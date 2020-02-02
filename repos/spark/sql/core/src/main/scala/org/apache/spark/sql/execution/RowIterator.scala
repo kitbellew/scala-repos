@@ -52,12 +52,11 @@ private[sql] abstract class RowIterator {
 }
 
 object RowIterator {
-  def fromScala(scalaIter: Iterator[InternalRow]): RowIterator = {
+  def fromScala(scalaIter: Iterator[InternalRow]): RowIterator =
     scalaIter match {
       case wrappedRowIter: RowIteratorToScala => wrappedRowIter.rowIter
       case _                                  => new RowIteratorFromScala(scalaIter)
     }
-  }
 }
 
 private final class RowIteratorToScala(val rowIter: RowIterator)
@@ -82,7 +81,7 @@ private final class RowIteratorToScala(val rowIter: RowIterator)
 private final class RowIteratorFromScala(scalaIter: Iterator[InternalRow])
     extends RowIterator {
   private[this] var _next: InternalRow = null
-  override def advanceNext(): Boolean = {
+  override def advanceNext(): Boolean =
     if (scalaIter.hasNext) {
       _next = scalaIter.next()
       true
@@ -90,7 +89,6 @@ private final class RowIteratorFromScala(scalaIter: Iterator[InternalRow])
       _next = null
       false
     }
-  }
   override def getRow: InternalRow = _next
   override def toScala: Iterator[InternalRow] = scalaIter
 }

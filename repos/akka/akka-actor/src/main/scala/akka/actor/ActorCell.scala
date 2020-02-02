@@ -620,12 +620,11 @@ private[akka] class ActorCell(
   }
 
   protected def create(failure: Option[ActorInitializationException]): Unit = {
-    def clearOutActorIfNonNull(): Unit = {
+    def clearOutActorIfNonNull(): Unit =
       if (actor != null) {
         clearActorFields(actor, recreate = false)
         actor = null // ensure that we know that we failed during creation
       }
-    }
 
     failure foreach { throw _ }
 

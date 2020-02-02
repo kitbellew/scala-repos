@@ -18,7 +18,7 @@ import scala.tools.testing.ClearAfterClass
 object OptimizedBytecodeTest extends ClearAfterClass.Clearable {
   val args = "-Yopt:l:classpath -Yopt-warnings"
   var compiler = newCompiler(extraArgs = args)
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])

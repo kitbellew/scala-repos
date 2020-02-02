@@ -20,12 +20,11 @@ package object util {
   private[util] final case class Box[+K](inner: K) {
     def apply(): K = inner
 
-    override def equals(o: Any): Boolean = {
+    override def equals(o: Any): Boolean =
       o match {
         case o: Box[_] => inner === o.inner
         case _         => false
       }
-    }
 
     override def hashCode(): Int =
       if (inner == null) 0

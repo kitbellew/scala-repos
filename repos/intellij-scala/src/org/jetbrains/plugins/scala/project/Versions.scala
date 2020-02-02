@@ -36,7 +36,7 @@ object Versions extends Versions {
 trait Versions {
   protected val releaseVersionLine: Regex
 
-  protected def loadVersionsOf(entity: Entity): Array[String] = {
+  protected def loadVersionsOf(entity: Entity): Array[String] =
     loadVersionsFrom(entity.url, {
       case releaseVersionLine(number) => number
     }).getOrElse(entity.hardcodedVersions)
@@ -45,15 +45,13 @@ trait Versions {
       .sorted(implicitly[Ordering[Version]].reverse)
       .map(_.number)
       .toArray
-  }
 
   protected def loadVersionsFrom(
       url: String,
-      filter: PartialFunction[String, String]): Try[Seq[String]] = {
+      filter: PartialFunction[String, String]): Try[Seq[String]] =
     loadLinesFrom(url).map { lines => lines.collect(filter) }
-  }
 
-  private def loadLinesFrom(url: String): Try[Seq[String]] = {
+  private def loadLinesFrom(url: String): Try[Seq[String]] =
     Try(HttpConfigurable.getInstance().openHttpConnection(url)).map {
       connection =>
         try {
@@ -62,7 +60,6 @@ trait Versions {
           connection.disconnect()
         }
     }
-  }
 
   protected case class Entity(
       url: String,

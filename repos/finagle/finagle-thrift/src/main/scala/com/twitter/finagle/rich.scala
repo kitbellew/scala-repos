@@ -259,14 +259,13 @@ private[twitter] object ThriftUtil {
   def serverFromIface(
       impl: AnyRef,
       protocolFactory: TProtocolFactory,
-      serviceName: String): BinaryService = {
+      serviceName: String): BinaryService =
     serverFromIface(
       impl,
       protocolFactory,
       LoadedStatsReceiver,
       Thrift.maxThriftBufferSize,
       serviceName)
-  }
 }
 
 /**

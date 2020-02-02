@@ -133,9 +133,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   private def baseRdd(
       sqlContext: SQLContext,
       options: CSVOptions,
-      inputPaths: Seq[String]): RDD[String] = {
+      inputPaths: Seq[String]): RDD[String] =
     readText(sqlContext, options, inputPaths.mkString(","))
-  }
 
   private def tokenRdd(
       sqlContext: SQLContext,
@@ -152,7 +151,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   /**
     * Returns the first line of the first non-empty file in path
     */
-  private def findFirstLine(options: CSVOptions, rdd: RDD[String]): String = {
+  private def findFirstLine(options: CSVOptions, rdd: RDD[String]): String =
     if (options.isCommentSet) {
       val comment = options.comment.toString
       rdd
@@ -163,12 +162,11 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         .filter { line => line.trim.nonEmpty }
         .first()
     }
-  }
 
   private def readText(
       sqlContext: SQLContext,
       options: CSVOptions,
-      location: String): RDD[String] = {
+      location: String): RDD[String] =
     if (Charset.forName(options.charset) == StandardCharsets.UTF_8) {
       sqlContext.sparkContext.textFile(location)
     } else {
@@ -178,5 +176,4 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         .mapPartitions(_.map(pair =>
           new String(pair._2.getBytes, 0, pair._2.getLength, charset)))
     }
-  }
 }

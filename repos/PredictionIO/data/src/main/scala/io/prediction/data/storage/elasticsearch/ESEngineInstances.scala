@@ -76,7 +76,7 @@ class ESEngineInstances(
       .get
   }
 
-  def insert(i: EngineInstance): String = {
+  def insert(i: EngineInstance): String =
     try {
       val response = client.prepareIndex(index, estype).setSource(write(i)).get
       response.getId
@@ -85,9 +85,8 @@ class ESEngineInstances(
         error(e.getMessage)
         ""
     }
-  }
 
-  def get(id: String): Option[EngineInstance] = {
+  def get(id: String): Option[EngineInstance] =
     try {
       val response = client.prepareGet(index, estype, id).get
       if (response.isExists) {
@@ -100,9 +99,8 @@ class ESEngineInstances(
         error(e.getMessage)
         None
     }
-  }
 
-  def getAll(): Seq[EngineInstance] = {
+  def getAll(): Seq[EngineInstance] =
     try {
       val builder = client.prepareSearch(index).setTypes(estype)
       ESUtils.getAll[EngineInstance](client, builder)
@@ -111,12 +109,11 @@ class ESEngineInstances(
         error(e.getMessage)
         Seq()
     }
-  }
 
   def getCompleted(
       engineId: String,
       engineVersion: String,
-      engineVariant: String): Seq[EngineInstance] = {
+      engineVariant: String): Seq[EngineInstance] =
     try {
       val builder = client
         .prepareSearch(index)
@@ -134,7 +131,6 @@ class ESEngineInstances(
         error(e.getMessage)
         Seq()
     }
-  }
 
   def getLatestCompleted(
       engineId: String,
@@ -142,19 +138,17 @@ class ESEngineInstances(
       engineVariant: String): Option[EngineInstance] =
     getCompleted(engineId, engineVersion, engineVariant).headOption
 
-  def update(i: EngineInstance): Unit = {
+  def update(i: EngineInstance): Unit =
     try {
       client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
-  }
 
-  def delete(id: String): Unit = {
+  def delete(id: String): Unit =
     try {
       val response = client.prepareDelete(index, estype, id).get
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
-  }
 }

@@ -131,14 +131,13 @@ class ApplicationCacheSuite
         attemptId: Option[String],
         ui: SparkUI,
         completed: Boolean,
-        timestamp: Long): Unit = {
+        timestamp: Long): Unit =
       instances += (CacheKey(appId, attemptId) ->
         new CacheEntry(
           ui,
           completed,
           updateProbe(appId, attemptId, timestamp),
           timestamp))
-    }
 
     /**
       * Detach a reconstructed UI
@@ -160,11 +159,8 @@ class ApplicationCacheSuite
     /**
       * Lookup from the internal cache of attached UIs
       */
-    def getAttached(
-        appId: String,
-        attemptId: Option[String]): Option[SparkUI] = {
+    def getAttached(appId: String, attemptId: Option[String]): Option[SparkUI] =
       attached.get(CacheKey(appId, attemptId))
-    }
 
     /**
       * The update probe.
@@ -177,7 +173,7 @@ class ApplicationCacheSuite
         attemptId: Option[String],
         updateTime: Long)(): Boolean = {
       updateProbeCount += 1
-      logDebug(s"isUpdated($appId, $attemptId, ${updateTime})")
+      logDebug(s"isUpdated($appId, $attemptId, $updateTime)")
       val entry = instances.get(CacheKey(appId, attemptId)).get
       val updated = entry.probeTime > updateTime
       logDebug(s"entry = $entry; updated = $updated")
@@ -528,9 +524,8 @@ class ApplicationCacheSuite
     when(request.getQueryString()).thenReturn("id=2")
     val resp = mock[HttpServletResponse]
     when(resp.encodeRedirectURL(any())).thenAnswer(new Answer[String]() {
-      override def answer(invocationOnMock: InvocationOnMock): String = {
+      override def answer(invocationOnMock: InvocationOnMock): String =
         invocationOnMock.getArguments()(0).asInstanceOf[String]
-      }
     })
     filter.doFilter(request, resp, null)
     verify(resp).sendRedirect(

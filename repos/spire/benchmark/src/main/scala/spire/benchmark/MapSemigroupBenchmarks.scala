@@ -51,7 +51,7 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
       y: Map[K, V],
       flip: Boolean)(
       implicit
-      semigroup: Semigroup[V]): Map[K, V] = {
+      semigroup: Semigroup[V]): Map[K, V] =
     y.foldLeft(x) {
       case (z, kv) =>
         z + ((kv._1, (x get kv._1) match {
@@ -60,13 +60,11 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
           case None => kv._2
         }))
     }
-  }
 
   def bulkAdd[K, V](x: Map[K, V], y: Map[K, V])(
       implicit
-      semigroup: Semigroup[V]): Map[K, V] = {
+      semigroup: Semigroup[V]): Map[K, V] =
     if (x.size < y.size) add(y, x, true) else add(x, y, false)
-  }
 
   def spireAdd[K, V](x: Map[K, V], y: Map[K, V])(
       implicit
@@ -89,7 +87,7 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     arr
   }
 
-  override protected def setUp(): Unit = {
+  override protected def setUp(): Unit =
     if (mapType == "random") {
       maps = genMaps { i => (nextInt, nextInt) }
     } else if (mapType == "sparse") {
@@ -99,7 +97,6 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     } else {
       sys.error("What are you doing to me!")
     }
-  }
 
   implicit val semigroup = new Semigroup[Int] {
     def op(x: Int, y: Int): Int = x + y

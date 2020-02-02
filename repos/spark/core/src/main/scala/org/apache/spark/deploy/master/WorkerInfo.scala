@@ -84,9 +84,8 @@ private[spark] class WorkerInfo(
     }
   }
 
-  def hasExecutor(app: ApplicationInfo): Boolean = {
+  def hasExecutor(app: ApplicationInfo): Boolean =
     executors.values.exists(_.application == app)
-  }
 
   def addDriver(driver: DriverInfo) {
     drivers(driver.id) = driver
@@ -100,9 +99,8 @@ private[spark] class WorkerInfo(
     coresUsed -= driver.desc.cores
   }
 
-  def setState(state: WorkerState.Value): Unit = {
+  def setState(state: WorkerState.Value): Unit =
     this.state = state
-  }
 
   def isAlive(): Boolean = this.state == WorkerState.ALIVE
 }

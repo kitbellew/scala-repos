@@ -97,7 +97,7 @@ class CoGroupedRDD[K: ClassTag](
     this
   }
 
-  override def getDependencies: Seq[Dependency[_]] = {
+  override def getDependencies: Seq[Dependency[_]] =
     rdds.map { rdd: RDD[_] =>
       if (rdd.partitioner == Some(part)) {
         logDebug("Adding one-to-one dependency with " + rdd)
@@ -110,7 +110,6 @@ class CoGroupedRDD[K: ClassTag](
           serializer)
       }
     }
-  }
 
   override def getPartitions: Array[Partition] = {
     val array = new Array[Partition](part.numPartitions)

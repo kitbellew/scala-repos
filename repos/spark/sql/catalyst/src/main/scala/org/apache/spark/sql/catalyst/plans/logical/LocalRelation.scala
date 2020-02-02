@@ -29,9 +29,8 @@ import org.apache.spark.sql.types.{StructField, StructType}
 object LocalRelation {
   def apply(output: Attribute*): LocalRelation = new LocalRelation(output)
 
-  def apply(output1: StructField, output: StructField*): LocalRelation = {
+  def apply(output1: StructField, output: StructField*): LocalRelation =
     new LocalRelation(StructType(output1 +: output).toAttributes)
-  }
 
   def fromExternalRows(
       output: Seq[Attribute],
@@ -62,9 +61,8 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[InternalRow] = Nil)
     * attributes are required when a relation is going to be included multiple times in the same
     * query.
     */
-  override final def newInstance(): this.type = {
+  override final def newInstance(): this.type =
     LocalRelation(output.map(_.newInstance()), data).asInstanceOf[this.type]
-  }
 
   override protected def stringArgs = Iterator(output)
 

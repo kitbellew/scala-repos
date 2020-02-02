@@ -12,9 +12,8 @@ class SymbolTableTest {
   object symbolTable extends SymbolTableForUnitTesting
 
   @Test
-  def initDefinitions = {
+  def initDefinitions =
     symbolTable.definitions.init()
-  }
 
   @Test
   def basicSubTypeCheck = {

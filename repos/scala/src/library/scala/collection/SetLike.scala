@@ -78,14 +78,13 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
   protected[this] override def parCombiner = ParSet.newCombiner[A]
 
   // Default collection type appropriate for immutable collections; mutable collections override this
-  override def toSeq: Seq[A] = {
+  override def toSeq: Seq[A] =
     if (isEmpty) Vector.empty[A]
     else {
       val vb = Vector.newBuilder[A]
       foreach(vb += _)
       vb.result
     }
-  }
 
   override def toBuffer[A1 >: A]: mutable.Buffer[A1] = {
     val result = new mutable.ArrayBuffer[A1](size)
@@ -188,10 +187,9 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
     *  @param len  the size of the subsets.
     *  @return     the iterator.
     */
-  def subsets(len: Int): Iterator[This] = {
+  def subsets(len: Int): Iterator[This] =
     if (len < 0 || len > size) Iterator.empty
     else new SubsetsItr(self.toIndexedSeq, len)
-  }
 
   /** An iterator over all subsets of this set.
     *

@@ -54,9 +54,8 @@ trait LowPriorityWriteables {
     */
   implicit def writeableOf_Content[C <: play.twirl.api.Content](
       implicit codec: Codec,
-      ct: ContentTypeOf[C]): Writeable[C] = {
+      ct: ContentTypeOf[C]): Writeable[C] =
     Writeable(content => codec.encode(content.body))
-  }
 
 }
 
@@ -70,25 +69,22 @@ trait DefaultWriteables extends LowPriorityWriteables {
     */
   implicit def writeableOf_XmlContent(
       implicit codec: Codec,
-      ct: ContentTypeOf[play.twirl.api.Xml]): Writeable[play.twirl.api.Xml] = {
+      ct: ContentTypeOf[play.twirl.api.Xml]): Writeable[play.twirl.api.Xml] =
     Writeable(xml => codec.encode(xml.body.trim))
-  }
 
   /**
     * `Writeable` for `NodeSeq` values - literal Scala XML.
     */
   implicit def writeableOf_NodeSeq[C <: scala.xml.NodeSeq](
-      implicit codec: Codec): Writeable[C] = {
+      implicit codec: Codec): Writeable[C] =
     Writeable(xml => codec.encode(xml.toString))
-  }
 
   /**
     * `Writeable` for `NodeBuffer` values - literal Scala XML.
     */
   implicit def writeableOf_NodeBuffer(
-      implicit codec: Codec): Writeable[scala.xml.NodeBuffer] = {
+      implicit codec: Codec): Writeable[scala.xml.NodeBuffer] =
     Writeable(xml => codec.encode(xml.toString))
-  }
 
   /**
     * `Writeable` for `urlEncodedForm` values
@@ -108,10 +104,8 @@ trait DefaultWriteables extends LowPriorityWriteables {
   /**
     * `Writeable` for `JsValue` values - Json
     */
-  implicit def writeableOf_JsValue(
-      implicit codec: Codec): Writeable[JsValue] = {
+  implicit def writeableOf_JsValue(implicit codec: Codec): Writeable[JsValue] =
     Writeable(a => codec.encode(Json.stringify(a)))
-  }
 
   /**
     * `Writeable` for empty responses.

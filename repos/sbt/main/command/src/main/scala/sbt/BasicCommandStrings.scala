@@ -79,9 +79,8 @@ ${runEarly(level.toString)}
       if (command.isEmpty || Character.isLetter(command.charAt(0))) "" else " "
     s"$EarlyCommand$sep$command"
   }
-  private[sbt] def isEarlyCommand(s: String): Boolean = {
+  private[sbt] def isEarlyCommand(s: String): Boolean =
     s.startsWith(EarlyCommand) && s != Compat.FailureWall && s != Compat.ClearOnFailure
-  }
 
   val EarlyCommand = "--"
   val EarlyCommandBrief = (

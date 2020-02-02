@@ -109,7 +109,7 @@ class Queue[A]
     *  @return    a sequence of all elements in the queue for which
     *             p yields true.
     */
-  def dequeueAll(p: A => Boolean): Seq[A] = {
+  def dequeueAll(p: A => Boolean): Seq[A] =
     if (first0.isEmpty)
       Seq.empty
     else {
@@ -122,7 +122,6 @@ class Queue[A]
       if (first0.isEmpty) res
       else removeAllFromList(p, res)
     }
-  }
 
   private def removeAllFromList(
       p: A => Boolean,
@@ -147,7 +146,7 @@ class Queue[A]
     "2.11.0")
   def extractFirst(
       start: LinkedList[A],
-      p: A => Boolean): Option[LinkedList[A]] = {
+      p: A => Boolean): Option[LinkedList[A]] =
     if (isEmpty) None
     else {
       var cell = start
@@ -163,7 +162,6 @@ class Queue[A]
         res
       }
     }
-  }
 
   /** Returns the first element in the queue, or throws an error if there
     *  is no element contained in the queue.

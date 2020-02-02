@@ -36,14 +36,13 @@ object ScalaProjectSettingsUtil {
   }
 
   def getPatternValidator: InputValidator = new InputValidator {
-    def checkInput(inputString: String): Boolean = {
+    def checkInput(inputString: String): Boolean =
       checkInput(inputString, checkExcludes = true)
-    }
 
     @tailrec
     private def checkInput(
         inputString: String,
-        checkExcludes: Boolean): Boolean = {
+        checkExcludes: Boolean): Boolean =
       if (checkExcludes && inputString.startsWith(
             ScalaCodeStyleSettings.EXCLUDE_PREFIX))
         checkInput(
@@ -52,22 +51,18 @@ object ScalaProjectSettingsUtil {
       else
         inputString.contains(".") && ScalaProjectSettingsUtil.isValidPackage(
           inputString)
-    }
 
-    def canClose(inputString: String): Boolean = {
+    def canClose(inputString: String): Boolean =
       checkInput(inputString)
-    }
   }
 
   def getPackageValidator: InputValidator = new InputValidator {
-    def checkInput(inputString: String): Boolean = {
+    def checkInput(inputString: String): Boolean =
       ScalaProjectSettingsUtil
         .isValidPackage(inputString, checkPlaceholder = false)
-    }
 
-    def canClose(inputString: String): Boolean = {
+    def canClose(inputString: String): Boolean =
       checkInput(inputString)
-    }
   }
 
   def getPatternListPanel(

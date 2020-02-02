@@ -99,14 +99,12 @@ class GraphStageDocSpec extends AkkaSpec {
     override def createLogic(attr: Attributes): GraphStageLogic =
       new GraphStageLogic(shape) {
         setHandler(in, new InHandler {
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             push(out, f(grab(in)))
-          }
         })
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             pull(in)
-          }
         })
       }
   }
@@ -142,9 +140,8 @@ class GraphStageDocSpec extends AkkaSpec {
           }
         })
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             pull(in)
-          }
         })
       }
   }
@@ -194,14 +191,13 @@ class GraphStageDocSpec extends AkkaSpec {
           }
         )
         setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (lastElem.isDefined) {
               push(out, lastElem.get)
               lastElem = None
             } else {
               pull(in)
             }
-          }
         })
       }
   }
@@ -244,9 +240,8 @@ class GraphStageDocSpec extends AkkaSpec {
             }
           )
           setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               pull(in)
-            }
           })
         }
     }
@@ -302,10 +297,10 @@ class GraphStageDocSpec extends AkkaSpec {
           }
 
           setHandler(in, new InHandler {
-            override def onPush(): Unit = { push(out, grab(in)) }
+            override def onPush(): Unit = push(out, grab(in))
           })
           setHandler(out, new OutHandler {
-            override def onPull(): Unit = { pull(in) }
+            override def onPull(): Unit = pull(in)
           })
         }
     }
@@ -370,12 +365,11 @@ class GraphStageDocSpec extends AkkaSpec {
             }
           })
           setHandler(out, new OutHandler {
-            override def onPull(): Unit = { pull(in) }
+            override def onPull(): Unit = pull(in)
           })
 
-          override protected def onTimer(timerKey: Any): Unit = {
+          override protected def onTimer(timerKey: Any): Unit =
             open = false
-          }
         }
     }
     //#timed
@@ -416,18 +410,16 @@ class GraphStageDocSpec extends AkkaSpec {
 
                 // replace handler with one just forwarding
                 setHandler(in, new InHandler {
-                  override def onPush(): Unit = {
+                  override def onPush(): Unit =
                     push(out, grab(in))
-                  }
                 })
               }
             }
           )
 
           setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               pull(in)
-            }
           })
 
         }
@@ -466,11 +458,10 @@ class GraphStageDocSpec extends AkkaSpec {
           def bufferFull = buffer.size == 2
           var downstreamWaiting = false
 
-          override def preStart(): Unit = {
+          override def preStart(): Unit =
             // a detached stage needs to start upstream demand
             // itself as it is not triggered by downstream demand
             pull(in)
-          }
 
           setHandler(
             in,

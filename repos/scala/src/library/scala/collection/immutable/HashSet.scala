@@ -76,10 +76,9 @@ class HashSet[A]
     *              The value of level is 0 for a top-level HashSet and grows in increments of 5
     * @return true if all elements of this set are contained in that set
     */
-  protected def subsetOf0(that: HashSet[A], level: Int) = {
+  protected def subsetOf0(that: HashSet[A], level: Int) =
     // The default implementation is for the empty set and returns true because the empty set is a subset of all sets
     true
-  }
 
   override def +(e: A): HashSet[A] = updated0(e, computeHash(e), 0)
 
@@ -114,12 +113,9 @@ class HashSet[A]
     * @return The union of this and that at the given level. Unless level is zero, the result is not a self-contained
     *         HashSet but needs to be stored at the correct depth
     */
-  private[immutable] def union0(
-      that: LeafHashSet[A],
-      level: Int): HashSet[A] = {
+  private[immutable] def union0(that: LeafHashSet[A], level: Int): HashSet[A] =
     // the default implementation is for the empty set, so we just return that
     that
-  }
 
   /**
     * Union with a HashSet at a given level
@@ -134,10 +130,9 @@ class HashSet[A]
       that: HashSet[A],
       level: Int,
       buffer: Array[HashSet[A]],
-      offset0: Int): HashSet[A] = {
+      offset0: Int): HashSet[A] =
     // the default implementation is for the empty set, so we just return that
     that
-  }
 
   /**
     * Intersection with another hash set at a given level
@@ -151,10 +146,9 @@ class HashSet[A]
       that: HashSet[A],
       level: Int,
       buffer: Array[HashSet[A]],
-      offset0: Int): HashSet[A] = {
+      offset0: Int): HashSet[A] =
     // the default implementation is for the empty set, so we just return the empty set
     null
-  }
 
   /**
     * Diff with another hash set at a given level
@@ -168,10 +162,9 @@ class HashSet[A]
       that: HashSet[A],
       level: Int,
       buffer: Array[HashSet[A]],
-      offset0: Int): HashSet[A] = {
+      offset0: Int): HashSet[A] =
     // the default implementation is for the empty set, so we just return the empty set
     null
-  }
 
   def -(e: A): HashSet[A] =
     nullToEmpty(removed0(e, computeHash(e), 0))
@@ -285,13 +278,12 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     override protected def get0(key: A, hash: Int, level: Int): Boolean =
       (hash == this.hash && key == this.key)
 
-    override protected def subsetOf0(that: HashSet[A], level: Int) = {
+    override protected def subsetOf0(that: HashSet[A], level: Int) =
       // check if that contains this.key
       // we use get0 with our key and hash at the correct level instead of calling contains,
       // which would not work since that might not be a top-level HashSet
       // and in any case would be inefficient because it would require recalculating the hash code
       that.get0(key, hash, level)
-    }
 
     override private[collection] def updated0(
         key: A,
@@ -335,11 +327,10 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         that: HashSet[A],
         level: Int,
         buffer: Array[HashSet[A]],
-        offset0: Int) = {
+        offset0: Int) =
       // switch to the Leaf version of union
       // we can exchange the arguments because union is symmetrical
       that.union0(this, level)
-    }
 
     override private[immutable] def intersect0(
         that: HashSet[A],
@@ -380,13 +371,12 @@ object HashSet extends ImmutableSetFactory[HashSet] {
     override protected def get0(key: A, hash: Int, level: Int): Boolean =
       if (hash == this.hash) ks.contains(key) else false
 
-    override protected def subsetOf0(that: HashSet[A], level: Int) = {
+    override protected def subsetOf0(that: HashSet[A], level: Int) =
       // we have to check each element
       // we use get0 with our hash at the correct level instead of calling contains,
       // which would not work since that might not be a top-level HashSet
       // and in any case would be inefficient because it would require recalculating the hash code
       ks.forall(key => that.get0(key, hash, level))
-    }
 
     override private[collection] def updated0(
         key: A,

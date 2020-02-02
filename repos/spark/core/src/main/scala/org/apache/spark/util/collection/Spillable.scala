@@ -39,7 +39,7 @@ private[spark] trait Spillable[C] extends Logging {
 
   // Called by subclasses every time a record is read
   // It's used for checking spilling frequency
-  protected def addElementsRead(): Unit = { _elementsRead += 1 }
+  protected def addElementsRead(): Unit = _elementsRead += 1
 
   // Memory manager that can be used to acquire/release memory
   protected[this] def taskMemoryManager: TaskMemoryManager

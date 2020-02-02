@@ -16,16 +16,15 @@ object BoxesRunTime {
     else equals2(x, y)
 
   @inline // only called by equals(), not by codegen
-  def equals2(x: Object, y: Object): Boolean = {
+  def equals2(x: Object, y: Object): Boolean =
     x match {
       case xn: java.lang.Number    => equalsNumObject(xn, y)
       case xc: java.lang.Character => equalsCharObject(xc, y)
       case null                    => y eq null
       case _                       => x.equals(y)
     }
-  }
 
-  def equalsNumObject(xn: java.lang.Number, y: Object): Boolean = {
+  def equalsNumObject(xn: java.lang.Number, y: Object): Boolean =
     y match {
       case yn: java.lang.Number    => equalsNumNum(xn, yn)
       case yc: java.lang.Character => equalsNumChar(xn, yc)
@@ -35,9 +34,8 @@ object BoxesRunTime {
         else
           xn.equals(y)
     }
-  }
 
-  def equalsNumNum(xn: java.lang.Number, yn: java.lang.Number): Boolean = {
+  def equalsNumNum(xn: java.lang.Number, yn: java.lang.Number): Boolean =
     (xn: Any) match {
       case xn: Double =>
         (yn: Any) match {
@@ -56,9 +54,8 @@ object BoxesRunTime {
       case null => yn eq null
       case _    => xn.equals(yn)
     }
-  }
 
-  def equalsCharObject(xc: java.lang.Character, y: Object): Boolean = {
+  def equalsCharObject(xc: java.lang.Character, y: Object): Boolean =
     y match {
       case yc: java.lang.Character => xc.charValue() == yc.charValue()
       case yn: java.lang.Number    => equalsNumChar(yn, xc)
@@ -68,12 +65,11 @@ object BoxesRunTime {
         else
           false // xc.equals(y) must be false here, because y is not a Char
     }
-  }
 
   @inline
   private def equalsNumChar(
       xn: java.lang.Number,
-      yc: java.lang.Character): Boolean = {
+      yc: java.lang.Character): Boolean =
     (xn: Any) match {
       case xn: Double => xn == yc.charValue()
       case xn: Long   => xn == yc.charValue()
@@ -81,7 +77,6 @@ object BoxesRunTime {
         if (xn eq null) yc eq null
         else xn.equals(yc)
     }
-  }
 
   def hashFromLong(n: java.lang.Long): Int = {
     val iv = n.intValue()
@@ -105,23 +100,20 @@ object BoxesRunTime {
     }
   }
 
-  def hashFromFloat(n: java.lang.Float): Int = {
+  def hashFromFloat(n: java.lang.Float): Int =
     hashFromDouble(java.lang.Double.valueOf(n.doubleValue()))
-  }
 
-  def hashFromNumber(n: java.lang.Number): Int = {
+  def hashFromNumber(n: java.lang.Number): Int =
     (n: Any) match {
       case n: Int              => n
       case n: java.lang.Long   => hashFromLong(n)
       case n: java.lang.Double => hashFromDouble(n)
       case n                   => n.hashCode()
     }
-  }
 
-  def hashFromObject(a: Object): Int = {
+  def hashFromObject(a: Object): Int =
     a match {
       case a: java.lang.Number => hashFromNumber(a)
       case a                   => a.hashCode()
     }
-  }
 }

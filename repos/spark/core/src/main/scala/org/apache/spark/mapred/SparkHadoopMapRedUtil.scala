@@ -51,7 +51,7 @@ object SparkHadoopMapRedUtil extends Logging {
     val mrTaskAttemptID = mrTaskContext.getTaskAttemptID
 
     // Called after we have decided to commit
-    def performCommit(): Unit = {
+    def performCommit(): Unit =
       try {
         committer.commitTask(mrTaskContext)
         logInfo(s"$mrTaskAttemptID: Committed")
@@ -63,7 +63,6 @@ object SparkHadoopMapRedUtil extends Logging {
           committer.abortTask(mrTaskContext)
           throw cause
       }
-    }
 
     // First, check whether the task's output has already been committed by some other attempt
     if (committer.needsTaskCommit(mrTaskContext)) {

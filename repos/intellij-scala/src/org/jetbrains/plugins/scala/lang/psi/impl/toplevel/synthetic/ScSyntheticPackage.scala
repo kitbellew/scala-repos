@@ -58,7 +58,7 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     processor match {
       case bp: BaseProcessor =>
         if (bp.kinds.contains(PACKAGE)) {
@@ -78,7 +78,6 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
         true
       case _ => true
     }
-  }
 }
 
 object ScSyntheticPackage {
@@ -111,9 +110,7 @@ object ScSyntheticPackage {
           classOf[PsiClass]
         )
         .toSeq
-        .find(pc => {
-          pc.qualifiedName == fqn
-        }) match {
+        .find { pc => pc.qualifiedName == fqn } match {
         case Some(obj) =>
           val pname = if (i < 0) "" else fqn.substring(0, i)
           new ScSyntheticPackage(name, PsiManager.getInstance(project)) {
@@ -136,9 +133,9 @@ object ScSyntheticPackage {
         case None => null
       }
     } else {
-      val pkgs = packages.filter(pc => {
+      val pkgs = packages.filter { pc =>
         pc.fqn.startsWith(fqn) && fqn.startsWith(pc.prefix)
-      })
+      }
 
       if (pkgs.isEmpty) null
       else {
@@ -150,17 +147,15 @@ object ScSyntheticPackage {
 
           def findClassByShortName(
               name: String,
-              scope: GlobalSearchScope): Array[PsiClass] = {
+              scope: GlobalSearchScope): Array[PsiClass] =
             getClasses.filter(_.name == name)
-          }
 
-          def containsClassNamed(name: String): Boolean = {
+          def containsClassNamed(name: String): Boolean =
             getClasses.exists(_.name == name)
-          }
 
           def getQualifiedName = fqn
 
-          def getClasses = {
+          def getClasses =
             Array(
               pkgs.flatMap(p =>
                 if (p.fqn.length == fqn.length)
@@ -171,14 +166,11 @@ object ScSyntheticPackage {
                     case td => Seq(td)
                   }
                 else Seq.empty): _*)
-          }
 
           def getClasses(scope: GlobalSearchScope) =
             getClasses.filter { clazz =>
-              {
-                val file = clazz.getContainingFile.getVirtualFile
-                file != null && scope.contains(file)
-              }
+              val file = clazz.getContainingFile.getVirtualFile
+              file != null && scope.contains(file)
             }
 
           def getParentPackage = ScPackageImpl.findPackage(project, pname)
@@ -197,11 +189,9 @@ object ScSyntheticPackage {
                 else ""
               if (tail.length == 0) {
                 p.packagings.foreach { pack =>
-                  {
-                    val own = pack.ownNamePart
-                    val i = own.indexOf(".")
-                    addPackage(if (i > 0) own.substring(0, i) else own)
-                  }
+                  val own = pack.ownNamePart
+                  val i = own.indexOf(".")
+                  addPackage(if (i > 0) own.substring(0, i) else own)
                 }
                 p.typeDefs.foreach {
                   case o: ScObject

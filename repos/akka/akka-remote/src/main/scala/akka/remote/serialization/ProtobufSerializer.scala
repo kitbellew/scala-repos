@@ -19,11 +19,10 @@ object ProtobufSerializer {
     * Helper to serialize an [[akka.actor.ActorRef]] to Akka's
     * protobuf representation.
     */
-  def serializeActorRef(ref: ActorRef): ActorRefData = {
+  def serializeActorRef(ref: ActorRef): ActorRefData =
     ActorRefData.newBuilder
       .setPath(Serialization.serializedActorPath(ref))
       .build
-  }
 
   /**
     * Helper to materialize (lookup) an [[akka.actor.ActorRef]]
@@ -64,7 +63,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
 
   override def fromBinary(
       bytes: Array[Byte],
-      manifest: Option[Class[_]]): AnyRef = {
+      manifest: Option[Class[_]]): AnyRef =
     manifest match {
       case Some(clazz) ⇒
         @tailrec
@@ -93,7 +92,6 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
         throw new IllegalArgumentException(
           "Need a protobuf message class to be able to serialize bytes using protobuf")
     }
-  }
 
   override def toBinary(obj: AnyRef): Array[Byte] = {
     val clazz = obj.getClass

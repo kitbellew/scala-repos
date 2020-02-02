@@ -89,7 +89,7 @@ trait GenTrees {
         reify(m.privateWithin),
         reify(m.annotations))
 
-  private def spliceTree(tree: Tree): Tree = {
+  private def spliceTree(tree: Tree): Tree =
     tree match {
       case TreeSplice(splicee) =>
         if (reifyDebug) println("splicing " + tree)
@@ -128,7 +128,6 @@ trait GenTrees {
       case _ =>
         EmptyTree
     }
-  }
 
   // unlike in `reifyBoundType` we can skip checking for `tpe` being local or not local w.r.t the reifee
   // a single check for a symbol of the bound term should be enough

@@ -73,11 +73,10 @@ abstract class ContextCleanerSuiteBase(
 
   protected def newRDDWithShuffleDependencies()
       : (RDD[_], Seq[ShuffleDependency[_, _, _]]) = {
-    def getAllDependencies(rdd: RDD[_]): Seq[Dependency[_]] = {
+    def getAllDependencies(rdd: RDD[_]): Seq[Dependency[_]] =
       rdd.dependencies ++ rdd.dependencies.flatMap { dep =>
         getAllDependencies(dep.rdd)
       }
-    }
     val rdd = newShuffleRDD()
 
     // Get all the shuffle dependencies
@@ -482,9 +481,8 @@ class CleanerTester(
       logInfo("Broadcast " + broadcastId + " cleaned")
     }
 
-    def accumCleaned(accId: Long): Unit = {
+    def accumCleaned(accId: Long): Unit =
       logInfo("Cleaned accId " + accId + " cleaned")
-    }
 
     def checkpointCleaned(rddId: Long): Unit = {
       toBeCheckpointIds.synchronized { toBeCheckpointIds -= rddId }
@@ -622,27 +620,24 @@ class CleanerTester(
       toBeCleanedBroadcstIds.synchronized { toBeCleanedBroadcstIds.isEmpty } &&
       toBeCheckpointIds.synchronized { toBeCheckpointIds.isEmpty }
 
-  private def getRDDBlocks(rddId: Int): Seq[BlockId] = {
+  private def getRDDBlocks(rddId: Int): Seq[BlockId] =
     blockManager.master.getMatchingBlockIds(_ match {
       case RDDBlockId(`rddId`, _) => true
       case _                      => false
     }, askSlaves = true)
-  }
 
-  private def getShuffleBlocks(shuffleId: Int): Seq[BlockId] = {
+  private def getShuffleBlocks(shuffleId: Int): Seq[BlockId] =
     blockManager.master.getMatchingBlockIds(_ match {
       case ShuffleBlockId(`shuffleId`, _, _)      => true
       case ShuffleIndexBlockId(`shuffleId`, _, _) => true
       case _                                      => false
     }, askSlaves = true)
-  }
 
-  private def getBroadcastBlocks(broadcastId: Long): Seq[BlockId] = {
+  private def getBroadcastBlocks(broadcastId: Long): Seq[BlockId] =
     blockManager.master.getMatchingBlockIds(_ match {
       case BroadcastBlockId(`broadcastId`, _) => true
       case _                                  => false
     }, askSlaves = true)
-  }
 
   private def blockManager = sc.env.blockManager
   private def mapOutputTrackerMaster =

@@ -154,7 +154,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       file: File,
       splitter: SplitExpressions.SplitExpression,
       lines: List[String])
-      : scala.util.Try[(Seq[(String, Int)], Seq[LineRange])] = {
+      : scala.util.Try[(Seq[(String, Int)], Seq[LineRange])] =
     try {
       val (imports, settingsAndDefs) = splitter(file, lines)
 
@@ -172,9 +172,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       case e: Throwable =>
         scala.util.Failure(e)
     }
-  }
 
-  def printResults(results: List[(File, SplitterComparison)]) = {
+  def printResults(results: List[(File, SplitterComparison)]) =
     for ((file, comparison) <- results) {
       val fileName = file.getName
       comparison match {
@@ -196,5 +195,4 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       }
 
     }
-  }
 }

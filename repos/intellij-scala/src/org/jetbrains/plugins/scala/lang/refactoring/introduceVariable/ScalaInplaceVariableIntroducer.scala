@@ -143,15 +143,13 @@ class ScalaInplaceVariableIntroducer(
   private def getDeclaration: PsiElement =
     findDeclaration(myDeclarationStartOffset)
 
-  private def setDeclaration(declaration: PsiElement): Unit = {
+  private def setDeclaration(declaration: PsiElement): Unit =
     myDeclarationStartOffset = declaration.getTextRange.getStartOffset
-  }
 
-  private def commitDocument(): Unit = {
+  private def commitDocument(): Unit =
     PsiDocumentManager
       .getInstance(myProject)
       .commitDocument(myEditor.getDocument)
-  }
 
   private def needInferType = forceInferType.getOrElse {
     if (mySpecifyTypeChb != null) mySpecifyTypeChb.isSelected
@@ -271,7 +269,7 @@ class ScalaInplaceVariableIntroducer(
                 case _ =>
               }
             }
-            private def removeTypeAnnotation(): Unit = {
+            private def removeTypeAnnotation(): Unit =
               getDeclaration match {
                 case holder: ScDeclaredElementsHolder =>
                   val colon =
@@ -295,7 +293,6 @@ class ScalaInplaceVariableIntroducer(
                   commitDocument()
                 case _ =>
               }
-            }
             protected def run(result: Result[Unit]): Unit = {
               commitDocument()
               setGreedyToRightToFalse()
@@ -308,9 +305,8 @@ class ScalaInplaceVariableIntroducer(
           }
           writeAction.execute()
           ApplicationManager.getApplication.runReadAction(new Runnable {
-            def run(): Unit = {
+            def run(): Unit =
               if (needInferType) resetGreedyToRightBack()
-            }
           })
         }
       })
@@ -358,7 +354,7 @@ class ScalaInplaceVariableIntroducer(
     myBalloon.revalidate()
   }
 
-  protected override def moveOffsetAfter(success: Boolean): Unit = {
+  protected override def moveOffsetAfter(success: Boolean): Unit =
     try {
       myBalloon.hide()
       if (success) {
@@ -399,12 +395,10 @@ class ScalaInplaceVariableIntroducer(
       }
       if (getExprMarker != null) getExprMarker.dispose()
     }
-  }
 
   protected override def getReferencesSearchScope(
-      file: VirtualFile): SearchScope = {
+      file: VirtualFile): SearchScope =
     new LocalSearchScope(myElementToRename.getContainingFile)
-  }
 
   protected override def checkLocalScope(): PsiElement = {
     val scope = new LocalSearchScope(myElementToRename.getContainingFile)
@@ -412,9 +406,8 @@ class ScalaInplaceVariableIntroducer(
     PsiTreeUtil.findCommonParent(elements: _*)
   }
 
-  protected override def startRename: StartMarkAction = {
+  protected override def startRename: StartMarkAction =
     StartMarkAction.start(myEditor, myProject, getCommandName)
-  }
 
   override def finish(success: Boolean): Unit = {
     myEditor.getDocument.removeDocumentListener(myCheckIdentifierListener)

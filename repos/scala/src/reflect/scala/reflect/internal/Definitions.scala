@@ -104,12 +104,11 @@ trait Definitions extends api.StandardDefinitions {
         "Could not find value classes! This is a catastrophic failure.  scala " +
           scala.util.Properties.versionString)
 
-    private def valueClassSymbol(name: TypeName): ClassSymbol = {
+    private def valueClassSymbol(name: TypeName): ClassSymbol =
       getMember(ScalaPackageClass, name) match {
         case x: ClassSymbol => x
         case _              => catastrophicFailure()
       }
-    }
 
     private[Definitions] def classesMap[T](f: Name => T) =
       symbolsMap(ScalaValueClassesNoUnit, f)
@@ -790,14 +789,13 @@ trait Definitions extends api.StandardDefinitions {
     def isProductNSymbol(sym: Symbol) =
       ProductClass.seq contains unspecializedSymbol(sym)
 
-    def unspecializedSymbol(sym: Symbol): Symbol = {
+    def unspecializedSymbol(sym: Symbol): Symbol =
       if (sym hasFlag SPECIALIZED) {
         // add initialization from its generic class constructor
         val genericName = nme.unspecializedName(sym.name)
         val member = sym.owner.info.decl(genericName.toTypeName)
         member
       } else sym
-    }
     def unspecializedTypeArgs(tp: Type): List[Type] =
       (tp baseType unspecializedSymbol(tp.typeSymbolDirect)).typeArgs
 
@@ -1160,14 +1158,13 @@ trait Definitions extends api.StandardDefinitions {
         )
     }
 
-    def EnumType(sym: Symbol) = {
+    def EnumType(sym: Symbol) =
       // given (in java): "class A { enum E { VAL1 } }"
       //  - sym: the symbol of the actual enumeration value (VAL1)
       //  - .owner: the ModuleClassSymbol of the enumeration (object E)
       //  - .linkedClassOfClass: the ClassSymbol of the enumeration (class E)
       // SI-6613 Subsequent runs of the resident compiler demand the phase discipline here.
       enteringPhaseNotLaterThan(picklerPhase)(sym.owner.linkedClassOfClass).tpe
-    }
 
     /** Given a class symbol C with type parameters T1, T2, ... Tn
       *  which have upper/lower bounds LB1/UB1, LB1/UB2, ..., LBn/UBn,
@@ -1286,13 +1283,12 @@ trait Definitions extends api.StandardDefinitions {
       *  Object are discarded.  Otherwise, all parents which normalize
       *  to Object except the first one found are discarded.
       */
-    def normalizedParents(parents: List[Type]): List[Type] = {
+    def normalizedParents(parents: List[Type]): List[Type] =
       if (parents exists (t =>
             (t.typeSymbol ne ObjectClass) && t.typeSymbol.isClass))
         parents filterNot (_.typeSymbol eq ObjectClass)
       else
         removeRedundantObjects(parents)
-    }
 
     /** Flatten curried parameter lists of a method type. */
     def allParameters(tpe: Type): List[Symbol] = tpe match {
@@ -1492,10 +1488,9 @@ trait Definitions extends api.StandardDefinitions {
         owner: Symbol,
         name: Name,
         what: String = "member",
-        addendum: String = "") = {
+        addendum: String = "") =
       throw new FatalError(
         owner + " does not have a " + what + " " + name + addendum)
-    }
 
     def getLanguageFeature(
         name: String,
@@ -1514,7 +1509,7 @@ trait Definitions extends api.StandardDefinitions {
       if (segs.isEmpty) root
       else findNamedMember(segs.tail, root.info member segs.head)
 
-    def getMember(owner: Symbol, name: Name): Symbol = {
+    def getMember(owner: Symbol, name: Name): Symbol =
       getMemberIfDefined(owner, name) orElse {
         if (phase.flatClasses && name.isTypeName && !owner.isPackageObjectOrClass) {
           val pkg = owner.owner
@@ -1522,14 +1517,12 @@ trait Definitions extends api.StandardDefinitions {
           getMember(pkg, flatname)
         } else fatalMissingSymbol(owner, name)
       }
-    }
-    def getMemberValue(owner: Symbol, name: Name): TermSymbol = {
+    def getMemberValue(owner: Symbol, name: Name): TermSymbol =
       getMember(owner, name.toTermName) match {
         case x: TermSymbol => x
         case _             => fatalMissingSymbol(owner, name, "member value")
       }
-    }
-    def getMemberModule(owner: Symbol, name: Name): ModuleSymbol = {
+    def getMemberModule(owner: Symbol, name: Name): ModuleSymbol =
       getMember(owner, name.toTermName) match {
         case x: ModuleSymbol => x
         case NoSymbol        => fatalMissingSymbol(owner, name, "member object")
@@ -1539,27 +1532,23 @@ trait Definitions extends api.StandardDefinitions {
             name,
             "member object",
             addendum =
-              s". A symbol ${other} of kind ${other.accurateKindString} already exists.")
+              s". A symbol $other of kind ${other.accurateKindString} already exists.")
       }
-    }
-    def getTypeMember(owner: Symbol, name: Name): TypeSymbol = {
+    def getTypeMember(owner: Symbol, name: Name): TypeSymbol =
       getMember(owner, name.toTypeName) match {
         case x: TypeSymbol => x
         case _             => fatalMissingSymbol(owner, name, "type member")
       }
-    }
-    def getMemberClass(owner: Symbol, name: Name): ClassSymbol = {
+    def getMemberClass(owner: Symbol, name: Name): ClassSymbol =
       getMember(owner, name.toTypeName) match {
         case x: ClassSymbol => x
         case _              => fatalMissingSymbol(owner, name, "member class")
       }
-    }
-    def getMemberMethod(owner: Symbol, name: Name): TermSymbol = {
+    def getMemberMethod(owner: Symbol, name: Name): TermSymbol =
       getMember(owner, name.toTermName) match {
         case x: TermSymbol => x
         case _             => fatalMissingSymbol(owner, name, "method")
       }
-    }
 
     private lazy val erasurePhase = findPhaseWithName("erasure")
     def getMemberIfDefined(owner: Symbol, name: Name): Symbol =
@@ -1576,12 +1565,11 @@ trait Definitions extends api.StandardDefinitions {
       *  OverloadedTypes turning up when you don't want them, if you
       *  know the method in question is uniquely declared in the given owner.
       */
-    def getDecl(owner: Symbol, name: Name): Symbol = {
+    def getDecl(owner: Symbol, name: Name): Symbol =
       getDeclIfDefined(owner, name) orElse fatalMissingSymbol(
         owner,
         name,
         "decl")
-    }
     def getDeclIfDefined(owner: Symbol, name: Name): Symbol =
       owner.info.nonPrivateDecl(name)
 
@@ -1621,15 +1609,13 @@ trait Definitions extends api.StandardDefinitions {
     /** T1 means one type parameter.
       */
     def newT1NullaryMethod(owner: Symbol, name: TermName, flags: Long)(
-        createFn: Symbol => Type): MethodSymbol = {
+        createFn: Symbol => Type): MethodSymbol =
       newPolyMethod(1, owner, name, flags)(tparams =>
         (None, createFn(tparams.head)))
-    }
     def newT1NoParamsMethod(owner: Symbol, name: TermName, flags: Long)(
-        createFn: Symbol => Type): MethodSymbol = {
+        createFn: Symbol => Type): MethodSymbol =
       newPolyMethod(1, owner, name, flags)(tparams =>
         (Some(Nil), createFn(tparams.head)))
-    }
 
     /** Is symbol a phantom class for which no runtime representation exists? */
     lazy val isPhantomClass =
@@ -1727,13 +1713,12 @@ trait Definitions extends api.StandardDefinitions {
         else if (sym.isTopLevel) sym.javaClassName
         else
           flatNameString(sym.owner, separator) + nme.NAME_JOIN_STRING + sym.simpleName
-      def signature1(etp: Type): String = {
+      def signature1(etp: Type): String =
         if (etp.typeSymbol == ArrayClass)
           "[" + signature1(erasure(etp.dealiasWiden.typeArgs.head))
         else if (isPrimitiveValueClass(etp.typeSymbol))
           abbrvTag(etp.typeSymbol).toString()
         else "L" + flatNameString(etp.typeSymbol, '/') + ";"
-      }
       val etp = erasure(tp)
       if (etp.typeSymbol == ArrayClass) signature1(etp)
       else flatNameString(etp.typeSymbol, '.')
@@ -1783,12 +1768,11 @@ trait Definitions extends api.StandardDefinitions {
         getDecl(BoxesRunTimeClass, nme.isBoxedNumberOrBoolean)
       lazy val Boxes_isNumber = getDecl(BoxesRunTimeClass, nme.isBoxedNumber)
 
-      private def valueClassCompanion(name: TermName): ModuleSymbol = {
+      private def valueClassCompanion(name: TermName): ModuleSymbol =
         getMember(ScalaPackageClass, name) match {
           case x: ModuleSymbol => x
           case _               => catastrophicFailure()
         }
-      }
 
       private def valueCompanionMember(
           className: Name,

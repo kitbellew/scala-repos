@@ -79,10 +79,10 @@ class OffsetCommitTest extends ZooKeeperTestHarness {
           simpleConsumer.send(consumerMetadataRequest)
         consumerMetadataResponse.coordinatorOpt.isDefined
       }
-      .dropWhile(success => {
+      .dropWhile { success =>
         if (!success) Thread.sleep(1000)
         !success
-      })
+      }
   }
 
   @After

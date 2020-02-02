@@ -32,14 +32,13 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     findReferencePattern(element) match {
       case Some((_, newPatternText)) =>
         setText("Expand to: " + StringUtils.abbreviate(newPatternText, 25))
         true
       case _ => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     findReferencePattern(element) match {
@@ -60,7 +59,7 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
   }
 
   private def findReferencePattern(
-      element: PsiElement): Option[(ScPattern, String)] = {
+      element: PsiElement): Option[(ScPattern, String)] =
     element.getParent match {
       case refPattern: ScReferencePattern =>
         val expectedType = refPattern.expectedType
@@ -72,9 +71,8 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
           (wildcardPattern, patText))
       case _ => None
     }
-  }
 
-  def nestedPatternText(expectedType: Option[ScType]): Option[String] = {
+  def nestedPatternText(expectedType: Option[ScType]): Option[String] =
     expectedType match {
       case Some(ScTupleType(comps)) =>
         import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester.suggestNamesByType
@@ -98,5 +96,4 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
           case _ => None
         }
     }
-  }
 }

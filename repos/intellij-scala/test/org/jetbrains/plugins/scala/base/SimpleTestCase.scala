@@ -35,7 +35,7 @@ abstract class SimpleTestCase extends UsefulTestCase {
     super.tearDown()
   }
 
-  def parseText(@Language("Scala") s: String): ScalaFile = {
+  def parseText(@Language("Scala") s: String): ScalaFile =
     PsiFileFactory
       .getInstance(fixture.getProject)
       .createFileFromText(
@@ -43,7 +43,6 @@ abstract class SimpleTestCase extends UsefulTestCase {
         ScalaFileType.SCALA_FILE_TYPE,
         s)
       .asInstanceOf[ScalaFile]
-  }
 
   implicit class Findable(val element: ScalaFile) {
     def target: PsiElement =

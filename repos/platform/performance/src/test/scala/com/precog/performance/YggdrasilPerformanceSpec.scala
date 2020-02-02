@@ -176,9 +176,8 @@ histogram
       true must_== true
     }
 
-    def testRead() = {
+    def testRead() =
       executor.execute("apiKey", "count(load(//test/large))")
-    }
 
     "read large" in {
       insert(bifrost, Path("/test/large"), 1, 100000, 1)

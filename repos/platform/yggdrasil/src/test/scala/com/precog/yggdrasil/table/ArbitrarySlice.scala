@@ -32,11 +32,10 @@ import com.precog.util.{BitSet, BitSetUtil, Loop}
 import com.precog.util.BitSetUtil.Implicits._
 
 trait ArbitrarySlice {
-  def arbitraryBitSet(size: Int): Gen[BitSet] = {
+  def arbitraryBitSet(size: Int): Gen[BitSet] =
     containerOfN[List, Boolean](size, arbitrary[Boolean]) map {
       BitsetColumn.bitset _
     }
-  }
 
   private def fullBitSet(size: Int): BitSet = BitSetUtil.range(0, size)
 
@@ -86,12 +85,11 @@ trait ArbitrarySlice {
   }
 
   def genSlice(identities: Int, refs: Seq[ColumnRef], sz: Int): Gen[Slice] = {
-    def sequence[T](l: List[Gen[T]], acc: Gen[List[T]]): Gen[List[T]] = {
+    def sequence[T](l: List[Gen[T]], acc: Gen[List[T]]): Gen[List[T]] =
       l match {
         case x :: xs => acc.flatMap(l => sequence(xs, x.map(xv => xv :: l)))
         case Nil     => acc
       }
-    }
 
     for {
       ids <- listOfN(

@@ -25,7 +25,7 @@ object SelectorSerializer {
         s"Unknown Selector type: ${sel.getClass}")
   }
 
-  def deserialize(obj: js.Dynamic): Selector = {
+  def deserialize(obj: js.Dynamic): Selector =
     obj.selType.asInstanceOf[String] match {
       case "SuiteSelector" =>
         new SuiteSelector()
@@ -42,6 +42,5 @@ object SelectorSerializer {
       case tpe =>
         throw new IllegalArgumentException(s"Unknown Selector type: $tpe")
     }
-  }
 
 }

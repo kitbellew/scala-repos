@@ -46,17 +46,16 @@ case class VersionedSegmentFormat(formats: Map[Int, SegmentFormat])
   }
 
   object writer extends SegmentWriter {
-    def writeSegment(channel: WritableByteChannel, segment: Segment) = {
+    def writeSegment(channel: WritableByteChannel, segment: Segment) =
       for {
         _ <- writeVersion(channel)
         _ <- format.writer.writeSegment(channel, segment)
       } yield PrecogUnit
-    }
   }
 
   object reader extends SegmentReader {
     def readSegmentId(
-        channel: ReadableByteChannel): Validation[IOException, SegmentId] = {
+        channel: ReadableByteChannel): Validation[IOException, SegmentId] =
       readVersion(channel) flatMap { version =>
         formats get version map { format =>
           format.reader.readSegmentId(channel)
@@ -65,10 +64,9 @@ case class VersionedSegmentFormat(formats: Map[Int, SegmentFormat])
             "Invalid version found. Expected one of %s, found %d." format (formats.keys mkString ",", version)))
         }
       }
-    }
 
     def readSegment(
-        channel: ReadableByteChannel): Validation[IOException, Segment] = {
+        channel: ReadableByteChannel): Validation[IOException, Segment] =
       readVersion(channel) flatMap { version =>
         formats get version map { format =>
           format.reader.readSegment(channel)
@@ -77,6 +75,5 @@ case class VersionedSegmentFormat(formats: Map[Int, SegmentFormat])
             "Invalid version found. Expected one of %s, found %d." format (formats.keys mkString ",", version)))
         }
       }
-    }
   }
 }

@@ -24,7 +24,7 @@ object Test {
     base ::: extras
   }
 
-  def mkNumbers(x: BigInt): List[AnyRef] = {
+  def mkNumbers(x: BigInt): List[AnyRef] =
     List(
       List(BigDecimal(x, java.math.MathContext.UNLIMITED)),
       List(x),
@@ -36,7 +36,6 @@ object Test {
       if (x.isValidByte) List(new java.lang.Byte(x.toByte)) else Nil,
       if (x.isValidChar) List(new java.lang.Character(x.toChar)) else Nil
     ).flatten
-  }
 
   // Don't necessarily expect BigDecimal created from BigInt to agree with Double here.
   def isIffy(x: Any, y: Any, canSwap: Boolean = true): Boolean = x match {

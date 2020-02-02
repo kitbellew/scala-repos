@@ -87,11 +87,10 @@ abstract class SyntaxAnalyzer
     }
   }
 
-  private def initialUnitBody(unit: CompilationUnit): Tree = {
+  private def initialUnitBody(unit: CompilationUnit): Tree =
     if (unit.isJava) new JavaUnitParser(unit).parse()
     else if (currentRun.parsing.incompleteHandled) newUnitParser(unit).parse()
     else newUnitParser(unit).smartParse()
-  }
 
   class ParserPhase(prev: Phase) extends StdPhase(prev) {
     override val checkable = false

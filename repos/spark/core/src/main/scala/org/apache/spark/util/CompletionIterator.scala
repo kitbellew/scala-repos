@@ -44,9 +44,8 @@ abstract class CompletionIterator[+A, +I <: Iterator[A]](sub: I)
 private[spark] object CompletionIterator {
   def apply[A, I <: Iterator[A]](
       sub: I,
-      completionFunction: => Unit): CompletionIterator[A, I] = {
+      completionFunction: => Unit): CompletionIterator[A, I] =
     new CompletionIterator[A, I](sub) {
       def completion(): Unit = completionFunction
     }
-  }
 }

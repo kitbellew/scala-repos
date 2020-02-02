@@ -118,7 +118,7 @@ private[akka] trait BatchingExecutor extends Executor {
 
   protected def resubmitOnBlock: Boolean
 
-  override def execute(runnable: Runnable): Unit = {
+  override def execute(runnable: Runnable): Unit =
     if (batchable(runnable)) { // If we can batch the runnable
       _tasksLocal.get match {
         case null ⇒
@@ -137,7 +137,6 @@ private[akka] trait BatchingExecutor extends Executor {
       unbatchedExecute(
         runnable
       ) // If not batchable, just delegate to underlying
-  }
 
   /** Override this to define which runnables will be batched. */
   def batchable(runnable: Runnable): Boolean = runnable match {

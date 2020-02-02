@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.expr._
  */
 
 class ScalaWithIfElseSurrounder extends ScalaExpressionSurrounder {
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     return "if (a) { " + super.getTemplateAsString(elements) + "} else {  }"
-  }
 
   override def getTemplateDescription = "if / else"
 

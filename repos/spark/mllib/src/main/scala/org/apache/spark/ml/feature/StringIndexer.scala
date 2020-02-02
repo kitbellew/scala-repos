@@ -97,9 +97,8 @@ class StringIndexer(override val uid: String)
     copyValues(new StringIndexerModel(uid, labels).setParent(this))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): StringIndexer = defaultCopy(extra)
 }
@@ -187,14 +186,13 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
       indexer(dataset($(inputCol)).cast(StringType)).as($(outputCol), metadata))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     if (schema.fieldNames.contains($(inputCol))) {
       validateAndTransformSchema(schema)
     } else {
       // If the input column does not exist during transformation, we skip StringIndexerModel.
       schema
     }
-  }
 
   override def copy(extra: ParamMap): StringIndexerModel = {
     val copied = new StringIndexerModel(uid, labels)
@@ -337,9 +335,8 @@ class IndexToString private[ml] (override val uid: String)
       indexer(dataset($(inputCol)).cast(DoubleType)).as(outputColName))
   }
 
-  override def copy(extra: ParamMap): IndexToString = {
+  override def copy(extra: ParamMap): IndexToString =
     defaultCopy(extra)
-  }
 }
 
 @Since("1.6.0")

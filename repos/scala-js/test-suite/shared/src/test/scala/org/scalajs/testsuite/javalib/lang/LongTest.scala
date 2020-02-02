@@ -19,9 +19,8 @@ import org.scalajs.testsuite.utils.AssertThrows._
   */
 class LongTest {
 
-  @Test def reverseBytes(): Unit = {
+  @Test def reverseBytes(): Unit =
     assertEquals(0x14FF01D49C68ABF5L, JLong.reverseBytes(0xF5AB689CD401FF14L))
-  }
 
   @Test def rotateLeft(): Unit = {
     assertEquals(0xF5AB689CD401FF14L, JLong.rotateLeft(0xF5AB689CD401FF14L, 0))

@@ -25,9 +25,8 @@ trait ViewMkString[+A] {
   // is because mkString should force a view but toString should not.
   override def mkString: String = mkString("")
   override def mkString(sep: String): String = mkString("", sep, "")
-  override def mkString(start: String, sep: String, end: String): String = {
+  override def mkString(start: String, sep: String, end: String): String =
     thisSeq.addString(new StringBuilder(), start, sep, end).toString
-  }
   override def addString(
       b: StringBuilder,
       start: String,
@@ -253,24 +252,22 @@ trait TraversableViewLike[
     newPrepended(xs).asInstanceOf[That]
 
   override def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That = {
+      implicit bf: CanBuildFrom[This, B, That]): That =
     newMapped(f).asInstanceOf[That]
 //    val b = bf(repr)
 //          if (b.isInstanceOf[NoBuilder[_]]) newMapped(f).asInstanceOf[That]
 //    else super.map[B, That](f)(bf)
-  }
 
   override def collect[B, That](pf: PartialFunction[A, B])(
       implicit bf: CanBuildFrom[This, B, That]): That =
     filter(pf.isDefinedAt).map(pf)(bf)
 
   override def flatMap[B, That](f: A => GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[This, B, That]): That = {
+      implicit bf: CanBuildFrom[This, B, That]): That =
     newFlatMapped(f).asInstanceOf[That]
 // was:    val b = bf(repr)
 //     if (b.isInstanceOf[NoBuilder[_]]) newFlatMapped(f).asInstanceOf[That]
 //    else super.flatMap[B, That](f)(bf)
-  }
   override def flatten[B](
       implicit asTraversable: A => /*<:<!!!*/ GenTraversableOnce[B]) =
     newFlatMapped(asTraversable)

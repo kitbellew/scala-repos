@@ -151,12 +151,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CDouble, col: DoubleColumn) =>
@@ -166,12 +165,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CNum, col: NumColumn) =>
@@ -181,12 +179,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CBoolean, col: BoolColumn) =>
@@ -196,12 +193,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CString, col: StrColumn) =>
@@ -211,12 +207,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CDate, col: DateColumn) =>
@@ -226,12 +221,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CPeriod, col: PeriodColumn) =>
@@ -241,12 +235,11 @@ trait RowFormatSupport { self: StdCodecs =>
           def encode(
               row: Int,
               buffer: ByteBuffer,
-              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+              pool: ByteBufferPool): Option[List[ByteBuffer]] =
             codec.writeInit(col(row), buffer) match {
               case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
               case None    => None
             }
-          }
         }
 
       case (CEmptyObject, col: EmptyObjectColumn) =>
@@ -526,12 +519,11 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
         case Nil => None
       }
 
-    def writeInit(xs: List[CValue], sink: ByteBuffer) = {
+    def writeInit(xs: List[CValue], sink: ByteBuffer) =
       rawBitSetCodec.writeInit(undefineds(xs), sink) match {
         case Some(s) => Some((Left(s), xs))
         case None    => writeCValues(xs, sink)
       }
-    }
 
     def writeMore(more: S, sink: ByteBuffer) = more match {
       case (Left(s), xs) =>
@@ -631,7 +623,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
             def encode(
                 row: Int,
                 buffer: ByteBuffer,
-                pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+                pool: ByteBufferPool): Option[List[ByteBuffer]] =
               (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
                 .encode(row, buffer, pool)) getOrElse {
                 val flag = SortingRowFormat.flagForCType(CUndefined)
@@ -644,7 +636,6 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                   Some(buffer :: nextBuffer :: Nil)
                 }
               }
-            }
           }
       })(collection.breakOut)
 

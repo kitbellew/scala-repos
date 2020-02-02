@@ -22,18 +22,15 @@ case class Exponential(rate: Double)(implicit basis: RandBasis = Rand)
 
   def draw() = -math.log(basis.uniform.draw()) / rate
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     new ExponentialDistribution(rate).probability(x, y)
-  }
 
-  override def inverseCdf(p: Double): Double = {
+  override def inverseCdf(p: Double): Double =
     new ExponentialDistribution(rate).inverseCumulativeProbability(p)
-  }
 
   // Probability that x < a <= Y
-  override def cdf(x: Double): Double = {
+  override def cdf(x: Double): Double =
     new ExponentialDistribution(rate).cumulativeProbability(x)
-  }
 }
 
 object Exponential
@@ -52,9 +49,8 @@ object Exponential
 
   def sufficientStatisticFor(t: Double) = SufficientStatistic(1, t)
 
-  def mle(stats: SufficientStatistic) = {
+  def mle(stats: SufficientStatistic) =
     stats.n / stats.v
-  }
 
   def likelihoodFunction(stats: SufficientStatistic) =
     new DiffFunction[Double] {

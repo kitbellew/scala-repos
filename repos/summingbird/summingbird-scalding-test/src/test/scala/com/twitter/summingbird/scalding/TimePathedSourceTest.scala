@@ -58,20 +58,18 @@ object TimePathSourceLaws extends Properties("Time path source") {
 
   def genVertractor(
       availableRange: DateRange): (DateRange => Option[DateRange]) = {
-    { (dr: DateRange) =>
+    (dr: DateRange) =>
       val botTs = max(dr.start.timestamp, availableRange.start.timestamp)
       val topTs = min(dr.end.timestamp, availableRange.end.timestamp)
       if (botTs > topTs) None
       else Some(DateRange(RichDate(botTs), RichDate(topTs)))
-    }
   }
 
   def rangeWithEmbgginContained(
       smaller: DateRange,
       embiggen: Long,
-      bigger: DateRange) = {
+      bigger: DateRange) =
     bigger.contains(genEmbiggen(embiggen)(smaller))
-  }
 
   def rangeLength(dr: DateRange): Long =
     dr.end.timestamp - dr.start.timestamp + 1

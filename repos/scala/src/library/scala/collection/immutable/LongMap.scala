@@ -89,11 +89,10 @@ object LongMap {
       left: LongMap[T],
       right: LongMap[T])
       extends LongMap[T] {
-    def bin[S](left: LongMap[S], right: LongMap[S]): LongMap[S] = {
+    def bin[S](left: LongMap[S], right: LongMap[S]): LongMap[S] =
       if ((this.left eq left) && (this.right eq right))
         this.asInstanceOf[LongMap.Bin[S]]
       else LongMap.Bin[S](prefix, mask, left, right)
-    }
   }
 }
 

@@ -39,20 +39,18 @@ case class ScalaMethodEvaluator(
   private var prevProcess: DebugProcess = null
   private val jdiMethodsCache = mutable.HashMap[ReferenceType, Option[Method]]()
 
-  private def initCache(process: DebugProcess): Unit = {
+  private def initCache(process: DebugProcess): Unit =
     if (process != null) {
       prevProcess = process
       jdiMethodsCache.clear()
     }
-  }
 
   private def getOrUpdateMethod(
       referenceType: ReferenceType,
-      findMethod: ReferenceType => Method): Option[Method] = {
+      findMethod: ReferenceType => Method): Option[Method] =
     jdiMethodsCache.getOrElseUpdate(
       referenceType,
       Option(findMethod(referenceType)))
-  }
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val debugProcess: DebugProcessImpl = context.getDebugProcess
@@ -161,7 +159,7 @@ case class ScalaMethodEvaluator(
             if (filtered.isEmpty) jdiMethod = sortedMethodCandidates.head
             else if (filtered.length == 1) jdiMethod = filtered.head
             else {
-              val newFiltered = filtered.filter(m => {
+              val newFiltered = filtered.filter { m =>
                 var result = true
                 ApplicationManager.getApplication.runReadAction(new Runnable {
                   def run() {
@@ -178,7 +176,7 @@ case class ScalaMethodEvaluator(
                   }
                 })
                 result
-              })
+              }
               if (newFiltered.isEmpty)
                 jdiMethod = filtered.head
               else jdiMethod = newFiltered.head

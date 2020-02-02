@@ -234,9 +234,8 @@ object CompileServerManager {
   def instance(project: Project) =
     project.getComponent(classOf[CompileServerManager])
 
-  def showCompileServerSettingsDialog(): Unit = {
+  def showCompileServerSettingsDialog(): Unit =
     ShowSettingsUtil
       .getInstance()
       .showSettingsDialog(null, "Scala Compile Server")
-  }
 }

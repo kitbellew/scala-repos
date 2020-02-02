@@ -60,7 +60,7 @@ class HttpEventStreamHandleActor(
       sendAllMessages()
   }
 
-  private[this] def sendAllMessages(): Unit = {
+  private[this] def sendAllMessages(): Unit =
     if (outstanding.nonEmpty) {
       val toSend = outstanding.reverse
       outstanding = List.empty[MarathonEvent]
@@ -76,7 +76,6 @@ class HttpEventStreamHandleActor(
     } else {
       context.become(waitForEvent)
     }
-  }
 
   private[this] def handleException(ex: Throwable): Unit = ex match {
     case eof: EOFException =>
@@ -89,9 +88,8 @@ class HttpEventStreamHandleActor(
       log.warning("Could not send message to {} reason: {}", handle, ex)
   }
 
-  private[this] def dropEvent(event: MarathonEvent): Unit = {
+  private[this] def dropEvent(event: MarathonEvent): Unit =
     log.warning("Ignore event {} for handle {} (slow consumer)", event, handle)
-  }
 }
 
 object HttpEventStreamHandleActor {

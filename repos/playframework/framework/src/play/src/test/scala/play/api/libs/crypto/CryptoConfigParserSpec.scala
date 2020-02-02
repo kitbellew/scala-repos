@@ -15,14 +15,13 @@ class CryptoConfigParserSpec extends Specification {
     "parse the secret" in {
       val Secret = "abcdefghijklmnopqrs"
 
-      def parseSecret(mode: Mode.Mode, secret: Option[String] = None) = {
+      def parseSecret(mode: Mode.Mode, secret: Option[String] = None) =
         new CryptoConfigParser(
           Environment.simple(mode = mode),
           Configuration.reference ++ Configuration.from(
             secret.map("play.crypto.secret" -> _).toMap +
               ("play.crypto.aes.transformation" -> "AES")
           )).get.secret
-      }
 
       "load a configured secret in prod" in {
         parseSecret(Mode.Prod, Some(Secret)) must_== Secret

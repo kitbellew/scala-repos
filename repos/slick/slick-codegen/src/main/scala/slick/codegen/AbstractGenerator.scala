@@ -359,7 +359,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def dbName = model.name.getOrElse(table.model.name.table + "_PK")
       def rawName = disambiguateTerm("pk")
       def doc =
-        "Primary key of " + TableValue.name + s" (database name ${dbName})"
+        "Primary key of " + TableValue.name + s" (database name $dbName)"
     }
 
     private var _freshFkId = 0
@@ -417,7 +417,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
             if (fksToSameTable.size > 1) baseName + id else baseName)
         })
       def doc =
-        s"Foreign key referencing ${referencedTable.TableValue.name} (database name ${dbName})"
+        s"Foreign key referencing ${referencedTable.TableValue.name} (database name $dbName)"
     }
 
     private var _freshIdxId = 0
@@ -452,7 +452,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         (if (model.unique) "Uniqueness " else "") +
           "Index over " + columns
           .map(_.name)
-          .mkString("(", ",", ")") + s" (database name ${dbName})"
+          .mkString("(", ",", ")") + s" (database name $dbName)"
     }
 
     /** Common interface for any kind of definition within the generated code */

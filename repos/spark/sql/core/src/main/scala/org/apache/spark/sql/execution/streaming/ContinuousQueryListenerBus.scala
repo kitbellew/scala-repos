@@ -52,17 +52,16 @@ class ContinuousQueryListenerBus(sparkListenerBus: LiveListenerBus)
     }
   }
 
-  override def onOtherEvent(event: SparkListenerEvent): Unit = {
+  override def onOtherEvent(event: SparkListenerEvent): Unit =
     event match {
       case WrappedContinuousQueryListenerEvent(e) =>
         postToAll(e)
       case _ =>
     }
-  }
 
   override protected def doPostEvent(
       listener: ContinuousQueryListener,
-      event: ContinuousQueryListener.Event): Unit = {
+      event: ContinuousQueryListener.Event): Unit =
     event match {
       case queryStarted: QueryStarted =>
         listener.onQueryStarted(queryStarted)
@@ -72,7 +71,6 @@ class ContinuousQueryListenerBus(sparkListenerBus: LiveListenerBus)
         listener.onQueryTerminated(queryTerminated)
       case _ =>
     }
-  }
 
   /**
     * Wrapper for StreamingListenerEvent as SparkListenerEvent so that it can be posted to Spark

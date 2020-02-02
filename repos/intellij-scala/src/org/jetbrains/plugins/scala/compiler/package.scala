@@ -11,7 +11,7 @@ import com.intellij.openapi.util.io.FileUtil
 package object compiler {
   case class JDK(executable: File, tools: File)
 
-  def findJdkByName(sdkName: String): Either[String, JDK] = {
+  def findJdkByName(sdkName: String): Either[String, JDK] =
     Option(sdkName).toRight("No JVM SDK configured").right.flatMap { name =>
       val projectSdk = Option(ProjectJdkTable.getInstance().findJdk(name))
         .toRight("JVM SDK does not exists: " + sdkName)
@@ -36,7 +36,6 @@ package object compiler {
         }
       }
     }
-  }
 
   implicit class RichFile(val file: File) {
     def canonicalPath: String = FileUtil.toCanonicalPath(file.getPath)

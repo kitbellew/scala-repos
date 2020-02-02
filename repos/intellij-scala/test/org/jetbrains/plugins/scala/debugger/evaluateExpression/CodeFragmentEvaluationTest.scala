@@ -31,7 +31,7 @@ abstract class CodeFragmentEvaluationTestBase extends ScalaDebuggerTestCase {
       """.stripMargin.trim()
   )
 
-  def testCodeFragments(): Unit = {
+  def testCodeFragments(): Unit =
     evaluateCodeFragments(
       """1 + 1
         |2 + 2
@@ -83,6 +83,5 @@ abstract class CodeFragmentEvaluationTestBase extends ScalaDebuggerTestCase {
         |}
         |sum""" -> "15"
     )
-  }
 
 }

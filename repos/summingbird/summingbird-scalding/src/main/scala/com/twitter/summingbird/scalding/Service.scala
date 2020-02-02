@@ -52,9 +52,8 @@ case class StoreService[K, V](store: BatchedStore[K, V])
       delta: PipeFactory[(K, V)],
       sg: Semigroup[V],
       commutativity: Commutativity,
-      reducers: Int): PipeFactory[(K, (Option[V], V))] = {
+      reducers: Int): PipeFactory[(K, (Option[V], V))] =
     store.merge(delta, sg, commutativity, reducers)
-  }
 }
 
 /**
@@ -65,8 +64,7 @@ private[scalding] object InternalService {
   def storeDoesNotDependOnJoin[K, V](
       dag: Dependants[Scalding],
       joinProducer: Producer[Scalding, Any],
-      store: BatchedStore[K, V]): Boolean = {
-
+      store: BatchedStore[K, V]): Boolean =
     // in all of the graph, find a summer node Summer(_, thatStore, _) where thatStore == store
     // and see if this summer depends on the given leftJoin
     !dag.nodes.exists { n =>
@@ -82,7 +80,6 @@ private[scalding] object InternalService {
         case _ => false
       }
     }
-  }
 
   def isValidLoopJoin[K, V](
       dag: Dependants[Scalding],
@@ -100,7 +97,7 @@ private[scalding] object InternalService {
     val depsOfSummer: List[Producer[Scalding, Any]] =
       Producer.transitiveDependenciesOf(summerToStore)
 
-    def recurse(p: Producer[Scalding, Any]): Boolean = {
+    def recurse(p: Producer[Scalding, Any]): Boolean =
       p match {
         case ValueFlatMappedProducer(lprod, _) =>
           recurse(lprod)
@@ -113,7 +110,6 @@ private[scalding] object InternalService {
         case _ =>
           false // hit a node that is not one of the allowed ones, invalid loop
       }
-    }
     recurse(depsOfSummer.head)
   }
 
@@ -128,14 +124,13 @@ private[scalding] object InternalService {
   // Get the summer that sums into the given store
   def getSummer[K, V](
       dag: Dependants[Scalding],
-      store: BatchedStore[K, V]): Option[Summer[Scalding, K, V]] = {
+      store: BatchedStore[K, V]): Option[Summer[Scalding, K, V]] =
     // what to do if there is more than one summer here?
     dag.nodes.collectFirst {
       case summer @ Summer(p, StoreService(thatStore), _)
           if (thatStore == store) =>
         summer.asInstanceOf[Summer[Scalding, K, V]]
     }
-  }
 
   /**
     * Just wire in LookupJoin here. This method assumes that

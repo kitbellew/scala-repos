@@ -296,7 +296,7 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
   case class Match(s: Method, j: Method, reason: String = "")
       extends MatchResult { val matches = true }
 
-  def delegationCheck(s: Method, j: Method): MatchResult = {
+  def delegationCheck(s: Method, j: Method): MatchResult =
     if (nameMatch(s.name, j.name)) {
       if (s.parameterTypes.length == j.parameterTypes.length)
         if (typeMatch(s.parameterTypes, j.parameterTypes))
@@ -314,7 +314,6 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     } else {
       MatchFailure(s, j, "Names don't match!")
     }
-  }
 
   def nameMatch(scalaName: String, javaName: String): Boolean =
     (scalaName, javaName) match {

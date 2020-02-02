@@ -50,19 +50,17 @@ class IndexShuffleBlockResolverSuite
 
     when(blockManager.diskBlockManager).thenReturn(diskBlockManager)
     when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
-      override def answer(invocation: InvocationOnMock): File = {
+      override def answer(invocation: InvocationOnMock): File =
         new File(tempDir, invocation.getArguments.head.toString)
-      }
     })
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Utils.deleteRecursively(tempDir)
     } finally {
       super.afterEach()
     }
-  }
 
   test("commit shuffle files multiple times") {
     val resolver = new IndexShuffleBlockResolver(conf, blockManager)

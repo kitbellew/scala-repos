@@ -78,7 +78,7 @@ object ExtractSuperUtil {
     }
   }
 
-  def classPresentableName(clazz: ScTemplateDefinition) = {
+  def classPresentableName(clazz: ScTemplateDefinition) =
     clazz match {
       case td: ScTypeDefinition => td.qualifiedName
       case anon: ScNewTemplateDefinition =>
@@ -93,14 +93,12 @@ object ExtractSuperUtil {
         }
       case _ => ""
     }
-  }
 
-  def packageName(clazz: ScTemplateDefinition) = {
+  def packageName(clazz: ScTemplateDefinition) =
     clazz.containingFile match {
       case Some(f: ScalaFile) => f.getPackageName
       case _                  => ""
     }
-  }
 
   def addExtendsTo(
       clazz: ScTemplateDefinition,
@@ -177,7 +175,7 @@ object ExtractSuperUtil {
   }
 
   def possibleMembersToExtract(
-      clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] = {
+      clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] =
     clazz.members
       .filter {
         case m if m.isPrivate                     => false
@@ -188,9 +186,8 @@ object ExtractSuperUtil {
       }
       .map(new ScalaExtractMemberInfo(_))
       .asJava
-  }
 
-  def declarationScope(m: ScMember): Seq[PsiElement] = {
+  def declarationScope(m: ScMember): Seq[PsiElement] =
     m match {
       case decl: ScDeclaration => Seq(decl)
       case fun: ScFunctionDefinition =>
@@ -201,5 +198,4 @@ object ExtractSuperUtil {
         varDef.children.takeWhile(Some(_) != varDef.expr).toSeq
       case _ => Seq(m)
     }
-  }
 }

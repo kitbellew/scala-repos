@@ -222,7 +222,7 @@ private class ScalaConfiguration(project: MavenProject) {
 
   def compilerOptions: Seq[String] = elements("args", "arg").map(_.getTextTrim)
 
-  def plugins: Seq[MavenId] = {
+  def plugins: Seq[MavenId] =
     elements("compilerPlugins", "compilerPlugin").flatMap { plugin =>
       plugin
         .getChildTextTrim("groupId")
@@ -234,7 +234,6 @@ private class ScalaConfiguration(project: MavenProject) {
             new MavenId(groupId, artifactId, version)
         }
     }
-  }
 
   private def elements(root: String, name: String): Seq[Element] =
     element(root).toSeq.flatMap(elements(_, name))

@@ -132,7 +132,7 @@ trait ScPrimaryConstructor
 
   def getParamByName(
       name: String,
-      clausePosition: Int = -1): Option[ScParameter] = {
+      clausePosition: Int = -1): Option[ScParameter] =
     clausePosition match {
       case -1 =>
         for (param <- parameters
@@ -148,7 +148,6 @@ trait ScPrimaryConstructor
           return Some(param)
         None
     }
-  }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def getFunctionWrappers: Seq[ScPrimaryConstructorWrapper] = {
@@ -173,11 +172,10 @@ trait ScPrimaryConstructor
 
 object ScPrimaryConstructor {
   object ofClass {
-    def unapply(pc: ScPrimaryConstructor): Option[ScClass] = {
+    def unapply(pc: ScPrimaryConstructor): Option[ScClass] =
       pc.containingClass match {
         case c: ScClass => Some(c)
         case _          => None
       }
-    }
   }
 }

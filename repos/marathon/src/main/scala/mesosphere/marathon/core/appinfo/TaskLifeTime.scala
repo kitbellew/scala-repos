@@ -14,9 +14,8 @@ case class TaskLifeTime(averageSeconds: Double, medianSeconds: Double)
 object TaskLifeTime {
   def forSomeTasks(
       now: Timestamp,
-      tasks: Iterable[Task]): Option[TaskLifeTime] = {
+      tasks: Iterable[Task]): Option[TaskLifeTime] =
     forSomeTasks(TaskForStatistics.forTasks(now, tasks, Map.empty))
-  }
 
   def forSomeTasks(tasks: Iterable[TaskForStatistics]): Option[TaskLifeTime] = {
     val lifeTimes = tasks.iterator.flatMap(_.maybeLifeTime).toVector.sorted

@@ -16,9 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 class ScalaWithForSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateDescription = "for"
 
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     return "for (a <- as) {" + super.getTemplateAsString(elements) + "}"
-  }
 
   override def getSurroundSelectionRange(withForNode: ASTNode): TextRange = {
     val element: PsiElement = withForNode.getPsi match {

@@ -258,14 +258,13 @@ class CoarseMesosSchedulerBackendSuite
   private def verifyDeclinedOffer(
       driver: SchedulerDriver,
       offerId: OfferID,
-      filter: Boolean = false): Unit = {
+      filter: Boolean = false): Unit =
     if (filter) {
       verify(driver, times(1))
         .declineOffer(Matchers.eq(offerId), anyObject[Filters])
     } else {
       verify(driver, times(1)).declineOffer(Matchers.eq(offerId))
     }
-  }
 
   private def offerResources(
       offers: List[(Int, Int)],
@@ -291,30 +290,25 @@ class CoarseMesosSchedulerBackendSuite
   private def createTaskStatus(
       taskId: String,
       slaveId: String,
-      state: TaskState): TaskStatus = {
+      state: TaskState): TaskStatus =
     TaskStatus
       .newBuilder()
       .setTaskId(TaskID.newBuilder().setValue(taskId).build())
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId).build())
       .setState(state)
       .build
-  }
 
-  private def createOfferId(offerId: String): OfferID = {
+  private def createOfferId(offerId: String): OfferID =
     OfferID.newBuilder().setValue(offerId).build()
-  }
 
-  private def createSlaveId(slaveId: String): SlaveID = {
+  private def createSlaveId(slaveId: String): SlaveID =
     SlaveID.newBuilder().setValue(slaveId).build()
-  }
 
-  private def createExecutorId(executorId: String): ExecutorID = {
+  private def createExecutorId(executorId: String): ExecutorID =
     ExecutorID.newBuilder().setValue(executorId).build()
-  }
 
-  private def createTaskId(taskId: String): TaskID = {
+  private def createTaskId(taskId: String): TaskID =
     TaskID.newBuilder().setValue(taskId).build()
-  }
 
   private def createOffer(
       offerId: String,
@@ -339,7 +333,7 @@ class CoarseMesosSchedulerBackendSuite
           .newBuilder()
           .setValue("f1"))
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId))
-      .setHostname(s"host${slaveId}")
+      .setHostname(s"host$slaveId")
       .build()
   }
 
@@ -373,9 +367,8 @@ class CoarseMesosSchedulerBackendSuite
           properties: ArrayBuffer[(String, String)]): RpcEndpointRef = endpoint
 
       // override to avoid race condition with the driver thread on `mesosDriver`
-      override def startScheduler(newDriver: SchedulerDriver): Unit = {
+      override def startScheduler(newDriver: SchedulerDriver): Unit =
         mesosDriver = newDriver
-      }
 
       markRegistered()
     }

@@ -40,7 +40,7 @@ trait PathServiceCombinators
     extends HttpRequestHandlerCombinators
     with Logging {
   def dataPath[A, B, C](prefix: String)(
-      next: HttpService[A, (B, Path) => Future[C]]) = {
+      next: HttpService[A, (B, Path) => Future[C]]) =
     // FIXME: We need documentation *right here* about what this regex
     // is trying to do, because it's unclear that this is 100%
     // correct.
@@ -66,6 +66,5 @@ trait PathServiceCombinators
         )
       }
     }
-  }
 }
 // vim: set ts=4 sw=4 et:

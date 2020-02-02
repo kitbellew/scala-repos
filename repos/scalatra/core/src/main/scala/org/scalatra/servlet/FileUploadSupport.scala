@@ -105,7 +105,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
     })
   }
 
-  private def extractMultipartParams(req: HttpServletRequest): BodyParams = {
+  private def extractMultipartParams(req: HttpServletRequest): BodyParams =
     req.get(BodyParamsKey).asInstanceOf[Option[BodyParams]] match {
       case Some(bodyParams) =>
         bodyParams
@@ -134,9 +134,8 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
         bodyParams
       }
     }
-  }
 
-  private def getParts(req: HttpServletRequest): Iterable[Part] = {
+  private def getParts(req: HttpServletRequest): Iterable[Part] =
     try {
       if (isMultipartRequest(req)) req.getParts.asScala else Seq.empty[Part]
     } catch {
@@ -145,12 +144,10 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
           "Too large request or file",
           e)
     }
-  }
 
-  private def fileItemToString(item: FileItem): String = {
+  private def fileItemToString(item: FileItem): String =
     //    val charset = item.charset getOrElse defaultCharacterEncoding
     new String(item.get().map(_.toChar))
-  }
 
   private def mergeFormParamsWithQueryString(
       req: HttpServletRequest,
@@ -182,39 +179,33 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
           _.toArray
         } getOrElse null
 
-      override def getParameterMap: JMap[String, Array[String]] = {
+      override def getParameterMap: JMap[String, Array[String]] =
         (new JHashMap[String, Array[String]].asScala ++ (formMap transform {
           (k, v) => v.toArray
         })).asJava
-      }
     }
     wrapped
   }
 
-  def fileMultiParams(implicit request: HttpServletRequest): FileMultiParams = {
+  def fileMultiParams(implicit request: HttpServletRequest): FileMultiParams =
     extractMultipartParams(request).fileParams
-  }
 
   def fileMultiParams(key: String)(
-      implicit request: HttpServletRequest): Seq[FileItem] = {
+      implicit request: HttpServletRequest): Seq[FileItem] =
     fileMultiParams(request)(key)
-  }
 
   /**
     * @return a Map, keyed on the names of multipart file upload parameters,
     *         of all multipart files submitted with the request
     */
   def fileParams(implicit request: HttpServletRequest)
-      : MultiMapHeadView[String, FileItem] = {
+      : MultiMapHeadView[String, FileItem] =
     new MultiMapHeadView[String, FileItem] {
       protected def multiMap = fileMultiParams
     }
-  }
 
-  def fileParams(key: String)(
-      implicit request: HttpServletRequest): FileItem = {
+  def fileParams(key: String)(implicit request: HttpServletRequest): FileItem =
     fileParams(request)(key)
-  }
 }
 
 object FileUploadSupport {
@@ -230,9 +221,8 @@ object FileUploadSupport {
 class FileMultiParams(wrapped: Map[String, Seq[FileItem]] = Map.empty)
     extends Map[String, Seq[FileItem]] {
 
-  def get(key: String): Option[Seq[FileItem]] = {
+  def get(key: String): Option[Seq[FileItem]] =
     (wrapped.get(key) orElse wrapped.get(key + "[]"))
-  }
 
   def get(key: Symbol): Option[Seq[FileItem]] = get(key.name)
 
@@ -251,9 +241,8 @@ object FileMultiParams {
   def apply(): FileMultiParams = new FileMultiParams
 
   def apply[SeqType <: Seq[FileItem]](
-      wrapped: Map[String, Seq[FileItem]]): FileMultiParams = {
+      wrapped: Map[String, Seq[FileItem]]): FileMultiParams =
     new FileMultiParams(wrapped)
-  }
 
 }
 
@@ -276,13 +265,11 @@ case class FileItem(part: Part) {
 
   def getCharset: Option[String] = charset.orElse(null)
 
-  def write(file: File): Unit = {
+  def write(file: File): Unit =
     using(new FileOutputStream(file)) { out => io.copy(getInputStream, out) }
-  }
 
-  def write(fileName: String): Unit = {
+  def write(fileName: String): Unit =
     part.write(fileName)
-  }
 
   def get(): Array[Byte] = org.scalatra.util.io.readBytes(getInputStream)
 
@@ -297,7 +284,7 @@ object Util {
       part: Part,
       headerName: String,
       attributeName: String,
-      defaultValue: String = null): String = {
+      defaultValue: String = null): String =
     Option(part.getHeader(headerName)) match {
       case Some(value) => {
         value.split(";").find(_.trim().startsWith(attributeName)) match {
@@ -311,6 +298,5 @@ object Util {
       }
       case _ => defaultValue
     }
-  }
 
 }

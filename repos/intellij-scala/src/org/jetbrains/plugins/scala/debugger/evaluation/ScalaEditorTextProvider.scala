@@ -32,7 +32,7 @@ class ScalaEditorTextProvider extends EditorTextProvider {
 
   def findExpression(
       element: PsiElement,
-      allowMethodCalls: Boolean): Pair[PsiElement, TextRange] = {
+      allowMethodCalls: Boolean): Pair[PsiElement, TextRange] =
     findExpressionInner(element, allowMethodCalls) match {
       case None => null
       case Some(elem) =>
@@ -45,7 +45,6 @@ class ScalaEditorTextProvider extends EditorTextProvider {
           new Pair[PsiElement, TextRange](expressionCopy, elem.getTextRange)
         }.toOption.orNull
     }
-  }
 
   private def findExpressionInner(
       element: PsiElement,

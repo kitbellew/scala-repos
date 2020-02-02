@@ -146,7 +146,7 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
     }
   }
 
-  private def getByKeys(keys: Seq[Buf]): Values = {
+  private def getByKeys(keys: Seq[Buf]): Values =
     Values(
       keys.flatMap { key =>
         map.lock(key) { data =>
@@ -160,7 +160,6 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
         }
       }
     )
-  }
 
 }
 

@@ -201,9 +201,8 @@ object Multinomial {
       }
     }
 
-    def distribution(p: Parameter) = {
+    def distribution(p: Parameter) =
       new Multinomial(numerics.exp(p))
-    }
   }
 
 }

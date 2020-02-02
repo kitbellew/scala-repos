@@ -271,21 +271,16 @@ class ScalaIntroduceFieldFromExpressionHandler
       elem: PsiElement,
       clazz: ScTemplateDefinition): Boolean = true
 
-  private def onOneLine(document: Document, range: TextRange): Boolean = {
+  private def onOneLine(document: Document, range: TextRange): Boolean =
     document.getLineNumber(range.getStartOffset) == document.getLineNumber(
       range.getEndOffset)
-  }
 
-  private def showErrorMessage(
-      text: String,
-      project: Project,
-      editor: Editor) = {
+  private def showErrorMessage(text: String, project: Project, editor: Editor) =
     CommonRefactoringUtil.showErrorHint(
       project,
       editor,
       text,
       REFACTORING_NAME,
       HelpID.INTRODUCE_FIELD)
-  }
 
 }

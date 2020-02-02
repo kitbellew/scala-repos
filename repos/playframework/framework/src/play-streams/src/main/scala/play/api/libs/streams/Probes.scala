@@ -44,11 +44,10 @@ object Probes {
       val probeName = name
       val startTime = System.nanoTime()
 
-      def subscribe(subscriber: Subscriber[_ >: T]) = {
+      def subscribe(subscriber: Subscriber[_ >: T]) =
         log("subscribe", subscriber.toString)(
           publisher.subscribe(
             subscriberProbe(name, subscriber, messageLogger, startTime)))
-      }
     }
 
   def subscriberProbe[T](
@@ -60,10 +59,9 @@ object Probes {
       val probeName = name
       val startTime = start
 
-      def onError(t: Throwable) = {
+      def onError(t: Throwable) =
         log("onError", s"${t.getClass}: ${t.getMessage}", t.printStackTrace())(
           subscriber.onError(t))
-      }
       def onSubscribe(subscription: Subscription) =
         log("onSubscribe", subscription.toString)(
           subscriber.onSubscribe(subscriptionProbe(name, subscription, start)))
@@ -104,7 +102,7 @@ object Probes {
 
   def flowProbe[T](
       name: String,
-      messageLogger: T => String = (t: T) => t.toString): Flow[T, T, _] = {
+      messageLogger: T => String = (t: T) => t.toString): Flow[T, T, _] =
     Flow[T].transform(() =>
       new PushPullStage[T, T] with Probe {
         override def startTime: Long = System.nanoTime()
@@ -128,5 +126,4 @@ object Probes {
         override def decide(t: Throwable) = log("decide")(super.decide(t))
         override def restart() = log("restart")(super.restart())
       })
-  }
 }

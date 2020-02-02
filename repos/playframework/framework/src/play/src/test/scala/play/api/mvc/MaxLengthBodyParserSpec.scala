@@ -28,9 +28,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
   import system.dispatcher
   implicit val mat = ActorMaterializer()
 
-  override def afterAll: Unit = {
+  override def afterAll: Unit =
     system.terminate()
-  }
 
   def bodyParser
       : (Accumulator[ByteString, Either[Result, ByteString]], Future[Unit]) = {
@@ -49,11 +48,10 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     (parser, bodyParsed.future)
   }
 
-  def feed[A](accumulator: Accumulator[ByteString, A]): A = {
+  def feed[A](accumulator: Accumulator[ByteString, A]): A =
     Await.result(
       accumulator.run(Source.fromIterator(() => Body15.grouped(3))),
       5.seconds)
-  }
 
   def assertDidNotParse(parsed: Future[Unit]) = {
     Await.ready(parsed, 5.seconds)
@@ -62,18 +60,16 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     }
   }
 
-  def enforceMaxLengthEnforced(result: Either[Result, _]) = {
+  def enforceMaxLengthEnforced(result: Either[Result, _]) =
     result must beLeft[Result].which { inner =>
       inner.header.status must_== Status.REQUEST_ENTITY_TOO_LARGE
     }
-  }
 
   def maxLengthParserEnforced(
-      result: Either[Result, Either[MaxSizeExceeded, ByteString]]) = {
+      result: Either[Result, Either[MaxSizeExceeded, ByteString]]) =
     result must beRight[Either[MaxSizeExceeded, ByteString]].which { inner =>
       inner must beLeft(MaxSizeExceeded(MaxLength10))
     }
-  }
 
   "Max length body handling" should {
 

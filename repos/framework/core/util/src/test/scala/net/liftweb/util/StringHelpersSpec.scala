@@ -72,22 +72,22 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
       val doesntContainUnderscores = forAll(underscoredStrings) {
         ((name: String) => !camelify(name).contains("_"))
       }
-      val isCamelCased = forAll(underscoredStrings)((name: String) => {
+      val isCamelCased = forAll(underscoredStrings) { (name: String) =>
         name.forall(_ == '_') && camelify(name).isEmpty ||
-          name.toList.zipWithIndex.forall {
-            case (c, i) =>
-              c == '_' ||
-                correspondingIndexInCamelCase(name, i) == 0 && correspondingCharInCamelCase(
-                  name,
-                  i) == c.toUpper ||
-                !previousCharacterIsUnderscore(name, i) && correspondingCharInCamelCase(
-                  name,
-                  i) == c ||
-                previousCharacterIsUnderscore(name, i) && correspondingCharInCamelCase(
-                  name,
-                  i) == c.toUpper
-          }
-      })
+        name.toList.zipWithIndex.forall {
+          case (c, i) =>
+            c == '_' ||
+              correspondingIndexInCamelCase(name, i) == 0 && correspondingCharInCamelCase(
+                name,
+                i) == c.toUpper ||
+              !previousCharacterIsUnderscore(name, i) && correspondingCharInCamelCase(
+                name,
+                i) == c ||
+              previousCharacterIsUnderscore(name, i) && correspondingCharInCamelCase(
+                name,
+                i) == c.toUpper
+        }
+      }
       (doesntContainUnderscores && isCamelCased)
     }
     "return an empty string if given null" in {

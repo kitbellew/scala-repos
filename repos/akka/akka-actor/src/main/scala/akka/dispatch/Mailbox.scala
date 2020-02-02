@@ -255,7 +255,7 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     case _ ⇒ hasSystemMessageHint || hasSystemMessages
   }
 
-  override final def run(): Unit = {
+  override final def run(): Unit =
     try {
       if (!isClosed) { //Volatile read, needed here
         processAllSystemMessages() //First, deal with any system messages
@@ -265,7 +265,6 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       setAsIdle() //Volatile write, needed here
       dispatcher.registerForExecution(this, false, false)
     }
-  }
 
   override final def getRawResult(): Unit = ()
   override final def setRawResult(unit: Unit): Unit = ()
@@ -558,7 +557,7 @@ trait QueueBasedMessageQueue
   def queue: Queue[Envelope]
   def numberOfMessages = queue.size
   def hasMessages = !queue.isEmpty
-  def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
+  def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit =
     if (hasMessages) {
       var envelope = dequeue
       while (envelope ne null) {
@@ -566,7 +565,6 @@ trait QueueBasedMessageQueue
         envelope = dequeue
       }
     }
-  }
 }
 
 /**

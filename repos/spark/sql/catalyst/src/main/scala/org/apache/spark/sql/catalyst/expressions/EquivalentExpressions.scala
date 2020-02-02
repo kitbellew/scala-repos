@@ -48,7 +48,7 @@ class EquivalentExpressions {
     * expressions. Non-recursive.
     * Returns true if there was already a matching expression.
     */
-  def addExpr(expr: Expression): Boolean = {
+  def addExpr(expr: Expression): Boolean =
     if (expr.deterministic) {
       val e: Expr = Expr(expr)
       val f = equivalenceMap.get(e)
@@ -62,7 +62,6 @@ class EquivalentExpressions {
     } else {
       false
     }
-  }
 
   /**
     * Adds the expression to this data structure recursively. Stops if a matching expression
@@ -81,16 +80,14 @@ class EquivalentExpressions {
     * Returns all of the expression trees that are equivalent to `e`. Returns
     * an empty collection if there are none.
     */
-  def getEquivalentExprs(e: Expression): Seq[Expression] = {
+  def getEquivalentExprs(e: Expression): Seq[Expression] =
     equivalenceMap.getOrElse(Expr(e), mutable.MutableList())
-  }
 
   /**
     * Returns all the equivalent sets of expressions.
     */
-  def getAllEquivalentExprs: Seq[Seq[Expression]] = {
+  def getAllEquivalentExprs: Seq[Seq[Expression]] =
     equivalenceMap.values.map(_.toSeq).toSeq
-  }
 
   /**
     * Returns the state of the data structure as a string. If `all` is false, skips sets of

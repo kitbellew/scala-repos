@@ -183,7 +183,7 @@ object CanConvolve extends SerializableLogging {
   @expand
   @expand.valify
   implicit def dvTKernel1DConvolve[@expand.args(Int, Long, Float, Double) T]
-      : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] = {
+      : CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] =
     new CanConvolve[DenseVector[T], FIRKernel1D[T], DenseVector[T]] {
       def apply(
           data: DenseVector[T],
@@ -198,7 +198,6 @@ object CanConvolve extends SerializableLogging {
           correlate(data, kernel.kernel, range, overhang, padding, method)
         else convolve(data, kernel.kernel, range, overhang, padding, method)
     }
-  }
 
   trait CanCorrelateNoOverhang[Input, KernelType, Output] {
     def apply(data: Input, kernel: KernelType, range: Range): Output
@@ -239,17 +238,15 @@ object CanConvolve extends SerializableLogging {
         val tempRange = range.par
         val zero = 0.asInstanceOf[T]
 
-        val tempArr = tempRange
-          .map((count: Int) => {
-            var ki: Int = 0
-            var sum = zero
-            while (ki < kernel.length) {
-              sum = sum + dataVect(count + ki) * kernelVect(ki)
-              ki = ki + 1
-            }
-            sum
-          })
-          .toArray
+        val tempArr = tempRange.map { (count: Int) =>
+          var ki: Int = 0
+          var sum = zero
+          while (ki < kernel.length) {
+            sum = sum + dataVect(count + ki) * kernelVect(ki)
+            ki = ki + 1
+          }
+          sum
+        }.toArray
 
         DenseVector(tempArr)
       }
@@ -283,17 +280,15 @@ object CanConvolve extends SerializableLogging {
         val kernelL = convert(kernel, Long).toScalaVector()
 
         val tempRange = range.par
-        val tempArr = tempRange
-          .map((count: Int) => {
-            var ki: Int = 0
-            var sum = 0L
-            while (ki < kernel.length) {
-              sum = sum + dataL(count + ki) * kernelL(ki)
-              ki = ki + 1
-            }
-            sum.toInt
-          })
-          .toArray
+        val tempArr = tempRange.map { (count: Int) =>
+          var ki: Int = 0
+          var sum = 0L
+          while (ki < kernel.length) {
+            sum = sum + dataL(count + ki) * kernelL(ki)
+            ki = ki + 1
+          }
+          sum.toInt
+        }.toArray
         DenseVector[Int](tempArr)
 //        val tempRangeVect = range.toVector
 //        val tempArr = Array[Int](tempRangeVect.length)

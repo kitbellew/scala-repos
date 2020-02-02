@@ -29,11 +29,10 @@ class ScalaEvaluatorCache(project: Project)
     override def sessionDetached(session: DebuggerSession) = clear()
   }
 
-  override def projectOpened() = {
+  override def projectOpened() =
     DebuggerManagerEx
       .getInstanceEx(project)
       .addDebuggerManagerListener(listener)
-  }
 
   override def projectClosed(): Unit = {
     clear()

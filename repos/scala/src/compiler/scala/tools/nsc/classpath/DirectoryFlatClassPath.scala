@@ -26,7 +26,7 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
   override def asClassPathStrings: Seq[String] = Seq(dir.getPath)
 
   import FlatClassPath.RootPackage
-  private def getDirectory(forPackage: String): Option[File] = {
+  private def getDirectory(forPackage: String): Option[File] =
     if (forPackage == RootPackage) {
       Some(dir)
     } else {
@@ -36,7 +36,6 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
         Some(packageDir)
       } else None
     }
-  }
 
   override private[nsc] def packages(inPackage: String): Seq[PackageEntry] = {
     val dirForPackage = getDirectory(inPackage)
@@ -144,9 +143,8 @@ case class DirectoryFlatSourcePath(dir: File)
     DirectoryFlatSourcePath.sourceFileFilter
 
   override def findClass(
-      className: String): Option[ClassRepresentation[AbstractFile]] = {
+      className: String): Option[ClassRepresentation[AbstractFile]] =
     findSourceFile(className) map SourceFileEntryImpl
-  }
 
   private def findSourceFile(className: String): Option[AbstractFile] = {
     val relativePath = FileUtils.dirPath(className)

@@ -340,9 +340,8 @@ trait TypeTags { self: Universe =>
   private class PredefTypeCreator[T](copyIn: Universe => Universe#TypeTag[T])
       extends TypeCreator {
     def apply[U <: Universe with Singleton](
-        m: scala.reflect.api.Mirror[U]): U#Type = {
+        m: scala.reflect.api.Mirror[U]): U#Type =
       copyIn(m.universe).asInstanceOf[U#TypeTag[T]].tpe
-    }
   }
 
   /* @group TypeTags */
@@ -414,7 +413,6 @@ private[scala] class SerializedTypeTag(
 private class PredefTypeCreator[T](copyIn: Universe => Universe#TypeTag[T])
     extends TypeCreator {
   def apply[U <: Universe with Singleton](
-      m: scala.reflect.api.Mirror[U]): U#Type = {
+      m: scala.reflect.api.Mirror[U]): U#Type =
     copyIn(m.universe).asInstanceOf[U#TypeTag[T]].tpe
-  }
 }

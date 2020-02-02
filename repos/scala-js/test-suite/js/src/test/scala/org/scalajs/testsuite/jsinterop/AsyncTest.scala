@@ -107,7 +107,7 @@ class AsyncTest {
     }
   }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext(): Unit = {
+  @Test def scala_scalajs_concurrent_QueueExecutionContext(): Unit =
     TimeoutMock.withMockedTimeout { tick =>
       PromiseMock.withMockedPromiseIfExists { optProcessQueue =>
         implicit val executor = QueueExecutionContext()
@@ -117,21 +117,18 @@ class AsyncTest {
         }
       }
     }
-  }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext_timeouts(): Unit = {
+  @Test def scala_scalajs_concurrent_QueueExecutionContext_timeouts(): Unit =
     TimeoutMock.withMockedTimeout { tick =>
       implicit val executor = QueueExecutionContext.timeouts()
       queueExecOrderTests { () => tick(1) }
     }
-  }
 
-  @Test def scala_scalajs_concurrent_QueueExecutionContext_promises(): Unit = {
+  @Test def scala_scalajs_concurrent_QueueExecutionContext_promises(): Unit =
     PromiseMock.withMockedPromise { processQueue =>
       implicit val executor = QueueExecutionContext.promises()
       queueExecOrderTests { () => processQueue() }
     }
-  }
 
   @Test def scala_concurrent_future_should_support_map(): Unit = {
     implicit val ec = JSExecutionContext.runNow
@@ -151,7 +148,7 @@ class AsyncTest {
     assertEquals(Seq(3, 5), f.value.get.get)
   }
 
-  @Test def JSPromiseToFuture_basic_case(): Unit = {
+  @Test def JSPromiseToFuture_basic_case(): Unit =
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
@@ -175,9 +172,8 @@ class AsyncTest {
 
       assertTrue(callbackDone)
     }
-  }
 
-  @Test def scala_concurrent_FutureToJSPromise_basic_case(): Unit = {
+  @Test def scala_concurrent_FutureToJSPromise_basic_case(): Unit =
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
@@ -197,9 +193,8 @@ class AsyncTest {
 
       assertTrue(callbackDone)
     }
-  }
 
-  @Test def scala_concurrent_FutureToJSPromise_thenable_case(): Unit = {
+  @Test def scala_concurrent_FutureToJSPromise_thenable_case(): Unit =
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
@@ -225,5 +220,4 @@ class AsyncTest {
 
       assertTrue(callbackDone)
     }
-  }
 }

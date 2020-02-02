@@ -42,7 +42,7 @@ import scalafx.scene.layout.StackPane
   */
 class EnsembleReflection extends EnsembleExample {
 
-  def getContent = {
+  def getContent =
     new StackPane {
       padding = Insets(20, 20, 170, 20)
       children = new ImageView {
@@ -54,5 +54,4 @@ class EnsembleReflection extends EnsembleExample {
         effect = new Reflection()
       }
     }
-  }
 }

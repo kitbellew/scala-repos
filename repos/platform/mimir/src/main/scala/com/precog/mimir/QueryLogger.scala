@@ -110,13 +110,12 @@ trait JobQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 
   protected def decomposer: Decomposer[P]
 
-  protected def mkMessage(pos: P, msg: String): JValue = {
+  protected def mkMessage(pos: P, msg: String): JValue =
     JObject(
       JField("message", JString(msg)) ::
         JField("timestamp", clock.now().serialize) ::
         JField("position", decomposer.decompose(pos)) ::
         Nil)
-  }
 
   private def send(channel: String, pos: P, msg: String): M[Unit] =
     jobManager.addMessage(jobId, channel, mkMessage(pos, msg)) map { _ => () }
@@ -158,11 +157,10 @@ trait LoggingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
 }
 
 object LoggingQueryLogger {
-  def apply[M[+_]](implicit M0: Monad[M]): QueryLogger[M, Any] = {
+  def apply[M[+_]](implicit M0: Monad[M]): QueryLogger[M, Any] =
     new LoggingQueryLogger[M, Any] with TimingQueryLogger[M, Any] {
       val M = M0
     }
-  }
 }
 
 trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
@@ -211,14 +209,13 @@ trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
       sumSq: Long,
       min: Long,
       max: Long) {
-    final def derive(nanos: Long): Stats = {
+    final def derive(nanos: Long): Stats =
       copy(
         count = count + 1,
         sum = sum + nanos,
         sumSq = sumSq + (nanos * nanos),
         min = min min nanos,
         max = max max nanos)
-    }
   }
 }
 

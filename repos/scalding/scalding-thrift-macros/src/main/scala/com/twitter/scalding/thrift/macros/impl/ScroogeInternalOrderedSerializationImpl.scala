@@ -56,7 +56,7 @@ object ScroogeInternalOrderedSerializationImpl {
         case tpe: Type =>
           c.abort(
             c.enclosingPosition,
-            s"""Unable to find OrderedSerialization for type ${tpe}""")
+            s"""Unable to find OrderedSerialization for type $tpe""")
       }
   }
 

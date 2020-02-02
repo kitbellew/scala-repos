@@ -42,19 +42,17 @@ package object interpolation {
     private val ord = implicitly[Ordering[T]]
     import ord.mkOrderingOps
 
-    def apply(x: T): T = {
+    def apply(x: T): T =
       if (x < X(0) || x > X(X.size - 1))
         extrapolate(x)
       else
         interpolate(x)
-    }
 
     protected def interpolate(x: T): T
 
-    protected def extrapolate(x: T): T = {
+    protected def extrapolate(x: T): T =
       throw new IndexOutOfBoundsException(
         "Out of the domain [" + X(0) + "," + X(X.size - 1) + "]")
-    }
 
     protected def bisearch(x: T): Int = bisearch(0, X.length - 1, x)
 

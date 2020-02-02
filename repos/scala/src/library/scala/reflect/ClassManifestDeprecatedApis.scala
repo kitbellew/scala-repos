@@ -21,7 +21,7 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   def erasure: jClass[_] = runtimeClass
 
   private def subtype(sub: jClass[_], sup: jClass[_]): Boolean = {
-    def loop(left: Set[jClass[_]], seen: Set[jClass[_]]): Boolean = {
+    def loop(left: Set[jClass[_]], seen: Set[jClass[_]]): Boolean =
       left.nonEmpty && {
         val next = left.head
         val supers = next.getInterfaces.toSet ++ Option(next.getSuperclass)
@@ -30,7 +30,6 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
           loop(xs - next, seen + next)
         }
       }
-    }
     loop(Set(sub), Set())
   }
 

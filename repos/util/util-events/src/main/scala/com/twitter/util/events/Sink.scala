@@ -131,7 +131,7 @@ object Sink {
     }
 
   // exposed for testing
-  private[events] def newDefault: Sink = {
+  private[events] def newDefault: Sink =
     if (!sinkEnabled.apply()) {
       Null
     } else if (approxNumEvents() <= 0) {
@@ -139,7 +139,6 @@ object Sink {
     } else {
       SizedSink(approxNumEvents())
     }
-  }
 
   /**
     * The global default `Sink`.

@@ -42,12 +42,10 @@ object JacksonParser extends Logging {
       input: RDD[String],
       schema: StructType,
       columnNameOfCorruptRecords: String,
-      configOptions: JSONOptions): RDD[InternalRow] = {
-
+      configOptions: JSONOptions): RDD[InternalRow] =
     input.mapPartitions { iter =>
       parseJson(iter, schema, columnNameOfCorruptRecords, configOptions)
     }
-  }
 
   /**
     * Parse the current token (and related children) according to a desired schema

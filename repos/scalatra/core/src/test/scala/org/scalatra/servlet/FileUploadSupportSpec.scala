@@ -17,14 +17,14 @@ class FileUploadSupportSpecServlet
   }
 
   def fileParamsToHeaders() {
-    fileParams.foreach(fileParam => {
+    fileParams.foreach { fileParam =>
       response.setHeader("File-" + fileParam._1 + "-Name", fileParam._2.name)
       response
         .setHeader("File-" + fileParam._1 + "-Size", fileParam._2.size.toString)
       response.setHeader(
         "File-" + fileParam._1 + "-SHA",
         DigestUtils.shaHex(fileParam._2.get()))
-    })
+    }
   }
 
   def paramsToHeaders() {
@@ -57,7 +57,7 @@ class FileUploadSupportSpecServlet
   }
 
   post("/uploadFileMultiParams") {
-    fileMultiParams.foreach(file => {
+    fileMultiParams.foreach { file =>
       val name = file._1
       val items = file._2
       val first = fileParams(name)
@@ -65,7 +65,7 @@ class FileUploadSupportSpecServlet
 
       response.setHeader("File-" + name + "-First", first.name)
 
-      items.foreach(item => {
+      items.foreach { item =>
         response.setHeader("File-" + name + i + "-Name", item.name)
         response.setHeader("File-" + name + i + "-Size", item.size.toString)
         response.setHeader(
@@ -73,8 +73,8 @@ class FileUploadSupportSpecServlet
           DigestUtils.shaHex(item.get()))
 
         i += 1
-      })
-    })
+      }
+    }
 
     "post(/uploadFileMultiParams)"
   }
@@ -168,9 +168,8 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
     }
   }
 
-  def multipartHeaders = {
+  def multipartHeaders =
     Map("Content-Type" -> "multipart/form-data; boundary=XyXyXy")
-  }
 
   "POST with multipart/form-data" should {
     "route correctly to action" in {

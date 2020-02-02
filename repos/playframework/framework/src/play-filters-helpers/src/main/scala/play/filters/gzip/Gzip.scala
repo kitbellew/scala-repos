@@ -66,12 +66,11 @@ object Gzip {
         case in @ Input.Empty => feedEmpty(state, k)
       }
 
-      def continue[A](k: K[Bytes, A]) = {
+      def continue[A](k: K[Bytes, A]) =
         feedHeader(k).pureFlatFold {
           case Step.Cont(k2) => Cont(step(new State, k2))
           case step          => Done(step.it, Input.Empty)
         }
-      }
 
       def deflateUntilNeedsInput[A](
           state: State,
@@ -240,12 +239,11 @@ object Gzip {
         case in @ Input.Empty => feedEmpty(state, k)
       }
 
-      def continue[A](k: K[Bytes, A]) = {
+      def continue[A](k: K[Bytes, A]) =
         for {
           state <- readHeader
           step <- Cont(step(state, k))
         } yield step
-      }
 
       def maybeEmpty(bytes: Bytes) =
         if (bytes.isEmpty) Input.Empty else Input.El(bytes)
@@ -461,14 +459,12 @@ object Gzip {
     out
   }
 
-  private def littleEndianToShort(bytes: Bytes, offset: Int = 0): Short = {
+  private def littleEndianToShort(bytes: Bytes, offset: Int = 0): Short =
     ((bytes(offset + 1) & 0xff) << 8 | bytes(offset) & 0xff).asInstanceOf[Short]
-  }
 
-  private def littleEndianToInt(bytes: Bytes, offset: Int = 0): Int = {
+  private def littleEndianToInt(bytes: Bytes, offset: Int = 0): Int =
     (bytes(offset + 3) & 0xff) << 24 |
       (bytes(offset + 2) & 0xff) << 16 |
       (bytes(offset + 1) & 0xff) << 8 |
       (bytes(offset) & 0xff)
-  }
 }

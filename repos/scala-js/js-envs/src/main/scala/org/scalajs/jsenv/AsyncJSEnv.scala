@@ -25,8 +25,7 @@ trait AsyncJSEnv extends JSEnv {
   private[jsenv] trait AsyncLoadedLibs extends LoadedLibs with AsyncJSEnv {
     def asyncRunner(
         libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): AsyncJSRunner = {
+        code: VirtualJSFile): AsyncJSRunner =
       AsyncJSEnv.this.asyncRunner(loadedLibs ++ libs, code)
-    }
   }
 }

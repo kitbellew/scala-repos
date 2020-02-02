@@ -25,7 +25,7 @@ object Publish extends AutoPlugin {
     defaultPublishTo := crossTarget.value / "repository"
   )
 
-  def akkaPomExtra = {
+  def akkaPomExtra =
     <inceptionYear>2009</inceptionYear>
     <scm>
       <url>git://github.com/akka/akka.git</url>
@@ -39,7 +39,6 @@ object Publish extends AutoPlugin {
         <url>https://github.com/akka/akka/graphs/contributors</url>
       </developer>
     </developers>
-  }
 
   private def akkaPublishTo = Def.setting {
     sonatypeRepo(version.value) orElse localRepo(defaultPublishTo.value)

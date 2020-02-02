@@ -136,9 +136,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
 
   class FailDecoder(props: VerifiableProperties = null)
       extends Decoder[String] {
-    def fromBytes(bytes: Array[Byte]): String = {
+    def fromBytes(bytes: Array[Byte]): String =
       throw new UnsupportedOperationException(
         "This decoder does not work at all..")
-    }
   }
 }

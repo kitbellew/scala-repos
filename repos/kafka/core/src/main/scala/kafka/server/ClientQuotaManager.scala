@@ -164,16 +164,13 @@ class ClientQuotaManager(
   }
 
   // Casting to Rate because we only use Rate in Quota computation
-  private def measurableAsRate(
-      name: MetricName,
-      measurable: Measurable): Rate = {
+  private def measurableAsRate(name: MetricName, measurable: Measurable): Rate =
     measurable match {
       case r: Rate => r
       case _ =>
         throw new IllegalArgumentException(
           s"Metric $name is not a Rate metric, value $measurable")
     }
-  }
 
   /**
     * Returns the quota for the specified clientId
@@ -263,12 +260,11 @@ class ClientQuotaManager(
   private def getQuotaSensorName(clientId: String): String =
     apiKey + "-" + clientId
 
-  private def getQuotaMetricConfig(quota: Quota): MetricConfig = {
+  private def getQuotaMetricConfig(quota: Quota): MetricConfig =
     new MetricConfig()
       .timeWindow(config.quotaWindowSizeSeconds, TimeUnit.SECONDS)
       .samples(config.numQuotaSamples)
       .quota(quota)
-  }
 
   /**
     * Overrides quotas per clientId
@@ -305,16 +301,14 @@ class ClientQuotaManager(
     }
   }
 
-  private def clientRateMetricName(clientId: String): MetricName = {
+  private def clientRateMetricName(clientId: String): MetricName =
     metrics.metricName(
       "byte-rate",
       apiKey,
       "Tracking byte-rate per client",
       "client-id",
       clientId)
-  }
 
-  def shutdown() = {
+  def shutdown() =
     throttledRequestReaper.shutdown()
-  }
 }

@@ -161,13 +161,12 @@ package object collections {
     invocation(monadicMethods).from(likeCollectionClasses)
 
   object scalaNone {
-    def unapply(expr: ScExpression): Boolean = {
+    def unapply(expr: ScExpression): Boolean =
       expr match {
         case ResolvesTo(obj: ScObject) if obj.qualifiedName == "scala.None" =>
           true
         case _ => false
       }
-    }
   }
 
   object scalaSome {
@@ -184,26 +183,24 @@ package object collections {
 
   object IfStmt {
     def unapply(expr: ScExpression)
-        : Option[(ScExpression, ScExpression, ScExpression)] = {
+        : Option[(ScExpression, ScExpression, ScExpression)] =
       expr match {
         case ScIfStmt(Some(c), Some(stripped(tb)), Some(stripped(eb))) =>
           Some(c, tb, eb)
         case _ => None
       }
-    }
   }
 
   object literal {
-    def unapply(expr: ScExpression): Option[String] = {
+    def unapply(expr: ScExpression): Option[String] =
       expr match {
         case lit: ScLiteral => Some(lit.getText)
         case _              => None
       }
-    }
   }
 
   class FunctionExpressionWithReturnTypeTemplate(tp: ScType) {
-    def unapply(expr: ScExpression): Boolean = {
+    def unapply(expr: ScExpression): Boolean =
       expr.getType(TypingContext.empty) match {
         case Success(result, _) =>
           result match {
@@ -212,7 +209,6 @@ package object collections {
           }
         case _ => false
       }
-    }
   }
 
   val returnsBoolean = new FunctionExpressionWithReturnTypeTemplate(
@@ -250,7 +246,7 @@ package object collections {
   }
 
   class BinaryOperationOnParameterAndExprTemplate(operName: String) {
-    def unapply(expr: ScExpression): Option[ScExpression] = {
+    def unapply(expr: ScExpression): Option[ScExpression] =
       stripped(expr) match {
         case ScFunctionExpr(Seq(x), Some(result)) =>
           stripped(result) match {
@@ -276,7 +272,6 @@ package object collections {
           Some(left)
         case _ => None
       }
-    }
   }
 
   private[collections] val `x == ` =
@@ -285,7 +280,7 @@ package object collections {
     new BinaryOperationOnParameterAndExprTemplate("!=")
 
   object andCondition {
-    def unapply(expr: ScExpression): Option[ScExpression] = {
+    def unapply(expr: ScExpression): Option[ScExpression] =
       stripped(expr) match {
         case ScFunctionExpr(Seq(x, y), Some(result)) =>
           stripped(result) match {
@@ -308,11 +303,10 @@ package object collections {
           Some(right)
         case _ => None
       }
-    }
   }
 
   class ParameterlessCallOnParameterTemplate(name: String) {
-    def unapply(expr: ScExpression): Boolean = {
+    def unapply(expr: ScExpression): Boolean =
       stripped(expr) match {
         case ScFunctionExpr(Seq(x), Some(result)) =>
           stripped(result) match {
@@ -326,7 +320,6 @@ package object collections {
           true
         case _ => false
       }
-    }
   }
 
   private[collections] val `_._1` = new ParameterlessCallOnParameterTemplate(
@@ -335,7 +328,7 @@ package object collections {
     "_2")
 
   object underscore {
-    def unapply(expr: ScExpression): Boolean = {
+    def unapply(expr: ScExpression): Boolean =
       stripped(expr) match {
         case ScParenthesisedExpr(underscore()) => true
         case typed: ScTypedStmt
@@ -344,7 +337,6 @@ package object collections {
         case und: ScUnderscoreSection => true
         case _                        => false
       }
-    }
   }
 
   def invocationText(
@@ -374,7 +366,7 @@ package object collections {
     }
   }
 
-  def argListText(args: Seq[ScExpression]): String = {
+  def argListText(args: Seq[ScExpression]): String =
     args match {
       case Seq(p: ScParenthesisedExpr)                        => p.getText
       case Seq(b @ ScBlock(fe: ScFunctionExpr))               => b.getText
@@ -385,7 +377,6 @@ package object collections {
       case seq if seq.size > 1                                => seq.map(_.getText).mkString("(", ", ", ")")
       case _                                                  => ""
     }
-  }
 
   private def checkResolveToMap(memberRef: ScReferenceElement): Boolean =
     memberRef.resolve() match {
@@ -394,9 +385,8 @@ package object collections {
       case _ => false
     }
 
-  private def checkScalaVersion(elem: PsiElement): Boolean = { //there is no Option.fold in Scala 2.9
+  private def checkScalaVersion(elem: PsiElement): Boolean = //there is no Option.fold in Scala 2.9
     elem.scalaLanguageLevel.map(_ > Scala_2_9).getOrElse(true)
-  }
 
   def implicitParameterExistsFor(
       methodName: String,
@@ -408,7 +398,7 @@ package object collections {
     implicitParameterExistsFor(expression)
   }
 
-  def implicitParameterExistsFor(expr: ScExpression): Boolean = {
+  def implicitParameterExistsFor(expr: ScExpression): Boolean =
     expr.findImplicitParameters match {
       case Some(Seq(srr: ScalaResolveResult))
           if srr.element.name == InferUtil.notFoundParameterName =>
@@ -416,16 +406,14 @@ package object collections {
       case Some(Seq(srr: ScalaResolveResult, _*)) => true
       case _                                      => false
     }
-  }
 
   @tailrec
-  def stripped(expr: ScExpression): ScExpression = {
+  def stripped(expr: ScExpression): ScExpression =
     expr match {
       case ScParenthesisedExpr(inner)   => stripped(inner)
       case ScBlock(inner: ScExpression) => stripped(inner)
       case _                            => expr
     }
-  }
 
   object stripped {
     def unapply(expr: ScExpression): Option[ScExpression] = Some(stripped(expr))
@@ -444,7 +432,7 @@ package object collections {
     result
   }
 
-  def checkResolve(expr: ScExpression, patterns: Array[String]): Boolean = {
+  def checkResolve(expr: ScExpression, patterns: Array[String]): Boolean =
     expr match {
       case ref: ScReferenceExpression =>
         ref.resolve() match {
@@ -458,7 +446,6 @@ package object collections {
         }
       case _ => false
     }
-  }
 
   def isOfClassFrom(expr: ScExpression, patterns: Array[String]): Boolean = {
     if (expr == null) return false
@@ -546,11 +533,10 @@ package object collections {
           Array("scala.collection.mutable._", "scala.collection.Iterator"))
       }
 
-      def isSetter(ref: ScReferenceExpression): Boolean = {
+      def isSetter(ref: ScReferenceExpression): Boolean =
         ref.refName.startsWith("set") || ref.refName.endsWith("_=")
-      }
 
-      def hasUnitReturnType(ref: ScReferenceExpression): Boolean = {
+      def hasUnitReturnType(ref: ScReferenceExpression): Boolean =
         ref match {
           case MethodRepr(ExpressionType(ScFunctionType(_, _)), _, _, _) =>
             false
@@ -558,7 +544,6 @@ package object collections {
           case ResolvesTo(m: PsiMethod)    => m.getReturnType == PsiType.VOID
           case _                           => false
         }
-      }
 
       object definedOutside {
         def unapply(ref: ScReferenceElement): Option[PsiElement] = ref match {

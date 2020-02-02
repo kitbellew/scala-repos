@@ -69,41 +69,36 @@ class ParamGridBuilder @Since("1.2.0") {
     * Adds a double param with multiple values.
     */
   @Since("1.2.0")
-  def addGrid(param: DoubleParam, values: Array[Double]): this.type = {
+  def addGrid(param: DoubleParam, values: Array[Double]): this.type =
     addGrid[Double](param, values)
-  }
 
   /**
     * Adds a int param with multiple values.
     */
   @Since("1.2.0")
-  def addGrid(param: IntParam, values: Array[Int]): this.type = {
+  def addGrid(param: IntParam, values: Array[Int]): this.type =
     addGrid[Int](param, values)
-  }
 
   /**
     * Adds a float param with multiple values.
     */
   @Since("1.2.0")
-  def addGrid(param: FloatParam, values: Array[Float]): this.type = {
+  def addGrid(param: FloatParam, values: Array[Float]): this.type =
     addGrid[Float](param, values)
-  }
 
   /**
     * Adds a long param with multiple values.
     */
   @Since("1.2.0")
-  def addGrid(param: LongParam, values: Array[Long]): this.type = {
+  def addGrid(param: LongParam, values: Array[Long]): this.type =
     addGrid[Long](param, values)
-  }
 
   /**
     * Adds a boolean param with true and false.
     */
   @Since("1.2.0")
-  def addGrid(param: BooleanParam): this.type = {
+  def addGrid(param: BooleanParam): this.type =
     addGrid[Boolean](param, Array(true, false))
-  }
 
   /**
     * Builds and returns all combinations of parameters specified by the param grid.

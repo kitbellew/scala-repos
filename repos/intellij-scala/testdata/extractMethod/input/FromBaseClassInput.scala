@@ -6,11 +6,10 @@ object Bug {
 
   class A {
     class B extends C {
-      def foo() = {
+      def foo() =
         /*start*/
         x + 1
-        /*end*/
-      }
+      /*end*/
     }
   }
 }

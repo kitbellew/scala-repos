@@ -33,7 +33,7 @@ object SbtData {
   def from(
       classLoader: ClassLoader,
       pluginRoot: File,
-      javaClassVersion: String): Either[String, SbtData] = {
+      javaClassVersion: String): Either[String, SbtData] =
     Either
       .cond(
         pluginRoot.exists,
@@ -71,9 +71,8 @@ object SbtData {
               }
           }
       }
-  }
 
-  private def readSbtVersionFrom(classLoader: ClassLoader): Option[String] = {
+  private def readSbtVersionFrom(classLoader: ClassLoader): Option[String] =
     readProperty(classLoader, "xsbt.version.properties", "version").map {
       version =>
         if (version.endsWith("-SNAPSHOT")) {
@@ -87,7 +86,6 @@ object SbtData {
           version
         }
     }
-  }
 
   private def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")

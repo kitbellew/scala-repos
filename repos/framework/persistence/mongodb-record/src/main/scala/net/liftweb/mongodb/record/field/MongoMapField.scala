@@ -45,7 +45,7 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
 
   def defaultValue = Map[String, MapValueType]()
 
-  def setFromAny(in: Any): Box[Map[String, MapValueType]] = {
+  def setFromAny(in: Any): Box[Map[String, MapValueType]] =
     in match {
       case dbo: DBObject => setFromDBObject(dbo)
       case map: Map[_, _] =>
@@ -63,7 +63,6 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
       case f: Failure          => setBox(f)
       case o                   => setFromString(o.toString)
     }
-  }
 
   def setFromJValue(jvalue: JValue) = jvalue match {
     case JNothing | JNull if optional_? => setBox(Empty)

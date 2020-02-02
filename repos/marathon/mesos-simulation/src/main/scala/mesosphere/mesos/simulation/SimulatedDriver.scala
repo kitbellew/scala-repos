@@ -52,9 +52,8 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
 
   override def killTask(taskId: TaskID): Status =
     driverCmd(DriverActor.KillTask(taskId))
-  override def reconcileTasks(statuses: util.Collection[TaskStatus]): Status = {
+  override def reconcileTasks(statuses: util.Collection[TaskStatus]): Status =
     driverCmd(DriverActor.ReconcileTask(statuses.toSeq))
-  }
 
   override def suppressOffers(): Status = driverCmd(DriverActor.SuppressOffers)
 
@@ -108,21 +107,20 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
 
   override def stop(failover: Boolean): Status = stop()
   override def stop(): Status = abort()
-  override def abort(): Status = {
+  override def abort(): Status =
     system match {
       case None => Status.DRIVER_NOT_STARTED
       case Some(sys) =>
         sys.shutdown()
         Status.DRIVER_ABORTED
     }
-  }
 
   override def run(): Status = {
     start()
     join()
   }
 
-  override def join(): Status = {
+  override def join(): Status =
     system match {
       case None => Status.DRIVER_NOT_STARTED
       case Some(sys) =>
@@ -132,5 +130,4 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
         log.info("Stopped simulated Mesos")
         Status.DRIVER_STOPPED
     }
-  }
 }

@@ -42,7 +42,6 @@ class ScalaUnwrapContext extends AbstractUnwrapper.AbstractContext {
     }
   }
 
-  def setIsEffective(value: Boolean): Unit = {
+  def setIsEffective(value: Boolean): Unit =
     myIsEffective = value
-  }
 }

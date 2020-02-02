@@ -128,13 +128,12 @@ private[akka] class CachingConfig(_config: Config) extends Config {
 
   def getDouble(path: String) = config.getDouble(path)
 
-  def getString(path: String) = {
+  def getString(path: String) =
     getPathEntry(path) match {
       case StringPathEntry(_, _, _, string) ⇒
         string
       case e ⇒ e.config.getString("cached")
     }
-  }
 
   def getObject(path: String) = config.getObject(path)
 

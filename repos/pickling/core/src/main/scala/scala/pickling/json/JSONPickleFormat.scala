@@ -29,7 +29,7 @@ package json {
     def createBuilder() = new JSONPickleBuilder(this, new StringOutput)
     def createBuilder(out: Output[String]): PBuilder =
       new JSONPickleBuilder(this, out)
-    def createReader(pickle: JSONPickle) = {
+    def createReader(pickle: JSONPickle) =
       // TODO - Raw strings, null, etc. should be valid JSON.
       if (pickle.value == "null") new JSONPickleReader(null, this)
       else
@@ -39,7 +39,6 @@ package json {
             throw new PicklingException(
               "failed to parse \"" + pickle.value + "\" as JSON")
         }
-    }
   }
 
   class JSONPickleBuilder(format: JSONPickleFormat, buf: Output[String])
@@ -308,7 +307,7 @@ package json {
               fields("$type").asInstanceOf[String]
             case JSONObject(fields) =>
               throw new PicklingException(
-                s"Logic pickling error:  Could not find a type tag, and no elided type was hinted: ${fields}")
+                s"Logic pickling error:  Could not find a type tag, and no elided type was hinted: $fields")
             case value =>
               throw new PicklingException(
                 s"Logic pickling error:  Could not find a type tag on primitive, and no elided type was hinted: $value")
@@ -318,7 +317,7 @@ package json {
       lastReadTag
     }
     def atPrimitive: Boolean = primitives.contains(lastReadTag)
-    def readPrimitive(): Any = {
+    def readPrimitive(): Any =
       datum match {
         case JSONArray(list)
             if lastReadTag != FastTypeTag.ArrayByte.key &&
@@ -338,9 +337,8 @@ package json {
         case _ =>
           primitives(lastReadTag)()
       }
-    }
     def atObject: Boolean = datum.isInstanceOf[JSONObject]
-    def readField(name: String): JSONPickleReader = {
+    def readField(name: String): JSONPickleReader =
       datum match {
         case JSONObject(fields) =>
           mkNestedReader(fields
@@ -348,14 +346,12 @@ package json {
             .getOrElse(throw PicklingException(
               s"No field '$name' when unpickling, tag $lastReadTag, fields were $fields")))
       }
-    }
     def endEntry(): Unit = {}
     def beginCollection(): PReader = readField("elems")
-    def readLength(): Int = {
+    def readLength(): Int =
       datum match {
         case JSONArray(list) => list.length
       }
-    }
     private var i = 0
     def readElement(): PReader = {
       val reader = {

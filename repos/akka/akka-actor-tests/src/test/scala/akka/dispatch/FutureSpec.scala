@@ -883,12 +883,12 @@ class FutureSpec
       f: ((Future[Any], String) ⇒ Unit) ⇒ Unit) {
     "be completed" in { f((future, _) ⇒ future should be('completed)) }
     "contain a value" in {
-      f((future, message) ⇒ {
+      f { (future, message) ⇒
         future.value should be('defined)
         future.value.get should be('failure)
         val Failure(f) = future.value.get
         f.getMessage should ===(message)
-      })
+      }
     }
     "throw exception with 'get'" in {
       f((future, message) ⇒

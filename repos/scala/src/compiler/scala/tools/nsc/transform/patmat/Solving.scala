@@ -73,14 +73,13 @@ trait Solving extends Logic {
         Solvable(cnf ++ other.cnf, symbolMapping)
       }
 
-      override def toString: String = {
+      override def toString: String =
         "Solvable\nLiterals:\n" +
           (for {
             (lit, sym) <- symbolMapping.symForVar.toSeq.sortBy(_._1)
           } yield {
             s"$lit -> $sym"
           }).mkString("\n") + "Cnf:\n" + cnfString(cnf)
-      }
     }
 
     trait CnfBuilder {
@@ -151,7 +150,7 @@ trait Solving extends Logic {
 
       def apply(p: Prop): Solvable = {
 
-        def convert(p: Prop): Option[Lit] = {
+        def convert(p: Prop): Option[Lit] =
           p match {
             case And(fv) =>
               Some(and(fv.flatMap(convert)))
@@ -171,9 +170,8 @@ trait Solving extends Logic {
             case _: Eq =>
               throw new MatchError(p)
           }
-        }
 
-        def and(bv: Set[Lit]): Lit = {
+        def and(bv: Set[Lit]): Lit =
           if (bv.isEmpty) {
             // this case can actually happen because `removeVarEq` could add no constraints
             constTrue
@@ -190,9 +188,8 @@ trait Solving extends Logic {
             new_bv.map(op => addClauseProcessed(clause(op, -o)))
             o
           }
-        }
 
-        def or(bv: Set[Lit]): Lit = {
+        def or(bv: Set[Lit]): Lit =
           if (bv.isEmpty) {
             constFalse
           } else if (bv.size == 1) {
@@ -208,7 +205,6 @@ trait Solving extends Logic {
             addClauseProcessed(new_bv + (-o))
             o
           }
-        }
 
         // no need for auxiliary variable
         def not(a: Lit): Lit = -a
@@ -317,7 +313,7 @@ trait Solving extends Logic {
 
     def eqFreePropToSolvable(p: Prop): Solvable = {
 
-      def doesFormulaExceedSize(p: Prop): Boolean = {
+      def doesFormulaExceedSize(p: Prop): Boolean =
         p match {
           case And(ops) =>
             if (ops.size > AnalysisBudget.maxFormulaSize) {
@@ -334,7 +330,6 @@ trait Solving extends Logic {
           case Not(a) => doesFormulaExceedSize(a)
           case _      => false
         }
-      }
 
       val simplified = simplify(p)
       if (doesFormulaExceedSize(simplified)) {
@@ -347,7 +342,7 @@ trait Solving extends Logic {
       val cnfExtractor = new AlreadyInCNF(symbolMapping)
       val cnfTransformer = new TransformToCnf(symbolMapping)
 
-      def cnfFor(prop: Prop): Solvable = {
+      def cnfFor(prop: Prop): Solvable =
         prop match {
           case cnfExtractor.ToCnf(solvable) =>
             // this is needed because t6942 would generate too many clauses with Tseitin
@@ -356,7 +351,6 @@ trait Solving extends Logic {
           case p =>
             cnfTransformer.apply(p)
         }
-      }
 
       simplified match {
         case And(props) =>
@@ -453,9 +447,8 @@ trait Solving extends Logic {
         _.projectToSolution(solvable.symbolMapping.symForVar))
     }
 
-    private def withLit(res: TseitinModel, l: Lit): TseitinModel = {
+    private def withLit(res: TseitinModel, l: Lit): TseitinModel =
       if (res eq NoTseitinModel) NoTseitinModel else res + l
-    }
 
     /** Drop trivially true clauses, simplify others by dropping negation of `unitLit`.
       *
@@ -475,11 +468,10 @@ trait Solving extends Logic {
       simplified.toArray
     }
 
-    def findModelFor(solvable: Solvable): Model = {
+    def findModelFor(solvable: Solvable): Model =
       projectToModel(
         findTseitinModelFor(solvable.cnf),
         solvable.symbolMapping.symForVar)
-    }
 
     def findTseitinModelFor(clauses: Array[Clause]): TseitinModel = {
       @inline def orElse(a: TseitinModel, b: => TseitinModel) =

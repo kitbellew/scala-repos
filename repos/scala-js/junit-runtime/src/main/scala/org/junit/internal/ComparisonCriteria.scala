@@ -14,7 +14,7 @@ abstract class ComparisonCriteria {
       message: String,
       expecteds: AnyRef,
       actuals: AnyRef,
-      outer: Boolean): Unit = {
+      outer: Boolean): Unit =
     if (expecteds != actuals &&
         !java.util.Arrays.deepEquals(Array(expecteds), Array(actuals))) {
 
@@ -48,7 +48,6 @@ abstract class ComparisonCriteria {
         }
       }
     }
-  }
 
   private def isArray(expected: AnyRef): Boolean =
     expected.isInstanceOf[Array[_]]

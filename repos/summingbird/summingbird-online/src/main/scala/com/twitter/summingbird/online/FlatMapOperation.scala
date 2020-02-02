@@ -56,7 +56,7 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
         Future.collect(next).map(_.flatten) // flatten the inner
       }
 
-      override def maybeFlush = {
+      override def maybeFlush =
         self.maybeFlush.flatMap { x: TraversableOnce[U] =>
           val z: IndexedSeq[Future[TraversableOnce[V]]] =
             x.map(fmo.apply(_)).toIndexedSeq
@@ -67,7 +67,6 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
             maybeSeq = maybes.toSeq
           } yield ws ++ maybeSeq
         }
-      }
       override def close { self.close; fmo.close }
     }
   }
@@ -90,9 +89,8 @@ class FunctionKeyFlatMapOperation[K1, K2, V](
     @transient fm: K1 => TraversableOnce[K2])
     extends FlatMapOperation[(K1, V), (K2, V)] {
   val boxed = Externalizer(fm)
-  def apply(t: (K1, V)) = {
+  def apply(t: (K1, V)) =
     Future.value(boxed.get(t._1).map { newK => (newK, t._2) })
-  }
 }
 
 class IdentityFlatMapOperation[T] extends FlatMapOperation[T, T] {

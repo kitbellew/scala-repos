@@ -28,9 +28,8 @@ private[akka] trait IntegrationRoutingSpec
   implicit val mat = ActorMaterializer()
   import system.dispatcher
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     Await.ready(system.terminate(), 3.seconds)
-  }
 
   implicit class DSL(request: HttpRequest) {
     def ~!>(route: Route) = new Prepped(request, route)

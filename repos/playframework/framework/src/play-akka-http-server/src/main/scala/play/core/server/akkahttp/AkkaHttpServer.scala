@@ -143,7 +143,7 @@ class AkkaHttpServer(
   }
 
   private def getHandler(requestHeader: RequestHeader)
-      : (RequestHeader, Handler, Try[Application]) = {
+      : (RequestHeader, Handler, Try[Application]) =
     getHandlerFor(requestHeader) match {
       case Left(futureResult) =>
         (
@@ -161,7 +161,6 @@ class AkkaHttpServer(
           ) // TODO: Change getHandlerFor to use the app that we already had
         )
     }
-  }
 
   private def executeHandler(
       tryApp: Try[Application],
@@ -215,12 +214,11 @@ class AkkaHttpServer(
   private def handleHandlerError(
       tryApp: Try[Application],
       rh: RequestHeader,
-      t: Throwable): Future[Result] = {
+      t: Throwable): Future[Result] =
     tryApp match {
       case Success(app) => app.errorHandler.onServerError(rh, t)
       case Failure(_)   => DefaultHttpErrorHandler.onServerError(rh, t)
     }
-  }
 
   def executeAction(
       tryApp: Try[Application],
@@ -315,8 +313,7 @@ class AkkaHttpServer(
     * order to pass an SSLContext, we need to implement our own mock one that delegates to the SSLEngineProvider
     * when creating an SSLEngine.
     */
-  private def mockSslContext(
-      sslEngineProvider: SSLEngineProvider): SSLContext = {
+  private def mockSslContext(sslEngineProvider: SSLEngineProvider): SSLContext =
     new SSLContext(
       new SSLContextSpi() {
         def engineCreateSSLEngine() = sslEngineProvider.createSSLEngine()
@@ -341,7 +338,6 @@ class AkkaHttpServer(
         "A provider that only implements the creation of SSL engines, and delegates to Play's SSLEngineProvider") {},
       "Play SSLEngineProvider delegate") {}
 
-  }
 }
 
 object AkkaHttpServer {

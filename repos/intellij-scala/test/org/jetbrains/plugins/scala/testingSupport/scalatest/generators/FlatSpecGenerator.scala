@@ -38,7 +38,7 @@ trait FlatSpecGenerator extends ScalaTestTestCase {
     )
   }
 
-  def addBehaviorFlatSpec() = {
+  def addBehaviorFlatSpec() =
     addFileToProject(
       "BehaviorFlatSpec.scala",
       """
@@ -57,5 +57,4 @@ trait FlatSpecGenerator extends ScalaTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 }

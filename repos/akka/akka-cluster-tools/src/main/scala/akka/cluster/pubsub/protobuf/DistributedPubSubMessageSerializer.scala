@@ -115,7 +115,7 @@ private[akka] class DistributedPubSubMessageSerializer(
           .setProtocol(protocol)
       case _ ⇒
         throw new IllegalArgumentException(
-          s"Address [${address}] could not be serialized: host or port missing.")
+          s"Address [$address] could not be serialized: host or port missing.")
     }
 
   private def addressFromProto(address: dm.Address): Address =
@@ -190,18 +190,16 @@ private[akka] class DistributedPubSubMessageSerializer(
       Bucket(addressFromProto(b.getOwner), b.getVersion, content)
     })
 
-  private def resolveActorRef(path: String): ActorRef = {
+  private def resolveActorRef(path: String): ActorRef =
     system.provider.resolveActorRef(path)
-  }
 
-  private def sendToProto(send: Send): dm.Send = {
+  private def sendToProto(send: Send): dm.Send =
     dm.Send
       .newBuilder()
       .setPath(send.path)
       .setLocalAffinity(send.localAffinity)
       .setPayload(payloadToProto(send.msg))
       .build()
-  }
 
   private def sendFromBinary(bytes: Array[Byte]): Send =
     sendFromProto(dm.Send.parseFrom(bytes))
@@ -209,14 +207,13 @@ private[akka] class DistributedPubSubMessageSerializer(
   private def sendFromProto(send: dm.Send): Send =
     Send(send.getPath, payloadFromProto(send.getPayload), send.getLocalAffinity)
 
-  private def sendToAllToProto(sendToAll: SendToAll): dm.SendToAll = {
+  private def sendToAllToProto(sendToAll: SendToAll): dm.SendToAll =
     dm.SendToAll
       .newBuilder()
       .setPath(sendToAll.path)
       .setAllButSelf(sendToAll.allButSelf)
       .setPayload(payloadToProto(sendToAll.msg))
       .build()
-  }
 
   private def sendToAllFromBinary(bytes: Array[Byte]): SendToAll =
     sendToAllFromProto(dm.SendToAll.parseFrom(bytes))
@@ -227,13 +224,12 @@ private[akka] class DistributedPubSubMessageSerializer(
       payloadFromProto(sendToAll.getPayload),
       sendToAll.getAllButSelf)
 
-  private def publishToProto(publish: Publish): dm.Publish = {
+  private def publishToProto(publish: Publish): dm.Publish =
     dm.Publish
       .newBuilder()
       .setTopic(publish.topic)
       .setPayload(payloadToProto(publish.msg))
       .build()
-  }
 
   private def publishFromBinary(bytes: Array[Byte]): Publish =
     publishFromProto(dm.Publish.parseFrom(bytes))

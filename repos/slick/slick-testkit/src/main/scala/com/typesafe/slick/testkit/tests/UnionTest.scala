@@ -163,21 +163,19 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       def * = (id, mname, mbody) <> (Message.tupled, Message.unapply)
     }
 
-    def leftSide = {
+    def leftSide =
       (for {
         d <- TableQuery[Deliveries]
         m <- TableQuery[Messages] if d.messageId === m.id
       } yield (d, m))
         .filter { case (d, m) => d.sentAt >= 1400000000L }
-    }
 
-    def rightSide = {
+    def rightSide =
       (for {
         d <- TableQuery[Deliveries]
         m <- TableQuery[Messages] if d.messageId === m.id
       } yield (d, m))
         .filter { case (d, m) => d.sentAt < 1400000000L }
-    }
 
     val query =
       leftSide.union(rightSide).length
@@ -200,13 +198,11 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       def * = (id, dname, sentAt) <> (Delivery.tupled, Delivery.unapply)
     }
 
-    def leftSide = {
+    def leftSide =
       TableQuery[Deliveries].filter(_.sentAt >= 1400000000L)
-    }
 
-    def rightSide = {
+    def rightSide =
       TableQuery[Deliveries].filter(_.sentAt < 1400000000L)
-    }
 
     val query =
       leftSide.union(rightSide).sortBy(_.id.desc).length

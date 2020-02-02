@@ -2,9 +2,8 @@ object Outer {
   class Tester
   private[Outer] trait B4 { _: Tester =>
     protected val FREQ = 23
-    def fail() = {
+    def fail() =
       println(FREQ)
-    }
   }
   object C4 extends Tester with B4
 }

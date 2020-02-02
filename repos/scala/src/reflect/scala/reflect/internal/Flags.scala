@@ -515,7 +515,7 @@ class Flags extends ModifierFlags {
   }
 
   @deprecated("Use flagString on the flag-carrying member", "2.10.0")
-  private[scala] def flagsToString(flags: Long): String = {
+  private[scala] def flagsToString(flags: Long): String =
     // Fast path for common case
     if (flags == 0L) ""
     else {
@@ -535,7 +535,6 @@ class Flags extends ModifierFlags {
       }
       if (sb eq null) "" else sb.toString
     }
-  }
 
   // List of the raw flags, in pickled order
   final val MaxBitPosition = 62

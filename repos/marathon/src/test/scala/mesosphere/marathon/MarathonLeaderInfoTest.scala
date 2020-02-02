@@ -23,9 +23,8 @@ class MarathonLeaderInfoTest
     lazy val leaderInfo =
       new MarathonLeaderInfo(maybeCandidate, leader, eventStream, metrics)
 
-    def verifyNoMoreInteractions(): Unit = {
+    def verifyNoMoreInteractions(): Unit =
       Mockito.verifyNoMoreInteractions(candidate)
-    }
   }
 
   test("currentLeaderHostPort handles exceptions and returns None") {

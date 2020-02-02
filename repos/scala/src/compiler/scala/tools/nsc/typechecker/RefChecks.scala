@@ -225,7 +225,7 @@ abstract class RefChecks
 
     /** Add bridges for vararg methods that extend Java vararg methods
       */
-    def addVarargBridges(clazz: Symbol): List[Tree] = {
+    def addVarargBridges(clazz: Symbol): List[Tree] =
       // This is quite expensive, so attempt to skip it completely.
       // Insist there at least be a java-defined ancestor which
       // defines a varargs method. TODO: Find a cheaper way to exclude.
@@ -287,7 +287,6 @@ abstract class RefChecks
 
         bridges.toList
       } else Nil
-    }
 
     /** 1. Check all members of class `clazz` for overriding conditions.
       *  That is for overriding member M and overridden member O:
@@ -317,9 +316,8 @@ abstract class RefChecks
       */
     private def checkAllOverrides(clazz: Symbol, typesOnly: Boolean = false) {
       val self = clazz.thisType
-      def classBoundAsSeen(tp: Type) = {
+      def classBoundAsSeen(tp: Type) =
         tp.typeSymbol.classBound.asSeenFrom(self, tp.typeSymbol.owner)
-      }
 
       case class MixinOverrideError(member: Symbol, msg: String)
 
@@ -978,7 +976,7 @@ abstract class RefChecks
                 .map(m => m.defStringSeenAs(clazz.tpe memberType m))
                 .mkString("\n")
               issueError(
-                s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member.name}:\n${superSigs}")
+                s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member.name}:\n$superSigs")
           }
           member resetFlag (OVERRIDE | ABSOVERRIDE) // Any Override
         }
@@ -1412,7 +1410,7 @@ abstract class RefChecks
         )
         transformTrees(newTrees map localTyper.typedPos(moduleDef.pos))
       }
-    def newInnerObject(site: Symbol, module: Symbol): List[Tree] = {
+    def newInnerObject(site: Symbol, module: Symbol): List[Tree] =
       if (site.isTrait)
         DefDef(module, EmptyTree) :: Nil
       else {
@@ -1437,7 +1435,6 @@ abstract class RefChecks
 
         ValDef(moduleVar) :: accessorDef :: Nil
       }
-    }
 
     def mixinModuleDefs(clazz: Symbol): List[Tree] = {
       val res = for {
@@ -1573,7 +1570,7 @@ abstract class RefChecks
       if (settings.warnDelayedInit && isLikelyUninitialized)
         reporter.warning(
           pos,
-          s"Selecting ${sym} from ${sym.owner}, which extends scala.DelayedInit, is likely to yield an uninitialized value")
+          s"Selecting $sym from ${sym.owner}, which extends scala.DelayedInit, is likely to yield an uninitialized value")
     }
 
     private def lessAccessible(otherSym: Symbol, memberSym: Symbol): Boolean = (
@@ -1740,7 +1737,7 @@ abstract class RefChecks
           def messageWarning(name: String)(warn: String) =
             reporter.warning(
               tree.pos,
-              f"Invalid $name message for ${sym}%s${sym.locationString}%s:%n$warn")
+              f"Invalid $name message for $sym%s${sym.locationString}%s:%n$warn")
 
           // validate implicitNotFoundMessage and implicitAmbiguousMessage
           analyzer.ImplicitNotFoundMsg.check(sym) foreach messageWarning(
@@ -1902,7 +1899,7 @@ abstract class RefChecks
     }
 
     // Verify classes extending AnyVal meet the requirements
-    private def checkAnyValSubclass(clazz: Symbol) = {
+    private def checkAnyValSubclass(clazz: Symbol) =
       if (clazz.isDerivedValueClass) {
         if (clazz.isTrait)
           reporter.error(
@@ -1913,7 +1910,6 @@ abstract class RefChecks
             clazz.pos,
             "`abstract' modifier cannot be used with value classes")
       }
-    }
 
     private def checkUnexpandedMacro(t: Tree) =
       if (!t.isDef && t.hasSymbolField && t.symbol.isTermMacro)

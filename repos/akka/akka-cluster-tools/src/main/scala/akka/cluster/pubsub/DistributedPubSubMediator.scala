@@ -545,7 +545,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   require(
     role.forall(cluster.selfRoles.contains),
-    s"This cluster member [${selfAddress}] doesn't have the role [$role]")
+    s"This cluster member [$selfAddress] doesn't have the role [$role]")
 
   val removedTimeToLiveMillis = removedTimeToLive.toMillis
 
@@ -750,14 +750,13 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       sender() ! count
   }
 
-  def publish(path: String, msg: Any, allButSelf: Boolean = false): Unit = {
+  def publish(path: String, msg: Any, allButSelf: Boolean = false): Unit =
     for {
       (address, bucket) ← registry
       if !(allButSelf && address == selfAddress) // if we should skip sender() node and current address == self address => skip
       valueHolder ← bucket.content.get(path)
       ref ← valueHolder.ref
     } ref forward msg
-  }
 
   def publishToEachGroup(path: String, msg: Any): Unit = {
     val prefix = path + '/'
@@ -847,17 +846,16 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def gossip(): Unit =
     selectRandomNode((nodes - selfAddress).toVector) foreach gossipTo
 
-  def gossipTo(address: Address): Unit = {
+  def gossipTo(address: Address): Unit =
     context.actorSelection(self.path.toStringWithAddress(address)) ! Status(
       versions = myVersions)
-  }
 
   def selectRandomNode(
       addresses: immutable.IndexedSeq[Address]): Option[Address] =
     if (addresses.isEmpty) None
     else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
-  def prune(): Unit = {
+  def prune(): Unit =
     registry foreach {
       case (owner, bucket) ⇒
         val oldRemoved = bucket.content.collect {
@@ -869,7 +867,6 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           registry += owner -> bucket
             .copy(content = bucket.content -- oldRemoved)
     }
-  }
 
   def newTopicActor(encTopic: String): ActorRef = {
     val t = context.actorOf(

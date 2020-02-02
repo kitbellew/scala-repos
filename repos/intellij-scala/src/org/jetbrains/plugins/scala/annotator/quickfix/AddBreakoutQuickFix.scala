@@ -81,7 +81,7 @@ object AddBreakoutQuickFix {
     }
   }
 
-  def isImplicitCanBuildFromParam(p: ScParameter): Boolean = {
+  def isImplicitCanBuildFromParam(p: ScParameter): Boolean =
     p.getType(TypingContext.empty) match {
       case Success(tpe, _)
           if tpe.canonicalText.startsWith(
@@ -89,5 +89,4 @@ object AddBreakoutQuickFix {
         true
       case _ => false
     }
-  }
 }

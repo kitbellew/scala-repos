@@ -40,13 +40,12 @@ private[streaming] case class ReceivedBlockInfo(
 
   def blockId: StreamBlockId = blockStoreResult.blockId
 
-  def walRecordHandleOption: Option[WriteAheadLogRecordHandle] = {
+  def walRecordHandleOption: Option[WriteAheadLogRecordHandle] =
     blockStoreResult match {
       case walStoreResult: WriteAheadLogBasedStoreResult =>
         Some(walStoreResult.walRecordHandle)
       case _ => None
     }
-  }
 
   /** Is the block ID valid, that is, is the block present in the Spark executors. */
   def isBlockIdValid(): Boolean = _isBlockIdValid
@@ -55,7 +54,6 @@ private[streaming] case class ReceivedBlockInfo(
     * Set the block ID as invalid. This is useful when it is known that the block is not present
     * in the Spark executors.
     */
-  def setBlockIdInvalid(): Unit = {
+  def setBlockIdInvalid(): Unit =
     _isBlockIdValid = false
-  }
 }

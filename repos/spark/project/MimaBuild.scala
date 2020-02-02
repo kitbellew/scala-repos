@@ -52,14 +52,12 @@ object MimaBuild {
   )
 
   // Exclude a Spark class, that is in the package org.apache.spark
-  def excludeSparkClass(className: String) = {
+  def excludeSparkClass(className: String) =
     excludeClass("org.apache.spark." + className)
-  }
 
   // Exclude a Spark package, that is in the package org.apache.spark
-  def excludeSparkPackage(packageName: String) = {
+  def excludeSparkPackage(packageName: String) =
     excludePackage("org.apache.spark." + packageName)
-  }
 
   def ignoredABIProblems(base: File, currentSparkVersion: String) = {
 

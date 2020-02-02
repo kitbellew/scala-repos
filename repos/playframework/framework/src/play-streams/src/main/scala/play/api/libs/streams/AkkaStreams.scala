@@ -22,9 +22,8 @@ object AkkaStreams {
     * flow.
     */
   def bypassWith[In, FlowIn, Out](splitter: In => Either[FlowIn, Out])
-      : Flow[FlowIn, Out, _] => Flow[In, Out, _] = {
+      : Flow[FlowIn, Out, _] => Flow[In, Out, _] =
     bypassWith(Flow[In].map(splitter))
-  }
 
   /**
     * Using the given splitter flow, allow messages to bypass a flow.
@@ -94,19 +93,18 @@ object AkkaStreams {
         override def onUpstreamFinish(ctx: Context[T]) = ctx.absorbTermination()
         override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) =
           ctx.absorbTermination()
-        override def onPull(ctx: Context[T]) = {
+        override def onPull(ctx: Context[T]) =
           if (!ctx.isFinishing) {
             ctx.pull()
           } else {
             null
           }
-        }
       })
 
   /**
     * A flow that will ignore downstream cancellation, and instead will continue receiving and ignoring the stream.
     */
-  def ignoreAfterCancellation[T]: Flow[T, T, Future[Done]] = {
+  def ignoreAfterCancellation[T]: Flow[T, T, Future[Done]] =
     Flow.fromGraph(GraphDSL.create(Sink.ignore) { implicit builder => ignore =>
       import GraphDSL.Implicits._
       // This pattern is an effective way to absorb cancellation, Sink.ignore will keep the broadcast always flowing
@@ -115,5 +113,4 @@ object AkkaStreams {
       broadcast.out(0) ~> ignore.in
       FlowShape(broadcast.in, broadcast.out(1))
     })
-  }
 }

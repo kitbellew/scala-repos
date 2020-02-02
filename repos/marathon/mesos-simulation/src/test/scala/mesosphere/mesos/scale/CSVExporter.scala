@@ -197,7 +197,7 @@ object CSVExporter {
     ).flatten
   }
 
-  def writeCSV(directory: File, csv: File, sep: String = ";") = {
+  def writeCSV(directory: File, csv: File, sep: String = ";") =
     IO.using(new FileWriter(csv)) { writer =>
       toRows(directory).sortBy(_.name).foreach { row =>
         val values = row.values
@@ -206,7 +206,6 @@ object CSVExporter {
         writer.write(s"${row.name}$sep$values\n")
       }
     }
-  }
 
   /**
     * Export CSV files from metric directories.

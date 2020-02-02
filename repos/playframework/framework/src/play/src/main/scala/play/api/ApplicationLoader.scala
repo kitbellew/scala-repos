@@ -53,7 +53,7 @@ object ApplicationLoader {
   /**
     * Locate and instantiate the ApplicationLoader.
     */
-  def apply(context: Context): ApplicationLoader = {
+  def apply(context: Context): ApplicationLoader =
     Reflect.configuredClass[
       ApplicationLoader,
       play.ApplicationLoader,
@@ -81,7 +81,6 @@ object ApplicationLoader {
         }
         new JavaApplicationLoaderAdapter
     }
-  }
 
   /**
     * Create an application loading context.

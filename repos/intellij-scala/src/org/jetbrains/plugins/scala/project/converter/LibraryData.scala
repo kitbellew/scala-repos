@@ -20,14 +20,13 @@ private case class LibraryData(
 }
 
 private object LibraryData {
-  def apply(prototype: Library): LibraryData = {
+  def apply(prototype: Library): LibraryData =
     LibraryData(
       prototype.getName,
       prototype.getUrls(OrderRootType.CLASSES).toSeq,
       prototype.getUrls(OrderRootType.SOURCES).toSeq,
       prototype.getUrls(JavadocOrderRootType.getInstance).toSeq
     )
-  }
 
   def apply(element: Element): LibraryData = {
     def urls(kind: String) =

@@ -11,7 +11,7 @@ import breeze.linalg.{QuasiTensor, argtopk}
 private[linalg] trait LowPriorityArgTopK {
   implicit def argtopkWithQT[Q, I, V](
       implicit qt: Q <:< QuasiTensor[I, V],
-      ord: Ordering[V]): argtopk.Impl2[Q, Int, IndexedSeq[I]] = {
+      ord: Ordering[V]): argtopk.Impl2[Q, Int, IndexedSeq[I]] =
     new argtopk.Impl2[Q, Int, IndexedSeq[I]] {
 
       def apply(q: Q, k: Int): IndexedSeq[I] = {
@@ -21,5 +21,4 @@ private[linalg] trait LowPriorityArgTopK {
         queue.toIndexedSeq.sorted(ordK.reverse)
       }
     }
-  }
 }

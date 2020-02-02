@@ -66,9 +66,8 @@ abstract class Plugin {
   }
 
   @deprecated("use Plugin#init instead", since = "2.11")
-  def processOptions(options: List[String], error: String => Unit): Unit = {
+  def processOptions(options: List[String], error: String => Unit): Unit =
     if (!options.isEmpty) error(s"Error: $name takes no options")
-  }
 
   /** A description of this plugin's options, suitable as a response
     *  to the -help command-line option.  Conventionally, the options
@@ -199,10 +198,9 @@ object Plugin {
   /** Instantiate a plugin class, given the class and
     *  the compiler it is to be used in.
     */
-  def instantiate(clazz: AnyClass, global: Global): Plugin = {
+  def instantiate(clazz: AnyClass, global: Global): Plugin =
     (clazz getConstructor classOf[Global] newInstance global)
       .asInstanceOf[Plugin]
-  }
 }
 
 class PluginLoadException(val path: String, message: String, cause: Exception)

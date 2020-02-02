@@ -83,7 +83,7 @@ class PrintStream private (
     }
   }
 
-  def checkError(): Boolean = {
+  def checkError(): Boolean =
     if (closed) {
       /* Just check the error flag.
        * Common sense would tell us to look at the underlying writer's
@@ -102,7 +102,6 @@ class PrintStream private (
         case _                => false
       })
     }
-  }
 
   protected[io] def setError(): Unit = errorFlag = true
   protected[io] def clearError(): Unit = errorFlag = false
@@ -124,21 +123,19 @@ class PrintStream private (
    * This is consistent with the behavior of the JDK.
    */
 
-  override def write(b: Int): Unit = {
+  override def write(b: Int): Unit =
     ensureOpenAndTrapIOExceptions {
       out.write(b)
       if (autoFlush && b == '\n')
         flush()
     }
-  }
 
-  override def write(buf: Array[Byte], off: Int, len: Int): Unit = {
+  override def write(buf: Array[Byte], off: Int, len: Int): Unit =
     ensureOpenAndTrapIOExceptions {
       out.write(buf, off, len)
       if (autoFlush)
         flush()
     }
-  }
 
   def print(b: Boolean): Unit = printString(String.valueOf(b))
   def print(c: Char): Unit = printString(String.valueOf(c))
@@ -206,18 +203,15 @@ class PrintStream private (
     this
   }
 
-  @inline private[this] def trapIOExceptions(body: => Unit): Unit = {
+  @inline private[this] def trapIOExceptions(body: => Unit): Unit =
     try {
       body
     } catch {
       case _: IOException => setError()
     }
-  }
 
-  @inline private[this] def ensureOpenAndTrapIOExceptions(
-      body: => Unit): Unit = {
+  @inline private[this] def ensureOpenAndTrapIOExceptions(body: => Unit): Unit =
     if (closed) setError()
     else trapIOExceptions(body)
-  }
 
 }

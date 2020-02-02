@@ -82,20 +82,18 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
   override def onElected: Future[Unit] = {
     val cache = new TrieMap[String, Option[T]]()
 
-    def preloadEntry(nextName: String): Future[Unit] = {
+    def preloadEntry(nextName: String): Future[Unit] =
       store.fetch(nextName).map {
         case Some(t) => cache.update(nextName, Some(t))
         case None =>
           log.warn(s"Expected to find entry $nextName in store $store")
       }
-    }
 
-    def preloadEntries(unversionedNames: Seq[String]): Future[Unit] = {
+    def preloadEntries(unversionedNames: Seq[String]): Future[Unit] =
       unversionedNames.foldLeft[Future[Unit]](Future.successful(())) {
         (completed, nextName) =>
           completed.flatMap { _ => preloadEntry(nextName) }
       }
-    }
 
     def handleEntries(names: Seq[String]): Future[Unit] = {
       val (unversionedNames, versionedNames) = names.partition(noVersionKey)
@@ -125,10 +123,9 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
     * Execute cached if we have the preloaded data.
     */
   private[this] def directOrCached[R](direct: => R)(
-      cached: TrieMap[String, Option[T]] => R): R = {
+      cached: TrieMap[String, Option[T]] => R): R =
     cacheOpt match {
       case Some(cache) => cached(cache)
       case None        => direct
     }
-  }
 }

@@ -201,14 +201,13 @@ private[akka] trait Children { this: ActorCell ⇒
   }
 
   @tailrec final protected def setChildrenTerminationReason(
-      reason: ChildrenContainer.SuspendReason): Boolean = {
+      reason: ChildrenContainer.SuspendReason): Boolean =
     childrenRefs match {
       case c: ChildrenContainer.TerminatingChildrenContainer ⇒
         swapChildrenRefs(c, c.copy(reason = reason)) || setChildrenTerminationReason(
           reason)
       case _ ⇒ false
     }
-  }
 
   final protected def setTerminated(): Unit =
     Unsafe.instance.putObjectVolatile(
@@ -295,7 +294,7 @@ private[akka] trait Children { this: ActorCell ⇒
    * Private helpers
    */
 
-  private def checkName(name: String): String = {
+  private def checkName(name: String): String =
     name match {
       case null ⇒
         throw new InvalidActorNameException("actor name must not be null")
@@ -305,7 +304,6 @@ private[akka] trait Children { this: ActorCell ⇒
         ActorPath.validatePathElement(name)
         name
     }
-  }
 
   private def makeChild(
       cell: ActorCell,

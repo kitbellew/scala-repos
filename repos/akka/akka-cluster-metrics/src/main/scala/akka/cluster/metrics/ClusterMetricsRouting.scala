@@ -288,7 +288,7 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
     */
   def getInstance = this
 
-  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
+  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] =
     nodeMetrics.collect {
       case HeapMemory(address, _, used, committed, max) ⇒
         val capacity = max match {
@@ -297,7 +297,6 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
         }
         (address, capacity)
     }.toMap
-  }
 }
 
 /**
@@ -327,9 +326,9 @@ case object CpuMetricsSelector extends CapacityMetricsSelector {
   // TODO read factor from reference.conf
   /** How much extra weight to give to the stolen time. */
   val factor = 0.3
-  require(0.0 <= factor, s"factor must be non negative: ${factor}")
+  require(0.0 <= factor, s"factor must be non negative: $factor")
 
-  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
+  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] =
     nodeMetrics.collect {
       case Cpu(address, _, _, Some(cpuCombined), Some(cpuStolen), _) ⇒
         // Arbitrary load rating function which skews in favor of stolen time.
@@ -337,7 +336,6 @@ case object CpuMetricsSelector extends CapacityMetricsSelector {
         val capacity = if (load >= 1.0) 0.0 else 1.0 - load
         (address, capacity)
     }.toMap
-  }
 }
 
 /**
@@ -356,13 +354,12 @@ case object SystemLoadAverageMetricsSelector extends CapacityMetricsSelector {
     */
   def getInstance = this
 
-  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
+  override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] =
     nodeMetrics.collect {
       case Cpu(address, _, Some(systemLoadAverage), _, _, processors) ⇒
         val capacity = 1.0 - math.min(1.0, systemLoadAverage / processors)
         (address, capacity)
     }.toMap
-  }
 }
 
 /**
@@ -480,7 +477,7 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
     * nodes gets weights proportional to their capacity compared to
     * the node with lowest capacity.
     */
-  def weights(capacity: Map[Address, Double]): Map[Address, Int] = {
+  def weights(capacity: Map[Address, Double]): Map[Address, Int] =
     if (capacity.isEmpty) Map.empty[Address, Int]
     else {
       val (_, min) = capacity.minBy { case (_, c) ⇒ c }
@@ -490,7 +487,6 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
         case (addr, c) ⇒ (addr -> math.round((c) / divisor).toInt)
       }
     }
-  }
 
   /**
     * The weights per address, based on the capacity produced by
@@ -560,7 +556,7 @@ private[metrics] class WeightedRoutees(
     * Converts the result of Arrays.binarySearch into a index in the buckets array
     * see documentation of Arrays.binarySearch for what it returns
     */
-  private def idx(i: Int): Int = {
+  private def idx(i: Int): Int =
     if (i >= 0) i // exact match
     else {
       val j = math.abs(i + 1)
@@ -569,7 +565,6 @@ private[metrics] class WeightedRoutees(
           "Requested index [%s] is > max index [%s]".format(i, buckets.length))
       else j
     }
-  }
 }
 
 /**

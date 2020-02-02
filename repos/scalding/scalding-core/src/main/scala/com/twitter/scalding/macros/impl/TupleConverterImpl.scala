@@ -125,11 +125,11 @@ object TupleConverterImpl {
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
           CaseClassBuilder(tpe, membersOf(tpe).map(matchField))
         case tpe if allowUnknownTypes =>
-          PrimitiveBuilder(idx => q"""t.getObject(${idx}).asInstanceOf[$tpe]""")
+          PrimitiveBuilder(idx => q"""t.getObject($idx).asInstanceOf[$tpe]""")
         case tpe =>
           c.abort(
             c.enclosingPosition,
-            s"${T.tpe} is not pure primitives, Option of a primitive, nested case classes when looking at type ${tpe}")
+            s"${T.tpe} is not pure primitives, Option of a primitive, nested case classes when looking at type $tpe")
       }
 
     val builder = matchField(T.tpe)

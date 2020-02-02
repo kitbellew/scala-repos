@@ -28,9 +28,8 @@ class RenameScalaTypeAliasProcessor
 
   override def substituteElementToRename(
       element: PsiElement,
-      editor: Editor): PsiElement = {
+      editor: Editor): PsiElement =
     RenameSuperMembersUtil.chooseSuper(element.asInstanceOf[ScNamedElement])
-  }
 
   override def substituteElementToRename(
       element: PsiElement,

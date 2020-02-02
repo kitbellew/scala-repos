@@ -98,14 +98,13 @@ sealed abstract class Natural
 
   def trim: Natural = {
     @tailrec
-    def recur(next: Natural): Natural = {
+    def recur(next: Natural): Natural =
       next match {
         case Digit(n, tail) =>
           if (n == UInt(0)) recur(tail) else next
         case End(n) =>
           next
       }
-    }
     recur(reversed).reversed
   }
 
@@ -130,7 +129,7 @@ sealed abstract class Natural
 
   // calculate 9 digits at a time using /%
   override def toString: String = {
-    @tailrec def recur(next: Natural, s: String): String = {
+    @tailrec def recur(next: Natural, s: String): String =
       next match {
         case End(d) =>
           d.toLong.toString + s
@@ -141,7 +140,6 @@ sealed abstract class Natural
           else
             recur(q, "%09d%s" format (r.digit.toLong, s))
       }
-    }
     recur(this, "")
   }
 
@@ -364,26 +362,24 @@ sealed abstract class Natural
   }
 
   def pow(rhs: Natural): Natural = {
-    @tailrec def _pow(t: Natural, b: Natural, e: Natural): Natural = {
+    @tailrec def _pow(t: Natural, b: Natural, e: Natural): Natural =
       if (e.isZero) t
       else if (e.isOdd) _pow(t * b, b * b, e >> 1)
       else _pow(t, b * b, e >> 1)
-    }
     _pow(Natural(1), lhs, rhs)
   }
 
   def pow(rhs: UInt): Natural = {
-    @tailrec def _pow(t: Natural, b: Natural, e: UInt): Natural = {
+    @tailrec def _pow(t: Natural, b: Natural, e: UInt): Natural =
       if (e == UInt(0)) t
       else if ((e & UInt(1)) == UInt(1)) _pow(t * b, b * b, e >> 1)
       else _pow(t, b * b, e >> 1)
-    }
     _pow(Natural(1), lhs, rhs)
   }
 
   def /~(rhs: Natural): Natural = lhs / rhs
 
-  def /(rhs: Natural): Natural = {
+  def /(rhs: Natural): Natural =
     rhs match {
       case End(rd) =>
         lhs / rd
@@ -408,9 +404,8 @@ sealed abstract class Natural
             }
         }
     }
-  }
 
-  def %(rhs: Natural): Natural = {
+  def %(rhs: Natural): Natural =
     rhs match {
       case End(rd) => lhs % rd
 
@@ -431,9 +426,8 @@ sealed abstract class Natural
             }
         }
     }
-  }
 
-  def /%(rhs: Natural): (Natural, Natural) = {
+  def /%(rhs: Natural): (Natural, Natural) =
     rhs match {
       case End(rd) => (lhs / rd, lhs % rd)
 
@@ -456,7 +450,6 @@ sealed abstract class Natural
             }
         }
     }
-  }
 
   private def longdiv(num: Natural, denom: Natural): (Natural, Natural) = {
     var rem = num

@@ -36,7 +36,7 @@ class FoldSimplificationType(
   override def hint = InspectionBundle.message(keyPrefix + ".hint")
   override def description = InspectionBundle.message(keyPrefix + ".short")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.fold` (literal(`startElem`), binaryOperation(`opName`))
           if implicitParameterExistsFor(methodName, qual) =>
@@ -46,7 +46,6 @@ class FoldSimplificationType(
         Some(simpl)
       case _ => None
     }
-  }
 }
 
 class ReduceSimplificationType(
@@ -59,7 +58,7 @@ class ReduceSimplificationType(
   override def hint = InspectionBundle.message(keyPrefix + ".hint")
   override def description = InspectionBundle.message(keyPrefix + ".short")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.reduce`(binaryOperation(`opName`))
           if implicitParameterExistsFor(methodName, qual) =>
@@ -69,5 +68,4 @@ class ReduceSimplificationType(
         Some(simpl)
       case _ => None
     }
-  }
 }

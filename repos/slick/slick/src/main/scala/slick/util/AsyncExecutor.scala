@@ -26,7 +26,7 @@ object AsyncExecutor extends Logging {
     * @param name A prefix to use for the names of the created threads.
     * @param numThreads The number of threads in the pool.
     * @param queueSize The size of the job queue, 0 for direct hand-off or -1 for unlimited size. */
-  def apply(name: String, numThreads: Int, queueSize: Int): AsyncExecutor = {
+  def apply(name: String, numThreads: Int, queueSize: Int): AsyncExecutor =
     new AsyncExecutor {
       // Before init: 0, during init: 1, after init: 2, during/after shutdown: 3
       private[this] val state = new AtomicInteger(0)
@@ -70,7 +70,6 @@ object AsyncExecutor extends Logging {
             "Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
       }
     }
-  }
 
   def default(name: String = "AsyncExecutor.default"): AsyncExecutor =
     apply(name, 20, 1000)

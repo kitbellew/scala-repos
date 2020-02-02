@@ -37,7 +37,7 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
   override def toString: String = s"input[$ordinal, ${dataType.simpleString}]"
 
   // Use special getter for primitive types (for UnsafeRow)
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     if (input.isNullAt(ordinal)) {
       null
     } else {
@@ -59,7 +59,6 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
         case _                        => input.get(ordinal, dataType)
       }
     }
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val javaType = ctx.javaType(dataType)
@@ -90,7 +89,7 @@ object BindReferences extends Logging {
   def bindReference[A <: Expression](
       expression: A,
       input: Seq[Attribute],
-      allowFailures: Boolean = false): A = {
+      allowFailures: Boolean = false): A =
     expression
       .transform {
         case a: AttributeReference =>
@@ -111,5 +110,4 @@ object BindReferences extends Logging {
       .asInstanceOf[
         A
       ] // Kind of a hack, but safe.  TODO: Tighten return type when possible.
-  }
 }

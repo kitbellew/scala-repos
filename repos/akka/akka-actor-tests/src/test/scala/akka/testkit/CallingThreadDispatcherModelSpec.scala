@@ -51,12 +51,11 @@ class CallingThreadDispatcherModelSpec
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-calling-thread-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
   override def dispatcherType = "Calling Thread Dispatcher"
 
 }

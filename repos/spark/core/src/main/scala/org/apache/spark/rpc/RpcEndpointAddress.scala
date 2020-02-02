@@ -47,11 +47,10 @@ private[spark] case class RpcEndpointAddress(
 
 private[spark] object RpcEndpointAddress {
 
-  def apply(host: String, port: Int, name: String): RpcEndpointAddress = {
+  def apply(host: String, port: Int, name: String): RpcEndpointAddress =
     new RpcEndpointAddress(host, port, name)
-  }
 
-  def apply(sparkUrl: String): RpcEndpointAddress = {
+  def apply(sparkUrl: String): RpcEndpointAddress =
     try {
       val uri = new java.net.URI(sparkUrl)
       val host = uri.getHost
@@ -71,5 +70,4 @@ private[spark] object RpcEndpointAddress {
       case e: java.net.URISyntaxException =>
         throw new SparkException("Invalid Spark URL: " + sparkUrl, e)
     }
-  }
 }

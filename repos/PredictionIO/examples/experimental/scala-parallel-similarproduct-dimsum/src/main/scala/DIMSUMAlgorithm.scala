@@ -35,22 +35,21 @@ class DIMSUMModel(
       params: DIMSUMAlgorithmParams,
       sc: SparkContext): Boolean = {
 
-    similarities.saveAsObjectFile(s"/tmp/${id}/similarities")
+    similarities.saveAsObjectFile(s"/tmp/$id/similarities")
     sc.parallelize(Seq(itemStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
+      .saveAsObjectFile(s"/tmp/$id/itemStringIntMap")
     sc.parallelize(Seq(items))
-      .saveAsObjectFile(s"/tmp/${id}/items")
+      .saveAsObjectFile(s"/tmp/$id/items")
     true
   }
 
-  override def toString = {
+  override def toString =
     s"similarities: [${similarities.count()}]" +
       s"(${similarities.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
       s" items: [${items.size}]" +
       s"(${items.take(2).toString}...)]"
-  }
 }
 
 object DIMSUMModel
@@ -58,16 +57,15 @@ object DIMSUMModel
   def apply(
       id: String,
       params: DIMSUMAlgorithmParams,
-      sc: Option[SparkContext]) = {
+      sc: Option[SparkContext]) =
     new DIMSUMModel(
-      similarities = sc.get.objectFile(s"/tmp/${id}/similarities"),
+      similarities = sc.get.objectFile(s"/tmp/$id/similarities"),
       itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
+        .objectFile[BiMap[String, Int]](s"/tmp/$id/itemStringIntMap")
         .first,
       items = sc.get
-        .objectFile[Map[Int, Item]](s"/tmp/${id}/items")
+        .objectFile[Map[Int, Item]](s"/tmp/$id/items")
         .first)
-  }
 }
 
 class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
@@ -170,7 +168,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
         .map { itemInt =>
           val simsSeq = model.similarities.lookup(itemInt)
           if (simsSeq.isEmpty) {
-            logger.info(s"No similar items found for ${iid}.")
+            logger.info(s"No similar items found for $iid.")
             Array.empty[(Int, Double)]
           } else {
             val sims = simsSeq.head
@@ -199,7 +197,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
           }
         }
         .getOrElse {
-          logger.info(s"No similar items for unknown item ${iid}.")
+          logger.info(s"No similar items for unknown item $iid.")
           Array.empty[(Int, Double)]
         }
     }

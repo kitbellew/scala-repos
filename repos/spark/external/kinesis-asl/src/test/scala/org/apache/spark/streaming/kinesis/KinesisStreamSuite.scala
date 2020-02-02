@@ -318,7 +318,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     )
 
     // Verify that the generated RDDs are KinesisBackedBlockRDDs, and collect the data in each batch
-    kinesisStream.foreachRDD((rdd: RDD[Array[Byte]], time: Time) => {
+    kinesisStream.foreachRDD { (rdd: RDD[Array[Byte]], time: Time) =>
       val kRdd = rdd.asInstanceOf[KinesisBackedBlockRDD[Array[Byte]]]
       val data = rdd
         .map { bytes => new String(bytes).toInt }
@@ -327,7 +327,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       collectedData.synchronized {
         collectedData(time) = (kRdd.arrayOfseqNumberRanges, data)
       }
-    })
+    }
 
     ssc.remember(
       Minutes(60)

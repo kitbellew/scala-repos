@@ -63,9 +63,8 @@ object Genders extends Enumeration {
   val Female = new I18NGender(2, "female")
 
   class I18NGender(id: Int, name: String) extends Val(id, name) {
-    override def toString = {
+    override def toString =
       S.?(name)
-    }
   }
 }
 

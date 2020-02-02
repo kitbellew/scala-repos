@@ -107,7 +107,7 @@ class LocalKafkaEventStore(
   def save(event: Event, timeout: Timeout) = {
     @tailrec def encodeAll(
         toEncode: List[Event],
-        messages: Vector[Message]): StoreFailure \/ Vector[Message] = {
+        messages: Vector[Message]): StoreFailure \/ Vector[Message] =
       toEncode match {
         case x :: xs =>
           val message = codec.toMessage(x)
@@ -129,7 +129,6 @@ class LocalKafkaEventStore(
 
         case Nil => right(messages)
       }
-    }
 
     val toSend = event.fold(
       ingest => encodeAll(List(event), Vector.empty),

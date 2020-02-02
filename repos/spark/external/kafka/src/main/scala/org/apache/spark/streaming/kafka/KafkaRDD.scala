@@ -57,7 +57,7 @@ private[kafka] class KafkaRDD[
 ) extends RDD[R](sc, Nil)
     with Logging
     with HasOffsetRanges {
-  override def getPartitions: Array[Partition] = {
+  override def getPartitions: Array[Partition] =
     offsetRanges.zipWithIndex.map {
       case (o, i) =>
         val (host, port) = leaders(TopicAndPartition(o.topic, o.partition))
@@ -70,7 +70,6 @@ private[kafka] class KafkaRDD[
           host,
           port)
     }.toArray
-  }
 
   override def count(): Long = offsetRanges.map(_.count).sum
 
@@ -133,7 +132,7 @@ private[kafka] class KafkaRDD[
   private def errOvershotEnd(
       itemOffset: Long,
       part: KafkaRDDPartition): String =
-    s"Got ${itemOffset} > ending offset ${part.untilOffset} " +
+    s"Got $itemOffset > ending offset ${part.untilOffset} " +
       s"for topic ${part.topic} partition ${part.partition} start ${part.fromOffset}." +
       " This should not happen, and indicates a message may have been skipped"
 
@@ -176,7 +175,7 @@ private[kafka] class KafkaRDD[
 
     // The idea is to use the provided preferred host, except on task retry attempts,
     // to minimize number of kafka metadata requests
-    private def connectLeader: SimpleConsumer = {
+    private def connectLeader: SimpleConsumer =
       if (context.attemptNumber > 0) {
         kc.connectLeader(part.topic, part.partition)
           .fold(
@@ -189,7 +188,6 @@ private[kafka] class KafkaRDD[
       } else {
         kc.connect(part.host, part.port)
       }
-    }
 
     private def handleFetchErr(resp: FetchResponse) {
       if (resp.hasError) {
@@ -223,11 +221,10 @@ private[kafka] class KafkaRDD[
         .dropWhile(_.offset < requestOffset)
     }
 
-    override def close(): Unit = {
+    override def close(): Unit =
       if (consumer != null) {
         consumer.close()
       }
-    }
 
     override def getNext(): R = {
       if (iter == null || !iter.hasNext) {

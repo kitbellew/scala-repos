@@ -21,9 +21,8 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
   override def getText =
     "Permute arguments to match the parameter declaration order"
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     check(project, editor, element).isDefined
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (!element.isValid) return

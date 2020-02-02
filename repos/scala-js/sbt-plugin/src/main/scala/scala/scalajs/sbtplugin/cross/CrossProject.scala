@@ -233,11 +233,10 @@ final class CrossProject private (
 
   // Concrete alteration members
 
-  def aggregate(refs: CrossProject*): CrossProject = {
+  def aggregate(refs: CrossProject*): CrossProject =
     copy(
       jvm.aggregate(refs.map(_.jvm: ProjectReference): _*),
       js.aggregate(refs.map(_.js: ProjectReference): _*))
-  }
 
   def configs(cs: Configuration*): CrossProject =
     copy(jvm.configs(cs: _*), js.configs(cs: _*))
@@ -282,9 +281,8 @@ final class CrossProject private (
 
 object CrossProject extends CrossProjectExtra {
 
-  def apply(id: String, base: File, crossType: CrossType): CrossProject = {
+  def apply(id: String, base: File, crossType: CrossType): CrossProject =
     CrossProject(id + "JVM", id + "JS", base, crossType).settings(name := id)
-  }
 
   def apply(
       jvmId: String,
@@ -322,7 +320,7 @@ object CrossProject extends CrossProjectExtra {
   private def makeCrossSources(
       sharedSrcDir: Option[File],
       scalaBinaryVersion: String,
-      cross: Boolean): Seq[File] = {
+      cross: Boolean): Seq[File] =
     sharedSrcDir.fold[Seq[File]] {
       Seq.empty
     } { srcDir =>
@@ -333,7 +331,6 @@ object CrossProject extends CrossProjectExtra {
       else
         Seq(srcDir)
     }
-  }
 
   final class Builder(id: String, base: File) {
     def crossType(crossType: CrossType): CrossProject =
@@ -357,9 +354,8 @@ trait CrossProjectExtra {
   def crossProject: CrossProject.Builder = macro CrossProject.crossProject_impl
 
   implicit def crossProjectFromBuilder(
-      builder: CrossProject.Builder): CrossProject = {
+      builder: CrossProject.Builder): CrossProject =
     builder.crossType(CrossType.Full)
-  }
 
   implicit def crossClasspathDependencyConstructor(
       cp: CrossProject): CrossClasspathDependency.Constructor =

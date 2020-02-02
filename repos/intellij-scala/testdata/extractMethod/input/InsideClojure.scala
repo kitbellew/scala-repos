@@ -1,13 +1,9 @@
 class InsideClojure {
-  def foo = {
-    { p: Int =>
-      {
-        /*start*/
-        p + 1
-        p + 2
-        /*end*/
-      }
-    }
+  def foo = { p: Int =>
+    /*start*/
+    p + 1
+    p + 2
+    /*end*/
   }
 }
 /*

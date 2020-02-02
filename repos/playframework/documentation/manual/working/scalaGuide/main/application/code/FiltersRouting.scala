@@ -25,7 +25,7 @@ class LoggingFilter @Inject() (implicit val mat: Materializer) extends Filter {
       val requestTime = endTime - startTime
 
       Logger.info(
-        s"${action} took ${requestTime}ms and returned ${result.header.status}")
+        s"$action took ${requestTime}ms and returned ${result.header.status}")
 
       result.withHeaders("Request-Time" -> requestTime.toString)
     }

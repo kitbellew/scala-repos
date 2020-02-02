@@ -40,7 +40,7 @@ object Test {
     val reading = new CountDownLatch(1)
     val count = new AtomicInteger
     def counted = count.get
-    val command = s"${f.getAbsolutePath} -classpath ${javaClassPath} Test data"
+    val command = s"${f.getAbsolutePath} -classpath $javaClassPath Test data"
     Try {
       Process(command) run ProcessLogger { (s: String) =>
         //Console println s"[[$s]]"     // java help

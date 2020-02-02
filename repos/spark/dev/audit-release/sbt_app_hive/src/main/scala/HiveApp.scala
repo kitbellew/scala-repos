@@ -46,12 +46,11 @@ object SparkSqlExample {
       sql("FROM src SELECT key, value WHERE key >= 0 AND KEY < 5").collect()
     results.foreach(println)
 
-    def test(f: => Boolean, failureMsg: String) = {
+    def test(f: => Boolean, failureMsg: String) =
       if (!f) {
         println(failureMsg)
         System.exit(-1)
       }
-    }
 
     test(
       results.size == 5,

@@ -48,7 +48,7 @@ object ForkRun {
     doShutdown(log, system, forkRun)
   }
 
-  def doShutdown(log: Logger, system: ActorSystem, forkRun: ActorRef): Unit = {
+  def doShutdown(log: Logger, system: ActorSystem, forkRun: ActorRef): Unit =
     if (running.compareAndSet(true, false)) {
       log.info("Stopping Play fork run ...")
       forkRun ! Close
@@ -57,12 +57,11 @@ object ForkRun {
     } else {
       log.info("Play fork run already stopped ...")
     }
-  }
 
   def registerShutdownHook(
       log: Logger,
       system: ActorSystem,
-      forkRun: ActorRef): Unit = {
+      forkRun: ActorRef): Unit =
     Runtime
       .getRuntime()
       .addShutdownHook(new Thread {
@@ -71,7 +70,6 @@ object ForkRun {
           doShutdown(log, system, forkRun)
         }
       })
-  }
 
   def startServer(
       config: ForkConfig,
@@ -169,24 +167,21 @@ object ForkRun {
     Await.result(future, timeout.duration)
   }
 
-  def waitForStop(): Unit = {
+  def waitForStop(): Unit =
     System.in.read() match {
       case -1 | 4 => // exit on EOF or EOT/Ctrl-D
       case _      => waitForStop()
     }
-  }
 
-  def cancel(): Unit = {
+  def cancel(): Unit =
     // close stdin in case we're in waitForStop
     System.in.close()
-  }
 
-  def akkaNoLogging: Config = {
+  def akkaNoLogging: Config =
     ConfigFactory.parseString("""
       akka.stdout-loglevel = "OFF"
       akka.loglevel = "OFF"
     """)
-  }
 
   def props(
       sbt: ActorRef,
@@ -217,7 +212,7 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
     case ForkRun.Close => shutdown()
   }
 
-  def run(config: ForkConfig): Unit = {
+  def run(config: ForkConfig): Unit =
     try {
       val notifyStart = ForkRun.sendStart(sbt, config, args)
       val reloadCompile =
@@ -228,7 +223,6 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
     } catch {
       case e: Exception => fail(e)
     }
-  }
 
   def running(server: PlayDevServer, reloadKey: String): Receive = {
     case ForkRun.Reload => reload(server, reloadKey)

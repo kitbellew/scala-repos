@@ -69,15 +69,13 @@ class ExecutorClassLoader(
       getClassFileInputStreamFromFileSystem(fileSystem)
   }
 
-  override def getResource(name: String): URL = {
+  override def getResource(name: String): URL =
     parentLoader.getResource(name)
-  }
 
-  override def getResources(name: String): java.util.Enumeration[URL] = {
+  override def getResources(name: String): java.util.Enumeration[URL] =
     parentLoader.getResources(name)
-  }
 
-  override def findClass(name: String): Class[_] = {
+  override def findClass(name: String): Class[_] =
     userClassPathFirst match {
       case true =>
         findClassLocally(name).getOrElse(parentLoader.loadClass(name))
@@ -101,7 +99,6 @@ class ExecutorClassLoader(
         }
       }
     }
-  }
 
   private def getClassFileInputStreamFromSparkRPC(path: String): InputStream = {
     val channel = env.rpcEnv.openChannel(s"$classUri/$path")
@@ -114,14 +111,13 @@ class ExecutorClassLoader(
       override def read(b: Array[Byte], offset: Int, len: Int) =
         toClassNotFound(super.read(b, offset, len))
 
-      private def toClassNotFound(fn: => Int): Int = {
+      private def toClassNotFound(fn: => Int): Int =
         try {
           fn
         } catch {
           case e: Exception =>
             throw new ClassNotFoundException(path, e)
         }
-      }
     }
   }
 
@@ -206,7 +202,7 @@ class ExecutorClassLoader(
     }
   }
 
-  def readAndTransformClass(name: String, in: InputStream): Array[Byte] = {
+  def readAndTransformClass(name: String, in: InputStream): Array[Byte] =
     if (name.startsWith("line") && name.endsWith("$iw$")) {
       // Class seems to be an interpreter "wrapper" object storing a val or var.
       // Replace its constructor with a dummy one that does not run the
@@ -233,14 +229,12 @@ class ExecutorClassLoader(
       }
       return bos.toByteArray
     }
-  }
 
   /**
     * URL-encode a string, preserving only slashes
     */
-  def urlEncode(str: String): String = {
+  def urlEncode(str: String): String =
     str.split('/').map(part => URLEncoder.encode(part, "UTF-8")).mkString("/")
-  }
 }
 
 class ConstructorCleaner(className: String, cv: ClassVisitor)

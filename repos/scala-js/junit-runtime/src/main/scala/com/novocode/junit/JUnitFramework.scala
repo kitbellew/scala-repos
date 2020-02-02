@@ -13,33 +13,30 @@ final class JUnitFramework extends Framework {
     override def isModule(): Boolean = false
   }
 
-  def fingerprints(): Array[Fingerprint] = {
+  def fingerprints(): Array[Fingerprint] =
     Array(JUnitFingerprint)
-  }
 
   def runner(
       args: Array[String],
       remoteArgs: Array[String],
-      testClassLoader: ClassLoader): JUnitMasterRunner = {
+      testClassLoader: ClassLoader): JUnitMasterRunner =
     new JUnitMasterRunner(
       args,
       remoteArgs,
       testClassLoader,
       parseRunSettings(args))
-  }
 
   def slaveRunner(
       args: Array[String],
       remoteArgs: Array[String],
       testClassLoader: ClassLoader,
-      send: String => Unit): JUnitSlaveRunner = {
+      send: String => Unit): JUnitSlaveRunner =
     new JUnitSlaveRunner(
       args,
       remoteArgs,
       testClassLoader,
       send,
       parseRunSettings(args))
-  }
 
   def arrayString(arr: Array[String]): String =
     arr.mkString("Array(", ", ", ")")

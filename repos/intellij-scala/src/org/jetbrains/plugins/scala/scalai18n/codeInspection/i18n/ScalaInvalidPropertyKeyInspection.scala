@@ -28,26 +28,21 @@ import scala.collection.mutable
   * @since 7/17/12
   */
 class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
-  @NotNull override def getGroupDisplayName: String = {
+  @NotNull override def getGroupDisplayName: String =
     GroupNames.INTERNATIONALIZATION_GROUP_NAME
-  }
 
-  @NotNull override def getDisplayName: String = {
+  @NotNull override def getDisplayName: String =
     CodeInsightBundle.message(
       "inspection.unresolved.property.key.reference.name")
-  }
 
-  @NotNull override def getShortName: String = {
+  @NotNull override def getShortName: String =
     "ScalaUnresolvedPropertyKey"
-  }
 
-  @NotNull override def getDefaultLevel: HighlightDisplayLevel = {
+  @NotNull override def getDefaultLevel: HighlightDisplayLevel =
     HighlightDisplayLevel.ERROR
-  }
 
-  override def isEnabledByDefault: Boolean = {
+  override def isEnabledByDefault: Boolean =
     true
-  }
 
   @Nullable override def checkFile(
       @NotNull file: PsiFile,

@@ -19,7 +19,7 @@ object StepBuilder {
       variant: Variant,
       a: Option[(Pgn, Analysis)],
       initialFen: String,
-      withOpening: Boolean): JsArray = {
+      withOpening: Boolean): JsArray =
     chess.Replay.gameWhileValid(pgnMoves, initialFen, variant) match {
       case (games, error) =>
         error foreach logChessError(id)
@@ -56,7 +56,6 @@ object StepBuilder {
             }
             .map(_.toJson))
     }
-  }
 
   private def applyAnalysisEvals(
       steps: List[Step],
@@ -103,7 +102,7 @@ object StepBuilder {
       gameId: String,
       fromStep: Step,
       info: Info,
-      variant: Variant): List[Step] = {
+      variant: Variant): List[Step] =
     chess.Replay.gameWhileValid(info.variation take 20, fromStep.fen, variant) match {
       case (games, error) =>
         error foreach logChessError(gameId)
@@ -123,7 +122,6 @@ object StepBuilder {
           )
         }
     }
-  }
 
   private val logChessError = (id: String) =>
     (err: String) => {

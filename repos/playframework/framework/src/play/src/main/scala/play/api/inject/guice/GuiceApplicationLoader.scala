@@ -19,21 +19,19 @@ class GuiceApplicationLoader(
   // empty constructor needed for instantiating via reflection
   def this() = this(new GuiceApplicationBuilder)
 
-  override final def load(context: ApplicationLoader.Context): Application = {
+  override final def load(context: ApplicationLoader.Context): Application =
     builder(context).build
-  }
 
   /**
     * Construct a builder to use for loading the given context.
     */
   protected def builder(
-      context: ApplicationLoader.Context): GuiceApplicationBuilder = {
+      context: ApplicationLoader.Context): GuiceApplicationBuilder =
     initialBuilder
       .disableCircularProxies()
       .in(context.environment)
       .loadConfig(context.initialConfiguration)
       .overrides(overrides(context): _*)
-  }
 
   /**
     * Override some bindings using information from the context. The default
@@ -41,9 +39,8 @@ class GuiceApplicationLoader(
     * should include.
     */
   protected def overrides(
-      context: ApplicationLoader.Context): Seq[GuiceableModule] = {
+      context: ApplicationLoader.Context): Seq[GuiceableModule] =
     GuiceApplicationLoader.defaultOverrides(context)
-  }
 
 }
 
@@ -53,10 +50,9 @@ object GuiceApplicationLoader {
     * The default overrides provided by the Scala and Java GuiceApplicationLoaders.
     */
   def defaultOverrides(
-      context: ApplicationLoader.Context): Seq[GuiceableModule] = {
+      context: ApplicationLoader.Context): Seq[GuiceableModule] =
     Seq(
       bind[OptionalSourceMapper] to new OptionalSourceMapper(
         context.sourceMapper),
       bind[WebCommands] to context.webCommands)
-  }
 }

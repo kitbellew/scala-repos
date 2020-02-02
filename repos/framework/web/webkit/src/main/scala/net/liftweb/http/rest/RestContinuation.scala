@@ -71,9 +71,8 @@ object RestContinuation {
     * body will be executed in the scope of the current request (the
     * current session and the current Req object).
     */
-  def async(f: ((=> LiftResponse) => Unit) => Unit): Nothing = {
+  def async(f: ((=> LiftResponse) => Unit) => Unit): Nothing =
     throw new ContinuationException(CurrentReq.value, S.session, f)
-  }
 
 }
 

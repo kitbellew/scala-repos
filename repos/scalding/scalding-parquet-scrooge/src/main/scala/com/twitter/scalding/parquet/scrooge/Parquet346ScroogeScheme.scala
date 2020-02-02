@@ -50,8 +50,7 @@ object Parquet346ScroogeRecordConverter {
   /**
     * Same as the (private) getCodec in ScroogeRecordConverter
     */
-  def getCodec[T <: ThriftStruct](klass: Class[T]): ThriftStructCodec[T] = {
-
+  def getCodec[T <: ThriftStruct](klass: Class[T]): ThriftStructCodec[T] =
     try {
       val companionClass = Class.forName(klass.getName + "$")
       val companionObject: AnyRef = companionClass.getField("MODULE$").get(null)
@@ -61,7 +60,6 @@ object Parquet346ScroogeRecordConverter {
         throw new RuntimeException("Unable to create ThriftStructCodec", e)
     }
 
-  }
 }
 
 /**

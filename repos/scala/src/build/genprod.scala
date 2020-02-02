@@ -206,7 +206,7 @@ class Function(val i: Int) extends Group("Function") with Arity {
  *  }}}"""
 
   def toStr() = "\"" + ("<function%d>" format i) + "\""
-  def apply() = {
+  def apply() =
     <file name={fileName}>{header}
 
 /** A function of {i} parameter{s}.
@@ -221,7 +221,6 @@ class Function(val i: Int) extends Group("Function") with Arity {
   override def toString() = {toStr}
 }}
 </file>
-  }
 
   private def commaXs = xdefs.mkString("(", ", ", ")")
 
@@ -241,12 +240,11 @@ class Function(val i: Int) extends Group("Function") with Arity {
   )
 
   // f(x1,x2,x3,x4,x5,x6)  == (f.curried)(x1)(x2)(x3)(x4)(x5)(x6)
-  def curryComment = {
+  def curryComment =
     """  /** Creates a curried version of this function.
    *
    *  @return   a function `f` such that `f%s == apply%s`
    */""".format(xdefs map ("(" + _ + ")") mkString, commaXs)
-  }
 
   def tupleMethod = {
     def comment =
@@ -339,7 +337,7 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
     }
   }
 
-  def apply() = {
+  def apply() =
     <file name={fileName}>{header}
 
 /** A tuple of {i} elements; the canonical representation of a [[scala.{
@@ -357,7 +355,6 @@ case class {className}{covariantArgs}({fields})
   {moreMethods}
 }}
 </file>
-  }
 } // object Tuple
 
 /* zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
@@ -399,7 +396,7 @@ class Product(val i: Int) extends Group("Product") with Arity {
     val default = "case _ => throw new IndexOutOfBoundsException(n.toString())"
     "\n" + ((xs ::: List(default)) map ("    " + _ + "\n") mkString)
   }
-  def proj = {
+  def proj =
     (mdefs, targs).zipped
       .map((_, _))
       .zipWithIndex
@@ -411,9 +408,8 @@ class Product(val i: Int) extends Group("Product") with Arity {
          |  def %s: %s
          |""".stripMargin.format(index + 1, index + 1, method, typeName)
     } mkString
-  }
 
-  def apply() = {
+  def apply() =
     <file name={fileName}>{header}
 object {className} {{
   def unapply{invariantArgs}(x: {className}{invariantArgs}): Option[{className}{
@@ -439,7 +435,6 @@ trait {className}{covariantArgs} extends Any with Product {{
 {moreMethods}
 }}
 </file>
-  }
 
 }
 
@@ -465,13 +460,12 @@ class AbstractFunction(val i: Int)
 
   val superTypeArgs = typeArgsString(targs ::: List("R"))
 
-  def apply() = {
+  def apply() =
     <file name={"runtime/" + fileName}>{header}
 abstract class {className}{contraCoArgs} extends Function{i}{superTypeArgs} {{
 {moreMethods}
 }}
 </file>
-  }
 
 }
 object AbstractFunction {

@@ -40,9 +40,8 @@ trait ManyToMany extends BaseKeyedMapper {
     * Returns false as soon as the parent or a one-to-many field returns false.
     * If they are all successful returns true.
     */
-  abstract override def save = {
+  abstract override def save =
     super.save && manyToManyFields.forall(_.save)
-  }
 
   /**
     * An override for delete_! to propogate the deletion to all children
@@ -50,10 +49,9 @@ trait ManyToMany extends BaseKeyedMapper {
     * Returns false as soon as the parent or a one-to-many field returns false.
     * If they are all successful returns true.
     */
-  abstract override def delete_! = {
+  abstract override def delete_! =
     super.delete_! &&
-    manyToManyFields.forall(_.delete_!)
-  }
+      manyToManyFields.forall(_.delete_!)
 
   /**
     * This is the base class to extend for fields that track many-to-many relationships.
@@ -96,7 +94,7 @@ trait ManyToMany extends BaseKeyedMapper {
     protected def joinForChild(e: T2): Option[O] =
       joins.find(isJoinForChild(e))
 
-    protected def own(e: T2): O = {
+    protected def own(e: T2): O =
       joinForChild(e) match {
         case None =>
           removedJoins.find { // first check if we can recycle a removed join
@@ -117,8 +115,7 @@ trait ManyToMany extends BaseKeyedMapper {
         case Some(join) =>
           join
       }
-    }
-    protected def unown(e: T2) = {
+    protected def unown(e: T2) =
       joinForChild(e) match {
         case Some(join) =>
           removedJoins = join :: removedJoins
@@ -131,7 +128,6 @@ trait ManyToMany extends BaseKeyedMapper {
         case None =>
           None
       }
-    }
 
     /**
       * Get the List backing this Buffer.
@@ -238,9 +234,8 @@ trait ManyToMany extends BaseKeyedMapper {
       * marked for removal.
       * Returns true if both succeed, otherwise false
       */
-    def delete_! = {
+    def delete_! =
       removedJoins.forall(_.delete_!) &
         joins.forall(_.delete_!)
-    }
   }
 }

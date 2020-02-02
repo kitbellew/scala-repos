@@ -15,12 +15,11 @@ object TestUtils {
     accessor()
   }
 
-  private def namespace(loader: ClassLoader): js.Dynamic = {
+  private def namespace(loader: ClassLoader): js.Dynamic =
     loader match {
       case loader: ScalaJSClassLoader => loader.namespace
       case _                          => throw new IllegalArgumentException("Need a ScalaJSClassLoader.")
     }
-  }
 
   private def deepSelect(receiver: js.Dynamic, name: String) =
     name.split('.').foldLeft(receiver)((obj, n) => obj.selectDynamic(n))

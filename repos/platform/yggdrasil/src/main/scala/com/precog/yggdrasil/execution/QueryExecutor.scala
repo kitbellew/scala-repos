@@ -118,8 +118,7 @@ trait QueryExecutor[M[+_], +A] { self =>
       def execute(
           query: String,
           context: EvaluationContext,
-          opts: QueryOptions): EitherT[M, EvaluationError, B] = {
+          opts: QueryOptions): EitherT[M, EvaluationError, B] =
         self.execute(query, context, opts) map f
-      }
     }
 }

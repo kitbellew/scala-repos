@@ -130,12 +130,11 @@ trait FlexMenuBuilder {
     */
   protected def renderPlaceholder(
       item: MenuItem,
-      renderInner: Seq[MenuItem] => NodeSeq): Elem = {
+      renderInner: Seq[MenuItem] => NodeSeq): Elem =
     buildInnerTag(
       <xml:group><span>{item.text}</span>{renderInner(item.kids)}</xml:group>,
       item.path,
       item.current)
-  }
 
   /**
     * Render a link that's the current link, but the "link to self" flag is set to true
@@ -225,7 +224,7 @@ trait FlexMenuBuilder {
       case Nil if S.attr("group").isDefined => emptyGroup
       case Nil                              => emptyMenu
       case xs =>
-        def buildANavItem(i: MenuItem): NodeSeq = {
+        def buildANavItem(i: MenuItem): NodeSeq =
           i match {
             // Per Loc.PlaceHolder, placeholder implies HideIfNoKids
             case m @ MenuItem(text, uri, kids, _, _, _)
@@ -242,7 +241,6 @@ trait FlexMenuBuilder {
               renderItemInPath(m, buildLine _)
             case m => renderItem(m, buildLine _)
           }
-        }
 
         def buildLine(in: Seq[MenuItem]): NodeSeq = buildUlLine(in, false)
 

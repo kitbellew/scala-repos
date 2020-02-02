@@ -140,14 +140,13 @@ final class NIHDBPerfTestRunner[T](
 
   def Evaluator[N[+_]](N0: Monad[N])(
       implicit mn: Future ~> N,
-      nm: N ~> Future): EvaluatorLike[N] = {
+      nm: N ~> Future): EvaluatorLike[N] =
     new Evaluator[N](N0) {
       type YggConfig = self.YggConfig
       val yggConfig = self.yggConfig
       val report = LoggingQueryLogger[N](N0)
       def freshIdScanner = self.freshIdScanner
     }
-  }
 
   def startup() {}
 

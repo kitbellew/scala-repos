@@ -53,9 +53,8 @@ object eq {
   implicit def monoidEq[A](
       implicit eqSA: Eq[Semigroup[A]],
       eqA: Eq[A]): Eq[Monoid[A]] = new Eq[Monoid[A]] {
-    def eqv(f: Monoid[A], g: Monoid[A]): Boolean = {
+    def eqv(f: Monoid[A], g: Monoid[A]): Boolean =
       eqSA.eqv(f, g) && eqA.eqv(f.empty, g.empty)
-    }
   }
 
   implicit val unitEq: Eq[Unit] = new Eq[Unit] {

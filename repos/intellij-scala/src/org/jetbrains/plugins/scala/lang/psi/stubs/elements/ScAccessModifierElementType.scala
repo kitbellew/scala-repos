@@ -36,13 +36,12 @@ class ScAccessModifierElementType[Func <: ScAccessModifier]
 
   def indexStub(stub: ScAccessModifierStub, sink: IndexSink) {}
 
-  def createPsi(stub: ScAccessModifierStub): ScAccessModifier = {
+  def createPsi(stub: ScAccessModifierStub): ScAccessModifier =
     new ScAccessModifierImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScAccessModifier,
-      parentStub: StubElement[ParentPsi]): ScAccessModifierStub = {
+      parentStub: StubElement[ParentPsi]): ScAccessModifierStub =
     new ScAccessModifierStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this,
@@ -50,7 +49,6 @@ class ScAccessModifierElementType[Func <: ScAccessModifier]
       psi.isProtected,
       psi.isThis,
       psi.idText.map(StringRef.fromString(_)))
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,

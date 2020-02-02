@@ -119,17 +119,15 @@ abstract class JxNodeBase extends Node with JxBase {}
 case class JxAttr(in: JsCmd) extends Node with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
+  def appendToParent(parentName: String): JsCmd =
     Noop
-  }
 }
 
 case class JxFuncAttr(in: JsCmd) extends Node with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
+  def appendToParent(parentName: String): JsCmd =
     Noop
-  }
 }
 
 case class JxMap(in: JsExp, what: JxYieldFunc) extends Node with JxBase {
@@ -178,12 +176,11 @@ case class JxCase(toMatch: JsExp, toDo: NodeSeq)
 case class JxIf(toTest: JsExp, ifTrue: NodeSeq) extends Node with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
+  def appendToParent(parentName: String): JsCmd =
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
         addToDocFrag(parentName, ifTrue.toList).toJsCmd +
         "}\n")
-  }
 }
 
 case class JxIfElse(toTest: JsExp, ifTrue: NodeSeq, ifFalse: NodeSeq)
@@ -191,14 +188,13 @@ case class JxIfElse(toTest: JsExp, ifTrue: NodeSeq, ifFalse: NodeSeq)
     with JxBase {
   def child = Nil
 
-  def appendToParent(parentName: String): JsCmd = {
+  def appendToParent(parentName: String): JsCmd =
     JsRaw(
       "if (" + toTest.toJsCmd + ") {\n" +
         addToDocFrag(parentName, ifTrue.toList).toJsCmd +
         "} else {\n" +
         addToDocFrag(parentName, ifFalse.toList).toJsCmd +
         "}\n")
-  }
 }
 
 case class Jx(child: NodeSeq) extends Node with JxBase with JxYieldFunc {

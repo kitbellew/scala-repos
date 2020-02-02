@@ -41,8 +41,8 @@ class DataSource(val dsp: DataSourceParams)
           } catch {
             case e: Exception =>
               logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" item ${entityId}. Exception: ${e}.")
+                s"Failed to get properties $properties of" +
+                  s" item $entityId. Exception: $e.")
               throw e
           }
       }
@@ -63,14 +63,13 @@ class DataSource(val dsp: DataSourceParams)
               case "rate" => event.properties.get[Double]("rating")
               case "buy"  => 4.0 // map buy event to rating value of 4
               case _ =>
-                throw new Exception(s"Unexpected event ${event} is read.")
+                throw new Exception(s"Unexpected event $event is read.")
             }
             // entityId and targetEntityId is String
             Rating(event.entityId, event.targetEntityId.get, ratingValue)
           } catch {
             case e: Exception => {
-              logger.error(
-                s"Cannot convert ${event} to Rating. Exception: ${e}.")
+              logger.error(s"Cannot convert $event to Rating. Exception: $e.")
               throw e
             }
           }
@@ -97,8 +96,7 @@ class TrainingData(
     val items: RDD[Item],
     val ratings: RDD[Rating]
 ) extends Serializable {
-  override def toString = {
+  override def toString =
     s"items: [${items.count()}] (${items.take(2).toList}...)" +
       s" ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
-  }
 }

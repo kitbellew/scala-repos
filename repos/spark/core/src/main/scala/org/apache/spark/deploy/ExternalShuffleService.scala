@@ -61,9 +61,8 @@ private[deploy] class ExternalShuffleService(
 
   /** Create a new shuffle block handler. Factored out for subclasses to override. */
   protected def newShuffleBlockHandler(
-      conf: TransportConf): ExternalShuffleBlockHandler = {
+      conf: TransportConf): ExternalShuffleBlockHandler =
     new ExternalShuffleBlockHandler(conf, null)
-  }
 
   /** Starts the external shuffle service if the user has configured us to. */
   def startIfEnabled() {
@@ -86,9 +85,8 @@ private[deploy] class ExternalShuffleService(
   }
 
   /** Clean up all shuffle files associated with an application that has exited. */
-  def applicationRemoved(appId: String): Unit = {
+  def applicationRemoved(appId: String): Unit =
     blockHandler.applicationRemoved(appId, true /* cleanupLocalDirs */ )
-  }
 
   def stop() {
     if (server != null) {
@@ -107,12 +105,11 @@ object ExternalShuffleService extends Logging {
 
   private val barrier = new CountDownLatch(1)
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     main(
       args,
       (conf: SparkConf, sm: SecurityManager) =>
         new ExternalShuffleService(conf, sm))
-  }
 
   /** A helper main method that allows the caller to call this with a custom shuffle service. */
   private[spark] def main(

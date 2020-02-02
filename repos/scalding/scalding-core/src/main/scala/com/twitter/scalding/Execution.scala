@@ -560,12 +560,11 @@ object Execution {
     * Use our internal faster failing zip function rather than the standard one due to waiting
     */
   def failFastSequence[T](t: Iterable[Future[T]])(
-      implicit cec: ConcurrentExecutionContext): Future[List[T]] = {
+      implicit cec: ConcurrentExecutionContext): Future[List[T]] =
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
         failFastZip(f, i).map { case (tail, h) => h :: tail }
       }
       .map(_.reverse)
-  }
 
   /**
     * Standard scala zip waits forever on the left side, even if the right side fails
@@ -725,7 +724,7 @@ object Execution {
         cache: EvalCache,
         head: ToWrite,
         tail: List[ToWrite])(
-        implicit cec: ConcurrentExecutionContext): Future[ExecutionCounters] = {
+        implicit cec: ConcurrentExecutionContext): Future[ExecutionCounters] =
       for {
         flowDef <- toFuture(Try {
           val fd = new FlowDef; (head :: tail).foreach(_.write(conf, fd, mode));
@@ -735,7 +734,6 @@ object Execution {
         jobStats <- cache.runFlowDef(conf, mode, flowDef)
         _ = FlowStateMap.clear(flowDef)
       } yield (ExecutionCounters.fromJobStats(jobStats))
-    }
 
     def unwrapListEither[A, B, C](
         it: List[(A, Either[B, C])]): (List[(A, B)], List[(A, C)]) = it match {
@@ -1032,7 +1030,7 @@ object Execution {
 
     val sem = new AsyncSemaphore(parallelism)
 
-    def waitRun(e: Execution[T]): Execution[T] = {
+    def waitRun(e: Execution[T]): Execution[T] =
       Execution
         .fromFuture(_ => sem.acquire())
         .flatMap(p => e.liftToTry.map((_, p)))
@@ -1042,7 +1040,6 @@ object Execution {
             throw ex // should never happen or there is a logic bug
         }
         .flatMap { case (ex, _) => fromTry(ex) }
-    }
 
     Execution.sequence(executions.map(waitRun))
   }
@@ -1144,9 +1141,8 @@ object ExecutionCounters {
     new Monoid[ExecutionCounters] {
       override def isNonZero(that: ExecutionCounters) = that.keys.nonEmpty
       def zero = ExecutionCounters.empty
-      def plus(left: ExecutionCounters, right: ExecutionCounters) = {
+      def plus(left: ExecutionCounters, right: ExecutionCounters) =
         fromMap(
           (left.keys ++ right.keys).map { k => (k, left(k) + right(k)) }.toMap)
-      }
     }
 }

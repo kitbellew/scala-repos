@@ -523,13 +523,12 @@ sealed abstract class ==>>[A, B] {
     }
 
   /* Unions */
-  def union(other: A ==>> B)(implicit k: Order[A]): A ==>> B = {
+  def union(other: A ==>> B)(implicit k: Order[A]): A ==>> B =
     (this, other) match {
       case (Tip(), t2) => t2
       case (t1, Tip()) => t1
       case (t1, t2)    => t1.hedgeUnionL(Function const LT, Function const GT, t2)
     }
-  }
 
   def unionWith(other: A ==>> B)(f: (B, B) => B)(implicit o: Order[A]) =
     unionWithKey(other)((_: A, b: B, c: B) => f(b, c))
@@ -1229,7 +1228,7 @@ object ==>> extends MapInstances {
       k: A,
       x: B,
       l: A ==>> B,
-      r: A ==>> B): A ==>> B = {
+      r: A ==>> B): A ==>> B =
     if (l.size + r.size <= 1)
       Bin(k, x, l, r)
     else if (r.size >= delta * l.size)
@@ -1238,7 +1237,6 @@ object ==>> extends MapInstances {
       rotateR(k, x, l, r)
     else
       Bin(k, x, l, r)
-  }
 
   // Left rotations
   private def rotateL[A, B](k: A, x: B, l: A ==>> B, r: A ==>> B): A ==>> B =

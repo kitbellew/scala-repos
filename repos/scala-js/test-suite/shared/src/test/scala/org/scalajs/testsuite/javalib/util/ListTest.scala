@@ -395,7 +395,7 @@ trait ListTest extends CollectionTest {
     }
   }
 
-  @Test def shouldIterateAndModifyElementsWithAListIteratorIfAllowed(): Unit = {
+  @Test def shouldIterateAndModifyElementsWithAListIteratorIfAllowed(): Unit =
     if (factory.allowsMutationThroughIterator) {
       val s = Seq("one", "two", "three")
       val ll = factory.empty[String]
@@ -453,7 +453,6 @@ trait ListTest extends CollectionTest {
 
       assertTrue(ll.isEmpty())
     }
-  }
 }
 
 object ListFactory {

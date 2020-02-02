@@ -15,11 +15,10 @@ object Rank {
   val DotDot = new Rank(1)
   val DotDotDot = new Rank(2)
   object Dot { def unapply(rank: Rank) = rank != NoDot }
-  def parseDots(part: String) = {
+  def parseDots(part: String) =
     if (part.endsWith("...")) (part.stripSuffix("..."), DotDotDot)
     else if (part.endsWith("..")) (part.stripSuffix(".."), DotDot)
     else (part, NoDot)
-  }
 }
 
 /** Defines abstractions that provide support for splicing into Scala syntax.
@@ -54,11 +53,10 @@ trait Holes { self: Quasiquotes =>
       val (rank, innerTpe) = stripIterable(targ, limit.pred)
       (rank.succ, innerTpe)
     }
-  private def iterableTypeFromRank(n: Rank, tpe: Type): Type = {
+  private def iterableTypeFromRank(n: Rank, tpe: Type): Type =
     if (n == NoDot) tpe
     else
       appliedType(IterableClass.toType, List(iterableTypeFromRank(n.pred, tpe)))
-  }
 
   /** Hole encapsulates information about unquotees in quasiquotes.
     *  It packs together a rank, pre-reified tree representation

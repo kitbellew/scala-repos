@@ -38,7 +38,7 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
 
   def remove(o: Any): Boolean = {
     @tailrec
-    def findAndRemove(iter: Iterator[E]): Boolean = {
+    def findAndRemove(iter: Iterator[E]): Boolean =
       if (iter.hasNext) {
         if (iter.next() === o) {
           iter.remove()
@@ -47,7 +47,6 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
           findAndRemove(iter)
       } else
         false
-    }
     findAndRemove(iterator())
   }
 

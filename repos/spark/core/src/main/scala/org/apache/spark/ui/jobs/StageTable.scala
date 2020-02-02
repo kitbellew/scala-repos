@@ -35,7 +35,7 @@ private[ui] class StageTableBase(
     isFairScheduler: Boolean,
     killEnabled: Boolean) {
 
-  protected def columns: Seq[Node] = {
+  protected def columns: Seq[Node] =
     <th>Stage Id</th> ++ {
       if (isFairScheduler) {
         <th>Pool Name</th>
@@ -58,25 +58,22 @@ private[ui] class StageTableBase(
         Shuffle Write
       </span>
     </th>
-  }
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     listener.synchronized {
       stageTable(renderStageRow, stages)
     }
-  }
 
   /** Special table that merges two header cells. */
   protected def stageTable[T](
       makeRow: T => Seq[Node],
-      rows: Seq[T]): Seq[Node] = {
+      rows: Seq[T]): Seq[Node] =
     <table class="table table-bordered table-striped table-condensed sortable">
       <thead>{columns}</thead>
       <tbody>
         {rows.map(r => makeRow(r))}
       </tbody>
     </table>
-  }
 
   private def makeDescription(s: StageInfo): Seq[Node] = {
     val basePathUri = UIUtils.prependBaseUri(basePath)
@@ -131,7 +128,7 @@ private[ui] class StageTableBase(
     <div>{stageDesc.getOrElse("")} {killLink} {nameLink} {details}</div>
   }
 
-  protected def missingStageRow(stageId: Int): Seq[Node] = {
+  protected def missingStageRow(stageId: Int): Seq[Node] =
     <td>{stageId}</td> ++ {
       if (isFairScheduler) {
         <td>-</td>
@@ -145,7 +142,6 @@ private[ui] class StageTableBase(
       <td></td> ++ // Output
       <td></td> ++ // Shuffle Read
       <td></td> // Shuffle Write
-  }
 
   protected def stageRow(s: StageInfo): Seq[Node] = {
     val stageDataOption = listener.stageIdToData.get((s.stageId, s.attemptId))

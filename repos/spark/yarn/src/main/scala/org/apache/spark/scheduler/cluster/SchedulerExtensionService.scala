@@ -133,12 +133,11 @@ private[spark] class SchedulerExtensionServices
     * Stop the services; idempotent.
     *
     */
-  override def stop(): Unit = {
+  override def stop(): Unit =
     if (started.getAndSet(false)) {
       logInfo(s"Stopping $this")
       services.foreach { s => Utils.tryLogNonFatalError(s.stop()) }
     }
-  }
 
   override def toString(): String = s"""SchedulerExtensionServices
     |(serviceOption=$serviceOption,

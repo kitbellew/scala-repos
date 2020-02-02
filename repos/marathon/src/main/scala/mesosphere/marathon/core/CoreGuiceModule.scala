@@ -132,13 +132,11 @@ class CoreGuiceModule extends AbstractModule {
       taskStatusEmitterPublishImpl: TaskStatusEmitterPublishStepImpl,
       postToEventStreamStepImpl: PostToEventStreamStepImpl,
       scaleAppUpdateStepImpl: ScaleAppUpdateStepImpl)
-      : Seq[TaskStatusUpdateStep] = {
-
+      : Seq[TaskStatusUpdateStep] =
     // This is a sequence on purpose. The specified steps are executed in order for every
     // task status update.
     // This way we make sure that e.g. the taskTracker already reflects the changes for the update
     // (updateTaskTrackerStepImpl) before we notify the launch queue (notifyLaunchQueueStepImpl).
-
     Seq(
       // Update the task tracker _first_.
       //
@@ -156,13 +154,11 @@ class CoreGuiceModule extends AbstractModule {
       ContinueOnErrorStep(postToEventStreamStepImpl),
       ContinueOnErrorStep(scaleAppUpdateStepImpl)
     )
-  }
 
   @Provides @Singleton
   def pluginHttpRequestHandler(
-      coreModule: CoreModule): Seq[HttpRequestHandler] = {
+      coreModule: CoreModule): Seq[HttpRequestHandler] =
     coreModule.pluginModule.httpRequestHandler
-  }
 
   override def configure(): Unit = {
     bind(classOf[Clock]).toInstance(Clock())

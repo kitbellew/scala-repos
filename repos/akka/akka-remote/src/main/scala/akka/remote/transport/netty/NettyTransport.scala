@@ -294,10 +294,9 @@ private[netty] abstract class ClientHandler(
   final protected def initOutbound(
       channel: Channel,
       remoteSocketAddress: SocketAddress,
-      msg: ChannelBuffer): Unit = {
+      msg: ChannelBuffer): Unit =
     init(channel, remoteSocketAddress, remoteAddress, msg)(
       statusPromise.success)
-  }
 
 }
 
@@ -570,7 +569,7 @@ class NettyTransport(
             s"Address [$addr] does not contain host or port information."))
     }
 
-  override def listen: Future[(Address, Promise[AssociationEventListener])] = {
+  override def listen: Future[(Address, Promise[AssociationEventListener])] =
     for {
       address ← addressToSocketAddress(
         Address("", "", settings.BindHostname, settings.BindPortSelector))
@@ -626,12 +625,11 @@ class NettyTransport(
         }
       }
     }
-  }
 
   // Need to do like this for binary compatibility reasons
   private[akka] def boundAddress = boundTo
 
-  override def associate(remoteAddress: Address): Future[AssociationHandle] = {
+  override def associate(remoteAddress: Address): Future[AssociationHandle] =
     if (!serverChannel.isBound)
       Future.failed(new NettyTransportException("Transport is not bound"))
     else {
@@ -680,7 +678,6 @@ class NettyTransport(
             with NoStackTrace
       }
     }
-  }
 
   override def shutdown(): Future[Boolean] = {
     def always(c: ChannelGroupFuture) =

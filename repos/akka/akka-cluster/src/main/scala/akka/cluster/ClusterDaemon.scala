@@ -456,7 +456,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       sender() ! InitJoinAck(selfAddress)
   }
 
-  def joinSeedNodes(newSeedNodes: immutable.IndexedSeq[Address]): Unit = {
+  def joinSeedNodes(newSeedNodes: immutable.IndexedSeq[Address]): Unit =
     if (newSeedNodes.nonEmpty) {
       stopSeedNodeProcess()
       seedNodes = newSeedNodes // keep them for retry
@@ -481,7 +481,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         }
       }
     }
-  }
 
   /**
     * Try to join this cluster node with the node specified by `address`.
@@ -489,7 +488,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     * A `Join(selfUniqueAddress)` command is sent to the node to join,
     * which will reply with a `Welcome` message.
     */
-  def join(address: Address): Unit = {
+  def join(address: Address): Unit =
     if (address.protocol != selfAddress.protocol)
       log.warning(
         "Trying to join member with wrong protocol, but was ignored, expected [{}] but was [{}]",
@@ -520,9 +519,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         clusterCore(address) ! Join(selfUniqueAddress, cluster.selfRoles)
       }
     }
-  }
 
-  def stopSeedNodeProcess(): Unit = {
+  def stopSeedNodeProcess(): Unit =
     seedNodeProcess match {
       case Some(s) ⇒
         // manual join, abort current seedNodeProcess
@@ -530,7 +528,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         seedNodeProcess = None
       case None ⇒ // no seedNodeProcess in progress
     }
-  }
 
   /**
     * State transition to JOINING - new node joining.
@@ -632,7 +629,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     * The node will eventually be removed by the leader, after hand-off in EXITING, and only after
     * removal a new node with same address can join the cluster through the normal joining procedure.
     */
-  def leaving(address: Address): Unit = {
+  def leaving(address: Address): Unit =
     // only try to update if the node is available (in the member ring)
     if (latestGossip.members.exists(m ⇒ m.address == address && m.status == Up)) {
       val newMembers = latestGossip.members map { m ⇒
@@ -645,7 +642,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       logInfo("Marked address [{}] as [{}]", address, Leaving)
       publish(latestGossip)
     }
-  }
 
   /**
     * This method is called when a member sees itself as Exiting or Down.
@@ -893,8 +889,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   /**
     * Initiates a new round of gossip.
     */
-  def gossip(): Unit = {
-
+  def gossip(): Unit =
     if (!isSingletonCluster) {
       val localGossip = latestGossip
 
@@ -926,7 +921,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         }
       }
     }
-  }
 
   /**
     * For large clusters we should avoid shooting down individual
@@ -987,7 +981,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     shutdownSelfWhenDown()
   }
 
-  def shutdownSelfWhenDown(): Unit = {
+  def shutdownSelfWhenDown(): Unit =
     if (latestGossip.member(selfUniqueAddress).status == Down) {
       // When all reachable have seen the state this member will shutdown itself when it has
       // status Down. The down commands should spread before we shutdown.
@@ -1010,14 +1004,12 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         shutdown()
       }
     }
-  }
 
-  def isMinNrOfMembersFulfilled: Boolean = {
+  def isMinNrOfMembersFulfilled: Boolean =
     latestGossip.members.size >= MinNrOfMembers && MinNrOfMembersOfRole.forall {
       case (role, threshold) ⇒
         latestGossip.members.count(_.hasRole(role)) >= threshold
     }
-  }
 
   /**
     * Leader actions are as follows:
@@ -1158,7 +1150,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   /**
     * Reaps the unreachable members according to the failure detector's verdict.
     */
-  def reapUnreachableMembers(): Unit = {
+  def reapUnreachableMembers(): Unit =
     if (!isSingletonCluster) {
       // only scrutinize if we are a non-singleton cluster
 
@@ -1224,7 +1216,6 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         }
       }
     }
-  }
 
   def selectRandomNode(
       nodes: IndexedSeq[UniqueAddress]): Option[UniqueAddress] =
@@ -1234,11 +1225,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def isSingletonCluster: Boolean = latestGossip.isSingletonCluster
 
   // needed for tests
-  def sendGossipTo(address: Address): Unit = {
+  def sendGossipTo(address: Address): Unit =
     latestGossip.members.foreach(m ⇒
       if (m.address == address)
         gossipTo(m.uniqueAddress))
-  }
 
   /**
     * Gossips latest gossip to a node.
@@ -1281,7 +1271,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def assertLatestGossip(): Unit =
     if (Cluster.isAssertInvariantsEnabled && latestGossip.version.versions.size > latestGossip.members.size)
       throw new IllegalStateException(
-        s"Too many vector clock entries in gossip state ${latestGossip}")
+        s"Too many vector clock entries in gossip state $latestGossip")
 
   def publish(newGossip: Gossip): Unit = {
     publisher ! PublishChanges(newGossip)
@@ -1465,7 +1455,7 @@ private[cluster] class OnMemberStatusChangedListener(
         done()
   }
 
-  private def done(): Unit = {
+  private def done(): Unit =
     try callback.run()
     catch {
       case NonFatal(e) ⇒
@@ -1477,7 +1467,6 @@ private[cluster] class OnMemberStatusChangedListener(
     } finally {
       context stop self
     }
-  }
 
   private def isTriggered(m: Member): Boolean =
     m.uniqueAddress == cluster.selfUniqueAddress && m.status == status
@@ -1515,7 +1504,7 @@ private[cluster] final case class GossipStats(
       olderCount = olderCount + 1,
       receivedGossipCount = receivedGossipCount + 1)
 
-  def :+(that: GossipStats): GossipStats = {
+  def :+(that: GossipStats): GossipStats =
     GossipStats(
       this.receivedGossipCount + that.receivedGossipCount,
       this.mergeCount + that.mergeCount,
@@ -1523,9 +1512,8 @@ private[cluster] final case class GossipStats(
       this.newerCount + that.newerCount,
       this.olderCount + that.olderCount
     )
-  }
 
-  def :-(that: GossipStats): GossipStats = {
+  def :-(that: GossipStats): GossipStats =
     GossipStats(
       this.receivedGossipCount - that.receivedGossipCount,
       this.mergeCount - that.mergeCount,
@@ -1533,7 +1521,6 @@ private[cluster] final case class GossipStats(
       this.newerCount - that.newerCount,
       this.olderCount - that.olderCount
     )
-  }
 
 }
 

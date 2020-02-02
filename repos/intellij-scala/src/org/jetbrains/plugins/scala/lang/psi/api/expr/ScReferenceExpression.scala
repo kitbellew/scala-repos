@@ -42,7 +42,7 @@ trait ScReferenceExpression
     * Includes qualifier for Infix, Postfix and Prefix expression
     * @return qualifier for Infix, Postfix, Prefix or reference expression
     */
-  def smartQualifier: Option[ScExpression] = {
+  def smartQualifier: Option[ScExpression] =
     qualifier match {
       case Some(qual) => Some(qual)
       case _ =>
@@ -53,7 +53,6 @@ trait ScReferenceExpression
           case _                                       => None
         }
     }
-  }
 
   /**
     * This method returns all possible types for this place.
@@ -75,7 +74,7 @@ trait ScReferenceExpression
 
   override def createReplacingElementWithClassName(
       useFullQualifiedName: Boolean,
-      clazz: TypeToImport) = {
+      clazz: TypeToImport) =
     if (useFullQualifiedName) {
       super.createReplacingElementWithClassName(useFullQualifiedName, clazz)
     } else {
@@ -83,7 +82,6 @@ trait ScReferenceExpression
         .createExpressionFromText(clazz.name, clazz.element.getManager)
         .asInstanceOf[ScReferenceExpression]
     }
-  }
 
   def bindToElement(
       element: PsiElement,

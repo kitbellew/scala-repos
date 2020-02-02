@@ -18,11 +18,10 @@ class CustomReporter extends Reporter {
     writer.close()
   }
 
-  def apply(event: Event): Unit = {
+  def apply(event: Event): Unit =
     event match {
       case runStarting: RunStarting =>
         writeFile("target/RunStarting", "RunStarting")
       case _ =>
     }
-  }
 }

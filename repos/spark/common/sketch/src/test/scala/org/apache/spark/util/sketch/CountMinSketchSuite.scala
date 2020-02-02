@@ -44,7 +44,7 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
   }
 
   def testAccuracy[T: ClassTag](typeName: String)(
-      itemGenerator: Random => T): Unit = {
+      itemGenerator: Random => T): Unit =
     test(s"accuracy - $typeName") {
       // Uses fixed seed to ensure reproducible test execution
       val r = new Random(31)
@@ -82,10 +82,9 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
         s"Confidence not reached: required $confidence, reached $probCorrect"
       )
     }
-  }
 
   def testMergeInPlace[T: ClassTag](typeName: String)(
-      itemGenerator: Random => T): Unit = {
+      itemGenerator: Random => T): Unit =
     test(s"mergeInPlace - $typeName") {
       // Uses fixed seed to ensure reproducible test execution
       val r = new Random(31)
@@ -123,7 +122,6 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
         }
       }
     }
-  }
 
   def testItemType[T: ClassTag](typeName: String)(
       itemGenerator: Random => T): Unit = {

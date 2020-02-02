@@ -39,8 +39,7 @@ class ServerBuilderTest
 
   val svc: Service[String, String] = Service.const(Future.value("hi"))
 
-  def verifyProtocolRegistry(name: String, expected: String)(
-      build: => Server) = {
+  def verifyProtocolRegistry(name: String, expected: String)(build: => Server) =
     test(name + " registers protocol library") {
       val simple = new SimpleRegistry()
       GlobalRegistry.withRegistry(simple) {
@@ -57,10 +56,9 @@ class ServerBuilderTest
         server.close()
       }
     }
-  }
 
   def verifyServerBoundAddress(name: String, expected: String)(
-      build: => Server) = {
+      build: => Server) =
     test(s"$name registers server with bound address") {
       val simple = new SimpleRegistry()
       GlobalRegistry.withRegistry(simple) {
@@ -78,7 +76,6 @@ class ServerBuilderTest
         server.close()
       }
     }
-  }
 
   def loopback = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 

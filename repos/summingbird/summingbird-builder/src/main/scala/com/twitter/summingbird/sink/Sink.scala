@@ -54,10 +54,9 @@ class BatchedSinkFromOffline[T](
     */
   def writeStream(batchID: BatchID, stream: TypedPipe[(Timestamp, T)])(
       implicit flowDef: FlowDef,
-      mode: Mode): Unit = {
+      mode: Mode): Unit =
     // strip the time
     offline.write(batchID, stream.values)(flowDef, mode)
-  }
 }
 
 case class CompoundSink[Event](

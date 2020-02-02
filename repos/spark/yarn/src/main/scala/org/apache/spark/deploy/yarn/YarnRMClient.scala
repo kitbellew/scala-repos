@@ -100,9 +100,8 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
   }
 
   /** Returns the attempt ID. */
-  def getAttemptId(): ApplicationAttemptId = {
+  def getAttemptId(): ApplicationAttemptId =
     YarnSparkHadoopUtil.get.getContainerId.getApplicationAttemptId()
-  }
 
   /** Returns the configuration for the AmIpFilter to add to the Spark UI. */
   def getAmIpFilterParams(

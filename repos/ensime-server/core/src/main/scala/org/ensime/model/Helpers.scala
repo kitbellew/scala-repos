@@ -34,31 +34,28 @@ trait Helpers { self: Global =>
     members.toList.filter { _.isConstructor }
   }
 
-  def isArrowType(tpe: Type): Boolean = {
+  def isArrowType(tpe: Type): Boolean =
     tpe match {
       case _: MethodType => true
       case _: PolyType   => true
       case _             => false
     }
-  }
 
-  def isNoParamArrowType(tpe: Type): Boolean = {
+  def isNoParamArrowType(tpe: Type): Boolean =
     tpe match {
       case t: MethodType => t.paramss.flatten.isEmpty
       case t: PolyType   => t.paramss.flatten.isEmpty
       case t: Type       => false
     }
-  }
 
-  def typeOrArrowTypeResult(tpe: Type): Type = {
+  def typeOrArrowTypeResult(tpe: Type): Type =
     tpe match {
       case t: MethodType => t.finalResultType
       case t: PolyType   => t.finalResultType
       case t: Type       => t
     }
-  }
 
-  def completionSignatureForType(tpe: Type): CompletionSignature = {
+  def completionSignatureForType(tpe: Type): CompletionSignature =
     if (isArrowType(tpe)) {
       CompletionSignature(
         tpe.paramss.map { sect =>
@@ -68,7 +65,6 @@ trait Helpers { self: Global =>
         tpe.paramss.exists { sect => sect.exists(_.isImplicit) }
       )
     } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
-  }
 
   /**
     *  Return the string used to index a symbol
@@ -104,13 +100,12 @@ trait Helpers { self: Global =>
     * Generate qualified name, without args postfix.
     */
   def typeFullName(tpe: Type, withTpeArgs: Boolean = false): String = {
-    def nestedClassName(sym: Symbol): String = {
+    def nestedClassName(sym: Symbol): String =
       outerClass(sym) match {
         case Some(outerSym) =>
           nestedClassName(outerSym) + "$" + typeShortName(sym)
         case None => typeShortName(sym)
       }
-    }
 
     val typeSym = tpe.typeSymbol
     val prefix =
@@ -136,10 +131,9 @@ trait Helpers { self: Global =>
     } else withoutArgs
   }
 
-  def typeShortName(tpe: Type): String = {
+  def typeShortName(tpe: Type): String =
     if (tpe.typeSymbol != NoSymbol) typeShortName(tpe.typeSymbol)
     else tpe.toString()
-  }
 
   def typeShortName(sym: Symbol): String = {
     val s = sym.nameString
@@ -208,7 +202,7 @@ trait Helpers { self: Global =>
   }
 
   /* Give the outerClass of a symbol representing a nested type */
-  def outerClass(typeSym: Symbol): Option[Symbol] = {
+  def outerClass(typeSym: Symbol): Option[Symbol] =
     try {
       if (typeSym.isNestedClass) {
         Some(typeSym.outerClass)
@@ -218,7 +212,6 @@ trait Helpers { self: Global =>
       // Notably, when tpe = scala.Predef$Class
       case e: java.lang.Error => None
     }
-  }
 
   def companionTypeOf(tpe: Type): Option[Type] = {
     val sym = tpe.typeSymbol
@@ -242,12 +235,11 @@ trait Helpers { self: Global =>
     * @param path The full package path (com.foo.bar)
     * @return Some(packageSymbol) if `path` represents a valid package or None
     */
-  def packageSymFromPath(path: String): Option[Symbol] = {
+  def packageSymFromPath(path: String): Option[Symbol] =
     symbolByName(
       if (path.endsWith("$")) path else path + "$",
       RootPackage
     ).find { s => s.hasPackageFlag }
-  }
 
   /*
    * Get the valid member symbols of the package denoted by aSym.
@@ -278,7 +270,7 @@ trait Helpers { self: Global =>
 
   import scala.tools.nsc.symtab.Flags._
 
-  def declaredAs(sym: Symbol): DeclaredAs = {
+  def declaredAs(sym: Symbol): DeclaredAs =
     if (sym.isMethod)
       DeclaredAs.Method
     else if (sym.isTrait && sym.hasFlag(JAVA))
@@ -302,5 +294,4 @@ trait Helpers { self: Global =>
       DeclaredAs.Field
     else
       DeclaredAs.Nil
-  }
 }

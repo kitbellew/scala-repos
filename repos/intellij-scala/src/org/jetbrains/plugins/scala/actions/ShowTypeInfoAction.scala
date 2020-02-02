@@ -130,24 +130,21 @@ object ShowTypeInfoAction {
     typeInfoFromRef.orElse(typeInfoFromPattern(pattern))
   }
 
-  def typeInfoFromPattern(p: ScBindingPattern): Option[String] = {
+  def typeInfoFromPattern(p: ScBindingPattern): Option[String] =
     p match {
       case null => None
       case _    => typeTextOf(p, ScSubstitutor.empty)
     }
-  }
 
   val NO_TYPE: String = "No type was inferred"
 
   private[this] def typeTextOf(
       elem: PsiElement,
-      subst: ScSubstitutor): Option[String] = {
+      subst: ScSubstitutor): Option[String] =
     typeText(ScType.ofNamedElement(elem, subst))
-  }
 
   private[this] def typeText(
       optType: Option[ScType],
-      s: ScSubstitutor = ScSubstitutor.empty): Option[String] = {
+      s: ScSubstitutor = ScSubstitutor.empty): Option[String] =
     optType.map(ScTypePresentation.withoutAliases)
-  }
 }

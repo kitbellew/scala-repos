@@ -20,7 +20,7 @@ class PostfixMethodCallInspection
       holder.registerProblem(pexpr, getDisplayName, new AddDotFix(pexpr))
   }
 
-  private def safe(pexpr: ScPostfixExpr): Boolean = {
+  private def safe(pexpr: ScPostfixExpr): Boolean =
     pexpr.getContext match {
       case _: ScParenthesisedExpr => true
       case _: ScArgumentExprList  => true
@@ -33,7 +33,6 @@ class PostfixMethodCallInspection
         if (nextNode == null) return false
         nextNode.getElementType == ScalaTokenTypes.tSEMICOLON
     }
-  }
 }
 
 class AddDotFix(pexpr: ScPostfixExpr)

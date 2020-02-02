@@ -195,23 +195,20 @@ final class RandomForestRegressionModel private[ml] (
     dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
   }
 
-  override protected def predict(features: Vector): Double = {
+  override protected def predict(features: Vector): Double =
     // TODO: When we add a generic Bagging class, handle transform there.  SPARK-7128
     // Predict average of tree predictions.
     // Ignore the weights since all are 1.0 for now.
     _trees.map(_.rootNode.predictImpl(features).prediction).sum / numTrees
-  }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): RandomForestRegressionModel = {
+  override def copy(extra: ParamMap): RandomForestRegressionModel =
     copyValues(new RandomForestRegressionModel(uid, _trees, numFeatures), extra)
       .setParent(parent)
-  }
 
   @Since("1.4.0")
-  override def toString: String = {
+  override def toString: String =
     s"RandomForestRegressionModel (uid=$uid) with $numTrees trees"
-  }
 
   /**
     * Estimate of the importance of each feature.
@@ -232,9 +229,8 @@ final class RandomForestRegressionModel private[ml] (
     RandomForest.featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
-  private[ml] def toOld: OldRandomForestModel = {
+  private[ml] def toOld: OldRandomForestModel =
     new OldRandomForestModel(OldAlgo.Regression, _trees.map(_.toOld))
-  }
 }
 
 private[ml] object RandomForestRegressionModel {

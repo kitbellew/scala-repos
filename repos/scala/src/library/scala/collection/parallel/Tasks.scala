@@ -494,7 +494,7 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
 
     /** Constructs a tree of futures where tasks can be reasonably split.
       */
-    def compute(task: Task[R, Tp], depth: Int): Future[Task[R, Tp]] = {
+    def compute(task: Task[R, Tp], depth: Int): Future[Task[R, Tp]] =
       if (task.shouldSplitFurther && depth < maxdepth) {
         val subtasks = task.split
         val subfutures =
@@ -519,7 +519,6 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
           task.tryLeaf(None)
           task
         }
-    }
 
     compute(topLevelTask, 0) map { t =>
       t.forwardThrowable()
@@ -535,9 +534,8 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
     callback
   }
 
-  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = {
+  def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R =
     execute(task)()
-  }
 
   def parallelismLevel = Runtime.getRuntime.availableProcessors
 }

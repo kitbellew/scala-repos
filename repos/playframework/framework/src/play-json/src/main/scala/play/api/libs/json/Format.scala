@@ -73,12 +73,11 @@ object Format extends PathFormat with ConstraintFormat with DefaultFormat {
         Format(fa.map(f1), Writes(b => fa.writes(f2(b))))
     }
 
-  def apply[A](fjs: Reads[A], tjs: Writes[A]): Format[A] = {
+  def apply[A](fjs: Reads[A], tjs: Writes[A]): Format[A] =
     new Format[A] {
       def reads(json: JsValue) = fjs.reads(json)
       def writes(o: A) = tjs.writes(o)
     }
-  }
 
 }
 
@@ -89,11 +88,10 @@ trait DefaultFormat {
 
   implicit def GenericFormat[T](
       implicit fjs: Reads[T],
-      tjs: Writes[T]): Format[T] = {
+      tjs: Writes[T]): Format[T] =
     new Format[T] {
       def reads(json: JsValue) = fjs.reads(json)
       def writes(o: T) = tjs.writes(o)
     }
-  }
 
 }

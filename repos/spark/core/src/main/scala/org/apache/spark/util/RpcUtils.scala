@@ -38,30 +38,26 @@ private[spark] object RpcUtils {
   }
 
   /** Returns the configured number of times to retry connecting */
-  def numRetries(conf: SparkConf): Int = {
+  def numRetries(conf: SparkConf): Int =
     conf.getInt("spark.rpc.numRetries", 3)
-  }
 
   /** Returns the configured number of milliseconds to wait on each retry */
-  def retryWaitMs(conf: SparkConf): Long = {
+  def retryWaitMs(conf: SparkConf): Long =
     conf.getTimeAsMs("spark.rpc.retry.wait", "3s")
-  }
 
   /** Returns the default Spark timeout to use for RPC ask operations. */
-  def askRpcTimeout(conf: SparkConf): RpcTimeout = {
+  def askRpcTimeout(conf: SparkConf): RpcTimeout =
     RpcTimeout(
       conf,
       Seq("spark.rpc.askTimeout", "spark.network.timeout"),
       "120s")
-  }
 
   /** Returns the default Spark timeout to use for RPC remote endpoint lookup. */
-  def lookupRpcTimeout(conf: SparkConf): RpcTimeout = {
+  def lookupRpcTimeout(conf: SparkConf): RpcTimeout =
     RpcTimeout(
       conf,
       Seq("spark.rpc.lookupTimeout", "spark.network.timeout"),
       "120s")
-  }
 
   private val MAX_MESSAGE_SIZE_IN_MB = Int.MaxValue / 1024 / 1024
 

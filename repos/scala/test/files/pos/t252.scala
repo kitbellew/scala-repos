@@ -11,7 +11,6 @@ abstract class Base {
 }
 
 abstract class Derived extends Base {
-  def f(inputs: List[tType]): Unit = {
+  def f(inputs: List[tType]): Unit =
     for (t <- inputs; m = t.module) {}
-  }
 }

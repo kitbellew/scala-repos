@@ -58,21 +58,19 @@ object ServerSet {
   def apply(
       underlying: ServerSetImpl,
       path: String,
-      pool: FuturePool): ServerSet = {
+      pool: FuturePool): ServerSet =
     new ServerSet(underlying, path, pool)
-  }
 
   def apply(
       client: ZooKeeperClient,
       path: String,
-      pool: FuturePool): ServerSet = {
+      pool: FuturePool): ServerSet =
     apply(new ServerSetImpl(client, path), path, pool)
-  }
 
   /** Wraps a common Status in a matchable way. */
   class Status(val underlying: CommonStatus) {
     def apply(): CommonStatus = underlying
-    def unapply(status: CommonStatus): Boolean = { status == underlying }
+    def unapply(status: CommonStatus): Boolean = status == underlying
   }
 
   /** Status matchers */

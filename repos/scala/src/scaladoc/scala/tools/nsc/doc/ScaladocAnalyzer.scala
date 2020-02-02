@@ -64,9 +64,8 @@ trait ScaladocAnalyzer extends Analyzer {
     def defineUseCases(useCase: UseCase): List[Symbol] = {
       def stringParser(str: String): syntaxAnalyzer.Parser = {
         val file = new BatchSourceFile(context.unit.source.file, str) {
-          override def positionInUltimateSource(pos: Position) = {
+          override def positionInUltimateSource(pos: Position) =
             pos withSource context.unit.source withShift useCase.pos.start
-          }
         }
         newUnitParser(new CompilationUnit(file))
       }
@@ -136,7 +135,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       if (docBuffer ne null) docBuffer.append(c)
     }
 
-    override protected def skipComment(): Boolean = {
+    override protected def skipComment(): Boolean =
       if (in.ch == '/') {
         do {
           in.next
@@ -164,7 +163,6 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       } else {
         false
       }
-    }
   }
 
   class ScaladocUnitScanner(unit0: CompilationUnit, patches0: List[BracePatch])

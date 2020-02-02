@@ -25,7 +25,6 @@ object Test {
     assert(-Foo(5.0).+(Foo(10.0)) == Foo(-15.0))
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     numTests()
-  }
 }

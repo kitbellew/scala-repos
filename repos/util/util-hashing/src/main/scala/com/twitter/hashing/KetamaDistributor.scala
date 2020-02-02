@@ -66,9 +66,8 @@ class KetamaDistributor[A](
     (entry.getKey, entry.getValue.handle)
   }
 
-  def nodeForHash(hash: Long): A = {
+  def nodeForHash(hash: Long): A =
     mapEntryForHash(hash).getValue.handle
-  }
 
   protected def computeHash(key: String, alignment: Int): Long = {
     val hasher = MessageDigest.getInstance("MD5")

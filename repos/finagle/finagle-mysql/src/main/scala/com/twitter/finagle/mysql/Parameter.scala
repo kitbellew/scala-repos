@@ -13,9 +13,8 @@ sealed trait Parameter {
   def value: A
   def evidence: CanBeParameter[A]
 
-  final def writeTo(writer: BufferWriter): Unit = {
+  final def writeTo(writer: BufferWriter): Unit =
     evidence.write(writer, value)
-  }
 
   final def size: Int = evidence.sizeOf(value)
   final def typeCode: Short = evidence.typeCode(value)
@@ -27,7 +26,7 @@ sealed trait Parameter {
 object Parameter {
 
   implicit def wrap[_A](_value: _A)(
-      implicit _evidence: CanBeParameter[_A]): Parameter = {
+      implicit _evidence: CanBeParameter[_A]): Parameter =
     if (_value == null) {
       NullParameter
     } else {
@@ -38,7 +37,6 @@ object Parameter {
         override def toString = s"Parameter($value)"
       }
     }
-  }
 
   private val log = Logger.getLogger("finagle-mysql")
 

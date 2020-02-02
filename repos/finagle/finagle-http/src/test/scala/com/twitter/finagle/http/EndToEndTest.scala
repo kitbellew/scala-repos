@@ -82,9 +82,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   }
 
   def run(name: String)(tests: HttpTest*)(
-      connect: HttpService => HttpService): Unit = {
+      connect: HttpService => HttpService): Unit =
     tests.foreach(t => t(name)(connect))
-  }
 
   def standardErrors(name: String)(
       connect: HttpService => HttpService): Unit = {
@@ -633,7 +632,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
   private val failureAccrualFailures = 19
 
   def status(name: String)(
-      connect: (HttpService, StatsReceiver, String) => (HttpService)): Unit = {
+      connect: (HttpService, StatsReceiver, String) => (HttpService)): Unit =
     test(name + ": Status.busy propagates along the Stack") {
       val st = new InMemoryStatsReceiver
       val clientName = "http"
@@ -652,7 +651,6 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
         st.counters(Seq(clientName, "failures", "restartable")) == failureAccrualFailures)
       client.close()
     }
-  }
 
   status("ClientBuilder") { (service, st, name) =>
     val server = ServerBuilder()

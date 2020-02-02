@@ -45,16 +45,14 @@ private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 
   override def sqlType: DataType = ArrayType(DoubleType, containsNull = false)
 
-  override def serialize(features: MyDenseVector): ArrayData = {
+  override def serialize(features: MyDenseVector): ArrayData =
     new GenericArrayData(features.data.map(_.asInstanceOf[Any]))
-  }
 
-  override def deserialize(datum: Any): MyDenseVector = {
+  override def deserialize(datum: Any): MyDenseVector =
     datum match {
       case data: ArrayData =>
         new MyDenseVector(data.toDoubleArray())
     }
-  }
 
   override def userClass: Class[MyDenseVector] = classOf[MyDenseVector]
 

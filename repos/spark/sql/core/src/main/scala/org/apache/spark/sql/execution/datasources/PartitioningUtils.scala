@@ -270,7 +270,7 @@ private[sql] object PartitioningUtils {
     */
   private[sql] def resolvePartitions(
       pathsWithPartitionValues: Seq[(Path, PartitionValues)])
-      : Seq[PartitionValues] = {
+      : Seq[PartitionValues] =
     if (pathsWithPartitionValues.isEmpty) {
       Seq.empty
     } else {
@@ -296,7 +296,6 @@ private[sql] object PartitioningUtils {
           d.copy(literals = resolvedValues.map(_(index)))
       }
     }
-  }
 
   private[sql] def listConflictingPartitionColumns(
       pathWithPartitionValues: Seq[(Path, PartitionValues)]): String = {
@@ -339,7 +338,7 @@ private[sql] object PartitioningUtils {
   private[sql] def inferPartitionColumnValue(
       raw: String,
       defaultPartitionName: String,
-      typeInference: Boolean): Literal = {
+      typeInference: Boolean): Literal =
     if (typeInference) {
       // First tries integral types
       Try(Literal.create(Integer.parseInt(raw), IntegerType))
@@ -362,7 +361,6 @@ private[sql] object PartitioningUtils {
         Literal.create(unescapePathName(raw), StringType)
       }
     }
-  }
 
   private val upCastingOrder: Seq[DataType] =
     Seq(NullType, IntegerType, LongType, FloatType, DoubleType, StringType)
@@ -370,8 +368,7 @@ private[sql] object PartitioningUtils {
   def validatePartitionColumnDataTypes(
       schema: StructType,
       partitionColumns: Seq[String],
-      caseSensitive: Boolean): Unit = {
-
+      caseSensitive: Boolean): Unit =
     partitionColumnsSchema(schema, partitionColumns, caseSensitive).foreach {
       field =>
         field.dataType match {
@@ -381,7 +378,6 @@ private[sql] object PartitioningUtils {
               s"Cannot use ${field.dataType} for partition column")
         }
     }
-  }
 
   def partitionColumnsSchema(
       schema: StructType,
@@ -397,13 +393,12 @@ private[sql] object PartitioningUtils {
   }
 
   private def columnNameEquality(
-      caseSensitive: Boolean): (String, String) => Boolean = {
+      caseSensitive: Boolean): (String, String) => Boolean =
     if (caseSensitive) {
       org.apache.spark.sql.catalyst.analysis.caseSensitiveResolution
     } else {
       org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution
     }
-  }
 
   /**
     * Given a collection of [[Literal]]s, resolves possible type conflicts by up-casting "lower"
@@ -449,9 +444,8 @@ private[sql] object PartitioningUtils {
     bitSet
   }
 
-  def needsEscaping(c: Char): Boolean = {
+  def needsEscaping(c: Char): Boolean =
     c >= 0 && c < charToEscape.size() && charToEscape.get(c)
-  }
 
   def escapePathName(path: String): String = {
     val builder = new StringBuilder()

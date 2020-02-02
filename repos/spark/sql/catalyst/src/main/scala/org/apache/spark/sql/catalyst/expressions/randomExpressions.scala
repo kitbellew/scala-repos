@@ -45,9 +45,8 @@ abstract class RDG extends LeafExpression with Nondeterministic {
     */
   @transient protected var rng: XORShiftRandom = _
 
-  override protected def initInternal(): Unit = {
+  override protected def initInternal(): Unit =
     rng = new XORShiftRandom(seed + TaskContext.getPartitionId)
-  }
 
   override def nullable: Boolean = false
 

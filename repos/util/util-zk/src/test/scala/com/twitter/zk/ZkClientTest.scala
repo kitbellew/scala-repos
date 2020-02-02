@@ -950,7 +950,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       "A live server @ %s".format(connectString) should {
         val zkClient = ZkClient(connectString, 1.second, 1.minute)
         val znode = zkClient("/")
-        def after = { zkClient.release() }
+        def after = zkClient.release()
         "have 'zookeeper' in '/'" in {
           Await
             .result(znode.getChildren(), 2.seconds)

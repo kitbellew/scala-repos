@@ -51,17 +51,16 @@ class PEventsSpec extends Specification with TestEvents {
     dbName
   )
 
-  def stopSpark = {
+  def stopSpark =
     sc.stop()
-  }
 
   def is = s2"""
 
   PredictionIO Storage PEvents Specification
 
     PEvents can be implemented by:
-    - HBPEvents ${hbPEvents}
-    - JDBCPEvents ${jdbcPEvents}
+    - HBPEvents $hbPEvents
+    - JDBCPEvents $jdbcPEvents
     - (stop Spark) ${Step(sc.stop())}
 
   """

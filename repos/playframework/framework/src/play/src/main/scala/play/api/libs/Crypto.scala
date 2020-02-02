@@ -68,7 +68,7 @@ object Crypto {
   private val cryptoCache: (Application) => Crypto =
     Application.instanceCache[Crypto]
 
-  def crypto: Crypto = {
+  def crypto: Crypto =
     Play.privateMaybeApplication.fold {
       val config = new CryptoConfigParser(
         Environment.simple(),
@@ -80,7 +80,6 @@ object Crypto {
       val crypter = new AESCTRCrypter(config)
       new Crypto(cookieSigner, tokenSigner, crypter)
     }(cryptoCache)
-  }
 
   def sign(message: String, key: Array[Byte]): String =
     crypto.sign(message, key)

@@ -32,13 +32,12 @@ private[json] object ScalaSigReader {
   }
 
   def readField(name: String, clazz: Class[_], typeArgIndex: Int): Class[_] = {
-    def read(current: Class[_]): MethodSymbol = {
+    def read(current: Class[_]): MethodSymbol =
       if (current == null)
         Meta.fail("Can't find field " + name + " from " + clazz)
       else
         findField(findClass(current), name)
           .getOrElse(read(current.getSuperclass))
-    }
     findArgTypeForField(read(clazz), typeArgIndex)
   }
 
@@ -49,7 +48,7 @@ private[json] object ScalaSigReader {
       Meta.fail("Can't find " + clazz + " from parsed ScalaSig"))
   }
 
-  private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
+  private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] =
     sig.symbols
       .collect { case c: ClassSymbol if !c.isModule => c }
       .find(_.name == clazz.getSimpleName)
@@ -63,7 +62,6 @@ private[json] object ScalaSigReader {
             }.head
           }
       }
-  }
 
   private def findConstructor(
       c: ClassSymbol,

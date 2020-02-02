@@ -98,7 +98,7 @@ object InfixExpr {
   //private var assoc: Int = 0  //this mark associativity: left - 1, right - -1
 
   //compares two operators a id2 b id1 c
-  private def compar(id1: String, id2: String, builder: PsiBuilder): Boolean = {
+  private def compar(id1: String, id2: String, builder: PsiBuilder): Boolean =
     if (priority(id1, assignments = true) < priority(id2, assignments = true))
       true //  a * b + c  =((a * b) + c)
     else if (priority(id1, assignments = true) > priority(
@@ -111,14 +111,12 @@ object InfixExpr {
       builder error ErrMsg("wrong.type.associativity")
       false
     }
-  }
 
   //Associations of operator
-  def associate(id: String): Int = {
+  def associate(id: String): Int =
     id.charAt(id.length - 1) match {
       case ':' => -1
       // right
       case _ => +1 // left
     }
-  }
 }

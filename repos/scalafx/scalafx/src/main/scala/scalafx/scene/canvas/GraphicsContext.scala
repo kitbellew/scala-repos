@@ -61,10 +61,10 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
     val xPoints = new ArrayBuffer[Double](points.size)
     val yPoints = new ArrayBuffer[Double](points.size)
 
-    points.foreach(p => {
+    points.foreach { p =>
       xPoints += p._1
       yPoints += p._2
-    })
+    }
 
     action(xPoints.toArray, yPoints.toArray, points.size)
   }

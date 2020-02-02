@@ -42,13 +42,12 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     import WorksheetUiConstructor._
 
     @inline def addSplitter(): Unit = addChild(panel, createSplitter())
-    @inline def addFiller(): Unit = {
+    @inline def addFiller(): Unit =
       panel.getComponent(0) match {
         case child: JComponent =>
           addChild(panel, createFillerFor(child))
         case _ =>
       }
-    }
 
     var statusDisplayN: InteractiveStatusDisplay = null
 
@@ -122,7 +121,7 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     modulesBox
   }
 
-  def createMakeProjectChb(file: VirtualFile): JCheckBox = {
+  def createMakeProjectChb(file: VirtualFile): JCheckBox =
     createCheckBox(
       "Make project",
       WorksheetCompiler.isMakeBeforeRun(
@@ -136,7 +135,6 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
           }
         }
     )
-  }
 
   def createAutoRunChb(file: VirtualFile): JCheckBox = {
     val psiFile = PsiManager getInstance project findFile file

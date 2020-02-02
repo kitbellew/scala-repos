@@ -94,10 +94,7 @@ private[math] object Primality {
     *  @see BigInteger#probablePrime(int,Random)
     *  @see #isProbablePrime(BigInteger, int)
     */
-  def consBigInteger(
-      bitLength: Int,
-      certainty: Int,
-      rnd: Random): BigInteger = {
+  def consBigInteger(bitLength: Int, certainty: Int, rnd: Random): BigInteger =
     // PRE: bitLength >= 2
     // For small numbers get a random prime from the prime table
     if (bitLength <= 10) {
@@ -121,7 +118,6 @@ private[math] object Primality {
       } while (!isProbablePrime(n, certainty))
       n
     }
-  }
 
   /** Returns true if this is a prime, within the provided certainty.
     *
@@ -130,7 +126,7 @@ private[math] object Primality {
     *  @ar.org.fitc.ref Optimizations: "A. Menezes - Handbook of applied
     *                   Cryptography, Chapter 4".
     */
-  def isProbablePrime(n: BigInteger, certainty: Int): Boolean = {
+  def isProbablePrime(n: BigInteger, certainty: Int): Boolean =
     // scalastyle:off return
     // PRE: n >= 0
     if (certainty <= 0 || (n.numberLength == 1 && n.digits(0) == 2)) {
@@ -158,8 +154,7 @@ private[math] object Primality {
       val newCertainty = Math.min(i, 1 + ((certainty - 1) >> 1))
       millerRabin(n, newCertainty)
     }
-    // scalastyle:on return
-  }
+  // scalastyle:on return
 
   /** Returns the next, probable prime number.
     *

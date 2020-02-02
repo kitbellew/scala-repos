@@ -28,17 +28,17 @@ object Keys {
     /**
       * Generate session key for the issue search condition.
       */
-    def Issues(owner: String, name: String) = s"${owner}/${name}/issues"
+    def Issues(owner: String, name: String) = s"$owner/$name/issues"
 
     /**
       * Generate session key for the pull request search condition.
       */
-    def Pulls(owner: String, name: String) = s"${owner}/${name}/pulls"
+    def Pulls(owner: String, name: String) = s"$owner/$name/pulls"
 
     /**
       * Generate session key for the upload filename.
       */
-    def Upload(fileId: String) = s"upload_${fileId}"
+    def Upload(fileId: String) = s"upload_$fileId"
 
   }
 
@@ -84,7 +84,7 @@ object Keys {
     /**
       * Generate request key for the request cache.
       */
-    def Cache(key: String) = s"cache.${key}"
+    def Cache(key: String) = s"cache.$key"
 
   }
 

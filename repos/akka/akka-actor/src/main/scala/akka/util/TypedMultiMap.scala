@@ -78,7 +78,7 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
   /**
     * Return a map that has the given mapping from the given key removed.
     */
-  def removed(key: T)(value: K[key.type]): TypedMultiMap[T, K] = {
+  def removed(key: T)(value: K[key.type]): TypedMultiMap[T, K] =
     map.get(key) match {
       case None ⇒ this
       case Some(set) ⇒
@@ -89,7 +89,6 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
           new TypedMultiMap[T, K](newmap)
         } else this
     }
-  }
 
   override def toString: String = s"TypedMultiMap($map)"
   override def equals(other: Any) = other match {

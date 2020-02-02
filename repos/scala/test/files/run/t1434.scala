@@ -9,7 +9,6 @@ object Test {
     case b: B                      => "B"
   }
 
-  def main(args: Array[String]) = {
+  def main(args: Array[String]) =
     assert("C" == f(new C))
-  }
 }

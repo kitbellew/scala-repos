@@ -58,9 +58,8 @@ abstract class Transformer extends PipelineStage {
     * @param paramMap additional parameters, overwrite embedded params
     * @return transformed dataset
     */
-  def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame = {
+  def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame =
     this.copy(paramMap).transform(dataset)
-  }
 
   /**
     * Transforms the input dataset.

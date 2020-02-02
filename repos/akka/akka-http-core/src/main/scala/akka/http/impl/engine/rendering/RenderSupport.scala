@@ -32,13 +32,12 @@ private object RenderSupport {
 
   def CancelSecond[T, Mat](
       first: Source[T, Mat],
-      second: Source[T, Any]): Source[T, Mat] = {
+      second: Source[T, Any]): Source[T, Mat] =
     Source.fromGraph(GraphDSL.create(first) { implicit b ⇒ frst ⇒
       import GraphDSL.Implicits._
       second ~> Sink.cancelled
       SourceShape(frst.out)
     })
-  }
 
   def renderEntityContentType(r: Rendering, entity: HttpEntity) =
     if (entity.contentType != ContentTypes.NoContentType)

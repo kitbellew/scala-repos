@@ -161,7 +161,7 @@ object Storage extends Logging {
 
   requiredRepositories foreach { r =>
     if (!repositoryKeys.contains(r)) {
-      error(s"Required repository (${r}) configuration is missing.")
+      error(s"Required repository ($r) configuration is missing.")
       errors += 1
     }
   }
@@ -232,17 +232,16 @@ object Storage extends Logging {
   }
 
   /** Get the StorageClient config data from PIO Framework's environment variables */
-  def getConfig(sourceName: String): Option[StorageClientConfig] = {
+  def getConfig(sourceName: String): Option[StorageClientConfig] =
     if (s2cm.contains(sourceName) && s2cm.get(sourceName).nonEmpty
         && s2cm.get(sourceName).get.nonEmpty) {
       Some(s2cm.get(sourceName).get.get.config)
     } else None
-  }
 
   private def updateS2CM(
       k: String,
       parallel: Boolean,
-      test: Boolean): Option[ClientMeta] = {
+      test: Boolean): Option[ClientMeta] =
     try {
       val keyedPath = sourcesPrefixPath(k)
       val sourceType = sys.env(prefixPath(keyedPath, "TYPE"))
@@ -257,11 +256,10 @@ object Storage extends Logging {
       Some(ClientMeta(sourceType, client, clientConfig))
     } catch {
       case e: Throwable =>
-        error(s"Error initializing storage client for source ${k}", e)
+        error(s"Error initializing storage client for source $k", e)
         errors += 1
         None
     }
-  }
 
   private[prediction] def getDataObjectFromRepo[T](
       repo: String,
@@ -323,7 +321,7 @@ object Storage extends Logging {
             ctorArgs.size + "." +
             " Number of existing constructor arguments: " +
             constructor.getParameterTypes.size + "." +
-            s" Storage source name: ${sourceName}." +
+            s" Storage source name: $sourceName." +
             s" Exception message: ${e.getMessage}).",
           e
         )
@@ -340,9 +338,8 @@ object Storage extends Logging {
 
   private def dataObjectCtorArgs(
       client: BaseStorageClient,
-      namespace: String): Seq[AnyRef] = {
+      namespace: String): Seq[AnyRef] =
     Seq(client.client, client.config, namespace)
-  }
 
   private[prediction] def verifyAllDataObjects(): Unit = {
     info(

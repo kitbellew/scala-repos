@@ -31,14 +31,13 @@ object MesosFacade {
     def isEmpty: Boolean =
       resources.isEmpty || resources.values.forall(_.isEmpty)
 
-    override def toString: String = {
+    override def toString: String =
       s"{" + resources.toSeq
         .sortBy(_._1)
         .map {
           case (k, v) => s"$k: $v"
         }
         .mkString(", ") + " }"
-    }
   }
   object ITResources {
     def empty: ITResources = new ITResources(Map.empty)

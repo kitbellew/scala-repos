@@ -32,9 +32,8 @@ private[streaming] class MapPartitionedDStream[T: ClassTag, U: ClassTag](
 
   override def slideDuration: Duration = parent.slideDuration
 
-  override def compute(validTime: Time): Option[RDD[U]] = {
+  override def compute(validTime: Time): Option[RDD[U]] =
     parent
       .getOrCompute(validTime)
       .map(_.mapPartitions[U](mapPartFunc, preservePartitioning))
-  }
 }

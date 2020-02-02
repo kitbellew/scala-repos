@@ -26,13 +26,11 @@ object JsonTestHelper extends Assertions with Matchers {
   }
 
   def assertThatJsonOf[T](value: T)(
-      implicit writes: Writes[T]): AssertThatJsonString = {
+      implicit writes: Writes[T]): AssertThatJsonString =
     AssertThatJsonString(Json.prettyPrint(Json.toJson(value)))
-  }
 
-  def assertThatJsonString(actual: String): AssertThatJsonString = {
+  def assertThatJsonString(actual: String): AssertThatJsonString =
     AssertThatJsonString(actual)
-  }
 
   def removeNullFieldValues(json: JsValue): JsValue = json match {
     case JsObject(fields) =>
@@ -65,9 +63,8 @@ object JsonTestHelper extends Assertions with Matchers {
     }
 
     def containsEverythingInJsonOf[T](expected: T)(
-        implicit writes: Writes[T]): Unit = {
+        implicit writes: Writes[T]): Unit =
       correspondsToJsonString(Json.prettyPrint(Json.toJson(expected)))
-    }
 
     def correspondsToJsonString(expected: String): Unit = {
       val diff = JsonDiff.diff(expected, actual)
@@ -76,10 +73,8 @@ object JsonTestHelper extends Assertions with Matchers {
         s"unexpected differences in actual json:\n$actual\nexpected:\n$expected\n$diff")
     }
 
-    def correspondsToJsonOf[T](expected: T)(
-        implicit writes: Writes[T]): Unit = {
+    def correspondsToJsonOf[T](expected: T)(implicit writes: Writes[T]): Unit =
       correspondsToJsonString(Json.prettyPrint(Json.toJson(expected)))
-    }
   }
 
 }

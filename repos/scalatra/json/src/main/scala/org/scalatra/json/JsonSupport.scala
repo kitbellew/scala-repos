@@ -77,12 +77,11 @@ trait JsonSupport[T] extends JsonOutput[T] {
     XML.withSAXParser(saxParser)
   }
 
-  protected def readXmlFromBody(bd: String): JValue = {
+  protected def readXmlFromBody(bd: String): JValue =
     if (bd.nonBlank) {
       val JObject(JField(_, jv) :: Nil) = toJson(secureXML.loadString(bd))
       jv
     } else JNothing
-  }
   protected def readXmlFromStream(stream: InputStream): JValue = {
     val rdr = new InputStreamReader(stream)
     if (rdr.ready()) {
@@ -92,7 +91,7 @@ trait JsonSupport[T] extends JsonOutput[T] {
   }
   protected def transformRequestBody(body: JValue) = body
 
-  override protected def invoke(matchedRoute: MatchedRoute) = {
+  override protected def invoke(matchedRoute: MatchedRoute) =
     withRouteMultiParams(Some(matchedRoute)) {
       val mt = request.contentType.fold("application/x-www-form-urlencoded")(
         _.split(";").head)
@@ -102,7 +101,6 @@ trait JsonSupport[T] extends JsonOutput[T] {
       }
       super.invoke(matchedRoute)
     }
-  }
 
   protected def shouldParseBody(fmt: String)(
       implicit request: HttpServletRequest) =

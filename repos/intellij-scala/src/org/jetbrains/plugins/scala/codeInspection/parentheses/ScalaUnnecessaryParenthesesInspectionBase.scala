@@ -49,12 +49,11 @@ abstract class ScalaUnnecessaryParenthesesInspectionBase
       )
   }
 
-  override def createOptionsPanel(): JComponent = {
+  override def createOptionsPanel(): JComponent =
     new SingleCheckboxOptionsPanel(
       InspectionBundle.message("ignore.clarifying.parentheses"),
       this,
       "ignoreClarifying")
-  }
 
   def getIgnoreClarifying: Boolean
   def setIgnoreClarifying(value: Boolean)
@@ -91,7 +90,7 @@ object UnnecessaryParenthesesUtil {
   @tailrec
   def canBeStripped(
       parenthesized: ScParenthesisedExpr,
-      ignoreClarifying: Boolean): Boolean = {
+      ignoreClarifying: Boolean): Boolean =
     parenthesized match {
       case ScParenthesisedExpr(inner) if ignoreClarifying =>
         (parenthesized.getParent, inner) match {
@@ -102,9 +101,6 @@ object UnnecessaryParenthesesUtil {
         !ScalaPsiUtil.needParentheses(parenthesized, inner)
       case _ => false
     }
-
-  }
-
   @tailrec
   def getTextOfStripped(expr: ScExpression, ignoreClarifying: Boolean): String =
     expr match {

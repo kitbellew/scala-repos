@@ -61,13 +61,12 @@ object JavaResults
   def empty = Results.EmptyContent()
   def chunked[A](
       onConnected: Consumer[Channel[A]],
-      onDisconnected: Runnable): Enumerator[A] = {
+      onDisconnected: Runnable): Enumerator[A] =
     Concurrent.unicast[A](
       onStart = (channel: Channel[A]) => onConnected.accept(channel),
       onComplete = onDisconnected.run(),
       onError = (_: String, _: Input[A]) => onDisconnected.run()
     )(internalContext)
-  }
   //play.api.libs.iteratee.Enumerator.imperative[A](onComplete = onDisconnected)
   def chunked(
       stream: java.io.InputStream,
@@ -101,11 +100,10 @@ object JavaResultExtractor {
       private val cookies = Cookies.fromSetCookieHeader(
         responseHeader.headers.get(HeaderNames.SET_COOKIE))
 
-      def get(name: String): JCookie = {
+      def get(name: String): JCookie =
         cookies.get(name).map(makeJavaCookie).orNull
-      }
 
-      private def makeJavaCookie(cookie: Cookie): JCookie = {
+      private def makeJavaCookie(cookie: Cookie): JCookie =
         new JCookie(
           cookie.name,
           cookie.value,
@@ -114,11 +112,9 @@ object JavaResultExtractor {
           cookie.domain.orNull,
           cookie.secure,
           cookie.httpOnly)
-      }
 
-      def iterator: java.util.Iterator[JCookie] = {
+      def iterator: java.util.Iterator[JCookie] =
         cookies.toIterator.map(makeJavaCookie).asJava
-      }
     }
 
   def getSession(responseHeader: ResponseHeader): JSession =

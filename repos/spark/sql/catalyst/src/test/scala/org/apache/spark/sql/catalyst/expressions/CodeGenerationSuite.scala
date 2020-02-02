@@ -80,7 +80,7 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     val plan = GenerateMutableProjection.generate(Seq(expression))()
     val input = new GenericMutableRow(
-      Array[Any](UTF8String.fromString(s"${clauses}:${cases}")))
+      Array[Any](UTF8String.fromString(s"$clauses:$cases")))
     val actual = plan(input).toSeq(Seq(expression.dataType))
 
     assert(actual(0) == cases)

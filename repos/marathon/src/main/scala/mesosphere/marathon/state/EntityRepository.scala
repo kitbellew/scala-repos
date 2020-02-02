@@ -91,13 +91,12 @@ trait EntityRepository[T <: MarathonState[_, T]]
   protected def storeWithVersion(
       id: String,
       version: Timestamp,
-      t: T): Future[T] = {
+      t: T): Future[T] =
     for {
       alias <- storeByName(id, t)
       result <- storeByName(versionKey(id, version), t)
       limit <- limitNumberOfVersions(id)
     } yield result
-  }
 
   /**
     * Stores the given entity directly under the given id without a second versioned store.

@@ -68,13 +68,12 @@ trait DAG extends Instructions {
           f: List[Either[BucketSpec, DepGraph]] => Either[
             StackError,
             List[Either[BucketSpec, DepGraph]]])
-          : Trampoline[Either[StackError, DepGraph]] = {
+          : Trampoline[Either[StackError, DepGraph]] =
         Free.suspend(
           M.sequence(f(roots).right map { roots2 =>
               loop(loc, roots2, splits, stream.tail)
             })
             .map(_.joinRight))
-      }
 
       def processJoinInstr(instr: JoinInstr) = {
         val maybeOpSort = Some(instr) collect {

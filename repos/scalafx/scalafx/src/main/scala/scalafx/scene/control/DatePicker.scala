@@ -76,9 +76,8 @@ class DatePicker(
   def dayCellFactory = delegate.dayCellFactoryProperty
   def dayCellFactory_=(value: DatePicker => DateCell) {
     dayCellFactory() = new jfxu.Callback[jfxsc.DatePicker, jfxsc.DateCell] {
-      def call(result: jfxsc.DatePicker) = {
+      def call(result: jfxsc.DatePicker) =
         value(result)
-      }
     }
   }
 
@@ -91,7 +90,6 @@ class DatePicker(
     * Whether the `DatePicker` popup should display a column showing week numbers.
     */
   def showWeekNumbers = delegate.showWeekNumbersProperty
-  def showWeekNumbers_=(value: Boolean) = {
+  def showWeekNumbers_=(value: Boolean) =
     showWeekNumbers() = value
-  }
 }

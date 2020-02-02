@@ -139,9 +139,8 @@ class TasksResource @Inject() (
         }
       }.toMap
 
-      def scaleAppWithKill(toKill: Map[PathId, Iterable[Task]]): Response = {
+      def scaleAppWithKill(toKill: Map[PathId, Iterable[Task]]): Response =
         deploymentResult(result(taskKiller.killAndScale(toKill, force)))
-      }
 
       def killTasks(toKill: Map[PathId, Iterable[Task]]): Response = {
         val affectedApps = tasksToAppId.values

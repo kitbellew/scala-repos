@@ -125,7 +125,7 @@ class ScSuperReferenceImpl(node: ASTNode)
         }
 
         def resolve = {
-          def resolveNoHack: PsiClass = {
+          def resolveNoHack: PsiClass =
             findSuper(id) match {
               case Some(t) =>
                 ScType.extractClass(t) match {
@@ -134,7 +134,6 @@ class ScSuperReferenceImpl(node: ASTNode)
                 }
               case _ => null
             }
-          }
           ScalaPsiUtil.fileContext(id) match {
             case file: ScalaFile if file.isCompiled =>
               val next = id.getNode.getTreeNext

@@ -42,21 +42,19 @@ object Terminals {
     * Succeeds if at the start of the input, consuming no input
     */
   case object Start extends Parser[Unit] {
-    def parseRec(cfg: ParseCtx, index: Int) = {
+    def parseRec(cfg: ParseCtx, index: Int) =
       if (index == 0) success(cfg.success, (), index, Set.empty, false)
       else fail(cfg.failure, index)
-    }
   }
 
   /**
     * Succeeds if at the end of the input, consuming no input
     */
   case object End extends Parser[Unit] {
-    def parseRec(cfg: ParseCtx, index: Int) = {
+    def parseRec(cfg: ParseCtx, index: Int) =
       if (index == cfg.input.length)
         success(cfg.success, (), index, Set.empty, false)
       else fail(cfg.failure, index)
-    }
   }
 
   /**
@@ -65,18 +63,17 @@ object Terminals {
     */
   def startsWith(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
-    @tailrec def rec(i: Int): Boolean = {
+    @tailrec def rec(i: Int): Boolean =
       if (i >= prefix.length) true
       else if (i + offset >= src.length) false
       else if (src.charAt(i + offset) != prefix.charAt(i)) false
       else rec(i + 1)
-    }
     rec(0)
   }
 
   def startsWithIgnoreCase(src: String, prefix: String, offset: Int) = {
     val max = prefix.length
-    @tailrec def rec(i: Int): Boolean = {
+    @tailrec def rec(i: Int): Boolean =
       if (i >= prefix.length) true
       else if (i + offset >= src.length) false
       else {
@@ -85,7 +82,6 @@ object Terminals {
         if (c1 != c2 && c1.toLower != c2.toLower) false
         else rec(i + 1)
       }
-    }
     rec(0)
   }
 
@@ -93,12 +89,10 @@ object Terminals {
     * Parses a literal `String`
     */
   case class Literal(s: String) extends Parser[Unit] {
-    def parseRec(cfg: ParseCtx, index: Int) = {
-
+    def parseRec(cfg: ParseCtx, index: Int) =
       if (startsWith(cfg.input, s, index))
         success(cfg.success, (), index + s.length, Set.empty, false)
       else fail(cfg.failure, index)
-    }
     override def toString = literalize(s).toString
   }
 
@@ -107,11 +101,10 @@ object Terminals {
     */
   case class IgnoreCase(s: String) extends Parser[Unit] {
 
-    def parseRec(cfg: ParseCtx, index: Int) = {
+    def parseRec(cfg: ParseCtx, index: Int) =
       if (startsWithIgnoreCase(cfg.input, s, index))
         success(cfg.success, (), index + s.length, Set.empty, false)
       else fail(cfg.failure, index)
-    }
     override def toString = literalize(s).toString
   }
 
@@ -135,8 +128,7 @@ object Terminals {
     * source locations for AST nodes. Consumes no input.
     */
   case object Index extends Parser[Int] {
-    def parseRec(cfg: ParseCtx, index: Int) = {
+    def parseRec(cfg: ParseCtx, index: Int) =
       success(cfg.success, index, index, Set.empty, false)
-    }
   }
 }

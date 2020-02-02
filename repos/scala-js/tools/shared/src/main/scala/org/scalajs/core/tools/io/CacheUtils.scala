@@ -6,7 +6,7 @@ object CacheUtils {
     val bld = new StringBuilder
 
     @scala.annotation.tailrec
-    def loop(vs: Seq[Option[String]]): Option[String] = {
+    def loop(vs: Seq[Option[String]]): Option[String] =
       vs match {
         case Some(v) :: vss =>
           bld.append(mangleVersionString(v))
@@ -16,7 +16,6 @@ object CacheUtils {
         case Nil =>
           Some(bld.toString)
       }
-    }
 
     loop(vs.toList)
   }

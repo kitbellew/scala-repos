@@ -59,7 +59,7 @@ private[streaming] case class JobSet(
   // (i.e. including the time they wait in the streaming scheduler queue)
   def totalDelay: Long = processingEndTime - time.milliseconds
 
-  def toBatchInfo: BatchInfo = {
+  def toBatchInfo: BatchInfo =
     BatchInfo(
       time,
       streamIdToInputInfo,
@@ -68,5 +68,4 @@ private[streaming] case class JobSet(
       if (hasCompleted) Some(processingEndTime) else None,
       jobs.map { job => (job.outputOpId, job.toOutputOperationInfo) }.toMap
     )
-  }
 }

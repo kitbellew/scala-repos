@@ -139,9 +139,8 @@ class ScaldingLaws extends WordSpec {
       }
 
       val pruner = new PrunedSpace[(Int, Int)] {
-        def prune(item: (Int, Int), writeTime: Timestamp) = {
+        def prune(item: (Int, Int), writeTime: Timestamp) =
           prunedList.contains(item._1)
-        }
       }
 
       val testStore =
@@ -538,7 +537,7 @@ class ScaldingLaws extends WordSpec {
 
       val valuesFlatMap =
         (e: ((Int, Option[Int]))) =>
-          valuesFlatMap1(e).flatMap { x => { valuesFlatMap2(x) } }
+          valuesFlatMap1(e).flatMap { x => valuesFlatMap2(x) }
 
       def toTime[T, U](fn: T => TraversableOnce[U])
           : ((Long, T)) => TraversableOnce[(Long, U)] =

@@ -21,30 +21,29 @@ object Sampling {
     num
   }
 
-  def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] = {
+  def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] =
     if (a.length < 2) {
       a
     } else {
       val pivot = a(a.length / 2).srcId
       // 'L'ess, 'E'qual, 'G'reater
-      val partitions = a.groupBy((e: Edge[Int]) => {
+      val partitions = a.groupBy { (e: Edge[Int]) =>
         if (e.srcId < pivot)
           'L'
         else if (e.srcId > pivot)
           'G'
         else
           'E'
-      })
+      }
 
       var sortedAccumulator: Array[Edge[Int]] = Array()
-      List('L', 'E', 'G').foreach((c: Char) => {
+      List('L', 'E', 'G').foreach { (c: Char) =>
         if (partitions.contains(c)) {
           sortedAccumulator = sortedAccumulator ++ partitions(c)
         }
-      })
+      }
       sortedAccumulator
     }
-  }
 
   // Samples vertices by forest fire random process and induces edges.
   // Fraction denotes fraction of total graph vertices to sample and geoParam
@@ -75,9 +74,7 @@ object Sampling {
         val edgeCandidates = accumulateEdges(e, vertexId)
         val burnCandidate = sc
           .parallelize(edgeCandidates)
-          .filter((e: Edge[Int]) => {
-            !sampledVertices.contains(e.dstId)
-          })
+          .filter { (e: Edge[Int]) => !sampledVertices.contains(e.dstId) }
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
         val burnEdges =
           burnCandidate.sample(false, burnFraction, Random.nextLong)

@@ -81,36 +81,32 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
 
   def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(
       implicit F: Traverse[F],
-      G: Applicative[G]): G[LazyEitherT[F, C, D]] = {
+      G: Applicative[G]): G[LazyEitherT[F, C, D]] =
     Applicative[G].map(
       F.traverse(run)(Bitraverse[LazyEither].bitraverseF(f, g)))(
       LazyEitherT(_: F[LazyEither[C, D]]))
-  }
 
   def traverse[G[_], C](f: B => G[C])(
       implicit F: Traverse[F],
-      G: Applicative[G]): G[LazyEitherT[F, A, C]] = {
+      G: Applicative[G]): G[LazyEitherT[F, A, C]] =
     G.map(
       F.traverse(run)(o => LazyEither.lazyEitherInstance[A].traverse(o)(f)))(
       LazyEitherT(_))
-  }
 
-  def foldRight[Z](z: => Z)(f: (B, => Z) => Z)(implicit F: Foldable[F]): Z = {
+  def foldRight[Z](z: => Z)(f: (B, => Z) => Z)(implicit F: Foldable[F]): Z =
     F.foldr[LazyEither[A, B], Z](run, z)(a =>
       b => LazyEither.lazyEitherInstance[A].foldRight[B, Z](a, b)(f))
-  }
 
   /** Apply a function in the environment of the right of this
     * disjunction.  Because it runs my `F` even when `f`'s `\/` fails,
     * it is not consistent with `ap`.
     */
   def app[C](f: => LazyEitherT[F, A, B => C])(
-      implicit F: Apply[F]): LazyEitherT[F, A, C] = {
+      implicit F: Apply[F]): LazyEitherT[F, A, C] =
     // TODO check laziness
     LazyEitherT[F, A, C](
       F.apply2(f.run, run)((ff: LazyEither[A, B => C], aa: LazyEither[A, B]) =>
         LazyEither.lazyEitherInstance[A].ap(aa)(ff)))
-  }
 
   def left: LeftProjectionT[F, A, B] =
     new LazyEitherT.LeftProjectionT[F, A, B](LazyEitherT.this)

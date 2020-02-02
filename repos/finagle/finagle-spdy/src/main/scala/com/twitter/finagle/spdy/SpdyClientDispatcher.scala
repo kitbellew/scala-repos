@@ -16,7 +16,7 @@ class SpdyClientDispatcher(trans: Transport[HttpRequest, HttpResponse])
   private[this] val promiseMap =
     new ConcurrentHashMap[java.lang.Integer, Promise[HttpResponse]]()
 
-  private[this] def readLoop(): Future[_] = {
+  private[this] def readLoop(): Future[_] =
     trans.read() flatMap { resp =>
       val streamId = SpdyHttpHeaders.getStreamId(resp)
       val promise = promiseMap.remove(streamId)
@@ -25,7 +25,6 @@ class SpdyClientDispatcher(trans: Transport[HttpRequest, HttpResponse])
       }
       readLoop()
     }
-  }
 
   readLoop() onFailure { cause =>
     readFailure.synchronized {

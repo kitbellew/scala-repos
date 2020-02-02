@@ -98,8 +98,7 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
   /**
     * Load or generate on first iteration the matrix M^ given A.
     */
-  def M_hat: Matrix[Int, Int, Double] = {
-
+  def M_hat: Matrix[Int, Int, Double] =
     if (currentIteration == 0) {
       val A = matrixFromTsv(edgesLoc)
       val M = A.rowL1Normalize.transpose
@@ -109,13 +108,11 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
     } else {
       matrixFromTsv(rootDir + "/constants/M_hat")
     }
-  }
 
   /**
     * Load or generate on first iteration the prior vector given d and n.
     */
-  def priorVector: ColVector[Int, Double] = {
-
+  def priorVector: ColVector[Int, Double] =
     if (currentIteration == 0) {
       val onesVector = colVectorFromTsv(onesVectorLoc)
       val priorVector = ((1 - d) / n) * onesVector.toMatrix(0)
@@ -124,7 +121,6 @@ class WeightedPageRankFromMatrix(args: Args) extends Job(args) {
     } else {
       colVectorFromTsv(rootDir + "/constants/priorVector")
     }
-  }
 
   def matrixFromTsv(input: String): Matrix[Int, Int, Double] =
     TypedTsv[(Int, Int, Double)](input).toMatrix

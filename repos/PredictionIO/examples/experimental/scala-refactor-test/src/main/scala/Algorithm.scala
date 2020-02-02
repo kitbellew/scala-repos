@@ -35,5 +35,5 @@ class Algorithm(val ap: AlgorithmParams)
 }
 
 class Model(val mc: Int) extends Serializable {
-  override def toString = s"mc=${mc}"
+  override def toString = s"mc=$mc"
 }

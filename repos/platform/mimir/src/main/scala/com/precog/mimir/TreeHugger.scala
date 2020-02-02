@@ -70,7 +70,7 @@ class Code extends UsefulStuff {
     )
   }
 
-  def trait2: Tree = {
+  def trait2: Tree =
     TRAITDEF("Genlib") withParents ("GenOpcode", "GenLibrary") := BLOCK(
       (DEF("_mathlib1") withFlags (Flags.OVERRIDE) := REF("super._mathlib1") SEQ_++ (sym.Set UNAPPLY (ID(
         m1)))) ::
@@ -78,9 +78,8 @@ class Code extends UsefulStuff {
           m2)))) ::
         methodsAll: _*
     )
-  }
 
-  def objects1(method: String): Tree = {
+  def objects1(method: String): Tree =
     OBJECTDEF(method) withParents ("""BIF1(Vector("std", "math"), "%s")"""
       .format(method)) := BLOCK(
       VAL("operandType") := (REF("Some(SDecimal)")),
@@ -88,9 +87,8 @@ class Code extends UsefulStuff {
         CASE(REF("SDecimal(num)")) ==> REF(
           """SDecimal(Math.%s(num.toDouble))""".format(method)))
     )
-  }
 
-  def objects2(method: String): Tree = {
+  def objects2(method: String): Tree =
     OBJECTDEF(method) withParents ("""BIF2(Vector("std", "math"), "%s")"""
       .format(method)) := BLOCK(
       VAL("operandType") := (REF("(Some(SDecimal), Some(SDecimal))")),
@@ -98,7 +96,6 @@ class Code extends UsefulStuff {
         CASE(REF("(SDecimal(num1), SDecimal(num2))")) ==> REF(
           """SDecimal(Math.%s(num1.toDouble, num2.toDouble))""".format(method)))
     )
-  }
 
   val methodsOneGen = methodsOne map { x => objects1(x) }
   val methodsTwoGen = methodsTwo map { x => objects2(x) }

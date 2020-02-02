@@ -208,9 +208,8 @@ object Flaggable {
       }.toMap
     }
 
-    override def show(out: Map[K, V]) = {
+    override def show(out: Map[K, V]) =
       out.toSeq map { case (k, v) => k.toString + "=" + v.toString } mkString (",")
-    }
   }
 
   implicit def ofSet[T: Flaggable]: Flaggable[Set[T]] = new SetFlaggable[T]
@@ -430,7 +429,7 @@ class Flag[T: Flaggable] private[app] (
   def getWithDefault: Option[T] = valueOrDefault
 
   /** String representation of this flag's default value */
-  def defaultString(): String = {
+  def defaultString(): String =
     try {
       flaggable.show(default getOrElse { throw flagNotFound })
     } catch {
@@ -438,7 +437,6 @@ class Flag[T: Flaggable] private[app] (
         log.log(Level.SEVERE, s"Flag $name default cannot be read", e)
         throw e
     }
-  }
 
   def usageString: String = {
     val defaultOrUsageStr = defaultOrUsage match {
@@ -448,26 +446,24 @@ class Flag[T: Flaggable] private[app] (
     s"  -$name='$defaultOrUsageStr': $help"
   }
 
-  private[this] def runDefaultString = {
+  private[this] def runDefaultString =
     try {
       defaultString
     } catch {
       case e: Throwable =>
         s"Error in reading default value for flag=$name.  See logs for exception"
     }
-  }
 
   /**
     * String representation of this flag in -foo='bar' format,
     * suitable for being used on the command line.
     */
-  override def toString = {
+  override def toString =
     valueOrDefault match {
       case None => "-" + name + "=unset"
       case Some(v) =>
         "-" + name + "='" + flaggable.show(v).replaceAll("'", "'\"'\"'") + "'"
     }
-  }
 
   /** Parse value `raw` into this flag. */
   def parse(raw: String) {
@@ -565,9 +561,8 @@ class Flags(
     flags foreach { case (_, f) => f.reset() }
   }
 
-  private[app] def finishParsing(): Unit = {
+  private[app] def finishParsing(): Unit =
     flags.values.foreach { _.finishParsing() }
-  }
 
   private[this] def resolveGlobalFlag(f: String) =
     if (includeGlobal) GlobalFlag.get(f) else None
@@ -975,7 +970,7 @@ private object GlobalFlag {
 
   private[this] val log = java.util.logging.Logger.getLogger("")
 
-  def getAllOrEmptyArray(loader: ClassLoader): Seq[Flag[_]] = {
+  def getAllOrEmptyArray(loader: ClassLoader): Seq[Flag[_]] =
     try {
       getAll(loader)
     } catch {
@@ -985,7 +980,6 @@ private object GlobalFlag {
         log.log(java.util.logging.Level.SEVERE, "failure reading in flags", e)
         new ArrayBuffer[Flag[_]]
     }
-  }
 
   def getAll(loader: ClassLoader): Seq[Flag[_]] = {
     val markerClass = classOf[GlobalFlagVisible]

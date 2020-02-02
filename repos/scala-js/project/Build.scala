@@ -361,7 +361,7 @@ object Build extends sbt.Build {
       else project.dependsOn(compiler % "plugin")
 
     /** Depends on library as if (exportJars in library) was set to false. */
-    def dependsOnLibraryNoJar: Project = {
+    def dependsOnLibraryNoJar: Project =
       if (isGeneratingEclipse) {
         project.dependsOn(library)
       } else {
@@ -373,10 +373,9 @@ object Build extends sbt.Build {
           }
         )
       }
-    }
 
     /** Depends on the sources of another project. */
-    def dependsOnSource(dependency: Project): Project = {
+    def dependsOnSource(dependency: Project): Project =
       if (isGeneratingEclipse) {
         project.dependsOn(dependency)
       } else {
@@ -385,7 +384,6 @@ object Build extends sbt.Build {
             (scalaSource in (dependency, Compile)).value
         )
       }
-    }
   }
 
   override lazy val settings = (
@@ -514,13 +512,12 @@ object Build extends sbt.Build {
           (packageBin in (library, Compile)).value.getAbsolutePath
         sys.props("scala.scalajs.compiler.test.scalalib") = {
 
-          def isScalaLib(att: Attributed[File]) = {
+          def isScalaLib(att: Attributed[File]) =
             att.metadata.get(moduleID.key).exists { mId =>
               mId.organization == "org.scala-lang" &&
               mId.name == "scala-library" &&
               mId.revision == scalaVersion.value
             }
-          }
 
           val lib = (managedClasspath in Test).value.find(isScalaLib)
           lib.map(_.data.getAbsolutePath).getOrElse {

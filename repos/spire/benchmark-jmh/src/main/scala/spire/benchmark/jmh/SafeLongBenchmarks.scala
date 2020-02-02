@@ -21,21 +21,19 @@ object SafeLongUtil {
   def classify(a: SafeLong, b: SafeLong, a_op_b: SafeLong): String =
     classify(a) + "_" + classify(b) + "_" + classify(a_op_b)
 
-  def check(cases: Map[String, (SafeLong, SafeLong)]): Unit = {
+  def check(cases: Map[String, (SafeLong, SafeLong)]): Unit =
     for ((kind, (a, b)) ← cases) {
       val c = classify(a, b)
       require(kind.startsWith(c), s"Unexpected class $c for case $kind")
     }
-  }
 
   def check(
       cases: Map[String, (SafeLong, SafeLong)],
-      op: (SafeLong, SafeLong) ⇒ SafeLong): Unit = {
+      op: (SafeLong, SafeLong) ⇒ SafeLong): Unit =
     for ((kind, (a, b)) ← cases) {
       val c = classify(a, b, op(a, b))
       require(kind.startsWith(c), s"Unexpected class $c for case $kind")
     }
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -72,9 +70,8 @@ class SafeLongMultiplyBenchmark {
   }
 
   @Benchmark
-  def multiply(x: Blackhole): Unit = {
+  def multiply(x: Blackhole): Unit =
     x.consume(a * b)
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -120,13 +117,11 @@ class SafeLongAddSubtractBenchmark {
   }
 
   @Benchmark
-  def add(x: Blackhole): Unit = {
+  def add(x: Blackhole): Unit =
     x.consume(a + b)
-  }
 
-  def subtract(x: Blackhole): Unit = {
+  def subtract(x: Blackhole): Unit =
     x.consume(a - c)
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -154,7 +149,6 @@ class SafeLongCompareBenchmark {
   }
 
   @Benchmark
-  def compare(x: Blackhole): Unit = {
+  def compare(x: Blackhole): Unit =
     x.consume(a compare b)
-  }
 }

@@ -35,15 +35,12 @@ object TestHelper extends Matchers {
     r.head
   }
 
-  def oBufCompare[T](a: T, b: T)(
-      implicit obuf: OrderedSerialization[T]): Int = {
+  def oBufCompare[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]): Int =
     obuf.compare(a, b)
-  }
 
   def deserializeSeq[T](items: Int, buf: InputStream)(
-      implicit orderedBuffer: OrderedSerialization[T]): Seq[T] = {
+      implicit orderedBuffer: OrderedSerialization[T]): Seq[T] =
     (0 until items).map { _ => orderedBuffer.read(buf).get }.toList
-  }
 
   def serialize[T](t: T)(
       implicit orderedBuffer: OrderedSerialization[T]): InputStream =
@@ -56,9 +53,8 @@ object TestHelper extends Matchers {
     baos.toInputStream
   }
 
-  def rawCompare[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]): Int = {
+  def rawCompare[T](a: T, b: T)(implicit obuf: OrderedSerialization[T]): Int =
     obuf.compareBinary(serialize(a), serialize(b)).unsafeToInt
-  }
 
   def checkManyExplicit[T](i: List[T])(
       implicit obuf: OrderedSerialization[T]) = {

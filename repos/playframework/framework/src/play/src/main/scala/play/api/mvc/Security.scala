@@ -43,8 +43,7 @@ object Security {
   def Authenticated[A](
       userinfo: RequestHeader => Option[A],
       onUnauthorized: RequestHeader => Result)(
-      action: A => EssentialAction): EssentialAction = {
-
+      action: A => EssentialAction): EssentialAction =
     EssentialAction { request =>
       userinfo(request)
         .map { user => action(user)(request) }
@@ -52,8 +51,6 @@ object Security {
           Accumulator.done(onUnauthorized(request))
         }
     }
-
-  }
 
   /**
     * Key of the username attribute stored in session.
@@ -148,13 +145,12 @@ object Security {
       */
     def authenticate[A](
         request: Request[A],
-        block: (AuthenticatedRequest[A, U]) => Future[Result]) = {
+        block: (AuthenticatedRequest[A, U]) => Future[Result]) =
       userinfo(request).map { user =>
         block(new AuthenticatedRequest(user, request))
       } getOrElse {
         Future.successful(onUnauthorized(request))
       }
-    }
   }
 
   /**

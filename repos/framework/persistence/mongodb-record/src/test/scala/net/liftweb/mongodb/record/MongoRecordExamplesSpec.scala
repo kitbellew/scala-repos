@@ -132,15 +132,11 @@ package mongotestrecords {
         val dbl = new BasicDBList
 
         value.foreach { m =>
-          {
-            val dbo = new BasicDBObject
+          val dbo = new BasicDBObject
 
-            m.keys.foreach(k => {
-              dbo.put(k.toString, m.getOrElse(k, ""))
-            })
+          m.keys.foreach { k => dbo.put(k.toString, m.getOrElse(k, "")) }
 
-            dbl.add(dbo)
-          }
+          dbl.add(dbo)
         }
 
         dbl
@@ -150,7 +146,7 @@ package mongotestrecords {
           dbo: DBObject): Box[List[Map[String, String]]] = {
         val lst: List[Map[String, String]] =
           dbo.keySet.toList
-            .map(k => {
+            .map { k =>
               dbo.get(k.toString) match {
                 case bdbo: BasicDBObject
                     if (bdbo.containsField("name") && bdbo.containsField(
@@ -160,7 +156,7 @@ package mongotestrecords {
                     "type" -> bdbo.getString("type"))
                 case _ => null
               }
-            })
+            }
             .filter(_ != null)
         Full(set(lst))
       }
@@ -342,12 +338,12 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     // get the docs back from the db
     MainDoc
       .find(md1.id.get)
-      .foreach(m => {
+      .foreach { m =>
         m.name.value must_== md1.name.value
         m.cnt.value must_== md1.cnt.value
         m.refdocId.value must_== md1.refdocId.value
         m.refuuid.value must_== md1.refuuid.value
-      })
+      }
 
     // fetch a refdoc
     val refFromFetch = md1.refdocId.obj
@@ -407,10 +403,10 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     // get the doc back from the db and compare
     val mdq5 = MainDoc.find("_id", md1.id.get)
     mdq5.isDefined must_== true
-    mdq5.map(m => {
+    mdq5.map { m =>
       m.name.value must_== "md1a"
       m.cnt.value must_== 1
-    })
+    }
 
     if (!debug) {
       // delete them

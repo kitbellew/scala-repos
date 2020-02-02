@@ -320,7 +320,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         }
 
         /** Remove box creations - leave the boxed value(s) on the stack instead. */
-        def replaceCreationOps(): Unit = {
+        def replaceCreationOps(): Unit =
           for (creation <- allCreations) creation.loadInitialValues match {
             case None =>
               toDelete ++= creation.allInsns
@@ -329,7 +329,6 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               toReplace(creation.valuesConsumer) = ops
               toDelete ++= (creation.allInsns - creation.valuesConsumer)
           }
-        }
 
         /**
           * Replace a value extraction operation. For a single-value box, the extraction operation can
@@ -337,7 +336,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           * non-used values, and an xSTORE / xLOAD for the extracted value. Example: tuple3._2 becomes
           * POP; xSTORE n; POP; xLOAD n.
           */
-        def replaceExtractionOps(): Unit = {
+        def replaceExtractionOps(): Unit =
           if (boxKind.boxedTypes.lengthCompare(1) == 0) {
             // fast path for single-value boxes
             allConsumers.foreach(extraction =>
@@ -376,7 +375,6 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               toDelete ++= extraction.allInsns - extraction.consumer
             }
           }
-        }
 
         checkCopyOpReplacements(
           allCreations,
@@ -556,11 +554,11 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             reTypedLocals += index -> t
             List((t, index))
           case _ =>
-            valueTypes.map(t => {
+            valueTypes.map { t =>
               val newIndex = nextCopyOpLocal
               nextCopyOpLocal += t.getSize
               (t, newIndex)
-            })
+            }
         }
       )
 
@@ -608,7 +606,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
     private val boxConsumingOps = finalCons.map(_.consumer)
 
-    @tailrec private def advanceToNextCopyOp(): Unit = {
+    @tailrec private def advanceToNextCopyOp(): Unit =
       if (queue.nonEmpty) {
         val h = queue.front
         if (visited(h) || boxConsumingOps(h)) {
@@ -616,7 +614,6 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           advanceToNextCopyOp()
         }
       }
-    }
 
     def hasNext: Boolean = {
       advanceToNextCopyOp()
@@ -647,11 +644,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
   object BoxKind {
     def valueCreationKind(
         insn: AbstractInsnNode,
-        prodCons: ProdConsAnalyzer): Option[(BoxCreation, BoxKind)] = {
+        prodCons: ProdConsAnalyzer): Option[(BoxCreation, BoxKind)] =
       PrimitiveBox.checkPrimitiveBox(insn, None, prodCons) orElse
         Ref.checkRefCreation(insn, None, prodCons) orElse
         Tuple.checkTupleCreation(insn, None, prodCons)
-    }
 
     /**
       * Check if `newOp` is part of a standard object construction pattern in which:
@@ -745,10 +741,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     private def boxedType(mi: MethodInsnNode) =
       Type.getArgumentTypes(mi.desc)(0)
 
-    private def boxClass(mi: MethodInsnNode) = {
+    private def boxClass(mi: MethodInsnNode) =
       if (mi.name == GenBCode.INSTANCE_CONSTRUCTOR_NAME) mi.owner
       else Type.getReturnType(mi.desc).getInternalName
-    }
 
     def checkPrimitiveBox(
         insn: AbstractInsnNode,

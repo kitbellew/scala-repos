@@ -30,7 +30,7 @@ trait ActorSystemLifecycle {
   }
 
   @AfterClass
-  def shutdownActorSystem(): Unit = {
+  def shutdownActorSystem(): Unit =
     try {
       system.terminate()
       system.awaitTermination(shutdownTimeout)
@@ -42,6 +42,5 @@ trait ActorSystemLifecycle {
           system.asInstanceOf[ActorSystemImpl].printTree)
         throw new RuntimeException(msg)
     }
-  }
 
 }

@@ -26,7 +26,7 @@ object NameInterpreter extends NameInterpreter {
   @volatile var global: NameInterpreter = DefaultInterpreter
 
   /** Java API for setting the interpreter */
-  def setGlobal(nameInterpreter: NameInterpreter) = { global = nameInterpreter }
+  def setGlobal(nameInterpreter: NameInterpreter) = global = nameInterpreter
 
   override def bind(dtab: Dtab, tree: Path): Activity[NameTree[Name.Bound]] =
     global.bind(dtab, tree)

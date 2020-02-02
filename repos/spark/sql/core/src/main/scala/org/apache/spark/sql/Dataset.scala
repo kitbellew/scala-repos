@@ -60,9 +60,8 @@ import org.apache.spark.util.Utils
 private[sql] object Dataset {
   def apply[T: Encoder](
       sqlContext: SQLContext,
-      logicalPlan: LogicalPlan): Dataset[T] = {
+      logicalPlan: LogicalPlan): Dataset[T] =
     new Dataset(sqlContext, logicalPlan, implicitly[Encoder[T]])
-  }
 
   def newDataFrame(
       sqlContext: SQLContext,
@@ -222,7 +221,7 @@ class Dataset[T] private[sql] (
 
   private implicit def classTag = unresolvedTEncoder.clsTag
 
-  protected[sql] def resolve(colName: String): NamedExpression = {
+  protected[sql] def resolve(colName: String): NamedExpression =
     queryExecution.analyzed
       .resolveQuoted(colName, sqlContext.sessionState.analyzer.resolver)
       .getOrElse {
@@ -230,15 +229,13 @@ class Dataset[T] private[sql] (
           s"""Cannot resolve column name "$colName" among (${schema.fieldNames
             .mkString(", ")})""")
       }
-  }
 
-  protected[sql] def numericColumns: Seq[Expression] = {
+  protected[sql] def numericColumns: Seq[Expression] =
     schema.fields.filter(_.dataType.isInstanceOf[NumericType]).map { n =>
       queryExecution.analyzed
         .resolveQuoted(n.name, sqlContext.sessionState.analyzer.resolver)
         .get
     }
-  }
 
   /**
     * Compose the string representing rows for output
@@ -531,9 +528,8 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def join(right: DataFrame, usingColumn: String): DataFrame = {
+  def join(right: DataFrame, usingColumn: String): DataFrame =
     join(right, Seq(usingColumn))
-  }
 
   /**
     * Inner equi-join with another [[DataFrame]] using the given columns.
@@ -556,9 +552,8 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def join(right: DataFrame, usingColumns: Seq[String]): DataFrame = {
+  def join(right: DataFrame, usingColumns: Seq[String]): DataFrame =
     join(right, usingColumns, "inner")
-  }
 
   /**
     * Equi-join with another [[DataFrame]] using the given columns.
@@ -748,9 +743,8 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   @Experimental
-  def joinWith[U](other: Dataset[U], condition: Column): Dataset[(T, U)] = {
+  def joinWith[U](other: Dataset[U], condition: Column): Dataset[(T, U)] =
     joinWith(other, condition, "inner")
-  }
 
   /**
     * Returns a new [[Dataset]] with each partition sorted by the given expressions.
@@ -761,9 +755,8 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def sortWithinPartitions(sortCol: String, sortCols: String*): Dataset[T] = {
+  def sortWithinPartitions(sortCol: String, sortCols: String*): Dataset[T] =
     sortWithinPartitions((sortCol +: sortCols).map(Column(_)): _*)
-  }
 
   /**
     * Returns a new [[Dataset]] with each partition sorted by the given expressions.
@@ -774,9 +767,8 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def sortWithinPartitions(sortExprs: Column*): Dataset[T] = {
+  def sortWithinPartitions(sortExprs: Column*): Dataset[T] =
     sortInternal(global = false, sortExprs)
-  }
 
   /**
     * Returns a new [[Dataset]] sorted by the specified column, all in ascending order.
@@ -791,9 +783,8 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def sort(sortCol: String, sortCols: String*): Dataset[T] = {
+  def sort(sortCol: String, sortCols: String*): Dataset[T] =
     sort((sortCol +: sortCols).map(apply): _*)
-  }
 
   /**
     * Returns a new [[Dataset]] sorted by the given expressions. For example:
@@ -805,9 +796,8 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def sort(sortExprs: Column*): Dataset[T] = {
+  def sort(sortExprs: Column*): Dataset[T] =
     sortInternal(global = true, sortExprs)
-  }
 
   /**
     * Returns a new [[Dataset]] sorted by the given expressions.
@@ -933,11 +923,10 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def selectExpr(exprs: String*): DataFrame = {
+  def selectExpr(exprs: String*): DataFrame =
     select(exprs.map { expr =>
       Column(sqlContext.sessionState.sqlParser.parseExpression(expr))
     }: _*)
-  }
 
   /**
     * :: Experimental ::
@@ -952,14 +941,13 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   @Experimental
-  def select[U1: Encoder](c1: TypedColumn[T, U1]): Dataset[U1] = {
+  def select[U1: Encoder](c1: TypedColumn[T, U1]): Dataset[U1] =
     new Dataset[U1](
       sqlContext,
       Project(
         c1.withInputType(boundTEncoder, logicalPlan.output).named :: Nil,
         logicalPlan),
       implicitly[Encoder[U1]])
-  }
 
   /**
     * Internal helper function for building typed selects that return tuples.  For simplicity and
@@ -1059,10 +1047,9 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def filter(conditionExpr: String): Dataset[T] = {
+  def filter(conditionExpr: String): Dataset[T] =
     filter(
       Column(sqlContext.sessionState.sqlParser.parseExpression(conditionExpr)))
-  }
 
   /**
     * Filters rows using the given condition. This is an alias for `filter`.
@@ -1086,10 +1073,9 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def where(conditionExpr: String): Dataset[T] = {
+  def where(conditionExpr: String): Dataset[T] =
     filter(
       Column(sqlContext.sessionState.sqlParser.parseExpression(conditionExpr)))
-  }
 
   /**
     * Groups the [[Dataset]] using the specified columns, so we can run aggregation on them.  See
@@ -1110,12 +1096,11 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def groupBy(cols: Column*): RelationalGroupedDataset = {
+  def groupBy(cols: Column*): RelationalGroupedDataset =
     RelationalGroupedDataset(
       toDF(),
       cols.map(_.expr),
       RelationalGroupedDataset.GroupByType)
-  }
 
   /**
     * Create a multi-dimensional rollup for the current [[Dataset]] using the specified columns,
@@ -1137,12 +1122,11 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def rollup(cols: Column*): RelationalGroupedDataset = {
+  def rollup(cols: Column*): RelationalGroupedDataset =
     RelationalGroupedDataset(
       toDF(),
       cols.map(_.expr),
       RelationalGroupedDataset.RollupType)
-  }
 
   /**
     * Create a multi-dimensional cube for the current [[Dataset]] using the specified columns,
@@ -1164,12 +1148,11 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   @scala.annotation.varargs
-  def cube(cols: Column*): RelationalGroupedDataset = {
+  def cube(cols: Column*): RelationalGroupedDataset =
     RelationalGroupedDataset(
       toDF(),
       cols.map(_.expr),
       RelationalGroupedDataset.CubeType)
-  }
 
   /**
     * Groups the [[Dataset]] using the specified columns, so we can run aggregation on them.
@@ -1360,9 +1343,8 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def agg(aggExpr: (String, String), aggExprs: (String, String)*): DataFrame = {
+  def agg(aggExpr: (String, String), aggExprs: (String, String)*): DataFrame =
     groupBy().agg(aggExpr, aggExprs: _*)
-  }
 
   /**
     * (Scala-specific) Aggregates on the entire [[Dataset]] without groups.
@@ -1506,9 +1488,8 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def sample(withReplacement: Boolean, fraction: Double): Dataset[T] = {
+  def sample(withReplacement: Boolean, fraction: Double): Dataset[T] =
     sample(withReplacement, fraction, Utils.random.nextLong)
-  }
 
   /**
     * Randomly splits this [[Dataset]] with the provided weights.
@@ -1548,9 +1529,8 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 2.0.0
     */
-  def randomSplit(weights: Array[Double]): Array[Dataset[T]] = {
+  def randomSplit(weights: Array[Double]): Array[Dataset[T]] =
     randomSplit(weights, Utils.random.nextLong)
-  }
 
   /**
     * Randomly splits this [[Dataset]] with the provided weights. Provided for the Python Api.
@@ -1560,9 +1540,8 @@ class Dataset[T] private[sql] (
     */
   private[spark] def randomSplit(
       weights: List[Double],
-      seed: Long): Array[Dataset[T]] = {
+      seed: Long): Array[Dataset[T]] =
     randomSplit(weights.toArray, seed)
-  }
 
   /**
     * :: Experimental ::
@@ -1739,9 +1718,8 @@ class Dataset[T] private[sql] (
     * @group untypedrel
     * @since 2.0.0
     */
-  def drop(colName: String): DataFrame = {
+  def drop(colName: String): DataFrame =
     drop(Seq(colName): _*)
-  }
 
   /**
     * Returns a new [[Dataset]] with columns dropped.
@@ -1989,13 +1967,11 @@ class Dataset[T] private[sql] (
     * @since 1.6.0
     */
   @Experimental
-  def mapPartitions[U: Encoder](
-      func: Iterator[T] => Iterator[U]): Dataset[U] = {
+  def mapPartitions[U: Encoder](func: Iterator[T] => Iterator[U]): Dataset[U] =
     new Dataset[U](
       sqlContext,
       MapPartitions[T, U](func, logicalPlan),
       implicitly[Encoder[U]])
-  }
 
   /**
     * :: Experimental ::
@@ -2315,9 +2291,8 @@ class Dataset[T] private[sql] (
     * @group basic
     * @since 1.6.0
     */
-  def registerTempTable(tableName: String): Unit = {
+  def registerTempTable(tableName: String): Unit =
     sqlContext.registerDataFrameAsTable(toDF(), tableName)
-  }
 
   /**
     * :: Experimental ::
@@ -2395,11 +2370,10 @@ class Dataset[T] private[sql] (
     EvaluatePython.javaToPython(rdd)
   }
 
-  protected[sql] def collectToPython(): Int = {
+  protected[sql] def collectToPython(): Int =
     withNewExecutionId {
       PythonRDD.collectAndServe(javaToPython.rdd)
     }
-  }
 
   ////////////////////////////////////////////////////////////////////////////
   // Private Helpers
@@ -2409,16 +2383,15 @@ class Dataset[T] private[sql] (
     * Wrap a Dataset action to track all Spark jobs in the body so that we can connect them with
     * an execution.
     */
-  private[sql] def withNewExecutionId[U](body: => U): U = {
+  private[sql] def withNewExecutionId[U](body: => U): U =
     SQLExecution.withNewExecutionId(sqlContext, queryExecution)(body)
-  }
 
   /**
     * Wrap a Dataset action to track the QueryExecution and time cost, then report to the
     * user-registered callback functions.
     */
   private def withCallback[U](name: String, df: DataFrame)(
-      action: DataFrame => U) = {
+      action: DataFrame => U) =
     try {
       df.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
       val start = System.nanoTime()
@@ -2431,10 +2404,9 @@ class Dataset[T] private[sql] (
         sqlContext.listenerManager.onFailure(name, df.queryExecution, e)
         throw e
     }
-  }
 
   private def withTypedCallback[A, B](name: String, ds: Dataset[A])(
-      action: Dataset[A] => B) = {
+      action: Dataset[A] => B) =
     try {
       ds.queryExecution.executedPlan.foreach { plan => plan.resetMetrics() }
       val start = System.nanoTime()
@@ -2447,7 +2419,6 @@ class Dataset[T] private[sql] (
         sqlContext.listenerManager.onFailure(name, ds.queryExecution, e)
         throw e
     }
-  }
 
   private def sortInternal(
       global: Boolean,
@@ -2466,14 +2437,12 @@ class Dataset[T] private[sql] (
   }
 
   /** A convenient function to wrap a logical plan and produce a DataFrame. */
-  @inline private def withPlan(logicalPlan: => LogicalPlan): DataFrame = {
+  @inline private def withPlan(logicalPlan: => LogicalPlan): DataFrame =
     Dataset.newDataFrame(sqlContext, logicalPlan)
-  }
 
   /** A convenient function to wrap a logical plan and produce a Dataset. */
-  @inline private def withTypedPlan(logicalPlan: => LogicalPlan): Dataset[T] = {
+  @inline private def withTypedPlan(logicalPlan: => LogicalPlan): Dataset[T] =
     new Dataset[T](sqlContext, logicalPlan, encoder)
-  }
 
   private[sql] def withTypedPlan[R](other: Dataset[_], encoder: Encoder[R])(
       f: (LogicalPlan, LogicalPlan) => LogicalPlan): Dataset[R] =

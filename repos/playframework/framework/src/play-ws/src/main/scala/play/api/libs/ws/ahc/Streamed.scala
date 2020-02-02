@@ -75,24 +75,22 @@ private[play] object Streamed {
     private var responseHeaders: WSResponseHeaders = _
     private var publisher: Publisher[HttpResponseBodyPart] = _
 
-    def onStream(publisher: Publisher[HttpResponseBodyPart]): State = {
+    def onStream(publisher: Publisher[HttpResponseBodyPart]): State =
       if (this.publisher != null) State.ABORT
       else {
         this.publisher = publisher
         promise.success((responseHeaders, publisher))
         State.CONTINUE
       }
-    }
 
-    override def onStatusReceived(status: HttpResponseStatus): State = {
+    override def onStatusReceived(status: HttpResponseStatus): State =
       if (this.publisher != null) State.ABORT
       else {
         statusCode = status.getStatusCode
         State.CONTINUE
       }
-    }
 
-    override def onHeadersReceived(h: HttpResponseHeaders): State = {
+    override def onHeadersReceived(h: HttpResponseHeaders): State =
       if (this.publisher != null) State.ABORT
       else {
         val headers = h.getHeaders
@@ -101,16 +99,14 @@ private[play] object Streamed {
           AhcWSRequest.ahcHeadersToMap(headers))
         State.CONTINUE
       }
-    }
 
     override def onBodyPartReceived(bodyPart: HttpResponseBodyPart): State =
       throw new IllegalStateException("Should not have received body part")
 
-    override def onCompleted(): Unit = {
+    override def onCompleted(): Unit =
       // EmptyPublisher can be replaces with `Source.empty` when we carry out the refactoring
       // mentioned in the `execute2` method.
       promise.trySuccess((responseHeaders, EmptyPublisher))
-    }
 
     override def onThrowable(t: Throwable): Unit = promise.tryFailure(t)
   }

@@ -72,13 +72,11 @@ class HoconPsiParser extends PsiParser {
     def newLinesBeforeCurrentToken =
       builder.rawTokenIndex > newLineSuppressedIndex && builder.rawLookup(-1) == LineBreakingWhitespace
 
-    def suppressNewLine(): Unit = {
+    def suppressNewLine(): Unit =
       newLineSuppressedIndex = builder.rawTokenIndex
-    }
 
-    def advanceLexer(): Unit = {
+    def advanceLexer(): Unit =
       builder.advanceLexer()
-    }
 
     def matches(matcher: Matcher) =
       (matcher.tokenSet.contains(builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
@@ -103,7 +101,7 @@ class HoconPsiParser extends PsiParser {
     def errorUntil(
         matcher: Matcher,
         msg: String,
-        onlyNonEmpty: Boolean = false): Unit = {
+        onlyNonEmpty: Boolean = false): Unit =
       if (!onlyNonEmpty || !matches(matcher)) {
         val marker = builder.mark()
         while (!matches(matcher)) {
@@ -111,7 +109,6 @@ class HoconPsiParser extends PsiParser {
         }
         marker.error(msg)
       }
-    }
 
     def tokenError(msg: String): Unit = {
       val marker = builder.mark()
@@ -303,19 +300,18 @@ class HoconPsiParser extends PsiParser {
       }
     }
 
-    def tryParseKey(first: Boolean): Unit = {
+    def tryParseKey(first: Boolean): Unit =
       if (!matches(KeyEnding.orNewLineOrEof)) {
         parseKey(first)
       } else {
         builder.error("expected key (use quoted \"\" if you want empty key)")
       }
-    }
 
     def parseKey(first: Boolean): Unit = {
       val marker = builder.mark()
 
       @tailrec
-      def parseKeyParts(first: Boolean): Unit = {
+      def parseKeyParts(first: Boolean): Unit =
         if (!matches(KeyEnding.orNewLineOrEof)) {
           if (matches(UnquotedChars)) {
             parseUnquotedString(
@@ -332,7 +328,6 @@ class HoconPsiParser extends PsiParser {
           }
           parseKeyParts(first = false)
         }
-      }
 
       suppressNewLine()
       parseKeyParts(first)
@@ -396,7 +391,7 @@ class HoconPsiParser extends PsiParser {
         tryParse(passNumber() && matches(endingMatcher), Number)
 
       @tailrec
-      def parseValueParts(partCount: Int): Int = {
+      def parseValueParts(partCount: Int): Int =
         if (!matches(endingMatcher)) {
           if (matches(LBrace)) {
             parseObject()
@@ -418,7 +413,6 @@ class HoconPsiParser extends PsiParser {
           }
           parseValueParts(partCount + 1)
         } else partCount
-      }
 
       suppressNewLine()
       if (!tryParseNull && !tryParseBoolean && !tryParseNumber) {

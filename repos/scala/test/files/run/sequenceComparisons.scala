@@ -121,7 +121,7 @@ object Test {
     // assert(res, resStr)
   }
 
-  def runSeqs() = {
+  def runSeqs() =
     for (s1f <- seqMakers; s2f <- seqMakers; testData <- List(test1)) {
       import testData._
       val scrut = s1f(seq)
@@ -134,7 +134,6 @@ object Test {
           assertOne(scrut, rhs, !f(scrut, rhs), "!(" + descr + ")")
       }
     }
-  }
 
   def main(args: Array[String]) {
     runSeqs()

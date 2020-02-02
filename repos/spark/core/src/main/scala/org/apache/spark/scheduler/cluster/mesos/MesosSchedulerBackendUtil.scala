@@ -33,7 +33,7 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
     * Parse a comma-delimited list of volume specs, each of which
     * takes the form [host-dir:]container-dir[:rw|:ro].
     */
-  def parseVolumesSpec(volumes: String): List[Volume] = {
+  def parseVolumesSpec(volumes: String): List[Volume] =
     volumes
       .split(",")
       .map(_.split(":"))
@@ -77,7 +77,6 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
       }
       .map { _.build() }
       .toList
-  }
 
   /**
     * Parse a comma-delimited list of port mapping specs, each of which
@@ -90,7 +89,7 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
     * anticipates the expansion of the docker form to allow for a protocol
     * and leaves open the chance for mesos to begin to accept an 'ip' field
     */
-  def parsePortMappingsSpec(portmaps: String): List[DockerInfo.PortMapping] = {
+  def parsePortMappingsSpec(portmaps: String): List[DockerInfo.PortMapping] =
     portmaps
       .split(",")
       .map(_.split(":"))
@@ -119,7 +118,6 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
       }
       .map { _.build() }
       .toList
-  }
 
   /**
     * Construct a DockerInfo structure and insert it into a ContainerInfo

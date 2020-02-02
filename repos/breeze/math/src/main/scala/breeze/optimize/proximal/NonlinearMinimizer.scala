@@ -178,13 +178,11 @@ class NonlinearMinimizer(
       }
       .takeUpToWhere { _.converged }
 
-  def minimize(primal: DiffFunction[BDV], init: BDV): BDV = {
+  def minimize(primal: DiffFunction[BDV], init: BDV): BDV =
     minimizeAndReturnState(primal, init).z
-  }
 
-  def minimizeAndReturnState(primal: DiffFunction[BDV], init: BDV): State = {
+  def minimizeAndReturnState(primal: DiffFunction[BDV], init: BDV): State =
     iterations(primal, init).last
-  }
 }
 
 object NonlinearMinimizer {
@@ -258,7 +256,7 @@ object NonlinearMinimizer {
       ndim: Int,
       constraint: Constraint,
       lambda: Double,
-      usePQN: Boolean = false): FirstOrderMinimizer[BDV, DiffFunction[BDV]] = {
+      usePQN: Boolean = false): FirstOrderMinimizer[BDV, DiffFunction[BDV]] =
     constraint match {
       case IDENTITY => project(ProjectIdentity())
       case POSITIVE => project(ProjectPos())
@@ -277,7 +275,6 @@ object NonlinearMinimizer {
         throw new IllegalArgumentException(
           "NonlinearMinimizer does not support the Projection Operator")
     }
-  }
 
   def main(args: Array[String]) {
     if (args.length < 3) {
@@ -291,7 +288,7 @@ object NonlinearMinimizer {
     val lambda = args(1).toDouble
     val beta = args(2).toDouble
 
-    println(s"Generating Linear and Logistic Loss with rank ${problemSize}")
+    println(s"Generating Linear and Logistic Loss with rank $problemSize")
 
     val (quadraticCost, h, q) = LinearGenerator(problemSize)
 
@@ -400,7 +397,7 @@ object NonlinearMinimizer {
     val nlBoxLogisticTime = System.nanoTime() - nlBoxLogisticStart
     val nlBoxLogisticObj = elasticNetLoss.calculate(nlBoxLogisticResult.x)._1
     println(
-      s"Objective nl ${nlBoxLogisticObj} time ${nlBoxLogisticTime / 1e6} ms")
+      s"Objective nl $nlBoxLogisticObj time ${nlBoxLogisticTime / 1e6} ms")
 
     println("Linear Regression with ProbabilitySimplex")
 
@@ -446,7 +443,7 @@ object NonlinearMinimizer {
       elasticNetLoss.calculate(nlProxLogisticSimplexResult.z)._1
 
     println(
-      s"Objective nl ${nlLogisticSimplexObj} admm ${nlProxLogisticSimplexObj}")
+      s"Objective nl $nlLogisticSimplexObj admm $nlProxLogisticSimplexObj")
     println(
       s"Constraint nl ${sum(nlLogisticSimplexResult.x)} admm ${sum(nlProxLogisticSimplexResult.z)}")
     println(

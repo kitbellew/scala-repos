@@ -73,7 +73,7 @@ object RenameSuperMembersUtil {
   def prepareSuperMembers(
       element: PsiElement,
       newName: String,
-      allRenames: util.Map[PsiElement, String]) = {
+      allRenames: util.Map[PsiElement, String]) =
     for (elem <- superMembersToRename) {
       allRenames.put(elem, newName)
       superMembersToRename -= elem
@@ -83,7 +83,6 @@ object RenameSuperMembersUtil {
         .asScala
         .foreach(_.prepareRenaming(elem, newName, allRenames))
     }
-  }
 
   /* @param supermembers contains only maximal supermembers
    */
@@ -144,10 +143,9 @@ object RenameSuperMembersUtil {
     val popup = NavigationUtil.getPsiElementPopup(
       classesToNamed.keys.toArray,
       new PsiClassListCellRenderer() {
-        override def getIcon(element: PsiElement): Icon = {
+        override def getIcon(element: PsiElement): Icon =
           if (element == renameAllMarkerObject || oneSuperClass) null
           else super.getIcon(element)
-        }
 
         override def getElementText(clazz: PsiClass): String = {
           if (clazz == renameAllMarkerObject) return renameAllText
@@ -165,11 +163,10 @@ object RenameSuperMembersUtil {
               ScalaNamesUtil.scalaName(clazz))
         }
 
-        override def getContainerText(clazz: PsiClass, name: String): String = {
+        override def getContainerText(clazz: PsiClass, name: String): String =
           if (clazz == renameAllMarkerObject || clazz == classes.last || oneSuperClass)
             null //don't show package name
           else super.getContainerText(clazz, name)
-        }
       },
       title,
       processor,
@@ -227,13 +224,12 @@ object RenameSuperMembersUtil {
   @NotNull
   private def findMaxSuperMembers(
       elements: Seq[PsiNamedElement]): Seq[PsiNamedElement] = {
-    def elementWithContainingClass(elem: PsiNamedElement) = {
+    def elementWithContainingClass(elem: PsiNamedElement) =
       ScalaPsiUtil.nameContext(elem) match {
         case sm: ScMember => Option(sm.containingClass, elem)
         case m: PsiMember => Option((m.getContainingClass, elem))
         case _            => None
       }
-    }
     val classToElement = elements.flatMap(elementWithContainingClass).toMap
     val classes = classToElement.keys
     val maxClasses = classes.filter(maxClass =>

@@ -114,12 +114,11 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
     implicit def LineDecompose: Decomposer[instructions.Line] =
       new Decomposer[instructions.Line] {
-        def decompose(line: instructions.Line): JValue = {
+        def decompose(line: instructions.Line): JValue =
           JObject(
             JField("lineNum", JNum(line.line)),
             JField("colNum", JNum(line.col)),
             JField("detail", JString(line.text)))
-        }
       }
 
     lazy val report = queryReport contramap { (l: instructions.Line) =>

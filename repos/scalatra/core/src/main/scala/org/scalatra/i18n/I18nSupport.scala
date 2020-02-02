@@ -23,35 +23,32 @@ trait I18nSupport { this: ScalatraBase =>
     request(MessagesKey) = provideMessages(locale)
   }
 
-  def locale(implicit request: HttpServletRequest): Locale = {
+  def locale(implicit request: HttpServletRequest): Locale =
     if (request == null) {
       throw new ScalatraException(
         "There needs to be a request in scope to call locale")
     } else {
       request.get(LocaleKey).map(_.asInstanceOf[Locale]).orNull
     }
-  }
 
-  def userLocales(implicit request: HttpServletRequest): Array[Locale] = {
+  def userLocales(implicit request: HttpServletRequest): Array[Locale] =
     if (request == null) {
       throw new ScalatraException(
         "There needs to be a request in scope to call userLocales")
     } else {
       request.get(UserLocalesKey).map(_.asInstanceOf[Array[Locale]]).orNull
     }
-  }
 
   def messages(key: String)(implicit request: HttpServletRequest): String =
     messages(request)(key)
 
-  def messages(implicit request: HttpServletRequest): Messages = {
+  def messages(implicit request: HttpServletRequest): Messages =
     if (request == null) {
       throw new ScalatraException(
         "There needs to be a request in scope to call messages")
     } else {
       request.get(MessagesKey).map(_.asInstanceOf[Messages]).orNull
     }
-  }
 
   /**
     * Provides a default Message resolver
@@ -77,14 +74,13 @@ trait I18nSupport { this: ScalatraBase =>
    * Locale strings are transformed to [[java.util.Locale]]
    *
    */
-  private def resolveHttpLocale: Option[Locale] = {
+  private def resolveHttpLocale: Option[Locale] =
     (params.get(LocaleKey) match {
       case Some(localeValue) =>
         cookies.set(LocaleKey, localeValue)
         Some(localeValue)
       case _ => cookies.get(LocaleKey)
     }).map(localeFromString(_)) orElse resolveHttpLocaleFromUserAgent
-  }
 
   /**
     * Accept-Language header looks like "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4"
@@ -92,11 +88,11 @@ trait I18nSupport { this: ScalatraBase =>
     *
     * @return first preferred found locale or None
     */
-  private def resolveHttpLocaleFromUserAgent: Option[Locale] = {
+  private def resolveHttpLocaleFromUserAgent: Option[Locale] =
     request.headers.get("Accept-Language") map { s =>
       val locales = s
         .split(",")
-        .map(s => {
+        .map { s =>
           def splitLanguageCountry(s: String): Locale = {
             val langCountry = s.split("-")
             if (langCountry.length > 1) {
@@ -112,14 +108,13 @@ trait I18nSupport { this: ScalatraBase =>
           } else {
             splitLanguageCountry(s)
           }
-        })
+        }
       // save all found locales for later user
       request.setAttribute(UserLocalesKey, locales)
       // We assume that all accept-languages are stored in order of quality
       // (so first language is preferred)
       locales.head
     }
-  }
 
   /**
     * Reads a locale from a String

@@ -33,19 +33,16 @@ class ReflectionTest {
     case _    => false
   }
 
-  @Test def java_lang_Class_getName_under_normal_circumstances(): Unit = {
+  @Test def java_lang_Class_getName_under_normal_circumstances(): Unit =
     assertEquals("scala.Some", classOf[scala.Some[_]].getName)
-  }
 
-  @Test def should_append_$_to_class_name_of_objects(): Unit = {
+  @Test def should_append_$_to_class_name_of_objects(): Unit =
     assertEquals(
       "org.scalajs.testsuite.compiler.ReflectionTest$TestObject$",
       TestObject.getClass.getName)
-  }
 
-  @Test def java_lang_Class_getName_renamed_through_semantics(): Unit = {
+  @Test def java_lang_Class_getName_renamed_through_semantics(): Unit =
     assertEquals("renamed.test.Class", classOf[RenamedTestClass].getName)
-  }
 
   @Test def should_support_isInstance(): Unit = {
     class A

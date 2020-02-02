@@ -179,11 +179,10 @@ private[streaming] class MapWithStateRDD[
     Iterator(newRecord)
   }
 
-  override protected def getPartitions: Array[Partition] = {
+  override protected def getPartitions: Array[Partition] =
     Array.tabulate(prevStateRDD.partitions.length) { i =>
       new MapWithStateRDDPartition(i, prevStateRDD, partitionedDataRDD)
     }
-  }
 
   override def clearDependencies(): Unit = {
     super.clearDependencies()
@@ -191,9 +190,8 @@ private[streaming] class MapWithStateRDD[
     partitionedDataRDD = null
   }
 
-  def setFullScan(): Unit = {
+  def setFullScan(): Unit =
     doFullScan = true
-  }
 }
 
 private[streaming] object MapWithStateRDD {

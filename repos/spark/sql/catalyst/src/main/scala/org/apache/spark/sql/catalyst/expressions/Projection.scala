@@ -117,9 +117,8 @@ object UnsafeProjection {
   /**
     * Returns an UnsafeProjection for given Array of DataTypes.
     */
-  def create(fields: Array[DataType]): UnsafeProjection = {
+  def create(fields: Array[DataType]): UnsafeProjection =
     create(fields.zipWithIndex.map(x => new BoundReference(x._2, x._1, true)))
-  }
 
   /**
     * Returns an UnsafeProjection for given sequence of Expressions (bounded).
@@ -140,9 +139,8 @@ object UnsafeProjection {
     */
   def create(
       exprs: Seq[Expression],
-      inputSchema: Seq[Attribute]): UnsafeProjection = {
+      inputSchema: Seq[Attribute]): UnsafeProjection =
     create(exprs.map(BindReferences.bindReference(_, inputSchema)))
-  }
 
   /**
     * Same as other create()'s but allowing enabling/disabling subexpression elimination.
@@ -170,23 +168,19 @@ object FromUnsafeProjection {
   /**
     * Returns an Projection for given StructType.
     */
-  def apply(schema: StructType): Projection = {
+  def apply(schema: StructType): Projection =
     apply(schema.fields.map(_.dataType))
-  }
 
   /**
     * Returns an UnsafeProjection for given Array of DataTypes.
     */
-  def apply(fields: Seq[DataType]): Projection = {
-    create(fields.zipWithIndex.map(x => {
-      new BoundReference(x._2, x._1, true)
-    }))
-  }
+  def apply(fields: Seq[DataType]): Projection =
+    create(
+      fields.zipWithIndex.map { x => new BoundReference(x._2, x._1, true) })
 
   /**
     * Returns an Projection for given sequence of Expressions (bounded).
     */
-  private def create(exprs: Seq[Expression]): Projection = {
+  private def create(exprs: Seq[Expression]): Projection =
     GenerateSafeProjection.generate(exprs)
-  }
 }

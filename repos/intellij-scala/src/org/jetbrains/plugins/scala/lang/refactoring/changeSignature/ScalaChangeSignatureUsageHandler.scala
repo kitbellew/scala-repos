@@ -119,11 +119,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
   protected def handleParametersUsage(
       change: ChangeInfo,
-      usage: ParameterUsageInfo): Unit = {
+      usage: ParameterUsageInfo): Unit =
     if (change.isParameterNamesChanged || change.isParameterSetOrOrderChanged) {
       replaceNameId(usage.ref.getElement, usage.newName)
     }
-  }
 
   def handleAnonFunUsage(change: ChangeInfo, usage: AnonFunUsageInfo): Unit = {
     if (!change.isParameterSetOrOrderChanged) return
@@ -238,7 +237,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
   protected def handleUsageArguments(
       change: ChangeInfo,
-      usage: UsageInfo): Unit = {
+      usage: UsageInfo): Unit =
     usage match {
       case c: ConstructorUsageInfo => handleConstructorUsageArguments(change, c)
       case m: MethodCallUsageInfo  => handleMethodCallUsagesArguments(change, m)
@@ -247,7 +246,6 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       case p: PostfixExprUsageInfo => handlePostfixUsage(change, p)
       case _                       =>
     }
-  }
 
   protected def handleInfixUsage(
       change: ChangeInfo,
@@ -572,12 +570,11 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     }
   }
 
-  private def hasSeveralClauses(change: ChangeInfo): Boolean = {
+  private def hasSeveralClauses(change: ChangeInfo): Boolean =
     change match {
       case sc: ScalaChangeInfo => sc.newParams.size > 1
       case _                   => false
     }
-  }
 
   private def isRepeated(p: ParameterInfo) = p match {
     case p: ScalaParameterInfo => p.isRepeatedParameter

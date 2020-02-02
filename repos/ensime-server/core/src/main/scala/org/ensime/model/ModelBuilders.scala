@@ -18,9 +18,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
 
   import rootMirror.RootPackage
 
-  def locateSymbolPos(
-      sym: Symbol,
-      needPos: PosNeeded): Option[SourcePosition] = {
+  def locateSymbolPos(sym: Symbol, needPos: PosNeeded): Option[SourcePosition] =
     _locateSymbolPos(sym, needPos).orElse({
       logger.debug(s"search $sym: Try Companion")
       sym.companionSymbol match {
@@ -28,11 +26,10 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         case s: Symbol => _locateSymbolPos(s, needPos)
       }
     })
-  }
 
   def _locateSymbolPos(
       sym: Symbol,
-      needPos: PosNeeded): Option[SourcePosition] = {
+      needPos: PosNeeded): Option[SourcePosition] =
     if (sym == NoSymbol || needPos == PosNeededNo)
       None
     else if (sym.pos != NoPosition) {
@@ -60,7 +57,6 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       } else
         None
     }
-  }
 
   // When inspecting a type, transform a raw list of TypeMembers to a sorted
   // list of InterfaceInfo objects, each with its own list of sorted member infos.
@@ -148,9 +144,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     // TODO THIS SHOULD NOT EXIST
     val nullInfo = new PackageInfo("NA", "NA", List.empty)
 
-    private def sortedMembers(items: Iterable[EntityInfo]) = {
+    private def sortedMembers(items: Iterable[EntityInfo]) =
       items.toList.sortBy(_.name)
-    }
 
     def fromSymbol(sym: Symbol): PackageInfo = {
       val members = sortedMembers(
@@ -162,7 +157,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       }
     }
 
-    def packageMemberInfoFromSym(sym: Symbol): Option[EntityInfo] = {
+    def packageMemberInfoFromSym(sym: Symbol): Option[EntityInfo] =
       try {
         if (sym == RootPackage) {
           Some(root)
@@ -181,7 +176,6 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       } catch {
         case e: Throwable => None
       }
-    }
   }
 
   object TypeInfo {
@@ -220,7 +214,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       }
     }
 
-    def nullInfo = {
+    def nullInfo =
       new BasicTypeInfo(
         "NA",
         DeclaredAs.Nil,
@@ -228,16 +222,14 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         List.empty,
         List.empty,
         None)
-    }
   }
 
   object ParamSectionInfo {
-    def apply(params: Iterable[Symbol]): ParamSectionInfo = {
+    def apply(params: Iterable[Symbol]): ParamSectionInfo =
       new ParamSectionInfo(
         params.map { s => (s.nameString, TypeInfo(s.tpe)) },
         params.exists(_.isImplicit)
       )
-    }
   }
 
   object SymbolInfo {
@@ -290,7 +282,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     def fromSymbolAndType(
         sym: Symbol,
         tpe: Type,
-        relevance: Int): CompletionInfo = {
+        relevance: Int): CompletionInfo =
       CompletionInfo(
         sym.nameString,
         completionSignatureForType(tpe),
@@ -298,7 +290,6 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         relevance,
         None
       )
-    }
 
   }
 
@@ -320,7 +311,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
 
   object ArrowTypeInfo {
 
-    def apply(tpe: Type): ArrowTypeInfo = {
+    def apply(tpe: Type): ArrowTypeInfo =
       tpe match {
         case tpe: MethodType =>
           apply(
@@ -334,22 +325,19 @@ trait ModelBuilders { self: RichPresentationCompiler =>
             tpe.finalResultType)
         case _ => nullInfo()
       }
-    }
 
     def apply(
         tpe: Type,
         paramSections: List[ParamSectionInfo],
-        finalResultType: Type): ArrowTypeInfo = {
+        finalResultType: Type): ArrowTypeInfo =
       new ArrowTypeInfo(
         tpe.toString(),
         TypeInfo(tpe.finalResultType),
         paramSections
       )
-    }
 
-    def nullInfo() = {
+    def nullInfo() =
       new ArrowTypeInfo("NA", TypeInfo.nullInfo, List.empty)
-    }
   }
 }
 

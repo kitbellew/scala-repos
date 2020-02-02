@@ -134,7 +134,7 @@ abstract class CharsetDecoder protected (
     loop()
   }
 
-  final def flush(out: CharBuffer): CoderResult = {
+  final def flush(out: CharBuffer): CoderResult =
     (status: @switch) match {
       case END =>
         val result = implFlush(out)
@@ -146,7 +146,6 @@ abstract class CharsetDecoder protected (
       case _ =>
         throw new IllegalStateException
     }
-  }
 
   protected def implFlush(out: CharBuffer): CoderResult =
     CoderResult.UNDERFLOW
@@ -162,7 +161,7 @@ abstract class CharsetDecoder protected (
   protected def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult
 
   final def decode(in: ByteBuffer): CharBuffer = {
-    def grow(out: CharBuffer): CharBuffer = {
+    def grow(out: CharBuffer): CharBuffer =
       if (out.capacity == 0) {
         CharBuffer.allocate(1)
       } else {
@@ -171,7 +170,6 @@ abstract class CharsetDecoder protected (
         result.put(out)
         result
       }
-    }
 
     @inline
     @tailrec

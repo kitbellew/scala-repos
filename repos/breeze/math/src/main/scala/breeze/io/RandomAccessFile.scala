@@ -86,17 +86,15 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an Int8 (Byte) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt8(v: Byte): Unit = {
+  final def writeInt8(v: Byte): Unit =
     rafObj.write(v)
-  }
 
   /** Tries to write n Int8s (Bytes) to the current getFilePointer().
     * Will throw an exception if it encounters an end of file.
     */
   @throws(classOf[IOException])
-  final def writeInt8(v: Array[Byte]): Unit = {
+  final def writeInt8(v: Array[Byte]): Unit =
     rafObj.write(v)
-  }
   //</editor-fold>
 
   //<editor-fold desc="Aliases">
@@ -161,9 +159,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(
     * Will throw an exception if it encounters an end of file.
     */
   @throws(classOf[IOException])
-  final def writeUInt8(values: Array[Short]): Unit = {
+  final def writeUInt8(values: Array[Short]): Unit =
     rafObj.write(values.map(converter.uInt8ToByte(_)))
-  }
   //</editor-fold>
 
   //<editor-fold desc="Aliases">
@@ -228,9 +225,8 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an Int16 (Short) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt16(v: Short): Unit = {
+  final def writeInt16(v: Short): Unit =
     rafObj.write(converter.int16ToBytes(v))
-  }
 
   /** Tries to write an array of Int16s (Shorts) to the current getFilePointer().
     */
@@ -315,16 +311,14 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write a UInt16 (Char) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt16(v: Char): Unit = {
+  final def writeUInt16(v: Char): Unit =
     rafObj.write(converter.uInt16ToBytes(v))
-  }
 
   /** Tries to write an array of UInt16s (Chars) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt16(v: Array[Char]): Unit = {
+  final def writeUInt16(v: Array[Char]): Unit =
     rafObj.write(v.flatMap(converter.uInt16ToBytes(_)))
-  }
   //</editor-fold>
 
   //<editor-fold desc="Aliases">
@@ -434,16 +428,14 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an Int32 (Int) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt32(v: Int): Unit = {
+  final def writeInt32(v: Int): Unit =
     rafObj.write(converter.int32ToBytes(v))
-  }
 
   /** Tries to write an array of Int32s (Ints) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt32(v: Array[Int]): Unit = {
+  final def writeInt32(v: Array[Int]): Unit =
     rafObj.write(v.flatMap(converter.int32ToBytes(_)))
-  }
 
   //</editor-fold>
 
@@ -514,16 +506,14 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write a UInt32 (represented by Int) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt32(v: Long): Unit = {
+  final def writeUInt32(v: Long): Unit =
     rafObj.write(converter.uInt32ToBytes(v))
-  }
 
   /** Tries to write an array of Int32s (Ints) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt32(v: Array[Long]): Unit = {
+  final def writeUInt32(v: Array[Long]): Unit =
     rafObj.write(v.flatMap(converter.uInt32ToBytes(_)))
-  }
   //</editor-fold>
 
   ///// Int64 (Long) /////
@@ -583,16 +573,14 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an Int64 (Long) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt64(v: Long): Unit = {
+  final def writeInt64(v: Long): Unit =
     rafObj.write(converter.int64ToBytes(v))
-  }
 
   /** Tries to write an array of Int64s (Longs) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeInt64(v: Array[Long]): Unit = {
+  final def writeInt64(v: Array[Long]): Unit =
     rafObj.write(v.flatMap(converter.int64ToBytes(_)))
-  }
   //</editor-fold>
 
   //<editor-fold desc="Aliases">
@@ -679,17 +667,15 @@ class RandomAccessFile(file: File, arg0: String = "r")(
     * Will throw error if value < 0.
     */
   @throws(classOf[IOException])
-  final def writeUInt64(v: ULong): Unit = {
+  final def writeUInt64(v: ULong): Unit =
     rafObj.write(converter.uInt64ToBytes(v))
-  }
 
   /** Tries to write an array of UInt64s (input as [[spire.math.ULong]]) to the current getFilePointer().
     * Will throw error if value < 0.
     */
   @throws(classOf[IOException])
-  final def writeUInt64(v: Array[ULong]): Unit = {
+  final def writeUInt64(v: Array[ULong]): Unit =
     rafObj.write(v.flatMap(converter.uInt64ToBytes(_)))
-  }
 
   //</editor-fold>
 
@@ -749,16 +735,14 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   /** Tries to write an UInt64Shifted (shifted down to Long range) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt64Shifted(v: Long): Unit = {
+  final def writeUInt64Shifted(v: Long): Unit =
     rafObj.write(converter.uInt64ShiftedToBytes(v))
-  }
 
   /** Tries to write an array of UInt64Shifted (shifted down to Long range) to the current getFilePointer().
     */
   @throws(classOf[IOException])
-  final def writeUInt64Shifted(v: Array[Long]): Unit = {
+  final def writeUInt64Shifted(v: Array[Long]): Unit =
     rafObj.write(v.flatMap(converter.uInt64ShiftedToBytes(_)))
-  }
   //</editor-fold>
 
   ///// Floating Point /////
@@ -769,17 +753,15 @@ class RandomAccessFile(file: File, arg0: String = "r")(
     * Will throw an exception if it encounters an end of file.
     */
   @throws(classOf[IOException])
-  override def readDouble(): Double = {
+  override def readDouble(): Double =
     java.lang.Double.longBitsToDouble(readLong())
-  }
 
   /** Tries to read a Float at the current getFilePointer().
     * Will throw an exception if it encounters an end of file.
     */
   @throws(classOf[IOException])
-  override def readFloat(): Float = {
+  override def readFloat(): Float =
     java.lang.Float.intBitsToFloat(readInt())
-  }
 
   /** Tries to read n Doubles from the current getFilePointer().
     * Will throw an exception if it encounters an end of file.
@@ -839,14 +821,12 @@ class RandomAccessFile(file: File, arg0: String = "r")(
   //<editor-fold desc="Writing">
 
   @throws(classOf[IOException])
-  def writeFloat(v: Float) = {
+  def writeFloat(v: Float) =
     writeInt32(java.lang.Float.floatToRawIntBits(v))
-  }
 
   @throws(classOf[IOException])
-  def writeDouble(v: Double) = {
+  def writeDouble(v: Double) =
     writeInt64(java.lang.Double.doubleToRawLongBits(v))
-  }
 
   @throws(classOf[IOException])
   def writeDouble(v: Array[Double]): Unit = {
@@ -910,11 +890,10 @@ class RandomAccessFile(file: File, arg0: String = "r")(
 
   /** like [[skipBytes]] but just jumps, does not return. For speed
     */
-  def jumpBytes(n: Int): Unit = {
+  def jumpBytes(n: Int): Unit =
     //Speed optimization
     //rafObj.skipBytes(n)
     rafObj.seek(rafObj.getFilePointer + n)
-  }
 
   /** Pass on to [[java.io.RandomAccessFile]]
     */
@@ -972,9 +951,8 @@ abstract class ByteConverter {
 
   ///// bytesToXXX /////
   /**Takes 1 Byte and returns a UInt8 (as Short)*/
-  def byteToUInt8(b0: Byte): Short = {
+  def byteToUInt8(b0: Byte): Short =
     if (b0 < 0) (b0 + 256).toShort else b0.toShort
-  }
 
   /**Takes 2 Bytes and returns an Int16 (Short)*/
   def bytesToInt16(b0: Byte, b1: Byte): Short
@@ -997,9 +975,8 @@ abstract class ByteConverter {
       b4: Byte,
       b5: Byte,
       b6: Byte,
-      b7: Byte): ULong = {
+      b7: Byte): ULong =
     ULong(bytesToInt64(b0, b1, b2, b3, b4, b5, b6, b7))
-  }
 
   /**Takes 8 Bytes and returns a Int64 (Long)*/
   def bytesToInt64(
@@ -1063,21 +1040,17 @@ abstract class ByteConverter {
 object ByteConverterBigEndian extends ByteConverter {
 
   ///// bytesToXXX /////
-  def bytesToInt16(b0: Byte, b1: Byte): Short = {
+  def bytesToInt16(b0: Byte, b1: Byte): Short =
     (b0 << 8 | b1 & 0xFF).toShort
-  }
 
-  def bytesToUInt16(b0: Byte, b1: Byte): Char = {
+  def bytesToUInt16(b0: Byte, b1: Byte): Char =
     ((b0.toInt & 0xFF) << 8 | (b1.toInt & 0xFF)).toChar
-  }
 
-  def bytesToInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int = {
+  def bytesToInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int =
     b0.toInt << 24 | (b1 & 0xFF) << 16 | (b2 & 0xFF) << 8 | (b3 & 0xFF)
-  }
 
-  def bytesToUInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Long = {
+  def bytesToUInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Long =
     (b0.toLong & 0xFFL) << 24 | (b1.toLong & 0xFFL) << 16 | (b2.toLong & 0xFFL) << 8 | (b3.toLong & 0xFFL)
-  }
 
 //  def bytesToUInt64(b0: Byte, b1: Byte, b2: Byte, b3: Byte, b4: Byte, b5: Byte, b6: Byte, b7: Byte): ULong = {
 ////    if ((b0/*.toInt*/ & 0x80) != 0x00) {
@@ -1096,10 +1069,9 @@ object ByteConverterBigEndian extends ByteConverter {
       b4: Byte,
       b5: Byte,
       b6: Byte,
-      b7: Byte): Long = {
+      b7: Byte): Long =
     b0.toLong << 56 | (b1.toLong & 0xFFL) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
       (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (b6.toLong & 0xFFL) << 8 | (b7.toLong & 0xFFL)
-  }
 
   def bytesToUInt64Shifted(
       b0: Byte,
@@ -1109,10 +1081,9 @@ object ByteConverterBigEndian extends ByteConverter {
       b4: Byte,
       b5: Byte,
       b6: Byte,
-      b7: Byte): Long = {
+      b7: Byte): Long =
     (b0 ^ 0x80).toLong << 56 | (b1.toLong & 0xFFL) << 48 | (b2.toLong & 0xFFL) << 40 | (b3.toLong & 0xFFL) << 32 |
       (b4.toLong & 0xFFL) << 24 | (b5.toLong & 0xFFL) << 16 | (b6.toLong & 0xFFL) << 8 | (b7.toLong & 0xFFL)
-  }
   ///// XXXToByte /////
   def int16ToBytes(value: Short): Array[Byte] = {
     val tempret = new Array[Byte](2)

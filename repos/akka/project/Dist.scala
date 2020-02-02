@@ -83,35 +83,32 @@ object Dist {
     }
   }
 
-  def distTask: Initialize[Task[File]] = {
+  def distTask: Initialize[Task[File]] =
     (baseDirectory, distSources, distUnzipped, version, distFile, streams) map {
       (projectBase, allSources, unzipped, version, zipFile, s) =>
-        {
-          val base = unzipped / ("akka-" + version)
-          val distBase = projectBase / "akka-kernel" / "src" / "main" / "dist"
-          val deploy = base / "deploy"
-          val doc = base / "doc" / "akka"
-          val api = doc / "api"
-          val docs = doc / "docs"
-          val docJars = doc / "jars"
-          val libs = allSources.depJars ++ allSources.libJars
-          val (scalaLibs, akkaLibs) =
-            libs partition (_.name.contains("scala-library"))
-          val lib = base / "lib"
-          val libAkka = lib / "akka"
-          val src = base / "src" / "akka"
-          IO.delete(unzipped)
-          copyDirectory(distBase, base, setExecutable = true)
-          copyDirectory(allSources.api, api)
-          copyDirectory(allSources.docs, docs)
-          copyFlat(allSources.docJars, docJars)
-          copyFlat(scalaLibs, lib)
-          copyFlat(akkaLibs, libAkka)
-          copyFlat(allSources.srcJars, src)
-          zip(unzipped, zipFile)
-        }
+        val base = unzipped / ("akka-" + version)
+        val distBase = projectBase / "akka-kernel" / "src" / "main" / "dist"
+        val deploy = base / "deploy"
+        val doc = base / "doc" / "akka"
+        val api = doc / "api"
+        val docs = doc / "docs"
+        val docJars = doc / "jars"
+        val libs = allSources.depJars ++ allSources.libJars
+        val (scalaLibs, akkaLibs) =
+          libs partition (_.name.contains("scala-library"))
+        val lib = base / "lib"
+        val libAkka = lib / "akka"
+        val src = base / "src" / "akka"
+        IO.delete(unzipped)
+        copyDirectory(distBase, base, setExecutable = true)
+        copyDirectory(allSources.api, api)
+        copyDirectory(allSources.docs, docs)
+        copyFlat(allSources.docJars, docJars)
+        copyFlat(scalaLibs, lib)
+        copyFlat(akkaLibs, libAkka)
+        copyFlat(allSources.srcJars, src)
+        zip(unzipped, zipFile)
     }
-  }
 
   def copyDirectory(
       source: File,
@@ -138,11 +135,10 @@ object Dist {
       sources: Traversable[(File, File)],
       overwrite: Boolean,
       preserveLastModified: Boolean,
-      setExecutable: Boolean): Set[File] = {
+      setExecutable: Boolean): Set[File] =
     sources map {
       Function.tupled(copy(overwrite, preserveLastModified, setExecutable))
     } toSet
-  }
 
   def copy(
       overwrite: Boolean,

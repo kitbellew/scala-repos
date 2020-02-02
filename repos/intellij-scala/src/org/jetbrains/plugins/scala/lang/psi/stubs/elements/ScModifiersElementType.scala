@@ -28,9 +28,8 @@ class ScModifiersElementType(debugName: String)
     for (modifier <- stub.getModifiers) dataStream.writeName(modifier)
   }
 
-  def createPsi(stub: ScModifiersStub): ScModifierList = {
+  def createPsi(stub: ScModifiersStub): ScModifierList =
     new ScModifierListImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScModifierList,

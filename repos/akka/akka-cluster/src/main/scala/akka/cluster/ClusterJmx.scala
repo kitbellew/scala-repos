@@ -175,10 +175,10 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         s"""{
         |  "self-address": "${clusterView.selfAddress}",
         |  "members": [
-        |    ${members}
+        |    $members
         |  ],
         |  "unreachable": [
-        |    ${unreachable}
+        |    $unreachable
         |  ]
         |}
         |""".stripMargin
@@ -217,12 +217,11 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
   /**
     * Unregisters the cluster JMX MBean from MBean server.
     */
-  def unregisterMBean(): Unit = {
+  def unregisterMBean(): Unit =
     try {
       mBeanServer.unregisterMBean(clusterMBeanName)
     } catch {
       case e: InstanceNotFoundException ⇒ // ignore - we are running multiple cluster nodes in the same JVM (probably for testing)
     }
-  }
 
 }

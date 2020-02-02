@@ -17,7 +17,7 @@ object GetGetOrElse extends SimplificationType() {
 
   def hint = InspectionBundle.message("get.getOrElse.hint")
 
-  override def getSimplification(expr: ScExpression) = {
+  override def getSimplification(expr: ScExpression) =
     expr match {
       case map `.getOnMap` (key) `.getOrElse` (default) =>
         Some(
@@ -26,6 +26,5 @@ object GetGetOrElse extends SimplificationType() {
             .highlightFrom(map))
       case _ => None
     }
-  }
 
 }

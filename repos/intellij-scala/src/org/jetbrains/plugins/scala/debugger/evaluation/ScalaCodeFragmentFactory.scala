@@ -95,9 +95,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
   def createPresentationCodeFragment(
       item: TextWithImports,
       context: PsiElement,
-      project: Project): JavaCodeFragment = {
+      project: Project): JavaCodeFragment =
     createCodeFragment(item, context, project)
-  }
 
   def isContextAccepted(contextElement: PsiElement): Boolean = {
     if (contextElement.isInstanceOf[PsiCodeBlock]) {

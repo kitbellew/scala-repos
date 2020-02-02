@@ -38,7 +38,7 @@ trait KinesisFunSuite extends SparkFunSuite {
   }
 
   /** Run the give body of code only if Kinesis tests are enabled */
-  def runIfTestsEnabled(message: String)(body: => Unit): Unit = {
+  def runIfTestsEnabled(message: String)(body: => Unit): Unit =
     if (shouldRunTests) {
       body
     } else {
@@ -46,5 +46,4 @@ trait KinesisFunSuite extends SparkFunSuite {
         s"$message [enable by setting env var $envVarNameForEnablingTests=1]")(
         ())
     }
-  }
 }

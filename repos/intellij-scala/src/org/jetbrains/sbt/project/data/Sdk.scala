@@ -56,14 +56,12 @@ object SdkUtils {
     }
   }
 
-  def javaLanguageLevelFrom(
-      javacOptions: Seq[String]): Option[LanguageLevel] = {
+  def javaLanguageLevelFrom(javacOptions: Seq[String]): Option[LanguageLevel] =
     for {
       sourcePos <- Option(javacOptions.indexOf("-source")).filterNot(_ == -1)
       sourceValue <- javacOptions.lift(sourcePos + 1)
       languageLevel <- Option(LanguageLevel.parse(sourceValue))
     } yield languageLevel
-  }
 
   private def findAndroidJdkByVersion(
       version: String): Option[projectRoots.Sdk] = {

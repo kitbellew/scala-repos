@@ -76,13 +76,11 @@ class PowerMethod(maxIters: Int = 10, tolerance: Double = 1e-5)
       }
       .takeUpToWhere(_.converged)
 
-  def iterateAndReturnState(A: BDM, y: BDV): State = {
+  def iterateAndReturnState(A: BDM, y: BDV): State =
     iterations(A, y).last
-  }
 
-  def eigen(A: BDM, y: BDV): Double = {
+  def eigen(A: BDM, y: BDV): Double =
     iterateAndReturnState(A, y).eigenValue
-  }
 }
 
 object PowerMethod {

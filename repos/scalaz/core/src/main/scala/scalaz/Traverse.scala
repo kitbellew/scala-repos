@@ -86,11 +86,11 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     import Free._
     implicit val A =
       StateT.stateTMonadState[S, Trampoline].compose(Applicative[G])
-    State[S, G[F[B]]](s => {
+    State[S, G[F[B]]] { s =>
       val st = traverse[λ[α => StateT[Trampoline, S, G[α]]], A, B](fa)(
         f(_: A).lift[Trampoline])
       st.run(s).run
-    })
+    }
   }
 
   /** Traverse `fa` with a `Kleisli[G, S, B]`, internally using a `Trampoline` to avoid stack overflow. */
@@ -99,11 +99,11 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     import Free._
     implicit val A =
       Kleisli.kleisliMonadReader[Trampoline, S].compose(Applicative[G])
-    Kleisli[G, S, F[B]](s => {
+    Kleisli[G, S, F[B]] { s =>
       val kl = traverse[λ[α => Kleisli[Trampoline, S, G[α]]], A, B](fa)(z =>
         Kleisli[Id, S, G[B]](i => f(z)(i)).lift[Trampoline]).run(s)
       kl.run
-    })
+    }
   }
 
   /** Traverse with the identity function. */
@@ -178,10 +178,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
   trait TraverseLaw extends FunctorLaw {
 
     /** Traversal through the [[scalaz.Id]] effect is equivalent to `Functor#map` */
-    def identityTraverse[A, B](fa: F[A], f: A => B)(
-        implicit FB: Equal[F[B]]) = {
+    def identityTraverse[A, B](fa: F[A], f: A => B)(implicit FB: Equal[F[B]]) =
       FB.equal(traverse[Id, A, B](fa)(f), map(fa)(f))
-    }
 
     /** Two sequentially dependent effects can be fused into one, their composition */
     def sequentialFusion[N[_], M[_], A, B, C](

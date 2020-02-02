@@ -129,9 +129,8 @@ class ZKStoreTest
 
   val conf = CompressionConf(false, 0)
 
-  override protected def beforeAll(configMap: ConfigMap): Unit = {
+  override protected def beforeAll(configMap: ConfigMap): Unit =
     super.beforeAll(configMap + ("zkPort" -> "2185"))
-  }
 
   override protected def afterAll(configMap: ConfigMap): Unit = {
     Await.ready(persistentStore.client.release())

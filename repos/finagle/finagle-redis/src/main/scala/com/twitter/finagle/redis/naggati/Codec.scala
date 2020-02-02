@@ -78,11 +78,10 @@ object Codec {
 
     def signals = flags
 
-    override def toString = {
+    override def toString =
       super.toString + flags
         .map { _.toString }
         .mkString(" with Signalling(", ", ", ")")
-    }
   }
 }
 
@@ -106,9 +105,8 @@ class Codec[A: Manifest](
 
   private[this] var stage = firstStage
 
-  private[this] def buffer(context: ChannelHandlerContext) = {
+  private[this] def buffer(context: ChannelHandlerContext) =
     ChannelBuffers.dynamicBuffer(context.getChannel.getConfig.getBufferFactory)
-  }
 
   private[this] def encode(obj: A): Option[ChannelBuffer] = {
     val buffer = encoder.encode(obj)

@@ -92,7 +92,7 @@ object ORSet {
   private def mergeCommonKeys[A](
       commonKeys: Iterator[A],
       lhs: ORSet[A],
-      rhs: ORSet[A]): Map[A, ORSet.Dot] = {
+      rhs: ORSet[A]): Map[A, ORSet.Dot] =
     commonKeys.foldLeft(Map.empty[A, ORSet.Dot]) {
       case (acc, k) ⇒
         val lhsDots = lhs.elementsMap(k)
@@ -158,7 +158,6 @@ object ORSet {
             else acc.updated(k, merged)
         }
     }
-  }
 
   /**
     * INTERNAL API
@@ -175,7 +174,7 @@ object ORSet {
       keys: Iterator[A],
       elementsMap: Map[A, ORSet.Dot],
       vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] = {
+      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] =
     keys.foldLeft(accumulator) {
       case (acc, k) ⇒
         val dots = elementsMap(k)
@@ -187,7 +186,6 @@ object ORSet {
           acc.updated(k, newDots)
         }
     }
-  }
 }
 
 /**
@@ -315,7 +313,7 @@ final class ORSet[A] private[akka] (
     * and the other Set version vector dominates those dots, then we need to drop those dots.
     * Keep only common dots, and dots that are not dominated by the other sides version vector
     */
-  override def merge(that: ORSet[A]): ORSet[A] = {
+  override def merge(that: ORSet[A]): ORSet[A] =
     if ((this eq that) || that.isAncestorOf(this)) this.clearAncestor()
     else if (this.isAncestorOf(that)) that.clearAncestor()
     else {
@@ -344,7 +342,6 @@ final class ORSet[A] private[akka] (
       clearAncestor()
       new ORSet(entries, mergedVvector)
     }
-  }
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean =
     vvector.needPruningFrom(removedNode)

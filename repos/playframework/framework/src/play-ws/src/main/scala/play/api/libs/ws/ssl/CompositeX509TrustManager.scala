@@ -121,7 +121,6 @@ class CompositeX509TrustManager(
     exceptionList
   }
 
-  override def toString = {
+  override def toString =
     s"CompositeX509TrustManager(trustManagers = [$trustManagers], algorithmChecker = $algorithmChecker)"
-  }
 }

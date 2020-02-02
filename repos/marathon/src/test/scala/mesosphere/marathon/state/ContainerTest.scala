@@ -255,9 +255,8 @@ class ContainerTest extends MarathonSpec with Matchers {
     JsonTestHelper.assertSerializationRoundtripWorks(f.container)
   }
 
-  private[this] def fromJson(json: String): Container = {
+  private[this] def fromJson(json: String): Container =
     Json.fromJson[Container](Json.parse(json)).get
-  }
 
   test("Reading JSON with volumes") {
     val json3 =

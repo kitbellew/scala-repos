@@ -137,12 +137,11 @@ class ScGenericCallImpl(node: ASTNode)
     typeResult.map(shapeType(_))
   }
 
-  override def shapeMultiResolve: Option[Array[ResolveResult]] = {
+  override def shapeMultiResolve: Option[Array[ResolveResult]] =
     referencedExpr match {
       case ref: ScReferenceExpression => Some(ref.shapeResolve)
       case expr                       => None
     }
-  }
 
   def multiType: Array[TypeResult[ScType]] = {
     val typeResult: Array[TypeResult[ScType]] = referencedExpr match {
@@ -152,12 +151,11 @@ class ScGenericCallImpl(node: ASTNode)
     typeResult.map(convertReferencedType)
   }
 
-  override def multiResolve: Option[Array[ResolveResult]] = {
+  override def multiResolve: Option[Array[ResolveResult]] =
     referencedExpr match {
       case ref: ScReferenceExpression => Some(ref.multiResolve(false))
       case expr                       => None
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitGenericCallExpression(this)

@@ -94,9 +94,8 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *
     */
   @Since("1.3.0")
-  def predict(testData: RDD[Double]): RDD[Double] = {
+  def predict(testData: RDD[Double]): RDD[Double] =
     testData.map(predict)
-  }
 
   /**
     * Predict labels for provided features.
@@ -107,9 +106,8 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *
     */
   @Since("1.3.0")
-  def predict(testData: JavaDoubleRDD): JavaDoubleRDD = {
+  def predict(testData: JavaDoubleRDD): JavaDoubleRDD =
     JavaDoubleRDD.fromRDD(predict(testData.rdd.retag.asInstanceOf[RDD[Double]]))
-  }
 
   /**
     * Predict a single label.
@@ -136,9 +134,8 @@ class IsotonicRegressionModel @Since("1.3.0") (
         y1: Double,
         x2: Double,
         y2: Double,
-        x: Double): Double = {
+        x: Double): Double =
       y1 + (y2 - y1) * (x - x1) / (x2 - x1)
-    }
 
     val foundIndex = binarySearch(boundaries, testData)
     val insertIndex = -foundIndex - 1
@@ -168,14 +165,13 @@ class IsotonicRegressionModel @Since("1.3.0") (
   private[mllib] def predictionVector: Vector = Vectors.dense(predictions)
 
   @Since("1.4.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     IsotonicRegressionModel.SaveLoadV1_0.save(
       sc,
       path,
       boundaries,
       predictions,
       isotonic)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -333,9 +329,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
     */
   @Since("1.3.0")
   def run(
-      input: JavaRDD[(JDouble, JDouble, JDouble)]): IsotonicRegressionModel = {
+      input: JavaRDD[(JDouble, JDouble, JDouble)]): IsotonicRegressionModel =
     run(input.rdd.retag.asInstanceOf[RDD[(Double, Double, Double)]])
-  }
 
   /**
     * Performs a pool adjacent violators algorithm (PAV).

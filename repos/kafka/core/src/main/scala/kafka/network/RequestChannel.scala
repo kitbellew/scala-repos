@@ -119,12 +119,11 @@ object RequestChannel extends Logging {
     buffer = null
     private val requestLogger = Logger.getLogger("kafka.request.logger")
 
-    private def requestDesc(details: Boolean): String = {
+    private def requestDesc(details: Boolean): String =
       if (requestObj != null)
         requestObj.describe(details)
       else
         header.toString + " -- " + body.toString
-    }
 
     trace(
       "Processor %d received request : %s".format(processor, requestDesc(true)))

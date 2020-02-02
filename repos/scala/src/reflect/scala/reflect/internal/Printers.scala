@@ -55,7 +55,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
   /** Turns a path into a String, introducing backquotes
     *  as necessary.
     */
-  def backquotedPath(t: Tree): String = {
+  def backquotedPath(t: Tree): String =
     t match {
       case Select(qual, name) if name.isTermName =>
         s"${backquotedPath(qual)}.${symName(t, name)}"
@@ -64,7 +64,6 @@ trait Printers extends api.Printers { self: SymbolTable =>
       case Ident(name) => symName(t, name)
       case _           => t.toString
     }
-  }
 
   class TreePrinter(out: PrintWriter) extends super.TreePrinter {
     protected var indentMargin = 0
@@ -615,7 +614,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
         insideAnnotated: Boolean = true,
         insideBlock: Boolean = true,
         insideLabelDef: Boolean = true,
-        insideAssign: Boolean = true) = {
+        insideAssign: Boolean = true) =
       parent match {
         case _: If        => insideIf
         case _: Match     => insideMatch
@@ -626,7 +625,6 @@ trait Printers extends api.Printers { self: SymbolTable =>
         case _: Assign    => insideAssign
         case _            => false
       }
-    }
 
     protected def checkForBlank(cond: Boolean) = if (cond) " " else ""
     protected def blankForOperatorName(name: Name) =
@@ -634,7 +632,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
     protected def blankForName(name: Name) =
       checkForBlank(name.isOperatorName || name.endsWith("_"))
 
-    protected def resolveSelect(t: Tree): String = {
+    protected def resolveSelect(t: Tree): String =
       t match {
         // case for: 1) (if (a) b else c).meth1.meth2 or 2) 1 + 5 should be represented as (1).+(5)
         case Select(qual, name)
@@ -648,7 +646,6 @@ trait Printers extends api.Printers { self: SymbolTable =>
         case Ident(name) => printedName(name)
         case _           => render(t, new CodePrinter(_, printRootPkg))
       }
-    }
 
     object EmptyTypeTree {
       def unapply(tt: TypeTree): Boolean = tt match {
@@ -718,9 +715,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
         ts: List[Tree],
         start: String,
         sep: String,
-        end: String) = {
+        end: String) =
       super.printColumn(ts.filter(!syntheticToRemove(_)), start, sep, end)
-    }
 
     def printFlags(mods: Modifiers, primaryCtorParam: Boolean = false): Unit = {
       val base = AccessFlags | OVERRIDE | ABSTRACT | FINAL | SEALED | LAZY
@@ -778,9 +774,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
           super.printParam(tree)
       }
 
-    override def printParam(tree: Tree): Unit = {
+    override def printParam(tree: Tree): Unit =
       printParam(tree, primaryCtorParam = false)
-    }
 
     protected def printArgss(argss: List[List[Tree]]) =
       argss foreach { x: List[Tree] =>
@@ -792,7 +787,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
       annots foreach { annot => printAnnot(annot); print(" ") }
     }
 
-    protected def printAnnot(tree: Tree) = {
+    protected def printAnnot(tree: Tree) =
       tree match {
         case treeInfo.Applied(core, _, argss) =>
           print("@")
@@ -803,7 +798,6 @@ trait Printers extends api.Printers { self: SymbolTable =>
           printArgss(argss)
         case _ => super.printTree(tree)
       }
-    }
 
     override def printTree(tree: Tree): Unit = {
       parentsStack.push(tree)
@@ -852,13 +846,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
               printModifiers(ctorMods, primaryCtorParam = false)
             }
 
-            def printConstrParams(ts: List[ValDef]): Unit = {
+            def printConstrParams(ts: List[ValDef]): Unit =
               parenthesize() {
                 printImplicitInParamsList(ts)
                 printSeq(ts)(printParam(_, primaryCtorParam = true))(
                   print(", "))
               }
-            }
             // constructor's params processing (don't print single empty constructor param list)
             vparamss match {
               case Nil | List(Nil)
@@ -1492,7 +1485,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
       prefix + name.toString + "\")"
   }
 
-  def show(flags: FlagSet): String = {
+  def show(flags: FlagSet): String =
     if (flags == NoFlags) nme.NoFlags.toString
     else {
       val s_flags = new scala.collection.mutable.ListBuffer[String]
@@ -1504,11 +1497,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
           .toUpperCase
       s_flags mkString " | "
     }
-  }
 
-  def show(position: Position): String = {
+  def show(position: Position): String =
     position.show
-  }
 
   def showDecl(sym: Symbol): String = {
     if (!isCompilerUniverse) definitions.fullyInitializeSymbol(sym)

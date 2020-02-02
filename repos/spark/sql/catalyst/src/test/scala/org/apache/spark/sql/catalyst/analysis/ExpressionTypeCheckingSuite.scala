@@ -51,9 +51,8 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
     SimpleAnalyzer.checkAnalysis(analyzed)
   }
 
-  def assertErrorForDifferingTypes(expr: Expression): Unit = {
+  def assertErrorForDifferingTypes(expr: Expression): Unit =
     assertError(expr, s"differing types in '${expr.sql}'")
-  }
 
   test("check types for unary arithmetic") {
     assertError(UnaryMinus('stringField), "(numeric or calendarinterval) type")

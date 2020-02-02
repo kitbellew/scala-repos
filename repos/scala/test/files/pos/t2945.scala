@@ -1,5 +1,5 @@
 object Foo {
-  def test(s: String) = {
+  def test(s: String) =
     (s: Seq[Char]) match {
       case Seq('f', 'o', 'o', ' ', rest1 @ _*) =>
         rest1
@@ -8,5 +8,4 @@ object Foo {
       case _ =>
         s
     }
-  }
 }

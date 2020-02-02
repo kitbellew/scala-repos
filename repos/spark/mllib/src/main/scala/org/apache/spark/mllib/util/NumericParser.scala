@@ -112,12 +112,11 @@ private[mllib] object NumericParser {
     items
   }
 
-  private def parseDouble(s: String): Double = {
+  private def parseDouble(s: String): Double =
     try {
       java.lang.Double.parseDouble(s)
     } catch {
       case e: NumberFormatException =>
         throw new SparkException(s"Cannot parse a double from: $s", e)
     }
-  }
 }

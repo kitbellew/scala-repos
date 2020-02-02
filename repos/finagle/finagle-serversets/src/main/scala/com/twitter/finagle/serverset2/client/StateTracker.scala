@@ -17,9 +17,8 @@ class StateTracker(
       sample()
     }
 
-  def close(deadline: Time): Future[Unit] = {
+  def close(deadline: Time): Future[Unit] =
     timerTask.close(deadline)
-  }
 
   def transition(newState: SessionState): Unit = synchronized {
     sample()

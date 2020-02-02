@@ -100,28 +100,25 @@ private[util] class BatchedWriteAheadLog(
     * This method is primarily used in testing, and to ensure that it is not used in production,
     * we throw an UnsupportedOperationException.
     */
-  override def read(segment: WriteAheadLogRecordHandle): ByteBuffer = {
+  override def read(segment: WriteAheadLogRecordHandle): ByteBuffer =
     throw new UnsupportedOperationException(
       "read() is not supported for BatchedWriteAheadLog " +
         "as the data may require de-aggregation.")
-  }
 
   /**
     * Read all the existing logs from the log directory. The output of the wrapped WriteAheadLog
     * will be de-aggregated.
     */
-  override def readAll(): JIterator[ByteBuffer] = {
+  override def readAll(): JIterator[ByteBuffer] =
     wrappedLog.readAll().asScala.flatMap(deaggregate).asJava
-  }
 
   /**
     * Delete the log files that are older than the threshold time.
     *
     * This method is handled by the parent WriteAheadLog.
     */
-  override def clean(threshTime: Long, waitForCompletion: Boolean): Unit = {
+  override def clean(threshTime: Long, waitForCompletion: Boolean): Unit =
     wrappedLog.clean(threshTime, waitForCompletion)
-  }
 
   /**
     * Stop the batched writer thread, fulfill promises with failures and close the wrapped WAL.
@@ -216,11 +213,10 @@ private[util] object BatchedWriteAheadLog {
       promise: Promise[WriteAheadLogRecordHandle])
 
   /** Aggregate multiple serialized ReceivedBlockTrackerLogEvents in a single ByteBuffer. */
-  def aggregate(records: Seq[Record]): ByteBuffer = {
+  def aggregate(records: Seq[Record]): ByteBuffer =
     ByteBuffer.wrap(
       Utils.serialize[Array[Array[Byte]]](
         records.map(record => JavaUtils.bufferToArray(record.data)).toArray))
-  }
 
   /**
     * De-aggregate serialized ReceivedBlockTrackerLogEvents in a single ByteBuffer.

@@ -50,13 +50,12 @@ object HBEventsUtil {
   def tableName(
       namespace: String,
       appId: Int,
-      channelId: Option[Int] = None): String = {
+      channelId: Option[Int] = None): String =
     channelId
-      .map { ch => s"${namespace}:events_${appId}_${ch}" }
+      .map { ch => s"$namespace:events_${appId}_$ch" }
       .getOrElse {
-        s"${namespace}:events_${appId}"
+        s"$namespace:events_$appId"
       }
-  }
 
   // column names for "e" column family
   val colNames: Map[String, Array[Byte]] = Map(
@@ -90,9 +89,8 @@ object HBEventsUtil {
 
     lazy val toBytes: Array[Byte] = b
 
-    override def toString: String = {
+    override def toString: String =
       Base64.encodeBase64URLSafeString(toBytes)
-    }
   }
 
   object RowKey {
@@ -110,22 +108,21 @@ object HBEventsUtil {
     }
 
     // get RowKey from string representation
-    def apply(s: String): RowKey = {
+    def apply(s: String): RowKey =
       try {
         apply(Base64.decodeBase64(s))
       } catch {
         case e: Exception =>
           throw new RowKeyException(
-            s"Failed to convert String ${s} to RowKey because ${e}",
+            s"Failed to convert String $s to RowKey because $e",
             e)
       }
-    }
 
     def apply(b: Array[Byte]): RowKey = {
       if (b.size != 32) {
         val bString = b.mkString(",")
         throw new RowKeyException(
-          s"Incorrect byte array size. Bytes: ${bString}.")
+          s"Incorrect byte array size. Bytes: $bString.")
       }
       new RowKey(b)
     }
@@ -168,13 +165,11 @@ object HBEventsUtil {
     // use eventTime as HBase's cell timestamp
     val put = new Put(rowKey.toBytes, event.eventTime.getMillis)
 
-    def addStringToE(col: Array[Byte], v: String): Put = {
+    def addStringToE(col: Array[Byte], v: String): Put =
       put.add(eBytes, col, Bytes.toBytes(v))
-    }
 
-    def addLongToE(col: Array[Byte], v: Long): Put = {
+    def addLongToE(col: Array[Byte], v: Long): Put =
       put.add(eBytes, col, Bytes.toBytes(v))
-    }
 
     addStringToE(colNames("event"), event.event)
     addStringToE(colNames("entityType"), event.entityType)
@@ -221,7 +216,7 @@ object HBEventsUtil {
       val r = result.getValue(eBytes, colNames(col))
       require(
         r != null,
-        s"Failed to get value for column ${col}. " +
+        s"Failed to get value for column $col. " +
           s"Rowkey: ${rowKey.toString} " +
           s"StringBinary: ${Bytes.toStringBinary(result.getRow())}.")
 
@@ -232,7 +227,7 @@ object HBEventsUtil {
       val r = result.getValue(eBytes, colNames(col))
       require(
         r != null,
-        s"Failed to get value for column ${col}. " +
+        s"Failed to get value for column $col. " +
           s"Rowkey: ${rowKey.toString} " +
           s"StringBinary: ${Bytes.toStringBinary(result.getRow())}.")
 
@@ -248,9 +243,8 @@ object HBEventsUtil {
       }
     }
 
-    def getTimestamp(col: String): Long = {
+    def getTimestamp(col: String): Long =
       result.getColumnLatestCell(eBytes, colNames(col)).getTimestamp()
-    }
 
     val event = getStringCol("event")
     val entityType = getStringCol("entityType")

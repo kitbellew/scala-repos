@@ -26,18 +26,16 @@ trait CollectionsCheckedCollectionTest extends CollectionsOnCollectionsTest {
 
   def originalFactory: CollectionFactory
 
-  def factory: CollectionFactory = {
+  def factory: CollectionFactory =
     new CollectionFactory {
       override def implementationName: String =
         s"checkedCollection(${originalFactory.implementationName})"
 
-      override def empty[E](implicit ct: ClassTag[E]): ju.Collection[E] = {
+      override def empty[E](implicit ct: ClassTag[E]): ju.Collection[E] =
         ju.Collections.checkedCollection(
           originalFactory.empty[E],
           ct.runtimeClass.asInstanceOf[Class[E]])
-      }
     }
-  }
 
   @Test def testCheckedCollection(): Unit = {
     assertTrue(superColl().add(new C))

@@ -182,7 +182,7 @@ object ScalaClassNameCompletionContributor {
     def addTypeForCompletion(typeToImport: TypeToImport) {
       val isExcluded: Boolean = ApplicationManager.getApplication.runReadAction(
         new Computable[Boolean] {
-          def compute: Boolean = {
+          def compute: Boolean =
             typeToImport match {
               case ClassTypeToImport(classToImport) =>
                 JavaCompletionUtil.isInExcludedPackage(classToImport, false)
@@ -195,7 +195,6 @@ object ScalaClassNameCompletionContributor {
                   .getSettings(pack.getProject)
                   .isExcluded(pack.getQualifiedName)
             }
-          }
         })
       if (isExcluded) return
 

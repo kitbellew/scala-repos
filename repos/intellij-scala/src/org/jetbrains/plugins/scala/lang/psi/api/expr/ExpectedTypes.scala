@@ -84,7 +84,7 @@ private[expr] object ExpectedTypes {
       : Array[(ScType, Option[ScTypeElement])] = {
     @tailrec
     def fromFunction(tp: (ScType, Option[ScTypeElement]))
-        : Array[(ScType, Option[ScTypeElement])] = {
+        : Array[(ScType, Option[ScTypeElement])] =
       tp._1 match {
         case ScFunctionType(retType, _) =>
           Array[(ScType, Option[ScTypeElement])]((retType, None))
@@ -98,12 +98,11 @@ private[expr] object ExpectedTypes {
           }
         case _ => Array[(ScType, Option[ScTypeElement])]()
       }
-    }
 
     def mapResolves(
         resolves: Array[ResolveResult],
         types: Array[TypeResult[ScType]])
-        : Array[(TypeResult[ScType], Boolean)] = {
+        : Array[(TypeResult[ScType], Boolean)] =
       resolves.zip(types).map {
         case (r: ScalaResolveResult, tp) =>
           val isNamedDynamic =
@@ -112,7 +111,6 @@ private[expr] object ExpectedTypes {
           (tp, isNamedDynamic)
         case (_, tp) => (tp, false)
       }
-    }
 
     val result: Array[(ScType, Option[ScTypeElement])] = expr.getContext match {
       case p: ScParenthesisedExpr => p.expectedTypesEx(fromUnderscore = false)
@@ -453,7 +451,7 @@ private[expr] object ExpectedTypes {
     }
 
     @tailrec
-    def checkIsUnderscore(expr: ScExpression): Boolean = {
+    def checkIsUnderscore(expr: ScExpression): Boolean =
       expr match {
         case p: ScParenthesisedExpr =>
           p.expr match {
@@ -462,7 +460,6 @@ private[expr] object ExpectedTypes {
           }
         case _ => ScUnderScoreSectionUtil.underscores(expr).nonEmpty
       }
-    }
 
     if (fromUnderscore && checkIsUnderscore(expr)) {
       val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
@@ -574,11 +571,10 @@ private[expr] object ExpectedTypes {
             case r @ ScalaResolveResult(fun: ScFunction, s) =>
               val isDynamicNamed =
                 r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
-              def update(tp: ScType): ScType = {
+              def update(tp: ScType): ScType =
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)
                 else tp
-              }
               var polyType: TypeResult[ScType] = Success(
                 s.subst(fun.polymorphicType()) match {
                   case ScTypePolymorphicType(internal, params) =>
@@ -610,11 +606,10 @@ private[expr] object ExpectedTypes {
             case r @ ScalaResolveResult(fun: ScFunction, subst) =>
               val isDynamicNamed =
                 r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
-              def update(tp: ScType): ScType = {
+              def update(tp: ScType): ScType =
                 if (r.isDynamic)
                   ResolvableReferenceExpression.getDynamicReturn(tp)
                 else tp
-              }
               var polyType: TypeResult[ScType] =
                 Success(update(subst.subst(fun.polymorphicType())), Some(expr))
               call.foreach(call =>

@@ -37,7 +37,7 @@ private[hive] case class DescribeHiveTableCommand(
     isExtended: Boolean)
     extends RunnableCommand {
 
-  override def run(sqlContext: SQLContext): Seq[Row] = {
+  override def run(sqlContext: SQLContext): Seq[Row] =
     // There are two modes here:
     // For metastore tables, create an output similar to Hive's.
     // For other tables, delegate to DescribeCommand.
@@ -80,5 +80,4 @@ private[hive] case class DescribeHiveTableCommand(
       case o: LogicalPlan =>
         DescribeCommand(tableId, output, isExtended).run(sqlContext)
     }
-  }
 }

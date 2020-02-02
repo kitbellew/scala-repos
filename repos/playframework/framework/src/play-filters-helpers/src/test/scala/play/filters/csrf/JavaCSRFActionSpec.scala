@@ -116,17 +116,15 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       import play.core.j.PlayMagicForJava.requestHeader
       Results.ok(CSRF.getToken.get.value)
     }
-    def getToken(): Result = {
+    def getToken(): Result =
       Results.ok(
         Option(CSRF.getToken(Controller.request()).orElse(null)) match {
           case Some(CSRF.Token(_, value)) => value
           case None                       => ""
         })
-    }
     @RequireCSRFCheck
-    def check(): Result = {
+    def check(): Result =
       Results.ok()
-    }
     @AddCSRFToken
     def withSession(): Result = {
       Context.current().session().put("hello", "world")
@@ -142,14 +140,12 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       Results.ok(CSRF.getToken.get.value)
     }
     @RequireCSRFCheck(error = classOf[CustomErrorHandler])
-    def check(): Result = {
+    def check(): Result =
       Results.ok()
-    }
   }
 
   class CustomErrorHandler extends CSRFErrorHandler {
-    def handle(req: RequestHeader, msg: String) = {
+    def handle(req: RequestHeader, msg: String) =
       CompletableFuture.completedFuture(Results.unauthorized(msg))
-    }
   }
 }

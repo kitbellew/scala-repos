@@ -24,10 +24,10 @@ class SinkForeachParallelSpec extends AkkaSpec {
 
       val probe = TestProbe()
       val latch = (1 to 4).map(_ -> TestLatch(1)).toMap
-      val p = Source(1 to 4).runWith(Sink.foreachParallel(4)((n: Int) ⇒ {
+      val p = Source(1 to 4).runWith(Sink.foreachParallel(4) { (n: Int) ⇒
         Await.ready(latch(n), 5.seconds)
         probe.ref ! n
-      }))
+      })
       latch(2).countDown()
       probe.expectMsg(2)
       latch(4).countDown()
@@ -50,10 +50,10 @@ class SinkForeachParallelSpec extends AkkaSpec {
       val probe = TestProbe()
       val latch = (1 to 5).map(_ -> TestLatch()).toMap
 
-      val p = Source(1 to 5).runWith(Sink.foreachParallel(4)((n: Int) ⇒ {
+      val p = Source(1 to 5).runWith(Sink.foreachParallel(4) { (n: Int) ⇒
         probe.ref ! n
         Await.ready(latch(n), 5.seconds)
-      }))
+      })
       probe.expectMsgAllOf(1, 2, 3, 4)
       probe.expectNoMsg(200.millis)
 
@@ -75,16 +75,15 @@ class SinkForeachParallelSpec extends AkkaSpec {
       val probe = TestProbe()
       val latch = TestLatch(1)
 
-      val p = Source(1 to 5).runWith(
-        Sink
-          .foreachParallel(4)((n: Int) ⇒ {
-            if (n == 3) throw new RuntimeException("err1") with NoStackTrace
-            else {
-              probe.ref ! n
-              Await.ready(latch, 10.seconds)
-            }
-          })
-          .withAttributes(supervisionStrategy(resumingDecider)))
+      val p = Source(1 to 5).runWith(Sink
+        .foreachParallel(4) { (n: Int) ⇒
+          if (n == 3) throw new RuntimeException("err1") with NoStackTrace
+          else {
+            probe.ref ! n
+            Await.ready(latch, 10.seconds)
+          }
+        }
+        .withAttributes(supervisionStrategy(resumingDecider)))
 
       latch.countDown()
       probe.expectMsgAllOf(1, 2, 4, 5)
@@ -97,16 +96,15 @@ class SinkForeachParallelSpec extends AkkaSpec {
       val latch = TestLatch(1)
 
       implicit val ec = system.dispatcher
-      val p = Source(1 to 5).runWith(
-        Sink
-          .foreachParallel(3)((n: Int) ⇒ {
-            if (n == 3) throw new RuntimeException("err2") with NoStackTrace
-            else {
-              probe.ref ! n
-              Await.ready(latch, 10.seconds)
-            }
-          })
-          .withAttributes(supervisionStrategy(stoppingDecider)))
+      val p = Source(1 to 5).runWith(Sink
+        .foreachParallel(3) { (n: Int) ⇒
+          if (n == 3) throw new RuntimeException("err2") with NoStackTrace
+          else {
+            probe.ref ! n
+            Await.ready(latch, 10.seconds)
+          }
+        }
+        .withAttributes(supervisionStrategy(stoppingDecider)))
       p.onFailure { case e ⇒ assert(e.getMessage.equals("err2")); Unit }
       p.onSuccess { case _ ⇒ fail() }
 

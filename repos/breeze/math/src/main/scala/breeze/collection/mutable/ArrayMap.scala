@@ -40,14 +40,13 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
   def this(defValue: => V = ArrayMap.error) =
     this(defValue, new ArrayBuffer[V]())
   override def default(i: Int): V = defValue
-  override def apply(i: Int) = {
+  override def apply(i: Int) =
     if (i < arr.length) {
       arr(i)
     } else {
       update(i, default(i))
       arr(i)
     }
-  }
   override def get(i: Int) = if (i < arr.length) Some(arr(i)) else None
   override def +=(k: (Int, V)): this.type = { update(k._1, k._2); this }
   override def clear = arr.clear()

@@ -36,9 +36,8 @@ final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
 
   /** A version of `sequence` that infers the nested type constructor */
   final def sequenceU(
-      implicit G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ = {
+      implicit G: Unapply[Applicative, A]): G.M[F[G.A]] /*G[F[A]] */ =
     G.TC.traverse(self)(x => G.apply(x))
-  }
 
   /** A version of `traverse` specialized for `State` */
   final def traverseS[S, B](f: A => State[S, B]): State[S, F[B]] =

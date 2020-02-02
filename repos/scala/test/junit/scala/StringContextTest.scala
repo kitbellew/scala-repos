@@ -142,8 +142,8 @@ class StringContextTest {
     val ss = List[(String, String)](
       // 'b' / 'B' (category: general)
       // -----------------------------
-      f"${b_false}%b" -> "false",
-      f"${b_true}%b" -> "true",
+      f"$b_false%b" -> "false",
+      f"$b_true%b" -> "true",
       f"${null}%b" -> "false",
       f"${false}%b" -> "false",
       f"${true}%b" -> "true",
@@ -160,19 +160,19 @@ class StringContextTest {
       // 'h' | 'H' (category: general)
       // -----------------------------
       f"${null}%h" -> "null",
-      f"${f_zero}%h" -> "0",
-      f"${f_zero_-}%h" -> "80000000",
-      f"${s}%h" -> "4c01926",
+      f"$f_zero%h" -> "0",
+      f"$f_zero_-%h" -> "80000000",
+      f"$s%h" -> "4c01926",
       f"${null}%H" -> "NULL",
-      f"${s}%H" -> "4C01926",
+      f"$s%H" -> "4C01926",
       // 's' | 'S' (category: general)
       // -----------------------------
       f"${null}%s" -> "null",
       f"${null}%S" -> "NULL",
-      f"${s}%s" -> "Scala",
-      f"${s}%S" -> "SCALA",
+      f"$s%s" -> "Scala",
+      f"$s%S" -> "SCALA",
       f"${5}" -> "5",
-      f"${i}" -> "42",
+      f"$i" -> "42",
       f"${'foo}" -> "'foo",
       f"${Thread.State.NEW}" -> "NEW",
       // 'c' | 'C' (category: character)
@@ -206,7 +206,7 @@ class StringContextTest {
       f"${BigInt(120)}%d" -> "120",
       f"${new java.math.BigInteger("120")}%d" -> "120",
       f"${4}%#10X" -> "       0X4",
-      f"She is ${fff}%#s feet tall." -> "She is 4 feet tall.",
+      f"She is $fff%#s feet tall." -> "She is 4 feet tall.",
       f"Just want to say ${"hello, world"}%#s..." -> "Just want to say hello, world...", {
         implicit val strToShort = (s: String) => java.lang.Short.parseShort(s);
         f"${"120"}%d"
@@ -224,7 +224,7 @@ class StringContextTest {
       f"${3L}%e" -> locally"3.000000e+00",
       // 't' | 'T' (category: date/time)
       // -------------------------------
-      f"${c}%TD" -> "05/26/12",
+      f"$c%TD" -> "05/26/12",
       f"${c.getTime}%TD" -> "05/26/12",
       f"${c.getTime.getTime}%TD" -> "05/26/12",
       f"""${"1234"}%TD""" -> "05/26/12",
@@ -234,7 +234,7 @@ class StringContextTest {
         """| mind
           |------
           |matter""".stripMargin.lines.mkString(compat.Platform.EOL),
-      f"${i}%d %<d ${9}%d" -> "42 42 9",
+      f"$i%d %<d ${9}%d" -> "42 42 9",
       f"${7}%d %<d ${9}%d" -> "7 7 9",
       f"${7}%d %2$$d ${9}%d" -> "7 9 9",
       f"${null}%d %<B" -> "null FALSE",

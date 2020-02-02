@@ -171,7 +171,7 @@ private[streaming] class BlockGenerator(
   /**
     * Push a single data item into the buffer.
     */
-  def addData(data: Any): Unit = {
+  def addData(data: Any): Unit =
     if (state == Active) {
       waitToPush()
       synchronized {
@@ -186,13 +186,12 @@ private[streaming] class BlockGenerator(
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
     }
-  }
 
   /**
     * Push a single data item into the buffer. After buffering the data, the
     * `BlockGeneratorListener.onAddData` callback will be called.
     */
-  def addDataWithCallback(data: Any, metadata: Any): Unit = {
+  def addDataWithCallback(data: Any, metadata: Any): Unit =
     if (state == Active) {
       waitToPush()
       synchronized {
@@ -208,7 +207,6 @@ private[streaming] class BlockGenerator(
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
     }
-  }
 
   /**
     * Push multiple data items into the buffer. After buffering the data, the
@@ -217,7 +215,7 @@ private[streaming] class BlockGenerator(
     */
   def addMultipleDataWithCallback(
       dataIterator: Iterator[Any],
-      metadata: Any): Unit = {
+      metadata: Any): Unit =
     if (state == Active) {
       // Unroll iterator into a temp buffer, and wait for pushing in the process
       val tempBuffer = new ArrayBuffer[Any]
@@ -238,14 +236,13 @@ private[streaming] class BlockGenerator(
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
     }
-  }
 
   def isActive(): Boolean = state == Active
 
   def isStopped(): Boolean = state == StoppedAll
 
   /** Change the buffer to which single records are added to. */
-  private def updateCurrentBuffer(time: Long): Unit = {
+  private def updateCurrentBuffer(time: Long): Unit =
     try {
       var newBlock: Block = null
       synchronized {
@@ -267,7 +264,6 @@ private[streaming] class BlockGenerator(
       case e: Exception =>
         reportError("Error in block updating thread", e)
     }
-  }
 
   /** Keep pushing blocks to the BlockManager. */
   private def keepPushingBlocks() {

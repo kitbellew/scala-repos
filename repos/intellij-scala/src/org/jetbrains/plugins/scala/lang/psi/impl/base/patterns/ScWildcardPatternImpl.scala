@@ -18,12 +18,11 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 class ScWildcardPatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScWildcardPattern {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def isIrrefutableFor(t: Option[ScType]): Boolean = true
 

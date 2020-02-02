@@ -90,10 +90,9 @@ class JDBCAccessKeys(
   }
 
   /** Convert JDBC results to [[AccessKey]] */
-  def resultToAccessKey(rs: WrappedResultSet): AccessKey = {
+  def resultToAccessKey(rs: WrappedResultSet): AccessKey =
     AccessKey(
       key = rs.string("accesskey"),
       appid = rs.int("appid"),
       events = rs.stringOpt("events").map(_.split(",").toSeq).getOrElse(Nil))
-  }
 }

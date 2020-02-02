@@ -25,7 +25,7 @@ object PersistentActorFailureSpec {
   class FailingInmemJournal extends InmemJournal {
 
     override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite])
-        : Future[immutable.Seq[Try[Unit]]] = {
+        : Future[immutable.Seq[Try[Unit]]] =
       if (isWrong(messages))
         throw new SimulatedException("Simulated Store failure")
       else {
@@ -35,7 +35,6 @@ object PersistentActorFailureSpec {
         else
           super.asyncWriteMessages(messages)
       }
-    }
 
     override def asyncReplayMessages(
         persistenceId: String,
@@ -126,7 +125,7 @@ object PersistentActorFailureSpec {
     def this(name: String) = this(name, None)
 
     override val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒ persist(Evt(s"${data}"))(updateState)
+      case Cmd(data) ⇒ persist(Evt(s"$data"))(updateState)
     }
 
     val failingRecover: Receive = {
@@ -142,7 +141,7 @@ object PersistentActorFailureSpec {
   class ThrowingActor1(name: String) extends ExamplePersistentActor(name) {
     override val receiveCommand: Receive = commonBehavior orElse {
       case Cmd(data) ⇒
-        persist(Evt(s"${data}"))(updateState)
+        persist(Evt(s"$data"))(updateState)
         if (data == "err")
           throw new SimulatedException("Simulated exception 1")
     }
@@ -151,7 +150,7 @@ object PersistentActorFailureSpec {
   class ThrowingActor2(name: String) extends ExamplePersistentActor(name) {
     override val receiveCommand: Receive = commonBehavior orElse {
       case Cmd(data) ⇒
-        persist(Evt(s"${data}")) { evt ⇒
+        persist(Evt(s"$data")) { evt ⇒
           if (data == "err")
             throw new SimulatedException("Simulated exception 1")
           updateState(evt)

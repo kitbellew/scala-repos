@@ -13,10 +13,8 @@
 class A {
   case class Foo[T](x: T)
 
-  def f1(xs: List[Foo[Int]]) = {
+  def f1(xs: List[Foo[Int]]) =
     for (Foo(x: Int) <- xs) yield x
-  }
-  def f2(xs: List[Foo[Any]]) = {
+  def f2(xs: List[Foo[Any]]) =
     for (Foo(x: Int) <- xs) yield x
-  }
 }

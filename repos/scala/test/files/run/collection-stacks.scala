@@ -7,9 +7,8 @@ object Test extends App {
     s
   }
 
-  def immutableStack[T](xs: T*): immutable.Stack[T] = {
+  def immutableStack[T](xs: T*): immutable.Stack[T] =
     immutable.Stack.empty[T] pushAll xs
-  }
 
   def check[T](expected: T, got: T) {
     println(got + ": " + (expected == got))

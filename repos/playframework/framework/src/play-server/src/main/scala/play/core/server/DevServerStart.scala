@@ -32,9 +32,8 @@ object DevServerStart {
       buildLink: BuildLink,
       buildDocHandler: BuildDocHandler,
       httpsPort: Int,
-      httpAddress: String): ServerWithStop = {
+      httpAddress: String): ServerWithStop =
     mainDev(buildLink, buildDocHandler, None, Some(httpsPort), httpAddress)
-  }
 
   /**
     * Provides an HTTP server for the dev environment
@@ -46,14 +45,13 @@ object DevServerStart {
       buildLink: BuildLink,
       buildDocHandler: BuildDocHandler,
       httpPort: Int,
-      httpAddress: String): ServerWithStop = {
+      httpAddress: String): ServerWithStop =
     mainDev(
       buildLink,
       buildDocHandler,
       Some(httpPort),
       Option(System.getProperty("https.port")).map(Integer.parseInt(_)),
       httpAddress)
-  }
 
   private def mainDev(
       buildLink: BuildLink,
@@ -158,7 +156,7 @@ object DevServerStart {
                               val sourceMapper = new SourceMapper {
                                 def sourceOf(
                                     className: String,
-                                    line: Option[Int]) = {
+                                    line: Option[Int]) =
                                   Option(
                                     buildLink.findSource(
                                       className,
@@ -173,7 +171,6 @@ object DevServerStart {
                                       Some((file, Some(line)))
                                     case _ => None
                                   }
-                                }
                               }
 
                               val webCommands = new DefaultWebCommands
@@ -226,7 +223,7 @@ object DevServerStart {
           }
 
           override def handleWebCommand(
-              request: play.api.mvc.RequestHeader): Option[Result] = {
+              request: play.api.mvc.RequestHeader): Option[Result] =
             buildDocHandler
               .maybeHandleDocRequest(request)
               .asInstanceOf[Option[Result]]
@@ -234,8 +231,6 @@ object DevServerStart {
                 currentWebCommands.flatMap(
                   _.handleWebCommand(request, buildLink, path))
               )
-
-          }
 
         }
 

@@ -36,7 +36,7 @@ private[v1] class EventLogDownloadResource(
   val conf = SparkHadoopUtil.get.newConfiguration(new SparkConf)
 
   @GET
-  def getEventLogs(): Response = {
+  def getEventLogs(): Response =
     try {
       val fileName = {
         attemptId match {
@@ -70,5 +70,4 @@ private[v1] class EventLogDownloadResource(
           .status(Response.Status.SERVICE_UNAVAILABLE)
           .build()
     }
-  }
 }

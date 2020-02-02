@@ -61,14 +61,13 @@ abstract class Ticket15109Spec
     expectMsgType[ActorIdentity](5.seconds).getRef
   }
 
-  def ping(ref: ActorRef) = {
+  def ping(ref: ActorRef) =
     within(30.seconds) {
       awaitAssert {
         ref ! "ping"
         expectMsg(1.second, "pong")
       }
     }
-  }
 
   "Quarantining" must {
 

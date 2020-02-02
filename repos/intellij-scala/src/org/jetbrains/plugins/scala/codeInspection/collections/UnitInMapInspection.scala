@@ -64,12 +64,11 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
   }
 
   object lambdaWithBody {
-    def unapply(expr: ScExpression): Option[ScExpression] = {
+    def unapply(expr: ScExpression): Option[ScExpression] =
       expr match {
         case ScBlock(ScFunctionExpr(_, res)) => res
         case ScFunctionExpr(_, res)          => res
         case e                               => Some(e)
       }
-    }
   }
 }

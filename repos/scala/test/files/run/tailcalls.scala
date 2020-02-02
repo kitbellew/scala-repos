@@ -203,34 +203,28 @@ object PolyObject extends App {
 
 class FancyTailCalls {
 
-  def tcTryLocal(x: Int, v: Int): Int = {
+  def tcTryLocal(x: Int, v: Int): Int =
     try {
-      def loop(n: Int): Int = {
+      def loop(n: Int): Int =
         if (n == 0) v else loop(n - 1)
-      }
       loop(x)
     } finally {}
-  }
 
   def tcInBooleanExprFirstOp(x: Int, v: Int): Boolean = {
-    {
-      def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
-      loop(x)
-    } == v && true
-  }
-  def tcInBooleanExprSecondOp(x: Int, v: Int): Boolean = {
+    def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
+    loop(x)
+  } == v && true
+  def tcInBooleanExprSecondOp(x: Int, v: Int): Boolean =
     true && {
       def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
       loop(x)
     } == v
-  }
-  def tcInIfCond(x: Int, v: Int): Boolean = {
+  def tcInIfCond(x: Int, v: Int): Boolean =
     if ({
       def loop(n: Int): Int = if (n == 0) v else loop(n - 1)
       loop(x)
     } == v) true
     else false
-  }
   def tcInPatternGuard(x: Int, v: Int): Boolean =
     v match {
       case _ if {
@@ -241,11 +235,10 @@ class FancyTailCalls {
     }
 
   import FancyTailCalls._
-  final def differentInstance(n: Int, v: Int): Int = {
+  final def differentInstance(n: Int, v: Int): Int =
     if (n == 0) v
     else if ((n % 2) == 0) f1.differentInstance(n - 1, v)
     else f2.differentInstance(n - 1, v)
-  }
 }
 
 class NonTailCall {

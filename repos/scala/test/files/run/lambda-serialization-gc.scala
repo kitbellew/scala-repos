@@ -15,9 +15,8 @@ class C {
 }
 
 object Test {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     test()
-  }
 
   def test(): Unit = {
     val loader = getClass.getClassLoader.asInstanceOf[URLClassLoader]

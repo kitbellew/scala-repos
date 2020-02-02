@@ -135,18 +135,16 @@ abstract class SQLImplicits {
     *
     * @since 1.6.0
     */
-  implicit def rddToDatasetHolder[T: Encoder](rdd: RDD[T]): DatasetHolder[T] = {
+  implicit def rddToDatasetHolder[T: Encoder](rdd: RDD[T]): DatasetHolder[T] =
     DatasetHolder(_sqlContext.createDataset(rdd))
-  }
 
   /**
     * Creates a [[Dataset]] from a local Seq.
     * @since 1.6.0
     */
   implicit def localSeqToDatasetHolder[T: Encoder](
-      s: Seq[T]): DatasetHolder[T] = {
+      s: Seq[T]): DatasetHolder[T] =
     DatasetHolder(_sqlContext.createDataset(s))
-  }
 
   /**
     * An implicit conversion that turns a Scala `Symbol` into a [[Column]].
@@ -159,18 +157,16 @@ abstract class SQLImplicits {
     * @since 1.3.0
     */
   implicit def rddToDataFrameHolder[A <: Product: TypeTag](
-      rdd: RDD[A]): DataFrameHolder = {
+      rdd: RDD[A]): DataFrameHolder =
     DataFrameHolder(_sqlContext.createDataFrame(rdd))
-  }
 
   /**
     * Creates a DataFrame from a local Seq of Product.
     * @since 1.3.0
     */
   implicit def localSeqToDataFrameHolder[A <: Product: TypeTag](
-      data: Seq[A]): DataFrameHolder = {
+      data: Seq[A]): DataFrameHolder =
     DataFrameHolder(_sqlContext.createDataFrame(data))
-  }
 
   // Do NOT add more implicit conversions for primitive types.
   // They are likely to break source compatibility by making existing implicit conversions

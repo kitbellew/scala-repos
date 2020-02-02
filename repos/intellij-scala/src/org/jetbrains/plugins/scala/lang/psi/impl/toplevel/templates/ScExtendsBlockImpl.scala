@@ -59,19 +59,17 @@ class ScExtendsBlockImpl private (
 
   def templateBody: Option[ScTemplateBody] = {
     def childStubTemplate(
-        stub: StubElement[ScExtendsBlock]): Option[ScTemplateBody] = {
+        stub: StubElement[ScExtendsBlock]): Option[ScTemplateBody] =
       Option(stub.findChildStubByType(ScalaElementTypes.TEMPLATE_BODY)) match {
         case Some(template) => Some(template.getPsi)
         case _              => None
       }
-    }
 
-    def lastChildTemplateBody: Option[ScTemplateBody] = {
+    def lastChildTemplateBody: Option[ScTemplateBody] =
       getLastChild match {
         case childTemplateBody: ScTemplateBody => Some(childTemplateBody)
         case _                                 => None
       }
-    }
 
     Option(getStub) match {
       case Some(stub) => childStubTemplate(stub)
@@ -122,7 +120,7 @@ class ScExtendsBlockImpl private (
         buffer += obj
     }
 
-    def extract(scType: ScType): Boolean = {
+    def extract(scType: ScType): Boolean =
       ScType.extractClass(scType, Some(getProject)) match {
         case Some(o: ScObject)                   => true
         case Some(t: ScTrait)                    => false
@@ -130,7 +128,6 @@ class ScExtendsBlockImpl private (
         case Some(c: PsiClass) if !c.isInterface => true
         case _                                   => false
       }
-    }
 
     val findResult = buffer.find {
       case AnyVal | AnyRef | Any => true
@@ -150,13 +147,12 @@ class ScExtendsBlockImpl private (
     buffer.toList
   }
 
-  def isScalaObject: Boolean = {
+  def isScalaObject: Boolean =
     getParentByStub match {
       case clazz: PsiClass =>
         clazz.qualifiedName == "scala.ScalaObject"
       case _ => false
     }
-  }
 
   private def scalaProductClass: PsiClass =
     ScalaPsiManager
@@ -272,7 +268,7 @@ class ScExtendsBlockImpl private (
 
   def directSupersNames: Seq[String] = {
     @tailrec
-    def process(te: ScTypeElement, acc: Vector[String]): Vector[String] = {
+    def process(te: ScTypeElement, acc: Vector[String]): Vector[String] =
       te match {
         case simpleType: ScSimpleTypeElement =>
           simpleType.reference match {
@@ -293,7 +289,6 @@ class ScExtendsBlockImpl private (
           }
         case _ => acc
       }
-    }
 
     def default(res: Seq[String]): Seq[String] =
       res ++ Seq[String]("Object", "ScalaObject")
@@ -369,7 +364,7 @@ class ScExtendsBlockImpl private (
     } else findChild(classOf[ScEarlyDefinitions])
   }
 
-  override def addEarlyDefinitions(): ScEarlyDefinitions = {
+  override def addEarlyDefinitions(): ScEarlyDefinitions =
     earlyDefinitions.getOrElse {
       val text = "class A extends {} with B {}"
       val templDef = ScalaPsiElementFactory.createTemplateDefinitionFromText(
@@ -391,7 +386,6 @@ class ScExtendsBlockImpl private (
 
       earlyDefinitions.get
     }
-  }
 
   def isUnderCaseClass: Boolean = getParentByStub match {
     case td: ScTypeDefinition if td.isCase => true

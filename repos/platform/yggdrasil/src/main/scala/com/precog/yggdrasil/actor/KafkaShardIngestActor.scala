@@ -113,12 +113,11 @@ case class FilesystemIngestFailureLog(
   def logFailed(
       offset: Long,
       message: EventMessage,
-      lastKnownGood: YggCheckpoint): IngestFailureLog = {
+      lastKnownGood: YggCheckpoint): IngestFailureLog =
     copy(
       failureLog =
         failureLog + (message -> LogRecord(offset, message, lastKnownGood)),
       restoreFrom = lastKnownGood min restoreFrom)
-  }
 
   def checkFailed(message: EventMessage): Boolean = failureLog.contains(message)
 
@@ -201,7 +200,7 @@ object FilesystemIngestFailureLog {
     }
 
     implicit val extractor: Extractor[LogRecord] = new Extractor[LogRecord] {
-      def validated(jv: JValue) = {
+      def validated(jv: JValue) =
         for {
           offset <- jv.validated[Long]("offset")
           msgType <- jv.validated[String]("messageType")
@@ -218,7 +217,6 @@ object FilesystemIngestFailureLog {
           }
           checkpoint <- jv.validated[YggCheckpoint]("lastKnownGood")
         } yield LogRecord(offset, message, checkpoint)
-      }
     }
   }
 }
@@ -420,8 +418,7 @@ abstract class KafkaShardIngestActor(
         input: List[(Long, EventMessage)],
         batch: Vector[(Long, EventMessage)],
         checkpoint: YggCheckpoint)
-        : (Vector[(Long, EventMessage)], YggCheckpoint) = {
-
+        : (Vector[(Long, EventMessage)], YggCheckpoint) =
       input match {
         case Nil =>
           (batch, checkpoint)
@@ -469,7 +466,6 @@ abstract class KafkaShardIngestActor(
             (Vector(offset -> ar), checkpoint.update(offset, pid, sid))
           }
       }
-    }
 
     val read = M.point {
       val req = new FetchRequest(

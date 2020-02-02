@@ -85,13 +85,12 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  override def withFixture(test: NoArgTest): Outcome = {
+  override def withFixture(test: NoArgTest): Outcome =
     if (!testServers.isEmpty) test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()
     }
-  }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("with unmanaged regular zk serverset") {
@@ -105,17 +104,13 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
       val count = 100
       (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+        client.set("foo" + n, Buf.Utf8("bar" + n))()
       }
 
       (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = c.get("foo" + n)().get
-          assert(res == "bar" + n)
-        }
+        val c = client.clientOf("foo" + n)
+        val Buf.Utf8(res) = c.get("foo" + n)().get
+        assert(res == "bar" + n)
       }
     }
   }
@@ -139,17 +134,13 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
       val count = 100
       (0 until count).foreach { n =>
-        {
-          client.set("foo" + n, Buf.Utf8("bar" + n))()
-        }
+        client.set("foo" + n, Buf.Utf8("bar" + n))()
       }
 
       (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = c.get("foo" + n)().get
-          assert(res == "bar" + n)
-        }
+        val c = client.clientOf("foo" + n)
+        val Buf.Utf8(res) = c.get("foo" + n)().get
+        assert(res == "bar" + n)
       }
     }
 

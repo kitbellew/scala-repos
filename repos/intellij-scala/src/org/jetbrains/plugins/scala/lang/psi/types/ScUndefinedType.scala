@@ -84,19 +84,18 @@ case class ScAbstractType(
     hash
   }
 
-  override def equals(obj: scala.Any): Boolean = {
+  override def equals(obj: scala.Any): Boolean =
     obj match {
       case ScAbstractType(oTpt, oLower, oUpper) =>
         lower.equals(oLower) && upper.equals(oUpper) && tpt.args.equals(
           oTpt.args)
       case _ => false
     }
-  }
 
   override def equivInner(
       r: ScType,
       uSubst: ScUndefinedSubstitutor,
-      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
+      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) =
     r match {
       case _ if falseUndef => (false, uSubst)
       case rt =>
@@ -107,13 +106,11 @@ case class ScAbstractType(
         if (!t._1) return (false, uSubst)
         (true, t._2)
     }
-  }
 
   def inferValueType = tpt
 
-  def simplifyType: ScType = {
+  def simplifyType: ScType =
     if (upper.equiv(Any)) lower else if (lower.equiv(Nothing)) upper else lower
-  }
 
   override def removeAbstracts = simplifyType
 
@@ -147,7 +144,7 @@ case class ScAbstractType(
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
@@ -163,7 +160,6 @@ case class ScAbstractType(
           case cce: ClassCastException => throw new RecursiveUpdateException
         }
     }
-  }
 
   def visitType(visitor: ScalaTypeVisitor) {
     visitor.visitAbstractType(this)

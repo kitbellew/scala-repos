@@ -136,7 +136,7 @@ class StandardImageExtractor(
     *
     * @return
     */
-  private def checkForOpenGraphTag: Boolean = {
+  private def checkForOpenGraphTag: Boolean =
     try {
       val meta: Elements = doc.select("meta[property~=og:image]")
       import scala.collection.JavaConversions._
@@ -160,14 +160,13 @@ class StandardImageExtractor(
         return false
       }
     }
-  }
 
   /**
     * checks to see if we were able to find open graph tags on this page
     *
     * @return
     */
-  private def checkForLinkTag: Boolean = {
+  private def checkForLinkTag: Boolean =
     try {
       val meta: Elements = doc.select("link[rel~=image_src]")
       import scala.collection.JavaConversions._
@@ -190,11 +189,9 @@ class StandardImageExtractor(
         false
       }
     }
-  }
 
-  def getAllImages: ArrayList[Element] = {
+  def getAllImages: ArrayList[Element] =
     null
-  }
 
   def getImagesFromNode(node: Element): Option[Elements] = {
     val images: Elements = node.select("img")
@@ -327,9 +324,8 @@ class StandardImageExtractor(
     }
   }
 
-  def getNode(node: Element): Option[Element] = {
+  def getNode(node: Element): Option[Element] =
     if (node == null) None else Some(node)
-  }
 
   /**
     * loop through all the images and find the ones that have the best bytez to even make them a candidate
@@ -342,7 +338,7 @@ class StandardImageExtractor(
     var cnt: Int = 0
     val goodImages: ArrayList[Element] = new ArrayList[Element]
 
-    images.foreach(image => {
+    images.foreach { image =>
       try {
         if (cnt > 30) {
           trace(
@@ -365,7 +361,7 @@ class StandardImageExtractor(
         case e: Exception => warn(e, e.toString)
       }
       cnt += 1
-    })
+    }
 
     trace(logPrefix + " Now leaving findImagesThatPassByteSizeTest")
     if (goodImages != null && goodImages.size > 0) Some(goodImages) else None
@@ -674,17 +670,15 @@ class StandardImageExtractor(
     false
   }
 
-  def getMinBytesForImages: Int = {
+  def getMinBytesForImages: Int =
     minBytesForImages
-  }
 
   def setMinBytesForImages(minBytesForImages: Int) {
     this.minBytesForImages = minBytesForImages
   }
 
-  def getTempStoragePath: String = {
+  def getTempStoragePath: String =
     tempStoragePath
-  }
 
   def setTempStoragePath(tempStoragePath: String) {
     this.tempStoragePath = tempStoragePath

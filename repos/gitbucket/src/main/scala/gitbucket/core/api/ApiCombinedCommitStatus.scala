@@ -13,7 +13,7 @@ case class ApiCombinedCommitStatus(
     repository: ApiRepository) {
   // val commit_url = ApiPath(s"/api/v3/repos/${repository.full_name}/${sha}")
   val url = ApiPath(
-    s"/api/v3/repos/${repository.full_name}/commits/${sha}/status")
+    s"/api/v3/repos/${repository.full_name}/commits/$sha/status")
 }
 object ApiCombinedCommitStatus {
   def apply(

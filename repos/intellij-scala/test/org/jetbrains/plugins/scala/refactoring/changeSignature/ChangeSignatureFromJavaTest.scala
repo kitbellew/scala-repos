@@ -25,9 +25,8 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
       newVisibility: String,
       newName: String,
       newReturnType: String,
-      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase = {
+      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase =
     javaProcessor(newVisibility, newName, newReturnType, newParams)
-  }
 
   override def findTargetElement: PsiMember = {
     val element = new JavaChangeSignatureHandler()
@@ -67,9 +66,8 @@ class ChangeSignatureFromJavaTest extends ChangeSignatureTestBase {
     doTest(null, "bar", "boolean", Seq(newParams))
   }
 
-  def testParameterlessOverriders() = {
+  def testParameterlessOverriders() =
     doTest(null, "bar", null, Seq(Seq.empty))
-  }
 
   def testParameterlessOverriders2() = {
     val params = Seq(new ParameterInfoImpl(-1, "b", PsiType.BOOLEAN, "true"))

@@ -9,7 +9,7 @@ import spire.implicits.cforRange
 object det extends UFunc {
   implicit def canDetUsingLU[T](
       implicit luImpl: LU.Impl[T, (DenseMatrix[Double], Array[Int])])
-      : Impl[T, Double] = {
+      : Impl[T, Double] =
     new Impl[T, Double] {
       def apply(X: T): Double = {
 
@@ -34,5 +34,4 @@ object det extends UFunc {
       }
 
     }
-  }
 }

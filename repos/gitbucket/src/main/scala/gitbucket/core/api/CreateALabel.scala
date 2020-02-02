@@ -8,11 +8,10 @@ case class CreateALabel(
     name: String,
     color: String
 ) {
-  def isValid: Boolean = {
+  def isValid: Boolean =
     name.length <= 100 &&
-    !name.startsWith("_") &&
-    !name.startsWith("-") &&
-    color.length == 6 &&
-    color.matches("[a-fA-F0-9+_.]+")
-  }
+      !name.startsWith("_") &&
+      !name.startsWith("-") &&
+      color.length == 6 &&
+      color.matches("[a-fA-F0-9+_.]+")
 }

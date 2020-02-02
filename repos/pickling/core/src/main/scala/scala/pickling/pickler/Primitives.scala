@@ -35,7 +35,7 @@ class PrimitivePickler[T: FastTypeTag](name: String)
     builder.beginEntry(picklee, tag)
     builder.endEntry()
   }
-  def unpickle(tag: String, reader: PReader): Any = {
+  def unpickle(tag: String, reader: PReader): Any =
     try {
       // TODO - beginEntry/endEntry?
       reader.readPrimitive()
@@ -43,13 +43,12 @@ class PrimitivePickler[T: FastTypeTag](name: String)
       case PicklingException(msg, cause) =>
         throw PicklingException(
           s"""error in unpickle of primitive unpickler '$name':
-                                   |tag in unpickle: '${tag}'
+                                   |tag in unpickle: '$tag'
                                    |message:
                                    |$msg""".stripMargin,
           cause
         )
     }
-  }
 }
 object PrimitivePickler {
   def apply[A: FastTypeTag]: Pickler[A] with Unpickler[A] =

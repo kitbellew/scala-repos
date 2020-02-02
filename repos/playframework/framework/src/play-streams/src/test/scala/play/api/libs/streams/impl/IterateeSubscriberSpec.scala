@@ -45,13 +45,11 @@ class IterateeSubscriberSpec extends Specification {
       })
     }
 
-    def doneStep(result: T, remaining: Input[T]): Unit = {
+    def doneStep(result: T, remaining: Input[T]): Unit =
       nextIterateePromise.success(Done(result, remaining))
-    }
 
-    def errorStep(msg: String, input: Input[T]): Unit = {
+    def errorStep(msg: String, input: Input[T]): Unit =
       nextIterateePromise.success(Error(msg, input))
-    }
 
   }
 

@@ -87,7 +87,7 @@ object GitSpecUtil {
       def _getPathObjectId: ObjectId = walk.next match {
         case true if (walk.getPathString == path) => walk.getObjectId(0)
         case true                                 => _getPathObjectId
-        case false                                => throw new Exception(s"not found ${branch} / ${path}")
+        case false                                => throw new Exception(s"not found $branch / $path")
       }
       _getPathObjectId
     }

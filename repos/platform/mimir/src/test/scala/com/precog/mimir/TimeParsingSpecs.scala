@@ -45,12 +45,11 @@ trait TimeParsingSpecs[M[+_]]
 
   val line = Line(1, 1, "")
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "parse a time string into an ISO801 string, given its format" should {
     "time zone not specified" in {

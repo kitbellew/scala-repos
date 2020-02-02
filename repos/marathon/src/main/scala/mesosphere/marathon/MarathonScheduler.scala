@@ -73,9 +73,8 @@ class MarathonScheduler @Inject() (
     }
   }
 
-  override def offerRescinded(driver: SchedulerDriver, offer: OfferID): Unit = {
+  override def offerRescinded(driver: SchedulerDriver, offer: OfferID): Unit =
     log.info("Offer %s rescinded".format(offer))
-  }
 
   override def statusUpdate(
       driver: SchedulerDriver,

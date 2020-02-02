@@ -182,7 +182,7 @@ package parallel {
           new BufferSplitter(buffer, index + divsz, until, signalDelegate)
         )
       } else Seq(this)
-    private[parallel] override def debugInformation = {
+    private[parallel] override def debugInformation =
       buildString { append =>
         append("---------------")
         append("Buffer iterator")
@@ -191,7 +191,6 @@ package parallel {
         append("until: " + until)
         append("---------------")
       }
-    }
   }
 
   /** A helper combiner which contains an array of buckets. Buckets themselves
@@ -239,7 +238,7 @@ package parallel {
     def afterCombine[N <: Elem, NewTo >: To](other: Combiner[N, NewTo]) {}
 
     def combine[N <: Elem, NewTo >: To](
-        other: Combiner[N, NewTo]): Combiner[N, NewTo] = {
+        other: Combiner[N, NewTo]): Combiner[N, NewTo] =
       if (this eq other) this
       else
         other match {
@@ -263,6 +262,5 @@ package parallel {
           case _ =>
             sys.error("Unexpected combiner type.")
         }
-    }
   }
 }

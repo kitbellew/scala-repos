@@ -531,11 +531,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val config = new AhcWSClientConfig(wsClientConfig = parser.parse())
       val builder = new AhcConfigBuilder(config)
       val logging = new AsyncHttpClientConfig.AdditionalChannelInitializer() {
-        override def initChannel(channel: io.netty.channel.Channel): Unit = {
+        override def initChannel(channel: io.netty.channel.Channel): Unit =
           channel.pipeline.addFirst(
             "log",
             new io.netty.handler.logging.LoggingHandler("debug"))
-        }
       }
       val ahcBuilder = builder.configure()
       ahcBuilder.setHttpAdditionalChannelInitializer(logging)

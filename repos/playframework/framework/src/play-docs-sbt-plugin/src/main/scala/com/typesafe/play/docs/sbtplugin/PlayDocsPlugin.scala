@@ -278,13 +278,12 @@ object PlayDocsPlugin extends AutoPlugin {
     val classloader = new java.net.URLClassLoader(
       classpath.map(_.data.toURI.toURL).toArray,
       null /* important here, don't depend of the sbt classLoader! */ ) {
-      override def loadClass(name: String): Class[_] = {
+      override def loadClass(name: String): Class[_] =
         if (play.core.Build.sharedClasses.contains(name)) {
           sbtLoader.loadClass(name)
         } else {
           super.loadClass(name)
         }
-      }
     }
 
     val allResources = PlayDocsKeys.resources.value
@@ -392,7 +391,7 @@ object PlayDocsPlugin extends AutoPlugin {
       sourceDirectories: Seq[File],
       target: File,
       imports: Seq[String],
-      log: Logger) = {
+      log: Logger) =
     play.twirl.sbt.TemplateCompiler.compile(
       sourceDirectories,
       target,
@@ -403,5 +402,4 @@ object PlayDocsPlugin extends AutoPlugin {
       templateCodec,
       false,
       log)
-  }
 }

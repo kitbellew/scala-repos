@@ -71,7 +71,7 @@ private[launcher] class TaskLauncherImpl(
   }
 
   private[this] def withDriver(description: => String)(
-      block: SchedulerDriver => Status): Boolean = {
+      block: SchedulerDriver => Status): Boolean =
     marathonSchedulerDriverHolder.driver match {
       case Some(driver) =>
         val status = block(driver)
@@ -84,5 +84,4 @@ private[launcher] class TaskLauncherImpl(
         log.warn(s"Cannot execute '$description', no driver available")
         false
     }
-  }
 }

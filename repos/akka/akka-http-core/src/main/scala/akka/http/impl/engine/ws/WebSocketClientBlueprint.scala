@@ -101,7 +101,7 @@ object WebSocketClientBlueprint {
           override def handleInformationalResponses = false
           override protected def parseMessage(
               input: ByteString,
-              offset: Int): StateResult = {
+              offset: Int): StateResult =
             if (first) {
               first = false
               super.parseMessage(input, offset)
@@ -109,14 +109,11 @@ object WebSocketClientBlueprint {
               emit(RemainingBytes(input.drop(offset)))
               terminate()
             }
-          }
         }
         parser.setContextForNextResponse(
           HttpResponseParser.ResponseContext(HttpMethods.GET, None))
 
-        def onPush(
-            elem: ByteString,
-            ctx: Context[ByteString]): SyncDirective = {
+        def onPush(elem: ByteString, ctx: Context[ByteString]): SyncDirective =
           parser.parseBytes(elem) match {
             case NeedMoreData ⇒ ctx.pull()
             case ResponseStart(status, protocol, headers, entity, close) ⇒
@@ -152,7 +149,6 @@ object WebSocketClientBlueprint {
               throw new IllegalStateException(
                 s"unexpected element of type ${other.getClass}")
           }
-        }
       }
 
       def transparent: State = new State {

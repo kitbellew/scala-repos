@@ -119,7 +119,7 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
     }
   }
 
-  private def cleanUpCorruptedIndex(indexDir: File): Unit = {
+  private def cleanUpCorruptedIndex(indexDir: File): Unit =
     try {
       FileUtil.delete(indexDir)
       notifyWarning(
@@ -133,7 +133,6 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
             "sbt.resolverIndexer.indexDirIsCorruptedCantBeRemoved",
             indexDir.getAbsolutePath))
     }
-  }
 
   private def getIndexDirectory(root: String) =
     new File(indexesDir, root.shaDigest)

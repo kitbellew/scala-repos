@@ -49,7 +49,7 @@ private[spark] abstract class LauncherBackend {
     }
   }
 
-  def close(): Unit = {
+  def close(): Unit =
     if (connection != null) {
       try {
         connection.close()
@@ -59,20 +59,17 @@ private[spark] abstract class LauncherBackend {
         }
       }
     }
-  }
 
-  def setAppId(appId: String): Unit = {
+  def setAppId(appId: String): Unit =
     if (connection != null) {
       connection.send(new SetAppId(appId))
     }
-  }
 
-  def setState(state: SparkAppHandle.State): Unit = {
+  def setState(state: SparkAppHandle.State): Unit =
     if (connection != null && lastState != state) {
       connection.send(new SetState(state))
       lastState = state
     }
-  }
 
   /** Return whether the launcher handle is still connected to this backend. */
   def isConnected(): Boolean = _isConnected
@@ -108,14 +105,13 @@ private[spark] abstract class LauncherBackend {
           s"Unexpected message type: ${m.getClass().getName()}")
     }
 
-    override def close(): Unit = {
+    override def close(): Unit =
       try {
         super.close()
       } finally {
         onDisconnected()
         _isConnected = false
       }
-    }
 
   }
 

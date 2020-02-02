@@ -179,7 +179,7 @@ object GraphStageLogic {
     private[this] var behaviour = initialReceive
 
     /** INTERNAL API */
-    private[akka] def internalReceive(pack: (ActorRef, Any)): Unit = {
+    private[akka] def internalReceive(pack: (ActorRef, Any)): Unit =
       pack._2 match {
         case Terminated(ref) ⇒
           if (functionRef.isWatching(ref)) {
@@ -188,15 +188,13 @@ object GraphStageLogic {
           }
         case _ ⇒ behaviour(pack)
       }
-    }
 
     /**
       * Special `become` allowing to swap the behaviour of this StageActorRef.
       * Unbecome is not available.
       */
-    def become(receive: StageActorRef.Receive): Unit = {
+    def become(receive: StageActorRef.Receive): Unit =
       behaviour = receive
-    }
 
     def stop(): Unit = cell.removeFunctionRef(functionRef)
 
@@ -347,9 +345,8 @@ abstract class GraphStageLogic private[stream] (
   /**
     * Retrieves the current callback for the events on the given [[Inlet]]
     */
-  final protected def getHandler(in: Inlet[_]): InHandler = {
+  final protected def getHandler(in: Inlet[_]): InHandler =
     handlers(in.id).asInstanceOf[InHandler]
-  }
 
   /**
     * Assigns callbacks for the events for an [[Outlet]]
@@ -365,9 +362,8 @@ abstract class GraphStageLogic private[stream] (
   /**
     * Retrieves the current callback for the events on the given [[Outlet]]
     */
-  final protected def getHandler(out: Outlet[_]): OutHandler = {
+  final protected def getHandler(out: Outlet[_]): OutHandler =
     handlers(out.id + inCount).asInstanceOf[OutHandler]
-  }
 
   private def getNonEmittingHandler(out: Outlet[_]): OutHandler =
     getHandler(out) match {
@@ -380,7 +376,7 @@ abstract class GraphStageLogic private[stream] (
     * There can only be one outstanding request at any given time. The method [[hasBeenPulled()]] can be used
     * query whether pull is allowed to be called or not. This method will also fail if the port is already closed.
     */
-  final protected def pull[T](in: Inlet[T]): Unit = {
+  final protected def pull[T](in: Inlet[T]): Unit =
     if ((interpreter.portStates(conn(in)) & (InReady | InClosed)) == InReady) {
       interpreter.pull(conn(in))
     } else {
@@ -388,7 +384,6 @@ abstract class GraphStageLogic private[stream] (
       require(!isClosed(in), s"Cannot pull closed port ($in)")
       require(!hasBeenPulled(in), s"Cannot pull port ($in) twice")
     }
-  }
 
   /**
     * Requests an element on the given port unless the port is already closed.
@@ -479,7 +474,7 @@ abstract class GraphStageLogic private[stream] (
     * will fail. There can be only one outstanding push request at any given time. The method [[isAvailable()]] can be
     * used to check if the port is ready to be pushed or not.
     */
-  final protected def push[T](out: Outlet[T], elem: T): Unit = {
+  final protected def push[T](out: Outlet[T], elem: T): Unit =
     if ((interpreter.portStates(conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
       interpreter.push(conn(out), elem)
     } else {
@@ -488,7 +483,6 @@ abstract class GraphStageLogic private[stream] (
       require(isAvailable(out), s"Cannot push port ($out) twice")
       require(!isClosed(out), s"Cannot pull closed port ($out)")
     }
-  }
 
   /**
     * Controls whether this stage shall shut down when all its ports are closed, which
@@ -624,7 +618,7 @@ abstract class GraphStageLogic private[stream] (
     * handler upon receiving the `onPush()` signal (before invoking the `andThen` function).
     */
   final protected def read[T](
-      in: Inlet[T])(andThen: T ⇒ Unit, onClose: () ⇒ Unit): Unit = {
+      in: Inlet[T])(andThen: T ⇒ Unit, onClose: () ⇒ Unit): Unit =
     if (isAvailable(in)) {
       val elem = grab(in)
       andThen(elem)
@@ -635,7 +629,6 @@ abstract class GraphStageLogic private[stream] (
       if (!hasBeenPulled(in)) pull(in)
       setHandler(in, new Reading(in, 1, getHandler(in))(andThen, onClose))
     }
-  }
 
   /**
     * Java API: Read an element from the given inlet and continue with the given function,
@@ -646,9 +639,8 @@ abstract class GraphStageLogic private[stream] (
   final protected def read[T](
       in: Inlet[T],
       andThen: Procedure[T],
-      onClose: Effect): Unit = {
+      onClose: Effect): Unit =
     read(in)(andThen.apply, onClose.apply)
-  }
 
   /**
     * Abort outstanding (suspended) reading for the given inlet, if there is any.
@@ -821,12 +813,8 @@ abstract class GraphStageLogic private[stream] (
   final protected def emit[T](out: Outlet[T], elem: T): Unit =
     emit(out, elem, DoNothing)
 
-  final protected def emit[T](
-      out: Outlet[T],
-      elem: T,
-      andThen: Effect): Unit = {
+  final protected def emit[T](out: Outlet[T], elem: T, andThen: Effect): Unit =
     emit(out, elem, andThen.apply _)
-  }
 
   /**
     * Abort outstanding (suspended) emissions for the given outlet, if there are any.
@@ -973,7 +961,7 @@ abstract class GraphStageLogic private[stream] (
     *
     * This object can be cached and reused within the same [[GraphStageLogic]].
     */
-  final def getAsyncCallback[T](handler: T ⇒ Unit): AsyncCallback[T] = {
+  final def getAsyncCallback[T](handler: T ⇒ Unit): AsyncCallback[T] =
     new AsyncCallback[T] {
       override def invoke(event: T): Unit =
         interpreter.onAsyncInput(
@@ -981,7 +969,6 @@ abstract class GraphStageLogic private[stream] (
           event,
           handler.asInstanceOf[Any ⇒ Unit])
     }
-  }
 
   /**
     * Java API: Obtain a callback object that can be used asynchronously to re-enter the
@@ -1021,7 +1008,7 @@ abstract class GraphStageLogic private[stream] (
     */
   // FIXME: I don't like the Pair allocation :(
   final protected def getStageActor(
-      receive: ((ActorRef, Any)) ⇒ Unit): StageActor = {
+      receive: ((ActorRef, Any)) ⇒ Unit): StageActor =
     _stageActor match {
       case null ⇒
         val actorMaterializer =
@@ -1033,7 +1020,6 @@ abstract class GraphStageLogic private[stream] (
         existing.become(receive)
         existing
     }
-  }
 
   // Internal hooks to avoid reliance on user calling super in preStart
   /** INTERNAL API */
@@ -1041,12 +1027,11 @@ abstract class GraphStageLogic private[stream] (
 
   // Internal hooks to avoid reliance on user calling super in postStop
   /** INTERNAL API */
-  protected[stream] def afterPostStop(): Unit = {
+  protected[stream] def afterPostStop(): Unit =
     if (_stageActor ne null) {
       _stageActor.stop()
       _stageActor = null
     }
-  }
 
   /**
     * Invoked before any external events are processed, at the startup of the stage.
@@ -1389,10 +1374,9 @@ trait OutHandler {
     * be called for this port.
     */
   @throws(classOf[Exception])
-  def onDownstreamFinish(): Unit = {
+  def onDownstreamFinish(): Unit =
     GraphInterpreter.currentInterpreter.activeStage
       .completeStage()
-  }
 }
 
 /**

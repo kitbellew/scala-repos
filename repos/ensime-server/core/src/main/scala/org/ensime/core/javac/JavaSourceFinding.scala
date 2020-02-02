@@ -20,14 +20,13 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
 
   protected def findInCompiledUnit(
       info: CompilationInfo,
-      fqn: JavaFqn): Option[SourcePosition] = {
+      fqn: JavaFqn): Option[SourcePosition] =
     Option(info.getElements().getTypeElement(fqn.toFqnString))
       .flatMap(elementPosition(info, _))
-  }
 
   private def elementPosition(
       info: CompilationInfo,
-      el: Element): Option[SourcePosition] = {
+      el: Element): Option[SourcePosition] =
     // if we can get a tree for the element, determining start position
     // is easy
     Option(info.getTrees.getPath(el)).map { path =>
@@ -38,15 +37,13 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
           .toInt
       )
     }
-  }
 
   protected def findDeclPos(
       info: CompilationInfo,
-      path: TreePath): Option[SourcePosition] = {
+      path: TreePath): Option[SourcePosition] =
     element(info, path)
       .flatMap(elementPosition(info, _))
       .orElse(findInIndexer(info, path))
-  }
 
   private def findInIndexer(
       info: CompilationInfo,

@@ -47,9 +47,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
   "WS@java" should {
 
-    def withServer[T](block: play.libs.ws.WSClient => T) = {
+    def withServer[T](block: play.libs.ws.WSClient => T) =
       Server.withApplication(app) { implicit port => withClient(block) }
-    }
 
     def withEchoServer[T](block: play.libs.ws.WSClient => T) = {
       def echo = BodyParser { req =>
@@ -65,11 +64,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       } { implicit port => withClient(block) }
     }
 
-    def withResult[T](result: Result)(block: play.libs.ws.WSClient => T) = {
+    def withResult[T](result: Result)(block: play.libs.ws.WSClient => T) =
       Server.withRouter() {
         case _ => Action(result)
       } { implicit port => withClient(block) }
-    }
 
     def withClient[T](block: play.libs.ws.WSClient => T)(
         implicit port: Port): T = {
@@ -235,11 +233,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
         state ++ bs)
 
-    def withServer[T](block: play.api.libs.ws.WSClient => T) = {
+    def withServer[T](block: play.api.libs.ws.WSClient => T) =
       Server.withApplication(app) { implicit port =>
         WsTestClient.withClient(block)
       }
-    }
 
     def withEchoServer[T](block: play.api.libs.ws.WSClient => T) = {
       def echo = BodyParser { req =>
@@ -255,11 +252,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       } { implicit port => WsTestClient.withClient(block) }
     }
 
-    def withResult[T](result: Result)(block: play.api.libs.ws.WSClient => T) = {
+    def withResult[T](result: Result)(block: play.api.libs.ws.WSClient => T) =
       Server.withRouter() {
         case _ => Action(result)
       } { implicit port => WsTestClient.withClient(block) }
-    }
 
     "make GET Requests" in withServer { ws =>
       val req = ws.url("/get").get()

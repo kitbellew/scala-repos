@@ -48,7 +48,7 @@ class UISeleniumSuite
     }
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (webDriver != null) {
         webDriver.quit()
@@ -56,7 +56,6 @@ class UISeleniumSuite
     } finally {
       super.afterAll()
     }
-  }
 
   /**
     * Create a test SparkStreamingContext with the SparkUI enabled.

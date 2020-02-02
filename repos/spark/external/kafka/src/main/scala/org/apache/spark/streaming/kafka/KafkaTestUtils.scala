@@ -180,11 +180,10 @@ private[kafka] class KafkaTestUtils extends Logging {
   def createTopic(topic: String): Unit = createTopic(topic, 1)
 
   /** Java-friendly function for sending messages to the Kafka broker */
-  def sendMessages(topic: String, messageToFreq: JMap[String, JInt]): Unit = {
+  def sendMessages(topic: String, messageToFreq: JMap[String, JInt]): Unit =
     sendMessages(
       topic,
       Map(messageToFreq.asScala.mapValues(_.intValue()).toSeq: _*))
-  }
 
   /** Send the messages to the Kafka broker */
   def sendMessages(topic: String, messageToFreq: Map[String, Int]): Unit = {
@@ -226,17 +225,16 @@ private[kafka] class KafkaTestUtils extends Logging {
   // A simplified version of scalatest eventually, rewritten here to avoid adding extra test
   // dependency
   def eventually[T](timeout: Time, interval: Time)(func: => T): T = {
-    def makeAttempt(): Either[Throwable, T] = {
+    def makeAttempt(): Either[Throwable, T] =
       try {
         Right(func)
       } catch {
         case e if NonFatal(e) => Left(e)
       }
-    }
 
     val startTime = System.currentTimeMillis()
     @tailrec
-    def tryAgain(attempt: Int): T = {
+    def tryAgain(attempt: Int): T =
       makeAttempt() match {
         case Right(result) => result
         case Left(e) =>
@@ -249,7 +247,6 @@ private[kafka] class KafkaTestUtils extends Logging {
 
           tryAgain(attempt + 1)
       }
-    }
 
     tryAgain(1)
   }

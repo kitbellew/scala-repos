@@ -165,7 +165,7 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
   // get an rdd from the committed consumer offsets until the latest leader offsets,
   private def getRdd(kc: KafkaCluster, topics: Set[String]) = {
     val groupId = kc.kafkaParams("group.id")
-    def consumerOffsets(topicPartitions: Set[TopicAndPartition]) = {
+    def consumerOffsets(topicPartitions: Set[TopicAndPartition]) =
       kc.getConsumerOffsets(groupId, topicPartitions)
         .right
         .toOption
@@ -174,7 +174,6 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
             offs => offs.map(kv => kv._1 -> kv._2.offset)
           }
         )
-    }
     kc.getPartitions(topics).right.toOption.flatMap { topicPartitions =>
       consumerOffsets(topicPartitions).flatMap { from =>
         kc.getLatestLeaderOffsets(topicPartitions).right.toOption.map { until =>

@@ -282,20 +282,19 @@ case class ExpressionEncoder[T](
     * is being bound by ordinal instead of by name.  This method checks to make sure this process
     * has not been done already in places where we plan to do later composition of encoders.
     */
-  def assertUnresolved(): Unit = {
+  def assertUnresolved(): Unit =
     (fromRowExpression +: toRowExpressions).foreach(_.foreach {
       case a: AttributeReference if a.name != "loopVar" =>
         sys.error(s"Unresolved encoder expected, but $a was found.")
       case _ =>
     })
-  }
 
   /**
     * Validates `fromRowExpression` to make sure it can be resolved by given schema, and produce
     * friendly error messages to explain why it fails to resolve if there is something wrong.
     */
   def validate(schema: Seq[Attribute]): Unit = {
-    def fail(st: StructType, maxOrdinal: Int): Unit = {
+    def fail(st: StructType, maxOrdinal: Int): Unit =
       throw new AnalysisException(
         s"Try to map ${st.simpleString} to Tuple${maxOrdinal + 1}, " +
           "but failed as the number of fields does not line up.\n" +
@@ -303,7 +302,6 @@ case class ExpressionEncoder[T](
           .fromAttributes(schema)
           .simpleString + "\n" +
           " - Target schema: " + this.schema.simpleString)
-    }
 
     // If this is a tuple encoder or tupled encoder, which means its leaf nodes are all
     // `BoundReference`, make sure their ordinals are all valid.
@@ -368,19 +366,17 @@ case class ExpressionEncoder[T](
     * row have been bound to the ordinals of the given schema.  Note that you need to first call
     * resolve before bind.
     */
-  def bind(schema: Seq[Attribute]): ExpressionEncoder[T] = {
+  def bind(schema: Seq[Attribute]): ExpressionEncoder[T] =
     copy(fromRowExpression =
       BindReferences.bindReference(fromRowExpression, schema))
-  }
 
   /**
     * Returns a new encoder with input columns shifted by `delta` ordinals
     */
-  def shift(delta: Int): ExpressionEncoder[T] = {
+  def shift(delta: Int): ExpressionEncoder[T] =
     copy(fromRowExpression = fromRowExpression transform {
       case r: BoundReference => r.copy(ordinal = r.ordinal + delta)
     })
-  }
 
   protected val attrs = toRowExpressions.flatMap(_.collect {
     case _: UnresolvedAttribute => ""

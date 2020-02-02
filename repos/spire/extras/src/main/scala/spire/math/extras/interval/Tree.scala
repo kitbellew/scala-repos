@@ -13,11 +13,10 @@ private[interval] object Tree {
   @inline final def levelAbove(a: Long, b: Long): Byte =
     (63 - numberOfLeadingZeros(a ^ b)).toByte
 
-  @inline final def maskAbove(prefix: Long, bit: Byte) = {
+  @inline final def maskAbove(prefix: Long, bit: Byte) =
     // this is not the same as (-1L << (bit + 1)) due to the somewhat strange behavior of the java shift operator
     // -1L << 64 gives -1L, whereas (-1L << 63) << 1 gives 0L like we need
     prefix & ((-1L << bit) << 1)
-  }
 
   @inline final def zeroAt(value: Long, bit: Byte) =
     (value & (1L << bit)) == 0L
@@ -357,7 +356,7 @@ private[interval] object Tree {
       }
     }
 
-    final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree) = {
+    final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree) =
       if ((a eq null) && (b eq null))
         null
       else if (a eq null)
@@ -366,7 +365,6 @@ private[interval] object Tree {
         overlapA(a0, a, b0)
       else
         op(a0, a, b0, b)
-    }
   }
 
   object DisjointCalculator extends BooleanBinaryOperator {
@@ -580,7 +578,7 @@ private[interval] object Tree {
 
     val sign = left.sign ^ right.sign
 
-    def lr(left: Tree, right: Tree): Tree = {
+    def lr(left: Tree, right: Tree): Tree =
       if (left eq null)
         right
       else if (right eq null)
@@ -589,7 +587,6 @@ private[interval] object Tree {
         this
       else
         copy(left = left, right = right)
-    }
   }
 }
 

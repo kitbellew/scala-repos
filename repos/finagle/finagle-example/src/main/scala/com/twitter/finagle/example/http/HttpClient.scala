@@ -20,7 +20,7 @@ object HttpClient {
     * Convert HTTP 4xx and 5xx class responses into Exceptions.
     */
   class HandleErrors extends SimpleFilter[Request, Response] {
-    def apply(request: Request, service: Service[Request, Response]) = {
+    def apply(request: Request, service: Service[Request, Response]) =
       // flatMap asynchronously responds to requests and can "map" them to both
       // success and failure values:
       service(request) flatMap { response =>
@@ -30,7 +30,6 @@ object HttpClient {
           case _                => Future.exception(new Exception(response.status.reason))
         }
       }
-    }
   }
 
   def main(args: Array[String]) {

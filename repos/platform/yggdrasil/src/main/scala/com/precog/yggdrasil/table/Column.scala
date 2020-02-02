@@ -85,9 +85,8 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
     true
   }
 
-  def rowCompare(row1: Int, row2: Int): Int = {
+  def rowCompare(row1: Int, row2: Int): Int =
     sys.error("...")
-  }
 
   val tpe: CArrayType[A]
 
@@ -331,9 +330,8 @@ trait NullColumn extends Column {
   override def toString = "NullColumn"
 }
 object NullColumn {
-  def apply(definedAt: BitSet) = {
+  def apply(definedAt: BitSet) =
     new BitsetColumn(definedAt) with NullColumn
-  }
 }
 
 object UndefinedColumn {
@@ -383,20 +381,18 @@ case class MmixPrng(_seed: Long) {
 
 object Column {
   def rowOrder(col: Column): Order[Int] = new Order[Int] {
-    def compare(i: Int, j: Int): Int = {
+    def compare(i: Int, j: Int): Int =
       if (col.isDefinedAt(i)) {
         if (col.isDefinedAt(j)) {
           col.rowCompare(i, j)
         } else 1
       } else if (col.isDefinedAt(j)) -1
       else 0
-    }
 
-    def eqv(i: Int, j: Int): Boolean = {
+    def eqv(i: Int, j: Int): Boolean =
       if (col.isDefinedAt(i)) {
         if (col.isDefinedAt(j)) col.rowEq(i, j) else false
       } else !col.isDefinedAt(j)
-    }
   }
   @inline def const(cv: CValue): Column = cv match {
     case CBoolean(v)                         => const(v)
@@ -525,12 +521,11 @@ object Column {
   }
 
   object unionRightSemigroup extends Semigroup[Column] {
-    def append(c1: Column, c2: => Column): Column = {
+    def append(c1: Column, c2: => Column): Column =
       cf.util.UnionRight(c1, c2) getOrElse {
         sys.error(
           "Illgal attempt to merge columns of dissimilar type: " + c1.tpe + "," + c2.tpe)
       }
-    }
   }
 
   def isDefinedAt(cols: Array[Column], row: Int): Boolean = {
@@ -541,7 +536,7 @@ object Column {
     i < cols.length
   }
 
-  def isDefinedAtAll(cols: Array[Column], row: Int): Boolean = {
+  def isDefinedAtAll(cols: Array[Column], row: Int): Boolean =
     if (cols.isEmpty) {
       false
     } else {
@@ -551,7 +546,6 @@ object Column {
       }
       i == cols.length
     }
-  }
 }
 
 abstract class ModUnionColumn(table: Array[Column]) extends Column {

@@ -49,7 +49,7 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
     if (innerThenBranch == null) return false
 
     val comparator = new util.Comparator[PsiElement]() {
-      def compare(element1: PsiElement, element2: PsiElement): Int = {
+      def compare(element1: PsiElement, element2: PsiElement): Int =
         (element1, element2) match {
           case _ if element1 == element2 => 0
           case (block1: ScBlockExpr, block2: ScBlockExpr)
@@ -60,7 +60,6 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
           case (expr1: ScExpression, expr2: ScExpression) if expr1 == expr2 => 0
           case _                                                            => 1
         }
-      }
     }
 
     PsiEquivalenceUtil.areElementsEquivalent(

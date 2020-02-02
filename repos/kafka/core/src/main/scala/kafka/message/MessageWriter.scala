@@ -32,7 +32,7 @@ class MessageWriter(segmentSize: Int)
       codec: CompressionCodec,
       timestamp: Long,
       timestampType: TimestampType,
-      magicValue: Byte)(writePayload: OutputStream => Unit): Unit = {
+      magicValue: Byte)(writePayload: OutputStream => Unit): Unit =
     withCrc32Prefix {
       // write magic value
       write(magicValue)
@@ -58,7 +58,6 @@ class MessageWriter(segmentSize: Int)
         writePayload(this)
       }
     }
-  }
 
   private def writeInt(value: Int): Unit = {
     write(value >>> 24)
@@ -208,7 +207,7 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
     currentSegment = newSeg
   }
 
-  private def skip(len: Int): Unit = {
+  private def skip(len: Int): Unit =
     if (len >= 0) {
       var remaining = len
       while (remaining > 0) {
@@ -221,7 +220,6 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
     } else {
       throw new IndexOutOfBoundsException()
     }
-  }
 
   def reserve(len: Int): ReservedOutput = {
     val out = new ReservedOutput(currentSegment, currentSegment.written, len)

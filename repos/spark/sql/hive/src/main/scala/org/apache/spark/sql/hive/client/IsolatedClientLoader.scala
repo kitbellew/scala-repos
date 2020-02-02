@@ -72,8 +72,8 @@ private[hive] object IsolatedClientLoader extends Logging {
                 // "org.apache.hadoop:hadoop-client:2.4.0". "org.apache.hadoop:hadoop-client:2.4.0"
                 // is used just because we used to hard code it as the hadoop artifact to download.
                 logWarning(
-                  s"Failed to resolve Hadoop artifacts for the version ${hadoopVersion}. " +
-                    s"We will change the hadoop version from ${hadoopVersion} to 2.4.0 and try again. " +
+                  s"Failed to resolve Hadoop artifacts for the version $hadoopVersion. " +
+                    s"We will change the hadoop version from $hadoopVersion to 2.4.0 and try again. " +
                     "Hadoop classes will not be shared between Spark and Hive metastore client. " +
                     "It is recommended to set jars used by Hive metastore client through " +
                     "spark.sql.hive.metastore.jars in the production environment.")
@@ -132,7 +132,7 @@ private[hive] object IsolatedClientLoader extends Logging {
     val allFiles = classpath.split(",").map(new File(_)).toSet
 
     // TODO: Remove copy logic.
-    val tempDir = Utils.createTempDir(namePrefix = s"hive-${version}")
+    val tempDir = Utils.createTempDir(namePrefix = s"hive-$version")
     allFiles.foreach(f => FileUtils.copyFileToDirectory(f, tempDir))
     tempDir.listFiles().map(_.toURI.toURL)
   }

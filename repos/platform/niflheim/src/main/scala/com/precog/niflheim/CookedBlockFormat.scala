@@ -94,14 +94,13 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
   }
 
   def readCookedBlock(channel: ReadableByteChannel)
-      : Validation[IOException, CookedBlockMetadata] = {
+      : Validation[IOException, CookedBlockMetadata] =
     read(channel) map { buffer =>
       val blockid = buffer.getLong()
       val length = buffer.getInt()
       val segments = SegmentsCodec.read(buffer)
       CookedBlockMetadata(blockid, length, segments)
     }
-  }
 }
 
 case class VersionedCookedBlockFormat(formats: Map[Int, CookedBlockFormat])
@@ -115,15 +114,14 @@ case class VersionedCookedBlockFormat(formats: Map[Int, CookedBlockFormat])
 
   def writeCookedBlock(
       channel: WritableByteChannel,
-      segments: CookedBlockMetadata) = {
+      segments: CookedBlockMetadata) =
     for {
       _ <- writeVersion(channel)
       _ <- format.writeCookedBlock(channel, segments)
     } yield PrecogUnit
-  }
 
   def readCookedBlock(channel: ReadableByteChannel)
-      : Validation[IOException, CookedBlockMetadata] = {
+      : Validation[IOException, CookedBlockMetadata] =
     readVersion(channel) flatMap { version =>
       formats get version map { format =>
         format.readCookedBlock(channel)
@@ -132,5 +130,4 @@ case class VersionedCookedBlockFormat(formats: Map[Int, CookedBlockFormat])
           "Invalid version found. Expected one of %s, found %d." format (formats.keys mkString ",", version)))
       }
     }
-  }
 }

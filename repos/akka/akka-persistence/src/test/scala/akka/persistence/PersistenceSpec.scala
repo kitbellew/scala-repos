@@ -47,7 +47,7 @@ abstract class PersistenceSpec(config: Config)
     system.actorOf(Props(implicitly[ClassTag[T]].runtimeClass, name))
 
   override protected def beforeEach() {
-    _name = s"${namePrefix}-${counter.incrementAndGet()}"
+    _name = s"$namePrefix-${counter.incrementAndGet()}"
   }
 }
 
@@ -61,14 +61,14 @@ object PersistenceSpec {
       .map(ConfigFactory.parseString(_))
       .getOrElse(ConfigFactory.empty())
       .withFallback(ConfigFactory.parseString(s"""
-      akka.actor.serialize-creators = ${serialization}
-      akka.actor.serialize-messages = ${serialization}
+      akka.actor.serialize-creators = $serialization
+      akka.actor.serialize-messages = $serialization
       akka.actor.warn-about-java-serializer-usage = off
       akka.persistence.publish-plugin-commands = on
-      akka.persistence.journal.plugin = "akka.persistence.journal.${plugin}"
-      akka.persistence.journal.leveldb.dir = "target/journal-${test}"
+      akka.persistence.journal.plugin = "akka.persistence.journal.$plugin"
+      akka.persistence.journal.leveldb.dir = "target/journal-$test"
       akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-      akka.persistence.snapshot-store.local.dir = "target/snapshots-${test}/"
+      akka.persistence.snapshot-store.local.dir = "target/snapshots-$test/"
       akka.test.single-expect-default = 10s
     """))
 }

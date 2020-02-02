@@ -421,9 +421,8 @@ class ShardRegion(
   var retryCount = 0
 
   // subscribe to MemberEvent, re-subscribe when restart
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     cluster.subscribe(self, classOf[MemberEvent])
-  }
 
   override def postStop(): Unit = {
     super.postStop()
@@ -469,11 +468,10 @@ class ShardRegion(
     case msg: RestartShard ⇒ deliverMessage(msg, sender())
   }
 
-  def receiveClusterState(state: CurrentClusterState): Unit = {
+  def receiveClusterState(state: CurrentClusterState): Unit =
     changeMembers(
       immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
         m.status == MemberStatus.Up && matchingRole(m)))
-  }
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit = evt match {
     case MemberUp(m) ⇒
@@ -509,7 +507,7 @@ class ShardRegion(
         case Some(r) if r == self && ref != self ⇒
           // should not happen, inconsistency between ShardRegion and ShardCoordinator
           throw new IllegalStateException(
-            s"Unexpected change of shard [${shard}] from self to [${ref}]")
+            s"Unexpected change of shard [$shard] from self to [$ref]")
         case _ ⇒
       }
       regionByShard = regionByShard.updated(shard, ref)
@@ -600,7 +598,7 @@ class ShardRegion(
     case _ ⇒ unhandled(query)
   }
 
-  def receiveTerminated(ref: ActorRef): Unit = {
+  def receiveTerminated(ref: ActorRef): Unit =
     if (coordinator.exists(_ == ref))
       coordinator = None
     else if (regions.contains(ref)) {
@@ -632,9 +630,8 @@ class ShardRegion(
 
       tryCompleteGracefulShutdown()
     }
-  }
 
-  def replyToRegionStateQuery(ref: ActorRef): Unit = {
+  def replyToRegionStateQuery(ref: ActorRef): Unit =
     askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState)
       .map { shardStates ⇒
         CurrentShardRegionState(shardStates.map {
@@ -646,9 +643,8 @@ class ShardRegion(
         case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
       }
       .pipeTo(ref)
-  }
 
-  def replyToRegionStatsQuery(ref: ActorRef): Unit = {
+  def replyToRegionStatsQuery(ref: ActorRef): Unit =
     askAllShards[Shard.ShardStats](Shard.GetShardStats)
       .map { shardStats ⇒
         ShardRegionStats(shardStats.map {
@@ -659,7 +655,6 @@ class ShardRegion(
         case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty)
       }
       .pipeTo(ref)
-  }
 
   def askAllShards[T: ClassTag](msg: Any): Future[Seq[(ShardId, T)]] = {
     implicit val timeout: Timeout = 3.seconds
@@ -686,7 +681,7 @@ class ShardRegion(
   def registrationMessage: Any =
     if (entityProps.isDefined) Register(self) else RegisterProxy(self)
 
-  def requestShardBufferHomes(): Unit = {
+  def requestShardBufferHomes(): Unit =
     shardBuffers.foreach {
       case (shard, buf) ⇒
         coordinator.foreach { c ⇒
@@ -700,7 +695,6 @@ class ShardRegion(
           c ! GetShardHome(shard)
         }
     }
-  }
 
   def initializeShard(id: ShardId, shard: ActorRef): Unit = {
     log.debug("Shard was initialized {}", id)
@@ -804,7 +798,7 @@ class ShardRegion(
         }
     }
 
-  def getShard(id: ShardId): Option[ActorRef] = {
+  def getShard(id: ShardId): Option[ActorRef] =
     if (startingShards.contains(id))
       None
     else {
@@ -839,7 +833,6 @@ class ShardRegion(
               "Shard must not be allocated to a proxy only ShardRegion")
         })
     }
-  }
 
   def sendGracefulShutdownToCoordinator(): Unit =
     if (gracefulShutdownInProgress)

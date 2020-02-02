@@ -91,21 +91,20 @@ trait NormalizationHelperModule[M[+_]]
         def reduce(schema: CSchema, range: Range) = {
           val refs: Set[ColumnRef] = schema.columnRefs
 
-          def collectReduction(reduction: Reduction): Set[CPath] = {
+          def collectReduction(reduction: Reduction): Set[CPath] =
             refs collect {
               case ColumnRef(selector, ctype)
                   if selector
                     .hasSuffix(CPathField(reduction.name)) && ctype.isNumeric =>
                 selector.take(selector.length - 1) getOrElse CPath.Identity
             }
-          }
 
           val meanPaths = collectReduction(Mean)
           val stdDevPaths = collectReduction(StdDev)
 
           val commonPaths = (meanPaths & stdDevPaths).toList
 
-          def getColumns(reduction: Reduction): List[(CPath, NumColumn)] = {
+          def getColumns(reduction: Reduction): List[(CPath, NumColumn)] =
             commonPaths map { path =>
               val augPath = path \ CPathField(reduction.name)
               val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
@@ -116,7 +115,6 @@ trait NormalizationHelperModule[M[+_]]
 
               (path, unifiedCol)
             }
-          }
 
           val meanCols = getColumns(Mean)
           val stdDevCols = getColumns(StdDev)
@@ -209,11 +207,10 @@ trait NormalizationHelperModule[M[+_]]
               bitsets reduceOption { _ & _ } getOrElse BitSetUtil
                 .create()
 
-            def intersectColumn(col: NumColumn): NumColumn = {
+            def intersectColumn(col: NumColumn): NumColumn =
               new BitsetColumn(definedBitset) with NumColumn {
                 def apply(row: Int) = col.apply(row)
               }
-            }
 
             resultsAll map {
               case (ref, col) =>

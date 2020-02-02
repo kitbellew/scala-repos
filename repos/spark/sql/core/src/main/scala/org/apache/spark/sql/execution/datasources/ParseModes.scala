@@ -24,12 +24,11 @@ private[datasources] object ParseModes {
 
   val DEFAULT = PERMISSIVE_MODE
 
-  def isValidMode(mode: String): Boolean = {
+  def isValidMode(mode: String): Boolean =
     mode.toUpperCase match {
       case PERMISSIVE_MODE | DROP_MALFORMED_MODE | FAIL_FAST_MODE => true
       case _                                                      => false
     }
-  }
 
   def isDropMalformedMode(mode: String): Boolean =
     mode.toUpperCase == DROP_MALFORMED_MODE

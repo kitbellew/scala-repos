@@ -97,9 +97,7 @@ object ToHeadUsages extends Specification {
     "not merge for headless bodyless html" in {
       jetty.browse(
         "/h1",
-        html => {
-          html.getElementById("h1") must not(beNull when jetty.running)
-        }
+        html => html.getElementById("h1") must not(beNull when jetty.running)
       )
     }
 
@@ -118,9 +116,7 @@ object ToHeadUsages extends Specification {
     "not merge non-html" in {
       jetty.browse(
         "/non_html",
-        html => {
-          html.getElementById("frog") must not(beNull when jetty.running)
-        }
+        html => html.getElementById("frog") must not(beNull when jetty.running)
       )
     }
 
@@ -159,31 +155,28 @@ object ToHeadUsages extends Specification {
     "render" in {
       jetty.browse(
         "/deferred",
-        html => {
+        html =>
           html.getElementById("second") must not(beNull when jetty.running)
-        }
       )
     }
 
     "not deferred not in actor" in {
       jetty.browse(
         "/deferred",
-        html => {
+        html =>
           html.getElementByXPath(
             "/html/body/span[@id='whack1']/span[@id='actor_false']") must not(
             beNull when jetty.running)
-        }
       )
     }
 
     "deferred in actor" in {
       jetty.browse(
         "/deferred",
-        html => {
+        html =>
           html.getElementByXPath(
             "/html/body/span[@id='whack2']/span[@id='actor_true']") must not(
             beNull when jetty.running)
-        }
       )
     }
 

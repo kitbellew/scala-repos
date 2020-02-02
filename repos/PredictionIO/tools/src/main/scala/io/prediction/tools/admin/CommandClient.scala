@@ -95,7 +95,7 @@ class CommandClient(
           } else {
             GeneralResponse(
               0,
-              s"Unable to initialize Event Store for this app ID: ${id}.")
+              s"Unable to initialize Event Store for this app ID: $id.")
           }
           r
         } getOrElse {
@@ -110,9 +110,7 @@ class CommandClient(
     Future {
       val apps = appClient.getAll().sortBy(_.name)
       val appsRes = apps.map { app =>
-        {
-          new AppResponse(app.id, app.name, accessKeyClient.getByAppid(app.id))
-        }
+        new AppResponse(app.id, app.name, accessKeyClient.getByAppid(app.id))
       }
       new AppListResponse(1, "Successful retrieved app list.", appsRes)
     }
@@ -139,7 +137,7 @@ class CommandClient(
       }
       GeneralResponse(data.status * data2.status, data.message + data2.message)
     } getOrElse {
-      GeneralResponse(0, s"App ${appName} does not exist.")
+      GeneralResponse(0, s"App $appName does not exist.")
     }
     response
   }
@@ -156,7 +154,7 @@ class CommandClient(
       }
       data
     } getOrElse {
-      GeneralResponse(0, s"App ${appName} does not exist.")
+      GeneralResponse(0, s"App $appName does not exist.")
     }
     response
   }

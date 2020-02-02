@@ -63,7 +63,7 @@ class DuplicatePattern(
     buffer.toMap
   }
 
-  def isDuplicateStart(candidate: PsiElement): Option[DuplicateMatch] = {
+  def isDuplicateStart(candidate: PsiElement): Option[DuplicateMatch] =
     withFilteredForwardSiblings(candidate, elements.size) match {
       case Some(cands) =>
         if (cands.exists(isUnder(_, elements))) None
@@ -74,13 +74,12 @@ class DuplicatePattern(
         }
       case _ => None
     }
-  }
 
   def findDuplicates(scope: PsiElement): Seq[DuplicateMatch] = {
     val result = ListBuffer[DuplicateMatch]()
     val seen = mutable.Set[PsiElement]()
     val visitor = new ScalaRecursiveElementVisitor {
-      override def visitElement(element: ScalaPsiElement) = {
+      override def visitElement(element: ScalaPsiElement) =
         if (isSignificant(element)) {
           isDuplicateStart(element) match {
             case Some(mtch) if !seen(mtch.candidates(0)) =>
@@ -89,7 +88,6 @@ class DuplicatePattern(
             case _ => super.visitElement(element)
           }
         }
-      }
     }
     scope.acceptChildren(visitor)
     result.toSeq

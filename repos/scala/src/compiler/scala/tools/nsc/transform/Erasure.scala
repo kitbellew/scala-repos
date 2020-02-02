@@ -645,7 +645,7 @@ abstract class Erasure
       *   - All forms of x.m where x is a boxed type and m is a member of an unboxed class become
       *     x.m where m is the corresponding member of the boxed class.
       */
-    private def adaptMember(tree: Tree): Tree = {
+    private def adaptMember(tree: Tree): Tree =
       //Console.println("adaptMember: " + tree);
       tree match {
         case Apply(ta @ TypeApply(sel @ Select(qual, name), List(targ)), List())
@@ -739,7 +739,6 @@ abstract class Erasure
         case _ =>
           tree
       }
-    }
 
     /** A replacement for the standard typer's adapt method.
       */
@@ -969,7 +968,7 @@ abstract class Erasure
           case Select(qual, _)               => qual
           case TypeApply(Select(qual, _), _) => qual
         }
-        def preEraseAsInstanceOf = {
+        def preEraseAsInstanceOf =
           (fn: @unchecked) match {
             case TypeApply(Select(qual, _), List(targ)) =>
               if (qual.tpe <:< targ.tpe)
@@ -980,10 +979,9 @@ abstract class Erasure
               else
                 tree
           }
-          // todo: also handle the case where the singleton type is buried in a compound
-        }
+        // todo: also handle the case where the singleton type is buried in a compound
 
-        def preEraseIsInstanceOf = {
+        def preEraseIsInstanceOf =
           fn match {
             case TypeApply(sel @ Select(qual, name), List(targ)) =>
               if (qual.tpe != null && isPrimitiveValueClass(qual.tpe.typeSymbol) && targ.tpe != null && targ.tpe <:< AnyRefTpe)
@@ -1027,7 +1025,6 @@ abstract class Erasure
               }
             case _ => tree
           }
-        }
 
         if (fn.symbol == Any_asInstanceOf) {
           preEraseAsInstanceOf
@@ -1261,7 +1258,7 @@ abstract class Erasure
           tree
       }
 
-      override def transform(tree: Tree): Tree = {
+      override def transform(tree: Tree): Tree =
         // Reply to "!!! needed?" which adorned the next line: without it, build fails with:
         //   Exception in thread "main" scala.tools.nsc.symtab.Types$TypeError:
         //   value array_this is not a member of object scala.runtime.ScalaRunTime
@@ -1292,7 +1289,6 @@ abstract class Erasure
               super.transform(tree1).clearType()
           }
         }
-      }
     }
 
     /** The main transform function: Pretransform the tree, and then

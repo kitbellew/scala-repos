@@ -111,7 +111,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
     def apply(
         tp: Type,
         runtimeType: Type,
-        param: NamedParam): TypeMemberCompletion = {
+        param: NamedParam): TypeMemberCompletion =
       new TypeMemberCompletion(tp) {
         var upgraded = false
         lazy val upgrade = {
@@ -122,12 +122,11 @@ class SparkJLineCompletion(val intp: SparkIMain)
           upgraded = true
           new TypeMemberCompletion(runtimeType)
         }
-        override def completions(verbosity: Int) = {
+        override def completions(verbosity: Int) =
           super.completions(verbosity) ++ (
             if (verbosity == 0) Nil
             else upgrade.completions(verbosity)
           )
-        }
         override def follow(s: String) = super.follow(s) orElse {
           if (upgraded) upgrade.follow(s)
           else None
@@ -138,12 +137,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
             else Nil
           ) distinct
       }
-    }
-    def apply(tp: Type): TypeMemberCompletion = {
+    def apply(tp: Type): TypeMemberCompletion =
       if (tp eq NoType) NoTypeCompletion
       else if (tp.typeSymbol.isPackageClass) new PackageCompletion(tp)
       else new TypeMemberCompletion(tp)
-    }
     def imported(tp: Type) = new ImportCompletion(tp)
   }
 
@@ -156,9 +153,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
     def excludeNames: List[String] =
       (anyref.methodNames filterNot anyRefMethodsToShow) :+ "_root_"
 
-    def methodSignatureString(sym: Symbol) = {
+    def methodSignatureString(sym: Symbol) =
       IMain stripString afterTyper(new MethodSymbolOutput(sym).methodString())
-    }
 
     def exclude(name: String): Boolean = (
       (name contains "$") ||
@@ -367,7 +363,7 @@ class SparkJLineCompletion(val intp: SparkIMain)
       cursor == lastCursor && buf == lastBuf
 
     // Longest common prefix
-    def commonPrefix(xs: List[String]): String = {
+    def commonPrefix(xs: List[String]): String =
       if (xs.isEmpty || xs.contains("")) ""
       else
         xs.head.head match {
@@ -376,7 +372,6 @@ class SparkJLineCompletion(val intp: SparkIMain)
               "" + ch + commonPrefix(xs map (_.tail))
             else ""
         }
-    }
 
     // This is jline's entry point for completion.
     override def complete(buf: String, cursor: Int): Candidates = {

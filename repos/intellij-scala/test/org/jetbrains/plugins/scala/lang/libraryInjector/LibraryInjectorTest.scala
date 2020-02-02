@@ -38,7 +38,7 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
       val file = new File(toDir, LIBRARY_NAME)
       val zfs = new ZipOutputStream(
         new BufferedOutputStream(new FileOutputStream(file)))
-      def doZip(zipable: Zipable): Unit = {
+      def doZip(zipable: Zipable): Unit =
         zipable match {
           case ZDir(zname, zfiles) =>
             zfs.putNextEntry(new ZipEntry(zname + "/"))
@@ -49,7 +49,6 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
             zfs.write(zdata.getBytes("UTF-8"), 0, zdata.length)
             zfs.closeEntry()
         }
-      }
       doZip(this)
       zfs.close()
       file
@@ -99,9 +98,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
       .storePointers()
   }
 
-  override protected def getTestProjectJdk: Sdk = {
+  override protected def getTestProjectJdk: Sdk =
     DebuggerTestUtil.findJdk8()
-  }
 
   val simpleInjector = {
     val manifest =

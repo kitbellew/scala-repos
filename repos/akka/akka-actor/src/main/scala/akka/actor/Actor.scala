@@ -619,9 +619,8 @@ trait Actor {
     classOf[Exception]
   ) // when changing this you MUST also change UntypedActorDocTest
   //#lifecycle-hooks
-  def postRestart(reason: Throwable): Unit = {
+  def postRestart(reason: Throwable): Unit =
     preStart()
-  }
   //#lifecycle-hooks
 
   /**
@@ -632,12 +631,11 @@ trait Actor {
     * case of an unhandled [[akka.actor.Terminated]] message) or publishes an [[akka.actor.UnhandledMessage]]
     * to the actor's system's [[akka.event.EventStream]]
     */
-  def unhandled(message: Any): Unit = {
+  def unhandled(message: Any): Unit =
     message match {
       case Terminated(dead) ⇒ throw new DeathPactException(dead)
       case _ ⇒
         context.system.eventStream
           .publish(UnhandledMessage(message, sender(), self))
     }
-  }
 }

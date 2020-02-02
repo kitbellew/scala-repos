@@ -43,7 +43,7 @@ object Traversable {
     def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 
       def step(inner: Iteratee[M, A], leftToTake: Long)(
-          in: Input[M]): Iteratee[M, Iteratee[M, A]] = {
+          in: Input[M]): Iteratee[M, Iteratee[M, A]] =
         in match {
           case in @ Input.El(e) =>
             inner.pureFlatFold {
@@ -65,7 +65,6 @@ object Traversable {
           case Input.Empty => Cont(step(inner, leftToTake))
         }
 
-      }
       Cont(step(it, count))
     }
   }
@@ -77,7 +76,7 @@ object Traversable {
     def applyOn[A](it: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 
       def step(inner: Iteratee[M, A], leftToTake: Int)(
-          in: Input[M]): Iteratee[M, Iteratee[M, A]] = {
+          in: Input[M]): Iteratee[M, Iteratee[M, A]] =
         in match {
           case in @ Input.El(e) =>
             e.splitAt(leftToTake) match {
@@ -102,7 +101,6 @@ object Traversable {
           case Input.Empty => Cont(step(inner, leftToTake))
         }
 
-      }
       Cont(step(it, count))
 
     }
@@ -155,7 +153,7 @@ object Traversable {
     def applyOn[A](inner: Iteratee[M, A]): Iteratee[M, Iteratee[M, A]] = {
 
       def step(it: Iteratee[M, A], leftToDrop: Int)(
-          in: Input[M]): Iteratee[M, Iteratee[M, A]] = {
+          in: Input[M]): Iteratee[M, Iteratee[M, A]] =
         in match {
           case in @ Input.El(e) =>
             val left = leftToDrop - e.size
@@ -173,7 +171,6 @@ object Traversable {
 
           case Input.EOF => Done(it, Input.EOF)
         }
-      }
 
       Cont(step(inner, count))
 

@@ -82,7 +82,7 @@ object FailFastFactory {
           _logger: param.Logger,
           _endpoint: Transporter.EndpointAddr,
           next: ServiceFactory[Req, Rep]
-      ) = {
+      ) =
         failFast match {
           case FailFast(false) =>
             next
@@ -101,7 +101,6 @@ object FailFastFactory {
               logger,
               endpoint)
         }
-      }
     }
 }
 
@@ -233,7 +232,7 @@ private[finagle] class FailFastFactory[Req, Rep](
     }
   }
 
-  override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
+  override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     if (state != Ok) futureExc
     else {
       underlying(conn).respond {
@@ -242,7 +241,6 @@ private[finagle] class FailFastFactory[Req, Rep](
         case _                        =>
       }
     }
-  }
   override def status = state match {
     case Ok          => underlying.status
     case _: Retrying => Status.Busy

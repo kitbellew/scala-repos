@@ -143,7 +143,7 @@ trait StatsLibModule[M[+_]]
 
       def reducer(ctx: MorphContext): Reducer[Result] =
         new Reducer[Result] { //TODO add cases for other column types; get information necessary for dealing with slice boundaries and unsoretd slices in the Iterable[Slice] that's used in table.reduce
-          def reduce(schema: CSchema, range: Range): Result = {
+          def reduce(schema: CSchema, range: Range): Result =
             schema.columns(JNumberT) flatMap {
               case col: LongColumn =>
                 val mapped = range filter col.isDefinedAt map { x => col(x) }
@@ -188,7 +188,6 @@ trait StatsLibModule[M[+_]]
 
               case _ => Set.empty[BigDecimal]
             }
-          }
         }
 
       def extract(res: Result): Table = Table.constDecimal(res)
@@ -277,14 +276,13 @@ trait StatsLibModule[M[+_]]
         @tailrec def findFirst(
             col: NumColumn,
             row: Int,
-            end: Int): Option[BigDecimal] = {
+            end: Int): Option[BigDecimal] =
           if (row < end) {
             if (col.isDefinedAt(row)) Some(col(row))
             else findFirst(col, row + 1, end)
           } else {
             None
           }
-        }
 
         def scan(
             init: Option[BigDecimal],
@@ -362,14 +360,13 @@ trait StatsLibModule[M[+_]]
         @tailrec def findFirst(
             col: NumColumn,
             row: Int,
-            end: Int): Option[(Int, BigDecimal)] = {
+            end: Int): Option[(Int, BigDecimal)] =
           if (row < end) {
             if (col.isDefinedAt(row)) Some(row -> col(row))
             else findFirst(col, row + 1, end)
           } else {
             None
           }
-        }
 
         def scan(
             state0: ScannerState,
@@ -785,7 +782,7 @@ trait StatsLibModule[M[+_]]
         }
       }
 
-      def extract(res: Result): Table = {
+      def extract(res: Result): Table =
         res filter (_._1 > 0) map {
           case (count, sum1, sum2, sumsq1, sumsq2, productSum) =>
             val unscaledVar1 = count * sumsq1 - sum1 * sum1
@@ -808,7 +805,6 @@ trait StatsLibModule[M[+_]]
               Table.empty
             }
         } getOrElse Table.empty
-      }
 
       private val morph1 = new Morph1Apply {
         def apply(table: Table, ctx: MorphContext) = {
@@ -1959,7 +1955,7 @@ trait StatsLibModule[M[+_]]
           definedCols: Array[BitSet],
           lastRow: Int,
           row: Int,
-          index: Int): Boolean = {
+          index: Int): Boolean =
         if (index >= cols.length) {
           true
         } else {
@@ -1973,7 +1969,6 @@ trait StatsLibModule[M[+_]]
             false
           }
         }
-      }
 
       /**
         * Determines whether row is a duplicate of the row in RankContext.

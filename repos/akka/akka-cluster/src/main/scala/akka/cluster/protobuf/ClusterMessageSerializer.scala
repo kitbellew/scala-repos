@@ -283,8 +283,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         .setStatus(cm.MemberStatus.valueOf(memberStatusToInt(member.status)))
         .addAllRolesIndexes(member.roles.map(mapRole).asJava)
 
-    def reachabilityToProto(reachability: Reachability)
-        : Iterable[cm.ObserverReachability.Builder] = {
+    def reachabilityToProto(
+        reachability: Reachability): Iterable[cm.ObserverReachability.Builder] =
       reachability.versions.map {
         case (observer, version) ⇒
           val subjectReachability = reachability
@@ -302,7 +302,6 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
             .setVersion(version)
             .addAllSubjectReachability(subjectReachability.map(_.build).asJava)
       }
-    }
 
     val reachability = reachabilityToProto(gossip.overview.reachability)
     val members = gossip.members.map(memberToProto)

@@ -135,8 +135,7 @@ object Connection extends App {
       val f = db.run(countAction zip errorHandleAction zip countAction).map {
         case ((initialCount, result), finalCount) =>
           // init: 5, final: 5, result: Roll it back
-          println(
-            s"init: ${initialCount}, final: ${finalCount}, result: ${result}")
+          println(s"init: $initialCount, final: $finalCount, result: $result")
           result
       }
 

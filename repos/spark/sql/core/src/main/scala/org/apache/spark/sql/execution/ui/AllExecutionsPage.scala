@@ -185,7 +185,7 @@ private[ui] abstract class ExecutionTable(
     <td>{summary}{details}</td>
   }
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     <div>
       <h4>{tableName}</h4>
       {
@@ -196,7 +196,6 @@ private[ui] abstract class ExecutionTable(
         id = Some(tableId))
     }
     </div>
-  }
 
   private def jobURL(jobId: Long): String =
     "%s/jobs/job?id=%s".format(UIUtils.prependBaseUri(parent.basePath), jobId)

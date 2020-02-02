@@ -14,10 +14,9 @@ class StdNamesTest {
   import nme.{SPECIALIZED_SUFFIX, unspecializedName, splitSpecializedName}
 
   @Test
-  def testNewTermNameInvalid(): Unit = {
+  def testNewTermNameInvalid(): Unit =
     assertThrows[IllegalArgumentException](
       newTermName("foo".toCharArray, -1, 1))
-  }
 
   @Test
   def testNewTermNameNegativeLength(): Unit = {

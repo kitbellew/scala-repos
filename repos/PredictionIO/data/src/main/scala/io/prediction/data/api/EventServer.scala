@@ -236,7 +236,7 @@ class EventServiceActor(
                 val channelId = authData.channelId
                 respondWithMediaType(MediaTypes.`application/json`) {
                   complete {
-                    logger.debug(s"GET event ${eventId}.")
+                    logger.debug(s"GET event $eventId.")
                     val data =
                       eventClient.futureGet(eventId, appId, channelId).map {
                         eventOpt =>
@@ -263,7 +263,7 @@ class EventServiceActor(
                   val channelId = authData.channelId
                   respondWithMediaType(MediaTypes.`application/json`) {
                     complete {
-                      logger.debug(s"DELETE event ${eventId}.")
+                      logger.debug(s"DELETE event $eventId.")
                       val data = eventClient
                         .futureDelete(eventId, appId, channelId)
                         .map { found =>
@@ -312,7 +312,7 @@ class EventServiceActor(
                               channelId = channelId,
                               event = event)
                             val result =
-                              (StatusCodes.Created, Map("eventId" -> s"${id}"))
+                              (StatusCodes.Created, Map("eventId" -> s"$id"))
                             if (config.stats) {
                               statsActorRef ! Bookkeeping(
                                 appId,
@@ -364,10 +364,10 @@ class EventServiceActor(
                       respondWithMediaType(MediaTypes.`application/json`) {
                         complete {
                           logger.debug(
-                            s"GET events of appId=${appId} " +
-                              s"st=${startTimeStr} ut=${untilTimeStr} " +
-                              s"et=${entityType} eid=${entityId} " +
-                              s"li=${limit} rev=${reversed} ")
+                            s"GET events of appId=$appId " +
+                              s"st=$startTimeStr ut=$untilTimeStr " +
+                              s"et=$entityType eid=$entityId " +
+                              s"li=$limit rev=$reversed ")
 
                           require(
                             !((reversed == Some(true))
@@ -418,7 +418,7 @@ class EventServiceActor(
                               case e: Exception =>
                                 (
                                   StatusCodes.BadRequest,
-                                  Map("message" -> s"${e}"))
+                                  Map("message" -> s"$e"))
                             }
                         }
                       }
@@ -461,7 +461,7 @@ class EventServiceActor(
                           val status = StatusCodes.Created
                           val result = Map(
                             "status" -> status.intValue,
-                            "eventId" -> s"${id}")
+                            "eventId" -> s"$id")
                           if (config.stats) {
                             statsActorRef ! Bookkeeping(appId, status, event)
                           }
@@ -497,7 +497,7 @@ class EventServiceActor(
                         StatusCodes.BadRequest,
                         Map(
                           "message" -> (s"Batch request must have less than or equal to " +
-                            s"${MaxNumberOfEventsPerBatchRequest} events")))
+                            s"$MaxNumberOfEventsPerBatchRequest events")))
                     }
                   }
                 }

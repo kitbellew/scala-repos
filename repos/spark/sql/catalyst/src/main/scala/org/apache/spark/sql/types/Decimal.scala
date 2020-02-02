@@ -142,52 +142,47 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     this
   }
 
-  def toBigDecimal: BigDecimal = {
+  def toBigDecimal: BigDecimal =
     if (decimalVal.ne(null)) {
       decimalVal
     } else {
       BigDecimal(longVal, _scale)
     }
-  }
 
-  def toJavaBigDecimal: java.math.BigDecimal = {
+  def toJavaBigDecimal: java.math.BigDecimal =
     if (decimalVal.ne(null)) {
       decimalVal.underlying()
     } else {
       java.math.BigDecimal.valueOf(longVal, _scale)
     }
-  }
 
-  def toUnscaledLong: Long = {
+  def toUnscaledLong: Long =
     if (decimalVal.ne(null)) {
       decimalVal.underlying().unscaledValue().longValue()
     } else {
       longVal
     }
-  }
 
   override def toString: String = toBigDecimal.toString()
 
   @DeveloperApi
-  def toDebugString: String = {
+  def toDebugString: String =
     if (decimalVal.ne(null)) {
       s"Decimal(expanded,$decimalVal,$precision,$scale})"
     } else {
       s"Decimal(compact,$longVal,$precision,$scale})"
     }
-  }
 
   def toDouble: Double = toBigDecimal.doubleValue()
 
   def toFloat: Float = toBigDecimal.floatValue()
 
-  def toLong: Long = {
+  def toLong: Long =
     if (decimalVal.eq(null)) {
       longVal / POW_10(_scale)
     } else {
       decimalVal.longValue()
     }
-  }
 
   def toInt: Int = toLong.toInt
 
@@ -200,9 +195,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     *
     * @return true if successful, false if overflow would occur
     */
-  def changePrecision(precision: Int, scale: Int): Boolean = {
+  def changePrecision(precision: Int, scale: Int): Boolean =
     changePrecision(precision, scale, ROUND_HALF_UP)
-  }
 
   /**
     * Update precision and scale while keeping our value the same, and return true if successful.
@@ -267,7 +261,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
 
   override def clone(): Decimal = new Decimal().set(this)
 
-  override def compare(other: Decimal): Int = {
+  override def compare(other: Decimal): Int =
     if (decimalVal.eq(null) && other.decimalVal.eq(null) && _scale == other._scale) {
       if (longVal < other.longVal) -1
       else if (longVal == other.longVal) 0
@@ -275,7 +269,6 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     } else {
       toBigDecimal.compare(other.toBigDecimal)
     }
-  }
 
   override def equals(other: Any): Boolean = other match {
     case d: Decimal =>
@@ -289,7 +282,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   def isZero: Boolean =
     if (decimalVal.ne(null)) decimalVal == BIG_DEC_ZERO else longVal == 0
 
-  def +(that: Decimal): Decimal = {
+  def +(that: Decimal): Decimal =
     if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
       Decimal(
         longVal + that.longVal,
@@ -298,9 +291,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     } else {
       Decimal(toBigDecimal + that.toBigDecimal)
     }
-  }
 
-  def -(that: Decimal): Decimal = {
+  def -(that: Decimal): Decimal =
     if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
       Decimal(
         longVal - that.longVal,
@@ -309,7 +301,6 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     } else {
       Decimal(toBigDecimal - that.toBigDecimal)
     }
-  }
 
   // HiveTypeCoercion will take care of the precision, scale of result
   def *(that: Decimal): Decimal =
@@ -326,13 +317,12 @@ final class Decimal extends Ordered[Decimal] with Serializable {
 
   def remainder(that: Decimal): Decimal = this % that
 
-  def unary_- : Decimal = {
+  def unary_- : Decimal =
     if (decimalVal.ne(null)) {
       Decimal(-decimalVal, precision, scale)
     } else {
       Decimal(-longVal, precision, scale)
     }
-  }
 
   def abs: Decimal = if (this.compare(Decimal.ZERO) < 0) this.unary_- else this
 

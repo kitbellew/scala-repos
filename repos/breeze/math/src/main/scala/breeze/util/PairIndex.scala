@@ -10,10 +10,9 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
 
   def pairs = iterator.zipWithIndex;
 
-  def mapIndex(indexInT: Int, indexInU: Int) = {
+  def mapIndex(indexInT: Int, indexInU: Int) =
     if (indexInT < 0 || indexInU < 0) -1
     else indexInT * uIndex.size + indexInU
-  }
 
   def unapply(i: Int) =
     if (i >= 0) {
@@ -24,9 +23,8 @@ class PairIndex[T, U](tIndex: Index[T], uIndex: Index[U])
       None
     }
 
-  def apply(t: (T, U)) = {
+  def apply(t: (T, U)) =
     mapIndex(tIndex(t._1), uIndex(t._2))
-  }
 
   override def size: Int = tIndex.size * uIndex.size
 }

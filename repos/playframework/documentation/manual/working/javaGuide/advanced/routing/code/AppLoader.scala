@@ -14,9 +14,8 @@ import router.RoutingDslBuilder
 
 //#load
 class AppLoader extends ApplicationLoader {
-  def load(context: Context) = {
+  def load(context: Context) =
     new MyComponents(context).application
-  }
 }
 
 class MyComponents(context: Context)

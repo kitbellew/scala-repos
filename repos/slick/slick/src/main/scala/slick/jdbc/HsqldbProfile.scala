@@ -104,7 +104,7 @@ trait HsqldbProfile extends JdbcProfile {
       case _ => super.expr(c, skipParens)
     }
 
-    override protected def buildJoin(j: Join): Unit = {
+    override protected def buildJoin(j: Join): Unit =
       /* Re-balance inner joins to the left because Hsqldb does not supported RHS nesting. Paths
        * into joined views have already been mapped to unique identifiers at this point, so we can
        * safely rearrange views. */
@@ -131,7 +131,6 @@ trait HsqldbProfile extends JdbcProfile {
               on3))
         case j => super.buildJoin(j)
       }
-    }
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
@@ -154,7 +153,7 @@ trait HsqldbProfile extends JdbcProfile {
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override protected def createIndex(idx: Index) = {
+    override protected def createIndex(idx: Index) =
       if (idx.unique) {
         /* Create a UNIQUE CONSTRAINT (with an automatically generated backing
          * index) because Hsqldb does not allow a FOREIGN KEY CONSTRAINT to
@@ -167,7 +166,6 @@ trait HsqldbProfile extends JdbcProfile {
         sb append ")"
         sb.toString
       } else super.createIndex(idx)
-    }
   }
 
   class SequenceDDLBuilder[T](seq: Sequence[T])

@@ -139,7 +139,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       sc.addFile(file1.getAbsolutePath)
       sc.addFile(relativePath)
       sc.parallelize(Array(1), 1)
-        .map(x => {
+        .map { x =>
           val gotten1 = new File(SparkFiles.get(file1.getName))
           val gotten2 = new File(SparkFiles.get(file2.getName))
           if (!gotten1.exists()) {
@@ -169,7 +169,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
               "file should have been copied : " + absolutePath2)
           }
           x
-        })
+        }
         .count()
     } finally {
       sc.stop()
@@ -188,7 +188,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
       sc.addFile(neptune.getAbsolutePath, true)
       sc.parallelize(Array(1), 1)
-        .map(x => {
+        .map { x =>
           val sep = File.separator
           if (!new File(SparkFiles.get(neptune.getName + sep + alien1.getName))
                 .exists()) {
@@ -206,7 +206,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
             throw new SparkException("file exists that shouldn't")
           }
           x
-        })
+        }
         .count()
     } finally {
       sc.stop()

@@ -60,7 +60,7 @@ class MapperSpec extends Specification with BeforeExample {
 
   def before = MapperSpecsModel.cleanup() // before each example
 
-  providers.foreach(provider => {
+  providers.foreach { provider =>
     try {
       provider.setupDB
 
@@ -456,5 +456,5 @@ class MapperSpec extends Specification with BeforeExample {
         skipped("Provider %s not available: %s".format(provider, e))
       case _: Exception => skipped
     }
-  })
+  }
 }

@@ -85,12 +85,11 @@ private[spark] class DiskBlockManager(
   def getFile(blockId: BlockId): File = getFile(blockId.name)
 
   /** Check if disk block manager has a block. */
-  def containsBlock(blockId: BlockId): Boolean = {
+  def containsBlock(blockId: BlockId): Boolean =
     getFile(blockId.name).exists()
-  }
 
   /** List all the files currently stored on disk by the disk manager. */
-  def getAllFiles(): Seq[File] = {
+  def getAllFiles(): Seq[File] =
     // Get all the files inside the array of array of directories
     subDirs
       .flatMap { dir =>
@@ -104,12 +103,10 @@ private[spark] class DiskBlockManager(
         val files = dir.listFiles()
         if (files != null) files else Seq.empty
       }
-  }
 
   /** List all the blocks currently stored on disk by the disk manager. */
-  def getAllBlocks(): Seq[BlockId] = {
+  def getAllBlocks(): Seq[BlockId] =
     getAllFiles().map(f => BlockId(f.getName))
-  }
 
   /** Produces a unique block id and File suitable for storing local intermediate results. */
   def createTempLocalBlock(): (TempLocalBlockId, File) = {
@@ -134,7 +131,7 @@ private[spark] class DiskBlockManager(
     * located inside configured local directories and won't
     * be deleted on JVM exit when using the external shuffle service.
     */
-  private def createLocalDirs(conf: SparkConf): Array[File] = {
+  private def createLocalDirs(conf: SparkConf): Array[File] =
     Utils.getConfiguredLocalDirs(conf).flatMap { rootDir =>
       try {
         val localDir = Utils.createDirectory(rootDir, "blockmgr")
@@ -148,15 +145,13 @@ private[spark] class DiskBlockManager(
           None
       }
     }
-  }
 
-  private def addShutdownHook(): AnyRef = {
+  private def addShutdownHook(): AnyRef =
     ShutdownHookManager.addShutdownHook(
       ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) { () =>
       logInfo("Shutdown hook called")
       DiskBlockManager.this.doStop()
     }
-  }
 
   /** Cleanup local dirs and stop shuffle sender. */
   private[spark] def stop() {
@@ -170,7 +165,7 @@ private[spark] class DiskBlockManager(
     doStop()
   }
 
-  private def doStop(): Unit = {
+  private def doStop(): Unit =
     if (deleteFilesOnStop) {
       localDirs.foreach { localDir =>
         if (localDir.isDirectory() && localDir.exists()) {
@@ -187,5 +182,4 @@ private[spark] class DiskBlockManager(
         }
       }
     }
-  }
 }

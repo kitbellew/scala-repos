@@ -550,10 +550,9 @@ class CleanerTest extends JUnitSuite {
       time = time,
       checkDone = checkDone)
 
-  def writeToLog(log: Log, seq: Iterable[(Int, Int)]): Iterable[Long] = {
+  def writeToLog(log: Log, seq: Iterable[(Int, Int)]): Iterable[Long] =
     for ((key, value) <- seq)
       yield log.append(message(key, value)).firstOffset
-  }
 
   def key(id: Int) = ByteBuffer.wrap(id.toString.getBytes)
 

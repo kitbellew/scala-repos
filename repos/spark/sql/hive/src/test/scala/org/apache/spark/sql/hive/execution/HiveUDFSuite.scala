@@ -527,7 +527,7 @@ class TestPair(x: Int, y: Int) extends Writable with Serializable {
 class PairSerDe extends AbstractSerDe {
   override def initialize(p1: Configuration, p2: Properties): Unit = {}
 
-  override def getObjectInspector: ObjectInspector = {
+  override def getObjectInspector: ObjectInspector =
     ObjectInspectorFactory
       .getStandardStructObjectInspector(
         Arrays.asList("pair"),
@@ -539,7 +539,6 @@ class PairSerDe extends AbstractSerDe {
               PrimitiveObjectInspectorFactory.javaIntObjectInspector)
           ))
       )
-  }
 
   override def getSerializedClass: Class[_ <: Writable] = classOf[TestPair]
 
@@ -568,9 +567,8 @@ class PairUDF extends GenericUDF {
         PrimitiveObjectInspectorFactory.javaIntObjectInspector)
     )
 
-  override def evaluate(args: Array[DeferredObject]): AnyRef = {
+  override def evaluate(args: Array[DeferredObject]): AnyRef =
     Integer.valueOf(args(0).get.asInstanceOf[TestPair].entry._2)
-  }
 
   override def getDisplayString(p1: Array[String]): String = ""
 }

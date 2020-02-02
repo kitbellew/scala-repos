@@ -116,9 +116,8 @@ package scala.collection.mutable {
     def keysInView[This <: TraversableOnce[K], That](
         keys: This,
         from: Option[K],
-        until: Option[K])(implicit bf: CanBuildFrom[This, K, That]) = {
+        until: Option[K])(implicit bf: CanBuildFrom[This, K, That]) =
       (bf.apply(keys) ++= keys.filter(in(_, from, until))).result()
-    }
 
     property("size, isEmpty") = forAll {
       (keys: Set[K], from: Option[K], until: Option[K]) =>

@@ -27,28 +27,25 @@ trait ScalaPsiElement
     this.child = child
   }
 
-  def getSameElementInContext: PsiElement = {
+  def getSameElementInContext: PsiElement =
     child match {
       case null => this
       case _    => child
     }
-  }
 
-  def getDeepSameElementInContext: PsiElement = {
+  def getDeepSameElementInContext: PsiElement =
     child match {
       case null                   => this
       case _ if child == context  => this
       case child: ScalaPsiElement => child.getDeepSameElementInContext
       case _                      => child
     }
-  }
 
-  def startOffsetInParent: Int = {
+  def startOffsetInParent: Int =
     child match {
       case s: ScalaPsiElement => s.startOffsetInParent
       case _                  => getStartOffsetInParent
     }
-  }
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T
@@ -124,7 +121,7 @@ trait ScalaPsiElement
     }
   }
 
-  abstract override def getUseScope: SearchScope = {
+  abstract override def getUseScope: SearchScope =
     ScalaPsiUtil.intersectScopes(
       super.getUseScope,
       containingFile match {
@@ -134,5 +131,4 @@ trait ScalaPsiElement
         case _ => None
       }
     )
-  }
 }

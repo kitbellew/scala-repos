@@ -173,11 +173,10 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
 
   private def getAclToCommand(
       permissionType: PermissionType,
-      operations: Set[Operation]): (Set[Acl], Array[String]) = {
+      operations: Set[Operation]): (Set[Acl], Array[String]) =
     (
       AclCommand.getAcls(Users, permissionType, operations, Hosts),
       getCmd(permissionType))
-  }
 
   private def getCmd(permissionType: PermissionType): Array[String] = {
     val principalCmd =

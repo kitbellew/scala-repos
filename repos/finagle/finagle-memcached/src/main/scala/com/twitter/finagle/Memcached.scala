@@ -427,9 +427,8 @@ object Memcached
     protected type In = Response
     protected type Out = Command
 
-    protected def newListener(): Listener[In, Out] = {
+    protected def newListener(): Listener[In, Out] =
       Netty3Listener("memcached", MemcachedServerPipelineFactory)
-    }
 
     protected def newDispatcher(
         transport: Transport[In, Out],

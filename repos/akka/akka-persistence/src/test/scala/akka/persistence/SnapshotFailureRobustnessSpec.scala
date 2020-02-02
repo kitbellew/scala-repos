@@ -59,25 +59,24 @@ object SnapshotFailureRobustnessSpec {
       extends NamedPersistentActor(name) {
     override def receiveRecover: Receive = {
       case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case payload: String ⇒ probe ! s"${payload}-${lastSequenceNr}"
+      case payload: String ⇒ probe ! s"$payload-$lastSequenceNr"
       case other ⇒ probe ! other
     }
 
     override def receiveCommand = {
       case Cmd(payload) ⇒
-        persist(payload) { _ ⇒ probe ! s"${payload}-${lastSequenceNr}" }
+        persist(payload) { _ ⇒ probe ! s"$payload-$lastSequenceNr" }
       case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
       case other ⇒ probe ! other
     }
   }
 
   class FailingLocalSnapshotStore extends LocalSnapshotStore {
-    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit = {
+    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit =
       if (metadata.sequenceNr == 2) {
         val bytes = "b0rk".getBytes("UTF-8")
         withOutputStream(metadata)(_.write(bytes))
       } else super.save(metadata, snapshot)
-    }
   }
 
   class DeleteFailingLocalSnapshotStore extends LocalSnapshotStore {

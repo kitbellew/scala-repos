@@ -7,12 +7,11 @@ object GenerateId {
 
   def apply(): String = generateCsrfToken()
 
-  private[this] def hexEncode(bytes: Array[Byte]): String = {
+  private[this] def hexEncode(bytes: Array[Byte]): String =
     ((new StringBuilder(bytes.length * 2) /: bytes) { (sb, b) =>
       if ((b.toInt & 0xff) < 0x10) sb.append("0")
       sb.append(Integer.toString(b.toInt & 0xff, 16))
     }).toString
-  }
 
   protected def generateCsrfToken(): String = {
     val tokenVal = new Array[Byte](20)
@@ -64,17 +63,15 @@ trait CsrfTokenSupport { this: ScalatraBase =>
     * Take an action when a forgery is detected. The default action
     * halts further request processing and returns a 403 HTTP status code.
     */
-  protected def handleForgery(): Unit = {
+  protected def handleForgery(): Unit =
     halt(403, "Request tampering detected!")
-  }
 
   /**
     * Prepares a CSRF token.  The default implementation uses `GenerateId`
     * and stores it on the session.
     */
-  protected def prepareCsrfToken(): String = {
+  protected def prepareCsrfToken(): String =
     session.getOrElseUpdate(csrfKey, GenerateId()).toString
-  }
 
   @deprecated("Use prepareCsrfToken()", "2.0.0")
   protected def prepareCSRFToken(): String = prepareCsrfToken()
@@ -110,11 +107,10 @@ trait XsrfTokenSupport { this: ScalatraBase =>
   def xsrfToken(implicit request: HttpServletRequest): String =
     request.getSession.getAttribute(xsrfKey).asInstanceOf[String]
 
-  def xsrfGuard(only: RouteTransformer*): Unit = {
+  def xsrfGuard(only: RouteTransformer*): Unit =
     before((only.toSeq ++ Seq[RouteTransformer](isForged)): _*) {
       handleForgery()
     }
-  }
 
   before() { prepareXsrfToken() }
 
@@ -135,9 +131,8 @@ trait XsrfTokenSupport { this: ScalatraBase =>
     * Take an action when a forgery is detected. The default action
     * halts further request processing and returns a 403 HTTP status code.
     */
-  protected def handleForgery(): Unit = {
+  protected def handleForgery(): Unit =
     halt(403, "Request tampering detected!")
-  }
 
   /**
     * Prepares a XSRF token.  The default implementation uses `GenerateId`

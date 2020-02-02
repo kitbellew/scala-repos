@@ -12,9 +12,8 @@ abstract class CachedTestBase extends ScalaFixtureTestCase {
 
   trait Managed {
     val getManager = new MockPsiManager(getProject) {
-      override def getModificationTracker: PsiModificationTrackerImpl = {
+      override def getModificationTracker: PsiModificationTrackerImpl =
         super.getModificationTracker.asInstanceOf[PsiModificationTrackerImpl]
-      }
     }
   }
 }

@@ -132,11 +132,10 @@ class SystemTest {
       System.identityHashCode(list2))
   }
 
-  @Test def identityHashCode_of_null(): Unit = {
+  @Test def identityHashCode_of_null(): Unit =
     assertEquals(0, System.identityHashCode(null))
-  }
 
-  @Test def identityHashCode_of_values_implemented_as_JS_primitives(): Unit = {
+  @Test def identityHashCode_of_values_implemented_as_JS_primitives(): Unit =
     if (!executingInJVM) {
       assertEquals("foo".hashCode(), System.identityHashCode("foo"))
       assertEquals("".hashCode(), System.identityHashCode(""))
@@ -149,5 +148,4 @@ class SystemTest {
 
       assertEquals(().hashCode(), System.identityHashCode(()))
     }
-  }
 }

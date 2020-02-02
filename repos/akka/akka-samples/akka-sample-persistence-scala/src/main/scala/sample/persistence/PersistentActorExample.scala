@@ -31,8 +31,8 @@ class ExamplePersistentActor extends PersistentActor {
 
   val receiveCommand: Receive = {
     case Cmd(data) =>
-      persist(Evt(s"${data}-${numEvents}"))(updateState)
-      persist(Evt(s"${data}-${numEvents + 1}")) { event =>
+      persist(Evt(s"$data-$numEvents"))(updateState)
+      persist(Evt(s"$data-${numEvents + 1}")) { event =>
         updateState(event)
         context.system.eventStream.publish(event)
       }

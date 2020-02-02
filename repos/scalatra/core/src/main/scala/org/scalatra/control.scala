@@ -28,9 +28,8 @@ trait Control {
     throw new HaltException(statusOpt, Some(reason), headers, body)
   }
 
-  def halt(result: ActionResult): Nothing = {
+  def halt(result: ActionResult): Nothing =
     halt(result.status.code, result.body, result.headers, result.status.message)
-  }
 
   /**
     * Immediately exits from the current route.

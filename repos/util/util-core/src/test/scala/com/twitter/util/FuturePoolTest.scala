@@ -30,9 +30,8 @@ class FuturePoolTest extends FunSuite with Eventually {
 
   test("Executor failing contains failures") {
     val badExecutor = new ScheduledThreadPoolExecutor(1) {
-      override def submit(runnable: Runnable): JFuture[_] = {
+      override def submit(runnable: Runnable): JFuture[_] =
         throw new RejectedExecutionException()
-      }
     }
 
     val pool = FuturePool(badExecutor)

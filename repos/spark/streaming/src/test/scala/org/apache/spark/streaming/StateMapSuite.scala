@@ -348,7 +348,7 @@ class StateMapSuite extends SparkFunSuite {
       mapToTest: StateMap[T, T],
       refMapToTestWith: StateMap[T, T],
       time: Long,
-      msg: String): Unit = {
+      msg: String): Unit =
     withClue(msg) {
       // Assert all the data is same as the reference map
       assert(mapToTest.getAll().toSet === refMapToTestWith.getAll().toSet)
@@ -364,14 +364,13 @@ class StateMapSuite extends SparkFunSuite {
           mapToTest.getByTime(t).toSet === refMapToTestWith.getByTime(t).toSet)
       }
     }
-  }
 
   // Assert whether all the data and operations on a state map matches that of a reference map
   private def assertMap(
       mapToTest: StateMap[Int, Int],
       refMapToTestWith: Map[Int, (Int, Long)],
       time: Long,
-      msg: String): Unit = {
+      msg: String): Unit =
     withClue(msg) {
       // Assert all the data is same as the reference map
       assert(
@@ -393,7 +392,6 @@ class StateMapSuite extends SparkFunSuite {
         assert(mapToTest.getByTime(t).toSet === expectedRecords.toSet)
       }
     }
-  }
 
   test(
     "OpenHashMapBasedStateMap - serializing and deserializing with KryoSerializable states") {
@@ -446,20 +444,17 @@ class StateMapSuite extends SparkFunSuite {
 private[streaming] final class KryoState(var state: String)
     extends KryoSerializable {
 
-  override def write(kryo: Kryo, output: Output): Unit = {
+  override def write(kryo: Kryo, output: Output): Unit =
     kryo.writeClassAndObject(output, state)
-  }
 
-  override def read(kryo: Kryo, input: Input): Unit = {
+  override def read(kryo: Kryo, input: Input): Unit =
     state = kryo.readClassAndObject(input).asInstanceOf[String]
-  }
 
   override def equals(other: Any): Boolean = other match {
     case that: KryoState => state == that.state
     case _               => false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     if (state == null) 0 else state.hashCode()
-  }
 }

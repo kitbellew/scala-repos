@@ -58,9 +58,9 @@ object PlayConsoleInteractionMode extends PlayInteractionMode {
     try f(consoleReader)
     finally consoleReader.shutdown()
   }
-  private def waitForKey(): Unit = {
+  private def waitForKey(): Unit =
     withConsoleReader { consoleReader =>
-      def waitEOF(): Unit = {
+      def waitEOF(): Unit =
         consoleReader.readCharacter() match {
           case 4 | -1 =>
           // Note: we have to listen to -1 for jline2, for some reason...
@@ -71,18 +71,15 @@ object PlayConsoleInteractionMode extends PlayInteractionMode {
             println(); waitEOF()
           case x => waitEOF()
         }
-      }
       doWithoutEcho(waitEOF())
     }
-  }
-  def doWithoutEcho(f: => Unit): Unit = {
+  def doWithoutEcho(f: => Unit): Unit =
     withConsoleReader { consoleReader =>
       val terminal = consoleReader.getTerminal
       terminal.setEchoEnabled(false)
       try f
       finally terminal.restore()
     }
-  }
   override def waitForCancel(): Unit = waitForKey()
 
   override def toString = "Console Interaction Mode"

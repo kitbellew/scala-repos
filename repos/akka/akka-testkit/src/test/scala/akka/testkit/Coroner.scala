@@ -43,9 +43,8 @@ object Coroner {
     val startedLatch = new CountDownLatch(1)
     val finishedLatch = new CountDownLatch(1)
 
-    def waitForStart(): Unit = {
+    def waitForStart(): Unit =
       startedLatch.await(startAndStopDuration.length, startAndStopDuration.unit)
-    }
 
     def started(): Unit = startedLatch.countDown()
 
@@ -151,11 +150,10 @@ object Coroner {
                 #Non-heap usage: ${memMx
                  .getNonHeapMemoryUsage()}""".stripMargin('#'))
 
-    def dumpAllThreads: Seq[ThreadInfo] = {
+    def dumpAllThreads: Seq[ThreadInfo] =
       threadMx.dumpAllThreads(
         threadMx.isObjectMonitorUsageSupported,
         threadMx.isSynchronizerUsageSupported)
-    }
 
     def findDeadlockedThreads: (Seq[ThreadInfo], String) = {
       val (ids, desc) = if (threadMx.isSynchronizerUsageSupported()) {
@@ -173,7 +171,7 @@ object Coroner {
       }
     }
 
-    def printThreadInfos(threadInfos: Seq[ThreadInfo]) = {
+    def printThreadInfos(threadInfos: Seq[ThreadInfo]) =
       if (threadInfos.isEmpty) {
         println("None")
       } else {
@@ -181,7 +179,6 @@ object Coroner {
           println(threadInfoToString(ti))
         }
       }
-    }
 
     def threadInfoToString(ti: ThreadInfo): String = {
       val sb = new java.lang.StringBuilder

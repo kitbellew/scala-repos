@@ -474,7 +474,7 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
   override def hashCode(): Int = toVec.foldLeft(1)(_ * 31 + _.hashCode())
 
   /** Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case rv: Index[_] =>
         (this eq rv) || (this.length == rv.length) && {
@@ -488,7 +488,6 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
         }
       case _ => false
     }
-  }
 
   /**
     * Creates a string representation of Index

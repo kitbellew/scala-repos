@@ -31,7 +31,7 @@ object ColumnDefinitionProviderImpl {
     if (moduleSym == NoSymbol) {
       c.abort(
         c.enclosingPosition,
-        s"No companion for case class ${tpe} available. Possibly a nested class? These do not work with this macro.")
+        s"No companion for case class $tpe available. Possibly a nested class? These do not work with this macro.")
     }
     // pick the last apply method which (anecdotally) gives us the defaults
     // set in the case class declaration, not the companion object
@@ -50,8 +50,7 @@ object ColumnDefinitionProviderImpl {
           if (!p.isParamWithDefault) None
           else {
             val getterName = newTermName("apply$default$" + (i + 1))
-            Some(
-              p.name.toString -> c.Expr(q"${moduleSym}.$getterName.toString"))
+            Some(p.name.toString -> c.Expr(q"$moduleSym.$getterName.toString"))
           }
       }
       .toMap
@@ -75,7 +74,7 @@ object ColumnDefinitionProviderImpl {
         fieldName: FieldName,
         defaultValOpt: Option[c.Expr[String]],
         annotationInfo: List[(Type, Option[Int])],
-        nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] = {
+        nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] =
       oTpe match {
         // String handling
         case tpe if tpe =:= typeOf[String] =>
@@ -134,12 +133,12 @@ object ColumnDefinitionProviderImpl {
             nullable)
         case tpe if tpe.erasure =:= typeOf[Option[Any]] && nullable == true =>
           Failure(new Exception(
-            s"Case class ${T.tpe} has field ${fieldName} which contains a nested option. This is not supported by this macro."))
+            s"Case class ${T.tpe} has field $fieldName which contains a nested option. This is not supported by this macro."))
 
         case tpe if tpe.erasure =:= typeOf[Option[Any]] && nullable == false =>
           if (defaultValOpt.isDefined)
             Failure(new Exception(
-              s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, with a default value. Options cannot have default values"))
+              s"Case class ${T.tpe} has field $fieldName: ${oTpe.toString}, with a default value. Options cannot have default values"))
           else {
             matchField(
               accessorTree,
@@ -155,9 +154,8 @@ object ColumnDefinitionProviderImpl {
         // default
         case _ =>
           Failure(new Exception(
-            s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, which is not supported for talking to JDBC"))
+            s"Case class ${T.tpe} has field $fieldName: ${oTpe.toString}, which is not supported for talking to JDBC"))
       }
-    }
 
     def expandMethod(
         outerAccessorTree: List[MethodSymbol],

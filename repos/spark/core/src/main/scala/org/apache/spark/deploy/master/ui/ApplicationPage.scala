@@ -108,7 +108,7 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
     UIUtils.basicSparkPage(content, "Application: " + app.desc.name)
   }
 
-  private def executorRow(executor: ExecutorDesc): Seq[Node] = {
+  private def executorRow(executor: ExecutorDesc): Seq[Node] =
     <tr>
       <td>{executor.id}</td>
       <td>
@@ -134,5 +134,4 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
     }>stderr</a>
       </td>
     </tr>
-  }
 }

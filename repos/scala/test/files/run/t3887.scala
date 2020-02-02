@@ -4,12 +4,11 @@ object Test {
     assert(!matchPair(2))
   }
 
-  def matchPair(i: Int) = {
+  def matchPair(i: Int) =
     (i, "abc") match {
       case this.option1 => true
       case _            => false
     }
-  }
 
   val option1: (Int, String) = (1, "abc")
 

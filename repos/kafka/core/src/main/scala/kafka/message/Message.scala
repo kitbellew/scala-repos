@@ -281,7 +281,7 @@ class Message(
   def ensureValid() {
     if (!isValid)
       throw new InvalidMessageException(
-        s"Message is corrupt (stored crc = ${checksum}, computed crc = ${computeChecksum})")
+        s"Message is corrupt (stored crc = $checksum, computed crc = $computeChecksum)")
   }
 
   /**
@@ -292,10 +292,9 @@ class Message(
   /**
     * The position where the key size is stored.
     */
-  private def keySizeOffset = {
+  private def keySizeOffset =
     if (magic == MagicValue_V0) KeySizeOffset_V0
     else KeySizeOffset_V1
-  }
 
   /**
     * The length of the key in bytes
@@ -310,10 +309,9 @@ class Message(
   /**
     * The position where the payload size is stored
     */
-  private def payloadSizeOffset = {
+  private def payloadSizeOffset =
     if (magic == MagicValue_V0) KeyOffset_V0 + max(0, keySize)
     else KeyOffset_V1 + max(0, keySize)
-  }
 
   /**
     * The length of the message value in bytes
@@ -342,7 +340,7 @@ class Message(
     * 2. wrapperMessageTimestampType = LogAppendTime and wrapperMessageTimestamp is defined - Compressed message using LogAppendTime
     * 3. wrapperMessageTimestampType = CreateTime and wrapperMessageTimestamp is defined - Compressed message using CreateTime
     */
-  def timestamp: Long = {
+  def timestamp: Long =
     if (magic == MagicValue_V0)
       Message.NoTimestamp
     // Case 2
@@ -351,18 +349,16 @@ class Message(
       wrapperMessageTimestamp.get
     else // case 1, 3
       buffer.getLong(Message.TimestampOffset)
-  }
 
   /**
     * The timestamp type of the message
     */
-  def timestampType = {
+  def timestampType =
     if (magic == MagicValue_V0)
       TimestampType.NO_TIMESTAMP_TYPE
     else
       wrapperMessageTimestampType.getOrElse(
         TimestampType.forAttributes(attributes))
-  }
 
   /**
     * The compression codec used with this message
@@ -384,7 +380,7 @@ class Message(
   /**
     * convert the message to specified format
     */
-  def toFormatVersion(toMagicValue: Byte): Message = {
+  def toFormatVersion(toMagicValue: Byte): Message =
     if (magic == toMagicValue)
       this
     else {
@@ -394,7 +390,6 @@ class Message(
       convertToBuffer(toMagicValue, byteBuffer, Message.NoTimestamp)
       new Message(byteBuffer)
     }
-  }
 
   def convertToBuffer(
       toMagicValue: Byte,
@@ -468,22 +463,20 @@ class Message(
         s"Invalid message timestamp $timestamp")
     if (magic == MagicValue_V0 && timestamp != NoTimestamp)
       throw new IllegalArgumentException(
-        s"Invalid timestamp $timestamp. Timestamp must be ${NoTimestamp} when magic = ${MagicValue_V0}")
+        s"Invalid timestamp $timestamp. Timestamp must be $NoTimestamp when magic = $MagicValue_V0")
   }
 
-  override def toString(): String = {
+  override def toString(): String =
     if (magic == MagicValue_V0)
       s"Message(magic = $magic, attributes = $attributes, crc = $checksum, key = $key, payload = $payload)"
     else
       s"Message(magic = $magic, attributes = $attributes, $timestampType = $timestamp, crc = $checksum, key = $key, payload = $payload)"
-  }
 
-  override def equals(any: Any): Boolean = {
+  override def equals(any: Any): Boolean =
     any match {
       case that: Message => this.buffer.equals(that.buffer)
       case _             => false
     }
-  }
 
   override def hashCode(): Int = buffer.hashCode
 

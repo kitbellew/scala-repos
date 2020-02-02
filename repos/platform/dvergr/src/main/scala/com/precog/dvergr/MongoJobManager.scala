@@ -123,17 +123,15 @@ final class MongoJobManager(
     }
   }
 
-  def findJob(jobId: JobId): Future[Option[Job]] = {
+  def findJob(jobId: JobId): Future[Option[Job]] =
     database(selectOne().from(settings.jobs).where("id" === jobId)) map {
       _ map (_.deserialize[Job])
     }
-  }
 
-  def listJobs(apiKey: APIKey): Future[Seq[Job]] = {
+  def listJobs(apiKey: APIKey): Future[Seq[Job]] =
     database(selectAll.from(settings.jobs).where("apiKey" === apiKey)) map {
       _.map(_.deserialize[Job]).toList
     }
-  }
 
   def updateStatus(
       jobId: JobId,
@@ -185,16 +183,13 @@ final class MongoJobManager(
     }
   }
 
-  def getStatus(jobId: JobId): Future[Option[Status]] = {
-
+  def getStatus(jobId: JobId): Future[Option[Status]] =
     // TODO: Get Job object, find current status ID, then use that as since.
     // It'll include at least the last status, but rarely much more.
-
     listMessages(jobId, channels.Status, None) map (_.lastOption flatMap (Status
       .fromMessage(_)))
-  }
 
-  private def nextMessageId(jobId: JobId): Future[Long] = {
+  private def nextMessageId(jobId: JobId): Future[Long] =
     database(
       selectAndUpsert(settings.jobs)
         .set(JPath("sequence") inc 1)
@@ -206,27 +201,24 @@ final class MongoJobManager(
       case None =>
         sys.error("Sequence number doesn't exist. This shouldn't happen.")
     }
-  }
 
-  def listChannels(jobId: JobId): Future[Seq[String]] = {
+  def listChannels(jobId: JobId): Future[Seq[String]] =
     database {
       distinct("channel").from(settings.messages).where("jobId" === jobId)
     } map (_.collect {
       case JString(channel) => channel
     }.toList)
-  }
 
   def addMessage(
       jobId: JobId,
       channel: String,
-      value: JValue): Future[Message] = {
+      value: JValue): Future[Message] =
     nextMessageId(jobId) flatMap { id =>
       val message = Message(jobId, id, channel, value)
       database {
         insert(message.serialize.asInstanceOf[JObject]).into(settings.messages)
       } map { _ => message }
     }
-  }
 
   def listMessages(
       jobId: JobId,
@@ -242,7 +234,7 @@ final class MongoJobManager(
   }
 
   protected def transition(jobId: JobId)(
-      t: JobState => Either[String, JobState]): Future[Either[String, Job]] = {
+      t: JobState => Either[String, JobState]): Future[Either[String, Job]] =
     findJob(jobId) flatMap {
       case Some(job) =>
         t(job.state) match {
@@ -261,5 +253,4 @@ final class MongoJobManager(
       case None =>
         Future { Left("Cannot find job with ID '%s'." format jobId) }
     }
-  }
 }

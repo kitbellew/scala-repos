@@ -34,7 +34,6 @@ private[streaming] class FlatMapValuedDStream[
 
   override def slideDuration: Duration = parent.slideDuration
 
-  override def compute(validTime: Time): Option[RDD[(K, U)]] = {
+  override def compute(validTime: Time): Option[RDD[(K, U)]] =
     parent.getOrCompute(validTime).map(_.flatMapValues[U](flatMapValueFunc))
-  }
 }

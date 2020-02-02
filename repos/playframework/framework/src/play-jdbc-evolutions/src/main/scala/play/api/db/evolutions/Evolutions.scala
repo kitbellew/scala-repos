@@ -56,10 +56,9 @@ trait Script {
     *
     * Any ";;" found in the sql are escaped to ";".
     */
-  def statements: Seq[String] = {
+  def statements: Seq[String] =
     // Regex matches on semicolons that neither precede nor follow other semicolons
     sql.split("(?<!;);(?!;)").map(_.trim.replace(";;", ";")).filter(_ != "")
-  }
 }
 
 /**
@@ -98,19 +97,19 @@ object Evolutions {
   /**
     * Default evolutions directory location.
     */
-  def directoryName(db: String): String = s"conf/evolutions/${db}"
+  def directoryName(db: String): String = s"conf/evolutions/$db"
 
   /**
     * Default evolution file location.
     */
   def fileName(db: String, revision: Int): String =
-    s"${directoryName(db)}/${revision}.sql"
+    s"${directoryName(db)}/$revision.sql"
 
   /**
     * Default evolution resource name.
     */
   def resourceName(db: String, revision: Int): String =
-    s"evolutions/${db}/${revision}.sql"
+    s"evolutions/$db/$revision.sql"
 
   /**
     * Apply pending evolutions for the given DB.
@@ -153,15 +152,13 @@ object Evolutions {
     )
   }
 
-  private def writeFileIfChanged(path: File, content: String): Unit = {
+  private def writeFileIfChanged(path: File, content: String): Unit =
     if (content != PlayIO.readFileAsString(path)) {
       writeFile(path, content)
     }
-  }
 
-  private def writeFile(destination: File, content: String): Unit = {
+  private def writeFile(destination: File, content: String): Unit =
     Files.write(destination.toPath, content.getBytes(utf8))
-  }
 
   private lazy val utf8 = Charset.forName("UTF8")
 

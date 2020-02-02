@@ -55,9 +55,8 @@ private[spark] class TimeStampedHashMap[A, B](
     Option(value).map(_.value)
   }
 
-  def iterator: Iterator[(A, B)] = {
+  def iterator: Iterator[(A, B)] =
     getEntrySet.iterator.asScala.map(kv => (kv.getKey, kv.getValue.value))
-  }
 
   def getEntrySet: Set[Entry[A, TimeStampedValue[B]]] = internalMap.entrySet
 
@@ -95,15 +94,13 @@ private[spark] class TimeStampedHashMap[A, B](
     this += ((key, value))
   }
 
-  override def apply(key: A): B = {
+  override def apply(key: A): B =
     get(key).getOrElse { throw new NoSuchElementException() }
-  }
 
-  override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] = {
+  override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] =
     internalMap.asScala
       .map { case (k, TimeStampedValue(v, t)) => (k, v) }
       .filter(p)
-  }
 
   override def empty: mutable.Map[A, B] = new TimeStampedHashMap[A, B]()
 
@@ -151,11 +148,9 @@ private[spark] class TimeStampedHashMap[A, B](
 
   // For testing
 
-  def getTimeStampedValue(key: A): Option[TimeStampedValue[B]] = {
+  def getTimeStampedValue(key: A): Option[TimeStampedValue[B]] =
     Option(internalMap.get(key))
-  }
 
-  def getTimestamp(key: A): Option[Long] = {
+  def getTimestamp(key: A): Option[Long] =
     getTimeStampedValue(key).map(_.timestamp)
-  }
 }

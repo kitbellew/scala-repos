@@ -17,9 +17,8 @@ object SpecialPolynomials {
     def loop(
         pnm1: Polynomial[C],
         pn: Polynomial[C],
-        n: Int = 1): Stream[Polynomial[C]] = {
+        n: Int = 1): Stream[Polynomial[C]] =
       pn #:: loop(pn, fn(pn, pnm1, n), n + 1)
-    }
     zero #:: loop(zero, one)
   }
 

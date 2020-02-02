@@ -31,7 +31,7 @@ class ScAssignStmtImpl(node: ASTNode)
     with ScAssignStmt {
   override def toString: String = "AssignStatement"
 
-  protected override def innerType(ctx: TypingContext) = {
+  protected override def innerType(ctx: TypingContext) =
     getLExpression match {
       case call: ScMethodCall => call.getType(ctx)
       case _ =>
@@ -44,7 +44,6 @@ class ScAssignStmtImpl(node: ASTNode)
           case _ => Success(Unit, Some(this))
         }
     }
-  }
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
@@ -62,7 +61,7 @@ class ScAssignStmtImpl(node: ASTNode)
     resolveAssignmentInner(shapeResolve = true)
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
-  def mirrorMethodCall: Option[ScMethodCall] = {
+  def mirrorMethodCall: Option[ScMethodCall] =
     getLExpression match {
       case ref: ScReferenceExpression =>
         val text =
@@ -94,10 +93,9 @@ class ScAssignStmtImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
   private def resolveAssignmentInner(
-      shapeResolve: Boolean): Option[ScalaResolveResult] = {
+      shapeResolve: Boolean): Option[ScalaResolveResult] =
     getLExpression match {
       case ref: ScReferenceExpression =>
         ref.bind() match {
@@ -140,5 +138,4 @@ class ScAssignStmtImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 }

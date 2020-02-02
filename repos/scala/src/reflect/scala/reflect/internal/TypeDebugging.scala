@@ -89,7 +89,7 @@ trait TypeDebugging {
       case x: Product            => x.productIterator mkString ("(", ", ", ")")
       case _                     => "" + x
     }
-    def ptBlock(label: String, pairs: (String, Any)*): String = {
+    def ptBlock(label: String, pairs: (String, Any)*): String =
       if (pairs.isEmpty) label + "{ }"
       else {
         val width = (pairs map (_._1.length)).max
@@ -98,7 +98,6 @@ trait TypeDebugging {
 
         strs.mkString(label + " {\n  ", "\n  ", "\n}")
       }
-    }
     def ptLine(pairs: (String, Any)*): String = (
       pairs
         map { case (k, v)       => (k, to_s(v)) }

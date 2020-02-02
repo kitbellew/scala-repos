@@ -136,9 +136,8 @@ trait DescriptiveStats {
               s = s + (n - 1) * d / n * d
             }
 
-            def zeros(numZero: Int, zeroValue: S): Unit = {
+            def zeros(numZero: Int, zeroValue: S): Unit =
               for (i <- 0 until numZero) visit(zeroValue)
-            }
           }
           iter.traverse(v, visit)
           import visit._
@@ -183,7 +182,7 @@ trait DescriptiveStats {
     implicit def reduce[@expand.args(Int, Long, Double, Float) T]
         : Impl[DenseVector[T], T] =
       new Impl[DenseVector[T], T] {
-        def apply(v: DenseVector[T]): T = {
+        def apply(v: DenseVector[T]): T =
           if (isOdd(v.length)) {
             quickSelect(v.toArray, (v.length - 1) / 2)
           } else {
@@ -193,14 +192,13 @@ trait DescriptiveStats {
             (quickSelectImpl(tempArray, secondMedianPosition) +
               quickSelectImpl(tempArray, secondMedianPosition - 1)) / 2
           }
-        }
       }
 
     @expand
     implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]
         : Impl[Seq[T], T] =
       new Impl[Seq[T], T] {
-        def apply(v: Seq[T]): T = { median(DenseVector(v.toArray)) }
+        def apply(v: Seq[T]): T = median(DenseVector(v.toArray))
       }
 
     @expand
@@ -226,43 +224,42 @@ trait DescriptiveStats {
          * We roughly follow the two_pass_covariance algorithm from here: http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Covariance
          * However, we also use Bessel's correction, in order to agree with the rest of breeze.
          */
-        def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] = {
+        def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] =
           data.headOption
-            .map(firstRow => {
+            .map { firstRow =>
               val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
               val dataSize = firstRow.size
               //First compute the mean
               var mean = firstRow.copy
               var numRows: Long = 1
-              data.tail.foreach(x => {
+              data.tail.foreach { x =>
                 numRows += 1
                 if (mean.size != x.size) {
                   throw new IllegalArgumentException(
                     "Attempting to compute covariance of dataset where elements have different sizes")
                 }
-                cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
+                cfor(0)(i => i < firstRow.size, i => i + 1) { i =>
                   mean(i) = mean(i) + x(i)
-                })
+                }
 
-              })
+              }
               val numRowsD = numRows.toDouble
               mean = mean / numRowsD
 
               //Second compute the covariance
               data.foreach { x =>
-                cfor(0)(i => i < dataSize, i => i + 1)(i => {
+                cfor(0)(i => i < dataSize, i => i + 1) { i =>
                   val a = x(i) - mean(i)
-                  cfor(0)(j => j < dataSize, j => j + 1)(j => {
+                  cfor(0)(j => j < dataSize, j => j + 1) { j =>
                     val b = x(j) - mean(j)
                     result(i, j) = result(i, j) + (a * b / (numRowsD - 1)) //Use
-                  })
-                })
+                  }
+                }
               }
 
               result
-            })
+            }
             .getOrElse(new DenseMatrix[Double](0, 0))
-        }
       }
   }
 
@@ -273,19 +270,19 @@ trait DescriptiveStats {
       def apply(data: T) = {
         val covariance = covarianceCalculator(data)
         val d = new Array[Double](covariance.rows)
-        cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
+        cfor(0)(i => i < covariance.rows, i => i + 1) { i =>
           d(i) = math.sqrt(covariance(i, i))
-        })
+        }
 
-        cfor(0)(i => i < covariance.rows, i => i + 1)(i => {
-          cfor(0)(j => j < covariance.rows, j => j + 1)(j => {
+        cfor(0)(i => i < covariance.rows, i => i + 1) { i =>
+          cfor(0)(j => j < covariance.rows, j => j + 1) { j =>
             if (i != j) {
               covariance(i, j) /= (d(i) * d(j))
             } else {
               covariance(i, j) = 1.0
             }
-          })
-        })
+          }
+        }
         covariance
       }
     }
@@ -360,7 +357,7 @@ trait DescriptiveStats {
             bins: DenseVector[Double]): DenseVector[Int] = {
           errorCheckBins(bins)
           val result = new DenseVector[Int](x.length)
-          cfor(0)(i => i < x.length, i => i + 1)(i => {
+          cfor(0)(i => i < x.length, i => i + 1) { i =>
             result(i) = bins.length
             var j = bins.length - 1
             while (j >= 0) {
@@ -371,15 +368,15 @@ trait DescriptiveStats {
               }
               j -= 1
             }
-          })
+          }
           result
         }
       }
 
     private def errorCheckBins(bins: DenseVector[Double]) {
-      cfor(0)(i => i < bins.length - 1, i => i + 1)(i => {
+      cfor(0)(i => i < bins.length - 1, i => i + 1) { i =>
         require(bins(i) < bins(i + 1))
-      })
+      }
     }
   }
 
@@ -410,9 +407,9 @@ trait DescriptiveStats {
           require(min(x) >= 0)
           require(x.length == weights.length)
           val result = new DenseVector[T](max(x) + 1)
-          cfor(0)(i => i < x.length, i => i + 1)(i => {
+          cfor(0)(i => i < x.length, i => i + 1) { i =>
             result(x(i)) = result(x(i)) + weights(i)
-          })
+          }
           result
         }
       }
@@ -424,10 +421,9 @@ trait DescriptiveStats {
           require(min(x) >= 0)
           val result = new DenseVector[Int](max(x) + 1)
           class BincountVisitor extends ValuesVisitor[Int] {
-            def visit(a: Int): Unit = { result(a) = result(a) + 1 }
-            def zeros(numZero: Int, zeroValue: Int) = {
+            def visit(a: Int): Unit = result(a) = result(a) + 1
+            def zeros(numZero: Int, zeroValue: Int) =
               result(0) = result(0) + numZero
-            }
           }
           iter.traverse(x, new BincountVisitor)
           result
@@ -456,9 +452,9 @@ trait DescriptiveStats {
             require(min(x) >= 0)
             require(x.length == weights.length)
             val counter = Counter[Int, T]()
-            cfor(0)(i => i < x.length, i => i + 1)(i => {
+            cfor(0)(i => i < x.length, i => i + 1) { i =>
               counter.update(x(i), counter(x(i)) + weights(i))
-            })
+            }
             val builder = new VectorBuilder[T](max(x) + 1)
             counter.iterator.foreach(x => builder.add(x._1, x._2))
             builder.toSparseVector
@@ -473,10 +469,9 @@ trait DescriptiveStats {
             val counter = Counter[Int, Int]()
 
             class BincountVisitor extends ValuesVisitor[Int] {
-              def visit(a: Int): Unit = { counter.update(a, counter(a) + 1) }
-              def zeros(numZero: Int, zeroValue: Int) = {
+              def visit(a: Int): Unit = counter.update(a, counter(a) + 1)
+              def zeros(numZero: Int, zeroValue: Int) =
                 counter.update(zeroValue, counter(zeroValue) + numZero)
-              }
             }
             iter.traverse(x, new BincountVisitor)
             val builder = new VectorBuilder[Int](max(x) + 1)
@@ -546,8 +541,7 @@ object DescriptiveStats {
     * by truncating the longer vector.
     * </p>
     */
-  def cov[T](it1: Iterable[T], it2: Iterable[T])(implicit n: Fractional[T]) = {
+  def cov[T](it1: Iterable[T], it2: Iterable[T])(implicit n: Fractional[T]) =
     meanAndCov(it1, it2)._3
-  }
 
 }

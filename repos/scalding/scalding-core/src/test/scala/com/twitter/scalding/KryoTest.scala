@@ -81,17 +81,14 @@ class KryoTest extends WordSpec with Matchers {
     ks.close
     res.asInstanceOf[T]
   }
-  def singleRT[T <: AnyRef](in: T): T = {
+  def singleRT[T <: AnyRef](in: T): T =
     deserObj[T](in.getClass, serObj(in))
-  }
 
   //These are analogous to how Hadoop will serialize
-  def serialize(ins: List[AnyRef]) = {
+  def serialize(ins: List[AnyRef]) =
     ins.map { v => (v.getClass, serObj(v)) }
-  }
-  def deserialize(input: List[(Class[_], Array[Byte])]) = {
+  def deserialize(input: List[(Class[_], Array[Byte])]) =
     input.map { tup => deserObj[AnyRef](tup._1, tup._2) }
-  }
   def serializationRT(ins: List[AnyRef]) = deserialize(serialize(ins))
 
   "KryoSerializers and KryoDeserializers" should {

@@ -87,9 +87,8 @@ class TextInputDialog(
     *
     * @return An `Option` that contains the `result`.
     */
-  def showAndWait(): Option[String] = {
+  def showAndWait(): Option[String] =
     super.showAndWait((x: String) => x).asInstanceOf[Option[String]]
-  }
 
   /**
     * The `TextField` used within this dialog.

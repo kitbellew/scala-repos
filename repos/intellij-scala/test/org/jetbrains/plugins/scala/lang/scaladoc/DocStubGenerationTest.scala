@@ -9,9 +9,8 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
 
   import org.jetbrains.plugins.scala.lang.scaladoc.DocStubGenerationTest._
 
-  private def transformateGeneratedText(text: String): String = {
+  private def transformateGeneratedText(text: String): String =
     text.substring(standartHeader.length(), text.length())
-  }
 
   private def genericTestStub(stub: String, testText: String) {
     checkGeneratedTextFromString(

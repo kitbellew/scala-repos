@@ -36,7 +36,7 @@ class MongoDirectMongoClientSpec extends Specification with MongoTestKit {
     checkMongoIsRunning
 
     // use a Mongo instance directly
-    MongoDB.use(db => {
+    MongoDB.use { db =>
       val coll = db.getCollection("testCollection")
 
       // create a unique index on name
@@ -65,7 +65,7 @@ class MongoDirectMongoClientSpec extends Specification with MongoTestKit {
       coll.save(doc)
       coll.save(doc2) must throwA[MongoException]
       coll.save(doc3)
-    })
+    }
     success
   }
 }

@@ -117,7 +117,7 @@ object CoreUtils extends Logging {
     * @param name The name to register this mbean with
     * @return true if the registration succeeded
     */
-  def registerMBean(mbean: Object, name: String): Boolean = {
+  def registerMBean(mbean: Object, name: String): Boolean =
     try {
       val mbs = ManagementFactory.getPlatformMBeanServer()
       mbs synchronized {
@@ -133,7 +133,6 @@ object CoreUtils extends Logging {
         false
       }
     }
-  }
 
   /**
     * Unregister the mbean with the given name, if there is one registered
@@ -172,14 +171,13 @@ object CoreUtils extends Logging {
     * Read some bytes into the provided buffer, and return the number of bytes read. If the
     * channel has been closed or we get -1 on the read for any reason, throw an EOFException
     */
-  def read(channel: ReadableByteChannel, buffer: ByteBuffer): Int = {
+  def read(channel: ReadableByteChannel, buffer: ByteBuffer): Int =
     channel.read(buffer) match {
       case -1 =>
         throw new EOFException(
           "Received -1 when reading from channel, socket has likely been closed.")
       case n: Int => n
     }
-  }
 
   /**
     * This method gets comma separated values which contains key,value pairs and returns a map of
@@ -193,10 +191,10 @@ object CoreUtils extends Logging {
       return map
     val keyVals = str
       .split("\\s*,\\s*")
-      .map(s => {
+      .map { s =>
         val lio = s.lastIndexOf(":")
         (s.substring(0, lio).trim, s.substring(lio + 1).trim)
-      })
+      }
     keyVals.toMap
   }
 
@@ -204,13 +202,12 @@ object CoreUtils extends Logging {
     * Parse a comma separated string into a sequence of strings.
     * Whitespace surrounding the comma will be removed.
     */
-  def parseCsvList(csvList: String): Seq[String] = {
+  def parseCsvList(csvList: String): Seq[String] =
     if (csvList == null || csvList.isEmpty)
       Seq.empty[String]
     else {
       csvList.split("\\s*,\\s*").filter(v => !v.equals(""))
     }
-  }
 
   /**
     * Create an instance of the class with the given class name
@@ -245,12 +242,11 @@ object CoreUtils extends Logging {
   /**
     * Read a big-endian integer from a byte array
     */
-  def readInt(bytes: Array[Byte], offset: Int): Int = {
+  def readInt(bytes: Array[Byte], offset: Int): Int =
     ((bytes(offset) & 0xFF) << 24) |
       ((bytes(offset + 1) & 0xFF) << 16) |
       ((bytes(offset + 2) & 0xFF) << 8) |
       (bytes(offset + 3) & 0xFF)
-  }
 
   /**
     * Execute the given function inside the lock
@@ -271,7 +267,7 @@ object CoreUtils extends Logging {
     inLock[T](lock.writeLock)(fun)
 
   //JSON strings need to be escaped based on ECMA-404 standard http://json.org
-  def JSONEscapeString(s: String): String = {
+  def JSONEscapeString(s: String): String =
     s.map {
       case '"'  => "\\\""
       case '\\' => "\\\\"
@@ -294,17 +290,15 @@ object CoreUtils extends Logging {
         "\\u%04x".format(c: Int)
       case c => c
     }.mkString
-  }
 
   /**
     * Returns a list of duplicated items
     */
-  def duplicates[T](s: Traversable[T]): Iterable[T] = {
+  def duplicates[T](s: Traversable[T]): Iterable[T] =
     s.groupBy(identity)
       .map { case (k, l) => (k, l.size) }
       .filter { case (k, l) => (l > 1) }
       .keys
-  }
 
   def listenerListToEndPoints(
       listeners: String): immutable.Map[SecurityProtocol, EndPoint] = {

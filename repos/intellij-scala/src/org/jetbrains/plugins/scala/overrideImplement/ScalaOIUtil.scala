@@ -37,7 +37,7 @@ object ScalaOIUtil {
 
   def toClassMember(
       candidate: AnyRef,
-      isImplement: Boolean): Option[ClassMember] = {
+      isImplement: Boolean): Option[ClassMember] =
     candidate match {
       case sign: PhysicalSignature =>
         val method = sign.method
@@ -77,7 +77,6 @@ object ScalaOIUtil {
         }
       case x => None
     }
-  }
 
   def invokeOverrideImplement(
       project: Project,
@@ -152,7 +151,7 @@ object ScalaOIUtil {
   def getMembersToImplement(
       clazz: ScTemplateDefinition,
       withOwn: Boolean = false,
-      withSelfType: Boolean = false): Iterable[ClassMember] = {
+      withSelfType: Boolean = false): Iterable[ClassMember] =
     allMembers(clazz, withSelfType)
       .filter {
         case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
@@ -161,7 +160,6 @@ object ScalaOIUtil {
         case _ => false
       }
       .flatMap(toClassMember(_, isImplement = true))
-  }
 
   def isProductAbstractMethod(
       m: PsiMethod,
@@ -192,7 +190,7 @@ object ScalaOIUtil {
 
   def getMembersToOverride(
       clazz: ScTemplateDefinition,
-      withSelfType: Boolean): Iterable[ClassMember] = {
+      withSelfType: Boolean): Iterable[ClassMember] =
     allMembers(clazz, withSelfType)
       .filter {
         case sign: PhysicalSignature => needOverride(sign, clazz)
@@ -201,19 +199,17 @@ object ScalaOIUtil {
         case _ => false
       }
       .flatMap(toClassMember(_, isImplement = false))
-  }
 
   def allMembers(
       clazz: ScTemplateDefinition,
-      withSelfType: Boolean): Iterable[Object] = {
+      withSelfType: Boolean): Iterable[Object] =
     if (withSelfType)
       clazz.allMethodsIncludingSelfType ++ clazz.allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
     else clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
-  }
 
   private def needOverride(
       sign: PhysicalSignature,
-      clazz: ScTemplateDefinition): Boolean = {
+      clazz: ScTemplateDefinition): Boolean =
     sign.method match {
       case _ if isProductAbstractMethod(sign.method, clazz) => true
       case f: ScFunctionDeclaration
@@ -250,7 +246,6 @@ object ScalaOIUtil {
         }
         !flag
     }
-  }
 
   private def needImplement(
       sign: PhysicalSignature,
@@ -286,7 +281,7 @@ object ScalaOIUtil {
 
   private def needOverride(
       named: PsiNamedElement,
-      clazz: ScTemplateDefinition) = {
+      clazz: ScTemplateDefinition) =
     ScalaPsiUtil.nameContext(named) match {
       case x: PsiModifierListOwner if x.hasModifierPropertyScala("final") =>
         false
@@ -324,12 +319,11 @@ object ScalaOIUtil {
       case x: ScTypeAliasDefinition if x.containingClass != clazz => true
       case _                                                      => false
     }
-  }
 
   private def needImplement(
       named: PsiNamedElement,
       clazz: ScTemplateDefinition,
-      withOwn: Boolean): Boolean = {
+      withOwn: Boolean): Boolean =
     ScalaPsiUtil.nameContext(named) match {
       case m: PsiMember
           if !ResolveUtils.isAccessible(
@@ -345,7 +339,6 @@ object ScalaOIUtil {
         true
       case _ => false
     }
-  }
 
   def getAnchor(offset: Int, clazz: ScTemplateDefinition): Option[ScMember] = {
     val body = clazz.extendsBlock.templateBody match {

@@ -32,7 +32,7 @@ private[mllib] object PMMLModelExportFactory {
     * Factory object to help creating the necessary PMMLModelExport implementation
     * taking as input the machine learning model (for example KMeansModel).
     */
-  def createPMMLModelExport(model: Any): PMMLModelExport = {
+  def createPMMLModelExport(model: Any): PMMLModelExport =
     model match {
       case kmeans: KMeansModel =>
         new KMeansPMMLModelExport(kmeans)
@@ -63,6 +63,5 @@ private[mllib] object PMMLModelExportFactory {
         throw new IllegalArgumentException(
           "PMML Export not supported for model: " + model.getClass.getName)
     }
-  }
 
 }

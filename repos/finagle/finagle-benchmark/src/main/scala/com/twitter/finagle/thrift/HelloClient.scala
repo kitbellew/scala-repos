@@ -30,7 +30,6 @@ class HelloClient extends StdBenchAnnotations {
     .newIface[Hello.FutureIface]("localhost:1234")
 
   @Benchmark
-  def helloClient(): String = {
+  def helloClient(): String =
     Await.result(svc.echo("asdf"))
-  }
 }

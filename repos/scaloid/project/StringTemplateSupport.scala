@@ -78,9 +78,7 @@ class StringTemplateSupport(
     }.toMap
 
   private def expandToPackageMap(pkg: Map[String, Any]): Map[String, Any] = {
-    def expand(
-        lmap: Map[List[String], Any],
-        level: Int = 0): Map[String, Any] = {
+    def expand(lmap: Map[List[String], Any], level: Int = 0): Map[String, Any] =
       lmap
         .groupBy(_._1.head)
         .mapValues(_.map { case (k, v) => k.tail -> v })
@@ -91,7 +89,6 @@ class StringTemplateSupport(
             level + 1)
         }
         .map(identity)
-    }
 
     val listKeyMap = pkg.map { case (k, v) => k.split('.').toList -> v }
     expand(listKeyMap)
@@ -150,13 +147,12 @@ object StringTemplateSupport {
         self: ST,
         o: scala.Any,
         property: scala.Any,
-        propertyName: String): AnyRef = {
+        propertyName: String): AnyRef =
       o.asInstanceOf[AndroidPackage].get(propertyName) match {
         case Some(cls: AndroidClass)     => cls
         case Some(pkg: Map[String, Any]) => AndroidPackage(pkg)
         case _                           => throw new STNoSuchPropertyException(null, o, propertyName);
       }
-    }
   }
 
   class STCompanionTemplate(stGroup: Option[STGroup])

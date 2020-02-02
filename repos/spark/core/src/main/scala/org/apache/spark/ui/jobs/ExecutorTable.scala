@@ -31,11 +31,10 @@ private[ui] class ExecutorTable(
     parent: StagesTab) {
   private val listener = parent.progressListener
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     listener.synchronized {
       executorTable()
     }
-  }
 
   /** Special table which merges two header cells. */
   private def executorTable[T](): Seq[Node] = {
@@ -45,13 +44,13 @@ private[ui] class ExecutorTable(
     var hasShuffleWrite = false
     var hasShuffleRead = false
     var hasBytesSpilled = false
-    stageData.foreach(data => {
+    stageData.foreach { data =>
       hasInput = data.hasInput
       hasOutput = data.hasOutput
       hasShuffleRead = data.hasShuffleRead
       hasShuffleWrite = data.hasShuffleWrite
       hasBytesSpilled = data.hasBytesSpilled
-    })
+    }
 
     <table class={UIUtils.TABLE_CLASS_STRIPED_SORTABLE}>
       <thead>

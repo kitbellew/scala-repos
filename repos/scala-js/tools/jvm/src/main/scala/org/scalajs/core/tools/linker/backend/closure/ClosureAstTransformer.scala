@@ -322,7 +322,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
 
   @inline
   private def wrapTransform(tree: Tree)(body: Tree => Node)(
-      implicit pos: Position): Node = {
+      implicit pos: Position): Node =
     try {
       setNodePosition(body(tree), pos)
     } catch {
@@ -331,7 +331,6 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       case e: RuntimeException =>
         throw new TransformException(tree, e)
     }
-  }
 
   def setNodePosition(node: Node, pos: ir.Position): node.type = {
     if (pos != ir.Position.NoPosition) {
@@ -423,10 +422,9 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     import ir.Printers._
     import java.io._
 
-    private def mkMsg(tree: Tree): String = {
+    private def mkMsg(tree: Tree): String =
       "Exception while translating Scala.js JS tree to GCC IR at tree:\n" +
         tree.show
-    }
   }
 
 }

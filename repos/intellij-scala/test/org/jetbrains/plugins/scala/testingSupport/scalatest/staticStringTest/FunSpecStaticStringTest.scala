@@ -10,7 +10,7 @@ trait FunSpecStaticStringTest extends ScalaTestTestCase {
   val funSpecClassName = "FunSpecStringTest"
   val funSpecFileName = funSpecClassName + ".scala"
 
-  def addFunSpec() = {
+  def addFunSpec() =
     addFileToProject(
       funSpecFileName,
       """
@@ -37,7 +37,6 @@ trait FunSpecStaticStringTest extends ScalaTestTestCase {
         |
       """.stripMargin.trim()
     )
-  }
 
   def testFunSpecSum() = {
     addFunSpec()
@@ -59,8 +58,7 @@ trait FunSpecStaticStringTest extends ScalaTestTestCase {
         "FunSpecTest consts"))
   }
 
-  def testFunSpecValSum() = {
+  def testFunSpecValSum() =
     addFunSpec()
 
-  }
 }

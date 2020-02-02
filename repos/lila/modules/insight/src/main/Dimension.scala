@@ -203,10 +203,9 @@ object Dimension {
       parseIntOption(key) flatMap lila.insight.MaterialRange.byId.get
   }
 
-  def valueToJson[X](d: Dimension[X])(v: X): play.api.libs.json.JsObject = {
+  def valueToJson[X](d: Dimension[X])(v: X): play.api.libs.json.JsObject =
     play.api.libs.json.Json
       .obj("key" -> valueKey(d)(v), "name" -> d.valueName(v))
-  }
 
   def valueKey[X](d: Dimension[X])(v: X): String =
     (d match {

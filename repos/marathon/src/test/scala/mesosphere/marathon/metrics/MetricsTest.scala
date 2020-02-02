@@ -24,18 +24,16 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
   class TestModule extends AbstractModule {
 
     class DummyBehavior extends MethodInterceptor {
-      override def invoke(invocation: MethodInvocation): AnyRef = {
+      override def invoke(invocation: MethodInvocation): AnyRef =
         invocation.proceed()
-      }
     }
 
     object MarathonMatcher extends AbstractMatcher[Class[_]] {
       override def matches(t: Class[_]): Boolean = t == classOf[FooBar]
     }
 
-    override def configure(): Unit = {
+    override def configure(): Unit =
       bindInterceptor(Matchers.any(), Matchers.any(), new DummyBehavior())
-    }
   }
 
   before {

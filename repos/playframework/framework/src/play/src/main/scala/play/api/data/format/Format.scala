@@ -88,7 +88,7 @@ object Formats {
     */
   private def parsing[T](parse: String => T, errMsg: String, errArgs: Seq[Any])(
       key: String,
-      data: Map[String, String]): Either[Seq[FormError], T] = {
+      data: Map[String, String]): Either[Seq[FormError], T] =
     stringFormat.bind(key, data).right.flatMap { s =>
       scala.util.control.Exception
         .allCatch[T]
@@ -96,7 +96,6 @@ object Formats {
         .left
         .map(e => Seq(FormError(key, errMsg, errArgs)))
     }
-  }
 
   private def numberFormatter[T](
       convert: String => T,
@@ -152,7 +151,7 @@ object Formats {
 
       override val format = Some(("format.real", Nil))
 
-      def bind(key: String, data: Map[String, String]) = {
+      def bind(key: String, data: Map[String, String]) =
         Formats.stringFormat.bind(key, data).right.flatMap { s =>
           scala.util.control.Exception
             .allCatch[BigDecimal]
@@ -180,7 +179,6 @@ object Formats {
               )
             }
         }
-      }
 
       def unbind(key: String, value: BigDecimal) =
         Map(
@@ -202,13 +200,12 @@ object Formats {
 
     override val format = Some(("format.boolean", Nil))
 
-    def bind(key: String, data: Map[String, String]) = {
+    def bind(key: String, data: Map[String, String]) =
       Right(data.get(key).getOrElse("false")).right.flatMap {
         case "true"  => Right(true)
         case "false" => Right(false)
         case _       => Left(Seq(FormError(key, "error.boolean", Nil)))
       }
-    }
 
     def unbind(key: String, value: Boolean) = Map(key -> value.toString)
   }
@@ -263,12 +260,11 @@ object Formats {
 
       override val format = Some(("format.date", Seq(pattern)))
 
-      def bind(key: String, data: Map[String, String]) = {
+      def bind(key: String, data: Map[String, String]) =
         dateFormatter
           .bind(key, data)
           .right
           .map(d => new java.sql.Date(d.getTime))
-      }
 
       def unbind(key: String, value: java.sql.Date) =
         dateFormatter.unbind(key, value)

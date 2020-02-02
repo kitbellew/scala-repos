@@ -824,13 +824,12 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
   private object defaultMirrorMakerMessageHandler
       extends MirrorMakerMessageHandler {
     override def handle(record: BaseConsumerRecord)
-        : util.List[ProducerRecord[Array[Byte], Array[Byte]]] = {
+        : util.List[ProducerRecord[Array[Byte], Array[Byte]]] =
       Collections.singletonList(
         new ProducerRecord[Array[Byte], Array[Byte]](
           record.topic,
           record.key,
           record.value))
-    }
   }
 
 }

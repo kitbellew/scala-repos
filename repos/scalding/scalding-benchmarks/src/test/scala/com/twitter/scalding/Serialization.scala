@@ -77,12 +77,11 @@ object SerializationBenchmark
 
   def toArrayOrd[T](t: OrderedSerialization[T]): Ordering[Array[Byte]] =
     new Ordering[Array[Byte]] {
-      def compare(a: Array[Byte], b: Array[Byte]) = {
+      def compare(a: Array[Byte], b: Array[Byte]) =
         t.compareBinary(
             new ByteArrayInputStream(a),
             new ByteArrayInputStream(b))
           .unsafeToInt
-      }
     }
   def toArrayOrd[T](k: KryoPool, ord: Ordering[T]): Ordering[Array[Byte]] =
     new Ordering[Array[Byte]] {

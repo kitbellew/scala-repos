@@ -154,7 +154,7 @@ class ParquetQuerySuite
   }
 
   test("Enabling/disabling merging partfiles when merging parquet schema") {
-    def testSchemaMerging(expectedColumnNumber: Int): Unit = {
+    def testSchemaMerging(expectedColumnNumber: Int): Unit =
       withTempDir { dir =>
         val basePath = dir.getCanonicalPath
         sqlContext
@@ -176,7 +176,6 @@ class ParquetQuerySuite
             .columns
             .length === expectedColumnNumber)
       }
-    }
 
     withSQLConf(
       SQLConf.PARQUET_SCHEMA_MERGING_ENABLED.key -> "true",
@@ -192,7 +191,7 @@ class ParquetQuerySuite
   }
 
   test("Enabling/disabling schema merging") {
-    def testSchemaMerging(expectedColumnNumber: Int): Unit = {
+    def testSchemaMerging(expectedColumnNumber: Int): Unit =
       withTempDir { dir =>
         val basePath = dir.getCanonicalPath
         sqlContext
@@ -211,7 +210,6 @@ class ParquetQuerySuite
             .columns
             .length === expectedColumnNumber)
       }
-    }
 
     withSQLConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED.key -> "true") {
       testSchemaMerging(3)
@@ -278,9 +276,8 @@ class ParquetQuerySuite
     withTempPath { dir =>
       val path = dir.getCanonicalPath
 
-      def append(df: DataFrame): Unit = {
+      def append(df: DataFrame): Unit =
         df.write.mode(SaveMode.Append).parquet(path)
-      }
 
       // Note that both the following two DataFrames contain a single struct column with multiple
       // nested fields.
@@ -685,11 +682,10 @@ object TestingUDT {
 
     override def userClass: Class[NestedStruct] = classOf[NestedStruct]
 
-    override def deserialize(datum: Any): NestedStruct = {
+    override def deserialize(datum: Any): NestedStruct =
       datum match {
         case row: InternalRow =>
           NestedStruct(row.getInt(0), row.getLong(1), row.getDouble(2))
       }
-    }
   }
 }

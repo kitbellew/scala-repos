@@ -316,10 +316,10 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     val result = sc
       .parallelize(control, 2)
       .map(new ClassWithoutNoArgConstructor(_))
-      .fold(null)((t1, t2) => {
+      .fold(null) { (t1, t2) =>
         val t1x = if (t1 == null) 0 else t1.x
         new ClassWithoutNoArgConstructor(t1x + t2.x)
-      })
+      }
       .x
     assert(control.sum === result)
   }

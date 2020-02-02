@@ -155,14 +155,13 @@ private[spire] trait Fuser[C <: Context, A] {
 
   private def zipInd(a: Either[Tree, Int], b: Either[Tree, Int])(
       f: (Tree, Tree) => Tree,
-      g: (Int, Int) => Int): Either[Tree, Int] = {
+      g: (Int, Int) => Int): Either[Tree, Int] =
     (a, b) match {
       case (Right(n), Right(m)) => Right(g(n, m))
       case (Right(n), Left(t))  => Left(f(intLit(n), t))
       case (Left(t), Right(n))  => Left(f(t, intLit(n)))
       case (Left(t), Left(u))   => Left(f(t, u))
     }
-  }
 
   private def fuse2(lhs: Tree, rhs: Tree)(
       f: (Approx, Approx) => Approx): Fused = {

@@ -831,7 +831,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 // Check if the Apply tree has an InlineAnnotatedAttachment, added by the typer
                 // for callsites marked `f(): @inline/noinline`. For nullary calls, the attachment
                 // is on the Select node (not on the Apply node added by UnCurry).
-                def checkInlineAnnotated(t: Tree): Unit = {
+                def checkInlineAnnotated(t: Tree): Unit =
                   if (t.hasAttachment[InlineAnnotatedAttachment])
                     lastInsn match {
                       case m: MethodInsnNode =>
@@ -845,7 +845,6 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                       case Apply(fun, _) => checkInlineAnnotated(fun)
                       case _             =>
                     }
-                }
                 checkInlineAnnotated(app)
               }
 

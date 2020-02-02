@@ -61,9 +61,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       CATCH_BLOCK)
   }
 
-  private def getText(node: ASTNode, fileText: String): String = {
+  private def getText(node: ASTNode, fileText: String): String =
     node.getTextRange.substring(fileText)
-  }
 
   private def nextNotWithspace(elem: PsiElement): PsiElement = {
     var next = elem.getNextSibling
@@ -92,12 +91,11 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     @tailrec
     def dfsChildren(
         currentNode: ASTNode,
-        getChildren: ASTNode => List[ASTNode]): ASTNode = {
+        getChildren: ASTNode => List[ASTNode]): ASTNode =
       getChildren(currentNode) find (_.getTextLength > 0) match {
         case Some(next) => dfsChildren(next, getChildren)
         case None       => currentNode
       }
-    }
     val leftNode = dfsChildren(
       left.myLastNode.getOrElse(left.getNode),
       _.getChildren(null).toList.reverse)
@@ -126,19 +124,17 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     val keepLineBreaks = settings.KEEP_LINE_BREAKS
     val keepBlankLinesInDeclarations = settings.KEEP_BLANK_LINES_IN_DECLARATIONS
     val keepBlankLinesBeforeRBrace = settings.KEEP_BLANK_LINES_BEFORE_RBRACE
-    def getSpacing(x: Int, y: Int, z: Int) = {
+    def getSpacing(x: Int, y: Int, z: Int) =
       if (keepLineBreaks) Spacing.createSpacing(y, y, z, true, x)
       else Spacing.createSpacing(y, y, z, false, 0)
-    }
     if (left == null) {
       return getSpacing(keepBlankLinesInCode, 0, 0) //todo:
     }
     val scalaSettings: ScalaCodeStyleSettings =
       left.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
-    def getDependentLFSpacing(x: Int, y: Int, range: TextRange) = {
+    def getDependentLFSpacing(x: Int, y: Int, range: TextRange) =
       if (keepLineBreaks) Spacing.createDependentLFSpacing(y, y, range, true, x)
       else Spacing.createDependentLFSpacing(y, y, range, false, 0)
-    }
     val leftNode = left.getNode
     val rightNode = right.getNode
     val fileText = leftNode.getPsi.getContainingFile.getText
@@ -466,7 +462,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     @tailrec
-    def isMultiLineStringCase(psiElem: PsiElement): Boolean = {
+    def isMultiLineStringCase(psiElem: PsiElement): Boolean =
       psiElem match {
         case ml: ScLiteral if ml.isMultiLineString =>
           right.getTextRange.contains(
@@ -477,7 +473,6 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           isMultiLineStringCase(psiElem.getFirstChild)
         case _ => false
       }
-    }
 
     //multiline strings
     if (scalaSettings.MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings.MULTILINE_STRING_NONE && isMultiLineStringCase(

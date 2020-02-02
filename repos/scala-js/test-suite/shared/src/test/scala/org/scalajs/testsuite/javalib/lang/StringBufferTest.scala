@@ -113,10 +113,9 @@ class StringBufferTest {
     expectThrows(classOf[IndexOutOfBoundsException], buf.setCharAt(6, 'h'))
   }
 
-  @Test def ensureCapacity(): Unit = {
+  @Test def ensureCapacity(): Unit =
     // test that ensureCapacity is linking
     newBuf.ensureCapacity(10)
-  }
 
   @Test def should_properly_setLength(): Unit = {
     val buf = newBuf
@@ -211,9 +210,8 @@ class StringBuilderTest {
   }
 
   @Test def should_allow_string_interpolation_to_survive_null_and_undefined()
-      : Unit = {
+      : Unit =
     assertEquals("null", s"${null}")
-  }
 
   @Test def deleteCharAt(): Unit = {
     assertEquals("023", initBuilder("0123").deleteCharAt(1).toString)
@@ -255,10 +253,9 @@ class StringBuilderTest {
     expectThrows(classOf[IndexOutOfBoundsException], b.setCharAt(6, 'h'))
   }
 
-  @Test def ensureCapacity(): Unit = {
+  @Test def ensureCapacity(): Unit =
     // test that ensureCapacity is linking
     newBuilder.ensureCapacity(10)
-  }
 
   @Test def should_properly_setLength(): Unit = {
     val b = newBuilder

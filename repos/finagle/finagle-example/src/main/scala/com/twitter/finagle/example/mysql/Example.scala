@@ -102,9 +102,8 @@ object Example extends App {
     Await.ready(resultFuture)
   }
 
-  def createTable(client: Client): Future[Result] = {
+  def createTable(client: Client): Future[Result] =
     client.query(SwimmingRecord.createTableSQL)
-  }
 
   def insertValues(client: Client): Future[Seq[Result]] = {
     val insertSQL =

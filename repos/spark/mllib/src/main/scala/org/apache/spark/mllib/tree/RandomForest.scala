@@ -402,7 +402,7 @@ object RandomForest extends Serializable with Logging {
       impurity: String,
       maxDepth: Int,
       maxBins: Int,
-      seed: Int): RandomForestModel = {
+      seed: Int): RandomForestModel =
     trainClassifier(
       input.rdd,
       numClasses,
@@ -417,7 +417,6 @@ object RandomForest extends Serializable with Logging {
       maxBins,
       seed
     )
-  }
 
   /**
     * Method to train a decision tree model for regression.
@@ -508,7 +507,7 @@ object RandomForest extends Serializable with Logging {
       impurity: String,
       maxDepth: Int,
       maxBins: Int,
-      seed: Int): RandomForestModel = {
+      seed: Int): RandomForestModel =
     trainRegressor(
       input.rdd,
       categoricalFeaturesInfo
@@ -521,7 +520,6 @@ object RandomForest extends Serializable with Logging {
       maxDepth,
       maxBins,
       seed)
-  }
 
   /**
     * List of supported feature subset sampling strategies.

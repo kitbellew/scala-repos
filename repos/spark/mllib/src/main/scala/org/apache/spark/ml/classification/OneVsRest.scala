@@ -81,12 +81,11 @@ final class OneVsRestModel private[ml] (
     with OneVsRestParams {
 
   @Since("1.4.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(
       schema,
       fitting = false,
       getClassifier.featuresDataType)
-  }
 
   @Since("1.4.0")
   override def transform(dataset: DataFrame): DataFrame = {
@@ -178,9 +177,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
 
   /** @group setParam */
   @Since("1.4.0")
-  def setClassifier(value: Classifier[_, _, _]): this.type = {
+  def setClassifier(value: Classifier[_, _, _]): this.type =
     set(classifier, value.asInstanceOf[ClassifierType])
-  }
 
   /** @group setParam */
   @Since("1.5.0")
@@ -195,12 +193,11 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
   def setPredictionCol(value: String): this.type = set(predictionCol, value)
 
   @Since("1.4.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(
       schema,
       fitting = true,
       getClassifier.featuresDataType)
-  }
 
   @Since("1.4.0")
   override def fit(dataset: DataFrame): OneVsRestModel = {

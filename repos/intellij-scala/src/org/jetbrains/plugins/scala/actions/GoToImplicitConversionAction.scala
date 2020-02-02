@@ -235,9 +235,8 @@ class GoToImplicitConversionAction
           expressions,
           (elem: ScExpression) => chooseExpression(elem),
           "Expressions",
-          (expr: ScExpression) => {
-            ScalaRefactoringUtil.getShortText(expr)
-          })
+          (expr: ScExpression) => ScalaRefactoringUtil.getShortText(expr)
+        )
       }
     }
   }

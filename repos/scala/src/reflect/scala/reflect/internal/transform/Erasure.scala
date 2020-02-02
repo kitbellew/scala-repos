@@ -218,7 +218,7 @@ trait Erasure {
     else
       specialScalaErasure(tp)
 
-  def specialConstructorErasure(clazz: Symbol, tpe: Type): Type = {
+  def specialConstructorErasure(clazz: Symbol, tpe: Type): Type =
     tpe match {
       case PolyType(tparams, restpe) =>
         specialConstructorErasure(clazz, restpe)
@@ -237,7 +237,6 @@ trait Erasure {
             s"!!! unexpected constructor erasure $tp for $clazz")
         specialScalaErasure(tp)
     }
-  }
 
   /** Scala's more precise erasure than java's is problematic as follows:
     *
@@ -327,7 +326,7 @@ trait Erasure {
     *    not Object, the dominator is Tc.                                        <--- @PP: "which is not Object" not in spec.
     *  - Otherwise, the dominator is the first element of the span.
     */
-  def intersectionDominator(parents: List[Type]): Type = {
+  def intersectionDominator(parents: List[Type]): Type =
     if (parents.isEmpty) ObjectTpe
     else {
       val psyms = parents map (_.typeSymbol)
@@ -350,7 +349,6 @@ trait Erasure {
          else parents.iterator.filter(p => isUnshadowed(p.typeSymbol))).next()
       }
     }
-  }
 
   /**  The symbol's erased info. This is the type's erasure, except for the following symbols:
     *
@@ -360,7 +358,7 @@ trait Erasure {
     *   - For Array[T].<init>    : {scala#Int)Array[T]
     *   - For a type parameter   : A type bounds type consisting of the erasures of its bounds.
     */
-  def transformInfo(sym: Symbol, tp: Type): Type = {
+  def transformInfo(sym: Symbol, tp: Type): Type =
     if (sym == Object_asInstanceOf)
       sym.info
     else if (sym == Object_isInstanceOf || sym == ArrayClass)
@@ -397,5 +395,4 @@ trait Erasure {
     } else {
       specialErasure(sym)(tp)
     }
-  }
 }

@@ -19,9 +19,8 @@ package scalaguide.cache {
     import play.api.cache.CacheApi
     import play.api.cache.Cached
 
-    def withCache[T](block: CacheApi => T) = {
+    def withCache[T](block: CacheApi => T) =
       running()(app => block(app.injector.instanceOf[CacheApi]))
-    }
 
     "A scala Cache" should {
 
@@ -128,30 +127,27 @@ package scalaguide.cache {
     def testAction[A](
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
-        expectedResponse: Int = OK) = {
+        expectedResponse: Int = OK) =
       assertAction(action, request, expectedResponse) { result => success }
-    }
 
     def assertAction[A, T: AsResult](
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
-        expectedResponse: Int = OK)(assertions: Future[Result] => T) = {
+        expectedResponse: Int = OK)(assertions: Future[Result] => T) =
       running() { app =>
         implicit val mat = ActorMaterializer()(app.actorSystem)
         val result = action(request).run()
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
 
   }
 
   package views {
 
     object html {
-      def profile(user: User) = {
+      def profile(user: User) =
         s"Hello, $user.name"
-      }
     }
 
   }

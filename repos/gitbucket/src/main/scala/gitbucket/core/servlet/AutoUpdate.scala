@@ -209,7 +209,7 @@ object AutoUpdate {
   /**
     * Returns the current version from the version file.
     */
-  def getCurrentVersion(): Version = {
+  def getCurrentVersion(): Version =
     if (versionFile.exists) {
       FileUtils.readFileToString(versionFile, "UTF-8").trim.split("\\.") match {
         case Array(majorVersion, minorVersion) => {
@@ -222,6 +222,5 @@ object AutoUpdate {
         case _ => Version(0, 0)
       }
     } else Version(0, 0)
-  }
 
 }

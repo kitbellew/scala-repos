@@ -142,19 +142,17 @@ object SparkSubmit {
   /**
     * Kill an existing submission using the REST protocol. Standalone and Mesos cluster mode only.
     */
-  private def kill(args: SparkSubmitArguments): Unit = {
+  private def kill(args: SparkSubmitArguments): Unit =
     new RestSubmissionClient(args.master)
       .killSubmission(args.submissionToKill)
-  }
 
   /**
     * Request the status of an existing submission using the REST protocol.
     * Standalone and Mesos cluster mode only.
     */
-  private def requestStatus(args: SparkSubmitArguments): Unit = {
+  private def requestStatus(args: SparkSubmitArguments): Unit =
     new RestSubmissionClient(args.master)
       .requestSubmissionStatus(args.submissionToRequestStatusFor)
-  }
 
   /**
     * Submit the application using the provided parameters.
@@ -170,21 +168,20 @@ object SparkSubmit {
     val (childArgs, childClasspath, sysProps, childMainClass) =
       prepareSubmitEnvironment(args)
 
-    def doRunMain(): Unit = {
+    def doRunMain(): Unit =
       if (args.proxyUser != null) {
         val proxyUser = UserGroupInformation.createProxyUser(
           args.proxyUser,
           UserGroupInformation.getCurrentUser())
         try {
           proxyUser.doAs(new PrivilegedExceptionAction[Unit]() {
-            override def run(): Unit = {
+            override def run(): Unit =
               runMain(
                 childArgs,
                 childClasspath,
                 sysProps,
                 childMainClass,
                 args.verbose)
-            }
           })
         } catch {
           case e: Exception =>
@@ -209,7 +206,6 @@ object SparkSubmit {
           childMainClass,
           args.verbose)
       }
-    }
 
     // In standalone cluster mode, there are two submission gateways:
     //   (1) The traditional RPC gateway using o.a.s.deploy.Client as a wrapper
@@ -938,48 +934,41 @@ object SparkSubmit {
   /**
     * Return whether the given primary resource represents a user jar.
     */
-  private[deploy] def isUserJar(res: String): Boolean = {
+  private[deploy] def isUserJar(res: String): Boolean =
     !isShell(res) && !isPython(res) && !isInternal(res) && !isR(res)
-  }
 
   /**
     * Return whether the given primary resource represents a shell.
     */
-  private[deploy] def isShell(res: String): Boolean = {
+  private[deploy] def isShell(res: String): Boolean =
     (res == SPARK_SHELL || res == PYSPARK_SHELL || res == SPARKR_SHELL)
-  }
 
   /**
     * Return whether the given main class represents a sql shell.
     */
-  private[deploy] def isSqlShell(mainClass: String): Boolean = {
+  private[deploy] def isSqlShell(mainClass: String): Boolean =
     mainClass == "org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver"
-  }
 
   /**
     * Return whether the given main class represents a thrift server.
     */
-  private def isThriftServer(mainClass: String): Boolean = {
+  private def isThriftServer(mainClass: String): Boolean =
     mainClass == "org.apache.spark.sql.hive.thriftserver.HiveThriftServer2"
-  }
 
   /**
     * Return whether the given primary resource requires running python.
     */
-  private[deploy] def isPython(res: String): Boolean = {
+  private[deploy] def isPython(res: String): Boolean =
     res != null && res.endsWith(".py") || res == PYSPARK_SHELL
-  }
 
   /**
     * Return whether the given primary resource requires running R.
     */
-  private[deploy] def isR(res: String): Boolean = {
+  private[deploy] def isR(res: String): Boolean =
     res != null && res.endsWith(".R") || res == SPARKR_SHELL
-  }
 
-  private[deploy] def isInternal(res: String): Boolean = {
+  private[deploy] def isInternal(res: String): Boolean =
     res == SPARK_INTERNAL
-  }
 
   /**
     * Merge a sequence of comma-separated file lists, some of which may be null to indicate
@@ -1019,7 +1008,7 @@ private[spark] object SparkSubmitUtils {
     * @param coordinates Comma-delimited string of maven coordinates
     * @return Sequence of Maven coordinates
     */
-  def extractMavenCoordinates(coordinates: String): Seq[MavenCoordinate] = {
+  def extractMavenCoordinates(coordinates: String): Seq[MavenCoordinate] =
     coordinates.split(",").map { p =>
       val splits = p.replace("/", ":").split(":")
       require(
@@ -1040,10 +1029,9 @@ private[spark] object SparkSubmitUtils {
           s"be whitespace. The version provided is: ${splits(2)}")
       new MavenCoordinate(splits(0), splits(1), splits(2))
     }
-  }
 
   /** Path of the local Maven cache. */
-  private[spark] def m2Path: File = {
+  private[spark] def m2Path: File =
     if (Utils.isTesting) {
       // test builds delete the maven cache, and this can cause flakiness
       new File("dummy", ".m2" + File.separator + "repository")
@@ -1052,7 +1040,6 @@ private[spark] object SparkSubmitUtils {
         System.getProperty("user.home"),
         ".m2" + File.separator + "repository")
     }
-  }
 
   /**
     * Extracts maven coordinates from a comma-delimited string
@@ -1132,7 +1119,7 @@ private[spark] object SparkSubmitUtils {
     */
   def resolveDependencyPaths(
       artifacts: Array[AnyRef],
-      cacheDirectory: File): String = {
+      cacheDirectory: File): String =
     artifacts
       .map { artifactInfo =>
         val artifact = artifactInfo.asInstanceOf[Artifact].getModuleRevisionId
@@ -1140,13 +1127,12 @@ private[spark] object SparkSubmitUtils {
           s"${artifact.getOrganisation}_${artifact.getName}-${artifact.getRevision}.jar"
       }
       .mkString(",")
-  }
 
   /** Adds the given maven coordinates to Ivy's module descriptor. */
   def addDependenciesToIvy(
       md: DefaultModuleDescriptor,
       artifacts: Seq[MavenCoordinate],
-      ivyConfName: String): Unit = {
+      ivyConfName: String): Unit =
     artifacts.foreach { mvn =>
       val ri =
         ModuleRevisionId.newInstance(mvn.groupId, mvn.artifactId, mvn.version)
@@ -1157,7 +1143,6 @@ private[spark] object SparkSubmitUtils {
       // scalastyle:on println
       md.addDependency(dd)
     }
-  }
 
   /** Add exclusion rules for dependencies already included in the spark-assembly */
   def addExclusionRules(
@@ -1214,7 +1199,7 @@ private[spark] object SparkSubmitUtils {
       remoteRepos: Option[String],
       ivyPath: Option[String],
       exclusions: Seq[String] = Nil,
-      isTest: Boolean = false): String = {
+      isTest: Boolean = false): String =
     if (coordinates == null || coordinates.trim.isEmpty) {
       ""
     } else {
@@ -1303,7 +1288,6 @@ private[spark] object SparkSubmitUtils {
         System.setOut(sysOut)
       }
     }
-  }
 
   private[deploy] def createExclusion(
       coords: String,

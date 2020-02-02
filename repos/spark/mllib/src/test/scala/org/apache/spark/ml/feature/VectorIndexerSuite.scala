@@ -83,11 +83,10 @@ class VectorIndexerSuite
     assert(densePoints1Seq.head.size == sparsePoints1Seq.head.size)
     assert(densePoints2Seq.head.size == sparsePoints2Seq.head.size)
     assert(densePoints1Seq.head.size != densePoints2Seq.head.size)
-    def checkPair(dvSeq: Seq[Vector], svSeq: Seq[Vector]): Unit = {
+    def checkPair(dvSeq: Seq[Vector], svSeq: Seq[Vector]): Unit =
       assert(dvSeq.zip(svSeq).forall {
         case (dv, sv) => dv.toArray === sv.toArray
       }, "typo in unit test")
-    }
     checkPair(densePoints1Seq, sparsePoints1Seq)
     checkPair(densePoints2Seq, sparsePoints2Seq)
 

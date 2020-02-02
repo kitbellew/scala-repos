@@ -568,7 +568,7 @@ object PrefixSpan extends Logging {
     /**
       * Returns the same sequence with compressed storage if possible.
       */
-    def compressed: Postfix = {
+    def compressed: Postfix =
       if (start > 0) {
         new Postfix(
           items.slice(start, items.length),
@@ -577,7 +577,6 @@ object PrefixSpan extends Logging {
       } else {
         this
       }
-    }
   }
 
   /**

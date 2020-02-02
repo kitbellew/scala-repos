@@ -705,13 +705,13 @@ final class ClusterReceptionist(
 
   require(
     role.forall(cluster.selfRoles.contains),
-    s"This cluster member [${selfAddress}] doesn't have the role [$role]")
+    s"This cluster member [$selfAddress] doesn't have the role [$role]")
 
   var nodes: immutable.SortedSet[Address] = {
     def hashFor(node: Address): Int = node match {
       // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
       case Address(_, _, Some(host), Some(port)) ⇒
-        MurmurHash.stringHash(s"${host}:${port}")
+        MurmurHash.stringHash(s"$host:$port")
       case _ ⇒
         throw new IllegalStateException(
           s"Unexpected address without host/port: [$node]")

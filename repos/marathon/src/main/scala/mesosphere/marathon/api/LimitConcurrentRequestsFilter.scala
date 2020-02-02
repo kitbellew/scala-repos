@@ -19,7 +19,7 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
   def withSemaphore(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit = {
+      chain: FilterChain): Unit =
     if (semaphore.tryAcquire()) {
       try {
         chain.doFilter(request, response)
@@ -38,21 +38,18 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
             s"Expected http response but got $response")
       }
     }
-  }
 
   def pass(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit = {
+      chain: FilterChain): Unit =
     chain.doFilter(request, response)
-  }
 
   override def doFilter(
       request: ServletRequest,
       response: ServletResponse,
-      chain: FilterChain): Unit = {
+      chain: FilterChain): Unit =
     filterFunction(request, response, chain)
-  }
 
   override def init(filterConfig: FilterConfig): Unit = {}
   override def destroy(): Unit = {}

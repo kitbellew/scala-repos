@@ -58,9 +58,8 @@ class ScalaCollectionRenderer
 
   setClassName(collectionClassName)
 
-  override def isApplicable(tp: Type): Boolean = {
+  override def isApplicable(tp: Type): Boolean =
     super.isApplicable(tp) && notStream(tp) && notView(tp)
-  }
 
   override def isEnabled: Boolean =
     ScalaDebuggerSettings.getInstance().FRIENDLY_COLLECTION_DISPLAY_ENABLED
@@ -101,7 +100,7 @@ object ScalaCollectionRenderer {
 
   val sizeLabelRenderer = createSizeLabelRenderer()
 
-  def hasDefiniteSize(value: Value, evaluationContext: EvaluationContext) = {
+  def hasDefiniteSize(value: Value, evaluationContext: EvaluationContext) =
     value.`type`() match {
       case ct: ClassType
           if ct.name.startsWith("scala.collection") &&
@@ -110,16 +109,14 @@ object ScalaCollectionRenderer {
         true
       case _ => evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
     }
-  }
 
-  def nonEmpty(value: Value, evaluationContext: EvaluationContext) = {
+  def nonEmpty(value: Value, evaluationContext: EvaluationContext) =
     value.`type`() match {
       case ct: ClassType
           if ct.name.toLowerCase.contains("empty") || ct.name.contains("Nil") =>
         false
       case _ => evaluateBoolean(value, evaluationContext, nonEmptyEval)
     }
-  }
 
   def size(value: Value, evaluationContext: EvaluationContext) =
     evaluateInt(value, evaluationContext, sizeEval)
@@ -148,7 +145,7 @@ object ScalaCollectionRenderer {
       override def calcLabel(
           descriptor: ValueDescriptor,
           evaluationContext: EvaluationContext,
-          labelListener: DescriptorLabelListener): String = {
+          labelListener: DescriptorLabelListener): String =
         descriptor.getValue match {
           case null => "null"
           case objRef: ObjectReference =>
@@ -162,7 +159,6 @@ object ScalaCollectionRenderer {
               else size(objRef, evaluationContext)
             typeName + sizePrefix + sizeValue
         }
-      }
     }
     labelRenderer.setLabelExpression(
       new TextWithImportsImpl(
@@ -176,27 +172,25 @@ object ScalaCollectionRenderer {
   private def evaluateBoolean(
       value: Value,
       context: EvaluationContext,
-      evaluator: Evaluator): Boolean = {
+      evaluator: Evaluator): Boolean =
     evaluate(value, context, evaluator) match {
       case b: BooleanValue => b.booleanValue()
       case x               => throw EvaluationException(s"$x is not a boolean")
     }
-  }
 
   private def evaluateInt(
       value: Value,
       context: EvaluationContext,
-      evaluator: Evaluator): Int = {
+      evaluator: Evaluator): Int =
     evaluate(value, context, evaluator) match {
       case i: IntegerValue => i.intValue()
       case x               => throw EvaluationException(s"$x is not an integer")
     }
-  }
 
   private def evaluate(
       value: Value,
       context: EvaluationContext,
-      evaluator: Evaluator) = {
+      evaluator: Evaluator) =
     if (value != null) {
       val newContext = context.createEvaluationContext(value)
       evaluator.exprEval.evaluate(newContext)
@@ -207,7 +201,6 @@ object ScalaCollectionRenderer {
         case _               => throw EvaluationException("Cannot evaluate expression")
       }
     } else throw EvaluationException("Cannot evaluate expression")
-  }
 
   object ScalaToArrayRenderer
       extends ReferenceRenderer(collectionClassName)

@@ -67,12 +67,11 @@ abstract class VertexRDD[VD](sc: SparkContext, deps: Seq[Dependency[_]])
     */
   override def compute(
       part: Partition,
-      context: TaskContext): Iterator[(VertexId, VD)] = {
+      context: TaskContext): Iterator[(VertexId, VD)] =
     firstParent[ShippableVertexPartition[VD]]
       .iterator(part, context)
       .next()
       .iterator
-  }
 
   /**
     * Construct a new VertexRDD that is indexed by only the visible vertices. The resulting
@@ -302,9 +301,8 @@ object VertexRDD {
   def apply[VD: ClassTag](
       vertices: RDD[(VertexId, VD)],
       edges: EdgeRDD[_],
-      defaultVal: VD): VertexRDD[VD] = {
+      defaultVal: VD): VertexRDD[VD] =
     VertexRDD(vertices, edges, defaultVal, (a, b) => a)
-  }
 
   /**
     * Constructs a `VertexRDD` from an RDD of vertex-attribute pairs. Duplicate vertex entries are

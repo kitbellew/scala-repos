@@ -23,9 +23,8 @@ object logAndNormalize extends UFunc {
       implicit logImpl: breeze.numerics.log.Impl[V, V],
       logNormalizeImpl: logNormalize.Impl[V, V]): Impl[V, V] = new Impl[V, V] {
 
-    def apply(value: V): V = {
+    def apply(value: V): V =
       logNormalize(numerics.log(value))
-    }
   }
 
 }

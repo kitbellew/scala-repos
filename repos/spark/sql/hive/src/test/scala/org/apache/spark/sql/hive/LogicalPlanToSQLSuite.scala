@@ -47,9 +47,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       .write
       .saveAsTable("parquet_t2")
 
-    def createArray(id: Column): Column = {
+    def createArray(id: Column): Column =
       when(id % 3 === 0, lit(null)).otherwise(array('id, 'id + 1))
-    }
 
     sqlContext
       .range(10)

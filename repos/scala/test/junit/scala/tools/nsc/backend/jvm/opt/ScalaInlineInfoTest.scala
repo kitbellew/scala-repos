@@ -18,7 +18,7 @@ import scala.tools.testing.ClearAfterClass
 
 object ScalaInlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:none")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])

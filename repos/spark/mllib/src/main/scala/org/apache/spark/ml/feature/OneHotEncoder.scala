@@ -150,9 +150,7 @@ class OneHotEncoder(override val uid: String)
               s"Values from column $inputColName must be indices, but got $x.")
             math.max(m, x)
           },
-          (m0, m1) => {
-            math.max(m0, m1)
-          }
+          (m0, m1) => math.max(m0, m1)
         )
         .toInt + 1
       val outputAttrNames = Array.tabulate(numAttrs)(_.toString)

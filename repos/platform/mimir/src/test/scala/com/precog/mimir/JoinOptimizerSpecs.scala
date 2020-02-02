@@ -56,12 +56,11 @@ trait JoinOptimizerSpecs[M[+_]]
 
   import joins._
 
-  def testEval(graph: DepGraph)(test: Set[SEvent] => Result): Result = {
+  def testEval(graph: DepGraph)(test: Set[SEvent] => Result): Result =
     (consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => test(results)
       case Failure(error)   => throw error
     })
-  }
 
   "join optimization" should {
     "fail to rewrite in presence of constant join" in {

@@ -15,7 +15,7 @@ object kron extends UFunc {
       implicit mul: OpMulScalar.Impl2[V1, M, DenseMatrix[RV]],
       asMat: M <:< Matrix[V2],
       man: ClassTag[RV],
-      zero: Zero[RV]): Impl2[DenseMatrix[V1], M, DenseMatrix[RV]] = {
+      zero: Zero[RV]): Impl2[DenseMatrix[V1], M, DenseMatrix[RV]] =
     new Impl2[DenseMatrix[V1], M, DenseMatrix[RV]] {
       def apply(a: DenseMatrix[V1], b: M): DenseMatrix[RV] = {
 
@@ -30,6 +30,5 @@ object kron extends UFunc {
         result
       }
     }
-  }
 
 }

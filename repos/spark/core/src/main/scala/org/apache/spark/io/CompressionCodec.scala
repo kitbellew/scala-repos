@@ -49,24 +49,21 @@ private[spark] object CompressionCodec {
   private val configKey = "spark.io.compression.codec"
 
   private[spark] def supportsConcatenationOfSerializedStreams(
-      codec: CompressionCodec): Boolean = {
+      codec: CompressionCodec): Boolean =
     (codec.isInstanceOf[SnappyCompressionCodec] || codec
       .isInstanceOf[LZFCompressionCodec]
-    || codec.isInstanceOf[LZ4CompressionCodec])
-  }
+      || codec.isInstanceOf[LZ4CompressionCodec])
 
   private val shortCompressionCodecNames = Map(
     "lz4" -> classOf[LZ4CompressionCodec].getName,
     "lzf" -> classOf[LZFCompressionCodec].getName,
     "snappy" -> classOf[SnappyCompressionCodec].getName)
 
-  def getCodecName(conf: SparkConf): String = {
+  def getCodecName(conf: SparkConf): String =
     conf.get(configKey, DEFAULT_COMPRESSION_CODEC)
-  }
 
-  def createCodec(conf: SparkConf): CompressionCodec = {
+  def createCodec(conf: SparkConf): CompressionCodec =
     createCodec(conf, getCodecName(conf))
-  }
 
   def createCodec(conf: SparkConf, codecName: String): CompressionCodec = {
     val codecClass =
@@ -90,7 +87,7 @@ private[spark] object CompressionCodec {
     * Return the short version of the given codec name.
     * If it is already a short name, just return it.
     */
-  def getShortName(codecName: String): String = {
+  def getShortName(codecName: String): String =
     if (shortCompressionCodecNames.contains(codecName)) {
       codecName
     } else {
@@ -101,7 +98,6 @@ private[spark] object CompressionCodec {
             s"No short name for codec $codecName.")
         }
     }
-  }
 
   val FALLBACK_COMPRESSION_CODEC = "snappy"
   val DEFAULT_COMPRESSION_CODEC = "lz4"
@@ -141,9 +137,8 @@ class LZ4CompressionCodec(conf: SparkConf) extends CompressionCodec {
 @DeveloperApi
 class LZFCompressionCodec(conf: SparkConf) extends CompressionCodec {
 
-  override def compressedOutputStream(s: OutputStream): OutputStream = {
+  override def compressedOutputStream(s: OutputStream): OutputStream =
     new LZFOutputStream(s).setFinishBlockOnFlush(true)
-  }
 
   override def compressedInputStream(s: InputStream): InputStream =
     new LZFInputStream(s)
@@ -224,10 +219,9 @@ private final class SnappyOutputStreamWrapper(os: SnappyOutputStream)
     os.flush()
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     if (!closed) {
       closed = true
       os.close()
     }
-  }
 }

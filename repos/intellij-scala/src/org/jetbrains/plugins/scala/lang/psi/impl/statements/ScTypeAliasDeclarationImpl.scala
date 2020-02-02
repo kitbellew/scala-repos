@@ -105,7 +105,7 @@ class ScTypeAliasDeclarationImpl private (
     } else None
   }
 
-  override def getPresentation: ItemPresentation = {
+  override def getPresentation: ItemPresentation =
     new ItemPresentation() {
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null
@@ -114,7 +114,6 @@ class ScTypeAliasDeclarationImpl private (
       override def getIcon(open: Boolean) =
         ScTypeAliasDeclarationImpl.this.getIcon(0)
     }
-  }
 
   override def getOriginalElement: PsiElement =
     super[ScTypeAliasDeclaration].getOriginalElement

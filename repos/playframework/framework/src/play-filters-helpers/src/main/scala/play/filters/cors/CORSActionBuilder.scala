@@ -23,9 +23,8 @@ trait CORSActionBuilder extends ActionBuilder[Request] with AbstractCORSPolicy {
 
   override def invokeBlock[A](
       request: Request[A],
-      block: Request[A] => Future[Result]): Future[Result] = {
+      block: Request[A] => Future[Result]): Future[Result] =
     filterRequest(rh => block(Request(rh, request.body)), request)
-  }
 }
 
 /**

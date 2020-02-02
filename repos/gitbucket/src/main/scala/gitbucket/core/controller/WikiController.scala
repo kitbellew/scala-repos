@@ -172,26 +172,27 @@ trait WikiControllerBase extends ControllerBase {
       } else {
         flash += "info" -> "This patch was not able to be reversed."
         redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
-          .urlEncode(pageName)}/_compare/${from}...${to}")
+          .urlEncode(pageName)}/_compare/$from...$to")
       }
   })
 
-  get("/:owner/:repository/wiki/_revert/:commitId")(collaboratorsOnly { repository =>
-    val Array(from, to) = params("commitId").split("\\.\\.\\.")
+  get("/:owner/:repository/wiki/_revert/:commitId")(collaboratorsOnly {
+    repository =>
+      val Array(from, to) = params("commitId").split("\\.\\.\\.")
 
-    if (revertWikiPage(
-          repository.owner,
-          repository.name,
-          from,
-          to,
-          context.loginAccount.get,
-          None)) {
-      redirect(s"/${repository.owner}/${repository.name}/wiki/")
-    } else {
-      flash += "info" -> "This patch was not able to be reversed."
-      redirect(
-        s"/${repository.owner}/${repository.name}/wiki/_compare/${from}...${to}")
-    }
+      if (revertWikiPage(
+            repository.owner,
+            repository.name,
+            from,
+            to,
+            context.loginAccount.get,
+            None)) {
+        redirect(s"/${repository.owner}/${repository.name}/wiki/")
+      } else {
+        flash += "info" -> "This patch was not able to be reversed."
+        redirect(
+          s"/${repository.owner}/${repository.name}/wiki/_compare/$from...$to")
+      }
   })
 
   get("/:owner/:repository/wiki/:page/_edit")(collaboratorsOnly { repository =>
@@ -276,7 +277,7 @@ trait WikiControllerBase extends ControllerBase {
           pageName,
           loginAccount.fullName,
           loginAccount.mailAddress,
-          s"Destroyed ${pageName}")
+          s"Destroyed $pageName")
         updateLastActivityDate(repository.owner, repository.name)
 
         redirect(s"/${repository.owner}/${repository.name}/wiki")
@@ -328,10 +329,10 @@ trait WikiControllerBase extends ControllerBase {
         value: String,
         messages: Messages): Option[String] =
       if (value.exists("\\/:*?\"<>|".contains(_))) {
-        Some(s"${name} contains invalid character.")
+        Some(s"$name contains invalid character.")
       } else if (notReservedPageName(value) && (value.startsWith("_") || value
                    .startsWith("-"))) {
-        Some(s"${name} starts with invalid character.")
+        Some(s"$name starts with invalid character.")
       } else {
         None
       }
@@ -344,22 +345,20 @@ trait WikiControllerBase extends ControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       targetWikiPage.map { _ =>
         "Someone has created the wiki since you started. Please reload this page and re-apply your changes."
       }
-    }
   }
 
   private def conflictForEdit: Constraint = new Constraint() {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       targetWikiPage.filter(_.id != params("id")).map { _ =>
         "Someone has edited the wiki since you started. Please reload this page and re-apply your changes."
       }
-    }
   }
 
   private def targetWikiPage =

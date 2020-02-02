@@ -46,9 +46,8 @@ class EventsByPersistenceIdSpec
     ref
   }
 
-  def setupEmpty(persistenceId: String): ActorRef = {
+  def setupEmpty(persistenceId: String): ActorRef =
     system.actorOf(TestActor.props(persistenceId))
-  }
 
   "Leveldb query EventsByPersistenceId" must {
 

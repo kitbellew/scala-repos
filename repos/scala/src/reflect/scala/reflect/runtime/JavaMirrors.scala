@@ -354,13 +354,12 @@ private[scala] trait JavaMirrors
         val value = jfield get receiver
         if (isDerivedValueClass) boxer.newInstance(value) else value
       }
-      def set(value: Any) = {
+      def set(value: Any) =
         // it appears useful to be able to set values of vals, therefore I'm disabling this check
         // if (!symbol.isMutable) ErrorSetImmutableField(symbol)
         jfield.set(
           receiver,
           if (isDerivedValueClass) unboxer.invoke(value) else value)
-      }
 
       override def toString =
         s"field mirror for ${showDecl(symbol)} (bound to $receiver)"
@@ -743,13 +742,12 @@ private[scala] trait JavaMirrors
         with ModuleMirror {
       def erasure = symbol.moduleClass.asClass
       def isStatic = true
-      def instance = {
+      def instance =
         if (symbol.isTopLevel)
           staticSingletonInstance(classLoader, symbol.fullName)
         else if (outer == null)
           staticSingletonInstance(classToJava(symbol.moduleClass.asClass))
         else innerSingletonInstance(outer, symbol.name.toString)
-      }
       override def toString =
         s"module mirror for ${symbol.fullName} (bound to $outer)"
     }
@@ -1028,10 +1026,9 @@ private[scala] trait JavaMirrors
         def enter(sym: Symbol, mods: JavaAccFlags) =
           followStatic(clazz, module, mods).info.decls enter sym
 
-        def enterEmptyCtorIfNecessary(): Unit = {
+        def enterEmptyCtorIfNecessary(): Unit =
           if (jclazz.getConstructors.isEmpty)
             clazz.info.decls.enter(clazz.newClassConstructor(NoPosition))
-        }
 
         for (jinner <- jclazz.getDeclaredClasses) {
           jclassAsScala(jinner) // inner class is entered as a side-effect
@@ -1127,9 +1124,8 @@ private[scala] trait JavaMirrors
     /**
       * The Scala owner of the Scala symbol corresponding to the Java member `jmember`
       */
-    private def sOwner(jmember: jMember): Symbol = {
+    private def sOwner(jmember: jMember): Symbol =
       followStatic(classToScala(jmember.getDeclaringClass), jmember.javaFlags)
-    }
 
     /**
       * The Scala owner of the Scala type parameter corresponding to the Java type variable `jtvar`
@@ -1201,13 +1197,12 @@ private[scala] trait JavaMirrors
     /**
       * The Scala package with given fully qualified name.
       */
-    def packageNameToScala(fullname: String): ModuleSymbol = {
+    def packageNameToScala(fullname: String): ModuleSymbol =
       if (fullname == "") EmptyPackage
       else {
         val jpkg = jPackage.getPackage(fullname)
         if (jpkg != null) packageToScala(jpkg) else makeScalaPackage(fullname)
       }
-    }
 
     /**
       * The Scala package with given fully qualified name. Unlike `packageNameToScala`,
@@ -1433,13 +1428,12 @@ private[scala] trait JavaMirrors
         meth: Symbol,
         tparams: List[Symbol],
         paramtpes: List[Type],
-        restpe: Type) = {
+        restpe: Type) =
       meth setInfo GenPolyType(
         tparams,
         MethodType(
           meth.owner.newSyntheticValueParams(paramtpes map objToAny),
           restpe))
-    }
 
     /**
       * The Scala method that corresponds to given Java method without taking
@@ -1636,7 +1630,7 @@ private[scala] trait JavaMirrors
       case root: RootSymbol => root.mirror
       case _ =>
         abort(
-          s"${sym}.enclosingRootClass = ${sym.enclosingRootClass}, which is not a RootSymbol")
+          s"$sym.enclosingRootClass = ${sym.enclosingRootClass}, which is not a RootSymbol")
     }
 
   /** 1. If `owner` is a package class (but not the empty package) and `name` is a term name, make a new package

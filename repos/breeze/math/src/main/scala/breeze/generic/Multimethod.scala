@@ -32,9 +32,8 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
 
   protected def bindingMissing(a: A): R =
     throw new UnsupportedOperationException("Types not found!")
-  protected def multipleOptions(a: A, m: Map[Class[_], Method]) = {
+  protected def multipleOptions(a: A, m: Map[Class[_], Method]) =
     throw new RuntimeException("Multiple bindings for method: " + m)
-  }
 
   protected def doMethod(m: Method, a: A): R
 
@@ -88,9 +87,8 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
   protected def multipleOptions(
       a: A,
       b: B,
-      m: Map[(Class[_], Class[_]), Method[_ <: A, _ <: B, _ <: R]]) = {
+      m: Map[(Class[_], Class[_]), Method[_ <: A, _ <: B, _ <: R]]) =
     throw new RuntimeException("Multiple bindings for method: " + m)
-  }
 
   def apply(a: A, b: B): R = {
     val ac = a.asInstanceOf[AnyRef].getClass
@@ -149,9 +147,8 @@ trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
   protected def multipleOptions(
       a: A,
       b: B,
-      m: Map[(Class[_], Class[_]), Method[_ <: A, _ <: B]]) = {
+      m: Map[(Class[_], Class[_]), Method[_ <: A, _ <: B]]) =
     throw new RuntimeException("Multiple bindings for method: " + m)
-  }
 
   def apply(a: A, b: B): Unit = {
     val ac = a.asInstanceOf[AnyRef].getClass
@@ -240,7 +237,7 @@ trait MMRegistry2[R] {
     result
   }
 
-  def resolve(a: Class[_], b: Class[_]): Map[(Class[_], Class[_]), R] = {
+  def resolve(a: Class[_], b: Class[_]): Map[(Class[_], Class[_]), R] =
     ops.get(a -> b) match {
       case Some(m) => Map((a -> b) -> m)
       case None =>
@@ -252,8 +249,6 @@ trait MMRegistry2[R] {
         }
         candidates.toMap[(Class[_], Class[_]), R]
     }
-
-  }
 
   /** This selects based on the partial order induced by the inheritance hierarchy.
     *  If there is ambiguity, all are returned.
@@ -318,7 +313,7 @@ trait MMRegistry3[R] {
   def resolve(
       a: Class[_],
       b: Class[_],
-      c: Class[_]): Map[(Class[_], Class[_], Class[_]), R] = {
+      c: Class[_]): Map[(Class[_], Class[_], Class[_]), R] =
     ops.get((a, b, c)) match {
       case Some(m) => Map((a, b, c) -> m)
       case None =>
@@ -331,8 +326,6 @@ trait MMRegistry3[R] {
         }
         candidates.toMap[(Class[_], Class[_], Class[_]), R]
     }
-
-  }
 
   /** This selects based on the partial order induced by the inheritance hierarchy.
     *  If there is ambiguity, all are returned.
@@ -370,7 +363,7 @@ trait MMRegistry1[M] {
 
   protected def resolve(
       a: Class[_],
-      checkedA: Set[Class[_]] = Set.empty): Map[Class[_], M] = {
+      checkedA: Set[Class[_]] = Set.empty): Map[Class[_], M] =
     ops.get(a) match {
       case Some(m) => Map(a -> m)
       case None =>
@@ -382,8 +375,6 @@ trait MMRegistry1[M] {
           }
         allParents.toMap
     }
-
-  }
 
   /** This selects based on the partial order induced by the inheritance hierarchy.
     *  If there is ambiguity, all are returned.

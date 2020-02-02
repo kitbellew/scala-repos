@@ -47,14 +47,13 @@ trait JLineHistory extends JHistory with History {
 
 object JLineHistory {
   class JLineFileHistory extends SimpleHistory with FileBackedHistory {
-    override def add(item: CharSequence): Unit = {
+    override def add(item: CharSequence): Unit =
       if (!isEmpty && last == item)
         interpreter.repldbg("Ignoring duplicate entry '" + item + "'")
       else {
         super.add(item)
         addLineToFile(item)
       }
-    }
     override def toString =
       "History(size = " + size + ", index = " + index + ")"
 

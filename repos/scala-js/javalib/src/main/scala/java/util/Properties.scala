@@ -24,7 +24,7 @@ class Properties(protected val defaults: Properties)
   def getProperty(key: String): String =
     getProperty(key, defaultValue = null)
 
-  def getProperty(key: String, defaultValue: String): String = {
+  def getProperty(key: String, defaultValue: String): String =
     get(key) match {
       case value: String => value
 
@@ -32,7 +32,6 @@ class Properties(protected val defaults: Properties)
         if (defaults != null) defaults.getProperty(key, defaultValue)
         else defaultValue
     }
-  }
 
   def propertyNames(): ju.Enumeration[_] = {
     val thisSet: ju.Set[String] = keySet().map(_.asInstanceOf[String])

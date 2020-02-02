@@ -72,7 +72,7 @@ trait Scaling {
     else 0
   }
 
-  def determineScale(score: Double, oldScale: Int): Int = {
+  def determineScale(score: Double, oldScale: Int): Int =
     if (score != 0.0) {
       val maxScale = java.lang.Math.getExponent(score)
       if (maxScale == -10000) oldScale
@@ -84,7 +84,6 @@ trait Scaling {
     } else {
       Int.MinValue
     }
-  }
 
   def scaleArrayToScale(
       scores: Array[Double],
@@ -115,7 +114,7 @@ trait Scaling {
       src: Array[Double],
       srcScale: Int,
       dest: Array[Double],
-      destScale: Int): Int = {
+      destScale: Int): Int =
     if (destScale == srcScale) {
       axpy(1.0, src, dest)
       destScale
@@ -146,25 +145,21 @@ trait Scaling {
 
       destScale
     }
-  }
 
   /**
     * Converts the scaled value into "normal" space
     */
-  def unscaleValue(score: Double, currentScale: Int) = {
+  def unscaleValue(score: Double, currentScale: Int) =
     java.lang.Math.scalb(score, currentScale)
-  }
 
   /**
     * Converts the scaled value into "normal" space
     */
-  def scaleValue(score: Double, currentScale: Int, targetScale: Int) = {
+  def scaleValue(score: Double, currentScale: Int, targetScale: Int) =
     java.lang.Math.scalb(score, currentScale - targetScale)
-  }
 
-  def toLogSpace(score: Double, currentScale: Int) = {
+  def toLogSpace(score: Double, currentScale: Int) =
     log(score) + currentScale * log(2d)
-  }
 }
 
 object Scaling extends Scaling {

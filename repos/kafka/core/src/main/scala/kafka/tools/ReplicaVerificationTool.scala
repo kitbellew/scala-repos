@@ -56,9 +56,8 @@ object ReplicaVerificationTool extends Logging {
   val dateFormatString = "yyyy-MM-dd HH:mm:ss,SSS"
   val dateFormat = new SimpleDateFormat(dateFormatString)
 
-  def getCurrentTimeString() = {
+  def getCurrentTimeString() =
     ReplicaVerificationTool.dateFormat.format(new Date(SystemTime.milliseconds))
-  }
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
@@ -286,12 +285,11 @@ private class ReplicaBuffer(
   }
 
   private def offsetResponseStringWithError(
-      offsetResponse: OffsetResponse): String = {
+      offsetResponse: OffsetResponse): String =
     offsetResponse.partitionErrorAndOffsets.filter {
       case (topicAndPartition, partitionOffsetsResponse) =>
         partitionOffsetsResponse.error != Errors.NONE.code
     }.mkString
-  }
 
   private def setInitialOffsets() {
     for ((brokerId, topicAndPartitions) <- leadersPerBroker) {
@@ -330,9 +328,8 @@ private class ReplicaBuffer(
     messageSetCache.get(topicAndPartition).put(replicaId, partitionData)
   }
 
-  def getOffset(topicAndPartition: TopicAndPartition) = {
+  def getOffset(topicAndPartition: TopicAndPartition) =
     fetchOffsetMap.get(topicAndPartition)
-  }
 
   def verifyCheckSum() {
     debug("Begin verification")

@@ -128,9 +128,9 @@ trait LabelsControllerBase extends ControllerBase {
         value: String,
         messages: Messages): Option[String] =
       if (value.contains(',')) {
-        Some(s"${name} contains invalid character.")
+        Some(s"$name contains invalid character.")
       } else if (value.startsWith("_") || value.startsWith("-")) {
-        Some(s"${name} starts with invalid character.")
+        Some(s"$name starts with invalid character.")
       } else {
         None
       }

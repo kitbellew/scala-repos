@@ -44,9 +44,8 @@ class TypedSpec(config: Config)
   implicit val timeout = Timeout(1.minute)
   implicit val patience = PatienceConfig(3.seconds)
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     Await.result(system ? (Terminate(_)), timeout.duration): Status
-  }
 
   // TODO remove after basing on ScalaTest 3 with async support
   import akka.testkit._
@@ -93,10 +92,9 @@ class TypedSpec(config: Config)
   /**
     * Group assertion that ensures that the given inboxes are empty.
     */
-  def assertEmpty(inboxes: Inbox.SyncInbox[_]*): Unit = {
+  def assertEmpty(inboxes: Inbox.SyncInbox[_]*): Unit =
     inboxes foreach (i ⇒
       withClue(s"inbox $i had messages")(i.hasMessages should be(false)))
-  }
 
   // for ScalaTest === compare of Class objects
   implicit def classEqualityConstraint[A, B]: Constraint[Class[A], Class[B]] =

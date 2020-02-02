@@ -113,27 +113,22 @@ class BernoulliCellSampler[T](
 
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
-  override def sample(items: Iterator[T]): Iterator[T] = {
+  override def sample(items: Iterator[T]): Iterator[T] =
     if (ub - lb <= 0.0) {
       if (complement) items else Iterator.empty
     } else {
       if (complement) {
         items.filter { item =>
-          {
-            val x = rng.nextDouble()
-            (x < lb) || (x >= ub)
-          }
+          val x = rng.nextDouble()
+          (x < lb) || (x >= ub)
         }
       } else {
         items.filter { item =>
-          {
-            val x = rng.nextDouble()
-            (x >= lb) && (x < ub)
-          }
+          val x = rng.nextDouble()
+          (x >= lb) && (x < ub)
         }
       }
     }
-  }
 
   /**
     *  Return a sampler that is the complement of the range specified of the current sampler.
@@ -167,7 +162,7 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
 
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
-  override def sample(items: Iterator[T]): Iterator[T] = {
+  override def sample(items: Iterator[T]): Iterator[T] =
     if (fraction <= 0.0) {
       Iterator.empty
     } else if (fraction >= 1.0) {
@@ -177,7 +172,6 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
     } else {
       items.filter { _ => rng.nextDouble() <= fraction }
     }
-  }
 
   override def clone: BernoulliSampler[T] = new BernoulliSampler[T](fraction)
 }
@@ -214,7 +208,7 @@ class PoissonSampler[T: ClassTag](
     rngGap.setSeed(seed)
   }
 
-  override def sample(items: Iterator[T]): Iterator[T] = {
+  override def sample(items: Iterator[T]): Iterator[T] =
     if (fraction <= 0.0) {
       Iterator.empty
     } else if (useGapSamplingIfPossible &&
@@ -230,7 +224,6 @@ class PoissonSampler[T: ClassTag](
         if (count == 0) Iterator.empty else Iterator.fill(count)(item)
       }
     }
-  }
 
   override def clone: PoissonSampler[T] =
     new PoissonSampler[T](fraction, useGapSamplingIfPossible)

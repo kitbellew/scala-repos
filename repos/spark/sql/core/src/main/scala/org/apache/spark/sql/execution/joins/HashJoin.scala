@@ -38,7 +38,7 @@ trait HashJoin {
   val left: SparkPlan
   val right: SparkPlan
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     joinType match {
       case Inner =>
         left.output ++ right.output
@@ -52,7 +52,6 @@ trait HashJoin {
         throw new IllegalArgumentException(
           s"HashJoin should not take $x as the JoinType")
     }
-  }
 
   protected lazy val (buildPlan, streamedPlan) = buildSide match {
     case BuildLeft  => (left, right)
@@ -132,7 +131,7 @@ trait HashJoin {
   protected def hashJoin(
       streamIter: Iterator[InternalRow],
       hashedRelation: HashedRelation,
-      numOutputRows: LongSQLMetric): Iterator[InternalRow] = {
+      numOutputRows: LongSQLMetric): Iterator[InternalRow] =
     new Iterator[InternalRow] {
       private[this] var currentStreamedRow: InternalRow = _
       private[this] var currentHashMatches: Seq[InternalRow] = _
@@ -187,7 +186,7 @@ trait HashJoin {
         false // unreachable
       }
 
-      override final def next(): InternalRow = {
+      override final def next(): InternalRow =
         // next() could be called without calling hasNext()
         if (hasNext) {
           currentMatchPosition += 1
@@ -196,9 +195,7 @@ trait HashJoin {
         } else {
           throw new NoSuchElementException
         }
-      }
     }
-  }
 
   @transient protected[this] lazy val EMPTY_LIST = CompactBuffer[InternalRow]()
 

@@ -61,9 +61,8 @@ private[spark] class ZookeeperMesosClusterPersistenceEngineFactory(
 
   lazy val zk = SparkCuratorUtil.newClient(conf)
 
-  def createEngine(path: String): MesosClusterPersistenceEngine = {
+  def createEngine(path: String): MesosClusterPersistenceEngine =
     new ZookeeperMesosClusterPersistenceEngine(path, zk, conf)
-  }
 }
 
 /**
@@ -72,9 +71,8 @@ private[spark] class ZookeeperMesosClusterPersistenceEngineFactory(
   */
 private[spark] class BlackHoleMesosClusterPersistenceEngineFactory
     extends MesosClusterPersistenceEngineFactory(null) {
-  def createEngine(path: String): MesosClusterPersistenceEngine = {
+  def createEngine(path: String): MesosClusterPersistenceEngine =
     new BlackHoleMesosClusterPersistenceEngine
-  }
 }
 
 /**
@@ -104,13 +102,11 @@ private[spark] class ZookeeperMesosClusterPersistenceEngine(
 
   SparkCuratorUtil.mkdir(zk, WORKING_DIR)
 
-  def path(name: String): String = {
+  def path(name: String): String =
     WORKING_DIR + "/" + name
-  }
 
-  override def expunge(name: String): Unit = {
+  override def expunge(name: String): Unit =
     zk.delete().forPath(path(name))
-  }
 
   override def persist(name: String, obj: Object): Unit = {
     val serialized = Utils.serialize(obj)
@@ -134,7 +130,6 @@ private[spark] class ZookeeperMesosClusterPersistenceEngine(
     }
   }
 
-  override def fetchAll[T](): Iterable[T] = {
+  override def fetchAll[T](): Iterable[T] =
     zk.getChildren.forPath(WORKING_DIR).asScala.flatMap(fetch[T])
-  }
 }

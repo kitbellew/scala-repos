@@ -140,18 +140,18 @@ object DumpLogSegments {
     misMatchesForIndexFilesMap.foreach {
       case (fileName, listOfMismatches) => {
         System.err.println("Mismatches in :" + fileName)
-        listOfMismatches.foreach(m => {
+        listOfMismatches.foreach { m =>
           System.err.println(
             "  Index offset: %d, log offset: %d".format(m._1, m._2))
-        })
+        }
       }
     }
     nonConsecutivePairsForLogFilesMap.foreach {
       case (fileName, listOfNonConsecutivePairs) => {
         System.err.println("Non-secutive offsets in :" + fileName)
-        listOfNonConsecutivePairs.foreach(m => {
+        listOfNonConsecutivePairs.foreach { m =>
           System.err.println("  %d is followed by %d".format(m._1, m._2))
-        })
+        }
       }
     }
   }
@@ -208,7 +208,7 @@ object DumpLogSegments {
       keyDecoder: Decoder[K],
       valueDecoder: Decoder[V])
       extends MessageParser[K, V] {
-    override def parse(message: Message): (Option[K], Option[V]) = {
+    override def parse(message: Message): (Option[K], Option[V]) =
       if (message.isNull) {
         (None, None)
       } else {
@@ -223,16 +223,14 @@ object DumpLogSegments {
 
         (key, payload)
       }
-    }
   }
 
   private class OffsetsMessageParser extends MessageParser[String, String] {
-    private def hex(bytes: Array[Byte]): String = {
+    private def hex(bytes: Array[Byte]): String =
       if (bytes.isEmpty)
         ""
       else
         String.format("%X", BigInt(1, bytes))
-    }
 
     private def parseOffsets(offsetKey: OffsetKey, payload: ByteBuffer) = {
       val group = offsetKey.key.group
@@ -240,7 +238,7 @@ object DumpLogSegments {
       val offset = GroupMetadataManager.readOffsetMessageValue(payload)
 
       val keyString =
-        s"offset::${group}:${topicPartition.topic}:${topicPartition.partition}"
+        s"offset::$group:${topicPartition.topic}:${topicPartition.partition}"
       val valueString =
         if (offset.metadata.isEmpty)
           String.valueOf(offset.offset)
@@ -267,21 +265,21 @@ object DumpLogSegments {
             if (userData.isEmpty)
               s"${member.memberId}=${partitionAssignment.partitions()}"
             else
-              s"${member.memberId}=${partitionAssignment.partitions()}:${userData}"
+              s"${member.memberId}=${partitionAssignment.partitions()}:$userData"
           } else {
             s"${member.memberId}=${hex(member.assignment)}"
           }
         }
         .mkString("{", ",", "}")
 
-      val keyString = s"metadata::${groupId}"
+      val keyString = s"metadata::$groupId"
       val valueString =
-        s"${protocolType}:${group.protocol}:${group.generationId}:${assignment}"
+        s"$protocolType:${group.protocol}:${group.generationId}:$assignment"
 
       (Some(keyString), Some(valueString))
     }
 
-    override def parse(message: Message): (Option[String], Option[String]) = {
+    override def parse(message: Message): (Option[String], Option[String]) =
       if (message.isNull)
         (None, None)
       else if (!message.hasKey) {
@@ -297,7 +295,6 @@ object DumpLogSegments {
               "Failed to decode message using offset topic decoder (message had an invalid key)")
         }
       }
-    }
   }
 
   /* print out the contents of the log */
@@ -342,8 +339,8 @@ object DumpLogSegments {
           print(" keysize: " + msg.keySize)
         if (printContents) {
           val (key, payload) = parser.parse(msg)
-          key.map(key => print(s" key: ${key}"))
-          payload.map(payload => print(s" payload: ${payload}"))
+          key.map(key => print(s" key: $key"))
+          payload.map(payload => print(s" payload: $payload"))
         }
         println()
       }
@@ -358,7 +355,7 @@ object DumpLogSegments {
 
   private def getIterator(
       messageAndOffset: MessageAndOffset,
-      isDeepIteration: Boolean) = {
+      isDeepIteration: Boolean) =
     if (isDeepIteration) {
       val message = messageAndOffset.message
       message.compressionCodec match {
@@ -369,20 +366,17 @@ object DumpLogSegments {
       }
     } else
       getSingleMessageIterator(messageAndOffset)
-  }
 
-  private def getSingleMessageIterator(messageAndOffset: MessageAndOffset) = {
+  private def getSingleMessageIterator(messageAndOffset: MessageAndOffset) =
     new IteratorTemplate[MessageAndOffset] {
       var messageIterated = false
 
-      override def makeNext(): MessageAndOffset = {
+      override def makeNext(): MessageAndOffset =
         if (!messageIterated) {
           messageIterated = true
           messageAndOffset
         } else
           allDone()
-      }
     }
-  }
 
 }

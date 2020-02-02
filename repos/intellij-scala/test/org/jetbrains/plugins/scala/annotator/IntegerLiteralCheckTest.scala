@@ -15,17 +15,15 @@ import scala.util.Random
 class IntegerLiteralCheckTest extends SimpleTestCase {
   final val Header = ""
 
-  def randomIntValues(num: Int): List[Int] = {
+  def randomIntValues(num: Int): List[Int] =
     List.fill(num)(Random.nextInt)
-  }
 
-  def randomLongValues(num: Int): List[Long] = {
+  def randomLongValues(num: Int): List[Long] =
     Stream
       .continually(Random.nextLong)
       .filter(_.toHexString.length > 8)
       .take(num)
       .toList
-  }
 
   // how should I bound T to Int and Long only?
   def expandIntegerLiteral[T](x: T): List[String] = {

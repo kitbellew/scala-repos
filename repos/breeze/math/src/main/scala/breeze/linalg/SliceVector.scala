@@ -49,42 +49,35 @@ object SliceVector {
   implicit def scalarOf[K, T]: ScalarOf[SliceVector[K, T], T] = ScalarOf.dummy
 
   implicit def canMapKeyValuePairs[K, V, V2: ClassTag]
-      : CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] = {
+      : CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] =
     new CanMapKeyValuePairs[SliceVector[K, V], Int, V, V2, DenseVector[V2]] {
       override def map(
           from: SliceVector[K, V],
-          fn: (Int, V) => V2): DenseVector[V2] = {
+          fn: (Int, V) => V2): DenseVector[V2] =
         DenseVector.tabulate(from.length)(i => fn(i, from(i)))
-      }
 
       override def mapActive(
           from: SliceVector[K, V],
-          fn: (Int, V) => V2): DenseVector[V2] = {
+          fn: (Int, V) => V2): DenseVector[V2] =
         map(from, fn)
-      }
     }
-  }
 
   implicit def canMapValues[K, V, V2: ClassTag]
-      : CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] = {
+      : CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] =
     new CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] {
       override def apply(
           from: SliceVector[K, V],
-          fn: (V) => V2): DenseVector[V2] = {
+          fn: (V) => V2): DenseVector[V2] =
         DenseVector.tabulate(from.length)(i => fn(from(i)))
-      }
 
     }
-  }
 
   implicit def canCreateZerosLike[K, V: ClassTag: Zero]
-      : CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] = {
+      : CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] =
     new CanCreateZerosLike[SliceVector[K, V], DenseVector[V]] {
-      def apply(v1: SliceVector[K, V]): DenseVector[V] = {
+      def apply(v1: SliceVector[K, V]): DenseVector[V] =
         DenseVector.zeros[V](v1.length)
-      }
     }
-  }
 
   implicit def canIterateValues[K, V]: CanTraverseValues[SliceVector[K, V], V] =
     new CanTraverseValues[SliceVector[K, V], V] {
@@ -92,35 +85,31 @@ object SliceVector {
       def isTraversableAgain(from: SliceVector[K, V]): Boolean = true
 
       /** Iterates all key-value pairs from the given collection. */
-      def traverse(from: SliceVector[K, V], fn: ValuesVisitor[V]): Unit = {
+      def traverse(from: SliceVector[K, V], fn: ValuesVisitor[V]): Unit =
         from.valuesIterator foreach {
           fn.visit(_)
         }
-      }
 
     }
 
   implicit def canIterateKeyValuePairs[K, V]
-      : CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] = {
+      : CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] =
     new CanTraverseKeyValuePairs[SliceVector[K, V], Int, V] {
 
       /** Traverses all values from the given collection. */
       override def traverse(
           from: SliceVector[K, V],
-          fn: KeyValuePairsVisitor[Int, V]): Unit = {
+          fn: KeyValuePairsVisitor[Int, V]): Unit =
         from.iterator foreach {
           case (k, v) => fn.visit(k, v)
         }
 
-      }
-
       def isTraversableAgain(from: SliceVector[K, V]): Boolean = true
 
     }
-  }
 
   implicit def canTransformValues[K, V]
-      : CanTransformValues[SliceVector[K, V], V] = {
+      : CanTransformValues[SliceVector[K, V], V] =
     new CanTransformValues[SliceVector[K, V], V] {
       def transform(from: SliceVector[K, V], fn: (V) => V) {
         for (i <- 0 until from.length) {
@@ -132,6 +121,5 @@ object SliceVector {
         transform(from, fn)
       }
     }
-  }
 
 }

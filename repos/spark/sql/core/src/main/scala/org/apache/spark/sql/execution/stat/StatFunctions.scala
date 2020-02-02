@@ -92,9 +92,8 @@ private[sql] object StatFunctions extends Logging {
 
     def merge(
         sum1: Array[QuantileSummaries],
-        sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
+        sum2: Array[QuantileSummaries]): Array[QuantileSummaries] =
       sum1.zip(sum2).map { case (s1, s2) => s1.compress().merge(s2.compress()) }
-    }
     val summaries =
       df.select(columns: _*).rdd.aggregate(emptySummaries)(apply, merge)
 
@@ -223,14 +222,13 @@ private[sql] object StatFunctions extends Logging {
         inserted.count)
     }
 
-    private def shallowCopy: QuantileSummaries = {
+    private def shallowCopy: QuantileSummaries =
       new QuantileSummaries(
         compressThreshold,
         relativeError,
         sampled,
         count,
         headSampled)
-    }
 
     /**
       * Merges two (compressed) summaries together.
@@ -467,9 +465,8 @@ private[sql] object StatFunctions extends Logging {
         "The maximum limit of 1e6 pairs have been collected, which may not be all of " +
           "the pairs. Please try reducing the amount of distinct items in your columns.")
     }
-    def cleanElement(element: Any): String = {
+    def cleanElement(element: Any): String =
       if (element == null) "null" else element.toString
-    }
     // get the distinct values of column 2, so that we can make them the column names
     val distinctCol2: Map[Any, Int] =
       counts.map(e => cleanElement(e.get(1))).distinct.zipWithIndex.toMap
@@ -497,9 +494,8 @@ private[sql] object StatFunctions extends Logging {
       .toSeq
     // Back ticks can't exist in DataFrame column names, therefore drop them. To be able to accept
     // special keywords and `.`, wrap the column names in ``.
-    def cleanColumnName(name: String): String = {
+    def cleanColumnName(name: String): String =
       name.replace("`", "")
-    }
     // In the map, the column names (._1) are not ordered by the index (._2). This was the bug in
     // SPARK-8681. We need to explicitly sort by the column index and assign the column names.
     val headerNames = distinctCol2.toSeq.sortBy(_._2).map { r =>

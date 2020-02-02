@@ -28,8 +28,7 @@ object Test extends App {
       /** Return an iterator over persons older than 20, given
         *  an iterator over persons.
         */
-      def olderThan20(xs: Iterator[Person]): Iterator[String] = {
-
+      def olderThan20(xs: Iterator[Person]): Iterator[String] =
         // The first expression is called a 'generator' and makes
         // 'p' take values from 'xs'. The second expression is
         // called a 'filter' and it is a boolean expression which
@@ -38,7 +37,6 @@ object Test extends App {
         // for each 'p' which satisfies the filters and used to assemble
         // the resulting iterator
         for (p <- xs if p.age > 20) yield p.name
-      }
     }
 
     /** Some functions over lists of numbers which demonstrate
@@ -54,13 +52,11 @@ object Test extends App {
       def isPrime(n: Int) = divisors(n).length == 2
 
       /** Return pairs of numbers whose sum is prime. */
-      def findNums(n: Int): Iterable[(Int, Int)] = {
-
+      def findNums(n: Int): Iterable[(Int, Int)] =
         // a for comprehension using two generators
         for (i <- 1 until n;
              j <- 1 until (i - 1);
              if isPrime(i + j)) yield (i, j)
-      }
 
       /** Return the sum of the elements of 'xs'. */
       def sum(xs: List[Double]): Double =

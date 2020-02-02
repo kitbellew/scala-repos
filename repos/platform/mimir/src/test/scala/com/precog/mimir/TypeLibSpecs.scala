@@ -35,12 +35,11 @@ trait TypeLibSpecs[M[+_]]
   import instructions._
   import library._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "the type functions" should {
     "return correct booleans for isNumber" in {

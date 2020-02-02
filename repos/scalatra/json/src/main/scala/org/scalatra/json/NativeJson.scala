@@ -23,10 +23,9 @@ trait NativeJsonSupport
     }
   }
 
-  protected def readJsonFromBody(bd: String): JValue = {
+  protected def readJsonFromBody(bd: String): JValue =
     if (bd.nonBlank) native.JsonParser.parse(bd, jsonFormats.wantsBigDecimal)
     else JNothing
-  }
 }
 
 trait NativeJsonValueReaderProperty extends JsonValueReaderProperty[Document] {

@@ -113,11 +113,10 @@ abstract class NumericRange[T](
     else copy(locationAfterN(n), end, step)
   )
 
-  def apply(idx: Int): T = {
+  def apply(idx: Int): T =
     if (idx < 0 || idx >= length)
       throw new IndexOutOfBoundsException(idx.toString)
     else locationAfterN(idx)
-  }
 
   import NumericRange.defaultOrdering
 
@@ -184,7 +183,7 @@ abstract class NumericRange[T](
     try containsTyped(x.asInstanceOf[T])
     catch { case _: ClassCastException => false }
 
-  final override def sum[B >: T](implicit num: Numeric[B]): B = {
+  final override def sum[B >: T](implicit num: Numeric[B]): B =
     // arithmetic series formula  can be used for regular addition
     if ((num eq scala.math.Numeric.IntIsIntegral) ||
         (num eq scala.math.Numeric.ShortIsIntegral) ||
@@ -211,7 +210,6 @@ abstract class NumericRange[T](
         acc
       }
     }
-  }
 
   override lazy val hashCode = super.hashCode()
   override def equals(other: Any) = other match {

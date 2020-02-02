@@ -45,9 +45,8 @@ object SecurityHeadersFilter {
     * @return a configured SecurityHeadersFilter.
     */
   def apply(config: SecurityHeadersConfig = SecurityHeadersConfig())
-      : SecurityHeadersFilter = {
+      : SecurityHeadersFilter =
     new SecurityHeadersFilter(config)
-  }
 
   /**
     * Convenience method for creating a filter using play.api.Configuration.  Good for testing.
@@ -55,9 +54,8 @@ object SecurityHeadersFilter {
     * @param config a configuration object that may contain string settings.
     * @return a configured SecurityHeadersFilter.
     */
-  def apply(config: Configuration): SecurityHeadersFilter = {
+  def apply(config: Configuration): SecurityHeadersFilter =
     new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(config))
-  }
 }
 
 /**

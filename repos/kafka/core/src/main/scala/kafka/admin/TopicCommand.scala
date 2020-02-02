@@ -314,7 +314,7 @@ object TopicCommand extends Logging {
     props
   }
 
-  def parseTopicConfigsToBeDeleted(opts: TopicCommandOptions): Seq[String] = {
+  def parseTopicConfigsToBeDeleted(opts: TopicCommandOptions): Seq[String] =
     if (opts.options.has(opts.deleteConfigOpt)) {
       val configsToBeDeleted =
         opts.options.valuesOf(opts.deleteConfigOpt).map(_.trim())
@@ -324,7 +324,6 @@ object TopicCommand extends Logging {
       configsToBeDeleted
     } else
       Seq.empty
-  }
 
   def parseReplicaAssignment(
       replicaAssignmentList: String): Map[Int, List[Int]] = {
@@ -527,7 +526,7 @@ object TopicCommand extends Logging {
     }
   }
 
-  def shortMessageSizeWarning(maxMessageBytes: Int): String = {
+  def shortMessageSizeWarning(maxMessageBytes: Int): String =
     "\n\n" +
       "*****************************************************************************************************\n" +
       "*** WARNING: you are creating a topic where the the max.message.bytes is greater than the consumer ***\n" +
@@ -537,9 +536,8 @@ object TopicCommand extends Logging {
       s"- value set here: $maxMessageBytes\n" +
       s"- Default Consumer fetch.message.max.bytes: ${ConsumerConfig.FetchSize}\n" +
       s"- Default Broker max.message.bytes: ${kafka.server.Defaults.MessageMaxBytes}\n\n"
-  }
 
-  def longMessageSizeWarning(maxMessageBytes: Int): String = {
+  def longMessageSizeWarning(maxMessageBytes: Int): String =
     "\n\n" +
       "****************************************************************************************************\n" +
       "*** WARNING: you are creating a topic where the max.message.bytes is greater than the broker      ***\n" +
@@ -554,5 +552,4 @@ object TopicCommand extends Logging {
       s"- Default Broker replica.fetch.max.bytes: ${kafka.server.Defaults.ReplicaFetchMaxBytes}\n" +
       s"- Default Broker max.message.bytes: ${kafka.server.Defaults.MessageMaxBytes}\n" +
       s"- Default Consumer fetch.message.max.bytes: ${ConsumerConfig.FetchSize}\n\n"
-  }
 }

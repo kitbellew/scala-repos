@@ -89,7 +89,7 @@ object Swagger {
   private[swagger] def collectModels(
       tpe: ScalaType,
       alreadyKnown: Set[Model],
-      known: Set[ScalaType] = Set.empty): Set[Model] = {
+      known: Set[ScalaType] = Set.empty): Set[Model] =
     if (tpe.isMap)
       collectModels(tpe.typeArgs.head, alreadyKnown, tpe.typeArgs.toSet) ++ collectModels(
         tpe.typeArgs.last,
@@ -128,7 +128,6 @@ object Swagger {
         }
       }
     }
-  }
 
   import org.scalatra.util.RicherString._
   def modelToSwagger[T](implicit mf: Manifest[T]): Option[Model] =
@@ -158,7 +157,7 @@ object Swagger {
     //    if (descr.simpleName == "Pet") println("The property is: " + mp)
     prop.name -> mp
   }
-  def modelToSwagger(klass: ScalaType): Option[Model] = {
+  def modelToSwagger(klass: ScalaType): Option[Model] =
     if (Reflector.isPrimitive(klass.erasure) || Reflector.isExcluded(
           klass.erasure,
           excludes.toSeq)) None
@@ -202,11 +201,10 @@ object Swagger {
       //      if (descr.simpleName == "Pet") println("The collected fields:\n" + result)
       result
     }
-  }
 
   private def convertToAllowableValues(
       csvString: String,
-      paramType: String = null): AllowableValues = {
+      paramType: String = null): AllowableValues =
     if (csvString.toLowerCase.startsWith("range[")) {
       val ranges = csvString.substring(6, csvString.length() - 1).split(",")
       buildAllowableRangeValues(ranges, csvString, inclusive = true)
@@ -227,7 +225,6 @@ object Swagger {
         }
       }
     }
-  }
 
   private def buildAllowableRangeValues(
       ranges: Array[String],
@@ -443,9 +440,8 @@ object DataType {
     Set[Class[_]](classOf[Boolean], classOf[java.lang.Boolean])
   private[this] def isBool(klass: Class[_]) = BoolTypes contains klass
 
-  private[swagger] def fromManifest[T](implicit mf: Manifest[T]): DataType = {
+  private[swagger] def fromManifest[T](implicit mf: Manifest[T]): DataType =
     fromScalaType(Reflector.scalaTypeOf[T])
-  }
   private[swagger] def fromClass(klass: Class[_]): DataType =
     fromScalaType(Reflector.scalaTypeOf(klass))
   private[swagger] def fromScalaType(st: ScalaType): DataType = {

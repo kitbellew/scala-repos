@@ -127,7 +127,7 @@ class AppsResource @Inject() (
         AppInfo.Embed.Deployments
       )
 
-      def transitiveApps(groupId: PathId): Response = {
+      def transitiveApps(groupId: PathId): Response =
         result(groupManager.group(groupId)) match {
           case Some(group) =>
             checkAuthorization(ViewGroup, group)
@@ -138,16 +138,14 @@ class AppsResource @Inject() (
           case None =>
             unknownGroup(groupId)
         }
-      }
 
-      def app(appId: PathId): Response = {
+      def app(appId: PathId): Response =
         result(appInfoService.selectApp(appId, allAuthorized, resolvedEmbed)) match {
           case Some(appInfo) =>
             checkAuthorization(ViewApp, appInfo.app)
             ok(jsonObjString("app" -> appInfo))
           case None => unknownApp(appId)
         }
-      }
 
       id match {
         case ListApps(gid) => transitiveApps(gid.toRootPath)
@@ -258,12 +256,11 @@ class AppsResource @Inject() (
     implicit identity =>
       val appId = id.toRootPath
 
-      def markForRestartingOrThrow(opt: Option[AppDefinition]) = {
+      def markForRestartingOrThrow(opt: Option[AppDefinition]) =
         opt
           .map(checkAuthorization(UpdateApp, _))
           .map(_.markedForRestarting)
           .getOrElse(throw UnknownAppException(appId))
-      }
 
       val newVersion = clock.now()
       val restartDeployment = result(

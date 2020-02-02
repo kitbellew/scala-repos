@@ -192,27 +192,24 @@ class JsonExporter(registry: Metrics, timer: Timer)
     }
   }
 
-  private[this] def mkRegex(regexes: Seq[String]): Option[Regex] = {
+  private[this] def mkRegex(regexes: Seq[String]): Option[Regex] =
     if (regexes.isEmpty) {
       None
     } else {
       Some(regexes.mkString("(", ")|(", ")").r)
     }
-  }
 
-  def mkRegex(regexesString: String): Option[Regex] = {
+  def mkRegex(regexesString: String): Option[Regex] =
     regexesString.split(",") match {
       case Array("") => None
       case regexes   => mkRegex(regexes)
     }
-  }
 
-  def filterSample(sample: collection.Map[String, Number])
-      : collection.Map[String, Number] = {
+  def filterSample(
+      sample: collection.Map[String, Number]): collection.Map[String, Number] =
     statsFilterRegex match {
       case Some(regex) => sample.filterKeys(!regex.pattern.matcher(_).matches)
       case None        => sample
     }
-  }
 
 }

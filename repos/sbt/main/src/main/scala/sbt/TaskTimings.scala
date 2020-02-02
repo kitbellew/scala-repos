@@ -13,16 +13,15 @@ private[sbt] final class TaskTimings extends ExecuteProgress[Task] {
 
   type S = Unit
 
-  def initial = { start = System.nanoTime }
+  def initial = start = System.nanoTime
   def registered(
       state: Unit,
       task: Task[_],
       allDeps: Iterable[Task[_]],
-      pendingDeps: Iterable[Task[_]]) = {
+      pendingDeps: Iterable[Task[_]]) =
     pendingDeps foreach { t =>
       if (transformNode(t).isEmpty) anonOwners.put(t, task)
     }
-  }
   def ready(state: Unit, task: Task[_]) = ()
   def workStarting(task: Task[_]) = timings.put(task, System.nanoTime)
   def workFinished[T](task: Task[T], result: Either[Task[T], Result[T]]) = {

@@ -202,7 +202,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   def foreignIsImplClass(sym: Symbol): Boolean =
     sym.isModuleClass && nme.isImplClassName(sym.name)
 
-  def encodeClassType(sym: Symbol): jstpe.Type = {
+  def encodeClassType(sym: Symbol): jstpe.Type =
     if (sym == definitions.ObjectClass) jstpe.AnyType
     else if (isRawJSType(sym.toTypeConstructor)) jstpe.AnyType
     else {
@@ -211,17 +211,13 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
         "encodeClassType() cannot be called with ArrayClass")
       jstpe.ClassType(encodeClassFullName(sym))
     }
-  }
 
-  def encodeClassFullNameIdent(sym: Symbol)(
-      implicit pos: Position): js.Ident = {
+  def encodeClassFullNameIdent(sym: Symbol)(implicit pos: Position): js.Ident =
     js.Ident(encodeClassFullName(sym), Some(sym.fullName))
-  }
 
-  def encodeClassFullName(sym: Symbol): String = {
+  def encodeClassFullName(sym: Symbol): String =
     ir.Definitions.encodeClassName(
       sym.fullName + (if (needsModuleClassSuffix(sym)) "$" else ""))
-  }
 
   def needsModuleClassSuffix(sym: Symbol): Boolean =
     sym.isModuleClass && !foreignIsImplClass(sym)

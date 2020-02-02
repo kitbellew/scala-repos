@@ -21,7 +21,7 @@ import scala.util.matching.Regex
 class SbtPluginLayoutFactory extends RepositoryLayoutFactory {
   def newInstance(
       session: RepositorySystemSession,
-      repository: RemoteRepository): RepositoryLayout = {
+      repository: RemoteRepository): RepositoryLayout =
     repository.getContentType match {
       case SbtRepositoryLayout.LAYOUT_NAME =>
         SbtRepositoryLayout
@@ -30,7 +30,6 @@ class SbtPluginLayoutFactory extends RepositoryLayoutFactory {
           repository,
           "Not an sbt-plugin repository")
     }
-  }
   def getPriority: Float = 100.0f
 }
 

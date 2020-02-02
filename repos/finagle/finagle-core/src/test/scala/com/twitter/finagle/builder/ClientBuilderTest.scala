@@ -65,7 +65,7 @@ class ClientBuilderTest
   }
 
   def verifyProtocolRegistry(name: String, expected: String)(
-      build: => Service[String, String]) = {
+      build: => Service[String, String]) =
     test(name + " registers protocol library") {
       val simple = new SimpleRegistry()
       GlobalRegistry.withRegistry(simple) {
@@ -81,7 +81,6 @@ class ClientBuilderTest
         assert(specified > 0, "did not see expected protocol registry keys")
       }
     }
-  }
 
   verifyProtocolRegistry("#codec(Codec)", expected = "fancy") {
     val ctx = new ClientBuilderHelper {}

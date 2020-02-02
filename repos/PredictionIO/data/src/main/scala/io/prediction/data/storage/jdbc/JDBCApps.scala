@@ -49,7 +49,7 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
   }
 
   def get(id: Int): Option[App] = DB readOnly { implicit session =>
-    sql"SELECT id, name, description FROM $tableName WHERE id = ${id}"
+    sql"SELECT id, name, description FROM $tableName WHERE id = $id"
       .map(rs =>
         App(
           id = rs.int("id"),
@@ -60,7 +60,7 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
   }
 
   def getByName(name: String): Option[App] = DB readOnly { implicit session =>
-    sql"SELECT id, name, description FROM $tableName WHERE name = ${name}"
+    sql"SELECT id, name, description FROM $tableName WHERE name = $name"
       .map(rs =>
         App(
           id = rs.int("id"),

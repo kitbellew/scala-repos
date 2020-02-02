@@ -73,7 +73,7 @@ private[server] class ForwardedHeaderHandler(
       configuration.forwardedHeaders(headers).reverseIterator
 
     @tailrec
-    def scan(prev: ConnectionInfo): ConnectionInfo = {
+    def scan(prev: ConnectionInfo): ConnectionInfo =
       // Check if there's a forwarded header for us to scan.
       if (headerEntries.hasNext) {
         // There is a forwarded header from 'prev', so lets check if 'prev' is trusted.
@@ -100,7 +100,6 @@ private[server] class ForwardedHeaderHandler(
         // No more headers to process, so just use its address.
         prev
       }
-    }
 
     // Start scanning through connections starting at the rawConnection that
     // was made the the Play server.
@@ -140,11 +139,10 @@ private[server] object ForwardedHeaderHandler {
       * Removes surrounding quotes if present, otherwise returns original string.
       * Not RFC compliant. To be compliant we need proper header field parsing.
       */
-    private def unquote(s: String): String = {
+    private def unquote(s: String): String =
       if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(s.length - 1) == '"') {
         s.substring(1, s.length - 1)
       } else s
-    }
 
     /**
       * Parse any Forward or X-Forwarded-* headers into a sequence of ForwardedEntry
@@ -158,19 +156,16 @@ private[server] object ForwardedHeaderHandler {
             fhs <- headers.getAll("Forwarded")
             fh <- fhs.split(",\\s*")
           } yield fh)
-            .map(
-              _.split(";")
-                .flatMap(s => {
-                  val splitted = s.split("=", 2)
-                  if (splitted.length < 2) Seq.empty
-                  else {
-                    // Remove surrounding quotes
-                    val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
-                    val value = unquote(splitted(1))
-                    Seq(name -> value)
-                  }
-                })
-                .toMap)
+            .map(_.split(";").flatMap { s =>
+              val splitted = s.split("=", 2)
+              if (splitted.length < 2) Seq.empty
+              else {
+                // Remove surrounding quotes
+                val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
+                val value = unquote(splitted(1))
+                Seq(name -> value)
+              }
+            }.toMap)
             .map { paramMap: Map[String, String] =>
               ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
             }
@@ -199,7 +194,7 @@ private[server] object ForwardedHeaderHandler {
       * parsing fails or because the connection info doesn't include an IP address, this
       * method will return `Left` with an error message.
       */
-    def parseEntry(entry: ForwardedEntry): Either[String, ConnectionInfo] = {
+    def parseEntry(entry: ForwardedEntry): Either[String, ConnectionInfo] =
       entry.addressString match {
         case None =>
           // We had a forwarding header, but it was missing the address entry for some reason.
@@ -216,15 +211,13 @@ private[server] object ForwardedHeaderHandler {
               Left(s"Parse error: $errorOrNonIp")
           }
       }
-    }
 
     /**
       * Check if a connection is considered to be a trusted proxy, i.e. a proxy whose
       * forwarding headers we will process.
       */
-    def isTrustedProxy(connection: ConnectionInfo): Boolean = {
+    def isTrustedProxy(connection: ConnectionInfo): Boolean =
       trustedProxies.exists(_.isInRange(connection.address))
-    }
   }
 
   object ForwardedHeaderHandlerConfig {

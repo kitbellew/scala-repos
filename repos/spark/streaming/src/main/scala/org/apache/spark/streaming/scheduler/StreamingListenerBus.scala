@@ -42,17 +42,16 @@ private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
     sparkListenerBus.post(new WrappedStreamingListenerEvent(event))
   }
 
-  override def onOtherEvent(event: SparkListenerEvent): Unit = {
+  override def onOtherEvent(event: SparkListenerEvent): Unit =
     event match {
       case WrappedStreamingListenerEvent(e) =>
         postToAll(e)
       case _ =>
     }
-  }
 
   protected override def doPostEvent(
       listener: StreamingListener,
-      event: StreamingListenerEvent): Unit = {
+      event: StreamingListenerEvent): Unit =
     event match {
       case receiverStarted: StreamingListenerReceiverStarted =>
         listener.onReceiverStarted(receiverStarted)
@@ -72,23 +71,20 @@ private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
         listener.onOutputOperationCompleted(outputOperationCompleted)
       case _ =>
     }
-  }
 
   /**
     * Register this one with the Spark listener bus so that it can receive Streaming events and
     * forward them to StreamingListeners.
     */
-  def start(): Unit = {
+  def start(): Unit =
     sparkListenerBus.addListener(this) // for getting callbacks on spark events
-  }
 
   /**
     * Unregister this one with the Spark listener bus and all StreamingListeners won't receive any
     * events after that.
     */
-  def stop(): Unit = {
+  def stop(): Unit =
     sparkListenerBus.removeListener(this)
-  }
 
   /**
     * Wrapper for StreamingListenerEvent as SparkListenerEvent so that it can be posted to Spark

@@ -92,7 +92,7 @@ object GradientTester extends SerializableLogging {
       }
       if (tried % 100 == 0 || tried == sz) {
         logger.info(
-          f"Checked $tried of ${sz} (out of dimension ${x.size}). ${ok * 100.0 / tried}%.4g%% ok.")
+          f"Checked $tried of $sz (out of dimension ${x.size}). ${ok * 100.0 / tried}%.4g%% ok.")
       }
     }
     differences

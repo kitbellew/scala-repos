@@ -141,18 +141,16 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
   lazy val paths = buildBoundedPaths(3)
   lazy val jpaths = buildBoundedJPaths(3)
 
-  def buildBoundedPaths(depth: Int): List[String] = {
+  def buildBoundedPaths(depth: Int): List[String] =
     buildChildPaths(List.empty, depth).map("/" + _.reverse.mkString("/"))
-  }
 
-  def buildBoundedJPaths(depth: Int): List[JPath] = {
+  def buildBoundedJPaths(depth: Int): List[JPath] =
     buildChildPaths(List.empty, depth)
       .map(_.reverse.mkString("."))
       .filter(_.length > 0)
       .map(JPath(_))
-  }
 
-  def buildChildPaths(parent: List[String], depth: Int): List[List[String]] = {
+  def buildChildPaths(parent: List[String], depth: Int): List[List[String]] =
     if (depth == 0) {
       List(parent)
     } else {
@@ -165,7 +163,6 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
           .sample
           .get
     }
-  }
 
   def genStablePaths: Gen[Seq[String]] = lzy(paths)
   def genStableJPaths: Gen[Seq[JPath]] = lzy(jpaths)

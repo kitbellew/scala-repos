@@ -134,20 +134,18 @@ object ScalaCsrf extends PlaySpecification {
       object PostAction extends ActionBuilder[Request] {
         def invokeBlock[A](
             request: Request[A],
-            block: (Request[A]) => Future[Result]) = {
+            block: (Request[A]) => Future[Result]) =
           // authentication code here
           block(request)
-        }
         override def composeAction[A](action: Action[A]) = checkToken(action)
       }
 
       object GetAction extends ActionBuilder[Request] {
         def invokeBlock[A](
             request: Request[A],
-            block: (Request[A]) => Future[Result]) = {
+            block: (Request[A]) => Future[Result]) =
           // authentication code here
           block(request)
-        }
         override def composeAction[A](action: Action[A]) = addToken(action)
       }
       //#csrf-action-builder

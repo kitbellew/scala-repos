@@ -23,13 +23,12 @@ trait ScalaSeparatorProvider {
   val DefaultGroup = 0
   val MultilineLevel = 10
 
-  def isSeparatorNeeded(element: PsiElement): Boolean = {
+  def isSeparatorNeeded(element: PsiElement): Boolean =
     isKnown(element) && doIfSeparatorNeeded(element)
-  }
 
   def isKnown(element: PsiElement) = groupOf(element).isDefined
 
-  def doIfSeparatorNeeded(element: PsiElement) = {
+  def doIfSeparatorNeeded(element: PsiElement) =
     if (isSeparationContainer(element.getParent) && hasElementAbove(element)) {
       val g = getGroup(element)
       if (g.get >= MultilineLevel) {
@@ -38,18 +37,15 @@ trait ScalaSeparatorProvider {
         g != getGroupAbove(element) { _ => true }
       }
     } else false
-  }
 
-  def hasElementAbove(element: PsiElement) = {
+  def hasElementAbove(element: PsiElement) =
     getGroupAbove(element) { !_.isInstanceOf[ScImportStmt] }.isDefined
-  }
 
-  def getGroup(element: PsiElement) = {
+  def getGroup(element: PsiElement) =
     for (g <- groupOf(element))
       yield if (isMultiline(element)) MultilineLevel + g else g
-  }
 
-  def groupOf(element: PsiElement): Option[Int] = {
+  def groupOf(element: PsiElement): Option[Int] =
     element match {
       case _: ScValue | _: ScVariable | _: ScTypeAlias | _: ScFunction |
           _: ScImportStmt | _: ScPackageContainer | _: ScClass | _: ScObject |
@@ -59,12 +55,10 @@ trait ScalaSeparatorProvider {
         Some(DefaultGroup)
       case _ => None
     }
-  }
 
   //TODO remove ".trim" when SCL-1746 will be fixed
-  def isMultiline(element: PsiElement) = {
+  def isMultiline(element: PsiElement) =
     element.getText.trim.contains('\n') // trim to bypass SCL-1746
-  }
 
   def isSeparationContainer(element: PsiElement): Boolean = {
     var e = element
@@ -77,13 +71,12 @@ trait ScalaSeparatorProvider {
     true
   }
 
-  def isSeparationBlocker(element: PsiElement) = {
+  def isSeparationBlocker(element: PsiElement) =
     element match {
       case _: ScBlock | _: ScIfStmt                               => true
       case it: ScNewTemplateDefinition if it.extendsBlock != null => true
       case _                                                      => false
     }
-  }
 
   def getGroupAbove(element: PsiElement)(
       filter: PsiElement => Boolean): Option[Int] = {

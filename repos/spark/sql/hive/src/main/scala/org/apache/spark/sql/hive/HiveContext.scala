@@ -70,9 +70,8 @@ private[hive] case class CurrentDatabase(ctx: HiveContext)
   override def dataType: DataType = StringType
   override def foldable: Boolean = true
   override def nullable: Boolean = false
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     UTF8String.fromString(ctx.metadataHive.currentDatabase)
-  }
 }
 
 /**
@@ -112,7 +111,7 @@ class HiveContext private[hive] (
     * temporary tables and SessionState, but sharing the same CacheManager, IsolatedClientLoader
     * and Hive client (both of execution and metadata) with existing HiveContext.
     */
-  override def newSession(): HiveContext = {
+  override def newSession(): HiveContext =
     new HiveContext(
       sc = sc,
       cacheManager = cacheManager,
@@ -120,7 +119,6 @@ class HiveContext private[hive] (
       execHive = executionHive.newSession(),
       metaHive = metadataHive.newSession(),
       isRootContext = false)
-  }
 
   @transient
   protected[sql] override lazy val sessionState = new HiveSessionState(self)
@@ -238,9 +236,8 @@ class HiveContext private[hive] (
     * Overrides default Hive configurations to avoid breaking changes to Spark SQL users.
     *  - allow SQL11 keywords to be used as identifiers
     */
-  private[sql] def defaultOverrides() = {
+  private[sql] def defaultOverrides() =
     setConf(ConfVars.HIVE_SUPPORT_SQL11_RESERVED_KEYWORDS.varname, "false")
-  }
 
   defaultOverrides()
 
@@ -271,7 +268,7 @@ class HiveContext private[hive] (
     val isolatedLoader = if (hiveMetastoreJars == "builtin") {
       if (hiveExecutionVersion != hiveMetastoreVersion) {
         throw new IllegalArgumentException("Builtin jars can only be used when hive execution version == hive metastore version. " +
-          s"Execution: ${hiveExecutionVersion} != Metastore: ${hiveMetastoreVersion}. " +
+          s"Execution: $hiveExecutionVersion != Metastore: $hiveMetastoreVersion. " +
           "Specify a vaild path to the correct hive jars using $HIVE_METASTORE_JARS " +
           s"or change ${HIVE_METASTORE_VERSION.key} to $hiveExecutionVersion.")
       }
@@ -352,11 +349,10 @@ class HiveContext private[hive] (
     isolatedLoader.createClient()
   }
 
-  protected[sql] override def parseSql(sql: String): LogicalPlan = {
+  protected[sql] override def parseSql(sql: String): LogicalPlan =
     executionHive.withHiveState {
       super.parseSql(substitutor.substitute(hiveconf, sql))
     }
-  }
 
   override protected[sql] def executePlan(
       plan: LogicalPlan): this.QueryExecution =
@@ -477,14 +473,11 @@ class HiveContext private[hive] (
     hiveconf.set(key, value)
   }
 
-  override private[sql] def setConf[T](
-      entry: SQLConfEntry[T],
-      value: T): Unit = {
+  override private[sql] def setConf[T](entry: SQLConfEntry[T], value: T): Unit =
     setConf(entry.key, entry.stringConverter(value))
-  }
 
   /** Overridden by child classes that need to set configuration before the client init. */
-  protected def configure(): Map[String, String] = {
+  protected def configure(): Map[String, String] =
     // Hive 0.14.0 introduces timeout operations in HiveConf, and changes default values of a bunch
     // of time `ConfVar`s by adding time suffixes (`s`, `ms`, and `d` etc.).  This breaks backwards-
     // compatibility when users are trying to connecting to a Hive metastore of lower version,
@@ -536,7 +529,6 @@ class HiveContext private[hive] (
       case (confVar, unit) =>
         confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
     }.toMap
-  }
 
   /**
     * SQLConf and HiveConf contracts:
@@ -577,9 +569,8 @@ class HiveContext private[hive] (
     * This is currently only used for DDLs and will be removed as soon as Spark can parse
     * all supported Hive DDLs itself.
     */
-  protected[sql] override def runNativeSql(sqlText: String): Seq[Row] = {
+  protected[sql] override def runNativeSql(sqlText: String): Seq[Row] =
     runSqlHive(sqlText).map { s => Row(s) }
-  }
 
   /** Extends QueryExecution with hive specific features. */
   protected[sql] class QueryExecution(logicalPlan: LogicalPlan)
@@ -661,10 +652,10 @@ private[hive] object HiveContext {
       | Location of the jars that should be used to instantiate the HiveMetastoreClient.
       | This property can be one of three options: "
       | 1. "builtin"
-      |   Use Hive ${hiveExecutionVersion}, which is bundled with the Spark assembly jar when
+      |   Use Hive $hiveExecutionVersion, which is bundled with the Spark assembly jar when
       |   <code>-Phive</code> is enabled. When this option is chosen,
       |   <code>spark.sql.hive.metastore.version</code> must be either
-      |   <code>${hiveExecutionVersion}</code> or not defined.
+      |   <code>$hiveExecutionVersion</code> or not defined.
       | 2. "maven"
       |   Use Hive jars of specified version downloaded from Maven repositories.
       | 3. A classpath in the standard format for both Hive and Hadoop.
@@ -749,7 +740,7 @@ private[hive] object HiveContext {
       localMetastore.toURI.toString)
     propMap.put(
       HiveConf.ConfVars.METASTORECONNECTURLKEY.varname,
-      s"jdbc:derby:${withInMemoryMode};databaseName=${localMetastore.getAbsolutePath};create=true")
+      s"jdbc:derby:$withInMemoryMode;databaseName=${localMetastore.getAbsolutePath};create=true")
     propMap.put(
       "datanucleus.rdbms.datastoreAdapterClassName",
       "org.datanucleus.store.rdbms.adapter.DerbyAdapter")

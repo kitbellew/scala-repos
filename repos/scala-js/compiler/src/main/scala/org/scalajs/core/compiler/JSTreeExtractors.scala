@@ -30,11 +30,10 @@ object JSTreeExtractors {
       *  Example (Scala): method(("name1", x), (a, y), z)
       */
     object LitNamedExtractor {
-      def extractFrom(exprs: List[Tree]): List[(StringLiteral, Tree)] = {
+      def extractFrom(exprs: List[Tree]): List[(StringLiteral, Tree)] =
         // Note that with 'failIfNonLit = false'
         // genNameLitExtract will never return None
         genNamedLitExtract(exprs, Nil, false).getOrElse(Nil)
-      }
 
       @tailrec
       private[jse] final def genNamedLitExtract(
@@ -60,9 +59,8 @@ object JSTreeExtractors {
       *  Example (Scala): method(("name1", x), ("name2", y))
       */
     object LitNamed {
-      def unapply(exprs: List[Tree]): Option[List[(StringLiteral, Tree)]] = {
+      def unapply(exprs: List[Tree]): Option[List[(StringLiteral, Tree)]] =
         LitNamedExtractor.genNamedLitExtract(exprs, Nil, true)
-      }
     }
 
     /**

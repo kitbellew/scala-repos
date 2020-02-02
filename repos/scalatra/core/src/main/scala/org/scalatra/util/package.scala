@@ -10,7 +10,7 @@ package object util {
     * @param closeable the closeable resource
     * @param f the block
     */
-  def using[A, B <: { def close(): Unit }](closeable: B)(f: B => A): A = {
+  def using[A, B <: { def close(): Unit }](closeable: B)(f: B => A): A =
     try {
       f(closeable)
     } finally {
@@ -18,6 +18,5 @@ package object util {
         closeable.close()
       }
     }
-  }
 
 }

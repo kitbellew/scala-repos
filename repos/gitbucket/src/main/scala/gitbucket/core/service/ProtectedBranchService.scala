@@ -128,7 +128,7 @@ object ProtectedBranchService {
     def getStopReason(
         isAllowNonFastForwards: Boolean,
         command: ReceiveCommand,
-        pusher: String)(implicit session: Session): Option[String] = {
+        pusher: String)(implicit session: Session): Option[String] =
       if (enabled) {
         command.getType() match {
           case ReceiveCommand.Type.UPDATE |
@@ -153,7 +153,6 @@ object ProtectedBranchService {
       } else {
         None
       }
-    }
     def unSuccessedContexts(sha1: String)(
         implicit session: Session): Set[String] =
       if (contexts.isEmpty) {

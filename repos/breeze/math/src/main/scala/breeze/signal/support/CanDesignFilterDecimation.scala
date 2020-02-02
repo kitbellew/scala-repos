@@ -30,15 +30,14 @@ object CanDesignFilterDecimation {
     *
     */
   implicit def decimationFilterDouble
-      : CanDesignFilterDecimation[FIRKernel1D[Double]] = {
+      : CanDesignFilterDecimation[FIRKernel1D[Double]] =
     new CanDesignFilterDecimation[FIRKernel1D[Double]] {
       def apply(
           factor: Int,
           multiplier: Double,
           optDesignMethod: OptDesignMethod,
           optWindow: OptWindowFunction,
-          optFilterOrder: OptFilterTaps): FIRKernel1D[Double] = {
-
+          optFilterOrder: OptFilterTaps): FIRKernel1D[Double] =
         optDesignMethod match {
           case OptDesignMethod.Firwin => {
             import OptFilterTaps._
@@ -60,15 +59,13 @@ object CanDesignFilterDecimation {
             throw new IllegalArgumentException(
               "Design method " + meth + "is not supported yet!")
         }
-      }
     }
-  }
 
   /** Use via implicit delegate syntax firwin(xxxx)
     *
     */
   implicit def decimationFilterLong
-      : CanDesignFilterDecimation[FIRKernel1D[Long]] = {
+      : CanDesignFilterDecimation[FIRKernel1D[Long]] =
     new CanDesignFilterDecimation[FIRKernel1D[Long]] {
       def apply(
           factor: Int,
@@ -94,6 +91,5 @@ object CanDesignFilterDecimation {
 
       }
     }
-  }
 
 }

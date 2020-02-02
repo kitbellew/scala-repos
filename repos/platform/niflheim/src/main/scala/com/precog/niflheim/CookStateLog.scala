@@ -85,7 +85,7 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
       logger.error("Error reading TX log", e)
       throw e
     }
-    def onRecord(r: LogRecord) = {
+    def onRecord(r: LogRecord) =
       r.`type` match {
         case LogRecordType.END_OF_LOG =>
           logger.debug("TXLog Replay complete in " + baseDir.getCanonicalPath)
@@ -104,7 +104,6 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
         case other =>
           logger.warn("Unknown LogRecord type: " + other)
       }
-    }
   })
 
   currentBlockId0 += 1

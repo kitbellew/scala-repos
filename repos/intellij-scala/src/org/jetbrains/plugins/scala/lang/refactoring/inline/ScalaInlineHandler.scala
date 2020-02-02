@@ -238,7 +238,7 @@ class ScalaInlineHandler extends InlineHandler {
       } else settings
     }
 
-    def isSimpleTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean = {
+    def isSimpleTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean =
       typeAlias.aliasedTypeElement.depthFirst.forall {
         case t: ScTypeElement =>
           t.calcType match {
@@ -250,7 +250,6 @@ class ScalaInlineHandler extends InlineHandler {
           }
         case _ => true
       }
-    }
 
     def isParametrizedTypeAlias(typeAlias: ScTypeAliasDefinition): Boolean =
       !typeAlias.typeParameters.isEmpty
@@ -324,7 +323,7 @@ class ScalaInlineHandler extends InlineHandler {
     }
   }
 
-  private def usedInSameClassOnly(named: ScNamedElement): Boolean = {
+  private def usedInSameClassOnly(named: ScNamedElement): Boolean =
     ScalaPsiUtil.nameContext(named) match {
       case member: ScMember =>
         ReferencesSearch
@@ -339,5 +338,4 @@ class ScalaInlineHandler extends InlineHandler {
           }
       case _ => true
     }
-  }
 }

@@ -105,13 +105,12 @@ private[clustering] trait LDAParams
   def getDocConcentration: Array[Double] = $(docConcentration)
 
   /** Get docConcentration used by spark.mllib LDA */
-  protected def getOldDocConcentration: Vector = {
+  protected def getOldDocConcentration: Vector =
     if (isSet(docConcentration)) {
       Vectors.dense(getDocConcentration)
     } else {
       Vectors.dense(-1.0)
     }
-  }
 
   /**
     * Concentration parameter (commonly named "beta" or "eta") for the prior placed on topics'
@@ -149,13 +148,12 @@ private[clustering] trait LDAParams
   def getTopicConcentration: Double = $(topicConcentration)
 
   /** Get topicConcentration used by spark.mllib LDA */
-  protected def getOldTopicConcentration: Double = {
+  protected def getOldTopicConcentration: Double =
     if (isSet(topicConcentration)) {
       getTopicConcentration
     } else {
       -1.0
     }
-  }
 
   /** Supported values for Param [[optimizer]]. */
   @Since("1.6.0")
@@ -413,7 +411,7 @@ sealed abstract class LDAModel private[ml] (
     *          This implementation may be changed in the future.
     */
   @Since("1.6.0")
-  override def transform(dataset: DataFrame): DataFrame = {
+  override def transform(dataset: DataFrame): DataFrame =
     if ($(topicDistributionCol).nonEmpty) {
       val t = udf(
         oldLocalModel.getTopicDistributionMethod(sqlContext.sparkContext))
@@ -424,12 +422,10 @@ sealed abstract class LDAModel private[ml] (
           " such as topicDistributionCol to produce results.")
       dataset
     }
-  }
 
   @Since("1.6.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   /**
     * Value for [[docConcentration]] estimated from data.
@@ -881,9 +877,8 @@ class LDA @Since("1.6.0") (@Since("1.6.0") override val uid: String)
   }
 
   @Since("1.6.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 }
 
 private[clustering] object LDA extends DefaultParamsReadable[LDA] {
@@ -891,7 +886,7 @@ private[clustering] object LDA extends DefaultParamsReadable[LDA] {
   /** Get dataset for spark.mllib LDA */
   def getOldDataset(
       dataset: DataFrame,
-      featuresCol: String): RDD[(Long, Vector)] = {
+      featuresCol: String): RDD[(Long, Vector)] =
     dataset
       .withColumn("docId", monotonicallyIncreasingId())
       .select("docId", featuresCol)
@@ -900,7 +895,6 @@ private[clustering] object LDA extends DefaultParamsReadable[LDA] {
         case Row(docId: Long, features: Vector) =>
           (docId, features)
       }
-  }
 
   @Since("1.6.0")
   override def load(path: String): LDA = super.load(path)

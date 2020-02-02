@@ -16,11 +16,9 @@ class HoconSingleModuleIncludeResolutionTest
 
   protected def rootPath = baseRootPath + "includes/singlemodule"
 
-  def testIncludesFromToplevel(): Unit = {
+  def testIncludesFromToplevel(): Unit =
     checkFile("including.conf")
-  }
 
-  def testIncludesFromWithinPackage(): Unit = {
+  def testIncludesFromWithinPackage(): Unit =
     checkFile("pkg/including.conf")
-  }
 }

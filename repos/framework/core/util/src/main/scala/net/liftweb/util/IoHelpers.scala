@@ -30,7 +30,7 @@ trait IoHelpers {
     * Execute the specified OS command and return the output of that command
     * in a Full Box if the command succeeds, or a Failure if an error occurs.
     */
-  def exec(cmds: String*): Box[String] = {
+  def exec(cmds: String*): Box[String] =
     try {
       class ReadItAll(in: InputStream, done: String => Unit) extends Runnable {
         def run {
@@ -61,7 +61,6 @@ trait IoHelpers {
     } catch {
       case e: Throwable => Failure(e.getMessage, Full(e), Empty)
     }
-  }
 
   /**
     * Read all data to the end of the specified Reader and concatenate
@@ -112,13 +111,12 @@ trait IoHelpers {
   /**
     * Executes by-name function f and then closes the Cloaseables parameters
     */
-  def doClose[T](is: java.io.Closeable*)(f: => T): T = {
+  def doClose[T](is: java.io.Closeable*)(f: => T): T =
     try {
       f
     } finally {
       is.foreach(stream => tryo { stream.close })
     }
-  }
 }
 
 /**

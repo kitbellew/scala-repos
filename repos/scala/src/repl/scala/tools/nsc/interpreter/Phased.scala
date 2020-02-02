@@ -23,15 +23,14 @@ trait Phased {
     case NoPhaseName => false
     case name        => active = name; true
   }
-  def setMulti(phases: Seq[PhaseName]): Boolean = {
+  def setMulti(phases: Seq[PhaseName]): Boolean =
     if (phases contains NoPhaseName) false
     else {
       multi = phases
       true
     }
-  }
 
-  private def parsePhaseChange(str: String): Option[Int] = {
+  private def parsePhaseChange(str: String): Option[Int] =
     if (str == "") Some(0)
     else if (str startsWith ".prev") parsePhaseChange(str drop 5) map (_ - 1)
     else if (str startsWith ".next") parsePhaseChange(str drop 5) map (_ + 1)
@@ -44,12 +43,11 @@ trait Phased {
         case _ =>
           None
       }
-  }
 
   /** Takes a string like 4, typer+2, typer.next, etc.
     *  and turns it into a PhaseName instance.
     */
-  private def parseInternal(str: String): PhaseName = {
+  private def parseInternal(str: String): PhaseName =
     if (str == "") NoPhaseName
     else if (str forall (_.isDigit)) PhaseName(str.toInt)
     else {
@@ -60,7 +58,6 @@ trait Phased {
       if (start.isEmpty || change.isEmpty) NoPhaseName
       else PhaseName(start.id + change.get)
     }
-  }
   def parse(str: String): PhaseName =
     try parseInternal(str)
     catch { case _: Exception => NoPhaseName }

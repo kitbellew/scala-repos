@@ -36,7 +36,7 @@ class ScalaMethodImplementor extends MethodImplementor {
 
   def createImplementationPrototypes(
       inClass: PsiClass,
-      method: PsiMethod): Array[PsiMethod] = {
+      method: PsiMethod): Array[PsiMethod] =
     (for {
       td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
       member <- ScalaOIUtil.getMembersToImplement(td).collect {
@@ -58,7 +58,6 @@ class ScalaMethodImplementor extends MethodImplementor {
       prototypeToBaseMethod += (prototype -> method)
       prototype
     }).toArray
-  }
 
   def createGenerationInfo(
       method: PsiMethod,

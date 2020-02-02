@@ -35,7 +35,7 @@ package object metadata {
     implicit object monoid extends Monoid[ColumnMetadata] {
       val zero = Empty
 
-      def append(m1: ColumnMetadata, m2: => ColumnMetadata): ColumnMetadata = {
+      def append(m1: ColumnMetadata, m2: => ColumnMetadata): ColumnMetadata =
         m1.foldLeft(m2) {
           case (acc, (descriptor, mmap)) =>
             val currentMmap: MetadataMap =
@@ -50,7 +50,6 @@ package object metadata {
 
             acc + (descriptor -> newMmap)
         }
-      }
     }
   }
 }

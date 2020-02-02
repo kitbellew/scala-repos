@@ -21,9 +21,8 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup {
 
   private val nanoBase = System.nanoTime()
 
-  override def cached(name: String): Option[Resolved] = {
+  override def cached(name: String): Option[Resolved] =
     cache.get().get(name)
-  }
 
   protected def clock(): Long = {
     val now = System.nanoTime()
@@ -51,12 +50,11 @@ object SimpleDnsCache {
       queue: immutable.SortedSet[ExpiryEntry],
       cache: immutable.Map[String, CacheEntry],
       clock: () ⇒ Long) {
-    def get(name: String): Option[Resolved] = {
+    def get(name: String): Option[Resolved] =
       for {
         e ← cache.get(name)
         if e.isValid(clock())
       } yield e.answer
-    }
 
     def put(answer: Resolved, ttlMillis: Long): Cache = {
       val until = clock() + ttlMillis
@@ -93,8 +91,7 @@ object SimpleDnsCache {
   }
 
   private object ExpiryEntryOrdering extends Ordering[ExpiryEntry] {
-    override def compare(x: ExpiryEntry, y: ExpiryEntry): Int = {
+    override def compare(x: ExpiryEntry, y: ExpiryEntry): Int =
       x.until.compareTo(y.until)
-    }
   }
 }

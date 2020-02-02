@@ -288,14 +288,13 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
           finally e = lookupNextEntry(e)
       }
 
-    def lookupUnshadowedEntries(name: Name): Iterator[ScopeEntry] = {
+    def lookupUnshadowedEntries(name: Name): Iterator[ScopeEntry] =
       lookupEntry(name) match {
         case null => Iterator.empty
         case e =>
           lookupAllEntries(name) filter (e1 =>
             (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
       }
-    }
 
     /** lookup a symbol entry matching given name.
       *  @note from Martin: I believe this is a hotspot or will be one

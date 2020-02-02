@@ -65,9 +65,8 @@ object SQLConf {
     def defaultValueString: String =
       defaultValue.map(stringConverter).getOrElse("<undefined>")
 
-    override def toString: String = {
+    override def toString: String =
       s"SQLConfEntry(key = $key, defaultValue=$defaultValueString, doc=$doc, isPublic = $isPublic)"
-    }
   }
 
   object SQLConfEntry {
@@ -241,7 +240,7 @@ object SQLConf {
         valueConverter: String => T,
         defaultValue: Option[Seq[T]] = None,
         doc: String = "",
-        isPublic: Boolean = true): SQLConfEntry[Seq[T]] = {
+        isPublic: Boolean = true): SQLConfEntry[Seq[T]] =
       SQLConfEntry(
         key,
         defaultValue,
@@ -249,15 +248,13 @@ object SQLConf {
         _.mkString(","),
         doc,
         isPublic)
-    }
 
     def stringSeqConf(
         key: String,
         defaultValue: Option[Seq[String]] = None,
         doc: String = "",
-        isPublic: Boolean = true): SQLConfEntry[Seq[String]] = {
+        isPublic: Boolean = true): SQLConfEntry[Seq[String]] =
       seqConf(key, s => s, defaultValue, doc, isPublic)
-    }
   }
 
   import SQLConfEntry._
@@ -822,14 +819,13 @@ class SQLConf
 
   /** Return the value of Spark SQL configuration property for the given key. */
   @throws[NoSuchElementException]("if key is not set")
-  def getConfString(key: String): String = {
+  def getConfString(key: String): String =
     Option(settings.get(key))
       .orElse {
         // Try to use the default value
         Option(sqlConfEntries.get(key)).map(_.defaultValueString)
       }
       .getOrElse(throw new NoSuchElementException(key))
-  }
 
   /**
     * Return the value of Spark SQL configuration property for the given key. If the key is not set
@@ -895,15 +891,12 @@ class SQLConf
     settings.put(key, value)
   }
 
-  def unsetConf(key: String): Unit = {
+  def unsetConf(key: String): Unit =
     settings.remove(key)
-  }
 
-  def unsetConf(entry: SQLConfEntry[_]): Unit = {
+  def unsetConf(entry: SQLConfEntry[_]): Unit =
     settings.remove(entry.key)
-  }
 
-  def clear(): Unit = {
+  def clear(): Unit =
     settings.clear()
-  }
 }

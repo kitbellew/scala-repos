@@ -48,7 +48,7 @@ object ScalaWrapManager {
     def wrapBinary(
         elementMatch: PsiElement => Boolean,
         elementOperation: PsiElement => PsiElement,
-        assignments: Boolean): Wrap = {
+        assignments: Boolean): Wrap =
       psi.getParent match {
         case parent: PsiElement if elementMatch(parent) =>
           import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils.priority
@@ -65,7 +65,6 @@ object ScalaWrapManager {
           } else Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
         case _ => Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
       }
-    }
 
     psi match {
       case psi: ScInfixExpr =>
@@ -155,7 +154,7 @@ object ScalaWrapManager {
         elementMatch: PsiElement => Boolean,
         elementOperation: PsiElement => PsiElement,
         elementRightSide: PsiElement => PsiElement,
-        elementLeftSide: PsiElement => PsiElement): Wrap = {
+        elementLeftSide: PsiElement => PsiElement): Wrap =
       childPsi.getParent match {
         case parent: PsiElement if elementMatch(parent) =>
           if (elementOperation(parent) == childPsi) return null
@@ -165,7 +164,6 @@ object ScalaWrapManager {
           else null
         case _ => null //hasn't to be
       }
-    }
 
     parentPsi match {
       case inf: ScInfixExpr =>

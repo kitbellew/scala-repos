@@ -55,9 +55,8 @@ trait LocalFileSystemPersistentModel[AP <: Params] extends PersistentModel[AP] {
   */
 trait LocalFileSystemPersistentModelLoader[AP <: Params, M]
     extends PersistentModelLoader[AP, M] {
-  def apply(id: String, params: AP, sc: Option[SparkContext]): M = {
+  def apply(id: String, params: AP, sc: Option[SparkContext]): M =
     Utils.load(id).asInstanceOf[M]
-  }
 }
 
 /** DEPRECATED. Use [[LocalFileSystemPersistentModel]] instead.

@@ -55,9 +55,8 @@ class ScalaTestConfigurationProducer extends {
   override def findExistingByElement(
       location: Location[_ <: PsiElement],
       existingConfigurations: Array[RunnerAndConfigurationSettings],
-      context: ConfigurationContext): RunnerAndConfigurationSettings = {
+      context: ConfigurationContext): RunnerAndConfigurationSettings =
     super.findExistingByElement(location, existingConfigurations, context)
-  }
 
   override def createConfigurationByLocation(
       location: Location[_ <: PsiElement])
@@ -252,13 +251,12 @@ class ScalaTestConfigurationProducer extends {
         checkFirstArgIsUnitOrString)
     }
 
-    def endupWithLitral(literal: ScExpression): Option[String] = {
+    def endupWithLitral(literal: ScExpression): Option[String] =
       literal match {
         case l: ScLiteral if l.isString =>
           Some(l.getValue.asInstanceOf[String])
         case _ => None
       }
-    }
 
     def checkCall(
         call: MethodInvocation,
@@ -307,7 +305,7 @@ class ScalaTestConfigurationProducer extends {
         checkFirstArgIsUnitOrString: Boolean = false,
         testNameIsAlwaysEmpty: Boolean = false) = {
       val inv: (MethodInvocation) => Option[String] = m => {
-        def checkTagged(m: MethodInvocation): Option[String] = {
+        def checkTagged(m: MethodInvocation): Option[String] =
           m.getInvokedExpr match {
             case ref: ScReferenceExpression if ref.refName == "taggedAs" =>
               val resolve = ref.resolve()
@@ -331,7 +329,6 @@ class ScalaTestConfigurationProducer extends {
               }
             case _ => None
           }
-        }
         m match {
           case i: ScInfixExpr =>
             i.getBaseExpr match {
@@ -796,19 +793,16 @@ class ScalaTestConfigurationProducer extends {
       None
     }
 
-    def checkJUnitSuite(fqn: String): Option[String] = {
+    def checkJUnitSuite(fqn: String): Option[String] =
       checkAnnotatedSuite(fqn, "org.junit.Test")
-    }
 
-    def checkTestNGSuite(fqn: String): Option[String] = {
+    def checkTestNGSuite(fqn: String): Option[String] =
       checkAnnotatedSuite(fqn, "org.testng.annotations.Test")
-    }
 
     class OptionExtension(x: Option[String]) {
-      def ++(s: => Option[String]): Option[String] = {
+      def ++(s: => Option[String]): Option[String] =
         if (x.isDefined) x
         else s
-      }
     }
     implicit def o2e(x: Option[String]): OptionExtension =
       new OptionExtension(x)

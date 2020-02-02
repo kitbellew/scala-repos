@@ -61,14 +61,13 @@ case class ScCompoundType(
       components.map(_.removeAbstracts),
       signatureMap.map {
         case (s: Signature, tp: ScType) =>
-          def updateTypeParam(tp: TypeParameter): TypeParameter = {
+          def updateTypeParam(tp: TypeParameter): TypeParameter =
             new TypeParameter(
               tp.name,
               tp.typeParams.map(updateTypeParam),
               () => tp.lowerType().removeAbstracts,
               () => tp.upperType().removeAbstracts,
               tp.ptp)
-          }
 
           val pTypes: List[Seq[() => ScType]] =
             s.substitutedTypes.map(_.map(f => () => f().removeAbstracts))
@@ -117,7 +116,7 @@ case class ScCompoundType(
     update(this) match {
       case (true, res) => res
       case _ =>
-        def updateTypeParam(tp: TypeParameter): TypeParameter = {
+        def updateTypeParam(tp: TypeParameter): TypeParameter =
           new TypeParameter(tp.name, tp.typeParams.map(updateTypeParam), {
             val res = tp.lowerType().recursiveUpdate(update, visited + this)
             () => res
@@ -125,7 +124,6 @@ case class ScCompoundType(
             val res = tp.upperType().recursiveUpdate(update, visited + this)
             () => res
           }, tp.ptp)
-        }
         new ScCompoundType(
           components.map(_.recursiveUpdate(update, visited + this)),
           signatureMap.map {
@@ -170,11 +168,11 @@ case class ScCompoundType(
   override def recursiveVarianceUpdateModifiable[T](
       data: T,
       update: (ScType, Int, T) => (Boolean, ScType, T),
-      variance: Int = 1): ScType = {
+      variance: Int = 1): ScType =
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
-        def updateTypeParam(tp: TypeParameter): TypeParameter = {
+        def updateTypeParam(tp: TypeParameter): TypeParameter =
           new TypeParameter(tp.name, tp.typeParams.map(updateTypeParam), {
             val res = tp
               .lowerType()
@@ -186,7 +184,6 @@ case class ScCompoundType(
               .recursiveVarianceUpdateModifiable(newData, update, 1)
             () => res
           }, tp.ptp)
-        }
         new ScCompoundType(
           components.map(
             _.recursiveVarianceUpdateModifiable(newData, update, variance)),
@@ -221,7 +218,6 @@ case class ScCompoundType(
                   _.recursiveVarianceUpdateModifiable(newData, update, 1)))
           })
     }
-  }
 
   override def equivInner(
       r: ScType,

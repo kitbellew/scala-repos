@@ -222,9 +222,8 @@ object ArrayPeriodColumn {
 class MutableEmptyArrayColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with EmptyArrayColumn {
-  def update(row: Int, value: Boolean) = {
+  def update(row: Int, value: Boolean) =
     if (value) defined.set(row) else defined.clear(row)
-  }
 }
 
 object MutableEmptyArrayColumn {
@@ -234,9 +233,8 @@ object MutableEmptyArrayColumn {
 class MutableEmptyObjectColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with EmptyObjectColumn {
-  def update(row: Int, value: Boolean) = {
+  def update(row: Int, value: Boolean) =
     if (value) defined.set(row) else defined.clear(row)
-  }
 }
 
 object MutableEmptyObjectColumn {
@@ -247,9 +245,8 @@ object MutableEmptyObjectColumn {
 class MutableNullColumn(val defined: BitSet)
     extends ArrayColumn[Boolean]
     with NullColumn {
-  def update(row: Int, value: Boolean) = {
+  def update(row: Int, value: Boolean) =
     if (value) defined.set(row) else defined.clear(row)
-  }
 }
 
 object MutableNullColumn {

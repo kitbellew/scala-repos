@@ -35,16 +35,14 @@ class StringBuilder(private var content: String)
   def append(f: scala.Float): StringBuilder = append(f.toString())
   def append(d: scala.Double): StringBuilder = append(d.toString())
 
-  def append(obj: AnyRef): StringBuilder = {
+  def append(obj: AnyRef): StringBuilder =
     if (obj == null) append(null: String)
     else append(obj.toString())
-  }
 
   def append(csq: CharSequence): StringBuilder = append(csq: AnyRef)
-  def append(csq: CharSequence, start: Int, end: Int): StringBuilder = {
+  def append(csq: CharSequence, start: Int, end: Int): StringBuilder =
     if (csq == null) append("null", start, end)
     else append(csq.subSequence(start, end).toString())
-  }
 
   def appendCodePoint(codePoint: Int): StringBuilder =
     append(Character.toChars(codePoint))

@@ -30,21 +30,17 @@ class Metrics @Inject() (val registry: MetricRegistry) {
     }
   }
 
-  def counter(name: String): Counter = {
+  def counter(name: String): Counter =
     new Counter(registry.counter(name))
-  }
 
-  def timer(name: String): Timer = {
+  def timer(name: String): Timer =
     new Timer(registry.timer(name))
-  }
 
-  def meter(name: String): Meter = {
+  def meter(name: String): Meter =
     new Meter(registry.meter(name))
-  }
 
-  def histogram(name: String): Histogram = {
+  def histogram(name: String): Histogram =
     new Histogram(registry.histogram(name))
-  }
 
   @throws[IllegalArgumentException](
     "if this function is called multiple times for the same name.")
@@ -53,17 +49,14 @@ class Metrics @Inject() (val registry: MetricRegistry) {
     gauge
   }
 
-  def name(prefix: String, clazz: Class[_], method: String): String = {
-    s"${prefix}.${className(clazz)}.${method}"
-  }
+  def name(prefix: String, clazz: Class[_], method: String): String =
+    s"$prefix.${className(clazz)}.$method"
 
-  def name(prefix: String, in: MethodInvocation): String = {
+  def name(prefix: String, in: MethodInvocation): String =
     name(prefix, in.getThis.getClass, in.getMethod.getName)
-  }
 
-  def className(clazz: Class[_]): String = {
+  def className(clazz: Class[_]): String =
     classNameCache.getOrElseUpdate(clazz, stripGuiceMarksFromClassName(clazz))
-  }
 
   private[metrics] def stripGuiceMarksFromClassName(clazz: Class[_]): String = {
     val name = clazz.getName
@@ -111,13 +104,11 @@ object Metrics {
   }
 
   class Histogram(histogram: com.codahale.metrics.Histogram) {
-    def update(value: Long): Unit = {
+    def update(value: Long): Unit =
       histogram.update(value)
-    }
 
-    def update(value: Int): Unit = {
+    def update(value: Int): Unit =
       histogram.update(value)
-    }
   }
 
   class Meter(meter: com.codahale.metrics.Meter) {

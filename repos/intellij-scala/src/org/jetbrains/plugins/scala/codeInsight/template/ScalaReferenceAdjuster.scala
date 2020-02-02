@@ -45,7 +45,7 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
       startOffset: Int,
       endOffset: Int,
       useFqInJavadoc: Boolean,
-      useFqInCode: Boolean): Unit = {
+      useFqInCode: Boolean): Unit =
     processRange(
       element,
       startOffset,
@@ -54,7 +54,6 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
       incompleteCode = false,
       useFqInJavadoc = useFqInJavadoc,
       useFqInCode = useFqInCode)
-  }
 
   def processRange(
       element: ASTNode,
@@ -69,11 +68,10 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
       return //do not process other languages
     val buffer = new ArrayBuffer[ScalaPsiElement]()
     val visitor = new ScalaRecursiveElementVisitor {
-      override def visitElement(element: ScalaPsiElement): Unit = {
+      override def visitElement(element: ScalaPsiElement): Unit =
         if (element.getTextRange.getStartOffset >= startOffset && element.getTextRange.getEndOffset <= endOffset) {
           buffer += element
         } else super.visitElement(element)
-      }
     }
     psi.accept(visitor)
     TypeAdjuster.adjustFor(buffer, addImports)

@@ -167,12 +167,11 @@ class DistributedPubSubMediatorSpec
 
   def chatUser(name: String): ActorRef = chatUsers(name)
 
-  def awaitCount(expected: Int): Unit = {
+  def awaitCount(expected: Int): Unit =
     awaitAssert {
       mediator ! Count
       expectMsgType[Int] should ===(expected)
     }
-  }
 
   "A DistributedPubSubMediator" must {
 
@@ -342,9 +341,8 @@ class DistributedPubSubMediatorSpec
     }
 
     "demonstrate usage of Publish" in within(15 seconds) {
-      def later(): Unit = {
+      def later(): Unit =
         awaitCount(10)
-      }
 
       //#start-subscribers
       runOn(first) {
@@ -369,9 +367,8 @@ class DistributedPubSubMediatorSpec
     }
 
     "demonstrate usage of Send" in within(15 seconds) {
-      def later(): Unit = {
+      def later(): Unit =
         awaitCount(12)
-      }
 
       //#start-send-destinations
       runOn(first) {

@@ -11,7 +11,7 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
 
   override def hint: String = InspectionBundle.message("replace.with.last")
 
-  def testExplicitApply(): Unit = {
+  def testExplicitApply(): Unit =
     doTest(
       s"""
          |val seq = Seq(1, 2)
@@ -26,9 +26,8 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
         |seq.last
       """.stripMargin
     )
-  }
 
-  def testImplicitApply(): Unit = {
+  def testImplicitApply(): Unit =
     doTest(
       s"""
          |val seq = Seq(1, 2)
@@ -43,9 +42,8 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
         |seq.last
       """.stripMargin
     )
-  }
 
-  def testLength(): Unit = {
+  def testLength(): Unit =
     doTest(
       s"""
          |val seq = Seq(1, 2)
@@ -60,29 +58,25 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
         |seq.last
       """.stripMargin
     )
-  }
 
-  def testNotSeq(): Unit = {
+  def testNotSeq(): Unit =
     checkTextHasNoErrors("""
         |val set = Set(1, 2)
         |set(set.size - 1)
       """.stripMargin)
-  }
 
-  def testDiffSeqs(): Unit = {
+  def testDiffSeqs(): Unit =
     checkTextHasNoErrors("""
         |val seq = Seq(1, 2)
         |val seq2 = Seq(1, 2)
         |seq(seq2.size - 1)
       """.stripMargin)
-  }
 
-  def testNotLast(): Unit = {
+  def testNotLast(): Unit =
     checkTextHasNoErrors("""
         |val seq = Seq(1, 2)
         |seq(seq.size - 2)
       """.stripMargin)
-  }
 
   def testIndexedSeq(): Unit = {
     checkTextHasNoErrors(

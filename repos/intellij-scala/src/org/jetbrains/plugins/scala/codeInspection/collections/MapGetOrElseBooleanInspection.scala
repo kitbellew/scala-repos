@@ -20,7 +20,7 @@ abstract class MapGetOrElseBoolean(
     extends SimplificationType() {
   def hint = InspectionBundle.message(hintKey)
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.map` (f @ returnsBoolean()) `.getOrElse`(literal(
             `defaultValue`)) if isOption(qual) =>
@@ -30,7 +30,6 @@ abstract class MapGetOrElseBoolean(
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }
 
 object MapGetOrElseFalse

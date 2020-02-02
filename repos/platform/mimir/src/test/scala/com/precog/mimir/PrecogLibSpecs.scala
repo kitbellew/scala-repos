@@ -44,12 +44,11 @@ trait PrecogLibSpecs[M[+_]]
 
   import TableModule.CrossOrder._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   private val line = Line(1, 1, "")
   private def const[A: CValueType](a: A) = Const(CValueType[A](a))(line)

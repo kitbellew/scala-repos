@@ -83,9 +83,8 @@ class InMemoryStatsReceiver extends StatsReceiver {
     */
   def addGauge(name: String*)(f: => Float): Gauge = {
     val gauge = new Gauge {
-      def remove(): Unit = {
+      def remove(): Unit =
         gauges -= name
-      }
 
       override def toString: String = {
         // avoid holding a reference to `f`

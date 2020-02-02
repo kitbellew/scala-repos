@@ -18,9 +18,8 @@ import mesosphere.marathon.core.leadership.PreparationMessages.{
 import mesosphere.marathon.core.leadership.impl.WhenLeaderActor.{Stop, Stopped}
 
 private[leadership] object WhenLeaderActor {
-  def props(childProps: Props): Props = {
+  def props(childProps: Props): Props =
     Props(new WhenLeaderActor(childProps))
-  }
 
   case object Stop
   case object Stopped

@@ -41,13 +41,12 @@ object AttributeSet {
     new AttributeSet(Set(new AttributeEquals(a)))
 
   /** Constructs a new [[AttributeSet]] given a sequence of [[Expression Expressions]]. */
-  def apply(baseSet: Iterable[Expression]): AttributeSet = {
+  def apply(baseSet: Iterable[Expression]): AttributeSet =
     new AttributeSet(
       baseSet
         .flatMap(_.references)
         .map(new AttributeEquals(_))
         .toSet)
-  }
 }
 
 /**

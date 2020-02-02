@@ -17,14 +17,13 @@ object IgnoreBodyParserSpec extends PlaySpecification {
         value: A,
         bytes: ByteString,
         contentType: Option[String],
-        encoding: String)(implicit mat: Materializer) = {
+        encoding: String)(implicit mat: Materializer) =
       await(
         BodyParsers.parse
           .ignore(value)(FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(bytes))
       )
-    }
 
     "ignore empty bodies" in new WithApplication() {
       parse("foo", ByteString.empty, Some("text/plain"), "utf-8") must beRight(

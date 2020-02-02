@@ -44,10 +44,9 @@ class ResizerSpec
 
   import akka.routing.ResizerSpec._
 
-  override def atStartup: Unit = {
+  override def atStartup: Unit =
     // when shutting down some Resize messages might hang around
     system.eventStream.publish(Mute(EventFilter.warning(pattern = ".*Resize")))
-  }
 
   def routeeSize(router: ActorRef): Int =
     Await

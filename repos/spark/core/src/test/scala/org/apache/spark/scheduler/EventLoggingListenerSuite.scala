@@ -270,9 +270,8 @@ class EventLoggingListenerSuite
       "The following events are missing: " + eventSet.toSeq)
   }
 
-  private def readLines(in: InputStream): Seq[String] = {
+  private def readLines(in: InputStream): Seq[String] =
     Source.fromInputStream(in).getLines().toSeq
-  }
 
   /**
     * A listener that asserts certain events are logged by the given EventLoggingListener.

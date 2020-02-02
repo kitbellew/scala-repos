@@ -111,7 +111,7 @@ object LzoGenericScheme {
       conv: BinaryConverter[M],
       conf: JobConf,
       confKey: String,
-      overrideConf: Boolean = false): Unit = {
+      overrideConf: Boolean = false): Unit =
     if ((conf.get(confKey) == null) || overrideConf) {
       val extern = Externalizer(conv)
       try {
@@ -126,7 +126,6 @@ object LzoGenericScheme {
       }
       conf.set(confKey, ExternalizerSerializer.inj(extern))
     }
-  }
 
 }
 

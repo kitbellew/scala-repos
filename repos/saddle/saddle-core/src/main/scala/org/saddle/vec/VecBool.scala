@@ -128,7 +128,7 @@ class VecBool(values: Array[Boolean]) extends Vec[Boolean] { self =>
     }
   }
 
-  private[saddle] def toArray: Array[Boolean] = {
+  private[saddle] def toArray: Array[Boolean] =
     // need to check if we're a view on an array
     if (!needsCopy)
       values
@@ -141,7 +141,6 @@ class VecBool(values: Array[Boolean]) extends Vec[Boolean] { self =>
       }
       buf
     }
-  }
 
   /** Default equality does an iterative, element-wise equality check of all values. */
   override def equals(o: Any): Boolean = o match {

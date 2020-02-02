@@ -187,9 +187,10 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("flatMapValues") {
     testOperation(
       Seq(Seq("a", "a", "b"), Seq("", ""), Seq()),
-      (s: DStream[String]) => {
-        s.map(x => (x, 1)).reduceByKey(_ + _).flatMapValues(x => Seq(x, x + 10))
-      },
+      (s: DStream[String]) =>
+        s.map(x => (x, 1))
+          .reduceByKey(_ + _)
+          .flatMapValues(x => Seq(x, x + 10)),
       Seq(
         Seq(("a", 2), ("a", 12), ("b", 1), ("b", 11)),
         Seq(("", 2), ("", 12)),
@@ -601,12 +602,11 @@ class BasicOperationsSuite extends TestSuiteBase {
       stream.foreachRDD(_ => {}) // Dummy output stream
       ssc.start()
       Thread.sleep(2000)
-      def getInputFromSlice(fromMillis: Long, toMillis: Long): Set[Int] = {
+      def getInputFromSlice(fromMillis: Long, toMillis: Long): Set[Int] =
         stream
           .slice(new Time(fromMillis), new Time(toMillis))
           .flatMap(_.collect())
           .toSet
-      }
 
       assert(getInputFromSlice(0, 1000) == Set(1))
       assert(getInputFromSlice(0, 2000) == Set(1, 2))
@@ -629,11 +629,10 @@ class BasicOperationsSuite extends TestSuiteBase {
 
   test("rdd cleanup - map and window") {
     val rememberDuration = Seconds(3)
-    def operation(s: DStream[Int]): DStream[(Int, Int)] = {
+    def operation(s: DStream[Int]): DStream[(Int, Int)] =
       s.map(x => (x % 10, 1))
         .window(Seconds(2), Seconds(1))
         .window(Seconds(4), Seconds(2))
-    }
 
     val operatedStream = runCleanupTest(
       conf,

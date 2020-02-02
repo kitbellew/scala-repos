@@ -32,7 +32,7 @@ object ImportMembersUtil {
   def isInImport(element: PsiElement): Boolean =
     PsiTreeUtil.getParentOfType(element, classOf[ScImportExpr]) != null
 
-  def hasQualifier(ref: ScReferenceElement) = {
+  def hasQualifier(ref: ScReferenceElement) =
     ref match {
       case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
@@ -43,7 +43,6 @@ object ImportMembersUtil {
         stCodeRef.qualifier.isDefined
       case _ => false
     }
-  }
 
   def resolvesToStablePath(ref: ScReferenceElement): Boolean = {
     if (ref == null) return false
@@ -60,7 +59,7 @@ object ImportMembersUtil {
   @tailrec
   def replaceWithName(
       oldRef: ScReferenceElement,
-      name: String): ScReferenceElement = {
+      name: String): ScReferenceElement =
     oldRef match {
       case _ childOf (inf @ ScInfixExpr(
             qual: ScReferenceExpression,
@@ -95,7 +94,6 @@ object ImportMembersUtil {
           .asInstanceOf[ScReferenceElement]
       case _ => null
     }
-  }
 
   @tailrec
   def replaceAndBind(
@@ -183,7 +181,7 @@ object ImportMembersUtil {
   }
 
   object isQualifierFor {
-    def unapply(qual: ScReferenceElement): Option[ScReferenceElement] = {
+    def unapply(qual: ScReferenceElement): Option[ScReferenceElement] =
       qual.getParent match {
         case ref @ ScReferenceExpression.withQualifier(`qual`) => Some(ref)
         case ScInfixExpr(`qual`, op, _)                        => Some(op)
@@ -193,12 +191,10 @@ object ImportMembersUtil {
           Some(stRef)
         case _ => None
       }
-    }
   }
 
   object isQualifierInImport {
-    def unapply(qual: ScStableCodeReferenceElement): Option[ScImportExpr] = {
+    def unapply(qual: ScStableCodeReferenceElement): Option[ScImportExpr] =
       PsiTreeUtil.getParentOfType(qual, classOf[ScImportExpr]).toOption
-    }
   }
 }

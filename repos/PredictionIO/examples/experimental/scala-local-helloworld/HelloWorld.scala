@@ -76,11 +76,10 @@ class MyAlgorithm
 
 // factory
 object MyEngineFactory extends IEngineFactory {
-  override def apply() = {
+  override def apply() =
     /* SimpleEngine only requires one DataSouce and one Algorithm */
     new SimpleEngine(
       classOf[MyDataSource],
       classOf[MyAlgorithm]
     )
-  }
 }

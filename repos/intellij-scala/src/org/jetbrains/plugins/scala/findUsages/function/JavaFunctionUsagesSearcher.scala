@@ -75,7 +75,7 @@ class JavaFunctionUsagesSearcher
   }
 
   private object scalaOrNonStatic {
-    def unapply(method: PsiMethod): Option[PsiMethod] = {
+    def unapply(method: PsiMethod): Option[PsiMethod] =
       inReadAction {
         if (!method.isValid) return None
         method match {
@@ -85,6 +85,5 @@ class JavaFunctionUsagesSearcher
           case _ => None
         }
       }
-    }
   }
 }

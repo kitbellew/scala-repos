@@ -303,11 +303,10 @@ trait Kinds {
         n: Option[Int],
         alias: Option[String])
         extends ScalaNotation {
-      override def toString: String = {
+      override def toString: String =
         alias getOrElse {
           typeAlias(order) + n.map(_.toString).getOrElse("")
         }
-      }
       private def typeAlias(x: Int): String =
         x match {
           case 0           => "A"
@@ -355,12 +354,11 @@ trait Kinds {
         })
       }
       // Replace Head(o, n, Some(_)) with Head(o, n, None), so F[F] becomes F[A].
-      def removeAlias: StringState = {
+      def removeAlias: StringState =
         StringState(tokens map {
           case Head(o, n, Some(_)) => Head(o, n, None)
           case t                   => t
         })
-      }
     }
     private[internal] object StringState {
       def empty: StringState = StringState(Seq())
@@ -373,11 +371,10 @@ trait Kinds {
     val description: String = "This is a proper type."
     val order = 0
     private[internal] def buildState(sym: Symbol, v: Variance)(
-        s: StringState): StringState = {
+        s: StringState): StringState =
       s.append(v.symbolicString)
         .appendHead(order, sym)
         .append(bounds.scalaNotation(_.toString))
-    }
     def scalaNotation: String =
       Kind.Head(order, None, None) + bounds.scalaNotation(_.toString)
     def starNotation: String = "*" + bounds.starNotation(_.toString)

@@ -26,17 +26,15 @@ final class SortedSetClientServerIntegrationSuite
   private def zAdd(
       client: Service[Command, Reply],
       key: String,
-      members: ZMember*): Unit = {
+      members: ZMember*): Unit =
     members.foreach { member =>
       assert(Await.result(client(ZAdd(key, List(member)))) == IntegerReply(1))
     }
-  }
 
-  private def initialize(client: Service[Command, Reply]): Unit = {
+  private def initialize(client: Service[Command, Reply]): Unit =
     ZVAL.foreach { zv =>
       assert(Await.result(client(ZAdd(ZKEY, List(zv)))) == IntegerReply(1))
     }
-  }
 
   test("ZADD should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>

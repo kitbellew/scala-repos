@@ -120,21 +120,19 @@ private[nio] object TypedArrayCharBuffer {
         typedArray: Uint16Array,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): TypedArrayCharBuffer = {
+        readOnly: Boolean): TypedArrayCharBuffer =
       new TypedArrayCharBuffer(
         typedArray,
         initialPosition,
         initialLimit,
         readOnly)
-    }
 
     @inline
     def newTypedArray(
         buffer: ArrayBuffer,
         byteOffset: Int,
-        length: Int): Uint16Array = {
+        length: Int): Uint16Array =
       new Uint16Array(buffer, byteOffset, length)
-    }
   }
 
   @inline

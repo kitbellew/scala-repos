@@ -99,7 +99,7 @@ trait MethodSynthesis {
         gen.mkMethodCall(newMethod, transformArgs(m.paramss.head map Ident)))
 
     def createSwitchMethod(name: Name, range: Seq[Int], returnType: Type)(
-        f: Int => Tree) = {
+        f: Int => Tree) =
       createMethod(name, List(IntTpe), returnType) { m =>
         val arg0 = Ident(m.firstParam)
         val default = DEFAULT ==> Throw(
@@ -111,7 +111,6 @@ trait MethodSynthesis {
 
         Match(arg0, cases)
       }
-    }
 
     // def foo() = constant
     def constantMethod(name: Name, value: Any): Tree = {
@@ -594,7 +593,7 @@ trait MethodSynthesis {
     }
     trait NoSymbolBeanGetter extends AnyBeanGetter {
       // Derives a tree without attempting to use the original tree's symbol.
-      override def derivedTree = {
+      override def derivedTree =
         atPos(tree.pos.focus) {
           DefDef(
             derivedMods mapAnnotations (_ => Nil),
@@ -604,7 +603,6 @@ trait MethodSynthesis {
             tree.tpt.duplicate,
             if (isDeferred) EmptyTree else Select(This(owner), tree.name))
         }
-      }
       override def createAndEnterSymbol(): MethodSymbol =
         enterSyntheticSym(derivedTree).asInstanceOf[MethodSymbol]
     }

@@ -177,13 +177,12 @@ object EventHandler extends ListenerManagement {
     sw.toString
   }
 
-  private def levelFor(eventClass: Class[_ <: Event]) = {
+  private def levelFor(eventClass: Class[_ <: Event]) =
     if (eventClass.isInstanceOf[Error]) ErrorLevel
     else if (eventClass.isInstanceOf[Warning]) WarningLevel
     else if (eventClass.isInstanceOf[Info]) InfoLevel
     else if (eventClass.isInstanceOf[Debug]) DebugLevel
     else DebugLevel
-  }
 
   class DefaultListener extends Actor {
     self.id = ID

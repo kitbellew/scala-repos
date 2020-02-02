@@ -27,7 +27,6 @@ private[streaming] class PluggableInputDStream[T: ClassTag](
     receiver: Receiver[T])
     extends ReceiverInputDStream[T](_ssc) {
 
-  def getReceiver(): Receiver[T] = {
+  def getReceiver(): Receiver[T] =
     receiver
-  }
 }

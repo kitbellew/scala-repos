@@ -234,14 +234,14 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   def testProduceConsume {
     AclCommand.main(produceAclArgs)
     AclCommand.main(consumeAclArgs)
-    servers.foreach(s => {
+    servers.foreach { s =>
       TestUtils.waitAndVerifyAcls(
         TopicReadAcl ++ TopicWriteAcl ++ TopicDescribeAcl,
         s.apis.authorizer.get,
         topicResource)
       TestUtils
         .waitAndVerifyAcls(GroupReadAcl, s.apis.authorizer.get, groupResource)
-    })
+    }
     //Produce records
     debug("Starting to send records")
     sendRecords(numRecords, tp)
@@ -276,7 +276,7 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
   def testNoConsumeAcl {
     AclCommand.main(produceAclArgs)
     AclCommand.main(groupAclArgs)
-    servers.foreach(s => {
+    servers.foreach { s =>
       TestUtils.waitAndVerifyAcls(
         TopicWriteAcl ++ TopicDescribeAcl,
         s.apis.authorizer.get,
@@ -285,7 +285,7 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
         GroupReadAcl,
         servers.head.apis.authorizer.get,
         groupResource)
-    })
+    }
     //Produce records
     debug("Starting to send records")
     sendRecords(numRecords, tp)

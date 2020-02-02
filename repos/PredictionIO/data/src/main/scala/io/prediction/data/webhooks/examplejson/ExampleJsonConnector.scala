@@ -67,7 +67,7 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
       } catch {
         case e: Exception =>
           throw new ConnectorException(
-            s"Cannot extract Common field from ${data}. ${e.getMessage()}",
+            s"Cannot extract Common field from $data. ${e.getMessage()}",
             e)
       }
 
@@ -82,13 +82,13 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
               userActionItem = data.extract[UserActionItem])
           case x: String =>
             throw new ConnectorException(
-              s"Cannot convert unknown type '${x}' to Event JSON.")
+              s"Cannot convert unknown type '$x' to Event JSON.")
         }
       } catch {
         case e: ConnectorException => throw e
         case e: Exception =>
           throw new ConnectorException(
-            s"Cannot convert ${data} to eventJson. ${e.getMessage()}",
+            s"Cannot convert $data to eventJson. ${e.getMessage()}",
             e)
       }
 

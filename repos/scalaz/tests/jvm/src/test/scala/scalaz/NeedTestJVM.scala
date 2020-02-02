@@ -10,7 +10,7 @@ object NeedTestJVM extends SpecLite {
         .invoke(
           Need,
           new runtime.AbstractFunction0[String] {
-            override def finalize = { flag = true }
+            override def finalize = flag = true
             override def apply = ""
           }
         )

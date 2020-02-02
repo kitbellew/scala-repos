@@ -100,7 +100,7 @@ object GenerateMIMAIgnore {
     * to public for some reason. So had to resort to java reflection to get all inner
     * functions with $$ in there name.
     */
-  def getInnerFunctions(classSymbol: unv.ClassSymbol): Seq[String] = {
+  def getInnerFunctions(classSymbol: unv.ClassSymbol): Seq[String] =
     try {
       Class
         .forName(classSymbol.fullName, false, classLoader)
@@ -116,16 +116,14 @@ object GenerateMIMAIgnore {
         // scalastyle:on println
         Seq.empty[String]
     }
-  }
 
   private def getAnnotatedOrPackagePrivateMembers(
-      classSymbol: unv.ClassSymbol) = {
+      classSymbol: unv.ClassSymbol) =
     classSymbol.typeSignature.members
       .filterNot(x =>
         x.fullName.startsWith("java") || x.fullName.startsWith("scala"))
       .filter(x => isPackagePrivate(x))
       .map(_.fullName) ++ getInnerFunctions(classSymbol)
-  }
 
   def main(args: Array[String]) {
     import scala.tools.nsc.io.File
@@ -148,14 +146,13 @@ object GenerateMIMAIgnore {
     // scalastyle:on println
   }
 
-  private def shouldExclude(name: String) = {
+  private def shouldExclude(name: String) =
     // Heuristic to remove JVM classes that do not correspond to user-facing classes in Scala
     name.contains("anon") ||
-    name.endsWith("$class") ||
-    name.contains("$sp") ||
-    name.contains("hive") ||
-    name.contains("Hive")
-  }
+      name.endsWith("$class") ||
+      name.contains("$sp") ||
+      name.contains("hive") ||
+      name.contains("Hive")
 
   /**
     * Scans all classes accessible from the context class loader which belong to the given package

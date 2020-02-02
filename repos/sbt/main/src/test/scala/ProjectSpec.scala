@@ -8,7 +8,7 @@ class ProjectSpec extends Specification {
   This is a specification to check utility methods on the Project object
 
   Project should
-    normalize projectIDs if they are empty  ${normalizeEmptyFileName}
+    normalize projectIDs if they are empty  $normalizeEmptyFileName
 
   """
 

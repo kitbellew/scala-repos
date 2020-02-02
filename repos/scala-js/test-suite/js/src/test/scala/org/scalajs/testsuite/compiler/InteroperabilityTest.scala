@@ -32,11 +32,10 @@ class InteroperabilityTest {
   implicit def array2Array[T](a: Array[T]): Array[AnyRef] =
     a.map(_.asInstanceOf[AnyRef])
 
-  def assertArrayDynEquals[T](expected: Array[T], actual: js.Dynamic): Unit = {
+  def assertArrayDynEquals[T](expected: Array[T], actual: js.Dynamic): Unit =
     assertArrayEquals(
       expected,
       jsArray2Array(actual.asInstanceOf[js.Array[Any]]))
-  }
 
   @Test def should_support_backquotes_to_escape_Scala_fields(): Unit = {
     val obj = js.eval("""

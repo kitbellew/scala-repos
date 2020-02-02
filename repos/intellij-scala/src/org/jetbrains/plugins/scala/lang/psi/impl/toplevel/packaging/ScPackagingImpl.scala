@@ -191,14 +191,13 @@ class ScPackagingImpl private (
     true
   }
 
-  def findPackageObject(scope: GlobalSearchScope): Option[ScTypeDefinition] = {
+  def findPackageObject(scope: GlobalSearchScope): Option[ScTypeDefinition] =
     Option(
       ScalaShortNamesCacheManager
         .getInstance(getProject)
         .getPackageObjectByName(getPackageName, scope))
-  }
 
-  def getBodyText: String = {
+  def getBodyText: String =
     if (isExplicit) {
       val startOffset =
         findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
@@ -219,10 +218,8 @@ class ScPackagingImpl private (
       if (startOffset >= endOffset) ""
       else text.substring(startOffset, endOffset)
     }
-  }
 
-  override protected def childBeforeFirstImport: Option[PsiElement] = {
+  override protected def childBeforeFirstImport: Option[PsiElement] =
     if (isExplicit) Option(findChildByType[PsiElement](ScalaTokenTypes.tLBRACE))
     else reference
-  }
 }

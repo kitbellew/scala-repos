@@ -100,13 +100,12 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
        |}
        |""".stripMargin.trim()
   )
-  def testApplyMethod(): Unit = {
+  def testApplyMethod(): Unit =
     runDebugger() {
       waitForBreakpoint()
       doStepInto()
       checkLocation("QQQ.scala", "apply", 9)
     }
-  }
 
   addFileWithBreakpoints(
     "IntoPackageObject.scala",
@@ -167,13 +166,12 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
        |}
        |""".stripMargin.trim()
   )
-  def testFromPackageObject(): Unit = {
+  def testFromPackageObject(): Unit =
     runDebugger("test1.FromPackageObject") {
       waitForBreakpoint()
       doStepInto()
       checkLocation("FromPackageObject.scala", "bar", 9)
     }
-  }
 
   addFileWithBreakpoints(
     "WithDefaultParam.scala",
@@ -300,13 +298,12 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
        |}
       """.stripMargin.trim()
   )
-  def testLazyVal(): Unit = {
+  def testLazyVal(): Unit =
     runDebugger() {
       waitForBreakpoint()
       doStepInto()
       checkLocation("LazyVal.scala", "lzy$lzycompute", 2)
     }
-  }
 
   addFileWithBreakpoints(
     "LazyVal2.scala",
@@ -325,13 +322,12 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
        |}
       """.stripMargin.trim()
   )
-  def testLazyVal2(): Unit = {
+  def testLazyVal2(): Unit =
     runDebugger() {
       waitForBreakpoint()
       doStepInto()
       checkLocation("LazyVal2.scala", "foo", 10)
     }
-  }
 
   addFileWithBreakpoints(
     "SimpleGetters.scala",
@@ -392,7 +388,7 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
       |}
     """.stripMargin.trim
   )
-  def testCustomizedPatternMatching(): Unit = {
+  def testCustomizedPatternMatching(): Unit =
     runDebugger() {
       waitForBreakpoint()
       doStepInto()
@@ -401,6 +397,5 @@ abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
       doStepInto()
       checkLocation("CustomizedPatternMatching.scala", "b", 16)
     }
-  }
 
 }

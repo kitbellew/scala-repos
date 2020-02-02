@@ -38,9 +38,8 @@ trait MonadTransformer { self: PsiElement =>
     new MonadLike[T](opt)(msg)
 
   def wrapWith[T](opt: Option[T], default: ScType)(
-      implicit msg: String): SemiMonadLike[T] = {
+      implicit msg: String): SemiMonadLike[T] =
     new SemiMonadLike[T](opt, default)(msg)
-  }
 
   /**
     * The combinator, taking a list of result and default element for conversion.

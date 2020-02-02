@@ -219,7 +219,7 @@ class BatchCounter(ssc: StreamingContext) {
 
   private def waitUntilConditionBecomeTrue(
       condition: => Boolean,
-      timeout: Long): Boolean = {
+      timeout: Long): Boolean =
     synchronized {
       var now = System.currentTimeMillis()
       val timeoutTick = now + timeout
@@ -229,7 +229,6 @@ class BatchCounter(ssc: StreamingContext) {
       }
       condition
     }
-  }
 }
 
 /**
@@ -301,7 +300,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     * stop the context when the block completes or when an exception is thrown.
     */
   def withStreamingContext[R](ssc: StreamingContext)(
-      block: StreamingContext => R): R = {
+      block: StreamingContext => R): R =
     try {
       block(ssc)
     } finally {
@@ -312,13 +311,12 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
           logError("Error stopping StreamingContext", e)
       }
     }
-  }
 
   /**
     * Run a block of code with the given TestServer and automatically
     * stop the server when the block completes or when an exception is thrown.
     */
-  def withTestServer[R](testServer: TestServer)(block: TestServer => R): R = {
+  def withTestServer[R](testServer: TestServer)(block: TestServer => R): R =
     try {
       block(testServer)
     } finally {
@@ -329,7 +327,6 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
           logError("Error stopping TestServer", e)
       }
     }
-  }
 
   /**
     * Set up required DStreams to test the DStream operation using the two sequences
@@ -393,11 +390,10 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       ssc: StreamingContext,
       numBatches: Int,
       numExpectedOutput: Int
-  ): Seq[Seq[V]] = {
+  ): Seq[Seq[V]] =
     // Flatten each RDD into a single Seq
     runStreamsWithPartitions(ssc, numBatches, numExpectedOutput).map(
       _.flatten.toSeq)
-  }
 
   /**
     * Runs the streams set up in `ssc` on manual clock for `numBatches` batches and

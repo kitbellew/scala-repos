@@ -148,13 +148,12 @@ object FastTypeTag {
   }
 
   /** Construct a new FastTypeTag where all members are known. */
-  def apply(mirror0: ru.Mirror, tpe0: ru.Type, key0: String): FastTypeTag[_] = {
+  def apply(mirror0: ru.Mirror, tpe0: ru.Type, key0: String): FastTypeTag[_] =
     new FastTypeTag[Nothing] {
       def mirror = mirror0
       def tpe = tpe0
       def key = key0
     }
-  }
 
   /** Construct a new fast type tag that will lazily instantiate the Type. */
   def apply(mirror0: ru.Mirror, key0: String): FastTypeTag[_] =

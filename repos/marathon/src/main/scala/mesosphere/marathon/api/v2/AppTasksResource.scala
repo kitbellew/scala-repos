@@ -101,11 +101,10 @@ class AppTasksResource @Inject() (
     implicit identity =>
       val pathId = appId.toRootPath
 
-      def findToKill(appTasks: Iterable[Task]): Iterable[Task] = {
+      def findToKill(appTasks: Iterable[Task]): Iterable[Task] =
         Option(host).fold(appTasks) { hostname =>
           appTasks.filter(_.agentInfo.host == hostname || hostname == "*")
         }
-      }
 
       if (scale) {
         val deploymentF = taskKiller.killAndScale(pathId, findToKill, force)

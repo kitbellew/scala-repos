@@ -40,7 +40,7 @@ trait FoldOperations[+Self <: FoldOperations[Self]]
   //If there is an ordering, we need to reverse the list
   override def mapList[T, R](fieldDef: (Fields, Fields))(fn: (List[T]) => R)(
       implicit conv: TupleConverter[T],
-      setter: TupleSetter[R]): Self = {
+      setter: TupleSetter[R]): Self =
     if (sorting.isDefined) {
       //the list is built in reverse order so we need to reverse it here
       super.mapList[T, R](fieldDef) { l => fn(l.reverse) }(conv, setter)
@@ -48,5 +48,4 @@ trait FoldOperations[+Self <: FoldOperations[Self]]
       // Ordering doesn't matter, so skip the reversal
       super.mapList[T, R](fieldDef)(fn)(conv, setter)
     }
-  }
 }

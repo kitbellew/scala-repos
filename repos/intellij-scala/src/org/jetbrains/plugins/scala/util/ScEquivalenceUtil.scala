@@ -36,18 +36,16 @@ object ScEquivalenceUtil {
     }
   }
 
-  def arePackagesEquivalent(p1: PsiPackage, p2: PsiPackage) = {
+  def arePackagesEquivalent(p1: PsiPackage, p2: PsiPackage) =
     p1 != null && p2 != null &&
-    p1.getManager == p2.getManager &&
-    p1.getQualifiedName == p2.getQualifiedName
-  }
+      p1.getManager == p2.getManager &&
+      p1.getQualifiedName == p2.getQualifiedName
 
-  def smartEquivalence(elem1: PsiElement, elem2: PsiElement): Boolean = {
+  def smartEquivalence(elem1: PsiElement, elem2: PsiElement): Boolean =
     (elem1, elem2) match {
       case (clazz1: PsiClass, clazz2: PsiClass) =>
         areClassesEquivalent(clazz1, clazz2)
       case (p1: PsiPackage, p2: PsiPackage) => arePackagesEquivalent(p1, p2)
       case _                                => elem1 == elem2
     }
-  }
 }

@@ -29,9 +29,8 @@ class ScalaUnusedSymbolPassFactory(project: Project)
 
   def createHighlightingPass(
       file: PsiFile,
-      editor: Editor): TextEditorHighlightingPass = {
+      editor: Editor): TextEditorHighlightingPass =
     new ScalaUnusedSymbolPass(file, editor)
-  }
 
   def initComponent() {}
 

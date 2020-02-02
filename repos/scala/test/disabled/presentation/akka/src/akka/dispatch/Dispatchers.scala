@@ -258,7 +258,7 @@ object Dispatchers {
    * Throws: IllegalArgumentException if the value of "type" is not valid
    *         IllegalArgumentException if it cannot
    */
-  def from(cfg: Configuration): Option[MessageDispatcher] = {
+  def from(cfg: Configuration): Option[MessageDispatcher] =
     cfg.getString("type") map {
       case "ExecutorBasedEventDriven" =>
         new ExecutorBasedEventDrivenDispatcherConfigurator()
@@ -287,7 +287,6 @@ object Dispatchers {
     } map {
       _ configure cfg
     }
-  }
 }
 
 object GlobalExecutorBasedEventDrivenDispatcherConfigurator
@@ -298,7 +297,7 @@ object GlobalExecutorBasedEventDrivenDispatcherConfigurator
 
 class ExecutorBasedEventDrivenDispatcherConfigurator
     extends MessageDispatcherConfigurator {
-  def configure(config: Configuration): MessageDispatcher = {
+  def configure(config: Configuration): MessageDispatcher =
     configureThreadPool(
       config,
       threadPoolConfig =>
@@ -311,12 +310,11 @@ class ExecutorBasedEventDrivenDispatcherConfigurator
           mailboxType(config),
           threadPoolConfig)
     ).build
-  }
 }
 
 class ExecutorBasedEventDrivenWorkStealingDispatcherConfigurator
     extends MessageDispatcherConfigurator {
-  def configure(config: Configuration): MessageDispatcher = {
+  def configure(config: Configuration): MessageDispatcher =
     configureThreadPool(
       config,
       threadPoolConfig =>
@@ -329,5 +327,4 @@ class ExecutorBasedEventDrivenWorkStealingDispatcherConfigurator
           mailboxType(config),
           threadPoolConfig)
     ).build
-  }
 }

@@ -74,10 +74,9 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       * @return a BooleanSome containing the specified value
       * if the decorated boolean is true, or a BooleanNone otherwise.
       */
-    def ?[A](first: => A): BooleanOption[A] = {
+    def ?[A](first: => A): BooleanOption[A] =
       if (b) BooleanSome(() => first)
       else BooleanNone
-    }
 
     /**
       * Class for return values from the Boolean2 ternary operator.
@@ -172,7 +171,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Comparse two XML nodes
     */
-  def compareNode(left: Node, right: Node): Boolean = {
+  def compareNode(left: Node, right: Node): Boolean =
     (left, right) match {
       case (Group(gl), Group(gr))       => compareXml(gl, gr)
       case (el: Elem, er: Elem)         => compareElem(el, er)
@@ -185,8 +184,6 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       case (pl: ProcInstr, pr: ProcInstr) => pl === pr
       case (a, b)                         => a.toString == b.toString
     }
-
-  }
 
   /**
     * Optional cons that implements the expression: <code>expr ?> value ::: List</code>
@@ -237,7 +234,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Convert any object to an "equivalent" Boolean depending on its value
     */
-  def toBoolean(in: Any): Boolean = {
+  def toBoolean(in: Any): Boolean =
     in match {
       case null                     => false
       case b: Boolean               => b
@@ -252,7 +249,6 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       case x :: xs                  => toBoolean(x)
       case o                        => toBoolean(o.toString)
     }
-  }
 
   /**
     * A helper that will convert the String to a Boolean if it's
@@ -313,7 +309,7 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   /**
     * Convert any object to an "equivalent" Long depending on its value
     */
-  def asLong(in: Any): Box[Long] = {
+  def asLong(in: Any): Box[Long] =
     in match {
       case null                            => Empty
       case i: Int                          => Full(i.toLong)
@@ -328,12 +324,11 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       case x :: xs                         => asLong(x)
       case o                               => asLong(o.toString)
     }
-  }
 
   /**
     * Convert any object to an "equivalent" Int depending on its value
     */
-  def toInt(in: Any): Int = {
+  def toInt(in: Any): Int =
     in match {
       case null                            => 0
       case n: Int                          => n
@@ -348,12 +343,11 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       case x :: xs                         => toInt(x)
       case o                               => toInt(o.toString)
     }
-  }
 
   /**
     * Convert any object to an "equivalent" Long depending on its value
     */
-  def toLong(in: Any): Long = {
+  def toLong(in: Any): Long =
     in match {
       case null                            => 0L
       case i: Int                          => i
@@ -368,7 +362,6 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
       case x :: xs                         => toLong(x)
       case o                               => toLong(o.toString)
     }
-  }
 
   /**
     * Convert any InputStream to a ByteArrayInputStream
@@ -397,11 +390,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
     * @return true if two Byte arrays contain the same bytes
     */
   def isEq(a: Array[Byte], b: Array[Byte]) = {
-    def eq(a: Array[Byte], b: Array[Byte], pos: Int, len: Int): Boolean = {
+    def eq(a: Array[Byte], b: Array[Byte], pos: Int, len: Int): Boolean =
       if (pos == len) true
       else if (a(pos) != b(pos)) false
       else eq(a, b, pos + 1, len)
-    }
     a.length == b.length && eq(a, b, 0, a.length)
   }
 }

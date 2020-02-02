@@ -37,7 +37,7 @@ private[tracker] object TaskOpProcessorImpl {
       * * an Action.Update if the tasks existed and the TaskStatus contains new information OR ELSE
       */
     def resolve(taskId: Task.Id, status: TaskStatus)(
-        implicit ec: ExecutionContext): Future[Action] = {
+        implicit ec: ExecutionContext): Future[Action] =
       directTaskTracker.task(taskId).map {
         case Some(existingTask) =>
           actionForTaskAndStatus(existingTask, status)
@@ -46,7 +46,6 @@ private[tracker] object TaskOpProcessorImpl {
             new IllegalStateException(
               s"$taskId of app [${taskId.appId}] does not exist"))
       }
-    }
 
     private[this] def actionForTaskAndStatus(
         task: Task,
@@ -79,7 +78,7 @@ private[tracker] class TaskOpProcessorImpl(
   import TaskOpProcessor._
 
   override def process(op: Operation)(
-      implicit ec: ExecutionContext): Future[Unit] = {
+      implicit ec: ExecutionContext): Future[Unit] =
     op.action match {
 
       case Action.Update(task) =>
@@ -128,7 +127,6 @@ private[tracker] class TaskOpProcessorImpl(
         op.sender ! Status.Failure(cause)
         Future.successful(())
     }
-  }
 
   /**
     * If we encounter failure, we try to reload the effected task to make sure that the taskTracker

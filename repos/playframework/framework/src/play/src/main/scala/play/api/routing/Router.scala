@@ -35,9 +35,8 @@ trait Router {
   /**
     * A lifted version of the routes partial function.
     */
-  def handlerFor(request: RequestHeader): Option[Handler] = {
+  def handlerFor(request: RequestHeader): Option[Handler] =
     routes.lift(request)
-  }
 
   def asJava: play.routing.Router = new JavaRouterAdapter(this)
 }
@@ -124,7 +123,7 @@ object Router {
   */
 trait SimpleRouter extends Router { self =>
   def documentation: Seq[(String, String, String)] = Seq.empty
-  def withPrefix(prefix: String): Router = {
+  def withPrefix(prefix: String): Router =
     if (prefix == "/") {
       self
     } else {
@@ -141,7 +140,6 @@ trait SimpleRouter extends Router { self =>
         def documentation = self.documentation
       }
     }
-  }
 }
 
 object SimpleRouter {

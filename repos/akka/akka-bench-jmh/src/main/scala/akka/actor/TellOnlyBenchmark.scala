@@ -24,7 +24,7 @@ class TellOnlyBenchmark {
   implicit var system: ActorSystem = _
 
   @Setup(Level.Trial)
-  def setup(): Unit = {
+  def setup(): Unit =
     system = ActorSystem(
       "TellOnlyBenchmark",
       ConfigFactory.parseString(s"""| akka {
@@ -48,7 +48,6 @@ class TellOnlyBenchmark {
           | }
           | """.stripMargin)
     )
-  }
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
@@ -84,9 +83,8 @@ class TellOnlyBenchmark {
 
   @Benchmark
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def tell(): Unit = {
+  def tell(): Unit =
     probe.send(actor, message)
-  }
 }
 
 object TellOnlyBenchmark {
@@ -107,10 +105,9 @@ object TellOnlyBenchmark {
   class DroppingMessageQueue extends UnboundedMailbox.MessageQueue {
     @volatile var dropping = false
 
-    override def enqueue(receiver: ActorRef, handle: Envelope): Unit = {
+    override def enqueue(receiver: ActorRef, handle: Envelope): Unit =
       if (handle.message == flipDrop) dropping = !dropping
       else if (!dropping) super.enqueue(receiver, handle)
-    }
   }
 
   case class UnboundedDroppingMailbox()

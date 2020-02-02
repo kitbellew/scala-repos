@@ -56,9 +56,8 @@ class ProducerTopicStats(clientId: String) {
 
   def getProducerAllTopicsStats(): ProducerTopicMetrics = allTopicsStats
 
-  def getProducerTopicStats(topic: String): ProducerTopicMetrics = {
+  def getProducerTopicStats(topic: String): ProducerTopicMetrics =
     stats.getAndMaybePut(new ClientIdAndTopic(clientId, topic))
-  }
 }
 
 /**
@@ -72,9 +71,8 @@ object ProducerTopicStatsRegistry {
   private val globalStats =
     new Pool[String, ProducerTopicStats](Some(valueFactory))
 
-  def getProducerTopicStats(clientId: String) = {
+  def getProducerTopicStats(clientId: String) =
     globalStats.getAndMaybePut(clientId)
-  }
 
   def removeProducerTopicStats(clientId: String) {
     globalStats.remove(clientId)

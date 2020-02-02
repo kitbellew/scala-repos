@@ -130,13 +130,11 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
     processHandler.get
   }
 
-  protected def getDebugProcess: DebugProcessImpl = {
+  protected def getDebugProcess: DebugProcessImpl =
     getDebugSession.getProcess
-  }
 
-  protected def getDebugSession: DebuggerSession = {
+  protected def getDebugSession: DebuggerSession =
     DebuggerManagerEx.getInstanceEx(getProject).getContext.getDebuggerSession
-  }
 
   protected def resume() {
     val resumeCommand = getDebugProcess.createResumeCommand(suspendContext)
@@ -171,7 +169,7 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
     }
   }
 
-  private def clearXBreakpoints(): Unit = {
+  private def clearXBreakpoints(): Unit =
     UsefulTestCase.edt(new Runnable {
       def run() {
         val xBreakpointManager =
@@ -182,7 +180,6 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
         }
       }
     })
-  }
 
   protected def scalaLineBreakpointType =
     XBreakpointType.EXTENSION_POINT_NAME.findExtension(
@@ -301,7 +298,7 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   }
 
   protected def evaluateCodeFragments(
-      fragmentsWithResults: (String, String)*): Unit = {
+      fragmentsWithResults: (String, String)*): Unit =
     runDebugger() {
       waitForBreakpoint()
       fragmentsWithResults.foreach {
@@ -309,7 +306,6 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           evalEquals(fragment.stripMargin.trim().replace("\r", ""), result)
       }
     }
-  }
 
   def atNextBreakpoint(action: => Unit) = {
     resume()

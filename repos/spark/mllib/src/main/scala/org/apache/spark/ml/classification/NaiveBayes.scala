@@ -188,7 +188,7 @@ class NaiveBayesModel private[ml] (
     prob
   }
 
-  override protected def predictRaw(features: Vector): Vector = {
+  override protected def predictRaw(features: Vector): Vector =
     $(modelType) match {
       case Multinomial =>
         multinomialCalculation(features)
@@ -198,10 +198,8 @@ class NaiveBayesModel private[ml] (
         // This should never happen.
         throw new UnknownError(s"Invalid modelType: ${$(modelType)}.")
     }
-  }
 
-  override protected def raw2probabilityInPlace(
-      rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector =
     rawPrediction match {
       case dv: DenseVector =>
         var i = 0
@@ -223,19 +221,16 @@ class NaiveBayesModel private[ml] (
           "Unexpected error in NaiveBayesModel:" +
             " raw2probabilityInPlace encountered SparseVector")
     }
-  }
 
   @Since("1.5.0")
-  override def copy(extra: ParamMap): NaiveBayesModel = {
+  override def copy(extra: ParamMap): NaiveBayesModel =
     copyValues(
       new NaiveBayesModel(uid, pi, theta).setParent(this.parent),
       extra)
-  }
 
   @Since("1.5.0")
-  override def toString: String = {
+  override def toString: String =
     s"NaiveBayesModel (uid=$uid) with ${pi.size} classes"
-  }
 
   @Since("1.6.0")
   override def write: MLWriter = new NaiveBayesModel.NaiveBayesModelWriter(this)

@@ -84,8 +84,8 @@ private[akka] class Mailboxes(
             .recover {
               case e ⇒
                 throw new ConfigurationException(
-                  s"Type [${k}] specified as akka.actor.mailbox.requirement " +
-                    s"[${v}] in config can't be loaded due to [${e.getMessage}]",
+                  s"Type [$k] specified as akka.actor.mailbox.requirement " +
+                    s"[$v] in config can't be loaded due to [${e.getMessage}]",
                   e)
             }
             .get
@@ -216,11 +216,11 @@ private[akka] class Mailboxes(
     mailboxBindings.get(queueType) match {
       case None ⇒
         throw new ConfigurationException(
-          s"Mailbox Mapping for [${queueType}] not configured")
+          s"Mailbox Mapping for [$queueType] not configured")
       case Some(s) ⇒ s
     }
 
-  private def lookupConfigurator(id: String): MailboxType = {
+  private def lookupConfigurator(id: String): MailboxType =
     mailboxTypeConfigurators.get(id) match {
       case null ⇒
         // It doesn't matter if we create a mailbox type configurator that isn't used due to concurrent lookup.
@@ -231,7 +231,7 @@ private[akka] class Mailboxes(
           case _ ⇒
             if (!settings.config.hasPath(id))
               throw new ConfigurationException(
-                s"Mailbox Type [${id}] not configured")
+                s"Mailbox Type [$id] not configured")
             val conf = config(id)
 
             val mailboxType = conf.getString("mailbox-type") match {
@@ -277,7 +277,6 @@ private[akka] class Mailboxes(
 
       case existing ⇒ existing
     }
-  }
 
   private val defaultMailboxConfig = settings.config.getConfig(DefaultMailboxId)
 
@@ -310,10 +309,9 @@ private[akka] class Mailboxes(
     @tailrec def updateCache(
         cache: Map[String, Int],
         key: String,
-        value: Int): Boolean = {
+        value: Int): Boolean =
       stashCapacityCache.compareAndSet(cache, cache.updated(key, value)) ||
-      updateCache(stashCapacityCache.get, key, value) // recursive, try again
-    }
+        updateCache(stashCapacityCache.get, key, value) // recursive, try again
 
     if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes.DefaultMailboxId)
       defaultStashCapacity

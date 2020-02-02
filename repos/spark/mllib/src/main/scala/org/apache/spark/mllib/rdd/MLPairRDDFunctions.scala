@@ -40,7 +40,7 @@ class MLPairRDDFunctions[K: ClassTag, V: ClassTag](self: RDD[(K, V)])
     * @param ord the implicit ordering for T
     * @return an RDD that contains the top k values for each key
     */
-  def topByKey(num: Int)(implicit ord: Ordering[V]): RDD[(K, Array[V])] = {
+  def topByKey(num: Int)(implicit ord: Ordering[V]): RDD[(K, Array[V])] =
     self
       .aggregateByKey(new BoundedPriorityQueue[V](num)(ord))(
         seqOp = (queue, item) => {
@@ -53,7 +53,6 @@ class MLPairRDDFunctions[K: ClassTag, V: ClassTag](self: RDD[(K, V)])
       .mapValues(
         _.toArray.sorted(ord.reverse)
       ) // This is an min-heap, so we reverse the order.
-  }
 }
 
 @DeveloperApi

@@ -56,7 +56,7 @@ trait WebSocketSpec
   }
 
   def runWebSocket[A](
-      handler: (Flow[ExtendedMessage, ExtendedMessage, _]) => Future[A]): A = {
+      handler: (Flow[ExtendedMessage, ExtendedMessage, _]) => Future[A]): A =
     WebSocketClient { client =>
       val innerResult = Promise[A]()
       await(
@@ -66,7 +66,6 @@ trait WebSocketSpec
         })
       await(innerResult.future)
     }
-  }
 
   def pongFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] = beLike {
     case SimpleMessage(PongMessage(data), _) => data.utf8String must matcher
@@ -119,8 +118,7 @@ trait WebSocketSpec
     }
   }
 
-  def allowSendingMessages(
-      webSocket: Application => List[String] => Handler) = {
+  def allowSendingMessages(webSocket: Application => List[String] => Handler) =
     withServer(app => webSocket(app)(List("a", "b"))) { app =>
       import app.materializer
       val frames = runWebSocket { (flow) =>
@@ -133,7 +131,6 @@ trait WebSocketSpec
           closeFrame()
         ).inOrder)
     }
-  }
 
   def cleanUpWhenClosed(
       webSocket: Application => Promise[Boolean] => Handler) = {
@@ -147,7 +144,7 @@ trait WebSocketSpec
     }
   }
 
-  def closeWhenTheConsumerIsDone(webSocket: Application => Handler) = {
+  def closeWhenTheConsumerIsDone(webSocket: Application => Handler) =
     withServer(app => webSocket(app)) { app =>
       import app.materializer
       val frames = runWebSocket { flow =>
@@ -161,10 +158,9 @@ trait WebSocketSpec
           closeFrame()
         ))
     }
-  }
 
   def allowRejectingTheWebSocketWithAResult(
-      webSocket: Application => Int => Handler) = {
+      webSocket: Application => Int => Handler) =
     withServer(app => webSocket(app)(FORBIDDEN)) { app =>
       implicit val port = testServerPort
       await(
@@ -178,7 +174,6 @@ trait WebSocketSpec
           )
           .get()).status must_== FORBIDDEN
     }
-  }
 
   "Plays WebSockets" should {
     "allow handling WebSockets using Akka streams" in {
@@ -393,9 +388,8 @@ trait WebSocketSpec
                 case msg: String =>
                   messages = msg :: messages
               }
-              override def postStop() = {
+              override def postStop() =
                 consumed.success(messages.reverse)
-              }
             })
           }
       }
@@ -428,9 +422,8 @@ trait WebSocketSpec
         WebSocket.acceptWithActor[String, String] { req => out =>
           Props(new Actor() {
             def receive = PartialFunction.empty
-            override def postStop() = {
+            override def postStop() =
               cleanedUp.success(true)
-            }
           })
         }
       }
@@ -544,11 +537,10 @@ trait WebSocketSpec
 
       "clean up when closed" in cleanUpWhenClosed { _ => cleanedUp =>
         new LegacyWebSocket[String] {
-          def onReady(in: In[String], out: Out[String]) = {
+          def onReady(in: In[String], out: Out[String]) =
             in.onClose(new Runnable {
               def run() = cleanedUp.success(true)
             })
-          }
         }
       }
 
@@ -560,7 +552,7 @@ trait WebSocketSpec
       "allow handling a websocket with an actor" in allowSendingMessages {
         _ => messages =>
           JWebSocket.withActor[String](new Function[ActorRef, Props]() {
-            def apply(out: ActorRef) = {
+            def apply(out: ActorRef) =
               Props(new Actor() {
                 messages.foreach { msg => out ! msg }
                 out ! Status.Success(())
@@ -568,7 +560,6 @@ trait WebSocketSpec
                   case msg: Message => ()
                 }
               })
-            }
           })
       }
     }

@@ -144,7 +144,7 @@ trait BinOpSeries {
   final class SrSrEOp[OP <: ScalarOp, X: ST: ORD, A, B, C: ST](
       opv: BinOp[OP, Vec[A], Vec[B], Vec[C]])
       extends BinOp[OP, Series[X, A], Series[X, B], Series[X, C]] {
-    def apply(v1: Series[X, A], v2: Series[X, B]) = {
+    def apply(v1: Series[X, A], v2: Series[X, B]) =
       if (v1.index == v2.index) {
         Series(opv(v1.values, v2.values), v1.index)
       } else {
@@ -155,7 +155,6 @@ trait BinOpSeries {
           joined.rTake.map(locs => v2.values.take(locs)).getOrElse(v2.values)
         Series(opv(lvec, rvec), joined.index)
       }
-    }
   }
 
   // concrete implementations

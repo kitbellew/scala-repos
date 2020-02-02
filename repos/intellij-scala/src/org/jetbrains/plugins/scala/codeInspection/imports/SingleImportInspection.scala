@@ -20,7 +20,7 @@ class SingleImportInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitImportExpr(importExpr: ScImportExpr) {
         if (importExpr.selectorSet.isDefined && importExpr.selectors.length + (if (importExpr.singleWildcard)
@@ -41,5 +41,4 @@ class SingleImportInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }

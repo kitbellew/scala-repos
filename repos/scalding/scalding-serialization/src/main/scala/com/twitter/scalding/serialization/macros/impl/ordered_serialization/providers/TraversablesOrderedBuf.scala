@@ -297,8 +297,7 @@ object TraversablesOrderedBuf {
       override val lazyOuterVariables: Map[String, ctx.Tree] =
         innerBuf.lazyOuterVariables
 
-      override def length(element: Tree): CompileTimeLengthTypes[c.type] = {
-
+      override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         innerBuf.length(q"$element.head") match {
           case const: ConstantLengthCalculation[_] =>
             FastLengthCalculation(c)(q"""{
@@ -336,7 +335,6 @@ object TraversablesOrderedBuf {
               }
             """)
         }
-      }
     }
   }
 }

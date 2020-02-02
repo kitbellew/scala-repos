@@ -83,7 +83,7 @@ class VectorOps_DoubleTest
 
   val N = 30
   implicit def genTriple
-      : Arbitrary[(Vector[Double], Vector[Double], Vector[Double])] = {
+      : Arbitrary[(Vector[Double], Vector[Double], Vector[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -105,7 +105,6 @@ class VectorOps_DoubleTest
           else SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e10 })
@@ -119,7 +118,7 @@ class VectorOps_FloatTest
   override val TOL: Double = 1e-2
   val N = 30
   implicit def genTriple
-      : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
+      : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 1000f }
@@ -147,7 +146,6 @@ class VectorOps_FloatTest
               zl.map(i => (i % N).abs -> (math.random * z toFloat)): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Float] =
     Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000f })
@@ -158,7 +156,7 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
   val space = Vector.space[Int]
 
   val N = 30
-  implicit def genTriple: Arbitrary[(Vector[Int], Vector[Int], Vector[Int])] = {
+  implicit def genTriple: Arbitrary[(Vector[Int], Vector[Int], Vector[Int])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Int].map { _ % 1000 }
@@ -186,7 +184,6 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
               zl.map(i => (i % N).abs -> (math.random * z toInt)): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Int] =
     Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
@@ -199,7 +196,7 @@ class VectorOps_ComplexTest
 
   val N = 30
   implicit def genTriple
-      : Arbitrary[(Vector[Complex], Vector[Complex], Vector[Complex])] = {
+      : Arbitrary[(Vector[Complex], Vector[Complex], Vector[Complex])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Complex]
@@ -224,7 +221,6 @@ class VectorOps_ComplexTest
             SparseVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
       }
     }
-  }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {
     for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])

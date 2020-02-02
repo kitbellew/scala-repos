@@ -21,7 +21,7 @@ object FindDeterioratedMetrics {
   def filterDeteriorated(
       baseLine: MetricsSample,
       sample: MetricsSample,
-      factor: Double): Map[Metric, Metric] = {
+      factor: Double): Map[Metric, Metric] =
     for {
       (name, metricsBase) <- baseLine.all
       metricsSample <- sample.all.get(name).toList
@@ -29,18 +29,16 @@ object FindDeterioratedMetrics {
       metricSample <- metricsSample.find(_.name == metricBase.name)
       if (metricSample.mean / metricBase.mean) > factor
     } yield metricBase -> metricSample
-  }
 
   def filterDeteriorated(
       before: URL,
       after: URL,
-      deterioration: Double): Map[Metric, Metric] = {
+      deterioration: Double): Map[Metric, Metric] =
     //only compare last
     filterDeteriorated(
       readMetrics(before).last,
       readMetrics(after).last,
       deterioration)
-  }
 
   /**
     * FindDeterioratedMetrics <file_base> <file_sample> <deterioration_factor>

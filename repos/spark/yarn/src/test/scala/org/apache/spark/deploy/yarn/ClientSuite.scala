@@ -60,14 +60,13 @@ class ClientSuite
     System.setProperty("SPARK_YARN_MODE", "true")
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       System.setProperties(oldSystemProperties)
       oldSystemProperties = null
     } finally {
       super.afterAll()
     }
-  }
 
   test("default Yarn application classpath") {
     getDefaultYarnApplicationClasspath should be(
@@ -143,7 +142,7 @@ class ClientSuite
         }
       })
     cp should contain(PWD)
-    cp should contain(s"$PWD${Path.SEPARATOR}${LOCALIZED_CONF_DIR}")
+    cp should contain(s"$PWD${Path.SEPARATOR}$LOCALIZED_CONF_DIR")
     cp should not contain (APP_JAR)
   }
 
@@ -161,14 +160,14 @@ class ClientSuite
       // staging dir.
       val expected = ADDED
         .split(",")
-        .map(p => {
+        .map { p =>
           val uri = new URI(p)
           if (LOCAL_SCHEME == uri.getScheme()) {
             p
           } else {
             Option(uri.getFragment()).getOrElse(new File(p).getName())
           }
-        })
+        }
         .mkString(",")
 
       sparkConf.get(SECONDARY_JARS) should be(Some(expected.split(",").toSeq))
@@ -372,18 +371,17 @@ class ClientSuite
     (a ++ b).flatten.toArray
 
   def getFieldValue[A, B](clazz: Class[_], field: String, defaults: => B)(
-      mapTo: A => B): B = {
+      mapTo: A => B): B =
     Try(clazz.getField(field))
       .map(_.get(null).asInstanceOf[A])
       .toOption
       .map(mapTo)
       .getOrElse(defaults)
-  }
 
   def getFieldValue2[A: ClassTag, A1: ClassTag, B](
       clazz: Class[_],
       field: String,
-      defaults: => B)(mapTo: A => B)(mapTo1: A1 => B): B = {
+      defaults: => B)(mapTo: A => B)(mapTo1: A1 => B): B =
     Try(clazz.getField(field))
       .map(_.get(null))
       .map {
@@ -393,7 +391,6 @@ class ClientSuite
       }
       .toOption
       .getOrElse(defaults)
-  }
 
   private def createClient(
       sparkConf: SparkConf,

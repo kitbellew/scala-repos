@@ -259,7 +259,7 @@ private final class TrapExit(delegateManager: SecurityManager)
 
     val exitCode = new ExitCode
 
-    def run(): Unit = {
+    def run(): Unit =
       try execute()
       catch {
         case x: Throwable =>
@@ -268,7 +268,6 @@ private final class TrapExit(delegateManager: SecurityManager)
           ) //exceptions in the main thread cause the exit code to be 1
           throw x
       }
-    }
 
     /** Records a new group both in the global [[TrapExit]] manager and for this [[App]].*/
     def register(g: ThreadGroup): Unit =
@@ -448,14 +447,12 @@ private final class TrapExit(delegateManager: SecurityManager)
   override def checkDelete(file: String): Unit = ()
   override def checkExec(cmd: String): Unit = ()
 
-  override def checkPermission(perm: Permission): Unit = {
+  override def checkPermission(perm: Permission): Unit =
     if (delegateManager ne null)
       delegateManager.checkPermission(perm)
-  }
-  override def checkPermission(perm: Permission, context: AnyRef): Unit = {
+  override def checkPermission(perm: Permission, context: AnyRef): Unit =
     if (delegateManager ne null)
       delegateManager.checkPermission(perm, context)
-  }
 
   /**
     * SecurityManager hook that is abused to record every created Thread and associate it with a managed application.

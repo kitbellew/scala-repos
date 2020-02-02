@@ -144,7 +144,7 @@ object Extraction {
   def flatten(json: JValue): Map[String, String] = {
     def escapePath(str: String) = str
 
-    def flatten0(path: String, json: JValue): Map[String, String] = {
+    def flatten0(path: String, json: JValue): Map[String, String] =
       json match {
         case JNothing | JNull => Map()
         case JString(s)       => Map(path -> ("\"" + JsonAST.quote(s) + "\""))
@@ -169,7 +169,6 @@ object Extraction {
                 ._1
           }
       }
-    }
 
     flatten0("", json)
   }
@@ -233,7 +232,7 @@ object Extraction {
   private def extract0(json: JValue, clazz: Class[_], typeArgs: Seq[Class[_]])(
       implicit formats: Formats): Any = {
     def mkMapping(clazz: Class[_], typeArgs: Seq[Class[_]])(
-        implicit formats: Formats): Meta.Mapping = {
+        implicit formats: Formats): Meta.Mapping =
       if (clazz == classOf[Option[_]] || clazz == classOf[List[_]] || clazz == classOf[
             Set[_]] || clazz.isArray) {
         Col(TypeInfo(clazz, None), mkMapping(typeArgs.head, typeArgs.tail))
@@ -242,7 +241,6 @@ object Extraction {
       } else {
         mappingOf(clazz, typeArgs)
       }
-    }
 
     extract0(json, mkMapping(clazz, typeArgs))
   }
@@ -253,7 +251,7 @@ object Extraction {
   private def extract0(json: JValue, mapping: Mapping)(
       implicit formats: Formats): Any = {
     def newInstance(constructor: Constructor, json: JValue) = {
-      def findBestConstructor = {
+      def findBestConstructor =
         if (constructor.choices.size == 1)
           constructor.choices.head // optimized common case
         else {
@@ -266,7 +264,6 @@ object Extraction {
             .getOrElse(fail(
               "No constructor for type " + constructor.targetType.clazz + ", " + json))
         }
-      }
 
       def setFields(a: AnyRef, json: JValue, constructor: JConstructor[_]) =
         json match {
@@ -405,12 +402,11 @@ object Extraction {
       constructor(array)
     }
 
-    def newOption(root: JValue, m: Mapping) = {
+    def newOption(root: JValue, m: Mapping) =
       root match {
         case JNothing | JNull => None
         case x                => Option(build(x, m))
       }
-    }
 
     def build(root: JValue, mapping: Mapping): Any = mapping match {
       case Value(targetType)      => convert(root, targetType, formats)
@@ -439,10 +435,8 @@ object Extraction {
       import java.lang.reflect.Array.{newInstance => newArray}
 
       a.foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
-          {
-            java.lang.reflect.Array.set(tuple._1, tuple._2, e);
-            (tuple._1, tuple._2 + 1)
-          }
+          java.lang.reflect.Array.set(tuple._1, tuple._2, e);
+          (tuple._1, tuple._2 + 1)
         }
         ._1
     }
@@ -457,7 +451,7 @@ object Extraction {
         root: JValue,
         mapping: Mapping,
         path: String,
-        optional: Boolean) = {
+        optional: Boolean) =
       if (optional && root == JNothing) {
         None
       } else {
@@ -473,7 +467,6 @@ object Extraction {
             }
         }
       }
-    }
 
     build(json, mapping)
   }

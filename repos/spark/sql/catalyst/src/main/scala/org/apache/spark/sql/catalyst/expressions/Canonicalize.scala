@@ -32,9 +32,8 @@ package org.apache.spark.sql.catalyst.expressions
   *  - Other comparisons ([[GreaterThan]], [[LessThan]]) are reversed by `hashCode`.
   */
 object Canonicalize extends {
-  def execute(e: Expression): Expression = {
+  def execute(e: Expression): Expression =
     expressionReorder(ignoreNamesTypes(e))
-  }
 
   /** Remove names and nullability from types. */
   private def ignoreNamesTypes(e: Expression): Expression = e match {

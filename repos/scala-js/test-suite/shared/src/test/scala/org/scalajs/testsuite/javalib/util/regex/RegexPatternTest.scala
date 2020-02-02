@@ -151,8 +151,7 @@ class RegexPatternTest {
     assertEquals("Scala$1&$2.js", splitNoQuote.mkString)
   }
 
-  @Test def compile_should_throw_for_invalid_patterns_issue_1718(): Unit = {
+  @Test def compile_should_throw_for_invalid_patterns_issue_1718(): Unit =
     assertThrows(classOf[Throwable], Pattern.compile("*"))
-  }
 
 }

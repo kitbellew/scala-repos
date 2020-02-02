@@ -419,17 +419,16 @@ abstract class Stream[+A]
     * @return  `f(a,,0,,), ..., f(a,,n,,)` if this sequence is `a,,0,,, ..., a,,n,,`.
     */
   override final def map[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
+      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
     if (isStreamBuilder(bf))
       asThat(
         if (isEmpty) Stream.Empty
         else cons(f(head), asStream[B](tail map f))
       )
     else super.map(f)(bf)
-  }
 
   override final def collect[B, That](pf: PartialFunction[A, B])(
-      implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
+      implicit bf: CanBuildFrom[Stream[A], B, That]): That =
     if (!isStreamBuilder(bf)) super.collect(pf)(bf)
     else {
       // this implementation avoids:
@@ -448,7 +447,6 @@ abstract class Stream[+A]
       if (rest.isEmpty) Stream.Empty.asInstanceOf[That]
       else Stream.collectedTail(newHead, rest, pf, bf).asInstanceOf[That]
     }
-  }
 
   /** Applies the given function `f` to each element of this stream, then
     * concatenates the results.  As with `map` this function does not need to
@@ -558,10 +556,9 @@ abstract class Stream[+A]
     * @return The accumulated value from successive applications of `op`.
     */
   @tailrec
-  override final def foldLeft[B](z: B)(op: (B, A) => B): B = {
+  override final def foldLeft[B](z: B)(op: (B, A) => B): B =
     if (this.isEmpty) z
     else tail.foldLeft(op(z, head))(op)
-  }
 
   /** Stream specialization of reduceLeft which allows GC to collect
     *  along the way.
@@ -570,7 +567,7 @@ abstract class Stream[+A]
     * @param f The operation to perform on successive elements of the `Stream`.
     * @return The accumulated value from successive applications of `f`.
     */
-  override final def reduceLeft[B >: A](f: (B, A) => B): B = {
+  override final def reduceLeft[B >: A](f: (B, A) => B): B =
     if (this.isEmpty)
       throw new UnsupportedOperationException("empty.reduceLeft")
     else {
@@ -582,7 +579,6 @@ abstract class Stream[+A]
       }
       reducedRes
     }
-  }
 
   /** Returns all the elements of this stream that satisfy the predicate `p`
     * returning of [[scala.Tuple2]] of `Stream`s obeying the partition predicate
@@ -881,11 +877,10 @@ abstract class Stream[+A]
     // a buffer of the dropped size. As long as the buffer is full and the
     // rest is non-empty, we can feed elements off the buffer head.  When
     // the rest becomes empty, the full buffer is the dropped elements.
-    def advance(stub0: List[A], stub1: List[A], rest: Stream[A]): Stream[A] = {
+    def advance(stub0: List[A], stub1: List[A], rest: Stream[A]): Stream[A] =
       if (rest.isEmpty) Stream.empty
       else if (stub0.isEmpty) advance(stub1.reverse, Nil, rest)
       else cons(stub0.head, advance(stub0.tail, rest.head :: stub1, rest.tail))
-    }
     if (n <= 0) this
     else advance((this take n).toList, Nil, this drop n)
   }
@@ -947,11 +942,10 @@ abstract class Stream[+A]
   override def distinct: Stream[A] = {
     // This should use max memory proportional to N, whereas
     // recursively calling distinct on the tail is N^2.
-    def loop(seen: Set[A], rest: Stream[A]): Stream[A] = {
+    def loop(seen: Set[A], rest: Stream[A]): Stream[A] =
       if (rest.isEmpty) rest
       else if (seen(rest.head)) loop(seen, rest.tail)
       else cons(rest.head, loop(seen + rest.head, rest.tail))
-    }
     loop(Set(), this)
   }
 
@@ -1271,17 +1265,15 @@ object Stream extends SeqFactory[Stream] {
   private[immutable] def filteredTail[A](
       stream: Stream[A],
       p: A => Boolean,
-      isFlipped: Boolean) = {
+      isFlipped: Boolean) =
     cons(stream.head, stream.tail.filterImpl(p, isFlipped))
-  }
 
   private[immutable] def collectedTail[A, B, That](
       head: B,
       stream: Stream[A],
       pf: PartialFunction[A, B],
-      bf: CanBuildFrom[Stream[A], B, That]) = {
+      bf: CanBuildFrom[Stream[A], B, That]) =
     cons(head, stream.tail.collect(pf)(bf).asInstanceOf[Stream[B]])
-  }
 
   /** An implementation of `FilterMonadic` allowing GC of the filtered-out elements of
     * the `Stream` as it is processed.

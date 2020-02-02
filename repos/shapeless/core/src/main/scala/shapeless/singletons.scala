@@ -189,7 +189,7 @@ trait SingletonTypeUtils extends ReprTypes {
     }
   }
 
-  def narrowValue(t: Tree): (Type, Tree) = {
+  def narrowValue(t: Tree): (Type, Tree) =
     t match {
       case Literal(k: Constant) =>
         val tpe = c.internal.constantType(k)
@@ -197,7 +197,6 @@ trait SingletonTypeUtils extends ReprTypes {
       case LiteralSymbol(s) => (SingletonSymbolType(s), mkSingletonSymbol(s))
       case _                => (t.tpe, t)
     }
-  }
 
   def parseLiteralType(typeStr: String): Option[Type] =
     for {
@@ -245,11 +244,10 @@ class SingletonTypeMacros(val c: whitebox.Context)
   import c.universe._
   import internal.decorators._
 
-  def mkWitness(sTpe: Type, s: Tree): Tree = {
+  def mkWitness(sTpe: Type, s: Tree): Tree =
     q"""
       _root_.shapeless.Witness.mkWitness[$sTpe]($s.asInstanceOf[$sTpe])
     """
-  }
 
   def mkWitnessWith(parent: Type, sTpe: Type, s: Tree, i: Tree): Tree = {
     val name = TypeName(c.freshName("anon$"))
@@ -426,7 +424,7 @@ class SingletonTypeMacros(val c: whitebox.Context)
   def mkSingletonOps(t: Tree): Tree =
     extractResult(t) { (tpe, tree) => mkOps(tpe, mkWitness(tpe, tree)) }
 
-  def narrowSymbol[S <: String: WeakTypeTag](t: Tree): Tree = {
+  def narrowSymbol[S <: String: WeakTypeTag](t: Tree): Tree =
     (weakTypeOf[S], t) match {
       case (ConstantType(Constant(s1: String)), LiteralSymbol(s2))
           if s1 == s2 =>
@@ -436,7 +434,6 @@ class SingletonTypeMacros(val c: whitebox.Context)
           c.enclosingPosition,
           s"Expression $t is not an appropriate Symbol literal")
     }
-  }
 
   def witnessTypeImpl(tpeSelector: Tree): Tree = {
     val q"${tpeString: String}" = tpeSelector

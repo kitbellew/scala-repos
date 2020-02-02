@@ -48,7 +48,7 @@ trait ContextTrees { self: Global =>
   def locateContext(contexts: Contexts, pos: Position): Option[Context] =
     synchronized {
       @tailrec
-      def locateFinestContextTree(context: ContextTree): ContextTree = {
+      def locateFinestContextTree(context: ContextTree): ContextTree =
         if (context.pos includes pos) {
           locateContextTree(context.children, pos) match {
             case Some(x) =>
@@ -59,7 +59,6 @@ trait ContextTrees { self: Global =>
         } else {
           context
         }
-      }
       def sanitizeContext(c: Context): Context = {
         c.retyping = false
         c
@@ -73,7 +72,7 @@ trait ContextTrees { self: Global =>
     */
   def locateContextTree(
       contexts: Contexts,
-      pos: Position): Option[ContextTree] = {
+      pos: Position): Option[ContextTree] =
     if (contexts.isEmpty) None
     else {
       // binary search on contexts, loop invar: lo <= hi, recursion metric: `hi - lo`
@@ -81,7 +80,7 @@ trait ContextTrees { self: Global =>
       def loop(
           lo: Int,
           hi: Int,
-          previousSibling: Option[ContextTree]): Option[ContextTree] = {
+          previousSibling: Option[ContextTree]): Option[ContextTree] =
         // [SI-8239] enforce loop invariant & ensure recursion metric decreases monotonically on every recursion
         if (lo > hi) previousSibling
         else if (pos properlyPrecedes contexts(lo).pos)
@@ -107,10 +106,8 @@ trait ContextTrees { self: Global =>
             loop(lo, mid, previousSibling)
           else previousSibling
         }
-      }
       loop(0, contexts.length - 1, None)
     }
-  }
 
   /** Insert a context at correct position into a buffer of context trees.
     *  If the `context` has a transparent position, add it multiple times

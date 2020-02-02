@@ -403,9 +403,8 @@ class MockHttpServletRequest(
 
   def getContentType(): String = contentType
 
-  def getInputStream(): ServletInputStream = {
+  def getInputStream(): ServletInputStream =
     new MockServletInputStream(new ByteArrayInputStream(body))
-  }
 
   def getLocalAddr(): String = localAddr
 
@@ -510,9 +509,8 @@ class MockHttpServletRequest(
   def getHeaders(s: String): JEnum[String] =
     headers.getOrElse(s, Nil).iterator
 
-  def getIntHeader(h: String): Int = {
+  def getIntHeader(h: String): Int =
     Box.!!(getHeader(h)).map(_.toInt) openOr -1
-  }
 
   def getMethod(): String = method
 
@@ -575,13 +573,11 @@ class MockHttpServletRequest(
     headers += (s -> List(Helpers.toInternetDate(l)))
   }
 
-  def getParts(): Collection[Part] = {
+  def getParts(): Collection[Part] =
     Seq[Part]()
-  }
 
-  def getPart(partName: String): Part = {
+  def getPart(partName: String): Part =
     null
-  }
 
   def login(username: String, password: String): Unit = ()
 

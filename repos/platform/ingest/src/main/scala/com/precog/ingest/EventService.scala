@@ -89,7 +89,7 @@ object EventService {
   )
 
   object ServiceConfig {
-    def fromConfiguration(config: Configuration) = {
+    def fromConfiguration(config: Configuration) =
       (ServiceLocation.fromConfig(config.detach("eventService")) |@| ServiceLocation
         .fromConfig(config.detach("bifrost"))) { (serviceLoc, shardLoc) =>
         ServiceConfig(
@@ -109,7 +109,6 @@ object EventService {
             akka.util.Timeout(config[Long]("delete.timeout", 10000L))
         )
       }
-    }
   }
 }
 
@@ -219,7 +218,7 @@ trait EventService
     }
   }
 
-  def fsService(state: State): AsyncHttpService[ByteChunk, JValue] = {
+  def fsService(state: State): AsyncHttpService[ByteChunk, JValue] =
     jsonAPIKey(state.accessControl) {
       dataPath("/fs") {
         post(state.ingestHandler) ~
@@ -232,7 +231,6 @@ trait EventService
           }
         }
     }
-  }
 
   def dataService(state: State): AsyncHttpService[ByteChunk, JValue] = {
     import FileContent._
@@ -254,7 +252,7 @@ trait EventService
   }
 
   def shardProxy(shardClient: HttpClient[ByteChunk])
-      : AsyncHttpService[ByteChunk, ByteChunk] = {
+      : AsyncHttpService[ByteChunk, ByteChunk] =
     path("/data/fs/'path") {
       get {
         accept(FileContent.XQuirrelScript) {
@@ -262,5 +260,4 @@ trait EventService
         }
       }
     }
-  }
 }

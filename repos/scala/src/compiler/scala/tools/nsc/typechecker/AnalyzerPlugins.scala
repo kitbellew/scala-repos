@@ -319,12 +319,11 @@ trait AnalyzerPlugins { self: Analyzer =>
     def accumulate: (T, AnalyzerPlugin) => T
   }
 
-  private def invoke[T](op: CumulativeOp[T]): T = {
+  private def invoke[T](op: CumulativeOp[T]): T =
     if (analyzerPlugins.isEmpty) op.default
     else
       analyzerPlugins.foldLeft(op.default)((current, plugin) =>
         if (!plugin.isActive()) current else op.accumulate(current, plugin))
-  }
 
   /** @see AnalyzerPlugin.pluginsPt */
   def pluginsPt(pt: Type, typer: Typer, tree: Tree, mode: Mode): Type =
@@ -419,7 +418,7 @@ trait AnalyzerPlugins { self: Analyzer =>
     def custom(plugin: MacroPlugin): Option[T]
   }
 
-  private def invoke[T](op: NonCumulativeOp[T]): T = {
+  private def invoke[T](op: NonCumulativeOp[T]): T =
     if (macroPlugins.isEmpty) op.default
     else {
       val results = macroPlugins
@@ -436,7 +435,6 @@ trait AnalyzerPlugins { self: Analyzer =>
         case Nil                => op.default
       }
     }
-  }
 
   /** @see MacroPlugin.pluginsTypedMacroBody */
   def pluginsTypedMacroBody(typer: Typer, ddef: DefDef): Tree =
@@ -522,12 +520,11 @@ trait AnalyzerPlugins { self: Analyzer =>
     })
 
   /** @see MacroPlugin.pluginsEnterStats */
-  def pluginsEnterStats(typer: Typer, stats: List[Tree]): List[Tree] = {
+  def pluginsEnterStats(typer: Typer, stats: List[Tree]): List[Tree] =
     // performance opt
     if (macroPlugins.isEmpty) stats
     else
       macroPlugins.foldLeft(stats)((current, plugin) =>
         if (!plugin.isActive()) current
         else plugin.pluginsEnterStats(typer, current))
-  }
 }

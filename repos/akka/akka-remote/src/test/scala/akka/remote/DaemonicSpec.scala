@@ -51,7 +51,7 @@ class DaemonicSpec extends AkkaSpec {
       val unusedAddress =
         addr(daemonicSystem, "tcp").copy(port = Some(unusedPort))
       val selection =
-        daemonicSystem.actorSelection(s"${unusedAddress}/user/SomeActor")
+        daemonicSystem.actorSelection(s"$unusedAddress/user/SomeActor")
       selection ! "whatever"
       Thread.sleep(2.seconds.dilated.toMillis)
 

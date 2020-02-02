@@ -64,7 +64,7 @@ trait BaseGenericInternalRow extends InternalRow {
     false
   }
 
-  override def toString: String = {
+  override def toString: String =
     if (numFields == 0) {
       "[empty row]"
     } else {
@@ -81,7 +81,6 @@ trait BaseGenericInternalRow extends InternalRow {
       sb.append("]")
       sb.toString()
     }
-  }
 
   override def equals(o: Any): Boolean = {
     if (!o.isInstanceOf[BaseGenericInternalRow]) {
@@ -174,13 +173,13 @@ abstract class MutableRow extends InternalRow {
   def update(i: Int, value: Any)
 
   // default implementation (slow)
-  def setBoolean(i: Int, value: Boolean): Unit = { update(i, value) }
-  def setByte(i: Int, value: Byte): Unit = { update(i, value) }
-  def setShort(i: Int, value: Short): Unit = { update(i, value) }
-  def setInt(i: Int, value: Int): Unit = { update(i, value) }
-  def setLong(i: Int, value: Long): Unit = { update(i, value) }
-  def setFloat(i: Int, value: Float): Unit = { update(i, value) }
-  def setDouble(i: Int, value: Double): Unit = { update(i, value) }
+  def setBoolean(i: Int, value: Boolean): Unit = update(i, value)
+  def setByte(i: Int, value: Byte): Unit = update(i, value)
+  def setShort(i: Int, value: Short): Unit = update(i, value)
+  def setInt(i: Int, value: Int): Unit = update(i, value)
+  def setLong(i: Int, value: Long): Unit = update(i, value)
+  def setFloat(i: Int, value: Float): Unit = update(i, value)
+  def setDouble(i: Int, value: Double): Unit = update(i, value)
 
   /**
     * Update the decimal column at `i`.
@@ -258,9 +257,9 @@ class GenericMutableRow(values: Array[Any])
 
   override def numFields: Int = values.length
 
-  override def setNullAt(i: Int): Unit = { values(i) = null }
+  override def setNullAt(i: Int): Unit = values(i) = null
 
-  override def update(i: Int, value: Any): Unit = { values(i) = value }
+  override def update(i: Int, value: Any): Unit = values(i) = value
 
   override def copy(): InternalRow = new GenericInternalRow(values.clone())
 }

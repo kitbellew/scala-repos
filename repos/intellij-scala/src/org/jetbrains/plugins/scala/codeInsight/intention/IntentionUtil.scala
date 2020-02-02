@@ -17,16 +17,14 @@ object IntentionUtil {
   def collectComments(
       element: PsiElement,
       onElementLine: Boolean = false): CommentsAroundElement = {
-    def hasLineBreaks(whiteSpace: PsiElement): Boolean = {
+    def hasLineBreaks(whiteSpace: PsiElement): Boolean =
       if (!onElementLine) false
       else StringUtil.containsLineBreak(whiteSpace.getText)
-    }
 
     def getElements(it: Iterator[PsiElement]) = {
-      def acceptableElem(elem: PsiElement) = {
+      def acceptableElem(elem: PsiElement) =
         (elem.isInstanceOf[PsiComment] || elem
           .isInstanceOf[PsiWhiteSpace]) && !hasLineBreaks(elem)
-      }
 
       it.takeWhile { a => acceptableElem(a) }
         .filter(a => a.isInstanceOf[PsiComment])

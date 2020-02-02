@@ -53,9 +53,8 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     this.superType = superType
   }
 
-  def importsToString(): String = {
+  def importsToString(): String =
     imports.mkString(",")
-  }
 
   def addImportsFromString(imports: String) {
     this.imports ++= imports.split(',').filter(_.nonEmpty)
@@ -119,9 +118,8 @@ class ScalaCodeFragment(project: Project, text: String) extends {
 
   override def addImportsForPaths(
       paths: Seq[String],
-      refsContainer: PsiElement): Unit = {
+      refsContainer: PsiElement): Unit =
     paths.foreach(addImportForPath(_, refsContainer))
-  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,

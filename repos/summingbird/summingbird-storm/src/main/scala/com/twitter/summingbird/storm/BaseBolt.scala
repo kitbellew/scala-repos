@@ -252,7 +252,6 @@ case class BaseBolt[I, O](
     }
   }
 
-  private def clearValues(t: Tuple): Unit = {
+  private def clearValues(t: Tuple): Unit =
     valuesField.foreach(fn => fn(t))
-  }
 }

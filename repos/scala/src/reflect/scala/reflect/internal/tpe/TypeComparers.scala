@@ -48,13 +48,12 @@ trait TypeComparers {
       sym1: Symbol,
       sym2: Symbol,
       pre1: Type,
-      pre2: Type) = {
+      pre2: Type) =
     sym1.isExistentialSkolem && sym2.isExistentialSkolem &&
-    sym1.name == sym2.name &&
-    phase.specialized &&
-    sym1.info =:= sym2.info &&
-    pre1 =:= pre2
-  }
+      sym1.name == sym2.name &&
+      phase.specialized &&
+      sym1.info =:= sym2.info &&
+      pre1 =:= pre2
 
   private def isSubPre(pre1: Type, pre2: Type, sym: Symbol) =
     if ((pre1 ne pre2) && (pre1 ne NoPrefix) && (pre2 ne NoPrefix) && pre1 <:< pre2) {

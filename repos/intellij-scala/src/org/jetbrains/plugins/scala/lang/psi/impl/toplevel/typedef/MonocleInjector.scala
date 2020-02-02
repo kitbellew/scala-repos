@@ -12,7 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 import scala.collection.mutable.ArrayBuffer
 
 class MonocleInjector extends SyntheticMembersInjector {
-  override def injectFunctions(source: ScTypeDefinition): Seq[String] = {
+  override def injectFunctions(source: ScTypeDefinition): Seq[String] =
     source match {
       // Monocle lenses generation
       case obj: ScObject =>
@@ -24,7 +24,6 @@ class MonocleInjector extends SyntheticMembersInjector {
         }
       case _ => Seq.empty
     }
-  }
 
   private def mkLens(obj: ScObject): ArrayBuffer[String] = {
     val buffer = new ArrayBuffer[String]

@@ -42,8 +42,7 @@ trait CommentFactory extends base.CommentFactoryBase {
   def defineComment(
       sym: Symbol,
       linkTarget: DocTemplateImpl,
-      inTpl: DocTemplateImpl): Option[Comment] = {
-
+      inTpl: DocTemplateImpl): Option[Comment] =
     //param accessor case
     // We just need the @param argument, we put it into the body
     if (sym.isParamAccessor &&
@@ -88,8 +87,6 @@ trait CommentFactory extends base.CommentFactoryBase {
         Some(c)
       } else None
     }
-
-  }
 
   protected def parse(
       comment: String,

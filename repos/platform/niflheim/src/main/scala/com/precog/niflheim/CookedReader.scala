@@ -70,13 +70,12 @@ final class CookedReader(
     }
   }
 
-  private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] = {
+  private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] =
     read(metadataFile) { channel =>
       val segsV = blockFormat.readCookedBlock(channel)
       segsV foreach { segs0 => block = new SoftReference(segs0) }
       segsV
     }
-  }
 
   def id: Long = metadata.valueOr(throw _).blockid
   def length: Int = metadata.valueOr(throw _).length
@@ -152,7 +151,7 @@ final class CookedReader(
   }
 
   def load(paths: List[ColumnRef])
-      : ValidationNel[IOException, List[(ColumnRef, List[Segment])]] = {
+      : ValidationNel[IOException, List[(ColumnRef, List[Segment])]] =
     segmentsByRef.toValidationNel flatMap {
       (segsByRef: Map[ColumnRef, List[File]]) =>
         paths
@@ -176,5 +175,4 @@ final class CookedReader(
             ({ type λ[α] = ValidationNel[IOException, α] })#λ,
             (ColumnRef, List[Segment])]
     }
-  }
 }

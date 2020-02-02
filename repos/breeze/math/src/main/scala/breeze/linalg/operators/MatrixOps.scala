@@ -33,9 +33,8 @@ trait MatrixGenericOps { this: Matrix.type =>
     new SetMMOp[V, MM]
 
   implicit def canCopyMatrix[V: ClassTag] = new CanCopy[Matrix[V]] {
-    def apply(v1: Matrix[V]) = {
+    def apply(v1: Matrix[V]) =
       v1.copy
-    }
   }
 
   import breeze.math.PowImplicits._
@@ -121,17 +120,15 @@ trait MatrixGenericOps { this: Matrix.type =>
       v1ne: M1 =:!= Matrix[T],
       v2ev: M2 <:< Matrix[T],
       v2ne: M2 =:!= Matrix[T],
-      op: UImpl2[Op, Matrix[T], Matrix[T], MR]): UImpl2[Op, M1, M2, MR] = {
+      op: UImpl2[Op, Matrix[T], Matrix[T], MR]): UImpl2[Op, M1, M2, MR] =
     op.asInstanceOf[UFunc.UImpl2[Op, M1, M2, MR]]
-  }
 
   implicit def castUpdateOps[M1, M2, T, Op <: OpType](
       implicit v1ev: M1 <:< Matrix[T],
       v2ev: M2 <:< Matrix[T],
       op: UFunc.InPlaceImpl2[Op, Matrix[T], Matrix[T]])
-      : UFunc.InPlaceImpl2[Op, M1, M2] = {
+      : UFunc.InPlaceImpl2[Op, M1, M2] =
     op.asInstanceOf[UFunc.InPlaceImpl2[Op, M1, M2]]
-  }
 }
 
 trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
@@ -299,7 +296,7 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
         { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { _ % _ }, {
           _ pow _
         }) op: Op.Impl2[T, T, T])
-      : BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]] = {
+      : BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]] =
     new BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]] {
       override def bindingMissing(b: T, a: Matrix[T]) = {
         val res = DenseMatrix.zeros[T](a.rows, a.cols)
@@ -319,7 +316,6 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
         res
       }
     }
-  }
   @expand
   implicit def op_S_M[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,

@@ -32,7 +32,7 @@ object SbtResolver {
   }
 
   val DELIMITER = "|"
-  def fromString(str: String): Option[SbtResolver] = {
+  def fromString(str: String): Option[SbtResolver] =
     str.split(Pattern.quote(DELIMITER), 3).toSeq match {
       case Seq(root, kind, name) =>
         Some(new SbtResolver(Kind.withName(kind), name, root))
@@ -40,5 +40,4 @@ object SbtResolver {
         Some(new SbtResolver(Kind.withName(kind), "", root))
       case _ => None
     }
-  }
 }

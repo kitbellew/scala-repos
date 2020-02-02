@@ -352,14 +352,13 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       if (value.split(",").exists {
             _.split(":") match {
               case Array(userName, isManager) => isManager.toBoolean
             }
           }) None
       else Some("Must select one manager at least.")
-    }
   }
 
   protected def disableByNotYourself(paramName: String): Constraint =
@@ -367,7 +366,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
       override def validate(
           name: String,
           value: String,
-          messages: Messages): Option[String] = {
+          messages: Messages): Option[String] =
         params.get(paramName).flatMap { userName =>
           if (userName == context.loginAccount.get.userName && params.get(
                 "removed") == Some("true"))
@@ -375,7 +374,6 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           else
             None
         }
-      }
     }
 
 }

@@ -77,11 +77,11 @@ class AdminClient(
           return send(broker, api, request)
         } catch {
           case e: Exception =>
-            debug(s"Request ${api} failed against node ${broker}", e)
+            debug(s"Request $api failed against node $broker", e)
         }
     }
     throw new RuntimeException(
-      s"Request ${api} failed on brokers ${bootstrapBrokers}")
+      s"Request $api failed on brokers $bootstrapBrokers")
   }
 
   private def findCoordinator(groupId: String): Node = {
@@ -108,11 +108,11 @@ class AdminClient(
     val response = new MetadataResponse(responseBody)
     val errors = response.errors()
     if (!errors.isEmpty)
-      debug(s"Metadata request contained errors: ${errors}")
+      debug(s"Metadata request contained errors: $errors")
     response.cluster().nodes().asScala.toList
   }
 
-  def listAllGroups(): Map[Node, List[GroupOverview]] = {
+  def listAllGroups(): Map[Node, List[GroupOverview]] =
     findAllBrokers.map {
       case broker =>
         broker -> {
@@ -120,27 +120,23 @@ class AdminClient(
             listGroups(broker)
           } catch {
             case e: Exception =>
-              debug(s"Failed to find groups from broker ${broker}", e)
+              debug(s"Failed to find groups from broker $broker", e)
               List[GroupOverview]()
           }
         }
     }.toMap
-  }
 
-  def listAllConsumerGroups(): Map[Node, List[GroupOverview]] = {
+  def listAllConsumerGroups(): Map[Node, List[GroupOverview]] =
     listAllGroups().mapValues { groups =>
       groups.filter(_.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
     }
-  }
 
-  def listAllGroupsFlattened(): List[GroupOverview] = {
+  def listAllGroupsFlattened(): List[GroupOverview] =
     listAllGroups.values.flatten.toList
-  }
 
-  def listAllConsumerGroupsFlattened(): List[GroupOverview] = {
+  def listAllConsumerGroupsFlattened(): List[GroupOverview] =
     listAllGroupsFlattened.filter(
       _.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
-  }
 
   def describeGroup(groupId: String): GroupSummary = {
     val coordinator = findCoordinator(groupId)
@@ -152,7 +148,7 @@ class AdminClient(
     val metadata = response.groups().get(groupId)
     if (metadata == null)
       throw new KafkaException(
-        s"Response from broker contained no metadata for group ${groupId}")
+        s"Response from broker contained no metadata for group $groupId")
 
     Errors.forCode(metadata.errorCode()).maybeThrow()
     val members = metadata
@@ -188,7 +184,7 @@ class AdminClient(
 
     if (group.protocolType != ConsumerProtocol.PROTOCOL_TYPE)
       throw new IllegalArgumentException(
-        s"Group ${groupId} with protocol type '${group.protocolType}' is not a valid consumer group")
+        s"Group $groupId with protocol type '${group.protocolType}' is not a valid consumer group")
 
     if (group.state == "Stable") {
       group.members.map { member =>

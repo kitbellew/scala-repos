@@ -243,7 +243,7 @@ trait ModelFactoryImplicitSupport {
       sym: Symbol,
       context: Context,
       inTpl: DocTemplateImpl): List[Constraint] =
-    types.flatMap((tpe: Type) => {
+    types.flatMap { (tpe: Type) =>
       // TODO: Before creating constraints, map typeVarToOriginOrWildcard on the implicitTypes
       val implType = typeVarToOriginOrWildcard(tpe)
       val qualifiedName = makeQualifiedName(implType.typeSymbol)
@@ -319,7 +319,7 @@ trait ModelFactoryImplicitSupport {
               })
           }
       }
-    })
+    }
 
   def makeSubstitutionConstraints(
       subst: TreeTypeSubstituter,
@@ -618,18 +618,17 @@ trait ModelFactoryImplicitSupport {
   }
 
   /** implicitShouldDocument decides whether a member inherited by implicit conversion should be documented */
-  def implicitShouldDocument(aSym: Symbol): Boolean = {
+  def implicitShouldDocument(aSym: Symbol): Boolean =
     // We shouldn't document:
     // - constructors
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
     localShouldDocument(aSym) && (!aSym.isConstructor) && (aSym.owner != AnyValClass) &&
-    (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
-    (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
-    (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&
-    (aSym.nameString != "getClass")
-  }
+      (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
+      (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
+      (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&
+      (aSym.nameString != "getClass")
 
   /* To put it very bluntly: checks if you can call implicitly added method with t1 when t2 is already there in the
    * class. We suppose the name of the two members coincides
@@ -637,7 +636,7 @@ trait ModelFactoryImplicitSupport {
    * The trick here is that the resultType does not matter - the condition for removal it that paramss have the same
    * structure (A => B => C may not override (A, B) => C) and that all the types involved are
    * of the implicit conversion's member are subtypes of the parent members' parameters */
-  def isDistinguishableFrom(t1: Type, t2: Type): Boolean = {
+  def isDistinguishableFrom(t1: Type, t2: Type): Boolean =
     // Vlad: I tried using matches but it's not exactly what we need:
     // (p: AnyRef)AnyRef matches ((t: String)AnyRef returns false -- but we want that to be true
     // !(t1 matches t2)
@@ -650,5 +649,4 @@ trait ModelFactoryImplicitSupport {
       // a.foo(Right(4.5d)) prints out 3 :)
       false
     } else true // the member structure is different foo(3, 5) vs foo(3)(5)
-  }
 }

@@ -33,7 +33,7 @@ trait SecondOrderFunction[T, H] extends DiffFunction[T] {
 object SecondOrderFunction {
   def empirical[T, I](f: DiffFunction[T], eps: Double = 1e-5)(
       implicit vs: VectorSpace[T, Double])
-      : SecondOrderFunction[T, EmpiricalHessian[T]] = {
+      : SecondOrderFunction[T, EmpiricalHessian[T]] =
     new SecondOrderFunction[T, EmpiricalHessian[T]] {
 
       /** Calculates the value, the gradient, and the Hessian at a point */
@@ -43,13 +43,12 @@ object SecondOrderFunction {
         (v, grad, h)
       }
     }
-  }
 
   def minibatchEmpirical[T, I](
       f: BatchDiffFunction[T],
       eps: Double = 1e-5,
       batchSize: Int = 30000)(implicit vs: InnerProductVectorSpace[T, Double])
-      : SecondOrderFunction[T, EmpiricalHessian[T]] = {
+      : SecondOrderFunction[T, EmpiricalHessian[T]] =
     new SecondOrderFunction[T, EmpiricalHessian[T]] {
 
       /** Calculates the value, the gradient, and the Hessian at a point */
@@ -57,15 +56,13 @@ object SecondOrderFunction {
         val subset = Rand.subsetsOfSize(f.fullRange, batchSize).draw()
         val (v, grad) = f.calculate(x)
         val newf = new DiffFunction[T] {
-          def calculate(x: T): (Double, T) = {
+          def calculate(x: T): (Double, T) =
             f.calculate(x, subset)
-          }
         }
         val h = new EmpiricalHessian(newf, x, newf.gradientAt(x), eps)
         (v, grad, h)
       }
     }
-  }
 }
 
 /**
@@ -88,20 +85,17 @@ class EmpiricalHessian[T](
 
   import vs._
 
-  def *(t: T): T = {
+  def *(t: T): T =
     (df.gradientAt(x + t * eps) - grad) / eps
-  }
 
 }
 
 object EmpiricalHessian {
-  implicit def product[T, I]: OpMulMatrix.Impl2[EmpiricalHessian[T], T, T] = {
+  implicit def product[T, I]: OpMulMatrix.Impl2[EmpiricalHessian[T], T, T] =
     new OpMulMatrix.Impl2[EmpiricalHessian[T], T, T] {
-      def apply(a: EmpiricalHessian[T], b: T): T = {
+      def apply(a: EmpiricalHessian[T], b: T): T =
         a * b
-      }
     }
-  }
 
   /**
     * Calculate the Hessian using central differences
@@ -188,20 +182,17 @@ class FisherMatrix[T](grads: IndexedSeq[T])(
 
   import vs._
 
-  def *(t: T): T = {
+  def *(t: T): T =
     grads.view
       .map(g => g * (g dot t))
       .reduceLeft(_ += _) /= grads.length.toDouble
-  }
 }
 
 object FisherMatrix {
-  implicit def product[T, I]: OpMulMatrix.Impl2[FisherMatrix[T], T, T] = {
+  implicit def product[T, I]: OpMulMatrix.Impl2[FisherMatrix[T], T, T] =
     new OpMulMatrix.Impl2[FisherMatrix[T], T, T] {
-      def apply(a: FisherMatrix[T], b: T): T = {
+      def apply(a: FisherMatrix[T], b: T): T =
         a * b
-      }
     }
-  }
 
 }

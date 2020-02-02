@@ -63,7 +63,6 @@ object CompositeOffset {
     * Returns a [[CompositeOffset]] with a variable sequence of offsets.
     * `nulls` in the sequence are converted to `None`s.
     */
-  def fill(offsets: Offset*): CompositeOffset = {
+  def fill(offsets: Offset*): CompositeOffset =
     CompositeOffset(offsets.map(Option(_)))
-  }
 }

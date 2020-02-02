@@ -18,7 +18,7 @@ trait SourceMapper {
       className: String,
       line: Option[Int] = None): Option[(File, Option[Int])]
 
-  def sourceFor(e: Throwable): Option[(File, Option[Int])] = {
+  def sourceFor(e: Throwable): Option[(File, Option[Int])] =
     e.getStackTrace
       .find(element => sourceOf(element.getClassName).isDefined)
       .flatMap { interestingStackTrace =>
@@ -26,7 +26,6 @@ trait SourceMapper {
           interestingStackTrace.getClassName,
           Option(interestingStackTrace.getLineNumber))
       }
-  }
 
 }
 

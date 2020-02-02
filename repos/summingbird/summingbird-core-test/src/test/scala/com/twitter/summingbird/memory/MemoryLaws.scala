@@ -91,7 +91,7 @@ class MemoryLaws extends WordSpec {
     val serviceFn: MemoryService[K, JoinedU] =
       Arbitrary.arbitrary[MemoryService[K, JoinedU]].sample.get
     testGraph[T, K, V].leftJoinChecker[U, JoinedU](
-      serviceFn, { svc => { (k: K) => svc.get(k) } },
+      serviceFn, { svc => (k: K) => svc.get(k) },
       sample[List[T]],
       sample[T => List[(K, U)]],
       sample[((K, (U, Option[JoinedU]))) => List[(K, V)]])

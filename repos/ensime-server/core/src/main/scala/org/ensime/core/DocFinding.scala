@@ -106,11 +106,10 @@ trait DocFinding { self: RichPresentationCompiler =>
     }
   }
 
-  private def linkName(sym: Symbol, java: Boolean): DocFqn = {
+  private def linkName(sym: Symbol, java: Boolean): DocFqn =
     if (java) javaFqn(sym.tpe) else scalaFqn(sym)
-  }
 
-  private def signatureString(sym: Symbol, java: Boolean): String = {
+  private def signatureString(sym: Symbol, java: Boolean): String =
     sym.nameString + (if (java) {
                         if (sym.paramLists.isEmpty) ""
                         else
@@ -118,7 +117,6 @@ trait DocFinding { self: RichPresentationCompiler =>
                             .flatMap(_.map { sym => javaFqn(sym.tpe).mkString })
                             .mkString("(", ", ", ")")
                       } else sym.signatureString.replaceAll("[\\s]", ""))
-  }
 
   def docSignature(sym: Symbol, pos: Option[Position]): Option[DocSigPair] = {
     def docSig(java: Boolean) = {

@@ -65,10 +65,10 @@ object OffsetCommitRequest extends Logging {
         org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME
 
     val topicCount = buffer.getInt
-    val pairs = (1 to topicCount).flatMap(_ => {
+    val pairs = (1 to topicCount).flatMap { _ =>
       val topic = readShortString(buffer)
       val partitionCount = buffer.getInt
-      (1 to partitionCount).map(_ => {
+      (1 to partitionCount).map { _ =>
         val partitionId = buffer.getInt
         val offset = buffer.getLong
         val timestamp = {
@@ -83,8 +83,8 @@ object OffsetCommitRequest extends Logging {
         (
           TopicAndPartition(topic, partitionId),
           OffsetAndMetadata(offset, metadata, timestamp))
-      })
-    })
+      }
+    }
 
     OffsetCommitRequest(
       groupId,
@@ -139,19 +139,18 @@ case class OffsetCommitRequest(
     }
 
     buffer.putInt(requestInfoGroupedByTopic.size) // number of topics
-    requestInfoGroupedByTopic.foreach(
-      t1 => { // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
-        writeShortString(buffer, t1._1) // topic
-        buffer.putInt(t1._2.size) // number of partitions for this topic
-        t1._2.foreach(t2 => {
-          buffer.putInt(t2._1.partition)
-          buffer.putLong(t2._2.offset)
-          // version 1 specific data
-          if (versionId == 1)
-            buffer.putLong(t2._2.commitTimestamp)
-          writeShortString(buffer, t2._2.metadata)
-        })
-      })
+    requestInfoGroupedByTopic.foreach { t1 => // topic -> Map[TopicAndPartition, OffsetMetadataAndError]
+      writeShortString(buffer, t1._1) // topic
+      buffer.putInt(t1._2.size) // number of partitions for this topic
+      t1._2.foreach { t2 =>
+        buffer.putInt(t2._1.partition)
+        buffer.putLong(t2._2.offset)
+        // version 1 specific data
+        if (versionId == 1)
+          buffer.putLong(t2._2.commitTimestamp)
+        writeShortString(buffer, t2._2.metadata)
+      }
+    }
   }
 
   override def sizeInBytes =
@@ -164,19 +163,19 @@ case class OffsetCommitRequest(
        else 0) +
       (if (versionId >= 2) 8 /* retention time */ else 0) +
       4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((count, topicAndOffsets) => {
+    requestInfoGroupedByTopic.foldLeft(0) { (count, topicAndOffsets) =>
       val (topic, offsets) = topicAndOffsets
       count +
         shortStringLength(topic) + /* topic */
       4 + /* number of partitions */
-      offsets.foldLeft(0)((innerCount, offsetAndMetadata) => {
+      offsets.foldLeft(0) { (innerCount, offsetAndMetadata) =>
         innerCount +
           4 /* partition */ +
           8 /* offset */ +
           (if (versionId == 1) 8 else 0) /* timestamp */ +
           shortStringLength(offsetAndMetadata._2.metadata)
-      })
-    })
+      }
+    }
 
   override def handleError(
       e: Throwable,
@@ -207,7 +206,6 @@ case class OffsetCommitRequest(
     offsetCommitRequest.toString()
   }
 
-  override def toString = {
+  override def toString =
     describe(details = true)
-  }
 }

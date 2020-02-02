@@ -22,34 +22,33 @@ class ALSModel(
       params: ALSAlgorithmParams,
       sc: SparkContext): Boolean = {
 
-    productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
+    productFeatures.saveAsObjectFile(s"/tmp/$id/productFeatures")
     sc.parallelize(Seq(itemStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
+      .saveAsObjectFile(s"/tmp/$id/itemStringIntMap")
     // HOWTO: save items too as part of algo model
     sc.parallelize(Seq(items))
-      .saveAsObjectFile(s"/tmp/${id}/items")
+      .saveAsObjectFile(s"/tmp/$id/items")
     true
   }
 
-  override def toString = {
+  override def toString =
     s" productFeatures: [${productFeatures.count()}]" +
       s"(${productFeatures.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
       s" items: [${items.size}]" +
       s"(${items.take(2).toString}...)]"
-  }
 }
 
 object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
   def apply(id: String, params: ALSAlgorithmParams, sc: Option[SparkContext]) =
     new ALSModel(
-      productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
+      productFeatures = sc.get.objectFile(s"/tmp/$id/productFeatures"),
       itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
+        .objectFile[BiMap[String, Int]](s"/tmp/$id/itemStringIntMap")
         .first,
       // HOWTO: read items too as part of algo model
       items = sc.get
-        .objectFile[Map[Int, Item]](s"/tmp/${id}/items")
+        .objectFile[Map[Int, Item]](s"/tmp/$id/items")
         .first)
 }

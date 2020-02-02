@@ -84,13 +84,12 @@ class CometSpec extends Specification {
 
   implicit def timeout: Timeout = 20.seconds
 
-  def charset(of: Future[Result]): Option[String] = {
+  def charset(of: Future[Result]): Option[String] =
     Await.result(of, timeout.duration).body.contentType match {
       case Some(s) if s.contains("charset=") =>
         Some(s.split("; *charset=").drop(1).mkString.trim)
       case _ => None
     }
-  }
 
   /**
     * Extracts the content as String.

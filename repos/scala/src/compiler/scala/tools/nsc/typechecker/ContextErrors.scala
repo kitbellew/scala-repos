@@ -91,7 +91,7 @@ trait ContextErrors {
     def errMsg: String = errMsgForPt(pt0)
     def withPt(pt: Type): AbsTypeError = this.copy(pt0 = pt)
     private def errMsgForPt(pt: Type) =
-      s"diverging implicit expansion for type ${pt}\nstarting with ${sym.fullLocationString}"
+      s"diverging implicit expansion for type $pt\nstarting with ${sym.fullLocationString}"
   }
 
   case class PosAndMsgTypeError(errPos: Position, errMsg: String)
@@ -190,9 +190,8 @@ trait ContextErrors {
       implicit val contextTyperErrorGen: Context = infer.getContext
 
       def UnstableTreeError(tree: Tree) = {
-        def addendum = {
+        def addendum =
           "\n Note that " + tree.symbol + " is not stable because its type, " + tree.tpe + ", is volatile."
-        }
         issueNormalTypeError(
           tree,
           "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
@@ -280,9 +279,8 @@ trait ContextErrors {
           tree: Tree,
           name: Name,
           owner: Symbol,
-          startingIdentCx: Context) = {
+          startingIdentCx: Context) =
         NormalTypeError(tree, "not found: " + decodeWithKind(name, owner))
-      }
 
       // typedAppliedTypeTree
       def AppliedTypeNoParametersError(tree: Tree, errTpe: Type) = {
@@ -491,10 +489,9 @@ trait ContextErrors {
       }
 
       //typedBind
-      def VariableInPatternAlternativeError(tree: Tree) = {
+      def VariableInPatternAlternativeError(tree: Tree) =
         issueNormalTypeError(tree, "illegal variable in pattern alternative")
-        //setError(tree)
-      }
+      //setError(tree)
 
       //typedCase
       def StarPositionInPatternError(tree: Tree) =
@@ -827,10 +824,10 @@ trait ContextErrors {
       def TypeSelectionFromVolatileTypeError(tree: Tree, qual: Tree) = {
         val hiBound = qual.tpe.bounds.hi
         val addendum =
-          if (hiBound =:= qual.tpe) "" else s" (with upper bound ${hiBound})"
+          if (hiBound =:= qual.tpe) "" else s" (with upper bound $hiBound)"
         issueNormalTypeError(
           tree,
-          s"illegal type selection from volatile type ${qual.tpe}${addendum}")
+          s"illegal type selection from volatile type ${qual.tpe}$addendum")
         setError(tree)
       }
 
@@ -935,9 +932,8 @@ trait ContextErrors {
         setError(tree)
       }
 
-      def MacroTooManyArgumentListsError(expandee: Tree, fun: Symbol) = {
+      def MacroTooManyArgumentListsError(expandee: Tree, fun: Symbol) =
         NormalTypeError(expandee, "too many argument lists for " + fun)
-      }
 
       case object MacroExpansionException
           extends Exception
@@ -1256,8 +1252,7 @@ trait ContextErrors {
           firstCompeting: Symbol,
           argtpes: List[Type],
           pt: Type,
-          lastTry: Boolean) = {
-
+          lastTry: Boolean) =
         if (!(argtpes exists (_.isErroneous)) && !pt.isErroneous) {
           val msg0 =
             "argument types " + argtpes.mkString("(", ",", ")") +
@@ -1274,9 +1269,7 @@ trait ContextErrors {
           setError(
             tree
           ) // do not even try further attempts because they should all fail
-        // even if this is not the last attempt (because of the SO's possibility on the horizon)
-
-      }
+      // even if this is not the last attempt (because of the SO's possibility on the horizon)
 
       def NoBestExprAlternativeError(tree: Tree, pt: Type, lastTry: Boolean) = {
         issueNormalTypeError(
@@ -1307,7 +1300,7 @@ trait ContextErrors {
           prefix: String,
           targs: List[Type],
           tparams: List[Symbol],
-          kindErrors: List[String]) = {
+          kindErrors: List[String]) =
         issueNormalTypeError(
           tree,
           prefix + "kinds of the type arguments " + targs
@@ -1317,7 +1310,6 @@ trait ContextErrors {
               .mkString("(", ",", ")") + tparams.head.locationString + "." +
             kindErrors.toList.mkString("\n", ", ", "")
         )
-      }
 
       private[scala] def NotWithinBoundsErrorMessage(
           prefix: String,
@@ -1439,7 +1431,7 @@ trait ContextErrors {
       import DuplicatesErrorKinds._
       import symtab.Flags
 
-      def TypeSigError(tree: Tree, ex: TypeError) = {
+      def TypeSigError(tree: Tree, ex: TypeError) =
         ex match {
           case CyclicReference(_, _) if tree.symbol.isTermMacro =>
             // say, we have a macro def `foo` and its macro impl `impl`
@@ -1463,7 +1455,6 @@ trait ContextErrors {
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))
         }
-      }
 
       def GetterDefinedTwiceError(getter: Symbol) =
         issueSymbolTypeError(getter, getter + " is defined twice")
@@ -1608,7 +1599,7 @@ trait ContextErrors {
         pre1: String,
         pre2: String,
         trailer: String)(isView: Boolean, pt: Type, tree: Tree)(
-        implicit context0: Context) = {
+        implicit context0: Context) =
       if (!info1.tpe.isErroneous && !info2.tpe.isErroneous) {
         def coreMsg =
           sm"""| $pre1 ${info1.sym.fullLocationString} of type ${info1.tpe}
@@ -1667,7 +1658,6 @@ trait ContextErrors {
             }
           ))
       }
-    }
 
     def DivergingImplicitExpansionError(tree: Tree, pt: Type, sym: Symbol)(
         implicit context0: Context) =
@@ -1690,7 +1680,7 @@ trait ContextErrors {
     }
 
     def AmbiguousReferenceInNamesDefaultError(arg: Tree, name: Name)(
-        implicit context: Context) = {
+        implicit context: Context) =
       if (!arg.isErroneous) { // check if name clash wasn't reported already
         issueNormalTypeError(
           arg,
@@ -1698,7 +1688,6 @@ trait ContextErrors {
             "and a variable in scope.")
         setError(arg)
       } else arg
-    }
 
     def WarnAfterNonSilentRecursiveInference(param: Symbol, arg: Tree)(
         implicit context: Context) = {

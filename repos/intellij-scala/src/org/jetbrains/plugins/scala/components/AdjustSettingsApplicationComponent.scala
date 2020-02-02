@@ -95,7 +95,7 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
       panel
     }
 
-    override def doOKAction(): Unit = {
+    override def doOKAction(): Unit =
       try {
         val xmsValue = xmsField.getText.toInt
         val xmxValue = xmxField.getText.toInt
@@ -113,13 +113,11 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
         case n: NumberFormatException => //do nothing
       } finally {
         SwingUtilities.invokeLater(new Runnable {
-          override def run(): Unit = {
+          override def run(): Unit =
             ApplicationManager.getApplication.restart()
-          }
         })
         super.doOKAction() //close OK dialog
       }
-    }
 
     override def doCancelAction(): Unit = {
       ScalaApplicationSettings.getInstance().IGNORE_SETTINGS_CHECK = true

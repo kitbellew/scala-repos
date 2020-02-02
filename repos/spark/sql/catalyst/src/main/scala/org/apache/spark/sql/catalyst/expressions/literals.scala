@@ -97,9 +97,8 @@ object Literal {
     }
   }
 
-  def create(v: Any, dataType: DataType): Literal = {
+  def create(v: Any, dataType: DataType): Literal =
     Literal(CatalystTypeConverters.convertToCatalyst(v), dataType)
-  }
 
   /**
     * Create a literal with default value for given DataType
@@ -134,9 +133,8 @@ object Literal {
   * An extractor that matches non-null literal values
   */
 object NonNullLiteral {
-  def unapply(literal: Literal): Option[(Any, DataType)] = {
+  def unapply(literal: Literal): Option[(Any, DataType)] =
     Option(literal.value).map(_ => (literal.value, literal.dataType))
-  }
 }
 
 /**
@@ -202,7 +200,7 @@ case class Literal protected (value: Any, dataType: DataType)
 
   override def eval(input: InternalRow): Any = value
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     // change the isNull and primitive to consts, to inline them
     if (value == null) {
       ev.isNull = "true"
@@ -248,7 +246,6 @@ case class Literal protected (value: Any, dataType: DataType)
           super[CodegenFallback].genCode(ctx, ev)
       }
     }
-  }
 
   override def sql: String = (value, dataType) match {
     case (_, NullType | _: ArrayType | _: MapType | _: StructType)

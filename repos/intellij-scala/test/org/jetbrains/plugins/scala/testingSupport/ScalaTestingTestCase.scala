@@ -65,21 +65,16 @@ abstract class ScalaTestingTestCase(
 
   override protected def isRunInEdt = false
 
-  override protected def addFileToProject(
-      fileName: String,
-      fileText: String) = {
+  override protected def addFileToProject(fileName: String, fileText: String) =
     UsefulTestCase.edt(new Runnable() {
-      override def run(): Unit = {
+      override def run(): Unit =
         ScalaTestingTestCase.super.addFileToProject(fileName, fileText)
-      }
     })
-  }
 
-  override protected def tearDown() = {
+  override protected def tearDown() =
     UsefulTestCase.edt(new Runnable() {
       override def run(): Unit = ScalaTestingTestCase.super.tearDown()
     })
-  }
 
   override val testDataBasePrefix = "testingSupport"
 
@@ -188,7 +183,7 @@ abstract class ScalaTestingTestCase(
       fileName: String): RunnerAndConfigurationSettings = {
     var res: RunnerAndConfigurationSettings = null
     UsefulTestCase.edt(new Runnable {
-      override def run(): Unit = {
+      override def run(): Unit =
         res = configurationProducer
           .createConfigurationByLocation(
             createLocation(lineNumber, offset, fileName))
@@ -198,7 +193,6 @@ abstract class ScalaTestingTestCase(
             throw new RuntimeException(
               failedConfigMessage(fileName, lineNumber, offset))
         }
-      }
     })
     res
   }

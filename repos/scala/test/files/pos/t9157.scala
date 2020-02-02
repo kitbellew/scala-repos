@@ -9,7 +9,6 @@ class Test {
       f: Flow[String, String]#Repr[String]#Repr[String]#Repr[String]#Repr[
         String]#Repr[String]#Repr[String]#Repr[String]#Repr[String]#Repr[String]#Repr[
         String]#Repr[String]
-  ) = {
+  ) =
     f.map
-  }
 }

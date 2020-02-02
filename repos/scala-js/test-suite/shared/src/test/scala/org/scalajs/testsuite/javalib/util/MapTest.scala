@@ -145,7 +145,7 @@ trait MapTest {
     assertTrue(mp.isEmpty)
   }
 
-  @Test def should_put_or_fail_on_null_keys(): Unit = {
+  @Test def should_put_or_fail_on_null_keys(): Unit =
     if (factory.allowsNullKeys) {
       val mp = factory.empty[String, String]
       mp.put(null, "one")
@@ -154,9 +154,8 @@ trait MapTest {
       val mp = factory.empty[String, String]
       expectThrows(classOf[NullPointerException], mp.put(null, "one"))
     }
-  }
 
-  @Test def should_put_or_fail_on_null_values(): Unit = {
+  @Test def should_put_or_fail_on_null_values(): Unit =
     if (factory.allowsNullValues) {
       val mp = factory.empty[String, String]
       mp.put("one", null)
@@ -165,7 +164,6 @@ trait MapTest {
       val mp = factory.empty[String, String]
       expectThrows(classOf[NullPointerException], mp.put("one", null))
     }
-  }
 
   @Test def should_be_cleared_with_one_operation(): Unit = {
     val mp = factory.empty[String, String]
@@ -266,11 +264,10 @@ trait MapTest {
 
   class SimpleQueryableMap[K, V](inner: mu.HashMap[K, V])
       extends ju.AbstractMap[K, V] {
-    def entrySet(): java.util.Set[java.util.Map.Entry[K, V]] = {
+    def entrySet(): java.util.Set[java.util.Map.Entry[K, V]] =
       setAsJavaSet(inner.map {
         case (k, v) => new ju.AbstractMap.SimpleImmutableEntry(k, v)
       }.toSet)
-    }
   }
 
   @Test def values_should_mirror_the_related_map_size(): Unit = {

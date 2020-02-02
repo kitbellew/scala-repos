@@ -1,11 +1,10 @@
 class A {
-  def f(b: Boolean) = {
+  def f(b: Boolean) =
     locally {
       while (b == false) ()
       // or:
       // do () while (b == false)
     }
-  }
 }
 //
 // [Now checking: erasure]

@@ -537,9 +537,8 @@ package com.twitter.scalding {
       with ScaldingPrepare[Any] {
     val lockedFn = Externalizer(fn)
 
-    def isRemove(flowProcess: FlowProcess[_], filterCall: FilterCall[Any]) = {
+    def isRemove(flowProcess: FlowProcess[_], filterCall: FilterCall[Any]) =
       !lockedFn.get(conv(filterCall.getArguments))
-    }
   }
 
   // All the following are operations for use in GroupBuilder
@@ -670,7 +669,7 @@ package com.twitter.scalding {
       nextContext
     }
 
-    override final def complete(flowProcess: FlowProcess[_], context: Tuple) = {
+    override final def complete(flowProcess: FlowProcess[_], context: Tuple) =
       if (null == context) {
         throw new Exception("FoldFunctor completed with any aggregate calls")
       } else {
@@ -679,7 +678,6 @@ package com.twitter.scalding {
         context.set(0, null)
         finish(res)
       }
-    }
   }
 
   /**

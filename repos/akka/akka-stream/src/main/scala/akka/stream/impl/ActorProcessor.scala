@@ -94,13 +94,12 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
     pump.pump()
   }
 
-  override def cancel(): Unit = {
+  override def cancel(): Unit =
     if (!upstreamCompleted) {
       upstreamCompleted = true
       if (upstream ne null) upstream.cancel()
       clear()
     }
-  }
   override def isClosed: Boolean = upstreamCompleted
 
   private def clear(): Unit = {
@@ -154,9 +153,8 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
         "onSubscribe called after onError or onComplete")
   }
 
-  protected def inputOnError(e: Throwable): Unit = {
+  protected def inputOnError(e: Throwable): Unit =
     clear()
-  }
 
 }
 
@@ -186,29 +184,26 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
     tryOnNext(subscriber, elem)
   }
 
-  override def complete(): Unit = {
+  override def complete(): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(None)
       if (subscriber ne null) tryOnComplete(subscriber)
     }
-  }
 
-  override def cancel(): Unit = {
+  override def cancel(): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(None)
     }
-  }
 
-  override def error(e: Throwable): Unit = {
+  override def error(e: Throwable): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
       if ((subscriber ne null) && !e.isInstanceOf[SpecViolation])
         tryOnError(subscriber, e)
     }
-  }
 
   override def isClosed: Boolean = downstreamCompleted && (subscriber ne null)
 

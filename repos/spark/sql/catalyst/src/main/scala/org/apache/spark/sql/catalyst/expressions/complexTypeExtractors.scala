@@ -53,8 +53,7 @@ object ExtractValue {
   def apply(
       child: Expression,
       extraction: Expression,
-      resolver: Resolver): Expression = {
-
+      resolver: Resolver): Expression =
     (child.dataType, extraction) match {
       case (StructType(fields), NonNullLiteral(v, StringType)) =>
         val fieldName = v.toString
@@ -86,7 +85,6 @@ object ExtractValue {
         }
         throw new AnalysisException(errorMsg)
     }
-  }
 
   /**
     * Find the ordinal of StructField, report error if no desired field or over one
@@ -140,11 +138,11 @@ case class GetStructField(
   protected override def nullSafeEval(input: Any): Any =
     input.asInstanceOf[InternalRow].get(ordinal, childSchema(ordinal).dataType)
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
-      eval => {
+      eval =>
         if (nullable) {
           s"""
           if ($eval.isNullAt($ordinal)) {
@@ -158,9 +156,7 @@ case class GetStructField(
           ${ev.value} = ${ctx.getValue(eval, dataType, ordinal.toString)};
         """
         }
-      }
     )
-  }
 }
 
 /**
@@ -273,7 +269,7 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
     }
   }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
@@ -289,7 +285,6 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
       """
       }
     )
-  }
 }
 
 /**
@@ -353,7 +348,7 @@ case class GetMapValue(child: Expression, key: Expression)
     nullSafeCodeGen(
       ctx,
       ev,
-      (eval1, eval2) => {
+      (eval1, eval2) =>
         s"""
         final int $length = $eval1.numElements();
         final ArrayData $keys = $eval1.keyArray();
@@ -377,7 +372,6 @@ case class GetMapValue(child: Expression, key: Expression)
           ${ev.value} = ${ctx.getValue(values, dataType, index)};
         }
       """
-      }
     )
   }
 }

@@ -44,7 +44,7 @@ object ServerConfig {
       sslPort: Option[Int] = None,
       address: String = "0.0.0.0",
       mode: Mode.Mode = Mode.Prod,
-      properties: Properties = System.getProperties): ServerConfig = {
+      properties: Properties = System.getProperties): ServerConfig =
     ServerConfig(
       rootDir = rootDir,
       port = port,
@@ -58,7 +58,6 @@ object ServerConfig {
         rootDirConfig(rootDir),
         mode == Mode.Test)
     )
-  }
 
   /**
     * Gets the configuration for the given root directory. Used to construct

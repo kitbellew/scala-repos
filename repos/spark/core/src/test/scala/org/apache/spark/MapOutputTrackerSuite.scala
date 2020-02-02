@@ -34,9 +34,8 @@ class MapOutputTrackerSuite extends SparkFunSuite {
       name: String,
       host: String = "localhost",
       port: Int = 0,
-      securityManager: SecurityManager = new SecurityManager(conf)): RpcEnv = {
+      securityManager: SecurityManager = new SecurityManager(conf)): RpcEnv =
     RpcEnv.create(name, host, port, conf, securityManager)
-  }
 
   test("master start and stop") {
     val rpcEnv = createRpcEnv("test")

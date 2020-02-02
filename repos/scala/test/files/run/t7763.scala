@@ -4,9 +4,8 @@ object Test {
     def noExpectedType() {
       a().asInstanceOf[B] // cast elided!
     }
-    def withExpectedType(): B = {
+    def withExpectedType(): B =
       a().asInstanceOf[B]
-    }
     def test(a: => Any) =
       try {
         a

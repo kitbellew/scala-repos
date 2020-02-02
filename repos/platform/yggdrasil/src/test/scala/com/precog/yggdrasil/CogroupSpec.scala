@@ -81,7 +81,7 @@ trait CogroupSpec[M[+_]]
   @tailrec protected final def computeCogroup[A](
       l: Stream[A],
       r: Stream[A],
-      acc: CogroupResult[A])(implicit ord: Order[A]): CogroupResult[A] = {
+      acc: CogroupResult[A])(implicit ord: Order[A]): CogroupResult[A] =
     (l, r) match {
       case (lh #:: lt, rh #:: rt) =>
         ord.order(lh, rh) match {
@@ -113,7 +113,6 @@ trait CogroupSpec[M[+_]]
       case (Stream.Empty, _) => acc ++ r.map { case v => right3(v) }
       case (_, Stream.Empty) => acc ++ l.map { case v => left3(v) }
     }
-  }
 
   def testCogroup(l: SampleData, r: SampleData) = {
     val ltable = fromSample(l)

@@ -230,17 +230,15 @@ object ASMConverters {
     private def convertMethodHandle(h: asm.Handle): MethodHandle =
       MethodHandle(h.getTag, h.getOwner, h.getName, h.getDesc)
 
-    private def convertHandlers(
-        method: t.MethodNode): List[ExceptionHandler] = {
+    private def convertHandlers(method: t.MethodNode): List[ExceptionHandler] =
       method.tryCatchBlocks.asScala.map(h =>
         ExceptionHandler(
           applyLabel(h.start),
           applyLabel(h.end),
           applyLabel(h.handler),
           Option(h.`type`)))(collection.breakOut)
-    }
 
-    private def convertLocalVars(method: t.MethodNode): List[LocalVariable] = {
+    private def convertLocalVars(method: t.MethodNode): List[LocalVariable] =
       method.localVariables.asScala.map(v =>
         LocalVariable(
           v.name,
@@ -249,7 +247,6 @@ object ASMConverters {
           applyLabel(v.start),
           applyLabel(v.end),
           v.index))(collection.breakOut)
-    }
   }
 
   import collection.mutable.{Map => MMap}
@@ -262,14 +259,13 @@ object ASMConverters {
       bs: List[Instruction],
       varMap: MMap[Int, Int] = MMap(),
       labelMap: MMap[Int, Int] = MMap()): Boolean = {
-    def same(v1: Int, v2: Int, m: MMap[Int, Int]) = {
+    def same(v1: Int, v2: Int, m: MMap[Int, Int]) =
       if (m contains v1) m(v1) == v2
       else if (m.valuesIterator contains v2)
         false // v2 is already associated with some different value v1
       else {
         m(v1) = v2; true
       }
-    }
     def sameVar(v1: Int, v2: Int) = same(v1, v2, varMap)
     def sameLabel(l1: Label, l2: Label) = same(l1.offset, l2.offset, labelMap)
     def sameLabels(ls1: List[Label], ls2: List[Label]) =

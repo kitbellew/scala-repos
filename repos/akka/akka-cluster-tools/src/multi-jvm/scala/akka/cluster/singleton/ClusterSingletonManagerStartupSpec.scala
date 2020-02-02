@@ -69,14 +69,13 @@ class ClusterSingletonManagerStartupSpec
 
   override def initialParticipants = roles.size
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     runOn(from) {
       Cluster(system) join node(to).address
       createSingleton()
     }
-  }
 
-  def createSingleton(): ActorRef = {
+  def createSingleton(): ActorRef =
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = Props(classOf[Echo], testActor),
@@ -84,7 +83,6 @@ class ClusterSingletonManagerStartupSpec
         settings = ClusterSingletonManagerSettings(system)),
       name = "echo"
     )
-  }
 
   lazy val echoProxy: ActorRef = {
     system.actorOf(

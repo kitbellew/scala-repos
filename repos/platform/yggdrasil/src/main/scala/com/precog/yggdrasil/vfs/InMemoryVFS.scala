@@ -347,22 +347,20 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     }
 
     def writeAllSync(events: Seq[(Long, EventMessage)])
-        : EitherT[M, ResourceError, PrecogUnit] = {
+        : EitherT[M, ResourceError, PrecogUnit] =
       EitherT.right(M.point(writeAll(events).unsafePerformIO))
-    }
 
     def readResource(
         path: Path,
-        version: Version): EitherT[M, ResourceError, Resource] = {
+        version: Version): EitherT[M, ResourceError, Resource] =
       EitherT {
         data
           .get((path, version))
           .toRightDisjunction(NotFound("No data found for path %s version %s"
             .format(path.path, version))) traverse { toResource }
       }
-    }
 
-    private def childMetadata(path: Path): Set[PathMetadata] = {
+    private def childMetadata(path: Path): Set[PathMetadata] =
       data.keySet.map(_._1) flatMap { _ - path } flatMap { p0 =>
         val childPath = path / Path(p0.elements.headOption.toList)
         val isDir = p0.length > 1
@@ -378,17 +376,14 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
           else Set.empty[PathMetadata]
         }
       }
-    }
 
     def findDirectChildren(
-        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] = {
+        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
       EitherT.right {
         M point { childMetadata(path) }
       }
-    }
 
-    def findPathMetadata(
-        path: Path): EitherT[M, ResourceError, PathMetadata] = {
+    def findPathMetadata(path: Path): EitherT[M, ResourceError, PathMetadata] =
       EitherT {
         M point {
           val isDir = childMetadata(path).nonEmpty
@@ -404,7 +399,6 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
           }
         }
       }
-    }
 
     def currentVersion(path: Path): M[Option[VersionEntry]] = M point {
       data.get((path, Version.Current)) map {

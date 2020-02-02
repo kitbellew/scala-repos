@@ -164,7 +164,7 @@ private[columnar] object ColumnBuilder {
   val DEFAULT_INITIAL_BUFFER_SIZE = 128 * 1024
   val MAX_BATCH_SIZE_IN_BYTE = 4 * 1024 * 1024L
 
-  private[columnar] def ensureFreeSpace(orig: ByteBuffer, size: Int) = {
+  private[columnar] def ensureFreeSpace(orig: ByteBuffer, size: Int) =
     if (orig.remaining >= size) {
       orig
     } else {
@@ -178,7 +178,6 @@ private[columnar] object ColumnBuilder {
         .order(ByteOrder.nativeOrder())
         .put(orig.array(), 0, pos)
     }
-  }
 
   def apply(
       dataType: DataType,

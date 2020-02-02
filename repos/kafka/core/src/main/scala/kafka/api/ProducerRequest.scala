@@ -36,11 +36,11 @@ object ProducerRequest {
     val ackTimeoutMs: Int = buffer.getInt
     //build the topic structure
     val topicCount = buffer.getInt
-    val partitionDataPairs = (1 to topicCount).flatMap(_ => {
+    val partitionDataPairs = (1 to topicCount).flatMap { _ =>
       // process topic
       val topic = readShortString(buffer)
       val partitionCount = buffer.getInt
-      (1 to partitionCount).map(_ => {
+      (1 to partitionCount).map { _ =>
         val partition = buffer.getInt
         val messageSetSize = buffer.getInt
         val messageSetBuffer = new Array[Byte](messageSetSize)
@@ -48,8 +48,8 @@ object ProducerRequest {
         (
           TopicAndPartition(topic, partition),
           new ByteBufferMessageSet(ByteBuffer.wrap(messageSetBuffer)))
-      })
-    })
+      }
+    }
 
     ProducerRequest(
       versionId,
@@ -104,7 +104,7 @@ case class ProducerRequest(
       case (topic, topicAndPartitionData) =>
         writeShortString(buffer, topic) //write the topic
         buffer.putInt(topicAndPartitionData.size) //the number of partitions
-        topicAndPartitionData.foreach(partitionAndData => {
+        topicAndPartitionData.foreach { partitionAndData =>
           val partition = partitionAndData._1.partition
           val partitionMessageData = partitionAndData._2
           val bytes = partitionMessageData.buffer
@@ -112,41 +112,39 @@ case class ProducerRequest(
           buffer.putInt(bytes.limit)
           buffer.put(bytes)
           bytes.rewind
-        })
+        }
     }
   }
 
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 + /* versionId */
     4 + /* correlationId */
     shortStringLength(clientId) + /* client id */
     2 + /* requiredAcks */
     4 + /* ackTimeoutMs */
     4 + /* number of topics */
-    dataGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+    dataGroupedByTopic.foldLeft(0) { (foldedTopics, currTopic) =>
       foldedTopics +
         shortStringLength(currTopic._1) +
         4 + /* the number of partitions */ {
-        currTopic._2.foldLeft(0)((foldedPartitions, currPartition) => {
+        currTopic._2.foldLeft(0) { (foldedPartitions, currPartition) =>
           foldedPartitions +
             4 + /* partition id */
           4 + /* byte-length of serialized messages */
           currPartition._2.sizeInBytes
-        })
+        }
       }
-    })
-  }
+    }
 
   def numPartitions = data.size
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,
       requestChannel: RequestChannel,
-      request: RequestChannel.Request): Unit = {
+      request: RequestChannel.Request): Unit =
     if (request.requestObj.asInstanceOf[ProducerRequest].requiredAcks == 0) {
       requestChannel.closeConnection(request.processor, request)
     } else {
@@ -166,7 +164,6 @@ case class ProducerRequest(
           request,
           new RequestOrResponseSend(request.connectionId, errorResponse)))
     }
-  }
 
   override def describe(details: Boolean): String = {
     val producerRequest = new StringBuilder

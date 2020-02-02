@@ -45,9 +45,8 @@ trait Imports {
     *  scope twiddling which should be swept away in favor of digging
     *  into the compiler scopes.
     */
-  def sessionWildcards: List[Type] = {
+  def sessionWildcards: List[Type] =
     importHandlers filter (_.importsWildcard) map (_.targetType) distinct
-  }
 
   def languageSymbols = languageWildcardSyms flatMap membersAtPickler
   def sessionImportedSymbols = importHandlers flatMap (_.importedSymbols)
@@ -64,11 +63,10 @@ trait Imports {
 
     lang ++ session
   }
-  def implicitSymbolsBySource: List[(Symbol, List[Symbol])] = {
+  def implicitSymbolsBySource: List[(Symbol, List[Symbol])] =
     importedSymbolsBySource map {
       case (k, vs) => (k, vs filter (_.isImplicit))
     } filterNot (_._2.isEmpty)
-  }
 
   /** Compute imports that allow definitions from previous
     *  requests to be visible in a new request.  Returns

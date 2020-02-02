@@ -39,7 +39,7 @@ class ScTypeProjectionImpl(node: ASTNode)
 
   override def toString: String = "TypeProjection: " + getText
 
-  protected def innerType(ctx: TypingContext) = {
+  protected def innerType(ctx: TypingContext) =
     this.bind() match {
       case Some(ScalaResolveResult(elem, subst)) =>
         val te: TypeResult[ScType] = typeElement.getType(ctx)
@@ -51,7 +51,6 @@ class ScTypeProjectionImpl(node: ASTNode)
         }
       case _ => Failure("Cannot Resolve reference", Some(this))
     }
-  }
 
   def getKinds(incomplete: Boolean, completion: Boolean) = StdKinds.stableClass
 
@@ -84,13 +83,12 @@ class ScTypeProjectionImpl(node: ASTNode)
 
   object MyResolver
       extends ResolveCache.PolyVariantResolver[ScTypeProjectionImpl] {
-    def resolve(projection: ScTypeProjectionImpl, incomplete: Boolean) = {
+    def resolve(projection: ScTypeProjectionImpl, incomplete: Boolean) =
       projection.doResolve(
         new ResolveProcessor(
           projection.getKinds(incomplete),
           projection,
           projection.refName))
-    }
   }
 
   def doResolve(

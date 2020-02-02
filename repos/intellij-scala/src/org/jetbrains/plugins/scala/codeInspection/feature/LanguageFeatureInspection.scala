@@ -156,7 +156,7 @@ private case class Feature(
     }
   }
 
-  private def isFlagImportedFor(e: PsiElement): Boolean = {
+  private def isFlagImportedFor(e: PsiElement): Boolean =
     ScalaPsiElementFactory
       .createReferenceFromText(flagName, e, e)
       .resolve() match {
@@ -164,7 +164,6 @@ private case class Feature(
         Option(e.containingClass).exists(_.qualifiedName == flagQualifier)
       case _ => false
     }
-  }
 }
 
 private class ImportFeatureFlagFix(e: PsiElement, name: String, flag: String)

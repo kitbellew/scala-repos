@@ -21,7 +21,7 @@ class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
       if (!isApplicable(element)) return false
     return true
   }
-  override def isApplicable(element: PsiElement): Boolean = {
+  override def isApplicable(element: PsiElement): Boolean =
     element match {
       case _: ScBlockExpr => true
       case _: ScBlock     => false
@@ -32,11 +32,9 @@ class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
         ScalaPsiUtil.isLineTerminator(e)
       }
     }
-  }
 
-  override def getTemplateAsString(elements: Array[PsiElement]): String = {
+  override def getTemplateAsString(elements: Array[PsiElement]): String =
     return "(" + super.getTemplateAsString(elements) + ")"
-  }
 
   override def getTemplateDescription = "(  )"
 

@@ -80,29 +80,27 @@ object HB_0_8_0 {
       // use eventTime instead).
       Bytes.toBytes(appId) ++ Bytes.toBytes(millis) ++ Bytes.toBytes(uuidLow)
     }
-    override def toString: String = {
+    override def toString: String =
       Base64.encodeBase64URLSafeString(toBytes)
-    }
   }
 
   object RowKey {
     // get RowKey from string representation
-    def apply(s: String): RowKey = {
+    def apply(s: String): RowKey =
       try {
         apply(Base64.decodeBase64(s))
       } catch {
         case e: Exception =>
           throw new RowKeyException(
-            s"Failed to convert String ${s} to RowKey because ${e}",
+            s"Failed to convert String $s to RowKey because $e",
             e)
       }
-    }
 
     def apply(b: Array[Byte]): RowKey = {
       if (b.size != 20) {
         val bString = b.mkString(",")
         throw new RowKeyException(
-          s"Incorrect byte array size. Bytes: ${bString}.")
+          s"Incorrect byte array size. Bytes: $bString.")
       }
 
       new RowKey(
@@ -135,7 +133,7 @@ object HB_0_8_0 {
       val r = result.getValue(eBytes, colNames(col))
       require(
         r != null,
-        s"Failed to get value for column ${col}. " +
+        s"Failed to get value for column $col. " +
           s"Rowkey: ${rowKey.toString} " +
           s"StringBinary: ${Bytes.toStringBinary(result.getRow())}.")
 
@@ -151,9 +149,8 @@ object HB_0_8_0 {
       }
     }
 
-    def getTimestamp(col: String): Long = {
+    def getTimestamp(col: String): Long =
       result.getColumnLatestCell(eBytes, colNames(col)).getTimestamp()
-    }
 
     val event = getStringCol("event")
     val entityType = getStringCol("entityType")

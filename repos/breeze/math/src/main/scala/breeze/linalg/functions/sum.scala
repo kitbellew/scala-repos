@@ -22,13 +22,11 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     def apply(v: T): S = {
       class SumVisitor extends ValuesVisitor[S] {
         var sum: S = 0
-        def visit(a: S): Unit = {
+        def visit(a: S): Unit =
           sum += a
-        }
 
-        def zeros(numZero: Int, zeroValue: S): Unit = {
+        def zeros(numZero: Int, zeroValue: S): Unit =
           sum += numZero * zeroValue
-        }
       }
       val visit = new SumVisitor
       iter.traverse(v, visit)
@@ -42,9 +40,8 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     def apply(v: T): S = {
       class SumVisitor extends ValuesVisitor[S] {
         var sum: S = semiring.zero
-        def visit(a: S): Unit = {
+        def visit(a: S): Unit =
           sum = semiring.+(sum, a)
-        }
 
         def zeros(numZero: Int, zeroValue: S): Unit = {}
 
@@ -75,9 +72,8 @@ trait VectorizedReduceUFunc extends UFunc {
 
   implicit def vectorizeRows[T: ClassTag](
       implicit helper: VectorizeHelper[T],
-      baseOp: UFunc.InPlaceImpl2[Op, DenseVector[T], DenseVector[T]]): Impl[
-    BroadcastedRows[DenseMatrix[T], DenseVector[T]],
-    DenseVector[T]] = {
+      baseOp: UFunc.InPlaceImpl2[Op, DenseVector[T], DenseVector[T]])
+      : Impl[BroadcastedRows[DenseMatrix[T], DenseVector[T]], DenseVector[T]] =
     new Impl[BroadcastedRows[DenseMatrix[T], DenseVector[T]], DenseVector[T]] {
       override def apply(v: BroadcastedRows[DenseMatrix[T], DenseVector[T]])
           : DenseVector[T] = {
@@ -88,13 +84,12 @@ trait VectorizedReduceUFunc extends UFunc {
         result
       }
     }
-  }
 
   @expand
   implicit def vectorizeCols[@expand.args(Double, Float, Int, Long) T: ClassTag: Zero](
       implicit helper: VectorizeHelper[T]): Impl[
     BroadcastedColumns[DenseMatrix[T], DenseVector[T]],
-    Transpose[DenseVector[T]]] = {
+    Transpose[DenseVector[T]]] =
     new Impl[
       BroadcastedColumns[DenseMatrix[T], DenseVector[T]],
       Transpose[DenseVector[T]]] {
@@ -125,16 +120,14 @@ trait VectorizedReduceUFunc extends UFunc {
         res.t
       }
     }
-  }
 
 }
 
 sealed trait sumLowPrio { this: sum.type =>
   implicit def sumSummableThings[CC, T](
       implicit view: CC <:< TraversableOnce[T],
-      tSum: OpAdd.Impl2[T, T, T]): Impl[CC, T] = {
+      tSum: OpAdd.Impl2[T, T, T]): Impl[CC, T] =
     new Impl[CC, T] {
       override def apply(v: CC): T = v.reduceLeft(tSum(_, _))
     }
-  }
 }

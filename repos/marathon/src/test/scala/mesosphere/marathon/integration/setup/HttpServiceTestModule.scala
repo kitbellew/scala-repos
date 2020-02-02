@@ -25,9 +25,8 @@ case class RestResult[+T](
   lazy val value: T = valueGetter()
 
   /** Transform the value of this result. */
-  def map[R](change: T => R): RestResult[R] = {
+  def map[R](change: T => R): RestResult[R] =
     RestResult(() => change(valueGetter()), originalResponse)
-  }
 
   /** Display the original response entity (=body) as string. */
   lazy val entityString: String = originalResponse.entity.asString
@@ -40,15 +39,13 @@ case class RestResult[+T](
 }
 
 object RestResult {
-  def apply(response: HttpResponse): RestResult[HttpResponse] = {
+  def apply(response: HttpResponse): RestResult[HttpResponse] =
     new RestResult[HttpResponse](() => response, response)
-  }
 
   def await(
       responseFuture: Awaitable[HttpResponse],
-      waitTime: Duration): RestResult[HttpResponse] = {
+      waitTime: Duration): RestResult[HttpResponse] =
     apply(Await.result(responseFuture, waitTime))
-  }
 }
 
 /**

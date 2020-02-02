@@ -278,9 +278,10 @@ object WiringUI {
       .getOrElse(<span id={Helpers.nextFuncName}>{in}</span>)
 
     val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
-    addJsFunc(cell, (t: T, first: Boolean) => {
-      jsEffect(id, first, SetHtml(id, f(t, elem.child)))
-    })
+    addJsFunc(
+      cell,
+      (t: T, first: Boolean) =>
+        jsEffect(id, first, SetHtml(id, f(t, elem.child))))
     elem
   }
 
@@ -316,9 +317,10 @@ object WiringUI {
         .getOrElse(<span id={Helpers.nextFuncName}>{in}</span>)
 
       val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
-      addJsFunc(cell, (t: T, first: Boolean) => {
-        jsEffect(id, first, SetHtml(id, f(t, elem.child)))
-      })
+      addJsFunc(
+        cell,
+        (t: T, first: Boolean) =>
+          jsEffect(id, first, SetHtml(id, f(t, elem.child))))
       elem
     }
 
@@ -341,7 +343,7 @@ object WiringUI {
     var lastValue: T = null.asInstanceOf[T]
     for {
       sess <- S.session
-    } sess.addPostPageJavaScript(() => {
+    } sess.addPostPageJavaScript { () =>
       val (value, ct) = trc.get
       val first = lastTime == 0L
       if (first || (ct > lastTime && value != lastValue)) {
@@ -349,7 +351,7 @@ object WiringUI {
         lastTime = ct
         f(value, first)
       } else Noop
-    })
+    }
   }
 
   /**
@@ -371,7 +373,7 @@ object WiringUI {
     var lastValue: Box[T] = Empty
     for {
       sess <- S.session
-    } sess.addPostPageJavaScript(() => {
+    } sess.addPostPageJavaScript { () =>
       val (value, ct) = trc.get
       val first = lastTime == 0L
       if (first || (ct > lastTime && Full(value) != lastValue)) {
@@ -380,7 +382,7 @@ object WiringUI {
         lastTime = ct
         f(oldValue, value)
       } else Noop
-    })
+    }
   }
 
 }

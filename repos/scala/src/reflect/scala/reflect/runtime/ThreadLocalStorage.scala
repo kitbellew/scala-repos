@@ -15,7 +15,7 @@ private[reflect] trait ThreadLocalStorage {
     //       (we would need a version that uses weak keys)
     private val values = java.util.Collections
       .synchronizedMap(new java.util.WeakHashMap[Thread, T]())
-    def get: T = {
+    def get: T =
       if (values containsKey currentThread) values.get(currentThread)
       else {
         val value = initialValue
@@ -25,10 +25,8 @@ private[reflect] trait ThreadLocalStorage {
         values.put(currentThread, value)
         value
       }
-    }
-    def set(newValue: T): Unit = {
+    def set(newValue: T): Unit =
       values.put(currentThread, newValue)
-    }
   }
   @inline final def mkThreadLocalStorage[T](x: => T): ThreadLocalStorage[T] =
     new MyThreadLocalStorage(x)

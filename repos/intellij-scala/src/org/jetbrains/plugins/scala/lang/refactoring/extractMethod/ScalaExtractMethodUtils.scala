@@ -92,13 +92,12 @@ object ScalaExtractMethodUtils {
     def byOutputsSize(
         ifZero: => String,
         ifOne: => String,
-        ifMany: => String): String = {
+        ifMany: => String): String =
       settings.outputs.length match {
         case 0 => ifZero
         case 1 => ifOne
         case _ => ifMany
       }
-    }
 
     val returnText =
       if (settings.lastReturn) ""
@@ -304,13 +303,12 @@ object ScalaExtractMethodUtils {
     if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined) {
       return prepareResult(lastExprType.get)
     }
-    def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T = {
+    def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T =
       outputs.length match {
         case 0 => ifZero
         case 1 => ifOne
         case _ => ifMany
       }
-    }
     val outputType = outputTypeText(settings)
     returnStmtType match {
       case Some(psi.types.Unit) =>
@@ -334,7 +332,7 @@ object ScalaExtractMethodUtils {
     }
   }
 
-  def outputTypeText(settings: ScalaExtractMethodSettings) = {
+  def outputTypeText(settings: ScalaExtractMethodSettings) =
     if (settings.innerClassSettings.needClass)
       settings.innerClassSettings.className
     else {
@@ -346,7 +344,6 @@ object ScalaExtractMethodUtils {
           outputs.map(_.returnType.presentableText).mkString("(", ", ", ")")
       }
     }
-  }
 
   /**
     * methods for Unit tests
@@ -369,9 +366,9 @@ object ScalaExtractMethodUtils {
     val res = list.toArray
     Sorting.stableSort[ExtractMethodParameter](
       res,
-      (p1: ExtractMethodParameter, p2: ExtractMethodParameter) => {
+      (p1: ExtractMethodParameter, p2: ExtractMethodParameter) =>
         p1.oldName < p2.oldName
-      })
+    )
     res
   }
 

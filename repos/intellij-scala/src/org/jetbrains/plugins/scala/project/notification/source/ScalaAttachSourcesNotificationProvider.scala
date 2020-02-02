@@ -101,9 +101,8 @@ class ScalaAttachSourcesNotificationProvider(
       new Comparator[AttachSourcesProvider.AttachSourcesAction] {
         def compare(
             o1: AttachSourcesProvider.AttachSourcesAction,
-            o2: AttachSourcesProvider.AttachSourcesAction): Int = {
+            o2: AttachSourcesProvider.AttachSourcesAction): Int =
           o1.getName.compareToIgnoreCase(o2.getName)
-        }
       }
     )
 

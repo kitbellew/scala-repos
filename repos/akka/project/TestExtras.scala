@@ -55,7 +55,7 @@ object TestExtras {
       val testTagsOnly = systemPropertyAsSeq("akka.test.tags.only").toSet
     }
 
-    def settings = {
+    def settings =
       Seq(
         excludeTestNames := Params.testNamesExclude,
         excludeTestTags := {
@@ -78,11 +78,9 @@ object TestExtras {
           else Seq(Tests.Argument("-n", tags.mkString(" ")))
         }
       )
-    }
 
-    def containsOrNotExcludesTag(tag: String) = {
+    def containsOrNotExcludesTag(tag: String) =
       Params.testTagsOnly.contains(tag) || !Params.testTagsExlcude(tag)
-    }
 
     def systemPropertyAsSeq(name: String): Seq[String] = {
       val prop = sys.props.get(name).getOrElse("")

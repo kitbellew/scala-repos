@@ -49,7 +49,7 @@ class DoubleNegationQuickFix(expr: ScExpression)
 
 object DoubleNegationUtil {
 
-  def hasDoubleNegation(expr: ScExpression): Boolean = {
+  def hasDoubleNegation(expr: ScExpression): Boolean =
     if (hasNegation(expr))
       expr match {
         case ScPrefixExpr(_, operand) => hasNegation(operand)
@@ -63,7 +63,6 @@ object DoubleNegationUtil {
           operation.refName == "==" && hasNegation(left) && hasNegation(right)
         case _ => false
       }
-  }
 
   def removeDoubleNegation(expr: ScExpression): ScExpression = {
     val text: String = stripParentheses(expr) match {

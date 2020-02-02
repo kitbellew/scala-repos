@@ -53,7 +53,7 @@ private[pickling] trait PicklingAlgorithm {
 private[pickling] object PicklingAlgorithm {
   def run(alg: PicklingAlgorithm)(
       tpe: IrClass,
-      logger: AlgorithmLogger): Option[PickleUnpickleImplementation] = {
+      logger: AlgorithmLogger): Option[PickleUnpickleImplementation] =
     alg.generate(tpe, logger) match {
       case AlgorithmSucccess(success) => Some(success)
       case AlgorithmFailure(failures) =>
@@ -62,7 +62,6 @@ private[pickling] object PicklingAlgorithm {
           s"Unable to generate pickling/unpickling implementation for $tpe.\n$fString")
         None
     }
-  }
 
   /** Aggregates the sequence of picklers (prioritizing left-to-right or first-to-last) to
     * create a new "uber" pickling algorithm.

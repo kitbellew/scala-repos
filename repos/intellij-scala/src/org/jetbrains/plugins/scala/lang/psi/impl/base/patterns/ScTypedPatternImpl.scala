@@ -41,7 +41,7 @@ class ScTypedPatternImpl(node: ASTNode)
   def isWildcard: Boolean =
     findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
 
-  override def isIrrefutableFor(t: Option[ScType]): Boolean = {
+  override def isIrrefutableFor(t: Option[ScType]): Boolean =
     t match {
       case Some(t) =>
         getType(TypingContext.empty) match {
@@ -50,11 +50,10 @@ class ScTypedPatternImpl(node: ASTNode)
         }
       case _ => false
     }
-  }
 
   override def toString: String = "TypedPattern: " + name
 
-  override def getType(ctx: TypingContext): TypeResult[ScType] = {
+  override def getType(ctx: TypingContext): TypeResult[ScType] =
     typePattern match {
       case Some(tp) =>
         if (tp.typeElement == null)
@@ -143,20 +142,18 @@ class ScTypedPatternImpl(node: ASTNode)
         }
       case None => Failure("No type pattern", Some(this))
     }
-  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement) = {
+      place: PsiElement) =
     ScalaPsiUtil.processImportLastParent(
       processor,
       state,
       place,
       lastParent,
       getType(TypingContext.empty))
-  }
 
   override def getOriginalElement: PsiElement =
     super[ScTypedPattern].getOriginalElement

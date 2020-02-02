@@ -23,7 +23,7 @@ object XsrfTokenSpec extends MutableScalatraSpec {
 
   addServlet(classOf[XsrfTokenServlet], "/*")
 
-  def tokenFromCookie = {
+  def tokenFromCookie =
     response
       .getHeaderValues("Set-Cookie")
       .asScala
@@ -31,7 +31,6 @@ object XsrfTokenSpec extends MutableScalatraSpec {
       .find(_.getName == "XSRF-TOKEN")
       .map(_.getValue)
       .getOrElse("")
-  }
 
   "the get request should include the CSRF token" in {
     get("/renderForm") {

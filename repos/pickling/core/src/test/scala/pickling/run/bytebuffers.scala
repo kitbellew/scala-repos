@@ -7,7 +7,7 @@ import org.scalatest.FunSuite
 
 object Primitives extends Properties("bytebuffer primitive tests") {
 
-  def roundTrip[T: Pickler: Unpickler: FastTypeTag](obj: T): Boolean = {
+  def roundTrip[T: Pickler: Unpickler: FastTypeTag](obj: T): Boolean =
     try {
       val buf = ByteBuffer.allocate(1024)
       obj.pickleTo(buf)
@@ -21,7 +21,6 @@ object Primitives extends Properties("bytebuffer primitive tests") {
         e.printStackTrace
         throw e
     }
-  }
 
   property("Int") = Prop forAll { (i: Int) => roundTrip[Int](i) }
   property("Double") = Prop forAll { (d: Double) => roundTrip[Double](d) }

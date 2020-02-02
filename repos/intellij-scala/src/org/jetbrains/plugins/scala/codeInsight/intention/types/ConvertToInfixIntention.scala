@@ -24,7 +24,7 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
 
   override def getText = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element match {
       case Parent(
           Both(
@@ -35,7 +35,6 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
         true
       case _ => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (element == null || !element.isValid) return

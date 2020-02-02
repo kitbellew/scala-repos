@@ -39,18 +39,18 @@ object OffsetRequest {
     val clientId = readShortString(buffer)
     val replicaId = buffer.getInt
     val topicCount = buffer.getInt
-    val pairs = (1 to topicCount).flatMap(_ => {
+    val pairs = (1 to topicCount).flatMap { _ =>
       val topic = readShortString(buffer)
       val partitionCount = buffer.getInt
-      (1 to partitionCount).map(_ => {
+      (1 to partitionCount).map { _ =>
         val partitionId = buffer.getInt
         val time = buffer.getLong
         val maxNumOffsets = buffer.getInt
         (
           TopicAndPartition(topic, partitionId),
           PartitionOffsetRequestInfo(time, maxNumOffsets))
-      })
-    })
+      }
+    }
     OffsetRequest(
       Map(pairs: _*),
       versionId = versionId,
@@ -109,7 +109,7 @@ case class OffsetRequest(
     shortStringLength(clientId) +
       4 + /* replicaId */
     4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+    requestInfoGroupedByTopic.foldLeft(0) { (foldedTopics, currTopic) =>
       val (topic, partitionInfos) = currTopic
       foldedTopics +
         shortStringLength(topic) +
@@ -119,14 +119,13 @@ case class OffsetRequest(
         8 + /* time */
         4 /* maxNumOffsets */
       )
-    })
+    }
 
   def isFromOrdinaryClient = replicaId == Request.OrdinaryConsumerId
   def isFromDebuggingClient = replicaId == Request.DebuggingConsumerId
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,

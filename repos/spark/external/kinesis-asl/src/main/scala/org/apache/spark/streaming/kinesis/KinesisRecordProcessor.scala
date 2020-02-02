@@ -168,7 +168,7 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
   def retryRandom[T](
       expression: => T,
       numRetriesLeft: Int,
-      maxBackOffMillis: Int): T = {
+      maxBackOffMillis: Int): T =
     util.Try { expression } match {
       /* If the function succeeded, evaluate to x. */
       case util.Success(x) => x
@@ -181,7 +181,7 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
             val backOffMillis = Random.nextInt(maxBackOffMillis)
             Thread.sleep(backOffMillis)
             logError(
-              s"Retryable Exception:  Random backOffMillis=${backOffMillis}",
+              s"Retryable Exception:  Random backOffMillis=$backOffMillis",
               e)
             retryRandom(expression, numRetriesLeft - 1, maxBackOffMillis)
           }
@@ -207,5 +207,4 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
           }
         }
     }
-  }
 }

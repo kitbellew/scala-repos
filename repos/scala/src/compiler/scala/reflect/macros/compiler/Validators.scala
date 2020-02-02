@@ -49,17 +49,17 @@ trait Validators {
       // we only check strict correspondence between value parameterss
       // type parameters of macro defs and macro impls don't have to coincide with each other
       if (aparamss.length != rparamss.length) MacroImplParamssMismatchError()
-      map2(aparamss, rparamss)((aparams, rparams) => {
+      map2(aparamss, rparamss) { (aparams, rparams) =>
         if (aparams.length < rparams.length)
           MacroImplMissingParamsError(aparams, rparams)
         if (rparams.length < aparams.length)
           MacroImplExtraParamsError(aparams, rparams)
-      })
+      }
 
       try {
         // cannot fuse this map2 and the map2 above because if aparamss.flatten != rparamss.flatten
         // then `atpeToRtpe` is going to fail with an unsound substitution
-        map2(aparamss.flatten, rparamss.flatten)((aparam, rparam) => {
+        map2(aparamss.flatten, rparamss.flatten) { (aparam, rparam) =>
           if (aparam.name != rparam.name && !rparam.isSynthetic)
             MacroImplParamNameMismatchError(aparam, rparam)
           if (isRepeated(aparam) ^ isRepeated(rparam))
@@ -69,7 +69,7 @@ trait Validators {
             case tpe                   => tpe
           }
           checkMacroImplParamTypeMismatch(atpeToRtpe(aparamtpe), rparam)
-        })
+        }
 
         checkMacroImplResultTypeMismatch(atpeToRtpe(aret), rret)
 

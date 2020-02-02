@@ -1,7 +1,6 @@
 class ReturnType {
-  def foo(): Unit = {
+  def foo(): Unit =
     1
-  }
 }
 
 class ReturnTypeChild extends ReturnType {

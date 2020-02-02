@@ -78,7 +78,7 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
   /**
     * Transform this PartialResult into a PartialResult of type T.
     */
-  def map[T](f: R => T): PartialResult[T] = {
+  def map[T](f: R => T): PartialResult[T] =
     new PartialResult[T](f(initialVal), isFinal) {
       override def getFinalValue(): T = synchronized {
         f(PartialResult.this.getFinalValue())
@@ -101,7 +101,6 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
       def getFinalValueInternal(): Option[T] =
         PartialResult.this.getFinalValueInternal().map(f)
     }
-  }
 
   private[spark] def setFinalValue(value: R) {
     synchronized {

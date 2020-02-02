@@ -100,12 +100,11 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       *  I'm only considering TopLevelPickledFlags to be sources of potential initialization. This ensures that such system flags as
       *  isMethod, isModule or isPackage are never going to auto-initialize.
       */
-    override def isThreadsafe(purpose: SymbolOps) = {
+    override def isThreadsafe(purpose: SymbolOps) =
       if (isCompilerUniverse) false
       else if (_initialized) true
       else
         purpose.isFlagRelated && (_initializationMask & purpose.mask & TopLevelPickledFlags) == 0
-    }
 
     /** Communicates with completers declared in scala.reflect.runtime.SymbolLoaders
       *  about the status of initialization of the underlying symbol.
@@ -137,12 +136,11 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       _initializationMask = 0L; _initialized = true; this
     }
 
-    def gilSynchronizedIfNotThreadsafe[T](body: => T): T = {
+    def gilSynchronizedIfNotThreadsafe[T](body: => T): T =
       // TODO: debug and fix the race that doesn't allow us uncomment this optimization
       // if (isCompilerUniverse || isThreadsafe(purpose = AllOps)) body
       // else gilSynchronized { body }
       gilSynchronized { body }
-    }
 
     override def validTo = gilSynchronizedIfNotThreadsafe { super.validTo }
     override def info = gilSynchronizedIfNotThreadsafe { super.info }

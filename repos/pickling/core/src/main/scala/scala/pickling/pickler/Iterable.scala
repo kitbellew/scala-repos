@@ -55,7 +55,7 @@ trait IterablePicklers {
 object TravPickler {
   private val ANY_TAG = FastTypeTag[Any]
 
-  def oneArgumentTagExtractor[T](tpe: AppliedType): FastTypeTag[T] = {
+  def oneArgumentTagExtractor[T](tpe: AppliedType): FastTypeTag[T] =
     tpe.typeargs match {
       case List(one) =>
         FastTypeTag
@@ -67,7 +67,6 @@ object TravPickler {
         throw new PicklingException(
           s"Error, expected one type argument  on $tpe, found: $x")
     }
-  }
 
   /** Creates a pickling generator that can be registered at runtime. */
   def generate[T, C](

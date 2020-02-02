@@ -61,12 +61,11 @@ class ClusterClientStopSpec
     enterBarrier(from.name + "-joined")
   }
 
-  def awaitCount(expected: Int): Unit = {
+  def awaitCount(expected: Int): Unit =
     awaitAssert {
       DistributedPubSub(system).mediator ! DistributedPubSubMediator.Count
       expectMsgType[Int] should ===(expected)
     }
-  }
 
   def initialContacts = Set(first, second).map { r ⇒
     node(r) / "system" / "receptionist"

@@ -77,7 +77,7 @@ object AkkaProtocolStressTest {
             context.become(done)
           }
         } else {
-          controller ! s"Received out of order message. Previous: ${maxSeq} Received: ${seq}"
+          controller ! s"Received out of order message. Previous: $maxSeq Received: $seq"
         }
     }
 
@@ -126,7 +126,7 @@ class AkkaProtocolStressTest
       expectMsgPF(60.seconds) {
         case (received: Int, lost: Int) ⇒
           log.debug(
-            s" ######## Received ${received - lost} messages from ${received} ########")
+            s" ######## Received ${received - lost} messages from $received ########")
       }
     }
   }

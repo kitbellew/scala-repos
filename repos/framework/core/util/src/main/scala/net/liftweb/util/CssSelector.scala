@@ -146,11 +146,9 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
     // of the selectors will be cached, it's not really a performance hit
     cache.get(toParse) or {
       internalParse(toParse).map { sel =>
-        {
-          // cache the result
-          cache(toParse) = sel
-          sel
-        }
+        // cache the result
+        cache(toParse) = sel
+        sel
       }
     }
   }
@@ -174,9 +172,7 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private implicit def str2chars(s: String): List[Char] =
     new scala.collection.immutable.WrappedString(s).toList
 
-  private def fixAll(
-      all: List[CssSelector],
-      sn: Option[SubNode]): CssSelector = {
+  private def fixAll(all: List[CssSelector], sn: Option[SubNode]): CssSelector =
     (all, sn) match {
       // case (Nil, Some())
       case (r :: Nil, None)     => r
@@ -186,7 +182,6 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
         (lst.dropRight(1) ::: lst.takeRight(1).map(_.withSubnode(sn)))
           .reduceRight((b, a) => EnclosedSelector(b, a))
     }
-  }
 
   private val atEnd = Parser { in =>
     if (in.atEnd) Success(CharSequenceReader.EofCh, in) else Failure("", in)
@@ -286,19 +281,13 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   }
 
   private lazy val attrConst: Parser[String] = {
-    (('\'' ~> rep(elem("isValid", (c: Char) => {
-      c != '\'' && c >= ' '
-    })) <~ '\'') ^^ {
+    (('\'' ~> rep(elem("isValid", (c: Char) => c != '\'' && c >= ' ')) <~ '\'') ^^ {
       case s => s.mkString
     }) |
-      (('"' ~> rep(elem("isValid", (c: Char) => {
-        c != '"' && c >= ' '
-      })) <~ '"') ^^ {
+      (('"' ~> rep(elem("isValid", (c: Char) => c != '"' && c >= ' ')) <~ '"') ^^ {
         case s => s.mkString
       }) |
-      (rep1(elem("isValid", (c: Char) => {
-        c != '\'' && c != '"' && c > ' '
-      })) ^^ {
+      (rep1(elem("isValid", (c: Char) => c != '\'' && c != '"' && c > ' ')) ^^ {
         case s => s.mkString
       })
 

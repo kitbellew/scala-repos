@@ -199,7 +199,7 @@ final case class GuiceApplicationBuilder(
       List("DEBUG", "WARN", "ERROR", "INFO", "TRACE", "OFF")
 
     // Recursively checks each key to see if it contains a deprecated value
-    def hasDeprecatedValue(values: mutable.Map[String, AnyRef]): Boolean = {
+    def hasDeprecatedValue(values: mutable.Map[String, AnyRef]): Boolean =
       values.exists {
         case (_, value: String) if deprecatedValues.contains(value) =>
           true
@@ -208,7 +208,6 @@ final case class GuiceApplicationBuilder(
         case _ =>
           false
       }
-    }
 
     if (appConfiguration.underlying.hasPath("logger")) {
       appConfiguration.underlying.getAnyRef("logger") match {
@@ -253,9 +252,8 @@ private class FakeRoutes(
       fallback.routes.applyOrElse(rh, default)
     def isDefinedAt(x: RequestHeader) = fallback.routes.isDefinedAt(x)
   }
-  def withPrefix(prefix: String) = {
+  def withPrefix(prefix: String) =
     new FakeRoutes(injected, fallback.withPrefix(prefix))
-  }
 }
 
 private case class FakeRouterConfig(

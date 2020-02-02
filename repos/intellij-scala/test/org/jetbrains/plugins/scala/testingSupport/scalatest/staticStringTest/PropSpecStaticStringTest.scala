@@ -10,7 +10,7 @@ trait PropSpecStaticStringTest extends ScalaTestTestCase {
   val propSpecClassName = "PropSpecStringTest"
   val propSpecFileName = propSpecClassName + ".scala"
 
-  def addPropSpec() = {
+  def addPropSpec() =
     addFileToProject(
       propSpecFileName,
       """
@@ -32,7 +32,6 @@ trait PropSpecStaticStringTest extends ScalaTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 
   def testPropSpecSum() = {
     addPropSpec()

@@ -18,7 +18,7 @@ class ConvertToParenthesesIntention extends PsiElementBaseIntentionAction {
 
   override def getText = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element match {
       case e @ Parent(_: ScForStatement) =>
         List(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tRBRACE)
@@ -26,7 +26,6 @@ class ConvertToParenthesesIntention extends PsiElementBaseIntentionAction {
           IntentionAvailabilityChecker.checkIntention(this, element)
       case _ => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val statement = element.getParent.asInstanceOf[ScForStatement]

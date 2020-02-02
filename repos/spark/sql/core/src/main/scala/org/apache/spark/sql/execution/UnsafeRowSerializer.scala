@@ -82,19 +82,16 @@ private class UnsafeRowSerializerInstance(numFields: Int)
       }
 
       override def writeAll[T: ClassTag](
-          iter: Iterator[T]): SerializationStream = {
+          iter: Iterator[T]): SerializationStream =
         // This method is never called by shuffle code.
         throw new UnsupportedOperationException
-      }
 
-      override def writeObject[T: ClassTag](t: T): SerializationStream = {
+      override def writeObject[T: ClassTag](t: T): SerializationStream =
         // This method is never called by shuffle code.
         throw new UnsupportedOperationException
-      }
 
-      override def flush(): Unit = {
+      override def flush(): Unit =
         dOut.flush()
-      }
 
       override def close(): Unit = {
         writeBuffer = null
@@ -102,7 +99,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
       }
     }
 
-  override def deserializeStream(in: InputStream): DeserializationStream = {
+  override def deserializeStream(in: InputStream): DeserializationStream =
     new DeserializationStream {
       private[this] val dIn: DataInputStream = new DataInputStream(
         new BufferedInputStream(in))
@@ -112,7 +109,7 @@ private class UnsafeRowSerializerInstance(numFields: Int)
       private[this] var rowTuple: (Int, UnsafeRow) = (0, row)
       private[this] val EOF: Int = -1
 
-      override def asKeyValueIterator: Iterator[(Int, UnsafeRow)] = {
+      override def asKeyValueIterator: Iterator[(Int, UnsafeRow)] =
         new Iterator[(Int, UnsafeRow)] {
 
           private[this] def readSize(): Int =
@@ -148,18 +145,15 @@ private class UnsafeRowSerializerInstance(numFields: Int)
             }
           }
         }
-      }
 
-      override def asIterator: Iterator[Any] = {
+      override def asIterator: Iterator[Any] =
         // This method is never called by shuffle code.
         throw new UnsupportedOperationException
-      }
 
-      override def readKey[T: ClassTag](): T = {
+      override def readKey[T: ClassTag](): T =
         // We skipped serialization of the key in writeKey(), so just return a dummy value since
         // this is going to be discarded anyways.
         null.asInstanceOf[T]
-      }
 
       override def readValue[T: ClassTag](): T = {
         val rowSize = dIn.readInt()
@@ -171,16 +165,13 @@ private class UnsafeRowSerializerInstance(numFields: Int)
         row.asInstanceOf[T]
       }
 
-      override def readObject[T: ClassTag](): T = {
+      override def readObject[T: ClassTag](): T =
         // This method is never called by shuffle code.
         throw new UnsupportedOperationException
-      }
 
-      override def close(): Unit = {
+      override def close(): Unit =
         dIn.close()
-      }
     }
-  }
 
   // These methods are never called by shuffle code.
   override def serialize[T: ClassTag](t: T): ByteBuffer =

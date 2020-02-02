@@ -393,7 +393,7 @@ trait MethodConstruction { self: QuasiquoteProperties =>
   def assertSameAnnots(tree: { def mods: Modifiers }, annots: List[Tree]) =
     assert(
       tree.mods.annotations ≈ annots,
-      s"${tree.mods.annotations} =/= ${annots}")
+      s"${tree.mods.annotations} =/= $annots")
 
   def assertSameAnnots(tree1: { def mods: Modifiers }, tree2: {
     def mods: Modifiers

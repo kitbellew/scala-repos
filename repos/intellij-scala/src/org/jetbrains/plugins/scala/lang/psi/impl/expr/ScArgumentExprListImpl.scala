@@ -20,14 +20,13 @@ class ScArgumentExprListImpl(node: ASTNode)
     with ScArgumentExprList {
   override def toString: String = "ArgumentList"
 
-  def invocationCount: Int = {
+  def invocationCount: Int =
     callExpression match {
       case call: ScMethodCall => call.args.invocationCount + 1
       case _                  => 1
     }
-  }
 
-  def callReference: Option[ScReferenceExpression] = {
+  def callReference: Option[ScReferenceExpression] =
     getContext match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr match {
@@ -41,9 +40,8 @@ class ScArgumentExprListImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
-  def callGeneric: Option[ScGenericCall] = {
+  def callGeneric: Option[ScGenericCall] =
     getContext match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr match {
@@ -52,17 +50,15 @@ class ScArgumentExprListImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
-  def callExpression: ScExpression = {
+  def callExpression: ScExpression =
     getContext match {
       case call: ScMethodCall =>
         call.getEffectiveInvokedExpr
       case _ => null
     }
-  }
 
-  def matchedParameters: Seq[(ScExpression, Parameter)] = {
+  def matchedParameters: Seq[(ScExpression, Parameter)] =
     getContext match {
       case call: ScMethodCall => call.matchedParameters
       case constr: ScConstructor =>
@@ -71,11 +67,8 @@ class ScArgumentExprListImpl(node: ASTNode)
         }
       case _ => Seq.empty
     }
-  }
 
-  override def addBefore(
-      element: PsiElement,
-      anchor: PsiElement): PsiElement = {
+  override def addBefore(element: PsiElement, anchor: PsiElement): PsiElement =
     if (anchor == null) {
       if (exprs.isEmpty) {
         val par: PsiElement =
@@ -93,7 +86,6 @@ class ScArgumentExprListImpl(node: ASTNode)
     } else {
       super.addBefore(element, anchor)
     }
-  }
 
   def addExpr(expr: ScExpression): ScArgumentExprList = {
     val par = findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)

@@ -384,15 +384,13 @@ abstract class OutputWriter {
 
   private var converter: InternalRow => Row = _
 
-  protected[sql] def initConverter(dataSchema: StructType) = {
+  protected[sql] def initConverter(dataSchema: StructType) =
     converter = CatalystTypeConverters
       .createToScalaConverter(dataSchema)
       .asInstanceOf[InternalRow => Row]
-  }
 
-  protected[sql] def writeInternal(row: InternalRow): Unit = {
+  protected[sql] def writeInternal(row: InternalRow): Unit =
     write(converter(row))
-  }
 }
 
 /**
@@ -496,13 +494,11 @@ trait FileFormat {
       partitionSchema: StructType,
       dataSchema: StructType,
       filters: Seq[Filter],
-      options: Map[String, String])
-      : PartitionedFile => Iterator[InternalRow] = {
+      options: Map[String, String]): PartitionedFile => Iterator[InternalRow] =
     // TODO: Remove this default implementation when the other formats have been ported
     // Until then we guard in [[FileSourceStrategy]] to only call this method on supported formats.
     throw new UnsupportedOperationException(
       s"buildReader is not supported for $this")
-  }
 }
 
 /**
@@ -572,7 +568,7 @@ class HDFSFileCatalog(
 
   refresh()
 
-  override def listFiles(filters: Seq[Expression]): Seq[Partition] = {
+  override def listFiles(filters: Seq[Expression]): Seq[Partition] =
     if (partitionSpec().partitionColumns.isEmpty) {
       Partition(InternalRow.empty, allFiles()) :: Nil
     } else {
@@ -581,7 +577,6 @@ class HDFSFileCatalog(
           Partition(values, getStatus(path))
       }
     }
-  }
 
   protected def prunePartitions(
       predicates: Seq[Expression],
@@ -628,7 +623,7 @@ class HDFSFileCatalog(
   def getStatus(path: Path): Array[FileStatus] = leafDirToChildrenFiles(path)
 
   private def listLeafFiles(
-      paths: Seq[Path]): mutable.LinkedHashSet[FileStatus] = {
+      paths: Seq[Path]): mutable.LinkedHashSet[FileStatus] =
     if (paths.length >= sqlContext.conf.parallelPartitionDiscoveryThreshold) {
       HadoopFsRelation.listLeafFilesInParallel(
         paths,
@@ -662,7 +657,6 @@ class HDFSFileCatalog(
         mutable.LinkedHashSet(files: _*) ++ listLeafFiles(dirs.map(_.getPath))
       }
     }
-  }
 
   def inferPartitioning(schema: Option[StructType]): PartitionSpec = {
     // We use leaf dirs containing data files to discover the schema.
@@ -677,13 +671,12 @@ class HDFSFileCatalog(
 
         // Without auto inference, all of value in the `row` should be null or in StringType,
         // we need to cast into the data type that user specified.
-        def castPartitionValuesToUserSchema(row: InternalRow) = {
+        def castPartitionValuesToUserSchema(row: InternalRow) =
           InternalRow((0 until row.numFields).map { i =>
             Cast(
               Literal.create(row.getUTF8String(i), StringType),
               userProvidedSchema.fields(i).dataType).eval()
           }: _*)
-        }
 
         PartitionSpec(userProvidedSchema, spec.partitions.map { part =>
           part.copy(values = castPartitionValuesToUserSchema(part.values))
@@ -749,14 +742,13 @@ class HDFSFileCatalog(
 private[sql] object HadoopFsRelation extends Logging {
 
   /** Checks if we should filter out this path name. */
-  def shouldFilterOut(pathName: String): Boolean = {
+  def shouldFilterOut(pathName: String): Boolean =
     // TODO: We should try to filter out all files/dirs starting with "." or "_".
     // The only reason that we are not doing it now is that Parquet needs to find those
     // metadata files from leaf files returned by this methods. We should refactor
     // this logic to not mix metadata files with data files.
     pathName == "_SUCCESS" || pathName == "_temporary" || pathName.startsWith(
       ".")
-  }
 
   // We don't filter files/directories whose name start with "_" except "_temporary" here, as
   // specific data sources may take advantages over them (e.g. Parquet _metadata and

@@ -100,23 +100,20 @@ class CatalystQlSuite extends PlanTest {
       comparePlans(parsed, expected)
     }
 
-    def checkYearMonth(lit: String): Unit = {
+    def checkYearMonth(lit: String): Unit =
       checkInterval(
         s"SELECT INTERVAL '$lit' YEAR TO MONTH",
         CalendarInterval.fromYearMonthString(lit))
-    }
 
-    def checkDayTime(lit: String): Unit = {
+    def checkDayTime(lit: String): Unit =
       checkInterval(
         s"SELECT INTERVAL '$lit' DAY TO SECOND",
         CalendarInterval.fromDayTimeString(lit))
-    }
 
-    def checkSingleUnit(lit: String, unit: String): Unit = {
+    def checkSingleUnit(lit: String, unit: String): Unit =
       checkInterval(
         s"SELECT INTERVAL '$lit' $unit",
         CalendarInterval.fromSingleUnitString(unit, lit))
-    }
 
     checkYearMonth("123-10")
     checkYearMonth("496-0")

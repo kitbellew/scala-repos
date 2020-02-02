@@ -86,7 +86,7 @@ object FixInternalDebugLogging {
   }
 
   def apply(newOptions: String) {
-    logger.trace(s"apply: newOptions = ${newOptions}")
+    logger.trace(s"apply: newOptions = $newOptions")
 
     try {
       val action = new MonkeyPatchInternalSslDebugAction(newOptions)

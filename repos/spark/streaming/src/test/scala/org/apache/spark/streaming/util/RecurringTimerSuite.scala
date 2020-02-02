@@ -64,9 +64,8 @@ class RecurringTimerSuite extends SparkFunSuite with PrivateMethodTester {
     @volatile var lastTime = -1L
     // Now RecurringTimer is waiting for the next interval
     val thread = new Thread {
-      override def run(): Unit = {
+      override def run(): Unit =
         lastTime = timer.stop(interruptTimer = false)
-      }
     }
     thread.start()
     val stopped = PrivateMethod[RecurringTimer]('stopped)

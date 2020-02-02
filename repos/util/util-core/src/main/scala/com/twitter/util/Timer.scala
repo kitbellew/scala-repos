@@ -61,9 +61,8 @@ trait Timer {
     * Performs an operation after the specified delay.  Interrupting the Future
     * will cancel the scheduled timer task, if not too late.
     */
-  def doLater[A](delay: Duration)(f: => A): Future[A] = {
+  def doLater[A](delay: Duration)(f: => A): Future[A] =
     doAt(Time.now + delay)(f)
-  }
 
   /**
     * Performs an operation at the specified time.  Interrupting the Future
@@ -147,9 +146,8 @@ class ThreadStoppingTimer(underlying: Timer, executor: ExecutorService)
       f: => Unit): TimerTask =
     underlying.schedule(when, period)(f)
 
-  def stop(): Unit = {
+  def stop(): Unit =
     executor.submit(new Runnable { def run() = underlying.stop() })
-  }
 }
 
 trait ReferenceCountedTimer extends Timer {
@@ -248,9 +246,8 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
   // Make sure Time is on or after the epoch.  j.u.Timer throws an
   // IllegalArgumentException if the value is negative.  To allow `when` to be
   // before the epoch (e.g. Time.Bottom), move any pre-epoch times to the epoch.
-  private[this] def safeTime(time: Time): Time = {
+  private[this] def safeTime(time: Time): Time =
     time.max(Time.epoch)
-  }
 
   private[this] def toJavaTimerTask(f: => Unit) = new java.util.TimerTask {
     def run(): Unit = f

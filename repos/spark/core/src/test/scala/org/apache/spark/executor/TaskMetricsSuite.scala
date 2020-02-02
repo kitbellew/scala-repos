@@ -251,14 +251,13 @@ class TaskMetricsSuite extends SparkFunSuite {
     def assertValEquals[T](
         tmValue: ShuffleReadMetrics => T,
         name: String,
-        value: T): Unit = {
+        value: T): Unit =
       assertValueEquals(
         tm,
         tm => tmValue(tm.shuffleReadMetrics.get),
         accums,
         name,
         value)
-    }
     // create shuffle read metrics
     assert(tm.shuffleReadMetrics.isEmpty)
     tm.registerTempShuffleReadMetrics()
@@ -313,14 +312,13 @@ class TaskMetricsSuite extends SparkFunSuite {
     def assertValEquals[T](
         tmValue: ShuffleWriteMetrics => T,
         name: String,
-        value: T): Unit = {
+        value: T): Unit =
       assertValueEquals(
         tm,
         tm => tmValue(tm.shuffleWriteMetrics.get),
         accums,
         name,
         value)
-    }
     // create shuffle write metrics
     assert(tm.shuffleWriteMetrics.isEmpty)
     tm.registerShuffleWriteMetrics()
@@ -354,7 +352,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     def assertValEquals(
         tmValue: InputMetrics => Any,
         name: String,
-        value: Any): Unit = {
+        value: Any): Unit =
       assertValueEquals(
         tm,
         tm => tmValue(tm.inputMetrics.get),
@@ -362,7 +360,6 @@ class TaskMetricsSuite extends SparkFunSuite {
         name,
         value,
         (x: Any, y: Any) => assert(x.toString === y.toString))
-    }
     // create input metrics
     assert(tm.inputMetrics.isEmpty)
     tm.registerInputMetrics(DataReadMethod.Memory)
@@ -391,7 +388,7 @@ class TaskMetricsSuite extends SparkFunSuite {
     def assertValEquals(
         tmValue: OutputMetrics => Any,
         name: String,
-        value: Any): Unit = {
+        value: Any): Unit =
       assertValueEquals(
         tm,
         tm => tmValue(tm.outputMetrics.get),
@@ -399,7 +396,6 @@ class TaskMetricsSuite extends SparkFunSuite {
         name,
         value,
         (x: Any, y: Any) => assert(x.toString === y.toString))
-    }
     // create input metrics
     assert(tm.outputMetrics.isEmpty)
     tm.registerOutputMetrics(DataWriteMethod.Hadoop)

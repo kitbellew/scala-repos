@@ -106,7 +106,7 @@ object DocStrings {
     * Merge sections following an usecase into the usecase comment, so they
     * can override the parent symbol's sections
     */
-  def mergeUsecaseSections(str: String, idxs: List[Int]): List[Int] = {
+  def mergeUsecaseSections(str: String, idxs: List[Int]): List[Int] =
     idxs.indexWhere(str.startsWith("@usecase", _)) match {
       case firstUCIndex if firstUCIndex != -1 =>
         val commentSections = idxs.take(firstUCIndex)
@@ -116,7 +116,6 @@ object DocStrings {
       case _ =>
         idxs
     }
-  }
 
   /**
     * Merge the inheritdoc sections, as they never make sense on their own

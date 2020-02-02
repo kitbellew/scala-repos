@@ -88,12 +88,11 @@ with LightScalaMethod {
 
   override def getParent: PsiElement = containingClass
 
-  override def hasModifierProperty(name: String): Boolean = {
+  override def hasModifierProperty(name: String): Boolean =
     name match {
       case "abstract" if isInterface => true
       case _                         => super.hasModifierProperty(name)
     }
-  }
 
   override def getPrevSibling: PsiElement = typedDefinition.getPrevSibling
 
@@ -104,11 +103,10 @@ with LightScalaMethod {
 
   override def isWritable: Boolean = getContainingFile.isWritable
 
-  override def setName(name: String) = {
+  override def setName(name: String) =
     if (role == PsiTypedDefinitionWrapper.DefinitionRole.SIMPLE_ROLE)
       typedDefinition.setName(name)
     else this
-  }
 }
 
 object PsiTypedDefinitionWrapper {

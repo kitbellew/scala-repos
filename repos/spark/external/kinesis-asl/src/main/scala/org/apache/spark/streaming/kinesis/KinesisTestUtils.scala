@@ -68,14 +68,13 @@ private[kinesis] class KinesisTestUtils extends Logging {
     new DynamoDB(dynamoDBClient)
   }
 
-  protected def getProducer(aggregate: Boolean): KinesisDataGenerator = {
+  protected def getProducer(aggregate: Boolean): KinesisDataGenerator =
     if (!aggregate) {
       new SimpleDataGenerator(kinesisClient)
     } else {
       throw new UnsupportedOperationException(
         "Aggregation is not supported through this code path")
     }
-  }
 
   def streamName: String = {
     require(
@@ -120,11 +119,10 @@ private[kinesis] class KinesisTestUtils extends Logging {
   /**
     * Expose a Python friendly API.
     */
-  def pushData(testData: java.util.List[Int]): Unit = {
+  def pushData(testData: java.util.List[Int]): Unit =
     pushData(testData.asScala, aggregate = false)
-  }
 
-  def deleteStream(): Unit = {
+  def deleteStream(): Unit =
     try {
       if (streamCreated) {
         kinesisClient.deleteStream(streamName)
@@ -133,9 +131,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
       case e: Exception =>
         logWarning(s"Could not delete stream $streamName")
     }
-  }
 
-  def deleteDynamoDBTable(tableName: String): Unit = {
+  def deleteDynamoDBTable(tableName: String): Unit =
     try {
       val table = dynamoDB.getTable(tableName)
       table.delete()
@@ -144,10 +141,9 @@ private[kinesis] class KinesisTestUtils extends Logging {
       case e: Exception =>
         logWarning(s"Could not delete DynamoDB table $tableName")
     }
-  }
 
   private def describeStream(
-      streamNameToDescribe: String): Option[StreamDescription] = {
+      streamNameToDescribe: String): Option[StreamDescription] =
     try {
       val describeStreamRequest =
         new DescribeStreamRequest().withStreamName(streamNameToDescribe)
@@ -159,7 +155,6 @@ private[kinesis] class KinesisTestUtils extends Logging {
       case rnfe: ResourceNotFoundException =>
         None
     }
-  }
 
   private def findNonExistentStreamName(): String = {
     var testStreamName: String = null
@@ -222,9 +217,8 @@ private[kinesis] object KinesisTestUtils {
     url
   }
 
-  def isAWSCredentialsPresent: Boolean = {
+  def isAWSCredentialsPresent: Boolean =
     Try { new DefaultAWSCredentialsProviderChain().getCredentials() }.isSuccess
-  }
 
   def getAWSCredentials(): AWSCredentials = {
     assert(

@@ -61,9 +61,8 @@ class Scentry[UserType <: AnyRef](
 
   def isAuthenticated(
       implicit request: HttpServletRequest,
-      response: HttpServletResponse) = {
+      response: HttpServletResponse) =
     userOption.isDefined
-  }
 
   //def session = app.session
   def params(implicit request: HttpServletRequest): Params = app.params(request)

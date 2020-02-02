@@ -35,10 +35,9 @@ private[spark] trait Logging {
   @transient private var log_ : Logger = null
 
   // Method to get the logger name for this object
-  protected def logName = {
+  protected def logName =
     // Ignore trailing $'s in the class names for Scala objects
     this.getClass.getName.stripSuffix("$")
-  }
 
   // Method to get or create the logger for this object
   protected def log: Logger = {
@@ -91,11 +90,10 @@ private[spark] trait Logging {
     if (log.isErrorEnabled) log.error(msg, throwable)
   }
 
-  protected def isTraceEnabled(): Boolean = {
+  protected def isTraceEnabled(): Boolean =
     log.isTraceEnabled
-  }
 
-  protected def initializeLogIfNecessary(isInterpreter: Boolean): Unit = {
+  protected def initializeLogIfNecessary(isInterpreter: Boolean): Unit =
     if (!Logging.initialized) {
       Logging.initLock.synchronized {
         if (!Logging.initialized) {
@@ -103,7 +101,6 @@ private[spark] trait Logging {
         }
       }
     }
-  }
 
   private def initializeLogging(isInterpreter: Boolean): Unit = {
     // Don't use a logger in here, as this is itself occurring during initialization of a logger

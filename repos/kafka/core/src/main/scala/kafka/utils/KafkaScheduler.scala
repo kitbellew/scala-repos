@@ -142,14 +142,12 @@ class KafkaScheduler(
     }
   }
 
-  def isStarted: Boolean = {
+  def isStarted: Boolean =
     this synchronized {
       executor != null
     }
-  }
 
-  private def ensureRunning = {
+  private def ensureRunning =
     if (!isStarted)
       throw new IllegalStateException("Kafka scheduler is not running.")
-  }
 }

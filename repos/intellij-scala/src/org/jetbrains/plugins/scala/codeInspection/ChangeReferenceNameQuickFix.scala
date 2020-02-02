@@ -13,7 +13,6 @@ class ChangeReferenceNameQuickFix(
     ref: ScReferenceElement,
     newRefName: String)
     extends AbstractFixOnPsiElement(name, ref) {
-  override def doApplyFix(project: Project): Unit = {
+  override def doApplyFix(project: Project): Unit =
     getElement.handleElementRename(newRefName)
-  }
 }

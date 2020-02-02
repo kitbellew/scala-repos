@@ -53,13 +53,12 @@ class ReliableProxySpec
     target = expectMsgType[ActorIdentity].ref.get
   }
 
-  def startTarget(): Unit = {
+  def startTarget(): Unit =
     target = system.actorOf(Props(new Actor {
       def receive = {
         case x ⇒ testActor ! x
       }
     }).withDeploy(Deploy.local), "echo")
-  }
 
   def stopProxy(): Unit = {
     val currentProxy = proxy

@@ -133,7 +133,7 @@ object WriteSupportProvider {
     def expandMethod(
         outerTpe: Type,
         pValueTree: Tree,
-        groupName: TermName): (Int, Tree) = {
+        groupName: TermName): (Int, Tree) =
       outerTpe.declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .foldLeft((0, q"")) {
@@ -150,7 +150,6 @@ object WriteSupportProvider {
                       $subTree
                     """)
         }
-    }
 
     def createGroupName(): TermName = newTermName(ctx.fresh("group"))
 

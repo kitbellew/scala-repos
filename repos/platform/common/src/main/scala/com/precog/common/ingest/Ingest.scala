@@ -67,9 +67,8 @@ sealed trait Event {
 
 object Event {
   implicit val decomposer: Decomposer[Event] = new Decomposer[Event] {
-    override def decompose(event: Event): JValue = {
+    override def decompose(event: Event): JValue =
       event.fold(_.serialize, _.serialize, _.serialize)
-    }
   }
 }
 
@@ -116,7 +115,7 @@ object Ingest {
 
   // A transitionary format similar to V1 structure, but lacks a version number and only carries a single data element
   val extractorV1a = new Extractor[Ingest] {
-    def validated(obj: JValue): Validation[Error, Ingest] = {
+    def validated(obj: JValue): Validation[Error, Ingest] =
       (obj.validated[APIKey]("apiKey") |@|
         obj.validated[Path]("path") |@|
         obj.validated[Option[AccountId]]("ownerAccountId")) {
@@ -131,11 +130,10 @@ object Ingest {
             EventMessage.defaultTimestamp,
             StreamRef.Append)
       }
-    }
   }
 
   val extractorV0 = new Extractor[Ingest] {
-    def validated(obj: JValue): Validation[Error, Ingest] = {
+    def validated(obj: JValue): Validation[Error, Ingest] =
       (obj.validated[String]("tokenId") |@|
         obj.validated[Path]("path")) { (apiKey, path) =>
         val jv = (obj \ "data")
@@ -148,7 +146,6 @@ object Ingest {
           EventMessage.defaultTimestamp,
           StreamRef.Append)
       }
-    }
   }
 
   implicit val decomposer: Decomposer[Ingest] = decomposerV1
@@ -214,13 +211,12 @@ object StreamRef {
   }
 
   object NewVersion {
-    def unapply(ref: StreamRef): Option[(UUID, Boolean, Boolean)] = {
+    def unapply(ref: StreamRef): Option[(UUID, Boolean, Boolean)] =
       ref match {
         case Append                  => None
         case Create(uuid, terminal)  => Some((uuid, terminal, false))
         case Replace(uuid, terminal) => Some((uuid, terminal, true))
       }
-    }
   }
 
   case class Create(streamId: UUID, terminal: Boolean) extends StreamRef {

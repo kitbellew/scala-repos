@@ -25,7 +25,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
  * Surrounds an expression and return an expression
  */
 abstract class ScalaExpressionSurrounder extends Surrounder {
-  def isApplicable(element: PsiElement): Boolean = {
+  def isApplicable(element: PsiElement): Boolean =
     element match {
       case _: ScExpression | _: PsiWhiteSpace | _: ScValue | _: ScVariable |
           _: ScFunction | _: ScTypeAlias => {
@@ -39,7 +39,6 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
         else false
       }
     }
-  }
 
   def needParenthesis(elements: Array[PsiElement]): Boolean = {
     if (elements.length > 1) return false

@@ -22,12 +22,10 @@ object WaitTestSupport {
     checkValid()
   }
 
-  def waitUntil(description: String, maxWait: FiniteDuration)(
-      fn: => Boolean) = {
+  def waitUntil(description: String, maxWait: FiniteDuration)(fn: => Boolean) =
     waitFor(description, maxWait) {
       if (fn) Some(true) else None
     }
-  }
 
   def waitFor[T](description: String, maxWait: FiniteDuration)(
       fn: => Option[T]): T = {

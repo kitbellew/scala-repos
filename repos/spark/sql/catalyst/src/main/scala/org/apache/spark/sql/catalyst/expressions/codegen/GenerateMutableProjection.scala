@@ -43,14 +43,12 @@ object GenerateMutableProjection
   def generate(
       expressions: Seq[Expression],
       inputSchema: Seq[Attribute],
-      useSubexprElimination: Boolean): (() => MutableProjection) = {
+      useSubexprElimination: Boolean): (() => MutableProjection) =
     create(canonicalize(bind(expressions, inputSchema)), useSubexprElimination)
-  }
 
   protected def create(
-      expressions: Seq[Expression]): (() => MutableProjection) = {
+      expressions: Seq[Expression]): (() => MutableProjection) =
     create(expressions, false)
-  }
 
   private def create(
       expressions: Seq[Expression],

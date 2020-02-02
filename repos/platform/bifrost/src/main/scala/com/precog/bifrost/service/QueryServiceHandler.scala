@@ -166,46 +166,44 @@ class AnalysisServiceHandler(
 
   val service = (request: HttpRequest[ByteChunk]) => {
     ShardServiceCombinators.queryOpts(request) map {
-      queryOptions =>
-        { (details: (APIKey, AccountDetails), path: Path) =>
-          val (apiKey, accountDetails) = details
-          // The context needs to use the prefix of the requested script, not th script path
-          val context = EvaluationContext(
-            apiKey,
-            accountDetails,
-            Path.Root,
-            path.prefix getOrElse Path.Root,
-            clock.now())
-          val cacheDirectives =
-            request.headers.header[`Cache-Control`].toSeq.flatMap(_.directives)
-          logger.debug(
-            "Received analysis request with cache directives: " + cacheDirectives)
+      queryOptions => (details: (APIKey, AccountDetails), path: Path) =>
+        val (apiKey, accountDetails) = details
+        // The context needs to use the prefix of the requested script, not th script path
+        val context = EvaluationContext(
+          apiKey,
+          accountDetails,
+          Path.Root,
+          path.prefix getOrElse Path.Root,
+          clock.now())
+        val cacheDirectives =
+          request.headers.header[`Cache-Control`].toSeq.flatMap(_.directives)
+        logger.debug(
+          "Received analysis request with cache directives: " + cacheDirectives)
 
-          val cacheControl0 =
-            CacheControl.fromCacheDirectives(cacheDirectives: _*)
-          // Internally maxAge/maxStale are compared against ms times
-          platform.vfs.executeStoredQuery(
-            platform,
-            scheduler,
-            context,
-            path,
-            queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
-            HttpResponse(
-              OK,
-              headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
-                `Last-Modified`(HttpDateTimes.StandardDateTime(lmod.toDateTime))
-              }: _*),
-              content = Some(
-                Right(
-                  ColumnarTableModule.toCharBuffers(
-                    queryOptions.output,
-                    sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
-            )
-          } valueOr { evaluationError =>
-            logger.error(
-              "Evaluation errors prevented returning results from stored query: " + evaluationError)
-            HttpResponse(InternalServerError)
-          }
+        val cacheControl0 =
+          CacheControl.fromCacheDirectives(cacheDirectives: _*)
+        // Internally maxAge/maxStale are compared against ms times
+        platform.vfs.executeStoredQuery(
+          platform,
+          scheduler,
+          context,
+          path,
+          queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
+          HttpResponse(
+            OK,
+            headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
+              `Last-Modified`(HttpDateTimes.StandardDateTime(lmod.toDateTime))
+            }: _*),
+            content = Some(
+              Right(
+                ColumnarTableModule.toCharBuffers(
+                  queryOptions.output,
+                  sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
+          )
+        } valueOr { evaluationError =>
+          logger.error(
+            "Evaluation errors prevented returning results from stored query: " + evaluationError)
+          HttpResponse(InternalServerError)
         }
     }
   }
@@ -329,8 +327,7 @@ class SyncQueryServiceHandler(
     */
   private def silenceShardQueryExceptions(
       stream0: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
-    def loop(
-        stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
+    def loop(stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] =
       StreamT(stream.uncons map {
         case Some((s, tail)) => StreamT.Yield(s, loop(tail))
         case None            => StreamT.Done
@@ -345,7 +342,6 @@ class SyncQueryServiceHandler(
           logger.error("Error executing bifrost query:\n" + msg.toString())
           StreamT.Done
       })
-    }
 
     loop(stream0)
   }

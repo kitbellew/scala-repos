@@ -317,13 +317,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         operationGraphListener.getOperationGraphForStage(stageId))
 
       val accumulableHeaders: Seq[String] = Seq("Accumulable", "Value")
-      def accumulableRow(acc: AccumulableInfo): Seq[Node] = {
+      def accumulableRow(acc: AccumulableInfo): Seq[Node] =
         (acc.name, acc.value) match {
           case (Some(name), Some(value)) =>
             <tr><td>{name}</td><td>{value}</td></tr>
           case _ => Seq.empty[Node]
         }
-      }
       val accumulableTable = UIUtils.listingTable(
         accumulableHeaders,
         accumulableRow,
@@ -344,7 +343,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val _taskTable = new TaskPagedTable(
             parent.conf,
             UIUtils.prependBaseUri(parent.basePath) +
-              s"/stages/stage?id=${stageId}&attempt=${stageAttemptId}",
+              s"/stages/stage?id=$stageId&attempt=$stageAttemptId",
             tasks,
             hasAccumulators,
             stageData.hasInput,
@@ -401,15 +400,13 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         } else {
           def getDistributionQuantiles(data: Seq[Double]): IndexedSeq[Double] =
             Distribution(data).get.getQuantiles()
-          def getFormattedTimeQuantiles(times: Seq[Double]): Seq[Node] = {
+          def getFormattedTimeQuantiles(times: Seq[Double]): Seq[Node] =
             getDistributionQuantiles(times).map { millis =>
               <td>{UIUtils.formatDuration(millis.toLong)}</td>
             }
-          }
-          def getFormattedSizeQuantiles(data: Seq[Double]): Seq[Elem] = {
+          def getFormattedSizeQuantiles(data: Seq[Double]): Seq[Elem] =
             getDistributionQuantiles(data).map(d =>
               <td>{Utils.bytesToString(d.toLong)}</td>)
-          }
 
           val deserializationTimes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
@@ -930,7 +927,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 private[ui] object StagePage {
   private[ui] def getGettingResultTime(
       info: TaskInfo,
-      currentTime: Long): Long = {
+      currentTime: Long): Long =
     if (info.gettingResult) {
       if (info.finished) {
         info.finishTime - info.gettingResultTime
@@ -941,12 +938,11 @@ private[ui] object StagePage {
     } else {
       0L
     }
-  }
 
   private[ui] def getSchedulerDelay(
       info: TaskInfo,
       metrics: TaskMetrics,
-      currentTime: Long): Long = {
+      currentTime: Long): Long =
     if (info.finished) {
       val totalExecutionTime = info.finishTime - info.launchTime
       val executorOverhead = (metrics.executorDeserializeTime +
@@ -959,7 +955,6 @@ private[ui] object StagePage {
       // The task is still running and the metrics like executorRunTime are not available.
       0L
     }
-  }
 }
 
 private[ui] case class TaskTableRowInputData(
@@ -1621,7 +1616,7 @@ private[ui] class TaskPagedTable(
     <thead>{headerRow}</thead>
   }
 
-  def row(task: TaskTableRowData): Seq[Node] = {
+  def row(task: TaskTableRowData): Seq[Node] =
     <tr>
       <td>{task.index}</td>
       <td>{task.taskId}</td>
@@ -1696,7 +1691,6 @@ private[ui] class TaskPagedTable(
     }
       {errorMessageCell(task.error)}
     </tr>
-  }
 
   private def errorMessageCell(error: String): Seq[Node] = {
     val isMultiline = error.indexOf('\n') >= 0

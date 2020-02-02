@@ -119,13 +119,12 @@ class QuadraticMinimizer(
 
   def getProximal = proximal
 
-  private def updateQuasiDefinite = {
+  private def updateQuasiDefinite =
     if (linearEquality > 0) {
       wsH(nGram until (nGram + Aeq.rows), 0 until Aeq.cols) := Aeq
       wsH(0 until nGram, nGram until (nGram + Aeq.rows)) := transAeq
       wsH(nGram until (nGram + Aeq.rows), nGram until (nGram + Aeq.rows)) := 0.0
     }
-  }
 
   /**
     * updateGram allows the user to seed QuadraticMinimizer with symmetric gram matrix most useful for cases
@@ -369,14 +368,13 @@ class QuadraticMinimizer(
     sqrt(eigenMin * eigenMax)
   }
 
-  private def computeRho(H: DenseMatrix[Double]): Double = {
+  private def computeRho(H: DenseMatrix[Double]): Double =
     proximal match {
       case null                                      => 0.0
       case ProximalL1(lambda: Double)                => computeRhoSparse(H)
       case ProjectProbabilitySimplex(lambda: Double) => computeRhoSparse(H)
       case _                                         => sqrt(QuadraticMinimizer.normColumn(H))
     }
-  }
 
   /**
     * minimizeAndReturnState API gives an advanced control for users who would like to use
@@ -436,9 +434,8 @@ class QuadraticMinimizer(
     */
   def minimize(
       q: DenseVector[Double],
-      initialState: State): DenseVector[Double] = {
+      initialState: State): DenseVector[Double] =
     minimizeAndReturnState(q, initialState).z
-  }
 
   /**
     * minimize API for cases where gram matrix is provided by the user. If a initialState is not provided
@@ -451,9 +448,8 @@ class QuadraticMinimizer(
   def minimize(
       H: DenseMatrix[Double],
       q: DenseVector[Double],
-      initialState: State): DenseVector[Double] = {
+      initialState: State): DenseVector[Double] =
     minimizeAndReturnState(H, q, initialState).z
-  }
 
   /**
     * minimize API for cases where upper triangular gram matrix is provided by user as primitive array.
@@ -466,9 +462,8 @@ class QuadraticMinimizer(
   def minimize(
       upper: Array[Double],
       q: DenseVector[Double],
-      initialState: State): DenseVector[Double] = {
+      initialState: State): DenseVector[Double] =
     minimizeAndReturnState(upper, q, initialState).z
-  }
 
   def minimizeAndReturnState(
       H: DenseMatrix[Double],
@@ -586,7 +581,7 @@ object QuadraticMinimizer {
   def apply(
       rank: Int,
       constraint: Constraint,
-      lambda: Double = 1.0): QuadraticMinimizer = {
+      lambda: Double = 1.0): QuadraticMinimizer =
     constraint match {
       case SMOOTH   => new QuadraticMinimizer(rank)
       case POSITIVE => new QuadraticMinimizer(rank, ProjectPos())
@@ -608,7 +603,6 @@ object QuadraticMinimizer {
       case SPARSE =>
         new QuadraticMinimizer(rank, ProximalL1().setLambda(lambda))
     }
-  }
 
   def computeObjective(
       h: DenseMatrix[Double],
@@ -620,9 +614,8 @@ object QuadraticMinimizer {
 
   case class Cost(H: DenseMatrix[Double], q: DenseVector[Double])
       extends DiffFunction[DenseVector[Double]] {
-    def calculate(x: DenseVector[Double]) = {
+    def calculate(x: DenseVector[Double]) =
       (computeObjective(H, q, x), H * x + q)
-    }
   }
 
   def optimizeWithLBFGS(
@@ -649,7 +642,7 @@ object QuadraticMinimizer {
     val beta = args(3).toDouble
 
     println(
-      s"Generating randomized QPs with rank ${problemSize} equalities ${nequalities}")
+      s"Generating randomized QPs with rank $problemSize equalities $nequalities")
     val (aeq, b, bl, bu, q, h) = QpGenerator(problemSize, nequalities)
 
     println(
@@ -689,7 +682,7 @@ object QuadraticMinimizer {
     println(s"Objective lu $luObj bfgs $bfgsObj qp $qpObj")
 
     println(
-      s"dim ${problemSize} lu ${luTime / 1e6} ms qp ${qpTime / 1e6} ms cg ${cgTime / 1e6} ms bfgs ${bfgsTime / 1e6} ms")
+      s"dim $problemSize lu ${luTime / 1e6} ms qp ${qpTime / 1e6} ms cg ${cgTime / 1e6} ms bfgs ${bfgsTime / 1e6} ms")
 
     val lambdaL1 = lambda * beta
     val lambdaL2 = lambda * (1 - beta)

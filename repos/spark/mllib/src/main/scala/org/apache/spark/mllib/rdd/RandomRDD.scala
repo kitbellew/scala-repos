@@ -58,9 +58,8 @@ private[mllib] class RandomRDD[T: ClassTag](
     RandomRDD.getPointIterator[T](split)
   }
 
-  override def getPartitions: Array[Partition] = {
+  override def getPartitions: Array[Partition] =
     RandomRDD.getPartitions(size, numPartitions, rng, seed)
-  }
 }
 
 private[mllib] class RandomVectorRDD(
@@ -86,9 +85,8 @@ private[mllib] class RandomVectorRDD(
     RandomRDD.getVectorIterator(split, vectorSize)
   }
 
-  override protected def getPartitions: Array[Partition] = {
+  override protected def getPartitions: Array[Partition] =
     RandomRDD.getPartitions(size, numPartitions, rng, seed)
-  }
 }
 
 private[mllib] object RandomRDD {

@@ -24,7 +24,7 @@ private[twitter] object Init {
 
   def finagleBuildRevision: String = _finagleBuildRevision.get
 
-  private def tryProps(path: String): Option[Properties] = {
+  private def tryProps(path: String): Option[Properties] =
     try {
       val resourceOpt = Option(getClass.getResourceAsStream(path))
       resourceOpt match {
@@ -48,7 +48,6 @@ private[twitter] object Init {
           exc)
         None
     }
-  }
 
   // package protected for testing
   private[finagle] def loadBuildProperties: Option[Properties] = {

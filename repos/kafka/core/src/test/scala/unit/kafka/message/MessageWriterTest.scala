@@ -28,9 +28,8 @@ class MessageWriterTest extends JUnitSuite {
 
   private val rnd = new Random()
 
-  private def mkRandomArray(size: Int): Array[Byte] = {
+  private def mkRandomArray(size: Int): Array[Byte] =
     (0 until size).map(_ => rnd.nextInt(10).toByte).toArray
-  }
 
   private def mkMessageWithWriter(
       key: Array[Byte] = null,
@@ -72,9 +71,8 @@ class MessageWriterTest extends JUnitSuite {
 
   private def decompress(
       compressed: Array[Byte],
-      codec: CompressionCodec): Array[Byte] = {
+      codec: CompressionCodec): Array[Byte] =
     toArray(CompressionFactory(codec, new ByteArrayInputStream(compressed)))
-  }
 
   private def toArray(in: InputStream): Array[Byte] = {
     val out = new ByteArrayOutputStream()

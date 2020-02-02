@@ -17,9 +17,8 @@ object Statics {
     hash ^ k
   }
 
-  def finalizeHash(hash: Int, length: Int): Int = {
+  def finalizeHash(hash: Int, length: Int): Int =
     avalanche(hash ^ length)
-  }
 
   /** Force all bits of the hash to avalanche. Used for finalizing the hash. */
   def avalanche(h0: Int): Int = {
@@ -32,18 +31,17 @@ object Statics {
     h
   }
 
-  def longHash(lv: Long): Int = {
+  def longHash(lv: Long): Int =
     lv.toInt
-    /*
+  /*
     val iv = lv.toInt | 0
     if (iv == lv) iv
     else (lv ^ (lv >>> 32)).toInt | 0
    */
-  }
 
-  def doubleHash(dv: Double): Int = {
+  def doubleHash(dv: Double): Int =
     dv.toInt
-    /*
+  /*
     val iv = dv.toInt | 0
     if (iv == dv)
       return iv
@@ -59,11 +57,10 @@ object Statics {
     val lv2 == java.lang.Double.doubleToLongBits(dv)
     return (lv2 ^ (lv2 >>> 32)).toInt | 0
    */
-  }
 
-  def floatHash(fv: Float): Int = {
+  def floatHash(fv: Float): Int =
     fv.toInt
-    /*
+  /*
     val iv = fv.toInt
     if (iv == fv)
       return iv
@@ -74,9 +71,8 @@ object Statics {
 
     return java.lang.Float.floatToIntBits(fv)
    */
-  }
 
-  def anyHash(x: Any): Int = {
+  def anyHash(x: Any): Int =
     x match {
       case null      => 0
       case x: Long   => longHash(x)
@@ -84,5 +80,4 @@ object Statics {
       case x: Float  => floatHash(x)
       case _         => x.hashCode()
     }
-  }
 }

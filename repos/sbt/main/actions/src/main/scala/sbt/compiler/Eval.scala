@@ -151,11 +151,10 @@ final class Eval(
         val trees = defUnits flatMap parseDefinitions
         syntheticModule(fullParser, importTrees, trees.toList, moduleName)
       }
-      def extra(run: Run, unit: CompilationUnit) = {
+      def extra(run: Run, unit: CompilationUnit) =
         atPhase(run.typerPhase.next) {
           (new ValExtractor(valTypes.toSet)).getVals(unit.body)
         }
-      }
       def read(file: File) = IO.readLines(file)
       def write(value: Seq[String], file: File) = IO.writeLines(file, value)
       def extraHash = file match {
@@ -324,9 +323,8 @@ final class Eval(
   private[this] final class ValExtractor(tpes: Set[String]) extends Traverser {
     private[this] var vals = List[String]()
     def getVals(t: Tree): List[String] = { vals = Nil; traverse(t); vals }
-    def isAcceptableType(tpe: Type): Boolean = {
+    def isAcceptableType(tpe: Type): Boolean =
       tpe.baseClasses.exists { sym => tpes.contains(sym.fullName) }
-    }
     override def traverse(tree: Tree): Unit = tree match {
       case ValDef(_, n, actualTpe, _)
           if isTopLevelModule(tree.symbol.owner) && isAcceptableType(

@@ -12,7 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType.ExtractClass
   * 2014-10-02
   */
 object ValueClassType {
-  def unapply(tp: ScType): Option[ScType] = {
+  def unapply(tp: ScType): Option[ScType] =
     tp match {
       case _: ValType => None
       case ExtractClass(cl: ScClass) if isValueClass(cl) =>
@@ -23,7 +23,6 @@ object ValueClassType {
         }
       case _ => None
     }
-  }
 
   def isValueType(tp: ScType): Boolean = unapply(tp).isDefined
 

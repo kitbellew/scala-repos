@@ -348,7 +348,7 @@ trait Html5Parser {
     * will be returned on successful parsing, otherwise
     * a Failure.
     */
-  def parse(in: InputStream): Box[Elem] = {
+  def parse(in: InputStream): Box[Elem] =
     Helpers
       .tryo {
         val hp = new HtmlParser(common.XmlViolationPolicy.ALLOW)
@@ -397,7 +397,6 @@ trait Html5Parser {
         }
       }
       .flatMap(a => a)
-  }
 
   private object AutoInsertedBody {
     def checkHead(n: Node): Boolean =

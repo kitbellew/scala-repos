@@ -58,7 +58,7 @@ class TaskLabelsTest extends FunSuite with GivenWhenThen with Matchers {
     require(unlabeledResources.forall(!_.hasReservation))
 
     def labelResourcesFor(
-        frameworkId: FrameworkId): Iterable[MesosProtos.Resource] = {
+        frameworkId: FrameworkId): Iterable[MesosProtos.Resource] =
       MarathonTestHelper
         .makeBasicOffer(
           reservation = Some(TaskLabels.labelsForTask(frameworkId, taskId)),
@@ -66,7 +66,6 @@ class TaskLabelsTest extends FunSuite with GivenWhenThen with Matchers {
         )
         .getResourcesList
         .asScala
-    }
 
     val labeledResources = labelResourcesFor(frameworkId)
     require(labeledResources.nonEmpty)

@@ -125,8 +125,7 @@ object DependencyResolver {
     @scala.annotation.tailrec
     def loop(
         coll: List[ResolutionInfo],
-        acc: List[ResolutionInfo]): List[ResolutionInfo] = {
-
+        acc: List[ResolutionInfo]): List[ResolutionInfo] =
       if (coll.isEmpty) acc
       else if (coll.tail.isEmpty) coll.head :: acc
       else {
@@ -139,7 +138,6 @@ object DependencyResolver {
         else
           throw new CyclicDependencyException(pending)
       }
-    }
 
     loop(jsDeps.values.toList, Nil)
   }

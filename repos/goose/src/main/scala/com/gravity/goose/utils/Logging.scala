@@ -37,9 +37,8 @@ trait Logging extends CanLog {
 
   val logger: Logger = Logging.getLogger(this)
 
-  private def formatmsg(msg: String, refs: Seq[Any]): String = {
+  private def formatmsg(msg: String, refs: Seq[Any]): String =
     new MessageFormat(msg).format(refs.toArray)
-  }
 
   private def checkFormat(msg: String, refs: Seq[Any]): String =
     if (refs.size > 0) formatmsg(msg, refs) else msg
@@ -81,13 +80,12 @@ trait Logging extends CanLog {
   */
 object Logging {
 
-  def loggerNameForClass(className: String) = {
+  def loggerNameForClass(className: String) =
     if (className endsWith "$") {
       className.substring(0, className.length - 1)
     } else {
       className
     }
-  }
 
   def getLogger(logging: AnyRef) =
     LoggerFactory.getLogger(loggerNameForClass(logging.getClass.getName))

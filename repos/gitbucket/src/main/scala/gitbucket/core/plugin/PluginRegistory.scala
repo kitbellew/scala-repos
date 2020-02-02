@@ -34,9 +34,8 @@ class PluginRegistry {
   private val receiveHooks = new ListBuffer[ReceiveHook]
   receiveHooks += new ProtectedBranchReceiveHook()
 
-  def addPlugin(pluginInfo: PluginInfo): Unit = {
+  def addPlugin(pluginInfo: PluginInfo): Unit =
     plugins += pluginInfo
-  }
 
   def getPlugins(): List[PluginInfo] = plugins.toList
 
@@ -57,57 +56,47 @@ class PluginRegistry {
 
   def getImage(id: String): String = images(id)
 
-  def addController(path: String, controller: ControllerBase): Unit = {
+  def addController(path: String, controller: ControllerBase): Unit =
     controllers += ((controller, path))
-  }
 
   @deprecated(
     "Use addController(path: String, controller: ControllerBase) instead",
     "3.4.0")
-  def addController(controller: ControllerBase, path: String): Unit = {
+  def addController(controller: ControllerBase, path: String): Unit =
     addController(path, controller)
-  }
 
   def getControllers(): Seq[(ControllerBase, String)] = controllers.toSeq
 
-  def addJavaScript(path: String, script: String): Unit = {
+  def addJavaScript(path: String, script: String): Unit =
     javaScripts += ((path, script))
-  }
 
-  def getJavaScript(currentPath: String): List[String] = {
+  def getJavaScript(currentPath: String): List[String] =
     javaScripts.filter(x => currentPath.matches(x._1)).toList.map(_._2)
-  }
 
-  def addRenderer(extension: String, renderer: Renderer): Unit = {
+  def addRenderer(extension: String, renderer: Renderer): Unit =
     renderers += ((extension, renderer))
-  }
 
-  def getRenderer(extension: String): Renderer = {
+  def getRenderer(extension: String): Renderer =
     renderers.get(extension).getOrElse(DefaultRenderer)
-  }
 
   def renderableExtensions: Seq[String] = renderers.keys.toSeq
 
-  def addRepositoryRouting(routing: GitRepositoryRouting): Unit = {
+  def addRepositoryRouting(routing: GitRepositoryRouting): Unit =
     repositoryRoutings += routing
-  }
 
-  def getRepositoryRoutings(): Seq[GitRepositoryRouting] = {
+  def getRepositoryRoutings(): Seq[GitRepositoryRouting] =
     repositoryRoutings.toSeq
-  }
 
   def getRepositoryRouting(
-      repositoryPath: String): Option[GitRepositoryRouting] = {
+      repositoryPath: String): Option[GitRepositoryRouting] =
     PluginRegistry().getRepositoryRoutings().find {
       case GitRepositoryRouting(urlPath, _, _) => {
         repositoryPath.matches("/" + urlPath + "(/.*)?")
       }
     }
-  }
 
-  def addReceiveHook(commitHook: ReceiveHook): Unit = {
+  def addReceiveHook(commitHook: ReceiveHook): Unit =
     receiveHooks += commitHook
-  }
 
   def getReceiveHooks: Seq[ReceiveHook] = receiveHooks.toSeq
 
@@ -217,7 +206,7 @@ object PluginRegistry {
     }
   }
 
-  def shutdown(context: ServletContext, settings: SystemSettings): Unit = {
+  def shutdown(context: ServletContext, settings: SystemSettings): Unit =
     instance.getPlugins().foreach { pluginInfo =>
       try {
         pluginInfo.pluginClass.shutdown(instance, context, settings)
@@ -227,7 +216,6 @@ object PluginRegistry {
         }
       }
     }
-  }
 
 }
 

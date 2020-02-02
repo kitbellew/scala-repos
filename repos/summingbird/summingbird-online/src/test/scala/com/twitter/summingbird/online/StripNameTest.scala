@@ -47,7 +47,7 @@ class StripNameTest extends FunSuite {
         : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
-      assert(nameMap(nodes(0)).toSet == names, s"checking ${names}")
+      assert(nameMap(nodes(0)).toSet == names, s"checking $names")
     }
 
     assertName(Set("source", "map", "sumByKey")) {
@@ -108,7 +108,7 @@ class StripNameTest extends FunSuite {
         : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
-      assert(nameMap(nodes(0)) == names, s"checking ${names}")
+      assert(nameMap(nodes(0)) == names, s"checking $names")
     }
 
     assertName(List("source0", "map0", "sumByKey")) {

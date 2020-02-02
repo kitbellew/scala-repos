@@ -359,14 +359,14 @@ object ProducerPerformance extends Logging {
 
       while (i < messagesPerThread) {
         try {
-          config.topics.foreach(topic => {
+          config.topics.foreach { topic =>
             message = generateProducerData(topic, i)
             producer.send(topic, BigInteger.valueOf(i).toByteArray, message)
             bytesSent += message.size
             nSends += 1
             if (config.messageSendGapMs > 0)
               Thread.sleep(config.messageSendGapMs)
-          })
+          }
         } catch {
           case e: Throwable =>
             error("Error when sending message " + new String(message), e)

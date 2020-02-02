@@ -123,13 +123,12 @@ class ClusterClientTest
     }
   }
 
-  override def withFixture(test: NoArgTest): Outcome = {
+  override def withFixture(test: NoArgTest): Outcome =
     if (!testServers.isEmpty) test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()
     }
-  }
 
   test("Simple ClusterClient using finagle load balancing - many keys") {
     // create simple cluster client
@@ -162,16 +161,14 @@ class ClusterClientTest
     }
 
     (0 until count).foreach { n =>
-      {
-        var found = false
-        tmpClients foreach { c =>
-          if (Await.result(c.get("foo" + n), TimeOut) != None) {
-            assert(!found)
-            found = true
-          }
+      var found = false
+      tmpClients foreach { c =>
+        if (Await.result(c.get("foo" + n), TimeOut) != None) {
+          assert(!found)
+          found = true
         }
-        assert(found)
       }
+      assert(found)
     }
   }
 
@@ -400,11 +397,9 @@ class ClusterClientTest
         TimeOut)
 
       (0 until count).foreach { n =>
-        {
-          val c = client.clientOf("foo" + n)
-          val Buf.Utf8(res) = Await.result(c.get("foo" + n), TimeOut).get
-          assert(res == "bar" + n)
-        }
+        val c = client.clientOf("foo" + n)
+        val Buf.Utf8(res) = Await.result(c.get("foo" + n), TimeOut).get
+        assert(res == "bar" + n)
       }
     }
   }
@@ -616,13 +611,12 @@ class ClusterClientTest
 
   // create temporary zk clients for additional cache servers since we will need to
   // de-register these services by expiring corresponding zk client session
-  def addMoreServers(size: Int): List[EndpointStatus] = {
+  def addMoreServers(size: Int): List[EndpointStatus] =
     List.fill(size) {
       val server = TestMemcachedServer.start()
       testServers :+= server.get
       zkServerSetCluster.joinServerSet(server.get.address)
     }
-  }
 
   def initializePool(
       expectedSize: Int,
@@ -666,7 +660,7 @@ class ClusterClientTest
     var poolSeen = mutable.HashSet[CacheNode]()
 
     def expectMore(
-        spoolChanges: Spool[Cluster.Change[CacheNode]]): Future[Unit] = {
+        spoolChanges: Spool[Cluster.Change[CacheNode]]): Future[Unit] =
       spoolChanges match {
         case change *:: tail =>
           change match {
@@ -683,7 +677,6 @@ class ClusterClientTest
             Future.Done
           else tail flatMap expectMore
       }
-    }
 
     myCachePool.snap match {
       case (cachePool, changes) =>

@@ -165,8 +165,7 @@ class SocketServer(
     info("Shutdown completed")
   }
 
-  def boundPort(
-      protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Int = {
+  def boundPort(protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Int =
     try {
       acceptors(endpoints(protocol)).serverChannel.socket().getLocalPort
     } catch {
@@ -175,7 +174,6 @@ class SocketServer(
           "Tried to check server's port before server was started or checked for port of non-existing protocol",
           e)
     }
-  }
 
   /* For test usage */
   private[network] def connectionCount(address: InetAddress): Int =
@@ -214,9 +212,8 @@ private[kafka] abstract class AbstractServerThread(
   /**
     * Record that the thread startup is complete
     */
-  protected def startupComplete() = {
+  protected def startupComplete() =
     startupLatch.countDown()
-  }
 
   /**
     * Record that the thread shutdown is complete
@@ -455,13 +452,12 @@ private[kafka] class Processor(
   newGauge(
     "IdlePercent",
     new Gauge[Double] {
-      def value = {
+      def value =
         metrics
           .metrics()
           .get(metrics
             .metricName("io-wait-ratio", "socket-server-metrics", metricTags))
           .value()
-      }
     },
     metricTags.asScala
   )

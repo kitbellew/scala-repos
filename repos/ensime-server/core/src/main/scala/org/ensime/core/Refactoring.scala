@@ -110,7 +110,7 @@ trait RefactoringHandler { self: Analyzer =>
     VoidResponse
   }
 
-  def handleExpandselection(file: File, start: Int, stop: Int): FileRange = {
+  def handleExpandselection(file: File, start: Int, stop: Int): FileRange =
     FileUtils.readFile(file, charset) match {
       case Right(contents) =>
         val selectionRange = Range(start, stop - start)
@@ -122,7 +122,6 @@ trait RefactoringHandler { self: Analyzer =>
         }
       case Left(e) => throw e
     }
-  }
 
   def handleFormatFiles(files: List[File]): Unit = {
     val cs = charset
@@ -155,16 +154,15 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
   def askPrepareRefactor(
       procId: Int,
       refactor: RefactorDesc
-  ): Either[RefactorFailure, RefactorEffect] = {
+  ): Either[RefactorFailure, RefactorEffect] =
     askOption(prepareRefactor(procId, refactor))
       .getOrElse(Left(RefactorFailure(procId, "Refactor call failed")))
-  }
 
   def askExecRefactor(
       procId: Int,
       tpe: RefactorType,
       effect: RefactorEffect
-  ): Either[RefactorFailure, RefactorResult] = {
+  ): Either[RefactorFailure, RefactorResult] =
     askOption(execRefactor(procId, tpe, effect)).getOrElse(
       Left(RefactorFailure(procId, "Refactor exec call failed."))
     ) match {
@@ -176,7 +174,6 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
         Right(result)
       case Left(failure) => Left(failure)
     }
-  }
 
 }
 

@@ -39,19 +39,16 @@ abstract class UnsafeRowJoiner {
 object GenerateUnsafeRowJoiner
     extends CodeGenerator[(StructType, StructType), UnsafeRowJoiner] {
 
-  override protected def create(
-      in: (StructType, StructType)): UnsafeRowJoiner = {
+  override protected def create(in: (StructType, StructType)): UnsafeRowJoiner =
     create(in._1, in._2)
-  }
 
   override protected def canonicalize(
       in: (StructType, StructType)): (StructType, StructType) = in
 
   override protected def bind(
       in: (StructType, StructType),
-      inputSchema: Seq[Attribute]): (StructType, StructType) = {
+      inputSchema: Seq[Attribute]): (StructType, StructType) =
     in
-  }
 
   def create(schema1: StructType, schema2: StructType): UnsafeRowJoiner = {
     val offset = Platform.BYTE_ARRAY_OFFSET

@@ -185,11 +185,10 @@ object Compiler {
     new AnalyzingCompiler(instance, provider, cpOptions)
   }
 
-  def compile(in: Inputs, log: Logger): CompileResult = {
+  def compile(in: Inputs, log: Logger): CompileResult =
     sbt.inc.IncrementalCompilerUtil.defaultIncrementalCompiler.compile(in, log)
-    // import in.inputs.config._
-    // compile(in, log, new LoggerReporter(maxErrors, log, sourcePositionMapper))
-  }
+  // import in.inputs.config._
+  // compile(in, log, new LoggerReporter(maxErrors, log, sourcePositionMapper))
   // def compile(in: Inputs, log: Logger, reporter: xsbti.Reporter): CompileResult =
   //   {
   //     import in.inputs.compilers._
@@ -207,12 +206,7 @@ object Compiler {
   //   }
 
   private[sbt] def foldMappers[A](mappers: Seq[A => Option[A]]) =
-    mappers.foldRight({ p: A =>
-      p
-    }) {
-      (mapper, mappers) =>
-        { p: A =>
-          mapper(p).getOrElse(mappers(p))
-        }
+    mappers.foldRight({ p: A => p }) { (mapper, mappers) => p: A =>
+      mapper(p).getOrElse(mappers(p))
     }
 }

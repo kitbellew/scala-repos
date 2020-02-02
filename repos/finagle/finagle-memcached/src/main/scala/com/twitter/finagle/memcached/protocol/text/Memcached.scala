@@ -124,7 +124,7 @@ private class MemcachedLoggingFilter(stats: StatsReceiver)
   private[this] val error = stats.scope("error")
   private[this] val succ = stats.scope("success")
 
-  override def apply(command: Command, service: Service[Command, Response]) = {
+  override def apply(command: Command, service: Service[Command, Response]) =
     service(command) map { response =>
       response match {
         case NotFound() | Stored() | NotStored() | Exists() | Deleted() |
@@ -135,5 +135,4 @@ private class MemcachedLoggingFilter(stats: StatsReceiver)
       }
       response
     }
-  }
 }

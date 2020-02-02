@@ -97,18 +97,16 @@ private[spark] class CoalescedRDD[T: ClassTag](
 
   override def compute(
       partition: Partition,
-      context: TaskContext): Iterator[T] = {
+      context: TaskContext): Iterator[T] =
     partition.asInstanceOf[CoalescedRDDPartition].parents.iterator.flatMap {
       parentPartition => firstParent[T].iterator(parentPartition, context)
     }
-  }
 
-  override def getDependencies: Seq[Dependency[_]] = {
+  override def getDependencies: Seq[Dependency[_]] =
     Seq(new NarrowDependency(prev) {
       def getParents(id: Int): Seq[Int] =
         partitions(id).asInstanceOf[CoalescedRDDPartition].parentsIndices
     })
-  }
 
   override def clearDependencies() {
     super.clearDependencies()
@@ -121,9 +119,8 @@ private[spark] class CoalescedRDD[T: ClassTag](
     * @param partition
     * @return the machine most preferred by split
     */
-  override def getPreferredLocations(partition: Partition): Seq[String] = {
+  override def getPreferredLocations(partition: Partition): Seq[String] =
     partition.asInstanceOf[CoalescedRDDPartition].preferredLocation.toSeq
-  }
 }
 
 /**
@@ -183,9 +180,8 @@ private class PartitionCoalescer(
   var noLocality = true // if true if no preferredLocations exists for parent RDD
 
   // gets the *current* preferred locations from the DAGScheduler (as opposed to the static ones)
-  def currPrefLocs(part: Partition): Seq[String] = {
+  def currPrefLocs(part: Partition): Seq[String] =
     prev.context.getPreferredLocs(prev, part.index).map(tl => tl.host)
-  }
 
   // this class just keeps iterating and rotating infinitely over the partitions of the RDD
   // next() returns the next preferred machine that a partition is replicated on
@@ -200,24 +196,23 @@ private class PartitionCoalescer(
     // initializes/resets to start iterating from the beginning
     def resetIterator(): Iterator[(String, Partition)] = {
       val iterators = (0 to 2).map(x =>
-        prev.partitions.iterator.flatMap(p => {
+        prev.partitions.iterator.flatMap { p =>
           if (currPrefLocs(p).size > x) Some((currPrefLocs(p)(x), p)) else None
-        }))
+        })
       iterators.reduceLeft((x, y) => x ++ y)
     }
 
     // hasNext() is false iff there are no preferredLocations for any of the partitions of the RDD
-    override def hasNext: Boolean = { !isEmpty }
+    override def hasNext: Boolean = !isEmpty
 
     // return the next preferredLocation of some partition of the RDD
-    override def next(): (String, Partition) = {
+    override def next(): (String, Partition) =
       if (it.hasNext) {
         it.next()
       } else {
         it = resetIterator() // ran out of preferred locations, reset and rotate to the beginning
         it.next()
       }
-    }
   }
 
   /**
@@ -226,11 +221,10 @@ private class PartitionCoalescer(
     * @param key string representing a partitioned group on preferred machine key
     * @return Option of PartitionGroup that has least elements for key
     */
-  def getLeastGroupHash(key: String): Option[PartitionGroup] = {
+  def getLeastGroupHash(key: String): Option[PartitionGroup] =
     groupHash.get(key).map(_.sortWith(compare).head)
-  }
 
-  def addPartToPGroup(part: Partition, pgroup: PartitionGroup): Boolean = {
+  def addPartToPGroup(part: Partition, pgroup: PartitionGroup): Boolean =
     if (!initialHash.contains(part)) {
       pgroup.arr += part // already assign this element
       initialHash += part // needed to avoid assigning partitions to multiple buckets
@@ -238,7 +232,6 @@ private class PartitionCoalescer(
     } else {
       false
     }
-  }
 
   /**
     * Initializes targetLen partition groups and assigns a preferredLocation

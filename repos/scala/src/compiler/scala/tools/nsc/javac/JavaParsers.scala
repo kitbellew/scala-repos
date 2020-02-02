@@ -684,7 +684,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       accept(IMPORT)
       val pos = in.currentPos
       val buf = new ListBuffer[Name]
-      def collectIdents(): Int = {
+      def collectIdents(): Int =
         if (in.token == ASTERISK) {
           val starOffset = in.pos
           in.nextToken()
@@ -698,7 +698,6 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             collectIdents()
           } else nameOffset
         }
-      }
       if (in.token == STATIC) in.nextToken()
       else buf += nme.ROOTPKG
       val lastnameOffset = collectIdents()

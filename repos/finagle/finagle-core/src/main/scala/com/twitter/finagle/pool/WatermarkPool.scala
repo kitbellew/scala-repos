@@ -94,7 +94,7 @@ class WatermarkPool[Req, Rep](
     }
   }
 
-  @tailrec private[this] def dequeue(): Option[Service[Req, Rep]] = {
+  @tailrec private[this] def dequeue(): Option[Service[Req, Rep]] =
     if (queue.isEmpty) {
       None
     } else {
@@ -108,7 +108,6 @@ class WatermarkPool[Req, Rep](
         Some(service)
       }
     }
-  }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
     if (!isOpen)

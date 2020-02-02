@@ -60,8 +60,8 @@ object userRoles extends RequestVar[List[Role]](Nil)
 case class HttpBasicAuthentication(realmName: String)(
     func: PartialFunction[(String, String, Req), Boolean])
     extends HttpAuthentication {
-  def credentials(r: Req): Box[(String, String)] = {
-    header(r).flatMap(auth => {
+  def credentials(r: Req): Box[(String, String)] =
+    header(r).flatMap { auth =>
       val decoded =
         new String(Base64.decodeBase64(auth.substring(6, auth.length).getBytes))
           .split(":")
@@ -71,8 +71,7 @@ case class HttpBasicAuthentication(realmName: String)(
         case userName :: Nil           => Full((userName, ""))
         case _                         => Empty
       }
-    })
-  }
+    }
 
   override def realm = realmName
 
@@ -103,12 +102,12 @@ case class HttpDigestAuthentication(realmName: String)(
     protected def messageHandler = {
       case CheckAndPurge =>
         if (keepPinging) doPing()
-        nonceMap.foreach((entry) => {
+        nonceMap.foreach { (entry) =>
           val ts = System.currentTimeMillis
           if ((ts - entry._2) > nonceValidityPeriod) {
             nonceMap -= entry._1
           }
-        })
+        }
 
       case ShutDown => keepPinging = false
     }
@@ -128,8 +127,7 @@ case class HttpDigestAuthentication(realmName: String)(
   override def shutDown = NonceWatcher ! ShutDown
 
   def getInfo(req: Req): Box[DigestAuthentication] =
-    header(req).map(auth => {
-
+    header(req).map { auth =>
       val info = auth.substring(7, auth.length)
       val pairs = splitNameValuePairs(info)
       DigestAuthentication(
@@ -144,7 +142,7 @@ case class HttpDigestAuthentication(realmName: String)(
         pairs("response"),
         pairs("opaque")
       )
-    })
+    }
 
   /**
     * The period in milli seconds during which the nonce sent by server is valid. After this period

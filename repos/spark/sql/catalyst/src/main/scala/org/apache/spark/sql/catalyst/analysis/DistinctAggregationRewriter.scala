@@ -142,12 +142,11 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       def evalWithinGroup(id: Literal, e: Expression) =
         If(EqualTo(gid, id), e, nullify(e))
       def patchAggregateFunctionChildren(af: AggregateFunction)(
-          attrs: Expression => Expression): AggregateFunction = {
+          attrs: Expression => Expression): AggregateFunction =
         af.withNewChildren(af.children.map {
             case afc => attrs(afc)
           })
           .asInstanceOf[AggregateFunction]
-      }
 
       // Setup unique distinct aggregate children.
       val distinctAggChildren = distinctAggGroups.keySet.flatten.toSeq.distinct

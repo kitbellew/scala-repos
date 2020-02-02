@@ -43,13 +43,13 @@ abstract class AbstractFetcherManager(
     new Gauge[Long] {
       // current max lag across all fetchers/topics/partitions
       def value =
-        fetcherThreadMap.foldLeft(0L)((curMaxAll, fetcherThreadMapEntry) => {
+        fetcherThreadMap.foldLeft(0L) { (curMaxAll, fetcherThreadMapEntry) =>
           fetcherThreadMapEntry._2.fetcherLagStats.stats
-            .foldLeft(0L)((curMaxThread, fetcherLagStatsEntry) => {
+            .foldLeft(0L) { (curMaxThread, fetcherLagStatsEntry) =>
               curMaxThread.max(fetcherLagStatsEntry._2.lag)
-            })
+            }
             .max(curMaxAll)
-        })
+        }
     },
     Map("clientId" -> clientId)
   )
@@ -64,20 +64,19 @@ abstract class AbstractFetcherManager(
               .map(_._2.fetcherStats.requestRate.oneMinuteRate)
               .getOrElse(0)
 
-          fetcherThreadMap.foldLeft(headRate)(
-            (curMinAll, fetcherThreadMapEntry) => {
+          fetcherThreadMap.foldLeft(headRate) {
+            (curMinAll, fetcherThreadMapEntry) =>
               fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
                 .min(curMinAll)
-            })
+          }
         }
       }
     },
     Map("clientId" -> clientId)
   )
 
-  private def getFetcherId(topic: String, partitionId: Int): Int = {
+  private def getFetcherId(topic: String, partitionId: Int): Int =
     Utils.abs(31 * topic.hashCode() + partitionId) % numFetchers
-  }
 
   // to be defined in subclass to create a specific fetcher
   def createFetcherThread(

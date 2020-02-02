@@ -120,14 +120,13 @@ class Formatter(
     * Return the string to prefix each log message with, given a log level,
     * formatted date string, and package name.
     */
-  def formatPrefix(level: javalog.Level, date: String, name: String): String = {
+  def formatPrefix(level: javalog.Level, date: String, name: String): String =
     FORMAT.format(formatLevelName(level), name, date)
-  }
 
   /**
     * Return the string representation of a given log level's name
     */
-  def formatLevelName(level: javalog.Level): String = {
+  def formatLevelName(level: javalog.Level): String =
     level match {
       case x: Level =>
         x.name
@@ -137,7 +136,6 @@ class Formatter(
           case Some(level) => level.name
         }
     }
-  }
 
   /**
     * Return the line terminator (if any) to use at the end of each log
@@ -173,7 +171,7 @@ class Formatter(
   /**
     * Return formatted text from a java LogRecord.
     */
-  def formatText(record: javalog.LogRecord): String = {
+  def formatText(record: javalog.LogRecord): String =
     record match {
       case null => ""
       case r: LogRecord => {
@@ -189,7 +187,6 @@ class Formatter(
         }
       }
     }
-  }
 
   override def format(record: javalog.LogRecord): String = {
     val name = formatName(record)
@@ -206,7 +203,7 @@ class Formatter(
   /**
     * Returns the formatted name of the node given a LogRecord
     */
-  def formatName(record: javalog.LogRecord): String = {
+  def formatName(record: javalog.LogRecord): String =
     record.getLoggerName match {
       case null => "(root)"
       case ""   => "(root)"
@@ -223,7 +220,6 @@ class Formatter(
         }
       }
     }
-  }
 
   /**
     * Truncates the text from a java LogRecord, if necessary

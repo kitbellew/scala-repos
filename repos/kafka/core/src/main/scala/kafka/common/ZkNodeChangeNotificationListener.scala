@@ -69,9 +69,8 @@ class ZkNodeChangeNotificationListener(
     processAllNotifications()
   }
 
-  def close() = {
+  def close() =
     isClosed.set(true)
-  }
 
   /**
     * Process all changes
@@ -164,7 +163,7 @@ class ZkNodeChangeNotificationListener(
     }
 
     override def handleStateChanged(state: KeeperState) {
-      debug(s"New zookeeper state: ${state}")
+      debug(s"New zookeeper state: $state")
     }
   }
 

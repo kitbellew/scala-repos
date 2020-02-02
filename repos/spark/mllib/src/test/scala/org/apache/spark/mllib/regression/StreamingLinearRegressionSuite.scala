@@ -157,9 +157,10 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     }
 
     // apply model predictions to test stream
-    ssc = setupStreams(testInput, (inputDStream: DStream[LabeledPoint]) => {
-      model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
-    })
+    ssc = setupStreams(
+      testInput,
+      (inputDStream: DStream[LabeledPoint]) =>
+        model.predictOnValues(inputDStream.map(x => (x.label, x.features))))
     // collect the output as (true, estimated) tuples
     val output: Seq[Seq[(Double, Double)]] =
       runStreams(ssc, numBatches, numBatches)

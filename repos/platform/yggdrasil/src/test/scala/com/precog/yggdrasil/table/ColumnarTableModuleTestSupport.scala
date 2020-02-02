@@ -53,7 +53,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     @tailrec def buildColArrays(
         from: Stream[JValue],
         into: Map[ColumnRef, ArrayColumn[_]],
-        sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) = {
+        sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) =
       from match {
         case jv #:: xs =>
           val refs = Slice.withIdsAndValues(jv, into, sliceIndex, sliceSize)
@@ -61,7 +61,6 @@ trait ColumnarTableModuleTestSupport[M[+_]]
         case _ =>
           (into, sliceIndex)
       }
-    }
 
     val (prefix, suffix) = sampleData.splitAt(sliceSize)
     val slice = new Slice {

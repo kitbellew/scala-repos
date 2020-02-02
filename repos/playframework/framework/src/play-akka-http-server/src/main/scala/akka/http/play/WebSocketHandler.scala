@@ -38,7 +38,7 @@ object WebSocketHandler {
     */
   def messageFlowToFrameFlow(
       flow: Flow[Message, Message, _],
-      bufferLimit: Int): Flow[FrameEvent, FrameEvent, _] = {
+      bufferLimit: Int): Flow[FrameEvent, FrameEvent, _] =
     // Each of the stages here transforms frames to an Either[Message, ?], where Message is a close message indicating
     // some sort of protocol failure. The handleProtocolFailures function then ensures that these messages skip the
     // flow that we are wrapping, are sent to the client and the close procedure is implemented.
@@ -47,7 +47,6 @@ object WebSocketHandler {
       .via(handleProtocolFailures(
         WebSocketFlowHandler.webSocketProtocol(bufferLimit).join(flow)))
       .map(messageToFrameEvent)
-  }
 
   /**
     * Akka HTTP potentially splits frames into multiple frame events.
@@ -57,7 +56,7 @@ object WebSocketHandler {
     * @param bufferLimit The maximum size of frame data that should be buffered.
     */
   private def aggregateFrames(
-      bufferLimit: Int): Stage[FrameEvent, Either[Message, RawMessage]] = {
+      bufferLimit: Int): Stage[FrameEvent, Either[Message, RawMessage]] =
     new PushStage[FrameEvent, Either[Message, RawMessage]] {
 
       var currentFrameData: ByteString = null
@@ -111,7 +110,6 @@ object WebSocketHandler {
         }
 
     }
-  }
 
   private def frameToRawMessage(header: FrameHeader, data: ByteString) = {
     val unmasked = FrameEventParser.mask(data, header.mask)
@@ -162,7 +160,7 @@ object WebSocketHandler {
   private def handleProtocolFailures: Flow[RawMessage, Message, _] => Flow[
     Either[Message, RawMessage],
     Message,
-    _] = {
+    _] =
     AkkaStreams.bypassWith(
       Flow[Either[Message, RawMessage]]
         .transform(() =>
@@ -184,14 +182,12 @@ object WebSocketHandler {
           }),
       Merge(2, eagerComplete = true)
     )
-  }
 
   private case class Frame(header: FrameHeader, data: ByteString) {
     def unmaskedData = FrameEventParser.mask(data, header.mask)
   }
 
-  private def close(status: Int, message: String = "") = {
+  private def close(status: Int, message: String = "") =
     Left(new CloseMessage(Some(status), message))
-  }
 
 }

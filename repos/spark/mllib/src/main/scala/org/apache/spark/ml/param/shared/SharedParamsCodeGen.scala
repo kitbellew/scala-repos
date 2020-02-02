@@ -174,7 +174,7 @@ private[shared] object SharedParamsCodeGen {
       getTypeString(c)
     }
 
-    private def getTypeString(c: Class[_]): String = {
+    private def getTypeString(c: Class[_]): String =
       c match {
         case _ if c == classOf[Int]     => "Int"
         case _ if c == classOf[Long]    => "Long"
@@ -184,7 +184,6 @@ private[shared] object SharedParamsCodeGen {
         case _ if c == classOf[String]  => "String"
         case _ if c.isArray             => s"Array[${getTypeString(c.getComponentType)}]"
       }
-    }
   }
 
   /** Generates the HasParam trait code for the input param. */

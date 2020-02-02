@@ -46,7 +46,7 @@ trait Filter extends EssentialFilter {
   def apply(f: RequestHeader => Future[Result])(
       rh: RequestHeader): Future[Result]
 
-  def apply(next: EssentialAction): EssentialAction = {
+  def apply(next: EssentialAction): EssentialAction =
     new EssentialAction {
       import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
@@ -91,7 +91,6 @@ trait Filter extends EssentialFilter {
       }
 
     }
-  }
 }
 
 object Filter {
@@ -116,9 +115,8 @@ object Filters {
 
 @deprecated("Use dependency injection", "2.5.0")
 class WithFilters(filters: EssentialFilter*) extends GlobalSettings {
-  override def doFilter(a: EssentialAction): EssentialAction = {
+  override def doFilter(a: EssentialAction): EssentialAction =
     Filters(super.doFilter(a), filters: _*)
-  }
 }
 
 /**

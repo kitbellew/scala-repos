@@ -41,9 +41,8 @@ private[exception] class TestServiceException(
 
   lazy val serviceException = constructServiceException
 
-  def verifyCompressedJSON(json: String) = {
+  def verifyCompressedJSON(json: String) =
     verifyJSON(GZIPStringEncoder.decodeString(json))
-  }
 
   def verifyJSON(json: String) = {
     def verify[T](
@@ -61,7 +60,7 @@ private[exception] class TestServiceException(
         expected: Option[T],
         fieldName: String,
         previous: Boolean = false,
-        enforced: Boolean = true) = {
+        enforced: Boolean = true) =
       if (enforced) {
         assert(
           expected.isDefined,
@@ -72,7 +71,6 @@ private[exception] class TestServiceException(
           "incorrect value for " + fieldName,
           previous)
       } else true
-    }
 
     def fail(badKey: String, location: String) {
       assert(false, "unknown element found in " + location + ": " + badKey)

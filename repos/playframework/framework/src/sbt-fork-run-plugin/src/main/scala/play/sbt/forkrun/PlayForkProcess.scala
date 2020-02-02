@@ -145,7 +145,7 @@ object PlayForkProcess {
     isWindows && (options.mkString(" ").length > MaxOptionsLength)
 
   val ansiCode = "(?:\\033\\[[0-9;]+m)?"
-  val LogLine = s"^${ansiCode}\\[${ansiCode}([a-z]+)${ansiCode}\\] (.*)".r
+  val LogLine = s"^$ansiCode\\[$ansiCode([a-z]+)$ansiCode\\] (.*)".r
 
   // detect log level from output lines and re-log at the same level
   def logLine(logger: Logger, defaultLevel: Level.Value): String => Unit =

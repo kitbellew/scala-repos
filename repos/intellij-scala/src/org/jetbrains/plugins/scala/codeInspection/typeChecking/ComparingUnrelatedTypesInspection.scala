@@ -46,7 +46,7 @@ object ComparingUnrelatedTypesInspection {
       .isNeverSubType(unboxed2, unboxed1)
   }
 
-  def isNumericType(tp: ScType) = {
+  def isNumericType(tp: ScType) =
     tp match {
       case Byte | Char | Short | Int | Long | Float | Double => true
       case ScDesignatorType(c: ScClass) =>
@@ -55,7 +55,6 @@ object ComparingUnrelatedTypesInspection {
           .contains("scala.math.ScalaNumber")
       case _ => false
     }
-  }
 
   def undefinedTypeAlias(tp: ScType) = tp.isAliasType match {
     case Some(ScTypeUtil.AliasType(_, lower, upper)) =>
@@ -64,13 +63,12 @@ object ComparingUnrelatedTypesInspection {
   }
 
   @tailrec
-  def extractActualType(tp: ScType): ScType = {
+  def extractActualType(tp: ScType): ScType =
     tp.isAliasType match {
       case Some(ScTypeUtil.AliasType(_, Success(rhs, _), _)) =>
         extractActualType(rhs)
       case _ => tryExtractSingletonType(tp)
     }
-  }
 
   private def tryExtractSingletonType(tp: ScType): ScType =
     ScType.extractDesignatorSingletonType(tp).getOrElse(tp)

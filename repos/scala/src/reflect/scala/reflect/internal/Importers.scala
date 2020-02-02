@@ -49,13 +49,12 @@ trait Importers { to: SymbolTable =>
     var pendingTpes = 0
     lazy val fixups = scala.collection.mutable.MutableList[Function0[Unit]]()
     def addFixup(fixup: => Unit): Unit = fixups += (() => fixup)
-    def tryFixup(): Unit = {
+    def tryFixup(): Unit =
       if (pendingSyms == 0 && pendingTpes == 0) {
         val fixups = this.fixups.toList
         this.fixups.clear()
         fixups foreach { _() }
       }
-    }
 
     object reverse extends from.StandardImporter {
       val from: to.type = to
@@ -69,9 +68,7 @@ trait Importers { to: SymbolTable =>
 
     // ============== SYMBOLS ==============
 
-    protected def recreatedSymbolCompleter(
-        my: to.Symbol,
-        their: from.Symbol) = {
+    protected def recreatedSymbolCompleter(my: to.Symbol, their: from.Symbol) =
       // we lock the symbol that is imported for a very short period of time
       // i.e. only for when type parameters of the symbol are being imported
       // the lock is used to communicate to the recursive importSymbol calls
@@ -95,7 +92,6 @@ trait Importers { to: SymbolTable =>
       } finally {
         my resetFlag Flags.LOCKED
       }
-    }
 
     protected def recreateSymbol(their: from.Symbol): to.Symbol = {
       val myowner = importSymbol(their.owner)
@@ -333,7 +329,7 @@ trait Importers { to: SymbolTable =>
         null
     }
 
-    def importType(their: from.Type): Type = {
+    def importType(their: from.Type): Type =
       tpeMap.weakGet(their) match {
         case Some(result) => result
         case None =>
@@ -347,11 +343,10 @@ trait Importers { to: SymbolTable =>
             tryFixup()
           }
       }
-    }
 
     // ============== TREES ==============
 
-    def recreatedTreeCompleter(their: from.Tree, my: to.Tree): Unit = {
+    def recreatedTreeCompleter(their: from.Tree, my: to.Tree): Unit =
       if (their.canHaveAttrs) {
         if (my.hasSymbolField) my.symbol = importSymbol(their.symbol)
         my.pos = importPosition(their.pos)
@@ -363,7 +358,6 @@ trait Importers { to: SymbolTable =>
             my.setType(importType(their.tpe))
         }
       }
-    }
 
     def recreateTree(their: from.Tree): to.Tree = their match {
       case from.ClassDef(mods, name, tparams, impl) =>

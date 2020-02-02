@@ -53,22 +53,20 @@ class URITest {
     assertEquals(isOpaque, uri.isOpaque())
   }
 
-  @Test def should_parse_vanilla_absolute_URIs(): Unit = {
+  @Test def should_parse_vanilla_absolute_URIs(): Unit =
     expectURI(new URI("http://java.sun.com/j2se/1.3/"), true, false)(
       scheme = "http",
       host = "java.sun.com",
       path = "/j2se/1.3/",
       authority = "java.sun.com",
       schemeSpecificPart = "//java.sun.com/j2se/1.3/")()
-  }
 
-  @Test def should_parse_absolute_URIs_with_empty_path(): Unit = {
+  @Test def should_parse_absolute_URIs_with_empty_path(): Unit =
     expectURI(new URI("http://foo:bar"), true, false)(
       authority = "foo:bar",
       path = "",
       scheme = "http",
       schemeSpecificPart = "//foo:bar")()
-  }
 
   @Test def should_parse_absolute_URIs_with_IPv6(): Unit = {
     val uri = new URI("http://hans@[ffff::0:128.4.5.3]:345/~hans/")
@@ -83,19 +81,17 @@ class URITest {
     )()
   }
 
-  @Test def should_parse_absolute_URIs_without_authority(): Unit = {
+  @Test def should_parse_absolute_URIs_without_authority(): Unit =
     expectURI(new URI("file:/~/calendar"), true, false)(
       scheme = "file",
       path = "/~/calendar",
       schemeSpecificPart = "/~/calendar")()
-  }
 
-  @Test def should_parse_absolute_URIs_with_empty_authority(): Unit = {
+  @Test def should_parse_absolute_URIs_with_empty_authority(): Unit =
     expectURI(new URI("file:///~/calendar"), true, false)(
       scheme = "file",
       path = "/~/calendar",
       schemeSpecificPart = "///~/calendar")()
-  }
 
   @Test def should_parse_opaque_URIs(): Unit = {
     expectURI(new URI("mailto:java-net@java.sun.com"), true, true)(
@@ -127,23 +123,21 @@ class URITest {
       schemeSpecificPart = "../../../demo/jfc/SwingSet2/src/SwingSet2.java")()
   }
 
-  @Test def should_parse_relative_URIs_with_IPv4(): Unit = {
+  @Test def should_parse_relative_URIs_with_IPv4(): Unit =
     expectURI(new URI("//123.5.6.3:45/bar"), false, false)(
       authority = "123.5.6.3:45",
       host = "123.5.6.3",
       port = 45,
       path = "/bar",
       schemeSpecificPart = "//123.5.6.3:45/bar")()
-  }
 
-  @Test def should_parse_relative_URIs_with_registry_based_authority(): Unit = {
+  @Test def should_parse_relative_URIs_with_registry_based_authority(): Unit =
     expectURI(new URI("//foo:bar"), false, false)(
       authority = "foo:bar",
       path = "",
       schemeSpecificPart = "//foo:bar")()
-  }
 
-  @Test def should_parse_relative_URIs_with_escapes(): Unit = {
+  @Test def should_parse_relative_URIs_with_escapes(): Unit =
     expectURI(new URI("//ma%5dx:secret@example.com:8000/foo"), false, false)(
       authority = "ma]x:secret@example.com:8000",
       userInfo = "ma]x:secret",
@@ -155,22 +149,19 @@ class URITest {
       rawUserInfo = "ma%5dx:secret",
       rawAuthority = "ma%5dx:secret@example.com:8000",
       rawSchemeSpecificPart = "//ma%5dx:secret@example.com:8000/foo")
-  }
 
-  @Test def should_parse_relative_URIs_with_fragment_only(): Unit = {
+  @Test def should_parse_relative_URIs_with_fragment_only(): Unit =
     expectURI(new URI("#foo"), false, false)(
       fragment = "foo",
       path = "",
       schemeSpecificPart = "")()
-  }
 
-  @Test def should_parse_relative_URIs_with_query_and_fragment(): Unit = {
+  @Test def should_parse_relative_URIs_with_query_and_fragment(): Unit =
     expectURI(new URI("?query=1#foo"), false, false)(
       query = "query=1",
       fragment = "foo",
       path = "",
       schemeSpecificPart = "?query=1")()
-  }
 
   @Test def should_provide_compareTo(): Unit = {
     val x = new URI("http://example.com/asdf%6a")
@@ -357,22 +348,20 @@ class URITest {
     relTest("file:/c", "file:///c/d/", "d/")
   }
 
-  @Test def should_provide_hashCode(): Unit = {
+  @Test def should_provide_hashCode(): Unit =
     if (!executingInJVM) { // Fails on JDK6 and JDK7
       assertEquals(
         new URI("http://example.com/asdf%6a").hashCode,
         new URI("http://example.com/asdf%6A").hashCode)
     }
-  }
 
-  @Test def should_allow_non_ASCII_characters(): Unit = {
+  @Test def should_allow_non_ASCII_characters(): Unit =
     expectURI(new URI("http://cs.dbpedia.org/resource/Víno"), true, false)(
       scheme = "http",
       host = "cs.dbpedia.org",
       path = "/resource/Víno",
       authority = "cs.dbpedia.org",
       schemeSpecificPart = "//cs.dbpedia.org/resource/Víno")()
-  }
 
   @Test def should_decode_UTF_8(): Unit = {
     expectURI(new URI("http://cs.dbpedia.org/resource/V%C3%ADno"), true, false)(

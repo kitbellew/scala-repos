@@ -81,14 +81,13 @@ class ClusterSingletonManagerChaosSpec
 
   override def initialParticipants = roles.size
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     runOn(from) {
       Cluster(system) join node(to).address
       createSingleton()
     }
-  }
 
-  def createSingleton(): ActorRef = {
+  def createSingleton(): ActorRef =
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = Props(classOf[Echo], testActor),
@@ -96,16 +95,14 @@ class ClusterSingletonManagerChaosSpec
         settings = ClusterSingletonManagerSettings(system)),
       name = "echo"
     )
-  }
 
-  def crash(roles: RoleName*): Unit = {
+  def crash(roles: RoleName*): Unit =
     runOn(controller) {
       roles foreach { r ⇒
         log.info("Shutdown [{}]", node(r).address)
         testConductor.exit(r, 0).await
       }
     }
-  }
 
   def echo(oldest: RoleName): ActorSelection =
     system.actorSelection(

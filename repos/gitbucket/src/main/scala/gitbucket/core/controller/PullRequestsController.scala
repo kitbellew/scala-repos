@@ -158,7 +158,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           val name = repository.name
           getPullRequest(owner, name, issueId) map {
             case (issue, pullreq) =>
-              val hasConflict = LockUtil.lock(s"${owner}/${name}") {
+              val hasConflict = LockUtil.lock(s"$owner/$name") {
                 checkConflict(owner, name, pullreq.branch, issueId)
               }
               val hasMergePermission =
@@ -230,7 +230,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           issueId,
           branchName,
           "delete_branch")
-        redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
+        redirect(s"/${repository.owner}/${repository.name}/pull/$issueId")
     } getOrElse NotFound
   })
 
@@ -253,7 +253,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
         } else {
           val repository = getRepository(owner, name).get
-          LockUtil.lock(s"${owner}/${name}") {
+          LockUtil.lock(s"$owner/$name") {
             val alias =
               if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName) {
                 pullreq.branch
@@ -275,7 +275,7 @@ trait PullRequestsControllerBase extends ControllerBase {
               "Merge branch '${alias}' into ${pullreq.requestBranch}"
             ) match {
               case None => // conflict
-                flash += "error" -> s"Can't automatic merging branch '${alias}' into ${pullreq.requestBranch}."
+                flash += "error" -> s"Can't automatic merging branch '$alias' into ${pullreq.requestBranch}."
               case Some(oldId) =>
                 // update pull request
                 updatePullRequests(owner, name, pullreq.requestBranch)
@@ -342,10 +342,10 @@ trait PullRequestsControllerBase extends ControllerBase {
                       }
                     }
                 }
-                flash += "info" -> s"Merge branch '${alias}' into ${pullreq.requestBranch}"
+                flash += "info" -> s"Merge branch '$alias' into ${pullreq.requestBranch}"
             }
           }
-          redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
+          redirect(s"/${repository.owner}/${repository.name}/pull/$issueId")
         }
       }) getOrElse NotFound
   })
@@ -356,7 +356,7 @@ trait PullRequestsControllerBase extends ControllerBase {
         issueId =>
           val owner = repository.owner
           val name = repository.name
-          LockUtil.lock(s"${owner}/${name}") {
+          LockUtil.lock(s"$owner/$name") {
             getPullRequest(owner, name, issueId).map {
               case (issue, pullreq) =>
                 using(Git.open(getRepositoryDir(owner, name))) {
@@ -392,7 +392,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                       git,
                       pullreq.branch,
                       issueId,
-                      s"Merge pull request #${issueId} from ${pullreq.requestUserName}/${pullreq.requestBranch}\n\n" + form.message,
+                      s"Merge pull request #$issueId from ${pullreq.requestUserName}/${pullreq.requestBranch}\n\n" + form.message,
                       new PersonIdent(
                         loginAccount.fullName,
                         loginAccount.mailAddress)
@@ -446,10 +446,10 @@ trait PullRequestsControllerBase extends ControllerBase {
                     // notifications
                     Notifier().toNotify(repository, issue, "merge") {
                       Notifier.msgStatus(
-                        s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
+                        s"${context.baseUrl}/$owner/$name/pull/$issueId")
                     }
 
-                    redirect(s"/${owner}/${name}/pull/${issueId}")
+                    redirect(s"/$owner/$name/pull/$issueId")
                 }
             }
           }
@@ -478,7 +478,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                     JGitUtil.getDefaultBranch(oldGit, originRepository).get._2)
 
                 redirect(
-                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${originUserName}:${oldBranch}...${newBranch}")
+                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/$originUserName:$oldBranch...$newBranch")
             }
         } getOrElse NotFound
       }
@@ -490,7 +490,7 @@ trait PullRequestsControllerBase extends ControllerBase {
             JGitUtil.getDefaultBranch(git, forkedRepository).map {
               case (_, defaultBranch) =>
                 redirect(
-                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${defaultBranch}...${headBranch
+                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/$defaultBranch...${headBranch
                     .getOrElse(defaultBranch)}")
             } getOrElse {
               redirect(s"/${forkedRepository.owner}/${forkedRepository.name}")
@@ -620,8 +620,8 @@ trait PullRequestsControllerBase extends ControllerBase {
               case (oldId, newId) =>
                 redirect(
                   s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
-                    s"${originOwner}:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
-                    s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
+                    s"$originOwner:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
+                    s"$forkedOwner:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
             }
         }
       }) getOrElse NotFound
@@ -763,11 +763,11 @@ trait PullRequestsControllerBase extends ControllerBase {
               Notifier()
                 .toNotify(repository, issue, form.content.getOrElse("")) {
                   Notifier.msgPullRequest(
-                    s"${context.baseUrl}/${owner}/${name}/pull/${issueId}")
+                    s"${context.baseUrl}/$owner/$name/pull/$issueId")
                 }
           }
 
-          redirect(s"/${owner}/${name}/pull/${issueId}")
+          redirect(s"/$owner/$name/pull/$issueId")
       }
   })
 

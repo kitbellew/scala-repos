@@ -84,16 +84,14 @@ abstract class GeneralizedLinearModel @Since("1.0.0") (
     *
     */
   @Since("1.0.0")
-  def predict(testData: Vector): Double = {
+  def predict(testData: Vector): Double =
     predictPoint(testData, weights, intercept)
-  }
 
   /**
     * Print a summary of the model.
     */
-  override def toString: String = {
-    s"${this.getClass.getName}: intercept = ${intercept}, numFeatures = ${weights.size}"
-  }
+  override def toString: String =
+    s"${this.getClass.getName}: intercept = $intercept, numFeatures = ${weights.size}"
 }
 
 /**
@@ -235,9 +233,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     *
     */
   @Since("0.8.0")
-  def run(input: RDD[LabeledPoint]): M = {
+  def run(input: RDD[LabeledPoint]): M =
     run(input, generateInitialWeights(input))
-  }
 
   /**
     * Run the algorithm with the configured parameters on an input RDD

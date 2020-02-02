@@ -52,9 +52,7 @@ class SimplifyBooleanQuickFix(expr: ScExpression)
 object SimplifyBooleanUtil {
   val boolInfixOperations = Set("==", "!=", "&&", "&", "||", "|", "^")
 
-  def canBeSimplified(
-      expr: ScExpression,
-      isTopLevel: Boolean = true): Boolean = {
+  def canBeSimplified(expr: ScExpression, isTopLevel: Boolean = true): Boolean =
     expr match {
       case _: ScLiteral if !isTopLevel => booleanConst(expr).isDefined
       case ScParenthesisedExpr(e)      => canBeSimplified(e, isTopLevel)
@@ -71,9 +69,8 @@ object SimplifyBooleanUtil {
         isBooleanOperation && isOfBooleanType(expr) && children.exists(
           canBeSimplified(_, isTopLevel = false))
     }
-  }
 
-  def simplify(expr: ScExpression, isTopLevel: Boolean = true): ScExpression = {
+  def simplify(expr: ScExpression, isTopLevel: Boolean = true): ScExpression =
     if (canBeSimplified(expr, isTopLevel) && booleanConst(expr).isEmpty) {
       val exprCopy = ScalaPsiElementFactory.createExpressionWithContextFromText(
         expr.getText,
@@ -86,7 +83,6 @@ object SimplifyBooleanUtil {
           simplify(child, isTopLevel = false).getNode))
       simplifyTrivially(exprCopy)
     } else expr
-  }
 
   private def isOfBooleanType(expr: ScExpression): Boolean =
     expr

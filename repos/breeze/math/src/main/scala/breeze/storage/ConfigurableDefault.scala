@@ -57,18 +57,16 @@ trait ConfigurableDefault[@specialized V] extends Serializable { outer =>
 }
 
 trait LowPriorityConfigurableImplicits {
-  implicit def default[V]: ConfigurableDefault[V] = {
+  implicit def default[V]: ConfigurableDefault[V] =
     new ConfigurableDefault[V] {
       def value(implicit default: Zero[V]) = default.zero
     }
-  }
 
 }
 
 object ConfigurableDefault extends LowPriorityConfigurableImplicits {
-  implicit def fromV[V](v: V): ConfigurableDefault[V] = {
+  implicit def fromV[V](v: V): ConfigurableDefault[V] =
     new ConfigurableDefault[V] {
       def value(implicit default: Zero[V]) = v
     }
-  }
 }

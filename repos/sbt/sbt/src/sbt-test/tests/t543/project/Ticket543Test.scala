@@ -17,7 +17,7 @@ object Ticket543Test extends Build {
       scalaVersion := "2.9.2",
       fork := true,
       testListeners += new TestReportListener {
-        def testEvent(event: TestEvent): Unit = {
+        def testEvent(event: TestEvent): Unit =
           for (e <- event.detail
                  .filter(_.status == sbt.testing.Status.Failure)) {
             if (e.throwable != null && e.throwable.isDefined) {
@@ -27,7 +27,6 @@ object Ticket543Test extends Build {
                 marker.createNewFile()
             }
           }
-        }
         def startGroup(name: String): Unit = ()
         def endGroup(name: String, t: Throwable): Unit = ()
         def endGroup(name: String, result: TestResult.Value): Unit = ()

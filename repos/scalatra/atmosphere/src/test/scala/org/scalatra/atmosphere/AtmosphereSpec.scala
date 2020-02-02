@@ -161,9 +161,8 @@ class AtmosphereSpec extends MutableScalatraSpec {
           }
         })
         .on(new Function[Throwable] {
-          def on(t: Throwable) = {
+          def on(t: Throwable) =
             t.printStackTrace
-          }
         })
 
       socket.open(req.build()).fire("echo");

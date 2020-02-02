@@ -126,15 +126,14 @@ class BypassMergeSortShuffleWriterSuite
         }
       })
     when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
-      override def answer(invocation: InvocationOnMock): File = {
+      override def answer(invocation: InvocationOnMock): File =
         blockIdToFileMap
           .get(invocation.getArguments.head.asInstanceOf[BlockId])
           .get
-      }
     })
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Utils.deleteRecursively(tempDir)
       blockIdToFileMap.clear()
@@ -142,7 +141,6 @@ class BypassMergeSortShuffleWriterSuite
     } finally {
       super.afterEach()
     }
-  }
 
   test("write empty iterator") {
     val writer = new BypassMergeSortShuffleWriter[Int, Int](
@@ -241,12 +239,12 @@ class BypassMergeSortShuffleWriterSuite
       conf
     )
     intercept[SparkException] {
-      writer.write((0 until 100000).iterator.map(i => {
+      writer.write((0 until 100000).iterator.map { i =>
         if (i == 99990) {
           throw new SparkException("Intentional failure")
         }
         (i, i)
-      }))
+      })
     }
     assert(temporaryFilesCreated.nonEmpty)
     writer.stop( /* success = */ false)

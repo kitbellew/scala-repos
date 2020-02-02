@@ -27,12 +27,11 @@ import org.apache.spark.unsafe.types.UTF8String
 class DDLScanSource extends RelationProvider {
   override def createRelation(
       sqlContext: SQLContext,
-      parameters: Map[String, String]): BaseRelation = {
+      parameters: Map[String, String]): BaseRelation =
     SimpleDDLScan(
       parameters("from").toInt,
       parameters("TO").toInt,
       parameters("Table"))(sqlContext)
-  }
 }
 
 case class SimpleDDLScan(from: Int, to: Int, table: String)(
@@ -73,13 +72,12 @@ case class SimpleDDLScan(from: Int, to: Int, table: String)(
 
   override def needConversion: Boolean = false
 
-  override def buildScan(): RDD[Row] = {
+  override def buildScan(): RDD[Row] =
     // Rely on a type erasure hack to pass RDD[InternalRow] back as RDD[Row]
     sqlContext.sparkContext
       .parallelize(from to to)
       .map { e => InternalRow(UTF8String.fromString(s"people$e"), e * 2) }
       .asInstanceOf[RDD[Row]]
-  }
 }
 
 class DDLTestSuite extends DataSourceTest with SharedSQLContext {

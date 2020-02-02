@@ -109,7 +109,7 @@ object ScroogeOrderedBuf {
         }
         q"""
        ..${getValProcessor.map(_._1)}
-       ${companionSymbol}(..${getValProcessor.map(_._2)}) : $outerType
+       $companionSymbol(..${getValProcessor.map(_._2)}) : $outerType
         """
       }
       override def compare(

@@ -101,11 +101,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
     */
   @inline
   private def internalCompare(that: URI)(cmp: (String, String) => Int): Int = {
-    @inline def cmpOpt(x: js.UndefOr[String], y: js.UndefOr[String]): Int = {
+    @inline def cmpOpt(x: js.UndefOr[String], y: js.UndefOr[String]): Int =
       if (x == y) 0
       // Undefined components are considered less than defined components
       else x.fold(-1)(s1 => y.fold(1)(s2 => cmp(s1, s2)))
-    }
 
     if (this._scheme != that._scheme)
       this._scheme.fold(-1)(s1 => that._scheme.fold(1)(s1.compareToIgnoreCase))
@@ -250,11 +249,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
           getFragment())
     }
 
-  def parseServerAuthority(): URI = {
+  def parseServerAuthority(): URI =
     if (_authority.nonEmpty && _host.isEmpty)
       throw new URISyntaxException(origStr, "No Host in URI")
     else this
-  }
 
   def relativize(uri: URI): URI = {
     def authoritiesEqual = this._authority.fold(uri._authority.isEmpty) { a1 =>
@@ -284,7 +282,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   def resolve(str: String): URI = resolve(URI.create(str))
 
-  def resolve(uri: URI): URI = {
+  def resolve(uri: URI): URI =
     if (uri.isAbsolute() || this.isOpaque()) uri
     else if (uri._scheme.isEmpty && uri._authority.isEmpty &&
              uri._path.get == "" && uri._query.isEmpty)
@@ -324,7 +322,6 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
         uri.getRawQuery(),
         uri.getRawFragment()).normalize()
     }
-  }
 
   def toASCIIString(): String = quoteNonASCII(origStr)
 
@@ -337,12 +334,11 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
 object URI {
 
-  def create(str: String): URI = {
+  def create(str: String): URI =
     try new URI(str)
     catch {
       case e: URISyntaxException => throw new IllegalArgumentException(e)
     }
-  }
 
   // IPv4address   = 1*digit "." 1*digit "." 1*digit "." 1*digit
   private final val ipv4address = "[0-9]{1,3}(?:\\.[0-9]{1,3}){3}"
@@ -658,7 +654,7 @@ object URI {
 
   // Quote helpers
 
-  private def decodeComponent(str: String): String = {
+  private def decodeComponent(str: String): String =
     // Fast-track, if no encoded components
     if (str.forall(_ != '%')) str
     else {
@@ -708,7 +704,6 @@ object URI {
       outBuf.flip()
       outBuf.toString
     }
-  }
 
   private val quoteStr: js.Function1[String, String] = { (str: String) =>
     val buf = StandardCharsets.UTF_8.encode(str)
@@ -812,7 +807,7 @@ object URI {
     */
   private def escapeAwareCompare(x: String, y: String): Int = {
     @tailrec
-    def loop(i: Int): Int = {
+    def loop(i: Int): Int =
       if (i >= x.length || i >= y.length)
         x.length - y.length
       else {
@@ -829,7 +824,6 @@ object URI {
           else loop(i + 3)
         } else loop(i + 1)
       }
-    }
 
     loop(0)
   }

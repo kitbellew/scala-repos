@@ -37,18 +37,16 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(
   /**
     * Returns a Multinomial distribution over the iterator
     */
-  def draw(): T = {
+  def draw(): T =
     normalize(unnormalizedDraw(), 1.0)
-  }
 
   /**
     * Returns unnormalized probabilities for a Multinomial distribution.
     */
-  def unnormalizedDraw() = {
+  def unnormalizedDraw() =
     mapActiveValues(params, { (v: Double) =>
       if (v == 0.0) 0.0 else new Gamma(v, 1).draw()
     })
-  }
 
   /**
     * Returns logNormalized probabilities. Use this if you're worried about underflow
@@ -118,9 +116,8 @@ object Dirichlet {
 
     def emptySufficientStatistic = SufficientStatistic(0, zeroLike(exemplar))
 
-    def sufficientStatisticFor(t: T) = {
+    def sufficientStatisticFor(t: T) =
       SufficientStatistic(1, numerics.log(normalize(t, 1.0)))
-    }
 
     def mle(stats: SufficientStatistic) = {
       val likelihood = likelihoodFunction(stats)
@@ -138,8 +135,7 @@ object Dirichlet {
       }
     }
 
-    def distribution(p: Parameter) = {
+    def distribution(p: Parameter) =
       new Dirichlet(p)
-    }
   }
 }

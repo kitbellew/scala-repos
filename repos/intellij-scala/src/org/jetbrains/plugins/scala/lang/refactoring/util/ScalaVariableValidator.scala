@@ -141,7 +141,7 @@ class ScalaVariableValidator(
 
   private def validateReference(
       context: PsiElement,
-      name: String): Seq[(PsiNamedElement, String)] = {
+      name: String): Seq[(PsiNamedElement, String)] =
     ScalaPsiElementFactory.createExpressionFromText(name, context) match {
       case ResolvesTo(elem @ ScalaPsiUtil.inNameContext(nameCtx)) =>
         val message = nameCtx match {
@@ -159,7 +159,6 @@ class ScalaVariableValidator(
         else Seq.empty
       case _ => Seq.empty
     }
-  }
 
   private def validateDown(
       element: PsiElement,

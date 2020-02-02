@@ -106,7 +106,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')).*
 
-  def pathWith(additionalCharacters: Char*) = {
+  def pathWith(additionalCharacters: Char*) =
     elem(
       "path",
       c =>
@@ -123,7 +123,6 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
       case l =>
         l.mkString("")
     }
-  }
 
   // consider only root relative paths that start with /
   lazy val path = pathWith()
@@ -173,7 +172,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
         a + b
     }
 
-  def fixCss(cssString: String): Box[String] = {
+  def fixCss(cssString: String): Box[String] =
     phrase(cssString) match {
       case Success(updatedCss, remaining) if remaining.atEnd =>
         Full(updatedCss)
@@ -193,7 +192,6 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
       case failure =>
         common.Failure(s"Parse failed with result $failure") ~> failure
     }
-  }
 
   @deprecated(
     "Please use fixCss instead; we are unifying capitalization across Lift.",

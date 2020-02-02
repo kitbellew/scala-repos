@@ -68,9 +68,8 @@ class MarathonSchedulerTest
         override def disconnected(): Unit = {}
       }
     ) {
-      override protected def suicide(removeFrameworkId: Boolean): Unit = {
+      override protected def suicide(removeFrameworkId: Boolean): Unit =
         suicideFn(removeFrameworkId)
-      }
     }
   }
 

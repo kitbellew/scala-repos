@@ -178,12 +178,11 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     val kvOrdering = new Ordering[(InternalRow, InternalRow)] {
       override def compare(
           x: (InternalRow, InternalRow),
-          y: (InternalRow, InternalRow)): Int = {
+          y: (InternalRow, InternalRow)): Int =
         keyOrdering.compare(x._1, y._1) match {
           case 0   => valueOrdering.compare(x._2, y._2)
           case cmp => cmp
         }
-      }
     }
 
     // Testing to make sure output from the sorter is sorted by key

@@ -88,7 +88,7 @@ case class Form[T](
     *
     * @return a copy of this form filled with the new data
     */
-  def bindFromRequest()(implicit request: play.api.mvc.Request[_]): Form[T] = {
+  def bindFromRequest()(implicit request: play.api.mvc.Request[_]): Form[T] =
     bindFromRequest {
       (request.body match {
         case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined =>
@@ -105,9 +105,8 @@ case class Form[T](
         case _ => Map.empty[String, Seq[String]]
       }) ++ request.queryString
     }
-  }
 
-  def bindFromRequest(data: Map[String, Seq[String]]): Form[T] = {
+  def bindFromRequest(data: Map[String, Seq[String]]): Form[T] =
     bind {
       data.foldLeft(Map.empty[String, String]) {
         case (s, (key, values)) if key.endsWith("[]") =>
@@ -117,7 +116,6 @@ case class Form[T](
         case (s, (key, values)) => s + (key -> values.headOption.getOrElse(""))
       }
     }
-  }
 
   /**
     * Fills this form with a existing value, used for edit forms.
@@ -342,13 +340,12 @@ case class Field(
     *
     * @param key Relative key.
     */
-  def apply(key: String): Field = {
+  def apply(key: String): Field =
     form(
       Option(name)
         .filterNot(_.isEmpty)
         .map(_ + (if (key(0) == '[') "" else "."))
         .getOrElse("") + key)
-  }
 
   /**
     * Retrieve available indexes defined for this field (if this field is repeated).
@@ -592,11 +589,10 @@ trait Mapping[T] {
     * @param constraint a function describing the constraint that returns `false` on failure
     * @return the new mapping
     */
-  def verifying(error: => String, constraint: (T => Boolean)): Mapping[T] = {
+  def verifying(error: => String, constraint: (T => Boolean)): Mapping[T] =
     verifying(Constraint { t: T =>
       if (constraint(t)) Valid else Invalid(Seq(ValidationError(error)))
     })
-  }
 
   /**
     * Transform this Mapping[T] to a Mapping[B].
@@ -610,19 +606,17 @@ trait Mapping[T] {
 
   // Internal utilities
 
-  protected def addPrefix(prefix: String) = {
+  protected def addPrefix(prefix: String) =
     Option(prefix)
       .filterNot(_.isEmpty)
       .map(p => p + Option(key).filterNot(_.isEmpty).map("." + _).getOrElse(""))
-  }
 
-  protected def applyConstraints(t: T): Either[Seq[FormError], T] = {
+  protected def applyConstraints(t: T): Either[Seq[FormError], T] =
     Right(t).right.flatMap { v =>
       Option(collectErrors(v)).filterNot(_.isEmpty).toLeft(v)
     }
-  }
 
-  protected def collectErrors(t: T): Seq[FormError] = {
+  protected def collectErrors(t: T): Seq[FormError] =
     constraints
       .map(_(t))
       .collect {
@@ -630,7 +624,6 @@ trait Mapping[T] {
       }
       .flatten
       .map(ve => FormError(key, ve.messages, ve.args))
-  }
 
 }
 
@@ -675,9 +668,8 @@ case class WrappedMapping[A, B](
     * @param data the submitted data
     * @return either a concrete value of type `B` or a set of errors, if the binding failed
     */
-  def bind(data: Map[String, String]): Either[Seq[FormError], B] = {
+  def bind(data: Map[String, String]): Either[Seq[FormError], B] =
     wrapped.bind(data).right.map(t => f1(t)).right.flatMap(applyConstraints)
-  }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data.
@@ -704,9 +696,8 @@ case class WrappedMapping[A, B](
     * @param prefix the prefix to add to the key
     * @return the same mapping, with only the key changed
     */
-  def withPrefix(prefix: String): Mapping[B] = {
+  def withPrefix(prefix: String): Mapping[B] =
     copy(wrapped = wrapped.withPrefix(prefix))
-  }
 
   /**
     * Constructs a new Mapping based on this one, by adding new constraints.
@@ -776,9 +767,8 @@ case class RepeatedMapping[T](
     * @param addConstraints the constraints to add
     * @return the new mapping
     */
-  def verifying(addConstraints: Constraint[List[T]]*): Mapping[List[T]] = {
+  def verifying(addConstraints: Constraint[List[T]]*): Mapping[List[T]] =
     this.copy(constraints = constraints ++ addConstraints.toSeq)
-  }
 
   /**
     * Binds this field, i.e. construct a concrete value from submitted data.
@@ -834,9 +824,8 @@ case class RepeatedMapping[T](
     * @param prefix the prefix to add to the key
     * @return the same mapping, with only the key changed
     */
-  def withPrefix(prefix: String): Mapping[List[T]] = {
+  def withPrefix(prefix: String): Mapping[List[T]] =
     addPrefix(prefix).map(newKey => this.copy(key = newKey)).getOrElse(this)
-  }
 
   /**
     * Sub-mappings (these can be seen as sub-keys).
@@ -876,9 +865,8 @@ case class OptionalMapping[T](
     * @param addConstraints the constraints to add
     * @return the new mapping
     */
-  def verifying(addConstraints: Constraint[Option[T]]*): Mapping[Option[T]] = {
+  def verifying(addConstraints: Constraint[Option[T]]*): Mapping[Option[T]] =
     this.copy(constraints = constraints ++ addConstraints.toSeq)
-  }
 
   /**
     * Binds this field, i.e. constructs a concrete value from submitted data.
@@ -886,7 +874,7 @@ case class OptionalMapping[T](
     * @param data the submitted data
     * @return either a concrete value of type `T` or a set of error if the binding failed
     */
-  def bind(data: Map[String, String]): Either[Seq[FormError], Option[T]] = {
+  def bind(data: Map[String, String]): Either[Seq[FormError], Option[T]] =
     data.keys
       .filter(p =>
         p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
@@ -899,7 +887,6 @@ case class OptionalMapping[T](
       }
       .right
       .flatMap(applyConstraints)
-  }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data.
@@ -907,9 +894,8 @@ case class OptionalMapping[T](
     * @param value the value to unbind
     * @return the plain data
     */
-  def unbind(value: Option[T]): Map[String, String] = {
+  def unbind(value: Option[T]): Map[String, String] =
     value.map(wrapped.unbind).getOrElse(Map.empty)
-  }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data, and applies validation.
@@ -932,9 +918,8 @@ case class OptionalMapping[T](
     * @param prefix the prefix to add to the key
     * @return the same mapping, with only the key changed
     */
-  def withPrefix(prefix: String): Mapping[Option[T]] = {
+  def withPrefix(prefix: String): Mapping[Option[T]] =
     copy(wrapped = wrapped.withPrefix(prefix))
-  }
 
   /** Sub-mappings (these can be seen as sub-keys). */
   val mappings: Seq[Mapping[_]] = wrapped.mappings
@@ -972,9 +957,8 @@ case class FieldMapping[T](
     * @param addConstraints the constraints to add
     * @return the new mapping
     */
-  def verifying(addConstraints: Constraint[T]*): Mapping[T] = {
+  def verifying(addConstraints: Constraint[T]*): Mapping[T] =
     this.copy(constraints = constraints ++ addConstraints.toSeq)
-  }
 
   /**
     * Changes the binder used to handle this field.
@@ -982,9 +966,8 @@ case class FieldMapping[T](
     * @param binder the new binder to use
     * @return the same mapping with a new binder
     */
-  def as(binder: Formatter[T]): Mapping[T] = {
+  def as(binder: Formatter[T]): Mapping[T] =
     this.copy()(binder)
-  }
 
   /**
     * Binds this field, i.e. constructs a concrete value from submitted data.
@@ -992,9 +975,8 @@ case class FieldMapping[T](
     * @param data the submitted data
     * @return either a concrete value of type `T` or a set of errors, if binding failed
     */
-  def bind(data: Map[String, String]): Either[Seq[FormError], T] = {
+  def bind(data: Map[String, String]): Either[Seq[FormError], T] =
     binder.bind(key, data).right.flatMap { applyConstraints(_) }
-  }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data.
@@ -1002,9 +984,8 @@ case class FieldMapping[T](
     * @param value the value to unbind
     * @return the plain data
     */
-  def unbind(value: T): Map[String, String] = {
+  def unbind(value: T): Map[String, String] =
     binder.unbind(key, value)
-  }
 
   /**
     * Unbinds this field, i.e. transforms a concrete value to plain data, and applies validation.
@@ -1012,9 +993,8 @@ case class FieldMapping[T](
     * @param value the value to unbind
     * @return the plain data and any errors in the plain data
     */
-  def unbindAndValidate(value: T): (Map[String, String], Seq[FormError]) = {
+  def unbindAndValidate(value: T): (Map[String, String], Seq[FormError]) =
     binder.unbind(key, value) -> collectErrors(value)
-  }
 
   /**
     * Constructs a new Mapping based on this one, adding a prefix to the key.
@@ -1022,9 +1002,8 @@ case class FieldMapping[T](
     * @param prefix the prefix to add to the key
     * @return the same mapping, with only the key changed
     */
-  def withPrefix(prefix: String): Mapping[T] = {
+  def withPrefix(prefix: String): Mapping[T] =
     addPrefix(prefix).map(newKey => this.copy(key = newKey)).getOrElse(this)
-  }
 
   /** Sub-mappings (these can be seen as sub-keys). */
   val mappings: Seq[Mapping[_]] = Seq(this)

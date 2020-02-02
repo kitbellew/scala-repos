@@ -78,7 +78,7 @@ case class ShuffledHashJoin(
           case LeftOuter =>
             val keyGenerator = streamSideKeyGenerator
             val resultProj = createResultProjection
-            streamIter.flatMap(currentRow => {
+            streamIter.flatMap { currentRow =>
               val rowKey = keyGenerator(currentRow)
               joinedRow.withLeft(currentRow)
               leftOuterIterator(
@@ -87,12 +87,12 @@ case class ShuffledHashJoin(
                 hashed.get(rowKey),
                 resultProj,
                 numOutputRows)
-            })
+            }
 
           case RightOuter =>
             val keyGenerator = streamSideKeyGenerator
             val resultProj = createResultProjection
-            streamIter.flatMap(currentRow => {
+            streamIter.flatMap { currentRow =>
               val rowKey = keyGenerator(currentRow)
               joinedRow.withRight(currentRow)
               rightOuterIterator(
@@ -101,7 +101,7 @@ case class ShuffledHashJoin(
                 joinedRow,
                 resultProj,
                 numOutputRows)
-            })
+            }
 
           case x =>
             throw new IllegalArgumentException(

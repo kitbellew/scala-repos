@@ -35,8 +35,7 @@ class AppMock(appId: String, version: String, url: String)
       target: String,
       baseRequest: Request,
       request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
-
+      response: HttpServletResponse): Unit =
     if (request.getMethod == "GET" && request.getPathInfo == "/ping") {
       response.setStatus(200)
       baseRequest.setHandled(true)
@@ -50,7 +49,6 @@ class AppMock(appId: String, version: String, url: String)
       baseRequest.setHandled(true)
       response.getWriter.print(res.entity.asString)
     }
-  }
 }
 
 object AppMock {

@@ -22,12 +22,11 @@ trait TypeAdaptingTransformer {
       case _                  => false
     }
 
-    private def isSafelyRemovableUnbox(fn: Tree, arg: Tree): Boolean = {
+    private def isSafelyRemovableUnbox(fn: Tree, arg: Tree): Boolean =
       currentRun.runDefinitions.isUnbox(fn.symbol) && {
         val cls = arg.tpe.typeSymbol
         (cls == definitions.NullClass) || isBoxedValueClass(cls)
       }
-    }
 
     private def isPrimitiveValueType(tpe: Type) =
       isPrimitiveValueClass(tpe.typeSymbol)

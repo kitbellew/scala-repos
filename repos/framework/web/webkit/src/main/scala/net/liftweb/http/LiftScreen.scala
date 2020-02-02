@@ -387,14 +387,12 @@ trait AbstractScreen extends Factory with Loggable {
   protected def builder[T](
       name: => String,
       default: => T,
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T]): FieldBuilder[T] = {
+      stuff: FilterOrValidate[T]*)(implicit man: Manifest[T]): FieldBuilder[T] =
     new FieldBuilder[T](name, default, man, Empty, stuff.toList.collect {
       case AVal(v: Function1[_, _]) => v.asInstanceOf[T => List[FieldError]]
     }, stuff.toList.collect {
       case AFilter(v) => v.asInstanceOf[T => T]
     }, stuff)
-  }
 
   protected object FilterOrValidate {
     implicit def promoteFilter[T](f: T => T): FilterOrValidate[T] = AFilter(f)
@@ -1302,15 +1300,13 @@ trait ScreenWizardRendered extends Loggable {
         f.field.uniqueFieldId openOr Helpers.nextFuncName
 
       val theForm = theFormEarly.map { fe =>
-        {
-          val f = Helpers.deepEnsureUniqueId(fe)
-          val id =
-            Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
-          if (id.isEmpty) {
-            Helpers.ensureId(f, curId)
-          } else {
-            f
-          }
+        val f = Helpers.deepEnsureUniqueId(fe)
+        val id =
+          Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
+        if (id.isEmpty) {
+          Helpers.ensureId(f, curId)
+        } else {
+          f
         }
       }
 
@@ -1396,22 +1392,20 @@ trait ScreenWizardRendered extends Loggable {
             SHtml.hidden(() => snapshot.restore()) % liftScreenAttr(
               "restoreAction"))
         }{fields}{
-          S.formGroup(4)(SHtml.hidden(() => {
+          S.formGroup(4)(SHtml.hidden { () =>
             val res = nextId._2();
             if (!ajax_?) {
               val localSnapshot = createSnapshot
-              S.seeOther(url, () => {
-                localSnapshot.restore
-              })
+              S.seeOther(url, () => localSnapshot.restore)
             }
             res
-          })) % liftScreenAttr("nextAction")
+          }) % liftScreenAttr("nextAction")
         }</form> %
           theScreen.additionalAttributes) ++
           prevId.toList.map {
             case (id, func) =>
               <form id={id} action={url} method="post">{
-                SHtml.hidden(() => {
+                SHtml.hidden { () =>
                   snapshot.restore();
                   val res = func();
                   if (!ajax_?) {
@@ -1419,18 +1413,18 @@ trait ScreenWizardRendered extends Loggable {
                     S.seeOther(url, () => localSnapshot.restore)
                   }
                   res
-                }) % liftScreenAttr("restoreAction")
+                } % liftScreenAttr("restoreAction")
               }</form>
           } ++
           <form id={cancelId._1} action={url} method="post">{
-            SHtml.hidden(() => {
+            SHtml.hidden { () =>
               snapshot.restore();
               val res = cancelId._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
               if (!ajax_?) {
                 S.seeOther(Referer.get)
               }
               res
-            }) % liftScreenAttr("restoreAction")
+            } % liftScreenAttr("restoreAction")
           }</form>
 
       if (ajax_?) {
@@ -1495,7 +1489,7 @@ trait ScreenWizardRendered extends Loggable {
 
   protected def allTemplate: NodeSeq
 
-  protected def allTemplateNodeSeq: NodeSeq = {
+  protected def allTemplateNodeSeq: NodeSeq =
     <div>
       <div class="screenInfo">
         Page <span class="screenNumber"></span> of <span class="totalScreens"></span>
@@ -1531,7 +1525,6 @@ trait ScreenWizardRendered extends Loggable {
       <div class="screenBottom"></div>
       <div class="wizardBottom"></div>
     </div>
-  }
 
   protected trait Snapshot {
     def restore(): Unit
@@ -1578,13 +1571,12 @@ trait ScreenWizardRendered extends Loggable {
   protected def calcAjax: Boolean =
     S.attr("ajax").flatMap(Helpers.asBoolean) openOr defaultToAjax_?
 
-  protected def redirectBack(): JsCmd = {
+  protected def redirectBack(): JsCmd =
     if (ajaxForms_?) {
       AjaxOnDone.get
     } else {
       S.seeOther(Referer.get)
     }
-  }
 
   /**
     * Are the forms Ajax or regular HTTP/HTML.
@@ -1764,11 +1756,10 @@ trait LiftScreen
       old
     }
 
-    override protected def testWasSet(name: String, bn: String): Boolean = {
+    override protected def testWasSet(name: String, bn: String): Boolean =
       ScreenVarHandler
         .get(name)
         .isDefined || (ScreenVarHandler.get(bn) openOr false)
-    }
 
     /**
       * Different Vars require different mechanisms for synchronization. This method implements
@@ -1790,7 +1781,7 @@ trait LiftScreen
       ScreenVars.set(ScreenVars.get - name)
   }
 
-  protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
+  protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel =
     mapLocalAction(func)(name =>
       selector #> (
         SHtml
@@ -1800,7 +1791,6 @@ trait LiftScreen
           .cmd
         )
         .toJsCmd)
-  }
 
   protected def mapLocalAction[T](func: () => JsCmd)(f: String => T): T = {
     val name = randomString(20)
@@ -1835,10 +1825,11 @@ trait LiftScreen
 
       // if we're not Ajax,
       if (!ajaxForms_?) {
-        S.seeOther(S.uri, () => {
-          // S.appendNotices(notices)
-          localSnapshot.restore
-        })
+        S.seeOther(
+          S.uri,
+          () =>
+            // S.appendNotices(notices)
+            localSnapshot.restore)
       }
     }
 

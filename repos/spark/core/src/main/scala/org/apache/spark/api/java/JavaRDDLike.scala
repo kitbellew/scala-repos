@@ -114,9 +114,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Return a new RDD by applying a function to all elements of this RDD.
     */
-  def mapToDouble[R](f: DoubleFunction[T]): JavaDoubleRDD = {
+  def mapToDouble[R](f: DoubleFunction[T]): JavaDoubleRDD =
     new JavaDoubleRDD(rdd.map(x => f.call(x).doubleValue()))
-  }
 
   /**
     * Return a new RDD by applying a function to all elements of this RDD.
@@ -309,11 +308,10 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * partitions* and the *same number of elements in each partition* (e.g. one was made through
     * a map on the other).
     */
-  def zip[U](other: JavaRDDLike[U, _]): JavaPairRDD[T, U] = {
+  def zip[U](other: JavaRDDLike[U, _]): JavaPairRDD[T, U] =
     JavaPairRDD.fromRDD(rdd.zip(other.rdd)(other.classTag))(
       classTag,
       other.classTag)
-  }
 
   /**
     * Zip this RDD's partitions with one (or more) RDD(s) and return a new RDD by
@@ -338,11 +336,10 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * 2*n+k, ..., where n is the number of partitions. So there may exist gaps, but this method
     * won't trigger a spark job, which is different from [[org.apache.spark.rdd.RDD#zipWithIndex]].
     */
-  def zipWithUniqueId(): JavaPairRDD[T, jl.Long] = {
+  def zipWithUniqueId(): JavaPairRDD[T, jl.Long] =
     JavaPairRDD
       .fromRDD(rdd.zipWithUniqueId())
       .asInstanceOf[JavaPairRDD[T, jl.Long]]
-  }
 
   /**
     * Zips this RDD with its element indices. The ordering is first based on the partition index
@@ -351,11 +348,10 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * This is similar to Scala's zipWithIndex but it uses Long instead of Int as the index type.
     * This method needs to trigger a spark job when this RDD contains more than one partitions.
     */
-  def zipWithIndex(): JavaPairRDD[T, jl.Long] = {
+  def zipWithIndex(): JavaPairRDD[T, jl.Long] =
     JavaPairRDD
       .fromRDD(rdd.zipWithIndex())
       .asInstanceOf[JavaPairRDD[T, jl.Long]]
-  }
 
   // Actions (launch a job to return a value to the user program)
 
@@ -452,9 +448,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       zeroValue: U,
       seqOp: JFunction2[U, T, U],
       combOp: JFunction2[U, U, U],
-      depth: Int): U = {
+      depth: Int): U =
     rdd.treeAggregate(zeroValue)(seqOp, combOp, depth)(fakeClassTag[U])
-  }
 
   /**
     * [[org.apache.spark.api.java.JavaRDDLike#treeAggregate]] with suggested depth 2.
@@ -462,9 +457,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   def treeAggregate[U](
       zeroValue: U,
       seqOp: JFunction2[U, T, U],
-      combOp: JFunction2[U, U, U]): U = {
+      combOp: JFunction2[U, U, U]): U =
     treeAggregate(zeroValue, seqOp, combOp, 2)
-  }
 
   /**
     * Return the number of elements in the RDD.
@@ -542,25 +536,20 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Save this RDD as a text file, using string representations of elements.
     */
-  def saveAsTextFile(path: String): Unit = {
+  def saveAsTextFile(path: String): Unit =
     rdd.saveAsTextFile(path)
-  }
 
   /**
     * Save this RDD as a compressed text file, using string representations of elements.
     */
-  def saveAsTextFile(
-      path: String,
-      codec: Class[_ <: CompressionCodec]): Unit = {
+  def saveAsTextFile(path: String, codec: Class[_ <: CompressionCodec]): Unit =
     rdd.saveAsTextFile(path, codec)
-  }
 
   /**
     * Save this RDD as a SequenceFile of serialized objects.
     */
-  def saveAsObjectFile(path: String): Unit = {
+  def saveAsObjectFile(path: String): Unit =
     rdd.saveAsObjectFile(path)
-  }
 
   /**
     * Creates tuples of the elements in this RDD by applying `f`.
@@ -578,9 +567,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * executed on this RDD. It is strongly recommended that this RDD is persisted in
     * memory, otherwise saving it on a file will require recomputation.
     */
-  def checkpoint(): Unit = {
+  def checkpoint(): Unit =
     rdd.checkpoint()
-  }
 
   /**
     * Return whether this RDD has been checkpointed or not
@@ -590,14 +578,12 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Gets the name of the file to which this RDD was checkpointed
     */
-  def getCheckpointFile(): Optional[String] = {
+  def getCheckpointFile(): Optional[String] =
     JavaUtils.optionToOptional(rdd.getCheckpointFile)
-  }
 
   /** A description of this RDD and its recursive dependencies for debugging. */
-  def toDebugString(): String = {
+  def toDebugString(): String =
     rdd.toDebugString
-  }
 
   /**
     * Returns the top k (largest) elements from this RDD as defined by
@@ -609,9 +595,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @param comp the comparator that defines the order
     * @return an array of top elements
     */
-  def top(num: Int, comp: Comparator[T]): JList[T] = {
+  def top(num: Int, comp: Comparator[T]): JList[T] =
     rdd.top(num)(Ordering.comparatorToOrdering(comp)).toSeq.asJava
-  }
 
   /**
     * Returns the top k (largest) elements from this RDD using the
@@ -638,9 +623,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @param comp the comparator that defines the order
     * @return an array of top elements
     */
-  def takeOrdered(num: Int, comp: Comparator[T]): JList[T] = {
+  def takeOrdered(num: Int, comp: Comparator[T]): JList[T] =
     rdd.takeOrdered(num)(Ordering.comparatorToOrdering(comp)).toSeq.asJava
-  }
 
   /**
     * Returns the maximum element from this RDD as defined by the specified
@@ -648,9 +632,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @param comp the comparator that defines ordering
     * @return the maximum of the RDD
     * */
-  def max(comp: Comparator[T]): T = {
+  def max(comp: Comparator[T]): T =
     rdd.max()(Ordering.comparatorToOrdering(comp))
-  }
 
   /**
     * Returns the minimum element from this RDD as defined by the specified
@@ -658,9 +641,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @param comp the comparator that defines ordering
     * @return the minimum of the RDD
     * */
-  def min(comp: Comparator[T]): T = {
+  def min(comp: Comparator[T]): T =
     rdd.min()(Ordering.comparatorToOrdering(comp))
-  }
 
   /**
     * Returns the first k (smallest) elements from this RDD using the
@@ -696,11 +678,10 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * The asynchronous version of `count`, which returns a
     * future for counting the number of elements in this RDD.
     */
-  def countAsync(): JavaFutureAction[jl.Long] = {
+  def countAsync(): JavaFutureAction[jl.Long] =
     new JavaFutureActionWrapper[Long, jl.Long](
       rdd.countAsync(),
       jl.Long.valueOf)
-  }
 
   /**
     * The asynchronous version of `collect`, which returns a future for
@@ -709,9 +690,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @note this method should only be used if the resulting array is expected to be small, as
     * all the data is loaded into the driver's memory.
     */
-  def collectAsync(): JavaFutureAction[JList[T]] = {
+  def collectAsync(): JavaFutureAction[JList[T]] =
     new JavaFutureActionWrapper(rdd.collectAsync(), (x: Seq[T]) => x.asJava)
-  }
 
   /**
     * The asynchronous version of the `take` action, which returns a
@@ -720,29 +700,26 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @note this method should only be used if the resulting array is expected to be small, as
     * all the data is loaded into the driver's memory.
     */
-  def takeAsync(num: Int): JavaFutureAction[JList[T]] = {
+  def takeAsync(num: Int): JavaFutureAction[JList[T]] =
     new JavaFutureActionWrapper(rdd.takeAsync(num), (x: Seq[T]) => x.asJava)
-  }
 
   /**
     * The asynchronous version of the `foreach` action, which
     * applies a function f to all the elements of this RDD.
     */
-  def foreachAsync(f: VoidFunction[T]): JavaFutureAction[Void] = {
+  def foreachAsync(f: VoidFunction[T]): JavaFutureAction[Void] =
     new JavaFutureActionWrapper[Unit, Void](rdd.foreachAsync(x => f.call(x)), {
       x => null.asInstanceOf[Void]
     })
-  }
 
   /**
     * The asynchronous version of the `foreachPartition` action, which
     * applies a function f to each partition of this RDD.
     */
   def foreachPartitionAsync(
-      f: VoidFunction[java.util.Iterator[T]]): JavaFutureAction[Void] = {
+      f: VoidFunction[java.util.Iterator[T]]): JavaFutureAction[Void] =
     new JavaFutureActionWrapper[Unit, Void](
       rdd.foreachPartitionAsync(x => f.call(x.asJava)), { x =>
         null.asInstanceOf[Void]
       })
-  }
 }

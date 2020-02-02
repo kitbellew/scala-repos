@@ -56,7 +56,7 @@ object ResourceUtil {
 
     def deductRange(
         baseRange: MesosProtos.Value.Range,
-        usedRange: MesosProtos.Value.Range): Seq[MesosProtos.Value.Range] = {
+        usedRange: MesosProtos.Value.Range): Seq[MesosProtos.Value.Range] =
       if (baseRange.getEnd < usedRange.getBegin) { // baseRange completely before usedRange
         Seq(baseRange)
       } else if (baseRange.getBegin > usedRange.getEnd) { // baseRange completely after usedRange
@@ -76,7 +76,6 @@ object ResourceUtil {
 
         Seq(rangeBefore, rangeAfter).flatten
       }
-    }
 
     def consumeRangeResource: Option[MesosProtos.Resource] = {
       val usedRanges = usedResource.getRanges.getRangeList.asScala
@@ -199,11 +198,10 @@ object ResourceUtil {
   def displayResource(
       resource: MesosProtos.Resource,
       maxRanges: Int): String = {
-    def rangesToString(ranges: Seq[MesosProtos.Value.Range]): String = {
+    def rangesToString(ranges: Seq[MesosProtos.Value.Range]): String =
       ranges
         .map { range => s"${range.getBegin}->${range.getEnd}" }
         .mkString(",")
-    }
 
     lazy val resourceName = {
       val principalString =
@@ -237,7 +235,6 @@ object ResourceUtil {
 
   def displayResources(
       resources: Iterable[MesosProtos.Resource],
-      maxRanges: Int): String = {
+      maxRanges: Int): String =
     resources.map(displayResource(_, maxRanges)).mkString("; ")
-  }
 }

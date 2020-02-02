@@ -99,15 +99,13 @@ class ScalaMoveClassesOrPackagesHandler
         adjustedElements,
         initialTargetElement,
         moveCallback) {
-        override def createCenterPanel(): JComponent = {
+        override def createCenterPanel(): JComponent =
           addMoveCompanionChb(super.createCenterPanel(), adjustedElements)
-        }
 
         override def createMoveToPackageProcessor(
             destination: MoveDestination,
             elementsToMove: Array[PsiElement],
-            callback: MoveCallback): MoveClassesOrPackagesProcessor = {
-
+            callback: MoveCallback): MoveClassesOrPackagesProcessor =
           new ScalaMoveClassesOrPackagesProcessor(
             project,
             elementsToMove,
@@ -115,7 +113,6 @@ class ScalaMoveClassesOrPackagesHandler
             isSearchInComments,
             searchTextOccurences,
             callback)
-        }
       }
     val searchInComments: Boolean =
       JavaRefactoringSettings.getInstance.MOVE_SEARCH_IN_COMMENTS
@@ -138,14 +135,13 @@ class ScalaMoveClassesOrPackagesHandler
   protected override def createMoveClassesOrPackagesToNewDirectoryDialog(
       @NotNull directory: PsiDirectory,
       elementsToMove: Array[PsiElement],
-      moveCallback: MoveCallback): DialogWrapper = {
+      moveCallback: MoveCallback): DialogWrapper =
     new MoveClassesOrPackagesToNewDirectoryDialog(
       directory,
       elementsToMove,
       moveCallback) {
-      protected override def createCenterPanel(): JComponent = {
+      protected override def createCenterPanel(): JComponent =
         addMoveCompanionChb(super.createCenterPanel(), elementsToMove)
-      }
 
       protected override def createMoveClassesOrPackagesProcessor(
           project: Project,
@@ -153,8 +149,7 @@ class ScalaMoveClassesOrPackagesHandler
           moveDestination: MoveDestination,
           searchInComments: Boolean,
           searchInNonJavaFiles: Boolean,
-          moveCallback: MoveCallback): MoveClassesOrPackagesProcessor = {
-
+          moveCallback: MoveCallback): MoveClassesOrPackagesProcessor =
         new ScalaMoveClassesOrPackagesProcessor(
           project,
           elements,
@@ -162,9 +157,7 @@ class ScalaMoveClassesOrPackagesHandler
           searchInComments,
           searchInNonJavaFiles,
           moveCallback)
-      }
     }
-  }
 
   private def addMoveCompanionChb(
       @Nullable panel: JComponent,

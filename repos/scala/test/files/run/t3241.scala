@@ -6,18 +6,16 @@ object Test {
     println("done")
   }
 
-  def recurse(map: collection.immutable.Map[Int, Int]): Unit = {
+  def recurse(map: collection.immutable.Map[Int, Int]): Unit =
     if (!map.isEmpty) {
       val x = map.keys.head
       recurse(map - x)
     }
-  }
 
-  def recurse(set: collection.immutable.Set[Int]): Unit = {
+  def recurse(set: collection.immutable.Set[Int]): Unit =
     if (!set.isEmpty) {
       val x = set.toStream.head
       recurse(set - x)
     }
-  }
 
 }

@@ -48,13 +48,11 @@ class ByteBufferMessageSet(val buffer: ByteBuffer) extends MessageSet {
   override def iterator: java.util.Iterator[MessageAndOffset] =
     new java.util.Iterator[MessageAndOffset] {
       val underlyingIterator = underlying.iterator
-      override def hasNext(): Boolean = {
+      override def hasNext(): Boolean =
         underlyingIterator.hasNext
-      }
 
-      override def next(): MessageAndOffset = {
+      override def next(): MessageAndOffset =
         underlyingIterator.next
-      }
 
       override def remove =
         throw new UnsupportedOperationException(
@@ -65,12 +63,11 @@ class ByteBufferMessageSet(val buffer: ByteBuffer) extends MessageSet {
 
   def sizeInBytes: Int = underlying.sizeInBytes
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case that: ByteBufferMessageSet => buffer.equals(that.buffer)
       case _                          => false
     }
-  }
 
   override def hashCode: Int = buffer.hashCode
 }

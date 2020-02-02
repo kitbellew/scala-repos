@@ -2,9 +2,8 @@ package stepping
 
 class Defaults(someArg: String = "a default String") {
 
-  def methWithDefaults(someArg1: String = "another default String") = {
+  def methWithDefaults(someArg1: String = "another default String") =
     println()
-  }
   def methWithDefaults2(arg1: String, arg2: Int = 42)(
       barg1: String,
       barg2: Int = arg2 + 1) = {}
@@ -26,9 +25,8 @@ trait BaseTrait {
       t: Object): Unit = ()
 
   def concreteTraitMethodWithDefault(
-      someArg2: String = "yet another default String") = {
+      someArg2: String = "yet another default String") =
     someArg2
-  }
 
   def abstractMethodWithDefault(
       someArg3: String = "last default String"): String

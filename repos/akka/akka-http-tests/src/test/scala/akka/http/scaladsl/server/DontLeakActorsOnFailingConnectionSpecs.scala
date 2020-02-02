@@ -93,7 +93,7 @@ class DontLeakActorsOnFailingConnectionSpecs
     }
   }
 
-  private def handleResponse(httpResp: Try[HttpResponse], id: Int): Unit = {
+  private def handleResponse(httpResp: Try[HttpResponse], id: Int): Unit =
     httpResp match {
       case Success(httpRes) ⇒
         println(s"$id: OK: (${httpRes.status.intValue}")
@@ -102,10 +102,8 @@ class DontLeakActorsOnFailingConnectionSpecs
       case Failure(ex) ⇒
         println(s"$id: FAIL: $ex")
     }
-  }
 
-  override def afterAll = {
+  override def afterAll =
     Await.result(system.terminate(), 3.seconds)
-  }
 
 }

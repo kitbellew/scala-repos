@@ -115,7 +115,7 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
       "Spark Worker at %s:%s".format(workerState.host, workerState.port))
   }
 
-  def executorRow(executor: ExecutorRunner): Seq[Node] = {
+  def executorRow(executor: ExecutorRunner): Seq[Node] =
     <tr>
       <td>{executor.execId}</td>
       <td>{executor.cores}</td>
@@ -142,9 +142,7 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
       </td>
     </tr>
 
-  }
-
-  def driverRow(driver: DriverRunner): Seq[Node] = {
+  def driverRow(driver: DriverRunner): Seq[Node] =
     <tr>
       <td>{driver.driverId}</td>
       <td>{driver.driverDesc.command.arguments(2)}</td>
@@ -163,5 +161,4 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
         {driver.finalException.getOrElse("")}
       </td>
     </tr>
-  }
 }

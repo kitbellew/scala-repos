@@ -22,7 +22,7 @@ object test1 {
     def d(x: AnyRef) = new Object { override def toString = "dee" }
     def e(x: Tata) = new Tata("iei")
     def f(x: Int) = x + 1
-    def g(x: Int) = { v = x }
+    def g(x: Int) = v = x
     def h(x: Unit) = new Object { override def toString = "eitch" }
     def i(x: Array[Int]) = x(0)
     def j(x: Array[AnyRef]) = x(0)

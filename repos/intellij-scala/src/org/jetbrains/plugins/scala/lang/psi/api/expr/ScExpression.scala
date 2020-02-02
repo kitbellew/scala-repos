@@ -76,7 +76,7 @@ trait ScExpression
       isShape: Boolean = false,
       expectedOption: Option[ScType] = None,
       ignoreBaseTypes: Boolean = false,
-      fromUnderscore: Boolean = false): ExpressionTypeResult = {
+      fromUnderscore: Boolean = false): ExpressionTypeResult =
     if (isShape) {
       val tp: ScType = getShape()._1
       def default =
@@ -175,7 +175,6 @@ trait ScExpression
         }
       }
     }
-  }
 
   private def tryConvertToSAM(
       fromUnderscore: Boolean,
@@ -258,7 +257,7 @@ trait ScExpression
 
         @tailrec
         def isMethodInvocation(
-            expr: ScExpression = ScExpression.this): Boolean = {
+            expr: ScExpression = ScExpression.this): Boolean =
           expr match {
             case p: ScPrefixExpr     => false
             case p: ScPostfixExpr    => false
@@ -270,7 +269,6 @@ trait ScExpression
               }
             case _ => false
           }
-        }
         if (!isMethodInvocation()) { //it is not updated according to expected type, let's do it
           val oldRes = res
           try {
@@ -385,7 +383,7 @@ trait ScExpression
                 //numeric widening
                 def checkWidening(
                     l: ScType,
-                    r: ScType): Option[TypeResult[ScType]] = {
+                    r: ScType): Option[TypeResult[ScType]] =
                   (l, r) match {
                     case (Byte, Short | Int | Long | Float | Double) =>
                       Some(Success(expected, Some(ScExpression.this)))
@@ -401,7 +399,6 @@ trait ScExpression
                       Some(Success(expected, Some(ScExpression.this)))
                     case _ => None
                   }
-                }
                 (valType.getValType, expected.getValType) match {
                   case (Some(l), Some(r)) =>
                     checkWidening(l, r) match {
@@ -443,7 +440,7 @@ trait ScExpression
   def getTypeExt(ctx: TypingContext = TypingContext.empty)
       : ScExpression.ExpressionTypeResult = getTypeAfterImplicitConversion()
 
-  def getShape(ignoreAssign: Boolean = false): (ScType, String) = {
+  def getShape(ignoreAssign: Boolean = false): (ScType, String) =
     this match {
       case assign: ScAssignStmt
           if !ignoreAssign && assign.assignName.isDefined =>
@@ -472,7 +469,6 @@ trait ScExpression
         }
       case _ => (Nothing, "")
     }
-  }
 
   @volatile
   protected var implicitParameters: Option[Seq[ScalaResolveResult]] = None
@@ -508,7 +504,7 @@ trait ScExpression
     ModCount.getBlockModificationCount)
   private def getNonValueTypeImpl(
       ignoreBaseType: Boolean,
-      fromUnderscore: Boolean): TypeResult[ScType] = {
+      fromUnderscore: Boolean): TypeResult[ScType] =
     if (fromUnderscore) innerType(TypingContext.empty)
     else {
       val unders = ScUnderScoreSectionUtil.underscores(ScExpression.this)
@@ -533,7 +529,6 @@ trait ScExpression
         new Success(methType, Some(ScExpression.this))
       }
     }
-  }
 
   protected def innerType(ctx: TypingContext): TypeResult[ScType] =
     Failure(ScalaBundle.message("no.type.inferred", getText), Some(this))
@@ -584,12 +579,11 @@ trait ScExpression
     this,
     Array.empty[(ScType, Option[ScTypeElement])],
     ModCount.getBlockModificationCount)
-  def expectedTypesEx(fromUnderscore: Boolean = true)
-      : Array[(ScType, Option[ScTypeElement])] = {
+  def expectedTypesEx(
+      fromUnderscore: Boolean = true): Array[(ScType, Option[ScTypeElement])] =
     ExpectedTypes.expectedExprTypes(
       ScExpression.this,
       fromUnderscore = fromUnderscore)
-  }
 
   @CachedMappedWithRecursionGuard(
     this,

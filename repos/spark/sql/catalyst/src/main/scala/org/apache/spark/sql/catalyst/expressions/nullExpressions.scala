@@ -44,7 +44,7 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
   // Coalesce is foldable if all children are foldable.
   override def foldable: Boolean = children.forall(_.foldable)
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (children == Nil) {
       TypeCheckResult.TypeCheckFailure(
         "input to function coalesce cannot be empty")
@@ -53,7 +53,6 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
         children.map(_.dataType),
         "function coalesce")
     }
-  }
 
   override def dataType: DataType = children.head.dataType
 
@@ -194,9 +193,8 @@ case class NaNvl(left: Expression, right: Expression)
 case class IsNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     child.eval(input) == null
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)
@@ -214,9 +212,8 @@ case class IsNull(child: Expression) extends UnaryExpression with Predicate {
 case class IsNotNull(child: Expression) extends UnaryExpression with Predicate {
   override def nullable: Boolean = false
 
-  override def eval(input: InternalRow): Any = {
+  override def eval(input: InternalRow): Any =
     child.eval(input) != null
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval = child.gen(ctx)

@@ -18,7 +18,7 @@ class ScalaAnnotatedMacro extends Macro {
 
   protected def getAnnotatedMembers(
       params: Array[Expression],
-      context: ExpressionContext): Query[PsiMember] = {
+      context: ExpressionContext): Query[PsiMember] =
     (params, context) match {
       case (null, _) => EmptyQuery.getEmptyQuery[PsiMember]
       case (_, null) => EmptyQuery.getEmptyQuery[PsiMember]
@@ -33,11 +33,10 @@ class ScalaAnnotatedMacro extends Macro {
           .map(AnnotatedMembersSearch.search(_, scope))
           .getOrElse(EmptyQuery.getEmptyQuery[PsiMember])
     }
-  }
 
   override def calculateResult(
       params: Array[Expression],
-      context: ExpressionContext): Result = {
+      context: ExpressionContext): Result =
     Option(getAnnotatedMembers(params, context).findFirst())
       .map(member =>
         new TextResult(member match {
@@ -45,7 +44,6 @@ class ScalaAnnotatedMacro extends Macro {
           case _                  => member.getName
         }))
       .orNull
-  }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "annotated"
 

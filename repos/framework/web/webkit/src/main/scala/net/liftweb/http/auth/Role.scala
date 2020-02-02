@@ -95,21 +95,19 @@ trait Role {
   /**
     * Removes the child Role
     */
-  def removeRoleByName(roleName: String): Box[Role] = {
+  def removeRoleByName(roleName: String): Box[Role] =
     getRoleByName(roleName).map(_.detach) openOr Empty
-  }
 
   /**
     * Removes this Role from its parent
     */
-  def detach: Box[Role] = {
+  def detach: Box[Role] =
     this.parent.map {
       case p =>
         p.childs = p.childs.filter(role => role.name != this.name)
         this.parent = Empty
         this
     }
-  }
 
   /**
     * Verifies if this Role is a child of a role having the name <i>roleName</i>

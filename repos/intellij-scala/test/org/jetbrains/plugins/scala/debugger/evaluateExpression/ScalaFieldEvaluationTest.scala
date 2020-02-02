@@ -32,7 +32,7 @@ abstract class ScalaFieldEvaluationTestBase extends ScalaDebuggerTestCase {
       |}
     """.stripMargin.trim()
   )
-  def testStatic(): Unit = {
+  def testStatic(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalStartsWith("x", "23")
@@ -41,7 +41,6 @@ abstract class ScalaFieldEvaluationTestBase extends ScalaDebuggerTestCase {
       evalStartsWith("java.lang.Math.PI", "3.14") //static java
       evalStartsWith("y", "1") //private this
     }
-  }
 
   addFileWithBreakpoints(
     "test/Java.java",

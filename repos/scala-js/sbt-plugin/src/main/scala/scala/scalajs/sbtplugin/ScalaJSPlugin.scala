@@ -305,13 +305,12 @@ object ScalaJSPlugin extends AutoPlugin {
   import autoImport._
   import ScalaJSPluginInternal._
 
-  override def globalSettings: Seq[Setting[_]] = {
+  override def globalSettings: Seq[Setting[_]] =
     super.globalSettings ++ Seq(
       scalaJSStage := Stage.FastOpt,
       scalaJSUseRhino := true,
       scalaJSClearCacheStats := globalIRCache.clearStats()
     )
-  }
 
   override def projectSettings: Seq[Setting[_]] = (
     scalaJSAbstractSettings ++

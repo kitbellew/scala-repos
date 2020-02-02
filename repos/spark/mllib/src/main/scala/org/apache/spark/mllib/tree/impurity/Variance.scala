@@ -98,11 +98,8 @@ private[tree] class VarianceAggregator()
     * @param allStats  Flat stats array, with stats for this (node, feature, bin) contiguous.
     * @param offset    Start index of stats for this (node, feature, bin).
     */
-  def getCalculator(
-      allStats: Array[Double],
-      offset: Int): VarianceCalculator = {
+  def getCalculator(allStats: Array[Double], offset: Int): VarianceCalculator =
     new VarianceCalculator(allStats.view(offset, offset + statsSize).toArray)
-  }
 }
 
 /**
@@ -145,8 +142,7 @@ private[spark] class VarianceCalculator(stats: Array[Double])
       stats(1) / count
     }
 
-  override def toString: String = {
+  override def toString: String =
     s"VarianceAggregator(cnt = ${stats(0)}, sum = ${stats(1)}, sum2 = ${stats(2)})"
-  }
 
 }

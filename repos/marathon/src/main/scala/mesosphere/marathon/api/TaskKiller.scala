@@ -30,7 +30,7 @@ class TaskKiller @Inject() (
     extends AuthResource {
 
   def kill(appId: PathId, findToKill: (Iterable[Task] => Iterable[Task]))(
-      implicit identity: Identity): Future[Iterable[Task]] = {
+      implicit identity: Identity): Future[Iterable[Task]] =
     result(groupManager.app(appId)) match {
       case Some(app) =>
         checkAuthorization(UpdateApp, app)
@@ -43,16 +43,14 @@ class TaskKiller @Inject() (
         Future.successful(toKill)
       case None => Future.failed(UnknownAppException(appId))
     }
-  }
 
   def killAndScale(
       appId: PathId,
       findToKill: (Iterable[Task] => Iterable[Task]),
-      force: Boolean)(implicit identity: Identity): Future[DeploymentPlan] = {
+      force: Boolean)(implicit identity: Identity): Future[DeploymentPlan] =
     killAndScale(
       Map(appId -> findToKill(taskTracker.appTasksLaunchedSync(appId))),
       force)
-  }
 
   def killAndScale(appTasks: Map[PathId, Iterable[Task]], force: Boolean)(
       implicit identity: Identity): Future[DeploymentPlan] = {
@@ -63,11 +61,10 @@ class TaskKiller @Inject() (
       }
     }
 
-    def updateGroup(group: Group): Group = {
+    def updateGroup(group: Group): Group =
       group.copy(
         apps = group.apps.map(scaleApp),
         groups = group.groups.map(updateGroup))
-    }
 
     def killTasks = groupManager.update(
       PathId.empty,

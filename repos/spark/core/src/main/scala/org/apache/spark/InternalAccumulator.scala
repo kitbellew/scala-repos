@@ -123,7 +123,7 @@ private[spark] object InternalAccumulator {
   /**
     * Accumulators for tracking internal metrics.
     */
-  def createAll(): Seq[Accumulator[_]] = {
+  def createAll(): Seq[Accumulator[_]] =
     Seq[String](
       EXECUTOR_DESERIALIZE_TIME,
       EXECUTOR_RUN_TIME,
@@ -140,12 +140,11 @@ private[spark] object InternalAccumulator {
       createInputAccums() ++
       createOutputAccums() ++
       sys.props.get("spark.testing").map(_ => create(TEST_ACCUM)).toSeq
-  }
 
   /**
     * Accumulators for tracking shuffle read metrics.
     */
-  def createShuffleReadAccums(): Seq[Accumulator[_]] = {
+  def createShuffleReadAccums(): Seq[Accumulator[_]] =
     Seq[String](
       shuffleRead.REMOTE_BLOCKS_FETCHED,
       shuffleRead.LOCAL_BLOCKS_FETCHED,
@@ -154,35 +153,31 @@ private[spark] object InternalAccumulator {
       shuffleRead.FETCH_WAIT_TIME,
       shuffleRead.RECORDS_READ
     ).map(create)
-  }
 
   /**
     * Accumulators for tracking shuffle write metrics.
     */
-  def createShuffleWriteAccums(): Seq[Accumulator[_]] = {
+  def createShuffleWriteAccums(): Seq[Accumulator[_]] =
     Seq[String](
       shuffleWrite.BYTES_WRITTEN,
       shuffleWrite.RECORDS_WRITTEN,
       shuffleWrite.WRITE_TIME).map(create)
-  }
 
   /**
     * Accumulators for tracking input metrics.
     */
-  def createInputAccums(): Seq[Accumulator[_]] = {
+  def createInputAccums(): Seq[Accumulator[_]] =
     Seq[String](input.READ_METHOD, input.BYTES_READ, input.RECORDS_READ)
       .map(create)
-  }
 
   /**
     * Accumulators for tracking output metrics.
     */
-  def createOutputAccums(): Seq[Accumulator[_]] = {
+  def createOutputAccums(): Seq[Accumulator[_]] =
     Seq[String](
       output.WRITE_METHOD,
       output.BYTES_WRITTEN,
       output.RECORDS_WRITTEN).map(create)
-  }
 
   /**
     * Accumulators for tracking internal metrics.
@@ -206,13 +201,12 @@ private[spark] object InternalAccumulator {
   private def newMetric[T](
       initialValue: T,
       name: String,
-      param: AccumulatorParam[T]): Accumulator[T] = {
+      param: AccumulatorParam[T]): Accumulator[T] =
     new Accumulator[T](
       initialValue,
       param,
       Some(name),
       internal = true,
       countFailedValues = true)
-  }
 
 }

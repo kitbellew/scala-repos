@@ -562,7 +562,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       val client = app.injector.instanceOf(classOf[WSClient])
       val callList = scala.collection.mutable.ArrayBuffer[Int]()
       val responseFuture = client
-        .url(s"http://localhost:${testServerPort}")
+        .url(s"http://localhost:$testServerPort")
         .withRequestFilter(new CallbackRequestFilter(callList, 1))
         .withRequestFilter(new CallbackRequestFilter(callList, 2))
         .withRequestFilter(new CallbackRequestFilter(callList, 3))

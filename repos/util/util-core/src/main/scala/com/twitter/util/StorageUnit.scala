@@ -83,14 +83,13 @@ class StorageUnit(val bytes: Long) extends Ordered[StorageUnit] {
   def *(scalar: Long): StorageUnit = new StorageUnit(this.bytes * scalar)
   def /(scalar: Long): StorageUnit = new StorageUnit(this.bytes / scalar)
 
-  override def equals(other: Any) = {
+  override def equals(other: Any) =
     other match {
       case other: StorageUnit =>
         inBytes == other.inBytes
       case _ =>
         false
     }
-  }
 
   override def hashCode: Int = bytes.hashCode
 

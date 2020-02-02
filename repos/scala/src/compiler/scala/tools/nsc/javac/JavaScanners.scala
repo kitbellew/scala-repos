@@ -712,7 +712,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
     /** convert name to long value
       */
-    def intVal(negated: Boolean): Long = {
+    def intVal(negated: Boolean): Long =
       if (token == CHARLIT && !negated) {
         if (name.length > 0) name.charAt(0).toLong else 0
       } else {
@@ -740,7 +740,6 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         }
         if (negated) -value else value
       }
-    }
 
     /** convert name, base to double value
       */

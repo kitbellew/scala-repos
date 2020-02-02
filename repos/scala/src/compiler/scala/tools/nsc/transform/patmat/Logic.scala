@@ -145,9 +145,8 @@ trait Logic extends Debugging {
         case _ => false
       }
 
-      override def hashCode(): Int = {
+      override def hashCode(): Int =
         variable.hashCode * 41 + const.hashCode
-      }
 
       private val id: Int = Sym.nextSymId
 
@@ -684,7 +683,7 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
             d mkString (" ::= ", " | ", "// " + symForEqualsTo.keys)
           case _ => symForEqualsTo.keys mkString (" ::= ", " | ", " | ...")
         }
-        s"$this: ${staticTp}${domain_s} // = $path"
+        s"$this: $staticTp$domain_s // = $path"
       }
       override def toString = "V" + id
     }
@@ -735,10 +734,9 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
       // hashconsing trees (modulo value-equality)
       private[TreesAndTypesDomain] def uniqueTpForTree(t: Tree): Type = {
-        def freshExistentialSubtype(tp: Type): Type = {
+        def freshExistentialSubtype(tp: Type): Type =
           // SI-8611 tp.narrow is tempting, but unsuitable. See `testRefinedTypeSI8611` for an explanation.
           NoSymbol.freshExistential("").setInfo(TypeBounds.upper(tp)).tpe
-        }
 
         if (!t.symbol.isStable) {
           // Create a fresh type for each unstable value, since we can never correlate it to another value.
@@ -784,11 +782,10 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       else tp.baseType(tp.baseClasses.head)
 
     object TypeConst extends TypeConstExtractor {
-      def apply(tp: Type) = {
+      def apply(tp: Type) =
         if (tp =:= ConstantNull) NullConst
         else if (tp.isInstanceOf[SingletonType]) ValueConst.fromType(tp)
         else Const.unique(tp, new TypeConst(tp))
-      }
       def unapply(c: TypeConst): Some[Type] = Some(c.tp)
     }
 

@@ -44,7 +44,7 @@ object IntroduceVariableTestUtil {
       editor: Editor,
       file: ScalaFile,
       startOffset: Int,
-      endOffset: Int): ScalaValidator = {
+      endOffset: Int): ScalaValidator =
     PsiTreeUtil.getParentOfType(
       file.findElementAt(startOffset),
       classOf[ScExpression],
@@ -55,7 +55,6 @@ object IntroduceVariableTestUtil {
         getTypeValidator(project, editor, file, startOffset, endOffset)
       case _ => null
     }
-  }
 
   def getVariableValidator(
       project: Project,

@@ -11,9 +11,8 @@ import org.specs2.runner.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ScalaLoggingSpec extends Specification with Mockito {
 
-  private def riskyCalculation: Int = {
+  private def riskyCalculation: Int =
     10 / scala.util.Random.nextInt(2)
-  }
 
   "The default Logger" should {
     "properly log" in {
@@ -146,12 +145,12 @@ class ScalaLoggingSpec extends Specification with Mockito {
             request: RequestHeader): Future[Result] = {
           val resultFuture = next(request)
 
-          resultFuture.foreach(result => {
+          resultFuture.foreach { result =>
             val msg =
               s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}" +
                 s" status=${result.header.status}";
             accessLogger.info(msg)
-          })
+          }
 
           resultFuture
         }

@@ -36,13 +36,12 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
   protected def resetState(): Unit = {}
 
   // Clear all state after each test
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       resetState()
     } finally {
       super.afterEach()
     }
-  }
 
   // --------------------------------------------------------------------------
   // Databases
@@ -630,14 +629,13 @@ abstract class CatalogTestUtils {
 
   def newUriForDatabase(): String = Utils.createTempDir().getAbsolutePath
 
-  def newDb(name: String): CatalogDatabase = {
+  def newDb(name: String): CatalogDatabase =
     CatalogDatabase(name, name + " description", newUriForDatabase(), Map.empty)
-  }
 
   def newTable(name: String, db: String): CatalogTable =
     newTable(name, Some(db))
 
-  def newTable(name: String, database: Option[String] = None): CatalogTable = {
+  def newTable(name: String, database: Option[String] = None): CatalogTable =
     CatalogTable(
       name = TableIdentifier(name, database),
       tableType = CatalogTableType.EXTERNAL_TABLE,
@@ -647,13 +645,9 @@ abstract class CatalogTestUtils {
       partitionColumns =
         Seq(CatalogColumn("a", "int"), CatalogColumn("b", "string"))
     )
-  }
 
-  def newFunc(
-      name: String,
-      database: Option[String] = None): CatalogFunction = {
+  def newFunc(name: String, database: Option[String] = None): CatalogFunction =
     CatalogFunction(FunctionIdentifier(name, database), funcClass)
-  }
 
   /**
     * Whether the catalog's table partitions equal the ones given.
@@ -663,10 +657,9 @@ abstract class CatalogTestUtils {
       catalog: ExternalCatalog,
       db: String,
       table: String,
-      parts: Seq[CatalogTablePartition]): Boolean = {
+      parts: Seq[CatalogTablePartition]): Boolean =
     catalog.listPartitions(db, table).map(_.spec).toSet == parts
       .map(_.spec)
       .toSet
-  }
 
 }

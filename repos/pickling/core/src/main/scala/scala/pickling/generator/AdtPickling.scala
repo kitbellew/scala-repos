@@ -11,7 +11,7 @@ private[pickling] object AdtPickling extends PicklingAlgorithm {
     */
   override def generate(
       tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+      logger: AlgorithmLogger): AlgorithmResult =
     if (!tpe.isAbstract) {
       AlgorithmFailure(s"Cannot use ADT algorithm because $tpe is not abstract")
     } else
@@ -31,5 +31,4 @@ private[pickling] object AdtPickling extends PicklingAlgorithm {
             Seq(SubclassUnpicklerDelegation(subclasses, tpe)))
           AlgorithmSucccess(PickleUnpickleImplementation(pickle, unpickle))
       }
-  }
 }

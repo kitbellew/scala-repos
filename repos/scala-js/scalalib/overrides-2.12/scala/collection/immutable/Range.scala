@@ -251,7 +251,7 @@ class Range(val start: Int, val end: Int, val step: Int)
   }
 
   // Advance from the start while we meet the given test
-  private def argTakeWhile(p: Int => Boolean): Long = {
+  private def argTakeWhile(p: Int => Boolean): Long =
     if (isEmpty) start
     else {
       var current = start
@@ -260,7 +260,6 @@ class Range(val start: Int, val end: Int, val step: Int)
       if (current != stop || !p(current)) current
       else current.toLong + step
     }
-  }
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int) = start + (step * n)
@@ -313,7 +312,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     *
     *  $doesNotUseBuilders
     */
-  final override def takeRight(n: Int): Range = {
+  final override def takeRight(n: Int): Range =
     if (n <= 0) newEmptyRange(start)
     else if (numRangeElements >= 0) drop(numRangeElements - n)
     else {
@@ -323,13 +322,12 @@ class Range(val start: Int, val end: Int, val step: Int)
       if ((step > 0 && x < start) || (step < 0 && x > start)) this
       else new Range.Inclusive(x.toInt, y, step)
     }
-  }
 
   /** Creates a new range consisting of the initial `length - n` elements of the range.
     *
     *  $doesNotUseBuilders
     */
-  final override def dropRight(n: Int): Range = {
+  final override def dropRight(n: Int): Range =
     if (n <= 0) this
     else if (numRangeElements >= 0) take(numRangeElements - n)
     else {
@@ -339,7 +337,6 @@ class Range(val start: Int, val end: Int, val step: Int)
         newEmptyRange(start)
       else new Range.Inclusive(start, y.toInt, step)
     }
-  }
 
   /** Returns the reverse of this range.
     *
@@ -355,7 +352,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     if (isInclusive) this
     else new Range.Inclusive(start, end, step)
 
-  final def contains(x: Int) = {
+  final def contains(x: Int) =
     if (x == end && !isInclusive) false
     else if (step > 0) {
       if (x < start || x > end) false
@@ -364,9 +361,8 @@ class Range(val start: Int, val end: Int, val step: Int)
       if (x < end || x > start) false
       else (step == -1) || (((x - start) % step) == 0)
     }
-  }
 
-  final override def sum[B >: Int](implicit num: Numeric[B]): Int = {
+  final override def sum[B >: Int](implicit num: Numeric[B]): Int =
     if (num eq scala.math.Numeric.IntIsIntegral) {
       // this is normal integer range with usual addition. arithmetic series formula can be used
       if (isEmpty) 0
@@ -385,7 +381,6 @@ class Range(val start: Int, val end: Int, val step: Int)
         num.toInt(acc)
       }
     }
-  }
 
   override def toIterable = this
 

@@ -47,17 +47,15 @@ trait Mapper[A <: Mapper[A]]
   @volatile private[mapper] var persisted_? = false
 
   def getSingleton: MetaMapper[A];
-  final def safe_? : Boolean = {
+  final def safe_? : Boolean =
     util.Safe.safe_?(System.identityHashCode(this))
-  }
 
   def dbName: String = getSingleton.dbName
 
   implicit def thisToMappee(in: Mapper[A]): A = this.asInstanceOf[A]
 
-  def runSafe[T](f: => T): T = {
+  def runSafe[T](f: => T): T =
     util.Safe.runSafe(System.identityHashCode(this))(f)
-  }
 
   def connectionIdentifier(id: ConnectionIdentifier): A = {
     if (id != getSingleton.dbDefaultConnectionIdentifier || dbConnectionIdentifier.isDefined)
@@ -92,19 +90,16 @@ trait Mapper[A <: Mapper[A]]
     this
   }
 
-  def save(): Boolean = {
+  def save(): Boolean =
     runSafe {
       getSingleton.save(this)
     }
-  }
 
-  def htmlLine: NodeSeq = {
+  def htmlLine: NodeSeq =
     getSingleton.doHtmlLine(this)
-  }
 
-  def asHtml: NodeSeq = {
+  def asHtml: NodeSeq =
     getSingleton.asHtml(this)
-  }
 
   /**
     * If the instance calculates any additional
@@ -113,11 +108,10 @@ trait Mapper[A <: Mapper[A]]
     */
   def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = Nil
 
-  def validate: List[FieldError] = {
+  def validate: List[FieldError] =
     runSafe {
       getSingleton.validate(this)
     }
-  }
 
   /**
     * Returns the instance in a Full Box if the instance is valid, otherwise
@@ -155,14 +149,13 @@ trait Mapper[A <: Mapper[A]]
   /**
     * Delete the model from the RDBMS
     */
-  def delete_! : Boolean = {
+  def delete_! : Boolean =
     if (!db_can_delete_?) false
     else
       runSafe {
         was_deleted_? = getSingleton.delete_!(this)
         was_deleted_?
       }
-  }
 
   /**
     * Get the fields (in order) for displaying a form
@@ -207,12 +200,13 @@ trait Mapper[A <: Mapper[A]]
     * @return the form
     */
   def toForm(button: Box[String], onSuccess: String): NodeSeq =
-    toForm(button, (what: A) => {
-      what.validate match {
-        case Nil => what.save; S.redirectTo(onSuccess)
-        case xs  => S.error(xs)
-      }
-    })
+    toForm(
+      button,
+      (what: A) =>
+        what.validate match {
+          case Nil => what.save; S.redirectTo(onSuccess)
+          case xs  => S.error(xs)
+        })
 
   /**
     * Present the model as a HTML using the same formatting as toForm
@@ -285,9 +279,8 @@ trait Mapper[A <: Mapper[A]]
     ret.toString
   }
 
-  def toXml: Elem = {
+  def toXml: Elem =
     getSingleton.toXml(this)
-  }
 
   def checkNames {
     runSafe {
@@ -319,9 +312,8 @@ trait Mapper[A <: Mapper[A]]
     */
   def fieldMapperTransforms(
       fieldTransform: (BaseOwnedMappedField[A] => NodeSeq))
-      : scala.collection.Seq[CssSel] = {
+      : scala.collection.Seq[CssSel] =
     getSingleton.fieldMapperTransforms(fieldTransform, this)
-  }
 
   private var fieldTransforms_i: scala.collection.Seq[CssSel] = Vector()
 
@@ -474,7 +466,7 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
 
   override def hashCode(): Int = primaryKeyField.get.hashCode
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case null => false
       case km: KeyedMapper[_, _]
@@ -483,7 +475,6 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
         this.primaryKeyField == km.primaryKeyField
       case k => super.equals(k)
     }
-  }
 }
 
 /**

@@ -46,10 +46,9 @@ class InputFormatInfo(
 
   validate()
 
-  override def toString: String = {
+  override def toString: String =
     "InputFormatInfo " + super.toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
       "path : " + path
-  }
 
   override def hashCode(): Int = {
     var hashCode = inputFormatClazz.hashCode

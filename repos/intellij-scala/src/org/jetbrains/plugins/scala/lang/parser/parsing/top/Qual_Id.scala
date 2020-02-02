@@ -21,9 +21,7 @@ object Qual_Id {
     val qualMarker = builder.mark
     return parse(builder, qualMarker)
   }
-  def parse(
-      builder: ScalaPsiBuilder,
-      qualMarker: PsiBuilder.Marker): Boolean = {
+  def parse(builder: ScalaPsiBuilder, qualMarker: PsiBuilder.Marker): Boolean =
     //parsing td identifier
     builder.getTokenType match {
       case ScalaTokenTypes.tIDENTIFIER =>
@@ -49,5 +47,4 @@ object Qual_Id {
         qualMarker.drop
         return true
     }
-  }
 }

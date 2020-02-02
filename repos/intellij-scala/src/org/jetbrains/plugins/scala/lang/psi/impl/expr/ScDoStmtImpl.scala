@@ -21,12 +21,11 @@ class ScDoStmtImpl(node: ASTNode)
   override def toString: String = "DoStatement"
 
   def getExprBody: Option[ScExpression] = findChild(classOf[ScExpression])
-  def hasExprBody: Boolean = {
+  def hasExprBody: Boolean =
     getExprBody match {
       case None    => false
       case Some(_) => true
     }
-  }
 
   def condition = {
     val rpar = findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
@@ -37,10 +36,9 @@ class ScDoStmtImpl(node: ASTNode)
     if (c == null) None else Some(c)
   }
 
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 }

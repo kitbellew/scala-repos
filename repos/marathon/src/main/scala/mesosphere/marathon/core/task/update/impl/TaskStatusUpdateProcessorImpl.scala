@@ -90,15 +90,14 @@ class TaskStatusUpdateProcessorImpl @Inject() (
     Future.successful(())
   }
 
-  private[this] def killTask(taskId: MesosProtos.TaskID): Unit = {
+  private[this] def killTask(taskId: MesosProtos.TaskID): Unit =
     driverHolder.driver.foreach(_.killTask(taskId))
-  }
 
   private[this] def processUpdate(
       timestamp: Timestamp,
       appId: PathId,
       task: Task,
-      mesosStatus: MesosProtos.TaskStatus): Future[Unit] = {
+      mesosStatus: MesosProtos.TaskStatus): Future[Unit] =
     steps.foldLeft(Future.successful(())) { (resultSoFar, nextStep) =>
       resultSoFar.flatMap { _ =>
         stepTimers(nextStep.name).timeFuture {
@@ -114,5 +113,4 @@ class TaskStatusUpdateProcessorImpl @Inject() (
         }
       }
     }
-  }
 }

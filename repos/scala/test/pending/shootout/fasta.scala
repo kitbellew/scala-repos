@@ -86,7 +86,7 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
   private val LineLength = 60
   private val nl = '\n'.toByte
 
-  def writeDescription(desc: String) = { write((">" + desc + "\n").getBytes) }
+  def writeDescription(desc: String) = write((">" + desc + "\n").getBytes)
 
   def writeRepeatingSequence(_alu: String, length: Int) = {
     val alu = _alu.getBytes

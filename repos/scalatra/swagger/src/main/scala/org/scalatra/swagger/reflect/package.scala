@@ -9,14 +9,13 @@ package object reflect {
 
   private[reflect] class Memo[A, R] {
     private[this] val cache = new ConcurrentHashMap[A, R](1500, 1, 1)
-    def apply(x: A, f: A => R): R = {
+    def apply(x: A, f: A => R): R =
       if (cache.containsKey(x))
         cache.get(x)
       else {
         val v = f(x)
         replace(x, v)
       }
-    }
 
     def replace(x: A, v: R): R = {
       cache.put(x, v)
@@ -38,10 +37,9 @@ package object reflect {
       paranamer.lookupParameterNames(constructor)
   }
 
-  def fail(msg: String, cause: Exception = null) = {
+  def fail(msg: String, cause: Exception = null) =
     if (cause != null) {
       System.err.println(msg)
       throw cause
     } else sys.error(msg)
-  }
 }

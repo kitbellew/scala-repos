@@ -50,9 +50,8 @@ object LinkingUnit {
   object GlobalInfo {
     private[LinkingUnit] def apply(
         isParentDataAccessed: Boolean
-    ): GlobalInfo = {
+    ): GlobalInfo =
       new GlobalInfo(isParentDataAccessed)
-    }
   }
 
 }

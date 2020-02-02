@@ -24,12 +24,10 @@ trait Equal[F] { self =>
     import std.boolean.conditional
     def commutative(f1: F, f2: F): Boolean = equal(f1, f2) == equal(f2, f1)
     def reflexive(f: F): Boolean = equal(f, f)
-    def transitive(f1: F, f2: F, f3: F): Boolean = {
+    def transitive(f1: F, f2: F, f3: F): Boolean =
       conditional(equal(f1, f2) && equal(f2, f3), equal(f1, f3))
-    }
-    def naturality(f1: F, f2: F): Boolean = {
+    def naturality(f1: F, f2: F): Boolean =
       conditional(equalIsNatural, equal(f1, f2) == (f1 == f2))
-    }
   }
   def equalLaw = new EqualLaw {}
   ////

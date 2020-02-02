@@ -64,7 +64,7 @@ final private[stream] class QueueSource[T](
         offer.promise.success(QueueOfferResult.Enqueued)
       }
 
-      private def bufferElem(offer: Offer[T]): Unit = {
+      private def bufferElem(offer: Offer[T]): Unit =
         if (!buffer.isFull) {
           enqueueAndSuccess(offer)
         } else
@@ -96,7 +96,6 @@ final private[stream] class QueueSource[T](
                   pendingOffer = Some(offer)
               }
           }
-      }
 
       private val callback: AsyncCallback[Input[T]] = getAsyncCallback {
 
@@ -154,7 +153,7 @@ final private[stream] class QueueSource[T](
         completeStage()
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (maxBuffer == 0) {
           pendingOffer match {
             case Some(Offer(elem, promise)) ⇒
@@ -180,7 +179,6 @@ final private[stream] class QueueSource[T](
             completeStage()
           }
         }
-      }
     }
 
     (stageLogic, new SourceQueueWithComplete[T] {
@@ -190,12 +188,10 @@ final private[stream] class QueueSource[T](
         stageLogic.invoke(Offer(element, p))
         p.future
       }
-      override def complete(): Unit = {
+      override def complete(): Unit =
         stageLogic.invoke(Completion)
-      }
-      override def fail(ex: Throwable): Unit = {
+      override def fail(ex: Throwable): Unit =
         stageLogic.invoke(Failure(ex))
-      }
     })
   }
 }

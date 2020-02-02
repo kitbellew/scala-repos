@@ -167,9 +167,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
       f.ipAddressWithDiscoveryInfo)
   }
 
-  private[this] def fromJson(json: String): IpAddress = {
+  private[this] def fromJson(json: String): IpAddress =
     Json.fromJson[IpAddress](Json.parse(json)).get
-  }
 
   test("Reading empty IpAddress from JSON") {
     val json =

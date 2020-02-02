@@ -67,29 +67,25 @@ object PersistenceQueryDocSpec {
     override def eventsByPersistenceId(
         persistenceId: String,
         fromSequenceNr: Long = 0L,
-        toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+        toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
-    override def allPersistenceIds(): Source[String, NotUsed] = {
+    override def allPersistenceIds(): Source[String, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
-    override def currentPersistenceIds(): Source[String, NotUsed] = {
+    override def currentPersistenceIds(): Source[String, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
     // possibility to add more plugin specific queries
 
     //#advanced-journal-query-definition
-    def byTagsWithMeta(tags: Set[String]): Source[RichEvent, QueryMetadata] = {
+    def byTagsWithMeta(tags: Set[String]): Source[RichEvent, QueryMetadata] =
       //#advanced-journal-query-definition
       // implement in a similar way as eventsByTag
       ???
-    }
 
   }
 
@@ -180,10 +176,9 @@ object PersistenceQueryDocSpec {
         if (state.readyToSave) store.save(Record(state))
     }
 
-    def updateState(state: ComplexState, msg: Any): ComplexState = {
+    def updateState(state: ComplexState, msg: Any): ComplexState =
       // some complicated aggregation logic here ...
       state
-    }
   }
 
   //#projection-into-different-store-actor

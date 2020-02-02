@@ -333,9 +333,8 @@ private[akka] class ClusterShardingMessageSerializer(
     ShardStats(parsed.getShard, parsed.getEntityCount)
   }
 
-  private def resolveActorRef(path: String): ActorRef = {
+  private def resolveActorRef(path: String): ActorRef =
     system.provider.resolveActorRef(path)
-  }
 
   private def compress(msg: MessageLite): Array[Byte] = {
     val bos = new ByteArrayOutputStream(BufferSize)

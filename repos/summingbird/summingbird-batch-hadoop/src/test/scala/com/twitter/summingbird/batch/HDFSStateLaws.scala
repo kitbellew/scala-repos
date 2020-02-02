@@ -113,22 +113,20 @@ class HDFSStateLaws extends WordSpec {
   def shouldNotAcceptInterval(
       state: WaitingState[Interval[Timestamp]],
       interval: Interval[Timestamp],
-      message: String = "PreparedState accepted a bad Interval!") = {
+      message: String = "PreparedState accepted a bad Interval!") =
     state.begin.willAccept(interval) match {
       case Left(t)  => t
       case Right(t) => sys.error(message)
     }
-  }
 
   def completeState[T](
-      either: Either[WaitingState[T], RunningState[T]]): WaitingState[T] = {
+      either: Either[WaitingState[T], RunningState[T]]): WaitingState[T] =
     either match {
       case Right(t) => t.succeed
       case Left(t) =>
         sys.error(
           "PreparedState didn't accept its proposed Interval! failed state: " + t)
     }
-  }
 
   def shouldCheckpointInterval(
       batcher: Batcher,

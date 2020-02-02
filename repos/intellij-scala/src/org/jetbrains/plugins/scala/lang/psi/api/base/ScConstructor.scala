@@ -54,18 +54,16 @@ trait ScConstructor extends ScalaPsiElement {
 
 object ScConstructor {
   def unapply(
-      c: ScConstructor): Option[(ScTypeElement, Seq[ScArgumentExprList])] = {
+      c: ScConstructor): Option[(ScTypeElement, Seq[ScArgumentExprList])] =
     Option(c).map(it => (it.typeElement, it.arguments))
-  }
 
   object byReference {
-    def unapply(ref: ScReferenceElement): Option[ScConstructor] = {
+    def unapply(ref: ScReferenceElement): Option[ScConstructor] =
       PsiTreeUtil.getParentOfType(ref, classOf[ScConstructor]) match {
         case null                           => None
         case c if c.reference.contains(ref) => Some(c)
         case _                              => None
       }
-    }
   }
 
   new A(i = 1)(s = "A")

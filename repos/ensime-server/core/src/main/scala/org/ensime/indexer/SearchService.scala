@@ -310,9 +310,8 @@ class SearchService(
   def fileRemoved(f: FileObject): Unit = fileChanged(f)
   def fileAdded(f: FileObject): Unit = fileChanged(f)
 
-  def shutdown(): Future[Unit] = {
+  def shutdown(): Future[Unit] =
     db.shutdown()
-  }
 }
 
 case class IndexFile(f: FileObject)

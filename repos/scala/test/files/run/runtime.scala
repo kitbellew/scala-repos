@@ -50,9 +50,8 @@ package test1.bar {
   }
 
   class PrintStream() {
-    def println(): Unit = {
+    def println(): Unit =
       Console.println;
-    }
   }
 
 }

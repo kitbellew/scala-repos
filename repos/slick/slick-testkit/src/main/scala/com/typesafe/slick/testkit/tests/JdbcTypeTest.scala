@@ -163,7 +163,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
   def testTime =
     roundtrip("time_t1", Time.valueOf("17:53:48"))
 
-  def testTimestamp = {
+  def testTimestamp =
     roundtrip[Timestamp](
       "timestamp_t1",
       Timestamp.valueOf("2012-12-24 17:53:48.0")) >> {
@@ -174,7 +174,6 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       val t2 = TableQuery[T2]
       t2.schema.create >> (t2 += None) >> t2.result.head.map(_ shouldBe None)
     }
-  }
 
   def testUUID =
     roundtrip[UUID]("uuid_t1", UUID.randomUUID())

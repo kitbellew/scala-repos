@@ -25,19 +25,18 @@ trait ScAssignStmt extends ScExpression {
       case _                                                  => None
     }
 
-  def assignName: Option[String] = {
+  def assignName: Option[String] =
     getLExpression match {
       case ref: ScReferenceExpression if ref.qualifier == None =>
         Some(ref.getText)
       case _ => None
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitAssignmentStatement(this)
   }
 
-  def isNamedParameter: Boolean = {
+  def isNamedParameter: Boolean =
     getLExpression match {
       case expr: ScReferenceExpression =>
         expr.bind() match {
@@ -46,7 +45,6 @@ trait ScAssignStmt extends ScExpression {
         }
       case _ => false
     }
-  }
 
   def mirrorMethodCall: Option[ScMethodCall]
 
@@ -61,7 +59,7 @@ trait ScAssignStmt extends ScExpression {
   /**
     * @return element to which equals sign should navigate
     */
-  def assignNavigationElement: PsiElement = {
+  def assignNavigationElement: PsiElement =
     getLExpression match {
       case methodCall: ScMethodCall =>
         methodCall.applyOrUpdateElement match {
@@ -84,7 +82,6 @@ trait ScAssignStmt extends ScExpression {
             }
         }
     }
-  }
 
   def isDynamicNamedAssignment: Boolean = {
     getContext match {

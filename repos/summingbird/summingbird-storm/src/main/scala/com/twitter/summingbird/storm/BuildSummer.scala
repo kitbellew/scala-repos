@@ -76,11 +76,10 @@ object BuildSummer {
     if (cacheSize.lowerBound == 0) {
       new SummerBuilder {
         def getSummer[K, V: Semigroup]
-            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
+            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] =
           new com.twitter.algebird.util.summer.NullSummer[K, V](
             tupleInCounter,
             tupleOutCounter)
-        }
       }
     } else {
       val softMemoryFlush =
@@ -98,7 +97,7 @@ object BuildSummer {
           def getSummer[K, V: Semigroup]
               : com.twitter.algebird.util.summer.AsyncSummer[
                 (K, V),
-                Map[K, V]] = {
+                Map[K, V]] =
             new SyncSummingQueue[K, V](
               BufferSize(cacheSize.lowerBound),
               FlushFrequency(flushFrequency.get),
@@ -109,7 +108,6 @@ object BuildSummer {
               insertCounter,
               tupleInCounter,
               tupleOutCounter)
-          }
         }
       } else {
         val asyncPoolSize = storm.getOrElse(dag, node, DEFAULT_ASYNC_POOL_SIZE)
@@ -141,12 +139,12 @@ object BuildSummer {
               futurePool,
               Compact(false),
               CompactionSize(0))
-            summer.withCleanup(() => {
+            summer.withCleanup { () =>
               Future {
                 executor.shutdown
                 executor.awaitTermination(10, TimeUnit.SECONDS)
               }
-            })
+            }
           }
         }
       }

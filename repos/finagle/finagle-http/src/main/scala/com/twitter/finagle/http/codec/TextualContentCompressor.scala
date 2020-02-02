@@ -21,12 +21,11 @@ private[http] class TextualContentCompressor extends HttpContentCompressor {
   private[this] def contentEncoder(
       msg: HttpMessage,
       acceptEncoding: String
-  ): Option[EncoderEmbedder[ChannelBuffer]] = {
+  ): Option[EncoderEmbedder[ChannelBuffer]] =
     Option(msg.headers.get(HttpHeaders.Names.CONTENT_TYPE)) collect {
       case ctype if isTextual(ctype) =>
         super.newContentEncoder(msg, acceptEncoding)
     }
-  }
 
   private[this] def isTextual(contentType: String) = {
     val contentTypeWithoutCharset = contentType.split(";", 2) match {

@@ -33,9 +33,8 @@ object ArrayType extends AbstractDataType {
   override private[sql] def defaultConcreteType: DataType =
     ArrayType(NullType, containsNull = true)
 
-  override private[sql] def acceptsType(other: DataType): Boolean = {
+  override private[sql] def acceptsType(other: DataType): Boolean =
     other.isInstanceOf[ArrayType]
-  }
 
   override private[sql] def simpleString: String = "array"
 }
@@ -88,9 +87,8 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
     ArrayType(elementType.asNullable, containsNull = true)
 
   override private[spark] def existsRecursively(
-      f: (DataType) => Boolean): Boolean = {
+      f: (DataType) => Boolean): Boolean =
     f(this) || elementType.existsRecursively(f)
-  }
 
   @transient
   private[sql] lazy val interpretedOrdering: Ordering[ArrayData] =

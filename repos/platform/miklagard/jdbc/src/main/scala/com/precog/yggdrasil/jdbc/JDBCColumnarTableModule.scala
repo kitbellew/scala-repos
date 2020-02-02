@@ -379,7 +379,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         remainingPaths: List[Path])
         extends LoadState
 
-    def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
+    def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] =
       for {
         paths <- pathsM(table)
       } yield {
@@ -457,7 +457,6 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           UnknownSize
         ).transform(idSpec) //.printer("JDBC Table")
       }
-    }
 
     def makeSlice(
         connGen: () => Connection,

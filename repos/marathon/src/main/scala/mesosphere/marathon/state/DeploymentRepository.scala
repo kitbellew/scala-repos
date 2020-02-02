@@ -17,11 +17,10 @@ class DeploymentRepository(
   def store(plan: DeploymentPlan): Future[DeploymentPlan] =
     storeWithVersion(plan.id, plan.version, plan)
 
-  def all(): Future[Seq[DeploymentPlan]] = {
+  def all(): Future[Seq[DeploymentPlan]] =
     allIds().flatMap { ids =>
       val results = ids.map(this.currentVersion)
 
       Future.sequence(results).map(_.flatten.to[Seq])
     }
-  }
 }

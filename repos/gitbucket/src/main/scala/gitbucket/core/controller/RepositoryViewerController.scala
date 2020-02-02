@@ -480,7 +480,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             id,
             form.content)
       }
-      redirect(s"/${repository.owner}/${repository.name}/commit/${id}")
+      redirect(s"/${repository.owner}/${repository.name}/commit/$id")
     })
 
   ajaxGet("/:owner/:repository/commit/:id/comment/_form")(readableUsersOnly {
@@ -595,7 +595,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             if (isEditable(owner, name, comment.commentedUserName)) {
               updateCommitComment(comment.commentId, form.content)
               redirect(
-                s"/${owner}/${name}/commit_comments/_data/${comment.commentId}")
+                s"/$owner/$name/commit_comments/_data/${comment.commentId}")
             } else Unauthorized
           } getOrElse NotFound
       }
@@ -664,7 +664,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       case Left(message) =>
         flash += "error" -> message
         redirect(
-          s"/${repository.owner}/${repository.name}/tree/${fromBranchName}")
+          s"/${repository.owner}/${repository.name}/tree/$fromBranchName")
     }
   })
 
@@ -764,7 +764,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   }
 
   private val readmeFiles = PluginRegistry().renderableExtensions.map {
-    extension => s"readme.${extension}"
+    extension => s"readme.$extension"
   } ++ Seq("readme.txt", "readme")
 
   /**
@@ -778,7 +778,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   private def fileList(
       repository: RepositoryService.RepositoryInfo,
       revstr: String = "",
-      path: String = ".") = {
+      path: String = ".") =
     if (repository.commitCount == 0) {
       html.guide(
         repository,
@@ -846,7 +846,6 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           } getOrElse NotFound
       }
     }
-  }
 
   private def commitFile(
       repository: RepositoryService.RepositoryInfo,
@@ -859,10 +858,10 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       message: String) = {
 
     val newPath = newFileName.map { newFileName =>
-      if (path.length == 0) newFileName else s"${path}/${newFileName}"
+      if (path.length == 0) newFileName else s"$path/$newFileName"
     }
     val oldPath = oldFileName.map { oldFileName =>
-      if (path.length == 0) oldFileName else s"${path}/${oldFileName}"
+      if (path.length == 0) oldFileName else s"$path/$oldFileName"
     }
 
     LockUtil.lock(s"${repository.owner}/${repository.name}") {
@@ -871,7 +870,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           val loginAccount = context.loginAccount.get
           val builder = DirCache.newInCore.builder()
           val inserter = git.getRepository.newObjectInserter()
-          val headName = s"refs/heads/${branch}"
+          val headName = s"refs/heads/$branch"
           val headTip = git.getRepository.resolve(headName)
 
           JGitUtil.processTree(git, headTip) { (path, tree) =>
@@ -1002,7 +1001,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         contentType = "application/octet-stream"
         response.setHeader(
           "Content-Disposition",
-          s"attachment; filename=${filename}")
+          s"attachment; filename=$filename")
         response.setBufferSize(1024 * 1024);
 
         git.archive
@@ -1019,8 +1018,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   override protected def renderUncaughtException(e: Throwable)(
       implicit request: HttpServletRequest,
-      response: HttpServletResponse): Unit = {
+      response: HttpServletResponse): Unit =
     e.printStackTrace()
-  }
 
 }

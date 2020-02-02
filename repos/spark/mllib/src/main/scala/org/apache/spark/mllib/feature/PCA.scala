@@ -101,7 +101,7 @@ class PCAModel private[spark] (
     * @return transformed vector. Vector will be of length k.
     */
   @Since("1.4.0")
-  override def transform(vector: Vector): Vector = {
+  override def transform(vector: Vector): Vector =
     vector match {
       case dv: DenseVector =>
         pc.transpose.multiply(dv)
@@ -117,5 +117,4 @@ class PCAModel private[spark] (
           "Unsupported vector format. Expected " +
             s"SparseVector or DenseVector. Instead got: ${vector.getClass}")
     }
-  }
 }

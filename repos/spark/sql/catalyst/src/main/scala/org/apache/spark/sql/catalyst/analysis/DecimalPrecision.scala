@@ -63,9 +63,8 @@ object DecimalPrecision extends Rule[LogicalPlan] {
   private def isFloat(t: DataType): Boolean = t == FloatType || t == DoubleType
 
   // Returns the wider decimal type that's wider than both of them
-  def widerDecimalType(d1: DecimalType, d2: DecimalType): DecimalType = {
+  def widerDecimalType(d1: DecimalType, d2: DecimalType): DecimalType =
     widerDecimalType(d1.precision, d1.scale, d2.precision, d2.scale)
-  }
   // max(s1, s2) + max(p1-s1, p2-s2), max(s1, s2)
   def widerDecimalType(p1: Int, s1: Int, p2: Int, s2: Int): DecimalType = {
     val scale = max(s1, s2)
@@ -73,11 +72,8 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     DecimalType.bounded(range + scale, scale)
   }
 
-  private def promotePrecision(
-      e: Expression,
-      dataType: DataType): Expression = {
+  private def promotePrecision(e: Expression, dataType: DataType): Expression =
     PromotePrecision(Cast(e, dataType))
-  }
 
   def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
     // fix decimal precision for expressions

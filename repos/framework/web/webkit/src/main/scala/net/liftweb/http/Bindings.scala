@@ -112,7 +112,7 @@ object Bindings {
       * Apply this binder's binding function to the specified templated
       * looked up using Templates.apply
       */
-    def bind(templatePath: List[String]): NodeSeq = {
+    def bind(templatePath: List[String]): NodeSeq =
       Templates(templatePath) map binding match {
         case Full(xhtml) => xhtml
         case Failure(msg, ex, _) if Props.mode == Props.RunModes.Development =>
@@ -123,7 +123,6 @@ object Bindings {
               .mkString("/", "/", ""))
         case _ => NodeSeq.Empty
       }
-    }
   }
 
   /**

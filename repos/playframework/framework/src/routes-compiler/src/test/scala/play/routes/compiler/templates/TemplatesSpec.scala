@@ -50,10 +50,9 @@ object TemplatesSpec extends Specification {
     }
   }
 
-  def route(staticPath: String, params: Seq[Parameter] = Nil): Route = {
+  def route(staticPath: String, params: Seq[Parameter] = Nil): Route =
     Route(
       HttpVerb("GET"),
       PathPattern(Seq(StaticPart(staticPath))),
       HandlerCall("pkg", "ctrl", true, "method", Some(params)))
-  }
 }

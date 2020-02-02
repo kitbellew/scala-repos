@@ -21,13 +21,12 @@ class ProcessWatcher(process: Process, commandLine: String) {
 
   def running: Boolean = !processHandler.isProcessTerminated
 
-  def errors(): Seq[String] = {
+  def errors(): Seq[String] =
     lock.synchronized {
       val result = errorLines
       errorLines = Vector()
       result
     }
-  }
 
   def destroyProcess() {
     process.destroy()

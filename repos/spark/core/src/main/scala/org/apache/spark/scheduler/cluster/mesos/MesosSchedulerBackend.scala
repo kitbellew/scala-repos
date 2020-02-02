@@ -156,7 +156,7 @@ private[spark] class MesosSchedulerBackend(
       // glob the directory "correctly".
       val basename = uri.get.split('/').last.split('.').head
       command.setValue(
-        s"cd ${basename}*; $prefixEnv ./bin/spark-class $executorBackendName")
+        s"cd $basename*; $prefixEnv ./bin/spark-class $executorBackendName")
       command.addUris(CommandInfo.URI.newBuilder().setValue(uri.get))
     }
     val builder = MesosExecutorInfo.newBuilder()
@@ -455,7 +455,7 @@ private[spark] class MesosSchedulerBackend(
   /**
     * Remove executor associated with slaveId in a thread safe manner.
     */
-  private def removeExecutor(slaveId: String, reason: String) = {
+  private def removeExecutor(slaveId: String, reason: String) =
     synchronized {
       listenerBus.post(
         SparkListenerExecutorRemoved(
@@ -464,7 +464,6 @@ private[spark] class MesosSchedulerBackend(
           reason))
       slaveIdToExecutorInfo -= slaveId
     }
-  }
 
   private def recordSlaveLost(
       d: SchedulerDriver,
@@ -495,14 +494,13 @@ private[spark] class MesosSchedulerBackend(
   override def killTask(
       taskId: Long,
       executorId: String,
-      interruptThread: Boolean): Unit = {
+      interruptThread: Boolean): Unit =
     mesosDriver.killTask(
       TaskID
         .newBuilder()
         .setValue(taskId.toString)
         .build()
     )
-  }
 
   // TODO: query Mesos for number of cores
   override def defaultParallelism(): Int =

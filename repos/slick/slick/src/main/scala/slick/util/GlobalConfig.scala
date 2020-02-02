@@ -41,10 +41,9 @@ object GlobalConfig {
   def driverConfig(name: String): Config = profileConfig("slick.driver." + name)
 
   /** Get a `Config` object for a Slick profile */
-  def profileConfig(path: String): Config = {
+  def profileConfig(path: String): Config =
     if (config.hasPath(path)) config.getConfig(path)
     else ConfigFactory.empty()
-  }
 }
 
 /** Extension methods to make Typesafe Config easier to use */

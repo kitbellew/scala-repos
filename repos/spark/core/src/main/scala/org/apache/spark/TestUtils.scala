@@ -125,9 +125,8 @@ private[spark] object TestUtils {
 
   // Adapted from the JavaCompiler.java doc examples
   private val SOURCE = JavaFileObject.Kind.SOURCE
-  private def createURI(name: String) = {
+  private def createURI(name: String) =
     URI.create(s"string:///${name.replace(".", "/")}${SOURCE.extension}")
-  }
 
   private[spark] class JavaSourceFromString(val name: String, val code: String)
       extends SimpleJavaFileObject(createURI(name), SOURCE) {
@@ -184,7 +183,7 @@ private[spark] object TestUtils {
       baseClass: String = null,
       classpathUrls: Seq[URL] = Seq()): File = {
     val extendsText = Option(baseClass)
-      .map { c => s" extends ${c}" }
+      .map { c => s" extends $c" }
       .getOrElse("")
     val sourceFile = new JavaSourceFromString(
       className,
@@ -232,11 +231,10 @@ private class SpillListener extends SparkListener {
 
   def numSpilledStages: Int = spilledStageIds.size
 
-  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
+  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
     stageIdToTaskMetrics.getOrElseUpdate(
       taskEnd.stageId,
       new ArrayBuffer[TaskMetrics]) += taskEnd.taskMetrics
-  }
 
   override def onStageCompleted(
       stageComplete: SparkListenerStageCompleted): Unit = {

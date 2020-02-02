@@ -316,7 +316,7 @@ class ScalaReflectionSuite extends SparkFunSuite {
       () => getClassNameFromType(typeOfComplexData))
   ).foreach {
     case (name, exec) =>
-      test(s"SPARK-13640: thread safety of ${name}") {
+      test(s"SPARK-13640: thread safety of $name") {
         (0 until 100).foreach { _ =>
           val loader =
             new URLClassLoader(Array.empty, Utils.getContextOrSparkClassLoader)

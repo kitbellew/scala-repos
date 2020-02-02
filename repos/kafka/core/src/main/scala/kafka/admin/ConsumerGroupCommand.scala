@@ -112,7 +112,7 @@ object ConsumerGroupCommand {
         group: String,
         topicPartitions: Seq[TopicAndPartition],
         getPartitionOffset: TopicAndPartition => Option[Long],
-        getOwner: TopicAndPartition => Option[String]): Unit = {
+        getOwner: TopicAndPartition => Option[String]): Unit =
       topicPartitions
         .sortBy { case topicPartition => topicPartition.partition }
         .foreach { topicPartition =>
@@ -123,7 +123,6 @@ object ConsumerGroupCommand {
             getPartitionOffset(topicPartition),
             getOwner(topicPartition))
         }
-    }
 
     protected def printDescribeHeader() {
       println(
@@ -247,7 +246,7 @@ object ConsumerGroupCommand {
 
     protected def getLogEndOffset(
         topic: String,
-        partition: Int): LogEndOffsetResult = {
+        partition: Int): LogEndOffsetResult =
       zkUtils.getLeaderForPartition(topic, partition) match {
         case Some(-1) => LogEndOffsetResult.Unknown
         case Some(brokerId) =>
@@ -273,7 +272,6 @@ object ConsumerGroupCommand {
             s"No broker for partition ${new TopicPartition(topic, partition)}")
           LogEndOffsetResult.Ignore
       }
-    }
 
     private def getPartitionOffsets(
         group: String,
@@ -379,7 +377,7 @@ object ConsumerGroupCommand {
           .format(topic))
     }
 
-    private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] = {
+    private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] =
       try {
         zkUtils
           .readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + brokerId)
@@ -410,7 +408,6 @@ object ConsumerGroupCommand {
           println("Could not parse broker info due to " + t.getMessage)
           None
       }
-    }
 
   }
 
@@ -431,7 +428,7 @@ object ConsumerGroupCommand {
     protected def describeGroup(group: String) {
       val consumerSummaries = adminClient.describeConsumerGroup(group)
       if (consumerSummaries.isEmpty)
-        println(s"Consumer group `${group}` does not exist or is rebalancing.")
+        println(s"Consumer group `$group` does not exist or is rebalancing.")
       else {
         val consumer = getConsumer()
         printDescribeHeader()

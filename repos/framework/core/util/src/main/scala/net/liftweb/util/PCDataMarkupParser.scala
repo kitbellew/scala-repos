@@ -428,14 +428,13 @@ class PCDataXmlParser(val input: Source)
 object PCDataXmlParser {
   import Helpers._
 
-  def apply(in: InputStream): Box[NodeSeq] = {
+  def apply(in: InputStream): Box[NodeSeq] =
     for {
       ba <- tryo(Helpers.readWholeStream(in))
       ret <- apply(new String(ba, "UTF-8"))
     } yield ret
-  }
 
-  private def apply(source: Source): Box[NodeSeq] = {
+  private def apply(source: Source): Box[NodeSeq] =
     for {
       p <- tryo { new PCDataXmlParser(source) }
       _ = while (p.ch != '<' && p.curInput.hasNext)
@@ -443,8 +442,6 @@ object PCDataXmlParser {
       bd <- tryo(p.document)
       doc <- Box !! bd
     } yield (doc.children: NodeSeq)
-
-  }
 
   def apply(in: String): Box[NodeSeq] = {
     var pos = 0

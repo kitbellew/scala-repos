@@ -21,7 +21,7 @@ private[akka] object MessageSerializer {
     */
   def deserialize(
       system: ExtendedActorSystem,
-      messageProtocol: SerializedMessage): AnyRef = {
+      messageProtocol: SerializedMessage): AnyRef =
     SerializationExtension(system)
       .deserialize(
         messageProtocol.getMessage.toByteArray,
@@ -31,7 +31,6 @@ private[akka] object MessageSerializer {
         else ""
       )
       .get
-  }
 
   /**
     * Uses Akka Serialization for the specified ActorSystem to transform the given message to a MessageProtocol

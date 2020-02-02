@@ -66,12 +66,12 @@ class BucketedReadSuite
         assert(rdd.partitions.length == 8)
 
         val attrs = table.select("j", "k").queryExecution.analyzed.output
-        val checkBucketId = rdd.mapPartitionsWithIndex((index, rows) => {
+        val checkBucketId = rdd.mapPartitionsWithIndex { (index, rows) =>
           val getBucketId = UnsafeProjection.create(
             HashPartitioning(attrs, 8).partitionIdExpression :: Nil,
             output)
           rows.map(row => getBucketId(row).getInt(0) -> index)
-        })
+        }
         checkBucketId.collect().foreach(r => assert(r._1 == r._2))
       }
     }
@@ -84,7 +84,7 @@ class BucketedReadSuite
       bucketSpec: BucketSpec,
       bucketValues: Seq[Integer],
       filterCondition: Column,
-      originalDataFrame: DataFrame): Unit = {
+      originalDataFrame: DataFrame): Unit =
     // This test verifies parts of the plan. Disable whole stage codegen.
     withSQLConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
       val bucketedDataFrame =
@@ -125,7 +125,6 @@ class BucketedReadSuite
         bucketedDataFrame.filter(filterCondition).orderBy("i", "j", "k"),
         originalDataFrame.filter(filterCondition).orderBy("i", "j", "k"))
     }
-  }
 
   test("read partitioning bucketed tables with bucket pruning filters") {
     withTable("bucketed_table") {
@@ -257,11 +256,11 @@ class BucketedReadSuite
       bucketSpecRight: Option[BucketSpec],
       joinColumns: Seq[String],
       shuffleLeft: Boolean,
-      shuffleRight: Boolean): Unit = {
+      shuffleRight: Boolean): Unit =
     withTable("bucketed_table1", "bucketed_table2") {
       def withBucket(
           writer: DataFrameWriter,
-          bucketSpec: Option[BucketSpec]): DataFrameWriter = {
+          bucketSpec: Option[BucketSpec]): DataFrameWriter =
         bucketSpec
           .map { spec =>
             writer.bucketBy(
@@ -270,7 +269,6 @@ class BucketedReadSuite
               spec.bucketColumnNames.tail: _*)
           }
           .getOrElse(writer)
-      }
 
       withBucket(df1.write.format("parquet"), bucketSpecLeft)
         .saveAsTable("bucketed_table1")
@@ -309,14 +307,12 @@ class BucketedReadSuite
         )
       }
     }
-  }
 
   private def joinCondition(
       left: DataFrame,
       right: DataFrame,
-      joinCols: Seq[String]): Column = {
+      joinCols: Seq[String]): Column =
     joinCols.map(col => left(col) === right(col)).reduce(_ && _)
-  }
 
   test("avoid shuffle when join 2 bucketed tables") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))

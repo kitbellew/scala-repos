@@ -50,7 +50,7 @@ private[manager] object OfferMatcherManagerActor {
       random: Random,
       clock: Clock,
       offerMatcherConfig: OfferMatcherManagerConfig,
-      offersWanted: Observer[Boolean]): Props = {
+      offersWanted: Observer[Boolean]): Props =
     Props(
       new OfferMatcherManagerActor(
         metrics,
@@ -58,7 +58,6 @@ private[manager] object OfferMatcherManagerActor {
         clock,
         offerMatcherConfig,
         offersWanted))
-  }
 
   private val log = LoggerFactory.getLogger(getClass)
   private case class OfferData(
@@ -72,12 +71,11 @@ private[manager] object OfferMatcherManagerActor {
 
     def addMatcher(matcher: OfferMatcher): OfferData =
       copy(matcherQueue = matcherQueue.enqueue(matcher))
-    def nextMatcherOpt: Option[(OfferMatcher, OfferData)] = {
+    def nextMatcherOpt: Option[(OfferMatcher, OfferData)] =
       matcherQueue.dequeueOption map {
         case (nextMatcher, newQueue) =>
           nextMatcher -> copy(matcherQueue = newQueue)
       }
-    }
 
     def addTasks(added: Seq[TaskOpWithSource]): OfferData = {
       val leftOverOffer = added.foldLeft(offer) { (offer, nextOp) =>

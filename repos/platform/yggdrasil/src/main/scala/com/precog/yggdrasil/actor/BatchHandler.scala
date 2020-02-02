@@ -117,7 +117,7 @@ class BatchHandler(
       logger.warn("Received unexpected message in BatchHandler: " + other)
   }
 
-  override def postStop() = {
+  override def postStop() =
     // if the ingest isn't complete by the timeout, ask the requestor to retry
     if (remaining != 0) {
       logger.info(
@@ -130,6 +130,5 @@ class BatchHandler(
       logger.info("Sending complete on batch to " + requestor)
       ingestActor ! BatchComplete(requestor, checkpoint)
     }
-  }
 }
 // vim: set ts=4 sw=4 et:

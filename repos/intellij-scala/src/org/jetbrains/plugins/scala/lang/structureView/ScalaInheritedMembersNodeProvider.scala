@@ -33,7 +33,7 @@ import org.jetbrains.plugins.scala.lang.structureView.elements.impl._
   */
 class ScalaInheritedMembersNodeProvider
     extends FileStructureNodeProvider[TreeElement] {
-  def provideNodes(node: TreeElement): util.Collection[TreeElement] = {
+  def provideNodes(node: TreeElement): util.Collection[TreeElement] =
     node match {
       case td: ScalaTypeDefinitionStructureViewElement =>
         val children = new util.ArrayList[TreeElement]()
@@ -89,7 +89,6 @@ class ScalaInheritedMembersNodeProvider
         }
       case _ => new util.ArrayList[TreeElement]()
     }
-  }
 
   def getCheckBoxText: String =
     IdeBundle.message("file.structure.toggle.show.inherited")

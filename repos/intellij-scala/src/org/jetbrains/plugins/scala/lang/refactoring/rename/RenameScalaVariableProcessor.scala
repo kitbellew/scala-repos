@@ -68,7 +68,7 @@ class RenameScalaVariableProcessor
           }
           t.nameContext match {
             case member: ScMember if member.containingClass != null =>
-              Seq(GETTER, SETTER, IS_GETTER).foreach(r => {
+              Seq(GETTER, SETTER, IS_GETTER).foreach { r =>
                 val wrapper = t.getTypedDefinitionWrapper(
                   isStatic = false,
                   isInterface = false,
@@ -80,7 +80,7 @@ class RenameScalaVariableProcessor
                 val newBeanName = prefix + StringUtil.capitalize(
                   ScalaNamesUtil.toJavaName(newName))
                 allRenames.put(wrapper, newBeanName)
-              })
+              }
             case _ =>
           }
         case _ =>
@@ -113,14 +113,13 @@ class RenameScalaVariableProcessor
 
   override def substituteElementToRename(
       element: PsiElement,
-      editor: Editor): PsiElement = {
+      editor: Editor): PsiElement =
     element match {
       case method: FakePsiMethod =>
         substituteElementToRename(method.navElement, editor)
       case named: ScNamedElement => RenameSuperMembersUtil.chooseSuper(named)
       case _                     => element
     }
-  }
 
   override def substituteElementToRename(
       element: PsiElement,

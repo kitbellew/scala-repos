@@ -12,7 +12,7 @@ import org.reactivestreams.Publisher
 
 class InputStreamSourceTest extends AkkaPublisherVerification[ByteString] {
 
-  def createPublisher(elements: Long): Publisher[ByteString] = {
+  def createPublisher(elements: Long): Publisher[ByteString] =
     StreamConverters
       .fromInputStream(() ⇒
         new InputStream {
@@ -25,5 +25,4 @@ class InputStreamSourceTest extends AkkaPublisherVerification[ByteString] {
       .withAttributes(ActorAttributes.dispatcher("akka.test.stream-dispatcher"))
       .take(elements)
       .runWith(Sink.asPublisher(false))
-  }
 }

@@ -14,7 +14,7 @@ class StopOnFirstMatchingOfferMatcher(chained: OfferMatcher*)
     extends OfferMatcher {
   override def matchOffer(
       deadline: Timestamp,
-      offer: Offer): Future[MatchedTaskOps] = {
+      offer: Offer): Future[MatchedTaskOps] =
     chained.foldLeft(
       Future.successful(
         MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))) {
@@ -24,7 +24,6 @@ class StopOnFirstMatchingOfferMatcher(chained: OfferMatcher*)
           else matchedFuture
         }(ExecutionContext.global)
     }
-  }
 }
 
 object StopOnFirstMatchingOfferMatcher {

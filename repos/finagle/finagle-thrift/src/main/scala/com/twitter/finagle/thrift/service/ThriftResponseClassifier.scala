@@ -89,9 +89,8 @@ object ThriftResponseClassifier {
     private[this] def deserialized(
         deserCtx: DeserializeCtx[_],
         bytes: Array[Byte]
-    ): ReqRep = {
+    ): ReqRep =
       ReqRep(deserCtx.request, deserCtx.deserialize(bytes))
-    }
 
     override def toString: String =
       s"Thrift.usingDeserializeCtx(${classifier.toString})"
@@ -140,7 +139,7 @@ object ThriftResponseClassifier {
     new ResponseClassifier {
       // we want the side-effect of deserialization if it has not
       // yet been done
-      private[this] def deserializeIfPossible(rep: Try[Any]): Unit = {
+      private[this] def deserializeIfPossible(rep: Try[Any]): Unit =
         rep match {
           case Return(bytes: Array[Byte]) =>
             val deserCtx =
@@ -154,7 +153,6 @@ object ThriftResponseClassifier {
             }
           case _ =>
         }
-      }
 
       def isDefinedAt(reqRep: ReqRep): Boolean = {
         deserializeIfPossible(reqRep.response)

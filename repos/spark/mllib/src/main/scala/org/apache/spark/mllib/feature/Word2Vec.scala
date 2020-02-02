@@ -474,9 +474,8 @@ class Word2Vec extends Serializable with Logging {
     * @return a Word2VecModel
     */
   @Since("1.1.0")
-  def fit[S <: JavaIterable[String]](dataset: JavaRDD[S]): Word2VecModel = {
+  def fit[S <: JavaIterable[String]](dataset: JavaRDD[S]): Word2VecModel =
     fit(dataset.rdd.map(_.asScala))
-  }
 }
 
 /**
@@ -527,9 +526,8 @@ class Word2VecModel private[spark] (
   override protected def formatVersion = "1.0"
 
   @Since("1.4.0")
-  def save(sc: SparkContext, path: String): Unit = {
+  def save(sc: SparkContext, path: String): Unit =
     Word2VecModel.SaveLoadV1_0.save(sc, path, getVectors)
-  }
 
   /**
     * Transforms a word to its vector representation
@@ -537,7 +535,7 @@ class Word2VecModel private[spark] (
     * @return vector representation of word
     */
   @Since("1.1.0")
-  def transform(word: String): Vector = {
+  def transform(word: String): Vector =
     wordIndex.get(word) match {
       case Some(ind) =>
         val vec =
@@ -546,7 +544,6 @@ class Word2VecModel private[spark] (
       case None =>
         throw new IllegalStateException(s"$word not in vocabulary")
     }
-  }
 
   /**
     * Find synonyms of a word
@@ -620,14 +617,13 @@ class Word2VecModel private[spark] (
     * Returns a map of words to their vector representations.
     */
   @Since("1.2.0")
-  def getVectors: Map[String, Array[Float]] = {
+  def getVectors: Map[String, Array[Float]] =
     wordIndex.map {
       case (word, ind) =>
         (
           word,
           wordVectors.slice(vectorSize * ind, vectorSize * ind + vectorSize))
     }
-  }
 
 }
 
@@ -635,9 +631,8 @@ class Word2VecModel private[spark] (
 object Word2VecModel extends Loader[Word2VecModel] {
 
   private def buildWordIndex(
-      model: Map[String, Array[Float]]): Map[String, Int] = {
+      model: Map[String, Array[Float]]): Map[String, Int] =
     model.keys.zipWithIndex.toMap
-  }
 
   private def buildWordVectors(
       model: Map[String, Array[Float]]): Array[Float] = {

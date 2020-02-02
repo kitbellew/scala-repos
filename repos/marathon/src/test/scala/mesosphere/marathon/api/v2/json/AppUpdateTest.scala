@@ -89,9 +89,8 @@ class AppUpdateTest extends MarathonSpec {
       "got -3, expected 0 or more")
   }
 
-  private[this] def fromJsonString(json: String): AppUpdate = {
+  private[this] def fromJsonString(json: String): AppUpdate =
     Json.fromJson[AppUpdate](Json.parse(json)).get
-  }
 
   test("SerializationRoundtrip for empty definition") {
     val update0 = AppUpdate(container = Some(Container.Empty))

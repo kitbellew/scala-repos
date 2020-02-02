@@ -194,7 +194,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         (a, b) => b
       }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T])
-      : Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] = {
+      : Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] =
     new Op.Impl2[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(a: DenseVector[T], b: DenseVector[T]): DenseVector[T] = {
         val ad = a.data
@@ -224,7 +224,6 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
     }
-  }
 
   @expand
   @expand.valify
@@ -268,9 +267,10 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
-        _ / _
-      }, { (a, b) => b }, { _ % _ })
+      implicit @expand.sequence[Op](
+        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+          _ / _
+        }, { (a, b) => b }, { _ % _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], T] =
     new Op.InPlaceImpl2[DenseVector[T], T] {
       def apply(a: DenseVector[T], b: T): Unit = {
@@ -290,13 +290,11 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
       }
 
-      private def fastPath(b: T, ad: Array[T], length: Int): Unit = {
+      private def fastPath(b: T, ad: Array[T], length: Int): Unit =
         cforRange(0 until length) { j => ad(j) = op(ad(j), b) }
-      }
 
-      private def medPath(ad: Array[T], aoff: Int, b: T, length: Int): Unit = {
+      private def medPath(ad: Array[T], aoff: Int, b: T, length: Int): Unit =
         cforRange(0 until length) { j => ad(j + aoff) = op(ad(j + aoff), b) }
-      }
 
       private def slowPath(
           ad: Array[T],
@@ -323,7 +321,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       : breeze.linalg.operators.OpMulInner.Impl2[
         DenseVector[T],
         DenseVector[T],
-        T] = {
+        T] =
     new breeze.linalg.operators.OpMulInner.Impl2[
       DenseVector[T],
       DenseVector[T],
@@ -350,13 +348,12 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
         .register(this)
     }
-  }
 
   @expand
   @expand.valify
   implicit def canDot_DV_V[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], Vector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], Vector[T], T] =
     new breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], Vector[T], T] {
       def apply(a: DenseVector[T], b: Vector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -377,9 +374,6 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
         .register(this)
     }
-
-  }
-
   @expand
   @expand.valify
   implicit def canZipValues_DV_DV[@expand.args(Int, Double, Float, Long) T]()
@@ -430,7 +424,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   }
 
   implicit def axpy[V: Semiring: ClassTag]
-      : scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] = {
+      : scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] =
     new scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] {
       val sr = implicitly[Semiring[V]]
       def apply(a: DenseVector[V], s: V, b: DenseVector[V]) {
@@ -451,12 +445,11 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
         .register(this)
     }
-  }
 
   @expand
   @expand.valify
   implicit def axpy[@expand.args(Int, Double, Float, Long) V]
-      : scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] = {
+      : scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] =
     new scaleAdd.InPlaceImpl3[DenseVector[V], V, DenseVector[V]] {
       def apply(y: DenseVector[V], s: V, x: DenseVector[V]) {
         require(x.length == y.length, "Vectors must be the same length!")
@@ -471,81 +464,61 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
         .register(this)
     }
-  }
 
   implicit def dvAddIntoField[T](
       implicit field: Field[T],
-      ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
+      ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
-      override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
+      override def apply(v: DenseVector[T], v2: DenseVector[T]) =
         for (i <- 0 until v.length) v(i) = field.+(v(i), v2(i))
-      }
     }
-
-  }
 
   implicit def dvSubIntoField[T](
       implicit field: Field[T],
-      ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
+      ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
-      override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
+      override def apply(v: DenseVector[T], v2: DenseVector[T]) =
         for (i <- 0 until v.length) v(i) = field.-(v(i), v2(i))
-      }
     }
-
-  }
 
   implicit def dvMulIntoField[T](implicit field: Field[T], ct: ClassTag[T])
-      : OpMulScalar.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
+      : OpMulScalar.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new OpMulScalar.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
-      override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
+      override def apply(v: DenseVector[T], v2: DenseVector[T]) =
         for (i <- 0 until v.length) v(i) = field.*(v(i), v2(i))
-      }
     }
-
-  }
 
   implicit def dvDivIntoField[T](
       implicit field: Field[T],
-      ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
+      ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
-      override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
+      override def apply(v: DenseVector[T], v2: DenseVector[T]) =
         for (i <- 0 until v.length) v(i) = field./(v(i), v2(i))
-      }
     }
-
-  }
 
   implicit def dvPowInto[T](
       implicit pow: OpPow.Impl2[T, T, T],
-      ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
+      ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] =
     new OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
-      override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
+      override def apply(v: DenseVector[T], v2: DenseVector[T]) =
         for (i <- 0 until v.length) v(i) = pow(v(i), v2(i))
-      }
     }
-
-  }
 
   implicit def dvAddIntoSField[T](
       implicit field: Semiring[T],
-      ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], T] = {
+      ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], T] =
     new OpAdd.InPlaceImpl2[DenseVector[T], T] {
-      override def apply(v: DenseVector[T], v2: T) = {
+      override def apply(v: DenseVector[T], v2: T) =
         for (i <- 0 until v.length) v(i) = field.+(v(i), v2)
-      }
     }
-
-  }
 
   implicit def dvAddSField[T](
       implicit field: Semiring[T],
-      ct: ClassTag[T]): OpAdd.Impl2[DenseVector[T], T, DenseVector[T]] = {
+      ct: ClassTag[T]): OpAdd.Impl2[DenseVector[T], T, DenseVector[T]] =
     binaryOpFromUpdateOp(
       implicitly[CanCopy[DenseVector[T]]],
       dvAddIntoSField,
       ct)
-  }
   implicit def dvSubSField[T](
       implicit field: Ring[T],
       ct: ClassTag[T]): OpSub.Impl2[DenseVector[T], T, DenseVector[T]] =
@@ -574,47 +547,38 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   implicit def dvSubIntoSField[T](
       implicit field: Ring[T],
-      ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], T] = {
+      ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], T] =
     new OpSub.InPlaceImpl2[DenseVector[T], T] {
-      override def apply(v: DenseVector[T], v2: T) = {
+      override def apply(v: DenseVector[T], v2: T) =
         for (i <- 0 until v.length) v(i) = field.-(v(i), v2)
-      }
     }
-
-  }
 
   implicit def dvMulScalarIntoSField[T](
       implicit field: Semiring[T],
-      ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[DenseVector[T], T] = {
+      ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[DenseVector[T], T] =
     new OpMulScalar.InPlaceImpl2[DenseVector[T], T] {
-      override def apply(v: DenseVector[T], v2: T) = {
+      override def apply(v: DenseVector[T], v2: T) =
         for (i <- 0 until v.length) v(i) = field.*(v(i), v2)
-      }
     }
-  }
 
   implicit def dvDivIntoSField[T](
       implicit field: Field[T],
-      ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], T] = {
+      ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], T] =
     new OpDiv.InPlaceImpl2[DenseVector[T], T] {
-      override def apply(v: DenseVector[T], v2: T) = {
+      override def apply(v: DenseVector[T], v2: T) =
         for (i <- 0 until v.length) v(i) = field./(v(i), v2)
-      }
     }
-  }
 
   implicit def dvPowIntoS[T](
       implicit pow: OpPow.Impl2[T, T, T],
-      ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], T] = {
+      ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], T] =
     new OpPow.InPlaceImpl2[DenseVector[T], T] {
-      override def apply(v: DenseVector[T], v2: T) = {
+      override def apply(v: DenseVector[T], v2: T) =
         for (i <- 0 until v.length) v(i) = pow(v(i), v2)
-      }
     }
-  }
 
   implicit def dotField[T](implicit field: Semiring[T])
-      : OpMulInner.Impl2[DenseVector[T], DenseVector[T], T] = {
+      : OpMulInner.Impl2[DenseVector[T], DenseVector[T], T] =
     new OpMulInner.Impl2[DenseVector[T], DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]): T = {
         var acc = field.zero
@@ -624,7 +588,6 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         acc
       }
     }
-  }
 
 }
 
@@ -638,9 +601,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   implicit val canAddIntoF
       : OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
     new OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] {
-      def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
+      def apply(a: DenseVector[Float], b: DenseVector[Float]) =
         canSaxpy(a, 1.0f, b)
-      }
       implicitly[BinaryUpdateRegistry[Vector[Float], Vector[Float], OpAdd.type]]
         .register(this)
     }
@@ -669,9 +631,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
     private def slowPath(
         y: DenseVector[Float],
         a: Float,
-        x: DenseVector[Float]): Unit = {
+        x: DenseVector[Float]): Unit =
       cforRange(0 until x.length) { i => y(i) += x(i) * a }
-    }
   }
   implicitly[
     TernaryUpdateRegistry[Vector[Float], Float, Vector[Float], scaleAdd.type]]
@@ -690,9 +651,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   implicit val canSubIntoF
       : OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
     new OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] {
-      def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
+      def apply(a: DenseVector[Float], b: DenseVector[Float]) =
         canSaxpy(a, -1.0f, b)
-      }
       implicitly[BinaryUpdateRegistry[Vector[Float], Vector[Float], OpSub.type]]
         .register(this)
     }
@@ -729,7 +689,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
 
       private def blasPath(
           a: DenseVector[Float],
-          b: DenseVector[Float]): Float = {
+          b: DenseVector[Float]): Float =
         if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
           DenseVectorSupportMethods.dotProduct_Float(
             a.data,
@@ -746,7 +706,6 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
             else (a.offset + a.stride * (a.length - 1))
           blas.sdot(a.length, b.data, boff, b.stride, a.data, aoff, a.stride)
         }
-      }
       implicitly[
         BinaryRegistry[Vector[Float], Vector[Float], OpMulInner.type, Float]]
         .register(this)
@@ -851,7 +810,7 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
       implicit copy: CanCopy[DenseVector[V]],
       op: UFunc.InPlaceImpl2[Op, DenseVector[V], Other],
       man: ClassTag[V])
-      : UFunc.UImpl2[Op, DenseVector[V], Other, DenseVector[V]] = {
+      : UFunc.UImpl2[Op, DenseVector[V], Other, DenseVector[V]] =
     new UFunc.UImpl2[Op, DenseVector[V], Other, DenseVector[V]] {
       override def apply(a: DenseVector[V], b: Other): DenseVector[V] = {
         val c = copy(a)
@@ -859,7 +818,6 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
         c
       }
     }
-  }
   @expand
   implicit def pureFromUpdate[
       @expand.args(Int, Double, Float, Long) T,

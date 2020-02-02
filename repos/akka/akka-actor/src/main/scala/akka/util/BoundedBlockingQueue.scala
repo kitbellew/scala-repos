@@ -56,7 +56,7 @@ class BoundedBlockingQueue[E <: AnyRef](
   def take(): E = { //Blocks until not empty
     lock.lockInterruptibly()
     try {
-      @tailrec def takeElement(): E = {
+      @tailrec def takeElement(): E =
         if (!backing.isEmpty()) {
           val e = backing.poll()
           require(e ne null)
@@ -66,7 +66,6 @@ class BoundedBlockingQueue[E <: AnyRef](
           notEmpty.await()
           takeElement()
         }
-      }
       takeElement()
     } finally lock.unlock()
   }
@@ -88,14 +87,13 @@ class BoundedBlockingQueue[E <: AnyRef](
     if (e eq null) throw new NullPointerException
     lock.lockInterruptibly()
     try {
-      @tailrec def offerElement(remainingNanos: Long): Boolean = {
+      @tailrec def offerElement(remainingNanos: Long): Boolean =
         if (backing.size() < maxCapacity) {
           require(backing.offer(e)) //Should never fail
           notEmpty.signal()
           true
         } else if (remainingNanos <= 0) false
         else offerElement(notFull.awaitNanos(remainingNanos))
-      }
       offerElement(unit.toNanos(timeout))
     } finally lock.unlock()
   }
@@ -103,7 +101,7 @@ class BoundedBlockingQueue[E <: AnyRef](
   def poll(timeout: Long, unit: TimeUnit): E = { //Tries to do it within the timeout, returns null if fail
     lock.lockInterruptibly()
     try {
-      @tailrec def pollElement(remainingNanos: Long): E = {
+      @tailrec def pollElement(remainingNanos: Long): E =
         backing.poll() match {
           case null if remainingNanos <= 0 ⇒ null.asInstanceOf[E]
           case null ⇒ pollElement(notEmpty.awaitNanos(remainingNanos))
@@ -112,7 +110,6 @@ class BoundedBlockingQueue[E <: AnyRef](
             e
           }
         }
-      }
       pollElement(unit.toNanos(timeout))
     } finally lock.unlock()
   }
@@ -184,14 +181,13 @@ class BoundedBlockingQueue[E <: AnyRef](
     else {
       lock.lock()
       try {
-        @tailrec def drainOne(n: Int = 0): Int = {
+        @tailrec def drainOne(n: Int = 0): Int =
           if (n < maxElements) {
             backing.poll() match {
               case null ⇒ n
               case e ⇒ c add e; drainOne(n + 1)
             }
           } else n
-        }
         val n = drainOne()
         if (n > 0) notFull.signalAll()
         n

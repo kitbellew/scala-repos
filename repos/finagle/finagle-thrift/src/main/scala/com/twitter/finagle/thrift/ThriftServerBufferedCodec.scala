@@ -46,9 +46,8 @@ class ThriftServerBufferedCodecFactory(protocolFactory: TProtocolFactory)
     * Create a [[com.twitter.finagle.thrift.ThriftServerBufferedCodec]]
     * with a default TBinaryProtocol.
     */
-  def apply(config: ServerCodecConfig) = {
+  def apply(config: ServerCodecConfig) =
     new ThriftServerBufferedCodec(protocolFactory, config)
-  }
 }
 
 class ThriftServerBufferedCodec(

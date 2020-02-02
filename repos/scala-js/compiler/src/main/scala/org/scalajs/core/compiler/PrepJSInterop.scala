@@ -340,7 +340,7 @@ abstract class PrepJSInterop
             if (typer.checkClassType(tpeArg)) {
               typer.typed { Literal(Constant(tpeArg.tpe.dealias.widen)) }
             } else {
-              reporter.error(tpeArg.pos, s"Type ${tpeArg} is not a class type")
+              reporter.error(tpeArg.pos, s"Type $tpeArg is not a class type")
               EmptyTree
             }
           } else {
@@ -448,11 +448,10 @@ abstract class PrepJSInterop
 
         // Expose objects (modules) members of Scala.js-defined JS classes
         if (sym.isModule && (enclosingOwner is OwnerKind.JSNonNative)) {
-          def shouldBeExposed: Boolean = {
+          def shouldBeExposed: Boolean =
             !sym.isLocalToBlock &&
-            !sym.isSynthetic &&
-            !isPrivateMaybeWithin(sym)
-          }
+              !sym.isSynthetic &&
+              !isPrivateMaybeWithin(sym)
           if (shouldBeExposed)
             sym.addAnnotation(ExposedJSMemberAnnot)
         }
@@ -530,7 +529,7 @@ abstract class PrepJSInterop
         val badName = badParent.get.typeSymbol.fullName
         reporter.error(
           implDef.pos,
-          s"${sym.nameString} extends ${badName} " +
+          s"${sym.nameString} extends $badName " +
             "which does not extend js.Any.")
       }
 
@@ -658,11 +657,10 @@ abstract class PrepJSInterop
           }
 
           val msg = {
-            def memberDefString(membSym: Symbol) = {
+            def memberDefString(membSym: Symbol) =
               membSym.defStringSeenAs(sym.thisType.memberType(membSym)) +
                 membSym.locationString + " with JSName '" +
                 jsInterop.jsNameOf(membSym) + '\''
-            }
             "A member of a JS class is overriding another member with a different JS name.\n\n" +
               memberDefString(low) + "\n" +
               "    is conflicting with\n" +
@@ -707,13 +705,12 @@ abstract class PrepJSInterop
          * Scala.js-defined classes.
          */
         if (enclosingOwner is OwnerKind.JSNonNative) {
-          def shouldBeExposed: Boolean = {
+          def shouldBeExposed: Boolean =
             !sym.isConstructor &&
-            !sym.isValueParameter &&
-            !sym.isParamWithDefault &&
-            !sym.isSynthetic &&
-            !isPrivateMaybeWithin(sym)
-          }
+              !sym.isValueParameter &&
+              !sym.isParamWithDefault &&
+              !sym.isSynthetic &&
+              !isPrivateMaybeWithin(sym)
           if (shouldBeExposed) {
             sym.addAnnotation(ExposedJSMemberAnnot)
 
@@ -955,7 +952,7 @@ abstract class PrepJSInterop
   /** Checks that argument to @JSName on [[sym]] is a literal.
     *  Reports an error on each annotation where this is not the case.
     */
-  private def checkJSNameLiteral(sym: Symbol): Unit = {
+  private def checkJSNameLiteral(sym: Symbol): Unit =
     for {
       annot <- sym.getAnnotation(JSNameAnnotation)
       if annot.stringArg(0).isEmpty
@@ -964,7 +961,6 @@ abstract class PrepJSInterop
         annot.pos,
         "The argument to JSName must be a literal string")
     }
-  }
 
   private trait ScalaEnumFctExtractors {
     protected val methSym: Symbol

@@ -25,7 +25,7 @@ private[akka] object EventsByPersistenceIdPublisher {
       toSequenceNr: Long,
       refreshInterval: Option[FiniteDuration],
       maxBufSize: Int,
-      writeJournalPluginId: String): Props = {
+      writeJournalPluginId: String): Props =
     refreshInterval match {
       case Some(interval) ⇒
         Props(
@@ -45,7 +45,6 @@ private[akka] object EventsByPersistenceIdPublisher {
             maxBufSize,
             writeJournalPluginId))
     }
-  }
 
   /**
     * INTERNAL API

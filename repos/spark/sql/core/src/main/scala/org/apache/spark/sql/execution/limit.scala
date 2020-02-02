@@ -63,13 +63,11 @@ trait BaseLimit extends UnaryNode with CodegenSupport {
   protected override def doExecute(): RDD[InternalRow] =
     child.execute().mapPartitions { iter => iter.take(limit) }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  protected override def doProduce(ctx: CodegenContext): String = {
+  protected override def doProduce(ctx: CodegenContext): String =
     child.asInstanceOf[CodegenSupport].produce(ctx, this)
-  }
 
   override def doConsume(
       ctx: CodegenContext,
@@ -127,9 +125,8 @@ case class TakeOrderedAndProject(
     child: SparkPlan)
     extends UnaryNode {
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     projectList.map(_.map(_.toAttribute)).getOrElse(child.output)
-  }
 
   override def outputPartitioning: Partitioning = SinglePartition
 

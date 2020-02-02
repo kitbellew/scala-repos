@@ -23,19 +23,17 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 class ScCompositePatternImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScCompositePattern {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "CompositePattern"
 
-  override def getType(ctx: TypingContext): TypeResult[ScType] = {
+  override def getType(ctx: TypingContext): TypeResult[ScType] =
     expectedType match {
       case Some(expected) => Success(expected, Some(this))
       case _              => super.getType(ctx) //Failure
     }
-  }
 }

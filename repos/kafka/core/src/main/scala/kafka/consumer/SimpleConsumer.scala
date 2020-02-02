@@ -76,9 +76,8 @@ class SimpleConsumer(
     * This handles a bug found in Java 1.7 and below, where interrupting a thread can not correctly unblock
     * the thread from waiting on ReadableByteChannel.read().
     */
-  def disconnectToHandleJavaIOBug() = {
+  def disconnectToHandleJavaIOBug() =
     disconnect()
-  }
 
   def close() {
     lock synchronized {
@@ -87,7 +86,7 @@ class SimpleConsumer(
     }
   }
 
-  private def sendRequest(request: RequestOrResponse): NetworkReceive = {
+  private def sendRequest(request: RequestOrResponse): NetworkReceive =
     lock synchronized {
       var response: NetworkReceive = null
       try {
@@ -115,7 +114,6 @@ class SimpleConsumer(
       }
       response
     }
-  }
 
   def send(request: TopicMetadataRequest): TopicMetadataResponse = {
     val response = sendRequest(request)
@@ -177,11 +175,10 @@ class SimpleConsumer(
     * @param request a [[kafka.api.OffsetCommitRequest]] object.
     * @return a [[kafka.api.OffsetCommitResponse]] object.
     */
-  def commitOffsets(request: OffsetCommitRequest) = {
+  def commitOffsets(request: OffsetCommitRequest) =
     // TODO: With KAFKA-1012, we have to first issue a ConsumerMetadataRequest and connect to the coordinator before
     // we can commit offsets.
     OffsetCommitResponse.readFrom(sendRequest(request).payload())
-  }
 
   /**
     * Fetch offsets for a topic

@@ -144,13 +144,12 @@ class Path private[io] (val jfile: JFile) {
 
     def createRelativePath(
         baseSegs: List[String],
-        otherSegs: List[String]): String = {
+        otherSegs: List[String]): String =
       (baseSegs, otherSegs) match {
         case (b :: bs, o :: os) if b == o => createRelativePath(bs, os)
         case (bs, os) =>
           ((".." + separator) * bs.length) + os.mkString(separatorStr)
       }
-    }
 
     Path(createRelativePath(segments, other.segments))
   }

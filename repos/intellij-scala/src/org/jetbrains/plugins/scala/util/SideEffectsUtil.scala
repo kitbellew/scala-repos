@@ -155,7 +155,7 @@ object SideEffectsUtil {
       scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++: fromScalaMath ++: immutableCollections).toArray
   }
 
-  private def hasImplicitConversion(refExpr: ScExpression) = {
+  private def hasImplicitConversion(refExpr: ScExpression) =
     refExpr match {
       case ref: ScReferenceExpression =>
         ref
@@ -164,7 +164,6 @@ object SideEffectsUtil {
             rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
       case _ => false
     }
-  }
 
   private def methodHasNoSideEffects(
       m: PsiMethod,

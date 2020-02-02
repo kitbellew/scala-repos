@@ -44,9 +44,8 @@ private[spark] object NNLS {
     }
   }
 
-  def createWorkspace(n: Int): Workspace = {
+  def createWorkspace(n: Int): Workspace =
     new Workspace(n)
-  }
 
   /**
     * Solve a least squares problem, possibly with nonnegativity constraints, by a modified
@@ -80,14 +79,13 @@ private[spark] object NNLS {
     }
 
     // stopping condition
-    def stop(step: Double, ndir: Double, nx: Double): Boolean = {
+    def stop(step: Double, ndir: Double, nx: Double): Boolean =
       ((step.isNaN) // NaN
-      || (step < 1e-7) // too small or negative
-      || (step > 1e40) // too small; almost certainly numerical problems
-      || (ndir < 1e-12 * nx) // gradient relatively too small
-      || (ndir < 1e-32) // gradient absolutely too small; numerical issues may lurk
+        || (step < 1e-7) // too small or negative
+        || (step > 1e40) // too small; almost certainly numerical problems
+        || (ndir < 1e-12 * nx) // gradient relatively too small
+        || (ndir < 1e-32) // gradient absolutely too small; numerical issues may lurk
       )
-    }
 
     val grad = ws.grad
     val x = ws.x

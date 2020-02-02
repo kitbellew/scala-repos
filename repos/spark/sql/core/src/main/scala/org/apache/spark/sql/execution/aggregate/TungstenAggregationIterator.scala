@@ -186,7 +186,7 @@ class TungstenAggregationIterator(
   // hashMap. If there is not enough memory, it will multiple hash-maps, spilling
   // after each becomes full then using sort to merge these spills, finally do sort
   // based aggregation.
-  private def processInputs(fallbackStartsAt: Int): Unit = {
+  private def processInputs(fallbackStartsAt: Int): Unit =
     if (groupingExpressions.isEmpty) {
       // If there is no grouping expressions, we can just reuse the same buffer over and over again.
       // Note that it would be better to eliminate the hash map entirely in the future.
@@ -232,7 +232,6 @@ class TungstenAggregationIterator(
         switchToSortBasedAggregation()
       }
     }
-  }
 
   // The iterator created from hashMap. It is used to generate output rows when we
   // are using hash-based aggregation.
@@ -392,11 +391,10 @@ class TungstenAggregationIterator(
   // Part 7: Iterator's public methods.
   ///////////////////////////////////////////////////////////////////////////
 
-  override final def hasNext: Boolean = {
+  override final def hasNext: Boolean =
     (sortBased && sortedInputHasNewGroup) || (!sortBased && mapIteratorHasNext)
-  }
 
-  override final def next(): UnsafeRow = {
+  override final def next(): UnsafeRow =
     if (hasNext) {
       val res = if (sortBased) {
         // Process the current group.
@@ -450,7 +448,6 @@ class TungstenAggregationIterator(
       // no more result
       throw new NoSuchElementException
     }
-  }
 
   ///////////////////////////////////////////////////////////////////////////
   // Part 8: Utility functions
@@ -459,7 +456,7 @@ class TungstenAggregationIterator(
   /**
     * Generate a output row when there is no input and there is no grouping expression.
     */
-  def outputForEmptyGroupingKeyWithoutInput(): UnsafeRow = {
+  def outputForEmptyGroupingKeyWithoutInput(): UnsafeRow =
     if (groupingExpressions.isEmpty) {
       sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
       // We create a output row and copy it. So, we can free the map.
@@ -473,5 +470,4 @@ class TungstenAggregationIterator(
       throw new IllegalStateException(
         "This method should not be called when groupingExpressions is not empty.")
     }
-  }
 }

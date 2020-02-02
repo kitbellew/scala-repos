@@ -48,10 +48,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
 
   protected def classify(event: AnyRef): Class[_] = event.getClass
 
-  protected def publish(event: AnyRef, subscriber: ActorRef) = {
+  protected def publish(event: AnyRef, subscriber: ActorRef) =
     if (sys == null && subscriber.isTerminated) unsubscribe(subscriber)
     else subscriber ! event
-  }
 
   override def subscribe(subscriber: ActorRef, channel: Class[_]): Boolean = {
     if (subscriber eq null)
@@ -105,7 +104,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     * INTERNAL API
     */
   @tailrec
-  final private[akka] def initUnsubscriber(unsubscriber: ActorRef): Boolean = {
+  final private[akka] def initUnsubscriber(unsubscriber: ActorRef): Boolean =
     // sys may be null for backwards compatibility reasons
     if (sys eq null) false
     else
@@ -136,13 +135,12 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
                 s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
           false
       }
-  }
 
   /**
     * INTERNAL API
     */
   @tailrec
-  private def registerWithUnsubscriber(subscriber: ActorRef): Unit = {
+  private def registerWithUnsubscriber(subscriber: ActorRef): Unit =
     // sys may be null for backwards compatibility reasons
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) ⇒
@@ -153,7 +151,6 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
       case Right(unsubscriber) ⇒
         unsubscriber ! EventStreamUnsubscriber.Register(subscriber)
     }
-  }
 
   /**
     * INTERNAL API
@@ -163,8 +160,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     * catch up and perform the appropriate operation.
     */
   @tailrec
-  private def unregisterIfNoMoreSubscribedChannels(
-      subscriber: ActorRef): Unit = {
+  private def unregisterIfNoMoreSubscribedChannels(subscriber: ActorRef): Unit =
     // sys may be null for backwards compatibility reasons
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) ⇒
@@ -176,6 +172,5 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
         unsubscriber ! EventStreamUnsubscriber
           .UnregisterIfNoMoreSubscribedChannels(subscriber)
     }
-  }
 
 }

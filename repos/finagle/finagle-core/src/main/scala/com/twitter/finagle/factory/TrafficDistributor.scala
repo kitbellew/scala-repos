@@ -100,9 +100,8 @@ private[finagle] object TrafficDistributor {
     def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
       balancers(drv(rng))(conn)
 
-    def close(deadline: Time): Future[Unit] = {
+    def close(deadline: Time): Future[Unit] =
       Closable.all(balancers: _*).close(deadline)
-    }
 
     private[this] val svcFactoryStatus: ServiceFactory[Req, Rep] => Status =
       sf => sf.status

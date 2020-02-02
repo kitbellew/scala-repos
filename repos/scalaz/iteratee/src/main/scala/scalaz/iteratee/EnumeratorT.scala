@@ -14,11 +14,10 @@ trait EnumeratorT[E, F[_]] { self =>
   def map[B](f: E => B)(implicit ev: Monad[F]): EnumeratorT[B, F] =
     EnumerateeT.map[E, B, F](f) run self
 
-  def #::(e: => E)(implicit F: Monad[F]): EnumeratorT[E, F] = {
+  def #::(e: => E)(implicit F: Monad[F]): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {
       def apply[A] = _.mapCont(_(elInput(e))) &= self
     }
-  }
 
   def flatMap[B](f: E => EnumeratorT[B, F])(implicit M1: Monad[F]) =
     EnumerateeT.flatMap(f) run self
@@ -198,11 +197,11 @@ trait EnumeratorTFunctions {
       import MO._
       def apply[A] =
         (s: StepT[IoExceptionOr[E], F, A]) =>
-          s.mapCont(k => {
+          s.mapCont { k =>
             val i = get()
             if (gotdata(i)) k(elInput(i.map(render))) >>== apply[A]
             else s.pointI
-          })
+          }
     }
 
   def enumReader[F[_]](r: => java.io.Reader)(

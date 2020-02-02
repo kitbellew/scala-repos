@@ -39,7 +39,7 @@ class CompileServerLauncher extends ApplicationComponent {
     if (running) stop()
   }
 
-  def tryToStart(project: Project): Boolean = {
+  def tryToStart(project: Project): Boolean =
     if (!running) {
       val started = start(project)
       if (started) {
@@ -51,7 +51,6 @@ class CompileServerLauncher extends ApplicationComponent {
       }
       started
     } else true
-  }
 
   private def start(project: Project): Boolean = {
     val applicationSettings = ScalaCompileServerSettings.getInstance
@@ -226,11 +225,10 @@ object CompileServerLauncher {
     )
   }
 
-  def pluginPath: String = {
+  def pluginPath: String =
     if (ApplicationManager.getApplication.isUnitTestMode)
       new File(System.getProperty("plugin.path"), "lib").getCanonicalPath
     else new File(PathUtil.getJarPathForClass(getClass)).getParent
-  }
 
   def dottyInterfacesJar: File = {
     val jpsDir = new File(pluginPath, "jps")
@@ -242,9 +240,8 @@ object CompileServerLauncher {
     dottySdk.toSeq.flatMap(_.compilerClasspath)
   }
 
-  private def withTimestamps(files: Seq[File]): Set[(File, Long)] = {
+  private def withTimestamps(files: Seq[File]): Set[(File, Long)] =
     files.map(f => (f, f.lastModified())).toSet
-  }
 
   def jvmParameters: Seq[String] = {
     val settings = ScalaCompileServerSettings.getInstance
@@ -301,14 +298,13 @@ object CompileServerLauncher {
     else port
   }
 
-  private def projectHome(project: Project): Option[File] = {
+  private def projectHome(project: Project): Option[File] =
     for {
       dir <- Option(project.getBaseDir)
       path <- Option(dir.getCanonicalPath)
       file = new File(path)
       if file.exists()
     } yield file
-  }
 
 }
 

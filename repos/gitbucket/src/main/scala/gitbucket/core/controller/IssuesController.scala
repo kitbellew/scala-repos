@@ -180,11 +180,11 @@ trait IssuesControllerBase extends ControllerBase {
               Notifier()
                 .toNotify(repository, issue, form.content.getOrElse("")) {
                   Notifier.msgIssue(
-                    s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+                    s"${context.baseUrl}/$owner/$name/issues/$issueId")
                 }
           }
 
-          redirect(s"/${owner}/${name}/issues/${issueId}")
+          redirect(s"/$owner/$name/issues/$issueId")
       }
   })
 
@@ -205,7 +205,7 @@ trait IssuesControllerBase extends ControllerBase {
                   title,
                   context.loginAccount.get)
 
-                redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+                redirect(s"/$owner/$name/issues/_data/${issue.issueId}")
               } else Unauthorized
           } getOrElse NotFound
       }
@@ -228,7 +228,7 @@ trait IssuesControllerBase extends ControllerBase {
                   content.getOrElse(""),
                   context.loginAccount.get)
 
-                redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+                redirect(s"/$owner/$name/issues/_data/${issue.issueId}")
               } else Unauthorized
           } getOrElse NotFound
       }
@@ -249,7 +249,7 @@ trait IssuesControllerBase extends ControllerBase {
             case (issue, id) =>
               redirect(
                 s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
+                else "issues"}/${form.issueId}#comment-$id")
           }
         } getOrElse NotFound
     })
@@ -269,7 +269,7 @@ trait IssuesControllerBase extends ControllerBase {
             case (issue, id) =>
               redirect(
                 s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
+                else "issues"}/${form.issueId}#comment-$id")
           }
         } getOrElse NotFound
     })
@@ -282,7 +282,7 @@ trait IssuesControllerBase extends ControllerBase {
             if (isEditable(owner, name, comment.commentedUserName)) {
               updateComment(comment.commentId, form.content)
               redirect(
-                s"/${owner}/${name}/issue_comments/_data/${comment.commentId}")
+                s"/$owner/$name/issue_comments/_data/${comment.commentId}")
             } else Unauthorized
           } getOrElse NotFound
       }
@@ -518,7 +518,7 @@ trait IssuesControllerBase extends ControllerBase {
     }
   }
 
-  private def searchIssues(repository: RepositoryService.RepositoryInfo) = {
+  private def searchIssues(repository: RepositoryService.RepositoryInfo) =
     defining(repository.owner, repository.name) {
       case (owner, repoName) =>
         val page = IssueSearchCondition.page(request)
@@ -570,5 +570,4 @@ trait IssuesControllerBase extends ControllerBase {
           hasWritePermission(owner, repoName, context.loginAccount)
         )
     }
-  }
 }

@@ -46,9 +46,8 @@ class PowerIterationClusteringModel @Since("1.3.0") (
     with Serializable {
 
   @Since("1.4.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     PowerIterationClusteringModel.SaveLoadV1_0.save(sc, this, path)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -60,9 +59,8 @@ object PowerIterationClusteringModel
   @Since("1.4.0")
   override def load(
       sc: SparkContext,
-      path: String): PowerIterationClusteringModel = {
+      path: String): PowerIterationClusteringModel =
     PowerIterationClusteringModel.SaveLoadV1_0.load(sc, path)
-  }
 
   private[clustering] object SaveLoadV1_0 {
 
@@ -225,9 +223,8 @@ class PowerIterationClustering private[clustering] (
   @Since("1.3.0")
   def run(
       similarities: JavaRDD[(java.lang.Long, java.lang.Long, java.lang.Double)])
-      : PowerIterationClusteringModel = {
+      : PowerIterationClusteringModel =
     run(similarities.rdd.asInstanceOf[RDD[(Long, Long, Double)]])
-  }
 
   /**
     * Runs the PIC algorithm.

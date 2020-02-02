@@ -24,7 +24,7 @@ private class LazyCompiledClass(
   private var loadedContent: Option[BinaryContent] = None
   private var contentIsSet = false
 
-  override def getContent = {
+  override def getContent =
     if (contentIsSet) super.getContent
     else
       loadedContent.getOrElse {
@@ -32,7 +32,6 @@ private class LazyCompiledClass(
         loadedContent = Some(content)
         content
       }
-  }
 
   override def setContent(content: BinaryContent) {
     super.setContent(content)

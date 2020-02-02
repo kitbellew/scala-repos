@@ -146,7 +146,7 @@ object LambdaDeserializer {
       kind: Int,
       owner: Class[_],
       name: String,
-      signature: MethodType): MethodHandle = {
+      signature: MethodType): MethodHandle =
     kind match {
       case MethodHandleInfo.REF_invokeStatic =>
         lookup.findStatic(owner, name, signature)
@@ -158,5 +158,4 @@ object LambdaDeserializer {
       case MethodHandleInfo.REF_invokeSpecial =>
         lookup.findSpecial(owner, name, signature, owner)
     }
-  }
 }

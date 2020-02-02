@@ -137,13 +137,12 @@ abstract class HiveComparisonTest
     new java.math.BigInteger(1, digest.digest).toString(16)
   }
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     try {
       TestHive.reset()
     } finally {
       super.afterAll()
     }
-  }
 
   protected def prepareAnswer(
       hiveQuery: TestHive.type#QueryExecution,
@@ -221,9 +220,8 @@ abstract class HiveComparisonTest
   /**
     * Removes non-deterministic paths from `str` so cached answers will compare correctly.
     */
-  protected def cleanPaths(str: String): String = {
+  protected def cleanPaths(str: String): String =
     str.replaceAll("file:\\/.*\\/", "<PATH>")
-  }
 
   val installHooksCommand = "(?i)SET.*hooks".r
   def createQueryTest(

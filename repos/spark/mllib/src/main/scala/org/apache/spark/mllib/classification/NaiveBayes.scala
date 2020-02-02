@@ -111,14 +111,13 @@ class NaiveBayesModel private[spark] (
   }
 
   @Since("1.0.0")
-  override def predict(testData: Vector): Double = {
+  override def predict(testData: Vector): Double =
     modelType match {
       case Multinomial =>
         labels(multinomialCalculation(testData).argmax)
       case Bernoulli =>
         labels(bernoulliCalculation(testData).argmax)
     }
-  }
 
   /**
     * Predict values for the given data set using the model trained.
@@ -144,14 +143,13 @@ class NaiveBayesModel private[spark] (
     *         in the same order as class labels
     */
   @Since("1.5.0")
-  def predictProbabilities(testData: Vector): Vector = {
+  def predictProbabilities(testData: Vector): Vector =
     modelType match {
       case Multinomial =>
         posteriorProbabilities(multinomialCalculation(testData))
       case Bernoulli =>
         posteriorProbabilities(bernoulliCalculation(testData))
     }
-  }
 
   private def multinomialCalculation(testData: Vector) = {
     val prob = thetaMatrix.multiply(testData)
@@ -511,9 +509,8 @@ object NaiveBayes {
     *              vector or a count vector.
     */
   @Since("0.9.0")
-  def train(input: RDD[LabeledPoint]): NaiveBayesModel = {
+  def train(input: RDD[LabeledPoint]): NaiveBayesModel =
     new NaiveBayes().run(input)
-  }
 
   /**
     * Trains a Naive Bayes model given an RDD of `(label, features)` pairs.
@@ -527,9 +524,8 @@ object NaiveBayes {
     * @param lambda The smoothing parameter
     */
   @Since("0.9.0")
-  def train(input: RDD[LabeledPoint], lambda: Double): NaiveBayesModel = {
+  def train(input: RDD[LabeledPoint], lambda: Double): NaiveBayesModel =
     new NaiveBayes(lambda, Multinomial).run(input)
-  }
 
   /**
     * Trains a Naive Bayes model given an RDD of `(label, features)` pairs.

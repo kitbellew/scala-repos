@@ -17,9 +17,8 @@ trait Compat210Component {
   def newValDef(sym: Symbol, rhs: Tree)(
       mods: Modifiers = Modifiers(sym.flags),
       name: TermName = sym.name.toTermName,
-      tpt: Tree = TypeTreeMemberType(sym)): ValDef = {
+      tpt: Tree = TypeTreeMemberType(sym)): ValDef =
     atPos(sym.pos)(ValDef(mods, name, tpt, rhs)) setSymbol sym
-  }
 
   def newDefDef(sym: Symbol, rhs: Tree)(
       mods: Modifiers = Modifiers(sym.flags),
@@ -28,10 +27,9 @@ trait Compat210Component {
         sym.typeParams.map(sym => newTypeDef(sym, typeBoundsTree(sym))()),
       vparamss: List[List[ValDef]] =
         mapParamss(sym)(sym => newValDef(sym, EmptyTree)()),
-      tpt: Tree = TypeTreeMemberType(sym)): DefDef = {
+      tpt: Tree = TypeTreeMemberType(sym)): DefDef =
     atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs))
       .setSymbol(sym)
-  }
 
   def TypeTreeMemberType(sym: Symbol): TypeTree = {
     val resType = {
@@ -45,9 +43,8 @@ trait Compat210Component {
       mods: Modifiers = Modifiers(sym.flags),
       name: TypeName = sym.name.toTypeName,
       tparams: List[TypeDef] = sym.typeParams.map(sym =>
-        newTypeDef(sym, typeBoundsTree(sym))())): TypeDef = {
+        newTypeDef(sym, typeBoundsTree(sym))())): TypeDef =
     atPos(sym.pos)(TypeDef(mods, name, tparams, rhs)) setSymbol sym
-  }
 
   private def typeBoundsTree(bounds: TypeBounds): TypeBoundsTree =
     TypeBoundsTree(TypeTree(bounds.lo), TypeTree(bounds.hi))

@@ -109,7 +109,7 @@ private[nio] object HeapCharBuffer {
         arrayOffset: Int,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): CharBuffer = {
+        readOnly: Boolean): CharBuffer =
       new HeapCharBuffer(
         capacity,
         array,
@@ -117,7 +117,6 @@ private[nio] object HeapCharBuffer {
         initialPosition,
         initialLimit,
         readOnly)
-    }
   }
 
   private[nio] def wrap(
@@ -126,7 +125,7 @@ private[nio] object HeapCharBuffer {
       capacity: Int,
       initialPosition: Int,
       initialLength: Int,
-      isReadOnly: Boolean): CharBuffer = {
+      isReadOnly: Boolean): CharBuffer =
     GenHeapBuffer.generic_wrap(
       array,
       arrayOffset,
@@ -134,5 +133,4 @@ private[nio] object HeapCharBuffer {
       initialPosition,
       initialLength,
       isReadOnly)
-  }
 }

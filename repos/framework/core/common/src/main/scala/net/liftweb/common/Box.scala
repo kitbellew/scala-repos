@@ -86,7 +86,7 @@ object Box extends BoxTrait with Tryo {
       * @param failureErrorMessage The string that should be placed in the message for the Failure.
       * @return A `Full[List[T]]` if no `Failure`s were present. `ParamFailure[List[Box[T]]]` otherwise.
     **/
-    def toSingleBox(failureErrorMessage: String): Box[List[T]] = {
+    def toSingleBox(failureErrorMessage: String): Box[List[T]] =
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
         val failureChain =
           theListOfBoxes
@@ -106,7 +106,6 @@ object Box extends BoxTrait with Tryo {
       } else {
         Full(theListOfBoxes.flatten)
       }
-    }
   }
 
 }
@@ -253,9 +252,8 @@ sealed trait BoxTrait {
     * res1: net.liftweb.common.Box[Int] = Full(5)
     * }}}
     */
-  def isA[A, B](in: A, clz: Class[B]): Box[B] = {
+  def isA[A, B](in: A, clz: Class[B]): Box[B] =
     (Box !! in).isA(clz)
-  }
 
   // NOTE: We use an existential type here so that you can invoke asA with
   // just one type parameter. To wit, this lets you do:
@@ -280,9 +278,8 @@ sealed trait BoxTrait {
     * res1: net.liftweb.common.Box[Int] = Full(5)
     * }}}
     */
-  def asA[B](in: T forSome { type T })(implicit m: Manifest[B]): Box[B] = {
+  def asA[B](in: T forSome { type T })(implicit m: Manifest[B]): Box[B] =
     (Box !! in).asA[B]
-  }
 }
 
 /**
@@ -436,10 +433,9 @@ sealed abstract class Box[+A] extends Product with Serializable {
     *
     * This method '''always''' throws an exception.
     */
-  final def get: DoNotCallThisMethod = {
+  final def get: DoNotCallThisMethod =
     throw new Exception(
       "Attempted to open a Box incorrectly. Please use openOrThrowException.")
-  }
 
   /**
     * Return the value contained in this `Box` if it is full; otherwise return
@@ -776,11 +772,10 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * If the partial function is defined at the current Box's value, apply the
     * partial function.
     */
-  final def collect[B](pf: PartialFunction[A, B]): Box[B] = {
+  final def collect[B](pf: PartialFunction[A, B]): Box[B] =
     flatMap(value =>
       if (pf.isDefinedAt(value)) Full(pf(value))
       else Empty)
-  }
 
   /**
     * An alias for `collect`.
@@ -788,9 +783,8 @@ sealed abstract class Box[+A] extends Product with Serializable {
     * Although this function is different for true collections, because `Box` is
     * really a collection of 1, the two functions are identical.
     */
-  final def collectFirst[B](pf: PartialFunction[A, B]): Box[B] = {
+  final def collectFirst[B](pf: PartialFunction[A, B]): Box[B] =
     collect(pf)
-  }
 }
 
 /**
@@ -951,9 +945,8 @@ sealed case class Failure(
     * Gets the deepest exception cause, if any, which is ostensibly the root
     * cause of this `Failure`.
     */
-  def rootExceptionCause: Box[Throwable] = {
+  def rootExceptionCause: Box[Throwable] =
     exceptionChain.lastOption
-  }
 
   /**
     * Flatten the `Failure` chain to a List where this Failure is at the head.
@@ -1096,13 +1089,11 @@ object BoxOrRaw {
   implicit def rawToBoxOrRaw[T, Q <: T](r: Q): BoxOrRaw[T] =
     RawBoxOrRaw(r: T)
 
-  implicit def boxToBoxOrRaw[T, Q <% T](r: Box[Q]): BoxOrRaw[T] = {
+  implicit def boxToBoxOrRaw[T, Q <% T](r: Box[Q]): BoxOrRaw[T] =
     BoxedBoxOrRaw(r.map(v => v: T))
-  }
 
-  implicit def optionToBoxOrRaw[T, Q <% T](r: Option[Q]): BoxOrRaw[T] = {
+  implicit def optionToBoxOrRaw[T, Q <% T](r: Option[Q]): BoxOrRaw[T] =
     BoxedBoxOrRaw(r.map(v => v: T))
-  }
 
   implicit def borToBox[T](in: BoxOrRaw[T]): Box[T] = in.box
 }

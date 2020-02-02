@@ -112,9 +112,8 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     * Access an unboxed element of a Vec[A] at a single location
     * @param loc offset into Vec
     */
-  def raw(loc: Int): T = {
+  def raw(loc: Int): T =
     apply(loc)
-  }
 
   /**
     * Slice a Vec at a sequence of locations, e.g.

@@ -76,14 +76,13 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
         setHandler(
           i,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               if (isAvailable(out)) {
                 // isAvailable(out) implies !pending
                 // -> grab and push immediately
                 push(out, grab(i))
                 tryPull(i)
               } else pendingQueue.enqueue(i)
-            }
 
             override def onUpstreamFinish() =
               if (eagerComplete) {
@@ -99,10 +98,9 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
       }
 
       setHandler(out, new OutHandler {
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (pending)
             dequeueAndDispatch()
-        }
       })
     }
 
@@ -183,10 +181,10 @@ final class MergePreferred[T] private (
 
       setHandler(out, eagerTerminateOutput)
 
-      val pullMe = Array.tabulate(secondaryPorts)(i ⇒ {
+      val pullMe = Array.tabulate(secondaryPorts) { i ⇒
         val port = in(i)
         () ⇒ tryPull(port)
-      })
+      }
 
       /*
        * This determines the unfairness of the merge:
@@ -235,12 +233,11 @@ final class MergePreferred[T] private (
         setHandler(
           port,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               if (preferredEmitting > 0) () // blocked
               else {
                 emit(out, grab(port), pullPort)
               }
-            }
             override def onUpstreamFinish(): Unit = onComplete()
           }
         )
@@ -332,7 +329,7 @@ final class Interleave[T] private (
               if (counter == segmentSize) switchToNextInput()
             }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (!eagerClose) {
                 runningUpstreams -= 1
                 if (!upstreamsClosed) {
@@ -342,7 +339,6 @@ final class Interleave[T] private (
                   }
                 } else completeStage()
               } else completeStage()
-            }
           }
         )
       }
@@ -493,7 +489,7 @@ final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
                 tryPull()
               }
 
-              override def onDownstreamFinish() = {
+              override def onDownstreamFinish() =
                 if (eagerCancel) completeStage()
                 else {
                   downstreamsRunning -= 1
@@ -504,7 +500,6 @@ final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
                     tryPull()
                   }
                 }
-              }
             }
           )
           idx += 1
@@ -584,10 +579,9 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
               pull(in)
           }
 
-          override def onUpstreamFinish(): Unit = {
+          override def onUpstreamFinish(): Unit =
             if (outPendingElem == null)
               completeStage()
-          }
         }
       )
 
@@ -596,8 +590,7 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
           setHandler(
             o,
             new OutHandler {
-              override def onPull() = {
-
+              override def onPull() =
                 if (outPendingElem != null) {
                   val elem = outPendingElem.asInstanceOf[T]
                   if (idx == outPendingIdx) {
@@ -612,7 +605,6 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                   }
                 } else if (!hasBeenPulled(in))
                   pull(in)
-              }
 
               override def onDownstreamFinish(): Unit = {
                 downstreamRunning -= 1
@@ -862,11 +854,10 @@ final class Concat[T](inputPorts: Int)
           setHandler(
             i,
             new InHandler {
-              override def onPush() = {
+              override def onPush() =
                 push(out, grab(i))
-              }
 
-              override def onUpstreamFinish() = {
+              override def onUpstreamFinish() =
                 if (idx == activeStream) {
                   activeStream += 1
                   // Skip closed inputs
@@ -875,7 +866,6 @@ final class Concat[T](inputPorts: Int)
                   if (activeStream == inputPorts) completeStage()
                   else if (isAvailable(out)) pull(in(activeStream))
                 }
-              }
             }
           )
           idxx += 1
@@ -990,11 +980,10 @@ object GraphDSL extends GraphApply {
 
     private[stream] def deprecatedAndThen(
         port: OutPort,
-        op: StageModule): Unit = {
+        op: StageModule): Unit =
       moduleInProgress = moduleInProgress
         .compose(op)
         .wire(port, op.inPort)
-    }
 
     private[stream] def module: Module = moduleInProgress
 
@@ -1009,25 +998,23 @@ object GraphDSL extends GraphApply {
     private[stream] def findOut[I, O](
         b: Builder[_],
         junction: UniformFanOutShape[I, O],
-        n: Int): Outlet[O] = {
+        n: Int): Outlet[O] =
       if (n == junction.outArray.length)
         throw new IllegalArgumentException(s"no more outlets free on $junction")
       else if (b.module.downstreams.contains(junction.out(n)))
         findOut(b, junction, n + 1)
       else junction.out(n)
-    }
 
     @tailrec
     private[stream] def findIn[I, O](
         b: Builder[_],
         junction: UniformFanInShape[I, O],
-        n: Int): Inlet[I] = {
+        n: Int): Inlet[I] =
       if (n == junction.inSeq.length)
         throw new IllegalArgumentException(s"no more inlets free on $junction")
       else if (b.module.upstreams.contains(junction.in(n)))
         findIn(b, junction, n + 1)
       else junction.in(n)
-    }
 
     sealed trait CombinerBase[+T] extends Any {
       def importAndGetPort(b: Builder[_]): Outlet[T @uncheckedVariance]
@@ -1044,13 +1031,12 @@ object GraphDSL extends GraphApply {
 
       def ~>[Out](junction: UniformFanInShape[T, Out])(
           implicit b: Builder[_]): PortOps[Out] = {
-        def bind(n: Int): Unit = {
+        def bind(n: Int): Unit =
           if (n == junction.inSeq.length)
             throw new IllegalArgumentException(
               s"no more inlets free on $junction")
           else if (b.module.upstreams.contains(junction.in(n))) bind(n + 1)
           else b.addEdge(importAndGetPort(b), junction.in(n))
-        }
         bind(0)
         junction.out
       }
@@ -1092,13 +1078,12 @@ object GraphDSL extends GraphApply {
 
       def <~[In](junction: UniformFanOutShape[In, T])(
           implicit b: Builder[_]): ReversePortOps[In] = {
-        def bind(n: Int): Unit = {
+        def bind(n: Int): Unit =
           if (n == junction.outArray.length)
             throw new IllegalArgumentException(
               s"no more outlets free on $junction")
           else if (b.module.downstreams.contains(junction.out(n))) bind(n + 1)
           else b.addEdge(junction.out(n), importAndGetPortReverse(b))
-        }
         bind(0)
         junction.in
       }
@@ -1163,9 +1148,8 @@ object GraphDSL extends GraphApply {
         new PortOpsImpl(op.shape.out.asInstanceOf[Outlet[U]], b)
       }
 
-      def to[Mat2](sink: Graph[SinkShape[Out], Mat2]): Closed = {
+      def to[Mat2](sink: Graph[SinkShape[Out], Mat2]): Closed =
         super.~>(sink)(b)
-      }
     }
 
     private class DisabledPortOps[Out](msg: String)

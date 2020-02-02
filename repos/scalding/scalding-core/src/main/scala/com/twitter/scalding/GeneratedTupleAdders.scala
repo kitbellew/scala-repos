@@ -3,38 +3,30 @@ package com.twitter.scalding
 
 trait GeneratedTupleAdders {
   class Tuple1Adder[A](tup: Tuple1[A]) {
-    def :+[B](other: B) = {
+    def :+[B](other: B) =
       (tup._1, other)
-    }
-    def +:[B](other: B) = {
+    def +:[B](other: B) =
       (other, tup._1)
-    }
 
-    def ++[B](other: Tuple1[B]) = {
+    def ++[B](other: Tuple1[B]) =
       (tup._1, other._1)
-    }
 
-    def ++[B, C](other: Tuple2[B, C]) = {
+    def ++[B, C](other: Tuple2[B, C]) =
       (tup._1, other._1, other._2)
-    }
 
-    def ++[B, C, D](other: Tuple3[B, C, D]) = {
+    def ++[B, C, D](other: Tuple3[B, C, D]) =
       (tup._1, other._1, other._2, other._3)
-    }
 
-    def ++[B, C, D, E](other: Tuple4[B, C, D, E]) = {
+    def ++[B, C, D, E](other: Tuple4[B, C, D, E]) =
       (tup._1, other._1, other._2, other._3, other._4)
-    }
 
-    def ++[B, C, D, E, F](other: Tuple5[B, C, D, E, F]) = {
+    def ++[B, C, D, E, F](other: Tuple5[B, C, D, E, F]) =
       (tup._1, other._1, other._2, other._3, other._4, other._5)
-    }
 
-    def ++[B, C, D, E, F, G](other: Tuple6[B, C, D, E, F, G]) = {
+    def ++[B, C, D, E, F, G](other: Tuple6[B, C, D, E, F, G]) =
       (tup._1, other._1, other._2, other._3, other._4, other._5, other._6)
-    }
 
-    def ++[B, C, D, E, F, G, H](other: Tuple7[B, C, D, E, F, G, H]) = {
+    def ++[B, C, D, E, F, G, H](other: Tuple7[B, C, D, E, F, G, H]) =
       (
         tup._1,
         other._1,
@@ -44,9 +36,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[B, C, D, E, F, G, H, I](other: Tuple8[B, C, D, E, F, G, H, I]) = {
+    def ++[B, C, D, E, F, G, H, I](other: Tuple8[B, C, D, E, F, G, H, I]) =
       (
         tup._1,
         other._1,
@@ -57,10 +48,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J](
-        other: Tuple9[B, C, D, E, F, G, H, I, J]) = {
+        other: Tuple9[B, C, D, E, F, G, H, I, J]) =
       (
         tup._1,
         other._1,
@@ -72,10 +62,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K](
-        other: Tuple10[B, C, D, E, F, G, H, I, J, K]) = {
+        other: Tuple10[B, C, D, E, F, G, H, I, J, K]) =
       (
         tup._1,
         other._1,
@@ -88,10 +77,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L](
-        other: Tuple11[B, C, D, E, F, G, H, I, J, K, L]) = {
+        other: Tuple11[B, C, D, E, F, G, H, I, J, K, L]) =
       (
         tup._1,
         other._1,
@@ -105,10 +93,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M](
-        other: Tuple12[B, C, D, E, F, G, H, I, J, K, L, M]) = {
+        other: Tuple12[B, C, D, E, F, G, H, I, J, K, L, M]) =
       (
         tup._1,
         other._1,
@@ -123,10 +110,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N](
-        other: Tuple13[B, C, D, E, F, G, H, I, J, K, L, M, N]) = {
+        other: Tuple13[B, C, D, E, F, G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         other._1,
@@ -142,10 +128,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O](
-        other: Tuple14[B, C, D, E, F, G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple14[B, C, D, E, F, G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         other._1,
@@ -162,10 +147,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
-        other: Tuple15[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple15[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         other._1,
@@ -183,10 +167,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple16[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple16[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         other._1,
@@ -205,10 +188,9 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple17[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple17[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         other._1,
@@ -228,27 +210,9 @@ trait GeneratedTupleAdders {
         other._15,
         other._16,
         other._17)
-    }
 
-    def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](other: Tuple18[
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S]) = {
+    def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
+        other: Tuple18[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         other._1,
@@ -269,7 +233,6 @@ trait GeneratedTupleAdders {
         other._16,
         other._17,
         other._18)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
         other: Tuple19[
@@ -291,7 +254,7 @@ trait GeneratedTupleAdders {
           Q,
           R,
           S,
-          T]) = {
+          T]) =
       (
         tup._1,
         other._1,
@@ -313,7 +276,6 @@ trait GeneratedTupleAdders {
         other._17,
         other._18,
         other._19)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
         other: Tuple20[
@@ -336,7 +298,7 @@ trait GeneratedTupleAdders {
           R,
           S,
           T,
-          U]) = {
+          U]) =
       (
         tup._1,
         other._1,
@@ -359,7 +321,6 @@ trait GeneratedTupleAdders {
         other._18,
         other._19,
         other._20)
-    }
 
     def ++[B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
         other: Tuple21[
@@ -383,7 +344,7 @@ trait GeneratedTupleAdders {
           S,
           T,
           U,
-          V]) = {
+          V]) =
       (
         tup._1,
         other._1,
@@ -407,40 +368,32 @@ trait GeneratedTupleAdders {
         other._19,
         other._20,
         other._21)
-    }
   }
 
   implicit def tup1ToAdder[A](tup: Tuple1[A]) = new Tuple1Adder(tup)
 
   class Tuple2Adder[A, B](tup: Tuple2[A, B]) {
-    def :+[C](other: C) = {
+    def :+[C](other: C) =
       (tup._1, tup._2, other)
-    }
-    def +:[C](other: C) = {
+    def +:[C](other: C) =
       (other, tup._1, tup._2)
-    }
 
-    def ++[C](other: Tuple1[C]) = {
+    def ++[C](other: Tuple1[C]) =
       (tup._1, tup._2, other._1)
-    }
 
-    def ++[C, D](other: Tuple2[C, D]) = {
+    def ++[C, D](other: Tuple2[C, D]) =
       (tup._1, tup._2, other._1, other._2)
-    }
 
-    def ++[C, D, E](other: Tuple3[C, D, E]) = {
+    def ++[C, D, E](other: Tuple3[C, D, E]) =
       (tup._1, tup._2, other._1, other._2, other._3)
-    }
 
-    def ++[C, D, E, F](other: Tuple4[C, D, E, F]) = {
+    def ++[C, D, E, F](other: Tuple4[C, D, E, F]) =
       (tup._1, tup._2, other._1, other._2, other._3, other._4)
-    }
 
-    def ++[C, D, E, F, G](other: Tuple5[C, D, E, F, G]) = {
+    def ++[C, D, E, F, G](other: Tuple5[C, D, E, F, G]) =
       (tup._1, tup._2, other._1, other._2, other._3, other._4, other._5)
-    }
 
-    def ++[C, D, E, F, G, H](other: Tuple6[C, D, E, F, G, H]) = {
+    def ++[C, D, E, F, G, H](other: Tuple6[C, D, E, F, G, H]) =
       (
         tup._1,
         tup._2,
@@ -450,9 +403,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[C, D, E, F, G, H, I](other: Tuple7[C, D, E, F, G, H, I]) = {
+    def ++[C, D, E, F, G, H, I](other: Tuple7[C, D, E, F, G, H, I]) =
       (
         tup._1,
         tup._2,
@@ -463,9 +415,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[C, D, E, F, G, H, I, J](other: Tuple8[C, D, E, F, G, H, I, J]) = {
+    def ++[C, D, E, F, G, H, I, J](other: Tuple8[C, D, E, F, G, H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -477,10 +428,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K](
-        other: Tuple9[C, D, E, F, G, H, I, J, K]) = {
+        other: Tuple9[C, D, E, F, G, H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -493,10 +443,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L](
-        other: Tuple10[C, D, E, F, G, H, I, J, K, L]) = {
+        other: Tuple10[C, D, E, F, G, H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -510,10 +459,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M](
-        other: Tuple11[C, D, E, F, G, H, I, J, K, L, M]) = {
+        other: Tuple11[C, D, E, F, G, H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -528,10 +476,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N](
-        other: Tuple12[C, D, E, F, G, H, I, J, K, L, M, N]) = {
+        other: Tuple12[C, D, E, F, G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -547,10 +494,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O](
-        other: Tuple13[C, D, E, F, G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple13[C, D, E, F, G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -567,10 +513,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P](
-        other: Tuple14[C, D, E, F, G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple14[C, D, E, F, G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -588,10 +533,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple15[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple15[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -610,10 +554,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple16[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple16[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -633,10 +576,9 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple17[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple17[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -657,27 +599,9 @@ trait GeneratedTupleAdders {
         other._15,
         other._16,
         other._17)
-    }
 
-    def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](other: Tuple18[
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T]) = {
+    def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
+        other: Tuple18[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -699,7 +623,6 @@ trait GeneratedTupleAdders {
         other._16,
         other._17,
         other._18)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
         other: Tuple19[
@@ -721,7 +644,7 @@ trait GeneratedTupleAdders {
           R,
           S,
           T,
-          U]) = {
+          U]) =
       (
         tup._1,
         tup._2,
@@ -744,7 +667,6 @@ trait GeneratedTupleAdders {
         other._17,
         other._18,
         other._19)
-    }
 
     def ++[C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
         other: Tuple20[
@@ -767,7 +689,7 @@ trait GeneratedTupleAdders {
           S,
           T,
           U,
-          V]) = {
+          V]) =
       (
         tup._1,
         tup._2,
@@ -791,40 +713,32 @@ trait GeneratedTupleAdders {
         other._18,
         other._19,
         other._20)
-    }
   }
 
   implicit def tup2ToAdder[A, B](tup: Tuple2[A, B]) = new Tuple2Adder(tup)
 
   class Tuple3Adder[A, B, C](tup: Tuple3[A, B, C]) {
-    def :+[D](other: D) = {
+    def :+[D](other: D) =
       (tup._1, tup._2, tup._3, other)
-    }
-    def +:[D](other: D) = {
+    def +:[D](other: D) =
       (other, tup._1, tup._2, tup._3)
-    }
 
-    def ++[D](other: Tuple1[D]) = {
+    def ++[D](other: Tuple1[D]) =
       (tup._1, tup._2, tup._3, other._1)
-    }
 
-    def ++[D, E](other: Tuple2[D, E]) = {
+    def ++[D, E](other: Tuple2[D, E]) =
       (tup._1, tup._2, tup._3, other._1, other._2)
-    }
 
-    def ++[D, E, F](other: Tuple3[D, E, F]) = {
+    def ++[D, E, F](other: Tuple3[D, E, F]) =
       (tup._1, tup._2, tup._3, other._1, other._2, other._3)
-    }
 
-    def ++[D, E, F, G](other: Tuple4[D, E, F, G]) = {
+    def ++[D, E, F, G](other: Tuple4[D, E, F, G]) =
       (tup._1, tup._2, tup._3, other._1, other._2, other._3, other._4)
-    }
 
-    def ++[D, E, F, G, H](other: Tuple5[D, E, F, G, H]) = {
+    def ++[D, E, F, G, H](other: Tuple5[D, E, F, G, H]) =
       (tup._1, tup._2, tup._3, other._1, other._2, other._3, other._4, other._5)
-    }
 
-    def ++[D, E, F, G, H, I](other: Tuple6[D, E, F, G, H, I]) = {
+    def ++[D, E, F, G, H, I](other: Tuple6[D, E, F, G, H, I]) =
       (
         tup._1,
         tup._2,
@@ -835,9 +749,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[D, E, F, G, H, I, J](other: Tuple7[D, E, F, G, H, I, J]) = {
+    def ++[D, E, F, G, H, I, J](other: Tuple7[D, E, F, G, H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -849,9 +762,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[D, E, F, G, H, I, J, K](other: Tuple8[D, E, F, G, H, I, J, K]) = {
+    def ++[D, E, F, G, H, I, J, K](other: Tuple8[D, E, F, G, H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -864,10 +776,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L](
-        other: Tuple9[D, E, F, G, H, I, J, K, L]) = {
+        other: Tuple9[D, E, F, G, H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -881,10 +792,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M](
-        other: Tuple10[D, E, F, G, H, I, J, K, L, M]) = {
+        other: Tuple10[D, E, F, G, H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -899,10 +809,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N](
-        other: Tuple11[D, E, F, G, H, I, J, K, L, M, N]) = {
+        other: Tuple11[D, E, F, G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -918,10 +827,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O](
-        other: Tuple12[D, E, F, G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple12[D, E, F, G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -938,10 +846,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P](
-        other: Tuple13[D, E, F, G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple13[D, E, F, G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -959,10 +866,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple14[D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple14[D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -981,10 +887,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple15[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple15[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -1004,10 +909,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple16[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple16[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -1028,10 +932,9 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple17[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple17[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -1053,27 +956,9 @@ trait GeneratedTupleAdders {
         other._15,
         other._16,
         other._17)
-    }
 
-    def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](other: Tuple18[
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U]) = {
+    def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
+        other: Tuple18[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -1096,7 +981,6 @@ trait GeneratedTupleAdders {
         other._16,
         other._17,
         other._18)
-    }
 
     def ++[D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
         other: Tuple19[
@@ -1118,7 +1002,7 @@ trait GeneratedTupleAdders {
           S,
           T,
           U,
-          V]) = {
+          V]) =
       (
         tup._1,
         tup._2,
@@ -1142,36 +1026,29 @@ trait GeneratedTupleAdders {
         other._17,
         other._18,
         other._19)
-    }
   }
 
   implicit def tup3ToAdder[A, B, C](tup: Tuple3[A, B, C]) = new Tuple3Adder(tup)
 
   class Tuple4Adder[A, B, C, D](tup: Tuple4[A, B, C, D]) {
-    def :+[E](other: E) = {
+    def :+[E](other: E) =
       (tup._1, tup._2, tup._3, tup._4, other)
-    }
-    def +:[E](other: E) = {
+    def +:[E](other: E) =
       (other, tup._1, tup._2, tup._3, tup._4)
-    }
 
-    def ++[E](other: Tuple1[E]) = {
+    def ++[E](other: Tuple1[E]) =
       (tup._1, tup._2, tup._3, tup._4, other._1)
-    }
 
-    def ++[E, F](other: Tuple2[E, F]) = {
+    def ++[E, F](other: Tuple2[E, F]) =
       (tup._1, tup._2, tup._3, tup._4, other._1, other._2)
-    }
 
-    def ++[E, F, G](other: Tuple3[E, F, G]) = {
+    def ++[E, F, G](other: Tuple3[E, F, G]) =
       (tup._1, tup._2, tup._3, tup._4, other._1, other._2, other._3)
-    }
 
-    def ++[E, F, G, H](other: Tuple4[E, F, G, H]) = {
+    def ++[E, F, G, H](other: Tuple4[E, F, G, H]) =
       (tup._1, tup._2, tup._3, tup._4, other._1, other._2, other._3, other._4)
-    }
 
-    def ++[E, F, G, H, I](other: Tuple5[E, F, G, H, I]) = {
+    def ++[E, F, G, H, I](other: Tuple5[E, F, G, H, I]) =
       (
         tup._1,
         tup._2,
@@ -1182,9 +1059,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[E, F, G, H, I, J](other: Tuple6[E, F, G, H, I, J]) = {
+    def ++[E, F, G, H, I, J](other: Tuple6[E, F, G, H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -1196,9 +1072,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[E, F, G, H, I, J, K](other: Tuple7[E, F, G, H, I, J, K]) = {
+    def ++[E, F, G, H, I, J, K](other: Tuple7[E, F, G, H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -1211,9 +1086,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[E, F, G, H, I, J, K, L](other: Tuple8[E, F, G, H, I, J, K, L]) = {
+    def ++[E, F, G, H, I, J, K, L](other: Tuple8[E, F, G, H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -1227,10 +1101,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M](
-        other: Tuple9[E, F, G, H, I, J, K, L, M]) = {
+        other: Tuple9[E, F, G, H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -1245,10 +1118,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N](
-        other: Tuple10[E, F, G, H, I, J, K, L, M, N]) = {
+        other: Tuple10[E, F, G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -1264,10 +1136,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O](
-        other: Tuple11[E, F, G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple11[E, F, G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -1284,10 +1155,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P](
-        other: Tuple12[E, F, G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple12[E, F, G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -1305,10 +1175,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple13[E, F, G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple13[E, F, G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -1327,10 +1196,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple14[E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple14[E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -1350,10 +1218,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple15[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple15[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -1374,10 +1241,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple16[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple16[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -1399,10 +1265,9 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
 
     def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple17[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple17[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -1425,27 +1290,9 @@ trait GeneratedTupleAdders {
         other._15,
         other._16,
         other._17)
-    }
 
-    def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](other: Tuple18[
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]) = {
+    def ++[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
+        other: Tuple18[E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -1469,33 +1316,27 @@ trait GeneratedTupleAdders {
         other._16,
         other._17,
         other._18)
-    }
   }
 
   implicit def tup4ToAdder[A, B, C, D](tup: Tuple4[A, B, C, D]) =
     new Tuple4Adder(tup)
 
   class Tuple5Adder[A, B, C, D, E](tup: Tuple5[A, B, C, D, E]) {
-    def :+[F](other: F) = {
+    def :+[F](other: F) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, other)
-    }
-    def +:[F](other: F) = {
+    def +:[F](other: F) =
       (other, tup._1, tup._2, tup._3, tup._4, tup._5)
-    }
 
-    def ++[F](other: Tuple1[F]) = {
+    def ++[F](other: Tuple1[F]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, other._1)
-    }
 
-    def ++[F, G](other: Tuple2[F, G]) = {
+    def ++[F, G](other: Tuple2[F, G]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, other._1, other._2)
-    }
 
-    def ++[F, G, H](other: Tuple3[F, G, H]) = {
+    def ++[F, G, H](other: Tuple3[F, G, H]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, other._1, other._2, other._3)
-    }
 
-    def ++[F, G, H, I](other: Tuple4[F, G, H, I]) = {
+    def ++[F, G, H, I](other: Tuple4[F, G, H, I]) =
       (
         tup._1,
         tup._2,
@@ -1506,9 +1347,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[F, G, H, I, J](other: Tuple5[F, G, H, I, J]) = {
+    def ++[F, G, H, I, J](other: Tuple5[F, G, H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -1520,9 +1360,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[F, G, H, I, J, K](other: Tuple6[F, G, H, I, J, K]) = {
+    def ++[F, G, H, I, J, K](other: Tuple6[F, G, H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -1535,9 +1374,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[F, G, H, I, J, K, L](other: Tuple7[F, G, H, I, J, K, L]) = {
+    def ++[F, G, H, I, J, K, L](other: Tuple7[F, G, H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -1551,9 +1389,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[F, G, H, I, J, K, L, M](other: Tuple8[F, G, H, I, J, K, L, M]) = {
+    def ++[F, G, H, I, J, K, L, M](other: Tuple8[F, G, H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -1568,10 +1405,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N](
-        other: Tuple9[F, G, H, I, J, K, L, M, N]) = {
+        other: Tuple9[F, G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -1587,10 +1423,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O](
-        other: Tuple10[F, G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple10[F, G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -1607,10 +1442,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P](
-        other: Tuple11[F, G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple11[F, G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -1628,10 +1462,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple12[F, G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple12[F, G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -1650,10 +1483,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple13[F, G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple13[F, G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -1673,10 +1505,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple14[F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple14[F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -1697,10 +1528,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple15[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple15[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -1722,10 +1552,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple16[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple16[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -1748,10 +1577,9 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
 
     def ++[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple17[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple17[F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -1775,29 +1603,24 @@ trait GeneratedTupleAdders {
         other._15,
         other._16,
         other._17)
-    }
   }
 
   implicit def tup5ToAdder[A, B, C, D, E](tup: Tuple5[A, B, C, D, E]) =
     new Tuple5Adder(tup)
 
   class Tuple6Adder[A, B, C, D, E, F](tup: Tuple6[A, B, C, D, E, F]) {
-    def :+[G](other: G) = {
+    def :+[G](other: G) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, other)
-    }
-    def +:[G](other: G) = {
+    def +:[G](other: G) =
       (other, tup._1, tup._2, tup._3, tup._4, tup._5, tup._6)
-    }
 
-    def ++[G](other: Tuple1[G]) = {
+    def ++[G](other: Tuple1[G]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, other._1)
-    }
 
-    def ++[G, H](other: Tuple2[G, H]) = {
+    def ++[G, H](other: Tuple2[G, H]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, other._1, other._2)
-    }
 
-    def ++[G, H, I](other: Tuple3[G, H, I]) = {
+    def ++[G, H, I](other: Tuple3[G, H, I]) =
       (
         tup._1,
         tup._2,
@@ -1808,9 +1631,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[G, H, I, J](other: Tuple4[G, H, I, J]) = {
+    def ++[G, H, I, J](other: Tuple4[G, H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -1822,9 +1644,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[G, H, I, J, K](other: Tuple5[G, H, I, J, K]) = {
+    def ++[G, H, I, J, K](other: Tuple5[G, H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -1837,9 +1658,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[G, H, I, J, K, L](other: Tuple6[G, H, I, J, K, L]) = {
+    def ++[G, H, I, J, K, L](other: Tuple6[G, H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -1853,9 +1673,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[G, H, I, J, K, L, M](other: Tuple7[G, H, I, J, K, L, M]) = {
+    def ++[G, H, I, J, K, L, M](other: Tuple7[G, H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -1870,9 +1689,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[G, H, I, J, K, L, M, N](other: Tuple8[G, H, I, J, K, L, M, N]) = {
+    def ++[G, H, I, J, K, L, M, N](other: Tuple8[G, H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -1888,10 +1706,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O](
-        other: Tuple9[G, H, I, J, K, L, M, N, O]) = {
+        other: Tuple9[G, H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -1908,10 +1725,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P](
-        other: Tuple10[G, H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple10[G, H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -1929,10 +1745,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple11[G, H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple11[G, H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -1951,10 +1766,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple12[G, H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple12[G, H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -1974,10 +1788,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple13[G, H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple13[G, H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -1998,10 +1811,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple14[G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple14[G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -2023,10 +1835,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple15[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple15[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -2049,10 +1860,9 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
 
     def ++[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple16[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple16[G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -2076,25 +1886,21 @@ trait GeneratedTupleAdders {
         other._14,
         other._15,
         other._16)
-    }
   }
 
   implicit def tup6ToAdder[A, B, C, D, E, F](tup: Tuple6[A, B, C, D, E, F]) =
     new Tuple6Adder(tup)
 
   class Tuple7Adder[A, B, C, D, E, F, G](tup: Tuple7[A, B, C, D, E, F, G]) {
-    def :+[H](other: H) = {
+    def :+[H](other: H) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7, other)
-    }
-    def +:[H](other: H) = {
+    def +:[H](other: H) =
       (other, tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7)
-    }
 
-    def ++[H](other: Tuple1[H]) = {
+    def ++[H](other: Tuple1[H]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7, other._1)
-    }
 
-    def ++[H, I](other: Tuple2[H, I]) = {
+    def ++[H, I](other: Tuple2[H, I]) =
       (
         tup._1,
         tup._2,
@@ -2105,9 +1911,8 @@ trait GeneratedTupleAdders {
         tup._7,
         other._1,
         other._2)
-    }
 
-    def ++[H, I, J](other: Tuple3[H, I, J]) = {
+    def ++[H, I, J](other: Tuple3[H, I, J]) =
       (
         tup._1,
         tup._2,
@@ -2119,9 +1924,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[H, I, J, K](other: Tuple4[H, I, J, K]) = {
+    def ++[H, I, J, K](other: Tuple4[H, I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -2134,9 +1938,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[H, I, J, K, L](other: Tuple5[H, I, J, K, L]) = {
+    def ++[H, I, J, K, L](other: Tuple5[H, I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -2150,9 +1953,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[H, I, J, K, L, M](other: Tuple6[H, I, J, K, L, M]) = {
+    def ++[H, I, J, K, L, M](other: Tuple6[H, I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -2167,9 +1969,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[H, I, J, K, L, M, N](other: Tuple7[H, I, J, K, L, M, N]) = {
+    def ++[H, I, J, K, L, M, N](other: Tuple7[H, I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -2185,9 +1986,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[H, I, J, K, L, M, N, O](other: Tuple8[H, I, J, K, L, M, N, O]) = {
+    def ++[H, I, J, K, L, M, N, O](other: Tuple8[H, I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -2204,10 +2004,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P](
-        other: Tuple9[H, I, J, K, L, M, N, O, P]) = {
+        other: Tuple9[H, I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -2225,10 +2024,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q](
-        other: Tuple10[H, I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple10[H, I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -2247,10 +2045,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple11[H, I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple11[H, I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -2270,10 +2067,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple12[H, I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple12[H, I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -2294,10 +2090,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple13[H, I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple13[H, I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -2319,10 +2114,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple14[H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple14[H, I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -2345,10 +2139,9 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
 
     def ++[H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple15[H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple15[H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -2372,7 +2165,6 @@ trait GeneratedTupleAdders {
         other._13,
         other._14,
         other._15)
-    }
   }
 
   implicit def tup7ToAdder[A, B, C, D, E, F, G](
@@ -2380,18 +2172,15 @@ trait GeneratedTupleAdders {
 
   class Tuple8Adder[A, B, C, D, E, F, G, H](
       tup: Tuple8[A, B, C, D, E, F, G, H]) {
-    def :+[I](other: I) = {
+    def :+[I](other: I) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7, tup._8, other)
-    }
-    def +:[I](other: I) = {
+    def +:[I](other: I) =
       (other, tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7, tup._8)
-    }
 
-    def ++[I](other: Tuple1[I]) = {
+    def ++[I](other: Tuple1[I]) =
       (tup._1, tup._2, tup._3, tup._4, tup._5, tup._6, tup._7, tup._8, other._1)
-    }
 
-    def ++[I, J](other: Tuple2[I, J]) = {
+    def ++[I, J](other: Tuple2[I, J]) =
       (
         tup._1,
         tup._2,
@@ -2403,9 +2192,8 @@ trait GeneratedTupleAdders {
         tup._8,
         other._1,
         other._2)
-    }
 
-    def ++[I, J, K](other: Tuple3[I, J, K]) = {
+    def ++[I, J, K](other: Tuple3[I, J, K]) =
       (
         tup._1,
         tup._2,
@@ -2418,9 +2206,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[I, J, K, L](other: Tuple4[I, J, K, L]) = {
+    def ++[I, J, K, L](other: Tuple4[I, J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -2434,9 +2221,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[I, J, K, L, M](other: Tuple5[I, J, K, L, M]) = {
+    def ++[I, J, K, L, M](other: Tuple5[I, J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -2451,9 +2237,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[I, J, K, L, M, N](other: Tuple6[I, J, K, L, M, N]) = {
+    def ++[I, J, K, L, M, N](other: Tuple6[I, J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -2469,9 +2254,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[I, J, K, L, M, N, O](other: Tuple7[I, J, K, L, M, N, O]) = {
+    def ++[I, J, K, L, M, N, O](other: Tuple7[I, J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -2488,9 +2272,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[I, J, K, L, M, N, O, P](other: Tuple8[I, J, K, L, M, N, O, P]) = {
+    def ++[I, J, K, L, M, N, O, P](other: Tuple8[I, J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -2508,10 +2291,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q](
-        other: Tuple9[I, J, K, L, M, N, O, P, Q]) = {
+        other: Tuple9[I, J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -2530,10 +2312,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q, R](
-        other: Tuple10[I, J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple10[I, J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -2553,10 +2334,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple11[I, J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple11[I, J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -2577,10 +2357,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple12[I, J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple12[I, J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -2602,10 +2381,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple13[I, J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple13[I, J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -2628,10 +2406,9 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
 
     def ++[I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple14[I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple14[I, J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -2655,7 +2432,6 @@ trait GeneratedTupleAdders {
         other._12,
         other._13,
         other._14)
-    }
   }
 
   implicit def tup8ToAdder[A, B, C, D, E, F, G, H](
@@ -2663,7 +2439,7 @@ trait GeneratedTupleAdders {
 
   class Tuple9Adder[A, B, C, D, E, F, G, H, I](
       tup: Tuple9[A, B, C, D, E, F, G, H, I]) {
-    def :+[J](other: J) = {
+    def :+[J](other: J) =
       (
         tup._1,
         tup._2,
@@ -2675,8 +2451,7 @@ trait GeneratedTupleAdders {
         tup._8,
         tup._9,
         other)
-    }
-    def +:[J](other: J) = {
+    def +:[J](other: J) =
       (
         other,
         tup._1,
@@ -2688,9 +2463,8 @@ trait GeneratedTupleAdders {
         tup._7,
         tup._8,
         tup._9)
-    }
 
-    def ++[J](other: Tuple1[J]) = {
+    def ++[J](other: Tuple1[J]) =
       (
         tup._1,
         tup._2,
@@ -2702,9 +2476,8 @@ trait GeneratedTupleAdders {
         tup._8,
         tup._9,
         other._1)
-    }
 
-    def ++[J, K](other: Tuple2[J, K]) = {
+    def ++[J, K](other: Tuple2[J, K]) =
       (
         tup._1,
         tup._2,
@@ -2717,9 +2490,8 @@ trait GeneratedTupleAdders {
         tup._9,
         other._1,
         other._2)
-    }
 
-    def ++[J, K, L](other: Tuple3[J, K, L]) = {
+    def ++[J, K, L](other: Tuple3[J, K, L]) =
       (
         tup._1,
         tup._2,
@@ -2733,9 +2505,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[J, K, L, M](other: Tuple4[J, K, L, M]) = {
+    def ++[J, K, L, M](other: Tuple4[J, K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -2750,9 +2521,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[J, K, L, M, N](other: Tuple5[J, K, L, M, N]) = {
+    def ++[J, K, L, M, N](other: Tuple5[J, K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -2768,9 +2538,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[J, K, L, M, N, O](other: Tuple6[J, K, L, M, N, O]) = {
+    def ++[J, K, L, M, N, O](other: Tuple6[J, K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -2787,9 +2556,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[J, K, L, M, N, O, P](other: Tuple7[J, K, L, M, N, O, P]) = {
+    def ++[J, K, L, M, N, O, P](other: Tuple7[J, K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -2807,9 +2575,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[J, K, L, M, N, O, P, Q](other: Tuple8[J, K, L, M, N, O, P, Q]) = {
+    def ++[J, K, L, M, N, O, P, Q](other: Tuple8[J, K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -2828,10 +2595,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[J, K, L, M, N, O, P, Q, R](
-        other: Tuple9[J, K, L, M, N, O, P, Q, R]) = {
+        other: Tuple9[J, K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -2851,10 +2617,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[J, K, L, M, N, O, P, Q, R, S](
-        other: Tuple10[J, K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple10[J, K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -2875,10 +2640,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[J, K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple11[J, K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple11[J, K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -2900,10 +2664,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[J, K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple12[J, K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple12[J, K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -2926,10 +2689,9 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
 
     def ++[J, K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple13[J, K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple13[J, K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -2953,7 +2715,6 @@ trait GeneratedTupleAdders {
         other._11,
         other._12,
         other._13)
-    }
   }
 
   implicit def tup9ToAdder[A, B, C, D, E, F, G, H, I](
@@ -2961,7 +2722,7 @@ trait GeneratedTupleAdders {
 
   class Tuple10Adder[A, B, C, D, E, F, G, H, I, J](
       tup: Tuple10[A, B, C, D, E, F, G, H, I, J]) {
-    def :+[K](other: K) = {
+    def :+[K](other: K) =
       (
         tup._1,
         tup._2,
@@ -2974,8 +2735,7 @@ trait GeneratedTupleAdders {
         tup._9,
         tup._10,
         other)
-    }
-    def +:[K](other: K) = {
+    def +:[K](other: K) =
       (
         other,
         tup._1,
@@ -2988,9 +2748,8 @@ trait GeneratedTupleAdders {
         tup._8,
         tup._9,
         tup._10)
-    }
 
-    def ++[K](other: Tuple1[K]) = {
+    def ++[K](other: Tuple1[K]) =
       (
         tup._1,
         tup._2,
@@ -3003,9 +2762,8 @@ trait GeneratedTupleAdders {
         tup._9,
         tup._10,
         other._1)
-    }
 
-    def ++[K, L](other: Tuple2[K, L]) = {
+    def ++[K, L](other: Tuple2[K, L]) =
       (
         tup._1,
         tup._2,
@@ -3019,9 +2777,8 @@ trait GeneratedTupleAdders {
         tup._10,
         other._1,
         other._2)
-    }
 
-    def ++[K, L, M](other: Tuple3[K, L, M]) = {
+    def ++[K, L, M](other: Tuple3[K, L, M]) =
       (
         tup._1,
         tup._2,
@@ -3036,9 +2793,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[K, L, M, N](other: Tuple4[K, L, M, N]) = {
+    def ++[K, L, M, N](other: Tuple4[K, L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -3054,9 +2810,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[K, L, M, N, O](other: Tuple5[K, L, M, N, O]) = {
+    def ++[K, L, M, N, O](other: Tuple5[K, L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -3073,9 +2828,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[K, L, M, N, O, P](other: Tuple6[K, L, M, N, O, P]) = {
+    def ++[K, L, M, N, O, P](other: Tuple6[K, L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -3093,9 +2847,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[K, L, M, N, O, P, Q](other: Tuple7[K, L, M, N, O, P, Q]) = {
+    def ++[K, L, M, N, O, P, Q](other: Tuple7[K, L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -3114,9 +2867,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[K, L, M, N, O, P, Q, R](other: Tuple8[K, L, M, N, O, P, Q, R]) = {
+    def ++[K, L, M, N, O, P, Q, R](other: Tuple8[K, L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -3136,10 +2888,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[K, L, M, N, O, P, Q, R, S](
-        other: Tuple9[K, L, M, N, O, P, Q, R, S]) = {
+        other: Tuple9[K, L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -3160,10 +2911,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[K, L, M, N, O, P, Q, R, S, T](
-        other: Tuple10[K, L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple10[K, L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -3185,10 +2935,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[K, L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple11[K, L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple11[K, L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -3211,10 +2960,9 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
 
     def ++[K, L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple12[K, L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple12[K, L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -3238,7 +2986,6 @@ trait GeneratedTupleAdders {
         other._10,
         other._11,
         other._12)
-    }
   }
 
   implicit def tup10ToAdder[A, B, C, D, E, F, G, H, I, J](
@@ -3246,7 +2993,7 @@ trait GeneratedTupleAdders {
 
   class Tuple11Adder[A, B, C, D, E, F, G, H, I, J, K](
       tup: Tuple11[A, B, C, D, E, F, G, H, I, J, K]) {
-    def :+[L](other: L) = {
+    def :+[L](other: L) =
       (
         tup._1,
         tup._2,
@@ -3260,8 +3007,7 @@ trait GeneratedTupleAdders {
         tup._10,
         tup._11,
         other)
-    }
-    def +:[L](other: L) = {
+    def +:[L](other: L) =
       (
         other,
         tup._1,
@@ -3275,9 +3021,8 @@ trait GeneratedTupleAdders {
         tup._9,
         tup._10,
         tup._11)
-    }
 
-    def ++[L](other: Tuple1[L]) = {
+    def ++[L](other: Tuple1[L]) =
       (
         tup._1,
         tup._2,
@@ -3291,9 +3036,8 @@ trait GeneratedTupleAdders {
         tup._10,
         tup._11,
         other._1)
-    }
 
-    def ++[L, M](other: Tuple2[L, M]) = {
+    def ++[L, M](other: Tuple2[L, M]) =
       (
         tup._1,
         tup._2,
@@ -3308,9 +3052,8 @@ trait GeneratedTupleAdders {
         tup._11,
         other._1,
         other._2)
-    }
 
-    def ++[L, M, N](other: Tuple3[L, M, N]) = {
+    def ++[L, M, N](other: Tuple3[L, M, N]) =
       (
         tup._1,
         tup._2,
@@ -3326,9 +3069,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[L, M, N, O](other: Tuple4[L, M, N, O]) = {
+    def ++[L, M, N, O](other: Tuple4[L, M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -3345,9 +3087,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[L, M, N, O, P](other: Tuple5[L, M, N, O, P]) = {
+    def ++[L, M, N, O, P](other: Tuple5[L, M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -3365,9 +3106,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[L, M, N, O, P, Q](other: Tuple6[L, M, N, O, P, Q]) = {
+    def ++[L, M, N, O, P, Q](other: Tuple6[L, M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -3386,9 +3126,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[L, M, N, O, P, Q, R](other: Tuple7[L, M, N, O, P, Q, R]) = {
+    def ++[L, M, N, O, P, Q, R](other: Tuple7[L, M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -3408,9 +3147,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[L, M, N, O, P, Q, R, S](other: Tuple8[L, M, N, O, P, Q, R, S]) = {
+    def ++[L, M, N, O, P, Q, R, S](other: Tuple8[L, M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -3431,10 +3169,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[L, M, N, O, P, Q, R, S, T](
-        other: Tuple9[L, M, N, O, P, Q, R, S, T]) = {
+        other: Tuple9[L, M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -3456,10 +3193,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[L, M, N, O, P, Q, R, S, T, U](
-        other: Tuple10[L, M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple10[L, M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -3482,10 +3218,9 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
 
     def ++[L, M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple11[L, M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple11[L, M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -3509,7 +3244,6 @@ trait GeneratedTupleAdders {
         other._9,
         other._10,
         other._11)
-    }
   }
 
   implicit def tup11ToAdder[A, B, C, D, E, F, G, H, I, J, K](
@@ -3517,7 +3251,7 @@ trait GeneratedTupleAdders {
 
   class Tuple12Adder[A, B, C, D, E, F, G, H, I, J, K, L](
       tup: Tuple12[A, B, C, D, E, F, G, H, I, J, K, L]) {
-    def :+[M](other: M) = {
+    def :+[M](other: M) =
       (
         tup._1,
         tup._2,
@@ -3532,8 +3266,7 @@ trait GeneratedTupleAdders {
         tup._11,
         tup._12,
         other)
-    }
-    def +:[M](other: M) = {
+    def +:[M](other: M) =
       (
         other,
         tup._1,
@@ -3548,9 +3281,8 @@ trait GeneratedTupleAdders {
         tup._10,
         tup._11,
         tup._12)
-    }
 
-    def ++[M](other: Tuple1[M]) = {
+    def ++[M](other: Tuple1[M]) =
       (
         tup._1,
         tup._2,
@@ -3565,9 +3297,8 @@ trait GeneratedTupleAdders {
         tup._11,
         tup._12,
         other._1)
-    }
 
-    def ++[M, N](other: Tuple2[M, N]) = {
+    def ++[M, N](other: Tuple2[M, N]) =
       (
         tup._1,
         tup._2,
@@ -3583,9 +3314,8 @@ trait GeneratedTupleAdders {
         tup._12,
         other._1,
         other._2)
-    }
 
-    def ++[M, N, O](other: Tuple3[M, N, O]) = {
+    def ++[M, N, O](other: Tuple3[M, N, O]) =
       (
         tup._1,
         tup._2,
@@ -3602,9 +3332,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[M, N, O, P](other: Tuple4[M, N, O, P]) = {
+    def ++[M, N, O, P](other: Tuple4[M, N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -3622,9 +3351,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[M, N, O, P, Q](other: Tuple5[M, N, O, P, Q]) = {
+    def ++[M, N, O, P, Q](other: Tuple5[M, N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -3643,9 +3371,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[M, N, O, P, Q, R](other: Tuple6[M, N, O, P, Q, R]) = {
+    def ++[M, N, O, P, Q, R](other: Tuple6[M, N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -3665,9 +3392,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[M, N, O, P, Q, R, S](other: Tuple7[M, N, O, P, Q, R, S]) = {
+    def ++[M, N, O, P, Q, R, S](other: Tuple7[M, N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -3688,9 +3414,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[M, N, O, P, Q, R, S, T](other: Tuple8[M, N, O, P, Q, R, S, T]) = {
+    def ++[M, N, O, P, Q, R, S, T](other: Tuple8[M, N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -3712,10 +3437,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[M, N, O, P, Q, R, S, T, U](
-        other: Tuple9[M, N, O, P, Q, R, S, T, U]) = {
+        other: Tuple9[M, N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -3738,10 +3462,9 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
 
     def ++[M, N, O, P, Q, R, S, T, U, V](
-        other: Tuple10[M, N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple10[M, N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -3765,7 +3488,6 @@ trait GeneratedTupleAdders {
         other._8,
         other._9,
         other._10)
-    }
   }
 
   implicit def tup12ToAdder[A, B, C, D, E, F, G, H, I, J, K, L](
@@ -3773,7 +3495,7 @@ trait GeneratedTupleAdders {
 
   class Tuple13Adder[A, B, C, D, E, F, G, H, I, J, K, L, M](
       tup: Tuple13[A, B, C, D, E, F, G, H, I, J, K, L, M]) {
-    def :+[N](other: N) = {
+    def :+[N](other: N) =
       (
         tup._1,
         tup._2,
@@ -3789,8 +3511,7 @@ trait GeneratedTupleAdders {
         tup._12,
         tup._13,
         other)
-    }
-    def +:[N](other: N) = {
+    def +:[N](other: N) =
       (
         other,
         tup._1,
@@ -3806,9 +3527,8 @@ trait GeneratedTupleAdders {
         tup._11,
         tup._12,
         tup._13)
-    }
 
-    def ++[N](other: Tuple1[N]) = {
+    def ++[N](other: Tuple1[N]) =
       (
         tup._1,
         tup._2,
@@ -3824,9 +3544,8 @@ trait GeneratedTupleAdders {
         tup._12,
         tup._13,
         other._1)
-    }
 
-    def ++[N, O](other: Tuple2[N, O]) = {
+    def ++[N, O](other: Tuple2[N, O]) =
       (
         tup._1,
         tup._2,
@@ -3843,9 +3562,8 @@ trait GeneratedTupleAdders {
         tup._13,
         other._1,
         other._2)
-    }
 
-    def ++[N, O, P](other: Tuple3[N, O, P]) = {
+    def ++[N, O, P](other: Tuple3[N, O, P]) =
       (
         tup._1,
         tup._2,
@@ -3863,9 +3581,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[N, O, P, Q](other: Tuple4[N, O, P, Q]) = {
+    def ++[N, O, P, Q](other: Tuple4[N, O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -3884,9 +3601,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[N, O, P, Q, R](other: Tuple5[N, O, P, Q, R]) = {
+    def ++[N, O, P, Q, R](other: Tuple5[N, O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -3906,9 +3622,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[N, O, P, Q, R, S](other: Tuple6[N, O, P, Q, R, S]) = {
+    def ++[N, O, P, Q, R, S](other: Tuple6[N, O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -3929,9 +3644,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[N, O, P, Q, R, S, T](other: Tuple7[N, O, P, Q, R, S, T]) = {
+    def ++[N, O, P, Q, R, S, T](other: Tuple7[N, O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -3953,9 +3667,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[N, O, P, Q, R, S, T, U](other: Tuple8[N, O, P, Q, R, S, T, U]) = {
+    def ++[N, O, P, Q, R, S, T, U](other: Tuple8[N, O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -3978,10 +3691,9 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
 
     def ++[N, O, P, Q, R, S, T, U, V](
-        other: Tuple9[N, O, P, Q, R, S, T, U, V]) = {
+        other: Tuple9[N, O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4005,7 +3717,6 @@ trait GeneratedTupleAdders {
         other._7,
         other._8,
         other._9)
-    }
   }
 
   implicit def tup13ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M](
@@ -4014,7 +3725,7 @@ trait GeneratedTupleAdders {
 
   class Tuple14Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N](
       tup: Tuple14[A, B, C, D, E, F, G, H, I, J, K, L, M, N]) {
-    def :+[O](other: O) = {
+    def :+[O](other: O) =
       (
         tup._1,
         tup._2,
@@ -4031,8 +3742,7 @@ trait GeneratedTupleAdders {
         tup._13,
         tup._14,
         other)
-    }
-    def +:[O](other: O) = {
+    def +:[O](other: O) =
       (
         other,
         tup._1,
@@ -4049,9 +3759,8 @@ trait GeneratedTupleAdders {
         tup._12,
         tup._13,
         tup._14)
-    }
 
-    def ++[O](other: Tuple1[O]) = {
+    def ++[O](other: Tuple1[O]) =
       (
         tup._1,
         tup._2,
@@ -4068,9 +3777,8 @@ trait GeneratedTupleAdders {
         tup._13,
         tup._14,
         other._1)
-    }
 
-    def ++[O, P](other: Tuple2[O, P]) = {
+    def ++[O, P](other: Tuple2[O, P]) =
       (
         tup._1,
         tup._2,
@@ -4088,9 +3796,8 @@ trait GeneratedTupleAdders {
         tup._14,
         other._1,
         other._2)
-    }
 
-    def ++[O, P, Q](other: Tuple3[O, P, Q]) = {
+    def ++[O, P, Q](other: Tuple3[O, P, Q]) =
       (
         tup._1,
         tup._2,
@@ -4109,9 +3816,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[O, P, Q, R](other: Tuple4[O, P, Q, R]) = {
+    def ++[O, P, Q, R](other: Tuple4[O, P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -4131,9 +3837,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[O, P, Q, R, S](other: Tuple5[O, P, Q, R, S]) = {
+    def ++[O, P, Q, R, S](other: Tuple5[O, P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -4154,9 +3859,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[O, P, Q, R, S, T](other: Tuple6[O, P, Q, R, S, T]) = {
+    def ++[O, P, Q, R, S, T](other: Tuple6[O, P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -4178,9 +3882,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[O, P, Q, R, S, T, U](other: Tuple7[O, P, Q, R, S, T, U]) = {
+    def ++[O, P, Q, R, S, T, U](other: Tuple7[O, P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -4203,9 +3906,8 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
 
-    def ++[O, P, Q, R, S, T, U, V](other: Tuple8[O, P, Q, R, S, T, U, V]) = {
+    def ++[O, P, Q, R, S, T, U, V](other: Tuple8[O, P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4229,7 +3931,6 @@ trait GeneratedTupleAdders {
         other._6,
         other._7,
         other._8)
-    }
   }
 
   implicit def tup14ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M, N](
@@ -4238,7 +3939,7 @@ trait GeneratedTupleAdders {
 
   class Tuple15Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
       tup: Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]) {
-    def :+[P](other: P) = {
+    def :+[P](other: P) =
       (
         tup._1,
         tup._2,
@@ -4256,8 +3957,7 @@ trait GeneratedTupleAdders {
         tup._14,
         tup._15,
         other)
-    }
-    def +:[P](other: P) = {
+    def +:[P](other: P) =
       (
         other,
         tup._1,
@@ -4275,9 +3975,8 @@ trait GeneratedTupleAdders {
         tup._13,
         tup._14,
         tup._15)
-    }
 
-    def ++[P](other: Tuple1[P]) = {
+    def ++[P](other: Tuple1[P]) =
       (
         tup._1,
         tup._2,
@@ -4295,9 +3994,8 @@ trait GeneratedTupleAdders {
         tup._14,
         tup._15,
         other._1)
-    }
 
-    def ++[P, Q](other: Tuple2[P, Q]) = {
+    def ++[P, Q](other: Tuple2[P, Q]) =
       (
         tup._1,
         tup._2,
@@ -4316,9 +4014,8 @@ trait GeneratedTupleAdders {
         tup._15,
         other._1,
         other._2)
-    }
 
-    def ++[P, Q, R](other: Tuple3[P, Q, R]) = {
+    def ++[P, Q, R](other: Tuple3[P, Q, R]) =
       (
         tup._1,
         tup._2,
@@ -4338,9 +4035,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[P, Q, R, S](other: Tuple4[P, Q, R, S]) = {
+    def ++[P, Q, R, S](other: Tuple4[P, Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -4361,9 +4057,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[P, Q, R, S, T](other: Tuple5[P, Q, R, S, T]) = {
+    def ++[P, Q, R, S, T](other: Tuple5[P, Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -4385,9 +4080,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[P, Q, R, S, T, U](other: Tuple6[P, Q, R, S, T, U]) = {
+    def ++[P, Q, R, S, T, U](other: Tuple6[P, Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -4410,9 +4104,8 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
 
-    def ++[P, Q, R, S, T, U, V](other: Tuple7[P, Q, R, S, T, U, V]) = {
+    def ++[P, Q, R, S, T, U, V](other: Tuple7[P, Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4436,7 +4129,6 @@ trait GeneratedTupleAdders {
         other._5,
         other._6,
         other._7)
-    }
   }
 
   implicit def tup15ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
@@ -4445,7 +4137,7 @@ trait GeneratedTupleAdders {
 
   class Tuple16Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
       tup: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]) {
-    def :+[Q](other: Q) = {
+    def :+[Q](other: Q) =
       (
         tup._1,
         tup._2,
@@ -4464,8 +4156,7 @@ trait GeneratedTupleAdders {
         tup._15,
         tup._16,
         other)
-    }
-    def +:[Q](other: Q) = {
+    def +:[Q](other: Q) =
       (
         other,
         tup._1,
@@ -4484,9 +4175,8 @@ trait GeneratedTupleAdders {
         tup._14,
         tup._15,
         tup._16)
-    }
 
-    def ++[Q](other: Tuple1[Q]) = {
+    def ++[Q](other: Tuple1[Q]) =
       (
         tup._1,
         tup._2,
@@ -4505,9 +4195,8 @@ trait GeneratedTupleAdders {
         tup._15,
         tup._16,
         other._1)
-    }
 
-    def ++[Q, R](other: Tuple2[Q, R]) = {
+    def ++[Q, R](other: Tuple2[Q, R]) =
       (
         tup._1,
         tup._2,
@@ -4527,9 +4216,8 @@ trait GeneratedTupleAdders {
         tup._16,
         other._1,
         other._2)
-    }
 
-    def ++[Q, R, S](other: Tuple3[Q, R, S]) = {
+    def ++[Q, R, S](other: Tuple3[Q, R, S]) =
       (
         tup._1,
         tup._2,
@@ -4550,9 +4238,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[Q, R, S, T](other: Tuple4[Q, R, S, T]) = {
+    def ++[Q, R, S, T](other: Tuple4[Q, R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -4574,9 +4261,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[Q, R, S, T, U](other: Tuple5[Q, R, S, T, U]) = {
+    def ++[Q, R, S, T, U](other: Tuple5[Q, R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -4599,9 +4285,8 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
 
-    def ++[Q, R, S, T, U, V](other: Tuple6[Q, R, S, T, U, V]) = {
+    def ++[Q, R, S, T, U, V](other: Tuple6[Q, R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4625,7 +4310,6 @@ trait GeneratedTupleAdders {
         other._4,
         other._5,
         other._6)
-    }
   }
 
   implicit def tup16ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
@@ -4634,7 +4318,7 @@ trait GeneratedTupleAdders {
 
   class Tuple17Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
       tup: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]) {
-    def :+[R](other: R) = {
+    def :+[R](other: R) =
       (
         tup._1,
         tup._2,
@@ -4654,8 +4338,7 @@ trait GeneratedTupleAdders {
         tup._16,
         tup._17,
         other)
-    }
-    def +:[R](other: R) = {
+    def +:[R](other: R) =
       (
         other,
         tup._1,
@@ -4675,9 +4358,8 @@ trait GeneratedTupleAdders {
         tup._15,
         tup._16,
         tup._17)
-    }
 
-    def ++[R](other: Tuple1[R]) = {
+    def ++[R](other: Tuple1[R]) =
       (
         tup._1,
         tup._2,
@@ -4697,9 +4379,8 @@ trait GeneratedTupleAdders {
         tup._16,
         tup._17,
         other._1)
-    }
 
-    def ++[R, S](other: Tuple2[R, S]) = {
+    def ++[R, S](other: Tuple2[R, S]) =
       (
         tup._1,
         tup._2,
@@ -4720,9 +4401,8 @@ trait GeneratedTupleAdders {
         tup._17,
         other._1,
         other._2)
-    }
 
-    def ++[R, S, T](other: Tuple3[R, S, T]) = {
+    def ++[R, S, T](other: Tuple3[R, S, T]) =
       (
         tup._1,
         tup._2,
@@ -4744,9 +4424,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[R, S, T, U](other: Tuple4[R, S, T, U]) = {
+    def ++[R, S, T, U](other: Tuple4[R, S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -4769,9 +4448,8 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
 
-    def ++[R, S, T, U, V](other: Tuple5[R, S, T, U, V]) = {
+    def ++[R, S, T, U, V](other: Tuple5[R, S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4795,7 +4473,6 @@ trait GeneratedTupleAdders {
         other._3,
         other._4,
         other._5)
-    }
   }
 
   implicit def tup17ToAdder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q](
@@ -4804,7 +4481,7 @@ trait GeneratedTupleAdders {
 
   class Tuple18Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R](
       tup: Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]) {
-    def :+[S](other: S) = {
+    def :+[S](other: S) =
       (
         tup._1,
         tup._2,
@@ -4825,8 +4502,7 @@ trait GeneratedTupleAdders {
         tup._17,
         tup._18,
         other)
-    }
-    def +:[S](other: S) = {
+    def +:[S](other: S) =
       (
         other,
         tup._1,
@@ -4847,9 +4523,8 @@ trait GeneratedTupleAdders {
         tup._16,
         tup._17,
         tup._18)
-    }
 
-    def ++[S](other: Tuple1[S]) = {
+    def ++[S](other: Tuple1[S]) =
       (
         tup._1,
         tup._2,
@@ -4870,9 +4545,8 @@ trait GeneratedTupleAdders {
         tup._17,
         tup._18,
         other._1)
-    }
 
-    def ++[S, T](other: Tuple2[S, T]) = {
+    def ++[S, T](other: Tuple2[S, T]) =
       (
         tup._1,
         tup._2,
@@ -4894,9 +4568,8 @@ trait GeneratedTupleAdders {
         tup._18,
         other._1,
         other._2)
-    }
 
-    def ++[S, T, U](other: Tuple3[S, T, U]) = {
+    def ++[S, T, U](other: Tuple3[S, T, U]) =
       (
         tup._1,
         tup._2,
@@ -4919,9 +4592,8 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
 
-    def ++[S, T, U, V](other: Tuple4[S, T, U, V]) = {
+    def ++[S, T, U, V](other: Tuple4[S, T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -4945,7 +4617,6 @@ trait GeneratedTupleAdders {
         other._2,
         other._3,
         other._4)
-    }
   }
 
   implicit def tup18ToAdder[
@@ -4971,7 +4642,7 @@ trait GeneratedTupleAdders {
 
   class Tuple19Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
       tup: Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]) {
-    def :+[T](other: T) = {
+    def :+[T](other: T) =
       (
         tup._1,
         tup._2,
@@ -4993,8 +4664,7 @@ trait GeneratedTupleAdders {
         tup._18,
         tup._19,
         other)
-    }
-    def +:[T](other: T) = {
+    def +:[T](other: T) =
       (
         other,
         tup._1,
@@ -5016,9 +4686,8 @@ trait GeneratedTupleAdders {
         tup._17,
         tup._18,
         tup._19)
-    }
 
-    def ++[T](other: Tuple1[T]) = {
+    def ++[T](other: Tuple1[T]) =
       (
         tup._1,
         tup._2,
@@ -5040,9 +4709,8 @@ trait GeneratedTupleAdders {
         tup._18,
         tup._19,
         other._1)
-    }
 
-    def ++[T, U](other: Tuple2[T, U]) = {
+    def ++[T, U](other: Tuple2[T, U]) =
       (
         tup._1,
         tup._2,
@@ -5065,9 +4733,8 @@ trait GeneratedTupleAdders {
         tup._19,
         other._1,
         other._2)
-    }
 
-    def ++[T, U, V](other: Tuple3[T, U, V]) = {
+    def ++[T, U, V](other: Tuple3[T, U, V]) =
       (
         tup._1,
         tup._2,
@@ -5091,7 +4758,6 @@ trait GeneratedTupleAdders {
         other._1,
         other._2,
         other._3)
-    }
   }
 
   implicit def tup19ToAdder[
@@ -5119,7 +4785,7 @@ trait GeneratedTupleAdders {
 
   class Tuple20Adder[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
       tup: Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]) {
-    def :+[U](other: U) = {
+    def :+[U](other: U) =
       (
         tup._1,
         tup._2,
@@ -5142,8 +4808,7 @@ trait GeneratedTupleAdders {
         tup._19,
         tup._20,
         other)
-    }
-    def +:[U](other: U) = {
+    def +:[U](other: U) =
       (
         other,
         tup._1,
@@ -5166,9 +4831,8 @@ trait GeneratedTupleAdders {
         tup._18,
         tup._19,
         tup._20)
-    }
 
-    def ++[U](other: Tuple1[U]) = {
+    def ++[U](other: Tuple1[U]) =
       (
         tup._1,
         tup._2,
@@ -5191,9 +4855,8 @@ trait GeneratedTupleAdders {
         tup._19,
         tup._20,
         other._1)
-    }
 
-    def ++[U, V](other: Tuple2[U, V]) = {
+    def ++[U, V](other: Tuple2[U, V]) =
       (
         tup._1,
         tup._2,
@@ -5217,7 +4880,6 @@ trait GeneratedTupleAdders {
         tup._20,
         other._1,
         other._2)
-    }
   }
 
   implicit def tup20ToAdder[
@@ -5287,7 +4949,7 @@ trait GeneratedTupleAdders {
         S,
         T,
         U]) {
-    def :+[V](other: V) = {
+    def :+[V](other: V) =
       (
         tup._1,
         tup._2,
@@ -5311,8 +4973,7 @@ trait GeneratedTupleAdders {
         tup._20,
         tup._21,
         other)
-    }
-    def +:[V](other: V) = {
+    def +:[V](other: V) =
       (
         other,
         tup._1,
@@ -5336,9 +4997,8 @@ trait GeneratedTupleAdders {
         tup._19,
         tup._20,
         tup._21)
-    }
 
-    def ++[V](other: Tuple1[V]) = {
+    def ++[V](other: Tuple1[V]) =
       (
         tup._1,
         tup._2,
@@ -5362,7 +5022,6 @@ trait GeneratedTupleAdders {
         tup._20,
         tup._21,
         other._1)
-    }
   }
 
   implicit def tup21ToAdder[

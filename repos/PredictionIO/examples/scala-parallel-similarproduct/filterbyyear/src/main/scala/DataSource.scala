@@ -41,8 +41,8 @@ class DataSource(val dsp: DataSourceParams)
             } catch {
               case e: Exception => {
                 logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" user ${entityId}. Exception: ${e}.")
+                  s"Failed to get properties $properties of" +
+                    s" user $entityId. Exception: $e.")
                 throw e
               }
             }
@@ -67,8 +67,8 @@ class DataSource(val dsp: DataSourceParams)
             } catch {
               case e: Exception => {
                 logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" item ${entityId}. Exception: ${e}.")
+                  s"Failed to get properties $properties of" +
+                    s" item $entityId. Exception: $e.")
                 throw e
               }
             }
@@ -96,13 +96,13 @@ class DataSource(val dsp: DataSourceParams)
                   item = event.targetEntityId.get,
                   t = event.eventTime.getMillis)
               case _ =>
-                throw new Exception(s"Unexpected event ${event} is read.")
+                throw new Exception(s"Unexpected event $event is read.")
             }
           } catch {
             case e: Exception => {
               logger.error(
-                s"Cannot convert ${event} to ViewEvent." +
-                  s" Exception: ${e}.")
+                s"Cannot convert $event to ViewEvent." +
+                  s" Exception: $e.")
               throw e
             }
           }
@@ -129,9 +129,8 @@ class TrainingData(
     val items: RDD[(String, Item)],
     val viewEvents: RDD[ViewEvent]
 ) extends Serializable {
-  override def toString = {
+  override def toString =
     s"users: [${users.count()} (${users.take(2).toList}...)]" +
       s"items: [${items.count()} (${items.take(2).toList}...)]" +
       s"viewEvents: [${viewEvents.count()}] (${viewEvents.take(2).toList}...)"
-  }
 }

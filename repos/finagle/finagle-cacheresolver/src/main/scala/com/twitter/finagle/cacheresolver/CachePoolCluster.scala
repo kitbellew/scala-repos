@@ -51,7 +51,7 @@ class TwitterCacheResolverException(msg: String) extends Exception(msg)
 class TwitterCacheResolver extends Resolver {
   val scheme = "twcache"
 
-  def bind(arg: String) = {
+  def bind(arg: String) =
     arg.split("!") match {
       // twcache!<host1>:<port>:<weight>:<key>,<host2>:<port>:<weight>:<key>,<host3>:<port>:<weight>:<key>
       case Array(hosts) =>
@@ -71,7 +71,6 @@ class TwitterCacheResolver extends Resolver {
         throw new TwitterCacheResolverException(
           "Invalid twcache format \"%s\"".format(arg))
     }
-  }
 
   private def toUnresolvedAddr(g: Set[CacheNode]): Addr = {
     val set: Set[Address] = g.map {
@@ -359,7 +358,7 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
     }
   }
 
-  override def applyZKData(data: Array[Byte]): Unit = {
+  override def applyZKData(data: Array[Byte]): Unit =
     if (data != null) {
       val cachePoolConfig =
         CachePoolConfig.jsonCodec.deserialize(new ByteArrayInputStream(data))
@@ -382,7 +381,6 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
       updatePool(newSet)
     }
-  }
 
   /**
     * Wait for the current set to contain expected size of members.
@@ -396,7 +394,7 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
       currentSet: Set[CacheNode],
       expectedSize: Int,
       spoolChanges: Future[Spool[Cluster.Change[CacheNode]]]
-  ): Future[Set[CacheNode]] = {
+  ): Future[Set[CacheNode]] =
     if (expectedSize == currentSet.size) {
       Future.value(currentSet)
     } else
@@ -410,7 +408,6 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
             waitForClusterComplete(currentSet - node, expectedSize, tail)
         }
       }
-  }
 }
 
 /**

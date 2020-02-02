@@ -156,7 +156,7 @@ class VarianceTest extends SimpleTestCase {
     }
   }
 
-  def testSCL8863() = {
+  def testSCL8863() =
     assertMatches(messages("""
         |class Test[+T]{
         |  var arr: Array[T@uncheckedVariance] = null
@@ -164,9 +164,8 @@ class VarianceTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
-  def testUV() = {
+  def testUV() =
     assertMatches(
       messages("""
         |import scala.annotation.unchecked.{ uncheckedVariance => uV }
@@ -177,7 +176,6 @@ class VarianceTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)
       : List[Message] = {

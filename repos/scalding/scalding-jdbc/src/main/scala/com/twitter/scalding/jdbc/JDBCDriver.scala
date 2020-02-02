@@ -49,7 +49,7 @@ trait MysqlDriver extends JdbcDriver with MysqlTableCreationImplicits {
       columnNames: Array[ColumnName],
       filterCondition: Option[String],
       updateBy: Iterable[String],
-      replaceOnInsert: Boolean) = {
+      replaceOnInsert: Boolean) =
     new MySqlScheme(
       null, // inputFormatClass
       columnNames.map(_.get),
@@ -57,7 +57,6 @@ trait MysqlDriver extends JdbcDriver with MysqlTableCreationImplicits {
       filterCondition.orNull,
       updateBy.toArray,
       replaceOnInsert)
-  }
 }
 
 trait HsqlDbDriver extends JdbcDriver {

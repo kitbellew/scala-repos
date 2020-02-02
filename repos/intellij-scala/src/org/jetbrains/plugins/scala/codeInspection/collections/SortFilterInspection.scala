@@ -17,7 +17,7 @@ object SortFilter extends SimplificationType {
 
   def hint = InspectionBundle.message("sort.filter.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.sort` () `.filter` (pred) if !hasSideEffects(pred) =>
         swapLastTwoMethods(expr)
@@ -25,7 +25,6 @@ object SortFilter extends SimplificationType {
         swapLastTwoMethods(expr)
       case _ => None
     }
-  }
 
   def swapLastTwoMethods(expr: ScExpression): Option[Simplification] = {
     def refWithArgumentsText(method: MethodRepr): Option[String] =

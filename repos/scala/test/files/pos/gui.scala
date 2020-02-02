@@ -45,7 +45,7 @@ object GUI {
   class Label(scr: Screen, p: Geom.Point, name: String) extends Glyph {
     private var origin = p
     def getRect = Geom.Rectangle(origin, origin).inset(10);
-    def setLoc(p: Geom.Point) = { origin = p }
+    def setLoc(p: Geom.Point) = origin = p
   }
 
   trait Ctl {

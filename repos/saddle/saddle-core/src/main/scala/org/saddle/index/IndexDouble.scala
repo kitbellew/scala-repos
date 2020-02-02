@@ -78,9 +78,8 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
     JoinerImpl.join(this, other, OuterJoin)
   }
 
-  def slice(from: Int, until: Int, stride: Int): Index[Double] = {
+  def slice(from: Int, until: Int, stride: Int): Index[Double] =
     new IndexDouble(keys.slice(from, until, stride))
-  }
 
   // find the first location whereby an insertion would maintain a sorted index
   def lsearch(t: Double): Int = {
@@ -113,7 +112,7 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
   def toArray: Array[Double] = keys.toArray
 
   /** Default equality does an iterative, element-wise equality check of all values. */
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case rv: IndexDouble =>
         (this eq rv) || (this.length == rv.length) && {
@@ -127,5 +126,4 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
         }
       case _ => super.equals(o)
     }
-  }
 }

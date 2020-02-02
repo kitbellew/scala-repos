@@ -78,7 +78,7 @@ final class VirtualFileMaterializer(singleDir: Boolean = false) {
         throw new IllegalStateException(
           "Failed to create directory within " +
             s"$TempDirAttempts attempts (tried ${baseName}0 to " +
-            s"${baseName}${TempDirAttempts - 1})")
+            s"$baseName${TempDirAttempts - 1})")
       }
     }
 

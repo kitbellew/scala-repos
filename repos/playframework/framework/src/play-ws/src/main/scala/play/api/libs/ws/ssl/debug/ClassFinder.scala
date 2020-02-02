@@ -32,18 +32,18 @@ trait ClassFinder {
   def isValidClass(className: String): Boolean
 
   def findClasses: Set[Class[_]] = {
-    logger.debug(s"findClasses: using initialResource = ${initialResource}")
+    logger.debug(s"findClasses: using initialResource = $initialResource")
 
     val classSet = scala.collection.mutable.Set[Class[_]]()
     val classLoader: ClassLoader = Thread.currentThread.getContextClassLoader
 
     val urlToSource: URL = this.getClass.getResource(initialResource)
-    logger.debug(s"findClasses: urlToSource = ${urlToSource}")
+    logger.debug(s"findClasses: urlToSource = $urlToSource")
 
     val parts: Array[String] = urlToSource.toString.split("!")
     val jarURLString: String = parts(0).replace("jar:", "")
 
-    logger.debug(s"findClasses: Loading from ${jarURLString}")
+    logger.debug(s"findClasses: Loading from $jarURLString")
 
     val jar: URL = new URL(jarURLString)
     val jarConnection: URLConnection = jar.openConnection

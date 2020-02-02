@@ -151,7 +151,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       """\{\@(code|docRoot|linkplain|link|literal|value)\p{Zs}*([^}]*)\}""")
 
   /** Maps a javadoc tag to a useful wiki replacement, or an empty string if it cannot be salvaged. */
-  private def javadocReplacement(mtch: Regex.Match): String = {
+  private def javadocReplacement(mtch: Regex.Match): String =
     mtch.group(1) match {
       case "code"      => "<code>" + mtch.group(2) + "</code>"
       case "docRoot"   => ""
@@ -161,7 +161,6 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       case "value"     => "`" + mtch.group(2) + "`"
       case _           => ""
     }
-  }
 
   /** Safe HTML tags that can be kept. */
   private val SafeTags =
@@ -218,13 +217,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /** The cleaned raw comment as a list of lines. Cleaning removes comment
       * start and end markers, line start markers  and unnecessary whitespace. */
     def clean(comment: String): List[String] = {
-      def cleanLine(line: String): String = {
+      def cleanLine(line: String): String =
         // Remove trailing whitespaces
         TrailingWhitespaceRegex.replaceAllIn(line, "") match {
           case CleanCommentLine(ctl) => ctl
           case tl                    => tl
         }
-      }
       val strippedComment = comment.trim.stripPrefix("/*").stripSuffix("*/")
       val safeComment = DangerousTags.replaceAllIn(strippedComment, {
         htmlReplacement(_)
@@ -548,7 +546,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /* BLOCKS */
 
     /** {{{ block ::= code | title | hrule | listBlock | para }}} */
-    def block(): Block = {
+    def block(): Block =
       if (checkSkipInitWhitespace("{{{"))
         code()
       else if (checkSkipInitWhitespace('='))
@@ -560,7 +558,6 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       else {
         para()
       }
-    }
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
@@ -711,7 +708,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     def inline(isInlineEnd: => Boolean): Inline = {
 
-      def inline0(): Inline = {
+      def inline0(): Inline =
         if (char == safeTagMarker) {
           val tag = htmlTag()
           HtmlTag(tag.data + readHTMLFrom(tag))
@@ -729,7 +726,6 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           }
           Text(str)
         }
-      }
 
       val inlines: List[Inline] = {
         val iss = mutable.ListBuffer.empty[Inline]
@@ -887,24 +883,23 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         .mkString("\n")
     }
 
-    def checkParaEnded(): Boolean = {
+    def checkParaEnded(): Boolean =
       (char == endOfText) ||
-      ((char == endOfLine) && {
-        val poff = offset
-        nextChar() // read EOL
-        val ok = {
-          checkSkipInitWhitespace(endOfLine) ||
-          checkSkipInitWhitespace('=') ||
-          checkSkipInitWhitespace("{{{") ||
-          checkList ||
-          checkSkipInitWhitespace('\u003D')
-        }
-        offset = poff
-        ok
-      })
-    }
+        ((char == endOfLine) && {
+          val poff = offset
+          nextChar() // read EOL
+          val ok = {
+            checkSkipInitWhitespace(endOfLine) ||
+            checkSkipInitWhitespace('=') ||
+            checkSkipInitWhitespace("{{{") ||
+            checkList ||
+            checkSkipInitWhitespace('\u003D')
+          }
+          offset = poff
+          ok
+        })
 
-    def checkSentenceEnded(): Boolean = {
+    def checkSentenceEnded(): Boolean =
       (char == '.') && {
         val poff = offset
         nextChar() // read '.'
@@ -912,7 +907,6 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         offset = poff
         ok
       }
-    }
 
     def reportError(pos: Position, message: String) {
       reporter.warning(pos, message)
@@ -972,12 +966,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /** jumps a character and consumes it
       * @return true only if the correct character has been jumped */
-    final def jump(ch: Char): Boolean = {
+    final def jump(ch: Char): Boolean =
       if (char == ch) {
         nextChar()
         true
       } else false
-    }
 
     /** jumps all the characters in chars, consuming them in the process.
       * @return true only if the correct characters have been jumped */
@@ -1020,13 +1013,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /* READERS */
 
-    final def readUntil(c: Char): String = {
+    final def readUntil(c: Char): String =
       withRead {
         while (char != c && char != endOfText) {
           nextChar()
         }
       }
-    }
 
     final def readUntil(chars: String): String = {
       assert(chars.length > 0)
@@ -1039,13 +1031,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
     }
 
-    final def readUntil(pred: => Boolean): String = {
+    final def readUntil(pred: => Boolean): String =
       withRead {
         while (char != endOfText && !pred) {
           nextChar()
         }
       }
-    }
 
     private def withRead(read: => Unit): String = {
       val start = offset

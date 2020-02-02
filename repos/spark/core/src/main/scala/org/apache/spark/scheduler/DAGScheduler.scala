@@ -216,10 +216,9 @@ private[spark] class DAGScheduler(
       reason: TaskEndReason,
       result: Any,
       accumUpdates: Seq[AccumulableInfo],
-      taskInfo: TaskInfo): Unit = {
+      taskInfo: TaskInfo): Unit =
     eventProcessLoop.post(
       CompletionEvent(task, reason, result, accumUpdates, taskInfo))
-  }
 
   /**
     * Update metrics for in-progress tasks and let the master know that the BlockManager is still
@@ -240,16 +239,14 @@ private[spark] class DAGScheduler(
   /**
     * Called by TaskScheduler implementation when an executor fails.
     */
-  def executorLost(execId: String): Unit = {
+  def executorLost(execId: String): Unit =
     eventProcessLoop.post(ExecutorLost(execId))
-  }
 
   /**
     * Called by TaskScheduler implementation when a host is added.
     */
-  def executorAdded(execId: String, host: String): Unit = {
+  def executorAdded(execId: String, host: String): Unit =
     eventProcessLoop.post(ExecutorAdded(execId, host))
-  }
 
   /**
     * Called by the TaskSetManager to cancel an entire TaskSet due to either repeated failures or
@@ -258,9 +255,8 @@ private[spark] class DAGScheduler(
   def taskSetFailed(
       taskSet: TaskSet,
       reason: String,
-      exception: Option[Throwable]): Unit = {
+      exception: Option[Throwable]): Unit =
     eventProcessLoop.post(TaskSetFailed(taskSet, reason, exception))
-  }
 
   private[scheduler] def getCacheLocs(
       rdd: RDD[_]): IndexedSeq[Seq[TaskLocation]] = cacheLocs.synchronized {
@@ -293,7 +289,7 @@ private[spark] class DAGScheduler(
     */
   private def getShuffleMapStage(
       shuffleDep: ShuffleDependency[_, _, _],
-      firstJobId: Int): ShuffleMapStage = {
+      firstJobId: Int): ShuffleMapStage =
     shuffleToMapStage.get(shuffleDep.shuffleId) match {
       case Some(stage) => stage
       case None        =>
@@ -307,7 +303,6 @@ private[spark] class DAGScheduler(
         shuffleToMapStage(shuffleDep.shuffleId) = stage
         stage
     }
-  }
 
   /**
     * Helper function to eliminate some code re-use when creating new stages.
@@ -784,9 +779,8 @@ private[spark] class DAGScheduler(
   /**
     * Cancel all jobs that are running or waiting in the queue.
     */
-  def cancelAllJobs(): Unit = {
+  def cancelAllJobs(): Unit =
     eventProcessLoop.post(AllJobsCancelled)
-  }
 
   private[scheduler] def doCancelAllJobs() {
     // Cancel all running jobs.
@@ -1211,12 +1205,12 @@ private[spark] class DAGScheduler(
 
       val debugString = stage match {
         case stage: ShuffleMapStage =>
-          s"Stage ${stage} is actually done; " +
+          s"Stage $stage is actually done; " +
             s"(available: ${stage.isAvailable}," +
             s"available outputs: ${stage.numAvailableOutputs}," +
             s"partitions: ${stage.numPartitions})"
         case stage: ResultStage =>
-          s"Stage ${stage} is actually done; (partitions: ${stage.numPartitions})"
+          s"Stage $stage is actually done; (partitions: ${stage.numPartitions})"
       }
       logDebug(debugString)
     }
@@ -1456,7 +1450,7 @@ private[spark] class DAGScheduler(
               s"$failedStage (${failedStage.name}) " +
                 s"has failed the maximum allowable number of " +
                 s"times: ${Stage.MAX_CONSECUTIVE_FETCH_FAILURES}. " +
-                s"Most recent failure reason: ${failureMessage}",
+                s"Most recent failure reason: $failureMessage",
               None
             )
           } else if (failedStages.isEmpty) {
@@ -1739,9 +1733,8 @@ private[spark] class DAGScheduler(
     */
   private[spark] def getPreferredLocs(
       rdd: RDD[_],
-      partition: Int): Seq[TaskLocation] = {
+      partition: Int): Seq[TaskLocation] =
     getPreferredLocsInternal(rdd, partition, new HashSet)
-  }
 
   /**
     * Recursive implementation for getPreferredLocs.
@@ -1904,10 +1897,9 @@ private[scheduler] class DAGSchedulerEventProcessLoop(
     dagScheduler.sc.stop()
   }
 
-  override def onStop(): Unit = {
+  override def onStop(): Unit =
     // Cancel any active jobs in postStop hook
     dagScheduler.cleanUpAfterSchedulerStop()
-  }
 }
 
 private[spark] object DAGScheduler {

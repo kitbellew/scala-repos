@@ -26,11 +26,9 @@ class MutableMesosLeaderInfo extends MesosLeaderInfo {
 
   @volatile private[this] var leaderUrl: Option[String] = None
 
-  override def currentLeaderUrl: Option[String] = {
+  override def currentLeaderUrl: Option[String] =
     leaderUrl
-  }
 
-  override def onNewMasterInfo(master: MasterInfo): Unit = {
+  override def onNewMasterInfo(master: MasterInfo): Unit =
     leaderUrl = Some(s"http://${master.getHostname}:${master.getPort}/")
-  }
 }

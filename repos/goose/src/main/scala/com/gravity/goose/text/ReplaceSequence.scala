@@ -64,9 +64,8 @@ object ReplaceSequence {
     * @param firstPattern The regex {@link Pattern pattern} string for the first replacement
     * @return a new instance
     */
-  def create(firstPattern: String): ReplaceSequence = {
+  def create(firstPattern: String): ReplaceSequence =
     create(firstPattern, string.empty)
-  }
 
   /**
     * Creates a new <code>ReplaceSequence</code> with the first pattern to be replaced with the specified <code>replaceWith</code> parameter.
@@ -88,9 +87,8 @@ class ReplaceSequence {
     * @param pattern The regex {@link Pattern pattern} {@link String} for this replacement
     * @return this instance of itself for use in a builder pattern
     */
-  def append(pattern: String): ReplaceSequence = {
+  def append(pattern: String): ReplaceSequence =
     append(pattern, string.empty)
-  }
 
   /**
     * Appends a new pattern to this instance in a builder pattern

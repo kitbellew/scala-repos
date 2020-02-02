@@ -41,11 +41,9 @@ class ScParamClauseElementType
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScParameterClause,
-      parentStub: StubElement[ParentPsi]) = {
+      parentStub: StubElement[ParentPsi]) =
     new ScParamClauseStubImpl(parentStub, this, psi.isImplicit)
-  }
 
-  def createPsi(stub: ScParamClauseStub): ScParameterClause = {
+  def createPsi(stub: ScParamClauseStub): ScParameterClause =
     new ScParameterClauseImpl(stub)
-  }
 }

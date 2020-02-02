@@ -264,9 +264,8 @@ class HealthCheckTest extends MarathonSpec {
     assert(readResult == expected)
   }
 
-  def shouldBeInvalid(hc: HealthCheck): Unit = {
+  def shouldBeInvalid(hc: HealthCheck): Unit =
     assert(validate(hc).isFailure)
-  }
 
   def shouldBeValid(hc: HealthCheck): Unit = {
     val result = validate(hc)

@@ -32,9 +32,8 @@ object MultilineStringUtil {
 
   private val escaper = Pattern.compile("([^a-zA-z0-9])")
 
-  def escapeForRegexp(s: String): String = {
+  def escapeForRegexp(s: String): String =
     escaper.matcher(s).replaceAll("\\\\$1")
-  }
 
   def inMultilineString(element: PsiElement): Boolean = {
     if (element == null) return false
@@ -80,18 +79,16 @@ object MultilineStringUtil {
     true
   }
 
-  def hasMarginChars(element: PsiElement, marginChar: String) = {
+  def hasMarginChars(element: PsiElement, marginChar: String) =
     element.getText
       .replace("\r", "")
       .split(s"\n[ \t]*${escapeForRegexp(marginChar)}")
       .length > 1
-  }
 
-  def needAddStripMargin(element: PsiElement, marginChar: String): Boolean = {
+  def needAddStripMargin(element: PsiElement, marginChar: String): Boolean =
     findAllMethodCallsOnMLString(element, "stripMargin").isEmpty && !hasMarginChars(
       element,
       marginChar)
-  }
 
   def needAddByType(literal: ScLiteral): Boolean = literal match {
     case interpolated: ScInterpolatedStringLiteral =>
@@ -178,14 +175,13 @@ object MultilineStringUtil {
     callsArray
   }
 
-  def findParentMLString(element: PsiElement): Option[ScLiteral] = {
+  def findParentMLString(element: PsiElement): Option[ScLiteral] =
     (Iterator(element) ++ element.parentsInFile)
       .collect {
         case lit: ScLiteral if lit.isMultiLineString => lit
       }
       .toStream
       .headOption
-  }
 
   def isMLString(element: PsiElement): Boolean = element match {
     case lit: ScLiteral if lit.isMultiLineString => true
@@ -300,12 +296,11 @@ class MultilineStringSettings(project: Project) {
   val supportLevel = scalaSettings.MULTILINE_STRING_SUPORT
   val quotesOnNewLine = scalaSettings.MULTI_LINE_QUOTES_ON_NEW_LINE
 
-  def selectBySettings[T](ifIndent: => T)(ifAll: => T): T = {
+  def selectBySettings[T](ifIndent: => T)(ifAll: => T): T =
     scalaSettings.MULTILINE_STRING_SUPORT match {
       case ScalaCodeStyleSettings.MULTILINE_STRING_QUOTES_AND_INDENT => ifIndent
       case ScalaCodeStyleSettings.MULTILINE_STRING_ALL               => ifAll
     }
-  }
 
   def getSmartSpaces(count: Int) =
     if (useTabs) {

@@ -29,13 +29,12 @@ class ScalaUdpMulticastSpec
       // TODO make this work consistently on all platforms
       pending
 
-      def okInterfaceToUse(iface: NetworkInterface): Boolean = {
+      def okInterfaceToUse(iface: NetworkInterface): Boolean =
         iface.getInetAddresses.exists(_.isInstanceOf[Inet6Address]) &&
-        // awdl0 is a special interface on OSX that we cannot use
-        iface.getDisplayName != "awdl0" &&
-        // we do not want to use virtual docker interfaces
-        !iface.getDisplayName.contains("docker")
-      }
+          // awdl0 is a special interface on OSX that we cannot use
+          iface.getDisplayName != "awdl0" &&
+          // we do not want to use virtual docker interfaces
+          !iface.getDisplayName.contains("docker")
       val Some(ipv6Iface) =
         NetworkInterface.getNetworkInterfaces.find(okInterfaceToUse)
 
@@ -62,9 +61,8 @@ class ScalaUdpMulticastSpec
     }
   }
 
-  def afterAll(): Unit = {
+  def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
 }
 

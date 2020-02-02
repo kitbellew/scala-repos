@@ -116,9 +116,8 @@ abstract class Broadcast[T: ClassTag](val id: Long)
     * Whether this Broadcast is actually usable. This should be false once persisted state is
     * removed from the driver.
     */
-  private[spark] def isValid: Boolean = {
+  private[spark] def isValid: Boolean =
     _isValid
-  }
 
   /**
     * Actually get the broadcasted value. Concrete implementations of Broadcast class must

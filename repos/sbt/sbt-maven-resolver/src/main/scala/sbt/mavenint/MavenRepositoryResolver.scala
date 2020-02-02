@@ -165,7 +165,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           // TODO - Alter revision id to be maven-friendly first.
           val coords =
             s"${dd.getDependencyRevisionId.getOrganisation}:${aetherArtifactIdFromMrid(
-              dd.getDependencyRevisionId)}:${revision}"
+              dd.getDependencyRevisionId)}:$revision"
           //val coords = aetherCoordsFromMrid(dd.getDependencyRevisionId)
           Message.debug(s"Aether about to resolve version for [$coords]...")
           val versionRequest = addRepositories(
@@ -188,7 +188,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       // TODO - Check to see if we're asking for latest.* version, and if so, we should run a latest version query
       //        first and use that result to return the metadata/final module.
       Message.debug(s"Requesting conf [${dd.getModuleConfigurations.mkString(
-        ",")}] from Aether module ${drid} in resolver ${getName}")
+        ",")}] from Aether module $drid in resolver $getName")
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")
@@ -198,7 +198,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val result = system.readArtifactDescriptor(session, request)
       val packaging = getPackagingFromPomProperties(result.getProperties)
       Message.debug(
-        s"Aether resolved ${dd.getDependencyId} w/ packaging ${packaging}")
+        s"Aether resolved ${dd.getDependencyId} w/ packaging $packaging")
 
       // TODO - better pub date if we have no metadata.
       val lastModifiedTime = getPublicationTime(drid) getOrElse 0L
@@ -266,21 +266,20 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               originalMdResource: ResolvedResource,
               md: ModuleDescriptor,
               src: File,
-              dest: File): Unit = {
+              dest: File): Unit =
             // a basic ivy file is written containing default data
             XmlModuleDescriptorWriter.write(md, dest);
-          }
         }
       )
       rmr
     } catch {
       case e: org.eclipse.aether.resolution.ArtifactDescriptorException =>
         Message.info(
-          s"Failed to read descriptor ${dd} from ${getName}, ${e.getMessage}")
+          s"Failed to read descriptor $dd from $getName, ${e.getMessage}")
         rd.getCurrentResolvedModuleRevision
       case e: MavenResolutionException =>
         Message.debug(
-          s"Resolution Exception from ${getName}, ${e.getMessage}, returning: ${rd.getCurrentResolvedModuleRevision}")
+          s"Resolution Exception from $getName, ${e.getMessage}, returning: ${rd.getCurrentResolvedModuleRevision}")
         rd.getCurrentResolvedModuleRevision
     } finally IvyContext.popContext()
   }
@@ -314,7 +313,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     } catch {
       case e: ArtifactResolutionException =>
         // Ignore, as we're just working around issues with pom.xml's with no jars or POM packaging
-        Message.debug(s"Could not find $art in ${getName}")
+        Message.debug(s"Could not find $art in $getName")
         false
     }
   }
@@ -417,7 +416,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   /** Adds the dependency mediators required based on the managed dependency instances from this pom. */
   def addManagedDependenciesFromAether(
       result: AetherDescriptorResult,
-      md: DefaultModuleDescriptor): Unit = {
+      md: DefaultModuleDescriptor): Unit =
     for (d <- result.getManagedDependencies.asScala) {
       // TODO - Figure out what to do about exclusions on managed dependencies.
       md.addDependencyDescriptorMediator(
@@ -425,15 +424,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           .newInstance(d.getArtifact.getGroupId, d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
         new OverrideDependencyDescriptorMediator(null, d.getArtifact.getVersion) {
-          override def mediate(
-              dd: DependencyDescriptor): DependencyDescriptor = {
+          override def mediate(dd: DependencyDescriptor): DependencyDescriptor =
             super.mediate(dd)
-          }
         }
       )
 
     }
-  }
 
   /** Adds the list of dependencies this artifact has on other artifacts. */
   def addDependenciesFromAether(
@@ -481,7 +477,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val mapping =
         ReplaceMavenConfigurationMappings.addMappings(dd, scope, d.isOptional)
       Message.debug(
-        s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
+        s"Adding maven transitive dependency ${md.getModuleRevisionId} -> $dd")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
       // Now we add the artifact....
       if ((d.getArtifact.getClassifier != null) || ((d.getArtifact.getExtension != null) && !("jar" == d.getArtifact.getExtension))) {
@@ -579,7 +575,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       } catch {
         case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
           Message.error(
-            s"Failed to resolve artifacts from ${getName}, ${e.getMessage}")
+            s"Failed to resolve artifacts from $getName, ${e.getMessage}")
           (e.getResults.asScala, true)
       }
     for ((result, art) <- aetherResults zip artifacts) {
@@ -616,17 +612,15 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
   override def beginPublishTransaction(
       module: ModuleRevisionId,
-      overwrite: Boolean): Unit = {
+      overwrite: Boolean): Unit =
     currentTransaction match {
       case Some(t) =>
         throw new IllegalStateException(
           s"Publish Transaction already open for [$getName]")
       case None => currentTransaction = Some(PublishTransaction(module, Nil))
     }
-  }
-  override def abortPublishTransaction(): Unit = {
+  override def abortPublishTransaction(): Unit =
     currentTransaction = None
-  }
 
   def getClassifier(art: Artifact): Option[String] =
     // TODO - Do we need to look anywere else?
@@ -659,7 +653,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case other => MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION
     }
 
-  override def commitPublishTransaction(): Unit = {
+  override def commitPublishTransaction(): Unit =
     // TODO - actually send all artifacts to aether
     currentTransaction match {
       case Some(t) =>
@@ -687,9 +681,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         throw new IllegalStateException(
           s"Publish Transaction already open for [$getName]")
     }
-  }
 
-  override def publish(art: Artifact, file: File, overwrite: Boolean): Unit = {
+  override def publish(art: Artifact, file: File, overwrite: Boolean): Unit =
     currentTransaction match {
       case Some(t) =>
         val allArts = t.artifacts ++ List(art -> file)
@@ -698,7 +691,6 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         throw new IllegalStateException(
           ("MavenRepositories require transactional publish"))
     }
-  }
 
   override def equals(a: Any): Boolean =
     a match {

@@ -49,12 +49,10 @@ class IfFilter extends ElementFilter {
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean =
     true
-  }
 
   @NonNls
-  override def toString: String = {
+  override def toString: String =
     "'if' keyword filter"
-  }
 }

@@ -130,7 +130,7 @@ case class DataSource(
   }
 
   /** Returns a source that can be used to continually read data. */
-  def createSource(): Source = {
+  def createSource(): Source =
     providingClass.newInstance() match {
       case s: StreamSourceProvider =>
         s.createSource(sqlContext, userSpecifiedSchema, className, options)
@@ -167,7 +167,7 @@ case class DataSource(
               "Unable to infer schema.  It must be specified manually.")
           }
 
-        def dataFrameBuilder(files: Array[String]): DataFrame = {
+        def dataFrameBuilder(files: Array[String]): DataFrame =
           Dataset.newDataFrame(
             sqlContext,
             LogicalRelation(
@@ -178,7 +178,6 @@ case class DataSource(
                 className = className,
                 options = options.filterKeys(_ != "path")).resolveRelation())
           )
-        }
 
         new FileStreamSource(
           sqlContext,
@@ -191,7 +190,6 @@ case class DataSource(
         throw new UnsupportedOperationException(
           s"Data source $className does not support streamed reading")
     }
-  }
 
   /** Returns a sink that can be used to continually write data. */
   def createSink(): Sink = {

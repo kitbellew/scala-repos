@@ -151,7 +151,7 @@ object FastEvalEngineWorkflow {
                       s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
                 } else {
                   logger.error(
-                    s"${algoName} cannot be found in the engine's " +
+                    s"$algoName cannot be found in the engine's " +
                       "definition. Existing algorithm name(s) are: " +
                       s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
                 }
@@ -185,30 +185,24 @@ object FastEvalEngineWorkflow {
 
           val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
             .map { ax =>
-              {
-                val algo = algoMap(ax)
-                val model = modelsMap(ax)
-                val rawPredicts: RDD[(QX, P)] =
-                  algo.batchPredictBase(workflow.sc, model, qs)
+              val algo = algoMap(ax)
+              val model = modelsMap(ax)
+              val rawPredicts: RDD[(QX, P)] =
+                algo.batchPredictBase(workflow.sc, model, qs)
 
-                val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                  case (qx, p) => (qx, (ax, p))
-                }
-                predicts
+              val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
+                case (qx, p) => (qx, (ax, p))
               }
+              predicts
             }
 
           val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow.sc
             .union(algoPredicts)
             .groupByKey
             .mapValues { ps =>
-              {
-                assert(
-                  ps.size == algoCount,
-                  "Must have same length as algoCount")
-                // TODO. Check size == algoCount
-                ps.toSeq.sortBy(_._1).map(_._2)
-              }
+              assert(ps.size == algoCount, "Must have same length as algoCount")
+              // TODO. Check size == algoCount
+              ps.toSeq.sortBy(_._1).map(_._2)
             }
           (ex, unionAlgoPredicts)
         }
@@ -266,9 +260,7 @@ object FastEvalEngineWorkflow {
         }
 
       val servingResult = (0 until evalQAsMap.size).map { ex =>
-        {
-          (evalInfoMap(ex), servingQPAMap(ex))
-        }
+        (evalInfoMap(ex), servingQPAMap(ex))
       }.toSeq
 
       cache += Tuple2(prefix, servingResult)
@@ -279,15 +271,12 @@ object FastEvalEngineWorkflow {
   def get[TD, EI, PD, Q, P, A](
       workflow: FastEvalEngineWorkflow[TD, EI, PD, Q, P, A],
       engineParamsList: Seq[EngineParams])
-      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] = {
+      : Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])] =
     engineParamsList.map { engineParams =>
-      {
-        (
-          engineParams,
-          getServingResult(workflow, new ServingPrefix(engineParams)))
-      }
+      (
+        engineParams,
+        getServingResult(workflow, new ServingPrefix(engineParams)))
     }
-  }
 }
 
 /** :: Experimental ::

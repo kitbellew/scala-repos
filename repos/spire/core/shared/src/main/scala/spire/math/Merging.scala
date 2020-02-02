@@ -57,7 +57,7 @@ abstract class BinaryMerge {
     */
   def fromB(ai: Int, b0: Int, b1: Int): Unit
 
-  def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit = {
+  def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit =
     if (a0 == a1) {
       if (b0 != b1)
         fromB(a0, b0, b1)
@@ -85,7 +85,6 @@ abstract class BinaryMerge {
         merge0(am + 1, a1, bm, b1)
       }
     }
-  }
 }
 
 /**
@@ -97,9 +96,8 @@ abstract class BinaryMerge {
   */
 object BinaryMerge extends Merge {
 
-  def merge[@sp T: Order: ClassTag](a: Array[T], b: Array[T]): Array[T] = {
+  def merge[@sp T: Order: ClassTag](a: Array[T], b: Array[T]): Array[T] =
     new ArrayBinaryMerge(a, b).result
-  }
 
   /*
   private[this] def resize[T:ClassTag](x:Array[T], n: Int): Array[T] = {

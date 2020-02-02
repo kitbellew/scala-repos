@@ -8,9 +8,8 @@ object SCL5840 {
   }
 
   object Macros {
-    def impl(c: Context)(args: c.Expr[Any]*): c.Expr[SC] = {
+    def impl(c: Context)(args: c.Expr[Any]*): c.Expr[SC] =
       c.universe.reify { new SC }
-    }
   }
 
   object Test {

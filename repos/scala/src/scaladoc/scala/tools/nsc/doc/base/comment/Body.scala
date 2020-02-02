@@ -84,9 +84,8 @@ final case class HtmlTag(data: String) extends Inline {
       (false, None)
   }
 
-  def canClose(open: HtmlTag) = {
+  def canClose(open: HtmlTag) =
     isEnd && tagName == open.tagName
-  }
 
   private val TagsNotToClose = Set("br", "img")
   def close = tagName collect {

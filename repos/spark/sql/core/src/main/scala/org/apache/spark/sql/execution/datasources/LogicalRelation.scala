@@ -67,9 +67,8 @@ case class LogicalRelation(
     case _ => false
   }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     com.google.common.base.Objects.hashCode(relation, output)
-  }
 
   override def sameResult(otherPlan: LogicalPlan): Boolean = otherPlan match {
     case LogicalRelation(otherRelation, _, _) => relation == otherRelation

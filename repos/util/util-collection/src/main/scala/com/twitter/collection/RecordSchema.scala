@@ -149,9 +149,8 @@ final class RecordSchema {
       *
       * @return a copy of this record
       */
-    def copy(): Record = {
+    def copy(): Record =
       new Record(copyFields())
-    }
 
     /**
       * Create a copy of this record with `value` assigned to `field`.  `field` will be locked in the

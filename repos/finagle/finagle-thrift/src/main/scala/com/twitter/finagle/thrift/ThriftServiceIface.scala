@@ -114,11 +114,10 @@ object ThriftServiceIface {
       thriftService: Service[ThriftClientRequest, Array[Byte]],
       pf: TProtocolFactory,
       stats: StatsReceiver
-  ): Service[method.Args, method.Result] = {
+  ): Service[method.Args, method.Result] =
     statsFilter(method, stats) andThen
       thriftCodecFilter(method, pf) andThen
       thriftService
-  }
 
   /**
     * A [[Filter]] that updates success and failure stats for a thrift method.
@@ -179,7 +178,7 @@ object ThriftServiceIface {
       def apply(
           args: method.Args,
           service: Service[method.Args, method.Result]
-      ): Future[method.SuccessType] = {
+      ): Future[method.SuccessType] =
         service(args).flatMap { response: method.Result =>
           response.firstException() match {
             case Some(exception) =>
@@ -198,7 +197,6 @@ object ThriftServiceIface {
               }
           }
         }
-      }
     }
 
   private[this] val tlReusableBuffer =
@@ -212,12 +210,11 @@ object ThriftServiceIface {
     buf
   }
 
-  private[this] def resetBuffer(trans: TReusableMemoryTransport): Unit = {
+  private[this] def resetBuffer(trans: TReusableMemoryTransport): Unit =
     if (trans.currentCapacity > maxReusableBufferSize().inBytes) {
       resetCounter.incr()
       tlReusableBuffer.remove()
     }
-  }
 
   private def encodeRequest(
       methodName: String,

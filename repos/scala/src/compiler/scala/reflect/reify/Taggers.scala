@@ -109,7 +109,7 @@ abstract class Taggers {
     catch { case terr @ TypecheckException(pos, msg) => failExpr(result, terr) }
   }
 
-  private def translatingReificationErrors(materializer: => Tree): Tree = {
+  private def translatingReificationErrors(materializer: => Tree): Tree =
     try materializer
     catch {
       case ReificationException(pos, msg) =>
@@ -120,7 +120,6 @@ abstract class Taggers {
       case UnexpectedReificationException(pos, err, cause) if cause != null =>
         throw cause
     }
-  }
 
   private def failTag(result: Tree, reason: Any): Nothing = {
     val Apply(TypeApply(fun, List(tpeTree)), _) = c.macroApplication

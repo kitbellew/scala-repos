@@ -100,7 +100,7 @@ class DeleteOldActivityActor
         if (limit > 0) {
           Database() withTransaction { implicit session =>
             val rows = deleteOldActivities(limit)
-            logger.info(s"Deleted ${rows} activity logs")
+            logger.info(s"Deleted $rows activity logs")
           }
         }
       }

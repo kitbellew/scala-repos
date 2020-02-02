@@ -11,13 +11,12 @@ import com.intellij.psi.PsiElement
   * Date: 06.03.2008
   */
 trait ScMethodCall extends ScExpression with MethodInvocation {
-  def deepestInvokedExpr: ScExpression = {
+  def deepestInvokedExpr: ScExpression =
     getEffectiveInvokedExpr match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr
       case expr => expr
     }
-  }
 
   def args: ScArgumentExprList =
     findChildByClassScala(classOf[ScArgumentExprList])
@@ -30,12 +29,11 @@ trait ScMethodCall extends ScExpression with MethodInvocation {
     getContext.isInstanceOf[ScAssignStmt] &&
       getContext.asInstanceOf[ScAssignStmt].getLExpression == this
 
-  def updateExpression(): Option[ScExpression] = {
+  def updateExpression(): Option[ScExpression] =
     getContext match {
       case a: ScAssignStmt if a.getLExpression == this => a.getRExpression
       case _                                           => None
     }
-  }
 
   def argsElement: PsiElement = args
 

@@ -77,14 +77,12 @@ object ColumnarTestUtils {
   def makeRandomValues(head: ColumnType[_], tail: ColumnType[_]*): Seq[Any] =
     makeRandomValues(Seq(head) ++ tail)
 
-  def makeRandomValues(columnTypes: Seq[ColumnType[_]]): Seq[Any] = {
+  def makeRandomValues(columnTypes: Seq[ColumnType[_]]): Seq[Any] =
     columnTypes.map(makeRandomValue(_))
-  }
 
   def makeUniqueRandomValues[JvmType](
       columnType: ColumnType[JvmType],
-      count: Int): Seq[JvmType] = {
-
+      count: Int): Seq[JvmType] =
     Iterator
       .iterate(HashSet.empty[JvmType]) { set =>
         set + Iterator
@@ -95,7 +93,6 @@ object ColumnarTestUtils {
       .drop(count)
       .next()
       .toSeq
-  }
 
   def makeRandomRow(head: ColumnType[_], tail: ColumnType[_]*): InternalRow =
     makeRandomRow(Seq(head) ++ tail)

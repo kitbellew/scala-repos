@@ -61,11 +61,10 @@ package net.liftweb {
       private def liftRulesEnabled =
         useLiftRulesGlobally || useLiftRules.box == Full(true)
 
-      private def withLiftRules[T](f: => T) = {
+      private def withLiftRules[T](f: => T) =
         if (liftRulesEnabled) {
           f
         }
-      }
 
       /**
         * Executes a given function against a new Req constructed
@@ -74,9 +73,8 @@ package net.liftweb {
         * testReq(HttpServletRequest) for more details on
         * how the Req is processed.
         */
-      def testReq[T](url: String, contextPath: String = "")(f: Req => T): T = {
+      def testReq[T](url: String, contextPath: String = "")(f: Req => T): T =
         testReq(new MockHttpServletRequest(url, contextPath))(f)
-      }
 
       /**
         * Executes a given function against a new Req constructed
@@ -216,9 +214,8 @@ package net.liftweb {
 // S.doSnippet method
   package http {
     private[liftweb] object httpPackageProxy {
-      def doSnippet[T](name: String)(f: => T): T = {
+      def doSnippet[T](name: String)(f: => T): T =
         S.doSnippet(name)(f)
-      }
     }
   }
 

@@ -57,20 +57,17 @@ class OrcPartitionDiscoverySuite
 
   def makeOrcFile[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
-      path: File): Unit = {
+      path: File): Unit =
     data.toDF().write.mode("overwrite").orc(path.getCanonicalPath)
-  }
 
   def makeOrcFile[T <: Product: ClassTag: TypeTag](
       df: DataFrame,
-      path: File): Unit = {
+      path: File): Unit =
     df.write.mode("overwrite").orc(path.getCanonicalPath)
-  }
 
-  protected def withTempTable(tableName: String)(f: => Unit): Unit = {
+  protected def withTempTable(tableName: String)(f: => Unit): Unit =
     try f
     finally hiveContext.dropTempTable(tableName)
-  }
 
   protected def makePartitionDir(
       basePath: File,

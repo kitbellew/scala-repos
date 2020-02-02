@@ -169,7 +169,7 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
           // Not both have arrays
           @inline
           @tailrec
-          def loop(): CoderResult = {
+          def loop(): CoderResult =
             if (!in.hasRemaining) {
               CoderResult.UNDERFLOW
             } else if (!out.hasRemaining) {
@@ -202,7 +202,6 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
                 }
               }
             }
-          }
 
           loop()
         }

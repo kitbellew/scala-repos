@@ -18,7 +18,7 @@ import org.apache.thrift.transport.TTransport
 object Protocols {
 
   // based on guava's UnsignedBytes.getUnsafe()
-  private[this] def getUnsafe: sun.misc.Unsafe = {
+  private[this] def getUnsafe: sun.misc.Unsafe =
     try {
       sun.misc.Unsafe.getUnsafe()
     } catch {
@@ -48,7 +48,6 @@ object Protocols {
             null
         }
     }
-  }
 
   private val unsafe: Option[sun.misc.Unsafe] = Option(getUnsafe)
 
@@ -63,7 +62,7 @@ object Protocols {
       strictWrite: Boolean = true,
       readLength: Int = 0,
       statsReceiver: StatsReceiver = DefaultStatsReceiver
-  ): TProtocolFactory = {
+  ): TProtocolFactory =
     if (!optimizedBinarySupported) {
       new TBinaryProtocol.Factory(strictRead, strictWrite, readLength)
     } else {
@@ -87,12 +86,10 @@ object Protocols {
         }
       }
     }
-  }
 
   def factory(
-      statsReceiver: StatsReceiver = DefaultStatsReceiver): TProtocolFactory = {
+      statsReceiver: StatsReceiver = DefaultStatsReceiver): TProtocolFactory =
     binaryFactory(statsReceiver = statsReceiver)
-  }
 
   // Visible for testing purposes.
   private[thrift] object TFinagleBinaryProtocol {

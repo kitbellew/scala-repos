@@ -109,7 +109,7 @@ object TestResultLogger {
       }
     }
 
-    val printSummary = TestResultLogger((log, results, _) => {
+    val printSummary = TestResultLogger { (log, results, _) =>
       val multipleFrameworks = results.summaries.size > 1
       for (Summary(name, message) <- results.summaries)
         if (message.isEmpty)
@@ -118,7 +118,7 @@ object TestResultLogger {
           if (multipleFrameworks) log.info(name)
           log.info(message)
         }
-    })
+    }
 
     val printStandard_? : Output => Boolean =
       results =>
@@ -126,7 +126,7 @@ object TestResultLogger {
         results.summaries.size > 1 || results.summaries.headOption
           .forall(_.summaryText.isEmpty)
 
-    val printStandard = TestResultLogger((log, results, _) => {
+    val printStandard = TestResultLogger { (log, results, _) =>
       val (
         skippedCount,
         errorsCount,
@@ -174,9 +174,9 @@ object TestResultLogger {
         case TestResult.Passed => log.info("Passed: " + postfix)
         case TestResult.Failed => log.error("Failed: " + postfix)
       }
-    })
+    }
 
-    val printFailures = TestResultLogger((log, results, _) => {
+    val printFailures = TestResultLogger { (log, results, _) =>
       def select(resultTpe: TestResult.Value) = results.events collect {
         case (name, tpe) if tpe.result == resultTpe =>
           scala.reflect.NameTransformer.decode(name)
@@ -194,7 +194,7 @@ object TestResultLogger {
       show("Passed tests:", Level.Debug, select(TestResult.Passed))
       show("Failed tests:", Level.Error, select(TestResult.Failed))
       show("Error during tests:", Level.Error, select(TestResult.Error))
-    })
+    }
 
     val printNoTests = TestResultLogger((log, results, taskName) =>
       log.info("No tests to run for " + taskName))

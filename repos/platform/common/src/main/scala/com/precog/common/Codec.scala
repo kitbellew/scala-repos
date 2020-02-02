@@ -316,22 +316,20 @@ object Codec {
     override def minSize(n: Long) = 10
 
     def encodedSize(sn: Long) = {
-      @tailrec def loop(size: Int, n: Long): Int = {
+      @tailrec def loop(size: Int, n: Long): Int =
         if ((n & ~0x7FL) != 0) loop(size + 1, n >> 7) else size
-      }
 
       val n = if (sn < 0) ~sn else sn
       if ((n & ~0x3FL) != 0) loop(2, n >> 6) else 1
     }
 
-    def writeInit(n: Long, buf: ByteBuffer): Option[S] = {
+    def writeInit(n: Long, buf: ByteBuffer): Option[S] =
       if (buf.remaining() < 10) {
         Some(n)
       } else {
         writeUnsafe(n, buf)
         None
       }
-    }
 
     def writeMore(n: Long, buf: ByteBuffer): Option[S] = writeInit(n, buf)
 
@@ -432,7 +430,7 @@ object Codec {
       sink.put(a.getBytes(Utf8Charset))
     }
 
-    def writeInit(a: String, sink: ByteBuffer): Option[S] = {
+    def writeInit(a: String, sink: ByteBuffer): Option[S] =
       if (sink.remaining < 5) Some(Left(a))
       else {
         writePackedInt(strEncodedSize(a), sink)
@@ -446,7 +444,6 @@ object Codec {
           None
         }
       }
-    }
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(a) => writeInit(a, sink)
@@ -533,13 +530,12 @@ object Codec {
         case _ => None
       }
 
-    def writeInit(as: IndexedSeq[A], sink: ByteBuffer): Option[S] = {
+    def writeInit(as: IndexedSeq[A], sink: ByteBuffer): Option[S] =
       if (sink.remaining < 5) Some(Left(as))
       else {
         writePackedInt(as.length, sink)
         writeArray(as.toList, sink)
       }
-    }
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(as) => writeInit(as, sink)
@@ -610,13 +606,12 @@ object Codec {
         }
       } else None
 
-    def writeInit(as: Array[A], sink: ByteBuffer): Option[S] = {
+    def writeInit(as: Array[A], sink: ByteBuffer): Option[S] =
       if (sink.remaining < 5) Some(Left(as))
       else {
         writePackedInt(as.length, sink)
         writeArray(as, 0, sink)
       }
-    }
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(as) => writeInit(as, sink)
@@ -781,7 +776,7 @@ object Codec {
         (src.get(pos + (offset >>> 3)) & (1 << (offset & 7))) != 0
 
       val bits = new BitSet
-      def read(l: Int, r: Int, offset: Int): Int = {
+      def read(l: Int, r: Int, offset: Int): Int =
         if (l == r) {
           offset
         } else if (r - l == 1) {
@@ -798,7 +793,6 @@ object Codec {
             case (true, true)   => read(c, r, read(l, c, offset + 2))
           }
         }
-      }
 
       val offset = read(0, size, 0)
       src.position(pos + (offset >>> 3) + 1)
@@ -939,7 +933,7 @@ object Codec {
 
       val bits = RawBitSet.create(size)
 
-      def read(l: Int, r: Int, offset: Int): Int = {
+      def read(l: Int, r: Int, offset: Int): Int =
         if (l == r) {
           offset
         } else if (r - l == 1) {
@@ -956,7 +950,6 @@ object Codec {
             case (true, true)   => read(c, r, read(l, c, offset + 2))
           }
         }
-      }
 
       val offset = read(0, size, 0)
       src.position(pos + (offset >>> 3) + 1)

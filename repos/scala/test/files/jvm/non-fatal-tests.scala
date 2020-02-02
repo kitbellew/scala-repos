@@ -21,21 +21,17 @@ trait NonFatalTests {
       new Throwable with scala.util.control.ControlThrowable
     )
 
-  def testFatalsUsingApply(): Unit = {
+  def testFatalsUsingApply(): Unit =
     fatals foreach { t => assert(NonFatal(t) == false) }
-  }
 
-  def testNonFatalsUsingApply(): Unit = {
+  def testNonFatalsUsingApply(): Unit =
     nonFatals foreach { t => assert(NonFatal(t) == true) }
-  }
 
-  def testFatalsUsingUnapply(): Unit = {
+  def testFatalsUsingUnapply(): Unit =
     fatals foreach { t => assert(NonFatal.unapply(t).isEmpty) }
-  }
 
-  def testNonFatalsUsingUnapply(): Unit = {
+  def testNonFatalsUsingUnapply(): Unit =
     nonFatals foreach { t => assert(NonFatal.unapply(t).isDefined) }
-  }
 
   testFatalsUsingApply()
   testNonFatalsUsingApply()

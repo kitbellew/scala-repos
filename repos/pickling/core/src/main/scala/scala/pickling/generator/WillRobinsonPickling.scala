@@ -38,7 +38,7 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
       tpe: IrClass,
       logger: AlgorithmLogger): AlgorithmResult = {
     logger.warn(
-      s"DANGER WILL ROBINSON - ${tpe} is being serialized/deserialized using Unsafe operations.  Cannot statically identify any other safe mechanism.")
+      s"DANGER WILL ROBINSON - $tpe is being serialized/deserialized using Unsafe operations.  Cannot statically identify any other safe mechanism.")
     if (tpe.isScala) {
       // TODO - We should probably try the constructor unification thing.
       val fields = allScalaField(tpe, logger)

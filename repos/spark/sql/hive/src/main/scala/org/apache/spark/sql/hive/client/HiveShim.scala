@@ -131,9 +131,8 @@ private[client] sealed abstract class Shim {
   protected def findMethod(
       klass: Class[_],
       name: String,
-      args: Class[_]*): Method = {
+      args: Class[_]*): Method =
     klass.getMethod(name, args: _*)
-  }
 
 }
 
@@ -243,10 +242,8 @@ private[client] class Shim_v0_12 extends Shim with Logging {
     res.asScala
   }
 
-  override def getMetastoreClientConnectRetryDelayMillis(
-      conf: HiveConf): Long = {
+  override def getMetastoreClientConnectRetryDelayMillis(conf: HiveConf): Long =
     conf.getIntVar(HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY) * 1000
-  }
 
   override def loadPartition(
       hive: Hive,
@@ -256,7 +253,7 @@ private[client] class Shim_v0_12 extends Shim with Logging {
       replace: Boolean,
       holdDDLTime: Boolean,
       inheritTableSpecs: Boolean,
-      isSkewedStoreAsSubdir: Boolean): Unit = {
+      isSkewedStoreAsSubdir: Boolean): Unit =
     loadPartitionMethod.invoke(
       hive,
       loadPath,
@@ -266,21 +263,19 @@ private[client] class Shim_v0_12 extends Shim with Logging {
       holdDDLTime: JBoolean,
       inheritTableSpecs: JBoolean,
       isSkewedStoreAsSubdir: JBoolean)
-  }
 
   override def loadTable(
       hive: Hive,
       loadPath: Path,
       tableName: String,
       replace: Boolean,
-      holdDDLTime: Boolean): Unit = {
+      holdDDLTime: Boolean): Unit =
     loadTableMethod.invoke(
       hive,
       loadPath,
       tableName,
       replace: JBoolean,
       holdDDLTime: JBoolean)
-  }
 
   override def loadDynamicPartitions(
       hive: Hive,
@@ -290,7 +285,7 @@ private[client] class Shim_v0_12 extends Shim with Logging {
       replace: Boolean,
       numDP: Int,
       holdDDLTime: Boolean,
-      listBucketingEnabled: Boolean): Unit = {
+      listBucketingEnabled: Boolean): Unit =
     loadDynamicPartitionsMethod.invoke(
       hive,
       loadPath,
@@ -300,15 +295,13 @@ private[client] class Shim_v0_12 extends Shim with Logging {
       numDP: JInteger,
       holdDDLTime: JBoolean,
       listBucketingEnabled: JBoolean)
-  }
 
   override def dropIndex(
       hive: Hive,
       dbName: String,
       tableName: String,
-      indexName: String): Unit = {
+      indexName: String): Unit =
     dropIndexMethod.invoke(hive, dbName, tableName, indexName, true: JBoolean)
-  }
 
 }
 
@@ -478,7 +471,7 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
       replace: Boolean,
       holdDDLTime: Boolean,
       inheritTableSpecs: Boolean,
-      isSkewedStoreAsSubdir: Boolean): Unit = {
+      isSkewedStoreAsSubdir: Boolean): Unit =
     loadPartitionMethod.invoke(
       hive,
       loadPath,
@@ -491,14 +484,13 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
       isSrcLocal(loadPath, hive.getConf()): JBoolean,
       JBoolean.FALSE
     )
-  }
 
   override def loadTable(
       hive: Hive,
       loadPath: Path,
       tableName: String,
       replace: Boolean,
-      holdDDLTime: Boolean): Unit = {
+      holdDDLTime: Boolean): Unit =
     loadTableMethod.invoke(
       hive,
       loadPath,
@@ -508,7 +500,6 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
       isSrcLocal(loadPath, hive.getConf()): JBoolean,
       JBoolean.FALSE,
       JBoolean.FALSE)
-  }
 
   override def loadDynamicPartitions(
       hive: Hive,
@@ -518,7 +509,7 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
       replace: Boolean,
       numDP: Int,
       holdDDLTime: Boolean,
-      listBucketingEnabled: Boolean): Unit = {
+      listBucketingEnabled: Boolean): Unit =
     loadDynamicPartitionsMethod.invoke(
       hive,
       loadPath,
@@ -529,17 +520,14 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
       holdDDLTime: JBoolean,
       listBucketingEnabled: JBoolean,
       JBoolean.FALSE)
-  }
 
-  override def getMetastoreClientConnectRetryDelayMillis(
-      conf: HiveConf): Long = {
+  override def getMetastoreClientConnectRetryDelayMillis(conf: HiveConf): Long =
     getTimeVarMethod
       .invoke(
         conf,
         HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY,
         TimeUnit.MILLISECONDS)
       .asInstanceOf[Long]
-  }
 
   protected def isSrcLocal(path: Path, conf: HiveConf): Boolean = {
     val localFs = FileSystem.getLocal(conf)
@@ -567,7 +555,7 @@ private[client] class Shim_v1_1 extends Shim_v1_0 {
       hive: Hive,
       dbName: String,
       tableName: String,
-      indexName: String): Unit = {
+      indexName: String): Unit =
     dropIndexMethod.invoke(
       hive,
       dbName,
@@ -575,7 +563,6 @@ private[client] class Shim_v1_1 extends Shim_v1_0 {
       indexName,
       true: JBoolean,
       true: JBoolean)
-  }
 
 }
 
@@ -604,7 +591,7 @@ private[client] class Shim_v1_2 extends Shim_v1_1 {
       replace: Boolean,
       numDP: Int,
       holdDDLTime: Boolean,
-      listBucketingEnabled: Boolean): Unit = {
+      listBucketingEnabled: Boolean): Unit =
     loadDynamicPartitionsMethod.invoke(
       hive,
       loadPath,
@@ -616,6 +603,5 @@ private[client] class Shim_v1_2 extends Shim_v1_1 {
       listBucketingEnabled: JBoolean,
       JBoolean.FALSE,
       0L: JLong)
-  }
 
 }

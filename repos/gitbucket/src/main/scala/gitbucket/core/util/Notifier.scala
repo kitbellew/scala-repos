@@ -59,25 +59,25 @@ object Notifier {
     }
 
   def msgIssue(url: String) = (content: String) => s"""
-    |${content}<br/>
+    |$content<br/>
     |--<br/>
-    |<a href="${url}">View it on GitBucket</a>
+    |<a href="$url">View it on GitBucket</a>
     """.stripMargin
 
   def msgPullRequest(url: String) = (content: String) => s"""
-    |${content}<hr/>
+    |$content<hr/>
     |View, comment on, or merge it at:<br/>
-    |<a href="${url}">${url}</a>
+    |<a href="$url">$url</a>
     """.stripMargin
 
   def msgComment(url: String) = (content: String) => s"""
-    |${content}<br/>
+    |$content<br/>
     |--<br/>
-    |<a href="${url}">View it on GitBucket</a>
+    |<a href="$url">View it on GitBucket</a>
     """.stripMargin
 
   def msgStatus(url: String) = (content: String) => s"""
-    |${content} <a href="${url}">#${url split ('/') last}</a>
+    |$content <a href="$url">#${url split ('/') last}</a>
     """.stripMargin
 }
 

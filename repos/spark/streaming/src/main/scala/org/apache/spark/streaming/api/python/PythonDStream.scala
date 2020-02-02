@@ -87,9 +87,8 @@ private[python] class TransformFunction(
   }
 
   // for function.Function2
-  def call(rdds: JList[JavaRDD[_]], time: Time): JavaRDD[Array[Byte]] = {
+  def call(rdds: JList[JavaRDD[_]], time: Time): JavaRDD[Array[Byte]] =
     callPythonTransformFunction(time.milliseconds, rdds)
-  }
 
   private def callPythonTransformFunction(
       time: Long,
@@ -172,9 +171,8 @@ private[python] object PythonDStream {
     * can not access PythonTransformFunctionSerializer.register() via Py4j
     * Py4JError: PythonTransformFunctionSerializerregister does not exist in the JVM
     */
-  def registerSerializer(ser: PythonTransformFunctionSerializer): Unit = {
+  def registerSerializer(ser: PythonTransformFunctionSerializer): Unit =
     PythonTransformFunctionSerializer.register(ser)
-  }
 
   /**
     * helper function for DStream.foreachRDD(),

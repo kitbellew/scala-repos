@@ -13,7 +13,7 @@ object TestUtil {
   def checkNeg[T](
       input: String,
       expected: String = "ADA???D",
-      found: String = "ADQW??") = {
+      found: String = "ADQW??") =
 //    println("Checking Neg...\n" )
 //    println(input)
     Scala.CompilationUnit.parse(input) match {
@@ -31,7 +31,6 @@ object TestUtil {
         )
       case s: Parsed.Success[_] => assert { implicitly(input); false }
     }
-  }
 
   def check[T](input: String, tag: String = "") = {
 //    println("Checking...\n" )

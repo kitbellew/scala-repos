@@ -46,19 +46,17 @@ class LassoModel @Since("1.1.0") (
   override protected def predictPoint(
       dataMatrix: Vector,
       weightMatrix: Vector,
-      intercept: Double): Double = {
+      intercept: Double): Double =
     weightMatrix.toBreeze.dot(dataMatrix.toBreeze) + intercept
-  }
 
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GLMRegressionModel.SaveLoadV1_0.save(
       sc,
       path,
       this.getClass.getName,
       weights,
       intercept)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -122,9 +120,8 @@ class LassoWithSGD private (
   @Since("0.8.0")
   def this() = this(1.0, 100, 0.01, 1.0)
 
-  override protected def createModel(weights: Vector, intercept: Double) = {
+  override protected def createModel(weights: Vector, intercept: Double) =
     new LassoModel(weights, intercept)
-  }
 }
 
 /**
@@ -157,10 +154,9 @@ object LassoWithSGD {
       stepSize: Double,
       regParam: Double,
       miniBatchFraction: Double,
-      initialWeights: Vector): LassoModel = {
+      initialWeights: Vector): LassoModel =
     new LassoWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
       .run(input, initialWeights)
-  }
 
   /**
     * Train a Lasso model given an RDD of (label, features) pairs. We run a fixed number
@@ -181,10 +177,9 @@ object LassoWithSGD {
       numIterations: Int,
       stepSize: Double,
       regParam: Double,
-      miniBatchFraction: Double): LassoModel = {
+      miniBatchFraction: Double): LassoModel =
     new LassoWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
       .run(input)
-  }
 
   /**
     * Train a Lasso model given an RDD of (label, features) pairs. We run a fixed number
@@ -204,9 +199,8 @@ object LassoWithSGD {
       input: RDD[LabeledPoint],
       numIterations: Int,
       stepSize: Double,
-      regParam: Double): LassoModel = {
+      regParam: Double): LassoModel =
     train(input, numIterations, stepSize, regParam, 1.0)
-  }
 
   /**
     * Train a Lasso model given an RDD of (label, features) pairs. We run a fixed number
@@ -220,7 +214,6 @@ object LassoWithSGD {
     *
     */
   @Since("0.8.0")
-  def train(input: RDD[LabeledPoint], numIterations: Int): LassoModel = {
+  def train(input: RDD[LabeledPoint], numIterations: Int): LassoModel =
     train(input, numIterations, 1.0, 0.01, 1.0)
-  }
 }

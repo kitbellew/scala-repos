@@ -74,9 +74,8 @@ class RDDFunctions[T: ClassTag](self: RDD[T]) extends Serializable {
   def treeAggregate[U: ClassTag](zeroValue: U)(
       seqOp: (U, T) => U,
       combOp: (U, U) => U,
-      depth: Int = 2): U = {
+      depth: Int = 2): U =
     self.treeAggregate(zeroValue)(seqOp, combOp, depth)
-  }
 }
 
 @DeveloperApi

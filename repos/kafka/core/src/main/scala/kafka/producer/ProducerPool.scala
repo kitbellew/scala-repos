@@ -53,25 +53,25 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
 
   def updateProducer(topicMetadata: Seq[TopicMetadata]) {
     val newBrokers = new collection.mutable.HashSet[BrokerEndPoint]
-    topicMetadata.foreach(tmd => {
-      tmd.partitionsMetadata.foreach(pmd => {
+    topicMetadata.foreach { tmd =>
+      tmd.partitionsMetadata.foreach { pmd =>
         if (pmd.leader.isDefined) {
           newBrokers += pmd.leader.get
         }
-      })
-    })
+      }
+    }
     lock synchronized {
-      newBrokers.foreach(b => {
+      newBrokers.foreach { b =>
         if (syncProducers.contains(b.id)) {
           syncProducers(b.id).close()
           syncProducers.put(b.id, ProducerPool.createSyncProducer(config, b))
         } else
           syncProducers.put(b.id, ProducerPool.createSyncProducer(config, b))
-      })
+      }
     }
   }
 
-  def getProducer(brokerId: Int): SyncProducer = {
+  def getProducer(brokerId: Int): SyncProducer =
     lock.synchronized {
       val producer = syncProducers.get(brokerId)
       producer match {
@@ -81,16 +81,14 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
             "Sync producer for broker id %d does not exist".format(brokerId))
       }
     }
-  }
 
   /**
     * Closes all the producers in the pool
     */
-  def close() = {
+  def close() =
     lock.synchronized {
       info("Closing all sync producers")
       val iter = syncProducers.values.iterator
       while (iter.hasNext) iter.next.close
     }
-  }
 }

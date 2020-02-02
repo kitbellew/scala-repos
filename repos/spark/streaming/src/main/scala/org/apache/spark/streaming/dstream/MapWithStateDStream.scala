@@ -68,11 +68,10 @@ private[streaming] class MapWithStateDStreamImpl[
 
   override def dependencies: List[DStream[_]] = List(internalStream)
 
-  override def compute(validTime: Time): Option[RDD[MappedType]] = {
+  override def compute(validTime: Time): Option[RDD[MappedType]] =
     internalStream.getOrCompute(validTime).map {
       _.flatMap[MappedType] { _.mappedData }
     }
-  }
 
   /**
     * Forward the checkpoint interval to the internal DStream that computes the state maps. This
@@ -84,11 +83,10 @@ private[streaming] class MapWithStateDStreamImpl[
   }
 
   /** Return a pair DStream where each RDD is the snapshot of the state of all the keys. */
-  def stateSnapshots(): DStream[(KeyType, StateType)] = {
+  def stateSnapshots(): DStream[(KeyType, StateType)] =
     internalStream.flatMap {
       _.stateMap.getAll().map { case (k, s, _) => (k, s) }.toTraversable
     }
-  }
 
   def keyClass: Class[_] = implicitly[ClassTag[KeyType]].runtimeClass
 

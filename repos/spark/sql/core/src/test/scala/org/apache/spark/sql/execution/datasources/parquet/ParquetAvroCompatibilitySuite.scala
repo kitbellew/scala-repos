@@ -275,7 +275,7 @@ class ParquetAvroCompatibilitySuite
   }
 
   def makeParquetAvroCompat(i: Int): ParquetAvroCompat = {
-    def makeComplexColumn(i: Int): JMap[String, JList[Nested]] = {
+    def makeComplexColumn(i: Int): JMap[String, JList[Nested]] =
       Seq
         .tabulate(3) { n =>
           (i + n).toString -> Seq
@@ -291,7 +291,6 @@ class ParquetAvroCompatibilitySuite
         }
         .toMap
         .asJava
-    }
 
     ParquetAvroCompat
       .newBuilder()

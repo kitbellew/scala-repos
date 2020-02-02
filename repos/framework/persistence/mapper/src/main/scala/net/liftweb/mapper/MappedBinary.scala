@@ -106,9 +106,8 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
 
   protected[mapper] def doneWithSave() { orgData.setFrom(data) }
 
-  protected def i_obscure_!(in: Array[Byte]): Array[Byte] = {
+  protected def i_obscure_!(in: Array[Byte]): Array[Byte] =
     new Array[Byte](0)
-  }
 
   override def renderJs_? = false
 
@@ -257,7 +256,7 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   protected def i_obscure_!(in: String): String = ""
 
-  override def setFromAny(in: Any): String = {
+  override def setFromAny(in: Any): String =
     in match {
       case JsonAST.JNull                   => this.set(null)
       case JsonAST.JString(str)            => this.set(str)
@@ -271,7 +270,6 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
       case None | Empty | Failure(_, _, _) => this.set(null)
       case o                               => this.set(o.toString)
     }
-  }
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 
@@ -419,7 +417,7 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
       case str  => JsonAST.JString(str)
     })
 
-  override def setFromAny(in: Any): String = {
+  override def setFromAny(in: Any): String =
     in match {
       case JsonAST.JNull                   => this.set(null)
       case JsonAST.JString(str)            => this.set(str)
@@ -433,7 +431,6 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
       case None | Empty | Failure(_, _, _) => this.set(null)
       case o                               => this.set(o.toString)
     }
-  }
 
   def jdbcFriendly(field: String): Object = real_convertToJDBCFriendly(data.get)
 

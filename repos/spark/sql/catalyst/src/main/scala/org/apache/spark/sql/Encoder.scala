@@ -234,13 +234,12 @@ object Encoders {
     javaSerialization(ClassTag[T](clazz))
 
   /** Throws an exception if T is not a public class. */
-  private def validatePublicClass[T: ClassTag](): Unit = {
+  private def validatePublicClass[T: ClassTag](): Unit =
     if (!Modifier.isPublic(classTag[T].runtimeClass.getModifiers)) {
       throw new UnsupportedOperationException(
         s"${classTag[T].runtimeClass.getName} is not a public class. " +
           "Only public classes are supported.")
     }
-  }
 
   /** A way to construct encoders using generic serializers. */
   private def genericSerializer[T: ClassTag](useKryo: Boolean): Encoder[T] = {
@@ -270,9 +269,8 @@ object Encoders {
     * An encoder for 2-ary tuples.
     * @since 1.6.0
     */
-  def tuple[T1, T2](e1: Encoder[T1], e2: Encoder[T2]): Encoder[(T1, T2)] = {
+  def tuple[T1, T2](e1: Encoder[T1], e2: Encoder[T2]): Encoder[(T1, T2)] =
     ExpressionEncoder.tuple(encoderFor(e1), encoderFor(e2))
-  }
 
   /**
     * An encoder for 3-ary tuples.
@@ -281,9 +279,8 @@ object Encoders {
   def tuple[T1, T2, T3](
       e1: Encoder[T1],
       e2: Encoder[T2],
-      e3: Encoder[T3]): Encoder[(T1, T2, T3)] = {
+      e3: Encoder[T3]): Encoder[(T1, T2, T3)] =
     ExpressionEncoder.tuple(encoderFor(e1), encoderFor(e2), encoderFor(e3))
-  }
 
   /**
     * An encoder for 4-ary tuples.
@@ -293,13 +290,12 @@ object Encoders {
       e1: Encoder[T1],
       e2: Encoder[T2],
       e3: Encoder[T3],
-      e4: Encoder[T4]): Encoder[(T1, T2, T3, T4)] = {
+      e4: Encoder[T4]): Encoder[(T1, T2, T3, T4)] =
     ExpressionEncoder.tuple(
       encoderFor(e1),
       encoderFor(e2),
       encoderFor(e3),
       encoderFor(e4))
-  }
 
   /**
     * An encoder for 5-ary tuples.
@@ -310,12 +306,11 @@ object Encoders {
       e2: Encoder[T2],
       e3: Encoder[T3],
       e4: Encoder[T4],
-      e5: Encoder[T5]): Encoder[(T1, T2, T3, T4, T5)] = {
+      e5: Encoder[T5]): Encoder[(T1, T2, T3, T4, T5)] =
     ExpressionEncoder.tuple(
       encoderFor(e1),
       encoderFor(e2),
       encoderFor(e3),
       encoderFor(e4),
       encoderFor(e5))
-  }
 }

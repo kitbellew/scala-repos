@@ -31,9 +31,10 @@ object FormatSpec extends Specification {
       Form("value" -> bigDecimal)
         .bind(Map("value" -> "10.23"))
         .fold(
-          formWithErrors => {
-            "The mapping should not fail." must equalTo("Error")
-          }, { number => number must equalTo(BigDecimal("10.23")) }
+          formWithErrors =>
+            "The mapping should not fail." must equalTo("Error"), { number =>
+            number must equalTo(BigDecimal("10.23"))
+          }
         )
     }
   }
@@ -43,9 +44,10 @@ object FormatSpec extends Specification {
       Form("value" -> bigDecimal(10, 2))
         .bind(Map("value" -> "10.23"))
         .fold(
-          formWithErrors => {
-            "The mapping should not fail." must equalTo("Error")
-          }, { number => number must equalTo(BigDecimal("10.23")) }
+          formWithErrors =>
+            "The mapping should not fail." must equalTo("Error"), { number =>
+            number must equalTo(BigDecimal("10.23"))
+          }
         )
     }
 
@@ -53,10 +55,11 @@ object FormatSpec extends Specification {
       Form("value" -> bigDecimal(10, 1))
         .bind(Map("value" -> "10.23"))
         .fold(
-          formWithErrors => {
+          formWithErrors =>
             formWithErrors.errors.head.message must equalTo(
-              "error.real.precision")
-          }, { number => "The mapping should fail." must equalTo("Error") }
+              "error.real.precision"), { number =>
+            "The mapping should fail." must equalTo("Error")
+          }
         )
     }
 
@@ -64,10 +67,11 @@ object FormatSpec extends Specification {
       Form("value" -> bigDecimal(5, 2))
         .bind(Map("value" -> "12111.23"))
         .fold(
-          formWithErrors => {
+          formWithErrors =>
             formWithErrors.errors.head.message must equalTo(
-              "error.real.precision")
-          }, { number => "The mapping should fail." must equalTo("Error") }
+              "error.real.precision"), { number =>
+            "The mapping should fail." must equalTo("Error")
+          }
         )
     }
   }
@@ -81,9 +85,10 @@ object FormatSpec extends Specification {
       Form("value" -> uuid)
         .bind(Map("value" -> testUUID.toString))
         .fold(
-          formWithErrors => {
-            "The mapping should not fail." must equalTo("Error")
-          }, { uuid => uuid must equalTo(testUUID) }
+          formWithErrors =>
+            "The mapping should not fail." must equalTo("Error"), { uuid =>
+            uuid must equalTo(testUUID)
+          }
         )
     }
 
@@ -92,9 +97,10 @@ object FormatSpec extends Specification {
       Form("value" -> uuid)
         .bind(Map("value" -> "Joe"))
         .fold(
-          formWithErrors => {
-            formWithErrors.errors.head.message must equalTo("error.uuid")
-          }, { uuid => uuid must equalTo(UUID.randomUUID()) }
+          formWithErrors =>
+            formWithErrors.errors.head.message must equalTo("error.uuid"), {
+            uuid => uuid must equalTo(UUID.randomUUID())
+          }
         )
     }
   }
@@ -108,9 +114,10 @@ object FormatSpec extends Specification {
       Form("value" -> char)
         .bind(Map("value" -> testChar.toString))
         .fold(
-          formWithErrors => {
-            "The mapping should not fail." must equalTo("Error")
-          }, { char => char must equalTo(testChar) }
+          formWithErrors =>
+            "The mapping should not fail." must equalTo("Error"), { char =>
+            char must equalTo(testChar)
+          }
         )
     }
 
@@ -119,9 +126,10 @@ object FormatSpec extends Specification {
       Form("value" -> char)
         .bind(Map("value" -> " "))
         .fold(
-          formWithErrors => {
-            formWithErrors.errors.head.message must equalTo("error.required")
-          }, { char => char must equalTo('X') }
+          formWithErrors =>
+            formWithErrors.errors.head.message must equalTo("error.required"), {
+            char => char must equalTo('X')
+          }
         )
     }
   }

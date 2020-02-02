@@ -63,14 +63,13 @@ trait JavaPlatform extends Platform {
     *  to anything but other booleans, but it should be present in
     *  case this is put to other uses.
     */
-  def isMaybeBoxed(sym: Symbol) = {
+  def isMaybeBoxed(sym: Symbol) =
     (sym == ObjectClass) ||
-    (sym == JavaSerializableClass) ||
-    (sym == ComparableClass) ||
-    (sym isNonBottomSubClass BoxedNumberClass) ||
-    (sym isNonBottomSubClass BoxedCharacterClass) ||
-    (sym isNonBottomSubClass BoxedBooleanClass)
-  }
+      (sym == JavaSerializableClass) ||
+      (sym == ComparableClass) ||
+      (sym isNonBottomSubClass BoxedNumberClass) ||
+      (sym isNonBottomSubClass BoxedCharacterClass) ||
+      (sym isNonBottomSubClass BoxedBooleanClass)
 
   def needCompile(bin: AbstractFile, src: AbstractFile) =
     src.lastModified >= bin.lastModified

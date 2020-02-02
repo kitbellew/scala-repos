@@ -71,9 +71,8 @@ final class RhinoJSEnv private (
     */
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+      code: VirtualJSFile): JSRunner =
     new Runner(libs, None, Nil, code)
-  }
 
   override def jsRunner(
       preLibs: Seq[ResolvedJSDependency],
@@ -103,9 +102,8 @@ final class RhinoJSEnv private (
 
   override def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
+      code: VirtualJSFile): AsyncJSRunner =
     new AsyncRunner(libs, None, Nil, code)
-  }
 
   override def asyncRunner(
       preLibs: Seq[ResolvedJSDependency],
@@ -130,7 +128,7 @@ final class RhinoJSEnv private (
 
     def start(logger: Logger, console: JSConsole): Future[Unit] = {
       _thread = new Thread {
-        override def run(): Unit = {
+        override def run(): Unit =
           try {
             internalRunJS(
               preLibs,
@@ -145,7 +143,6 @@ final class RhinoJSEnv private (
             case t: Throwable =>
               promise.failure(t)
           }
-        }
       }
 
       _thread.start()
@@ -159,9 +156,8 @@ final class RhinoJSEnv private (
 
   override def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
+      code: VirtualJSFile): ComJSRunner =
     new ComRunner(libs, None, Nil, code)
-  }
 
   override def comRunner(
       preLibs: Seq[ResolvedJSDependency],
@@ -186,14 +182,13 @@ final class RhinoJSEnv private (
 
     def send(msg: String): Unit = channel.sendToJS(msg)
 
-    def receive(timeout: Duration): String = {
+    def receive(timeout: Duration): String =
       try {
         channel.recvJVM(timeout)
       } catch {
         case _: ChannelClosedException =>
           throw new ComJSEnv.ComClosedException
       }
-    }
 
     def close(): Unit = channel.closeJVM()
 

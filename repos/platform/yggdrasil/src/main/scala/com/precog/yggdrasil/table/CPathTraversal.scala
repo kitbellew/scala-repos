@@ -56,11 +56,10 @@ sealed trait CPathTraversal { self =>
         val validPaths = paths map { case (_, nodes) => CPath(nodes.reverse) }
 
         def makeCols(
-            pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] = {
+            pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] =
           validPaths.flatMap({ path =>
             pathToCol.getOrElse(path, Set.empty).toList map ((path, _))
           })(collection.breakOut)
-        }
 
         val lCols = makeCols(left)
         val rCols = makeCols(right)
@@ -172,9 +171,8 @@ sealed trait CPathTraversal { self =>
       private val indices = new Array[Int](self.arrayDepth)
       private val pathComp = plan0(self, cpaths map (_.nodes -> Nil), 0)
 
-      def compare(row1: Int, row2: Int) = {
+      def compare(row1: Int, row2: Int) =
         pathComp.compare(row1, row2, indices).toInt
-      }
 
       def eqv(row1: Int, row2: Int) = compare(row1, row2) == 0
     }
@@ -329,7 +327,7 @@ object CPathTraversal {
         }
     }
 
-    def pretty(ps: List[CPathPosition]): String = {
+    def pretty(ps: List[CPathPosition]): String =
       ps map {
         case CPathRange(_, 0, None)              => "[*]"
         case CPathRange(_, i, None)              => "[%d+]" format i
@@ -337,7 +335,6 @@ object CPathTraversal {
         case CPathRange(_, i, Some(j))           => "[%d..%d]" format (i, j)
         case CPathPoint(a)                       => a.toString
       } mkString ""
-    }
 
     /**
       * Returns a `p` as a positioned CPath.
@@ -351,10 +348,9 @@ object CPathTraversal {
         l1: Int,
         r1: Option[Int],
         l2: Int,
-        r2: Option[Int]): Boolean = {
+        r2: Option[Int]): Boolean =
       (l2 >= l1 && l2 <= r1.getOrElse(l2)) || (l1 >= l2 && l1 <= r2.getOrElse(
         l1))
-    }
 
     /**
       * This splits 2 positioned CPaths into a list of completely disjoint positioned CPaths.
@@ -476,7 +472,7 @@ object CPathTraversal {
       @tailrec
       def rec(
           a: List[CPathPosition],
-          ts: List[List[CPathPosition]]): List[List[CPathPosition]] = {
+          ts: List[List[CPathPosition]]): List[List[CPathPosition]] =
         if (!pq.isEmpty) {
           val b = pq.dequeue()
           if (intersect(a, b)) {
@@ -488,7 +484,6 @@ object CPathTraversal {
         } else {
           (a :: ts).reverse
         }
-      }
 
       if (pq.isEmpty) Nil else rec(pq.dequeue(), Nil)
     }

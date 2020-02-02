@@ -34,7 +34,7 @@ import scala.collection.mutable.ArrayBuffer
 object ScalaCompletionUtil {
   val PREFIX_COMPLETION_KEY: Key[Boolean] = Key.create("prefix.completion.key")
 
-  def completeThis(ref: ScReferenceExpression): Boolean = {
+  def completeThis(ref: ScReferenceExpression): Boolean =
     ref.qualifier match {
       case Some(_) => false
       case None =>
@@ -45,7 +45,6 @@ object ScalaCompletionUtil {
           case _                                              => true
         }
     }
-  }
 
   def shouldRunClassNameCompletion(
       dummyPosition: PsiElement,
@@ -77,11 +76,10 @@ object ScalaCompletionUtil {
     val text = new StringBuilder()
     if (braceArgs) text.append("case ")
     val paramNamesWithTypes = new ArrayBuffer[(String, ScType)]
-    def contains(name: String): Boolean = {
+    def contains(name: String): Boolean =
       paramNamesWithTypes.exists {
         case (s, _) => s == name
       }
-    }
     for (param <- params) {
       val names = NameSuggester.suggestNamesByType(param)
       var name = if (names.length == 0) "x" else names(0)
@@ -164,14 +162,13 @@ object ScalaCompletionUtil {
     (false, true)
   }
 
-  def awful(parent: PsiElement, leaf: PsiElement): Boolean = {
+  def awful(parent: PsiElement, leaf: PsiElement): Boolean =
     (leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-    leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-    (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-    (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-    !parent.getPrevSibling.getPrevSibling.getLastChild
-      .isInstanceOf[PsiErrorElement]))
-  }
+      leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
+      (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+        (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+          !parent.getPrevSibling.getPrevSibling.getLastChild
+            .isInstanceOf[PsiErrorElement]))
 
   val DUMMY_IDENTIFIER = "IntellijIdeaRulezzz"
 
@@ -270,15 +267,13 @@ object ScalaCompletionUtil {
     !checkErrors(dummyFile)
   }
 
-  def removeDummy(text: String): String = {
+  def removeDummy(text: String): String =
     replaceDummy(text, "")
-  }
 
-  def replaceDummy(text: String, to: String): String = {
+  def replaceDummy(text: String, to: String): String =
     if (text.indexOf(DUMMY_IDENTIFIER) != -1) {
       text.replaceAll("\\w*" + DUMMY_IDENTIFIER, to)
     } else text
-  }
 
   def checkNewWith(
       news: ScNewTemplateDefinition,
@@ -344,9 +339,8 @@ object ScalaCompletionUtil {
     } getOrElse (null, false)
 
   def getDummyIdentifier(offset: Int, file: PsiFile): String = {
-    def isOpChar(c: Char): Boolean = {
+    def isOpChar(c: Char): Boolean =
       ScalaNamesUtil.isIdentifier("+" + c)
-    }
 
     val element = file.findElementAt(offset)
     val ref = file.findReferenceAt(offset)

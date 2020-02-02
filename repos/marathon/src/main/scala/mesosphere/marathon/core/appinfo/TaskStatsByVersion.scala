@@ -18,10 +18,8 @@ object TaskStatsByVersion {
   def apply(
       versionInfo: VersionInfo,
       tasks: Iterable[TaskForStatistics]): TaskStatsByVersion = {
-    def statsForVersion(
-        versionTest: Timestamp => Boolean): Option[TaskStats] = {
+    def statsForVersion(versionTest: Timestamp => Boolean): Option[TaskStats] =
       TaskStats.forSomeTasks(tasks.filter(task => versionTest(task.version)))
-    }
 
     val maybeFullVersionInfo = versionInfo match {
       case full: FullVersionInfo => Some(full)
@@ -47,11 +45,10 @@ object TaskStatsByVersion {
       now: Timestamp,
       versionInfo: VersionInfo,
       tasks: Iterable[Task],
-      statuses: Map[Task.Id, Seq[Health]]): TaskStatsByVersion = {
+      statuses: Map[Task.Id, Seq[Health]]): TaskStatsByVersion =
     TaskStatsByVersion(
       versionInfo,
       TaskForStatistics.forTasks(now, tasks, statuses))
-  }
 }
 
 case class TaskStats(counts: TaskCounts, maybeLifeTime: Option[TaskLifeTime])
@@ -60,11 +57,10 @@ object TaskStats {
   def forSomeTasks(
       now: Timestamp,
       tasks: Iterable[Task],
-      statuses: Map[Task.Id, Seq[Health]]): Option[TaskStats] = {
+      statuses: Map[Task.Id, Seq[Health]]): Option[TaskStats] =
     forSomeTasks(TaskForStatistics.forTasks(now, tasks, statuses))
-  }
 
-  def forSomeTasks(tasks: Iterable[TaskForStatistics]): Option[TaskStats] = {
+  def forSomeTasks(tasks: Iterable[TaskForStatistics]): Option[TaskStats] =
     if (tasks.isEmpty) {
       None
     } else {
@@ -75,5 +71,4 @@ object TaskStats {
         )
       )
     }
-  }
 }

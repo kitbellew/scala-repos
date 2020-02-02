@@ -1,5 +1,5 @@
 class Raw_1[T] {
-  def raw(): Raw_1[_] = { new Raw_1[String] { def t() = "" } }
+  def raw(): Raw_1[_] = new Raw_1[String] { def t() = "" }
   def t(): T
 }
 

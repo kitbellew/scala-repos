@@ -86,14 +86,13 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
   def setLevel(level: javalog.Level) = wrapped.setLevel(level)
   def setUseParentHandlers(use: Boolean) = wrapped.setUseParentHandlers(use)
 
-  override def toString = {
+  override def toString =
     "<%s name='%s' level=%s handlers=%s use_parent=%s>".format(
       getClass.getName,
       name,
       getLevel(),
       getHandlers().toList.mkString("[", ", ", "]"),
       if (getUseParentHandlers()) "true" else "false")
-  }
 
   /**
     * Log a message, with sprintf formatting, at the desired level.
@@ -323,12 +322,11 @@ object Logger extends Iterable[Logger] {
   /**
     * Remove all existing log handlers from all existing loggers.
     */
-  def clearHandlers() = {
+  def clearHandlers() =
     foreach { logger =>
       logger.clearHandlers()
       logger.setLevel(null)
     }
-  }
 
   /**
     * Execute a block with a given set of handlers, reverting back to the original
@@ -359,7 +357,7 @@ object Logger extends Iterable[Logger] {
     * Return a logger for the given package name. If one doesn't already
     * exist, a new logger will be created and returned.
     */
-  def get(name: String): Logger = {
+  def get(name: String): Logger =
     loggersCache.get(name) match {
       case logger: Logger =>
         logger
@@ -372,7 +370,6 @@ object Logger extends Iterable[Logger] {
           logger
         }
     }
-  }
 
   /** An alias for `get(name)` */
   def apply(name: String) = get(name)
@@ -391,13 +388,12 @@ object Logger extends Iterable[Logger] {
   /** An alias for `get()` */
   def apply() = get(2)
 
-  private def getForClassName(className: String) = {
+  private def getForClassName(className: String) =
     if (className.endsWith("$")) {
       get(className.substring(0, className.length - 1))
     } else {
       get(className)
     }
-  }
 
   /**
     * Return a logger for the package of the class given.

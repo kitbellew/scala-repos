@@ -53,9 +53,8 @@ object Test extends DirectTest {
     val output = collection.mutable.ListBuffer[String]()
 
     object annotChecker extends AnnotationChecker {
-      def hasTestAnn(tps: Type*) = {
+      def hasTestAnn(tps: Type*) =
         tps exists (_.annotations.map(_.toString) contains "testAnn")
-      }
 
       def annotationsConform(tpe1: Type, tpe2: Type): Boolean = {
         if (hasTestAnn(tpe1, tpe2))

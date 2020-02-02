@@ -21,21 +21,19 @@ object RationalUtil {
   def classify(a: Rational, b: Rational, a_op_b: Rational): String =
     classify(a) + "_" + classify(b) + "_" + classify(a_op_b)
 
-  def check(cases: Map[String, (Rational, Rational)]): Unit = {
+  def check(cases: Map[String, (Rational, Rational)]): Unit =
     for ((kind, (a, b)) ← cases) {
       val c = classify(a, b)
       require(kind.startsWith(c), s"Unexpected class $c for case $kind")
     }
-  }
 
   def check(
       cases: Map[String, (Rational, Rational)],
-      op: (Rational, Rational) ⇒ Rational): Unit = {
+      op: (Rational, Rational) ⇒ Rational): Unit =
     for ((kind, (a, b)) ← cases) {
       val c = classify(a, b, op(a, b))
       require(kind.startsWith(c), s"Unexpected class $c for case $kind")
     }
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -80,14 +78,12 @@ class RationalMultiplyDivideBenchmark {
   }
 
   @Benchmark
-  def product(x: Blackhole): Unit = {
+  def product(x: Blackhole): Unit =
     x.consume(a * b)
-  }
 
   @Benchmark
-  def quotient(x: Blackhole): Unit = {
+  def quotient(x: Blackhole): Unit =
     x.consume(a / b)
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -129,14 +125,12 @@ class RationalAddSubtractBenchmark {
   }
 
   @Benchmark
-  def sum(x: Blackhole): Unit = {
+  def sum(x: Blackhole): Unit =
     x.consume(a + b)
-  }
 
   @Benchmark
-  def difference(x: Blackhole): Unit = {
+  def difference(x: Blackhole): Unit =
     x.consume(a - b)
-  }
 }
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -172,7 +166,6 @@ class RationalCompareBenchmark {
   }
 
   @Benchmark
-  def compare(x: Blackhole): Unit = {
+  def compare(x: Blackhole): Unit =
     x.consume(a compare b)
-  }
 }

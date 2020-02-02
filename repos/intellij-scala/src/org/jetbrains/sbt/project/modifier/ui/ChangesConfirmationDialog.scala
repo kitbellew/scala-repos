@@ -37,11 +37,10 @@ class ChangesConfirmationDialog private (
   setTitle("SBT build file changes")
   init()
 
-  def selectedChanges: List[BuildFileChange] = {
+  def selectedChanges: List[BuildFileChange] =
     myChangesBrowser.getViewer.getIncludedChanges
       .map(change => BuildFileChange.swap(change.asInstanceOf[BuildFileChange]))
       .toList
-  }
 
   override def createCenterPanel(): JComponent = {
     val rootPane: JPanel = new JPanel(new BorderLayout)

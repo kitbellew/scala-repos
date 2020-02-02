@@ -57,13 +57,11 @@ private[columnar] abstract class BasicColumnAccessor[JvmType](
 
   override def hasNext: Boolean = buffer.hasRemaining
 
-  override def extractTo(row: MutableRow, ordinal: Int): Unit = {
+  override def extractTo(row: MutableRow, ordinal: Int): Unit =
     extractSingle(row, ordinal)
-  }
 
-  def extractSingle(row: MutableRow, ordinal: Int): Unit = {
+  def extractSingle(row: MutableRow, ordinal: Int): Unit =
     columnType.extract(buffer, row, ordinal)
-  }
 
   protected def underlyingBuffer = buffer
 }

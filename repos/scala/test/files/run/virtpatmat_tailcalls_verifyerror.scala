@@ -1,7 +1,7 @@
 // shouldn't result in a verify error when run...
 object Test extends App {
   @annotation.tailrec
-  final def test(meh: Boolean): Boolean = {
+  final def test(meh: Boolean): Boolean =
     Some("a") match {
       case x =>
         x match {
@@ -9,6 +9,5 @@ object Test extends App {
           case _       => test(false)
         }
     }
-  }
   println(test(true))
 }

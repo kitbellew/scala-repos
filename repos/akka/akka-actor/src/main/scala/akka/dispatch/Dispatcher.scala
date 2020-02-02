@@ -100,10 +100,9 @@ class Dispatcher(
     */
   protected[akka] def createMailbox(
       actor: akka.actor.Cell,
-      mailboxType: MailboxType): Mailbox = {
+      mailboxType: MailboxType): Mailbox =
     new Mailbox(mailboxType.create(Some(actor.self), Some(actor.system)))
       with DefaultSystemMessageQueue
-  }
 
   private val esUpdater = AtomicReferenceFieldUpdater.newUpdater(
     classOf[Dispatcher],
@@ -127,7 +126,7 @@ class Dispatcher(
   protected[akka] override def registerForExecution(
       mbox: Mailbox,
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = {
+      hasSystemMessageHint: Boolean): Boolean =
     if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { //This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {
@@ -152,7 +151,6 @@ class Dispatcher(
         }
       } else false
     } else false
-  }
 
   override val toString: String = Logging.simpleName(this) + "[" + id + "]"
 }

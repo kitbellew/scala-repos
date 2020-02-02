@@ -135,7 +135,7 @@ object OptionOrderedBuf {
         genCompareFn(elementA, elementB)
       override val lazyOuterVariables: Map[String, ctx.Tree] =
         innerBuf.lazyOuterVariables
-      override def length(element: Tree): CompileTimeLengthTypes[c.type] = {
+      override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         innerBuf.length(q"$element.get") match {
           case const: ConstantLengthCalculation[_] =>
             FastLengthCalculation(c)(q"""
@@ -158,7 +158,6 @@ object OptionOrderedBuf {
           """)
           case _ => NoLengthCalculationAvailable(c)
         }
-      }
     }
   }
 }

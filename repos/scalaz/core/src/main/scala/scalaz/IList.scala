@@ -524,10 +524,9 @@ object IList extends IListInstances {
     cata(a)(single(_), IList.empty[A])
 
   def fill[A](n: Int)(a: A): IList[A] = {
-    @tailrec def go(i: Int, list: IList[A]): IList[A] = {
+    @tailrec def go(i: Int, list: IList[A]): IList[A] =
       if (i > 0) go(i - 1, ICons(a, list))
       else list
-    }
     if (n <= 0) empty
     else go(n, empty)
   }

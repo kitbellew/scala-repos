@@ -55,12 +55,10 @@ class NamedCometDispatcher(name: Box[String]) extends LiftActor with Loggable {
       */
     case msg => {
       cometActorsToUpdate.par.foreach { x =>
-        {
-          x ! msg
-          logger.debug(
-            "We will update this comet actor: %s showing name: %s"
-              .format(x, name))
-        }
+        x ! msg
+        logger.debug(
+          "We will update this comet actor: %s showing name: %s"
+            .format(x, name))
       }
     }
   }

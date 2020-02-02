@@ -30,10 +30,9 @@ object URLDecoder {
     lazy val byteBuffer = ByteBuffer.allocate(len / 3)
     val charBuffer = CharBuffer.allocate(len)
 
-    def throwIllegalHex() = {
+    def throwIllegalHex() =
       throw new IllegalArgumentException(
         "URLDecoder: Illegal hex characters in escape (%) pattern")
-    }
 
     var i = 0
     while (i < len) {

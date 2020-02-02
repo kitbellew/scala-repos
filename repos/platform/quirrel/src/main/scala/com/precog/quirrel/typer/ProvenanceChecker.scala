@@ -617,12 +617,11 @@ trait ProvenanceChecker extends parser.AST with Binder {
               val ids = let.params map { Identifier(Vector(), _) }
               val zipped = ids zip (actuals map { _.provenance })
 
-              def sub(target: Provenance): Provenance = {
+              def sub(target: Provenance): Provenance =
                 zipped.foldLeft(target) {
                   case (target, (id, sub)) =>
                     substituteParam(id, let, target, sub)
                 }
-              }
 
               val constraints2 = let.constraints map {
                 case Related(left, right) => {
@@ -831,7 +830,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 unifyProvenance(relations)(left.provenance, right.provenance)
 
               def compute(paramProv: Provenance, prov: Provenance)
-                  : (Set[Error], Set[ProvConstraint], Provenance) = {
+                  : (Set[Error], Set[ProvConstraint], Provenance) =
                 if (left.provenance.isParametric || right.provenance.isParametric) {
                   if (unified.isDefined)
                     (Set(), Set(), paramProv)
@@ -849,7 +848,6 @@ trait ProvenanceChecker extends parser.AST with Binder {
                       Set(),
                       NullProvenance)
                 }
-              }
 
               def rec(policy: IdentityPolicy)
                   : (Set[Error], Set[ProvConstraint], Provenance) =
@@ -1092,7 +1090,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       from: Provenance,
       to: Provenance): Boolean = {
     // not actually DFS, but that's alright since we can't have cycles
-    def dfs(seen: Set[Provenance])(from: Provenance): Boolean = {
+    def dfs(seen: Set[Provenance])(from: Provenance): Boolean =
       if (seen contains from) {
         false
       } else if (from == to) {
@@ -1102,7 +1100,6 @@ trait ProvenanceChecker extends parser.AST with Binder {
         val seen2 = seen + from
         next exists dfs(seen2)
       }
-    }
 
     dfs(Set())(from)
   }
@@ -1305,7 +1302,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       case _ => Set(prov)
     }
 
-    def makeCanonical: Provenance = {
+    def makeCanonical: Provenance =
       this match {
         case UnifiedProvenance(left, right) =>
           UnifiedProvenance(left.makeCanonical, right.makeCanonical).associateLeft
@@ -1321,7 +1318,6 @@ trait ProvenanceChecker extends parser.AST with Binder {
           DerivedDifferenceProvenance(left.makeCanonical, right.makeCanonical)
         case prov => prov
       }
-    }
   }
 
   object Provenance {

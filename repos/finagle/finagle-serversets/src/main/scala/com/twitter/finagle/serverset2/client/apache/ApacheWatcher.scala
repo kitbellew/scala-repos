@@ -15,7 +15,7 @@ private[serverset2] class ApacheWatcher(
     with EventStats {
   protected val stats = statsIn
   val state = Var[WatchState](WatchState.Pending)
-  def process(event: WatchedEvent) = {
+  def process(event: WatchedEvent) =
     event.getType match {
       case Watcher.Event.EventType.None =>
         EventDeliveryThread.offer(
@@ -26,5 +26,4 @@ private[serverset2] class ApacheWatcher(
           state,
           WatchState.Determined(EventFilter(ApacheNodeEvent(e))))
     }
-  }
 }

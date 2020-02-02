@@ -52,7 +52,7 @@ object ExpandLibJarsGlobs {
     import java.nio._
     import java.nio.file._
     val fs = FileSystems.getDefault()
-    val expandedSlash = if (glob.endsWith("/")) s"${glob}/*" else glob
+    val expandedSlash = if (glob.endsWith("/")) s"$glob/*" else glob
     val absoluteGlob = fs.getPath(expandedSlash).toAbsolutePath
     val matcher: PathMatcher = fs.getPathMatcher(s"glob:$absoluteGlob")
 

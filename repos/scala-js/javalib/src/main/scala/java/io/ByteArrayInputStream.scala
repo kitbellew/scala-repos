@@ -12,7 +12,7 @@ class ByteArrayInputStream(
 
   def this(buf: Array[Byte]) = this(buf, 0, buf.length)
 
-  override def read(): Int = {
+  override def read(): Int =
     if (pos >= count)
       -1
     else {
@@ -20,7 +20,6 @@ class ByteArrayInputStream(
       pos += 1
       res
     }
-  }
 
   override def read(b: Array[Byte], off: Int, reqLen: Int): Int = {
     if (off < 0 || reqLen < 0 || reqLen > b.length - off)

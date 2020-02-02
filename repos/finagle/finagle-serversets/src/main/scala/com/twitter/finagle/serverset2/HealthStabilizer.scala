@@ -29,8 +29,7 @@ private[serverset2] object HealthStabilizer {
       va: Var[ClientHealth],
       probationEpoch: Epoch,
       statsReceiver: StatsReceiver
-  ): Var[ClientHealth] = {
-
+  ): Var[ClientHealth] =
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
       val stateChanges = va.changes.dedup
         .select(probationEpoch.event)
@@ -81,5 +80,4 @@ private[serverset2] object HealthStabilizer {
         Future.Done
       })
     }
-  }
 }

@@ -481,7 +481,7 @@ object SparseArray {
     * @author dramage
     */
   def fill[@specialized(Int, Float, Double) T: ClassTag: Zero](length: Int)(
-      value: => T): SparseArray[T] = {
+      value: => T): SparseArray[T] =
     if (value != implicitly[Zero[T]].zero) {
       val rv = new SparseArray[T](size = length)
       var i = 0
@@ -493,7 +493,6 @@ object SparseArray {
     } else {
       new SparseArray[T](length)
     }
-  }
 
   def create[@specialized(Int, Float, Double) T: ClassTag: Zero](length: Int)(
       values: (Int, T)*) = {

@@ -28,9 +28,8 @@ class AdaDeltaGradientDescent[T](
 
   override protected def initialHistory(
       f: StochasticDiffFunction[T],
-      init: T): History = {
+      init: T): History =
     History(zeroLike(init), zeroLike(init))
-  }
 
   override protected def updateHistory(
       newX: T,
@@ -61,12 +60,10 @@ class AdaDeltaGradientDescent[T](
   override def determineStepSize(
       state: State,
       f: StochasticDiffFunction[T],
-      dir: T) = {
+      dir: T) =
     defaultStepSize
-  }
 
-  override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
+  override protected def adjust(newX: T, newGrad: T, newVal: Double) =
     newVal -> newGrad
-  }
 
 }

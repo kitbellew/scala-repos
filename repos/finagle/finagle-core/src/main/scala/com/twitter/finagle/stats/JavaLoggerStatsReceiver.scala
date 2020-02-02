@@ -40,9 +40,8 @@ class JavaLoggerStatsReceiver(logger: Logger, timer: Timer)
     timerTasks.remove(name) foreach { _.cancel() }
   }
 
-  private[this] def formatName(description: Seq[String]) = {
+  private[this] def formatName(description: Seq[String]) =
     description mkString "/"
-  }
 }
 
 object JavaLoggerStatsReceiver {

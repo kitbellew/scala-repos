@@ -235,7 +235,7 @@ object SessionMaster extends LiftActor with Loggable {
           killedSessions.put(s.underlyingId, Helpers.millis)
           s.markedForShutDown_? = true
           Schedule.schedule(
-            () => {
+            () =>
               try {
                 s.doShutDown
                 try {
@@ -246,8 +246,7 @@ object SessionMaster extends LiftActor with Loggable {
               } catch {
                 case e: Exception => logger.warn("Failure in remove session", e)
 
-              }
-            },
+              },
             0.seconds
           )
           lockWrite {
@@ -275,23 +274,23 @@ object SessionMaster extends LiftActor with Loggable {
         if (Props.inGAE) {
           f(
             ses,
-            shutDown => {
+            shutDown =>
               if (!shutDown.session.markedForShutDown_?) {
                 shutDown.session.markedForShutDown_? = true
                 this.sendMsg(RemoveSession(shutDown.session.underlyingId))
               }
-            }
           )
         } else {
           Schedule.schedule(
             () =>
-              f(ses, shutDown => {
-                if (!shutDown.session.markedForShutDown_?) {
-                  shutDown.session.markedForShutDown_? = true
+              f(
+                ses,
+                shutDown =>
+                  if (!shutDown.session.markedForShutDown_?) {
+                    shutDown.session.markedForShutDown_? = true
 
-                  this ! RemoveSession(shutDown.session.underlyingId)
-                }
-              }),
+                    this ! RemoveSession(shutDown.session.underlyingId)
+                  }),
             0.seconds
           )
         }

@@ -232,7 +232,7 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       td: ScTemplateDefinition,
       name: (ClassMember, ScTemplateDefinition) => String,
       resultSet: CompletionResultSet)(
-      insertionHandler: ClassMember => InsertHandler[LookupElement]): Unit = {
+      insertionHandler: ClassMember => InsertHandler[LookupElement]): Unit =
     classMembers.foreach {
       case mm: ScalaNamedMember =>
         val lookupItem = LookupElementBuilder
@@ -247,7 +247,6 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
         resultSet.consume(renderingDecorator)
       case _ =>
     }
-  }
 
   registerOverrideCompletion(new ModifiersFilter, "override")
 }

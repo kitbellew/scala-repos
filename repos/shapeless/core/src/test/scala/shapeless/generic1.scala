@@ -176,17 +176,15 @@ package Generic1TestsAux {
     implicit def hcons[F[_]](
         implicit ihc: IsHCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
-        def point[A](a: A): F[A] = {
+        def point[A](a: A): F[A] =
           ihc.pack(ihc.fh.point(a), ihc.ft.point(a))
-        }
       }
 
     implicit def ccons[F[_]](
         implicit ihc: IsCCons1[F, Pointed, Pointed]): Pointed[F] =
       new Pointed[F] {
-        def point[A](a: A): F[A] = {
+        def point[A](a: A): F[A] =
           ihc.pack(Left(ihc.fh.point(a)))
-        }
       }
 
     implicit def generic[F[_]](implicit gen: Generic1[F, Pointed]): Pointed[F] =

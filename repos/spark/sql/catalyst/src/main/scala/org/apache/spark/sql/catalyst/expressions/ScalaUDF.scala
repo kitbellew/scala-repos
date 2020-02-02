@@ -1448,7 +1448,7 @@ case class ScalaUDF(
       converterClassName,
       converterTerm,
       s"this.$converterTerm = ($converterClassName)$typeConvertersClassName" +
-        s".createToScalaConverter(((${expressionClassName})((($scalaUDFClassName)" +
+        s".createToScalaConverter((($expressionClassName)((($scalaUDFClassName)" +
         s"references[$expressionIdx]).getChildren().apply($index))).dataType());"
     )
     converterTerm
@@ -1510,7 +1510,7 @@ case class ScalaUDF(
     }.unzip
 
     val callFunc = s"${ctx.boxedType(dataType)} $resultTerm = " +
-      s"(${ctx.boxedType(dataType)})${catalystConverterTerm}" +
+      s"(${ctx.boxedType(dataType)})$catalystConverterTerm" +
       s".apply($funcTerm.apply(${funcArguments.mkString(", ")}));"
 
     s"""

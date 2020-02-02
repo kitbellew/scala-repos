@@ -25,7 +25,7 @@ trait Importer {
 
   private val BUFFER_SIZE = 8192
 
-  protected def streamToString(in: InputStream): String = {
+  protected def streamToString(in: InputStream): String =
     try {
       val reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))
       val buffer = new Array[Char](BUFFER_SIZE)
@@ -42,7 +42,6 @@ trait Importer {
     } catch {
       case x => throw new ConfigurationException(x.toString)
     }
-  }
 }
 
 /**

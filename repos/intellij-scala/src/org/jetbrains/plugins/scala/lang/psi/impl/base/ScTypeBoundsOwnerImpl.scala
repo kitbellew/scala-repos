@@ -48,20 +48,18 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
     } else None
   }
 
-  override def viewTypeElement: Seq[ScTypeElement] = {
+  override def viewTypeElement: Seq[ScTypeElement] =
     for {
       v <- findChildrenByType(ScalaTokenTypes.tVIEW)
       e = ScalaPsiUtil.getNextSiblingOfType(v, classOf[ScTypeElement])
       t <- Option(e)
     } yield t
-  }
 
-  override def contextBoundTypeElement: Seq[ScTypeElement] = {
+  override def contextBoundTypeElement: Seq[ScTypeElement] =
     for {
       v <- findChildrenByType(ScalaTokenTypes.tCOLON)
       t <- Option(ScalaPsiUtil.getNextSiblingOfType(v, classOf[ScTypeElement]))
     } yield t
-  }
 
   override def removeImplicitBounds() {
     var node = getNode.getFirstChildNode

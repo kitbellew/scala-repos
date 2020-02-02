@@ -28,13 +28,12 @@ private[finagle] object FinagleScheduler {
   private val log = DefaultLogger
 
   private object Integer {
-    def unapply(str: String): Option[Int] = {
+    def unapply(str: String): Option[Int] =
       try {
         Some(str.toInt)
       } catch {
         case _: java.lang.NumberFormatException => None
       }
-    }
   }
 
   private def switchToBridged(numWorkers: Int) {

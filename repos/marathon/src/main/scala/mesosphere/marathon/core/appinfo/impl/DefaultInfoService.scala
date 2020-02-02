@@ -57,25 +57,23 @@ private[appinfo] class DefaultInfoService(
       groupId: PathId,
       groupSelector: GroupSelector,
       appEmbed: Set[Embed],
-      groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] = {
+      groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] =
     groupManager.group(groupId).flatMap {
       case Some(group) =>
         queryForGroup(group, groupSelector, appEmbed, groupEmbed)
       case None => Future.successful(None)
     }
-  }
 
   override def selectGroupVersion(
       groupId: PathId,
       version: Timestamp,
       groupSelector: GroupSelector,
-      groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] = {
+      groupEmbed: Set[GroupInfo.Embed]): Future[Option[GroupInfo]] =
     groupManager.group(groupId, version).flatMap {
       case Some(group) =>
         queryForGroup(group, groupSelector, Set.empty, groupEmbed)
       case None => Future.successful(None)
     }
-  }
 
   private[this] def queryForGroup(
       group: Group,
@@ -112,11 +110,10 @@ private[appinfo] class DefaultInfoService(
           else
             None
         //if a subgroup is allowed, we also have to allow all parents implicitly
-        def groupMatches(group: Group): Boolean = {
+        def groupMatches(group: Group): Boolean =
           alreadyMatched.getOrElseUpdate(
             group.id,
             groupSelector.matches(group) || group.groups.exists(groupMatches))
-        }
         if (groupMatches(ref)) Some(GroupInfo(ref, apps, groups)) else None
       }
       queryGroup(group)

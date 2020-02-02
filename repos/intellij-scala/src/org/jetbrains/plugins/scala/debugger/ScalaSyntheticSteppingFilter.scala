@@ -62,14 +62,13 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
     }
   }
 
-  private def hasLocalFun(name: String, td: PsiElement): Boolean = {
+  private def hasLocalFun(name: String, td: PsiElement): Boolean =
     td.depthFirst(elem =>
         elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
       .exists {
         case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
         case _                              => false
       }
-  }
 
   private def nameMatches(jvmName: String, funName: String) = {
     val encoded = ScalaNamesUtil.toJavaName(funName)

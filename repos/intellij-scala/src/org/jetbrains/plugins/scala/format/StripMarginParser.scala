@@ -45,7 +45,7 @@ object StripMarginParser extends StringParser {
 object WithStrippedMargin {
   val STRIP_MARGIN = "stripMargin"
 
-  def unapply(literal: ScLiteral): Option[(ScExpression, Char)] = {
+  def unapply(literal: ScLiteral): Option[(ScExpression, Char)] =
     literal.getParent match {
       case MethodRepr(
           refExpr: ScReferenceExpression,
@@ -63,14 +63,13 @@ object WithStrippedMargin {
         Some(mc, argLit.getValue.asInstanceOf[Char])
       case _ => None
     }
-  }
 
 }
 
 object IsStripMargin {
   val STRIP_MARGIN = WithStrippedMargin.STRIP_MARGIN
 
-  def unapply(expr: ScExpression): Option[(ScLiteral, Char)] = {
+  def unapply(expr: ScExpression): Option[(ScLiteral, Char)] =
     expr match {
       case MethodRepr(_, Some(lit: ScLiteral), Some(ref), args)
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN =>
@@ -84,5 +83,4 @@ object IsStripMargin {
         Some(lit, marginChar)
       case _ => None
     }
-  }
 }

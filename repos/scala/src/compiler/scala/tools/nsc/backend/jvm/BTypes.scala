@@ -164,7 +164,7 @@ abstract class BTypes {
     * Parse the classfile for `internalName` and construct the [[ClassBType]]. If the classfile cannot
     * be found in the `byteCodeRepository`, the `info` of the resulting ClassBType is undefined.
     */
-  def classBTypeFromParsedClassfile(internalName: InternalName): ClassBType = {
+  def classBTypeFromParsedClassfile(internalName: InternalName): ClassBType =
     classBTypeFromInternalName.getOrElse(
       internalName, {
         val res = ClassBType(internalName)
@@ -175,16 +175,14 @@ abstract class BTypes {
         }
       }
     )
-  }
 
   /**
     * Construct the [[ClassBType]] for a parsed classfile.
     */
-  def classBTypeFromClassNode(classNode: ClassNode): ClassBType = {
+  def classBTypeFromClassNode(classNode: ClassNode): ClassBType =
     classBTypeFromInternalName.getOrElse(classNode.name, {
       setClassInfoFromClassNode(classNode, ClassBType(classNode.name))
     })
-  }
 
   private def setClassInfoFromClassNode(
       classNode: ClassNode,
@@ -215,15 +213,14 @@ abstract class BTypes {
       * to have an EnclosingMethod attribute declaring the outer class. So we keep those local and
       * anonymous classes whose outerClass is classNode.name.
       */
-    def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
+    def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean =
       (innerClassNode.outerName != null && innerClassNode.outerName == classNode.name) ||
-      (innerClassNode.outerName == null && {
-        val classNodeForInnerClass = byteCodeRepository
-          .classNode(innerClassNode.name)
-          .get // TODO: don't get here, but set the info to Left at the end
-        classNodeForInnerClass.outerClass == classNode.name
-      })
-    }
+        (innerClassNode.outerName == null && {
+          val classNodeForInnerClass = byteCodeRepository
+            .classNode(innerClassNode.name)
+            .get // TODO: don't get here, but set the info to Left at the end
+          classNodeForInnerClass.outerClass == classNode.name
+        })
 
     val nestedClasses: List[ClassBType] =
       classNode.innerClasses.asScala.collect({
@@ -272,14 +269,13 @@ abstract class BTypes {
     * metadata available in the classfile (ACC_FINAL flags, etc).
     */
   def inlineInfoFromClassfile(classNode: ClassNode): InlineInfo = {
-    def fromClassfileAttribute: Option[InlineInfo] = {
+    def fromClassfileAttribute: Option[InlineInfo] =
       if (classNode.attrs == null) None
       else
         classNode.attrs.asScala
           .collect({ case a: InlineInfoAttribute => a })
           .headOption
           .map(_.inlineInfo)
-    }
 
     def fromClassfileWithoutAttribute = {
       val warning = {
@@ -294,16 +290,14 @@ abstract class BTypes {
       // require special handling. Excluding is OK because they are never inlined.
       // Here we are parsing from a classfile and we don't need to do anything special. Many of these
       // primitives don't even exist, for example Any.isInstanceOf.
-      val methodInfos = classNode.methods.asScala
-        .map(methodNode => {
-          val info = MethodInlineInfo(
-            effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
-            traitMethodWithStaticImplementation = false,
-            annotatedInline = false,
-            annotatedNoInline = false)
-          (methodNode.name + methodNode.desc, info)
-        })
-        .toMap
+      val methodInfos = classNode.methods.asScala.map { methodNode =>
+        val info = MethodInlineInfo(
+          effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
+          traitMethodWithStaticImplementation = false,
+          annotatedInline = false,
+          annotatedNoInline = false)
+        (methodNode.name + methodNode.desc, info)
+      }.toMap
       InlineInfo(
         traitImplClassSelfType = None,
         isEffectivelyFinal = BytecodeUtils.isFinalClass(classNode),
@@ -503,12 +497,11 @@ abstract class BTypes {
       * @return The opcode adapted to this java type. For example, if this type is `float` and
       *         `opcode` is `IRETURN`, this method returns `FRETURN`.
       */
-    final def typedOpcode(opcode: Int): Int = {
+    final def typedOpcode(opcode: Int): Int =
       if (opcode == Opcodes.IALOAD || opcode == Opcodes.IASTORE)
         opcode + loadStoreOpcodeOffset
       else
         opcode + typedOpcodeOffset
-    }
 
     /**
       * The asm.Type corresponding to this BType.
@@ -993,15 +986,14 @@ abstract class BTypes {
       info.map(_.nestedInfo.isDefined)
 
     def enclosingNestedClassesChain
-        : Either[NoClassBTypeInfo, List[ClassBType]] = {
-      isNestedClass.flatMap(isNested => {
+        : Either[NoClassBTypeInfo, List[ClassBType]] =
+      isNestedClass.flatMap { isNested =>
         // if isNested is true, we know that info.get is defined, and nestedInfo.get is also defined.
         if (isNested)
           info.get.nestedInfo.get.enclosingClass.enclosingNestedClassesChain
             .map(this :: _)
         else Right(Nil)
-      })
-    }
+      }
 
     def innerClassAttributeEntry
         : Either[NoClassBTypeInfo, Option[InnerClassEntry]] =
@@ -1021,7 +1013,7 @@ abstract class BTypes {
         })
 
     def inlineInfoAttribute: Either[NoClassBTypeInfo, InlineInfoAttribute] =
-      info.map(i => {
+      info.map { i =>
         // InlineInfos are serialized for classes being compiled. For those the info was built by
         // buildInlineInfoFromClassSymbol, which only adds a warning under SI-9111, which in turn
         // only happens for class symbols of java source files.
@@ -1029,7 +1021,7 @@ abstract class BTypes {
         // where it affect only GenBCode, and not add any assertion to GenASM in 2.11.6.
         assert(i.inlineInfo.warning.isEmpty, i.inlineInfo.warning)
         InlineInfoAttribute(i.inlineInfo)
-      })
+      }
 
     def isSubtypeOf(other: ClassBType): Either[NoClassBTypeInfo, Boolean] =
       try {

@@ -97,7 +97,7 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       }
     )
 
-  def toDouble(in: Any): Double = {
+  def toDouble(in: Any): Double =
     in match {
       case null             => 0.0
       case i: Int           => i
@@ -112,7 +112,6 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       case x :: xs          => toDouble(x)
       case o                => toDouble(o.toString)
     }
-  }
 
   override def readPermission_? = true
   override def writePermission_? = true
@@ -131,7 +130,7 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
 
   def asJsonValue: Box[JsonAST.JValue] = Full(JsonAST.JDouble(get))
 
-  override def setFromAny(in: Any): Double = {
+  override def setFromAny(in: Any): Double =
     in match {
       case JsonAST.JDouble(db) => this.set(db)
       case JsonAST.JInt(bi)    => this.set(bi.doubleValue)
@@ -145,7 +144,6 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       case s: String           => this.set(toDouble(s))
       case o                   => this.set(toDouble(o))
     }
-  }
 
   def real_convertToJDBCFriendly(value: Double): Object =
     new java.lang.Double(value)

@@ -43,7 +43,7 @@ class ReplProps {
         val left = if ((flags & LEFT_JUSTIFY) != 0) "-" else ""
         val w = if (width >= 0) s"$width" else ""
         val p = if (precision >= 0) s".$precision" else ""
-        val fmt = s"%${left}${w}${p}s"
+        val fmt = s"%$left$w${p}s"
         formatter.format(fmt, version)
       }
     }

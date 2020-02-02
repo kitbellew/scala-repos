@@ -140,7 +140,7 @@ object Menu extends DispatchSnippet {
         val liMap = S.prefixedAttrsToMap("li")
         val li = S.mapToAttrs(liMap)
 
-        def buildANavItem(i: MenuItem) = {
+        def buildANavItem(i: MenuItem) =
           i match {
             // Per Loc.PlaceHolder, placeholder implies HideIfNoKids
             case m @ MenuItem(text, uri, kids, _, _, _)
@@ -200,7 +200,6 @@ object Menu extends DispatchSnippet {
                   uri
                 }>{text}</a>{ifExpandAll(buildUlLine(kids))}</xml:group>) % li)
           }
-        }
 
         def buildUlLine(in: Seq[MenuItem]): NodeSeq =
           if (in.isEmpty) {
@@ -309,17 +308,15 @@ object Menu extends DispatchSnippet {
     text match {
       case TitleText(attrs, str) => {
         r.map { rt =>
-          {
-            val rts = rt.text
-            val idx = str.indexOf("%*%")
-            val bodyStr = if (idx >= 0) {
-              str.substring(0, idx) + rts + str.substring(idx + 3)
-            } else {
-              str + " " + rts
-            }
-
-            <title>{bodyStr}</title> % attrs
+          val rts = rt.text
+          val idx = str.indexOf("%*%")
+          val bodyStr = if (idx >= 0) {
+            str.substring(0, idx) + rts + str.substring(idx + 3)
+          } else {
+            str + " " + rts
           }
+
+          <title>{bodyStr}</title> % attrs
         } openOr text
       }
 
@@ -470,7 +467,7 @@ object Menu extends DispatchSnippet {
       type T = Q forSome { type Q }
 
       // Builds a link for the given loc
-      def buildLink[T](loc: Loc[T]) = {
+      def buildLink[T](loc: Loc[T]) =
         Group(SiteMap.buildLink(name, text) match {
           case e: Elem =>
             Helpers.addCssClass(
@@ -478,7 +475,6 @@ object Menu extends DispatchSnippet {
               e % S.prefixedAttrsToMetaData("a"))
           case x => x
         })
-      }
 
       (
         S.originalRequest.flatMap(_.location),

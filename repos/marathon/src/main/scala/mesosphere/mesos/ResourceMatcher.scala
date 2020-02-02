@@ -185,7 +185,7 @@ object ResourceMatcher {
         valueLeft: Double,
         resourcesLeft: Iterable[Protos.Resource],
         resourcesConsumed: List[ScalarMatch.Consumption] = List.empty)
-        : ScalarMatchResult = {
+        : ScalarMatchResult =
       if (valueLeft <= 0) {
         ScalarMatch(name, requiredValue, resourcesConsumed, scope = scope)
       } else {
@@ -213,7 +213,6 @@ object ResourceMatcher {
               consumedValue :: resourcesConsumed)
         }
       }
-    }
 
     val resourcesForName = groupedResources.getOrElse(name, Iterable.empty)
     val matchingScalarResources = resourcesForName.filter(selector(_))
@@ -223,7 +222,7 @@ object ResourceMatcher {
   private[this] def logUnsatisfiedResources(
       offer: Offer,
       selector: ResourceSelector,
-      scalarMatchResults: Iterable[ScalarMatchResult]): Unit = {
+      scalarMatchResults: Iterable[ScalarMatchResult]): Unit =
     if (log.isInfoEnabled) {
       if (scalarMatchResults.exists(!_.matches)) {
         val basicResourceString = scalarMatchResults.mkString(", ")
@@ -233,5 +232,4 @@ object ResourceMatcher {
             s"Not all basic resources satisfied: $basicResourceString")
       }
     }
-  }
 }

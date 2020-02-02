@@ -42,7 +42,6 @@ trait SharedEnsimeVFSFixture
     _vfs.close()
   }
 
-  override def withVFS[T](testCode: EnsimeVFS => T): T = {
+  override def withVFS[T](testCode: EnsimeVFS => T): T =
     testCode(_vfs)
-  }
 }

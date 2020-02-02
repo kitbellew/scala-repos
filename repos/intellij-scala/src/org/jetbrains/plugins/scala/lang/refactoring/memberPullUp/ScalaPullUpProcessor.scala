@@ -112,7 +112,7 @@ class ScalaPullUpProcessor(
   }
 
   private def memberCopiesToExtract(
-      info: ScalaExtractMemberInfo): Seq[ScMember] = {
+      info: ScalaExtractMemberInfo): Seq[ScMember] =
     info match {
       case ScalaExtractMemberInfo(decl: ScDeclaration, _) =>
         val member = decl.copy().asInstanceOf[ScMember]
@@ -131,16 +131,14 @@ class ScalaPullUpProcessor(
         Seq(copy)
       case _ => Seq(info.getMember.copy().asInstanceOf[ScMember])
     }
-  }
 
-  private def handleOldMember(info: ScalaExtractMemberInfo) = {
+  private def handleOldMember(info: ScalaExtractMemberInfo) =
     info match {
       case ScalaExtractMemberInfo(m: ScDeclaration, _) => m.delete()
       case ScalaExtractMemberInfo(m, false)            => m.delete()
       case ScalaExtractMemberInfo(m, true) =>
         m.setModifierProperty("override", value = true)
     }
-  }
 
   private def declarationsText(m: ScMember): Seq[String] = {
     def textForBinding(b: ScBindingPattern) = {

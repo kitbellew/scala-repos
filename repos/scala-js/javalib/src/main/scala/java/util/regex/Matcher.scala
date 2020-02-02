@@ -178,7 +178,7 @@ final class Matcher private[regex] (
   def end(): Int = start() + group().length
   def group(): String = ensureLastMatch(0).get
 
-  def start(group: Int): Int = {
+  def start(group: Int): Int =
     if (group == 0) start()
     else {
       val last = ensureLastMatch
@@ -188,7 +188,6 @@ final class Matcher private[regex] (
         inputstr.indexOf(groupStr, last.index)
       }
     }
-  }
 
   def end(group: Int): Int = {
     val s = start(group)
@@ -249,7 +248,7 @@ object Matcher {
     def end(): Int = start() + group().length
     def group(): String = ensureLastMatch(0).get
 
-    def start(group: Int): Int = {
+    def start(group: Int): Int =
       if (group == 0) start()
       else {
         val last = ensureLastMatch
@@ -260,7 +259,6 @@ object Matcher {
           inputstr.indexOf(groupStr, last.index)
         }
       }
-    }
 
     def end(group: Int): Int = {
       val s = start(group)

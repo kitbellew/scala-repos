@@ -31,7 +31,7 @@ private object PostgresDialect extends JdbcDialect {
       sqlType: Int,
       typeName: String,
       size: Int,
-      md: MetadataBuilder): Option[DataType] = {
+      md: MetadataBuilder): Option[DataType] =
     if (sqlType == Types.BIT && typeName.equals("bit") && size != 1) {
       Some(BinaryType)
     } else if (sqlType == Types.OTHER) {
@@ -41,7 +41,6 @@ private object PostgresDialect extends JdbcDialect {
       // postgres array type names start with underscore
       toCatalystType(typeName.drop(1), size, scale).map(ArrayType(_))
     } else None
-  }
 
   private def toCatalystType(
       typeName: String,
@@ -84,9 +83,8 @@ private object PostgresDialect extends JdbcDialect {
     case _ => None
   }
 
-  override def getTableExistsQuery(table: String): String = {
+  override def getTableExistsQuery(table: String): String =
     s"SELECT 1 FROM $table LIMIT 1"
-  }
 
   override def beforeFetch(
       connection: Connection,

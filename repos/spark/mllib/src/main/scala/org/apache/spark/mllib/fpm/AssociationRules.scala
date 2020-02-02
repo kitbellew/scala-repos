@@ -134,7 +134,7 @@ object AssociationRules {
       antecedent.toSet.intersect(consequent.toSet).isEmpty, {
         val sharedItems = antecedent.toSet.intersect(consequent.toSet)
         s"A valid association rule must have disjoint antecedent and " +
-          s"consequent but ${sharedItems} is present in both."
+          s"consequent but $sharedItems is present in both."
       }
     )
 
@@ -143,22 +143,19 @@ object AssociationRules {
       *
       */
     @Since("1.5.0")
-    def javaAntecedent: java.util.List[Item] = {
+    def javaAntecedent: java.util.List[Item] =
       antecedent.toList.asJava
-    }
 
     /**
       * Returns consequent in a Java List.
       *
       */
     @Since("1.5.0")
-    def javaConsequent: java.util.List[Item] = {
+    def javaConsequent: java.util.List[Item] =
       consequent.toList.asJava
-    }
 
-    override def toString: String = {
+    override def toString: String =
       s"${antecedent.mkString("{", ",", "}")} => " +
-        s"${consequent.mkString("{", ",", "}")}: ${confidence}"
-    }
+        s"${consequent.mkString("{", ",", "}")}: $confidence"
   }
 }

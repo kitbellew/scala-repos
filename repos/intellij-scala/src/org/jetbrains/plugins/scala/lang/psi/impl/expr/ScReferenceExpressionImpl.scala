@@ -84,7 +84,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
   def bindToElement(
       element: PsiElement,
       containingClass: Option[PsiClass]): PsiElement = {
-    def tail(qualName: String)(simpleImport: => PsiElement): PsiElement = {
+    def tail(qualName: String)(simpleImport: => PsiElement): PsiElement =
       safeBindToElement(
         qualName, {
           case (qual, true) =>
@@ -97,7 +97,6 @@ class ScReferenceExpressionImpl(node: ASTNode)
               .asInstanceOf[ScReferenceExpression]
         }
       )(simpleImport)
-    }
 
     if (isReferenceTo(element)) return this
     element match {
@@ -196,19 +195,18 @@ class ScReferenceExpressionImpl(node: ASTNode)
 
   def getSimpleVariants(
       implicits: Boolean,
-      filterNotNamedVariants: Boolean): Array[ResolveResult] = {
+      filterNotNamedVariants: Boolean): Array[ResolveResult] =
     doResolve(
       this,
       new CompletionProcessor(getKinds(incomplete = true), this, implicits))
-      .filter(r => {
+      .filter { r =>
         if (filterNotNamedVariants) {
           r match {
             case res: ScalaResolveResult => res.isNamedParameter
             case _                       => false
           }
         } else true
-      })
-  }
+      }
 
   def getSameNameVariants: Array[ResolveResult] =
     doResolve(
@@ -219,7 +217,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
         true,
         Some(refName)))
 
-  def getKinds(incomplete: Boolean, completion: Boolean = false) = {
+  def getKinds(incomplete: Boolean, completion: Boolean = false) =
     getContext match {
       case _ if completion          => StdKinds.refExprQualRef // SC-3092
       case _: ScReferenceExpression => StdKinds.refExprQualRef
@@ -234,30 +232,26 @@ class ScReferenceExpressionImpl(node: ASTNode)
         StdKinds.refExprQualRef
       case _ => StdKinds.refExprLastRef
     }
-  } // See SCL-3092
+  // See SCL-3092
 
-  def multiType: Array[TypeResult[ScType]] = {
+  def multiType: Array[TypeResult[ScType]] =
     multiResolve(incomplete = false)
       .filter(_.isInstanceOf[ScalaResolveResult])
       .map(r => convertBindToType(Some(r.asInstanceOf[ScalaResolveResult])))
-  }
 
-  protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  protected override def innerType(ctx: TypingContext): TypeResult[ScType] =
     convertBindToType(this.bind())
-  }
 
-  def shapeType = {
+  def shapeType =
     convertBindToType(shapeResolve match {
       case Array(bind: ScalaResolveResult) if bind.isApplicable() => Some(bind)
       case _                                                      => None
     })
-  }
 
-  def shapeMultiType: Array[TypeResult[ScType]] = {
+  def shapeMultiType: Array[TypeResult[ScType]] =
     shapeResolve
       .filter(_.isInstanceOf[ScalaResolveResult])
       .map(r => convertBindToType(Some(r.asInstanceOf[ScalaResolveResult])))
-  }
 
   protected def convertBindToType(
       bind: Option[ScalaResolveResult]): TypeResult[ScType] = {
@@ -437,12 +431,11 @@ class ScReferenceExpressionImpl(node: ASTNode)
           ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
         } else computeType
       case Some(ScalaResolveResult(obj: ScObject, s)) =>
-        def tail = {
+        def tail =
           fromType match {
             case Some(tp) => ScProjectionType(tp, obj, superReference = false)
             case _        => ScType.designator(obj)
           }
-        }
         //hack to add Eta expansion for case classes
         if (obj.isSyntheticObject) {
           ScalaPsiUtil.getCompanionModule(obj) match {
@@ -508,8 +501,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
               "java.lang.Class",
               getResolveScope,
               ScalaPsiManager.ClassCategory.TYPE)
-          def convertQualifier(
-              typeResult: TypeResult[ScType]): Option[ScType] = {
+          def convertQualifier(typeResult: TypeResult[ScType]): Option[ScType] =
             if (jlClass != null) {
               typeResult match {
                 case Success(tp, _) =>
@@ -533,7 +525,6 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 case _ => None
               }
             } else None
-          }
           val returnType: Option[ScType] = qualifier match {
             case Some(qual) =>
               convertQualifier(qual.getType(TypingContext.empty))
@@ -636,7 +627,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
     Success(inner, Some(this))
   }
 
-  def getPrevTypeInfoParams: Seq[TypeParameter] = {
+  def getPrevTypeInfoParams: Seq[TypeParameter] =
     qualifier match {
       case Some(s: ScSuperReference) => Seq.empty
       case Some(qual) =>
@@ -660,5 +651,4 @@ class ScReferenceExpressionImpl(node: ASTNode)
           case _ => Seq.empty
         }
     }
-  }
 }

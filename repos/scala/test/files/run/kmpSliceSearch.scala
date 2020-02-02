@@ -1,10 +1,9 @@
 object Test {
   import scala.collection.SeqLike
-  def slowSearch[A](xs: Seq[A], ys: Seq[A], start: Int = 0): Int = {
+  def slowSearch[A](xs: Seq[A], ys: Seq[A], start: Int = 0): Int =
     if (xs startsWith ys) start
     else if (xs.isEmpty) -1
     else slowSearch(xs.tail, ys, start + 1)
-  }
   def bkwSlowSearch[A](xs: Seq[A], ys: Seq[A]) = {
     val i = slowSearch(xs.reverse, ys.reverse)
     if (i < 0) i

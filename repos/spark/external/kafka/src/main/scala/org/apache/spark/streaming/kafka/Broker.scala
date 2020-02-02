@@ -36,13 +36,11 @@ final class Broker private (
     case _ => false
   }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     41 * (41 + host.hashCode) + port
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     s"Broker($host, $port)"
-  }
 }
 
 /**
@@ -57,11 +55,10 @@ object Broker {
   def apply(host: String, port: Int): Broker =
     new Broker(host, port)
 
-  def unapply(broker: Broker): Option[(String, Int)] = {
+  def unapply(broker: Broker): Option[(String, Int)] =
     if (broker == null) {
       None
     } else {
       Some((broker.host, broker.port))
     }
-  }
 }

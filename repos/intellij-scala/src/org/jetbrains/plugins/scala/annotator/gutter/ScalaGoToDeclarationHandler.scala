@@ -99,7 +99,7 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
     null
   }
 
-  private def goToTargets(element: PsiElement): Seq[PsiElement] = {
+  private def goToTargets(element: PsiElement): Seq[PsiElement] =
     element match {
       case null => Seq.empty
       case fun: ScFunction =>
@@ -118,5 +118,4 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
           .getOrElse(Seq[PsiElement](element))
       case _ => Seq(element)
     }
-  }
 }

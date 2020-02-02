@@ -191,8 +191,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     val rdd =
       sparkContext.parallelize((1 to 10000), 10).map { i =>
         Row(
-          s"str${i}: test cache.",
-          s"binary${i}: test cache.".getBytes(StandardCharsets.UTF_8),
+          s"str$i: test cache.",
+          s"binary$i: test cache.".getBytes(StandardCharsets.UTF_8),
           null,
           i % 2 == 0,
           i.toByte,
@@ -226,7 +226,7 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     // Issue a query and check the results.
     checkAnswer(
       sql(
-        s"SELECT DISTINCT ${allColumns} FROM InMemoryCache_different_data_types"),
+        s"SELECT DISTINCT $allColumns FROM InMemoryCache_different_data_types"),
       sqlContext.table("InMemoryCache_different_data_types").collect())
     sqlContext.dropTempTable("InMemoryCache_different_data_types")
   }

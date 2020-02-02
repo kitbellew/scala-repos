@@ -117,7 +117,7 @@ object HiddenFileFilter extends PathFilter {
 }
 
 object SuccessFileFilter extends PathFilter {
-  def accept(p: Path) = { p.getName == "_SUCCESS" }
+  def accept(p: Path) = p.getName == "_SUCCESS"
 }
 
 object AcceptAllPathFilter extends PathFilter {
@@ -143,9 +143,8 @@ object FileSource {
   /**
     * @return whether globPath contains non hidden files
     */
-  def globHasNonHiddenPaths(globPath: String, conf: Configuration): Boolean = {
+  def globHasNonHiddenPaths(globPath: String, conf: Configuration): Boolean =
     !glob(globPath, conf, HiddenFileFilter).isEmpty
-  }
 
   /**
     * @return whether globPath contains a _SUCCESS file
@@ -228,7 +227,7 @@ abstract class FileSource
   def hdfsWritePath = hdfsPaths.last
 
   override def createTap(readOrWrite: AccessMode)(
-      implicit mode: Mode): Tap[_, _, _] = {
+      implicit mode: Mode): Tap[_, _, _] =
     mode match {
       // TODO support strict in Local
       case Local(_) => {
@@ -267,12 +266,10 @@ abstract class FileSource
         }
       }
     }
-  }
 
   // This is only called when Mode.sourceStrictness is true
-  protected def hdfsReadPathsAreGood(conf: Configuration) = {
+  protected def hdfsReadPathsAreGood(conf: Configuration) =
     hdfsPaths.forall { pathIsGood(_, conf) }
-  }
 
   /*
    * This throws InvalidSourceException if:
@@ -280,7 +277,7 @@ abstract class FileSource
    * 2) we are not in the above, but some source has no input whatsoever
    * TODO this only does something for HDFS now. Maybe we should do the same for LocalMode
    */
-  override def validateTaps(mode: Mode): Unit = {
+  override def validateTaps(mode: Mode): Unit =
     mode match {
       case Hdfs(strict, conf) => {
         if (strict && (!hdfsReadPathsAreGood(conf))) {
@@ -307,19 +304,17 @@ abstract class FileSource
       }
       case _ => ()
     }
-  }
 
   /*
    * Get all the set of valid paths based on source strictness.
    */
-  protected def goodHdfsPaths(hdfsMode: Hdfs) = {
+  protected def goodHdfsPaths(hdfsMode: Hdfs) =
     hdfsMode match {
       //we check later that all the paths are good
       case Hdfs(true, _) => hdfsPaths
       // If there are no matching paths, this is still an error, we need at least something:
       case Hdfs(false, conf) => hdfsPaths.filter { pathIsGood(_, conf) }
     }
-  }
 
   protected def createHdfsReadTap(hdfsMode: Hdfs): Tap[JobConf, _, _] = {
     val taps: List[Tap[JobConf, RecordReader[_, _], OutputCollector[_, _]]] =

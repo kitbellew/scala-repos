@@ -95,11 +95,10 @@ class ChangeLambdaCodeStyleSetting(useGreekLambda: Boolean)
     if (useGreekLambda) codeStyleSettingUseGreekLambda
     else codeStyleSettingUseWordLambda
 
-  override def applyFix(project: Project, d: ProblemDescriptor): Unit = {
+  override def applyFix(project: Project, d: ProblemDescriptor): Unit =
     ScalaCodeStyleSettings
       .getInstance(project)
       .REPLACE_LAMBDA_WITH_GREEK_LETTER = useGreekLambda
-  }
 }
 
 object KindProjectorUseCorrectLambdaKeywordInspection {

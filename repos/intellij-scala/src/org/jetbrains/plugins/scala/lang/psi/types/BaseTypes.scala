@@ -137,15 +137,13 @@ object BaseTypes {
             })
           case c: PsiClass =>
             reduce(c.getSuperTypes.flatMap { st =>
-              {
-                val proj = c.getProject
-                if (!notAll)
-                  BaseTypes.get(
-                    s.subst(ScType.create(st, proj)),
-                    visitedAliases = visitedAliases) ++ Seq(
-                    s.subst(ScType.create(st, proj)))
-                else Seq(s.subst(ScType.create(st, proj)))
-              }
+              val proj = c.getProject
+              if (!notAll)
+                BaseTypes.get(
+                  s.subst(ScType.create(st, proj)),
+                  visitedAliases = visitedAliases) ++ Seq(
+                  s.subst(ScType.create(st, proj)))
+              else Seq(s.subst(ScType.create(st, proj)))
             })
           case _ => Seq.empty
         }

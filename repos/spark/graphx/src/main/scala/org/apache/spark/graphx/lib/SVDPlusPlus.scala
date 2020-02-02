@@ -185,13 +185,11 @@ object SVDPlusPlus {
               vid: VertexId,
               vd: (Array[Double], Array[Double], Double, Double),
               msg: Option[(Array[Double], Array[Double], Double)]) =>
-            {
-              val out1 = vd._1.clone()
-              blas.daxpy(out1.length, 1.0, msg.get._1, 1, out1, 1)
-              val out2 = vd._2.clone()
-              blas.daxpy(out2.length, 1.0, msg.get._2, 1, out2, 1)
-              (out1, out2, vd._3 + msg.get._3, vd._4)
-            }
+            val out1 = vd._1.clone()
+            blas.daxpy(out1.length, 1.0, msg.get._1, 1, out1, 1)
+            val out2 = vd._2.clone()
+            blas.daxpy(out2.length, 1.0, msg.get._2, 1, out2, 1)
+            (out1, out2, vd._3 + msg.get._3, vd._4)
         }
         .cache()
       materialize(gJoinT2)

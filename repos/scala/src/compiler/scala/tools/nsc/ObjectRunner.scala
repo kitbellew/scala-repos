@@ -28,11 +28,10 @@ trait CommonRunner {
   def runAndCatch(
       urls: Seq[URL],
       objectName: String,
-      arguments: Seq[String]): Either[Throwable, Boolean] = {
+      arguments: Seq[String]): Either[Throwable, Boolean] =
     try {
       run(urls, objectName, arguments); Right(true)
     } catch { case e: Throwable => Left(unwrap(e)) }
-  }
 }
 
 /** An object that runs another object specified by name.

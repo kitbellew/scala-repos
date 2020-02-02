@@ -28,17 +28,15 @@ import com.twitter.conversions.time._
 import com.twitter.util.{TempFolder, Time}
 @RunWith(classOf[JUnitRunner])
 class FileHandlerTest extends WordSpec with TempFolder {
-  def reader(filename: String) = {
+  def reader(filename: String) =
     new BufferedReader(
       new InputStreamReader(
         new FileInputStream(new File(folderName, filename))))
-  }
 
-  def writer(filename: String) = {
+  def writer(filename: String) =
     new OutputStreamWriter(
       new FileOutputStream(new File(folderName, filename)),
       "UTF-8")
-  }
 
   "FileHandler" should {
     val record1 = new javalog.LogRecord(Level.INFO, "first post!")

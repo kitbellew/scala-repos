@@ -19,9 +19,8 @@ import util.Helpers._
 object MongoRules extends SimpleInjector {
   private def defaultCollectionNameFunc(
       conn: ConnectionIdentifier,
-      name: String): String = {
+      name: String): String =
     charSplit(name, '.').last.toLowerCase + "s"
-  }
 
   /**
     * Calculate the name of a collection based on the full

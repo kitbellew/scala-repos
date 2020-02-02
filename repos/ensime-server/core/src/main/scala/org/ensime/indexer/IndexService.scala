@@ -111,7 +111,7 @@ class IndexService(path: File) {
     lucene.create(fqns, commit)
   }
 
-  def commit(): Unit = {
+  def commit(): Unit =
     try lucene.commit()
     catch {
       case e: FileNotFoundException =>
@@ -120,7 +120,6 @@ class IndexService(path: File) {
         // utterly fatal (the user deleted the files on disk)
         log.error("the Lucene database was deleted: " + e.getMessage)
     }
-  }
 
   def remove(fs: List[FileObject]): Unit = {
     val terms = fs.map { f =>
@@ -145,7 +144,7 @@ class IndexService(path: File) {
     lucene.search(query, max).map(_.toEntity[ClassIndex]).distinct
   }
 
-  def buildTermClassMethodQuery(query: String): BooleanQuery = {
+  def buildTermClassMethodQuery(query: String): BooleanQuery =
     new BooleanQuery {
       add(new BoostedPrefixQuery(new Term("fqn", query)), Occur.MUST)
       add(new BooleanQuery {
@@ -154,5 +153,4 @@ class IndexService(path: File) {
         add(MethodIndexT, Occur.SHOULD)
       }, Occur.MUST)
     }
-  }
 }

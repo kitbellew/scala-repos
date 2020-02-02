@@ -42,14 +42,13 @@ object Reloader {
     // we use accessControlContext & AccessController to avoid a ClassLoader leak (ProtectionDomain class)
     AccessController.doPrivileged(
       new PrivilegedAction[T]() {
-        def run: T = {
+        def run: T =
           try {
             thread.setContextClassLoader(classOf[Reloader].getClassLoader)
             f
           } finally {
             thread.setContextClassLoader(oldLoader)
           }
-        }
       },
       accessControlContext
     )
@@ -58,19 +57,16 @@ object Reloader {
   /**
     * Take all the options in javaOptions of the format "-Dfoo=bar" and return them as a Seq of key value pairs of the format ("foo" -> "bar")
     */
-  def extractSystemProperties(
-      javaOptions: Seq[String]): Seq[(String, String)] = {
+  def extractSystemProperties(javaOptions: Seq[String]): Seq[(String, String)] =
     javaOptions.collect { case SystemProperty(key, value) => key -> value }
-  }
 
-  def parsePort(portString: String): Int = {
+  def parsePort(portString: String): Int =
     try {
       Integer.parseInt(portString)
     } catch {
       case e: NumberFormatException =>
         sys.error("Invalid port argument: " + portString)
     }
-  }
 
   def filterArgs(
       args: Seq[String],
@@ -89,13 +85,12 @@ object Reloader {
 
     def parsePortValue(
         portValue: Option[String],
-        defaultValue: Option[Int] = None): Option[Int] = {
+        defaultValue: Option[Int] = None): Option[Int] =
       portValue match {
         case None             => defaultValue
         case Some("disabled") => None
         case Some(s)          => Some(parsePort(s))
       }
-    }
 
     // http port can be defined as the first non-property argument, or a -Dhttp.port argument or system property
     // the http port can be disabled (set to None) by setting any of the input methods to "disabled"
@@ -246,7 +241,7 @@ object Reloader {
       Build.sharedClasses,
       buildLoader,
       new ApplicationClassLoaderProvider {
-        def get: ClassLoader = { reloader.getClassLoader.orNull }
+        def get: ClassLoader = reloader.getClassLoader.orNull
       })
 
     lazy val applicationLoader = dependencyClassLoader(
@@ -397,9 +392,8 @@ class Reloader(
   @volatile private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
-  private val watcher = fileWatchService.watch(monitoredFiles, () => {
-    changed = true
-  })
+  private val watcher =
+    fileWatchService.watch(monitoredFiles, () => changed = true)
   private val classLoaderVersion =
     new java.util.concurrent.atomic.AtomicInteger(0)
 
@@ -415,7 +409,7 @@ class Reloader(
     * - ClassLoader - If the classloader has changed, and the application should be reloaded.
     * - null - If nothing changed.
     */
-  def reload: AnyRef = {
+  def reload: AnyRef =
     Reloader.synchronized {
       if (changed || forceReloadNextTime || currentSourceMap.isEmpty || currentApplicationClassLoader.isEmpty) {
 
@@ -464,7 +458,6 @@ class Reloader(
         null // null means nothing changed
       }
     }
-  }
 
   lazy val settings = {
     import scala.collection.JavaConverters._

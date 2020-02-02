@@ -47,12 +47,11 @@ final class Emitter private (
 
   // Private API for the Closure backend (could be opened if necessary)
   private[backend] def withOptimizeBracketSelects(
-      optimizeBracketSelects: Boolean): Emitter = {
+      optimizeBracketSelects: Boolean): Emitter =
     new Emitter(
       semantics,
       outputMode,
       internalOptions.withOptimizeBracketSelects(optimizeBracketSelects))
-  }
 
   def emitAll(
       unit: LinkingUnit,
@@ -90,13 +89,12 @@ final class Emitter private (
     }
   }
 
-  def emitPostlude(builder: JSFileBuilder, logger: Logger): Unit = {
+  def emitPostlude(builder: JSFileBuilder, logger: Logger): Unit =
     outputMode match {
       case OutputMode.ECMAScript51Global =>
       case OutputMode.ECMAScript51Isolated | OutputMode.ECMAScript6 =>
         builder.addLine("}).call(this);")
     }
-  }
 
   def emitCustomFooter(customFooter: String, builder: JSFileBuilder): Unit =
     emitLines(customFooter, builder)

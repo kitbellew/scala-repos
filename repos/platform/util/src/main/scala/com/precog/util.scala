@@ -37,9 +37,8 @@ package object util {
 
   class Order2JComparator[A](order: Order[A]) {
     def toJavaComparator: Comparator[A] = new Comparator[A] {
-      def compare(a1: A, a2: A) = {
+      def compare(a1: A, a2: A) =
         order.order(a1, a2).toInt
-      }
     }
   }
 
@@ -56,9 +55,8 @@ package object util {
   private val MIN_LONG = BigInt(Long.MinValue)
 
   @inline
-  final def isValidLong(i: BigInt): Boolean = {
+  final def isValidLong(i: BigInt): Boolean =
     MIN_LONG <= i && i <= MAX_LONG
-  }
 
   final def flipBytes(buffer: ByteBuffer): Array[Byte] = {
     val bytes = new Array[Byte](buffer.remaining())
@@ -87,13 +85,12 @@ package object util {
       (a, apply(a))
     }
 
-    def get(a: A): Option[C] = {
+    def get(a: A): Option[C] =
       m get a orElse (source get a map { b =>
         val c = f(b)
         m.putIfAbsent(a, c)
         c
       })
-    }
 
     def +[C1 >: C](kv: (A, C1)): Map[A, C1] = iterator.toMap + kv
     def -(a: A): Map[A, C] = iterator.toMap - a

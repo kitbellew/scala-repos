@@ -62,12 +62,11 @@ object MarathonSchedulerServiceTest {
     config
   }
 
-  def scallopOption[A](a: Option[A]): ScallopOption[A] = {
+  def scallopOption[A](a: Option[A]): ScallopOption[A] =
     new ScallopOption[A]("") {
       override def get = a
       override def apply() = a.get
     }
-  }
 }
 
 class MarathonSchedulerServiceTest
@@ -109,11 +108,10 @@ class MarathonSchedulerServiceTest
     events = new EventStream()
   }
 
-  def driverFactory[T](provide: => SchedulerDriver): SchedulerDriverFactory = {
+  def driverFactory[T](provide: => SchedulerDriver): SchedulerDriverFactory =
     new SchedulerDriverFactory {
       override def createDriver(): SchedulerDriver = provide
     }
-  }
 
   test("Start timer when elected") {
     val mockTimer = mock[Timer]

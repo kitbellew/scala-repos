@@ -39,9 +39,8 @@ object MarkovChain {
       next
     }
 
-    override def observe(x: T) = {
+    override def observe(x: T) =
       MarkovChain(x)(resample)
-    }
   }
 
   /**
@@ -293,10 +292,8 @@ object MarkovChain {
     * @param proposal the <b>symmetric</b> proposal distribution generator
     *
     */
-  def metropolis[T](init: T, proposal: T => Rand[T])(
-      logMeasure: T => Double) = {
+  def metropolis[T](init: T, proposal: T => Rand[T])(logMeasure: T => Double) =
     MarkovChain(init)(Kernels.metropolis(proposal)(logMeasure))
-  }
 
   /**
     * Performs Metropolis-Hastings distributions on a random variable.
@@ -307,9 +304,8 @@ object MarkovChain {
     *
     */
   def metropolisHastings[T](init: T, proposal: T => (Density[T] with Rand[T]))(
-      logMeasure: T => Double) = {
+      logMeasure: T => Double) =
     MarkovChain(init) { Kernels.metropolisHastings(proposal) { logMeasure } };
-  }
 
   /**
     * Creates a slice sampler for a function. logMeasure should be an (unnormalized) log pdf.
@@ -320,7 +316,6 @@ object MarkovChain {
   def slice(
       init: Double,
       logMeasure: Double => Double,
-      valid: Double => Boolean) = {
+      valid: Double => Boolean) =
     MarkovChain(init)(Kernels.slice(logMeasure, valid));
-  }
 }

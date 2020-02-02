@@ -22,12 +22,11 @@ class ScParenthesisedTypeElementImpl(node: ASTNode)
     with ScParenthesisedTypeElement {
   override def toString: String = "TypeInParenthesis: " + getText
 
-  protected def innerType(ctx: TypingContext) = {
+  protected def innerType(ctx: TypingContext) =
     typeElement match {
       case Some(el) => el.getType(ctx)
       case None     => Success(psi.types.Unit, Some(this))
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitParenthesisedTypeElement(this)

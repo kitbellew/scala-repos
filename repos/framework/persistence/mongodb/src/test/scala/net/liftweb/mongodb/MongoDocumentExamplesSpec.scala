@@ -369,9 +369,9 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     checkMongoIsRunning
 
     // get the indexes
-    val ixs = MongoDB.useCollection(TstCollection.collectionName)(coll => {
+    val ixs = MongoDB.useCollection(TstCollection.collectionName) { coll =>
       coll.getIndexInfo
-    })
+    }
 
     // unique index on name
     val ixName = ixs.find(dbo => dbo.get("name") == "name_1")
@@ -524,8 +524,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     val tc3 = SessCollection(ObjectId.get, "MongoDB", "db", 1)
 
     // use a Mongo instance directly
-    MongoDB.use(db => {
-
+    MongoDB.use { db =>
       // save to db
       Helpers.tryo(SessCollection.save(tc, db)).toOption must beSome
       SessCollection.save(tc2, db) must throwA[MongoException]
@@ -572,7 +571,7 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
         SessCollection.drop
       }
 
-    })
+    }
 
     success
   }

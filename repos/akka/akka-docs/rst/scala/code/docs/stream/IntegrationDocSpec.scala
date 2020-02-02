@@ -79,12 +79,11 @@ object IntegrationDocSpec {
 
   class SmsServer(probe: ActorRef) {
     //#sms-server-send
-    def send(text: TextMessage): Unit = {
+    def send(text: TextMessage): Unit =
       // ...
       //#sms-server-send
       probe ! text.to
-      //#sms-server-send
-    }
+    //#sms-server-send
     //#sms-server-send
   }
 
@@ -151,10 +150,10 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     //#send-emails
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
-        .mapAsync(4)(address => {
+        .mapAsync(4) { address =>
           emailServer.send(
             Email(to = address, title = "Akka", body = "I like your tweet"))
-        })
+        }
         .to(Sink.ignore)
 
     sendEmails.run()
@@ -203,10 +202,10 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
-        .mapAsyncUnordered(4)(address => {
+        .mapAsyncUnordered(4) { address =>
           emailServer.send(
             Email(to = address, title = "Akka", body = "I like your tweet"))
-        })
+        }
         .to(Sink.ignore)
 
     sendEmails.run()
@@ -242,12 +241,12 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val sendTextMessages: RunnableGraph[NotUsed] =
       phoneNumbers
-        .mapAsync(4)(phoneNo => {
+        .mapAsync(4) { phoneNo =>
           Future {
             smsServer.send(
               TextMessage(to = phoneNo, body = "I like your tweet"))
           }(blockingExecutionContext)
-        })
+        }
         .to(Sink.ignore)
 
     sendTextMessages.run()
@@ -327,10 +326,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsync" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:"))
         probe.ref ! s
-    }
 
     //#sometimes-slow-mapAsync
     implicit val blockingExecutionContext =
@@ -361,10 +359,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "illustrate ordering and parallelism of mapAsyncUnordered" in {
     val probe = TestProbe()
-    def println(s: String): Unit = {
+    def println(s: String): Unit =
       if (s.startsWith("after:"))
         probe.ref ! s
-    }
 
     //#sometimes-slow-mapAsyncUnordered
     implicit val blockingExecutionContext =

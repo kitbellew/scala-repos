@@ -27,8 +27,8 @@ case class PluginDescription(name: String, classname: String) {
     */
   def toXML: String =
     sm"""<plugin>
-         | <name>${name}</name>
-         | <classname>${classname}</classname>
+         | <name>$name</name>
+         | <classname>$classname</classname>
          |</plugin>"""
 }
 

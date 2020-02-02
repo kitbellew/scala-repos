@@ -38,9 +38,8 @@ trait ScalaResultsHandlingSpec
         block(response)
       }
 
-    def makeRequest[T](result: Result)(block: WSResponse => T) = {
+    def makeRequest[T](result: Result)(block: WSResponse => T) =
       tryRequest(result)(tryResult => block(tryResult.get))
-    }
 
     def withServer[T](result: Result)(block: Port => T) = {
       val port = testServerPort

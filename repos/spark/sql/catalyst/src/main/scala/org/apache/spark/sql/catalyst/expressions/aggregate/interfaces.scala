@@ -164,12 +164,11 @@ sealed abstract class AggregateFunction
     * An [[AggregateFunction]] should not be used without being wrapped in
     * an [[AggregateExpression]].
     */
-  def toAggregateExpression(isDistinct: Boolean): AggregateExpression = {
+  def toAggregateExpression(isDistinct: Boolean): AggregateExpression =
     AggregateExpression(
       aggregateFunction = this,
       mode = Complete,
       isDistinct = isDistinct)
-  }
 
   def sql(isDistinct: Boolean): String = {
     val distinct = if (isDistinct) "DISTINCT " else ""

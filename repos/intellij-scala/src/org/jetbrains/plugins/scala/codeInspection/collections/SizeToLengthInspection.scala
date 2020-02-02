@@ -17,7 +17,7 @@ object SizeToLength extends SimplificationType {
   override def hint: String = InspectionBundle.message("size.to.length")
   val `.size` = invocation("size").from(likeCollectionClasses)
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case (qual @ ExpressionType(tpe)) `.size` ()
           if isArray(qual) || isString(tpe) =>
@@ -27,7 +27,6 @@ object SizeToLength extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 
   def isString(tp: ScType) = {
     val extracted = ScType.extractDesignatorSingletonType(tp).getOrElse(tp)

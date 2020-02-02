@@ -64,12 +64,11 @@ class ListMap[A, B]
   private def remove(
       key: A,
       elems: List[(A, B)],
-      acc: List[(A, B)]): List[(A, B)] = {
+      acc: List[(A, B)]): List[(A, B)] =
     if (elems.isEmpty) acc
     else if (elems.head._1 == key) {
       siz -= 1; acc ::: elems.tail
     } else remove(key, elems.tail, elems.head :: acc)
-  }
   @deprecatedOverriding(
     "No sensible way to override as this functionality relies upon access to private methods.",
     "2.11.0")

@@ -223,15 +223,13 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
   /**
     * Returns a human-readable string representing a duration such as "5 second 35 ms"
     */
-  private def formatDurationOption(msOption: Option[Long]): String = {
+  private def formatDurationOption(msOption: Option[Long]): String =
     msOption.map(formatDurationVerbose).getOrElse(emptyCell)
-  }
 
   /** Generate HTML table from string data */
   private def listingTable(headers: Seq[String], data: Seq[Seq[String]]) = {
-    def generateDataRow(data: Seq[String]): Seq[Node] = {
+    def generateDataRow(data: Seq[String]): Seq[Node] =
       <tr> {data.map(d => <td>{d}</td>)} </tr>
-    }
     UIUtils.listingTable(headers, generateDataRow, data, fixedWidth = true)
   }
 }

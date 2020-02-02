@@ -33,14 +33,13 @@ object WorksheetDiffSplitters {
       viewerEditor: Editor,
       intervals: Iterable[(Int, Int)],
       changes: Iterable[(Int, Int)],
-      prop: Float) = {
+      prop: Float) =
     new SimpleWorksheetSplitter(
       originalEditor,
       viewerEditor,
       intervals,
       changes,
       prop)
-  }
 
   class WorksheetEditingSides(originalEditor: Editor, viewerEditor: Editor)
       extends EditingSides {

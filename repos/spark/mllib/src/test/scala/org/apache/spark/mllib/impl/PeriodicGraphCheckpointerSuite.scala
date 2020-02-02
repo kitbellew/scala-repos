@@ -97,23 +97,18 @@ private object PeriodicGraphCheckpointerSuite {
     Edge[Double](2, 3, 0),
     Edge[Double](3, 4, 0))
 
-  def createGraph(sc: SparkContext): Graph[Double, Double] = {
+  def createGraph(sc: SparkContext): Graph[Double, Double] =
     Graph.fromEdges[Double, Double](sc.parallelize(edges), 0)
-  }
 
-  def checkPersistence(graphs: Seq[GraphToCheck], iteration: Int): Unit = {
+  def checkPersistence(graphs: Seq[GraphToCheck], iteration: Int): Unit =
     graphs.foreach { g => checkPersistence(g.graph, g.gIndex, iteration) }
-  }
 
   /**
     * Check storage level of graph.
     * @param gIndex  Index of graph in order inserted into checkpointer (from 1).
     * @param iteration  Total number of graphs inserted into checkpointer.
     */
-  def checkPersistence(
-      graph: Graph[_, _],
-      gIndex: Int,
-      iteration: Int): Unit = {
+  def checkPersistence(graph: Graph[_, _], gIndex: Int, iteration: Int): Unit =
     try {
       if (gIndex + 2 < iteration) {
         assert(graph.vertices.getStorageLevel == StorageLevel.NONE)
@@ -131,16 +126,14 @@ private object PeriodicGraphCheckpointerSuite {
             s"\t graph.vertices.getStorageLevel = ${graph.vertices.getStorageLevel}\n" +
             s"\t graph.edges.getStorageLevel = ${graph.edges.getStorageLevel}\n")
     }
-  }
 
   def checkCheckpoint(
       graphs: Seq[GraphToCheck],
       iteration: Int,
-      checkpointInterval: Int): Unit = {
+      checkpointInterval: Int): Unit =
     graphs.reverse.foreach { g =>
       checkCheckpoint(g.graph, g.gIndex, iteration, checkpointInterval)
     }
-  }
 
   def confirmCheckpointRemoved(graph: Graph[_, _]): Unit = {
     // Note: We cannot check graph.isCheckpointed since that value is never updated.
@@ -164,7 +157,7 @@ private object PeriodicGraphCheckpointerSuite {
       graph: Graph[_, _],
       gIndex: Int,
       iteration: Int,
-      checkpointInterval: Int): Unit = {
+      checkpointInterval: Int): Unit =
     try {
       if (gIndex % checkpointInterval == 0) {
         // We allow 2 checkpoint intervals since we perform an action (checkpointing a second graph)
@@ -197,6 +190,5 @@ private object PeriodicGraphCheckpointerSuite {
             s"\t graph.getCheckpointFiles = ${graph.getCheckpointFiles.mkString(", ")}\n" +
             s"  AssertionError message: ${e.getMessage}")
     }
-  }
 
 }

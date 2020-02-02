@@ -51,7 +51,7 @@ object TestAccounts {
       creationDate: DateTime,
       plan: AccountPlan,
       parentId: Option[AccountId],
-      profile: Option[JValue])(f: AccountId => M[APIKey]): M[Account] = {
+      profile: Option[JValue])(f: AccountId => M[APIKey]): M[Account] =
     for {
       accountId <- newAccountId().point[M]
       path = Path(accountId)
@@ -71,6 +71,5 @@ object TestAccounts {
         None,
         profile)
     }
-  }
 }
 // vim: set ts=4 sw=4 et:

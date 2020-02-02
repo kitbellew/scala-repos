@@ -56,9 +56,8 @@ abstract class ScalaSuppressByLineCommentFix(key: HighlightDisplayKey)
   }
 
   override def getCommentsFor(
-      container: PsiElement): util.List[_ <: PsiElement] = {
+      container: PsiElement): util.List[_ <: PsiElement] =
     ScalaSuppressableInspectionTool.commentsFor(container).asJava
-  }
 }
 
 class ScalaSuppressForStatementFix(key: HighlightDisplayKey)

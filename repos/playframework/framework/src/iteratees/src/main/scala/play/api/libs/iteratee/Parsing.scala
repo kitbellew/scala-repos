@@ -32,8 +32,7 @@ object Parsing {
       }
 
       def applyOn[A](inner: Iteratee[MatchInfo[Array[Byte]], A])
-          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
-
+          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] =
         Iteratee.flatten(
           inner.fold1(
             (a, e) =>
@@ -43,11 +42,10 @@ object Parsing {
             (err, r) => throw new Exception()
           )(dec))
 
-      }
       def scan(
           previousMatches: List[MatchInfo[Array[Byte]]],
           piece: Array[Byte],
-          startScan: Int): (List[MatchInfo[Array[Byte]]], Array[Byte]) = {
+          startScan: Int): (List[MatchInfo[Array[Byte]]], Array[Byte]) =
         if (piece.length < needleSize) {
           (previousMatches, piece)
         } else {
@@ -73,13 +71,11 @@ object Parsing {
             } else scan(previousMatches, piece, newScan)
           }
         }
-      }
 
       def step[A](
           rest: Array[Byte],
           inner: Iteratee[MatchInfo[Array[Byte]], A])(in: Input[Array[Byte]])
-          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
-
+          : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] =
         in match {
           case Input.Empty =>
             Cont(step(rest, inner)) //here should rather pass Input.Empty along
@@ -137,6 +133,5 @@ object Parsing {
                 (err, e) => throw new Exception()
               )(dec))
         }
-      }
     }
 }

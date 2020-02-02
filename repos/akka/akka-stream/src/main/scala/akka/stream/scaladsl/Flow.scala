@@ -119,7 +119,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     * where appropriate instead of manually writing functions that pass through one of the values.
     */
   def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(
-      combine: (Mat, Mat2) ⇒ Mat3): Sink[In, Mat3] = {
+      combine: (Mat, Mat2) ⇒ Mat3): Sink[In, Mat3] =
     if (isIdentity)
       Sink
         .fromGraph(sink.asInstanceOf[Graph[SinkShape[In], Mat2]])
@@ -131,7 +131,6 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
           .fuse(sinkCopy, shape.out, sinkCopy.shape.inlets.head, combine)
           .replaceShape(SinkShape(shape.in)))
     }
-  }
 
   /**
     * Transform the materialized value of this Flow, leaving all other properties as they were.
@@ -235,8 +234,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
 
   /** INTERNAL API */
   // FIXME: Only exists to keep old stuff alive
-  private[stream] override def deprecatedAndThen[U](
-      op: StageModule): Repr[U] = {
+  private[stream] override def deprecatedAndThen[U](op: StageModule): Repr[U] =
     //No need to copy here, op is a fresh instance
     if (this.isIdentity) new Flow(op).asInstanceOf[Repr[U]]
     else
@@ -244,7 +242,6 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
         module
           .fuse(op, shape.out, op.inPort)
           .replaceShape(FlowShape(shape.in, op.outPort)))
-  }
 
   // FIXME: Only exists to keep old stuff alive
   private[akka] def deprecatedAndThenMat[U, Mat2, O >: Out](
@@ -339,17 +336,15 @@ object Flow {
     * Creates a Flow from a Reactive Streams [[org.reactivestreams.Processor]]
     */
   def fromProcessor[I, O](
-      processorFactory: () ⇒ Processor[I, O]): Flow[I, O, NotUsed] = {
+      processorFactory: () ⇒ Processor[I, O]): Flow[I, O, NotUsed] =
     fromProcessorMat(() ⇒ (processorFactory(), NotUsed))
-  }
 
   /**
     * Creates a Flow from a Reactive Streams [[org.reactivestreams.Processor]] and returns a materialized value.
     */
   def fromProcessorMat[I, O, Mat](
-      processorFactory: () ⇒ (Processor[I, O], Mat)): Flow[I, O, Mat] = {
+      processorFactory: () ⇒ (Processor[I, O], Mat)): Flow[I, O, Mat] =
     Flow[I].deprecatedAndThenMat(processorFactory)
-  }
 
   /**
     * Returns a `Flow` which outputs all its inputs.

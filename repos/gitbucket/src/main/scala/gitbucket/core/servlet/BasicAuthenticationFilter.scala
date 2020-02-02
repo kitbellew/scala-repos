@@ -153,7 +153,7 @@ class BasicAuthenticationFilter
           }
           case None => {
             logger.debug(
-              s"Repository ${repositoryOwner}/${repositoryName} is not found.")
+              s"Repository $repositoryOwner/$repositoryName is not found.")
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
           }
         }
@@ -169,11 +169,10 @@ class BasicAuthenticationFilter
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
   }
 
-  private def decodeAuthHeader(header: String): String = {
+  private def decodeAuthHeader(header: String): String =
     try {
       new String(new sun.misc.BASE64Decoder().decodeBuffer(header.substring(6)))
     } catch {
       case _: Throwable => ""
     }
-  }
 }

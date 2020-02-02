@@ -94,9 +94,8 @@ private[sql] class JavaBigDecimalSerializer
   def read(
       kryo: Kryo,
       input: Input,
-      tpe: Class[java.math.BigDecimal]): java.math.BigDecimal = {
+      tpe: Class[java.math.BigDecimal]): java.math.BigDecimal =
     new java.math.BigDecimal(input.readString())
-  }
 }
 
 private[sql] class ScalaBigDecimalSerializer extends Serializer[BigDecimal] {
@@ -105,7 +104,6 @@ private[sql] class ScalaBigDecimalSerializer extends Serializer[BigDecimal] {
     output.writeString(bd.toString)
   }
 
-  def read(kryo: Kryo, input: Input, tpe: Class[BigDecimal]): BigDecimal = {
+  def read(kryo: Kryo, input: Input, tpe: Class[BigDecimal]): BigDecimal =
     new java.math.BigDecimal(input.readString())
-  }
 }

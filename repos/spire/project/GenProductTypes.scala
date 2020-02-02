@@ -134,11 +134,10 @@ object GenProductTypes {
     |
     |""".stripMargin
 
-  def unifiedTrait(defns: Seq[Definition], start: Int, end: Int): String = {
+  def unifiedTrait(defns: Seq[Definition], start: Int, end: Int): String =
     "trait ProductInstances extends " + (defns map { defn =>
       defn.structure + "ProductInstances"
     } mkString " with ")
-  }
 
   def renderAll(
       pkg: String,

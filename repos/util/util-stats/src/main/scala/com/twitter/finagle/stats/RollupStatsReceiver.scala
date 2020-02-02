@@ -15,7 +15,7 @@ class RollupStatsReceiver(val self: StatsReceiver)
     with Proxy {
   val repr = self.repr
 
-  private[this] def tails[A](s: Seq[A]): Seq[Seq[A]] = {
+  private[this] def tails[A](s: Seq[A]): Seq[Seq[A]] =
     s match {
       case s @ Seq(_) =>
         Seq(s)
@@ -23,7 +23,6 @@ class RollupStatsReceiver(val self: StatsReceiver)
       case Seq(hd, tl @ _*) =>
         Seq(Seq(hd)) ++ (tails(tl) map { t => Seq(hd) ++ t })
     }
-  }
 
   override def toString(): String = self.toString
 

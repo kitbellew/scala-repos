@@ -55,7 +55,7 @@ class EnsembleComboBox extends EnsembleExample {
     "Option 10",
     "Option 12")
 
-  def getContent = {
+  def getContent =
     new VBox {
       vgrow = Priority.Always
       hgrow = Priority.Always
@@ -75,5 +75,4 @@ class EnsembleComboBox extends EnsembleExample {
         }
       )
     }
-  }
 }

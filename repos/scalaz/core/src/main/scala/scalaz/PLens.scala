@@ -161,13 +161,13 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def compose[C1, C2](
       that: PLensFamily[C1, C2, A1, A2]): PLensFamily[C1, C2, B1, B2] =
     plensFamily(c =>
-      (that run c).flatMap(x => {
+      (that run c).flatMap { x =>
         val (ac, a) = x.run
         run(a) map (y => {
           val (ba, b) = y.run
           IndexedStore(ac compose ba, b)
         })
-      }))
+      })
 
   /** alias for `compose` */
   def <=<[C1, C2](

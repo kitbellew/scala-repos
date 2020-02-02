@@ -121,16 +121,15 @@ abstract class AutoAlgebra extends AutoOps { ops =>
   def equals: c.Expr[Boolean]
   def compare: c.Expr[Int]
 
-  def Semiring[A: c.WeakTypeTag](): c.Expr[Semiring[A]] = {
+  def Semiring[A: c.WeakTypeTag](): c.Expr[Semiring[A]] =
     c.universe.reify {
       new Semiring[A] {
         def plus(x: A, y: A): A = ops.plus[A].splice
         def times(x: A, y: A): A = ops.times[A].splice
       }
     }
-  }
 
-  def Rig[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Rig[A]] = {
+  def Rig[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Rig[A]] =
     c.universe.reify {
       new Rig[A] {
         def zero: A = z.splice
@@ -139,9 +138,8 @@ abstract class AutoAlgebra extends AutoOps { ops =>
         def times(x: A, y: A): A = ops.times[A].splice
       }
     }
-  }
 
-  def Rng[A: c.WeakTypeTag](z: c.Expr[A]): c.Expr[Rng[A]] = {
+  def Rng[A: c.WeakTypeTag](z: c.Expr[A]): c.Expr[Rng[A]] =
     c.universe.reify {
       new Rng[A] {
         def zero: A = z.splice
@@ -151,9 +149,8 @@ abstract class AutoAlgebra extends AutoOps { ops =>
         def negate(x: A): A = ops.negate[A].splice
       }
     }
-  }
 
-  def Ring[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] = {
+  def Ring[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] =
     c.universe.reify {
       new Ring[A] {
         def zero: A = z.splice
@@ -164,10 +161,9 @@ abstract class AutoAlgebra extends AutoOps { ops =>
         def negate(x: A): A = ops.negate[A].splice
       }
     }
-  }
 
   def EuclideanRing[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
-      ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] = {
+      ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] =
     c.universe.reify {
       new EuclideanRing[A] {
         def zero: A = z.splice
@@ -181,10 +177,9 @@ abstract class AutoAlgebra extends AutoOps { ops =>
         def gcd(x: A, y: A): A = euclid(x, y)(ev.splice)
       }
     }
-  }
 
   def Field[A: c.WeakTypeTag](z: c.Expr[A], o: c.Expr[A])(
-      ev: c.Expr[Eq[A]]): c.Expr[Field[A]] = {
+      ev: c.Expr[Eq[A]]): c.Expr[Field[A]] =
     c.universe.reify {
       new Field[A] {
         def zero: A = z.splice
@@ -199,24 +194,21 @@ abstract class AutoAlgebra extends AutoOps { ops =>
         def div(x: A, y: A): A = ops.div[A].splice
       }
     }
-  }
 
-  def Eq[A: c.WeakTypeTag](): c.Expr[Eq[A]] = {
+  def Eq[A: c.WeakTypeTag](): c.Expr[Eq[A]] =
     c.universe.reify {
       new Eq[A] {
         def eqv(x: A, y: A): Boolean = ops.equals.splice
       }
     }
-  }
 
-  def Order[A: c.WeakTypeTag](): c.Expr[Order[A]] = {
+  def Order[A: c.WeakTypeTag](): c.Expr[Order[A]] =
     c.universe.reify {
       new Order[A] {
         override def eqv(x: A, y: A): Boolean = ops.equals.splice
         def compare(x: A, y: A): Int = ops.compare.splice
       }
     }
-  }
 }
 
 case class ScalaAlgebra[C <: Context](c: C) extends AutoAlgebra {

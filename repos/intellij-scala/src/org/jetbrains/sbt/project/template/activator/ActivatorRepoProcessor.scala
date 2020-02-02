@@ -90,7 +90,7 @@ object ActivatorRepoProcessor {
       url: String,
       toFile: String,
       onError: String => Unit,
-      indicator: ProgressIndicator = null): Boolean = {
+      indicator: ProgressIndicator = null): Boolean =
     try {
       val file = new File(toFile)
       if (!file.exists()) return false
@@ -103,7 +103,6 @@ object ActivatorRepoProcessor {
         ActivatorCachedRepoProcessor.logError(s"Can't download $url", io)
         false
     }
-  }
 
   def downloadTemplateFromRepo(
       id: String,

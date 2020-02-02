@@ -65,7 +65,7 @@ object ExitGuard {
     }
   }
 
-  private[this] def startGuardThread(): Thread = {
+  private[this] def startGuardThread(): Thread =
     new Thread {
       setDaemon(false)
       start()
@@ -79,5 +79,4 @@ object ExitGuard {
         }
       }
     }
-  }
 }

@@ -46,14 +46,13 @@ trait NIHDBSnapshot {
 
   val logger = LoggerFactory.getLogger("com.precog.niflheim.NIHDBSnapshot")
 
-  protected[this] def findReader(id0: Option[Long]): Option[StorageReader] = {
+  protected[this] def findReader(id0: Option[Long]): Option[StorageReader] =
     if (readers.isEmpty) {
       None
     } else {
       val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse 0
       if (i >= 0) Some(readers(i)) else None
     }
-  }
 
   protected[this] def findReaderAfter(
       id0: Option[Long]): Option[StorageReader] = {
@@ -98,11 +97,10 @@ trait NIHDBSnapshot {
   def structure: Set[ColumnRef] =
     readers.flatMap(_.structure)(collection.breakOut)
 
-  def getConstraints(columns: Iterable[ColumnRef], cpaths: Set[CPath]) = {
+  def getConstraints(columns: Iterable[ColumnRef], cpaths: Set[CPath]) =
     columns.collect {
       case ColumnRef(cpath, _) if cpaths.exists(cpath.hasPrefix(_)) => cpath
     }
-  }
 
   /**
     * Returns the total number of defined objects for a given `CPath` *mask*.
@@ -130,13 +128,12 @@ trait NIHDBSnapshot {
     }
   }
 
-  def count(paths0: Option[Set[CPath]] = None): Long = {
+  def count(paths0: Option[Set[CPath]] = None): Long =
     blockIds.foldLeft(0L) { (total, id) =>
       total + count(Some(id), paths0).getOrElse(0L)
     }
-  }
 
-  def reduce[A](reduction: Reduction[A], path: CPath): Map[CType, A] = {
+  def reduce[A](reduction: Reduction[A], path: CPath): Map[CType, A] =
     blockIds.foldLeft(Map.empty[CType, A]) { (acc, id) =>
       getBlock(Some(id), Some(Set(path))) map {
         case Block(_, segments, _) =>
@@ -150,5 +147,4 @@ trait NIHDBSnapshot {
           }
       } getOrElse acc
     }
-  }
 }

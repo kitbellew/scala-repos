@@ -96,11 +96,10 @@ private[http] object One2OneBidiFlow {
                 }
               } else throw new UnexpectedOutputException(element)
             }
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (pending == 0 && isClosed(inIn) && !innerFlowCancelled)
                 complete(outOut)
               else throw OutputTruncationException
-            }
           }
         )
 

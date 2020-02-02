@@ -9,7 +9,6 @@ object Test {
     case _: Bar             => 2
     case _: Foo             => 3
   }
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     println(matchParent(Spam(3)))
-  }
 }

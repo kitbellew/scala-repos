@@ -123,7 +123,7 @@ final class Formatter(private val dest: Appendable)
             result
           }
 
-          def with_+(s: String, preventZero: scala.Boolean = false) = {
+          def with_+(s: String, preventZero: scala.Boolean = false) =
             if (s.charAt(0) != '-') {
               if (hasFlag("+"))
                 pad(s, "+", preventZero)
@@ -137,7 +137,6 @@ final class Formatter(private val dest: Appendable)
               else
                 pad(s.substring(1), "-", preventZero)
             }
-          }
 
           def pad(
               argStr: String,
@@ -281,9 +280,8 @@ final class Formatter(private val dest: Appendable)
 object Formatter {
 
   private class RegExpExtractor(val regexp: js.RegExp) {
-    def unapply(str: String): Option[js.RegExp.ExecResult] = {
+    def unapply(str: String): Option[js.RegExp.ExecResult] =
       Option(regexp.exec(str))
-    }
   }
 
   private val RegularChunk = new RegExpExtractor(new js.RegExp("""^[^\x25]+"""))

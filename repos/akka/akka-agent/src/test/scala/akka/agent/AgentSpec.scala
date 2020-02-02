@@ -39,9 +39,9 @@ class AgentSpec extends AkkaSpec {
       val l1, l2 = new TestLatch(1)
       val agent = Agent("a")
       agent send (_ + "b")
-      agent.sendOff((s: String) ⇒ {
+      agent.sendOff { (s: String) ⇒
         l1.countDown; Await.ready(l2, timeout.duration); s + "c"
-      })
+      }
       Await.ready(l1, timeout.duration)
       agent send (_ + "d")
       agent send countDown
@@ -55,9 +55,9 @@ class AgentSpec extends AkkaSpec {
       val agent = Agent("a")
 
       val r1 = agent.alter(_ + "b")
-      val r2 = agent.alterOff(s ⇒ {
+      val r2 = agent.alterOff { s ⇒
         l1.countDown; Await.ready(l2, timeout.duration); s + "c"
-      })
+      }
       Await.ready(l1, timeout.duration)
       val r3 = agent.alter(_ + "d")
       val result = Future.sequence(Seq(r1, r2, r3)).map(_.mkString(":"))

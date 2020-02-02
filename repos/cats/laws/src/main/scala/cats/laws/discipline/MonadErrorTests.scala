@@ -28,7 +28,7 @@ trait MonadErrorTests[F[_], E]
       EqFXorEA: Eq[F[E Xor A]],
       EqXorTFEA: Eq[XorT[F, E, A]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new RuleSet {
       def name: String = "monadError"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -37,7 +37,6 @@ trait MonadErrorTests[F[_], E]
         "monadError left zero" -> forAll(laws.monadErrorLeftZero[A, B] _)
       )
     }
-  }
 }
 
 object MonadErrorTests {

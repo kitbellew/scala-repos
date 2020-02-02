@@ -20,7 +20,7 @@ class AbstractCollectionFactory extends CollectionFactory {
   override def implementationName: String =
     "java.util.AbstractCollection"
 
-  override def empty[E: ClassTag]: ju.AbstractCollection[E] = {
+  override def empty[E: ClassTag]: ju.AbstractCollection[E] =
     // inefficient but simple for debugging implementation of AbstractCollection
     new ju.AbstractCollection[E] {
 
@@ -36,7 +36,7 @@ class AbstractCollectionFactory extends CollectionFactory {
       def size(): Int =
         inner.size
 
-      override def iterator(): ju.Iterator[E] = {
+      override def iterator(): ju.Iterator[E] =
         new ju.Iterator[E] {
           val innerIter = inner.seq.iterator
 
@@ -48,7 +48,7 @@ class AbstractCollectionFactory extends CollectionFactory {
             elem
           }
 
-          def remove(): Unit = {
+          def remove(): Unit =
             last match {
               case Some(elem) =>
                 inner -= Box(elem)
@@ -56,14 +56,10 @@ class AbstractCollectionFactory extends CollectionFactory {
               case None =>
                 throw new IllegalStateException()
             }
-          }
 
-          def hasNext: Boolean = {
+          def hasNext: Boolean =
             innerIter.hasNext
-          }
         }
-      }
     }
-  }
 
 }

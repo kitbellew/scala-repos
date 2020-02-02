@@ -253,7 +253,7 @@ class ContinuousQueryManagerSuite
 
   /** Run a body of code by defining a query each on multiple datasets */
   private def withQueriesOn(datasets: Dataset[_]*)(
-      body: Seq[ContinuousQuery] => Unit): Unit = {
+      body: Seq[ContinuousQuery] => Unit): Unit =
     failAfter(streamingTimeout) {
       val queries = withClue("Error starting queries") {
         datasets.map { ds =>
@@ -280,7 +280,6 @@ class ContinuousQueryManagerSuite
         queries.foreach(_.stop())
       }
     }
-  }
 
   /** Test the behavior of awaitAnyTermination */
   private def testAwaitAnyTermination(
@@ -290,7 +289,7 @@ class ContinuousQueryManagerSuite
       testBehaviorFor: Span = 4 seconds
   ): Unit = {
 
-    def awaitTermFunc(): Unit = {
+    def awaitTermFunc(): Unit =
       if (awaitTimeout != null && awaitTimeout.toMillis > 0) {
         val returnedValue =
           sqlContext.streams.awaitAnyTermination(awaitTimeout.toMillis)
@@ -300,7 +299,6 @@ class ContinuousQueryManagerSuite
       } else {
         sqlContext.streams.awaitAnyTermination()
       }
-    }
 
     AwaitTerminationTester.test(
       expectedBehavior,

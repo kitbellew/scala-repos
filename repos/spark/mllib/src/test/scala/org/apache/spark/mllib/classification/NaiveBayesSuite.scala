@@ -113,9 +113,8 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       piData: Array[Double],
       thetaData: Array[Array[Double]],
       model: NaiveBayesModel): Unit = {
-    def closeFit(d1: Double, d2: Double, precision: Double): Boolean = {
+    def closeFit(d1: Double, d2: Double, precision: Double): Boolean =
       (d1 - d2).abs <= precision
-    }
     val modelIndex = (0 until piData.length).zip(model.labels.map(_.toInt))
     for (i <- modelIndex) {
       assert(closeFit(math.exp(piData(i._2)), math.exp(model.pi(i._1)), 0.05))

@@ -50,9 +50,8 @@ private[spark] abstract class SortDataFormat[K, Buffer] {
     * The default implementation ignores the reuse parameter and invokes [[getKey(Buffer, Int]].
     * If you want to override this method, you must implement [[newKey()]].
     */
-  def getKey(data: Buffer, pos: Int, reuse: K): K = {
+  def getKey(data: Buffer, pos: Int, reuse: K): K =
     getKey(data, pos)
-  }
 
   /** Swap two elements. */
   def swap(data: Buffer, pos0: Int, pos1: Int): Unit
@@ -119,7 +118,6 @@ private[spark] class KVArraySortDataFormat[K, T <: AnyRef: ClassTag]
     System.arraycopy(src, 2 * srcPos, dst, 2 * dstPos, 2 * length)
   }
 
-  override def allocate(length: Int): Array[T] = {
+  override def allocate(length: Int): Array[T] =
     new Array[T](2 * length)
-  }
 }

@@ -14,12 +14,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScMember
   */
 object ExtractTraitInfoModel
     extends AbstractMemberInfoModel[ScMember, ScalaExtractMemberInfo] {
-  override def isAbstractEnabled(member: ScalaExtractMemberInfo) = {
+  override def isAbstractEnabled(member: ScalaExtractMemberInfo) =
     member.getMember match {
       case decl: ScDeclaration => false
       case _                   => true
     }
-  }
 
   override def memberInfoChanged(
       event: MemberInfoChange[ScMember, ScalaExtractMemberInfo]) =

@@ -17,21 +17,19 @@ private[testadapter] object ComUtils {
 
   @tailrec
   def receiveLoop[T](com: ComJSRunner, timeout: Duration)(
-      handler: LoopHandler[T]): T = {
+      handler: LoopHandler[T]): T =
     receiveResponse(com, timeout)(handler) match {
       case Some(v) => v
       case None    => receiveLoop(com, timeout)(handler)
     }
-  }
 
   @tailrec
   def receiveLoop[T](com: ComJSRunner, deadline: Deadline)(
-      handler: LoopHandler[T]): T = {
+      handler: LoopHandler[T]): T =
     receiveResponse(com, deadline.timeLeft)(handler) match {
       case Some(v) => v
       case None    => receiveLoop(com, deadline)(handler)
     }
-  }
 
   def receiveResponse[T](com: ComJSRunner)(handler: Handler[T]): T =
     receiveResponse(com, Duration.Inf)(handler)
@@ -50,11 +48,10 @@ private[testadapter] object ComUtils {
       }
     }
 
-    def badResponse(cause: Throwable = null) = {
+    def badResponse(cause: Throwable = null) =
       throw new AssertionError(
         s"JS test interface sent bad reply: $resp",
         cause)
-    }
 
     val pos = resp.indexOf(':')
 
@@ -64,12 +61,11 @@ private[testadapter] object ComUtils {
     val status = resp.substring(0, pos)
     val data = resp.substring(pos + 1)
 
-    def throwable = {
+    def throwable =
       try fromJSON[RemoteException](readJSON(data))
       catch {
         case t: Throwable => badResponse(t)
       }
-    }
 
     def onFail = status match {
       case "fail" =>

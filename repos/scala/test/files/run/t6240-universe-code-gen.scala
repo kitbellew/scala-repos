@@ -75,7 +75,7 @@ object Test extends App {
   val actualLines = actual.getLines.toList
   val generatedLines = code.lines.toList
   if (actualLines != generatedLines) {
-    val msg = s"""|${actualFile} must be updated.
+    val msg = s"""|$actualFile must be updated.
                   |===========================================================
                   | DIFF:
                   |===========================================================
@@ -83,7 +83,7 @@ object Test extends App {
                   |===========================================================
                   | NEW CONTENTS:
                   |===========================================================
-                  |${code}""".stripMargin
+                  |$code""".stripMargin
 
     assert(false, msg)
   }

@@ -186,7 +186,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
   }
 
   private def verifiedId(
-      queryString: Map[String, Seq[String]]): Future[UserInfo] = {
+      queryString: Map[String, Seq[String]]): Future[UserInfo] =
     (
       queryString.get("openid.mode").flatMap(_.headOption),
       queryString
@@ -200,7 +200,6 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       case (Some("cancel"), _) => Future.failed(Errors.AUTH_CANCEL)
       case _                   => Future.failed(Errors.BAD_RESPONSE)
     }
-  }
 
   /**
     * Perform direct verification (see 11.4.2. Verifying Directly with the OpenID Provider)
@@ -211,16 +210,16 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       "check_authentication")))
     ws.url(server.url)
       .post(fields)
-      .map(response => {
+      .map { response =>
         if (response.status == 200 && response.body.contains("is_valid:true")) {
           UserInfo(queryString)
         } else throw Errors.AUTH_ERROR
-      })
+      }
   }
 
   private def axParameters(
       axRequired: Seq[(String, String)],
-      axOptional: Seq[(String, String)]): Seq[(String, String)] = {
+      axOptional: Seq[(String, String)]): Seq[(String, String)] =
     if (axRequired.isEmpty && axOptional.isEmpty)
       Nil
     else {
@@ -239,7 +238,6 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         "openid.ns.ax" -> "http://openid.net/srv/ax/1.0",
         "openid.ax.mode" -> "fetch_request") ++ axRequiredParams ++ axOptionalParams ++ definitions
     }
-  }
 }
 
 trait Discovery {
@@ -307,11 +305,11 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
     val discoveryUrl = normalizeIdentifier(openID)
     ws.url(discoveryUrl)
       .get()
-      .map(response => {
+      .map { response =>
         val maybeOpenIdServer = new XrdsResolver()
           .resolve(response) orElse new HtmlResolver().resolve(response)
         maybeOpenIdServer.getOrElse(throw Errors.NETWORK_ERROR)
-      })
+      }
   }
 }
 
@@ -361,7 +359,7 @@ private[openid] object Discovery {
         .findFirstIn(response.body)
         .orElse(serverRegex.findFirstIn(response.body))
         .flatMap(extractHref(_))
-      serverUrl.map(url => {
+      serverUrl.map { url =>
         val delegate: Option[String] = localidRegex
           .findFirstIn(response.body)
           .orElse(delegateRegex.findFirstIn(response.body))
@@ -371,7 +369,7 @@ private[openid] object Discovery {
           url,
           delegate
         ) //protocol version due to http://openid.net/specs/openid-authentication-2_0.html#html_disco
-      })
+      }
     }
 
     private def extractHref(link: String): Option[String] =
@@ -390,12 +388,11 @@ private[openid] object Discovery {
   * The OpenID module
   */
 class OpenIDModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[OpenIdClient].to[WsOpenIdClient],
       bind[Discovery].to[WsDiscovery]
     )
-  }
 }
 
 /**

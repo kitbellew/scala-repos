@@ -26,9 +26,8 @@ class VerifiableProperties(val props: Properties) extends Logging {
 
   def this() = this(new Properties)
 
-  def containsKey(name: String): Boolean = {
+  def containsKey(name: String): Boolean =
     props.containsKey(name)
-  }
 
   def getProperty(name: String): String = {
     val value = props.getProperty(name)
@@ -142,12 +141,11 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @param name The property name
     * @param default The default value for the property if not present
     */
-  def getDouble(name: String, default: Double): Double = {
+  def getDouble(name: String, default: Double): Double =
     if (containsKey(name))
       getDouble(name)
     else
       default
-  }
 
   /**
     * Read a boolean value from the properties instance
@@ -155,7 +153,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @param default The default value to use if the property is not found
     * @return the boolean value
     */
-  def getBoolean(name: String, default: Boolean): Boolean = {
+  def getBoolean(name: String, default: Boolean): Boolean =
     if (!containsKey(name))
       default
     else {
@@ -165,19 +163,17 @@ class VerifiableProperties(val props: Properties) extends Logging {
         "Unacceptable value for property '" + name + "', boolean values must be either 'true' or 'false")
       v.toBoolean
     }
-  }
 
   def getBoolean(name: String) = getString(name).toBoolean
 
   /**
     * Get a string property, or, if no such property is defined, return the given default value
     */
-  def getString(name: String, default: String): String = {
+  def getString(name: String, default: String): String =
     if (containsKey(name))
       getProperty(name)
     else
       default
-  }
 
   /**
     * Get a string property or throw and exception if no such property is defined.
@@ -192,7 +188,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     */
   def getMap(
       name: String,
-      valid: String => Boolean = s => true): Map[String, String] = {
+      valid: String => Boolean = s => true): Map[String, String] =
     try {
       val m = CoreUtils.parseCsvMap(getString(name, ""))
       m.foreach {
@@ -209,7 +205,6 @@ class VerifiableProperties(val props: Properties) extends Logging {
           "Error parsing configuration property '%s': %s"
             .format(name, e.getMessage))
     }
-  }
 
   /**
     * Parse compression codec from a property list in either. Codecs may be specified as integers, or as strings.

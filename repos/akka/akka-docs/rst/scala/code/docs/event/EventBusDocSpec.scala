@@ -30,11 +30,8 @@ object EventBusDocSpec {
 
     // will be invoked for each event for all subscribers which registered themselves
     // for the event’s classifier
-    override protected def publish(
-        event: Event,
-        subscriber: Subscriber): Unit = {
+    override protected def publish(event: Event, subscriber: Subscriber): Unit =
       subscriber ! event.payload
-    }
 
     // must define a full order over the subscribers, expressed as expected from
     // `java.lang.Comparable.compare`
@@ -83,11 +80,8 @@ object EventBusDocSpec {
 
     // will be invoked for each event for all subscribers which registered
     // themselves for the event’s classifier
-    override protected def publish(
-        event: Event,
-        subscriber: Subscriber): Unit = {
+    override protected def publish(event: Event, subscriber: Subscriber): Unit =
       subscriber ! event.payload
-    }
   }
   //#subchannel-bus
 
@@ -125,11 +119,8 @@ object EventBusDocSpec {
 
     // will be invoked for each event for all subscribers which registered themselves
     // for a classifier matching this event
-    override protected def publish(
-        event: Event,
-        subscriber: Subscriber): Unit = {
+    override protected def publish(event: Event, subscriber: Subscriber): Unit =
       subscriber ! event
-    }
   }
   //#scanning-bus
 

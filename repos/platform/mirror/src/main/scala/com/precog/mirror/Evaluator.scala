@@ -622,13 +622,12 @@ trait EvaluatorModule
     }
 
     def cross(left: Dataset, right: Dataset)(
-        pf: PartialFunction[(JValue, JValue), JValue]): Dataset = {
+        pf: PartialFunction[(JValue, JValue), JValue]): Dataset =
       for {
         (idsLeft, leftV) <- left
         (idsRight, rightV) <- right
         if pf.isDefinedAt((leftV, rightV))
       } yield (idsLeft ++ idsRight, pf((leftV, rightV)))
-    }
 
     if (expr.errors.isEmpty) {
       loop(Map(), Map())(expr) map {
@@ -667,21 +666,19 @@ trait EvaluatorModule
     back.reverse
   }
 
-  private def orderFromIndices(indices: Seq[Int]): Order[SEvent] = {
+  private def orderFromIndices(indices: Seq[Int]): Order[SEvent] =
     new Order[SEvent] {
-      def order(left: SEvent, right: SEvent) = {
+      def order(left: SEvent, right: SEvent) =
         (indices map left._1) zip (indices map right._1) map {
           case (l, r) => Ordering.fromInt(l - r)
         } reduce { _ |+| _ }
-      }
     }
-  }
 
   /**
     * Poor-man's cogroup specialized on the middle case
     */
   private def zipAlign[A, B](left: Seq[A], right: Seq[B])(
-      f: (A, B) => Ordering): Seq[(A, B)] = {
+      f: (A, B) => Ordering): Seq[(A, B)] =
     if (left.isEmpty || right.isEmpty) {
       Nil
     } else {
@@ -692,13 +689,12 @@ trait EvaluatorModule
         case Ordering.GT => zipAlign(left, right.tail)(f)
       }
     }
-  }
 
   /**
     * Poor-man's cogroup specialized on the left/right cases
     */
   private def mergeAlign[A](left: Seq[A], right: Seq[A])(
-      f: (A, A) => Ordering): Seq[A] = {
+      f: (A, A) => Ordering): Seq[A] =
     if (left.isEmpty) {
       right
     } else if (right.isEmpty) {
@@ -710,13 +706,12 @@ trait EvaluatorModule
         case Ordering.GT => right.head +: mergeAlign(left, right.tail)(f)
       }
     }
-  }
 
   /**
     * Poor-man's cogroup specialized on the left case
     */
   private def biasLeftAlign[A](left: Seq[A], right: Seq[A])(
-      f: (A, A) => Ordering): Seq[A] = {
+      f: (A, A) => Ordering): Seq[A] =
     if (left.isEmpty) {
       left
     } else if (right.isEmpty) {
@@ -728,7 +723,6 @@ trait EvaluatorModule
         case Ordering.GT => biasLeftAlign(left, right.tail)(f)
       }
     }
-  }
 
   // no need for biasRightAlign, since difference biases to the left
 }

@@ -36,9 +36,8 @@ object ClosableLazySpec extends Specification {
       val closeCount = new AtomicInteger()
 
       val cl = new ClosableLazy[String, Int] {
-        protected def create() = {
+        protected def create() =
           ("hat", () => closeCount.incrementAndGet())
-        }
         protected def closeNotNeeded = -1
       }
       closeCount.get must_== 0
@@ -57,9 +56,8 @@ object ClosableLazySpec extends Specification {
       val closeCount = new AtomicInteger()
 
       val cl = new ClosableLazy[String, Int] {
-        protected def create() = {
+        protected def create() =
           ("sock", () => closeCount.incrementAndGet())
-        }
         protected def closeNotNeeded = -1
       }
       closeCount.get must_== 0
@@ -88,7 +86,7 @@ object ClosableLazySpec extends Specification {
       val test = Future {
         lazy val cl: ClosableLazy[String, Unit] =
           new ClosableLazy[String, Unit] {
-            protected def create() = {
+            protected def create() =
               ("banana", { () =>
                 val getResult = Future[String] {
                   cl.get()
@@ -96,7 +94,6 @@ object ClosableLazySpec extends Specification {
                 getResultPromise.completeWith(getResult)
                 Await.result(getResult, Duration(2, MINUTES))
               })
-            }
             protected def closeNotNeeded = ()
           }
         cl.get must_== "banana"

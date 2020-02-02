@@ -35,9 +35,8 @@ object FormattedStringFormatter extends StringFormatter {
     format(formatString, argumentString.mkString(", "))
   }
 
-  private def format(formatter: String, arguments: String) = {
+  private def format(formatter: String, arguments: String) =
     '"' + formatter + '"' + ".format(%s)".format(arguments)
-  }
 
   private def letterFor(aType: ScType): Char = aType match {
     case types.Boolean                                     => 'b'

@@ -46,7 +46,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
     viaMat(flow)(Keep.left)
 
   override def viaMat[T, Mat2, Mat3](flow: Graph[FlowShape[Out, T], Mat2])(
-      combine: (Mat, Mat2) ⇒ Mat3): Source[T, Mat3] = {
+      combine: (Mat, Mat2) ⇒ Mat3): Source[T, Mat3] =
     if (flow.module eq GraphStages.Identity.module)
       this.asInstanceOf[Source[T, Mat3]]
     else {
@@ -56,7 +56,6 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
           .fuse(flowCopy, shape.out, flowCopy.shape.inlets.head, combine)
           .replaceShape(SourceShape(flowCopy.shape.outlets.head)))
     }
-  }
 
   /**
     * Connect this [[akka.stream.scaladsl.Source]] to a [[akka.stream.scaladsl.Sink]],
@@ -85,13 +84,12 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
 
   /** INTERNAL API */
   override private[scaladsl] def deprecatedAndThen[U](
-      op: StageModule): Repr[U] = {
+      op: StageModule): Repr[U] =
     // No need to copy here, op is a fresh instance
     new Source(
       module
         .fuse(op, shape.out, op.inPort)
         .replaceShape(SourceShape(op.outPort)))
-  }
 
   /**
     * Connect this `Source` to a `Sink` and run it. The returned value is the materialized value

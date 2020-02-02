@@ -102,12 +102,11 @@ object Opt {
     def defaultToEnv(envVar: String) = --| getOrElse envOrElse(envVar, "")
     def expandTo(args: String*) = ()
 
-    def choiceOf[T: FromString](choices: T*) = {
+    def choiceOf[T: FromString](choices: T*) =
       --^[T] map { arg =>
         if (choices contains arg) arg
         else failOption(arg.toString, "not a valid choice from " + choices)
       }
-    }
 
     def /(descr: String) = name
   }

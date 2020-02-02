@@ -50,9 +50,8 @@ class FakeDAGScheduler(sc: SparkContext, taskScheduler: FakeTaskScheduler)
   override def taskSetFailed(
       taskSet: TaskSet,
       reason: String,
-      exception: Option[Throwable]): Unit = {
+      exception: Option[Throwable]): Unit =
     taskScheduler.taskSetsFailed += taskSet.id
-  }
 }
 
 // Get the rack for a given host
@@ -67,9 +66,8 @@ object FakeRackUtil {
     hostToRack(host) = rack
   }
 
-  def getRackForHost(host: String): Option[String] = {
+  def getRackForHost(host: String): Option[String] =
     hostToRack.get(host)
-  }
 }
 
 /**
@@ -122,9 +120,8 @@ class FakeTaskScheduler(
   override def hasExecutorsAliveOnHost(host: String): Boolean =
     executors.values.exists(_ == host)
 
-  override def hasHostAliveOnRack(rack: String): Boolean = {
+  override def hasHostAliveOnRack(rack: String): Boolean =
     hostsByRack.get(rack) != None
-  }
 
   def addExecutor(execId: String, host: String) {
     executors.put(execId, host)

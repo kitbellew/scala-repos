@@ -35,11 +35,10 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
   * @since  17/09/15
   */
 class SimulacrumInjection extends SyntheticMembersInjector {
-  override def needsCompanionObject(source: ScTypeDefinition): Boolean = {
+  override def needsCompanionObject(source: ScTypeDefinition): Boolean =
     source.findAnnotationNoAliases("simulacrum.typeclass") != null && source.typeParameters.length == 1
-  }
 
-  override def injectFunctions(source: ScTypeDefinition): Seq[String] = {
+  override def injectFunctions(source: ScTypeDefinition): Seq[String] =
     source match {
       case obj: ScObject =>
         obj.fakeCompanionClassOrCompanionClass match {
@@ -54,7 +53,6 @@ class SimulacrumInjection extends SyntheticMembersInjector {
         }
       case _ => Seq.empty
     }
-  }
 
   override def injectInners(source: ScTypeDefinition): Seq[String] = {
     source match {
@@ -71,7 +69,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
             val additionalWithComma = tpAdditional.map(", " + _).getOrElse("")
             val additionalWithBracket =
               tpAdditional.map("[" + _ + "]").getOrElse("")
-            def isProperTpt(tp: ScType): Option[Option[ScTypeParameterType]] = {
+            def isProperTpt(tp: ScType): Option[Option[ScTypeParameterType]] =
               tp match {
                 case ScTypeParameterType(_, _, _, _, param)
                     if param == clazzTypeParam =>
@@ -82,7 +80,6 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                   Some(Some(p))
                 case _ => None
               }
-            }
             val ops = clazz.functions
               .flatMap {
                 case f: ScFunction =>
@@ -143,7 +140,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                               Some(subst)
                             case _ => None
                           }
-                          def paramText(p: ScParameter): String = {
+                          def paramText(p: ScParameter): String =
                             substOpt match {
                               case Some(subst) =>
                                 p.name + " : " + subst
@@ -152,15 +149,13 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                   .canonicalText
                               case _ => p.getText
                             }
-                          }
-                          def clauseText(p: ScParameterClause): String = {
+                          def clauseText(p: ScParameterClause): String =
                             p.parameters
                               .map(paramText)
                               .mkString(
                                 "(" + (if (p.isImplicit) "implicit " else ""),
                                 ", ",
                                 ")")
-                          }
                           val typeParamClasue =
                             f.typeParametersClause.map(_.getText).getOrElse("")
                           val headParams =
@@ -203,7 +198,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                       te.getType(TypingContext.empty) match {
                         case Success(ScParameterizedType(classType, Seq(tp)), _)
                             if isProperTpt(tp).isDefined =>
-                          def fromType: Seq[String] = {
+                          def fromType: Seq[String] =
                             ScType.extractClass(
                               classType,
                               Some(clazz.getProject)) match {
@@ -212,7 +207,6 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                   s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
                               case _ => Seq.empty
                             }
-                          }
                           //in most cases we have to resolve exactly the same reference
                           //but with .AllOps it will go into companion object
                           (for {

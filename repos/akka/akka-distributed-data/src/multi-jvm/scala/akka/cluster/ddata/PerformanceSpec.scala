@@ -86,8 +86,7 @@ class PerformanceSpec
       n: Int,
       expectedAfterReplication: Option[Set[Int]] = None)(
       block: (ORSetKey[Int], Int, ActorRef) ⇒ Unit,
-      afterEachKey: ORSetKey[Int] ⇒ Unit = _ ⇒ ()): Unit = {
-
+      afterEachKey: ORSetKey[Int] ⇒ Unit = _ ⇒ ()): Unit =
     keys.foreach { key ⇒
       val startTime = System.nanoTime()
       runOn(n1) {
@@ -116,14 +115,13 @@ class PerformanceSpec
       afterEachKey(key)
       enterBarrier("repeat-" + key + "-done")
     }
-  }
 
   def awaitReplicated(
       keys: Iterable[ORSetKey[Int]],
       expectedData: Set[Int]): Unit =
     keys.foreach { key ⇒ awaitReplicated(key, expectedData) }
 
-  def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit = {
+  def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit =
     within(20.seconds) {
       awaitAssert {
         val readProbe = TestProbe()
@@ -134,7 +132,6 @@ class PerformanceSpec
         result.elements should be(expectedData)
       }
     }
-  }
 
   "Performance" must {
 

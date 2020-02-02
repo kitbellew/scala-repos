@@ -29,7 +29,7 @@ case class Pagination(page: Int, count: Int, limit: Int, width: Int) {
   /**
     * Returns true if given page number is visible.
     */
-  def visibleFor(i: Int): Boolean = {
+  def visibleFor(i: Int): Boolean =
     if (i == 1 || i == max) {
       true
     } else {
@@ -46,5 +46,4 @@ case class Pagination(page: Int, count: Int, limit: Int, width: Int) {
 
       (i >= fixedRange._1 && i <= fixedRange._2)
     }
-  }
 }

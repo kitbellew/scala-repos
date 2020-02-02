@@ -19,12 +19,11 @@ class ContentionSnapshot {
       deadlocks: Seq[String])
 
   private[this] object Blocked {
-    def unapply(t: ThreadInfo): Option[ThreadInfo] = {
+    def unapply(t: ThreadInfo): Option[ThreadInfo] =
       t.getThreadState match {
         case BLOCKED | WAITING | TIMED_WAITING => Some(t)
         case _                                 => None
       }
-    }
   }
 
   def snap(): Snapshot = {

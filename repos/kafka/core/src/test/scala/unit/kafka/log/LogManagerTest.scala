@@ -284,12 +284,12 @@ class LogManagerTest {
       topicAndPartitions: Seq[TopicAndPartition],
       logManager: LogManager) {
     val logs = topicAndPartitions.map(this.logManager.createLog(_, logConfig))
-    logs.foreach(log => {
+    logs.foreach { log =>
       for (i <- 0 until 50)
         log.append(TestUtils.singleMessageSet("test".getBytes()))
 
       log.flush()
-    })
+    }
 
     logManager.checkpointRecoveryPointOffsets()
     val checkpoints = new OffsetCheckpoint(
@@ -306,10 +306,9 @@ class LogManagerTest {
   }
 
   private def createLogManager(
-      logDirs: Array[File] = Array(this.logDir)): LogManager = {
+      logDirs: Array[File] = Array(this.logDir)): LogManager =
     TestUtils.createLogManager(
       defaultConfig = logConfig,
       logDirs = logDirs,
       time = this.time)
-  }
 }

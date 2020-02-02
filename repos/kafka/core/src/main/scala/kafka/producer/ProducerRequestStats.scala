@@ -69,10 +69,9 @@ class ProducerRequestStats(clientId: String) {
 
   def getProducerRequestStats(
       brokerHost: String,
-      brokerPort: Int): ProducerRequestMetrics = {
+      brokerPort: Int): ProducerRequestMetrics =
     stats.getAndMaybePut(
       new ClientIdAndBroker(clientId, brokerHost, brokerPort))
-  }
 }
 
 /**
@@ -86,9 +85,8 @@ object ProducerRequestStatsRegistry {
   private val globalStats =
     new Pool[String, ProducerRequestStats](Some(valueFactory))
 
-  def getProducerRequestStats(clientId: String) = {
+  def getProducerRequestStats(clientId: String) =
     globalStats.getAndMaybePut(clientId)
-  }
 
   def removeProducerRequestStats(clientId: String) {
     globalStats.remove(clientId)

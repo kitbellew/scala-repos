@@ -15,7 +15,7 @@ case class Version(majorVersion: Int, minorVersion: Int) {
     * If corresponding SQL file does not exist, this method do nothing.
     */
   def update(conn: Connection, cl: ClassLoader): Unit = {
-    val sqlPath = s"update/${majorVersion}_${minorVersion}.sql"
+    val sqlPath = s"update/${majorVersion}_$minorVersion.sql"
 
     using(cl.getResourceAsStream(sqlPath)) { in =>
       if (in != null) {
@@ -31,7 +31,7 @@ case class Version(majorVersion: Int, minorVersion: Int) {
   /**
     * MAJOR.MINOR
     */
-  val versionString = s"${majorVersion}.${minorVersion}"
+  val versionString = s"$majorVersion.$minorVersion"
 
 }
 

@@ -19,7 +19,7 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
   implicit val ec = ExecutionContext.Implicits.global
   import mesosphere.util.BackToTheFuture.futureToFuture
 
-  override def load(key: ID): Future[Option[PersistentEntity]] = {
+  override def load(key: ID): Future[Option[PersistentEntity]] =
     futureToFuture(state.fetch(key))
       .map(throwOnNull)
       .map { variable =>
@@ -27,11 +27,10 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
         else None
       }
       .recover(mapException(s"Can not load entity with key $key"))
-  }
 
   override def create(
       key: ID,
-      content: IndexedSeq[Byte]): Future[PersistentEntity] = {
+      content: IndexedSeq[Byte]): Future[PersistentEntity] =
     futureToFuture(state.fetch(key))
       .map(throwOnNull)
       .flatMap { variable =>
@@ -43,7 +42,6 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
             .map(MesosStateEntity(key, _))
       }
       .recover(mapException(s"Can not create entity with key $key"))
-  }
 
   override def update(entity: PersistentEntity): Future[PersistentEntity] =
     entity match {
@@ -57,7 +55,7 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
         throw new IllegalArgumentException("Can not handle this kind of entity")
     }
 
-  override def delete(key: ID): Future[Boolean] = {
+  override def delete(key: ID): Future[Boolean] =
     futureToFuture(state.fetch(key))
       .map(throwOnNull)
       .flatMap { variable =>
@@ -68,9 +66,8 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
           }
       }
       .recover(mapException(s"Can not delete entity with key $key"))
-  }
 
-  override def allIds(): Future[Seq[ID]] = {
+  override def allIds(): Future[Seq[ID]] =
     futureToFuture(state.names())
       .map(_.asScala.toSeq)
       .recover {
@@ -90,18 +87,16 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
           )
           Seq.empty[ID]
       }
-  }
 
   private[this] def entityExists(variable: Variable): Boolean =
     variable.value().nonEmpty
 
-  private[this] def throwOnNull[T](t: T): T = {
+  private[this] def throwOnNull[T](t: T): T =
     Option(t) match {
       case Some(value) => value
       case None =>
         throw new StoreCommandFailedException("Null returned from state store!")
     }
-  }
 
   private[this] def mapException[T](
       message: String): PartialFunction[Throwable, T] = {
@@ -112,7 +107,6 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
 case class MesosStateEntity(id: String, variable: Variable)
     extends PersistentEntity {
   override def bytes: IndexedSeq[Byte] = variable.value()
-  override def withNewContent(bytes: IndexedSeq[Byte]): PersistentEntity = {
+  override def withNewContent(bytes: IndexedSeq[Byte]): PersistentEntity =
     copy(variable = variable.mutate(bytes.toArray))
-  }
 }

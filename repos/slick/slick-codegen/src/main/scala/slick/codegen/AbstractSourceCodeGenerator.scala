@@ -14,7 +14,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
 
   /** Generates code for the complete model (not wrapped in a package yet)
       @group Basic customization overrides */
-  def code = {
+  def code =
     "import slick.model.ForeignKeyAction\n" +
       (if (tables.exists(_.hlistEnabled)) {
          "import slick.collection.heterogeneous._\n" +
@@ -43,13 +43,12 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
            "\n\n"
        } else "") +
       tables.map(_.code.mkString("\n")).mkString("\n\n")
-  }
 
   protected def tuple(i: Int) = termName(s"_${i + 1}")
 
   abstract class TableDef(model: m.Table) extends super.TableDef(model) {
 
-    def compoundType(types: Seq[String]): String = {
+    def compoundType(types: Seq[String]): String =
       if (hlistEnabled) {
         def mkHList(types: List[String]): String = types match {
           case Nil       => "HNil"
@@ -57,16 +56,14 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
         }
         mkHList(types.toList)
       } else compoundValue(types)
-    }
 
-    def compoundValue(values: Seq[String]): String = {
+    def compoundValue(values: Seq[String]): String =
       if (hlistEnabled) values.mkString(" :: ") + " :: HNil"
       else if (values.size == 1) values.head
       else if (values.size <= 22) s"""(${values.mkString(", ")})"""
       else
         throw new Exception(
           "Cannot generate tuple for > 22 columns, please set hlistEnable=true or override compound.")
-    }
 
     def factory =
       if (columns.size == 1) TableClass.elementType
@@ -126,7 +123,7 @@ ${result(rearranged)} // putting AutoInc last
           } else
             result(positional)
         s"""
-implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR{
+implicit def $name(implicit $dependencies): GR[${TableClass.elementType}] = GR{
   prs => import prs._
   ${indent(body)}
 }
@@ -260,7 +257,7 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
             else (pk, fk)
           }.unzip
         s"""lazy val $name = foreignKey("$dbName", ${compoundValue(fkColumns)}, $pkTable)(r => ${compoundValue(
-          pkColumns)}, onUpdate=${onUpdate}, onDelete=${onDelete})"""
+          pkColumns)}, onUpdate=$onUpdate, onDelete=$onDelete)"""
       }
     }
 

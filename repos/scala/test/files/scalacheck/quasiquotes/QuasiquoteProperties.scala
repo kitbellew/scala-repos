@@ -132,7 +132,7 @@ trait Helpers {
         if (!emsg.contains(msg))
           result(
             false,
-            s"error message '${emsg}' is not the same as expected '$msg'")
+            s"error message '$emsg' is not the same as expected '$msg'")
         else
           result(true)
     }

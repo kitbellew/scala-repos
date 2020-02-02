@@ -27,7 +27,7 @@ class FastArrayOutputTest extends FunSuite {
 
 object Primitives extends Properties("fast byte array primitive tests") {
 
-  def roundTrip[T: Pickler: Unpickler: FastTypeTag](obj: T): Boolean = {
+  def roundTrip[T: Pickler: Unpickler: FastTypeTag](obj: T): Boolean =
     try {
       //val dummy = new FastByteArrayOutput
       val out = new FastByteArrayOutput
@@ -42,7 +42,6 @@ object Primitives extends Properties("fast byte array primitive tests") {
         e.printStackTrace
         throw e
     }
-  }
 
   property("Int") = Prop forAll { (i: Int) => roundTrip[Int](i) }
   property("Double") = Prop forAll { (d: Double) => roundTrip[Double](d) }

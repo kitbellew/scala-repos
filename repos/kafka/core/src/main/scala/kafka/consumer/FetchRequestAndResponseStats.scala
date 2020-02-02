@@ -65,10 +65,9 @@ class FetchRequestAndResponseStats(clientId: String) {
 
   def getFetchRequestAndResponseStats(
       brokerHost: String,
-      brokerPort: Int): FetchRequestAndResponseMetrics = {
+      brokerPort: Int): FetchRequestAndResponseMetrics =
     stats.getAndMaybePut(
       new ClientIdAndBroker(clientId, brokerHost, brokerPort))
-  }
 }
 
 /**
@@ -79,9 +78,8 @@ object FetchRequestAndResponseStatsRegistry {
   private val globalStats =
     new Pool[String, FetchRequestAndResponseStats](Some(valueFactory))
 
-  def getFetchRequestAndResponseStats(clientId: String) = {
+  def getFetchRequestAndResponseStats(clientId: String) =
     globalStats.getAndMaybePut(clientId)
-  }
 
   def removeConsumerFetchRequestAndResponseStats(clientId: String) {
     val pattern = (".*" + clientId + ".*").r

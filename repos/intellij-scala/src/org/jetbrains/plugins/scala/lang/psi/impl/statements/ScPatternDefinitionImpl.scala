@@ -33,12 +33,11 @@ class ScPatternDefinitionImpl private (
     node: ASTNode)
     extends ScalaStubBasedElementImpl(stub, nodeType, node)
     with ScPatternDefinition {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   def this(node: ASTNode) = { this(null, null, node) }
 
@@ -60,7 +59,7 @@ class ScPatternDefinitionImpl private (
 
   def declaredElements = bindings
 
-  def getType(ctx: TypingContext) = {
+  def getType(ctx: TypingContext) =
     typeElement match {
       case Some(te) => te.getType(ctx)
       case None =>
@@ -69,7 +68,6 @@ class ScPatternDefinitionImpl private (
           .getOrElse(
             Failure("Cannot infer type without an expression", Some(this)))
     }
-  }
 
   def expr: Option[ScExpression] = {
     val stub = getStub

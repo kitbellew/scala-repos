@@ -157,13 +157,12 @@ class MainGenericRunner {
     }
   }
 
-  private def urlToFile(url: java.net.URL) = {
+  private def urlToFile(url: java.net.URL) =
     try {
       new File(url.toURI())
     } catch {
       case e: java.net.URISyntaxException => new File(url.getPath())
     }
-  }
 }
 
 object MainGenericRunner extends MainGenericRunner {

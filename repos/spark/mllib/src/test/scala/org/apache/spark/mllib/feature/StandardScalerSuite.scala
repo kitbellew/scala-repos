@@ -61,11 +61,10 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
   )
 
   private def computeSummary(
-      data: RDD[Vector]): MultivariateStatisticalSummary = {
+      data: RDD[Vector]): MultivariateStatisticalSummary =
     data.treeAggregate(new MultivariateOnlineSummarizer)(
       (aggregator, data) => aggregator.add(data),
       (aggregator1, aggregator2) => aggregator1.merge(aggregator2))
-  }
 
   test("Standardization with dense input when means and stds are provided") {
 

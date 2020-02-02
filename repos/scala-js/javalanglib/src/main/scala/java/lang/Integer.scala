@@ -95,10 +95,9 @@ object Integer {
         val res =
           js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
 
-        @inline def isOutOfBounds: scala.Boolean = {
+        @inline def isOutOfBounds: scala.Boolean =
           if (signed) res > MAX_VALUE || res < MIN_VALUE
           else res > 0xFFFFFFFFL || res < 0
-        }
 
         if (res.isNaN || isOutOfBounds) {
           fail
@@ -217,14 +216,13 @@ object Integer {
   def toOctalString(i: scala.Int): String = toStringBase(i, 8)
 
   @inline // because radix is almost certainly constant at call site
-  def toString(i: Int, radix: Int): String = {
+  def toString(i: Int, radix: Int): String =
     if (radix == 10 || radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
       Integer.toString(i)
     } else {
       import js.JSNumberOps.enableJSNumberOps
       i.toString(radix)
     }
-  }
 
   @inline def toUnsignedString(i: scala.Int): String = toUnsignedString(i, 10)
 

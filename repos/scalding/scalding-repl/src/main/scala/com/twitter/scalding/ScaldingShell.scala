@@ -135,7 +135,7 @@ trait BaseScaldingShell extends MainGenericRunner {
     *
     * @return some file for the jar created, or `None` if the REPL is not running.
     */
-  private[scalding] def createReplCodeJar(): Option[File] = {
+  private[scalding] def createReplCodeJar(): Option[File] =
     scaldingREPL.map { repl =>
       val virtualDirectory = repl.virtualDirectory
       val tempJar = new File(
@@ -143,7 +143,6 @@ trait BaseScaldingShell extends MainGenericRunner {
         "scalding-repl-session-" + System.currentTimeMillis() + ".jar")
       createJar(virtualDirectory.asInstanceOf[VirtualDirectory], tempJar)
     }
-  }
 
   /**
     * Creates a jar file from the classes contained in a virtual directory.

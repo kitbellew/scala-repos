@@ -34,60 +34,56 @@ class ParquetEncodingSuite
 
   test("All Types Dictionary") {
     (1 :: 1000 :: Nil).foreach { n =>
-      {
-        withTempPath { dir =>
-          List
-            .fill(n)(ROW)
-            .toDF
-            .repartition(1)
-            .write
-            .parquet(dir.getCanonicalPath)
-          val file =
-            SpecificParquetRecordReaderBase.listDirectory(dir).toArray.head
+      withTempPath { dir =>
+        List
+          .fill(n)(ROW)
+          .toDF
+          .repartition(1)
+          .write
+          .parquet(dir.getCanonicalPath)
+        val file =
+          SpecificParquetRecordReaderBase.listDirectory(dir).toArray.head
 
-          val reader = new VectorizedParquetRecordReader
-          reader.initialize(file.asInstanceOf[String], null)
-          val batch = reader.resultBatch()
-          assert(reader.nextBatch())
-          assert(batch.numRows() == n)
-          var i = 0
-          while (i < n) {
-            assert(batch.column(0).getByte(i) == 1)
-            assert(batch.column(1).getInt(i) == 2)
-            assert(batch.column(2).getLong(i) == 3)
-            assert(batch.column(3).getUTF8String(i).toString == "abc")
-            i += 1
-          }
-          reader.close()
+        val reader = new VectorizedParquetRecordReader
+        reader.initialize(file.asInstanceOf[String], null)
+        val batch = reader.resultBatch()
+        assert(reader.nextBatch())
+        assert(batch.numRows() == n)
+        var i = 0
+        while (i < n) {
+          assert(batch.column(0).getByte(i) == 1)
+          assert(batch.column(1).getInt(i) == 2)
+          assert(batch.column(2).getLong(i) == 3)
+          assert(batch.column(3).getUTF8String(i).toString == "abc")
+          i += 1
         }
+        reader.close()
       }
     }
   }
 
   test("All Types Null") {
     (1 :: 100 :: Nil).foreach { n =>
-      {
-        withTempPath { dir =>
-          val data = List.fill(n)(NULL_ROW).toDF
-          data.repartition(1).write.parquet(dir.getCanonicalPath)
-          val file =
-            SpecificParquetRecordReaderBase.listDirectory(dir).toArray.head
+      withTempPath { dir =>
+        val data = List.fill(n)(NULL_ROW).toDF
+        data.repartition(1).write.parquet(dir.getCanonicalPath)
+        val file =
+          SpecificParquetRecordReaderBase.listDirectory(dir).toArray.head
 
-          val reader = new VectorizedParquetRecordReader
-          reader.initialize(file.asInstanceOf[String], null)
-          val batch = reader.resultBatch()
-          assert(reader.nextBatch())
-          assert(batch.numRows() == n)
-          var i = 0
-          while (i < n) {
-            assert(batch.column(0).getIsNull(i))
-            assert(batch.column(1).getIsNull(i))
-            assert(batch.column(2).getIsNull(i))
-            assert(batch.column(3).getIsNull(i))
-            i += 1
-          }
-          reader.close()
+        val reader = new VectorizedParquetRecordReader
+        reader.initialize(file.asInstanceOf[String], null)
+        val batch = reader.resultBatch()
+        assert(reader.nextBatch())
+        assert(batch.numRows() == n)
+        var i = 0
+        while (i < n) {
+          assert(batch.column(0).getIsNull(i))
+          assert(batch.column(1).getIsNull(i))
+          assert(batch.column(2).getIsNull(i))
+          assert(batch.column(3).getIsNull(i))
+          i += 1
         }
+        reader.close()
       }
     }
   }

@@ -77,7 +77,7 @@ class FiltersSuite extends SparkFunSuite with Logging {
   private def filterTest(
       name: String,
       filters: Seq[Expression],
-      result: String) = {
+      result: String) =
     test(name) {
       val converted = shim.convertFilters(testTable, filters)
       if (converted != result) {
@@ -85,7 +85,6 @@ class FiltersSuite extends SparkFunSuite with Logging {
           s"Expected filters ${filters.mkString(",")} to convert to '$result' but got '$converted'")
       }
     }
-  }
 
   private def a(name: String, dataType: DataType) =
     AttributeReference(name, dataType)()

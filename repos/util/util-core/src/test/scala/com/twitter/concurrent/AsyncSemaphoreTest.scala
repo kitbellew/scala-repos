@@ -232,9 +232,8 @@ class AsyncSemaphoreTest extends FunSpec {
           }
         }
         val badFunc = new (() => Int) {
-          def apply(): Int = {
+          def apply(): Int =
             throw new Exception("error!")
-          }
         }
         assert(semHelper.sem.numPermitsAvailable == 2)
 

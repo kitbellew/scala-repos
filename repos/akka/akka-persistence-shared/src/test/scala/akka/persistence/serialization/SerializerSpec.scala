@@ -319,17 +319,17 @@ object MessageSerializerRemotingSpec {
     def receive = {
       case m ⇒
         context
-          .actorSelection(s"akka.tcp://remote@127.0.0.1:${port}/user/remote")
+          .actorSelection(s"akka.tcp://remote@127.0.0.1:$port/user/remote")
           .tell(m, Actor.noSender)
     }
   }
 
   class RemoteActor extends Actor {
     def receive = {
-      case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p${data}"
+      case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p$data"
       case a: AtomicWrite ⇒
         a.payload.foreach {
-          case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p${data}"
+          case p @ PersistentRepr(MyPayload(data), _) ⇒ p.sender ! s"p$data"
         }
     }
   }
@@ -404,13 +404,13 @@ class MyPayloadSerializer extends Serializer {
   def includeManifest: Boolean = true
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
+    case MyPayload(data) ⇒ s".$data".getBytes(UTF_8)
   }
 
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     manifest match {
       case Some(MyPayloadClass) ⇒ MyPayload(s"${new String(bytes, UTF_8)}.")
-      case Some(c) ⇒ throw new Exception(s"unexpected manifest ${c}")
+      case Some(c) ⇒ throw new Exception(s"unexpected manifest $c")
       case None ⇒ throw new Exception("no manifest")
     }
 }
@@ -448,13 +448,13 @@ class MySnapshotSerializer extends Serializer {
   def includeManifest: Boolean = true
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case MySnapshot(data) ⇒ s".${data}".getBytes(UTF_8)
+    case MySnapshot(data) ⇒ s".$data".getBytes(UTF_8)
   }
 
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     manifest match {
       case Some(MySnapshotClass) ⇒ MySnapshot(s"${new String(bytes, UTF_8)}.")
-      case Some(c) ⇒ throw new Exception(s"unexpected manifest ${c}")
+      case Some(c) ⇒ throw new Exception(s"unexpected manifest $c")
       case None ⇒ throw new Exception("no manifest")
     }
 }
@@ -468,7 +468,7 @@ class MySnapshotSerializer2 extends SerializerWithStringManifest {
   def manifest(o: AnyRef): String = CurrentManifest
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case MySnapshot2(data) ⇒ s".${data}".getBytes(UTF_8)
+    case MySnapshot2(data) ⇒ s".$data".getBytes(UTF_8)
   }
 
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
@@ -489,7 +489,7 @@ class OldPayloadSerializer extends SerializerWithStringManifest {
   def manifest(o: AnyRef): String = o.getClass.getName
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case MyPayload(data) ⇒ s".${data}".getBytes(UTF_8)
+    case MyPayload(data) ⇒ s".$data".getBytes(UTF_8)
     case old if old.getClass.getName == OldPayloadClassName ⇒
       o.toString.getBytes(UTF_8)
   }

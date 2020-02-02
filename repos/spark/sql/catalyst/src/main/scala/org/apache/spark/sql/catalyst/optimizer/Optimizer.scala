@@ -45,7 +45,7 @@ import org.apache.spark.sql.types._
   * Optimizers can override this.
   */
 abstract class Optimizer extends RuleExecutor[LogicalPlan] {
-  def batches: Seq[Batch] = {
+  def batches: Seq[Batch] =
     // Technically some of the rules in Finish Analysis are not optimizer rules and belong more
     // in the analyzer, because they are needed for correctness (e.g. ComputeCurrentTime).
     // However, because we also use the analyzer to canonicalized queries (for view definition),
@@ -109,7 +109,6 @@ abstract class Optimizer extends RuleExecutor[LogicalPlan] {
       Batch("Decimal Optimizations", FixedPoint(100), DecimalAggregates) ::
       Batch("LocalRelation", FixedPoint(100), ConvertToLocalRelation) ::
       Batch("Subquery", Once, OptimizeSubqueries) :: Nil
-  }
 
   /**
     * Optimize all the subqueries inside expression.
@@ -163,16 +162,15 @@ object EliminateSerialization extends Rule[LogicalPlan] {
   */
 object LimitPushDown extends Rule[LogicalPlan] {
 
-  private def stripGlobalLimitIfPresent(plan: LogicalPlan): LogicalPlan = {
+  private def stripGlobalLimitIfPresent(plan: LogicalPlan): LogicalPlan =
     plan match {
       case GlobalLimit(expr, child) => child
       case _                        => plan
     }
-  }
 
   private def maybePushLimit(
       limitExp: Expression,
-      plan: LogicalPlan): LogicalPlan = {
+      plan: LogicalPlan): LogicalPlan =
     (limitExp, plan.maxRows) match {
       case (IntegerLiteral(maxRow), Some(childMaxRows))
           if maxRow < childMaxRows =>
@@ -181,7 +179,6 @@ object LimitPushDown extends Rule[LogicalPlan] {
         LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
       case _ => plan
     }
-  }
 
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
     // Adding extra Limits below UNION ALL for children which are not Limit or do not have Limit
@@ -290,10 +287,10 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
       assert(children.nonEmpty)
       if (projectList.forall(_.deterministic)) {
         val newFirstChild = Project(projectList, children.head)
-        val newOtherChildren = children.tail.map(child => {
+        val newOtherChildren = children.tail.map { child =>
           val rewrites = buildRewrites(children.head, child)
           Project(projectList.map(pushToRight(_, rewrites)), child)
-        })
+        }
         Union(newFirstChild +: newOtherChildren)
       } else {
         p
@@ -306,10 +303,8 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
         partitionByDeterministic(condition)
       val newFirstChild = Filter(deterministic, children.head)
       val newOtherChildren = children.tail.map { child =>
-        {
-          val rewrites = buildRewrites(children.head, child)
-          Filter(pushToRight(deterministic, rewrites), child)
-        }
+        val rewrites = buildRewrites(children.head, child)
+        Filter(pushToRight(deterministic, rewrites), child)
       }
       Filter(nondeterministic, Union(newFirstChild +: newOtherChildren))
 

@@ -13,14 +13,13 @@ import scala.collection.mutable.ArrayBuffer
   */
 object Util {
 
-  def mapOrNone[A <: AnyRef](c: Option[A])(f: A => A): Option[A] = {
+  def mapOrNone[A <: AnyRef](c: Option[A])(f: A => A): Option[A] =
     if (c.isEmpty) None
     else {
       val x = c.get
       val n = f(x)
       if (n ne x) Some(n) else None
     }
-  }
 
   @inline implicit def nodeToNodeOps(n: Node): NodeOps = new NodeOps(n)
 }
@@ -52,7 +51,7 @@ final class NodeOps(val tree: Node) extends AnyVal {
   def replace(
       f: PartialFunction[Node, Node],
       keepType: Boolean = false,
-      bottomUp: Boolean = false): Node = {
+      bottomUp: Boolean = false): Node =
     if (bottomUp) {
       def r(n: Node): Node = f.applyOrElse(g(n), identity[Node])
       def g(n: Node): Node = n.mapChildren(r, keepType)
@@ -62,7 +61,6 @@ final class NodeOps(val tree: Node) extends AnyVal {
       def g(n: Node): Node = n.mapChildren(r, keepType)
       r(tree)
     }
-  }
 
   /** Replace nodes in a bottom-up traversal while invalidating TypeSymbols. Any later references
     * to the invalidated TypeSymbols have their types unassigned, so that the whole tree can be
@@ -97,13 +95,12 @@ final class NodeOps(val tree: Node) extends AnyVal {
       }, bottomUp = true)
   }
 
-  def findNode(p: Node => Boolean): Option[Node] = {
+  def findNode(p: Node => Boolean): Option[Node] =
     if (p(tree)) Some(tree)
     else {
       val it = tree.children.iterator.map(_.findNode(p)).dropWhile(_.isEmpty)
       if (it.hasNext) it.next() else None
     }
-  }
 
   def select(field: TermSymbol): Node = (field, tree) match {
     case (s: AnonSymbol, StructNode(ch)) =>

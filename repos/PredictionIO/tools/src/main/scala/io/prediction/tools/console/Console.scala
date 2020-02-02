@@ -735,16 +735,15 @@ object Console extends Logging {
     }
   }
 
-  def help(commands: Seq[String] = Seq()): String = {
+  def help(commands: Seq[String] = Seq()): String =
     if (commands.isEmpty) {
       mainHelp
     } else {
       val stripped =
         (if (commands.head == "help") commands.drop(1) else commands)
           .mkString("-")
-      helpText.getOrElse(stripped, s"Help is unavailable for ${stripped}.")
+      helpText.getOrElse(stripped, s"Help is unavailable for $stripped.")
     }
-  }
 
   val mainHelp = txt.main().toString
 
@@ -785,9 +784,8 @@ object Console extends Logging {
     0
   }
 
-  def unregister(ca: ConsoleArgs): Unit = {
+  def unregister(ca: ConsoleArgs): Unit =
     RegisterEngine.unregisterEngine(ca.common.manifestJson)
-  }
 
   def train(ca: ConsoleArgs): Int = {
     Template.verifyTemplateMinVersion(new File("template.json"))
@@ -861,24 +859,24 @@ object Console extends Logging {
 
   def undeploy(ca: ConsoleArgs): Int = {
     val serverUrl = s"http://${ca.deploy.ip}:${ca.deploy.port}"
-    info(s"Undeploying any existing engine instance at ${serverUrl}")
+    info(s"Undeploying any existing engine instance at $serverUrl")
     try {
-      val code = Http(s"${serverUrl}/stop").asString.code
+      val code = Http(s"$serverUrl/stop").asString.code
       code match {
         case 200 => 0
         case 404 =>
-          error(s"Another process is using ${serverUrl}. Unable to undeploy.")
+          error(s"Another process is using $serverUrl. Unable to undeploy.")
           1
         case _ =>
           error(
-            s"Another process is using ${serverUrl}, or an existing " +
-              s"engine server is not responding properly (HTTP ${code}). " +
+            s"Another process is using $serverUrl, or an existing " +
+              s"engine server is not responding properly (HTTP $code). " +
               "Unable to undeploy.")
           1
       }
     } catch {
       case e: java.net.ConnectException =>
-        warn(s"Nothing at ${serverUrl}")
+        warn(s"Nothing at $serverUrl")
         0
       case _: Throwable =>
         error(
@@ -910,7 +908,7 @@ object Console extends Logging {
       case e: Throwable => WorkflowUtils.checkUpgrade("build")
     }
     val sbt = detectSbt(ca)
-    info(s"Using command '${sbt}' at the current working directory to build.")
+    info(s"Using command '$sbt' at the current working directory to build.")
     info("If the path above is incorrect, this process will fail.")
     val asm =
       if (ca.build.sbtAssemblyPackageDependency) {
@@ -919,8 +917,8 @@ object Console extends Logging {
         ""
       }
     val clean = if (ca.build.sbtClean) " clean" else ""
-    val buildCmd = s"${sbt} ${ca.build.sbtExtra.getOrElse("")}${clean} " +
-      (if (ca.build.uberJar) "assembly" else s"package${asm}")
+    val buildCmd = s"$sbt ${ca.build.sbtExtra.getOrElse("")}$clean " +
+      (if (ca.build.uberJar) "assembly" else s"package$asm")
     val core = new File(s"pio-assembly-${BuildInfo.version}.jar")
     if (ca.build.uberJar) {
       info(s"Uber JAR enabled. Putting ${core.getName} in lib.")
@@ -939,7 +937,7 @@ object Console extends Logging {
           s"like an engine project directory. Please delete lib/${core.getName} manually.")
       }
     }
-    info(s"Going to run: ${buildCmd}")
+    info(s"Going to run: $buildCmd")
     try {
       val r =
         if (ca.common.verbose) {
@@ -951,7 +949,7 @@ object Console extends Logging {
               line => outputSbtError(line)))
         }
       if (r != 0) {
-        error(s"Return code of previous step is ${r}. Aborting.")
+        error(s"Return code of previous step is $r. Aborting.")
         sys.exit(1)
       }
       info("Build finished successfully.")
@@ -962,9 +960,8 @@ object Console extends Logging {
     }
   }
 
-  private def outputSbtError(line: String): Unit = {
+  private def outputSbtError(line: String): Unit =
     """\[.*error.*\]""".r findFirstIn line foreach { _ => error(line) }
-  }
 
   def run(ca: ConsoleArgs): Int = {
     compile(ca)
@@ -992,10 +989,10 @@ object Console extends Logging {
         .filter(kv => kv._1.startsWith("PIO_"))
         .map(kv => s"${kv._1}=${kv._2}")
         .mkString(","))
-    info(s"Submission command: ${cmd}")
+    info(s"Submission command: $cmd")
     val r = proc.!
     if (r != 0) {
-      error(s"Return code of previous step is ${r}. Aborting.")
+      error(s"Return code of previous step is $r. Aborting.")
       return 1
     }
     r
@@ -1081,7 +1078,7 @@ object Console extends Logging {
     0
   }
 
-  def upgrade(ca: ConsoleArgs): Unit = {
+  def upgrade(ca: ConsoleArgs): Unit =
     (ca.upgrade.from, ca.upgrade.to) match {
       case ("0.8.2", "0.8.3") => {
         Upgrade_0_8_3.runMain(ca.upgrade.oldAppId, ca.upgrade.newAppId)
@@ -1091,7 +1088,6 @@ object Console extends Logging {
           s"Upgrade from version ${ca.upgrade.from} to ${ca.upgrade.to}"
             + s" is not supported.")
     }
-  }
 
   def coreAssembly(pioHome: String): File = {
     val core = s"pio-assembly-${BuildInfo.version}.jar"
@@ -1161,7 +1157,7 @@ object Console extends Logging {
     } catch {
       case e: java.io.IOException =>
         error(
-          s"Cannot generate ${json} automatically (${e.getMessage}). " +
+          s"Cannot generate $json automatically (${e.getMessage}). " +
             "Aborting.")
         sys.exit(1)
     }
@@ -1194,7 +1190,7 @@ object Console extends Logging {
     storage.Storage.getMetaDataEngineManifests.get(id, version) map {
       op
     } getOrElse {
-      error(s"Engine ${id} ${version} cannot be found in the system.")
+      error(s"Engine $id $version cannot be found in the system.")
       error("Possible reasons:")
       error("- the engine is not yet built by the 'build' command;")
       error("- the meta data store is offline.")
@@ -1211,7 +1207,7 @@ object Console extends Logging {
     val targetFiles = jarFilesForScalaFilter(
       jarFilesAt(
         new File("target" +
-          File.separator + s"scala-${scalaVersionNoPatch}")))
+          File.separator + s"scala-$scalaVersionNoPatch")))
     // Use libFiles is target is empty.
     if (targetFiles.size > 0) targetFiles else libFiles
   }
@@ -1222,17 +1218,15 @@ object Console extends Logging {
       f.getName.toLowerCase.endsWith("-sources.jar")
     }
 
-  def recursiveListFiles(f: File): Array[File] = {
+  def recursiveListFiles(f: File): Array[File] =
     Option(f.listFiles) map { these =>
       these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)
     } getOrElse Array[File]()
-  }
 
-  def getSparkHome(sparkHome: Option[String]): String = {
+  def getSparkHome(sparkHome: Option[String]): String =
     sparkHome getOrElse {
       sys.env.getOrElse("SPARK_HOME", ".")
     }
-  }
 
   def versionNoPatch(fullVersion: String): String = {
     val v = """^(\d+\.\d+)""".r
@@ -1244,7 +1238,7 @@ object Console extends Logging {
 
   def scalaVersionNoPatch: String = versionNoPatch(BuildInfo.scalaVersion)
 
-  def detectSbt(ca: ConsoleArgs): String = {
+  def detectSbt(ca: ConsoleArgs): String =
     ca.build.sbt map {
       _.getCanonicalPath
     } getOrElse {
@@ -1252,7 +1246,6 @@ object Console extends Logging {
         Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
       if (f.exists) f.getCanonicalPath else "sbt"
     }
-  }
 
   def stripMarginAndNewlines(string: String): String =
     string.stripMargin.replaceAll("\n", " ")

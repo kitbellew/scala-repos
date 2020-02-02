@@ -54,23 +54,21 @@ private[spark] class WorkerWatcher(
     case e => logWarning(s"Received unexpected message: $e")
   }
 
-  override def onConnected(remoteAddress: RpcAddress): Unit = {
+  override def onConnected(remoteAddress: RpcAddress): Unit =
     if (isWorker(remoteAddress)) {
       logInfo(s"Successfully connected to $workerUrl")
     }
-  }
 
-  override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+  override def onDisconnected(remoteAddress: RpcAddress): Unit =
     if (isWorker(remoteAddress)) {
       // This log message will never be seen
       logError(s"Lost connection to worker rpc endpoint $workerUrl. Exiting.")
       exitNonZero()
     }
-  }
 
   override def onNetworkError(
       cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+      remoteAddress: RpcAddress): Unit =
     if (isWorker(remoteAddress)) {
       // These logs may not be seen if the worker (and associated pipe) has died
       logError(
@@ -78,5 +76,4 @@ private[spark] class WorkerWatcher(
       logError(s"Error was: $cause")
       exitNonZero()
     }
-  }
 }

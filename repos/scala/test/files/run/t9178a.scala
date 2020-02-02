@@ -9,7 +9,6 @@ abstract class Test {
 object Test extends Test {
   lazy val samIAm = new Sam { def apply() {} }
   def foo() = samIAm
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     assert(f eq samIAm, f)
-  }
 }

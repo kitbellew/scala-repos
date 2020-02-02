@@ -64,9 +64,8 @@ class GcdBenchmarks extends MyBenchmark {
   }
 
   @tailrec
-  final def euclidGcdLong(x: Long, y: Long): Long = {
+  final def euclidGcdLong(x: Long, y: Long): Long =
     if (y == 0L) Math.abs(x) else euclidGcdLong(y, x % y)
-  }
 
   def binaryGcdLong(_x: Long, _y: Long): Long = {
     if (_x == 0L) return _y

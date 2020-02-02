@@ -70,7 +70,7 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
     */
   override def readLast(
       exclusiveUB: BatchID,
-      mode: Mode): Try[(BatchID, FlowProducer[TypedPipe[(K, V)]])] = {
+      mode: Mode): Try[(BatchID, FlowProducer[TypedPipe[(K, V)]])] =
     mode match {
       case hdfs: HdfsMode =>
         lastBatch(exclusiveUB, hdfs)
@@ -86,7 +86,6 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
             "Mode: %s not supported for VersionedBatchStore(%s)"
               .format(mode, rootPath)))
     }
-  }
 
   /**
     * These functions convert back and forth between a specific

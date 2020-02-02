@@ -92,7 +92,7 @@ object TypeDescriptorProviderImpl {
         case t =>
           c.abort(
             c.enclosingPosition,
-            s"Case class ${tpe} at $t is not pure primitives or nested case classes")
+            s"Case class $tpe at $t is not pure primitives or nested case classes")
       }
     }
     go(tpe, 0)._2

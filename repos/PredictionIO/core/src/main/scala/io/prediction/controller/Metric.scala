@@ -109,9 +109,8 @@ abstract class AverageMetric[EI, Q, P, A]
 
   def calculate(
       sc: SparkContext,
-      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = {
+      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double =
     calculateStats(sc, evalDataSet).mean
-  }
 }
 
 /** Returns the global average of the non-None score returned by the calculate
@@ -136,9 +135,8 @@ abstract class OptionAverageMetric[EI, Q, P, A]
 
   def calculate(
       sc: SparkContext,
-      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = {
+      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double =
     calculateStats(sc, evalDataSet).mean
-  }
 }
 
 /** Returns the global standard deviation of the score returned by the calculate method
@@ -166,9 +164,8 @@ abstract class StdevMetric[EI, Q, P, A]
 
   def calculate(
       sc: SparkContext,
-      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = {
+      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double =
     calculateStats(sc, evalDataSet).stdev
-  }
 }
 
 /** Returns the global standard deviation of the non-None score returned by the calculate method
@@ -196,9 +193,8 @@ abstract class OptionStdevMetric[EI, Q, P, A]
 
   def calculate(
       sc: SparkContext,
-      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double = {
+      evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): Double =
     calculateStats(sc, evalDataSet).stdev
-  }
 }
 
 /** Returns the sum of the score returned by the calculate method.
@@ -255,9 +251,8 @@ object ZeroMetric {
 
   /** Returns a ZeroMetric instance using Engine's type parameters. */
   def apply[EI, Q, P, A](
-      engine: BaseEngine[EI, Q, P, A]): ZeroMetric[EI, Q, P, A] = {
+      engine: BaseEngine[EI, Q, P, A]): ZeroMetric[EI, Q, P, A] =
     new ZeroMetric[EI, Q, P, A]()
-  }
 }
 
 /** Trait for metric which returns a score based on Query, PredictedResult,

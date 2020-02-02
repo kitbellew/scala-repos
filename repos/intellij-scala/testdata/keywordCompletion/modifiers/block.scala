@@ -1,7 +1,6 @@
 class A {
-  def fe = {
+  def fe =
     laz /*caret*/
-  }
 }
 /*
 lazy

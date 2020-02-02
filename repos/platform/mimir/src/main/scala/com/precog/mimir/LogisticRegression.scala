@@ -85,7 +85,7 @@ trait LogisticRegressionLibModule[M[+_]]
         def zero = None
         def append(
             t1: Option[Seq[ColumnValues]],
-            t2: => Option[Seq[ColumnValues]]) = {
+            t2: => Option[Seq[ColumnValues]]) =
           t1 match {
             case None => t2
             case Some(c1) =>
@@ -94,10 +94,9 @@ trait LogisticRegressionLibModule[M[+_]]
                 case Some(c2) => Some(c1 ++ c2)
               }
           }
-        }
       }
 
-      def checkValue(value: Double): Double = {
+      def checkValue(value: Double): Double =
         if (value isPosInfinity)
           Double.MaxValue
         else if (value isNegInfinity)
@@ -106,9 +105,8 @@ trait LogisticRegressionLibModule[M[+_]]
           sys.error("Inconceivable! Value is NaN.")
         else
           value
-      }
 
-      def cost(seq: Seq[ColumnValues], theta: Theta): Double = {
+      def cost(seq: Seq[ColumnValues], theta: Theta): Double =
         if (seq.isEmpty) {
           sys.error("empty sequence should never occur")
         } else {
@@ -135,12 +133,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
           -result
         }
-      }
 
-      def gradient(
-          seq: Seq[ColumnValues],
-          theta: Theta,
-          alpha: Double): Theta = {
+      def gradient(seq: Seq[ColumnValues], theta: Theta, alpha: Double): Theta =
         if (seq.isEmpty) {
           sys.error("empty sequence should never occur")
         } else {
@@ -162,7 +156,6 @@ trait LogisticRegressionLibModule[M[+_]]
             }
           }
         }
-      }
 
       def reduceDouble(seq0: Seq[ColumnValues]): Result = {
         val seq = seq0 filter { arr => arr.last == 0 || arr.last == 1 }

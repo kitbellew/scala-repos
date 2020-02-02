@@ -24,12 +24,11 @@ trait ArgHelper {
     */
   def validatedDescribe[T](
       describedArgs: Seq[DescribedArg],
-      ex: Execution[T]): Execution[T] = {
+      ex: Execution[T]): Execution[T] =
     Execution.getArgs.flatMap { args =>
       validatedDescribe(describedArgs, args)
       ex
     }
-  }
 
   /**
     * Describe a set of Args given Descriptions and validate all Args are described
@@ -59,12 +58,11 @@ trait ArgHelper {
     */
   def describe[T](
       describedArgs: Seq[DescribedArg],
-      ex: Execution[T]): Execution[T] = {
+      ex: Execution[T]): Execution[T] =
     Execution.getArgs.flatMap { args =>
       describe(describedArgs, args)
       ex
     }
-  }
 
   /**
     * Describe a set of Args given Descriptions
@@ -94,7 +92,7 @@ trait ArgHelper {
     * @param describedArgs List of Argument Descriptions
     * @return Command Line Parameters
     */
-  private[this] def argString(describedArgs: Seq[DescribedArg]): String = {
+  private[this] def argString(describedArgs: Seq[DescribedArg]): String =
     describedArgs.foldLeft("") {
       case (str, describedArg) =>
         val msg = describedArg match {
@@ -105,7 +103,6 @@ trait ArgHelper {
         }
         str + msg
     } + "[--help]"
-  }
 
   /**
     * More detailed help command for these described arguments
@@ -113,7 +110,7 @@ trait ArgHelper {
     * @param describedArgs List of Argument Descriptions
     * @return Detailed Help for the Args
     */
-  private[this] def help(describedArgs: Seq[DescribedArg]): String = {
+  private[this] def help(describedArgs: Seq[DescribedArg]): String =
     describedArgs.foldLeft("") {
       case (str, describedArg) =>
         val msg = describedArg match {
@@ -127,7 +124,6 @@ trait ArgHelper {
         }
         str + msg
     } + "--help :: Show this help message."
-  }
 }
 
 object ArgHelp extends ArgHelper

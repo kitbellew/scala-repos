@@ -88,11 +88,10 @@ class ChiSqTestResult private[stat] (
     @Since("1.1.0") override val nullHypothesis: String)
     extends TestResult[Int] {
 
-  override def toString: String = {
+  override def toString: String =
     "Chi squared test summary:\n" +
       s"method: $method\n" +
       super.toString
-  }
 }
 
 /**
@@ -110,9 +109,8 @@ class KolmogorovSmirnovTestResult private[stat] (
   @Since("1.5.0")
   override val degreesOfFreedom = 0
 
-  override def toString: String = {
+  override def toString: String =
     "Kolmogorov-Smirnov test summary:\n" + super.toString
-  }
 }
 
 /**
@@ -130,9 +128,8 @@ private[stat] class StreamingTestResult @Since("1.6.0") (
     extends TestResult[Double]
     with Serializable {
 
-  override def toString: String = {
+  override def toString: String =
     "Streaming test summary:\n" +
       s"method: $method\n" +
       super.toString
-  }
 }

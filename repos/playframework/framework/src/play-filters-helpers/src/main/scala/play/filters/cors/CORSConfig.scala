@@ -124,7 +124,7 @@ object CORSConfig {
   }
 
   private[cors] def fromUnprefixedConfiguration(
-      config: PlayConfig): CORSConfig = {
+      config: PlayConfig): CORSConfig =
     CORSConfig(
       allowedOrigins = config.get[Option[Seq[String]]]("allowedOrigins") match {
         case Some(allowed) => Origins.Matching(allowed.toSet)
@@ -148,5 +148,4 @@ object CORSConfig {
       supportsCredentials = config.get[Boolean]("supportsCredentials"),
       preflightMaxAge = config.get[Duration]("preflightMaxAge")
     )
-  }
 }

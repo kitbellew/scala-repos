@@ -12,9 +12,8 @@ class EnablePerformanceProblemsQuickFix(project: Project)
   val settings = ScalaProjectSettings.getInstance(project)
   val ignoreSettings = settings.isIgnorePerformance
 
-  def applyFix(project: Project, descriptor: ProblemDescriptor): Unit = {
+  def applyFix(project: Project, descriptor: ProblemDescriptor): Unit =
     settings.setIgnorePerformance(!ignoreSettings)
-  }
 
   val enable: String = if (!ignoreSettings) "Enable" else "Disable"
   def getName: String =

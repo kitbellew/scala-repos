@@ -92,7 +92,7 @@ object ThriftTypes
     extends scala.collection.mutable.HashMap[String, ThriftCallFactory[_, _]] {
   def add(c: ThriftCallFactory[_, _]): Unit = put(c.method, c)
 
-  override def apply(method: String) = {
+  override def apply(method: String) =
     try {
       super.apply(method)
     } catch {
@@ -101,5 +101,4 @@ object ThriftTypes
           TApplicationException.UNKNOWN_METHOD,
           "unknown method '%s'".format(method))
     }
-  }
 }

@@ -58,7 +58,7 @@ class BroadcastJoinSuite extends QueryTest with BeforeAndAfterAll {
     */
   private def testBroadcastJoin[T: ClassTag](
       name: String,
-      joinType: String): Unit = {
+      joinType: String): Unit =
     AccumulatorSuite.verifyPeakExecutionMemorySet(sqlContext.sparkContext, name) {
       val df1 =
         sqlContext.createDataFrame(Seq((1, "4"), (2, "2"))).toDF("key", "value")
@@ -74,7 +74,6 @@ class BroadcastJoinSuite extends QueryTest with BeforeAndAfterAll {
       assert(plan.collect { case p: T => p }.size === 1)
       plan.executeCollect()
     }
-  }
 
   test("unsafe broadcast hash join updates peak execution memory") {
     testBroadcastJoin[BroadcastHashJoin]("unsafe broadcast hash join", "inner")

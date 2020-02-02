@@ -30,19 +30,18 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
   @Nullable
   override def getWordsScanner: WordsScanner = new ScalaWordsScanner()
 
-  override def canFindUsagesFor(element: PsiElement): Boolean = {
+  override def canFindUsagesFor(element: PsiElement): Boolean =
     element match {
       case _: ScNamedElement | _: PsiMethod | _: PsiClass | _: PsiVariable =>
         true
       case _ => false
     }
-  }
 
   @Nullable
   override def getHelpId(psiElement: PsiElement): String = null
 
   @NotNull
-  override def getType(element: PsiElement): String = {
+  override def getType(element: PsiElement): String =
     element match {
       case _: ScTypeAlias => "type"
       case _: ScClass     => "class"
@@ -73,7 +72,6 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
         }
       case _ => ""
     }
-  }
   @NotNull
   override def getDescriptiveName(element: PsiElement): String = {
     val name = element match {

@@ -178,7 +178,7 @@ class JDBCEngineInstances(
   }
 
   /** Convert JDBC results to [[EngineInstance]] */
-  def resultToEngineInstance(rs: WrappedResultSet): EngineInstance = {
+  def resultToEngineInstance(rs: WrappedResultSet): EngineInstance =
     EngineInstance(
       id = rs.string("id"),
       status = rs.string("status"),
@@ -196,5 +196,4 @@ class JDBCEngineInstances(
       algorithmsParams = rs.string("algorithmsParams"),
       servingParams = rs.string("servingParams")
     )
-  }
 }

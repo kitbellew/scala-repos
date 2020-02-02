@@ -64,7 +64,7 @@ final class NIHDBProjection(
     }
   }
 
-  def reduce[A](reduction: Reduction[A], path: CPath): Map[CType, A] = {
+  def reduce[A](reduction: Reduction[A], path: CPath): Map[CType, A] =
     readers.foldLeft(Map.empty[CType, A]) { (acc, reader) =>
       reader.snapshot(Some(Set(path))).segments.foldLeft(acc) {
         (acc, segment) =>
@@ -76,11 +76,10 @@ final class NIHDBProjection(
           } getOrElse acc
       }
     }
-  }
 
   private def getSnapshotBlock(
       id: Option[Long],
-      columns: Option[Set[CPath]]): Option[Block] = {
+      columns: Option[Set[CPath]]): Option[Block] =
     try {
       // We're limiting ourselves to 2 billion blocks total here
       val index = id.map(_.toInt).getOrElse(0)
@@ -95,7 +94,6 @@ final class NIHDBProjection(
         logger.warn("Error during block read", e)
         None
     }
-  }
 }
 
 object NIHDBProjection {

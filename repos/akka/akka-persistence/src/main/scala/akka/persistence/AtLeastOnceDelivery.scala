@@ -281,12 +281,11 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     * @see [[#deliver]]
     * @return `true` the first time the `deliveryId` is confirmed, i.e. `false` for duplicate confirm
     */
-  def confirmDelivery(deliveryId: Long): Boolean = {
+  def confirmDelivery(deliveryId: Long): Boolean =
     if (unconfirmed.contains(deliveryId)) {
       unconfirmed -= deliveryId
       true
     } else false
-  }
 
   /**
     * Number of messages that have not been confirmed yet.

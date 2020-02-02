@@ -24,9 +24,8 @@ object InterpreterSupervisionSpec {
       ctx.push(sum)
     }
 
-    override def onPull(ctx: Context[Int]): SyncDirective = {
+    override def onPull(ctx: Context[Int]): SyncDirective =
       ctx.pull()
-    }
 
     override def decide(t: Throwable): Supervision.Directive =
       Supervision.Restart
@@ -47,7 +46,7 @@ object InterpreterSupervisionSpec {
       ctx.push(elem)
     }
 
-    override def onPull(ctx: Context[Int]): SyncDirective = {
+    override def onPull(ctx: Context[Int]): SyncDirective =
       if (buf.isEmpty && ctx.isFinishing)
         ctx.finish()
       else if (buf.isEmpty)
@@ -58,7 +57,6 @@ object InterpreterSupervisionSpec {
         if (elem == 3) throw TE
         ctx.push(elem)
       }
-    }
 
     override def onUpstreamFinish(ctx: Context[Int]): TerminationDirective =
       if (absorbTermination)
@@ -212,10 +210,9 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "restart when onPush throws" in {
       val stage = new RestartTestStage {
-        override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
+        override def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
           if (elem <= 0) throw TE
           else super.onPush(elem, ctx)
-        }
       }
 
       new OneBoundedSetup[Int](
@@ -439,9 +436,7 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "fail when onPull throws before pushing all generated elements" in {
-      def test(
-          decider: Supervision.Decider,
-          absorbTermination: Boolean): Unit = {
+      def test(decider: Supervision.Decider, absorbTermination: Boolean): Unit =
         new OneBoundedSetup[Int](
           Seq(OneToManyTestStage(decider, absorbTermination))) {
 
@@ -465,7 +460,6 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
           else
             lastEvents() should be(Set(OnError(TE), Cancel))
         }
-      }
 
       test(resumingDecider, absorbTermination = false)
       test(restartingDecider, absorbTermination = false)

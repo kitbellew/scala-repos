@@ -9,13 +9,12 @@ case class MultipartConfig(
     fileSizeThreshold: Option[Int] = None)
     extends MountConfig {
 
-  def toMultipartConfigElement = {
+  def toMultipartConfigElement =
     new MultipartConfigElement(
       location.getOrElse(""),
       maxFileSize.getOrElse(-1),
       maxRequestSize.getOrElse(-1),
       fileSizeThreshold.getOrElse(0))
-  }
 
   def apply(ctxt: ServletContext) {
     ctxt.setAttribute(HasMultipartConfig.MultipartConfigKey, this)

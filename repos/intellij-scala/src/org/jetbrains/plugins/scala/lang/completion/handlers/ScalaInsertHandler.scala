@@ -33,7 +33,7 @@ import scala.annotation.tailrec
   */
 object ScalaInsertHandler {
   def getItemParametersAndAccessorStatus(
-      item: ScalaLookupItem): (Int, String, Boolean) = {
+      item: ScalaLookupItem): (Int, String, Boolean) =
     item.element match {
       case fun: ScFunction =>
         val clauses = fun.paramClauses.clauses
@@ -41,11 +41,10 @@ object ScalaInsertHandler {
         else if (clauses.head.isImplicit) (-1, null, false)
         else (clauses.head.parameters.length, fun.name, false)
       case method: PsiMethod =>
-        def isStringSpecialMethod: Boolean = {
+        def isStringSpecialMethod: Boolean =
           Set("hashCode", "length", "trim").contains(method.getName) &&
-          method.containingClass != null &&
-          method.containingClass.qualifiedName == "java.lang.String"
-        }
+            method.containingClass != null &&
+            method.containingClass.qualifiedName == "java.lang.String"
         (
           method.getParameterList.getParametersCount,
           method.name,
@@ -58,7 +57,6 @@ object ScalaInsertHandler {
         }
       case _ => (0, item.element.name, true)
     }
-  }
 }
 
 class ScalaInsertHandler extends InsertHandler[LookupElement] {

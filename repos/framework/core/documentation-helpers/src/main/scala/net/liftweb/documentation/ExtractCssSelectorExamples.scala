@@ -60,17 +60,16 @@ object ExtractCssSelectorExamples extends App {
     part
   }
 
-  private def hasClass_?(element: Elem, className: String) = {
+  private def hasClass_?(element: Elem, className: String) =
     element.attribute("class") match {
       case Some(thing) =>
         charSplit(thing.text, ' ').exists(_ == className)
       case _ =>
         false
     }
-  }
 
   private def extractExamplesFromContents(
-      fileContents: FileContents): List[ExampleContents] = {
+      fileContents: FileContents): List[ExampleContents] =
     Html5.parse(fileContents.contents).toList.flatMap { html =>
       var setupCode: String = ""
 
@@ -140,7 +139,6 @@ object ExtractCssSelectorExamples extends App {
 
       exampleContents.reverse
     }
-  }
 
   if (args.length < 2) {
     Console.err.println(
@@ -209,7 +207,7 @@ object ExtractCssSelectorExamples extends App {
             |import util.Helpers._
             |
             |object $filename extends Specification with XmlMatchers {
-            |  ""\"${filename} examples""\" should {
+            |  ""\"$filename examples""\" should {
             |${examples.mkString("\n")}
             |  }
             |}""".stripMargin('|'))

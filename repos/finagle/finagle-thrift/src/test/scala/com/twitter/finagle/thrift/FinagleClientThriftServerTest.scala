@@ -31,7 +31,7 @@ class FinagleClientThriftServerTest extends FunSuite {
       somewayPromise: Promise[Unit])(f: (Int, Int) => Int) = {
     val processor = new B.Iface {
       def multiply(a: Int, b: Int): Int = f(a, b)
-      def add(a: Int, b: Int): Int = { throw new AnException }
+      def add(a: Int, b: Int): Int = throw new AnException
       def add_one(a: Int, b: Int) = {}
       def complex_return(someString: String) = new SomeStruct(123, someString)
       def someway() {

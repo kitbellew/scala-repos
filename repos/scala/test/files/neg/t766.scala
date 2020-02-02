@@ -1,8 +1,7 @@
 object B {
-  def a = {
+  def a =
     for (n <- Nil; m <- Nil) {
       val p = badIdentifier
       false
     }
-  }
 }

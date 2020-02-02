@@ -30,7 +30,7 @@ private[sql] trait Queryable {
   def queryExecution: QueryExecution
   def sqlContext: SQLContext
 
-  override def toString: String = {
+  override def toString: String =
     try {
       val builder = new StringBuilder
       val fields = schema.take(2).map {
@@ -50,7 +50,6 @@ private[sql] trait Queryable {
       case NonFatal(e) =>
         s"Invalid tree; ${e.getMessage}:\n$queryExecution"
     }
-  }
 
   def printSchema(): Unit
 

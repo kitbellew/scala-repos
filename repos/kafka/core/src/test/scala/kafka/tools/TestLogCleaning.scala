@@ -224,7 +224,7 @@ object TestLogCleaning {
     consumedDedupedFile.delete()
   }
 
-  def valuesIterator(reader: BufferedReader) = {
+  def valuesIterator(reader: BufferedReader) =
     new IteratorTemplate[TestRecord] {
       def makeNext(): TestRecord = {
         var next = readNext(reader)
@@ -235,7 +235,6 @@ object TestLogCleaning {
           next
       }
     }
-  }
 
   def readNext(reader: BufferedReader): TestRecord = {
     var line = reader.readLine()

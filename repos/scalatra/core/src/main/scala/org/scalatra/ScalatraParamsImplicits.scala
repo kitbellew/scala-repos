@@ -41,13 +41,11 @@ trait ScalatraParamsImplicits {
   sealed class TypedMultiParams(multiParams: MultiParams) {
 
     def getAs[T <: Any](name: String)(
-        implicit tc: TypeConverter[String, T]): Option[Seq[T]] = {
+        implicit tc: TypeConverter[String, T]): Option[Seq[T]] =
       multiParams.get(name) map { s => s.flatMap(tc.apply(_)) }
-    }
 
-    def getAs[T <: Date](nameAndFormat: (String, String)): Option[Seq[Date]] = {
+    def getAs[T <: Date](nameAndFormat: (String, String)): Option[Seq[Date]] =
       getAs(nameAndFormat._1)(stringToDate(nameAndFormat._2))
-    }
 
     def as[T <: Any](name: String)(
         implicit tc: TypeConverter[String, T]): Seq[T] =
@@ -63,9 +61,8 @@ trait ScalatraParamsImplicits {
       getAs[T](name).getOrElse(default)
 
     def getAsOrElse(nameAndFormat: (String, String), default: => Seq[Date])(
-        implicit tc: TypeConverter[String, Date]): Seq[Date] = {
+        implicit tc: TypeConverter[String, Date]): Seq[Date] =
       getAs[Date](nameAndFormat).getOrElse(default)
-    }
 
   }
 

@@ -89,20 +89,17 @@ trait SecurityHelpers {
   def md5(in: String): String = base64Encode(md5(in.getBytes("UTF-8")))
 
   /** create a SHA hash from a Byte array */
-  def hash(in: Array[Byte]): Array[Byte] = {
+  def hash(in: Array[Byte]): Array[Byte] =
     MessageDigest.getInstance("SHA").digest(in)
-  }
 
   /** create a SHA hash from a String */
-  def hash(in: String): String = {
+  def hash(in: String): String =
     base64Encode(MessageDigest.getInstance("SHA").digest(in.getBytes("UTF-8")))
-  }
 
   /** create a SHA hash from a String */
-  def hashHex(in: String): String = {
+  def hashHex(in: String): String =
     Helpers.hexEncode(
       MessageDigest.getInstance("SHA").digest(in.getBytes("UTF-8")))
-  }
 
   /** Compare two strings in a way that does not vary if the strings
     * are determined to be not equal early (test every byte... avoids
@@ -135,15 +132,13 @@ trait SecurityHelpers {
   }
 
   /** create a SHA-256 hash from a Byte array */
-  def hash256(in: Array[Byte]): Array[Byte] = {
+  def hash256(in: Array[Byte]): Array[Byte] =
     MessageDigest.getInstance("SHA-256").digest(in)
-  }
 
   /** create a SHA-256 hash from a String */
-  def hash256(in: String): String = {
+  def hash256(in: String): String =
     base64Encode(
       MessageDigest.getInstance("SHA-256").digest(in.getBytes("UTF-8")))
-  }
 
   /** create a hex encoded SHA hash from a Byte array */
   def hexDigest(in: Array[Byte]): String = {

@@ -44,14 +44,13 @@ abstract class GenJSCode
   def generatedJSAST(clDefs: List[js.Tree]): Unit
 
   /** Implicit conversion from nsc Position to ir.Position. */
-  implicit def pos2irPos(pos: Position): ir.Position = {
+  implicit def pos2irPos(pos: Position): ir.Position =
     if (pos == NoPosition) ir.Position.NoPosition
     else {
       val source = pos2irPosCache.toIRSource(pos.source)
       // nsc positions are 1-based but IR positions are 0-based
       ir.Position(source, pos.line - 1, pos.column - 1)
     }
-  }
 
   private[this] object pos2irPosCache {
     import scala.reflect.internal.util._
@@ -67,7 +66,7 @@ abstract class GenJSCode
       lastIRSource
     }
 
-    private[this] def convert(nscSource: SourceFile): ir.Position.SourceFile = {
+    private[this] def convert(nscSource: SourceFile): ir.Position.SourceFile =
       nscSource.file.file match {
         case null =>
           new java.net.URI(
@@ -85,7 +84,6 @@ abstract class GenJSCode
               to.fold(relURI)(_.resolve(relURI))
           } getOrElse srcURI
       }
-    }
 
     def clear(): Unit = {
       lastNscSource = null
@@ -177,13 +175,12 @@ abstract class GenJSCode
         val generatedClasses =
           ListBuffer.empty[(Symbol, js.ClassDef, ClassInfo)]
 
-        def collectClassDefs(tree: Tree): List[ClassDef] = {
+        def collectClassDefs(tree: Tree): List[ClassDef] =
           tree match {
             case EmptyTree            => Nil
             case PackageDef(_, stats) => stats flatMap collectClassDefs
             case cd: ClassDef         => cd :: Nil
           }
-        }
         val allClassDefs = collectClassDefs(cunit.body)
 
         /* First gen and record lambdas for js.FunctionN and js.ThisFunctionN.
@@ -313,7 +310,7 @@ abstract class GenJSCode
       val generatedMethods = new ListBuffer[js.MethodDef]
       val exportedSymbols = new ListBuffer[Symbol]
 
-      def gen(tree: Tree): Unit = {
+      def gen(tree: Tree): Unit =
         tree match {
           case EmptyTree            => ()
           case Template(_, _, body) => body foreach gen
@@ -341,7 +338,6 @@ abstract class GenJSCode
 
           case _ => abort("Illegal tree in gen of genClass(): " + tree)
         }
-      }
 
       gen(impl)
 
@@ -427,7 +423,7 @@ abstract class GenJSCode
       val classIdent = encodeClassFullNameIdent(sym)
 
       // fill in class info builder
-      def gen(tree: Tree): List[js.MethodDef] = {
+      def gen(tree: Tree): List[js.MethodDef] =
         tree match {
           case EmptyTree            => Nil
           case Template(_, _, body) => body.flatMap(gen)
@@ -435,7 +431,6 @@ abstract class GenJSCode
           case _ =>
             abort("Illegal tree in gen of genInterface(): " + tree)
         }
-      }
       val generatedMethods = gen(cd.impl)
       val interfaces = genClassInterfaces(sym)
 
@@ -461,7 +456,7 @@ abstract class GenJSCode
       val sym = cd.symbol
       implicit val pos = sym.pos
 
-      def gen(tree: Tree): List[js.MethodDef] = {
+      def gen(tree: Tree): List[js.MethodDef] =
         tree match {
           case EmptyTree            => Nil
           case Template(_, _, body) => body.flatMap(gen)
@@ -475,7 +470,6 @@ abstract class GenJSCode
 
           case _ => abort("Illegal tree in gen of genImplClass(): " + tree)
         }
-      }
       val generatedMethods = gen(impl)
 
       val classIdent = encodeClassFullNameIdent(sym)
@@ -495,7 +489,7 @@ abstract class GenJSCode
     }
 
     private def genClassInterfaces(sym: Symbol)(
-        implicit pos: Position): List[js.Ident] = {
+        implicit pos: Position): List[js.Ident] =
       for {
         parent <- sym.info.parents
         typeSym = parent.typeSymbol
@@ -504,14 +498,13 @@ abstract class GenJSCode
       } yield {
         encodeClassFullNameIdent(typeSym)
       }
-    }
 
     // Generate the fields of a class ------------------------------------------
 
     /** Gen definitions for the fields of a class.
       *  The fields are initialized with the zero of their types.
       */
-    def genClassFields(cd: ClassDef): List[js.FieldDef] = {
+    def genClassFields(cd: ClassDef): List[js.FieldDef] =
       // Non-method term members are fields, except for module members.
       (for {
         f <- currentClassSym.info.decls
@@ -522,7 +515,6 @@ abstract class GenJSCode
           suspectFieldMutable(f) || unexpectedMutatedFields.contains(f)
         js.FieldDef(encodeFieldSym(f), toIRType(f.tpe), mutable)
       }).toList
-    }
 
     // Generate a method -------------------------------------------------------
 
@@ -575,11 +567,10 @@ abstract class GenJSCode
 
         val methodIdent = encodeMethodSym(sym)
 
-        def createInfoBuilder() = {
+        def createInfoBuilder() =
           new MethodInfoBuilder()
             .setEncodedName(methodIdent.name)
             .setIsStatic(sym.owner.isImplClass)
-        }
 
         def jsParams = for (param <- params) yield {
           implicit val pos = param.pos
@@ -685,7 +676,7 @@ abstract class GenJSCode
     private def isTrivialConstructor(
         sym: Symbol,
         params: List[Symbol],
-        rhs: Tree): Boolean = {
+        rhs: Tree): Boolean =
       if (!sym.isClassConstructor) {
         false
       } else {
@@ -712,7 +703,6 @@ abstract class GenJSCode
           case _ => false
         }
       }
-    }
 
     /** Patches the mutable flags of selected locals in a [[js.MethodDef]].
       *
@@ -969,9 +959,8 @@ abstract class GenJSCode
 
     /** Gen JS code for a tree in statement position (in the IR).
       */
-    def genStat(tree: Tree): js.Tree = {
+    def genStat(tree: Tree): js.Tree =
       exprToStat(genStatOrExpr(tree, isStat = true))
-    }
 
     /** Turn a JavaScript expression of type Unit into a statement */
     def exprToStat(tree: js.Tree): js.Tree = {
@@ -1202,7 +1191,7 @@ abstract class GenJSCode
       *  But must be replaced by the tail-jump-this local variable if there
       *  is one.
       */
-    private def genThis()(implicit pos: Position): js.Tree = {
+    private def genThis()(implicit pos: Position): js.Tree =
       if (methodTailJumpThisSym.get != NoSymbol) {
         js.VarRef(encodeLocalSym(methodTailJumpThisSym))(currentClassType)
       } else {
@@ -1211,7 +1200,6 @@ abstract class GenJSCode
             "Trying to generate `this` inside the body")
         js.This()(currentClassType)
       }
-    }
 
     /** Gen JS code for LabelDef
       *  The only LabelDefs that can reach here are the desugaring of
@@ -1893,13 +1881,12 @@ abstract class GenJSCode
     def genApplyMethod(
         receiver: js.Tree,
         methodSym: Symbol,
-        arguments: List[js.Tree])(implicit pos: Position): js.Tree = {
+        arguments: List[js.Tree])(implicit pos: Position): js.Tree =
       genApplyMethod(
         receiver,
         encodeMethodSym(methodSym),
         arguments,
         toIRType(methodSym.tpe.resultType))
-    }
 
     /** Gen JS code for a call to a Scala method.
       *  This also registers that the given method is called by the current
@@ -2686,16 +2673,15 @@ abstract class GenJSCode
         *  Note that we cannot check if the expected return type is correct,
         *  since this type information is already erased.
         */
-      def isArrayLikeOp = {
+      def isArrayLikeOp =
         sym.name == nme.update &&
-        params.size == 2 && params.head.tpe.typeSymbol == IntClass ||
-        sym.name == nme.apply &&
-        params.size == 1 && params.head.tpe.typeSymbol == IntClass ||
-        sym.name == nme.length &&
-        params.size == 0 ||
-        sym.name == nme.clone_ &&
-        params.size == 0
-      }
+          params.size == 2 && params.head.tpe.typeSymbol == IntClass ||
+          sym.name == nme.apply &&
+            params.size == 1 && params.head.tpe.typeSymbol == IntClass ||
+          sym.name == nme.length &&
+            params.size == 0 ||
+          sym.name == nme.clone_ &&
+            params.size == 0
 
       /**
         * Tests whether one of our reflective "boxes" for primitive types
@@ -2867,8 +2853,7 @@ abstract class GenJSCode
       *    the posterasure phase.
       */
     def ensureBoxed(expr: js.Tree, tpeEnteringPosterasure: Type)(
-        implicit pos: Position): js.Tree = {
-
+        implicit pos: Position): js.Tree =
       tpeEnteringPosterasure match {
         case tpe if isPrimitiveValueType(tpe) =>
           makePrimitiveBox(expr, tpe)
@@ -2881,7 +2866,6 @@ abstract class GenJSCode
         case _ =>
           expr
       }
-    }
 
     /** Extracts a value typed as Any to the given type after posterasure.
       *  @param expr Tree to be extracted.
@@ -2889,8 +2873,7 @@ abstract class GenJSCode
       *    the posterasure phase.
       */
     def fromAny(expr: js.Tree, tpeEnteringPosterasure: Type)(
-        implicit pos: Position): js.Tree = {
-
+        implicit pos: Position): js.Tree =
       tpeEnteringPosterasure match {
         case tpe if isPrimitiveValueType(tpe) =>
           makePrimitiveUnbox(expr, tpe)
@@ -2908,11 +2891,10 @@ abstract class GenJSCode
         case tpe =>
           genAsInstanceOf(expr, tpe)
       }
-    }
 
     /** Gen a boxing operation (tpe is the primitive type) */
     def makePrimitiveBox(expr: js.Tree, tpe: Type)(
-        implicit pos: Position): js.Tree = {
+        implicit pos: Position): js.Tree =
       toTypeKind(tpe) match {
         case VOID => // must be handled at least for JS interop
           js.Block(expr, js.Undefined())
@@ -2929,11 +2911,10 @@ abstract class GenJSCode
           abort(
             s"makePrimitiveBox requires a primitive type, found $tpe at $pos")
       }
-    }
 
     /** Gen an unboxing operation (tpe is the primitive type) */
     def makePrimitiveUnbox(expr: js.Tree, tpe: Type)(
-        implicit pos: Position): js.Tree = {
+        implicit pos: Position): js.Tree =
       toTypeKind(tpe) match {
         case VOID => // must be handled at least for JS interop
           expr
@@ -2950,7 +2931,6 @@ abstract class GenJSCode
           abort(
             s"makePrimitiveUnbox requires a primitive type, found $tpe at $pos")
       }
-    }
 
     private def lookupModuleClass(name: String) = {
       val module = getModuleIfDefined(name)
@@ -3406,24 +3386,21 @@ abstract class GenJSCode
 
     /** Gen JS code representing a JS class (subclass of js.Any) */
     private def genPrimitiveJSClass(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+        implicit pos: Position): js.Tree =
       genGlobalJSObject(sym)
-    }
 
     /** Gen JS code representing a JS module (var of the global scope) */
     private def genPrimitiveJSModule(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+        implicit pos: Position): js.Tree =
       genGlobalJSObject(sym)
-    }
 
     /** Gen JS code representing a JS object (class or module) in global scope
       */
     private def genGlobalJSObject(sym: Symbol)(
-        implicit pos: Position): js.Tree = {
+        implicit pos: Position): js.Tree =
       jsNameOf(sym).split('.').foldLeft(genLoadGlobal()) { (memo, chunk) =>
         js.JSBracketSelect(memo, js.StringLiteral(chunk))
       }
-    }
 
     /** Gen actual actual arguments to Scala method call.
       *  Returns a list of the transformed arguments.
@@ -3528,7 +3505,7 @@ abstract class GenJSCode
       *  compile-time.
       *  Otherwise, it returns a JSSpread with the Seq converted to a js.Array.
       */
-    private def genPrimitiveJSRepeatedParam(arg: Tree): List[js.Tree] = {
+    private def genPrimitiveJSRepeatedParam(arg: Tree): List[js.Tree] =
       tryGenRepeatedParamAsJSArray(arg, handleNil = true) getOrElse {
         /* Fall back to calling runtime.genTraversableOnce2jsArray
          * to perform the conversion to js.Array, then wrap in a Spread
@@ -3541,7 +3518,6 @@ abstract class GenJSCode
           List(genExpr(arg)))
         List(js.JSSpread(jsArrayArg))
       }
-    }
 
     /** Try and expand a repeated param (xs: T*) at compile-time.
       *  This method recognizes the shapes of tree generated by the desugaring
@@ -3774,7 +3750,7 @@ abstract class GenJSCode
       var paramAccessors: List[Symbol] = Nil
       var applyDef: DefDef = null
 
-      def gen(tree: Tree): Unit = {
+      def gen(tree: Tree): Unit =
         tree match {
           case EmptyTree            => ()
           case Template(_, _, body) => body foreach gen
@@ -3810,7 +3786,6 @@ abstract class GenJSCode
             fail(
               "Illegal tree in gen of genAndRecordAnonFunctionClass(): " + tree)
         }
-      }
       gen(cd.impl)
       paramAccessors = paramAccessors.reverse // preserve definition order
 
@@ -3953,7 +3928,7 @@ abstract class GenJSCode
 
       val isInImplClass = target.owner.isImplClass
 
-      def makeCaptures(actualCaptures: List[js.Tree]) = {
+      def makeCaptures(actualCaptures: List[js.Tree]) =
         (actualCaptures map { c =>
           (c: @unchecked) match {
             case js.VarRef(ident) =>
@@ -3962,7 +3937,6 @@ abstract class GenJSCode
                 js.VarRef(ident)(c.tpe)(c.pos))
           }
         }).unzip
-      }
 
       val (allFormalCaptures, body, allActualCaptures) = if (!isInImplClass) {
         val thisActualCapture = genExpr(receiver)
@@ -4127,12 +4101,11 @@ abstract class GenJSCode
   private def isRawJSFunctionDef(sym: Symbol): Boolean =
     sym.isAnonymousClass && AllJSFunctionClasses.exists(sym isSubClass _)
 
-  private def isRawJSCtorDefaultParam(sym: Symbol) = {
+  private def isRawJSCtorDefaultParam(sym: Symbol) =
     sym.hasFlag(reflect.internal.Flags.DEFAULTPARAM) &&
-    sym.owner.isModuleClass &&
-    isRawJSType(patchedLinkedClassOfClass(sym.owner).tpe) &&
-    nme.defaultGetterToMethod(sym.name) == nme.CONSTRUCTOR
-  }
+      sym.owner.isModuleClass &&
+      isRawJSType(patchedLinkedClassOfClass(sym.owner).tpe) &&
+      nme.defaultGetterToMethod(sym.name) == nme.CONSTRUCTOR
 
   private def patchedLinkedClassOfClass(sym: Symbol): Symbol = {
     /* Work around a bug of scalac with linkedClassOfClass where package

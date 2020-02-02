@@ -29,7 +29,7 @@ object NegativeCompilation {
     }
   }
 
-  def intercept[T <: Throwable: ClassTag](body: => Any): T = {
+  def intercept[T <: Throwable: ClassTag](body: => Any): T =
     try {
       body
       throw new Exception(s"Exception of type ${classTag[T]} was not thrown")
@@ -38,7 +38,6 @@ object NegativeCompilation {
         if (classTag[T].runtimeClass != t.getClass) throw t
         else t.asInstanceOf[T]
     }
-  }
 
   def eval(code: String, compileOptions: String = ""): Any = {
     // println(s"eval compile options: $compileOptions")
@@ -67,9 +66,9 @@ object NegativeCompilation {
 
   def toolboxClasspath = {
     val f0 =
-      new java.io.File(s"core/target/scala-${scalaBinaryVersion}/classes")
+      new java.io.File(s"core/target/scala-$scalaBinaryVersion/classes")
     val f1 = new java.io.File(
-      s"test-util/target/scala-${scalaBinaryVersion}/test-classes")
+      s"test-util/target/scala-$scalaBinaryVersion/test-classes")
     val fs = Vector(f0, f1)
     fs foreach { f =>
       if (!f.exists)
@@ -88,7 +87,7 @@ object NegativeCompilation {
   def expectError(
       errorSnippet: String,
       compileOptions: String = "",
-      baseCompileOptions: String = s"-cp ${toolboxClasspath}${quasiquotesJar}")(
+      baseCompileOptions: String = s"-cp $toolboxClasspath$quasiquotesJar")(
       code: String) {
     intercept[ToolBoxError] {
       eval(code, compileOptions + " " + baseCompileOptions)

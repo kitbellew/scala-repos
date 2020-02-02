@@ -69,7 +69,7 @@ private[twitter] object ServerAdmissionControl {
     */
   def unregisterAll(): Unit = acs.clear()
 
-  def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] = {
+  def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module1[Param, ServiceFactory[Req, Rep]] {
       val role = ServerAdmissionControl.role
       val description =
@@ -93,5 +93,4 @@ private[twitter] object ServerAdmissionControl {
         }
       }
     }
-  }
 }

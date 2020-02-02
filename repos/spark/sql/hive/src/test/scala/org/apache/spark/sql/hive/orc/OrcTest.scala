@@ -34,21 +34,19 @@ private[sql] trait OrcTest extends SQLTestUtils with TestHiveSingleton {
     * returns.
     */
   protected def withOrcFile[T <: Product: ClassTag: TypeTag](data: Seq[T])(
-      f: String => Unit): Unit = {
+      f: String => Unit): Unit =
     withTempPath { file =>
       sparkContext.parallelize(data).toDF().write.orc(file.getCanonicalPath)
       f(file.getCanonicalPath)
     }
-  }
 
   /**
     * Writes `data` to a Orc file and reads it back as a [[DataFrame]],
     * which is then passed to `f`. The Orc file will be deleted after `f` returns.
     */
   protected def withOrcDataFrame[T <: Product: ClassTag: TypeTag](data: Seq[T])(
-      f: DataFrame => Unit): Unit = {
+      f: DataFrame => Unit): Unit =
     withOrcFile(data)(path => f(sqlContext.read.orc(path)))
-  }
 
   /**
     * Writes `data` to a Orc file, reads it back as a [[DataFrame]] and registers it as a
@@ -57,22 +55,19 @@ private[sql] trait OrcTest extends SQLTestUtils with TestHiveSingleton {
     */
   protected def withOrcTable[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
-      tableName: String)(f: => Unit): Unit = {
+      tableName: String)(f: => Unit): Unit =
     withOrcDataFrame(data) { df =>
       sqlContext.registerDataFrameAsTable(df, tableName)
       withTempTable(tableName)(f)
     }
-  }
 
   protected def makeOrcFile[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
-      path: File): Unit = {
+      path: File): Unit =
     data.toDF().write.mode(SaveMode.Overwrite).orc(path.getCanonicalPath)
-  }
 
   protected def makeOrcFile[T <: Product: ClassTag: TypeTag](
       df: DataFrame,
-      path: File): Unit = {
+      path: File): Unit =
     df.write.mode(SaveMode.Overwrite).orc(path.getCanonicalPath)
-  }
 }

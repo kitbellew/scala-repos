@@ -13,37 +13,33 @@ class OptionEqualsSomeTest extends OperationsOnCollectionInspectionTest {
 
   override def hint: String = OptionEqualsSomeToContains.hint
 
-  def test1(): Unit = {
+  def test1(): Unit =
     doTest(
       s"${START}Option(1) == Some(2)$END",
       "Option(1) == Some(2)",
       "Option(1).contains(2)"
     )
-  }
 
-  def test2(): Unit = {
+  def test2(): Unit =
     doTest(
       s"${START}Option(1) equals Some(2)$END",
       "Option(1) equals Some(2)",
       "Option(1).contains(2)"
     )
-  }
 
-  def test3(): Unit = {
+  def test3(): Unit =
     doTest(
       s"${START}Some(2) == Option(1)$END",
       "Some(2) == Option(1)",
       "Option(1).contains(2)"
     )
-  }
 
-  def test4(): Unit = {
+  def test4(): Unit =
     doTest(
       s"${START}Option(1).equals(Some(2))$END",
       "Option(1).equals(Some(2))",
       "Option(1).contains(2)"
     )
-  }
 }
 
 class OptionNotEqualsSomeTest extends OperationsOnCollectionInspectionTest {
@@ -54,21 +50,19 @@ class OptionNotEqualsSomeTest extends OperationsOnCollectionInspectionTest {
 
   override protected def libVersion: ScalaSdkVersion = ScalaSdkVersion._2_11
 
-  def test1(): Unit = {
+  def test1(): Unit =
     doTest(
       s"${START}Option(1) != Some(2)$END",
       "Option(1) != Some(2)",
       "!Option(1).contains(2)"
     )
-  }
 
-  def test2(): Unit = {
+  def test2(): Unit =
     doTest(
       s"${START}Some(2) != Option(1)$END",
       "Some(2) != Option(1)",
       "!Option(1).contains(2)"
     )
-  }
 }
 
 class OptionEqualsSome_2_10_Test extends OperationsOnCollectionInspectionTest {
@@ -79,9 +73,8 @@ class OptionEqualsSome_2_10_Test extends OperationsOnCollectionInspectionTest {
 
   override def hint: String = OptionEqualsSomeToContains.hint
 
-  def testNoErrors(): Unit = {
+  def testNoErrors(): Unit =
     checkTextHasNoErrors("Option(1) == Some(2)")
-  }
 }
 
 class OptionNotEqualsSome_2_10_Test
@@ -93,7 +86,6 @@ class OptionNotEqualsSome_2_10_Test
 
   override protected def libVersion: ScalaSdkVersion = ScalaSdkVersion._2_10
 
-  def testNoErrors(): Unit = {
+  def testNoErrors(): Unit =
     checkTextHasNoErrors("Option(1) == Some(2)")
-  }
 }

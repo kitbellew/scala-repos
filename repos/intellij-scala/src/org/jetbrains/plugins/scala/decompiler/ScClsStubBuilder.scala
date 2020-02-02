@@ -26,7 +26,7 @@ import scala.reflect.NameTransformer
   * @author ilyas
   */
 object ScClsStubBuilder {
-  def canBeProcessed(file: VirtualFile): Boolean = {
+  def canBeProcessed(file: VirtualFile): Boolean =
     try {
       canBeProcessed(file, file.contentsToByteArray())
     } catch {
@@ -34,7 +34,6 @@ object ScClsStubBuilder {
       case u: UnsupportedOperationException =>
         false //why we need to handle this?
     }
-  }
 
   private def canBeProcessed(
       file: VirtualFile,
@@ -72,14 +71,13 @@ object ScClsStubBuilder {
 class ScClsStubBuilder extends ClsStubBuilder {
   override def getStubVersion: Int = StubVersion.STUB_VERSION
 
-  override def buildFileStub(content: FileContent): PsiFileStub[ScalaFile] = {
+  override def buildFileStub(content: FileContent): PsiFileStub[ScalaFile] =
     if (isInnerClass(content.getFile)) null
     else
       buildFileStub(
         content.getFile,
         content.getContent,
         ProjectManager.getInstance().getDefaultProject)
-  }
 
   private def buildFileStub(
       vFile: VirtualFile,
@@ -140,9 +138,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
   private def containsPart(
       directory: Directory,
       name: String,
-      endIndex: Int): Boolean = {
+      endIndex: Int): Boolean =
     endIndex > 0 && directory.contains(name.substring(0, endIndex))
-  }
 
   private trait Directory {
     def contains(name: String): Boolean

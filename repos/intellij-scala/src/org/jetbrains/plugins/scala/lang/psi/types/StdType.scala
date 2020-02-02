@@ -26,16 +26,15 @@ abstract class StdType(val name: String, val tSuper: Option[StdType])
     * @param project in which project to find this class
     * @return If possible class to represent this type.
     */
-  def asClass(project: Project): Option[ScSyntheticClass] = {
+  def asClass(project: Project): Option[ScSyntheticClass] =
     if (SyntheticClasses.get(project).isClassesRegistered)
       Some(SyntheticClasses.get(project).byName(name).get)
     else None
-  }
 
   override def equivInner(
       r: ScType,
       subst: ScUndefinedSubstitutor,
-      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
+      falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) =
     (this, r) match {
       case (l: StdType, _: StdType) => (l == r, subst)
       case (AnyRef, _) => {
@@ -54,7 +53,6 @@ abstract class StdType(val name: String, val tSuper: Option[StdType])
         }
       }
     }
-  }
 }
 
 object StdType {
@@ -142,9 +140,8 @@ case object AnyVal extends StdType("AnyVal", Some(Any)) {
 
 abstract class ValType(override val name: String)
     extends StdType(name, Some(AnyVal)) {
-  def apply(element: PsiElement): ScType = {
+  def apply(element: PsiElement): ScType =
     apply(element.getManager, element.getResolveScope)
-  }
 
   def apply(manager: PsiManager, scope: GlobalSearchScope): ScType = {
     val clazz =

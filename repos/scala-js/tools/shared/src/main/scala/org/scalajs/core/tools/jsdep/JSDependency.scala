@@ -44,13 +44,12 @@ final class JSDependency(
       resourceName: String = this.resourceName,
       dependencies: List[String] = this.dependencies,
       commonJSName: Option[String] = this.commonJSName,
-      minifiedResourceName: Option[String] = this.minifiedResourceName) = {
+      minifiedResourceName: Option[String] = this.minifiedResourceName) =
     new JSDependency(
       resourceName,
       dependencies,
       commonJSName,
       minifiedResourceName)
-  }
 
   override def equals(that: Any): Boolean = that match {
     case that: JSDependency =>
@@ -91,7 +90,7 @@ object JSDependency {
   private final val HashSeed = 2103455349
 
   implicit object JSDepJSONSerializer extends JSONSerializer[JSDependency] {
-    def serialize(x: JSDependency): JSON = {
+    def serialize(x: JSDependency): JSON =
       new JSONObjBuilder()
         .fld("resourceName", x.resourceName)
         .opt(
@@ -100,7 +99,6 @@ object JSDependency {
         .opt("commonJSName", x.commonJSName)
         .opt("minifiedResourceName", x.minifiedResourceName)
         .toJSON
-    }
   }
 
   implicit object JSDepJSONDeserializer extends JSONDeserializer[JSDependency] {

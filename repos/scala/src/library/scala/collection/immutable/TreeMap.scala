@@ -92,24 +92,21 @@ class TreeMap[A, +B] private (tree: RB.Tree[A, B])(
   override def tail = new TreeMap(RB.delete(tree, firstKey))
   override def init = new TreeMap(RB.delete(tree, lastKey))
 
-  override def drop(n: Int) = {
+  override def drop(n: Int) =
     if (n <= 0) this
     else if (n >= size) empty
     else new TreeMap(RB.drop(tree, n))
-  }
 
-  override def take(n: Int) = {
+  override def take(n: Int) =
     if (n <= 0) empty
     else if (n >= size) this
     else new TreeMap(RB.take(tree, n))
-  }
 
-  override def slice(from: Int, until: Int) = {
+  override def slice(from: Int, until: Int) =
     if (until <= from) empty
     else if (from <= 0) take(until)
     else if (until >= size) drop(from)
     else new TreeMap(RB.slice(tree, from, until))
-  }
 
   override def dropRight(n: Int) = take(size - math.max(n, 0))
   override def takeRight(n: Int) = drop(size - math.max(n, 0))

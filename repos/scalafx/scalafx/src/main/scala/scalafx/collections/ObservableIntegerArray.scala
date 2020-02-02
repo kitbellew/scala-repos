@@ -120,9 +120,8 @@ class ObservableIntegerArray(
   /**
     * @inheritdoc.
     */
-  override def addAll(elems: Int*) = {
+  override def addAll(elems: Int*) =
     delegate.addAll(elems: _*)
-  }
 
   /**
     * @inheritdoc.

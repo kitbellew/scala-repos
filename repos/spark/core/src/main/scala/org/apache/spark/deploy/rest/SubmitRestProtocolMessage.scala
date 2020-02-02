@@ -68,7 +68,7 @@ private[rest] abstract class SubmitRestProtocolMessage {
     * Assert the validity of the message.
     * If the validation fails, throw a [[SubmitRestProtocolException]].
     */
-  final def validate(): Unit = {
+  final def validate(): Unit =
     try {
       doValidate()
     } catch {
@@ -77,33 +77,29 @@ private[rest] abstract class SubmitRestProtocolMessage {
           s"Validation of message $messageType failed!",
           e)
     }
-  }
 
   /** Assert the validity of the message */
-  protected def doValidate(): Unit = {
+  protected def doValidate(): Unit =
     if (action == null) {
       throw new SubmitRestMissingFieldException(
         s"The action field is missing in $messageType")
     }
-  }
 
   /** Assert that the specified field is set in this message. */
-  protected def assertFieldIsSet[T](value: T, name: String): Unit = {
+  protected def assertFieldIsSet[T](value: T, name: String): Unit =
     if (value == null) {
       throw new SubmitRestMissingFieldException(
         s"'$name' is missing in message $messageType.")
     }
-  }
 
   /**
     * Assert a condition when validating this message.
     * If the assertion fails, throw a [[SubmitRestProtocolException]].
     */
-  protected def assert(condition: Boolean, failMessage: String): Unit = {
+  protected def assert(condition: Boolean, failMessage: String): Unit =
     if (!condition) {
       throw new SubmitRestProtocolException(failMessage)
     }
-  }
 }
 
 /**
@@ -158,7 +154,6 @@ private[spark] object SubmitRestProtocolMessage {
     */
   def fromJson[T <: SubmitRestProtocolMessage](
       json: String,
-      clazz: Class[T]): T = {
+      clazz: Class[T]): T =
     mapper.readValue(json, clazz)
-  }
 }

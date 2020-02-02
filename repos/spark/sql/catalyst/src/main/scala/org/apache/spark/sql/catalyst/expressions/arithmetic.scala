@@ -57,13 +57,12 @@ case class UnaryMinus(child: Expression)
         defineCodeGen(ctx, ev, c => s"$c.negate()")
     }
 
-  protected override def nullSafeEval(input: Any): Any = {
+  protected override def nullSafeEval(input: Any): Any =
     if (dataType.isInstanceOf[CalendarIntervalType]) {
       input.asInstanceOf[CalendarInterval].negate()
     } else {
       numeric.negate(input)
     }
-  }
 
   override def sql: String = s"(-${child.sql})"
 }
@@ -159,7 +158,7 @@ case class Add(left: Expression, right: Expression) extends BinaryArithmetic {
 
   private lazy val numeric = TypeUtils.getNumeric(dataType)
 
-  protected override def nullSafeEval(input1: Any, input2: Any): Any = {
+  protected override def nullSafeEval(input1: Any, input2: Any): Any =
     if (dataType.isInstanceOf[CalendarIntervalType]) {
       input1
         .asInstanceOf[CalendarInterval]
@@ -167,7 +166,6 @@ case class Add(left: Expression, right: Expression) extends BinaryArithmetic {
     } else {
       numeric.plus(input1, input2)
     }
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     dataType match {
@@ -195,7 +193,7 @@ case class Subtract(left: Expression, right: Expression)
 
   private lazy val numeric = TypeUtils.getNumeric(dataType)
 
-  protected override def nullSafeEval(input1: Any, input2: Any): Any = {
+  protected override def nullSafeEval(input1: Any, input2: Any): Any =
     if (dataType.isInstanceOf[CalendarIntervalType]) {
       input1
         .asInstanceOf[CalendarInterval]
@@ -203,7 +201,6 @@ case class Subtract(left: Expression, right: Expression)
     } else {
       numeric.minus(input1, input2)
     }
-  }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     dataType match {
@@ -502,11 +499,11 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
         pmod(left.asInstanceOf[Decimal], right.asInstanceOf[Decimal])
     }
 
-  override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
+  override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     nullSafeCodeGen(
       ctx,
       ev,
-      (eval1, eval2) => {
+      (eval1, eval2) =>
         dataType match {
           case dt: DecimalType =>
             val decimalAdd = "$plus"
@@ -539,9 +536,7 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
             }
           """
         }
-      }
     )
-  }
 
   private def pmod(a: Int, n: Int): Int = {
     val r = a % n

@@ -37,11 +37,10 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   }
   override def getUniqueId: String = "ScalaRuntimeRefRenderer"
 
-  override def isApplicable(t: Type): Boolean = {
+  override def isApplicable(t: Type): Boolean =
     t != null && t.name() != null && t.name().startsWith("scala.runtime.") && t
       .name()
       .endsWith("Ref")
-  }
 
   override def buildChildren(
       value: Value,
@@ -96,14 +95,13 @@ class RuntimeRefRenderer extends NodeRendererImpl {
 
   private def autoRenderer(
       debugProcess: DebugProcess,
-      valueDescriptor: ValueDescriptor) = {
+      valueDescriptor: ValueDescriptor) =
     debugProcess
       .asInstanceOf[DebugProcessImpl]
       .getAutoRenderer(valueDescriptor)
       .asInstanceOf[NodeRendererImpl]
-  }
 
-  private def unwrappedDescriptor(ref: Value, project: Project) = {
+  private def unwrappedDescriptor(ref: Value, project: Project) =
     new ValueDescriptorImpl(project, unwrappedValue(ref)) {
       override def calcValue(evaluationContext: EvaluationContextImpl): Value =
         getValue
@@ -113,16 +111,14 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       override def getDescriptorEvaluation(
           context: DebuggerContext): PsiExpression = null
     }
-  }
 
-  private def unwrappedValue(ref: Value): Value = {
+  private def unwrappedValue(ref: Value): Value =
     ref match {
       case obj: ObjectReference =>
         val field = obj.referenceType().fieldByName("elem")
         obj.getValue(field)
       case _ => throw new Exception("Should not unwrap non reference value")
     }
-  }
 
   private def calcToStringLabel(
       valueDescriptor: ValueDescriptor,

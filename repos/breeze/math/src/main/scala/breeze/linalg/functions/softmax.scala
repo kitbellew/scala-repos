@@ -15,12 +15,11 @@ import spire.syntax.cfor._
 object softmax extends UFunc {
 
   implicit object implDoubleDouble extends Impl2[Double, Double, Double] {
-    def apply(a: Double, b: Double): Double = {
+    def apply(a: Double, b: Double): Double =
       if (a.isNegInfinity) b
       else if (b.isNegInfinity) a
       else if (a < b) b + scala.math.log1p(scala.math.exp(a - b))
       else a + scala.math.log1p(scala.math.exp(b - a))
-    }
   }
 
   /**
@@ -58,15 +57,13 @@ object softmax extends UFunc {
 
       val visit = new ValuesVisitor[Double] {
         var accum = 0.0
-        def visit(a: Double): Unit = {
+        def visit(a: Double): Unit =
           accum += scala.math.exp(a - max)
-        }
 
-        def zeros(numZero: Int, zeroValue: Double): Unit = {
+        def zeros(numZero: Int, zeroValue: Double): Unit =
           if (numZero != 0) {
             accum += (numZero * scala.math.exp(zeroValue - max))
           }
-        }
 
         override def visitArray(
             arr: Array[Double],
@@ -104,15 +101,13 @@ object softmax extends UFunc {
 
       val visit = new ValuesVisitor[Float] {
         var accum = 0.0f
-        def visit(a: Float): Unit = {
+        def visit(a: Float): Unit =
           accum += scala.math.exp(a - max).toFloat
-        }
 
-        def zeros(numZero: Int, zeroValue: Float): Unit = {
+        def zeros(numZero: Int, zeroValue: Float): Unit =
           if (numZero != 0) {
             accum += (numZero * scala.math.exp(zeroValue - max)).toFloat
           }
-        }
 
         override def visitArray(
             arr: Array[Float],

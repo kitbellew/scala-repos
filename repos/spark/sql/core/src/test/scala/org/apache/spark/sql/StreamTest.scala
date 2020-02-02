@@ -109,9 +109,8 @@ trait StreamTest extends QueryTest with Timeouts {
       extends AddData {
     override def toString: String = s"AddData to $source: ${data.mkString(",")}"
 
-    override def addData(): Offset = {
+    override def addData(): Offset =
       source.addData(data)
-    }
   }
 
   /**
@@ -154,7 +153,7 @@ trait StreamTest extends QueryTest with Timeouts {
   /** Assert that a body is true */
   class Assert(condition: => Boolean, val message: String = "")
       extends StreamAction {
-    def run(): Unit = { Assertions.assert(condition) }
+    def run(): Unit = Assertions.assert(condition)
     override def toString: String = s"Assert(<condition>, $message)"
   }
 
@@ -177,14 +176,12 @@ trait StreamTest extends QueryTest with Timeouts {
   object AssertOnQuery {
     def apply(
         condition: StreamExecution => Boolean,
-        message: String = ""): AssertOnQuery = {
+        message: String = ""): AssertOnQuery =
       new AssertOnQuery(condition, message)
-    }
 
     def apply(message: String)(
-        condition: StreamExecution => Boolean): AssertOnQuery = {
+        condition: StreamExecution => Boolean): AssertOnQuery =
       new AssertOnQuery(condition, message)
-    }
   }
 
   /**
@@ -252,16 +249,15 @@ trait StreamTest extends QueryTest with Timeouts {
          |${if (currentStream != null) currentStream.lastExecution else ""}
          """.stripMargin
 
-    def verify(condition: => Boolean, message: String): Unit = {
+    def verify(condition: => Boolean, message: String): Unit =
       try {
         Assertions.assert(condition)
       } catch {
         case NonFatal(e) =>
           failTest(message, e)
       }
-    }
 
-    def eventually[T](message: String)(func: => T): T = {
+    def eventually[T](message: String)(func: => T): T =
       try {
         Eventually.eventually(Timeout(streamingTimeout)) {
           func
@@ -270,7 +266,6 @@ trait StreamTest extends QueryTest with Timeouts {
         case NonFatal(e) =>
           failTest(message, e)
       }
-    }
 
     def failTest(message: String, cause: Throwable = null) = {
 
@@ -454,7 +449,7 @@ trait StreamTest extends QueryTest with Timeouts {
     var running = true
     val actions = new ArrayBuffer[StreamAction]()
 
-    def addCheck() = { actions += CheckAnswer(1 to dataPos: _*) }
+    def addCheck() = actions += CheckAnswer(1 to dataPos: _*)
 
     def addRandomData() = {
       val numItems = Random.nextInt(10)
@@ -516,8 +511,7 @@ trait StreamTest extends QueryTest with Timeouts {
         expectedBehavior: ExpectedBehavior,
         awaitTermFunc: () => Unit,
         testTimeout: Span = DEFAULT_TEST_TIMEOUT
-    ): Unit = {
-
+    ): Unit =
       expectedBehavior match {
         case ExpectNotBlocked =>
           withClue("Got blocked when expected non-blocking.") {
@@ -549,6 +543,5 @@ trait StreamTest extends QueryTest with Timeouts {
             thrownException.cause.getClass === e.t.runtimeClass,
             "exception of incorrect type was throw")
       }
-    }
   }
 }

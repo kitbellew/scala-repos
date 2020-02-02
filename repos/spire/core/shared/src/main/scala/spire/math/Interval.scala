@@ -638,7 +638,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     }
   }
 
-  def nroot(k: Int)(implicit r: Ring[A], n: NRoot[A]): Interval[A] = {
+  def nroot(k: Int)(implicit r: Ring[A], n: NRoot[A]): Interval[A] =
     if (k == 1) {
       this
     } else if ((k & 1) == 0 && hasBelow(r.zero)) {
@@ -653,7 +653,6 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case Bounded(l, u, flags) => Bounded(l.nroot(k), u.nroot(k), flags)
       }
     }
-  }
 
   def sqrt(implicit r: Ring[A], n: NRoot[A]): Interval[A] = nroot(2)
 

@@ -95,13 +95,11 @@ case class Expand(
       }
     }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  protected override def doProduce(ctx: CodegenContext): String = {
+  protected override def doProduce(ctx: CodegenContext): String =
     child.asInstanceOf[CodegenSupport].produce(ctx, this)
-  }
 
   override def doConsume(
       ctx: CodegenContext,

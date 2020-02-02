@@ -14,20 +14,18 @@ class PathBindableExtractor[T](implicit pb: PathBindable[T]) {
   /**
     * Extract s to T if it can be bound, otherwise don't match.
     */
-  def unapply(s: String): Option[T] = {
+  def unapply(s: String): Option[T] =
     pb.bind("anon", s).right.toOption
-  }
 
   /**
     * Extract Option[T] only if s is None, Some value that can be bound, otherwise don't match.
     */
-  def unapply(s: Option[String]): Option[Option[T]] = {
+  def unapply(s: Option[String]): Option[Option[T]] =
     s match {
       case None              => Some(None)
       case Some(self(value)) => Some(Some(value))
       case _                 => None
     }
-  }
 
   /**
     * Extract Seq[T] only if ever element of s can be bound, otherwise don't match.

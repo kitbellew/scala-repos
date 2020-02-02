@@ -25,7 +25,7 @@ object InputInitConvert extends Convert {
 /** Converts an input `Tree` of type `Parser[T]` or `State => Parser[T]` into a `Tree` of type `State => Parser[T]`.*/
 object ParserConvert extends Convert {
   def apply[T: c.WeakTypeTag](
-      c: Context)(nme: String, in: c.Tree): Converted[c.type] = {
+      c: Context)(nme: String, in: c.Tree): Converted[c.type] =
     if (nme == ParserInput.WrapName)
       Converted.Success(in)
     else if (nme == ParserInput.WrapInitName)
@@ -34,7 +34,6 @@ object ParserConvert extends Convert {
         "Internal sbt error: initialize+parser wrapper not split")
     else
       Converted.NotApplicable
-  }
 }
 
 /** Convert instance for plain `Task`s not within the settings system. */

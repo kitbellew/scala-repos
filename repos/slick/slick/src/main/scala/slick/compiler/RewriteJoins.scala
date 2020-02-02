@@ -162,7 +162,7 @@ class RewriteJoins extends Phase {
   /** Recursively hoist `Filter` out of of `Bind(_, Filter, Pure(StructNode))`. Returns the possibly
     * modified tree plus a set of invalidated TypeSymbols (non-empty if additional columns
     * have to be added to the base projection for the filters). */
-  def hoistFilterFromBind(b: Bind): (Node, Set[TypeSymbol]) = {
+  def hoistFilterFromBind(b: Bind): (Node, Set[TypeSymbol]) =
     (b.from match {
       case b2: Bind => hoistFilterFromBind(b2)
       case n        => (n, Set.empty[TypeSymbol])
@@ -216,7 +216,6 @@ class RewriteJoins extends Phase {
         (res, tss)
       case _ => (b, Set.empty)
     }
-  }
 
   /** Recursively push refs from the right-hand side of a Join to the left-hand side out of the join.
     * This is only possible when they occur in a a mapping `Bind(_, _, Pure(StructNode))` directly

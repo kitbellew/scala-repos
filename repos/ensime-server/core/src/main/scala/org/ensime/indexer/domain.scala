@@ -88,12 +88,11 @@ object ClassName {
     ClassName(PackageName(before.toList), after(0))
   }
 
-  def cleanupPackage(name: String): String = {
+  def cleanupPackage(name: String): String =
     name
       .replaceAll("\\.package\\$?\\.", ".")
       .replaceAll("\\.package\\$(?!$)", ".")
       .replaceAll("\\.package$", ".package\\$")
-  }
 }
 
 case class MemberName(

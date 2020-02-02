@@ -8,10 +8,8 @@ object Test extends Properties("==") {
 
   // ticket #2087
   property("short/char") = forAll { (x: Short) =>
-    {
-      val ch: Char = x.toChar
-      (x == ch) == (ch == x)
-    }
+    val ch: Char = x.toChar
+    (x == ch) == (ch == x)
   }
 
   property("symmetry") = forAll { (x: AnyVal, y: AnyVal) =>
@@ -22,32 +20,28 @@ object Test extends Properties("==") {
   }
 
   property("##") = forAll { (x: Short) =>
-    {
-      val anyvals = List(
-        x.toByte,
-        x.toChar,
-        x,
-        x.toInt,
-        x.toLong,
-        x.toFloat,
-        x.toDouble,
-        BigInt(x),
-        BigDecimal(x))
-      val shortAndLarger = anyvals drop 2
+    val anyvals = List(
+      x.toByte,
+      x.toChar,
+      x,
+      x.toInt,
+      x.toLong,
+      x.toFloat,
+      x.toDouble,
+      BigInt(x),
+      BigDecimal(x))
+    val shortAndLarger = anyvals drop 2
 
-      val result = (
-        ((anyvals, anyvals).zipped forall equalObjectsEqualHashcodes) &&
-          ((shortAndLarger, shortAndLarger).zipped forall (_ == _)) &&
-          ((shortAndLarger, shortAndLarger).zipped forall ((x, y) =>
-            (x: Any) == (y: Any)))
-      )
-      result
-    }
+    val result = (
+      ((anyvals, anyvals).zipped forall equalObjectsEqualHashcodes) &&
+        ((shortAndLarger, shortAndLarger).zipped forall (_ == _)) &&
+        ((shortAndLarger, shortAndLarger).zipped forall ((x, y) =>
+          (x: Any) == (y: Any)))
+    )
+    result
   }
   property("## 2") = forAll { (dv: Double) =>
-    {
-      val fv = dv.toFloat
-      (fv != dv) || (fv.## == dv.##)
-    }
+    val fv = dv.toFloat
+    (fv != dv) || (fv.## == dv.##)
   }
 }

@@ -206,12 +206,10 @@ object MultipleShapeDrawingDemo extends JFXApp {
     def update()
 
     override def handler: MouseEvent => Unit = { me: MouseEvent =>
-      {
-        me.eventType match {
-          case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
-          case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
-          case _                       => {}
-        }
+      me.eventType match {
+        case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
+        case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
+        case _                       => {}
       }
     }
   }

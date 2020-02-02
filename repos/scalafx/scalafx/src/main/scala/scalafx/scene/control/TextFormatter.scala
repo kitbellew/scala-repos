@@ -111,9 +111,8 @@ object TextFormatter {
       *
       * @param newCaretPosition The new caret position
       */
-    def caretPosition_=(newCaretPosition: Int): Unit = {
+    def caretPosition_=(newCaretPosition: Int): Unit =
       delegate.setCaretPosition(newCaretPosition)
-    }
 
     /**
       * Gets the new anchor. This value will always be &gt; 0 and
@@ -131,7 +130,7 @@ object TextFormatter {
       *
       * @param newAnchor The new anchor position
       */
-    def anchor_=(newAnchor: Int): Unit = { delegate.setAnchor(newAnchor) }
+    def anchor_=(newAnchor: Int): Unit = delegate.setAnchor(newAnchor)
 
     /**
       * Gets the current caret position of the control.
@@ -169,7 +168,7 @@ object TextFormatter {
       *
       * @param value The text. This cannot be null.
       */
-    def text_=(value: String): Unit = { delegate.setText(value) }
+    def text_=(value: String): Unit = delegate.setText(value)
 
     /**
       * This is the full text that control has before the change. To get the text
@@ -291,5 +290,5 @@ class TextFormatter[V](override val delegate: jfxsc.TextFormatter[V])
     * `valueConverter`, the value is set by the control, when the text is committed.
     */
   def value: ObjectProperty[V] = delegate.valueProperty
-  def value_=(v: V): Unit = { delegate.valueProperty.setValue(v) }
+  def value_=(v: V): Unit = delegate.valueProperty.setValue(v)
 }

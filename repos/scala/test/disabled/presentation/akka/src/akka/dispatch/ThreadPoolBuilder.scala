@@ -67,7 +67,7 @@ case class ThreadPoolConfig(
     new LazyExecutorServiceWrapper(createExecutorService(threadFactory))
 
   final def createExecutorService(
-      threadFactory: ThreadFactory): ExecutorService = {
+      threadFactory: ThreadFactory): ExecutorService =
     flowHandler match {
       case Left(rejectHandler) =>
         val service = new ThreadPoolExecutor(
@@ -91,7 +91,6 @@ case class ThreadPoolConfig(
         service.allowCoreThreadTimeOut(allowCorePoolTimeout)
         new BoundedExecutorDecorator(service, bounds)
     }
-  }
 }
 
 trait DispatcherBuilder {
@@ -233,14 +232,13 @@ class MonitorableThread(runnable: Runnable, name: String)
     def uncaughtException(thread: Thread, cause: Throwable) = {}
   })
 
-  override def run = {
+  override def run =
     try {
       MonitorableThread.alive.incrementAndGet
       super.run
     } finally {
       MonitorableThread.alive.decrementAndGet
     }
-  }
 }
 
 /**
@@ -254,13 +252,12 @@ class BoundedExecutorDecorator(val executor: ExecutorService, bound: Int)
     semaphore.acquire
     try {
       executor.execute(new Runnable() {
-        def run = {
+        def run =
           try {
             command.run
           } finally {
             semaphore.release
           }
-        }
       })
     } catch {
       case e: RejectedExecutionException =>

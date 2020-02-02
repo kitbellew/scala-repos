@@ -216,13 +216,12 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
   }
 
   /** Checkpoint the RDD either locally or reliably. */
-  protected def checkpoint(rdd: RDD[_], reliableCheckpoint: Boolean): Unit = {
+  protected def checkpoint(rdd: RDD[_], reliableCheckpoint: Boolean): Unit =
     if (reliableCheckpoint) {
       rdd.checkpoint()
     } else {
       rdd.localCheckpoint()
     }
-  }
 
   /** Run a test twice, once for local checkpointing and once for reliable checkpointing. */
   protected def runTest(
@@ -238,18 +237,16 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
   /**
     * Generate an RDD such that both the RDD and its partitions have large size.
     */
-  protected def generateFatRDD(): RDD[Int] = {
+  protected def generateFatRDD(): RDD[Int] =
     new FatRDD(sparkContext.makeRDD(1 to 100, 4)).map(x => x)
-  }
 
   /**
     * Generate an pair RDD (with partitioner) such that both the RDD and its partitions
     * have large size.
     */
-  protected def generateFatPairRDD(): RDD[(Int, Int)] = {
+  protected def generateFatPairRDD(): RDD[(Int, Int)] =
     new FatPairRDD(sparkContext.makeRDD(1 to 100, 4), partitioner).mapValues(
       x => x)
-  }
 }
 
 /**
@@ -270,13 +267,12 @@ class CheckpointSuite
     sc.setCheckpointDir(checkpointDir.toString)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Utils.deleteRecursively(checkpointDir)
     } finally {
       super.afterEach()
     }
-  }
 
   override def sparkContext: SparkContext = sc
 
@@ -401,10 +397,9 @@ class CheckpointSuite
 
   runTest("ShuffleRDD") { reliableCheckpoint: Boolean =>
     testRDD(
-      rdd => {
+      rdd =>
         // Creating ShuffledRDD directly as PairRDDFunctions.combineByKey produces a MapPartitionedRDD
-        new ShuffledRDD[Int, Int, Int](rdd.map(x => (x % 2, 1)), partitioner)
-      },
+        new ShuffledRDD[Int, Int, Int](rdd.map(x => (x % 2, 1)), partitioner),
       reliableCheckpoint
     )
   }
@@ -471,18 +466,22 @@ class CheckpointSuite
     val seqCollectFunc = (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
       rdd.map { case (p, a) => (p, a.toSeq) }.collect(): Any
 
-    testRDD(rdd => {
-      CheckpointSuite
-        .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner)
-    }, reliableCheckpoint, seqCollectFunc)
+    testRDD(
+      rdd =>
+        CheckpointSuite
+          .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner),
+      reliableCheckpoint,
+      seqCollectFunc)
 
     val longLineageRDD2 = generateFatPairRDD()
-    testRDDPartitions(rdd => {
-      CheckpointSuite.cogroup(
-        longLineageRDD2,
-        sc.makeRDD(1 to 2, 2).map(x => (x % 2, 1)),
-        partitioner)
-    }, reliableCheckpoint, seqCollectFunc)
+    testRDDPartitions(
+      rdd =>
+        CheckpointSuite.cogroup(
+          longLineageRDD2,
+          sc.makeRDD(1 to 2, 2).map(x => (x % 2, 1)),
+          partitioner),
+      reliableCheckpoint,
+      seqCollectFunc)
   }
 
   runTest("ZippedPartitionsRDD") { reliableCheckpoint: Boolean =>
@@ -514,23 +513,25 @@ class CheckpointSuite
   }
 
   runTest("PartitionerAwareUnionRDD") { reliableCheckpoint: Boolean =>
-    testRDD(rdd => {
-      new PartitionerAwareUnionRDD[(Int, Int)](
-        sc,
-        Array(
-          generateFatPairRDD(),
-          rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-        ))
-    }, reliableCheckpoint)
+    testRDD(
+      rdd =>
+        new PartitionerAwareUnionRDD[(Int, Int)](
+          sc,
+          Array(
+            generateFatPairRDD(),
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
+          )),
+      reliableCheckpoint)
 
-    testRDDPartitions(rdd => {
-      new PartitionerAwareUnionRDD[(Int, Int)](
-        sc,
-        Array(
-          generateFatPairRDD(),
-          rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-        ))
-    }, reliableCheckpoint)
+    testRDDPartitions(
+      rdd =>
+        new PartitionerAwareUnionRDD[(Int, Int)](
+          sc,
+          Array(
+            generateFatPairRDD(),
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
+          )),
+      reliableCheckpoint)
 
     // Test that the PartitionerAwareUnionRDD updates parent partitions
     // (PartitionerAwareUnionRDD.parents) after the parent RDD has been checkpointed and parent
@@ -604,13 +605,11 @@ class FatPartition(val partition: Partition) extends Partition {
 class FatRDD(parent: RDD[Int]) extends RDD[Int](parent) {
   val bigData = new Array[Byte](100000)
 
-  protected def getPartitions: Array[Partition] = {
+  protected def getPartitions: Array[Partition] =
     parent.partitions.map(p => new FatPartition(p))
-  }
 
-  def compute(split: Partition, context: TaskContext): Iterator[Int] = {
+  def compute(split: Partition, context: TaskContext): Iterator[Int] =
     parent.compute(split.asInstanceOf[FatPartition].partition, context)
-  }
 }
 
 /** Pair RDD that has large serialized size. */
@@ -618,17 +617,15 @@ class FatPairRDD(parent: RDD[Int], _partitioner: Partitioner)
     extends RDD[(Int, Int)](parent) {
   val bigData = new Array[Byte](100000)
 
-  protected def getPartitions: Array[Partition] = {
+  protected def getPartitions: Array[Partition] =
     parent.partitions.map(p => new FatPartition(p))
-  }
 
   @transient override val partitioner = Some(_partitioner)
 
-  def compute(split: Partition, context: TaskContext): Iterator[(Int, Int)] = {
+  def compute(split: Partition, context: TaskContext): Iterator[(Int, Int)] =
     parent
       .compute(split.asInstanceOf[FatPartition].partition, context)
       .map(x => (x, x))
-  }
 }
 
 object CheckpointSuite {
@@ -637,10 +634,9 @@ object CheckpointSuite {
   def cogroup[K: ClassTag, V: ClassTag](
       first: RDD[(K, V)],
       second: RDD[(K, V)],
-      part: Partitioner): RDD[(K, Array[Iterable[V]])] = {
+      part: Partitioner): RDD[(K, Array[Iterable[V]])] =
     new CoGroupedRDD[K](
       Seq(first.asInstanceOf[RDD[(K, _)]], second.asInstanceOf[RDD[(K, _)]]),
       part
     ).asInstanceOf[RDD[(K, Array[Iterable[V]])]]
-  }
 }

@@ -251,11 +251,10 @@ class HadoopRDD[K, V](
       // If we do a coalesce, however, we are likely to compute multiple partitions in the same
       // task and in the same thread, in which case we need to avoid override values written by
       // previous partitions (SPARK-13071).
-      def updateBytesRead(): Unit = {
+      def updateBytesRead(): Unit =
         getBytesReadCallback.foreach { getBytesRead =>
           inputMetrics.setBytesRead(existingBytesRead + getBytesRead())
         }
-      }
 
       var reader: RecordReader[K, V] = null
       val inputFormat = getInputFormat(jobConf)
@@ -334,9 +333,8 @@ class HadoopRDD[K, V](
   @DeveloperApi
   def mapPartitionsWithInputSplit[U: ClassTag](
       f: (InputSplit, Iterator[(K, V)]) => Iterator[U],
-      preservesPartitioning: Boolean = false): RDD[U] = {
+      preservesPartitioning: Boolean = false): RDD[U] =
     new HadoopMapPartitionsWithSplitRDD(this, f, preservesPartitioning)
-  }
 
   override def getPreferredLocations(split: Partition): Seq[String] = {
     val hsplit = split.asInstanceOf[HadoopPartition].inputSplit.value
@@ -470,19 +468,17 @@ private[spark] object HadoopRDD extends Logging {
       infos: Array[AnyRef]): Seq[String] = {
     val out = ListBuffer[String]()
     infos.foreach { loc =>
-      {
-        val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
-          .invoke(loc)
-          .asInstanceOf[String]
-        if (locationStr != "localhost") {
-          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
-                .invoke(loc)
-                .asInstanceOf[Boolean]) {
-            logDebug("Partition " + locationStr + " is cached by Hadoop.")
-            out += new HDFSCacheTaskLocation(locationStr).toString
-          } else {
-            out += new HostTaskLocation(locationStr).toString
-          }
+      val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
+        .invoke(loc)
+        .asInstanceOf[String]
+      if (locationStr != "localhost") {
+        if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
+              .invoke(loc)
+              .asInstanceOf[Boolean]) {
+          logDebug("Partition " + locationStr + " is cached by Hadoop.")
+          out += new HDFSCacheTaskLocation(locationStr).toString
+        } else {
+          out += new HostTaskLocation(locationStr).toString
         }
       }
     }

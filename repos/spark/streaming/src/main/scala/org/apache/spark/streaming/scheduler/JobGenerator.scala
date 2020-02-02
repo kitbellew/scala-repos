@@ -103,9 +103,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       override protected def onReceive(event: JobGeneratorEvent): Unit =
         processEvent(event)
 
-      override protected def onError(e: Throwable): Unit = {
+      override protected def onError(e: Throwable): Unit =
         jobScheduler.reportError("Error in job generator", e)
-      }
     }
     eventLoop.start()
 
@@ -159,9 +158,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       logInfo("Stopped generation timer")
 
       // Wait for the jobs to complete and checkpoints to be written
-      def haveAllBatchesBeenProcessed: Boolean = {
+      def haveAllBatchesBeenProcessed: Boolean =
         lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
-      }
       logInfo("Waiting for jobs to be processed and checkpoints to be written")
       while (!hasTimedOut && !haveAllBatchesBeenProcessed) {
         Thread.sleep(pollTime)

@@ -31,10 +31,9 @@ class ScInfixPatternImpl(node: ASTNode)
 
   override def toString: String = "InfixPattern"
 
-  override def getType(ctx: TypingContext) = {
+  override def getType(ctx: TypingContext) =
     expectedType match {
       case Some(x) => Success(x, Some(this))
       case _       => Failure("cannot define expected type", Some(this))
     }
-  }
 }

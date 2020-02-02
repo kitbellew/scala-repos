@@ -50,17 +50,16 @@ private[hive] class HiveFunctionRegistry(
     extends analysis.FunctionRegistry
     with HiveInspectors {
 
-  def getFunctionInfo(name: String): FunctionInfo = {
+  def getFunctionInfo(name: String): FunctionInfo =
     // Hive Registry need current database to lookup function
     // TODO: the current database of executionHive should be consistent with metadataHive
     executionHive.withHiveState {
       FunctionRegistry.getFunctionInfo(name)
     }
-  }
 
   override def lookupFunction(
       name: String,
-      children: Seq[Expression]): Expression = {
+      children: Seq[Expression]): Expression =
     Try(underlying.lookupFunction(name, children)).getOrElse {
       // We only look it up to see if it exists, but do not include it in the HiveUDF since it is
       // not always serializable.
@@ -140,7 +139,6 @@ private[hive] class HiveFunctionRegistry(
           throw new AnalysisException(errorMessage)
       }
     }
-  }
 
   override def registerFunction(
       name: String,
@@ -149,13 +147,12 @@ private[hive] class HiveFunctionRegistry(
     underlying.registerFunction(name, info, builder)
 
   /* List all of the registered function names. */
-  override def listFunction(): Seq[String] = {
+  override def listFunction(): Seq[String] =
     (FunctionRegistry.getFunctionNames.asScala ++ underlying
       .listFunction()).toList.sorted
-  }
 
   /* Get the class of the registered function by specified name. */
-  override def lookupFunction(name: String): Option[ExpressionInfo] = {
+  override def lookupFunction(name: String): Option[ExpressionInfo] =
     underlying
       .lookupFunction(name)
       .orElse(Try {
@@ -178,7 +175,6 @@ private[hive] class HiveFunctionRegistry(
               null))
         }
       }.getOrElse(None))
-  }
 }
 
 private[hive] case class HiveSimpleUDF(
@@ -244,9 +240,8 @@ private[hive] case class HiveSimpleUDF(
     unwrap(ret, returnInspector)
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"$nodeName#${funcWrapper.functionClassName}(${children.mkString(",")})"
-  }
 
   override def prettyName: String = name
 
@@ -261,9 +256,8 @@ private[hive] class DeferredObjectAdapter(
     with HiveInspectors {
 
   private var func: () => Any = _
-  def set(func: () => Any): Unit = {
+  def set(func: () => Any): Unit =
     this.func = func
-  }
   override def prepare(i: Int): Unit = {}
   override def get(): AnyRef = wrap(func(), oi, dataType)
 }
@@ -320,9 +314,7 @@ private[hive] case class HiveGenericUDF(
       val idx = i
       deferredObjects(i)
         .asInstanceOf[DeferredObjectAdapter]
-        .set(() => {
-          children(idx).eval(input)
-        })
+        .set { () => children(idx).eval(input) }
       i += 1
     }
     unwrap(function.evaluate(deferredObjects), returnInspector)
@@ -330,9 +322,8 @@ private[hive] case class HiveGenericUDF(
 
   override def prettyName: String = name
 
-  override def toString: String = {
+  override def toString: String =
     s"$nodeName#${funcWrapper.functionClassName}(${children.mkString(",")})"
-  }
 }
 
 /**
@@ -419,9 +410,8 @@ private[hive] case class HiveGenericUDTF(
     collector.collectRows()
   }
 
-  override def toString: String = {
+  override def toString: String =
     s"$nodeName#${funcWrapper.functionClassName}(${children.mkString(",")})"
-  }
 
   override def prettyName: String = name
 }
@@ -498,14 +488,12 @@ private[hive] case class HiveUDAFFunction(
     function.iterate(buffer, wrap(inputs, inspectors, cached, inputDataTypes))
   }
 
-  override def merge(buffer1: MutableRow, buffer2: InternalRow): Unit = {
+  override def merge(buffer1: MutableRow, buffer2: InternalRow): Unit =
     throw new UnsupportedOperationException(
       "Hive UDAF doesn't support partial aggregate")
-  }
 
-  override def initialize(_buffer: MutableRow): Unit = {
+  override def initialize(_buffer: MutableRow): Unit =
     buffer = function.getNewAggregationBuffer
-  }
 
   override val aggBufferAttributes: Seq[AttributeReference] = Nil
 

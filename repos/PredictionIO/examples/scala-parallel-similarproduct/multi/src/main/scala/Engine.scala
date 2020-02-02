@@ -23,7 +23,7 @@ case class ItemScore(
 ) extends Serializable
 
 object SimilarProductEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[DataSource],
       classOf[Preparator],
@@ -32,5 +32,4 @@ object SimilarProductEngine extends IEngineFactory {
         "likealgo" -> classOf[LikeAlgorithm]
       ), // ADDED
       classOf[Serving])
-  }
 }

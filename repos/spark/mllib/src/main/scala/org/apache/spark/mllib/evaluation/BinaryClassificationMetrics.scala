@@ -226,20 +226,18 @@ class BinaryClassificationMetrics @Since("1.3.0") (
 
   /** Creates a curve of (threshold, metric). */
   private def createCurve(
-      y: BinaryClassificationMetricComputer): RDD[(Double, Double)] = {
+      y: BinaryClassificationMetricComputer): RDD[(Double, Double)] =
     confusions.map {
       case (s, c) =>
         (s, y(c))
     }
-  }
 
   /** Creates a curve of (metricX, metricY). */
   private def createCurve(
       x: BinaryClassificationMetricComputer,
-      y: BinaryClassificationMetricComputer): RDD[(Double, Double)] = {
+      y: BinaryClassificationMetricComputer): RDD[(Double, Double)] =
     confusions.map {
       case (_, c) =>
         (x(c), y(c))
     }
-  }
 }

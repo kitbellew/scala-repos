@@ -47,12 +47,11 @@ import org.apache.spark.sql.test.ProcessTestUtils.ProcessOutputCapturer
 import org.apache.spark.util.{ThreadUtils, Utils}
 
 object TestData {
-  def getTestDataFilePath(name: String): URL = {
+  def getTestDataFilePath(name: String): URL =
     Thread
       .currentThread()
       .getContextClassLoader
       .getResource(s"data/files/$name")
-  }
 
   val smallKv = getTestDataFilePath("small_kv.txt")
   val smallKvWithNull = getTestDataFilePath("small_kv_with_null.txt")
@@ -859,7 +858,7 @@ abstract class HiveThriftServer2Test
     logTailingProcess = null
   }
 
-  private def dumpLogs(): Unit = {
+  private def dumpLogs(): Unit =
     logError(s"""
          |=====================================
          |HiveThriftServer2Suite failure output
@@ -869,7 +868,6 @@ abstract class HiveThriftServer2Test
          |End HiveThriftServer2Suite failure output
          |=========================================
        """.stripMargin)
-  }
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
@@ -897,12 +895,11 @@ abstract class HiveThriftServer2Test
     logInfo(s"HiveThriftServer2 started successfully")
   }
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     try {
       stopThriftServer()
       logInfo("HiveThriftServer2 stopped")
     } finally {
       super.afterAll()
     }
-  }
 }

@@ -58,9 +58,8 @@ class KMeansModel @Since("1.1.0") (
     * Returns the cluster index that a given point belongs to.
     */
   @Since("0.8.0")
-  def predict(point: Vector): Int = {
+  def predict(point: Vector): Int =
     KMeans.findClosest(clusterCentersWithNorm, new VectorWithNorm(point))._1
-  }
 
   /**
     * Maps given points to their cluster indices.
@@ -98,9 +97,8 @@ class KMeansModel @Since("1.1.0") (
     clusterCenters.map(new VectorWithNorm(_))
 
   @Since("1.4.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     KMeansModel.SaveLoadV1_0.save(sc, this, path)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -109,16 +107,14 @@ class KMeansModel @Since("1.1.0") (
 object KMeansModel extends Loader[KMeansModel] {
 
   @Since("1.4.0")
-  override def load(sc: SparkContext, path: String): KMeansModel = {
+  override def load(sc: SparkContext, path: String): KMeansModel =
     KMeansModel.SaveLoadV1_0.load(sc, path)
-  }
 
   private case class Cluster(id: Int, point: Vector)
 
   private object Cluster {
-    def apply(r: Row): Cluster = {
+    def apply(r: Row): Cluster =
       Cluster(r.getInt(0), r.getAs[Vector](1))
-    }
   }
 
   private[clustering] object SaveLoadV1_0 {

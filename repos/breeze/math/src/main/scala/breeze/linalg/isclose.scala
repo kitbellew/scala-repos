@@ -11,11 +11,10 @@ object isClose extends UFunc {
   val DEFAULT_TOLERANCE = 1e-8
 
   implicit def defaultTolImpl[A, B](
-      implicit impl3: Impl3[A, B, Double, Boolean]): Impl2[A, B, Boolean] = {
+      implicit impl3: Impl3[A, B, Double, Boolean]): Impl2[A, B, Boolean] =
     new Impl2[A, B, Boolean] {
       override def apply(v: A, v2: B): Boolean = impl3(v, v2, DEFAULT_TOLERANCE)
     }
-  }
 
   @expand
   implicit def impl[@expand.args(Double, Float) T]
@@ -26,12 +25,10 @@ object isClose extends UFunc {
 
   implicit def fromZipValues[A, B, V1, V2](
       implicit czv: zipValues.Impl2[A, B, ZippedValues[V1, V2]],
-      base: Impl3[V1, V2, Double, Boolean]): Impl3[A, B, Double, Boolean] = {
+      base: Impl3[V1, V2, Double, Boolean]): Impl3[A, B, Double, Boolean] =
     new Impl3[A, B, Double, Boolean] {
-      override def apply(a: A, b: B, tol: Double): Boolean = {
+      override def apply(a: A, b: B, tol: Double): Boolean =
         czv(a, b).forall { (v1, v2) => base(v1, v2, tol) }
-      }
     }
-  }
 
 }

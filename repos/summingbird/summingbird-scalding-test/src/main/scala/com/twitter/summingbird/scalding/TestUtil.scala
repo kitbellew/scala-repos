@@ -92,11 +92,10 @@ object TestUtil {
   def pruneToBatchCovered[T](
       input: TraversableOnce[(Long, T)],
       inputRange: Interval[Timestamp],
-      batcher: Batcher): TraversableOnce[T] = {
+      batcher: Batcher): TraversableOnce[T] =
     pruneToBatchCoveredWithTime(input, inputRange, batcher).map {
       case (ts, v) => v
     }
-  }
 
   /**
     * This converts the min and max times to a time interval.
@@ -122,11 +121,10 @@ object TestUtil {
       Interval.leftClosedRightOpen(BatchID(1), BatchID(2))
   }
 
-  def randomBatcher(items: Iterable[(Long, Any)]): Batcher = {
+  def randomBatcher(items: Iterable[(Long, Any)]): Batcher =
     if (items.isEmpty) simpleBatcher
     else
       randomBatcher(items.iterator.map(_._1).min, items.iterator.map(_._1).max)
-  }
 
   def randomBatcher(mintimeInc: Long, maxtimeInc: Long): Batcher = { //simpleBatcher
     // we can have between 1 and (maxtime - mintime + 1) batches.

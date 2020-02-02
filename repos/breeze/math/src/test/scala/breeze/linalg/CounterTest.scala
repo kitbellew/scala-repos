@@ -120,17 +120,15 @@ class CounterOps_IntTest
 
   val N = 30
   def genTriple
-      : Arbitrary[(Counter[Int, Int], Counter[Int, Int], Counter[Int, Int])] = {
+      : Arbitrary[(Counter[Int, Int], Counter[Int, Int], Counter[Int, Int])] =
     implicitly
-  }
 
-  implicit def genS: Arbitrary[Counter[Int, Int]] = {
+  implicit def genS: Arbitrary[Counter[Int, Int]] =
     Arbitrary {
       for { l <- Arbitrary.arbitrary[List[Int]] } yield {
         Counter.count(l: _*)
       }
     }
-  }
 
   def genScalar: Arbitrary[Int] =
     Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })

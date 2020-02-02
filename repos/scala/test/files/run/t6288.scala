@@ -32,11 +32,10 @@ object Test extends DirectTest {
       |
       |""".stripMargin.trim
 
-  override def show(): Unit = {
+  override def show(): Unit =
     // Now: [84][84]Case3.unapply([84]x1);
     // Was: [84][84]Case3.unapply([64]x1);
     Console.withErr(System.out) {
       compile()
     }
-  }
 }

@@ -93,12 +93,11 @@ trait BaseTypeSeqs {
     /** The type symbol of the type at i'th position in this sequence;
       *  no evaluation needed.
       */
-    def typeSymbol(i: Int): Symbol = {
+    def typeSymbol(i: Int): Symbol =
       elems(i) match {
         case RefinedType(v :: vs, _) => v.typeSymbol
         case tp                      => tp.typeSymbol
       }
-    }
 
     /** Return all evaluated types in this sequence as a list */
     def toList: List[Type] = elems.toList

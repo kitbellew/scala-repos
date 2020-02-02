@@ -23,7 +23,7 @@ object TypeArgs {
         case ScalaTokenTypes.tLSQBRACKET =>
           builder.advanceLexer() //Ate [
           builder.disableNewlines
-          def checkTypeVariable: Boolean = {
+          def checkTypeVariable: Boolean =
             if (isPattern) {
               builder.getTokenType match {
                 case ScalaTokenTypes.tIDENTIFIER =>
@@ -49,7 +49,6 @@ object TypeArgs {
                 case _ => false
               }
             } else false
-          }
 
           if (checkTypeVariable || Type.parse(builder)) {
             var parsedType = true

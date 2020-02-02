@@ -11,7 +11,7 @@ import scala.tools.testing.ClearAfterClass
 
 object DirectCompileTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:method")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 }
 
 @RunWith(classOf[JUnit4])
@@ -101,9 +101,8 @@ class DirectCompileTest extends ClearAfterClass {
   }
 
   @Test
-  def compileErroneous(): Unit = {
+  def compileErroneous(): Unit =
     compileClasses(compiler)(
       "class C { def f: String = 1 }",
       allowMessage = _.msg contains "type mismatch")
-  }
 }

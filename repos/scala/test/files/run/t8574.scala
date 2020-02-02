@@ -8,7 +8,7 @@ import annotation._
 object Test extends App {
   def checkUID(cls: Class[_], expected: Long) = {
     val actual = java.io.ObjectStreamClass.lookup(cls).getSerialVersionUID
-    assert(actual == expected, s"$actual != expected for ${cls}")
+    assert(actual == expected, s"$actual != expected for $cls")
   }
   def checkStrictFp(cls: Class[_]) = {
     import java.lang.reflect._

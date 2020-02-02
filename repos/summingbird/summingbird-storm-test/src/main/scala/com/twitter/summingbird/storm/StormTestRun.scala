@@ -34,9 +34,8 @@ import com.twitter.util.Duration
   * This stops Storm's exception handling triggering an exit(1)
   */
 private[storm] class MySecurityManager extends SecurityManager {
-  override def checkExit(status: Int): Unit = {
+  override def checkExit(status: Int): Unit =
     throw new SecurityException();
-  }
   override def checkAccess(t: Thread) = {}
   override def checkPermission(p: Permission) = {}
 }

@@ -10,7 +10,7 @@ import com.gravity.goose.text.string
   * Time: 11:31 AM
   */
 class VoicesContentExtractor extends ContentExtractor {
-  override def getTitle(article: Article): String = {
+  override def getTitle(article: Article): String =
     try {
       val titleElem = article.doc.getElementsByTag("title")
       if (titleElem == null || titleElem.isEmpty) return string.empty
@@ -30,5 +30,4 @@ class VoicesContentExtractor extends ContentExtractor {
         string.empty
       }
     }
-  }
 }

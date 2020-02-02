@@ -19,8 +19,7 @@ object StatefulMonads {
 
   private[monads] def isStatefulMonadType(
       t: ScType,
-      projection: Project): Boolean = {
+      projection: Project): Boolean =
     StatefulMonadsTypesNames.exists(typeName =>
       InspectionsUtil.conformsToTypeFromClass(t, typeName, projection))
-  }
 }

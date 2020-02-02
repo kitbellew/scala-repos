@@ -73,10 +73,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     val rng = new PoissonDistribution(f)
     rng.reseedRandomGenerator(rngSeed.nextLong)
     data.flatMap { v =>
-      {
-        val rep = rng.sample()
-        if (rep == 0) Iterator.empty else Iterator.fill(rep)(v)
-      }
+      val rep = rng.sample()
+      if (rep == 0) Iterator.empty else Iterator.fill(rep)(v)
     }
   }
 
@@ -84,9 +82,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
   // This function assumes input data is integers sampled from the sequence of
   // increasing integers: {0, 1, 2, ...}.  This works because that is how I generate them,
   // and the samplers preserve their input order
-  def gaps(data: Iterator[Int]): Iterator[Int] = {
+  def gaps(data: Iterator[Int]): Iterator[Int] =
     data.sliding(2).withPartial(false).map { x => x(1) - x(0) }
-  }
 
   // Returns the cumulative distribution from a histogram
   def cumulativeDist(hist: Array[Int]): Array[Double] = {

@@ -120,7 +120,7 @@ object V1SegmentFormat extends SegmentFormat {
   object writer extends SegmentWriter {
     def writeSegment(
         channel: WritableByteChannel,
-        segment: Segment): Validation[IOException, PrecogUnit] = {
+        segment: Segment): Validation[IOException, PrecogUnit] =
       for {
         _ <- writeSegmentId(channel, segment)
         _ <- segment match {
@@ -132,7 +132,6 @@ object V1SegmentFormat extends SegmentFormat {
             writeNullSegment(channel, seg)
         }
       } yield PrecogUnit
-    }
 
     private def writeSegmentId(
         channel: WritableByteChannel,
@@ -218,7 +217,7 @@ object V1SegmentFormat extends SegmentFormat {
   }
 
   def readChunk(
-      channel: ReadableByteChannel): Validation[IOException, ByteBuffer] = {
+      channel: ReadableByteChannel): Validation[IOException, ByteBuffer] =
     try {
       val buffer0 = allocate(4)
       while (buffer0.remaining() > 0) {
@@ -237,7 +236,6 @@ object V1SegmentFormat extends SegmentFormat {
       case ioe: IOException =>
         Failure(ioe)
     }
-  }
 
   private def getCodecFor[A](ctype: CValueType[A]): Codec[A] = ctype match {
     case CPeriod =>

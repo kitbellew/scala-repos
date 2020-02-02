@@ -13,7 +13,6 @@ class PublicServlet extends DefaultServlet {
     case _ => super.getInitParameter(name)
   }
 
-  override def getResource(pathInContext: String): Resource = {
+  override def getResource(pathInContext: String): Resource =
     super.getResource(pathInContext.substring(path.length + 1))
-  }
 }

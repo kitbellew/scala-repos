@@ -123,11 +123,10 @@ class PostScript(filename: String, _width: Double, _height: Double)
     scaleAndCenter(new Frame(origin, edgeX, edgeY), width / height)
   }
 
-  def plotLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit = {
+  def plotLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit =
     Console.println(
       round(x1) + " " + round(y1) + " m " +
         round(x2) + " " + round(y2) + " l");
-  }
 
   /** Print the PS header.*/
   Console.println("%!PS-Adobe-3.0 EPSF-3.0\n%%Title: ProgrammationIV");
@@ -159,14 +158,12 @@ object M0 {
     */
   def transformPainter(origin: Vector, newX: Vector, newY: Vector)(
       painter: Painter): Painter = { frame: Frame =>
-    {
-      val newOrigin = frame.coordMap(origin);
-      val newFrame = new Frame(
-        newOrigin,
-        frame.coordMap(newX) - newOrigin,
-        frame.coordMap(newY) - newOrigin);
-      painter(newFrame)
-    }
+    val newOrigin = frame.coordMap(origin);
+    val newFrame = new Frame(
+      newOrigin,
+      frame.coordMap(newX) - newOrigin,
+      frame.coordMap(newY) - newOrigin);
+    painter(newFrame)
   }
 
   /** Flip the painter vertically
@@ -188,40 +185,35 @@ object M0 {
   /** Compose a painter that draws p1 on the left of p2
     */
   def beside(p1: Painter, p2: Painter): Painter = { frame: Frame =>
-    {
-      transformPainter(
-        new Vector(0.0, 0.0),
-        new Vector(0.5, 0.0),
-        new Vector(0.0, 1.0))(p1)(frame);
-      transformPainter(
-        new Vector(0.5, 0.0),
-        new Vector(1.0, 0.0),
-        new Vector(0.5, 1.0))(p2)(frame)
-    }
+    transformPainter(
+      new Vector(0.0, 0.0),
+      new Vector(0.5, 0.0),
+      new Vector(0.0, 1.0))(p1)(frame);
+    transformPainter(
+      new Vector(0.5, 0.0),
+      new Vector(1.0, 0.0),
+      new Vector(0.5, 1.0))(p2)(frame)
   }
 
   /** Compose a painter that draws p1 below p2
     */
   def below(p1: Painter, p2: Painter): Painter = { frame: Frame =>
-    {
-      transformPainter(
-        new Vector(0.0, 0.0),
-        new Vector(1.0, 0.0),
-        new Vector(0.0, 0.5))(p1)(frame);
-      transformPainter(
-        new Vector(0.0, 0.5),
-        new Vector(1.0, 0.5),
-        new Vector(0.0, 1.0))(p2)(frame)
-    }
+    transformPainter(
+      new Vector(0.0, 0.0),
+      new Vector(1.0, 0.0),
+      new Vector(0.0, 0.5))(p1)(frame);
+    transformPainter(
+      new Vector(0.0, 0.5),
+      new Vector(1.0, 0.5),
+      new Vector(0.0, 1.0))(p2)(frame)
   }
 
-  def rightSplit(painter: Painter, n: Int): Painter = {
+  def rightSplit(painter: Painter, n: Int): Painter =
     if (n == 0) painter
     else {
       val smaller = rightSplit(painter, n - 1);
       beside(painter, below(smaller, smaller))
     }
-  }
 
   // A small test painter.
   def house(canvas: Graphics)(frame: Frame): Unit = {

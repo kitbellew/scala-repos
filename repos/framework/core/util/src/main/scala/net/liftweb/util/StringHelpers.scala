@@ -40,13 +40,12 @@ trait StringHelpers {
   /**
     * If str is surrounded by quotes it return the content between the quotes
     */
-  def unquote(str: String) = {
+  def unquote(str: String) =
     if (str != null && str.length >= 2 && str.charAt(0) == '\"' && str.charAt(
           str.length - 1) == '\"')
       str.substring(1, str.length - 1)
     else
       str
-  }
 
   /**
     * Splits a string of the form &lt;name1=value1, name2=value2, ... &gt; and unquotes the quoted values.
@@ -56,10 +55,10 @@ trait StringHelpers {
     val list = props
       .split(",")
       .toList
-      .map(in => {
+      .map { in =>
         val pair = in.roboSplit("=")
         (pair(0), unquote(pair(1)))
-      })
+      }
     val map: Map[String, String] = Map.empty
 
     (map /: list)((m, next) => m + (next))
@@ -165,7 +164,7 @@ trait StringHelpers {
       max: Int,
       lastLetter: Boolean,
       lastSymbol: Boolean,
-      out: GoodSB): Unit = {
+      out: GoodSB): Unit =
     if (pos >= max || pos >= in.length) return
     else {
       in.charAt(pos) match {
@@ -179,7 +178,6 @@ trait StringHelpers {
         case _ => capify(in, pos + 1, max, false, true, out)
       }
     }
-  }
 
   /**
     * Remove all the characters from a string exception a-z, A-Z, 0-9, and '_'
@@ -194,7 +192,7 @@ trait StringHelpers {
     * @return the generated string
     */
   def randomString(size: Int): String = {
-    def addChar(pos: Int, lastRand: Int, sb: GoodSB): GoodSB = {
+    def addChar(pos: Int, lastRand: Int, sb: GoodSB): GoodSB =
       if (pos >= size) sb
       else {
         val randNum = if ((pos % 6) == 0) {
@@ -209,7 +207,6 @@ trait StringHelpers {
         })
         addChar(pos + 1, randNum >> 5, sb)
       }
-    }
     addChar(0, 0, new GoodSB(size)).toString
   }
 
@@ -233,7 +230,7 @@ trait StringHelpers {
   def splitColonPair(
       in: String,
       first: String,
-      second: String): (String, String) = {
+      second: String): (String, String) =
     (in match {
       case null                      => List("")
       case s if s.indexOf(".") != -1 => s.roboSplit("\\.")
@@ -243,7 +240,6 @@ trait StringHelpers {
       case f :: Nil    => (f, second)
       case _           => (first, second)
     }
-  }
 
   /** @return an Empty can if the node seq is empty and a full can with the NodeSeq text otherwise */
   implicit def nodeSeqToOptionString(in: NodeSeq): Box[String] =
@@ -329,7 +325,7 @@ trait StringHelpers {
     * Split a string in 2 parts at the first place where a separator is found
     * @return a List containing a pair of the 2 trimmed parts
     */
-  def splitAt(what: String, sep: String): List[(String, String)] = {
+  def splitAt(what: String, sep: String): List[(String, String)] =
     if (null eq what)
       return Nil
     else
@@ -338,13 +334,12 @@ trait StringHelpers {
         case n =>
           List((what.substring(0, n).trim, what.substring(n + sep.length).trim))
       }
-  }
 
   /**
     * Encode the string to be including in JavaScript, replacing '\' or '\\' or non-ASCII characters by their unicode value
     * @return the encoded string inserted into quotes
     */
-  def encJs(what: String): String = {
+  def encJs(what: String): String =
     if (what eq null) "null"
     else {
       val len = what.length
@@ -364,13 +359,12 @@ trait StringHelpers {
       sb.append('"')
       sb.toString
     }
-  }
 
   /**
     * Add commas before the last 3 characters
     * @return the string with commas
     */
-  def commafy(what: String): String = {
+  def commafy(what: String): String =
     if (null eq what) null
     else {
       val toDo = what.toList.reverse
@@ -384,7 +378,6 @@ trait StringHelpers {
       }
       commaIt(toDo).reverse.mkString("")
     }
-  }
 
   /** @return a SuperString with more available methods such as roboSplit or commafy */
   implicit def stringToSuper(in: String): SuperString = new SuperString(in)

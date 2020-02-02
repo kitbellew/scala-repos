@@ -84,12 +84,11 @@ private[runtime] object RuntimeString {
   }
 
   @inline
-  def compareTo(thiz: String, anotherString: String): Int = {
+  def compareTo(thiz: String, anotherString: String): Int =
     if (thiz.equals(anotherString)) 0
     else if ((thiz.asInstanceOf[js.Dynamic] <
                anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]) -1
     else 1
-  }
 
   def compareToIgnoreCase(thiz: String, str: String): Int =
     thiz.toLowerCase().compareTo(str.toLowerCase())
@@ -225,9 +224,8 @@ private[runtime] object RuntimeString {
       toffset: Int,
       other: String,
       ooffset: Int,
-      len: Int): Boolean = {
+      len: Int): Boolean =
     regionMatches(thiz, false, toffset, other, ooffset, len)
-  }
 
   @inline
   def replace(thiz: String, oldChar: Char, newChar: Char): String =
@@ -264,10 +262,9 @@ private[runtime] object RuntimeString {
     thiz.startsWith(prefix, 0)
 
   @inline
-  def startsWith(thiz: String, prefix: String, toffset: Int): Boolean = {
+  def startsWith(thiz: String, prefix: String, toffset: Int): Boolean =
     (toffset <= thiz.length && toffset >= 0 &&
-    thiz.jsSubstring(toffset, toffset + prefix.length) == prefix)
-  }
+      thiz.jsSubstring(toffset, toffset + prefix.length) == prefix)
 
   @inline
   def subSequence(thiz: String, beginIndex: Int, endIndex: Int): CharSequence =
@@ -417,7 +414,7 @@ private[runtime] object RuntimeString {
     if (s == null) throw new NullPointerException()
     else s
 
-  private def fromCodePoint(codePoint: Int): String = {
+  private def fromCodePoint(codePoint: Int): String =
     if ((codePoint & ~Character.MAX_VALUE) == 0)
       fromCharCode(codePoint)
     else if (codePoint < 0 || codePoint > Character.MAX_CODE_POINT)
@@ -426,12 +423,10 @@ private[runtime] object RuntimeString {
       val offsetCp = codePoint - 0x10000
       fromCharCode((offsetCp >> 10) | 0xd800, (offsetCp & 0x3ff) | 0xdc00)
     }
-  }
 
-  @inline private def fromCharCode(charCodes: Int*): String = {
+  @inline private def fromCharCode(charCodes: Int*): String =
     js.Dynamic.global.String
       .applyDynamic("fromCharCode")(charCodes.asInstanceOf[Seq[js.Any]]: _*)
       .asInstanceOf[String]
-  }
 
 }

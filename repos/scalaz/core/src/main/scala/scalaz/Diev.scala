@@ -87,14 +87,13 @@ trait DievImplementation {
     private def construct(
         prefixCount: Int,
         middle: Vector[(A, A)],
-        suffixStart: Int): Diev[A] = {
+        suffixStart: Int): Diev[A] =
       DieVector(
         intervals.take(prefixCount) ++ middle ++ intervals.drop(suffixStart))
-    }
 
     private[this] def binarySearch(value: A): SearchResult = {
       @tailrec
-      def innerSearch(min: Int = 0, max: Int = intervals.size): SearchResult = {
+      def innerSearch(min: Int = 0, max: Int = intervals.size): SearchResult =
         if (max <= min) {
           val adjustedPosition = 0.max(min.min(max).min(intervals.size - 1))
           liftedIntervals(adjustedPosition) match {
@@ -128,7 +127,6 @@ trait DievImplementation {
             }
           }
         }
-      }
 
       val resultOfSearch = innerSearch()
       //println("resultOfSearch = " + resultOfSearch)
@@ -270,12 +268,11 @@ trait DievImplementation {
 
     def foreach(f: A => Unit): Unit = foldLeft[Unit](())((_, value) => f(value))
 
-    def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    def foldLeft[B](z: B)(f: (B, A) => B): B =
       intervals.foldLeft(z) { (z1, interval) =>
         val range = interval._1 |-> interval._2
         range.foldLeft(z1)(f)
       }
-    }
 
     def toSet(): Set[A] = foldLeft[Set[A]](Set[A]())(_ + _)
 

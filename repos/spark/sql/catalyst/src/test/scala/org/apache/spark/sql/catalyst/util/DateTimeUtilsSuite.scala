@@ -498,12 +498,11 @@ class DateTimeUtilsSuite extends SparkFunSuite {
   }
 
   test("from UTC timestamp") {
-    def test(utc: String, tz: String, expected: String): Unit = {
+    def test(utc: String, tz: String, expected: String): Unit =
       assert(
         toJavaTimestamp(
           fromUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz)).toString
           === expected)
-    }
     test("2011-12-25 09:00:00.123456", "UTC", "2011-12-25 09:00:00.123456")
     test("2011-12-25 09:00:00.123456", "JST", "2011-12-25 18:00:00.123456")
     test("2011-12-25 09:00:00.123456", "PST", "2011-12-25 01:00:00.123456")
@@ -514,12 +513,11 @@ class DateTimeUtilsSuite extends SparkFunSuite {
   }
 
   test("to UTC timestamp") {
-    def test(utc: String, tz: String, expected: String): Unit = {
+    def test(utc: String, tz: String, expected: String): Unit =
       assert(
         toJavaTimestamp(
           toUTCTime(fromJavaTimestamp(Timestamp.valueOf(utc)), tz)).toString
           === expected)
-    }
     test("2011-12-25 09:00:00.123456", "UTC", "2011-12-25 09:00:00.123456")
     test("2011-12-25 18:00:00.123456", "JST", "2011-12-25 09:00:00.123456")
     test("2011-12-25 01:00:00.123456", "PST", "2011-12-25 09:00:00.123456")

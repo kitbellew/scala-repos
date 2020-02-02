@@ -214,13 +214,13 @@ object M8 {
     override def toString(): String = {
       val buffer: StringBuilder = new StringBuilder();
       buffer.append('[');
-      foreach(i => {
+      foreach { i =>
         if (buffer.length > 1) {
           buffer.append(','); ()
         }; // !!! ; ()
         buffer.append(i);
         ()
-      });
+      };
       buffer.append(']');
       buffer.toString();
     }

@@ -10,7 +10,7 @@ object ValidationHelper {
         .getOrElse(s"Error message: $message")
   }
 
-  def getAllRuleConstrains(r: Result): Set[ViolationMessageAndPath] = {
+  def getAllRuleConstrains(r: Result): Set[ViolationMessageAndPath] =
     r match {
       case f: Failure =>
         f.violations
@@ -18,5 +18,4 @@ object ValidationHelper {
           .map(r => ViolationMessageAndPath(r.constraint, r.description))
       case _ => Set.empty[ViolationMessageAndPath]
     }
-  }
 }

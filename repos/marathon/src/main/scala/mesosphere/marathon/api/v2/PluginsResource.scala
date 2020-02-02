@@ -83,7 +83,7 @@ class PluginsResource @Inject() (
   private[this] def handleRequest(
       pluginId: String,
       path: String,
-      req: HttpServletRequest): Response = {
+      req: HttpServletRequest): Response =
     pluginIdToHandler
       .get(pluginId)
       .map { handler =>
@@ -93,5 +93,4 @@ class PluginsResource @Inject() (
         response.response
       }
       .getOrElse(notFound(s"No plugin with this pluginId: $pluginId"))
-  }
 }

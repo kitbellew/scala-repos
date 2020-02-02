@@ -16,14 +16,13 @@ trait CartesianTests[F[_]] extends Laws {
       ArbFA: Arbitrary[F[A]],
       ArbFB: Arbitrary[F[B]],
       ArbFC: Arbitrary[F[C]],
-      EqFABC: Eq[F[(A, B, C)]]): RuleSet = {
+      EqFABC: Eq[F[(A, B, C)]]): RuleSet =
     new DefaultRuleSet(
       name = "cartesian",
       parent = None,
       "cartesian associativity" -> forAll((fa: F[A], fb: F[B], fc: F[C]) =>
         iso.associativity(laws.cartesianAssociativity(fa, fb, fc)))
     )
-  }
 }
 
 object CartesianTests {

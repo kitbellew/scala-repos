@@ -70,12 +70,11 @@ trait RandomLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
       }
 
-      def extract(res: Result): Table = {
+      def extract(res: Result): Table =
         res map { resultSeed =>
           val distTable = Table.uniformDistribution(MmixPrng(resultSeed))
           distTable.transform(buildConstantWrapSpec(TransSpec1.Id))
         } getOrElse Table.empty
-      }
 
       def apply(table: Table, ctx: MorphContext): M[Table] =
         table.reduce(reducer(ctx)) map extract

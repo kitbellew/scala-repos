@@ -55,9 +55,8 @@ class GaussianMixtureModel @Since("1.3.0") (
   override protected def formatVersion = "1.0"
 
   @Since("1.4.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GaussianMixtureModel.SaveLoadV1_0.save(sc, path, weights, gaussians)
-  }
 
   /**
     * Number of gaussians in mixture
@@ -112,9 +111,8 @@ class GaussianMixtureModel @Since("1.3.0") (
     * Given the input vector, return the membership values to all mixture components.
     */
   @Since("1.4.0")
-  def predictSoft(point: Vector): Array[Double] = {
+  def predictSoft(point: Vector): Array[Double] =
     computeSoftAssignments(point.toBreeze.toDenseVector, gaussians, weights, k)
-  }
 
   /**
     * Compute the partial assignments for each vector

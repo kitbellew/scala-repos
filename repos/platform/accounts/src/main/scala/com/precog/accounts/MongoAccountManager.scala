@@ -112,7 +112,7 @@ abstract class MongoAccountManager(
       plan: AccountPlan,
       parent: Option[AccountId],
       profile: Option[JValue])(
-      f: AccountId => Future[APIKey]): Future[Account] = {
+      f: AccountId => Future[APIKey]): Future[Account] =
     for {
       accountId <- newAccountId
       path = Path(accountId)
@@ -137,26 +137,22 @@ abstract class MongoAccountManager(
             .into(settings.accounts)) map { _ => account0 }
       }
     } yield account
-  }
 
   private def findOneMatching[A](
       keyName: String,
       keyValue: String,
-      collection: String)(
-      implicit extractor: Extractor[A]): Future[Option[A]] = {
+      collection: String)(implicit extractor: Extractor[A]): Future[Option[A]] =
     database(selectOne().from(collection).where(keyName === keyValue)) map {
       _.map(_.deserialize(extractor))
     }
-  }
 
   private def findAllMatching[A](
       keyName: String,
       keyValue: String,
-      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] = {
+      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] =
     database(selectAll.from(collection).where(keyName === keyValue)) map {
       _.map(_.deserialize(extractor)).toSet
     }
-  }
 
   private def findAll[A](collection: String)(
       implicit extract: Extractor[A]): Future[Seq[A]] =
@@ -211,7 +207,7 @@ abstract class MongoAccountManager(
   def findAccountByEmail(email: String) =
     findOneMatching[Account]("email", email, settings.accounts)
 
-  def updateAccount(account: Account): Future[Boolean] = {
+  def updateAccount(account: Account): Future[Boolean] =
     findAccountById(account.accountId).flatMap {
       case Some(existingAccount) =>
         database {
@@ -224,9 +220,8 @@ abstract class MongoAccountManager(
       case None =>
         M.point(false)
     }
-  }
 
-  def deleteAccount(accountId: String): Future[Option[Account]] = {
+  def deleteAccount(accountId: String): Future[Option[Account]] =
     findAccountById(accountId).flatMap {
       case ot @ Some(account) =>
         for {
@@ -239,7 +234,6 @@ abstract class MongoAccountManager(
       case None =>
         M.point(None)
     }
-  }
 
   def close() =
     database.disconnect.fallbackTo(M.point(())).flatMap { _ => mongo.close }

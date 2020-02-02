@@ -63,7 +63,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     getLastChild.asInstanceOf[ScExtendsBlock]
   }
 
-  def refs = {
+  def refs =
     extendsBlock.templateParents.toSeq.flatMap(_.typeElements).map {
       refElement =>
         val tuple: Option[(PsiClass, ScSubstitutor)] = refElement
@@ -72,7 +72,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           .flatMap(ScType.extractClassType(_, Some(getProject)))
         (refElement, tuple)
     }
-  }
 
   def innerExtendsListTypes = {
     val eb = extendsBlock
@@ -93,45 +92,38 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     } else PsiClassType.EMPTY_ARRAY
   }
 
-  def showAsInheritor: Boolean = {
+  def showAsInheritor: Boolean =
     isInstanceOf[ScTypeDefinition] || extendsBlock.templateBody != None
-  }
 
   override def findMethodBySignature(
       patternMethod: PsiMethod,
-      checkBases: Boolean): PsiMethod = {
+      checkBases: Boolean): PsiMethod =
     PsiClassImplUtil.findMethodBySignature(this, patternMethod, checkBases)
-  }
 
   override def findMethodsBySignature(
       patternMethod: PsiMethod,
-      checkBases: Boolean): Array[PsiMethod] = {
+      checkBases: Boolean): Array[PsiMethod] =
     PsiClassImplUtil.findMethodsBySignature(this, patternMethod, checkBases)
-  }
 
   override def findMethodsByName(
       name: String,
-      checkBases: Boolean): Array[PsiMethod] = {
+      checkBases: Boolean): Array[PsiMethod] =
     PsiClassImplUtil.findMethodsByName(this, name, checkBases)
-  }
 
-  override def findFieldByName(name: String, checkBases: Boolean): PsiField = {
+  override def findFieldByName(name: String, checkBases: Boolean): PsiField =
     PsiClassImplUtil.findFieldByName(this, name, checkBases)
-  }
 
   override def findInnerClassByName(
       name: String,
-      checkBases: Boolean): PsiClass = {
+      checkBases: Boolean): PsiClass =
     PsiClassImplUtil.findInnerByName(this, name, checkBases)
-  }
 
   import java.util.{Collection => JCollection, List => JList}
 
   import com.intellij.openapi.util.{Pair => IPair}
 
-  def getAllFields: Array[PsiField] = {
+  def getAllFields: Array[PsiField] =
     PsiClassImplUtil.getAllFields(this)
-  }
 
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
@@ -159,14 +151,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   }
 
   override def getAllMethodsAndTheirSubstitutors
-      : JList[IPair[PsiMethod, PsiSubstitutor]] = {
+      : JList[IPair[PsiMethod, PsiSubstitutor]] =
     PsiClassImplUtil.getAllWithSubstitutorsByMap(this, MemberType.METHOD)
-  }
 
-  override def getVisibleSignatures
-      : JCollection[HierarchicalMethodSignature] = {
+  override def getVisibleSignatures: JCollection[HierarchicalMethodSignature] =
     PsiSuperMethodImplUtil.getVisibleSignatures(this)
-  }
 
   def getType(ctx: TypingContext): TypeResult[ScType]
 
@@ -226,7 +215,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .filter(!_.isObject)
       .map((_, ScSubstitutor.empty))
 
-  def allTypeAliasesIncludingSelfType = {
+  def allTypeAliasesIncludingSelfType =
     selfType match {
       case Some(selfType) =>
         val clazzType = getTypeWithProjections(TypingContext.empty).getOrAny
@@ -242,7 +231,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case _ =>
         allTypeAliases
     }
-  }
 
   def allVals =
     TypeDefinitionMembers
@@ -263,7 +251,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         })
       .map { case (_, n) => (n.info.namedElement, n.substitutor) }
 
-  def allValsIncludingSelfType = {
+  def allValsIncludingSelfType =
     selfType match {
       case Some(selfType) =>
         val clazzType = getTypeWithProjections(TypingContext.empty).getOrAny
@@ -292,7 +280,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case _ =>
         allVals
     }
-  }
 
   def allMethods: Iterable[PhysicalSignature] =
     TypeDefinitionMembers
@@ -305,7 +292,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       syntheticMethodsNoOverride.map(
         new PhysicalSignature(_, ScSubstitutor.empty))
 
-  def allMethodsIncludingSelfType: Iterable[PhysicalSignature] = {
+  def allMethodsIncludingSelfType: Iterable[PhysicalSignature] =
     selfType match {
       case Some(selfType) =>
         val clazzType = getTypeWithProjections(TypingContext.empty).getOrAny
@@ -326,7 +313,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case _ =>
         allMethods
     }
-  }
 
   def allSignatures =
     TypeDefinitionMembers
@@ -334,7 +320,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .allFirstSeq()
       .flatMap(_.map { case (_, n) => n.info })
 
-  def allSignaturesIncludingSelfType = {
+  def allSignaturesIncludingSelfType =
     selfType match {
       case Some(selfType) =>
         val clazzType = getTypeWithProjections(TypingContext.empty).getOrAny
@@ -350,7 +336,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case _ =>
         allSignatures
     }
-  }
 
   def isScriptFileClass = getContainingFile match {
     case file: ScalaFile => file.isScriptFile(false)
@@ -537,13 +522,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     member.getParent.getNode.removeChild(member.getNode)
   }
 
-  def functionsByName(name: String): Seq[PsiMethod] = {
+  def functionsByName(name: String): Seq[PsiMethod] =
     (for ((p: PhysicalSignature, _) <- TypeDefinitionMembers
             .getSignatures(this)
             .forName(name)
             ._1)
       yield p.method).++(syntheticMethodsNoOverride.filter(_.name == name))
-  }
 
   override def isInheritor(baseClass: PsiClass, deep: Boolean): Boolean = {
     if (baseClass == null) return false

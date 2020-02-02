@@ -62,7 +62,7 @@ private[spark] class PythonWorkerFactory(
     envVars.getOrElse("PYTHONPATH", ""),
     sys.env.getOrElse("PYTHONPATH", ""))
 
-  def create(): Socket = {
+  def create(): Socket =
     if (useDaemon) {
       synchronized {
         if (idleWorkers.size > 0) {
@@ -73,7 +73,6 @@ private[spark] class PythonWorkerFactory(
     } else {
       createSimpleWorker()
     }
-  }
 
   /**
     * Connect to a worker launched through pyspark/daemon.py, which forks python processes itself

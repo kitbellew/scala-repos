@@ -46,24 +46,21 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     inner.exists { case (_, iv) => value === iv }
   }
 
-  override def put(key: K, value: V): V = {
+  override def put(key: K, value: V): V =
     if (key != null && value != null)
       inner.put(Box(key), value).getOrElse(null)
     else
       throw new NullPointerException()
-  }
 
-  def putIfAbsent(key: K, value: V): V = {
+  def putIfAbsent(key: K, value: V): V =
     if (key != null && value != null)
       inner.getOrElseUpdate(Box(key), value)
     else
       throw new NullPointerException()
-  }
 
-  override def putAll(m: Map[_ <: K, _ <: V]): Unit = {
+  override def putAll(m: Map[_ <: K, _ <: V]): Unit =
     for (e <- m.entrySet())
       put(e.getKey, e.getValue)
-  }
 
   override def remove(key: Any): V =
     inner.remove(Box(key.asInstanceOf[K])).getOrElse(null)
@@ -76,7 +73,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
       false
   }
 
-  override def replace(key: K, oldValue: V, newValue: V): Boolean = {
+  override def replace(key: K, oldValue: V, newValue: V): Boolean =
     if (key != null && oldValue != null && newValue != null) {
       val old = inner(Box(key))
       if (oldValue === old) {
@@ -88,16 +85,14 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     } else {
       throw new NullPointerException()
     }
-  }
 
-  override def replace(key: K, value: V): V = {
+  override def replace(key: K, value: V): V =
     if (key != null && value != null) {
       if (inner(Box(key)) != null) put(key, value)
       else null
     } else {
       throw new NullPointerException()
     }
-  }
 
   override def clear(): Unit =
     inner.clear()
@@ -105,11 +100,11 @@ class ConcurrentHashMap[K >: Null, V >: Null]
   override def keySet(): ConcurrentHashMap.KeySetView[K, V] =
     new ConcurrentHashMap.KeySetView[K, V](this)
 
-  def entrySet(): Set[Map.Entry[K, V]] = {
+  def entrySet(): Set[Map.Entry[K, V]] =
     new AbstractSet[Map.Entry[K, V]] {
       override def size(): Int = self.size
 
-      def iterator(): Iterator[Map.Entry[K, V]] = {
+      def iterator(): Iterator[Map.Entry[K, V]] =
         new Iterator[Map.Entry[K, V]] {
           private val keysCopy = inner.keysIterator
 
@@ -124,18 +119,15 @@ class ConcurrentHashMap[K >: Null, V >: Null]
             new AbstractMap.SimpleImmutableEntry(k(), v)
           }
 
-          def remove(): Unit = {
+          def remove(): Unit =
             if (lastKey != null) {
               inner.remove(lastKey)
               lastKey = null
             } else {
               throw new IllegalStateException()
             }
-          }
         }
-      }
     }
-  }
 
   def keys(): Enumeration[K] =
     asJavaEnumeration(inner.keys.iterator.map(_.inner))
@@ -157,7 +149,7 @@ object ConcurrentHashMap {
 
     def contains(o: Any): Boolean = chm.containsKey(o)
 
-    def iterator(): Iterator[K] = {
+    def iterator(): Iterator[K] =
       new Iterator[K] {
         val iter = chm.entrySet.iterator()
 
@@ -167,7 +159,6 @@ object ConcurrentHashMap {
 
         def remove(): Unit = iter.remove()
       }
-    }
 
     def toArray(): Array[AnyRef] =
       chm.keys().asInstanceOf[Enumeration[AnyRef]].toArray[AnyRef]

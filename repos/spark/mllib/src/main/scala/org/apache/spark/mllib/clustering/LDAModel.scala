@@ -227,7 +227,7 @@ class LocalLDAModel private[spark] (
   override protected def formatVersion = "1.0"
 
   @Since("1.5.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     LocalLDAModel.SaveLoadV1_0.save(
       sc,
       path,
@@ -235,7 +235,6 @@ class LocalLDAModel private[spark] (
       docConcentration,
       topicConcentration,
       gammaShape)
-  }
 
   // TODO: declare in LDAModel and override once implemented in DistributedLDAModel
   /**
@@ -261,9 +260,8 @@ class LocalLDAModel private[spark] (
     * Java-friendly version of [[logLikelihood]]
     */
   @Since("1.5.0")
-  def logLikelihood(documents: JavaPairRDD[java.lang.Long, Vector]): Double = {
+  def logLikelihood(documents: JavaPairRDD[java.lang.Long, Vector]): Double =
     logLikelihood(documents.rdd.asInstanceOf[RDD[(Long, Vector)]])
-  }
 
   /**
     * Calculate an upper bound bound on perplexity.  (Lower is better.)
@@ -282,9 +280,8 @@ class LocalLDAModel private[spark] (
 
   /** Java-friendly version of [[logPerplexity]] */
   @Since("1.5.0")
-  def logPerplexity(documents: JavaPairRDD[java.lang.Long, Vector]): Double = {
+  def logPerplexity(documents: JavaPairRDD[java.lang.Long, Vector]): Double =
     logPerplexity(documents.rdd.asInstanceOf[RDD[(Long, Vector)]])
-  }
 
   /**
     * Estimate the variational likelihood bound of from `documents`:
@@ -856,28 +853,26 @@ class DistributedLDAModel private[clustering] (
     * @return  RDD of (document ID, topic distribution) pairs
     */
   @Since("1.3.0")
-  def topicDistributions: RDD[(Long, Vector)] = {
+  def topicDistributions: RDD[(Long, Vector)] =
     graph.vertices.filter(LDA.isDocumentVertex).map {
       case (docID, topicCounts) =>
         (docID.toLong, Vectors.fromBreeze(normalize(topicCounts, 1.0)))
     }
-  }
 
   /**
     * Java-friendly version of [[topicDistributions]]
     */
   @Since("1.4.1")
-  def javaTopicDistributions: JavaPairRDD[java.lang.Long, Vector] = {
+  def javaTopicDistributions: JavaPairRDD[java.lang.Long, Vector] =
     JavaPairRDD.fromRDD(
       topicDistributions.asInstanceOf[RDD[(java.lang.Long, Vector)]])
-  }
 
   /**
     * For each document, return the top k weighted topics for that document and their weights.
     * @return RDD of (doc ID, topic indices, topic weights)
     */
   @Since("1.5.0")
-  def topTopicsPerDocument(k: Int): RDD[(Long, Array[Int], Array[Double])] = {
+  def topTopicsPerDocument(k: Int): RDD[(Long, Array[Int], Array[Double])] =
     graph.vertices.filter(LDA.isDocumentVertex).map {
       case (docID, topicCounts) =>
         val topIndices = argtopk(topicCounts, k)
@@ -889,7 +884,6 @@ class DistributedLDAModel private[clustering] (
         }
         (docID.toLong, topIndices.toArray, weights.toArray)
     }
-  }
 
   /**
     * Java-friendly version of [[topTopicsPerDocument]]
@@ -912,7 +906,7 @@ class DistributedLDAModel private[clustering] (
     * Java-friendly version of [[topicDistributions]]
     */
   @Since("1.5.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     DistributedLDAModel.SaveLoadV1_0.save(
       sc,
       path,
@@ -924,7 +918,6 @@ class DistributedLDAModel private[clustering] (
       topicConcentration,
       iterationTimes,
       gammaShape)
-  }
 }
 @Experimental
 @Since("1.5.0")

@@ -91,7 +91,7 @@ object PhysicalOperation extends PredicateHelper {
     }.toMap
 
   private def substitute(aliases: Map[Attribute, Expression])(
-      expr: Expression): Expression = {
+      expr: Expression): Expression =
     expr.transform {
       case a @ Alias(ref: AttributeReference, name) =>
         aliases
@@ -110,7 +110,6 @@ object PhysicalOperation extends PredicateHelper {
               isGenerated = a.isGenerated))
           .getOrElse(a)
     }
-  }
 }
 
 /**
@@ -240,7 +239,7 @@ object Unions {
   @tailrec
   private def collectUnionChildren(
       plans: mutable.Stack[LogicalPlan],
-      children: Seq[LogicalPlan]): Seq[LogicalPlan] = {
+      children: Seq[LogicalPlan]): Seq[LogicalPlan] =
     if (plans.isEmpty) children
     else {
       plans.pop match {
@@ -250,7 +249,6 @@ object Unions {
         case other => collectUnionChildren(plans, children :+ other)
       }
     }
-  }
 }
 
 /**

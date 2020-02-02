@@ -41,9 +41,8 @@ private[spark] object FixedLengthBinaryInputFormat {
     "org.apache.spark.input.FixedLengthBinaryInputFormat.recordLength"
 
   /** Retrieves the record length property from a Hadoop configuration */
-  def getRecordLength(context: JobContext): Int = {
+  def getRecordLength(context: JobContext): Int =
     context.getConfiguration.get(RECORD_LENGTH_PROPERTY).toInt
-  }
 }
 
 private[spark] class FixedLengthBinaryInputFormat
@@ -93,8 +92,6 @@ private[spark] class FixedLengthBinaryInputFormat
     */
   override def createRecordReader(
       split: InputSplit,
-      context: TaskAttemptContext)
-      : RecordReader[LongWritable, BytesWritable] = {
+      context: TaskAttemptContext): RecordReader[LongWritable, BytesWritable] =
     new FixedLengthBinaryRecordReader
-  }
 }

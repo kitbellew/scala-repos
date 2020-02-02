@@ -154,11 +154,10 @@ class NewHadoopRDD[K, V](
       // If we do a coalesce, however, we are likely to compute multiple partitions in the same
       // task and in the same thread, in which case we need to avoid override values written by
       // previous partitions (SPARK-13071).
-      def updateBytesRead(): Unit = {
+      def updateBytesRead(): Unit =
         getBytesReadCallback.foreach { getBytesRead =>
           inputMetrics.setBytesRead(existingBytesRead + getBytesRead())
         }
-      }
 
       val format = inputFormatClass.newInstance
       format match {
@@ -254,9 +253,8 @@ class NewHadoopRDD[K, V](
   @DeveloperApi
   def mapPartitionsWithInputSplit[U: ClassTag](
       f: (InputSplit, Iterator[(K, V)]) => Iterator[U],
-      preservesPartitioning: Boolean = false): RDD[U] = {
+      preservesPartitioning: Boolean = false): RDD[U] =
     new NewHadoopMapPartitionsWithSplitRDD(this, f, preservesPartitioning)
-  }
 
   override def getPreferredLocations(hsplit: Partition): Seq[String] = {
     val split =

@@ -92,16 +92,17 @@ object EvaluatePython {
 
     case (a: ArrayData, array: ArrayType) =>
       val values = new java.util.ArrayList[Any](a.numElements())
-      a.foreach(array.elementType, (_, e) => {
-        values.add(toJava(e, array.elementType))
-      })
+      a.foreach(
+        array.elementType,
+        (_, e) => values.add(toJava(e, array.elementType)))
       values
 
     case (map: MapData, mt: MapType) =>
       val jmap = new java.util.HashMap[Any, Any](map.numElements())
-      map.foreach(mt.keyType, mt.valueType, (k, v) => {
-        jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
-      })
+      map.foreach(
+        mt.keyType,
+        mt.valueType,
+        (k, v) => jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType)))
       jmap
 
     case (ud, udt: UserDefinedType[_]) => toJava(ud, udt.sqlType)
@@ -194,9 +195,8 @@ object EvaluatePython {
 
     private val cls = classOf[StructType]
 
-    def register(): Unit = {
+    def register(): Unit =
       Pickler.registerCustomPickler(cls, this)
-    }
 
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       out.write(Opcodes.GLOBAL)
@@ -223,7 +223,7 @@ object EvaluatePython {
       Pickler.registerCustomPickler(cls, this)
     }
 
-    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
+    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit =
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
@@ -247,7 +247,6 @@ object EvaluatePython {
         out.write(Opcodes.TUPLE)
         out.write(Opcodes.REDUCE)
       }
-    }
   }
 
   private[this] var registered = false
@@ -256,7 +255,7 @@ object EvaluatePython {
     * This should be called before trying to serialize any above classes un cluster mode,
     * this should be put in the closure
     */
-  def registerPicklers(): Unit = {
+  def registerPicklers(): Unit =
     synchronized {
       if (!registered) {
         SerDeUtil.initialize()
@@ -265,16 +264,14 @@ object EvaluatePython {
         registered = true
       }
     }
-  }
 
   /**
     * Convert an RDD of Java objects to an RDD of serialized Python objects, that is usable by
     * PySpark.
     */
-  def javaToPython(rdd: RDD[Any]): RDD[Array[Byte]] = {
+  def javaToPython(rdd: RDD[Any]): RDD[Array[Byte]] =
     rdd.mapPartitions { iter =>
       registerPicklers() // let it called in executor
       new SerDeUtil.AutoBatchedPickler(iter)
     }
-  }
 }

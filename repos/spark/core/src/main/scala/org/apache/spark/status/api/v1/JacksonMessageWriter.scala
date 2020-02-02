@@ -43,9 +43,8 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
 
   val mapper = new ObjectMapper() {
-    override def writeValueAsString(t: Any): String = {
+    override def writeValueAsString(t: Any): String =
       super.writeValueAsString(t)
-    }
   }
   mapper.registerModule(com.fasterxml.jackson.module.scala.DefaultScalaModule)
   mapper.enable(SerializationFeature.INDENT_OUTPUT)
@@ -56,9 +55,8 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
       aClass: Class[_],
       `type`: Type,
       annotations: Array[Annotation],
-      mediaType: MediaType): Boolean = {
+      mediaType: MediaType): Boolean =
     true
-  }
 
   override def writeTo(
       t: Object,
@@ -67,22 +65,20 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
       annotations: Array[Annotation],
       mediaType: MediaType,
       multivaluedMap: MultivaluedMap[String, AnyRef],
-      outputStream: OutputStream): Unit = {
+      outputStream: OutputStream): Unit =
     t match {
       case ErrorWrapper(err) =>
         outputStream.write(err.getBytes(StandardCharsets.UTF_8))
       case _ => mapper.writeValue(outputStream, t)
     }
-  }
 
   override def getSize(
       t: Object,
       aClass: Class[_],
       `type`: Type,
       annotations: Array[Annotation],
-      mediaType: MediaType): Long = {
+      mediaType: MediaType): Long =
     -1L
-  }
 }
 
 private[spark] object JacksonMessageWriter {

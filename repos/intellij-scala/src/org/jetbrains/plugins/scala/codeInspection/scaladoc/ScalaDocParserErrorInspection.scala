@@ -17,8 +17,7 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
-
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitDocComment(s: ScDocComment) {
         visitScaladocElement(s)
@@ -51,5 +50,4 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }

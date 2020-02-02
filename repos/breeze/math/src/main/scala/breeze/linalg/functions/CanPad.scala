@@ -28,7 +28,7 @@ object CanPadRight {
       def apply(
           v: DenseVector[T],
           optDim: Dimensions1,
-          optMode: OptPadMode): DenseVector[T] = {
+          optMode: OptPadMode): DenseVector[T] =
         optMode match {
           case Zero => padRight1ImplZero(v, optDim)
           case Max  => padRight1ImplFixed(v, optDim, max(v))
@@ -54,13 +54,11 @@ object CanPadRight {
             throw new IllegalArgumentException(
               "Option " + optMode.toString + " is not supported!")
         }
-      }
 
       def padRight1ImplZero[T](
           v: DenseVector[T],
-          optDim: Dimensions1): DenseVector[T] = {
+          optDim: Dimensions1): DenseVector[T] =
         padRight1ImplFixed(v, optDim, implicitly[Semiring[T]].zero)
-      }
 
       def padRight1ImplFixed[T](
           v: DenseVector[T],
@@ -121,7 +119,7 @@ object CanPadRight {
       def apply(
           m: DenseMatrix[T],
           optDim: Dimensions2,
-          optMode: OptPadMode): DenseMatrix[T] = {
+          optMode: OptPadMode): DenseMatrix[T] =
         optMode match {
           case Zero => padRight2ImplZero(m, optDim)
           case Max  => padRight2ImplFixed(m, optDim, max(m))
@@ -149,13 +147,11 @@ object CanPadRight {
             throw new IllegalArgumentException(
               "Option " + optMode.toString + " is not supported!")
         }
-      }
 
       def padRight2ImplZero[T](
           v: DenseMatrix[T],
-          optDim: Dimensions2): DenseMatrix[T] = {
+          optDim: Dimensions2): DenseMatrix[T] =
         padRight2ImplFixed(v, optDim, implicitly[Semiring[T]].zero)
-      }
 
       def padRight2ImplFixed[T](
           m: DenseMatrix[T],
@@ -192,7 +188,7 @@ object CanPadLeft {
       def apply(
           v: DenseVector[T],
           optDim: Dimensions1,
-          optMode: OptPadMode): DenseVector[T] = {
+          optMode: OptPadMode): DenseVector[T] =
         optMode match {
           case Zero => padLeft1ImplZero(v, optDim)
           case Max  => padLeft1ImplFixed(v, optDim, max(v))
@@ -218,13 +214,11 @@ object CanPadLeft {
             throw new IllegalArgumentException(
               "Option " + optMode.toString + " is not supported!")
         }
-      }
 
       def padLeft1ImplZero(
           v: DenseVector[T],
-          optDim: Dimensions1): DenseVector[T] = {
+          optDim: Dimensions1): DenseVector[T] =
         padLeft1ImplFixed(v, optDim, implicitly[Semiring[T]].zero)
-      }
 
       def padLeft1ImplFixed(
           v: DenseVector[T],
@@ -285,7 +279,7 @@ object CanPadLeft {
       def apply(
           m: DenseMatrix[T],
           optDim: Dimensions2,
-          optMode: OptPadMode): DenseMatrix[T] = {
+          optMode: OptPadMode): DenseMatrix[T] =
         optMode match {
           case Zero => padLeft2ImplZero(m, optDim)
           case Max  => padLeft2ImplFixed(m, optDim, max(m))
@@ -313,13 +307,11 @@ object CanPadLeft {
             throw new IllegalArgumentException(
               "Option " + optMode.toString + " is not supported!")
         }
-      }
 
       def padLeft2ImplZero[T](
           v: DenseMatrix[T],
-          optDim: Dimensions2): DenseMatrix[T] = {
+          optDim: Dimensions2): DenseMatrix[T] =
         padLeft2ImplFixed(v, optDim, implicitly[Semiring[T]].zero)
-      }
 
       def padLeft2ImplFixed[T](
           m: DenseMatrix[T],

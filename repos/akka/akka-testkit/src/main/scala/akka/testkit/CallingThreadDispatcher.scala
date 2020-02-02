@@ -71,7 +71,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime
-  private def gc(): Unit = {
+  private def gc(): Unit =
     queues = (Map.newBuilder[
       CallingThreadMailbox,
       Set[WeakReference[MessageQueue]]] /: queues) {
@@ -79,7 +79,6 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
         val nv = v filter (_.get ne null)
         if (nv.isEmpty) m else m += (k -> nv)
     }.result
-  }
 
   protected[akka] def registerQueue(
       mbox: CallingThreadMailbox,
@@ -267,14 +266,13 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       queue: MessageQueue,
       interruptedEx: InterruptedException = null) {
     def checkThreadInterruption(
-        intEx: InterruptedException): InterruptedException = {
+        intEx: InterruptedException): InterruptedException =
       if (Thread.interrupted()) { // clear interrupted flag before we continue, exception will be thrown later
         val ie = new InterruptedException(
           "Interrupted during message processing")
         log.error(ie, "Interrupted during message processing")
         ie
       } else intEx
-    }
 
     def throwInterruptionIfExistsOrSet(intEx: InterruptedException): Unit = {
       val ie = checkThreadInterruption(intEx)
@@ -398,7 +396,7 @@ class CallingThreadMailbox(
   val ctdLock = new ReentrantLock
   val suspendSwitch = new Switch
 
-  override def cleanUp(): Unit = {
+  override def cleanUp(): Unit =
     /*
      * This is called from dispatcher.unregister, i.e. under this.lock. If
      * another thread obtained a reference to this mailbox and enqueues after
@@ -414,5 +412,4 @@ class CallingThreadMailbox(
         actor.dispatcher.mailboxes.deadLetterMailbox.messageQueue)
       q.remove()
     }
-  }
 }

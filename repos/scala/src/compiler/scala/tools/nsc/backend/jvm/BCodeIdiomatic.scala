@@ -120,7 +120,7 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     final def emit(opc: Int) { jmethod.visitInsn(opc) }
 
-    final def genPrimitiveNot(bType: BType): Unit = {
+    final def genPrimitiveNot(bType: BType): Unit =
       if (bType.isIntSizedType) {
         emit(Opcodes.ICONST_M1)
         emit(Opcodes.IXOR)
@@ -130,7 +130,6 @@ abstract class BCodeIdiomatic extends SubComponent {
       } else {
         abort(s"Impossible to negate a $bType")
       }
-    }
 
     /*
      * can-multi-thread
@@ -234,13 +233,12 @@ abstract class BCodeIdiomatic extends SubComponent {
     /*
      * can-multi-thread
      */
-    final def genEndConcat(pos: Position): Unit = {
+    final def genEndConcat(pos: Position): Unit =
       invokevirtual(
         JavaStringBuilderClassName,
         "toString",
         "()Ljava/lang/String;",
         pos)
-    }
 
     /*
      * Emits one or more conversion instructions based on the types given as arguments.
@@ -636,15 +634,13 @@ abstract class BCodeIdiomatic extends SubComponent {
     // ---------------- type checks and casts ----------------
 
     // can-multi-thread
-    final def isInstance(tk: RefBType): Unit = {
+    final def isInstance(tk: RefBType): Unit =
       jmethod.visitTypeInsn(Opcodes.INSTANCEOF, tk.classOrArrayType)
-    }
 
     // can-multi-thread
-    final def checkCast(tk: RefBType): Unit = {
+    final def checkCast(tk: RefBType): Unit =
       // TODO ICode also requires: but that's too much, right? assert(!isBoxedType(tk),     "checkcast on boxed type: " + tk)
       jmethod.visitTypeInsn(Opcodes.CHECKCAST, tk.classOrArrayType)
-    }
 
   } // end of class JCodeMethodN
 

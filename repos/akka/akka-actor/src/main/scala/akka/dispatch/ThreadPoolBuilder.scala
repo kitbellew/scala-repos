@@ -296,9 +296,8 @@ trait ExecutorServiceDelegate extends ExecutorService {
 class SaneRejectedExecutionHandler extends RejectedExecutionHandler {
   def rejectedExecution(
       runnable: Runnable,
-      threadPoolExecutor: ThreadPoolExecutor): Unit = {
+      threadPoolExecutor: ThreadPoolExecutor): Unit =
     if (threadPoolExecutor.isShutdown)
       throw new RejectedExecutionException("Shutdown")
     else runnable.run()
-  }
 }

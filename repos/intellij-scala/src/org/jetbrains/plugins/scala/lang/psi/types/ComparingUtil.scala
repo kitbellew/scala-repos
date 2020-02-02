@@ -70,11 +70,10 @@ object ComparingUtil {
         tps1: Seq[ScType],
         tps2: Seq[ScType],
         tparams: Seq[PsiTypeParameter]): Boolean = {
-      def isNeverSubArg(t1: ScType, t2: ScType, variance: Int) = {
+      def isNeverSubArg(t1: ScType, t2: ScType, variance: Int) =
         if (variance > 0) isNeverSubType(t2, t1)
         else if (variance < 0) isNeverSubType(t1, t2)
         else isNeverSameType(t1, t2)
-      }
       def getVariance(tp: PsiTypeParameter) = tp match {
         case scParam: ScTypeParam =>
           if (scParam.isCovariant) 1
@@ -88,13 +87,12 @@ object ComparingUtil {
       }
     }
 
-    def neverSubArgs() = {
+    def neverSubArgs() =
       (tp1, tp2) match {
         case (ScParameterizedType(_, args1), ScParameterizedType(_, args2)) =>
           isNeverSubArgs(args1, args2, clazz2.getTypeParameters)
         case _ => false
       }
-    }
 
     isNeverSubClass(clazz1, clazz2) ||
     ((areClassesEquivalent(clazz1, clazz2) || (!sameType) && clazz1.isInheritor(

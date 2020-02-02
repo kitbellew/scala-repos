@@ -28,10 +28,9 @@ abstract class ParallelIterableCheck[T](collName: String)
   )
 
   // used to check if constructed collection is valid
-  def checkDataStructureInvariants(orig: Traversable[T], cf: AnyRef) = {
+  def checkDataStructureInvariants(orig: Traversable[T], cf: AnyRef) =
     // can be overridden in subclasses
     true
-  }
 
   def printDataStructureDebugInfo(cf: AnyRef) {
     // can be overridden in subclasses

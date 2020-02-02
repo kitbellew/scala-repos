@@ -57,8 +57,7 @@ trait ClassfileIndexer {
         signature: String,
         superName: String,
         interfaces: Array[String]
-    ): Unit = {
-
+    ): Unit =
       clazz = RawClassfile(
         ClassName.fromInternal(name),
         Option(signature),
@@ -70,11 +69,9 @@ trait ClassfileIndexer {
         Queue.empty,
         RawSource(None, None)
       )
-    }
 
-    override def visitSource(filename: String, debug: String): Unit = {
+    override def visitSource(filename: String, debug: String): Unit =
       clazz = clazz.copy(source = RawSource(Option(filename), None))
-    }
 
     override def visitField(
         access: Int,
@@ -145,9 +142,8 @@ trait ClassfileIndexer {
     // NOTE: only mutate via addRefs
     var refs = Set.empty[FullyQualifiedName]
 
-    protected def addRefs(seen: Seq[FullyQualifiedName]): Unit = {
+    protected def addRefs(seen: Seq[FullyQualifiedName]): Unit =
       refs ++= seen.filterNot(_.contains(clazz.name))
-    }
     protected def addRef(seen: FullyQualifiedName): Unit = addRefs(seen :: Nil)
 
     private val fieldVisitor = new FieldVisitor(ASM5) {
@@ -187,16 +183,14 @@ trait ClassfileIndexer {
         name: String,
         outerName: String,
         innerName: String,
-        access: Int): Unit = {
+        access: Int): Unit =
       addRef(ClassName.fromInternal(name))
-    }
 
     override def visitOuterClass(
         owner: String,
         name: String,
-        desc: String): Unit = {
+        desc: String): Unit =
       addRef(ClassName.fromInternal(owner))
-    }
 
     private val annVisitor: AnnotationVisitor = new AnnotationVisitor(ASM5) {
       override def visitAnnotation(name: String, desc: String) = handleAnn(desc)
@@ -238,17 +232,14 @@ trait ClassfileIndexer {
         start: Label,
         end: Label,
         index: Int
-    ): Unit = {
+    ): Unit =
       internalRefs :+= ClassName.fromDescriptor(desc)
-    }
 
-    override def visitMultiANewArrayInsn(desc: String, dims: Int): Unit = {
+    override def visitMultiANewArrayInsn(desc: String, dims: Int): Unit =
       internalRefs :+= ClassName.fromDescriptor(desc)
-    }
 
-    override def visitTypeInsn(opcode: Int, desc: String): Unit = {
+    override def visitTypeInsn(opcode: Int, desc: String): Unit =
       internalRefs :+= ClassName.fromInternal(desc)
-    }
 
     override def visitFieldInsn(
         opcode: Int,

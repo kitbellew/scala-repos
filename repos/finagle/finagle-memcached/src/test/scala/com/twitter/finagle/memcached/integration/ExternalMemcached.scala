@@ -9,11 +9,10 @@ import scala.collection._
 object TestMemcachedServer {
   def start(): Option[TestMemcachedServer] = start(None)
 
-  def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] = {
+  def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] =
     if (!Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
       InternalMemcached.start(address)
     else ExternalMemcached.start(address)
-  }
 }
 
 trait TestMemcachedServer {
@@ -22,7 +21,7 @@ trait TestMemcachedServer {
 }
 
 private[memcached] object InternalMemcached {
-  def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] = {
+  def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] =
     try {
       val server = new InProcessMemcached(
         address.getOrElse(
@@ -36,7 +35,6 @@ private[memcached] object InternalMemcached {
     } catch {
       case NonFatal(_) => None
     }
-  }
 }
 
 private[memcached] object ExternalMemcached { self =>
@@ -108,7 +106,7 @@ private[memcached] object ExternalMemcached { self =>
 
   def waitForPort(port: Int, timeout: Duration = 5.seconds): Boolean = {
     val elapsed = Stopwatch.start()
-    def loop(): Boolean = {
+    def loop(): Boolean =
       if (!isPortAvailable(port))
         true
       else if (timeout < elapsed())
@@ -117,7 +115,6 @@ private[memcached] object ExternalMemcached { self =>
         Thread.sleep(100)
         loop()
       }
-    }
     loop()
   }
 

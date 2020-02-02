@@ -10,7 +10,7 @@ trait ClientRequestTracingFilter[Req, Res] extends SimpleFilter[Req, Res] {
   def apply(
       request: Req,
       service: Service[Req, Res]
-  ) = {
+  ) =
     if (Trace.isActivelyTracing) {
       Trace.recordServiceName(serviceName)
       Trace.recordRpc(methodName(request))
@@ -19,7 +19,6 @@ trait ClientRequestTracingFilter[Req, Res] extends SimpleFilter[Req, Res] {
       service(request) onSuccess { _ => Trace.record(Annotation.ClientRecv()) }
     } else
       service(request)
-  }
 
   val serviceName: String
   def methodName(req: Req): String

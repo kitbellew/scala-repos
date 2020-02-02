@@ -121,7 +121,7 @@ abstract class CharBuffer private[nio] (
   def compareTo(that: CharBuffer): Int =
     GenBuffer(this).generic_compareTo(that)(_.compareTo(_))
 
-  override def toString(): String = {
+  override def toString(): String =
     if (_array != null) { // even if read-only
       new String(_array, position + _arrayOffset, remaining)
     } else {
@@ -131,7 +131,6 @@ abstract class CharBuffer private[nio] (
       position(savedPos)
       new String(chars)
     }
-  }
 
   final def length(): Int = remaining
 

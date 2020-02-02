@@ -48,10 +48,9 @@ object ClientId {
   private[finagle] def let[R](clientId: ClientId)(f: => R): R =
     Contexts.broadcast.let(clientIdCtx, Some(clientId))(f)
 
-  private[finagle] def let[R](clientId: Option[ClientId])(f: => R): R = {
+  private[finagle] def let[R](clientId: Option[ClientId])(f: => R): R =
     clientId match {
       case Some(id) => Contexts.broadcast.let(clientIdCtx, Some(id))(f)
       case None     => Contexts.broadcast.letClear(clientIdCtx)(f)
     }
-  }
 }

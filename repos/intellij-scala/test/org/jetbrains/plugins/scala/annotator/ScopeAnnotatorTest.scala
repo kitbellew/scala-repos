@@ -524,12 +524,11 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def clashesOf(@Language(value = "Scala", prefix = Header) code: String) = {
+  def clashesOf(@Language(value = "Scala", prefix = Header) code: String) =
     messages(code).map {
       case error: Error => error.element
       case message      => Assert.fail("Unexpected message: " + message)
     }
-  }
 
   def assertClashes(
       @Language(value = "Scala", prefix = Header) code: String,

@@ -388,11 +388,10 @@ trait ParIterableLike[
     *  @throws UnsupportedOperationException
     *  if this $coll is empty.
     */
-  def reduce[U >: T](op: (U, U) => U): U = {
+  def reduce[U >: T](op: (U, U) => U): U =
     tasksupport.executeAndWaitResult(new Reduce(op, splitter) mapResult {
       _.get
     })
-  }
 
   /** Optionally reduces the elements of this sequence using the specified associative binary operator.
     *
@@ -426,9 +425,8 @@ trait ParIterableLike[
     *  @param op      a binary operator that must be associative
     *  @return        the result of applying fold operator `op` between all the elements and `z`
     */
-  def fold[U >: T](z: U)(op: (U, U) => U): U = {
+  def fold[U >: T](z: U)(op: (U, U) => U): U =
     tasksupport.executeAndWaitResult(new Fold(z, op, splitter))
-  }
 
   /** Aggregates the results of applying an operator to subsequent elements.
     *
@@ -459,10 +457,9 @@ trait ParIterableLike[
     *  @param seqop     an operator used to accumulate results within a partition
     *  @param combop    an associative operator used to combine results from different partitions
     */
-  def aggregate[S](z: => S)(seqop: (S, T) => S, combop: (S, S) => S): S = {
+  def aggregate[S](z: => S)(seqop: (S, T) => S, combop: (S, S) => S): S =
     tasksupport.executeAndWaitResult(
       new Aggregate(() => z, seqop, combop, splitter))
-  }
 
   def foldLeft[S](z: S)(op: (S, T) => S): S = seq.foldLeft(z)(op)
 
@@ -483,33 +480,27 @@ trait ParIterableLike[
     *  @tparam U    the result type of the function applied to each element, which is always discarded
     *  @param f     function applied to each element
     */
-  def foreach[U](f: T => U) = {
+  def foreach[U](f: T => U) =
     tasksupport.executeAndWaitResult(new Foreach(f, splitter))
-  }
 
-  def count(p: T => Boolean): Int = {
+  def count(p: T => Boolean): Int =
     tasksupport.executeAndWaitResult(new Count(p, splitter))
-  }
 
-  def sum[U >: T](implicit num: Numeric[U]): U = {
+  def sum[U >: T](implicit num: Numeric[U]): U =
     tasksupport.executeAndWaitResult(new Sum[U](num, splitter))
-  }
 
-  def product[U >: T](implicit num: Numeric[U]): U = {
+  def product[U >: T](implicit num: Numeric[U]): U =
     tasksupport.executeAndWaitResult(new Product[U](num, splitter))
-  }
 
-  def min[U >: T](implicit ord: Ordering[U]): T = {
+  def min[U >: T](implicit ord: Ordering[U]): T =
     tasksupport
       .executeAndWaitResult(new Min(ord, splitter) mapResult { _.get })
       .asInstanceOf[T]
-  }
 
-  def max[U >: T](implicit ord: Ordering[U]): T = {
+  def max[U >: T](implicit ord: Ordering[U]): T =
     tasksupport
       .executeAndWaitResult(new Max(ord, splitter) mapResult { _.get })
       .asInstanceOf[T]
-  }
 
   def maxBy[S](f: T => S)(implicit cmp: Ordering[S]): T = {
     if (isEmpty) throw new UnsupportedOperationException("empty.maxBy")
@@ -568,10 +559,9 @@ trait ParIterableLike[
     *  @param p       a predicate used to test elements
     *  @return        true if `p` holds for all elements, false otherwise
     */
-  def forall(@deprecatedName('pred) p: T => Boolean): Boolean = {
+  def forall(@deprecatedName('pred) p: T => Boolean): Boolean =
     tasksupport.executeAndWaitResult(
       new Forall(p, splitter assign new DefaultSignalling with VolatileAbort))
-  }
 
   /** Tests whether a predicate holds for some element of this $coll.
     *
@@ -580,10 +570,9 @@ trait ParIterableLike[
     *  @param p       a predicate used to test elements
     *  @return        true if `p` holds for some element, false otherwise
     */
-  def exists(@deprecatedName('pred) p: T => Boolean): Boolean = {
+  def exists(@deprecatedName('pred) p: T => Boolean): Boolean =
     tasksupport.executeAndWaitResult(
       new Exists(p, splitter assign new DefaultSignalling with VolatileAbort))
-  }
 
   /** Finds some element in the collection for which the predicate holds, if such
     *  an element exists. The element may not necessarily be the first such element
@@ -596,10 +585,9 @@ trait ParIterableLike[
     *  @param p        predicate used to test the elements
     *  @return         an option value with the element if such an element exists, or `None` otherwise
     */
-  def find(@deprecatedName('pred) p: T => Boolean): Option[T] = {
+  def find(@deprecatedName('pred) p: T => Boolean): Option[T] =
     tasksupport.executeAndWaitResult(
       new Find(p, splitter assign new DefaultSignalling with VolatileAbort))
-  }
 
   /** Creates a combiner factory. Each combiner factory instance is used
     *  once per invocation of a parallel transformer method for a single
@@ -644,22 +632,20 @@ trait ParIterableLike[
 
   def withFilter(pred: T => Boolean): Repr = filter(pred)
 
-  def filter(pred: T => Boolean): Repr = {
+  def filter(pred: T => Boolean): Repr =
     tasksupport.executeAndWaitResult(
       new Filter(pred, combinerFactory, splitter) mapResult {
         _.resultWithTaskSupport
       })
-  }
 
-  def filterNot(pred: T => Boolean): Repr = {
+  def filterNot(pred: T => Boolean): Repr =
     tasksupport.executeAndWaitResult(
       new FilterNot(pred, combinerFactory, splitter) mapResult {
         _.resultWithTaskSupport
       })
-  }
 
   def ++[U >: T, That](that: GenTraversableOnce[U])(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+      implicit bf: CanBuildFrom[Repr, U, That]): That =
     if (that.isParallel && bf.isParallel) {
       // println("case both are parallel")
       val other = that.asParIterable
@@ -693,15 +679,13 @@ trait ParIterableLike[
       for (elem <- that.seq) b += elem
       setTaskSupport(b.result(), tasksupport)
     }
-  }
 
-  def partition(pred: T => Boolean): (Repr, Repr) = {
+  def partition(pred: T => Boolean): (Repr, Repr) =
     tasksupport.executeAndWaitResult(
       new Partition(pred, combinerFactory, combinerFactory, splitter) mapResult {
         p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
-  }
 
   def groupBy[K](f: T => K): immutable.ParMap[K, Repr] = {
     val r = tasksupport.executeAndWaitResult(
@@ -773,13 +757,12 @@ trait ParIterableLike[
     cb.resultWithTaskSupport
   }
 
-  def splitAt(n: Int): (Repr, Repr) = {
+  def splitAt(n: Int): (Repr, Repr) =
     tasksupport.executeAndWaitResult(
       new SplitAt(n, combinerFactory, combinerFactory, splitter) mapResult {
         p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
-  }
 
   /** Computes a prefix scan of the elements of the collection.
     *
@@ -957,20 +940,18 @@ trait ParIterableLike[
         tasksupport)
 
   protected def toParCollection[U >: T, That](
-      cbf: () => Combiner[U, That]): That = {
+      cbf: () => Combiner[U, That]): That =
     tasksupport.executeAndWaitResult(
       new ToParCollection(combinerFactory(cbf), splitter) mapResult {
         _.resultWithTaskSupport
       })
-  }
 
   protected def toParMap[K, V, That](cbf: () => Combiner[(K, V), That])(
-      implicit ev: T <:< (K, V)): That = {
+      implicit ev: T <:< (K, V)): That =
     tasksupport.executeAndWaitResult(
       new ToParMap(combinerFactory(cbf), splitter)(ev) mapResult {
         _.resultWithTaskSupport
       })
-  }
 
   @deprecated("Use .seq.view instead", "2.11.0")
   def view = seq.view
@@ -1275,11 +1256,10 @@ trait ParIterableLike[
       result = pit.flatmap2combiner(f, pbf())
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new FlatMap(f, pbf, p)
-    override def merge(that: FlatMap[S, That]) = {
+    override def merge(that: FlatMap[S, That]) =
       //debuglog("merging " + result + " and " + that.result)
       result = result combine that.result
-      //debuglog("merged into " + result)
-    }
+    //debuglog("merged into " + result)
   }
 
   protected[this] class Forall(
@@ -1328,9 +1308,8 @@ trait ParIterableLike[
       protected[this] val pit: IterableSplitter[T])
       extends Transformer[Combiner[U, This], Filter[U, This]] {
     @volatile var result: Combiner[U, This] = null
-    def leaf(prev: Option[Combiner[U, This]]) = {
+    def leaf(prev: Option[Combiner[U, This]]) =
       result = pit.filter2combiner(pred, reuse(prev, cbf()))
-    }
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new Filter(pred, cbf, p)
     override def merge(that: Filter[U, This]) =
@@ -1343,9 +1322,8 @@ trait ParIterableLike[
       protected[this] val pit: IterableSplitter[T])
       extends Transformer[Combiner[U, This], FilterNot[U, This]] {
     @volatile var result: Combiner[U, This] = null
-    def leaf(prev: Option[Combiner[U, This]]) = {
+    def leaf(prev: Option[Combiner[U, This]]) =
       result = pit.filterNot2combiner(pred, reuse(prev, cbf()))
-    }
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new FilterNot(pred, cbf, p)
     override def merge(that: FilterNot[U, This]) =
@@ -1404,11 +1382,10 @@ trait ParIterableLike[
     }
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new GroupBy(f, mcf, p)
-    override def merge(that: GroupBy[K, U]) = {
+    override def merge(that: GroupBy[K, U]) =
       // note: this works because we know that a HashMapCombiner doesn't merge same keys until evaluation
       // --> we know we're not dropping any mappings
       result = (result combine that.result).asInstanceOf[HashMapCombiner[K, U]]
-    }
   }
 
   protected[this] class Take[U >: T, This >: Repr](
@@ -1417,9 +1394,8 @@ trait ParIterableLike[
       protected[this] val pit: IterableSplitter[T])
       extends Transformer[Combiner[U, This], Take[U, This]] {
     @volatile var result: Combiner[U, This] = null
-    def leaf(prev: Option[Combiner[U, This]]) = {
+    def leaf(prev: Option[Combiner[U, This]]) =
       result = pit.take2combiner(n, reuse(prev, cbf()))
-    }
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       throw new UnsupportedOperationException
     override def split = {
@@ -1838,9 +1814,8 @@ trait ParIterableLike[
       var acc: U)
       extends ScanTree[U] {
     def beginsAt = from
-    def pushdown(v: U) = {
+    def pushdown(v: U) =
       acc = op(v, acc)
-    }
     def leftmost = this
     def rightmost = this
     def print(depth: Int) = println((" " * depth) + this)

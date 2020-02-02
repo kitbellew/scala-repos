@@ -21,9 +21,8 @@ object PortDefinition {
 }
 
 object PortDefinitions {
-  def apply(ports: Int*): Seq[PortDefinition] = {
+  def apply(ports: Int*): Seq[PortDefinition] =
     ports.map(PortDefinition.apply(_)).toIndexedSeq
-  }
 
   implicit val portDefinitionsValidator: Validator[Seq[PortDefinition]] =
     validator[Seq[PortDefinition]] { portDefinitions =>

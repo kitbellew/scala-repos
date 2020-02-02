@@ -114,9 +114,8 @@ object CSVConverter {
         case _ => fail("Cannot convert '" ++ s ++ "' to HList")
       }
 
-      def to(ft: V :: T): String = {
+      def to(ft: V :: T): String =
         scv.value.to(ft.head) ++ "," ++ sct.value.to(ft.tail)
-      }
     }
 
   implicit def deriveHConsOption[V, T <: HList](
@@ -136,10 +135,9 @@ object CSVConverter {
         case _ => fail("Cannot convert '" ++ s ++ "' to HList")
       }
 
-      def to(ft: Option[V] :: T): String = {
+      def to(ft: Option[V] :: T): String =
         ft.head.map(scv.value.to(_) ++ ",").getOrElse("") ++ sct.value.to(
           ft.tail)
-      }
     }
 
   // Anything with a Generic

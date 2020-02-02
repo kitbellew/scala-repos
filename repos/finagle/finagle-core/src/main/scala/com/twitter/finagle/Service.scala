@@ -12,13 +12,12 @@ object Service {
     */
   def rescue[Req, Rep](service: Service[Req, Rep]) =
     new ServiceProxy[Req, Rep](service) {
-      override def apply(request: Req): Future[Rep] = {
+      override def apply(request: Req): Future[Rep] =
         try {
           service(request)
         } catch {
           case NonFatal(e) => Future.exception(e)
         }
-      }
     }
 
   /**
@@ -240,7 +239,7 @@ object FactoryToService {
     new Stack.Module1[Enabled, ServiceFactory[Req, Rep]] {
       val role = FactoryToService.role
       val description = "Apply service factory on each service request"
-      def make(_enabled: Enabled, next: ServiceFactory[Req, Rep]) = {
+      def make(_enabled: Enabled, next: ServiceFactory[Req, Rep]) =
         if (_enabled.enabled) {
           /*
            * The idea here is to push FactoryToService down the stack
@@ -277,7 +276,6 @@ object FactoryToService {
         } else {
           next
         }
-      }
     }
 }
 

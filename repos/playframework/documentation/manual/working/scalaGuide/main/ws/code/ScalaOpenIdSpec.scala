@@ -65,15 +65,14 @@ object ScalaOpenIdSpec extends PlaySpecification {
   }
   //#flow
 
-  def extended(openId: String)(implicit request: RequestHeader) = {
+  def extended(openId: String)(implicit request: RequestHeader) =
     //#extended
     openIdClient.redirectURL(
       openId,
       routes.Application.openIdCallback.absoluteURL(),
       Seq("email" -> "http://schema.openid.net/contact/email")
     )
-    //#extended
-  }
+  //#extended
 }
 
 object routes {

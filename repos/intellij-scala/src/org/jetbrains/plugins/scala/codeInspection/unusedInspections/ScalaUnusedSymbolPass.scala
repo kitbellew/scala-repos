@@ -247,17 +247,15 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
   import scala.collection.JavaConversions._
   override def getInfos: java.util.List[HighlightInfo] = highlightInfos.toList
 
-  private def isUnusedSymbolSuppressed(element: PsiElement) = {
+  private def isUnusedSymbolSuppressed(element: PsiElement) =
     inspectionSuppressor.isSuppressedFor(
       element,
       ScalaUnusedSymbolInspection.ShortName)
-  }
 
-  private def isVarCouldBeValSuppressed(element: PsiElement) = {
+  private def isVarCouldBeValSuppressed(element: PsiElement) =
     inspectionSuppressor.isSuppressedFor(
       element,
       VarCouldBeValInspection.ShortName)
-  }
 }
 
 class DeleteElementFix(element: PsiElement) extends IntentionAction {
@@ -279,9 +277,8 @@ class DeleteElementFix(element: PsiElement) extends IntentionAction {
 
   def startInWriteAction: Boolean = true
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     file.getManager.isInProject(file) && file.isInstanceOf[ScalaFile]
-  }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
@@ -293,20 +290,18 @@ class DeleteElementFix(element: PsiElement) extends IntentionAction {
 
 class VarToValFix(varDef: ScVariableDefinition, name: Option[String])
     extends IntentionAction {
-  def getText: String = {
+  def getText: String =
     name match {
       case Some(n) => "Convert var '%s' to val".format(n)
       case None    => "Convert var to val"
     }
-  }
 
   def getFamilyName: String = "Convert var to val"
 
   def startInWriteAction: Boolean = true
 
-  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
+  def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =
     file.getManager.isInProject(file) && file.isInstanceOf[ScalaFile]
-  }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!varDef.isValid) return

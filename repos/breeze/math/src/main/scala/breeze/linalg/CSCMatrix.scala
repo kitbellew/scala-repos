@@ -167,17 +167,15 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     reserve(used)
   }
 
-  def activeKeysIterator: Iterator[(Int, Int)] = {
+  def activeKeysIterator: Iterator[(Int, Int)] =
     for (c <- Iterator.range(0, cols);
          rr <- Iterator.range(colPtrs(c), colPtrs(c + 1)))
       yield (rowIndices(rr), c)
-  }
 
-  def activeIterator: Iterator[((Int, Int), V)] = {
+  def activeIterator: Iterator[((Int, Int), V)] =
     for (c <- Iterator.range(0, cols);
          rr <- Iterator.range(colPtrs(c), colPtrs(c + 1)))
       yield (rowIndices(rr), c) -> data(rr)
-  }
 
   def activeValuesIterator: Iterator[V] = data.iterator.take(used)
 
@@ -209,9 +207,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     toString(maxLines = Terminal.terminalHeight - 3)
 
   /** just uses the data from this matrix. No copies are made. designed for temporaries */
-  private[breeze] def use(matrix: CSCMatrix[V]): Unit = {
+  private[breeze] def use(matrix: CSCMatrix[V]): Unit =
     use(matrix.data, matrix.colPtrs, matrix.rowIndices, matrix.used)
-  }
 
   def use(
       data: Array[V],
@@ -228,7 +225,7 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     this.used = used
   }
 
-  def copy: CSCMatrix[V] = {
+  def copy: CSCMatrix[V] =
     new CSCMatrix[V](
       ArrayUtil.copyOf(_data, activeSize),
       rows,
@@ -236,9 +233,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       colPtrs.clone(),
       activeSize,
       _rowIndices.clone)
-  }
 
-  def flatten(view: View = View.Copy): SparseVector[V] = {
+  def flatten(view: View = View.Copy): SparseVector[V] =
     view match {
       // This seems kind of silly, since you don't save a ton of time, but for parity with DenseMatrix...
       case View.Require =>
@@ -273,13 +269,11 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
         sv
       case View.Prefer => flatten(View.Require)
     }
-  }
 
   override def toDenseMatrix(
       implicit cm: ClassTag[V],
-      zero: Zero[V]): DenseMatrix[V] = {
+      zero: Zero[V]): DenseMatrix[V] =
     toDense
-  }
 
   def toDense: DenseMatrix[V] = {
     implicit val ctg = ClassTag(data.getClass.getComponentType)
@@ -336,7 +330,7 @@ object CSCMatrix
   def zeros[@specialized(Int, Float, Double) V: ClassTag: Zero](
       rows: Int,
       cols: Int,
-      initialNonzero: Int) = {
+      initialNonzero: Int) =
     new CSCMatrix[V](
       new Array(initialNonzero),
       rows,
@@ -344,7 +338,6 @@ object CSCMatrix
       new Array(cols + 1),
       0,
       new Array(initialNonzero))
-  }
 
   def zeros[@spec(Double, Int, Float, Long) V: ClassTag: Zero](
       rows: Int,
@@ -372,9 +365,8 @@ object CSCMatrix
 
   class CanCopyCSCMatrix[@spec(Double, Int, Float, Long) V: ClassTag: Zero]
       extends CanCopy[CSCMatrix[V]] {
-    def apply(v1: CSCMatrix[V]) = {
+    def apply(v1: CSCMatrix[V]) =
       v1.copy
-    }
   }
 
   implicit def canCopySparse[@spec(Double, Int, Float, Long) V: ClassTag: Zero] =
@@ -383,9 +375,8 @@ object CSCMatrix
   implicit def canCreateZerosLike[V: ClassTag: Zero]
       : CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] =
     new CanCreateZerosLike[CSCMatrix[V], CSCMatrix[V]] {
-      def apply(v1: CSCMatrix[V]): CSCMatrix[V] = {
+      def apply(v1: CSCMatrix[V]): CSCMatrix[V] =
         zeros[V](v1.rows, v1.cols)
-      }
     }
 
   implicit def canMapValues[V, R: ClassTag: Zero: Semiring]
@@ -450,7 +441,7 @@ object CSCMatrix
 
   implicit def scalarOf[T]: ScalarOf[CSCMatrix[T], T] = ScalarOf.dummy
 
-  implicit def canIterateValues[V]: CanTraverseValues[CSCMatrix[V], V] = {
+  implicit def canIterateValues[V]: CanTraverseValues[CSCMatrix[V], V] =
     new CanTraverseValues[CSCMatrix[V], V] {
 
       def isTraversableAgain(from: CSCMatrix[V]): Boolean = true
@@ -461,10 +452,9 @@ object CSCMatrix
         fn.visitArray(from.data, 0, from.activeSize, 1)
       }
     }
-  }
 
   implicit def canIterateKeysValues[V: Zero]
-      : CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] = {
+      : CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] =
     new CanTraverseKeyValuePairs[CSCMatrix[V], (Int, Int), V] {
 
       def isTraversableAgain(from: CSCMatrix[V]): Boolean = true
@@ -482,10 +472,9 @@ object CSCMatrix
         from.activeIterator.foreach((fn.visit _).tupled)
       }
     }
-  }
 
   implicit def canTranspose[V: ClassTag: Zero: Semiring]
-      : CanTranspose[CSCMatrix[V], CSCMatrix[V]] = {
+      : CanTranspose[CSCMatrix[V], CSCMatrix[V]] =
     new CanTranspose[CSCMatrix[V], CSCMatrix[V]] {
       def apply(from: CSCMatrix[V]) = {
         val transposedMtx =
@@ -507,10 +496,9 @@ object CSCMatrix
         transposedMtx.result(false, false)
       }
     }
-  }
 
   implicit def canTransposeComplex
-      : CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] = {
+      : CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] =
     new CanTranspose[CSCMatrix[Complex], CSCMatrix[Complex]] {
       def apply(from: CSCMatrix[Complex]) = {
         val transposedMtx = CSCMatrix.zeros[Complex](from.cols, from.rows)
@@ -528,7 +516,6 @@ object CSCMatrix
         transposedMtx
       }
     }
-  }
 
   /**
     * This is basically an unsorted coordinate matrix.

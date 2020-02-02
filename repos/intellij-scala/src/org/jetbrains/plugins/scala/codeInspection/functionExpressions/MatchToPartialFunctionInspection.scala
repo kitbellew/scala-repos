@@ -54,13 +54,12 @@ class MatchToPartialFunctionInspection
       registerProblem(holder, ms, ms)
   }
 
-  private def notExpectedType(expr: ScExpression) = {
+  private def notExpectedType(expr: ScExpression) =
     (expr.getType(), expr.expectedType()) match {
       case (Success(tpe: ScType, _), Some(expType: ScType)) =>
         !expType.equiv(tpe)
       case _ => true
     }
-  }
 
   private def registerProblem(
       holder: ProblemsHolder,
@@ -164,7 +163,7 @@ class MatchToPartialFunctionQuickFix(
     }
   }
 
-  private def needNamingPattern(matchStmt: ScMatchStmt): Seq[Int] = {
+  private def needNamingPattern(matchStmt: ScMatchStmt): Seq[Int] =
     matchStmt match {
       case ScMatchStmt(expr: ScReferenceExpression, _) =>
         val arg = expr.resolve()
@@ -180,7 +179,6 @@ class MatchToPartialFunctionQuickFix(
         } yield index
       case _ => Nil
     }
-  }
 
   private def addNamingPatterns(
       matchStmt: ScMatchStmt,

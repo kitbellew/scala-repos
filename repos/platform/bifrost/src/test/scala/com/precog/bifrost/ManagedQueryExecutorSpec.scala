@@ -113,7 +113,7 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
       .copoint
   }
 
-  def poll(jobId: JobId): Future[Option[(Option[MimeType], String)]] = {
+  def poll(jobId: JobId): Future[Option[(Option[MimeType], String)]] =
     jobManager.getResult(jobId) flatMap {
       case Left(_) =>
         Future(None)
@@ -122,7 +122,6 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
           Some(mimeType -> new String(data, "UTF-8"))
         }
     }
-  }
 
   def waitForJobCompletion(jobId: JobId): Future[Job] = {
     import JobState._
@@ -223,7 +222,7 @@ trait TestManagedPlatform
   }
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
-      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
+      : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] =
     new QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] {
 
       import UserQuery.Serialization._
@@ -247,23 +246,20 @@ trait TestManagedPlatform
         }
       }
     }
-  }
 
   def asyncExecutorFor(
-      apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]] = {
+      apiKey: APIKey): EitherT[Future, String, QueryExecutor[Future, JobId]] =
     EitherT.right(Future(new AsyncQueryExecutor {
       val executionContext = self.executionContext
     }))
-  }
 
   def syncExecutorFor(apiKey: APIKey): EitherT[
     Future,
     String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] = {
+    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] =
     EitherT.right(Future(new SyncQueryExecutor {
       val executionContext = self.executionContext
     }))
-  }
 
   def startup = Future { true }
   def shutdown = Future { actorSystem.shutdown; true }

@@ -46,9 +46,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   private val boolFile = "bool.csv"
   private val simpleSparseFile = "simple_sparse.csv"
 
-  private def testFile(fileName: String): String = {
+  private def testFile(fileName: String): String =
     Thread.currentThread().getContextClassLoader.getResource(fileName).toString
-  }
 
   /** Verifies data and schema. */
   private def verifyCars(

@@ -37,7 +37,7 @@ final class JUnitExecuteTest(
       logFormattedInfo(null, "ignored")
       taskSkipped()
     } else {
-      def runWithOrWithoutQuietMode[T](block: => T): T = {
+      def runWithOrWithoutQuietMode[T](block: => T): T =
         if (runner.runSettings.quiet) {
           scala.Console.withOut(new ByteArrayOutputStream()) {
             block
@@ -45,7 +45,6 @@ final class JUnitExecuteTest(
         } else {
           block
         }
-      }
 
       runWithOrWithoutQuietMode {
         for (method <- jUnitMetadata.testMethods) {
@@ -270,8 +269,7 @@ final class JUnitExecuteTest(
       packageName: String,
       className: String,
       method: String,
-      msg: String): String = {
+      msg: String): String =
     if (method != null) s"$prefix$packageName.$className.$method $msg"
     else s"$prefix$packageName.$className $msg"
-  }
 }

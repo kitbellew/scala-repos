@@ -42,7 +42,7 @@ object AllowedHostsFilterSpec extends PlaySpecification {
 
   def newApplication(
       result: RequestHeader => Result,
-      config: String): Application = {
+      config: String): Application =
     new GuiceApplicationBuilder()
       .configure(Configuration(ConfigFactory.parseString(config)))
       .overrides(
@@ -51,12 +51,10 @@ object AllowedHostsFilterSpec extends PlaySpecification {
         bind[HttpFilters].to[Filters]
       )
       .build()
-  }
 
   def withApplication[T](result: RequestHeader => Result, config: String)(
-      block: => T): T = {
+      block: => T): T =
     running(newApplication(result, config))(block)
-  }
 
   val TestServerPort = 8192
   def withServer[T](result: RequestHeader => Result, config: String)(

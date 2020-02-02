@@ -161,7 +161,7 @@ class NettyServer(
   /**
     * Create a sink for the incoming connection channels.
     */
-  private def channelSink(secure: Boolean): Sink[Channel, Future[Done]] = {
+  private def channelSink(secure: Boolean): Sink[Channel, Future[Done]] =
     Sink.foreach[Channel] { (connChannel: Channel) =>
       // Setup the channel for explicit reads
       connChannel
@@ -219,9 +219,8 @@ class NettyServer(
       childChannelEventLoop.register(connChannel)
       allChannels.add(connChannel)
     }
-  }
 
-  private def handleSubscriberError(error: Throwable): Unit = {
+  private def handleSubscriberError(error: Throwable): Unit =
     error match {
       // IO exceptions happen all the time, it usually just means that the client has closed the connection before fully
       // sending/receiving the response.
@@ -230,7 +229,6 @@ class NettyServer(
       case e =>
         logger.error("Exception caught in Netty", e)
     }
-  }
 
   // Maybe the HTTP server channel
   private val httpChannel = config.port.map(bindChannel(_, secure = false))
@@ -335,24 +333,22 @@ object NettyServer {
     */
   def fromApplication(
       application: Application,
-      config: ServerConfig = ServerConfig()): NettyServer = {
+      config: ServerConfig = ServerConfig()): NettyServer =
     new NettyServer(
       config,
       ApplicationProvider(application),
       () => Future.successful(()),
       application.actorSystem)(application.materializer)
-  }
 
   /**
     * Create a Netty server from the given router and server config.
     */
   def fromRouter(config: ServerConfig = ServerConfig())(
-      routes: PartialFunction[RequestHeader, Handler]): NettyServer = {
+      routes: PartialFunction[RequestHeader, Handler]): NettyServer =
     new NettyServerComponents with BuiltInComponents {
       override lazy val serverConfig = config
       lazy val router = Router.from(routes)
     }.server
-  }
 }
 
 /**

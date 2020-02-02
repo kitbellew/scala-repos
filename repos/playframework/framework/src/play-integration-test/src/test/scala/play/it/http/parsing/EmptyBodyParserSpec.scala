@@ -14,14 +14,13 @@ object EmptyBodyParserSpec extends PlaySpecification {
   "The empty body parser" should {
 
     def parse(bytes: ByteString, contentType: Option[String], encoding: String)(
-        implicit mat: Materializer) = {
+        implicit mat: Materializer) =
       await(
         BodyParsers.parse
           .empty(FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(bytes))
       )
-    }
 
     "parse empty bodies" in new WithApplication() {
       parse(ByteString.empty, Some("text/plain"), "utf-8") must beRight(())

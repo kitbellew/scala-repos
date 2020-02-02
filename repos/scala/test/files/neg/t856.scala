@@ -5,7 +5,6 @@ class ComplexRect(val _1: Double, _2: Double) extends Complex {
 }
 
 object Test {
-  def main(args: Array[String]) = {
+  def main(args: Array[String]) =
     new ComplexRect(1, 1)._2
-  }
 }

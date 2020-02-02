@@ -82,41 +82,37 @@ class ScalaGradleDataServiceTest
       }
     }.build.toDataNode
 
-  def testEmptyScalaCompilerClasspath(): Unit = {
+  def testEmptyScalaCompilerClasspath(): Unit =
     importProjectData(generateProject(None, Set.empty, None))
-    // FIXME: can't check notification count for Gradle because tool window is uninitialized
-    // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
-  }
+  // FIXME: can't check notification count for Gradle because tool window is uninitialized
+  // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
 
-  def testScalaCompilerClasspathWithoutScala(): Unit = {
+  def testScalaCompilerClasspathWithoutScala(): Unit =
     importProjectData(
       generateProject(
         None,
         Set(new File("/tmp/test/not-a-scala-library.jar")),
         None))
-    // FIXME: can't check notification count for Gradle because tool window is uninitialized
-    // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
-  }
+  // FIXME: can't check notification count for Gradle because tool window is uninitialized
+  // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
 
-  def testWithoutScalaLibrary(): Unit = {
+  def testWithoutScalaLibrary(): Unit =
     importProjectData(
       generateProject(
         None,
         Set(new File("/tmp/test/scala-library-2.10.4.jar")),
         None))
-    // FIXME: can't check notification count for Gradle because tool window is uninitialized
-    // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
-  }
+  // FIXME: can't check notification count for Gradle because tool window is uninitialized
+  // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
 
-  def testWithDifferentVersionOfScalaLibrary(): Unit = {
+  def testWithDifferentVersionOfScalaLibrary(): Unit =
     importProjectData(
       generateProject(
         Some("2.11.5"),
         Set(new File("/tmp/test/scala-library-2.10.4.jar")),
         None))
-    // FIXME: can't check notification count for Gradle because tool window is uninitialized
-    // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
-  }
+  // FIXME: can't check notification count for Gradle because tool window is uninitialized
+  // assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, GradleConstants.SYSTEM_ID, 1)
 
   def testWithTheSameVersionOfScalaLibrary(): Unit = {
     importProjectData(

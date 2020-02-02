@@ -541,7 +541,7 @@ class MultiThreadTestReceiver(numThreads: Int, numRecordsPerThread: Int)
   lazy val finishCount = new AtomicInteger(0)
 
   def onStart() {
-    (1 to numThreads).map(threadId => {
+    (1 to numThreads).map { threadId =>
       val runnable = new Runnable {
         def run() {
           (1 to numRecordsPerThread).foreach(i =>
@@ -553,7 +553,7 @@ class MultiThreadTestReceiver(numThreads: Int, numRecordsPerThread: Int)
         }
       }
       executorPool.submit(runnable)
-    })
+    }
   }
 
   def onStop() {

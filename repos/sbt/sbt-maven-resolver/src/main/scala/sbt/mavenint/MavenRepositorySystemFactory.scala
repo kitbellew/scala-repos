@@ -35,9 +35,8 @@ object MavenRepositorySystemFactory {
       override def serviceCreationFailed(
           tpe: Class[_],
           impl: Class[_],
-          exception: Throwable): Unit = {
+          exception: Throwable): Unit =
         Message.error(s"Failed to create $tpe, of class $impl")
-      }
     })
     // Here we register the Ivy <-> Aether transport bridge
     locator.addService(classOf[TransporterFactory], classOf[MyTransportFactory])
@@ -83,7 +82,6 @@ object MavenRepositorySystemFactory {
     session
   }
 
-  def defaultLocalRepo: java.io.File = {
+  def defaultLocalRepo: java.io.File =
     new java.io.File(s"${sys.props("user.home")}/.m2/repository")
-  }
 }

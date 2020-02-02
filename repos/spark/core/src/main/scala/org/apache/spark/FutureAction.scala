@@ -223,14 +223,12 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
   }
 
   @throws(classOf[Exception])
-  override def result(atMost: Duration)(implicit permit: CanAwait): T = {
+  override def result(atMost: Duration)(implicit permit: CanAwait): T =
     p.future.result(atMost)(permit)
-  }
 
   override def onComplete[U](func: (Try[T]) => U)(
-      implicit executor: ExecutionContext): Unit = {
+      implicit executor: ExecutionContext): Unit =
     p.future.onComplete(func)(executor)
-  }
 
   override def isCompleted: Boolean = p.isCompleted
 
@@ -249,16 +247,14 @@ private[spark] class JavaFutureActionWrapper[S, T](
 
   override def isCancelled: Boolean = futureAction.isCancelled
 
-  override def isDone: Boolean = {
+  override def isDone: Boolean =
     // According to java.util.Future's Javadoc, this returns True if the task was completed,
     // whether that completion was due to successful execution, an exception, or a cancellation.
     futureAction.isCancelled || futureAction.isCompleted
-  }
 
-  override def jobIds(): java.util.List[java.lang.Integer] = {
+  override def jobIds(): java.util.List[java.lang.Integer] =
     Collections.unmodifiableList(
       futureAction.jobIds.map(Integer.valueOf).asJava)
-  }
 
   private def getImpl(timeout: Duration): T = {
     // This will throw TimeoutException on timeout:

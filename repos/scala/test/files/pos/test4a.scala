@@ -9,7 +9,6 @@ class O[X]() {
 
 object o extends O[C]() {
   def c: C = c;
-  def main = {
+  def main =
     o.j.foo(c);
-  }
 }

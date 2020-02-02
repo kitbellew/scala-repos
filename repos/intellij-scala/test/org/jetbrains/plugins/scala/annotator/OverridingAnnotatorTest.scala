@@ -21,7 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
 class OverridingAnnotatorTest extends SimpleTestCase {
   final val Header = "\n"
 
-  def testSyntheticUnapply(): Unit = {
+  def testSyntheticUnapply(): Unit =
     assertMatches(
       messages(
         """
@@ -44,9 +44,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
-  def testPrivateVal(): Unit = {
+  def testPrivateVal(): Unit =
     assertMatches(messages("""
         |object ppp {
         |class Base {
@@ -60,9 +59,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
-  def testClassParameter(): Unit = {
+  def testClassParameter(): Unit =
     assertMatches(messages("""
         |object ppp {
         |class A(x: Int)
@@ -72,9 +70,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
-  def testVal(): Unit = {
+  def testVal(): Unit =
     assertMatches(messages("""
         |object ppp {
         |class Base {
@@ -89,9 +86,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       case List(
           Error("something", "Value 'something' needs override modifier")) =>
     }
-  }
 
-  def testNotConcreteMember(): Unit = {
+  def testNotConcreteMember(): Unit =
     assertMatches(messages("""
         |object ppp {
         |class Base {
@@ -105,9 +101,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case Nil =>
     }
-  }
 
-  def testOverrideFinalMethod(): Unit = {
+  def testOverrideFinalMethod(): Unit =
     assertMatches(messages("""
         |object ppp {
         | class Base {
@@ -121,9 +116,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case List(Error("foo", "Method 'foo' cannot override final member")) =>
     }
-  }
 
-  def testOverrideFinalVal(): Unit = {
+  def testOverrideFinalVal(): Unit =
     assertMatches(messages("""
         |object ppp {
         | class Base {
@@ -137,9 +131,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case List(Error("foo", "Value 'foo' cannot override final member")) =>
     }
-  }
 
-  def testOverrideFinalVar(): Unit = {
+  def testOverrideFinalVar(): Unit =
     assertMatches(messages("""
         |object ppp {
         | class Base {
@@ -153,9 +146,8 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case List(Error("foo", "Variable 'foo' cannot override final member")) =>
     }
-  }
 
-  def testOverrideFinalAlias(): Unit = {
+  def testOverrideFinalAlias(): Unit =
     assertMatches(messages("""
         |object ppp {
         | class Base {
@@ -169,7 +161,6 @@ class OverridingAnnotatorTest extends SimpleTestCase {
       """.stripMargin)) {
       case List(Error("foo", "Type 'foo' cannot override final member")) =>
     }
-  }
 
   //SCL-3258
   def testOverrideVarWithFunctions(): Unit = {

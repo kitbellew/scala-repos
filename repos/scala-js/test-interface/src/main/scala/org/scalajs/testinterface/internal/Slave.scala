@@ -61,7 +61,7 @@ final class Slave(
     Com.send(s"msg:$msg")
   }
 
-  private def allowSendRunnerMessage[T](body: => T): T = {
+  private def allowSendRunnerMessage[T](body: => T): T =
     try {
       canSendRunnerMessage = true
 
@@ -73,7 +73,6 @@ final class Slave(
     } finally {
       canSendRunnerMessage = false
     }
-  }
 
   // Message handler methods
 
@@ -165,9 +164,8 @@ final class Slave(
 
   // Utility methods
 
-  private def ensureRunnerExists(): Unit = {
+  private def ensureRunnerExists(): Unit =
     if (runner == null)
       throw new IllegalStateException("No runner created")
-  }
 
 }

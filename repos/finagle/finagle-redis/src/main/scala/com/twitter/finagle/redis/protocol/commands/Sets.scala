@@ -30,9 +30,8 @@ case class SMembers(key: ChannelBuffer) extends StrictKeyCommand {
 }
 
 object SMembers {
-  def apply(args: Seq[Array[Byte]]): SMembers = {
+  def apply(args: Seq[Array[Byte]]): SMembers =
     SMembers(GetMonadArg(args, CommandBytes.SMEMBERS))
-  }
 }
 
 case class SIsMember(key: ChannelBuffer, value: ChannelBuffer)

@@ -64,11 +64,10 @@ class ScClassImpl private (
     }
   }
 
-  override def additionalJavaNames: Array[String] = {
+  override def additionalJavaNames: Array[String] =
     //do not add all cases with fakeCompanionModule, it will be used in Stubs.
     if (isCase) fakeCompanionModule.map(_.getName).toArray
     else Array.empty
-  }
 
   def this(node: ASTNode) = { this(null, null, node) }
   def this(stub: ScTemplateDefinitionStub) = {
@@ -142,19 +141,17 @@ class ScClassImpl private (
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     super[ScTemplateDefinition].processDeclarations(
       processor,
       state,
       lastParent,
       place)
-  }
 
   override def isCase: Boolean = hasModifierProperty("case")
 
-  override def getMethods: Array[PsiMethod] = {
+  override def getMethods: Array[PsiMethod] =
     getAllMethods.filter(_.containingClass == this)
-  }
 
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
@@ -300,9 +297,9 @@ class ScClassImpl private (
       .map(clause => typeParameters.map(_.name).mkString("[", ",", "]"))
       .getOrElse("")
     val typeParametersText = typeParametersClause
-      .map(tp => {
+      .map { tp =>
         tp.typeParameters
-          .map(tp => {
+          .map { tp =>
             val baseText = tp.typeParameterText
             if (tp.isContravariant) {
               val i = baseText.indexOf('-')
@@ -311,9 +308,9 @@ class ScClassImpl private (
               val i = baseText.indexOf('+')
               baseText.substring(i + 1)
             } else baseText
-          })
+          }
           .mkString("[", ", ", "]")
-      })
+      }
       .getOrElse("")
     val parametersText = constr.parameterList.clauses.map {
       case clause: ScParameterClause =>
@@ -337,7 +334,7 @@ class ScClassImpl private (
   }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
-  def getSyntheticImplicitMethod: Option[ScFunction] = {
+  def getSyntheticImplicitMethod: Option[ScFunction] =
     if (hasModifierProperty("implicit")) {
       constructor match {
         case Some(x: ScPrimaryConstructor) =>
@@ -354,7 +351,6 @@ class ScClassImpl private (
         case None => None
       }
     } else None
-  }
 
   override def getFields: Array[PsiField] = {
     val fields = constructor match {
@@ -385,7 +381,6 @@ class ScClassImpl private (
   override def getTypeParameterList: PsiTypeParameterList =
     typeParametersClause.orNull
 
-  override def getInterfaces: Array[PsiClass] = {
+  override def getInterfaces: Array[PsiClass] =
     getSupers.filter(_.isInterface)
-  }
 }

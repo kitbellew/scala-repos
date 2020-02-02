@@ -81,7 +81,7 @@ trait ApiControllerBase extends ControllerBase {
     (for {
       data <- extractFromJsonBody[CreateARepository] if data.isValid
     } yield {
-      LockUtil.lock(s"${owner}/${data.name}") {
+      LockUtil.lock(s"$owner/${data.name}") {
         if (getRepository(owner, data.name).isEmpty) {
           createRepository(
             context.loginAccount.get,
@@ -112,7 +112,7 @@ trait ApiControllerBase extends ControllerBase {
     (for {
       data <- extractFromJsonBody[CreateARepository] if data.isValid
     } yield {
-      LockUtil.lock(s"${groupName}/${data.name}") {
+      LockUtil.lock(s"$groupName/${data.name}") {
         if (getRepository(groupName, data.name).isEmpty) {
           createRepository(
             context.loginAccount.get,

@@ -37,12 +37,11 @@ abstract class EnumWithDescription {
   val enum = new Enumeration {
     def Value(
         inName: String,
-        inDescription: String): Value with ValueWithDescription = {
+        inDescription: String): Value with ValueWithDescription =
       new Val(nextId, inName) with ValueWithDescription {
         def description = inDescription
         def name = inName
       }
-    }
   }
 
   def Value(name: String, description: String): Value = {

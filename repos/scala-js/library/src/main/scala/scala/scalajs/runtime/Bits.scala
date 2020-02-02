@@ -25,7 +25,7 @@ object Bits {
   }
 
   @inline
-  def areTypedArraysSupported: Boolean = {
+  def areTypedArraysSupported: Boolean =
     /* We have a forwarder to the internal `val _areTypedArraysSupported` to
      * be able to inline it. This achieves the following:
      * * If we emit ES6, dce `|| _areTypedArraysSupported` and replace
@@ -35,7 +35,6 @@ object Bits {
      *   `_areTypedArraysSupported` so we do not calculate it multiple times.
      */
     assumingES6 || _areTypedArraysSupported
-  }
 
   private val arrayBuffer =
     if (areTypedArraysSupported) new typedarray.ArrayBuffer(8)
@@ -84,25 +83,23 @@ object Bits {
     else doubleToLongBits(value).hashCode()
   }
 
-  def intBitsToFloat(bits: Int): Float = {
+  def intBitsToFloat(bits: Int): Float =
     if (areTypedArraysSupported) {
       int32Array(0) = bits
       float32Array(0)
     } else {
       intBitsToFloatPolyfill(bits).toFloat
     }
-  }
 
-  def floatToIntBits(value: Float): Int = {
+  def floatToIntBits(value: Float): Int =
     if (areTypedArraysSupported) {
       float32Array(0) = value
       int32Array(0)
     } else {
       floatToIntBitsPolyfill(value.toDouble)
     }
-  }
 
-  def longBitsToDouble(bits: Long): Double = {
+  def longBitsToDouble(bits: Long): Double =
     if (areTypedArraysSupported) {
       int32Array(highOffset) = (bits >>> 32).toInt
       int32Array(lowOffset) = bits.toInt
@@ -110,9 +107,8 @@ object Bits {
     } else {
       longBitsToDoublePolyfill(bits)
     }
-  }
 
-  def doubleToLongBits(value: Double): Long = {
+  def doubleToLongBits(value: Double): Long =
     if (areTypedArraysSupported) {
       float64Array(0) = value
       ((int32Array(highOffset).toLong << 32) |
@@ -120,7 +116,6 @@ object Bits {
     } else {
       doubleToLongBitsPolyfill(value)
     }
-  }
 
   /* --- Polyfills for floating point bit manipulations ---
    *

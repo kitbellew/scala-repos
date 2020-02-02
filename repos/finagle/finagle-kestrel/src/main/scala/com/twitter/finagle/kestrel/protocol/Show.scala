@@ -35,7 +35,7 @@ private[kestrel] class ResponseToEncoding extends OneToOneEncoder {
   def encode(
       ctx: ChannelHandlerContext,
       ch: Channel,
-      message: AnyRef): Decoding = {
+      message: AnyRef): Decoding =
     message match {
       case Stored()   => StoredTokens
       case Deleted()  => DeletedTokens
@@ -48,7 +48,6 @@ private[kestrel] class ResponseToEncoding extends OneToOneEncoder {
         }
         ValueLines(tokensWithData)
     }
-  }
 }
 
 object CommandToEncoding {
@@ -82,17 +81,16 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
       queueName: Buf,
       suffix: Buf,
       timeout: Option[Duration]
-  ): Buf = {
+  ): Buf =
     timeout match {
       case Some(t) => queueName.concat(suffix).concat(encodeTimeout(t))
       case None    => queueName.concat(suffix)
     }
-  }
 
   def encode(
       ctx: ChannelHandlerContext,
       ch: Channel,
-      message: AnyRef): Decoding = {
+      message: AnyRef): Decoding =
     message match {
       case Set(key, expiry, value) =>
         TokensWithData(
@@ -124,5 +122,4 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
       case Flush(key) =>
         Tokens(Seq(FLUSH, key))
     }
-  }
 }

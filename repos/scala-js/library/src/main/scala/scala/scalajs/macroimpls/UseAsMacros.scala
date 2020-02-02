@@ -28,9 +28,8 @@ private[scalajs] object UseAsMacros {
 
   def as_impl[A: c.WeakTypeTag, B <: js.Any: c.WeakTypeTag](c: Context {
     type PrefixType = js.Using[_]
-  }): c.Expr[B] = {
+  }): c.Expr[B] =
     (new Macros[c.type](c)).as[A, B]
-  }
 
   private class Macros[C <: Context { type PrefixType = js.Using[_] }](val c: C)
       extends JSMembers
@@ -166,12 +165,11 @@ private[scalajs] object UseAsMacros {
     /** Members that a facade type defines */
     private def rawJSMembers(tpe: Type): JSMemberSet = {
 
-      def isAPIMember(member: Symbol) = {
+      def isAPIMember(member: Symbol) =
         !JSObjectAncestors(member.owner) &&
-        !member.isConstructor &&
-        member.isMethod &&
-        !member.asTerm.isParamWithDefault
-      }
+          !member.isConstructor &&
+          member.isMethod &&
+          !member.asTerm.isParamWithDefault
 
       val tups = for {
         member <- tpe.members
@@ -240,7 +238,7 @@ private[scalajs] object UseAsMacros {
     }
 
     /** Get the JS member for a method in [[origTpe]] */
-    private def jsMemberFor(origTpe: Type, sym: MethodSymbol): JSMember = {
+    private def jsMemberFor(origTpe: Type, sym: MethodSymbol): JSMember =
       sym.info.asSeenFrom(origTpe, sym.owner) match {
         case MethodType(List(param), resultType)
             if resultType.typeSymbol == definitions.UnitClass &&
@@ -252,7 +250,7 @@ private[scalajs] object UseAsMacros {
 
         case info: MethodType =>
           @tailrec
-          def flatParams(tpe: Type, acc: List[JSMethodParam]): JSMethod = {
+          def flatParams(tpe: Type, acc: List[JSMethodParam]): JSMethod =
             tpe match {
               case MethodType(params, returnTpe) =>
                 val ps = params map { p =>
@@ -262,14 +260,12 @@ private[scalajs] object UseAsMacros {
               case tpe =>
                 JSMethod(acc.reverse, tpe)
             }
-          }
 
           flatParams(info, Nil)
 
         case tpe =>
           UnsupportedMember(sym, tpe)
       }
-    }
 
     /** Names a method is exported to */
     private def exportNames(sym: MethodSymbol, exportAll: Boolean) = {
@@ -295,7 +291,7 @@ private[scalajs] object UseAsMacros {
       *  refine type members.
       *  @returns dealiased tpe
       */
-    private def verifyTargetType(tpe: Type): Type = {
+    private def verifyTargetType(tpe: Type): Type =
       tpe.dealias match {
         case tpe @ TypeRef(_, sym0, _) if sym0.isClass =>
           val sym = sym0.asClass
@@ -330,7 +326,6 @@ private[scalajs] object UseAsMacros {
         case tpe =>
           c.abort(c.enclosingPosition, "Only class types can be used with as")
       }
-    }
 
     /** Annotations of a member symbol.
       *  Looks on accessed field if this is an accessor

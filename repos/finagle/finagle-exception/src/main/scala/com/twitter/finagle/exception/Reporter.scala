@@ -55,9 +55,8 @@ object Reporter {
   def defaultReporter(
       scribeHost: String,
       scribePort: Int,
-      serviceName: String): Reporter = {
+      serviceName: String): Reporter =
     new Reporter(makeClient(scribeHost, scribePort), serviceName)
-  }
 
   /**
     * Create a default client reporter.
@@ -68,9 +67,8 @@ object Reporter {
     * It returns a String => Reporter, which conforms to ClientBuilder's monitor option.
     */
   @deprecated("Use reporterFactory instead")
-  def clientReporter(scribeHost: String, scribePort: Int): String => Monitor = {
+  def clientReporter(scribeHost: String, scribePort: Int): String => Monitor =
     monitorFactory(scribeHost, scribePort).clientMonitor
-  }
 
   /**
     * Create a default source (i.e. server) reporter.
@@ -84,9 +82,8 @@ object Reporter {
   @deprecated("Use reporterFactory instead")
   def sourceReporter(
       scribeHost: String,
-      scribePort: Int): (String, SocketAddress) => Monitor = {
+      scribePort: Int): (String, SocketAddress) => Monitor =
     monitorFactory(scribeHost, scribePort).serverMonitor
-  }
 
   /**
     * Create a reporter factory that can produce either a client or server reporter based

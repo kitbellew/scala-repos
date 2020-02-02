@@ -22,7 +22,7 @@ trait MonadReaderTests[F[_], R] extends MonadTests[F] {
       EqFC: Eq[F[C]],
       EqFR: Eq[F[R]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new RuleSet {
       def name: String = "monadReader"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -35,7 +35,6 @@ trait MonadReaderTests[F[_], R] extends MonadTests[F] {
           laws.monadReaderLocalFlatMap[A, B] _)
       )
     }
-  }
 }
 
 object MonadReaderTests {

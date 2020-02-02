@@ -37,7 +37,7 @@ import scalafx.scene.text.Font
 
 class EnsembleInnerShadow extends EnsembleExample {
 
-  def getContent = {
+  def getContent =
     new VBox {
       vgrow = Priority.Always
       hgrow = Priority.Always
@@ -62,5 +62,4 @@ class EnsembleInnerShadow extends EnsembleExample {
         }
       )
     }
-  }
 }

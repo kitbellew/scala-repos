@@ -104,13 +104,11 @@ private[ann] trait LayerModel extends Serializable {
   */
 private[ann] class AffineLayer(val numIn: Int, val numOut: Int) extends Layer {
 
-  override def getInstance(weights: Vector, position: Int): LayerModel = {
+  override def getInstance(weights: Vector, position: Int): LayerModel =
     AffineLayerModel(this, weights, position)
-  }
 
-  override def getInstance(seed: Long = 11L): LayerModel = {
+  override def getInstance(seed: Long = 11L): LayerModel =
     AffineLayerModel(this, seed)
-  }
 }
 
 /**
@@ -372,10 +370,9 @@ private[ann] class SoftmaxFunction extends ActivationFunction {
   override def squared(
       output: BDM[Double],
       target: BDM[Double],
-      result: BDM[Double]): Double = {
+      result: BDM[Double]): Double =
     throw new UnsupportedOperationException(
       "Sorry, squared error is not defined for SoftMax.")
-  }
 }
 
 /**
@@ -485,13 +482,12 @@ private[ann] class FunctionalLayerModel private (
     (e, error)
   }
 
-  def error(output: BDM[Double], target: BDM[Double]): (BDM[Double], Double) = {
+  def error(output: BDM[Double], target: BDM[Double]): (BDM[Double], Double) =
     // TODO: allow user pick error
     activationFunction match {
       case sigmoid: SigmoidFunction => squared(output, target)
       case softmax: SoftmaxFunction => crossEntropy(output, target)
     }
-  }
 }
 
 /**
@@ -573,9 +569,8 @@ private[ml] object FeedForwardTopology {
     * @param layers array of layers
     * @return feed forward topology
     */
-  def apply(layers: Array[Layer]): FeedForwardTopology = {
+  def apply(layers: Array[Layer]): FeedForwardTopology =
     new FeedForwardTopology(layers)
-  }
 
   /**
     * Creates a multi-layer perceptron
@@ -929,7 +924,7 @@ private[ml] class FeedForwardTrainer(
     this
   }
 
-  private[this] def updateGradient(gradient: Gradient): Unit = {
+  private[this] def updateGradient(gradient: Gradient): Unit =
     optimizer match {
       case lbfgs: LBFGS         => lbfgs.setGradient(gradient)
       case sgd: GradientDescent => sgd.setGradient(gradient)
@@ -937,9 +932,8 @@ private[ml] class FeedForwardTrainer(
         throw new UnsupportedOperationException(
           s"Only LBFGS and GradientDescent are supported but got ${other.getClass}.")
     }
-  }
 
-  private[this] def updateUpdater(updater: Updater): Unit = {
+  private[this] def updateUpdater(updater: Updater): Unit =
     optimizer match {
       case lbfgs: LBFGS         => lbfgs.setUpdater(updater)
       case sgd: GradientDescent => sgd.setUpdater(updater)
@@ -947,7 +941,6 @@ private[ml] class FeedForwardTrainer(
         throw new UnsupportedOperationException(
           s"Only LBFGS and GradientDescent are supported but got ${other.getClass}.")
     }
-  }
 
   /**
     * Trains the ANN

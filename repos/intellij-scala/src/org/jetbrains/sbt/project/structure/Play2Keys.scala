@@ -92,9 +92,8 @@ object Play2Keys {
 
       def in(
           projectName: String,
-          allKeys: Map[String, Map[String, ParsedValue[_]]]): Option[T] = {
+          allKeys: Map[String, Map[String, ParsedValue[_]]]): Option[T] =
         allIn(allKeys).find(_._1 == projectName).map(_._2)
-      }
 
       def allIn(
           allKeys: Map[String, Map[String, ParsedValue[_]]]): Seq[(String, T)]
@@ -104,7 +103,7 @@ object Play2Keys {
 
     class StringParsedKey(name: String) extends ParsedKey[String](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
-          : Seq[(String, String)] = {
+          : Seq[(String, String)] =
         in(allKeys) map {
           case vs =>
             vs.toSeq flatMap {
@@ -113,13 +112,12 @@ object Play2Keys {
               case _ => None
             }
         } getOrElse Seq.empty
-      }
     }
 
     class SeqStringParsedKey(name: String)
         extends ParsedKey[Seq[String]](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
-          : Seq[(String, Seq[String])] = {
+          : Seq[(String, Seq[String])] =
         in(allKeys) map {
           case vs =>
             vs.toSeq flatMap {
@@ -128,7 +126,6 @@ object Play2Keys {
               case _ => None
             }
         } getOrElse Seq.empty
-      }
     }
 
     val PLAY_VERSION = new StringParsedKey("playVersion")

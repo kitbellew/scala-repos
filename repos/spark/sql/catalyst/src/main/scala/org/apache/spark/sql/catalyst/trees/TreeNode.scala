@@ -55,9 +55,8 @@ object CurrentOrigin {
 
   def reset(): Unit = value.set(Origin())
 
-  def setPosition(line: Int, start: Int): Unit = {
+  def setPosition(line: Int, start: Int): Unit =
     value.set(value.get.copy(line = Some(line), startPosition = Some(start)))
-  }
 
   def withOrigin[A](o: Origin)(f: => A): A = {
     set(o)
@@ -89,9 +88,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     * We don't just override Object.equals, as doing so prevents the scala compiler from
     * generating case class `equals` methods
     */
-  def fastEquals(other: TreeNode[_]): Boolean = {
+  def fastEquals(other: TreeNode[_]): Boolean =
     this.eq(other) || this == other
-  }
 
   /**
     * Find the first [[TreeNode]] that satisfies the condition specified by `f`.
@@ -255,9 +253,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     *
     * @param rule the function use to transform this nodes children
     */
-  def transform(rule: PartialFunction[BaseType, BaseType]): BaseType = {
+  def transform(rule: PartialFunction[BaseType, BaseType]): BaseType =
     transformDown(rule)
-  }
 
   /**
     * Returns a copy of this node where `rule` has been recursively applied to it and all of its
@@ -462,7 +459,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     */
   def apply(number: Int): BaseType = getNodeNumbered(new MutableInt(number))
 
-  protected def getNodeNumbered(number: MutableInt): BaseType = {
+  protected def getNodeNumbered(number: MutableInt): BaseType =
     if (number.i < 0) {
       null.asInstanceOf[BaseType]
     } else if (number.i == 0) {
@@ -474,7 +471,6 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         .find(_ != null)
         .getOrElse(null.asInstanceOf[BaseType])
     }
-  }
 
   /**
     * All the nodes that will be used to generate tree string.

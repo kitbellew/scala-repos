@@ -67,11 +67,10 @@ trait PrecogLibModule[M[+_]]
 
       def spec[A <: SourceType](ctx: MorphContext)(
           left: TransSpec[A],
-          right: TransSpec[A]): TransSpec[A] = {
+          right: TransSpec[A]): TransSpec[A] =
         trans.MapWith(
           trans.InnerArrayConcat(trans.WrapArray(left), trans.WrapArray(right)),
           new EnrichmentMapper(ctx))
-      }
 
       class EnrichmentMapper(ctx: MorphContext) extends CMapperM[M] {
         import Extractor.Error
@@ -85,7 +84,7 @@ trait PrecogLibModule[M[+_]]
         private def addOrCreate(
             row: Int,
             unique: List[(Int, BitSet)],
-            order: Order[Int]): Option[(Int, BitSet)] = {
+            order: Order[Int]): Option[(Int, BitSet)] =
           unique match {
             case (row0, defined) :: tail if order.eqv(row, row0) =>
               defined.set(row)
@@ -98,7 +97,6 @@ trait PrecogLibModule[M[+_]]
 
             case _ :: tail => addOrCreate(row, tail, order)
           }
-        }
 
         private def concatenate(stream0: StreamT[M, CharBuffer]): M[String] = {
           val sb = new StringBuffer
@@ -165,7 +163,7 @@ trait PrecogLibModule[M[+_]]
                     JString(field).renderCompact + ":" + value
                 } mkString ("{", ",", "}")
 
-                def populate(data: List[JValue]): Validation[Error, Slice] = {
+                def populate(data: List[JValue]): Validation[Error, Slice] =
                   if (data.size != members.cardinality) {
                     Failure(
                       Error.invalid(
@@ -184,7 +182,6 @@ trait PrecogLibModule[M[+_]]
                       sparseStream(0, data map (RValue.fromJValue(_)))
                     Success(Slice.fromRValues(sparseData))
                   }
-                }
 
                 val client = HttpClient(url)
                 val request = Request(

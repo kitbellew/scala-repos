@@ -55,9 +55,8 @@ class DecisionTreeModel @Since("1.0.0") (
     * @return Double prediction from the trained model
     */
   @Since("1.0.0")
-  def predict(features: Vector): Double = {
+  def predict(features: Vector): Double =
     topNode.predict(features)
-  }
 
   /**
     * Predict values for the given data set using the model trained.
@@ -66,9 +65,8 @@ class DecisionTreeModel @Since("1.0.0") (
     * @return RDD of predictions for each of the given data points
     */
   @Since("1.0.0")
-  def predict(features: RDD[Vector]): RDD[Double] = {
+  def predict(features: RDD[Vector]): RDD[Double] =
     features.map(x => predict(x))
-  }
 
   /**
     * Predict values for the given data set using the model trained.
@@ -77,26 +75,23 @@ class DecisionTreeModel @Since("1.0.0") (
     * @return JavaRDD of predictions for each of the given data points
     */
   @Since("1.2.0")
-  def predict(features: JavaRDD[Vector]): JavaRDD[Double] = {
+  def predict(features: JavaRDD[Vector]): JavaRDD[Double] =
     predict(features.rdd)
-  }
 
   /**
     * Get number of nodes in tree, including leaf nodes.
     */
   @Since("1.1.0")
-  def numNodes: Int = {
+  def numNodes: Int =
     1 + topNode.numDescendants
-  }
 
   /**
     * Get depth of tree.
     * E.g.: Depth 0 means 1 leaf node.  Depth 1 means 1 internal node and 2 leaf nodes.
     */
   @Since("1.1.0")
-  def depth: Int = {
+  def depth: Int =
     topNode.subtreeDepth
-  }
 
   /**
     * Print a summary of the model.
@@ -126,9 +121,8 @@ class DecisionTreeModel @Since("1.0.0") (
     *              If the directory already exists, this method throws an exception.
     */
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     DecisionTreeModel.SaveLoadV1_0.save(sc, path, this)
-  }
 
   override protected def formatVersion: String = DecisionTreeModel.formatVersion
 }
@@ -161,27 +155,24 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         threshold: Double,
         featureType: Int,
         categories: Seq[Double]) { // TODO: Change to List once SPARK-3365 is fixed
-      def toSplit: Split = {
+      def toSplit: Split =
         new Split(
           feature,
           threshold,
           FeatureType(featureType),
           categories.toList)
-      }
     }
 
     object SplitData {
-      def apply(s: Split): SplitData = {
+      def apply(s: Split): SplitData =
         SplitData(s.feature, s.threshold, s.featureType.id, s.categories)
-      }
 
-      def apply(r: Row): SplitData = {
+      def apply(r: Row): SplitData =
         SplitData(
           r.getInt(0),
           r.getDouble(1),
           r.getInt(2),
           r.getAs[Seq[Double]](3))
-      }
     }
 
     /** Model data for model import/export */
@@ -197,7 +188,7 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         infoGain: Option[Double])
 
     object NodeData {
-      def apply(treeId: Int, n: Node): NodeData = {
+      def apply(treeId: Int, n: Node): NodeData =
         NodeData(
           treeId,
           n.id,
@@ -208,7 +199,6 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
           n.leftNode.map(_.id),
           n.rightNode.map(_.id),
           n.stats.map(_.gain))
-      }
 
       def apply(r: Row): NodeData = {
         val split = if (r.isNullAt(5)) None else Some(SplitData(r.getStruct(5)))

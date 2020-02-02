@@ -49,16 +49,14 @@ trait MonadPlus[F[_]] extends Monad[F] with ApplicativePlus[F] { self =>
       FA.equal(map(empty[A])(f1), empty[A])
 
     /** `empty` short-circuits its right. */
-    def leftZero[A](f: A => F[A])(implicit FA: Equal[F[A]]): Boolean = {
+    def leftZero[A](f: A => F[A])(implicit FA: Equal[F[A]]): Boolean =
       FA.equal(bind(empty[A])(f), empty[A])
-    }
   }
   trait StrongMonadPlusLaw extends MonadPlusLaw {
 
     /** `empty` short-circuits throughout its `join` tree. */
-    def rightZero[A](f: F[A])(implicit FA: Equal[F[A]]): Boolean = {
+    def rightZero[A](f: F[A])(implicit FA: Equal[F[A]]): Boolean =
       FA.equal(bind(f)(_ => empty[A]), empty[A])
-    }
   }
   def monadPlusLaw = new MonadPlusLaw {}
   def strongMonadPlusLaw = new StrongMonadPlusLaw {}

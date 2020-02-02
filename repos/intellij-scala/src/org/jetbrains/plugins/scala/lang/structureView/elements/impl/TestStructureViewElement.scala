@@ -19,9 +19,8 @@ class TestStructureViewElement(
 
   override def getChildren: Array[TreeElement] = myChildren
 
-  override def getPresentation: ItemPresentation = {
+  override def getPresentation: ItemPresentation =
     new TestItemRepresentation(myElement, testName, testStatus)
-  }
 }
 
 object TestStructureViewElement {

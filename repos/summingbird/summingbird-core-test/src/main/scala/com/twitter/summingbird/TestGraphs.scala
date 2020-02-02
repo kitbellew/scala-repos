@@ -62,7 +62,7 @@ object TestGraphs {
       leftAndRight: Iterable[(K, (Long, Either[U, V]))],
       valuesFn: ((Long, (U, Option[V]))) => TraversableOnce[(Long, V)]): List[(
       K,
-      List[(Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] = {
+      List[(Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] =
     leftAndRight
       .groupBy(_._1)
       .mapValues {
@@ -112,7 +112,6 @@ object TestGraphs {
           }
       }
       .toList
-  }
 
   // Test graphs
 
@@ -440,15 +439,13 @@ object TestGraphs {
         with P#Service[K, V])(simpleFM1: T => TraversableOnce[(K, U)])(
       valuesFlatMap1: ((U, Option[V])) => TraversableOnce[V1])(
       valuesFlatMap2: (V1) => TraversableOnce[V])
-      : TailProducer[P, (K, (Option[V], V))] = {
-
+      : TailProducer[P, (K, (Option[V], V))] =
     source1
       .flatMap(simpleFM1)
       .leftJoin(storeAndService)
       .flatMapValues(valuesFlatMap1)
       .flatMapValues(valuesFlatMap2)
       .sumByKey(storeAndService)
-  }
 
   def leftJoinWithDependentStoreJoinFanoutInScala[
       T,

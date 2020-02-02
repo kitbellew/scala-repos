@@ -35,7 +35,7 @@ private[spark] class MeanEvaluator(totalOutputs: Int, confidence: Double)
     counter.merge(taskResult)
   }
 
-  override def currentResult(): BoundedDouble = {
+  override def currentResult(): BoundedDouble =
     if (outputsMerged == totalOutputs) {
       new BoundedDouble(counter.mean, 1.0, counter.mean, counter.mean)
     } else if (outputsMerged == 0) {
@@ -61,5 +61,4 @@ private[spark] class MeanEvaluator(totalOutputs: Int, confidence: Double)
       val high = mean + confFactor * stdev
       new BoundedDouble(mean, confidence, low, high)
     }
-  }
 }

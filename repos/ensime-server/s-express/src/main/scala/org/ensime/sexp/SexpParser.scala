@@ -79,7 +79,7 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpListP: Rule1[Sexp] = rule {
     LeftBrace ~ SexpP ~ zeroOrMore(Whitespace ~ SexpP) ~ RightBrace ~> {
-      (head: Sexp, tail: Seq[Sexp]) => { SexpList(head :: tail.toList) }
+      (head: Sexp, tail: Seq[Sexp]) => SexpList(head :: tail.toList)
     }
   }
 

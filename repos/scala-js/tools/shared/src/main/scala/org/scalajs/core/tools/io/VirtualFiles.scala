@@ -34,13 +34,12 @@ trait VirtualFile {
   def exists: Boolean
 
   /** URI for this virtual file */
-  def toURI: URI = {
+  def toURI: URI =
     new URI(
       "virtualfile", // Pseudo-Scheme
       path, // Scheme specific part
       null // Fragment
     )
-  }
 }
 
 object VirtualFile {
@@ -194,28 +193,25 @@ trait VirtualJarFile extends VirtualBinaryFile {
     *  It is up to the implementation whether these files are read lazily or not.
     *  The default implementation reads them into memory.
     */
-  def sjsirFiles: Seq[VirtualScalaJSIRFile with RelativeVirtualFile] = {
+  def sjsirFiles: Seq[VirtualScalaJSIRFile with RelativeVirtualFile] =
     findEntries(_.endsWith(".sjsir")) { (entry, stream) =>
       val file = new JarEntryIRFile(path, entry.getName)
       file.content = IO.readInputStreamToByteArray(stream)
       file
     }
-  }
 
-  def jsFiles: Seq[VirtualJSFile with RelativeVirtualFile] = {
+  def jsFiles: Seq[VirtualJSFile with RelativeVirtualFile] =
     findEntries(_.endsWith(".js")) { (entry, stream) =>
       val file = new JarEntryJSFile(path, entry.getName)
       file.content = IO.readInputStreamToString(stream)
       file
     }
-  }
 
-  def jsDependencyManifests: Seq[JSDependencyManifest] = {
+  def jsDependencyManifests: Seq[JSDependencyManifest] =
     findEntries(_ == JSDependencyManifest.ManifestFileName) { (_, stream) =>
       val json = readJSON(new InputStreamReader(stream, "UTF-8"))
       fromJSON[JSDependencyManifest](json)
     }
-  }
 
   private def findEntries[T](cond: String => Boolean)(
       mkResult: (ZipEntry, InputStream) => T): Seq[T] = {

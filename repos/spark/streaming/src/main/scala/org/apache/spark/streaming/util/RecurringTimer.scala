@@ -41,9 +41,8 @@ private[streaming] class RecurringTimer(
     * The time will be a multiple of this timer's period and more than
     * current system time.
     */
-  def getStartTime(): Long = {
+  def getStartTime(): Long =
     (math.floor(clock.getTimeMillis().toDouble / period) + 1).toLong * period
-  }
 
   /**
     * Get the time when the timer will fire if it is restarted right now.
@@ -69,9 +68,8 @@ private[streaming] class RecurringTimer(
   /**
     * Start at the earliest time it can start based on the period.
     */
-  def start(): Long = {
+  def start(): Long =
     start(getStartTime())
-  }
 
   /**
     * Stop the timer, and return the last time the callback was made.

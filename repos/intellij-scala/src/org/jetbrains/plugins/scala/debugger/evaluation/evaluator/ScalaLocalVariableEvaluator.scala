@@ -104,7 +104,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       None
     }
 
-    def parameterByIndex(frameProxy: StackFrameProxyImpl) = {
+    def parameterByIndex(frameProxy: StackFrameProxyImpl) =
       if (frameProxy == null || myParameterIndex < 0) None
       else {
         val frameMethodName = frameProxy.location().method().name()
@@ -120,7 +120,6 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
           } catch { case ignore: InternalException => None }
         } else None
       }
-    }
 
     if (context.getFrameProxy == null) {
       throw EvaluationException(
@@ -168,7 +167,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
               LOG.error(e)
           }
         }
-        def getExpectedType: Type = {
+        def getExpectedType: Type =
           try {
             myEvaluatedVariable.getType
           } catch {
@@ -176,10 +175,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
               LOG.error(e)
               null
           }
-        }
-        def getInspectItem(project: Project): NodeDescriptorImpl = {
+        def getInspectItem(project: Project): NodeDescriptorImpl =
           new LocalVariableDescriptorImpl(project, myEvaluatedVariable)
-        }
       }
     }
     modifier

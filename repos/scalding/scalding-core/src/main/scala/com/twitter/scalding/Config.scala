@@ -145,7 +145,7 @@ trait Config extends Serializable {
     * They may or may not be used in this job, but Cascading might want to be made aware
     * that these classes exist
     */
-  def getKryoRegisteredClasses: Set[Class[_]] = {
+  def getKryoRegisteredClasses: Set[Class[_]] =
     // Get an instance of the Kryo serializer (which is populated with registrations)
     getKryo
       .map { kryo =>
@@ -161,7 +161,6 @@ trait Config extends Serializable {
         kryoClasses(0, Set[Class[_]]())
       }
       .getOrElse(Set())
-  }
 
   /*
    * Hadoop and Cascading serialization needs to be first, and the Kryo serialization

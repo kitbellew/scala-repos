@@ -33,7 +33,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.Signature
   * Date: 30.01.12
   */
 trait OverridingAnnotator {
-  private def isConcreteElement(element: PsiElement): Boolean = {
+  private def isConcreteElement(element: PsiElement): Boolean =
     element match {
       case _: ScFunctionDefinition                => true
       case f: ScFunctionDeclaration if f.isNative => true
@@ -55,7 +55,6 @@ trait OverridingAnnotator {
       case _: ScTypeAliasDefinition => true
       case _                        => false
     }
-  }
 
   private def isConcrete(signature: Signature): Boolean = {
     val element = ScalaPsiUtil.nameContext(signature.namedElement)
@@ -96,7 +95,7 @@ trait OverridingAnnotator {
       v: ScValue,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v.declaredElements.foreach(td => {
+    v.declaredElements.foreach { td =>
       val valsSignaturesWithSelfType: Seq[Signature] =
         ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
       val valsSignatures: Seq[Signature] =
@@ -110,14 +109,14 @@ trait OverridingAnnotator {
         isConcrete,
         "Value",
         holder)
-    })
+    }
   }
 
   def checkOverrideVars(
       v: ScVariable,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    v.declaredElements.foreach(td => {
+    v.declaredElements.foreach { td =>
       val valsSignaturesWithSelfType: Seq[Signature] =
         ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
       val valsSignatures: Seq[Signature] =
@@ -131,7 +130,7 @@ trait OverridingAnnotator {
         isConcrete,
         "Variable",
         holder)
-    })
+    }
   }
 
   def checkOverrideClassParameters(

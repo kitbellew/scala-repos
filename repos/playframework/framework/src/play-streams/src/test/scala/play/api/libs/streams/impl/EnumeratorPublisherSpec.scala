@@ -34,21 +34,18 @@ class EnumeratorPublisherSpec extends Specification {
       override def onComplete() = record(OnComplete)
     }
 
-    def forSubscription(f: Subscription => Any): Future[Unit] = {
+    def forSubscription(f: Subscription => Any): Future[Unit] =
       subscriber.subscription.future.map(f).map(_ => ())
-    }
-    def request(elementCount: Int): Future[Unit] = {
+    def request(elementCount: Int): Future[Unit] =
       forSubscription { s =>
         record(RequestMore(elementCount))
         s.request(elementCount)
       }
-    }
-    def cancel(): Future[Unit] = {
+    def cancel(): Future[Unit] =
       forSubscription { s =>
         record(Cancel)
         s.cancel()
       }
-    }
 
   }
 

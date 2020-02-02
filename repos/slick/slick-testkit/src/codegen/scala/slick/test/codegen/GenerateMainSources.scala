@@ -73,7 +73,7 @@ object GenerateMainSources extends TestCodeGenerator {
                 override def enabled = false
               }
               override def mappingEnabled = true
-              override def code = {
+              override def code =
                 if (model.name.table == "SIMPLE_AS") {
                   Seq("""
 import slick.test.codegen.CustomTyping._
@@ -82,7 +82,6 @@ type SimpleA = CustomTyping.SimpleA
 val  SimpleA = CustomTyping.SimpleA
                   """.trim) ++ super.code
                 } else super.code
-              }
               override def Column = new Column(_) {
                 override def rawType = model.name match {
                   case "A1" => "Bool"
@@ -167,7 +166,7 @@ val  SimpleA = CustomTyping.SimpleA
                 case v => super.defaultCode(v)
               }
             }
-            override def code = {
+            override def code =
               Seq("""
                 |  /* default UUID, which is the same as for 'uuid.sql' */
                 |  val defaultUUID = java.util.UUID.fromString("2f3f866c-d8e6-11e2-bb56-50e549c9b654")
@@ -180,7 +179,6 @@ val  SimpleA = CustomTyping.SimpleA
                 |    def apply(rs: slick.jdbc.PositionedResult) = Option(rs.nextObject().asInstanceOf[java.util.UUID])
                 |  }
                 """.stripMargin) ++ super.code
-            }
           }
         })
     override def testCode =

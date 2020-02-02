@@ -189,14 +189,13 @@ class ScriptRunner extends HasCompileSocket {
   def runScript(
       settings: GenericRunnerSettings,
       scriptFile: String,
-      scriptArgs: List[String]): Boolean = {
+      scriptArgs: List[String]): Boolean =
     if (File(scriptFile).isFile)
       withCompiledScript(settings, scriptFile) {
         runCompiled(settings, _, scriptArgs)
       }
     else
       throw new IOException("no such file: " + scriptFile)
-  }
 
   /** Calls runScript and catches the enumerated exceptions, routing
     *  them to Left(ex) if thrown.
@@ -204,10 +203,9 @@ class ScriptRunner extends HasCompileSocket {
   def runScriptAndCatch(
       settings: GenericRunnerSettings,
       scriptFile: String,
-      scriptArgs: List[String]): Either[Throwable, Boolean] = {
+      scriptArgs: List[String]): Either[Throwable, Boolean] =
     try Right(runScript(settings, scriptFile, scriptArgs))
     catch { case e: Throwable => Left(unwrap(e)) }
-  }
 
   /** Run a command
     *

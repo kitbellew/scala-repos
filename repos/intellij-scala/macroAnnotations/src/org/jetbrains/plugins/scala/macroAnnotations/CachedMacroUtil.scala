@@ -13,11 +13,10 @@ object CachedMacroUtil {
   //to analyze caches pass in the following compiler flag: "-Xmacro-settings:analyze-caches"
   val ANALYZE_CACHES: String = "analyze-caches"
 
-  def println(a: Any): Unit = {
+  def println(a: Any): Unit =
     if (debug) {
       Console.println(a)
     }
-  }
 
   def cachesUtilFQN(implicit c: whitebox.Context): c.universe.Tree = {
     import c.universe.Quasiquote
@@ -72,14 +71,12 @@ object CachedMacroUtil {
   }
 
   def generateTermName(name: String = "")(
-      implicit c: whitebox.Context): c.universe.TermName = {
+      implicit c: whitebox.Context): c.universe.TermName =
     c.universe.TermName(c.freshName(name))
-  }
 
   def generateTypeName(name: String = "")(
-      implicit c: whitebox.Context): c.universe.TypeName = {
+      implicit c: whitebox.Context): c.universe.TypeName =
     c.universe.TypeName(c.freshName(name))
-  }
 
   def abort(s: String)(implicit c: whitebox.Context): Nothing =
     c.abort(c.enclosingPosition, s)

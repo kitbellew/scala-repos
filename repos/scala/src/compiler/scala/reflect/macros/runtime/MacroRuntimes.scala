@@ -58,7 +58,7 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
     val className = binding.className
     val methName = binding.methName
 
-    def resolveRuntime(): MacroRuntime = {
+    def resolveRuntime(): MacroRuntime =
       if (className == Predef_???.owner.javaClassName && methName == Predef_???.name.encoded) {
         args =>
           throw new AbortMacroException(
@@ -78,6 +78,5 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
             null
         }
       }
-    }
   }
 }

@@ -170,7 +170,6 @@ object EndToEndLatency {
     finalise()
   }
 
-  def randomBytesOfLen(len: Int): Array[Byte] = {
+  def randomBytesOfLen(len: Int): Array[Byte] =
     Array.fill(len)((scala.util.Random.nextInt(26) + 65).toByte)
-  }
 }

@@ -22,12 +22,11 @@ class FlashMapSupportTestServlet extends ScalatraServlet with FlashMapSupport {
 
   get("/unused") {}
 
-  override def sweepUnusedFlashEntries(req: HttpServletRequest) = {
+  override def sweepUnusedFlashEntries(req: HttpServletRequest) =
     req.getParameter("sweep") match {
       case null => false
       case x    => x.toBoolean
     }
-  }
 }
 
 class FlashMapSupportSecondTestServlet

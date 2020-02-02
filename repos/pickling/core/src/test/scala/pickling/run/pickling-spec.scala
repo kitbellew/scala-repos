@@ -36,9 +36,8 @@ object PicklingSpec {
 
   lazy val randomDates =
     for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield {
-      def randBetween(start: Int, end: Int): Int = {
+      def randBetween(start: Int, end: Int): Int =
         start + scala.util.Random.nextInt(end - start)
-      }
 
       val gc = new GregorianCalendar()
       gc.set(Calendar.YEAR, randBetween(1900, 3000))
@@ -185,12 +184,12 @@ object PicklingJsonSpec extends Properties("pickling-json") {
     x1 == x
   }
 
-  property("CaseClassIntString") = forAll((name: String) => {
+  property("CaseClassIntString") = forAll { (name: String) =>
     val p = Person(name, 43)
     val pickle: JSONPickle = p.pickle
     val up = pickle.unpickle[Person]
     p == up
-  })
+  }
 
   property("case class with Array[Int] field") = Prop forAll {
     (x: WithIntArray) =>
@@ -218,53 +217,53 @@ object PicklingJsonSpec extends Properties("pickling-json") {
     x1 == x
   }
 
-  property("Array[Byte]") = forAll((ia: Array[Byte]) => {
+  property("Array[Byte]") = forAll { (ia: Array[Byte]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Byte]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Short]") = forAll((ia: Array[Short]) => {
+  property("Array[Short]") = forAll { (ia: Array[Short]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Short]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Char]") = forAll((ia: Array[Char]) => {
+  property("Array[Char]") = forAll { (ia: Array[Char]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Char]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Int]") = forAll((ia: Array[Int]) => {
+  property("Array[Int]") = forAll { (ia: Array[Int]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Int]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Long]") = forAll((ia: Array[Long]) => {
+  property("Array[Long]") = forAll { (ia: Array[Long]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Long]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Boolean]") = forAll((ia: Array[Boolean]) => {
+  property("Array[Boolean]") = forAll { (ia: Array[Boolean]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Boolean]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Float]") = forAll((ia: Array[Float]) => {
+  property("Array[Float]") = forAll { (ia: Array[Float]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Float]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Double]") = forAll((ia: Array[Double]) => {
+  property("Array[Double]") = forAll { (ia: Array[Double]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Double]]
     readArr.sameElements(ia)
-  })
+  }
 
   /* TODO: disabled because of spurious failures.
 
@@ -275,11 +274,11 @@ object PicklingJsonSpec extends Properties("pickling-json") {
   })
    */
 
-  property("Array[(String, Int)]") = forAll((ia: Array[(String, Int)]) => {
+  property("Array[(String, Int)]") = forAll { (ia: Array[(String, Int)]) =>
     val pickle: JSONPickle = ia.pickle
     val readArr = pickle.unpickle[Array[(String, Int)]]
     readArr.sameElements(ia)
-  })
+  }
 
   property("BigDecimal") = Prop forAll { (x: Double) =>
     val bd = new BigDecimal(x)
@@ -451,12 +450,12 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
     x1 == x
   }
 
-  property("CaseClassIntString") = forAll((name: String) => {
+  property("CaseClassIntString") = forAll { (name: String) =>
     val p = Person(name, 43)
     val pickle: BinaryPickle = p.pickle
     val up = pickle.unpickle[Person]
     p == up
-  })
+  }
 
   property("case class with Array[Int] field") = Prop forAll {
     (x: WithIntArray) =>
@@ -466,53 +465,53 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
       true
   }
 
-  property("Array[Byte]") = forAll((ia: Array[Byte]) => {
+  property("Array[Byte]") = forAll { (ia: Array[Byte]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Byte]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Short]") = forAll((ia: Array[Short]) => {
+  property("Array[Short]") = forAll { (ia: Array[Short]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Short]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Char]") = forAll((ia: Array[Char]) => {
+  property("Array[Char]") = forAll { (ia: Array[Char]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Char]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Int]") = forAll((ia: Array[Int]) => {
+  property("Array[Int]") = forAll { (ia: Array[Int]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Int]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Long]") = forAll((ia: Array[Long]) => {
+  property("Array[Long]") = forAll { (ia: Array[Long]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Long]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Boolean]") = forAll((ia: Array[Boolean]) => {
+  property("Array[Boolean]") = forAll { (ia: Array[Boolean]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Boolean]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Float]") = forAll((ia: Array[Float]) => {
+  property("Array[Float]") = forAll { (ia: Array[Float]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Float]]
     readArr.sameElements(ia)
-  })
+  }
 
-  property("Array[Double]") = forAll((ia: Array[Double]) => {
+  property("Array[Double]") = forAll { (ia: Array[Double]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[Double]]
     readArr.sameElements(ia)
-  })
+  }
 
   /* TODO: disabled because of spurious failures.
 
@@ -523,11 +522,11 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
   })
    */
 
-  property("Array[(String, Int)]") = forAll((ia: Array[(String, Int)]) => {
+  property("Array[(String, Int)]") = forAll { (ia: Array[(String, Int)]) =>
     val pickle: BinaryPickle = ia.pickle
     val readArr = pickle.unpickle[Array[(String, Int)]]
     readArr.sameElements(ia)
-  })
+  }
 
   property("BigDecimal") = Prop forAll { (x: Double) =>
     val bd = new BigDecimal(x)

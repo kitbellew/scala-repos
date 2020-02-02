@@ -84,7 +84,7 @@ case class WrappingConfig(
     removes: Set[String])
     extends SummingbirdConfig {
 
-  def get(key: String) = {
+  def get(key: String) =
     updates.get(key) match {
       case s @ Some(_) => s
       case None =>
@@ -93,18 +93,15 @@ case class WrappingConfig(
         else
           backingConfig.get(key)
     }
-  }
 
   def put(key: String, v: AnyRef): WrappingConfig = {
     assert(v != null)
     this.copy(updates = (updates + (key -> v)), removes = (removes - key))
   }
 
-  def remove(key: String): WrappingConfig = {
+  def remove(key: String): WrappingConfig =
     this.copy(updates = (updates - key), removes = (removes + key))
-  }
 
-  def keys: Iterable[String] = {
+  def keys: Iterable[String] =
     ((backingConfig.keys ++ updates.keys) -- removes)
-  }
 }

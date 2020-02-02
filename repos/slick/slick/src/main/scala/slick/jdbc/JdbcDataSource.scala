@@ -82,14 +82,13 @@ class DataSourceJdbcDataSource(
     c
   }
 
-  def close(): Unit = {
+  def close(): Unit =
     try if (keepAliveConnection && (openedKeepAliveConnection ne null))
       openedKeepAliveConnection.close()
     finally ds match {
       case ds: Closeable => ds.close()
       case _             =>
     }
-  }
 }
 
 object DataSourceJdbcDataSource extends JdbcDataSourceFactory {

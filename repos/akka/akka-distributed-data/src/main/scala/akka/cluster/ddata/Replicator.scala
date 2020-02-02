@@ -579,12 +579,11 @@ object Replicator {
 
       def initRemovedNodePruning(
           removed: UniqueAddress,
-          owner: UniqueAddress): DataEnvelope = {
+          owner: UniqueAddress): DataEnvelope =
         copy(pruning = pruning
           .updated(removed, PruningState(owner, PruningInitialized(Set.empty))))
-      }
 
-      def prune(from: UniqueAddress): DataEnvelope = {
+      def prune(from: UniqueAddress): DataEnvelope =
         data match {
           case dataWithRemovedNodePruning: RemovedNodePruning ⇒
             require(pruning.contains(from))
@@ -596,8 +595,6 @@ object Replicator {
                 pruning.updated(from, PruningState(to, PruningPerformed)))
           case _ ⇒ this
         }
-
-      }
 
       def merge(other: DataEnvelope): DataEnvelope =
         if (other.data == DeletedData) DeletedEnvelope
@@ -863,7 +860,7 @@ final class Replicator(settings: ReplicatorSettings)
   require(!cluster.isTerminated, "Cluster node must not be terminated")
   require(
     role.forall(cluster.selfRoles.contains),
-    s"This cluster member [${selfAddress}] doesn't have the role [$role]")
+    s"This cluster member [$selfAddress] doesn't have the role [$role]")
 
   //Start periodic gossip to random nodes in cluster
   import context.dispatcher
@@ -1003,9 +1000,8 @@ final class Replicator(settings: ReplicatorSettings)
       case _ ⇒ false
     }
 
-  def receiveRead(key: String): Unit = {
+  def receiveRead(key: String): Unit =
     sender() ! ReadResult(getData(key))
-  }
 
   def isLocalSender(): Boolean = !sender().path.address.hasGlobalScope
 
@@ -1093,7 +1089,7 @@ final class Replicator(settings: ReplicatorSettings)
     sender() ! GetKeyIdsResult(keys)
   }
 
-  def receiveDelete(key: KeyR, consistency: WriteConsistency): Unit = {
+  def receiveDelete(key: KeyR, consistency: WriteConsistency): Unit =
     getData(key.id) match {
       case Some(DataEnvelope(DeletedData, _)) ⇒
         // already deleted
@@ -1108,7 +1104,6 @@ final class Replicator(settings: ReplicatorSettings)
               .props(key, DeletedEnvelope, consistency, None, nodes, sender())
               .withDispatcher(context.props.dispatcher))
     }
-  }
 
   def setData(key: String, envelope: DataEnvelope): Unit = {
     val dig =
@@ -1124,7 +1119,7 @@ final class Replicator(settings: ReplicatorSettings)
     dataEntries = dataEntries.updated(key, (envelope, dig))
   }
 
-  def getDigest(key: String): Digest = {
+  def getDigest(key: String): Digest =
     dataEntries.get(key) match {
       case Some((envelope, LazyDigest)) ⇒
         val d = digest(envelope)
@@ -1133,7 +1128,6 @@ final class Replicator(settings: ReplicatorSettings)
       case Some((_, digest)) ⇒ digest
       case None ⇒ NotFoundDigest
     }
-  }
 
   def digest(envelope: DataEnvelope): Digest =
     if (envelope.data == DeletedData) DeletedDigest
@@ -1326,7 +1320,7 @@ final class Replicator(settings: ReplicatorSettings)
     if (matchingRole(m) && m.address != selfAddress)
       nodes += m.address
 
-  def receiveMemberRemoved(m: Member): Unit = {
+  def receiveMemberRemoved(m: Member): Unit =
     if (m.address == selfAddress)
       context stop self
     else if (matchingRole(m)) {
@@ -1335,7 +1329,6 @@ final class Replicator(settings: ReplicatorSettings)
         removedNodes.updated(m.uniqueAddress, allReachableClockTime)
       unreachable -= m.address
     }
-  }
 
   def receiveUnreachable(m: Member): Unit =
     if (matchingRole(m)) unreachable += m.address
@@ -1398,7 +1391,7 @@ final class Replicator(settings: ReplicatorSettings)
     }
   }
 
-  def performRemovedNodePruning(): Unit = {
+  def performRemovedNodePruning(): Unit =
     // perform pruning when all seen Init
     dataEntries.foreach {
       case (
@@ -1421,11 +1414,10 @@ final class Replicator(settings: ReplicatorSettings)
         }
       case _ ⇒ // deleted, or pruning not needed
     }
-  }
 
   def tombstoneRemovedNodePruning(): Unit = {
 
-    def allPruningPerformed(removed: UniqueAddress): Boolean = {
+    def allPruningPerformed(removed: UniqueAddress): Boolean =
       dataEntries forall {
         case (
             key,
@@ -1436,7 +1428,6 @@ final class Replicator(settings: ReplicatorSettings)
           }
         case _ ⇒ true // deleted, or pruning not needed
       }
-    }
 
     pruningPerformed.foreach {
       case (removed, timestamp)
@@ -1491,10 +1482,9 @@ final class Replicator(settings: ReplicatorSettings)
       case _ ⇒ data
     }
 
-  def receiveGetReplicaCount(): Unit = {
+  def receiveGetReplicaCount(): Unit =
     // selfAddress is not included in the set
     sender() ! ReplicaCount(nodes.size + 1)
-  }
 
 }
 

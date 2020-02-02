@@ -53,11 +53,10 @@ class RegressionStrategy(params: RegressionStrategyParams)
 
   // Compute each indicator value for training the model
   private def calcIndicator(
-      logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] = {
+      logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] =
     params.indicators.map {
       case (name, indicator) => indicator.getTraining(logPrice)
     }
-  }
 
   // Get max period from series of indicators
   private def getMaxPeriod(): Int = {
@@ -88,12 +87,12 @@ class RegressionStrategy(params: RegressionStrategyParams)
     // For each active ticker, pass in trained series into regress
     val tickerModelMap = tickers
       .filter(ticker => (active.firstCol(ticker).findOne(_ == false) == -1))
-      .map(ticker => {
+      .map { ticker =>
         val model = regress(
           calcIndicator(price.firstCol(ticker)).map(_.slice(firstIdx, lastIdx)),
           retF1d.firstCol(ticker).slice(firstIdx, lastIdx))
         (ticker, model)
-      })
+      }
       .toMap
 
     // tickers mapped to model
@@ -130,10 +129,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
     val prediction = query.tickers
       .filter(ticker => model.contains(ticker))
       .map { ticker =>
-        {
-          val p = predictOne(model(ticker), ticker, dataView)
-          (ticker, p)
-        }
+        val p = predictOne(model(ticker), ticker, dataView)
+        (ticker, p)
       }
 
     Prediction(HashMap[String, Double](prediction: _*))

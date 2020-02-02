@@ -297,6 +297,6 @@ class Zk2Resolver(
       addrOf(hosts, path, Some(endpoint))
 
     case _ =>
-      throw new IllegalArgumentException(s"Invalid address '${arg}'")
+      throw new IllegalArgumentException(s"Invalid address '$arg'")
   }
 }

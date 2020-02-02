@@ -105,14 +105,13 @@ private final class InfoChecker(
 
     def mapIncludes(
         actual: Map[String, List[String]],
-        expected: Map[String, List[String]]) = {
+        expected: Map[String, List[String]]) =
       expected forall {
         case (cls, expectedMethods) =>
           actual.get(cls) exists { actualMethods =>
             listIncludes(actualMethods, expectedMethods)
           }
       }
-    }
 
     if (info.encodedName != expectedInfo.encodedName ||
         info.isStatic != expectedInfo.isStatic ||
@@ -161,7 +160,6 @@ object InfoChecker {
     */
   def check(
       infoAndTrees: Traversable[(ClassInfo, ClassDef)],
-      logger: Logger): Int = {
+      logger: Logger): Int =
     new InfoChecker(infoAndTrees, logger).check()
-  }
 }

@@ -34,7 +34,7 @@ private case object MySQLDialect extends JdbcDialect {
       sqlType: Int,
       typeName: String,
       size: Int,
-      md: MetadataBuilder): Option[DataType] = {
+      md: MetadataBuilder): Option[DataType] =
     if (sqlType == Types.VARBINARY && typeName.equals("BIT") && size != 1) {
       // This could instead be a BinaryType if we'd rather return bit-vectors of up to 64 bits as
       // byte arrays instead of longs.
@@ -43,13 +43,10 @@ private case object MySQLDialect extends JdbcDialect {
     } else if (sqlType == Types.BIT && typeName.equals("TINYINT")) {
       Option(BooleanType)
     } else None
-  }
 
-  override def quoteIdentifier(colName: String): String = {
+  override def quoteIdentifier(colName: String): String =
     s"`$colName`"
-  }
 
-  override def getTableExistsQuery(table: String): String = {
+  override def getTableExistsQuery(table: String): String =
     s"SELECT 1 FROM $table LIMIT 1"
-  }
 }

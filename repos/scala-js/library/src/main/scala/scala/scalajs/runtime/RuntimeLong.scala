@@ -96,9 +96,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     }
   }
 
-  private def toUnsignedString(lo: Int, hi: Int): String = {
+  private def toUnsignedString(lo: Int, hi: Int): String =
     // This is called only if (lo, hi) is not an Int32
-
     if (isUnsignedSafeDouble(hi)) {
       // (lo, hi) is small enough to be a Double, use that directly
       asUnsignedSafeDouble(lo, hi).toString
@@ -125,7 +124,6 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       val remStr = rem.toString
       quot.toString + "000000000".jsSubstring(remStr.length) + remStr
     }
-  }
 
   // Conversions
 
@@ -250,11 +248,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   }
 
   @inline
-  private def inline_<<(lo: Int, hi: Int, n: Int): (Int, Int) = {
+  private def inline_<<(lo: Int, hi: Int, n: Int): (Int, Int) =
     if (n == 0) (lo, hi)
     else if (n < 32) (lo << n, (lo >>> -n) | (hi << n))
     else (0, lo << n)
-  }
 
   /** Logical shift right */
   def >>>(n0: Int): RuntimeLong = {
@@ -267,11 +264,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   }
 
   @inline
-  private def inline_>>>(lo: Int, hi: Int, n: Int): (Int, Int) = {
+  private def inline_>>>(lo: Int, hi: Int, n: Int): (Int, Int) =
     if (n == 0) (lo, hi)
     else if (n < 32) ((lo >>> n) | (hi << -n), hi >>> n)
     else (hi >>> n, 0)
-  }
 
   /** Arithmetic shift right */
   def >>(n0: Int): RuntimeLong = {
@@ -408,11 +404,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     }
   }
 
-  private def unsigned_/(
-      alo: Int,
-      ahi: Int,
-      blo: Int,
-      bhi: Int): RuntimeLong = {
+  private def unsigned_/(alo: Int, ahi: Int, blo: Int, bhi: Int): RuntimeLong =
     // This method is not called if isInt32(alo, ahi) nor if isZero(blo, bhi)
     if (isUnsignedSafeDouble(ahi)) {
       if (isUnsignedSafeDouble(bhi)) {
@@ -436,7 +428,6 @@ final class RuntimeLong(val lo: Int, val hi: Int)
           .asInstanceOf[RuntimeLong]
       }
     }
-  }
 
   def %(b: RuntimeLong): RuntimeLong = {
     val alo = a.lo
@@ -488,11 +479,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     }
   }
 
-  private def unsigned_%(
-      alo: Int,
-      ahi: Int,
-      blo: Int,
-      bhi: Int): RuntimeLong = {
+  private def unsigned_%(alo: Int, ahi: Int, blo: Int, bhi: Int): RuntimeLong =
     // This method is not called if isInt32(alo, ahi) nor if isZero(blo, bhi)
     if (isUnsignedSafeDouble(ahi)) {
       if (isUnsignedSafeDouble(bhi)) {
@@ -513,7 +500,6 @@ final class RuntimeLong(val lo: Int, val hi: Int)
           .asInstanceOf[RuntimeLong]
       }
     }
-  }
 
   private def unsignedDivModHelper(
       alo: Int,
@@ -791,22 +777,20 @@ object RuntimeLong {
       (a ^ 0x80000000) < (b ^ 0x80000000)
 
     @inline
-    def inlineUnsignedInt_<=(a: Int, b: Int): Boolean = {
+    def inlineUnsignedInt_<=(a: Int, b: Int): Boolean =
       /* Work around https://code.google.com/p/v8/issues/detail?id=3304
        * 0x7fffffff <= 0x80000000, so use >= here instead.
        * This case is common because it happens when a == -1 and b == 0.
        */
       (b ^ 0x80000000) >= (a ^ 0x80000000)
-    }
 
     @inline
-    def inlineUnsignedInt_>(a: Int, b: Int): Boolean = {
+    def inlineUnsignedInt_>(a: Int, b: Int): Boolean =
       /* Work around https://code.google.com/p/v8/issues/detail?id=3304
        * 0x7fffffff > 0x80000000, so use < here instead.
        * This case is common because it happens when a == -1 and b == 0.
        */
       (b ^ 0x80000000) < (a ^ 0x80000000)
-    }
 
     @inline
     def inlineUnsignedInt_>=(a: Int, b: Int): Boolean =

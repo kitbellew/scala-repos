@@ -90,12 +90,11 @@ class ClusterClientSpec
 
   def createReceptionist(): Unit = ClusterClientReceptionist(system)
 
-  def awaitCount(expected: Int): Unit = {
+  def awaitCount(expected: Int): Unit =
     awaitAssert {
       DistributedPubSub(system).mediator ! DistributedPubSubMediator.Count
       expectMsgType[Int] should ===(expected)
     }
-  }
 
   var remainingServerRoleNames = Set(first, second, third, fourth)
 

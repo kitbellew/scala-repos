@@ -81,7 +81,7 @@ class SQLExecutionSuite extends SparkFunSuite {
     // The child thread should not see the effect of this change.
     var throwable: Option[Throwable] = None
     val child = new Thread {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           sc.parallelize(1 to 100)
             .map { i => (i, i) }
@@ -92,7 +92,6 @@ class SQLExecutionSuite extends SparkFunSuite {
             throwable = Some(t)
         }
 
-      }
     }
     sc.setLocalProperty(SQLExecution.EXECUTION_ID_KEY, "anything")
     child.start()

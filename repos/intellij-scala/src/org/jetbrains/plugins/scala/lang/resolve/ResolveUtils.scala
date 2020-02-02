@@ -167,14 +167,13 @@ object ResolveUtils {
       m: PsiMethod,
       s: ScSubstitutor,
       scope: GlobalSearchScope = null,
-      returnType: Option[ScType] = None): NonValueType = {
+      returnType: Option[ScType] = None): NonValueType =
     if (m.getTypeParameters.isEmpty) javaMethodType(m, s, scope, returnType)
     else {
       ScTypePolymorphicType(
         javaMethodType(m, s, scope, returnType),
         m.getTypeParameters.map(new TypeParameter(_)))
     }
-  }
 
   def isAccessible(
       memb: PsiMember,
@@ -636,10 +635,9 @@ object ResolveUtils {
     false
   }
 
-  def packageContains(packageName: String, potentialChild: String): Boolean = {
+  def packageContains(packageName: String, potentialChild: String): Boolean =
     potentialChild == packageName || potentialChild.startsWith(
       packageName + ".")
-  }
 
   def packageProcessDeclarations(
       pack: PsiPackage,

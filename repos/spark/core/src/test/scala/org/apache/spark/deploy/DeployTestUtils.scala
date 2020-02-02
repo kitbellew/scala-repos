@@ -77,7 +77,7 @@ private[deploy] object DeployTestUtils {
     workerInfo
   }
 
-  def createExecutorRunner(execId: Int): ExecutorRunner = {
+  def createExecutorRunner(execId: Int): ExecutorRunner =
     new ExecutorRunner(
       "appId",
       execId,
@@ -95,7 +95,6 @@ private[deploy] object DeployTestUtils {
       new SparkConf,
       Seq("localDir"),
       ExecutorState.RUNNING)
-  }
 
   def createDriverRunner(driverId: String): DriverRunner = {
     val conf = new SparkConf()

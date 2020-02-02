@@ -35,9 +35,8 @@ private[server] class ThrottledResponse(
 
   def execute() = callback(throttleTimeMs)
 
-  override def getDelay(unit: TimeUnit): Long = {
+  override def getDelay(unit: TimeUnit): Long =
     unit.convert(endTime - time.milliseconds, TimeUnit.MILLISECONDS)
-  }
 
   override def compareTo(d: Delayed): Int = {
     val other = d.asInstanceOf[ThrottledResponse]

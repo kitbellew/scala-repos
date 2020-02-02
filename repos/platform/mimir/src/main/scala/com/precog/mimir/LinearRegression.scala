@@ -108,7 +108,7 @@ trait LinearRegressionLibModule[M[+_]]
         */
       implicit def coeffMonoid = new Monoid[CoeffAcc] {
         def zero = CoeffAcc(Array.empty[Double], 0, Set.empty[Int])
-        def append(r1: CoeffAcc, r2: => CoeffAcc) = {
+        def append(r1: CoeffAcc, r2: => CoeffAcc) =
           if (r1.beta isEmpty) r2
           else if (r2.beta isEmpty) r1
           //columns are only `removed` if they are not present in *all* slices seen so far
@@ -118,17 +118,15 @@ trait LinearRegressionLibModule[M[+_]]
               arraySum(r1.beta, r2.beta),
               r1.count + r2.count,
               r1.removed & r2.removed)
-        }
       }
 
       implicit def stdErrorMonoid = new Monoid[StdErrorAcc] {
         def zero = StdErrorAcc(0, 0, new Matrix(Array(Array.empty[Double])))
 
         def append(t1: StdErrorAcc, t2: => StdErrorAcc) = {
-          def isEmpty(matrix: Matrix) = {
+          def isEmpty(matrix: Matrix) =
             // there has to be a better way...
             matrix.getArray.length == 1 && matrix.getArray.head.length == 0
-          }
 
           val matrixSum = {
             if (isEmpty(t1.product)) {
@@ -150,7 +148,7 @@ trait LinearRegressionLibModule[M[+_]]
 
       implicit def betaMonoid = new Monoid[Option[Array[Beta]]] {
         def zero = None
-        def append(t1: Option[Array[Beta]], t2: => Option[Array[Beta]]) = {
+        def append(t1: Option[Array[Beta]], t2: => Option[Array[Beta]]) =
           t1 match {
             case None => t2
             case Some(c1) =>
@@ -159,7 +157,6 @@ trait LinearRegressionLibModule[M[+_]]
                 case Some(c2) => Some(c1 ++ c2)
               }
           }
-        }
       }
 
       // inserts the Double value `0` at all `indices` in `values`
@@ -298,7 +295,7 @@ trait LinearRegressionLibModule[M[+_]]
                 matrix: Matrix,
                 idx: Int,
                 colDim: Int,
-                removed: Set[Int]): (Matrix, Set[Int]) = {
+                removed: Set[Int]): (Matrix, Set[Int]) =
               if (idx <= colDim) {
                 if (matrixRank0 == colDim) {
                   (matrix, removed)
@@ -324,7 +321,6 @@ trait LinearRegressionLibModule[M[+_]]
                 sys.error(
                   "Failed to find dependent columns. Should never reach this case.")
               }
-            }
 
             inner(matrix0, 1, colDim0, Set.empty[Int])
           }
@@ -538,22 +534,20 @@ trait LinearRegressionLibModule[M[+_]]
           // though do we really want to allow people to run regression on >`sliceSize` columns?
           val sliceSize = 10000
           val tableReducer: (Table, JType) => M[Table] = { (table, jtype) =>
-            {
-              val arrayTable = table
-                .canonicalize(sliceSize, Some(sliceSize * 2))
-                .toArray[Double]
+            val arrayTable = table
+              .canonicalize(sliceSize, Some(sliceSize * 2))
+              .toArray[Double]
 
-              val coeffs0 = arrayTable.reduce(coefficientReducer)
-              val errors0 = coeffs0 flatMap { acc =>
-                arrayTable.reduce(stdErrorReducer(acc))
-              }
+            val coeffs0 = arrayTable.reduce(coefficientReducer)
+            val errors0 = coeffs0 flatMap { acc =>
+              arrayTable.reduce(stdErrorReducer(acc))
+            }
 
-              for {
-                coeffs <- coeffs0
-                errors <- errors0
-              } yield {
-                extract(coeffs, errors, jtype)
-              }
+            for {
+              coeffs <- coeffs0
+              errors <- errors0
+            } yield {
+              extract(coeffs, errors, jtype)
             }
           }
 

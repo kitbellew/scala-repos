@@ -50,7 +50,7 @@ trait ValueClassAnnotator {
   private def annotateContainingClass(
       valueClass: ScClass,
       holder: AnnotationHolder,
-      containingClass: Option[ScTemplateDefinition]): Unit = {
+      containingClass: Option[ScTemplateDefinition]): Unit =
     containingClass match {
       case Some(obj: ScObject) =>
         annotateContainingClass(
@@ -67,7 +67,6 @@ trait ValueClassAnnotator {
             "value.classes.may.not.be.member.of.another.class"))
       case _ => //we are done, value class is either top level or inside a statically accessible object
     }
-  }
 
   private def annotateInnerMembers(
       valueClass: ScClass,

@@ -35,17 +35,15 @@ trait CheckAnalysis {
     */
   val extendedCheckRules: Seq[LogicalPlan => Unit] = Nil
 
-  protected def failAnalysis(msg: String): Nothing = {
+  protected def failAnalysis(msg: String): Nothing =
     throw new AnalysisException(msg)
-  }
 
-  protected def containsMultipleGenerators(exprs: Seq[Expression]): Boolean = {
+  protected def containsMultipleGenerators(exprs: Seq[Expression]): Boolean =
     exprs
       .flatMap(_.collect {
         case e: Generator => e
       })
       .length > 1
-  }
 
   def checkAnalysis(plan: LogicalPlan): Unit = {
     // We transform up and order the rules so as to catch the first possible failure instead

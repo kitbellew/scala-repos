@@ -128,18 +128,16 @@ case class BroadcastHashJoin(
     }
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     streamedPlan.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  override def doProduce(ctx: CodegenContext): String = {
+  override def doProduce(ctx: CodegenContext): String =
     streamedPlan.asInstanceOf[CodegenSupport].produce(ctx, this)
-  }
 
   override def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
-      row: String): String = {
+      row: String): String =
     joinType match {
       case Inner                  => codegenInner(ctx, input)
       case LeftOuter | RightOuter => codegenOuter(ctx, input)
@@ -148,7 +146,6 @@ case class BroadcastHashJoin(
         throw new IllegalArgumentException(
           s"BroadcastHashJoin should not take $x as the JoinType")
     }
-  }
 
   /**
     * Returns a tuple of Broadcast of HashedRelation and the variable name for it.

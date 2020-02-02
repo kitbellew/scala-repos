@@ -51,11 +51,10 @@ object PatternMayNeverMatchInspection {
   }
 
   object ScPatternExpectedAndPatternType {
-    def unapply(pat: ScPattern): Option[(ScType, ScType)] = {
+    def unapply(pat: ScPattern): Option[(ScType, ScType)] =
       (pat.expectedType, PatternAnnotatorUtil.patternType(pat)) match {
         case (Some(expected), Some(pattern)) => Option((expected, pattern))
         case _                               => None
       }
-    }
   }
 }

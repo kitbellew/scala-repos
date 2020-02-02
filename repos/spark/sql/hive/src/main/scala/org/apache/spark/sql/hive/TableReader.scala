@@ -171,7 +171,7 @@ private[hive] class HadoopTableReader(
     // SPARK-5068:get FileStatus and do the filtering locally when the path is not exists
     def verifyPartitionPath(
         partitionToDeserializer: Map[HivePartition, Class[_ <: Deserializer]])
-        : Map[HivePartition, Class[_ <: Deserializer]] = {
+        : Map[HivePartition, Class[_ <: Deserializer]] =
       if (!sc.conf.verifyPartitionPath) {
         partitionToDeserializer
       } else {
@@ -205,7 +205,6 @@ private[hive] class HadoopTableReader(
             existPathSet.contains(partPath.toString)
         }
       }
-    }
 
     val hivePartitionRDDs = verifyPartitionPath(partitionToDeserializer).map {
       case (partition, partDeserializer) =>
@@ -245,7 +244,7 @@ private[hive] class HadoopTableReader(
 
         def fillPartitionKeys(
             rawPartValues: Array[String],
-            row: MutableRow): Unit = {
+            row: MutableRow): Unit =
           partitionKeyAttrs.foreach {
             case (attr, ordinal) =>
               val partOrdinal = relation.partitionKeys.indexOf(attr)
@@ -253,7 +252,6 @@ private[hive] class HadoopTableReader(
                 Cast(Literal(rawPartValues(partOrdinal)), attr.dataType)
                   .eval(null)
           }
-        }
 
         // Fill all partition keys to the given MutableRow object
         fillPartitionKeys(partValues, mutableRow)
@@ -290,7 +288,7 @@ private[hive] class HadoopTableReader(
     */
   private def applyFilterIfNeeded(
       path: Path,
-      filterOpt: Option[PathFilter]): String = {
+      filterOpt: Option[PathFilter]): String =
     filterOpt match {
       case Some(filter) =>
         val fs = path.getFileSystem(sc.hiveconf)
@@ -298,7 +296,6 @@ private[hive] class HadoopTableReader(
         filteredFiles.mkString(",")
       case None => path.toString
     }
-  }
 
   /**
     * Creates a HadoopRDD based on the broadcasted HiveConf and other job properties that will be

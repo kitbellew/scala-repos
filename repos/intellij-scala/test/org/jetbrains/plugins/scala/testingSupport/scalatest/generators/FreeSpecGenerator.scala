@@ -28,7 +28,7 @@ trait FreeSpecGenerator extends ScalaTestTestCase {
     )
   }
 
-  def addComplexFreeSpec() = {
+  def addComplexFreeSpec() =
     addFileToProject(
       "ComplexFreeSpec.scala",
       """
@@ -67,5 +67,4 @@ trait FreeSpecGenerator extends ScalaTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 }

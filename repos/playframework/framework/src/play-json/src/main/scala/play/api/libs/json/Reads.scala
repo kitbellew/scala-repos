@@ -215,14 +215,13 @@ trait DefaultReads extends LowPriorityDefaultReads {
     *    __ARGS__ : "the args for the error msg" (JsArray)
     * }
     */
-  def JsErrorObj(knownValue: JsValue, key: String, args: JsValue*) = {
+  def JsErrorObj(knownValue: JsValue, key: String, args: JsValue*) =
     Json.obj(
       "__VAL__" -> knownValue,
       "__ERR__" -> key,
       "__ARGS__" -> args.foldLeft(JsArray())((acc: JsArray, arg: JsValue) =>
         acc :+ arg)
     )
-  }
 
   /**
     * Deserializer for Int types.
@@ -999,20 +998,18 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * Deserializer for Jackson ObjectNode
     */
   implicit object ObjectNodeReads extends Reads[ObjectNode] {
-    def reads(json: JsValue): JsResult[ObjectNode] = {
+    def reads(json: JsValue): JsResult[ObjectNode] =
       json.validate[JsObject] map (jo =>
         JacksonJson.jsValueToJsonNode(jo).asInstanceOf[ObjectNode])
-    }
   }
 
   /**
     * Deserializer for Jackson ArrayNode
     */
   implicit object ArrayNodeReads extends Reads[ArrayNode] {
-    def reads(json: JsValue): JsResult[ArrayNode] = {
+    def reads(json: JsValue): JsResult[ArrayNode] =
       json.validate[JsArray] map (ja =>
         JacksonJson.jsValueToJsonNode(ja).asInstanceOf[ArrayNode])
-    }
   }
 
   /**

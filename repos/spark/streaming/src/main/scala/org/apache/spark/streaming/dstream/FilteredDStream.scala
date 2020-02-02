@@ -31,7 +31,6 @@ private[streaming] class FilteredDStream[T: ClassTag](
 
   override def slideDuration: Duration = parent.slideDuration
 
-  override def compute(validTime: Time): Option[RDD[T]] = {
+  override def compute(validTime: Time): Option[RDD[T]] =
     parent.getOrCompute(validTime).map(_.filter(filterFunc))
-  }
 }

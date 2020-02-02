@@ -28,14 +28,13 @@ class ALSModel(
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
-  override def toString = {
+  override def toString =
     s" productFeatures: [${productFeatures.size}]" +
       s"(${productFeatures.take(2).toList}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2).toString}...)]" +
       s" items: [${items.size}]" +
       s"(${items.take(2).toString}...)]"
-  }
 }
 
 /**
@@ -236,23 +235,22 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       whiteList: Option[Set[Int]],
       blackList: Option[Set[Int]],
       recommendFromYear: Option[Int]
-  ): Boolean = {
+  ): Boolean =
     whiteList.map(_.contains(i)).getOrElse(true) &&
-    blackList.map(!_.contains(i)).getOrElse(true) &&
-    // discard items in query as well
-    (!queryList.contains(i)) &&
-    items(i).year > recommendFromYear.getOrElse(1) &&
-    // filter categories
-    categories
-      .map { cat =>
-        items(i).categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
-  }
+      blackList.map(!_.contains(i)).getOrElse(true) &&
+      // discard items in query as well
+      (!queryList.contains(i)) &&
+      items(i).year > recommendFromYear.getOrElse(1) &&
+      // filter categories
+      categories
+        .map { cat =>
+          items(i).categories
+            .map { itemCat =>
+              // keep this item if has ovelap categories with the query
+              !(itemCat.toSet.intersect(cat).isEmpty)
+            }
+            .getOrElse(false) // discard this item if it has no categories
+        }
+        .getOrElse(true)
 
 }

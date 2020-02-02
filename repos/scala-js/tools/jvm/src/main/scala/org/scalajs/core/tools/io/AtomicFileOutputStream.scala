@@ -41,7 +41,7 @@ private[io] class AtomicFileOutputStream private (
   }
 
   /** Try to atomically replace the baseFile with the tmpFile */
-  private[this] def atomicReplace(): Unit = {
+  private[this] def atomicReplace(): Unit =
     if (!tmpFile.renameTo(baseFile)) {
       // Renaming failed. Fallback to copy
       try {
@@ -52,5 +52,4 @@ private[io] class AtomicFileOutputStream private (
         tmpFile.delete()
       }
     }
-  }
 }

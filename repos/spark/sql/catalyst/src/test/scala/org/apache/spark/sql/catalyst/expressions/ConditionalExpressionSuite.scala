@@ -40,7 +40,7 @@ class ConditionalExpressionSuite
     )
 
     // dataType must match T.
-    def testIf(convert: (Integer => Any), dataType: DataType): Unit = {
+    def testIf(convert: (Integer => Any), dataType: DataType): Unit =
       for ((predicate, trueValue, falseValue, expected) <- testcases) {
         val trueValueConverted =
           if (trueValue == null) null else convert(trueValue)
@@ -56,7 +56,6 @@ class ConditionalExpressionSuite
             Literal.create(falseValueConverted, dataType)),
           expectedConverted)
       }
-    }
 
     testIf(_ == 1, BooleanType)
     testIf(_.toShort, ShortType)

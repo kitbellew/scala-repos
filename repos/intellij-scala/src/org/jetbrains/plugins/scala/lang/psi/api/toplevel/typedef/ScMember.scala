@@ -119,7 +119,7 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
     containingClass == null
   }
 
-  override def hasModifierProperty(name: String) = {
+  override def hasModifierProperty(name: String) =
     name match {
       case PsiModifier.PUBLIC =>
         !hasModifierProperty("private") && !hasModifierProperty("protected")
@@ -132,7 +132,6 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
           _.access == ScAccessModifier.Type.THIS_PROTECTED)
       case _ => super.hasModifierProperty(name)
     }
-  }
 
   protected def isSimilarMemberForNavigation(m: ScMember, isStrict: Boolean) =
     false
@@ -200,14 +199,13 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       }
     }
 
-    def fromQualifiedPrivate(): Option[SearchScope] = {
+    def fromQualifiedPrivate(): Option[SearchScope] =
       accessModifier
         .filter(am => am.isPrivate && am.getReference != null)
         .map(_.scope) collect {
         case p: PsiPackage        => new PackageScope(p, true, true)
         case td: ScTypeDefinition => ScalaPsiUtil.withCompanionSearchScope(td)
       }
-    }
 
     val fromModifierOrContext = this match {
       case _ if accessModifier.exists(mod => mod.isPrivate && mod.isThis) =>

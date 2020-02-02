@@ -37,13 +37,12 @@ class AccumulatorSuite
     with LocalSparkContext {
   import AccumulatorParam._
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Accumulators.clear()
     } finally {
       super.afterEach()
     }
-  }
 
   implicit def setAccum[A]: AccumulableParam[mutable.Set[A], A] =
     new AccumulableParam[mutable.Set[A], A] {
@@ -55,9 +54,8 @@ class AccumulatorSuite
         t1 += t2
         t1
       }
-      def zero(t: mutable.Set[A]): mutable.Set[A] = {
+      def zero(t: mutable.Set[A]): mutable.Set[A] =
         new mutable.HashSet[A]()
-      }
     }
 
   test("basic accumulation") {
@@ -124,7 +122,7 @@ class AccumulatorSuite
       val mapAcc = sc.accumulableCollection(mutable.HashMap[Int, String]())
       val d = sc.parallelize((1 to maxI) ++ (1 to maxI))
       d.foreach { x =>
-        { setAcc += x; bufferAcc += x; mapAcc += (x -> x.toString) }
+        setAcc += x; bufferAcc += x; mapAcc += (x -> x.toString)
       }
 
       // Note that this is typed correctly -- no casts necessary
@@ -389,7 +387,7 @@ private class SaveInfoListener extends SparkListener {
     * If `jobCompletionCallback` is set, block until the next call has finished.
     * If the callback failed with an exception, throw it.
     */
-  def awaitNextJobCompletion(): Unit = {
+  def awaitNextJobCompletion(): Unit =
     if (jobCompletionCallback != null) {
       jobCompletionSem.acquire()
       if (exception != null) {
@@ -397,17 +395,15 @@ private class SaveInfoListener extends SparkListener {
         throw exception
       }
     }
-  }
 
   /**
     * Register a callback to be called on job end.
     * A call to this should be followed by [[awaitNextJobCompletion]].
     */
-  def registerJobCompletionCallback(callback: () => Unit): Unit = {
+  def registerJobCompletionCallback(callback: () => Unit): Unit =
     jobCompletionCallback = callback
-  }
 
-  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = {
+  override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit =
     if (jobCompletionCallback != null) {
       try {
         jobCompletionCallback()
@@ -419,18 +415,15 @@ private class SaveInfoListener extends SparkListener {
         jobCompletionSem.release()
       }
     }
-  }
 
   override def onStageCompleted(
-      stageCompleted: SparkListenerStageCompleted): Unit = {
+      stageCompleted: SparkListenerStageCompleted): Unit =
     completedStageInfos += stageCompleted.stageInfo
-  }
 
-  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
+  override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
     completedTaskInfos.getOrElseUpdate(
       (taskEnd.stageId, taskEnd.stageAttemptId),
       new ArrayBuffer[TaskInfo]) += taskEnd.taskInfo
-  }
 }
 
 /**

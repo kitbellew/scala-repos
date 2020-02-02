@@ -125,7 +125,7 @@ class FlatClassPathResolverTest {
       @tailrec
       def traverseToPackage(
           packageNameParts: Seq[String],
-          cp: ClassPath[AbstractFile]): ClassPath[AbstractFile] = {
+          cp: ClassPath[AbstractFile]): ClassPath[AbstractFile] =
         packageNameParts match {
           case Nil => cp
           case h :: t =>
@@ -136,7 +136,6 @@ class FlatClassPathResolverTest {
                   s"There's no package $inPackage in recursive classpath - error when searching for '$h'")
             }
         }
-      }
 
       val packageNameParts =
         if (inPackage == FlatClassPath.RootPackage) Nil

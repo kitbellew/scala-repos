@@ -70,9 +70,8 @@ class ScalaLibraryLoader(
     }
   }
 
-  def initScalaComponents(): Unit = {
+  def initScalaComponents(): Unit =
     ScalaLoader.loadScala()
-  }
 
   def addSyntheticClasses(): Unit = {
     val syntheticClasses: SyntheticClasses =
@@ -191,7 +190,7 @@ object ScalaLibraryLoader {
 }
 
 private object CommonLibrary {
-  def apply(name: String, version: TestUtils.ScalaSdkVersion): CommonLibrary = {
+  def apply(name: String, version: TestUtils.ScalaSdkVersion): CommonLibrary =
     name match {
       case "scalaz" =>
         CommonLibrary("scalaz", TestUtils.getMockScalazLib(version))
@@ -200,7 +199,6 @@ private object CommonLibrary {
       case "cats"  => CommonLibrary("cats", TestUtils.getCatsLib(version))
       case _       => throw new IllegalArgumentException(s"Unknown library: $name")
     }
-  }
 }
 
 private case class CommonLibrary(name: String, path: String)

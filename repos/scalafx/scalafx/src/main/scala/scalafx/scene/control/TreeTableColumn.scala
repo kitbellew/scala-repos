@@ -268,9 +268,8 @@ class TreeTableColumn[S, T](
     delegate.cellFactoryProperty.setValue(new jfxu.Callback[
       jfxsc.TreeTableColumn[S, T],
       jfxsc.TreeTableCell[S, T]] {
-      def call(v: jfxsc.TreeTableColumn[S, T]): jfxsc.TreeTableCell[S, T] = {
+      def call(v: jfxsc.TreeTableColumn[S, T]): jfxsc.TreeTableCell[S, T] =
         f(v)
-      }
     })
   }
 
@@ -313,9 +312,8 @@ class TreeTableColumn[S, T](
         jfxsc.TreeTableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
         def call(v: jfxsc.TreeTableColumn.CellDataFeatures[S, T])
-            : jfxbv.ObservableValue[T] = {
+            : jfxbv.ObservableValue[T] =
           f(v).delegate
-        }
       })
   }
 

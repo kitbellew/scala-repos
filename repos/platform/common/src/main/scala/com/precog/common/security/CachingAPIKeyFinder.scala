@@ -62,9 +62,8 @@ class CachingAPIKeyFinder[M[+_]: Monad](
       case t => t.point[M]
     }
 
-  def findAllAPIKeys(fromRoot: APIKey): M[Set[v1.APIKeyDetails]] = {
+  def findAllAPIKeys(fromRoot: APIKey): M[Set[v1.APIKeyDetails]] =
     sys.error("todo")
-  }
 
   // TODO: Cache capability checks
   def hasCapability(

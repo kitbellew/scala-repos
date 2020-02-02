@@ -55,7 +55,7 @@ class ScalaGenerateCompanionObjectHandler
       case _ => false
     }
 
-  private def createCompanionObject(clazz: ScTemplateDefinition): ScObject = {
+  private def createCompanionObject(clazz: ScTemplateDefinition): ScObject =
     if (canAddCompanionObject(clazz)) {
       val name = clazz.name
       val text = s"object $name {\n \n}"
@@ -64,6 +64,5 @@ class ScalaGenerateCompanionObjectHandler
         clazz.getContext,
         clazz)
     } else throw new IllegalArgumentException("Cannot create companion object")
-  }
 
 }

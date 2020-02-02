@@ -55,7 +55,7 @@ object Roots {
   /**
     * Returns a polynomial with the same roots as `poly`, but only integer coefficients.
     */
-  final def removeDecimal(poly: Polynomial[BigDecimal]): Polynomial[BigInt] = {
+  final def removeDecimal(poly: Polynomial[BigDecimal]): Polynomial[BigInt] =
     if (poly == Polynomial.zero[BigDecimal]) {
       Polynomial.zero[BigInt]
     } else {
@@ -70,7 +70,6 @@ object Roots {
           Term(c0, e)
       })
     }
-  }
 
   /**
     * Returns an upper bit bound on the roots of the polynomial `p`.

@@ -70,9 +70,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Set a configuration variable. */
-  def set(key: String, value: String): SparkConf = {
+  def set(key: String, value: String): SparkConf =
     set(key, value, false)
-  }
 
   private[spark] def set(
       key: String,
@@ -107,14 +106,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * The master URL to connect to, such as "local" to run locally with one thread, "local[4]" to
     * run locally with 4 cores, or "spark://master:7077" to run on a Spark standalone cluster.
     */
-  def setMaster(master: String): SparkConf = {
+  def setMaster(master: String): SparkConf =
     set("spark.master", master)
-  }
 
   /** Set a name for your application. Shown in the Spark web UI. */
-  def setAppName(name: String): SparkConf = {
+  def setAppName(name: String): SparkConf =
     set("spark.app.name", name)
-  }
 
   /** Set JAR files to distribute to the cluster. */
   def setJars(jars: Seq[String]): SparkConf = {
@@ -124,18 +121,16 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Set JAR files to distribute to the cluster. (Java-friendly version.) */
-  def setJars(jars: Array[String]): SparkConf = {
+  def setJars(jars: Array[String]): SparkConf =
     setJars(jars.toSeq)
-  }
 
   /**
     * Set an environment variable to be used when launching executors for this application.
     * These variables are stored as properties of the form spark.executorEnv.VAR_NAME
     * (for example spark.executorEnv.PATH) but this method makes them easier to set.
     */
-  def setExecutorEnv(variable: String, value: String): SparkConf = {
+  def setExecutorEnv(variable: String, value: String): SparkConf =
     set("spark.executorEnv." + variable, value)
-  }
 
   /**
     * Set multiple environment variables to be used when launching executors.
@@ -153,16 +148,14 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * Set multiple environment variables to be used when launching executors.
     * (Java-friendly version.)
     */
-  def setExecutorEnv(variables: Array[(String, String)]): SparkConf = {
+  def setExecutorEnv(variables: Array[(String, String)]): SparkConf =
     setExecutorEnv(variables.toSeq)
-  }
 
   /**
     * Set the location where Spark is installed on worker nodes.
     */
-  def setSparkHome(home: String): SparkConf = {
+  def setSparkHome(home: String): SparkConf =
     set("spark.home", home)
-  }
 
   /** Set multiple parameters together */
   def setAll(settings: Traversable[(String, String)]): SparkConf = {
@@ -228,12 +221,11 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Gets all the avro schemas in the configuration used in the generic Avro record serializer */
-  def getAvroSchema: Map[Long, String] = {
+  def getAvroSchema: Map[Long, String] =
     getAll
       .filter { case (k, v) => k.startsWith(avroNamespace) }
       .map { case (k, v) => (k.substring(avroNamespace.length).toLong, v) }
       .toMap
-  }
 
   /** Remove a parameter from the configuration */
   def remove(key: String): SparkConf = {
@@ -242,14 +234,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   }
 
   /** Get a parameter; throws a NoSuchElementException if it's not set */
-  def get(key: String): String = {
+  def get(key: String): String =
     getOption(key).getOrElse(throw new NoSuchElementException(key))
-  }
 
   /** Get a parameter, falling back to a default if not set */
-  def get(key: String, defaultValue: String): String = {
+  def get(key: String, defaultValue: String): String =
     getOption(key).getOrElse(defaultValue)
-  }
 
   /**
     * Retrieves the value of a pre-defined configuration entry.
@@ -258,148 +248,128 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * - The return type if defined by the configuration entry.
     * - This will throw an exception is the config is not optional and the value is not set.
     */
-  private[spark] def get[T](entry: ConfigEntry[T]): T = {
+  private[spark] def get[T](entry: ConfigEntry[T]): T =
     entry.readFrom(this)
-  }
 
   /**
     * Get a time parameter as seconds; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then seconds are assumed.
     * @throws NoSuchElementException
     */
-  def getTimeAsSeconds(key: String): Long = {
+  def getTimeAsSeconds(key: String): Long =
     Utils.timeStringAsSeconds(get(key))
-  }
 
   /**
     * Get a time parameter as seconds, falling back to a default if not set. If no
     * suffix is provided then seconds are assumed.
     */
-  def getTimeAsSeconds(key: String, defaultValue: String): Long = {
+  def getTimeAsSeconds(key: String, defaultValue: String): Long =
     Utils.timeStringAsSeconds(get(key, defaultValue))
-  }
 
   /**
     * Get a time parameter as milliseconds; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then milliseconds are assumed.
     * @throws NoSuchElementException
     */
-  def getTimeAsMs(key: String): Long = {
+  def getTimeAsMs(key: String): Long =
     Utils.timeStringAsMs(get(key))
-  }
 
   /**
     * Get a time parameter as milliseconds, falling back to a default if not set. If no
     * suffix is provided then milliseconds are assumed.
     */
-  def getTimeAsMs(key: String, defaultValue: String): Long = {
+  def getTimeAsMs(key: String, defaultValue: String): Long =
     Utils.timeStringAsMs(get(key, defaultValue))
-  }
 
   /**
     * Get a size parameter as bytes; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then bytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsBytes(key: String): Long = {
+  def getSizeAsBytes(key: String): Long =
     Utils.byteStringAsBytes(get(key))
-  }
 
   /**
     * Get a size parameter as bytes, falling back to a default if not set. If no
     * suffix is provided then bytes are assumed.
     */
-  def getSizeAsBytes(key: String, defaultValue: String): Long = {
+  def getSizeAsBytes(key: String, defaultValue: String): Long =
     Utils.byteStringAsBytes(get(key, defaultValue))
-  }
 
   /**
     * Get a size parameter as bytes, falling back to a default if not set.
     */
-  def getSizeAsBytes(key: String, defaultValue: Long): Long = {
+  def getSizeAsBytes(key: String, defaultValue: Long): Long =
     Utils.byteStringAsBytes(get(key, defaultValue + "B"))
-  }
 
   /**
     * Get a size parameter as Kibibytes; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then Kibibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsKb(key: String): Long = {
+  def getSizeAsKb(key: String): Long =
     Utils.byteStringAsKb(get(key))
-  }
 
   /**
     * Get a size parameter as Kibibytes, falling back to a default if not set. If no
     * suffix is provided then Kibibytes are assumed.
     */
-  def getSizeAsKb(key: String, defaultValue: String): Long = {
+  def getSizeAsKb(key: String, defaultValue: String): Long =
     Utils.byteStringAsKb(get(key, defaultValue))
-  }
 
   /**
     * Get a size parameter as Mebibytes; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then Mebibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsMb(key: String): Long = {
+  def getSizeAsMb(key: String): Long =
     Utils.byteStringAsMb(get(key))
-  }
 
   /**
     * Get a size parameter as Mebibytes, falling back to a default if not set. If no
     * suffix is provided then Mebibytes are assumed.
     */
-  def getSizeAsMb(key: String, defaultValue: String): Long = {
+  def getSizeAsMb(key: String, defaultValue: String): Long =
     Utils.byteStringAsMb(get(key, defaultValue))
-  }
 
   /**
     * Get a size parameter as Gibibytes; throws a NoSuchElementException if it's not set. If no
     * suffix is provided then Gibibytes are assumed.
     * @throws NoSuchElementException
     */
-  def getSizeAsGb(key: String): Long = {
+  def getSizeAsGb(key: String): Long =
     Utils.byteStringAsGb(get(key))
-  }
 
   /**
     * Get a size parameter as Gibibytes, falling back to a default if not set. If no
     * suffix is provided then Gibibytes are assumed.
     */
-  def getSizeAsGb(key: String, defaultValue: String): Long = {
+  def getSizeAsGb(key: String, defaultValue: String): Long =
     Utils.byteStringAsGb(get(key, defaultValue))
-  }
 
   /** Get a parameter as an Option */
-  def getOption(key: String): Option[String] = {
+  def getOption(key: String): Option[String] =
     Option(settings.get(key)).orElse(getDeprecatedConfig(key, this))
-  }
 
   /** Get all parameters as a list of pairs */
-  def getAll: Array[(String, String)] = {
+  def getAll: Array[(String, String)] =
     settings.entrySet().asScala.map(x => (x.getKey, x.getValue)).toArray
-  }
 
   /** Get a parameter as an integer, falling back to a default if not set */
-  def getInt(key: String, defaultValue: Int): Int = {
+  def getInt(key: String, defaultValue: Int): Int =
     getOption(key).map(_.toInt).getOrElse(defaultValue)
-  }
 
   /** Get a parameter as a long, falling back to a default if not set */
-  def getLong(key: String, defaultValue: Long): Long = {
+  def getLong(key: String, defaultValue: Long): Long =
     getOption(key).map(_.toLong).getOrElse(defaultValue)
-  }
 
   /** Get a parameter as a double, falling back to a default if not set */
-  def getDouble(key: String, defaultValue: Double): Double = {
+  def getDouble(key: String, defaultValue: Double): Double =
     getOption(key).map(_.toDouble).getOrElse(defaultValue)
-  }
 
   /** Get a parameter as a boolean, falling back to a default if not set */
-  def getBoolean(key: String, defaultValue: Boolean): Boolean = {
+  def getBoolean(key: String, defaultValue: Boolean): Boolean =
     getOption(key).map(_.toBoolean).getOrElse(defaultValue)
-  }
 
   /** Get all executor environment variables set on this SparkConf */
   def getExecutorEnv: Seq[(String, String)] = {
@@ -416,12 +386,11 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   def getAppId: String = get("spark.app.id")
 
   /** Does the configuration contain a given parameter? */
-  def contains(key: String): Boolean = {
+  def contains(key: String): Boolean =
     settings.containsKey(key) ||
-    configsWithAlternatives.get(key).toSeq.flatten.exists { alt =>
-      contains(alt.key)
-    }
-  }
+      configsWithAlternatives.get(key).toSeq.flatten.exists { alt =>
+        contains(alt.key)
+      }
 
   /** Copy this object */
   override def clone: SparkConf = {
@@ -618,9 +587,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * Return a string listing all keys and values, one per line. This is useful to print the
     * configuration out for debugging.
     */
-  def toDebugString: String = {
+  def toDebugString: String =
     getAll.sorted.map { case (k, v) => k + "=" + v }.mkString("\n")
-  }
 
 }
 
@@ -735,26 +703,24 @@ private[spark] object SparkConf extends Logging {
     * Certain authentication configs are required from the executor when it connects to
     * the scheduler, while the rest of the spark configs can be inherited from the driver later.
     */
-  def isExecutorStartupConf(name: String): Boolean = {
+  def isExecutorStartupConf(name: String): Boolean =
     (name.startsWith("spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
-    name.startsWith("spark.ssl") ||
-    name.startsWith("spark.rpc") ||
-    isSparkPortConf(name)
-  }
+      name.startsWith("spark.ssl") ||
+      name.startsWith("spark.rpc") ||
+      isSparkPortConf(name)
 
   /**
     * Return true if the given config matches either `spark.*.port` or `spark.port.*`.
     */
-  def isSparkPortConf(name: String): Boolean = {
+  def isSparkPortConf(name: String): Boolean =
     (name.startsWith("spark.") && name.endsWith(".port")) || name.startsWith(
       "spark.port.")
-  }
 
   /**
     * Looks for available deprecated keys for the given config option, and return the first
     * value available.
     */
-  def getDeprecatedConfig(key: String, conf: SparkConf): Option[String] = {
+  def getDeprecatedConfig(key: String, conf: SparkConf): Option[String] =
     configsWithAlternatives.get(key).flatMap { alts =>
       alts.collectFirst {
         case alt if conf.contains(alt.key) =>
@@ -762,7 +728,6 @@ private[spark] object SparkConf extends Logging {
           if (alt.translation != null) alt.translation(value) else value
       }
     }
-  }
 
   /**
     * Logs a warning message if the given config key is deprecated.

@@ -31,7 +31,7 @@ class ScalatraBroadcasterFactory(
     this.cfg = c
   }
 
-  private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T = {
+  private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T =
     try {
       val b: T = if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
         bCfg.broadcasterClass
@@ -63,7 +63,6 @@ class ScalatraBroadcasterFactory(
       case ex: Exception =>
         throw new DefaultBroadcasterFactory.BroadcasterCreationException(ex)
     }
-  }
 
   def add(b: Broadcaster, id: Any): Boolean = store.put(id, b).isEmpty
 
@@ -130,13 +129,11 @@ class ScalatraBroadcasterFactory(
   def lookup[T <: Broadcaster](id: scala.Any): T =
     lookup(id, createIfNull = false)
 
-  def lookup[T <: Broadcaster](id: scala.Any, createIfNull: Boolean): T = {
+  def lookup[T <: Broadcaster](id: scala.Any, createIfNull: Boolean): T =
     lookup(classOf[ScalatraBroadcaster], id, createIfNull).asInstanceOf[T]
-  }
 
-  def lookupAll(): java.util.Collection[Broadcaster] = {
+  def lookupAll(): java.util.Collection[Broadcaster] =
     store.values.toList.asJavaCollection
-  }
 
   def remove(b: Broadcaster, id: Any): Boolean = {
     val removed: Boolean = store.remove(id, b)

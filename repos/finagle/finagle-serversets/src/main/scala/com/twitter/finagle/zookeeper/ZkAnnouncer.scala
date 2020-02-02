@@ -123,7 +123,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
 
       doChange(conf) map { _ =>
         new Announcement {
-          def unannounce() = {
+          def unannounce() =
             conf.synchronized {
               endpoint match {
                 case Some(ep) => conf.endpoints.remove(ep)
@@ -131,7 +131,6 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
               }
               doChange(conf)
             }
-          }
         }
       }
     }

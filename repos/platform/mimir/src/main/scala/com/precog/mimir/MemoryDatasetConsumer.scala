@@ -58,7 +58,7 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
   def consumeEval(
       graph: DepGraph,
       ctx: EvaluationContext,
-      optimize: Boolean = true): Validation[X, Set[SEvent]] = {
+      optimize: Boolean = true): Validation[X, Set[SEvent]] =
     Validation.fromTryCatch {
       implicit val nt = NaturalTransformation.refl[M]
       val evaluator = Evaluator(M)
@@ -80,7 +80,6 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
       evaluator.report.done.copoint
       back
     }
-  }
 
   protected def jvalueToSValue(value: JValue): SValue = value match {
     case JUndefined   => sys.error("don't use jnothing; doh!")

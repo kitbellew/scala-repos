@@ -220,7 +220,7 @@ private[sql] object JDBCRDD extends Logging {
     * Turns a single Filter into a String representing a SQL expression.
     * Returns None for an unhandled filter.
     */
-  private[jdbc] def compileFilter(f: Filter): Option[String] = {
+  private[jdbc] def compileFilter(f: Filter): Option[String] =
     Option(f match {
       case EqualTo(attr, value) => s"$attr = ${compileValue(value)}"
       case EqualNullSafe(attr, value) =>
@@ -232,9 +232,9 @@ private[sql] object JDBCRDD extends Logging {
       case GreaterThanOrEqual(attr, value) => s"$attr >= ${compileValue(value)}"
       case IsNull(attr)                    => s"$attr IS NULL"
       case IsNotNull(attr)                 => s"$attr IS NOT NULL"
-      case StringStartsWith(attr, value)   => s"${attr} LIKE '${value}%'"
-      case StringEndsWith(attr, value)     => s"${attr} LIKE '%${value}'"
-      case StringContains(attr, value)     => s"${attr} LIKE '%${value}%'"
+      case StringStartsWith(attr, value)   => s"$attr LIKE '$value%'"
+      case StringEndsWith(attr, value)     => s"$attr LIKE '%$value'"
+      case StringContains(attr, value)     => s"$attr LIKE '%$value%'"
       case In(attr, value)                 => s"$attr IN (${compileValue(value)})"
       case Not(f)                          => compileFilter(f).map(p => s"(NOT ($p))").getOrElse(null)
       case Or(f1, f2)                      =>
@@ -256,7 +256,6 @@ private[sql] object JDBCRDD extends Logging {
         }
       case _ => null
     })
-  }
 
   /**
     * Build and return JDBCRDD from the given information.
@@ -337,7 +336,7 @@ private[sql] class JDBCRDD(
   /**
     * A WHERE clause representing both `filters`, if any, and the current partition.
     */
-  private def getWhereClause(part: JDBCPartition): String = {
+  private def getWhereClause(part: JDBCPartition): String =
     if (part.whereClause != null && filterWhereClause.length > 0) {
       "WHERE " + filterWhereClause + " AND " + part.whereClause
     } else if (part.whereClause != null) {
@@ -347,7 +346,6 @@ private[sql] class JDBCRDD(
     } else {
       ""
     }
-  }
 
   // Each JDBC-to-Catalyst conversion corresponds to a tag defined here so that
   // we don't have to potentially poke around in the Metadata once for every
@@ -597,11 +595,10 @@ private[sql] class JDBCRDD(
       }
     }
 
-  private def nullSafeConvert[T](input: T, f: T => Any): Any = {
+  private def nullSafeConvert[T](input: T, f: T => Any): Any =
     if (input == null) {
       null
     } else {
       f(input)
     }
-  }
 }

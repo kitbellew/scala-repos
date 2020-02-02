@@ -271,7 +271,7 @@ object AdminUtils extends Logging {
   }
 
   private[admin] def getInverseMap(
-      brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] = {
+      brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] =
     brokerRackMap.toSeq
       .map { case (id, rack) => (rack, id) }
       .groupBy { case (rack, _) => rack }
@@ -279,7 +279,6 @@ object AdminUtils extends Logging {
         case (rack, rackAndIdList) =>
           (rack, rackAndIdList.map { case (_, id) => id }.sorted)
       }
-  }
 
   /**
     * Add partitions to existing topic with optional replica assignment
@@ -399,9 +398,8 @@ object AdminUtils extends Logging {
     }
   }
 
-  def isConsumerGroupActive(zkUtils: ZkUtils, group: String) = {
+  def isConsumerGroupActive(zkUtils: ZkUtils, group: String) =
     zkUtils.getConsumersInGroup(group).nonEmpty
-  }
 
   /**
     * Delete the whole directory of the given consumer group if the group is inactive.
@@ -410,13 +408,12 @@ object AdminUtils extends Logging {
     * @param group Consumer group
     * @return whether or not we deleted the consumer group information
     */
-  def deleteConsumerGroupInZK(zkUtils: ZkUtils, group: String) = {
+  def deleteConsumerGroupInZK(zkUtils: ZkUtils, group: String) =
     if (!isConsumerGroupActive(zkUtils, group)) {
       val dir = new ZKGroupDirs(group)
       zkUtils.deletePathRecursive(dir.consumerGroupDir)
       true
     } else false
-  }
 
   /**
     * Delete the given consumer group's information for the given topic in Zookeeper if the group is inactive.
@@ -628,12 +625,11 @@ object AdminUtils extends Logging {
 
   def getConfigChangeZnodeData(
       entityType: String,
-      entityName: String): Map[String, Any] = {
+      entityName: String): Map[String, Any] =
     Map(
       "version" -> 1,
       "entity_type" -> entityType,
       "entity_name" -> entityName)
-  }
 
   /**
     * Write out the topic config to zk, if there is any
@@ -726,7 +722,7 @@ object AdminUtils extends Logging {
       zkUtils: ZkUtils,
       cachedBrokerInfo: mutable.HashMap[Int, Broker],
       protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT)
-      : MetadataResponse.TopicMetadata = {
+      : MetadataResponse.TopicMetadata =
     if (zkUtils.pathExists(getTopicPath(topic))) {
       val topicPartitionAssignment =
         zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic).get
@@ -814,7 +810,6 @@ object AdminUtils extends Logging {
         topic,
         java.util.Collections.emptyList())
     }
-  }
 
   private def getBrokerInfoFromCache(
       zkUtils: ZkUtils,

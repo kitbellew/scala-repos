@@ -286,7 +286,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
         x.boundPort()))
 
     // Assert that topic metadata at new brokers is updated correctly
-    activeBrokers.foreach(x => {
+    activeBrokers.foreach { x =>
       var metadata: TopicMetadataResponse =
         new TopicMetadataResponse(Seq(), Seq(), -1)
       waitUntilTrue(
@@ -318,7 +318,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
                                 ""),
         8000L
       )
-    })
+    }
   }
 
   @Test

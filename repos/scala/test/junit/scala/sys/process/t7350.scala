@@ -32,7 +32,7 @@ class PipedProcessTest {
       }
       0
     }
-    def destroy(): Unit = { destroyCount += 1 }
+    def destroy(): Unit = destroyCount += 1
   }
 
   class ProcessBuilderMock(process: Process, error: Boolean)
@@ -52,7 +52,7 @@ class PipedProcessTest {
     override def run(): Unit = {}
     override def connectOut(out: OutputStream): Unit = {}
     override def connectIn(pipeOut: PipedOutputStream): Unit = {}
-    override def release(): Unit = { releaseCount += 1 }
+    override def release(): Unit = releaseCount += 1
   }
 
   class PipeSourceMock extends Process.PipeSource("PipeSourceMock") {
@@ -62,7 +62,7 @@ class PipedProcessTest {
     override def run(): Unit = {}
     override def connectIn(in: InputStream): Unit = {}
     override def connectOut(sink: Process.PipeSink): Unit = {}
-    override def release(): Unit = { releaseCount += 1 }
+    override def release(): Unit = releaseCount += 1
   }
 
   class PipedProcesses(
@@ -208,18 +208,16 @@ class PipedProcessTest {
 
 @RunWith(classOf[JUnit4])
 class PipeSourceSinkTest {
-  def throwsIOException(f: => Unit) = {
+  def throwsIOException(f: => Unit) =
     try {
       f; false
     } catch { case _: IOException => true }
-  }
 
   class PipeSink extends Process.PipeSink("TestPipeSink") {
-    def ensureRunloopStarted() = {
+    def ensureRunloopStarted() =
       while (sink.size() > 0) {
         Thread.sleep(1)
       }
-    }
     def isReleased = {
       val field = classOf[Process.PipeSink].getDeclaredField("pipe")
       field.setAccessible(true)
@@ -229,11 +227,10 @@ class PipeSourceSinkTest {
   }
 
   class PipeSource extends Process.PipeSource("TestPipeSource") {
-    def ensureRunloopStarted() = {
+    def ensureRunloopStarted() =
       while (source.size() > 0) {
         Thread.sleep(1)
       }
-    }
     def isReleased = {
       val field = classOf[Process.PipeSource].getDeclaredField("pipe")
       field.setAccessible(true)

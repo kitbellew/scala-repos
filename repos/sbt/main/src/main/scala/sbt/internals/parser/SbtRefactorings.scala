@@ -38,7 +38,7 @@ private[sbt] object SbtRefactorings {
 
   private def replaceFromBottomToTop(
       modifiedContent: String,
-      sortedRecordedCommands: Seq[(Int, String, String)]) = {
+      sortedRecordedCommands: Seq[(Int, String, String)]) =
     sortedRecordedCommands.foldLeft(modifiedContent) {
       case (acc, (from, old, replacement)) =>
         val before = acc.substring(0, from)
@@ -46,7 +46,6 @@ private[sbt] object SbtRefactorings {
         val afterLast = emptyStringForEmptyString(after)
         before + replacement + afterLast
     }
-  }
 
   private def emptyStringForEmptyString(text: String) = {
     val trimmed = text.trim

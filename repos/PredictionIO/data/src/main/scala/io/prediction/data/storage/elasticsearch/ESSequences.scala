@@ -50,7 +50,7 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String)
       .get
   }
 
-  def genNext(name: String): Int = {
+  def genNext(name: String): Int =
     try {
       val response = client
         .prepareIndex(index, estype, name)
@@ -62,5 +62,4 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String)
         error(e.getMessage)
         0
     }
-  }
 }

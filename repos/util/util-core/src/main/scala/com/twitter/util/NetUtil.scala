@@ -23,11 +23,10 @@ object NetUtil {
         false
     }
 
-  def ipToInt(ip: String): Int = {
+  def ipToInt(ip: String): Int =
     ipToOptionInt(ip) getOrElse {
       throw new IllegalArgumentException("invalid IPv4 address: " + ip)
     }
-  }
 
   def ipToOptionInt(ip: String): Option[Int] = {
     // Fast IPv4 address to integer.  This is fast because it avoids split,
@@ -88,7 +87,7 @@ object NetUtil {
     }
   }
 
-  def inetAddressToInt(inetAddress: InetAddress): Int = {
+  def inetAddressToInt(inetAddress: InetAddress): Int =
     inetAddress match {
       case inetAddress: Inet4Address =>
         val addr = inetAddress.getAddress
@@ -100,7 +99,6 @@ object NetUtil {
         throw new IllegalArgumentException(
           "non-Inet4Address cannot be converted to an Int")
     }
-  }
 
   // Converts either a full or partial ip, (e.g.127.0.0.1, 127.0)
   // to it's integer equivalent with mask specified by prefixlen.
@@ -133,20 +131,18 @@ object NetUtil {
       ipBlock: (Int, Int)): Boolean =
     isIpInBlock(inetAddressToInt(inetAddress), ipBlock)
 
-  def isIpInBlocks(ip: Int, ipBlocks: Iterable[(Int, Int)]): Boolean = {
+  def isIpInBlocks(ip: Int, ipBlocks: Iterable[(Int, Int)]): Boolean =
     ipBlocks exists { ipBlock => isIpInBlock(ip, ipBlock) }
-  }
 
-  def isIpInBlocks(ip: String, ipBlocks: Iterable[(Int, Int)]): Boolean = {
+  def isIpInBlocks(ip: String, ipBlocks: Iterable[(Int, Int)]): Boolean =
     isIpInBlocks(ipToInt(ip), ipBlocks)
-  }
 
   def isInetAddressInBlocks(
       inetAddress: InetAddress,
       ipBlocks: Iterable[(Int, Int)]): Boolean =
     isIpInBlocks(inetAddressToInt(inetAddress), ipBlocks)
 
-  def getLocalHostName(): String = {
+  def getLocalHostName(): String =
     try {
       InetAddress.getLocalHost().getHostName()
     } catch {
@@ -160,5 +156,4 @@ object NetUtil {
           case None => "unknown_host"
         }
     }
-  }
 }

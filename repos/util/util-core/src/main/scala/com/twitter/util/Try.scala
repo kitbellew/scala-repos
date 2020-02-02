@@ -9,13 +9,12 @@ package com.twitter.util
 object Try {
   case class PredicateDoesNotObtain() extends Exception()
 
-  def apply[R](r: => R): Try[R] = {
+  def apply[R](r: => R): Try[R] =
     try {
       Return(r)
     } catch {
       case NonFatal(e) => Throw(e)
     }
-  }
 
   /**
     * Like [[Try.apply]] but allows the caller to specify a handler for fatal
@@ -31,13 +30,12 @@ object Try {
     * Collect the results from the given Trys into a new Try. The result will be a Throw if any of
     * the argument Trys are Throws. The first Throw in the Seq is the one which is surfaced.
     */
-  def collect[A](ts: Seq[Try[A]]): Try[Seq[A]] = {
+  def collect[A](ts: Seq[Try[A]]): Try[Seq[A]] =
     if (ts.isEmpty) Return(Seq.empty[A])
     else
       Try {
         ts map { t => t() }
       }
-  }
 
   /**
     * Convert an [[scala.Option]] to a [[Try]].
@@ -222,14 +220,13 @@ final case class Throw[+R](e: Throwable) extends Try[R] {
   def isThrow = true
   def isReturn = false
   def throwable: Throwable = e
-  def rescue[R2 >: R](rescueException: PartialFunction[Throwable, Try[R2]]) = {
+  def rescue[R2 >: R](rescueException: PartialFunction[Throwable, Try[R2]]) =
     try {
       val result = rescueException.applyOrElse(e, Throw.AlwaysNotApplied)
       if (result eq Throw.NotApplied) this else result
     } catch {
       case NonFatal(e2) => Throw(e2)
     }
-  }
   def apply(): R = throw e
   def flatMap[R2](f: R => Try[R2]) = this.asInstanceOf[Throw[R2]]
   def flatten[T](implicit ev: R <:< Try[T]): Try[T] =

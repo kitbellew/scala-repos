@@ -66,9 +66,8 @@ trait ActionResultTestBase {
   get("/defaults-to-call-by-value") {
     var state = "open"
     // close over mutable state
-    def x: String = {
+    def x: String =
       state
-    }
 
     val res = Ok(x)
 

@@ -48,7 +48,7 @@ object DBColumnTransformer {
       .map { siz => s"($siz)" }
       .getOrElse("")
     val defStr = preparedCol.defaultValue
-      .map { default => s" DEFAULT '${default}' " }
+      .map { default => s" DEFAULT '$default' " }
       .getOrElse(" ")
     val sqlType = preparedCol.sqlType.toStr
 

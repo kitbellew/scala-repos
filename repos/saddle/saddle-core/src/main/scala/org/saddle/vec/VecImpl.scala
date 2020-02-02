@@ -216,7 +216,7 @@ private[saddle] object VecImpl {
   def rolling[
       @spec(Boolean, Int, Long, Double) A,
       @spec(Boolean, Int, Long, Double) B: ST](
-      vec: Vec[A])(winSz: Int, f: Vec[A] => B): Vec[B] = {
+      vec: Vec[A])(winSz: Int, f: Vec[A] => B): Vec[B] =
     if (winSz <= 0)
       Vec.empty[B]
     else {
@@ -234,7 +234,6 @@ private[saddle] object VecImpl {
         Vec(buf)
       }
     }
-  }
 
   def foreach[@spec(Boolean, Int, Long, Double) A: ST](vec: Vec[A])(
       op: A => Unit) {
@@ -348,7 +347,7 @@ private[saddle] object VecImpl {
 
   def pad[@spec(Boolean, Int, Long, Double) A: ST](
       vec: Vec[A],
-      atMost: Int = 0): Vec[A] = {
+      atMost: Int = 0): Vec[A] =
     if (vec.length == 0 || vec.length == 1)
       vec
     else {
@@ -371,7 +370,6 @@ private[saddle] object VecImpl {
       }
       Vec(buf)
     }
-  }
 
   def vecfillNA[@spec(Boolean, Int, Long, Double) A: ST](vec: Vec[A])(
       f: (Int) => A): Vec[A] = {

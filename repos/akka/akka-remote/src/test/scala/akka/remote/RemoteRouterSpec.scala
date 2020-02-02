@@ -43,7 +43,7 @@ class RemoteRouterSpec
         /blub {
           router = round-robin-pool
           nr-of-instances = 2
-          target.nodes = ["akka.tcp://${sysName}@localhost:${port}"]
+          target.nodes = ["akka.tcp://$sysName@localhost:$port"]
         }
         /elastic-blub {
           router = round-robin-pool
@@ -51,10 +51,10 @@ class RemoteRouterSpec
             lower-bound = 2
             upper-bound = 3
           }
-          target.nodes = ["akka.tcp://${sysName}@localhost:${port}"]
+          target.nodes = ["akka.tcp://$sysName@localhost:$port"]
         }
         /remote-blub {
-          remote = "akka.tcp://${sysName}@localhost:${port}"
+          remote = "akka.tcp://$sysName@localhost:$port"
           router = round-robin-pool
           nr-of-instances = 2
         }
@@ -62,12 +62,12 @@ class RemoteRouterSpec
           remote = "akka://MasterRemoteRouterSpec"
           router = round-robin-pool
           nr-of-instances = 2
-          target.nodes = ["akka.tcp://${sysName}@localhost:${port}"]
+          target.nodes = ["akka.tcp://$sysName@localhost:$port"]
         }
         /local-blub2 {
           router = round-robin-pool
           nr-of-instances = 4
-          target.nodes = ["akka.tcp://${sysName}@localhost:${port}"]
+          target.nodes = ["akka.tcp://$sysName@localhost:$port"]
         }
       }
     }""").withFallback(system.settings.config)
@@ -91,7 +91,7 @@ class RemoteRouterSpec
       children should have size 2
       children.map(_.parent) should have size 1
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -111,7 +111,7 @@ class RemoteRouterSpec
       children should have size 2
       children.map(_.parent) should have size 1
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -127,7 +127,7 @@ class RemoteRouterSpec
       children.size should be >= 2
       children.map(_.parent) should have size 1
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -136,7 +136,7 @@ class RemoteRouterSpec
       val router =
         masterSystem.actorOf(FromConfig.props(Props[Echo]), "remote-blub")
       router.path.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}")
+        s"akka.tcp://$sysName@localhost:$port")
       val replies = for (i ← 1 to 5) yield {
         router.tell("", probe.ref)
         probe.expectMsgType[ActorRef].path
@@ -147,7 +147,7 @@ class RemoteRouterSpec
       parents should have size 1
       parents.head should ===(router.path)
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -157,11 +157,11 @@ class RemoteRouterSpec
         RoundRobinPool(2)
           .props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
-            AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
+            AddressFromURIString(s"akka.tcp://$sysName@localhost:$port")))),
         "remote-blub2"
       )
       router.path.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}")
+        s"akka.tcp://$sysName@localhost:$port")
       val replies = for (i ← 1 to 5) yield {
         router.tell("", probe.ref)
         probe.expectMsgType[ActorRef].path
@@ -172,7 +172,7 @@ class RemoteRouterSpec
       parents should have size 1
       parents.head should ===(router.path)
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -182,7 +182,7 @@ class RemoteRouterSpec
         RoundRobinPool(2)
           .props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
-            AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
+            AddressFromURIString(s"akka.tcp://$sysName@localhost:$port")))),
         "local-blub"
       )
       router.path.address.toString should ===("akka://MasterRemoteRouterSpec")
@@ -197,7 +197,7 @@ class RemoteRouterSpec
       parents.head.address should ===(
         Address("akka.tcp", sysName, "localhost", port))
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -207,11 +207,11 @@ class RemoteRouterSpec
         RoundRobinPool(2)
           .props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
-            AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
+            AddressFromURIString(s"akka.tcp://$sysName@localhost:$port")))),
         "local-blub2"
       )
       router.path.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}")
+        s"akka.tcp://$sysName@localhost:$port")
       val replies = for (i ← 1 to 5) yield {
         router.tell("", probe.ref)
         probe.expectMsgType[ActorRef].path
@@ -222,7 +222,7 @@ class RemoteRouterSpec
       parents should have size 1
       parents.head should ===(router.path)
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -232,11 +232,11 @@ class RemoteRouterSpec
         RoundRobinPool(2)
           .props(Props[Echo])
           .withDeploy(Deploy(scope = RemoteScope(
-            AddressFromURIString(s"akka.tcp://${sysName}@localhost:${port}")))),
+            AddressFromURIString(s"akka.tcp://$sysName@localhost:$port")))),
         "remote-override"
       )
       router.path.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}")
+        s"akka.tcp://$sysName@localhost:$port")
       val replies = for (i ← 1 to 5) yield {
         router.tell("", probe.ref)
         probe.expectMsgType[ActorRef].path
@@ -247,7 +247,7 @@ class RemoteRouterSpec
       parents should have size 1
       parents.head should ===(router.path)
       children foreach (_.address.toString should ===(
-        s"akka.tcp://${sysName}@localhost:${port}"))
+        s"akka.tcp://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 

@@ -33,7 +33,7 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
   // since these strings can be also used as column names or field names.
   import lexical.Identifier
   implicit def regexToParser(regex: Regex): Parser[String] = acceptMatch(
-    s"identifier matching regex ${regex}",
+    s"identifier matching regex $regex",
     { case Identifier(str) if regex.unapplySeq(str).isDefined => str }
   )
 
@@ -101,11 +101,10 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     }
   }
 
-  private def failMessage(dataTypeString: String): String = {
+  private def failMessage(dataTypeString: String): String =
     s"Unsupported dataType: $dataTypeString. If you have a struct and a field name of it has " +
       "any special characters, please use backticks (`) to quote that field name, e.g. `x+y`. " +
       "Please note that backtick itself is not supported in a field name."
-  }
 }
 
 private[sql] object DataTypeParser {

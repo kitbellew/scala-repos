@@ -8,11 +8,7 @@ object Test extends App {
     class Foo(y: Int) {
       val y1 = y
 
-      val fun = reify { (x: Int) =>
-        {
-          x + y1
-        }
-      }
+      val fun = reify { (x: Int) => x + y1 }
     }
 
     val toolbox = cm.mkToolBox()

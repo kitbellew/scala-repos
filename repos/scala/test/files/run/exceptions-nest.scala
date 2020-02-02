@@ -134,20 +134,18 @@ object Test extends App {
     x
   }
 
-  def test9 = {
+  def test9 =
     try {
       "" match {
         case s: String => 10
       }
     } catch { case _: Throwable => 20 }
-  }
 
   var x10 = 1
-  def test10: Int = {
+  def test10: Int =
     try {
       1
     } catch { case e if (x10 == 1) => 1 }
-  }
 
   def test11 {
     try {

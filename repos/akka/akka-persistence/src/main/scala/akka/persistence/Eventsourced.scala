@@ -157,14 +157,13 @@ private[persistence] trait Eventsourced
   protected def onPersistFailure(
       cause: Throwable,
       event: Any,
-      seqNr: Long): Unit = {
+      seqNr: Long): Unit =
     log.error(
       cause,
       "Failed to persist event type [{}] with sequence number [{}] for persistenceId [{}].",
       event.getClass.getName,
       seqNr,
       persistenceId)
-  }
 
   /**
     * Called when the journal rejected `persist` of an event. The event was not
@@ -177,7 +176,7 @@ private[persistence] trait Eventsourced
   protected def onPersistRejected(
       cause: Throwable,
       event: Any,
-      seqNr: Long): Unit = {
+      seqNr: Long): Unit =
     log.warning(
       "Rejected to persist event type [{}] with sequence number [{}] for persistenceId [{}] due to [{}].",
       event.getClass.getName,
@@ -185,7 +184,6 @@ private[persistence] trait Eventsourced
       persistenceId,
       cause.getMessage
     )
-  }
 
   private def stashInternally(currMsg: Any): Unit =
     try internalStash.stash()
@@ -227,7 +225,7 @@ private[persistence] trait Eventsourced
   /** INTERNAL API. */
   override protected[akka] def aroundPreRestart(
       reason: Throwable,
-      message: Option[Any]): Unit = {
+      message: Option[Any]): Unit =
     try {
       internalStash.unstashAll()
       unstashAll(unstashFilterPredicate)
@@ -247,7 +245,6 @@ private[persistence] trait Eventsourced
           super.aroundPreRestart(reason, None)
       }
     }
-  }
 
   /** INTERNAL API. */
   override protected[akka] def aroundPostRestart(reason: Throwable): Unit = {
@@ -262,7 +259,7 @@ private[persistence] trait Eventsourced
       unstashAll(unstashFilterPredicate)
     } finally super.aroundPostStop()
 
-  override def unhandled(message: Any): Unit = {
+  override def unhandled(message: Any): Unit =
     message match {
       case RecoveryCompleted ⇒ // mute
       case SaveSnapshotFailure(m, e) ⇒
@@ -293,11 +290,9 @@ private[persistence] trait Eventsourced
         )
       case m ⇒ super.unhandled(m)
     }
-  }
 
-  private def changeState(state: State): Unit = {
+  private def changeState(state: State): Unit =
     currentState = state
-  }
 
   private def updateLastSequenceNr(persistent: PersistentRepr): Unit =
     if (persistent.sequenceNr > _lastSequenceNr)
@@ -390,7 +385,7 @@ private[persistence] trait Eventsourced
     * @param events events to be persisted
     * @param handler handler for each persisted `events`
     */
-  def persistAll[A](events: immutable.Seq[A])(handler: A ⇒ Unit): Unit = {
+  def persistAll[A](events: immutable.Seq[A])(handler: A ⇒ Unit): Unit =
     if (events.nonEmpty) {
       events.foreach { event ⇒
         pendingStashingPersistInvocations += 1
@@ -407,7 +402,6 @@ private[persistence] trait Eventsourced
             writerUuid = writerUuid,
             sender = sender())))
     }
-  }
 
   @deprecated("use persistAll instead", "2.4")
   def persist[A](events: immutable.Seq[A])(handler: A ⇒ Unit): Unit =
@@ -495,7 +489,7 @@ private[persistence] trait Eventsourced
     * @param event event to be handled in the future, when preceding persist operations have been processes
     * @param handler handler for the given `event`
     */
-  def deferAsync[A](event: A)(handler: A ⇒ Unit): Unit = {
+  def deferAsync[A](event: A)(handler: A ⇒ Unit): Unit =
     if (pendingInvocations.isEmpty) {
       handler(event)
     } else {
@@ -504,7 +498,6 @@ private[persistence] trait Eventsourced
         handler.asInstanceOf[Any ⇒ Unit])
       eventBatch = NonPersistentRepr(event, sender()) :: eventBatch
     }
-  }
 
   /**
     * Permanently deletes all persistent messages with sequence numbers less than or equal `toSequenceNr`.

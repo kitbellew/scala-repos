@@ -21,12 +21,11 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
 class ScCaseClauseImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScCaseClause {
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 
   override def toString: String = "CaseClause"
 

@@ -72,7 +72,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   class GlobalMirror extends Roots(NoSymbol) {
     val universe: self.type = self
-    def rootLoader: LazyType = {
+    def rootLoader: LazyType =
       settings.YclasspathImpl.value match {
         case ClassPathRepresentationType.Flat =>
           new loaders.PackageLoaderUsingFlatClassPath(
@@ -81,7 +81,6 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         case ClassPathRepresentationType.Recursive =>
           new loaders.PackageLoader(recursiveClassPath)
       }
-    }
     override def toString = "compiler mirror"
   }
   implicit val MirrorTag: ClassTag[Mirror] =
@@ -245,12 +244,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def signalParseProgress(pos: Position) {}
 
   /** Called by ScaladocAnalyzer when a doc comment has been parsed. */
-  def signalParsedDocComment(comment: String, pos: Position) = {
+  def signalParsedDocComment(comment: String, pos: Position) =
     // TODO: this is all very broken (only works for scaladoc comments, not regular ones)
     //       --> add hooks to parser and refactor Interactive global to handle comments directly
     //       in any case don't use reporter for parser hooks
     reporter.comment(pos, comment)
-  }
 
   /** Register new context; called for every created context
     */
@@ -629,9 +627,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val runsRightAfter = None
     override val terminal = true
 
-    def newPhase(prev: Phase): GlobalPhase = {
+    def newPhase(prev: Phase): GlobalPhase =
       new TerminalPhase(prev)
-    }
     private class TerminalPhase(prev: Phase) extends GlobalPhase(prev) {
       def name = phaseName
       def apply(unit: CompilationUnit) {}
@@ -776,7 +773,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val maxDesc = MaxCol - (width + 6) // descriptions not novels
     val fmt =
       if (settings.verbose || !elliptically) s"%${maxName}s  %2s  %s%n"
-      else s"%${width}.${width}s  %2s  %.${maxDesc}s%n"
+      else s"%$width.${width}s  %2s  %.${maxDesc}s%n"
 
     val line1 = fmt.format("phase name", "id", title)
     val line2 = fmt.format("----------", "--", "-" * title.length)
@@ -828,7 +825,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Returns List of (phase, value) pairs, including only those
     *  where the value compares unequal to the previous phase's value.
     */
-  def afterEachPhase[T](op: => T): List[(Phase, T)] = { // used in tests
+  def afterEachPhase[T](op: => T): List[(Phase, T)] = // used in tests
     phaseDescriptors
       .map(_.ownPhase)
       .filterNot(_ eq NoPhase)
@@ -837,7 +834,6 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         if (res.nonEmpty && res.head._2 == value) res
       else ((ph, value)) :: res
     } reverse
-  }
 
   // ------------ REPL utilities ---------------------------------
 
@@ -1168,12 +1164,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     */
   override def currentRunId = curRunId
 
-  def echoPhaseSummary(ph: Phase) = {
+  def echoPhaseSummary(ph: Phase) =
     /* Only output a summary message under debug if we aren't echoing each file. */
     if (settings.debug && !(settings.verbose || currentRun.size < 5))
       inform(
         "[running phase " + ph.name + " on " + currentRun.size + " compilation units]")
-  }
 
   def newSourceFile(code: String, filename: String = "<console>") =
     new BatchSourceFile(filename, code)

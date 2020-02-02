@@ -27,9 +27,8 @@ private[persistence] class InmemJournal
 
   override def asyncReadHighestSequenceNr(
       persistenceId: String,
-      fromSequenceNr: Long): Future[Long] = {
+      fromSequenceNr: Long): Future[Long] =
     Future.successful(highestSequenceNr(persistenceId))
-  }
 
   override def asyncReplayMessages(
       persistenceId: String,

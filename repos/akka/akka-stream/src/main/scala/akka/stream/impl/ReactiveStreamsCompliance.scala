@@ -47,13 +47,12 @@ private[stream] object ReactiveStreamsCompliance {
   final def subscriptionMustNotBeNullException: Throwable =
     new NullPointerException(SubscriptionMustNotBeNullMsg)
 
-  final def rejectDuplicateSubscriber[T](subscriber: Subscriber[T]): Unit = {
+  final def rejectDuplicateSubscriber[T](subscriber: Subscriber[T]): Unit =
     // since it is already subscribed it has received the subscription first
     // and we can emit onError immediately
     tryOnError(
       subscriber,
       canNotSubscribeTheSameSubscriberMultipleTimesException)
-  }
 
   final def rejectAdditionalSubscriber[T](
       subscriber: Subscriber[T],
@@ -112,23 +111,21 @@ private[stream] object ReactiveStreamsCompliance {
 
   final def tryOnSubscribe[T](
       subscriber: Subscriber[T],
-      subscription: Subscription): Unit = {
+      subscription: Subscription): Unit =
     try subscriber.onSubscribe(subscription)
     catch {
       case NonFatal(t) ⇒
         throw new SignalThrewException(subscriber + ".onSubscribe", t)
     }
-  }
 
-  final def tryOnComplete[T](subscriber: Subscriber[T]): Unit = {
+  final def tryOnComplete[T](subscriber: Subscriber[T]): Unit =
     try subscriber.onComplete()
     catch {
       case NonFatal(t) ⇒
         throw new SignalThrewException(subscriber + ".onComplete", t)
     }
-  }
 
-  final def tryRequest(subscription: Subscription, demand: Long): Unit = {
+  final def tryRequest(subscription: Subscription, demand: Long): Unit =
     try subscription.request(demand)
     catch {
       case NonFatal(t) ⇒
@@ -136,9 +133,8 @@ private[stream] object ReactiveStreamsCompliance {
           "It is illegal to throw exceptions from request(), rule 3.16",
           t)
     }
-  }
 
-  final def tryCancel(subscription: Subscription): Unit = {
+  final def tryCancel(subscription: Subscription): Unit =
     try subscription.cancel()
     catch {
       case NonFatal(t) ⇒
@@ -146,6 +142,5 @@ private[stream] object ReactiveStreamsCompliance {
           "It is illegal to throw exceptions from cancel(), rule 3.15",
           t)
     }
-  }
 
 }

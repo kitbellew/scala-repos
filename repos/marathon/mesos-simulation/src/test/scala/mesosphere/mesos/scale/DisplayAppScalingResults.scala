@@ -49,7 +49,7 @@ object DisplayAppScalingResults {
     val allMetrics: Seq[JsObject] =
       ScalingTestResultFiles.readJson[Seq[JsObject]](fileName)
 
-    def subMetric(name: String): Map[String, JsObject] = {
+    def subMetric(name: String): Map[String, JsObject] =
       (allMetrics.last \ name)
         .as[JsObject]
         .value
@@ -57,7 +57,6 @@ object DisplayAppScalingResults {
           case (name, value) => name -> value.as[JsObject]
         }
         .toMap
-    }
 
     displayMeters(subMetric("meters"))
 
@@ -70,11 +69,10 @@ object DisplayAppScalingResults {
     displayTimers(subMetric("timers"))
   }
 
-  def shortenName(name: String): String = {
+  def shortenName(name: String): String =
     name
       .replaceAll("mesosphere\\.marathon", "marathon")
       .replaceAll("org\\.eclipse\\.jetty\\.servlet", "servlet")
-  }
 
   def displayMeters(meters: Map[String, JsObject]): Unit = {
     val header = IndexedSeq(

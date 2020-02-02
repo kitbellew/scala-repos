@@ -85,7 +85,7 @@ private[finagle] object TimerStats {
         headField
       }
 
-    def bucketTimeouts(hashedWheelBucket: Object): Int = {
+    def bucketTimeouts(hashedWheelBucket: Object): Int =
       bucketHeadField
         .map { headField =>
           val head = headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
@@ -104,7 +104,6 @@ private[finagle] object TimerStats {
           }
         }
         .getOrElse(0)
-    }
 
     def wheelTimeouts: Try[Int] =
       buckets.map { bs => bs.map(bucketTimeouts).sum }

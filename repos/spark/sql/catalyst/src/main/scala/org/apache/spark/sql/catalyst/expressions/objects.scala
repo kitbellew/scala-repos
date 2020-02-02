@@ -351,9 +351,8 @@ case class LambdaVariable(value: String, isNull: String, dataType: DataType)
 
   override def nullable: Boolean = true
 
-  override def gen(ctx: CodegenContext): ExprCode = {
+  override def gen(ctx: CodegenContext): ExprCode =
     ExprCode(code = "", value = value, isNull = isNull)
-  }
 }
 
 object MapObjects {

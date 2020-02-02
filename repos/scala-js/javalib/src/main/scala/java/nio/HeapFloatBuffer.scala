@@ -97,7 +97,7 @@ private[nio] object HeapFloatBuffer {
         arrayOffset: Int,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): FloatBuffer = {
+        readOnly: Boolean): FloatBuffer =
       new HeapFloatBuffer(
         capacity,
         array,
@@ -105,7 +105,6 @@ private[nio] object HeapFloatBuffer {
         initialPosition,
         initialLimit,
         readOnly)
-    }
   }
 
   @noinline
@@ -115,7 +114,7 @@ private[nio] object HeapFloatBuffer {
       capacity: Int,
       initialPosition: Int,
       initialLength: Int,
-      isReadOnly: Boolean): FloatBuffer = {
+      isReadOnly: Boolean): FloatBuffer =
     GenHeapBuffer.generic_wrap(
       array,
       arrayOffset,
@@ -123,5 +122,4 @@ private[nio] object HeapFloatBuffer {
       initialPosition,
       initialLength,
       isReadOnly)
-  }
 }

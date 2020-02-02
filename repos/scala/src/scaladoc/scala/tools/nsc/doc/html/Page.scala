@@ -74,12 +74,11 @@ abstract class Page {
     def downPacks(pack: Package): List[String] =
       if (pack.isRootPackage) Nil
       else (doName(pack) :: downPacks(pack.inTemplate))
-    def downInner(nme: String, tpl: TemplateEntity): (String, Package) = {
+    def downInner(nme: String, tpl: TemplateEntity): (String, Package) =
       tpl.inTemplate match {
         case inPkg: Package => (nme + ".html", inPkg)
         case inTpl          => downInner(doName(inTpl) + "$" + nme, inTpl)
       }
-    }
     val (file, pack) =
       tpl match {
         case p: Package => ("index.html", p)

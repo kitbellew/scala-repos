@@ -28,7 +28,7 @@ private[internal] trait TypeMaps {
 
   /** Remove any occurrence of type <singleton> from this type and its parents */
   object dropSingletonType extends TypeMap {
-    def apply(tp: Type): Type = {
+    def apply(tp: Type): Type =
       tp match {
         case TypeRef(_, SingletonClass, _) =>
           AnyTpe
@@ -41,7 +41,6 @@ private[internal] trait TypeMaps {
         case tp1 =>
           mapOver(tp1)
       }
-    }
   }
 
   /** Type with all top-level occurrences of abstract types replaced by their bounds */
@@ -225,12 +224,11 @@ private[internal] trait TypeMaps {
     /** Applies this map to the symbol's info, setting variance = Invariant
       *  if necessary when the symbol is an alias.
       */
-    private def applyToSymbolInfo(sym: Symbol): Type = {
+    private def applyToSymbolInfo(sym: Symbol): Type =
       if (trackVariance && !variance.isInvariant && sym.isAliasType)
         withVariance(Invariant)(this(sym.info))
       else
         this(sym.info)
-    }
 
     /** Called by mapOver to determine whether the original symbols can
       *  be returned, or whether they must be cloned.
@@ -252,12 +250,11 @@ private[internal] trait TypeMaps {
     }
 
     /** Map this function over given list of symbols */
-    def mapOver(origSyms: List[Symbol]): List[Symbol] = {
+    def mapOver(origSyms: List[Symbol]): List[Symbol] =
       // fast path in case nothing changes due to map
       if (noChangeToSymbols(origSyms)) origSyms
       // map is not the identity --> do cloning properly
       else cloneSymbolsAndModify(origSyms, TypeMap.this)
-    }
 
     def mapOver(annot: AnnotationInfo): AnnotationInfo = {
       val AnnotationInfo(atp, args, assocs) = annot
@@ -377,14 +374,13 @@ private[internal] trait TypeMaps {
   class ExistentialExtrapolation(tparams: List[Symbol])
       extends TypeMap(trackVariance = true) {
     private val occurCount = mutable.HashMap[Symbol, Int]()
-    private def countOccs(tp: Type) = {
+    private def countOccs(tp: Type) =
       tp foreach {
         case TypeRef(_, sym, _) =>
           if (tparams contains sym)
             occurCount(sym) += 1
         case _ => ()
       }
-    }
     def extrapolate(tpe: Type): Type = {
       tparams foreach (t => occurCount(t) = 0)
       countOccs(tpe)
@@ -548,7 +544,7 @@ private[internal] trait TypeMaps {
     /** Creates an existential representing a type parameter which appears
       *  in the prefix of a ThisType.
       */
-    protected def captureThis(pre: Type, clazz: Symbol): Type = {
+    protected def captureThis(pre: Type, clazz: Symbol): Type =
       capturedParams find (_.owner == clazz) match {
         case Some(p) => p.tpe
         case _ =>
@@ -560,7 +556,6 @@ private[internal] trait TypeMaps {
             s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
           qvar.tpe
       }
-    }
     protected def captureSkolems(skolems: List[Symbol]) {
       for (p <- skolems; if !(capturedSkolems contains p)) {
         debuglog(s"Captured $p seen from $seenFromPrefix")
@@ -696,7 +691,7 @@ private[internal] trait TypeMaps {
     // was touched. This takes us to one allocation per AsSeenFromMap rather
     // than an allocation on every call to mapOver, and no extra work when the
     // tree only has its types remapped.
-    override def mapOver(tree: Tree, giveup: () => Nothing): Tree = {
+    override def mapOver(tree: Tree, giveup: () => Nothing): Tree =
       if (isStablePrefix)
         annotationArgRewriter transform tree
       else {
@@ -705,7 +700,6 @@ private[internal] trait TypeMaps {
         try annotationArgRewriter transform tree
         finally if (wroteAnnotation) giveup() else wroteAnnotation = saved
       }
-    }
 
     private def thisTypeAsSeen(tp: ThisType): Type = {
       def loop(pre: Type, clazz: Symbol): Type = {
@@ -875,7 +869,7 @@ private[internal] trait TypeMaps {
         }
 
       // changes trees which refer to one of the mapped symbols. trees are copied before attributes are modified.
-      override def transform(tree: Tree) = {
+      override def transform(tree: Tree) =
         // super.transform maps symbol references in the types of `tree`. it also copies trees where necessary.
         super.transform(tree) match {
           case id @ Ident(_) =>
@@ -887,11 +881,9 @@ private[internal] trait TypeMaps {
 
           case tree => tree
         }
-      }
     }
-    override def mapOver(tree: Tree, giveup: () => Nothing): Tree = {
+    override def mapOver(tree: Tree, giveup: () => Nothing): Tree =
       mapTreeSymbols.transform(tree)
-    }
   }
 
   /** A map to implement the `subst` method. */
@@ -1168,7 +1160,7 @@ private[internal] trait TypeMaps {
 
   object adaptToNewRunMap extends TypeMap {
 
-    private def adaptToNewRun(pre: Type, sym: Symbol): Symbol = {
+    private def adaptToNewRun(pre: Type, sym: Symbol): Symbol =
       if (phase.flatClasses || sym.isRootSymbol || (pre eq NoPrefix) || (pre eq NoType) || sym.isPackageClass)
         sym
       else if (sym.isModuleClass) {
@@ -1222,7 +1214,6 @@ private[internal] trait TypeMaps {
           throw new MalformedType(pre, sym.nameString)
         }
       }
-    }
     def apply(tp: Type): Type = tp match {
       case ThisType(sym) =>
         try {

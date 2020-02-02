@@ -48,13 +48,12 @@ abstract class DataType extends AbstractDataType {
   def defaultSize: Int
 
   /** Name of the type used in JSON serialization. */
-  def typeName: String = {
+  def typeName: String =
     this.getClass.getSimpleName
       .stripSuffix("$")
       .stripSuffix("Type")
       .stripSuffix("UDT")
       .toLowerCase
-  }
 
   private[sql] def jsonValue: JValue = typeName
 
@@ -204,7 +203,7 @@ object DataType {
   protected[types] def buildFormattedString(
       dataType: DataType,
       prefix: String,
-      builder: StringBuilder): Unit = {
+      builder: StringBuilder): Unit =
     dataType match {
       case array: ArrayType =>
         array.buildFormattedString(prefix, builder)
@@ -214,14 +213,13 @@ object DataType {
         map.buildFormattedString(prefix, builder)
       case _ =>
     }
-  }
 
   /**
     * Compares two types, ignoring nullability of ArrayType, MapType, StructType.
     */
   private[types] def equalsIgnoreNullability(
       left: DataType,
-      right: DataType): Boolean = {
+      right: DataType): Boolean =
     (left, right) match {
       case (ArrayType(leftElementType, _), ArrayType(rightElementType, _)) =>
         equalsIgnoreNullability(leftElementType, rightElementType)
@@ -240,7 +238,6 @@ object DataType {
           }
       case (l, r) => l == r
     }
-  }
 
   /**
     * Compares two types, ignoring compatible nullability of ArrayType, MapType, StructType.
@@ -258,7 +255,7 @@ object DataType {
     */
   private[sql] def equalsIgnoreCompatibleNullability(
       from: DataType,
-      to: DataType): Boolean = {
+      to: DataType): Boolean =
     (from, to) match {
       case (ArrayType(fromElement, fn), ArrayType(toElement, tn)) =>
         (tn || !fn) && equalsIgnoreCompatibleNullability(fromElement, toElement)
@@ -281,5 +278,4 @@ object DataType {
 
       case (fromDataType, toDataType) => fromDataType == toDataType
     }
-  }
 }

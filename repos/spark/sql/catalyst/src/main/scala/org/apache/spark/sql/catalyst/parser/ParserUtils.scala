@@ -62,23 +62,21 @@ object ParserUtils {
   /**
     * Strip quotes, if any, from the string.
     */
-  def unquoteString(str: String): String = {
+  def unquoteString(str: String): String =
     str match {
       case singleQuotedString(s) => s
       case doubleQuotedString(s) => s
       case other                 => other
     }
-  }
 
   /**
     * Strip backticks, if any, from the string.
     */
-  def cleanIdentifier(ident: String): String = {
+  def cleanIdentifier(ident: String): String =
     ident match {
       case escapedIdentifier(i) => i
       case plainIdent           => plainIdent
     }
-  }
 
   def getClauses(
       clauseNames: Seq[String],
@@ -101,22 +99,20 @@ object ParserUtils {
     clauses
   }
 
-  def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode = {
+  def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode =
     getClauseOption(clauseName, nodeList).getOrElse(sys.error(
       s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
-  }
 
   def getClauseOption(
       clauseName: String,
-      nodeList: Seq[ASTNode]): Option[ASTNode] = {
+      nodeList: Seq[ASTNode]): Option[ASTNode] =
     nodeList.filter { case ast: ASTNode => ast.text == clauseName } match {
       case Seq(oneMatch) => Some(oneMatch)
       case Seq()         => None
       case _             => sys.error(s"Found multiple instances of clause $clauseName")
     }
-  }
 
-  def extractTableIdent(tableNameParts: ASTNode): TableIdentifier = {
+  def extractTableIdent(tableNameParts: ASTNode): TableIdentifier =
     tableNameParts.children.map {
       case Token(part, Nil) => cleanIdentifier(part)
     } match {
@@ -128,7 +124,6 @@ object ParserUtils {
           "Hive only supports tables names like 'tableName' " +
             s"or 'databaseName.tableName', found '$other'")
     }
-  }
 
   def nodeToDataType(node: ASTNode): DataType = node match {
     case Token("TOK_DECIMAL", precision :: scale :: Nil) =>
@@ -183,16 +178,14 @@ object ParserUtils {
   /**
     * Throw an exception because we cannot parse the given node for some unexpected reason.
     */
-  def parseFailed(msg: String, node: ASTNode): Nothing = {
+  def parseFailed(msg: String, node: ASTNode): Nothing =
     throw new AnalysisException(s"$msg: '${node.source}")
-  }
 
   /**
     * Throw an exception because there are no rules to parse the node.
     */
-  def noParseRule(msg: String, node: ASTNode): Nothing = {
+  def noParseRule(msg: String, node: ASTNode): Nothing =
     throw new NotImplementedError(
       s"[$msg]: No parse rules for ASTNode type: ${node.tokenType}, tree:\n${node.treeString}")
-  }
 
 }

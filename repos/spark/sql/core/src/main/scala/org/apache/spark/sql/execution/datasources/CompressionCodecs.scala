@@ -64,7 +64,7 @@ private[datasources] object CompressionCodecs {
     * Set compression configurations to Hadoop `Configuration`.
     * `codec` should be a full class path
     */
-  def setCodecConfiguration(conf: Configuration, codec: String): Unit = {
+  def setCodecConfiguration(conf: Configuration, codec: String): Unit =
     if (codec != null) {
       conf.set("mapreduce.output.fileoutputformat.compress", "true")
       conf.set(
@@ -78,5 +78,4 @@ private[datasources] object CompressionCodecs {
       conf.set("mapreduce.output.fileoutputformat.compress", "false")
       conf.set("mapreduce.map.output.compress", "false")
     }
-  }
 }

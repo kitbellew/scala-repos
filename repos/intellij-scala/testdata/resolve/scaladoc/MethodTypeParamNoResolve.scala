@@ -9,7 +9,6 @@ class a[T, U, E] {
     * @tparam <testref>P
     * @tparam Q
     */
-  def f[P, Q](a: P, b: Q, c: T): T = {
+  def f[P, Q](a: P, b: Q, c: T): T =
     c
-  }
 }

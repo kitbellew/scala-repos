@@ -21,20 +21,17 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
   def pushCurrentTestClassName(s: String): Unit =
     currentTestClassName.push(s)
 
-  def popCurrentTestClassName(): Unit = {
+  def popCurrentTestClassName(): Unit =
     if (currentTestClassName.size > 1)
       currentTestClassName.pop()
-  }
 
-  def debug(s: String): Unit = {
+  def debug(s: String): Unit =
     for (l <- loggers)
       l.debug(filterAnsiIfNeeded(l, s))
-  }
 
-  def error(s: String): Unit = {
+  def error(s: String): Unit =
     for (l <- loggers)
       l.error(filterAnsiIfNeeded(l, s))
-  }
 
   def error(s: String, t: Throwable): Unit = {
     error(s)
@@ -42,15 +39,13 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       logStackTrace(t)
   }
 
-  def info(s: String): Unit = {
+  def info(s: String): Unit =
     for (l <- loggers)
       l.info(filterAnsiIfNeeded(l, s))
-  }
 
-  def warn(s: String): Unit = {
+  def warn(s: String): Unit =
     for (l <- loggers)
       l.warn(filterAnsiIfNeeded(l, s))
-  }
 
   private def filterAnsiIfNeeded(l: Logger, s: String): String =
     if (l.ansiCodesSupported() && settings.color) s
@@ -134,7 +129,7 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       causedTrace: Array[StackTraceElement],
       t: Throwable,
       testClassName: String,
-      testFileName: String): Unit = {
+      testFileName: String): Unit =
     if (t != null) {
       val trace = t.getStackTrace
       var m = trace.length - 1
@@ -152,15 +147,13 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
         testClassName,
         testFileName)
     }
-  }
 
   private def findTestFileName(
       trace: Array[StackTraceElement],
-      testClassName: String): String = {
+      testClassName: String): String =
     trace.collectFirst {
       case e if testClassName.equals(e.getClassName) => e.getFileName
     }.orNull
-  }
 
   private def stackTraceElementToString(
       e: StackTraceElement,

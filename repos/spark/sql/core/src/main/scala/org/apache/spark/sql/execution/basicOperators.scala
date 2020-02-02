@@ -36,13 +36,11 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
 
   override def output: Seq[Attribute] = projectList.map(_.toAttribute)
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  protected override def doProduce(ctx: CodegenContext): String = {
+  protected override def doProduce(ctx: CodegenContext): String =
     child.asInstanceOf[CodegenSupport].produce(ctx, this)
-  }
 
   override def usedInputs: AttributeSet = {
     // only the attributes those are used at least twice should be evaluated before this plan,
@@ -76,13 +74,12 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
      """.stripMargin
   }
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     child.execute().mapPartitionsInternal { iter =>
       val project = UnsafeProjection
         .create(projectList, child.output, subexpressionEliminationEnabled)
       iter.map(project)
     }
-  }
 
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
 }
@@ -102,7 +99,7 @@ case class Filter(condition: Expression, child: SparkPlan)
   // The columns that will filtered out by `IsNotNull` could be considered as not nullable.
   private val notNullAttributes = notNullPreds.flatMap(_.references)
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     child.output.map { a =>
       if (a.nullable && notNullAttributes.contains(a)) {
         a.withNullability(false)
@@ -110,19 +107,16 @@ case class Filter(condition: Expression, child: SparkPlan)
         a
       }
     }
-  }
 
   private[sql] override lazy val metrics = Map(
     "numOutputRows" -> SQLMetrics
       .createLongMetric(sparkContext, "number of output rows"))
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  protected override def doProduce(ctx: CodegenContext): String = {
+  protected override def doProduce(ctx: CodegenContext): String =
     child.asInstanceOf[CodegenSupport].produce(ctx, this)
-  }
 
   override def doConsume(
       ctx: CodegenContext,
@@ -151,7 +145,7 @@ case class Filter(condition: Expression, child: SparkPlan)
         }
         s"""
          |${ev.code}
-         |if (${nullCheck}!${ev.value}) continue;
+         |if ($nullCheck!${ev.value}) continue;
        """.stripMargin
       }
       .mkString("\n")
@@ -207,7 +201,7 @@ case class Sample(
     extends UnaryNode {
   override def output: Seq[Attribute] = child.output
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     if (withReplacement) {
       // Disable gap sampling since the gap sampling method buffers two rows internally,
       // requiring us to copy the row, which is more expensive than the random number generator.
@@ -221,7 +215,6 @@ case class Sample(
     } else {
       child.execute().randomSampleWithRange(lowerBound, upperBound, seed)
     }
-  }
 }
 
 case class Range(
@@ -241,11 +234,10 @@ case class Range(
   override lazy val cleanArgs: Seq[Any] =
     Seq(start, step, numSlices, numElements)
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     sqlContext.sparkContext
       .parallelize(0 until numSlices, numSlices)
       .map(i => InternalRow(i)) :: Nil
-  }
 
   protected override def doProduce(ctx: CodegenContext): String = {
     val numOutput = metricTerm(ctx, "numOutputRows")
@@ -334,7 +326,7 @@ case class Range(
     val numOutputRows = longMetric("numOutputRows")
     sqlContext.sparkContext
       .parallelize(0 until numSlices, numSlices)
-      .mapPartitionsWithIndex((i, _) => {
+      .mapPartitionsWithIndex { (i, _) =>
         val partitionStart = (i * numElements) / numSlices * step + start
         val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
         def getSafeMargin(bi: BigInt): Long =
@@ -379,7 +371,7 @@ case class Range(
             unsafeRow
           }
         }
-      })
+      }
   }
 }
 
@@ -406,14 +398,12 @@ case class Union(children: Seq[SparkPlan]) extends SparkPlan {
 case class Coalesce(numPartitions: Int, child: SparkPlan) extends UnaryNode {
   override def output: Seq[Attribute] = child.output
 
-  override def outputPartitioning: Partitioning = {
+  override def outputPartitioning: Partitioning =
     if (numPartitions == 1) SinglePartition
     else UnknownPartitioning(numPartitions)
-  }
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     child.execute().coalesce(numPartitions, shuffle = false)
-  }
 }
 
 /**
@@ -423,9 +413,8 @@ case class Coalesce(numPartitions: Int, child: SparkPlan) extends UnaryNode {
 case class Except(left: SparkPlan, right: SparkPlan) extends BinaryNode {
   override def output: Seq[Attribute] = left.output
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     left.execute().map(_.copy()).subtract(right.execute().map(_.copy()))
-  }
 }
 
 /**
@@ -450,7 +439,6 @@ case class Subquery(name: String, child: SparkPlan) extends UnaryNode {
   override def outputPartitioning: Partitioning = child.outputPartitioning
   override def outputOrdering: Seq[SortOrder] = child.outputOrdering
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     throw new UnsupportedOperationException
-  }
 }

@@ -27,9 +27,8 @@ object PerformanceSpec {
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
-    def startMeasure(): Unit = {
+    def startMeasure(): Unit =
       startTime = System.nanoTime
-    }
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime
@@ -136,7 +135,7 @@ class PerformanceSpec
     failAt foreach { persistentActor ! FailAt(_) }
     val m = new Measure(loadCycles)
     m.startMeasure()
-    1 to loadCycles foreach { i ⇒ persistentActor ! s"msg${i}" }
+    1 to loadCycles foreach { i ⇒ persistentActor ! s"msg$i" }
     persistentActor ! StopMeasure
     expectMsg(100.seconds, StopMeasure)
     println(f"\nthroughput = ${m.stopMeasure()}%.2f $description per second")

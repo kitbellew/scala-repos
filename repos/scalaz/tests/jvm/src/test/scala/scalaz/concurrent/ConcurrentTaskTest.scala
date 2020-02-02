@@ -42,10 +42,10 @@ object ConcurrentTaskTest extends SpecLite {
         _ <- now(enqueue(6))
         _ <- fork(delay(enqueue(7)))(es)
 
-      } yield ()).unsafePerformAsync(_ => {
+      } yield ()).unsafePerformAsync { _ =>
         enqueue(8)
         sync.put(true)
-      })
+      }
       enqueue(9)
 
       sync.get(5000) must_== Some(true)

@@ -40,27 +40,24 @@ class WindowSpec private[sql] (
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def partitionBy(colName: String, colNames: String*): WindowSpec = {
+  def partitionBy(colName: String, colNames: String*): WindowSpec =
     partitionBy((colName +: colNames).map(Column(_)): _*)
-  }
 
   /**
     * Defines the partitioning columns in a [[WindowSpec]].
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def partitionBy(cols: Column*): WindowSpec = {
+  def partitionBy(cols: Column*): WindowSpec =
     new WindowSpec(cols.map(_.expr), orderSpec, frame)
-  }
 
   /**
     * Defines the ordering columns in a [[WindowSpec]].
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def orderBy(colName: String, colNames: String*): WindowSpec = {
+  def orderBy(colName: String, colNames: String*): WindowSpec =
     orderBy((colName +: colNames).map(Column(_)): _*)
-  }
 
   /**
     * Defines the ordering columns in a [[WindowSpec]].
@@ -92,9 +89,8 @@ class WindowSpec private[sql] (
     *            The frame is unbounded if this is the maximum long value.
     * @since 1.4.0
     */
-  def rowsBetween(start: Long, end: Long): WindowSpec = {
+  def rowsBetween(start: Long, end: Long): WindowSpec =
     between(RowFrame, start, end)
-  }
 
   /**
     * Defines the frame boundaries, from `start` (inclusive) to `end` (inclusive).
@@ -109,9 +105,8 @@ class WindowSpec private[sql] (
     *            The frame is unbounded if this is the maximum long value.
     * @since 1.4.0
     */
-  def rangeBetween(start: Long, end: Long): WindowSpec = {
+  def rangeBetween(start: Long, end: Long): WindowSpec =
     between(RangeFrame, start, end)
-  }
 
   private def between(typ: FrameType, start: Long, end: Long): WindowSpec = {
     val boundaryStart = start match {

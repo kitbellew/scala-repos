@@ -13,13 +13,12 @@ trait FunctorTests[F[_]] extends InvariantTests[F] {
       implicit
       ArbFA: Arbitrary[F[A]],
       EqFA: Eq[F[A]],
-      EqFC: Eq[F[C]]): RuleSet = {
+      EqFC: Eq[F[C]]): RuleSet =
     new DefaultRuleSet(
       name = "functor",
       parent = Some(invariant[A, B, C]),
       "covariant identity" -> forAll(laws.covariantIdentity[A] _),
       "covariant composition" -> forAll(laws.covariantComposition[A, B, C] _))
-  }
 }
 
 object FunctorTests {

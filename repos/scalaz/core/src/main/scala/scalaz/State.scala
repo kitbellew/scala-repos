@@ -8,10 +8,10 @@ trait IndexedStateFunctions {
     IndexedState(_ => (s, ()))
 
   def iModify[S1, S2](f: S1 => S2): IndexedState[S1, S2, Unit] =
-    IndexedState(s => {
+    IndexedState { s =>
       val r = f(s);
       (r, ())
-    })
+    }
 }
 
 trait StateFunctions extends IndexedStateFunctions {
@@ -30,8 +30,8 @@ trait StateFunctions extends IndexedStateFunctions {
   def put[S](s: S): State[S, Unit] = State(_ => (s, ()))
 
   def modify[S](f: S => S): State[S, Unit] =
-    State(s => {
+    State { s =>
       val r = f(s);
       (r, ())
-    })
+    }
 }

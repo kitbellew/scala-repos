@@ -45,18 +45,18 @@ object FetchRequest {
     val maxWait = buffer.getInt
     val minBytes = buffer.getInt
     val topicCount = buffer.getInt
-    val pairs = (1 to topicCount).flatMap(_ => {
+    val pairs = (1 to topicCount).flatMap { _ =>
       val topic = readShortString(buffer)
       val partitionCount = buffer.getInt
-      (1 to partitionCount).map(_ => {
+      (1 to partitionCount).map { _ =>
         val partitionId = buffer.getInt
         val offset = buffer.getLong
         val fetchSize = buffer.getInt
         (
           TopicAndPartition(topic, partitionId),
           PartitionFetchInfo(offset, fetchSize))
-      })
-    })
+      }
+    }
     FetchRequest(
       versionId,
       correlationId,
@@ -125,7 +125,7 @@ case class FetchRequest(
     }
   }
 
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 + /* versionId */
     4 + /* correlationId */
     shortStringLength(clientId) +
@@ -133,7 +133,7 @@ case class FetchRequest(
     4 + /* maxWait */
     4 + /* minBytes */
     4 + /* topic count */
-    requestInfoGroupedByTopic.foldLeft(0)((foldedTopics, currTopic) => {
+    requestInfoGroupedByTopic.foldLeft(0) { (foldedTopics, currTopic) =>
       val (topic, partitionFetchInfos) = currTopic
       foldedTopics +
         shortStringLength(topic) +
@@ -143,8 +143,7 @@ case class FetchRequest(
         8 + /* offset */
         4 /* fetch size */
       )
-    })
-  }
+    }
 
   def isFromFollower = Request.isValidBrokerId(replicaId)
 
@@ -154,9 +153,8 @@ case class FetchRequest(
 
   def numPartitions = requestInfo.size
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,

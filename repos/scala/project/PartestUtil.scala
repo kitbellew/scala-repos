@@ -33,12 +33,11 @@ object PartestUtil {
       grandParent != null && equiv(grandParent, testBase / srcPath) && testCaseFilter
         .accept(f)
     }
-    def mayContainTestCase(f: File) = {
+    def mayContainTestCase(f: File) =
       isParentOf(testBase / srcPath, f, 2) || isParentOf(
         f,
         testBase / srcPath,
         Int.MaxValue)
-    }
   }
 
   /** A parser for the custom `partest` command */

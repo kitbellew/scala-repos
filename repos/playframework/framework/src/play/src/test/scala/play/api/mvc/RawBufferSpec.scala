@@ -37,9 +37,8 @@ object RawBufferSpec extends Specification {
       }
     }
 
-    def rand(size: Int) = {
+    def rand(size: Int) =
       new String(scala.util.Random.alphanumeric.take(size).toArray[Char])
-    }
 
     "extend the size by a small amount" in {
       val buffer = RawBuffer(1024 * 100)

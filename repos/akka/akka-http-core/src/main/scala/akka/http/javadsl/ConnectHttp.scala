@@ -41,10 +41,9 @@ object ConnectHttp {
       new ConnectHttpImpl(uriHost.host.address, effectivePort(s, uriHost.port))
   }
 
-  def toHost(host: String): ConnectHttp = {
+  def toHost(host: String): ConnectHttp =
     if (isHttpOrHttps(host)) toHost(Uri.create(host))
     else toHost(Uri.create(s"http://$host"))
-  }
 
   def toHost(host: String, port: Int): ConnectHttp = {
     require(port > 0, "port must be > 0")

@@ -60,7 +60,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
             Messages.getQuestionIcon) == DialogWrapper.OK_EXIT_CODE) {
         val deletedOk = ApplicationManager.getApplication.runWriteAction(
           new Computable[Boolean] {
-            def compute: Boolean = {
+            def compute: Boolean =
               try {
                 equalsMethod.get.delete()
                 hashCodeMethod.get.delete()
@@ -68,7 +68,6 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
               } catch {
                 case e: IncorrectOperationException => false
               }
-            }
           })
         if (!deletedOk) return false
         else {
@@ -251,11 +250,10 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   private def findSuchMethod(
       aClass: ScClass,
       name: String,
-      methodType: ScType): Option[ScFunction] = {
+      methodType: ScType): Option[ScFunction] =
     aClass.functions
       .filter(_.name == name)
       .find(fun => fun.methodType(None) equiv methodType)
-  }
 
   private def overrideModifier(
       aClass: ScTemplateDefinition,

@@ -21,7 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.light.{
   * Date: 08.09.2009
   */
 class RenameLightProcessor extends RenamePsiElementProcessor {
-  def canProcessElement(element: PsiElement): Boolean = {
+  def canProcessElement(element: PsiElement): Boolean =
     element match {
       case f: FakePsiMethod                   => true
       case f: ScFunctionWrapper               => true
@@ -30,7 +30,6 @@ class RenameLightProcessor extends RenamePsiElementProcessor {
       case p: StaticPsiMethodWrapper          => true
       case _                                  => false
     }
-  }
 
   override def prepareRenaming(
       element: PsiElement,

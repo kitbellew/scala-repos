@@ -87,9 +87,8 @@ private[scheduler] abstract class Stage(
     * belonging to this stage has already finished. Otherwise, reinitializing the internal
     * accumulators here again will override partial values from the finished tasks.
     */
-  def resetInternalAccumulators(): Unit = {
+  def resetInternalAccumulators(): Unit =
     _internalAccumulators = InternalAccumulator.create(rdd.sparkContext)
-  }
 
   /**
     * Pointer to the [StageInfo] object for the most recent attempt. This needs to be initialized
@@ -107,9 +106,8 @@ private[scheduler] abstract class Stage(
     */
   private val fetchFailedAttemptIds = new HashSet[Int]
 
-  private[scheduler] def clearFailures(): Unit = {
+  private[scheduler] def clearFailures(): Unit =
     fetchFailedAttemptIds.clear()
-  }
 
   /**
     * Check whether we should abort the failedStage due to multiple consecutive fetch failures.

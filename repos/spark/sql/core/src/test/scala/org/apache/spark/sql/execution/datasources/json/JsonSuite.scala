@@ -54,8 +54,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         s"Failed to promote ${actual.getClass} to ${expected.getClass}.")
       assert(
         expected == actual,
-        s"Promoted value ${actual}(${actual.getClass}) does not equal the expected value " +
-          s"${expected}(${expected.getClass}).")
+        s"Promoted value $actual(${actual.getClass}) does not equal the expected value " +
+          s"$expected(${expected.getClass}).")
     }
 
     val factory = new JsonFactory()
@@ -1401,7 +1401,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   }
 
   test("JSONRelation equality test") {
-    withTempPath(dir => {
+    withTempPath { dir =>
       val path = dir.getCanonicalFile.toURI.toString
       sparkContext
         .parallelize(1 to 100)
@@ -1426,7 +1426,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         options = Map("path" -> path)
       ).resolveRelation()
       assert(d1 === d2)
-    })
+    }
   }
 
   test("SPARK-6245 JsonRDD.inferSchema on empty RDD") {
@@ -1473,7 +1473,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       p
     }
 
-    withTempPath(root => {
+    withTempPath { root =>
       val d1 = new File(root, "d1=1")
       // root/dt=1/col1=abc
       val p1_col1 = makePartition(
@@ -1507,7 +1507,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       checkAnswer(
         sql("SELECT count(a) FROM test_myjson_with_part where d1 = 1"),
         Row(9))
-    })
+    }
   }
 
   test("backward compatibility") {

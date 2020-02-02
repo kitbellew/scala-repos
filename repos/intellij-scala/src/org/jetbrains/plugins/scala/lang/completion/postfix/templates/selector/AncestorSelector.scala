@@ -26,14 +26,13 @@ class AncestorSelector(
     val selectorType: SelectorType = First)
     extends PostfixTemplateExpressionSelectorBase(condition) {
 
-  override protected def getFilters(offset: Int): Condition[PsiElement] = {
+  override protected def getFilters(offset: Int): Condition[PsiElement] =
     and(super.getFilters(offset), getPsiErrorFilter)
-  }
 
   override def getNonFilteredExpressions(
       context: PsiElement,
       document: Document,
-      offset: Int): util.List[PsiElement] = {
+      offset: Int): util.List[PsiElement] =
     ScalaPsiUtil.getParentOfType(context, classOf[ScExpression]) match {
       case element: ScExpression =>
         val result = ContainerUtil.newLinkedList[PsiElement](element)
@@ -49,5 +48,4 @@ class AncestorSelector(
         result
       case _ => ContainerUtil.emptyList()
     }
-  }
 }

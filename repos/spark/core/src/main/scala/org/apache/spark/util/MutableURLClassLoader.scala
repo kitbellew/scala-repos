@@ -31,13 +31,11 @@ private[spark] class MutableURLClassLoader(
     parent: ClassLoader)
     extends URLClassLoader(urls, parent) {
 
-  override def addURL(url: URL): Unit = {
+  override def addURL(url: URL): Unit =
     super.addURL(url)
-  }
 
-  override def getURLs(): Array[URL] = {
+  override def getURLs(): Array[URL] =
     super.getURLs()
-  }
 
 }
 

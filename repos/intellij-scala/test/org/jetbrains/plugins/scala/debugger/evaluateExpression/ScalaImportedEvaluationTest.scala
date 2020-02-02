@@ -105,13 +105,12 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim()
   )
 
-  def testStopInsidePackageObject(): Unit = {
+  def testStopInsidePackageObject(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("x", "0")
       evalEquals("foo", "foo")
     }
-  }
 
   addFileWithBreakpoints(
     "StopInsideClassInPackageObject.scala",
@@ -125,14 +124,13 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim()
   )
 
-  def testStopInsideClassInPackageObject(): Unit = {
+  def testStopInsideClassInPackageObject(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("x", "0")
       evalEquals("foo", "foo")
       evalEquals("a", "a")
     }
-  }
 
   addFileWithBreakpoints(
     "StopInsideValueClass.scala",
@@ -146,13 +144,12 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim()
   )
 
-  def testStopInsideValueClass(): Unit = {
+  def testStopInsideValueClass(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("x", "0")
       evalEquals("v", "v")
     }
-  }
 
   addFileWithBreakpoints(
     "ImportVal.scala",
@@ -345,7 +342,7 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     """.stripMargin.trim
   )
 
-  def testImportedFromOuterThis(): Unit = {
+  def testImportedFromOuterThis(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("foo()", "1")
@@ -354,5 +351,4 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
       evalStartsWith("B.this", "OuterThis$B")
       evalStartsWith("this", "OuterThis$B")
     }
-  }
 }

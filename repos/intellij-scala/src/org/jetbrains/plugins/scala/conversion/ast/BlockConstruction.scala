@@ -8,9 +8,8 @@ import scala.collection.mutable.ArrayBuffer
   */
 case class BlockConstruction(statements: Seq[IntermediateNode])
     extends IntermediateNode {
-  def addStatementBefore(statement: IntermediateNode) = {
+  def addStatementBefore(statement: IntermediateNode) =
     beforeStatements += statement
-  }
 
   val beforeStatements = new ArrayBuffer[IntermediateNode]
 }

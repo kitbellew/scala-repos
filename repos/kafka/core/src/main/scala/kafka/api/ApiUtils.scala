@@ -65,7 +65,7 @@ object ApiUtils {
     * Return size of a size prefixed string where the size is stored as a 2 byte short
     * @param string The string to write
     */
-  def shortStringLength(string: String): Int = {
+  def shortStringLength(string: String): Int =
     if (string == null) {
       2
     } else {
@@ -77,7 +77,6 @@ object ApiUtils {
         2 + encodedString.length
       }
     }
-  }
 
   /**
     * Read an integer out of the bytebuffer from the current position and check that it falls within the given

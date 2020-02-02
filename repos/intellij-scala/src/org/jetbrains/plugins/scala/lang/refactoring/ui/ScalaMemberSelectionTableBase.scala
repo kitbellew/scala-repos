@@ -30,7 +30,7 @@ abstract class ScalaMemberSelectionTableBase[
       memberInfoModel,
       abstractColumnHeader) {
 
-  def getAbstractColumnValue(memberInfo: I): AnyRef = {
+  def getAbstractColumnValue(memberInfo: I): AnyRef =
     memberInfo.getMember match {
       case member: ScMember if member.containingClass.isInstanceOf[ScObject] =>
         null
@@ -45,7 +45,6 @@ abstract class ScalaMemberSelectionTableBase[
       case _ if memberInfo.isToAbstract => java.lang.Boolean.TRUE
       case _                            => java.lang.Boolean.FALSE
     }
-  }
 
   def isAbstractColumnEditable(rowIndex: Int): Boolean = {
     val info: I = myMemberInfos.get(rowIndex)

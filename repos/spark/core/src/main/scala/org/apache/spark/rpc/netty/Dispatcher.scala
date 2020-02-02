@@ -100,7 +100,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     // `removeRpcEndpointRef`.
   }
 
-  def stop(rpcEndpointRef: RpcEndpointRef): Unit = {
+  def stop(rpcEndpointRef: RpcEndpointRef): Unit =
     synchronized {
       if (stopped) {
         // This endpoint will be stopped by Dispatcher.stop() method.
@@ -108,7 +108,6 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       }
       unregisterRpcEndpoint(rpcEndpointRef.name)
     }
-  }
 
   /**
     * Send a message to all registered [[RpcEndpoint]]s in this process.
@@ -147,12 +146,11 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
   }
 
   /** Posts a one-way message. */
-  def postOneWayMessage(message: RequestMessage): Unit = {
+  def postOneWayMessage(message: RequestMessage): Unit =
     postMessage(
       message.receiver.name,
       OneWayMessage(message.senderAddress, message.content),
       (e) => throw e)
-  }
 
   /**
     * Posts a message to a specific endpoint.
@@ -201,16 +199,14 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     threadpool.shutdown()
   }
 
-  def awaitTermination(): Unit = {
+  def awaitTermination(): Unit =
     threadpool.awaitTermination(Long.MaxValue, TimeUnit.MILLISECONDS)
-  }
 
   /**
     * Return if the endpoint exists
     */
-  def verify(name: String): Boolean = {
+  def verify(name: String): Boolean =
     endpoints.containsKey(name)
-  }
 
   /** Thread pool used for dispatching messages. */
   private val threadpool: ThreadPoolExecutor = {
@@ -227,7 +223,7 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
 
   /** Message loop used for dispatching messages. */
   private class MessageLoop extends Runnable {
-    override def run(): Unit = {
+    override def run(): Unit =
       try {
         while (true) {
           try {
@@ -245,7 +241,6 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       } catch {
         case ie: InterruptedException => // exit
       }
-    }
   }
 
   /** A poison endpoint that indicates MessageLoop should exit its message loop. */

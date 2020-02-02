@@ -11,7 +11,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.structureView.TestNodePro
 trait FreeSpecFileStructureViewTest extends ScalaTestTestCase {
   private val className = "FreeSpecViewTest"
 
-  def addFreeSpecViewTest(): Unit = {
+  def addFreeSpecViewTest(): Unit =
     addFileToProject(
       className + ".scala",
       """
@@ -40,7 +40,6 @@ trait FreeSpecFileStructureViewTest extends ScalaTestTestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testFreeSpecNormal(): Unit = {
     addFreeSpecViewTest()

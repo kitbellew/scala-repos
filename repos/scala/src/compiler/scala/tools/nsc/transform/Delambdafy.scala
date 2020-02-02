@@ -44,10 +44,9 @@ abstract class Delambdafy
   /** the following two members override abstract members in Transform */
   val phaseName: String = "delambdafy"
 
-  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase =
     if (settings.Ydelambdafy.value == "method") new Phase(prev)
     else new SkipPhase(prev)
-  }
 
   class SkipPhase(prev: scala.tools.nsc.Phase) extends StdPhase(prev) {
     def apply(unit: global.CompilationUnit): Unit = ()
@@ -74,7 +73,7 @@ abstract class Delambdafy
       val referrers = thisReferringMethodsTraverser.thisReferringMethods
       // recursively find methods that refer to 'this' directly or indirectly via references to other methods
       // for each method found add it to the referrers set
-      def refersToThis(symbol: Symbol): Boolean = {
+      def refersToThis(symbol: Symbol): Boolean =
         if (referrers contains symbol) true
         else if (methodReferringMap(symbol) exists refersToThis) {
           // add it early to memoize
@@ -82,7 +81,6 @@ abstract class Delambdafy
           referrers += symbol
           true
         } else false
-      }
       methodReferringMap.keys foreach refersToThis
       referrers
     }
@@ -127,13 +125,12 @@ abstract class Delambdafy
     // new class definitions to add to the top level
     override def transformStats(
         stats: List[Tree],
-        exprOwner: Symbol): List[Tree] = {
+        exprOwner: Symbol): List[Tree] =
       // Need to remove from the lambdaClassDefs map: there may be multiple PackageDef for the same
       // package when defining a package object. We only add the lambda class to one. See SI-9097.
       super.transformStats(stats, exprOwner) ++ lambdaClassDefs
         .remove(exprOwner)
         .getOrElse(Nil)
-    }
 
     private def optionSymbol(sym: Symbol): Option[Symbol] =
       if (sym.exists) Some(sym) else None
@@ -167,13 +164,12 @@ abstract class Delambdafy
           target.pos,
           target.flags | FINAL | ARTIFACT)
         var neededAdaptation = false
-        def boxedType(tpe: Type): Type = {
+        def boxedType(tpe: Type): Type =
           if (isPrimitiveValueClass(tpe.typeSymbol)) {
             neededAdaptation = true; ObjectTpe
           } else if (enteringErasure(tpe.typeSymbol.isDerivedValueClass)) {
             neededAdaptation = true; ObjectTpe
           } else tpe
-        }
         val targetParams: List[Symbol] = target.paramss.head
         val numCaptures = targetParams.length - functionParamTypes.length
         val (targetCaptureParams, targetFunctionParams) =
@@ -539,10 +535,9 @@ abstract class Delambdafy
       val methodType = MethodType(bridgeSyms, ObjectTpe)
       bridgeMethSym setInfo methodType
 
-      def adapt(tree: Tree, expectedTpe: Type): (Boolean, Tree) = {
+      def adapt(tree: Tree, expectedTpe: Type): (Boolean, Tree) =
         if (tree.tpe =:= expectedTpe) (false, tree)
         else (true, adaptToType(tree, expectedTpe))
-      }
 
       def adaptAndPostErase(tree: Tree, pt: Type): (Boolean, Tree) = {
         val (needsAdapt, adaptedTree) = adapt(tree, pt)

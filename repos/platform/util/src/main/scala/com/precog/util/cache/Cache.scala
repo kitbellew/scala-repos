@@ -95,9 +95,8 @@ object Cache {
       case (acc, opt) => opt.apply(acc)
     }
 
-  def simple[K, V](options: CacheOption[K, V]*): SimpleCache[K, V] = {
+  def simple[K, V](options: CacheOption[K, V]*): SimpleCache[K, V] =
     new SimpleCache[K, V](createBuilder(options).build())
-  }
 
   def auto[K, V](options: CacheOption[K, V]*)(
       loader: K => V): AutoCache[K, V] = {

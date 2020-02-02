@@ -16,7 +16,7 @@ class FindEmptyCheckInspection extends OperationOnCollectionInspection {
 object FindIsDefined extends SimplificationType() {
   def hint = InspectionBundle.message("find.isDefined.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case CheckIsDefined(qual `.find` (cond), s, e) =>
         val start = Math.min(s, qual.end)
@@ -25,13 +25,12 @@ object FindIsDefined extends SimplificationType() {
         Some(replace(expr).withText(existsText).highlightRange(start, end))
       case _ => None
     }
-  }
 }
 
 object FindIsEmpty extends SimplificationType() {
   def hint = InspectionBundle.message("find.isEmpty.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case CheckIsEmpty(qual `.find` (cond), s, e) if qual != null =>
         val start = Math.min(s, qual.end)
@@ -41,5 +40,4 @@ object FindIsEmpty extends SimplificationType() {
         Some(replace(expr).withText(notExistsText).highlightRange(start, end))
       case _ => None
     }
-  }
 }

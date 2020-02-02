@@ -141,9 +141,8 @@ package play.api.mvc {
       *
       * @return true if `mimeType` matches the Accept header, otherwise false
       */
-    def accepts(mimeType: String): Boolean = {
+    def accepts(mimeType: String): Boolean =
       acceptedTypes.isEmpty || acceptedTypes.find(_.accepts(mimeType)).isDefined
-    }
 
     /**
       * The HTTP cookies.
@@ -194,9 +193,8 @@ package play.api.mvc {
       *
       * @return the tagged request
       */
-    def withTag(tagName: String, tagValue: String): RequestHeader = {
+    def withTag(tagName: String, tagValue: String): RequestHeader =
       copy(tags = tags + (tagName -> tagValue))
-    }
 
     /**
       * Copy the request.
@@ -252,9 +250,8 @@ package play.api.mvc {
       }
     }
 
-    override def toString = {
+    override def toString =
       method + " " + uri
-    }
 
   }
 
@@ -267,7 +264,7 @@ package play.api.mvc {
       */
     private[play] def acceptHeader(
         headers: Headers,
-        headerName: String): Seq[(Double, String)] = {
+        headerName: String): Seq[(Double, String)] =
       for {
         header <- headers.get(headerName).toList
         value0 <- header.split(',')
@@ -278,7 +275,6 @@ package play.api.mvc {
           case None    => (1.0, value) // “The default value is q=1.”
         }
       }
-    }
   }
 
   private[play] class RequestHeaderImpl(
@@ -465,10 +461,9 @@ package play.api.mvc {
     def apply(key: String): String =
       get(key).getOrElse(scala.sys.error("Header doesn't exist"))
 
-    override def equals(other: Any) = {
+    override def equals(other: Any) =
       other.isInstanceOf[Headers] &&
-      toMap == other.asInstanceOf[Headers].toMap
-    }
+        toMap == other.asInstanceOf[Headers].toMap
 
     /**
       * Optionally returns the first header value associated with a key.
@@ -480,14 +475,13 @@ package play.api.mvc {
       */
     def getAll(key: String): Seq[String] = toMap.getOrElse(key, Nil)
 
-    override def hashCode = {
+    override def hashCode =
       toMap
         .map {
           case (name, value) =>
             name.toLowerCase(Locale.ENGLISH) -> value
         }
         .hashCode()
-    }
 
     /**
       * Retrieve all header keys
@@ -607,7 +601,7 @@ package play.api.mvc {
       */
     def decode(data: String): Map[String, String] = {
 
-      def urldecode(data: String) = {
+      def urldecode(data: String) =
         data
           .split("&")
           .map(_.split("=", 2))
@@ -615,12 +609,11 @@ package play.api.mvc {
             URLDecoder.decode(p(0), "UTF-8") -> URLDecoder
               .decode(p(1), "UTF-8"))
           .toMap
-      }
 
       // Do not change this unless you understand the security issues behind timing attacks.
       // This method intentionally runs in constant time if the two strings have the same length.
       // If it didn't, it would be vulnerable to a timing attack.
-      def safeEquals(a: String, b: String) = {
+      def safeEquals(a: String, b: String) =
         if (a.length != b.length) {
           false
         } else {
@@ -630,7 +623,6 @@ package play.api.mvc {
           }
           equal == 0
         }
-      }
 
       try {
         if (isSigned) {
@@ -658,9 +650,8 @@ package play.api.mvc {
     /**
       * Decodes the data from a `Cookie`.
       */
-    def decodeCookieToMap(cookie: Option[Cookie]): Map[String, String] = {
+    def decodeCookieToMap(cookie: Option[Cookie]): Map[String, String] =
       serialize(decodeFromCookie(cookie))
-    }
 
     /**
       * Decodes the data from a `Cookie`.
@@ -990,7 +981,7 @@ package play.api.mvc {
       * @param cookieHeader the Set-Cookie header value
       * @return decoded cookies
       */
-    def decodeSetCookieHeader(cookieHeader: String): Seq[Cookie] = {
+    def decodeSetCookieHeader(cookieHeader: String): Seq[Cookie] =
       Try {
         val decoder = config.clientDecoder
         SetCookieHeaderSeparatorRegex.split(cookieHeader).toSeq.flatMap {
@@ -1012,7 +1003,6 @@ package play.api.mvc {
           s"Couldn't decode the Cookie header containing: $cookieHeader")
         Seq.empty
       }
-    }
 
     /**
       * Decodes a Cookie header value as a proper cookie set.
@@ -1020,7 +1010,7 @@ package play.api.mvc {
       * @param cookieHeader the Cookie header value
       * @return decoded cookies
       */
-    def decodeCookieHeader(cookieHeader: String): Seq[Cookie] = {
+    def decodeCookieHeader(cookieHeader: String): Seq[Cookie] =
       Try {
         config.serverDecoder
           .decode(cookieHeader)
@@ -1037,7 +1027,6 @@ package play.api.mvc {
           s"Couldn't decode the Cookie header containing: $cookieHeader")
         Nil
       }
-    }
 
     /**
       * Merges an existing Set-Cookie header with new cookie values

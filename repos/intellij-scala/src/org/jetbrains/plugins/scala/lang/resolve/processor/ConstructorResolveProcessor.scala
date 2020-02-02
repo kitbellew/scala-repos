@@ -135,7 +135,7 @@ class ConstructorResolveProcessor(
     true
   }
 
-  override def candidatesS: Set[ScalaResolveResult] = {
+  override def candidatesS: Set[ScalaResolveResult] =
     if (!allConstructors) {
       val superCandidates = super.candidatesS
       if (superCandidates.size <= 1) superCandidates
@@ -152,5 +152,4 @@ class ConstructorResolveProcessor(
     } else {
       super.candidatesS
     }
-  }
 }

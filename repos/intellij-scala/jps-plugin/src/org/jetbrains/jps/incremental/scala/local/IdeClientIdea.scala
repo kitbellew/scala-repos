@@ -92,27 +92,24 @@ class IdeClientIdea(
   }
 
   //add source to successfullyCompiled only after the whole file is processed
-  def processed(source: File): Unit = {
+  def processed(source: File): Unit =
     if (tempSuccessfullyCompiled(source)) {
       successfullyCompiled += source
       tempSuccessfullyCompiled -= source
     }
-  }
 
-  override def compilationEnd(): Unit = {
+  override def compilationEnd(): Unit =
     persistPackageObjectData()
-  }
 
   private def handlePackageObject(
       source: File,
       outputFile: File,
-      reader: ClassReader): Any = {
+      reader: ClassReader): Any =
     if (outputFile.getName == s"$packageObjectClassName.class") {
       packageObjectsBaseClasses ++= collectPackageObjectBaseClasses(
         source,
         reader)
     }
-  }
 
   private def collectPackageObjectBaseClasses(
       source: File,

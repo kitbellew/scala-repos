@@ -78,17 +78,14 @@ package object file {
       Files.readLines(file, cs).toList
     }
 
-    def writeLines(lines: List[String])(implicit cs: Charset): Unit = {
+    def writeLines(lines: List[String])(implicit cs: Charset): Unit =
       Files.write(lines.mkString("", "\n", "\n"), file, cs)
-    }
 
-    def writeString(contents: String)(implicit cs: Charset): Unit = {
+    def writeString(contents: String)(implicit cs: Charset): Unit =
       Files.write(contents, file, cs)
-    }
 
-    def readString()(implicit cs: Charset): String = {
+    def readString()(implicit cs: Charset): String =
       Files.toString(file, cs)
-    }
 
     /**
       * @return the file and its descendent family tree (if it is a directory).

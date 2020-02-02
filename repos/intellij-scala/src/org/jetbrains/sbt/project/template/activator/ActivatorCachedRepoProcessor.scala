@@ -62,7 +62,7 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     extractedHash
   }
 
-  private def downloadIndex(): Option[File] = {
+  private def downloadIndex(): Option[File] =
     if (extractedHash
           .flatMap(a => indexFile.map(b => (a, b._1)))
           .exists(a => a._1 == a._2)) indexFile.map(_._2)
@@ -82,7 +82,6 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           } else None
       }
     }
-  }
 
   private def cacheFile(file: File, where: File) {
     val cacheDir = getCacheDataPath

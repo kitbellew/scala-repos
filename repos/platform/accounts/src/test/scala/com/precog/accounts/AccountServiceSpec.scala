@@ -102,12 +102,11 @@ trait TestAccountService
   def APIKeyFinder(config: Configuration) =
     new DirectAPIKeyFinder(apiKeyManager)
   def RootKey(config: Configuration) = M.copoint(apiKeyManager.rootAPIKey)
-  def Emailer(config: Configuration) = {
+  def Emailer(config: Configuration) =
     // Empty properties to force use of javamail-mock
     new ClassLoaderTemplateEmailer(
       Map("servicehost" -> "test.precog.com"),
       Some(new java.util.Properties))
-  }
 
   val clock = Clock.System
 
@@ -205,7 +204,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
   def removeAccountPlan(accountId: String, user: String, pass: String) =
     accounts.header(auth(user, pass)).delete(accountId + "/plan")
 
-  def createAccountAndGetId(email: String, pass: String): Future[String] = {
+  def createAccountAndGetId(email: String, pass: String): Future[String] =
     createAccount(email, pass) map {
       case HttpResponse(HttpStatus(OK, _), _, Some(jv), _) =>
         val JString(id) = jv \ "accountId"
@@ -215,7 +214,6 @@ class AccountServiceSpec extends TestAccountService with Tags {
         sys.error(
           "Invalid response from server when creating account: " + error)
     }
-  }
 
   "accounts service" should {
     "create accounts" in {

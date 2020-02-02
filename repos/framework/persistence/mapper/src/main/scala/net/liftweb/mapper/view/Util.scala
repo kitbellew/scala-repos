@@ -74,14 +74,13 @@ object Util {
       fn: MappedField[_, T] => CssSel,
       filter: MappedField[_, T] => Boolean
   ): NodeSeq => NodeSeq = {
-    def fieldBindIfWanted(fieldName: String) = {
+    def fieldBindIfWanted(fieldName: String) =
       mapper.fieldByName(fieldName).filter(filter) match {
         case Full(field) =>
           Some(fn(field))
         case _ =>
           None
       }
-    }
 
     "^" #> { ns: NodeSeq =>
       val fieldsAttribute = (ns \ "@fields")

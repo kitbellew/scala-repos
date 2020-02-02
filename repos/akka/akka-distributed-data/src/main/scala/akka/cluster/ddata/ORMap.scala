@@ -159,9 +159,8 @@ final class ORMap[A <: ReplicatedData] private[akka] (
   /**
     * INTERNAL API
     */
-  private[akka] def remove(node: UniqueAddress, key: String): ORMap[A] = {
+  private[akka] def remove(node: UniqueAddress, key: String): ORMap[A] =
     new ORMap(keys.remove(node, key), values - key)
-  }
 
   override def merge(that: ORMap[A]): ORMap[A] = {
     val mergedKeys = keys.merge(that.keys)
@@ -191,12 +190,11 @@ final class ORMap[A <: ReplicatedData] private[akka] (
     new ORMap(mergedKeys, mergedValues)
   }
 
-  override def needPruningFrom(removedNode: UniqueAddress): Boolean = {
+  override def needPruningFrom(removedNode: UniqueAddress): Boolean =
     keys.needPruningFrom(removedNode) || values.exists {
       case (_, data: RemovedNodePruning) ⇒ data.needPruningFrom(removedNode)
       case _ ⇒ false
     }
-  }
 
   override def prune(
       removedNode: UniqueAddress,

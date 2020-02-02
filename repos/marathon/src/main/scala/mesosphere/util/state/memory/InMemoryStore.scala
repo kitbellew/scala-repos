@@ -49,12 +49,11 @@ class InMemoryStore(
       }
     }
 
-  override def delete(key: ID): Future[Boolean] = {
+  override def delete(key: ID): Future[Boolean] =
     entities.get(key) match {
       case Some(value) => Future.successful(entities.remove(key).isDefined)
       case None        => Future.successful(false)
     }
-  }
 
   override def allIds(): Future[Seq[ID]] =
     Future.successful(entities.keySet.toSeq)

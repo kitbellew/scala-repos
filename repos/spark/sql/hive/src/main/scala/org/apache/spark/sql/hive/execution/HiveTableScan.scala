@@ -86,9 +86,8 @@ private[hive] case class HiveTableScan(
   private[this] val hadoopReader =
     new HadoopTableReader(attributes, relation, context, hiveExtraConf)
 
-  private[this] def castFromString(value: String, dataType: DataType) = {
+  private[this] def castFromString(value: String, dataType: DataType) =
     Cast(Literal(value), dataType).eval(null)
-  }
 
   private def addColumnMetadataToConf(hiveConf: HiveConf) {
     // Specifies needed column IDs for those non-partitioning columns.
@@ -128,7 +127,7 @@ private[hive] case class HiveTableScan(
     * @param partitions All partitions of the relation.
     * @return Partitions that are involved in the query plan.
     */
-  private[hive] def prunePartitions(partitions: Seq[HivePartition]) = {
+  private[hive] def prunePartitions(partitions: Seq[HivePartition]) =
     boundPruningPred match {
       case None => partitions
       case Some(shouldKeep) =>
@@ -144,7 +143,6 @@ private[hive] case class HiveTableScan(
           shouldKeep.eval(row).asInstanceOf[Boolean]
         }
     }
-  }
 
   protected override def doExecute(): RDD[InternalRow] = {
     // Using dummyCallSite, as getCallSite can turn out to be expensive with

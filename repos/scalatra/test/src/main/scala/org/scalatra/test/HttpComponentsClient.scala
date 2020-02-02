@@ -38,14 +38,13 @@ case class HttpComponentsClientResponse(res: HttpResponse)
     ResponseStatus(sl.getStatusCode, sl.getReasonPhrase)
   }
 
-  def headers = {
+  def headers =
     res.getAllHeaders.foldLeft(Map[String, Seq[String]]()) { (hmap, header) =>
       val Array(name, value) = Array(header.getName, header.getValue)
       val values = hmap.getOrElse(name, Seq())
 
       hmap + (name -> (values :+ value))
     }
-  }
 }
 
 trait HttpComponentsClient extends Client {
@@ -53,9 +52,8 @@ trait HttpComponentsClient extends Client {
 
   private val _cookieStore = new DynamicVariable[CookieStore](null)
 
-  def session[A](f: => A): A = {
+  def session[A](f: => A): A =
     _cookieStore.withValue(new BasicCookieStore) { f }
-  }
 
   def submit[A](
       method: String,

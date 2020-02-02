@@ -112,17 +112,15 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
   def hasCapability(
       apiKey: APIKey,
       perms: Set[Permission],
-      at: Option[DateTime]): M[Boolean] = {
+      at: Option[DateTime]): M[Boolean] =
     underlying.hasCapability(apiKey, perms, at)
-  }
 
-  def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) = {
+  def findAPIKey(apiKey: APIKey, rootKey: Option[APIKey]) =
     underlying.findAPIKey(apiKey) flatMap {
       _.collect(recordDetails(rootKey)).sequence
     }
-  }
 
-  def findAllAPIKeys(fromRoot: APIKey): M[Set[v1.APIKeyDetails]] = {
+  def findAllAPIKeys(fromRoot: APIKey): M[Set[v1.APIKeyDetails]] =
     underlying.findAPIKey(fromRoot) flatMap {
       case Some(record) =>
         underlying.findAPIKeyChildren(record.apiKey) flatMap { recs =>
@@ -132,16 +130,13 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
       case None =>
         M.point(Set())
     }
-  }
 
   def createAPIKey(
       accountId: AccountId,
       keyName: Option[String] = None,
-      keyDesc: Option[String] = None): M[v1.APIKeyDetails] = {
+      keyDesc: Option[String] = None): M[v1.APIKeyDetails] =
     underlying.newStandardAPIKeyRecord(accountId, keyName, keyDesc) flatMap recordDetails
-  }
 
-  def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean] = {
+  def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean] =
     underlying.addGrants(accountKey, Set(grantId)) map { _.isDefined }
-  }
 }

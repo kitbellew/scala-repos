@@ -30,9 +30,8 @@ class EndpointRecorderTest extends FunSuite {
       registry: EndpointRegistry,
       name: String,
       dtab: Dtab,
-      path: String): Option[Addr] = {
+      path: String): Option[Addr] =
     registry.endpoints(name).get(dtab).flatMap(_.get(path))
-  }
 
   test("EndpointRecorder is disabled if BindingFactory.Dest is not bound") {
     val stk: StackBuilder[ServiceFactory[Int, Int]] = new StackBuilder(

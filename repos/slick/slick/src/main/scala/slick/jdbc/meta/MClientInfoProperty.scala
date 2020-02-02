@@ -10,10 +10,9 @@ case class MClientInfoProperty(
     description: String)
 
 object MClientInfoProperty {
-  def getClientInfoProperties = {
+  def getClientInfoProperties =
     ResultSetAction[MClientInfoProperty] { s =>
       try s.metaData.getClientInfoProperties()
       catch { case _: AbstractMethodError => null }
     } { r => MClientInfoProperty(r.<<, r.<<, r.<<, r.<<) }
-  }
 }

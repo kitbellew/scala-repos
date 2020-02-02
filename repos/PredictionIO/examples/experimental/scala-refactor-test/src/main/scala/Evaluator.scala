@@ -14,9 +14,8 @@ class VanillaEvaluator
       Int,
       String] {
 
-  def evaluateUnit(q: Query, p: PredictedResult, a: ActualResult): Int = {
+  def evaluateUnit(q: Query, p: PredictedResult, a: ActualResult): Int =
     q.q - p.p
-  }
 
   def evaluateSet(evalInfo: EmptyEvaluationInfo, eus: Seq[Int]): Int = eus.sum
 

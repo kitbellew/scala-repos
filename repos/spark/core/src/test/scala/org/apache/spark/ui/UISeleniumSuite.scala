@@ -48,23 +48,20 @@ private[spark] class SparkUICssErrorHandler extends DefaultCssErrorHandler {
   private def isInWhileList(uri: String): Boolean =
     cssWhiteList.exists(uri.endsWith)
 
-  override def warning(e: CSSParseException): Unit = {
+  override def warning(e: CSSParseException): Unit =
     if (!isInWhileList(e.getURI)) {
       super.warning(e)
     }
-  }
 
-  override def fatalError(e: CSSParseException): Unit = {
+  override def fatalError(e: CSSParseException): Unit =
     if (!isInWhileList(e.getURI)) {
       super.fatalError(e)
     }
-  }
 
-  override def error(e: CSSParseException): Unit = {
+  override def error(e: CSSParseException): Unit =
     if (!isInWhileList(e.getURI)) {
       super.error(e)
     }
-  }
 }
 
 /**
@@ -86,7 +83,7 @@ class UISeleniumSuite
     }
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (webDriver != null) {
         webDriver.quit()
@@ -94,7 +91,6 @@ class UISeleniumSuite
     } finally {
       super.afterAll()
     }
-  }
 
   /**
     * Create a test SparkContext with the SparkUI enabled.
@@ -463,9 +459,8 @@ class UISeleniumSuite
 
       val newTab = new WebUITab(sparkUI, "foo") {
         attachPage(new WebUIPage("") {
-          def render(request: HttpServletRequest): Seq[Node] = {
+          def render(request: HttpServletRequest): Seq[Node] =
             <b>"html magic"</b>
-          }
         })
       }
       sparkUI.attachTab(newTab)
@@ -741,24 +736,19 @@ class UISeleniumSuite
     }
   }
 
-  def goToUi(sc: SparkContext, path: String): Unit = {
+  def goToUi(sc: SparkContext, path: String): Unit =
     goToUi(sc.ui.get, path)
-  }
 
-  def goToUi(ui: SparkUI, path: String): Unit = {
+  def goToUi(ui: SparkUI, path: String): Unit =
     go to (ui.appUIAddress.stripSuffix("/") + path)
-  }
 
-  def parseDate(json: JValue): Long = {
+  def parseDate(json: JValue): Long =
     JacksonMessageWriter.makeISODateFormat.parse(json.extract[String]).getTime
-  }
 
-  def getJson(ui: SparkUI, path: String): JValue = {
+  def getJson(ui: SparkUI, path: String): JValue =
     JsonMethods.parse(HistoryServerSuite.getUrl(apiUrl(ui, path)))
-  }
 
-  def apiUrl(ui: SparkUI, path: String): URL = {
+  def apiUrl(ui: SparkUI, path: String): URL =
     new URL(
       ui.appUIAddress + "/api/v1/applications/" + ui.sc.get.applicationId + "/" + path)
-  }
 }

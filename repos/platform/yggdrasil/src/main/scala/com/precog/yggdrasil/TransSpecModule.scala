@@ -239,7 +239,7 @@ trait TransSpecModule extends FNModule {
       }
 
       def mapSources[A <: SourceType, B <: SourceType](spec: TransSpec[A])(
-          f: A => B): TransSpec[B] = {
+          f: A => B): TransSpec[B] =
         spec match {
           case Leaf(source) => Leaf(f(source))
           case trans.ConstLiteral(value, target) =>
@@ -310,7 +310,6 @@ trait TransSpecModule extends FNModule {
               mapSources(left)(f),
               mapSources(right)(f))
         }
-      }
 
       def deepMap[A <: SourceType](spec: TransSpec[A])(
           f: PartialFunction[TransSpec[A], TransSpec[A]]): TransSpec[A] =
@@ -444,7 +443,7 @@ trait TransSpecModule extends FNModule {
         extends GroupKeySpec
 
     object GroupKeySpec {
-      def dnf(keySpec: GroupKeySpec): GroupKeySpec = {
+      def dnf(keySpec: GroupKeySpec): GroupKeySpec =
         keySpec match {
           case GroupKeySpecSource(key, spec) => GroupKeySpecSource(key, spec)
           case GroupKeySpecAnd(GroupKeySpecOr(ol, or), right) =>
@@ -468,14 +467,12 @@ trait TransSpecModule extends FNModule {
             if (leftdnf == left && rightdnf == right) gor
             else dnf(GroupKeySpecOr(leftdnf, rightdnf))
         }
-      }
 
-      def toVector(keySpec: GroupKeySpec): Vector[GroupKeySpec] = {
+      def toVector(keySpec: GroupKeySpec): Vector[GroupKeySpec] =
         keySpec match {
           case GroupKeySpecOr(left, right) => toVector(left) ++ toVector(right)
           case x                           => Vector(x)
         }
-      }
     }
 
     object constants {
@@ -545,8 +542,6 @@ trait TransSpecModule extends FNModule {
       trans.WrapObject(source, paths.Value.name))
   }
 
-  def buildValueWrapSpec[A <: SourceType](
-      source: TransSpec[A]): TransSpec[A] = {
+  def buildValueWrapSpec[A <: SourceType](source: TransSpec[A]): TransSpec[A] =
     trans.WrapObject(source, paths.Value.name)
-  }
 }

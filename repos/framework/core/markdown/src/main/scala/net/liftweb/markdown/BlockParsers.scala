@@ -483,13 +483,12 @@ trait BlockParsers extends Parsers {
 
   /** Generic apply method to run one of our pasers on the given input.
     */
-  def apply[T](p: Parser[T], in: MarkdownLineReader): T = {
+  def apply[T](p: Parser[T], in: MarkdownLineReader): T =
     phrase(p)(in) match {
       case Success(t, _) => t
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse '" + in + "': " + e)
     }
-  }
 
   /** parses all blocks from the given reader
     */
@@ -503,7 +502,7 @@ trait BlockParsers extends Parsers {
 
   /** Parses the given input as a markdown document and returns the string result
     */
-  def apply(in: MarkdownLineReader): String = {
+  def apply(in: MarkdownLineReader): String =
     phrase(markdown)(in) match {
       case Success(bs, _) => {
         val builder = new StringBuilder()
@@ -513,5 +512,4 @@ trait BlockParsers extends Parsers {
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse " + in + ": " + e)
     }
-  }
 }

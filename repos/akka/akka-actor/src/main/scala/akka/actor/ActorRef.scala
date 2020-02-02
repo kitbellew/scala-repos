@@ -148,10 +148,9 @@ abstract class ActorRef
   @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
   private[akka] def isTerminated: Boolean
 
-  final override def hashCode: Int = {
+  final override def hashCode: Int =
     if (path.uid == ActorCell.undefinedUid) path.hashCode
     else path.uid
-  }
 
   /**
     * Equals takes path and the unique id of the actor cell into account.
@@ -162,8 +161,8 @@ abstract class ActorRef
   }
 
   override def toString: String =
-    if (path.uid == ActorCell.undefinedUid) s"Actor[${path}]"
-    else s"Actor[${path}#${path.uid}]"
+    if (path.uid == ActorCell.undefinedUid) s"Actor[$path]"
+    else s"Actor[$path#${path.uid}]"
 }
 
 /**
@@ -459,9 +458,8 @@ private[akka] final case class SerializedActorRef private (path: String) {
   * INTERNAL API
   */
 private[akka] object SerializedActorRef {
-  def apply(actorRef: ActorRef): SerializedActorRef = {
+  def apply(actorRef: ActorRef): SerializedActorRef =
     new SerializedActorRef(actorRef)
-  }
 }
 
 /**
@@ -711,7 +709,7 @@ private[akka] class VirtualPathContainer(
     case _ ⇒ super.!(message)
   }
 
-  def addChild(name: String, ref: InternalActorRef): Unit = {
+  def addChild(name: String, ref: InternalActorRef): Unit =
     children.put(name, ref) match {
       case null ⇒ // okay
       case old ⇒
@@ -720,7 +718,6 @@ private[akka] class VirtualPathContainer(
         log.debug("{} replacing child {} ({} -> {})", path, name, old, ref)
         old.stop()
     }
-  }
 
   def removeChild(name: String): Unit =
     if (children.remove(name) eq null)
@@ -740,7 +737,7 @@ private[akka] class VirtualPathContainer(
 
   def getChild(name: String): InternalActorRef = children.get(name)
 
-  override def getChild(name: Iterator[String]): InternalActorRef = {
+  override def getChild(name: Iterator[String]): InternalActorRef =
     if (name.isEmpty) this
     else {
       val n = name.next()
@@ -753,7 +750,6 @@ private[akka] class VirtualPathContainer(
             else some.getChild(name)
         }
     }
-  }
 
   def hasChildren: Boolean = !children.isEmpty
 
@@ -786,11 +782,10 @@ private[akka] final class FunctionRef(
     extends MinimalActorRef {
 
   override def !(message: Any)(
-      implicit sender: ActorRef = Actor.noSender): Unit = {
+      implicit sender: ActorRef = Actor.noSender): Unit =
     f(sender, message)
-  }
 
-  override def sendSystemMessage(message: SystemMessage): Unit = {
+  override def sendSystemMessage(message: SystemMessage): Unit =
     message match {
       case w: Watch ⇒ addWatcher(w.watchee, w.watcher)
       case u: Unwatch ⇒ remWatcher(u.watchee, u.watcher)
@@ -801,7 +796,6 @@ private[akka] final class FunctionRef(
             addressTerminated = false))
       case _ ⇒ //ignore all other messages
     }
-  }
 
   private[this] var watching = ActorCell.emptyActorRefSet
   private[this] val _watchedBy =
@@ -870,9 +864,7 @@ private[akka] final class FunctionRef(
         }
     }
 
-  @tailrec private def remWatcher(
-      watchee: ActorRef,
-      watcher: ActorRef): Unit = {
+  @tailrec private def remWatcher(watchee: ActorRef, watcher: ActorRef): Unit =
     _watchedBy.get() match {
       case null ⇒ // do nothing...
       case watchedBy ⇒
@@ -897,7 +889,6 @@ private[akka] final class FunctionRef(
               s"BUG: illegal Unwatch($watchee,$watcher) for $this"))
         }
     }
-  }
 
   private def publish(e: Logging.LogEvent): Unit =
     try eventStream.publish(e)

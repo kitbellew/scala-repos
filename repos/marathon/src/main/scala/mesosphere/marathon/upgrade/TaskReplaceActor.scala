@@ -172,7 +172,7 @@ class TaskReplaceActor(
     checkFinished()
   }
 
-  def killNextOldTask(maybeNewTaskId: Option[Task.Id] = None): Unit = {
+  def killNextOldTask(maybeNewTaskId: Option[Task.Id] = None): Unit =
     if (toKill.nonEmpty) {
       val nextOldTask = toKill.dequeue()
 
@@ -187,9 +187,8 @@ class TaskReplaceActor(
       outstandingKills += nextOldTask
       driver.killTask(nextOldTask.mesosTaskId)
     }
-  }
 
-  def checkFinished(): Unit = {
+  def checkFinished(): Unit =
     if (healthy.size == app.instances && oldTaskIds.isEmpty) {
       log.info(
         s"App All new tasks for $appId are healthy and all old tasks have been killed")
@@ -200,14 +199,12 @@ class TaskReplaceActor(
         s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
           s"[${oldTaskIds.size}] old instances.")
     }
-  }
 
-  def retryKills(): Unit = {
+  def retryKills(): Unit =
     outstandingKills.foreach { id =>
       log.warning(s"Retrying kill of old $id")
       driver.killTask(id.mesosTaskId)
     }
-  }
 
   def buildTaskId(id: String): TaskID =
     TaskID

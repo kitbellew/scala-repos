@@ -19,10 +19,9 @@ object ReliableProxy {
       targetPath: ActorPath,
       retryAfter: FiniteDuration,
       reconnectAfter: Option[FiniteDuration],
-      maxReconnects: Option[Int]): Props = {
+      maxReconnects: Option[Int]): Props =
     Props(
       new ReliableProxy(targetPath, retryAfter, reconnectAfter, maxReconnects))
-  }
 
   /**
     * Java API Props.  Arguments are detailed in the [[akka.contrib.pattern.ReliableProxy]]
@@ -32,13 +31,12 @@ object ReliableProxy {
       targetPath: ActorPath,
       retryAfter: FiniteDuration,
       reconnectAfter: FiniteDuration,
-      maxReconnects: Int): Props = {
+      maxReconnects: Int): Props =
     props(
       targetPath,
       retryAfter,
       Option(reconnectAfter),
       if (maxReconnects > 0) Some(maxReconnects) else None)
-  }
 
   /**
     * Props with no limit on reconnections.  Arguments are detailed in the [[akka.contrib.pattern.ReliableProxy]]
@@ -47,17 +45,15 @@ object ReliableProxy {
   def props(
       targetPath: ActorPath,
       retryAfter: FiniteDuration,
-      reconnectAfter: FiniteDuration): Props = {
+      reconnectAfter: FiniteDuration): Props =
     props(targetPath, retryAfter, Option(reconnectAfter), None)
-  }
 
   /**
     * Props with no reconnections.  Arguments are detailed in the [[akka.contrib.pattern.ReliableProxy]]
     * constructor.
     */
-  def props(targetPath: ActorPath, retryAfter: FiniteDuration): Props = {
+  def props(targetPath: ActorPath, retryAfter: FiniteDuration): Props =
     props(targetPath, retryAfter, None, None)
-  }
 
   class Receiver(target: ActorRef, initialSerial: Int)
       extends Actor

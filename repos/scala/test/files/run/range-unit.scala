@@ -24,13 +24,12 @@ object Test {
     }
   }
 
-  def run[T](body: => Range): List[Any] = {
+  def run[T](body: => Range): List[Any] =
     try {
       val r = body;
       if (r.isEmpty) List(r.length)
       else List(num(r.length), num(r.head), num(r.last))
     } catch { case e: IllegalArgumentException => List("---\n    " + e) }
-  }
 
   def runGroup(label: String, f: (Int, Int, Int) => Range) {
     println(">>> " + label + " <<<\n")

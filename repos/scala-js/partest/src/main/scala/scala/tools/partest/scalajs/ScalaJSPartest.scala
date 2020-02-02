@@ -24,14 +24,12 @@ import java.net.URLClassLoader
 trait ScalaJSDirectCompiler extends DirectCompiler {
   override def newGlobal(
       settings: Settings,
-      reporter: Reporter): PartestGlobal = {
+      reporter: Reporter): PartestGlobal =
     new PartestGlobal(settings, reporter) {
-      override protected def loadRoughPluginsList(): List[Plugin] = {
+      override protected def loadRoughPluginsList(): List[Plugin] =
         (super.loadRoughPluginsList() :+
           Plugin.instantiate(classOf[ScalaJSPlugin], this))
-      }
     }
-  }
 }
 
 class ScalaJSRunner(
@@ -61,12 +59,11 @@ class ScalaJSRunner(
   }
 
   override def newCompiler = new DirectCompiler(this) with ScalaJSDirectCompiler
-  override def extraJavaOptions = {
+  override def extraJavaOptions =
     super.extraJavaOptions ++ Seq(
       s"-Dscalajs.partest.optMode=${options.optMode.id}",
       s"-Dscalajs.partest.compliantSems=${compliantSems.mkString(",")}"
     )
-  }
 }
 
 trait ScalaJSSuiteRunner extends SuiteRunner {
@@ -116,9 +113,8 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
 
   override def runTestsForFiles(
       kindFiles: Array[File],
-      kind: String): Array[TestState] = {
+      kind: String): Array[TestState] =
     super.runTestsForFiles(kindFiles.filter(shouldUseTest), kind)
-  }
 
   private lazy val listDir =
     s"/scala/tools/partest/scalajs/$scalaVersion"

@@ -161,12 +161,11 @@ class FormatterTest extends WordSpec {
         }
       }
 
-      def scrub(in: String) = {
+      def scrub(in: String) =
         in.regexSub("""FormatterTest.scala:\d+""".r) { m =>
             "FormatterTest.scala:NNN"
           }
           .regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
-      }
 
       "simple" in {
         val exception =

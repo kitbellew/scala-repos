@@ -44,9 +44,8 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     extends MatrixLike[V, Matrix[V]] {
 
   final def apply(i: (Int, Int)) = apply(i._1, i._2)
-  final def update(i: (Int, Int), e: V): Unit = {
+  final def update(i: (Int, Int), e: V): Unit =
     update(i._1, i._2, e)
-  }
 
   def apply(i: Int, j: Int): V
   def update(i: Int, j: Int, e: V): Unit
@@ -146,9 +145,8 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
   override def toString: String =
     toString(Terminal.terminalHeight, Terminal.terminalWidth)
 
-  def toDenseMatrix(implicit cm: ClassTag[V], zero: Zero[V]) = {
+  def toDenseMatrix(implicit cm: ClassTag[V], zero: Zero[V]) =
     DenseMatrix.tabulate(rows, cols) { (i, j) => apply(i, j) }
-  }
 
   def copy: Matrix[V]
 
@@ -215,7 +213,7 @@ object Matrix
   }
 
   implicit def canTraverseKeyValuePairs[V]
-      : CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] = {
+      : CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] =
     new CanTraverseKeyValuePairs[Matrix[V], (Int, Int), V] {
       def isTraversableAgain(from: Matrix[V]): Boolean = true
 
@@ -223,23 +221,19 @@ object Matrix
       def traverse(
           from: Matrix[V],
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[(Int, Int), V])
-          : Unit = {
+          : Unit =
         from.iterator.foreach((fn.visit _).tupled)
-      }
 
     }
-  }
 
-  implicit def canTraverseValues[V]: CanTraverseValues[Matrix[V], V] = {
+  implicit def canTraverseValues[V]: CanTraverseValues[Matrix[V], V] =
     new CanTraverseValues[Matrix[V], V] {
       def isTraversableAgain(from: Matrix[V]): Boolean = true
 
       /** Iterates all key-value pairs from the given collection. */
-      def traverse(from: Matrix[V], fn: ValuesVisitor[V]): Unit = {
+      def traverse(from: Matrix[V], fn: ValuesVisitor[V]): Unit =
         from.valuesIterator.foreach(fn.visit)
-      }
     }
-  }
 }
 
 trait MatrixConstructors[Mat[T] <: Matrix[T]] {
@@ -260,9 +254,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
     */
   def ones[@spec(Double, Int, Float, Long) V: ClassTag: Zero: Semiring](
       rows: Int,
-      cols: Int): Mat[V] = {
+      cols: Int): Mat[V] =
     fill(rows, cols)(implicitly[Semiring[V]].one)
-  }
 
   def fill[@spec(Double, Int, Float, Long) V: ClassTag: Zero](
       rows: Int,
@@ -281,9 +274,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
   def rand[T: ClassTag: Zero](
       rows: Int,
       cols: Int,
-      rand: Rand[T] = Rand.uniform): Mat[T] = {
+      rand: Rand[T] = Rand.uniform): Mat[T] =
     fill(rows, cols)(rand.draw())
-  }
 
   // @specialized() R because of https://issues.scala-lang.org/browse/SI-8886
   /** Static constructor for a literal matrix. */
@@ -303,9 +295,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
   implicit def canCreateZeros[T: ClassTag: Zero]
       : CanCreateZeros[Mat[T], (Int, Int)] =
     new CanCreateZeros[Mat[T], (Int, Int)] {
-      def apply(dims: (Int, Int)): Mat[T] = {
+      def apply(dims: (Int, Int)): Mat[T] =
         zeros[T](dims._1, dims._2)
-      }
     }
 
   implicit def canTabulate[T: ClassTag: Zero] =

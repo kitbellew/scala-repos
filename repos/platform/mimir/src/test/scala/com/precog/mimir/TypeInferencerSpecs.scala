@@ -83,11 +83,10 @@ trait TypeInferencerSpecs[M[+_]]
         : Map[String, Map[JPath, Set[CType]]] = {
       def mergeAux(
           left: Map[JPath, Set[CType]],
-          right: Map[JPath, Set[CType]]): Map[JPath, Set[CType]] = {
+          right: Map[JPath, Set[CType]]): Map[JPath, Set[CType]] =
         left ++ right.map {
           case (path, ctpes) => path -> (ctpes ++ left.getOrElse(path, Set()))
         }
-      }
       left ++ right.map {
         case (file, jtpes) =>
           file -> mergeAux(jtpes, left.getOrElse(file, Map()))

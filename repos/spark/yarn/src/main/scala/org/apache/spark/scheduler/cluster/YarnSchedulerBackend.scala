@@ -86,7 +86,7 @@ private[spark] abstract class YarnSchedulerBackend(
     super.start()
   }
 
-  override def stop(): Unit = {
+  override def stop(): Unit =
     try {
       // SPARK-12009: To prevent Yarn allocator from requesting backup for the executors which
       // was Stopped by SchedulerBackend.
@@ -95,7 +95,6 @@ private[spark] abstract class YarnSchedulerBackend(
     } finally {
       services.stop()
     }
-  }
 
   /**
     * Get the attempt ID for this run, if the cluster manager supports multiple
@@ -104,9 +103,8 @@ private[spark] abstract class YarnSchedulerBackend(
     *
     * @return The application attempt id, if available.
     */
-  override def applicationAttemptId(): Option[String] = {
+  override def applicationAttemptId(): Option[String] =
     attemptId.map(_.getAttemptId.toString)
-  }
 
   /**
     * Get an application ID associated with the job.
@@ -114,36 +112,32 @@ private[spark] abstract class YarnSchedulerBackend(
     * the locally-generated ID from the superclass.
     * @return The application ID
     */
-  override def applicationId(): String = {
+  override def applicationId(): String =
     appId.map(_.toString).getOrElse {
       logWarning("Application ID is not initialized yet.")
       super.applicationId
     }
-  }
 
   /**
     * Request executors from the ApplicationMaster by specifying the total number desired.
     * This includes executors already pending or running.
     */
-  override def doRequestTotalExecutors(requestedTotal: Int): Boolean = {
+  override def doRequestTotalExecutors(requestedTotal: Int): Boolean =
     yarnSchedulerEndpointRef.askWithRetry[Boolean](
       RequestExecutors(
         requestedTotal,
         localityAwareTasks,
         hostToLocalTaskCount))
-  }
 
   /**
     * Request that the ApplicationMaster kill the specified executors.
     */
-  override def doKillExecutors(executorIds: Seq[String]): Boolean = {
+  override def doKillExecutors(executorIds: Seq[String]): Boolean =
     yarnSchedulerEndpointRef.askWithRetry[Boolean](KillExecutors(executorIds))
-  }
 
-  override def sufficientResourcesRegistered(): Boolean = {
+  override def sufficientResourcesRegistered(): Boolean =
     totalRegisteredExecutors
       .get() >= totalExpectedExecutors * minRegisteredRatio
-  }
 
   /**
     * Add filters to the SparkUI.
@@ -172,9 +166,8 @@ private[spark] abstract class YarnSchedulerBackend(
   }
 
   override def createDriverEndpoint(
-      properties: Seq[(String, String)]): DriverEndpoint = {
+      properties: Seq[(String, String)]): DriverEndpoint =
     new YarnDriverEndpoint(rpcEnv, properties)
-  }
 
   /**
     * Reset the state of SchedulerBackend to the initial state. This is happened when AM is failed
@@ -207,14 +200,13 @@ private[spark] abstract class YarnSchedulerBackend(
       * to the TaskSetManager to inform the TaskSetManager that tasks on that lost executor should
       * not count towards a job failure.
       */
-    override def onDisconnected(rpcAddress: RpcAddress): Unit = {
+    override def onDisconnected(rpcAddress: RpcAddress): Unit =
       addressToExecutorId.get(rpcAddress).foreach { executorId =>
         if (disableExecutor(executorId)) {
           yarnSchedulerEndpoint
             .handleExecutorDisconnectedFromDriver(executorId, rpcAddress)
         }
       }
-    }
   }
 
   /**
@@ -231,7 +223,7 @@ private[spark] abstract class YarnSchedulerBackend(
 
     private[YarnSchedulerBackend] def handleExecutorDisconnectedFromDriver(
         executorId: String,
-        executorRpcAddress: RpcAddress): Unit = {
+        executorRpcAddress: RpcAddress): Unit =
       amEndpoint match {
         case Some(am) =>
           val lossReasonRequest = GetExecutorLossReason(executorId)
@@ -246,7 +238,7 @@ private[spark] abstract class YarnSchedulerBackend(
             case NonFatal(e) => {
               logWarning(
                 s"Attempted to get executor loss reason" +
-                  s" for executor id ${executorId} at RPC address ${executorRpcAddress}," +
+                  s" for executor id $executorId at RPC address $executorRpcAddress," +
                   s" but got no response. Marking as slave lost.",
                 e
               )
@@ -262,7 +254,6 @@ private[spark] abstract class YarnSchedulerBackend(
           driverEndpoint.askWithRetry[Boolean](
             RemoveExecutor(executorId, SlaveLost("AM is not yet registered.")))
       }
-    }
 
     override def receive: PartialFunction[Any, Unit] = {
       case RegisterClusterManager(am) =>
@@ -319,16 +310,14 @@ private[spark] abstract class YarnSchedulerBackend(
         }
     }
 
-    override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+    override def onDisconnected(remoteAddress: RpcAddress): Unit =
       if (amEndpoint.exists(_.address == remoteAddress)) {
         logWarning(s"ApplicationMaster has disassociated: $remoteAddress")
         amEndpoint = None
       }
-    }
 
-    override def onStop(): Unit = {
+    override def onStop(): Unit =
       askAmThreadPool.shutdownNow()
-    }
   }
 }
 

@@ -67,7 +67,7 @@ object WSClientAutobahnTest extends App {
       status.onComplete {
         case Success((CaseStatus(status), millis)) ⇒
           val color = if (status == "OK") GREEN else RED
-          println(f"${color}$status%-15s$RESET$millis%5d ms $prefix")
+          println(f"$color$status%-15s$RESET$millis%5d ms $prefix")
         case Failure(e) ⇒
           println(s"$prefix${RED}failed with '${e.getMessage}'$RESET")
       }

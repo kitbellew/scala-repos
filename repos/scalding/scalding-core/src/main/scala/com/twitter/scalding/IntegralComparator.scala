@@ -56,7 +56,7 @@ class IntegralComparator
       a1.asInstanceOf[Comparable[AnyRef]].compareTo(a2)
   }
 
-  override def hashCode(obj: AnyRef): Int = {
+  override def hashCode(obj: AnyRef): Int =
     if (null == obj) {
       0
     } else if (isIntegral(obj)) {
@@ -65,5 +65,4 @@ class IntegralComparator
       //Use the default:
       obj.hashCode
     }
-  }
 }

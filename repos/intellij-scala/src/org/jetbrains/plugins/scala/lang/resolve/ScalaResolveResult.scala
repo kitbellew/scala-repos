@@ -77,23 +77,21 @@ class ScalaResolveResult(
   /**
     * this is important to get precedence information
     */
-  def getActualElement = {
+  def getActualElement =
     parentElement match {
       case Some(e) => e
       case None    => element
     }
-  }
 
   def isApplicable(withExpectedType: Boolean = false): Boolean =
     if (withExpectedType) problems.isEmpty
     else problems.forall(_ == ExpectedTypeMismatch)
 
-  def isApplicableInternal(withExpectedType: Boolean): Boolean = {
+  def isApplicableInternal(withExpectedType: Boolean): Boolean =
     innerResolveResult match {
       case Some(r) => r.isApplicable(withExpectedType)
       case None    => isApplicable(withExpectedType)
     }
-  }
 
   def isValidResult = isAccessible && isApplicable()
 
@@ -193,7 +191,7 @@ class ScalaResolveResult(
       }
       def getClazzPrecedence(clazz: PsiClass): Int = {
         @tailrec
-        def getPackageName(element: PsiElement): String = {
+        def getPackageName(element: PsiElement): String =
           element match {
             case null => ""
             case o: ScObject if o.isPackageObject =>
@@ -205,7 +203,6 @@ class ScalaResolveResult(
             case p: ScPackaging => p.fullPackageName
             case _              => getPackageName(element.getParent)
           }
-        }
         val q = clazz match {
           case td: ScTypeDefinition =>
             if (td.containingClass != null) return OTHER_MEMBERS

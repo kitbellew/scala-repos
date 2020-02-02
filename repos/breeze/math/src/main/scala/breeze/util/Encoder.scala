@@ -17,9 +17,8 @@ trait Encoder[T] {
   /**
     * Creates a SparseVector[Double] with the index's size
     */
-  def mkSparseVector(): SparseVector[Double] = {
+  def mkSparseVector(): SparseVector[Double] =
     SparseVector.zeros[Double](index.size)
-  }
 
   /**
     * Creates a DenseVector[Double] with the index's size
@@ -38,9 +37,8 @@ trait Encoder[T] {
   /**
     * makes a matrix of some sort with the index's size as rows and cols
     */
-  final def mkMatrix(): DenseMatrix[Double] = {
+  final def mkMatrix(): DenseMatrix[Double] =
     DenseMatrix.zeros(index.size, index.size)
-  }
 
   /**
     * Decodes a vector back to a Counter[T,Double]
@@ -159,17 +157,15 @@ trait Encoder[T] {
   /**
     * Converts an array into a Map from T's to whatever was in the array.
     */
-  def decode[V](array: Array[V]): Map[T, V] = {
+  def decode[V](array: Array[V]): Map[T, V] =
     Map.empty ++ array.zipWithIndex.map { case (v, i) => (index.get(i), v) }
-  }
 
   def fillSparseArrayMap[V: ClassTag: Zero](default: => V) =
     new SparseArrayMap[V](index.size, default)
 
   def mkSparseArray[V: ClassTag: Zero] = new SparseArray[V](index.size)
-  def decode[V](array: SparseArray[V]): Map[T, V] = {
+  def decode[V](array: SparseArray[V]): Map[T, V] =
     Map.empty ++ array.iterator.map { case (i, v) => (index.get(i), v) }
-  }
 
 }
 

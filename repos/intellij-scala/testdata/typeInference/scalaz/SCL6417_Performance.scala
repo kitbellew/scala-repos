@@ -3,7 +3,7 @@ import scalaz._
 
 class SCL6417_Performance {
 
-  def testValidation(): Unit = {
+  def testValidation(): Unit =
     (validateOptionalX(Some(0)) |@| validateOptionalY(Some(1))
       |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
       |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
@@ -16,7 +16,6 @@ class SCL6417_Performance {
         print(t)
       case Failure(errors) => println(errors.toString)
     }
-  }
 
   def validateOptionalX(x: Option[Int]): ValidationNel[String, Int] = x match {
     case Some(p) =>

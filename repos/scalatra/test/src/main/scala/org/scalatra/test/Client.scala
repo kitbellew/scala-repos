@@ -22,9 +22,8 @@ trait Client extends ImplicitConversions {
 
   def header = response.header
 
-  protected def withResponse[A](res: ClientResponse)(f: => A): A = {
+  protected def withResponse[A](res: ClientResponse)(f: => A): A =
     _response.withValue(res) { f }
-  }
 
   def submit[A](
       method: String,

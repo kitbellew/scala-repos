@@ -97,12 +97,11 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
 
   def clear() { size = 0 }
 
-  def result() = {
+  def result() =
     if (capacity != 0 && capacity == size) {
       capacity = 0
       elems
     } else mkArray(size)
-  }
 
   // todo: add ++=
 }

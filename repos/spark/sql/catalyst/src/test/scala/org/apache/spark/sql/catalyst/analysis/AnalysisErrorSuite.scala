@@ -46,11 +46,10 @@ private[sql] class GroupableUDT extends UserDefinedType[GroupableData] {
 
   override def serialize(groupableData: GroupableData): Int = groupableData.data
 
-  override def deserialize(datum: Any): GroupableData = {
+  override def deserialize(datum: Any): GroupableData =
     datum match {
       case data: Int => GroupableData(data)
     }
-  }
 
   override def userClass: Class[GroupableData] = classOf[GroupableData]
 
@@ -70,7 +69,7 @@ private[sql] class UngroupableUDT extends UserDefinedType[UngroupableData] {
     new ArrayBasedMapData(keyArray, valueArray)
   }
 
-  override def deserialize(datum: Any): UngroupableData = {
+  override def deserialize(datum: Any): UngroupableData =
     datum match {
       case data: MapData =>
         val keyArray = data.keyArray().array
@@ -79,7 +78,6 @@ private[sql] class UngroupableUDT extends UserDefinedType[UngroupableData] {
         val mapData = keyArray.zip(valueArray).toMap.asInstanceOf[Map[Int, Int]]
         UngroupableData(mapData)
     }
-  }
 
   override def userClass: Class[UngroupableData] = classOf[UngroupableData]
 
@@ -108,11 +106,10 @@ class AnalysisErrorSuite extends AnalysisTest {
       name: String,
       plan: LogicalPlan,
       errorMessages: Seq[String],
-      caseSensitive: Boolean = true): Unit = {
+      caseSensitive: Boolean = true): Unit =
     test(name) {
       assertAnalysisError(plan, errorMessages, caseSensitive)
     }
-  }
 
   val dateLit = Literal.create(null, DateType)
 

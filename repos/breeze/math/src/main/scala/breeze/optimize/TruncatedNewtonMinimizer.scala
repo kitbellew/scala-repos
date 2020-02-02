@@ -77,7 +77,7 @@ class TruncatedNewtonMinimizer[T, H](
   private val sigma2 = 0.5
   private val sigma3 = 4.0
 
-  def iterations(f: SecondOrderFunction[T, H], initial: T): Iterator[State] = {
+  def iterations(f: SecondOrderFunction[T, H], initial: T): Iterator[State] =
     Iterator.iterate(initialState(f, initial)) { (state: State) =>
       import state._
       val cg = new ConjugateGradient[T, H](
@@ -176,8 +176,6 @@ class TruncatedNewtonMinimizer[T, H](
       }
 
     }
-
-  }
 
   // lbfgs stuff for preconditioning
   // LBFGS history

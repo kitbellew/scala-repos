@@ -18,14 +18,13 @@ object JTransformsSupport {
   //maintain instance of transform to eliminate repeated initialization
   private val fft_instD1D = new ThreadLocal[(Int, DoubleFFT_1D)]
 
-  def getD1DInstance(length: Int): DoubleFFT_1D = {
+  def getD1DInstance(length: Int): DoubleFFT_1D =
     if (fft_instD1D.get != null && length == fft_instD1D.get._1)
       fft_instD1D.get._2
     else {
       fft_instD1D.set((length, new DoubleFFT_1D(length)))
       fft_instD1D.get()._2
     }
-  }
 
   private val fft_instD2D = new ThreadLocal[(Int, Int, DoubleFFT_2D)]
 

@@ -108,13 +108,11 @@ private[streaming] object RawTextHelper {
     }
   }
 
-  def add(v1: Long, v2: Long): Long = {
+  def add(v1: Long, v2: Long): Long =
     v1 + v2
-  }
 
-  def subtract(v1: Long, v2: Long): Long = {
+  def subtract(v1: Long, v2: Long): Long =
     v1 - v2
-  }
 
   def max(v1: Long, v2: Long): Long = math.max(v1, v2)
 }

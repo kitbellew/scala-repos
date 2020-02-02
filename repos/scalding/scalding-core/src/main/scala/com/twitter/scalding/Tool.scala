@@ -52,9 +52,8 @@ class Tool extends Configured with HTool {
   // This both updates the jobConf with hadoop arguments
   // and returns all the non-hadoop arguments. Should be called once if
   // you want to process hadoop arguments (like -libjars).
-  protected def nonHadoopArgsFrom(args: Array[String]): Array[String] = {
+  protected def nonHadoopArgsFrom(args: Array[String]): Array[String] =
     (new GenericOptionsParser(getConf, args)).getRemainingArgs
-  }
 
   def parseModeArgs(args: Array[String]): (Mode, Args) = {
     val a = Args(nonHadoopArgsFrom(args))
@@ -99,7 +98,7 @@ class Tool extends Configured with HTool {
         flow match {
           case hadoopFlow: HadoopFlow =>
             val flowSteps = hadoopFlow.getFlowSteps.asScala
-            flowSteps.foreach(step => {
+            flowSteps.foreach { step =>
               val baseFlowStep: BaseFlowStep[JobConf] =
                 step.asInstanceOf[BaseFlowStep[JobConf]]
               val descriptions =
@@ -115,7 +114,7 @@ class Tool extends Configured with HTool {
                 x.setAccessible(true)
                 x.invoke(step, "%s %s".format(stepXofYData, descriptions))
               }
-            })
+            }
           case _ => // descriptions not yet supported in other modes
         }
 

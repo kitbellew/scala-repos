@@ -51,7 +51,6 @@ class HDFSStorageProvider(uri: URI, base: String, configuration: Configuration)
     extends StorageProvider {
   val fs = FileSystem.get(uri, configuration)
 
-  override def item(path: String): StorageItem = {
+  override def item(path: String): StorageItem =
     HDFSStorageItem(fs, new Path(base, path), base, path)
-  }
 }

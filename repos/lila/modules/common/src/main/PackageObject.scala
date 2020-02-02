@@ -216,11 +216,10 @@ trait WithPlay { self: PackageObject =>
     }
 
     def withTimeout(duration: FiniteDuration, error: => Throwable)(
-        implicit system: akka.actor.ActorSystem): Fu[A] = {
+        implicit system: akka.actor.ActorSystem): Fu[A] =
       Future firstCompletedOf Seq(
         fua,
         akka.pattern.after(duration, system.scheduler)(fufail(error)))
-    }
 
     def chronometer = lila.common.Chronometer(fua)
 

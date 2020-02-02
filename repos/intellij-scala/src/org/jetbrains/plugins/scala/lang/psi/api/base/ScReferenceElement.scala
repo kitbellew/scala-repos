@@ -76,7 +76,7 @@ trait ScReferenceElement
       new TextRange(start, len)
   }
 
-  def getCanonicalText: String = {
+  def getCanonicalText: String =
     resolve() match {
       case clazz: ScObject if clazz.isStatic => clazz.qualifiedName
       case c: ScTypeDefinition =>
@@ -85,7 +85,6 @@ trait ScReferenceElement
       case n: PsiNamedElement => n.name
       case _                  => refName
     }
-  }
 
   def isSoft: Boolean = false
 

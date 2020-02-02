@@ -535,12 +535,11 @@ class TaskTrackerImplTest
       .withNetworking(Task.HostPorts(Iterable(999)))
   }
 
-  def makeTaskStatus(id: Task.Id, state: TaskState = TaskState.TASK_RUNNING) = {
+  def makeTaskStatus(id: Task.Id, state: TaskState = TaskState.TASK_RUNNING) =
     TaskStatus.newBuilder
       .setTaskId(id.mesosTaskId)
       .setState(state)
       .build
-  }
 
   def containsTask(tasks: Iterable[Task], task: Task) =
     tasks.exists(t =>

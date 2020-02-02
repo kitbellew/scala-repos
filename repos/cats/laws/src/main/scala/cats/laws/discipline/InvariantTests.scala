@@ -15,14 +15,12 @@ trait InvariantTests[F[_]] extends Laws {
       implicit
       ArbFA: Arbitrary[F[A]],
       EqFA: Eq[F[A]],
-      EqFC: Eq[F[C]]): RuleSet = {
-
+      EqFC: Eq[F[C]]): RuleSet =
     new DefaultRuleSet(
       name = "invariant",
       parent = None,
       "invariant identity" -> forAll(laws.invariantIdentity[A] _),
       "invariant composition" -> forAll(laws.invariantComposition[A, B, C] _))
-  }
 }
 
 object InvariantTests {

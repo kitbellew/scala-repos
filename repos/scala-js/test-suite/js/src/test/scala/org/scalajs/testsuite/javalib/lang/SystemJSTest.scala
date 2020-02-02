@@ -39,7 +39,7 @@ class SystemJSTest {
     assertEquals(x2FirstHash, x2.hashCode())
   }
 
-  @Test def identityHashCode_for_JS_objects(): Unit = {
+  @Test def identityHashCode_for_JS_objects(): Unit =
     if (assumingES6 || !js.isUndefined(js.Dynamic.global.WeakMap)) {
       /* This test is more restrictive than the spec, but we know our
        * implementation will always pass the test.
@@ -59,7 +59,6 @@ class SystemJSTest {
       assertEquals(x1FirstHash, x1.hashCode())
       assertEquals(x1FirstHash, System.identityHashCode(x1))
     }
-  }
 
   @Test def systemProperties(): Unit = {
     def get(key: String): String = java.lang.System.getProperty(key)

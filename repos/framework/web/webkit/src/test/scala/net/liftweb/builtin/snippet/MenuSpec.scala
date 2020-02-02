@@ -49,7 +49,7 @@ object MenuSpec extends Specification {
     f(siteMap)
   }
 
-  def testSiteMap[T](uri: String)(f: => T): T = {
+  def testSiteMap[T](uri: String)(f: => T): T =
     mockSiteMap { siteMap =>
       val mockReq = new MockHttpServletRequest(uri)
 
@@ -61,7 +61,6 @@ object MenuSpec extends Specification {
         }
       }
     }
-  }
 
   "The built-in Menu snippet" should {
     "Properly render a menu item with default link text" in {

@@ -17,13 +17,12 @@ trait TypesAPI {
 
 // user should not be exposed to the implementation
 trait TypesUser extends TypesAPI {
-  def shouldNotCrash(tp: Type): Unit = {
+  def shouldNotCrash(tp: Type): Unit =
     tp match {
       case TypeRef(x)    => println("TypeRef")
       case MethodType(x) => println("MethodType")
       case _             => println("none of the above")
     }
-  }
 }
 
 trait TypesImpl extends TypesAPI {

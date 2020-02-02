@@ -120,12 +120,11 @@ abstract class ExplicitOuter
     * See SI-7242.
    }}
     */
-  private def skipMixinOuterAccessor(clazz: Symbol, mixin: Symbol) = {
+  private def skipMixinOuterAccessor(clazz: Symbol, mixin: Symbol) =
     // Reliant on the current scheme for name expansion, the expanded name
     // of the outer accessors in a trait and its companion object are the same.
     // If the assumption is one day falsified, run/t7424.scala will let us know.
     clazz.fullName == mixin.fullName
-  }
 
   /** <p>
     *    The type transformation method:
@@ -296,11 +295,10 @@ abstract class ExplicitOuter
       *  which refers to the outer instance of class to of
       *  value base. The result is typed but not positioned.
       */
-    protected def outerPath(base: Tree, from: Symbol, to: Symbol): Tree = {
+    protected def outerPath(base: Tree, from: Symbol, to: Symbol): Tree =
       //Console.println("outerPath from "+from+" to "+to+" at "+base+":"+base.tpe)
       if (from == to) base
       else outerPath(outerSelect(base), from.outerClass, to)
-    }
 
     override def transform(tree: Tree): Tree = {
       def sym = tree.symbol

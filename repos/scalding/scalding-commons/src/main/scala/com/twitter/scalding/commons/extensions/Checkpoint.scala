@@ -96,7 +96,7 @@ object Checkpoint {
       case Some(name) if hasInput(checkpointName, name) =>
         // We have checkpoint input; read the file instead of executing the flow.
         LOG.info(
-          s"""Checkpoint "${checkpointName}": reading ${format} input from "${name}"""")
+          s"""Checkpoint "$checkpointName": reading $format input from "$name"""")
         getSource(format, name).read
           .mapTo(List.range(0, resultFields.size) -> resultFields)((x: A) => x)(
             conv,
@@ -108,7 +108,7 @@ object Checkpoint {
 
         // Write the checkpoint output.
         LOG.info(
-          s"""Checkpoint "${checkpointName}": writing ${format} output to "${name}"""")
+          s"""Checkpoint "$checkpointName": writing $format output to "$name"""")
         pipe.write(getSource(format, name))
       case None =>
         flow.project(resultFields)
@@ -181,19 +181,17 @@ object Checkpoint {
 
   // Returns a source for the checkpoint in the given format.
   private def getSource(format: String, filename: String)(
-      implicit mode: Mode): Source = {
+      implicit mode: Mode): Source =
     format match {
       case "sequencefile" => SequenceFile(filename)
       case "tsv"          => Tsv(filename)
       case _              => sys.error("Invalid value for --checkpoint.format: " + format)
     }
-  }
 
   // Returns true if the given checkpoint file exists and should be read.
   private def hasInput(checkpointName: String, filename: String)(
       implicit args: Args,
-      mode: Mode): Boolean = {
+      mode: Mode): Boolean =
     !CheckpointArg(checkpointName, "clobber").isTrue && mode.fileExists(
       filename)
-  }
 }

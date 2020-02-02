@@ -38,9 +38,8 @@ case class Logarthmic(p: Double)(implicit rand: RandBasis = Rand)
 
   }
 
-  def probabilityOf(x: Int) = {
+  def probabilityOf(x: Int) =
     -1.0 / log1p(-p) * math.pow(p, x) / x
-  }
 
   def mean = -1.0 / log1p(-p) * (p / (1 - p))
 

@@ -589,7 +589,7 @@ class DenseVectorOps_IntTest
 
   val N = 30
   implicit def genTriple
-      : Arbitrary[(DenseVector[Int], DenseVector[Int], DenseVector[Int])] = {
+      : Arbitrary[(DenseVector[Int], DenseVector[Int], DenseVector[Int])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Int].map { _ % 1000 }
@@ -603,7 +603,6 @@ class DenseVectorOps_IntTest
           DenseVector.fill(n)(math.random * z toInt))
       }
     }
-  }
 
   def genScalar: Arbitrary[Int] =
     Arbitrary(Arbitrary.arbitrary[Int].map { _ % 1000 })
@@ -616,7 +615,7 @@ class DenseVectorOps_ComplexTest
 
   val N = 30
   implicit def genTriple: Arbitrary[
-    (DenseVector[Complex], DenseVector[Complex], DenseVector[Complex])] = {
+    (DenseVector[Complex], DenseVector[Complex], DenseVector[Complex])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Complex]
@@ -630,7 +629,6 @@ class DenseVectorOps_ComplexTest
           DenseVector.fill(n)(math.random * z))
       }
     }
-  }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {
     for (r <- Arbitrary.arbitrary[Double]; i <- Arbitrary.arbitrary[Double])
@@ -647,7 +645,7 @@ class DenseVectorOps_FloatTest
 
   val N = 30
   implicit def genTriple: Arbitrary[
-    (DenseVector[Float], DenseVector[Float], DenseVector[Float])] = {
+    (DenseVector[Float], DenseVector[Float], DenseVector[Float])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 1000 }
@@ -669,7 +667,6 @@ class DenseVectorOps_FloatTest
             .apply(offset until (n * stride + offset) by stride))
       }
     }
-  }
 
   def genScalar: Arbitrary[Float] =
     Arbitrary(Arbitrary.arbitrary[Float].map { _ % 1000 })

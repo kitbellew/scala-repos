@@ -20,7 +20,7 @@ object MethodRepr {
       ScExpression,
       Option[ScExpression],
       Option[ScReferenceExpression],
-      Seq[ScExpression])] = {
+      Seq[ScExpression])] =
     expr match {
       case call: ScMethodCall =>
         val args = call.args match {
@@ -85,15 +85,13 @@ object MethodRepr {
         }
       case _ => None
     }
-  }
 
   def apply(
       itself: ScExpression,
       optionalBase: Option[ScExpression],
       optionalMethodRef: Option[ScReferenceExpression],
-      args: Seq[ScExpression]) = {
+      args: Seq[ScExpression]) =
     new MethodRepr(itself, optionalBase, optionalMethodRef, args)
-  }
 
 }
 

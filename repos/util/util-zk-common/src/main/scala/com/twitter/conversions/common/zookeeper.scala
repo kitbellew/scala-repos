@@ -10,14 +10,12 @@ import scala.language.implicitConversions
 object zookeeper {
   class CommonZkClientAdapter(zkc: ZooKeeperClient) {
     def toConnector(timeout: Duration = COMMON_FOREVER)(
-        implicit pool: FuturePool): CommonConnector = {
+        implicit pool: FuturePool): CommonConnector =
       new CommonConnector(zkc, timeout)
-    }
 
     def toZkClient(timeout: Duration = COMMON_FOREVER)(
-        implicit pool: FuturePool): ZkClient = {
+        implicit pool: FuturePool): ZkClient =
       ZkClient(toConnector(timeout))
-    }
   }
 
   /** Implicit conversion of ZooKeeperClient to CommonZkClient */

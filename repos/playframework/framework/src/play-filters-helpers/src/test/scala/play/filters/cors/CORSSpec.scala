@@ -23,7 +23,7 @@ object CORSFilterSpec extends CORSCommonSpec {
   }
 
   def withApplication[T](conf: Map[String, _ <: Any] = Map.empty)(
-      block: => T): T = {
+      block: => T): T =
     running(
       _.configure(conf).overrides(
         bind[Router].to(Router.from {
@@ -33,7 +33,6 @@ object CORSFilterSpec extends CORSCommonSpec {
         }),
         bind[HttpFilters].to[Filters]
       ))(_ => block)
-  }
 
   "The CORSFilter" should {
 
@@ -67,7 +66,7 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
 
   def withApp[T](
       filters: Class[_ <: HttpFilters] = classOf[Filters],
-      conf: Map[String, _ <: Any] = Map())(block: Application => T): T = {
+      conf: Map[String, _ <: Any] = Map())(block: Application => T): T =
     running(
       _.configure(conf).overrides(
         bind[Router].to(Router.from {
@@ -77,7 +76,6 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
         }),
         bind[HttpFilters].to(filters)
       ))(block)
-  }
 
   def withApplication[T](conf: Map[String, _] = Map.empty)(block: => T) =
     withApp(classOf[Filters], conf)(_ => block)
@@ -116,7 +114,7 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
 object CORSActionBuilderSpec extends CORSCommonSpec {
 
   def withApplication[T](conf: Map[String, _ <: Any] = Map.empty)(
-      block: => T): T = {
+      block: => T): T =
     running(_.routes {
       case (_, "/error") =>
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf)) {
@@ -126,11 +124,10 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
         CORSActionBuilder(Configuration.reference ++ Configuration.from(conf))(
           Results.Ok)
     })(_ => block)
-  }
 
   def withApplicationWithPathConfiguredAction[T](
       configPath: String,
-      conf: Map[String, _ <: Any] = Map.empty)(block: => T): T = {
+      conf: Map[String, _ <: Any] = Map.empty)(block: => T): T =
     running(_.configure(conf).routes {
       case (_, "/error") =>
         CORSActionBuilder(
@@ -141,7 +138,6 @@ object CORSActionBuilderSpec extends CORSCommonSpec {
           Configuration.reference ++ Configuration.from(conf),
           configPath = configPath)(Results.Ok)
     })(_ => block)
-  }
 
   "The CORSActionBuilder with" should {
 

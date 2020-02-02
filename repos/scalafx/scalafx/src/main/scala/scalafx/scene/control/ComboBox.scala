@@ -74,9 +74,8 @@ class ComboBox[T](
   def cellFactory_=(f: ListView[T] => ListCell[T]) {
     delegate.cellFactoryProperty.setValue(
       new jfxu.Callback[jfxsc.ListView[T], jfxsc.ListCell[T]] {
-        def call(v: jfxsc.ListView[T]): jfxsc.ListCell[T] = {
+        def call(v: jfxsc.ListView[T]): jfxsc.ListCell[T] =
           f(v)
-        }
       })
   }
 

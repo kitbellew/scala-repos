@@ -56,7 +56,7 @@ import scalaz.syntax.std.option._
 
 object WebJobManager {
   def apply(config: Configuration)(implicit ec: ExecutionContext)
-      : Validation[NEL[String], JobManager[Response]] = {
+      : Validation[NEL[String], JobManager[Response]] =
     (
       config
         .get[String]("service.protocol")
@@ -73,7 +73,6 @@ object WebJobManager {
     ) { (protocol, host, port, path) =>
       RealWebJobManager(protocol, host, port, path)
     }
-  }
 }
 
 case class RealWebJobManager(
@@ -139,7 +138,7 @@ trait WebJobManager
     }
   }
 
-  def listJobs(apiKey: APIKey): Response[Seq[Job]] = {
+  def listJobs(apiKey: APIKey): Response[Seq[Job]] =
     withJsonClient { client =>
       eitherT(client.query("apiKey", apiKey).get[JValue]("/jobs/") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
@@ -149,9 +148,8 @@ trait WebJobManager
           left(unexpected(res))
       })
     }
-  }
 
-  def findJob(jobId: JobId): Response[Option[Job]] = {
+  def findJob(jobId: JobId): Response[Option[Job]] =
     withJsonClient { client =>
       eitherT(client.get[JValue]("/jobs/" + jobId) map {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
@@ -164,7 +162,6 @@ trait WebJobManager
           left(unexpected(res))
       })
     }
-  }
 
   def updateStatus(
       jobId: JobId,
@@ -172,7 +169,7 @@ trait WebJobManager
       msg: String,
       progress: BigDecimal,
       unit: String,
-      info: Option[JValue]): Response[Either[String, Status]] = {
+      info: Option[JValue]): Response[Either[String, Status]] =
     withJsonClient { client0 =>
       val update = JObject(
         JField("message", JString(msg)) ::
@@ -200,7 +197,6 @@ trait WebJobManager
           left(unexpected(res))
       })
     }
-  }
 
   def getStatus(jobId: JobId): Response[Option[Status]] = withJsonClient {
     client =>
@@ -301,7 +297,7 @@ trait WebJobManager
   def setResult(
       jobId: JobId,
       mimeType: Option[MimeType],
-      data: StreamT[Response, Array[Byte]]): Response[Either[String, Unit]] = {
+      data: StreamT[Response, Array[Byte]]): Response[Either[String, Unit]] =
     withRawClient { client0 =>
       eitherT(
         mimeType
@@ -316,7 +312,6 @@ trait WebJobManager
           case res => left(unexpected(res))
         })
     }
-  }
 
   def getResult(jobId: JobId): Response[
     Either[String, (Option[MimeType], StreamT[Response, Array[Byte]])]] = {

@@ -162,7 +162,7 @@ class ExecutionTest extends WordSpec with Matchers {
           if (cfg.get("test.cfg.variable").isDefined)
             Execution.failed(
               new Exception(
-                s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
+                s"$message\n: var: ${cfg.get("test.cfg.variable")}"))
           else
             Execution.from(())
       }
@@ -333,7 +333,7 @@ class ExecutionTest extends WordSpec with Matchers {
               (MyCustomType(k), v)
           }
           .sumByKey
-          .writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))
+          .writeExecution(TypedTsv(s"/tmp/asdf_$idx"))
 
       implicitly[OrderedSerialization[MyCustomType]] match {
         case mos: MacroEqualityOrderedSerialization[_] =>
@@ -342,12 +342,11 @@ class ExecutionTest extends WordSpec with Matchers {
           sys.error(
             "Ordered serialization should have been the MacroEqualityOrderedSerialization for this test")
       }
-      def executionLoop(idx: Int): Execution[Unit] = {
+      def executionLoop(idx: Int): Execution[Unit] =
         if (idx > 0)
           baseExecution(idx).flatMap(_ => executionLoop(idx - 1))
         else
           Execution.unit
-      }
 
       executionLoop(55).shouldSucceed()
       assert(
@@ -431,7 +430,7 @@ class ExecutionTest extends WordSpec with Matchers {
           Execution.from(Array.fill(4000000)(idx.toLong))
         })
 
-      def writeAll(numExecutions: Int): Execution[Unit] = {
+      def writeAll(numExecutions: Int): Execution[Unit] =
         if (numExecutions > 0) {
           memoryWastingExecutionGenerator(numExecutions).flatMap { _ =>
             writeAll(numExecutions - 1)
@@ -439,7 +438,6 @@ class ExecutionTest extends WordSpec with Matchers {
         } else {
           Execution.from(())
         }
-      }
 
       writeAll(400).shouldSucceed()
     }

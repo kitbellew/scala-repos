@@ -93,21 +93,19 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param headers the headers to add to this result.
     * @return the new result
     */
-  def withHeaders(headers: (String, String)*): Result = {
+  def withHeaders(headers: (String, String)*): Result =
     copy(header = header.copy(headers = header.headers ++ headers))
-  }
 
   /**
     * Add a header with a DateTime formatted using the default http date format
     * @param headers the headers with a DateTime to add to this result.
     * @return the new result.
     */
-  def withDateHeaders(headers: (String, DateTime)*): Result = {
+  def withDateHeaders(headers: (String, DateTime)*): Result =
     copy(header = header.copy(headers = header.headers ++ headers.map {
       case (name, dateTime) =>
         (name, ResponseHeader.httpDateFormat.print(dateTime.getMillis))
     }))
-  }
 
   /**
     * Adds cookies to this result. If the result already contains
@@ -121,7 +119,7 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param cookies the cookies to add to this result
     * @return the new result
     */
-  def withCookies(cookies: Cookie*): Result = {
+  def withCookies(cookies: Cookie*): Result =
     if (cookies.isEmpty) this
     else {
       withHeaders(
@@ -129,7 +127,6 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
           header.headers.getOrElse(SET_COOKIE, ""),
           cookies))
     }
-  }
 
   /**
     * Discards cookies along this result.
@@ -142,12 +139,11 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param cookies the cookies to discard along to this result
     * @return the new result
     */
-  def discardingCookies(cookies: DiscardingCookie*): Result = {
+  def discardingCookies(cookies: DiscardingCookie*): Result =
     withHeaders(
       SET_COOKIE -> Cookies.mergeSetCookieHeader(
         header.headers.getOrElse(SET_COOKIE, ""),
         cookies.map(_.toCookie)))
-  }
 
   /**
     * Sets a new session for this result.
@@ -160,10 +156,9 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @param session the session to set with this result
     * @return the new result
     */
-  def withSession(session: Session): Result = {
+  def withSession(session: Session): Result =
     if (session.isEmpty) discardingCookies(Session.discard)
     else withCookies(Session.encodeAsCookie(session))
-  }
 
   /**
     * Sets a new session for this result, discarding the existing session.
@@ -274,17 +269,15 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
       implicit request: RequestHeader): Result =
     withSession(new Session(session.data -- keys))
 
-  override def toString = {
+  override def toString =
     "Result(" + header + ")"
-  }
 
   /**
     * Returns true if the status code is not 3xx and the application is in Dev mode.
     */
-  private def shouldWarnIfNotRedirect(flash: Flash): Boolean = {
+  private def shouldWarnIfNotRedirect(flash: Flash): Boolean =
     play.api.Play.privateMaybeApplication.exists(app =>
       (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (header.status < 300 || header.status > 399))
-  }
 
   /**
     * Logs a redirect warning.
@@ -408,18 +401,17 @@ trait Results {
       *
       * @param content The content to send.
       */
-    def apply[C](content: C)(implicit writeable: Writeable[C]): Result = {
+    def apply[C](content: C)(implicit writeable: Writeable[C]): Result =
       Result(
         header,
         writeable.toEntity(content)
       )
-    }
 
     private def streamFile(
         file: Source[ByteString, _],
         name: String,
         length: Long,
-        inline: Boolean): Result = {
+        inline: Boolean): Result =
       Result(
         ResponseHeader(
           status,
@@ -437,7 +429,6 @@ trait Results {
             .orElse(Some(play.api.http.ContentTypes.BINARY))
         )
       )
-    }
 
     /**
       * Send a file.
@@ -450,14 +441,13 @@ trait Results {
         content: java.io.File,
         inline: Boolean = false,
         fileName: java.io.File => String = _.getName,
-        onClose: () => Unit = () => ()): Result = {
+        onClose: () => Unit = () => ()): Result =
       streamFile(
         StreamConverters.fromInputStream(() =>
           Files.newInputStream(content.toPath)),
         fileName(content),
         content.length,
         inline)
-    }
 
     /**
       * Send a file.
@@ -470,13 +460,12 @@ trait Results {
         content: Path,
         inline: Boolean = false,
         fileName: Path => String = _.getFileName.toString,
-        onClose: () => Unit = () => ()): Result = {
+        onClose: () => Unit = () => ()): Result =
       streamFile(
         StreamConverters.fromInputStream(() => Files.newInputStream(content)),
         fileName(content),
         Files.size(content),
         inline)
-    }
 
     /**
       * Send the given resource from the given classloader.
@@ -510,14 +499,13 @@ trait Results {
       * @param content Source providing the content to stream.
       */
     def chunked[C](content: Source[C, _])(
-        implicit writeable: Writeable[C]): Result = {
+        implicit writeable: Writeable[C]): Result =
       Result(
         header = header,
         body = HttpEntity.Chunked(
           content.map(c => HttpChunk.Chunk(writeable.transform(c))),
           writeable.contentType)
       )
-    }
 
     /**
       * Feed the content as the response, using chunked transfer encoding.
@@ -532,9 +520,8 @@ trait Results {
       */
     @deprecated("Use chunked with an Akka streams Source instead", "2.5.0")
     def chunked[C](content: Enumerator[C])(
-        implicit writeable: Writeable[C]): Result = {
+        implicit writeable: Writeable[C]): Result =
       chunked(Source.fromPublisher(Streams.enumeratorToPublisher(content)))
-    }
 
     /**
       * Feed the content as the response, closing the connection when done.
@@ -543,7 +530,7 @@ trait Results {
       */
     @deprecated("Use sendEntity with a Streamed entity instead", "2.5.0")
     def feed[C](content: Enumerator[C])(
-        implicit writeable: Writeable[C]): Result = {
+        implicit writeable: Writeable[C]): Result =
       Result(
         header = header,
         body = HttpEntity.Streamed(
@@ -553,17 +540,15 @@ trait Results {
           None,
           writeable.contentType)
       )
-    }
 
     /**
       * Send an HTTP entity with this status.
       */
-    def sendEntity(entity: HttpEntity): Result = {
+    def sendEntity(entity: HttpEntity): Result =
       Result(
         header = header,
         body = entity
       )
-    }
   }
 
   /** Generates a ‘200 OK’ result. */

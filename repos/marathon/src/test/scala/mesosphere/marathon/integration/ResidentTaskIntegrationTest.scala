@@ -235,14 +235,12 @@ class ResidentTaskIntegrationTest
   }
 
   private[this] def test(testName: String, testTags: Tag*)(
-      testFun: (Fixture) => Unit): Unit = {
+      testFun: (Fixture) => Unit): Unit =
     super.test(testName, testTags: _*)(testFun(new Fixture))
-  }
 
   private[this] def ignore(testName: String, testTags: Tag*)(
-      testFun: (Fixture) => Unit): Unit = {
+      testFun: (Fixture) => Unit): Unit =
     super.ignore(testName, testTags: _*)(testFun(new Fixture))
-  }
 
   class Fixture {
 
@@ -340,9 +338,8 @@ class ResidentTaskIntegrationTest
       result.value.version.toString
     }
 
-    def allTasks(appId: PathId): Iterable[ITEnrichedTask] = {
+    def allTasks(appId: PathId): Iterable[ITEnrichedTask] =
       Try(marathon.tasks(appId)).map(_.value).getOrElse(Nil)
-    }
 
     def launchedTasks(appId: PathId): Iterable[ITEnrichedTask] =
       allTasks(appId).filter(_.launched)

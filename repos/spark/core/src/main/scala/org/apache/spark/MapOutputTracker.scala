@@ -117,7 +117,7 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     * Send a message to the trackerEndpoint and get its result within a default timeout, or
     * throw a SparkException if this fails.
     */
-  protected def askTracker[T: ClassTag](message: Any): T = {
+  protected def askTracker[T: ClassTag](message: Any): T =
     try {
       trackerEndpoint.askWithRetry[T](message)
     } catch {
@@ -125,7 +125,6 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         logError("Error communicating with MapOutputTracker", e)
         throw new SparkException("Error communicating with MapOutputTracker", e)
     }
-  }
 
   /** Send a one-way message to the trackerEndpoint, to which we expect it to reply with true. */
   protected def sendTracker(message: Any) {
@@ -146,9 +145,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     */
   def getMapSizesByExecutorId(
       shuffleId: Int,
-      reduceId: Int): Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
+      reduceId: Int): Seq[(BlockManagerId, Seq[(BlockId, Long)])] =
     getMapSizesByExecutorId(shuffleId, reduceId, reduceId + 1)
-  }
 
   /**
     * Called from executors to get the server URIs and output sizes for each shuffle block that
@@ -262,11 +260,10 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
   }
 
   /** Called to get current epoch number. */
-  def getEpoch: Long = {
+  def getEpoch: Long =
     epochLock.synchronized {
       return epoch
     }
-  }
 
   /**
     * Called from executors to update the epoch number, potentially clearing old outputs
@@ -376,10 +373,9 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
   }
 
   /** Check if the given shuffle is being tracked */
-  def containsShuffle(shuffleId: Int): Boolean = {
+  def containsShuffle(shuffleId: Int): Boolean =
     cachedSerializedStatuses.contains(shuffleId) || mapStatuses.contains(
       shuffleId)
-  }
 
   /**
     * Return the preferred hosts on which to run the given map output partition in a given shuffle,
@@ -391,7 +387,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
     */
   def getPreferredLocationsForShuffle(
       dep: ShuffleDependency[_, _, _],
-      partitionId: Int): Seq[String] = {
+      partitionId: Int): Seq[String] =
     if (shuffleLocalityEnabled && dep.rdd.partitions.length < SHUFFLE_PREF_MAP_THRESHOLD &&
         dep.partitioner.numPartitions < SHUFFLE_PREF_REDUCE_THRESHOLD) {
       val blockManagerIds = getLocationsWithLargestOutputs(
@@ -407,7 +403,6 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
     } else {
       Nil
     }
-  }
 
   /**
     * Return a list of locations that each have fraction of map output greater than the specified

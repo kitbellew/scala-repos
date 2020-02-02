@@ -55,9 +55,8 @@ trait LinearRegressionTestSupport[M[+_]]
       noSamples: Int,
       actualThetas: Array[Double]): Seq[(Array[Double], Double)] = {
     val testSeqX = {
-      def createXs: Array[Double] = {
+      def createXs: Array[Double] =
         Seq.fill(length - 1)(Random.nextDouble) map { x => x * 2.0 - 1.0 } toArray
-      }
 
       Seq.fill(noSamples)(createXs)
     }
@@ -87,12 +86,11 @@ trait LinearRegressionSpecs[M[+_]]
   import instructions._
   import library._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   def makeDAG(points: String) = {
     val line = Line(1, 1, "")

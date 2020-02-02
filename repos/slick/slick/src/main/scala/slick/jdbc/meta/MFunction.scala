@@ -14,7 +14,7 @@ case class MFunction(
 }
 
 object MFunction {
-  def getFunctions(namePattern: MQName) = {
+  def getFunctions(namePattern: MQName) =
     ResultSetAction[MFunction] { s =>
       try s.metaData.getFunctions(
         namePattern.catalog_?,
@@ -33,5 +33,4 @@ object MFunction {
         r.<<
       )
     }
-  }
 }

@@ -21,8 +21,7 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
-
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       def startOffset(element: PsiElement) = element.getTextRange.getStartOffset
       def endOffset(element: PsiElement) = element.getTextRange.getEndOffset
@@ -81,7 +80,6 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
         super.visitElement(element)
       }
     }
-  }
 }
 
 class RemoveSemicolonFix(element: PsiElement)

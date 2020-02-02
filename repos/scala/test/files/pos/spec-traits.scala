@@ -4,7 +4,7 @@ class C extends B
 
 // issue 3309
 class Lazy {
-  def test[U](block: => U): Unit = { block }
+  def test[U](block: => U): Unit = block
 
   test { lazy val x = 1 }
 }

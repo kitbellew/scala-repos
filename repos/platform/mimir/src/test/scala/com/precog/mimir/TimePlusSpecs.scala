@@ -45,12 +45,11 @@ trait TimePlusSpecs[M[+_]]
 
   val line = Line(1, 1, "")
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "time plus functions (homogeneous case)" should {
     "compute incrememtation of positive number of years" in {

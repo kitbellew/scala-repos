@@ -81,14 +81,13 @@ package scalaguide.upload.fileupload {
     def testAction[A](
         action: Action[A],
         request: => Request[A] = FakeRequest(),
-        expectedResponse: Int = OK) = {
+        expectedResponse: Int = OK) =
       running(GuiceApplicationBuilder().build()) {
 
         val result = action(request)
 
         status(result) must_== expectedResponse
       }
-    }
 
     def writeFile(file: File, content: String) = {
       file.getParentFile.mkdirs()

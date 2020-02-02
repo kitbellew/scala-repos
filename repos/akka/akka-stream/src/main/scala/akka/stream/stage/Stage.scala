@@ -85,7 +85,7 @@ private[stream] object AbstractStage {
       setHandler(shape.out, handler)
     }
 
-    private def onSupervision(ex: Throwable): Unit = {
+    private def onSupervision(ex: Throwable): Unit =
       currentStage.decide(ex) match {
         case Supervision.Stop ⇒
           failStage(ex)
@@ -105,7 +105,6 @@ private[stream] object AbstractStage {
               LifecycleContext]]
           currentStage.preStart(ctx)
       }
-    }
 
     private def resetAfterSupervise(): Unit = {
       val mustPull = currentStage.isDetached || isAvailable(shape.out)
@@ -632,7 +631,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     */
   final def terminationEmit(
       iter: Iterator[Out],
-      ctx: Context[Out]): TerminationDirective = {
+      ctx: Context[Out]): TerminationDirective =
     if (iter.isEmpty) {
       if (emitting) ctx.absorbTermination()
       else ctx.finish()
@@ -644,7 +643,6 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       become(nextState)
       ctx.absorbTermination()
     }
-  }
 
   /**
     * Java API: Can be used from [[#onUpstreamFinish]] or [[#onUpstreamFailure]] to push final
@@ -664,7 +662,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       extends State {
     override def onPush(elem: In, ctx: Context[Out]) =
       throw new IllegalStateException("onPush not allowed in emittingState")
-    override def onPull(ctx: Context[Out]) = {
+    override def onPull(ctx: Context[Out]) =
       if (iter.hasNext) {
         val elem = iter.next()
         if (iter.hasNext)
@@ -683,7 +681,6 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       } else
         throw new IllegalStateException(
           "onPull with empty iterator is not expected in emittingState")
-    }
   }
 
 }

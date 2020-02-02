@@ -111,9 +111,8 @@ class VM(
     monitor.foreach { _.start() }
   }
 
-  def exit(exitCode: Int): Unit = {
+  def exit(exitCode: Int): Unit =
     vm.exit(exitCode)
-  }
 
   def dispose() =
     try {
@@ -124,21 +123,19 @@ class VM(
       case e: VMDisconnectedException =>
     }
 
-  def remember(value: Value): Value = {
+  def remember(value: Value): Value =
     value match {
       case v: ObjectReference => remember(v)
       case _                  => value
     }
-  }
 
   def remember(v: ObjectReference): ObjectReference = {
     savedObjects(DebugObjectId(v.uniqueID)) = v
     v
   }
 
-  def resume(): Unit = {
+  def resume(): Unit =
     vm.resume()
-  }
 
   def newStepRequest(thread: ThreadReference, stride: Int, depth: Int): Unit = {
     erm.deleteEventRequests(erm.stepRequests)
@@ -152,9 +149,8 @@ class VM(
     vm.resume()
   }
 
-  def bgMessage(msg: String): Unit = {
+  def bgMessage(msg: String): Unit =
     broadcaster ! SendBackgroundMessageEvent(msg)
-  }
 
   def setBreakpoint(file: File, line: Int): Boolean = {
     val locs = locations(file, line)
@@ -172,11 +168,10 @@ class VM(
     }
   }
 
-  def clearAllBreakpoints(): Unit = {
+  def clearAllBreakpoints(): Unit =
     erm.deleteAllBreakpoints()
-  }
 
-  def clearBreakpoints(bps: Iterable[Breakpoint]): Unit = {
+  def clearBreakpoints(bps: Iterable[Breakpoint]): Unit =
     for (bp <- bps) {
       for (req <- erm.breakpointRequests();
            pos <- sourceMap.locToPos(req.location())) {
@@ -185,9 +180,8 @@ class VM(
         }
       }
     }
-  }
 
-  def typeAdded(t: ReferenceType): Unit = {
+  def typeAdded(t: ReferenceType): Unit =
     try {
       val key = t.sourceName
       val types = fileToUnits.getOrElse(key, mutable.HashSet[ReferenceType]())
@@ -197,13 +191,11 @@ class VM(
       case e: AbsentInformationException =>
         log.info(s"No location information available for: ${t.name()}")
     }
-  }
 
-  def initLocationMap() = {
+  def initLocationMap() =
     for (t <- vm.allClasses) {
       typeAdded(t)
     }
-  }
 
   def locations(file: File, line: Int): Set[Location] = {
 
@@ -241,13 +233,12 @@ class VM(
     buf.map(_.loc).toSet
   }
 
-  def threadById(id: DebugThreadId): Option[ThreadReference] = {
+  def threadById(id: DebugThreadId): Option[ThreadReference] =
     vm.allThreads().find(t => t.uniqueID == id.id)
-  }
 
   // Helper as Value.toString doesn't give
   // us what we want...
-  def valueSummary(value: Value): String = {
+  def valueSummary(value: Value): String =
     value match {
       case v: BooleanValue    => v.value().toString
       case v: ByteValue       => v.value().toString
@@ -276,19 +267,17 @@ class VM(
         } else "Instance of " + lastNameComponent(v.referenceType().name())
       case _ => "NA"
     }
-  }
 
-  private def lastNameComponent(s: String): String = {
+  private def lastNameComponent(s: String): String =
     "^.*?\\.([^\\.]+)$".r.findFirstMatchIn(s) match {
       case Some(m) => m.group(1)
       case None    => s
     }
-  }
 
   private def makeFields(
       tpeIn: ReferenceType,
       obj: ObjectReference
-  ): List[DebugClassField] = {
+  ): List[DebugClassField] =
     tpeIn match {
       case tpeIn: ClassType =>
         var fields = List[DebugClassField]()
@@ -313,7 +302,6 @@ class VM(
         fields
       case _ => List.empty
     }
-  }
 
   private def fieldByName(obj: ObjectReference, name: String): Option[Field] = {
     val tpeIn = obj.referenceType
@@ -332,32 +320,29 @@ class VM(
     }
   }
 
-  private def makeDebugObj(value: ObjectReference): DebugObjectInstance = {
+  private def makeDebugObj(value: ObjectReference): DebugObjectInstance =
     DebugObjectInstance(
       valueSummary(value),
       makeFields(value.referenceType(), value),
       value.referenceType().name(),
       DebugObjectId(value.uniqueID())
     )
-  }
 
-  private def makeDebugStr(value: StringReference): DebugStringInstance = {
+  private def makeDebugStr(value: StringReference): DebugStringInstance =
     DebugStringInstance(
       valueSummary(value),
       makeFields(value.referenceType(), value),
       value.referenceType().name(),
       DebugObjectId(value.uniqueID())
     )
-  }
 
-  private def makeDebugArr(value: ArrayReference): DebugArrayInstance = {
+  private def makeDebugArr(value: ArrayReference): DebugArrayInstance =
     DebugArrayInstance(
       value.length,
       value.referenceType().name,
       value.referenceType().asInstanceOf[ArrayType].componentTypeName(),
       DebugObjectId(value.uniqueID)
     )
-  }
 
   private def makeDebugPrim(value: PrimitiveValue): DebugPrimitiveValue =
     DebugPrimitiveValue(
@@ -367,7 +352,7 @@ class VM(
 
   private def makeDebugNull(): DebugNullValue = DebugNullValue("Null")
 
-  private def makeDebugValue(value: Value): DebugValue = {
+  private def makeDebugValue(value: Value): DebugValue =
     if (value == null) makeDebugNull()
     else {
       value match {
@@ -377,7 +362,6 @@ class VM(
         case v: PrimitiveValue  => makeDebugPrim(v)
       }
     }
-  }
 
   def locationForName(
       thread: ThreadReference,
@@ -402,7 +386,7 @@ class VM(
     }
   }
 
-  private def valueAtLocation(location: DebugLocation): Option[Value] = {
+  private def valueAtLocation(location: DebugLocation): Option[Value] =
     location match {
       case DebugObjectReference(objId) =>
         valueForId(objId)
@@ -417,18 +401,16 @@ class VM(
           case None => None
         }
     }
-  }
 
-  def debugValueAtLocation(location: DebugLocation): Option[DebugValue] = {
+  def debugValueAtLocation(location: DebugLocation): Option[DebugValue] =
     valueAtLocation(location).map(makeDebugValue)
-  }
 
   private def callMethod(
       thread: ThreadReference,
       obj: ObjectReference,
       name: String,
       signature: String,
-      args: java.util.List[Value]): Option[Value] = {
+      args: java.util.List[Value]): Option[Value] =
     if (!vm.canBeModified) {
       log.info("Sorry, this debug VM is read-only.")
       None
@@ -452,11 +434,10 @@ class VM(
           None
       }
     }
-  }
 
   def debugValueAtLocationToString(
       threadId: DebugThreadId,
-      location: DebugLocation): Option[String] = {
+      location: DebugLocation): Option[String] =
     valueAtLocation(location) match {
       case Some(arr: ArrayReference) =>
         val quantifier = if (arr.length == 1) "element" else "elements"
@@ -482,41 +463,36 @@ class VM(
         log.info("No value found at location.")
         None
     }
-  }
 
-  private def valueForId(objectId: DebugObjectId): Option[ObjectReference] = {
+  private def valueForId(objectId: DebugObjectId): Option[ObjectReference] =
     savedObjects.get(objectId)
-  }
 
   private def valueForField(
       objectId: DebugObjectId,
-      name: String): Option[Value] = {
+      name: String): Option[Value] =
     for (obj <- savedObjects.get(objectId);
          f <- fieldByName(obj, name)) yield {
       remember(obj.getValue(f))
     }
-  }
 
   private def valueForIndex(
       objectId: DebugObjectId,
-      index: Int): Option[Value] = {
+      index: Int): Option[Value] =
     savedObjects.get(objectId) match {
       case Some(arr: ArrayReference) => Some(remember(arr.getValue(index)))
       case _                         => None
     }
-  }
 
   private def valueForStackVar(
       thread: ThreadReference,
       frame: Int,
-      offset: Int): Option[Value] = {
+      offset: Int): Option[Value] =
     if (thread.frameCount > frame &&
         thread.frame(frame).visibleVariables.length > offset) {
       val stackFrame = thread.frame(frame)
       val value = stackFrame.getValue(stackFrame.visibleVariables.get(offset))
       Some(remember(value))
     } else None
-  }
 
   case class StackSlot(frame: Int, offset: Int)
 
@@ -540,11 +516,10 @@ class VM(
     result
   }
 
-  def ignoreErr[T](action: => T, orElse: => T): T = {
+  def ignoreErr[T](action: => T, orElse: => T): T =
     try {
       action
     } catch { case e: Exception => orElse }
-  }
 
   private def makeStackFrame(index: Int, frame: StackFrame): DebugStackFrame = {
     val locals = ignoreErr({
@@ -622,7 +597,7 @@ class VM(
       thread: ThreadReference,
       frame: Int,
       offset: Int,
-      newValue: String): Boolean = {
+      newValue: String): Boolean =
     if (thread.frameCount > frame &&
         thread.frame(frame).visibleVariables.length > offset) {
       val stackFrame = thread.frame(frame)
@@ -633,6 +608,5 @@ class VM(
         case None => false
       }
     } else false
-  }
 
 }

@@ -12,7 +12,7 @@ class PublicKeyAuthenticator extends PublickeyAuthenticator with SshKeyService {
   override def authenticate(
       username: String,
       key: PublicKey,
-      session: ServerSession): Boolean = {
+      session: ServerSession): Boolean =
     Database() withSession { implicit session =>
       getPublicKeys(username).exists { sshKey =>
         SshUtil.str2PublicKey(sshKey.publicKey) match {
@@ -21,6 +21,5 @@ class PublicKeyAuthenticator extends PublickeyAuthenticator with SshKeyService {
         }
       }
     }
-  }
 
 }

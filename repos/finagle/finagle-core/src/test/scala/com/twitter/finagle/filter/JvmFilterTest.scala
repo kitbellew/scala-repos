@@ -17,9 +17,8 @@ class JvmFilterTest extends FunSuite with MockitoSugar {
   class JvmHelper {
     var gcEvents: List[Gc] = Nil
 
-    def mockGc(count: Int): Unit = {
+    def mockGc(count: Int): Unit =
       gcEvents ::= Gc(count, "pcopy", Time.now, 1.second)
-    }
 
     val jvm = mock[Jvm]
     when(jvm.monitorGcs(any[Duration])).thenReturn { since: Time =>

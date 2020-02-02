@@ -24,14 +24,13 @@ class ALSModel(
 
   @transient lazy val similarUserIntStringMap = similarUserStringIntMap.inverse
 
-  override def toString = {
+  override def toString =
     s" similarUserFeatures: [${similarUserFeatures.size}]" +
       s"(${similarUserFeatures.take(2).toList}...)" +
       s" similarUserStringIntMap: [${similarUserStringIntMap.size}]" +
       s"(${similarUserStringIntMap.take(2).toString()}...)]" +
       s" users: [${similarUsers.size}]" +
       s"(${similarUsers.take(2).toString()}...)]"
-  }
 }
 
 /**
@@ -218,11 +217,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       queryList: Set[Int],
       whiteList: Option[Set[Int]],
       blackList: Option[Set[Int]]
-  ): Boolean = {
+  ): Boolean =
     whiteList.map(_.contains(i)).getOrElse(true) &&
-    blackList.map(!_.contains(i)).getOrElse(true) &&
-    // discard similarUsers in query as well
-    (!queryList.contains(i))
-  }
+      blackList.map(!_.contains(i)).getOrElse(true) &&
+      // discard similarUsers in query as well
+      (!queryList.contains(i))
 
 }

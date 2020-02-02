@@ -342,7 +342,7 @@ abstract class ScalaExpressionsEvaluatorBase extends ScalaDebuggerTestCase {
        |}
       """.stripMargin.trim()
   )
-  def testSyntheticOperators(): Unit = {
+  def testSyntheticOperators(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("tr || fail", "true")
@@ -362,6 +362,5 @@ abstract class ScalaExpressionsEvaluatorBase extends ScalaDebuggerTestCase {
       evalEquals("1 << 2", "4")
       evalEquals("\"1\" + 1", "11")
     }
-  }
 
 }

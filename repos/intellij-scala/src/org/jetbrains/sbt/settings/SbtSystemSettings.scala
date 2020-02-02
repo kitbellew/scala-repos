@@ -169,9 +169,8 @@ class SbtSystemSettingsState
   @AbstractCollection(
     surroundWithTag = false,
     elementTypes = Array(classOf[SbtProjectSettings]))
-  def getLinkedExternalProjectsSettings: util.Set[SbtProjectSettings] = {
+  def getLinkedExternalProjectsSettings: util.Set[SbtProjectSettings] =
     projectSettings
-  }
 
   def setLinkedExternalProjectsSettings(
       settings: util.Set[SbtProjectSettings]) {

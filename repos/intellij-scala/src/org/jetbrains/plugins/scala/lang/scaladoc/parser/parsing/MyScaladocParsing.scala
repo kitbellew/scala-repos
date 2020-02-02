@@ -96,11 +96,10 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       clearFlag(tokenType.getFlagConst)
     }
 
-    def canClose(element: IElementType): Boolean = {
+    def canClose(element: IElementType): Boolean =
       element != null &&
-      (element == tokenType ||
-      ((tokenType == DOC_LINK_TAG) || (tokenType == DOC_HTTP_LINK_TAG)) && element == DOC_LINK_CLOSE_TAG)
-    }
+        (element == tokenType ||
+          ((tokenType == DOC_LINK_TAG) || (tokenType == DOC_HTTP_LINK_TAG)) && element == DOC_LINK_CLOSE_TAG)
 
     if (tokenType == DOC_HEADER) {
       marker.drop()

@@ -232,7 +232,7 @@ class JDBCLEvents(
     }
   }
 
-  private[prediction] def resultToEvent(rs: WrappedResultSet): Event = {
+  private[prediction] def resultToEvent(rs: WrappedResultSet): Event =
     Event(
       eventId = rs.stringOpt("id"),
       event = rs.string("event"),
@@ -253,5 +253,4 @@ class JDBCLEvents(
         rs.jodaDateTime("creationTime"),
         DateTimeZone.forID(rs.string("creationTimeZone")))
     )
-  }
 }

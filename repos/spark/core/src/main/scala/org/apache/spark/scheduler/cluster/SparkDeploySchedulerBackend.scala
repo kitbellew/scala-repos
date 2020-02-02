@@ -190,9 +190,8 @@ private[spark] class SparkDeploySchedulerBackend(
     removeExecutor(fullId.split("/")(1), reason)
   }
 
-  override def sufficientResourcesRegistered(): Boolean = {
+  override def sufficientResourcesRegistered(): Boolean =
     totalCoreCount.get() >= totalExpectedCores * minRegisteredRatio
-  }
 
   override def applicationId(): String =
     Option(appId).getOrElse {
@@ -206,8 +205,7 @@ private[spark] class SparkDeploySchedulerBackend(
     *
     * @return whether the request is acknowledged.
     */
-  protected override def doRequestTotalExecutors(
-      requestedTotal: Int): Boolean = {
+  protected override def doRequestTotalExecutors(requestedTotal: Int): Boolean =
     Option(client) match {
       case Some(c) => c.requestTotalExecutors(requestedTotal)
       case None =>
@@ -215,13 +213,12 @@ private[spark] class SparkDeploySchedulerBackend(
           "Attempted to request executors before driver fully initialized.")
         false
     }
-  }
 
   /**
     * Kill the given list of executors through the Master.
     * @return whether the kill request is acknowledged.
     */
-  protected override def doKillExecutors(executorIds: Seq[String]): Boolean = {
+  protected override def doKillExecutors(executorIds: Seq[String]): Boolean =
     Option(client) match {
       case Some(c) => c.killExecutors(executorIds)
       case None =>
@@ -229,15 +226,12 @@ private[spark] class SparkDeploySchedulerBackend(
           "Attempted to kill executors before driver fully initialized.")
         false
     }
-  }
 
-  private def waitForRegistration() = {
+  private def waitForRegistration() =
     registrationBarrier.acquire()
-  }
 
-  private def notifyContext() = {
+  private def notifyContext() =
     registrationBarrier.release()
-  }
 
   private def stop(finalState: SparkAppHandle.State): Unit = synchronized {
     try {

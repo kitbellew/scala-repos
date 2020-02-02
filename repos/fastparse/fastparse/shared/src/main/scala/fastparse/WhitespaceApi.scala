@@ -21,7 +21,7 @@ object WhitespaceApi {
   case class CustomSequence[+T, +R, +V](WL: P0, p0: P[T], p: P[V], cut: Boolean)(
       implicit ev: Sequencer[T, V, R])
       extends P[R] {
-    def parseRec(cfg: ParseCtx, index: Int) = {
+    def parseRec(cfg: ParseCtx, index: Int) =
       p0.parseRec(cfg, index) match {
         case f: Mutable.Failure =>
           failMore(f, index, cfg.logDepth, f.traceParsers, false)
@@ -54,15 +54,13 @@ object WhitespaceApi {
               }
           }
       }
-    }
 
-    override def toString = {
+    override def toString =
       if (!cut && p0 == Pass) p.toString
       else {
         val op = if (cut) "~/" else "~"
         opWrap(p0) + " " + op + " " + opWrap(p)
       }
-    }
     override def opPred = Precedence.OtherOp
   }
   def Wrapper(WL: P0) = new Wrapper(WL)
@@ -91,13 +89,12 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
       implicit ev: Repeater[T, R]): P[R] = Repeat(p0, min, max, sep)
 
   override def rep[R](min: Int = 0, sep: P[_] = Pass, max: Int = Int.MaxValue)(
-      implicit ev: Repeater[T, R]): P[R] = {
+      implicit ev: Repeater[T, R]): P[R] =
     Repeat(
       p0,
       min,
       max,
       if (sep != Pass) NoCut(WL) ~ sep ~ NoCut(WL) else NoCut(WL))
-  }
 
   def ~~[V, R](p: P[V])(implicit ev: Sequencer[T, V, R]): P[R] =
     p0 ~ p

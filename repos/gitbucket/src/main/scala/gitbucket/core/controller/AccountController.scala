@@ -249,7 +249,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
         updateImage(userName, form.fileId, form.clearImage)
         flash += "info" -> "Account information has been updated."
-        redirect(s"/${userName}/_edit")
+        redirect(s"/$userName/_edit")
 
     } getOrElse NotFound
   })
@@ -287,14 +287,14 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   post("/:userName/_ssh", sshKeyForm)(oneselfOnly { form =>
     val userName = params("userName")
     addPublicKey(userName, form.title, form.publicKey)
-    redirect(s"/${userName}/_ssh")
+    redirect(s"/$userName/_ssh")
   })
 
   get("/:userName/_ssh/delete/:id")(oneselfOnly {
     val userName = params("userName")
     val sshKeyId = params("id").toInt
     deletePublicKey(userName, sshKeyId)
-    redirect(s"/${userName}/_ssh")
+    redirect(s"/$userName/_ssh")
   })
 
   get("/:userName/_application")(oneselfOnly {
@@ -322,14 +322,14 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       val (tokenId, token) = generateAccessToken(userName, form.note)
       flash += "generatedToken" -> (tokenId, token)
     }
-    redirect(s"/${userName}/_application")
+    redirect(s"/$userName/_application")
   })
 
   get("/:userName/_personalToken/delete/:id")(oneselfOnly {
     val userName = params("userName")
     val tokenId = params("id").toInt
     deleteAccessToken(userName, tokenId)
-    redirect(s"/${userName}/_application")
+    redirect(s"/$userName/_application")
   })
 
   get("/register") {
@@ -486,7 +486,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           repository,
           (groups zip managerPermissions).toMap
         )
-      case _ => redirect(s"/${loginUserName}")
+      case _ => redirect(s"/$loginUserName")
     }
   })
 
@@ -496,12 +496,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       val loginUserName = loginAccount.userName
       val accountName = form.accountName
 
-      LockUtil.lock(s"${accountName}/${repository.name}") {
+      LockUtil.lock(s"$accountName/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
             (accountName != loginUserName && !getGroupsByUserName(loginUserName)
               .contains(accountName))) {
           // redirect to the repository if repository already exists
-          redirect(s"/${accountName}/${repository.name}")
+          redirect(s"/$accountName/${repository.name}")
         } else {
           // Insert to the database at first
           val originUserName =
@@ -548,7 +548,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
             loginUserName,
             accountName)
           // redirect to the repository
-          redirect(s"/${accountName}/${repository.name}")
+          redirect(s"/$accountName/${repository.name}")
         }
       }
   })
@@ -580,14 +580,13 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       if (value.split(",").exists {
             _.split(":") match {
               case Array(userName, isManager) => isManager.toBoolean
             }
           }) None
       else Some("Must select one manager at least.")
-    }
   }
 
   private def validPublicKey: Constraint = new Constraint() {
@@ -605,11 +604,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     override def validate(
         name: String,
         value: String,
-        messages: Messages): Option[String] = {
+        messages: Messages): Option[String] =
       getAccountByUserName(value) match {
         case Some(_) => None
         case None    => Some("Invalid Group/User Account.")
       }
-    }
   }
 }

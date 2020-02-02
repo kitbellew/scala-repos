@@ -105,9 +105,8 @@ class KafkaHealthcheck(
           ZkUtils.BrokerTopicsPath))
     }
 
-    override def handleSessionEstablishmentError(error: Throwable): Unit = {
+    override def handleSessionEstablishmentError(error: Throwable): Unit =
       fatal("Could not establish session with zookeeper", error)
-    }
   }
 
 }

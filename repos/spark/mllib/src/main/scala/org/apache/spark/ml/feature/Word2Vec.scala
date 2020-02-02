@@ -169,9 +169,8 @@ final class Word2Vec(override val uid: String)
     copyValues(new Word2VecModel(uid, wordVectors).setParent(this))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): Word2Vec = defaultCopy(extra)
 }
@@ -215,9 +214,8 @@ class Word2VecModel private[ml] (
     * Returns a dataframe with the words and the cosine similarities between the
     * synonyms and the given word.
     */
-  def findSynonyms(word: String, num: Int): DataFrame = {
+  def findSynonyms(word: String, num: Int): DataFrame =
     findSynonyms(wordVectors.transform(word), num)
-  }
 
   /**
     * Find "num" number of words closest to similarity to the given vector representation
@@ -264,9 +262,8 @@ class Word2VecModel private[ml] (
     dataset.withColumn($(outputCol), word2Vec(col($(inputCol))))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): Word2VecModel = {
     val copied = new Word2VecModel(uid, wordVectors)

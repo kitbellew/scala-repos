@@ -5,13 +5,12 @@ import scala.collection.JavaConversions._
 
 object AbstractMap {
 
-  private def entryEquals[K, V](entry: Map.Entry[K, V], other: Any): Boolean = {
+  private def entryEquals[K, V](entry: Map.Entry[K, V], other: Any): Boolean =
     other match {
       case other: Map.Entry[_, _] =>
         entry.getKey === other.getKey && entry.getValue === other.getValue
       case _ => false
     }
-  }
 
   private def entryHashCode[K, V](entry: Map.Entry[K, V]): Int = {
     val keyHash =
@@ -89,20 +88,19 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def containsKey(key: Any): Boolean =
     entrySet.iterator.exists(entry => entry === key)
 
-  def get(key: Any): V = {
+  def get(key: Any): V =
     entrySet.iterator
       .find(_.getKey === key)
       .fold[V] {
         null.asInstanceOf[V]
       } { entry => entry.getValue }
-  }
 
   def put(key: K, value: V): V =
     throw new UnsupportedOperationException()
 
   def remove(key: Any): V = {
     @tailrec
-    def findAndRemove(iter: Iterator[Map.Entry[K, V]]): V = {
+    def findAndRemove(iter: Iterator[Map.Entry[K, V]]): V =
       if (iter.hasNext) {
         val item = iter.next()
         if (key === item.getKey) {
@@ -112,7 +110,6 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
           findAndRemove(iter)
       } else
         null.asInstanceOf[V]
-    }
     findAndRemove(entrySet.iterator)
   }
 
@@ -122,11 +119,11 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def clear(): Unit =
     entrySet.clear()
 
-  def keySet(): Set[K] = {
+  def keySet(): Set[K] =
     new AbstractSet[K] {
       override def size(): Int = self.size
 
-      def iterator(): Iterator[K] = {
+      def iterator(): Iterator[K] =
         new Iterator[K] {
           val iter = entrySet.iterator()
 
@@ -136,15 +133,13 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
 
           def remove(): Unit = iter.remove()
         }
-      }
     }
-  }
 
-  def values(): Collection[V] = {
+  def values(): Collection[V] =
     new AbstractCollection[V] {
       override def size(): Int = self.size
 
-      def iterator(): Iterator[V] = {
+      def iterator(): Iterator[V] =
         new Iterator[V] {
           val iter = entrySet.iterator()
 
@@ -154,13 +149,11 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
 
           def remove(): Unit = iter.remove()
         }
-      }
     }
-  }
 
   def entrySet(): Set[Map.Entry[K, V]]
 
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     if (o.asInstanceOf[AnyRef] eq this) true
     else {
       o match {
@@ -170,14 +163,12 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
         case _ => false
       }
     }
-  }
 
   override def hashCode(): Int =
     entrySet.foldLeft(0)((prev, item) => item.hashCode + prev)
 
-  override def toString(): String = {
+  override def toString(): String =
     entrySet.iterator
       .map(e => s"${e.getKey}=${e.getValue}")
       .mkString("{", ", ", "}")
-  }
 }

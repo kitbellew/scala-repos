@@ -12,9 +12,8 @@ class RandomAlgorithm(val ap: FriendRecommendationAlgoParams)
       FriendRecommendationQuery,
       FriendRecommendationPrediction] {
 
-  override def train(pd: FriendRecommendationTrainingData): RandomModel = {
+  override def train(pd: FriendRecommendationTrainingData): RandomModel =
     new RandomModel(0.5)
-  }
 
   override def predict(
       model: RandomModel,

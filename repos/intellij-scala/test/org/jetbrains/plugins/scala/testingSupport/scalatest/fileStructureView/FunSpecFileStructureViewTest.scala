@@ -10,7 +10,7 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
 trait FunSpecFileStructureViewTest extends ScalaTestTestCase {
   private val className = "FunSpecViewTest"
 
-  def addFunSpecViewTest(): Unit = {
+  def addFunSpecViewTest(): Unit =
     addFileToProject(
       className + ".scala",
       """
@@ -30,7 +30,6 @@ trait FunSpecFileStructureViewTest extends ScalaTestTestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testFunSpecNormal() {
     addFunSpecViewTest()

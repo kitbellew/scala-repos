@@ -30,7 +30,7 @@ class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitXmlStartTag(s: ScXmlStartTag) {
         if (s.getTextRange.isEmpty) return
@@ -70,7 +70,6 @@ class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
         }
       }
     }
-  }
 }
 
 class DeleteUnmatchedTagQuickFix(s: ScalaPsiElement)

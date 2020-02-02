@@ -436,7 +436,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       _converter.asInstanceOf[ResultConverter[JdbcResultConverterDomain, T]]
 
     /** An Action that updates the data selected by this query. */
-    def update(value: T): ProfileAction[Int, NoStream, Effect.Write] = {
+    def update(value: T): ProfileAction[Int, NoStream, Effect.Write] =
       new SimpleJdbcProfileAction[Int]("update", Vector(sres.sql)) {
         def run(ctx: Backend#Context, sql: Vector[String]): Int =
           ctx.session.withPreparedStatement(sql.head) { st =>
@@ -446,7 +446,6 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
             st.executeUpdate
           }
       }
-    }
 
     /** Get the statement usd by `update` */
     def updateStatement: String = sres.sql

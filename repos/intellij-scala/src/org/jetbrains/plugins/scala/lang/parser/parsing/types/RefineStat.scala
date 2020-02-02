@@ -22,7 +22,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.statements.{
  */
 
 object RefineStat {
-  def parse(builder: ScalaPsiBuilder): Boolean = {
+  def parse(builder: ScalaPsiBuilder): Boolean =
     builder.getTokenType match {
       case ScalaTokenTypes.kTYPE =>
         if (!Def.parse(builder, isMod = false)) {
@@ -41,5 +41,4 @@ object RefineStat {
       case _ =>
         return false
     }
-  }
 }

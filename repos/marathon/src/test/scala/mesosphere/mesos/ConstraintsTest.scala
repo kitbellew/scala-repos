@@ -515,7 +515,7 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       .withNetworking(Task.HostPorts(999))
   }
 
-  def makeOffer(hostname: String, attributes: Iterable[Attribute]) = {
+  def makeOffer(hostname: String, attributes: Iterable[Attribute]) =
     Offer.newBuilder
       .setId(OfferID(Random.nextString(9)))
       .setSlaveId(SlaveID(Random.nextString(9)))
@@ -523,21 +523,18 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       .setHostname(hostname)
       .addAllAttributes(attributes.asJava)
       .build
-  }
 
-  def makeTaskWithHost(id: String, host: String) = {
+  def makeTaskWithHost(id: String, host: String) =
     MarathonTestHelper
       .runningTask(id)
       .withAgentInfo(_.copy(host = host))
       .withNetworking(Task.HostPorts(999))
-  }
 
-  def makeConstraint(field: String, operator: Operator, value: String) = {
+  def makeConstraint(field: String, operator: Operator, value: String) =
     Constraint.newBuilder
       .setField(field)
       .setOperator(operator)
       .setValue(value)
       .build
-  }
 
 }

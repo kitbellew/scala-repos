@@ -34,10 +34,9 @@ trait SimpleWindowedService[K, V] extends BatchedWindowService[K, V] {
 
   final def readStream(
       batchID: BatchID,
-      mode: Mode): Option[FlowToPipe[(K, Option[V])]] = {
+      mode: Mode): Option[FlowToPipe[(K, Option[V])]] =
     if (!streamIsAvailable(batchID, mode)) {
       None
     } else
       Some(Reader({ implicit fdm: (FlowDef, Mode) => read(batchID) }))
-  }
 }

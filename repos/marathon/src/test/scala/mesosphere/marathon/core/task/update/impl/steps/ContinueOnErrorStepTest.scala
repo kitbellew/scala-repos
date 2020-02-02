@@ -22,9 +22,8 @@ class ContinueOnErrorStepTest
       override def processUpdate(
           timestamp: Timestamp,
           task: Task,
-          mesosStatus: TaskStatus): Future[_] = {
+          mesosStatus: TaskStatus): Future[_] =
         throw new scala.RuntimeException("not implemted")
-      }
     }
 
     ContinueOnErrorStep(nested).name should equal("continueOnError(nested)")
@@ -35,13 +34,12 @@ class ContinueOnErrorStepTest
   private[this] val dummyTask: Task = MarathonTestHelper.mininimalTask(appId)
 
   test("A successful step should not produce logging output") {
-    def processUpdate(step: TaskStatusUpdateStep): Future[_] = {
+    def processUpdate(step: TaskStatusUpdateStep): Future[_] =
       step.processUpdate(
         timestamp = timestamp,
         task = dummyTask,
         mesosStatus = TaskStatus.newBuilder().buildPartial()
       )
-    }
 
     Given("a nested step that is always successful")
     val nested = mock[TaskStatusUpdateStep]
@@ -61,7 +59,7 @@ class ContinueOnErrorStepTest
   }
 
   test("A failing step should log the error but proceed") {
-    def processUpdate(step: TaskStatusUpdateStep): Future[_] = {
+    def processUpdate(step: TaskStatusUpdateStep): Future[_] =
       step.processUpdate(
         timestamp,
         task = dummyTask,
@@ -69,7 +67,6 @@ class ContinueOnErrorStepTest
           .newBuilder()
           .setTaskId(TaskID.newBuilder().setValue("task"))
           .buildPartial())
-    }
 
     Given("a nested step that is always successful")
     val nested = mock[TaskStatusUpdateStep]

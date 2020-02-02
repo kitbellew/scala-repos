@@ -71,12 +71,11 @@ private[niocharset] object UTF_8
   }
 
   private class Decoder extends CharsetDecoder(UTF_8, 1.0f, 1.0f) {
-    def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult = {
+    def decodeLoop(in: ByteBuffer, out: CharBuffer): CoderResult =
       if (in.hasArray && out.hasArray)
         decodeLoopArray(in, out)
       else
         decodeLoopNoArray(in, out)
-    }
 
     private def decodeLoopArray(
         in: ByteBuffer,
@@ -234,7 +233,7 @@ private[niocharset] object UTF_8
     @inline private def isInvalidNextByte(b: Int): Boolean =
       (b & 0xc0) != 0x80
 
-    @inline private def decode2(b1: Int, b2: Int): DecodedMultiByte = {
+    @inline private def decode2(b1: Int, b2: Int): DecodedMultiByte =
       if (isInvalidNextByte(b2))
         DecodedMultiByte(CoderResult.malformedForLength(1))
       else {
@@ -247,9 +246,8 @@ private[niocharset] object UTF_8
           DecodedMultiByte(codePoint.toChar)
         }
       }
-    }
 
-    @inline private def decode3(b1: Int, b2: Int, b3: Int): DecodedMultiByte = {
+    @inline private def decode3(b1: Int, b2: Int, b3: Int): DecodedMultiByte =
       if (isInvalidNextByte(b2))
         DecodedMultiByte(CoderResult.malformedForLength(1))
       else if (isInvalidNextByte(b3))
@@ -266,13 +264,12 @@ private[niocharset] object UTF_8
           DecodedMultiByte(codePoint.toChar)
         }
       }
-    }
 
     @inline private def decode4(
         b1: Int,
         b2: Int,
         b3: Int,
-        b4: Int): DecodedMultiByte = {
+        b4: Int): DecodedMultiByte =
       if (isInvalidNextByte(b2))
         DecodedMultiByte(CoderResult.malformedForLength(1))
       else if (isInvalidNextByte(b3))
@@ -296,16 +293,14 @@ private[niocharset] object UTF_8
             ((offsetCodePoint & 0x3ff) | 0xdc00).toChar)
         }
       }
-    }
   }
 
   private class Encoder extends CharsetEncoder(UTF_8, 1.1f, 4.0f) {
-    def encodeLoop(in: CharBuffer, out: ByteBuffer): CoderResult = {
+    def encodeLoop(in: CharBuffer, out: ByteBuffer): CoderResult =
       if (in.hasArray && out.hasArray)
         encodeLoopArray(in, out)
       else
         encodeLoopNoArray(in, out)
-    }
 
     private def encodeLoopArray(
         in: CharBuffer,

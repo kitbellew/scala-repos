@@ -58,24 +58,22 @@ private[deploy] object IvyTestUtils {
   private[deploy] def artifactName(
       artifact: MavenCoordinate,
       useIvyLayout: Boolean,
-      ext: String = ".jar"): String = {
+      ext: String = ".jar"): String =
     if (!useIvyLayout) {
       s"${artifact.artifactId}-${artifact.version}$ext"
     } else {
       s"${artifact.artifactId}$ext"
     }
-  }
 
   /** Returns the directory for the given groupId based on standard ivy or maven format. */
   private def getBaseGroupDirectory(
       artifact: MavenCoordinate,
-      useIvyLayout: Boolean): String = {
+      useIvyLayout: Boolean): String =
     if (!useIvyLayout) {
       artifact.groupId.replace(".", File.separator)
     } else {
       artifact.groupId
     }
-  }
 
   /** Write the contents to a file to the supplied directory. */
   private[deploy] def writeFile(
@@ -165,7 +163,7 @@ private[deploy] object IvyTestUtils {
       tempPath: File,
       artifact: MavenCoordinate,
       dependencies: Option[Seq[MavenCoordinate]],
-      useIvyLayout: Boolean): File = {
+      useIvyLayout: Boolean): File =
     if (useIvyLayout) {
       val ivyXmlPath = pathFromCoordinate(artifact, tempPath, "ivy", true)
       Files.createParentDirs(new File(ivyXmlPath, "dummy"))
@@ -175,7 +173,6 @@ private[deploy] object IvyTestUtils {
       Files.createParentDirs(new File(pomPath, "dummy"))
       createPom(pomPath, artifact, dependencies)
     }
-  }
 
   /** Helper method to write artifact information in the pom. */
   private def pomArtifactWriter(
@@ -217,11 +214,10 @@ private[deploy] object IvyTestUtils {
   }
 
   /** Helper method to write artifact information in the ivy.xml. */
-  private def ivyArtifactWriter(artifact: MavenCoordinate): String = {
+  private def ivyArtifactWriter(artifact: MavenCoordinate): String =
     s"""<dependency org="${artifact.groupId}" name="${artifact.artifactId}"
        |            rev="${artifact.version}" force="true"
        |            conf="compile->compile(*),master(*);runtime->runtime(*)"/>""".stripMargin
-  }
 
   /** Create a pom file for this artifact. */
   private def createIvyDescriptor(

@@ -47,12 +47,11 @@ trait Bijection[A, B] extends (A => B) { self =>
   /**
     * Composes two instances of Bijection in a new Bijection, with this one applied first.
     */
-  def andThen[C](g: Bijection[B, C]) = {
+  def andThen[C](g: Bijection[B, C]) =
     new Bijection[A, C] {
       def apply(a: A) = g(self(a))
       def invert(c: C) = self.invert(g.invert(c))
     }
-  }
 
   /**
     * Composes two instances of Bijection in a new Bijection, with this one applied last.

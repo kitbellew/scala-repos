@@ -62,13 +62,12 @@ private[serverset2] object Stabilizer {
   def epochs(period: Duration): Epoch =
     new Epoch(
       new Event[Unit] {
-        def register(w: Witness[Unit]) = {
+        def register(w: Witness[Unit]) =
           epochTimer.schedule(period) {
             val elapsed = Stopwatch.start()
             w.notify(())
             notifyMs.add(elapsed().inMilliseconds)
           }
-        }
       },
       period
     )

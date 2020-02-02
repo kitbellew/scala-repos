@@ -46,19 +46,17 @@ class RidgeRegressionModel @Since("1.1.0") (
   override protected def predictPoint(
       dataMatrix: Vector,
       weightMatrix: Vector,
-      intercept: Double): Double = {
+      intercept: Double): Double =
     weightMatrix.toBreeze.dot(dataMatrix.toBreeze) + intercept
-  }
 
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GLMRegressionModel.SaveLoadV1_0.save(
       sc,
       path,
       this.getClass.getName,
       weights,
       intercept)
-  }
 
   override protected def formatVersion: String = "1.0"
 }
@@ -122,9 +120,8 @@ class RidgeRegressionWithSGD private (
   @Since("0.8.0")
   def this() = this(1.0, 100, 0.01, 1.0)
 
-  override protected def createModel(weights: Vector, intercept: Double) = {
+  override protected def createModel(weights: Vector, intercept: Double) =
     new RidgeRegressionModel(weights, intercept)
-  }
 }
 
 /**
@@ -156,13 +153,12 @@ object RidgeRegressionWithSGD {
       stepSize: Double,
       regParam: Double,
       miniBatchFraction: Double,
-      initialWeights: Vector): RidgeRegressionModel = {
+      initialWeights: Vector): RidgeRegressionModel =
     new RidgeRegressionWithSGD(
       stepSize,
       numIterations,
       regParam,
       miniBatchFraction).run(input, initialWeights)
-  }
 
   /**
     * Train a RidgeRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -182,13 +178,12 @@ object RidgeRegressionWithSGD {
       numIterations: Int,
       stepSize: Double,
       regParam: Double,
-      miniBatchFraction: Double): RidgeRegressionModel = {
+      miniBatchFraction: Double): RidgeRegressionModel =
     new RidgeRegressionWithSGD(
       stepSize,
       numIterations,
       regParam,
       miniBatchFraction).run(input)
-  }
 
   /**
     * Train a RidgeRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -207,9 +202,8 @@ object RidgeRegressionWithSGD {
       input: RDD[LabeledPoint],
       numIterations: Int,
       stepSize: Double,
-      regParam: Double): RidgeRegressionModel = {
+      regParam: Double): RidgeRegressionModel =
     train(input, numIterations, stepSize, regParam, 1.0)
-  }
 
   /**
     * Train a RidgeRegression model given an RDD of (label, features) pairs. We run a fixed number
@@ -224,7 +218,6 @@ object RidgeRegressionWithSGD {
   @Since("0.8.0")
   def train(
       input: RDD[LabeledPoint],
-      numIterations: Int): RidgeRegressionModel = {
+      numIterations: Int): RidgeRegressionModel =
     train(input, numIterations, 1.0, 0.01, 1.0)
-  }
 }

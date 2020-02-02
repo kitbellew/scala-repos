@@ -27,9 +27,8 @@ object Close {
   import java.io._
 
   implicit object InputStreamClose extends Close[InputStream] {
-    def close(in: InputStream) = {
+    def close(in: InputStream) =
       in.close
-    }
   }
 
   implicit object OutputStreamClose extends Close[OutputStream] {

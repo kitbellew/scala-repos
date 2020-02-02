@@ -59,9 +59,8 @@ object functions {
 
   private def withAggregateFunction(
       func: AggregateFunction,
-      isDistinct: Boolean = false): Column = {
+      isDistinct: Boolean = false): Column =
     Column(func.toAggregateExpression(isDistinct))
-  }
 
   /**
     * Returns a [[Column]] based on the given column name.
@@ -168,9 +167,8 @@ object functions {
     * @group agg_funcs
     * @since 1.3.0
     */
-  def approxCountDistinct(columnName: String, rsd: Double): Column = {
+  def approxCountDistinct(columnName: String, rsd: Double): Column =
     approxCountDistinct(Column(columnName), rsd)
-  }
 
   /**
     * Aggregate function: returns the average of the values in a group.
@@ -245,9 +243,8 @@ object functions {
     * @group agg_funcs
     * @since 1.6.0
     */
-  def corr(columnName1: String, columnName2: String): Column = {
+  def corr(columnName1: String, columnName2: String): Column =
     corr(Column(columnName1), Column(columnName2))
-  }
 
   /**
     * Aggregate function: returns the number of items in a group.
@@ -279,11 +276,10 @@ object functions {
     * @since 1.3.0
     */
   @scala.annotation.varargs
-  def countDistinct(expr: Column, exprs: Column*): Column = {
+  def countDistinct(expr: Column, exprs: Column*): Column =
     withAggregateFunction(
       Count.apply((expr +: exprs).map(_.expr)),
       isDistinct = true)
-  }
 
   /**
     * Aggregate function: returns the number of distinct items in a group.
@@ -312,9 +308,8 @@ object functions {
     * @group agg_funcs
     * @since 2.0.0
     */
-  def covar_pop(columnName1: String, columnName2: String): Column = {
+  def covar_pop(columnName1: String, columnName2: String): Column =
     covar_pop(Column(columnName1), Column(columnName2))
-  }
 
   /**
     * Aggregate function: returns the sample covariance for two columns.
@@ -333,9 +328,8 @@ object functions {
     * @group agg_funcs
     * @since 2.0.0
     */
-  def covar_samp(columnName1: String, columnName2: String): Column = {
+  def covar_samp(columnName1: String, columnName2: String): Column =
     covar_samp(Column(columnName1), Column(columnName2))
-  }
 
   /**
     * Aggregate function: returns the first value in a group.
@@ -359,9 +353,8 @@ object functions {
     * @group agg_funcs
     * @since 2.0.0
     */
-  def first(columnName: String, ignoreNulls: Boolean): Column = {
+  def first(columnName: String, ignoreNulls: Boolean): Column =
     first(Column(columnName), ignoreNulls)
-  }
 
   /**
     * Aggregate function: returns the first value in a group.
@@ -426,9 +419,8 @@ object functions {
     * @group agg_funcs
     * @since 2.0.0
     */
-  def grouping_id(colName: String, colNames: String*): Column = {
+  def grouping_id(colName: String, colNames: String*): Column =
     grouping_id((Seq(colName) ++ colNames).map(n => Column(n)): _*)
-  }
 
   /**
     * Aggregate function: returns the kurtosis of the values in a group.
@@ -468,9 +460,8 @@ object functions {
     * @group agg_funcs
     * @since 2.0.0
     */
-  def last(columnName: String, ignoreNulls: Boolean): Column = {
+  def last(columnName: String, ignoreNulls: Boolean): Column =
     last(Column(columnName), ignoreNulls)
-  }
 
   /**
     * Aggregate function: returns the last value in a group.
@@ -768,9 +759,8 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def lag(columnName: String, offset: Int, defaultValue: Any): Column = {
+  def lag(columnName: String, offset: Int, defaultValue: Any): Column =
     lag(Column(columnName), offset, defaultValue)
-  }
 
   /**
     * Window function: returns the value that is `offset` rows before the current row, and
@@ -796,9 +786,8 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def lead(columnName: String, offset: Int): Column = {
+  def lead(columnName: String, offset: Int): Column =
     lead(columnName, offset, null)
-  }
 
   /**
     * Window function: returns the value that is `offset` rows after the current row, and
@@ -810,7 +799,7 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def lead(e: Column, offset: Int): Column = { lead(e, offset, null) }
+  def lead(e: Column, offset: Int): Column = lead(e, offset, null)
 
   /**
     * Window function: returns the value that is `offset` rows after the current row, and
@@ -822,9 +811,8 @@ object functions {
     * @group window_funcs
     * @since 1.4.0
     */
-  def lead(columnName: String, offset: Int, defaultValue: Any): Column = {
+  def lead(columnName: String, offset: Int, defaultValue: Any): Column =
     lead(Column(columnName), offset, defaultValue)
-  }
 
   /**
     * Window function: returns the value that is `offset` rows after the current row, and
@@ -918,9 +906,8 @@ object functions {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def array(colName: String, colNames: String*): Column = {
+  def array(colName: String, colNames: String*): Column =
     array((colName +: colNames).map(col): _*)
-  }
 
   /**
     * Marks a DataFrame as small enough for use in broadcast joins.
@@ -934,9 +921,8 @@ object functions {
     * @group normal_funcs
     * @since 1.5.0
     */
-  def broadcast(df: DataFrame): DataFrame = {
+  def broadcast(df: DataFrame): DataFrame =
     Dataset.newDataFrame(df.sqlContext, BroadcastHint(df.logicalPlan))
-  }
 
   /**
     * Returns the first column that is not null, or null if all inputs are null.
@@ -1137,9 +1123,8 @@ object functions {
     * @since 1.4.0
     */
   @scala.annotation.varargs
-  def struct(colName: String, colNames: String*): Column = {
+  def struct(colName: String, colNames: String*): Column =
     struct((colName +: colNames).map(col): _*)
-  }
 
   /**
     * Evaluates a list of conditions and returns one of multiple possible result expressions.
@@ -1490,9 +1475,8 @@ object functions {
     * @since 1.5.0
     */
   @scala.annotation.varargs
-  def greatest(columnName: String, columnNames: String*): Column = {
+  def greatest(columnName: String, columnNames: String*): Column =
     greatest((columnName +: columnNames).map(Column.apply): _*)
-  }
 
   /**
     * Computes hex value of the given column.
@@ -1597,9 +1581,8 @@ object functions {
     * @since 1.5.0
     */
   @scala.annotation.varargs
-  def least(columnName: String, columnNames: String*): Column = {
+  def least(columnName: String, columnNames: String*): Column =
     least((columnName +: columnNames).map(Column.apply): _*)
-  }
 
   /**
     * Computes the natural logarithm of the given value.
@@ -3027,9 +3010,8 @@ object functions {
     * @group udf_funcs
     * @since 2.0.0
     */
-  def udf(f: AnyRef, dataType: DataType): UserDefinedFunction = {
+  def udf(f: AnyRef, dataType: DataType): UserDefinedFunction =
     UserDefinedFunction(f, dataType, None)
-  }
 
   /**
     * Call an user-defined function.

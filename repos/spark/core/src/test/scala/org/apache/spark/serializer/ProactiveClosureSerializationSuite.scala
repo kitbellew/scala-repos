@@ -31,9 +31,8 @@ class ProactiveClosureSerializationSuite
     extends SparkFunSuite
     with SharedSparkContext {
 
-  def fixture: (RDD[String], UnserializableClass) = {
+  def fixture: (RDD[String], UnserializableClass) =
     (sc.parallelize(0 until 1000).map(_.toString), new UnserializableClass)
-  }
 
   test("throws expected serialization exceptions on actions") {
     val (data, uc) = fixture

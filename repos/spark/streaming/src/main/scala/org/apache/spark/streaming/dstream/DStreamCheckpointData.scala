@@ -129,10 +129,9 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
     }
   }
 
-  override def toString: String = {
+  override def toString: String =
     "[\n" + currentCheckpointFiles.size + " checkpoint files \n" +
       currentCheckpointFiles.mkString("\n") + "\n]"
-  }
 
   @throws(classOf[IOException])
   private def writeObject(oos: ObjectOutputStream): Unit =

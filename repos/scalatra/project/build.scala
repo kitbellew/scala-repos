@@ -105,7 +105,7 @@ object ScalatraBuild extends Build {
     id = "scalatra",
     base = file("core"),
     settings = scalatraSettings ++ Seq(
-      libraryDependencies <++= scalaVersion(sv => {
+      libraryDependencies <++= scalaVersion { sv =>
         val default = Seq(
           servletApi % "provided;test",
           slf4jApi,
@@ -119,7 +119,7 @@ object ScalatraBuild extends Build {
         )
         if (sv.startsWith("2.10")) default
         else default ++ Seq(parserCombinators, xml)
-      }),
+      },
       libraryDependencies ++= Seq(akkaTestkit % "test"),
       description := "The core Scalatra framework",
       binaryIssueFilters ++= Seq(

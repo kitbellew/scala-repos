@@ -11,13 +11,12 @@ class DeploymentPlanRevertTest
     extends MarathonSpec
     with Matchers
     with GivenWhenThen {
-  private def normalizeVersions(group: Group): Group = {
+  private def normalizeVersions(group: Group): Group =
     group.withNormalizedVersion.copy(
       apps = group.apps.map(
         _.copy(versionInfo = AppDefinition.VersionInfo.NoVersion)),
       groups = group.groups.map(normalizeVersions)
     )
-  }
 
   /**
     * An assert equals which provides better feedback about what's different for groups.
@@ -520,12 +519,11 @@ class DeploymentPlanRevertTest
       expectedReverted: Group): Unit = {
     val firstDeployment = deployments.head
 
-    def performDeployments(orig: Group, deployments: Seq[Deployment]): Group = {
+    def performDeployments(orig: Group, deployments: Seq[Deployment]): Group =
       deployments.foldLeft(orig) {
         case (last: Group, deployment: Deployment) =>
           deployment.change(last)
       }
-    }
 
     test(
       s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {

@@ -55,7 +55,7 @@ object Resources {
     * This works around a JDK bug where if the URL connection is to a JAR file, and the entry is a directory, an NPE is
     * thrown.
     */
-  def closeUrlConnection(connection: URLConnection): Unit = {
+  def closeUrlConnection(connection: URLConnection): Unit =
     connection match {
       case jar: JarURLConnection =>
         if (!jar.getUseCaches) {
@@ -64,7 +64,6 @@ object Resources {
       case other =>
         other.getInputStream.close()
     }
-  }
 
   private def isBundleResourceDirectory(
       classLoader: ClassLoader,

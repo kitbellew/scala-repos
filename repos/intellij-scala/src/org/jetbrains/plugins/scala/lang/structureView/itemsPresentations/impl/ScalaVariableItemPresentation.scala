@@ -18,15 +18,12 @@ class ScalaVariableItemPresentation(
     private val element: PsiElement,
     isInherited: Boolean)
     extends ScalaItemPresentation(element) {
-  def getPresentableText: String = {
+  def getPresentableText: String =
     ScalaElementPresentation.getPresentableText(myElement)
-  }
 
-  override def getIcon(open: Boolean): Icon = {
+  override def getIcon(open: Boolean): Icon =
     Icons.VAR
-  }
 
-  override def getTextAttributesKey: TextAttributesKey = {
+  override def getTextAttributesKey: TextAttributesKey =
     if (isInherited) CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES else null
-  }
 }

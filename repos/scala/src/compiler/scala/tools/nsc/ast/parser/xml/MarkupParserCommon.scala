@@ -116,7 +116,7 @@ private[scala] trait MarkupParserCommon {
     var c = it.next()
     Utility.parseCharRef(
       () => c,
-      () => { c = it.next() },
+      () => c = it.next(),
       reportSyntaxError _,
       truncatedError _)
   }

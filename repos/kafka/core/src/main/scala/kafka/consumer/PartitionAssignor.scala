@@ -114,26 +114,24 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
             info(
               "Consumer %s rebalancing the following partitions for topic %s: %s"
                 .format(ctx.consumerId, topic, partitions))
-            partitions.map(partition => {
-              TopicAndPartition(topic, partition)
-            })
+            partitions.map { partition => TopicAndPartition(topic, partition) }
         }
         .toSeq
-        .sortWith((topicPartition1, topicPartition2) => {
+        .sortWith { (topicPartition1, topicPartition2) =>
           /*
            * Randomize the order by taking the hashcode to reduce the likelihood of all partitions of a given topic ending
            * up on one consumer (if it has a high enough stream count).
            */
           topicPartition1.toString.hashCode < topicPartition2.toString.hashCode
-        })
+        }
 
-      allTopicPartitions.foreach(topicPartition => {
+      allTopicPartitions.foreach { topicPartition =>
         val threadId = threadAssignor.next()
         // record the partition ownership decision
         val assignmentForConsumer =
           partitionAssignment.getAndMaybePut(threadId.consumer)
         assignmentForConsumer += (topicPartition -> threadId)
-      })
+      }
     }
 
     // assign Map.empty for the consumers which are not associated with topic partitions

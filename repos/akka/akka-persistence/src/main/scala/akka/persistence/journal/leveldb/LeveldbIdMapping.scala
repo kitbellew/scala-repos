@@ -50,7 +50,7 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore â
 
   private def readIdMap(
       pathMap: Map[String, Int],
-      iter: DBIterator): Map[String, Int] = {
+      iter: DBIterator): Map[String, Int] =
     if (!iter.hasNext) pathMap
     else {
       val nextEntry = iter.next()
@@ -61,7 +61,6 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore â
         readIdMap(pathMap + (nextVal -> nextKey.mappingId), iter)
       }
     }
-  }
 
   private def writeIdMapping(id: String, numericId: Int): Int = {
     idMap = idMap + (id -> numericId)

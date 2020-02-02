@@ -216,7 +216,7 @@ private[akka] class UnstartedCell(
 
   def replaceWith(cell: Cell): Unit = locked {
     try {
-      def drainSysmsgQueue(): Unit = {
+      def drainSysmsgQueue(): Unit =
         // using while in case a sys msg enqueues another sys msg
         while (sysmsgQueue.nonEmpty) {
           var sysQ = sysmsgQueue.reverse
@@ -228,7 +228,6 @@ private[akka] class UnstartedCell(
             cell.sendSystemMessage(msg)
           }
         }
-      }
 
       drainSysmsgQueue()
 
@@ -258,7 +257,7 @@ private[akka] class UnstartedCell(
   def getChildByName(name: String): Option[ChildRestartStats] = None
   override def getSingleChild(name: String): InternalActorRef = Nobody
 
-  def sendMessage(msg: Envelope): Unit = {
+  def sendMessage(msg: Envelope): Unit =
     if (lock.tryLock(timeout.length, timeout.unit)) {
       try {
         val cell = self.underlying
@@ -284,7 +283,6 @@ private[akka] class UnstartedCell(
       system.deadLetters
         .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
     }
-  }
 
   def sendSystemMessage(msg: SystemMessage): Unit = {
     lock.lock // we cannot lose system messages, ever, and we cannot throw an Error from here as well

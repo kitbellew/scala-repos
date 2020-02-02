@@ -98,10 +98,9 @@ abstract class ZipArchive(override val file: JFile)
 
     override def isDirectory = true
     override def iterator: Iterator[Entry] = entries.valuesIterator
-    override def lookupName(name: String, directory: Boolean): Entry = {
+    override def lookupName(name: String, directory: Boolean): Entry =
       if (directory) entries(name + "/")
       else entries(name)
-    }
   }
 
   private def ensureDir(
@@ -128,10 +127,9 @@ abstract class ZipArchive(override val file: JFile)
 
   protected def getDir(
       dirs: mutable.Map[String, DirEntry],
-      entry: ZipEntry): DirEntry = {
+      entry: ZipEntry): DirEntry =
     if (entry.isDirectory) ensureDir(dirs, entry.getName, entry)
     else ensureDir(dirs, dirName(entry.getName), null)
-  }
 }
 
 /** ''Note:  This library is considered experimental and should not be used unless you know what you are doing.'' */
@@ -215,7 +213,7 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
           val arr = if (len == 0) Array.emptyByteArray else new Array[Byte](len)
           var offset = 0
 
-          def loop(): Unit = {
+          def loop(): Unit =
             if (offset < len) {
               val read = in.read(arr, offset, len - offset)
               if (read >= 0) {
@@ -223,7 +221,6 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
                 loop()
               }
             }
-          }
           loop()
 
           if (offset == arr.length) arr
@@ -316,7 +313,7 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
     case _                    => false
   }
 
-  private def resourceInputStream(path: String): InputStream = {
+  private def resourceInputStream(path: String): InputStream =
     new FilterInputStream(null) {
       override def read(): Int = {
         if (in == null)
@@ -333,5 +330,4 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
         in = null
       }
     }
-  }
 }

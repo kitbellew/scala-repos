@@ -175,7 +175,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
   def injectUsingPatterns(
       registrar: MultiHostRegistrar,
       host: PsiElement,
-      literals: scala.Seq[ScLiteral]) = {
+      literals: scala.Seq[ScLiteral]) =
     ScalaLanguageInjector withInjectionSupport { support =>
       val injections =
         myInjectionConfiguration.getInjections(support.getId).toIterator
@@ -208,7 +208,6 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
       done
     } getOrElse false
-  }
 
   def injectUsingIntention(
       registrar: MultiHostRegistrar,
@@ -252,18 +251,17 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     }
 
   def implicitAnnotationOwnerFor(
-      literal: ScLiteral): Option[PsiAnnotationOwner] = {
+      literal: ScLiteral): Option[PsiAnnotationOwner] =
     literal
       .getImplicitConversions()
       ._2
       .flatMap(_.asOptionOf[ScFunction])
       .flatMap(_.parameters.headOption)
-  }
 
   private def injectInInterpolation(
       registrar: MultiHostRegistrar,
       hostElement: PsiElement,
-      literals: scala.Seq[ScLiteral]) = {
+      literals: scala.Seq[ScLiteral]) =
     hostElement match {
       case host: PsiLanguageInjectionHost =>
         ScalaLanguageInjector withInjectionSupport { support =>
@@ -314,7 +312,6 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         } getOrElse false
       case _ => false //something is wrong
     }
-  }
 
   private def assignmentTarget(
       assignment: ScAssignStmt): Option[PsiAnnotationOwner with PsiElement] = {
@@ -330,7 +327,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
   private def parameterOf(
       argument: ScExpression): Option[PsiAnnotationOwner with PsiElement] = {
-    def getParameter(methodInv: MethodInvocation, index: Int) = {
+    def getParameter(methodInv: MethodInvocation, index: Int) =
       if (index == -1) None
       else
         methodInv.getEffectiveInvokedExpr
@@ -348,7 +345,6 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
             case _ => None
           }
         }
-    }
 
     argument.getParent match {
       case args: ScArgumentExprList =>

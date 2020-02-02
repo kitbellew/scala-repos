@@ -43,7 +43,7 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
     */
   def bypassForward: Boolean
 
-  final override def apply(request: Req, service: Service[Req, Rep]) = {
+  final override def apply(request: Req, service: Service[Req, Rep]) =
     if (warmupComplete || bypassForward) {
       service(request)
     } else {
@@ -69,5 +69,4 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
         }
       }
     }
-  }
 }

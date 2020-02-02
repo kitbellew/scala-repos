@@ -43,10 +43,7 @@ private[camel] object TestSupport {
       * It only waits for the response until timeout passes.
       * This is to reduce cases when unit-tests block infinitely.
       */
-    def sendTo(
-        to: String,
-        msg: String,
-        timeout: Duration = 1 second): AnyRef = {
+    def sendTo(to: String, msg: String, timeout: Duration = 1 second): AnyRef =
       try {
         camel.template
           .asyncRequestBody(to, msg)
@@ -58,7 +55,6 @@ private[camel] object TestSupport {
             "Failed to get response to message [%s], send to endpoint [%s], within [%s]"
               .format(msg, to, timeout))
       }
-    }
 
     def routeCount = camel.context.getRoutes().size()
     def routes = camel.context.getRoutes

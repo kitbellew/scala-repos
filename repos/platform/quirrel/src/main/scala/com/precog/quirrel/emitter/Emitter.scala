@@ -141,7 +141,7 @@ trait Emitter
       }
     }
 
-    def operandStackSizes(is: Vector[Instruction]): Vector[Int] = {
+    def operandStackSizes(is: Vector[Instruction]): Vector[Int] =
       (is
         .foldLeft((Vector(0), 0)) {
           case ((vector, cur), instr) =>
@@ -153,7 +153,6 @@ trait Emitter
             (vector :+ total, total)
         })
         ._1
-    }
 
     // Emits the bytecode and marks it so it can be reused in DUPing operations.
     def emitAndMark(markType: MarkType)(f: => EmitterState): EmitterState =
@@ -167,24 +166,21 @@ trait Emitter
       }
 
     def labelTicVar(solve: ast.Solve, name: TicId)(
-        state: => EmitterState): EmitterState = {
+        state: => EmitterState): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         (e.copy(ticVars = e.ticVars + ((solve, name) -> state)), ())
       }
-    }
 
     def labelFormal(id: Identifier, let: ast.Let)(
-        state: => EmitterState): EmitterState = {
+        state: => EmitterState): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         (e.copy(formals = e.formals + ((id, let) -> state)), ())
       }
-    }
 
-    def labelGroup(where: ast.Where, id: Int): EmitterState = {
+    def labelGroup(where: ast.Where, id: Int): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         (e.copy(groups = e.groups + (where -> id)), ())
       }
-    }
 
     // Dup's previously marked bytecode:
     def emitDup(markType: MarkType): EmitterState =
@@ -249,7 +245,7 @@ trait Emitter
         right: EmitterState,
         rightProv: Provenance)(
         ifCross: => Instruction,
-        ifMatch: => Instruction): EmitterState = {
+        ifMatch: => Instruction): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         val leftResolved = e.subResolve(leftProv)
         val rightResolved = e.subResolve(rightProv)
@@ -265,61 +261,55 @@ trait Emitter
 
         (left >> right >> instr)(e)
       }
-    }
 
     def emitMapState(
         left: EmitterState,
         leftProv: Provenance,
         right: EmitterState,
         rightProv: Provenance,
-        op: BinaryOperation): EmitterState = {
+        op: BinaryOperation): EmitterState =
       emitCrossOrMatchState(left, leftProv, right, rightProv)(
         ifCross = Map2Cross(op),
         ifMatch = Map2Match(op)
       )
-    }
 
     def emitMap(
         left: Expr,
         right: Expr,
         op: BinaryOperation,
-        dispatches: Set[ast.Dispatch]): EmitterState = {
+        dispatches: Set[ast.Dispatch]): EmitterState =
       emitMapState(
         emitExpr(left, dispatches),
         left.provenance,
         emitExpr(right, dispatches),
         right.provenance,
         op)
-    }
 
     def emitUnary(
         expr: Expr,
         op: UnaryOperation,
-        dispatches: Set[ast.Dispatch]): EmitterState = {
+        dispatches: Set[ast.Dispatch]): EmitterState =
       emitExpr(expr, dispatches) >> emitInstr(Map1(op))
-    }
 
     def emitFilterState(
         left: EmitterState,
         leftProv: Provenance,
         right: EmitterState,
-        rightProv: Provenance): EmitterState = {
+        rightProv: Provenance): EmitterState =
       emitCrossOrMatchState(left, leftProv, right, rightProv)(
         ifCross = FilterCross,
         ifMatch = FilterMatch
       )
-    }
 
     def emitFilter(
         left: Expr,
         right: Expr,
-        dispatches: Set[ast.Dispatch]): EmitterState = {
+        dispatches: Set[ast.Dispatch]): EmitterState =
       emitFilterState(
         emitExpr(left, dispatches),
         left.provenance,
         emitExpr(right, dispatches),
         right.provenance)
-    }
 
     def emitWhere(
         where: ast.Where,
@@ -372,13 +362,12 @@ trait Emitter
       case buckets.UnfixedSolution(name, solution, dtrace) => {
         val context = generateContext(solution, contextualDispatches, dtrace)
 
-        def state(id: Int) = {
+        def state(id: Int) =
           prepareContext(context, dispatches) { dispatches =>
             emitExpr(solution, dispatches)
           } >>
             labelTicVar(solve, name)(emitInstr(PushKey(id))) >>
             emitInstr(KeyPart(id))
-        }
 
         StateT.apply[Id, Emission, Unit] { e =>
           val s =
@@ -451,7 +440,7 @@ trait Emitter
 
     def createJoins(
         provs: NEL[Provenance],
-        op2: BinaryOperation): (Set[Provenance], Vector[EmitterState]) = {
+        op2: BinaryOperation): (Set[Provenance], Vector[EmitterState]) =
       // if `provs` has size one, we should not emit a join instruction
       provs.tail.foldLeft(
         (provs.head.possibilities, Vector.empty[EmitterState])) {
@@ -474,7 +463,6 @@ trait Emitter
           (resultProv, instrAcc :+ joinInstr)
         }
       }
-    }
 
     def emitDispatch(
         expr: ast.Dispatch,
@@ -487,11 +475,10 @@ trait Emitter
       val ids = let.params map { Identifier(Vector(), _) }
       val zipped = ids zip (actuals map { _.provenance })
 
-      def sub(target: Provenance): Provenance = {
+      def sub(target: Provenance): Provenance =
         zipped.foldLeft(target) {
           case (target, (id, sub)) => substituteParam(id, let, target, sub)
         }
-      }
 
       val actualStates = params zip actuals map {
         case (name, expr) =>
@@ -889,12 +876,11 @@ trait Emitter
   }
 
   private def collapseLines(
-      bytecode: Vector[Instruction]): Vector[Instruction] = {
+      bytecode: Vector[Instruction]): Vector[Instruction] =
     bytecode.foldLeft(Vector[Instruction]()) {
       case (acc, line: Line) if !acc.isEmpty && acc.last.isInstanceOf[Line] =>
         acc.updated(acc.length - 1, line)
 
       case (acc, instr) => acc :+ instr
     }
-  }
 }

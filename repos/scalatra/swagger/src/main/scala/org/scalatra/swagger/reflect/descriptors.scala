@@ -6,7 +6,7 @@ sealed trait Descriptor
 object ManifestScalaType {
   private val types = new Memo[Manifest[_], ScalaType]
 
-  def apply[T](mf: Manifest[T]): ScalaType = {
+  def apply[T](mf: Manifest[T]): ScalaType =
     /* optimization */
     if (mf.runtimeClass == classOf[Int] || mf.runtimeClass == classOf[
           java.lang.Integer]) ManifestScalaType.IntType
@@ -45,7 +45,6 @@ object ManifestScalaType {
       //      }
       //      new ScalaType(mf)
     }
-  }
 
   def apply(
       erasure: Class[_],
@@ -221,7 +220,7 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   def copy(
       erasure: Class[_] = erasure,
       typeArgs: Seq[ScalaType] = typeArgs,
-      typeVars: Map[TypeVariable[_], ScalaType] = _typeVars): ScalaType = {
+      typeVars: Map[TypeVariable[_], ScalaType] = _typeVars): ScalaType =
     /* optimization */
     if (erasure == classOf[Int] || erasure == classOf[java.lang.Integer])
       ManifestScalaType.IntType
@@ -257,7 +256,6 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
       if (typeArgs.isEmpty) types.replace(mf, st)
       else st
     }
-  }
 
   override def toString: String = simpleName
 }

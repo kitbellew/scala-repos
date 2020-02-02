@@ -454,9 +454,8 @@ class RowMatrix @Since("1.0.0") (
     * @see computePrincipalComponentsAndExplainedVariance
     */
   @Since("1.0.0")
-  def computePrincipalComponents(k: Int): Matrix = {
+  def computePrincipalComponents(k: Int): Matrix =
     computePrincipalComponentsAndExplainedVariance(k)._1
-  }
 
   /**
     * Computes column-wise summary statistics.
@@ -513,9 +512,8 @@ class RowMatrix @Since("1.0.0") (
     *         columns of this matrix.
     */
   @Since("1.2.0")
-  def columnSimilarities(): CoordinateMatrix = {
+  def columnSimilarities(): CoordinateMatrix =
     columnSimilarities(0.0)
-  }
 
   /**
     * Compute similarities between columns of this matrix using a sampling approach.
@@ -746,7 +744,7 @@ class RowMatrix @Since("1.0.0") (
     } else {
       require(
         nRows == m,
-        s"The number of rows $m is different from what specified or previously computed: ${nRows}.")
+        s"The number of rows $m is different from what specified or previously computed: $nRows.")
     }
   }
 }

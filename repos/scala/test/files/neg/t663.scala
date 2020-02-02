@@ -8,11 +8,10 @@ trait Test {
   trait NodeImpl;
   trait CoreIfImpl extends MatchableImpl {
     // NO_CRASH: def asMatch(m : Matchable) = {
-    def asMatch(m: Node): Any = {
+    def asMatch(m: Node): Any =
       if (m.isInstanceOf[MatchableImpl]) {
         null;
       } else null;
-      // NO_CRASH: null;
-    }
+    // NO_CRASH: null;
   }
 }

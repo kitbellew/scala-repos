@@ -36,9 +36,8 @@ class DynamicTest {
       : Unit = {
     class Point(val x: Int, val y: Int)
 
-    def jsonToPoint(json: js.Dynamic): Point = {
+    def jsonToPoint(json: js.Dynamic): Point =
       new Point(json.x.toString.toInt, json.y.toString.toInt)
-    }
 
     val json =
       js.eval("var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")

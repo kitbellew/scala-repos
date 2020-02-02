@@ -10,7 +10,7 @@ import Tags._
 
 object Hashers {
 
-  def hashMethodDef(methodDef: MethodDef): MethodDef = {
+  def hashMethodDef(methodDef: MethodDef): MethodDef =
     if (methodDef.hash.isDefined) methodDef
     else {
       val hasher = new TreeHasher()
@@ -30,7 +30,6 @@ object Hashers {
         methodDef.optimizerHints,
         Some(hash))(methodDef.pos)
     }
-  }
 
   /** Hash definitions from a ClassDef where applicable */
   def hashDefs(defs: List[Tree]): List[Tree] = defs map {
@@ -39,15 +38,13 @@ object Hashers {
   }
 
   /** Hash the definitions in a ClassDef (where applicable) */
-  def hashClassDef(classDef: ClassDef): ClassDef = {
+  def hashClassDef(classDef: ClassDef): ClassDef =
     classDef.copy(defs = hashDefs(classDef.defs))(classDef.optimizerHints)(
       classDef.pos)
-  }
 
-  def hashesEqual(x: TreeHash, y: TreeHash, considerPos: Boolean): Boolean = {
+  def hashesEqual(x: TreeHash, y: TreeHash, considerPos: Boolean): Boolean =
     Arrays.equals(x.treeHash, y.treeHash) &&
-    (!considerPos || Arrays.equals(x.posHash, y.posHash))
-  }
+      (!considerPos || Arrays.equals(x.posHash, y.posHash))
 
   def hashAsVersion(hash: TreeHash, considerPos: Boolean): String = {
     // 2 chars per byte, 20 bytes per hash
@@ -56,10 +53,9 @@ object Hashers {
 
     def hexDigit(digit: Int): Char = Character.forDigit(digit, 16)
 
-    def append(hash: Array[Byte]): Unit = {
+    def append(hash: Array[Byte]): Unit =
       for (b <- hash)
         builder.append(hexDigit(b >> 4)).append(hexDigit(b & 0xF))
-    }
     append(hash.treeHash)
 
     if (considerPos)

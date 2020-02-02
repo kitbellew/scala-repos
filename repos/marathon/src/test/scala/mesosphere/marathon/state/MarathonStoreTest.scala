@@ -186,12 +186,11 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     val config = new ScallopConf(Seq("--master", "foo")) with MarathonConf
     config.afterInit()
 
-    def populate(key: String, value: Array[Byte]) = {
+    def populate(key: String, value: Array[Byte]) =
       state.load(key).futureValue match {
         case Some(ent) => state.update(ent.withNewContent(value)).futureValue
         case None      => state.create(key, value).futureValue
       }
-    }
 
     populate("app:foo", Array())
     populate("app:bar", Array())
@@ -242,12 +241,11 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       .store("foo", AppDefinition(id = "foo".toPath, instances = 0))
       .futureValue
 
-    def plusOne() = {
+    def plusOne() =
       store.modify("foo") { f =>
         val appDef = f()
         appDef.copy(instances = appDef.instances + 1)
       }
-    }
 
     val results = for (_ <- 0 until 1000) yield plusOne()
 

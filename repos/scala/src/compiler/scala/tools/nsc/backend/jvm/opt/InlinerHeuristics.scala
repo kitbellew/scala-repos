@@ -42,7 +42,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
     } yield methodNode
 
     compilingMethods
-      .map(methodNode => {
+      .map { methodNode =>
         var requests = Set.empty[InlineRequest]
         callGraph.callsites(methodNode).valuesIterator foreach {
           case callsite @ Callsite(
@@ -114,7 +114,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                 s"failed to determine if ${ins.name} should be inlined:\n$warning")
         }
         (methodNode, requests)
-      })
+      }
       .filterNot(_._2.isEmpty)
       .toMap
   }

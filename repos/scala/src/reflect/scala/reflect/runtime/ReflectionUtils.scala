@@ -113,7 +113,7 @@ object ReflectionUtils {
   object EnclosedInClass extends EnclosedIn(_.getEnclosingClass)
   object EnclosedInPackage extends EnclosedIn(_.getPackage)
 
-  def associatedFile(clazz: Class[_]): AbstractFile = {
+  def associatedFile(clazz: Class[_]): AbstractFile =
     // TODO: I agree with Jason - this implementation isn't something that we'd like to support
     // therefore I'm having it commented out and this function will now return NoAbstractFile
     // I think we can keep the source code though, because it can be useful to the others
@@ -180,5 +180,4 @@ object ReflectionUtils {
     // }
     // inferAssociatedFile(clazz)
     NoAbstractFile
-  }
 }

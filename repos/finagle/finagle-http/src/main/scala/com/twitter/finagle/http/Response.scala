@@ -69,9 +69,8 @@ object Response {
   val Schema: RecordSchema = new RecordSchema
 
   /** Decode a [[Response]] from a String */
-  def decodeString(s: String): Response = {
+  def decodeString(s: String): Response =
     decodeBytes(s.getBytes(Charsets.UTF_8))
-  }
 
   /** Decode a [[Response]] from a byte array */
   def decodeBytes(b: Array[Byte]): Response = {

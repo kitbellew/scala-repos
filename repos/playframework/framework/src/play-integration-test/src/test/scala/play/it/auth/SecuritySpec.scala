@@ -47,7 +47,7 @@ object SecuritySpec extends PlaySpecification {
   object Authenticated extends ActionBuilder[AuthenticatedDbRequest] {
     def invokeBlock[A](
         request: Request[A],
-        block: (AuthenticatedDbRequest[A]) => Future[Result]) = {
+        block: (AuthenticatedDbRequest[A]) => Future[Result]) =
       AuthenticatedBuilder(req => getUserFromRequest(req))
         .authenticate(request, { authRequest: AuthenticatedRequest[A, User] =>
           DB.withConnection { conn =>
@@ -55,18 +55,15 @@ object SecuritySpec extends PlaySpecification {
               new AuthenticatedDbRequest[A](authRequest.user, conn, request))
           }
         })
-    }
   }
 
   object DB {
-    def withConnection[A](block: Connection => A) = {
+    def withConnection[A](block: Connection => A) =
       block(FakeConnection)
-    }
   }
   object FakeConnection extends Connection("fake")
   case class Connection(name: String)
 
-  def withApplication[T](block: => T) = {
+  def withApplication[T](block: => T) =
     running(_.configure("play.crypto.secret" -> "foobar"))(_ => block)
-  }
 }

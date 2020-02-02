@@ -43,9 +43,8 @@ class RateLimiterActorTest extends MarathonSpec {
     assert(delay.delayUntil == clock.now())
   }
 
-  private[this] def askLimiter(message: Any): Any = {
+  private[this] def askLimiter(message: Any): Any =
     Await.result(limiterRef ? message, 3.seconds)
-  }
 
   private val backoff: FiniteDuration = 10.seconds
   private val backoffFactor: Double = 2.0

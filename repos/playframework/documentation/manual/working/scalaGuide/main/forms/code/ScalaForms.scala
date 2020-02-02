@@ -225,10 +225,9 @@ package scalaguide.forms.scalaforms {
 
         //#userForm-handling-failure
         userForm.bindFromRequest.fold(
-          formWithErrors => {
+          formWithErrors =>
             // binding failure, you retrieve the form containing errors:
-            BadRequest(views.html.user(formWithErrors))
-          },
+            BadRequest(views.html.user(formWithErrors)),
           userData => {
             /* binding success, you get the actual value. */
             val newUser = models.User(userData.name, userData.age)
@@ -325,7 +324,7 @@ package scalaguide.forms.scalaforms {
       }
 
       //#userForm-constraints-ad-hoc
-      def validate(name: String, age: Int) = {
+      def validate(name: String, age: Int) =
         name match {
           case "bob" if age >= 18 =>
             Some(UserData(name, age))
@@ -334,7 +333,6 @@ package scalaguide.forms.scalaforms {
           case _ =>
             None
         }
-      }
 
       val userFormConstraintsAdHoc = Form(
         mapping(
@@ -499,9 +497,7 @@ package scalaguide.forms.scalaforms {
       // #contact-save
       def saveContact = Action { implicit request =>
         contactForm.bindFromRequest.fold(
-          formWithErrors => {
-            BadRequest(views.html.contact.form(formWithErrors))
-          },
+          formWithErrors => BadRequest(views.html.contact.form(formWithErrors)),
           contact => {
             val contactId = Contact.save(contact)
             Redirect(routes.Application.showContact(contactId))

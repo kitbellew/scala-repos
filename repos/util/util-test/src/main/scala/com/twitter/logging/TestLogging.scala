@@ -72,7 +72,6 @@ trait TestLogging extends BeforeAndAfter { self: WordSpec =>
     * Verify that the logger set up with `traceLogger` has received a log line with the given
     * substring somewhere inside it.
     */
-  def mustLog(substring: String) = {
+  def mustLog(substring: String) =
     assert(logLines().filter { _ contains substring }.size > 0)
-  }
 }

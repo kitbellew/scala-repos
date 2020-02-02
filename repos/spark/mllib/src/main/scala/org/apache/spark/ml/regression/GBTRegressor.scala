@@ -151,7 +151,7 @@ final class GBTRegressor @Since("1.4.0") (
   def getLossType: String = $(lossType).toLowerCase
 
   /** (private[ml]) Convert new loss to old loss. */
-  override private[ml] def getOldLossType: OldLoss = {
+  override private[ml] def getOldLossType: OldLoss =
     getLossType match {
       case "squared"  => OldSquaredError
       case "absolute" => OldAbsoluteError
@@ -160,7 +160,6 @@ final class GBTRegressor @Since("1.4.0") (
         throw new RuntimeException(
           s"GBTRegressorParams was given bad loss type: $getLossType")
     }
-  }
 
   override protected def train(dataset: DataFrame): GBTRegressionModel = {
     val categoricalFeatures: Map[Int, Int] =
@@ -251,21 +250,18 @@ final class GBTRegressionModel private[ml] (
   }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): GBTRegressionModel = {
+  override def copy(extra: ParamMap): GBTRegressionModel =
     copyValues(
       new GBTRegressionModel(uid, _trees, _treeWeights, numFeatures),
       extra).setParent(parent)
-  }
 
   @Since("1.4.0")
-  override def toString: String = {
+  override def toString: String =
     s"GBTRegressionModel (uid=$uid) with $numTrees trees"
-  }
 
   /** (private[ml]) Convert to a model in the old API */
-  private[ml] def toOld: OldGBTModel = {
+  private[ml] def toOld: OldGBTModel =
     new OldGBTModel(OldAlgo.Regression, _trees.map(_.toOld), _treeWeights)
-  }
 }
 
 private[ml] object GBTRegressionModel {

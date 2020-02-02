@@ -19,9 +19,8 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 object LookupElementManager {
   def getKeywrodLookupElement(
       keyword: String,
-      position: PsiElement): LookupElement = {
+      position: PsiElement): LookupElement =
     ScalaKeywordLookupItem.getLookupElement(keyword, position)
-  }
 
   def getLookupElement(
       resolveResult: ScalaResolveResult,
@@ -41,14 +40,13 @@ object LookupElementManager {
 
     def isCurrentClassMember: Boolean = {
       def checkIsExpectedClassMember(
-          expectedClassOption: Option[PsiClass]): Boolean = {
+          expectedClassOption: Option[PsiClass]): Boolean =
         expectedClassOption.exists { expectedClass =>
           ScalaPsiUtil.nameContext(element) match {
             case m: PsiMember if m.containingClass == expectedClass => true
             case _                                                  => false
           }
         }
-      }
 
       def usedImportForElement = resolveResult.importsUsed.nonEmpty
       def isPredef =
@@ -73,12 +71,11 @@ object LookupElementManager {
       }
     }
 
-    def isDeprecated: Boolean = {
+    def isDeprecated: Boolean =
       element match {
         case doc: PsiDocCommentOwner if doc.isDeprecated => true
         case _                                           => false
       }
-    }
 
     def getLookupElementInternal(
         isAssignment: Boolean,

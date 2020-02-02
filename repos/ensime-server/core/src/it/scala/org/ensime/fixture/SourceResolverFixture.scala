@@ -49,8 +49,7 @@ trait SharedSourceResolverFixture
   override def withSourceResolver(testCode: SourceResolver => Any): Any =
     testCode(_resolver)
   override def withSourceResolver(
-      testCode: (EnsimeConfig, SourceResolver) => Any): Any = {
+      testCode: (EnsimeConfig, SourceResolver) => Any): Any =
     testCode(_config, _resolver)
-  }
 
 }

@@ -48,8 +48,7 @@ class SyncProducerTest extends KafkaServerTestHarness {
       acks: Int,
       timeout: Int = SyncProducerConfig.DefaultAckTimeoutMs,
       correlationId: Int = 0,
-      clientId: String = SyncProducerConfig.DefaultClientId)
-      : ProducerRequest = {
+      clientId: String = SyncProducerConfig.DefaultClientId): ProducerRequest =
     TestUtils.produceRequest(
       topic,
       partition,
@@ -58,7 +57,6 @@ class SyncProducerTest extends KafkaServerTestHarness {
       timeout,
       correlationId,
       clientId)
-  }
 
   @Test
   def testReachableServer() {

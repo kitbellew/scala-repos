@@ -201,9 +201,8 @@ final case class VectorClock(
     *   4. Clock 1 is CONCURRENT (<>) to Clock 2 otherwise.
     * }}}
     */
-  def compareTo(that: VectorClock): Ordering = {
+  def compareTo(that: VectorClock): Ordering =
     compareOnlyTo(that, FullOrder)
-  }
 
   /**
     * Merges this VectorClock with another VectorClock. E.g. merges its versioned history.

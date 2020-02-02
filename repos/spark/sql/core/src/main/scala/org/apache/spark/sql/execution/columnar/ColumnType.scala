@@ -91,9 +91,8 @@ private[columnar] sealed abstract class ColumnType[JvmType] {
     * `row(ordinal)`. Subclasses should override this method to avoid boxing/unboxing costs whenever
     * possible.
     */
-  def extract(buffer: ByteBuffer, row: MutableRow, ordinal: Int): Unit = {
+  def extract(buffer: ByteBuffer, row: MutableRow, ordinal: Int): Unit =
     setField(row, ordinal, extract(buffer))
-  }
 
   /**
     * Appends the given value v of type T into the given ByteBuffer.
@@ -104,9 +103,8 @@ private[columnar] sealed abstract class ColumnType[JvmType] {
     * Appends `row(ordinal)` of type T into the given ByteBuffer. Subclasses should override this
     * method to avoid boxing/unboxing costs whenever possible.
     */
-  def append(row: InternalRow, ordinal: Int, buffer: ByteBuffer): Unit = {
+  def append(row: InternalRow, ordinal: Int, buffer: ByteBuffer): Unit =
     append(getField(row, ordinal), buffer)
-  }
 
   /**
     * Returns the size of the value `row(ordinal)`. This is used to calculate the size of variable
@@ -134,9 +132,8 @@ private[columnar] sealed abstract class ColumnType[JvmType] {
       from: InternalRow,
       fromOrdinal: Int,
       to: MutableRow,
-      toOrdinal: Int): Unit = {
+      toOrdinal: Int): Unit =
     setField(to, toOrdinal, getField(from, fromOrdinal))
-  }
 
   /**
     * Creates a duplicated copy of the value.
@@ -169,31 +166,26 @@ private[columnar] abstract class NativeColumnType[T <: AtomicType](
 }
 
 private[columnar] object INT extends NativeColumnType(IntegerType, 4) {
-  override def append(v: Int, buffer: ByteBuffer): Unit = {
+  override def append(v: Int, buffer: ByteBuffer): Unit =
     buffer.putInt(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.putInt(row.getInt(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Int = {
+  override def extract(buffer: ByteBuffer): Int =
     ByteBufferHelper.getInt(buffer)
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setInt(ordinal, ByteBufferHelper.getInt(buffer))
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Int): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Int): Unit =
     row.setInt(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Int =
     row.getInt(ordinal)
@@ -208,31 +200,26 @@ private[columnar] object INT extends NativeColumnType(IntegerType, 4) {
 }
 
 private[columnar] object LONG extends NativeColumnType(LongType, 8) {
-  override def append(v: Long, buffer: ByteBuffer): Unit = {
+  override def append(v: Long, buffer: ByteBuffer): Unit =
     buffer.putLong(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.putLong(row.getLong(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Long = {
+  override def extract(buffer: ByteBuffer): Long =
     ByteBufferHelper.getLong(buffer)
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setLong(ordinal, ByteBufferHelper.getLong(buffer))
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Long): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Long): Unit =
     row.setLong(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Long =
     row.getLong(ordinal)
@@ -247,31 +234,26 @@ private[columnar] object LONG extends NativeColumnType(LongType, 8) {
 }
 
 private[columnar] object FLOAT extends NativeColumnType(FloatType, 4) {
-  override def append(v: Float, buffer: ByteBuffer): Unit = {
+  override def append(v: Float, buffer: ByteBuffer): Unit =
     buffer.putFloat(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.putFloat(row.getFloat(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Float = {
+  override def extract(buffer: ByteBuffer): Float =
     ByteBufferHelper.getFloat(buffer)
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setFloat(ordinal, ByteBufferHelper.getFloat(buffer))
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Float): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Float): Unit =
     row.setFloat(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Float =
     row.getFloat(ordinal)
@@ -286,31 +268,26 @@ private[columnar] object FLOAT extends NativeColumnType(FloatType, 4) {
 }
 
 private[columnar] object DOUBLE extends NativeColumnType(DoubleType, 8) {
-  override def append(v: Double, buffer: ByteBuffer): Unit = {
+  override def append(v: Double, buffer: ByteBuffer): Unit =
     buffer.putDouble(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.putDouble(row.getDouble(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Double = {
+  override def extract(buffer: ByteBuffer): Double =
     ByteBufferHelper.getDouble(buffer)
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setDouble(ordinal, ByteBufferHelper.getDouble(buffer))
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Double): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Double): Unit =
     row.setDouble(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Double =
     row.getDouble(ordinal)
@@ -325,29 +302,25 @@ private[columnar] object DOUBLE extends NativeColumnType(DoubleType, 8) {
 }
 
 private[columnar] object BOOLEAN extends NativeColumnType(BooleanType, 1) {
-  override def append(v: Boolean, buffer: ByteBuffer): Unit = {
+  override def append(v: Boolean, buffer: ByteBuffer): Unit =
     buffer.put(if (v) 1: Byte else 0: Byte)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.put(if (row.getBoolean(ordinal)) 1: Byte else 0: Byte)
-  }
 
   override def extract(buffer: ByteBuffer): Boolean = buffer.get() == 1
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setBoolean(ordinal, buffer.get() == 1)
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Boolean): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Boolean): Unit =
     row.setBoolean(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Boolean =
     row.getBoolean(ordinal)
@@ -362,31 +335,26 @@ private[columnar] object BOOLEAN extends NativeColumnType(BooleanType, 1) {
 }
 
 private[columnar] object BYTE extends NativeColumnType(ByteType, 1) {
-  override def append(v: Byte, buffer: ByteBuffer): Unit = {
+  override def append(v: Byte, buffer: ByteBuffer): Unit =
     buffer.put(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.put(row.getByte(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Byte = {
+  override def extract(buffer: ByteBuffer): Byte =
     buffer.get()
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setByte(ordinal, buffer.get())
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Byte): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Byte): Unit =
     row.setByte(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Byte =
     row.getByte(ordinal)
@@ -401,31 +369,26 @@ private[columnar] object BYTE extends NativeColumnType(ByteType, 1) {
 }
 
 private[columnar] object SHORT extends NativeColumnType(ShortType, 2) {
-  override def append(v: Short, buffer: ByteBuffer): Unit = {
+  override def append(v: Short, buffer: ByteBuffer): Unit =
     buffer.putShort(v)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     buffer.putShort(row.getShort(ordinal))
-  }
 
-  override def extract(buffer: ByteBuffer): Short = {
+  override def extract(buffer: ByteBuffer): Short =
     buffer.getShort()
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     row.setShort(ordinal, buffer.getShort())
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Short): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Short): Unit =
     row.setShort(ordinal, value)
-  }
 
   override def getField(row: InternalRow, ordinal: Int): Short =
     row.getShort(ordinal)
@@ -450,7 +413,7 @@ private[columnar] trait DirectCopyColumnType[JvmType]
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     if (row.isInstanceOf[MutableUnsafeRow]) {
       val numBytes = buffer.getInt
       val cursor = buffer.position()
@@ -462,28 +425,25 @@ private[columnar] trait DirectCopyColumnType[JvmType]
     } else {
       setField(row, ordinal, extract(buffer))
     }
-  }
 
   // copy the bytes from UnsafeRow to ByteBuffer
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     if (row.isInstanceOf[UnsafeRow]) {
       row.asInstanceOf[UnsafeRow].writeFieldTo(ordinal, buffer)
     } else {
       super.append(row, ordinal, buffer)
     }
-  }
 }
 
 private[columnar] object STRING
     extends NativeColumnType(StringType, 8)
     with DirectCopyColumnType[UTF8String] {
 
-  override def actualSize(row: InternalRow, ordinal: Int): Int = {
+  override def actualSize(row: InternalRow, ordinal: Int): Int =
     row.getUTF8String(ordinal).numBytes() + 4
-  }
 
   override def append(v: UTF8String, buffer: ByteBuffer): Unit = {
     buffer.putInt(v.numBytes())
@@ -500,17 +460,15 @@ private[columnar] object STRING
   override def setField(
       row: MutableRow,
       ordinal: Int,
-      value: UTF8String): Unit = {
+      value: UTF8String): Unit =
     if (row.isInstanceOf[MutableUnsafeRow]) {
       row.asInstanceOf[MutableUnsafeRow].writer.write(ordinal, value)
     } else {
       row.update(ordinal, value.clone())
     }
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): UTF8String = {
+  override def getField(row: InternalRow, ordinal: Int): UTF8String =
     row.getUTF8String(ordinal)
-  }
 
   override def copyField(
       from: InternalRow,
@@ -526,45 +484,39 @@ private[columnar] object STRING
 private[columnar] case class COMPACT_DECIMAL(precision: Int, scale: Int)
     extends NativeColumnType(DecimalType(precision, scale), 8) {
 
-  override def extract(buffer: ByteBuffer): Decimal = {
+  override def extract(buffer: ByteBuffer): Decimal =
     Decimal(ByteBufferHelper.getLong(buffer), precision, scale)
-  }
 
   override def extract(
       buffer: ByteBuffer,
       row: MutableRow,
-      ordinal: Int): Unit = {
+      ordinal: Int): Unit =
     if (row.isInstanceOf[MutableUnsafeRow]) {
       // copy it as Long
       row.setLong(ordinal, ByteBufferHelper.getLong(buffer))
     } else {
       setField(row, ordinal, extract(buffer))
     }
-  }
 
-  override def append(v: Decimal, buffer: ByteBuffer): Unit = {
+  override def append(v: Decimal, buffer: ByteBuffer): Unit =
     buffer.putLong(v.toUnscaledLong)
-  }
 
   override def append(
       row: InternalRow,
       ordinal: Int,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     if (row.isInstanceOf[UnsafeRow]) {
       // copy it as Long
       buffer.putLong(row.getLong(ordinal))
     } else {
       append(getField(row, ordinal), buffer)
     }
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): Decimal = {
+  override def getField(row: InternalRow, ordinal: Int): Decimal =
     row.getDecimal(ordinal, precision, scale)
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Decimal): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Decimal): Unit =
     row.setDecimal(ordinal, value, precision)
-  }
 
   override def copyField(
       from: InternalRow,
@@ -576,9 +528,8 @@ private[columnar] case class COMPACT_DECIMAL(precision: Int, scale: Int)
 }
 
 private[columnar] object COMPACT_DECIMAL {
-  def apply(dt: DecimalType): COMPACT_DECIMAL = {
+  def apply(dt: DecimalType): COMPACT_DECIMAL =
     COMPACT_DECIMAL(dt.precision, dt.scale)
-  }
 }
 
 private[columnar] sealed abstract class ByteArrayColumnType[JvmType](
@@ -609,17 +560,14 @@ private[columnar] object BINARY extends ByteArrayColumnType[Array[Byte]](16) {
   override def setField(
       row: MutableRow,
       ordinal: Int,
-      value: Array[Byte]): Unit = {
+      value: Array[Byte]): Unit =
     row.update(ordinal, value)
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): Array[Byte] = {
+  override def getField(row: InternalRow, ordinal: Int): Array[Byte] =
     row.getBinary(ordinal)
-  }
 
-  override def actualSize(row: InternalRow, ordinal: Int): Int = {
+  override def actualSize(row: InternalRow, ordinal: Int): Int =
     row.getBinary(ordinal).length + 4
-  }
 
   def serialize(value: Array[Byte]): Array[Byte] = value
   def deserialize(bytes: Array[Byte]): Array[Byte] = bytes
@@ -630,23 +578,19 @@ private[columnar] case class LARGE_DECIMAL(precision: Int, scale: Int)
 
   override val dataType: DataType = DecimalType(precision, scale)
 
-  override def getField(row: InternalRow, ordinal: Int): Decimal = {
+  override def getField(row: InternalRow, ordinal: Int): Decimal =
     row.getDecimal(ordinal, precision, scale)
-  }
 
-  override def setField(row: MutableRow, ordinal: Int, value: Decimal): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Decimal): Unit =
     row.setDecimal(ordinal, value, precision)
-  }
 
-  override def actualSize(row: InternalRow, ordinal: Int): Int = {
+  override def actualSize(row: InternalRow, ordinal: Int): Int =
     4 + getField(row, ordinal).toJavaBigDecimal
       .unscaledValue()
       .bitLength() / 8 + 1
-  }
 
-  override def serialize(value: Decimal): Array[Byte] = {
+  override def serialize(value: Decimal): Array[Byte] =
     value.toJavaBigDecimal.unscaledValue().toByteArray
-  }
 
   override def deserialize(bytes: Array[Byte]): Decimal = {
     val javaDecimal = new BigDecimal(new BigInteger(bytes), scale)
@@ -655,9 +599,8 @@ private[columnar] case class LARGE_DECIMAL(precision: Int, scale: Int)
 }
 
 private[columnar] object LARGE_DECIMAL {
-  def apply(dt: DecimalType): LARGE_DECIMAL = {
+  def apply(dt: DecimalType): LARGE_DECIMAL =
     LARGE_DECIMAL(dt.precision, dt.scale)
-  }
 }
 
 private[columnar] case class STRUCT(dataType: StructType)
@@ -668,20 +611,14 @@ private[columnar] case class STRUCT(dataType: StructType)
 
   override def defaultSize: Int = 20
 
-  override def setField(
-      row: MutableRow,
-      ordinal: Int,
-      value: UnsafeRow): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: UnsafeRow): Unit =
     row.update(ordinal, value)
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): UnsafeRow = {
+  override def getField(row: InternalRow, ordinal: Int): UnsafeRow =
     row.getStruct(ordinal, numOfFields).asInstanceOf[UnsafeRow]
-  }
 
-  override def actualSize(row: InternalRow, ordinal: Int): Int = {
+  override def actualSize(row: InternalRow, ordinal: Int): Int =
     4 + getField(row, ordinal).getSizeInBytes
-  }
 
   override def append(value: UnsafeRow, buffer: ByteBuffer): Unit = {
     buffer.putInt(value.getSizeInBytes)
@@ -713,13 +650,11 @@ private[columnar] case class ARRAY(dataType: ArrayType)
   override def setField(
       row: MutableRow,
       ordinal: Int,
-      value: UnsafeArrayData): Unit = {
+      value: UnsafeArrayData): Unit =
     row.update(ordinal, value)
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): UnsafeArrayData = {
+  override def getField(row: InternalRow, ordinal: Int): UnsafeArrayData =
     row.getArray(ordinal).asInstanceOf[UnsafeArrayData]
-  }
 
   override def actualSize(row: InternalRow, ordinal: Int): Int = {
     val unsafeArray = getField(row, ordinal)
@@ -756,13 +691,11 @@ private[columnar] case class MAP(dataType: MapType)
   override def setField(
       row: MutableRow,
       ordinal: Int,
-      value: UnsafeMapData): Unit = {
+      value: UnsafeMapData): Unit =
     row.update(ordinal, value)
-  }
 
-  override def getField(row: InternalRow, ordinal: Int): UnsafeMapData = {
+  override def getField(row: InternalRow, ordinal: Int): UnsafeMapData =
     row.getMap(ordinal).asInstanceOf[UnsafeMapData]
-  }
 
   override def actualSize(row: InternalRow, ordinal: Int): Int = {
     val unsafeMap = getField(row, ordinal)
@@ -791,7 +724,7 @@ private[columnar] case class MAP(dataType: MapType)
 
 private[columnar] object ColumnType {
   @tailrec
-  def apply(dataType: DataType): ColumnType[_] = {
+  def apply(dataType: DataType): ColumnType[_] =
     dataType match {
       case NullType                 => NULL
       case BooleanType              => BOOLEAN
@@ -813,5 +746,4 @@ private[columnar] object ColumnType {
       case other =>
         throw new Exception(s"Unsupported type: $other")
     }
-  }
 }

@@ -237,9 +237,8 @@ case class Segments(
   }
 
   // TODO: more principled number handling
-  def addNum(row: Int, tree: CTree, s: String): Unit = {
+  def addNum(row: Int, tree: CTree, s: String): Unit =
     addBigDecimal(row, tree, BigDecimal(s))
-  }
 
   def extendWithRows(rows: Seq[JValue]) {
     var i = 0
@@ -261,7 +260,7 @@ case class Segments(
     }
   }
 
-  def initializeSegments(row: Int, j: JValue, tree: CTree): Unit = {
+  def initializeSegments(row: Int, j: JValue, tree: CTree): Unit =
     j match {
       case JNull  => addNull(row, tree)
       case JTrue  => addTrue(row, tree)
@@ -296,5 +295,4 @@ case class Segments(
 
       case JUndefined => ()
     }
-  }
 }

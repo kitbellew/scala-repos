@@ -42,14 +42,12 @@ class FinallyFilter extends ElementFilter {
     false
   }
 
-  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean = {
+  def isClassAcceptable(hintClass: java.lang.Class[_]): Boolean =
     true
-  }
 
   @NonNls
-  override def toString: String = {
+  override def toString: String =
     "statements keyword filter"
-  }
 
   def getPrevNotWhitespaceAndComment(index: Int, context: PsiElement): Int = {
     var i = index

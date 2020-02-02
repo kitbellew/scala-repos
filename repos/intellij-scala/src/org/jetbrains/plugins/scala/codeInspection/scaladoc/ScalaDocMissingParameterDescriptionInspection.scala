@@ -24,7 +24,7 @@ class ScalaDocMissingParameterDescriptionInspection
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
         if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
@@ -48,7 +48,6 @@ class ScalaDocMissingParameterDescriptionInspection
             isOnTheFly))
       }
     }
-  }
 }
 
 object ScalaDocMissingParameterDescriptionInspection {

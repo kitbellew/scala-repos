@@ -28,13 +28,12 @@ class SimplifyBooleanExprWithLiteralIntention
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     findSimplifiableParent(element).exists {
       case expr =>
         val offset = editor.getCaretModel.getOffset
         offset >= expr.getTextRange.getStartOffset && offset <= expr.getTextRange.getEndOffset
     }
-  }
 
   def invoke(project: Project, editor: Editor, element: PsiElement) {
     findSimplifiableParent(element) match {

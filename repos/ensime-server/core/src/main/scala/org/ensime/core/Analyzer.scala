@@ -83,15 +83,12 @@ class Analyzer(
     presCompLog.debug("Presentation Compiler settings:\n" + settings)
 
     reporter = new PresentationReporter(new ReportHandler {
-      override def messageUser(str: String): Unit = {
+      override def messageUser(str: String): Unit =
         broadcaster ! SendBackgroundMessageEvent(str, 101)
-      }
-      override def clearAllScalaNotes(): Unit = {
+      override def clearAllScalaNotes(): Unit =
         broadcaster ! ClearAllScalaNotesEvent
-      }
-      override def reportScalaNotes(notes: List[Note]): Unit = {
+      override def reportScalaNotes(notes: List[Note]): Unit =
         broadcaster ! NewScalaNotesEvent(isFull = false, notes)
-      }
     })
     reporter.disable() // until we start up
 
@@ -125,9 +122,8 @@ class Analyzer(
     broadcaster ! CompilerRestartedEvent
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     Try(scalaCompiler.askShutdown())
-  }
 
   def charset: Charset = scalaCompiler.charset
 
@@ -326,10 +322,9 @@ class Analyzer(
     pos(createSourceFile(file), range)
   def pos(file: SourceFileInfo, offset: Int): OffsetPosition =
     pos(createSourceFile(file), offset)
-  def pos(f: SourceFile, range: OffsetRange): OffsetPosition = {
+  def pos(f: SourceFile, range: OffsetRange): OffsetPosition =
     if (range.from == range.to) new OffsetPosition(f, range.from)
     else new RangePosition(f, range.from, range.from, range.to)
-  }
   def pos(f: SourceFile, offset: Int): OffsetPosition =
     new OffsetPosition(f, offset)
 

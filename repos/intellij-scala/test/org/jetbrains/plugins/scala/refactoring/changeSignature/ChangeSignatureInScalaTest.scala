@@ -36,14 +36,13 @@ class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
       newVisibility: String,
       newName: String,
       newReturnType: String,
-      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase = {
+      newParams: => Seq[Seq[ParameterInfo]]): ChangeSignatureProcessorBase =
     scalaProcessor(
       newVisibility,
       newName,
       newReturnType,
       newParams,
       isAddDefaultValue)
-  }
 
   override def mainFileName(testName: String): String = testName + ".scala"
   override def mainFileAfterName(testName: String): String =
@@ -57,7 +56,7 @@ class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
       tpe: ScType,
       defVal: String = "",
       isRep: Boolean = false,
-      isByName: Boolean = false) = {
+      isByName: Boolean = false) =
     new ScalaParameterInfo(
       name,
       oldIdx,
@@ -66,7 +65,6 @@ class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
       isRep,
       isByName,
       defVal)
-  }
 
   def testVisibility(): Unit = {
     isAddDefaultValue = false

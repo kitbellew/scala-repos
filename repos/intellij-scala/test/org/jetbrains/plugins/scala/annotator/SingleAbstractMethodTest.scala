@@ -649,7 +649,7 @@ class SingleAbstractMethodTest
     Assert.assertTrue("actual: " + actual.toString, pattern.isDefinedAt(actual))
   }
 
-  def parseText(@Language("Scala") s: String): ScalaFile = {
+  def parseText(@Language("Scala") s: String): ScalaFile =
     PsiFileFactory
       .getInstance(getProjectAdapter)
       .createFileFromText(
@@ -657,7 +657,6 @@ class SingleAbstractMethodTest
         ScalaFileType.SCALA_FILE_TYPE,
         s)
       .asInstanceOf[ScalaFile]
-  }
 
   val cannotResolveSymbol = ContainsPattern("Cannot resolve symbol")
   val doesNotConform = ContainsPattern("doesn't conform to expected type")

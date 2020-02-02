@@ -69,10 +69,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
   def multiResolveImpl(incomplete: Boolean): Array[ResolveResult] =
     Resolver.resolve(ResolvableReferenceExpression.this, incomplete)
 
-  def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
+  def multiResolve(incomplete: Boolean): Array[ResolveResult] =
     if (resolveFunction != null) resolveFunction()
     else multiResolveImpl(incomplete)
-  }
 
   @CachedWithRecursionGuard[ResolvableReferenceExpression](
     this,
@@ -95,12 +94,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       .exists(_.isLetterOrDigit))
   }
 
-  def isUnaryOperator = {
+  def isUnaryOperator =
     getContext match {
       case pref: ScPrefixExpr if pref.operation == this => true
       case _                                            => false
     }
-  }
 
   def rightAssoc = refName.endsWith(":")
 
@@ -125,7 +123,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
   }
   private def resolveUnqalified(
       ref: ResolvableReferenceExpression,
-      processor: BaseProcessor): BaseProcessor = {
+      processor: BaseProcessor): BaseProcessor =
     ref.getContext match {
       case inf: ScInfixExpr if ref == inf.operation =>
         val thisOp = if (ref.rightAssoc) inf.rOp else inf.lOp
@@ -138,7 +136,6 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         resolveUnqualifiedExpression(ref, processor)
         processor
     }
-  }
 
   private def resolveUnqualifiedExpression(
       ref: ResolvableReferenceExpression,
@@ -745,16 +742,15 @@ object ResolvableReferenceExpression {
   val UPDATE_DYNAMIC = "updateDynamic"
   val NAMED = "Named"
 
-  def getDynamicReturn(tp: ScType): ScType = {
+  def getDynamicReturn(tp: ScType): ScType =
     tp match {
       case ScTypePolymorphicType(mt: ScMethodType, typeArgs) =>
         ScTypePolymorphicType(mt.returnType, typeArgs)
       case mt: ScMethodType => mt.returnType
       case _                => tp
     }
-  }
 
-  def getDynamicNameForMethodInvocation(call: MethodInvocation): String = {
+  def getDynamicNameForMethodInvocation(call: MethodInvocation): String =
     call.argumentExpressions.find {
       case a: ScAssignStmt =>
         a.getLExpression match {
@@ -766,5 +762,4 @@ object ResolvableReferenceExpression {
       case Some(_) => APPLY_DYNAMIC_NAMED
       case _       => APPLY_DYNAMIC
     }
-  }
 }

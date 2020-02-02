@@ -49,19 +49,17 @@ trait DocComments { self: Global =>
     *  an infinite loop has broken out between superComment and cookedDocComment
     *  since r23926.
     */
-  private def allInheritedOverriddenSymbols(sym: Symbol): List[Symbol] = {
+  private def allInheritedOverriddenSymbols(sym: Symbol): List[Symbol] =
     if (!sym.owner.isClass) Nil
     else sym.owner.ancestors map (sym overriddenSymbol _) filter (_ != NoSymbol)
-  }
 
   def fillDocComment(sym: Symbol, comment: DocComment) {
     docComments(sym) = comment
     comment.defineVariables(sym)
   }
 
-  def replaceInheritDocToInheritdoc(docStr: String): String = {
+  def replaceInheritDocToInheritdoc(docStr: String): String =
     docStr.replaceAll("""\{@inheritDoc\p{Zs}*\}""", "@inheritdoc")
-  }
 
   /** The raw doc comment of symbol `sym`, minus usecase and define sections, augmented by
     *  missing sections of an inherited doc comment.
@@ -83,7 +81,7 @@ trait DocComments { self: Global =>
             if (ownComment.indexOf("@inheritdoc") != -1 && !sym.isSetter)
               reporter.warning(
                 sym.pos,
-                s"The comment for ${sym} contains @inheritdoc, but no parent comment is available to inherit from.")
+                s"The comment for $sym contains @inheritdoc, but no parent comment is available to inherit from.")
             ownComment.replaceAllLiterally(
               "@inheritdoc",
               "<invalid inheritdoc annotation>")
@@ -463,11 +461,9 @@ trait DocComments { self: Global =>
       val Trim = "(?s)^[\\s&&[^\n\r]]*(.*?)\\s*$".r
 
       defs(sym) ++= defines.map { str =>
-        {
-          val start = skipWhitespace(str, "@define".length)
-          val (key, value) = str.splitAt(skipVariable(str, start))
-          key.drop(start) -> value
-        }
+        val start = skipWhitespace(str, "@define".length)
+        val (key, value) = str.splitAt(skipVariable(str, start))
+        key.drop(start) -> value
       } map {
         case (key, Trim(value)) =>
           variableName(key) -> value.replaceAll("\\s+\\*+$", "")

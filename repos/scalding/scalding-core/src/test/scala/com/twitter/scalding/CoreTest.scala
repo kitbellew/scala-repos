@@ -641,10 +641,9 @@ class SizeAveStdJob(args: Args) extends Job(args) {
 class SizeAveStdSpec extends WordSpec with Matchers {
   "A sizeAveStd job" should {
     val r = new java.util.Random
-    def powerLawRand = {
+    def powerLawRand =
       // Generates a 1/x powerlaw with a max value or 1e40
       scala.math.pow(1e40, r.nextDouble)
-    }
     //Here is our input data:
     val input = (0 to 10000).map { i =>
       (i.toString, r.nextDouble.toString + " " + powerLawRand.toString)

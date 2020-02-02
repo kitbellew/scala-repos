@@ -289,9 +289,8 @@ abstract class SpinnerValueFactory[T](
     * value has been set.
     */
   def value: ObjectProperty[T] = delegate.valueProperty()
-  def value_=(newValue: T): Unit = {
+  def value_=(newValue: T): Unit =
     value() = newValue
-  }
 
   /**
     * Converts the user-typed input (when the Spinner is `editable`) to an object of type T,
@@ -300,9 +299,8 @@ abstract class SpinnerValueFactory[T](
     */
   def converter: ObjectProperty[jfxu.StringConverter[T]] =
     delegate.converterProperty()
-  def converter_=(newValue: StringConverter[T]): Unit = {
+  def converter_=(newValue: StringConverter[T]): Unit =
     converter() = newValue
-  }
 
   /**
     * The wrapAround property is used to specify whether the value factory should
@@ -310,8 +308,7 @@ abstract class SpinnerValueFactory[T](
     * from the maximum value back to the minimum value (and vice versa).
     */
   def wrapAround: BooleanProperty = delegate.wrapAroundProperty()
-  def wrapAround_=(value: Boolean): Unit = {
+  def wrapAround_=(value: Boolean): Unit =
     wrapAround() = value
-  }
 
 }

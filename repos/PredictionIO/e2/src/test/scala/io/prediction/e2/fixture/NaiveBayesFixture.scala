@@ -18,7 +18,7 @@ import io.prediction.e2.engine.LabeledPoint
 
 trait NaiveBayesFixture {
 
-  def fruit = {
+  def fruit =
     new {
       val Banana = "Banana"
       val Orange = "Orange"
@@ -44,5 +44,4 @@ trait NaiveBayesFixture {
         LabeledPoint(OtherFruit, Array(NotLong, NotSweet, NotYellow))
       )
     }
-  }
 }

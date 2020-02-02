@@ -23,13 +23,12 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     * @return the resource located at the path, or None if there is no resource
     * at that path.
     */
-  def resource(path: String): Option[URL] = {
+  def resource(path: String): Option[URL] =
     try {
       Option(sc.getResource(path))
     } catch {
       case e: MalformedURLException => throw e
     }
-  }
 
   /**
     * Optionally returns the resource mapped to the request's path.
@@ -61,9 +60,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     *
     * @param name the name of the handler
     */
-  def mount(handler: Handler, urlPattern: String, name: String): Unit = {
+  def mount(handler: Handler, urlPattern: String, name: String): Unit =
     mount(handler, urlPattern, name, 1)
-  }
 
   /**
     * Mounts a handler to the servlet context.  Must be an HttpServlet or a
@@ -97,9 +95,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
   def mount(handler: Handler, urlPattern: String): Unit =
     mount(handler, urlPattern, 1)
 
-  def mount(handler: Handler, urlPattern: String, loadOnStartup: Int): Unit = {
+  def mount(handler: Handler, urlPattern: String, loadOnStartup: Int): Unit =
     mount(handler, urlPattern, handler.getClass.getName, loadOnStartup)
-  }
 
   def mount[T](
       handlerClass: Class[T],
@@ -132,9 +129,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
   def mount[T](
       handlerClass: Class[T],
       urlPattern: String,
-      loadOnStartup: Int): Unit = {
+      loadOnStartup: Int): Unit =
     mount(handlerClass, urlPattern, handlerClass.getName, loadOnStartup)
-  }
 
   private def mountServlet(
       servlet: HttpServlet,
@@ -213,9 +209,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     * `org.scalatra.Environment` is looked up as a system property, and if
     * absent, as an init parameter.  The default value is `DEVELOPMENT`.
     */
-  def environment: String = {
+  def environment: String =
     sys.props.get(EnvironmentKey) orElse initParameters.get(EnvironmentKey) getOrElse ("DEVELOPMENT")
-  }
 
   object initParameters extends mutable.Map[String, String] {
 

@@ -381,7 +381,7 @@ private[spark] final class ShuffleBlockFetcherIterator(
     }
   }
 
-  private def fetchUpToMaxBytes(): Unit = {
+  private def fetchUpToMaxBytes(): Unit =
     // Send fetch requests up to maxBytesInFlight
     while (fetchRequests.nonEmpty &&
            (bytesInFlight == 0 ||
@@ -389,12 +389,11 @@ private[spark] final class ShuffleBlockFetcherIterator(
            bytesInFlight + fetchRequests.front.size <= maxBytesInFlight))) {
       sendRequest(fetchRequests.dequeue())
     }
-  }
 
   private def throwFetchFailedException(
       blockId: BlockId,
       address: BlockManagerId,
-      e: Throwable) = {
+      e: Throwable) =
     blockId match {
       case ShuffleBlockId(shufId, mapId, reduceId) =>
         throw new FetchFailedException(
@@ -408,7 +407,6 @@ private[spark] final class ShuffleBlockFetcherIterator(
           "Failed to get block " + blockId + ", which is not a shuffle block",
           e)
     }
-  }
 }
 
 /**
@@ -422,13 +420,12 @@ private class BufferReleasingInputStream(
 
   override def read(): Int = delegate.read()
 
-  override def close(): Unit = {
+  override def close(): Unit =
     if (!closed) {
       delegate.close()
       iterator.releaseCurrentResultBuffer()
       closed = true
     }
-  }
 
   override def available(): Int = delegate.available()
 

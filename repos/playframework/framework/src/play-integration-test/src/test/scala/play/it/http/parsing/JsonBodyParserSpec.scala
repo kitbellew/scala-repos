@@ -23,14 +23,13 @@ object JsonBodyParserSpec extends PlaySpecification {
         contentType: Option[String],
         encoding: String,
         bodyParser: BodyParser[A] = BodyParsers.parse.tolerantJson)(
-        implicit mat: Materializer) = {
+        implicit mat: Materializer) =
       await(
         bodyParser(
           FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(ByteString(json.getBytes(encoding))))
       )
-    }
 
     "parse JSON bodies" in new WithApplication() {
       parse("""{"foo":"bar"}""", Some("application/json"), "utf-8") must beRight

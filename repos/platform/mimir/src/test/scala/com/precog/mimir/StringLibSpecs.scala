@@ -48,24 +48,21 @@ trait StringLibSpecs[M[+_]]
   private def hetStrings(line: Line) =
     dag.AbsoluteLoad(Const(CString("/het/strings"))(line))(line)
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
-  def op1Input(op: Op1, loadFrom: Line => dag.AbsoluteLoad) = {
+  def op1Input(op: Op1, loadFrom: Line => dag.AbsoluteLoad) =
     dag.Operate(BuiltInFunction1Op(op), loadFrom(line))(line)
-  }
 
-  def op2Input(op: Op2, const: RValue, loadFrom: Line => dag.AbsoluteLoad) = {
+  def op2Input(op: Op2, const: RValue, loadFrom: Line => dag.AbsoluteLoad) =
     Join(
       BuiltInFunction2Op(op),
       Cross(None),
       loadFrom(line),
       Const(const)(line))(line)
-  }
 
   "for homogeneous sets, the appropriate string function" should {
     "determine length" in {

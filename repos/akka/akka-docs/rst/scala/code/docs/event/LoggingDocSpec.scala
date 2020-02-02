@@ -13,9 +13,8 @@ object LoggingDocSpec {
 
   class MyActor extends Actor {
     val log = Logging(context.system, this)
-    override def preStart() = {
+    override def preStart() =
       log.debug("Starting")
-    }
     override def preRestart(reason: Throwable, message: Option[Any]) {
       log.error(
         reason,

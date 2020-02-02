@@ -121,9 +121,8 @@ class MinMaxScaler(override val uid: String)
       new MinMaxScalerModel(uid, summary.min, summary.max).setParent(this))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): MinMaxScaler = defaultCopy(extra)
 }
@@ -192,9 +191,8 @@ class MinMaxScalerModel private[ml] (
     dataset.withColumn($(outputCol), reScale(col($(inputCol))))
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   override def copy(extra: ParamMap): MinMaxScalerModel = {
     val copied = new MinMaxScalerModel(uid, originalMin, originalMax)

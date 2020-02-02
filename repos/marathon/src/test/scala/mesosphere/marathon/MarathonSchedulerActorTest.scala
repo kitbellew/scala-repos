@@ -623,9 +623,8 @@ class MarathonSchedulerActorTest
 
     when(deploymentRepo.store(any))
       .thenAnswer(new Answer[Future[DeploymentPlan]] {
-        override def answer(p1: InvocationOnMock): Future[DeploymentPlan] = {
+        override def answer(p1: InvocationOnMock): Future[DeploymentPlan] =
           Future.successful(p1.getArguments()(0).asInstanceOf[DeploymentPlan])
-        }
       })
 
     when(deploymentRepo.expunge(any)).thenReturn(Future.successful(Seq(true)))
@@ -636,7 +635,7 @@ class MarathonSchedulerActorTest
     when(taskTracker.countLaunchedAppTasksSync(any[PathId])).thenReturn(0)
   }
 
-  def createActor() = {
+  def createActor() =
     system.actorOf(
       MarathonSchedulerActor.props(
         schedulerActions,
@@ -652,7 +651,6 @@ class MarathonSchedulerActorTest
         system.eventStream
       )
     )
-  }
 
   def stopActor(ref: ActorRef): Unit = {
     watch(ref)

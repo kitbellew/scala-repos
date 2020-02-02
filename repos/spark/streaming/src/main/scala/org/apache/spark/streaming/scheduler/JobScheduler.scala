@@ -139,9 +139,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     }
   }
 
-  def getPendingTimes(): Seq[Time] = {
+  def getPendingTimes(): Seq[Time] =
     jobSets.asScala.keys.toSeq
-  }
 
   def reportError(msg: String, e: Throwable) {
     eventLoop.post(ErrorReported(msg, e))
@@ -221,7 +220,7 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
           showYYYYMMSS = false)
         val batchUrl = s"/streaming/batch/?id=${job.time.milliseconds}"
         val batchLinkText =
-          s"[output operation ${job.outputOpId}, batch time ${formattedTime}]"
+          s"[output operation ${job.outputOpId}, batch time $formattedTime]"
 
         ssc.sc.setJobDescription(
           s"""Streaming job from <a href="$batchUrl">$batchLinkText</a>""")

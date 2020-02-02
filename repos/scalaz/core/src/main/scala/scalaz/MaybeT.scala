@@ -20,16 +20,14 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
       F.bind(self.run)(_.cata((a => F.map(f(a))(just)), F.point(empty)))
     )
 
-  def foldRight[Z](z: => Z)(f: (A, => Z) => Z)(implicit F: Foldable[F]): Z = {
+  def foldRight[Z](z: => Z)(f: (A, => Z) => Z)(implicit F: Foldable[F]): Z =
     F.foldRight[Maybe[A], Z](run, z)((a, b) =>
       Foldable[Maybe].foldRight[A, Z](a, b)(f))
-  }
 
   def traverse[G[_], B](f: A => G[B])(
       implicit F: Traverse[F],
-      G: Applicative[G]): G[MaybeT[F, B]] = {
+      G: Applicative[G]): G[MaybeT[F, B]] =
     G.map(F.traverse(run)(o => Traverse[Maybe].traverse(o)(f)))(MaybeT.apply)
-  }
 
   def ap[B](f: => MaybeT[F, A => B])(implicit F: Monad[F]): MaybeT[F, B] =
     MaybeT(F.bind(f.run)(_.cata(ff => F.map(run)(_ map ff), F.point(empty))))

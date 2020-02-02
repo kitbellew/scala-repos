@@ -24,10 +24,9 @@ abstract class ParallelSeqCheck[T](collName: String)
   )
 
   def fromTraversable(t: Traversable[T]) = fromSeq(traversable2Seq(t))
-  def traversable2Seq(t: Traversable[T]): Seq[T] = {
+  def traversable2Seq(t: Traversable[T]): Seq[T] =
     if (t.isInstanceOf[Iterable[_]]) t.asInstanceOf[Iterable[T]].iterator.toList
     else t.toList
-  }
 
   override def collectionPairs: Gen[(Seq[T], CollType)] =
     for (inst <- instances(values)) yield (inst, fromSeq(inst))
@@ -71,9 +70,8 @@ abstract class ParallelSeqCheck[T](collName: String)
       (inst, fromSeq(inst), inst.slice(sliceStart, sliceStart + howMany), f, s)
     }
 
-  private def modifySlightly(coll: Seq[T], updateStart: Int, howMany: Int) = {
+  private def modifySlightly(coll: Seq[T], updateStart: Int, howMany: Int) =
     coll.patch(updateStart, coll, howMany)
-  }
 
   property("segmentLengths must be equal") =
     forAll(collectionPairsWithLengths) {

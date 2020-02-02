@@ -14,7 +14,7 @@ import play.core.WebCommands
   * Default module for evolutions API.
   */
 class EvolutionsModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[EvolutionsConfig].toProvider[DefaultEvolutionsConfigParser],
       bind[EvolutionsReader].to[EnvironmentEvolutionsReader],
@@ -23,7 +23,6 @@ class EvolutionsModule extends Module {
         .toProvider[ApplicationEvolutionsProvider]
         .eagerly
     )
-  }
 }
 
 /**

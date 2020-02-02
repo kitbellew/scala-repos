@@ -89,7 +89,7 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
   private[this] val gauges =
     new ConcurrentHashMap[Seq[String], CumulativeGauge]()
 
-  def registerLargeGaugeLinter(rules: Rules): Unit = {
+  def registerLargeGaugeLinter(rules: Rules): Unit =
     rules.add(
       Rule(
         Category.Performance,
@@ -112,7 +112,6 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
           }.toSeq
         }
       })
-  }
 
   /**
     * The StatsReceiver implements these. They provide the cumulated

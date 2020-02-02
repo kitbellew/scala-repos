@@ -70,7 +70,7 @@ private[spark] class ApplicationInfo(
     appUIUrlAtHistoryServer = None
   }
 
-  private def newExecutorId(useID: Option[Int] = None): Int = {
+  private def newExecutorId(useID: Option[Int] = None): Int =
     useID match {
       case Some(id) =>
         nextExecutorId = math.max(nextExecutorId, id + 1)
@@ -80,7 +80,6 @@ private[spark] class ApplicationInfo(
         nextExecutorId += 1
         id
     }
-  }
 
   private[master] def addExecutor(
       worker: WorkerInfo,
@@ -125,9 +124,8 @@ private[spark] class ApplicationInfo(
     endTime = System.currentTimeMillis()
   }
 
-  private[master] def isFinished: Boolean = {
+  private[master] def isFinished: Boolean =
     state != ApplicationState.WAITING && state != ApplicationState.RUNNING
-  }
 
   /**
     * Return the limit on the number of executors this application can have.
@@ -135,13 +133,12 @@ private[spark] class ApplicationInfo(
     */
   private[deploy] def getExecutorLimit: Int = executorLimit
 
-  def duration: Long = {
+  def duration: Long =
     if (endTime != -1) {
       endTime - startTime
     } else {
       System.currentTimeMillis() - startTime
     }
-  }
 
   /**
     * Returns the original application UI url unless there is its address at history server

@@ -82,7 +82,7 @@ class ScalaFileImpl(
 
   def isCompiled = compiled
 
-  def sourceName: String = {
+  def sourceName: String =
     if (isCompiled) {
       val stub = getStub
       if (stub != null) {
@@ -93,19 +93,16 @@ class ScalaFileImpl(
         .decompile(virtualFile, virtualFile.contentsToByteArray)
         .sourceName
     } else ""
-  }
 
-  override def getName: String = {
+  override def getName: String =
     if (virtualFile != null) virtualFile.getName
     else super.getName
-  }
 
-  override def getVirtualFile: VirtualFile = {
+  override def getVirtualFile: VirtualFile =
     if (virtualFile != null) virtualFile
     else super.getVirtualFile
-  }
 
-  override def getNavigationElement: PsiElement = {
+  override def getNavigationElement: PsiElement =
     if (!isCompiled) this
     else {
       val inner: String = getPackageNameInner
@@ -188,7 +185,6 @@ class ScalaFileImpl(
         case _       => this
       }
     }
-  }
 
   private def isScriptFileImpl: Boolean = {
     val stub = getStub
@@ -223,10 +219,9 @@ class ScalaFileImpl(
   @CachedInsidePsiElement(this, this)
   private def isScriptFileCached: Boolean = isScriptFileImpl
 
-  def isScriptFile(withCaching: Boolean): Boolean = {
+  def isScriptFile(withCaching: Boolean): Boolean =
     if (!withCaching) isScriptFileImpl
     else isScriptFileCached
-  }
 
   def isWorksheetFile: Boolean = {
     val vFile = getVirtualFile
@@ -395,7 +390,7 @@ class ScalaFileImpl(
     } else ""
   }
 
-  override def getClasses: Array[PsiClass] = {
+  override def getClasses: Array[PsiClass] =
     if (!isScriptFile && !isWorksheetFile) {
       if (ScalaFileImpl.isDuringMoveRefactoring) {
         return typeDefinitions.toArray
@@ -425,17 +420,15 @@ class ScalaFileImpl(
       }
       arrayBuffer.toArray
     } else PsiClass.EMPTY_ARRAY
-  }
 
   def icon = Icons.FILE_TYPE_LOGO
 
   @CachedInsidePsiElement(
     this,
     ScalaPsiManager.instance(getProject).modificationTracker)
-  protected def isScalaPredefinedClass: Boolean = {
+  protected def isScalaPredefinedClass: Boolean =
     typeDefinitions.length == 1 && Set("scala", "scala.Predef").contains(
       typeDefinitions.head.qualifiedName)
-  }
 
   def isScalaPredefinedClassInner =
     typeDefinitions.length == 1 &&
@@ -492,30 +485,27 @@ class ScalaFileImpl(
     putCopyableUserData(ScalaFileImpl.CHILD_KEY, child)
   }
 
-  override def getContext: PsiElement = {
+  override def getContext: PsiElement =
     getCopyableUserData(ScalaFileImpl.CONTEXT_KEY) match {
       case null => super.getContext
       case _    => getCopyableUserData(ScalaFileImpl.CONTEXT_KEY)
     }
-  }
 
-  override def getPrevSibling: PsiElement = {
+  override def getPrevSibling: PsiElement =
     getCopyableUserData(ScalaFileImpl.CHILD_KEY) match {
       case null => super.getPrevSibling
       case _    => getCopyableUserData(ScalaFileImpl.CHILD_KEY).getPrevSibling
     }
-  }
 
-  override def getNextSibling: PsiElement = {
+  override def getNextSibling: PsiElement =
     child match {
       case null => super.getNextSibling
       case _    => getCopyableUserData(ScalaFileImpl.CHILD_KEY).getNextSibling
     }
-  }
 
   override protected def insertFirstImport(
       importSt: ScImportStmt,
-      first: PsiElement): PsiElement = {
+      first: PsiElement): PsiElement =
     if (isScriptFile) {
       first match {
         case c: PsiComment
@@ -526,7 +516,6 @@ class ScalaFileImpl(
     } else {
       super.insertFirstImport(importSt, first)
     }
-  }
 }
 
 object ScalaFileImpl {
@@ -570,19 +559,18 @@ object ScalaFileImpl {
   def pathIn(root: PsiElement): List[List[String]] =
     packagingsIn(root).map(packaging => toVector(packaging.getPackageName))
 
-  private def packagingsIn(root: PsiElement): List[ScPackaging] = {
+  private def packagingsIn(root: PsiElement): List[ScPackaging] =
     root.children.findByType(classOf[ScPackaging]) match {
       case Some(packaging) => packaging :: packagingsIn(packaging)
       case _               => Nil
     }
-  }
 
   def splitsIn(path: List[List[String]]): List[List[String]] =
     path.scanLeft(List[String]())((vs, v) => vs ::: v).tail.dropRight(1)
 
   def splitAt(
       path: List[List[String]],
-      vector: List[String]): List[List[String]] = {
+      vector: List[String]): List[List[String]] =
     if (vector.isEmpty) path
     else
       path match {
@@ -593,7 +581,6 @@ object ScalaFileImpl {
           h.take(vector.size) :: h.drop(vector.size) :: t
         case it => it
       }
-  }
 
   def toVector(name: String): List[String] =
     if (name.isEmpty) Nil else name.split('.').toList

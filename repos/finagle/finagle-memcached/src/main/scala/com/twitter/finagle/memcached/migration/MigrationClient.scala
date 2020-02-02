@@ -115,9 +115,8 @@ trait DarkRead extends Client {
   // DarkRead always choose the front result and ignore the backend one
   protected def chooseGetResult(
       frontResult: Future[GetResult],
-      backResult: Future[GetResult]): Future[GetResult] = {
+      backResult: Future[GetResult]): Future[GetResult] =
     frontResult
-  }
 
   abstract override def getsResult(keys: Iterable[String]) = {
     val frontResult = super.getsResult(keys)
@@ -129,9 +128,8 @@ trait DarkRead extends Client {
   // DarkRead always choose the front result and ignore the backend one
   protected def chooseGetsResult(
       frontResult: Future[GetsResult],
-      backResult: Future[GetsResult]): Future[GetsResult] = {
+      backResult: Future[GetsResult]): Future[GetsResult] =
     frontResult
-  }
 
   abstract override def release() {
     super.release()
@@ -293,15 +291,13 @@ trait FallbackRead extends Client {
 
   protected def combineGetResult(
       frontR: GetResult,
-      backR: GetResult): GetResult = {
+      backR: GetResult): GetResult =
     // when fallback, merge the front hits with back result
     GetResult.merged(Seq(GetResult(frontR.hits), backR))
-  }
 
   // Gets remains the same
-  abstract override def getsResult(keys: Iterable[String]) = {
+  abstract override def getsResult(keys: Iterable[String]) =
     super.getsResult(keys)
-  }
 
   abstract override def release() {
     super.release()

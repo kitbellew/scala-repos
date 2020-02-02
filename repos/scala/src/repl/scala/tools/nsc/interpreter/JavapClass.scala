@@ -327,7 +327,7 @@ class JavapClass(
       */
     def showable(target: String, filter: Boolean): Showable =
       new Showable {
-        val output = filterLines(target, s"${reporter.reportable()}${written}")
+        val output = filterLines(target, s"${reporter.reportable()}$written")
         def show() =
           if (filter) intp.withoutTruncating(printWriter.write(output))
           else

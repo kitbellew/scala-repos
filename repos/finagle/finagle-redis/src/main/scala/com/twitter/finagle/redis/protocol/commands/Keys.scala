@@ -286,7 +286,7 @@ object Type {
 
 object ScanCompanion {
 
-  def findArgs(args: Seq[String]): (Seq[String], Seq[String]) = {
+  def findArgs(args: Seq[String]): (Seq[String], Seq[String]) =
     args.head.toUpperCase match {
       case Count.COUNT     => args.splitAt(2)
       case Pattern.PATTERN => args.splitAt(2)
@@ -294,7 +294,6 @@ object ScanCompanion {
         throw ClientError(
           "COUNT or PATTERN argument expected, found %s".format(s))
     }
-  }
 
   def findCount(args0: Seq[String], args1: Seq[String]) = Count(args0) match {
     case None if args1.length > 0 =>

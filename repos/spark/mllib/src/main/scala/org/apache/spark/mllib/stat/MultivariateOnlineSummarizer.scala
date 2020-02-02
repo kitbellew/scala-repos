@@ -65,7 +65,7 @@ class MultivariateOnlineSummarizer
   def add(sample: Vector): this.type = add(sample, 1.0)
 
   private[spark] def add(instance: Vector, weight: Double): this.type = {
-    require(weight >= 0.0, s"sample weight, ${weight} has to be >= 0.0")
+    require(weight >= 0.0, s"sample weight, $weight has to be >= 0.0")
     if (weight == 0.0) return this
 
     if (n == 0) {

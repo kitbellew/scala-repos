@@ -64,7 +64,7 @@ class ScalaInjectedStringLiteralManipulator
     }
   }
 
-  override def getRangeInElement(element: ScLiteral): TextRange = {
+  override def getRangeInElement(element: ScLiteral): TextRange =
     if (element.isString) element match {
       case interp: ScInterpolatedStringLiteral =>
         val prefixLength = interp.reference match {
@@ -77,7 +77,6 @@ class ScalaInjectedStringLiteralManipulator
         getLiteralRange(element.getText)
     }
     else TextRange.from(0, element.getTextLength)
-  }
 
   private def getLiteralRange(text: String): TextRange = {
     val tripleQuote = "\"\"\""

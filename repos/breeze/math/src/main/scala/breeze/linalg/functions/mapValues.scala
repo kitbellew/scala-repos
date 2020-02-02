@@ -95,12 +95,11 @@ object mapValues extends UFunc with mapValuesLowPrio {
 sealed trait mapValuesLowPrio { this: mapValues.type =>
 
   /*implicit*/
-  def canMapSelf[V, V2]: Impl2[V, V => V2, V2] = {
+  def canMapSelf[V, V2]: Impl2[V, V => V2, V2] =
     new Impl2[V, V => V2, V2] {
       def apply(from: V, fn: (V) => V2) = fn(from)
       def mapActive(from: V, fn: (V) => V2) = fn(from)
     }
-  }
 
 }
 

@@ -105,7 +105,7 @@ object MarathonTestHelper {
       role != "*" || reservation.isEmpty,
       "reserved resources cannot have role *")
 
-    def heedReserved(resource: Mesos.Resource): Mesos.Resource = {
+    def heedReserved(resource: Mesos.Resource): Mesos.Resource =
       reservation match {
         case Some(reservationLabels) =>
           val labels = reservationLabels.mesosLabels
@@ -118,7 +118,6 @@ object MarathonTestHelper {
         case None =>
           resource
       }
-    }
 
     val cpusResource = heedReserved(
       ScalarResource(Resource.CPUS, cpus, role = role))
@@ -289,7 +288,7 @@ object MarathonTestHelper {
       .addResources(portsResource)
   }
 
-  def makeOneCPUTask(taskId: String): TaskInfo.Builder = {
+  def makeOneCPUTask(taskId: String): TaskInfo.Builder =
     TaskInfo
       .newBuilder()
       .setName("true")
@@ -297,7 +296,6 @@ object MarathonTestHelper {
       .setSlaveId(SlaveID("slave1"))
       .setCommand(CommandInfo.newBuilder().setShell(true).addArguments("true"))
       .addResources(ScalarResource(Resource.CPUS, 1.0, "*"))
-  }
 
   def makeTaskFromTaskInfo(
       taskInfo: TaskInfo,
@@ -391,9 +389,8 @@ object MarathonTestHelper {
       leadershipModule: LeadershipModule,
       store: PersistentStore = new InMemoryStore,
       config: MarathonConf = defaultConfig(),
-      metrics: Metrics = new Metrics(new MetricRegistry)): TaskTracker = {
+      metrics: Metrics = new Metrics(new MetricRegistry)): TaskTracker =
     createTaskTrackerModule(leadershipModule, store, config, metrics).taskTracker
-  }
 
   def dummyTaskBuilder(appId: PathId) =
     MarathonTask
@@ -415,7 +412,7 @@ object MarathonTestHelper {
   def mininimalTask(taskId: Task.Id): Task = mininimalTask(taskId.idString)
   def mininimalTask(
       taskId: String,
-      now: Timestamp = clock.now()): Task.LaunchedEphemeral = {
+      now: Timestamp = clock.now()): Task.LaunchedEphemeral =
     Task.LaunchedEphemeral(
       Task.Id(taskId),
       Task.AgentInfo(
@@ -430,7 +427,6 @@ object MarathonTestHelper {
       ),
       networking = Task.NoNetworking
     )
-  }
 
   def minimalReservedTask(
       appId: PathId,
@@ -483,13 +479,12 @@ object MarathonTestHelper {
   def startingTaskProto(
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
-      stagedAt: Long = 2): Protos.MarathonTask = {
+      stagedAt: Long = 2): Protos.MarathonTask =
     dummyTaskProto(taskId).toBuilder
       .setVersion(appVersion.toString)
       .setStagedAt(stagedAt)
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_STARTING))
       .build()
-  }
 
   def stagedTaskForApp(
       appId: PathId = PathId("/test"),
@@ -521,11 +516,10 @@ object MarathonTestHelper {
   def stagedTaskProto(
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
-      stagedAt: Long = 2): Protos.MarathonTask = {
+      stagedAt: Long = 2): Protos.MarathonTask =
     startingTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt).toBuilder
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_STAGING))
       .build()
-  }
 
   def runningTaskForApp(
       appId: PathId = PathId("/test"),
@@ -558,12 +552,11 @@ object MarathonTestHelper {
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2,
-      startedAt: Long = 3): Protos.MarathonTask = {
+      startedAt: Long = 3): Protos.MarathonTask =
     stagedTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt).toBuilder
       .setStartedAt(startedAt)
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_RUNNING))
       .build()
-  }
 
   def healthyTask(appId: PathId): Task =
     healthyTask(Task.Id.forApp(appId).idString)
@@ -593,15 +586,12 @@ object MarathonTestHelper {
       .buildPartial()
   }
 
-  def statusForState(
-      taskId: String,
-      state: Mesos.TaskState): Mesos.TaskStatus = {
+  def statusForState(taskId: String, state: Mesos.TaskState): Mesos.TaskStatus =
     Mesos.TaskStatus
       .newBuilder()
       .setTaskId(TaskID.newBuilder().setValue(taskId))
       .setState(state)
       .buildPartial()
-  }
 
   def persistentVolumeResources(
       taskId: Task.Id,
@@ -655,7 +645,7 @@ object MarathonTestHelper {
       .build()
   }
 
-  def appWithPersistentVolume(): AppDefinition = {
+  def appWithPersistentVolume(): AppDefinition =
     MarathonTestHelper
       .makeBasicApp()
       .copy(
@@ -665,7 +655,6 @@ object MarathonTestHelper {
             Residency.defaultRelaunchEscalationTimeoutSeconds,
             Residency.defaultTaskLostBehaviour))
       )
-  }
 
   def residentReservedTask(appId: PathId, localVolumeIds: Task.LocalVolumeId*) =
     minimalReservedTask(

@@ -161,41 +161,37 @@ final class Vector[+A] private[immutable] (
         .asInstanceOf[That] // ignore bf--it will just give a Vector, and slowly
     else super.:+(elem)(bf)
 
-  override def take(n: Int): Vector[A] = {
+  override def take(n: Int): Vector[A] =
     if (n <= 0)
       Vector.empty
     else if (startIndex < endIndex - n)
       dropBack0(startIndex + n)
     else
       this
-  }
 
-  override def drop(n: Int): Vector[A] = {
+  override def drop(n: Int): Vector[A] =
     if (n <= 0)
       this
     else if (startIndex < endIndex - n)
       dropFront0(startIndex + n)
     else
       Vector.empty
-  }
 
-  override def takeRight(n: Int): Vector[A] = {
+  override def takeRight(n: Int): Vector[A] =
     if (n <= 0)
       Vector.empty
     else if (endIndex - n > startIndex)
       dropFront0(endIndex - n)
     else
       this
-  }
 
-  override def dropRight(n: Int): Vector[A] = {
+  override def dropRight(n: Int): Vector[A] =
     if (n <= 0)
       this
     else if (endIndex - n > startIndex)
       dropBack0(endIndex - n)
     else
       Vector.empty
-  }
 
   override /*IterableLike*/ def head: A = {
     if (isEmpty) throw new UnsupportedOperationException("empty.head")
@@ -225,7 +221,7 @@ final class Vector[+A] private[immutable] (
 
   // concat (suboptimal but avoids worst performance gotchas)
   override def ++[B >: A, That](that: GenTraversableOnce[B])(
-      implicit bf: CanBuildFrom[Vector[A], B, That]): That = {
+      implicit bf: CanBuildFrom[Vector[A], B, That]): That =
     if (isDefaultCBF(bf)) {
       // We are sure we will create a Vector, so let's do it efficiently
       import Vector.{Log2ConcatFaster, TinyAppendFaster}
@@ -250,7 +246,6 @@ final class Vector[+A] private[immutable] (
         }
       }
     } else super.++(that.seq)
-  }
 
   // semi-private api
 
@@ -403,7 +398,7 @@ final class Vector[+A] private[immutable] (
     }
   }
 
-  private[immutable] def appendBack[B >: A](value: B): Vector[B] = {
+  private[immutable] def appendBack[B >: A](value: B): Vector[B] =
 //    //println("------- append " + value)
 //    debug()
     if (endIndex != startIndex) {
@@ -493,7 +488,6 @@ final class Vector[+A] private[immutable] (
       s.display0 = elems
       s
     }
-  }
 
   // low-level implementation (needs cleanup, maybe move to util class)
 
@@ -561,7 +555,7 @@ final class Vector[+A] private[immutable] (
   }
 
   // requires structure is at index cutIndex and writable at level 0
-  private def cleanLeftEdge(cutIndex: Int) = {
+  private def cleanLeftEdge(cutIndex: Int) =
     if (cutIndex < (1 << 5)) {
       zeroLeft(display0, cutIndex)
     } else if (cutIndex < (1 << 10)) {
@@ -592,14 +586,11 @@ final class Vector[+A] private[immutable] (
     } else {
       throw new IllegalArgumentException()
     }
-  }
 
   // requires structure is writable and at index cutIndex
-  private def cleanRightEdge(cutIndex: Int) = {
-
+  private def cleanRightEdge(cutIndex: Int) =
     // we're actually sitting one block left if cutIndex lies on a block boundary
     // this means that we'll end up erasing the whole block!!
-
     if (cutIndex <= (1 << 5)) {
       zeroRight(display0, cutIndex)
     } else if (cutIndex <= (1 << 10)) {
@@ -630,9 +621,8 @@ final class Vector[+A] private[immutable] (
     } else {
       throw new IllegalArgumentException()
     }
-  }
 
-  private def requiredDepth(xor: Int) = {
+  private def requiredDepth(xor: Int) =
     if (xor < (1 << 5)) 1
     else if (xor < (1 << 10)) 2
     else if (xor < (1 << 15)) 3
@@ -640,7 +630,6 @@ final class Vector[+A] private[immutable] (
     else if (xor < (1 << 25)) 5
     else if (xor < (1 << 30)) 6
     else throw new IllegalArgumentException()
-  }
 
   private def dropFront0(cutIndex: Int): Vector[A] = {
     val blockIndex = cutIndex & ~31
@@ -841,7 +830,7 @@ private[immutable] trait VectorPointer[T] {
   }
 
   // requires structure is at pos oldIndex = xor ^ index
-  private[immutable] final def getElem(index: Int, xor: Int): T = {
+  private[immutable] final def getElem(index: Int, xor: Int): T =
     if (xor < (1 << 5)) { // level = 0
       display0(index & 31).asInstanceOf[T]
     } else if (xor < (1 << 10)) { // level = 1
@@ -877,12 +866,11 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // go to specific position
   // requires structure is at pos oldIndex = xor ^ index,
   // ensures structure is at pos index
-  private[immutable] final def gotoPos(index: Int, xor: Int): Unit = {
+  private[immutable] final def gotoPos(index: Int, xor: Int): Unit =
     if (xor < (1 << 5)) { // level = 0 (could maybe removed)
     } else if (xor < (1 << 10)) { // level = 1
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
@@ -907,14 +895,11 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // USED BY ITERATOR
 
   // xor: oldIndex ^ index
-  private[immutable] final def gotoNextBlockStart(
-      index: Int,
-      xor: Int): Unit = { // goto block start pos
+  private[immutable] final def gotoNextBlockStart(index: Int, xor: Int): Unit = // goto block start pos
     if (xor < (1 << 10)) { // level = 1
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
     } else if (xor < (1 << 15)) { // level = 2
@@ -938,14 +923,13 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // USED BY BUILDER
 
   // xor: oldIndex ^ index
   private[immutable] final def gotoNextBlockStartWritable(
       index: Int,
-      xor: Int): Unit = { // goto block start pos
+      xor: Int): Unit = // goto block start pos
     if (xor < (1 << 10)) { // level = 1
       if (depth == 1) {
         display1 = new Array(32); display1(0) = display0; depth += 1
@@ -999,7 +983,6 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // STUFF BELOW USED BY APPEND / UPDATE
 
@@ -1118,7 +1101,7 @@ private[immutable] trait VectorPointer[T] {
   private[immutable] final def gotoPosWritable1(
       oldIndex: Int,
       newIndex: Int,
-      xor: Int): Unit = {
+      xor: Int): Unit =
     if (xor < (1 << 5)) { // level = 0
       display0 = copyOf(display0)
     } else if (xor < (1 << 10)) { // level = 1
@@ -1188,7 +1171,6 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // USED IN DROP
 
@@ -1214,7 +1196,7 @@ private[immutable] trait VectorPointer[T] {
   private[immutable] final def gotoFreshPosWritable0(
       oldIndex: Int,
       newIndex: Int,
-      xor: Int): Unit = { // goto block start pos
+      xor: Int): Unit = // goto block start pos
     if (xor < (1 << 5)) { // level = 0
       //println("XXX clean with low xor")
     } else if (xor < (1 << 10)) { // level = 1
@@ -1275,7 +1257,6 @@ private[immutable] trait VectorPointer[T] {
     } else { // level = 6
       throw new IllegalArgumentException()
     }
-  }
 
   // requires structure is dirty and at pos oldIndex,
   // ensures structure is dirty and at pos newIndex and writable at level 0
@@ -1289,22 +1270,21 @@ private[immutable] trait VectorPointer[T] {
 
   // DEBUG STUFF
 
-  private[immutable] def debug(): Unit = {
+  private[immutable] def debug(): Unit =
     return
-    /*
+  /*
       //println("DISPLAY 5: " + display5 + " ---> " + (if (display5 ne null) display5.map(x=> if (x eq null) "." else x + "->" +x.asInstanceOf[Array[AnyRef]].mkString("")).mkString(" ") else "null"))
       //println("DISPLAY 4: " + display4 + " ---> " + (if (display4 ne null) display4.map(x=> if (x eq null) "." else x + "->" +x.asInstanceOf[Array[AnyRef]].mkString("")).mkString(" ") else "null"))
       //println("DISPLAY 3: " + display3 + " ---> " + (if (display3 ne null) display3.map(x=> if (x eq null) "." else x + "->" +x.asInstanceOf[Array[AnyRef]].mkString("")).mkString(" ") else "null"))
       //println("DISPLAY 2: " + display2 + " ---> " + (if (display2 ne null) display2.map(x=> if (x eq null) "." else x + "->" +x.asInstanceOf[Array[AnyRef]].mkString("")).mkString(" ") else "null"))
       //println("DISPLAY 1: " + display1 + " ---> " + (if (display1 ne null) display1.map(x=> if (x eq null) "." else x + "->" +x.asInstanceOf[Array[AnyRef]].mkString("")).mkString(" ") else "null"))
       //println("DISPLAY 0: " + display0 + " ---> " + (if (display0 ne null) display0.map(x=> if (x eq null) "." else x.toString).mkString(" ") else "null"))
-     */
-    //println("DISPLAY 5: " + (if (display5 ne null) display5.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
-    //println("DISPLAY 4: " + (if (display4 ne null) display4.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
-    //println("DISPLAY 3: " + (if (display3 ne null) display3.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
-    //println("DISPLAY 2: " + (if (display2 ne null) display2.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
-    //println("DISPLAY 1: " + (if (display1 ne null) display1.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
-    //println("DISPLAY 0: " + (if (display0 ne null) display0.map(x=> if (x eq null) "." else x.toString).mkString(" ") else "null"))
-  }
+   */
+  //println("DISPLAY 5: " + (if (display5 ne null) display5.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
+  //println("DISPLAY 4: " + (if (display4 ne null) display4.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
+  //println("DISPLAY 3: " + (if (display3 ne null) display3.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
+  //println("DISPLAY 2: " + (if (display2 ne null) display2.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
+  //println("DISPLAY 1: " + (if (display1 ne null) display1.map(x=> if (x eq null) "." else x.asInstanceOf[Array[AnyRef]].deepMkString("[","","]")).mkString(" ") else "null"))
+  //println("DISPLAY 0: " + (if (display0 ne null) display0.map(x=> if (x eq null) "." else x.toString).mkString(" ") else "null"))
 
 }

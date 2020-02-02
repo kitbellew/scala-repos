@@ -94,12 +94,11 @@ abstract class EventFilter(occurrences: Int) {
     */
   protected def matches(event: LogEvent): Boolean
 
-  final def apply(event: LogEvent): Boolean = {
+  final def apply(event: LogEvent): Boolean =
     if (matches(event)) {
       if (todo != Int.MaxValue) todo -= 1
       true
     } else false
-  }
 
   def awaitDone(max: Duration): Boolean = {
     if (todo != Int.MaxValue && todo > 0)
@@ -337,14 +336,13 @@ final case class ErrorFilter(
     override val complete: Boolean)(occurrences: Int)
     extends EventFilter(occurrences) {
 
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     event match {
       case Error(cause, src, _, msg) if throwable isInstance cause ⇒
         (msg == null && cause.getMessage == null && cause.getStackTrace.length == 0) ||
           doMatch(src, msg) || doMatch(src, cause.getMessage)
       case _ ⇒ false
     }
-  }
 
   /**
     * Java API: create an ErrorFilter
@@ -398,12 +396,11 @@ final case class WarningFilter(
     override val complete: Boolean)(occurrences: Int)
     extends EventFilter(occurrences) {
 
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     event match {
       case Warning(src, _, msg) ⇒ doMatch(src, msg)
       case _ ⇒ false
     }
-  }
 
   /**
     * Java API: create a WarningFilter
@@ -448,12 +445,11 @@ final case class InfoFilter(
     override val complete: Boolean)(occurrences: Int)
     extends EventFilter(occurrences) {
 
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     event match {
       case Info(src, _, msg) ⇒ doMatch(src, msg)
       case _ ⇒ false
     }
-  }
 
   /**
     * Java API: create an InfoFilter
@@ -498,12 +494,11 @@ final case class DebugFilter(
     override val complete: Boolean)(occurrences: Int)
     extends EventFilter(occurrences) {
 
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     event match {
       case Debug(src, _, msg) ⇒ doMatch(src, msg)
       case _ ⇒ false
     }
-  }
 
   /**
     * Java API: create a DebugFilter
@@ -542,9 +537,8 @@ final case class DebugFilter(
 final case class CustomEventFilter(test: PartialFunction[LogEvent, Boolean])(
     occurrences: Int)
     extends EventFilter(occurrences) {
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     test.isDefinedAt(event) && test(event)
-  }
 }
 
 object DeadLettersFilter {
@@ -559,12 +553,11 @@ object DeadLettersFilter {
 final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int)
     extends EventFilter(occurrences) {
 
-  def matches(event: LogEvent) = {
+  def matches(event: LogEvent) =
     event match {
       case Warning(_, _, msg) ⇒ BoxedType(messageClass) isInstance msg
       case _ ⇒ false
     }
-  }
 
 }
 

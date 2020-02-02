@@ -21,10 +21,9 @@ class ScEnumeratorImpl(node: ASTNode)
   def pattern: ScPattern = findChildByClass(classOf[ScPattern])
   def rvalue = findChildByClass(classOf[ScExpression])
 
-  override def accept(visitor: PsiElementVisitor): Unit = {
+  override def accept(visitor: PsiElementVisitor): Unit =
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
       case _                            => super.accept(visitor)
     }
-  }
 }

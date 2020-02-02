@@ -69,14 +69,12 @@ class NewScalaTypeDefinitionAction
         null
       }
 
-      def checkInput(inputString: String): Boolean = {
+      def checkInput(inputString: String): Boolean =
         true
-      }
 
-      def canClose(inputString: String): Boolean = {
+      def canClose(inputString: String): Boolean =
         !StringUtil
           .isEmptyOrSpaces(inputString) && getErrorText(inputString) == null
-      }
     })
   }
 
@@ -89,9 +87,8 @@ class NewScalaTypeDefinitionAction
   def getActionName(
       directory: PsiDirectory,
       newName: String,
-      templateName: String): String = {
+      templateName: String): String =
     ScalaBundle.message("newclass.menu.action.text")
-  }
 
   def getNavigationElement(createdElement: ScTypeDefinition): PsiElement =
     createdElement.extendsBlock
@@ -99,17 +96,15 @@ class NewScalaTypeDefinitionAction
   def doCreate(
       directory: PsiDirectory,
       newName: String,
-      templateName: String): ScTypeDefinition = {
+      templateName: String): ScTypeDefinition =
     createClassFromTemplate(directory, newName, templateName) match {
       case scalaFile: ScalaFile =>
         scalaFile.typeDefinitions.headOption.orNull
       case _ => null
     }
-  }
 
-  override def isAvailable(dataContext: DataContext): Boolean = {
+  override def isAvailable(dataContext: DataContext): Boolean =
     super.isAvailable(dataContext) && isUnderSourceRoots(dataContext)
-  }
 
   private def isUnderSourceRoots(dataContext: DataContext): Boolean = {
     val module: Module =
@@ -139,20 +134,18 @@ class NewScalaTypeDefinitionAction
       directory: PsiDirectory,
       className: String,
       templateName: String,
-      parameters: String*): PsiFile = {
+      parameters: String*): PsiFile =
     NewScalaTypeDefinitionAction.createFromTemplate(
       directory,
       className,
       className + SCALA_EXTENSION,
       templateName,
       parameters: _*)
-  }
 
   private val SCALA_EXTENSION = ".scala"
 
-  def checkPackageExists(directory: PsiDirectory) = {
+  def checkPackageExists(directory: PsiDirectory) =
     JavaDirectoryService.getInstance.getPackage(directory) != null
-  }
 }
 
 object NewScalaTypeDefinitionAction {

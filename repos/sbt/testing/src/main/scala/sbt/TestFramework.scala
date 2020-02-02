@@ -38,7 +38,7 @@ case class TestFramework(implClassNames: String*) {
   private def createFramework(
       loader: ClassLoader,
       log: Logger,
-      frameworkClassNames: List[String]): Option[Framework] = {
+      frameworkClassNames: List[String]): Option[Framework] =
     frameworkClassNames match {
       case head :: tail =>
         try {
@@ -55,7 +55,6 @@ case class TestFramework(implClassNames: String*) {
       case Nil =>
         None
     }
-  }
 
   def create(loader: ClassLoader, log: Logger): Option[Framework] =
     createFramework(loader, log, implClassNames.toList)
@@ -108,7 +107,7 @@ final class TestRunner(
       // here we get the results! here is where we'd pass in the event listener
       val results = new scala.collection.mutable.ListBuffer[Event]
       val handler = new EventHandler {
-        def handle(e: Event): Unit = { results += e }
+        def handle(e: Event): Unit = results += e
       }
       val loggers = listeners.flatMap(_.contentLogger(testDefinition))
       val nestedTasks =

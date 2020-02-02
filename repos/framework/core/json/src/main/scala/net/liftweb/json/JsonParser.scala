@@ -81,7 +81,7 @@ object JsonParser {
   def parse[A](s: Reader, p: Parser => A): A =
     p(new Parser(new Buffer(s, false)))
 
-  private def parse(buf: Buffer): JValue = {
+  private def parse(buf: Buffer): JValue =
     try {
       astParser(new Parser(buf))
     } catch {
@@ -90,7 +90,6 @@ object JsonParser {
     } finally {
       buf.release
     }
-  }
 
   private[json] def unquote(string: String): String =
     unquote(new JsonParser.Buffer(new java.io.StringReader(string), false))
@@ -363,7 +362,7 @@ object JsonParser {
     def mark = { curMark = cur; curMarkSegment = curSegmentIdx }
     def back = cur = cur - 1
 
-    def next: Char = {
+    def next: Char =
       if (cur >= offset && read < 0) {
         if (eofIsFailure) throw new ParseException("unexpected eof", null)
         else EOF
@@ -372,9 +371,8 @@ object JsonParser {
         cur += 1
         c
       }
-    }
 
-    def substring = {
+    def substring =
       if (curSegmentIdx == curMarkSegment)
         new String(segment, curMark, cur - curMark - 1)
       else { // slower path for case when string is in two or more segments
@@ -401,7 +399,6 @@ object JsonParser {
         }
         new String(chars)
       }
-    }
 
     def near = {
       val start = (cur - 20) max 0

@@ -8,11 +8,9 @@ import com.intellij.openapi.project.Project
   * Date: 14.04.2010
   */
 class ScalaNamesValidator extends NamesValidator {
-  def isIdentifier(name: String, project: Project): Boolean = {
+  def isIdentifier(name: String, project: Project): Boolean =
     ScalaNamesUtil.isIdentifier(name)
-  }
 
-  def isKeyword(name: String, project: Project): Boolean = {
+  def isKeyword(name: String, project: Project): Boolean =
     ScalaNamesUtil.isKeyword(name)
-  }
 }

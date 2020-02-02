@@ -235,7 +235,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       def listenerName(
           am: AndroidMethod,
           callbacks: List[AndroidCallbackMethod],
-          setter: String) = {
+          setter: String) =
         if (callbacks.length != 1) am.name
         else {
           val transforms = List[String => String](
@@ -254,7 +254,6 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           else
             am.name
         }
-      }
 
       callbackMethods
         .map { cm =>
@@ -325,9 +324,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
       val isVarArgs = cons.isVarArgs
 
-      def isImplicit(a: Argument) = {
+      def isImplicit(a: Argument) =
         a.tpe.simpleName == "Context"
-      }
 
       val javaTypes = cons.getGenericParameterTypes.toList
       val typeStrs = javaTypes.reverse match {

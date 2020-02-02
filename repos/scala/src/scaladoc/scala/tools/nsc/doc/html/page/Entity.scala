@@ -550,7 +550,7 @@ trait EntityPage extends HtmlPage {
   def memberToCommentHtml(
       mbr: MemberEntity,
       inTpl: DocTemplateEntity,
-      isSelf: Boolean): NodeSeq = {
+      isSelf: Boolean): NodeSeq =
     mbr match {
       case dte: DocTemplateEntity if isSelf =>
         // comment of class itself
@@ -583,17 +583,13 @@ trait EntityPage extends HtmlPage {
           shortComment ++ includedLongComment
         }
     }
-  }
 
-  def memberToUseCaseCommentHtml(
-      mbr: MemberEntity,
-      isSelf: Boolean): NodeSeq = {
+  def memberToUseCaseCommentHtml(mbr: MemberEntity, isSelf: Boolean): NodeSeq =
     mbr match {
       case nte: NonTemplateMemberEntity if nte.isUseCase =>
         inlineToHtml(comment.Text("[use case] "))
       case _ => NodeSeq.Empty
     }
-  }
 
   def memberToShortCommentHtml(mbr: MemberEntity, isSelf: Boolean): NodeSeq =
     mbr.comment.fold(NodeSeq.Empty) { comment =>
@@ -776,7 +772,7 @@ trait EntityPage extends HtmlPage {
       else {
         <dt>Attributes</dt>
         <dd>{
-          fvs map { fv => { inlineToHtml(fv.text) ++ scala.xml.Text(" ") } }
+          fvs map { fv => inlineToHtml(fv.text) ++ scala.xml.Text(" ") }
         }</dd>
       }
     }
@@ -1333,7 +1329,7 @@ trait EntityPage extends HtmlPage {
     <span class="args">({argumentsToHtml0(argss)})</span>
   }
 
-  private def argumentToHtml(arg: ValueArgument): NodeSeq = {
+  private def argumentToHtml(arg: ValueArgument): NodeSeq =
     <span>
       {
       arg.parameter match {
@@ -1343,7 +1339,6 @@ trait EntityPage extends HtmlPage {
     }
       {treeToHtml(arg.value)}
     </span>
-  }
 
   private def bodyToStr(body: comment.Body): String =
     body.blocks flatMap (blockToStr(_)) mkString ""

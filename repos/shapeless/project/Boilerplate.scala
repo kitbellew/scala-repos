@@ -147,7 +147,7 @@ object Boilerplate {
         |trait TuplerInstances {
         |  type Aux[L <: HList, Out0] = Tupler[L] { type Out = Out0 }
         -
-        -  implicit def hlistTupler${arity}
+        -  implicit def hlistTupler$arity
         -    [${`A..N`}]
         -  : Aux[
         -    ${`A::N`},
@@ -183,17 +183,17 @@ object Boilerplate {
         |trait FnToProductInstances {
         |  type Aux[F, Out0] = FnToProduct[F] { type Out = Out0 }
         -
-        -  implicit def fnToProduct${arity}
+        -  implicit def fnToProduct$arity
         -    [${`A..N,Res`}]
         -  : Aux[
-        -    (${fnType}),
-        -    ${hlistFnType}
+        -    ($fnType),
+        -    $hlistFnType
         -  ] =
-        -    new FnToProduct[${fnType}] {
-        -      type Out = ${hlistFnType}
-        -      def apply(fn: ${fnType}): Out
+        -    new FnToProduct[$fnType] {
+        -      type Out = $hlistFnType
+        -      def apply(fn: $fnType): Out
         -        = (l : ${`A::N`})
-        -          => ${fnBody}
+        -          => $fnBody
         -    }
         |}
       """
@@ -218,15 +218,15 @@ object Boilerplate {
         |trait FnFromProductInstances {
         |  type Aux[F, Out0] = FnFromProduct[F] { type Out = Out0 }
         |
-        -  implicit def fnFromProduct${arity}
+        -  implicit def fnFromProduct$arity
         -    [${`A..N,Res`}]
         -  : Aux[
-        -    ${hlistFnType},
-        -    ${fnType}
+        -    $hlistFnType,
+        -    $fnType
         -  ] = 
-        -    new FnFromProduct[${hlistFnType}] {
-        -      type Out = ${fnType}
-        -      def apply(hf : ${hlistFnType}): Out
+        -    new FnFromProduct[$hlistFnType] {
+        -      type Out = $fnType
+        -      def apply(hf : $hlistFnType): Out
         -        = (${`a:A..n:N`})
         -          => hf(${`a::n`})
         -    }
@@ -247,7 +247,7 @@ object Boilerplate {
         |trait CaseInst {
         |  import poly._
         |
-        -  implicit def inst${arity}
+        -  implicit def inst$arity
         -    [Fn <: Poly, ${`A..N`}, Res]
         -    (cse : Case[Fn, ${`A::N`}] { type Result = Res }) 
         -  : (${`A..N`}) => Res =
@@ -290,7 +290,7 @@ object Boilerplate {
         |
         |trait PolyInst {
         |
-        -  implicit def inst${arity}
+        -  implicit def inst$arity
         -    [${`A..N`}]
         -    (fn : Poly)(implicit cse : fn.ProductCase[${`A::N`}])
         -  : (${`A..N`}) => cse.Result =
@@ -312,10 +312,10 @@ object Boilerplate {
         |trait Cases {
         |  import poly._
         |
-        -  type Case${arity}[Fn, ${`A..N`}]
+        -  type Case$arity[Fn, ${`A..N`}]
         -    = Case[Fn, ${`A::N`}]
         -
-        -  object Case${arity} {
+        -  object Case$arity {
         -    type Aux[Fn, ${`A..N`}, Result0]
         -      = Case[Fn, ${`A::N`}] { type Result = Result0 }
         -
@@ -351,7 +351,7 @@ object Boilerplate {
       block"""
         |
         -
-        -trait Poly${arity} extends Poly { outer =>
+        -trait Poly$arity extends Poly { outer =>
         -  type Case[${`A..N`}]
         -    = poly.Case[this.type, ${`A::N`}]
         -
@@ -365,7 +365,7 @@ object Boilerplate {
         -      (fn: (${`A..N`}) => Res) = new Case[${`A..N`}] {
         -      type Result = Res
         -      val value = (l: ${`A::N`})
-        -        => ${fnBody}
+        -        => $fnBody
         -    }
         -  }
         -  
@@ -386,8 +386,8 @@ object Boilerplate {
         |
         |trait Nats {
         -
-        -  type _${n} = Succ[_${n - 1}]
-        -  val _${n}: _${n} = new _${n}
+        -  type _$n = Succ[_${n - 1}]
+        -  val _$n: _$n = new _$n
         |}
       """
     }
@@ -399,12 +399,12 @@ object Boilerplate {
     def content(tv: TemplateVals) = {
       import tv._
       val implicitArgs =
-        (synTypes map (a => s"cast${a}:Typeable[${a}]")) mkString ", "
+        (synTypes map (a => s"cast$a:Typeable[$a]")) mkString ", "
       val enumerators = synTypes.zipWithIndex map {
-        case (a, idx) => s"_ <- p._${idx + 1}.cast[${a}]"
+        case (a, idx) => s"_ <- p._${idx + 1}.cast[$a]"
       } mkString "; "
       val castVals =
-        (synTypes map (a => s"$${cast${a}.describe}")) mkString ", "
+        (synTypes map (a => s"$${cast$a.describe}")) mkString ", "
 
       block"""
         |
@@ -413,13 +413,13 @@ object Boilerplate {
         |
         -  implicit def tuple${arity}Typeable
         -    [${`A..N`}]
-        -    (implicit ${implicitArgs})
+        -    (implicit $implicitArgs)
         -  = new Typeable[${`(A..N)`}] {
         -    def cast(t : Any) : Option[${`(A..N)`}] = {
         -      if(t == null) None
         -      else if(t.isInstanceOf[${`(_.._)`}]) {
         -        val p = t.asInstanceOf[${`(_.._)`}]
-        -        for(${enumerators})
+        -        for($enumerators)
         -        yield t.asInstanceOf[${`(A..N)`}]
         -      } else None
         -    }
@@ -447,7 +447,7 @@ object Boilerplate {
         |
         -  def apply[T](${`a:T..n:T`})
         -    (implicit cbf : CanBuildFrom[Nothing, T, CC[T]], ev : AdditiveCollection[CC[T]]) =
-        -    wrap[CC[T], _${arity}]((cbf() += (${`a..n`})).result)
+        -    wrap[CC[T], _$arity]((cbf() += (${`a..n`})).result)
         -
         |}
       """
@@ -459,11 +459,11 @@ object Boilerplate {
 
     def content(tv: TemplateVals) = {
       import tv._
-      val typeArgs = (0 until arity) map (n => s"K${n}, V${n}") mkString ", "
+      val typeArgs = (0 until arity) map (n => s"K$n, V$n") mkString ", "
       val args =
-        (0 until arity) map (n => s"e${n}: (K${n}, V${n})") mkString ", "
+        (0 until arity) map (n => s"e$n: (K$n, V$n)") mkString ", "
       val witnesses =
-        (0 until arity) map (n => s"ev${n}: R[K${n}, V${n}]") mkString ", "
+        (0 until arity) map (n => s"ev$n: R[K$n, V$n]") mkString ", "
       val mapArgs = (0 until arity) map (n => "e" + n) mkString ", "
 
       block"""
@@ -471,10 +471,10 @@ object Boilerplate {
         |class HMapBuilder[R[_, _]] {
         -
         -  def apply
-        -    [${typeArgs}]
-        -    (${args})
-        -    (implicit ${witnesses})
-        -    = new HMap[R](Map(${mapArgs}))
+        -    [$typeArgs]
+        -    ($args)
+        -    (implicit $witnesses)
+        -    = new HMap[R](Map($mapArgs))
         |}
       """
     }
@@ -486,7 +486,7 @@ object Boilerplate {
       import tv._
       val typeblock = "FF[" + `A..N` + "], FF, " + `A..N`
       val hktypeblock = "FF[" + `_.._` + "], " + `A..N`
-      val traitname = s"Unpack${arity}"
+      val traitname = s"Unpack$arity"
       block"""
         |
         -

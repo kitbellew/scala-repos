@@ -23,9 +23,8 @@ import org.jetbrains.plugins.scala.ScalaFileType
 class ScalaIsCommentComplete extends CommentCompleteHandler {
   def isApplicable(
       comment: PsiComment,
-      commenter: CodeDocumentationAwareCommenter): Boolean = {
+      commenter: CodeDocumentationAwareCommenter): Boolean =
     comment.getParent.getLanguage == ScalaFileType.SCALA_LANGUAGE
-  }
 
   //same code in com.intellij.codeInsight.editorActions.EnterHandler
   def isCommentComplete(

@@ -89,9 +89,8 @@ class HistoryServerSuite
     port = server.boundPort
   }
 
-  def stop(): Unit = {
+  def stop(): Unit =
     server.stop()
-  }
 
   before {
     init()
@@ -324,7 +323,7 @@ class HistoryServerSuite
         if (stat.isDirectory) listDir(stat.getPath) else Seq(stat))
     }
 
-    def dumpLogDir(msg: String = ""): Unit = {
+    def dumpLogDir(msg: String = ""): Unit =
       if (log.isDebugEnabled) {
         logDebug(msg)
         listDir(logDirPath).foreach { status =>
@@ -332,7 +331,6 @@ class HistoryServerSuite
           logDebug(s)
         }
       }
-    }
 
     // stop the server with the old config, and start the new one
     server.stop()
@@ -354,14 +352,12 @@ class HistoryServerSuite
     }
 
     // build a URL for an app or app/attempt plus a page underneath
-    def buildURL(appId: String, suffix: String): URL = {
+    def buildURL(appId: String, suffix: String): URL =
       new URL(s"http://localhost:$port/history/$appId$suffix")
-    }
 
     // build a rest URL for the application and suffix.
-    def applications(appId: String, suffix: String): URL = {
+    def applications(appId: String, suffix: String): URL =
       new URL(s"http://localhost:$port/api/v1/applications/$appId$suffix")
-    }
 
     val historyServerRoot = new URL(s"http://localhost:$port/")
 
@@ -382,9 +378,8 @@ class HistoryServerSuite
     // sanity check to make sure filter is chaining calls
     rootAppPage should not be empty
 
-    def getAppUI: SparkUI = {
+    def getAppUI: SparkUI =
       provider.getAppUI(appId, None).get.ui
-    }
 
     // selenium isn't that useful on failures...add our own reporting
     def getNumJobs(suffix: String): Int = {
@@ -414,7 +409,7 @@ class HistoryServerSuite
         case JNothing => Seq()
         case apps: JArray =>
           apps
-            .filter(app => {
+            .filter { app =>
               (app \ "attempts") match {
                 case attempts: JArray =>
                   val state =
@@ -422,19 +417,17 @@ class HistoryServerSuite
                   state.value == completed
                 case _ => false
               }
-            })
+            }
             .map(app => (app \ "id").asInstanceOf[JString].values)
         case _ => Seq()
       }
     }
 
-    def completedJobs(): Seq[JobUIData] = {
+    def completedJobs(): Seq[JobUIData] =
       getAppUI.jobProgressListener.completedJobs
-    }
 
-    def activeJobs(): Seq[JobUIData] = {
+    def activeJobs(): Seq[JobUIData] =
       getAppUI.jobProgressListener.activeJobs.values.toSeq
-    }
 
     activeJobs() should have size 0
     completedJobs() should have size 1
@@ -503,18 +496,15 @@ class HistoryServerSuite
 
   def getContentAndCode(
       path: String,
-      port: Int = port): (Int, Option[String], Option[String]) = {
+      port: Int = port): (Int, Option[String], Option[String]) =
     HistoryServerSuite.getContentAndCode(
       new URL(s"http://localhost:$port/api/v1/$path"))
-  }
 
-  def getUrl(path: String): String = {
+  def getUrl(path: String): String =
     HistoryServerSuite.getUrl(generateURL(path))
-  }
 
-  def generateURL(path: String): URL = {
+  def generateURL(path: String): URL =
     new URL(s"http://localhost:$port/api/v1/$path")
-  }
 
   def generateExpectation(name: String, path: String): Unit = {
     val json = getUrl(path)
@@ -575,10 +565,9 @@ object HistoryServerSuite {
     (code, inStream, errString)
   }
 
-  def sanitizePath(path: String): String = {
+  def sanitizePath(path: String): String =
     // this doesn't need to be perfect, just good enough to avoid collisions
     path.replaceAll("\\W", "_")
-  }
 
   def getUrl(path: URL): String = {
     val (code, resultOpt, error) = getContentAndCode(path)

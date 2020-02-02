@@ -576,7 +576,7 @@ trait TestKitBase {
       missing: Seq[Any],
       unexpected: Seq[Any],
       missingMessage: String,
-      unexpectedMessage: String): Unit = {
+      unexpectedMessage: String): Unit =
     assert(
       missing.isEmpty && unexpected.isEmpty,
       (if (missing.isEmpty) ""
@@ -584,7 +584,6 @@ trait TestKitBase {
         (if (unexpected.isEmpty) ""
          else unexpected.mkString(unexpectedMessage + " [", ", ", "]"))
     )
-  }
 
   private def expectMsgAllOf_internal[T](
       max: FiniteDuration,
@@ -715,7 +714,7 @@ trait TestKitBase {
     var msg: Message = NullMessage
 
     @tailrec
-    def doit(acc: List[T], count: Int): List[T] = {
+    def doit(acc: List[T], count: Int): List[T] =
       if (count >= messages) acc.reverse
       else {
         receiveOne((stop - now) min idle)
@@ -732,7 +731,6 @@ trait TestKitBase {
             acc.reverse
         }
       }
-    }
 
     val ret = doit(Nil, 0)
     lastWasNoMsg = true
@@ -870,7 +868,7 @@ object TestKit {
     val stop = now + max
 
     @tailrec
-    def poll(): Boolean = {
+    def poll(): Boolean =
       if (!p) {
         val toSleep = stop - now
         if (toSleep <= Duration.Zero) {
@@ -881,7 +879,6 @@ object TestKit {
           poll()
         }
       } else true
-    }
 
     poll()
   }

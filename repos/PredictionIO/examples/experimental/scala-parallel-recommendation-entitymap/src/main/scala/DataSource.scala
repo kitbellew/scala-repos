@@ -66,13 +66,13 @@ class DataSource(val dsp: DataSourceParams)
           val ratingValue: Double = event.event match {
             case "rate" => event.properties.get[Double]("rating")
             case "buy"  => 4.0 // map buy event to rating value of 4
-            case _      => throw new Exception(s"Unexpected event ${event} is read.")
+            case _      => throw new Exception(s"Unexpected event $event is read.")
           }
           // entityId and targetEntityId is String
           Rating(event.entityId, event.targetEntityId.get, ratingValue)
         } catch {
           case e: Exception => {
-            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+            logger.error(s"Cannot convert $event to Rating. Exception: $e.")
             throw e
           }
         }
@@ -105,9 +105,8 @@ class TrainingData(
     val items: EntityMap[Item],
     val ratings: RDD[Rating]
 ) extends Serializable {
-  override def toString = {
+  override def toString =
     s"users: [${users.size} (${users.take(2).toString}...)]" +
       s"items: [${items.size} (${items.take(2).toString}...)]" +
       s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
-  }
 }

@@ -96,13 +96,12 @@ trait MultiNodeClusterSpec
     muteLog()
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     stopCoroner()
-  }
 
   override def expectedTestDuration = 60.seconds
 
-  def muteLog(sys: ActorSystem = system): Unit = {
+  def muteLog(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       Seq(
         ".*Metrics collection has started successfully.*",
@@ -135,7 +134,6 @@ trait MultiNodeClusterSpec
       )(sys)
 
     }
-  }
 
   def muteMarkingAsUnreachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
@@ -164,7 +162,7 @@ trait MultiNodeClusterSpec
     * and then restarting a role (jvm) with another address is not
     * supported.
     */
-  implicit def address(role: RoleName): Address = {
+  implicit def address(role: RoleName): Address =
     cachedAddresses.get(role) match {
       case null ⇒
         val address = node(role).address
@@ -172,7 +170,6 @@ trait MultiNodeClusterSpec
         address
       case address ⇒ address
     }
-  }
 
   // Cluster tests are written so that if previous step (test method) failed
   // it will most likely not be possible to run next step. This ensures
@@ -198,14 +195,13 @@ trait MultiNodeClusterSpec
   /**
     * Use this method for the initial startup of the cluster node.
     */
-  def startClusterNode(): Unit = {
+  def startClusterNode(): Unit =
     if (clusterView.members.isEmpty) {
       cluster join myself
       awaitAssert(
         clusterView.members.map(_.address) should contain(address(myself)))
     } else
       clusterView.self
-  }
 
   /**
     * Initialize the cluster of the specified member
@@ -316,7 +312,7 @@ trait MultiNodeClusterSpec
   def awaitMembersUp(
       numberOfMembers: Int,
       canNotBePartOfMemberRing: Set[Address] = Set.empty,
-      timeout: FiniteDuration = 25.seconds): Unit = {
+      timeout: FiniteDuration = 25.seconds): Unit =
     within(timeout) {
       if (!canNotBePartOfMemberRing.isEmpty) // don't run this on an empty set
         awaitAssert(canNotBePartOfMemberRing foreach (a ⇒
@@ -328,7 +324,6 @@ trait MultiNodeClusterSpec
       val expectedLeader = clusterView.members.headOption.map(_.address)
       awaitAssert(clusterView.leader should ===(expectedLeader))
     }
-  }
 
   def awaitAllReachable(): Unit =
     awaitAssert(clusterView.unreachableMembers should ===(Set.empty))
@@ -377,14 +372,13 @@ trait MultiNodeClusterSpec
     * [[akka.cluster.FailureDetectorPuppet]] is used as
     * failure detector.
     */
-  def markNodeAsUnavailable(address: Address): Unit = {
+  def markNodeAsUnavailable(address: Address): Unit =
     if (isFailureDetectorPuppet) {
       // before marking it as unavailable there should be at least one heartbeat
       // to create the FailureDetectorPuppet in the FailureDetectorRegistry
       cluster.failureDetector.heartbeat(address)
       failureDetectorPuppet(address) foreach (_.markNodeAsUnavailable())
     }
-  }
 
   private def isFailureDetectorPuppet: Boolean =
     cluster.settings.FailureDetectorImplementationClass == classOf[

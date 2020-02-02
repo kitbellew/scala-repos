@@ -370,9 +370,8 @@ class CrossValidatorModel private[ml] (
   }
 
   @Since("1.4.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     bestModel.transformSchema(schema)
-  }
 
   @Since("1.4.0")
   override def copy(extra: ParamMap): CrossValidatorModel = {

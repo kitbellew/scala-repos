@@ -507,7 +507,7 @@ private[math] object Elementary {
       a: Array[Int],
       b: Array[Int],
       aSize: Int,
-      bSize: Int): Int = {
+      bSize: Int): Int =
     if (aSize > bSize) {
       1
     } else if (aSize < bSize) {
@@ -522,5 +522,4 @@ private[math] object Elementary {
       else if ((a(i) & UINT_MAX) < (b(i) & UINT_MAX)) BigInteger.LESS
       else BigInteger.GREATER
     }
-  }
 }

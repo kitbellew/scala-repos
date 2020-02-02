@@ -42,7 +42,7 @@ class RuntimeTypesTest {
 
   @Test def scala_Nothing_casts_to_scala_Nothing_should_fail(): Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
-    def test(x: Any): Unit = {
+    def test(x: Any): Unit =
       try {
         x.asInstanceOf[Nothing]
         fail("casting " + x + " to Nothing did not fail")
@@ -53,7 +53,6 @@ class RuntimeTypesTest {
             x + " is not an instance of scala.runtime.Nothing$",
             th.getMessage)
       }
-    }
     test("a")
     test(null)
   }
@@ -61,7 +60,7 @@ class RuntimeTypesTest {
   @Test def scala_Nothing_reflected_casts_to_scala_Nothing_should_fail()
       : Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
-    def test(x: Any): Unit = {
+    def test(x: Any): Unit =
       try {
         classOf[Nothing].cast(x)
         fail("casting " + x + " to Nothing did not fail")
@@ -72,7 +71,6 @@ class RuntimeTypesTest {
             x + " is not an instance of scala.runtime.Nothing$",
             th.getMessage)
       }
-    }
     test("a")
     test(null)
   }
@@ -107,9 +105,8 @@ class RuntimeTypesTest {
     assertEquals("scala.runtime.Null$", tag.runtimeClass.getName)
   }
 
-  @Test def scala_Null_casts_to_scala_Null_should_succeed_on_null(): Unit = {
+  @Test def scala_Null_casts_to_scala_Null_should_succeed_on_null(): Unit =
     null.asInstanceOf[Null]
-  }
 
   @Test def scala_Null_Array_Null_should_be_allowed_to_exist_and_be_castable()
       : Unit = {

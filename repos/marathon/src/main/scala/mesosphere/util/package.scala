@@ -16,7 +16,7 @@ package object util {
         } else res
 
       @tailrec
-      def loop(unit: TimeUnit, res: String = ""): String = {
+      def loop(unit: TimeUnit, res: String = ""): String =
         unit match {
           case DAYS =>
             loop(HOURS, appendIfPositive(d.toDays, unit, res))
@@ -38,7 +38,6 @@ package object util {
           case NANOSECONDS =>
             loop(MILLISECONDS, res)
         }
-      }
 
       loop(DAYS).trim
     }

@@ -12,9 +12,8 @@ object XMLSpec extends Specification {
 
   "The Java XML support" should {
 
-    def parse(xml: String) = {
+    def parse(xml: String) =
       XML.fromString(xml)
-    }
 
     def writeStringToFile(file: File, text: String) = {
       val out = new FileOutputStream(file)

@@ -27,10 +27,10 @@ class StructureViewBuilderSpec
       val par = parent.map(_ + ".").getOrElse("")
       x match {
         case StructureViewMember(key, name, _, Nil) =>
-          result.append(s"($key)${par}$name")
+          result.append(s"($key)$par$name")
         case StructureViewMember(key, name, _, xs) =>
-          result.append(s"($key)${par}$name")
-          xs.foreach(collect(Some(s"${par}$name"), _))
+          result.append(s"($key)$par$name")
+          xs.foreach(collect(Some(s"$par$name"), _))
       }
     }
 

@@ -25,9 +25,8 @@ object StabilizingGroup {
       grace: Duration,
       statsReceiver: StatsReceiver = NullStatsReceiver,
       timer: Timer = DefaultTimer.twitter
-  ): Group[T] = {
+  ): Group[T] =
     new StabilizingGroup(underlying, pulse, grace, statsReceiver, timer)
-  }
 
   /**
     * A StabilizingGroup conservatively removes elements

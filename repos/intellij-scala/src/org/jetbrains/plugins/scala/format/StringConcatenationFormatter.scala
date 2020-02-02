@@ -7,7 +7,7 @@ import com.intellij.openapi.util.text.StringUtil
   * Pavel Fatin
   */
 object StringConcatenationFormatter extends StringFormatter {
-  def format(parts: Seq[StringPart]) = {
+  def format(parts: Seq[StringPart]) =
     if (parts.isEmpty) quoted("")
     else {
       val strings = parts.collect {
@@ -23,7 +23,6 @@ object StringConcatenationFormatter extends StringFormatter {
       }
       strings.mkString(" + ")
     }
-  }
 
   private def quoted(s: String) = '"' + s + '"'
 }

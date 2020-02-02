@@ -10,7 +10,6 @@ object Test {
     foo(bar) // <- error here
   }
 
-  def bar() = {
+  def bar() =
     "string"
-  }
 }

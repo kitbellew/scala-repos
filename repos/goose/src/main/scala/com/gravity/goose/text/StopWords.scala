@@ -37,9 +37,8 @@ object StopWords {
     .split(sys.props("line.separator"))
     .toSet
 
-  def removePunctuation(str: String): String = {
+  def removePunctuation(str: String): String =
     PUNCTUATION.replaceAll(str)
-  }
 
   def getStopWordCount(content: String): WordStats = {
 
@@ -52,10 +51,10 @@ object StopWords {
 
     val overlappingStopWords: List[String] = new ArrayList[String]
 
-    candidateWords.foreach(w => {
+    candidateWords.foreach { w =>
       if (STOP_WORDS.contains(w.toLowerCase))
         overlappingStopWords.add(w.toLowerCase)
-    })
+    }
     ws.setWordCount(candidateWords.length)
     ws.setStopWordCount(overlappingStopWords.size)
     ws.setStopWords(overlappingStopWords)

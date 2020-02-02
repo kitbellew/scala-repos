@@ -28,7 +28,7 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
   def decode(
       ctx: ChannelHandlerContext,
       channel: Channel,
-      buffer: ChannelBuffer): Decoding = {
+      buffer: ChannelBuffer): Decoding =
     state match {
       case AwaitingCommand() =>
         decodeLine(buffer, needsData) { tokens =>
@@ -41,7 +41,6 @@ class Decoder(storageCommands: collection.Set[ChannelBuffer])
             ChannelBufferBuf.Owned(data))
         }
     }
-  }
 
   final protected[memcached] def awaitData(
       tokens: Seq[ChannelBuffer],

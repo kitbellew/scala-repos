@@ -230,9 +230,8 @@ object JavaStreamEnrichments {
     def writeBoolean(b: Boolean): Unit =
       if (b) s.write(1: Byte) else s.write(0: Byte)
 
-    def writeBytes(b: Array[Byte], off: Int, len: Int): Unit = {
+    def writeBytes(b: Array[Byte], off: Int, len: Int): Unit =
       s.write(b, off, len)
-    }
 
     def writeByte(b: Byte): Unit = s.write(b)
 
@@ -246,7 +245,7 @@ object JavaStreamEnrichments {
       * 7 bytes for 65536 - Int.MaxValue
       */
     def writePosVarInt(i: Int): Unit = {
-      if (i < 0) illegal(s"must be non-negative: ${i}")
+      if (i < 0) illegal(s"must be non-negative: $i")
       if (i < ((1 << 8) - 1)) s.write(i)
       else {
         s.write(-1: Byte)

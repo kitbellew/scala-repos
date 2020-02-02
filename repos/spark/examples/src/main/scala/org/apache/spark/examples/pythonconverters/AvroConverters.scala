@@ -69,7 +69,7 @@ object AvroConversionUtil extends Serializable {
     map
   }
 
-  def unpackMap(obj: Any, schema: Schema): JMap[String, Any] = {
+  def unpackMap(obj: Any, schema: Schema): JMap[String, Any] =
     obj
       .asInstanceOf[JMap[_, _]]
       .asScala
@@ -78,11 +78,9 @@ object AvroConversionUtil extends Serializable {
           (key.toString, fromAvro(value, schema.getValueType))
       }
       .asJava
-  }
 
-  def unpackFixed(obj: Any, schema: Schema): Array[Byte] = {
+  def unpackFixed(obj: Any, schema: Schema): Array[Byte] =
     unpackBytes(obj.asInstanceOf[GenericFixed].bytes())
-  }
 
   def unpackBytes(obj: Any): Array[Byte] = {
     val bytes: Array[Byte] = obj match {
@@ -111,7 +109,7 @@ object AvroConversionUtil extends Serializable {
       throw new SparkException(s"Unknown ARRAY type ${other.getClass.getName}")
   }
 
-  def unpackUnion(obj: Any, schema: Schema): Any = {
+  def unpackUnion(obj: Any, schema: Schema): Any =
     schema.getTypes.asScala.toList match {
       case List(s)                         => fromAvro(obj, s)
       case List(n, s) if n.getType == NULL => fromAvro(obj, s)
@@ -120,7 +118,6 @@ object AvroConversionUtil extends Serializable {
         throw new SparkException(
           "Unions may only consist of a concrete type and null")
     }
-  }
 }
 
 /**

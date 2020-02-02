@@ -120,9 +120,8 @@ private[tree] class EntropyAggregator(numClasses: Int)
     * @param allStats  Flat stats array, with stats for this (node, feature, bin) contiguous.
     * @param offset    Start index of stats for this (node, feature, bin).
     */
-  def getCalculator(allStats: Array[Double], offset: Int): EntropyCalculator = {
+  def getCalculator(allStats: Array[Double], offset: Int): EntropyCalculator =
     new EntropyCalculator(allStats.view(offset, offset + statsSize).toArray)
-  }
 }
 
 /**

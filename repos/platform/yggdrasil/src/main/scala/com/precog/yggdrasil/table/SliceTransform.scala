@@ -85,9 +85,8 @@ trait SliceTransforms[M[+_]]
     def lift(f: Slice => M[Slice]): SliceTransform1[Unit] =
       SliceTransform1[Unit]((), { (_, s) => f(s) map { ((), _) } })
 
-    def composeSliceTransform(spec: TransSpec1): SliceTransform1[_] = {
+    def composeSliceTransform(spec: TransSpec1): SliceTransform1[_] =
       composeSliceTransform2(spec).parallel
-    }
 
     // No transform defined herein may reduce the size of a slice. Be it known!
     def composeSliceTransform2(
@@ -249,7 +248,7 @@ trait SliceTransforms[M[+_]]
 
                 // numeric stuff
 
-                def stripTypes(cols: Map[ColumnRef, Column]) = {
+                def stripTypes(cols: Map[ColumnRef, Column]) =
                   cols.foldLeft(Map[CPath, Set[Column]]()) {
                     case (acc, (ColumnRef(path, _), column)) => {
                       val set = acc get path map { _ + column } getOrElse Set(
@@ -257,7 +256,6 @@ trait SliceTransforms[M[+_]]
                       acc.updated(path, set)
                     }
                   }
-                }
 
                 val leftNumMulti = stripTypes(leftNum)
                 val rightNumMulti = stripTypes(rightNum)
@@ -429,23 +427,22 @@ trait SliceTransforms[M[+_]]
             * won't have any unions, or funky behaviour arising from empty
             * objects.
             */
-          def isDisjoint(s1: Slice, s2: Slice): Boolean = {
+          def isDisjoint(s1: Slice, s2: Slice): Boolean =
             false // TODO: We really want to optimize the case where
-            // we are constructing a simple object from some
-            // other object where usually the definedness is equal
-            // on both sides, so we can just ++ the columns. But,
-            // we need to be a bit smarter about checking for equal
-            // definedness.
+          // we are constructing a simple object from some
+          // other object where usually the definedness is equal
+          // on both sides, so we can just ++ the columns. But,
+          // we need to be a bit smarter about checking for equal
+          // definedness.
 
-            // def containsEmptyObject(slice: Slice): Boolean =
-            //   slice.columns.exists(_._1.ctype == CEmptyObject)
+          // def containsEmptyObject(slice: Slice): Boolean =
+          //   slice.columns.exists(_._1.ctype == CEmptyObject)
 
-            // if (containsEmptyObject(s1) || containsEmptyObject(s2))
-            //   return false
+          // if (containsEmptyObject(s1) || containsEmptyObject(s2))
+          //   return false
 
-            // val keys = s1.columns.map(_._1.selector).toSet
-            // !s2.columns.map(_._1.selector).exists(keys)
-          }
+          // val keys = s1.columns.map(_._1.selector).toSet
+          // !s2.columns.map(_._1.selector).exists(keys)
 
           if (objects.size == 1) {
             val typed = Typed(objects.head, JObjectUnfixedT)
@@ -793,7 +790,7 @@ trait SliceTransforms[M[+_]]
       MappedState1[A, B](this, f, g)
 
     def zip[B](that: SliceTransform1[B])(
-        combine: (Slice, Slice) => Slice): SliceTransform1[(A, B)] = {
+        combine: (Slice, Slice) => Slice): SliceTransform1[(A, B)] =
       (this, that) match {
         case (sta: SliceTransform1S[_], stb: SliceTransform1S[_]) =>
           SliceTransform1S[(A, B)]((sta.initial, stb.initial), {
@@ -839,14 +836,11 @@ trait SliceTransforms[M[+_]]
             }
           )
       }
-    }
 
     def zip2[B, C](t: SliceTransform1[B], t2: SliceTransform1[C])(
-        combine: (Slice, Slice, Slice) => Slice): SliceTransform1[(A, B, C)] = {
-
+        combine: (Slice, Slice, Slice) => Slice): SliceTransform1[(A, B, C)] =
       // We can do this in 4 cases efficiently simply be re-ordering the 3 sts.
       // Since they're done in parallel, we just need to make sure combine works.
-
       (this, t, t2) match {
         case (
             sta: SliceTransform1S[_],
@@ -879,7 +873,6 @@ trait SliceTransforms[M[+_]]
             }
           )
       }
-    }
 
     def map(mapFunc: Slice => Slice): SliceTransform1[A] =
       SliceTransform1.map(this)(mapFunc)
@@ -915,7 +908,7 @@ trait SliceTransforms[M[+_]]
 
     private def chainS[A, B](
         sta: SliceTransform1S[A],
-        stb: SliceTransform1S[B]): SliceTransform1S[(A, B)] = {
+        stb: SliceTransform1S[B]): SliceTransform1S[(A, B)] =
       (sta, stb) match {
         case (Identity, stb) =>
           SliceTransform1S((sta.initial, stb.initial), {
@@ -935,13 +928,12 @@ trait SliceTransforms[M[+_]]
               ((a, b), s)
           })
       }
-    }
 
     // Note: This is here, rather than in SliceTransform1 trait, because Scala's
     // type unification doesn't deal well with `this`.
     private def chain[A, B](
         st0: SliceTransform1[A],
-        st1: SliceTransform1[B]): SliceTransform1[(A, B)] = {
+        st1: SliceTransform1[B]): SliceTransform1[(A, B)] =
       (st0, st1) match {
         case (sta: SliceTransform1S[_], stb: SliceTransform1S[_]) =>
           chainS(sta, stb)
@@ -1008,7 +1000,6 @@ trait SliceTransforms[M[+_]]
         case (sta, MappedState1(stb, f, g)) =>
           (sta andThen stb).mapState(_ :-> f, _ :-> g)
       }
-    }
 
     private[table] case class SliceTransform1S[A](
         initial: A,
@@ -1091,7 +1082,7 @@ trait SliceTransforms[M[+_]]
       MappedState2[A, B](this, f, g)
 
     def zip[B](that: SliceTransform2[B])(
-        combine: (Slice, Slice) => Slice): SliceTransform2[(A, B)] = {
+        combine: (Slice, Slice) => Slice): SliceTransform2[(A, B)] =
       (this, that) match {
         case (sta: SliceTransform2S[_], stb: SliceTransform2S[_]) =>
           SliceTransform2S[(A, B)](
@@ -1144,14 +1135,11 @@ trait SliceTransforms[M[+_]]
             }
           )
       }
-    }
 
     def zip2[B, C](t: SliceTransform2[B], t2: SliceTransform2[C])(
-        combine: (Slice, Slice, Slice) => Slice): SliceTransform2[(A, B, C)] = {
-
+        combine: (Slice, Slice, Slice) => Slice): SliceTransform2[(A, B, C)] =
       // We can do this in 4 cases efficiently simply be re-ordering the 3 sts.
       // Since they're done in parallel, we just need to make sure combine works.
-
       (this, t, t2) match {
         case (
             sta: SliceTransform2S[_],
@@ -1184,7 +1172,6 @@ trait SliceTransforms[M[+_]]
             }
           )
       }
-    }
 
     def map(mapFunc: Slice => Slice): SliceTransform2[A] =
       SliceTransform2.map(this)(mapFunc)
@@ -1237,7 +1224,7 @@ trait SliceTransforms[M[+_]]
 
     private def chainS[A, B](
         sta: SliceTransform2S[A],
-        stb: SliceTransform1S[B]): SliceTransform2S[(A, B)] = {
+        stb: SliceTransform1S[B]): SliceTransform2S[(A, B)] =
       (sta, stb) match {
         case (sta, SliceTransform1.Identity) =>
           SliceTransform2S((sta.initial, stb.initial), {
@@ -1252,11 +1239,10 @@ trait SliceTransforms[M[+_]]
               ((a, b), s)
           })
       }
-    }
 
     private def chain[A, B](
         st0: SliceTransform2[A],
-        st1: SliceTransform1[B]): SliceTransform2[(A, B)] = {
+        st1: SliceTransform1[B]): SliceTransform2[(A, B)] =
       (st0, st1) match {
         case (sta, MappedState1(stb, f, g)) =>
           chain(sta, stb).mapState(_ :-> f, _ :-> g)
@@ -1294,7 +1280,6 @@ trait SliceTransforms[M[+_]]
         case (MappedState2(sta, f, g), stb) =>
           chain(sta, stb).mapState(f <-: _, g <-: _)
       }
-    }
 
     private case class SliceTransform2S[A](
         initial: A,
@@ -1401,11 +1386,10 @@ trait ConcatHelpers {
       leftEmptyBits: BitSet,
       rightEmptyBits: BitSet,
       leftDefinedBits: BitSet,
-      rightDefinedBits: BitSet): BitSet = {
+      rightDefinedBits: BitSet): BitSet =
     (rightEmptyBits & leftEmptyBits) |
       (rightEmptyBits &~ leftDefinedBits) |
       (leftEmptyBits &~ rightDefinedBits)
-  }
 
   def buildInnerBits(
       leftEmptyBits: BitSet,
@@ -1477,12 +1461,11 @@ trait ObjectConcatHelpers extends ConcatHelpers {
       rightColumns: Map[ColumnRef, Column]) =
     (filterFields(leftColumns), filterFields(rightColumns))
 
-  def buildEmptyObjects(emptyBits: BitSet) = {
+  def buildEmptyObjects(emptyBits: BitSet) =
     if (emptyBits.isEmpty) Map.empty[ColumnRef, Column]
     else
       Map(
         ColumnRef(CPath.Identity, CEmptyObject) -> EmptyObjectColumn(emptyBits))
-  }
 
   def buildNonemptyObjects(
       leftFields: Map[ColumnRef, Column],

@@ -110,7 +110,7 @@ private[stats] object StatsFormatter {
     protected def histoName(name: String, component: String): String =
       s"$name.$component"
 
-    protected def labelPercentile(p: Double): String = {
+    protected def labelPercentile(p: Double): String =
       p match {
         case 0.5d    => "p50"
         case 0.9d    => "p90"
@@ -122,7 +122,6 @@ private[stats] object StatsFormatter {
           val padded = (p * 10000).toInt
           s"p$padded"
       }
-    }
 
     protected def labelMin: String = "minimum"
 

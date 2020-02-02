@@ -147,7 +147,7 @@ private[spark] class DiskBlockObjectWriter(
     *
     * @return the file that this DiskBlockObjectWriter wrote to.
     */
-  def revertPartialWritesAndClose(): File = {
+  def revertPartialWritesAndClose(): File =
     // Discard current writes. We do this by flushing the outstanding writes and then
     // truncating the file to its initial position.
     try {
@@ -173,7 +173,6 @@ private[spark] class DiskBlockObjectWriter(
           e)
         file
     }
-  }
 
   /**
     * Writes a key-value pair.

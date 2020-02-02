@@ -29,9 +29,8 @@ object Framing {
     */
   def delimiter(
       delimiter: ByteString,
-      maximumFrameLength: Int): Flow[ByteString, ByteString, NotUsed] = {
+      maximumFrameLength: Int): Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Framing.delimiter(delimiter, maximumFrameLength).asJava
-  }
 
   /**
     * Creates a Flow that handles decoding a stream of unstructured byte chunks into a stream of frames where the

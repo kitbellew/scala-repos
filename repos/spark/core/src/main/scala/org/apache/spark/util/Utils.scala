@@ -102,11 +102,10 @@ private[spark] object Utils extends Logging {
   def deserialize[T](bytes: Array[Byte], loader: ClassLoader): T = {
     val bis = new ByteArrayInputStream(bytes)
     val ois = new ObjectInputStream(bis) {
-      override def resolveClass(desc: ObjectStreamClass): Class[_] = {
+      override def resolveClass(desc: ObjectStreamClass): Class[_] =
         // scalastyle:off classforname
         Class.forName(desc.getName, false, loader)
-        // scalastyle:on classforname
-      }
+      // scalastyle:on classforname
     }
     ois.readObject.asInstanceOf[T]
   }
@@ -171,23 +170,21 @@ private[spark] object Utils extends Logging {
       .getOrElse(getSparkClassLoader)
 
   /** Determines whether the provided class is loadable in the current thread. */
-  def classIsLoadable(clazz: String): Boolean = {
+  def classIsLoadable(clazz: String): Boolean =
     // scalastyle:off classforname
     Try { Class.forName(clazz, false, getContextOrSparkClassLoader) }.isSuccess
-    // scalastyle:on classforname
-  }
+  // scalastyle:on classforname
 
   // scalastyle:off classforname
   /** Preferred alternative to Class.forName(className) */
-  def classForName(className: String): Class[_] = {
+  def classForName(className: String): Class[_] =
     Class.forName(className, true, getContextOrSparkClassLoader)
-    // scalastyle:on classforname
-  }
+  // scalastyle:on classforname
 
   /**
     * Primitive often used when writing [[java.nio.ByteBuffer]] to [[java.io.DataOutput]]
     */
-  def writeByteBuffer(bb: ByteBuffer, out: DataOutput): Unit = {
+  def writeByteBuffer(bb: ByteBuffer, out: DataOutput): Unit =
     if (bb.hasArray) {
       out.write(bb.array(), bb.arrayOffset() + bb.position(), bb.remaining())
     } else {
@@ -195,12 +192,11 @@ private[spark] object Utils extends Logging {
       bb.get(bbval)
       out.write(bbval)
     }
-  }
 
   /**
     * Primitive often used when writing [[java.nio.ByteBuffer]] to [[java.io.OutputStream]]
     */
-  def writeByteBuffer(bb: ByteBuffer, out: OutputStream): Unit = {
+  def writeByteBuffer(bb: ByteBuffer, out: OutputStream): Unit =
     if (bb.hasArray) {
       out.write(bb.array(), bb.arrayOffset() + bb.position(), bb.remaining())
     } else {
@@ -208,7 +204,6 @@ private[spark] object Utils extends Logging {
       bb.get(bbval)
       out.write(bbval)
     }
-  }
 
   /**
     * JDK equivalent of `chmod 700 file`.
@@ -216,14 +211,13 @@ private[spark] object Utils extends Logging {
     * @param file the file whose permissions will be modified
     * @return true if the permissions were successfully changed, false otherwise.
     */
-  def chmod700(file: File): Boolean = {
+  def chmod700(file: File): Boolean =
     file.setReadable(false, false) &&
-    file.setReadable(true, true) &&
-    file.setWritable(false, false) &&
-    file.setWritable(true, true) &&
-    file.setExecutable(false, false) &&
-    file.setExecutable(true, true)
-  }
+      file.setReadable(true, true) &&
+      file.setWritable(false, false) &&
+      file.setWritable(true, true) &&
+      file.setExecutable(false, false) &&
+      file.setExecutable(true, true)
 
   /**
     * Create a directory inside the given parent directory. The directory is guaranteed to be
@@ -557,7 +551,7 @@ private[spark] object Utils extends Logging {
     }
   }
 
-  private def filesEqualRecursive(file1: File, file2: File): Boolean = {
+  private def filesEqualRecursive(file1: File, file2: File): Boolean =
     if (file1.isDirectory && file2.isDirectory) {
       val subfiles1 = file1.listFiles()
       val subfiles2 = file2.listFiles()
@@ -572,9 +566,8 @@ private[spark] object Utils extends Logging {
     } else {
       false
     }
-  }
 
-  private def copyRecursive(source: File, dest: File): Unit = {
+  private def copyRecursive(source: File, dest: File): Unit =
     if (source.isDirectory) {
       if (!dest.mkdir()) {
         throw new IOException(s"Failed to create directory ${dest.getPath}")
@@ -584,7 +577,6 @@ private[spark] object Utils extends Logging {
     } else {
       Files.copy(source.toPath, dest.toPath)
     }
-  }
 
   /**
     * Download a file or directory to target directory. Supports fetching the file in a variety of
@@ -703,14 +695,12 @@ private[spark] object Utils extends Logging {
     * Some of these configuration options might be lists of multiple paths, but this method will
     * always return a single directory.
     */
-  def getLocalDir(conf: SparkConf): String = {
+  def getLocalDir(conf: SparkConf): String =
     getOrCreateLocalRootDirs(conf)(0)
-  }
 
-  private[spark] def isRunningInYarnContainer(conf: SparkConf): Boolean = {
+  private[spark] def isRunningInYarnContainer(conf: SparkConf): Boolean =
     // These environment variables are set by YARN.
     conf.getenv("CONTAINER_ID") != null
-  }
 
   /**
     * Gets or creates the directories listed in spark.local.dir or SPARK_LOCAL_DIRS,
@@ -773,7 +763,7 @@ private[spark] object Utils extends Logging {
     }
   }
 
-  private def getOrCreateLocalRootDirsImpl(conf: SparkConf): Array[String] = {
+  private def getOrCreateLocalRootDirsImpl(conf: SparkConf): Array[String] =
     getConfiguredLocalDirs(conf).flatMap { root =>
       try {
         val rootDir = new File(root)
@@ -792,7 +782,6 @@ private[spark] object Utils extends Logging {
           None
       }
     }
-  }
 
   /** Get the Yarn approved local directories. */
   private def getYarnLocalDirs(conf: SparkConf): String = {
@@ -805,18 +794,16 @@ private[spark] object Utils extends Logging {
   }
 
   /** Used by unit tests. Do not call from other places. */
-  private[spark] def clearLocalRootDirs(): Unit = {
+  private[spark] def clearLocalRootDirs(): Unit =
     localRootDirs = null
-  }
 
   /**
     * Shuffle the elements of a collection into a random order, returning the
     * result in a new collection. Unlike scala.util.Random.shuffle, this method
     * uses a local random number generator, avoiding inter-thread contention.
     */
-  def randomize[T: ClassTag](seq: TraversableOnce[T]): Seq[T] = {
+  def randomize[T: ClassTag](seq: TraversableOnce[T]): Seq[T] =
     randomizeInPlace(seq.toArray)
-  }
 
   /**
     * Shuffle the elements of an array into a random order, modifying the
@@ -904,16 +891,14 @@ private[spark] object Utils extends Logging {
   /**
     * Get the local machine's hostname.
     */
-  def localHostName(): String = {
+  def localHostName(): String =
     customHostname.getOrElse(localIpAddress.getHostAddress)
-  }
 
   /**
     * Get the local machine's URI.
     */
-  def localHostNameForURI(): String = {
+  def localHostNameForURI(): String =
     customHostname.getOrElse(InetAddresses.toUriString(localIpAddress))
-  }
 
   def checkHost(host: String, message: String = "") {
     assert(host.indexOf(':') == -1, message)
@@ -955,11 +940,10 @@ private[spark] object Utils extends Logging {
   /**
     * Return the string to tell how long has passed in milliseconds.
     */
-  def getUsedTimeMs(startTimeMs: Long): String = {
+  def getUsedTimeMs(startTimeMs: Long): String =
     " " + (System.currentTimeMillis - startTimeMs) + " ms"
-  }
 
-  private def listFilesSafely(file: File): Seq[File] = {
+  private def listFilesSafely(file: File): Seq[File] =
     if (file.exists()) {
       val files = file.listFiles()
       if (files == null) {
@@ -969,7 +953,6 @@ private[spark] object Utils extends Logging {
     } else {
       List()
     }
-  }
 
   /**
     * Delete a file or directory and its contents recursively.
@@ -1046,62 +1029,55 @@ private[spark] object Utils extends Logging {
     * Convert a time parameter such as (50s, 100ms, or 250us) to microseconds for internal use. If
     * no suffix is provided, the passed number is assumed to be in ms.
     */
-  def timeStringAsMs(str: String): Long = {
+  def timeStringAsMs(str: String): Long =
     JavaUtils.timeStringAsMs(str)
-  }
 
   /**
     * Convert a time parameter such as (50s, 100ms, or 250us) to seconds for internal use. If
     * no suffix is provided, the passed number is assumed to be in seconds.
     */
-  def timeStringAsSeconds(str: String): Long = {
+  def timeStringAsSeconds(str: String): Long =
     JavaUtils.timeStringAsSec(str)
-  }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m) to bytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in bytes.
     */
-  def byteStringAsBytes(str: String): Long = {
+  def byteStringAsBytes(str: String): Long =
     JavaUtils.byteStringAsBytes(str)
-  }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m) to kibibytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in kibibytes.
     */
-  def byteStringAsKb(str: String): Long = {
+  def byteStringAsKb(str: String): Long =
     JavaUtils.byteStringAsKb(str)
-  }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m) to mebibytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in mebibytes.
     */
-  def byteStringAsMb(str: String): Long = {
+  def byteStringAsMb(str: String): Long =
     JavaUtils.byteStringAsMb(str)
-  }
 
   /**
     * Convert a passed byte string (e.g. 50b, 100k, or 250m, 500g) to gibibytes for internal use.
     *
     * If no suffix is provided, the passed number is assumed to be in gibibytes.
     */
-  def byteStringAsGb(str: String): Long = {
+  def byteStringAsGb(str: String): Long =
     JavaUtils.byteStringAsGb(str)
-  }
 
   /**
     * Convert a Java memory parameter passed to -Xmx (such as 300m or 1g) to a number of mebibytes.
     */
-  def memoryStringToMb(str: String): Int = {
+  def memoryStringToMb(str: String): Int =
     // Convert to bytes, rather than directly to MB, because when no units are specified the unit
     // is assumed to be bytes
     (JavaUtils.byteStringAsBytes(str) / 1024 / 1024).toInt
-  }
 
   /**
     * Convert a quantity in bytes to a human-readable string such as "4.0 MB".
@@ -1151,9 +1127,8 @@ private[spark] object Utils extends Logging {
   /**
     * Convert a quantity in megabytes to a human-readable string such as "4.0 MB".
     */
-  def megabytesToString(megabytes: Long): String = {
+  def megabytesToString(megabytes: Long): String =
     bytesToString(megabytes * 1024L * 1024L)
-  }
 
   /**
     * Execute a command and return the process running the command.
@@ -1286,14 +1261,13 @@ private[spark] object Utils extends Logging {
     * read and write methods, since Java's serializer will not report non-IOExceptions properly;
     * see SPARK-4080 for more context.
     */
-  def tryOrIOException[T](block: => T): T = {
+  def tryOrIOException[T](block: => T): T =
     try {
       block
     } catch {
       case e: IOException => throw e
       case NonFatal(t)    => throw new IOException(t)
     }
-  }
 
   /** Executes the given block. Log non-fatal errors if any, and only throw fatal errors */
   def tryLogNonFatalError(block: => Unit) {
@@ -1543,13 +1517,11 @@ private[spark] object Utils extends Logging {
   /**
     * Clone an object using a Spark serializer.
     */
-  def clone[T: ClassTag](value: T, serializer: SerializerInstance): T = {
+  def clone[T: ClassTag](value: T, serializer: SerializerInstance): T =
     serializer.deserialize[T](serializer.serialize(value))
-  }
 
-  private def isSpace(c: Char): Boolean = {
+  private def isSpace(c: Char): Boolean =
     " \t\r\n".indexOf(c) != -1
-  }
 
   /**
     * Split a string of potentially quoted arguments from the command line the way that a shell
@@ -1666,13 +1638,12 @@ private[spark] object Utils extends Logging {
   /** Returns the system properties map that is thread-safe to iterator over. It gets the
     * properties which have been set explicitly, as well as those for which only a default value
     * has been defined. */
-  def getSystemProperties: Map[String, String] = {
+  def getSystemProperties: Map[String, String] =
     System.getProperties
       .stringPropertyNames()
       .asScala
       .map(key => (key, System.getProperty(key)))
       .toMap
-  }
 
   /**
     * Method executed for repeating a task for side effects.
@@ -1695,7 +1666,7 @@ private[spark] object Utils extends Logging {
     * @return the total time across all iterations (not counting preparation time)
     */
   def timeIt(
-      numIters: Int)(f: => Unit, prepare: Option[() => Unit] = None): Long = {
+      numIters: Int)(f: => Unit, prepare: Option[() => Unit] = None): Long =
     if (prepare.isEmpty) {
       val start = System.currentTimeMillis
       times(numIters)(f)
@@ -1712,7 +1683,6 @@ private[spark] object Utils extends Logging {
       }
       sum
     }
-  }
 
   /**
     * Counts the number of elements of an iterator using a while loop rather than calling
@@ -1744,17 +1714,15 @@ private[spark] object Utils extends Logging {
   }
 
   /** Return the class name of the given object, removing all dollar signs */
-  def getFormattedClassName(obj: AnyRef): String = {
+  def getFormattedClassName(obj: AnyRef): String =
     obj.getClass.getSimpleName.replace("$", "")
-  }
 
   /** Return an option that translates JNothing to None */
-  def jsonOption(json: JValue): Option[JValue] = {
+  def jsonOption(json: JValue): Option[JValue] =
     json match {
       case JNothing      => None
       case value: JValue => Some(value)
     }
-  }
 
   /** Return an empty JSON object */
   def emptyJson: JsonAST.JObject = JObject(List[JField]())
@@ -1762,16 +1730,14 @@ private[spark] object Utils extends Logging {
   /**
     * Return a Hadoop FileSystem with the scheme encoded in the given path.
     */
-  def getHadoopFileSystem(path: URI, conf: Configuration): FileSystem = {
+  def getHadoopFileSystem(path: URI, conf: Configuration): FileSystem =
     FileSystem.get(path, conf)
-  }
 
   /**
     * Return a Hadoop FileSystem with the scheme encoded in the given path.
     */
-  def getHadoopFileSystem(path: String, conf: Configuration): FileSystem = {
+  def getHadoopFileSystem(path: String, conf: Configuration): FileSystem =
     getHadoopFileSystem(new URI(path), conf)
-  }
 
   /**
     * Return the absolute path of a file in the given directory.
@@ -1800,16 +1766,14 @@ private[spark] object Utils extends Logging {
   /**
     * Indicates whether Spark is currently running unit tests.
     */
-  def isTesting: Boolean = {
+  def isTesting: Boolean =
     sys.env.contains("SPARK_TESTING") || sys.props.contains("spark.testing")
-  }
 
   /**
     * Strip the directory from a path name
     */
-  def stripDirectory(path: String): String = {
+  def stripDirectory(path: String): String =
     new File(path).getName
-  }
 
   /**
     * Terminates a process waiting for at most the specified duration. Returns whether
@@ -1880,7 +1844,7 @@ private[spark] object Utils extends Logging {
     * This is particularly useful for wrapping code that runs in a thread, to ensure
     * that exceptions are printed, and to avoid having to catch Throwable.
     */
-  def logUncaughtExceptions[T](f: => T): T = {
+  def logUncaughtExceptions[T](f: => T): T =
     try {
       f
     } catch {
@@ -1892,10 +1856,9 @@ private[spark] object Utils extends Logging {
           t)
         throw t
     }
-  }
 
   /** Executes the given block in a Try, logging any uncaught exceptions. */
-  def tryLog[T](f: => T): Try[T] = {
+  def tryLog[T](f: => T): Try[T] =
     try {
       val res = f
       scala.util.Success(res)
@@ -1908,10 +1871,9 @@ private[spark] object Utils extends Logging {
           t)
         scala.util.Failure(t)
     }
-  }
 
   /** Returns true if the given exception was fatal. See docs for scala.util.control.NonFatal. */
-  def isFatalError(e: Throwable): Boolean = {
+  def isFatalError(e: Throwable): Boolean =
     e match {
       case NonFatal(_) | _: InterruptedException | _: NotImplementedError |
           _: ControlThrowable =>
@@ -1919,7 +1881,6 @@ private[spark] object Utils extends Logging {
       case _ =>
         true
     }
-  }
 
   /**
     * Return a well-formed URI for the file described by a user input string.
@@ -1950,7 +1911,7 @@ private[spark] object Utils extends Logging {
   }
 
   /** Resolve a comma-separated list of paths. */
-  def resolveURIs(paths: String): String = {
+  def resolveURIs(paths: String): String =
     if (paths == null || paths.trim.isEmpty) {
       ""
     } else {
@@ -1959,7 +1920,6 @@ private[spark] object Utils extends Logging {
         .map { p => Utils.resolveURI(p) }
         .mkString(",")
     }
-  }
 
   /** Return all non-local paths from a comma-separated list of paths. */
   def nonLocalPaths(
@@ -2032,7 +1992,7 @@ private[spark] object Utils extends Logging {
   }
 
   /** Return the path of the default Spark properties file. */
-  def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
+  def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String =
     env
       .get("SPARK_CONF_DIR")
       .orElse(env.get("SPARK_HOME").map { t => s"$t${File.separator}conf" })
@@ -2040,13 +2000,12 @@ private[spark] object Utils extends Logging {
       .filter(_.isFile)
       .map(_.getAbsolutePath)
       .orNull
-  }
 
   /**
     * Return a nice string representation of the exception. It will call "printStackTrace" to
     * recursively generate the stack trace including the exception and its causes.
     */
-  def exceptionString(e: Throwable): String = {
+  def exceptionString(e: Throwable): String =
     if (e == null) {
       ""
     } else {
@@ -2055,7 +2014,6 @@ private[spark] object Utils extends Logging {
       e.printStackTrace(new PrintWriter(stringWriter))
       stringWriter.toString
     }
-  }
 
   /** Return a thread dump of all threads' stacktraces.  Used to capture dumps for the web UI */
   def getThreadDump(): Array[ThreadStackTrace] = {
@@ -2080,11 +2038,10 @@ private[spark] object Utils extends Logging {
     */
   def sparkJavaOpts(
       conf: SparkConf,
-      filterKey: (String => Boolean) = _ => true): Seq[String] = {
+      filterKey: (String => Boolean) = _ => true): Seq[String] =
     conf.getAll
       .filter { case (k, _) => filterKey(k) }
       .map { case (k, v) => s"-D$k=$v" }
-  }
 
   /**
     * Maximum number of retries when binding to a port before giving up.
@@ -2160,7 +2117,7 @@ private[spark] object Utils extends Logging {
   /**
     * Return whether the exception is caused by an address-port collision when binding.
     */
-  def isBindCollision(exception: Throwable): Boolean = {
+  def isBindCollision(exception: Throwable): Boolean =
     exception match {
       case e: BindException =>
         if (e.getMessage != null) {
@@ -2172,7 +2129,6 @@ private[spark] object Utils extends Logging {
       case e: Exception => isBindCollision(e.getCause)
       case _            => false
     }
-  }
 
   /**
     * configure a new log4j level
@@ -2202,7 +2158,7 @@ private[spark] object Utils extends Logging {
     */
   def setupSecureURLConnection(
       urlConnection: URLConnection,
-      sm: SecurityManager): URLConnection = {
+      sm: SecurityManager): URLConnection =
     urlConnection match {
       case https: HttpsURLConnection =>
         sm.sslSocketFactory.foreach(https.setSSLSocketFactory)
@@ -2210,7 +2166,6 @@ private[spark] object Utils extends Logging {
         https
       case connection => connection
     }
-  }
 
   def invoke(
       clazz: Class[_],
@@ -2224,14 +2179,13 @@ private[spark] object Utils extends Logging {
   }
 
   // Limit of bytes for total size of results (default is 1GB)
-  def getMaxResultSize(conf: SparkConf): Long = {
+  def getMaxResultSize(conf: SparkConf): Long =
     memoryStringToMb(conf.get("spark.driver.maxResultSize", "1g")).toLong << 20
-  }
 
   /**
     * Return the current system LD_LIBRARY_PATH name
     */
-  def libraryPathEnvName: String = {
+  def libraryPathEnvName: String =
     if (isWindows) {
       "PATH"
     } else if (isMac) {
@@ -2239,7 +2193,6 @@ private[spark] object Utils extends Logging {
     } else {
       "LD_LIBRARY_PATH"
     }
-  }
 
   /**
     * Return the prefix of a command that appends the given library paths to the
@@ -2248,7 +2201,7 @@ private[spark] object Utils extends Logging {
     */
   def libraryPathEnvPrefix(libraryPaths: Seq[String]): String = {
     val libraryPathScriptVar = if (isWindows) {
-      s"%${libraryPathEnvName}%"
+      s"%$libraryPathEnvName%"
     } else {
       "$" + libraryPathEnvName
     }
@@ -2289,7 +2242,7 @@ private[spark] object Utils extends Logging {
     *
     * @throws SparkException if `sparkUrl` is invalid.
     */
-  def extractHostPortFromSparkUrl(sparkUrl: String): (String, Int) = {
+  def extractHostPortFromSparkUrl(sparkUrl: String): (String, Int) =
     try {
       val uri = new java.net.URI(sparkUrl)
       val host = uri.getHost
@@ -2308,32 +2261,28 @@ private[spark] object Utils extends Logging {
       case e: java.net.URISyntaxException =>
         throw new SparkException("Invalid master URL: " + sparkUrl, e)
     }
-  }
 
   /**
     * Returns the current user name. This is the currently logged in user, unless that's been
     * overridden by the `SPARK_USER` environment variable.
     */
-  def getCurrentUserName(): String = {
+  def getCurrentUserName(): String =
     Option(System.getenv("SPARK_USER"))
       .getOrElse(UserGroupInformation.getCurrentUser().getShortUserName())
-  }
 
   /**
     * Split the comma delimited string of master URLs into a list.
     * For instance, "spark://abc,def" becomes [spark://abc, spark://def].
     */
-  def parseStandaloneMasterUrls(masterUrls: String): Array[String] = {
+  def parseStandaloneMasterUrls(masterUrls: String): Array[String] =
     masterUrls.stripPrefix("spark://").split(",").map("spark://" + _)
-  }
 
   /** An identifier that backup masters use in their responses. */
   val BACKUP_STANDALONE_MASTER_PREFIX = "Current state is not alive"
 
   /** Return true if the response message is sent from a backup Master on standby. */
-  def responseFromBackup(msg: String): Boolean = {
+  def responseFromBackup(msg: String): Boolean =
     msg.startsWith(BACKUP_STANDALONE_MASTER_PREFIX)
-  }
 
   /**
     * To avoid calling `Utils.getCallSite` for every single RDD we create in the body,
@@ -2408,17 +2357,15 @@ private[spark] object Utils extends Logging {
   /**
     * Returns a path of temporary file which is in the same directory with `path`.
     */
-  def tempFileWith(path: File): File = {
+  def tempFileWith(path: File): File =
     new File(path.getAbsolutePath + "." + UUID.randomUUID())
-  }
 
   /**
     * Returns the name of this JVM process. This is OS dependent but typically (OSX, Linux, Windows),
     * this is formatted as PID@hostname.
     */
-  def getProcessName(): String = {
+  def getProcessName(): String =
     ManagementFactory.getRuntimeMXBean().getName()
-  }
 
   /**
     * Utility function that should be called early in `main()` for daemons to set up some common

@@ -11,7 +11,7 @@ import akka.http.impl.util._
 class DebuggingDirectivesSpec extends RoutingSpec {
   var debugMsg = ""
 
-  def resetDebugMsg(): Unit = { debugMsg = "" }
+  def resetDebugMsg(): Unit = debugMsg = ""
 
   val log = new LoggingAdapter {
     def isErrorEnabled = true
@@ -23,7 +23,7 @@ class DebuggingDirectivesSpec extends RoutingSpec {
     def notifyError(cause: Throwable, message: String): Unit = {}
     def notifyWarning(message: String): Unit = {}
     def notifyInfo(message: String): Unit = {}
-    def notifyDebug(message: String): Unit = { debugMsg += message + '\n' }
+    def notifyDebug(message: String): Unit = debugMsg += message + '\n'
   }
 
   "The 'logRequest' directive" should {

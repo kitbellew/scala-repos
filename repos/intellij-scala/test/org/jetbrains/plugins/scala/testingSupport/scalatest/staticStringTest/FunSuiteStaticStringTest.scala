@@ -10,7 +10,7 @@ trait FunSuiteStaticStringTest extends ScalaTestTestCase {
   val funSuiteClassName = "FunSuiteStringTest"
   val funSuiteFileName = funSuiteClassName + ".scala"
 
-  def addFunSuite(): Unit = {
+  def addFunSuite(): Unit =
     addFileToProject(
       funSuiteFileName,
       """
@@ -30,7 +30,6 @@ trait FunSuiteStaticStringTest extends ScalaTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 
   def testFunSuiteSum() = {
     addFunSuite()

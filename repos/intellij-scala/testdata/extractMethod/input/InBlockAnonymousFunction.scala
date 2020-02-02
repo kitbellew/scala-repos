@@ -5,9 +5,8 @@ class Test {
       test2(x) + " Goodbye" /*end*/
   }
 
-  def test2(param: String): Unit = {
+  def test2(param: String): Unit =
     "Hello" + param
-  }
 }
 /*
 class Test {

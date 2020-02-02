@@ -26,9 +26,8 @@ case class LogNormal(mu: Double, sigma: Double)(implicit rand: RandBasis = Rand)
   /**
     * Gets one sample from the distribution. Equivalent to sample()
     */
-  def draw(): Double = {
+  def draw(): Double =
     exp(myGaussian.draw())
-  }
 
   def unnormalizedLogPdf(x: Double): Double = {
     if (x <= 0.0) return Double.NegativeInfinity
@@ -52,9 +51,8 @@ case class LogNormal(mu: Double, sigma: Double)(implicit rand: RandBasis = Rand)
     */
   def cdf(x: Double) = myGaussian.cdf(log(x))
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     myGaussian.probability(log(x), log(y))
-  }
 
   override def toString: String = ScalaRunTime._toString(this)
 
@@ -78,9 +76,8 @@ object LogNormal
 
   def emptySufficientStatistic = Gaussian.emptySufficientStatistic
 
-  def sufficientStatisticFor(t: Double) = {
+  def sufficientStatisticFor(t: Double) =
     SufficientStatistic(1, math.log(t), 0)
-  }
 
   def mle(stats: SufficientStatistic): (Double, Double) = Gaussian.mle(stats)
 

@@ -70,7 +70,7 @@ class ScalaCaseClassParametersNameContributer
       def byTypeCompletionsItems(
           position: PsiElement,
           parameter: Option[ScParameter],
-          result: CompletionResultSet) = {
+          result: CompletionResultSet) =
         position.getContext match {
           case pattern: ScPattern
               if pattern.expectedType.isDefined && parameter.isDefined =>
@@ -81,15 +81,13 @@ class ScalaCaseClassParametersNameContributer
             lookups.foreach(l => addLocalScalaLookUpItem(result, l))
           case _ =>
         }
-      }
 
       def byClassParamCompletionsItems(
           params: Seq[ScParameter],
-          result: CompletionResultSet): Unit = {
+          result: CompletionResultSet): Unit =
         params
           .map(p => new ScalaLookupItem(p, p.name))
           .foreach(l => addLocalScalaLookUpItem(result, l))
-      }
 
       def addByOrderSorter(
           parameters: CompletionParameters,
@@ -99,7 +97,7 @@ class ScalaCaseClassParametersNameContributer
 
         class PreferByParamsOrder
             extends LookupElementWeigher("orderByPosition") {
-          override def weigh(item: LookupElement): Comparable[_] = {
+          override def weigh(item: LookupElement): Comparable[_] =
             ScalaLookupItem.original(item) match {
               case s: ScalaLookupItem =>
                 s.element match {
@@ -112,7 +110,6 @@ class ScalaCaseClassParametersNameContributer
                 }
               case _ => null
             }
-          }
         }
 
         var sorter =

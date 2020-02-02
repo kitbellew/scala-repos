@@ -411,7 +411,7 @@ case class Product[R, C, C2, V](
   }
 
   private def computePipe(
-      joined: TypedPipe[(R, C2, V)] = toOuterSum): TypedPipe[(R, C2, V)] = {
+      joined: TypedPipe[(R, C2, V)] = toOuterSum): TypedPipe[(R, C2, V)] =
     if (isSpecialCase) {
       joined
     } else {
@@ -423,7 +423,6 @@ case class Product[R, C, C2, V](
         .filter { kv => localRing.isNonZero(kv._2) }
         .map { case ((r, c), v) => (r, c, v) }
     }
-  }
 
   override lazy val toTypedPipe: TypedPipe[(R, C2, V)] = {
     expressions match {
@@ -449,14 +448,13 @@ case class Product[R, C, C2, V](
 
   override lazy val transpose: Product[C2, C, R, V] =
     Product(right.transpose, left.transpose, ring)
-  override def negate(implicit g: Group[V]): Product[R, C, C2, V] = {
+  override def negate(implicit g: Group[V]): Product[R, C, C2, V] =
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
           .getOrElse(BigInt(0L))) {
       Product(left, right.negate, ring, expressions)
     } else {
       Product(left.negate, right, ring, expressions)
     }
-  }
 
   /**
     * Trace(A B) = Trace(B A) so we optimize to choose the lowest cost item
@@ -499,14 +497,13 @@ case class Sum[R, C, V](
     mon: Monoid[V])
     extends Matrix2[R, C, V] {
   def collectAddends(sum: Sum[R, C, V]): List[TypedPipe[(R, C, V)]] = {
-    def getLiteral(mat: Matrix2[R, C, V]): TypedPipe[(R, C, V)] = {
+    def getLiteral(mat: Matrix2[R, C, V]): TypedPipe[(R, C, V)] =
       mat match {
         case x @ Product(_, _, _, _)      => x.toOuterSum
         case x @ MatrixLiteral(_, _)      => x.toTypedPipe
         case x @ HadamardProduct(_, _, _) => x.optimizedSelf.toTypedPipe
         case _                            => sys.error("Invalid addend")
       }
-    }
 
     sum match {
       case Sum(l @ Sum(_, _, _), r @ Sum(_, _, _), _) => {
@@ -634,7 +631,7 @@ case class MatrixLiteral[R, C, V](
 trait Scalar2[V] extends Serializable {
   def value: ValuePipe[V]
 
-  def +(that: Scalar2[V])(implicit sg: Semigroup[V]): Scalar2[V] = {
+  def +(that: Scalar2[V])(implicit sg: Semigroup[V]): Scalar2[V] =
     (value, that.value) match {
       case (EmptyValue, _)       => that
       case (LiteralValue(v1), _) => that.map(sg.plus(v1, _))
@@ -644,7 +641,6 @@ trait Scalar2[V] extends Serializable {
       // only one M/R pass for the whole Sum.
       case (_, ComputedValue(v2)) => Scalar2((value ++ v2).sum(sg))
     }
-  }
   def -(that: Scalar2[V])(implicit g: Group[V]): Scalar2[V] =
     this + that.map(x => g.negate(x))
   def *(that: Scalar2[V])(implicit ring: Ring[V]): Scalar2[V] =
@@ -789,7 +785,7 @@ object Matrix2 {
      * intermediate matrix (like `OneC`).  This is not yet forbidden in the types.
      */
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
-    def generatePlan(i: Int, j: Int): Matrix2[Any, Any, V] = {
+    def generatePlan(i: Int, j: Int): Matrix2[Any, Any, V] =
       if (i == j) p(i)
       else {
         val k = splitMarkers((i, j))
@@ -798,8 +794,6 @@ object Matrix2 {
         val (ring, joiner) = product.get
         Product(left, right, ring, Some(sharedMap))(joiner)
       }
-
-    }
 
     val best = computeCosts(p, 0, p.length - 1)
 
@@ -831,8 +825,7 @@ object Matrix2 {
         List[Matrix2[Any, Any, V]],
         BigInt,
         Option[Ring[V]],
-        Option[MatrixJoiner2]) = {
-
+        Option[MatrixJoiner2]) =
       mf match {
         // basic block of one matrix
         case element @ MatrixLiteral(_, _) => (List(element), 0, None, None)
@@ -882,7 +875,6 @@ object Matrix2 {
         // OneC, OneR and potentially other intermediate matrices
         case el => (List(el), 0, None, None)
       }
-    }
     val (lastChain, lastCost, ring, joiner) = optimizeBasicBlocks(mf)
     val (potentialCost, finalResult) =
       optimizeProductChain(lastChain.toIndexedSeq, pair(ring, joiner))

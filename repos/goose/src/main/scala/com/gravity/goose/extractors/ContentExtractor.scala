@@ -138,16 +138,14 @@ trait ContentExtractor {
   /**
     * if the article has meta description set in the source, use that
     */
-  def getMetaDescription(article: Article): String = {
+  def getMetaDescription(article: Article): String =
     getMetaContent(article.doc, "meta[name=description]")
-  }
 
   /**
     * if the article has meta keywords set in the source, use that
     */
-  def getMetaKeywords(article: Article): String = {
+  def getMetaKeywords(article: Article): String =
     getMetaContent(article.doc, "meta[name=keywords]")
-  }
 
   /**
     * if the article has meta canonical link set in the url
@@ -162,9 +160,8 @@ trait ContentExtractor {
     }
   }
 
-  def getDomain(url: String): String = {
+  def getDomain(url: String): String =
     new URL(url).getHost
-  }
 
   def extractTags(article: Article): Set[String] = {
     val node = article.doc
@@ -313,28 +310,25 @@ trait ContentExtractor {
     val maxStepsAwayFromNode = 3
 
     walkSiblings(node) { currentNode =>
-      {
-        if (currentNode.tagName == para) {
-          if (stepsAway >= maxStepsAwayFromNode) {
-            trace(logPrefix + "Next paragraph is too far away, not boosting")
-            return false
-          }
-          val paraText: String = currentNode.text
-          val wordStats: WordStats = StopWords.getStopWordCount(paraText)
-          if (wordStats.getStopWordCount > minimumStopWordCount) {
-            trace(logPrefix + "We're gonna boost this node, seems contenty")
-            return true
-          }
-          stepsAway += 1
+      if (currentNode.tagName == para) {
+        if (stepsAway >= maxStepsAwayFromNode) {
+          trace(logPrefix + "Next paragraph is too far away, not boosting")
+          return false
         }
+        val paraText: String = currentNode.text
+        val wordStats: WordStats = StopWords.getStopWordCount(paraText)
+        if (wordStats.getStopWordCount > minimumStopWordCount) {
+          trace(logPrefix + "We're gonna boost this node, seems contenty")
+          return true
+        }
+        stepsAway += 1
       }
     }
     false
   }
 
-  def getShortText(e: String, max: Int): String = {
+  def getShortText(e: String, max: Int): String =
     if (e.length > max) e.substring(0, max) + "..." else e
-  }
 
   /**
     * checks the density of links within a node, is there not much text and most of it contains linky shit?
@@ -379,14 +373,13 @@ trait ContentExtractor {
     * @param node
     * @return
     */
-  private def getScore(node: Element): Int = {
+  private def getScore(node: Element): Int =
     getGravityScoreFromNode(node) match {
       case Some(score) => score
       case None        => 0
     }
-  }
 
-  private def getGravityScoreFromNode(node: Element): Option[Int] = {
+  private def getGravityScoreFromNode(node: Element): Option[Int] =
     try {
       val grvScoreString: String = node.attr("gravityScore")
       if (string.isNullOrEmpty(grvScoreString)) return None
@@ -394,7 +387,6 @@ trait ContentExtractor {
     } catch {
       case e: Exception => None
     }
-  }
 
   /**
     * adds a score to the gravityScore Attribute we put on divs
@@ -557,8 +549,7 @@ trait ContentExtractor {
     */
   def getSiblingContent(
       currentSibling: Element,
-      baselineScoreForSiblingParagraphs: Int): Option[String] = {
-
+      baselineScoreForSiblingParagraphs: Int): Option[String] =
     if (currentSibling.tagName == "p" && currentSibling.text.length() > 0) {
       Some(currentSibling.outerHtml)
 
@@ -585,7 +576,6 @@ trait ContentExtractor {
       }
 
     }
-  }
 
   def walkSiblings[T](node: Element)(work: (Element) => T): Seq[T] = {
     var currentSibling: Element = node.previousElementSibling
@@ -610,10 +600,8 @@ trait ContentExtractor {
     val baselineScoreForSiblingParagraphs: Int = getBaselineScoreForSiblings(
       topNode)
     val results = walkSiblings(topNode) { currentNode =>
-      {
-        getSiblingContent(currentNode, baselineScoreForSiblingParagraphs)
+      getSiblingContent(currentNode, baselineScoreForSiblingParagraphs)
 
-      }
     }.reverse.flatMap(itm => itm)
     topNode.child(0).before(results.mkString)
     topNode

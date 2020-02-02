@@ -141,13 +141,12 @@ trait AkkaGuiceSupport {
     */
   def bindActor[T <: Actor: ClassTag](
       name: String,
-      props: Props => Props = identity): Unit = {
+      props: Props => Props = identity): Unit =
     accessBinder
       .bind(classOf[ActorRef])
       .annotatedWith(Names.named(name))
       .toProvider(Providers.guicify(Akka.providerOf[T](name, props)))
       .asEagerSingleton()
-  }
 
   /**
     * Bind an actor factory.
@@ -199,7 +198,7 @@ trait AkkaGuiceSupport {
     * @tparam FactoryClass The class of the actor factory
     */
   def bindActorFactory[ActorClass <: Actor: ClassTag, FactoryClass: ClassTag]
-      : Unit = {
+      : Unit =
     accessBinder.install(
       new FactoryModuleBuilder()
         .implement(
@@ -207,7 +206,6 @@ trait AkkaGuiceSupport {
           implicitly[ClassTag[ActorClass]].runtimeClass
             .asInstanceOf[Class[_ <: Actor]])
         .build(implicitly[ClassTag[FactoryClass]].runtimeClass))
-  }
 
 }
 
@@ -247,9 +245,8 @@ trait InjectedActorSupport {
       create: => Actor,
       name: String,
       props: Props => Props = identity)(
-      implicit context: ActorContext): ActorRef = {
+      implicit context: ActorContext): ActorRef =
     context.actorOf(props(Props(create)), name)
-  }
 }
 
 /**
@@ -362,11 +359,10 @@ object ActorSystemProvider {
     */
   def lazyStart(
       classLoader: => ClassLoader,
-      configuration: => Configuration): ClosableLazy[ActorSystem, Future[_]] = {
+      configuration: => Configuration): ClosableLazy[ActorSystem, Future[_]] =
     new ClosableLazy[ActorSystem, Future[_]] {
       protected def create() = start(classLoader, configuration)
       protected def closeNotNeeded = Future.successful(())
     }
-  }
 
 }

@@ -54,11 +54,10 @@ final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
 
   def traverse[G[_], B](f: A => G[B])(
       implicit G: Applicative[G],
-      F: Traverse[F]): G[UnwriterT[F, U, B]] = {
+      F: Traverse[F]): G[UnwriterT[F, U, B]] =
     G.map(F.traverse(run) {
       case (w, a) => G.map(f(a))(b => (w, b))
     })(UnwriterT(_))
-  }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
     F.foldr(run, z) { a => b => f(a._2, b) }

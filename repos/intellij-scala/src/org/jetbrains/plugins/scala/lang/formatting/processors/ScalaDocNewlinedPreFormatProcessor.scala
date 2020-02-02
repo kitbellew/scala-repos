@@ -135,7 +135,7 @@ class ScalaDocNewlinedPreFormatProcessor
   private def fixNewlinesBetweenElements(
       wsAnchor: PsiElement,
       newlinesNew: Int,
-      settings: ScalaCodeStyleSettings): Unit = {
+      settings: ScalaCodeStyleSettings): Unit =
     linesCountAndLastWsBeforeElement(wsAnchor) match {
       case Some((newlinesOld, lastWs)) =>
         if (newlinesOld > newlinesNew && !settings.SD_KEEP_BLANK_LINES_BETWEEN_TAGS) {
@@ -168,7 +168,6 @@ class ScalaDocNewlinedPreFormatProcessor
         }
       case _ =>
     }
-  }
 
   private def linesCountAndLastWsBeforeElement(
       element: PsiElement): Option[(Int, PsiElement)] = {

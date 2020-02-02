@@ -2,7 +2,7 @@ import concurrent.ExecutionContext.Implicits.global
 
 class Admin extends javax.swing.JApplet {
   val jScrollPane = new javax.swing.JScrollPane(null, 0, 0)
-  def t2484: Unit = {
+  def t2484: Unit =
     scala.concurrent.Future {
       jScrollPane.synchronized {
         def someFunction() = {}
@@ -14,7 +14,6 @@ class Admin extends javax.swing.JApplet {
         })
       }
     }
-  }
 }
 // t2630.scala
 object Test {

@@ -245,9 +245,9 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "contain a value" in {
-      f((future, message) => {
+      f { (future, message) =>
         future.value.get.failed.get.getMessage mustBe (message)
-      })
+      }
     }
 
     "throw not throw exception with 'Await.ready'" in {

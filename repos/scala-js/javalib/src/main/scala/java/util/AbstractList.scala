@@ -28,11 +28,10 @@ abstract class AbstractList[E] protected ()
 
   def lastIndexOf(o: Any): Int = {
     @tailrec
-    def findIndex(iter: ListIterator[E]): Int = {
+    def findIndex(iter: ListIterator[E]): Int =
       if (!iter.hasPrevious) -1
       else if (iter.previous() === o) iter.nextIndex
       else findIndex(iter)
-    }
     findIndex(listIterator(size))
   }
 
@@ -102,7 +101,7 @@ abstract class AbstractList[E] protected ()
     }
   }
 
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     if (o.asInstanceOf[AnyRef] eq this) {
       true
     } else {
@@ -113,28 +112,24 @@ abstract class AbstractList[E] protected ()
         case _ => false
       }
     }
-  }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     this.foldLeft(1) { (prev, elem) =>
       31 * prev + (if (elem == null) 0 else elem.hashCode)
     }
-  }
 
   protected def removeRange(fromIndex: Int, toIndex: Int): Unit = {
     val iter = listIterator(fromIndex)
     iter.take(toIndex - fromIndex).foreach(_ => iter.remove())
   }
 
-  protected[this] def checkIndexInBounds(index: Int): Unit = {
+  protected[this] def checkIndexInBounds(index: Int): Unit =
     if (index < 0 || index >= size)
       throw new IndexOutOfBoundsException(index.toString)
-  }
 
-  protected[this] def checkIndexOnBounds(index: Int): Unit = {
+  protected[this] def checkIndexOnBounds(index: Int): Unit =
     if (index < 0 || index > size)
       throw new IndexOutOfBoundsException(index.toString)
-  }
 }
 
 private abstract class AbstractListView[E](

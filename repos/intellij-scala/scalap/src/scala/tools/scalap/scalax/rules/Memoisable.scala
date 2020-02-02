@@ -47,9 +47,8 @@ object DefaultMemoisable {
 trait DefaultMemoisable extends Memoisable {
   protected val map = new HashMap[AnyRef, Any]
 
-  def memo[A](key: AnyRef, a: => A) = {
+  def memo[A](key: AnyRef, a: => A) =
     map.getOrElseUpdate(key, compute(key, a)).asInstanceOf[A]
-  }
 
   protected def compute[A](key: AnyRef, a: => A): Any = a match {
     case success: Success[_, _] => onSuccess(key, success); success

@@ -39,7 +39,6 @@ case object IdentityBroadcastMode extends BroadcastMode {
   // TODO: pack the UnsafeRows into single bytes array.
   override def transform(rows: Array[InternalRow]): Array[InternalRow] = rows
 
-  override def compatibleWith(other: BroadcastMode): Boolean = {
+  override def compatibleWith(other: BroadcastMode): Boolean =
     this eq other
-  }
 }

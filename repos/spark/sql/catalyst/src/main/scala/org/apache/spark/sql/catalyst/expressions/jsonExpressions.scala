@@ -84,7 +84,7 @@ private[this] object JsonPathParser extends RegexParsers {
     phrase(root ~> rep(node) ^^ (x => x.flatten))
   }
 
-  def parse(str: String): Option[List[PathInstruction]] = {
+  def parse(str: String): Option[List[PathInstruction]] =
     this.parseAll(expression, str) match {
       case Success(result, _) =>
         Some(result)
@@ -92,7 +92,6 @@ private[this] object JsonPathParser extends RegexParsers {
       case NoSuccess(msg, next) =>
         None
     }
-  }
 }
 
 private[this] object SharedFactory {
@@ -164,13 +163,12 @@ case class GetJsonObject(json: Expression, path: Expression)
     }
   }
 
-  private def parsePath(path: UTF8String): Option[List[PathInstruction]] = {
+  private def parsePath(path: UTF8String): Option[List[PathInstruction]] =
     if (path != null) {
       JsonPathParser.parse(path.toString)
     } else {
       None
     }
-  }
 
   // advance to the desired array index, assumes to start at the START_ARRAY token
   private def arrayIndex(p: JsonParser, f: () => Boolean): Long => Boolean = {
@@ -336,10 +334,9 @@ case class JsonTuple(children: Seq[Expression])
 
   import SharedFactory._
 
-  override def nullable: Boolean = {
+  override def nullable: Boolean =
     // a row is always returned
     false
-  }
 
   // if processing fails this shared value will be returned
   @transient private lazy val nullRow: Seq[InternalRow] =
@@ -371,7 +368,7 @@ case class JsonTuple(children: Seq[Expression])
 
   override def prettyName: String = "json_tuple"
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (children.length < 2) {
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName requires at least two arguments")
@@ -381,7 +378,6 @@ case class JsonTuple(children: Seq[Expression])
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName requires that all arguments are strings")
     }
-  }
 
   override def eval(input: InternalRow): TraversableOnce[InternalRow] = {
     val json = jsonExpr.eval(input).asInstanceOf[UTF8String]
@@ -457,7 +453,7 @@ case class JsonTuple(children: Seq[Expression])
 
   private def copyCurrentStructure(
       generator: JsonGenerator,
-      parser: JsonParser): Unit = {
+      parser: JsonParser): Unit =
     parser.getCurrentToken match {
       // if the user requests a string field it needs to be returned without enclosing
       // quotes which is accomplished via JsonGenerator.writeRaw instead of JsonGenerator.write
@@ -483,5 +479,4 @@ case class JsonTuple(children: Seq[Expression])
         // handle other types including objects, arrays, booleans and numbers
         generator.copyCurrentStructure(parser)
     }
-  }
 }

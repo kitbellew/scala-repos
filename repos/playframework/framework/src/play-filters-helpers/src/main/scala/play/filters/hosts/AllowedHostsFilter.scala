@@ -88,10 +88,9 @@ object AllowedHostsConfig {
   /**
     * Parses out the AllowedHostsConfig from play.api.Configuration (usually this means application.conf).
     */
-  def fromConfiguration(conf: Configuration): AllowedHostsConfig = {
+  def fromConfiguration(conf: Configuration): AllowedHostsConfig =
     AllowedHostsConfig(
       PlayConfig(conf).get[Seq[String]]("play.filters.hosts.allowed"))
-  }
 }
 
 @Singleton

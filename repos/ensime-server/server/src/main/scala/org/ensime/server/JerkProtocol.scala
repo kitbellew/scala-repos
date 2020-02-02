@@ -14,7 +14,7 @@ class JerkProtocol extends FramedStringProtocol {
     writeString(resp.toJson.compactPrint)
 
   override def decode(
-      bytes: ByteString): (Option[RpcRequestEnvelope], ByteString) = {
+      bytes: ByteString): (Option[RpcRequestEnvelope], ByteString) =
     tryReadString(bytes) match {
       case (Some(message), remainder) =>
         val parsedMessage = message.parseJson.convertTo[RpcRequestEnvelope]
@@ -22,5 +22,4 @@ class JerkProtocol extends FramedStringProtocol {
       case (None, remainder) =>
         (None, remainder)
     }
-  }
 }

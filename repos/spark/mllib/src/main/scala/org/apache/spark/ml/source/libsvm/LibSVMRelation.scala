@@ -73,9 +73,8 @@ private[libsvm] class LibSVMOutputWriter(
     recordWriter.write(NullWritable.get(), buffer)
   }
 
-  override def close(): Unit = {
+  override def close(): Unit =
     recordWriter.close(context)
-  }
 }
 
 /**
@@ -114,29 +113,27 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   @Since("1.6.0")
   override def shortName(): String = "libsvm"
 
-  private def verifySchema(dataSchema: StructType): Unit = {
+  private def verifySchema(dataSchema: StructType): Unit =
     if (dataSchema.size != 2 ||
         (!dataSchema(0).dataType.sameType(DataTypes.DoubleType)
         || !dataSchema(1).dataType.sameType(new VectorUDT()))) {
       throw new IOException(
-        s"Illegal schema for libsvm data, schema=${dataSchema}")
+        s"Illegal schema for libsvm data, schema=$dataSchema")
     }
-  }
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
-      files: Seq[FileStatus]): Option[StructType] = {
+      files: Seq[FileStatus]): Option[StructType] =
     Some(
       StructType(
         StructField("label", DoubleType, nullable = false) ::
           StructField("features", new VectorUDT(), nullable = false) :: Nil))
-  }
 
   override def prepareWrite(
       sqlContext: SQLContext,
       job: Job,
       options: Map[String, String],
-      dataSchema: StructType): OutputWriterFactory = {
+      dataSchema: StructType): OutputWriterFactory =
     new OutputWriterFactory {
       override def newInstance(
           path: String,
@@ -149,7 +146,6 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         new LibSVMOutputWriter(path, dataSchema, context)
       }
     }
-  }
 
   override def buildInternalScan(
       sqlContext: SQLContext,

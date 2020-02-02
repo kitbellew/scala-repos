@@ -99,7 +99,7 @@ class SendSelectionToConsoleAction extends AnAction {
 
       text
         .split('\n')
-        .foreach(line => {
+        .foreach { line =>
           if (line != "") {
             val outputStream: OutputStream = processHandler.getProcessInput
             try {
@@ -111,7 +111,7 @@ class SendSelectionToConsoleAction extends AnAction {
             }
           }
           console.textSent(line + "\n")
-        })
+        }
     }
   }
 }

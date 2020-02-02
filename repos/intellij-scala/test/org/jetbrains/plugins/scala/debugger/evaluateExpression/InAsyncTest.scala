@@ -12,12 +12,11 @@ class InAsyncTest extends InAsyncTestBase with ScalaVersion_2_11
 
 abstract class InAsyncTestBase extends ScalaDebuggerTestCase {
 
-  override protected def addOtherLibraries(): Unit = {
+  override protected def addOtherLibraries(): Unit =
     addIvyCacheLibrary(
       "scala-async",
       "/org.scala-lang.modules/scala-async_2.11/bundles/",
       "scala-async_2.11-0.9.5.jar")
-  }
 
   addFileWithBreakpoints(
     "InAsync.scala",
@@ -58,7 +57,7 @@ abstract class InAsyncTestBase extends ScalaDebuggerTestCase {
     """.stripMargin
   )
 
-  def testInAsync(): Unit = {
+  def testInAsync(): Unit =
     runDebugger() {
       waitForBreakpoint()
       evalEquals("q", "q")
@@ -90,6 +89,5 @@ abstract class InAsyncTestBase extends ScalaDebuggerTestCase {
         evalEquals("inner()", "rq")
       }
     }
-  }
 
 }

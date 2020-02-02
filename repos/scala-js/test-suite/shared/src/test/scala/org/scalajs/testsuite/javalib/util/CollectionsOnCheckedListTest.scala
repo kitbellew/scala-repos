@@ -25,16 +25,15 @@ trait CollectionsCheckedListTest extends CollectionsOnListTest {
 
   def originalFactory: ListFactory
 
-  def factory: ListFactory = {
+  def factory: ListFactory =
     new ListFactory {
       override def implementationName: String =
         s"checkedList(${originalFactory.implementationName})"
 
-      override def empty[E](implicit ct: ClassTag[E]): ju.List[E] = {
+      override def empty[E](implicit ct: ClassTag[E]): ju.List[E] =
         ju.Collections.checkedList(
           originalFactory.empty[E],
           ct.runtimeClass.asInstanceOf[Class[E]])
-      }
 
       override def allowsMutationThroughIterator: Boolean =
         originalFactory.allowsMutationThroughIterator
@@ -42,7 +41,6 @@ trait CollectionsCheckedListTest extends CollectionsOnListTest {
       override def sortableUsingCollections: Boolean =
         originalFactory.sortableUsingCollections
     }
-  }
 
   @Test def testCheckedList(): Unit = {
     superList().add(0, new C)

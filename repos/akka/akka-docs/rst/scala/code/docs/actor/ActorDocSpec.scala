@@ -135,7 +135,7 @@ class ReplyException extends Actor {
     //#reply-exception
   }
 
-  def operation(): String = { "Hi" }
+  def operation(): String = "Hi"
 
 }
 

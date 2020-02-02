@@ -69,7 +69,7 @@ private[hive] class SparkSQLCLIService(
 
   override def getInfo(
       sessionHandle: SessionHandle,
-      getInfoType: GetInfoType): GetInfoValue = {
+      getInfoType: GetInfoType): GetInfoValue =
     getInfoType match {
       case GetInfoType.CLI_SERVER_NAME => new GetInfoValue("Spark SQL")
       case GetInfoType.CLI_DBMS_NAME   => new GetInfoValue("Spark SQL")
@@ -77,7 +77,6 @@ private[hive] class SparkSQLCLIService(
         new GetInfoValue(hiveContext.sparkContext.version)
       case _ => super.getInfo(sessionHandle, getInfoType)
     }
-  }
 }
 
 private[thriftserver] trait ReflectedCompositeService { this: AbstractService =>

@@ -88,7 +88,7 @@ trait ScalacPatternExpanders {
         context: Context,
         whole: Type,
         result: Type,
-        isSeq: Boolean): Extractor = {
+        isSeq: Boolean): Extractor =
       if (result =:= BooleanTpe) newExtractor(whole, Nil, NoRepeated)
       else {
         val getResult = typeOfMemberNamedGet(result)
@@ -96,7 +96,7 @@ trait ScalacPatternExpanders {
           val name = "unapply" + (if (isSeq) "Seq" else "")
           context.error(
             context.tree.pos,
-            s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in ${result}"
+            s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in $result"
           )
         }
         val expanded = getResult match {
@@ -110,7 +110,6 @@ trait ScalacPatternExpanders {
           case tps => newExtractor(whole, tps, NoRepeated, getResult)
         }
       }
-    }
   }
   object alignPatterns extends ScalacPatternExpander {
     private def validateAligned(
@@ -193,7 +192,7 @@ trait ScalacPatternExpanders {
           currentRun.reporting.deprecationWarning(
             sel.pos,
             sym,
-            s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
+            s"$sym expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
         }
         tupled
       } else extractor

@@ -49,10 +49,9 @@ object Channel {
     * @param s Channel name to examine
     * @return true if channel name is valid, false otherwise
     */
-  def isValidName(s: String): Boolean = {
+  def isValidName(s: String): Boolean =
     // note: update channelNameConstraint if this rule is changed
     s.matches("^[a-zA-Z0-9-]{1,16}$")
-  }
 
   /** For consistent error message display */
   val nameConstraint: String =

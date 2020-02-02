@@ -32,30 +32,26 @@ trait GlobalSettings {
   /**
     * Note, this should only be used for the default implementations of onError, onHandlerNotFound and onBadRequest.
     */
-  private def defaultErrorHandler: HttpErrorHandler = {
+  private def defaultErrorHandler: HttpErrorHandler =
     Play.privateMaybeApplication
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(dhehCache)
-  }
 
   /**
     * This should be used for all invocations of error handling in Global.
     */
-  private def configuredErrorHandler: HttpErrorHandler = {
+  private def configuredErrorHandler: HttpErrorHandler =
     Play.privateMaybeApplication
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
-  }
 
   private val jchrhCache =
     Application.instanceCache[JavaCompatibleHttpRequestHandler]
-  private def defaultRequestHandler: Option[DefaultHttpRequestHandler] = {
+  private def defaultRequestHandler: Option[DefaultHttpRequestHandler] =
     Play.privateMaybeApplication.map(jchrhCache)
-  }
 
   private val httpFiltersCache = Application.instanceCache[HttpFilters]
-  private def filters: HttpFilters = {
+  private def filters: HttpFilters =
     Play.privateMaybeApplication
       .fold[HttpFilters](NoHttpFilters)(httpFiltersCache)
-  }
 
   /**
     * Called before the application starts.
@@ -137,9 +133,8 @@ trait GlobalSettings {
   /**
     * Filters for EssentialAction.
     */
-  def doFilter(next: EssentialAction): EssentialAction = {
+  def doFilter(next: EssentialAction): EssentialAction =
     filters.filters.foldRight(next)(_ apply _)
-  }
 
   /**
     * Called when an HTTP request has been received.

@@ -111,7 +111,7 @@ private[sql] case class InMemoryRelation(
       _statistics
     }
 
-  override def statistics: Statistics = {
+  override def statistics: Statistics =
     if (_statistics == null) {
       if (batchStats.value.isEmpty) {
         // Underlying columnar RDD hasn't been materialized, no useful statistics information
@@ -128,7 +128,6 @@ private[sql] case class InMemoryRelation(
       // Pre-computed statistics
       _statistics
     }
-  }
 
   // If the cached column buffers were not passed in, we calculate them in the constructor.
   // As in Spark, the actual work of caching is lazy.
@@ -205,7 +204,7 @@ private[sql] case class InMemoryRelation(
     _cachedColumnBuffers = cached
   }
 
-  def withOutput(newOutput: Seq[Attribute]): InMemoryRelation = {
+  def withOutput(newOutput: Seq[Attribute]): InMemoryRelation =
     InMemoryRelation(
       newOutput,
       useCompression,
@@ -213,9 +212,8 @@ private[sql] case class InMemoryRelation(
       storageLevel,
       child,
       tableName)(_cachedColumnBuffers, statisticsToBePropagated, batchStats)
-  }
 
-  override def newInstance(): this.type = {
+  override def newInstance(): this.type =
     new InMemoryRelation(
       output.map(_.newInstance()),
       useCompression,
@@ -224,7 +222,6 @@ private[sql] case class InMemoryRelation(
       child,
       tableName)(_cachedColumnBuffers, statisticsToBePropagated, batchStats)
       .asInstanceOf[this.type]
-  }
 
   def cachedColumnBuffers: RDD[CachedBatch] = _cachedColumnBuffers
 

@@ -51,7 +51,7 @@ trait BuildFileModifier {
     CommandProcessor.getInstance.executeCommand(
       project,
       new Runnable {
-        def run(): Unit = {
+        def run(): Unit =
           modifyInner(module, vfsFileToCopy) match {
             case Some(changes) =>
               if (!needPreviewChanges) {
@@ -69,7 +69,6 @@ trait BuildFileModifier {
             case None =>
               res = false
           }
-        }
       },
       "Sbt build file modification",
       this

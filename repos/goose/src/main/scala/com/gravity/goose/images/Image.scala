@@ -61,7 +61,6 @@ class Image {
     */
   var bytes: Long = 0;
 
-  def getImageSrc = {
+  def getImageSrc =
     imageSrc
-  }
 }

@@ -72,14 +72,13 @@ object ReplicationClient {
       clientBuilder: Option[ClientBuilder[_, _, _, _, ClientConfig.Yes]] = None,
       hashName: Option[String] = None,
       failureAccrualParams: (Int, () => Duration) = (5, () => 30.seconds)
-  ) = {
+  ) =
     new SimpleReplicationClient(
       newBaseReplicationClient(
         pools,
         clientBuilder,
         hashName,
         failureAccrualParams))
-  }
 }
 
 /**
@@ -377,7 +376,7 @@ class BaseReplicationClient(
     * of failures from all replicas;
     */
   private[this] def toReplicationStatus[T](
-      results: Seq[Try[T]]): ReplicationStatus[T] = {
+      results: Seq[Try[T]]): ReplicationStatus[T] =
     results match {
       case _ if (results.forall(_.isReturn)) && (results.distinct.size == 1) =>
         ConsistentReplication(results.head.get())
@@ -388,7 +387,6 @@ class BaseReplicationClient(
         failedCounter.incr()
         FailedReplication(results collect { case t @ Throw(_) => t })
     }
-  }
 
   /**
     * Private helper to collect all underlying clients result for a given operation

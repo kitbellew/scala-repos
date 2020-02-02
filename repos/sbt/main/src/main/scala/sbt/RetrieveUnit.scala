@@ -9,7 +9,7 @@ import BuildLoader.ResolveInfo
 import Def.{ScopedKey, Setting}
 
 object RetrieveUnit {
-  def apply(info: ResolveInfo): Option[() => File] = {
+  def apply(info: ResolveInfo): Option[() => File] =
     info.uri match {
       case Scheme("svn") | Scheme("svn+ssh")   => Resolvers.subversion(info)
       case Scheme("hg")                        => Resolvers.mercurial(info)
@@ -20,7 +20,6 @@ object RetrieveUnit {
       case Scheme("file") => Resolvers.local(info)
       case _              => None
     }
-  }
 
   object Scheme {
     def unapply(uri: URI) = Option(uri.getScheme)

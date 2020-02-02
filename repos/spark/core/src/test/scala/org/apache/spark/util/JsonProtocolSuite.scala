@@ -1028,9 +1028,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
 
   private def assertBlocksEquals(
       blocks1: Seq[(BlockId, BlockStatus)],
-      blocks2: Seq[(BlockId, BlockStatus)]) = {
+      blocks2: Seq[(BlockId, BlockStatus)]) =
     assertSeqEquals(blocks1, blocks2, assertBlockEquals)
-  }
 
   private def assertBlockEquals(
       b1: (BlockId, BlockStatus),
@@ -2044,7 +2043,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
     s"""
       |{
       |  "Event": "SparkListenerExecutorAdded",
-      |  "Timestamp": ${executorAddedTime},
+      |  "Timestamp": $executorAddedTime,
       |  "Executor ID": "exec1",
       |  "Executor Info": {
       |    "Host": "Hostee.awesome.com",
@@ -2061,7 +2060,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
     s"""
       |{
       |  "Event": "SparkListenerExecutorRemoved",
-      |  "Timestamp": ${executorRemovedTime},
+      |  "Timestamp": $executorRemovedTime,
       |  "Executor ID": "exec2",
       |  "Removed Reason": "test reason"
       |}

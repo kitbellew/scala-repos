@@ -12,11 +12,10 @@ import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 
 object AtmosphereClient {
-  def lookupAll(): Seq[ScalatraBroadcaster] = {
+  def lookupAll(): Seq[ScalatraBroadcaster] =
     BroadcasterFactory.getDefault.lookupAll().asScala.toSeq collect {
       case b: ScalatraBroadcaster => b
     }
-  }
 
   def lookup(path: String): Option[ScalatraBroadcaster] = {
     val pth = path.blankOption getOrElse "/*"
@@ -35,18 +34,16 @@ object AtmosphereClient {
       path: String,
       message: OutboundMessage,
       filter: ClientFilter = new Everyone)(
-      implicit executionContext: ExecutionContext) = {
+      implicit executionContext: ExecutionContext) =
     lookup(path) foreach { _.broadcast(message, filter) }
-  }
 
   def broadcastAll(
       message: OutboundMessage,
       filter: ClientFilter = new Everyone)(
-      implicit executionContext: ExecutionContext) = {
+      implicit executionContext: ExecutionContext) =
     lookupAll() foreach {
       _ broadcast (message, filter)
     }
-  }
 }
 
 /**

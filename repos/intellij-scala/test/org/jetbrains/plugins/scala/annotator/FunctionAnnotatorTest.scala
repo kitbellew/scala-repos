@@ -97,7 +97,7 @@ class FunctionAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def testTry(): Unit = {
+  def testTry(): Unit =
     assertMatches(
       messages(
         """
@@ -113,7 +113,6 @@ class FunctionAnnotatorTest extends SimpleTestCase {
       )) {
       case Error("}", TypeMismatch()) :: Nil =>
     }
-  }
 
   def testTypeAbsolutelyEmpty() {
     assertMatches(messages("def f: A = {}")) {

@@ -21,7 +21,7 @@ case class ApiComment(
     "pull"
   } else {
     "issues"
-  }}/${issueId}#comment-${id}")
+  }}/$issueId#comment-$id")
 }
 
 object ApiComment {

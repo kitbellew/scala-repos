@@ -110,7 +110,7 @@ object Auth extends LilaController {
       rawEmail.map(e => env.emailAddress.validate(e) err s"Invalid email $e")
     UserRepo
       .create(username, password, email, ctx.blindMode, ctx.mobileApiVersion)
-      .flatten(s"No user could be created for ${username}")
+      .flatten(s"No user could be created for $username")
       .map(_ -> email)
   }
 

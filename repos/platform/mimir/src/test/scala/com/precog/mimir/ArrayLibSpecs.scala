@@ -40,12 +40,11 @@ trait ArrayLibSpecs[M[+_]]
 
   import library._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "array utilities" should {
     "flatten a homogeneous set" in {

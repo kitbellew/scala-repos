@@ -35,9 +35,8 @@ class DeferredSnippet {
     <span id="second">Very lazy {old}</span>
   }
 
-  def third: NodeSeq = {
+  def third: NodeSeq =
     <span id="third">third {MyNumber.is}</span>
-  }
 
   def stackWhack: NodeSeq = {
     val inActor: Boolean = Thread.currentThread.getStackTrace

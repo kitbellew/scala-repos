@@ -43,7 +43,7 @@ object AssertUtil {
   def assertThrows[T <: Throwable](
       body: => Any,
       checkMessage: String => Boolean = s => true)(
-      implicit manifest: Manifest[T]): Unit = {
+      implicit manifest: Manifest[T]): Unit =
     try {
       body
       fail("Expression did not throw!")
@@ -52,7 +52,6 @@ object AssertUtil {
           if (manifest.runtimeClass isAssignableFrom e.getClass) &&
             checkMessage(e.getMessage) =>
     }
-  }
 
   /** JUnit-style assertion for `IterableLike.sameElements`.
     */

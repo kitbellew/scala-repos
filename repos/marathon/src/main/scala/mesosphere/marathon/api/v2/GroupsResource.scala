@@ -99,13 +99,12 @@ class GroupsResource @Inject() (
             case None       => unknownGroup(id)
           }
 
-      def versionsResponse(groupId: PathId) = {
+      def versionsResponse(groupId: PathId) =
         groupManager.group(groupId).map { maybeGroup =>
           withAuthorization(ViewGroup, maybeGroup, unknownGroup(groupId)) { _ =>
             result(groupManager.versions(groupId).map(versions => ok(versions)))
           }
         }
-      }
 
       val response: Future[Response] = id match {
         case ListApps(gid)       => appsResponse(gid.toRootPath)
@@ -157,9 +156,8 @@ class GroupsResource @Inject() (
           .getOrElse(id.toRootPath)
         val rootGroup = result(groupManager.rootGroup())
 
-        def throwIfConflicting[A](conflict: Option[Any], msg: String) = {
+        def throwIfConflicting[A](conflict: Option[Any], msg: String) =
           conflict.map(_ => throw ConflictingChangeException(msg))
-        }
 
         throwIfConflicting(
           rootGroup.findGroup(_.id == effectivePath),
@@ -180,9 +178,8 @@ class GroupsResource @Inject() (
       @DefaultValue("false") @QueryParam("force") force: Boolean,
       @DefaultValue("false") @QueryParam("dryRun") dryRun: Boolean,
       body: Array[Byte],
-      @Context req: HttpServletRequest): Response = {
+      @Context req: HttpServletRequest): Response =
     update("", force, dryRun, body, req)
-  }
 
   /**
     * Create or update a group.

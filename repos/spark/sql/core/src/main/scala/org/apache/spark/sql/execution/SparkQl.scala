@@ -30,9 +30,8 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
   import ParserUtils._
 
   /** Check if a command should not be explained. */
-  protected def isNoExplainCommand(command: String): Boolean = {
+  protected def isNoExplainCommand(command: String): Boolean =
     "TOK_DESCTABLE" == command || "TOK_ALTERTABLE" == command
-  }
 
   /**
     * For each node, extract properties in the form of a list
@@ -53,7 +52,7 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
     */
   private def extractProps(
       props: Seq[ASTNode],
-      expectedNodeText: String): Seq[(String, String)] = {
+      expectedNodeText: String): Seq[(String, String)] =
     props.map {
       case Token(x, keysAndValue) if x == expectedNodeText =>
         val key = keysAndValue.init
@@ -64,7 +63,6 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
       case p =>
         parseFailed(s"Expected property '$expectedNodeText' in command", p)
     }
-  }
 
   protected override def nodeToPlan(node: ASTNode): LogicalPlan = {
     node match {

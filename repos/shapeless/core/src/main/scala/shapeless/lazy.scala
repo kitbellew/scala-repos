@@ -214,7 +214,7 @@ class LazyMacros(val c: whitebox.Context)
     )
 
   def mkImpl[I](mkInst: (Tree, Type) => Tree, nullInst: => Tree)(
-      implicit iTag: WeakTypeTag[I]): Tree = {
+      implicit iTag: WeakTypeTag[I]): Tree =
     openImplicitTpeParam match {
       case Some(tpe) => LazyMacros.deriveInstance(this)(tpe, mkInst)
       case None =>
@@ -224,7 +224,6 @@ class LazyMacros(val c: whitebox.Context)
         else
           LazyMacros.deriveInstance(this)(tpe, mkInst)
     }
-  }
 
   def setAnnotation(msg: String): Unit = {
     val tree0 =
@@ -239,14 +238,13 @@ class LazyMacros(val c: whitebox.Context)
       val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
       import global.nme
 
-      override def transform(tree: Tree): Tree = {
+      override def transform(tree: Tree): Tree =
         super.transform {
           tree match {
             case Literal(Constant("dummy")) => Literal(Constant(msg))
             case t                          => t
           }
         }
-      }
     }
 
     val tree = new SubstMessage().transform(tree0)
@@ -531,7 +529,7 @@ class LazyMacros(val c: whitebox.Context)
         }
     }
 
-    def derive(state: State)(tpe: Type): Either[String, (State, Instance)] = {
+    def derive(state: State)(tpe: Type): Either[String, (State, Instance)] =
       deriveLowPriority(state, tpe).getOrElse {
         state.lookup(tpe).left.flatMap { state0 =>
           val inst = state0.dict(TypeWrapper(tpe))
@@ -539,14 +537,13 @@ class LazyMacros(val c: whitebox.Context)
             .toRight(s"Unable to derive $tpe")
         }
       }
-    }
 
     // Workaround for https://issues.scala-lang.org/browse/SI-5465
     class StripUnApplyNodes extends Transformer {
       val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
       import global.nme
 
-      override def transform(tree: Tree): Tree = {
+      override def transform(tree: Tree): Tree =
         super.transform {
           tree match {
             case UnApply(
@@ -564,7 +561,6 @@ class LazyMacros(val c: whitebox.Context)
             case t => t
           }
         }
-      }
     }
 
     def mkInstances(state: State)(primaryTpe: Type): (Tree, Type) = {

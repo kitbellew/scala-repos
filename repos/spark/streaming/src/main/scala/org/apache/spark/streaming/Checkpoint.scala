@@ -98,16 +98,12 @@ private[streaming] object Checkpoint extends Logging {
   val REGEX = (PREFIX + """([\d]+)([\w\.]*)""").r
 
   /** Get the checkpoint file for the given checkpoint time */
-  def checkpointFile(checkpointDir: String, checkpointTime: Time): Path = {
+  def checkpointFile(checkpointDir: String, checkpointTime: Time): Path =
     new Path(checkpointDir, PREFIX + checkpointTime.milliseconds)
-  }
 
   /** Get the checkpoint backup file for the given checkpoint time */
-  def checkpointBackupFile(
-      checkpointDir: String,
-      checkpointTime: Time): Path = {
+  def checkpointBackupFile(checkpointDir: String, checkpointTime: Time): Path =
     new Path(checkpointDir, PREFIX + checkpointTime.milliseconds + ".bk")
-  }
 
   /** Get checkpoint files present in the give directory, ordered by oldest-first */
   def getCheckpointFiles(
@@ -266,10 +262,10 @@ private[streaming] class CheckpointWriter(
           if (allCheckpointFiles.size > 10) {
             allCheckpointFiles
               .take(allCheckpointFiles.size - 10)
-              .foreach(file => {
+              .foreach { file =>
                 logInfo("Deleting " + file)
                 fs.delete(file, true)
-              })
+              }
           }
 
           // All done, print success
@@ -347,13 +343,12 @@ private[streaming] object CheckpointReader extends Logging {
     * files, then return None, else try to return the latest valid checkpoint object. If no
     * checkpoint files could be read correctly, then return None.
     */
-  def read(checkpointDir: String): Option[Checkpoint] = {
+  def read(checkpointDir: String): Option[Checkpoint] =
     read(
       checkpointDir,
       new SparkConf(),
       SparkHadoopUtil.get.conf,
       ignoreReadError = true)
-  }
 
   /**
     * Read checkpoint files present in the given checkpoint directory. If there are no checkpoint
@@ -381,7 +376,7 @@ private[streaming] object CheckpointReader extends Logging {
     // Try to read the checkpoint files in the order
     logInfo("Checkpoint files found: " + checkpointFiles.mkString(","))
     var readError: Exception = null
-    checkpointFiles.foreach(file => {
+    checkpointFiles.foreach { file =>
       logInfo("Attempting to load checkpoint from file " + file)
       try {
         val fis = fs.open(file)
@@ -394,7 +389,7 @@ private[streaming] object CheckpointReader extends Logging {
           readError = e
           logWarning("Error reading checkpoint from file " + file, e)
       }
-    })
+    }
 
     // If none of checkpoint files could be read, then throw exception
     if (!ignoreReadError) {

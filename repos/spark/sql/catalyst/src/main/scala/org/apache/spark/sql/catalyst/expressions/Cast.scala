@@ -118,14 +118,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
 
   override def toString: String = s"cast($child as ${dataType.simpleString})"
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     if (Cast.canCast(child.dataType, dataType)) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(
         s"cannot cast ${child.dataType} to $dataType")
     }
-  }
 
   override def nullable: Boolean =
     Cast.forceNullable(child.dataType, dataType) || child.nullable
@@ -156,15 +155,16 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   // UDFToBoolean
   private[this] def castToBoolean(from: DataType): Any => Any = from match {
     case StringType =>
-      buildCast[UTF8String](_, s => {
-        if (StringUtils.isTrueString(s)) {
-          true
-        } else if (StringUtils.isFalseString(s)) {
-          false
-        } else {
-          null
-        }
-      })
+      buildCast[UTF8String](
+        _,
+        s =>
+          if (StringUtils.isTrueString(s)) {
+            true
+          } else if (StringUtils.isFalseString(s)) {
+            false
+          } else {
+            null
+          })
     case TimestampType =>
       buildCast[Long](_, t => t != 0)
     case DateType =>
@@ -215,12 +215,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       buildCast[Float](_, f => doubleToTimestamp(f.toDouble))
   }
 
-  private[this] def decimalToTimestamp(d: Decimal): Long = {
+  private[this] def decimalToTimestamp(d: Decimal): Long =
     (d.toBigDecimal * 1000000L).longValue()
-  }
-  private[this] def doubleToTimestamp(d: Double): Any = {
+  private[this] def doubleToTimestamp(d: Double): Any =
     if (d.isNaN || d.isInfinite) null else (d * 1000000L).toLong
-  }
 
   // converting seconds to us
   private[this] def longToTimestamp(t: Long): Long = t * 1000000L
@@ -228,9 +226,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   private[this] def timestampToLong(ts: Long): Long =
     math.floor(ts.toDouble / 1000000L).toLong
   // converting us to seconds in double
-  private[this] def timestampToDouble(ts: Long): Double = {
+  private[this] def timestampToDouble(ts: Long): Double =
     ts / 1000000.0
-  }
 
   // DateConverter
   private[this] def castToDate(from: DataType): Any => Any = from match {
@@ -342,10 +339,9 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     */
   private[this] def changePrecision(
       value: Decimal,
-      decimalType: DecimalType): Decimal = {
+      decimalType: DecimalType): Decimal =
     if (value.changePrecision(decimalType.precision, decimalType.scale)) value
     else null
-  }
 
   private[this] def castToDecimal(
       from: DataType,
@@ -437,13 +433,14 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       _,
       array => {
         val values = new Array[Any](array.numElements())
-        array.foreach(fromType, (i, e) => {
-          if (e == null) {
-            values(i) = null
-          } else {
-            values(i) = elementCast(e)
-          }
-        })
+        array.foreach(
+          fromType,
+          (i, e) =>
+            if (e == null) {
+              values(i) = null
+            } else {
+              values(i) = elementCast(e)
+            })
         new GenericArrayData(values)
       }
     )
@@ -574,19 +571,18 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       resultPrim: String,
       resultNull: String,
       resultType: DataType,
-      cast: CastFunction): String = {
+      cast: CastFunction): String =
     s"""
       boolean $resultNull = $childNull;
       ${ctx.javaType(resultType)} $resultPrim = ${ctx.defaultValue(resultType)};
-      if (!${childNull}) {
+      if (!$childNull) {
         ${cast(childPrim, resultPrim, resultNull)}
       }
     """
-  }
 
   private[this] def castToStringCode(
       from: DataType,
-      ctx: CodegenContext): CastFunction = {
+      ctx: CodegenContext): CastFunction =
     from match {
       case BinaryType =>
         (c, evPrim, evNull) => s"$evPrim = UTF8String.fromBytes($c);"
@@ -600,7 +596,6 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         (c, evPrim, evNull) =>
           s"$evPrim = UTF8String.fromString(String.valueOf($c));"
     }
-  }
 
   private[this] def castToBinaryCode(from: DataType): CastFunction =
     from match {

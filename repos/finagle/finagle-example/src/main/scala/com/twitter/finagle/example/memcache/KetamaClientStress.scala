@@ -66,7 +66,7 @@ object KetamaClientStress extends App {
     sb.toString
   }
 
-  private[this] def createCluster(hosts: String): Cluster[CacheNode] = {
+  private[this] def createCluster(hosts: String): Cluster[CacheNode] =
     CachePoolCluster.newStaticCluster(
       PartitionedClient
         .parseHostPortWeights(hosts)
@@ -74,7 +74,6 @@ object KetamaClientStress extends App {
           case (host, port, weight) => new CacheNode(host, port, weight)
         }
         .toSet)
-  }
 
   def main() {
     // the client builder

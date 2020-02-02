@@ -16,9 +16,8 @@ object MediaRangeSpec extends Specification {
       parsed.head
     }
 
-    def parseInvalidMediaRange(mediaRange: String) = {
+    def parseInvalidMediaRange(mediaRange: String) =
       MediaRange.parse(mediaRange) must beEmpty
-    }
 
     "accept all media types" in {
       val mediaRange = parseSingleMediaRange("*/*")

@@ -42,7 +42,7 @@ trait RedirectLogging {
   */
 case class SimpleSigarProvider(location: String = "native")
     extends SigarProvider {
-  def extractFolder = s"${System.getProperty("user.dir")}/target/${location}"
+  def extractFolder = s"${System.getProperty("user.dir")}/target/$location"
 }
 
 /**

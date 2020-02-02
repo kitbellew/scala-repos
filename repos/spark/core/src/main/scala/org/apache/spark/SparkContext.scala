@@ -129,7 +129,7 @@ class SparkContext(config: SparkConf)
 
   private[spark] val stopped: AtomicBoolean = new AtomicBoolean(false)
 
-  private def assertNotStopped(): Unit = {
+  private def assertNotStopped(): Unit =
     if (stopped.get()) {
       val activeContext = SparkContext.activeContext.get()
       val activeCreationSite =
@@ -149,7 +149,6 @@ class SparkContext(config: SparkConf)
            |$activeCreationSite
          """.stripMargin)
     }
-  }
 
   /**
     * Create a SparkContext that loads settings from system properties (for instance, when
@@ -306,13 +305,12 @@ class SparkContext(config: SparkConf)
   private[spark] def createSparkEnv(
       conf: SparkConf,
       isLocal: Boolean,
-      listenerBus: LiveListenerBus): SparkEnv = {
+      listenerBus: LiveListenerBus): SparkEnv =
     SparkEnv.createDriverEnv(
       conf,
       isLocal,
       listenerBus,
       SparkContext.numDriverCores(master))
-  }
 
   private[spark] def env: SparkEnv = _env
 
@@ -354,14 +352,12 @@ class SparkContext(config: SparkConf)
   private[spark] def schedulerBackend: SchedulerBackend = _schedulerBackend
 
   private[spark] def taskScheduler: TaskScheduler = _taskScheduler
-  private[spark] def taskScheduler_=(ts: TaskScheduler): Unit = {
+  private[spark] def taskScheduler_=(ts: TaskScheduler): Unit =
     _taskScheduler = ts
-  }
 
   private[spark] def dagScheduler: DAGScheduler = _dagScheduler
-  private[spark] def dagScheduler_=(ds: DAGScheduler): Unit = {
+  private[spark] def dagScheduler_=(ds: DAGScheduler): Unit =
     _dagScheduler = ds
-  }
 
   /**
     * A unique identifier for the Spark application.
@@ -387,11 +383,10 @@ class SparkContext(config: SparkConf)
   // Thread Local variable that can be used by users to pass information down the stack
   protected[spark] val localProperties =
     new InheritableThreadLocal[Properties] {
-      override protected def childValue(parent: Properties): Properties = {
+      override protected def childValue(parent: Properties): Properties =
         // Note: make a clone such that changes in the parent properties aren't reflected in
         // the those of the children threads, which has confusing semantics (SPARK-10563).
         SerializationUtils.clone(parent).asInstanceOf[Properties]
-      }
       override protected def initialValue(): Properties = new Properties()
     }
 
@@ -668,7 +663,7 @@ class SparkContext(config: SparkConf)
     * dump message back to the driver.
     */
   private[spark] def getExecutorThreadDump(
-      executorId: String): Option[Array[ThreadStackTrace]] = {
+      executorId: String): Option[Array[ThreadStackTrace]] =
     try {
       if (executorId == SparkContext.DRIVER_IDENTIFIER) {
         Some(Utils.getThreadDump())
@@ -683,7 +678,6 @@ class SparkContext(config: SparkConf)
         logError(s"Exception getting thread dump from executor $executorId", e)
         None
     }
-  }
 
   private[spark] def getLocalProperties: Properties = localProperties.get()
 
@@ -817,7 +811,7 @@ class SparkContext(config: SparkConf)
         (safeEnd - safeStart) / step + 1
       }
     }
-    parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex((i, _) => {
+    parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex { (i, _) =>
       val partitionStart = (i * numElements) / numSlices * step + start
       val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
       def getSafeMargin(bi: BigInt): Long =
@@ -856,7 +850,7 @@ class SparkContext(config: SparkConf)
           ret
         }
       }
-    })
+    }
   }
 
   /** Distribute a local Scala collection to form an RDD.
@@ -1282,7 +1276,7 @@ class SparkContext(config: SparkConf)
       implicit km: ClassTag[K],
       vm: ClassTag[V],
       kcf: () => WritableConverter[K],
-      vcf: () => WritableConverter[V]): RDD[(K, V)] = {
+      vcf: () => WritableConverter[V]): RDD[(K, V)] =
     withScope {
       assertNotStopped()
       val kc = clean(kcf)()
@@ -1296,7 +1290,6 @@ class SparkContext(config: SparkConf)
         minPartitions)
       writables.map { case (k, v) => (kc.convert(k), vc.convert(v)) }
     }
-  }
 
   /**
     * Load an RDD saved as a SequenceFile containing serialized objects, with NullWritable keys and
@@ -1434,9 +1427,8 @@ class SparkContext(config: SparkConf)
     * filesystems), or an HTTP, HTTPS or FTP URI.  To access the file in Spark jobs,
     * use `SparkFiles.get(fileName)` to find its download location.
     */
-  def addFile(path: String): Unit = {
+  def addFile(path: String): Unit =
     addFile(path, false)
-  }
 
   /**
     * Add a file to be downloaded with this Spark job on every node.
@@ -1526,7 +1518,7 @@ class SparkContext(config: SparkConf)
       numExecutors: Int,
       localityAwareTasks: Int,
       hostToLocalTaskCount: scala.collection.immutable.Map[String, Int]
-  ): Boolean = {
+  ): Boolean =
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.requestTotalExecutors(
@@ -1538,7 +1530,6 @@ class SparkContext(config: SparkConf)
           "Requesting executors is only supported in coarse-grained mode")
         false
     }
-  }
 
   /**
     * :: DeveloperApi ::
@@ -1546,7 +1537,7 @@ class SparkContext(config: SparkConf)
     * @return whether the request is received.
     */
   @DeveloperApi
-  override def requestExecutors(numAdditionalExecutors: Int): Boolean = {
+  override def requestExecutors(numAdditionalExecutors: Int): Boolean =
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.requestExecutors(numAdditionalExecutors)
@@ -1555,7 +1546,6 @@ class SparkContext(config: SparkConf)
           "Requesting executors is only supported in coarse-grained mode")
         false
     }
-  }
 
   /**
     * :: DeveloperApi ::
@@ -1569,7 +1559,7 @@ class SparkContext(config: SparkConf)
     * @return whether the request is received.
     */
   @DeveloperApi
-  override def killExecutors(executorIds: Seq[String]): Boolean = {
+  override def killExecutors(executorIds: Seq[String]): Boolean =
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.killExecutors(executorIds, replace = false, force = true)
@@ -1577,7 +1567,6 @@ class SparkContext(config: SparkConf)
         logWarning("Killing executors is only supported in coarse-grained mode")
         false
     }
-  }
 
   /**
     * :: DeveloperApi ::
@@ -1608,7 +1597,7 @@ class SparkContext(config: SparkConf)
     *
     * @return whether the request is received.
     */
-  private[spark] def killAndReplaceExecutor(executorId: String): Boolean = {
+  private[spark] def killAndReplaceExecutor(executorId: String): Boolean =
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.killExecutors(Seq(executorId), replace = true, force = true)
@@ -1616,7 +1605,6 @@ class SparkContext(config: SparkConf)
         logWarning("Killing executors is only supported in coarse-grained mode")
         false
     }
-  }
 
   /** The version of Spark on which this application is running. */
   def version: String = SPARK_VERSION
@@ -1639,9 +1627,8 @@ class SparkContext(config: SparkConf)
     * they take, etc.
     */
   @DeveloperApi
-  def getRDDStorageInfo: Array[RDDInfo] = {
+  def getRDDStorageInfo: Array[RDDInfo] =
     getRDDStorageInfo(_ => true)
-  }
 
   private[spark] def getRDDStorageInfo(
       filter: RDD[_] => Boolean): Array[RDDInfo] = {
@@ -1705,9 +1692,8 @@ class SparkContext(config: SparkConf)
     */
   private[spark] def getPreferredLocs(
       rdd: RDD[_],
-      partition: Int): Seq[TaskLocation] = {
+      partition: Int): Seq[TaskLocation] =
     dagScheduler.getPreferredLocs(rdd, partition)
-  }
 
   /**
     * Register an RDD to be persisted in memory and/or disk storage
@@ -1867,9 +1853,8 @@ class SparkContext(config: SparkConf)
     * or the spark.home Java property, or the SPARK_HOME environment variable
     * (in that order of preference). If neither of these is set, return None.
     */
-  private[spark] def getSparkHome(): Option[String] = {
+  private[spark] def getSparkHome(): Option[String] =
     conf.getOption("spark.home").orElse(Option(System.getenv("SPARK_HOME")))
-  }
 
   /**
     * Set the thread-local property for overriding the call sites
@@ -1971,16 +1956,14 @@ class SparkContext(config: SparkConf)
     */
   def runJob[T, U: ClassTag](
       rdd: RDD[T],
-      func: (TaskContext, Iterator[T]) => U): Array[U] = {
+      func: (TaskContext, Iterator[T]) => U): Array[U] =
     runJob(rdd, func, 0 until rdd.partitions.length)
-  }
 
   /**
     * Run a job on all partitions in an RDD and return the results in an array.
     */
-  def runJob[T, U: ClassTag](rdd: RDD[T], func: Iterator[T] => U): Array[U] = {
+  def runJob[T, U: ClassTag](rdd: RDD[T], func: Iterator[T] => U): Array[U] =
     runJob(rdd, func, 0 until rdd.partitions.length)
-  }
 
   /**
     * Run a job on all partitions in an RDD and pass the results to a handler function.
@@ -2068,9 +2051,11 @@ class SparkContext(config: SparkConf)
     val callSite = getCallSite()
     var result: MapOutputStatistics = null
     val waiter =
-      dagScheduler.submitMapStage(dependency, (r: MapOutputStatistics) => {
-        result = r
-      }, callSite, localProperties.get)
+      dagScheduler.submitMapStage(
+        dependency,
+        (r: MapOutputStatistics) => result = r,
+        callSite,
+        localProperties.get)
     new SimpleFutureAction[MapOutputStatistics](waiter, result)
   }
 
@@ -2305,7 +2290,7 @@ object SparkContext extends Logging {
     */
   private def assertNoOtherContextIsRunning(
       sc: SparkContext,
-      allowMultipleContexts: Boolean): Unit = {
+      allowMultipleContexts: Boolean): Unit =
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
       contextBeingConstructed.foreach { otherContext =>
         if (otherContext ne sc) { // checks for reference equality
@@ -2339,7 +2324,6 @@ object SparkContext extends Logging {
         }
       }
     }
-  }
 
   /**
     * This function may be used to get or instantiate a SparkContext and register it as a
@@ -2349,7 +2333,7 @@ object SparkContext extends Logging {
     * Note: This function cannot be used to create multiple SparkContext instances
     * even if multiple contexts are allowed.
     */
-  def getOrCreate(config: SparkConf): SparkContext = {
+  def getOrCreate(config: SparkConf): SparkContext =
     // Synchronize to ensure that multiple create requests don't trigger an exception
     // from assertNoOtherContextIsRunning within setActiveContext
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
@@ -2360,7 +2344,6 @@ object SparkContext extends Logging {
       }
       activeContext.get()
     }
-  }
 
   /**
     * This function may be used to get or instantiate a SparkContext and register it as a
@@ -2372,9 +2355,8 @@ object SparkContext extends Logging {
     * Note: This function cannot be used to create multiple SparkContext instances
     * even if multiple contexts are allowed.
     */
-  def getOrCreate(): SparkContext = {
+  def getOrCreate(): SparkContext =
     getOrCreate(new SparkConf())
-  }
 
   /**
     * Called at the beginning of the SparkContext constructor to ensure that no SparkContext is
@@ -2385,12 +2367,11 @@ object SparkContext extends Logging {
     */
   private[spark] def markPartiallyConstructed(
       sc: SparkContext,
-      allowMultipleContexts: Boolean): Unit = {
+      allowMultipleContexts: Boolean): Unit =
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
       assertNoOtherContextIsRunning(sc, allowMultipleContexts)
       contextBeingConstructed = Some(sc)
     }
-  }
 
   /**
     * Called at the end of the SparkContext constructor to ensure that no other SparkContext has
@@ -2398,24 +2379,22 @@ object SparkContext extends Logging {
     */
   private[spark] def setActiveContext(
       sc: SparkContext,
-      allowMultipleContexts: Boolean): Unit = {
+      allowMultipleContexts: Boolean): Unit =
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
       assertNoOtherContextIsRunning(sc, allowMultipleContexts)
       contextBeingConstructed = None
       activeContext.set(sc)
     }
-  }
 
   /**
     * Clears the active SparkContext metadata.  This is called by `SparkContext#stop()`.  It's
     * also called in unit tests to prevent a flood of warnings from test suites that don't / can't
     * properly clean up their SparkContexts.
     */
-  private[spark] def clearActiveContext(): Unit = {
+  private[spark] def clearActiveContext(): Unit =
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
       activeContext.set(null)
     }
-  }
 
   private[spark] val SPARK_JOB_DESCRIPTION = "spark.job.description"
   private[spark] val SPARK_JOB_GROUP_ID = "spark.jobGroup.id"
@@ -2502,10 +2481,9 @@ object SparkContext extends Logging {
     * The number of driver cores to use for execution in local mode, 0 otherwise.
     */
   private[spark] def numDriverCores(master: String): Int = {
-    def convertToInt(threads: String): Int = {
+    def convertToInt(threads: String): Int =
       if (threads == "*") Runtime.getRuntime.availableProcessors()
       else threads.toInt
-    }
     master match {
       case "local"                                 => 1
       case SparkMasterRegex.LOCAL_N_REGEX(threads) => convertToInt(threads)
@@ -2746,12 +2724,11 @@ object WritableConverter {
   implicit def booleanWritableConverter(): WritableConverter[Boolean] =
     simpleWritableConverter[Boolean, BooleanWritable](_.get)
 
-  implicit def bytesWritableConverter(): WritableConverter[Array[Byte]] = {
+  implicit def bytesWritableConverter(): WritableConverter[Array[Byte]] =
     simpleWritableConverter[Array[Byte], BytesWritable] { bw =>
       // getBytes method returns array which is longer then data to be returned
       Arrays.copyOfRange(bw.getBytes, 0, bw.getLength)
     }
-  }
 
   implicit def stringWritableConverter(): WritableConverter[String] =
     simpleWritableConverter[String, Text](_.toString)

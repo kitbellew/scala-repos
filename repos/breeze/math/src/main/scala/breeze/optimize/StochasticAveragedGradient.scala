@@ -37,9 +37,8 @@ class StochasticAveragedGradient[T](
 
   protected def chooseDescentDirection(
       state: State,
-      f: BatchDiffFunction[T]): T = {
+      f: BatchDiffFunction[T]): T =
     state.history.currentSum * (-1.0 / f.fullRange.size)
-  }
 
   protected def determineStepSize(
       state: State,
@@ -49,9 +48,8 @@ class StochasticAveragedGradient[T](
   override protected def calculateObjective(
       f: BatchDiffFunction[T],
       x: T,
-      history: History): (Double, T) = {
+      history: History): (Double, T) =
     f.calculate(x, IndexedSeq(history.nextPos))
-  }
 
   override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
     val av = newVal + (newX dot newX) * l2Regularization / 2.0

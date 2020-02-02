@@ -83,7 +83,7 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       try {
         val _blockTable = new BlockPagedTable(
           UIUtils
-            .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
+            .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=$rddId",
           rddStorageInfo.partitions.get,
           blockPageSize,
           blockSortColumn,
@@ -167,7 +167,7 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
   private def workerHeader = Seq("Host", "Memory Usage", "Disk Usage")
 
   /** Render an HTML row representing a worker */
-  private def workerRow(worker: RDDDataDistribution): Seq[Node] = {
+  private def workerRow(worker: RDDDataDistribution): Seq[Node] =
     <tr>
       <td>{worker.address}</td>
       <td>
@@ -176,7 +176,6 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
       </td>
       <td>{Utils.bytesToString(worker.diskUsed)}</td>
     </tr>
-  }
 }
 
 private[ui] case class BlockTableRowData(
@@ -198,18 +197,16 @@ private[ui] class BlockDataSource(
 
   override def dataSize: Int = data.size
 
-  override def sliceData(from: Int, to: Int): Seq[BlockTableRowData] = {
+  override def sliceData(from: Int, to: Int): Seq[BlockTableRowData] =
     data.slice(from, to)
-  }
 
-  private def blockRow(rddPartition: RDDPartitionInfo): BlockTableRowData = {
+  private def blockRow(rddPartition: RDDPartitionInfo): BlockTableRowData =
     BlockTableRowData(
       rddPartition.blockName,
       rddPartition.storageLevel,
       rddPartition.memoryUsed,
       rddPartition.diskUsed,
       rddPartition.executors.mkString(" "))
-  }
 
   /**
     * Return Ordering according to sortColumn and desc
@@ -343,7 +340,7 @@ private[ui] class BlockPagedTable(
     <thead>{headerRow}</thead>
   }
 
-  override def row(block: BlockTableRowData): Seq[Node] = {
+  override def row(block: BlockTableRowData): Seq[Node] =
     <tr>
       <td>{block.blockName}</td>
       <td>{block.storageLevel}</td>
@@ -351,5 +348,4 @@ private[ui] class BlockPagedTable(
       <td>{Utils.bytesToString(block.diskUsed)}</td>
       <td>{block.executors}</td>
     </tr>
-  }
 }

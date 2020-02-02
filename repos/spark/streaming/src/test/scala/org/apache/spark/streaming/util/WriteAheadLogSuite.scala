@@ -289,14 +289,13 @@ class FileBasedWriteAheadLogSuite
       val latch = new CountDownLatch(1)
       val testSeq = 1 to 1000
       val counter = new GetMaxCounter()
-      def handle(value: Int): Iterator[Int] = {
+      def handle(value: Int): Iterator[Int] =
         new CompletionIterator[Int, Iterator[Int]](Iterator(value)) {
           counter.increment()
           // block so that other threads also launch
           latch.await(10, TimeUnit.SECONDS)
           override def completion() { counter.decrement() }
         }
-      }
       @volatile var collected: Seq[Int] = Nil
       val t = new Thread() {
         override def run() {
@@ -504,7 +503,7 @@ class BatchedWriteAheadLogSuite
       ExecutionContext.fromExecutorService(walBatchingThreadPool)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       if (walBatchingExecutionContext != null) {
         walBatchingExecutionContext.shutdownNow()
@@ -512,7 +511,6 @@ class BatchedWriteAheadLogSuite
     } finally {
       super.afterEach()
     }
-  }
 
   test("BatchedWriteAheadLog - serializing and deserializing batched records") {
     val events = Seq(
@@ -723,7 +721,7 @@ object WriteAheadLogSuite {
 
   /** Read data from a segments of a log file directly and return the list of byte buffers. */
   def readDataManually(
-      segments: Seq[FileBasedWriteAheadLogSegment]): Seq[String] = {
+      segments: Seq[FileBasedWriteAheadLogSegment]): Seq[String] =
     segments.map { segment =>
       val reader = HdfsUtils.getInputStream(segment.path, hadoopConf)
       try {
@@ -738,7 +736,6 @@ object WriteAheadLogSuite {
         reader.close()
       }
     }
-  }
 
   /** Read all the data from a log file directly and return the list of byte buffers. */
   def readDataManually[T](file: String): Seq[T] = {
@@ -817,13 +814,12 @@ object WriteAheadLogSuite {
     if (allowBatching) new BatchedWriteAheadLog(wal, sparkConf) else wal
   }
 
-  def generateRandomData(): Seq[String] = {
+  def generateRandomData(): Seq[String] =
     (1 to 100).map { _.toString }
-  }
 
   def readAndDeserializeDataManually(
       logFiles: Seq[String],
-      allowBatching: Boolean): Seq[String] = {
+      allowBatching: Boolean): Seq[String] =
     if (allowBatching) {
       logFiles.flatMap { file =>
         val data = readDataManually[Array[Array[Byte]]](file)
@@ -832,20 +828,16 @@ object WriteAheadLogSuite {
     } else {
       logFiles.flatMap { file => readDataManually[String](file) }
     }
-  }
 
-  implicit def stringToByteBuffer(str: String): ByteBuffer = {
+  implicit def stringToByteBuffer(str: String): ByteBuffer =
     ByteBuffer.wrap(Utils.serialize(str))
-  }
 
-  implicit def byteBufferToString(byteBuffer: ByteBuffer): String = {
+  implicit def byteBufferToString(byteBuffer: ByteBuffer): String =
     Utils.deserialize[String](byteBuffer.array)
-  }
 
-  def wrapArrayArrayByte[T](records: Array[T]): ByteBuffer = {
+  def wrapArrayArrayByte[T](records: Array[T]): ByteBuffer =
     ByteBuffer.wrap(
       Utils.serialize[Array[Array[Byte]]](records.map(Utils.serialize[T])))
-  }
 
   /**
     * A wrapper WriteAheadLog that blocks the write function to allow batching with the
@@ -872,14 +864,12 @@ object WriteAheadLogSuite {
     override def read(segment: WriteAheadLogRecordHandle): ByteBuffer =
       wal.read(segment)
     override def readAll(): JIterator[ByteBuffer] = wal.readAll()
-    override def clean(threshTime: Long, waitForCompletion: Boolean): Unit = {
+    override def clean(threshTime: Long, waitForCompletion: Boolean): Unit =
       wal.clean(threshTime, waitForCompletion)
-    }
     override def close(): Unit = wal.close()
 
-    def allowWrite(): Unit = {
+    def allowWrite(): Unit =
       blockWrite = false
-    }
 
     def isBlocked: Boolean = isWriteCalled
   }

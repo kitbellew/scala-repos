@@ -76,18 +76,16 @@ class BitVector(
   def activeIterator: Iterator[(Int, Boolean)] =
     activeKeysIterator.map(_ -> true)
 
-  def lengthsMatch(other: Vector[_]) = {
+  def lengthsMatch(other: Vector[_]) =
     if (!enforceLength) true
     else
       other match {
         case x: BitVector => !x.enforceLength || x.length == length
         case _            => other.length == length
       }
-  }
 
-  override def toString = {
+  override def toString =
     activeKeysIterator.mkString("BitVector(", ", ", ")")
-  }
 
 }
 
@@ -125,23 +123,20 @@ object BitVector extends BitVectorOps {
       extends CanTraverseValues[BitVector, Boolean] {
 
     /** Traverses all values from the given collection. */
-    def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit = {
+    def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit =
       for (i <- from.valuesIterator) fn.visit(i)
-    }
 
     def isTraversableAgain(from: BitVector): Boolean = true
   }
 
   implicit def canMapValues[V2](implicit man: ClassTag[V2])
-      : CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] = {
+      : CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] =
     new CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
-      def apply(from: BitVector, fn: (Boolean) => V2): DenseVector[V2] = {
+      def apply(from: BitVector, fn: (Boolean) => V2): DenseVector[V2] =
         DenseVector.tabulate(from.length)(i => fn(from(i)))
-      }
     }
-  }
 
   implicit def scalarOf[T]: ScalarOf[DenseMatrix[T], T] = ScalarOf.dummy
 
@@ -151,12 +146,11 @@ object BitVector extends BitVectorOps {
       def isTraversableAgain(from: BitVector): Boolean = true
 
       /** Iterates all key-value pairs from the given collection. */
-      def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit = {
+      def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit =
         for (i <- 0 until from.length) {
           fn.visit(from(i))
         }
 //        fn.visitArray(from.data, from.offset, from.length, from.stride)
-      }
 
     }
 
@@ -169,11 +163,10 @@ object BitVector extends BitVectorOps {
       def traverse(
           from: BitVector,
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, Boolean])
-          : Unit = {
+          : Unit =
         for (i <- 0 until from.length) {
           fn.visit(i, from(i))
         }
-      }
 
     }
 
@@ -195,16 +188,14 @@ object BitVector extends BitVectorOps {
     new CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] {
 
       /**Maps all key-value pairs from the given collection. */
-      def map(from: BitVector, fn: (Int, Boolean) => V2): DenseVector[V2] = {
+      def map(from: BitVector, fn: (Int, Boolean) => V2): DenseVector[V2] =
         DenseVector.tabulate(from.length)(i => fn(i, from(i)))
-      }
 
       /**Maps all active key-value pairs from the given collection. */
       def mapActive(
           from: BitVector,
-          fn: (Int, Boolean) => V2): DenseVector[V2] = {
+          fn: (Int, Boolean) => V2): DenseVector[V2] =
         map(from, fn)
-      }
     }
 
 }

@@ -56,7 +56,7 @@ case class JsonLine(
     @scala.annotation.tailrec
     def nestedRetrieval(
         node: Option[Map[String, AnyRef]],
-        path: List[String]): AnyRef = {
+        path: List[String]): AnyRef =
       (path, node) match {
         case (_, None)            => null
         case (h :: Nil, Some(fs)) => fs.get(h).orNull
@@ -67,7 +67,6 @@ case class JsonLine(
           }
         case (Nil, _) => null
       }
-    }
 
     val splitFields = (0 until fields.size).map { i: Int =>
       fields.get(i).toString.split('.').toList
@@ -105,7 +104,7 @@ object JsonLine
     override def getType = typeFromManifest(manifest[T])
   }
 
-  private[this] def typeFromManifest(m: Manifest[_]): Type = {
+  private[this] def typeFromManifest(m: Manifest[_]): Type =
     if (m.typeArguments.isEmpty) {
       m.runtimeClass
     } else
@@ -117,7 +116,6 @@ object JsonLine
 
         def getOwnerType = null
       }
-  }
 
   val mapper = new ObjectMapper()
   mapper.registerModule(DefaultScalaModule)

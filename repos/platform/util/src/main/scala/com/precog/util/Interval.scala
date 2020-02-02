@@ -24,22 +24,19 @@ case class Interval[T: Ordering](start: Option[T], end: Option[T]) {
   def withStart(start: Option[T]) = Interval(start, end)
   def withEnd(end: Option[T]) = Interval(start, end)
 
-  def startsBefore(other: Interval[T]): Boolean = {
+  def startsBefore(other: Interval[T]): Boolean =
     start.forall(s => other.start.exists(_ > s))
-  }
 
-  def endsAfter(other: Interval[T]): Boolean = {
+  def endsAfter(other: Interval[T]): Boolean =
     end.forall(e => other.end.exists(_ < e))
-  }
 
-  def disjoint(other: Interval[T]): Boolean = {
+  def disjoint(other: Interval[T]): Boolean =
     end
       .flatMap(x => other.start.filter(_ > x))
       .orElse(start.flatMap(x => other.end.filter(_ < x)))
       .isDefined
-  }
 
-  def intersect(other: Interval[T]): Option[Interval[T]] = {
+  def intersect(other: Interval[T]): Option[Interval[T]] =
     if (disjoint(other)) {
       None
     } else if (startsBefore(other) && endsAfter(other)) {
@@ -51,9 +48,8 @@ case class Interval[T: Ordering](start: Option[T], end: Option[T]) {
     } else {
       other.intersect(this);
     }
-  }
 
-  def union(other: Interval[T]): Set[Interval[T]] = {
+  def union(other: Interval[T]): Set[Interval[T]] =
     if (disjoint(other)) {
       Set(this, other)
     } else if (startsBefore(other) && endsAfter(other)) {
@@ -65,7 +61,6 @@ case class Interval[T: Ordering](start: Option[T], end: Option[T]) {
     } else {
       other.union(this)
     }
-  }
 }
 
 // vim: set ts=4 sw=4 et:

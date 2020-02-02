@@ -143,12 +143,11 @@ object UriEncoding {
     * @throws play.utils.InvalidEncodingException If the input is not a valid encoded path.
     * @return A decoded string in the `outputCharset` character set.
     */
-  def decodePath(s: String, outputCharset: String): String = {
+  def decodePath(s: String, outputCharset: String): String =
     // Note: Could easily expose a method to return the decoded path as a Seq[String].
     // This would allow better handling of paths segments with encoded slashes in them.
     // However, there is no need for this yet, so the method hasn't been added yet.
     splitString(s, '/').map(decodePathSegment(_, outputCharset)).mkString("/")
-  }
 
   // RFC 3986, 3.3. Path
   // segment       = *pchar
@@ -188,16 +187,15 @@ object UriEncoding {
     * Given a number from 0 to 16, return the ASCII character code corresponding
     * to its uppercase hexadecimal representation.
     */
-  private def upperHex(x: Int): Int = {
+  private def upperHex(x: Int): Int =
     // Assume 0 <= x < 16
     if (x < 10) (x + '0') else (x - 10 + 'A')
-  }
 
   /**
     * Given the ASCII value of a character, return its value as a hex digit.
     * If the character isn't a valid hex digit, return -1 instead.
     */
-  private def fromHex(b: Int): Int = {
+  private def fromHex(b: Int): Int =
     if (b >= '0' && b <= '9') {
       b - '0'
     } else if (b >= 'A' && b <= 'Z') {
@@ -207,7 +205,6 @@ object UriEncoding {
     } else {
       -1
     }
-  }
 
   /**
     * Split a string on a character. Similar to `String.split` except, for this method,

@@ -60,7 +60,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     SparkEnv.set(sparkEnv)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (env != null) {
         env.shutdown()
@@ -69,7 +69,6 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     } finally {
       super.afterAll()
     }
-  }
 
   def createRpcEnv(
       conf: SparkConf,
@@ -227,9 +226,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     val endpoint = new RpcEndpoint {
       override val rpcEnv = env
 
-      override def onStart(): Unit = {
+      override def onStart(): Unit =
         calledMethods += "start"
-      }
 
       override def receive: PartialFunction[Any, Unit] = {
         case msg: String =>
@@ -253,17 +251,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def onStart(): Unit = {
+        override def onStart(): Unit =
           throw new RuntimeException("Oops!")
-        }
 
         override def receive: PartialFunction[Any, Unit] = {
           case m =>
         }
 
-        override def onError(cause: Throwable): Unit = {
+        override def onError(cause: Throwable): Unit =
           e = cause
-        }
       }
     )
 
@@ -283,13 +279,11 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           case m =>
         }
 
-        override def onError(cause: Throwable): Unit = {
+        override def onError(cause: Throwable): Unit =
           e = cause
-        }
 
-        override def onStop(): Unit = {
+        override def onStop(): Unit =
           throw new RuntimeException("Oops!")
-        }
       }
     )
 
@@ -311,9 +305,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           case m => throw new RuntimeException("Oops!")
         }
 
-        override def onError(cause: Throwable): Unit = {
+        override def onError(cause: Throwable): Unit =
           e = cause
-        }
       }
     )
 
@@ -383,9 +376,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           case m =>
         }
 
-        override def onStop(): Unit = {
+        override def onStop(): Unit =
           selfOption = Option(self)
-        }
       }
     )
 
@@ -436,9 +428,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         case m =>
       }
 
-      override def onStop(): Unit = {
+      override def onStop(): Unit =
         onStopCount += 1
-      }
     })
 
     env.stop(endpointRef)
@@ -568,19 +559,16 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           case m       => events.add("receive" -> m)
         }
 
-        override def onConnected(remoteAddress: RpcAddress): Unit = {
+        override def onConnected(remoteAddress: RpcAddress): Unit =
           events.add("onConnected" -> remoteAddress)
-        }
 
-        override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+        override def onDisconnected(remoteAddress: RpcAddress): Unit =
           events.add("onDisconnected" -> remoteAddress)
-        }
 
         override def onNetworkError(
             cause: Throwable,
-            remoteAddress: RpcAddress): Unit = {
+            remoteAddress: RpcAddress): Unit =
           events.add("onNetworkError" -> remoteAddress)
-        }
 
       }
     )

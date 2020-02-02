@@ -15,7 +15,7 @@ object ReplaceToWithUntil extends SimplificationType {
 
   def hint = InspectionBundle.message("replace.to.with.until")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.to` (x `-` literal("1")) =>
         Some(
@@ -24,5 +24,4 @@ object ReplaceToWithUntil extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

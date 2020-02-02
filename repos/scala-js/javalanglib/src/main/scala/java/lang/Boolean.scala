@@ -43,10 +43,9 @@ object Boolean {
   def TRUE: Boolean = new Boolean(true)
   def FALSE: Boolean = new Boolean(false)
 
-  @inline def valueOf(booleanValue: scala.Boolean): Boolean = {
+  @inline def valueOf(booleanValue: scala.Boolean): Boolean =
     // We don't care about identity, since they end up as primitive booleans
     new Boolean(booleanValue)
-  }
 
   @inline def valueOf(s: String): Boolean = valueOf(parseBoolean(s))
 

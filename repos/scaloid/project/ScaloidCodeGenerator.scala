@@ -163,13 +163,12 @@ class ScaloidCodeGenerator(
   private def concatArgs(
       args: List[Argument],
       customArgs: String,
-      isImplicit: Boolean) = {
+      isImplicit: Boolean) =
     List(constArgs(args), customArgs).filter(_.nonEmpty) match {
       case Nil => ""
       case argStrings =>
         s"(${if (isImplicit) "implicit " else ""}${argStrings.mkString(", ")})"
     }
-  }
 
   def baseClassInstance = {
     val args = BaseClassArgs.toMap
@@ -220,10 +219,9 @@ class ScaloidCodeGenerator(
     else if (isUnit) "f"
     else s"f(${callArgs(method.argTypes)})"
 
-  def callbackMethod(m: AndroidCallbackMethod, isUnit: Boolean = false) = {
+  def callbackMethod(m: AndroidCallbackMethod, isUnit: Boolean = false) =
     s"def ${m.name}(${namedArgs(m.argTypes)}): ${genType(m.retType)} = " +
       s"{ ${callbackBody(m, isUnit)} }"
-  }
 
   def commonListener(l: AndroidListener, args: String = "") = {
     val dp = if (l.isDeprecated) deprecatedDecl else ""
@@ -271,7 +269,7 @@ class ScaloidCodeGenerator(
   // Property
 
   def noGetter(name: String) =
-    s"""@inline def ${safeIdent(name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
+    s"""@inline def ${safeIdent(name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '$name'")"""
 
   def getter(prop: AndroidProperty) =
     prop.getter

@@ -44,12 +44,11 @@ class ScInfixTypeElementImpl(node: ASTNode)
     }
   }
 
-  protected def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  protected def innerType(ctx: TypingContext): TypeResult[ScType] =
     desugarizedInfixType match {
       case Some(p) => p.getType(ctx)
       case _       => Failure("Cannot desugarize infix type", Some(this))
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitInfixTypeElement(this)

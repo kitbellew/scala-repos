@@ -160,15 +160,11 @@ abstract class QueryTest extends PlanTest {
     }
   }
 
-  protected def checkAnswer(df: => DataFrame, expectedAnswer: Row): Unit = {
+  protected def checkAnswer(df: => DataFrame, expectedAnswer: Row): Unit =
     checkAnswer(df, Seq(expectedAnswer))
-  }
 
-  protected def checkAnswer(
-      df: => DataFrame,
-      expectedAnswer: DataFrame): Unit = {
+  protected def checkAnswer(df: => DataFrame, expectedAnswer: DataFrame): Unit =
     checkAnswer(df, expectedAnswer.collect())
-  }
 
   /**
     * Runs the plan and makes sure the answer is within absTol of the expected result.
@@ -195,9 +191,8 @@ abstract class QueryTest extends PlanTest {
   protected def checkAggregatesWithTol(
       dataFrame: DataFrame,
       expectedAnswer: Row,
-      absTol: Double): Unit = {
+      absTol: Double): Unit =
     checkAggregatesWithTol(dataFrame, Seq(expectedAnswer), absTol)
-  }
 
   /**
     * Asserts that a given [[Queryable]] will be executed using the given number of cached results.
@@ -379,7 +374,7 @@ object QueryTest {
   }
 
   // We need to call prepareRow recursively to handle schemas with struct types.
-  def prepareRow(row: Row): Row = {
+  def prepareRow(row: Row): Row =
     Row.fromSeq(row.toSeq.map {
       case null                    => null
       case d: java.math.BigDecimal => BigDecimal(d)
@@ -388,7 +383,6 @@ object QueryTest {
       case r: Row      => prepareRow(r)
       case o           => o
     })
-  }
 
   def sameRows(
       expectedAnswer: Seq[Row],
@@ -439,12 +433,9 @@ object QueryTest {
     }
   }
 
-  def checkAnswer(
-      df: DataFrame,
-      expectedAnswer: java.util.List[Row]): String = {
+  def checkAnswer(df: DataFrame, expectedAnswer: java.util.List[Row]): String =
     checkAnswer(df, expectedAnswer.asScala) match {
       case Some(errorMessage) => errorMessage
       case None               => null
     }
-  }
 }

@@ -46,7 +46,7 @@ class ConstructorParamsInConstructorPatternSearcher
               ReferencesSearch
                 .search(only, scope, false)
                 .forEach(new Processor[PsiReference] {
-                  def process(t: PsiReference): Boolean = {
+                  def process(t: PsiReference): Boolean =
                     inReadAction {
                       val descriptor =
                         new UsageInfoToUsageConverter.TargetElementsDescriptor(
@@ -56,7 +56,6 @@ class ConstructorParamsInConstructorPatternSearcher
                         .convert(descriptor, new UsageInfo(t))
                       processor0.process(usage)
                     }
-                  }
                 })
             case _ => true
           }
@@ -67,7 +66,7 @@ class ConstructorParamsInConstructorPatternSearcher
   }
 
   private object parameterOfClassWithIndex {
-    def unapply(param: ScClassParameter): Option[(ScClass, Int)] = {
+    def unapply(param: ScClassParameter): Option[(ScClass, Int)] =
       inReadAction {
         if (!param.isValid) return None
 
@@ -80,11 +79,10 @@ class ConstructorParamsInConstructorPatternSearcher
           case _ => None
         }
       }
-    }
   }
 
   private class SubPatternWithIndexBindings(i: Int) {
-    def unapply(ref: PsiReference): Option[Seq[ScBindingPattern]] = {
+    def unapply(ref: PsiReference): Option[Seq[ScBindingPattern]] =
       inReadAction {
         ref.getElement.getParent match {
           case consPattern: ScConstructorPattern =>
@@ -92,6 +90,5 @@ class ConstructorParamsInConstructorPatternSearcher
           case _ => None
         }
       }
-    }
   }
 }

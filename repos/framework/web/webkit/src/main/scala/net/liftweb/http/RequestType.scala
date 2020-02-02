@@ -62,7 +62,7 @@ case object OptionsRequest extends RequestType {
 case class UnknownRequest(method: String) extends RequestType
 
 object RequestType {
-  def apply(req: HTTPRequest): RequestType = {
+  def apply(req: HTTPRequest): RequestType =
     req.method.toUpperCase match {
       case "GET"     => GetRequest
       case "POST"    => PostRequest
@@ -72,5 +72,4 @@ object RequestType {
       case "OPTIONS" => OptionsRequest
       case meth      => UnknownRequest(meth)
     }
-  }
 }

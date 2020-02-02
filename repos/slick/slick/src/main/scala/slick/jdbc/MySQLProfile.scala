@@ -211,7 +211,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
         val tn =
           if (ti == columnTypes.stringJdbcType) "VARCHAR"
           else ti.sqlTypeName(None)
-        b"\({fn convert(!${ch},$tn)}\)"
+        b"\({fn convert(!$ch,$tn)}\)"
       case Library.NextValue(SequenceNode(name)) => b"`${name + "_nextval"}()"
       case Library.CurrentValue(SequenceNode(name)) =>
         b"`${name + "_currval"}()"
@@ -252,12 +252,10 @@ trait MySQLProfile extends JdbcProfile { profile =>
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override protected def dropForeignKey(fk: ForeignKey) = {
+    override protected def dropForeignKey(fk: ForeignKey) =
       "ALTER TABLE " + table.tableName + " DROP FOREIGN KEY " + fk.name
-    }
-    override protected def dropPrimaryKey(pk: PrimaryKey): String = {
+    override protected def dropPrimaryKey(pk: PrimaryKey): String =
       "ALTER TABLE " + table.tableName + " DROP PRIMARY KEY"
-    }
   }
 
   class ColumnDDLBuilder(column: FieldSymbol)

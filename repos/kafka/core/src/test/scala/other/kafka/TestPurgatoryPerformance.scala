@@ -193,7 +193,7 @@ object TestPurgatoryPerformance {
   }
 
   // Use JRE-specific class to get process CPU time
-  private def getProcessCpuTimeNanos(osMXBean: OperatingSystemMXBean) = {
+  private def getProcessCpuTimeNanos(osMXBean: OperatingSystemMXBean) =
     try {
       Some(
         Class
@@ -214,7 +214,6 @@ object TestPurgatoryPerformance {
           case _: Throwable => None
         }
     }
-  }
 
   // log-normal distribution (http://en.wikipedia.org/wiki/Log-normal_distribution)
   //   mu: the mean of the underlying normal distribution (not the mean of this log-normal distribution)
@@ -231,9 +230,8 @@ object TestPurgatoryPerformance {
   //  lambda : the rate parameter of the exponential distribution
   private class ExponentialDistribution(lambda: Double) {
     val rand = new Random
-    def next(): Double = {
+    def next(): Double =
       math.log(1d - rand.nextDouble()) / (-lambda)
-    }
   }
 
   // Samples of Latencies to completion
@@ -279,7 +277,7 @@ object TestPurgatoryPerformance {
 
     def next() = samples(rand.nextInt(sampleSize))
 
-    def printStats(): Unit = {
+    def printStats(): Unit =
       println(
         "# interval samples: rate = %f, min = %d, max = %d"
           .format(
@@ -287,7 +285,6 @@ object TestPurgatoryPerformance {
             samples.min,
             samples.max)
       )
-    }
   }
 
   private class FakeOperation(
@@ -301,16 +298,14 @@ object TestPurgatoryPerformance {
 
     def onExpiration(): Unit = {}
 
-    def onComplete(): Unit = {
+    def onComplete(): Unit =
       latch.countDown()
-    }
 
-    def tryComplete(): Boolean = {
+    def tryComplete(): Boolean =
       if (System.currentTimeMillis >= completesAt)
         forceComplete()
       else
         false
-    }
   }
 
   private class CompletionQueue {
@@ -327,20 +322,17 @@ object TestPurgatoryPerformance {
     }
     thread.start()
 
-    def add(operation: FakeOperation): Unit = {
+    def add(operation: FakeOperation): Unit =
       delayQueue.offer(new Scheduled(operation))
-    }
 
-    def shutdown() = {
+    def shutdown() =
       thread.shutdown()
-    }
 
     private class Scheduled(val operation: FakeOperation) extends Delayed {
-      def getDelay(unit: TimeUnit): Long = {
+      def getDelay(unit: TimeUnit): Long =
         unit.convert(
           max(operation.completesAt - SystemTime.milliseconds, 0),
           TimeUnit.MILLISECONDS)
-      }
 
       def compareTo(d: Delayed): Int = {
 

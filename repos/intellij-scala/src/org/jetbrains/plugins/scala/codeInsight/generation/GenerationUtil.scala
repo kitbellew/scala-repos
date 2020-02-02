@@ -113,7 +113,7 @@ object GenerationUtil {
     Option(PsiTreeUtil.getParentOfType(elem, types: _*))
   }
 
-  private def allMembers(aClass: PsiClass): Seq[ScMember] = {
+  private def allMembers(aClass: PsiClass): Seq[ScMember] =
     aClass match {
       case scClass: ScClass =>
         scClass.members ++ scClass.constructor.toSeq.flatMap(_.parameters)
@@ -121,5 +121,4 @@ object GenerationUtil {
       case scTrait: ScTrait   => scTrait.members
       case _                  => Seq.empty
     }
-  }
 }

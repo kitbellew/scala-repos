@@ -34,13 +34,12 @@ object GroupedIterator {
       input: Iterator[InternalRow],
       keyExpressions: Seq[Expression],
       inputSchema: Seq[Attribute])
-      : Iterator[(InternalRow, Iterator[InternalRow])] = {
+      : Iterator[(InternalRow, Iterator[InternalRow])] =
     if (input.hasNext) {
       new GroupedIterator(input.buffered, keyExpressions, inputSchema)
     } else {
       Iterator.empty
     }
-  }
 }
 
 /**
@@ -142,7 +141,7 @@ class GroupedIterator private (
     }
   }
 
-  private def createGroupValuesIterator(): Iterator[InternalRow] = {
+  private def createGroupValuesIterator(): Iterator[InternalRow] =
     new Iterator[InternalRow] {
       def hasNext: Boolean = currentRow != null || fetchNextRowInGroup()
 
@@ -173,5 +172,4 @@ class GroupedIterator private (
         }
       }
     }
-  }
 }

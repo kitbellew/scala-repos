@@ -24,10 +24,9 @@ class crtnamer extends Namer {
 
   def enum(prefix: Path): Activity[Dtab] = Activity.pending
 
-  def lookup(path: Path): Activity[NameTree[Name]] = {
+  def lookup(path: Path): Activity[NameTree[Name]] =
     Activity(
       Var.value(Activity.Ok(NameTree.Leaf(Name.Bound(va, new Object())))))
-  }
 }
 
 @RunWith(classOf[JUnitRunner])

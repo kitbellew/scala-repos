@@ -89,7 +89,7 @@ object Templates {
       // Don't sync directories or .gitkeep files. We can remove
       // .gitkeep files. These files are only there to make sure we preserve
       // directories in Git, but they're not needed in the templates.
-      def fileFilter(f: File) = { !f.isDirectory && (f.getName != ".gitkeep") }
+      def fileFilter(f: File) = !f.isDirectory && (f.getName != ".gitkeep")
 
       val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
         case templateSources: TemplateSources =>
@@ -353,14 +353,13 @@ object Templates {
       val (templateDirs, command) = args
       val extracted = Project.extract(state)
 
-      def createSetCommand(dirs: Seq[TemplateSources]): String = {
+      def createSetCommand(dirs: Seq[TemplateSources]): String =
         dirs
           .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
           .mkString(
             "set play.sbt.activator.Templates.templates := Seq(",
             ",",
             ")")
-      }
 
       val setCommand = createSetCommand(templateDirs)
       val setBack =

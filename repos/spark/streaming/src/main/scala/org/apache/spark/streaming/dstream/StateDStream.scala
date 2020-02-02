@@ -48,11 +48,11 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     // and then apply the update function
     val updateFuncLocal = updateFunc
     val finalFunc = (iterator: Iterator[(K, (Iterable[V], Iterable[S]))]) => {
-      val i = iterator.map(t => {
+      val i = iterator.map { t =>
         val itr = t._2._2.iterator
         val headOption = if (itr.hasNext) Some(itr.next()) else None
         (t._1, t._2._1.toSeq, headOption)
-      })
+      }
       updateFuncLocal(i)
     }
     val cogroupedRDD = parentRDD.cogroup(prevStateRDD, partitioner)
@@ -60,8 +60,7 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
     Some(stateRDD)
   }
 
-  override def compute(validTime: Time): Option[RDD[(K, S)]] = {
-
+  override def compute(validTime: Time): Option[RDD[(K, S)]] =
     // Try to get the previous state RDD
     getOrCompute(validTime - slideDuration) match {
 
@@ -121,5 +120,4 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
         }
       }
     }
-  }
 }

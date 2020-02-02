@@ -53,33 +53,31 @@ object Combinatorics {
     val n = input.size
     val allc = (1 to k).toList.map(x => Symbol("n" + x)) // all column names
 
-    val pipes = allc.zipWithIndex.map(x => {
+    val pipes = allc.zipWithIndex.map { x =>
       val num = x._2 + 1
       val pipe = IterableSource((num to n), x._1).read
       (pipe, num)
-    })
+    }
 
-    val res = pipes
-      .reduceLeft((a, b) => {
-        val num = b._2
-        val prevname = Symbol("n" + (num - 1))
-        val myname = Symbol("n" + num)
-        val mypipe = a._1
-          .crossWithSmaller(b._1)
-          .filter(prevname, myname) { foo: (Int, Int) =>
-            val (nn1, nn2) = foo
-            nn1 < nn2
-          }
-        (mypipe, -1)
-      })
-      ._1
+    val res = pipes.reduceLeft { (a, b) =>
+      val num = b._2
+      val prevname = Symbol("n" + (num - 1))
+      val myname = Symbol("n" + num)
+      val mypipe = a._1
+        .crossWithSmaller(b._1)
+        .filter(prevname, myname) { foo: (Int, Int) =>
+          val (nn1, nn2) = foo
+          nn1 < nn2
+        }
+      (mypipe, -1)
+    }._1
 
-    (1 to k).foldLeft(res)((a, b) => {
+    (1 to k).foldLeft(res) { (a, b) =>
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
       a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
         .discard(myname)
-    })
+    }
 
   }
 
@@ -113,12 +111,12 @@ object Combinatorics {
       }
 
     // map numerals to actual data
-    (1 to k).foldLeft(res)((a, b) => {
+    (1 to k).foldLeft(res) { (a, b) =>
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
       a.map(myname -> newname) { inpc: Int => input(inpc - 1) }
         .discard(myname)
-    })
+    }
 
   }
 
@@ -176,10 +174,10 @@ object Combinatorics {
     // create as many single-column pipes as the number of weights
     val pipes = allColumns
       .zip(weights)
-      .map(x => {
+      .map { x =>
         val (name, wt) = x
         IterableSource((0.0 to result by wt), name).read
-      })
+      }
       .zip(allColumns)
 
     val first = pipes.head
@@ -187,8 +185,7 @@ object Combinatorics {
     val rest = pipes.tail
 
     val res = rest
-      .foldLeft(accum)((a, b) => {
-
+      .foldLeft(accum) { (a, b) =>
         val (apipe, aname) = a
         val (bpipe, bname) = b
         val allc = (List(aname)).flatten ++ List[Symbol](bname)
@@ -215,17 +212,17 @@ object Combinatorics {
             }
             .discard('temp),
           allc)
-      })
+      }
       ._1
       .unique(allColumns)
 
     (1 to numWeights)
       .zip(weights)
-      .foldLeft(res)((a, b) => {
+      .foldLeft(res) { (a, b) =>
         val (num, wt) = b
         val myname = Symbol("k" + num)
         a.map(myname -> myname) { x: Int => (x / wt).toInt }
-      })
+      }
   }
 
   /**

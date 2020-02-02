@@ -52,12 +52,11 @@ private case class LibraryReference(level: Level, name: String) {
   private def rootManagerElementIn(module: ModuleSettings): Element =
     module.getComponentElement("NewModuleRootManager")
 
-  def libraryStorageFileIn(context: ConversionContext): Option[File] = {
+  def libraryStorageFileIn(context: ConversionContext): Option[File] =
     context.getStorageScheme match {
       case StorageScheme.DIRECTORY_BASED => directoryBasedLibraryFileIn(context)
       case StorageScheme.DEFAULT         => Some(context.getProjectFile)
     }
-  }
 
   private def directoryBasedLibraryFileIn(
       context: ConversionContext): Option[File] = {
@@ -120,9 +119,8 @@ private object LibraryReference {
     libraryEntries.map(LibraryReference(_))
   }
 
-  def apply(element: Element): LibraryReference = {
+  def apply(element: Element): LibraryReference =
     LibraryReference(
       Level.fromTitle(element.getAttributeValue("level")),
       element.getAttributeValue("name"))
-  }
 }

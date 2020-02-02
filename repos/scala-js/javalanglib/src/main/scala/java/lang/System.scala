@@ -24,9 +24,8 @@ object System {
   def setErr(err: PrintStream): Unit =
     this.err = err
 
-  def currentTimeMillis(): scala.Long = {
+  def currentTimeMillis(): scala.Long =
     (new js.Date).getTime().toLong
-  }
 
   private[this] val getHighPrecisionTime: js.Function0[scala.Double] = {
     import js.DynamicImplicits.truthValue
@@ -53,11 +52,10 @@ object System {
 
     import scala.{Boolean, Char, Byte, Short, Int, Long, Float, Double}
 
-    @inline def checkIndices(srcLen: Int, destLen: Int): Unit = {
+    @inline def checkIndices(srcLen: Int, destLen: Int): Unit =
       if (srcPos < 0 || destPos < 0 || length < 0 ||
           srcPos + length > srcLen || destPos + length > destLen)
         throw new ArrayIndexOutOfBoundsException("Array index out of bounds")
-    }
 
     def mismatch(): Nothing =
       throw new ArrayStoreException("Incompatible array types")
@@ -152,7 +150,7 @@ object System {
       })
   }
 
-  def identityHashCode(x: Object): scala.Int = {
+  def identityHashCode(x: Object): scala.Int =
     (x: Any) match {
       case null => 0
       case _: scala.Boolean | _: scala.Double | _: String | () =>
@@ -194,7 +192,6 @@ object System {
           }
         }
     }
-  }
 
   private object IDHashCode {
     private var lastIDHashCode: Int = 0
@@ -248,11 +245,10 @@ object System {
   def getProperties(): ju.Properties =
     SystemProperties.value
 
-  def setProperties(properties: ju.Properties): Unit = {
+  def setProperties(properties: ju.Properties): Unit =
     SystemProperties.value =
       if (properties != null) properties
       else SystemProperties.loadSystemProperties()
-  }
 
   def getProperty(key: String): String =
     SystemProperties.value.getProperty(key)

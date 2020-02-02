@@ -17,7 +17,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
   case class OpenTransaction(queueName: Buf, item: Buf) extends State
   state = NoTransaction()
 
-  def apply(command: Command): Response = {
+  def apply(command: Command): Response =
     command match {
       case Get(queueName, timeout) =>
         state match {
@@ -116,7 +116,6 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
       case Reload() =>
         NotFound()
     }
-  }
 }
 
 class InterpreterService(interpreter: Interpreter)

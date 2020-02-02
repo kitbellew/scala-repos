@@ -26,7 +26,7 @@ import kafka.utils.TestUtils
   * certainly doing something wrong unless you can prove that your test **cannot function** properly without it.
   */
 object FixedPortTestUtils {
-  def choosePorts(count: Int): Seq[Int] = {
+  def choosePorts(count: Int): Seq[Int] =
     try {
       val sockets = (0 until count).map(i => new ServerSocket(0))
       val ports = sockets.map(_.getLocalPort())
@@ -37,7 +37,6 @@ object FixedPortTestUtils {
         throw new RuntimeException(e)
       }
     }
-  }
 
   def createBrokerConfigs(
       numConfigs: Int,

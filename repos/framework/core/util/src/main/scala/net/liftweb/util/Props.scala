@@ -34,21 +34,19 @@ private[util] trait Props extends Logger {
     * @param name key for the property to get
     * @return the value of the property if defined
     */
-  def get(name: String): Box[String] = {
+  def get(name: String): Box[String] =
     lockedProviders
       .flatMap(_.get(name))
       .headOption
       .map(interpolate)
-  }
 
   private[this] val interpolateRegex = """(.*?)\Q${\E(.*?)\Q}\E([^$]*)""".r
 
   private[this] def interpolate(value: String): String = {
-    def lookup(key: String) = {
+    def lookup(key: String) =
       lockedInterpolationValues
         .flatMap(_.get(key))
         .headOption
-    }
 
     val interpolated = for {
       interpolateRegex(before, key, after) <- interpolateRegex.findAllMatchIn(
@@ -110,9 +108,8 @@ private[util] trait Props extends Logger {
     *
     * @param provider Arbitrary map of property key -> property value.
     */
-  def appendProvider(provider: PropProvider): List[PropProvider] = {
+  def appendProvider(provider: PropProvider): List[PropProvider] =
     updateProviders(_ :+ provider)
-  }
 
   /**
     * Updates Props to find property values in the argument BEFORE looking in
@@ -123,9 +120,8 @@ private[util] trait Props extends Logger {
     * @param provider Arbitrary map of property key -> property value to be used
     *                 for property lookup.
     */
-  def prependProvider(provider: PropProvider): List[PropProvider] = {
+  def prependProvider(provider: PropProvider): List[PropProvider] =
     updateProviders(provider :: _)
-  }
 
   /**
     * Passes the current `PropProvider`s to the passed `updater`, then sets the
@@ -152,9 +148,8 @@ private[util] trait Props extends Logger {
     *                 for interpolation.
     */
   def appendInterpolationValues(
-      interpolationValues: InterpolationValues): Seq[InterpolationValues] = {
+      interpolationValues: InterpolationValues): Seq[InterpolationValues] =
     updateInterpolationValues(_ :+ interpolationValues)
-  }
 
   /**
     * Passes the current `InterpolationValues`s to the passed `updater`, then sets the
@@ -380,14 +375,12 @@ private[util] trait Props extends Logger {
     def vendStreams: List[(String, () => Box[InputStream])] =
       whereToLook() :::
         toTry.map { f =>
-          {
-            val name = f() + "props"
-            name -> { () =>
-              val res = tryo { getClass.getResourceAsStream(name) }
-                .filter(_ ne null)
-              trace("Trying to open resource %s. Result=%s".format(name, res))
-              res
-            }
+          val name = f() + "props"
+          name -> { () =>
+            val res = tryo { getClass.getResourceAsStream(name) }
+              .filter(_ ne null)
+            trace("Trying to open resource %s. Result=%s".format(name, res))
+            res
           }
         }
 
@@ -432,17 +425,15 @@ private[util] trait Props extends Logger {
   // by the user.
   private[this] var providersAccumulator: Option[List[PropProvider]] = None
 
-  private[this] def providers = {
+  private[this] def providers =
     providersAccumulator getOrElse {
       val baseProviders = List(props)
       providersAccumulator = Some(baseProviders)
 
       baseProviders
     }
-  }
-  private[this] def providers_=(newProviders: List[PropProvider]) = {
+  private[this] def providers_=(newProviders: List[PropProvider]) =
     providersAccumulator = Some(newProviders)
-  }
 
   private[this] var interpolationValues: List[InterpolationValues] = Nil
 

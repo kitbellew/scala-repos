@@ -71,7 +71,7 @@ object ProductLike {
 
     q"""
       var $currentHash: Int = _root_.com.twitter.scalding.serialization.MurmurHashUtils.seed
-      ..${hashUpdates}
+      ..$hashUpdates
       _root_.com.twitter.scalding.serialization.MurmurHashUtils.fmix($currentHash, ${elementData.size})
     """
   }

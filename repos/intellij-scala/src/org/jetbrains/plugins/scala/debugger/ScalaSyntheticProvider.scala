@@ -44,13 +44,11 @@ object ScalaSyntheticProvider {
     }
   }
 
-  private def hasSpecializationMethod(refType: ReferenceType): Boolean = {
+  private def hasSpecializationMethod(refType: ReferenceType): Boolean =
     refType.methods().asScala.exists(isSpecialization)
-  }
 
-  private def isSpecialization(method: Method): Boolean = {
+  private def isSpecialization(method: Method): Boolean =
     method.name.contains("$mc") && method.name.endsWith("$sp")
-  }
 
   private val defaultArgPattern = """\$default\$\d+""".r
 
@@ -70,13 +68,11 @@ object ScalaSyntheticProvider {
     }
   }
 
-  private def isTraitForwarder(m: Method): Boolean = {
+  private def isTraitForwarder(m: Method): Boolean =
     Try(onlyInvokesStatic(m) && hasTraitWithImplementation(m)).getOrElse(false)
-  }
 
-  def isMacroDefined(typeComponent: TypeComponent) = {
+  def isMacroDefined(typeComponent: TypeComponent) =
     typeComponent.declaringType().name().contains("$macro")
-  }
 
   private def onlyInvokesStatic(m: Method): Boolean = {
     val bytecodes =
@@ -98,7 +94,7 @@ object ScalaSyntheticProvider {
     false
   }
 
-  private def hasTraitWithImplementation(m: Method): Boolean = {
+  private def hasTraitWithImplementation(m: Method): Boolean =
     m.declaringType() match {
       case ct: ClassType =>
         val interfaces = ct.allInterfaces().asScala
@@ -116,5 +112,4 @@ object ScalaSyntheticProvider {
         false
       case _ => false
     }
-  }
 }

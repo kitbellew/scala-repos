@@ -36,15 +36,13 @@ private[streaming] class QueueInputDStream[T: ClassTag](
 
   override def stop() {}
 
-  private def readObject(in: ObjectInputStream): Unit = {
+  private def readObject(in: ObjectInputStream): Unit =
     throw new NotSerializableException(
       "queueStream doesn't support checkpointing. " +
         "Please don't use queueStream when checkpointing is enabled.")
-  }
 
-  private def writeObject(oos: ObjectOutputStream): Unit = {
+  private def writeObject(oos: ObjectOutputStream): Unit =
     logWarning("queueStream doesn't support checkpointing")
-  }
 
   override def compute(validTime: Time): Option[RDD[T]] = {
     val buffer = new ArrayBuffer[RDD[T]]()

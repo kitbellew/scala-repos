@@ -66,14 +66,13 @@ case class TungstenAggregate(
         resultExpressions.diff(groupingExpressions).map(_.toAttribute)) ++
       AttributeSet(aggregateBufferAttributes)
 
-  override def requiredChildDistribution: List[Distribution] = {
+  override def requiredChildDistribution: List[Distribution] =
     requiredChildDistributionExpressions match {
       case Some(exprs) if exprs.length == 0 => AllTuples :: Nil
       case Some(exprs) if exprs.length > 0 =>
         ClusteredDistribution(exprs) :: Nil
       case None => UnspecifiedDistribution :: Nil
     }
-  }
 
   // This is for testing. We force TungstenAggregationIterator to fall back to sort-based
   // aggregation once it has processed a given number of input rows.
@@ -131,34 +130,30 @@ case class TungstenAggregate(
 
   override def usedInputs: AttributeSet = inputSet
 
-  override def supportCodegen: Boolean = {
+  override def supportCodegen: Boolean =
     // ImperativeAggregate is not supported right now
     !aggregateExpressions.exists(
       _.aggregateFunction.isInstanceOf[ImperativeAggregate])
-  }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     child.asInstanceOf[CodegenSupport].upstreams()
-  }
 
-  protected override def doProduce(ctx: CodegenContext): String = {
+  protected override def doProduce(ctx: CodegenContext): String =
     if (groupingExpressions.isEmpty) {
       doProduceWithoutKeys(ctx)
     } else {
       doProduceWithKeys(ctx)
     }
-  }
 
   override def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
-      row: String): String = {
+      row: String): String =
     if (groupingExpressions.isEmpty) {
       doConsumeWithoutKeys(ctx, input)
     } else {
       doConsumeWithKeys(ctx, input)
     }
-  }
 
   // The variables used as aggregation buffer
   private var bufVars: Seq[ExprCode] = _
@@ -318,9 +313,8 @@ case class TungstenAggregate(
   /**
     * This is called by generated Java class, should be public.
     */
-  def createUnsafeJoiner(): UnsafeRowJoiner = {
+  def createUnsafeJoiner(): UnsafeRowJoiner =
     GenerateUnsafeRowJoiner.create(groupingKeySchema, bufferSchema)
-  }
 
   /**
     * Called by generated Java class to finish the aggregate and return a KVIterator.
@@ -368,7 +362,7 @@ case class TungstenAggregate(
         null
       }
 
-      override def next(): Boolean = {
+      override def next(): Boolean =
         if (nextKey != null) {
           currentKey = nextKey.copy()
           currentRow = sortedIter.getValue.copy()
@@ -393,13 +387,11 @@ case class TungstenAggregate(
         } else {
           false
         }
-      }
 
       override def getKey: UnsafeRow = currentKey
       override def getValue: UnsafeRow = currentRow
-      override def close(): Unit = {
+      override def close(): Unit =
         sortedIter.close()
-      }
     }
   }
 
@@ -410,7 +402,7 @@ case class TungstenAggregate(
       ctx: CodegenContext,
       keyTerm: String,
       bufferTerm: String,
-      plan: String): String = {
+      plan: String): String =
     if (modes.contains(Final) || modes.contains(Complete)) {
       // generate output using resultExpressions
       ctx.currentVars = null
@@ -467,7 +459,6 @@ case class TungstenAggregate(
       }
       consume(ctx, eval)
     }
-  }
 
   private def doProduceWithKeys(ctx: CodegenContext): String = {
     val initAgg = ctx.freshName("initAgg")

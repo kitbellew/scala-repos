@@ -30,7 +30,7 @@ import org.apache.spark.mllib.linalg.Vectors
   * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
   */
 object DenseGaussianMixture {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     if (args.length < 3) {
       println(
         "usage: DenseGmmEM <input file> <k> <convergenceTol> [maxIterations]")
@@ -38,7 +38,6 @@ object DenseGaussianMixture {
       val maxIterations = if (args.length > 3) args(3).toInt else 100
       run(args(0), args(1).toInt, args(2).toDouble, maxIterations)
     }
-  }
 
   private def run(
       inputFile: String,

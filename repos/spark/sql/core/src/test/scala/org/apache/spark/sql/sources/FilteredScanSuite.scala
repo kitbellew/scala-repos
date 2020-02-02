@@ -31,10 +31,9 @@ import org.apache.spark.unsafe.types.UTF8String
 class FilteredScanSource extends RelationProvider {
   override def createRelation(
       sqlContext: SQLContext,
-      parameters: Map[String, String]): BaseRelation = {
+      parameters: Map[String, String]): BaseRelation =
     SimpleFilteredScan(parameters("from").toInt, parameters("to").toInt)(
       sqlContext)
-  }
 }
 
 case class SimpleFilteredScan(from: Int, to: Int)(
@@ -49,7 +48,7 @@ case class SimpleFilteredScan(from: Int, to: Int)(
         StructField("c", StringType, nullable = false) :: Nil)
 
   override def unhandledFilters(filters: Array[Filter]): Array[Filter] = {
-    def unhandled(filter: Filter): Boolean = {
+    def unhandled(filter: Filter): Boolean =
       filter match {
         case EqualTo(col, v)                 => col == "b"
         case EqualNullSafe(col, v)           => col == "b"
@@ -65,7 +64,6 @@ case class SimpleFilteredScan(from: Int, to: Int)(
         case Or(left, right)                 => unhandled(left) || unhandled(right)
         case _                               => false
       }
-    }
 
     filters.filter(unhandled)
   }
@@ -396,20 +394,18 @@ class FilteredScanSuite
   def testPushDown(
       sqlString: String,
       expectedCount: Int,
-      requiredColumnNames: Set[String]): Unit = {
+      requiredColumnNames: Set[String]): Unit =
     testPushDown(
       sqlString,
       expectedCount,
       requiredColumnNames,
       Set.empty[Filter])
-  }
 
   def testPushDown(
       sqlString: String,
       expectedCount: Int,
       requiredColumnNames: Set[String],
-      expectedUnhandledFilters: Set[Filter]): Unit = {
-
+      expectedUnhandledFilters: Set[Filter]): Unit =
     test(s"PushDown Returns $expectedCount: $sqlString") {
       // These tests check a particular plan, disable whole stage codegen.
       caseInsensitiveContext.conf
@@ -447,5 +443,4 @@ class FilteredScanSuite
           SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
       }
     }
-  }
 }

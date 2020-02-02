@@ -7,9 +7,8 @@ import org.scalatest.junit.JUnitRunner
 
 class TestApp(f: () => Unit) extends App {
   var reason: Option[String] = None
-  protected override def exitOnError(reason: String) = {
+  protected override def exitOnError(reason: String) =
     this.reason = Some(reason)
-  }
 
   def main() = f()
 }
@@ -17,9 +16,8 @@ class TestApp(f: () => Unit) extends App {
 object VeryBadApp extends App {
   var reason: String = throwRuntime()
 
-  protected def throwRuntime(): String = {
+  protected def throwRuntime(): String =
     throw new RuntimeException("this is a bad app")
-  }
 
   def main() = {}
 }

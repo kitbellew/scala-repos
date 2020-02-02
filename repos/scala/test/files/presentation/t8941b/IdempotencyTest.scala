@@ -44,9 +44,8 @@ abstract class IdempotencyTest { self =>
 
   // Extension points
   protected def code: String
-  protected def shouldInterrupt(tree: Tree): Boolean = {
+  protected def shouldInterrupt(tree: Tree): Boolean =
     tree.symbol != null && tree.symbol.name.toString == "MagicInterruptionMarker"
-  }
   protected def checkTypedTree(tree: Tree): Unit = {}
 
   private val source: SourceFile = newSourceFile(code)

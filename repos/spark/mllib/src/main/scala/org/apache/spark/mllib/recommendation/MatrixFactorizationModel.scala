@@ -168,9 +168,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
     */
   @Since("1.2.0")
   def predict(
-      usersProducts: JavaPairRDD[JavaInteger, JavaInteger]): JavaRDD[Rating] = {
+      usersProducts: JavaPairRDD[JavaInteger, JavaInteger]): JavaRDD[Rating] =
     predict(usersProducts.rdd.asInstanceOf[RDD[(Int, Int)]]).toJavaRDD()
-  }
 
   /**
     * Recommends products to a user.
@@ -223,9 +222,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
     *              If the directory already exists, this method throws an exception.
     */
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     MatrixFactorizationModel.SaveLoadV1_0.save(this, path)
-  }
 
   /**
     * Recommends top products for all users.
@@ -236,7 +234,7 @@ class MatrixFactorizationModel @Since("0.8.0") (
     * rating field. Semantics of score is same as recommendProducts API
     */
   @Since("1.4.0")
-  def recommendProductsForUsers(num: Int): RDD[(Int, Array[Rating])] = {
+  def recommendProductsForUsers(num: Int): RDD[(Int, Array[Rating])] =
     MatrixFactorizationModel
       .recommendForAll(rank, userFeatures, productFeatures, num)
       .map {
@@ -246,7 +244,6 @@ class MatrixFactorizationModel @Since("0.8.0") (
           }
           (user, ratings)
       }
-  }
 
   /**
     * Recommends top users for all products.
@@ -257,7 +254,7 @@ class MatrixFactorizationModel @Since("0.8.0") (
     * rating field. Semantics of score is same as recommendUsers API
     */
   @Since("1.4.0")
-  def recommendUsersForProducts(num: Int): RDD[(Int, Array[Rating])] = {
+  def recommendUsersForProducts(num: Int): RDD[(Int, Array[Rating])] =
     MatrixFactorizationModel
       .recommendForAll(rank, productFeatures, userFeatures, num)
       .map {
@@ -267,7 +264,6 @@ class MatrixFactorizationModel @Since("0.8.0") (
           }
           (product, ratings)
       }
-  }
 }
 
 @Since("1.3.0")
@@ -416,13 +412,11 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
       new MatrixFactorizationModel(rank, userFeatures, productFeatures)
     }
 
-    private def userPath(path: String): String = {
+    private def userPath(path: String): String =
       new Path(dataPath(path), "user").toUri.toString
-    }
 
-    private def productPath(path: String): String = {
+    private def productPath(path: String): String =
       new Path(dataPath(path), "product").toUri.toString
-    }
   }
 
 }

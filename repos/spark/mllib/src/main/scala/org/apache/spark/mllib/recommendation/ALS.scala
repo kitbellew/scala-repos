@@ -305,10 +305,9 @@ object ALS {
       lambda: Double,
       blocks: Int,
       seed: Long
-  ): MatrixFactorizationModel = {
+  ): MatrixFactorizationModel =
     new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0, seed)
       .run(ratings)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of ratings by users for a subset of products.
@@ -329,9 +328,8 @@ object ALS {
       iterations: Int,
       lambda: Double,
       blocks: Int
-  ): MatrixFactorizationModel = {
+  ): MatrixFactorizationModel =
     new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0).run(ratings)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of ratings by users for a subset of products.
@@ -349,9 +347,8 @@ object ALS {
       ratings: RDD[Rating],
       rank: Int,
       iterations: Int,
-      lambda: Double): MatrixFactorizationModel = {
+      lambda: Double): MatrixFactorizationModel =
     train(ratings, rank, iterations, lambda, -1)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of ratings by users for a subset of products.
@@ -367,9 +364,8 @@ object ALS {
   def train(
       ratings: RDD[Rating],
       rank: Int,
-      iterations: Int): MatrixFactorizationModel = {
+      iterations: Int): MatrixFactorizationModel =
     train(ratings, rank, iterations, 0.01, -1)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of 'implicit preferences' given by users
@@ -395,10 +391,9 @@ object ALS {
       blocks: Int,
       alpha: Double,
       seed: Long
-  ): MatrixFactorizationModel = {
+  ): MatrixFactorizationModel =
     new ALS(blocks, blocks, rank, iterations, lambda, true, alpha, seed)
       .run(ratings)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of 'implicit preferences' of users for a
@@ -421,9 +416,8 @@ object ALS {
       lambda: Double,
       blocks: Int,
       alpha: Double
-  ): MatrixFactorizationModel = {
+  ): MatrixFactorizationModel =
     new ALS(blocks, blocks, rank, iterations, lambda, true, alpha).run(ratings)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of 'implicit preferences' of users for a
@@ -444,9 +438,8 @@ object ALS {
       rank: Int,
       iterations: Int,
       lambda: Double,
-      alpha: Double): MatrixFactorizationModel = {
+      alpha: Double): MatrixFactorizationModel =
     trainImplicit(ratings, rank, iterations, lambda, -1, alpha)
-  }
 
   /**
     * Train a matrix factorization model given an RDD of 'implicit preferences' of users for a
@@ -463,7 +456,6 @@ object ALS {
   def trainImplicit(
       ratings: RDD[Rating],
       rank: Int,
-      iterations: Int): MatrixFactorizationModel = {
+      iterations: Int): MatrixFactorizationModel =
     trainImplicit(ratings, rank, iterations, 0.01, -1, 1.0)
-  }
 }

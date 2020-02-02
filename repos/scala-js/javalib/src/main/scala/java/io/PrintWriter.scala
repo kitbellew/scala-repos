@@ -41,7 +41,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
     }
   }
 
-  def checkError(): Boolean = {
+  def checkError(): Boolean =
     if (closed) {
       /* Just check the error flag.
        * Common sense would tell us to look at the underlying writer's
@@ -60,7 +60,6 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
         case _                => false
       })
     }
-  }
 
   protected[io] def setError(): Unit = errorFlag = true
   protected[io] def clearError(): Unit = errorFlag = false
@@ -137,17 +136,14 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
     this
   }
 
-  @inline private[this] def trapIOExceptions(body: => Unit): Unit = {
+  @inline private[this] def trapIOExceptions(body: => Unit): Unit =
     try {
       body
     } catch {
       case _: IOException => setError()
     }
-  }
 
-  @inline private[this] def ensureOpenAndTrapIOExceptions(
-      body: => Unit): Unit = {
+  @inline private[this] def ensureOpenAndTrapIOExceptions(body: => Unit): Unit =
     if (closed) setError()
     else trapIOExceptions(body)
-  }
 }

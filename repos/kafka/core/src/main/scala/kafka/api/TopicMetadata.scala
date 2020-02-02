@@ -48,13 +48,12 @@ case class TopicMetadata(
     partitionsMetadata: Seq[PartitionMetadata],
     errorCode: Short = Errors.NONE.code)
     extends Logging {
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 /* error code */ +
       shortStringLength(topic) +
       4 + partitionsMetadata
       .map(_.sizeInBytes)
       .sum /* size and partition data array */
-  }
 
   def writeTo(buffer: ByteBuffer) {
     /* error code */
@@ -139,13 +138,12 @@ case class PartitionMetadata(
     isr: Seq[BrokerEndPoint] = Seq.empty,
     errorCode: Short = Errors.NONE.code)
     extends Logging {
-  def sizeInBytes: Int = {
+  def sizeInBytes: Int =
     2 /* error code */ +
       4 /* partition id */ +
       4 /* leader */ +
       4 + 4 * replicas.size /* replica array */ +
       4 + 4 * isr.size /* isr array */
-  }
 
   def writeTo(buffer: ByteBuffer) {
     buffer.putShort(errorCode)

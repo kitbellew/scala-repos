@@ -40,7 +40,7 @@ import scalaz.std.anyVal._
 object CValueGenerators {
   type JSchema = Seq[(JPath, CType)]
 
-  def inferSchema(data: Seq[JValue]): JSchema = {
+  def inferSchema(data: Seq[JValue]): JSchema =
     if (data.isEmpty) {
       Seq.empty
     } else {
@@ -51,13 +51,12 @@ object CValueGenerators {
 
       (current ++ inferSchema(data.tail)).distinct
     }
-  }
 }
 
 trait CValueGenerators extends ArbitraryBigDecimal {
   import CValueGenerators._
 
-  def schema(depth: Int): Gen[JSchema] = {
+  def schema(depth: Int): Gen[JSchema] =
     if (depth <= 0) leafSchema
     else
       oneOf(1, 2, 3) flatMap {
@@ -65,9 +64,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         case 2 => arraySchema(depth, choose(1, 5))
         case 3 => leafSchema
       }
-  }
 
-  def objectSchema(depth: Int, sizeGen: Gen[Int]): Gen[JSchema] = {
+  def objectSchema(depth: Int, sizeGen: Gen[Int]): Gen[JSchema] =
     for {
       size <- sizeGen
       names <- containerOfN[Set, String](size, identifier)
@@ -80,9 +78,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         (JPathField(name) \ jpath, ctype)
       }
     }
-  }
 
-  def arraySchema(depth: Int, sizeGen: Gen[Int]): Gen[JSchema] = {
+  def arraySchema(depth: Int, sizeGen: Gen[Int]): Gen[JSchema] =
     for {
       size <- sizeGen
       subschemas <- listOfN(size, schema(depth - 1))
@@ -94,7 +91,6 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         (JPathIndex(idx) \ jpath, ctype)
       }
     }
-  }
 
   def leafSchema: Gen[JSchema] = ctype map { t => (JPath.Identity -> t) :: Nil }
 
@@ -125,7 +121,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
     case CUndefined   => JUndefined
   }
 
-  def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] = {
+  def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] =
     schema.foldLeft(Gen.value[JValue](JUndefined)) {
       case (gen, (jpath, ctype)) =>
         for {
@@ -135,7 +131,6 @@ trait CValueGenerators extends ArbitraryBigDecimal {
           acc.unsafeInsert(jpath, jv)
         }
     }
-  }
 
   def genEventColumns(jschema: JSchema)
       : Gen[(Int, Stream[(Identities, Seq[(JPath, JValue)])])] =
@@ -182,7 +177,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
 }
 
 trait SValueGenerators extends ArbitraryBigDecimal {
-  def svalue(depth: Int): Gen[SValue] = {
+  def svalue(depth: Int): Gen[SValue] =
     if (depth <= 0) sleaf
     else
       oneOf(1, 2, 3) flatMap { //it's much faster to lazily compute the subtrees
@@ -190,9 +185,8 @@ trait SValueGenerators extends ArbitraryBigDecimal {
         case 2 => sarray(depth)
         case 3 => sleaf
       }
-  }
 
-  def sobject(depth: Int): Gen[SValue] = {
+  def sobject(depth: Int): Gen[SValue] =
     for {
       size <- choose(0, 3)
       names <- containerOfN[Set, String](size, identifier)
@@ -200,14 +194,12 @@ trait SValueGenerators extends ArbitraryBigDecimal {
     } yield {
       SObject((names zip values).toMap)
     }
-  }
 
-  def sarray(depth: Int): Gen[SValue] = {
+  def sarray(depth: Int): Gen[SValue] =
     for {
       size <- choose(0, 3)
       l <- listOfN(size, svalue(depth - 1))
     } yield SArray(Vector(l: _*))
-  }
 
   def sleaf: Gen[SValue] = oneOf(
     alphaStr map (SString(_: String)),
@@ -220,12 +212,11 @@ trait SValueGenerators extends ArbitraryBigDecimal {
     value(SNull)
   )
 
-  def sevent(idCount: Int, vdepth: Int): Gen[SEvent] = {
+  def sevent(idCount: Int, vdepth: Int): Gen[SEvent] =
     for {
       ids <- containerOfN[Set, Long](idCount, posNum[Long])
       value <- svalue(vdepth)
     } yield (ids.toArray, value)
-  }
 
   def chunk(size: Int, idCount: Int, vdepth: Int): Gen[Vector[SEvent]] =
     listOfN(size, sevent(idCount, vdepth)) map { l => Vector(l: _*) }

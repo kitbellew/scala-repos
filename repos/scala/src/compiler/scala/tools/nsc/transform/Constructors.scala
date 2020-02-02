@@ -60,7 +60,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         // Checking the qualifier symbol is necessary to prevent a selection on
         // another instance of the same class from potentially appearing to be a forward
         // reference on the member in the current class.
-        def check(tree: Tree) = {
+        def check(tree: Tree) =
           for (t <- tree) t match {
             case t: RefTree
                 if uninitializedVals(t.symbol.accessedOrSelf) && t.qualifier.symbol == clazz =>
@@ -69,7 +69,6 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
                 s"Reference to uninitialized ${t.symbol.accessedOrSelf}")
             case _ =>
           }
-        }
         stat match {
           case vd: ValDef =>
             // doing this first allows self-referential vals, which to be a conservative
@@ -84,7 +83,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
     } // end of checkUninitializedReads()
 
-    override def transform(tree: Tree): Tree = {
+    override def transform(tree: Tree): Tree =
       tree match {
         case cd @ ClassDef(mods0, name0, tparams0, impl0)
             if !isPrimitiveValueClass(cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
@@ -103,7 +102,6 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         case _ =>
           super.transform(tree)
       }
-    }
 
   } // ConstructorTransformer
 
@@ -821,14 +819,14 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         else (Nil, remainingConstrStats)
 
       // Assemble final constructor
-      val primaryConstructor = deriveDefDef(primaryConstr)(_ => {
+      val primaryConstructor = deriveDefDef(primaryConstr) { _ =>
         treeCopy.Block(
           primaryConstrBody,
           paramInits ::: constructorPrefix ::: uptoSuperStats ::: guardSpecializedInitializer(
             remainingConstrStatsDelayedInit),
           primaryConstrBody.expr
         )
-      })
+      }
 
       val constructors = primaryConstructor :: auxConstructors
 

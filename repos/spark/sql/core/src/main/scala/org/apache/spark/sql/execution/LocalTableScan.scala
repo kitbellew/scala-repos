@@ -49,11 +49,9 @@ private[sql] case class LocalTableScan(
     }
   }
 
-  override def executeCollect(): Array[InternalRow] = {
+  override def executeCollect(): Array[InternalRow] =
     unsafeRows
-  }
 
-  override def executeTake(limit: Int): Array[InternalRow] = {
+  override def executeTake(limit: Int): Array[InternalRow] =
     unsafeRows.take(limit)
-  }
 }

@@ -334,7 +334,7 @@ class ReceivedBlockTrackerSuite
   }
 
   /** Generate blocks infos using random ids */
-  def generateBlockInfos(): Seq[ReceivedBlockInfo] = {
+  def generateBlockInfos(): Seq[ReceivedBlockInfo] =
     List.fill(5)(
       ReceivedBlockInfo(
         streamId,
@@ -343,7 +343,6 @@ class ReceivedBlockTrackerSuite
         BlockManagerBasedStoreResult(
           StreamBlockId(streamId, math.abs(Random.nextInt)),
           Some(0L))))
-  }
 
   /**
     * Write received block tracker events to a file manually.
@@ -361,22 +360,20 @@ class ReceivedBlockTrackerSuite
   }
 
   /** Get all the data written in the given write ahead log file. */
-  def getWrittenLogData(logFile: String): Seq[ReceivedBlockTrackerLogEvent] = {
+  def getWrittenLogData(logFile: String): Seq[ReceivedBlockTrackerLogEvent] =
     getWrittenLogData(Seq(logFile))
-  }
 
   /** Get the log file name for the given log start time. */
-  def getLogFileName(time: Long, rollingIntervalSecs: Int = 1): String = {
+  def getLogFileName(time: Long, rollingIntervalSecs: Int = 1): String =
     checkpointDirectory.toString + File.separator + "receivedBlockMetadata" +
       File.separator + s"log-$time-${time + rollingIntervalSecs * 1000}"
-  }
 
   /**
     * Get all the data written in the given write ahead log files. By default, it will read all
     * files in the test log directory.
     */
   def getWrittenLogData(logFiles: Seq[String] = getWriteAheadLogFiles)
-      : Seq[ReceivedBlockTrackerLogEvent] = {
+      : Seq[ReceivedBlockTrackerLogEvent] =
     logFiles
       .flatMap { file =>
         new FileBasedWriteAheadLogReader(file, hadoopConf).toSeq
@@ -394,7 +391,6 @@ class ReceivedBlockTrackerSuite
           Utils.deserialize[ReceivedBlockTrackerLogEvent](b.array()))
       }
       .toList
-  }
 
   /** Get all the write ahead log files in the test directory */
   def getWriteAheadLogFiles(): Seq[String] = {
@@ -406,14 +402,12 @@ class ReceivedBlockTrackerSuite
   /** Create batch allocation object from the given info */
   def createBatchAllocation(
       time: Long,
-      blockInfos: Seq[ReceivedBlockInfo]): BatchAllocationEvent = {
+      blockInfos: Seq[ReceivedBlockInfo]): BatchAllocationEvent =
     BatchAllocationEvent(time, AllocatedBlocks(Map((streamId -> blockInfos))))
-  }
 
   /** Create batch clean object from the given info */
-  def createBatchCleanup(time: Long, moreTimes: Long*): BatchCleanupEvent = {
+  def createBatchCleanup(time: Long, moreTimes: Long*): BatchCleanupEvent =
     BatchCleanupEvent((Seq(time) ++ moreTimes).map(Time.apply))
-  }
 
   implicit def millisToTime(milliseconds: Long): Time = Time(milliseconds)
 

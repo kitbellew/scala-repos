@@ -39,7 +39,7 @@ private[util] class NavigableView[E](
   override def remove(o: Any): Boolean =
     original.remove(o)
 
-  private def _iterator(iter: Iterator[E]) = {
+  private def _iterator(iter: Iterator[E]) =
     new Iterator[E] {
       private var last: Option[E] = None
 
@@ -50,16 +50,14 @@ private[util] class NavigableView[E](
         last.get
       }
 
-      def remove(): Unit = {
+      def remove(): Unit =
         if (last.isEmpty) {
           throw new IllegalStateException()
         } else {
           last.foreach(original.remove(_))
           last = None
         }
-      }
     }
-  }
 
   def iterator(): Iterator[E] =
     _iterator(inner().iterator.map(_.inner))
@@ -107,14 +105,13 @@ private[util] class NavigableView[E](
     } else null.asInstanceOf[E]
   }
 
-  def comparator(): Comparator[E] = {
+  def comparator(): Comparator[E] =
     new Comparator[E] {
       val ordering = inner().ordering
 
       def compare(a: E, b: E): Int =
         ordering.compare(Box(a), Box(b))
     }
-  }
 
   def first(): E = {
     val iter = iterator()

@@ -42,9 +42,8 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
         totalSize: Int,
         es: Entry): IterRepr
 
-    def hasNext = {
+    def hasNext =
       es ne null
-    }
 
     def next(): T = {
       val res = es
@@ -63,7 +62,7 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
 
     def remaining = totalsize - traversed
 
-    private[parallel] override def debugInformation = {
+    private[parallel] override def debugInformation =
       buildString { append =>
         append("/--------------------\\")
         append("Parallel hash table entry iterator")
@@ -81,7 +80,6 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
             .mkString(" | "))
         append("\\--------------------/")
       }
-    }
 
     def dup = newIterator(idx, until, totalsize, es)
 

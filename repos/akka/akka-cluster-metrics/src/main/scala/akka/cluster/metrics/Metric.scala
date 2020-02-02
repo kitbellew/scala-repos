@@ -141,7 +141,7 @@ object StandardMetrics {
       * @return if possible a tuple matching the HeapMemory constructor parameters
       */
     def unapply(nodeMetrics: NodeMetrics)
-        : Option[(Address, Long, Long, Long, Option[Long])] = {
+        : Option[(Address, Long, Long, Long, Option[Long])] =
       for {
         used ← nodeMetrics.metric(HeapMemoryUsed)
         committed ← nodeMetrics.metric(HeapMemoryCommitted)
@@ -151,7 +151,6 @@ object StandardMetrics {
         used.smoothValue.longValue,
         committed.smoothValue.longValue,
         nodeMetrics.metric(HeapMemoryMax).map(_.smoothValue.longValue))
-    }
 
   }
 
@@ -199,7 +198,7 @@ object StandardMetrics {
       * @return if possible a tuple matching the Cpu constructor parameters
       */
     def unapply(nodeMetrics: NodeMetrics): Option[
-      (Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
+      (Address, Long, Option[Double], Option[Double], Option[Double], Int)] =
       for {
         processors ← nodeMetrics.metric(Processors)
       } yield (
@@ -209,7 +208,6 @@ object StandardMetrics {
         nodeMetrics.metric(CpuCombined).map(_.smoothValue),
         nodeMetrics.metric(CpuStolen).map(_.smoothValue),
         processors.value.intValue)
-    }
 
   }
 

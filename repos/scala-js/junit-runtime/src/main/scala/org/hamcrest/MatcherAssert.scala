@@ -21,8 +21,7 @@ object MatcherAssert {
     }
   }
 
-  def assertThat(reason: String, assertion: Boolean): Unit = {
+  def assertThat(reason: String, assertion: Boolean): Unit =
     if (!assertion)
       throw new AssertionError(reason)
-  }
 }

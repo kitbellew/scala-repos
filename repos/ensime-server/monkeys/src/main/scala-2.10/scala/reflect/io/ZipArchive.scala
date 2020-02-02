@@ -82,12 +82,11 @@ abstract class ZipArchive(override val file: JFile)
   def absolute = unsupported
 
   private def walkIterator(
-      its: Iterator[AbstractFile]): Iterator[AbstractFile] = {
+      its: Iterator[AbstractFile]): Iterator[AbstractFile] =
     its flatMap { f =>
       if (f.isDirectory) walkIterator(f.iterator)
       else Iterator(f)
     }
-  }
   def deepIterator = walkIterator(iterator)
 
   /** ''Note:  This library is considered experimental and should not be used unless you know what you are doing.'' */
@@ -105,10 +104,9 @@ abstract class ZipArchive(override val file: JFile)
 
     override def isDirectory = true
     override def iterator: Iterator[Entry] = entries.valuesIterator
-    override def lookupName(name: String, directory: Boolean): Entry = {
+    override def lookupName(name: String, directory: Boolean): Entry =
       if (directory) entries(name + "/")
       else entries(name)
-    }
   }
 
   private def ensureDir(
@@ -135,10 +133,9 @@ abstract class ZipArchive(override val file: JFile)
 
   protected def getDir(
       dirs: mutable.Map[String, DirEntry],
-      entry: ZipEntry): DirEntry = {
+      entry: ZipEntry): DirEntry =
     if (entry.isDirectory) ensureDir(dirs, entry.getName, entry)
     else ensureDir(dirs, dirName(entry.getName), null)
-  }
 }
 
 /** ''Note:  This library is considered experimental and should not be used unless you know what you are doing.'' */

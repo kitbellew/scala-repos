@@ -35,9 +35,8 @@ class RecipeDigest extends RecipeSpec {
             val digest = MessageDigest.getInstance(algorithm)
 
             setHandler(out, new OutHandler {
-              override def onPull(): Trigger = {
+              override def onPull(): Trigger =
                 pull(in)
-              }
             })
 
             setHandler(

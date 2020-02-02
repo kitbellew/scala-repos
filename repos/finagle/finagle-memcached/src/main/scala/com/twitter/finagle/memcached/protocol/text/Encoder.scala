@@ -19,7 +19,7 @@ class Encoder extends OneToOneEncoder {
   def encode(
       context: ChannelHandlerContext,
       channel: Channel,
-      message: AnyRef): ChannelBuffer = {
+      message: AnyRef): ChannelBuffer =
     message match {
       case Tokens(tokens) =>
         val buffer = ChannelBuffers.dynamicBuffer(10 * tokens.size)
@@ -89,5 +89,4 @@ class Encoder extends OneToOneEncoder {
         buffer.writeBytes(DELIMITER)
         buffer
     }
-  }
 }

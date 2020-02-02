@@ -46,12 +46,12 @@ class ScalaLookupRenderingTest extends ScalaCodeInsightTestBase {
 
     val result = activeLookup
       .filter(_.getLookupString == "foo")
-      .map(p => {
+      .map { p =>
         val presentation: LookupElementPresentation =
           new LookupElementPresentation
         p.renderElement(presentation)
         presentation.getItemText + presentation.getTailText
-      })
+      }
       .sorted
       .mkString("\n")
 

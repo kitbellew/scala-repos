@@ -40,15 +40,14 @@ trait RestHelper extends LiftRules.DispatchPF {
     * then look to either the Content-Type header or the defaultGetAsJson
     * flag
     */
-  protected def jsonResponse_?(in: Req): Boolean = {
+  protected def jsonResponse_?(in: Req): Boolean =
     (in.acceptsJson_? && !in.acceptsStarStar) ||
-    ((in.weightedAccept.isEmpty ||
-    in.acceptsStarStar) &&
-    (in.path.suffix.equalsIgnoreCase("json") ||
-    in.json_? ||
-    (in.path.suffix.length == 0 && defaultGetAsJson))) ||
-    suplimentalJsonResponse_?(in)
-  }
+      ((in.weightedAccept.isEmpty ||
+        in.acceptsStarStar) &&
+        (in.path.suffix.equalsIgnoreCase("json") ||
+          in.json_? ||
+          (in.path.suffix.length == 0 && defaultGetAsJson))) ||
+      suplimentalJsonResponse_?(in)
 
   /**
     * If the headers and the suffix say nothing about the
@@ -89,15 +88,14 @@ trait RestHelper extends LiftRules.DispatchPF {
     * then look to either the Content-Type header or the defaultGetAsXml
     * flag.
     */
-  protected def xmlResponse_?(in: Req): Boolean = {
+  protected def xmlResponse_?(in: Req): Boolean =
     (in.acceptsXml_? && !in.acceptsStarStar) ||
-    ((in.weightedAccept.isEmpty ||
-    in.acceptsStarStar) &&
-    (in.path.suffix.equalsIgnoreCase("xml") ||
-    in.xml_? ||
-    (in.path.suffix.length == 0 && defaultGetAsXml))) ||
-    suplimentalXmlResponse_?(in)
-  }
+      ((in.weightedAccept.isEmpty ||
+        in.acceptsStarStar) &&
+        (in.path.suffix.equalsIgnoreCase("xml") ||
+          in.xml_? ||
+          (in.path.suffix.length == 0 && defaultGetAsXml))) ||
+      suplimentalXmlResponse_?(in)
 
   /**
     * If there are additional custom rules (e.g., looking at query parameters)
@@ -343,8 +341,7 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected def serveType[T, SelectType](
       selection: Req => BoxOrRaw[SelectType])(
       pf: PartialFunction[Req, BoxOrRaw[T]])(
-      implicit cvt: PartialFunction[(SelectType, T, Req), LiftResponse])
-      : Unit = {
+      implicit cvt: PartialFunction[(SelectType, T, Req), LiftResponse]): Unit =
     serve(new PartialFunction[Req, () => Box[LiftResponse]] {
       def isDefinedAt(r: Req): Boolean =
         selection(r).isDefined && pf.isDefinedAt(r)
@@ -369,7 +366,6 @@ trait RestHelper extends LiftRules.DispatchPF {
           }
         }
     })
-  }
 
   /**
     * Serve a request returning either JSON or XML.
@@ -559,11 +555,11 @@ trait RestHelper extends LiftRules.DispatchPF {
       implicit asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
       responseCreator: T => LiftResponse
   ): () => Box[LiftResponse] = () => {
-    RestContinuation.async(reply => {
+    RestContinuation.async { reply =>
       asyncResolveProvider.resolveAsync(
         asyncContainer, { resolved => reply(responseCreator(resolved)) }
       )
-    })
+    }
   }
 
   /**
@@ -581,13 +577,13 @@ trait RestHelper extends LiftRules.DispatchPF {
         Box[T]],
       responseCreator: T => LiftResponse
   ): () => Box[LiftResponse] = () => {
-    RestContinuation.async(reply => {
+    RestContinuation.async { reply =>
       asyncResolveProvider.resolveAsync(
         asyncBoxContainer, { resolvedBox =>
           boxToResp(resolvedBox).apply() openOr NotFoundResponse()
         }
       )
-    })
+    }
   }
 
   /**

@@ -25,14 +25,14 @@ case class ApiCommit(
     urlIsHtmlUrl: Boolean)
     extends FieldSerializable {
   val url = if (urlIsHtmlUrl) {
-    ApiPath(s"/${repositoryName.fullName}/commit/${id}")
+    ApiPath(s"/${repositoryName.fullName}/commit/$id")
   } else {
-    ApiPath(s"/api/v3/${repositoryName.fullName}/commits/${id}")
+    ApiPath(s"/api/v3/${repositoryName.fullName}/commits/$id")
   }
   val html_url = if (urlIsHtmlUrl) {
     None
   } else {
-    Some(ApiPath(s"/${repositoryName.fullName}/commit/${id}"))
+    Some(ApiPath(s"/${repositoryName.fullName}/commit/$id"))
   }
 }
 

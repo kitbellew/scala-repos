@@ -50,12 +50,11 @@ class ScObjectImpl protected (
     extends ScTypeDefinitionImpl(stub, nodeType, node)
     with ScObject
     with ScTemplateDefinition {
-  override def additionalJavaNames: Array[String] = {
+  override def additionalJavaNames: Array[String] =
     fakeCompanionClass match {
       case Some(c) => Array(c.getName)
       case _       => Array.empty
     }
-  }
 
   override def getNavigationElement: PsiElement = {
     if (isSyntheticObject) {
@@ -152,7 +151,7 @@ class ScObjectImpl protected (
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     if (isPackageObject) {
       import org.jetbrains.plugins.scala.lang.psi.impl.ScPackageImpl._
       startPackageObjectProcessing()
@@ -175,7 +174,6 @@ class ScObjectImpl protected (
         lastParent,
         place)
     }
-  }
 
   override protected def syntheticMethodsWithOverrideImpl: Seq[PsiMethod] = {
     val res =
@@ -184,7 +182,7 @@ class ScObjectImpl protected (
         ScalaPsiUtil.getCompanionModule(this) match {
           case Some(c: ScClass) if c.isCase =>
             val res = new ArrayBuffer[PsiMethod]
-            c.getSyntheticMethodsText.foreach(s => {
+            c.getSyntheticMethodsText.foreach { s =>
               try {
                 val method = ScalaPsiElementFactory
                   .createMethodWithContext(s, c.getContext, c)
@@ -194,7 +192,7 @@ class ScObjectImpl protected (
               } catch {
                 case e: Exception => //do not add methods with wrong signature
               }
-            })
+            }
             res.toSeq
           case _ => Seq.empty
         }
@@ -204,7 +202,7 @@ class ScObjectImpl protected (
   override protected def syntheticMethodsNoOverrideImpl: Seq[PsiMethod] =
     SyntheticMembersInjector.inject(this, withOverride = false)
 
-  def fakeCompanionClass: Option[PsiClass] = {
+  def fakeCompanionClass: Option[PsiClass] =
     ScalaPsiUtil.getCompanionModule(this) match {
       case Some(module) => None
       case None =>
@@ -214,18 +212,16 @@ class ScObjectImpl protected (
             getQualifiedName.substring(0, getQualifiedName.length() - 1),
             getName.substring(0, getName.length() - 1)))
     }
-  }
 
-  def fakeCompanionClassOrCompanionClass: PsiClass = {
+  def fakeCompanionClassOrCompanionClass: PsiClass =
     fakeCompanionClass match {
       case Some(clazz) => clazz
       case _ =>
         ScalaPsiUtil.getCompanionModule(this).get
     }
-  }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
-  private def getModuleField: Option[PsiField] = {
+  private def getModuleField: Option[PsiField] =
     if (getQualifiedName
           .split('.')
           .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
@@ -243,24 +239,20 @@ class ScObjectImpl protected (
       field.setNavigationElement(this)
       Some(field)
     }
-  }
 
-  override def getFields: Array[PsiField] = {
+  override def getFields: Array[PsiField] =
     getModuleField.toArray
-  }
 
-  override def findFieldByName(name: String, checkBases: Boolean): PsiField = {
+  override def findFieldByName(name: String, checkBases: Boolean): PsiField =
     name match {
       case "MODULE$" => getModuleField.orNull
       case _         => null
     }
-  }
 
   override def getInnerClasses: Array[PsiClass] = Array.empty
 
-  override def getMethods: Array[PsiMethod] = {
+  override def getMethods: Array[PsiMethod] =
     getAllMethods.filter(_.containingClass == this)
-  }
 
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
@@ -296,19 +288,16 @@ class ScObjectImpl protected (
   override def getConstructors: Array[PsiMethod] =
     Array(new EmptyPrivateConstructor(this))
 
-  override def isPhysical: Boolean = {
+  override def isPhysical: Boolean =
     if (isSyntheticObject) false
     else super.isPhysical
-  }
 
-  override def getTextRange: TextRange = {
+  override def getTextRange: TextRange =
     if (isSyntheticObject) null
     else super.getTextRange
-  }
 
-  override def getInterfaces: Array[PsiClass] = {
+  override def getInterfaces: Array[PsiClass] =
     getSupers.filter(_.isInterface)
-  }
 
   private val hardParameterlessSignatures: mutable.WeakHashMap[
     Project,
@@ -317,27 +306,24 @@ class ScObjectImpl protected (
       Project,
       TypeDefinitionMembers.ParameterlessNodes.Map]
   def getHardParameterlessSignatures
-      : TypeDefinitionMembers.ParameterlessNodes.Map = {
+      : TypeDefinitionMembers.ParameterlessNodes.Map =
     hardParameterlessSignatures.getOrElseUpdate(
       getProject,
       TypeDefinitionMembers.ParameterlessNodes.build(this))
-  }
 
   private val hardTypes
       : mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map]
-  def getHardTypes: TypeDefinitionMembers.TypeNodes.Map = {
+  def getHardTypes: TypeDefinitionMembers.TypeNodes.Map =
     hardTypes.getOrElseUpdate(
       getProject,
       TypeDefinitionMembers.TypeNodes.build(this))
-  }
 
   private val hardSignatures
       : mutable.WeakHashMap[Project, TypeDefinitionMembers.SignatureNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.SignatureNodes.Map]
-  def getHardSignatures: TypeDefinitionMembers.SignatureNodes.Map = {
+  def getHardSignatures: TypeDefinitionMembers.SignatureNodes.Map =
     hardSignatures.getOrElseUpdate(
       getProject,
       TypeDefinitionMembers.SignatureNodes.build(this))
-  }
 }

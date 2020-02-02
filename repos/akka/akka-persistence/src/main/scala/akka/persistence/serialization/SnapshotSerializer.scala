@@ -108,12 +108,11 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
      */
     def patch(b: Array[Byte]): Array[Byte] = {
       import SnapshotSerializer._
-      def find(pos: Int, offset: Int): Int = {
+      def find(pos: Int, offset: Int): Int =
         if (pos == b.length) -1
         else if (offset == key.length) pos
         else if (b(pos + offset) == key(offset)) find(pos, offset + 1)
         else find(pos + 1, 0)
-      }
       val found = find(0, 0)
       if (found == -1) b
       else {

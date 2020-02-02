@@ -238,7 +238,7 @@ trait PaginatorSnippet[T] extends Paginator[T] {
   /**
     * Generates links to multiple pages with arbitrary XML delimiting them.
     */
-  def pagesXml(pages: Seq[Int])(sep: NodeSeq): NodeSeq = {
+  def pagesXml(pages: Seq[Int])(sep: NodeSeq): NodeSeq =
     pages.toList map { n => pageXml(n * itemsPerPage, Text((n + 1).toString)) } match {
       case one :: Nil => one
       case first :: rest =>
@@ -247,7 +247,6 @@ trait PaginatorSnippet[T] extends Paginator[T] {
         }
       case Nil => Nil
     }
-  }
 
   /**
     * This method binds template HTML based according to the specified

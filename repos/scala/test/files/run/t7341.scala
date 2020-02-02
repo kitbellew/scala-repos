@@ -5,9 +5,8 @@ object Obj {
     returning(() => cache = ())
   }
 
-  def apply(): Any = {
+  def apply(): Any =
     cache
-  }
 }
 
 object Test extends App {

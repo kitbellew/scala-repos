@@ -26,12 +26,11 @@ import com.twitter.summingbird.batch.{Batcher, BatchID}
  */
 object MergeableStoreFactory {
 
-  def apply[K, V](store: () => Mergeable[K, V], batcher: Batcher) = {
+  def apply[K, V](store: () => Mergeable[K, V], batcher: Batcher) =
     new MergeableStoreFactory[K, V] {
       def mergeableStore = store
       def mergeableBatcher = batcher
     }
-  }
 
   def from[K, V](store: => Mergeable[(K, BatchID), V])(
       implicit batcher: Batcher): MergeableStoreFactory[(K, BatchID), V] =

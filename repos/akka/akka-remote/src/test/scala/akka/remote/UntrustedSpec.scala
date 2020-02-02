@@ -42,9 +42,8 @@ object UntrustedSpec {
   }
 
   class Child(testActor: ActorRef) extends Actor {
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       testActor ! s"${self.path.name} stopped"
-    }
     def receive = {
       case msg ⇒ testActor forward msg
     }

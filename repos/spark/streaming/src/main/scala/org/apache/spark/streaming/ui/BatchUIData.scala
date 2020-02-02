@@ -54,11 +54,10 @@ private[ui] case class BatchUIData(
     * Time taken for the all jobs of this batch to finish processing from the time they started
     * processing. Essentially, it is `processingEndTime` - `processingStartTime`.
     */
-  def processingDelay: Option[Long] = {
+  def processingDelay: Option[Long] =
     for (start <- processingStartTime;
          end <- processingEndTime)
       yield end - start
-  }
 
   /**
     * Time taken for all the jobs of this batch to finish processing from the time they
@@ -135,7 +134,7 @@ private[ui] case class OutputOperationUIData(
 
 private[ui] object OutputOperationUIData {
 
-  def apply(outputOperationInfo: OutputOperationInfo): OutputOperationUIData = {
+  def apply(outputOperationInfo: OutputOperationInfo): OutputOperationUIData =
     OutputOperationUIData(
       outputOperationInfo.id,
       outputOperationInfo.name,
@@ -144,5 +143,4 @@ private[ui] object OutputOperationUIData {
       outputOperationInfo.endTime,
       outputOperationInfo.failureReason
     )
-  }
 }

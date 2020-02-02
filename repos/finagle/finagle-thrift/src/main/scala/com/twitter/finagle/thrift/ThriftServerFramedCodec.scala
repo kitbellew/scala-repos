@@ -97,7 +97,7 @@ private[finagle] case class ThriftServerPreparer(
 
 private[thrift] class ThriftServerChannelBufferEncoder
     extends SimpleChannelDownstreamHandler {
-  override def writeRequested(ctx: ChannelHandlerContext, e: MessageEvent) = {
+  override def writeRequested(ctx: ChannelHandlerContext, e: MessageEvent) =
     e.getMessage match {
       // An empty array indicates a oneway reply.
       case array: Array[Byte] if (!array.isEmpty) =>
@@ -107,7 +107,6 @@ private[thrift] class ThriftServerChannelBufferEncoder
         e.getFuture.setSuccess()
       case _ => throw new IllegalArgumentException("no byte array")
     }
-  }
 }
 
 private[finagle] object UncaughtAppExceptionFilter {

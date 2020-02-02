@@ -76,12 +76,11 @@ private[ml] object TreeTests extends SparkFunSuite {
   def setMetadata(
       data: JavaRDD[LabeledPoint],
       categoricalFeatures: java.util.Map[java.lang.Integer, java.lang.Integer],
-      numClasses: Int): DataFrame = {
+      numClasses: Int): DataFrame =
     setMetadata(
       data.rdd,
       categoricalFeatures.asInstanceOf[java.util.Map[Int, Int]].asScala.toMap,
       numClasses)
-  }
 
   /**
     * Check if the two trees are exactly the same.
@@ -89,7 +88,7 @@ private[ml] object TreeTests extends SparkFunSuite {
     *       make mistakes such as creating loops of Nodes.
     * If the trees are not equal, this prints the two trees and throws an exception.
     */
-  def checkEqual(a: DecisionTreeModel, b: DecisionTreeModel): Unit = {
+  def checkEqual(a: DecisionTreeModel, b: DecisionTreeModel): Unit =
     try {
       checkEqual(a.rootNode, b.rootNode)
     } catch {
@@ -100,7 +99,6 @@ private[ml] object TreeTests extends SparkFunSuite {
             "TREE B:\n" + b.toDebugString + "\n",
           ex)
     }
-  }
 
   /**
     * Return true iff the two nodes and their descendants are exactly the same.
@@ -125,7 +123,7 @@ private[ml] object TreeTests extends SparkFunSuite {
     * Check if the two models are exactly the same.
     * If the models are not equal, this throws an exception.
     */
-  def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit = {
+  def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit =
     try {
       a.trees.zip(b.trees).foreach {
         case (treeA, treeB) =>
@@ -137,7 +135,6 @@ private[ml] object TreeTests extends SparkFunSuite {
         throw new AssertionError(
           "checkEqual failed since the two tree ensembles were not identical")
     }
-  }
 
   /**
     * Helper method for constructing a tree for testing.

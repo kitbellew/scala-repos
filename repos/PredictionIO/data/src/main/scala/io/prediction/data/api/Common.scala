@@ -41,7 +41,7 @@ object Common {
     case MissingQueryParamRejection(msg) :: _ =>
       complete(
         StatusCodes.NotFound,
-        Map("message" -> s"missing required query parameter ${msg}."))
+        Map("message" -> s"missing required query parameter $msg."))
     case AuthenticationFailedRejection(cause, challengeHeaders) :: _ => {
       val msg = cause match {
         case AuthenticationFailedRejection.CredentialsRejected =>

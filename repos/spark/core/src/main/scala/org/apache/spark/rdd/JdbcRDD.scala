@@ -67,13 +67,11 @@ class JdbcRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     // bounds are inclusive, hence the + 1 here and - 1 on end
     val length = BigInt(1) + upperBound - lowerBound
-    (0 until numPartitions)
-      .map(i => {
-        val start = lowerBound + ((i * length) / numPartitions)
-        val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
-        new JdbcPartition(i, start.toLong, end.toLong)
-      })
-      .toArray
+    (0 until numPartitions).map { i =>
+      val start = lowerBound + ((i * length) / numPartitions)
+      val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
+      new JdbcPartition(i, start.toLong, end.toLong)
+    }.toArray
   }
 
   override def compute(thePart: Partition, context: TaskContext): Iterator[T] =
@@ -99,14 +97,13 @@ class JdbcRDD[T: ClassTag](
       stmt.setLong(2, part.upper)
       val rs = stmt.executeQuery()
 
-      override def getNext(): T = {
+      override def getNext(): T =
         if (rs.next()) {
           mapRow(rs)
         } else {
           finished = true
           null.asInstanceOf[T]
         }
-      }
 
       override def close() {
         try {
@@ -136,10 +133,9 @@ class JdbcRDD[T: ClassTag](
 }
 
 object JdbcRDD {
-  def resultSetToObjectArray(rs: ResultSet): Array[Object] = {
+  def resultSetToObjectArray(rs: ResultSet): Array[Object] =
     Array.tabulate[Object](rs.getMetaData.getColumnCount)(i =>
       rs.getObject(i + 1))
-  }
 
   trait ConnectionFactory extends Serializable {
     @throws[Exception]
@@ -211,9 +207,8 @@ object JdbcRDD {
       numPartitions: Int): JavaRDD[Array[Object]] = {
 
     val mapRow = new JFunction[ResultSet, Array[Object]] {
-      override def call(resultSet: ResultSet): Array[Object] = {
+      override def call(resultSet: ResultSet): Array[Object] =
         resultSetToObjectArray(resultSet)
-      }
     }
 
     create(

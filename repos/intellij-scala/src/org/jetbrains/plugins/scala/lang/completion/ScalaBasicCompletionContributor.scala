@@ -191,10 +191,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                       val isExcluded: Boolean =
                         ApplicationManager.getApplication.runReadAction(
                           new Computable[Boolean] {
-                            def compute: Boolean = {
+                            def compute: Boolean =
                               JavaCompletionUtil
                                 .isInExcludedPackage(clazz, false)
-                            }
                           })
 
                       if (!isExcluded && !classNameCompletion && (!lookingForAnnotations || clazz.isAnnotationType)) {
@@ -390,7 +389,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
   @Nullable
   private def getQualifierCastType(
       ref: ScReferenceElement,
-      parameters: CompletionParameters): ScType = {
+      parameters: CompletionParameters): ScType =
     ref match {
       case refExpr: ScReferenceExpression =>
         (for (qualifier <- refExpr.qualifier) yield {
@@ -400,7 +399,6 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
         }).orNull
       case _ => null
     }
-  }
 
   private def createReferenceWithQualifierType(
       qualType: ScType,

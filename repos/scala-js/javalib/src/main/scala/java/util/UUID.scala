@@ -56,7 +56,7 @@ final class UUID private (
   def version(): Int =
     (i2 & 0xf000) >> 12
 
-  def variant(): Int = {
+  def variant(): Int =
     if ((i3 & 0x80000000) == 0) {
       // MSB0 not set: NCS backwards compatibility variant
       0
@@ -67,7 +67,6 @@ final class UUID private (
       // MSB1 not set: RFC 4122 variant
       2
     }
-  }
 
   def timestamp(): Long = {
     if (version() != TimeBased)
@@ -112,7 +111,7 @@ final class UUID private (
       false
   }
 
-  def compareTo(that: UUID): Int = {
+  def compareTo(that: UUID): Int =
     if (this.i1 != that.i1) {
       if (this.i1 > that.i1) 1 else -1
     } else if (this.i2 != that.i2) {
@@ -124,7 +123,6 @@ final class UUID private (
     } else {
       0
     }
-  }
 }
 
 object UUID {

@@ -24,13 +24,13 @@ case class ApiPullRequestReviewComment(
     extends FieldSerializable {
   // "url": "https://api.github.com/repos/baxterthehacker/public-repo/pulls/comments/29724692",
   val url = ApiPath(
-    s"/api/v3/repos/${repositoryName.fullName}/pulls/comments/${id}")
+    s"/api/v3/repos/${repositoryName.fullName}/pulls/comments/$id")
   // "html_url": "https://github.com/baxterthehacker/public-repo/pull/1#discussion_r29724692",
   val html_url = ApiPath(
-    s"/${repositoryName.fullName}/pull/${issueId}#discussion_r${id}")
+    s"/${repositoryName.fullName}/pull/$issueId#discussion_r$id")
   // "pull_request_url": "https://api.github.com/repos/baxterthehacker/public-repo/pulls/1",
   val pull_request_url = ApiPath(
-    s"/api/v3/repos/${repositoryName.fullName}/pulls/${issueId}")
+    s"/api/v3/repos/${repositoryName.fullName}/pulls/$issueId")
 
   /*
     "_links": {

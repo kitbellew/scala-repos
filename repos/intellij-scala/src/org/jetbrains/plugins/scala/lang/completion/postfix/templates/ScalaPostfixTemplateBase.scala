@@ -15,10 +15,9 @@ abstract class ScalaPostfixTemplateBase(val name: String, val example: String)
   override def isApplicable(
       context: PsiElement,
       copyDocument: Document,
-      newOffset: Int): Boolean = {
+      newOffset: Int): Boolean =
     ScalaPsiUtil.getParentOfType(context, classOf[ScExpression]) match {
       case expr: ScExpression => expr.getTextRange.getEndOffset == newOffset
       case _                  => false
     }
-  }
 }

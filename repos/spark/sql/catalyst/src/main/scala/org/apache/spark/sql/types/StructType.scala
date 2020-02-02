@@ -122,9 +122,8 @@ case class StructType(fields: Array[StructField])
     *   .add(StructField("c", StringType, true))
     *}}}
     */
-  def add(field: StructField): StructType = {
+  def add(field: StructField): StructType =
     StructType(fields :+ field)
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new nullable field with no metadata.
@@ -134,14 +133,13 @@ case class StructType(fields: Array[StructField])
     *   .add("b", LongType)
     *   .add("c", StringType)
     */
-  def add(name: String, dataType: DataType): StructType = {
+  def add(name: String, dataType: DataType): StructType =
     StructType(
       fields :+ new StructField(
         name,
         dataType,
         nullable = true,
         Metadata.empty))
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new field with no metadata.
@@ -151,10 +149,9 @@ case class StructType(fields: Array[StructField])
     *   .add("b", LongType, false)
     *   .add("c", StringType, true)
     */
-  def add(name: String, dataType: DataType, nullable: Boolean): StructType = {
+  def add(name: String, dataType: DataType, nullable: Boolean): StructType =
     StructType(
       fields :+ new StructField(name, dataType, nullable, Metadata.empty))
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new field and specifying metadata.
@@ -169,9 +166,8 @@ case class StructType(fields: Array[StructField])
       name: String,
       dataType: DataType,
       nullable: Boolean,
-      metadata: Metadata): StructType = {
+      metadata: Metadata): StructType =
     StructType(fields :+ new StructField(name, dataType, nullable, metadata))
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new nullable field with no metadata where the
@@ -184,9 +180,8 @@ case class StructType(fields: Array[StructField])
     *   .add("c", "string")
     * }}}
     */
-  def add(name: String, dataType: String): StructType = {
+  def add(name: String, dataType: String): StructType =
     add(name, DataTypeParser.parse(dataType), nullable = true, Metadata.empty)
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new field with no metadata where the
@@ -199,9 +194,8 @@ case class StructType(fields: Array[StructField])
     *   .add("c", "string", true)
     * }}}
     */
-  def add(name: String, dataType: String, nullable: Boolean): StructType = {
+  def add(name: String, dataType: String, nullable: Boolean): StructType =
     add(name, DataTypeParser.parse(dataType), nullable, Metadata.empty)
-  }
 
   /**
     * Creates a new [[StructType]] by adding a new field and specifying metadata where the
@@ -217,19 +211,17 @@ case class StructType(fields: Array[StructField])
       name: String,
       dataType: String,
       nullable: Boolean,
-      metadata: Metadata): StructType = {
+      metadata: Metadata): StructType =
     add(name, DataTypeParser.parse(dataType), nullable, metadata)
-  }
 
   /**
     * Extracts a [[StructField]] of the given name. If the [[StructType]] object does not
     * have a name matching the given name, `null` will be returned.
     */
-  def apply(name: String): StructField = {
+  def apply(name: String): StructField =
     nameToField.getOrElse(
       name,
       throw new IllegalArgumentException(s"""Field "$name" does not exist."""))
-  }
 
   /**
     * Returns a [[StructType]] containing [[StructField]]s of the given names, preserving the
@@ -248,15 +240,13 @@ case class StructType(fields: Array[StructField])
   /**
     * Returns index of a given field
     */
-  def fieldIndex(name: String): Int = {
+  def fieldIndex(name: String): Int =
     nameToIndex.getOrElse(
       name,
       throw new IllegalArgumentException(s"""Field "$name" does not exist."""))
-  }
 
-  private[sql] def getFieldIndex(name: String): Option[Int] = {
+  private[sql] def getFieldIndex(name: String): Option[Int] =
     nameToIndex.get(name)
-  }
 
   protected[sql] def toAttributes: Seq[AttributeReference] =
     map(f => AttributeReference(f.name, f.dataType, f.nullable, f.metadata)())
@@ -276,9 +266,8 @@ case class StructType(fields: Array[StructField])
 
   private[sql] def buildFormattedString(
       prefix: String,
-      builder: StringBuilder): Unit = {
+      builder: StringBuilder): Unit =
     fields.foreach(field => field.buildFormattedString(prefix, builder))
-  }
 
   override private[sql] def jsonValue =
     ("type" -> typeName) ~
@@ -348,9 +337,8 @@ case class StructType(fields: Array[StructField])
   }
 
   override private[spark] def existsRecursively(
-      f: (DataType) => Boolean): Boolean = {
+      f: (DataType) => Boolean): Boolean =
     f(this) || fields.exists(field => field.dataType.existsRecursively(f))
-  }
 
   @transient
   private[sql] lazy val interpretedOrdering =
@@ -363,19 +351,17 @@ object StructType extends AbstractDataType {
 
   override private[sql] def defaultConcreteType: DataType = new StructType
 
-  override private[sql] def acceptsType(other: DataType): Boolean = {
+  override private[sql] def acceptsType(other: DataType): Boolean =
     other.isInstanceOf[StructType]
-  }
 
   override private[sql] def simpleString: String = "struct"
 
-  private[sql] def fromString(raw: String): StructType = {
+  private[sql] def fromString(raw: String): StructType =
     Try(DataType.fromJson(raw))
       .getOrElse(LegacyTypeStringParser.parse(raw)) match {
       case t: StructType => t
       case _             => throw new RuntimeException(s"Failed parsing StructType: $raw")
     }
-  }
 
   def apply(fields: Seq[StructField]): StructType = StructType(fields.toArray)
 

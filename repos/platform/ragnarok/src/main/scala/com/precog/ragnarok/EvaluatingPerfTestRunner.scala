@@ -133,12 +133,11 @@ trait EvaluatingPerfTestRunner[M[+_], T]
           "Error parsing query:\n\n%s\n\n%s" format (query, e.getMessage()))
     }
 
-  private def countStream[A](str: StreamT[M, A]): M[Int] = {
+  private def countStream[A](str: StreamT[M, A]): M[Int] =
     for {
       optTail <- str.uncons
       res = optTail map { _._2 } map { tail => countStream(tail) map (1 +) }
 
       back <- res getOrElse M.point(0)
     } yield back
-  }
 }

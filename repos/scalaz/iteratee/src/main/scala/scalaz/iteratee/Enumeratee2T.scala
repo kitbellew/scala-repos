@@ -28,7 +28,7 @@ trait Enumeratee2TFunctions {
         // in the pathological case, this degrades to the cartesian product, which will blow up
         // your memory. Sorry!
         def advance(j: J, buf: List[K], s: StepT[Either3[J, (J, K), K], F, A])
-            : IterateeT[Either3[J, (J, K), K], F, A] = {
+            : IterateeT[Either3[J, (J, K), K], F, A] =
           s mapCont { contf =>
             buf match {
               case k :: Nil if order(j, k) == EQ =>
@@ -38,11 +38,10 @@ trait Enumeratee2TFunctions {
               case _ => contf(elInput(Left3(j)))
             }
           }
-        }
 
         def step(
             s: StepM[A],
-            rbuf: List[K]): IterateeT[J, IterateeM, StepM[A]] = {
+            rbuf: List[K]): IterateeT[J, IterateeM, StepM[A]] =
           s.fold[IterateeT[J, IterateeM, StepM[A]]](
             cont = contf => {
               for {
@@ -86,7 +85,6 @@ trait Enumeratee2TFunctions {
                 sdone(a, if (r.isEof) eofInput else emptyInput),
                 if (r.isEof) eofInput else emptyInput)
           )
-        }
 
         step(_, Nil)
       }
@@ -190,11 +188,10 @@ trait Enumeratee2TFunctions {
     }
 
   private def endStep[J, K, EE, F[_]: Monad, A](
-      sa: StepT[Either3[J, (J, K), K], F, StepT[EE, F, A]]) = {
+      sa: StepT[Either3[J, (J, K), K], F, StepT[EE, F, A]]) =
     IterateeT
       .IterateeTMonadTransT[J, λ[(β[_], α) => IterateeT[K, β, α]]]
       .liftM(sa.pointI.run)
-  }
 }
 
 object Enumeratee2T extends Enumeratee2TFunctions

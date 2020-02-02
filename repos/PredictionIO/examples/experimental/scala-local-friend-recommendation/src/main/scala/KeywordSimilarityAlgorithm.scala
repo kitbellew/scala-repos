@@ -51,7 +51,7 @@ class KeywordSimilarityAlgorithm(val ap: FriendRecommendationAlgoParams)
 
   override def predict(
       model: KeywordSimilarityModel,
-      query: FriendRecommendationQuery): FriendRecommendationPrediction = {
+      query: FriendRecommendationQuery): FriendRecommendationPrediction =
     // Currently use empty map for unseen users or items
     if (model.userIdMap.contains(query.user) &&
         model.itemIdMap.contains(query.item)) {
@@ -67,5 +67,4 @@ class KeywordSimilarityAlgorithm(val ap: FriendRecommendationAlgoParams)
         >= model.keywordSimThreshold)
       new FriendRecommendationPrediction(confidence, acceptance)
     }
-  }
 }

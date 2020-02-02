@@ -91,7 +91,7 @@ private[memory] trait MemoryManagerSuite
     * records the number of bytes this is called with. This variable is expected to be cleared
     * by the test code later through [[assertEvictBlocksToFreeSpaceCalled]].
     */
-  private def evictBlocksToFreeSpaceAnswer(mm: MemoryManager): Answer[Long] = {
+  private def evictBlocksToFreeSpaceAnswer(mm: MemoryManager): Answer[Long] =
     new Answer[Long] {
       override def answer(invocation: InvocationOnMock): Long = {
         val args = invocation.getArguments
@@ -114,7 +114,6 @@ private[memory] trait MemoryManagerSuite
         }
       }
     }
-  }
 
   /**
     * Assert that [[MemoryStore.evictBlocksToFreeSpace]] is called with the given parameters.

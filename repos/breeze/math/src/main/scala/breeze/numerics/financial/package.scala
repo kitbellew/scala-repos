@@ -82,7 +82,7 @@ package object financial {
       numPeriods: Int,
       presentValue: Double,
       futureValue: Double = 0.0,
-      when: PaymentTime = End): Double = {
+      when: PaymentTime = End): Double =
     if (rate == 0) {
       -1 * (futureValue + presentValue) / numPeriods
     } else {
@@ -91,7 +91,6 @@ package object financial {
         numPeriods) - 1.0)
       -1 * (futureValue + presentValue * math.pow(1.0 + rate, numPeriods)) / denominator
     }
-  }
 
   def principalInterest(
       rate: Double,
@@ -110,7 +109,7 @@ package object financial {
     val principalRemaining = DenseVector.zeros[Double](numPeriods)
     var principal = presentValue
     var interest = presentValue * rate
-    cfor(0)(i => i < numPeriods, i => i + 1)(i => {
+    cfor(0)(i => i < numPeriods, i => i + 1) { i =>
       val ip = -1 * math.max(interest, 0)
       interest += ip
       principal += (pmt - ip)
@@ -118,7 +117,7 @@ package object financial {
       interestPayment(i) = ip
       principalPayment(i) = pmt - ip
       interest += (principal + interest) * rate
-    })
+    }
     (principalPayment, interestPayment, principalRemaining)
   }
 

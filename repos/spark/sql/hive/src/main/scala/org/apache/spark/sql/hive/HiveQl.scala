@@ -208,7 +208,7 @@ private[hive] class HiveQl(conf: ParserConf)
   }
 
   /** Creates LogicalPlan for a given SQL string. */
-  override def parsePlan(sql: String): LogicalPlan = {
+  override def parsePlan(sql: String): LogicalPlan =
     safeParse(sql, ParseDriver.parsePlan(sql, conf)) { ast =>
       if (nativeCommands.contains(ast.text)) {
         HiveNativeCommand(sql)
@@ -219,7 +219,6 @@ private[hive] class HiveQl(conf: ParserConf)
         }
       }
     }
-  }
 
   protected override def isNoExplainCommand(command: String): Boolean =
     noExplainCommands.contains(command)
@@ -770,7 +769,7 @@ private[hive] class HiveQl(conf: ParserConf)
   // ql/src/java/org/apache/hadoop/hive/ql/parse/BaseSemanticAnalyzer.java
   protected def nodeToColumns(
       node: ASTNode,
-      lowerCase: Boolean): Seq[CatalogColumn] = {
+      lowerCase: Boolean): Seq[CatalogColumn] =
     node.children.map(_.children).collect {
       case Token(rawColName, Nil) :: colTypeNode :: comment =>
         val colName = if (!lowerCase) rawColName else rawColName.toLowerCase
@@ -780,7 +779,6 @@ private[hive] class HiveQl(conf: ParserConf)
           nullable = true,
           comment.headOption.map(n => unescapeSQLString(n.text)))
     }
-  }
 
   // This is based on the following methods in
   // ql/src/java/org/apache/hadoop/hive/ql/parse/BaseSemanticAnalyzer.java:

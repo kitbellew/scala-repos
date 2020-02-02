@@ -7,7 +7,7 @@ object Test {
 
   def main(args: Array[String]) {
     def checkFinal(clazz: Class[_]) =
-      println(s"${clazz} isFinal = ${isFinal(clazz.getModifiers())}")
+      println(s"$clazz isFinal = ${isFinal(clazz.getModifiers())}")
 
     checkFinal(InnerObject.getClass)
     checkFinal(classOf[InnerCase])

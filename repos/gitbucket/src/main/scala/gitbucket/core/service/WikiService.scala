@@ -69,7 +69,7 @@ trait WikiService {
       loginAccount: Account,
       owner: String,
       repository: String): Unit =
-    LockUtil.lock(s"${owner}/${repository}/wiki") {
+    LockUtil.lock(s"$owner/$repository/wiki") {
       defining(Directory.getWikiRepositoryDir(owner, repository)) { dir =>
         if (!dir.exists) {
           JGitUtil.initRepository(dir)
@@ -78,7 +78,7 @@ trait WikiService {
             repository,
             "Home",
             "Home",
-            s"Welcome to the ${repository} wiki!!",
+            s"Welcome to the $repository wiki!!",
             loginAccount,
             "Initial Commit",
             None)
@@ -92,7 +92,7 @@ trait WikiService {
   def getWikiPage(
       owner: String,
       repository: String,
-      pageName: String): Option[WikiPageInfo] = {
+      pageName: String): Option[WikiPageInfo] =
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
       if (!JGitUtil.isEmpty(git)) {
         JGitUtil
@@ -109,7 +109,6 @@ trait WikiService {
           }
       } else None
     }
-  }
 
   /**
     * Returns the content of the specified file.
@@ -134,7 +133,7 @@ trait WikiService {
   /**
     * Returns the list of wiki page names.
     */
-  def getWikiPageList(owner: String, repository: String): List[String] = {
+  def getWikiPageList(owner: String, repository: String): List[String] =
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
       JGitUtil
         .getFileList(git, "master", ".")
@@ -143,7 +142,6 @@ trait WikiService {
         .map(_.name.stripSuffix(".md"))
         .sortBy(x => x)
     }
-  }
 
   /**
     * Reverts specified changes.
@@ -159,7 +157,7 @@ trait WikiService {
     case class RevertInfo(operation: String, filePath: String, source: String)
 
     try {
-      LockUtil.lock(s"${owner}/${repository}/wiki") {
+      LockUtil.lock(s"$owner/$repository/wiki") {
         using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) {
           git =>
             val reader = git.getRepository.newObjectReader
@@ -266,8 +264,8 @@ trait WikiService {
                 committer.fullName,
                 committer.mailAddress,
                 pageName match {
-                  case Some(x) => s"Revert ${from} ... ${to} on ${x}"
-                  case None    => s"Revert ${from} ... ${to}"
+                  case Some(x) => s"Revert $from ... $to on $x"
+                  case None    => s"Revert $from ... $to"
                 }
               )
             }
@@ -293,8 +291,8 @@ trait WikiService {
       content: String,
       committer: Account,
       message: String,
-      currentId: Option[String]): Option[String] = {
-    LockUtil.lock(s"${owner}/${repository}/wiki") {
+      currentId: Option[String]): Option[String] =
+    LockUtil.lock(s"$owner/$repository/wiki") {
       using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) {
         git =>
           val builder = DirCache.newInCore.builder()
@@ -341,11 +339,11 @@ trait WikiService {
               committer.mailAddress,
               if (message.trim.length == 0) {
                 if (removed) {
-                  s"Rename ${currentPageName} to ${newPageName}"
+                  s"Rename $currentPageName to $newPageName"
                 } else if (created) {
-                  s"Created ${newPageName}"
+                  s"Created $newPageName"
                 } else {
-                  s"Updated ${newPageName}"
+                  s"Updated $newPageName"
                 }
               } else {
                 message
@@ -356,7 +354,6 @@ trait WikiService {
           } else None
       }
     }
-  }
 
   /**
     * Delete the wiki page.
@@ -367,8 +364,8 @@ trait WikiService {
       pageName: String,
       committer: String,
       mailAddress: String,
-      message: String): Unit = {
-    LockUtil.lock(s"${owner}/${repository}/wiki") {
+      message: String): Unit =
+    LockUtil.lock(s"$owner/$repository/wiki") {
       using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) {
         git =>
           val builder = DirCache.newInCore.builder()
@@ -401,6 +398,5 @@ trait WikiService {
           }
       }
     }
-  }
 
 }

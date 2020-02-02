@@ -204,7 +204,7 @@ class LoadServiceCallable extends Callable[Seq[Any]] {
 }
 
 class MetaInfCodedClassloader(parent: ClassLoader) extends ClassLoader(parent) {
-  override def loadClass(name: String): Class[_] = {
+  override def loadClass(name: String): Class[_] =
     if (name.startsWith("com.twitter.finagle")) {
       try {
         val path = name.replaceAll("\\.", "/") + ".class"
@@ -219,7 +219,6 @@ class MetaInfCodedClassloader(parent: ClassLoader) extends ClassLoader(parent) {
     } else {
       parent.loadClass(name)
     }
-  }
 
   override def getResources(p1: String): util.Enumeration[URL] = {
     // Totally contrived example classloader that stores "META-INF" as "HIDDEN-INF"

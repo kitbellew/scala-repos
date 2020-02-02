@@ -37,31 +37,28 @@ import org.apache.spark.util.Utils
 private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   private val master = parent.masterEndpointRef
 
-  def getMasterState: MasterStateResponse = {
+  def getMasterState: MasterStateResponse =
     master.askWithRetry[MasterStateResponse](RequestMasterState)
-  }
 
-  override def renderJson(request: HttpServletRequest): JValue = {
+  override def renderJson(request: HttpServletRequest): JValue =
     JsonProtocol.writeMasterState(getMasterState)
-  }
 
-  def handleAppKillRequest(request: HttpServletRequest): Unit = {
-    handleKillRequest(request, id => {
-      parent.master.idToApp.get(id).foreach { app =>
-        parent.master.removeApplication(app, ApplicationState.KILLED)
-      }
-    })
-  }
+  def handleAppKillRequest(request: HttpServletRequest): Unit =
+    handleKillRequest(
+      request,
+      id =>
+        parent.master.idToApp.get(id).foreach { app =>
+          parent.master.removeApplication(app, ApplicationState.KILLED)
+        })
 
-  def handleDriverKillRequest(request: HttpServletRequest): Unit = {
-    handleKillRequest(request, id => {
-      master.ask[KillDriverResponse](RequestKillDriver(id))
-    })
-  }
+  def handleDriverKillRequest(request: HttpServletRequest): Unit =
+    handleKillRequest(
+      request,
+      id => master.ask[KillDriverResponse](RequestKillDriver(id)))
 
   private def handleKillRequest(
       request: HttpServletRequest,
-      action: String => Unit): Unit = {
+      action: String => Unit): Unit =
     if (parent.killEnabled &&
         parent.master.securityMgr.checkModifyPermissions(request.getRemoteUser)) {
       val killFlag =
@@ -73,7 +70,6 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
 
       Thread.sleep(100)
     }
-  }
 
   /** Index view listing applications and executors */
   def render(request: HttpServletRequest): Seq[Node] = {
@@ -201,7 +197,7 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
     UIUtils.basicSparkPage(content, "Spark Master at " + state.uri)
   }
 
-  private def workerRow(worker: WorkerInfo): Seq[Node] = {
+  private def workerRow(worker: WorkerInfo): Seq[Node] =
     <tr>
       <td>
         <a href={worker.webUiAddress}>{worker.id}</a>
@@ -214,7 +210,6 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
         ({Utils.megabytesToString(worker.memoryUsed)} Used)
       </td>
     </tr>
-  }
 
   private def appRow(app: ApplicationInfo): Seq[Node] = {
     val killLink =

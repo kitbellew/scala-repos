@@ -3295,11 +3295,9 @@ trait EvaluatorSpecs[M[+_]]
       val input1 = dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line)
 
       testEval(input0) { result0 =>
-        {
-          testEval(input1) { result1 =>
-            result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
-          }
+        testEval(input1) { result1 =>
+          result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
+            .map({ case (ids, v)      => (ids.toSeq, v) })
         }
       }
     }
@@ -3322,11 +3320,9 @@ trait EvaluatorSpecs[M[+_]]
         Const(CLong(5))(line))(line)
 
       testEval(input0) { result0 =>
-        {
-          testEval(input1) { result1 =>
-            result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
-          }
+        testEval(input1) { result1 =>
+          result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
+            .map({ case (ids, v)      => (ids.toSeq, v) })
         }
       }
     }

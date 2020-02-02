@@ -61,9 +61,8 @@ object MacroProperties extends Properties("TypeDescriptor.roundTrip") {
     converter(new TupleEntry(fields, setter(t))) == t
   }
 
-  def propertyFor[T: TypeTag: Arbitrary: TypeDescriptor]: Unit = {
+  def propertyFor[T: TypeTag: Arbitrary: TypeDescriptor]: Unit =
     property(typeTag[T].tpe.toString) = roundTrip[T]
-  }
 
   propertyFor[Int]
   propertyFor[Option[Int]]

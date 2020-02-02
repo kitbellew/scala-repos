@@ -143,11 +143,10 @@ sealed abstract class SafeLong
   final def pow(k: Int): SafeLong = {
     if (k < 0) throw new IllegalArgumentException(s"negative exponent: $k")
 
-    @tailrec def loop(total: SafeLong, base: SafeLong, exp: Int): SafeLong = {
+    @tailrec def loop(total: SafeLong, base: SafeLong, exp: Int): SafeLong =
       if (exp == 0) total
       else if ((exp & 1) == 1) loop(total * base, base * base, exp >> 1)
       else loop(total, base * base, exp >> 1)
-    }
 
     loop(SafeLong.one, this, k)
   }
@@ -159,12 +158,11 @@ sealed abstract class SafeLong
         total: SafeLong,
         base: SafeLong,
         k: Int,
-        mod: SafeLong): SafeLong = {
+        mod: SafeLong): SafeLong =
       if (k == 0) total
       else if ((k & 1) == 1)
         loop((total * base) % mod, (base * base) % mod, k >> 1, mod)
       else loop(total, (base * base) % mod, k >> 1, mod)
-    }
 
     loop(SafeLong.one % mod, this, k, mod)
   }

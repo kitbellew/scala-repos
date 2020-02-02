@@ -13,9 +13,8 @@ object TestAddr {
     override def close(deadline: Time) = Future.Done
   }
 
-  def apply(arg: String): Address = {
+  def apply(arg: String): Address =
     exp.Address(StringFactory(arg))
-  }
 }
 
 class TestResolver extends Resolver {

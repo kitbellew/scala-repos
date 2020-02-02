@@ -266,10 +266,9 @@ private[hive] object SparkSQLCLIDriver extends Logging {
     System.exit(ret)
   }
 
-  def isRemoteMode(state: CliSessionState): Boolean = {
+  def isRemoteMode(state: CliSessionState): Boolean =
     //    sessionState.isRemoteMode
     state.isHiveServerQuery
-  }
 
 }
 

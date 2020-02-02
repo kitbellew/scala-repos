@@ -22,12 +22,11 @@ class ClientIdRequiredFilter[Req, Rep](
   private[this] val filterCounter =
     statsReceiver.counter("no_client_id_specified")
 
-  def apply(req: Req, service: Service[Req, Rep]) = {
+  def apply(req: Req, service: Service[Req, Rep]) =
     ClientId.current match {
       case Some(_) => service(req)
       case None =>
         filterCounter.incr()
         Future.exception(noClientIdSpecifiedEx)
     }
-  }
 }

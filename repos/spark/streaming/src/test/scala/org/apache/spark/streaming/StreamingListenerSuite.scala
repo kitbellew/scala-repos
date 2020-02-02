@@ -65,11 +65,11 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosSubmitted = collector.batchInfosSubmitted
     batchInfosSubmitted should have size 4
 
-    batchInfosSubmitted.asScala.foreach(info => {
+    batchInfosSubmitted.asScala.foreach { info =>
       info.schedulingDelay should be(None)
       info.processingDelay should be(None)
       info.totalDelay should be(None)
-    })
+    }
 
     batchInfosSubmitted.asScala.foreach { info =>
       info.numRecords should be(1L)
@@ -83,12 +83,12 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosStarted = collector.batchInfosStarted
     batchInfosStarted should have size 4
 
-    batchInfosStarted.asScala.foreach(info => {
+    batchInfosStarted.asScala.foreach { info =>
       info.schedulingDelay should not be None
       info.schedulingDelay.get should be >= 0L
       info.processingDelay should be(None)
       info.totalDelay should be(None)
-    })
+    }
 
     batchInfosStarted.asScala.foreach { info =>
       info.numRecords should be(1L)
@@ -104,14 +104,14 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     val batchInfosCompleted = collector.batchInfosCompleted
     batchInfosCompleted should have size 4
 
-    batchInfosCompleted.asScala.foreach(info => {
+    batchInfosCompleted.asScala.foreach { info =>
       info.schedulingDelay should not be None
       info.processingDelay should not be None
       info.totalDelay should not be None
       info.schedulingDelay.get should be >= 0L
       info.processingDelay.get should be >= 0L
       info.totalDelay.get should be >= 0L
-    })
+    }
 
     batchInfosCompleted.asScala.foreach { info =>
       info.numRecords should be(1L)
@@ -294,9 +294,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
   }
 
   /** Check if a sequence of numbers is in increasing order */
-  def isInIncreasingOrder(data: Iterable[Long]): Boolean = {
+  def isInIncreasingOrder(data: Iterable[Long]): Boolean =
     !data.sliding(2).exists { itr => itr.size == 2 && itr.head > itr.tail.head }
-  }
 }
 
 /** Listener that collects information on processed batches */
@@ -352,16 +351,14 @@ class OutputOperationInfoCollector extends StreamingListener {
   val completedOutputOperationIds = new ConcurrentLinkedQueue[Int]()
 
   override def onOutputOperationStarted(
-      outputOperationStarted: StreamingListenerOutputOperationStarted): Unit = {
+      outputOperationStarted: StreamingListenerOutputOperationStarted): Unit =
     startedOutputOperationIds.add(outputOperationStarted.outputOperationInfo.id)
-  }
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      : Unit =
     completedOutputOperationIds.add(
       outputOperationCompleted.outputOperationInfo.id)
-  }
 }
 
 class StreamingListenerSuiteReceiver
@@ -390,13 +387,12 @@ class FailureReasonsCollector extends StreamingListener {
 
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      : Unit =
     outputOperationCompleted.outputOperationInfo.failureReason.foreach { f =>
       failureReasons.synchronized {
         failureReasons(outputOperationCompleted.outputOperationInfo.id) = f
       }
     }
-  }
 }
 
 /**

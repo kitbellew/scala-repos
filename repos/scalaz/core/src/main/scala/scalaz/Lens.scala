@@ -74,11 +74,11 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
 
   /** Modify the portion of the state viewed through the lens and return its new value. */
   def mods(f: B1 => B2): IndexedState[A1, A2, B2] =
-    IndexedState(a => {
+    IndexedState { a =>
       val c = run(a)
       val b = f(c.pos)
       (c put b, b)
-    })
+    }
 
   /** Modify the portion of the state viewed through the lens and return its new value. */
   def %=(f: B1 => B2): IndexedState[A1, A2, B2] =
@@ -88,11 +88,11 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
     * @since 7.0.2
     */
   def modo(f: B1 => B2): IndexedState[A1, A2, B1] =
-    IndexedState(a => {
+    IndexedState { a =>
       val c = run(a)
       val o = c.pos
       (c put f(o), o)
-    })
+    }
 
   /** Modify the portion of the state viewed through the lens and return its old value. alias for `modo`
     * @since 7.0.2
@@ -164,11 +164,11 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
   /** Lenses can be composed */
   def compose[C1, C2](
       that: LensFamily[C1, C2, A1, A2]): LensFamily[C1, C2, B1, B2] =
-    lensFamily(c => {
+    lensFamily { c =>
       val (ac, a) = that.run(c).run
       val (ba, b) = run(a).run
       IndexedStore(ac compose ba, b)
-    })
+    }
 
   /** alias for `compose` */
   def <=<[C1, C2](
@@ -408,11 +408,11 @@ trait LensFunctions extends LensFamilyFunctions {
     lensg(s => b => if (b) s + a else s - a, _.contains(a))
 
   def applyLens[A, B](k: B => A)(implicit e: Equal[A]): Store[A, B] @> B =
-    lens(q => {
+    lens { q =>
       lazy val x = q.pos
       lazy val y = q put x
       Store(b => Store(w => if (e equal (x, w)) b else y, x), y)
-    })
+    }
 
   def predicateLens[A]: Store[A, Boolean] @> (A \/ A) =
     lens(q =>
@@ -474,16 +474,16 @@ abstract class LensInstances extends LensInstances0 {
     new Unzip[λ[α => LensFamily[S, R, α, α]]] {
       def unzip[A, B](a: LensFamily[S, R, (A, B), (A, B)]) =
         (
-          lensFamily(x => {
+          lensFamily { x =>
             val c = a run x
             val (p, q) = c.pos
             IndexedStore(a => c.put((a, q)): R, p)
-          }),
-          lensFamily(x => {
+          },
+          lensFamily { x =>
             val c = a run x
             val (p, q) = c.pos
             IndexedStore(a => c.put((p, a)): R, q)
-          })
+          }
         )
     }
 

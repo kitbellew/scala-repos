@@ -152,7 +152,7 @@ private[io] class UdpConnection(
       }
     }
 
-  private def reportConnectFailure(thunk: ⇒ Unit): Unit = {
+  private def reportConnectFailure(thunk: ⇒ Unit): Unit =
     try {
       thunk
     } catch {
@@ -165,5 +165,4 @@ private[io] class UdpConnection(
         commander ! CommandFailed(connect)
         context.stop(self)
     }
-  }
 }

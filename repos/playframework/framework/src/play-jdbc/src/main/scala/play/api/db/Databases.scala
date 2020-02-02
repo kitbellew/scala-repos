@@ -158,9 +158,8 @@ abstract class DefaultDatabase(
 
   // connection methods
 
-  def getConnection(): Connection = {
+  def getConnection(): Connection =
     getConnection(autocommit = true)
-  }
 
   def getConnection(autocommit: Boolean): Connection = {
     val connection = dataSource.getConnection
@@ -168,9 +167,8 @@ abstract class DefaultDatabase(
     connection
   }
 
-  def withConnection[A](block: Connection => A): A = {
+  def withConnection[A](block: Connection => A): A =
     withConnection(autocommit = true)(block)
-  }
 
   def withConnection[A](autocommit: Boolean)(block: Connection => A): A = {
     val connection = getConnection(autocommit)
@@ -181,7 +179,7 @@ abstract class DefaultDatabase(
     }
   }
 
-  def withTransaction[A](block: Connection => A): A = {
+  def withTransaction[A](block: Connection => A): A =
     withConnection(autocommit = false) { connection =>
       try {
         val r = block(connection)
@@ -196,7 +194,6 @@ abstract class DefaultDatabase(
           throw e
       }
     }
-  }
 
   // shutdown
 
@@ -205,9 +202,8 @@ abstract class DefaultDatabase(
     deregisterDriver()
   }
 
-  def deregisterDriver(): Unit = {
+  def deregisterDriver(): Unit =
     driver.foreach(DriverManager.deregisterDriver)
-  }
 
 }
 
@@ -240,11 +236,10 @@ class PooledDatabase(
     }
   }
 
-  def closeDataSource(dataSource: DataSource): Unit = {
+  def closeDataSource(dataSource: DataSource): Unit =
     dataSource match {
       case ds: LogSqlDataSource => pool.close(ds.getTargetDatasource)
       case _                    => pool.close(dataSource)
     }
-  }
 
 }

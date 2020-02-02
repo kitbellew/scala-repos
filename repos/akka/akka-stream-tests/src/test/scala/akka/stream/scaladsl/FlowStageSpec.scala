@@ -73,10 +73,9 @@ class FlowStageSpec
             override def initial = waitForNext
 
             override def onUpstreamFinish(
-                ctx: Context[Int]): TerminationDirective = {
+                ctx: Context[Int]): TerminationDirective =
               if (current eq waitForNext) ctx.finish()
               else ctx.absorbTermination()
-            }
 
           })
         .runWith(Sink.asPublisher(false))
@@ -106,9 +105,8 @@ class FlowStageSpec
 
               override def initial = inflate
               lazy val inflate: State = new State {
-                override def onPush(elem: Int, ctx: Context[Int]) = {
+                override def onPush(elem: Int, ctx: Context[Int]) =
                   emit(Iterator.fill(elem)(42), ctx, echo)
-                }
               }
               lazy val echo: State = new State {
                 def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
@@ -269,13 +267,12 @@ class FlowStageSpec
         .transform(() ⇒
           new StatefulStage[Int, Int] {
             override def initial = new State {
-              override def onPush(elem: Int, ctx: Context[Int]) = {
+              override def onPush(elem: Int, ctx: Context[Int]) =
                 if (elem == 2) {
                   throw new IllegalArgumentException("two not allowed")
                 } else {
                   emit(Iterator(elem, elem), ctx)
                 }
-              }
             }
           })
         .runWith(TestSink.probe[Int])
@@ -304,9 +301,8 @@ class FlowStageSpec
 
             override def onUpstreamFailure(
                 cause: Throwable,
-                ctx: Context[Int]) = {
+                ctx: Context[Int]) =
               terminationEmit(Iterator(100, 101), ctx)
-            }
           })
         .filter(elem ⇒ elem != 1)
         . // it's undefined if element 1 got through before the error or not
@@ -494,9 +490,8 @@ class FlowStageSpec
               override def onPush(elem: String, ctx: Context[String]) =
                 emit(Iterator(elem + "1", elem + "2"), ctx)
             }
-            override def onUpstreamFinish(ctx: Context[String]) = {
+            override def onUpstreamFinish(ctx: Context[String]) =
               terminationEmit(Iterator("byebye"), ctx)
-            }
           })
         .runWith(TestSink.probe[String])
         .request(1)

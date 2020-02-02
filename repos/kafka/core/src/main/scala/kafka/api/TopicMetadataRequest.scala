@@ -53,17 +53,15 @@ case class TopicMetadataRequest(
     topics.foreach(topic => writeShortString(buffer, topic))
   }
 
-  def sizeInBytes(): Int = {
+  def sizeInBytes(): Int =
     2 + /* version id */
     4 + /* correlation id */
     shortStringLength(clientId) + /* client id */
     4 + /* number of topics */
     topics.foldLeft(0)(_ + shortStringLength(_)) /* topics */
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def handleError(
       e: Throwable,

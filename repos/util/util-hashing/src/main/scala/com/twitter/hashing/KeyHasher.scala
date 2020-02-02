@@ -44,7 +44,7 @@ object KeyHasher {
     * Return one of the key hashing algorithms by name. This is used to configure a memcache
     * client from a config file.
     */
-  def byName(name: String): KeyHasher = {
+  def byName(name: String): KeyHasher =
     name match {
       case "fnv"       => FNV1_32
       case "fnv1"      => FNV1_32
@@ -57,7 +57,6 @@ object KeyHasher {
       case "hsieh"     => HSIEH
       case _           => throw new NoSuchElementException(name)
     }
-  }
 }
 
 /**

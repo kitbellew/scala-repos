@@ -184,20 +184,22 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             ScalaPsiUtil
               .getCompanionModule(clazz) foreach collectAndApplyVariants
           case Some(p: PsiClass) if isAccessible(p) =>
-            p.getFields.foreach(field => {
-              if (field.hasModifierProperty("static") && isAccessible(field)) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(field),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
-                lookup.addLookupStrings(p.getName + "." + field.getName)
-                applyVariant(lookup)
-              }
-            })
+            p.getFields.foreach {
+              field =>
+                if (field
+                      .hasModifierProperty("static") && isAccessible(field)) {
+                  val lookup = LookupElementManager
+                    .getLookupElement(
+                      new ScalaResolveResult(field),
+                      isClassName = true,
+                      isOverloadedForClassName = false,
+                      shouldImport = true,
+                      isInStableCodeReference = false)
+                    .head
+                  lookup.addLookupStrings(p.getName + "." + field.getName)
+                  applyVariant(lookup)
+                }
+            }
           case _ => // do nothing
         }
 

@@ -140,7 +140,6 @@ class ScFunctionDefinitionImpl protected (
     }
   }
 
-  override def importantOrderFunction(): Boolean = {
+  override def importantOrderFunction(): Boolean =
     hasModifierProperty("implicit") && !hasExplicitType
-  }
 }

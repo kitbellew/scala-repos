@@ -88,7 +88,7 @@ private[spark] class UnifiedMemoryManager private[memory] (
           * attempts. Each attempt must be able to evict storage in case another task jumps in
           * and caches a large block between the attempts. This is called once per attempt.
           */
-        def maybeGrowExecutionPool(extraMemoryNeeded: Long): Unit = {
+        def maybeGrowExecutionPool(extraMemoryNeeded: Long): Unit =
           if (extraMemoryNeeded > 0) {
             // There is not enough free memory in the execution pool, so try to reclaim memory from
             // storage. We can reclaim any free memory from the storage pool. If the storage pool
@@ -105,7 +105,6 @@ private[spark] class UnifiedMemoryManager private[memory] (
               onHeapExecutionMemoryPool.incrementPoolSize(spaceReclaimed)
             }
           }
-        }
 
         /**
           * The size the execution pool would have after evicting storage memory.
@@ -120,9 +119,8 @@ private[spark] class UnifiedMemoryManager private[memory] (
           * its fair share of execution memory, mistakenly thinking that other tasks can acquire
           * the portion of storage memory that cannot be evicted.
           */
-        def computeMaxExecutionPoolSize(): Long = {
+        def computeMaxExecutionPoolSize(): Long =
           maxMemory - math.min(storageMemoryUsed, storageRegionSize)
-        }
 
         onHeapExecutionMemoryPool.acquireMemory(
           numBytes,

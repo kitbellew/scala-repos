@@ -107,7 +107,7 @@ class ExtractorResolveProcessor(
     val candidates: Set[ScalaResolveResult] = super.candidatesS
     expected match {
       case Some(tp) =>
-        def isApplicable(r: ScalaResolveResult): Boolean = {
+        def isApplicable(r: ScalaResolveResult): Boolean =
           r.element match {
             case fun: ScFunction =>
               val clauses = fun.paramClauses.clauses
@@ -123,7 +123,6 @@ class ExtractorResolveProcessor(
               false
             case _ => true
           }
-        }
         val filtered = candidates.filter(t => isApplicable(t))
         if (filtered.size == 0) candidates
         else if (filtered.size == 1) filtered

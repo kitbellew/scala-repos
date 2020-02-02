@@ -32,10 +32,9 @@ object ArrayEquality extends SimplificationType {
       case _ => None
     }
 
-  private def arraysOrSeqAndArray(left: ScExpression, right: ScExpression) = {
+  private def arraysOrSeqAndArray(left: ScExpression, right: ScExpression) =
     isArray(left) && (isArray(right) || isSeq(right)) ||
-    isArray(right) && isSeq(left)
-  }
+      isArray(right) && isSeq(left)
 }
 
 object IteratorsEquality extends SimplificationType {

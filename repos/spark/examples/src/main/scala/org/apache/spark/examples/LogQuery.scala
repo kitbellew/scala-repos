@@ -60,7 +60,7 @@ object LogQuery {
       override def toString: String = "bytes=%s\tn=%s".format(numBytes, count)
     }
 
-    def extractKey(line: String): (String, String, String) = {
+    def extractKey(line: String): (String, String, String) =
       apacheLogRegex.findFirstIn(line) match {
         case Some(
             apacheLogRegex(
@@ -77,9 +77,8 @@ object LogQuery {
           else (null, null, null)
         case _ => (null, null, null)
       }
-    }
 
-    def extractStats(line: String): Stats = {
+    def extractStats(line: String): Stats =
       apacheLogRegex.findFirstIn(line) match {
         case Some(
             apacheLogRegex(
@@ -95,7 +94,6 @@ object LogQuery {
           new Stats(1, bytes.toInt)
         case _ => new Stats(1, 0)
       }
-    }
 
     dataSet
       .map(line => (extractKey(line), extractStats(line)))

@@ -75,18 +75,16 @@ object ClusterShardingCustomShardAllocationSpec {
         shardId: ShardRegion.ShardId,
         currentShardAllocations: Map[
           ActorRef,
-          immutable.IndexedSeq[ShardRegion.ShardId]]): Future[ActorRef] = {
+          immutable.IndexedSeq[ShardRegion.ShardId]]): Future[ActorRef] =
       (ref ? AllocateReq).mapTo[ActorRef]
-    }
 
     override def rebalance(
         currentShardAllocations: Map[
           ActorRef,
           immutable.IndexedSeq[ShardRegion.ShardId]],
         rebalanceInProgress: Set[ShardRegion.ShardId])
-        : Future[Set[ShardRegion.ShardId]] = {
+        : Future[Set[ShardRegion.ShardId]] =
       (ref ? RebalanceReq).mapTo[Set[String]]
-    }
   }
 
 }
@@ -174,7 +172,7 @@ abstract class ClusterShardingCustomShardAllocationSpec(
     enterBarrier(from.name + "-joined")
   }
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     ClusterSharding(system).start(
       typeName = "Entity",
       entityProps = Props[Entity],
@@ -184,7 +182,6 @@ abstract class ClusterShardingCustomShardAllocationSpec(
       allocationStrategy = TestAllocationStrategy(allocator),
       handOffStopMessage = PoisonPill
     )
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

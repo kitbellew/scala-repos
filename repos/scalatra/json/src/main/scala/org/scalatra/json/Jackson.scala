@@ -30,10 +30,9 @@ trait JacksonJsonSupport
     }
   }
 
-  protected def readJsonFromBody(bd: String): JValue = {
+  protected def readJsonFromBody(bd: String): JValue =
     if (bd.nonBlank) mapper.readValue(bd, classOf[JValue])
     else JNothing
-  }
 }
 
 trait JacksonJsonValueReaderProperty extends JsonValueReaderProperty[JValue] {

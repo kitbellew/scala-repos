@@ -38,9 +38,8 @@ private[ml] trait DecisionTreeModel {
   def rootNode: Node
 
   /** Number of nodes in tree, including leaf nodes. */
-  def numNodes: Int = {
+  def numNodes: Int =
     1 + rootNode.numDescendants
-  }
 
   /**
     * Depth of the tree.
@@ -51,10 +50,9 @@ private[ml] trait DecisionTreeModel {
   }
 
   /** Summary of the model */
-  override def toString: String = {
+  override def toString: String =
     // Implementing classes should generally override this method to be more descriptive.
     s"DecisionTreeModel of depth $depth with $numNodes nodes"
-  }
 
   /** Full description of model */
   def toDebugString: String = {
@@ -90,10 +88,9 @@ private[ml] trait TreeEnsembleModel {
   private[spark] def javaTreeWeights: Vector = Vectors.dense(treeWeights)
 
   /** Summary of the model */
-  override def toString: String = {
+  override def toString: String =
     // Implementing classes should generally override this method to be more descriptive.
     s"TreeEnsembleModel with $numTrees trees"
-  }
 
   /** Full description of model */
   def toDebugString: String = {
@@ -133,7 +130,7 @@ private[ml] object DecisionTreeModelReadWrite {
       leftCategoriesOrThreshold: Array[Double],
       numCategories: Int) {
 
-    def getSplit: Split = {
+    def getSplit: Split =
       if (numCategories != -1) {
         new CategoricalSplit(
           featureIndex,
@@ -148,7 +145,6 @@ private[ml] object DecisionTreeModelReadWrite {
         )
         new ContinuousSplit(featureIndex, leftCategoriesOrThreshold(0))
       }
-    }
   }
 
   object SplitData {

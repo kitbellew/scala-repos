@@ -70,11 +70,11 @@ trait DateTimeTypedField extends TypedField[Calendar] {
   def setFromJValue(jvalue: JValue) = setFromJString(jvalue) { v =>
     formats.dateFormat
       .parse(v)
-      .map(d => {
+      .map { d =>
         val cal = Calendar.getInstance
         cal.setTime(d)
         cal
-      })
+      }
   }
 }
 

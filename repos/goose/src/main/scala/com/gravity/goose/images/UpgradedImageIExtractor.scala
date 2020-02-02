@@ -234,7 +234,7 @@ class UpgradedImageIExtractor(
 
     images
       .take(30)
-      .foreach((image: Element) => {
+      .foreach { (image: Element) =>
         for {
           locallyStoredImage <- getLocallyStoredImage(
             buildImagePath(image.attr("src")))
@@ -266,14 +266,13 @@ class UpgradedImageIExtractor(
           imageResults += locallyStoredImage -> totalScore
           cnt += 1
         }
-      })
+      }
 
     imageResults
   }
 
-  def getAllImages: ArrayList[Element] = {
+  def getAllImages: ArrayList[Element] =
     null
-  }
 
   /**
     * returns true if we think this is kind of a bannery dimension
@@ -374,7 +373,7 @@ class UpgradedImageIExtractor(
     var cnt: Int = 0
     val MAX_BYTES_SIZE: Int = 15728640
     val goodImages: ArrayList[Element] = new ArrayList[Element]
-    images.foreach(image => {
+    images.foreach { image =>
       try {
         if (cnt > 30) {
           trace("Abort! they have over 30 images near the top node: ")
@@ -403,16 +402,15 @@ class UpgradedImageIExtractor(
         case e: Exception => warn(e, e.toString)
       }
       cnt += 1
-    })
+    }
 
     trace(" Now leaving findImagesThatPassByteSizeTest")
     if (goodImages == null || goodImages.isEmpty) None else Some(goodImages)
 
   }
 
-  def getNode(node: Element): Option[Element] = {
+  def getNode(node: Element): Option[Element] =
     if (node == null) None else Some(node)
-  }
 
   /**
     * checks to see if we were able to find open graph tags on this page
@@ -463,7 +461,7 @@ class UpgradedImageIExtractor(
     *
     * @return
     */
-  private def checkForOpenGraphTag: Option[Image] = {
+  private def checkForOpenGraphTag: Option[Image] =
     try {
       val meta: Elements = article.rawDoc.select("meta[property~=og:image]")
 
@@ -495,7 +493,6 @@ class UpgradedImageIExtractor(
         None
       }
     }
-  }
 
   /**
     * returns the bytes of the image file on disk
@@ -503,10 +500,9 @@ class UpgradedImageIExtractor(
   def getLocallyStoredImage(imageSrc: String): Option[LocallyStoredImage] =
     ImageUtils.storeImageToLocalFile(httpClient, linkhash, imageSrc, config)
 
-  def getCleanDomain = {
+  def getCleanDomain =
     // just grab the very end of the domain
     dotRegex.split(article.domain).takeRight(2).mkString(".")
-  }
 
   /**
     * in here we check for known image contains from sites we've checked out like yahoo, techcrunch, etc... that have
@@ -519,9 +515,9 @@ class UpgradedImageIExtractor(
     val domain = getCleanDomain
     customSiteMapping
       .get(domain)
-      .foreach(classes => {
+      .foreach { classes =>
         subDelimRegex.split(classes).foreach(c => KNOWN_IMG_DOM_NAMES += c)
-      })
+      }
 
     var knownImageElem: Element = null
     trace("Checking for known images from large sites")
@@ -554,12 +550,12 @@ class UpgradedImageIExtractor(
         mainImage.imageExtractionType = "known"
         mainImage.confidenceScore = 90
 
-        getLocallyStoredImage(buildImagePath(mainImage.imageSrc)).foreach(
-          locallyStoredImage => {
+        getLocallyStoredImage(buildImagePath(mainImage.imageSrc)).foreach {
+          locallyStoredImage =>
             mainImage.bytes = locallyStoredImage.bytes
             mainImage.height = locallyStoredImage.height
             mainImage.width = locallyStoredImage.width
-          })
+        }
 
         Some(mainImage)
 

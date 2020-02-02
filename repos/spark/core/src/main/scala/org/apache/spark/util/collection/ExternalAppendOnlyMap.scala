@@ -133,9 +133,8 @@ class ExternalAppendOnlyMap[K, V, C](
   /**
     * Insert the given key and value into the map.
     */
-  def insert(key: K, value: V): Unit = {
+  def insert(key: K, value: V): Unit =
     insertAll(Iterator((key, value)))
-  }
 
   /**
     * Insert the given iterator of keys and values into the map.
@@ -182,9 +181,8 @@ class ExternalAppendOnlyMap[K, V, C](
     *
     * The shuffle memory usage of the first trackMemoryThreshold entries is not tracked.
     */
-  def insertAll(entries: Iterable[Product2[K, V]]): Unit = {
+  def insertAll(entries: Iterable[Product2[K, V]]): Unit =
     insertAll(entries.iterator)
-  }
 
   /**
     * Sort the existing contents of the in-memory map and spill them to a temporary file on disk.
@@ -249,7 +247,7 @@ class ExternalAppendOnlyMap[K, V, C](
         }
         if (file.exists()) {
           if (!file.delete()) {
-            logWarning(s"Error deleting ${file}")
+            logWarning(s"Error deleting $file")
           }
         }
       }
@@ -317,7 +315,7 @@ class ExternalAppendOnlyMap[K, V, C](
       */
     private def readNextHashCode(
         it: BufferedIterator[(K, C)],
-        buf: ArrayBuffer[(K, C)]): Unit = {
+        buf: ArrayBuffer[(K, C)]): Unit =
       if (it.hasNext) {
         var kc = it.next()
         buf += kc
@@ -327,7 +325,6 @@ class ExternalAppendOnlyMap[K, V, C](
           buf += kc
         }
       }
-    }
 
     /**
       * If the given buffer contains a value for the given key, merge that value into
@@ -431,12 +428,11 @@ class ExternalAppendOnlyMap[K, V, C](
         hashKey(pairs.head)
       }
 
-      override def compareTo(other: StreamBuffer): Int = {
+      override def compareTo(other: StreamBuffer): Int =
         // descending order because mutable.PriorityQueue dequeues the max, not the min
         if (other.minKeyHash < minKeyHash) -1
         else if (other.minKeyHash == minKeyHash) 0
         else 1
-      }
     }
   }
 
@@ -469,7 +465,7 @@ class ExternalAppendOnlyMap[K, V, C](
     /**
       * Construct a stream that reads only from the next batch.
       */
-    private def nextBatchStream(): DeserializationStream = {
+    private def nextBatchStream(): DeserializationStream =
       // Note that batchOffsets.length = numBatches + 1 since we did a scan above; check whether
       // we're still in a valid batch.
       if (batchIndex < batchOffsets.length - 1) {
@@ -502,7 +498,6 @@ class ExternalAppendOnlyMap[K, V, C](
         cleanup()
         null
       }
-    }
 
     /**
       * Return the next (K, C) pair from the deserialization stream.
@@ -510,7 +505,7 @@ class ExternalAppendOnlyMap[K, V, C](
       * If the current batch is drained, construct a stream for the next batch and read from it.
       * If no more pairs are left, return null.
       */
-    private def readNextItem(): (K, C) = {
+    private def readNextItem(): (K, C) =
       try {
         val k = deserializeStream.readKey().asInstanceOf[K]
         val c = deserializeStream.readValue().asInstanceOf[C]
@@ -526,7 +521,6 @@ class ExternalAppendOnlyMap[K, V, C](
           cleanup()
           null
       }
-    }
 
     override def hasNext: Boolean = {
       if (nextItem == null) {
@@ -560,7 +554,7 @@ class ExternalAppendOnlyMap[K, V, C](
       }
       if (file.exists()) {
         if (!file.delete()) {
-          logWarning(s"Error deleting ${file}")
+          logWarning(s"Error deleting $file")
         }
       }
     }
@@ -577,9 +571,8 @@ private[spark] object ExternalAppendOnlyMap {
   /**
     * Return the hash code of the given object. If the object is null, return a special hash code.
     */
-  private def hash[T](obj: T): Int = {
+  private def hash[T](obj: T): Int =
     if (obj == null) 0 else obj.hashCode()
-  }
 
   /**
     * A comparator which sorts arbitrary keys based on their hash codes.

@@ -206,7 +206,7 @@ abstract class TailCalls extends Transform {
 
     private var ctx: TailContext = EmptyTailContext
 
-    override def transformUnit(unit: CompilationUnit): Unit = {
+    override def transformUnit(unit: CompilationUnit): Unit =
       try {
         super.transformUnit(unit)
       } finally {
@@ -215,7 +215,6 @@ abstract class TailCalls extends Transform {
         failReasons.clear()
         accessed.clear()
       }
-    }
 
     /** Rewrite this tree to contain no tail recursive calls */
     def transform(tree: Tree, nctx: TailContext): Tree = {

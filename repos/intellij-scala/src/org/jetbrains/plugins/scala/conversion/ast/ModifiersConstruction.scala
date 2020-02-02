@@ -24,12 +24,11 @@ object ModifierType extends Enumeration {
       ModifierType.PROTECTED,
       ModifierType.PACKAGE_LOCAL)
 
-  override def toString(): String = {
+  override def toString(): String =
     Value match {
       case ABSTRACT => "abstract"
       case _        => "other"
     }
-  }
 }
 
 case class ModifiersConstruction(

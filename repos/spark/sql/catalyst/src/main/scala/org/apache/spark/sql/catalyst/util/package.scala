@@ -87,9 +87,8 @@ package object util {
   def resourceToString(
       resource: String,
       encoding: String = "UTF-8",
-      classLoader: ClassLoader = Utils.getSparkClassLoader): String = {
+      classLoader: ClassLoader = Utils.getSparkClassLoader): String =
     new String(resourceToBytes(resource, classLoader), encoding)
-  }
 
   def stringToFile(file: File, str: String): File = {
     val out = new PrintWriter(file)
@@ -98,9 +97,8 @@ package object util {
     file
   }
 
-  def sideBySide(left: String, right: String): Seq[String] = {
+  def sideBySide(left: String, right: String): Seq[String] =
     sideBySide(left.split("\n"), right.split("\n"))
-  }
 
   def sideBySide(left: Seq[String], right: Seq[String]): Seq[String] = {
     val maxLeftSize = left.map(_.length).max
@@ -150,11 +148,10 @@ package object util {
         e.dataType)
   }
 
-  def quoteIdentifier(name: String): String = {
+  def quoteIdentifier(name: String): String =
     // Escapes back-ticks within the identifier name with double-back-ticks, and then quote the
     // identifier with back-ticks.
     "`" + name.replace("`", "``") + "`"
-  }
 
   /**
     * Returns the string representation of this expression that is safe to be put in

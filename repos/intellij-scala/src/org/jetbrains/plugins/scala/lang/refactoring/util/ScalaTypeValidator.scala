@@ -24,7 +24,7 @@ object ScalaTypeValidator {
       project: Project,
       element: PsiElement,
       container: PsiElement,
-      noOccurrences: Boolean): ScalaTypeValidator = {
+      noOccurrences: Boolean): ScalaTypeValidator =
     new ScalaTypeValidator(
       conflictsReporter,
       project,
@@ -32,7 +32,6 @@ object ScalaTypeValidator {
       noOccurrences,
       container,
       container)
-  }
 }
 
 class ScalaTypeValidator(
@@ -72,9 +71,7 @@ class ScalaTypeValidator(
         extends BaseProcessor(ValueSet(ResolveTargets.CLASS)) {
       val buf = new ArrayBuffer[(PsiNamedElement, String)]
 
-      override def execute(
-          element: PsiElement,
-          state: ResolveState): Boolean = {
+      override def execute(element: PsiElement, state: ResolveState): Boolean =
         element match {
           case typeAlias: ScTypeAlias if typeAlias.getName == name =>
             buf += ((typeAlias, messageForTypeAliasMember(name)))
@@ -89,7 +86,6 @@ class ScalaTypeValidator(
             true
           case _ => true
         }
-      }
     }
 
     val processor = new FindTypeAliasProcessor

@@ -54,9 +54,7 @@ object ReflectSpec extends Specification {
     }
   }
 
-  def bindings(
-      configured: String,
-      defaultClassName: String): Seq[Binding[_]] = {
+  def bindings(configured: String, defaultClassName: String): Seq[Binding[_]] =
     Reflect.bindingsFromConfiguration[
       Duck,
       JavaDuck,
@@ -67,11 +65,9 @@ object ReflectSpec extends Specification {
       PlayConfig(Configuration.from(Map("duck" -> configured))),
       "duck",
       defaultClassName)
-  }
 
-  def bindings[Default: ClassTag](configured: String): Seq[Binding[_]] = {
+  def bindings[Default: ClassTag](configured: String): Seq[Binding[_]] =
     bindings(configured, implicitly[ClassTag[Default]].runtimeClass.getName)
-  }
 
   trait Duck {
     def quack: String

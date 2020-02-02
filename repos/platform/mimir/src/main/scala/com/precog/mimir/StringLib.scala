@@ -99,13 +99,12 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         editDistance
       )
 
-    private def isValidInt(num: BigDecimal): Boolean = {
+    private def isValidInt(num: BigDecimal): Boolean =
       try {
         num.toIntExact; true
       } catch {
         case e: java.lang.ArithmeticException => { false }
       }
-    }
 
     class Op1SS(name: String, f: String => String)
         extends Op1F1(StringNamespace, name) {

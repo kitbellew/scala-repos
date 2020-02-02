@@ -76,10 +76,10 @@ object Doc {
               outputDirectory: File,
               options: Seq[String],
               maxErrors: Int,
-              log: Logger) => {
+              log: Logger) =>
             // doc.doc
             ???
-          })
+        )
       )
     )
 

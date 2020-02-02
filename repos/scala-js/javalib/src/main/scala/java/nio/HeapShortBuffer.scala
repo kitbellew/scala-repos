@@ -97,7 +97,7 @@ private[nio] object HeapShortBuffer {
         arrayOffset: Int,
         initialPosition: Int,
         initialLimit: Int,
-        readOnly: Boolean): ShortBuffer = {
+        readOnly: Boolean): ShortBuffer =
       new HeapShortBuffer(
         capacity,
         array,
@@ -105,7 +105,6 @@ private[nio] object HeapShortBuffer {
         initialPosition,
         initialLimit,
         readOnly)
-    }
   }
 
   @noinline
@@ -115,7 +114,7 @@ private[nio] object HeapShortBuffer {
       capacity: Int,
       initialPosition: Int,
       initialLength: Int,
-      isReadOnly: Boolean): ShortBuffer = {
+      isReadOnly: Boolean): ShortBuffer =
     GenHeapBuffer.generic_wrap(
       array,
       arrayOffset,
@@ -123,5 +122,4 @@ private[nio] object HeapShortBuffer {
       initialPosition,
       initialLength,
       isReadOnly)
-  }
 }

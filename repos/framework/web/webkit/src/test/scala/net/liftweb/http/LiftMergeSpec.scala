@@ -16,34 +16,31 @@ import common._
 import js.JE.JsObj
 
 trait BaseAround extends Around {
-  override def around[T: AsResult](test: => T): Result = {
+  override def around[T: AsResult](test: => T): Result =
     AsResult(test)
-  }
 }
 
 trait LiftRulesSetup extends Around {
   def rules: LiftRules
 
-  abstract override def around[T: AsResult](test: => T): Result = {
+  abstract override def around[T: AsResult](test: => T): Result =
     super.around {
       LiftRulesMocker.devTestLiftRulesInstance.doWith(rules) {
         AsResult(test)
       }
     }
-  }
 }
 
 trait SSetup extends Around {
   def session: LiftSession
   def req: Box[Req]
 
-  abstract override def around[T: AsResult](test: => T): Result = {
+  abstract override def around[T: AsResult](test: => T): Result =
     super.around {
       S.init(req, session) {
         AsResult(test)
       }
     }
-  }
 }
 
 class WithRules(val rules: LiftRules) extends BaseAround with LiftRulesSetup

@@ -9,12 +9,11 @@ object Test extends App {
     */
   case class Collision(value: Int) {
 
-    override def hashCode = {
+    override def hashCode =
       // we do not check hash counts for Collision keys because ListSet.++ uses a mutable hashset internally,
       // so when we have hash collisions, union will call key.hashCode.
       // hashCount += 1
       value / 5
-    }
   }
 
   /**

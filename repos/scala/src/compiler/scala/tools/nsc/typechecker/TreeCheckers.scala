@@ -197,7 +197,7 @@ abstract class TreeCheckers extends Analyzer {
   def assertFn(cond: Boolean, msg: => Any) =
     if (!cond) errorFn(msg)
 
-  private def wrap[T](msg: => Any)(body: => T): T = {
+  private def wrap[T](msg: => Any)(body: => T): T =
     try body
     catch {
       case x: Throwable =>
@@ -206,7 +206,6 @@ abstract class TreeCheckers extends Analyzer {
         x.printStackTrace
         null.asInstanceOf[T]
     }
-  }
 
   def checkTrees() {
     if (settings.verbose)

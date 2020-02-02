@@ -268,7 +268,7 @@ object Credentials {
     def verify(secret: String): Boolean
   }
 
-  def apply(cred: Option[HttpCredentials]): Credentials = {
+  def apply(cred: Option[HttpCredentials]): Credentials =
     cred match {
       case Some(BasicHttpCredentials(username, receivedSecret)) ⇒
         new Credentials.Provided(username) {
@@ -283,7 +283,6 @@ object Credentials {
           "cannot verify generic HTTP credentials")
       case None ⇒ Credentials.Missing
     }
-  }
 }
 
 import SecurityDirectives._

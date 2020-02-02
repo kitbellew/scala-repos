@@ -45,11 +45,10 @@ private[spark] class RpcTimeout(
 
   /** Amends the standard message of TimeoutException to include the description */
   private def createRpcTimeoutException(
-      te: TimeoutException): RpcTimeoutException = {
+      te: TimeoutException): RpcTimeoutException =
     new RpcTimeoutException(
       te.getMessage + ". This timeout is controlled by " + timeoutProp,
       te)
-  }
 
   /**
     * PartialFunction to match a TimeoutException and add the timeout description to the message
@@ -73,11 +72,10 @@ private[spark] class RpcTimeout(
     * @throws RpcTimeoutException if after waiting for the specified time `awaitable`
     *         is still not ready
     */
-  def awaitResult[T](awaitable: Awaitable[T]): T = {
+  def awaitResult[T](awaitable: Awaitable[T]): T =
     try {
       Await.result(awaitable, duration)
     } catch addMessageIfTimeout
-  }
 }
 
 private[spark] object RpcTimeout {

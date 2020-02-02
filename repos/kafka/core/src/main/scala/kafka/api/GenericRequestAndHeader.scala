@@ -32,16 +32,14 @@ private[kafka] abstract class GenericRequestAndHeader(
     body.writeTo(buffer)
   }
 
-  def sizeInBytes(): Int = {
+  def sizeInBytes(): Int =
     2 /* version id */ +
       4 /* correlation id */ +
       (2 + clientId.length) /* client id */ +
       body.sizeOf()
-  }
 
-  override def toString(): String = {
+  override def toString(): String =
     describe(true)
-  }
 
   override def describe(details: Boolean): String = {
     val strBuffer = new StringBuilder

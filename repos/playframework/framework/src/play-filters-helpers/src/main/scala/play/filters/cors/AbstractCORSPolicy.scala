@@ -38,7 +38,7 @@ private[cors] trait AbstractCORSPolicy {
 
   protected def filterRequest(
       next: RequestHeader => Future[Result],
-      request: RequestHeader): Future[Result] = {
+      request: RequestHeader): Future[Result] =
     (request.headers.get(HeaderNames.ORIGIN), request.method) match {
       case (None, _) =>
         /* http://www.w3.org/TR/cors/#resource-requests
@@ -72,7 +72,6 @@ private[cors] trait AbstractCORSPolicy {
         // unrecognized method so invalid request
         handleInvalidCORSRequest(request)
     }
-  }
 
   /* Handles a CORS request
    *
@@ -324,7 +323,7 @@ private[cors] trait AbstractCORSPolicy {
   }
 
   // http://tools.ietf.org/html/rfc6454#section-7.1
-  private def isValidOrigin(origin: String): Boolean = {
+  private def isValidOrigin(origin: String): Boolean =
     // Checks for encoded characters. Helps prevent CRLF injection.
     if (origin.contains("%")) {
       false
@@ -335,7 +334,6 @@ private[cors] trait AbstractCORSPolicy {
         case _: URISyntaxException => false
       }
     }
-  }
 
   private def isSameOrigin(origin: String, request: RequestHeader): Boolean = {
     val hostUri = new URI(origin.toLowerCase(Locale.ENGLISH))

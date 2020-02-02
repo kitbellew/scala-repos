@@ -80,7 +80,7 @@ object FreeApplicative {
   final def lift[F[_], A](fa: F[A]): FA[F, A] =
     ap(fa)(Pure(a => a))
 
-  implicit final def freeApplicative[S[_]]: Applicative[FA[S, ?]] = {
+  implicit final def freeApplicative[S[_]]: Applicative[FA[S, ?]] =
     new Applicative[FA[S, ?]] {
       def product[A, B](fa: FA[S, A], fb: FA[S, B]): FA[S, (A, B)] =
         ap(fa.map((a: A) => (b: B) => (a, b)))(fb)
@@ -88,5 +88,4 @@ object FreeApplicative {
       override def ap[A, B](f: FA[S, A => B])(fa: FA[S, A]): FA[S, B] = fa.ap(f)
       def pure[A](a: A): FA[S, A] = Pure(a)
     }
-  }
 }

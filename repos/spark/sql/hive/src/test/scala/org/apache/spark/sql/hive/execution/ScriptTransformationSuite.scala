@@ -123,7 +123,7 @@ class ScriptTransformationSuite extends SparkPlanTest with TestHiveSingleton {
 
 private case class ExceptionInjectingOperator(child: SparkPlan)
     extends UnaryNode {
-  override protected def doExecute(): RDD[InternalRow] = {
+  override protected def doExecute(): RDD[InternalRow] =
     child.execute().map { x =>
       assert(
         TaskContext.get() != null
@@ -131,6 +131,5 @@ private case class ExceptionInjectingOperator(child: SparkPlan)
       Thread.sleep(1000) // This sleep gives the external process time to start.
       throw new IllegalArgumentException("intentional exception")
     }
-  }
   override def output: Seq[Attribute] = child.output
 }

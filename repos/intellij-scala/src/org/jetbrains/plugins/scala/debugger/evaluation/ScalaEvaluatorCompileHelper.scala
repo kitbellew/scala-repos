@@ -35,11 +35,10 @@ class ScalaEvaluatorCompileHelper(project: Project)
   private val tempFiles = mutable.Set[File]()
 
   private val listener = new DebuggerManagerAdapter {
-    override def sessionAttached(session: DebuggerSession): Unit = {
+    override def sessionAttached(session: DebuggerSession): Unit =
       if (EvaluatorCompileHelper.needCompileServer && project.hasScala) {
         CompileServerLauncher.ensureServerRunning(project)
       }
-    }
 
     override def sessionDetached(session: DebuggerSession) = {
       clearTempFiles()
@@ -52,19 +51,17 @@ class ScalaEvaluatorCompileHelper(project: Project)
     }
   }
 
-  override def projectOpened(): Unit = {
+  override def projectOpened(): Unit =
     if (!ApplicationManager.getApplication.isUnitTestMode) {
       DebuggerManagerEx
         .getInstanceEx(project)
         .addDebuggerManagerListener(listener)
     }
-  }
 
-  override def projectClosed(): Unit = {
+  override def projectClosed(): Unit =
     DebuggerManagerEx
       .getInstanceEx(project)
       .removeDebuggerManagerListener(listener)
-  }
 
   private def clearTempFiles() = {
     tempFiles.foreach(FileUtil.delete)
@@ -83,9 +80,8 @@ class ScalaEvaluatorCompileHelper(project: Project)
     file
   }
 
-  def compile(fileText: String, module: Module): Array[(File, String)] = {
+  def compile(fileText: String, module: Module): Array[(File, String)] =
     compile(fileText, module, tempDir())
-  }
 
   def compile(
       files: Seq[File],
@@ -107,9 +103,8 @@ class ScalaEvaluatorCompileHelper(project: Project)
   def compile(
       fileText: String,
       module: Module,
-      outputDir: File): Array[(File, String)] = {
+      outputDir: File): Array[(File, String)] =
     compile(Seq(writeToTempFile(fileText)), module, outputDir)
-  }
 
   def writeToTempFile(text: String): File = {
     val file = tempFile()
@@ -137,9 +132,8 @@ private class ServerConnector(
         text: String,
         source: Option[File],
         line: Option[Long],
-        column: Option[Long]): Unit = {
+        column: Option[Long]): Unit =
       if (kind == Kind.ERROR) errors += text
-    }
     override def deleted(module: File): Unit = {}
     override def progress(text: String, done: Option[Float]): Unit = {}
     override def isCanceled: Boolean = false

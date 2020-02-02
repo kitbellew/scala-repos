@@ -570,7 +570,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       it: Iterator[Any],
       opt: Boolean,
       map: Any => T,
-      reduce: (T, T) => T): Option[T] = {
+      reduce: (T, T) => T): Option[T] =
     if (!it.hasNext) None
     else {
       val it2 = if (opt) it.collect { case Some(b) => b }
@@ -585,7 +585,6 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       }
       if (first) None else Some(res)
     }
-  }
 
   def createNullRow(tpe: Type): Any = tpe match {
     case t: ScalaType[_] => if (t.nullable) None else null

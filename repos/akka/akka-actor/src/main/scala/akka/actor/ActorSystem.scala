@@ -598,7 +598,7 @@ private[akka] class ActorSystemImpl(
 
   protected def uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =
     new Thread.UncaughtExceptionHandler() {
-      def uncaughtException(thread: Thread, cause: Throwable): Unit = {
+      def uncaughtException(thread: Thread, cause: Throwable): Unit =
         cause match {
           case NonFatal(_) | _: InterruptedException | _: NotImplementedError |
               _: ControlThrowable ⇒
@@ -631,7 +631,6 @@ private[akka] class ActorSystemImpl(
               terminate()
             }
         }
-      }
     }
 
   final val threadFactory: MonitorableThreadFactory =
@@ -866,7 +865,7 @@ private[akka] class ActorSystemImpl(
     }
 
   @tailrec
-  final def registerExtension[T <: Extension](ext: ExtensionId[T]): T = {
+  final def registerExtension[T <: Extension](ext: ExtensionId[T]): T =
     findExtension(ext) match {
       case null ⇒ //Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
@@ -903,7 +902,6 @@ private[akka] class ActorSystemImpl(
         }
       case existing ⇒ existing.asInstanceOf[T]
     }
-  }
 
   def extension[T <: Extension](ext: ExtensionId[T]): T =
     findExtension(ext) match {
@@ -940,7 +938,7 @@ private[akka] class ActorSystemImpl(
   override def toString: String = lookupRoot.path.root.address.toString
 
   override def printTree: String = {
-    def printNode(node: ActorRef, indent: String): String = {
+    def printNode(node: ActorRef, indent: String): String =
       node match {
         case wc: ActorRefWithCell ⇒
           val cell = wc.underlying
@@ -979,7 +977,6 @@ private[akka] class ActorSystemImpl(
         case _ ⇒
           indent + node.path.name + " " + Logging.simpleName(node)
       }
-    }
     printNode(lookupRoot, "")
   }
 

@@ -304,7 +304,7 @@ case class IdentityReduce[K, V1](
   override def filterKeys(fn: K => Boolean) =
     toUIR.filterKeys(fn)
 
-  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) = {
+  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) =
     // Only pass non-Empty iterators to subsequent functions
     IteratorMappedReduce(
       keyOrdering,
@@ -312,7 +312,6 @@ case class IdentityReduce[K, V1](
       Grouped.addEmptyGuard(fn),
       reducers,
       descriptions)
-  }
 
   // It would be nice to return IdentityReduce here, but
   // the type constraints prevent it currently
@@ -399,7 +398,7 @@ case class UnsortedIdentityReduce[K, V1](
       reducers,
       descriptions)
 
-  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) = {
+  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) =
     // Only pass non-Empty iterators to subsequent functions
     IteratorMappedReduce(
       keyOrdering,
@@ -407,7 +406,6 @@ case class UnsortedIdentityReduce[K, V1](
       Grouped.addEmptyGuard(fn),
       reducers,
       descriptions)
-  }
 
   // It would be nice to return IdentityReduce here, but
   // the type constraints prevent it currently
@@ -484,7 +482,7 @@ case class IdentityValueSortedReduce[K, V1](
       reducers,
       descriptions)
 
-  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) = {
+  override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) =
     // Only pass non-Empty iterators to subsequent functions
     ValueSortedReduce[K, V1, V3](
       keyOrdering,
@@ -493,7 +491,6 @@ case class IdentityValueSortedReduce[K, V1](
       Grouped.addEmptyGuard(fn),
       reducers,
       descriptions)
-  }
 
   /**
     * This does the partial heap sort followed by take in memory on the mappers

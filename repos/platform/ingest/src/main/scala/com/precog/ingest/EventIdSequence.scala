@@ -48,11 +48,10 @@ class SystemEventIdSequence private (
     state.next()
   }
 
-  def currentRelayState(offset: Long) = {
+  def currentRelayState(offset: Long) =
     EventRelayState(offset, state.current, state.block)
-  }
 
-  private def refill(offset: Long): InternalState = {
+  private def refill(offset: Long): InternalState =
     coordination.renewEventRelayState(
       agent,
       offset,
@@ -61,7 +60,6 @@ class SystemEventIdSequence private (
       case Success(ers @ EventRelayState(_, _, _)) => InternalState(ers)
       case Failure(e)                              => sys.error("Error trying to renew relay agent: " + e)
     }
-  }
 
   def saveState(offset: Long) = {
     state =
@@ -74,9 +72,8 @@ class SystemEventIdSequence private (
     PrecogUnit
   }
 
-  def getLastOffset(): Long = {
+  def getLastOffset(): Long =
     state.lastOffset
-  }
 }
 
 object SystemEventIdSequence {

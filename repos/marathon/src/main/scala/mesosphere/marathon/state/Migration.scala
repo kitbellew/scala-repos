@@ -117,12 +117,11 @@ class Migration @Inject() (
 
   private val storageVersionName = "internal:storage:version"
 
-  def currentStorageVersion: Future[StorageVersion] = {
+  def currentStorageVersion: Future[StorageVersion] =
     store.load(storageVersionName).map {
       case Some(variable) => StorageVersion.parseFrom(variable.bytes.toArray)
       case None           => StorageVersions.current
     }
-  }
 
   def storeCurrentVersion: Future[StorageVersion] = {
     val bytes = StorageVersions.current.toByteArray
@@ -177,7 +176,7 @@ class MigrationTo0_11(
 
   private[this] def processApps(
       appIds: Iterable[PathId],
-      rootGroup: Group): Future[Vector[AppDefinition]] = {
+      rootGroup: Group): Future[Vector[AppDefinition]] =
     appIds.foldLeft(Future.successful[Vector[AppDefinition]](Vector.empty)) {
       (otherStores, appId) =>
         otherStores.flatMap { storedApps =>
@@ -192,7 +191,6 @@ class MigrationTo0_11(
           }
         }
     }
-  }
 
   private[this] def addVersionInfo(
       id: PathId,
@@ -200,7 +198,7 @@ class MigrationTo0_11(
     def addVersionInfoToVersioned(
         maybeLastApp: Option[AppDefinition],
         nextVersion: Timestamp,
-        maybeNextApp: Option[AppDefinition]): Option[AppDefinition] = {
+        maybeNextApp: Option[AppDefinition]): Option[AppDefinition] =
       maybeNextApp.map { nextApp =>
         maybeLastApp match {
           case Some(lastApp) if !lastApp.isUpgrade(nextApp) =>
@@ -215,17 +213,13 @@ class MigrationTo0_11(
               AppDefinition.VersionInfo.forNewConfig(nextApp.version))
         }
       }
-    }
 
-    def loadApp(
-        id: PathId,
-        version: Timestamp): Future[Option[AppDefinition]] = {
+    def loadApp(id: PathId, version: Timestamp): Future[Option[AppDefinition]] =
       if (appInGroup.version == version) {
         Future.successful(Some(appInGroup))
       } else {
         appRepository.app(id, version)
       }
-    }
 
     val sortedVersions = appRepository.listVersions(id).map(_.to[SortedSet])
     sortedVersions.flatMap { sortedVersionsWithoutGroup =>
@@ -262,7 +256,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
   def fetchLegacyTask(taskKey: String): Future[Option[MarathonTask]] = {
     def deserialize(
         taskKey: String,
-        source: ObjectInputStream): Option[MarathonTask] = {
+        source: ObjectInputStream): Option[MarathonTask] =
       if (source.available > 0) {
         try {
           val size = source.readInt
@@ -276,7 +270,6 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
       } else {
         None
       }
-    }
 
     store
       .load("task:" + taskKey)
@@ -318,7 +311,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
   // had to be changed, even though tasks are not stored with versions. The new
   // format looks like this:
   // task:my-app.13cb0cbe-b959-11e5-bb6d-5e099c92de61
-  private[state] def migrateKey(legacyKey: String): Future[Unit] = {
+  private[state] def migrateKey(legacyKey: String): Future[Unit] =
     fetchLegacyTask(legacyKey).flatMap {
       case Some(task) =>
         taskRepository.store(task).flatMap { _ =>
@@ -328,17 +321,15 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
         Future.failed[Unit](
           new RuntimeException(s"Unable to load entity with key = $legacyKey"))
     }
-  }
 
   def renameFrameworkId(): Future[Unit] = {
     val oldName = "frameworkId"
     val newName = "framework:id"
-    def moveKey(bytes: IndexedSeq[Byte]): Future[Unit] = {
+    def moveKey(bytes: IndexedSeq[Byte]): Future[Unit] =
       for {
         _ <- store.create(newName, bytes)
         _ <- store.delete(oldName)
       } yield ()
-    }
 
     store.load(newName).flatMap {
       case Some(_) =>
@@ -388,9 +379,8 @@ class MigrationTo0_16(
     } yield log.info("Finished 0.16 migration")
   }
 
-  private[this] def migrateRootGroup(rootGroup: Group): Future[Unit] = {
+  private[this] def migrateRootGroup(rootGroup: Group): Future[Unit] =
     updateAllGroupVersions()
-  }
 
   private[this] def migrateApps(rootGroup: Group): Future[Unit] = {
     val apps = rootGroup.transitiveApps
@@ -417,7 +407,7 @@ class MigrationTo0_16(
     }
   }
 
-  private[this] def updateAllAppVersions(appId: PathId): Future[Unit] = {
+  private[this] def updateAllAppVersions(appId: PathId): Future[Unit] =
     appRepository.listVersions(appId).map(d => d.toSeq.sorted).flatMap {
       sortedVersions =>
         sortedVersions.foldLeft(Future.successful(())) { (future, version) =>
@@ -431,22 +421,20 @@ class MigrationTo0_16(
           }
         }
     }
-  }
 }
 
 object StorageVersions {
   val VersionRegex = """^(\d+)\.(\d+)\.(\d+).*""".r
 
-  def apply(major: Int, minor: Int, patch: Int): StorageVersion = {
+  def apply(major: Int, minor: Int, patch: Int): StorageVersion =
     StorageVersion
       .newBuilder()
       .setMajor(major)
       .setMinor(minor)
       .setPatch(patch)
       .build()
-  }
 
-  def current: StorageVersion = {
+  def current: StorageVersion =
     BuildInfo.version match {
       case VersionRegex(major, minor, patch) =>
         StorageVersions(
@@ -455,7 +443,6 @@ object StorageVersions {
           patch.toInt
         )
     }
-  }
 
   implicit class OrderedStorageVersion(val version: StorageVersion)
       extends AnyVal

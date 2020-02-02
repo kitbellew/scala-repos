@@ -75,20 +75,18 @@ trait ScFun extends ScTypeParametersOwner {
 
   def paramClauses: Seq[Seq[Parameter]]
 
-  def methodType: ScType = {
+  def methodType: ScType =
     paramClauses.foldRight[ScType](retType) {
       (params: Seq[Parameter], tp: ScType) =>
         new ScMethodType(tp, params, false)(getProject, getResolveScope)
     }
-  }
 
-  def polymorphicType: ScType = {
+  def polymorphicType: ScType =
     if (typeParameters.isEmpty) methodType
     else
       ScTypePolymorphicType(
         methodType,
         typeParameters.map(new TypeParameter(_)))
-  }
 }
 
 /**
@@ -156,9 +154,8 @@ trait ScFunction
       .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
   }
 
-  def isNative: Boolean = {
+  def isNative: Boolean =
     hasAnnotation("scala.native").isDefined
-  }
 
   override def hasModifierProperty(name: String): Boolean = {
     if (name == "abstract") {
@@ -178,7 +175,7 @@ trait ScFunction
   /**
     * This method is important for expected type evaluation.
     */
-  def getInheritedReturnType: Option[ScType] = {
+  def getInheritedReturnType: Option[ScType] =
     returnTypeElement match {
       case Some(_) => returnType.toOption
       case None =>
@@ -220,7 +217,6 @@ trait ScFunction
         }
         superReturnType
     }
-  }
 
   override def getTextOffset: Int = nameId.getTextRange.getStartOffset
   def hasParameterClause: Boolean = {
@@ -248,7 +244,7 @@ trait ScFunction
     false
   }
 
-  def definedReturnType: TypeResult[ScType] = {
+  def definedReturnType: TypeResult[ScType] =
     returnTypeElement match {
       case Some(ret)       => ret.getType(TypingContext.empty)
       case _ if !hasAssign => Success(types.Unit, Some(this))
@@ -262,7 +258,6 @@ trait ScFunction
           case _ => Failure("No defined return type", Some(this))
         }
     }
-  }
 
   /**
     * Returns pure 'function' type as it was defined as a field with functional value
@@ -292,13 +287,12 @@ trait ScFunction
   /**
     * Returns internal type with type parameters.
     */
-  def polymorphicType(result: Option[ScType] = None): ScType = {
+  def polymorphicType(result: Option[ScType] = None): ScType =
     if (typeParameters.isEmpty) methodType(result)
     else
       ScTypePolymorphicType(
         methodType(result),
         typeParameters.map(new TypeParameter(_)))
-  }
 
   /**
     * Optional Type Element, denotion function's return type
@@ -337,7 +331,7 @@ trait ScFunction
 
   def importantOrderFunction(): Boolean = false
 
-  def returnType: TypeResult[ScType] = {
+  def returnType: TypeResult[ScType] =
     if (importantOrderFunction()) {
       val parent = getParent
       val data = parent.getUserData(ScFunction.calculatedBlockKey)
@@ -361,7 +355,6 @@ trait ScFunction
         returnTypeInner
       }
     } else returnTypeInner
-  }
 
   def returnTypeInner: TypeResult[ScType]
 
@@ -410,7 +403,7 @@ trait ScFunction
     */
   def getParamByName(
       name: String,
-      clausePosition: Int = -1): Option[ScParameter] = {
+      clausePosition: Int = -1): Option[ScParameter] =
     clausePosition match {
       case -1 =>
         parameters.find {
@@ -431,13 +424,12 @@ trait ScFunction
                   ScalaPsiUtil.memberNamesEquals(_, name))
           }
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitFunction(this)
   }
 
-  def getGetterOrSetterFunction: Option[ScFunction] = {
+  def getGetterOrSetterFunction: Option[ScFunction] =
     containingClass match {
       case clazz: ScTemplateDefinition =>
         if (name.endsWith("_=")) {
@@ -447,12 +439,11 @@ trait ScFunction
         } else None
       case _ => None
     }
-  }
 
-  def isBridge: Boolean = {
+  def isBridge: Boolean =
     //todo: fix algorithm for annotation resolve to not resolve objects (if it's possible)
     //heuristic algorithm to avoid SOE in MixinNodes.build
-    annotations.exists(annot => {
+    annotations.exists { annot =>
       annot.typeElement match {
         case s: ScSimpleTypeElement =>
           s.reference match {
@@ -461,8 +452,7 @@ trait ScFunction
           }
         case _ => false
       }
-    })
-  }
+    }
 
   def getTypeParameters: Array[PsiTypeParameter] = {
     val params = typeParameters
@@ -488,7 +478,7 @@ trait ScFunction
   def getParameterList: ScParameters = paramClauses
 
   @tailrec
-  private def isJavaVarargs: Boolean = {
+  private def isJavaVarargs: Boolean =
     if (hasAnnotation("scala.annotation.varargs").isDefined) true
     else {
       superMethod match {
@@ -497,7 +487,6 @@ trait ScFunction
         case _                   => false
       }
     }
-  }
 
   /**
     * @return Empty array, if containing class is null.
@@ -684,15 +673,14 @@ trait ScFunction
 
   def getThrowsList =
     new FakePsiReferenceList(getManager, getLanguage, Role.THROWS_LIST) {
-      override def getReferenceElements: Array[PsiJavaCodeReferenceElement] = {
+      override def getReferenceElements: Array[PsiJavaCodeReferenceElement] =
         getReferencedTypes.map { tp =>
           PsiElementFactory.SERVICE
             .getInstance(getProject)
             .createReferenceElementByType(tp)
         }
-      }
 
-      override def getReferencedTypes: Array[PsiClassType] = {
+      override def getReferencedTypes: Array[PsiClassType] =
         hasAnnotation("scala.throws") match {
           case Some(annotation) =>
             annotation.constructor.args
@@ -716,10 +704,9 @@ trait ScFunction
               .toArray
           case _ => PsiClassType.EMPTY_ARRAY
         }
-      }
     }
 
-  def getType(ctx: TypingContext): TypeResult[ScType] = {
+  def getType(ctx: TypingContext): TypeResult[ScType] =
     returnType match {
       case Success(tp: ScType, _) =>
         var res: TypeResult[ScType] = Success(tp, None)
@@ -738,7 +725,6 @@ trait ScFunction
         res
       case x => x
     }
-  }
 
   override protected def isSimilarMemberForNavigation(
       m: ScMember,
@@ -756,14 +742,12 @@ trait ScFunction
   def hasAssign =
     getNode.getChildren(TokenSet.create(ScalaTokenTypes.tASSIGN)).nonEmpty
 
-  def getHierarchicalMethodSignature: HierarchicalMethodSignature = {
+  def getHierarchicalMethodSignature: HierarchicalMethodSignature =
     new HierarchicalMethodSignatureImpl(getSignature(PsiSubstitutor.EMPTY))
-  }
 
-  override def isDeprecated = {
+  override def isDeprecated =
     hasAnnotation("scala.deprecated").isDefined || hasAnnotation(
       "java.lang.Deprecated").isDefined
-  }
 
   override def getName = {
     val res =
@@ -774,10 +758,9 @@ trait ScFunction
     else res
   }
 
-  override def setName(name: String): PsiElement = {
+  override def setName(name: String): PsiElement =
     if (isConstructor) this
     else super.setName(name)
-  }
 
   override def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
@@ -810,7 +793,7 @@ trait ScFunction
 
   def getTypeNoImplicits(
       ctx: TypingContext,
-      rt: TypeResult[ScType]): TypeResult[ScType] = {
+      rt: TypeResult[ScType]): TypeResult[ScType] =
     collectReverseParamTypesNoImplicits match {
       case Some(params) =>
         val project = getProject
@@ -819,7 +802,6 @@ trait ScFunction
           ScFunctionType(res, params)(project, resolveScope)))
       case None => Failure("no params", Some(this))
     }
-  }
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def collectReverseParamTypesNoImplicits: Option[Seq[Seq[ScType]]] = {
@@ -873,7 +855,7 @@ object ScFunction {
       pTypes: List[List[ScType]],
       tParams: List[TypeParameter],
       rt: ScType,
-      fun: ScFunction): ScFunction = {
+      fun: ScFunction): ScFunction =
     fun match {
       case light: ScLightFunctionDeclaration =>
         getCompoundCopy(pTypes, tParams, rt, light.fun)
@@ -884,5 +866,4 @@ object ScFunction {
       case definition: ScFunctionDefinition =>
         new ScLightFunctionDefinition(pTypes, tParams, rt, definition)
     }
-  }
 }

@@ -88,14 +88,13 @@ object FormFieldDirectives extends FormFieldDirectives {
   private val _formFieldMultiMap: Directive1[Map[String, List[String]]] = {
     @tailrec def append(
         map: Map[String, List[String]],
-        fields: immutable.Seq[(String, String)]): Map[String, List[String]] = {
+        fields: immutable.Seq[(String, String)]): Map[String, List[String]] =
       if (fields.isEmpty) {
         map
       } else {
         val (key, value) = fields.head
         append(map.updated(key, value :: map.getOrElse(key, Nil)), fields.tail)
       }
-    }
 
     _formFieldSeq.map {
       case seq ⇒

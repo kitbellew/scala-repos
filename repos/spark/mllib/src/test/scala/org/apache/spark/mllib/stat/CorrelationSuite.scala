@@ -144,13 +144,12 @@ class CorrelationSuite
     }
   }
 
-  def approxEqual(v1: Double, v2: Double, threshold: Double = 1e-6): Boolean = {
+  def approxEqual(v1: Double, v2: Double, threshold: Double = 1e-6): Boolean =
     if (v1.isNaN) {
       v2.isNaN
     } else {
       math.abs(v1 - v2) <= threshold
     }
-  }
 
   def matrixApproxEqual(
       A: BM[Double],

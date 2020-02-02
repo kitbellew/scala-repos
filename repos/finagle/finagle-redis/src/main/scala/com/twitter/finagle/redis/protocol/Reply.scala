@@ -128,7 +128,7 @@ class ReplyCodec extends UnifiedProtocolCodec {
   def decodeMBulkLines(
       i: Long,
       stack: List[(Long, List[Reply])],
-      lines: List[Reply]): NextStep = {
+      lines: List[Reply]): NextStep =
     if (i <= 0) {
       val reply = (i, lines) match {
         case (i, _) if i < 0 => NilMBulkReply()
@@ -185,5 +185,4 @@ class ReplyCodec extends UnifiedProtocolCodec {
         }
       }
     }
-  }
 }

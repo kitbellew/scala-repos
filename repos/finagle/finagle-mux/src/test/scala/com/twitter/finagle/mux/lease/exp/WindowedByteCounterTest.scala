@@ -26,7 +26,7 @@ class WindowedByteCounterTest
       fakeBean: FakeGarbageCollectorMXBean,
       fakePool: FakeMemoryPool)(
       fn: (ByteCounter, () => Unit) => Unit
-  ): Unit = {
+  ): Unit =
     Time.withCurrentTimeFrozen { ctl =>
       val nfo = new JvmInfo(fakePool, fakeBean)
       val counter = new WindowedByteCounter(nfo, Local.save())
@@ -61,7 +61,6 @@ class WindowedByteCounterTest
 
       counter.join()
     }
-  }
 
   test("ByteCounter should be stoppable") {
     val h = new ByteCounterHelper {}

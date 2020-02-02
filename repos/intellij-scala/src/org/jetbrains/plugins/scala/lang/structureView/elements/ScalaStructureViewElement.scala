@@ -21,7 +21,7 @@ abstract class ScalaStructureViewElement(
     val inherited: Boolean)
     extends StructureViewTreeElement {
 
-  def getValue: Object = {
+  def getValue: Object =
     if (myElement.isValid) {
       /*
         code for right positioning for caret in case such:
@@ -43,19 +43,16 @@ abstract class ScalaStructureViewElement(
     } else {
       null;
     }
-  }
 
   def navigate(b: Boolean) {
     myElement.asInstanceOf[Navigatable].navigate(b);
   }
 
-  def canNavigate: Boolean = {
+  def canNavigate: Boolean =
     myElement.asInstanceOf[Navigatable].canNavigate
-  }
 
-  def canNavigateToSource: Boolean = {
+  def canNavigateToSource: Boolean =
     myElement.asInstanceOf[Navigatable].canNavigateToSource
-  }
 
   override def equals(o: Any): Boolean = {
     val clazz = o match {

@@ -33,7 +33,7 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       .instanceOf[CSRFTokenSigner]
 
   val Boundary = "83ff53821b7c"
-  def multiPartFormDataBody(tokenName: String, tokenValue: String) = {
+  def multiPartFormDataBody(tokenName: String, tokenValue: String) =
     s"""--$Boundary
       |Content-Disposition: form-data; name="foo"; filename="foo.txt"
       |Content-Type: application/octet-stream
@@ -44,7 +44,6 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       |
       |$tokenValue
       |--$Boundary--""".stripMargin.replaceAll("\n", "\r\n")
-  }
 
   // This extracts the tests out into different configurations
   def sharedTests(
@@ -281,12 +280,11 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       def generate = crypto.generateSignedToken
       def addToken(req: WSRequest, token: String) =
         req.withCookies("csrf" -> token)
-      def getToken(response: WSResponse) = {
+      def getToken(response: WSResponse) =
         response.cookies.find(_.name.exists(_ == "csrf")).flatMap { cookie =>
           cookie.secure must beTrue
           cookie.value
         }
-      }
       def compareTokens(a: String, b: String) =
         crypto.compareSignedTokens(a, b) must beTrue
 
@@ -364,13 +362,11 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
   def buildCsrfAddToken(configuration: (String, String)*): CsrfTester
 
   implicit class EnrichedRequestHolder(request: WSRequest) {
-    def withSession(session: (String, String)*): WSRequest = {
+    def withSession(session: (String, String)*): WSRequest =
       withCookies(Session.COOKIE_NAME -> Session.encode(session.toMap))
-    }
-    def withCookies(cookies: (String, String)*): WSRequest = {
+    def withCookies(cookies: (String, String)*): WSRequest =
       request.withHeaders(
         COOKIE -> cookies.map(c => c._1 + "=" + c._2).mkString(", "))
-    }
   }
 
   implicit def simpleFormWriteable: Writeable[Map[String, String]] =

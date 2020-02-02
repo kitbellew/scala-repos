@@ -165,14 +165,13 @@ with LightScalaMethod {
 
   override def getTextRange: TextRange = function.getTextRange
 
-  override def hasModifierProperty(name: String): Boolean = {
+  override def hasModifierProperty(name: String): Boolean =
     name match {
       case "abstract" if isInterface => true
       case "final" if containingClass.isInstanceOf[ScTrait] =>
         false //fix for SCL-5824
       case _ => super.hasModifierProperty(name)
     }
-  }
 
   override def getPrevSibling: PsiElement = function.getPrevSibling
 
@@ -226,10 +225,9 @@ with LightScalaMethod {
 
   override def isWritable: Boolean = getContainingFile.isWritable
 
-  override def setName(name: String) = {
+  override def setName(name: String) =
     if (forDefault.isEmpty && !function.isConstructor) function.setName(name)
     else this
-  }
 }
 
 object ScFunctionWrapper {
@@ -255,7 +253,7 @@ object ScFunctionWrapper {
       case function: ScFunction if function.typeParameters.nonEmpty =>
         builder.append(
           function.typeParameters
-            .map(tp => {
+            .map { tp =>
               var res = tp.name
               tp.upperTypeElement match {
                 case Some(tParam) =>
@@ -294,7 +292,7 @@ object ScFunctionWrapper {
                 case _ =>
               }
               res
-            })
+            }
             .mkString("<", ", ", ">"))
       case _ =>
     }
@@ -401,7 +399,7 @@ object ScFunctionWrapper {
 
   def getSubstitutor(
       cClass: Option[PsiClass],
-      function: ScMethodLike): ScSubstitutor = {
+      function: ScMethodLike): ScSubstitutor =
     (cClass, function) match {
       case (Some(clazz), function: ScFunction) =>
         clazz match {
@@ -415,5 +413,4 @@ object ScFunctionWrapper {
         }
       case _ => ScSubstitutor.empty
     }
-  }
 }

@@ -77,9 +77,8 @@ class HttpEventActor(
 
   implicit val timeout = HttpEventModule.timeout
   def pipeline(
-      implicit ec: ExecutionContext): HttpRequest => Future[HttpResponse] = {
+      implicit ec: ExecutionContext): HttpRequest => Future[HttpResponse] =
     addHeader("Accept", "application/json") ~> sendReceive
-  }
   var limiter =
     Map.empty[String, EventNotificationLimit].withDefaultValue(NoLimit)
 

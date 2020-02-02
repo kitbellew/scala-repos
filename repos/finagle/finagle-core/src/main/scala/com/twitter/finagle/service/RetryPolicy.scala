@@ -108,7 +108,7 @@ abstract class SimpleRetryPolicy[A](i: Int)
     with (A => Option[(Duration, RetryPolicy[A])]) {
   def this() = this(0)
 
-  final def apply(e: A) = {
+  final def apply(e: A) =
     if (shouldRetry(e)) {
       backoffAt(i) match {
         case Duration.Top =>
@@ -122,7 +122,6 @@ abstract class SimpleRetryPolicy[A](i: Int)
     } else {
       None
     }
-  }
 
   override def andThen[B](
       that: Option[(Duration, RetryPolicy[A])] => B): A => B =
@@ -263,7 +262,7 @@ object RetryPolicy extends JavaSingleton {
     */
   def backoff[A](
       backoffs: Stream[Duration]
-  )(shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] = {
+  )(shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] =
     RetryPolicy { e =>
       if (shouldRetry.applyOrElse(e, AlwaysFalse)) {
         backoffs match {
@@ -276,7 +275,6 @@ object RetryPolicy extends JavaSingleton {
         None
       }
     }
-  }
 
   /**
     * A version of [[backoff]] usable from Java.
@@ -286,9 +284,8 @@ object RetryPolicy extends JavaSingleton {
   def backoffJava[A](
       backoffs: juc.Callable[ju.Iterator[Duration]],
       shouldRetry: PartialFunction[A, Boolean]
-  ): RetryPolicy[A] = {
+  ): RetryPolicy[A] =
     backoff[A](backoffs.call().asScala.toStream)(shouldRetry)
-  }
 
   /**
     * Combines multiple `RetryPolicy`s into a single combined `RetryPolicy`, with interleaved

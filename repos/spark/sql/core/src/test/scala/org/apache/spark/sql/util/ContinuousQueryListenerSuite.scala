@@ -199,24 +199,21 @@ class ContinuousQueryListenerSuite
       }
     }
 
-    def checkAsyncErrors(): Unit = {
+    def checkAsyncErrors(): Unit =
       asyncTestWaiter.await(timeout(streamingTimeout))
-    }
 
-    override def onQueryStarted(queryStarted: QueryStarted): Unit = {
+    override def onQueryStarted(queryStarted: QueryStarted): Unit =
       asyncTestWaiter {
         startStatus = QueryStatus(queryStarted.query)
       }
-    }
 
-    override def onQueryProgress(queryProgress: QueryProgress): Unit = {
+    override def onQueryProgress(queryProgress: QueryProgress): Unit =
       asyncTestWaiter {
         assert(
           startStatus != null,
           "onQueryProgress called before onQueryStarted")
         progressStatuses.add(QueryStatus(queryProgress.query))
       }
-    }
 
     override def onQueryTerminated(queryTerminated: QueryTerminated): Unit = {
       asyncTestWaiter {
@@ -236,12 +233,11 @@ class ContinuousQueryListenerSuite
       sinkStatus: SinkStatus)
 
   object QueryStatus {
-    def apply(query: ContinuousQuery): QueryStatus = {
+    def apply(query: ContinuousQuery): QueryStatus =
       QueryStatus(
         query.isActive,
         query.exception,
         query.sourceStatuses,
         query.sinkStatus)
-    }
   }
 }

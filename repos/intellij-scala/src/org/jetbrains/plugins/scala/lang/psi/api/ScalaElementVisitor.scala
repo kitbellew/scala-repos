@@ -208,9 +208,8 @@ class ScalaElementVisitor extends PsiElementVisitor {
   def visitAnnotTypeElement(annot: ScAnnotTypeElement) {
     visitTypeElement(annot)
   }
-  def visitTypeVariableTypeElement(tvar: ScTypeVariableTypeElement): Unit = {
+  def visitTypeVariableTypeElement(tvar: ScTypeVariableTypeElement): Unit =
     visitTypeElement(tvar)
-  }
 
   //scaladoc
   def visitDocComment(s: ScDocComment) { visitComment(s) }

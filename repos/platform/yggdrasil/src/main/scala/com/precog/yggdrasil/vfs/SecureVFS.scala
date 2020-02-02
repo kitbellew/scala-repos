@@ -125,48 +125,43 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         apiKey: APIKey,
         path: Path,
         version: Version,
-        readMode: ReadMode): EitherT[M, ResourceError, Resource] = {
+        readMode: ReadMode): EitherT[M, ResourceError, Resource] =
       vfs.readResource(path, version) >>=
         verifyResourceAccess(apiKey, path, readMode)
-    }
 
     final def readQuery(
         apiKey: APIKey,
         path: Path,
         version: Version,
-        readMode: ReadMode): EitherT[M, ResourceError, String] = {
+        readMode: ReadMode): EitherT[M, ResourceError, String] =
       readResource(apiKey, path, version, readMode) >>=
         Resource.asQuery(path, version)
-    }
 
     final def readProjection(
         apiKey: APIKey,
         path: Path,
         version: Version,
-        readMode: ReadMode): EitherT[M, ResourceError, Projection] = {
+        readMode: ReadMode): EitherT[M, ResourceError, Projection] =
       readResource(apiKey, path, version, readMode) >>=
         Resource.asProjection(path, version)
-    }
 
     final def size(
         apiKey: APIKey,
         path: Path,
-        version: Version): EitherT[M, ResourceError, Long] = {
+        version: Version): EitherT[M, ResourceError, Long] =
       readResource(apiKey, path, version, AccessMode.ReadMetadata) flatMap { //need mapM
         _.fold(
           br => EitherT.right(br.byteLength.point[M]),
           pr => EitherT.right(pr.recordCount))
       }
-    }
 
     final def pathStructure(
         apiKey: APIKey,
         path: Path,
         selector: CPath,
-        version: Version): EitherT[M, ResourceError, PathStructure] = {
+        version: Version): EitherT[M, ResourceError, PathStructure] =
       readProjection(apiKey, path, version, AccessMode.ReadMetadata) >>=
         VFS.pathStructure(selector)
-    }
 
     final def findDirectChildren(
         apiKey: APIKey,

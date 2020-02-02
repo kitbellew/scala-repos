@@ -14,9 +14,8 @@ case class Uniform(low: Double, high: Double)(implicit rand: RandBasis = Rand)
   require(low <= high, "low <= high")
   def draw() = rand.uniform.get * (high - low) + low
 
-  def unnormalizedLogPdf(x: Double) = {
+  def unnormalizedLogPdf(x: Double) =
     logI(x >= low && x <= high)
-  }
 
   lazy val logNormalizer = entropy
 
@@ -26,15 +25,13 @@ case class Uniform(low: Double, high: Double)(implicit rand: RandBasis = Rand)
   def variance = math.pow(high - low, 2) / 12
   def entropy = math.log(high - low)
 
-  def cdf(x: Double) = {
+  def cdf(x: Double) =
     if (x <= low) 0.0
     else if (x >= high) 1.0
     else (x - low) / (high - low)
-  }
 
-  override def probability(x: Double, y: Double): Double = {
+  override def probability(x: Double, y: Double): Double =
     (y - x) / (high - low)
-  }
 
   override def inverseCdf(p: Double): Double = (high - low) * p + low
 }

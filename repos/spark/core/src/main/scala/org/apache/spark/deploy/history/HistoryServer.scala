@@ -118,14 +118,12 @@ class HistoryServer(
     // SPARK-5983 ensure TRACE is not supported
     protected override def doTrace(
         req: HttpServletRequest,
-        res: HttpServletResponse): Unit = {
+        res: HttpServletResponse): Unit =
       res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-    }
   }
 
-  def getSparkUI(appKey: String): Option[SparkUI] = {
+  def getSparkUI(appKey: String): Option[SparkUI] =
     appCache.getSparkUI(appKey)
-  }
 
   initialize()
 
@@ -192,30 +190,26 @@ class HistoryServer(
     */
   override def getAppUI(
       appId: String,
-      attemptId: Option[String]): Option[LoadedAppUI] = {
+      attemptId: Option[String]): Option[LoadedAppUI] =
     provider.getAppUI(appId, attemptId)
-  }
 
   /**
     * Returns a list of available applications, in descending order according to their end time.
     *
     * @return List of all known applications.
     */
-  def getApplicationList(): Iterable[ApplicationHistoryInfo] = {
+  def getApplicationList(): Iterable[ApplicationHistoryInfo] =
     provider.getListing()
-  }
 
-  def getApplicationInfoList: Iterator[ApplicationInfo] = {
+  def getApplicationInfoList: Iterator[ApplicationInfo] =
     getApplicationList().iterator
       .map(ApplicationsListResource.appHistoryInfoToPublicAppInfo)
-  }
 
   override def writeEventLogs(
       appId: String,
       attemptId: Option[String],
-      zipStream: ZipOutputStream): Unit = {
+      zipStream: ZipOutputStream): Unit =
     provider.writeEventLogs(appId, attemptId, zipStream)
-  }
 
   /**
     * Returns the provider configuration to show in the listing page.
@@ -230,7 +224,7 @@ class HistoryServer(
     * @param attemptId optional attempt ID
     * @return true if the application was found and loaded.
     */
-  private def loadAppUi(appId: String, attemptId: Option[String]): Boolean = {
+  private def loadAppUi(appId: String, attemptId: Option[String]): Boolean =
     try {
       appCache.get(appId, attemptId)
       true
@@ -243,19 +237,17 @@ class HistoryServer(
           case cause: Exception => throw cause
         }
     }
-  }
 
   /**
     * String value for diagnostics.
     * @return a multi-line description of the server state.
     */
-  override def toString: String = {
+  override def toString: String =
     s"""
       | History Server;
       | provider = $provider
       | cache = $appCache
     """.stripMargin
-  }
 }
 
 /**
@@ -319,7 +311,7 @@ object HistoryServer extends Logging {
     val attemptSuffix = attemptId
       .map { id => s"/$id" }
       .getOrElse("")
-    s"${HistoryServer.UI_PATH_PREFIX}/${appId}${attemptSuffix}"
+    s"${HistoryServer.UI_PATH_PREFIX}/$appId$attemptSuffix"
   }
 
 }

@@ -173,7 +173,7 @@ package object prime {
       fastRho(rand(n), SafeLong.one, SafeLong.one, rand(n))
     }
 
-    def factor(n: SafeLong): Factors = {
+    def factor(n: SafeLong): Factors =
       if (n == 1) {
         Factors.one
       } else if (isPrime(n)) {
@@ -188,7 +188,6 @@ package object prime {
         while (divisor == n) divisor = rho(n, rand(n))
         factor(divisor) * factor(n / divisor)
       }
-    }
 
     if (n0 == 0) return Factors.zero
 
@@ -226,7 +225,7 @@ package object prime {
 
   import SafeLong.{two, three}
 
-  def fill(n: Int): Array[SafeLong] = {
+  def fill(n: Int): Array[SafeLong] =
     if (n <= 0) throw new IllegalArgumentException(n.toString)
     else if (n == 1) Array(two)
     else {
@@ -243,7 +242,6 @@ package object prime {
       loop(2, three)
       arr
     }
-  }
 
   def fill(start: Int, limit: Int): Array[SafeLong] =
     if (start == 0) fill(limit)

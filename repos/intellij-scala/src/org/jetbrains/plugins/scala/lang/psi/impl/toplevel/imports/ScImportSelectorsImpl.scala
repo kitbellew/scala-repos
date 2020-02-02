@@ -39,10 +39,9 @@ class ScImportSelectorsImpl private (
     findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
   }
 
-  def wildcardElement: Option[PsiElement] = {
+  def wildcardElement: Option[PsiElement] =
     if (hasWildcard) Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
     else None
-  }
 
   def selectors: Array[ScImportSelector] =
     getStubOrPsiChildren(

@@ -72,12 +72,11 @@ object EventMessage {
 
   implicit val decomposer: Decomposer[EventMessage] =
     new Decomposer[EventMessage] {
-      override def decompose(eventMessage: EventMessage): JValue = {
+      override def decompose(eventMessage: EventMessage): JValue =
         eventMessage.fold(
           IngestMessage.Decomposer.apply _,
           ArchiveMessage.Decomposer.apply _,
           StoreFileMessage.Decomposer.apply _)
-      }
     }
 }
 
@@ -128,7 +127,7 @@ case class IngestMessage(
       im: IngestMessage => A,
       am: ArchiveMessage => A,
       sf: StoreFileMessage => A): A = im(this)
-  def split: Seq[IngestMessage] = {
+  def split: Seq[IngestMessage] =
     if (data.size > 1) {
       val (dataA, dataB) = data.splitAt(data.size / 2)
       val Seq(refA, refB) = streamRef.split(2)
@@ -138,7 +137,6 @@ case class IngestMessage(
     } else {
       List(this)
     }
-  }
 
   override def toString =
     "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)".format(
@@ -244,7 +242,7 @@ object ArchiveMessage {
   val extractorV1: Extractor[ArchiveMessage] =
     extractorV[ArchiveMessage](schemaV1, Some("1.0".v))
   val extractorV0: Extractor[ArchiveMessage] = new Extractor[ArchiveMessage] {
-    override def validated(obj: JValue): Validation[Error, ArchiveMessage] = {
+    override def validated(obj: JValue): Validation[Error, ArchiveMessage] =
       (obj.validated[Int]("producerId") |@|
         obj.validated[Int]("deletionId") |@|
         obj.validated[Archive]("deletion")) {
@@ -256,7 +254,6 @@ object ArchiveMessage {
             EventId(producerId, sequenceId),
             defaultTimestamp)
       }
-    }
   }
 
   implicit val Decomposer: Decomposer[ArchiveMessage] = decomposerV1

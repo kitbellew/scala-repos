@@ -107,18 +107,17 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
 
   // These collections should all be empty once Spark is idle (no active stages / jobs):
   private[spark] def getSizesOfActiveStateTrackingCollections
-      : Map[String, Int] = {
+      : Map[String, Int] =
     Map(
       "activeStages" -> activeStages.size,
       "activeJobs" -> activeJobs.size,
       "poolToActiveStages" -> poolToActiveStages.values.map(_.size).sum,
       "stageIdToActiveJobIds" -> stageIdToActiveJobIds.values.map(_.size).sum
     )
-  }
 
   // These collections should stop growing once we have run at least `spark.ui.retainedStages`
   // stages and `spark.ui.retainedJobs` jobs:
-  private[spark] def getSizesOfHardSizeLimitedCollections: Map[String, Int] = {
+  private[spark] def getSizesOfHardSizeLimitedCollections: Map[String, Int] =
     Map(
       "completedJobs" -> completedJobs.size,
       "failedJobs" -> failedJobs.size,
@@ -126,11 +125,10 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       "skippedStages" -> skippedStages.size,
       "failedStages" -> failedStages.size
     )
-  }
 
   // These collections may grow arbitrarily, but once Spark becomes idle they should shrink back to
   // some bound based on the `spark.ui.retainedStages` and `spark.ui.retainedJobs` settings:
-  private[spark] def getSizesOfSoftSizeLimitedCollections: Map[String, Int] = {
+  private[spark] def getSizesOfSoftSizeLimitedCollections: Map[String, Int] =
     Map(
       "jobIdToData" -> jobIdToData.size,
       "stageIdToData" -> stageIdToData.size,
@@ -139,7 +137,6 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       // Since jobGroupToJobIds is map of sets, check that we don't leak keys with empty values:
       "jobGroupToJobIds keySet" -> jobGroupToJobIds.keys.size
     )
-  }
 
   /** If stages is too large, remove and garbage collect old stages */
   private def trimStagesIfNecessary(stages: ListBuffer[StageInfo]) =

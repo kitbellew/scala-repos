@@ -96,11 +96,10 @@ class TCPConnectionActor(
     context.become(busy, discardOld = true)
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     broadcaster ! Broadcaster.Register
-  }
 
-  final def attemptProcess(): Unit = {
+  final def attemptProcess(): Unit =
     try {
       repeatedDecode()
     } catch {
@@ -110,9 +109,6 @@ class TCPConnectionActor(
           "Error seen during message processing, closing client connection")
         context.stop(self)
     }
-
-  }
-
   @tailrec
   final def repeatedDecode(): Unit = {
     val (envelopeOpt, remainder) = protocol.decode(seen)

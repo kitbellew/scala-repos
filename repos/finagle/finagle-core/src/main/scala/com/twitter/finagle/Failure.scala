@@ -114,7 +114,7 @@ final class Failure private[finagle] (
       p.println("\tat %s".format(te))
   }
 
-  override def equals(a: Any) = {
+  override def equals(a: Any) =
     a match {
       case that: Failure =>
         this.why.equals(that.why) &&
@@ -123,7 +123,6 @@ final class Failure private[finagle] (
           this.sources.equals(that.sources)
       case _ => false
     }
-  }
 
   override def hashCode: Int =
     why.hashCode ^
@@ -298,7 +297,7 @@ object Failure {
   val rejected: Failure = rejected("The request was rejected")
 
   @tailrec
-  private def show(f: Failure): Throwable = {
+  private def show(f: Failure): Throwable =
     if (!f.isFlagged(Failure.Wrapped)) f.masked(ShowMask)
     else
       f.cause match {
@@ -307,7 +306,6 @@ object Failure {
         case None =>
           throw new IllegalArgumentException("Wrapped failure without a cause")
       }
-  }
 
   /**
     * Process failures for external presentation. Specifically, this converts

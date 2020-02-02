@@ -40,12 +40,11 @@ private[fpm] class LocalPrefixSpan(
     * @param postfixes an array of postfixes
     * @return an iterator of (frequent pattern, count)
     */
-  def run(postfixes: Array[Postfix]): Iterator[(Array[Int], Long)] = {
+  def run(postfixes: Array[Postfix]): Iterator[(Array[Int], Long)] =
     genFreqPatterns(ReversedPrefix.empty, postfixes).map {
       case (prefix, count) =>
         (prefix.toSequence, count)
     }
-  }
 
   /**
     * Recursively generates frequent patterns.

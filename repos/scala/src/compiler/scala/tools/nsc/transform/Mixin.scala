@@ -124,7 +124,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   /** Is member overridden (either directly or via a bridge) in base class sequence `bcs`? */
   def isOverriddenAccessor(member: Symbol, bcs: List[Symbol]): Boolean =
     beforeOwnPhase {
-      def hasOverridingAccessor(clazz: Symbol) = {
+      def hasOverridingAccessor(clazz: Symbol) =
         clazz.info
           .nonPrivateDecl(member.name)
           .alternatives
@@ -132,7 +132,6 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             isConcreteAccessor(sym) &&
               !sym.hasFlag(MIXEDIN) &&
               matchesType(sym.tpe, member.tpe, alwaysMatchSimple = true))
-      }
       (bcs.head != member.owner
       && (hasOverridingAccessor(bcs.head) || isOverriddenAccessor(
         member,
@@ -715,7 +714,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           cond: => Tree,
           syncBody: List[Tree],
           stats: List[Tree],
-          retVal: Tree): Tree = {
+          retVal: Tree): Tree =
         mkFastPathBody(
           clazz,
           lzyVal,
@@ -725,7 +724,6 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           retVal,
           gen.mkAttributedThis(clazz),
           List())
-      }
 
       def mkFastPathBody(
           clazz: Symbol,
@@ -925,7 +923,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 bitmapKind(sym)))
           } else Nil
         }
-        override def transformStats(stats: List[Tree], exprOwner: Symbol) = {
+        override def transformStats(stats: List[Tree], exprOwner: Symbol) =
           // !!! Ident(self) is never referenced, is it supposed to be confirming
           // that self is anything in particular?
           super.transformStats(
@@ -940,7 +938,6 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             },
             exprOwner
           )
-        }
       }
 
       /* Adds statements to set the 'init' bit for each field initialized

@@ -40,10 +40,9 @@ class JavaHadoopRDD[K, V](rdd: HadoopRDD[K, V])(
         InputSplit,
         java.util.Iterator[(K, V)],
         java.util.Iterator[R]],
-      preservesPartitioning: Boolean = false): JavaRDD[R] = {
+      preservesPartitioning: Boolean = false): JavaRDD[R] =
     new JavaRDD(
       rdd.mapPartitionsWithInputSplit(
         (a, b) => f.call(a, b.asJava).asScala,
         preservesPartitioning)(fakeClassTag))(fakeClassTag)
-  }
 }

@@ -48,14 +48,13 @@ private[rhino] class LazyScalaJSScope(
   private def load(name: String): Unit =
     coreLib.load(globalScope, propNameToEncodedName(name))
 
-  private def propNameToEncodedName(name: String): String = {
+  private def propNameToEncodedName(name: String): String =
     if (isStatics) name.split("__")(0)
     else name
-  }
 
   override def getClassName(): String = "LazyScalaJSScope"
 
-  override def get(name: String, start: Scriptable): AnyRef = {
+  override def get(name: String, start: Scriptable): AnyRef =
     if (name == "__noSuchMethod__") {
       /* Automatically called by Rhino when trying to call a method fails.
        * We don't want to throw a ClassNotFoundException for this case, but
@@ -81,7 +80,6 @@ private[rhino] class LazyScalaJSScope(
         )
         .asInstanceOf[AnyRef]
     }
-  }
 
   override def get(index: Int, start: Scriptable): AnyRef =
     get(index.toString, start)
@@ -107,9 +105,8 @@ private[rhino] class LazyScalaJSScope(
 
   override def getIds(): Array[AnyRef] = fields.keys.toArray
 
-  override def getDefaultValue(hint: java.lang.Class[_]): AnyRef = {
+  override def getDefaultValue(hint: java.lang.Class[_]): AnyRef =
     base.getDefaultValue(hint)
-  }
 
   override def hasInstance(instance: Scriptable): Boolean = false
 }

@@ -26,23 +26,20 @@ class ScPrimaryConstructorElementType[Func <: ScPrimaryConstructor]
       stub: ScPrimaryConstructorStub,
       dataStream: StubOutputStream): Unit = {}
 
-  def createPsi(stub: ScPrimaryConstructorStub): ScPrimaryConstructor = {
+  def createPsi(stub: ScPrimaryConstructorStub): ScPrimaryConstructor =
     new ScPrimaryConstructorImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScPrimaryConstructor,
-      parentStub: StubElement[ParentPsi]): ScPrimaryConstructorStub = {
+      parentStub: StubElement[ParentPsi]): ScPrimaryConstructorStub =
     new ScPrimaryConstructorStubImpl(parentStub, this)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,
-      parentStub: Any): ScPrimaryConstructorStub = {
+      parentStub: Any): ScPrimaryConstructorStub =
     new ScPrimaryConstructorStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this)
-  }
 
   def indexStub(stub: ScPrimaryConstructorStub, sink: IndexSink): Unit = {}
 }

@@ -24,11 +24,10 @@ trait MergeService {
       userName: String,
       repositoryName: String,
       branch: String,
-      issueId: Int): Boolean = {
+      issueId: Int): Boolean =
     using(Git.open(getRepositoryDir(userName, repositoryName))) { git =>
       MergeCacheInfo(git, branch, issueId).checkConflict()
     }
-  }
 
   /**
     * Checks whether conflict will be caused in merging within pull request.
@@ -40,11 +39,10 @@ trait MergeService {
       userName: String,
       repositoryName: String,
       branch: String,
-      issueId: Int): Option[Boolean] = {
+      issueId: Int): Option[Boolean] =
     using(Git.open(getRepositoryDir(userName, repositoryName))) { git =>
       MergeCacheInfo(git, branch, issueId).checkConflictCache()
     }
-  }
 
   /** merge pull request */
   def mergePullRequest(
@@ -52,9 +50,8 @@ trait MergeService {
       branch: String,
       issueId: Int,
       message: String,
-      committer: PersonIdent): Unit = {
+      committer: PersonIdent): Unit =
     MergeCacheInfo(git, branch, issueId).merge(message, committer)
-  }
 
   /** fetch remote branch to my repository refs/pull/{issueId}/head */
   def fetchAsPullRequest(
@@ -69,7 +66,7 @@ trait MergeService {
         .setRemote(
           getRepositoryDir(requestUserName, requestRepositoryName).toURI.toString)
         .setRefSpecs(
-          new RefSpec(s"refs/heads/${requestBranch}:refs/pull/${issueId}/head"))
+          new RefSpec(s"refs/heads/$requestBranch:refs/pull/$issueId/head"))
         .call
     }
   }
@@ -83,14 +80,14 @@ trait MergeService {
       localBranch: String,
       remoteUserName: String,
       remoteRepositoryName: String,
-      remoteBranch: String): Option[(ObjectId, ObjectId, ObjectId)] = {
+      remoteBranch: String): Option[(ObjectId, ObjectId, ObjectId)] =
     using(Git.open(getRepositoryDir(localUserName, localRepositoryName))) {
       git =>
-        val remoteRefName = s"refs/heads/${remoteBranch}"
+        val remoteRefName = s"refs/heads/$remoteBranch"
         val tmpRefName =
-          s"refs/remote-temp/${remoteUserName}/${remoteRepositoryName}/${remoteBranch}"
+          s"refs/remote-temp/$remoteUserName/$remoteRepositoryName/$remoteBranch"
         val refSpec =
-          new RefSpec(s"${remoteRefName}:${tmpRefName}").setForceUpdate(true)
+          new RefSpec(s"$remoteRefName:$tmpRefName").setForceUpdate(true)
         try {
           // fetch objects from origin repository branch
           git.fetch
@@ -102,7 +99,7 @@ trait MergeService {
           val merger =
             MergeStrategy.RECURSIVE.newMerger(git.getRepository, true)
           val mergeBaseTip =
-            git.getRepository.resolve(s"refs/heads/${localBranch}")
+            git.getRepository.resolve(s"refs/heads/$localBranch")
           val mergeTip = git.getRepository.resolve(tmpRefName)
           try {
             if (merger.merge(mergeBaseTip, mergeTip)) {
@@ -119,7 +116,6 @@ trait MergeService {
           refUpdate.delete()
         }
     }
-  }
 
   /**
     * Checks whether conflict will be caused in merging. Returns true if conflict will be caused.
@@ -147,7 +143,7 @@ trait MergeService {
       remoteRepositoryName: String,
       remoteBranch: String,
       loginAccount: Account,
-      message: String): Option[ObjectId] = {
+      message: String): Option[ObjectId] =
     tryMergeRemote(
       localUserName,
       localRepositoryName,
@@ -168,7 +164,7 @@ trait MergeService {
               Seq(oldBaseId, oldHeadId))
             Util.updateRefs(
               git.getRepository,
-              s"refs/heads/${localBranch}",
+              s"refs/heads/$localBranch",
               newCommit,
               false,
               committer,
@@ -176,7 +172,6 @@ trait MergeService {
         }
         oldBaseId
     }
-  }
 
 }
 object MergeService {
@@ -219,11 +214,11 @@ object MergeService {
   }
   case class MergeCacheInfo(git: Git, branch: String, issueId: Int) {
     val repository = git.getRepository
-    val mergedBranchName = s"refs/pull/${issueId}/merge"
-    val conflictedBranchName = s"refs/pull/${issueId}/conflict"
-    lazy val mergeBaseTip = repository.resolve(s"refs/heads/${branch}")
-    lazy val mergeTip = repository.resolve(s"refs/pull/${issueId}/head")
-    def checkConflictCache(): Option[Boolean] = {
+    val mergedBranchName = s"refs/pull/$issueId/merge"
+    val conflictedBranchName = s"refs/pull/$issueId/conflict"
+    lazy val mergeBaseTip = repository.resolve(s"refs/heads/$branch")
+    lazy val mergeTip = repository.resolve(s"refs/pull/$issueId/head")
+    def checkConflictCache(): Option[Boolean] =
       Option(repository.resolve(mergedBranchName))
         .flatMap { merged =>
           if (parseCommit(merged).getParents().toSet == Set(
@@ -246,10 +241,8 @@ object MergeService {
               None
             }
         })
-    }
-    def checkConflict(): Boolean = {
+    def checkConflict(): Boolean =
       checkConflictCache.getOrElse(checkConflictForce)
-    }
     def checkConflictForce(): Boolean = {
       val merger = MergeStrategy.RECURSIVE.newMerger(repository, true)
       val conflicted =
@@ -297,7 +290,7 @@ object MergeService {
       }
       val mergeResultCommit = parseCommit(
         Option(repository.resolve(mergedBranchName)).getOrElse(
-          throw new RuntimeException(s"not found branch ${mergedBranchName}")))
+          throw new RuntimeException(s"not found branch $mergedBranchName")))
       // creates merge commit
       val mergeCommitId = createMergeCommit(
         mergeResultCommit.getTree().getId(),
@@ -306,7 +299,7 @@ object MergeService {
       // update refs
       Util.updateRefs(
         repository,
-        s"refs/heads/${branch}",
+        s"refs/heads/$branch",
         mergeCommitId,
         false,
         committer,

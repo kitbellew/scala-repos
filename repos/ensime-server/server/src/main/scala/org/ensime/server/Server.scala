@@ -105,7 +105,7 @@ class ServerActor(
     Environment.info foreach log.info
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     try {
       initialiseChildren()
     } catch {
@@ -113,15 +113,13 @@ class ServerActor(
         log.error(s"Error during startup - ${t.getMessage}", t)
         self ! ShutdownRequest(t.toString, isError = true)
     }
-  }
   override def receive: Receive = {
     case req: ShutdownRequest =>
       triggerShutdown(req)
   }
 
-  def triggerShutdown(request: ShutdownRequest): Unit = {
+  def triggerShutdown(request: ShutdownRequest): Unit =
     Server.shutdown(context.system, request)
-  }
 
 }
 

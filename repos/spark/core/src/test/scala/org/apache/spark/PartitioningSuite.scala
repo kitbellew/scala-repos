@@ -79,18 +79,16 @@ class PartitioningSuite
       case (numPartitions, partitioner) =>
         val rangeBounds = partitioner.invokePrivate(decoratedRangeBounds())
         1.to(1000).map { element =>
-          {
-            val partition = partitioner.getPartition(element)
-            if (numPartitions > 1) {
-              if (partition < rangeBounds.size) {
-                assert(element <= rangeBounds(partition))
-              }
-              if (partition > 0) {
-                assert(element > rangeBounds(partition - 1))
-              }
-            } else {
-              assert(partition === 0)
+          val partition = partitioner.getPartition(element)
+          if (numPartitions > 1) {
+            if (partition < rangeBounds.size) {
+              assert(element <= rangeBounds(partition))
             }
+            if (partition > 0) {
+              assert(element > rangeBounds(partition - 1))
+            }
+          } else {
+            assert(partition === 0)
           }
         }
     }
@@ -248,9 +246,8 @@ class PartitioningSuite
     val arrPairs: RDD[(Array[Int], Int)] =
       sc.parallelize(Array(1, 2, 3, 4), 2).map(x => (Array(x), x))
 
-    def verify(testFun: => Unit): Unit = {
+    def verify(testFun: => Unit): Unit =
       intercept[SparkException](testFun).getMessage.contains("array")
-    }
 
     verify(arrs.distinct())
     // We can't catch all usages of arrays, since they might occur inside other collections:

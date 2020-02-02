@@ -29,11 +29,10 @@ object ScFunctionType {
   def apply(returnType: ScType, params: Seq[ScType])(
       project: Project,
       scope: GlobalSearchScope): ValueType = {
-    def findClass(fullyQualifiedName: String): Option[PsiClass] = {
+    def findClass(fullyQualifiedName: String): Option[PsiClass] =
       ScalaPsiManager
         .instance(project)
         .getCachedClass(scope, fullyQualifiedName)
-    }
     findClass("scala.Function" + params.length) match {
       case Some(t: ScTrait) =>
         val typeParams = params.toList :+ returnType
@@ -42,14 +41,13 @@ object ScFunctionType {
     }
   }
 
-  def unapply(tp: ScType): Option[(ScType, Seq[ScType])] = {
+  def unapply(tp: ScType): Option[(ScType, Seq[ScType])] =
     ScSynteticSugarClassesUtil.extractForPrefix(tp, "scala.Function") match {
       case Some((clazz, typeArgs)) if typeArgs.length > 0 =>
         val (params, Seq(ret)) = typeArgs.splitAt(typeArgs.length - 1)
         Some(ret, params)
       case _ => None
     }
-  }
 
   def isFunctionType(tp: ScType): Boolean = unapply(tp).isDefined
 }
@@ -58,11 +56,10 @@ object ScPartialFunctionType {
   def apply(returnType: ScType, param: ScType)(
       project: Project,
       scope: GlobalSearchScope): ValueType = {
-    def findClass(fullyQualifiedName: String): Option[PsiClass] = {
+    def findClass(fullyQualifiedName: String): Option[PsiClass] =
       ScalaPsiManager
         .instance(project)
         .getCachedClass(scope, fullyQualifiedName)
-    }
     findClass("scala.PartialFunction") match {
       case Some(t: ScTrait) =>
         val typeParams = param :: returnType :: Nil
@@ -71,13 +68,12 @@ object ScPartialFunctionType {
     }
   }
 
-  def unapply(tp: ScType): Option[(ScType, ScType)] = {
+  def unapply(tp: ScType): Option[(ScType, ScType)] =
     ScSynteticSugarClassesUtil.extractForPrefix(tp, "scala.PartialFunction") match {
       case Some((clazz, typeArgs)) if typeArgs.length == 2 =>
         Some(typeArgs(1), typeArgs(0))
       case _ => None
     }
-  }
 
   def isFunctionType(tp: ScType): Boolean = unapply(tp).isDefined
 }
@@ -86,11 +82,10 @@ object ScTupleType {
   def apply(components: Seq[ScType])(
       project: Project,
       scope: GlobalSearchScope): ValueType = {
-    def findClass(fullyQualifiedName: String): Option[PsiClass] = {
+    def findClass(fullyQualifiedName: String): Option[PsiClass] =
       ScalaPsiManager
         .instance(project)
         .getCachedClass(scope, fullyQualifiedName)
-    }
     findClass("scala.Tuple" + components.length) match {
       case Some(t: ScClass) =>
         ScParameterizedType(ScType.designator(t), components)
@@ -98,13 +93,12 @@ object ScTupleType {
     }
   }
 
-  def unapply(tp: ScType): Option[Seq[ScType]] = {
+  def unapply(tp: ScType): Option[Seq[ScType]] =
     ScSynteticSugarClassesUtil.extractForPrefix(tp, "scala.Tuple") match {
       case Some((clazz, typeArgs)) if typeArgs.length > 0 =>
         Some(typeArgs)
       case _ => None
     }
-  }
 }
 
 object ScSynteticSugarClassesUtil {

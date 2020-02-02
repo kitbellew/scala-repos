@@ -4,11 +4,9 @@
 class Test {
   type Type1 = () => Unit
 
-  def call(p: Int)(f: => Type1) = {
+  def call(p: Int)(f: => Type1) =
     f()
-  }
 
-  def run = {
+  def run =
     call(0, () => System.out.println("here we are"))
-  }
 }

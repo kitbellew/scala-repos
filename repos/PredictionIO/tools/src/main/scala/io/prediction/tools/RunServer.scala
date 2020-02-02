@@ -86,7 +86,7 @@ object RunServer extends Logging {
           "--class",
           "io.prediction.workflow.CreateServer",
           "--name",
-          s"PredictionIO Engine Instance: ${engineInstanceId}") ++
+          s"PredictionIO Engine Instance: $engineInstanceId") ++
         (if (!ca.build.uberJar) {
            Seq("--jars", jarFiles)
          } else Seq()) ++
@@ -141,9 +141,8 @@ object RunServer extends Logging {
         "CLASSPATH" -> "",
         "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
     Runtime.getRuntime.addShutdownHook(new Thread(new Runnable {
-      def run(): Unit = {
+      def run(): Unit =
         proc.destroy()
-      }
     }))
     proc.exitValue()
   }

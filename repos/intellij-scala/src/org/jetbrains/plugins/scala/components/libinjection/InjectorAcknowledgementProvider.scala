@@ -59,10 +59,9 @@ class UIAcknowledgementProvider(
       .notify(project)
   }
 
-  override def showReviewDialogAndFilter(candidates: ManifestToDescriptors) = {
+  override def showReviewDialogAndFilter(candidates: ManifestToDescriptors) =
     candidates.partition { candidate =>
       val dialog = new InjectorReviewDialog(project, candidate, LOG)
       dialog.showAndGet()
     }
-  }
 }

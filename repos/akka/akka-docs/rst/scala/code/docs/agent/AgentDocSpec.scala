@@ -105,7 +105,7 @@ class AgentDocSpec extends AkkaSpec {
     import scala.concurrent.duration._
     import scala.concurrent.stm._
 
-    def transfer(from: Agent[Int], to: Agent[Int], amount: Int): Boolean = {
+    def transfer(from: Agent[Int], to: Agent[Int], amount: Int): Boolean =
       atomic { txn =>
         if (from.get < amount) false
         else {
@@ -114,7 +114,6 @@ class AgentDocSpec extends AkkaSpec {
           true
         }
       }
-    }
 
     val from = Agent(100)
     val to = Agent(20)

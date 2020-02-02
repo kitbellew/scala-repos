@@ -16,14 +16,13 @@ class ScalaInfixUnwrapper extends ScalaUnwrapper with ShortTextDescription {
     case _                           => false
   }
 
-  override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) = {
+  override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
     element.getParent match {
       case infix: ScInfixExpr =>
         context.extractElement(element, infix)
         context.delete(infix)
       case _ =>
     }
-  }
 
   override def collectAffectedElements(
       e: PsiElement,

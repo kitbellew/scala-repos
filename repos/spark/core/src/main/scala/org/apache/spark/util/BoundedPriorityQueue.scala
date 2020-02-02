@@ -54,9 +54,8 @@ private[spark] class BoundedPriorityQueue[A](maxSize: Int)(
     this
   }
 
-  override def +=(elem1: A, elem2: A, elems: A*): this.type = {
+  override def +=(elem1: A, elem2: A, elems: A*): this.type =
     this += elem1 += elem2 ++= elems
-  }
 
   override def clear() { underlying.clear() }
 

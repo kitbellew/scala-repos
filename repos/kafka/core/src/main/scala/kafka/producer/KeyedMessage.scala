@@ -33,14 +33,13 @@ case class KeyedMessage[K, V](topic: String, key: K, partKey: Any, message: V) {
 
   def this(topic: String, key: K, message: V) = this(topic, key, key, message)
 
-  def partitionKey = {
+  def partitionKey =
     if (partKey != null)
       partKey
     else if (hasKey)
       key
     else
       null
-  }
 
   def hasKey = key != null
 }

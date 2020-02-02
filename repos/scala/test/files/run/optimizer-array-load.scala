@@ -9,9 +9,8 @@ object Test {
       x += 1
     }
   }
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       f(); assert(false, "should have thrown exception")
     } catch { case _: ArrayIndexOutOfBoundsException => () }
-  }
 }

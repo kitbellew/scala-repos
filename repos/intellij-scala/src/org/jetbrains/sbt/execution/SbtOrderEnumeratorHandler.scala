@@ -17,7 +17,7 @@ import org.jetbrains.sbt.project.SbtProjectSystem
 class SbtOrderEnumeratorHandler extends OrderEnumerationHandler {
   override def shouldAddDependency(
       orderEntry: OrderEntry,
-      settings: OrderEnumeratorSettings): AddDependencyType = {
+      settings: OrderEnumeratorSettings): AddDependencyType =
     (orderEntry, settings) match {
       case (library: LibraryOrderEntry, enumerator: ModuleOrderEnumerator) =>
         val isTransitive = getModuleFromEnumerator(enumerator).fold(false)(
@@ -27,7 +27,6 @@ class SbtOrderEnumeratorHandler extends OrderEnumerationHandler {
       case _ =>
         AddDependencyType.DEFAULT
     }
-  }
 
   private def getModuleFromEnumerator(
       enumerator: ModuleOrderEnumerator): Option[Module] = {
@@ -46,13 +45,11 @@ class SbtOrderEnumeratorHandlerFactory extends OrderEnumerationHandler.Factory {
   override def createHandler(module: Module): OrderEnumerationHandler =
     new SbtOrderEnumeratorHandler
 
-  override def isApplicable(project: Project): Boolean = {
+  override def isApplicable(project: Project): Boolean =
     ModuleManager.getInstance(project).getModules.exists(isApplicable)
-  }
 
-  override def isApplicable(module: Module): Boolean = {
+  override def isApplicable(module: Module): Boolean =
     ExternalSystemApiUtil.isExternalSystemAwareModule(
       SbtProjectSystem.Id,
       module)
-  }
 }

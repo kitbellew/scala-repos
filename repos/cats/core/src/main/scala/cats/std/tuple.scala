@@ -24,8 +24,7 @@ sealed trait Tuple2Instances {
   implicit def tuple2Show[A, B](
       implicit aShow: Show[A],
       bShow: Show[B]): Show[(A, B)] = new Show[(A, B)] {
-    override def show(f: (A, B)): String = {
+    override def show(f: (A, B)): String =
       s"(${aShow.show(f._1)},${bShow.show(f._2)})"
-    }
   }
 }

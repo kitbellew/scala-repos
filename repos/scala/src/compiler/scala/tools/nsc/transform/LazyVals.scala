@@ -184,12 +184,12 @@ abstract class LazyVals
                 // add bitmap to inner class if necessary
                 val toAdd0 =
                   bitmaps(currentOwner).map(s => typed(ValDef(s, ZERO)))
-                toAdd0.foreach(t => {
+                toAdd0.foreach { t =>
                   if (currentOwner.info.decl(t.symbol.name) == NoSymbol) {
                     t.symbol.setFlag(PROTECTED)
                     currentOwner.info.decls.enter(t.symbol)
                   }
-                })
+                }
                 toAdd0
               } else List()
             deriveTemplate(tree)(_ =>

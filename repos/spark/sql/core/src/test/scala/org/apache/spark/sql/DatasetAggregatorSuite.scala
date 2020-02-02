@@ -41,13 +41,11 @@ object TypedAverage extends Aggregator[(String, Int), (Long, Long), Double] {
 
   override def reduce(
       countAndSum: (Long, Long),
-      input: (String, Int)): (Long, Long) = {
+      input: (String, Int)): (Long, Long) =
     (countAndSum._1 + 1, countAndSum._2 + input._2)
-  }
 
-  override def merge(b1: (Long, Long), b2: (Long, Long)): (Long, Long) = {
+  override def merge(b1: (Long, Long), b2: (Long, Long)): (Long, Long) =
     (b1._1 + b2._1, b1._2 + b2._2)
-  }
 
   override def finish(countAndSum: (Long, Long)): Double =
     countAndSum._2 / countAndSum._1
@@ -60,13 +58,11 @@ object ComplexResultAgg
 
   override def reduce(
       countAndSum: (Long, Long),
-      input: (String, Int)): (Long, Long) = {
+      input: (String, Int)): (Long, Long) =
     (countAndSum._1 + 1, countAndSum._2 + input._2)
-  }
 
-  override def merge(b1: (Long, Long), b2: (Long, Long)): (Long, Long) = {
+  override def merge(b1: (Long, Long), b2: (Long, Long)): (Long, Long) =
     (b1._1 + b2._1, b1._2 + b2._2)
-  }
 
   override def finish(reduction: (Long, Long)): (Long, Long) = reduction
 }

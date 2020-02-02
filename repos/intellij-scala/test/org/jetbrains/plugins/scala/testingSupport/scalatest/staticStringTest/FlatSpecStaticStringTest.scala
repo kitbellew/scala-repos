@@ -10,7 +10,7 @@ trait FlatSpecStaticStringTest extends ScalaTestTestCase {
   val flatSpecClassName = "FlatSpecStringTest"
   val flatSpecFileName = flatSpecClassName + ".scala"
 
-  def addFlatSpec() = {
+  def addFlatSpec() =
     addFileToProject(
       flatSpecFileName,
       """
@@ -34,7 +34,6 @@ trait FlatSpecStaticStringTest extends ScalaTestTestCase {
         |}
       """.stripMargin.trim()
     )
-  }
 
   def testFlatSpecSum() = {
     addFlatSpec()

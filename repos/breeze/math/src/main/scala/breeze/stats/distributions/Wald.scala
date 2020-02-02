@@ -31,10 +31,9 @@ case class Wald(mean: Double, shape: Double)(implicit rand: RandBasis = Rand)
   /**
     * Gets one sample from the distribution. Equivalent to sample()
     */
-  def draw(): Double = {
+  def draw(): Double =
     // from numpy
     gen.draw()
-  }
 
   def unnormalizedLogPdf(x: Double): Double = {
     val z = (x - mean) / mean

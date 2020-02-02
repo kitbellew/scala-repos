@@ -40,9 +40,8 @@ private[internal] trait TypeConstraints {
       *  be called from within an undo or undoUnless block,
       *  which is already synchronized.
       */
-    private[reflect] def record(tv: TypeVar) = {
+    private[reflect] def record(tv: TypeVar) =
       log ::= UndoPair(tv, tv.constr.cloneInternal)
-    }
 
     def clear() {
       if (settings.debug)
@@ -212,7 +211,7 @@ private[internal] trait TypeConstraints {
           if (up) tparam.info.bounds.hi else tparam.info.bounds.lo
         //Console.println("solveOne0(tv, tp, v, b)="+(tvar, tparam, variance, bound))
         var cyclic = bound contains tparam
-        foreach3(tvars, tparams, variances)((tvar2, tparam2, variance2) => {
+        foreach3(tvars, tparams, variances) { (tvar2, tparam2, variance2) =>
           val ok = (tparam2 != tparam) && (
             (bound contains tparam2)
               || up && (tparam2.info.bounds.lo =:= tparam.tpeHK)
@@ -222,7 +221,7 @@ private[internal] trait TypeConstraints {
             if (tvar2.constr.inst eq null) cyclic = true
             solveOne(tvar2, tparam2, variance2)
           }
-        })
+        }
         if (!cyclic) {
           if (up) {
             if (bound.typeSymbol != AnyClass) {

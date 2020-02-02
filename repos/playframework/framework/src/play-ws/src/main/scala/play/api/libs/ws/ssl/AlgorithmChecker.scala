@@ -55,14 +55,11 @@ class AlgorithmChecker(
     }
   }
 
-  def findSignatureConstraint(
-      algorithm: String): Option[AlgorithmConstraint] = {
+  def findSignatureConstraint(algorithm: String): Option[AlgorithmConstraint] =
     signatureConstraintsMap.get(algorithm)
-  }
 
-  def findKeyConstraint(algorithm: String): Option[AlgorithmConstraint] = {
+  def findKeyConstraint(algorithm: String): Option[AlgorithmConstraint] =
     keyConstraintsMap.get(algorithm)
-  }
 
   /**
     * Checks for signature algorithms in the certificate and throws CertPathValidatorException if matched.
@@ -197,7 +194,7 @@ class AlgorithmChecker(
   /**
     * Useful way to get certificate info without getting spammed with data.
     */
-  def getCommonName(cert: X509Certificate) = {
+  def getCommonName(cert: X509Certificate) =
     // http://stackoverflow.com/a/18174689/5266
     try {
       val ldapName = new LdapName(cert.getSubjectX500Principal.getName)
@@ -215,6 +212,5 @@ class AlgorithmChecker(
       case e: InvalidNameException =>
         null
     }
-  }
 
 }

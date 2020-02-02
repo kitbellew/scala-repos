@@ -60,7 +60,7 @@ class ScalaConsoleExecuteAction extends AnAction {
 
       text
         .split('\n')
-        .foreach(line => {
+        .foreach { line =>
           if (line != "") {
             val outputStream: OutputStream = processHandler.getProcessInput
             try {
@@ -72,7 +72,7 @@ class ScalaConsoleExecuteAction extends AnAction {
             }
           }
           console.textSent(line + "\n")
-        })
+        }
     } else {
       ScalaConsoleExecuteAction.LOG.info(
         new Throwable(

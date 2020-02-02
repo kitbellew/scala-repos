@@ -119,11 +119,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test(
     "SPARK-10484 Optimize the Cartesian (Cross) Join with broadcast based JOIN") {
-    def assertBroadcastNestedLoopJoin(sqlText: String): Unit = {
+    def assertBroadcastNestedLoopJoin(sqlText: String): Unit =
       assert(sql(sqlText).queryExecution.sparkPlan.collect {
         case _: BroadcastNestedLoopJoin => 1
       }.nonEmpty)
-    }
 
     assertBroadcastNestedLoopJoin(spark_10484_1)
     assertBroadcastNestedLoopJoin(spark_10484_2)
@@ -462,24 +461,24 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   createQueryTest(
     "transform with custom field delimiter",
     s"""
-      |SELECT TRANSFORM (key) ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter}
-      |USING 'cat' AS (tKey) ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter} FROM src;
+      |SELECT TRANSFORM (key) ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter
+      |USING 'cat' AS (tKey) ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter FROM src;
     """.stripMargin.replaceAll("\n", " ")
   )
 
   createQueryTest(
     "transform with custom field delimiter2",
     s"""
-      |SELECT TRANSFORM (key, value) ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter}
-      |USING 'cat' ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter} FROM src;
+      |SELECT TRANSFORM (key, value) ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter
+      |USING 'cat' ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter FROM src;
     """.stripMargin.replaceAll("\n", " ")
   )
 
   createQueryTest(
     "transform with custom field delimiter3",
     s"""
-      |SELECT TRANSFORM (*) ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter}
-      |USING 'cat' ROW FORMAT DELIMITED FIELDS TERMINATED BY ${delimiter} FROM src;
+      |SELECT TRANSFORM (*) ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter
+      |USING 'cat' ROW FORMAT DELIMITED FIELDS TERMINATED BY $delimiter FROM src;
     """.stripMargin.replaceAll("\n", " ")
   )
 

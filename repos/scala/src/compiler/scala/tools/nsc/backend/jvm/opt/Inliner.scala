@@ -26,9 +26,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
   import inlinerHeuristics._
   import backendUtils._
 
-  def runInliner(): Unit = {
+  def runInliner(): Unit =
 //    rewriteFinalTraitMethodInvocations()
-
     for (request <- collectAndOrderInlineRequests) {
       val Right(callee) = request.callsite.callee // collectAndOrderInlineRequests returns callsites with a known callee
 
@@ -51,7 +50,6 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         }
       }
     }
-  }
 
   /**
     * Ordering for inline requests. Required to make the inliner deterministic:
@@ -136,11 +134,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         })
 
     def implClassMethodV(
-        implMethodDescriptor: String): Either[OptimizerWarning, MethodNode] = {
+        implMethodDescriptor: String): Either[OptimizerWarning, MethodNode] =
       byteCodeRepository
         .methodNode(implClassInternalName, callee.name, implMethodDescriptor)
         .map(_._1)
-    }
 
     // The rewrite reading the implementation class and the implementation method from the bytecode
     // repository. If either of the two fails, the rewrite is not performed.
@@ -284,18 +281,17 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // that become leaves, etc.
     def leavesFirst(
         requests: List[InlineRequest],
-        visited: Set[InlineRequest] = Set.empty): List[InlineRequest] = {
+        visited: Set[InlineRequest] = Set.empty): List[InlineRequest] =
       if (requests.isEmpty) Nil
       else {
-        val (leaves, others) = requests.partition(r => {
+        val (leaves, others) = requests.partition { r =>
           val inlineRequestsForCallee =
             nonElidedRequests(r.callsite.callee.get.callee)
           inlineRequestsForCallee.forall(visited)
-        })
+        }
         assert(leaves.nonEmpty, requests)
         leaves ::: leavesFirst(others, visited ++ leaves)
       }
-    }
 
     leavesFirst(breakInlineCycles)
   }
@@ -348,14 +344,13 @@ class Inliner[BT <: BTypes](val btypes: BT) {
   def adaptPostRequestForMainCallsite(
       post: InlineRequest,
       mainCallsite: Callsite): List[InlineRequest] = {
-    def impl(post: InlineRequest, at: Callsite): List[InlineRequest] = {
+    def impl(post: InlineRequest, at: Callsite): List[InlineRequest] =
       post.callsite.inlinedClones.find(_.clonedWhenInlining == at) match {
         case Some(clonedCallsite) =>
           List(InlineRequest(clonedCallsite.callsite, post.post))
         case None =>
           post.post.flatMap(impl(_, post.callsite)).flatMap(impl(_, at))
       }
-    }
     impl(post, mainCallsite)
   }
 
@@ -917,8 +912,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 opcode: Int,
                 methodFlags: Int,
                 methodDeclClass: ClassBType,
-                methodRefClass: ClassBType)
-                : Either[OptimizerWarning, Boolean] = {
+                methodRefClass: ClassBType): Either[OptimizerWarning, Boolean] =
               opcode match {
                 case INVOKESPECIAL
                     if mi.name != GenBCode.INSTANCE_CONSTRUCTOR_NAME =>
@@ -933,7 +927,6 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                     methodRefClass,
                     destinationClass)
               }
-            }
 
             val methodRefClass = classBTypeFromParsedClassfile(mi.owner)
             for {
@@ -1040,7 +1033,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       }
 
     val it = instructions.iterator.asScala
-    @tailrec def find: Option[(AbstractInsnNode, Option[OptimizerWarning])] = {
+    @tailrec def find: Option[(AbstractInsnNode, Option[OptimizerWarning])] =
       if (!it.hasNext) None // all instructions are legal
       else {
         val i = it.next()
@@ -1052,7 +1045,6 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           case _ => find
         }
       }
-    }
     find
   }
 }

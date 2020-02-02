@@ -21,11 +21,10 @@ import scala.concurrent.duration.FiniteDuration
   * BoneCP runtime inject module.
   */
 class BoneCPModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[ConnectionPool].to[BoneConnectionPool]
     )
-  }
 }
 
 /**

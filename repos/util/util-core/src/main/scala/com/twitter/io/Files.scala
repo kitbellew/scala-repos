@@ -39,7 +39,7 @@ object Files {
     *
     * Returns whether or not the entire delete was successful
     */
-  def delete(file: File): Boolean = {
+  def delete(file: File): Boolean =
     if (!file.exists) {
       true
     } else if (file.isFile) {
@@ -48,6 +48,5 @@ object Files {
       file.listFiles.foreach { f => delete(f) }
       file.delete()
     }
-  }
 
 }

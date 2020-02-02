@@ -15,14 +15,13 @@ import com.twitter.io.Buf
   */
 class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
 
-  def apply(request: Req, service: Service[Req, Response]): Future[Response] = {
+  def apply(request: Req, service: Service[Req, Response]): Future[Response] =
     getCallback(request) match {
       case Some(callback) =>
         addCallback(callback, request, service)
       case None =>
         service(request)
     }
-  }
 
   def addCallback(
       callback: String,
@@ -42,7 +41,7 @@ class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
       response
     }
 
-  def getCallback(request: Request): Option[String] = {
+  def getCallback(request: Request): Option[String] =
     // Ignore HEAD, though in practice this should be behind the HeadFilter
     if (request.method != Method.Head)
       request.params.get("callback") flatMap { callback =>
@@ -55,7 +54,6 @@ class JsonpFilter[Req <: Request] extends SimpleFilter[Req, Response] {
       }
     else
       None
-  }
 }
 
 object JsonpFilter extends JsonpFilter[Request] {

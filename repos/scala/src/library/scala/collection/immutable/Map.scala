@@ -139,9 +139,8 @@ object Map extends ImmutableMapFactory[Map] {
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
     def -(key: A): Map[A, B] =
       if (key == key1) Map.empty else this
-    override def foreach[U](f: ((A, B)) => U): Unit = {
+    override def foreach[U](f: ((A, B)) => U): Unit =
       f((key1, value1))
-    }
   }
 
   class Map2[A, +B](key1: A, value1: B, key2: A, value2: B)

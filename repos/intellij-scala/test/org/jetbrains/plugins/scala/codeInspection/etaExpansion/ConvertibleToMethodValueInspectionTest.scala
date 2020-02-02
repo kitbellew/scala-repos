@@ -204,7 +204,7 @@ class ConvertibleToMethodValueInspectionTest
     checkTextHasNoErrors(text)
   }
 
-  def testImplicits(): Unit = {
+  def testImplicits(): Unit =
     checkTextHasNoErrors(
       """
         |import scala.language.implicitConversions
@@ -228,9 +228,8 @@ class ConvertibleToMethodValueInspectionTest
         |
         |}
       """.stripMargin)
-  }
 
-  def testNonStable(): Unit = {
+  def testNonStable(): Unit =
     checkTextHasNoErrors(
       """class A(s: String) {
         |  def foo(x: String) = x
@@ -260,7 +259,6 @@ class ConvertibleToMethodValueInspectionTest
         |}
       """.stripMargin
     )
-  }
 
   def testStableFunParam(): Unit = {
     val text = s"""class A(s: String) {

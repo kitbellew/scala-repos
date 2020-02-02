@@ -39,10 +39,9 @@ object JObjectParser extends SimpleInjector {
     */
   val stringProcessor = new Inject(() => defaultStringProcessor _) {}
 
-  def defaultStringProcessor(s: String): Object = {
+  def defaultStringProcessor(s: String): Object =
     if (ObjectId.isValid(s)) new ObjectId(s)
     else s
-  }
 
   /*
    * Parse a JObject into a DBObject
@@ -78,9 +77,8 @@ object JObjectParser extends SimpleInjector {
 
   object Parser {
 
-    def parse(jo: JObject, formats: Formats): DBObject = {
+    def parse(jo: JObject, formats: Formats): DBObject =
       parseObject(jo.obj)(formats)
-    }
 
     private def parseArray(arr: List[JValue])(
         implicit formats: Formats): BasicDBList = {
@@ -129,7 +127,7 @@ object JObjectParser extends SimpleInjector {
       }
 
     // FIXME: This is not ideal.
-    private def renderInteger(i: BigInt): Object = {
+    private def renderInteger(i: BigInt): Object =
       if (i <= java.lang.Integer.MAX_VALUE && i >= java.lang.Integer.MIN_VALUE) {
         new java.lang.Integer(i.intValue)
       } else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
@@ -137,7 +135,6 @@ object JObjectParser extends SimpleInjector {
       } else {
         i.toString
       }
-    }
 
     private def trimArr(xs: List[JValue]) = xs.filter(_ != JNothing)
     private def trimObj(xs: List[JField]) = xs.filter(_.value != JNothing)

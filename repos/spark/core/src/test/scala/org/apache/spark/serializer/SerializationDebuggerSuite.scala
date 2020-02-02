@@ -201,9 +201,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
   test("improveException with error in debugger") {
     // Object that throws exception in the SerializationDebugger
     val o = new SerializableClass1 {
-      private def writeReplace(): Object = {
+      private def writeReplace(): Object =
         throw new Exception()
-      }
     }
     withClue(
       "requirement: SerializationDebugger should fail trying debug this object") {
@@ -234,17 +233,15 @@ class SerializableClassWithWriteObject(val objectField: Object)
   val serializableObjectField = new SerializableClass1
 
   @throws(classOf[IOException])
-  private def writeObject(oos: ObjectOutputStream): Unit = {
+  private def writeObject(oos: ObjectOutputStream): Unit =
     oos.defaultWriteObject()
-  }
 }
 
 class SerializableClassWithWriteReplace(
     @(transient @param) replacementFieldObject: Object)
     extends Serializable {
-  private def writeReplace(): Object = {
+  private def writeReplace(): Object =
     replacementFieldObject
-  }
 }
 
 class ExternalizableClass(objectField: Object) extends java.io.Externalizable {

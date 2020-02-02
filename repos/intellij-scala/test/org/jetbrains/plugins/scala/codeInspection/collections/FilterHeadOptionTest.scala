@@ -33,14 +33,13 @@ class FilterHeadOptionTest extends OperationsOnCollectionInspectionTest {
     testFix(text, result, hint)
   }
 
-  def testSideEffect(): Unit = {
+  def testSideEffect(): Unit =
     checkTextHasNoErrors("""
         |List(0, 1).filter { x =>
         |  println(x)
         |  true
         |}.headOption
       """.stripMargin)
-  }
 
   override val inspectionClass = classOf[FilterHeadOptionInspection]
 }

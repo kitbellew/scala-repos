@@ -16,7 +16,7 @@ import scala.tools.testing.ClearAfterClass
 
 object UnusedLocalVariablesTest extends ClearAfterClass.Clearable {
   var dceCompiler = newCompiler(extraArgs = "-Yopt:unreachable-code")
-  def clear(): Unit = { dceCompiler = null }
+  def clear(): Unit = dceCompiler = null
 }
 
 @RunWith(classOf[JUnit4])
@@ -95,8 +95,7 @@ class UnusedLocalVariablesTest extends ClearAfterClass {
     assertTrue(companionConstr.localVars.length == 1) // this
   }
 
-  def assertLocalVarCount(code: String, numVars: Int): Unit = {
+  def assertLocalVarCount(code: String, numVars: Int): Unit =
     assertTrue(singleMethod(dceCompiler)(code).localVars.length == numVars)
-  }
 
 }

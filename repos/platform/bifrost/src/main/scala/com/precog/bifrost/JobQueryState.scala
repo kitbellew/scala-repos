@@ -60,13 +60,12 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
   def abort(): Boolean
 
   def swap[M[+_], A](state: JobQueryState[M[A]])(
-      implicit M: Monad[M]): M[JobQueryState[A]] = {
+      implicit M: Monad[M]): M[JobQueryState[A]] =
     state match {
       case Running(resources, ma) => M.map(ma)(Running(resources, _))
       case Cancelled              => M.point(Cancelled)
       case Expired                => M.point(Expired)
     }
-  }
 
   def point[A](a: => A): JobQueryState[A] =
     if (isCancelled()) {

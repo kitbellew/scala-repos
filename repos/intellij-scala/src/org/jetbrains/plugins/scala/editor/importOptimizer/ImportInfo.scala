@@ -87,10 +87,9 @@ case class ImportInfo(
   def isSimpleWildcard =
     hasWildcard && singleNames.isEmpty && renames.isEmpty && hiddenNames.isEmpty
 
-  def namesFromWildcard: Set[String] = {
+  def namesFromWildcard: Set[String] =
     if (hasWildcard) allNames -- singleNames -- renames.keySet
     else Set.empty[String]
-  }
 
   private def template: ImportInfo =
     copy(
@@ -128,7 +127,7 @@ object ImportInfo {
     val implicitNames = mutable.HashSet[String]()
     var hasNonUsedImplicits = false
 
-    def shouldAddName(resolveResult: ResolveResult): Boolean = {
+    def shouldAddName(resolveResult: ResolveResult): Boolean =
       resolveResult match {
         case ScalaResolveResult(p: PsiPackage, _)                        => true
         case ScalaResolveResult(m: PsiMethod, _)                         => m.containingClass != null
@@ -138,13 +137,11 @@ object ImportInfo {
         case ScalaResolveResult(f: PsiField, _)                          => f.hasFinalModifier
         case _                                                           => false
       }
-    }
 
     def addAllNames(
         ref: ScStableCodeReferenceElement,
-        nameToAdd: String): Unit = {
+        nameToAdd: String): Unit =
       if (ref.multiResolve(false).exists(shouldAddName)) allNames += nameToAdd
-    }
 
     def collectAllNamesForWildcard(): Unit = {
       val refText = imp.qualifier.getText + ".someIdentifier"
@@ -223,26 +220,24 @@ object ImportInfo {
 
     @tailrec
     def deepestQualifier(
-        ref: ScStableCodeReferenceElement): ScStableCodeReferenceElement = {
+        ref: ScStableCodeReferenceElement): ScStableCodeReferenceElement =
       ref.qualifier match {
         case Some(q) => deepestQualifier(q)
         case None    => ref
       }
-    }
 
-    def packageFqn(p: PsiPackage): String = {
+    def packageFqn(p: PsiPackage): String =
       p.getParentPackage match {
         case null                             => name(p.getName)
         case parent if parent.getName == null => name(p.getName)
         case parent                           => packageFqn(parent) + "." + name(p.getName)
       }
-    }
 
     @tailrec
     def explicitQualifierString(
         ref: ScStableCodeReferenceElement,
         withDeepest: Boolean,
-        res: String = ""): String = {
+        res: String = ""): String =
       ref.qualifier match {
         case Some(q) =>
           explicitQualifierString(q, withDeepest, ref.refName + withDot(res))
@@ -250,14 +245,12 @@ object ImportInfo {
           ref.refName + withDot(res)
         case None => res
       }
-    }
 
-    def withDot(s: String): String = {
+    def withDot(s: String): String =
       if (s.isEmpty) "" else "." + s
-    }
 
     @tailrec
-    def isRelativeObject(o: ScObject, res: Boolean = false): Boolean = {
+    def isRelativeObject(o: ScObject, res: Boolean = false): Boolean =
       o.getContext match {
         case _: ScTemplateBody =>
           o.containingClass match {
@@ -268,7 +261,6 @@ object ImportInfo {
         case _: ScPackaging | _: ScalaFile => true
         case _                             => res //something in default package or in local object
       }
-    }
 
     def qualifiedRef(ref: ScStableCodeReferenceElement): String = {
       if (ref.getText == _root_prefix) return _root_prefix

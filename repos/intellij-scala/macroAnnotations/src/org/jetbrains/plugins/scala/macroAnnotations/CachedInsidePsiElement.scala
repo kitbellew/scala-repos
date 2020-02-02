@@ -26,13 +26,12 @@ object CachedInsidePsiElement {
     import CachedMacroUtil._
     import c.universe._
     implicit val x: c.type = c
-    def parameters: (Tree, Tree) = {
+    def parameters: (Tree, Tree) =
       c.prefix.tree match {
         case q"new CachedInsidePsiElement(..$params)" if params.length == 2 =>
           (params.head, modCountParamToModTracker(c)(params(1), params.head))
         case _ => abort("Wrong annotation parameters!")
       }
-    }
 
     //annotation parameters
     val (elem, dependencyItem) = parameters

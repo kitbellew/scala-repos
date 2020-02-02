@@ -98,7 +98,7 @@ object TraversableHelpers {
             pivotStart: Int,
             pivotEnd: Int,
             endX: Int,
-            x: Buffer[T]): (Int, Int) = {
+            x: Buffer[T]): (Int, Int) =
           if (pivotEnd >= endX) (pivotStart, pivotEnd)
           else {
             val t = x(pivotEnd)
@@ -122,7 +122,6 @@ object TraversableHelpers {
               partition(pivot, pivotStart + 1, pivotEnd + 1, endX, x)
             }
           }
-        }
         val pivot = a(startA)
         val (aps, ape) = partition(pivot, startA, startA + 1, endA, a)
         val (bps, bpe) = partition(pivot, startB, startB, endB, b)

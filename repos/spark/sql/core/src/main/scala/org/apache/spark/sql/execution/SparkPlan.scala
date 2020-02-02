@@ -94,9 +94,8 @@ abstract class SparkPlan
   /**
     * Reset all the metrics.
     */
-  private[sql] def resetMetrics(): Unit = {
+  private[sql] def resetMetrics(): Unit =
     metrics.valuesIterator.foreach(_.reset())
-  }
 
   /**
     * Return a LongSQLMetric according to the name.
@@ -139,13 +138,12 @@ abstract class SparkPlan
     * Execute a query after preparing the query and adding query plan information to created RDDs
     * for visualization.
     */
-  private final def executeQuery[T](query: => T): T = {
+  private final def executeQuery[T](query: => T): T =
     RDDOperationScope.withScope(sparkContext, nodeName, false, true) {
       prepare()
       waitForSubqueries()
       query
     }
-  }
 
   /**
     * List of (uncorrelated scalar subquery, future holding the subquery result) for this plan node.
@@ -201,13 +199,12 @@ abstract class SparkPlan
   /**
     * Prepare a SparkPlan for execution. It's idempotent.
     */
-  final def prepare(): Unit = {
+  final def prepare(): Unit =
     if (prepareCalled.compareAndSet(false, true)) {
       doPrepare()
       prepareSubqueries()
       children.foreach(_.prepare())
     }
-  }
 
   /**
     * Overridden by concrete implementations of SparkPlan. It is guaranteed to run before any
@@ -229,10 +226,9 @@ abstract class SparkPlan
     * Overridden by concrete implementations of SparkPlan.
     * Produces the result of the query as a broadcast variable.
     */
-  protected[sql] def doExecuteBroadcast[T](): broadcast.Broadcast[T] = {
+  protected[sql] def doExecuteBroadcast[T](): broadcast.Broadcast[T] =
     throw new UnsupportedOperationException(
       s"$nodeName does not implement doExecuteBroadcast")
-  }
 
   /**
     * Packing the UnsafeRows into byte array for faster serialization.
@@ -242,7 +238,7 @@ abstract class SparkPlan
     * UnsafeRow is highly compressible (at least 8 bytes for any column), the byte array is also
     * compressed.
     */
-  private def getByteArrayRdd(n: Int = -1): RDD[Array[Byte]] = {
+  private def getByteArrayRdd(n: Int = -1): RDD[Array[Byte]] =
     execute().mapPartitionsInternal { iter =>
       var count = 0
       val buffer = new Array[Byte](4 << 10) // 4K
@@ -260,7 +256,6 @@ abstract class SparkPlan
       out.close()
       Iterator(bos.toByteArray)
     }
-  }
 
   /**
     * Decode the byte arrays back to UnsafeRows and put them into buffer.
@@ -371,15 +366,13 @@ abstract class SparkPlan
 
   protected def newPredicate(
       expression: Expression,
-      inputSchema: Seq[Attribute]): (InternalRow) => Boolean = {
+      inputSchema: Seq[Attribute]): (InternalRow) => Boolean =
     GeneratePredicate.generate(expression, inputSchema)
-  }
 
   protected def newOrdering(
       order: Seq[SortOrder],
-      inputSchema: Seq[Attribute]): Ordering[InternalRow] = {
+      inputSchema: Seq[Attribute]): Ordering[InternalRow] =
     GenerateOrdering.generate(order, inputSchema)
-  }
 
   /**
     * Creates a row ordering for the given schema, in natural ascending order.

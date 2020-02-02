@@ -402,7 +402,7 @@ object JavaToScala {
         ParameterListConstruction(
           p.getParameters.map(convertPsiToIntermdeiate(_, externalProperties)))
       case m: PsiMethod =>
-        def body: Option[IntermediateNode] = {
+        def body: Option[IntermediateNode] =
           if (m.isConstructor) {
             getFirstStatement(m).map(_.getExpression).flatMap {
               case mc: PsiMethodCallExpression
@@ -419,7 +419,6 @@ object JavaToScala {
             Option(m.getBody)
               .map(convertPsiToIntermdeiate(_, externalProperties))
           }
-        }
 
         if (m.isConstructor) {
           ConstructorSimply(
@@ -455,14 +454,13 @@ object JavaToScala {
             .map(convertPsiToIntermdeiate(_, externalProperties))
             .toSeq)
       case annot: PsiAnnotation =>
-        def isArrayAnnotationParameter(pair: PsiNameValuePair): Boolean = {
+        def isArrayAnnotationParameter(pair: PsiNameValuePair): Boolean =
           AnnotationUtil.getAnnotationMethod(pair) match {
             case method: PsiMethod =>
               val returnType = method.getReturnType
               returnType != null && returnType.isInstanceOf[PsiArrayType]
             case _ => false
           }
-        }
 
         val attributes = annot.getParameterList.getAttributes
         val attrResult =
@@ -653,7 +651,7 @@ object JavaToScala {
       case _ =>
     }
 
-    def associationFor(range: PsiElement): Option[AssociationHelper] = {
+    def associationFor(range: PsiElement): Option[AssociationHelper] =
       refs
         .find(ref =>
           new TextRange(ref.startOffset, ref.endOffset) == range.getTextRange)
@@ -670,7 +668,6 @@ object JavaToScala {
               Path(ref.qClassName, ref.staticMemberName))
           }
         }
-    }
   }
 
   val fieldParamaterMap = new mutable.HashMap[String, String]()
@@ -714,14 +711,13 @@ object JavaToScala {
     }
 
     def handleObject(objectMembers: Seq[PsiMember]): IntermediateNode = {
-      def handleAsEnum(modifiers: IntermediateNode): IntermediateNode = {
+      def handleAsEnum(modifiers: IntermediateNode): IntermediateNode =
         Enum(
           inClass.getName,
           modifiers,
           objectMembers
             .filter(_.isInstanceOf[PsiEnumConstant])
             .map((el: PsiMember) => el.getName))
-      }
       def handleAsObject(modifiers: IntermediateNode): IntermediateNode = {
         val membersOut = objectMembers
           .filter(!_.isInstanceOf[PsiEnumConstant])
@@ -804,9 +800,8 @@ object JavaToScala {
             }
           }
 
-          def compareByOrder(left: PsiMember, right: PsiMember): Boolean = {
+          def compareByOrder(left: PsiMember, right: PsiMember): Boolean =
             classMembers.indexOf(left) > classMembers.indexOf(right)
-          }
 
           if (targetMap.isEmpty)
             classMembers
@@ -882,12 +877,11 @@ object JavaToScala {
   }
 
   def getFirstStatement(
-      constructor: PsiMethod): Option[PsiExpressionStatement] = {
+      constructor: PsiMethod): Option[PsiExpressionStatement] =
     Option(constructor.getBody)
       .map(_.getStatements)
       .flatMap(_.headOption)
       .collect { case exp: PsiExpressionStatement => exp }
-  }
 
   // build map of constructor and constructor that it call
   def buildConstructorTargetMap(
@@ -935,11 +929,10 @@ object JavaToScala {
         constructor: PsiMethod): PrimaryConstruction = {
       def notContains(
           statement: PsiStatement,
-          where: Seq[PsiExpressionStatement]): Boolean = {
+          where: Seq[PsiExpressionStatement]): Boolean =
         !statement.isInstanceOf[PsiExpressionStatement] ||
-        (statement.isInstanceOf[PsiExpressionStatement] && !where.contains(
-          statement))
-      }
+          (statement.isInstanceOf[PsiExpressionStatement] && !where.contains(
+            statement))
 
       def getSuperCall(dropStatements: ArrayBuffer[PsiExpressionStatement])
           : IntermediateNode = {
@@ -1213,7 +1206,7 @@ object JavaToScala {
     * @param expr prefix or postfix expression
     * @return true if this expression is under block
     */
-  private def canBeSimpified(expr: PsiExpression): Boolean = {
+  private def canBeSimpified(expr: PsiExpression): Boolean =
     expr.getParent match {
       case b: PsiExpressionStatement =>
         b.getParent match {
@@ -1223,5 +1216,4 @@ object JavaToScala {
         }
       case _ => false
     }
-  }
 }

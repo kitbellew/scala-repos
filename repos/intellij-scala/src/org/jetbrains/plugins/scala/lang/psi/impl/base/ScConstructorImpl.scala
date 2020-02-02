@@ -73,7 +73,7 @@ class ScConstructorImpl(node: ASTNode)
 
   override def toString: String = "Constructor"
 
-  def expectedType: Option[ScType] = {
+  def expectedType: Option[ScType] =
     getContext match {
       case parents: ScClassParents =>
         if (parents.allTypeElements.length != 1) None
@@ -90,9 +90,8 @@ class ScConstructorImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
-  def newTemplate = {
+  def newTemplate =
     getContext match {
       case parents: ScClassParents =>
         parents.getContext match {
@@ -105,13 +104,9 @@ class ScConstructorImpl(node: ASTNode)
         }
       case _ => None
     }
-  }
 
   //todo: duplicate ScSimpleTypeElementImpl
-  def parameterize(
-      tp: ScType,
-      clazz: PsiClass,
-      subst: ScSubstitutor): ScType = {
+  def parameterize(tp: ScType, clazz: PsiClass, subst: ScSubstitutor): ScType =
     if (clazz.getTypeParameters.isEmpty) {
       tp
     } else {
@@ -120,7 +115,6 @@ class ScConstructorImpl(node: ASTNode)
         case ptp             => new ScTypeParameterType(ptp, subst)
       })
     }
-  }
 
   def shapeType(i: Int): TypeResult[ScType] = {
     val seq = shapeMultiType(i)
@@ -219,7 +213,7 @@ class ScConstructorImpl(node: ASTNode)
       }
     }
 
-    def processSimple(s: ScSimpleTypeElement): Seq[TypeResult[ScType]] = {
+    def processSimple(s: ScSimpleTypeElement): Seq[TypeResult[ScType]] =
       s.reference match {
         case Some(ref) =>
           val buffer = new ArrayBuffer[TypeResult[ScType]]
@@ -257,14 +251,12 @@ class ScConstructorImpl(node: ASTNode)
           buffer.toSeq
         case _ => Seq(Failure("Hasn't reference", Some(this)))
       }
-    }
 
     simpleTypeElement.toSeq.flatMap(processSimple)
   }
 
-  def reference: Option[ScStableCodeReferenceElement] = {
+  def reference: Option[ScStableCodeReferenceElement] =
     simpleTypeElement.flatMap(_.reference)
-  }
 
   def simpleTypeElement: Option[ScSimpleTypeElement] = typeElement match {
     case s: ScSimpleTypeElement => Some(s)

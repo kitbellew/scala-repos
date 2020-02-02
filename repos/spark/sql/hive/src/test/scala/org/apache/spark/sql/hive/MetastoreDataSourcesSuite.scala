@@ -50,9 +50,8 @@ class MetastoreDataSourcesSuite
 
   var jsonFilePath: String = _
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     jsonFilePath = Utils.getSparkClassLoader.getResource("sample.json").getFile
-  }
 
   test("persistent JSON table") {
     withTable("jsonTable") {
@@ -869,9 +868,8 @@ class MetastoreDataSourcesSuite
   }
 
   test("insert into a table") {
-    def createDF(from: Int, to: Int): DataFrame = {
+    def createDF(from: Int, to: Int): DataFrame =
       (from to to).map(i => i -> s"str$i").toDF("c1", "c2")
-    }
 
     withTable("insertParquet") {
       createDF(0, 9).write.format("parquet").saveAsTable("insertParquet")

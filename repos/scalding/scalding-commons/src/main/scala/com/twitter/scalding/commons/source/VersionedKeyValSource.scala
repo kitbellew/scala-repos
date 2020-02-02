@@ -48,14 +48,13 @@ object VersionedKeyValSource {
       sourceVersion: Option[Long] = None,
       sinkVersion: Option[Long] = None,
       maxFailures: Int = 0)(
-      implicit codec: Injection[(K, V), (Array[Byte], Array[Byte])]) = {
+      implicit codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
     new VersionedKeyValSource[K, V](
       path,
       sourceVersion,
       sinkVersion,
       maxFailures,
       defaultVersionsToKeep)
-  }
 
   def apply[K, V](
       path: String,
@@ -132,7 +131,7 @@ class VersionedKeyValSource[K, V](
   val source = getTap(TapMode.SOURCE)
   val sink = getTap(TapMode.SINK)
 
-  override def validateTaps(mode: Mode): Unit = {
+  override def validateTaps(mode: Mode): Unit =
     // if a version is explicitly supplied, ensure that it exists
     sourceVersion.foreach { version =>
       mode match {
@@ -152,7 +151,6 @@ class VersionedKeyValSource[K, V](
               .format(mode))
       }
     }
-  }
 
   def resourceExists(mode: Mode): Boolean =
     mode match {
@@ -208,17 +206,15 @@ class VersionedKeyValSource[K, V](
 
   override def sinkFields: Fields = fields
 
-  override def transformForRead(pipe: Pipe): Pipe = {
+  override def transformForRead(pipe: Pipe): Pipe =
     pipe.flatMap((keyField, valField) -> (keyField, valField)) {
       pair: (Array[Byte], Array[Byte]) => checkedInversion(pair)
     }
-  }
 
-  override def transformForWrite(pipe: Pipe): Pipe = {
+  override def transformForWrite(pipe: Pipe): Pipe =
     pipe.mapTo((0, 1) -> (keyField, valField)) { pair: (K, V) =>
       codecBox.get.apply(pair)
     }
-  }
 
   override def toIterator(
       implicit config: Config,

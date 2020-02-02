@@ -44,9 +44,8 @@ import org.apache.spark.sql.types._
   */
 private[feature] trait RFormulaBase extends HasFeaturesCol with HasLabelCol {
 
-  protected def hasLabelCol(schema: StructType): Boolean = {
+  protected def hasLabelCol(schema: StructType): Boolean =
     schema.map(_.name).contains($(labelCol))
-  }
 }
 
 /**
@@ -183,7 +182,7 @@ class RFormula(override val uid: String)
   }
 
   // optimistic schema; does not contain any ML attributes
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     if (hasLabelCol(schema)) {
       StructType(
         schema.fields :+ StructField($(featuresCol), new VectorUDT, true))
@@ -192,7 +191,6 @@ class RFormula(override val uid: String)
         schema.fields :+ StructField($(featuresCol), new VectorUDT, true) :+
           StructField($(labelCol), DoubleType, true))
     }
-  }
 
   override def copy(extra: ParamMap): RFormula = defaultCopy(extra)
 
@@ -249,7 +247,7 @@ class RFormulaModel private[feature] (
     copyValues(new RFormulaModel(uid, resolvedFormula, pipelineModel))
 
   override def toString: String =
-    s"RFormulaModel(${resolvedFormula}) (uid=$uid)"
+    s"RFormulaModel($resolvedFormula) (uid=$uid)"
 
   private def transformLabel(dataset: DataFrame): DataFrame = {
     val labelName = resolvedFormula.label
@@ -362,9 +360,8 @@ private class ColumnPruner(
     dataset.select(columnsToKeep.map(dataset.col): _*)
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     StructType(schema.fields.filter(col => !columnsToPrune.contains(col.name)))
-  }
 
   override def copy(extra: ParamMap): ColumnPruner = defaultCopy(extra)
 
@@ -466,11 +463,10 @@ private class VectorAttributeRewriter(
     dataset.select((otherCols :+ rewrittenCol): _*)
   }
 
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     StructType(
       schema.fields.filter(_.name != vectorCol) ++
         schema.fields.filter(_.name == vectorCol))
-  }
 
   override def copy(extra: ParamMap): VectorAttributeRewriter =
     defaultCopy(extra)

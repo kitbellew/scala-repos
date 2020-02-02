@@ -33,7 +33,7 @@ class DummyBroadcastClass(rdd: RDD[Int]) extends Serializable {
   val broadcast = rdd.context.broadcast(list)
   val bid = broadcast.id
 
-  def doSomething(): Set[(Int, Boolean)] = {
+  def doSomething(): Set[(Int, Boolean)] =
     rdd
       .map { x =>
         val bm = SparkEnv.get.blockManager
@@ -43,7 +43,6 @@ class DummyBroadcastClass(rdd: RDD[Int]) extends Serializable {
       }
       .collect()
       .toSet
-  }
 }
 
 class BroadcastSuite extends SparkFunSuite with LocalSparkContext {

@@ -134,9 +134,8 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
       type In = String
       type Out = String
 
-      def newTransporter(): Transporter[String, String] = {
+      def newTransporter(): Transporter[String, String] =
         Netty3Transporter[String, String](clientPipelineFactory, params)
-      }
 
       def newDispatcher(
           transport: Transport[In, Out]): Service[String, String] =

@@ -53,9 +53,8 @@ class ConversionsSpecs extends Specification {
     object Impl extends DefaultImplicitConversions {
 
       def testFor[T](source: String, expected: Option[T])(
-          implicit t: TypeConverter[String, T]) = {
+          implicit t: TypeConverter[String, T]) =
         t(source) must_== expected
-      }
     }
 
     "provide implicit VALs for basic types" in {

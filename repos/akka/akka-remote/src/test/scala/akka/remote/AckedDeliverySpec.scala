@@ -315,12 +315,11 @@ class AckedDeliverySpec extends AkkaSpec {
         }
       }
 
-      def receiverStep(p: Double = 1.0) = {
+      def receiverStep(p: Double = 1.0) =
         if (happened(p)) {
           sndBuf = sndBuf.acknowledge(lastAck)
           dbgLog(s"$sndBuf <-- $lastAck -- $rcvBuf")
         } else dbgLog(s"$sndBuf X-- $lastAck -- $rcvBuf")
-      }
 
       // Dropping phase
       info(
@@ -332,7 +331,7 @@ class AckedDeliverySpec extends AkkaSpec {
         receiverStep(DeliveryProbability)
         steps -= s
       }
-      info(s"Successfully delivered ${received.size} messages from ${MsgCount}")
+      info(s"Successfully delivered ${received.size} messages from $MsgCount")
       info("Entering reliable phase")
 
       // Finalizing phase

@@ -37,14 +37,13 @@ import org.apache.spark.util.{CallSite, Utils}
 class DAGSchedulerEventProcessLoopTester(dagScheduler: DAGScheduler)
     extends DAGSchedulerEventProcessLoop(dagScheduler) {
 
-  override def post(event: DAGSchedulerEvent): Unit = {
+  override def post(event: DAGSchedulerEvent): Unit =
     try {
       // Forward event to `onReceive` directly to avoid processing event asynchronously.
       onReceive(event)
     } catch {
       case NonFatal(e) => onError(e)
     }
-  }
 
   override def onError(e: Throwable): Unit = {
     logError("Error in DAGSchedulerEventLoop: ", e)
@@ -85,7 +84,7 @@ class MyRDD(
         })
       .toArray
 
-  override def getPreferredLocations(partition: Partition): Seq[String] = {
+  override def getPreferredLocations(partition: Partition): Seq[String] =
     if (locations.isDefinedAt(partition.index)) {
       locations(partition.index)
     } else if (tracker != null && dependencies.size == 1 &&
@@ -96,7 +95,6 @@ class MyRDD(
     } else {
       Nil
     }
-  }
 
   override def toString: String = "DAGSchedulerSuiteRDD " + id
 }
@@ -164,9 +162,8 @@ class DAGSchedulerSuite
       }
     }
 
-    override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
+    override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
       endedTasks += taskEnd.taskInfo.taskId
-    }
   }
 
   var mapOutputTracker: MapOutputTrackerMaster = null
@@ -182,14 +179,13 @@ class DAGSchedulerSuite
   // stub out BlockManagerMaster.getLocations to use our cacheLocations
   val blockManagerMaster = new BlockManagerMaster(null, conf, true) {
     override def getLocations(
-        blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
+        blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] =
       blockIds.map {
         _.asRDDId
           .map(id => (id.rddId -> id.splitIndex))
           .flatMap(key => cacheLocations.get(key))
           .getOrElse(Seq())
       }.toIndexedSeq
-    }
     override def removeExecutor(execId: String) {
       // don't need to propagate to the driver, which we don't have
     }
@@ -201,7 +197,7 @@ class DAGSchedulerSuite
   val jobListener = new JobListener() {
     override def taskSucceeded(index: Int, result: Any) =
       results.put(index, result)
-    override def jobFailed(exception: Exception) = { failure = exception }
+    override def jobFailed(exception: Exception) = failure = exception
   }
 
   /** A simple helper class for creating custom JobListeners */
@@ -210,7 +206,7 @@ class DAGSchedulerSuite
     var failure: Exception = null
     override def taskSucceeded(index: Int, result: Any): Unit =
       results.put(index, result)
-    override def jobFailed(exception: Exception): Unit = { failure = exception }
+    override def jobFailed(exception: Exception): Unit = failure = exception
   }
 
   override def beforeEach(): Unit = {
@@ -238,13 +234,12 @@ class DAGSchedulerSuite
       scheduler)
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       scheduler.stop()
     } finally {
       super.afterEach()
     }
-  }
 
   override def afterAll() {
     super.afterAll()
@@ -364,9 +359,8 @@ class DAGSchedulerSuite
     val fakeListener = new JobListener() {
       override def taskSucceeded(partition: Int, value: Any): Unit =
         numResults += 1
-      override def jobFailed(exception: Exception): Unit = {
+      override def jobFailed(exception: Exception): Unit =
         failureReason = Some(exception)
-      }
     }
     val jobId = submit(new MyRDD(sc, 0, Nil), Array(), listener = fakeListener)
     assert(numResults === 0)
@@ -536,9 +530,8 @@ class DAGSchedulerSuite
       override def schedulingMode: SchedulingMode = SchedulingMode.NONE
       override def start(): Unit = {}
       override def stop(): Unit = {}
-      override def submitTasks(taskSet: TaskSet): Unit = {
+      override def submitTasks(taskSet: TaskSet): Unit =
         taskSets += taskSet
-      }
       override def cancelTasks(stageId: Int, interruptThread: Boolean) {
         throw new UnsupportedOperationException
       }
@@ -1009,9 +1002,8 @@ class DAGSchedulerSuite
     submit(reduceRdd, Array(0, 1))
 
     val mapStageId = 0
-    def countSubmittedMapStageAttempts(): Int = {
+    def countSubmittedMapStageAttempts(): Int =
       sparkListener.submittedStageInfos.count(_.stageId == mapStageId)
-    }
 
     // The map stage should have been submitted.
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -1085,12 +1077,10 @@ class DAGSchedulerSuite
       new MyRDD(sc, 2, List(shuffleDep), tracker = mapOutputTracker)
     submit(reduceRdd, Array(0, 1))
 
-    def countSubmittedReduceStageAttempts(): Int = {
+    def countSubmittedReduceStageAttempts(): Int =
       sparkListener.submittedStageInfos.count(_.stageId == 1)
-    }
-    def countSubmittedMapStageAttempts(): Int = {
+    def countSubmittedMapStageAttempts(): Int =
       sparkListener.submittedStageInfos.count(_.stageId == 0)
-    }
 
     // The map stage should have been submitted.
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -1545,9 +1535,8 @@ class DAGSchedulerSuite
     class FailureRecordingJobListener() extends JobListener {
       var failureMessage: String = _
       override def taskSucceeded(index: Int, result: Any) {}
-      override def jobFailed(exception: Exception): Unit = {
+      override def jobFailed(exception: Exception): Unit =
         failureMessage = exception.getMessage
-      }
     }
     val listener1 = new FailureRecordingJobListener()
     val listener2 = new FailureRecordingJobListener()
@@ -1816,9 +1805,8 @@ class DAGSchedulerSuite
     val acc = new Accumulator[Int](0, new AccumulatorParam[Int] {
       override def addAccumulator(t1: Int, t2: Int): Int = t1 + t2
       override def zero(initialValue: Int): Int = 0
-      override def addInPlace(r1: Int, r2: Int): Int = {
+      override def addInPlace(r1: Int, r2: Int): Int =
         throw new DAGSchedulerSuiteDummyException
-      }
     })
 
     // Run this on executors
@@ -1858,9 +1846,8 @@ class DAGSchedulerSuite
     "getPartitions exceptions should not crash DAGScheduler and SparkContext (SPARK-8606)") {
     val e1 = intercept[DAGSchedulerSuiteDummyException] {
       val rdd = new MyRDD(sc, 2, Nil) {
-        override def getPartitions: Array[Partition] = {
+        override def getPartitions: Array[Partition] =
           throw new DAGSchedulerSuiteDummyException
-        }
       }
       rdd.reduceByKey(_ + _, 1).count()
     }
@@ -1873,9 +1860,8 @@ class DAGSchedulerSuite
     "getPreferredLocations errors should not crash DAGScheduler and SparkContext (SPARK-8606)") {
     val e1 = intercept[SparkException] {
       val rdd = new MyRDD(sc, 2, Nil) {
-        override def getPreferredLocations(split: Partition): Seq[String] = {
+        override def getPreferredLocations(split: Partition): Seq[String] =
           throw new DAGSchedulerSuiteDummyException
-        }
       }
       rdd.count()
     }

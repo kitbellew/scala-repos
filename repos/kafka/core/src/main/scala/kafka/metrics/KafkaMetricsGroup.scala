@@ -285,7 +285,7 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
   private def removeAllMetricsInList(
       metricNameList: immutable.List[MetricName],
       clientId: String) {
-    metricNameList.foreach(metric => {
+    metricNameList.foreach { metric =>
       val pattern = (".*clientId=" + clientId + ".*").r
       val registeredMetrics = scala.collection.JavaConversions
         .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
@@ -307,6 +307,6 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
           }
         }
       }
-    })
+    }
   }
 }

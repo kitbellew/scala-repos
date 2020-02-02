@@ -44,8 +44,7 @@ object CORSHeaders {
         "X-Precog-Uuid",
         "Accept",
         "Authorization"
-      )): HttpHeaders = {
-
+      )): HttpHeaders =
     HttpHeaders(
       Seq(
         "Allow" -> methods.mkString(","),
@@ -53,7 +52,6 @@ object CORSHeaders {
         "Access-Control-Allow-Methods" -> methods.mkString(","),
         "Access-Control-Allow-Headers" -> headers.mkString(",")
       ))
-  }
 
   val defaultHeaders = genHeaders()
 

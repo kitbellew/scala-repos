@@ -161,23 +161,21 @@ object ColumnarBatchBenchmark {
 
     // Access through the column API with off heap memory
     def columnOffHeap = { i: Int =>
-      {
-        val col = ColumnVector.allocate(count, IntegerType, MemoryMode.OFF_HEAP)
-        var sum = 0L
-        for (n <- 0L until iters) {
-          var i = 0
-          while (i < count) {
-            col.putInt(i, i)
-            i += 1
-          }
-          i = 0
-          while (i < count) {
-            sum += col.getInt(i)
-            i += 1
-          }
+      val col = ColumnVector.allocate(count, IntegerType, MemoryMode.OFF_HEAP)
+      var sum = 0L
+      for (n <- 0L until iters) {
+        var i = 0
+        while (i < count) {
+          col.putInt(i, i)
+          i += 1
         }
-        col.close
+        i = 0
+        while (i < count) {
+          sum += col.getInt(i)
+          i += 1
+        }
       }
+      col.close
     }
 
     // Access by directly getting the buffer backing the column.
@@ -301,39 +299,35 @@ object ColumnarBatchBenchmark {
     val count = 8 * 1024
     val benchmark = new Benchmark("Boolean Read/Write", iters * count)
     benchmark.addCase("Bitset") { i: Int =>
-      {
-        val b = new BitSet(count)
-        var sum = 0L
-        for (n <- 0L until iters) {
-          var i = 0
-          while (i < count) {
-            if (i % 2 == 0) b.set(i)
-            i += 1
-          }
-          i = 0
-          while (i < count) {
-            if (b.get(i)) sum += 1
-            i += 1
-          }
+      val b = new BitSet(count)
+      var sum = 0L
+      for (n <- 0L until iters) {
+        var i = 0
+        while (i < count) {
+          if (i % 2 == 0) b.set(i)
+          i += 1
+        }
+        i = 0
+        while (i < count) {
+          if (b.get(i)) sum += 1
+          i += 1
         }
       }
     }
 
     benchmark.addCase("Byte Array") { i: Int =>
-      {
-        val b = new Array[Byte](count)
-        var sum = 0L
-        for (n <- 0L until iters) {
-          var i = 0
-          while (i < count) {
-            if (i % 2 == 0) b(i) = 1;
-            i += 1
-          }
-          i = 0
-          while (i < count) {
-            if (b(i) == 1) sum += 1
-            i += 1
-          }
+      val b = new Array[Byte](count)
+      var sum = 0L
+      for (n <- 0L until iters) {
+        var i = 0
+        while (i < count) {
+          if (i % 2 == 0) b(i) = 1;
+          i += 1
+        }
+        i = 0
+        while (i < count) {
+          if (b(i) == 1) sum += 1
+          i += 1
         }
       }
     }

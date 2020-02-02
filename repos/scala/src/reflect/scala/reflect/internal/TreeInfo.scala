@@ -308,9 +308,8 @@ abstract class TreeInfo {
     }
   }
 
-  def isDefaultGetter(tree: Tree) = {
+  def isDefaultGetter(tree: Tree) =
     tree.symbol != null && tree.symbol.isDefaultGetter
-  }
 
   /** Is tree a self constructor call this(...)? I.e. a call to a constructor of the
     *  same object?
@@ -414,13 +413,12 @@ abstract class TreeInfo {
     *
     */
   def isVarPatternDeep(tree: Tree): Boolean = {
-    def isVarPatternDeep0(tree: Tree): Boolean = {
+    def isVarPatternDeep0(tree: Tree): Boolean =
       tree match {
         case Bind(name, pat) => isVarPatternDeep0(pat)
         case Ident(name)     => isVarPattern(tree)
         case _               => false
       }
-    }
     tree match {
       case Ident(name) => true
       case _           => isVarPatternDeep0(tree)

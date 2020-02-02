@@ -92,14 +92,13 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
   //scalastyle:off magic.number
   private[this] def offer: Offer = {
-    def resource(name: String, value: Double): Resource = {
+    def resource(name: String, value: Double): Resource =
       Resource
         .newBuilder()
         .setName(name)
         .setType(Value.Type.SCALAR)
         .setScalar(Value.Scalar.newBuilder().setValue(value))
         .build()
-    }
     Offer
       .newBuilder()
       .setId(OfferID.newBuilder().setValue(UUID.randomUUID().toString))
@@ -198,7 +197,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
   private[this] def simulateTaskLaunch(
       offers: Seq[OfferID],
-      tasksToLaunch: Iterable[TaskInfo]): Unit = {
+      tasksToLaunch: Iterable[TaskInfo]): Unit =
     if (random.nextDouble() > 0.001) {
       log.debug(s"launch tasksToLaunch $offers, $tasksToLaunch")
       tasksToLaunch.map(_.getTaskId).foreach {
@@ -224,11 +223,10 @@ class DriverActor(schedulerProps: Props) extends Actor {
     } else {
       log.debug("simulating lost launch")
     }
-  }
 
   private[this] def changeTaskStatus(
       status: TaskStatus,
-      create: Boolean): Unit = {
+      create: Boolean): Unit =
     if (create || tasks.contains(status.getTaskId.getValue)) {
       status.getState match {
         case TaskState.TASK_ERROR | TaskState.TASK_FAILED |
@@ -246,7 +244,6 @@ class DriverActor(schedulerProps: Props) extends Actor {
         log.debug(s"${status.getTaskId.getValue} does not exist anymore")
       }
     }
-  }
 
   private[this] def scheduleStatusChange(
       toState: TaskState,

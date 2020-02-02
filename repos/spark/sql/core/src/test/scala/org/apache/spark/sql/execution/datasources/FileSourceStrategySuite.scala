@@ -205,7 +205,7 @@ class FileSourceStrategySuite
   protected def checkArgument[T](
       name: String,
       arg: LastArguments.type => T,
-      expected: T): Unit = {
+      expected: T): Unit =
     if (arg(LastArguments) != expected) {
       fail(s"""
            |Wrong $name
@@ -213,19 +213,16 @@ class FileSourceStrategySuite
            |actual: ${arg(LastArguments)}
          """.stripMargin)
     }
-  }
 
   /** Returns a resolved expression for `str` in the context of `df`. */
-  def resolve(df: DataFrame, str: String): Expression = {
+  def resolve(df: DataFrame, str: String): Expression =
     df.select(expr(str)).queryExecution.analyzed.expressions.head.children.head
-  }
 
   /** Returns a set with all the filters present in the physical plan. */
-  def getPhysicalFilters(df: DataFrame): ExpressionSet = {
+  def getPhysicalFilters(df: DataFrame): ExpressionSet =
     ExpressionSet(df.queryExecution.executedPlan.collect {
       case execution.Filter(f, _) => splitConjunctivePredicates(f)
     }.flatten)
-  }
 
   /** Plans the query and calls the provided validation function with the planned partitioning. */
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
@@ -312,9 +309,8 @@ class TestFileFormat extends FileFormat {
       sqlContext: SQLContext,
       job: Job,
       options: Map[String, String],
-      dataSchema: StructType): OutputWriterFactory = {
+      dataSchema: StructType): OutputWriterFactory =
     throw new NotImplementedError("JUST FOR TESTING")
-  }
 
   override def buildInternalScan(
       sqlContext: SQLContext,
@@ -324,9 +320,8 @@ class TestFileFormat extends FileFormat {
       bucketSet: Option[BitSet],
       inputFiles: Seq[FileStatus],
       broadcastedConf: Broadcast[SerializableConfiguration],
-      options: Map[String, String]): RDD[InternalRow] = {
+      options: Map[String, String]): RDD[InternalRow] =
     throw new NotImplementedError("JUST FOR TESTING")
-  }
 
   override def buildReader(
       sqlContext: SQLContext,

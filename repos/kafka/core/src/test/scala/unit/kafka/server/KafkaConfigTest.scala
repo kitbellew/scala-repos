@@ -327,14 +327,13 @@ class KafkaConfigTest {
     assert(ApiVersion.latestVersion >= conf3.interBrokerProtocolVersion)
   }
 
-  private def isValidKafkaConfig(props: Properties): Boolean = {
+  private def isValidKafkaConfig(props: Properties): Boolean =
     try {
       KafkaConfig.fromProps(props)
       true
     } catch {
       case e: IllegalArgumentException => false
     }
-  }
 
   @Test
   def testUncleanLeaderElectionDefault() {
@@ -488,7 +487,7 @@ class KafkaConfigTest {
 
     KafkaConfig
       .configNames()
-      .foreach(name => {
+      .foreach { name =>
         name match {
           case KafkaConfig.ZkConnectProp => // ignore string
           case KafkaConfig.ZkSessionTimeoutMsProp =>
@@ -855,7 +854,7 @@ class KafkaConfigTest {
               "not_a_number",
               "-1")
         }
-      })
+      }
   }
 
   @Test
@@ -906,13 +905,13 @@ class KafkaConfigTest {
       validRequiredProps: => Properties,
       name: String,
       values: Any*) {
-    values.foreach((value) => {
+    values.foreach { (value) =>
       val props = validRequiredProps
       props.setProperty(name, value.toString)
       intercept[Exception] {
         KafkaConfig.fromProps(props)
       }
-    })
+    }
   }
 
 }

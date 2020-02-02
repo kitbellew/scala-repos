@@ -58,18 +58,16 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
     case s                => setBox(Helpers.tryo[CaseType] { s.extract[CaseType] })
   }
 
-  def asDBObject: DBObject = {
+  def asDBObject: DBObject =
     JObjectParser.parse(asJValue.asInstanceOf[JObject])
-  }
 
   def setFromDBObject(dbo: DBObject): Box[CaseType] = {
     val jvalue = JObjectParser.serialize(dbo)
     setFromJValue(jvalue)
   }
 
-  override def setFromString(in: String): Box[CaseType] = {
+  override def setFromString(in: String): Box[CaseType] =
     Helpers.tryo { JsonParser.parse(in).extract[CaseType] }
-  }
 
   def setFromAny(in: Any): Box[CaseType] = in match {
     case dbo: DBObject => setFromDBObject(dbo)
@@ -137,7 +135,6 @@ class MongoCaseClassListField[OwnerType <: Record[OwnerType], CaseType](
     case _ => setBox(Empty)
   }
 
-  override def setFromString(in: String): Box[MyType] = {
+  override def setFromString(in: String): Box[MyType] =
     setFromJValue(JsonParser.parse(in))
-  }
 }

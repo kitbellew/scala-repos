@@ -31,7 +31,7 @@ object Json extends Logging {
   /**
     * Parse a JSON string into an object
     */
-  def parseFull(input: String): Option[Any] = {
+  def parseFull(input: String): Option[Any] =
     lock synchronized {
       try {
         JSON.parseFull(input)
@@ -42,7 +42,6 @@ object Json extends Logging {
             t)
       }
     }
-  }
 
   /**
     * Encode an object into a JSON string. This method accepts any type T where
@@ -51,7 +50,7 @@ object Json extends Logging {
     *
     * This method does not properly handle non-ascii characters.
     */
-  def encode(obj: Any): String = {
+  def encode(obj: Any): String =
     obj match {
       case null       => "null"
       case b: Boolean => b.toString
@@ -74,5 +73,4 @@ object Json extends Logging {
         throw new IllegalArgumentException(
           "Unknown arguement of type " + other.getClass + ": " + other)
     }
-  }
 }

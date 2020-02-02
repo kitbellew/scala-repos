@@ -126,7 +126,7 @@ trait EventHandlerDelegate {
     */
   object HandlerMagnet {
     implicit def fromParen[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-        op: () => Unit): HandlerMagnet[J, S] = {
+        op: () => Unit): HandlerMagnet[J, S] =
       new HandlerMagnet[J, S] {
         override val eventHandler = new jfxe.EventHandler[J] {
           def handle(event: J) {
@@ -134,10 +134,9 @@ trait EventHandlerDelegate {
           }
         }
       }
-    }
 
     implicit def fromEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-        op: S => Unit)(implicit jfx2sfx: J => S): HandlerMagnet[J, S] = {
+        op: S => Unit)(implicit jfx2sfx: J => S): HandlerMagnet[J, S] =
       new HandlerMagnet[J, S] {
         override val eventHandler = new jfxe.EventHandler[J] {
           def handle(event: J) {
@@ -145,7 +144,6 @@ trait EventHandlerDelegate {
           }
         }
       }
-    }
   }
 
   /**
@@ -175,9 +173,8 @@ trait EventHandlerDelegate {
     * @return Returns a subscription that can be used to cancel/remove this event handler
     */
   def handleEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-      eventType: EventType[J])(handler: HandlerMagnet[J, S]): Subscription = {
+      eventType: EventType[J])(handler: HandlerMagnet[J, S]): Subscription =
     handler(eventType)
-  }
 
   /**
     * Unregisters a previously registered event handler from this task. One handler might have been
@@ -232,7 +229,7 @@ trait EventHandlerDelegate {
     */
   object FilterMagnet {
     implicit def fromParen[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-        op: () => Unit): FilterMagnet[J, S] = {
+        op: () => Unit): FilterMagnet[J, S] =
       new FilterMagnet[J, S] {
         override val eventFilter = new jfxe.EventHandler[J] {
           def handle(event: J) {
@@ -240,10 +237,9 @@ trait EventHandlerDelegate {
           }
         }
       }
-    }
 
     implicit def fromEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-        op: S => Unit)(implicit jfx2sfx: J => S): FilterMagnet[J, S] = {
+        op: S => Unit)(implicit jfx2sfx: J => S): FilterMagnet[J, S] =
       new FilterMagnet[J, S] {
         override val eventFilter = new jfxe.EventHandler[J] {
           def handle(event: J) {
@@ -251,7 +247,6 @@ trait EventHandlerDelegate {
           }
         }
       }
-    }
   }
 
   /**
@@ -286,9 +281,8 @@ trait EventHandlerDelegate {
     * @tparam S ScalaFX type for `J` type wrapper.
     */
   def filterEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
-      eventType: EventType[J])(filter: FilterMagnet[J, S]): Subscription = {
+      eventType: EventType[J])(filter: FilterMagnet[J, S]): Subscription =
     filter(eventType)
-  }
 
   /**
     * Unregisters a previously registered event filter from this task. One filter might have been

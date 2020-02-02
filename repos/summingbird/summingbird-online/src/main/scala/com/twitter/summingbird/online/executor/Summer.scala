@@ -128,7 +128,7 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
 
   override def tick = sSummer.tick.map(handleResult(_))
 
-  override def apply(state: InputState[S], tupList: (Int, CMap[Key, Value])) = {
+  override def apply(state: InputState[S], tupList: (Int, CMap[Key, Value])) =
     try {
       val (_, innerTuples) = tupList
       assert(innerTuples.size > 0, "Maps coming in must not be empty")
@@ -142,7 +142,6 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
     } catch {
       case NonFatal(e) => Future.exception(e)
     }
-  }
 
   override def cleanup = Await.result(store.close)
 }

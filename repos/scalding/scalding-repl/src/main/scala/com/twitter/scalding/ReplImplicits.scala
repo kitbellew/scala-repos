@@ -97,16 +97,15 @@ trait BaseReplState {
         (m, defaultFs.getWorkingDirectory.toString)
       }
     }
-    println(s"${Console.GREEN}#### Scalding mode: ${modeString}")
-    println(s"#### User home: ${homeDir}${Console.RESET}")
+    println(s"${Console.GREEN}#### Scalding mode: $modeString")
+    println(s"#### User home: $homeDir${Console.RESET}")
   }
 
-  private def modeHadoopConf: Configuration = {
+  private def modeHadoopConf: Configuration =
     mode match {
       case hdfsMode: Hdfs => hdfsMode.jobConf
       case _              => new Configuration(false)
     }
-  }
 
   /**
     * Access to Hadoop FsShell
@@ -114,9 +113,8 @@ trait BaseReplState {
     * @param cmdArgs list of command line parameters for FsShell, one per method argument
     * @return
     */
-  def fsShellExp(cmdArgs: String*): Int = {
+  def fsShellExp(cmdArgs: String*): Int =
     new FsShell(modeHadoopConf).run(cmdArgs.toArray)
-  }
 
   /**
     * Access to Hadoop FsShell
@@ -124,9 +122,8 @@ trait BaseReplState {
     * @param cmdLine command line parameters for FsShell as a single string
     * @return
     */
-  def fsShell(cmdLine: String): Int = {
+  def fsShell(cmdLine: String): Int =
     new FsShell(modeHadoopConf).run(cmdLine.trim.split(" "))
-  }
 
   /**
     * Configuration to use for REPL executions.
@@ -254,9 +251,8 @@ object ReplImplicits extends FieldConversions {
     */
   implicit def iterableToSource[T](iterable: Iterable[T])(
       implicit setter: TupleSetter[T],
-      converter: TupleConverter[T]): Source = {
+      converter: TupleConverter[T]): Source =
     IterableSource[T](iterable)(setter, converter)
-  }
 
   /**
     * Converts an iterable into a Pipe with index (int-based) fields.
@@ -270,9 +266,8 @@ object ReplImplicits extends FieldConversions {
       implicit setter: TupleSetter[T],
       converter: TupleConverter[T],
       flowDef: FlowDef,
-      mode: Mode): Pipe = {
+      mode: Mode): Pipe =
     iterableToSource(iterable)(setter, converter).read
-  }
 
   /**
     * Converts an iterable into a RichPipe with index (int-based) fields.
@@ -287,9 +282,8 @@ object ReplImplicits extends FieldConversions {
       implicit setter: TupleSetter[T],
       converter: TupleConverter[T],
       flowDef: FlowDef,
-      mode: Mode): RichPipe = {
+      mode: Mode): RichPipe =
     RichPipe(iterableToPipe(iterable)(setter, converter, flowDef, mode))
-  }
 
   /**
     * Convert KeyedListLike to enriched ShellTypedPipe

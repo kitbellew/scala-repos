@@ -99,7 +99,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val counter = new AtomicInteger(0)
 
     def processAllElementsConcurrentlyUnderProgress(
-        action: PsiElement => Unit) = {
+        action: PsiElement => Unit) =
       JobLauncher
         .getInstance()
         .invokeConcurrentlyUnderProgress(
@@ -119,7 +119,6 @@ class ScalaImportOptimizer extends ImportOptimizer {
             }
           }
         )
-    }
 
     processAllElementsConcurrentlyUnderProgress { element =>
       val (imports, names) = collectImportsUsed(element)
@@ -147,7 +146,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val settings = OptimizeImportSettings(project)
     import settings._
 
-    def isImportUsed(importUsed: ImportUsed): Boolean = {
+    def isImportUsed(importUsed: ImportUsed): Boolean =
       //todo: collect proper information about language features
       importUsed match {
         case ImportSelectorUsed(sel) if sel.isAliasedImport => true
@@ -155,7 +154,6 @@ class ScalaImportOptimizer extends ImportOptimizer {
           usedImports.contains(importUsed) || isLanguageFeatureImport(
             importUsed) || importUsed.qualName.exists(isAlwaysUsedImport)
       }
-    }
 
     val importsInfo =
       collectRanges(namesAtRangeStart, createInfo(_, isImportUsed))
@@ -182,7 +180,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
         documentManager.commitDocument(document)
       }
 
-      def sameInfosWithUpdatedRanges(): Seq[(TextRange, Seq[ImportInfo])] = {
+      def sameInfosWithUpdatedRanges(): Seq[(TextRange, Seq[ImportInfo])] =
         optimized
           .zip {
             collectRanges(_ => Set.empty, _ => Seq.empty)
@@ -190,7 +188,6 @@ class ScalaImportOptimizer extends ImportOptimizer {
           .map {
             case ((_, infos), (range, _)) => (range, infos)
           }
-      }
     }
   }
 
@@ -212,18 +209,17 @@ class ScalaImportOptimizer extends ImportOptimizer {
     import settings._
 
     @tailrec
-    def indentForOffset(index: Int, res: String = ""): String = {
+    def indentForOffset(index: Int, res: String = ""): String =
       if (index <= 0) res
       else {
         val c = documentText.charAt(index - 1)
         if (c == ' ' || c == '\t') indentForOffset(index - 1, s"$c$res")
         else res
       }
-    }
     val newLineWithIndent: String = "\n" + indentForOffset(range.getStartOffset)
 
     var prevGroupIndex = -1
-    def groupSeparatorsBefore(info: ImportInfo, currentGroupIndex: Int) = {
+    def groupSeparatorsBefore(info: ImportInfo, currentGroupIndex: Int) =
       if (currentGroupIndex <= prevGroupIndex || prevGroupIndex == -1) ""
       else {
         def isBlankLine(i: Int) =
@@ -235,7 +231,6 @@ class ScalaImportOptimizer extends ImportOptimizer {
             .size
         newLineWithIndent * blankLineNumber
       }
-    }
 
     val text = importInfos
       .map { info =>
@@ -276,7 +271,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val infos = ArrayBuffer[ImportInfo]()
     val allUsedImportedNames = collectUsedImportedNamesSorted(holder)
 
-    def addRange(): Unit = {
+    def addRange(): Unit =
       if (rangeStart != -1) {
         val usedImportedNames =
           allUsedImportedNames.dropWhile(_._2 < rangeStart).map(_._1).toSet
@@ -291,7 +286,6 @@ class ScalaImportOptimizer extends ImportOptimizer {
         namesAtStart = Set.empty
         infos.clear()
       }
-    }
 
     def initRange(psi: PsiElement) {
       rangeStart = psi.getTextRange.getStartOffset
@@ -394,10 +388,9 @@ object ScalaImportOptimizer {
 
       val groupStrings = new ArrayBuffer[String]
 
-      def addGroup(names: Iterable[String]) = {
+      def addGroup(names: Iterable[String]) =
         if (sortLexicografically) groupStrings ++= names.toSeq.sorted
         else groupStrings ++= names
-      }
 
       val arrow =
         if (isUnicodeArrow) ScalaTypedHandler.unicodeCaseArrow else "=>"
@@ -684,7 +677,7 @@ object ScalaImportOptimizer {
     buffer
   }
 
-  def getFirstId(s: String): String = {
+  def getFirstId(s: String): String =
     if (s.startsWith("`")) {
       val index: Int = s.indexOf('`', 1)
       if (index == -1) s
@@ -694,7 +687,6 @@ object ScalaImportOptimizer {
       if (index == -1) s
       else s.substring(0, index)
     }
-  }
 
   def findGroupIndex(info: String, settings: OptimizeImportSettings): Int = {
     val groups = settings.importLayout
@@ -826,7 +818,7 @@ object ScalaImportOptimizer {
 
   private def collectUsedImportedNamesSorted(
       holder: ScImportsHolder): ArrayBuffer[(String, Int)] = {
-    def implicitlyImported(srr: ScalaResolveResult) = {
+    def implicitlyImported(srr: ScalaResolveResult) =
       srr.element match {
         case c: PsiClass =>
           val qName = c.qualifiedName
@@ -837,7 +829,6 @@ object ScalaImportOptimizer {
             o.qualifiedName)
         case _ => false
       }
-    }
 
     val namesWithOffset = ArrayBuffer[(String, Int)]()
     holder.depthFirst.foreach {
@@ -854,9 +845,8 @@ object ScalaImportOptimizer {
     namesWithOffset.sortBy(_._2)
   }
 
-  def collectUsedImportedNames(holder: ScImportsHolder): Set[String] = {
+  def collectUsedImportedNames(holder: ScImportsHolder): Set[String] =
     collectUsedImportedNamesSorted(holder).map(_._1).toSet
-  }
 
   def createInfo(
       imp: ScImportStmt,

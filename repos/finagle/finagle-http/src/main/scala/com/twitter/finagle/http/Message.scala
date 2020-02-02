@@ -332,11 +332,10 @@ abstract class Message extends HttpMessageProxy {
     * requests specially.  For example, an endpoint might render JSON or XML
     * instead HTML if it's an XmlHttpRequest.  (Tip: don't do this - it's gross.)
     */
-  def isXmlHttpRequest = {
+  def isXmlHttpRequest =
     Option(headers.get("X-Requested-With")) exists {
       _.toLowerCase.contains("xmlhttprequest")
     }
-  }
 
   /** Get length of content. */
   def length: Int = getContent.readableBytes
@@ -383,12 +382,11 @@ abstract class Message extends HttpMessageProxy {
     new ChannelBufferInputStream(getContent)
 
   /** Use content as Reader.  (Scala interface.  Java usrs can use getReader().) */
-  def withReader[T](f: Reader => T): T = {
+  def withReader[T](f: Reader => T): T =
     withInputStream { inputStream =>
       val reader = new InputStreamReader(inputStream)
       f(reader)
     }
-  }
 
   /** Get Reader for content.  (Java interface.  Scala users should use withReader.) */
   def getReader(): Reader =
@@ -449,7 +447,7 @@ abstract class Message extends HttpMessageProxy {
   }
 
   /** Use as a Writer.  Content is replaced with writer contents. */
-  def withWriter[T](f: Writer => T): T = {
+  def withWriter[T](f: Writer => T): T =
     withOutputStream { outputStream =>
       val writer = new OutputStreamWriter(outputStream, Message.Utf8)
       val result = f(writer)
@@ -457,7 +455,6 @@ abstract class Message extends HttpMessageProxy {
       // withOutputStream will write()
       result
     }
-  }
 
   /** Clear content (set to ""). */
   def clearContent() {

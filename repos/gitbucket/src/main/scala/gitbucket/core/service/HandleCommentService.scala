@@ -132,14 +132,14 @@ trait HandleCommentService {
             content foreach {
               f.toNotify(repository, issue, _) {
                 Notifier.msgComment(
-                  s"${context.baseUrl}/${owner}/${name}/${if (issue.isPullRequest) "pull"
+                  s"${context.baseUrl}/$owner/$name/${if (issue.isPullRequest) "pull"
                   else "issues"}/${issue.issueId}#comment-${commentId.get}")
               }
             }
             action foreach {
               f.toNotify(repository, issue, _) {
                 Notifier.msgStatus(
-                  s"${context.baseUrl}/${owner}/${name}/issues/${issue.issueId}")
+                  s"${context.baseUrl}/$owner/$name/issues/${issue.issueId}")
               }
             }
         }

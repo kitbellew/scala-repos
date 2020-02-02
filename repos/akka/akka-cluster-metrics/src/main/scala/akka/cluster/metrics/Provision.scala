@@ -51,16 +51,15 @@ trait SigarProvider {
   }
 
   /** Extract and load sigar native library. */
-  def provisionSigarLibrary(): Unit = {
+  def provisionSigarLibrary(): Unit =
     SigarProvisioner.provision(new File(extractFolder))
-  }
 
   /**
     *  Create sigar instance with 2-phase sigar library loading.
     *  1) Assume that library is already provisioned.
     *  2) Attempt to provision library via sigar-loader.
     */
-  def createSigarInstance: SigarProxy = {
+  def createSigarInstance: SigarProxy =
     TryNative {
       verifiedSigarInstance
     } orElse TryNative {
@@ -69,7 +68,6 @@ trait SigarProvider {
     } recover {
       case e: Throwable ⇒ throw new RuntimeException("Failed to load sigar:", e)
     } get
-  }
 
 }
 
@@ -80,9 +78,8 @@ object SigarProvider {
     *
     * Note: `SigarProxy` is not `Sigar` during tests.
     */
-  def close(sigar: SigarProxy) = {
+  def close(sigar: SigarProxy) =
     if (sigar.isInstanceOf[Sigar]) sigar.asInstanceOf[Sigar].close()
-  }
 }
 
 /**

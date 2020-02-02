@@ -18,12 +18,11 @@ object SwaggerCommandSupport {
       ValueSource.Path -> ParamType.Path)
 
   def parametersFromCommand[T <: Command](obj: T)(
-      implicit mf: Manifest[T]): (List[Parameter], Option[Model]) = {
+      implicit mf: Manifest[T]): (List[Parameter], Option[Model]) =
     addModelFromCommand(obj, createParameterList(obj))
-  }
 
   private[this] def createParameterList[T <: Command](obj: T)(
-      implicit mf: Manifest[T]): List[Parameter] = {
+      implicit mf: Manifest[T]): List[Parameter] =
     mf.erasure.getMethods().foldLeft(List.empty[Parameter]) { (lst, fld) =>
       if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld
             .getParameterTypes()
@@ -48,7 +47,6 @@ object SwaggerCommandSupport {
         }
       } else lst
     }
-  }
 
   private[this] def addModelFromCommand[T <: Command](
       obj: T,
@@ -127,17 +125,15 @@ trait SwaggerCommandSupport {
     new CommandOperationBuilder(registerModel(_), underlying)
 
   private[this] def parametersFromCommand[T <: CommandType](
-      implicit mf: Manifest[T]): List[Parameter] = {
+      implicit mf: Manifest[T]): List[Parameter] =
     parametersFromCommand(mf.erasure.newInstance().asInstanceOf[T])
-  }
 
   private[this] def parametersFromCommand[T <: CommandType](cmd: => T)(
-      implicit mf: Manifest[T]): List[Parameter] = {
+      implicit mf: Manifest[T]): List[Parameter] =
     SwaggerCommandSupport.parametersFromCommand(cmd) match {
       case (parameters, None) => parameters
       case (parameters, Some(model)) =>
         _models += model.id -> model
         parameters
     }
-  }
 }

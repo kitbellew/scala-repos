@@ -15,11 +15,11 @@ import scala.annotation.tailrec
 object ParserUtils extends ParserUtilsBase {
 
   def lookAheadSeq(n: Int)(builder: PsiBuilder) =
-    (1 to n).map(i => {
+    (1 to n).map { i =>
       val token = if (!builder.eof) builder.getTokenType else null
       builder.advanceLexer()
       token
-    })
+    }
 
   //Write element node
   def eatElement(builder: PsiBuilder, elem: IElementType) {
@@ -147,7 +147,7 @@ object ParserUtils extends ParserUtilsBase {
 
   def elementCanStartStatement(
       element: IElementType,
-      builder: ScalaPsiBuilder): Boolean = {
+      builder: ScalaPsiBuilder): Boolean =
     element match {
       case ScalaTokenTypes.kCATCH        => false
       case ScalaTokenTypes.kELSE         => false
@@ -179,5 +179,4 @@ object ParserUtils extends ParserUtilsBase {
         }
       case _ => true
     }
-  }
 }

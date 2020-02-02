@@ -11,7 +11,7 @@ object Test extends App {
   val im: InstanceMirror = cm.reflect(a)
   val cs = im.symbol
 
-  def test(f: Symbol) = {
+  def test(f: Symbol) =
     try {
       val fm: FieldMirror = im.reflectField(f.asTerm)
       println(fm.symbol.isVar)
@@ -22,7 +22,6 @@ object Test extends App {
       case ex: Throwable =>
         println(ex.getMessage)
     }
-  }
 
   test(cs.info.decl(TermName("x")).asTerm)
   test(cs.info.decl(TermName("x_$eq")).asTerm)

@@ -62,9 +62,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
     element.getText
   }
 
-  def isCollapsedByDefault(@NotNull node: ASTNode): Boolean = {
+  def isCollapsedByDefault(@NotNull node: ASTNode): Boolean =
     ScalaI18nUtil.isFoldingsOn
-  }
 
   private def checkLiteral(
       project: Project,

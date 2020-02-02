@@ -40,7 +40,6 @@ class ImportTracker {
 }
 
 object ImportTracker {
-  def getInstance(project: Project): ImportTracker = {
+  def getInstance(project: Project): ImportTracker =
     ServiceManager.getService(project, classOf[ImportTracker])
-  }
 }

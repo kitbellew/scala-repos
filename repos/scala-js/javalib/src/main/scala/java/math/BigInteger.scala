@@ -96,7 +96,7 @@ object BigInteger {
   def probablePrime(bitLength: Int, rnd: Random): BigInteger =
     new BigInteger(bitLength, 100, rnd)
 
-  def valueOf(lVal: Long): BigInteger = {
+  def valueOf(lVal: Long): BigInteger =
     if (lVal < 0) {
       if (lVal != -1) new BigInteger(-1, -lVal)
       else MINUS_ONE
@@ -105,9 +105,8 @@ object BigInteger {
     } else {
       new BigInteger(1, lVal)
     }
-  }
 
-  private[math] def getPowerOfTwo(exp: Int): BigInteger = {
+  private[math] def getPowerOfTwo(exp: Int): BigInteger =
     if (exp < TWO_POWS.length) {
       TWO_POWS(exp)
     } else {
@@ -117,23 +116,20 @@ object BigInteger {
       resDigits(intCount) = 1 << bitN
       new BigInteger(1, intCount + 1, resDigits)
     }
-  }
 
   @inline
-  private def checkNotNull[T <: AnyRef](reference: T): reference.type = {
+  private def checkNotNull[T <: AnyRef](reference: T): reference.type =
     if (reference == null)
       throw new NullPointerException
     else
       reference
-  }
 
   @inline
   private def checkCriticalArgument(
       expression: Boolean,
-      errorMessage: => String): Unit = {
+      errorMessage: => String): Unit =
     if (!expression)
       throw new IllegalArgumentException(errorMessage)
-  }
 
   @inline
   private[math] final class QuotAndRem(
@@ -319,10 +315,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
   }
 
-  def abs(): BigInteger = {
+  def abs(): BigInteger =
     if (sign < 0) new BigInteger(1, numberLength, digits)
     else this
-  }
 
   def add(bi: BigInteger): BigInteger = Elementary.add(this, bi)
 
@@ -334,19 +329,17 @@ class BigInteger extends Number with Comparable[BigInteger] {
 
   def bitLength(): Int = BitLevel.bitLength(this)
 
-  def clearBit(n: Int): BigInteger = {
+  def clearBit(n: Int): BigInteger =
     if (testBit(n)) BitLevel.flipBit(this, n)
     else this
-  }
 
-  def compareTo(bi: BigInteger): Int = {
+  def compareTo(bi: BigInteger): Int =
     if (sign > bi.sign) GREATER
     else if (sign < bi.sign) LESS
     else if (numberLength > bi.numberLength) sign
     else if (numberLength < bi.numberLength) -bi.sign
     // else Equal sign and equal numberLength
     else sign * Elementary.compareArrays(digits, bi.digits, numberLength)
-  }
 
   def divide(divisor: BigInteger): BigInteger = {
     if (divisor.sign == 0)
@@ -496,7 +489,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
   }
 
-  def getLowestSetBit(): Int = {
+  def getLowestSetBit(): Int =
     if (sign == 0) {
       -1
     } else {
@@ -504,9 +497,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
       val i = getFirstNonzeroDigit
       (i << 5) + java.lang.Integer.numberOfTrailingZeros(digits(i))
     }
-  }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     if (_hashCode != 0) {
       _hashCode
     } else {
@@ -516,7 +508,6 @@ class BigInteger extends Number with Comparable[BigInteger] {
       _hashCode = _hashCode * sign
       _hashCode
     }
-  }
 
   override def intValue(): Int = sign * digits(0)
 
@@ -530,15 +521,13 @@ class BigInteger extends Number with Comparable[BigInteger] {
     sign * value
   }
 
-  def max(bi: BigInteger): BigInteger = {
+  def max(bi: BigInteger): BigInteger =
     if (this.compareTo(bi) == GREATER) this
     else bi
-  }
 
-  def min(bi: BigInteger): BigInteger = {
+  def min(bi: BigInteger): BigInteger =
     if (this.compareTo(bi) == LESS) this
     else bi
-  }
 
   def mod(m: BigInteger): BigInteger = {
     if (m.sign <= 0)
@@ -549,7 +538,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     else rem
   }
 
-  def modInverse(m: BigInteger): BigInteger = {
+  def modInverse(m: BigInteger): BigInteger =
     if (m.sign <= 0) {
       throw new ArithmeticException("BigInteger: modulus not positive")
     } else if (!(testBit(0) || m.testBit(0))) {
@@ -566,7 +555,6 @@ class BigInteger extends Number with Comparable[BigInteger] {
       if (sign < 0) m.subtract(res)
       else res
     }
-  }
 
   def modPow(exponent: BigInteger, m: BigInteger): BigInteger = {
     var _exponent = exponent
@@ -594,15 +582,13 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
   }
 
-  def multiply(bi: BigInteger): BigInteger = {
+  def multiply(bi: BigInteger): BigInteger =
     if (bi.sign == 0 || sign == 0) ZERO
     else Multiplication.multiply(this, bi)
-  }
 
-  def negate(): BigInteger = {
+  def negate(): BigInteger =
     if (sign == 0) this
     else new BigInteger(-sign, numberLength, digits)
-  }
 
   def nextProbablePrime(): BigInteger = {
     if (sign < 0)
@@ -672,22 +658,19 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
   }
 
-  def setBit(n: Int): BigInteger = {
+  def setBit(n: Int): BigInteger =
     if (testBit(n)) this
     else BitLevel.flipBit(this, n)
-  }
 
-  def shiftLeft(n: Int): BigInteger = {
+  def shiftLeft(n: Int): BigInteger =
     if (n == 0 || sign == 0) this
     else if (n > 0) BitLevel.shiftLeft(this, n)
     else BitLevel.shiftRight(this, -n)
-  }
 
-  def shiftRight(n: Int): BigInteger = {
+  def shiftRight(n: Int): BigInteger =
     if (n == 0 || sign == 0) this
     else if (n > 0) BitLevel.shiftRight(this, n)
     else BitLevel.shiftLeft(this, -n)
-  }
 
   def signum(): Int = sign
 
@@ -746,12 +729,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
 
     @inline
     @tailrec
-    def loopBytes(tempDigit: Int => Unit): Unit = {
+    def loopBytes(tempDigit: Int => Unit): Unit =
       if (bytesLen > firstByteNumber) {
         tempDigit(digitIndex)
         loopBytes(tempDigit)
       }
-    }
 
     @inline
     def setBytesForDigit(tempDigit: Int): Unit = {
@@ -794,12 +776,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
   private[math] def cutOffLeadingZeroes(): Unit = {
     @inline
     @tailrec
-    def loop(): Unit = {
+    def loop(): Unit =
       if (numberLength > 0) {
         numberLength -= 1
         if (digits(numberLength) == 0) loop()
       }
-    }
 
     loop()
     if (digits(numberLength) == 0) {
@@ -832,10 +813,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
   private[math] def isOne(): Boolean =
     numberLength == 1 && digits(0) == 1
 
-  private[math] def shiftLeftOneBit(): BigInteger = {
+  private[math] def shiftLeftOneBit(): BigInteger =
     if (sign == 0) this
     else BitLevel.shiftLeftOneBit(this)
-  }
 
   private[math] def unCache(): Unit =
     firstNonzeroDigit = firstNonzeroDigitNotSet

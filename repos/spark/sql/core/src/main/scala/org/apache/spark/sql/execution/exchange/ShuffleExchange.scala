@@ -59,7 +59,7 @@ case class ShuffleExchange(
   private val serializer: Serializer = new UnsafeRowSerializer(
     child.output.size)
 
-  override protected def doPrepare(): Unit = {
+  override protected def doPrepare(): Unit =
     // If an ExchangeCoordinator is needed, we register this Exchange operator
     // to the coordinator when we do prepare. It is important to make sure
     // we register this operator right before the execution instead of register it
@@ -73,7 +73,6 @@ case class ShuffleExchange(
         exchangeCoordinator.registerExchange(this)
       case None =>
     }
-  }
 
   /**
     * Returns a [[ShuffleDependency]] that will partition rows of its child based on
@@ -81,13 +80,12 @@ case class ShuffleExchange(
     * the returned ShuffleDependency will be the input of shuffle.
     */
   private[sql] def prepareShuffleDependency()
-      : ShuffleDependency[Int, InternalRow, InternalRow] = {
+      : ShuffleDependency[Int, InternalRow, InternalRow] =
     ShuffleExchange.prepareShuffleDependency(
       child.execute(),
       child.output,
       newPartitioning,
       serializer)
-  }
 
   /**
     * Returns a [[ShuffledRowRDD]] that represents the post-shuffle dataset.
@@ -134,14 +132,11 @@ case class ShuffleExchange(
 }
 
 object ShuffleExchange {
-  def apply(
-      newPartitioning: Partitioning,
-      child: SparkPlan): ShuffleExchange = {
+  def apply(newPartitioning: Partitioning, child: SparkPlan): ShuffleExchange =
     ShuffleExchange(
       newPartitioning,
       child,
       coordinator = None: Option[ExchangeCoordinator])
-  }
 
   /**
     * Determines whether records must be defensively copied before being sent to the shuffle.

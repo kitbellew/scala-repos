@@ -293,7 +293,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     * by this field should be deleted when the parent is deleted.
     */
   trait Cascade[O <: Mapper[_]] extends MappedOneToManyBase[O] {
-    def delete_! = {
+    def delete_! =
       delegate.forall { e =>
         if (foreign(e).get ==
               OneToMany.this.primaryKeyField.get) {
@@ -301,6 +301,5 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
         } else
           true // doesn't constitute a failure
       }
-    }
   }
 }

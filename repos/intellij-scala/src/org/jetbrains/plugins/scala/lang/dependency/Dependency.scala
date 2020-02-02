@@ -46,16 +46,15 @@ case class Dependency(
 }
 
 object Dependency {
-  def dependenciesIn(scope: PsiElement): Seq[Dependency] = {
+  def dependenciesIn(scope: PsiElement): Seq[Dependency] =
     scope.depthFirst
       .filterByType(classOf[ScReferenceElement])
       .toList
       .flatMap(reference => dependencyFor(reference).toList)
-  }
 
   // While we can rely on result.actualElement, there are several bugs related to unapply(Seq)
   // and it's impossible to rebind such targets later (if needed)
-  def dependencyFor(reference: ScReferenceElement): Option[Dependency] = {
+  def dependencyFor(reference: ScReferenceElement): Option[Dependency] =
     if (isPrimary(reference)) {
       reference.bind().flatMap { result =>
         dependencyFor(reference, result.element, result.fromType)
@@ -63,7 +62,6 @@ object Dependency {
     } else {
       None
     }
-  }
 
   private def isPrimary(ref: ScReferenceElement) = ref match {
     case it @ Parent(postfix: ScPostfixExpr) => it == postfix.operand

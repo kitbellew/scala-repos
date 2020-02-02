@@ -49,15 +49,14 @@ class ArrayBufferInputStream(
   private[this] var _pos: Int = 0
 
   override def available(): Int = length - pos
-  override def mark(readlimit: Int): Unit = { mark = pos }
+  override def mark(readlimit: Int): Unit = mark = pos
   override def markSupported(): Boolean = true
-  def read(): Int = {
+  def read(): Int =
     if (pos < length) {
       val res = uintView(pos)
       pos += 1
       res
     } else -1
-  }
 
   override def read(b: Array[Byte], off: Int, reqLen: Int): Int = {
     if (off < 0 || reqLen < 0 || reqLen > b.length - off)
@@ -80,7 +79,7 @@ class ArrayBufferInputStream(
     }
   }
 
-  override def reset(): Unit = { pos = mark }
+  override def reset(): Unit = pos = mark
 
   /** Skips a given number of bytes. Always skips the maximum number possible */
   override def skip(n: Long): Long = {

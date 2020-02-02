@@ -49,9 +49,8 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
 
   private def connect(
       s: SocketServer = socketServer,
-      protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Socket = {
+      protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Socket =
     new Socket("localhost", s.boundPort(protocol))
-  }
 
   private def sendRequest(
       socket: Socket,

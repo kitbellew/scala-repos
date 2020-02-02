@@ -74,13 +74,12 @@ class CSVIngestProcessing(
 
     def writeChunkStream(
         chan: WritableByteChannel,
-        chunk: ByteChunk): Future[Long] = {
+        chunk: ByteChunk): Future[Long] =
       chunk match {
         case Left(bytes) =>
           writeChannel(chan, bytes :: StreamT.empty[Future, Array[Byte]], 0L)
         case Right(stream) => writeChannel(chan, stream, 0L)
       }
-    }
 
     def writeToFile(byteStream: ByteChunk): Future[(File, Long)] = {
       val file = File.createTempFile("async-ingest-", null, tmpdir)
@@ -92,7 +91,7 @@ class CSVIngestProcessing(
     final private def writeChannel(
         chan: WritableByteChannel,
         stream: StreamT[Future, Array[Byte]],
-        written: Long): Future[Long] = {
+        written: Long): Future[Long] =
       stream.uncons flatMap {
         case Some((bytes, tail)) =>
           val written0 = chan.write(ByteBuffer.wrap(bytes))
@@ -101,19 +100,17 @@ class CSVIngestProcessing(
         case None =>
           M.point { chan.close(); written }
       }
-    }
 
     def readerBuilder: ValidationNel[String, java.io.Reader => CSVReader] = {
       def charOrError(
           s: Option[String],
-          default: Char): ValidationNel[String, Char] = {
+          default: Char): ValidationNel[String, Char] =
         s map {
           case s if s.length == 1 => success(s.charAt(0))
           case _                  => failure("Expected a single character but found a string.")
         } getOrElse {
           success(default)
         } toValidationNel
-      }
 
       val delimiterV = charOrError(delimiter, ',')
       val quoteV = charOrError(quote, '"')
@@ -127,7 +124,7 @@ class CSVIngestProcessing(
 
     @tailrec final def readBatch(
         reader: CSVReader,
-        batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) = {
+        batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) =
       if (batch.size >= batchSize) {
         (false, batch)
       } else {
@@ -135,7 +132,6 @@ class CSVIngestProcessing(
         if (nextRow == null) (true, batch)
         else readBatch(reader, batch :+ nextRow)
       }
-    }
 
     /**
       * Normalize headers by turning them into `JPath`s. Normally, a field will
@@ -177,7 +173,7 @@ class CSVIngestProcessing(
           reader: CSVReader,
           total: Int,
           ingested: Int,
-          errors: Vector[(Int, String)]): Future[IngestResult] = {
+          errors: Vector[(Int, String)]): Future[IngestResult] =
         // TODO: handle errors in readBatch
         M.point(readBatch(reader, Vector())) flatMap {
           case (done, batch) =>
@@ -227,7 +223,6 @@ class CSVIngestProcessing(
               }
             }
         }
-      }
 
       M.point(reader.readNext()) flatMap { header =>
         if (header == null) {
@@ -242,7 +237,7 @@ class CSVIngestProcessing(
         durability: Durability,
         errorHandling: ErrorHandling,
         storeMode: WriteMode,
-        data: ByteChunk): Future[IngestResult] = {
+        data: ByteChunk): Future[IngestResult] =
       readerBuilder map { f =>
         for {
           (file, size) <- writeToFile(data)
@@ -255,6 +250,5 @@ class CSVIngestProcessing(
           result
         }
       } valueOr { errors => M.point(NotIngested(errors.list.mkString("; "))) }
-    }
   }
 }

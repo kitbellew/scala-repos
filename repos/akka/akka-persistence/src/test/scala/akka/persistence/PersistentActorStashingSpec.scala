@@ -159,7 +159,7 @@ abstract class PersistentActorStashingSpec(config: Config)
     with ImplicitSender {
   import PersistentActorStashingSpec._
 
-  def stash[T <: NamedPersistentActor: ClassTag](): Unit = {
+  def stash[T <: NamedPersistentActor: ClassTag](): Unit =
     "support user stash operations" in {
       val persistentActor = namedPersistentActor[T]
       persistentActor ! Cmd("a")
@@ -169,9 +169,8 @@ abstract class PersistentActorStashingSpec(config: Config)
       expectMsg("c")
       expectMsg("a")
     }
-  }
 
-  def stashWithSeveralMessages[T <: NamedPersistentActor: ClassTag](): Unit = {
+  def stashWithSeveralMessages[T <: NamedPersistentActor: ClassTag](): Unit =
     "support user stash operations with several stashed messages" in {
       val persistentActor = namedPersistentActor[T]
       val n = 10
@@ -183,9 +182,8 @@ abstract class PersistentActorStashingSpec(config: Config)
       persistentActor ! GetState
       expectMsg(evts)
     }
-  }
 
-  def stashUnderFailures[T <: NamedPersistentActor: ClassTag](): Unit = {
+  def stashUnderFailures[T <: NamedPersistentActor: ClassTag](): Unit =
     "support user stash operations under failures" in {
       val persistentActor = namedPersistentActor[T]
       val bs = 1 to 10 map ("b-" + _)
@@ -195,7 +193,6 @@ abstract class PersistentActorStashingSpec(config: Config)
       persistentActor ! GetState
       expectMsg(List("a", "c") ++ bs.filter(_ != "b-2"))
     }
-  }
 
   "Stashing in a persistent actor" must {
     behave like stash[UserStashPersistentActor]()
@@ -224,7 +221,7 @@ class SteppingInMemPersistentActorStashingSpec
     with ImplicitSender {
   import PersistentActorStashingSpec._
 
-  def stash[T <: NamedPersistentActor: ClassTag](): Unit = {
+  def stash[T <: NamedPersistentActor: ClassTag](): Unit =
     "handle async callback not happening until next message has been stashed" in {
       val persistentActor = namedPersistentActor[T]
       awaitAssert(SteppingInmemJournal.getRef("persistence-stash"), 3.seconds)
@@ -251,7 +248,6 @@ class SteppingInMemPersistentActorStashingSpec
         }
       }
     }
-  }
 
   "Stashing in a persistent actor mixed with persistAsync" must {
     behave like stash[AsyncStashingPersistentActor]()

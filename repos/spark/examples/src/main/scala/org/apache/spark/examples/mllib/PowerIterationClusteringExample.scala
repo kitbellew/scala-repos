@@ -124,12 +124,11 @@ object PowerIterationClusteringExample {
     sc.stop()
   }
 
-  def generateCircle(radius: Double, n: Int): Seq[(Double, Double)] = {
+  def generateCircle(radius: Double, n: Int): Seq[(Double, Double)] =
     Seq.tabulate(n) { i =>
       val theta = 2.0 * math.Pi * i / n
       (radius * math.cos(theta), radius * math.sin(theta))
     }
-  }
 
   def generateCirclesRdd(
       sc: SparkContext,

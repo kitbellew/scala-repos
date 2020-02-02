@@ -72,7 +72,7 @@ object XmlPatterns extends ParserNode {
           builder.getTokenText.length - 1) == '`'
       )
     val args = builder.mark
-    def parseSeqWildcard(withComma: Boolean): Boolean = {
+    def parseSeqWildcard(withComma: Boolean): Boolean =
       if (if (withComma)
             lookAhead(
               builder,
@@ -100,7 +100,6 @@ object XmlPatterns extends ParserNode {
       } else {
         false
       }
-    }
 
     def parseSeqWildcardBinding(withComma: Boolean): Boolean = {
       if (if (withComma)

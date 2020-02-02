@@ -5,11 +5,10 @@ import org.slf4j.LoggerFactory
 object HasColumnProjection {
   val LOG = LoggerFactory.getLogger(this.getClass)
 
-  def requireNoSemiColon(glob: String) = {
+  def requireNoSemiColon(glob: String) =
     require(
       !glob.contains(";"),
       "A column projection glob cannot contain a ; character")
-  }
 }
 
 trait HasColumnProjection {

@@ -181,9 +181,8 @@ private[spark] class EventLoggingListener(
       event: SparkListenerEnvironmentUpdate): Unit = logEvent(event)
 
   // Events that trigger a flush
-  override def onStageCompleted(event: SparkListenerStageCompleted): Unit = {
+  override def onStageCompleted(event: SparkListenerStageCompleted): Unit =
     logEvent(event, flushLogger = true)
-  }
 
   override def onJobStart(event: SparkListenerJobStart): Unit =
     logEvent(event, flushLogger = true)
@@ -192,34 +191,26 @@ private[spark] class EventLoggingListener(
     logEvent(event, flushLogger = true)
 
   override def onBlockManagerAdded(
-      event: SparkListenerBlockManagerAdded): Unit = {
+      event: SparkListenerBlockManagerAdded): Unit =
     logEvent(event, flushLogger = true)
-  }
 
   override def onBlockManagerRemoved(
-      event: SparkListenerBlockManagerRemoved): Unit = {
+      event: SparkListenerBlockManagerRemoved): Unit =
     logEvent(event, flushLogger = true)
-  }
 
-  override def onUnpersistRDD(event: SparkListenerUnpersistRDD): Unit = {
+  override def onUnpersistRDD(event: SparkListenerUnpersistRDD): Unit =
     logEvent(event, flushLogger = true)
-  }
 
-  override def onApplicationStart(
-      event: SparkListenerApplicationStart): Unit = {
+  override def onApplicationStart(event: SparkListenerApplicationStart): Unit =
     logEvent(event, flushLogger = true)
-  }
 
-  override def onApplicationEnd(event: SparkListenerApplicationEnd): Unit = {
+  override def onApplicationEnd(event: SparkListenerApplicationEnd): Unit =
     logEvent(event, flushLogger = true)
-  }
-  override def onExecutorAdded(event: SparkListenerExecutorAdded): Unit = {
+  override def onExecutorAdded(event: SparkListenerExecutorAdded): Unit =
     logEvent(event, flushLogger = true)
-  }
 
-  override def onExecutorRemoved(event: SparkListenerExecutorRemoved): Unit = {
+  override def onExecutorRemoved(event: SparkListenerExecutorRemoved): Unit =
     logEvent(event, flushLogger = true)
-  }
 
   // No-op because logging every update would be overkill
   override def onBlockUpdated(event: SparkListenerBlockUpdated): Unit = {}
@@ -228,11 +219,10 @@ private[spark] class EventLoggingListener(
   override def onExecutorMetricsUpdate(
       event: SparkListenerExecutorMetricsUpdate): Unit = {}
 
-  override def onOtherEvent(event: SparkListenerEvent): Unit = {
+  override def onOtherEvent(event: SparkListenerEvent): Unit =
     if (event.logEvent) {
       logEvent(event, flushLogger = true)
     }
-  }
 
   /**
     * Stop logging events. The event log file will be renamed so that it loses the
@@ -321,9 +311,8 @@ private[spark] object EventLoggingListener extends Logging {
     }
   }
 
-  private def sanitize(str: String): String = {
+  private def sanitize(str: String): String =
     str.replaceAll("[ :/]", "-").replaceAll("[.${}'\"]", "_").toLowerCase
-  }
 
   /**
     * Opens an event log file and returns an input stream that contains the event data.

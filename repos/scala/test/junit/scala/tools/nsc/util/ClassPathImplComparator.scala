@@ -69,8 +69,7 @@ object ClassPathImplComparator {
   private val flatCpSearchingStats = new DurationStats(
     "Flat classpath - search")
 
-  def main(args: Array[String]): Unit = {
-
+  def main(args: Array[String]): Unit =
     if (args contains "-help")
       usage()
     else {
@@ -143,7 +142,6 @@ object ClassPathImplComparator {
         flatCpSearchingStats.printResults()
       }
     }
-  }
 
   /**
     * Prints usage information

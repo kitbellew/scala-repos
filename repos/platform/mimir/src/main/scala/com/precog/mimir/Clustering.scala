@@ -107,19 +107,18 @@ trait KMediansCoreSetClustering {
       def rec(
           tree0: List[(Int, CoreSet)],
           coreset0: CoreSet,
-          level0: Int): List[(Int, CoreSet)] = {
+          level0: Int): List[(Int, CoreSet)] =
         tree0 match {
           case (`level0`, coreset1) :: tail =>
             rec(tail, mergeCoreSets(coreset0, coreset1, level0), level0 + 1)
           case _ =>
             (level0, coreset0) :: tree0
         }
-      }
 
       CoreSetTree(prefix ++ rec(suffix, coreset, level), k)
     }
 
-    def ++(coreSetTree: CoreSetTree): CoreSetTree = {
+    def ++(coreSetTree: CoreSetTree): CoreSetTree =
       if (coreSetTree.k < k) {
         coreSetTree ++ this
       } else {
@@ -128,7 +127,6 @@ trait KMediansCoreSetClustering {
             acc.insertCoreSet(coreset, level)
         }
       }
-    }
   }
 
   object CoreSetTree {
@@ -242,7 +240,7 @@ trait KMediansCoreSetClustering {
     */
   private def createCenters(
       points: Array[Array[Double]],
-      weights: Array[Long]): Array[Array[Double]] = {
+      weights: Array[Long]): Array[Array[Double]] =
     if (points.length < 100) {
       points
     } else {
@@ -324,7 +322,6 @@ trait KMediansCoreSetClustering {
         centers ++ createCenters(badPoints, badWeights)
       }
     }
-  }
 
   /**
     * Returns a clustering that is within 2 times the cost of the optimal k-medians clustering.
@@ -342,9 +339,8 @@ trait KMediansCoreSetClustering {
     val reps = new Array[Array[Double]](k)
     reps(0) = points(0)
 
-    def weight(pointIdx: Int, clusterIdx: Int): Double = {
+    def weight(pointIdx: Int, clusterIdx: Int): Double =
       dist(points(pointIdx), reps(clusterIdx)) * weights(pointIdx)
-    }
 
     val isCenter = new Array[Boolean](points.length)
     isCenter(0) = true
@@ -755,7 +751,7 @@ trait ClusteringLibModule[M[+_]]
 
           def merge(
               table: Option[Table],
-              tables: StreamT[M, Table]): OptionT[M, Table] = {
+              tables: StreamT[M, Table]): OptionT[M, Table] =
             OptionT(tables.uncons flatMap {
               case Some((head, tail)) =>
                 table map { tbl =>
@@ -766,7 +762,6 @@ trait ClusteringLibModule[M[+_]]
               case None =>
                 M.point(table)
             })
-          }
 
           merge(None, tables) getOrElse Table.empty
         }

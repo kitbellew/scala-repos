@@ -278,9 +278,8 @@ trait Loc[T] {
     * Look up a snippet by name, taking into account the current
     * `Loc` value.
     */
-  def snippet(name: String): Box[NodeSeq => NodeSeq] = {
+  def snippet(name: String): Box[NodeSeq => NodeSeq] =
     snippets orElse calcSnippets lift (name, currentValue)
-  }
 
   protected object accessTestRes
       extends RequestVar[Either[Boolean, Box[() => LiftResponse]]](_testAccess) {
@@ -408,29 +407,24 @@ trait Loc[T] {
 
   def menu = _menu
 
-  private def testAllParams(
-      params: List[Loc.LocParam[T]],
-      req: Req): Boolean = {
+  private def testAllParams(params: List[Loc.LocParam[T]], req: Req): Boolean =
     params.forall {
       case Loc.Test(test) => test(req)
       case _              => true
     }
-  }
 
-  def doesMatch_?(req: Req): Boolean = {
+  def doesMatch_?(req: Req): Boolean =
     link.isDefinedAt(req) &&
-    testAllParams(allParams, req) &&
-    (
-      currentValue.isDefined ||
-      params.contains(Loc.MatchWithoutCurrentValue)
-    )
-  }
+      testAllParams(allParams, req) &&
+      (
+        currentValue.isDefined ||
+          params.contains(Loc.MatchWithoutCurrentValue)
+      )
 
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
 
-  def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] = {
+  def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] =
     kids.toList.flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
-  }
 
   def supplementalKidMenuItems: List[MenuItem] =
     for {
@@ -448,10 +442,9 @@ trait Loc[T] {
       }
     )
 
-  def buildMenu: CompleteMenu = {
+  def buildMenu: CompleteMenu =
     CompleteMenu(
       _menu.buildUpperLines(_menu, _menu, buildKidMenuItems(_menu.kids)))
-  }
 
   private[liftweb] def buildItem(
       kids: List[MenuItem],
@@ -907,20 +900,18 @@ object Loc {
       extends PartialFunction[Req, Box[Boolean]] {
     def this(b: List[String]) = this(b, false)
 
-    def isDefinedAt(req: Req): Boolean = {
+    def isDefinedAt(req: Req): Boolean =
       if (matchHead_?) req.path.partPath.take(uriList.length) == uriList
       else uriList == req.path.partPath
-    }
 
     /**
       * Is the Loc external
       */
     def external_? = false
 
-    def apply(in: Req): Box[Boolean] = {
+    def apply(in: Req): Box[Boolean] =
       if (isDefinedAt(in)) Full(true)
       else throw new MatchError("Failed for Link " + uriList)
-    }
 
     /**
       * Override this method to modify the uriList with data from the Loc's value
@@ -952,11 +943,10 @@ object Loc {
   }
 
   object Link {
-    def apply(urlLst: List[String], matchHead_? : Boolean, url: String) = {
+    def apply(urlLst: List[String], matchHead_? : Boolean, url: String) =
       new Link[Unit](urlLst, matchHead_?) {
         override def createLink(value: Unit): Box[NodeSeq] = Full(Text(url))
       }
-    }
 
     implicit def strLstToLink(in: Seq[String]): Link[Unit] =
       new Link[Unit](in.toList)
@@ -1031,8 +1021,7 @@ case class MenuItem(
     _cssClass = loc.cssClassForMenuItem
   }
 
-  def breadCrumbs: Seq[MenuItem] = {
+  def breadCrumbs: Seq[MenuItem] =
     if (!path) Nil
     else this :: kids.toList.flatMap(_.breadCrumbs)
-  }
 }

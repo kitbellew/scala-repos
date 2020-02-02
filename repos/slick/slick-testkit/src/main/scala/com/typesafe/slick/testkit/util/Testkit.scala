@@ -135,7 +135,7 @@ case class TestMethod(
 sealed abstract class GenericTest[TDB >: Null <: TestDB](
     implicit TdbClass: ClassTag[TDB]) {
   protected[this] var _tdb: TDB = null
-  private[testkit] def setTestDB(tdb: TestDB): Boolean = {
+  private[testkit] def setTestDB(tdb: TestDB): Boolean =
     tdb match {
       case TdbClass(o) =>
         _tdb = o
@@ -143,7 +143,6 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
       case _ =>
         false
     }
-  }
   lazy val tdb: TDB = _tdb
 
   private[testkit] var keepAliveSession: tdb.profile.Backend#Session = null
@@ -169,9 +168,8 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     }
   }
 
-  final def closeKeepAlive() = {
+  final def closeKeepAlive() =
     if (keepAliveSession ne null) keepAliveSession.close()
-  }
 
   implicit class StringContextExtensionMethods(s: StringContext) {
 
@@ -448,11 +446,10 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       if (ok) fixStack(Assert.fail("Expected failure"))
     }
 
-    def shouldBeA[T](implicit ct: ClassTag[T]): Unit = {
+    def shouldBeA[T](implicit ct: ClassTag[T]): Unit =
       if (!ct.runtimeClass.isInstance(v))
         fixStack(Assert.fail(
           "Expected value of type " + ct.runtimeClass.getName + ", got " + v.getClass.getName))
-    }
   }
 
   implicit class CollectionAssertionExtensionMethods[T](v: TraversableOnce[T]) {

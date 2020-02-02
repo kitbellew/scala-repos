@@ -317,7 +317,7 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
     @tailrec final def insertAll(
         idx: Int,
         t: scala.collection.Traversable[T],
-        buffer: UnrolledBuffer[T]): Unit = {
+        buffer: UnrolledBuffer[T]): Unit =
       if (idx < size) {
         // divide this node at the appropriate position and insert all into head
         // update new next
@@ -344,7 +344,6 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         var curr = this
         for (elem <- t) curr = curr append elem
       } else next.insertAll(idx - size, t, buffer)
-    }
     private def nullout(from: Int, until: Int) {
       var idx = from
       while (idx < until) {

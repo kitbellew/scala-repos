@@ -9,9 +9,8 @@ class OnceBenchmark {
   import OnceBenchmark._
 
   @Benchmark
-  def timeApply(state: OnceState): Unit = {
+  def timeApply(state: OnceState): Unit =
     state.once()
-  }
 }
 
 object OnceBenchmark {

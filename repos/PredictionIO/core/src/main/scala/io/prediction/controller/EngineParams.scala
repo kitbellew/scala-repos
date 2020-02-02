@@ -68,14 +68,12 @@ class EngineParams(
       dataSourceParams: (String, Params) = dataSourceParams,
       preparatorParams: (String, Params) = preparatorParams,
       algorithmParamsList: Seq[(String, Params)] = algorithmParamsList,
-      servingParams: (String, Params) = servingParams): EngineParams = {
-
+      servingParams: (String, Params) = servingParams): EngineParams =
     new EngineParams(
       dataSourceParams,
       preparatorParams,
       algorithmParamsList,
       servingParams)
-  }
 }
 
 /** Companion object for creating [[EngineParams]] instances.
@@ -101,14 +99,13 @@ object EngineParams {
       preparatorParams: Params = EmptyParams(),
       algorithmParamsList: Seq[(String, Params)] = Seq(),
       servingName: String = "",
-      servingParams: Params = EmptyParams()): EngineParams = {
+      servingParams: Params = EmptyParams()): EngineParams =
     new EngineParams(
       dataSourceParams = (dataSourceName, dataSourceParams),
       preparatorParams = (preparatorName, preparatorParams),
       algorithmParamsList = algorithmParamsList,
       servingParams = (servingName, servingParams)
     )
-  }
 }
 
 /** SimpleEngine has only one algorithm, and uses default preparator and serving

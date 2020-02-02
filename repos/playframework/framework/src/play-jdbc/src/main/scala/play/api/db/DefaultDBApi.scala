@@ -37,16 +37,15 @@ class DefaultDBApi(
     databases.map(db => (db.name, db)).toMap
   }
 
-  def database(name: String): Database = {
+  def database(name: String): Database =
     databaseByName.getOrElse(
       name,
       throw new IllegalArgumentException(s"Could not find database for $name"))
-  }
 
   /**
     * Try to connect to all data sources.
     */
-  def connect(logConnection: Boolean = false): Unit = {
+  def connect(logConnection: Boolean = false): Unit =
     databases foreach { db =>
       try {
         db.getConnection.close()
@@ -60,11 +59,9 @@ class DefaultDBApi(
             Some(e))
       }
     }
-  }
 
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     databases foreach (_.shutdown())
-  }
 
 }
 

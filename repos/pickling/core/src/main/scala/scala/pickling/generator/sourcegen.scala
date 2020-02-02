@@ -14,13 +14,12 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   def pickleNull(builder: c.Tree): c.Tree =
     q"""_root_.scala.pickling.Defaults.nullPickler.pickle(null, $builder)"""
 
-  def allowNonExistentField(impl: Tree): c.Tree = {
+  def allowNonExistentField(impl: Tree): c.Tree =
     q"""try $impl catch {
             case _: _root_.scala.pickling.PicklingException =>
             // TODO - Don't just ignore bad things, figure out how to actually read the class file for reals.
             // We could basically by blocked by scala here, though.
           }"""
-  }
   def generatePickleImplFromAst(picklerAst: PicklerAst): c.Tree = {
 
     def genGetField(x: GetField): c.Tree = {
@@ -86,7 +85,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           else {
             val result = reflectivelyGet(newTermName("picklee"), y)(fm =>
               putField(
-                q"${fm}.asInstanceOf[${y.returnType(u).asInstanceOf[c.Type]}]",
+                q"$fm.asInstanceOf[${y.returnType(u).asInstanceOf[c.Type]}]",
                 staticallyElided,
                 tpe))
             q"""..$result"""
@@ -199,7 +198,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
           _root_.scala.pickling.Defaults.nullPickler.pickle(null, builder)
         } else $pickleLogic"""
 
-  def genPicklerLogic[T: c.WeakTypeTag](picklerAst: PicklerAst): c.Tree = {
+  def genPicklerLogic[T: c.WeakTypeTag](picklerAst: PicklerAst): c.Tree =
     // TODO - The pickler logic should actually check to make sure the thing passed is actually a FOO, and
     //        If it is not, we delegate to a runtime pickler.
     //        ALTHOUGH, we could, instead, delegate that as function of the AST that we can encode, so
@@ -207,7 +206,6 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     //        We could still disable the generation here.
     //        This is somethign the current algorithm does which we do not do.
     checkNullPickle(generatePickleImplFromAst(picklerAst))
-  }
 
   def genUnpicklerLogic[T: c.WeakTypeTag](
       unpicklerAst: UnpicklerAst): c.Tree = {
@@ -218,16 +216,14 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   }
 
   /** Wraps unpickle logic with the logic on how to handle `null` values.   Assumes the term `tagKey` is available. */
-  def unpickleNull(unpickleLogic: c.Tree): c.Tree = {
+  def unpickleNull(unpickleLogic: c.Tree): c.Tree =
     q""" if (tagKey == _root_.scala.pickling.FastTypeTag.Null.key) null else $unpickleLogic"""
-  }
 
   /** Wraps unpickle logic with the logic on how to handle `Ref` values.   Assumes the terms `tagKey` and `reader` are available. */
-  def unpickleRef(unpickleLogic: c.Tree): c.Tree = {
+  def unpickleRef(unpickleLogic: c.Tree): c.Tree =
     q"""if (tagKey == _root_.scala.pickling.FastTypeTag.Ref.key) {
          _root_.scala.Predef.implicitly[_root_.scala.pickling.Unpickler[_root_.scala.pickling.refs.Ref]].unpickle(tagKey, reader)
        } else $unpickleLogic"""
-  }
 
   def readField(name: String, tpe: Type): c.Tree = {
     val readerName = c.fresh(newTermName("reader"))
@@ -272,7 +268,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     if (cons.requiresReflection)
       sys.error(s"Unable to reflectively call constructors, currently.")
     else {
-      if (cons.constructor.parameterNames.isEmpty) q"""new ${tpe}"""
+      if (cons.constructor.parameterNames.isEmpty) q"""new $tpe"""
       else {
         q"new $tpe(...$argss)"
       }
@@ -298,9 +294,9 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         sys.error(s"Unable to reflectively call factory methods, currently.")
       else {
         if (cons.factoryMethod.parameterNames.isEmpty)
-          q"${tpe}.${newTermName(cons.factoryMethod.methodName)}()"
+          q"$tpe.${newTermName(cons.factoryMethod.methodName)}()"
         else {
-          q"${tpe}.${newTermName(cons.factoryMethod.methodName)}(...$argss)"
+          q"$tpe.${newTermName(cons.factoryMethod.methodName)}(...$argss)"
         }
       }
     result
@@ -310,7 +306,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     *
     * Note: This assumes there exists a `result` name in scope which is the currently instantiated unpickle object.
     */
-  def genSetField(s: SetField): c.Tree = {
+  def genSetField(s: SetField): c.Tree =
     s.setter match {
       case x: IrMethod =>
         x.parameterTypes[c.universe.type](c.universe) match {
@@ -336,8 +332,6 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         } else q"""result.${newTermName(x.fieldName)} = $read"""
     }
 
-  }
-
   val ShortType = typeOf[Short]
   val CharType = typeOf[Char]
   val IntType = typeOf[Int]
@@ -347,7 +341,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   val BooleanType = typeOf[Boolean]
 
   /** This will lift any primitive value into  the java-boxed version (usefulf or reflective code.) */
-  def liftPrimitives(value: c.Tree, tpe: Type): c.Tree = {
+  def liftPrimitives(value: c.Tree, tpe: Type): c.Tree =
     tpe match {
       case ShortType   => q"new _root_.java.lang.Short($value)"
       case CharType    => q"new _root_.java.lang.Character($value)"
@@ -358,7 +352,6 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       case BooleanType => q"new _root_.java.lang.Boolean($value)"
       case _           => value
     }
-  }
 
   def createUnpickler(tpe: Type): Tree =
     q"_root_.scala.Predef.implicitly[_root_.scala.pickling.Unpickler[$tpe]]"
@@ -408,7 +401,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     q"""_root_.scala.concurrent.util.Unsafe.instance.allocateInstance(classOf[$tpe]).asInstanceOf[$tpe]"""
   }
 
-  def generateUnpickleImplFromAst(unpicklerAst: UnpicklerAst): c.Tree = {
+  def generateUnpickleImplFromAst(unpicklerAst: UnpicklerAst): c.Tree =
     unpicklerAst match {
       case c: CallConstructor             => genConstructorUnpickle(c)
       case c: CallModuleFactory           => genCallModuleFactory(c)
@@ -441,7 +434,6 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
                 }"""
         }
     }
-  }
 
   /** generates the tree which will construct + return a new instance of a Pickler class, capable of
     * pickling an instance of type T, using the behavior outlined by the PicklerAst.
@@ -603,7 +595,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   def reflectivelySet(
       target: TermName,
       setter: IrMember,
-      value: c.Tree): c.Tree = {
+      value: c.Tree): c.Tree =
     // TODO - Should we use scala reflection?
     // TODO - Should we trap errors and return better error messages?
     // TODO - We should attempt to SAVE the reflective methods/fields somewhere so we aren't
@@ -629,9 +621,6 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
                 $methodTerm.invoke($target, ${liftPrimitives(value, tpe)})
               """
     }
-
-  }
-
   // -- End Reflective Helper Methods --
 
 }

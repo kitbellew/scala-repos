@@ -74,13 +74,13 @@ class JobGeneratorSuite extends TestSuiteBase {
       val testTimeout = timeout(10 seconds)
       val inputStream = ssc.receiverStream(new TestReceiver)
 
-      inputStream.foreachRDD((rdd: RDD[Int], time: Time) => {
+      inputStream.foreachRDD { (rdd: RDD[Int], time: Time) =>
         if (time.milliseconds == longBatchTime) {
           while (waitLatch.getCount() > 0) {
             waitLatch.await()
           }
         }
-      })
+      }
 
       val batchCounter = new BatchCounter(ssc)
       ssc.checkpoint(checkpointDir.getAbsolutePath)
@@ -91,11 +91,10 @@ class JobGeneratorSuite extends TestSuiteBase {
       val receiverTracker = ssc.scheduler.receiverTracker
 
       // Get the blocks belonging to a batch
-      def getBlocksOfBatch(batchTime: Long): Seq[ReceivedBlockInfo] = {
+      def getBlocksOfBatch(batchTime: Long): Seq[ReceivedBlockInfo] =
         receiverTracker.getBlocksOfBatchAndStream(
           Time(batchTime),
           inputStream.id)
-      }
 
       // Wait for new blocks to be received
       def waitForNewReceivedBlocks() {

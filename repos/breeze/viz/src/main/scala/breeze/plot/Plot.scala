@@ -287,11 +287,10 @@ object Plot {
     datasetSeriesOffsets += 0
     private val seriesDelegates = ArrayBuffer[Int]()
 
-    private def delegate[A](series: Int)(f: (xy.XYDataset, Int) => A) = {
+    private def delegate[A](series: Int)(f: (xy.XYDataset, Int) => A) =
       f(
         datasets(seriesDelegates(series)),
         series - datasetSeriesOffsets(seriesDelegates(series)))
-    }
 
     def clear() {
       datasets.clear()
@@ -310,7 +309,7 @@ object Plot {
 
     def getItemCount(series: Int): Int = delegate(series)(_ getItemCount _)
 
-    def getX(p1: Int, p2: Int): Number = { delegate(p1)(_.getX(_, p2)) }
+    def getX(p1: Int, p2: Int): Number = delegate(p1)(_.getX(_, p2))
     def getY(p1: Int, p2: Int): Number = delegate(p1)(_.getY(_, p2))
     def getZ(p1: Int, p2: Int): Number =
       delegate(p1)(_.asInstanceOf[xy.XYZDataset].getZ(_, p2))
@@ -335,11 +334,10 @@ object Plot {
     private val autopaint = ArrayBuffer[Boolean]()
     private val autostroke = ArrayBuffer[Boolean]()
 
-    private def delegate[A](series: Int)(f: (xy.XYItemRenderer, Int) => A) = {
+    private def delegate[A](series: Int)(f: (xy.XYItemRenderer, Int) => A) =
       f(
         renderers(seriesDelegates(series)),
         series - datasetSeriesOffsets(seriesDelegates(series)))
-    }
 
     def clear() {
       renderers.clear()
@@ -380,9 +378,8 @@ object Plot {
 
     }
 
-    override def getItemVisible(series: Int, item: Int): Boolean = {
+    override def getItemVisible(series: Int, item: Int): Boolean =
       delegate(series)(_.getItemVisible(_, item))
-    }
 
     override def isSeriesVisible(series: Int): Boolean =
       delegate(series)(_.isSeriesVisible(_))
@@ -401,18 +398,15 @@ object Plot {
       delegate(series)(_.setSeriesVisible(_, visible, notify))
     }
 
-    override def isSeriesVisibleInLegend(series: Int): Boolean = {
+    override def isSeriesVisibleInLegend(series: Int): Boolean =
       delegate(series)(_.isSeriesVisibleInLegend(_))
-    }
 
-    override def getItemPaint(series: Int, column: Int): Paint = {
+    override def getItemPaint(series: Int, column: Int): Paint =
       if (autopaint(series)) Plot.paint(series)
       else delegate(series)(_.getItemPaint(_, column))
-    }
 
-    override def getSeriesVisibleInLegend(series: Int): lang.Boolean = {
+    override def getSeriesVisibleInLegend(series: Int): lang.Boolean =
       delegate(series)(_.getSeriesVisibleInLegend(_))
-    }
 
     override def setSeriesVisibleInLegend(series: Int, visible: lang.Boolean) {
       delegate(series)(_.setSeriesVisibleInLegend(_, visible))
@@ -425,83 +419,72 @@ object Plot {
       delegate(series)(_.setSeriesVisibleInLegend(_, visible, notify))
     }
 
-    override def getSeriesPaint(series: Int): Paint = {
+    override def getSeriesPaint(series: Int): Paint =
       if (autopaint(series)) Plot.paint(series)
       else delegate(series)(_.getSeriesPaint(_))
-    }
 
     override def setSeriesPaint(series: Int, paint: Paint) {
       delegate(series)(_.setSeriesPaint(_, paint))
       autopaint(series) = false
     }
 
-    override def getItemOutlinePaint(series: Int, column: Int): Paint = {
+    override def getItemOutlinePaint(series: Int, column: Int): Paint =
       if (autopaint(series)) Plot.paint(series)
       else delegate(series)(_.getItemOutlinePaint(_, column))
-    }
 
     override def setSeriesOutlinePaint(series: Int, paint: Paint) {
       delegate(series)(_.setSeriesOutlinePaint(_, paint))
     }
 
-    override def getSeriesOutlinePaint(series: Int): Paint = {
+    override def getSeriesOutlinePaint(series: Int): Paint =
       if (autopaint(series)) Plot.paint(series)
       else delegate(series)(_.getSeriesOutlinePaint(_))
-    }
 
-    override def getItemStroke(series: Int, column: Int): Stroke = {
+    override def getItemStroke(series: Int, column: Int): Stroke =
       if (autostroke(series)) Plot.stroke(series)
       else delegate(series)(_.getItemStroke(_, column))
 
-      //    renderer.setSeriesStroke(0, Plot.stroke(series))
-      //    renderer.setSeriesShape(0, Plot.shape(series))
-      //    renderer.setSeriesOutlineStroke(0, Plot.outlineStroke(series))
-    }
+    //    renderer.setSeriesStroke(0, Plot.stroke(series))
+    //    renderer.setSeriesShape(0, Plot.shape(series))
+    //    renderer.setSeriesOutlineStroke(0, Plot.outlineStroke(series))
 
-    override def getSeriesStroke(series: Int): Stroke = {
+    override def getSeriesStroke(series: Int): Stroke =
       if (autostroke(series)) Plot.stroke(series)
       else delegate(series)(_.getSeriesStroke(_))
-    }
 
     override def setSeriesStroke(series: Int, stroke: Stroke) {
       delegate(series)(_.setSeriesStroke(_, stroke))
     }
 
-    override def getItemOutlineStroke(series: Int, column: Int): Stroke = {
+    override def getItemOutlineStroke(series: Int, column: Int): Stroke =
       if (autostroke(series)) Plot.outlineStroke(series)
       else delegate(series)(_.getItemOutlineStroke(_, column))
-    }
 
     override def setSeriesOutlineStroke(series: Int, stroke: Stroke) {
       delegate(series)(_.setSeriesOutlineStroke(_, stroke))
     }
 
-    override def getSeriesOutlineStroke(series: Int): Stroke = {
+    override def getSeriesOutlineStroke(series: Int): Stroke =
       if (autostroke(series)) Plot.outlineStroke(series)
       else delegate(series)(_.getSeriesOutlineStroke(_))
-    }
 
-    override def getSeriesShape(series: Int): Shape = {
+    override def getSeriesShape(series: Int): Shape =
       if (autostroke(series)) Plot.shape(series)
       else delegate(series)(_.getSeriesShape(_))
-    }
 
     override def setSeriesShape(series: Int, shape: Shape) {
       delegate(series)(_.setSeriesShape(_, shape))
     }
 
-    override def getItemShape(series: Int, column: Int): Shape = {
+    override def getItemShape(series: Int, column: Int): Shape =
       if (autostroke(series)) Plot.shape(series)
       else delegate(series)(_.getItemShape(_, column))
-    }
 
-    override def isItemLabelVisible(series: Int, column: Int): Boolean = {
+    override def isItemLabelVisible(series: Int, column: Int): Boolean =
       delegate(series)(_.isItemLabelVisible(_, column))
-    }
 
-    override def isSeriesItemLabelsVisible(series: Int): Boolean = {
+    override def isSeriesItemLabelsVisible(series: Int): Boolean =
       delegate(series)(_.isSeriesItemLabelsVisible(_))
-    }
 
   }
 

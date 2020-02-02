@@ -22,13 +22,12 @@ private[streams] trait EnumeratorSubscriptionFactory[T]
 
   override def createSubscription[U >: T](
       subr: Subscriber[U],
-      onSubscriptionEnded: SubscriptionHandle[U] => Unit) = {
+      onSubscriptionEnded: SubscriptionHandle[U] => Unit) =
     new EnumeratorSubscription[T, U](
       enum,
       emptyElement,
       subr,
       onSubscriptionEnded)
-  }
 
 }
 
@@ -103,19 +102,17 @@ private[streams] class EnumeratorSubscription[T, U >: T](
 
   // SubscriptionHandle methods
 
-  override def start(): Unit = {
+  override def start(): Unit =
     subr.onSubscribe(this)
-  }
 
   override def subscriber: Subscriber[U] = subr
 
-  override def isActive: Boolean = {
+  override def isActive: Boolean =
     // run immediately, don't need to wait for exclusive access
     state match {
       case Requested(_, _)       => true
       case Completed | Cancelled => false
     }
-  }
 
   // Streams methods
 

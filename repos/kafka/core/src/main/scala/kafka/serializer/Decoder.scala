@@ -47,7 +47,6 @@ class StringDecoder(props: VerifiableProperties = null)
     else
       props.getString("serializer.encoding", "UTF8")
 
-  def fromBytes(bytes: Array[Byte]): String = {
+  def fromBytes(bytes: Array[Byte]): String =
     new String(bytes, encoding)
-  }
 }

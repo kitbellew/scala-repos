@@ -44,9 +44,8 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(
   private[streaming] def sparkContext = self.context.sparkContext
 
   private[streaming] def defaultPartitioner(
-      numPartitions: Int = self.ssc.sc.defaultParallelism) = {
+      numPartitions: Int = self.ssc.sc.defaultParallelism) =
     new HashPartitioner(numPartitions)
-  }
 
   /**
     * Return a new DStream by applying `groupByKey` to each RDD. Hash partitioning is used to
@@ -419,12 +418,11 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(
   @Experimental
   def mapWithState[StateType: ClassTag, MappedType: ClassTag](
       spec: StateSpec[K, V, StateType, MappedType]
-  ): MapWithStateDStream[K, V, StateType, MappedType] = {
+  ): MapWithStateDStream[K, V, StateType, MappedType] =
     new MapWithStateDStreamImpl[K, V, StateType, MappedType](
       self,
       spec.asInstanceOf[StateSpecImpl[K, V, StateType, MappedType]]
     )
-  }
 
   /**
     * Return a new "state" DStream where the state for each key is updated by applying

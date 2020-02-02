@@ -47,12 +47,12 @@ object SplitMenuButtonDemo extends JFXApp {
           new SplitMenuButton {
             text = "SplitMenuButton 1"
             onAction = { ae: ActionEvent =>
-              { println(ae.eventType + " occurred on SplitMenuButton") }
+              println(ae.eventType + " occurred on SplitMenuButton")
             }
             items = List(
               new MenuItem("MenuItem A") {
                 onAction = { ae: ActionEvent =>
-                  { println(ae.eventType + " occurred on Menu Item A") }
+                  println(ae.eventType + " occurred on Menu Item A")
                 }
               },
               new MenuItem("MenuItem B")

@@ -24,9 +24,8 @@ class QueueSourceSpec extends AkkaSpec {
   implicit val ec = system.dispatcher
   val pause = 300.millis
 
-  def assertSuccess(f: Future[QueueOfferResult]): Unit = {
+  def assertSuccess(f: Future[QueueOfferResult]): Unit =
     f.futureValue should ===(QueueOfferResult.Enqueued)
-  }
 
   "A QueueSource" must {
 

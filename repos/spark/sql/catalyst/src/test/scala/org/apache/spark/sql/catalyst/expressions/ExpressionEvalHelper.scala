@@ -35,9 +35,8 @@ import org.apache.spark.util.Utils
 trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   self: SparkFunSuite =>
 
-  protected def create_row(values: Any*): InternalRow = {
+  protected def create_row(values: Any*): InternalRow =
     InternalRow.fromSeq(values.map(CatalystTypeConverters.convertToCatalyst))
-  }
 
   protected def checkEvaluation(
       expression: => Expression,
@@ -59,7 +58,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     * Check the equality between result of expression and expected value, it will handle
     * Array[Byte] and Spread[Double].
     */
-  protected def checkResult(result: Any, expected: Any): Boolean = {
+  protected def checkResult(result: Any, expected: Any): Boolean =
     (result, expected) match {
       case (result: Array[Byte], expected: Array[Byte]) =>
         java.util.Arrays.equals(result, expected)
@@ -67,7 +66,6 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
         expected.asInstanceOf[Spread[Double]].isWithin(result)
       case _ => result == expected
     }
-  }
 
   protected def evaluate(
       expression: Expression,
@@ -81,7 +79,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
 
   protected def generateProject(
       generator: => Projection,
-      expression: Expression): Projection = {
+      expression: Expression): Projection =
     try {
       generator
     } catch {
@@ -92,7 +90,6 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
             |${Utils.exceptionString(e)}
           """.stripMargin)
     }
-  }
 
   protected def checkEvaluationWithoutCodegen(
       expression: Expression,
@@ -209,11 +206,10 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     */
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: Expression => Expression,
-      dataType: DataType): Unit = {
+      dataType: DataType): Unit =
     forAll(LiteralGenerator.randomGen(dataType)) { (l: Literal) =>
       cmpInterpretWithCodegen(EmptyRow, c(l))
     }
-  }
 
   /**
     * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
@@ -225,14 +221,13 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: (Expression, Expression) => Expression,
       dataType1: DataType,
-      dataType2: DataType): Unit = {
+      dataType2: DataType): Unit =
     forAll(
       LiteralGenerator.randomGen(dataType1),
       LiteralGenerator.randomGen(dataType2)
     ) { (l1: Literal, l2: Literal) =>
       cmpInterpretWithCodegen(EmptyRow, c(l1, l2))
     }
-  }
 
   /**
     * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
@@ -245,7 +240,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       c: (Expression, Expression, Expression) => Expression,
       dataType1: DataType,
       dataType2: DataType,
-      dataType3: DataType): Unit = {
+      dataType3: DataType): Unit =
     forAll(
       LiteralGenerator.randomGen(dataType1),
       LiteralGenerator.randomGen(dataType2),
@@ -253,7 +248,6 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     ) { (l1: Literal, l2: Literal, l3: Literal) =>
       cmpInterpretWithCodegen(EmptyRow, c(l1, l2, l3))
     }
-  }
 
   /**
     * Test evaluation results between Interpreted mode and Codegen mode, making sure we have
@@ -265,14 +259,13 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   def checkConsistencyBetweenInterpretedAndCodegen(
       c: Seq[Expression] => Expression,
       dataType: DataType,
-      minNumElements: Int = 0): Unit = {
+      minNumElements: Int = 0): Unit =
     forAll(Gen.listOf(LiteralGenerator.randomGen(dataType))) {
       (literals: Seq[Literal]) =>
         whenever(literals.size >= minNumElements) {
           cmpInterpretWithCodegen(EmptyRow, c(literals))
         }
     }
-  }
 
   private def cmpInterpretWithCodegen(
       inputRow: InternalRow,
@@ -300,7 +293,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     * Check the equality between result of expression and expected value, it will handle
     * Array[Byte] and Spread[Double].
     */
-  private[this] def compareResults(result: Any, expected: Any): Boolean = {
+  private[this] def compareResults(result: Any, expected: Any): Boolean =
     (result, expected) match {
       case (result: Array[Byte], expected: Array[Byte]) =>
         java.util.Arrays.equals(result, expected)
@@ -313,5 +306,4 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
         true
       case _ => result == expected
     }
-  }
 }

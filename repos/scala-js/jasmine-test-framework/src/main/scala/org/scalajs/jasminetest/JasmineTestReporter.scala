@@ -28,17 +28,15 @@ class JasmineTestReporter(
   private var currentSuite: Suite = _
 
   @JSExport
-  def reportRunnerStarting(): Unit = {
+  def reportRunnerStarting(): Unit =
     info("")
-  }
 
   @JSExport
-  def reportSpecStarting(spec: Spec): Unit = {
+  def reportSpecStarting(spec: Spec): Unit =
     if (currentSuite != spec.suite) {
       currentSuite = spec.suite
       info(currentSuite.description)
     }
-  }
 
   @JSExport
   def reportSpecResults(spec: Spec): Unit = {
@@ -94,9 +92,8 @@ class JasmineTestReporter(
   }
 
   @JSExport
-  def reportRunnerResults(): Unit = {
+  def reportRunnerResults(): Unit =
     runnerDone()
-  }
 
   private val ErrorColor = "\u001b[31m"
   private val SuccessColor = "\u001b[32m"
@@ -121,7 +118,7 @@ class JasmineTestReporter(
     }
   }
 
-  private def displayResult(log: Logger)(result: Result) = {
+  private def displayResult(log: Logger)(result: Result) =
     (result.`type`: String) match {
       case "log" =>
         log.info(s"    ${result.toString}")
@@ -141,6 +138,5 @@ class JasmineTestReporter(
             log.trace(new JasmineTestException(message, stack))
         }
     }
-  }
 
 }

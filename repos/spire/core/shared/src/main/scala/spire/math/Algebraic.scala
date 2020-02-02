@@ -218,7 +218,7 @@ final class Algebraic private (val expr: Algebraic.Expr)
       case ConstantLong(n)             => n.toString
       case ConstantDouble(n)           => n.toString
       case ConstantBigDecimal(n)       => n.toString
-      case ConstantRational(n)         => s"(${n})"
+      case ConstantRational(n)         => s"($n)"
       case ConstantRoot(poly, i, _, _) => s"root($poly, $i)"
       case Neg(sub)                    => s"-$sub"
       case Add(lhs, rhs)               => s"(${recur(lhs)}) + (${recur(rhs)})"
@@ -554,7 +554,7 @@ object Algebraic extends AlgebraicInstances {
     * @param i    the index (0-based) of the root
     * @return an algebraic whose value is the i-th root of the polynomial
     */
-  def root(poly: Polynomial[Rational], i: Int): Algebraic = {
+  def root(poly: Polynomial[Rational], i: Int): Algebraic =
     if (i < 0) {
       throw new ArithmeticException(s"invalid real root index: $i")
     } else {
@@ -573,7 +573,6 @@ object Algebraic extends AlgebraicInstances {
           throw new RuntimeException("invalid isolated root interval")
       }
     }
-  }
 
   /**
     * Returns all of the real roots of the given polynomial, in order from

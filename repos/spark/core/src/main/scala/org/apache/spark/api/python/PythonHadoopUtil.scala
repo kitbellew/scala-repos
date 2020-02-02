@@ -41,7 +41,7 @@ private[python] object Converter extends Logging {
 
   def getInstance(
       converterClass: Option[String],
-      defaultConverter: Converter[Any, Any]): Converter[Any, Any] = {
+      defaultConverter: Converter[Any, Any]): Converter[Any, Any] =
     converterClass
       .map { cc =>
         Try {
@@ -59,7 +59,6 @@ private[python] object Converter extends Logging {
         }
       }
       .getOrElse { defaultConverter }
-  }
 }
 
 /**
@@ -74,7 +73,7 @@ private[python] class WritableToJavaConverter(
     * Converts a [[org.apache.hadoop.io.Writable]] to the underlying primitive, String or
     * object representation
     */
-  private def convertWritable(writable: Writable): Any = {
+  private def convertWritable(writable: Writable): Any =
     writable match {
       case iw: IntWritable     => iw.get()
       case dw: DoubleWritable  => dw.get()
@@ -102,16 +101,14 @@ private[python] class WritableToJavaConverter(
       case w: Writable => WritableUtils.clone(w, conf.value.value)
       case other       => other
     }
-  }
 
-  override def convert(obj: Any): Any = {
+  override def convert(obj: Any): Any =
     obj match {
       case writable: Writable =>
         convertWritable(writable)
       case _ =>
         obj
     }
-  }
 }
 
 /**
@@ -127,7 +124,7 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
     * Converts common data types to [[org.apache.hadoop.io.Writable]]. Note that array types are not
     * supported out-of-the-box.
     */
-  private def convertToWritable(obj: Any): Writable = {
+  private def convertToWritable(obj: Any): Writable =
     obj match {
       case i: java.lang.Integer => new IntWritable(i)
       case d: java.lang.Double  => new DoubleWritable(d)
@@ -153,7 +150,6 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
         throw new SparkException(
           s"Data of type ${other.getClass.getName} cannot be used")
     }
-  }
 
   override def convert(obj: Any): Writable = obj match {
     case writable: Writable => writable
@@ -190,10 +186,9 @@ private[python] object PythonHadoopUtil {
   def convertRDD[K, V](
       rdd: RDD[(K, V)],
       keyConverter: Converter[Any, Any],
-      valueConverter: Converter[Any, Any]): RDD[(Any, Any)] = {
+      valueConverter: Converter[Any, Any]): RDD[(Any, Any)] =
     rdd.map {
       case (k, v) => (keyConverter.convert(k), valueConverter.convert(v))
     }
-  }
 
 }

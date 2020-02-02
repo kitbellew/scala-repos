@@ -17,7 +17,7 @@ class ScalaElseRemover extends ScalaElseUnwrapperBase {
   override protected def unwrapElseBranch(
       expr: ScExpression,
       ifStmt: ScIfStmt,
-      context: ScalaUnwrapContext) = {
+      context: ScalaUnwrapContext) =
     expr.getParent match {
       case ifSt @ ScIfStmt(_, Some(`expr`), Some(elseExpr)) childOf (parentIf @ ScIfStmt(
             _,
@@ -28,7 +28,6 @@ class ScalaElseRemover extends ScalaElseUnwrapperBase {
         context.delete(ifStmt.findFirstChildByType(ScalaTokenTypes.kELSE))
         context.delete(expr)
     }
-  }
 
   override def collectAffectedElements(
       e: PsiElement,

@@ -51,9 +51,8 @@ private[kinesis] case class SequenceNumberRanges(
 }
 
 private[kinesis] object SequenceNumberRanges {
-  def apply(range: SequenceNumberRange): SequenceNumberRanges = {
+  def apply(range: SequenceNumberRange): SequenceNumberRanges =
     new SequenceNumberRanges(Seq(range))
-  }
 }
 
 /** Partition storing the information of the ranges of Kinesis sequence numbers to read */
@@ -86,7 +85,7 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
 
   override def isValid(): Boolean = true
 
-  override def getPartitions: Array[Partition] = {
+  override def getPartitions: Array[Partition] =
     Array.tabulate(_blockIds.length) { i =>
       val isValid = if (isBlockIdValid.length == 0) true else isBlockIdValid(i)
       new KinesisBackedBlockRDDPartition(
@@ -95,7 +94,6 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
         isValid,
         arrayOfseqNumberRanges(i))
     }
-  }
 
   override def compute(split: Partition, context: TaskContext): Iterator[T] = {
     val blockManager = SparkEnv.get.blockManager
@@ -196,9 +194,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
     nextRecord
   }
 
-  override protected def close(): Unit = {
+  override protected def close(): Unit =
     client.shutdown()
-  }
 
   /**
     * Get records starting from or after the given sequence number.

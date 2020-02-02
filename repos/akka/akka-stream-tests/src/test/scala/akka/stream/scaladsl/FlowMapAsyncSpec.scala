@@ -271,7 +271,7 @@ class FlowMapAsyncSpec extends AkkaSpec {
       }
       timer.start
 
-      def deferred(): Future[Int] = {
+      def deferred(): Future[Int] =
         if (counter.incrementAndGet() > parallelism)
           Future.failed(new Exception("parallelism exceeded"))
         else {
@@ -279,7 +279,6 @@ class FlowMapAsyncSpec extends AkkaSpec {
           queue.offer(p -> System.nanoTime())
           p.future
         }
-      }
 
       try {
         val N = 10000

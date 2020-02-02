@@ -185,9 +185,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       hostname: String,
       port: Int,
       storageLevel: StorageLevel
-  ): JavaReceiverInputDStream[String] = {
+  ): JavaReceiverInputDStream[String] =
     ssc.socketTextStream(hostname, port, storageLevel)
-  }
 
   /**
     * Create an input stream from network source hostname:port. Data is received using
@@ -198,9 +197,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     */
   def socketTextStream(
       hostname: String,
-      port: Int): JavaReceiverInputDStream[String] = {
+      port: Int): JavaReceiverInputDStream[String] =
     ssc.socketTextStream(hostname, port)
-  }
 
   /**
     * Create an input stream from network source hostname:port. Data is received using
@@ -232,9 +230,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * file system. File names starting with . are ignored.
     * @param directory HDFS directory to monitor for new file
     */
-  def textFileStream(directory: String): JavaDStream[String] = {
+  def textFileStream(directory: String): JavaDStream[String] =
     ssc.textFileStream(directory)
-  }
 
   /**
     * Create an input stream that monitors a Hadoop-compatible filesystem
@@ -249,9 +246,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     */
   def binaryRecordsStream(
       directory: String,
-      recordLength: Int): JavaDStream[Array[Byte]] = {
+      recordLength: Int): JavaDStream[Array[Byte]] =
     ssc.binaryRecordsStream(directory, recordLength)
-  }
 
   /**
     * Create an input stream from network source hostname:port, where data is received
@@ -572,24 +568,21 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     *   </li>
     * </ul>
     */
-  def getState(): StreamingContextState = {
+  def getState(): StreamingContextState =
     ssc.getState()
-  }
 
   /**
     * Start the execution of the streams.
     */
-  def start(): Unit = {
+  def start(): Unit =
     ssc.start()
-  }
 
   /**
     * Wait for the execution to stop. Any exceptions that occurs during the execution
     * will be thrown in this thread.
     */
-  def awaitTermination(): Unit = {
+  def awaitTermination(): Unit =
     ssc.awaitTermination()
-  }
 
   /**
     * Wait for the execution to stop. Any exceptions that occurs during the execution
@@ -599,16 +592,14 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * @return `true` if it's stopped; or throw the reported error during the execution; or `false`
     *         if the waiting time elapsed before returning from the method.
     */
-  def awaitTerminationOrTimeout(timeout: Long): Boolean = {
+  def awaitTerminationOrTimeout(timeout: Long): Boolean =
     ssc.awaitTerminationOrTimeout(timeout)
-  }
 
   /**
     * Stop the execution of the streams. Will stop the associated JavaSparkContext as well.
     */
-  def stop(): Unit = {
+  def stop(): Unit =
     ssc.stop()
-  }
 
   /**
     * Stop the execution of the streams.
@@ -622,9 +613,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * @param stopGracefully Stop gracefully by waiting for the processing of all
     *                       received data to be completed
     */
-  def stop(stopSparkContext: Boolean, stopGracefully: Boolean): Unit = {
+  def stop(stopSparkContext: Boolean, stopGracefully: Boolean): Unit =
     ssc.stop(stopSparkContext, stopGracefully)
-  }
 
   override def close(): Unit = stop()
 
@@ -648,9 +638,9 @@ object JavaStreamingContext {
       checkpointPath: String,
       creatingFunc: JFunction0[JavaStreamingContext]
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    })
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => creatingFunc.call().ssc)
     new JavaStreamingContext(ssc)
   }
 
@@ -670,9 +660,10 @@ object JavaStreamingContext {
       creatingFunc: JFunction0[JavaStreamingContext],
       hadoopConf: Configuration
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    }, hadoopConf)
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => creatingFunc.call().ssc,
+      hadoopConf)
     new JavaStreamingContext(ssc)
   }
 
@@ -695,9 +686,11 @@ object JavaStreamingContext {
       hadoopConf: Configuration,
       createOnError: Boolean
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    }, hadoopConf, createOnError)
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => creatingFunc.call().ssc,
+      hadoopConf,
+      createOnError)
     new JavaStreamingContext(ssc)
   }
 

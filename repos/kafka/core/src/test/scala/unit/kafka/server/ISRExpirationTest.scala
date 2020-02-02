@@ -270,9 +270,8 @@ class IsrExpirationTest {
   private def getFollowerReplicas(
       partition: Partition,
       leaderId: Int,
-      time: Time): Seq[Replica] = {
+      time: Time): Seq[Replica] =
     configs.filter(_.brokerId != leaderId).map { config =>
       new Replica(config.brokerId, partition, time)
     }
-  }
 }

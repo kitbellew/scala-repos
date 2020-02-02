@@ -21,7 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 class ScalaQualifiedNameProvider extends QualifiedNameProvider {
   def adjustElementToCopy(element: PsiElement) = null
 
-  def getQualifiedName(element: PsiElement): String = {
+  def getQualifiedName(element: PsiElement): String =
     element match {
       case clazz: ScTypeDefinition => clazz.qualifiedName
       case named: ScNamedElement =>
@@ -36,11 +36,9 @@ class ScalaQualifiedNameProvider extends QualifiedNameProvider {
         }
       case _ => null
     }
-  }
 
-  def qualifiedNameToElement(fqn: String, project: Project) = {
+  def qualifiedNameToElement(fqn: String, project: Project) =
     new JavaQualifiedNameProvider().qualifiedNameToElement(fqn, project) //todo:
-  }
 
   def insertQualifiedName(
       fqn: String,

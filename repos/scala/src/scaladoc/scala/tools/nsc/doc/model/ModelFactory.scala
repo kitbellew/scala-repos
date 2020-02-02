@@ -137,7 +137,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         makeTemplate(sym.owner) :: (sym.allOverriddenSymbols map { inhSym =>
           makeTemplate(inhSym.owner)
         })
-    def visibility = {
+    def visibility =
       if (sym.isPrivateLocal) PrivateInInstance()
       else if (sym.isProtectedLocal) ProtectedInInstance()
       else {
@@ -153,7 +153,6 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             case None    => Public()
           }
       }
-    }
     def flags = {
       val fgs = mutable.ListBuffer.empty[Paragraph]
       if (sym.isImplicit) fgs += Paragraph(Text("implicit"))
@@ -389,10 +388,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         if (sym == AnyRefClass || sym == AnyClass) null
         else mutable.ListBuffer[DocTemplateEntity]()
       )
-    def registerSubClass(sc: DocTemplateEntity): Unit = {
+    def registerSubClass(sc: DocTemplateEntity): Unit =
       if (subClassesCache != null)
         subClassesCache += sc
-    }
     def directSubClasses =
       if (subClassesCache == null) Nil else subClassesCache.toList
 
@@ -894,7 +892,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     def makeMember0(
         bSym: Symbol,
-        useCaseOf: Option[MemberImpl]): Option[MemberImpl] = {
+        useCaseOf: Option[MemberImpl]): Option[MemberImpl] =
       if (bSym.isGetter && bSym.isLazy)
         Some(
           new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
@@ -961,7 +959,6 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         modelCreation.createTemplate(bSym, inTpl)
       else
         None
-    }
 
     if (!localShouldDocument(aSym) || aSym.isModuleClass || aSym.isPackageObject || aSym.isMixinConstructor)
       Nil
@@ -1054,17 +1051,15 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       with TypeBoundsImpl
       with HigherKindedImpl
       with TypeParam {
-      def variance: String = {
+      def variance: String =
         if (sym hasFlag Flags.COVARIANT) "+"
         else if (sym hasFlag Flags.CONTRAVARIANT) "-"
         else ""
-      }
     }
 
   /** */
-  def makeValueParam(aSym: Symbol, inTpl: DocTemplateImpl): ValueParam = {
+  def makeValueParam(aSym: Symbol, inTpl: DocTemplateImpl): ValueParam =
     makeValueParam(aSym, inTpl, aSym.nameString)
-  }
 
   /** */
   def makeValueParam(
@@ -1158,11 +1153,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         }
       }
 
-      filtParents.map(parent => {
+      filtParents.map { parent =>
         val templateEntity = makeTemplateOrMemberTemplate(parent)
         val typeEntity = makeType(parent, inTpl)
         (templateEntity, typeEntity)
-      })
+      }
     case _ =>
       List((makeTemplate(aType.typeSymbol), makeType(aType, inTpl)))
   }
@@ -1202,20 +1197,19 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       // either it's inside the original owner or we can document it later:
       (!inOriginalOwner(aSym, inTpl) || (aSym.isPackageClass || (aSym.sourceFile != null)))
 
-  def membersShouldDocument(sym: Symbol, inTpl: TemplateImpl) = {
+  def membersShouldDocument(sym: Symbol, inTpl: TemplateImpl) =
     // pruning modules that shouldn't be documented
     // Why Symbol.isInitialized? Well, because we need to avoid exploring all the space available to scaladoc
     // from the classpath -- scaladoc is a hog, it will explore everything starting from the root package unless we
     // somehow prune the tree. And isInitialized is a good heuristic for pruning -- if the package was not explored
     // during typer and refchecks, it's not necessary for the current application and there's no need to explore it.
     (!sym.isModule || sym.moduleClass.isInitialized) &&
-    // documenting only public and protected members
-    localShouldDocument(sym) &&
-    // Only this class's constructors are part of its members, inherited constructors are not.
-    (!sym.isConstructor || sym.owner == inTpl.sym) &&
-    // If the @bridge annotation overrides a normal member, show it
-    !isPureBridge(sym)
-  }
+      // documenting only public and protected members
+      localShouldDocument(sym) &&
+      // Only this class's constructors are part of its members, inherited constructors are not.
+      (!sym.isConstructor || sym.owner == inTpl.sym) &&
+      // If the @bridge annotation overrides a normal member, show it
+      !isPureBridge(sym)
 
   def isEmptyJavaObject(aSym: Symbol): Boolean =
     aSym.isModule && aSym.isJavaDefined &&

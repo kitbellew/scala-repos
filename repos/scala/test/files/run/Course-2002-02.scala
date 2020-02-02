@@ -296,18 +296,16 @@ object MB {
 
 object MC {
   def sum(f: Int => Double)(a: Int, b: Int): Double = {
-    def iter(a: Int, result: Double): Double = {
+    def iter(a: Int, result: Double): Double =
       if (a > b) result
       else iter(a + 1, result + f(a))
-    }
     iter(a, 0)
   }
 
   def product(f: Int => Double)(a: Int, b: Int): Double = {
-    def iter(a: Int, result: Double): Double = {
+    def iter(a: Int, result: Double): Double =
       if (a > b) result
       else iter(a + 1, result * f(a))
-    }
     iter(a, 1)
   }
 
@@ -335,10 +333,9 @@ object MC {
 object MD {
   def reduce(op: (Double, Double) => Double, zero: Double)(
       f: Int => Double)(a: Int, b: Int): Double = {
-    def iter(a: Int, result: Double): Double = {
+    def iter(a: Int, result: Double): Double =
       if (a > b) result
       else iter(a + 1, op(result, f(a)))
-    }
     iter(a, zero)
   }
 
@@ -371,10 +368,9 @@ object MD {
 object ME {
   def reduce(op: (Double, Double) => Double, zero: Double)(
       f: Int => Double)(a: Int, b: Int): Double = {
-    def iter(a: Int, result: Double): Double = {
+    def iter(a: Int, result: Double): Double =
       if (a > b) result
       else iter(a + 1, op(result, f(a)))
-    }
     iter(a, zero)
   }
 

@@ -19,12 +19,11 @@ final class IntervalSeq[T] private (
 
   import IntervalSeq._
 
-  private def belowIndex(index: Int): Boolean = {
+  private def belowIndex(index: Int): Boolean =
     if (index == 0)
       belowAll
     else
       valueAbove(kinds(index - 1))
-  }
 
   def at(value: T): Boolean = {
     val index = Searching.search(values, value)
@@ -81,17 +80,15 @@ final class IntervalSeq[T] private (
       kinds: Array[Byte] = kinds) =
     new IntervalSeq[T](belowAll, values, kinds, order)
 
-  override def toString: String = {
+  override def toString: String =
     if (isEmpty)
       Interval.empty[T].toString()
     else
       intervals.mkString(";")
-  }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     belowAll.## * 41 + Arrays.hashCode(kinds) * 23 + Arrays.hashCode(
       values.asInstanceOf[Array[AnyRef]])
-  }
 
   override def equals(rhs: Any): Boolean = rhs match {
     case rhs: IntervalSeq[_] =>
@@ -136,7 +133,7 @@ final class IntervalSeq[T] private (
     case _   => wrong
   }
 
-  def hull: Interval[T] = {
+  def hull: Interval[T] =
     if (isEmpty) {
       Interval.empty[T]
     } else if (belowAll && aboveAll) {
@@ -148,7 +145,6 @@ final class IntervalSeq[T] private (
     } else {
       Interval.fromBounds(lowerBound(0), upperBound(kinds.length - 1))
     }
-  }
 
   // todo: switch to AbstractTraversable once we no longer need to support scala 2.10
   def intervals: Traversable[Interval[T]] = new Traversable[Interval[T]] {
@@ -409,7 +405,7 @@ object IntervalSeq {
 
     protected[this] def rBelow = if (ri > 0) valueAbove(rk(ri - 1)) else r0
 
-    def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit = {
+    def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit =
       if (a0 == a1) {
         fromB(aBelow(a0), b0, b1)
       } else if (b0 == b1) {
@@ -436,16 +432,14 @@ object IntervalSeq {
           merge0(am + 1, a1, bm, b1)
         }
       }
-    }
 
     merge0(0, a.length, 0, b.length)
 
-    def result: IntervalSeq[T] = {
+    def result: IntervalSeq[T] =
       if (ri == r.length)
         new IntervalSeq(r0, r, rk, order)
       else
         new IntervalSeq(r0, r.take(ri), rk.take(ri), order)
-    }
   }
 
   private class And[T](val lhs: IntervalSeq[T], val rhs: IntervalSeq[T])
@@ -539,7 +533,7 @@ object IntervalSeq {
     protected[this] def bBelow(i: Int) =
       if (i > 0) valueAbove(bk(i - 1)) else b0
 
-    def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Boolean = {
+    def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Boolean =
       if (a0 == a1 && b0 == b1) {
         true
       } else if (a0 == a1) {
@@ -568,7 +562,6 @@ object IntervalSeq {
           merge0(am + 1, a1, bm, b1)
         }
       }
-    }
 
     val result = op(a0, b0) && merge0(0, a.length, 0, b.length)
   }

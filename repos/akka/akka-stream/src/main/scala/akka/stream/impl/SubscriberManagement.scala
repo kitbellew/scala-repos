@@ -220,7 +220,7 @@ private[akka] trait SubscriberManagement[T]
     * this method must be called by the implementing class whenever
     * it has been determined that no more elements will be produced
     */
-  protected def completeDownstream(): Unit = {
+  protected def completeDownstream(): Unit =
     if (endOfStream eq NotReached) {
       @tailrec def completeDoneSubscriptions(
           remaining: Subscriptions,
@@ -238,7 +238,6 @@ private[akka] trait SubscriberManagement[T]
       subscriptions = completeDoneSubscriptions(subscriptions)
       if (subscriptions.isEmpty) shutdown(completed = true)
     } // else ignore, we need to be idempotent
-  }
 
   /**
     * this method must be called by the implementing class to push an error downstream

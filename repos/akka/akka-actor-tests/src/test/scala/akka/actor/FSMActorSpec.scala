@@ -187,7 +187,7 @@ class FSMActorSpec
        * It is necessary here because of the path-dependent type fsm.StopEvent.
        */
       lazy val fsm = new Actor with FSM[Int, Null] {
-        override def preStart = { started.countDown }
+        override def preStart = started.countDown
         startWith(1, null)
         when(1) { FSM.NullFunction }
         onTermination {

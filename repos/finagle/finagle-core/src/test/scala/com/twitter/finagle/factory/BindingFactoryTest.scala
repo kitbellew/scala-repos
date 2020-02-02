@@ -104,12 +104,11 @@ class BindingFactoryTest
       maxNamerCacheSize = 2,
       maxNameCacheSize = 2)
 
-    def newWith(localDtab: Dtab): Service[Unit, Var[Addr]] = {
+    def newWith(localDtab: Dtab): Service[Unit, Var[Addr]] =
       Dtab.unwind {
         Dtab.local = localDtab
         Await.result(factory())
       }
-    }
   }
 
   def mkFactory(st: Status) =

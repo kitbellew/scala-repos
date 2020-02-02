@@ -103,9 +103,8 @@ object ScalaBreakpointMethodFilter {
   def from(
       psiMethod: Option[PsiMethod],
       stmts: Seq[ScBlockStatement],
-      exprLines: Range[Integer]): Option[ScalaBreakpointMethodFilter] = {
+      exprLines: Range[Integer]): Option[ScalaBreakpointMethodFilter] =
     from(psiMethod, stmts.headOption, stmts.lastOption, exprLines)
-  }
 
   def from(
       psiMethod: Option[PsiMethod],

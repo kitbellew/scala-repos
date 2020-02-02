@@ -136,18 +136,14 @@ class BacktestingEvaluator(val params: BacktestingParams)
 
       // Update price change
       positions.keys.foreach { ticker =>
-        {
-          positions(ticker) *= todayRet.first(ticker).get
-        }
+        positions(ticker) *= todayRet.first(ticker).get
       }
 
       // Determine exit
       daily.toExit.foreach { ticker =>
-        {
-          if (positions.contains(ticker)) {
-            val money = positions.remove(ticker).get
-            cash += money
-          }
+        if (positions.contains(ticker)) {
+          val money = positions.remove(ticker).get
+          cash += money
         }
       }
 
@@ -158,10 +154,8 @@ class BacktestingEvaluator(val params: BacktestingParams)
         .filter(t => !positions.contains(t))
         .take(slack)
         .map { ticker =>
-          {
-            cash -= money
-            positions += (ticker -> money)
-          }
+          cash -= money
+          positions += (ticker -> money)
         }
 
       // Book keeping

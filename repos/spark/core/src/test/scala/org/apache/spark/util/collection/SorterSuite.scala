@@ -251,48 +251,42 @@ abstract class AbstractIntArraySortDataFormat[K]
   }
 
   /** Allocates a new structure that can hold up to 'length' elements. */
-  override def allocate(length: Int): Array[Int] = {
+  override def allocate(length: Int): Array[Int] =
     new Array[Int](length)
-  }
 }
 
 /** Format to sort a simple Array[Int]. Could be easily generified and specialized. */
 class IntArraySortDataFormat extends AbstractIntArraySortDataFormat[Int] {
 
-  override protected def getKey(data: Array[Int], pos: Int): Int = {
+  override protected def getKey(data: Array[Int], pos: Int): Int =
     data(pos)
-  }
 }
 
 /** Wrapper of Int for key reuse. */
 class IntWrapper(var key: Int = 0) extends Ordered[IntWrapper] {
 
-  override def compare(that: IntWrapper): Int = {
+  override def compare(that: IntWrapper): Int =
     Ordering.Int.compare(key, that.key)
-  }
 }
 
 /** SortDataFormat for Array[Int] with reused keys. */
 class KeyReuseIntArraySortDataFormat
     extends AbstractIntArraySortDataFormat[IntWrapper] {
 
-  override def newKey(): IntWrapper = {
+  override def newKey(): IntWrapper =
     new IntWrapper()
-  }
 
   override def getKey(
       data: Array[Int],
       pos: Int,
-      reuse: IntWrapper): IntWrapper = {
+      reuse: IntWrapper): IntWrapper =
     if (reuse == null) {
       new IntWrapper(data(pos))
     } else {
       reuse.key = data(pos)
       reuse
     }
-  }
 
-  override protected def getKey(data: Array[Int], pos: Int): IntWrapper = {
+  override protected def getKey(data: Array[Int], pos: Int): IntWrapper =
     getKey(data, pos, null)
-  }
 }

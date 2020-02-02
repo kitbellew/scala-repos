@@ -83,7 +83,7 @@ class SimpleBuildFileModifier(
   protected def buildPsiElement(
       project: IJProject,
       inName: Option[String],
-      elementType: BuildFileElementType): Option[PsiElement] = {
+      elementType: BuildFileElementType): Option[PsiElement] =
     elementType match {
       case BuildFileElementType.libraryDependencyElementId =>
         SimpleBuildFileModifier.buildLibraryDependenciesPsi(
@@ -101,9 +101,8 @@ class SimpleBuildFileModifier(
         throw new IllegalArgumentException(
           "Unsupported build file element type: " + elementType)
     }
-  }
 
-  protected def requiredElementTypes = {
+  protected def requiredElementTypes =
     SimpleBuildFileModifier.supportedElementTypes.filter {
       case BuildFileElementType.libraryDependencyElementId =>
         libDependencies.nonEmpty
@@ -114,7 +113,6 @@ class SimpleBuildFileModifier(
         throw new IllegalArgumentException(
           "Unsupported build file element type: " + elementType)
     }
-  }
 }
 
 object SimpleBuildFileModifier {
@@ -167,7 +165,7 @@ object SimpleBuildFileModifier {
       locationProvider: BuildFileModificationLocationProvider,
       elementType: BuildFileElementType,
       buildFile: PsiFile,
-      psiElements: PsiElement*): Option[VirtualFile] = {
+      psiElements: PsiElement*): Option[VirtualFile] =
     locationProvider.getAddElementLocation(module, elementType, buildFile) match {
       case Some((parent, index))
           if (index == 0) || parent.getChildren.size >= index =>
@@ -190,28 +188,26 @@ object SimpleBuildFileModifier {
         Some(res)
       case None => None
     }
-  }
 
   def addElementToBuildFile(
       module: IJModule,
       locationProvider: BuildFileModificationLocationProvider,
       elementType: BuildFileElementType,
       buildFile: PsiFile,
-      psiElement: PsiElement) = {
+      psiElement: PsiElement) =
     addElementsToBuildFile(
       module,
       locationProvider,
       elementType,
       buildFile,
       psiElement)
-  }
 
   def removeElementFromBuildFile(
       module: IJModule,
       locationProvider: BuildFileModificationLocationProvider,
       buildFile: PsiFile,
       elementType: BuildFileElementType,
-      elementCondition: PsiElement => Boolean) = {
+      elementCondition: PsiElement => Boolean) =
     locationProvider.getModifyOrRemoveElement(
       module,
       elementType,
@@ -223,7 +219,6 @@ object SimpleBuildFileModifier {
         Some(res)
       case None => None
     }
-  }
 
   def modifyElementInBuildFile(
       module: IJModule,
@@ -231,7 +226,7 @@ object SimpleBuildFileModifier {
       elementType: BuildFileElementType,
       buildFile: PsiFile,
       elementCondition: PsiElement => Boolean,
-      modifyFunction: PsiElement => PsiElement) = {
+      modifyFunction: PsiElement => PsiElement) =
     locationProvider.getModifyOrRemoveElement(
       module,
       elementType,
@@ -243,5 +238,4 @@ object SimpleBuildFileModifier {
         Some(res)
       case None => None
     }
-  }
 }

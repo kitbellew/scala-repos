@@ -24,7 +24,7 @@ private[appinfo] object TaskForStatistics {
 
     val nowTs: Long = now.toDateTime.getMillis
 
-    def taskForStatistics(task: Task): Option[TaskForStatistics] = {
+    def taskForStatistics(task: Task): Option[TaskForStatistics] =
       task.launched.map { launched =>
         val maybeTaskState = launched.status.mesosStatus.map(_.getState)
         val healths = statuses.getOrElse(task.taskId, Seq.empty)
@@ -43,7 +43,6 @@ private[appinfo] object TaskForStatistics {
           maybeLifeTime = maybeTaskLifeTime
         )
       }
-    }
 
     tasks.iterator.flatMap(taskForStatistics).toVector
   }

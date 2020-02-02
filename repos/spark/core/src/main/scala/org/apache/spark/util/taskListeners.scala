@@ -51,7 +51,7 @@ private[spark] class TaskCompletionListenerException(
     val previousError: Option[Throwable] = None)
     extends RuntimeException {
 
-  override def getMessage: String = {
+  override def getMessage: String =
     if (errorMessages.size == 1) {
       errorMessages.head
     } else {
@@ -65,5 +65,4 @@ private[spark] class TaskCompletionListenerException(
             e.getStackTrace.mkString("\t", "\n\t", "")
         }
         .getOrElse("")
-  }
 }

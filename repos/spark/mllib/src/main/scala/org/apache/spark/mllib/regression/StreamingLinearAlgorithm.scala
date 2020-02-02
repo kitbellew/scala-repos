@@ -72,9 +72,8 @@ abstract class StreamingLinearAlgorithm[
     *
     */
   @Since("1.1.0")
-  def latestModel(): M = {
+  def latestModel(): M =
     model.get
-  }
 
   /**
     * Update the model by training on batches of data from a DStream.
@@ -99,7 +98,7 @@ abstract class StreamingLinearAlgorithm[
             model.get.weights.toArray.take(100).mkString("[", ",", "...")
           case _ => model.get.weights.toArray.mkString("[", ",", "]")
         }
-        logInfo(s"Current model: weights, ${display}")
+        logInfo(s"Current model: weights, $display")
       }
     }
   }
@@ -131,10 +130,9 @@ abstract class StreamingLinearAlgorithm[
     *
     */
   @Since("1.3.0")
-  def predictOn(data: JavaDStream[Vector]): JavaDStream[java.lang.Double] = {
+  def predictOn(data: JavaDStream[Vector]): JavaDStream[java.lang.Double] =
     JavaDStream.fromDStream(
       predictOn(data.dstream).asInstanceOf[DStream[java.lang.Double]])
-  }
 
   /**
     * Use the model to make predictions on the values of a DStream and carry over its keys.

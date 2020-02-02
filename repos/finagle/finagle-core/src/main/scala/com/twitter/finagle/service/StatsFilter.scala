@@ -122,7 +122,7 @@ class StatsFilter[Req, Rep](
   def this(statsReceiver: StatsReceiver) =
     this(statsReceiver, StatsFilter.DefaultExceptions)
 
-  private[this] def latencyStatSuffix: String = {
+  private[this] def latencyStatSuffix: String =
     timeUnit match {
       case TimeUnit.NANOSECONDS  => "ns"
       case TimeUnit.MICROSECONDS => "us"
@@ -130,7 +130,6 @@ class StatsFilter[Req, Rep](
       case TimeUnit.SECONDS      => "secs"
       case _                     => timeUnit.toString.toLowerCase
     }
-  }
 
   private[this] val outstandingRequestCount = new LongAdder()
   private[this] val dispatchCount = statsReceiver.counter("requests")

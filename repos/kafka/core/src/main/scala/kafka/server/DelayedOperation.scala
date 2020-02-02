@@ -63,7 +63,7 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
    * the first thread will succeed in completing the operation and return
    * true, others will still return false
    */
-  def forceComplete(): Boolean = {
+  def forceComplete(): Boolean =
     if (completed.compareAndSet(false, true)) {
       // cancel the timeout timer
       cancel()
@@ -72,7 +72,6 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
     } else {
       false
     }
-  }
 
   /**
     * Check if the delayed operation is already completed
@@ -102,10 +101,9 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
   /*
    * run() method defines a task that is executed on timeout
    */
-  override def run(): Unit = {
+  override def run(): Unit =
     if (forceComplete())
       onExpiration()
-  }
 }
 
 /**

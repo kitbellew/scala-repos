@@ -42,7 +42,7 @@ private[swagger] object ManifestFactory {
 
   }
 
-  def manifestOf(erasure: Class[_], typeArgs: Seq[Manifest[_]]): Manifest[_] = {
+  def manifestOf(erasure: Class[_], typeArgs: Seq[Manifest[_]]): Manifest[_] =
     if (typeArgs.size == 0) {
       fromClass(erasure)
     } else {
@@ -54,7 +54,6 @@ private[swagger] object ManifestFactory {
 
       Manifest.classType(normalizedErasure, typeArgs.head, typeArgs.tail: _*)
     }
-  }
 
   def manifestOf(st: ScalaType): Manifest[_] = st match {
     case t: ManifestScalaType => t.manifest

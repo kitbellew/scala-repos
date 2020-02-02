@@ -47,22 +47,20 @@ import CValueGenerators.JSchema
 case class SampleData(
     data: Stream[JValue],
     schema: Option[(Int, JSchema)] = None) {
-  override def toString = {
+  override def toString =
     "SampleData: \ndata = " + data
       .map(_.toString.replaceAll("\n", "\n  "))
       .mkString("[\n  ", ",\n  ", "]\n") +
       "\nschema: " + schema
-  }
 
   def sortBy[B: Ordering](f: JValue => B) = copy(data = data.sortBy(f))
 }
 
 object SampleData extends CValueGenerators {
-  def toRecord(ids: Array[Long], jv: JValue): JValue = {
+  def toRecord(ids: Array[Long], jv: JValue): JValue =
     JObject(Nil)
       .set(JPath(".key"), JArray(ids.map(JNum(_)).toList))
       .set(JPath(".value"), jv)
-  }
 
   implicit def keyOrder[A]: scala.math.Ordering[(Identities, A)] =
     tupledIdentitiesOrder[A](IdentitiesOrder).toScalaOrdering
@@ -119,7 +117,7 @@ object SampleData extends CValueGenerators {
     builder.result
   }
 
-  def sort(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
+  def sort(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
@@ -127,7 +125,6 @@ object SampleData extends CValueGenerators {
         SampleData(sampleData.data.sorted, sampleData.schema)
       }
     )
-  }
 
   def shuffle(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =
@@ -140,7 +137,7 @@ object SampleData extends CValueGenerators {
     Arbitrary(gen)
   }
 
-  def distinct(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
+  def distinct(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
@@ -148,9 +145,8 @@ object SampleData extends CValueGenerators {
         SampleData(sampleData.data.distinct, sampleData.schema)
       }
     )
-  }
 
-  def distinctKeys(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
+  def distinctKeys(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
@@ -158,9 +154,8 @@ object SampleData extends CValueGenerators {
         SampleData(distinctBy(sampleData.data)(_ \ "keys"), sampleData.schema)
       }
     )
-  }
 
-  def distinctValues(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
+  def distinctValues(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
@@ -168,7 +163,6 @@ object SampleData extends CValueGenerators {
         SampleData(distinctBy(sampleData.data)(_ \ "value"), sampleData.schema)
       }
     )
-  }
 
   def duplicateRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =

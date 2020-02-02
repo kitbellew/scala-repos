@@ -94,12 +94,11 @@ object SlickBuild extends Build {
   def ifPublished(s: Seq[Setting[_]]): Seq[Setting[_]] =
     if (scalaSettings eq publishedScalaSettings) s else Nil
 
-  def extTarget(extName: String): Seq[Setting[File]] = {
+  def extTarget(extName: String): Seq[Setting[File]] =
     sys.props("slick.build.target") match {
       case null => Seq.empty
       case path => Seq(target := file(path + "/" + extName))
     }
-  }
 
   lazy val sharedSettings = Seq(
     version := slickVersion,

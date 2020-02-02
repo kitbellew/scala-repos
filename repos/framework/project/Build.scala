@@ -27,11 +27,10 @@ import com.typesafe.sbt.web.SbtWeb.autoImport._
   * name, and revision if available in its attributes.
   */
 object MatchingModule {
-  def unapply(file: Attributed[File]): Option[(String, String, String)] = {
+  def unapply(file: Attributed[File]): Option[(String, String, String)] =
     file.get(moduleID.key).map { moduleInfo =>
       (moduleInfo.organization, moduleInfo.name, moduleInfo.revision)
     }
-  }
 }
 
 object BuildDef extends Build {
@@ -43,14 +42,13 @@ object BuildDef extends Build {
   def findManagedDependency(
       classpath: Seq[Attributed[File]],
       organization: String,
-      name: String): Option[(String, File)] = {
+      name: String): Option[(String, File)] =
     classpath.collectFirst {
       case entry @ MatchingModule(moduleOrganization, moduleName, revision)
           if moduleOrganization == organization &&
             moduleName.startsWith(name) =>
         (revision, entry.data)
     }
-  }
 
   lazy val liftProjects = core ++ web ++ persistence
 
@@ -274,7 +272,7 @@ object BuildDef extends Build {
       id = if (module.startsWith(prefix)) module else prefix + module,
       base = file(base) / module.stripPrefix(prefix))
 
-  def liftProject(id: String, base: File): Project = {
+  def liftProject(id: String, base: File): Project =
     Project(id, base)
       .settings(liftBuildSettings: _*)
       .settings(
@@ -290,5 +288,4 @@ object BuildDef extends Build {
           }.toMap
         }
       )
-  }
 }

@@ -69,7 +69,7 @@ object ScalaPluginVersionVerifier {
     }
   }
 
-  def getPluginDescriptor = {
+  def getPluginDescriptor =
     getClass.getClassLoader match {
       case pluginLoader: PluginClassLoader =>
         PluginManager
@@ -79,7 +79,6 @@ object ScalaPluginVersionVerifier {
         throw new RuntimeException(s"Wrong plugin classLoader: $other")
     }
 
-  }
 }
 
 object ScalaPluginVersionVerifierApplicationComponent {

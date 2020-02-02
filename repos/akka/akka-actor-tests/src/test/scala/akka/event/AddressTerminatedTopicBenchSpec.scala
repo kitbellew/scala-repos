@@ -16,9 +16,8 @@ object AddressTerminatedTopicBenchSpec {
     AddressTerminatedTopic(context.system).subscribe(self)
     testActor ! "started"
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       AddressTerminatedTopic(context.system).unsubscribe(self)
-    }
 
     def receive = Actor.emptyBehavior
   }

@@ -61,7 +61,7 @@ class YarnShuffleServiceSuite
   var s2: YarnShuffleService = null
   var s3: YarnShuffleService = null
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       if (s1 != null) {
         s1.stop()
@@ -78,7 +78,6 @@ class YarnShuffleServiceSuite
     } finally {
       super.afterEach()
     }
-  }
 
   test("executor state kept across NM restart") {
     s1 = new YarnShuffleService
@@ -110,11 +109,10 @@ class YarnShuffleServiceSuite
       be(Some(shuffleInfo2))
 
     if (!execStateFile.exists()) {
-      @tailrec def findExistingParent(file: File): File = {
+      @tailrec def findExistingParent(file: File): File =
         if (file == null) file
         else if (file.exists()) file
         else findExistingParent(file.getParentFile())
-      }
       val existingParent = findExistingParent(execStateFile)
       assert(
         false,

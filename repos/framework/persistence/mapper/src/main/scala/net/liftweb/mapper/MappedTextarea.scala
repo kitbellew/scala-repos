@@ -29,7 +29,7 @@ abstract class MappedTextarea[T <: Mapper[T]](owner: T, maxLen: Int)
   /**
     * Create an input field for the item
     */
-  override def _toForm: Box[Elem] = {
+  override def _toForm: Box[Elem] =
     S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
       Full(appendFieldId(<textarea name={funcName}
 	               rows={textareaRows.toString}
@@ -40,7 +40,6 @@ abstract class MappedTextarea[T <: Mapper[T]](owner: T, maxLen: Int)
         }
       }</textarea>))
     }
-  }
 
   override def toString = {
     val v = get

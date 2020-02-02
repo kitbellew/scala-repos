@@ -55,7 +55,7 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
         name,
         HelpID.CHANGE_SIGNATURE)
     }
-    def isSupportedFor(fun: ScMethodLike): Boolean = {
+    def isSupportedFor(fun: ScMethodLike): Boolean =
       fun match {
         case fun: ScFunction if fun.paramClauses.clauses.exists(_.isImplicit) =>
           val message = ScalaBundle.message(
@@ -75,7 +75,6 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
           false
         case _ => true
       }
-    }
 
     @tailrec
     def unwrapMethod(element: PsiElement): Option[PsiMethod] = element match {

@@ -59,13 +59,10 @@ object Unidoc extends Plugin {
     }
   }
 
-  def unidocTask: Def.Initialize[Task[File]] = {
+  def unidocTask: Def.Initialize[Task[File]] =
     (compilers, unidocSources, unidocDirectory, scalacOptions in doc, streams) map {
       (compilers, sources, target, options, s) =>
-        {
-          Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
-          target
-        }
+        Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
+        target
     }
-  }
 }

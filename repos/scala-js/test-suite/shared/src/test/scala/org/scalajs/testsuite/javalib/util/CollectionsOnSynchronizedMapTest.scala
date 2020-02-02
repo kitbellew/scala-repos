@@ -15,7 +15,7 @@ trait CollectionsOnSynchronizedMapTest extends CollectionsOnMapsTest {
 
   def originalFactory: MapFactory
 
-  def factory: MapFactory = {
+  def factory: MapFactory =
     new MapFactory {
       override def implementationName: String =
         s"synchronizedMap(${originalFactory.implementationName})"
@@ -29,7 +29,6 @@ trait CollectionsOnSynchronizedMapTest extends CollectionsOnMapsTest {
       override def allowsNullValues: Boolean =
         originalFactory.allowsNullValues
     }
-  }
 }
 
 trait CollectionsOnSynchronizedSortedMapTest
@@ -37,7 +36,7 @@ trait CollectionsOnSynchronizedSortedMapTest
 
   def originalFactory: SortedMapFactory
 
-  def factory: SortedMapFactory = {
+  def factory: SortedMapFactory =
     new SortedMapFactory {
       override def implementationName: String =
         s"synchronizedSortedMap(${originalFactory.implementationName})"
@@ -51,7 +50,6 @@ trait CollectionsOnSynchronizedSortedMapTest
       override def allowsNullValues: Boolean =
         originalFactory.allowsNullValues
     }
-  }
 }
 
 class CollectionsOnSynchronizedMapOnHashMapTest

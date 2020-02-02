@@ -54,7 +54,7 @@ case class SortMergeJoin(
     "numOutputRows" -> SQLMetrics
       .createLongMetric(sparkContext, "number of output rows"))
 
-  override def output: Seq[Attribute] = {
+  override def output: Seq[Attribute] =
     joinType match {
       case Inner =>
         left.output ++ right.output
@@ -68,7 +68,6 @@ case class SortMergeJoin(
         throw new IllegalArgumentException(
           s"${getClass.getSimpleName} should not take $x as the JoinType")
     }
-  }
 
   override def outputPartitioning: Partitioning = joinType match {
     case Inner =>
@@ -91,10 +90,9 @@ case class SortMergeJoin(
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
     requiredOrders(leftKeys) :: requiredOrders(rightKeys) :: Nil
 
-  private def requiredOrders(keys: Seq[Expression]): Seq[SortOrder] = {
+  private def requiredOrders(keys: Seq[Expression]): Seq[SortOrder] =
     // This must be ascending in order to agree with the `keyOrdering` defined in `doExecute()`.
     keys.map(SortOrder(_, Ascending))
-  }
 
   private def createLeftKeyGenerator(): Projection =
     UnsafeProjection.create(leftKeys, left.output)
@@ -232,13 +230,11 @@ case class SortMergeJoin(
     }
   }
 
-  override def supportCodegen: Boolean = {
+  override def supportCodegen: Boolean =
     joinType == Inner
-  }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     left.execute() :: right.execute() :: Nil
-  }
 
   private def createJoinKey(
       ctx: CodegenContext,
@@ -251,7 +247,7 @@ case class SortMergeJoin(
 
   private def copyKeys(
       ctx: CodegenContext,
-      vars: Seq[ExprCode]): Seq[ExprCode] = {
+      vars: Seq[ExprCode]): Seq[ExprCode] =
     vars.zipWithIndex.map {
       case (ev, i) =>
         val value = ctx.freshName("value")
@@ -262,7 +258,6 @@ case class SortMergeJoin(
          """.stripMargin
         ExprCode(code, "false", value)
     }
-  }
 
   private def genComparision(
       ctx: CodegenContext,
@@ -424,7 +419,7 @@ case class SortMergeJoin(
     */
   private def splitVarsByCondition(
       attributes: Seq[Attribute],
-      variables: Seq[ExprCode]): (String, String) = {
+      variables: Seq[ExprCode]): (String, String) =
     if (condition.isDefined) {
       val condRefs = condition.get.references
       val (used, notUsed) = attributes.zip(variables).partition {
@@ -437,7 +432,6 @@ case class SortMergeJoin(
     } else {
       (evaluateVariables(variables), "")
     }
-  }
 
   override def doProduce(ctx: CodegenContext): String = {
     ctx.copyResult = true
@@ -619,7 +613,7 @@ private[joins] class SortMergeJoinScanner(
     *         then [[getStreamedRow]] and [[getBufferedMatches]] can be called to produce the outer
     *         join results.
     */
-  final def findNextOuterJoinRows(): Boolean = {
+  final def findNextOuterJoinRows(): Boolean =
     if (!advancedStreamed()) {
       // We have consumed the entire streamed iterator, so there can be no more matches.
       matchJoinKey = null
@@ -652,7 +646,6 @@ private[joins] class SortMergeJoinScanner(
       // If there is a streamed input then we always return true
       true
     }
-  }
 
   // --- Private methods --------------------------------------------------------------------------
 
@@ -660,7 +653,7 @@ private[joins] class SortMergeJoinScanner(
     * Advance the streamed iterator and compute the new row's join key.
     * @return true if the streamed iterator returned a row and false otherwise.
     */
-  private def advancedStreamed(): Boolean = {
+  private def advancedStreamed(): Boolean =
     if (streamedIter.advanceNext()) {
       streamedRow = streamedIter.getRow
       streamedRowKey = streamedKeyGenerator(streamedRow)
@@ -670,7 +663,6 @@ private[joins] class SortMergeJoinScanner(
       streamedRowKey = null
       false
     }
-  }
 
   /**
     * Advance the buffered iterator until we find a row with join key that does not contain nulls.
@@ -875,7 +867,7 @@ private class SortMergeFullOuterJoinScanner(
     * Advance the left iterator and compute the new row's join key.
     * @return true if the left iterator returned a row and false otherwise.
     */
-  private def advancedLeft(): Boolean = {
+  private def advancedLeft(): Boolean =
     if (leftIter.advanceNext()) {
       leftRow = leftIter.getRow
       leftRowKey = leftKeyGenerator(leftRow)
@@ -885,13 +877,12 @@ private class SortMergeFullOuterJoinScanner(
       leftRowKey = null
       false
     }
-  }
 
   /**
     * Advance the right iterator and compute the new row's join key.
     * @return true if the right iterator returned a row and false otherwise.
     */
-  private def advancedRight(): Boolean = {
+  private def advancedRight(): Boolean =
     if (rightIter.advanceNext()) {
       rightRow = rightIter.getRow
       rightRowKey = rightKeyGenerator(rightRow)
@@ -901,7 +892,6 @@ private class SortMergeFullOuterJoinScanner(
       rightRowKey = null
       false
     }
-  }
 
   /**
     * Populate the left and right buffers with rows matching the provided key.

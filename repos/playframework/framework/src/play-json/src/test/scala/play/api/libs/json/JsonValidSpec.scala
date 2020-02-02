@@ -538,7 +538,7 @@ object JsonValidSpec extends Specification {
       )
 
       val dt = (new java.util.Date).getTime()
-      def func = { JsNumber(dt + 100) }
+      def func = JsNumber(dt + 100)
 
       val jsonTransformer = (
         (__ \ "key1").json.pickBranch and

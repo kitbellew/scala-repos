@@ -49,7 +49,7 @@ object TupleFieldSetter extends CaseClassFieldSetter {
       fieldValue: c.Tree): Try[c.Tree] = Try {
     import c.universe._
 
-    def simpleType(accessor: Tree) = q"""${accessor}(${idx}, $fieldValue)"""
+    def simpleType(accessor: Tree) = q"""$accessor($idx, $fieldValue)"""
 
     fieldType match {
       case tpe if tpe =:= typeOf[String] => simpleType(q"$container.setString")
@@ -60,7 +60,7 @@ object TupleFieldSetter extends CaseClassFieldSetter {
       case tpe if tpe =:= typeOf[Long]   => simpleType(q"$container.setLong")
       case tpe if tpe =:= typeOf[Float]  => simpleType(q"$container.setFloat")
       case tpe if tpe =:= typeOf[Double] => simpleType(q"$container.setDouble")
-      case _                             => sys.error(s"Unsupported primitive type ${fieldType}")
+      case _                             => sys.error(s"Unsupported primitive type $fieldType")
     }
   }
 }

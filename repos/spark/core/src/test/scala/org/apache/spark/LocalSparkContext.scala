@@ -61,12 +61,11 @@ object LocalSparkContext {
   }
 
   /** Runs `f` by passing in `sc` and ensures that `sc` is stopped. */
-  def withSpark[T](sc: SparkContext)(f: SparkContext => T): T = {
+  def withSpark[T](sc: SparkContext)(f: SparkContext => T): T =
     try {
       f(sc)
     } finally {
       stop(sc)
     }
-  }
 
 }

@@ -129,9 +129,8 @@ class KMeansModel private[ml] (
   }
 
   @Since("1.5.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   private[clustering] def predict(features: Vector): Int =
     parentModel.predict(features)
@@ -305,9 +304,8 @@ class KMeans @Since("1.5.0") (@Since("1.5.0") override val uid: String)
   }
 
   @Since("1.5.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 }
 
 @Since("1.6.0")

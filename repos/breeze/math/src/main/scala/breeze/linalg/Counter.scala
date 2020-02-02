@@ -49,9 +49,8 @@ trait CounterLike[
 
   def contains(k: K) = data.contains(k)
 
-  override def apply(k: K) = {
+  override def apply(k: K) =
     data.get(k) getOrElse default
-  }
 
   def update(k: K, v: V) { data(k) = v }
 
@@ -121,7 +120,7 @@ object Counter extends CounterOps {
   }
 
   implicit def canMapValues[K, V, RV: Zero]
-      : CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] = {
+      : CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] =
     new CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
@@ -131,10 +130,9 @@ object Counter extends CounterOps {
         rv
       }
     }
-  }
 
   implicit def canMapActiveValues[K, V, RV: Zero]
-      : CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] = {
+      : CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] =
     new CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
@@ -144,7 +142,6 @@ object Counter extends CounterOps {
         rv
       }
     }
-  }
 
   implicit def canIterateValues[K, V]: CanTraverseValues[Counter[K, V], V] =
     new CanTraverseValues[Counter[K, V], V] {
@@ -152,11 +149,10 @@ object Counter extends CounterOps {
       def isTraversableAgain(from: Counter[K, V]): Boolean = true
 
       /** Iterates all values from the given collection. */
-      def traverse(from: Counter[K, V], fn: ValuesVisitor[V]): Unit = {
+      def traverse(from: Counter[K, V], fn: ValuesVisitor[V]): Unit =
         for (v <- from.valuesIterator) {
           fn.visit(v)
         }
-      }
 
     }
 
@@ -169,11 +165,10 @@ object Counter extends CounterOps {
       /** Traverses all values from the given collection. */
       override def traverse(
           from: Counter[K, V],
-          fn: KeyValuePairsVisitor[K, V]): Unit = {
+          fn: KeyValuePairsVisitor[K, V]): Unit =
         for ((k, v) <- from.activeIterator) {
           fn.visit(k, v)
         }
-      }
 
       override def isTraversableAgain(from: Counter[K, V]): Boolean = true
     }
@@ -191,19 +186,17 @@ object Counter extends CounterOps {
     }
 
   implicit def canCreateZeros[K, V: Zero: Semiring]
-      : CanCreateZeros[Counter[K, V], K] = {
+      : CanCreateZeros[Counter[K, V], K] =
     new CanCreateZeros[Counter[K, V], K] {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for
       // implicitly full-domain spaces (like Counter), and finite domain spaces, like Vector
-      def apply(d: K): Counter[K, V] = {
+      def apply(d: K): Counter[K, V] =
         Counter()
-      }
     }
-  }
 
   implicit def canCreateZerosLike[K, V: Zero: Semiring]
-      : CanCreateZerosLike[Counter[K, V], Counter[K, V]] = {
+      : CanCreateZerosLike[Counter[K, V], Counter[K, V]] =
     new CanCreateZerosLike[Counter[K, V], Counter[K, V]] {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for
@@ -217,7 +210,6 @@ object Counter extends CounterOps {
         r
       }
     }
-  }
 
   implicit def space[K, V](implicit field: Field[V])
       : MutableEnumeratedCoordinateField[Counter[K, V], K, V] = {

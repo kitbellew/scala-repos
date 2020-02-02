@@ -7,12 +7,11 @@ import io.prediction.engines.itemrec.ItemRecPreparator
 import io.prediction.engines.itemrec.NCItemBasedAlgorithm
 
 object TempFilterEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[EventsDataSource],
       classOf[ItemRecPreparator],
       Map("ncMahoutItemBased" -> classOf[NCItemBasedAlgorithm]),
       classOf[TempFilter]
     )
-  }
 }

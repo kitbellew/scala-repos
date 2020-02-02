@@ -108,7 +108,7 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
         Framework.fingerprint,
         eventHandler,
         loggers,
-        new File(s"../partest/fetchedSources/${scalaVersion}"),
+        new File(s"../partest/fetchedSources/$scalaVersion"),
         classLoader,
         null,
         null,

@@ -8,7 +8,7 @@ import scala.xml.NodeSeq
 object XMLUtil {
   import scala.xml._
 
-  def stripGroup(seq: Node): Node = {
+  def stripGroup(seq: Node): Node =
     seq match {
       case group: Group => {
         <div class="group">{group.nodes.map(stripGroup _)}</div>
@@ -19,7 +19,6 @@ object XMLUtil {
       }
       case _ => seq
     }
-  }
 }
 
 object Test extends Properties("HtmlFactory") {
@@ -59,9 +58,9 @@ object Test extends Properties("HtmlFactory") {
     createFactory.makeUniverse(Left(List(RESOURCES + basename))) match {
       case Some(universe) => {
         new HtmlFactory(universe, new ScalaDocReporter(universe.settings))
-          .writeTemplates((page) => {
+          .writeTemplates { (page) =>
             result += (page.absoluteLinkTo(page.path) -> page.body)
-          })
+          }
       }
       case _ =>
     }
@@ -169,10 +168,8 @@ object Test extends Properties("HtmlFactory") {
     createTemplate("Trac4366.scala") match {
       case node: scala.xml.Node => {
         shortComments(node).exists { n =>
-          {
-            val str = n.toString
-            str.contains("<code>foo</code>") && str.contains("</strong>")
-          }
+          val str = n.toString
+          str.contains("<code>foo</code>") && str.contains("</strong>")
         }
       }
       case _ => false

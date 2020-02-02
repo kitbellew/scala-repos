@@ -47,7 +47,7 @@ object WSServerAutobahnTest extends App {
     )
 
     Await.result(binding, 3.second) // throws if binding fails
-    println(s"Server online at http://${host}:${port}")
+    println(s"Server online at http://$host:$port")
     mode match {
       case "sleep" ⇒ while (true) Thread.sleep(1.minute.toMillis)
       case "read" ⇒ Console.readLine("Press RETURN to stop...")

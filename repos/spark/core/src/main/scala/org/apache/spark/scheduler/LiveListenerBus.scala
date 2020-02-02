@@ -100,14 +100,13 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     *
     * @param sc Used to stop the SparkContext in case the listener thread dies.
     */
-  def start(sc: SparkContext): Unit = {
+  def start(sc: SparkContext): Unit =
     if (started.compareAndSet(false, true)) {
       sparkContext = sc
       listenerThread.start()
     } else {
       throw new IllegalStateException(s"$name already started!")
     }
-  }
 
   def post(event: SparkListenerEvent): Unit = {
     if (stopped.get) {
@@ -184,7 +183,7 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     *
     * Note: `onDropEvent` can be called in any thread.
     */
-  def onDropEvent(event: SparkListenerEvent): Unit = {
+  def onDropEvent(event: SparkListenerEvent): Unit =
     if (logDroppedEvent.compareAndSet(false, true)) {
       // Only log the following message once to avoid duplicated annoying logs.
       logError(
@@ -192,7 +191,6 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
           "This likely means one of the SparkListeners is too slow and cannot keep up with " +
           "the rate at which tasks are being started by the scheduler.")
     }
-  }
 }
 
 private[spark] object LiveListenerBus {

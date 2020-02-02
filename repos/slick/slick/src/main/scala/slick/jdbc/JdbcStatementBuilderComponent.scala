@@ -240,12 +240,11 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       }
     }
 
-    protected def buildSelectModifiers(c: Comprehension): Unit = {
+    protected def buildSelectModifiers(c: Comprehension): Unit =
       c.distinct.foreach {
         case ProductNode(ch) if ch.isEmpty => b"distinct "
         case n                             => b"distinct on (!$n) "
       }
-    }
 
     protected def scanJoins(from: ConstArray[(TermSymbol, Node)]) {
       for ((sym, j: Join) <- from) {

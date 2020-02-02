@@ -18,9 +18,8 @@ import scala.reflect.ClassTag
 class helpersTest extends JUnitSuite with ShouldMatchers {
   implicit var activity: SActivity = _
   @Before
-  def createActivity(): Unit = {
+  def createActivity(): Unit =
     activity = Robolectric.buildActivity(classOf[SActivityImpl]).create.get
-  }
 
   @Test
   def testAlert(): Unit = {

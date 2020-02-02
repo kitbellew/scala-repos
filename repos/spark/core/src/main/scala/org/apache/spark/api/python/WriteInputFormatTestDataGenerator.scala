@@ -58,9 +58,8 @@ case class TestWritable(var str: String, var int: Int, var double: Double)
 }
 
 private[python] class TestInputKeyConverter extends Converter[Any, Any] {
-  override def convert(obj: Any): Char = {
+  override def convert(obj: Any): Char =
     obj.asInstanceOf[IntWritable].get().toChar
-  }
 }
 
 private[python] class TestInputValueConverter extends Converter[Any, Any] {
@@ -71,16 +70,14 @@ private[python] class TestInputValueConverter extends Converter[Any, Any] {
 }
 
 private[python] class TestOutputKeyConverter extends Converter[Any, Any] {
-  override def convert(obj: Any): Text = {
+  override def convert(obj: Any): Text =
     new Text(obj.asInstanceOf[Int].toString)
-  }
 }
 
 private[python] class TestOutputValueConverter extends Converter[Any, Any] {
-  override def convert(obj: Any): DoubleWritable = {
+  override def convert(obj: Any): DoubleWritable =
     new DoubleWritable(
       obj.asInstanceOf[java.util.Map[Double, _]].keySet().iterator().next())
-  }
 }
 
 private[python] class DoubleArrayWritable

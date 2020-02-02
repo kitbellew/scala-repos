@@ -103,9 +103,8 @@ private[spark] class ExternalSorter[K, V, C](
 
   private val numPartitions = partitioner.map(_.numPartitions).getOrElse(1)
   private val shouldPartition = numPartitions > 1
-  private def getPartition(key: K): Int = {
+  private def getPartition(key: K): Int =
     if (shouldPartition) partitioner.get.getPartition(key) else 0
-  }
 
   private val blockManager = SparkEnv.get.blockManager
   private val diskBlockManager = blockManager.diskBlockManager
@@ -154,13 +153,12 @@ private[spark] class ExternalSorter[K, V, C](
       }
     })
 
-  private def comparator: Option[Comparator[K]] = {
+  private def comparator: Option[Comparator[K]] =
     if (ordering.isDefined || aggregator.isDefined) {
       Some(keyComparator)
     } else {
       None
     }
-  }
 
   // Information about a spilled file. Includes sizes in bytes of "batches" written by the
   // serializer as we periodically reset its stream, as well as number of elements in each
@@ -287,7 +285,7 @@ private[spark] class ExternalSorter[K, V, C](
         val partitionId = it.nextPartition()
         require(
           partitionId >= 0 && partitionId < numPartitions,
-          s"partition Id: ${partitionId} should be in the range [0, ${numPartitions})")
+          s"partition Id: $partitionId should be in the range [0, $numPartitions)")
         it.writeNext(writer)
         elementsPerPartition(partitionId) += 1
         objectsWritten += 1
@@ -314,7 +312,7 @@ private[spark] class ExternalSorter[K, V, C](
         }
         if (file.exists()) {
           if (!file.delete()) {
-            logWarning(s"Error deleting ${file}")
+            logWarning(s"Error deleting $file")
           }
         }
       }
@@ -403,7 +401,7 @@ private[spark] class ExternalSorter[K, V, C](
       iterators: Seq[Iterator[Product2[K, C]]],
       mergeCombiners: (C, C) => C,
       comparator: Comparator[K],
-      totalOrder: Boolean): Iterator[Product2[K, C]] = {
+      totalOrder: Boolean): Iterator[Product2[K, C]] =
     if (!totalOrder) {
       // We only have a partial ordering, e.g. comparing the keys by hash code, which means that
       // multiple distinct keys might be treated as equal by the ordering. To deal with this, we
@@ -471,7 +469,6 @@ private[spark] class ExternalSorter[K, V, C](
         }
       }
     }
-  }
 
   /**
     * An internal class for reading a spilled file partition by partition. Expects all the
@@ -501,7 +498,7 @@ private[spark] class ExternalSorter[K, V, C](
     var finished = false
 
     /** Construct a stream that only reads from the next batch */
-    def nextBatchStream(): DeserializationStream = {
+    def nextBatchStream(): DeserializationStream =
       // Note that batchOffsets.length = numBatches + 1 since we did a scan above; check whether
       // we're still in a valid batch.
       if (batchId < batchOffsets.length - 1) {
@@ -534,7 +531,6 @@ private[spark] class ExternalSorter[K, V, C](
         cleanup()
         null
       }
-    }
 
     /**
       * Update partitionId if we have reached the end of our current partition, possibly skipping

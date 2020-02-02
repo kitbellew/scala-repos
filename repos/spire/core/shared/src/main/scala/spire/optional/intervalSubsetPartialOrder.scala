@@ -21,12 +21,11 @@ object intervalSubsetPartialOrder {
     override def gt(x: Interval[A], y: Interval[A]): Boolean =
       x.isProperSupersetOf(y)
 
-    def partialCompare(x: Interval[A], y: Interval[A]): Double = {
+    def partialCompare(x: Interval[A], y: Interval[A]): Double =
       if (eqv(x, y)) 0.0
       else if (lt(x, y)) -1.0
       else if (gt(x, y)) 1.0
       else Double.NaN
-    }
   }
   implicit def intervalSubsetPartialOrder[A: Order]: PartialOrder[Interval[A]] =
     new IntervalSubsetPartialOrder[A]

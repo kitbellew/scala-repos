@@ -571,9 +571,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
   }
 
   /** Calculate learning rate rho for the current [[iteration]]. */
-  private def rho(): Double = {
+  private def rho(): Double =
     math.pow(getTau0 + this.iteration, -getKappa)
-  }
 
   /**
     * Get a random matrix to initialize lambda.
@@ -589,13 +588,12 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
   }
 
   override private[clustering] def getLDAModel(
-      iterationTimes: Array[Double]): LDAModel = {
+      iterationTimes: Array[Double]): LDAModel =
     new LocalLDAModel(
       Matrices.fromBreeze(lambda).transpose,
       alpha,
       eta,
       gammaShape)
-  }
 
 }
 

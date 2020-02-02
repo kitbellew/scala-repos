@@ -25,7 +25,7 @@ private[ui] abstract class BatchTableBase(
     tableId: String,
     batchInterval: Long) {
 
-  protected def columns: Seq[Node] = {
+  protected def columns: Seq[Node] =
     <th>Batch Time</th>
       <th>Input Size</th>
       <th>Scheduling Delay
@@ -39,15 +39,13 @@ private[ui] abstract class BatchTableBase(
         {
       SparkUIUtils.tooltip("Time taken to process all jobs of a batch", "top")
     }</th>
-  }
 
   /**
     * Return the first failure reason if finding in the batches.
     */
   protected def getFirstFailureReason(
-      batches: Seq[BatchUIData]): Option[String] = {
+      batches: Seq[BatchUIData]): Option[String] =
     batches.flatMap(_.outputOperations.flatMap(_._2.failureReason)).headOption
-  }
 
   protected def getFirstFailureTableCell(batch: BatchUIData): Seq[Node] = {
     val firstFailureReason =
@@ -93,7 +91,7 @@ private[ui] abstract class BatchTableBase(
       </td>
   }
 
-  private def batchTable: Seq[Node] = {
+  private def batchTable: Seq[Node] =
     <table id={tableId} class="table table-bordered table-striped table-condensed sortable">
       <thead>
         {columns}
@@ -102,14 +100,12 @@ private[ui] abstract class BatchTableBase(
         {renderRows}
       </tbody>
     </table>
-  }
 
-  def toNodeSeq: Seq[Node] = {
+  def toNodeSeq: Seq[Node] =
     batchTable
-  }
 
   protected def createOutputOperationProgressBar(
-      batch: BatchUIData): Seq[Node] = {
+      batch: BatchUIData): Seq[Node] =
     <td class="progress-cell">
       {
       SparkUIUtils.makeProgressBar(
@@ -120,7 +116,6 @@ private[ui] abstract class BatchTableBase(
         total = batch.outputOperations.size)
     }
     </td>
-  }
 
   /**
     * Return HTML for all rows of this table.
@@ -147,14 +142,13 @@ private[ui] class ActiveBatchTable(
     }
   }
 
-  override protected def renderRows: Seq[Node] = {
+  override protected def renderRows: Seq[Node] =
     // The "batchTime"s of "waitingBatches" must be greater than "runningBatches"'s, so display
     // waiting batches before running batches
     waitingBatches.flatMap(batch => <tr>{waitingBatchRow(batch)}</tr>) ++
       runningBatches.flatMap(batch => <tr>{runningBatchRow(batch)}</tr>)
-  }
 
-  private def runningBatchRow(batch: BatchUIData): Seq[Node] = {
+  private def runningBatchRow(batch: BatchUIData): Seq[Node] =
     baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>processing</td> ++ {
       if (firstFailureReason.nonEmpty) {
         getFirstFailureTableCell(batch)
@@ -162,9 +156,8 @@ private[ui] class ActiveBatchTable(
         Nil
       }
     }
-  }
 
-  private def waitingBatchRow(batch: BatchUIData): Seq[Node] = {
+  private def waitingBatchRow(batch: BatchUIData): Seq[Node] =
     baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>queued</td> ++ {
       if (firstFailureReason.nonEmpty) {
         // Waiting batches have not run yet, so must have no failure reasons.
@@ -173,7 +166,6 @@ private[ui] class ActiveBatchTable(
         Nil
       }
     }
-  }
 }
 
 private[ui] class CompletedBatchTable(
@@ -196,9 +188,8 @@ private[ui] class CompletedBatchTable(
     }
   }
 
-  override protected def renderRows: Seq[Node] = {
+  override protected def renderRows: Seq[Node] =
     batches.flatMap(batch => <tr>{completedBatchRow(batch)}</tr>)
-  }
 
   private def completedBatchRow(batch: BatchUIData): Seq[Node] = {
     val totalDelay = batch.totalDelay

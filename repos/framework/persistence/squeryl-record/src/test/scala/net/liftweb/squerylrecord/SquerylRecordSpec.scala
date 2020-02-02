@@ -45,21 +45,19 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
   lazy val session = new LiftSession("", Helpers.randomString(20), Empty)
   // One of these is for specs2 2.x, the other for specs2 1.x
-  protected def around[T <% Result](t: => T) = {
+  protected def around[T <% Result](t: => T) =
     S.initIfUninitted(session) {
       DBHelper.initSquerylRecordWithInMemoryDB()
       DBHelper.createSchema()
       t
     }
-  }
 
-  protected def around[T: AsResult](t: => T) = {
+  protected def around[T: AsResult](t: => T) =
     S.initIfUninitted(session) {
       DBHelper.initSquerylRecordWithInMemoryDB()
       DBHelper.createSchema()
       AsResult(t)
     }
-  }
 
   "SquerylRecord" should {
     "load record by ID" in {
@@ -350,9 +348,7 @@ class SquerylRecordSpec extends Specification with AroundExample {
         bridge.save
         val company2 = Company.findForParam(id.toString)
         company2.isDefined must_== true
-        company2.foreach(c2 => {
-          c2.postCode.get must_== "10001"
-        })
+        company2.foreach { c2 => c2.postCode.get must_== "10001" }
         val allCompanies = Company.findForList(0, 1000)
         allCompanies.size must be_>(0)
         bridge.delete_!

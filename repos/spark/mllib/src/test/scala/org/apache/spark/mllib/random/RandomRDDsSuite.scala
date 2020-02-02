@@ -63,10 +63,8 @@ class RandomRDDsSuite
     assert(expectedNumPartitions === rdd.partitions.size)
     val values = new ArrayBuffer[Double]()
     rdd.collect.foreach { vector =>
-      {
-        assert(vector.size === expectedColumns)
-        values ++= vector.toArray
-      }
+      assert(vector.size === expectedColumns)
+      values ++= vector.toArray
     }
     assert(expectedRows === values.size / expectedColumns)
     val stats = new StatCounter(values)

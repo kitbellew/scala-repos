@@ -133,12 +133,11 @@ final class LongMap[V] private[collection] (
     o
   }
 
-  override def contains(key: Long): Boolean = {
+  override def contains(key: Long): Boolean =
     if (key == -key) (((key >>> 63).toInt + 1) & extraKeys) != 0
     else seekEntry(key) >= 0
-  }
 
-  override def get(key: Long): Option[V] = {
+  override def get(key: Long): Option[V] =
     if (key == -key) {
       if ((((key >>> 63).toInt + 1) & extraKeys) == 0) None
       else if (key == 0) Some(zeroValue.asInstanceOf[V])
@@ -147,9 +146,8 @@ final class LongMap[V] private[collection] (
       val i = seekEntry(key)
       if (i < 0) None else Some(_values(i).asInstanceOf[V])
     }
-  }
 
-  override def getOrElse[V1 >: V](key: Long, default: => V1): V1 = {
+  override def getOrElse[V1 >: V](key: Long, default: => V1): V1 =
     if (key == -key) {
       if ((((key >>> 63).toInt + 1) & extraKeys) == 0) default
       else if (key == 0) zeroValue.asInstanceOf[V1]
@@ -158,9 +156,8 @@ final class LongMap[V] private[collection] (
       val i = seekEntry(key)
       if (i < 0) default else _values(i).asInstanceOf[V1]
     }
-  }
 
-  override def getOrElseUpdate(key: Long, defaultValue: => V): V = {
+  override def getOrElseUpdate(key: Long, defaultValue: => V): V =
     if (key == -key) {
       val kbits = (key >>> 63).toInt + 1
       if ((kbits & extraKeys) == 0) {
@@ -195,7 +192,6 @@ final class LongMap[V] private[collection] (
         value
       } else _values(i).asInstanceOf[V]
     }
-  }
 
   /** Retrieves the value associated with a key, or the default for that type if none exists
     *  (null for AnyRef, 0 for floats and integers).
@@ -204,7 +200,7 @@ final class LongMap[V] private[collection] (
     *  may not exist, if the default null/zero is acceptable.  For key/value
     *  pairs that do exist,  `apply` (i.e. `map(key)`) is equally fast.
     */
-  def getOrNull(key: Long): V = {
+  def getOrNull(key: Long): V =
     if (key == -key) {
       if ((((key >>> 63).toInt + 1) & extraKeys) == 0) null.asInstanceOf[V]
       else if (key == 0) zeroValue.asInstanceOf[V]
@@ -213,13 +209,12 @@ final class LongMap[V] private[collection] (
       val i = seekEntry(key)
       if (i < 0) null.asInstanceOf[V] else _values(i).asInstanceOf[V]
     }
-  }
 
   /** Retrieves the value associated with a key.
     *  If the key does not exist in the map, the `defaultEntry` for that key
     *  will be returned instead.
     */
-  override def apply(key: Long): V = {
+  override def apply(key: Long): V =
     if (key == -key) {
       if ((((key >>> 63).toInt + 1) & extraKeys) == 0) defaultEntry(key)
       else if (key == 0) zeroValue.asInstanceOf[V]
@@ -228,7 +223,6 @@ final class LongMap[V] private[collection] (
       val i = seekEntry(key)
       if (i < 0) defaultEntry(key) else _values(i).asInstanceOf[V]
     }
-  }
 
   /** The user-supplied default value for the key.  Throws an exception
     *  if no other default behavior was specified.
@@ -270,7 +264,7 @@ final class LongMap[V] private[collection] (
     repack(m)
   }
 
-  override def put(key: Long, value: V): Option[V] = {
+  override def put(key: Long, value: V): Option[V] =
     if (key == -key) {
       if (key == 0) {
         val ans =
@@ -302,13 +296,12 @@ final class LongMap[V] private[collection] (
         ans
       }
     }
-  }
 
   /** Updates the map to include a new key-value pair.
     *
     *  This is the fastest way to add an entry to a `LongMap`.
     */
-  override def update(key: Long, value: V): Unit = {
+  override def update(key: Long, value: V): Unit =
     if (key == -key) {
       if (key == 0) {
         zeroValue = value.asInstanceOf[AnyRef]
@@ -331,7 +324,6 @@ final class LongMap[V] private[collection] (
         _values(i) = value.asInstanceOf[AnyRef]
       }
     }
-  }
 
   /** Adds a new key/value pair to this map and returns the map. */
   def +=(key: Long, value: V): this.type = { update(key, value); this }

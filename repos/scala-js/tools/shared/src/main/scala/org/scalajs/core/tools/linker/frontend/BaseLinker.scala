@@ -46,14 +46,13 @@ final class BaseLinker(
       irInput: Seq[VirtualScalaJSIRFile],
       logger: Logger,
       symbolRequirements: SymbolRequirement,
-      checkIR: Boolean): LinkingUnit = {
+      checkIR: Boolean): LinkingUnit =
     linkInternal(
       irInput,
       logger,
       symbolRequirements,
       bypassLinkingErrors = false,
       checkIR = checkIR)
-  }
 
   @deprecated(
     "Bypassing linking errors will not be possible in the next major version. " +
@@ -64,14 +63,13 @@ final class BaseLinker(
       logger: Logger,
       symbolRequirements: SymbolRequirement,
       bypassLinkingErrors: Boolean,
-      checkIR: Boolean): LinkingUnit = {
+      checkIR: Boolean): LinkingUnit =
     linkInternal(
       irInput,
       logger,
       symbolRequirements,
       bypassLinkingErrors,
       checkIR)
-  }
 
   // Non-deprecated version to be called from `LinkerFrontend`
   private[frontend] def linkInternal(

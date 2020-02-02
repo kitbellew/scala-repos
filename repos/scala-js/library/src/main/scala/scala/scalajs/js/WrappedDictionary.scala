@@ -22,26 +22,23 @@ class WrappedDictionary[A](val dict: Dictionary[A])
 
   import WrappedDictionary._
 
-  def get(key: String): Option[A] = {
+  def get(key: String): Option[A] =
     if (contains(key))
       Some(dict.rawApply(key))
     else
       None
-  }
 
-  override def apply(key: String): A = {
+  override def apply(key: String): A =
     if (contains(key))
       dict.rawApply(key)
     else
       throw new NoSuchElementException("key not found: " + key)
-  }
 
-  override def contains(key: String): Boolean = {
+  override def contains(key: String): Boolean =
     /* We have to use a safe version of hasOwnProperty, because
      * "hasOwnProperty" could be a key of this dictionary.
      */
     safeHasOwnProperty(dict, key)
-  }
 
   def -=(key: String): this.type = {
     if (contains(key))

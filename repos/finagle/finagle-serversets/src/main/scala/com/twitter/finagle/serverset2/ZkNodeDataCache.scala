@@ -67,7 +67,7 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
         val results = parseNode(path, data)
         // avoid string concatenation cost if not logging debug
         if (logger.isLoggable(Level.DEBUG)) {
-          logger.debug(s"$path retrieved ${results.length} for ${entityType}")
+          logger.debug(s"$path retrieved ${results.length} for $entityType")
         }
         results
       case None => Nil

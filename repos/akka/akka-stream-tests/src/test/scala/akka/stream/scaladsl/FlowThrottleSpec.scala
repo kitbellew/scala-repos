@@ -289,7 +289,7 @@ class FlowThrottleSpec extends AkkaSpec {
       .assertAllStagesStopped {
         val ex = new RuntimeException with NoStackTrace
         Source(1 to 5)
-          .throttle(2, 200.millis, 0, (_) ⇒ { throw ex }, Shaping)
+          .throttle(2, 200.millis, 0, (_) ⇒ throw ex, Shaping)
           .throttle(1, 100.millis, 5, Enforcing)
           .runWith(TestSink.probe[Int])
           .request(5)

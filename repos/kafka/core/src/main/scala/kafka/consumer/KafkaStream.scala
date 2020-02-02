@@ -50,7 +50,6 @@ class KafkaStream[K, V](
     iter.clearCurrentChunk()
   }
 
-  override def toString(): String = {
+  override def toString(): String =
     "%s kafka stream".format(clientId)
-  }
 }

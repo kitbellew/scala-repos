@@ -54,8 +54,7 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     * This method is useful for implementing blocking behaviour on top of the non-blocking `NetworkClient`, use it with
     * care.
     */
-  def blockingReady(node: Node, timeout: Long)(
-      implicit time: JTime): Boolean = {
+  def blockingReady(node: Node, timeout: Long)(implicit time: JTime): Boolean =
     client.ready(node, time.milliseconds()) || pollUntil(timeout) { (_, now) =>
       if (client.isReady(node, now))
         true
@@ -63,7 +62,6 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
         throw new IOException(s"Connection to $node failed")
       else false
     }
-  }
 
   /**
     * Invokes `client.send` followed by 1 or more `client.poll` invocations until a response is received,
@@ -107,12 +105,11 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
     */
   private def pollUntil(timeout: Long)(
       predicate: (Seq[ClientResponse], Long) => Boolean)(
-      implicit time: JTime): Boolean = {
+      implicit time: JTime): Boolean =
     pollUntilFound(timeout) { (responses, now) =>
       if (predicate(responses, now)) Some(true)
       else None
     }.fold(false)(_ => true)
-  }
 
   /**
     * Invokes `client.poll` until `collect` returns `Some` or the timeout expires.

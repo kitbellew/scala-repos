@@ -65,7 +65,7 @@ object ScalaBuilder {
       else None
     }
 
-    def getPreviousIncrementalType: Option[IncrementalityType] = {
+    def getPreviousIncrementalType: Option[IncrementalityType] =
       storageFile.filter(_.exists).flatMap { file =>
         val result = using(
           new DataInputStream(
@@ -81,7 +81,6 @@ object ScalaBuilder {
         if (result.isEmpty) file.delete()
         result
       }
-    }
 
     def setPreviousIncrementalType(incrType: IncrementalityType) {
       storageFile.foreach { file =>
@@ -180,13 +179,12 @@ object ScalaBuilder {
 
   private val lock = new Object()
 
-  def localServer = {
+  def localServer =
     lock.synchronized {
       val server = cachedServer.getOrElse(new LocalServer())
       cachedServer = Some(server)
       server
     }
-  }
 
   private def cleanLocalServerCache() {
     lock.synchronized {

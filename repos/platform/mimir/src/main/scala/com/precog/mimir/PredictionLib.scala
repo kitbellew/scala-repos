@@ -131,13 +131,12 @@ trait PredictionLibModule[M[+_]]
                     val predictionLower =
                       arraySum(resultArray, res.prediction map { -_ })
 
-                    def makeCPath(field: String, index: Int) = {
+                    def makeCPath(field: String, index: Int) =
                       CPath(
                         TableModule.paths.Value,
                         CPathField(model.name),
                         CPathField(field),
                         CPathIndex(index))
-                    }
 
                     // the correct model name gets added to the CPath here
                     val pathFit = CPath(

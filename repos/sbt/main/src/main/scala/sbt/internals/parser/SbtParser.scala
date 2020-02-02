@@ -240,7 +240,7 @@ private[sbt] object MissingBracketHandler {
       positionEnd: Int,
       positionLine: Int,
       fileName: String,
-      originalException: Throwable): String = {
+      originalException: Throwable): String =
     findClosingBracketIndex(content, positionEnd) match {
       case Some(index) =>
         val text = content.substring(positionEnd, index + 1)
@@ -260,7 +260,6 @@ private[sbt] object MissingBracketHandler {
         throw new MessageOnlyException(
           s"""[$fileName]:$positionLine: ${originalException.getMessage}""".stripMargin)
     }
-  }
 
   /**
     *

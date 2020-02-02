@@ -56,7 +56,7 @@ trait BsonRecord[MyType <: BsonRecord[MyType]] extends Record[MyType] {
   /**
     * Pattern.equals doesn't work properly so it needs a special check. If you use PatternField, be sure to override equals with this.
     */
-  protected def equalsWithPatternCheck(other: Any): Boolean = {
+  protected def equalsWithPatternCheck(other: Any): Boolean =
     other match {
       case that: BsonRecord[MyType] =>
         that.fields.corresponds(this.fields) { (a, b) =>
@@ -68,7 +68,6 @@ trait BsonRecord[MyType <: BsonRecord[MyType]] extends Record[MyType] {
         }
       case _ => false
     }
-  }
 }
 
 /** Specialized MetaRecord that deals with BsonRecords */

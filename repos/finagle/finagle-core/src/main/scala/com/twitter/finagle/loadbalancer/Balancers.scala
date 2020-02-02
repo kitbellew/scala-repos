@@ -106,7 +106,7 @@ object Balancers {
           endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
           sr: StatsReceiver,
           exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] = {
+      ): ServiceFactory[Req, Rep] =
         new HeapBalancer(endpoints, sr, exc, rng) {
           private[this] val gauge = sr.addGauge("heap")(1)
           override def close(when: Time): Future[Unit] = {
@@ -114,7 +114,6 @@ object Balancers {
             super.close(when)
           }
         }
-      }
     }
 
   /**
@@ -146,7 +145,7 @@ object Balancers {
         endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
         sr: StatsReceiver,
         exc: NoBrokersAvailableException
-    ): ServiceFactory[Req, Rep] = {
+    ): ServiceFactory[Req, Rep] =
       new ApertureLoadBandBalancer(
         endpoints,
         smoothWin,
@@ -164,6 +163,5 @@ object Balancers {
           super.close(when)
         }
       }
-    }
   }
 }

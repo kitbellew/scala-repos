@@ -12,8 +12,7 @@ object ColumnFormat {
       size: Option[Int])(
       implicit fName: FieldName,
       isNullable: Boolean,
-      defaultV: Option[c.Expr[String]]): ColumnFormat[c.type] = {
-
+      defaultV: Option[c.Expr[String]]): ColumnFormat[c.type] =
     new ColumnFormat[c.type](c) {
       val fieldAccessor = fAccessor
       val fieldType = fType
@@ -22,7 +21,6 @@ object ColumnFormat {
       val sizeOpt = size
       val defaultValue = defaultV
     }
-  }
 }
 
 /**

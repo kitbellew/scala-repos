@@ -55,7 +55,7 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
     *                                    zookeeper client clobbers the tree location for this
     *                                    ShardCoordinator.
     */
-  def acquire(): Future[ShardPermit] = {
+  def acquire(): Future[ShardPermit] =
     semaphore.acquire flatMap { permit =>
       shardNodes() map { nodes =>
         nodes map { node => shardIdOf(node.path) }
@@ -86,29 +86,25 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
         case err: PermitNodeException => Future.exception(SemaphoreError(err))
       } onFailure { err => permit.release() }
     }
-  }
 
   private[this] def createShardNode(
       id: Int,
-      permit: Permit): Future[Option[Shard]] = {
+      permit: Permit): Future[Option[Shard]] =
     zk(shardPath(id)).create(mode = CreateMode.EPHEMERAL) map { node =>
       Some(Shard(id, node, permit))
     } handle {
       case err: KeeperException.NodeExistsException => None
     }
-  }
 
-  private[this] def shardNodes(): Future[Seq[ZNode]] = {
+  private[this] def shardNodes(): Future[Seq[ZNode]] =
     zk(path).getChildren() map { zop =>
       zop.children filter { child =>
         child.path.startsWith(shardPathPrefix)
       } sortBy (child => shardIdOf(child.path))
     }
-  }
 
-  private[this] def shardIdOf(path: String): Int = {
+  private[this] def shardIdOf(path: String): Int =
     path.substring(shardPathPrefix.length).toInt
-  }
 
   private[this] def shardPath(id: Int) =
     Seq(path, "shard-" + id).mkString(separator)
@@ -123,7 +119,6 @@ sealed trait ShardPermit {
 case class Shard(id: Int, private val node: ZNode, private val permit: Permit)
     extends ShardPermit {
 
-  def release() = {
+  def release() =
     node.delete() ensure { permit.release() }
-  }
 }

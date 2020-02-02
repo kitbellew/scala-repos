@@ -107,7 +107,7 @@ object HiveTypeCoercion {
   /** Similar to [[findTightestCommonType]], but can promote all the way to StringType. */
   private def findTightestCommonTypeToString(
       left: DataType,
-      right: DataType): Option[DataType] = {
+      right: DataType): Option[DataType] =
     findTightestCommonTypeOfTwo(left, right).orElse((left, right) match {
       case (StringType, t2: AtomicType)
           if t2 != BinaryType && t2 != BooleanType =>
@@ -117,33 +117,30 @@ object HiveTypeCoercion {
         Some(StringType)
       case _ => None
     })
-  }
 
   /**
     * Similar to [[findTightestCommonType]], if can not find the TightestCommonType, try to use
     * [[findTightestCommonTypeToString]] to find the TightestCommonType.
     */
   private def findTightestCommonTypeAndPromoteToString(
-      types: Seq[DataType]): Option[DataType] = {
+      types: Seq[DataType]): Option[DataType] =
     types.foldLeft[Option[DataType]](Some(NullType))((r, c) =>
       r match {
         case None => None
         case Some(d) =>
           findTightestCommonTypeToString(d, c)
       })
-  }
 
   /**
     * Find the tightest common type of a set of types by continuously applying
     * `findTightestCommonTypeOfTwo` on these types.
     */
-  private def findTightestCommonType(types: Seq[DataType]): Option[DataType] = {
+  private def findTightestCommonType(types: Seq[DataType]): Option[DataType] =
     types.foldLeft[Option[DataType]](Some(NullType))((r, c) =>
       r match {
         case None    => None
         case Some(d) => findTightestCommonTypeOfTwo(d, c)
       })
-  }
 
   /**
     * Case 2 type widening (see the classdoc comment above for HiveTypeCoercion).
@@ -167,13 +164,12 @@ object HiveTypeCoercion {
       findTightestCommonTypeToString(t1, t2)
   }
 
-  private def findWiderCommonType(types: Seq[DataType]) = {
+  private def findWiderCommonType(types: Seq[DataType]) =
     types.foldLeft[Option[DataType]](Some(NullType))((r, c) =>
       r match {
         case Some(d) => findWiderTypeForTwo(d, c)
         case None    => None
       })
-  }
 
   /**
     * Applies any changes to [[AttributeReference]] data types that are made by other rules to

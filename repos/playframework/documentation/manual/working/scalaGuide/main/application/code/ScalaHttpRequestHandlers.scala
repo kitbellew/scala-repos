@@ -13,12 +13,11 @@ package simple {
 
   class SimpleHttpRequestHandler @Inject() (router: Router)
       extends HttpRequestHandler {
-    def handlerForRequest(request: RequestHeader) = {
+    def handlerForRequest(request: RequestHeader) =
       router.routes.lift(request) match {
         case Some(handler) => (request, handler)
         case None          => (request, Action(Results.NotFound))
       }
-    }
   }
 //#simple
 }
@@ -51,13 +50,12 @@ package virtualhost {
         filters
       ) {
 
-    override def routeRequest(request: RequestHeader) = {
+    override def routeRequest(request: RequestHeader) =
       request.host match {
         case "foo.example.com" => fooRouter.routes.lift(request)
         case "bar.example.com" => barRouter.routes.lift(request)
         case _                 => super.routeRequest(request)
       }
-    }
   }
 //#virtualhost
 

@@ -103,7 +103,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
 
   def findAPIKey(apiKey: APIKey): M[Option[APIKeyRecord]]
   def findAPIKeyChildren(apiKey: APIKey): M[Set[APIKeyRecord]]
-  def findAPIKeyAncestry(apiKey: APIKey): M[List[APIKeyRecord]] = {
+  def findAPIKeyAncestry(apiKey: APIKey): M[List[APIKeyRecord]] =
     findAPIKey(apiKey) flatMap {
       case Some(keyRecord) =>
         if (keyRecord.issuerKey == apiKey) M.point(List(keyRecord))
@@ -112,7 +112,6 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       case None =>
         M.point(List.empty[APIKeyRecord])
     }
-  }
 
   def listGrants: M[Seq[Grant]]
   def findGrant(gid: GrantId): M[Option[Grant]]
@@ -173,7 +172,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       description: Option[String],
       issuerKey: APIKey,
       perms: Set[Permission],
-      expiration: Option[DateTime] = None): M[Option[Grant]] = {
+      expiration: Option[DateTime] = None): M[Option[Grant]] =
     validGrants(issuerKey, expiration).flatMap { grants =>
       if (!Grant.implies(grants, perms, expiration)) none[Grant].point[M]
       else {
@@ -192,7 +191,6 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
         }
       }
     }
-  }
 
   def deriveSingleParentGrant(
       name: Option[String],
@@ -200,7 +198,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       issuerKey: APIKey,
       parentId: GrantId,
       perms: Set[Permission],
-      expiration: Option[DateTime] = None): M[Option[Grant]] = {
+      expiration: Option[DateTime] = None): M[Option[Grant]] =
     validGrants(issuerKey, expiration).flatMap { validGrants =>
       validGrants.find(_.grantId == parentId) match {
         case Some(parent) if parent.implies(perms, expiration) =>
@@ -214,7 +212,6 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
         case _ => none[Grant].point[M]
       }
     }
-  }
 
   def deriveAndAddGrant(
       name: Option[String],
@@ -222,7 +219,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       issuerKey: APIKey,
       perms: Set[Permission],
       recipientKey: APIKey,
-      expiration: Option[DateTime] = None): M[Option[Grant]] = {
+      expiration: Option[DateTime] = None): M[Option[Grant]] =
     deriveGrant(name, description, issuerKey, perms, expiration) flatMap {
       case Some(grant) =>
         addGrants(recipientKey, Set(grant.grantId)) map {
@@ -230,7 +227,6 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
         }
       case None => none[Grant].point[M]
     }
-  }
 
   def newAPIKeyWithGrants(
       name: Option[String],

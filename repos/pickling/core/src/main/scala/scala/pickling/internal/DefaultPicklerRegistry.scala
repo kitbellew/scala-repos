@@ -27,7 +27,7 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
   autoRegisterDefaults()
 
   override def genUnpickler(mirror: Mirror, tagKey: String)(
-      implicit share: refs.Share): Unpickler[_] = {
+      implicit share: refs.Share): Unpickler[_] =
     lookupUnpickler(tagKey) match {
       case Some(p) => p
       case None    =>
@@ -37,11 +37,10 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
         registerUnpickler(tagKey, p)
         p
     }
-  }
   def genPickler(
       classLoader: ClassLoader,
       clazz: Class[_],
-      tag: FastTypeTag[_])(implicit share: refs.Share): Pickler[_] = {
+      tag: FastTypeTag[_])(implicit share: refs.Share): Pickler[_] =
     lookupPickler(tag.key) match {
       case Some(p) => p
       case None    =>
@@ -50,7 +49,6 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
         registerPickler(tag.key, p)
         p
     }
-  }
 
   /** Registers a pickler with this registry for future use. */
   override def registerPickler[T](key: String, p: Pickler[T]): Unit =
@@ -61,7 +59,7 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
     unpicklerMap.put(key, p)
 
   /** Checks the existince of an unpickler. */
-  override def lookupUnpickler(key: String): Option[Unpickler[_]] = {
+  override def lookupUnpickler(key: String): Option[Unpickler[_]] =
     unpicklerMap.get(key) match {
       case x: Some[Unpickler[_]] => x
       case None                  =>
@@ -79,10 +77,9 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
           case None => None // This key is not an applied type.
         }
     }
-  }
 
   /** Looks for a pickler with the given FastTypeTag string. */
-  override def lookupPickler(key: String): Option[Pickler[_]] = {
+  override def lookupPickler(key: String): Option[Pickler[_]] =
     picklerMap.get(key) match {
       case x: Some[Pickler[_]] => x
       case None                =>
@@ -100,8 +97,6 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
           case None => None // This key is not an applied type.
         }
     }
-
-  }
 
   /** Registers a function which can generate picklers for a given type constructor.
     *

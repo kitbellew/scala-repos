@@ -52,10 +52,9 @@ final class JasmineRunner(
     new JasmineTask(this, deserializer(task))
   }
 
-  private def ensureNotDone(): Unit = {
+  private def ensureNotDone(): Unit =
     if (isDone)
       throw new IllegalStateException("Runner is done")
-  }
 }
 
 object JasmineRunner {

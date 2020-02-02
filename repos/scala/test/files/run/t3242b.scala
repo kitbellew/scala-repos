@@ -10,8 +10,7 @@ object Test {
     assert(v == (0 until n), "not same as (0 until " + n + "): " + v)
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     for (i <- 0 until 2000)
       test(i)
-  }
 }

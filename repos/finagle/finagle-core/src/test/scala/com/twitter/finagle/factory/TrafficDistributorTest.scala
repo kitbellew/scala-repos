@@ -68,7 +68,7 @@ private object TrafficDistributorTest {
 
   // Return the distribution for the the given `balancer` as a tuple
   // of (weight, size, offer load).
-  def distribution(balancers: Set[Balancer]): Set[(Double, Int, Int)] = {
+  def distribution(balancers: Set[Balancer]): Set[(Double, Int, Int)] =
     balancers.flatMap { b =>
       val endpoints = b.endpoints.sample()
       endpoints.map {
@@ -79,7 +79,6 @@ private object TrafficDistributorTest {
           }
       }
     }
-  }
 
   class Ctx {
     var newEndpointCalls = 0
@@ -102,7 +101,7 @@ private object TrafficDistributorTest {
         dest: Var[Activity.State[Set[Address]]],
         eagerEviction: Boolean = true,
         statsReceiver: StatsReceiver = NullStatsReceiver
-    ): ServiceFactory[Int, Int] = {
+    ): ServiceFactory[Int, Int] =
       new TrafficDistributor[Int, Int](
         dest = Activity(dest),
         newEndpoint = newEndpoint,
@@ -111,7 +110,6 @@ private object TrafficDistributorTest {
         statsReceiver = statsReceiver,
         rng = Rng("seed".hashCode)
       )
-    }
 
     def resetCounters() {
       newEndpointCalls = 0

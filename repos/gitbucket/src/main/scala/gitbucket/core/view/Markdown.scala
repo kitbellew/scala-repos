@@ -91,12 +91,11 @@ object Markdown {
       out.toString()
     }
 
-    override def code(code: String, lang: String, escaped: Boolean): String = {
+    override def code(code: String, lang: String, escaped: Boolean): String =
       "<pre class=\"prettyprint" + (if (lang != null)
-                                      s" ${options.getLangPrefix}${lang}"
+                                      s" ${options.getLangPrefix}$lang"
                                     else "") + "\">" +
         (if (escaped) code else escape(code, true)) + "</pre>"
-    }
 
     override def list(body: String, ordered: Boolean): String = {
       var listType: String = null
@@ -112,13 +111,12 @@ object Markdown {
       }
     }
 
-    override def listitem(text: String): String = {
+    override def listitem(text: String): String =
       if (text.contains("""class="task-list-item-checkbox" """)) {
         "<li class=\"task-list-item\">" + text + "</li>\n"
       } else {
         "<li>" + text + "</li>\n"
       }
-    }
 
     override def text(text: String): String = {
       // convert commit id and username to link.
@@ -133,15 +131,13 @@ object Markdown {
       t2
     }
 
-    override def link(href: String, title: String, text: String): String = {
+    override def link(href: String, title: String, text: String): String =
       super.link(fixUrl(href, false), title, text)
-    }
 
-    override def image(href: String, title: String, text: String): String = {
+    override def image(href: String, title: String, text: String): String =
       super.image(fixUrl(href, true), title, text)
-    }
 
-    override def nolink(text: String): String = {
+    override def nolink(text: String): String =
       if (enableWikiLink && text.startsWith("[[") && text.endsWith("]]")) {
         val link = text.replaceAll("(^\\[\\[|\\]\\]$)", "")
 
@@ -163,9 +159,8 @@ object Markdown {
       } else {
         escape(text)
       }
-    }
 
-    private def fixUrl(url: String, isImage: Boolean = false): String = {
+    private def fixUrl(url: String, isImage: Boolean = false): String =
       if (url.startsWith("http://") || url.startsWith("https://") || url
             .startsWith("/")) {
         url
@@ -200,16 +195,14 @@ object Markdown {
           .replaceFirst("/git/", "/")
           .stripSuffix(".git") + "/wiki/_blob/" + url
       }
-    }
 
   }
 
-  def escapeTaskList(text: String): String = {
+  def escapeTaskList(text: String): String =
     Pattern
       .compile("""^( *)- \[([x| ])\] """, Pattern.MULTILINE)
       .matcher(text)
       .replaceAll("$1* task:$2: ")
-  }
 
   def generateAnchorName(text: String): String = {
     val normalized = Normalizer.normalize(

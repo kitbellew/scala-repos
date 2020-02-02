@@ -1,19 +1,17 @@
 object Texts {
-  def textL[T](list: List[T]) = {
+  def textL[T](list: List[T]) =
     list match {
       case List()   => "Empty"
       case List(_)  => "One"
       case List(_*) => "Many"
     }
-  }
 
-  def textA[T](array: Array[T]) = {
+  def textA[T](array: Array[T]) =
     array match {
       case Array()   => "Empty"
       case Array(_)  => "One"
       case Array(_*) => "Many"
     }
-  }
 }
 
 object Test extends App {

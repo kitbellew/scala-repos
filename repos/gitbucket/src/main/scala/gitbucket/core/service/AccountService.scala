@@ -28,13 +28,12 @@ trait AccountService {
     * Authenticate by internal database.
     */
   private def defaultAuthentication(userName: String, password: String)(
-      implicit s: Session) = {
+      implicit s: Session) =
     getAccountByUserName(userName).collect {
       case account
           if (!account.isGroupAccount && account.password == sha1(password)) =>
         Some(account)
     } getOrElse None
-  }
 
   /**
     * Authenticate by LDAP.
@@ -42,7 +41,7 @@ trait AccountService {
   private def ldapAuthentication(
       settings: SystemSettings,
       userName: String,
-      password: String)(implicit s: Session): Option[Account] = {
+      password: String)(implicit s: Session): Option[Account] =
     LDAPUtil.authenticate(settings.ldap.get, userName, password) match {
       case Right(ldapUserInfo) => {
         // Create or update account by LDAP information
@@ -88,11 +87,10 @@ trait AccountService {
         }
       }
       case Left(errorMessage) => {
-        logger.info(s"LDAP Authentication Failed: ${errorMessage}")
+        logger.info(s"LDAP Authentication Failed: $errorMessage")
         defaultAuthentication(userName, password)
       }
     }
-  }
 
   def getAccountByUserName(userName: String, includeRemoved: Boolean = false)(
       implicit s: Session): Option[Account] =
@@ -244,14 +242,13 @@ trait AccountService {
     Repositories.filter(_.userName === userName.bind).delete
   }
 
-  def getGroupNames(userName: String)(implicit s: Session): List[String] = {
+  def getGroupNames(userName: String)(implicit s: Session): List[String] =
     List(userName) ++
       Collaborators
         .filter(_.collaboratorName === userName.bind)
         .sortBy(_.userName)
         .map(_.userName)
         .list
-  }
 
 }
 

@@ -17,9 +17,8 @@ import AsmUtils._
 object ProdConsAnalyzerTest extends ClearAfterClass.Clearable {
   var noOptCompiler = newCompiler(extraArgs = "-Yopt:l:none")
 
-  def clear(): Unit = {
+  def clear(): Unit =
     noOptCompiler = null
-  }
 }
 
 @RunWith(classOf[JUnit4])
@@ -35,9 +34,8 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   def testSingleInsn(
       singletonInsns: Traversable[AbstractInsnNode],
-      expected: String): Unit = {
+      expected: String): Unit =
     testInsn(single(singletonInsns), expected)
-  }
 
   def testMultiInsns(
       insns: Traversable[AbstractInsnNode],

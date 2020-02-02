@@ -436,7 +436,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
       submitMessage: String = "driver is submitted",
       killMessage: String = "driver is killed",
       state: DriverState = FINISHED,
-      exception: Option[Exception] = None): String = {
+      exception: Option[Exception] = None): String =
     startServer(
       new DummyMaster(
         _,
@@ -445,17 +445,14 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
         killMessage,
         state,
         exception))
-  }
 
   /** Start a smarter dummy server that keeps track of submitted driver states. */
-  private def startSmartServer(): String = {
+  private def startSmartServer(): String =
     startServer(new SmarterMaster(_))
-  }
 
   /** Start a dummy server that is faulty in many ways... */
-  private def startFaultyServer(): String = {
+  private def startFaultyServer(): String =
     startServer(new DummyMaster(_), faulty = true)
-  }
 
   /**
     * Start a [[StandaloneRestServer]] that communicates with the given endpoint.
@@ -523,42 +520,38 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   /** Return the response as a submit response, or fail with error otherwise. */
   private def getSubmitResponse(
-      response: SubmitRestProtocolResponse): CreateSubmissionResponse = {
+      response: SubmitRestProtocolResponse): CreateSubmissionResponse =
     response match {
       case s: CreateSubmissionResponse => s
       case e: ErrorResponse            => fail(s"Server returned error: ${e.message}")
       case r                           => fail(s"Expected submit response. Actual: ${r.toJson}")
     }
-  }
 
   /** Return the response as a kill response, or fail with error otherwise. */
   private def getKillResponse(
-      response: SubmitRestProtocolResponse): KillSubmissionResponse = {
+      response: SubmitRestProtocolResponse): KillSubmissionResponse =
     response match {
       case k: KillSubmissionResponse => k
       case e: ErrorResponse          => fail(s"Server returned error: ${e.message}")
       case r                         => fail(s"Expected kill response. Actual: ${r.toJson}")
     }
-  }
 
   /** Return the response as a status response, or fail with error otherwise. */
   private def getStatusResponse(
-      response: SubmitRestProtocolResponse): SubmissionStatusResponse = {
+      response: SubmitRestProtocolResponse): SubmissionStatusResponse =
     response match {
       case s: SubmissionStatusResponse => s
       case e: ErrorResponse            => fail(s"Server returned error: ${e.message}")
       case r                           => fail(s"Expected status response. Actual: ${r.toJson}")
     }
-  }
 
   /** Return the response as an error response, or fail if the response was not an error. */
   private def getErrorResponse(
-      response: SubmitRestProtocolResponse): ErrorResponse = {
+      response: SubmitRestProtocolResponse): ErrorResponse =
     response match {
       case e: ErrorResponse => e
       case r                => fail(s"Expected error response. Actual: ${r.toJson}")
     }
-  }
 
   /**
     * Send an HTTP request to the given URL using the method and the body specified.

@@ -42,11 +42,10 @@ class ModuleExtDataServiceTest
   def testWithoutScalaLibrary(): Unit =
     importProjectData(generateScalaProject("2.11.5", None, Seq.empty))
 
-  def testWithIncompatibleScalaLibrary(): Unit = {
+  def testWithIncompatibleScalaLibrary(): Unit =
     importProjectData(generateScalaProject("2.11.5", Some("2.10.4"), Seq.empty))
-    // FIXME: fix notifications on Windows
-    //assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, SbtProjectSystem.Id, 1)
-  }
+  // FIXME: fix notifications on Windows
+  //assertNotificationsCount(NotificationSource.PROJECT_SYNC, NotificationCategory.WARNING, SbtProjectSystem.Id, 1)
 
   def testWithCompatibleScalaLibrary(): Unit = {
     doTestAndCheckScalaSdk("2.11.1", "2.11.5")
@@ -315,7 +314,7 @@ class ModuleExtDataServiceTest
     }
   }
 
-  private def setUpJdks(): Unit = {
+  private def setUpJdks(): Unit =
     ApplicationManagerEx.getApplicationEx.runWriteAction(new Runnable {
       def run(): Unit = {
         val projectJdkTable = ProjectJdkTable.getInstance()
@@ -324,8 +323,7 @@ class ModuleExtDataServiceTest
         projectJdkTable.addJdk(IdeaTestUtil.getMockJdk18)
       }
     })
-    // TODO: find a way to create mock Android SDK
-  }
+  // TODO: find a way to create mock Android SDK
 
   private def defaultJdk: projectRoots.Sdk =
     ProjectJdkTable.getInstance().getAllJdks.head

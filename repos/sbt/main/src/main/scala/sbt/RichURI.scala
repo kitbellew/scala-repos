@@ -42,7 +42,7 @@ class RichURI(uri: URI) {
     * If the URI has a fragment, the fragment is transferred to the wrapped URI.
     * If this URI does not have a marker scheme, it is returned unchanged.
     */
-  def withoutMarkerScheme = {
+  def withoutMarkerScheme =
     if (hasMarkerScheme)
       if (hasFragment)
         new URI(uri.getRawSchemeSpecificPart + "#" + uri.getRawFragment)
@@ -50,7 +50,6 @@ class RichURI(uri: URI) {
         new URI(uri.getRawSchemeSpecificPart)
     else
       uri
-  }
 }
 
 object RichURI {

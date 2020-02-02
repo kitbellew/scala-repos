@@ -92,12 +92,11 @@ object CanBeParameter {
     new CanBeParameter[Array[Byte]] {
       def sizeOf(param: Array[Byte]) =
         Buffer.sizeOfLen(param.length) + param.length
-      def typeCode(param: Array[Byte]) = {
+      def typeCode(param: Array[Byte]) =
         if (param.length <= 255) Type.TinyBlob
         else if (param.length <= 65535) Type.Blob
         else if (param.length <= 16777215) Type.MediumBlob
         else -1
-      }
       def write(writer: BufferWriter, param: Array[Byte]) =
         writer.writeLengthCodedBytes(param)
     }
@@ -153,9 +152,8 @@ object CanBeParameter {
     new CanBeParameter[java.sql.Timestamp] {
       def sizeOf(param: java.sql.Timestamp) = 12
       def typeCode(param: java.sql.Timestamp) = Type.Timestamp
-      def write(writer: BufferWriter, param: java.sql.Timestamp) = {
+      def write(writer: BufferWriter, param: java.sql.Timestamp) =
         valueCanBeParameter.write(writer, TimestampValue(param))
-      }
     }
   }
 
@@ -163,9 +161,8 @@ object CanBeParameter {
     new CanBeParameter[java.sql.Date] {
       def sizeOf(param: java.sql.Date) = 5
       def typeCode(param: java.sql.Date) = Type.Date
-      def write(writer: BufferWriter, param: java.sql.Date) = {
+      def write(writer: BufferWriter, param: java.sql.Date) =
         valueCanBeParameter.write(writer, DateValue(param))
-      }
     }
   }
 
@@ -173,11 +170,10 @@ object CanBeParameter {
     new CanBeParameter[java.util.Date] {
       def sizeOf(param: java.util.Date) = 12
       def typeCode(param: java.util.Date) = Type.DateTime
-      def write(writer: BufferWriter, param: java.util.Date) = {
+      def write(writer: BufferWriter, param: java.util.Date) =
         valueCanBeParameter.write(
           writer,
           TimestampValue(new java.sql.Timestamp(param.getTime)))
-      }
     }
   }
 

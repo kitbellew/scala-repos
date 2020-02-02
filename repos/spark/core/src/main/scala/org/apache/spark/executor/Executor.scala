@@ -176,11 +176,10 @@ private[spark] class Executor(
   }
 
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
-  private def computeTotalGcTime(): Long = {
+  private def computeTotalGcTime(): Long =
     ManagementFactory.getGarbageCollectorMXBeans.asScala
       .map(_.getCollectionTime)
       .sum
-  }
 
   class TaskRunner(
       execBackend: ExecutorBackend,

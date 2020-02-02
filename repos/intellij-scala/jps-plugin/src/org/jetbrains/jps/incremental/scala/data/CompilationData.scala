@@ -107,11 +107,10 @@ object CompilationData {
     }
   }
 
-  def outputsNotSpecified(chunk: ModuleChunk): Option[String] = {
+  def outputsNotSpecified(chunk: ModuleChunk): Option[String] =
     chunk.getTargets.asScala
       .find(_.getOutputDir == null)
       .map("Output directory not specified for module " + _.getModule.getName)
-  }
 
   private def javaOptionsFor(
       context: CompileContext,
@@ -176,7 +175,7 @@ object CompilationData {
     }
   }
 
-  private def createOutputGroups(chunk: ModuleChunk): Seq[(File, File)] = {
+  private def createOutputGroups(chunk: ModuleChunk): Seq[(File, File)] =
     for {
       target <- chunk.getTargets.asScala.toSeq
       module = target.getModule
@@ -184,7 +183,6 @@ object CompilationData {
       sourceRoot <- module.getSourceRoots.asScala.map(_.getFile)
       if sourceRoot.exists
     } yield (sourceRoot, output)
-  }
 
   private def targetsIn(context: CompileContext): Seq[ModuleBuildTarget] = {
     def isExcluded(target: ModuleBuildTarget): Boolean = {

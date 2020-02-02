@@ -96,12 +96,11 @@ object CompilerData {
       }
   }
 
-  def isDottyModule(module: JpsModule) = {
+  def isDottyModule(module: JpsModule) =
     compilerJarsIn(module) match {
       case Right(jars) => jars.dotty.isDefined
       case _           => false
     }
-  }
 
   def isDotty(chunk: ModuleChunk) =
     chunk.getModules.asScala.exists(isDottyModule)
@@ -155,7 +154,7 @@ object CompilerData {
   private def find(
       files: Seq[File],
       prefix: String,
-      suffix: String): Either[String, File] = {
+      suffix: String): Either[String, File] =
     files.filter(it =>
       it.getName.startsWith(prefix) && it.getName.endsWith(suffix)) match {
       case Seq() =>
@@ -167,5 +166,4 @@ object CompilerData {
           "Multiple '%s*%s' files (%s)"
             .format(prefix, suffix, duplicates.map(_.getName).mkString(", ")))
     }
-  }
 }

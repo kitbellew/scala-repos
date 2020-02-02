@@ -92,9 +92,8 @@ class GradientBoostedTrees @Since("1.2.0") (
     * Java-friendly API for [[org.apache.spark.mllib.tree.GradientBoostedTrees!#run]].
     */
   @Since("1.2.0")
-  def run(input: JavaRDD[LabeledPoint]): GradientBoostedTreesModel = {
+  def run(input: JavaRDD[LabeledPoint]): GradientBoostedTreesModel =
     run(input.rdd)
-  }
 
   /**
     * Method to validate a gradient boosting model
@@ -142,9 +141,8 @@ class GradientBoostedTrees @Since("1.2.0") (
   @Since("1.4.0")
   def runWithValidation(
       input: JavaRDD[LabeledPoint],
-      validationInput: JavaRDD[LabeledPoint]): GradientBoostedTreesModel = {
+      validationInput: JavaRDD[LabeledPoint]): GradientBoostedTreesModel =
     runWithValidation(input.rdd, validationInput.rdd)
-  }
 }
 
 @Since("1.2.0")
@@ -162,9 +160,8 @@ object GradientBoostedTrees extends Logging {
   @Since("1.2.0")
   def train(
       input: RDD[LabeledPoint],
-      boostingStrategy: BoostingStrategy): GradientBoostedTreesModel = {
+      boostingStrategy: BoostingStrategy): GradientBoostedTreesModel =
     new GradientBoostedTrees(boostingStrategy).run(input)
-  }
 
   /**
     * Java-friendly API for [[org.apache.spark.mllib.tree.GradientBoostedTrees$#train]]
@@ -172,9 +169,8 @@ object GradientBoostedTrees extends Logging {
   @Since("1.2.0")
   def train(
       input: JavaRDD[LabeledPoint],
-      boostingStrategy: BoostingStrategy): GradientBoostedTreesModel = {
+      boostingStrategy: BoostingStrategy): GradientBoostedTreesModel =
     train(input.rdd, boostingStrategy)
-  }
 
   /**
     * Internal method for performing regression using trees as base learners.

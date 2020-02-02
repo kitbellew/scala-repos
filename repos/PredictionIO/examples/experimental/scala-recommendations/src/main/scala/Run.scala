@@ -62,9 +62,9 @@ class PMatrixFactorizationModel(
     with IPersistentModel[AlgorithmParams] {
   def save(id: String, params: AlgorithmParams, sc: SparkContext): Boolean = {
     if (params.persistModel) {
-      sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
-      userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
-      productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
+      sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/$id/rank")
+      userFeatures.saveAsObjectFile(s"/tmp/$id/userFeatures")
+      productFeatures.saveAsObjectFile(s"/tmp/$id/productFeatures")
     }
     params.persistModel
   }
@@ -72,12 +72,11 @@ class PMatrixFactorizationModel(
 
 object PMatrixFactorizationModel
     extends IPersistentModelLoader[AlgorithmParams, PMatrixFactorizationModel] {
-  def apply(id: String, params: AlgorithmParams, sc: Option[SparkContext]) = {
+  def apply(id: String, params: AlgorithmParams, sc: Option[SparkContext]) =
     new PMatrixFactorizationModel(
-      rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
-      userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
-      productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"))
-  }
+      rank = sc.get.objectFile[Int](s"/tmp/$id/rank").first,
+      userFeatures = sc.get.objectFile(s"/tmp/$id/userFeatures"),
+      productFeatures = sc.get.objectFile(s"/tmp/$id/productFeatures"))
 }
 
 class ALSAlgorithm(val ap: AlgorithmParams)
@@ -113,9 +112,8 @@ class ALSAlgorithm(val ap: AlgorithmParams)
       .map { case (up, (fi, r)) => (fi, r) }
   }
 
-  def predict(model: PMatrixFactorizationModel, feature: (Int, Int)): Double = {
+  def predict(model: PMatrixFactorizationModel, feature: (Int, Int)): Double =
     model.predict(feature._1, feature._2)
-  }
 
   @transient override lazy val querySerializer =
     Utils.json4sDefaultFormats + new Tuple2IntSerializer
@@ -142,13 +140,12 @@ object Run {
 }
 
 object RecommendationEngine extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[DataSource],
       PIdentityPreparator(classOf[DataSource]),
       Map("" -> classOf[ALSAlgorithm]),
       LFirstServing(classOf[ALSAlgorithm]))
-  }
 }
 
 class Tuple2IntSerializer

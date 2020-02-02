@@ -151,9 +151,8 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
 
     override def toIRType: Types.ArrayType = toReferenceType
 
-    override def toReferenceType: Types.ArrayType = {
+    override def toReferenceType: Types.ArrayType =
       Types.ArrayType(elementKind.toReferenceType.className, dimensions)
-    }
 
     /** The ultimate element type of this array. */
     def elementKind: TypeKindButArray = elem match {

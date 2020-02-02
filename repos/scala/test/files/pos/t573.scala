@@ -34,9 +34,8 @@ abstract class Linked {
       node.set(dir.reverse, self);
     }
 
-    def end(dir: Dir): Node = {
+    def end(dir: Dir): Node =
       if (get(dir) == null) this;
       else get(dir).end(dir);
-    }
   }
 }

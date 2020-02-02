@@ -27,7 +27,6 @@ class ScLiteralPatternImpl(node: ASTNode)
 
   override def toString: String = "LiteralPattern"
 
-  override def getType(ctx: TypingContext) = {
+  override def getType(ctx: TypingContext) =
     getLiteral.getType(TypingContext.empty)
-  }
 }

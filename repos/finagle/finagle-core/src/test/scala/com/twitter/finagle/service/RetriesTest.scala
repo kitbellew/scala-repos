@@ -231,9 +231,8 @@ class RetriesTest extends FunSuite {
     Await.result(frontSvcFactory(), 5.seconds)
   }
 
-  private def nRetries(retriesStat: Seq[Float]): Int = {
+  private def nRetries(retriesStat: Seq[Float]): Int =
     retriesStat.foldLeft(0) { (sum, next) => sum + next.toInt }
-  }
 
   test("moduleWithRetryPolicy end to end to end with RetryBudget") {
     val stats = new InMemoryStatsReceiver()

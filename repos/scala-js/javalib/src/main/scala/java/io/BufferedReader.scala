@@ -16,9 +16,8 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
 
   private[this] var validMark = false
 
-  override def close(): Unit = {
+  override def close(): Unit =
     closed = true
-  }
 
   override def mark(readAheadLimit: Int): Unit = {
     ensureOpen()
@@ -104,7 +103,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
     pos = 0
   }
 
-  override def skip(n: Long): Long = {
+  override def skip(n: Long): Long =
     if (n < 0) throw new IllegalArgumentException("n negative")
     else if (pos < end) {
       val count = Math.min(n, end - pos).toInt
@@ -114,14 +113,13 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
       validMark = false
       in.skip(n)
     }
-  }
 
   /** Prepare the buffer for reading. Returns false if EOF */
   private def prepareRead(): Boolean =
     pos < end || fillBuffer()
 
   /** Tries to fill the buffer. Returns false if EOF */
-  private def fillBuffer(): Boolean = {
+  private def fillBuffer(): Boolean =
     if (validMark && end < buf.length) {
       // we may not do a full re-read, since we'll damage the mark.
       val read = in.read(buf, end, buf.length - end)
@@ -135,11 +133,9 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
       pos = 0
       end > 0
     }
-  }
 
-  private def ensureOpen(): Unit = {
+  private def ensureOpen(): Unit =
     if (closed)
       throw new IOException("Operation on closed stream")
-  }
 
 }

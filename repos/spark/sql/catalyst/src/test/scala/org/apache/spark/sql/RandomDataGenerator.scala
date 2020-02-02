@@ -78,12 +78,11 @@ object RandomDataGenerator {
   def randomSchema(
       rand: Random,
       numFields: Int,
-      acceptedTypes: Seq[DataType]): StructType = {
+      acceptedTypes: Seq[DataType]): StructType =
     StructType(Seq.tabulate(numFields) { i =>
       val dt = acceptedTypes(rand.nextInt(acceptedTypes.size))
       StructField("col_" + i, dt, nullable = rand.nextBoolean())
     })
-  }
 
   /**
     * Returns a random nested schema. This will randomly generate structs and arrays drawn from
@@ -140,11 +139,11 @@ object RandomDataGenerator {
     val valueGenerator: Option[() => Any] = dataType match {
       case StringType => Some(() => rand.nextString(rand.nextInt(MAX_STR_LEN)))
       case BinaryType =>
-        Some(() => {
+        Some { () =>
           val arr = new Array[Byte](rand.nextInt(MAX_STR_LEN))
           rand.nextBytes(arr)
           arr
-        })
+        }
       case BooleanType => Some(() => rand.nextBoolean())
       case DateType =>
         val generator =
@@ -179,11 +178,11 @@ object RandomDataGenerator {
           }
         Some(generator)
       case CalendarIntervalType =>
-        Some(() => {
+        Some { () =>
           val months = rand.nextInt(1000)
           val ns = rand.nextLong()
           new CalendarInterval(months, ns)
-        })
+        }
       case DecimalType.Fixed(precision, scale) =>
         Some(() =>
           BigDecimal
@@ -251,20 +250,18 @@ object RandomDataGenerator {
                valueType,
                nullable = valueContainsNull,
                rand)) yield { () =>
-          {
-            val length = rand.nextInt(MAX_MAP_SIZE)
-            val keys = scala.collection.mutable
-              .HashSet(Seq.fill(length)(keyGenerator()): _*)
-            // In case the number of different keys is not enough, set a max iteration to avoid
-            // infinite loop.
-            var count = 0
-            while (keys.size < length && count < MAX_MAP_SIZE) {
-              keys += keyGenerator()
-              count += 1
-            }
-            val values = Seq.fill(keys.size)(valueGenerator())
-            keys.zip(values).toMap
+          val length = rand.nextInt(MAX_MAP_SIZE)
+          val keys = scala.collection.mutable
+            .HashSet(Seq.fill(length)(keyGenerator()): _*)
+          // In case the number of different keys is not enough, set a max iteration to avoid
+          // infinite loop.
+          var count = 0
+          while (keys.size < length && count < MAX_MAP_SIZE) {
+            keys += keyGenerator()
+            count += 1
           }
+          val values = Seq.fill(keys.size)(valueGenerator())
+          keys.zip(values).toMap
         }
       }
       case StructType(fields) => {
@@ -305,12 +302,10 @@ object RandomDataGenerator {
     // Handle nullability by wrapping the non-null value generator:
     valueGenerator.map { valueGenerator =>
       if (nullable) { () =>
-        {
-          if (rand.nextFloat() <= PROBABILITY_OF_NULL) {
-            null
-          } else {
-            valueGenerator()
-          }
+        if (rand.nextFloat() <= PROBABILITY_OF_NULL) {
+          null
+        } else {
+          valueGenerator()
         }
       } else {
         valueGenerator

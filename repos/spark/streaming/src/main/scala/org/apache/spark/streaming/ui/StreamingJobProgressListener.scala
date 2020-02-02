@@ -48,7 +48,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     new LinkedHashMap[Time, ConcurrentLinkedQueue[OutputOpIdAndSparkJobId]] {
       override def removeEldestEntry(
           p1: JMap.Entry[Time, ConcurrentLinkedQueue[OutputOpIdAndSparkJobId]])
-          : Boolean = {
+          : Boolean =
         // If a lot of "onBatchCompleted"s happen before "onJobStart" (image if
         // SparkContext.listenerBus is very slow), "batchTimeToOutputOpIdToSparkJobIds"
         // may add some information for a removed batch when processing "onJobStart". It will be a
@@ -63,7 +63,6 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
         // solution, but at least it can handle most of cases.
         size() >
           waitingBatchUIData.size + runningBatchUIData.size + completedBatchUIData.size + 10
-      }
     }
 
   val batchDuration = ssc.graph.batchDuration.milliseconds
@@ -92,12 +91,11 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   }
 
   override def onBatchSubmitted(
-      batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
+      batchSubmitted: StreamingListenerBatchSubmitted): Unit =
     synchronized {
       waitingBatchUIData(batchSubmitted.batchInfo.batchTime) =
         BatchUIData(batchSubmitted.batchInfo)
     }
-  }
 
   override def onBatchStarted(
       batchStarted: StreamingListenerBatchStarted): Unit = synchronized {
@@ -109,7 +107,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   }
 
   override def onBatchCompleted(
-      batchCompleted: StreamingListenerBatchCompleted): Unit = {
+      batchCompleted: StreamingListenerBatchCompleted): Unit =
     synchronized {
       waitingBatchUIData.remove(batchCompleted.batchInfo.batchTime)
       runningBatchUIData.remove(batchCompleted.batchInfo.batchTime)
@@ -123,7 +121,6 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
 
       totalProcessedRecords += batchUIData.numRecords
     }
-  }
 
   override def onOutputOperationStarted(
       outputOperationStarted: StreamingListenerOutputOperationStarted): Unit =
@@ -181,9 +178,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     receiverInfos.count(_._2.active)
   }
 
-  def numInactiveReceivers: Int = {
+  def numInactiveReceivers: Int =
     ssc.graph.getReceiverInputStreams().length - numActiveReceivers
-  }
 
   def numTotalCompletedBatches: Long = synchronized {
     totalCompletedBatches
@@ -213,9 +209,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     completedBatchUIData.toSeq
   }
 
-  def streamName(streamId: Int): Option[String] = {
+  def streamName(streamId: Int): Option[String] =
     ssc.graph.getInputStreamName(streamId)
-  }
 
   /**
     * Return all InputDStream Ids

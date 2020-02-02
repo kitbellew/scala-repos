@@ -283,12 +283,11 @@ private[test] final class ListTests(
     log: Logger)
     extends NotNull {
   def filter = DirectoryFilter -- HiddenFileFilter
-  def listTests: Seq[ScriptedTest] = {
+  def listTests: Seq[ScriptedTest] =
     list(baseDirectory, filter) flatMap { group =>
       val groupName = group.getName
       listTests(group).map(ScriptedTest(groupName, _))
     }
-  }
   private[this] def listTests(group: File): Set[String] = {
     val groupName = group.getName
     val allTests = list(group, filter)

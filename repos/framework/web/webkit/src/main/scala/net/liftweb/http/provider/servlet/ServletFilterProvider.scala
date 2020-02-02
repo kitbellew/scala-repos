@@ -65,10 +65,7 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
   /**
     * Executes the Lift filter component.
     */
-  def doFilter(
-      req: ServletRequest,
-      res: ServletResponse,
-      chain: FilterChain) = {
+  def doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) =
     if (LiftRules.ending) chain.doFilter(req, res)
     else {
       LiftRules.reqCnt.incrementAndGet()
@@ -95,5 +92,4 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
         LiftRules.reqCnt.decrementAndGet()
       }
     }
-  }
 }

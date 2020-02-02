@@ -234,13 +234,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         .collectFirst { case x: ReusedCondTreeMaker => x }
         .head
 
-      def chainBefore(next: Tree)(casegen: Casegen): Tree = {
+      def chainBefore(next: Tree)(casegen: Casegen): Tree =
         // TODO: finer-grained duplication -- MUST duplicate though, or we'll get VerifyErrors since sharing trees confuses lambdalift,
         // and in its confusion it emits illegal casts (diagnosed by Grzegorz: checkcast T ; invokevirtual S.m, where T not a subtype of S)
         casegen.ifThenElseZero(
           REF(lastReusedTreeMaker.storedCond),
           substitution(next).duplicate)
-      }
       override def toString =
         "R" + ((lastReusedTreeMaker.storedCond.name, substitution))
     }
@@ -287,7 +286,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           body: Tree = defaultBody): CaseDef
 
       object GuardAndBodyTreeMakers {
-        def unapply(tms: List[TreeMaker]): Option[(Tree, Tree)] = {
+        def unapply(tms: List[TreeMaker]): Option[(Tree, Tree)] =
           tms match {
             case (btm @ BodyTreeMaker(body, _)) :: Nil =>
               Some((EmptyTree, btm.substitution(body)))
@@ -295,7 +294,6 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               Some((gtm.substitution(guard), btm.substitution(body)))
             case _ => None
           }
-        }
       }
 
       private val defaultLabel: Symbol = newSynthCaseLabel("default")

@@ -14,9 +14,9 @@ trait Validations {
         value: String,
         messages: Messages): Option[String] =
       if (!value.matches("[a-zA-Z0-9\\-_.]+")) {
-        Some(s"${name} contains invalid character.")
+        Some(s"$name contains invalid character.")
       } else if (value.startsWith("_") || value.startsWith("-")) {
-        Some(s"${name} starts with invalid character.")
+        Some(s"$name starts with invalid character.")
       } else {
         None
       }
@@ -31,9 +31,9 @@ trait Validations {
         value: String,
         messages: Messages): Option[String] =
       if (!value.matches("[a-zA-Z0-9\\-\\+_.]+")) {
-        Some(s"${name} contains invalid character.")
+        Some(s"$name contains invalid character.")
       } else if (value.startsWith("_") || value.startsWith("-")) {
-        Some(s"${name} starts with invalid character.")
+        Some(s"$name starts with invalid character.")
       } else {
         None
       }

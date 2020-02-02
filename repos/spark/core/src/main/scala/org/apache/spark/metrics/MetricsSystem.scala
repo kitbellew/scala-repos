@@ -245,7 +245,6 @@ private[spark] object MetricsSystem {
   def createMetricsSystem(
       instance: String,
       conf: SparkConf,
-      securityMgr: SecurityManager): MetricsSystem = {
+      securityMgr: SecurityManager): MetricsSystem =
     new MetricsSystem(instance, conf, securityMgr)
-  }
 }

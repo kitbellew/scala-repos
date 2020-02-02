@@ -347,7 +347,7 @@ object UnionLike {
 
     val compareFn = q"""
       def instanceToIdx($arg: $cmpType): Int = {
-        ${toIdOpt}: Int
+        $toIdOpt: Int
       }
 
       val $idxA: Int = instanceToIdx($elementA)

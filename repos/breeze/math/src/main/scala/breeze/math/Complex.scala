@@ -137,7 +137,7 @@ case class Complex(real: Double, imag: Double) {
 
   def pow(b: Double): Complex = pow(Complex(b, 0))
 
-  def pow(b: Complex): Complex = {
+  def pow(b: Complex): Complex =
     if (b == Complex.zero) Complex.one
     else if (this == Complex.zero) {
       if (b.imag != 0.0 || b.real < 0.0) Complex.nan
@@ -147,7 +147,6 @@ case class Complex(real: Double, imag: Double) {
       val expReal = math.exp(c.real)
       Complex(expReal * math.cos(c.imag), expReal * math.sin(c.imag))
     }
-  }
 
   override def equals(that: Any) = that match {
     case that: Complex => this.real == that.real && this.imag == that.imag
@@ -229,9 +228,8 @@ object Complex { outer =>
         def apply(v: Complex): Double = v.abs
       }
 
-    override def close(a: Complex, b: Complex, tolerance: Double): Boolean = {
+    override def close(a: Complex, b: Complex, tolerance: Double): Boolean =
       sNorm(a - b) <= tolerance * math.max(sNorm(a), sNorm(b))
-    }
 
     def pow(a: Complex, b: Complex): Complex = a.pow(b)
 
@@ -499,13 +497,12 @@ object Complex { outer =>
   /** Ordering for complex numbers: orders lexicographically first
     * on the real, then on the imaginary part of the number. */
   trait ComplexOrdering extends Ordering[Complex] {
-    override def compare(a: Complex, b: Complex) = {
+    override def compare(a: Complex, b: Complex) =
       if (a.real < b.real) -1
       else if (a.real > b.real) 1
       else if (a.imag < b.imag) -1
       else if (a.imag > b.imag) 1
       else 0
-    }
   }
 
   /** Implicit object providing `scala.math.Fractional` capabilities.

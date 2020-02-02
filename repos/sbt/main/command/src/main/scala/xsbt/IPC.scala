@@ -48,12 +48,11 @@ object IPC {
   def server[T](port: Int)(f: IPC => Option[T]): T =
     serverImpl(new ServerSocket(port, 1, loopback), f)
   private def serverImpl[T](server: ServerSocket, f: IPC => Option[T]): T = {
-    def listen(): T = {
+    def listen(): T =
       ipc(server.accept())(f) match {
         case Some(done) => done
         case None       => listen()
       }
-    }
 
     try {
       listen()

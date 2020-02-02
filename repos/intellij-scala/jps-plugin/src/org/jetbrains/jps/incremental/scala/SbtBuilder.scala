@@ -146,10 +146,9 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     }
   }
 
-  private def isDisabled(context: CompileContext): Boolean = {
+  private def isDisabled(context: CompileContext): Boolean =
     projectSettings(context).getIncrementalityType != IncrementalityType.SBT || !isScalaProject(
       context.getProjectDescriptor.getProject)
-  }
 
   private def hasDirtyFilesOrDependencies(
       context: CompileContext,

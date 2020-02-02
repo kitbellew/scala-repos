@@ -212,7 +212,7 @@ class ComparingUnrelatedTypesInspectionTest
 
   }
 
-  def testOverridenWithImplicitParam(): Unit = {
+  def testOverridenWithImplicitParam(): Unit =
     checkTextHasError(
       s"""
         |class Store(val foo: Int, val bar: String)
@@ -237,8 +237,6 @@ class ComparingUnrelatedTypesInspectionTest
         |}
       """.stripMargin
     )
-
-  }
 
   def testOverridenEquals(): Unit = {
     checkTextHasError(s"""

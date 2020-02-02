@@ -53,7 +53,7 @@ object JournalPerfSpec {
         counter += 1
         require(
           payload == counter,
-          s"Expected to receive [$counter] yet got: [${payload}]")
+          s"Expected to receive [$counter] yet got: [$payload]")
         if (counter == replyAfter) replyTo ! payload
 
       case ResetCounter ⇒
@@ -65,7 +65,7 @@ object JournalPerfSpec {
         counter += 1
         require(
           payload == counter,
-          s"Expected to receive [$counter] yet got: [${payload}]")
+          s"Expected to receive [$counter] yet got: [$payload]")
         if (counter == replyAfter) replyTo ! payload
     }
 

@@ -46,9 +46,8 @@ private[play] final class NonBlockingMutex {
     *
     * @param body The body of the operation to run.
     */
-  def exclusive(body: => Unit): Unit = {
+  def exclusive(body: => Unit): Unit =
     schedule(() => body)
-  }
 
   private type Op = () => Unit
 

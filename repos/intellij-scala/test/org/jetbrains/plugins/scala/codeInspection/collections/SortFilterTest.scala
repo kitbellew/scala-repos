@@ -49,7 +49,7 @@ class SortFilterTest extends OperationsOnCollectionInspectionTest {
     testFix(text, result, hint)
   }
 
-  def testWithSideEffect(): Unit = {
+  def testWithSideEffect(): Unit =
     checkTextHasNoErrors("""
         |var q = 1
         |Seq(3, 1, 2).sorted.filter {
@@ -58,7 +58,6 @@ class SortFilterTest extends OperationsOnCollectionInspectionTest {
         |    i % 2 == 0
         |}
       """.stripMargin)
-  }
 
   override val inspectionClass = classOf[SortFilterInspection]
 }

@@ -16,7 +16,7 @@ import scala.util.Random
 
 trait ServiceSpecBase {
 
-  def withTestDB[A](action: (Session) => A): A = {
+  def withTestDB[A](action: (Session) => A): A =
     FileUtil.withTmpDir(
       new File(
         FileUtils.getTempDirectory(),
@@ -34,14 +34,13 @@ trait ServiceSpecBase {
         action(session)
       }
     }
-  }
 
   def generateNewAccount(name: String)(implicit s: Session): Account = {
     AccountService.createAccount(
       name,
       name,
       name,
-      s"${name}@example.com",
+      s"$name@example.com",
       false,
       None)
     user(name)
@@ -69,7 +68,7 @@ trait ServiceSpecBase {
   def generateNewIssue(
       userName: String,
       repositoryName: String,
-      loginUser: String = "root")(implicit s: Session): Int = {
+      loginUser: String = "root")(implicit s: Session): Int =
     dummyService.createIssue(
       owner = userName,
       repository = repositoryName,
@@ -80,7 +79,6 @@ trait ServiceSpecBase {
       milestoneId = None,
       isPullRequest = true
     )
-  }
 
   def generateNewPullRequest(
       base: String,

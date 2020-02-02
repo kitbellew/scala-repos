@@ -10,7 +10,7 @@ trait MethodsStaticStringTest extends ScalaTestTestCase {
   val methodsClassName = "ScalaTestMethodsTest"
   val methodsFileName = methodsClassName + ".scala"
 
-  def addMethodsTest() = {
+  def addMethodsTest() =
     addFileToProject(
       methodsFileName,
       """
@@ -41,7 +41,6 @@ trait MethodsStaticStringTest extends ScalaTestTestCase {
         |
       """.stripMargin.trim
     )
-  }
 
   def testTrim() = {
     addMethodsTest()

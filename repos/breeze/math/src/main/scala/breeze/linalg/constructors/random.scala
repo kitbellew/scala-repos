@@ -99,28 +99,25 @@ trait RandomGeneratorUFunc[T] extends UFunc {
   implicit def implRandomT_1DRange(
       implicit basis: RandBasis = Rand): Impl2[Int, (T, T), DenseVector[T]] =
     new Impl2[Int, (T, T), DenseVector[T]] {
-      def apply(dimensions1: Int, range: (T, T)): DenseVector[T] = {
+      def apply(dimensions1: Int, range: (T, T)): DenseVector[T] =
         DenseVector.rand(dimensions1, genRange(range._1, range._2))
-      }
     }
 
   implicit def implRandomT_2D(
       implicit basis: RandBasis = Rand): Impl[(Int, Int), DenseMatrix[T]] =
     new Impl[(Int, Int), DenseMatrix[T]] {
-      def apply(dimensions2: (Int, Int)): DenseMatrix[T] = {
+      def apply(dimensions2: (Int, Int)): DenseMatrix[T] =
         DenseMatrix.rand(dimensions2._1, dimensions2._2, gen)
-      }
     }
 
   implicit def implRandomT_2DRange(implicit basis: RandBasis = Rand)
       : Impl2[(Int, Int), (T, T), DenseMatrix[T]] =
     new Impl2[(Int, Int), (T, T), DenseMatrix[T]] {
-      def apply(dimensions2: (Int, Int), range: (T, T)): DenseMatrix[T] = {
+      def apply(dimensions2: (Int, Int), range: (T, T)): DenseMatrix[T] =
         DenseMatrix.rand(
           dimensions2._1,
           dimensions2._2,
           genRange(range._1, range._2))
-      }
     }
 
 }

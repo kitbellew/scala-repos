@@ -46,9 +46,8 @@ private[spark] object ClosureCleaner extends Logging {
   }
 
   // Check whether a class represents a Scala closure
-  private def isClosure(cls: Class[_]): Boolean = {
+  private def isClosure(cls: Class[_]): Boolean =
     cls.getName.contains("$anonfun$")
-  }
 
   // Get a list of the outer objects and their classes of a given closure object, obj;
   // the outer objects are defined as any closures that obj is nested within, plus
@@ -96,7 +95,7 @@ private[spark] object ClosureCleaner extends Logging {
     (seen - obj.getClass).toList
   }
 
-  private def createNullValue(cls: Class[_]): AnyRef = {
+  private def createNullValue(cls: Class[_]): AnyRef =
     if (cls.isPrimitive) {
       cls match {
         case java.lang.Boolean.TYPE   => new java.lang.Boolean(false)
@@ -110,7 +109,6 @@ private[spark] object ClosureCleaner extends Logging {
     } else {
       null
     }
-  }
 
   /**
     * Clean the given closure in place.
@@ -125,9 +123,8 @@ private[spark] object ClosureCleaner extends Logging {
   def clean(
       closure: AnyRef,
       checkSerializable: Boolean = true,
-      cleanTransitively: Boolean = true): Unit = {
+      cleanTransitively: Boolean = true): Unit =
     clean(closure, checkSerializable, cleanTransitively, Map.empty)
-  }
 
   /**
     * Helper method to clean the given closure in place.
@@ -351,7 +348,7 @@ private class ReturnStatementFinder extends ClassVisitor(ASM5) {
       name: String,
       desc: String,
       sig: String,
-      exceptions: Array[String]): MethodVisitor = {
+      exceptions: Array[String]): MethodVisitor =
     if (name.contains("apply")) {
       new MethodVisitor(ASM5) {
         override def visitTypeInsn(op: Int, tp: String) {
@@ -363,7 +360,6 @@ private class ReturnStatementFinder extends ClassVisitor(ASM5) {
     } else {
       new MethodVisitor(ASM5) {}
     }
-  }
 }
 
 /** Helper class to identify a method. */
@@ -476,7 +472,7 @@ private class InnerClosureFinder(output: Set[Class[_]])
       name: String,
       desc: String,
       sig: String,
-      exceptions: Array[String]): MethodVisitor = {
+      exceptions: Array[String]): MethodVisitor =
     new MethodVisitor(ASM5) {
       override def visitMethodInsn(
           op: Int,
@@ -497,5 +493,4 @@ private class InnerClosureFinder(output: Set[Class[_]])
         }
       }
     }
-  }
 }

@@ -180,18 +180,16 @@ abstract class Buffer private[nio] (val _capacity: Int) {
 
   // Helpers
 
-  @inline private[nio] def ensureNotReadOnly(): Unit = {
+  @inline private[nio] def ensureNotReadOnly(): Unit =
     if (isReadOnly)
       throw new ReadOnlyBufferException
-  }
 
   @inline private[nio] def validateArrayIndexRange(
       array: Array[_],
       offset: Int,
-      length: Int): Unit = {
+      length: Int): Unit =
     if (offset < 0 || length < 0 || offset > array.length - length)
       throw new IndexOutOfBoundsException
-  }
 
   @inline private[nio] def getPosAndAdvanceRead(): Int = {
     val p = _position

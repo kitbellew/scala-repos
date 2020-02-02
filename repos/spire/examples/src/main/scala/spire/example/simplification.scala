@@ -20,7 +20,7 @@ import scala.collection.generic.CanBuildFrom
   */
 object Simplification {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     if (args.isEmpty) {
       println("usage: %s [nrat | rats | nprime | primes | snap] [number]")
     } else {
@@ -47,7 +47,6 @@ object Simplification {
           println("%s =~ nroot(%s, %s) / %s" format (n, base, k, div))
       }
     }
-  }
 
   /**
     * Using Cantor's diagonalization method, create an infinite stream
@@ -60,7 +59,7 @@ object Simplification {
     */
   val rationals: BigStream[Rational] = {
     @tailrec
-    def next(i: Long, n: Long, d: Long): BigStream[Rational] = {
+    def next(i: Long, n: Long, d: Long): BigStream[Rational] =
       if (n == 0L) {
         next(i + 1L, i, 1L)
       } else {
@@ -71,7 +70,6 @@ object Simplification {
           next(i, n - 1L, d + 1L)
         }
       }
-    }
 
     def loop(i: Long, n: Long, d: Long): BigStream[Rational] = next(i, n, d)
 
@@ -115,7 +113,7 @@ object Simplification {
       limit: Int = 10,
       epsilon: Double = 0.00000000001): (Double, Int, Int) = {
     @tailrec
-    def loop(i: Int, ex: Int, div: Int): (Double, Int, Int) = {
+    def loop(i: Int, ex: Int, div: Int): (Double, Int, Int) =
       if (i >= limit) {
         (n, 1, 1)
       } else if (div < 1) {
@@ -130,7 +128,6 @@ object Simplification {
           loop(i, ex + 1, div - 1)
         }
       }
-    }
     if (n < 0.0) {
       val (x, k, div) = snap(-n, limit, epsilon)
       (x, k, -div)

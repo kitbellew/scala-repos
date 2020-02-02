@@ -156,7 +156,7 @@ object Main extends Main {
   }
 
   /** Prints usage information for scalap. */
-  def usage(): Unit = {
+  def usage(): Unit =
     Console println s"""
       |Usage: scalap {<option>} <name>
       |where <name> is fully-qualified class name or <package_name>.package for package objects
@@ -168,7 +168,6 @@ object Main extends Main {
       |  ${opts.classpath} <path>  specify where to find user class files
       |  ${opts.cp} <path>         specify where to find user class files
     """.stripMargin.trim
-  }
 
   def main(args: Array[String]): Unit =
     // print usage information if there is no command-line argument

@@ -137,7 +137,7 @@ object ConfigCommand {
   }
 
   private[admin] def parseConfigsToBeDeleted(
-      opts: ConfigCommandOptions): Seq[String] = {
+      opts: ConfigCommandOptions): Seq[String] =
     if (opts.options.has(opts.deleteConfig)) {
       val configsToBeDeleted =
         opts.options.valuesOf(opts.deleteConfig).map(_.trim())
@@ -146,7 +146,6 @@ object ConfigCommand {
       configsToBeDeleted
     } else
       Seq.empty
-  }
 
   class ConfigCommandOptions(args: Array[String]) {
     val parser = new OptionParser

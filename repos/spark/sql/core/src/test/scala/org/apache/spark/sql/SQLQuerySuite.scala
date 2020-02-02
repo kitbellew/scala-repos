@@ -1143,9 +1143,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         schema("name").copy(metadata = metadata),
         schema("age")))
     val personWithMeta = sqlContext.createDataFrame(person.rdd, schemaWithMeta)
-    def validateMetadata(rdd: DataFrame): Unit = {
+    def validateMetadata(rdd: DataFrame): Unit =
       assert(rdd.schema("name").metadata.getString(docKey) == docValue)
-    }
     personWithMeta.registerTempTable("personWithMeta")
     validateMetadata(personWithMeta.select($"name"))
     validateMetadata(personWithMeta.select($"name"))
@@ -1663,13 +1662,13 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         new CalendarInterval(
           12 * 3 - 3,
           7L * 1000 * 1000 * 3600 * 24 * 7 + 123)))
-    withTempPath(f => {
+    withTempPath { f =>
       // Currently we don't yet support saving out values of interval data type.
       val e = intercept[AnalysisException] {
         df.write.json(f.getCanonicalPath)
       }
       e.message.contains("Cannot save interval data type into external storage")
-    })
+    }
 
     val e1 = intercept[AnalysisException] {
       sql("select interval")
@@ -1844,7 +1843,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("run sql directly on files") {
     val df = sqlContext.range(100).toDF()
-    withTempPath(f => {
+    withTempPath { f =>
       df.write.json(f.getCanonicalPath)
       checkAnswer(sql(s"select id from json.`${f.getCanonicalPath}`"), df)
       checkAnswer(
@@ -1854,7 +1853,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       checkAnswer(
         sql(s"select a.id from json.`${f.getCanonicalPath}` as a"),
         df)
-    })
+    }
 
     val e1 = intercept[AnalysisException] {
       sql("select * from in_valid_table")
@@ -2138,10 +2137,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         Row(4, 2),
         2)
 
-      val testUdf = functions.udf((x: Int) => {
+      val testUdf = functions.udf { (x: Int) =>
         countAcc.++=(1)
         x
-      })
+      }
       verifyCallCount(
         df.groupBy().agg(sum(testUdf($"b") + testUdf($"b") + testUdf($"b"))),
         Row(3.0),

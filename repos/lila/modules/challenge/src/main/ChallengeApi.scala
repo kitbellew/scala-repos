@@ -101,12 +101,11 @@ final class ChallengeApi(
   private def remove(id: Challenge.ID) =
     repo.remove(id) >> countInFor.remove(id)
 
-  private def uncacheAndNotify(c: Challenge) = {
+  private def uncacheAndNotify(c: Challenge) =
     (c.destUserId ?? countInFor.remove) >>-
       (c.destUserId ?? notify) >>-
       (c.challengerUserId ?? notify) >>-
       socketReload(c.id)
-  }
 
   private def socketReload(id: Challenge.ID) {
     socketHub ! Tell(id, Socket.Reload)

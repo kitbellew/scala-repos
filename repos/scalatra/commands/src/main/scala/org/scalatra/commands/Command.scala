@@ -74,9 +74,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
   }
 
   implicit def binding2field[T: Manifest: TypeConverterFactory](
-      field: FieldDescriptor[T]): Field[T] = {
+      field: FieldDescriptor[T]): Field[T] =
     new Field(bind(field), this)
-  }
 
   implicit def autoBind[T: Manifest: TypeConverterFactory](
       fieldName: String): Field[T] =

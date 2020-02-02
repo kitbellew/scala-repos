@@ -62,7 +62,7 @@ object EventJson4sSupport {
               DataUtils.stringToDateTime(s)
             } catch {
               case _: Exception =>
-                throw new MappingException(s"Fail to extract eventTime ${s}")
+                throw new MappingException(s"Fail to extract eventTime $s")
             }
           }
           .getOrElse(currentTime)

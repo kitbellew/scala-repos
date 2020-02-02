@@ -90,12 +90,11 @@ more text
   }
 
   it should "parse different line types" in {
-    def p(line: String) = {
+    def p(line: String) =
       tokenizer.lineToken(new LineReader(Seq(line))) match {
         case tokenizer.Success(result, _) => result
         case _                            => fail("Line tokenization failed.")
       }
-    }
     p("a line") should equal(new OtherLine("a line"))
     p("    a code line") should equal(new CodeLine("    ", "a code line"))
     p("#a header#") should equal(new AtxHeaderLine("#", "a header#"))

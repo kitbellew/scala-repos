@@ -53,7 +53,7 @@ object randomclient {
 
 object randomserver {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       val listener = new ServerSocket(9999);
       while (true) new ServerThread(listener.accept()).start();
@@ -63,7 +63,6 @@ object randomserver {
         System.err.println("Could not listen on port: 9999.");
         System.exit(-1)
     }
-  }
 
 }
 

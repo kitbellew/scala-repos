@@ -133,9 +133,8 @@ private[spark] class ApplicationMaster(
   private var delegationTokenRenewerOption: Option[AMDelegationTokenRenewer] =
     None
 
-  def getAttemptId(): ApplicationAttemptId = {
+  def getAttemptId(): ApplicationAttemptId =
     client.getAttemptId()
-  }
 
   final def run(): Int = {
     try {
@@ -228,13 +227,12 @@ private[spark] class ApplicationMaster(
     * status to SUCCEEDED in cluster mode to handle if the user calls System.exit
     * from the application code.
     */
-  final def getDefaultFinalStatus(): FinalApplicationStatus = {
+  final def getDefaultFinalStatus(): FinalApplicationStatus =
     if (isClusterMode) {
       FinalApplicationStatus.FAILED
     } else {
       FinalApplicationStatus.UNDEFINED
     }
-  }
 
   /**
     * unregister is used to completely unregister the application from the ResourceManager.
@@ -243,7 +241,7 @@ private[spark] class ApplicationMaster(
     */
   final def unregister(
       status: FinalApplicationStatus,
-      diagnostics: String = null): Unit = {
+      diagnostics: String = null): Unit =
     synchronized {
       if (!unregistered) {
         logInfo(
@@ -255,12 +253,11 @@ private[spark] class ApplicationMaster(
         client.unregister(status, Option(diagnostics).getOrElse(""))
       }
     }
-  }
 
   final def finish(
       status: FinalApplicationStatus,
       code: Int,
-      msg: String = null): Unit = {
+      msg: String = null): Unit =
     synchronized {
       if (!finished) {
         val inShutdown = ShutdownHookManager.inShutdown()
@@ -284,18 +281,15 @@ private[spark] class ApplicationMaster(
         if (!inShutdown) delegationTokenRenewerOption.foreach(_.stop())
       }
     }
-  }
 
-  private def sparkContextInitialized(sc: SparkContext) = {
+  private def sparkContextInitialized(sc: SparkContext) =
     sparkContextRef.synchronized {
       sparkContextRef.compareAndSet(null, sc)
       sparkContextRef.notifyAll()
     }
-  }
 
-  private def sparkContextStopped(sc: SparkContext) = {
+  private def sparkContextStopped(sc: SparkContext) =
     sparkContextRef.compareAndSet(sc, null)
-  }
 
   private def registerAM(
       _rpcEnv: RpcEnv,
@@ -313,7 +307,7 @@ private[spark] class ApplicationMaster(
           SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
         }
         .map { address =>
-          s"${address}${HistoryServer.UI_PATH_PREFIX}/${appId}/${attemptId}"
+          s"$address${HistoryServer.UI_PATH_PREFIX}/$appId/$attemptId"
         }
         .getOrElse("")
 
@@ -665,9 +659,8 @@ private[spark] class ApplicationMaster(
       extends RpcEndpoint
       with Logging {
 
-    override def onStart(): Unit = {
+    override def onStart(): Unit =
       driver.send(RegisterClusterManager(self))
-    }
 
     override def receive: PartialFunction[Any, Unit] = {
       case x: AddWebUIFilter =>
@@ -719,7 +712,7 @@ private[spark] class ApplicationMaster(
         }
     }
 
-    override def onDisconnected(remoteAddress: RpcAddress): Unit = {
+    override def onDisconnected(remoteAddress: RpcAddress): Unit =
       // In cluster mode, do not rely on the disassociated event to exit
       // This avoids potentially reporting incorrect exit codes if the driver fails
       if (!isClusterMode) {
@@ -727,7 +720,6 @@ private[spark] class ApplicationMaster(
           s"Driver terminated or disconnected! Shutting down. $remoteAddress")
         finish(FinalApplicationStatus.SUCCEEDED, ApplicationMaster.EXIT_SUCCESS)
       }
-    }
   }
 
 }
@@ -755,17 +747,14 @@ object ApplicationMaster extends Logging {
     }
   }
 
-  private[spark] def sparkContextInitialized(sc: SparkContext): Unit = {
+  private[spark] def sparkContextInitialized(sc: SparkContext): Unit =
     master.sparkContextInitialized(sc)
-  }
 
-  private[spark] def sparkContextStopped(sc: SparkContext): Boolean = {
+  private[spark] def sparkContextStopped(sc: SparkContext): Boolean =
     master.sparkContextStopped(sc)
-  }
 
-  private[spark] def getAttemptId(): ApplicationAttemptId = {
+  private[spark] def getAttemptId(): ApplicationAttemptId =
     master.getAttemptId
-  }
 
 }
 
@@ -775,8 +764,7 @@ object ApplicationMaster extends Logging {
   */
 object ExecutorLauncher {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     ApplicationMaster.main(args)
-  }
 
 }

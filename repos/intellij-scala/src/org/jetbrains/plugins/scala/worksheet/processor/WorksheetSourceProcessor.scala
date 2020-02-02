@@ -52,7 +52,7 @@ object WorksheetSourceProcessor {
       |  }}
     """.stripMargin
 
-  def extractLineInfoFrom(encoded: String): Option[(Int, Int)] = {
+  def extractLineInfoFrom(encoded: String): Option[(Int, Int)] =
     if (encoded startsWith END_TOKEN_MARKER) {
       val nums = encoded stripPrefix END_TOKEN_MARKER stripSuffix "\n" split '|'
       if (nums.length == 2) {
@@ -64,7 +64,6 @@ object WorksheetSourceProcessor {
         }
       } else None
     } else None
-  }
 
   /**
     * @return (Code, Main class name)
@@ -140,7 +139,7 @@ object WorksheetSourceProcessor {
           actualPsi.getFirstChild match {
             case _: PsiComment =>
               @tailrec
-              def iter(wsOrComment: PsiElement): PsiElement = {
+              def iter(wsOrComment: PsiElement): PsiElement =
                 wsOrComment match {
                   case comment: PsiComment =>
                     appendPsiComment(comment)
@@ -153,7 +152,6 @@ object WorksheetSourceProcessor {
                   case a: PsiElement => a
                   case _             => psi
                 }
-              }
 
               actualPsi = iter(actualPsi.getFirstChild)
             case _ =>
@@ -378,11 +376,10 @@ object WorksheetSourceProcessor {
           }
         )
       case varDef: ScVariableDefinition =>
-        def writeTypedPatter(p: ScTypedPattern) = {
+        def writeTypedPatter(p: ScTypedPattern) =
           p.typePattern map {
             case typed => p.name + ":" + typed.typeElement.getText
           } getOrElse p.name
-        }
 
         def typeElement2Types(te: ScTypeElement) = te match {
           case tpl: ScTupleTypeElement => tpl.components

@@ -37,14 +37,13 @@ trait HostDirectives {
     * If the regex contains more than one capturing group an IllegalArgumentException is thrown.
     */
   def host(regex: Regex): Directive1[String] = {
-    def forFunc(regexMatch: String ⇒ Option[String]): Directive1[String] = {
+    def forFunc(regexMatch: String ⇒ Option[String]): Directive1[String] =
       extractHost.flatMap { name ⇒
         regexMatch(name) match {
           case Some(matched) ⇒ provide(matched)
           case None ⇒ reject
         }
       }
-    }
 
     regex.groupCount match {
       case 0 ⇒ forFunc(regex.findPrefixOf(_))

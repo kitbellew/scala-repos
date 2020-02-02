@@ -19,12 +19,11 @@ class HttpNackFilterTest extends FunSuite {
   class ClientCtx {
     val n = new AtomicInteger()
     val flakyService = new Service[Request, Response] {
-      def apply(req: Request): Future[Response] = {
+      def apply(req: Request): Future[Response] =
         if (n.get < 0) Future.exception(new Exception)
         else if (n.getAndIncrement == 0)
           Future.exception(Failure.rejected("unhappy"))
         else Future.value(Response(Status.Ok))
-      }
     }
     val request = Request("/")
     val serverSr = new InMemoryStatsReceiver

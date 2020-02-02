@@ -20,8 +20,8 @@ class TypedStaticQueryTest {
     try {
       val id1 = 150
       val id2 = 1
-      val s1 = tsql"select * from SUPPLIERS where SUP_ID = ${id1}"
-      val s2 = tsql"select * from COFFEES where SUP_ID = ${id2}"
+      val s1 = tsql"select * from SUPPLIERS where SUP_ID = $id1"
+      val s2 = tsql"select * from COFFEES where SUP_ID = $id2"
       assertEquals(
         "select * from SUPPLIERS where SUP_ID = ?",
         s1.statements.head)
@@ -29,7 +29,7 @@ class TypedStaticQueryTest {
 
       val (total1, sales1) = (5, 4)
       val s3 =
-        tsql"select COF_NAME from COFFEES where SALES = ${sales1} and TOTAL = ${total1}"
+        tsql"select COF_NAME from COFFEES where SALES = $sales1 and TOTAL = $total1"
 
       val s4 =
         tsql"select 1, '2', 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23"
@@ -95,7 +95,7 @@ class TypedStaticQueryTest {
       val bar = new Bar("Something")
       val num = 15
 
-      val s1 = tsql"select * from SUPPLIERS where SUP_ID = ${foo}"
+      val s1 = tsql"select * from SUPPLIERS where SUP_ID = $foo"
       val s2 = tsql"select * from SUPPLIERS where SUP_ID = ${num * 10}"
       val s3 = tsql"select SUP_ID from SUPPLIERS"
       val s4 = tsql"select CITY from SUPPLIERS"

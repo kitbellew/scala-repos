@@ -20,16 +20,12 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
 
   def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(
       implicit W: Cobind[W]): IndexedContsT[W, M, R, E, B] =
-    IndexedContsT { wbme =>
-      run(W.cobind(wbme) { wk => { a => f(a).run(wk) } })
-    }
+    IndexedContsT { wbme => run(W.cobind(wbme) { wk => a => f(a).run(wk) }) }
 
   def contramap[I](f: I => O)(
       implicit M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, R, I, A] =
-    IndexedContsT { wami =>
-      run(W.map(wami) { ami => { a => M.map(ami(a))(f) } })
-    }
+    IndexedContsT { wami => run(W.map(wami) { ami => a => M.map(ami(a))(f) }) }
 
   def imap[E](f: R => E)(implicit M: Functor[M]): IndexedContsT[W, M, E, O, A] =
     IndexedContsT { wamo => M.map(run(wamo))(f) }
@@ -43,7 +39,7 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       implicit M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, E, I, A] =
     IndexedContsT { wami =>
-      M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(g) } }))(f)
+      M.map(run(W.map(wami) { ami => a => M.map(ami(a))(g) }))(f)
     }
 
   import BijectionT._
@@ -52,8 +48,7 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       implicit M: Functor[M],
       W: Functor[W]): ContsT[W, M, Z, A] =
     IndexedContsT { wami =>
-      M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(f from _) } }))(
-        f to _)
+      M.map(run(W.map(wami) { ami => a => M.map(ami(a))(f from _) }))(f to _)
     }
 }
 
@@ -80,7 +75,7 @@ trait IndexedContsTFunctions {
     new (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[W, N, R, O, ?]) {
       def apply[A](
           fa: IndexedContsT[W, M, R, O, A]): IndexedContsT[W, N, R, O, A] =
-        IndexedContsT { wk => f(fa.run(W.map(wk) { k => { x => g(k(x)) } })) }
+        IndexedContsT { wk => f(fa.run(W.map(wk) { k => x => g(k(x)) })) }
     }
 
   def contracohoist[W[_], V[_], M[_], R, O](f: V ~> W)

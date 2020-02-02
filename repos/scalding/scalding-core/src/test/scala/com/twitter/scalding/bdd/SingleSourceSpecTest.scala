@@ -16,15 +16,11 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
       } Then { buffer: Buffer[(String, String, String)] =>
-        {
-          buffer.forall({
-            case (_, _, transformed) => transformed.endsWith("_transf")
-          }) shouldBe true
-        }
+        buffer.forall({
+          case (_, _, transformed) => transformed.endsWith("_transf")
+        }) shouldBe true
       }
     }
 
@@ -35,15 +31,11 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: Pipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
       } Then { buffer: Buffer[(String, String, String)] =>
-        {
-          buffer.forall({
-            case (_, _, transformed) => transformed.endsWith("_transf")
-          }) shouldBe true
-        }
+        buffer.forall({
+          case (_, _, transformed) => transformed.endsWith("_transf")
+        }) shouldBe true
       }
     }
 
@@ -54,13 +46,9 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
       } Then { buffer: Buffer[Tuple] =>
-        {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
-        }
+        buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
       }
     }
 
@@ -68,13 +56,9 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
       Given {
         List("col1_1", "col1_2") withSchema ('col1)
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
       } Then { buffer: Buffer[Tuple] =>
-        {
-          buffer.forall(tuple => tuple.getString(1).endsWith("_transf")) shouldBe true
-        }
+        buffer.forall(tuple => tuple.getString(1).endsWith("_transf")) shouldBe true
       }
     }
 
@@ -85,13 +69,9 @@ class SingleSourceSpecTest extends WordSpec with Matchers with BddDsl {
             'col1,
             'col2))
       } When { pipe: RichPipe =>
-        {
-          pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
-        }
+        pipe.map('col1 -> 'col1_transf) { col1: String => col1 + "_transf" }
       } Then { buffer: Buffer[Tuple] =>
-        {
-          buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
-        }
+        buffer.forall(tuple => tuple.getString(2).endsWith("_transf")) shouldBe true
       }
     }
   }

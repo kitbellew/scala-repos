@@ -16,11 +16,10 @@ import java.util.Date
   */
 class ExtractionsTest {
 
-  def getHtml(filename: String): String = {
+  def getHtml(filename: String): String =
     FileHelper.loadResourceFile(
       TestUtils.staticHtmlDir + filename,
       Goose.getClass)
-  }
 
   @Test
   def cnn1() {

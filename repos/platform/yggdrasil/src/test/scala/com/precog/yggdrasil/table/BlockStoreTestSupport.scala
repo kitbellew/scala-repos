@@ -105,7 +105,7 @@ trait BaseBlockStoreTestModule[M[+_]]
         implicit M: Monad[M]) = M.point {
       @tailrec def findBlockAfter(
           id: JArray,
-          blocks: Stream[Slice]): Option[Slice] = {
+          blocks: Stream[Slice]): Option[Slice] =
         blocks.filterNot(_.isEmpty) match {
           case x #:: xs =>
             if ((x.toJson(x.size - 1).getOrElse(JUndefined) \ "key") > id)
@@ -114,7 +114,6 @@ trait BaseBlockStoreTestModule[M[+_]]
 
           case _ => None
         }
-      }
 
       val slice = id map { key =>
         findBlockAfter(key, slices)

@@ -251,8 +251,7 @@ private[hive] case class InsertIntoHiveTable(
 
   override def executeCollect(): Array[InternalRow] = sideEffectResult.toArray
 
-  protected override def doExecute(): RDD[InternalRow] = {
+  protected override def doExecute(): RDD[InternalRow] =
     sqlContext.sparkContext
       .parallelize(sideEffectResult.asInstanceOf[Seq[InternalRow]], 1)
-  }
 }

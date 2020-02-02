@@ -122,9 +122,8 @@ abstract class HttpFlatSpec
     timeout.duration.dilated)
   implicit val mat = ActorMaterializer()
 
-  override protected def beforeAll(): Unit = {
+  override protected def beforeAll(): Unit =
     super.beforeAll()
-  }
   override protected def afterAll(): Unit = {
     super.afterAll()
     TestKit.shutdownActorSystem(system)

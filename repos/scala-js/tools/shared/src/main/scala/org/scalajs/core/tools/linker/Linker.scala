@@ -49,12 +49,11 @@ final class Linker(frontend: LinkerFrontend, backend: LinkerBackend)
   def link(
       irFiles: Seq[VirtualScalaJSIRFile],
       output: WritableVirtualJSFile,
-      logger: Logger): Unit = {
+      logger: Logger): Unit =
     guard {
       val unit = frontend.link(irFiles, backend.symbolRequirements, logger)
       backend.emit(unit, output, logger)
     }
-  }
 
   @inline
   private[this] def guard[T](body: => T): T = {

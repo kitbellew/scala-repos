@@ -43,7 +43,7 @@ class MacroExpansionProvider extends LineMarkerProvider {
             def fun(param: PsiElement): String = "Undo Macro Expansion"
           },
           new GutterIconNavigationHandler[PsiElement] {
-            def navigate(mouseEvent: MouseEvent, elt: PsiElement) = {
+            def navigate(mouseEvent: MouseEvent, elt: PsiElement) =
               inWriteAction {
                 val newPsi = ScalaPsiElementFactory
                   .createBlockExpressionWithoutBracesFromText(
@@ -52,7 +52,6 @@ class MacroExpansionProvider extends LineMarkerProvider {
                 current.replace(newPsi)
                 saved
               }
-            }
           },
           GutterIconRenderer.Alignment.RIGHT,
           util.Arrays.asList[GotoRelatedItem]())

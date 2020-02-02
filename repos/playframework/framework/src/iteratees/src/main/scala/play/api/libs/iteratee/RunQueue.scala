@@ -62,9 +62,8 @@ private[play] final class RunQueue {
     *
     * The operation will execute in the given ExecutionContext.
     */
-  def schedule[A](body: => Future[A])(implicit ec: ExecutionContext): Unit = {
+  def schedule[A](body: => Future[A])(implicit ec: ExecutionContext): Unit =
     schedule(Op(() => body.asInstanceOf[Future[Unit]], ec.prepare))
-  }
 
   /**
     * Schedule a simple synchronous operation to be run. The operation is considered
@@ -84,12 +83,11 @@ private[play] final class RunQueue {
     *
     * The operation will execute in the given ExecutionContext.
     */
-  def scheduleSimple(body: => Unit)(implicit ec: ExecutionContext): Unit = {
+  def scheduleSimple(body: => Unit)(implicit ec: ExecutionContext): Unit =
     schedule {
       body
       Future.successful(())
     }
-  }
 
   /**
     * Schedule a reified operation for execution. If no other operations

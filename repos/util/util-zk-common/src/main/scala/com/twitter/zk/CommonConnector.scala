@@ -24,21 +24,18 @@ object CommonConnector {
   def apply(
       underlying: ZooKeeperClient,
       connectTimeout: Duration = COMMON_FOREVER)(
-      implicit pool: FuturePool): CommonConnector = {
+      implicit pool: FuturePool): CommonConnector =
     new CommonConnector(underlying, connectTimeout)(pool)
-  }
 
   def apply(addrs: Seq[java.net.InetSocketAddress], sessionTimeout: Duration)(
-      implicit pool: FuturePool): CommonConnector = {
+      implicit pool: FuturePool): CommonConnector =
     apply(new ZooKeeperClient(sessionTimeout.toIntAmount, addrs.asJava))(pool)
-  }
 
   def apply(
       addrs: Seq[java.net.InetSocketAddress],
       sessionTimeout: Duration,
-      connectTimeout: Duration)(implicit pool: FuturePool): CommonConnector = {
+      connectTimeout: Duration)(implicit pool: FuturePool): CommonConnector =
     apply(
       new ZooKeeperClient(sessionTimeout.toIntAmount, addrs.asJava),
       connectTimeout)(pool)
-  }
 }

@@ -71,7 +71,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
     /* ---------------- q1 ---------------- */
 
     case class Item1(arrivalPos: Int, cd: ClassDef, cunit: CompilationUnit) {
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = arrivalPos == Int.MaxValue
     }
     private val poison1 = Item1(Int.MaxValue, null, null)
     private val q1 = new java.util.LinkedList[Item1]
@@ -84,7 +84,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
         plain: asm.tree.ClassNode,
         bean: asm.tree.ClassNode,
         outFolder: scala.tools.nsc.io.AbstractFile) {
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = arrivalPos == Int.MaxValue
     }
 
     private val poison2 = Item2(Int.MaxValue, null, null, null, null)
@@ -111,14 +111,13 @@ abstract class GenBCode extends BCodeSyncAndTry {
         bean: SubItem3,
         outFolder: scala.tools.nsc.io.AbstractFile) {
 
-      def isPoison = { arrivalPos == Int.MaxValue }
+      def isPoison = arrivalPos == Int.MaxValue
     }
     private val i3comparator = new java.util.Comparator[Item3] {
-      override def compare(a: Item3, b: Item3) = {
+      override def compare(a: Item3, b: Item3) =
         if (a.arrivalPos < b.arrivalPos) -1
         else if (a.arrivalPos == b.arrivalPos) 0
         else 1
-      }
     }
     private val poison3 = Item3(Int.MaxValue, null, null, null, null)
     private val q3 = new java.util.PriorityQueue[Item3](1000, i3comparator)
@@ -250,10 +249,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
           closureOptimizer.rewriteClosureApplyInvocations()
       }
 
-      def localOptimizations(classNode: ClassNode): Unit = {
+      def localOptimizations(classNode: ClassNode): Unit =
         BackendStats.timed(BackendStats.methodOptTimer)(
           localOpt.methodOptimizations(classNode))
-      }
 
       def setInnerClasses(classNode: ClassNode): Unit = if (classNode != null) {
         classNode.innerClasses.clear()

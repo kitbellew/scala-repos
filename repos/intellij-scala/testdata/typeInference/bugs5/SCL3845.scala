@@ -4,9 +4,8 @@ class A {
 }
 
 trait T { this: A =>
-  def getList(): B = {
+  def getList(): B =
     /*start*/
     value /*end*/
-  }
 }
 //T.this.B

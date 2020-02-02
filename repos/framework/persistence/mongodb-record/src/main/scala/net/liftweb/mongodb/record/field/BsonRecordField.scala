@@ -104,18 +104,18 @@ class BsonRecordListField[
   }
 
   override def setFromDBObject(dbo: DBObject): Box[List[SubRecordType]] =
-    setBox(Full(dbo.keySet.toList.map(k => {
+    setBox(Full(dbo.keySet.toList.map { k =>
       valueMeta.fromDBObject(dbo.get(k.toString).asInstanceOf[DBObject])
-    })))
+    }))
 
   override def asJValue: JValue = JArray(value.map(_.asJValue))
 
   override def setFromJValue(jvalue: JValue) = jvalue match {
     case JNothing | JNull if optional_? => setBox(Empty)
     case JArray(arr) =>
-      setBox(Full(arr.map(jv => {
+      setBox(Full(arr.map { jv =>
         valueMeta.fromJValue(jv) openOr valueMeta.createRecord
-      })))
+      }))
     case other => setBox(FieldHelpers.expectedA("JArray", other))
   }
 }

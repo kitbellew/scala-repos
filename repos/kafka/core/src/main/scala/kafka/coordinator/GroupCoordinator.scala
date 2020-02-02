@@ -361,7 +361,7 @@ class GroupCoordinator(
                 groupManager.prepareStoreGroup(
                   group,
                   assignment,
-                  (errorCode: Short) => {
+                  (errorCode: Short) =>
                     group synchronized {
                       // another member may have joined the group while we were awaiting this callback,
                       // so we must ensure we are still in the AwaitingSync state and the same generation
@@ -376,7 +376,6 @@ class GroupCoordinator(
                         }
                       }
                     }
-                  }
                 ))
             }
 
@@ -537,7 +536,7 @@ class GroupCoordinator(
   }
 
   def handleFetchOffsets(groupId: String, partitions: Seq[TopicPartition])
-      : Map[TopicPartition, OffsetFetchResponse.PartitionData] = {
+      : Map[TopicPartition, OffsetFetchResponse.PartitionData] =
     if (!isActive.get) {
       partitions.map {
         case topicPartition =>
@@ -573,9 +572,8 @@ class GroupCoordinator(
       // Kafka commit storage without automatic group management
       groupManager.getOffsets(groupId, partitions)
     }
-  }
 
-  def handleListGroups(): (Errors, List[GroupOverview]) = {
+  def handleListGroups(): (Errors, List[GroupOverview]) =
     if (!isActive.get) {
       (Errors.GROUP_COORDINATOR_NOT_AVAILABLE, List[GroupOverview]())
     } else {
@@ -584,9 +582,8 @@ class GroupCoordinator(
         else Errors.NONE
       (errorCode, groupManager.currentGroups.map(_.overview).toList)
     }
-  }
 
-  def handleDescribeGroup(groupId: String): (Errors, GroupSummary) = {
+  def handleDescribeGroup(groupId: String): (Errors, GroupSummary) =
     if (!isActive.get) {
       (Errors.GROUP_COORDINATOR_NOT_AVAILABLE, GroupCoordinator.EmptyGroup)
     } else if (!isCoordinatorForGroup(groupId)) {
@@ -603,7 +600,6 @@ class GroupCoordinator(
         }
       }
     }
-  }
 
   private def onGroupUnloaded(group: GroupMetadata) {
     group synchronized {
@@ -693,11 +689,10 @@ class GroupCoordinator(
     }
   }
 
-  private def validGroupId(groupId: String): Boolean = {
+  private def validGroupId(groupId: String): Boolean =
     groupId != null && !groupId.isEmpty
-  }
 
-  private def joinError(memberId: String, errorCode: Short): JoinGroupResult = {
+  private def joinError(memberId: String, errorCode: Short): JoinGroupResult =
     JoinGroupResult(
       members = Map.empty,
       memberId = memberId,
@@ -705,7 +700,6 @@ class GroupCoordinator(
       subProtocol = GroupCoordinator.NoProtocol,
       leaderId = GroupCoordinator.NoLeader,
       errorCode = errorCode)
-  }
 
   /**
     * Complete existing DelayedHeartbeats for the given member and schedule the next one
@@ -804,13 +798,12 @@ class GroupCoordinator(
     }
   }
 
-  def tryCompleteJoin(group: GroupMetadata, forceComplete: () => Boolean) = {
+  def tryCompleteJoin(group: GroupMetadata, forceComplete: () => Boolean) =
     group synchronized {
       if (group.notYetRejoinedMembers.isEmpty)
         forceComplete()
       else false
     }
-  }
 
   def onExpireJoin() {
     // TODO: add metrics for restabilize timeouts
@@ -868,13 +861,12 @@ class GroupCoordinator(
       group: GroupMetadata,
       member: MemberMetadata,
       heartbeatDeadline: Long,
-      forceComplete: () => Boolean) = {
+      forceComplete: () => Boolean) =
     group synchronized {
       if (shouldKeepMemberAlive(member, heartbeatDeadline) || member.isLeaving)
         forceComplete()
       else false
     }
-  }
 
   def onExpireHeartbeat(
       group: GroupMetadata,

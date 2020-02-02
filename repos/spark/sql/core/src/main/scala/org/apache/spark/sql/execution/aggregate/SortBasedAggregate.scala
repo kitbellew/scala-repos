@@ -57,22 +57,19 @@ case class SortBasedAggregate(
 
   override def output: Seq[Attribute] = resultExpressions.map(_.toAttribute)
 
-  override def requiredChildDistribution: List[Distribution] = {
+  override def requiredChildDistribution: List[Distribution] =
     requiredChildDistributionExpressions match {
       case Some(exprs) if exprs.length == 0 => AllTuples :: Nil
       case Some(exprs) if exprs.length > 0 =>
         ClusteredDistribution(exprs) :: Nil
       case None => UnspecifiedDistribution :: Nil
     }
-  }
 
-  override def requiredChildOrdering: Seq[Seq[SortOrder]] = {
+  override def requiredChildOrdering: Seq[Seq[SortOrder]] =
     groupingExpressions.map(SortOrder(_, Ascending)) :: Nil
-  }
 
-  override def outputOrdering: Seq[SortOrder] = {
+  override def outputOrdering: Seq[SortOrder] =
     groupingExpressions.map(SortOrder(_, Ascending))
-  }
 
   protected override def doExecute(): RDD[InternalRow] =
     attachTree(this, "execute") {

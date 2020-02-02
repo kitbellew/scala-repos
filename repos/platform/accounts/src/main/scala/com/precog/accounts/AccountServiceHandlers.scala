@@ -130,7 +130,7 @@ class AccountServiceHandlers(
 
   def withAccountAdmin[A](request: HttpRequest[_], auth: Account)(
       f: Account => Future[HttpResponse[JValue]])(
-      implicit executor: ExecutionContext): Future[HttpResponse[JValue]] = {
+      implicit executor: ExecutionContext): Future[HttpResponse[JValue]] =
     request.parameters.get('accountId).map { accountId =>
       withAccountAdmin(accountId, auth, request) { f }
     } getOrElse {
@@ -139,7 +139,6 @@ class AccountServiceHandlers(
           HttpStatus(BadRequest, "Missing accountId in request URI."),
           content = Some(JString("Missing accountId in request URI."))))
     }
-  }
 
   object SearchAccountsHandler
       extends CustomHttpService[Future[JValue], Future[HttpResponse[JValue]]] {

@@ -56,13 +56,12 @@ class WriteAheadLogBackedBlockRDDSuite
     dir = Utils.createTempDir()
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     try {
       Utils.deleteRecursively(dir)
     } finally {
       super.afterEach()
     }
-  }
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -70,7 +69,7 @@ class WriteAheadLogBackedBlockRDDSuite
     blockManager = sparkContext.env.blockManager
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     // Copied from LocalSparkContext, simpler than to introduced test dependencies to core tests.
     try {
       sparkContext.stop()
@@ -78,7 +77,6 @@ class WriteAheadLogBackedBlockRDDSuite
     } finally {
       super.afterAll()
     }
-  }
 
   test("Read data available in both block manager and write ahead log") {
     testRDD(numPartitions = 5, numPartitionsInBM = 5, numPartitionsInWAL = 5)
@@ -281,7 +279,6 @@ class WriteAheadLogBackedBlockRDDSuite
   }
 
   private def generateFakeRecordHandles(
-      count: Int): Seq[FileBasedWriteAheadLogSegment] = {
+      count: Int): Seq[FileBasedWriteAheadLogSegment] =
     Array.fill(count)(new FileBasedWriteAheadLogSegment("random", 0L, 0))
-  }
 }

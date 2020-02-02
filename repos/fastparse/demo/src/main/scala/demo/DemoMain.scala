@@ -26,18 +26,16 @@ object DemoMain {
     helper(container, scalaparse.Scala.CompilationUnit, example)
   }
   @JSExport
-  def math(container: html.Div) = {
+  def math(container: html.Div) =
     helper(container, fastparse.MathTests.expr, "((1+1*2)+(3*4*5))/3")
-  }
   @JSExport
-  def whitespaceMath(container: html.Div) = {
+  def whitespaceMath(container: html.Div) =
     helper(
       container,
       fastparse.WhiteSpaceMathTests.expr,
       "  (  (  1+1  * 2   ) +( 3* 4  *5  )  )/3")
-  }
   @JSExport
-  def indentation(container: html.Div) = {
+  def indentation(container: html.Div) =
     helper(
       container,
       fastparse.IndentationTests.expr,
@@ -52,9 +50,8 @@ object DemoMain {
         |    4
         |    5""".stripMargin
     )
-  }
   @JSExport
-  def json(container: html.Div) = {
+  def json(container: html.Div) =
     helper(
       container,
       fastparse.JsonTests.jsonExpr,
@@ -80,7 +77,6 @@ object DemoMain {
         |  ]
         |}""".stripMargin
     )
-  }
   def helper(container: html.Div, parser: Parser[_], default: String) = {
     import scalatags.JsDom.all._
     val inputBox = textarea(

@@ -12,13 +12,11 @@ class ScalaBracePostFormatProcessor extends PostFormatProcessor {
   def processText(
       source: PsiFile,
       rangeToReformat: TextRange,
-      settings: CodeStyleSettings): TextRange = {
+      settings: CodeStyleSettings): TextRange =
     new ScalaBraceEnforcer(settings).processText(source, rangeToReformat)
-  }
 
   def processElement(
       source: PsiElement,
-      settings: CodeStyleSettings): PsiElement = {
+      settings: CodeStyleSettings): PsiElement =
     new ScalaBraceEnforcer(settings).process(source)
-  }
 }

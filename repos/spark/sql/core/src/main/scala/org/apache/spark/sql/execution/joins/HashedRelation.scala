@@ -46,9 +46,8 @@ private[execution] sealed trait HashedRelation {
   /**
     * Returns matched rows for a key that has only one column with LongType.
     */
-  def get(key: Long): Seq[InternalRow] = {
+  def get(key: Long): Seq[InternalRow] =
     throw new UnsupportedOperationException
-  }
 
   /**
     * Returns the size of used memory.
@@ -89,9 +88,8 @@ private[execution] trait UniqueHashedRelation extends HashedRelation {
   /**
     * Returns the matched single row with key that have only one column of LongType.
     */
-  def getValue(key: Long): InternalRow = {
+  def getValue(key: Long): InternalRow =
     throw new UnsupportedOperationException
-  }
 
   override def get(key: InternalRow): Seq[InternalRow] = {
     val row = getValue(key)
@@ -125,13 +123,11 @@ private[joins] class GeneralHashedRelation(
 
   override def get(key: InternalRow): Seq[InternalRow] = hashTable.get(key)
 
-  override def writeExternal(out: ObjectOutput): Unit = {
+  override def writeExternal(out: ObjectOutput): Unit =
     writeBytes(out, SparkSqlSerializer.serialize(hashTable))
-  }
 
-  override def readExternal(in: ObjectInput): Unit = {
+  override def readExternal(in: ObjectInput): Unit =
     hashTable = SparkSqlSerializer.deserialize(readBytes(in))
-  }
 }
 
 /**
@@ -148,13 +144,11 @@ private[joins] class UniqueKeyHashedRelation(
 
   override def getValue(key: InternalRow): InternalRow = hashTable.get(key)
 
-  override def writeExternal(out: ObjectOutput): Unit = {
+  override def writeExternal(out: ObjectOutput): Unit =
     writeBytes(out, SparkSqlSerializer.serialize(hashTable))
-  }
 
-  override def readExternal(in: ObjectInput): Unit = {
+  override def readExternal(in: ObjectInput): Unit =
     hashTable = SparkSqlSerializer.deserialize(readBytes(in))
-  }
 }
 
 private[execution] object HashedRelation {
@@ -257,21 +251,19 @@ private[joins] final class UnsafeHashedRelation(
     *
     * For non-broadcast joins or in local mode, return 0.
     */
-  override def getMemorySize: Long = {
+  override def getMemorySize: Long =
     if (binaryMap != null) {
       binaryMap.getTotalMemoryConsumption
     } else {
       0
     }
-  }
 
-  override def estimatedSize: Long = {
+  override def estimatedSize: Long =
     if (binaryMap != null) {
       binaryMap.getTotalMemoryConsumption
     } else {
       SizeEstimator.estimate(hashTable)
     }
-  }
 
   override def get(key: InternalRow): Seq[InternalRow] = {
     val unsafeKey = key.asInstanceOf[UnsafeRow]
@@ -475,9 +467,8 @@ private[joins] object UnsafeHashedRelation {
   * An interface for a hashed relation that the key is a Long.
   */
 private[joins] trait LongHashedRelation extends HashedRelation {
-  override def get(key: InternalRow): Seq[InternalRow] = {
+  override def get(key: InternalRow): Seq[InternalRow] =
     get(key.getLong(0))
-  }
 }
 
 private[joins] final class GeneralLongHashedRelation(
@@ -490,13 +481,11 @@ private[joins] final class GeneralLongHashedRelation(
 
   override def get(key: Long): Seq[InternalRow] = hashTable.get(key)
 
-  override def writeExternal(out: ObjectOutput): Unit = {
+  override def writeExternal(out: ObjectOutput): Unit =
     writeBytes(out, SparkSqlSerializer.serialize(hashTable))
-  }
 
-  override def readExternal(in: ObjectInput): Unit = {
+  override def readExternal(in: ObjectInput): Unit =
     hashTable = SparkSqlSerializer.deserialize(readBytes(in))
-  }
 }
 
 private[joins] final class UniqueLongHashedRelation(
@@ -508,21 +497,17 @@ private[joins] final class UniqueLongHashedRelation(
   // Needed for serialization (it is public to make Java serialization work)
   def this() = this(null)
 
-  override def getValue(key: InternalRow): InternalRow = {
+  override def getValue(key: InternalRow): InternalRow =
     getValue(key.getLong(0))
-  }
 
-  override def getValue(key: Long): InternalRow = {
+  override def getValue(key: Long): InternalRow =
     hashTable.get(key)
-  }
 
-  override def writeExternal(out: ObjectOutput): Unit = {
+  override def writeExternal(out: ObjectOutput): Unit =
     writeBytes(out, SparkSqlSerializer.serialize(hashTable))
-  }
 
-  override def readExternal(in: ObjectInput): Unit = {
+  override def readExternal(in: ObjectInput): Unit =
     hashTable = SparkSqlSerializer.deserialize(readBytes(in))
-  }
 }
 
 /**
@@ -559,13 +544,11 @@ private[joins] final class LongArrayRelation(
   // Needed for serialization (it is public to make Java serialization work)
   def this() = this(0, 0L, null, null, null)
 
-  override def getValue(key: InternalRow): InternalRow = {
+  override def getValue(key: InternalRow): InternalRow =
     getValue(key.getLong(0))
-  }
 
-  override def getMemorySize: Long = {
+  override def getMemorySize: Long =
     offsets.length * 4 + sizes.length * 4 + bytes.length
-  }
 
   override def getValue(key: Long): InternalRow = {
     val idx = (key - start).toInt

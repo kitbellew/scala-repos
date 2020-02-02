@@ -13,11 +13,10 @@ package client {
   class GitHubClient(ws: WSClient, baseUrl: String) {
     @Inject def this(ws: WSClient) = this(ws, "https://api.github.com")
 
-    def repositories(): Future[Seq[String]] = {
+    def repositories(): Future[Seq[String]] =
       ws.url(baseUrl + "/repositories").get().map { response =>
         (response.json \\ "full_name").map(_.as[String])
       }
-    }
   }
 //#client
 }
@@ -128,7 +127,7 @@ object ScalaTestingWebServiceClients
       import play.core.server.Server
       import play.api.test._
 
-      def withGitHubClient[T](block: GitHubClient => T): T = {
+      def withGitHubClient[T](block: GitHubClient => T): T =
         Server.withRouter() {
           case GET(p"/repositories") =>
             Action {
@@ -140,7 +139,6 @@ object ScalaTestingWebServiceClients
             block(new GitHubClient(client, ""))
           }
         }
-      }
       //#with-github-client
 
       //#with-github-test

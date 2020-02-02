@@ -41,7 +41,7 @@ sealed trait Task {
     taskId.mesosTaskId
   }
 
-  def mesosStatus: Option[MesosProtos.TaskStatus] = {
+  def mesosStatus: Option[MesosProtos.TaskStatus] =
     launched.flatMap(_.status.mesosStatus).orElse {
       launchedMesosId.map { mesosId =>
         val taskStatusBuilder = MesosProtos.TaskStatus.newBuilder
@@ -56,7 +56,6 @@ sealed trait Task {
         taskStatusBuilder.build()
       }
     }
-  }
 
   def ipAddresses: Iterable[MesosProtos.NetworkInfo.IPAddress] =
     launched.map(_.ipAddresses).getOrElse(Iterable.empty)
@@ -280,12 +279,11 @@ object Task {
     private val uuidGenerator =
       Generators.timeBasedGenerator(EthernetAddress.fromInterface())
 
-    def appId(taskId: String): PathId = {
+    def appId(taskId: String): PathId =
       taskId match {
         case TaskIdRegex(appId, uuid) => PathId.fromSafePath(appId)
         case _                        => throw new MatchError(s"taskId $taskId is no valid identifier")
       }
-    }
 
     def apply(mesosTaskId: MesosProtos.TaskID): Id =
       new Id(mesosTaskId.getValue)

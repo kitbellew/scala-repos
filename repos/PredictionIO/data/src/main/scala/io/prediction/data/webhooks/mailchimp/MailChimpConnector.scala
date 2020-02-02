@@ -43,7 +43,7 @@ private[prediction] object MailChimpConnector extends FormConnector {
       // invalid type
       case Some(x) =>
         throw new ConnectorException(
-          s"Cannot convert unknown MailChimp data type ${x} to event JSON")
+          s"Cannot convert unknown MailChimp data type $x to event JSON")
       case None =>
         throw new ConnectorException(
           s"The field 'type' is required for MailChimp data.")
@@ -55,9 +55,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
     .forPattern("yyyy-MM-dd HH:mm:ss")
     .withZone(EventValidation.defaultTimeZone)
 
-  def parseMailChimpDateTime(s: String): DateTime = {
+  def parseMailChimpDateTime(s: String): DateTime =
     mailChimpDateTimeFormat.parseDateTime(s)
-  }
 
   def subscribeToEventJson(data: Map[String, String]): JObject = {
 

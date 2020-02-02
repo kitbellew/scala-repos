@@ -14,13 +14,12 @@ object Test {
     object DomainA extends Domain
     object DomainB extends Domain
 
-    def lookingForAs(event: Event): Unit = {
+    def lookingForAs(event: Event): Unit =
       event match {
         case DomainB.Created(_) => throw null
         case DomainC.Created(_) => throw null
         case DomainA.Created(_) => // okay
       }
-    }
 
     lookingForAs(DomainA.Created("I am an A"))
   }

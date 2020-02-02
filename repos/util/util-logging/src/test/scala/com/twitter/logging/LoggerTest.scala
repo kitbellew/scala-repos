@@ -82,9 +82,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     * Verify that the logger set up with `traceLogger` has received a log line with the given
     * substring somewhere inside it.
     */
-  def mustLog(substring: String) = {
+  def mustLog(substring: String) =
     assert(logLines().filter { _ contains substring }.size > 0)
-  }
 
   class LoggerSpecHelper {
     var myHandler: Handler = null
@@ -255,9 +254,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     }
 
     "configure logging" should {
-      def before(): Unit = {
+      def before(): Unit =
         Logger.clearHandlers()
-      }
 
       "file handler" in {
         withTempFolder {
@@ -399,9 +397,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     "java logging" should {
       val logger = javalog.Logger.getLogger("")
 
-      def before() = {
+      def before() =
         traceLogger(Level.INFO)
-      }
 
       "single arg calls" in {
         before()

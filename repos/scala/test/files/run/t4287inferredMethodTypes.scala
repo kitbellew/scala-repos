@@ -17,9 +17,8 @@ class B extends A {
 }
   """.trim
 
-  override def show(): Unit = {
+  override def show(): Unit =
     Console.withErr(System.out) {
       compile()
     }
-  }
 }

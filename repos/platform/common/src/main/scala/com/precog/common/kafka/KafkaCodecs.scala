@@ -50,9 +50,8 @@ trait EncodingFlags {
   val storeFileFlag: Byte = 0x06
   val magicByte: Byte = -123
 
-  def writeHeader(buffer: ByteBuffer, encodingFlag: Byte): ByteBuffer = {
+  def writeHeader(buffer: ByteBuffer, encodingFlag: Byte): ByteBuffer =
     buffer.put(magicByte).put(encodingFlag).put(stopByte)
-  }
 
   def readHeader(buffer: ByteBuffer): Validation[Error, Byte] = {
     val magic = buffer.get()
@@ -100,11 +99,10 @@ object EventEncoding extends EncodingFlags with Logging {
     bytes
   }
 
-  def write(buffer: ByteBuffer, event: Event) = {
+  def write(buffer: ByteBuffer, event: Event) =
     buffer.put(toMessageBytes(event))
-  }
 
-  def read(buffer: ByteBuffer): Validation[Error, Event] = {
+  def read(buffer: ByteBuffer): Validation[Error, Event] =
     for {
       msgType <- readHeader(buffer)
       jv <- ((Error.thrown _) <-: JParser.parseFromByteBuffer(buffer))
@@ -116,7 +114,6 @@ object EventEncoding extends EncodingFlags with Logging {
         case `storeFileFlag`          => jv.validated[StoreFile]
       }
     } yield event
-  }
 }
 
 class KafkaEventMessageCodec extends Encoder[EventMessage] {
@@ -155,7 +152,7 @@ object EventMessageEncoding extends EncodingFlags with Logging {
 
   import EventMessage.EventMessageExtraction
 
-  def read(buffer: ByteBuffer): Validation[Error, EventMessageExtraction] = {
+  def read(buffer: ByteBuffer): Validation[Error, EventMessageExtraction] =
     for {
       msgType <- readHeader(buffer)
       //_ = println(java.nio.charset.Charset.forName("UTF-8").decode(buffer).toString)
@@ -168,5 +165,4 @@ object EventMessageEncoding extends EncodingFlags with Logging {
         case `storeFileFlag` => jv.validated[StoreFileMessage].map(\/.right(_))
       }
     } yield message
-  }
 }

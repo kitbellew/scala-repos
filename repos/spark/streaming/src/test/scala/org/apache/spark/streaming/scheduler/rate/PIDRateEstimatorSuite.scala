@@ -165,7 +165,6 @@ class PIDRateEstimatorSuite extends SparkFunSuite with Matchers {
     }
   }
 
-  private def createDefaultEstimator(): PIDRateEstimator = {
+  private def createDefaultEstimator(): PIDRateEstimator =
     new PIDRateEstimator(20, 1d, 0d, 0d, 10)
-  }
 }

@@ -123,7 +123,7 @@ trait StreamInstances {
   implicit val streamZipApplicative: Applicative[λ[α => Stream[α] @@ Zip]] =
     new Applicative[λ[α => Stream[α] @@ Zip]] {
       def point[A](a: => A) = Zip(Stream.continually(a))
-      def ap[A, B](fa: => (Stream[A] @@ Zip))(f: => (Stream[A => B] @@ Zip)) = {
+      def ap[A, B](fa: => (Stream[A] @@ Zip))(f: => (Stream[A => B] @@ Zip)) =
         Zip(
           if (Tag.unwrap(f).isEmpty || Tag.unwrap(fa).isEmpty) Stream.empty[B]
           else
@@ -131,7 +131,6 @@ trait StreamInstances {
               (Tag.unwrap(f).head)(Tag.unwrap(fa).head),
               Tag.unwrap(
                 ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
-      }
     }
 
   implicit def streamMonoid[A] = new Monoid[Stream[A]] {
@@ -215,14 +214,14 @@ trait StreamFunctions {
 
   final def unfoldForest[A, B](as: Stream[A])(
       f: A => (B, () => Stream[A])): Stream[Tree[B]] =
-    as.map(a => {
+    as.map { a =>
       def unfoldTree(x: A): Tree[B] =
         f(x) match {
           case (b, bs) => Tree.Node(b, unfoldForest(bs())(f))
         }
 
       unfoldTree(a)
-    })
+    }
 
   final def unfoldForestM[A, B, M[_]: Monad](as: Stream[A])(
       f: A => M[(B, Stream[A])]): M[Stream[Tree[B]]] = {

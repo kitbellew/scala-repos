@@ -85,10 +85,9 @@ object TlsSpec {
         setHandler(out, new OutHandler {
           override def onPull(): Unit = pull(in)
         })
-        override def onTimer(x: Any): Unit = {
+        override def onTimer(x: Any): Unit =
           failStage(
             new TimeoutException(s"timeout expired, last element was $last"))
-        }
       }
   }
 
@@ -440,12 +439,12 @@ class TlsSpec
       // under error conditions, and has the bonus of matching most actual SSL deployments.
       val (server, serverErr) = Tcp()
         .bind("localhost", 0)
-        .map(c ⇒ {
+        .map { c ⇒
           c.flow
             .joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
               Keep.right))(Keep.right)
             .run()
-        })
+        }
         .toMat(Sink.head)(Keep.both)
         .run()
 

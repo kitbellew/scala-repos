@@ -89,7 +89,7 @@ object AclCommand {
       for ((resource, acls) <- resourceToAcl) {
         val acls = resourceToAcl(resource)
         println(
-          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+          s"Adding ACLs for resource `$resource`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
         authorizer.addAcls(acls, resource)
       }
 
@@ -104,12 +104,12 @@ object AclCommand {
       for ((resource, acls) <- resourceToAcl) {
         if (acls.isEmpty) {
           if (confirmAction(
-                s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
+                s"Are you sure you want to delete all ACLs for resource `$resource`? (y/n)"))
             authorizer.removeAcls(resource)
         } else {
           if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
                 .map("\t" + _)
-                .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+                .mkString(Newline)} $Newline from resource `$resource`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -129,7 +129,7 @@ object AclCommand {
 
       for ((resource, acls) <- resourceToAcls)
         println(
-          s"Current ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+          s"Current ACLs for resource `$resource`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
     }
   }
 
@@ -227,30 +227,28 @@ object AclCommand {
       principals: Set[KafkaPrincipal],
       permissionType: PermissionType,
       operations: Set[Operation],
-      hosts: Set[String]): Set[Acl] = {
+      hosts: Set[String]): Set[Acl] =
     for {
       principal <- principals
       operation <- operations
       host <- hosts
     } yield new Acl(principal, permissionType, host, operation)
-  }
 
   private def getHosts(
       opts: AclCommandOptions,
       hostOptionSpec: ArgumentAcceptingOptionSpec[String],
-      principalOptionSpec: ArgumentAcceptingOptionSpec[String]): Set[String] = {
+      principalOptionSpec: ArgumentAcceptingOptionSpec[String]): Set[String] =
     if (opts.options.has(hostOptionSpec))
       opts.options.valuesOf(hostOptionSpec).asScala.map(_.trim).toSet
     else if (opts.options.has(principalOptionSpec))
       Set[String](Acl.WildCardHost)
     else
       Set.empty[String]
-  }
 
   private def getPrincipals(
       opts: AclCommandOptions,
       principalOptionSpec: ArgumentAcceptingOptionSpec[String])
-      : Set[KafkaPrincipal] = {
+      : Set[KafkaPrincipal] =
     if (opts.options.has(principalOptionSpec))
       opts.options
         .valuesOf(principalOptionSpec)
@@ -259,7 +257,6 @@ object AclCommand {
         .toSet
     else
       Set.empty[KafkaPrincipal]
-  }
 
   private def getResource(
       opts: AclCommandOptions,
@@ -295,7 +292,7 @@ object AclCommand {
 
   private def validateOperation(
       opts: AclCommandOptions,
-      resourceToAcls: Map[Resource, Set[Acl]]) = {
+      resourceToAcls: Map[Resource, Set[Acl]]) =
     for ((resource, acls) <- resourceToAcls) {
       val validOps = ResourceTypeToValidOperations(resource.resourceType)
       if ((acls.map(_.operation) -- validOps).nonEmpty)
@@ -304,7 +301,6 @@ object AclCommand {
           s"ResourceType ${resource.resourceType} only supports operations ${validOps
             .mkString(",")}")
     }
-  }
 
   class AclCommandOptions(args: Array[String]) {
     val parser = new OptionParser

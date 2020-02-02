@@ -223,7 +223,7 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
   private def build(segments: String*): String =
     segments.map(_.trim).filter(_.nonEmpty).mkString(" ")
 
-  private def projectToSQL(plan: Project, isDistinct: Boolean): String = {
+  private def projectToSQL(plan: Project, isDistinct: Boolean): String =
     build(
       "SELECT",
       if (isDistinct) "DISTINCT" else "",
@@ -231,7 +231,6 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       if (plan.child == OneRowRelation) "" else "FROM",
       toSQL(plan.child)
     )
-  }
 
   private def scriptTransformationToSQL(plan: ScriptTransformation): String = {
     val ioSchema = plan.ioschema.asInstanceOf[HiveScriptIOSchema]
@@ -401,14 +400,13 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     )
   }
 
-  private def windowToSQL(w: Window): String = {
+  private def windowToSQL(w: Window): String =
     build(
       "SELECT",
       (w.child.output ++ w.windowExpressions).map(_.sql).mkString(", "),
       if (w.child == OneRowRelation) "" else "FROM",
       toSQL(w.child)
     )
-  }
 
   private def normalizedName(n: NamedExpression): String =
     "gen_attr_" + n.exprId.id
@@ -538,9 +536,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       }
     }
 
-    private def addSubquery(plan: LogicalPlan): SubqueryAlias = {
+    private def addSubquery(plan: LogicalPlan): SubqueryAlias =
       SubqueryAlias(newSubqueryName(), plan)
-    }
 
     private def addSubqueryIfNeeded(plan: LogicalPlan): LogicalPlan =
       plan match {

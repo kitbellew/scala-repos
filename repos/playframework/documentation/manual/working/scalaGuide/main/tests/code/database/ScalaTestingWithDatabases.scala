@@ -60,7 +60,7 @@ object ScalaTestingWithDatabases extends Specification {
       //#custom-with-database
       import play.api.db.{Database, Databases}
 
-      def withMyDatabase[T](block: Database => T) = {
+      def withMyDatabase[T](block: Database => T) =
         Databases.withDatabase(
           driver = "com.mysql.jdbc.Driver",
           url = "jdbc:mysql://localhost/test",
@@ -70,7 +70,6 @@ object ScalaTestingWithDatabases extends Specification {
             "password" -> "secret"
           )
         )(block)
-      }
       //#custom-with-database
 
       //#custom-with-database-use
@@ -139,7 +138,7 @@ object ScalaTestingWithDatabases extends Specification {
       //#with-in-memory-custom
       import play.api.db.{Database, Databases}
 
-      def withMyDatabase[T](block: Database => T) = {
+      def withMyDatabase[T](block: Database => T) =
         Databases.withInMemory(
           name = "mydatabase",
           urlOptions = Map(
@@ -149,7 +148,6 @@ object ScalaTestingWithDatabases extends Specification {
             "logStatements" -> true
           )
         )(block)
-      }
       //#with-in-memory-custom
 
       withMyDatabase(
@@ -231,8 +229,7 @@ object ScalaTestingWithDatabases extends Specification {
       import play.api.db.{Database, Databases}
       import play.api.db.evolutions._
 
-      def withMyDatabase[T](block: Database => T) = {
-
+      def withMyDatabase[T](block: Database => T) =
         Databases.withInMemory(
           urlOptions = Map(
             "MODE" -> "MYSQL"
@@ -255,7 +252,6 @@ object ScalaTestingWithDatabases extends Specification {
 
           }
         }
-      }
       //#with-evolutions-custom
 
       //#with-evolutions-custom-use

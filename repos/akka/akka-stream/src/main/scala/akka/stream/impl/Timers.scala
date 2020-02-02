@@ -191,10 +191,9 @@ private[stream] object Timers {
       new TimerGraphStageLogic(shape) {
         private val IdleTimer = "DelayTimer"
 
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           if (delay == Duration.Zero) open = true
           else scheduleOnce(IdleTimer, delay)
-        }
 
         private var open: Boolean = false
 
@@ -240,16 +239,15 @@ private[stream] object Timers {
               }
             }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (!isAvailable(in)) completeStage()
-            }
           }
         )
 
         setHandler(
           out,
           new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               if (isAvailable(in)) {
                 push(out, grab(in))
                 if (isClosed(in)) completeStage()
@@ -260,16 +258,14 @@ private[stream] object Timers {
                   push(out, inject())
                 } else scheduleOnce(IdleTimer, nextDeadline.timeLeft)
               }
-            }
           }
         )
 
-        override protected def onTimer(timerKey: Any): Unit = {
+        override protected def onTimer(timerKey: Any): Unit =
           if (nextDeadline.isOverdue() && isAvailable(out)) {
             push(out, inject())
             nextDeadline = Deadline.now + timeout
           }
-        }
       }
 
   }

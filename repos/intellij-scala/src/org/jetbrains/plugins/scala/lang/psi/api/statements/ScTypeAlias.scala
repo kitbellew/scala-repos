@@ -44,12 +44,11 @@ trait ScTypeAlias
     case _              => false
   }
 
-  def isExistentialTypeAlias: Boolean = {
+  def isExistentialTypeAlias: Boolean =
     getContext match {
       case _: ScExistentialClause => true
       case _                      => false
     }
-  }
 
   override def isDeprecated =
     hasAnnotation("scala.deprecated") != None || hasAnnotation(
@@ -76,9 +75,7 @@ trait ScTypeAlias
 
 object ScTypeAlias {
   @tailrec
-  def getCompoundCopy(
-      sign: TypeAliasSignature,
-      ta: ScTypeAlias): ScTypeAlias = {
+  def getCompoundCopy(sign: TypeAliasSignature, ta: ScTypeAlias): ScTypeAlias =
     ta match {
       case light: ScLightTypeAliasDeclaration => getCompoundCopy(sign, light.ta)
       case light: ScLightTypeAliasDefinition  => getCompoundCopy(sign, light.ta)
@@ -87,5 +84,4 @@ object ScTypeAlias {
       case definition: ScTypeAliasDefinition =>
         new ScLightTypeAliasDefinition(sign, definition)
     }
-  }
 }

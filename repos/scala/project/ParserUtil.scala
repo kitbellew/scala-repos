@@ -6,9 +6,8 @@ import sbt.complete._
 object ParserUtil {
   def notStartingWith(parser: Parser[String], c: Char): Parser[String] =
     parser & not(c ~> any.*, "value cannot start with " + c + ".")
-  def concat(p: Parser[(String, String)]): Parser[String] = {
+  def concat(p: Parser[(String, String)]): Parser[String] =
     p.map(x => x._1 + x._2)
-  }
 
   def Opt(a: Parser[String]) = a.?.map(_.getOrElse(""))
 

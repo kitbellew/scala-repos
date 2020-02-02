@@ -18,14 +18,14 @@ class FileUploadTestHelpersTestServlet
       .filter(header => header.startsWith("Test-"))
       .foreach(header => response.setHeader(header, request.getHeader(header)))
 
-    fileParams.foreach(fileParam => {
+    fileParams.foreach { fileParam =>
       response.setHeader("File-" + fileParam._1 + "-Name", fileParam._2.name)
       response
         .setHeader("File-" + fileParam._1 + "-Size", fileParam._2.size.toString)
       response.setHeader(
         "File-" + fileParam._1 + "-SHA",
         DigestUtils.shaHex(fileParam._2.get()))
-    })
+    }
   }
 
   post("/") {

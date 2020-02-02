@@ -68,7 +68,7 @@ object WSSpec extends PlaySpecification {
       val client = app.injector.instanceOf(classOf[play.libs.ws.WSClient])
       val callList = scala.collection.mutable.ArrayBuffer[Int]()
       val responseFuture = client
-        .url(s"http://localhost:${testServerPort}")
+        .url(s"http://localhost:$testServerPort")
         .withRequestFilter(new CallbackRequestFilter(callList, 1))
         .withRequestFilter(new CallbackRequestFilter(callList, 2))
         .withRequestFilter(new CallbackRequestFilter(callList, 3))

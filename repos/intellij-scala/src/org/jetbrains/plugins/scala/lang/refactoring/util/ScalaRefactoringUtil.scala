@@ -157,25 +157,22 @@ object ScalaRefactoringUtil {
   }
 
   def replaceSingletonTypes(scType: ScType): ScType = {
-    def replaceSingleton(scType: ScType): (Boolean, ScType) = {
+    def replaceSingleton(scType: ScType): (Boolean, ScType) =
       ScType.extractDesignatorSingletonType(scType) match {
         case None     => (false, scType)
         case Some(tp) => (true, tp)
       }
-    }
     scType.recursiveUpdate(replaceSingleton)
   }
 
-  def inTemplateParents(typeElement: ScTypeElement): Boolean = {
+  def inTemplateParents(typeElement: ScTypeElement): Boolean =
     PsiTreeUtil.getParentOfType(typeElement, classOf[ScTemplateParents]) != null
-  }
 
-  def checkTypeElement(element: ScTypeElement): Option[ScTypeElement] = {
+  def checkTypeElement(element: ScTypeElement): Option[ScTypeElement] =
     Option(element).filter {
       case e if e.getNextSiblingNotWhitespace.isInstanceOf[ScTypeArgs] => false
       case _                                                           => true
     }
-  }
 
   def getTypeElement(
       project: Project,
@@ -563,7 +560,7 @@ object ScalaRefactoringUtil {
     (occurrences, validators)
   }
 
-  def unparExpr(expr: ScExpression): ScExpression = {
+  def unparExpr(expr: ScExpression): ScExpression =
     expr match {
       case x: ScParenthesisedExpr =>
         x.expr match {
@@ -572,7 +569,6 @@ object ScalaRefactoringUtil {
         }
       case _ => expr
     }
-  }
 
   def hasNltoken(e: PsiElement): Boolean = {
     var hasNlToken = false
@@ -618,11 +614,10 @@ object ScalaRefactoringUtil {
   def highlightOccurrences(
       project: Project,
       occurrences: Array[PsiElement],
-      editor: Editor): Seq[RangeHighlighter] = {
+      editor: Editor): Seq[RangeHighlighter] =
     highlightOccurrences(project, occurrences.map({ el: PsiElement =>
       el.getTextRange
     }), editor)
-  }
 
   def showChooser[T <: PsiElement](
       editor: Editor,
@@ -713,9 +708,8 @@ object ScalaRefactoringUtil {
         }
       })
       .addListener(new JBPopupAdapter {
-        override def beforeShown(event: LightweightWindowEvent): Unit = {
+        override def beforeShown(event: LightweightWindowEvent): Unit =
           selection.addHighlighter()
-        }
 
         override def onClosed(event: LightweightWindowEvent) {
           highlighter.dropHighlight()
@@ -914,9 +908,7 @@ object ScalaRefactoringUtil {
           expressions,
           (elem: ScExpression) => chooseExpression(elem),
           ScalaBundle.message("choose.expression.for", refactoringName),
-          (expr: ScExpression) => {
-            getShortText(expr)
-          }
+          (expr: ScExpression) => getShortText(expr)
         )
         return
       }
@@ -977,9 +969,7 @@ object ScalaRefactoringUtil {
           typeElement,
           (elem: ScTypeElement) => chooseTypeElement(elem),
           ScalaBundle.message("choose.type.element.for", refactoringName),
-          (value: ScTypeElement) => {
-            getShortText(value)
-          }
+          (value: ScTypeElement) => getShortText(value)
         )
         return
       }
@@ -1005,7 +995,7 @@ object ScalaRefactoringUtil {
     element
   }
 
-  def fileEncloser(startOffset: Int, file: PsiFile): PsiElement = {
+  def fileEncloser(startOffset: Int, file: PsiFile): PsiElement =
     if (file.asInstanceOf[ScalaFile].isScriptFile()) file
     else {
       val elem = file.findElementAt(startOffset)
@@ -1021,17 +1011,15 @@ object ScalaRefactoringUtil {
       }
       result
     }
-  }
 
   def isInplaceAvailable(editor: Editor): Boolean =
     editor.getSettings.isVariableInplaceRenameEnabled && !ApplicationManager.getApplication.isUnitTestMode
 
-  def enclosingContainer(parent: PsiElement): PsiElement = {
+  def enclosingContainer(parent: PsiElement): PsiElement =
     Option(parent)
       .map(elem => elem.firstChild.getOrElse(elem)) //to make enclosing container non-strict
       .flatMap(_.scopes.toStream.headOption)
       .orNull
-  }
 
   def commonParent(file: PsiFile, textRanges: TextRange*): PsiElement = {
     val elemSeq = (for (occurence <- textRanges)
@@ -1069,14 +1057,13 @@ object ScalaRefactoringUtil {
       text: String,
       project: Project,
       editor: Editor,
-      refactoringName: String) = {
+      refactoringName: String) =
     CommonRefactoringUtil.showErrorHint(
       project,
       editor,
       text,
       refactoringName,
       null)
-  }
 
   def checkFile(
       file: PsiFile,
@@ -1314,16 +1301,15 @@ object ScalaRefactoringUtil {
     findParentExpr(elem)
   }
 
-  def nextParent(expr: PsiElement, file: PsiFile): PsiElement = {
+  def nextParent(expr: PsiElement, file: PsiFile): PsiElement =
     if (expr == null) file
     else
       expr.getParent match {
         case args: ScArgumentExprList => args.getParent
         case other                    => other
       }
-  }
 
-  def needBraces(parExpr: PsiElement, prev: PsiElement): Boolean = {
+  def needBraces(parExpr: PsiElement, prev: PsiElement): Boolean =
     prev match {
       case tb: ScTryBlock if !tb.hasRBrace => true
       case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
@@ -1352,7 +1338,6 @@ object ScalaRefactoringUtil {
         }
       case _ => false
     }
-  }
 
   def checkForwardReferences(
       expr: ScExpression,
@@ -1415,12 +1400,11 @@ object ScalaRefactoringUtil {
 
   def inSuperConstructor(
       element: PsiElement,
-      aClass: ScTemplateDefinition): Boolean = {
+      aClass: ScTemplateDefinition): Boolean =
     aClass.extendsBlock.templateParents match {
       case Some(parents) if parents.isAncestorOf(element) => true
       case None                                           => false
     }
-  }
 
   def selectedElements(
       editor: Editor,
@@ -1492,8 +1476,7 @@ object ScalaRefactoringUtil {
   }
 
   @tailrec
-  def findEnclosingBlockStatement(
-      place: PsiElement): Option[ScBlockStatement] = {
+  def findEnclosingBlockStatement(place: PsiElement): Option[ScBlockStatement] =
     place match {
       case null => None
       case (bs: ScBlockStatement) childOf (_: ScBlock | _: ScEarlyDefinitions |
@@ -1501,7 +1484,6 @@ object ScalaRefactoringUtil {
         Some(bs)
       case other => findEnclosingBlockStatement(other.getParent)
     }
-  }
 
   private[refactoring] case class RevertInfo(fileText: String, caretOffset: Int)
 

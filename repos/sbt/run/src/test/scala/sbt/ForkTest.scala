@@ -73,7 +73,6 @@ object ForkTest extends Properties("Fork") {
 
 // Object used in the tests
 object exit {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     System.exit(java.lang.Integer.parseInt(args(0)))
-  }
 }

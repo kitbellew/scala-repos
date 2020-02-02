@@ -21,7 +21,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
         checkResult(result.toList, sorted.toList)
       }
   }
-  final def sortDirect(a: Seq[Int]): Seq[Int] = {
+  final def sortDirect(a: Seq[Int]): Seq[Int] =
     if (a.length < 2)
       a
     else {
@@ -29,8 +29,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
       val (lt, gte) = a.view.drop(1).partition(_ < pivot)
       sortDirect(lt) ++ List(pivot) ++ sortDirect(gte)
     }
-  }
-  final def sort(a: Seq[Int]): Task[Seq[Int]] = {
+  final def sort(a: Seq[Int]): Task[Seq[Int]] =
     if (a.length < 200)
       task(sortDirect(a))
     else {
@@ -42,5 +41,4 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
         }
       }
     }
-  }
 }

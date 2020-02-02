@@ -48,7 +48,7 @@ class ScalaCompletionStatistician extends CompletionStatistician {
 
   def helper(
       element: PsiNamedElement,
-      location: CompletionLocation): StatisticsInfo = {
+      location: CompletionLocation): StatisticsInfo =
     element match {
       case member: PsiMember =>
         val key = ScalaStatisticManager
@@ -69,5 +69,4 @@ class ScalaCompletionStatistician extends CompletionStatistician {
         }
       case _ => StatisticsInfo.EMPTY
     }
-  }
 }

@@ -43,10 +43,9 @@ class ScFunctionDeclarationImpl private (
 
   override def toString: String = "ScFunctionDeclaration: " + name
 
-  def returnTypeInner: TypeResult[ScType] = {
+  def returnTypeInner: TypeResult[ScType] =
     typeElement match {
       case Some(t) => t.getType(TypingContext.empty)
       case None    => Success(Unit, Some(this))
     }
-  }
 }

@@ -75,9 +75,8 @@ abstract class LAlgorithm[PD, M: ClassTag, Q, P]
     }
   }
 
-  def predictBase(localBaseModel: Any, q: Q): P = {
+  def predictBase(localBaseModel: Any, q: Q): P =
     predict(localBaseModel.asInstanceOf[M], q)
-  }
 
   /** Implement this method to produce a prediction from a query and trained
     * model.

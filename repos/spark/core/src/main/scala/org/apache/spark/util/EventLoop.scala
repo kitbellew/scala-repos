@@ -40,7 +40,7 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
   private val eventThread = new Thread(name) {
     setDaemon(true)
 
-    override def run(): Unit = {
+    override def run(): Unit =
       try {
         while (!stopped.get) {
           val event = eventQueue.take()
@@ -60,7 +60,6 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
         case ie: InterruptedException => // exit even if eventQueue is not empty
         case NonFatal(e)              => logError("Unexpected error in " + name, e)
       }
-    }
 
   }
 
@@ -73,7 +72,7 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
     eventThread.start()
   }
 
-  def stop(): Unit = {
+  def stop(): Unit =
     if (stopped.compareAndSet(false, true)) {
       eventThread.interrupt()
       var onStopCalled = false
@@ -94,14 +93,12 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
     } else {
       // Keep quiet to allow calling `stop` multiple times.
     }
-  }
 
   /**
     * Put the event into the event queue. The event thread will process it later.
     */
-  def post(event: E): Unit = {
+  def post(event: E): Unit =
     eventQueue.put(event)
-  }
 
   /**
     * Return if the event thread has already been started but not yet stopped.

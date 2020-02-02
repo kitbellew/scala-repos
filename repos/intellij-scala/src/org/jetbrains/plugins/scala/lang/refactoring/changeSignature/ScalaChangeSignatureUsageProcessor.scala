@@ -135,7 +135,7 @@ class ScalaChangeSignatureUsageProcessor
 
     def isLastUsage = !beforeMethodChange && usageInfo == usages.last
 
-    def updateNamedElements(): Unit = {
+    def updateNamedElements(): Unit =
       usages.foreach {
         case namedInfo: ScalaNamedElementUsageInfo =>
           val element = ScalaPsiUtil.nameContext(namedInfo.namedElement)
@@ -157,7 +157,6 @@ class ScalaChangeSignatureUsageProcessor
           }
         case _ =>
       }
-    }
 
     //need to add arguments from previous clauses as parameters to default argument function
     def addArgumentsToDefaultParamInJava(): Unit = {
@@ -261,7 +260,7 @@ class ScalaChangeSignatureUsageProcessor
 
   private def processNamedElementUsage(
       change: ChangeInfo,
-      usage: ScalaNamedElementUsageInfo): Unit = {
+      usage: ScalaNamedElementUsageInfo): Unit =
     usage.namedElement match {
       case fun: ScFunction if fun.isConstructor =>
         handleVisibility(change, usage)
@@ -276,7 +275,6 @@ class ScalaChangeSignatureUsageProcessor
         handleReturnTypeChange(change, usage)
         handleChangedParameters(change, usage)
     }
-  }
 
   private def findMethodRefUsages(
       named: PsiNamedElement,
@@ -314,17 +312,16 @@ class ScalaChangeSignatureUsageProcessor
   }
 
   @tailrec
-  private def fullCall(mc: ScMethodCall): ScMethodCall = {
+  private def fullCall(mc: ScMethodCall): ScMethodCall =
     mc.getParent match {
       case p: ScMethodCall if !mc.isApplyOrUpdateCall => fullCall(p)
       case _                                          => mc
     }
-  }
 
   private def findParameterUsages(
       changeInfo: JavaChangeInfo,
       method: PsiMethod,
-      results: ArrayBuffer[UsageInfo]): Unit = {
+      results: ArrayBuffer[UsageInfo]): Unit =
     for {
       paramInfo <- changeInfo.getNewParameters
       oldIdx = paramInfo.getOldIndex
@@ -338,7 +335,6 @@ class ScalaChangeSignatureUsageProcessor
     } {
       addParameterUsages(param, oldIdx, newName, results)
     }
-  }
 
   private def addParameterUsages(
       param: PsiParameter,

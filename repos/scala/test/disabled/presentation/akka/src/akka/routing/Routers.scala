@@ -44,7 +44,7 @@ abstract class UntypedDispatcher extends UntypedActor {
     self.senderFuture.isDefined || self.sender.isDefined
 
   @throws(classOf[Exception])
-  def onReceive(msg: Any): Unit = {
+  def onReceive(msg: Any): Unit =
     if (msg.isInstanceOf[Routing.Broadcast])
       broadcast(msg.asInstanceOf[Routing.Broadcast].message)
     else {
@@ -54,7 +54,6 @@ abstract class UntypedDispatcher extends UntypedActor {
       if (isSenderDefined) r.forward(transform(msg))(someSelf)
       else r.!(transform(msg))(None)
     }
-  }
 }
 
 /**

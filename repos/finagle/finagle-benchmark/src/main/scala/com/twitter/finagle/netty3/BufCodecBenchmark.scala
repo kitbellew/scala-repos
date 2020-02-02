@@ -58,19 +58,16 @@ class BufCodecBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def decodeBuf(): Seq[Buf] = {
+  def decodeBuf(): Seq[Buf] =
     TwitterBuf.decode(encodedBuf)
-  }
 
   @Benchmark
-  def roundTripCB(): Seq[ChannelBuffer] = {
+  def roundTripCB(): Seq[ChannelBuffer] =
     NettyChannelBuffer.decode(NettyChannelBuffer.encode(cbs))
-  }
 
   @Benchmark
-  def roundTripBuf(): Seq[Buf] = {
+  def roundTripBuf(): Seq[Buf] =
     TwitterBuf.decode(TwitterBuf.encode(bufs))
-  }
 }
 
 object BufCodecBenchmark {

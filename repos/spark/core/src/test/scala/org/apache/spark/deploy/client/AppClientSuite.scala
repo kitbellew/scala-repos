@@ -76,7 +76,7 @@ class AppClientSuite
     }
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       workerRpcEnvs.foreach(_.shutdown())
       masterRpcEnv.shutdown()
@@ -89,7 +89,6 @@ class AppClientSuite
     } finally {
       super.afterAll()
     }
-  }
 
   test("interface methods of AppClient using local Master") {
     val ci = new AppClientInst(masterRpcEnv.address.toSparkURL)
@@ -148,12 +147,11 @@ class AppClientSuite
   // ===============================
 
   /** Return a SparkConf for applications that want to talk to our Master. */
-  private def appConf: SparkConf = {
+  private def appConf: SparkConf =
     new SparkConf()
       .setMaster(masterRpcEnv.address.toSparkURL)
       .setAppName("test")
       .set("spark.executor.memory", "256m")
-  }
 
   /** Make a master to which our application will send executor requests. */
   private def makeMaster(): Master = {
@@ -164,7 +162,7 @@ class AppClientSuite
   }
 
   /** Make a few workers that talk to our master. */
-  private def makeWorkers(cores: Int, memory: Int): Seq[Worker] = {
+  private def makeWorkers(cores: Int, memory: Int): Seq[Worker] =
     (0 until numWorkers).map { i =>
       val rpcEnv = workerRpcEnvs(i)
       val worker = new Worker(
@@ -180,17 +178,14 @@ class AppClientSuite
       rpcEnv.setupEndpoint(Worker.ENDPOINT_NAME, worker)
       worker
     }
-  }
 
   /** Get the Master state */
-  private def getMasterState: MasterStateResponse = {
+  private def getMasterState: MasterStateResponse =
     master.self.askWithRetry[MasterStateResponse](RequestMasterState)
-  }
 
   /** Get the applications that are active from Master */
-  private def getApplications(): Seq[ApplicationInfo] = {
+  private def getApplications(): Seq[ApplicationInfo] =
     getMasterState.activeApps
-  }
 
   /** Application Listener to collect events */
   private class AppClientCollector extends AppClientListener with Logging {
@@ -200,35 +195,30 @@ class AppClientSuite
     val execAddedList = new ConcurrentLinkedQueue[String]()
     val execRemovedList = new ConcurrentLinkedQueue[String]()
 
-    def connected(id: String): Unit = {
+    def connected(id: String): Unit =
       connectedIdList.add(id)
-    }
 
-    def disconnected(): Unit = {
+    def disconnected(): Unit =
       synchronized {
         disconnectedCount += 1
       }
-    }
 
-    def dead(reason: String): Unit = {
+    def dead(reason: String): Unit =
       deadReasonList.add(reason)
-    }
 
     def executorAdded(
         id: String,
         workerId: String,
         hostPort: String,
         cores: Int,
-        memory: Int): Unit = {
+        memory: Int): Unit =
       execAddedList.add(id)
-    }
 
     def executorRemoved(
         id: String,
         message: String,
-        exitStatus: Option[Int]): Unit = {
+        exitStatus: Option[Int]): Unit =
       execRemovedList.add(id)
-    }
   }
 
   /** Create AppClient and supporting objects */

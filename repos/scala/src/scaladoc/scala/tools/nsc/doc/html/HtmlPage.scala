@@ -197,7 +197,7 @@ abstract class HtmlPage extends Page { thisPage =>
 
   def typeToHtml(tpe: model.TypeEntity, hasLinks: Boolean): NodeSeq = {
     val string = tpe.name
-    def toLinksOut(inPos: Int, starts: List[Int]): NodeSeq = {
+    def toLinksOut(inPos: Int, starts: List[Int]): NodeSeq =
       if (starts.isEmpty && (inPos == string.length))
         NodeSeq.Empty
       else if (starts.isEmpty)
@@ -209,7 +209,6 @@ abstract class HtmlPage extends Page { thisPage =>
           starts.head,
           starts)
       }
-    }
     def toLinksIn(inPos: Int, starts: List[Int]): NodeSeq = {
       val (link, width) = tpe.refEntity(inPos)
       val text = comment.Text(string.slice(inPos, inPos + width))
@@ -231,9 +230,8 @@ abstract class HtmlPage extends Page { thisPage =>
       typeToHtml(tpe, hasLinks) ++ sep ++ typesToHtml(tpes, hasLinks, sep)
   }
 
-  def hasPage(e: DocTemplateEntity) = {
+  def hasPage(e: DocTemplateEntity) =
     e.isPackage || e.isTrait || e.isClass || e.isObject || e.isCaseClass
-  }
 
   /** Returns the HTML code that represents the template in `tpl` as a hyperlinked name. */
   def templateToHtml(tpl: TemplateEntity, name: String = null) = tpl match {

@@ -70,9 +70,8 @@ final class Master(frameworkName: String) extends BridgeBase(frameworkName) {
 
   // Utility methods
 
-  private def ensureRunnerExists(): Unit = {
+  private def ensureRunnerExists(): Unit =
     if (runner == null)
       throw new IllegalStateException("No runner created")
-  }
 
 }

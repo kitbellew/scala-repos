@@ -75,7 +75,7 @@ trait ScriptedTest extends Matchers {
     def consumeOutput(out: Out): Script[In, Out] = {
       if (noOutsPending)
         throw new ScriptException(
-          s"Tried to produce element ${out} but no elements should be produced right now.")
+          s"Tried to produce element $out but no elements should be produced right now.")
       out should be(expectedOutputs(outputCursor))
       new Script(
         providedInputs,
@@ -87,7 +87,7 @@ trait ScriptedTest extends Matchers {
         completed)
     }
 
-    def complete(): Script[In, Out] = {
+    def complete(): Script[In, Out] =
       if (finished)
         new Script(
           providedInputs,
@@ -98,7 +98,6 @@ trait ScriptedTest extends Matchers {
           outputEndCursor,
           completed = true)
       else fail("received onComplete prematurely")
-    }
 
     def finished: Boolean = outputCursor == expectedOutputs.size
 
@@ -198,7 +197,7 @@ trait ScriptedTest extends Matchers {
           val tieBreak = ThreadLocalRandom.current().nextBoolean()
           if (mayProvideInput && (!mayRequestMore || tieBreak)) {
             val (input, nextScript) = currentScript.provideInput
-            debugLog(s"test environment produces [${input}]")
+            debugLog(s"test environment produces [$input]")
             pendingRequests -= 1
             currentScript = nextScript
             upstreamSubscription.sendNext(input)
@@ -242,7 +241,7 @@ trait ScriptedTest extends Matchers {
       maximumOverrun: Int = 3,
       maximumRequest: Int = 3,
       maximumBuffer: Int = 3)(op: Flow[In, In, NotUsed] ⇒ Flow[In, Out, M])(
-      implicit system: ActorSystem): Unit = {
+      implicit system: ActorSystem): Unit =
     new ScriptRunner(
       op,
       settings,
@@ -250,6 +249,5 @@ trait ScriptedTest extends Matchers {
       maximumOverrun,
       maximumRequest,
       maximumBuffer).run()
-  }
 
 }

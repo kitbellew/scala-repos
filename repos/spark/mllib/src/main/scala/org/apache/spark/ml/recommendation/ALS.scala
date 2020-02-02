@@ -472,9 +472,8 @@ class ALS(@Since("1.4.0") override val uid: String)
   }
 
   @Since("1.3.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     validateAndTransformSchema(schema)
-  }
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): ALS = defaultCopy(extra)
@@ -552,7 +551,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     private var ata: Array[Double] = _
     private var initialized: Boolean = false
 
-    private def initialize(rank: Int): Unit = {
+    private def initialize(rank: Int): Unit =
       if (!initialized) {
         this.rank = rank
         workspace = NNLS.createWorkspace(rank)
@@ -561,7 +560,6 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       } else {
         require(this.rank == rank)
       }
-    }
 
     /**
       * Solves a nonnegative least squares problem with L2 regularization:
@@ -887,7 +885,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   private def initialize[ID](
       inBlocks: RDD[(Int, InBlock[ID])],
       rank: Int,
-      seed: Long): RDD[(Int, FactorBlock)] = {
+      seed: Long): RDD[(Int, FactorBlock)] =
     // Choose a unit vector uniformly at random from the unit sphere, but from the
     // "first quadrant" where all elements are nonnegative. This can be done by choosing
     // elements distributed as Normal(0,1) and taking the absolute value, and then normalizing.
@@ -904,7 +902,6 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         }
         (srcBlockId, factors)
     }
-  }
 
   /**
     * A rating block that contains src IDs, dst IDs, and ratings, stored in primitive arrays.
@@ -952,9 +949,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     }
 
     /** Builds a [[RatingBlock]]. */
-    def build(): RatingBlock[ID] = {
+    def build(): RatingBlock[ID] =
       RatingBlock[ID](srcIds.result(), dstIds.result(), ratings.result())
-    }
   }
 
   /**
@@ -1054,12 +1050,11 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     }
 
     /** Builds a [[UncompressedInBlock]]. */
-    def build(): UncompressedInBlock[ID] = {
+    def build(): UncompressedInBlock[ID] =
       new UncompressedInBlock(
         srcIds.result(),
         dstEncodedIndices.result(),
         ratings.result())
-    }
   }
 
   /**
@@ -1142,9 +1137,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     var key: ID = _
 
-    override def compare(that: KeyWrapper[ID]): Int = {
+    override def compare(that: KeyWrapper[ID]): Int =
       ord.compare(key, that.key)
-    }
 
     def setKey(key: ID): this.type = {
       this.key = key
@@ -1164,19 +1158,17 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     override def getKey(
         data: UncompressedInBlock[ID],
         pos: Int,
-        reuse: KeyWrapper[ID]): KeyWrapper[ID] = {
+        reuse: KeyWrapper[ID]): KeyWrapper[ID] =
       if (reuse == null) {
         new KeyWrapper().setKey(data.srcIds(pos))
       } else {
         reuse.setKey(data.srcIds(pos))
       }
-    }
 
     override def getKey(
         data: UncompressedInBlock[ID],
-        pos: Int): KeyWrapper[ID] = {
+        pos: Int): KeyWrapper[ID] =
       getKey(data, pos, null)
-    }
 
     private def swapElements[@specialized(Int, Float) T](
         data: Array[T],
@@ -1212,12 +1204,11 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       System.arraycopy(src.ratings, srcPos, dst.ratings, dstPos, length)
     }
 
-    override def allocate(length: Int): UncompressedInBlock[ID] = {
+    override def allocate(length: Int): UncompressedInBlock[ID] =
       new UncompressedInBlock(
         new Array[ID](length),
         new Array[Int](length),
         new Array[Float](length))
-    }
 
     override def copyElement(
         src: UncompressedInBlock[ID],
@@ -1407,14 +1398,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     */
   private def computeYtY(
       factorBlocks: RDD[(Int, FactorBlock)],
-      rank: Int): NormalEquation = {
+      rank: Int): NormalEquation =
     factorBlocks.values.aggregate(new NormalEquation(rank))(
       seqOp = (ne, factors) => {
         factors.foreach(ne.add(_, 0.0))
         ne
       },
       combOp = (ne1, ne2) => ne1.merge(ne2))
-  }
 
   /**
     * Encoder for storing (blockId, localIndex) into a single integer.
@@ -1443,15 +1433,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     /** Gets the block id from an encoded index. */
     @inline
-    def blockId(encoded: Int): Int = {
+    def blockId(encoded: Int): Int =
       encoded >>> numLocalIndexBits
-    }
 
     /** Gets the local index from an encoded index. */
     @inline
-    def localIndex(encoded: Int): Int = {
+    def localIndex(encoded: Int): Int =
       encoded & localIndexMask
-    }
   }
 
   /**

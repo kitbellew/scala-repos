@@ -355,13 +355,12 @@ object BigDecimalRootRefinement {
         y1: JBigDecimal,
         x2: JBigDecimal,
         y2: JBigDecimal
-    ): Approximation = {
+    ): Approximation =
       if (y0.signum == 0) ExactRoot(x0)
       else if (y1.signum == 0) ExactRoot(x1)
       else if (y2.signum == 0) ExactRoot(x2)
       else if (y0.sign != y1.sign) loop(x0, y0, x1, y1, 1)
       else loop(x1, y1, x2, y2, 1)
-    }
 
     def loop0(
         x0: JBigDecimal,

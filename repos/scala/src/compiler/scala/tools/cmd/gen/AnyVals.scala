@@ -18,10 +18,9 @@ trait AnyValReps {
 
     case class Op(op: String, doc: String)
 
-    private def companionCoercions(tos: AnyValRep*) = {
+    private def companionCoercions(tos: AnyValRep*) =
       tos.toList map (to =>
         s"implicit def @javaequiv@2${to.javaEquiv}(x: @name@): ${to.name} = x.to${to.name}")
-    }
     def coercionComment =
       """/** Language mandated coercions from @name@ to "wider" types. */
 import scala.language.implicitConversions"""

@@ -118,13 +118,12 @@ class SQLContext private[sql] (
     *
     * @since 1.6.0
     */
-  def newSession(): SQLContext = {
+  def newSession(): SQLContext =
     new SQLContext(
       sparkContext = sparkContext,
       cacheManager = cacheManager,
       listener = listener,
       isRootContext = false)
-  }
 
   /**
     * Per-session state, e.g. configuration, functions, temporary tables etc.
@@ -179,9 +178,8 @@ class SQLContext private[sql] (
     * yet, return `defaultValue`. This is useful when `defaultValue` in SQLConfEntry is not the
     * desired one.
     */
-  private[sql] def getConf[T](entry: SQLConfEntry[T], defaultValue: T): T = {
+  private[sql] def getConf[T](entry: SQLConfEntry[T], defaultValue: T): T =
     conf.getConf(entry, defaultValue)
-  }
 
   /**
     * Return the value of Spark SQL configuration property for the given key. If the key is not set
@@ -214,9 +212,8 @@ class SQLContext private[sql] (
   /**
     * Add a jar to SQLContext
     */
-  protected[sql] def addJar(path: String): Unit = {
+  protected[sql] def addJar(path: String): Unit =
     sparkContext.addJar(path)
-  }
 
   {
     // We extract spark sql settings from SparkContext's conf and put them to
@@ -303,27 +300,24 @@ class SQLContext private[sql] (
     * @group cachemgmt
     * @since 1.3.0
     */
-  def isCached(tableName: String): Boolean = {
+  def isCached(tableName: String): Boolean =
     cacheManager.lookupCachedData(table(tableName)).nonEmpty
-  }
 
   /**
     * Returns true if the [[Queryable]] is currently cached in-memory.
     * @group cachemgmt
     * @since 1.3.0
     */
-  private[sql] def isCached(qName: Queryable): Boolean = {
+  private[sql] def isCached(qName: Queryable): Boolean =
     cacheManager.lookupCachedData(qName).nonEmpty
-  }
 
   /**
     * Caches the specified table in-memory.
     * @group cachemgmt
     * @since 1.3.0
     */
-  def cacheTable(tableName: String): Unit = {
+  def cacheTable(tableName: String): Unit =
     cacheManager.cacheQuery(table(tableName), Some(tableName))
-  }
 
   /**
     * Removes the specified table from the in-memory cache.
@@ -365,9 +359,8 @@ class SQLContext private[sql] (
       */
     // This must live here to preserve binary compatibility with Spark < 1.5.
     implicit class StringToColumn(val sc: StringContext) {
-      def $(args: Any*): ColumnName = {
+      def $(args: Any*): ColumnName =
         new ColumnName(sc.s(args: _*))
-      }
     }
   }
   // scalastyle:on
@@ -409,9 +402,8 @@ class SQLContext private[sql] (
     * @group dataframes
     * @since 1.3.0
     */
-  def baseRelationToDataFrame(baseRelation: BaseRelation): DataFrame = {
+  def baseRelationToDataFrame(baseRelation: BaseRelation): DataFrame =
     Dataset.newDataFrame(this, LogicalRelation(baseRelation))
-  }
 
   /**
     * :: DeveloperApi ::
@@ -446,9 +438,8 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   @DeveloperApi
-  def createDataFrame(rowRDD: RDD[Row], schema: StructType): DataFrame = {
+  def createDataFrame(rowRDD: RDD[Row], schema: StructType): DataFrame =
     createDataFrame(rowRDD, schema, needsConversion = true)
-  }
 
   /**
     * Creates a DataFrame from an RDD[Row]. User can specify whether the input rows should be
@@ -488,9 +479,8 @@ class SQLContext private[sql] (
     Dataset[T](this, plan)
   }
 
-  def createDataset[T: Encoder](data: java.util.List[T]): Dataset[T] = {
+  def createDataset[T: Encoder](data: java.util.List[T]): Dataset[T] =
     createDataset(data.asScala)
-  }
 
   /**
     * Creates a DataFrame from an RDD[Row]. User can specify whether the input rows should be
@@ -515,9 +505,8 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   @DeveloperApi
-  def createDataFrame(rowRDD: JavaRDD[Row], schema: StructType): DataFrame = {
+  def createDataFrame(rowRDD: JavaRDD[Row], schema: StructType): DataFrame =
     createDataFrame(rowRDD.rdd, schema)
-  }
 
   /**
     * :: DeveloperApi ::
@@ -531,11 +520,10 @@ class SQLContext private[sql] (
   @DeveloperApi
   def createDataFrame(
       rows: java.util.List[Row],
-      schema: StructType): DataFrame = {
+      schema: StructType): DataFrame =
     Dataset.newDataFrame(
       self,
       LocalRelation.fromExternalRows(schema.toAttributes, rows.asScala))
-  }
 
   /**
     * Applies a schema to an RDD of Java Beans.
@@ -565,9 +553,8 @@ class SQLContext private[sql] (
     * @group dataframes
     * @since 1.3.0
     */
-  def createDataFrame(rdd: JavaRDD[_], beanClass: Class[_]): DataFrame = {
+  def createDataFrame(rdd: JavaRDD[_], beanClass: Class[_]): DataFrame =
     createDataFrame(rdd.rdd, beanClass)
-  }
 
   /**
     * Applies a schema to an List of Java Beans.
@@ -627,9 +614,8 @@ class SQLContext private[sql] (
   def createExternalTable(
       tableName: String,
       path: String,
-      source: String): DataFrame = {
+      source: String): DataFrame =
     createExternalTable(tableName, source, Map("path" -> path))
-  }
 
   /**
     * :: Experimental ::
@@ -643,9 +629,8 @@ class SQLContext private[sql] (
   def createExternalTable(
       tableName: String,
       source: String,
-      options: java.util.Map[String, String]): DataFrame = {
+      options: java.util.Map[String, String]): DataFrame =
     createExternalTable(tableName, source, options.asScala.toMap)
-  }
 
   /**
     * :: Experimental ::
@@ -688,9 +673,8 @@ class SQLContext private[sql] (
       tableName: String,
       source: String,
       schema: StructType,
-      options: java.util.Map[String, String]): DataFrame = {
+      options: java.util.Map[String, String]): DataFrame =
     createExternalTable(tableName, source, schema, options.asScala.toMap)
-  }
 
   /**
     * :: Experimental ::
@@ -727,11 +711,10 @@ class SQLContext private[sql] (
     */
   private[sql] def registerDataFrameAsTable(
       df: DataFrame,
-      tableName: String): Unit = {
+      tableName: String): Unit =
     sessionState.catalog.registerTable(
       sessionState.sqlParser.parseTableIdentifier(tableName),
       df.logicalPlan)
-  }
 
   /**
     * Drops the temporary table with the given table name in the catalog. If the table has been
@@ -766,9 +749,8 @@ class SQLContext private[sql] (
     * @group dataset
     */
   @Experimental
-  def range(start: Long, end: Long): Dataset[Long] = {
+  def range(start: Long, end: Long): Dataset[Long] =
     range(start, end, step = 1, numPartitions = sparkContext.defaultParallelism)
-  }
 
   /**
     * :: Experimental ::
@@ -779,9 +761,8 @@ class SQLContext private[sql] (
     * @group dataset
     */
   @Experimental
-  def range(start: Long, end: Long, step: Long): Dataset[Long] = {
+  def range(start: Long, end: Long, step: Long): Dataset[Long] =
     range(start, end, step, numPartitions = sparkContext.defaultParallelism)
-  }
 
   /**
     * :: Experimental ::
@@ -797,12 +778,11 @@ class SQLContext private[sql] (
       start: Long,
       end: Long,
       step: Long,
-      numPartitions: Int): Dataset[Long] = {
+      numPartitions: Int): Dataset[Long] =
     new Dataset(
       this,
       Range(start, end, step, numPartitions),
       implicits.newLongEncoder)
-  }
 
   /**
     * Executes a SQL query using Spark, returning the result as a [[DataFrame]]. The dialect that is
@@ -811,18 +791,16 @@ class SQLContext private[sql] (
     * @group basic
     * @since 1.3.0
     */
-  def sql(sqlText: String): DataFrame = {
+  def sql(sqlText: String): DataFrame =
     Dataset.newDataFrame(this, parseSql(sqlText))
-  }
 
   /**
     * Executes a SQL query without parsing it, but instead passing it directly to an underlying
     * system to process. This is currently only used for Hive DDLs and will be removed as soon
     * as Spark can parse all supported Hive DDLs itself.
     */
-  private[sql] def runNativeSql(sqlText: String): Seq[Row] = {
+  private[sql] def runNativeSql(sqlText: String): Seq[Row] =
     throw new UnsupportedOperationException
-  }
 
   /**
     * Returns the specified table as a [[DataFrame]].
@@ -830,13 +808,11 @@ class SQLContext private[sql] (
     * @group ddl_ops
     * @since 1.3.0
     */
-  def table(tableName: String): DataFrame = {
+  def table(tableName: String): DataFrame =
     table(sessionState.sqlParser.parseTableIdentifier(tableName))
-  }
 
-  private def table(tableIdent: TableIdentifier): DataFrame = {
+  private def table(tableIdent: TableIdentifier): DataFrame =
     Dataset.newDataFrame(this, sessionState.catalog.lookupRelation(tableIdent))
-  }
 
   /**
     * Returns a [[DataFrame]] containing names of existing tables in the current database.
@@ -846,9 +822,8 @@ class SQLContext private[sql] (
     * @group ddl_ops
     * @since 1.3.0
     */
-  def tables(): DataFrame = {
+  def tables(): DataFrame =
     Dataset.newDataFrame(this, ShowTablesCommand(None))
-  }
 
   /**
     * Returns a [[DataFrame]] containing names of existing tables in the given database.
@@ -858,9 +833,8 @@ class SQLContext private[sql] (
     * @group ddl_ops
     * @since 1.3.0
     */
-  def tables(databaseName: String): DataFrame = {
+  def tables(databaseName: String): DataFrame =
     Dataset.newDataFrame(this, ShowTablesCommand(Some(databaseName)))
-  }
 
   /**
     * Returns a [[ContinuousQueryManager]] that allows managing all the
@@ -876,14 +850,13 @@ class SQLContext private[sql] (
     * @group ddl_ops
     * @since 1.3.0
     */
-  def tableNames(): Array[String] = {
+  def tableNames(): Array[String] =
     sessionState.catalog
       .getTables(None)
       .map {
         case (tableName, _) => tableName
       }
       .toArray
-  }
 
   /**
     * Returns the names of tables in the given database as an array.
@@ -891,14 +864,13 @@ class SQLContext private[sql] (
     * @group ddl_ops
     * @since 1.3.0
     */
-  def tableNames(databaseName: String): Array[String] = {
+  def tableNames(databaseName: String): Array[String] =
     sessionState.catalog
       .getTables(Some(databaseName))
       .map {
         case (tableName, _) => tableName
       }
       .toArray
-  }
 
   @transient
   protected[sql] lazy val emptyResult =
@@ -909,9 +881,8 @@ class SQLContext private[sql] (
     * have the same format as the one generated by `toString` in scala.
     * It is only used by PySpark.
     */
-  protected[sql] def parseDataType(dataTypeString: String): DataType = {
+  protected[sql] def parseDataType(dataTypeString: String): DataType =
     DataType.fromJson(dataTypeString)
-  }
 
   /**
     * Apply a schema defined by the schemaString to an RDD. It is only used by PySpark.
@@ -1009,26 +980,22 @@ object SQLContext {
     }
   }
 
-  private[sql] def clearInstantiatedContext(): Unit = {
+  private[sql] def clearInstantiatedContext(): Unit =
     instantiatedContext.set(null)
-  }
 
-  private[sql] def setInstantiatedContext(sqlContext: SQLContext): Unit = {
+  private[sql] def setInstantiatedContext(sqlContext: SQLContext): Unit =
     synchronized {
       val ctx = instantiatedContext.get()
       if (ctx == null || ctx.sparkContext.isStopped) {
         instantiatedContext.set(sqlContext)
       }
     }
-  }
 
-  private[sql] def getInstantiatedContextOption(): Option[SQLContext] = {
+  private[sql] def getInstantiatedContextOption(): Option[SQLContext] =
     Option(instantiatedContext.get())
-  }
 
-  private[sql] def clearSqlListener(): Unit = {
+  private[sql] def clearSqlListener(): Unit =
     sqlListener.set(null)
-  }
 
   /**
     * Changes the SQLContext that will be returned in this thread and its children when
@@ -1037,9 +1004,8 @@ object SQLContext {
     *
     * @since 1.6.0
     */
-  def setActive(sqlContext: SQLContext): Unit = {
+  def setActive(sqlContext: SQLContext): Unit =
     activeContext.set(sqlContext)
-  }
 
   /**
     * Clears the active SQLContext for current thread. Subsequent calls to getOrCreate will
@@ -1047,13 +1013,11 @@ object SQLContext {
     *
     * @since 1.6.0
     */
-  def clearActive(): Unit = {
+  def clearActive(): Unit =
     activeContext.remove()
-  }
 
-  private[sql] def getActive(): Option[SQLContext] = {
+  private[sql] def getActive(): Option[SQLContext] =
     Option(activeContext.get())
-  }
 
   /**
     * Converts an iterator of Java Beans to InternalRow using the provided

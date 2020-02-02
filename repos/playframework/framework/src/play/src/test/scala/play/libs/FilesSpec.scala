@@ -66,11 +66,10 @@ object FilesSpec extends Specification with After {
             ApplicationLoader.getClass.getClassLoader,
             Mode.Test))
         val appLoader = new ApplicationLoader {
-          def load(context: Context) = {
+          def load(context: Context) =
             (new BuiltInComponentsFromContext(context) {
               lazy val router = Router.empty
             }).application
-          }
         }
         val app = appLoader.load(context)
         Play.start(app)
@@ -124,7 +123,7 @@ object FilesSpec extends Specification with After {
   }
 
   private def retry[T](block: => T): T = {
-    def step(attempt: Int): T = {
+    def step(attempt: Int): T =
       try {
         block
       } catch {
@@ -132,7 +131,6 @@ object FilesSpec extends Specification with After {
           Thread.sleep(10)
           step(attempt + 1)
       }
-    }
     step(0)
   }
 }

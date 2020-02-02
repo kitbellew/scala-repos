@@ -36,9 +36,8 @@ with AbstractTestConfigurationProducer {
   override def findExistingByElement(
       location: Location[_ <: PsiElement],
       existingConfigurations: Array[RunnerAndConfigurationSettings],
-      context: ConfigurationContext): RunnerAndConfigurationSettings = {
+      context: ConfigurationContext): RunnerAndConfigurationSettings =
     super.findExistingByElement(location, existingConfigurations, context)
-  }
 
   override def createConfigurationByLocation(
       location: Location[_ <: PsiElement])
@@ -150,14 +149,12 @@ with AbstractTestConfigurationProducer {
     }
   }
 
-  private def extractStaticTestName(
-      testDefExpr: ScInfixExpr): Option[String] = {
+  private def extractStaticTestName(testDefExpr: ScInfixExpr): Option[String] =
     testDefExpr.getChildren
       .filter(_.isInstanceOf[ScExpression])
       .map(_.asInstanceOf[ScExpression])
       .headOption
       .flatMap(TestConfigurationUtil.getStaticTestName(_))
-  }
 
   def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {

@@ -332,9 +332,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @param from Beginning offset
     * @param until Ending offset
     */
-  def slice(from: Int, until: Int, stride: Int = 1): Series[X, T] = {
+  def slice(from: Int, until: Int, stride: Int = 1): Series[X, T] =
     Series(values.slice(from, until, stride), index.slice(from, until, stride))
-  }
 
   /**
     * Given int offets to take, form a new series from the keys and values found
@@ -633,7 +632,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @param f Function Series[X, T] => B to operate on sliding window
     * @tparam B Result type of function
     */
-  def rolling[B: ST](winSz: Int, f: Series[X, T] => B): Series[X, B] = {
+  def rolling[B: ST](winSz: Int, f: Series[X, T] => B): Series[X, B] =
     if (winSz <= 0)
       Series.empty[X, B]
     else {
@@ -647,7 +646,6 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       }
       Series(Vec(buf), index.slice(win - 1, len))
     }
-  }
 
   /**
     * Split Series into two series at position i

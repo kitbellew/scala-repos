@@ -68,11 +68,10 @@ trait PartitionMergeSpec[M[+_]]
       tbl.partitionMerge(DerefObjectStatic(Leaf(Source), CPathField("key"))) {
         table =>
           val reducer = new Reducer[String] {
-            def reduce(schema: CSchema, range: Range): String = {
+            def reduce(schema: CSchema, range: Range): String =
               schema.columns(JTextT).head match {
                 case col: StrColumn => range.map(col).mkString(";")
               }
-            }
           }
 
           val derefed = table.transform(

@@ -15,7 +15,7 @@ object InetSocketAddressUtil {
     new SocketAddress { override def toString = "unconnected" }
 
   /** converts 0.0.0.0 -> public ip in bound ip */
-  def toPublic(bound: SocketAddress): SocketAddress = {
+  def toPublic(bound: SocketAddress): SocketAddress =
     bound match {
       case addr: InetSocketAddress if addr.getAddress().isAnyLocalAddress() =>
         val host =
@@ -26,7 +26,6 @@ object InetSocketAddressUtil {
         new InetSocketAddress(host, addr.getPort())
       case _ => bound
     }
-  }
 
   /**
     * Parses a comma or space-delimited string of hostname and port pairs into scala pairs.

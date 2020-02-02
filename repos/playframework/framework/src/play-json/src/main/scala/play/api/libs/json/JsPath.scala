@@ -137,7 +137,7 @@ object JsPath extends JsPath(List.empty) {
   def createObj(pathValues: (JsPath, JsValue)*) = {
 
     def buildSubPath(path: JsPath, value: JsValue) = {
-      def step(path: List[PathNode], value: JsValue): JsObject = {
+      def step(path: List[PathNode], value: JsValue): JsObject =
         path match {
           case List() =>
             value match {
@@ -157,7 +157,6 @@ object JsPath extends JsPath(List.empty) {
               case _                => throw new RuntimeException("expected KeyPathNode")
             }
         }
-      }
 
       step(path.path, value)
     }
@@ -237,18 +236,17 @@ case class JsPath(path: List[PathNode] = List()) {
     * Simple Prune for simple path and only JsObject
     */
   def prune(js: JsValue) = {
-    def stepNode(json: JsObject, node: PathNode): JsResult[JsObject] = {
+    def stepNode(json: JsObject, node: PathNode): JsResult[JsObject] =
       node match {
         case KeyPathNode(key) => JsSuccess(json - key)
         case _ =>
           JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }
-    }
 
     def filterPathNode(
         json: JsObject,
         node: PathNode,
-        value: JsValue): JsResult[JsObject] = {
+        value: JsValue): JsResult[JsObject] =
       node match {
         case KeyPathNode(key) =>
           JsSuccess(
@@ -257,9 +255,8 @@ case class JsPath(path: List[PathNode] = List()) {
         case _ =>
           JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }
-    }
 
-    def step(json: JsObject, lpath: JsPath): JsResult[JsObject] = {
+    def step(json: JsObject, lpath: JsPath): JsResult[JsObject] =
       lpath.path match {
         case Nil     => JsSuccess(json)
         case List(p) => stepNode(json, p).repath(lpath)
@@ -279,7 +276,6 @@ case class JsPath(path: List[PathNode] = List()) {
               JsError(lpath, ValidationError("error.path.result.multiple"))
           }
       }
-    }
 
     js match {
       case o: JsObject =>

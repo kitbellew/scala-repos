@@ -65,7 +65,7 @@ class MapWithStateSuite
     sc = new SparkContext(conf)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       if (sc != null) {
         sc.stop()
@@ -73,7 +73,6 @@ class MapWithStateSuite
     } finally {
       super.afterAll()
     }
-  }
 
   test("state - get, exists, update, remove, ") {
     var state: StateImpl[Int] = null

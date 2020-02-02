@@ -12,14 +12,13 @@ class SideEffectsInMonadicTransformationTest
   override def hint: String =
     InspectionBundle.message("side.effects.in.monadic")
 
-  def testInfixAssignment(): Unit = {
+  def testInfixAssignment(): Unit =
     check(s"""
         |var a = 0
         |Seq(1, 2).map(${START}a += _$END)
       """.stripMargin)
-  }
 
-  def testAssignment(): Unit = {
+  def testAssignment(): Unit =
     check(s"""
          |var filtered = 0
          |Seq(1, 2).filter { x =>
@@ -30,9 +29,8 @@ class SideEffectsInMonadicTransformationTest
          |  else false
          |}
        """.stripMargin)
-  }
 
-  def testInnerVar(): Unit = {
+  def testInnerVar(): Unit =
     checkTextHasNoErrors("""
         |Seq(1, 2).map { x =>
         |  var b = true
@@ -42,9 +40,8 @@ class SideEffectsInMonadicTransformationTest
         |  x + 1
         |}
       """.stripMargin)
-  }
 
-  def testIteratorNext(): Unit = {
+  def testIteratorNext(): Unit =
     check(
       s"""
         |val it = Iterator(1, 2)
@@ -54,7 +51,6 @@ class SideEffectsInMonadicTransformationTest
         |}
       """.stripMargin
     )
-  }
 
   def testCollectionMethods(): Unit = {
     check(

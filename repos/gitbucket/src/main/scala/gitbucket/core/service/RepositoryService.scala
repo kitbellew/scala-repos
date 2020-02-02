@@ -222,9 +222,9 @@ trait RepositoryService { self: AccountService =>
         // Update activity messages
         Activities
           .filter { t =>
-            (t.message like s"%:${oldUserName}/${oldRepositoryName}]%") ||
-            (t.message like s"%:${oldUserName}/${oldRepositoryName}#%") ||
-            (t.message like s"%:${oldUserName}/${oldRepositoryName}@%")
+            (t.message like s"%:$oldUserName/$oldRepositoryName]%") ||
+            (t.message like s"%:$oldUserName/$oldRepositoryName#%") ||
+            (t.message like s"%:$oldUserName/$oldRepositoryName@%")
           }
           .map { t => t.activityId -> t.message }
           .list
@@ -236,23 +236,23 @@ trait RepositoryService { self: AccountService =>
                 .update(
                   message
                     .replace(
-                      s"[repo:${oldUserName}/${oldRepositoryName}]",
-                      s"[repo:${newUserName}/${newRepositoryName}]")
+                      s"[repo:$oldUserName/$oldRepositoryName]",
+                      s"[repo:$newUserName/$newRepositoryName]")
                     .replace(
-                      s"[branch:${oldUserName}/${oldRepositoryName}#",
-                      s"[branch:${newUserName}/${newRepositoryName}#")
+                      s"[branch:$oldUserName/$oldRepositoryName#",
+                      s"[branch:$newUserName/$newRepositoryName#")
                     .replace(
-                      s"[tag:${oldUserName}/${oldRepositoryName}#",
-                      s"[tag:${newUserName}/${newRepositoryName}#")
+                      s"[tag:$oldUserName/$oldRepositoryName#",
+                      s"[tag:$newUserName/$newRepositoryName#")
                     .replace(
-                      s"[pullreq:${oldUserName}/${oldRepositoryName}#",
-                      s"[pullreq:${newUserName}/${newRepositoryName}#")
+                      s"[pullreq:$oldUserName/$oldRepositoryName#",
+                      s"[pullreq:$newUserName/$newRepositoryName#")
                     .replace(
-                      s"[issue:${oldUserName}/${oldRepositoryName}#",
-                      s"[issue:${newUserName}/${newRepositoryName}#")
+                      s"[issue:$oldUserName/$oldRepositoryName#",
+                      s"[issue:$newUserName/$newRepositoryName#")
                     .replace(
-                      s"[commit:${oldUserName}/${oldRepositoryName}@",
-                      s"[commit:${newUserName}/${newRepositoryName}@")
+                      s"[commit:$oldUserName/$oldRepositoryName@",
+                      s"[commit:$newUserName/$newRepositoryName@")
                 )
           }
       }
@@ -324,7 +324,7 @@ trait RepositoryService { self: AccountService =>
     * @return the repository information
     */
   def getRepository(userName: String, repositoryName: String)(
-      implicit s: Session): Option[RepositoryInfo] = {
+      implicit s: Session): Option[RepositoryInfo] =
     (Repositories filter { t => t.byRepository(userName, repositoryName) } firstOption) map {
       repository =>
         // for getting issue count and pull request count
@@ -347,7 +347,6 @@ trait RepositoryService { self: AccountService =>
           ),
           getRepositoryManagers(repository.userName))
     }
-  }
 
   /**
     * Returns the repositories without private repository that user does not have access right.
@@ -357,7 +356,7 @@ trait RepositoryService { self: AccountService =>
     * @return the repository infomation list
     */
   def getAllRepositories(userName: String)(
-      implicit s: Session): List[(String, String)] = {
+      implicit s: Session): List[(String, String)] =
     Repositories
       .filter { t1 =>
         (t1.isPrivate === false.bind) ||
@@ -369,12 +368,11 @@ trait RepositoryService { self: AccountService =>
       .sortBy(_.lastActivityDate desc)
       .map { t => (t.userName, t.repositoryName) }
       .list
-  }
 
   def getUserRepositories(
       userName: String,
       withoutPhysicalInfo: Boolean = false)(
-      implicit s: Session): List[RepositoryInfo] = {
+      implicit s: Session): List[RepositoryInfo] =
     Repositories
       .filter { t1 =>
         (t1.userName === userName.bind) ||
@@ -401,7 +399,6 @@ trait RepositoryService { self: AccountService =>
           ),
           getRepositoryManagers(repository.userName))
       }
-  }
 
   /**
     * Returns the list of visible repositories for the specified user.
@@ -417,7 +414,7 @@ trait RepositoryService { self: AccountService =>
       loginAccount: Option[Account],
       repositoryUserName: Option[String] = None,
       withoutPhysicalInfo: Boolean = false)(
-      implicit s: Session): List[RepositoryInfo] = {
+      implicit s: Session): List[RepositoryInfo] =
     (loginAccount match {
       // for Administrators
       case Some(x) if (x.isAdmin) => Repositories
@@ -455,7 +452,6 @@ trait RepositoryService { self: AccountService =>
           ),
           getRepositoryManagers(repository.userName))
       }
-  }
 
   private def getRepositoryManagers(userName: String)(
       implicit s: Session): Seq[String] =
@@ -558,7 +554,7 @@ trait RepositoryService { self: AccountService =>
   def hasWritePermission(
       owner: String,
       repository: String,
-      loginAccount: Option[Account])(implicit s: Session): Boolean = {
+      loginAccount: Option[Account])(implicit s: Session): Boolean =
     loginAccount match {
       case Some(a) if (a.isAdmin)           => true
       case Some(a) if (a.userName == owner) => true
@@ -567,7 +563,6 @@ trait RepositoryService { self: AccountService =>
         true
       case _ => false
     }
-  }
 
   private def getForkedCount(userName: String, repositoryName: String)(
       implicit s: Session): Int =
@@ -650,17 +645,17 @@ object RepositoryService {
   }
 
   def httpUrl(owner: String, name: String)(implicit context: Context): String =
-    s"${context.baseUrl}/git/${owner}/${name}.git"
+    s"${context.baseUrl}/git/$owner/$name.git"
   def sshUrl(owner: String, name: String)(
       implicit context: Context): Option[String] =
     if (context.settings.ssh) {
       context.loginAccount.flatMap { loginAccount =>
         context.settings.sshAddress.map { x =>
-          s"ssh://${loginAccount.userName}@${x.host}:${x.port}/${owner}/${name}.git"
+          s"ssh://${loginAccount.userName}@${x.host}:${x.port}/$owner/$name.git"
         }
       }
     } else None
   def openRepoUrl(openUrl: String)(implicit context: Context): String =
-    s"github-${context.platform}://openRepo/${openUrl}"
+    s"github-${context.platform}://openRepo/$openUrl"
 
 }

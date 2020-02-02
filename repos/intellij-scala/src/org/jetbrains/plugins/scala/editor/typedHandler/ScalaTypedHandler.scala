@@ -403,7 +403,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       document: Document,
       project: Project,
       element: PsiElement,
-      offset: Int) = {
+      offset: Int) =
     indentElement(file)(
       document,
       project,
@@ -411,13 +411,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       offset,
       _ => true,
       elem => elem.getParent.isInstanceOf[ScReferenceExpression])
-  }
 
   private def indentParametersComma(file: PsiFile)(
       document: Document,
       project: Project,
       element: PsiElement,
-      offset: Int) = {
+      offset: Int) =
     indentElement(file)(
       document,
       project,
@@ -430,13 +429,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           case _                                            => false
         }
     )
-  }
 
   private def indentDefinitionAssign(file: PsiFile)(
       document: Document,
       project: Project,
       element: PsiElement,
-      offset: Int) = {
+      offset: Int) =
     indentElement(file)(
       document,
       project,
@@ -450,13 +448,12 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           case _ => false
         }
     )
-  }
 
   private def indentValBraceStyle(file: PsiFile)(
       document: Document,
       project: Project,
       element: PsiElement,
-      offset: Int) = {
+      offset: Int) =
     indentElement(file)(
       document,
       project,
@@ -464,7 +461,6 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       offset,
       ScalaPsiUtil.isLineTerminator,
       _.parent.flatMap(_.parent).exists(_.isInstanceOf[ScValue]))
-  }
 
   private def indentElement(file: PsiFile)(
       document: Document,
@@ -541,7 +537,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
   private def scheduleAutopopup(
       file: PsiFile,
       editor: Editor,
-      project: Project): Unit = {
+      project: Project): Unit =
     AutoPopupController
       .getInstance(project)
       .scheduleAutoPopup(
@@ -550,7 +546,6 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           def value(t: PsiFile): Boolean = t == file
         }
       )
-  }
 
   private def startAutopopupCompletionInInterpolatedString(
       file: PsiFile,

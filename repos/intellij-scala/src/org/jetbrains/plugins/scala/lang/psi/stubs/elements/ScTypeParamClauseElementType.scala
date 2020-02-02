@@ -28,18 +28,16 @@ class ScTypeParamClauseElementType[Func <: ScTypeParamClause]
 
   def indexStub(stub: ScTypeParamClauseStub, sink: IndexSink) {}
 
-  def createPsi(stub: ScTypeParamClauseStub): ScTypeParamClause = {
+  def createPsi(stub: ScTypeParamClauseStub): ScTypeParamClause =
     new ScTypeParamClauseImpl(stub)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScTypeParamClause,
-      parentStub: StubElement[ParentPsi]): ScTypeParamClauseStub = {
+      parentStub: StubElement[ParentPsi]): ScTypeParamClauseStub =
     new ScTypeParamClauseStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],
       this,
       psi.getText)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,

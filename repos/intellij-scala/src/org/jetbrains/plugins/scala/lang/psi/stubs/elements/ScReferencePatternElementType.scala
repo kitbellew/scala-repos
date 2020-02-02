@@ -19,19 +19,16 @@ class ScReferencePatternElementType[Func <: ScReferencePattern]
       "reference pattern") {
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScReferencePattern,
-      parentStub: StubElement[ParentPsi]): ScReferencePatternStub = {
+      parentStub: StubElement[ParentPsi]): ScReferencePatternStub =
     new ScReferencePatternStubImpl[ParentPsi](parentStub, this, psi.name)
-  }
 
   def serialize(
       stub: ScReferencePatternStub,
-      dataStream: StubOutputStream): Unit = {
+      dataStream: StubOutputStream): Unit =
     dataStream.writeName(stub.getName)
-  }
 
-  def createPsi(stub: ScReferencePatternStub): ScReferencePattern = {
+  def createPsi(stub: ScReferencePatternStub): ScReferencePattern =
     new ScReferencePatternImpl(stub)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,

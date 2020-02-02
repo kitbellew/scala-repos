@@ -108,7 +108,7 @@ trait Collections {
         mapped: ListBuffer[A],
         unchanged: List[A],
         pending0: List[A],
-        pending1: List[B]): List[A] = {
+        pending1: List[B]): List[A] =
       if (pending0.isEmpty || pending1.isEmpty) {
         if (mapped eq null) unchanged
         else mapped.prependToList(unchanged)
@@ -132,16 +132,14 @@ trait Collections {
           loop(b, tail0, tail0, tail1)
         }
       }
-    }
     loop(null, xs, xs, ys)
   }
 
   final def map3[A, B, C, D](xs1: List[A], xs2: List[B], xs3: List[C])(
-      f: (A, B, C) => D): List[D] = {
+      f: (A, B, C) => D): List[D] =
     if (xs1.isEmpty || xs2.isEmpty || xs3.isEmpty) Nil
     else
       f(xs1.head, xs2.head, xs3.head) :: map3(xs1.tail, xs2.tail, xs3.tail)(f)
-  }
   final def flatMap2[A, B, C](xs1: List[A], xs2: List[B])(
       f: (A, B) => List[C]): List[C] = {
     var lb: ListBuffer[C] = null
@@ -181,9 +179,8 @@ trait Collections {
     buf.toList
   }
 
-  @tailrec final def flattensToEmpty(xss: Seq[Seq[_]]): Boolean = {
+  @tailrec final def flattensToEmpty(xss: Seq[Seq[_]]): Boolean =
     xss.isEmpty || xss.head.isEmpty && flattensToEmpty(xss.tail)
-  }
 
   final def foreachWithIndex[A, B](xs: List[A])(f: (A, Int) => Unit) {
     var index = 0
@@ -197,17 +194,14 @@ trait Collections {
 
   // @inline
   final def findOrElse[A](xs: TraversableOnce[A])(p: A => Boolean)(
-      orElse: => A): A = {
+      orElse: => A): A =
     xs find p getOrElse orElse
-  }
 
-  final def mapFrom[A, A1 >: A, B](xs: List[A])(f: A => B): Map[A1, B] = {
+  final def mapFrom[A, A1 >: A, B](xs: List[A])(f: A => B): Map[A1, B] =
     Map[A1, B](xs map (x => (x, f(x))): _*)
-  }
   final def linkedMapFrom[A, A1 >: A, B](xs: List[A])(
-      f: A => B): mutable.LinkedHashMap[A1, B] = {
+      f: A => B): mutable.LinkedHashMap[A1, B] =
     mutable.LinkedHashMap[A1, B](xs map (x => (x, f(x))): _*)
-  }
 
   final def mapWithIndex[A, B](xs: List[A])(f: (A, Int) => B): List[B] = {
     val lb = new ListBuffer[B]
@@ -305,10 +299,9 @@ trait Collections {
     true
   }
 
-  final def sequence[A](as: List[Option[A]]): Option[List[A]] = {
+  final def sequence[A](as: List[Option[A]]): Option[List[A]] =
     if (as.exists(_.isEmpty)) None
     else Some(as.flatten)
-  }
 
   final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =
     try {

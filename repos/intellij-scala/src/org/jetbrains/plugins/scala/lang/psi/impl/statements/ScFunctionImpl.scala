@@ -47,9 +47,8 @@ abstract class ScFunctionImpl protected (
     n.getPsi
   }
 
-  def paramClauses: ScParameters = {
+  def paramClauses: ScParameters =
     getStubOrPsiChild(ScalaElementTypes.PARAM_CLAUSES)
-  }
 
   override def processDeclarations(
       processor: PsiScopeProcessor,

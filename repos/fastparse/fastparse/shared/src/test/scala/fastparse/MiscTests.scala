@@ -8,9 +8,8 @@ object MiscTests extends TestSuite {
 
   val tests = TestSuite {
     'toString {
-      def check(p: fastparse.core.Parser[_], s: String) = {
+      def check(p: fastparse.core.Parser[_], s: String) =
         assert(p.toString == s.trim)
-      }
       'Either {
         check("A" | "B", """ "A" | "B" """)
         check("A" | "B" | "C", """ "A" | "B" | "C" """)

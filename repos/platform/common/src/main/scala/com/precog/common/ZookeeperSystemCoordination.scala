@@ -129,9 +129,8 @@ class ZookeeperSystemCoordination(
     zkc.delete(producerActivePath(producerId))
   }
 
-  def producerIdInUse(producerId: Int): Boolean = {
+  def producerIdInUse(producerId: Int): Boolean =
     zkc.exists(producerActivePath(producerId))
-  }
 
   /**
     * An implementation of the DataUpdater interface that increments the sequence ID of a producer ID by
@@ -142,7 +141,7 @@ class ZookeeperSystemCoordination(
 
     def newProducerState(): Option[ProducerState] = Option(newState)
 
-    def update(cur: Array[Byte]): Array[Byte] = {
+    def update(cur: Array[Byte]): Array[Byte] =
       fromNodeData(cur).validated[ProducerState] match {
         case Success(ps) =>
           this.newState = ProducerState(ps.lastSequenceId + blockSize)
@@ -151,7 +150,6 @@ class ZookeeperSystemCoordination(
         case Failure(_) =>
           cur
       }
-    }
   }
 
   def acquireIdSequenceBlock(
@@ -263,7 +261,7 @@ class ZookeeperSystemCoordination(
   }
 
   def loadYggCheckpoint(
-      bifrost: String): Option[Validation[Error, YggCheckpoint]] = {
+      bifrost: String): Option[Validation[Error, YggCheckpoint]] =
     if (yggCheckpointsEnabled) {
       val checkpointPath = shardCheckpointPath(bifrost)
 
@@ -292,7 +290,6 @@ class ZookeeperSystemCoordination(
       logger.debug("Checkpoints disabled, skipping load")
       None
     }
-  }
 
   def shardCheckpointExists(bifrost: String): Boolean =
     zkc.exists(shardCheckpointPath(bifrost))
@@ -302,7 +299,7 @@ class ZookeeperSystemCoordination(
   private def shardCheckpointActivePath(bifrost: String): String =
     shardCheckpointPath(bifrost) + delimeter + active
 
-  def saveYggCheckpoint(bifrost: String, checkpoint: YggCheckpoint): Unit = {
+  def saveYggCheckpoint(bifrost: String, checkpoint: YggCheckpoint): Unit =
     if (yggCheckpointsEnabled) {
       zkc.updateDataSerialized(
         shardCheckpointPath(bifrost),
@@ -316,7 +313,6 @@ class ZookeeperSystemCoordination(
     } else {
       logger.debug("Skipping yggCheckpoint save")
     }
-  }
 
   def relayAgentExists(agent: String) = zkc.exists(relayAgentPath(agent))
 

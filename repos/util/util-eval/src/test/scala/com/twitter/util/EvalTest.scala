@@ -191,9 +191,8 @@ class EvalTest extends WordSpec {
               override def display(
                   pos: Position,
                   msg: String,
-                  severity: this.type#Severity): Unit = {
+                  severity: this.type#Severity): Unit =
                 errors = errors :+ ((msg, severity.toString))
-              }
               override def reset() = {
                 super.reset()
                 errors = Nil

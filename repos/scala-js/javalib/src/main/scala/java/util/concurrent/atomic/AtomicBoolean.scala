@@ -5,13 +5,12 @@ class AtomicBoolean(private[this] var value: Boolean) extends Serializable {
 
   final def get(): Boolean = value
 
-  final def compareAndSet(expect: Boolean, update: Boolean): Boolean = {
+  final def compareAndSet(expect: Boolean, update: Boolean): Boolean =
     if (expect != value) false
     else {
       value = update
       true
     }
-  }
 
   // For some reason, this method is not final
   def weakCompareAndSet(expect: Boolean, update: Boolean): Boolean =

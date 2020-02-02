@@ -104,7 +104,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       REFACTORING_NAME)
     if (hasWarnings) return
 
-    def checkLastReturn(elem: PsiElement): Boolean = {
+    def checkLastReturn(elem: PsiElement): Boolean =
       elem match {
         case ret: ScReturnStmt => true
         case m: ScMatchStmt =>
@@ -115,7 +115,6 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           checkLastReturn(block.lastExpr.get)
         case _ => false
       }
-    }
 
     def returnType: Option[ScType] = {
       val fun = PsiTreeUtil.getParentOfType(

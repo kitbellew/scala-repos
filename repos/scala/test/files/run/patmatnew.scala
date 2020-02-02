@@ -332,13 +332,12 @@ object Test {
     case class Var(n: String) extends Function
     case class Const(v: Double) extends Function
 
-    def f(): (Function, Function) = {
+    def f(): (Function, Function) =
       (Var("x"): Function, Var("y"): Function) match {
         case (Const(v), Const(w)) => throw new Error
         case (leftOne, Var("z"))  => throw new Error
         case (leftTwo, rightTwo)  => (leftTwo, rightTwo) // was giving "y","x"
       }
-    }
 
     def flips(l: List[Int]): Int = (l: @unchecked) match {
       case 1 :: ls => 0
@@ -464,10 +463,9 @@ object Test {
 
   object Bug1281 {
     class Sync {
-      def unapplySeq(scrut: Int): Option[Seq[Int]] = {
+      def unapplySeq(scrut: Int): Option[Seq[Int]] =
         if (scrut == 42) Some(List(1, 2))
         else None
-      }
     }
     class Buffer {
       val Get = new Sync
@@ -745,12 +743,11 @@ object Test {
 
     object C {
 
-      def unapply(xs: L): Option[(Int, L)] = {
+      def unapply(xs: L): Option[(Int, L)] =
         if (xs.isEmpty) {
           println("xs is empty"); None
         } else
           Some((xs.head, new L(xs.tail)))
-      }
 
     }
 

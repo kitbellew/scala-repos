@@ -193,7 +193,7 @@ object ResultsSpec extends Specification {
 
       (rh.status aka "status" must_== OK) and
         (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-          s"""attachment; filename="${fileName}""""))
+          s"""attachment; filename="$fileName""""))
     }
 
     "support sending a file with Unauthorized status" in withFile {
@@ -202,7 +202,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== UNAUTHORIZED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""attachment; filename="${fileName}""""))
+            s"""attachment; filename="$fileName""""))
     }
 
     "support sending a file inline with Unauthorized status" in withFile {
@@ -211,7 +211,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== UNAUTHORIZED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""inline; filename="${fileName}""""))
+            s"""inline; filename="$fileName""""))
     }
 
     "support sending a file with PaymentRequired status" in withFile {
@@ -220,7 +220,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== PAYMENT_REQUIRED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""attachment; filename="${fileName}""""))
+            s"""attachment; filename="$fileName""""))
     }
 
     "support sending a file inline with PaymentRequired status" in withFile {
@@ -229,7 +229,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== PAYMENT_REQUIRED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""inline; filename="${fileName}""""))
+            s"""inline; filename="$fileName""""))
     }
 
     "support sending a path with Ok status" in withPath { (file, fileName) =>
@@ -237,7 +237,7 @@ object ResultsSpec extends Specification {
 
       (rh.status aka "status" must_== OK) and
         (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-          s"""attachment; filename="${fileName}""""))
+          s"""attachment; filename="$fileName""""))
     }
 
     "support sending a path with Unauthorized status" in withPath {
@@ -246,7 +246,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== UNAUTHORIZED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""attachment; filename="${fileName}""""))
+            s"""attachment; filename="$fileName""""))
     }
 
     "support sending a path inline with Unauthorized status" in withPath {
@@ -255,7 +255,7 @@ object ResultsSpec extends Specification {
 
         (rh.status aka "status" must_== UNAUTHORIZED) and
           (rh.headers.get(CONTENT_DISPOSITION) aka "disposition" must beSome(
-            s"""inline; filename="${fileName}""""))
+            s"""inline; filename="$fileName""""))
     }
 
     "allow checking content length" in withPath { (file, fileName) =>

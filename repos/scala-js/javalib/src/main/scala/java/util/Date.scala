@@ -99,19 +99,17 @@ class Date private (private val date: js.Date)
   def setYear(year: Int): Unit = date.setFullYear(1900 + year)
 
   @Deprecated
-  def toGMTString(): String = {
+  def toGMTString(): String =
     date.getUTCDate() + " " + Months(date.getUTCMonth()) + " " +
       date.getUTCFullYear() + " " + pad0(date.getUTCHours()) + ":" +
       pad0(date.getUTCMinutes()) + ":" +
       pad0(date.getUTCSeconds()) + " GMT"
-  }
 
   @Deprecated
-  def toLocaleString(): String = {
+  def toLocaleString(): String =
     date.getDate() + "-" + Months(date.getMonth()) + "-" +
       date.getFullYear() + "-" + pad0(date.getHours()) + ":" +
       pad0(date.getMinutes()) + ":" + pad0(date.getSeconds())
-  }
 
   override def toString(): String = {
     val offset = -date.getTimezoneOffset()

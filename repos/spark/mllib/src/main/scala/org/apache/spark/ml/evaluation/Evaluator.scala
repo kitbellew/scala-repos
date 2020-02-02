@@ -37,9 +37,8 @@ abstract class Evaluator extends Params {
     * @return metric
     */
   @Since("1.5.0")
-  def evaluate(dataset: DataFrame, paramMap: ParamMap): Double = {
+  def evaluate(dataset: DataFrame, paramMap: ParamMap): Double =
     this.copy(paramMap).evaluate(dataset)
-  }
 
   /**
     * Evaluates the output.

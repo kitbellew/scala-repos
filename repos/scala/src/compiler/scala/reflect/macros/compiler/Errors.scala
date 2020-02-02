@@ -67,10 +67,10 @@ trait Errors extends Traces {
       else "macro implementation"
 
     def MacroImplNotPublicError() =
-      implRefError(s"${macroImplementationWording} must be public")
+      implRefError(s"$macroImplementationWording must be public")
 
     def MacroImplOverloadedError() =
-      implRefError(s"${macroImplementationWording} cannot be overloaded")
+      implRefError(s"$macroImplementationWording cannot be overloaded")
 
     def MacroImplNonTagImplicitParameters(params: List[Symbol]) =
       implRefError(
@@ -147,7 +147,7 @@ trait Errors extends Traces {
 
     private def compatibilityError(message: String) =
       implRefError(
-        s"${macroImplementationWording} has incompatible shape:" +
+        s"$macroImplementationWording has incompatible shape:" +
           "\n required: " + showMeth(
           rparamss,
           rret,

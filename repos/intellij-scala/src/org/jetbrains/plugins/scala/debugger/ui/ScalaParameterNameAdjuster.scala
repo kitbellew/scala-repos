@@ -14,7 +14,7 @@ import scala.util.Try
   * @author Nikolay.Tropin
   */
 class ScalaParameterNameAdjuster extends NodeDescriptorNameAdjuster {
-  override def isApplicable(descriptor: NodeDescriptor): Boolean = {
+  override def isApplicable(descriptor: NodeDescriptor): Boolean =
     descriptor match {
       case vd: LocalVariableDescriptorImpl if vd.getName == "$this" => false
       case vd: LocalVariableDescriptorImpl =>
@@ -22,7 +22,6 @@ class ScalaParameterNameAdjuster extends NodeDescriptorNameAdjuster {
           .contains("$")
       case _ => false
     }
-  }
 
   override def fixName(name: String, descriptor: NodeDescriptor): String =
     ScalaParameterNameAdjuster.fixName(name)
@@ -31,10 +30,9 @@ class ScalaParameterNameAdjuster extends NodeDescriptorNameAdjuster {
 object ScalaParameterNameAdjuster {
   private[debugger] def fixName(name: String): String = name.takeWhile(_ != '$')
 
-  private def isScalaArgument(variable: LocalVariableProxyImpl) = {
+  private def isScalaArgument(variable: LocalVariableProxyImpl) =
     Try {
       variable.getVariable.isArgument && DebuggerUtil.isScala(
         variable.getFrame.location().declaringType())
     }.getOrElse(false)
-  }
 }

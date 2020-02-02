@@ -58,9 +58,8 @@ object Trees {
     !isKeyword(name)
   }
 
-  @inline final def requireValidIdent(name: String): Unit = {
-    require(isValidIdentifier(name), s"${name} is not a valid identifier")
-  }
+  @inline final def requireValidIdent(name: String): Unit =
+    require(isValidIdentifier(name), s"$name is not a valid identifier")
 
   final val isKeyword: Set[String] = Set(
     // Value keywords
@@ -480,9 +479,8 @@ object Trees {
 
   object CallHelper {
     def apply(helper: String, args: Tree*)(tpe: Type)(
-        implicit pos: Position): CallHelper = {
+        implicit pos: Position): CallHelper =
       CallHelper(helper, args.toList)(tpe)
-    }
   }
 
   // JavaScript expressions

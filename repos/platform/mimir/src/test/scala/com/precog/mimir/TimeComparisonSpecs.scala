@@ -45,13 +45,12 @@ trait TimeComparisonSpecs[M[+_]]
 
   val line = Line(1, 1, "")
 
-  def parseDateTime(time: String, fmt: String) = {
+  def parseDateTime(time: String, fmt: String) =
     Join(
       BuiltInFunction2Op(ParseDateTime),
       Cross(None),
       Const(CString(time))(line),
       Const(CString(fmt))(line))(line)
-  }
 
   def parseDateTimeFuzzy(time: String) =
     Operate(BuiltInFunction1Op(ParseDateTimeFuzzy), Const(CString(time))(line))(
@@ -71,12 +70,11 @@ trait TimeComparisonSpecs[M[+_]]
     }
   }
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "comparison of two DateTimes of value provenance" should {
     "compute lt resulting in false" in {

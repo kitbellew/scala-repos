@@ -36,7 +36,7 @@ case class TestBrowser(webDriver: WebDriver, baseUrl: Option[String])
   def submit(selector: String, fields: (String, String)*): Fluent = {
     fields.foreach {
       case (fieldName, fieldValue) =>
-        fill(s"${selector} *[name=${fieldName}]").`with`(fieldValue)
+        fill(s"$selector *[name=$fieldName]").`with`(fieldValue)
     }
     super.submit(selector)
   }
@@ -55,9 +55,8 @@ case class TestBrowser(webDriver: WebDriver, baseUrl: Option[String])
     val wait =
       new FluentWait[WebDriver](webDriver).withTimeout(timeout, timeUnit)
     val f = new Function[WebDriver, T]() {
-      def apply(driver: WebDriver): T = {
+      def apply(driver: WebDriver): T =
         block
-      }
     }
     wait.until(f)
   }

@@ -96,14 +96,13 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     newTemporaryConfiguration(useInMemoryDerby = false)
 
   /** Sets up the system initially or after a RESET command */
-  protected override def configure(): Map[String, String] = {
+  protected override def configure(): Map[String, String] =
     super.configure() ++ temporaryConfig ++ Map(
       ConfVars.METASTOREWAREHOUSE.varname -> warehousePath.toURI.toString,
       ConfVars.METASTORE_INTEGER_JDO_PUSHDOWN.varname -> "true",
       ConfVars.SCRATCHDIR.varname -> scratchDirPath.toURI.toString,
       ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY.varname -> "1"
     )
-  }
 
   val testTempDir = Utils.createTempDir()
 
@@ -150,9 +149,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     * Returns the value of specified environmental variable as a [[java.io.File]] after checking
     * to ensure it exists
     */
-  private def envVarToFile(envVar: String): Option[File] = {
+  private def envVarToFile(envVar: String): Option[File] =
     Option(System.getenv(envVar)).map(new File(_))
-  }
 
   /**
     * Replaces relative paths to the parent directory "../" with hiveDevHome since this is how the
@@ -238,9 +236,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   @transient
   lazy val testTables = new mutable.HashMap[String, TestTable]()
 
-  def registerTestTable(testTable: TestTable): Unit = {
+  def registerTestTable(testTable: TestTable): Unit =
     testTables += (testTable.name -> testTable)
-  }
 
   // The test tables that are defined in the Hive QTestUtil.
   // /itests/util/src/main/java/org/apache/hadoop/hive/ql/QTestUtil.java
@@ -511,15 +508,13 @@ private[hive] class TestHiveFunctionRegistry(
     collection.mutable.ArrayBuffer
       .empty[(String, (ExpressionInfo, FunctionBuilder))]
 
-  def unregisterFunction(name: String): Unit = {
+  def unregisterFunction(name: String): Unit =
     fr.functionBuilders.remove(name).foreach(f => removedFunctions += name -> f)
-  }
 
-  def restore(): Unit = {
+  def restore(): Unit =
     removedFunctions.foreach {
       case (name, (info, builder)) => fr.registerFunction(name, info, builder)
     }
-  }
 }
 
 private[hive] object TestHiveContext {

@@ -154,7 +154,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
     lhm.get(52)
     lhm.get(5)
 
-    def expectedKey(index: Int): Int = {
+    def expectedKey(index: Int): Int =
       if (accessOrder) {
         // elements ordered by insertion order except for those accessed
         if (withSizeLimit.isEmpty) {
@@ -178,7 +178,6 @@ abstract class LinkedHashMapTest extends HashMapTest {
         // accesses shouldn't modify the order
         withSizeLimit.getOrElse(0) + index
       }
-    }
 
     def expectedValue(index: Int): String =
       s"elem ${expectedKey(index)}"
@@ -203,13 +202,12 @@ abstract class LinkedHashMapTest extends HashMapTest {
 }
 
 object LinkedHashMapFactory {
-  def allFactories: Iterator[MapFactory] = {
+  def allFactories: Iterator[MapFactory] =
     Iterator(
       new LinkedHashMapFactory(true, Some(50)),
       new LinkedHashMapFactory(true, None),
       new LinkedHashMapFactory(false, Some(50)),
       new LinkedHashMapFactory(false, None))
-  }
 }
 
 class LinkedHashMapFactory(
@@ -225,7 +223,7 @@ class LinkedHashMapFactory(
     s"java.util.LinkedHashMap{$orderName$sizeLimitSting}"
   }
 
-  override def empty[K: ClassTag, V: ClassTag]: ju.LinkedHashMap[K, V] = {
+  override def empty[K: ClassTag, V: ClassTag]: ju.LinkedHashMap[K, V] =
     withSizeLimit match {
       case Some(limit) =>
         new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder) {
@@ -237,5 +235,4 @@ class LinkedHashMapFactory(
       case None =>
         new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder)
     }
-  }
 }

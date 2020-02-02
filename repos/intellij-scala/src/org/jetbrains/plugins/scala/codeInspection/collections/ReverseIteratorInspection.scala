@@ -10,7 +10,7 @@ object ReverseIterator extends SimplificationType {
   override def hint: String =
     InspectionBundle.message("replace.reverse.iterator")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.reverse` () `.iterator` () =>
         Some(
@@ -19,7 +19,6 @@ object ReverseIterator extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }
 
 class ReverseIteratorInspection extends OperationOnCollectionInspection {

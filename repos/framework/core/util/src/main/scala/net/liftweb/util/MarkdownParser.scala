@@ -19,7 +19,7 @@ object MarkdownParser {
   lazy val htmlHasYaml =
     """(?s)(?m)\A(:?[ \t]*\n)*^[yY][aA][mM][lL][ \t]*\{[ \t]*$(.*?)^\}[ \t]*[yY][Aa][mM][Ll][ \t]*$""".r
 
-  def childrenOfBody(in: NodeSeq): NodeSeq = {
+  def childrenOfBody(in: NodeSeq): NodeSeq =
     (in \ "body").toList match {
       case Nil => in
       case xs =>
@@ -28,11 +28,10 @@ object MarkdownParser {
           }
           .flatMap(_.child)
     }
-  }
 
   private lazy val threadLocalTransformer = new ThreadLocalTransformer
 
-  def parse(in: String): Box[NodeSeq] = {
+  def parse(in: String): Box[NodeSeq] =
     for {
       str <- Helpers.tryo(threadLocalTransformer.apply(in))
       res = Html5.parse(
@@ -45,5 +44,4 @@ object MarkdownParser {
           .flatMap(_.child)
       }
     } yield info
-  }
 }

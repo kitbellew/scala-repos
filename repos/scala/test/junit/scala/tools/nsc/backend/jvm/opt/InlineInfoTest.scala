@@ -20,7 +20,7 @@ import scala.collection.convert.decorateAsScala._
 
 object InlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:classpath")
-  def clear(): Unit = { compiler = null }
+  def clear(): Unit = compiler = null
 
   def notPerRun: List[Clearable] =
     List(
@@ -72,12 +72,12 @@ class InlineInfoTest extends ClearAfterClass {
         .get
         .inlineInfo)
 
-    val fromAttrs = classes.map(c => {
+    val fromAttrs = classes.map { c =>
       assert(
         c.attrs.asScala.exists(_.isInstanceOf[InlineInfoAttribute]),
         c.attrs)
       compiler.genBCode.bTypes.inlineInfoFromClassfile(c)
-    })
+    }
 
     assert(fromSyms == fromAttrs)
   }

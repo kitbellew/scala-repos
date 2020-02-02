@@ -178,7 +178,7 @@ sealed trait Partitioning {
 }
 
 object Partitioning {
-  def allCompatible(partitionings: Seq[Partitioning]): Boolean = {
+  def allCompatible(partitionings: Seq[Partitioning]): Boolean =
     // Note: this assumes transitivity
     partitionings
       .sliding(2)
@@ -193,7 +193,6 @@ object Partitioning {
           }
       }
       .forall(_ == true)
-  }
 }
 
 case class UnknownPartitioning(numPartitions: Int) extends Partitioning {
@@ -374,9 +373,8 @@ case class PartitioningCollection(partitionings: Seq[Partitioning])
   override def guarantees(other: Partitioning): Boolean =
     partitionings.exists(_.guarantees(other))
 
-  override def toString: String = {
+  override def toString: String =
     partitionings.map(_.toString).mkString("(", " or ", ")")
-  }
 }
 
 /**

@@ -50,7 +50,7 @@ trait SetInstances {
       }
     }
 
-    override def equal(a1: Set[A], a2: Set[A]) = {
+    override def equal(a1: Set[A], a2: Set[A]) =
       if (equalIsNatural) a1 == a2
       else {
         implicit val x = Order[A].toScalaOrdering
@@ -59,7 +59,6 @@ trait SetInstances {
         val s2 = TreeSet[A](a2.toSeq: _*)
         s1.toStream.corresponds(s2.toStream)(Order[A].equal)
       }
-    }
     override val equalIsNatural: Boolean = Equal[A].equalIsNatural
   }
 

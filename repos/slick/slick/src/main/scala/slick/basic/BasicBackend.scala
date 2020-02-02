@@ -202,7 +202,7 @@ trait BasicBackend { self =>
         case sa @ SequenceAction(actions) =>
           val len = actions.length
           val results = new AtomicReferenceArray[Any](len)
-          def run(pos: Int): Future[Any] = {
+          def run(pos: Int): Future[Any] =
             if (pos == len) Future.successful {
               val b = sa.cbf()
               var i = 0
@@ -218,7 +218,6 @@ trait BasicBackend { self =>
                   results.set(pos, v)
                   run(pos + 1)
               }(DBIO.sameThreadExecutionContext)
-          }
           run(0).asInstanceOf[Future[R]]
         case CleanUpAction(base, f, keepFailure, ec) =>
           val p = Promise[R]()
@@ -442,7 +441,7 @@ trait BasicBackend { self =>
 
     protected[this] def logAction(
         a: DBIOAction[_, NoStream, Nothing],
-        ctx: Context): Unit = {
+        ctx: Context): Unit =
       if (actionLogger.isDebugEnabled && a.isLogged) {
         ctx.sequenceCounter += 1
         val logA = a.nonFusedEquivalentAction
@@ -456,7 +455,6 @@ trait BasicBackend { self =>
           .substring(0, dump.length - 1)
         actionLogger.debug(msg)
       }
-    }
   }
 
   /** A logical session of a `Database`. The underlying database connection is created lazily on demand. */

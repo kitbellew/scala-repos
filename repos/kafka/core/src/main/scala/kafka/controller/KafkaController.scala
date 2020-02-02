@@ -95,16 +95,15 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
   def liveOrShuttingDownBrokerIds = liveBrokerIdsUnderlying
   def liveOrShuttingDownBrokers = liveBrokersUnderlying
 
-  def partitionsOnBroker(brokerId: Int): Set[TopicAndPartition] = {
+  def partitionsOnBroker(brokerId: Int): Set[TopicAndPartition] =
     partitionReplicaAssignment
       .filter {
         case (topicAndPartition, replicas) => replicas.contains(brokerId)
       }
       .map { case (topicAndPartition, replicas) => topicAndPartition }
       .toSet
-  }
 
-  def replicasOnBrokers(brokerIds: Set[Int]): Set[PartitionAndReplica] = {
+  def replicasOnBrokers(brokerIds: Set[Int]): Set[PartitionAndReplica] =
     brokerIds
       .map { brokerId =>
         partitionReplicaAssignment
@@ -121,9 +120,8 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
       }
       .flatten
       .toSet
-  }
 
-  def replicasForTopic(topic: String): Set[PartitionAndReplica] = {
+  def replicasForTopic(topic: String): Set[PartitionAndReplica] =
     partitionReplicaAssignment
       .filter {
         case (topicAndPartition, replicas) =>
@@ -140,26 +138,22 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
       }
       .flatten
       .toSet
-  }
 
-  def partitionsForTopic(topic: String): collection.Set[TopicAndPartition] = {
+  def partitionsForTopic(topic: String): collection.Set[TopicAndPartition] =
     partitionReplicaAssignment.filter {
       case (topicAndPartition, replicas) =>
         topicAndPartition.topic.equals(topic)
     }.keySet
-  }
 
-  def allLiveReplicas(): Set[PartitionAndReplica] = {
+  def allLiveReplicas(): Set[PartitionAndReplica] =
     replicasOnBrokers(liveBrokerIds)
-  }
 
   def replicasForPartition(partitions: collection.Set[TopicAndPartition])
-      : collection.Set[PartitionAndReplica] = {
+      : collection.Set[PartitionAndReplica] =
     partitions.map { p =>
       val replicas = partitionReplicaAssignment(p)
       replicas.map(r => new PartitionAndReplica(p.topic, p.partition, r))
     }.flatten
-  }
 
   def removeTopic(topic: String) = {
     partitionLeadershipInfo = partitionLeadershipInfo.filter {
@@ -180,7 +174,7 @@ object KafkaController extends Logging {
 
   case class StateChangeLogger(override val loggerName: String) extends Logging
 
-  def parseControllerId(controllerInfoString: String): Int = {
+  def parseControllerId(controllerInfoString: String): Int =
     try {
       Json.parseFull(controllerInfoString) match {
         case Some(m) =>
@@ -207,7 +201,6 @@ object KafkaController extends Logging {
               t)
         }
     }
-  }
 }
 
 class KafkaController(
@@ -263,7 +256,7 @@ class KafkaController(
   newGauge(
     "OfflinePartitionsCount",
     new Gauge[Int] {
-      def value(): Int = {
+      def value(): Int =
         inLock(controllerContext.controllerLock) {
           if (!isActive())
             0
@@ -272,14 +265,13 @@ class KafkaController(
               !controllerContext.liveOrShuttingDownBrokerIds.contains(
                 p._2.leaderAndIsr.leader))
         }
-      }
     }
   )
 
   newGauge(
     "PreferredReplicaImbalanceCount",
     new Gauge[Int] {
-      def value(): Int = {
+      def value(): Int =
         inLock(controllerContext.controllerLock) {
           if (!isActive())
             0
@@ -292,7 +284,6 @@ class KafkaController(
                   .leader != replicas.head
             }
         }
-      }
     }
   )
 
@@ -518,11 +509,10 @@ class KafkaController(
   /**
     * Returns true if this broker is the current controller.
     */
-  def isActive(): Boolean = {
+  def isActive(): Boolean =
     inLock(controllerContext.controllerLock) {
       controllerContext.controllerChannelManager != null
     }
-  }
 
   /**
     * This callback is invoked by the replica state machine's broker change listener, with the list of newly started
@@ -918,7 +908,7 @@ class KafkaController(
     * is the controller. It merely registers the session expiration listener and starts the controller leader
     * elector
     */
-  def startup() = {
+  def startup() =
     inLock(controllerContext.controllerLock) {
       info("Controller starting up")
       registerSessionExpirationListener()
@@ -926,7 +916,6 @@ class KafkaController(
       controllerElector.startup
       info("Controller startup complete")
     }
-  }
 
   /**
     * Invoked when the controller module of a Kafka server is shutting down. If the broker was the current controller,
@@ -945,14 +934,13 @@ class KafkaController(
       apiKey: ApiKeys,
       apiVersion: Option[Short],
       request: AbstractRequest,
-      callback: AbstractRequestResponse => Unit = null) = {
+      callback: AbstractRequestResponse => Unit = null) =
     controllerContext.controllerChannelManager.sendRequest(
       brokerId,
       apiKey,
       apiVersion,
       request,
       callback)
-  }
 
   def incrementControllerEpoch(zkClient: ZkClient) = {
     try {
@@ -998,9 +986,8 @@ class KafkaController(
         .format(config.brokerId, controllerContext.epoch))
   }
 
-  private def registerSessionExpirationListener() = {
+  private def registerSessionExpirationListener() =
     zkUtils.zkClient.subscribeStateChanges(new SessionExpirationListener())
-  }
 
   private def initializeControllerContext() {
     // update controller cache with delete topic information
@@ -1166,7 +1153,7 @@ class KafkaController(
   private def areReplicasInIsr(
       topic: String,
       partition: Int,
-      replicas: Seq[Int]): Boolean = {
+      replicas: Seq[Int]): Boolean =
     zkUtils.getLeaderAndIsrForPartition(topic, partition) match {
       case Some(leaderAndIsr) =>
         val replicasNotInIsr =
@@ -1174,7 +1161,6 @@ class KafkaController(
         replicasNotInIsr.isEmpty
       case None => false
     }
-  }
 
   private def moveReassignedPartitionLeaderIfRequired(
       topicAndPartition: TopicAndPartition,
@@ -1347,17 +1333,15 @@ class KafkaController(
       isrChangeNotificationListener)
   }
 
-  private def registerReassignedPartitionsListener() = {
+  private def registerReassignedPartitionsListener() =
     zkUtils.zkClient.subscribeDataChanges(
       ZkUtils.ReassignPartitionsPath,
       partitionReassignedListener)
-  }
 
-  private def deregisterReassignedPartitionsListener() = {
+  private def deregisterReassignedPartitionsListener() =
     zkUtils.zkClient.unsubscribeDataChanges(
       ZkUtils.ReassignPartitionsPath,
       partitionReassignedListener)
-  }
 
   private def registerPreferredReplicaElectionListener() {
     zkUtils.zkClient.subscribeDataChanges(
@@ -1701,7 +1685,7 @@ class KafkaController(
     }
   }
 
-  private def checkAndTriggerPartitionRebalance(): Unit = {
+  private def checkAndTriggerPartitionRebalance(): Unit =
     if (isActive()) {
       trace("checking need to trigger partition rebalance")
       // get all the active brokers
@@ -1771,7 +1755,6 @@ class KafkaController(
         }
       }
     }
-  }
 }
 
 /**
@@ -2052,9 +2035,8 @@ case class ReassignedPartitionsContext(
     var isrChangeListener: ReassignedPartitionsIsrChangeListener = null)
 
 case class PartitionAndReplica(topic: String, partition: Int, replica: Int) {
-  override def toString(): String = {
+  override def toString(): String =
     "[Topic=%s,Partition=%d,Replica=%d]".format(topic, partition, replica)
-  }
 }
 
 case class LeaderIsrAndControllerEpoch(

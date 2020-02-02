@@ -61,9 +61,8 @@ class BalancingSpec extends AkkaSpec("""
 
   val poolSize = 5 // must be less than fork-join parallelism-min, which is 8 in AkkaSpec
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     counter.set(1)
-  }
 
   def test(pool: ActorRef, latch: TestLatch): Unit = {
     val iterationCount = 100

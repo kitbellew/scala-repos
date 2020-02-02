@@ -710,9 +710,8 @@ object hlist {
         def append[LLub](
             l: T :: HNil,
             b: mutable.Builder[LLub, M[LLub]],
-            f: Lub0 => LLub) = {
+            f: Lub0 => LLub) =
           b += f(l.head)
-        }
       }
 
     implicit def hlistToTraversable[H1, H2, T <: HList, LubT, Lub0, M[_]](

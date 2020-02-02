@@ -53,7 +53,7 @@ class InputSizeReducerEstimator extends ReducerEstimator {
 
         lazy val logStr = inputSizes
           .map {
-            case (name, bytes) => s"   - ${name}\t${bytes}"
+            case (name, bytes) => s"   - $name\t$bytes"
           }
           .mkString("\n")
 

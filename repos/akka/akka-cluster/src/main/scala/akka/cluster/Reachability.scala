@@ -285,7 +285,7 @@ private[cluster] class Reachability private (
         }(breakOut)
     }
 
-  def observersGroupedByUnreachable: Map[UniqueAddress, Set[UniqueAddress]] = {
+  def observersGroupedByUnreachable: Map[UniqueAddress, Set[UniqueAddress]] =
     records.groupBy(_.subject).collect {
       case (subject, records) if records.exists(_.status == Unreachable) ⇒
         val observers: Set[UniqueAddress] =
@@ -293,16 +293,14 @@ private[cluster] class Reachability private (
             breakOut)
         (subject -> observers)
     }
-  }
 
   def allObservers: Set[UniqueAddress] = versions.keySet
 
-  def recordsFrom(observer: UniqueAddress): immutable.IndexedSeq[Record] = {
+  def recordsFrom(observer: UniqueAddress): immutable.IndexedSeq[Record] =
     observerRows(observer) match {
       case None ⇒ Vector.empty
       case Some(rows) ⇒ rows.valuesIterator.toVector
     }
-  }
 
   // only used for testing
   override def hashCode: Int = versions.hashCode

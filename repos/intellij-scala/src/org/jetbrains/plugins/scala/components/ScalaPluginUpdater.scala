@@ -128,11 +128,10 @@ object ScalaPluginUpdater {
     }
   }
 
-  def getScalaPluginBranch: ScalaApplicationSettings.pluginBranch = {
+  def getScalaPluginBranch: ScalaApplicationSettings.pluginBranch =
     if (ScalaPluginUpdater.pluginIsEap) EAP
     else if (ScalaPluginUpdater.pluginIsNightly) Nightly
     else Release
-  }
 
   def pluginIsEap = {
     val updateSettings = UpdateSettings.getInstance()
@@ -226,7 +225,7 @@ object ScalaPluginUpdater {
       val info = HttpRequests
         .request(a)
         .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
-          def process(request: HttpRequests.Request) = {
+          def process(request: HttpRequests.Request) =
             try {
               Some(
                 new UpdatesInfo(
@@ -234,7 +233,6 @@ object ScalaPluginUpdater {
                     .loadDocument(request.getInputStream)
                     .detachRootElement))
             } catch { case e: JDOMException => LOG.info(e); None }
-          }
         })
       if (info.isDefined) {
         val strategy = new UpdateStrategy(
@@ -361,7 +359,7 @@ object ScalaPluginUpdater {
   }
 
   @deprecated("Unsafe method, use patchPluginVersion instead", "")
-  def patchPluginVersionReflection() = {
+  def patchPluginVersionReflection() =
     // crime of reflection goes below - workaround until force updating is available
     try {
       val hack: Field =
@@ -377,7 +375,6 @@ object ScalaPluginUpdater {
             "Please remove and reinstall Scala plugin to finish downgrading",
             NotificationType.INFORMATION))
     }
-  }
 
   def askUpdatePluginBranch(): Unit = {
     val infoImpl =

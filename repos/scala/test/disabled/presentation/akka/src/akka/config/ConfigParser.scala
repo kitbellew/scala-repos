@@ -17,11 +17,10 @@ class ConfigParser(
     extends RegexParsers {
   val sections = mutable.Stack[String]()
 
-  def createPrefix = {
+  def createPrefix =
     prefix =
       if (sections.isEmpty) ""
       else sections.toList.reverse.mkString("", ".", ".")
-  }
 
   override val whiteSpace = """(\s+|#[^\n]*\n)+""".r
 
@@ -72,11 +71,10 @@ class ConfigParser(
     }
   }
 
-  def parse(in: String): Map[String, Any] = {
+  def parse(in: String): Map[String, Any] =
     parseAll(root, in) match {
       case Success(result, _)  => map.toMap
       case x @ Failure(msg, _) => throw new ConfigurationException(x.toString)
       case x @ Error(msg, _)   => throw new ConfigurationException(x.toString)
     }
-  }
 }

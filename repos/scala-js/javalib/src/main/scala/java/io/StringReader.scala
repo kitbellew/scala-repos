@@ -6,9 +6,8 @@ class StringReader(s: String) extends Reader {
   private[this] var pos = 0
   private[this] var mark = 0
 
-  override def close(): Unit = {
+  override def close(): Unit =
     closed = true
-  }
 
   override def mark(readAheadLimit: Int): Unit = {
     ensureOpen()
@@ -64,9 +63,8 @@ class StringReader(s: String) extends Reader {
     count.toLong
   }
 
-  private def ensureOpen(): Unit = {
+  private def ensureOpen(): Unit =
     if (closed)
       throw new IOException("Operation on closed stream")
-  }
 
 }

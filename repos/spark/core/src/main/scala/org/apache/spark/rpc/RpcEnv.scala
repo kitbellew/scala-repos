@@ -83,9 +83,8 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
   /**
     * Retrieve the [[RpcEndpointRef]] represented by `uri`. This is a blocking action.
     */
-  def setupEndpointRefByURI(uri: String): RpcEndpointRef = {
+  def setupEndpointRefByURI(uri: String): RpcEndpointRef =
     defaultLookupTimeout.awaitResult(asyncSetupEndpointRefByURI(uri))
-  }
 
   /**
     * Retrieve the [[RpcEndpointRef]] represented by `address` and `endpointName`.
@@ -93,9 +92,8 @@ private[spark] abstract class RpcEnv(conf: SparkConf) {
     */
   def setupEndpointRef(
       address: RpcAddress,
-      endpointName: String): RpcEndpointRef = {
+      endpointName: String): RpcEndpointRef =
     setupEndpointRefByURI(RpcEndpointAddress(address, endpointName).toString)
-  }
 
   /**
     * Stop [[RpcEndpoint]] specified by `endpoint`.

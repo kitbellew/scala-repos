@@ -200,10 +200,9 @@ object ThreadPoolsSpec extends PlaySpecification {
           akkaSystem.dispatchers.lookup("contexts.expensive-cpu-operations")
       }
       //#many-specific-contexts
-      def test(context: ExecutionContext, name: String) = {
+      def test(context: ExecutionContext, name: String) =
         await(Future(Thread.currentThread().getName)(context)) must startWith(
           "application-contexts." + name)
-      }
       test(Contexts.simpleDbLookups, "simple-db-lookups")
       test(Contexts.expensiveDbLookups, "expensive-db-lookups")
       test(Contexts.dbWriteOperations, "db-write-operations")

@@ -28,10 +28,9 @@ import org.apache.spark.sql.types._
 class PrunedScanSource extends RelationProvider {
   override def createRelation(
       sqlContext: SQLContext,
-      parameters: Map[String, String]): BaseRelation = {
+      parameters: Map[String, String]): BaseRelation =
     SimplePrunedScan(parameters("from").toInt, parameters("to").toInt)(
       sqlContext)
-  }
 }
 
 case class SimplePrunedScan(from: Int, to: Int)(
@@ -114,7 +113,7 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
   testPruning("SELECT a FROM oneToTenPruned", "a")
   testPruning("SELECT b FROM oneToTenPruned", "b")
 
-  def testPruning(sqlString: String, expectedColumns: String*): Unit = {
+  def testPruning(sqlString: String, expectedColumns: String*): Unit =
     test(s"Columns output ${expectedColumns.mkString(",")}: $sqlString") {
 
       // These tests check a particular plan, disable whole stage codegen.
@@ -147,5 +146,4 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
           SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
       }
     }
-  }
 }

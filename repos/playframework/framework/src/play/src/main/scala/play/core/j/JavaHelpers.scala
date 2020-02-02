@@ -29,7 +29,7 @@ import collection.JavaConverters._
 trait JavaHelpers {
 
   def cookiesToScalaCookies(
-      cookies: java.lang.Iterable[play.mvc.Http.Cookie]): Seq[Cookie] = {
+      cookies: java.lang.Iterable[play.mvc.Http.Cookie]): Seq[Cookie] =
     cookies.asScala.toSeq map { c =>
       Cookie(
         c.name,
@@ -40,15 +40,13 @@ trait JavaHelpers {
         c.secure,
         c.httpOnly)
     }
-  }
 
-  def cookiesToJavaCookies(cookies: Cookies) = {
+  def cookiesToJavaCookies(cookies: Cookies) =
     new JCookies {
-      def get(name: String): JCookie = {
+      def get(name: String): JCookie =
         cookies.get(name).map(makeJavaCookie).orNull
-      }
 
-      private def makeJavaCookie(cookie: Cookie): JCookie = {
+      private def makeJavaCookie(cookie: Cookie): JCookie =
         new JCookie(
           cookie.name,
           cookie.value,
@@ -57,13 +55,10 @@ trait JavaHelpers {
           cookie.domain.orNull,
           cookie.secure,
           cookie.httpOnly)
-      }
 
-      def iterator: java.util.Iterator[JCookie] = {
+      def iterator: java.util.Iterator[JCookie] =
         cookies.toIterator.map(makeJavaCookie).asJava
-      }
     }
-  }
 
   /**
     * Creates a scala result from java context and result objects
@@ -96,7 +91,7 @@ trait JavaHelpers {
     * Creates a java context from a scala RequestHeader
     * @param req
     */
-  def createJavaContext(req: RequestHeader): JContext = {
+  def createJavaContext(req: RequestHeader): JContext =
     new JContext(
       req.id,
       req,
@@ -105,13 +100,12 @@ trait JavaHelpers {
       req.flash.data.asJava,
       req.tags.mapValues(_.asInstanceOf[AnyRef]).asJava
     )
-  }
 
   /**
     * Creates a java context from a scala Request[RequestBody]
     * @param req
     */
-  def createJavaContext(req: Request[RequestBody]): JContext = {
+  def createJavaContext(req: Request[RequestBody]): JContext =
     new JContext(
       req.id,
       req,
@@ -119,7 +113,6 @@ trait JavaHelpers {
       req.session.data.asJava,
       req.flash.data.asJava,
       req.tags.mapValues(_.asInstanceOf[AnyRef]).asJava)
-  }
 
   /**
     * Invoke the given function with the right context set, converting the scala request to a
@@ -162,13 +155,12 @@ trait JavaHelpers {
     */
   def invokeWithContext(
       request: RequestHeader,
-      f: JRequest => CompletionStage[JResult]): Future[Result] = {
+      f: JRequest => CompletionStage[JResult]): Future[Result] =
     withContext(request) { javaContext =>
       FutureConverters
         .toScala(f(javaContext.request()))
         .map(createResult(javaContext, _))(trampoline)
     }
-  }
 
   /**
     * Invoke the given block with Java context created from the request header
@@ -210,9 +202,8 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
 
   def acceptLanguages = header.acceptLanguages.map(new play.i18n.Lang(_)).asJava
 
-  def queryString = {
+  def queryString =
     header.queryString.mapValues(_.toArray).asJava
-  }
 
   def acceptedTypes = header.acceptedTypes.asJava
 
@@ -223,24 +214,21 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
   override def clientCertificateChain() =
     OptionConverters.toJava(header.clientCertificateChain.map(_.asJava))
 
-  def getQueryString(key: String): String = {
+  def getQueryString(key: String): String =
     if (queryString().containsKey(key) && queryString().get(key).length > 0)
       queryString().get(key)(0)
     else null
-  }
 
-  def cookie(name: String): JCookie = {
+  def cookie(name: String): JCookie =
     cookies().get(name)
-  }
 
   def getHeader(headerName: String): String = {
     val header: Array[String] = headers.get(headerName)
     if (header == null) null else header(0)
   }
 
-  def hasHeader(headerName: String): Boolean = {
+  def hasHeader(headerName: String): Boolean =
     getHeader(headerName) != null
-  }
 
   private def createHeaderMap(
       headers: Headers): java.util.Map[String, Array[String]] = {

@@ -26,9 +26,8 @@ import scala.util.control.NonFatal
 private[launchqueue] object LaunchQueueActor {
   def props(
       config: LaunchQueueConfig,
-      appActorProps: (AppDefinition, Int) => Props): Props = {
+      appActorProps: (AppDefinition, Int) => Props): Props =
     Props(new LaunchQueueActor(config, appActorProps))
-  }
 
   case class FullCount(appId: PathId)
 }

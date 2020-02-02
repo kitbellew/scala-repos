@@ -24,9 +24,8 @@ object Test extends App {
     def selectDynamic[T](n: String) = {
       println("qual.selectDynamic(" + n + ")"); stub
     }
-    def updateDynamic(n: String)(x: Any): Unit = {
+    def updateDynamic(n: String)(x: Any): Unit =
       println("qual.updateDynamic(" + n + ")(" + x + ")")
-    }
   }
   val qual = new MyDynamic
   val expr = "expr"

@@ -318,7 +318,7 @@ object Multipart {
         else ctx.finish()
       } else ctx.finish()
 
-    override def onPull(ctx: Context[RawPart]): SyncDirective = {
+    override def onPull(ctx: Context[RawPart]): SyncDirective =
       if (output.nonEmpty)
         ctx.push(dequeue())
       else if (ctx.isFinishing) {
@@ -326,7 +326,6 @@ object Multipart {
         else ctx.pushAndFinish(Left(ParseError("Unexpected end of input")))
       } else
         ctx.pull()
-    }
 
     override def onUpstreamFinish(ctx: Context[RawPart]): TerminationDirective =
       ctx.absorbTermination()
@@ -368,7 +367,7 @@ object Multipart {
     def parseHeader(
         input: ByteString,
         headerStart: Int,
-        memoryBufferSize: Int): StateResult = {
+        memoryBufferSize: Int): StateResult =
       input.indexOfSlice(crlfcrlf, headerStart) match {
         case -1 if input.length - headerStart >= maxHeaderSize =>
           bufferExceeded(
@@ -417,7 +416,6 @@ object Multipart {
                 headers)
           }
       }
-    }
 
     def handleFilePart(
         input: ByteString,
@@ -425,7 +423,7 @@ object Multipart {
         memoryBufferSize: Int,
         partName: String,
         fileName: String,
-        contentType: Option[String]): StateResult = {
+        contentType: Option[String]): StateResult =
       if (memoryBufferSize > maxMemoryBufferSize) {
         bufferExceeded(
           s"Memory buffer full ($maxMemoryBufferSize) on part $partName")
@@ -433,12 +431,11 @@ object Multipart {
         emit(FilePart(partName, fileName, contentType, ()))
         handleFileData(input, partStart, memoryBufferSize)
       }
-    }
 
     def handleFileData(
         input: ByteString,
         offset: Int,
-        memoryBufferSize: Int): StateResult = {
+        memoryBufferSize: Int): StateResult =
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, offset)
         val needleEnd = currentPartEnd + needle.length
@@ -464,13 +461,11 @@ object Multipart {
           }
       }
 
-    }
-
     def handleDataPart(
         input: ByteString,
         partStart: Int,
         memoryBufferSize: Int,
-        partName: String): StateResult = {
+        partName: String): StateResult =
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, partStart)
         val needleEnd = currentPartEnd + needle.length
@@ -501,13 +496,12 @@ object Multipart {
           continue(input, partStart)(
             handleDataPart(_, _, memoryBufferSize, partName))
       }
-    }
 
     def handleBadPart(
         input: ByteString,
         partStart: Int,
         memoryBufferSize: Int,
-        headers: Map[String, String]): StateResult = {
+        headers: Map[String, String]): StateResult =
       try {
         val currentPartEnd = boyerMoore.nextIndex(input, partStart)
         val needleEnd = currentPartEnd + needle.length
@@ -525,15 +519,13 @@ object Multipart {
           continue(input, partStart)(
             handleBadPart(_, _, memoryBufferSize, headers))
       }
-    }
 
     def emit(bytes: ByteString): Unit = if (bytes.nonEmpty) {
       output = output.enqueue(Right(bytes))
     }
 
-    def emit(part: Part[Unit]): Unit = {
+    def emit(part: Part[Unit]): Unit =
       output = output.enqueue(Left(part))
-    }
 
     def dequeue(): RawPart = {
       val head = output.head

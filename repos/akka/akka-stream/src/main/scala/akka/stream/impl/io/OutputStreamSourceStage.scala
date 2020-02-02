@@ -154,16 +154,15 @@ private[akka] class OutputStreamAdapter(
     "Reactive stream is terminated, no writes are possible")
 
   @scala.throws(classOf[IOException])
-  private[this] def send(sendAction: () ⇒ Unit): Unit = {
+  private[this] def send(sendAction: () ⇒ Unit): Unit =
     if (isActive) {
       if (isPublisherAlive) sendAction()
       else throw publisherClosedException
     } else throw new IOException("OutputStream is closed")
-  }
 
   @scala.throws(classOf[IOException])
   private[this] def sendData(data: ByteString): Unit =
-    send(() ⇒ {
+    send { () ⇒
       try {
         dataQueue.put(data)
       } catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
@@ -171,7 +170,7 @@ private[akka] class OutputStreamAdapter(
         isPublisherAlive = false
         throw publisherClosedException
       }
-    })
+    }
 
   @scala.throws(classOf[IOException])
   private[this] def sendMessage(
@@ -191,14 +190,12 @@ private[akka] class OutputStreamAdapter(
       })
 
   @scala.throws(classOf[IOException])
-  override def write(b: Int): Unit = {
+  override def write(b: Int): Unit =
     sendData(ByteString(b))
-  }
 
   @scala.throws(classOf[IOException])
-  override def write(b: Array[Byte], off: Int, len: Int): Unit = {
+  override def write(b: Array[Byte], off: Int, len: Int): Unit =
     sendData(ByteString.fromArray(b, off, len))
-  }
 
   @scala.throws(classOf[IOException])
   override def flush(): Unit = sendMessage(Flush)

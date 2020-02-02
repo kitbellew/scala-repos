@@ -215,14 +215,13 @@ class MethodResolveProcessor(
     true
   }
 
-  override def candidatesS: Set[ScalaResolveResult] = {
+  override def candidatesS: Set[ScalaResolveResult] =
     if (isDynamic) {
       collectCandidates(super.candidatesS.map(_.copy(isDynamic = true)))
         .filter(_.isApplicable())
     } else {
       collectCandidates(super.candidatesS)
     }
-  }
 
   private def collectCandidates(
       input: Set[ScalaResolveResult]): Set[ScalaResolveResult] = {
@@ -291,7 +290,7 @@ object MethodResolveProcessor {
     })
 
     def addExpectedTypeProblems(
-        eOption: Option[ScType] = expectedOption()): Unit = {
+        eOption: Option[ScType] = expectedOption()): Unit =
       for (expected <- eOption) {
         val retType: ScType = element match {
           case f: ScFunction
@@ -314,10 +313,9 @@ object MethodResolveProcessor {
           problems += ExpectedTypeMismatch
         }
       }
-    }
 
     def checkFunction(fun: PsiNamedElement): ConformanceExtResult = {
-      def default(): ConformanceExtResult = {
+      def default(): ConformanceExtResult =
         fun match {
           case fun: ScFunction
               if fun.paramClauses.clauses.isEmpty ||
@@ -338,7 +336,6 @@ object MethodResolveProcessor {
             problems += MissedParametersClause(null)
             ConformanceExtResult(problems)
         }
-      }
 
       def processFunctionType(
           retType: ScType,
@@ -733,34 +730,31 @@ object MethodResolveProcessor {
       }
     }
 
-    def mapper(applicationImplicits: Boolean): Set[ScalaResolveResult] = {
+    def mapper(applicationImplicits: Boolean): Set[ScalaResolveResult] =
       if (argumentClauses.nonEmpty) {
         input.flatMap(expand).map { r =>
-          {
-            val pr = problemsFor(r, applicationImplicits, proc)
-            r.innerResolveResult match {
-              case Some(rr) =>
-                r.copy(innerResolveResult = Some(
-                  rr.copy(
-                    problems = pr.problems,
-                    defaultParameterUsed = pr.defaultParameterUsed)))
-              case _ =>
-                r.copy(
+          val pr = problemsFor(r, applicationImplicits, proc)
+          r.innerResolveResult match {
+            case Some(rr) =>
+              r.copy(innerResolveResult = Some(
+                rr.copy(
                   problems = pr.problems,
-                  defaultParameterUsed = pr.defaultParameterUsed,
-                  resultUndef = Some(pr.undefSubst))
-            }
+                  defaultParameterUsed = pr.defaultParameterUsed)))
+            case _ =>
+              r.copy(
+                problems = pr.problems,
+                defaultParameterUsed = pr.defaultParameterUsed,
+                resultUndef = Some(pr.undefSubst))
           }
         }
       } else
-        input.map(r => {
+        input.map { r =>
           val pr = problemsFor(r, applicationImplicits, proc)
           r.copy(
             problems = pr.problems,
             defaultParameterUsed = pr.defaultParameterUsed,
             resultUndef = Some(pr.undefSubst))
-        })
-    }
+        }
     var mapped = mapper(applicationImplicits = false)
     var filtered =
       mapped.filter(_.isApplicableInternal(withExpectedType = true))
@@ -782,14 +776,14 @@ object MethodResolveProcessor {
       return input.map(_.copy(notCheckedResolveResult = true))
     } else if (!onlyValues) {
       //in this case all values are not applicable
-      mapped = mapped.map(r => {
+      mapped = mapped.map { r =>
         if (r.isApplicable()) {
           r.innerResolveResult match {
             case Some(rr) => r.copy(problems = rr.problems)
             case _        => r
           }
         } else r
-      })
+      }
     }
 
     //remove default parameters alternatives
@@ -804,7 +798,7 @@ object MethodResolveProcessor {
       if (filtered.isEmpty) {
         if (enableTupling) {
           val filtered2 = input
-            .filter(r => {
+            .filter { r =>
               r.element match {
                 case fun: ScFun if fun.paramClauses.nonEmpty =>
                   fun.paramClauses.head.length == 1
@@ -817,7 +811,7 @@ object MethodResolveProcessor {
                   m.getParameterList.getParameters.length == 1
                 case _ => false
               }
-            })
+            }
             .map(r => r.copy(tuplingUsed = true))
           if (filtered2.isEmpty)
             return input.map(r => r.copy(notCheckedResolveResult = true))

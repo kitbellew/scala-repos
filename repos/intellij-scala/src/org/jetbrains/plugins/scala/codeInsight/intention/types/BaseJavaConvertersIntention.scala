@@ -28,7 +28,7 @@ abstract class BaseJavaConvertersIntention(methodName: String)
 
   val alreadyConvertedPrefixes: Set[String]
 
-  def isAvailable(p: Project, e: Editor, element: PsiElement): Boolean = {
+  def isAvailable(p: Project, e: Editor, element: PsiElement): Boolean =
     Option(getTargetExpression(element)) exists { scExpr =>
       def properTargetCollection =
         isProperTargetCollection(scExpr.getTypeAfterImplicitConversion().tr)
@@ -40,7 +40,6 @@ abstract class BaseJavaConvertersIntention(methodName: String)
       }
       properTargetCollection && parentNonConvertedCollection
     }
-  }
 
   def isProperTargetCollection(typeResult: TypeResult[ScType]): Boolean =
     typeResult.exists { scType =>
@@ -89,7 +88,7 @@ abstract class BaseJavaConvertersIntention(methodName: String)
     @tailrec
     def allSuperNames(
         pClasses: List[PsiClass],
-        superNames: Set[String] = Set.empty): Set[String] = {
+        superNames: Set[String] = Set.empty): Set[String] =
       pClasses match {
         case Nil => superNames
         case head :: tail =>
@@ -97,7 +96,6 @@ abstract class BaseJavaConvertersIntention(methodName: String)
             head.getSupers.toList ::: tail,
             superNames + head.getQualifiedName)
       }
-    }
     allSuperNames(List(psiClass))
   }
 }

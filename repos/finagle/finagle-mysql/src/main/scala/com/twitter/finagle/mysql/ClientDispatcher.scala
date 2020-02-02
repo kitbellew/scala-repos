@@ -46,12 +46,11 @@ private[mysql] class PrepareCache(
     val listener = new RemovalListener[Request, Future[Result]] {
       // make sure prepared futures get removed eventually
       def onRemoval(
-          notification: RemovalNotification[Request, Future[Result]]): Unit = {
+          notification: RemovalNotification[Request, Future[Result]]): Unit =
         notification.getValue() onSuccess {
           case r: PrepareOK => svc(CloseRequest(r.id))
           case _            => // nop
         }
-      }
     }
     val underlying = CacheBuilder
       .newBuilder()
@@ -90,9 +89,8 @@ object ClientDispatcher {
   def apply(
       trans: Transport[Packet, Packet],
       handshake: HandshakeInit => Try[HandshakeResponse]
-  ): Service[Request, Result] = {
+  ): Service[Request, Result] =
     new PrepareCache(new ClientDispatcher(trans, handshake))
-  }
 
   /**
     * Wrap a Try[T] into a Future[T]. This is useful for
@@ -251,7 +249,7 @@ class ClientDispatcher(
     */
   private[this] def readTx(
       limit: Int = Int.MaxValue): Future[(Seq[Packet], EOF)] = {
-    def aux(numRead: Int, xs: List[Packet]): Future[(List[Packet], EOF)] = {
+    def aux(numRead: Int, xs: List[Packet]): Future[(List[Packet], EOF)] =
       if (numRead > limit) Future.exception(lostSyncExc)
       else
         trans.read() flatMap { packet =>
@@ -267,7 +265,6 @@ class ClientDispatcher(
             case None    => Future.exception(lostSyncExc)
           }
         }
-    }
 
     if (limit <= 0) Future.value(emptyTx)
     else aux(0, Nil)

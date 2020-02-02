@@ -13,14 +13,13 @@ import scala.reflect.ClassTag
 
 object JavaErrorHandling extends PlaySpecification with WsTestClient {
 
-  def fakeApp[A](implicit ct: ClassTag[A]) = {
+  def fakeApp[A](implicit ct: ClassTag[A]) =
     GuiceApplicationBuilder()
       .configure("play.http.errorHandler" -> ct.runtimeClass.getName)
       .routes {
         case (_, "/error") => Action(_ => throw new RuntimeException("foo"))
       }
       .build()
-  }
 
   "java error handling" should {
     "allow providing a custom error handler" in new WithServer(

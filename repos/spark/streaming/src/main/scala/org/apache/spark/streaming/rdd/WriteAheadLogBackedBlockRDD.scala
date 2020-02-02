@@ -122,9 +122,8 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     val partition = split.asInstanceOf[WriteAheadLogBackedBlockRDDPartition]
     val blockId = partition.blockId
 
-    def getBlockFromBlockManager(): Option[Iterator[T]] = {
+    def getBlockFromBlockManager(): Option[Iterator[T]] =
       blockManager.get(blockId).map(_.data.asInstanceOf[Iterator[T]])
-    }
 
     def getBlockFromWriteAheadLog(): Iterator[T] = {
       var dataRead: ByteBuffer = null

@@ -114,9 +114,8 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
   /** Update the given block in this storage status. If it doesn't already exist, add it. */
   private[spark] def updateBlock(
       blockId: BlockId,
-      blockStatus: BlockStatus): Unit = {
+      blockStatus: BlockStatus): Unit =
     addBlock(blockId, blockStatus)
-  }
 
   /** Remove the given block from this storage status. */
   private[spark] def removeBlock(blockId: BlockId): Option[BlockStatus] = {
@@ -143,27 +142,25 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     * Return whether the given block is stored in this block manager in O(1) time.
     * Note that this is much faster than `this.blocks.contains`, which is O(blocks) time.
     */
-  def containsBlock(blockId: BlockId): Boolean = {
+  def containsBlock(blockId: BlockId): Boolean =
     blockId match {
       case RDDBlockId(rddId, _) =>
         _rddBlocks.get(rddId).exists(_.contains(blockId))
       case _ =>
         _nonRddBlocks.contains(blockId)
     }
-  }
 
   /**
     * Return the given block stored in this block manager in O(1) time.
     * Note that this is much faster than `this.blocks.get`, which is O(blocks) time.
     */
-  def getBlock(blockId: BlockId): Option[BlockStatus] = {
+  def getBlock(blockId: BlockId): Option[BlockStatus] =
     blockId match {
       case RDDBlockId(rddId, _) =>
         _rddBlocks.get(rddId).flatMap(_.get(blockId))
       case _ =>
         _nonRddBlocks.get(blockId)
     }
-  }
 
   /**
     * Return the number of blocks stored in this block manager in O(RDDs) time.
@@ -257,14 +254,13 @@ private[spark] object StorageUtils extends Logging {
     * waiting for the GC to find it because that could lead to huge numbers of open files. There's
     * unfortunately no standard API to do this.
     */
-  def dispose(buffer: ByteBuffer): Unit = {
+  def dispose(buffer: ByteBuffer): Unit =
     if (buffer != null && buffer.isInstanceOf[MappedByteBuffer]) {
       logTrace(s"Unmapping $buffer")
       if (buffer.asInstanceOf[DirectBuffer].cleaner() != null) {
         buffer.asInstanceOf[DirectBuffer].cleaner().clean()
       }
     }
-  }
 
   /**
     * Update the given list of RDDInfo with the given list of storage statuses.
@@ -272,7 +268,7 @@ private[spark] object StorageUtils extends Logging {
     */
   def updateRddInfo(
       rddInfos: Seq[RDDInfo],
-      statuses: Seq[StorageStatus]): Unit = {
+      statuses: Seq[StorageStatus]): Unit =
     rddInfos.foreach { rddInfo =>
       val rddId = rddInfo.id
       // Assume all blocks belonging to the same RDD have the same storage level
@@ -289,7 +285,6 @@ private[spark] object StorageUtils extends Logging {
       rddInfo.memSize = memSize
       rddInfo.diskSize = diskSize
     }
-  }
 
   /**
     * Return a mapping from block ID to its locations for each block that belongs to the given RDD.

@@ -52,11 +52,10 @@ class ScalaSafeDeleteProcessorDelegate extends JavaSafeDeleteProcessor {
     return new NonCodeUsageSearchInfo(insideDeletedCondition, element)
   }
 
-  override def preprocessUsages(project: Project, usages: Array[UsageInfo]) = {
+  override def preprocessUsages(project: Project, usages: Array[UsageInfo]) =
     // Currently this ProcessorDelegate emits SafeDeleteReferenceJavaDeleteUsageInfo, which gets processed by the JavaSafeDeleteProcessor.
     // Right now we rely on that processor to preprocess the usages, so we intentionally don't call super here!
 
     // TODO Use Scala specific DeleteUsageInfo, and consider them here.
     usages
-  }
 }

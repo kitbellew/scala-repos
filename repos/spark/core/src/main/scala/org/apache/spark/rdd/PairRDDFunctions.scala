@@ -1408,7 +1408,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
 
   private def maybeUpdateOutputMetrics(
       outputMetricsAndBytesWrittenCallback: Option[(OutputMetrics, () => Long)],
-      recordsWritten: Long): Unit = {
+      recordsWritten: Long): Unit =
     if (recordsWritten % PairRDDFunctions.RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0) {
       outputMetricsAndBytesWrittenCallback.foreach {
         case (om, callback) =>
@@ -1416,7 +1416,6 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
           om.setRecordsWritten(recordsWritten)
       }
     }
-  }
 
   /**
     * Return an RDD with the keys of each tuple.

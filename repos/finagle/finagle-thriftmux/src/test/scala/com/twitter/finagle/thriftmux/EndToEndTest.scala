@@ -748,9 +748,8 @@ class EndToEndTest
     val server = ThriftMux.serveIface(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
-        def query(x: String) = {
+        def query(x: String) =
           Future.value(ClientId.current.map(_.name).getOrElse(""))
-        }
       }
     )
 

@@ -55,7 +55,7 @@ object TypeParam {
     return true
   }
 
-  def parseBound(builder: ScalaPsiBuilder)(bound: String): Boolean = {
+  def parseBound(builder: ScalaPsiBuilder)(bound: String): Boolean =
     builder.getTokenText match {
       case x if x == bound =>
         builder.advanceLexer
@@ -63,5 +63,4 @@ object TypeParam {
         true
       case _ => false
     }
-  }
 }

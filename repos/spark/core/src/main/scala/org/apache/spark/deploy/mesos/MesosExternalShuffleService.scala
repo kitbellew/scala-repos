@@ -59,7 +59,7 @@ private[mesos] class MesosExternalShuffleBlockHandler(
   protected override def handleMessage(
       message: BlockTransferMessage,
       client: TransportClient,
-      callback: RpcResponseCallback): Unit = {
+      callback: RpcResponseCallback): Unit =
     message match {
       case RegisterDriverParam(appId, appState) =>
         val address = client.getSocketAddress
@@ -89,7 +89,6 @@ private[mesos] class MesosExternalShuffleBlockHandler(
         }
       case _ => super.handleMessage(message, client, callback)
     }
-  }
 
   /** An extractor object for matching [[RegisterDriver]] message. */
   private object RegisterDriverParam {
@@ -141,10 +140,9 @@ private[mesos] class MesosExternalShuffleService(
 
 private[spark] object MesosExternalShuffleService extends Logging {
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     ExternalShuffleService.main(
       args,
       (conf: SparkConf, sm: SecurityManager) =>
         new MesosExternalShuffleService(conf, sm))
-  }
 }

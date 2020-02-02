@@ -252,7 +252,7 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
        |  def unapply(a: D) = Some(a.i)
        |}""".stripMargin.trim()
   )
-  def testPostfixAndUnapply(): Unit = {
+  def testPostfixAndUnapply(): Unit =
     runDebugger() {
       waitForBreakpoint()
       checkSmartStepTargets("D.unapply(D)", "foo()")
@@ -262,11 +262,10 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
         "unapply",
         16)
     }
-    //    runDebugger("Sample") {  //should work after cleaning up match statements
-    //      waitForBreakpoint()
-    //      checkSmartStepInto("foo()", "Sample.scala", "foo", 11)
-    //    }
-  }
+  //    runDebugger("Sample") {  //should work after cleaning up match statements
+  //      waitForBreakpoint()
+  //      checkSmartStepInto("foo()", "Sample.scala", "foo", 11)
+  //    }
 
   addFileWithBreakpoints(
     "AnonymousClassFromTrait.scala",
@@ -410,13 +409,12 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
        |  }
        |}""".stripMargin.trim()
   )
-  def testLocalFunction(): Unit = {
+  def testLocalFunction(): Unit =
     runDebugger() {
       waitForBreakpoint()
       checkSmartStepTargets("foo(String)")
       checkSmartStepInto("foo(String)", "LocalFunction.scala", "foo$1", 5)
     }
-  }
 
   addFileWithBreakpoints(
     "ImplicitConversion.scala",
@@ -436,7 +434,7 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
        |  }
        |}""".stripMargin.trim()
   )
-  def testImplicitConversion(): Unit = {
+  def testImplicitConversion(): Unit =
     runDebugger() {
       waitForBreakpoint()
       checkSmartStepTargets("inc(int)", "implicit string2Int(String)")
@@ -446,7 +444,6 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
         "string2Int",
         5)
     }
-  }
 
   addFileWithBreakpoints(
     "ImplicitClass.scala",
@@ -464,7 +461,7 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
        |  }
        |}""".stripMargin.trim()
   )
-  def testImplicitClass(): Unit = {
+  def testImplicitClass(): Unit =
     runDebugger() {
       waitForBreakpoint()
       checkSmartStepTargets("charAt(int)", "implicit toOption()")
@@ -474,7 +471,6 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
         "toOption",
         6)
     }
-  }
 
   addFileWithBreakpoints(
     "ImplicitValueClass.scala",
@@ -492,7 +488,7 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
        |  }
        |}""".stripMargin.trim()
   )
-  def testImplicitValueClass(): Unit = {
+  def testImplicitValueClass(): Unit =
     runDebugger() {
       waitForBreakpoint()
       checkSmartStepTargets("charAt(int)", "implicit toOption()")
@@ -502,7 +498,6 @@ abstract class SmartStepIntoTestBase extends ScalaDebuggerTestCase {
         "toOption$extension",
         6)
     }
-  }
 
   addFileWithBreakpoints(
     "MethodValue.scala",

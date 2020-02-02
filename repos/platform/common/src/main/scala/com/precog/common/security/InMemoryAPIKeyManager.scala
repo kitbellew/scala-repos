@@ -127,15 +127,14 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
   def listGrants() = grants.values.toList.point[M]
 
   def findAPIKey(apiKey: APIKey) = apiKeys.get(apiKey).point[M]
-  def findAPIKeyChildren(parent: APIKey) = {
+  def findAPIKeyChildren(parent: APIKey) =
     apiKeys.values.filter(_.issuerKey == parent).toSet.point[M]
-  }
 
   def findGrant(gid: GrantId) = grants.get(gid).point[M]
   def findGrantChildren(gid: GrantId) =
     grants.values.filter(_.parentIds.contains(gid)).toSet.point[M]
 
-  def addGrants(apiKey: APIKey, grants: Set[GrantId]) = {
+  def addGrants(apiKey: APIKey, grants: Set[GrantId]) =
     apiKeys
       .get(apiKey)
       .map { record =>
@@ -144,7 +143,6 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
         updated
       }
       .point[M]
-  }
 
   def listDeletedAPIKeys() = deletedAPIKeys.values.toList.point[M]
 
@@ -157,7 +155,7 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
   def findDeletedGrantChildren(gid: GrantId) =
     deletedGrants.values.filter(_.parentIds.contains(gid)).toSet.point[M]
 
-  def removeGrants(apiKey: APIKey, grants: Set[GrantId]) = {
+  def removeGrants(apiKey: APIKey, grants: Set[GrantId]) =
     apiKeys
       .get(apiKey)
       .flatMap { record =>
@@ -168,7 +166,6 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
         } else None
       }
       .point[M]
-  }
 
   def deleteAPIKey(apiKey: APIKey) =
     apiKeys
@@ -180,7 +177,7 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
       .point[M]
 
   def deleteGrant(gid: GrantId) = {
-    def deleteGrantAux(gid: GrantId): Set[Grant] = {
+    def deleteGrantAux(gid: GrantId): Set[Grant] =
       grants
         .remove(gid)
         .map { grant =>
@@ -188,7 +185,6 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
           Set(grant) ++ children.flatMap(grant => deleteGrantAux(grant.grantId))
         }
         .getOrElse(Set.empty)
-    }
     deleteGrantAux(gid).point[M]
   }
 

@@ -45,12 +45,11 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
 
   def errorSource[T] =
     Source.fromPublisher(new Publisher[T] {
-      def subscribe(s: Subscriber[_ >: T]) = {
+      def subscribe(s: Subscriber[_ >: T]) =
         s.onSubscribe(new Subscription {
           def cancel() = s.onComplete()
           def request(n: Long) = s.onError(new RuntimeException("error"))
         })
-      }
     })
 
   "an accumulator" should {

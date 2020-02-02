@@ -40,7 +40,7 @@ object ScalaSuppressableInspectionTool {
     }
   }
 
-  def commentsFor(elem: PsiElement): Seq[PsiComment] = {
+  def commentsFor(elem: PsiElement): Seq[PsiComment] =
     elem match {
       case null | _: PsiFile | _: PsiDirectory => Seq.empty
       case co: ScCommentOwner                  => co.allComments
@@ -48,7 +48,6 @@ object ScalaSuppressableInspectionTool {
         val prev = stmt.getPrevSiblingNotWhitespace
         prev.asOptionOf[PsiComment].toSeq
     }
-  }
 
   def suppressActions(toolShortName: String): Array[SuppressQuickFix] = {
     val displayKey: HighlightDisplayKey =

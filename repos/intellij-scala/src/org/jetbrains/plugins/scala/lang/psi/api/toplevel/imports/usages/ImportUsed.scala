@@ -25,20 +25,18 @@ object ImportUsed {
   val key: Key[_root_.scala.collection.Set[ImportUsed]] =
     Key.create("scala.used.imports.key")
 
-  def unapply(importUsed: ImportUsed): Option[PsiElement] = {
+  def unapply(importUsed: ImportUsed): Option[PsiElement] =
     Some(importUsed.e)
-  }
 }
 
 /**
   * Class to mark whole import expression as used (qualified or ending with reference id)
   */
 case class ImportExprUsed(expr: ScImportExpr) extends ImportUsed(expr) {
-  override def qualName: Option[String] = {
+  override def qualName: Option[String] =
     if (expr.qualifier == null) None
     else if (expr.singleWildcard) Some(expr.qualifier.qualName + "._")
     else expr.reference.map(ref => expr.qualifier.qualName + "." + ref.refName)
-  }
 
   override def toString: String = "ImportExprUsed(" + super.toString + ")"
 }
@@ -89,9 +87,8 @@ case class ImportSelectorUsed(sel: ScImportSelector) extends ImportUsed(sel) {
   */
 case class ImportWildcardSelectorUsed(elem: ScImportExpr)
     extends ImportUsed(elem) {
-  override def qualName: Option[String] = {
+  override def qualName: Option[String] =
     elem.reference.map(ref => ref.qualName + "._")
-  }
 
   override def toString: String =
     "ImportWildcardSelectorUsed(" + super.toString + ")"

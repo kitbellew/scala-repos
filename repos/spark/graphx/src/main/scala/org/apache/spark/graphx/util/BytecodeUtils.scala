@@ -39,7 +39,7 @@ private[graphx] object BytecodeUtils {
   def invokedMethod(
       closure: AnyRef,
       targetClass: Class[_],
-      targetMethod: String): Boolean = {
+      targetMethod: String): Boolean =
     if (_invokedMethod(closure.getClass, "apply", targetClass, targetMethod)) {
       true
     } else {
@@ -53,7 +53,6 @@ private[graphx] object BytecodeUtils {
       }
       return false
     }
-  }
 
   private def _invokedMethod(
       cls: Class[_],
@@ -124,7 +123,7 @@ private[graphx] object BytecodeUtils {
         name: String,
         desc: String,
         sig: String,
-        exceptions: Array[String]): MethodVisitor = {
+        exceptions: Array[String]): MethodVisitor =
       if (name == methodName) {
         new MethodVisitor(ASM5) {
           override def visitMethodInsn(
@@ -144,6 +143,5 @@ private[graphx] object BytecodeUtils {
       } else {
         null
       }
-    }
   }
 }

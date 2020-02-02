@@ -101,7 +101,7 @@ trait HistoryReducerEstimator extends ReducerEstimator {
       case Success(h) =>
         LOG.info(s"${h.length} history entries found.")
         val estimate = estimateReducers(info, h)
-        LOG.info(s"Reducer estimate: ${estimate}")
+        LOG.info(s"Reducer estimate: $estimate")
         estimate
       case Failure(f) =>
         LOG.warn(s"Unable to fetch history in $getClass", f)

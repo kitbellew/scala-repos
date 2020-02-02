@@ -721,7 +721,7 @@ class KafkaApis(
         Errors.TOPIC_AUTHORIZATION_FAILED.code,
         List[JLong]().asJava))
 
-    val responseMap = authorizedRequestInfo.map(elem => {
+    val responseMap = authorizedRequestInfo.map { elem =>
       val (topicPartition, partitionData) = elem
       try {
         // ensure leader exists
@@ -784,7 +784,7 @@ class KafkaApis(
               Errors.forException(e).code,
               List[JLong]().asJava))
       }
-    })
+    }
 
     val mergedResponseMap = responseMap ++ unauthorizedResponseStatus
 
@@ -801,7 +801,7 @@ class KafkaApis(
       logManager: LogManager,
       topicPartition: TopicPartition,
       timestamp: Long,
-      maxNumOffsets: Int): Seq[Long] = {
+      maxNumOffsets: Int): Seq[Long] =
     logManager.getLog(
       TopicAndPartition(topicPartition.topic, topicPartition.partition)) match {
       case Some(log) =>
@@ -812,7 +812,6 @@ class KafkaApis(
         else
           Nil
     }
-  }
 
   private def fetchOffsetsBefore(
       log: Log,
@@ -865,7 +864,7 @@ class KafkaApis(
       numPartitions: Int,
       replicationFactor: Int,
       properties: Properties = new Properties())
-      : MetadataResponse.TopicMetadata = {
+      : MetadataResponse.TopicMetadata =
     try {
       AdminUtils.createTopic(
         zkUtils,
@@ -893,7 +892,6 @@ class KafkaApis(
           topic,
           java.util.Collections.emptyList())
     }
-  }
 
   private def createGroupMetadataTopic(): MetadataResponse.TopicMetadata = {
     val aliveBrokers = metadataCache.getAliveBrokers
@@ -1455,9 +1453,8 @@ class KafkaApis(
     info("Shutdown complete.")
   }
 
-  def authorizeClusterAction(request: RequestChannel.Request): Unit = {
+  def authorizeClusterAction(request: RequestChannel.Request): Unit =
     if (!authorize(request.session, ClusterAction, Resource.ClusterResource))
       throw new ClusterAuthorizationException(
         s"Request $request is not authorized.")
-  }
 }

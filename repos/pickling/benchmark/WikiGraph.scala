@@ -32,15 +32,14 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
     neighbors = v +: neighbors
   }
 
-  def sameAs(other: Vertex): Boolean = {
+  def sameAs(other: Vertex): Boolean =
     (this ne other) &&
-    this.label == other.label && (
+      this.label == other.label && (
       this.neighbors.length == other.neighbors.length &&
-      this.neighbors.zip(other.neighbors).forall {
-        case (thisv, otherv) => thisv.label == otherv.label
-      }
+        this.neighbors.zip(other.neighbors).forall {
+          case (thisv, otherv) => thisv.label == otherv.label
+        }
     )
-  }
 
   override def toString = "Vertex(" + label + ")"
 }
@@ -54,13 +53,12 @@ final class Graph extends Serializable {
     v
   }
 
-  def sameAs(other: Graph): Boolean = {
+  def sameAs(other: Graph): Boolean =
     (this ne other) &&
-    this.vertices.length == other.vertices.length &&
-    this.vertices.zip(other.vertices).forall {
-      case (thisv, otherv) => thisv.sameAs(otherv)
-    }
-  }
+      this.vertices.length == other.vertices.length &&
+      this.vertices.zip(other.vertices).forall {
+        case (thisv, otherv) => thisv.sameAs(otherv)
+      }
 }
 
 object GraphReader extends RegexParsers {
@@ -120,7 +118,7 @@ object GraphReader extends RegexParsers {
     graph
   }
 
-  def printGraph(g: Graph): Unit = {
+  def printGraph(g: Graph): Unit =
     for (v <- g.vertices) {
       print(v.label + ":")
       for (to <- v.neighbors) {
@@ -128,7 +126,6 @@ object GraphReader extends RegexParsers {
       }
       println()
     }
-  }
 }
 
 object WikiGraph {
@@ -140,9 +137,8 @@ object WikiGraph {
   codec.onUnmappableCharacter(CodingErrorAction.REPLACE)
 
   val names: Map[String, String] = new HashMap[String, String] {
-    override def default(label: String) = {
+    override def default(label: String) =
       "no_title[" + label + "]"
-    }
   }
   // println("Building page title map...")
 

@@ -67,21 +67,18 @@ class NodeJSEnv private (
 
   override def jsRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+      code: VirtualJSFile): JSRunner =
     new NodeRunner(libs, code)
-  }
 
   override def asyncRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): AsyncJSRunner = {
+      code: VirtualJSFile): AsyncJSRunner =
     new AsyncNodeRunner(libs, code)
-  }
 
   override def comRunner(
       libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): ComJSRunner = {
+      code: VirtualJSFile): ComJSRunner =
     new ComNodeRunner(libs, code)
-  }
 
   protected class NodeRunner(
       libs: Seq[ResolvedJSDependency],
@@ -186,13 +183,12 @@ class NodeJSEnv private (
       """
     )
 
-    def send(msg: String): Unit = {
+    def send(msg: String): Unit =
       if (awaitConnection()) {
         jvm2js.writeInt(msg.length)
         jvm2js.writeChars(msg)
         jvm2js.flush()
       }
-    }
 
     def receive(timeout: Duration): String = {
       if (!awaitConnection())
@@ -267,7 +263,7 @@ class NodeJSEnv private (
     /** File(s) to automatically install source-map-support.
       *  Is used by [[initFiles]], override to change/disable.
       */
-    protected def installSourceMap(): Seq[VirtualJSFile] = {
+    protected def installSourceMap(): Seq[VirtualJSFile] =
       if (sourceMap)
         Seq(
           new MemVirtualJSFile("sourceMapSupport.js").withContent(
@@ -279,7 +275,6 @@ class NodeJSEnv private (
           )
         )
       else Seq()
-    }
 
     /** File(s) to hack console.log to prevent if from changing `%%` to `%`.
       *  Is used by [[initFiles]], override to change/disable.
@@ -336,14 +331,13 @@ class NodeJSEnv private (
       installSourceMap() ++ fixPercentConsole() ++ runtimeEnv()
 
     /** Libraries are loaded via require in Node.js */
-    override protected def getLibJSFiles(): Seq[VirtualJSFile] = {
+    override protected def getLibJSFiles(): Seq[VirtualJSFile] =
       initFiles() ++
         customInitFiles() ++
         libs.map(requireLibrary)
-    }
 
     /** Rewrites a library virtual file to a require statement if possible */
-    protected def requireLibrary(dep: ResolvedJSDependency): VirtualJSFile = {
+    protected def requireLibrary(dep: ResolvedJSDependency): VirtualJSFile =
       dep.info.commonJSName.fold(dep.lib) { varname =>
         val fname = dep.lib.name
         libCache.materialize(dep.lib)
@@ -351,19 +345,17 @@ class NodeJSEnv private (
           s"""$varname = require("${escapeJS(fname)}");"""
         )
       }
-    }
 
     // Send code to Stdin
-    override protected def sendVMStdin(out: OutputStream): Unit = {
+    override protected def sendVMStdin(out: OutputStream): Unit =
       sendJS(getJSFiles(), out)
-    }
 
     /** write a single JS file to a writer using an include fct if appropriate
       *  uses `require` if the file exists on the filesystem
       */
     override protected def writeJSFile(
         file: VirtualJSFile,
-        writer: Writer): Unit = {
+        writer: Writer): Unit =
       file match {
         case file: FileVirtualJSFile =>
           val fname = file.file.getAbsolutePath
@@ -371,7 +363,6 @@ class NodeJSEnv private (
         case _ =>
           super.writeJSFile(file, writer)
       }
-    }
 
     // Node.js specific (system) environment
     override protected def getVMEnv(): Map[String, String] = {

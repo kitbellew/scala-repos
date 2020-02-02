@@ -6,7 +6,7 @@ import scala.collection.{immutable, mutable}
 import scala.pickling.internal._
 
 object MapPicklerHelper {
-  def tupleTagExtractor[T, U](tpe: AppliedType): FastTypeTag[(T, U)] = {
+  def tupleTagExtractor[T, U](tpe: AppliedType): FastTypeTag[(T, U)] =
     tpe.typeargs match {
       case List(one, two) =>
         FastTypeTag
@@ -23,7 +23,6 @@ object MapPicklerHelper {
         throw new PicklingException(
           s"Error, expected one type argument  on $tpe, found: $x")
     }
-  }
 }
 
 trait MapPicklers {

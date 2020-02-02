@@ -158,11 +158,10 @@ private[storage] class BlockInfoManager extends Logging {
     * Returns the current task's task attempt id (which uniquely identifies the task), or
     * [[BlockInfo.NON_TASK_WRITER]] if called by a non-task thread.
     */
-  private def currentTaskAttemptId: TaskAttemptId = {
+  private def currentTaskAttemptId: TaskAttemptId =
     Option(TaskContext.get())
       .map(_.taskAttemptId())
       .getOrElse(BlockInfo.NON_TASK_WRITER)
-  }
 
   /**
     * Lock a block for reading and return its metadata.

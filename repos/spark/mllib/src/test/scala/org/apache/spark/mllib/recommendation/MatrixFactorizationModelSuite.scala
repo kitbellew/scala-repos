@@ -61,10 +61,8 @@ class MatrixFactorizationModelSuite
     val model = new MatrixFactorizationModel(rank, userFeatures, prodFeatures)
     val tempDir = Utils.createTempDir()
     val path = tempDir.toURI.toString
-    def collect(
-        features: RDD[(Int, Array[Double])]): Set[(Int, Seq[Double])] = {
+    def collect(features: RDD[(Int, Array[Double])]): Set[(Int, Seq[Double])] =
       features.mapValues(_.toSeq).collect().toSet
-    }
     try {
       model.save(sc, path)
       val newModel = MatrixFactorizationModel.load(sc, path)

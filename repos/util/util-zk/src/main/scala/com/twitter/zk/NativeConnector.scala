@@ -27,7 +27,7 @@ case class NativeConnector(
     with Serialized {
   override val name = "native-zk-connector"
 
-  protected[this] def mkConnection = {
+  protected[this] def mkConnection =
     new NativeConnector.Connection(
       connectString,
       connectTimeout,
@@ -35,7 +35,6 @@ case class NativeConnector(
       authenticate,
       timer,
       log)
-  }
 
   onSessionEvent {
     // Invalidate the connection on expiration.
@@ -86,30 +85,26 @@ case class NativeConnector(
 
 object NativeConnector {
   def apply(connectString: String, sessionTimeout: Duration)(
-      implicit timer: Timer): NativeConnector = {
+      implicit timer: Timer): NativeConnector =
     NativeConnector(connectString, None, sessionTimeout, timer)
-  }
 
   def apply(
       connectString: String,
       connectTimeout: Duration,
-      sessionTimeout: Duration)(implicit timer: Timer): NativeConnector = {
+      sessionTimeout: Duration)(implicit timer: Timer): NativeConnector =
     NativeConnector(connectString, Some(connectTimeout), sessionTimeout, timer)
-  }
 
   def apply(
       connectString: String,
       connectTimeout: Duration,
       sessionTimeout: Duration,
-      authenticate: Option[AuthInfo])(
-      implicit timer: Timer): NativeConnector = {
+      authenticate: Option[AuthInfo])(implicit timer: Timer): NativeConnector =
     NativeConnector(
       connectString,
       Some(connectTimeout),
       sessionTimeout,
       timer,
       authenticate)
-  }
 
   case class ConnectTimeoutException(connectString: String, timeout: Duration)
       extends TimeoutException(
@@ -182,9 +177,8 @@ object NativeConnector {
       connected
     }
 
-    protected[this] def mkZooKeeper = {
+    protected[this] def mkZooKeeper =
       new ZooKeeper(connectString, sessionTimeout.inMillis.toInt, sessionBroker)
-    }
 
     def release(): Future[Unit] = Future {
       zookeeper foreach { zk =>

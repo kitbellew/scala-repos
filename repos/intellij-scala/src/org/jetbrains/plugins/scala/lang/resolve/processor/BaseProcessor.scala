@@ -54,12 +54,11 @@ object BaseProcessor {
 
   val guard = RecursionManager.createGuard("process.element.guard")
 
-  def isImplicitProcessor(processor: PsiScopeProcessor): Boolean = {
+  def isImplicitProcessor(processor: PsiScopeProcessor): Boolean =
     processor match {
       case b: BaseProcessor => b.isImplicitProcessor
       case _                => false
     }
-  }
 }
 
 abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
@@ -127,19 +126,17 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
   def setClassKind(classKind: Boolean) {
     this.classKind = classKind
   }
-  def getClassKind = {
+  def getClassKind =
     classKind && getClassKindInner
-  }
-  def getClassKindInner = {
+  def getClassKindInner =
     (kinds contains ResolveTargets.CLASS) ||
-    (kinds contains ResolveTargets.OBJECT) ||
-    (kinds contains ResolveTargets.METHOD)
-  }
+      (kinds contains ResolveTargets.OBJECT) ||
+      (kinds contains ResolveTargets.METHOD)
 
   //java compatibility
   object MyElementClassHint extends ElementClassHint {
     import com.intellij.psi.scope.ElementClassHint.DeclarationKind
-    def shouldProcess(kind: DeclarationKind): Boolean = {
+    def shouldProcess(kind: DeclarationKind): Boolean =
       kind match {
         case null                    => true
         case DeclarationKind.PACKAGE => kinds contains ResolveTargets.PACKAGE
@@ -153,15 +150,13 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         case DeclarationKind.METHOD => kinds contains ResolveTargets.METHOD
         case _                      => false
       }
-    }
   }
 
-  def getHint[T](hintKey: Key[T]): T = {
+  def getHint[T](hintKey: Key[T]): T =
     hintKey match {
       case ElementClassHint.KEY => MyElementClassHint.asInstanceOf[T]
       case _                    => null.asInstanceOf[T]
     }
-  }
 
   def handleEvent(event: PsiScopeProcessor.Event, associated: Object) {}
 
@@ -489,13 +484,11 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     if (used == null) Set[ImportUsed]() else used
   }
 
-  protected def getBoundClass(state: ResolveState): PsiClass = {
+  protected def getBoundClass(state: ResolveState): PsiClass =
     state.get(BaseProcessor.boundClassKey)
-  }
 
-  protected def getFromType(state: ResolveState): Option[ScType] = {
+  protected def getFromType(state: ResolveState): Option[ScType] =
     state.get(BaseProcessor.FROM_TYPE_KEY).toOption
-  }
 
   protected def isForwardReference(state: ResolveState): Boolean = {
     val res: java.lang.Boolean = state.get(BaseProcessor.FORWARD_REFERENCE_KEY)

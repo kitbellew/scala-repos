@@ -13,9 +13,8 @@ object Engine0 {
   @transient lazy val logger = Logger[this.type]
 
   case class TrainingData(id: Int, error: Boolean = false) extends SanityCheck {
-    def sanityCheck(): Unit = {
+    def sanityCheck(): Unit =
       Predef.assert(!error, "Not Error")
-    }
   }
 
   case class EvalInfo(id: Int)
@@ -31,28 +30,22 @@ object Engine0 {
 
   class PDataSource0(id: Int = 0)
       extends PDataSource[TrainingData, EvalInfo, Query, Actual] {
-    def readTraining(sc: SparkContext): TrainingData = {
+    def readTraining(sc: SparkContext): TrainingData =
       TrainingData(id)
-    }
   }
 
   class PDataSource1(id: Int = 0, en: Int = 0, qn: Int = 0)
       extends PDataSource[TrainingData, EvalInfo, Query, Actual] {
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
-    }
   }
 
   object PDataSource2 {
@@ -64,26 +57,20 @@ object Engine0 {
     val id = params.id
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
-    }
   }
 
   class PDataSource3(id: Int = 0, error: Boolean = false)
       extends PDataSource[TrainingData, EvalInfo, Query, Actual] {
-    def readTraining(sc: SparkContext): TrainingData = {
+    def readTraining(sc: SparkContext): TrainingData =
       TrainingData(id = id, error = error)
-    }
   }
 
   object PDataSource4 {
@@ -96,19 +83,14 @@ object Engine0 {
     val id = params.id
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), sc.parallelize(qaSeq))
       }
-    }
   }
 
   class LDataSource0(id: Int, en: Int = 0, qn: Int = 0)
@@ -116,18 +98,13 @@ object Engine0 {
     def readTraining(): TrainingData = TrainingData(id)
 
     override def readEval()
-        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
+        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] =
       (0 until en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), qaSeq)
+        val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), qaSeq)
       }
-    }
   }
 
   object LDataSource1 {
@@ -140,25 +117,19 @@ object Engine0 {
     def readTraining(): TrainingData = TrainingData(id)
 
     override def readEval()
-        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
+        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] =
       (0 until params.en).map { ex =>
-        {
-          val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
-            {
-              (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
-            }
-          }
-          (TrainingData(id), EvalInfo(id), qaSeq)
+        val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
+          (Query(id, ex = ex, qx = qx), Actual(id, ex, qx))
         }
+        (TrainingData(id), EvalInfo(id), qaSeq)
       }
-    }
   }
 
   class PPreparator0(id: Int = 0)
       extends PPreparator[TrainingData, ProcessedData] {
-    def prepare(sc: SparkContext, td: TrainingData): ProcessedData = {
+    def prepare(sc: SparkContext, td: TrainingData): ProcessedData =
       ProcessedData(id, td)
-    }
   }
 
   object PPreparator1 {
@@ -167,16 +138,14 @@ object Engine0 {
 
   class PPreparator1(params: PPreparator1.Params)
       extends PPreparator[TrainingData, ProcessedData] {
-    def prepare(sc: SparkContext, td: TrainingData): ProcessedData = {
+    def prepare(sc: SparkContext, td: TrainingData): ProcessedData =
       ProcessedData(params.id, td)
-    }
   }
 
   class LPreparator0(id: Int = 0)
       extends LPreparator[TrainingData, ProcessedData] {
-    def prepare(td: TrainingData): ProcessedData = {
+    def prepare(td: TrainingData): ProcessedData =
       ProcessedData(id, td)
-    }
   }
 
   object LPreparator1 {
@@ -185,9 +154,8 @@ object Engine0 {
 
   class LPreparator1(params: LPreparator1.Params)
       extends LPreparator[TrainingData, ProcessedData] {
-    def prepare(td: TrainingData): ProcessedData = {
+    def prepare(td: TrainingData): ProcessedData =
       ProcessedData(params.id, td)
-    }
   }
 
   object PAlgo0 {
@@ -201,13 +169,11 @@ object Engine0 {
 
     override def batchPredict(
         m: PAlgo0.Model,
-        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] = {
+        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] =
       qs.mapValues(q => Prediction(id, q, Some(m)))
-    }
 
-    def predict(m: PAlgo0.Model, q: Query): Prediction = {
+    def predict(m: PAlgo0.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object PAlgo1 {
@@ -221,13 +187,11 @@ object Engine0 {
 
     override def batchPredict(
         m: PAlgo1.Model,
-        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] = {
+        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] =
       qs.mapValues(q => Prediction(id, q, Some(m)))
-    }
 
-    def predict(m: PAlgo1.Model, q: Query): Prediction = {
+    def predict(m: PAlgo1.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object PAlgo2 {
@@ -244,13 +208,11 @@ object Engine0 {
 
     override def batchPredict(
         m: PAlgo2.Model,
-        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] = {
+        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] =
       qs.mapValues(q => Prediction(id, q, Some(m)))
-    }
 
-    def predict(m: PAlgo2.Model, q: Query): Prediction = {
+    def predict(m: PAlgo2.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object PAlgo3 {
@@ -271,13 +233,11 @@ object Engine0 {
 
     override def batchPredict(
         m: PAlgo3.Model,
-        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] = {
+        qs: RDD[(Long, Query)]): RDD[(Long, Prediction)] =
       qs.mapValues(q => Prediction(id, q, Some(m)))
-    }
 
-    def predict(m: PAlgo3.Model, q: Query): Prediction = {
+    def predict(m: PAlgo3.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object LAlgo0 {
@@ -288,9 +248,8 @@ object Engine0 {
       extends LAlgorithm[ProcessedData, LAlgo0.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo0.Model = LAlgo0.Model(id, pd)
 
-    def predict(m: LAlgo0.Model, q: Query): Prediction = {
+    def predict(m: LAlgo0.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object LAlgo1 {
@@ -301,9 +260,8 @@ object Engine0 {
       extends LAlgorithm[ProcessedData, LAlgo1.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo1.Model = LAlgo1.Model(id, pd)
 
-    def predict(m: LAlgo1.Model, q: Query): Prediction = {
+    def predict(m: LAlgo1.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object LAlgo2 {
@@ -320,9 +278,8 @@ object Engine0 {
       extends LAlgorithm[ProcessedData, LAlgo2.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo2.Model = LAlgo2.Model(params.id, pd)
 
-    def predict(m: LAlgo2.Model, q: Query): Prediction = {
+    def predict(m: LAlgo2.Model, q: Query): Prediction =
       Prediction(params.id, q, Some(m))
-    }
   }
 
   object LAlgo3 {
@@ -335,9 +292,8 @@ object Engine0 {
       extends LAlgorithm[ProcessedData, LAlgo3.Model, Query, Prediction] {
     def train(pd: ProcessedData): LAlgo3.Model = LAlgo3.Model(params.id, pd)
 
-    def predict(m: LAlgo3.Model, q: Query): Prediction = {
+    def predict(m: LAlgo3.Model, q: Query): Prediction =
       Prediction(params.id, q, Some(m))
-    }
   }
 
   // N : P2L. As N is in the middle of P and L.
@@ -350,9 +306,8 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData): NAlgo0.Model =
       NAlgo0.Model(id, pd)
 
-    def predict(m: NAlgo0.Model, q: Query): Prediction = {
+    def predict(m: NAlgo0.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object NAlgo1 {
@@ -364,9 +319,8 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData): NAlgo1.Model =
       NAlgo1.Model(id, pd)
 
-    def predict(m: NAlgo1.Model, q: Query): Prediction = {
+    def predict(m: NAlgo1.Model, q: Query): Prediction =
       Prediction(id, q, Some(m))
-    }
   }
 
   object NAlgo2 {
@@ -384,9 +338,8 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData): NAlgo2.Model =
       NAlgo2.Model(params.id, pd)
 
-    def predict(m: NAlgo2.Model, q: Query): Prediction = {
+    def predict(m: NAlgo2.Model, q: Query): Prediction =
       Prediction(params.id, q, Some(m))
-    }
   }
 
   object NAlgo3 {
@@ -400,15 +353,13 @@ object Engine0 {
     def train(sc: SparkContext, pd: ProcessedData): NAlgo3.Model =
       NAlgo3.Model(params.id, pd)
 
-    def predict(m: NAlgo3.Model, q: Query): Prediction = {
+    def predict(m: NAlgo3.Model, q: Query): Prediction =
       Prediction(params.id, q, Some(m))
-    }
   }
 
   class LServing0(id: Int = 0) extends LServing[Query, Prediction] {
-    def serve(q: Query, ps: Seq[Prediction]): Prediction = {
+    def serve(q: Query, ps: Seq[Prediction]): Prediction =
       Prediction(id, q, ps = ps)
-    }
   }
 
   object LServing1 {
@@ -417,17 +368,15 @@ object Engine0 {
 
   class LServing1(params: LServing1.Params)
       extends LServing[Query, Prediction] {
-    def serve(q: Query, ps: Seq[Prediction]): Prediction = {
+    def serve(q: Query, ps: Seq[Prediction]): Prediction =
       Prediction(params.id, q, ps = ps)
-    }
   }
 
   class LServing2(id: Int) extends LServing[Query, Prediction] {
     override def supplement(q: Query): Query = q.copy(supp = true)
 
-    def serve(q: Query, ps: Seq[Prediction]): Prediction = {
+    def serve(q: Query, ps: Seq[Prediction]): Prediction =
       Prediction(id, q, ps = ps)
-    }
   }
 }
 
@@ -479,10 +428,8 @@ class Metric0
       sc: SparkContext,
       evalDataSet: Seq[(
           Engine1.EvalInfo,
-          RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-      : Double = {
+          RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])]): Double =
     evalDataSet.head._1.v
-  }
 }
 
 object Metric1 {
@@ -503,7 +450,6 @@ class Metric1
       evalDataSet: Seq[(
           Engine1.EvalInfo,
           RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])])
-      : Metric1.Result = {
+      : Metric1.Result =
     Metric1.Result(0, evalDataSet.head._1.v)
-  }
 }

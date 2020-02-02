@@ -28,12 +28,11 @@ abstract class Handler(val formatter: Formatter, val level: Option[Level])
 
   level.foreach { x => setLevel(x) }
 
-  override def toString = {
+  override def toString =
     "<%s level=%s formatter=%s>".format(
       getClass.getName,
       getLevel,
       formatter.toString)
-  }
 }
 
 /**
@@ -110,17 +109,15 @@ class StringHandler(
   // thread-safe logging
   private val buffer = new StringBuffer()
 
-  def publish(record: javalog.LogRecord) = {
+  def publish(record: javalog.LogRecord) =
     buffer append getFormatter().format(record)
-  }
 
   def close() = {}
 
   def flush() = {}
 
-  def get = {
+  def get =
     buffer.toString
-  }
 
   def clear() = {
     buffer.setLength(0)
@@ -152,9 +149,8 @@ class ConsoleHandler(
     level: Option[Level] = None)
     extends Handler(formatter, level) {
 
-  def publish(record: javalog.LogRecord) = {
+  def publish(record: javalog.LogRecord) =
     System.err.print(getFormatter().format(record))
-  }
 
   def close() = {}
 

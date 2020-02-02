@@ -32,14 +32,13 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     * appear in the [[outputSet]].
     */
   protected def getRelevantConstraints(
-      constraints: Set[Expression]): Set[Expression] = {
+      constraints: Set[Expression]): Set[Expression] =
     constraints
       .union(inferAdditionalConstraints(constraints))
       .union(constructIsNotNullConstraints(constraints))
       .filter(constraint =>
         constraint.references.nonEmpty && constraint.references.subsetOf(
           outputSet))
-  }
 
   /**
     * Infers a set of `isNotNull` constraints from a given set of equality/comparison expressions.
@@ -47,7 +46,7 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     * `isNotNull(a)`
     */
   private def constructIsNotNullConstraints(
-      constraints: Set[Expression]): Set[Expression] = {
+      constraints: Set[Expression]): Set[Expression] =
     // Currently we only propagate constraints if the condition consists of equality
     // and ranges. For all other cases, we return an empty set of constraints
     constraints
@@ -68,7 +67,6 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
           Set.empty[Expression]
       }
       .foldLeft(Set.empty[Expression])(_ union _.toSet)
-  }
 
   /**
     * Infers an additional set of constraints from a given set of equality constraints.
@@ -146,9 +144,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     * @param rule the rule to be applied to every expression in this operator.
     */
   def transformExpressions(
-      rule: PartialFunction[Expression, Expression]): this.type = {
+      rule: PartialFunction[Expression, Expression]): this.type =
     transformExpressionsDown(rule)
-  }
 
   /**
     * Runs [[transformDown]] with `rule` on all expressions present in this query operator.
@@ -222,12 +219,11 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   /** Returns the result of running [[transformExpressions]] on this node
     * and all its children. */
   def transformAllExpressions(
-      rule: PartialFunction[Expression, Expression]): this.type = {
+      rule: PartialFunction[Expression, Expression]): this.type =
     transform {
       case q: QueryPlan[_] =>
         q.transformExpressions(rule).asInstanceOf[PlanType]
     }.asInstanceOf[this.type]
-  }
 
   /** Returns all of the expressions present in this query plan operator. */
   final def expressions: Seq[Expression] = {
@@ -270,11 +266,10 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   /**
     * All the subqueries of current plan.
     */
-  def subqueries: Seq[PlanType] = {
+  def subqueries: Seq[PlanType] =
     expressions.flatMap(_.collect {
       case e: SubqueryExpression => e.plan.asInstanceOf[PlanType]
     })
-  }
 
   override def innerChildren: Seq[PlanType] = subqueries
 

@@ -27,17 +27,17 @@ class ALSModel(
       params: ALSAlgorithmParams,
       sc: SparkContext): Boolean = {
 
-    sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
-    userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
-    productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
+    sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/$id/rank")
+    userFeatures.saveAsObjectFile(s"/tmp/$id/userFeatures")
+    productFeatures.saveAsObjectFile(s"/tmp/$id/productFeatures")
     sc.parallelize(Seq(userStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/userStringIntMap")
+      .saveAsObjectFile(s"/tmp/$id/userStringIntMap")
     sc.parallelize(Seq(itemStringIntMap))
-      .saveAsObjectFile(s"/tmp/${id}/itemStringIntMap")
+      .saveAsObjectFile(s"/tmp/$id/itemStringIntMap")
     true
   }
 
-  override def toString = {
+  override def toString =
     s"userFeatures: [${userFeatures.count()}]" +
       s"(${userFeatures.take(2).toList}...)" +
       s" productFeatures: [${productFeatures.count()}]" +
@@ -46,23 +46,18 @@ class ALSModel(
       s"(${userStringIntMap.take(2)}...)" +
       s" itemStringIntMap: [${itemStringIntMap.size}]" +
       s"(${itemStringIntMap.take(2)}...)"
-  }
 }
 
 object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
-  def apply(
-      id: String,
-      params: ALSAlgorithmParams,
-      sc: Option[SparkContext]) = {
+  def apply(id: String, params: ALSAlgorithmParams, sc: Option[SparkContext]) =
     new ALSModel(
-      rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
-      userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
-      productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
+      rank = sc.get.objectFile[Int](s"/tmp/$id/rank").first,
+      userFeatures = sc.get.objectFile(s"/tmp/$id/userFeatures"),
+      productFeatures = sc.get.objectFile(s"/tmp/$id/productFeatures"),
       userStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/userStringIntMap")
+        .objectFile[BiMap[String, Int]](s"/tmp/$id/userStringIntMap")
         .first,
       itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
+        .objectFile[BiMap[String, Int]](s"/tmp/$id/itemStringIntMap")
         .first)
-  }
 }

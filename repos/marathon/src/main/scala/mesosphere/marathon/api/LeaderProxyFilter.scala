@@ -69,20 +69,18 @@ class LeaderProxyFilter @Inject() (
 
   private[this] def buildUrl(
       leaderData: String,
-      request: HttpServletRequest): URL = {
+      request: HttpServletRequest): URL =
     buildUrl(leaderData, request.getRequestURI, Option(request.getQueryString))
-  }
 
   private[this] def buildUrl(
       leaderData: String,
       requestURI: String = "",
-      queryStringOpt: Option[String] = None): URL = {
+      queryStringOpt: Option[String] = None): URL =
     queryStringOpt match {
       case Some(queryString) =>
         new URL(s"$scheme://$leaderData$requestURI?$queryString")
       case None => new URL(s"$scheme://$leaderData$requestURI")
     }
-  }
 
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length
@@ -159,11 +157,10 @@ class LeaderProxyFilter @Inject() (
     }
   }
 
-  protected def sleep(): Unit = {
+  protected def sleep(): Unit =
     //scalastyle:off magic.number
     Thread.sleep(250)
-    //scalastyle:on
-  }
+  //scalastyle:on
 
   def destroy() {
     //NO-OP
@@ -263,7 +260,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
 
     def copyRequestBodyToConnection(
         leaderConnection: HttpURLConnection,
-        request: HttpServletRequest): Unit = {
+        request: HttpServletRequest): Unit =
       request.getMethod match {
         case "GET" | "HEAD" | "DELETE" =>
           leaderConnection.setDoOutput(false)
@@ -276,7 +273,6 @@ class JavaUrlConnectionRequestForwarder @Inject() (
             }
           }
       }
-    }
 
     def copyRequestToConnection(
         leaderConnection: HttpURLConnection,
@@ -349,7 +345,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
 
   }
 
-  def copy(nullableIn: InputStream, nullableOut: OutputStream): Unit = {
+  def copy(nullableIn: InputStream, nullableOut: OutputStream): Unit =
     try {
       for {
         in <- Option(nullableIn)
@@ -359,7 +355,6 @@ class JavaUrlConnectionRequestForwarder @Inject() (
       case e: UnknownServiceException =>
         log.warn("unexpected unknown service exception", e)
     }
-  }
 }
 
 object JavaUrlConnectionRequestForwarder {

@@ -75,17 +75,15 @@ private class ThresholdFailureDetector(
 
   def status: Status = state.get
 
-  private[this] def markBusy(): Unit = {
+  private[this] def markBusy(): Unit =
     if (state.compareAndSet(Status.Open, Status.Busy)) {
       busyCounter.incr()
     }
-  }
 
-  private[this] def markOpen(): Unit = {
+  private[this] def markOpen(): Unit =
     if (state.compareAndSet(Status.Busy, Status.Open)) {
       revivalCounter.incr()
     }
-  }
 
   private[this] def markClosed(): Unit = {
     closeCounter.incr()

@@ -83,7 +83,7 @@ trait SerializationSupport {
       dm.Address.newBuilder().setHostname(host).setPort(port)
     case _ ⇒
       throw new IllegalArgumentException(
-        s"Address [${address}] could not be serialized: host or port missing.")
+        s"Address [$address] could not be serialized: host or port missing.")
   }
 
   def addressFromProto(address: dm.Address): Address =

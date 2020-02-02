@@ -66,7 +66,7 @@ object Algorithms {
   /**
     * Returns the keySize of the given key, or None if no key exists.
     */
-  def keySize(key: java.security.Key): Option[Int] = {
+  def keySize(key: java.security.Key): Option[Int] =
     key match {
       case sk: SecretKey =>
         if ((sk.getFormat == "RAW") && sk.getEncoded != null) {
@@ -97,7 +97,6 @@ object Algorithms {
         }
       // None
     }
-  }
 
   def getKeyAlgorithmName(pubk: Key): String = {
     val name = pubk.getAlgorithm
@@ -219,9 +218,8 @@ case class AlgorithmConstraint(
   /**
     * Returns true only if the algorithm matches.  Useful for signature algorithms where we don't care about key size.
     */
-  def matches(algorithm: String): Boolean = {
+  def matches(algorithm: String): Boolean =
     this.algorithm.equalsIgnoreCase(algorithm)
-  }
 
   /**
     * Returns true if the algorithm name matches, and if there's a keySize constraint, will match on that as well.
@@ -240,9 +238,8 @@ case class AlgorithmConstraint(
     }
   }
 
-  override def toString = {
+  override def toString =
     algorithm + constraint.getOrElse("")
-  }
 }
 
 /**

@@ -35,7 +35,7 @@ private[master] class ExecutorDesc(
 
   def fullId: String = application.id + "/" + id
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case info: ExecutorDesc =>
         fullId == info.fullId &&
@@ -44,7 +44,6 @@ private[master] class ExecutorDesc(
           memory == info.memory
       case _ => false
     }
-  }
 
   override def toString: String = fullId
 

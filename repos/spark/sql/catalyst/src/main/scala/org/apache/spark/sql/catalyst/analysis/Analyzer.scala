@@ -63,13 +63,12 @@ class Analyzer(
     extends RuleExecutor[LogicalPlan]
     with CheckAnalysis {
 
-  def resolver: Resolver = {
+  def resolver: Resolver =
     if (conf.caseSensitiveAnalysis) {
       caseSensitiveResolution
     } else {
       caseInsensitiveResolution
     }
-  }
 
   val fixedPoint = FixedPoint(maxIterations)
 
@@ -124,7 +123,7 @@ class Analyzer(
 
     def substituteCTE(
         plan: LogicalPlan,
-        cteRelations: Map[String, LogicalPlan]): LogicalPlan = {
+        cteRelations: Map[String, LogicalPlan]): LogicalPlan =
       plan transform {
         // In hive, if there is same table name in database and CTE definition,
         // hive will use the table in database, not the CTE one.
@@ -145,7 +144,6 @@ class Analyzer(
               e.withNewPlan(substituteCTE(e.query, cteRelations))
           }
       }
-    }
   }
 
   /**
@@ -176,7 +174,7 @@ class Analyzer(
     * Replaces [[UnresolvedAlias]]s with concrete aliases.
     */
   object ResolveAliases extends Rule[LogicalPlan] {
-    private def assignAliases(exprs: Seq[NamedExpression]) = {
+    private def assignAliases(exprs: Seq[NamedExpression]) =
       exprs.zipWithIndex
         .map {
           case (expr, i) =>
@@ -196,7 +194,6 @@ class Analyzer(
             }
         }
         .asInstanceOf[Seq[NamedExpression]]
-    }
 
     private def hasUnresolvedAlias(exprs: Seq[NamedExpression]) =
       exprs.exists(_.find(_.isInstanceOf[UnresolvedAlias]).isDefined)
@@ -235,9 +232,8 @@ class Analyzer(
      *  We need to get all of its subsets for the rule described above, the subset is
      *  represented as the bit masks.
      */
-    def bitmasks(r: Rollup): Seq[Int] = {
+    def bitmasks(r: Rollup): Seq[Int] =
       Seq.tabulate(r.groupByExprs.length + 1)(idx => { (1 << idx) - 1 })
-    }
 
     /*
      *  GROUP BY a, b, c WITH CUBE
@@ -248,17 +244,15 @@ class Analyzer(
      *  We need to get all of its subsets for a given GROUPBY expression, the subsets are
      *  represented as the bit masks.
      */
-    def bitmasks(c: Cube): Seq[Int] = {
+    def bitmasks(c: Cube): Seq[Int] =
       Seq.tabulate(1 << c.groupByExprs.length)(i => i)
-    }
 
-    private def hasGroupingId(expr: Seq[Expression]): Boolean = {
+    private def hasGroupingId(expr: Seq[Expression]): Boolean =
       expr.exists(_.collectFirst {
         case u: UnresolvedAttribute
             if resolver(u.name, VirtualColumn.groupingIdName) =>
           u
       }.isDefined)
-    }
 
     def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
       case a if !a.childrenResolved =>
@@ -305,9 +299,8 @@ class Analyzer(
             // any AggregateExpression or not.
             val aggsBuffer = ArrayBuffer[Expression]()
             // Returns whether the expression belongs to any expressions in `aggsBuffer` or not.
-            def isPartOfAggregation(e: Expression): Boolean = {
+            def isPartOfAggregation(e: Expression): Boolean =
               aggsBuffer.exists(a => a.find(_ eq e).isDefined)
-            }
             expr
               .transformDown {
                 // AggregateExpression should be computed on the unmodified value of its argument
@@ -367,9 +360,8 @@ class Analyzer(
         val singleAgg = aggregates.size == 1
         val pivotAggregates: Seq[NamedExpression] = pivotValues.flatMap {
           value =>
-            def ifExpr(expr: Expression) = {
+            def ifExpr(expr: Expression) =
               If(EqualTo(pivotColumn, value), expr, Literal(null))
-            }
             aggregates.map { aggregate =>
               val filteredAggregate = aggregate.transformDown {
                 // Assumption is the aggregate function ignores nulls. This is true for all current
@@ -403,14 +395,13 @@ class Analyzer(
     * Replaces [[UnresolvedRelation]]s with concrete relations from the catalog.
     */
   object ResolveRelations extends Rule[LogicalPlan] {
-    private def getTable(u: UnresolvedRelation): LogicalPlan = {
+    private def getTable(u: UnresolvedRelation): LogicalPlan =
       try {
         catalog.lookupRelation(u.tableIdentifier, u.alias)
       } catch {
         case _: NoSuchTableException =>
           u.failAnalysis(s"Table not found: ${u.tableName}")
       }
-    }
 
     def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
       case i @ InsertIntoTable(u: UnresolvedRelation, _, _, _, _) =>
@@ -438,7 +429,7 @@ class Analyzer(
       */
     def expandStarExpressions(
         exprs: Seq[Expression],
-        child: LogicalPlan): Seq[Expression] = {
+        child: LogicalPlan): Seq[Expression] =
       exprs.flatMap {
         case s: Star => s.expand(child, resolver)
         case e =>
@@ -450,7 +441,6 @@ class Analyzer(
               })
           } :: Nil
       }
-    }
 
     /**
       * Generate a new logical plan for the right child with different expression IDs
@@ -646,11 +636,10 @@ class Analyzer(
     }
 
     private def containsUnresolvedDeserializer(
-        exprs: Seq[Expression]): Boolean = {
+        exprs: Seq[Expression]): Boolean =
       exprs.exists { expr =>
         !expr.resolved || expr.find(_.isInstanceOf[BoundReference]).isDefined
       }
-    }
 
     def resolveDeserializer(
         deserializer: Expression,
@@ -679,16 +668,14 @@ class Analyzer(
       }
     }
 
-    def newAliases(expressions: Seq[NamedExpression]): Seq[NamedExpression] = {
+    def newAliases(expressions: Seq[NamedExpression]): Seq[NamedExpression] =
       expressions.map {
         case a: Alias => Alias(a.child, a.name)(isGenerated = a.isGenerated)
         case other    => other
       }
-    }
 
-    def findAliases(projectList: Seq[NamedExpression]): AttributeSet = {
+    def findAliases(projectList: Seq[NamedExpression]): AttributeSet =
       AttributeSet(projectList.collect { case a: Alias => a.toAttribute })
-    }
 
     /**
       * Returns true if `exprs` contains a [[Star]].
@@ -700,7 +687,7 @@ class Analyzer(
   private def resolveExpression(
       expr: Expression,
       plan: LogicalPlan,
-      throws: Boolean = false) = {
+      throws: Boolean = false) =
     // Resolve expression in one round.
     // If throws == false or the desired attribute doesn't exist
     // (like try to resolve `a.b` but `a` doesn't exist), fail and return the origin one.
@@ -715,7 +702,6 @@ class Analyzer(
     } catch {
       case a: AnalysisException if !throws => expr
     }
-  }
 
   /**
     * In many dialects of SQL it is valid to sort by attributes that are not present in the SELECT
@@ -876,13 +862,11 @@ class Analyzer(
     */
   object ResolveSubquery extends Rule[LogicalPlan] with PredicateHelper {
 
-    private def hasSubquery(e: Expression): Boolean = {
+    private def hasSubquery(e: Expression): Boolean =
       e.find(_.isInstanceOf[SubqueryExpression]).isDefined
-    }
 
-    private def hasSubquery(q: LogicalPlan): Boolean = {
+    private def hasSubquery(q: LogicalPlan): Boolean =
       q.expressions.exists(hasSubquery)
-    }
 
     def apply(plan: LogicalPlan): LogicalPlan = plan resolveOperators {
       case q: LogicalPlan if q.childrenResolved && hasSubquery(q) =>
@@ -1029,13 +1013,11 @@ class Analyzer(
         }
     }
 
-    private def isAggregateExpression(e: Expression): Boolean = {
+    private def isAggregateExpression(e: Expression): Boolean =
       e.isInstanceOf[AggregateExpression] || e.isInstanceOf[Grouping] || e
         .isInstanceOf[GroupingID]
-    }
-    def containsAggregate(condition: Expression): Boolean = {
+    def containsAggregate(condition: Expression): Boolean =
       condition.find(isAggregateExpression).isDefined
-    }
   }
 
   /**
@@ -1101,7 +1083,7 @@ class Analyzer(
           // If not given the default names, and the TGF with multiple output columns
           failAnalysis(
             s"""Expect multiple names given for ${g.getClass.getName},
-               |but only single name '${name}' specified""".stripMargin)
+               |but only single name '$name' specified""".stripMargin)
         case Alias(g: Generator, name) if g.resolved       => Some((g, name :: Nil))
         case MultiAlias(g: Generator, names) if g.resolved => Some(g, names)
         case _                                             => None
@@ -1161,12 +1143,11 @@ class Analyzer(
     private def hasWindowFunction(projectList: Seq[NamedExpression]): Boolean =
       projectList.exists(hasWindowFunction)
 
-    private def hasWindowFunction(expr: NamedExpression): Boolean = {
+    private def hasWindowFunction(expr: NamedExpression): Boolean =
       expr.find {
         case window: WindowExpression => true
         case _                        => false
       }.isDefined
-    }
 
     /**
       * From a Seq of [[NamedExpression]]s, extract expressions containing window expressions and
@@ -1699,14 +1680,13 @@ object ResolveUpCast extends Rule[LogicalPlan] {
   private def fail(
       from: Expression,
       to: DataType,
-      walkedTypePath: Seq[String]) = {
+      walkedTypePath: Seq[String]) =
     throw new AnalysisException(s"Cannot up cast ${from.sql} from " +
       s"${from.dataType.simpleString} to ${to.simpleString} as it may truncate\n" +
       "The type path of the target object is:\n" + walkedTypePath
       .mkString("", "\n", "\n") +
       "You can either add an explicit cast to the input data or choose a higher precision " +
       "type of the field in the target object")
-  }
 
   private def illegalNumericPrecedence(
       from: DataType,
@@ -1716,7 +1696,7 @@ object ResolveUpCast extends Rule[LogicalPlan] {
     toPrecedence > 0 && fromPrecedence > toPrecedence
   }
 
-  def apply(plan: LogicalPlan): LogicalPlan = {
+  def apply(plan: LogicalPlan): LogicalPlan =
     plan transformAllExpressions {
       case u @ UpCast(child, _, _) if !child.resolved => u
 
@@ -1736,5 +1716,4 @@ object ResolveUpCast extends Rule[LogicalPlan] {
           case _ => Cast(child, dataType.asNullable)
         }
     }
-  }
 }

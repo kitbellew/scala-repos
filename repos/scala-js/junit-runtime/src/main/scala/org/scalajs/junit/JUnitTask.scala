@@ -14,9 +14,8 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
   def execute(
       eventHandler: EventHandler,
       loggers: Array[Logger],
-      continuation: Array[Task] => Unit): Unit = {
+      continuation: Array[Task] => Unit): Unit =
     continuation(execute(eventHandler, loggers))
-  }
 
   def execute(
       eventHandler: EventHandler,

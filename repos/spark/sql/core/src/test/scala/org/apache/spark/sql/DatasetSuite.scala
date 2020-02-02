@@ -702,20 +702,17 @@ case class DeepNestedStruct(f: NestedStruct)
   * Java serialization -- so the only way it can be "serialized" is through our encoders.
   */
 case class NonSerializableCaseClass(value: String) extends Externalizable {
-  override def readExternal(in: ObjectInput): Unit = {
+  override def readExternal(in: ObjectInput): Unit =
     throw new UnsupportedOperationException
-  }
 
-  override def writeExternal(out: ObjectOutput): Unit = {
+  override def writeExternal(out: ObjectOutput): Unit =
     throw new UnsupportedOperationException
-  }
 }
 
 /** Used to test Kryo encoder. */
 class KryoData(val a: Int) {
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     a == other.asInstanceOf[KryoData].a
-  }
   override def hashCode: Int = a
   override def toString: String = s"KryoData($a)"
 }
@@ -726,9 +723,8 @@ object KryoData {
 
 /** Used to test Java encoder. */
 class JavaData(val a: Int) extends Serializable {
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     a == other.asInstanceOf[JavaData].a
-  }
   override def hashCode: Int = a
   override def toString: String = s"JavaData($a)"
 }

@@ -257,9 +257,8 @@ final case class BindingKey[T](
   def toSelf: Binding[T] =
     Binding(this, None, None, false, SourceLocator.source)
 
-  override def toString = {
+  override def toString =
     s"$clazz${qualifier.fold("")(" qualified with " + _)}"
-  }
 }
 
 /**

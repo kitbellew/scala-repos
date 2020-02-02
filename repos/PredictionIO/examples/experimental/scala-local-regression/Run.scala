@@ -90,9 +90,8 @@ case class LocalAlgorithm()
     return result.data.toArray
   }
 
-  def predict(model: Array[Double], query: Vector[Double]) = {
+  def predict(model: Array[Double], query: Vector[Double]) =
     model.zip(query).map(e => e._1 * e._2).sum
-  }
 
   @transient override lazy val querySerializer =
     Utils.json4sDefaultFormats + new VectorSerializer
@@ -115,13 +114,12 @@ class VectorSerializer
         ))
 
 object RegressionEngineFactory extends IEngineFactory {
-  def apply() = {
+  def apply() =
     new Engine(
       classOf[LocalDataSource],
       classOf[LocalPreparator],
       Map("" -> classOf[LocalAlgorithm]),
       classOf[LFirstServing[Vector[Double], Double]])
-  }
 }
 
 object Run {

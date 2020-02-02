@@ -58,9 +58,8 @@ private[akka] object Reflect {
     */
   private[akka] def instantiate[T](
       clazz: Class[T],
-      args: immutable.Seq[Any]): T = {
+      args: immutable.Seq[Any]): T =
     instantiate(findConstructor(clazz, args), args)
-  }
 
   /**
     * INTERNAL API
@@ -134,7 +133,7 @@ private[akka] object Reflect {
     () ⇒ instantiate(clazz)
 
   def findMarker(root: Class[_], marker: Class[_]): Type = {
-    @tailrec def rec(curr: Class[_]): Type = {
+    @tailrec def rec(curr: Class[_]): Type =
       if (curr.getSuperclass != null && marker.isAssignableFrom(
             curr.getSuperclass)) rec(curr.getSuperclass)
       else
@@ -153,7 +152,6 @@ private[akka] object Reflect {
             else rec(t.getRawType.asInstanceOf[Class[_]])
           case _ ⇒ ??? // cannot happen due to collectFirst
         }
-    }
     rec(root)
   }
 

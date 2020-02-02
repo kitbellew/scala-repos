@@ -52,10 +52,9 @@ final case class TailChoppingRoutingLogic(
     extends RoutingLogic {
   override def select(
       message: Any,
-      routees: immutable.IndexedSeq[Routee]): Routee = {
+      routees: immutable.IndexedSeq[Routee]): Routee =
     if (routees.isEmpty) NoRoutee
     else TailChoppingRoutees(scheduler, routees, within, interval)(context)
-  }
 }
 
 /**

@@ -88,9 +88,8 @@ object BoostingStrategy {
     * @return Configuration for boosting algorithm
     */
   @Since("1.2.0")
-  def defaultParams(algo: String): BoostingStrategy = {
+  def defaultParams(algo: String): BoostingStrategy =
     defaultParams(Algo.fromString(algo))
-  }
 
   /**
     * Returns default configuration for the boosting algorithm

@@ -69,12 +69,11 @@ object PackageObjectsData {
   }
 
   def getFor(context: CompileContext): PackageObjectsData = {
-    def warning(message: String) = {
+    def warning(message: String) =
       context.processMessage(
         new CompilerMessage("scala", BuildMessage.Kind.WARNING, message))
-    }
 
-    def tryToReadData(file: File) = {
+    def tryToReadData(file: File) =
       synchronized {
         try {
           using(
@@ -90,7 +89,6 @@ object PackageObjectsData {
             new PackageObjectsData()
         }
       }
-    }
 
     def getOrLoadInstance(file: File) =
       instances.getOrElseUpdate(file, tryToReadData(file))

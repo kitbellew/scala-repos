@@ -109,7 +109,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       .unsafePerformIO
   }
 
-  private[this] def loadJob(jobId: JobId): Option[FileJobState] = {
+  private[this] def loadJob(jobId: JobId): Option[FileJobState] =
     cache.get(jobId) orElse {
       if (jobFile(jobId).exists) {
         JParser
@@ -125,7 +125,6 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         None
       }
     }
-  }
 
   def createJob(
       auth: APIKey,
@@ -267,7 +266,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   // Results handling
   def exists(file: String): M[Boolean] = M.point { resultFile(file).exists }
 
-  def save(file: String, data: FileData[M]): M[Unit] = {
+  def save(file: String, data: FileData[M]): M[Unit] =
     // TODO: Make this more efficient
     data.data.toStream.map { chunks =>
       val output = new DataOutputStream(new FileOutputStream(resultFile(file)))
@@ -281,7 +280,6 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         output.close()
       }
     }
-  }
 
   def load(file: String): M[Option[FileData[M]]] = M.point {
     if (resultFile(file).exists) {

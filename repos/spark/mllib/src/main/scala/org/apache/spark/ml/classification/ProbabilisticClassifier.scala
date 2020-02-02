@@ -177,13 +177,12 @@ abstract class ProbabilisticClassificationModel[
     raw2probabilityInPlace(probs)
   }
 
-  override protected def raw2prediction(rawPrediction: Vector): Double = {
+  override protected def raw2prediction(rawPrediction: Vector): Double =
     if (!isDefined(thresholds)) {
       rawPrediction.argmax
     } else {
       probability2prediction(raw2probability(rawPrediction))
     }
-  }
 
   /**
     * Predict the probability of each class given the features.
@@ -203,7 +202,7 @@ abstract class ProbabilisticClassificationModel[
     * This supports thresholds which favor particular labels.
     * @return  predicted label
     */
-  protected def probability2prediction(probability: Vector): Double = {
+  protected def probability2prediction(probability: Vector): Double =
     if (!isDefined(thresholds)) {
       probability.argmax
     } else {
@@ -215,7 +214,6 @@ abstract class ProbabilisticClassificationModel[
         }
       Vectors.dense(scaledProbability).argmax
     }
-  }
 }
 
 private[ml] object ProbabilisticClassificationModel {

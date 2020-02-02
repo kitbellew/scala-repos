@@ -46,7 +46,7 @@ class ClosureCleanerSuite2
     closureSerializer = sc.env.closureSerializer.newInstance()
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       sc.stop()
       sc = null
@@ -54,7 +54,6 @@ class ClosureCleanerSuite2
     } finally {
       super.afterAll()
     }
-  }
 
   // Some fields and methods to reference in inner closures later
   private val someSerializableValue = 1
@@ -63,9 +62,7 @@ class ClosureCleanerSuite2
   private def someNonSerializableMethod() = new NonSerializable
 
   /** Assert that the given closure is serializable (or not). */
-  private def assertSerializable(
-      closure: AnyRef,
-      serializable: Boolean): Unit = {
+  private def assertSerializable(closure: AnyRef, serializable: Boolean): Unit =
     if (serializable) {
       closureSerializer.serialize(closure)
     } else {
@@ -73,7 +70,6 @@ class ClosureCleanerSuite2
         closureSerializer.serialize(closure)
       }
     }
-  }
 
   /**
     * Helper method for testing whether closure cleaning works as expected.
@@ -143,18 +139,15 @@ class ClosureCleanerSuite2
   private val _getOuterClassesAndObjects =
     PrivateMethod[(List[Class[_]], List[AnyRef])]('getOuterClassesAndObjects)
 
-  private def isClosure(obj: AnyRef): Boolean = {
+  private def isClosure(obj: AnyRef): Boolean =
     ClosureCleaner invokePrivate _isClosure(obj)
-  }
 
-  private def getInnerClosureClasses(closure: AnyRef): List[Class[_]] = {
+  private def getInnerClosureClasses(closure: AnyRef): List[Class[_]] =
     ClosureCleaner invokePrivate _getInnerClosureClasses(closure)
-  }
 
   private def getOuterClassesAndObjects(
-      closure: AnyRef): (List[Class[_]], List[AnyRef]) = {
+      closure: AnyRef): (List[Class[_]], List[AnyRef]) =
     ClosureCleaner invokePrivate _getOuterClassesAndObjects(closure)
-  }
 
   test("get inner closure classes") {
     val closure1 = () => 1

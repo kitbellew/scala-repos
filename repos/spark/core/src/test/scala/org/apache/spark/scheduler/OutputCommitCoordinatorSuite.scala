@@ -121,15 +121,13 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
           override def dequeueSpeculativeTask(
               execId: String,
               host: String,
-              locality: TaskLocality.Value)
-              : Option[(Int, TaskLocality.Value)] = {
+              locality: TaskLocality.Value): Option[(Int, TaskLocality.Value)] =
             if (!hasDequeuedSpeculatedTask) {
               hasDequeuedSpeculatedTask = true
               Some(0, TaskLocality.PROCESS_LOCAL)
             } else {
               None
             }
-          }
         }
       }
     }).when(mockTaskScheduler)
@@ -238,9 +236,8 @@ private case class OutputCommitFunctions(tempDirPath: String) {
 
   // Mock output committer that simulates a successful commit (after commit is authorized)
   private def successfulOutputCommitter = new FakeOutputCommitter {
-    override def commitTask(context: TaskAttemptContext): Unit = {
+    override def commitTask(context: TaskAttemptContext): Unit =
       Utils.createDirectory(tempDirPath)
-    }
   }
 
   // Mock output committer that simulates a failed commit (after commit is authorized)
@@ -274,9 +271,8 @@ private case class OutputCommitFunctions(tempDirPath: String) {
     val sparkHadoopWriter = new SparkHadoopWriter(jobConf) {
       override def newTaskAttemptContext(
           conf: JobConf,
-          attemptId: TaskAttemptID): TaskAttemptContext = {
+          attemptId: TaskAttemptID): TaskAttemptContext =
         mock(classOf[TaskAttemptContext])
-      }
     }
     sparkHadoopWriter.setup(ctx.stageId, ctx.partitionId, ctx.attemptNumber)
     sparkHadoopWriter.commit()

@@ -71,11 +71,10 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
 
   def traverse[G[_], B](f: A => G[B])(
       implicit G: Applicative[G],
-      F: Traverse[F]): G[WriterT[F, W, B]] = {
+      F: Traverse[F]): G[WriterT[F, W, B]] =
     G.map(F.traverse(run) {
       case (w, a) => G.map(f(a))(b => (w, b))
     })(WriterT(_))
-  }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
     F.foldr(run, z) { a => b => f(a._2, b) }

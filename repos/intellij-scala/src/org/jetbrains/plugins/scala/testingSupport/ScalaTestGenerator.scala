@@ -31,7 +31,7 @@ import org.jetbrains.plugins.scala.testingSupport.test.{
 }
 
 class ScalaTestGenerator extends TestGenerator {
-  def generateTest(project: Project, d: CreateTestDialog): PsiElement = {
+  def generateTest(project: Project, d: CreateTestDialog): PsiElement =
     postponeFormattingWithin(project) {
       inWriteAction {
         try {
@@ -51,7 +51,6 @@ class ScalaTestGenerator extends TestGenerator {
         }
       }
     }
-  }
 
   override def toString: String = ScalaFileType.SCALA_LANGUAGE.getDisplayName
 
@@ -405,12 +404,12 @@ object ScalaTestGenerator {
       methods
         .map("it should \"" + _.getMember.getName + "\" in {\n\n}")
         .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+        .foreach { expr =>
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
             closingBrace)
-        })
+        }
     }
   }
 
@@ -456,12 +455,12 @@ object ScalaTestGenerator {
       methods
         .map("test(\"test" + _.getMember.getName.capitalize + "\") {\n\n}")
         .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+        .foreach { expr =>
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
             closingBrace)
-        })
+        }
     }
   }
 
@@ -474,12 +473,12 @@ object ScalaTestGenerator {
       methods
         .map("property(\"" + _.getMember.getName + " property\"){\n\n}")
         .map(ScalaPsiElementFactory.createExpressionFromText(_, psiManager))
-        .foreach(expr => {
+        .foreach { expr =>
           templateBody.addBefore(expr, closingBrace)
           templateBody.addBefore(
             ScalaPsiElementFactory.createNewLine(psiManager, "\n\n"),
             closingBrace)
-        })
+        }
     }
   }
 

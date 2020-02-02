@@ -34,9 +34,8 @@ abstract class ScalaCompletionSortingTestCase(
       .enableStatistics(getTestRootDisposable)
   }
 
-  def baseRootPath: String = {
+  def baseRootPath: String =
     TestUtils.getTestDataPath + relativePath
-  }
 
   def invokeCompletion(path: String): LookupImpl = {
     configureNoCompletion(baseRootPath + path)

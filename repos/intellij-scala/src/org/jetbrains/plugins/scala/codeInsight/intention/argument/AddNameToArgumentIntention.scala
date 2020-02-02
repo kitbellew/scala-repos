@@ -20,9 +20,8 @@ class AddNameToArgumentIntention extends PsiElementBaseIntentionAction {
   override def getText =
     "Use named arguments for current and subsequent arguments"
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
+  def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     IntentionUtils.addNameToArgumentsFix(element, onlyBoolean = false).isDefined
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     if (!element.isValid) return

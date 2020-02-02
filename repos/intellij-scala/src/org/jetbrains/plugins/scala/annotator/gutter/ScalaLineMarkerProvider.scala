@@ -69,7 +69,7 @@ class ScalaLineMarkerProvider(
     }
   }
 
-  def createMarkerInfo(element: PsiElement) = {
+  def createMarkerInfo(element: PsiElement) =
     new LineMarkerInfo[PsiElement](
       element,
       element.getTextRange,
@@ -79,7 +79,6 @@ class ScalaLineMarkerProvider(
         .asInstanceOf[com.intellij.util.Function[PsiElement, String]],
       null,
       GutterIconRenderer.Alignment.RIGHT)
-  }
 
   def addSeparatorInfo(info: LineMarkerInfo[_ <: PsiElement]) = {
     info.separatorColor = colorsManager.getGlobalScheme.getColor(
@@ -317,7 +316,7 @@ private object GutterUtil {
     }
   }
 
-  def isOverrides(element: PsiElement, supers: Seq[Signature]): Boolean = {
+  def isOverrides(element: PsiElement, supers: Seq[Signature]): Boolean =
     element match {
       case decl: ScFunctionDeclaration => true
       case v: ScValueDeclaration       => true
@@ -343,7 +342,6 @@ private object GutterUtil {
         }
         false
     }
-  }
 
   def isAbstract(element: PsiElement) = element match {
     case method: ScFunctionDeclaration   => true

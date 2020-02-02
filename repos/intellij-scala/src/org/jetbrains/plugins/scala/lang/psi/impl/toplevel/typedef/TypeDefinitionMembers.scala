@@ -40,12 +40,11 @@ import scala.reflect.NameTransformer
   * @author alefas
   */
 object TypeDefinitionMembers {
-  def nonBridge(place: Option[PsiElement], memb: PsiMember): Boolean = {
+  def nonBridge(place: Option[PsiElement], memb: PsiMember): Boolean =
     memb match {
       case f: ScFunction if f.isBridge => false
       case _                           => true
     }
-  }
 
   def isAbstract(s: PhysicalSignature) = s.method match {
     case _: ScFunctionDeclaration                         => true
@@ -63,11 +62,10 @@ object TypeDefinitionMembers {
 
     def elemName(t: Signature) = t.name
 
-    def same(t1: Signature, t2: Signature): Boolean = {
+    def same(t1: Signature, t2: Signature): Boolean =
       t1.namedElement eq t2.namedElement
-    }
 
-    def isPrivate(t: Signature): Boolean = {
+    def isPrivate(t: Signature): Boolean =
       t.namedElement match {
         case param: ScClassParameter if !param.isEffectiveVal => true
         case named: ScNamedElement =>
@@ -83,7 +81,6 @@ object TypeDefinitionMembers {
           n.hasModifierProperty("private")
         case _ => false
       }
-    }
 
     def isAbstract(s: Signature) = s match {
       case phys: PhysicalSignature =>
@@ -307,11 +304,10 @@ object TypeDefinitionMembers {
 
     def isImplicit(t: PsiNamedElement) = false
 
-    def same(t1: PsiNamedElement, t2: PsiNamedElement): Boolean = {
+    def same(t1: PsiNamedElement, t2: PsiNamedElement): Boolean =
       t1 eq t2
-    }
 
-    def isPrivate(t: PsiNamedElement): Boolean = {
+    def isPrivate(t: PsiNamedElement): Boolean =
       t match {
         case n: ScModifierListOwner =>
           n.getModifierList.accessModifier match {
@@ -321,7 +317,6 @@ object TypeDefinitionMembers {
         case n: PsiModifierListOwner => n.hasModifierProperty("private")
         case _                       => false
       }
-    }
 
     def processJava(
         clazz: PsiClass,
@@ -376,11 +371,10 @@ object TypeDefinitionMembers {
 
     def elemName(t: Signature) = t.name
 
-    def same(t1: Signature, t2: Signature): Boolean = {
+    def same(t1: Signature, t2: Signature): Boolean =
       t1.namedElement eq t2.namedElement
-    }
 
-    def isPrivate(t: Signature): Boolean = {
+    def isPrivate(t: Signature): Boolean =
       t.namedElement match {
         case c: ScClassParameter if !c.isEffectiveVal => true
         case named: ScNamedElement =>
@@ -396,7 +390,6 @@ object TypeDefinitionMembers {
           n.hasModifierProperty("private")
         case _ => false
       }
-    }
 
     def isAbstract(s: Signature) = s match {
       case phys: PhysicalSignature =>
@@ -646,12 +639,11 @@ object TypeDefinitionMembers {
       }
     }
 
-    def forAllSignatureNodes(c: PsiClass)(action: Node => Unit): Unit = {
+    def forAllSignatureNodes(c: PsiClass)(action: Node => Unit): Unit =
       for {
         signature <- TypeDefinitionMembers.getSignatures(c).allFirstSeq()
         (_, node) <- signature
       } action(node)
-    }
   }
 
   import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.TypeDefinitionMembers.ParameterlessNodes.{
@@ -752,31 +744,28 @@ object TypeDefinitionMembers {
   def getParameterlessSignatures(
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
-      place: PsiElement): PMap = {
+      place: PsiElement): PMap =
     ScalaPsiManager
       .instance(place.getProject)
       .getParameterlessSignatures(tp, compoundTypeThisType)
-  }
 
   def getTypes(
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
-      place: PsiElement): TMap = {
+      place: PsiElement): TMap =
     ScalaPsiManager
       .instance(place.getProject)
       .getTypes(tp, compoundTypeThisType)
-  }
 
   def getSignatures(
       tp: ScCompoundType,
       compoundTypeThisType: Option[ScType],
-      place: PsiElement): SMap = {
+      place: PsiElement): SMap =
     ScalaPsiManager
       .instance(place.getProject)
       .getSignatures(tp, compoundTypeThisType)
-  }
 
-  def getSelfTypeSignatures(clazz: PsiClass): SMap = {
+  def getSelfTypeSignatures(clazz: PsiClass): SMap =
     clazz match {
       case td: ScTypeDefinition =>
         td.selfType match {
@@ -799,9 +788,8 @@ object TypeDefinitionMembers {
         }
       case _ => getSignatures(clazz)
     }
-  }
 
-  def getSelfTypeTypes(clazz: PsiClass): TMap = {
+  def getSelfTypeTypes(clazz: PsiClass): TMap =
     clazz match {
       case td: ScTypeDefinition =>
         td.selfType match {
@@ -824,7 +812,6 @@ object TypeDefinitionMembers {
         }
       case _ => getTypes(clazz)
     }
-  }
 
   //todo: this method requires refactoring
   def processDeclarations(
@@ -848,16 +835,15 @@ object TypeDefinitionMembers {
       map
     }
 
-    def syntheticMethods: Seq[(Signature, SignatureNodes.Node)] = {
+    def syntheticMethods: Seq[(Signature, SignatureNodes.Node)] =
       clazz match {
         case td: ScTemplateDefinition =>
-          td.syntheticMethodsNoOverride.map(fun => {
+          td.syntheticMethodsNoOverride.map { fun =>
             val f = new PhysicalSignature(fun, ScSubstitutor.empty)
             (f, new SignatureNodes.Node(f, ScSubstitutor.empty))
-          })
+          }
         case _ => Seq.empty
       }
-    }
 
     if (BaseProcessor.isImplicitProcessor(processor) && !clazz
           .isInstanceOf[ScTemplateDefinition]) return true
@@ -997,11 +983,10 @@ object TypeDefinitionMembers {
     val name = if (nameHint == null) "" else nameHint.getName(state)
     val decodedName = if (name != null) convertMemberName(name) else ""
     val isScalaProcessor = processor.isInstanceOf[BaseProcessor]
-    def checkName(s: String): Boolean = {
+    def checkName(s: String): Boolean =
       if (name == null || name == "") true
       else convertMemberName(s) == decodedName
-    }
-    def checkNameGetSetIs(s: String): Boolean = {
+    def checkNameGetSetIs(s: String): Boolean =
       if (name == null || name == "") true
       else {
         val decoded = NameTransformer.decode(s)
@@ -1009,7 +994,6 @@ object TypeDefinitionMembers {
           Seq("is", "get", "set").map(_ + decoded.capitalize)
         beanPropertyNames.contains(decodedName)
       }
-    }
 
     val processVals = shouldProcessVals(processor)
     val processMethods = shouldProcessMethods(processor)
@@ -1354,13 +1338,12 @@ object TypeDefinitionMembers {
     hint == null || hint.shouldProcess(ElementClassHint.DeclarationKind.CLASS)
   }
 
-  def shouldProcessOnlyStable(processor: PsiScopeProcessor): Boolean = {
+  def shouldProcessOnlyStable(processor: PsiScopeProcessor): Boolean =
     processor match {
       case BaseProcessor(kinds) =>
         !kinds.contains(METHOD) && !kinds.contains(VAR)
       case _ => false
     }
-  }
 
   def processEnum(clazz: PsiClass, process: PsiMethod => Boolean): Boolean = {
     var containsValues = false

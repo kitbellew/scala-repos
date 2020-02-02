@@ -38,9 +38,8 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
       g: B => G[D]): F[A, B] => G[F[C, D]] =
     bitraverseImpl(_)(f, g)
 
-  def bimap[A, B, C, D](fab: F[A, B])(f: A => C, g: B => D): F[C, D] = {
+  def bimap[A, B, C, D](fab: F[A, B])(f: A => C, g: B => D): F[C, D] =
     bitraverseImpl[Id, A, B, C, D](fab)(f, g)
-  }
 
   /** Extract the Traverse on the first param. */
   def leftTraverse[X]: Traverse[F[?, X]] =
@@ -100,13 +99,13 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
     implicit val A =
       Kleisli.kleisliMonadReader[Trampoline, S].compose(Applicative[G])
 
-    Kleisli[G, S, F[C, D]](s => {
+    Kleisli[G, S, F[C, D]] { s =>
       val kl =
         bitraverse[λ[α => Kleisli[Trampoline, S, G[α]]], A, B, C, D](fa)(z =>
           Kleisli[Id, S, G[C]](i => f(z)(i)).lift[Trampoline])(z =>
           Kleisli[Id, S, G[D]](i => g(z)(i)).lift[Trampoline])
       kl.run(s).run
-    })
+    }
   }
 
   def bifoldLShape[A, B, C](fa: F[A, B], z: C)(f: (C, A) => C)(

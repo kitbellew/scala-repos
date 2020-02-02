@@ -44,7 +44,7 @@ private[spark] object ExecutorExitCode {
     */
   val HEARTBEAT_FAILURE = 56
 
-  def explainExitCode(exitCode: Int): String = {
+  def explainExitCode(exitCode: Int): String =
     exitCode match {
       case UNCAUGHT_EXCEPTION => "Uncaught exception"
       case UNCAUGHT_EXCEPTION_TWICE =>
@@ -69,5 +69,4 @@ private[spark] object ExecutorExitCode {
           }
         )
     }
-  }
 }

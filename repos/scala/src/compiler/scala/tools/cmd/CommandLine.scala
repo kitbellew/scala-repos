@@ -43,13 +43,12 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
       /*  Returns Some(List(args)) if this option expands to an
        *  argument list and it's not returning only the same arg.
        */
-      def expand(s1: String) = {
+      def expand(s1: String) =
         if (isExpandOption(s1)) {
           val s2 = spec expandArg s1
           if (s2 == List(s1)) None
           else Some(s2)
         } else None
-      }
 
       /* Assumes known options have all been ruled out already. */
       def isUnknown(opt: String) =

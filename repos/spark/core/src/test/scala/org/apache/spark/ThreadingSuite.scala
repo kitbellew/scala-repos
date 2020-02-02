@@ -124,7 +124,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
         override def run() {
           try {
             val ans = nums
-              .map(number => {
+              .map { number =>
                 val running = ThreadingSuiteState.runningThreads
                 running.getAndIncrement()
                 val time = System.currentTimeMillis()
@@ -136,7 +136,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
                   ThreadingSuiteState.failed.set(true)
                 }
                 number
-              })
+              }
               .collect()
             assert(ans.toList === List(1, 2))
           } catch {
@@ -222,14 +222,13 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     sc.setLocalProperty("test", originalTestValue)
     var throwable: Option[Throwable] = None
     val thread = new Thread {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           threadTestValue = sc.getLocalProperty("test")
         } catch {
           case t: Throwable =>
             throwable = Some(t)
         }
-      }
     }
     sc.setLocalProperty("test", "this-should-not-be-inherited")
     thread.start()

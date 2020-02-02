@@ -40,9 +40,8 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
   private val originalInMemoryPartitionPruning =
     TestHive.conf.inMemoryPartitionPruning
 
-  def testCases: Seq[(String, File)] = {
+  def testCases: Seq[(String, File)] =
     hiveQueryDir.listFiles.map(f => f.getName.stripSuffix(".q") -> f)
-  }
 
   override def beforeAll() {
     super.beforeAll()

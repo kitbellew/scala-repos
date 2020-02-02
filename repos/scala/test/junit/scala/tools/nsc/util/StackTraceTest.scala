@@ -76,12 +76,11 @@ class StackTraceTest extends Expecting {
 
   // evaluating s should throw, p trims stack trace, t is the test of resulting trace string
   def probe(s: => String)(p: StackTraceElement => Boolean)(
-      t: String => Unit): Unit = {
+      t: String => Unit): Unit =
     Try(s) recover { case e => e stackTracePrefixString p } match {
       case Success(s) => t(s)
       case Failure(e) => throw e
     }
-  }
 
   @Test def showsAllTrace() {
     probe(sampler)(_ => true) { s =>

@@ -13,7 +13,7 @@ import breeze.storage.Zero
 object split extends UFunc {
 
   implicit def implIntVec[T: ClassTag]
-      : Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] = {
+      : Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] =
     new Impl2[DenseVector[T], Int, IndexedSeq[DenseVector[T]]] {
       def apply(v: DenseVector[T], n: Int): IndexedSeq[DenseVector[T]] = {
         require(n >= 0)
@@ -34,7 +34,6 @@ object split extends UFunc {
         result
       }
     }
-  }
 
   implicit def implSeqVec[T: ClassTag]
       : Impl2[DenseVector[T], Seq[Int], IndexedSeq[DenseVector[T]]] =

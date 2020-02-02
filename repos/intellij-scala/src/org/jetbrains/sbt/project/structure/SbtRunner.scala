@@ -84,7 +84,7 @@ class SbtRunner(
         s"""set shellPrompt := { _ => "" }""",
         s"""set SettingKey[Option[File]]("sbt-structure-output-file") in Global := Some(file("${path(
           structureFile)}"))""",
-        s"""set SettingKey[String]("sbt-structure-options") in Global := "${options}" """,
+        s"""set SettingKey[String]("sbt-structure-options") in Global := "$options" """,
         s"""apply -cp "${path(pluginFile)}" org.jetbrains.sbt.CreateTasks""",
         s"""*/*:dump-structure""",
         s"""exit"""
@@ -236,12 +236,11 @@ object SbtRunner {
       sectionName: String): Map[String, String] = {
     val Property = "^\\s*(\\w+)\\s*:(.+)".r.unanchored
 
-    def findProperty(line: String): Option[(String, String)] = {
+    def findProperty(line: String): Option[(String, String)] =
       line match {
         case Property(name, value) => Some((name, value.trim))
         case _                     => None
       }
-    }
 
     val jar = new JarFile(launcherFile)
     try {
@@ -267,11 +266,10 @@ object SbtRunner {
     else None
   }
 
-  private def readPropertyFrom(file: File, name: String): Option[String] = {
+  private def readPropertyFrom(file: File, name: String): Option[String] =
     using(new BufferedInputStream(new FileInputStream(file))) { input =>
       val properties = new Properties()
       properties.load(input)
       Option(properties.getProperty(name))
     }
-  }
 }

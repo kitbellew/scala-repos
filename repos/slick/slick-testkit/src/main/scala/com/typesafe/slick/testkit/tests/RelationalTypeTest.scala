@@ -69,10 +69,9 @@ class RelationalTypeTest extends AsyncTest[RelationalTestDB] {
     )
   }
 
-  def testBoolean = {
+  def testBoolean =
     roundtrip[Boolean]("boolean_true", true) >>
       roundtrip[Boolean]("boolean_false", false)
-  }
 
   def testUnit = {
     class T(tag: Tag) extends Table[Int](tag, "unit_t") {

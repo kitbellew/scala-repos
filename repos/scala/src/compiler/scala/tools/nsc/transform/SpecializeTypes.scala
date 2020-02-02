@@ -123,14 +123,13 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   }
 
   @annotation.tailrec
-  private def findSymbol[T](candidates: List[T], f: T => Symbol): Symbol = {
+  private def findSymbol[T](candidates: List[T], f: T => Symbol): Symbol =
     if (candidates.isEmpty) NoSymbol
     else
       f(candidates.head) match {
         case NoSymbol => findSymbol(candidates.tail, f)
         case sym      => sym
       }
-  }
   private def hasNewParents(tree: Tree) = {
     val parents = tree.symbol.info.parents
     val prev = enteringPrevPhase(tree.symbol.info.parents)
@@ -143,12 +142,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   // If we replace `isBoundedGeneric` with (tp <:< AnyRefTpe),
   // then pos/spec-List.scala fails - why? Does this kind of check fail
   // for similar reasons? Does `sym.isAbstractType` make a difference?
-  private def isSpecializedAnyRefSubtype(tp: Type, sym: Symbol) = {
+  private def isSpecializedAnyRefSubtype(tp: Type, sym: Symbol) =
     specializedOn(sym).exists(s => !isPrimitiveValueClass(s)) &&
-    !isPrimitiveValueClass(tp.typeSymbol) &&
-    isBoundedGeneric(tp)
-    //(tp <:< AnyRefTpe)
-  }
+      !isPrimitiveValueClass(tp.typeSymbol) &&
+      isBoundedGeneric(tp)
+  //(tp <:< AnyRefTpe)
 
   object TypeEnv {
 
@@ -187,7 +185,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       *  It is valid if each binding is from a @specialized type parameter in sym (or its owner)
       *  to a type for which `sym` is specialized.
       */
-    def isValid(env: TypeEnv, sym: Symbol): Boolean = {
+    def isValid(env: TypeEnv, sym: Symbol): Boolean =
       env forall {
         case (tvar, tpe) =>
           tvar.isSpecialized && (concreteTypes(tvar) contains tpe) && {
@@ -195,7 +193,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
             (sym.owner != rootMirror.RootClass && (sym.owner.typeParams contains tvar))
           }
       }
-    }
   }
 
   case class Overload(sym: Symbol, env: TypeEnv) {
@@ -274,11 +271,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   case class NormalizedMember(target: Symbol) extends SpecializedInfo {
 
     /** Type bounds of a @specialized type var are now in the environment. */
-    override def typeBoundsIn(env: TypeEnv): Boolean = {
+    override def typeBoundsIn(env: TypeEnv): Boolean =
       target.info.typeParams exists { tvar =>
         tvar.isSpecialized && (specializedTypeVars(tvar.info.bounds) exists env.isDefinedAt)
       }
-    }
 
     override lazy val degenerate = {
       val stvTypeParams = specializedTypeVars(
@@ -472,10 +468,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   def specializedTypeVars(tpes: List[Type]): immutable.Set[Symbol] = {
     @tailrec def loop(
         result: immutable.Set[Symbol],
-        xs: List[Type]): immutable.Set[Symbol] = {
+        xs: List[Type]): immutable.Set[Symbol] =
       if (xs.isEmpty) result
       else loop(result ++ specializedTypeVars(xs.head), xs.tail)
-    }
     loop(immutable.Set.empty, tpes)
   }
   def specializedTypeVars(sym: Symbol): immutable.Set[Symbol] = (
@@ -942,7 +937,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   private def normalizeMember(
       owner: Symbol,
       sym: Symbol,
-      outerEnv: TypeEnv): List[Symbol] = {
+      outerEnv: TypeEnv): List[Symbol] =
     sym :: (
       if (!sym.isMethod || enteringTyper(sym.typeParams.isEmpty)) Nil
       else if (sym.hasDefault) {
@@ -1009,10 +1004,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         }
       }
     )
-  }
 
   // concise printing of type env
-  private def pp(env: TypeEnv): String = {
+  private def pp(env: TypeEnv): String =
     env.toList.sortBy(_._1.name) map {
       case (k, v) =>
         val vsym = v.typeSymbol
@@ -1020,7 +1014,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         else k.name + ":" + vsym.name
 
     } mkString ("env(", ", ", ")")
-  }
 
   /** Specialize member `m` w.r.t. to the outer environment and the type
     *  parameters of the innermost enclosing class.
@@ -1310,7 +1303,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       tp1: List[Type],
       tp2: List[Type],
       env: TypeEnv,
-      strict: Boolean): TypeEnv = {
+      strict: Boolean): TypeEnv =
     if (tp1.isEmpty || tp2.isEmpty) env
     else
       (tp1 zip tp2).foldLeft(env) { (env, args) =>
@@ -1325,7 +1318,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           }
         }
       }
-  }
 
   /** Apply the type environment 'env' to the given type. All type
     *  bindings are supposed to be to primitive types. A type variable
@@ -1369,7 +1361,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
   /** Type transformation. It is applied to all symbols, compiled or loaded.
     *  If it is a 'no-specialization' run, it is applied only to loaded symbols.
     */
-  override def transformInfo(sym: Symbol, tpe: Type): Type = {
+  override def transformInfo(sym: Symbol, tpe: Type): Type =
     if (settings.nospecialization && currentRun.compiles(sym)) tpe
     else
       tpe.resultType match {
@@ -1391,7 +1383,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         case _ =>
           tpe
       }
-  }
 
   /** Is any type variable in `env` conflicting with any if its type bounds, when
     *  type bindings in `env` are taken into account?
@@ -1638,7 +1629,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         origSymbol: Symbol,
         treeType: Type,
         memberType: Type,
-        env: TypeEnv) = {
+        env: TypeEnv) =
       (treeType =:= memberType) || { // anyref specialization
         memberType match {
           case PolyType(_, resTpe) =>
@@ -1656,7 +1647,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           case _ => false
         }
       }
-    }
 
     def reportError[T](body: => T)(handler: TypeError => T): T =
       try body
@@ -1701,11 +1691,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       def matchingSymbolInPrefix(
           pre: Type,
           member: Symbol,
-          env: TypeEnv): Symbol = {
+          env: TypeEnv): Symbol =
         pre member specializedName(member, env) suchThat (_.tpe matches subst(
           env,
           member.tpe))
-      }
 
       def transformSelect(sel: Select) = {
         val Select(qual, name) = sel
@@ -2215,7 +2204,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     }
 
     /** Create specialized class definitions */
-    def implSpecClasses(trees: List[Tree]): List[Tree] = {
+    def implSpecClasses(trees: List[Tree]): List[Tree] =
       trees flatMap {
         case tree @ ClassDef(_, _, _, impl) =>
           tree.symbol.info // force specialization
@@ -2232,7 +2221,6 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           }
         case _ => Nil
       } sortBy (_.name.decoded)
-    }
   }
 
   private def forwardCall(

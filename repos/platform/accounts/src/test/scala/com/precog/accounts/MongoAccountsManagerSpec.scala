@@ -227,8 +227,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         AccountPlan.Free) { _ => M.point("testapikey") })
       .copoint
 
-    def after = {
+    def after =
       defaultActorSystem.shutdown
-    }
   }
 }

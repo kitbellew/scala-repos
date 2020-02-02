@@ -209,7 +209,7 @@ trait ModelFactoryTypeSupport {
           appendType0(result)
 
         case et @ ExistentialType(quantified, underlying) =>
-          def appendInfoStringReduced(sym: Symbol, tp: Type): Unit = {
+          def appendInfoStringReduced(sym: Symbol, tp: Type): Unit =
             if (sym.isType && !sym.isAliasType && !sym.isClass) {
               tp match {
                 case PolyType(tparams, _) =>
@@ -229,7 +229,6 @@ trait ModelFactoryTypeSupport {
               // fallback to the Symbol infoString
               nameBuffer append sym.infoString(tp)
             }
-          }
 
           def appendClauses = {
             nameBuffer append " forSome {"

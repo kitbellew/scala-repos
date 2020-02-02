@@ -246,7 +246,7 @@ class MutableSettings(val errorFn: String => Unit)
       sett =>
         if (sett.value != default) {
           sett.withDeprecationMessage(
-            s"${name}:${sett.value} is deprecated, forcing use of $default")
+            s"$name:${sett.value} is deprecated, forcing use of $default")
           sett.value = default
         })
   def IntSetting(
@@ -490,13 +490,12 @@ class MutableSettings(val errorFn: String => Unit)
     // Ensure that the default value is actually valid
     assert(isInputValid(default))
 
-    def parseArgument(x: String): Option[Int] = {
+    def parseArgument(x: String): Option[Int] =
       parser(x) orElse {
         try {
           Some(x.toInt)
         } catch { case _: NumberFormatException => None }
       }
-    }
 
     def errorMsg() =
       errorFn("invalid setting for -" + name + " " + getValidText)
@@ -609,9 +608,9 @@ class MutableSettings(val errorFn: String => Unit)
     }
 
     def unparse: List[String] =
-      if (value == NoScalaVersion) Nil else List(s"${name}:${value.unparse}")
+      if (value == NoScalaVersion) Nil else List(s"$name:${value.unparse}")
 
-    withHelpSyntax(s"${name}:<${arg}>")
+    withHelpSyntax(s"$name:<$arg>")
   }
 
   class PathSetting private[nsc] (
@@ -936,11 +935,10 @@ class MutableSettings(val errorFn: String => Unit)
     withHelpSyntax(name + ":<" + helpArg + ">")
   }
 
-  private def mkPhasesHelp(descr: String, default: String) = {
+  private def mkPhasesHelp(descr: String, default: String) =
     descr + " <phases>" + (
       if (default == "") "" else " (default: " + default + ")"
     )
-  }
 
   /** A setting represented by a list of strings which should be prefixes of
     *  phase names. This is not checked here, however.  Alternatively the string

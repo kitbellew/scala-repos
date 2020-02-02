@@ -140,7 +140,7 @@ object SyntheticMembersInjector {
         context,
         source)
       td.syntheticContainingClass = Some(source)
-      def updateSynthetic(element: ScMember): Unit = {
+      def updateSynthetic(element: ScMember): Unit =
         element match {
           case td: ScTypeDefinition =>
             td.setSynthetic(context)
@@ -148,7 +148,6 @@ object SyntheticMembersInjector {
           case fun: ScFunction => fun.setSynthetic(context)
           case _               => //todo: ?
         }
-      }
       updateSynthetic(td)
       buffer += td
     } catch {

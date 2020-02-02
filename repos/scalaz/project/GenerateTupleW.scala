@@ -37,14 +37,14 @@ object GenerateTupleW {
         }
 
         val pimp = s"""|
-          |final class Tuple${arity}Ops[${tparams}](val value: (${tparams})) extends AnyVal {
-          |  def fold[Z](f: => (${tparams}) => Z): Z = {import value._; f(${params})}
-          |  def toIndexedSeq[Z](implicit ev: value.type <:< Tuple${arity}[${ztparams}]): IndexedSeq[Z] = {val zs = ev(value); import zs._; IndexedSeq(${params})}
-          |  def mapElements[${mapallTParams}](${mapallParams}): (${mapallTParams}) = (${mapallApply})
+          |final class Tuple${arity}Ops[$tparams](val value: ($tparams)) extends AnyVal {
+          |  def fold[Z](f: => ($tparams) => Z): Z = {import value._; f($params)}
+          |  def toIndexedSeq[Z](implicit ev: value.type <:< Tuple$arity[$ztparams]): IndexedSeq[Z] = {val zs = ev(value); import zs._; IndexedSeq($params)}
+          |  def mapElements[$mapallTParams]($mapallParams): ($mapallTParams) = ($mapallApply)
           |}""".stripMargin
 
         val conv =
-          s"""implicit def ToTuple${arity}Ops[${tparams}](t: (${tparams})): Tuple${arity}Ops[${tparams}] = new Tuple${arity}Ops(t)\n"""
+          s"""implicit def ToTuple${arity}Ops[$tparams](t: ($tparams)): Tuple${arity}Ops[$tparams] = new Tuple${arity}Ops(t)\n"""
         (pimp, conv)
       }
 

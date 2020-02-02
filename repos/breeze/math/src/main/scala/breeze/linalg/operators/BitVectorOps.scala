@@ -12,15 +12,13 @@ import breeze.storage.Zero
 trait BitVectorOps {
 
   implicit object anyImpl extends any.Impl[BitVector, Boolean] {
-    override def apply(v: BitVector): Boolean = {
+    override def apply(v: BitVector): Boolean =
       v.data.cardinality() != 0
-    }
   }
 
   implicit object allImpl extends all.Impl[BitVector, Boolean] {
-    override def apply(v: BitVector): Boolean = {
+    override def apply(v: BitVector): Boolean =
       v.data.cardinality() == v.size
-    }
   }
 
   @expand
@@ -71,9 +69,8 @@ trait BitVectorOps {
 
   implicit val bv_bv_OpNe: OpNe.Impl2[BitVector, BitVector, BitVector] =
     new OpNe.Impl2[BitVector, BitVector, BitVector] {
-      def apply(a: BitVector, b: BitVector): BitVector = {
+      def apply(a: BitVector, b: BitVector): BitVector =
         a ^^ b
-      }
     }
 
   implicit val bv_bv_OpEq: OpEq.Impl2[BitVector, BitVector, BitVector] =
@@ -88,7 +85,7 @@ trait BitVectorOps {
   @expand
   implicit def axpy[@expand.args(Int, Double, Float, Long) V, Vec](
       implicit ev: Vec <:< Vector[V])
-      : scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
+      : scaleAdd.InPlaceImpl3[Vec, V, BitVector] =
     new scaleAdd.InPlaceImpl3[Vec, V, BitVector] {
       def apply(a: Vec, s: V, b: BitVector) {
         require(b.lengthsMatch(a), "Vectors must be the same length!")
@@ -100,11 +97,10 @@ trait BitVectorOps {
         }
       }
     }
-  }
 
   implicit def axpyGen[V, Vec](
       implicit ev: Vec <:< Vector[V],
-      semi: Semiring[V]): scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
+      semi: Semiring[V]): scaleAdd.InPlaceImpl3[Vec, V, BitVector] =
     new scaleAdd.InPlaceImpl3[Vec, V, BitVector] {
       def apply(a: Vec, s: V, b: BitVector) {
         require(b.lengthsMatch(a), "Vectors must be the same length!")
@@ -116,7 +112,6 @@ trait BitVectorOps {
         }
       }
     }
-  }
 
   implicit val canDot_BV_BV: OpMulInner.Impl2[BitVector, BitVector, Boolean] = {
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, BitVector, Boolean] {
@@ -130,7 +125,7 @@ trait BitVectorOps {
   @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](
       implicit @expand.sequence[T](0.0, 0.0f, 0, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] =
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] {
       def apply(a: BitVector, b: DenseVector[T]) = {
         val ad = a.data
@@ -149,7 +144,6 @@ trait BitVectorOps {
       }
       //      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner, T]].register(this)
     }
-  }
 
   @expand
   @expand.valify
@@ -158,7 +152,7 @@ trait BitVectorOps {
       : breeze.linalg.operators.OpMulInner.Impl2[
         BitVector,
         SparseVector[T],
-        T] = {
+        T] =
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[T], T] {
       def apply(a: BitVector, b: SparseVector[T]): T = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
@@ -177,16 +171,13 @@ trait BitVectorOps {
       }
       //      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner, T]].register(this)
     }
-  }
 
   implicit def canDot_Other_BV[T, Other](
       implicit op: OpMulInner.Impl2[BitVector, Other, T])
-      : OpMulInner.Impl2[Other, BitVector, T] = {
+      : OpMulInner.Impl2[Other, BitVector, T] =
     new OpMulInner.Impl2[Other, BitVector, T] {
-      def apply(a: Other, b: BitVector): T = {
+      def apply(a: Other, b: BitVector): T =
         op(b, a)
-      }
     }
-  }
 
 }

@@ -206,7 +206,7 @@ object Reflector {
         }
       }
 
-      def constructors: Seq[ConstructorDescriptor] = {
+      def constructors: Seq[ConstructorDescriptor] =
         tpe.erasure.getConstructors.toSeq map { ctor =>
           val ctorParameterNames =
             if (Modifier
@@ -236,7 +236,6 @@ object Reflector {
           }
           ConstructorDescriptor(ctorParams.toSeq, ctor, isPrimary = false)
         }
-      }
 
       ClassDescriptor(
         tpe.simpleName,
@@ -248,7 +247,7 @@ object Reflector {
     }
   }
 
-  def defaultValue(compClass: Class[_], compObj: AnyRef, argIndex: Int) = {
+  def defaultValue(compClass: Class[_], compObj: AnyRef, argIndex: Int) =
     allCatch.withApply(_ => None) {
       Option(
         compClass
@@ -256,7 +255,6 @@ object Reflector {
         meth => () => meth.invoke(compObj)
       }
     }
-  }
 
   def rawClassOf(t: Type): Class[_] =
     rawClasses(t, _ match {

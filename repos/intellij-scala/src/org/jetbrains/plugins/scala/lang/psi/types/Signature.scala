@@ -37,7 +37,7 @@ case class TypeAliasSignature(
   def updateTypes(
       fun: ScType => ScType,
       withCopy: Boolean = true): TypeAliasSignature = {
-    def updateTypeParam(tp: TypeParameter): TypeParameter = {
+    def updateTypeParam(tp: TypeParameter): TypeParameter =
       new TypeParameter(tp.name, tp.typeParams.map(updateTypeParam), {
         val res = fun(tp.lowerType())
         () => res
@@ -45,7 +45,6 @@ case class TypeAliasSignature(
         val res = fun(tp.upperType())
         () => res
       }, tp.ptp)
-    }
     val res = TypeAliasSignature(
       name,
       typeParams.map(updateTypeParam),
@@ -62,14 +61,13 @@ case class TypeAliasSignature(
       fun: (ScType, Int) => ScType,
       variance: Int,
       withCopy: Boolean = true): TypeAliasSignature = {
-    def updateTypeParam(tp: TypeParameter): TypeParameter = {
+    def updateTypeParam(tp: TypeParameter): TypeParameter =
       new TypeParameter(
         tp.name,
         tp.typeParams.map(updateTypeParam),
         () => fun(tp.lowerType(), variance),
         () => fun(tp.upperType(), -variance),
         tp.ptp)
-    }
     val res = TypeAliasSignature(
       name,
       typeParams.map(updateTypeParam),
@@ -146,7 +144,7 @@ class Signature(
 
   }
 
-  def javaErasedEquiv(other: Signature): Boolean = {
+  def javaErasedEquiv(other: Signature): Boolean =
     (this, other) match {
       case (ps1: PhysicalSignature, ps2: PhysicalSignature)
           if ps1.isJava && ps2.isJava =>
@@ -164,14 +162,12 @@ class Signature(
           .equals(psiSig1, psiSig2)
       case _ => false
     }
-  }
 
-  def paramTypesEquiv(other: Signature): Boolean = {
+  def paramTypesEquiv(other: Signature): Boolean =
     paramTypesEquivExtended(
       other,
       new ScUndefinedSubstitutor,
       falseUndef = true)._1
-  }
 
   def paramTypesEquivExtended(
       other: Signature,
@@ -218,29 +214,26 @@ class Signature(
     case _            => false
   }
 
-  def parameterlessKind: Int = {
+  def parameterlessKind: Int =
     namedElement match {
       case f: ScFunction if !f.hasParameterClause => 1
       case p: PsiMethod                           => 2
       case _                                      => 3
     }
-  }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     simpleHashCode * 31 + parameterlessKind
-  }
 
   /**
     * Use it, while building class hierarchy.
     * Because for class hierarch def foo(): Int is the same thing as def foo: Int and val foo: Int.
     */
-  def simpleHashCode: Int = {
+  def simpleHashCode: Int =
     ScalaPsiUtil.convertMemberName(name).hashCode
-  }
 
   def isJava: Boolean = false
 
-  def parameterlessCompatible(other: Signature): Boolean = {
+  def parameterlessCompatible(other: Signature): Boolean =
     (namedElement, other.namedElement) match {
       case (f1: ScFunction, f2: ScFunction) =>
         !f1.hasParameterClause ^ f2.hasParameterClause
@@ -252,7 +245,6 @@ class Signature(
       case (_, f: PsiMethod)              => false
       case _                              => true
     }
-  }
 }
 
 object Signature {
@@ -295,7 +287,7 @@ object PhysicalSignature {
     case _ => List(method.getParameterList.getParametersCount)
   }
 
-  def hasRepeatedParam(method: PsiMethod): Seq[Int] = {
+  def hasRepeatedParam(method: PsiMethod): Seq[Int] =
     method.getParameterList match {
       case p: ScParameters =>
         val params = p.params
@@ -313,12 +305,10 @@ object PhysicalSignature {
           return Seq(parameters.length - 1)
         Seq.empty
     }
-  }
 
   def unapply(
-      signature: PhysicalSignature): Option[(PsiMethod, ScSubstitutor)] = {
+      signature: PhysicalSignature): Option[(PsiMethod, ScSubstitutor)] =
     Some(signature.method, signature.substitutor)
-  }
 }
 
 class PhysicalSignature(

@@ -64,9 +64,8 @@ abstract class TemplateEmailer(
     props
   }
 
-  def withSession[T](f: Session => T): T = {
+  def withSession[T](f: Session => T): T =
     f(Session.getInstance(mailProps))
-  }
 
   protected def source(name: String): TemplateSource
 

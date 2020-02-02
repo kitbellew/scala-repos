@@ -53,13 +53,12 @@ class FlowSpec
       brokenMessage: Any)
       extends ActorGraphInterpreter(_shell) {
 
-    override protected[akka] def aroundReceive(receive: Receive, msg: Any) = {
+    override protected[akka] def aroundReceive(receive: Receive, msg: Any) =
       msg match {
         case ActorGraphInterpreter.OnNext(_, 0, m) if m == brokenMessage ⇒
           throw new NullPointerException(s"I'm so broken [$m]")
         case _ ⇒ super.aroundReceive(receive, msg)
       }
-    }
   }
 
   val faultyFlow: Flow[Any, Any, NotUsed] ⇒ Flow[Any, Any, NotUsed] = in ⇒
@@ -123,9 +122,8 @@ class FlowSpec
           .withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
 
   def materializeIntoSubscriberAndPublisher[In, Out](
-      flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
+      flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) =
     flow.runWith(Source.asSubscriber[In], Sink.asPublisher[Out](false))
-  }
 
   "A Flow" must {
 

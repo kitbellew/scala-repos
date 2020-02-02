@@ -153,7 +153,7 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
             target: String,
             baseRequest: Request,
             request: HttpServletRequest,
-            response: HttpServletResponse): Unit = {
+            response: HttpServletResponse): Unit =
           if (target == "/") {
             val requestedHost = Option(request.getHeader("Host"))
               .map(_.toLowerCase.split(':').head)
@@ -162,7 +162,6 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
               "http://%1$s:%2$d/index.html?apiKey=%3$s&analyticsService=http://%1$s:%4$d/&version=2"
                 .format(requestedHost, serverPort, rootKey, quirrelPort))
           }
-        }
       }
 
       val handlers = new HandlerList

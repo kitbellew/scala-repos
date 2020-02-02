@@ -18,7 +18,7 @@ object DiagramStats {
       instances += 1
     }
 
-    def printStats(print: String => Unit) = {
+    def printStats(print: String => Unit) =
       if (instances == 0)
         print(title + ": no stats gathered")
       else {
@@ -30,7 +30,6 @@ object DiagramStats {
         print("    maximum time: " + maxTime + " ms")
         print("")
       }
-    }
   }
 
   private[this] val filterTrack = new TimeTracker("diagrams model filtering")
@@ -41,7 +40,7 @@ object DiagramStats {
   private[this] var brokenImages = 0
   private[this] var fixedImages = 0
 
-  def printStats(settings: Settings) = {
+  def printStats(settings: Settings) =
     if (settings.docDiagramsDebug) {
       settings.printMsg("\nDiagram generation running time breakdown:\n")
       filterTrack.printStats(settings.printMsg)
@@ -53,7 +52,6 @@ object DiagramStats {
       println("  Fixed images: " + fixedImages)
       println("")
     }
-  }
 
   def addFilterTime(ms: Long) = filterTrack.addTime(ms)
   def addModelTime(ms: Long) = modelTrack.addTime(ms)

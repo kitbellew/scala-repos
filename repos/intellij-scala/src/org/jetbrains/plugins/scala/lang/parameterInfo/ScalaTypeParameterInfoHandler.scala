@@ -41,9 +41,8 @@ class ScalaTypeParameterInfoHandler
       ScTypeArgs,
       Any,
       ScTypeElement] {
-  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] = {
+  def getArgListStopSearchClasses: java.util.Set[_ <: Class[_]] =
     java.util.Collections.singleton(classOf[PsiMethod]) //todo: ?
-  }
 
   def getActualParameterDelimiterType: IElementType = ScalaTokenTypes.tCOMMA
 
@@ -62,9 +61,8 @@ class ScalaTypeParameterInfoHandler
   }
 
   def findElementForParameterInfo(
-      context: CreateParameterInfoContext): ScTypeArgs = {
+      context: CreateParameterInfoContext): ScTypeArgs =
     findCall(context)
-  }
 
   def getParameterCloseChars: String = "{},];\n"
 
@@ -74,9 +72,8 @@ class ScalaTypeParameterInfoHandler
     ArrayUtil.EMPTY_OBJECT_ARRAY
 
   def findElementForUpdatingParameterInfo(
-      context: UpdateParameterInfoContext): ScTypeArgs = {
+      context: UpdateParameterInfoContext): ScTypeArgs =
     findCall(context)
-  }
 
   def couldShowInLookup: Boolean = true
 
@@ -139,7 +136,7 @@ class ScalaTypeParameterInfoHandler
     else {
       buffer.append(
         params
-          .map((param: PsiTypeParameter) => {
+          .map { (param: PsiTypeParameter) =>
             val isBold =
               if (params.indexOf(param) == index) true
               else {
@@ -151,14 +148,14 @@ class ScalaTypeParameterInfoHandler
             val refTypes = param.getExtendsList.getReferencedTypes
             if (refTypes.nonEmpty) {
               paramText = paramText + refTypes
-                .map((typez: PsiType) => {
+                .map { (typez: PsiType) =>
                   ScType.presentableText(
                     substitutor.subst(ScType.create(typez, param.getProject)))
-                })
+                }
                 .mkString(" <: ", " with ", "")
             }
             if (isBold) "<b>" + paramText + "</b>" else paramText
-          })
+          }
           .mkString(", "))
     }
   }
@@ -167,12 +164,12 @@ class ScalaTypeParameterInfoHandler
       params: scala.Seq[ScTypeParam],
       buffer: scala.StringBuilder,
       index: Int,
-      substitutor: ScSubstitutor): StringBuilder = {
+      substitutor: ScSubstitutor): StringBuilder =
     if (params.isEmpty)
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
     else {
       buffer.append(params
-        .map((param: ScTypeParam) => {
+        .map { (param: ScTypeParam) =>
           val isBold =
             if (params.indexOf(param) == index) true
             else {
@@ -203,16 +200,14 @@ class ScalaTypeParameterInfoHandler
               paramText + " : " + ScType.presentableText(substitutor.subst(tp))
           }
           if (isBold) "<b>" + paramText + "</b>" else paramText
-        })
+        }
         .mkString(", "))
     }
-  }
 
   def showParameterInfo(
       element: ScTypeArgs,
-      context: CreateParameterInfoContext): Unit = {
+      context: CreateParameterInfoContext): Unit =
     context.showHint(element, element.getTextRange.getStartOffset, this)
-  }
 
   def getParametersForLookup(
       item: LookupElement,

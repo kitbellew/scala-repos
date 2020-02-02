@@ -192,7 +192,7 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     * Called when the iteratee folds to a Cont step. We may want to feed
     * an Input to the Iteratee.
     */
-  private def onContStep(cont: Step.Cont[T, R]): Unit = {
+  private def onContStep(cont: Step.Cont[T, R]): Unit =
     exclusive {
       case NotSubscribedNoStep(result) =>
         state = NotSubscribedWithCont(cont, result)
@@ -208,7 +208,6 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
       case Finished(resultIteratee) =>
         ()
     }
-  }
 
   /**
     * Called when the iteratee folds to a Done or Error step. We may want to
@@ -234,13 +233,12 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     * Folds an Iteratee to get its Step. The Step is used to choose a method
     * to call.
     */
-  private def getNextStepFromIteratee(iter: Iteratee[T, R]): Unit = {
+  private def getNextStepFromIteratee(iter: Iteratee[T, R]): Unit =
     iter.pureFold {
       case c @ Step.Cont(_)     => onContStep(c)
       case d @ Step.Done(_, _)  => onDoneOrErrorStep(d)
       case e @ Step.Error(_, _) => onDoneOrErrorStep(e)
     }(Execution.trampoline)
-  }
 
   /** Flattens a Promise[Iteratee] to an Iteratee. */
   private def promiseToIteratee(result: Promise[Iteratee[T, R]]) =

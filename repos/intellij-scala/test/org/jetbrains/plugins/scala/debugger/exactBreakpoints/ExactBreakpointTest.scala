@@ -48,15 +48,13 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
   }
 
   protected def checkStoppedAtBreakpointAt(breakpoints: Breakpoint*)(
-      sourcePositionText: String) = {
+      sourcePositionText: String) =
     checkStopResumeSeveralTimes(breakpoints: _*)(sourcePositionText)
-  }
 
   protected def checkStopResumeSeveralTimes(breakpoints: Breakpoint*)(
       sourcePositions: String*) = {
-    def message(expected: String, actual: String) = {
+    def message(expected: String, actual: String) =
       s"Wrong source position. Expected: $expected, actual: $actual"
-    }
     clearBreakpoints()
     breakpoints.foreach(addBreakpoint)
     runDebugger() {
@@ -374,12 +372,11 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
        |}
     """.stripMargin.trim
   )
-  def testPartialFunctionArg(): Unit = {
+  def testPartialFunctionArg(): Unit =
     checkStopResumeSeveralTimes(Breakpoint(5, null), Breakpoint(6, null))(
       "case Some(i) =>",
       "false"
     )
-  }
 
   addSourceFile(
     "LikeDefaultArgName.scala",
@@ -394,10 +391,9 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
     |}""".stripMargin
   )
 
-  def testLikeDefaultArgName(): Unit = {
+  def testLikeDefaultArgName(): Unit =
     checkStopResumeSeveralTimes(Breakpoint(3, null))(
       "\"stop here\""
     )
-  }
 
 }

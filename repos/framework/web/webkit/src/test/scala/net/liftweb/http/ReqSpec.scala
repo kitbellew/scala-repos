@@ -75,13 +75,11 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
 
     "Do the right thing with iPhone" in {
       iPhoneUserAgents map { agent =>
-        {
-          val uac = new UserAgentCalculator {
-            def userAgent = Full(agent)
-          }
-          uac.isIPhone must_== true
-          uac.isIPad must_== false
+        val uac = new UserAgentCalculator {
+          def userAgent = Full(agent)
         }
+        uac.isIPhone must_== true
+        uac.isIPad must_== false
       }
 
       success
@@ -89,13 +87,11 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
 
     "Do the right thing with iPad" in {
       iPadUserAgents map { agent =>
-        {
-          val uac = new UserAgentCalculator {
-            def userAgent = Full(agent)
-          }
-          uac.isIPhone must_== false
-          uac.isIPad must_== true
+        val uac = new UserAgentCalculator {
+          def userAgent = Full(agent)
         }
+        uac.isIPhone must_== false
+        uac.isIPad must_== true
       }
 
       success
@@ -124,7 +120,7 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
 
       def bodyBytes: Array[Byte]
 
-      def req(contentType: String) = {
+      def req(contentType: String) =
         new Req(
           Req.NilPath,
           "/",
@@ -137,7 +133,6 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
           () => paramCalcInfo,
           Map.empty
         )
-      }
     }
 
     class mockJsonReq(
@@ -148,9 +143,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       val parsedJson =
         tryo(JsonParser.parse(jsonString)) openOr json.JsonAST.JNothing
 
-      def bodyBytes = {
+      def bodyBytes =
         testJson.getBytes("UTF-8")
-      }
     }
 
     class mockXmlReq(
@@ -160,9 +154,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
       val testXml = xmlString
       val parsedXml = tryo(XML.loadString(xmlString)) openOr "totally failed"
 
-      def bodyBytes = {
+      def bodyBytes =
         testXml.getBytes("UTF-8")
-      }
     }
 
     "when trying to JSON parse the request body" in {

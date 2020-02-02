@@ -59,16 +59,14 @@ class ScReferencePatternImpl private (
 
   override def toString: String = "ReferencePattern: " + name
 
-  override def getType(ctx: TypingContext) = {
+  override def getType(ctx: TypingContext) =
     expectedType match {
       case Some(x) => Success(x, Some(this))
       case _       => Failure("Cannot define expected type", Some(this))
     }
-  }
 
-  override def getReferences: Array[PsiReference] = {
+  override def getReferences: Array[PsiReference] =
     PsiReferenceService.getService.getContributedReferences(this)
-  }
 
   override def getNavigationElement = getContainingFile match {
     case sf: ScalaFile if sf.isCompiled => {
@@ -89,14 +87,13 @@ class ScReferencePatternImpl private (
       processor: PsiScopeProcessor,
       state: ResolveState,
       lastParent: PsiElement,
-      place: PsiElement): Boolean = {
+      place: PsiElement): Boolean =
     ScalaPsiUtil.processImportLastParent(
       processor,
       state,
       place,
       lastParent,
       getType(TypingContext.empty))
-  }
 
   override def delete() {
     getContext match {

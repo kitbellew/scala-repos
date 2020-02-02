@@ -306,9 +306,8 @@ object ScalaMarkerType {
 
   class ScCellRenderer extends PsiElementListCellRenderer[PsiElement] {
     def getElementText(element: PsiElement): String = {
-      def defaultPresentation: String = {
+      def defaultPresentation: String =
         element.getText.substring(0, math.min(element.getText.length, 20))
-      }
 
       element match {
         case method: PsiMethod if method.containingClass != null =>
@@ -342,14 +341,13 @@ object ScalaMarkerType {
 
     def getIconFlags: Int = 0
 
-    override def getIcon(element: PsiElement): Icon = {
+    override def getIcon(element: PsiElement): Icon =
       element match {
         case _: PsiMethod => super.getIcon(element)
         case x: PsiNamedElement if ScalaPsiUtil.nameContext(x) != null =>
           ScalaPsiUtil.nameContext(x).getIcon(getIconFlags)
         case _ => super.getIcon(element)
       }
-    }
   }
 }
 

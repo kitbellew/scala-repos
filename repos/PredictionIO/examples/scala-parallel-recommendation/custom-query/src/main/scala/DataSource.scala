@@ -64,7 +64,7 @@ class DataSource(val dsp: DataSourceParams)
           }).map(Rating(event.entityId, event.targetEntityId.get, _))
         } catch {
           case e: Exception ⇒
-            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+            logger.error(s"Cannot convert $event to Rating. Exception: $e.")
             throw e
         }
       }

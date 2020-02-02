@@ -151,9 +151,8 @@ class UTF8StringPropertyCheckSuite
   val randomInt = Gen.choose(-100, 100)
 
   test("repeat") {
-    def repeat(str: String, times: Int): String = {
+    def repeat(str: String, times: Int): String =
       if (times > 0) str * times else ""
-    }
     // ScalaCheck always generating too large repeat times which might hang the test forever.
     forAll(randomString, randomInt) { (s: String, times: Int) =>
       assert(toUTF8(s).repeat(times) === toUTF8(repeat(s, times)))

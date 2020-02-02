@@ -26,14 +26,13 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
   /** The output character buffer */
   private var chars: CharBuffer = CharBuffer.allocate(0x4000)
 
-  private def reportEncodingError(filename: String) = {
+  private def reportEncodingError(filename: String) =
     reporter.error(
       scala.reflect.internal.util.NoPosition,
       "IO error while decoding " + filename + " with " + decoder
         .charset() + "\n" +
         "Please try specifying another one using the -encoding option"
     )
-  }
 
   /** Reads the specified file. */
   def read(file: JFile): Array[Char] = {
@@ -46,7 +45,7 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
 
   /** Reads the specified file.
     */
-  def read(file: AbstractFile): Array[Char] = {
+  def read(file: AbstractFile): Array[Char] =
     try file match {
       case p: PlainFile        => read(p.file)
       case z: ZipArchive#Entry => read(Channels.newChannel(z.input))
@@ -54,7 +53,6 @@ class SourceReader(decoder: CharsetDecoder, reporter: Reporter) {
     } catch {
       case e: Exception => reportEncodingError("" + file); Array()
     }
-  }
 
   /** Reads the specified byte channel. */
   protected def read(input: ReadableByteChannel): Array[Char] = {

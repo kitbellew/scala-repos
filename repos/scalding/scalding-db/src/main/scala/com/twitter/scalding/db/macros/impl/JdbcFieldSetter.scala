@@ -47,7 +47,7 @@ private[macros] object JdbcFieldSetter extends CaseClassFieldSetter {
     import c.universe._
 
     // jdbc Statement indexes are one-based, hence +1 here
-    def simpleType(accessor: Tree) = q"""${accessor}(${idx + 1}, $fieldValue)"""
+    def simpleType(accessor: Tree) = q"""$accessor(${idx + 1}, $fieldValue)"""
 
     fieldType match {
       case tpe if tpe =:= typeOf[String] => simpleType(q"$container.setString")
@@ -58,7 +58,7 @@ private[macros] object JdbcFieldSetter extends CaseClassFieldSetter {
       case tpe if tpe =:= typeOf[Long]   => simpleType(q"$container.setLong")
       case tpe if tpe =:= typeOf[Float]  => simpleType(q"$container.setFloat")
       case tpe if tpe =:= typeOf[Double] => simpleType(q"$container.setDouble")
-      case _                             => sys.error(s"Unsupported primitive type ${fieldType}")
+      case _                             => sys.error(s"Unsupported primitive type $fieldType")
     }
   }
 }

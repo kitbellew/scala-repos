@@ -54,7 +54,7 @@ class CompoundTypeCheckSignatureProcessor(
     def checkTypeParameters(
         tp1: PsiTypeParameter,
         tp2: TypeParameter,
-        variance: Int = 1): Boolean = {
+        variance: Int = 1): Boolean =
       tp1 match {
         case tp1: ScTypeParam =>
           if (tp1.typeParameters.length != tp2.typeParams.length) return false
@@ -95,7 +95,6 @@ class CompoundTypeCheckSignatureProcessor(
           //todo: check bounds?
           true
       }
-    }
 
     //let's check type parameters
     element match {
@@ -213,7 +212,7 @@ class CompoundTypeCheckTypeAliasProcessor(
     def checkTypeParameters(
         tp1: PsiTypeParameter,
         tp2: TypeParameter,
-        variance: Int = 1): Boolean = {
+        variance: Int = 1): Boolean =
       tp1 match {
         case tp1: ScTypeParam =>
           if (tp1.typeParameters.length != tp2.typeParams.length) return false
@@ -254,7 +253,6 @@ class CompoundTypeCheckTypeAliasProcessor(
           //todo: check bounds?
           true
       }
-    }
 
     //let's check type parameters
     element match {

@@ -29,7 +29,7 @@ trait LazyCombiner[Elem, +To, Buff <: Growable[Elem] with Sizing]
   val lastbuff = chain.last
   def +=(elem: Elem) = { lastbuff += elem; this }
   def result: To = allocateAndCopy
-  def clear() = { chain.clear() }
+  def clear() = chain.clear()
   def combine[N <: Elem, NewTo >: To](
       other: Combiner[N, NewTo]): Combiner[N, NewTo] =
     if (this ne other) {

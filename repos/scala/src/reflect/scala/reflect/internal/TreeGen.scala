@@ -219,7 +219,7 @@ abstract class TreeGen {
   def mkAttributedIdent(sym: Symbol): RefTree =
     Ident(sym.name) setSymbol sym setType sym.tpeHK
 
-  def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree = {
+  def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree =
     // Tests involving the repl fail without the .isEmptyPackage condition.
     if (qual.symbol != null && (qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage))
       mkAttributedIdent(sym)
@@ -250,7 +250,6 @@ abstract class TreeGen {
       if (pkgQualifier.tpe == null) tree
       else tree setType (qual.tpe memberType sym)
     }
-  }
 
   /** Builds a type application node if args.nonEmpty, returns fun otherwise. */
   def mkTypeApply(fun: Tree, targs: List[Tree]): Tree =

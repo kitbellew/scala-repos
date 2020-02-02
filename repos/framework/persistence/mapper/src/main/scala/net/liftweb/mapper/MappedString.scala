@@ -168,20 +168,17 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
       }/>))
     }
 
-  protected def i_obscure_!(in: String): String = {
+  protected def i_obscure_!(in: String): String =
     ""
-  }
 
-  override def toForm: Box[Elem] = {
-
+  override def toForm: Box[Elem] =
     super.toForm match {
       case Full(IsElem(elem)) => Full(elem)
       case _ =>
         Empty
     }
-  }
 
-  override def setFromAny(in: Any): String = {
+  override def setFromAny(in: Any): String =
     in match {
       case JsonAST.JNull                   => this.set(null)
       case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
@@ -195,7 +192,6 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
       case None | Empty | Failure(_, _, _) => this.set(null)
       case o                               => this.set(o.toString)
     }
-  }
 
   override def apply(v: String): T = super.apply(v)
 

@@ -65,25 +65,22 @@ trait StorageItem {
   /**
     * Store this item with given file input.
     */
-  def store(from: File): StorageItem = {
+  def store(from: File): StorageItem =
     IO.using(new FileInputStream(from)) { in =>
       store(out => IO.transfer(in, out))
     }
-  }
 
   /**
     * Store this item with given item input.
     */
-  def store(from: StorageItem): StorageItem = {
+  def store(from: StorageItem): StorageItem =
     IO.using(from.inputStream()) { in => store(out => IO.transfer(in, out)) }
-  }
 
   /**
     * Store this item with given input stream.
     */
-  def store(in: InputStream): StorageItem = {
+  def store(in: InputStream): StorageItem =
     store(out => IO.transfer(in, out))
-  }
 }
 
 /**

@@ -37,17 +37,15 @@ class FramingSpec extends AkkaSpec {
       rechunk(ctx)
     }
 
-    override def onPull(ctx: Context[ByteString]): SyncDirective = {
+    override def onPull(ctx: Context[ByteString]): SyncDirective =
       rechunk(ctx)
-    }
 
     override def onUpstreamFinish(
-        ctx: Context[ByteString]): TerminationDirective = {
+        ctx: Context[ByteString]): TerminationDirective =
       if (rechunkBuffer.isEmpty) ctx.finish()
       else ctx.absorbTermination()
-    }
 
-    private def rechunk(ctx: Context[ByteString]): SyncDirective = {
+    private def rechunk(ctx: Context[ByteString]): SyncDirective =
       if (!ctx.isFinishing && ThreadLocalRandom.current().nextBoolean())
         ctx.pull()
       else {
@@ -60,7 +58,6 @@ class FramingSpec extends AkkaSpec {
           ctx.pushAndFinish(newChunk)
         else ctx.push(newChunk)
       }
-    }
   }
 
   val rechunk =

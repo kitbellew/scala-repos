@@ -8,7 +8,7 @@ case class Utils[C <: Context](c: C) {
   import c.{Tree => _}
   object removeDoubleReify extends c.universe.Transformer {
     def apply(tree: Tree) = transform(tree)
-    override def transform(tree: Tree): Tree = {
+    override def transform(tree: Tree): Tree =
       super.transform {
         tree match {
           case Apply(TypeApply(Select(_this, termname), _), reification :: Nil)
@@ -20,7 +20,6 @@ case class Utils[C <: Context](c: C) {
           case _ => tree
         }
       }
-    }
   }
 }
 object QueryableMacros {

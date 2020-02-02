@@ -46,9 +46,8 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
 
   implicit def enrichString(s: String) = new StringOps(s)
 
-  def check(x: => Boolean): Prop = {
+  def check(x: => Boolean): Prop =
     x must_== (true)
-  }
 
   def fail(msg: String): Nothing = throw new AssertionError(msg)
   class AnyOps[A](actual: => A) {

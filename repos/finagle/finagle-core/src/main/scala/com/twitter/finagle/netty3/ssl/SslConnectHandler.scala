@@ -31,7 +31,7 @@ private[netty3] class SslListenerConnectionHandler(
   // delay propagating connection upstream until we've completed the handshake
   override def channelConnected(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent): Unit = {
+      e: ChannelStateEvent): Unit =
     sslHandler
       .handshake()
       .addListener(new ChannelFutureListener {
@@ -42,7 +42,6 @@ private[netty3] class SslListenerConnectionHandler(
             Channels.close(ctx.getChannel)
           }
       })
-  }
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,
@@ -87,7 +86,7 @@ class SslConnectHandler(
 
   override def connectRequested(
       ctx: ChannelHandlerContext,
-      e: ChannelStateEvent): Unit = {
+      e: ChannelStateEvent): Unit =
     e match {
       case de: DownstreamChannelStateEvent =>
         if (!connectFuture.compareAndSet(null, e.getFuture)) {
@@ -126,7 +125,6 @@ class SslConnectHandler(
       case _ =>
         fail(ctx.getChannel, new InconsistentStateException(_))
     }
-  }
 
   // delay propagating connection upstream until we've completed the handshake
   override def channelConnected(

@@ -35,8 +35,7 @@ class NodeJSTest extends TimeoutComTests {
 
   /** Node.js console.log hack didn't allow to log non-Strings - #561 */
   @Test
-  def nonStringTest: Unit = {
-
+  def nonStringTest: Unit =
     """
     console.log(1);
     console.log(undefined);
@@ -50,7 +49,6 @@ class NodeJSTest extends TimeoutComTests {
        |[object Object]
        |1,2
        |""".stripMargin
-  }
 
   @Test
   def slowJSEnvTest: Unit = {

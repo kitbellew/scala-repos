@@ -61,7 +61,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
     doc.put("info", info)
 
     // use the Mongo instance directly
-    MongoDB.use(DefaultConnectionIdentifier)(db => {
+    MongoDB.use(DefaultConnectionIdentifier) { db =>
       val coll = db.getCollection("testCollection")
 
       // save the doc to the db
@@ -103,7 +103,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       // server-side eval
       val six = db.eval(" function() { return 3+3; } ")
       six must_== 6
-    })
+    }
   }
 
   "Mongo tutorial 2 example" in {
@@ -111,7 +111,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
     checkMongoIsRunning
 
     // use a DBCollection directly
-    MongoDB.useCollection("iDoc")(coll => {
+    MongoDB.useCollection("iDoc") { coll =>
       // insert multiple documents
       for (i <- List.range(1, 101)) {
         coll.insert(new BasicDBObject().append("i", i))
@@ -206,7 +206,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
         coll.find.count must_== 0
         coll.drop
       }
-    })
+    }
     success
   }
 
@@ -215,7 +215,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
     checkMongoIsRunning
 
     // use a Mongo instance directly
-    MongoDB.use(db => {
+    MongoDB.use { db =>
       val coll = db.getCollection("testCollection")
 
       // create a unique index on name
@@ -285,7 +285,7 @@ class MongoDirectSpec extends Specification with MongoTestKit {
         coll.find.count must_== 0
         coll.drop
       }
-    })
+    }
     success
   }
 

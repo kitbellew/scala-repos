@@ -119,10 +119,9 @@ abstract class ClassfileParser {
     throw new IOException(
       s"class file '$file' is broken\n(${e.getClass}/${e.getMessage})")
   }
-  private def mismatchError(c: Symbol) = {
+  private def mismatchError(c: Symbol) =
     throw new IOException(
       s"class file '$file' has location not matching its contents: contains $c")
-  }
 
   private def parseErrorHandler[T]: PartialFunction[Throwable, T] = {
     case e: MissingRequirementError => handleMissing(e)
@@ -445,7 +444,7 @@ abstract class ClassfileParser {
   )
 
   /** Return the class symbol of the given name. */
-  def classNameToSymbol(name: Name): Symbol = {
+  def classNameToSymbol(name: Name): Symbol =
     if (innerClasses contains name)
       innerClasses innerSymbol name
     else
@@ -453,7 +452,6 @@ abstract class ClassfileParser {
       catch {
         case _: FatalError => loadClassSymbol(name)
       }
-  }
 
   def parseClass() {
     val jflags = readClassFlags()
@@ -463,7 +461,7 @@ abstract class ClassfileParser {
 
     /* Parse parents for Java classes. For Scala, return AnyRef, since the real type will be unpickled.
      * Updates the read pointer of 'in'. */
-    def parseParents: List[Type] = {
+    def parseParents: List[Type] =
       if (isScala) {
         u2 // skip superclass
         val ifaces = u2
@@ -483,7 +481,6 @@ abstract class ClassfileParser {
           if (jflags.isAnnotation) ifaces ::= ClassfileAnnotationClass.tpe
           superType :: ifaces
         }
-    }
 
     val isTopLevel = !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
 
@@ -862,12 +859,11 @@ abstract class ClassfileParser {
   } // sigToType
 
   def parseAttributes(sym: Symbol, symtype: Type) {
-    def convertTo(c: Constant, pt: Type): Constant = {
+    def convertTo(c: Constant, pt: Type): Constant =
       if (pt.typeSymbol == BooleanClass && c.tag == IntTag)
         Constant(c.value != 0)
       else
         c convertTo pt
-    }
     def parseAttribute() {
       val attrName = readTypeName()
       val attrLen = u4

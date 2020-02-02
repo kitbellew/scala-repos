@@ -36,14 +36,13 @@ private[client] case class ClientConfig(
     "timer" -> timer
   )
 
-  override def toString = {
+  override def toString =
     "ClientConfig(%s)".format(toMap flatMap {
       case (k, Some(v)) =>
         Some("%s=%s".format(k, v))
       case _ =>
         None
     } mkString (", "))
-  }
 }
 
 /**

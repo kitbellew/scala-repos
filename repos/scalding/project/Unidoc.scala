@@ -59,7 +59,7 @@ object Unidoc {
     }
   }
 
-  def unidocTask: Initialize[Task[File]] = {
+  def unidocTask: Initialize[Task[File]] =
     (
       compilers,
       cacheDirectory,
@@ -69,18 +69,15 @@ object Unidoc {
       scalacOptions in doc,
       streams) map {
       (compilers, cache, sources, classpath, target, options, s) =>
-        {
-          val scaladoc = new Scaladoc(100, compilers.scalac)
-          scaladoc.cached(
-            cache / "unidoc",
-            "main",
-            sources,
-            classpath,
-            target,
-            options,
-            s.log)
-          target
-        }
+        val scaladoc = new Scaladoc(100, compilers.scalac)
+        scaladoc.cached(
+          cache / "unidoc",
+          "main",
+          sources,
+          classpath,
+          target,
+          options,
+          s.log)
+        target
     }
-  }
 }

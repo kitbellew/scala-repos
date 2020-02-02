@@ -164,14 +164,13 @@ final class Board {
 
   def remove(piece: Piece) = for (c <- cells; if c.piece == piece) c.empty
 
-  private def find(p: PieceCell, b: BoardCell): Unit = {
+  private def find(p: PieceCell, b: BoardCell): Unit =
     if (p != null && !p.marked && b != null) {
       cellsPieceWillFill(cellCount) = b
       cellCount = cellCount + 1
       p.mark
       for (i <- Iterator.range(0, Cell.sides)) find(p.next(i), b.next(i))
     }
-  }
 
   private def boardCells() = {
     val a = for (i <- Array.range(0, Board.size)) yield new BoardCell(i)
@@ -440,7 +439,7 @@ final class BoardCell(_number: Int) extends {
   def isEmpty() = piece == null
   def empty() = piece = null
 
-  def contiguousEmptyCells(): Int = {
+  def contiguousEmptyCells(): Int =
     if (!marked && isEmpty) {
       mark
       var count = 1
@@ -453,7 +452,6 @@ final class BoardCell(_number: Int) extends {
     } else {
       0
     }
-  }
 }
 
 // PieceCell.scala

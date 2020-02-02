@@ -43,50 +43,45 @@ abstract class BaseDescription extends Description {
     this
   }
 
-  private def descriptionOf(value: AnyRef): String = {
+  private def descriptionOf(value: AnyRef): String =
     try {
       String.valueOf(value)
     } catch {
       case _: Exception =>
         s"${value.getClass.getName}@${Integer.toHexString(value.hashCode)}"
     }
-  }
 
   override def appendValueList[T](
       start: String,
       separator: String,
       end: String,
-      values: T*): Description = {
+      values: T*): Description =
     appendValueList(start, separator, end, Arrays.asList(values))
-  }
 
   override def appendValueList[T](
       start: String,
       separator: String,
       end: String,
-      values: java.lang.Iterable[T]): Description = {
+      values: java.lang.Iterable[T]): Description =
     appendValueList(start, separator, end, values.iterator())
-  }
 
   private def appendValueList[T](
       start: String,
       separator: String,
       end: String,
-      values: java.util.Iterator[T]): Description = {
+      values: java.util.Iterator[T]): Description =
     appendList(
       start,
       separator,
       end,
       new SelfDescribingValueIterator[T](values))
-  }
 
   override def appendList(
       start: String,
       separator: String,
       end: String,
-      values: java.lang.Iterable[SelfDescribing]): Description = {
+      values: java.lang.Iterable[SelfDescribing]): Description =
     appendList(start, separator, end, values.iterator())
-  }
 
   private def appendList(
       start: String,
@@ -94,29 +89,27 @@ abstract class BaseDescription extends Description {
       end: String,
       i: java.util.Iterator[SelfDescribing]): Description = {
     @tailrec
-    def appendElems(separate: Boolean): Unit = {
+    def appendElems(separate: Boolean): Unit =
       if (i.hasNext) {
         if (separate) append(separator)
         appendDescriptionOf(i.next)
         appendElems(true)
       }
-    }
     append(start)
     appendElems(false)
     append(end)
     this
   }
 
-  protected def append(str: String): Unit = {
+  protected def append(str: String): Unit =
     str.foreach(append)
-  }
 
   protected def append(c: Char): Unit
 
   private def toJavaSyntax(unformatted: String): String =
     s""""${unformatted.map(toJavaSyntax)}"""" // Note the four "
 
-  private def toJavaSyntax(ch: Char): String = {
+  private def toJavaSyntax(ch: Char): String =
     ch match {
       case '"'  => "\\\""
       case '\n' => "\\n"
@@ -124,5 +117,4 @@ abstract class BaseDescription extends Description {
       case '\t' => "\\t"
       case _    => ch.toString
     }
-  }
 }

@@ -674,12 +674,11 @@ object Future {
     */
   def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(
       implicit cbf: CanBuildFrom[M[Future[A]], A, M[A]],
-      executor: ExecutionContext): Future[M[A]] = {
+      executor: ExecutionContext): Future[M[A]] =
     in.foldLeft(successful(cbf(in))) { (fr, fa) =>
         for (r <- fr; a <- fa) yield (r += a)
       }
       .map(_.result())(InternalCallbackExecutor)
-  }
 
   /** Asynchronously and non-blockingly returns a new `Future` to the result of the first future
     *  in the list that is completed. This means no matter if it is completed as a success or as a failure.
@@ -807,10 +806,9 @@ object Future {
   @deprecated("Use Future.foldLeft instead", "2.12")
   def fold[T, R](futures: TraversableOnce[Future[T]])(zero: R)(
       @deprecatedName('foldFun) op: (R, T) => R)(
-      implicit executor: ExecutionContext): Future[R] = {
+      implicit executor: ExecutionContext): Future[R] =
     if (futures.isEmpty) successful(zero)
     else sequence(futures).map(_.foldLeft(zero)(op))
-  }
 
   /** Initiates a non-blocking, asynchronous, fold over the supplied futures
     *  where the fold-zero is the result value of the `Future` that's completed first.
@@ -827,11 +825,10 @@ object Future {
     */
   @deprecated("Use Future.reduceLeft instead", "2.12")
   def reduce[T, R >: T](futures: TraversableOnce[Future[T]])(op: (R, T) => R)(
-      implicit executor: ExecutionContext): Future[R] = {
+      implicit executor: ExecutionContext): Future[R] =
     if (futures.isEmpty)
       failed(new NoSuchElementException("reduce attempted on empty collection"))
     else sequence(futures).map(_ reduceLeft op)
-  }
 
   /** Initiates a non-blocking, asynchronous, left reduction over the supplied futures
     *  where the zero is the result value of the first `Future`.

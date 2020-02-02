@@ -569,12 +569,11 @@ abstract class GenIncOptimizer private[optimizer] (
     }
 
     /** UPDATE PASS ONLY. */
-    def updateHasElidableModuleAccessor(): Unit = {
+    def updateHasElidableModuleAccessor(): Unit =
       hasElidableModuleAccessor =
         isAdHocElidableModuleAccessor(encodedName) ||
           (isModuleClass && lookupMethod("init___").exists(
             isElidableModuleConstructor))
-    }
 
     /** UPDATE PASS ONLY. */
     def updateIsInlineable(linkedClass: LinkedClass): Boolean = {
@@ -686,7 +685,7 @@ abstract class GenIncOptimizer private[optimizer] (
 
     /** BOTH PASSES. */
     @tailrec
-    final def lookupMethod(methodName: String): Option[MethodImpl] = {
+    final def lookupMethod(methodName: String): Option[MethodImpl] =
       methods.get(methodName) match {
         case Some(impl) => Some(impl)
         case none =>
@@ -695,7 +694,6 @@ abstract class GenIncOptimizer private[optimizer] (
             case none    => None
           }
       }
-    }
   }
 
   /** Namespace for static members of a class. */
@@ -982,7 +980,7 @@ abstract class GenIncOptimizer private[optimizer] (
       /** Look up the target of a static call to an instance method. */
       protected def staticCall(
           className: String,
-          methodName: String): Option[MethodID] = {
+          methodName: String): Option[MethodID] =
         classes
           .get(className)
           .fold {
@@ -995,7 +993,6 @@ abstract class GenIncOptimizer private[optimizer] (
             MethodImpl.this.registerStaticCall(clazz.myInterface, methodName)
             clazz.lookupMethod(methodName)
           }
-      }
 
       /** Look up the target of a call to a static method. */
       protected def callStatic(

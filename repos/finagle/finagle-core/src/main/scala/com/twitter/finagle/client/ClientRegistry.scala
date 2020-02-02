@@ -36,16 +36,16 @@ private[twitter] object ClientRegistry extends StackRegistry {
         resolved.map { resolution =>
           // the full resolution can be rather verbose for large clusters,
           // so be stingy with our output
-          log.fine(s"${name} params ${params}")
+          log.fine(s"$name params $params")
           if (log.isLoggable(Level.FINER)) {
-            log.finer(s"${name} resolved to ${resolution}")
+            log.finer(s"$name resolved to $resolution")
           } else {
             resolution match {
               case bound: Addr.Bound =>
                 log.info(
-                  s"${name} resolved to Addr.Bound, current size=${bound.addrs.size}")
+                  s"$name resolved to Addr.Bound, current size=${bound.addrs.size}")
               case _ =>
-                log.info(s"${name} resolved to ${resolution}")
+                log.info(s"$name resolved to $resolution")
             }
           }
 

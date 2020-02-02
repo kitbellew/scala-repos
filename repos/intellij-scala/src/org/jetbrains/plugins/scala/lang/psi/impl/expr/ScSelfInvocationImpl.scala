@@ -109,15 +109,13 @@ class ScSelfInvocationImpl(node: ASTNode)
     workWithBindInternal(option, i)
   }
 
-  def shapeMultiType(i: Int): Seq[TypeResult[ScType]] = {
+  def shapeMultiType(i: Int): Seq[TypeResult[ScType]] =
     bindMultiInternal(shapeResolve = true).map(pe =>
       workWithBindInternal(Some(pe), i))
-  }
 
-  def multiType(i: Int): Seq[TypeResult[ScType]] = {
+  def multiType(i: Int): Seq[TypeResult[ScType]] =
     bindMultiInternal(shapeResolve = false).map(pe =>
       workWithBindInternal(Some(pe), i))
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitSelfInvocation(this)

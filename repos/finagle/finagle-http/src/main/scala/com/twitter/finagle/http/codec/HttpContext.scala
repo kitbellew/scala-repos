@@ -27,7 +27,7 @@ private[http] object HttpContext {
           Time.fromNanoseconds(deadline)))
     } catch {
       case NonFatal(exc) =>
-        log.debug(s"Could not unmarshall Deadline from header value: ${header}")
+        log.debug(s"Could not unmarshall Deadline from header value: $header")
         None
     }
 

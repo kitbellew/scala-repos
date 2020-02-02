@@ -22,10 +22,9 @@ object Test {
       check(chars.subSequence(1, chars.length - 1))
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     while (xs.length > 0) {
       check(xs)
       xs = xs.subSequence(0, xs.length - 1)
     }
-  }
 }

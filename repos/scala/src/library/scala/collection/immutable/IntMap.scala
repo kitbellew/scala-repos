@@ -89,11 +89,10 @@ object IntMap {
       left: IntMap[T],
       right: IntMap[T])
       extends IntMap[T] {
-    def bin[S](left: IntMap[S], right: IntMap[S]): IntMap[S] = {
+    def bin[S](left: IntMap[S], right: IntMap[S]): IntMap[S] =
       if ((this.left eq left) && (this.right eq right))
         this.asInstanceOf[IntMap.Bin[S]]
       else IntMap.Bin[S](prefix, mask, left, right)
-    }
   }
 
 }

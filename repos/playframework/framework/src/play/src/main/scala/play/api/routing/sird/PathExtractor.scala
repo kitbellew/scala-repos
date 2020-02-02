@@ -33,7 +33,7 @@ class PathExtractor(regex: Regex, partDescriptors: Seq[PathPart.Value]) {
   def unapplySeq(uri: URI): Option[List[String]] =
     Option(uri.getRawPath).flatMap(extract)
 
-  private def extract(path: String): Option[List[String]] = {
+  private def extract(path: String): Option[List[String]] =
     regex.unapplySeq(path).map { parts =>
       parts.zip(partDescriptors).map {
         case (part, PathPart.Decoded) =>
@@ -41,7 +41,6 @@ class PathExtractor(regex: Regex, partDescriptors: Seq[PathPart.Value]) {
         case (part, PathPart.Raw) => part
       }
     }
-  }
 }
 
 object PathExtractor {
@@ -57,7 +56,7 @@ object PathExtractor {
   /**
     * Lookup the PathExtractor from the cache, or create and store a new one if not found.
     */
-  def cached(parts: Seq[String]): PathExtractor = {
+  def cached(parts: Seq[String]): PathExtractor =
     cache.getOrElseUpdate(
       parts, {
 
@@ -85,7 +84,6 @@ object PathExtractor {
           descs)
       }
     )
-  }
 }
 
 /**

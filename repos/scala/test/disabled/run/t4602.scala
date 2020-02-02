@@ -15,9 +15,8 @@ object Test extends App {
   // the "scala" shell command meaning whatever version of scala (and whatever version of libraries)
   // happens to be in the path gets used
   val t = new Thread(new Runnable {
-    def run() = {
+    def run() =
       CompileServer.execute(() => startupLatch.countDown(), Array[String]())
-    }
   })
   t setDaemon true
   t.start()
@@ -30,9 +29,9 @@ object Test extends App {
   val outdir = scala.reflect.io.Directory(sys.props("partest.output"))
 
   val dirNameAndPath = (1 to 2).toList map { number =>
-    val name = s"Hello${number}"
+    val name = s"Hello$number"
     val dir = outdir / number.toString
-    (dir, name, dir / s"${name}.scala")
+    (dir, name, dir / s"$name.scala")
   }
 
   dirNameAndPath foreach {
@@ -40,7 +39,7 @@ object Test extends App {
       dir.createDirectory()
       val file = path.jfile
       val out = new FileWriter(file)
-      try out.write(s"object ${name}\n")
+      try out.write(s"object $name\n")
       finally out.close
   }
 
@@ -48,7 +47,7 @@ object Test extends App {
     dirNameAndPath foreach {
       case (path, name, _) =>
         CompileClient.process(
-          Array("-verbose", "-current-dir", path.toString, s"${name}.scala"))
+          Array("-verbose", "-current-dir", path.toString, s"$name.scala"))
     }
 
     CompileClient.process(Array("-shutdown"))
@@ -57,12 +56,12 @@ object Test extends App {
   // now make sure we got success and the correct normalized paths
   val msg = baos.toString()
 
-  assert(success, s"got a failure. Full results were: \n${msg}")
+  assert(success, s"got a failure. Full results were: \n$msg")
   dirNameAndPath foreach {
     case (_, _, path) =>
-      val expected = s"Input files after normalizing paths: ${path}"
+      val expected = s"Input files after normalizing paths: $path"
       assert(
         msg contains expected,
-        s"could not find '${expected}' in output. Full results were: \n${msg}")
+        s"could not find '$expected' in output. Full results were: \n$msg")
   }
 }

@@ -62,10 +62,9 @@ class JDBCChannels(client: String, config: StorageClientConfig, prefix: String)
     sql"DELETE FROM $tableName WHERE id = $id".update().apply()
   }
 
-  def resultToChannel(rs: WrappedResultSet): Channel = {
+  def resultToChannel(rs: WrappedResultSet): Channel =
     Channel(
       id = rs.int("id"),
       name = rs.string("name"),
       appid = rs.int("appid"))
-  }
 }

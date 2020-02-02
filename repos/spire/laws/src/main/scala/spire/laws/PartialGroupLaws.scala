@@ -25,11 +25,11 @@ trait PartialGroupLaws[A] extends GroupLaws[A] {
     "associative: a |+|?? b && b |+|?? c imply (a |+| b) |+|?? c" → forAll(
       (a: A, b: A, c: A) =>
         !((a |+|?? b) && (b |+|?? c)) || ((a |+|? b).get |+|?? c)),
-    "associative: (a |+|? b) |+|? c === a |+|? (b |+|? c)" → forAll(
-      (a: A, b: A, c: A) => {
+    "associative: (a |+|? b) |+|? c === a |+|? (b |+|? c)" → forAll {
+      (a: A, b: A, c: A) =>
         (!(a |+|?? b) || !(b |+|?? c)) ||
-          ((a |+|? b).get |+|? c).get === (a |+|? (b |+|? c).get).get
-      })
+        ((a |+|? b).get |+|? c).get === (a |+|? (b |+|? c).get).get
+    }
   )
 
   def groupoid(implicit A: Groupoid[A]) = new GroupProperties(

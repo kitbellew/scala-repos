@@ -72,7 +72,7 @@ trait NIHDBIngestSupport
   /**
     * Reads a JArray from a JSON file or a set of JSON files zipped up together.
     */
-  private def readRows(data: File): Seq[JValue] = {
+  private def readRows(data: File): Seq[JValue] =
     // TODO Resource leak; need to close zippedData.
     openZipFile(data).map { zippedData =>
       new Iterator[ZipEntry] {
@@ -100,7 +100,6 @@ trait NIHDBIngestSupport
     } getOrElse {
       JParser.parseManyFromFile(data).valueOr(throw _)
     }
-  }
 
   /**
     * Reads in the JSON file (or several zipped JSON files) into the specified

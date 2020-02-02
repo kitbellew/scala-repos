@@ -3,9 +3,8 @@ import scala.reflect.{ClassTag, classTag}
 // ticket #421
 object Test extends App {
 
-  def transpose[A: ClassTag](xss: Array[Array[A]]) = {
+  def transpose[A: ClassTag](xss: Array[Array[A]]) =
     for (i <- Array.range(0, xss(0).length)) yield for (xs <- xss) yield xs(i)
-  }
 
   def scalprod(xs: Array[Double], ys: Array[Double]) = {
     var acc = 0.0

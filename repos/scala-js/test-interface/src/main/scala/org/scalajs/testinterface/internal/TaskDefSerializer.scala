@@ -8,14 +8,13 @@ import sbt.testing._
 
 object TaskDefSerializer {
 
-  def serialize(td: TaskDef): js.Dynamic = {
+  def serialize(td: TaskDef): js.Dynamic =
     lit(
       fullyQualifiedName = td.fullyQualifiedName,
       fingerprint = FingerprintSerializer.serialize(td.fingerprint),
       explicitlySpecified = td.explicitlySpecified,
       selectors = td.selectors.map(SelectorSerializer.serialize _).toJSArray
     )
-  }
 
   def deserialize(obj: js.Dynamic): TaskDef = {
     val selectors = obj.selectors

@@ -66,9 +66,7 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
   def samplesVector[U >: T](size: Int)(
       implicit m: ClassTag[U]): DenseVector[U] = {
     val result = new DenseVector[U](new Array[U](size))
-    cfor(0)(i => i < size, i => i + 1)(i => {
-      result(i) = draw()
-    })
+    cfor(0)(i => i < size, i => i + 1) { i => result(i) = draw() }
     result
   }
 
@@ -173,9 +171,9 @@ private final case class MultiplePredicatesRand[@specialized(Int, Double) T](
     extends PredicateRandDraws[T] {
   override def condition(p: T => Boolean): Rand[T] = {
     val newPredicates = new Array[T => Boolean](predicates.size + 1)
-    cfor(0)(i => i < predicates.size, i => i + 1)(i => {
+    cfor(0)(i => i < predicates.size, i => i + 1) { i =>
       newPredicates(i) = predicates(i)
-    })
+    }
     newPredicates(predicates.size) = p
     MultiplePredicatesRand(rand, newPredicates)
   }

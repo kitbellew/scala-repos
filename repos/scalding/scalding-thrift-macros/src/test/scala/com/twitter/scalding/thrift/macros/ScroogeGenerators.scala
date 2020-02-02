@@ -6,7 +6,7 @@ import org.scalacheck.Arbitrary.{arbitrary => arb}
 import java.nio.ByteBuffer
 
 private object Perturbers {
-  def perturb(t0: TestStruct, t1: TestStruct, i: Int): TestStruct = {
+  def perturb(t0: TestStruct, t1: TestStruct, i: Int): TestStruct =
     i match {
       case 1 => t0.copy(aString = t1.aString)
       case 2 => t0.copy(aI32 = t1.aI32)
@@ -14,8 +14,7 @@ private object Perturbers {
       case 4 => t0
       case x => sys.error("Can't perturb TestStruct field: " + x)
     }
-  }
-  def perturb(t0: TestTypes, t1: TestTypes, i: Int): TestTypes = {
+  def perturb(t0: TestTypes, t1: TestTypes, i: Int): TestTypes =
     i match {
       case 1  => t0.copy(aBool = t1.aBool)
       case 2  => t0.copy(aByte = t1.aByte)
@@ -29,8 +28,7 @@ private object Perturbers {
       case 10 => t0
       case x  => sys.error("Can't perturb TestTypes field: " + x)
     }
-  }
-  def perturb(t0: TestLists, t1: TestLists, i: Int): TestLists = {
+  def perturb(t0: TestLists, t1: TestLists, i: Int): TestLists =
     i match {
       case 1  => t0.copy(aBoolList = t1.aBoolList)
       case 2  => t0.copy(aByteList = t1.aByteList)
@@ -46,8 +44,7 @@ private object Perturbers {
       case 12 => t0
       case x  => sys.error("Can't perturb TestLists field: " + x)
     }
-  }
-  def perturb(t0: TestSets, t1: TestSets, i: Int): TestSets = {
+  def perturb(t0: TestSets, t1: TestSets, i: Int): TestSets =
     i match {
       case 1  => t0.copy(aBoolSet = t1.aBoolSet)
       case 2  => t0.copy(aByteSet = t1.aByteSet)
@@ -63,8 +60,7 @@ private object Perturbers {
       case 12 => t0
       case x  => sys.error("Can't perturb TestSets field: " + x)
     }
-  }
-  def perturb(t0: TestMaps, t1: TestMaps, i: Int): TestMaps = {
+  def perturb(t0: TestMaps, t1: TestMaps, i: Int): TestMaps =
     i match {
       case 1  => t0.copy(aBoolMap = t1.aBoolMap)
       case 2  => t0.copy(aByteMap = t1.aByteMap)
@@ -80,7 +76,6 @@ private object Perturbers {
       case 12 => t0
       case x  => sys.error("Can't perturb TestMaps field: " + x)
     }
-  }
 }
 
 object ScroogeGenerators {

@@ -18,9 +18,8 @@ sealed abstract class BackendReporting {
 final class BackendReportingImpl(val global: Global) extends BackendReporting {
   import global._
 
-  def inlinerWarning(pos: Position, message: String): Unit = {
+  def inlinerWarning(pos: Position, message: String): Unit =
     currentRun.reporting.inlinerWarning(pos, message)
-  }
 }
 
 /**
@@ -34,15 +33,13 @@ object BackendReporting {
   def methodSignature(
       classInternalName: InternalName,
       name: String,
-      desc: String) = {
+      desc: String) =
     classInternalName + "::" + name + desc
-  }
 
   def methodSignature(
       classInternalName: InternalName,
-      method: MethodNode): String = {
+      method: MethodNode): String =
     methodSignature(classInternalName, method.name, method.desc)
-  }
 
   def assertionError(message: String): Nothing =
     throw new AssertionError(message)

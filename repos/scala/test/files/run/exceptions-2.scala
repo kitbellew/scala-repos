@@ -137,7 +137,7 @@ object Test {
     Console.println(x);
   }
 
-  def tryFinallyTry: Unit = {
+  def tryFinallyTry: Unit =
     try {
       ()
     } finally {
@@ -148,7 +148,6 @@ object Test {
           Console.println("Silently ignore exception in finally");
       }
     }
-  }
 
   def valInFinally: Unit =
     try {} finally {
@@ -227,7 +226,7 @@ object Test {
     }
 
   /** bug #1020, no crash at compile time */
-  def tryCatchInFinally: Unit = {
+  def tryCatchInFinally: Unit =
     try {
       Console.println("Try")
     } catch {
@@ -243,9 +242,8 @@ object Test {
         } catch { case e: java.io.IOException => ; }
       }
     }
-  }
 
-  def tryThrowFinally: Unit = {
+  def tryThrowFinally: Unit =
     try {
       print("A")
       throw new Exception
@@ -256,7 +254,6 @@ object Test {
     } finally {
       println("C")
     }
-  }
 
   def execute(f: => Unit) =
     try {
@@ -294,9 +291,8 @@ object Test {
   }
 
   /* Tests that class Issue passes verification. */
-  def whileInFinally = {
+  def whileInFinally =
     new Issue
-  }
 
   def main(args: Array[String]): Unit = {
     Console.println("nested1: ");

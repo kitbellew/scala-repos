@@ -132,7 +132,7 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespace: Option[String],
       additionalImports: Seq[String],
       routes: List[Route],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -152,14 +152,13 @@ object StaticRoutesGenerator extends RoutesGenerator {
             )
             .body
     }
-  }
 
   private def generateJavaScriptReverseRouters(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String],
       additionalImports: Seq[String],
       routes: List[Route],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -180,13 +179,12 @@ object StaticRoutesGenerator extends RoutesGenerator {
             )
             .body
     }
-  }
 
   private def generateJavaWrappers(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String],
       rules: List[Rule],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -200,7 +198,6 @@ object StaticRoutesGenerator extends RoutesGenerator {
             .javaWrappers(sourceInfo, namespace, packageName, controllers)
             .body
     }
-  }
 }
 
 /**
@@ -355,7 +352,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespace: Option[String],
       additionalImports: Seq[String],
       routes: List[Route],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -375,14 +372,13 @@ object InjectedRoutesGenerator extends RoutesGenerator {
             )
             .body
     }
-  }
 
   private def generateJavaScriptReverseRouters(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String],
       additionalImports: Seq[String],
       routes: List[Route],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     routes.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -403,13 +399,12 @@ object InjectedRoutesGenerator extends RoutesGenerator {
             )
             .body
     }
-  }
 
   private def generateJavaWrappers(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String],
       rules: List[Rule],
-      namespaceReverseRouter: Boolean) = {
+      namespaceReverseRouter: Boolean) =
     rules.collect { case r: Route => r }.groupBy(_.call.packageName).map {
       case (pn, routes) =>
         val packageName = namespace
@@ -423,5 +418,4 @@ object InjectedRoutesGenerator extends RoutesGenerator {
             .javaWrappers(sourceInfo, namespace, packageName, controllers)
             .body
     }
-  }
 }

@@ -130,7 +130,7 @@ object JsonTests extends TestSuite {
       )
     }
     'fail {
-      def check(s: String, expectedError: String) = {
+      def check(s: String, expectedError: String) =
         jsonExpr.parse(s) match {
           case s: Parsed.Success[_] =>
             throw new Exception("Parsing should have failed:")
@@ -139,7 +139,6 @@ object JsonTests extends TestSuite {
             val expected = expectedError.trim
             assert(error == expected)
         }
-      }
       * - check(
         """
         }

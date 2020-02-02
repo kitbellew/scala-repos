@@ -219,7 +219,7 @@ abstract class Enumeration(initial: Int) extends Serializable {
     override def toString() =
       if (name != null) name
       // Scala.js specific
-      else s"<Unknown name for enum field #$i of class ${getClass}>"
+      else s"<Unknown name for enum field #$i of class $getClass>"
 
     protected def readResolve(): AnyRef = {
       val enum = thisenum.readResolve().asInstanceOf[Enumeration]

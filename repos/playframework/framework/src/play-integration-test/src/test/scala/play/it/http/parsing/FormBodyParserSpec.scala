@@ -20,14 +20,13 @@ class FormBodyParserSpec extends PlaySpecification {
 
     def parse[A, B](body: B, bodyParser: BodyParser[A])(
         implicit writeable: Writeable[B],
-        mat: Materializer): Either[Result, A] = {
+        mat: Materializer): Either[Result, A] =
       await(
         bodyParser(
           FakeRequest().withHeaders(
             writeable.contentType.map(CONTENT_TYPE -> _).toSeq: _*))
           .run(Source.single(writeable.transform(body)))
       )
-    }
 
     case class User(name: String, age: Int)
 

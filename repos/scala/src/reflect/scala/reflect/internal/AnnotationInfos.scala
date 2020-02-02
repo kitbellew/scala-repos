@@ -243,7 +243,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       case (x, y) => x + " = " + y
     } mkString ("(", ", ", ")"))
     else ""
-    s"${atp}${s_args}${s_assocs}"
+    s"$atp$s_args$s_assocs"
   }
 
   /** Symbol annotations parsed in `Namer` (typeCompleter of
@@ -482,7 +482,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     * as well as “new-stye” `@throws[Exception]("cause")` annotations.
     */
   object ThrownException {
-    def unapply(ann: AnnotationInfo): Option[Type] = {
+    def unapply(ann: AnnotationInfo): Option[Type] =
       ann match {
         case AnnotationInfo(tpe, _, _) if tpe.typeSymbol != ThrowsClass =>
           None
@@ -495,6 +495,5 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
         case AnnotationInfo(TypeRef(_, _, Nil), _, _) =>
           Some(ThrowableTpe)
       }
-    }
   }
 }

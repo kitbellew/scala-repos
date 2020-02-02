@@ -70,9 +70,8 @@ class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
     * @param dataset a JavaRDD of term frequency vectors
     */
   @Since("1.1.0")
-  def fit(dataset: JavaRDD[Vector]): IDFModel = {
+  def fit(dataset: JavaRDD[Vector]): IDFModel =
     fit(dataset.rdd)
-  }
 }
 
 private object IDF {
@@ -202,9 +201,8 @@ class IDFModel private[spark] (@Since("1.1.0") val idf: Vector)
     * @return a JavaRDD of TF-IDF vectors
     */
   @Since("1.1.0")
-  def transform(dataset: JavaRDD[Vector]): JavaRDD[Vector] = {
+  def transform(dataset: JavaRDD[Vector]): JavaRDD[Vector] =
     transform(dataset.rdd).toJavaRDD()
-  }
 }
 
 private object IDFModel {

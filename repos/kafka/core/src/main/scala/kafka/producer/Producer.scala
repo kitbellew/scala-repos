@@ -144,7 +144,7 @@ class Producer[K, V](
     * Close API to close the producer pool connections to all Kafka brokers. Also closes
     * the zookeeper client connection if one exists
     */
-  def close() = {
+  def close() =
     lock synchronized {
       val canShutdown = hasShutdown.compareAndSet(false, true)
       if (canShutdown) {
@@ -159,5 +159,4 @@ class Producer[K, V](
             .nanoTime() - startTime) / 1000000 + " ms")
       }
     }
-  }
 }

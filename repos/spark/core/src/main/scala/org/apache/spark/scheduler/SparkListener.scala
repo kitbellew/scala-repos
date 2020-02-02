@@ -368,21 +368,19 @@ private[spark] object StatsReportListener extends Logging {
   def extractDoubleDistribution(
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Double])
-      : Option[Distribution] = {
+      : Option[Distribution] =
     Distribution(taskInfoMetrics.flatMap {
       case (info, metric) => getMetric(info, metric)
     })
-  }
 
   // Is there some way to setup the types that I can get rid of this completely?
   def extractLongDistribution(
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Long])
-      : Option[Distribution] = {
-    extractDoubleDistribution(taskInfoMetrics, (info, metric) => {
-      getMetric(info, metric).map(_.toDouble)
-    })
-  }
+      : Option[Distribution] =
+    extractDoubleDistribution(
+      taskInfoMetrics,
+      (info, metric) => getMetric(info, metric).map(_.toDouble))
 
   def showDistribution(
       heading: String,

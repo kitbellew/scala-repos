@@ -18,12 +18,10 @@ package io.prediction.data.store.java
 object OptionHelper {
 
   /** Mimics a None from Java-based engine */
-  def none[T]: Option[T] = {
+  def none[T]: Option[T] =
     Option(null.asInstanceOf[T])
-  }
 
   /** Mimics a Some from Java-based engine */
-  def some[T](value: T): Option[T] = {
+  def some[T](value: T): Option[T] =
     Some(value)
-  }
 }

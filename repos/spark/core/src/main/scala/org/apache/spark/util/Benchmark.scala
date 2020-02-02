@@ -42,9 +42,8 @@ private[spark] class Benchmark(
     outputPerIteration: Boolean = false) {
   val benchmarks = mutable.ArrayBuffer.empty[Benchmark.Case]
 
-  def addCase(name: String)(f: Int => Unit): Unit = {
+  def addCase(name: String)(f: Int => Unit): Unit =
     benchmarks += Benchmark.Case(name, f)
-  }
 
   /**
     * Runs the benchmark and outputs the results to stdout. This should be copied and added as
@@ -99,7 +98,7 @@ private[spark] object Benchmark {
     * This should return a user helpful processor information. Getting at this depends on the OS.
     * This should return something like "Intel(R) Core(TM) i7-4870HQ CPU @ 2.50GHz"
     */
-  def getProcessorName(): String = {
+  def getProcessorName(): String =
     if (SystemUtils.IS_OS_MAC_OSX) {
       Utils.executeAndGetOutput(
         Seq("/usr/sbin/sysctl", "-n", "machdep.cpu.brand_string"))
@@ -112,7 +111,6 @@ private[spark] object Benchmark {
     } else {
       System.getenv("PROCESSOR_IDENTIFIER")
     }
-  }
 
   /**
     * Runs a single function `f` for iters, returning the average time the function took and

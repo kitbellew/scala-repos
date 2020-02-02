@@ -12,7 +12,6 @@ object Test {
       (new java.lang.Short(100.toShort).asInstanceOf[Int])
     } catch { case _: Throwable => "cce3" }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     List(x1, x2, x3) foreach println
-  }
 }

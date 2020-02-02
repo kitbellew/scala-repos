@@ -62,9 +62,8 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
     * Save the instance and return the instance
     * @param safe - if true will use WriteConcern ACKNOWLEDGED else UNACKNOWLEDGED
     */
-  def save(safe: Boolean = true): MyType = {
+  def save(safe: Boolean = true): MyType =
     save(if (safe) WriteConcern.ACKNOWLEDGED else WriteConcern.UNACKNOWLEDGED)
-  }
 
   /**
     * Try to save the instance and return the instance in a Box.
@@ -99,11 +98,10 @@ trait MongoRecord[MyType <: MongoRecord[MyType]] extends BsonRecord[MyType] {
   /**
     * Delete the instance from backing store
     */
-  def delete_! : Boolean = {
+  def delete_! : Boolean =
     runSafe {
       meta.delete_!(this)
     }
-  }
 
   /**
     * Try to delete the instance from backing store

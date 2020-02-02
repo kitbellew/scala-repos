@@ -44,11 +44,10 @@ sealed abstract class NullnessValue(final val isSize2: Boolean) extends Value {
    **/
   def getSize: Int = if (isSize2) 2 else 1
 
-  def merge(other: NullnessValue) = {
+  def merge(other: NullnessValue) =
     if (this eq other) this
     else if (this eq UnknownValue2) this // the only possible value of size two
     else UnknownValue1
-  }
 
   final override def equals(other: Any) = this eq other.asInstanceOf[Object]
 }
@@ -75,7 +74,7 @@ object NullnessValue {
 
 final class NullnessInterpreter(bTypes: BTypes)
     extends Interpreter[NullnessValue](Opcodes.ASM5) {
-  def newValue(tp: Type): NullnessValue = {
+  def newValue(tp: Type): NullnessValue =
     // ASM loves giving semantics to null. The behavior here is the same as in SourceInterpreter,
     // which is provided by the framework.
     //
@@ -87,16 +86,14 @@ final class NullnessInterpreter(bTypes: BTypes)
     //     `newValue(null)` for each local variable. We have to return a value of size 1.
     if (tp == Type.VOID_TYPE) null // (1)
     else NullnessValue.unknown(isSize2 = tp != null /*(2)*/ && tp.getSize == 2)
-  }
 
   override def newParameterValue(
       isInstanceMethod: Boolean,
       local: Int,
-      tp: Type): NullnessValue = {
+      tp: Type): NullnessValue =
     // For instance methods, the `this` parameter is known to be not null.
     if (isInstanceMethod && local == 0) NotNullValue
     else super.newParameterValue(isInstanceMethod, local, tp)
-  }
 
   def newOperation(insn: AbstractInsnNode): NullnessValue =
     (insn.getOpcode: @switch) match {
@@ -129,9 +126,8 @@ final class NullnessInterpreter(bTypes: BTypes)
   def binaryOperation(
       insn: AbstractInsnNode,
       value1: NullnessValue,
-      value2: NullnessValue): NullnessValue = {
+      value2: NullnessValue): NullnessValue =
     NullnessValue.unknown(insn)
-  }
 
   def ternaryOperation(
       insn: AbstractInsnNode,

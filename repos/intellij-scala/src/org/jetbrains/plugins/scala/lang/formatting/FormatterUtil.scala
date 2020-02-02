@@ -13,7 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScIfStmt
   * Date: 05.10.2008
   */
 object FormatterUtil {
-  def calcIndent(node: ASTNode): Int = {
+  def calcIndent(node: ASTNode): Int =
     node.getTreeParent.getPsi match {
       case ifStmt: ScIfStmt =>
         ifStmt.getParent match {
@@ -29,7 +29,6 @@ object FormatterUtil {
       case _: ScalaFile => 0
       case _            => calcIndent(node.getTreeParent)
     }
-  }
   def calcAbsolutePosition(node: ASTNode): Int = {
     val text = node.getPsi.getContainingFile.getText
     var offset = node.getTextRange.getStartOffset - 1
@@ -38,7 +37,7 @@ object FormatterUtil {
     result
   }
 
-  def getNormalIndentString(project: Project) = {
+  def getNormalIndentString(project: Project) =
     String.format(
       "%1$" +
         ScalaCodeStyleSettings
@@ -46,5 +45,4 @@ object FormatterUtil {
           .getContainer
           .getIndentSize(ScalaFileType.SCALA_FILE_TYPE) + "s",
       " ")
-  }
 }

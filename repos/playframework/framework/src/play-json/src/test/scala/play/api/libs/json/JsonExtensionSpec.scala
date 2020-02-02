@@ -490,12 +490,11 @@ object JsonExtensionSpec extends Specification {
 
       //val c2Reads1 = Json.reads[C2]
 
-      implicit def c1Reads[A](implicit rds: Reads[Id[A]]) = {
+      implicit def c1Reads[A](implicit rds: Reads[Id[A]]) =
         (
           (__ \ 'id).read(rds) and
             (__ \ 'name).read[String]
         )((id, name) => C1[A](id, name))
-      }
 
       val js = Json.obj("id" -> 123L, "name" -> "toto")
 

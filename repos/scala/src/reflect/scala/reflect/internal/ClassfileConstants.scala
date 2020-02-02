@@ -375,21 +375,18 @@ object ClassfileConstants {
       res
     }
 
-    def classFlags(jflags: Int): Long = {
+    def classFlags(jflags: Int): Long =
       translateFlags(jflags, 0, isClass = true)
-    }
-    def fieldFlags(jflags: Int): Long = {
+    def fieldFlags(jflags: Int): Long =
       translateFlags(
         jflags,
         if ((jflags & JAVA_ACC_FINAL) == 0) MUTABLE else 0,
         isClass = false)
-    }
-    def methodFlags(jflags: Int): Long = {
+    def methodFlags(jflags: Int): Long =
       translateFlags(
         jflags,
         if ((jflags & JAVA_ACC_BRIDGE) != 0) BRIDGE | ARTIFACT else 0,
         isClass = false)
-    }
   }
   object FlagTranslation extends FlagTranslation {}
 

@@ -26,7 +26,7 @@ object ProcessTestUtils {
       extends Thread {
     this.setDaemon(true)
 
-    override def run(): Unit = {
+    override def run(): Unit =
       try {
         BasicIO.processFully(capture)(stream)
       } catch {
@@ -34,6 +34,5 @@ object ProcessTestUtils {
         // Ignores the IOException thrown when the process termination, which closes the input
         // stream abruptly.
       }
-    }
   }
 }

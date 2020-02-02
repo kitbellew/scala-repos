@@ -20,7 +20,7 @@ trait Parsers { self: Quasiquotes =>
   abstract class Parser extends {
     val global: self.global.type = self.global
   } with ScalaParser {
-    def parse(code: String): Tree = {
+    def parse(code: String): Tree =
       try {
         val file = new BatchSourceFile(nme.QUASIQUOTE_FILE, code)
         val parser = new QuasiquoteParser(file)
@@ -29,7 +29,6 @@ trait Parsers { self: Quasiquotes =>
         case mi: MalformedInput =>
           c.abort(correspondingPosition(mi.offset), mi.msg)
       }
-    }
 
     def correspondingPosition(offset: Int): Position = {
       val posMapList = posMap.toList

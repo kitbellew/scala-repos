@@ -107,9 +107,8 @@ package ll {
     def to_s(x: Any): String =
       wfmt.format(x.toString.replaceAll("""\bll\.""", ""))
 
-    def fmt(args: Any*): String = {
+    def fmt(args: Any*): String =
       (args map to_s mkString "  ").replaceAll("""\s+$""", "")
-    }
     def fname(sym: Symbol) = {
       val p = "" + sym.owner.name
       val x =
@@ -138,7 +137,7 @@ package ll {
       first +: lines.map("  " + _) :+ last
     }
 
-    def permute(targs: List[Type]): List[String] = {
+    def permute(targs: List[Type]): List[String] =
       permuteAsSeenFrom(targs)
         .groupBy(_._1)
         .toList
@@ -154,7 +153,6 @@ package ll {
             }
           }
       }
-    }
   }
 
   def pretty(xs: List[_]) =

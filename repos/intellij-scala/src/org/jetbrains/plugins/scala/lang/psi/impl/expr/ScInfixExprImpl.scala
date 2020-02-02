@@ -26,7 +26,7 @@ class ScInfixExprImpl(node: ASTNode)
     with ScInfixExpr {
   override def toString: String = "InfixExpression"
 
-  override def argumentExpressions: Seq[ScExpression] = {
+  override def argumentExpressions: Seq[ScExpression] =
     if (isLeftAssoc) Seq(lOp)
     else
       rOp match {
@@ -39,9 +39,8 @@ class ScInfixExprImpl(node: ASTNode)
         case unit: ScUnitExpr => Seq.empty
         case expr             => Seq(expr)
       }
-  }
 
-  protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
+  protected override def innerType(ctx: TypingContext): TypeResult[ScType] =
     operation.bind() match {
       //this is assignment statement: x += 1 equals to x = x + 1
       case Some(r) if r.element.name + "=" == operation.refName =>
@@ -54,7 +53,6 @@ class ScInfixExprImpl(node: ASTNode)
         newExpr.getType(TypingContext.empty)
       case _ => super.innerType(ctx)
     }
-  }
 
   override def accept(visitor: ScalaElementVisitor) {
     visitor.visitInfixExpression(this)

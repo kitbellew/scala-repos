@@ -120,10 +120,9 @@ trait PrepJSExports { this: PrepJSInterop =>
     val ignoreInvalid = exports.forall(_.ignoreInvalid)
 
     if (exports.nonEmpty) {
-      def err(msg: String) = {
+      def err(msg: String) =
         if (!ignoreInvalid)
           reporter.error(exports.head.pos, msg)
-      }
 
       def hasAnyNonPrivateCtor: Boolean =
         sym.info.member(nme.CONSTRUCTOR).filter(!isPrivateMaybeWithin(_)).exists
@@ -162,10 +161,9 @@ trait PrepJSExports { this: PrepJSInterop =>
     }
   }
 
-  private def createFactoryInOuterClassHint = {
+  private def createFactoryInOuterClassHint =
     "Create an exported factory method in the outer class to work " +
       "around this limitation."
-  }
 
   /** retrieves the names a sym should be exported to from its annotations
     *
@@ -249,11 +247,10 @@ trait PrepJSExports { this: PrepJSInterop =>
       }
 
       // Make sure we do not override the default export of toString
-      def isIllegalToString = {
+      def isIllegalToString =
         isMember && !isNamedExport &&
-        name == "toString" && sym.name != nme.toString_ &&
-        sym.tpe.params.isEmpty && !jsInterop.isJSGetter(sym)
-      }
+          name == "toString" && sym.name != nme.toString_ &&
+          sym.tpe.params.isEmpty && !jsInterop.isJSGetter(sym)
 
       if (isIllegalToString) {
         reporter.error(
@@ -262,14 +259,13 @@ trait PrepJSExports { this: PrepJSInterop =>
             "method named other than 'toString' under the name 'toString'")
       }
 
-      def isIllegalApplyExport = {
+      def isIllegalApplyExport =
         isMember && !hasExplicitName &&
-        sym.name == nme.apply &&
-        !(isExportAll && directAnnots.exists(annot =>
-          annot.symbol == JSExportAnnotation &&
-            annot.args.nonEmpty &&
-            annot.stringArg(0) == Some("apply")))
-      }
+          sym.name == nme.apply &&
+          !(isExportAll && directAnnots.exists(annot =>
+            annot.symbol == JSExportAnnotation &&
+              annot.args.nonEmpty &&
+              annot.stringArg(0) == Some("apply")))
 
       // Don't allow apply without explicit name
       if (isIllegalApplyExport) {
@@ -356,11 +352,10 @@ trait PrepJSExports { this: PrepJSInterop =>
   }
 
   /** Just like sym.fullName, but does not encode components */
-  private def decodedFullName(sym: Symbol): String = {
+  private def decodedFullName(sym: Symbol): String =
     if (sym.isRoot || sym.isRootPackage || sym == NoSymbol) sym.name.decoded
     else if (sym.owner.isEffectiveRoot) sym.name.decoded
     else decodedFullName(sym.effectiveOwner.enclClass) + '.' + sym.name.decoded
-  }
 
   /** generate an exporter for a DefDef including default parameter methods */
   private def genExportDefs(defSym: Symbol, jsName: String, pos: Position) = {
@@ -489,12 +484,11 @@ trait PrepJSExports { this: PrepJSInterop =>
       pos: Position) = atPos(pos) {
 
     // Helper to ascribe repeated argument lists when calling
-    def spliceParam(sym: Symbol) = {
+    def spliceParam(sym: Symbol) =
       if (isRepeated(sym))
         Typed(Ident(sym), Ident(tpnme.WILDCARD_STAR))
       else
         Ident(sym)
-    }
 
     // Construct proxied function call
     val sel: Tree = Select(This(clsSym), trgSym)

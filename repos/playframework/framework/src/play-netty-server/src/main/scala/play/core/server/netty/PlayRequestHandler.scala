@@ -192,7 +192,7 @@ private[play] class PlayRequestHandler(val server: NettyServer)
   // Netty overrides
 
   override def channelRead(ctx: ChannelHandlerContext, msg: Object): Unit = {
-    logger.trace(s"channelRead: ctx = ${ctx}, msg = ${msg}")
+    logger.trace(s"channelRead: ctx = $ctx, msg = $msg")
     msg match {
       case req: HttpRequest =>
         requestsInFlight.incrementAndGet()
@@ -223,7 +223,7 @@ private[play] class PlayRequestHandler(val server: NettyServer)
   }
 
   override def channelReadComplete(ctx: ChannelHandlerContext): Unit = {
-    logger.trace(s"channelReadComplete: ctx = ${ctx}")
+    logger.trace(s"channelReadComplete: ctx = $ctx")
 
     // The normal response to read complete is to issue another read,
     // but we only want to do that if there are no requests in flight,
@@ -243,7 +243,7 @@ private[play] class PlayRequestHandler(val server: NettyServer)
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,
-      cause: Throwable): Unit = {
+      cause: Throwable): Unit =
     cause match {
       // IO exceptions happen all the time, it usually just means that the client has closed the connection before fully
       // sending/receiving the response.
@@ -263,14 +263,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         logger.error("Exception caught in Netty", e)
         ctx.channel().close()
     }
-  }
 
-  override def channelActive(ctx: ChannelHandlerContext): Unit = {
+  override def channelActive(ctx: ChannelHandlerContext): Unit =
     // AUTO_READ is off, so need to do the first read explicitly.
     // this method is called when the channel is registered with the event loop,
     // so ctx.read is automatically safe here w/o needing an isRegistered().
     ctx.read()
-  }
 
   //----------------------------------------------------------------
   // Private methods

@@ -13,15 +13,14 @@ trait UTestStaticStringTest extends UTestTestCase {
   protected def checkTest(
       lineNumber: Int,
       position: Int,
-      expectedName: String) = {
+      expectedName: String) =
     assert(
       checkConfigAndSettings(
         createTestFromLocation(lineNumber, position, staticStringTestFileName),
         staticStringTestName,
         "tests" + (if (expectedName.isEmpty) "" else "\\" + expectedName)))
-  }
 
-  protected def addTest(): Unit = {
+  protected def addTest(): Unit =
     addFileToProject(
       staticStringTestFileName,
       """
@@ -55,7 +54,6 @@ trait UTestStaticStringTest extends UTestTestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testSum(): Unit = {
     addTest()

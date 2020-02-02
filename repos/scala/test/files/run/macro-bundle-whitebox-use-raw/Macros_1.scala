@@ -5,14 +5,13 @@ import scala.language.experimental.macros
 
 class ReturnTypeRefinementBundle(val c: Context) {
   import c.universe._
-  def impl = {
+  def impl =
     q"""
       trait Foo {
         def x = 2
       }
       new Foo {}
     """
-  }
 }
 
 object ReturnTypeRefinement {
@@ -46,14 +45,13 @@ class FundepMaterializationBundle(val c: Context) {
       else AppliedTypeTree(core, fields map (f => TypeTree(f.info)))
     }
 
-    def mkFrom() = {
+    def mkFrom() =
       if (fields.length == 0) Literal(Constant(Unit))
       else
         Apply(
           Ident(newTermName("Tuple" + fields.length)),
           fields map (f =>
             Select(Ident(newTermName("f")), newTermName(f.name.toString.trim))))
-    }
 
     val evidenceClass = ClassDef(
       Modifiers(FINAL),
@@ -145,7 +143,7 @@ object ExtractorMacro {
 
 class ExtractorBundle(val c: Context) {
   import c.universe._
-  def unapplyImpl(x: Tree) = {
+  def unapplyImpl(x: Tree) =
     q"""
       new {
         class Match(x: Int) {
@@ -155,5 +153,4 @@ class ExtractorBundle(val c: Context) {
         def unapply(x: Int) = new Match(x)
       }.unapply($x)
     """
-  }
 }

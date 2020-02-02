@@ -75,19 +75,17 @@ class Partition(
   val tags = Map("topic" -> topic, "partition" -> partitionId.toString)
 
   newGauge("UnderReplicated", new Gauge[Int] {
-    def value = {
+    def value =
       if (isUnderReplicated) 1 else 0
-    }
   }, tags)
 
-  def isUnderReplicated(): Boolean = {
+  def isUnderReplicated(): Boolean =
     leaderReplicaIfLocal() match {
       case Some(_) =>
         inSyncReplicas.size < assignedReplicas.size
       case None =>
         false
     }
-  }
 
   def getOrCreateReplica(replicaId: Int = localBrokerId): Replica = {
     val replicaOpt = getReplica(replicaId)
@@ -129,7 +127,7 @@ class Partition(
       Some(replica)
   }
 
-  def leaderReplicaIfLocal(): Option[Replica] = {
+  def leaderReplicaIfLocal(): Option[Replica] =
     leaderReplicaIdOpt match {
       case Some(leaderReplicaId) =>
         if (leaderReplicaId == localBrokerId)
@@ -138,15 +136,12 @@ class Partition(
           None
       case None => None
     }
-  }
 
-  def addReplicaIfNotExists(replica: Replica) = {
+  def addReplicaIfNotExists(replica: Replica) =
     assignedReplicaMap.putIfNotExists(replica.brokerId, replica)
-  }
 
-  def assignedReplicas(): Set[Replica] = {
+  def assignedReplicas(): Set[Replica] =
     assignedReplicaMap.values.toSet
-  }
 
   def removeReplica(replicaId: Int) {
     assignedReplicaMap.remove(replicaId)
@@ -172,9 +167,8 @@ class Partition(
     }
   }
 
-  def getLeaderEpoch(): Int = {
+  def getLeaderEpoch(): Int =
     return this.leaderEpoch
-  }
 
   /**
     * Make the local replica the leader by resetting LogEndOffset for remote replicas (there could be old LogEndOffset
@@ -232,7 +226,7 @@ class Partition(
   def makeFollower(
       controllerId: Int,
       partitionStateInfo: LeaderAndIsrRequest.PartitionState,
-      correlationId: Int): Boolean = {
+      correlationId: Int): Boolean =
     inWriteLock(leaderIsrUpdateLock) {
       val allReplicas = partitionStateInfo.replicas.asScala.map(_.toInt)
       val newLeaderBrokerId: Int = partitionStateInfo.leader
@@ -255,7 +249,6 @@ class Partition(
         true
       }
     }
-  }
 
   /**
     * Update the log end offset of a certain replica of this partition
@@ -335,12 +328,12 @@ class Partition(
    * the (local) leader's offset corresponding to this produce request
    * before we acknowledge the produce request.
    */
-  def checkEnoughReplicasReachOffset(requiredOffset: Long): (Boolean, Short) = {
+  def checkEnoughReplicasReachOffset(requiredOffset: Long): (Boolean, Short) =
     leaderReplicaIfLocal() match {
       case Some(leaderReplica) =>
         // keep the current immutable replica list reference
         val curInSyncReplicas = inSyncReplicas
-        val numAcks = curInSyncReplicas.count(r => {
+        val numAcks = curInSyncReplicas.count { r =>
           if (!r.isLocal)
             if (r.logEndOffset.messageOffset >= requiredOffset) {
               trace(
@@ -351,7 +344,7 @@ class Partition(
               false
           else
             true /* also count the local (leader) replica */
-        })
+        }
 
         trace(
           "%d acks satisfied for %s-%d with acks = -1"
@@ -374,7 +367,6 @@ class Partition(
       case None =>
         (false, Errors.NOT_LEADER_FOR_PARTITION.code)
     }
-  }
 
   /**
     * Check and maybe increment the high watermark of the partition;
@@ -568,9 +560,8 @@ class Partition(
     false
   }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     31 + topic.hashCode() + 17 * partitionId
-  }
 
   override def toString(): String = {
     val partitionString = new StringBuilder

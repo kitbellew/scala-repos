@@ -384,15 +384,13 @@ object GeneralizedLinearRegression
     val reweightFunc
         : (Instance, WeightedLeastSquaresModel) => (Double, Double) = {
       (instance: Instance, model: WeightedLeastSquaresModel) =>
-        {
-          val eta = model.predict(instance.features)
-          val mu = fitted(eta)
-          val offset = eta + (instance.label - mu) * link.deriv(mu)
-          val weight =
-            instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
-              .variance(mu))
-          (offset, weight)
-        }
+        val eta = model.predict(instance.features)
+        val mu = fitted(eta)
+        val offset = eta + (instance.label - mu) * link.deriv(mu)
+        val weight =
+          instance.weight / (math.pow(this.link.deriv(mu), 2.0) * family
+            .variance(mu))
+        (offset, weight)
     }
   }
 
@@ -437,14 +435,13 @@ object GeneralizedLinearRegression
       * Gets the [[Family]] object from its name.
       * @param name family name: "gaussian", "binomial", "poisson" or "gamma".
       */
-    def fromName(name: String): Family = {
+    def fromName(name: String): Family =
       name match {
         case Gaussian.name => Gaussian
         case Binomial.name => Binomial
         case Poisson.name  => Poisson
         case Gamma.name    => Gamma
       }
-    }
   }
 
   /**
@@ -459,9 +456,8 @@ object GeneralizedLinearRegression
 
     override def variance(mu: Double): Double = 1.0
 
-    override def deviance(y: Double, mu: Double, weight: Double): Double = {
+    override def deviance(y: Double, mu: Double, weight: Double): Double =
       weight * (y - mu) * (y - mu)
-    }
 
     override def aic(
         predictions: RDD[(Double, Double, Double)],
@@ -472,7 +468,7 @@ object GeneralizedLinearRegression
       numInstances * (math.log(deviance / numInstances * 2.0 * math.Pi) + 1.0) + 2.0 - wt
     }
 
-    override def project(mu: Double): Double = {
+    override def project(mu: Double): Double =
       if (mu.isNegInfinity) {
         Double.MinValue
       } else if (mu.isPosInfinity) {
@@ -480,7 +476,6 @@ object GeneralizedLinearRegression
       } else {
         mu
       }
-    }
   }
 
   /**
@@ -512,16 +507,15 @@ object GeneralizedLinearRegression
         predictions: RDD[(Double, Double, Double)],
         deviance: Double,
         numInstances: Double,
-        weightSum: Double): Double = {
+        weightSum: Double): Double =
       -2.0 * predictions
         .map {
           case (y: Double, mu: Double, weight: Double) =>
             weight * dist.Binomial(1, mu).logProbabilityOf(math.round(y).toInt)
         }
         .sum()
-    }
 
-    override def project(mu: Double): Double = {
+    override def project(mu: Double): Double =
       if (mu < epsilon) {
         epsilon
       } else if (mu > 1.0 - epsilon) {
@@ -529,7 +523,6 @@ object GeneralizedLinearRegression
       } else {
         mu
       }
-    }
   }
 
   /**
@@ -550,24 +543,22 @@ object GeneralizedLinearRegression
 
     override def variance(mu: Double): Double = mu
 
-    override def deviance(y: Double, mu: Double, weight: Double): Double = {
+    override def deviance(y: Double, mu: Double, weight: Double): Double =
       2.0 * weight * (y * math.log(y / mu) - (y - mu))
-    }
 
     override def aic(
         predictions: RDD[(Double, Double, Double)],
         deviance: Double,
         numInstances: Double,
-        weightSum: Double): Double = {
+        weightSum: Double): Double =
       -2.0 * predictions
         .map {
           case (y: Double, mu: Double, weight: Double) =>
             weight * dist.Poisson(mu).logProbabilityOf(y.toInt)
         }
         .sum()
-    }
 
-    override def project(mu: Double): Double = {
+    override def project(mu: Double): Double =
       if (mu < epsilon) {
         epsilon
       } else if (mu.isInfinity) {
@@ -575,7 +566,6 @@ object GeneralizedLinearRegression
       } else {
         mu
       }
-    }
   }
 
   /**
@@ -596,9 +586,8 @@ object GeneralizedLinearRegression
 
     override def variance(mu: Double): Double = mu * mu
 
-    override def deviance(y: Double, mu: Double, weight: Double): Double = {
+    override def deviance(y: Double, mu: Double, weight: Double): Double =
       -2.0 * weight * (math.log(y / mu) - (y - mu) / mu)
-    }
 
     override def aic(
         predictions: RDD[(Double, Double, Double)],
@@ -614,7 +603,7 @@ object GeneralizedLinearRegression
         .sum() + 2.0
     }
 
-    override def project(mu: Double): Double = {
+    override def project(mu: Double): Double =
       if (mu < epsilon) {
         epsilon
       } else if (mu.isInfinity) {
@@ -622,7 +611,6 @@ object GeneralizedLinearRegression
       } else {
         mu
       }
-    }
   }
 
   /**
@@ -650,7 +638,7 @@ object GeneralizedLinearRegression
       * @param name link name: "identity", "logit", "log",
       *             "inverse", "probit", "cloglog" or "sqrt".
       */
-    def fromName(name: String): Link = {
+    def fromName(name: String): Link =
       name match {
         case Identity.name => Identity
         case Logit.name    => Logit
@@ -660,7 +648,6 @@ object GeneralizedLinearRegression
         case CLogLog.name  => CLogLog
         case Sqrt.name     => Sqrt
       }
-    }
   }
 
   private[ml] object Identity extends Link("identity") {
@@ -704,9 +691,8 @@ object GeneralizedLinearRegression
 
     override def link(mu: Double): Double = dist.Gaussian(0.0, 1.0).icdf(mu)
 
-    override def deriv(mu: Double): Double = {
+    override def deriv(mu: Double): Double =
       1.0 / dist.Gaussian(0.0, 1.0).pdf(dist.Gaussian(0.0, 1.0).icdf(mu))
-    }
 
     override def unlink(eta: Double): Double = dist.Gaussian(0.0, 1.0).cdf(eta)
   }
@@ -785,7 +771,7 @@ class GeneralizedLinearRegressionModel private[ml] (
     * of the current model.
     */
   private[regression] def findSummaryModelAndPredictionCol()
-      : (GeneralizedLinearRegressionModel, String) = {
+      : (GeneralizedLinearRegressionModel, String) =
     $(predictionCol) match {
       case "" =>
         val predictionColName = "prediction_" + java.util.UUID.randomUUID
@@ -795,15 +781,13 @@ class GeneralizedLinearRegressionModel private[ml] (
           predictionColName)
       case p => (this, p)
     }
-  }
 
   @Since("2.0.0")
-  override def copy(extra: ParamMap): GeneralizedLinearRegressionModel = {
+  override def copy(extra: ParamMap): GeneralizedLinearRegressionModel =
     copyValues(
       new GeneralizedLinearRegressionModel(uid, coefficients, intercept),
       extra)
       .setParent(parent)
-  }
 
   @Since("2.0.0")
   override def write: MLWriter =
@@ -978,7 +962,7 @@ class GeneralizedLinearRegressionSummary private[regression] (
     *                      Supported options: deviance, pearson, working and response.
     */
   @Since("2.0.0")
-  def residuals(residualsType: String): DataFrame = {
+  def residuals(residualsType: String): DataFrame =
     residualsType match {
       case "deviance" => devianceResiduals
       case "pearson"  => pearsonResiduals
@@ -988,7 +972,6 @@ class GeneralizedLinearRegressionSummary private[regression] (
         throw new UnsupportedOperationException(
           s"The residuals type $other is not supported by Generalized Linear Regression.")
     }
-  }
 
   /**
     * The deviance for the null model.

@@ -394,8 +394,8 @@ class RefactoringHandlerSpec
       val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z")
       val t = sdf.format(new Date((new File(file.path)).lastModified()))
       val diffContents = diffFile.readString()
-      val expectedContents = s"""|--- ${file.path}	${t}
-                                 |+++ ${file.path}	${t}
+      val expectedContents = s"""|--- ${file.path}	$t
+                                 |+++ ${file.path}	$t
                                  |@@ -1,3 +1,2 @@
                                  |-import java.lang.Integer.{valueOf => vo}
                                  |-import java.lang.Integer.toBinaryString
@@ -449,8 +449,8 @@ class RefactoringHandlerSpec
       val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z")
       val t = sdf.format(new Date((new File(file.path)).lastModified()))
       val diffContents = diffFile.readString()
-      val expectedContents = s"""|--- ${file.path}	${t}
-                                 |+++ ${file.path}	${t}
+      val expectedContents = s"""|--- ${file.path}	$t
+                                 |+++ ${file.path}	$t
                                  |@@ -1,5 +1,5 @@
                                  |-import scala._
                                  |-import java.lang.Integer

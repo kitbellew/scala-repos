@@ -28,7 +28,7 @@ trait Zero[@specialized T] extends Serializable {
 }
 
 object Zero extends ZeroLowPriority {
-  def forClass(clazz: Class[_]): Zero[_] = {
+  def forClass(clazz: Class[_]): Zero[_] =
     if (clazz == Integer.TYPE) IntZero
     else if (clazz == java.lang.Float.TYPE) FloatZero
     else if (clazz == java.lang.Double.TYPE) DoubleZero
@@ -37,7 +37,6 @@ object Zero extends ZeroLowPriority {
     else if (clazz == java.lang.Boolean.TYPE) BooleanZero
     else if (clazz == java.lang.Character.TYPE) CharZero
     else refDefault
-  }
 
   def apply[T](v: T): Zero[T] = new Zero[T] {
     def zero = v
@@ -86,9 +85,8 @@ object Zero extends ZeroLowPriority {
 }
 
 trait ZeroVeryLowPriority { this: Zero.type =>
-  implicit def ObjectZero[T <: AnyRef] = {
+  implicit def ObjectZero[T <: AnyRef] =
     refDefault.asInstanceOf[Zero[T]]
-  }
 
   protected val refDefault = new Zero[AnyRef] {
     override def zero: AnyRef = null

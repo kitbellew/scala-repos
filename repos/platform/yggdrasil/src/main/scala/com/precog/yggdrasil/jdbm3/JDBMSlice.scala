@@ -54,7 +54,7 @@ object JDBMSlice {
     @tailrec
     def consumeRows(
         source: Iterator[java.util.Map.Entry[Array[Byte], Array[Byte]]],
-        row: Int): Int = {
+        row: Int): Int =
       if (source.hasNext) {
         val entry = source.next
         val rowKey = entry.getKey
@@ -70,7 +70,6 @@ object JDBMSlice {
       } else {
         row
       }
-    }
 
     val rows = {
       // FIXME: Looping here is a blatantly poor way to work around ConcurrentModificationExceptions

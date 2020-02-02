@@ -44,7 +44,7 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
     */
   def updateNodeIndex(
       binnedFeatures: Array[Int],
-      bins: Array[Array[Bin]]): Int = {
+      bins: Array[Array[Bin]]): Int =
     if (split.featureType == Continuous) {
       val featureIndex = split.feature
       val binIndex = binnedFeatures(featureIndex)
@@ -62,7 +62,6 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
         Node.rightChildIndex(nodeIndex)
       }
     }
-  }
 }
 
 /**
@@ -192,9 +191,8 @@ private[spark] object NodeIdCache {
       data: RDD[BaggedPoint[TreePoint]],
       numTrees: Int,
       checkpointInterval: Int,
-      initVal: Int = 1): NodeIdCache = {
+      initVal: Int = 1): NodeIdCache =
     new NodeIdCache(
       data.map(_ => Array.fill[Int](numTrees)(initVal)),
       checkpointInterval)
-  }
 }

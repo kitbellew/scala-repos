@@ -96,8 +96,8 @@ object StripNamedNode {
           case None =>
             val newLine = "\n"
             sys.error(
-              s"Node $n in the new node has no corresponding node in the original graph: ${tail}.\n" +
-                s"new: ${newNodeIrr}\n" +
+              s"Node $n in the new node has no corresponding node in the original graph: $tail.\n" +
+                s"new: $newNodeIrr\n" +
                 s"old: ${oldIrrToNode.mkString(newLine)}")
         }
       }(breakOut)

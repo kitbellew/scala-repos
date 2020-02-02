@@ -12,7 +12,7 @@ trait SystemSettingsService {
   def baseUrl(implicit request: HttpServletRequest): String =
     loadSystemSettings().baseUrl(request)
 
-  def saveSystemSettings(settings: SystemSettings): Unit = {
+  def saveSystemSettings(settings: SystemSettings): Unit =
     defining(new java.util.Properties()) { props =>
       settings.baseUrl.foreach(x =>
         props.setProperty(BaseURL, x.replaceFirst("/\\Z", "")))
@@ -71,9 +71,8 @@ trait SystemSettingsService {
         props.store(out, null)
       }
     }
-  }
 
-  def loadSystemSettings(): SystemSettings = {
+  def loadSystemSettings(): SystemSettings =
     defining(new java.util.Properties()) { props =>
       if (GitBucketConf.exists) {
         using(new java.io.FileInputStream(GitBucketConf)) { in =>
@@ -134,7 +133,6 @@ trait SystemSettingsService {
         }
       )
     }
-  }
 
 }
 

@@ -86,7 +86,7 @@ case class Timer(
   private[this] def alignTimeResolution(time: Long): Long =
     time / timeoutTickMs * timeoutTickMs
 
-  def valueWait[T](value: T, waitMs: Long): Future[T] = {
+  def valueWait[T](value: T, waitMs: Long): Future[T] =
     withRead {
       if (continueRunning) {
         val listen: (T => Unit) => Unit = callback =>
@@ -105,7 +105,6 @@ case class Timer(
         Future.now(value)
       }
     }
-  }
 
   def withTimeout[T](future: Future[T], timeout: Long): Future[Timeout \/ T] = {
     val timeoutFuture = valueWait(Timeout, timeout)

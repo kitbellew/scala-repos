@@ -48,12 +48,11 @@ class IntroduceExplicitParameterIntention
   def isAvailable(
       project: Project,
       editor: Editor,
-      _element: PsiElement): Boolean = {
+      _element: PsiElement): Boolean =
     findExpression(_element, editor) match {
       case Some(x) => true
       case None    => false
     }
-  }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val expr = findExpression(element, editor).get

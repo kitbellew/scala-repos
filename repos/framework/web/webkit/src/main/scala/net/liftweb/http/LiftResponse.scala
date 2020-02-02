@@ -123,9 +123,8 @@ object BadResponse {
   @deprecated(
     "Use BadRequestResponse instead, as that is the correct name for this response.",
     "3.0.0")
-  def apply() = {
+  def apply() =
     BadRequestResponse()
-  }
 }
 
 /**
@@ -367,11 +366,10 @@ object JsonResponse {
       _json: JsonAST.JValue,
       _headers: List[(String, String)],
       _cookies: List[HTTPCookie],
-      code: Int): LiftResponse = {
+      code: Int): LiftResponse =
     new JsonResponse(new JsExp {
       lazy val toJsCmd = jsonPrinter(_json)
     }, _headers, _cookies, code)
-  }
 
   lazy val jsonPrinter: JsonAST.JValue => String =
     LiftRules.jsonOutputConverter.vend
@@ -816,11 +814,10 @@ case class XhtmlResponse(
 
   val docType: Box[String] = htmlProperties.docType
 
-  protected override def writeDocType(writer: Writer): Unit = {
+  protected override def writeDocType(writer: Writer): Unit =
     htmlProperties.htmlOutputHeader.foreach {
       writer.append
     }
-  }
 
   override protected lazy val _encoding: String =
     htmlProperties.encoding openOr ""

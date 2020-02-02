@@ -8,7 +8,7 @@ import gitbucket.core.util.RepositoryName
   */
 case class ApiLabel(name: String, color: String)(
     repositoryName: RepositoryName) {
-  var url = ApiPath(s"/api/v3/repos/${repositoryName.fullName}/labels/${name}")
+  var url = ApiPath(s"/api/v3/repos/${repositoryName.fullName}/labels/$name")
 }
 
 object ApiLabel {

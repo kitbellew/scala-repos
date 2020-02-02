@@ -105,7 +105,7 @@ private[python] class PythonMLLibAPI extends Serializable {
   private def trainRegressionModel(
       learner: GeneralizedLinearAlgorithm[_ <: GeneralizedLinearModel],
       data: JavaRDD[LabeledPoint],
-      initialWeights: Vector): JList[Object] = {
+      initialWeights: Vector): JList[Object] =
     try {
       val model = learner.run(
         data.rdd.persist(StorageLevel.MEMORY_AND_DISK),
@@ -125,12 +125,11 @@ private[python] class PythonMLLibAPI extends Serializable {
     } finally {
       data.rdd.unpersist(blocking = false)
     }
-  }
 
   /**
     * Return the Updater from string
     */
-  def getUpdaterFromString(regType: String): Updater = {
+  def getUpdaterFromString(regType: String): Updater =
     if (regType == "l2") {
       new SquaredL2Updater
     } else if (regType == "l1") {
@@ -142,7 +141,6 @@ private[python] class PythonMLLibAPI extends Serializable {
         "Invalid value for 'regType' parameter."
           + " Can only be initialized using the following string values: ['l1', 'l2', None].")
     }
-  }
 
   /**
     * Java stub for Python mllib BisectingKMeans.run()
@@ -152,14 +150,13 @@ private[python] class PythonMLLibAPI extends Serializable {
       k: Int,
       maxIterations: Int,
       minDivisibleClusterSize: Double,
-      seed: Long): BisectingKMeansModel = {
+      seed: Long): BisectingKMeansModel =
     new BisectingKMeans()
       .setK(k)
       .setMaxIterations(maxIterations)
       .setMinDivisibleClusterSize(minDivisibleClusterSize)
       .setSeed(seed)
       .run(data)
-  }
 
   /**
     * Java stub for Python mllib LinearRegressionWithSGD.train()
@@ -393,9 +390,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     */
   def computeCostKmeansModel(
       data: JavaRDD[Vector],
-      centers: java.util.ArrayList[Vector]): Double = {
+      centers: java.util.ArrayList[Vector]): Double =
     new KMeansModel(centers).computeCost(data)
-  }
 
   /**
     * Java stub for Python mllib GaussianMixture.run()
@@ -630,16 +626,14 @@ private[python] class PythonMLLibAPI extends Serializable {
   /**
     * Java stub for Normalizer.transform()
     */
-  def normalizeVector(p: Double, vector: Vector): Vector = {
+  def normalizeVector(p: Double, vector: Vector): Vector =
     new Normalizer(p).transform(vector)
-  }
 
   /**
     * Java stub for Normalizer.transform()
     */
-  def normalizeVector(p: Double, rdd: JavaRDD[Vector]): JavaRDD[Vector] = {
+  def normalizeVector(p: Double, rdd: JavaRDD[Vector]): JavaRDD[Vector] =
     new Normalizer(p).transform(rdd)
-  }
 
   /**
     * Java stub for StandardScaler.fit(). This stub returns a
@@ -650,9 +644,8 @@ private[python] class PythonMLLibAPI extends Serializable {
   def fitStandardScaler(
       withMean: Boolean,
       withStd: Boolean,
-      data: JavaRDD[Vector]): StandardScalerModel = {
+      data: JavaRDD[Vector]): StandardScalerModel =
     new StandardScaler(withMean, withStd).fit(data.rdd)
-  }
 
   /**
     * Java stub for ChiSqSelector.fit(). This stub returns a
@@ -662,9 +655,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     */
   def fitChiSqSelector(
       numTopFeatures: Int,
-      data: JavaRDD[LabeledPoint]): ChiSqSelectorModel = {
+      data: JavaRDD[LabeledPoint]): ChiSqSelectorModel =
     new ChiSqSelector(numTopFeatures).fit(data.rdd)
-  }
 
   /**
     * Java stub for PCA.fit(). This stub returns a
@@ -672,9 +664,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     * Extra care needs to be taken in the Python code to ensure it gets freed on
     * exit; see the Py4J documentation.
     */
-  def fitPCA(k: Int, data: JavaRDD[Vector]): PCAModel = {
+  def fitPCA(k: Int, data: JavaRDD[Vector]): PCAModel =
     new PCA(k).fit(data.rdd)
-  }
 
   /**
     * Java stub for IDF.fit(). This stub returns a
@@ -682,9 +673,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     * Extra care needs to be taken in the Python code to ensure it gets freed on
     * exit; see the Py4J documentation.
     */
-  def fitIDF(minDocFreq: Int, dataset: JavaRDD[Vector]): IDFModel = {
+  def fitIDF(minDocFreq: Int, dataset: JavaRDD[Vector]): IDFModel =
     new IDF(minDocFreq).fit(dataset)
-  }
 
   /**
     * Java stub for Python mllib Word2Vec fit(). This stub returns a
@@ -844,87 +834,74 @@ private[python] class PythonMLLibAPI extends Serializable {
     }
   }
 
-  def elementwiseProductVector(
-      scalingVector: Vector,
-      vector: Vector): Vector = {
+  def elementwiseProductVector(scalingVector: Vector, vector: Vector): Vector =
     new ElementwiseProduct(scalingVector).transform(vector)
-  }
 
   def elementwiseProductVector(
       scalingVector: Vector,
-      vector: JavaRDD[Vector]): JavaRDD[Vector] = {
+      vector: JavaRDD[Vector]): JavaRDD[Vector] =
     new ElementwiseProduct(scalingVector).transform(vector)
-  }
 
   /**
     * Java stub for mllib Statistics.colStats(X: RDD[Vector]).
     * TODO figure out return type.
     */
-  def colStats(rdd: JavaRDD[Vector]): MultivariateStatisticalSummary = {
+  def colStats(rdd: JavaRDD[Vector]): MultivariateStatisticalSummary =
     Statistics.colStats(rdd.rdd)
-  }
 
   /**
     * Java stub for mllib Statistics.corr(X: RDD[Vector], method: String).
     * Returns the correlation matrix serialized into a byte array understood by deserializers in
     * pyspark.
     */
-  def corr(x: JavaRDD[Vector], method: String): Matrix = {
+  def corr(x: JavaRDD[Vector], method: String): Matrix =
     Statistics.corr(x.rdd, getCorrNameOrDefault(method))
-  }
 
   /**
     * Java stub for mllib Statistics.corr(x: RDD[Double], y: RDD[Double], method: String).
     */
-  def corr(x: JavaRDD[Double], y: JavaRDD[Double], method: String): Double = {
+  def corr(x: JavaRDD[Double], y: JavaRDD[Double], method: String): Double =
     Statistics.corr(x.rdd, y.rdd, getCorrNameOrDefault(method))
-  }
 
   /**
     * Java stub for mllib Statistics.chiSqTest()
     */
-  def chiSqTest(observed: Vector, expected: Vector): ChiSqTestResult = {
+  def chiSqTest(observed: Vector, expected: Vector): ChiSqTestResult =
     if (expected == null) {
       Statistics.chiSqTest(observed)
     } else {
       Statistics.chiSqTest(observed, expected)
     }
-  }
 
   /**
     * Java stub for mllib Statistics.chiSqTest(observed: Matrix)
     */
-  def chiSqTest(observed: Matrix): ChiSqTestResult = {
+  def chiSqTest(observed: Matrix): ChiSqTestResult =
     Statistics.chiSqTest(observed)
-  }
 
   /**
     * Java stub for mllib Statistics.chiSqTest(RDD[LabelPoint])
     */
-  def chiSqTest(data: JavaRDD[LabeledPoint]): Array[ChiSqTestResult] = {
+  def chiSqTest(data: JavaRDD[LabeledPoint]): Array[ChiSqTestResult] =
     Statistics.chiSqTest(data.rdd)
-  }
 
   // used by the corr methods to retrieve the name of the correlation method passed in via pyspark
-  private def getCorrNameOrDefault(method: String) = {
+  private def getCorrNameOrDefault(method: String) =
     if (method == null) CorrelationNames.defaultCorrName else method
-  }
 
   // Used by the *RDD methods to get default seed if not passed in from pyspark
-  private def getSeedOrDefault(seed: java.lang.Long): Long = {
+  private def getSeedOrDefault(seed: java.lang.Long): Long =
     if (seed == null) Utils.random.nextLong else seed
-  }
 
   // Used by *RDD methods to get default numPartitions if not passed in from pyspark
   private def getNumPartitionsOrDefault(
       numPartitions: java.lang.Integer,
-      jsc: JavaSparkContext): Int = {
+      jsc: JavaSparkContext): Int =
     if (numPartitions == null) {
       jsc.sc.defaultParallelism
     } else {
       numPartitions
     }
-  }
 
   // Note: for the following methods, numPartitions and seed are boxed to allow nulls to be passed
   // in for either argument from pyspark
@@ -1106,10 +1083,9 @@ private[python] class PythonMLLibAPI extends Serializable {
   /**
     * Java stub for the constructor of Python mllib RankingMetrics
     */
-  def newRankingMetrics(predictionAndLabels: DataFrame): RankingMetrics[Any] = {
+  def newRankingMetrics(predictionAndLabels: DataFrame): RankingMetrics[Any] =
     new RankingMetrics(predictionAndLabels.rdd.map(r =>
       (r.getSeq(0).toArray[Any], r.getSeq(1).toArray[Any])))
-  }
 
   /**
     * Java stub for the estimate method of KernelDensity
@@ -1117,12 +1093,11 @@ private[python] class PythonMLLibAPI extends Serializable {
   def estimateKernelDensity(
       sample: JavaRDD[Double],
       bandwidth: Double,
-      points: java.util.ArrayList[Double]): Array[Double] = {
+      points: java.util.ArrayList[Double]): Array[Double] =
     new KernelDensity()
       .setSample(sample)
       .setBandwidth(bandwidth)
       .estimate(points.asScala.toArray)
-  }
 
   /**
     * Java stub for the update method of StreamingKMeansModel.
@@ -1150,7 +1125,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       xVariance: JList[Double],
       nPoints: Int,
       seed: Int,
-      eps: Double): Array[LabeledPoint] = {
+      eps: Double): Array[LabeledPoint] =
     LinearDataGenerator
       .generateLinearInput(
         intercept,
@@ -1161,7 +1136,6 @@ private[python] class PythonMLLibAPI extends Serializable {
         seed,
         eps)
       .toArray
-  }
 
   /**
     * Wrapper around the generateLinearRDD method of LinearDataGenerator.
@@ -1172,7 +1146,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       nfeatures: Int,
       eps: Double,
       nparts: Int,
-      intercept: Double): JavaRDD[LabeledPoint] = {
+      intercept: Double): JavaRDD[LabeledPoint] =
     LinearDataGenerator.generateLinearRDD(
       sc,
       nexamples,
@@ -1180,7 +1154,6 @@ private[python] class PythonMLLibAPI extends Serializable {
       eps,
       nparts,
       intercept)
-  }
 
   /**
     * Java stub for Statistics.kolmogorovSmirnovTest()
@@ -1199,9 +1172,8 @@ private[python] class PythonMLLibAPI extends Serializable {
   def createRowMatrix(
       rows: JavaRDD[Vector],
       numRows: Long,
-      numCols: Int): RowMatrix = {
+      numCols: Int): RowMatrix =
     new RowMatrix(rows.rdd.retag(classOf[Vector]), numRows, numCols)
-  }
 
   /**
     * Wrapper around IndexedRowMatrix constructor.
@@ -1311,7 +1283,7 @@ private[spark] object SerDe extends Serializable {
       Unpickler.registerConstructor(module, name, this)
     }
 
-    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
+    def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit =
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
@@ -1321,7 +1293,6 @@ private[spark] object SerDe extends Serializable {
         saveState(obj, out, pickler)
         out.write(Opcodes.REDUCE)
       }
-    }
 
     private[python] def saveObjects(
         out: OutputStream,
@@ -1340,14 +1311,13 @@ private[spark] object SerDe extends Serializable {
       out.write(code)
     }
 
-    protected def getBytes(obj: Object): Array[Byte] = {
+    protected def getBytes(obj: Object): Array[Byte] =
       if (obj.getClass.isArray) {
         obj.asInstanceOf[Array[Byte]]
       } else {
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
         obj.asInstanceOf[String].getBytes(StandardCharsets.ISO_8859_1)
       }
-    }
 
     private[python] def saveState(
         obj: Object,
@@ -1565,7 +1535,7 @@ private[spark] object SerDe extends Serializable {
         args(2).asInstanceOf[Double])
     }
 
-    private def ratingsIdCheckLong(obj: Object): Int = {
+    private def ratingsIdCheckLong(obj: Object): Int =
       try {
         obj.asInstanceOf[Int]
       } catch {
@@ -1575,7 +1545,6 @@ private[spark] object SerDe extends Serializable {
               s"max integer value of ${Int.MaxValue}",
             ex)
       }
-    }
   }
 
   var initialized = false
@@ -1598,45 +1567,40 @@ private[spark] object SerDe extends Serializable {
   // will not called in Executor automatically
   initialize()
 
-  def dumps(obj: AnyRef): Array[Byte] = {
+  def dumps(obj: AnyRef): Array[Byte] =
     obj match {
       // Pickler in Python side cannot deserialize Scala Array normally. See SPARK-12834.
       case array: Array[_] => new Pickler().dumps(array.toSeq.asJava)
       case _               => new Pickler().dumps(obj)
     }
-  }
 
-  def loads(bytes: Array[Byte]): AnyRef = {
+  def loads(bytes: Array[Byte]): AnyRef =
     new Unpickler().loads(bytes)
-  }
 
   /* convert object into Tuple */
-  def asTupleRDD(rdd: RDD[Array[Any]]): RDD[(Int, Int)] = {
+  def asTupleRDD(rdd: RDD[Array[Any]]): RDD[(Int, Int)] =
     rdd.map(x => (x(0).asInstanceOf[Int], x(1).asInstanceOf[Int]))
-  }
 
   /* convert RDD[Tuple2[,]] to RDD[Array[Any]] */
-  def fromTuple2RDD(rdd: RDD[(Any, Any)]): RDD[Array[Any]] = {
+  def fromTuple2RDD(rdd: RDD[(Any, Any)]): RDD[Array[Any]] =
     rdd.map(x => Array(x._1, x._2))
-  }
 
   /**
     * Convert an RDD of Java objects to an RDD of serialized Python objects, that is usable by
     * PySpark.
     */
-  def javaToPython(jRDD: JavaRDD[Any]): JavaRDD[Array[Byte]] = {
+  def javaToPython(jRDD: JavaRDD[Any]): JavaRDD[Array[Byte]] =
     jRDD.rdd.mapPartitions { iter =>
       initialize() // let it called in executor
       new SerDeUtil.AutoBatchedPickler(iter)
     }
-  }
 
   /**
     * Convert an RDD of serialized Python objects to RDD of objects, that is usable by PySpark.
     */
   def pythonToJava(
       pyRDD: JavaRDD[Array[Byte]],
-      batched: Boolean): JavaRDD[Any] = {
+      batched: Boolean): JavaRDD[Any] =
     pyRDD.rdd
       .mapPartitions { iter =>
         initialize() // let it called in executor
@@ -1654,5 +1618,4 @@ private[spark] object SerDe extends Serializable {
         }
       }
       .toJavaRDD()
-  }
 }

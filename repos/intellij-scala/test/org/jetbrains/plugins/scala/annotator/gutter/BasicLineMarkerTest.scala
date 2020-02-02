@@ -16,11 +16,10 @@ class BasicLineMarkerTest extends LineMarkerTestBase {
   def testComplex() = doTest()
   def testLexerErrorBypass() = doTest()
 
-  def testGators() = {
+  def testGators() =
     doTest()
 
-    // TODO make sure somehow that gators (overriding, etc) remain
+  // TODO make sure somehow that gators (overriding, etc) remain
 //    val markers = DaemonCodeAnalyzerImpl.getLineMarkers(myFixture.getEditor.getDocument, myFixture.getProject)
 //    assertTrue(markers.get(2).getNavigationHandler != null)
-  }
 }

@@ -42,13 +42,11 @@ object JsError {
   def merge(
       e1: Seq[(JsPath, Seq[ValidationError])],
       e2: Seq[(JsPath, Seq[ValidationError])])
-      : Seq[(JsPath, Seq[ValidationError])] = {
+      : Seq[(JsPath, Seq[ValidationError])] =
     (e1 ++ e2).groupBy(_._1).mapValues(_.map(_._2).flatten).toList
-  }
 
-  def merge(e1: JsError, e2: JsError): JsError = {
+  def merge(e1: JsError, e2: JsError): JsError =
     JsError(merge(e1.errors, e2.errors))
-  }
 
   def toJson(e: JsError): JsObject = toJson(e.errors, false)
   def toJson(errors: Seq[(JsPath, Seq[ValidationError])]): JsObject =

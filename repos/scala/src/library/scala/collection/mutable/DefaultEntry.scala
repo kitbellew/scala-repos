@@ -18,9 +18,8 @@ final class DefaultEntry[A, B](val key: A, var value: B)
     with Serializable {
   override def toString = chainString
 
-  def chainString = {
+  def chainString =
     "(kv: " + key + ", " + value + ")" + (if (next != null)
                                             " -> " + next.toString
                                           else "")
-  }
 }

@@ -32,7 +32,7 @@ class DocumentationHandler(
   /**
     * This is a def because we want to reindex the docs each time.
     */
-  def playDoc = {
+  def playDoc =
     new PlayDoc(
       repo,
       repo,
@@ -40,7 +40,6 @@ class DocumentationHandler(
       PlayVersion.current,
       PageIndex.parseFrom(repo, "Home", Some("manual")),
       "Next")
-  }
 
   val locator: String => String = new Memoise(
     name =>
@@ -51,9 +50,8 @@ class DocumentationHandler(
 
   // Method without Scala types. Required by BuildDocHandler to allow communication
   // between code compiled by different versions of Scala
-  override def maybeHandleDocRequest(request: AnyRef): AnyRef = {
+  override def maybeHandleDocRequest(request: AnyRef): AnyRef =
     this.maybeHandleDocRequest(request.asInstanceOf[RequestHeader])
-  }
 
   /**
     * Handle the given request if it is a request for documentation content.
@@ -61,7 +59,7 @@ class DocumentationHandler(
   def maybeHandleDocRequest(request: RequestHeader): Option[Result] = {
 
     // Assumes caller consumes result, closing entry
-    def sendFileInline(repo: FileRepository, path: String): Option[Result] = {
+    def sendFileInline(repo: FileRepository, path: String): Option[Result] =
       repo.handleFile(path) { handle =>
         Results.Ok.sendEntity(
           HttpEntity.Streamed(
@@ -72,7 +70,6 @@ class DocumentationHandler(
             MimeTypes.forFileName(handle.name).orElse(Some(ContentTypes.BINARY))
           ))
       }
-    }
 
     import play.api.mvc.Results._
 

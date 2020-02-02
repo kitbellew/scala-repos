@@ -232,21 +232,18 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       // inheritance edges
       edges.map {
         case (from, tos) =>
-          tos
-            .map(to => {
-              val id =
-                "graph" + counter + "_" + node2Index(to) + "_" + node2Index(
-                  from)
-              // the X -> Y edge is inverted twice to keep the diagram flowing the right way
-              // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
-              "node" + node2Index(to) + " -> node" + node2Index(from) +
-                " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-                "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                              " are subtypes of "
-                                            else " is a subtype of ") +
-                to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
-            })
-            .mkString
+          tos.map { to =>
+            val id =
+              "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
+            // the X -> Y edge is inverted twice to keep the diagram flowing the right way
+            // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
+            "node" + node2Index(to) + " -> node" + node2Index(from) +
+              " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
+              "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
+                                            " are subtypes of "
+                                          else " is a subtype of ") +
+              to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
+          }.mkString
       }.mkString +
       "}"
 
@@ -331,14 +328,13 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
   /**
     * Returns the CSS class for an edge connecting node1 and node2.
     */
-  private def cssClass(node1: Node, node2: Node): String = {
+  private def cssClass(node1: Node, node2: Node): String =
     if (node1.isImplicitNode && node2.isThisNode)
       "implicit-incoming"
     else if (node1.isThisNode && node2.isImplicitNode)
       "implicit-outgoing"
     else
       "inheritance"
-  }
 
   /**
     * Returns the CSS class for a node.

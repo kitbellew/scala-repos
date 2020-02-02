@@ -37,9 +37,8 @@ object SVMSuite {
       intercept: Double,
       weights: Array[Double],
       nPoints: Int,
-      seed: Int): java.util.List[LabeledPoint] = {
+      seed: Int): java.util.List[LabeledPoint] =
     generateSVMInput(intercept, weights, nPoints, seed).asJava
-  }
 
   // Generate noisy input of the form Y = signum(x.dot(weights) + intercept + noise)
   def generateSVMInput(

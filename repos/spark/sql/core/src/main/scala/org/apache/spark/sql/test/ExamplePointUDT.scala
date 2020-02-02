@@ -50,12 +50,11 @@ private[sql] class ExamplePointUDT extends UserDefinedType[ExamplePoint] {
     new GenericArrayData(output)
   }
 
-  override def deserialize(datum: Any): ExamplePoint = {
+  override def deserialize(datum: Any): ExamplePoint =
     datum match {
       case values: ArrayData =>
         new ExamplePoint(values.getDouble(0), values.getDouble(1))
     }
-  }
 
   override def userClass: Class[ExamplePoint] = classOf[ExamplePoint]
 

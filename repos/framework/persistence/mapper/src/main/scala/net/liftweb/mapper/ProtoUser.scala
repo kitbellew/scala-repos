@@ -275,9 +275,8 @@ trait MetaMegaProtoUser[ModelType <: MegaProtoUser[ModelType]]
     /**
       * Set the unique ID for this user to a new value
       */
-    def resetUniqueId(): TheUserType = {
+    def resetUniqueId(): TheUserType =
       in.uniqueId.reset()
-    }
 
     /**
       * Return the unique ID for the user

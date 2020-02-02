@@ -19,9 +19,8 @@ class IntegerTestOnJDK8 {
   val MinValue: Int = Int.MinValue
 
   @Test def should_parse_uInt_strings(): Unit = {
-    def test(s: String, v: Int, radix: Int = 10): Unit = {
+    def test(s: String, v: Int, radix: Int = 10): Unit =
       assertEquals(v, Integer.parseUnsignedInt(s, radix))
-    }
 
     test("0", 0)
     test("5", 5)
@@ -54,9 +53,8 @@ class IntegerTestOnJDK8 {
   }
 
   @Test def should_parse_strings_in_base_16(): Unit = {
-    def test(s: String, v: Int): Unit = {
+    def test(s: String, v: Int): Unit =
       assertEquals(v, Integer.parseUnsignedInt(s, 16))
-    }
 
     test("0", 0x0)
     test("5", 0x5)

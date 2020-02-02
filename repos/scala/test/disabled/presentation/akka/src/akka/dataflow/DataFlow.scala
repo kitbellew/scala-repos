@@ -145,7 +145,7 @@ object DataFlow {
     /**
       * Retrieves the value of variable, throws a DataFlowVariableException if it times out.
       */
-    def apply(): T = {
+    def apply(): T =
       value.get getOrElse {
         val out = actorOf(new Out(this)).start()
 
@@ -163,7 +163,6 @@ object DataFlow {
         result.getOrElse(throw new DataFlowVariableException(
           "Timed out (after " + timeoutMs + " milliseconds) while waiting for result"))
       }
-    }
 
     def shutdown() { in ! Exit }
   }

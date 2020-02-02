@@ -38,7 +38,7 @@ object LockManager {
     }
   }
 
-  private[this] def loadingCache[A <: AnyRef](): LoadingCache[A, Semaphore] = {
+  private[this] def loadingCache[A <: AnyRef](): LoadingCache[A, Semaphore] =
     CacheBuilder
       .newBuilder()
       .weakValues()
@@ -47,5 +47,4 @@ object LockManager {
           override def load(key: A): Semaphore = new Semaphore(1)
         }
       )
-  }
 }

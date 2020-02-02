@@ -120,7 +120,7 @@ trait StateRules {
     def rep(
         in: S,
         rules: List[Rule[A, X]],
-        results: List[A]): Result[S, List[A], X] = {
+        results: List[A]): Result[S, List[A], X] =
       rules match {
         case Nil => Success(in, results.reverse)
         case rule :: tl =>
@@ -130,7 +130,6 @@ trait StateRules {
             case Success(out, v) => rep(out, tl, v :: results)
           }
       }
-    }
     in: S => rep(in, rules.toList, Nil)
   }
 
@@ -145,7 +144,7 @@ trait StateRules {
   def repeatUntil[T, X](rule: Rule[T => T, X])(finished: T => Boolean)(
       initial: T) = apply {
     // more compact using HoF but written this way so it's tail-recursive
-    def rep(in: S, t: T): Result[S, T, X] = {
+    def rep(in: S, t: T): Result[S, T, X] =
       if (finished(t)) Success(in, t)
       else
         rule(in) match {
@@ -153,7 +152,6 @@ trait StateRules {
           case Failure         => Failure
           case Error(x)        => Error(x)
         }
-    }
     in => rep(in, initial)
   }
 

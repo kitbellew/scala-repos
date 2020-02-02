@@ -56,10 +56,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       val itr = new IteratorInterpreter[Int, Int](
         List(1, 2, 3).iterator,
         Seq(new PushStage[Int, Int] {
-          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
+          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
             if (elem == 2) ctx.fail(new ArithmeticException())
             else ctx.push(elem)
-          }
         })).iterator
 
       itr.next() should be(1)
@@ -72,10 +71,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       val itr = new IteratorInterpreter[Int, Int](
         List(1, 2, 3).iterator,
         Seq(new PushStage[Int, Int] {
-          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
+          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
             if (elem == 2) throw new ArithmeticException()
             else ctx.push(elem)
-          }
         })).iterator
 
       itr.next() should be(1)
@@ -136,10 +134,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       ctx.push(elem)
     }
 
-    override def onPull(ctx: Context[T]): SyncDirective = {
+    override def onPull(ctx: Context[T]): SyncDirective =
       if (left == 0) ctx.finish()
       else ctx.pull()
-    }
   }
 
   case class ByteStringBatcher(threshold: Int, compact: Boolean = true)
@@ -151,7 +148,7 @@ class IteratorInterpreterSpec extends AkkaSpec {
 
     override def onPush(
         elem: ByteString,
-        ctx: Context[ByteString]): SyncDirective = {
+        ctx: Context[ByteString]): SyncDirective =
       if (passthrough) ctx.push(elem)
       else {
         buf = buf ++ elem
@@ -162,18 +159,15 @@ class IteratorInterpreterSpec extends AkkaSpec {
           ctx.push(batch)
         } else ctx.pull()
       }
-    }
 
-    override def onPull(ctx: Context[ByteString]): SyncDirective = {
+    override def onPull(ctx: Context[ByteString]): SyncDirective =
       if (ctx.isFinishing) ctx.pushAndFinish(buf)
       else ctx.pull()
-    }
 
     override def onUpstreamFinish(
-        ctx: Context[ByteString]): TerminationDirective = {
+        ctx: Context[ByteString]): TerminationDirective =
       if (passthrough || buf.isEmpty) ctx.finish()
       else ctx.absorbTermination()
-    }
   }
 
 }

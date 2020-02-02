@@ -71,20 +71,20 @@ trait ScalaClassLoader extends JClassLoader {
           if (maybes.size == 1) maybes.head
           else
             fail(
-              s"Constructor must accept arg list (${args map (_.getClass.getName) mkString ", "}): ${path}")
+              s"Constructor must accept arg list (${args map (_.getClass.getName) mkString ", "}): $path")
         }
         (ctor.newInstance(args: _*)).asInstanceOf[T]
       } else {
         errorFn(s"""Loader for ${classTag[T]}:   [${show(
                      classTag[T].runtimeClass.getClassLoader)}]
                    |Loader for ${clazz.getName}: [${show(clazz.getClassLoader)}]""".stripMargin)
-        fail(s"Not a ${classTag[T]}: ${path}")
+        fail(s"Not a ${classTag[T]}: $path")
       }
     } catch {
       case e: ClassNotFoundException =>
-        error(s"Class not found: ${path}", e)
+        error(s"Class not found: $path", e)
       case e @ (_: LinkageError | _: ReflectiveOperationException) =>
-        error(s"Unable to create instance: ${path}: ${e.toString}", e)
+        error(s"Unable to create instance: $path: ${e.toString}", e)
     }
   }
 

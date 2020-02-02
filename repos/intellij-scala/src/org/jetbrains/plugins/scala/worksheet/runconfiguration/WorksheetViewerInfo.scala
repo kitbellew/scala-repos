@@ -55,12 +55,11 @@ object WorksheetViewerInfo {
     }
   }
 
-  private def get(editor: Editor): Editor = {
+  private def get(editor: Editor): Editor =
     synchronized {
       allViewers.get(editor) match {
         case null => null
         case list => list.headOption.orNull
       }
     }
-  }
 }

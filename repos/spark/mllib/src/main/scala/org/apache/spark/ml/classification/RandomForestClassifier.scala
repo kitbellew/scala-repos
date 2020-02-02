@@ -242,8 +242,7 @@ final class RandomForestClassificationModel private[ml] (
     Vectors.dense(votes)
   }
 
-  override protected def raw2probabilityInPlace(
-      rawPrediction: Vector): Vector = {
+  override protected def raw2probabilityInPlace(rawPrediction: Vector): Vector =
     rawPrediction match {
       case dv: DenseVector =>
         ProbabilisticClassificationModel.normalizeToProbabilitiesInPlace(dv)
@@ -253,20 +252,17 @@ final class RandomForestClassificationModel private[ml] (
           "Unexpected error in RandomForestClassificationModel:" +
             " raw2probabilityInPlace encountered SparseVector")
     }
-  }
 
   @Since("1.4.0")
-  override def copy(extra: ParamMap): RandomForestClassificationModel = {
+  override def copy(extra: ParamMap): RandomForestClassificationModel =
     copyValues(
       new RandomForestClassificationModel(uid, _trees, numFeatures, numClasses),
       extra)
       .setParent(parent)
-  }
 
   @Since("1.4.0")
-  override def toString: String = {
+  override def toString: String =
     s"RandomForestClassificationModel (uid=$uid) with $numTrees trees"
-  }
 
   /**
     * Estimate of the importance of each feature.
@@ -287,9 +283,8 @@ final class RandomForestClassificationModel private[ml] (
     RandomForest.featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
-  private[ml] def toOld: OldRandomForestModel = {
+  private[ml] def toOld: OldRandomForestModel =
     new OldRandomForestModel(OldAlgo.Classification, _trees.map(_.toOld))
-  }
 }
 
 private[ml] object RandomForestClassificationModel {

@@ -40,7 +40,7 @@ private[sql] abstract class SQLMetric[R <: SQLMetricValue[T], T](
   // Provide special identifier as metadata so we can tell that this is a `SQLMetric` later
   override def toInfo(
       update: Option[Any],
-      value: Option[Any]): AccumulableInfo = {
+      value: Option[Any]): AccumulableInfo =
     new AccumulableInfo(
       id,
       Some(name),
@@ -49,11 +49,9 @@ private[sql] abstract class SQLMetric[R <: SQLMetricValue[T], T](
       isInternal,
       countFailedValues,
       Some(SQLMetrics.ACCUM_IDENTIFIER))
-  }
 
-  def reset(): Unit = {
+  def reset(): Unit =
     this.value = param.zero
-  }
 }
 
 /**
@@ -98,12 +96,11 @@ private[sql] class LongSQLMetricValue(private var _value: Long)
   override def value: Long = _value
 
   // Needed for SQLListenerSuite
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case o: LongSQLMetricValue => value == o.value
       case _                     => false
     }
-  }
 }
 
 /**
@@ -115,13 +112,11 @@ private[sql] class LongSQLMetric private[metric] (
     param: LongSQLMetricParam)
     extends SQLMetric[LongSQLMetricValue, Long](name, param) {
 
-  override def +=(term: Long): Unit = {
+  override def +=(term: Long): Unit =
     localValue.add(term)
-  }
 
-  override def add(term: Long): Unit = {
+  override def add(term: Long): Unit =
     localValue.add(term)
-  }
 }
 
 private class LongSQLMetricParam(
@@ -183,15 +178,14 @@ private[sql] object SQLMetrics {
     acc
   }
 
-  def createLongMetric(sc: SparkContext, name: String): LongSQLMetric = {
+  def createLongMetric(sc: SparkContext, name: String): LongSQLMetric =
     createLongMetric(sc, name, LongSQLMetricParam)
-  }
 
   /**
     * Create a metric to report the size information (including total, min, med, max) like data size,
     * spill size, etc.
     */
-  def createSizeMetric(sc: SparkContext, name: String): LongSQLMetric = {
+  def createSizeMetric(sc: SparkContext, name: String): LongSQLMetric =
     // The final result of this metric in physical operator UI may looks like:
     // data size total (min, med, max):
     // 100GB (100MB, 1GB, 10GB)
@@ -199,7 +193,6 @@ private[sql] object SQLMetrics {
       sc,
       s"$name total (min, med, max)",
       StaticsLongSQLMetricParam)
-  }
 
   def getMetricParam(
       metricParamName: String): SQLMetricParam[SQLMetricValue[Any], Any] = {

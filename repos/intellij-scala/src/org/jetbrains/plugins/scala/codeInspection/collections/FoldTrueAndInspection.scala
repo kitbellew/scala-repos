@@ -17,7 +17,7 @@ object FoldTrueAnd extends SimplificationType() {
 
   def hint = InspectionBundle.message("fold.true.and.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.foldLeft` (literal("true"), andCondition(cond))
           if hasSideEffects(cond) =>
@@ -29,5 +29,4 @@ object FoldTrueAnd extends SimplificationType() {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 }

@@ -297,14 +297,14 @@ trait Foldable[F[_]] { self =>
     * Splits the elements into groups that alternatively satisfy and don't satisfy the predicate p.
     */
   def splitWith[A](fa: F[A])(p: A => Boolean): List[NonEmptyList[A]] =
-    foldRight(fa, (List[NonEmptyList[A]](), None: Option[Boolean]))((a, b) => {
+    foldRight(fa, (List[NonEmptyList[A]](), None: Option[Boolean])) { (a, b) =>
       val pa = p(a)
       (b match {
         case (_, None) => NonEmptyList(a) :: Nil
         case (x, Some(q)) =>
           if (pa == q) (a <:: x.head) :: x.tail else NonEmptyList(a) :: x
       }, Some(pa))
-    })._1
+    }._1
 
   /**
     * Selects groups of elements that satisfy p and discards others.

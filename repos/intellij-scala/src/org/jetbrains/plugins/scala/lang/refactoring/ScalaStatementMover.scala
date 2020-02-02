@@ -32,14 +32,13 @@ class ScalaStatementMover extends LineMover {
     def aim(
         sourceClass: ElementClass,
         predicate: PsiElement => Boolean,
-        canUseLineAsTarget: Boolean = true): Option[(PsiElement, LineRange)] = {
+        canUseLineAsTarget: Boolean = true): Option[(PsiElement, LineRange)] =
       findSourceOf(sourceClass).map { source =>
         val targetRange = findTargetRangeFor(source, predicate).getOrElse {
           if (canUseLineAsTarget) nextLineRangeFor(source) else null
         }
         (source, targetRange)
       }
-    }
 
     def findSourceOf(aClass: ElementClass) =
       findElementAt(aClass, editor, file, info.toMove.startLine)

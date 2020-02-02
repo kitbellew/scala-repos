@@ -218,7 +218,7 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
     }
   }
 
-  protected override def renderIndex(docs: List[ApiType]): JValue = {
+  protected override def renderIndex(docs: List[ApiType]): JValue =
     ("apiVersion" -> swagger.apiVersion) ~
       ("swaggerVersion" -> swagger.swaggerVersion) ~
       ("apis" ->
@@ -242,7 +242,6 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
       }) ~
       ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)(
         SwaggerAuthSerializers.authFormats(userOption)(userManifest))))
-  }
 
 }
 
@@ -359,7 +358,7 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
   /**
     * Builds the documentation for all the endpoints discovered in an API.
     */
-  def endpoints(basePath: String): List[AuthEndpoint[TypeForUser]] = {
+  def endpoints(basePath: String): List[AuthEndpoint[TypeForUser]] =
     (swaggerEndpointEntries(extractOperation) groupBy (_.key)).toList map {
       case (name, entries) =>
         val desc = _description.lift apply name
@@ -370,7 +369,6 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
           desc,
           entries.toList map (_.value))
     } sortBy (_.path)
-  }
 
   /**
     * Returns a list of operations based on the given route. The default implementation returns a list with only 1

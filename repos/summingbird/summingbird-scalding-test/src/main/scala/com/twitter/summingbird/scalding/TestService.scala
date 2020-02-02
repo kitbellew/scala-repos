@@ -28,9 +28,8 @@ import cascading.tuple.Tuple
 import cascading.flow.FlowDef
 
 object TestStoreService {
-  def apply[K, V](store: TestStore[K, V]): TestStoreService[K, V] = {
+  def apply[K, V](store: TestStore[K, V]): TestStoreService[K, V] =
     new TestStoreService(store)
-  }
 }
 
 class TestStoreService[K, V](store: TestStore[K, V])
@@ -93,12 +92,11 @@ class TestService[K, V](
 
   override def readStream(
       batchID: BatchID,
-      mode: Mode): Option[FlowToPipe[(K, Option[V])]] = {
+      mode: Mode): Option[FlowToPipe[(K, Option[V])]] =
     streams.get(batchID).map { iter =>
       val mappable = streamMappable(batchID)
       Reader { (fd: (FlowDef, Mode)) => TypedPipe.from(mappable) }
     }
-  }
   override def readLast(exclusiveUB: BatchID, mode: Mode) = {
     val candidates = lasts.filter { _._1 < exclusiveUB }
     if (candidates.isEmpty) {

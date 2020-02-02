@@ -48,13 +48,11 @@ private class DeploymentActor(
   var currentStep: Option[DeploymentStep] = None
   var currentStepNr: Int = 0
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     self ! NextStep
-  }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     parent ! DeploymentFinished(plan)
-  }
 
   def receive: Receive = {
     case NextStep if steps.hasNext =>
@@ -85,7 +83,7 @@ private class DeploymentActor(
       context.stop(self)
   }
 
-  def performStep(step: DeploymentStep): Future[Unit] = {
+  def performStep(step: DeploymentStep): Future[Unit] =
     if (step.actions.isEmpty) {
       Future.successful(())
     } else {
@@ -110,7 +108,6 @@ private class DeploymentActor(
         case Failure(_) => eventBus.publish(DeploymentStepFailure(plan, step))
       }
     }
-  }
 
   def startApp(app: AppDefinition, scaleTo: Int): Future[Unit] = {
     val promise = Promise[Unit]()
@@ -192,7 +189,7 @@ private class DeploymentActor(
     }
   }
 
-  def restartApp(app: AppDefinition): Future[Unit] = {
+  def restartApp(app: AppDefinition): Future[Unit] =
     if (app.instances == 0) {
       Future.successful(())
     } else {
@@ -208,7 +205,6 @@ private class DeploymentActor(
             promise)))
       promise.future
     }
-  }
 
   def resolveArtifacts(
       app: AppDefinition,
@@ -237,9 +233,8 @@ object DeploymentActor {
       taskQueue: LaunchQueue,
       storage: StorageProvider,
       healthCheckManager: HealthCheckManager,
-      eventBus: EventStream): Props = {
+      eventBus: EventStream): Props =
     // scalastyle:on parameter.number
-
     Props(
       new DeploymentActor(
         parent,
@@ -253,5 +248,4 @@ object DeploymentActor {
         healthCheckManager,
         eventBus
       ))
-  }
 }

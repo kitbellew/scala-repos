@@ -121,9 +121,8 @@ private[spark] object JettyUtils extends Logging {
       // SPARK-5983 ensure TRACE is not supported
       protected override def doTrace(
           req: HttpServletRequest,
-          res: HttpServletResponse): Unit = {
+          res: HttpServletResponse): Unit =
         res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-      }
     }
   }
 
@@ -133,12 +132,11 @@ private[spark] object JettyUtils extends Logging {
       servletParams: ServletParams[T],
       securityMgr: SecurityManager,
       conf: SparkConf,
-      basePath: String = ""): ServletContextHandler = {
+      basePath: String = ""): ServletContextHandler =
     createServletHandler(
       path,
       createServlet(servletParams, securityMgr, conf),
       basePath)
-  }
 
   /** Create a context handler that responds to a request with the given path prefix */
   def createServletHandler(
@@ -168,22 +166,20 @@ private[spark] object JettyUtils extends Logging {
     val servlet = new HttpServlet {
       override def doGet(
           request: HttpServletRequest,
-          response: HttpServletResponse): Unit = {
+          response: HttpServletResponse): Unit =
         if (httpMethods.contains("GET")) {
           doRequest(request, response)
         } else {
           response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
         }
-      }
       override def doPost(
           request: HttpServletRequest,
-          response: HttpServletResponse): Unit = {
+          response: HttpServletResponse): Unit =
         if (httpMethods.contains("POST")) {
           doRequest(request, response)
         } else {
           response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
         }
-      }
       private def doRequest(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
@@ -197,9 +193,8 @@ private[spark] object JettyUtils extends Logging {
       // SPARK-5983 ensure TRACE is not supported
       protected override def doTrace(
           req: HttpServletRequest,
-          res: HttpServletResponse): Unit = {
+          res: HttpServletResponse): Unit =
         res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-      }
     }
     createServletHandler(srcPath, servlet, basePath)
   }
@@ -404,7 +399,7 @@ private[spark] object JettyUtils extends Logging {
       path: String,
       query: String) = {
     val redirectServer = if (server.contains(":") && !server.startsWith("[")) {
-      s"[${server}]"
+      s"[$server]"
     } else {
       server
     }

@@ -27,7 +27,7 @@ import org.apache.spark.sql.types._
 @SQLUserDefinedType(udt = classOf[ExamplePointUDT])
 class ExamplePoint(val x: Double, val y: Double) extends Serializable {
   override def hashCode: Int = 41 * (41 + x.toInt) + y.toInt
-  override def equals(that: Any): Boolean = {
+  override def equals(that: Any): Boolean =
     if (that.isInstanceOf[ExamplePoint]) {
       val e = that.asInstanceOf[ExamplePoint]
       (this.x == e.x || (this.x.isNaN && e.x.isNaN) || (this.x.isInfinity && e.x.isInfinity)) &&
@@ -35,7 +35,6 @@ class ExamplePoint(val x: Double, val y: Double) extends Serializable {
     } else {
       false
     }
-  }
 }
 
 /**
@@ -54,7 +53,7 @@ class ExamplePointUDT extends UserDefinedType[ExamplePoint] {
     new GenericArrayData(output)
   }
 
-  override def deserialize(datum: Any): ExamplePoint = {
+  override def deserialize(datum: Any): ExamplePoint =
     datum match {
       case values: ArrayData =>
         if (values.numElements() > 1) {
@@ -64,7 +63,6 @@ class ExamplePointUDT extends UserDefinedType[ExamplePoint] {
           new ExamplePoint(random.nextDouble(), random.nextDouble())
         }
     }
-  }
 
   override def userClass: Class[ExamplePoint] = classOf[ExamplePoint]
 
@@ -148,7 +146,7 @@ class RowEncoderSuite extends SparkFunSuite {
     assert(input.getStruct(0) == convertedBack.getStruct(0))
   }
 
-  private def encodeDecodeTest(schema: StructType): Unit = {
+  private def encodeDecodeTest(schema: StructType): Unit =
     test(s"encode/decode: ${schema.simpleString}") {
       val encoder = RowEncoder(schema)
       val inputGenerator =
@@ -167,10 +165,9 @@ class RowEncoderSuite extends SparkFunSuite {
           fail(
             s"""
                |schema: ${schema.simpleString}
-               |input: ${input}
+               |input: $input
              """.stripMargin,
             e)
       }
     }
-  }
 }

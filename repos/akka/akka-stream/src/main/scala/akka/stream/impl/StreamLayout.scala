@@ -804,7 +804,7 @@ private[stream] final class VirtualProcessor[T]
     "spec violation: onNext was signaled from upstream without demand"
 
   private class WrappedSubscription(real: Subscription) extends Subscription {
-    override def request(n: Long): Unit = {
+    override def request(n: Long): Unit =
       if (n < 1) {
         tryCancel(real)
         getAndSet(Inert) match {
@@ -813,7 +813,6 @@ private[stream] final class VirtualProcessor[T]
           case _       => // this cannot possibly happen, but signaling errors is impossible at this point
         }
       } else real.request(n)
-    }
     override def cancel(): Unit = {
       set(Inert)
       real.cancel()
@@ -847,7 +846,7 @@ private[impl] class VirtualPublisher[T]
 
   override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
-    @tailrec def rec(): Unit = {
+    @tailrec def rec(): Unit =
       get() match {
         case null => if (!compareAndSet(null, subscriber)) rec()
         case pub: Publisher[_] =>
@@ -859,7 +858,6 @@ private[impl] class VirtualPublisher[T]
             subscriber,
             "Sink.asPublisher(fanout = false)")
       }
-    }
     rec() // return value is boolean only to make the expressions above compile
   }
 
@@ -1063,9 +1061,8 @@ private[stream] abstract class MaterializerSession(
 
   protected def materializeComposite(
       composite: Module,
-      effectiveAttributes: Attributes): Any = {
+      effectiveAttributes: Attributes): Any =
     materializeModule(composite, effectiveAttributes)
-  }
 
   protected def materializeAtomic(
       atomic: AtomicModule,

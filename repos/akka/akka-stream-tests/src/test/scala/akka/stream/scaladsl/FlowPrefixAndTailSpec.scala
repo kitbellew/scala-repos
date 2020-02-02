@@ -130,7 +130,7 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
 
       tail.to(Sink.fromSubscriber(subscriber)).run()(tightTimeoutMaterializer)
       subscriber.expectSubscriptionAndError().getMessage should ===(
-        s"Substream Source has not been materialized in ${ms} milliseconds")
+        s"Substream Source has not been materialized in $ms milliseconds")
     }
     "not fail the stream if substream has not been subscribed in time and configured subscription timeout is noop" in assertAllStagesStopped {
       val tightTimeoutMaterializer =

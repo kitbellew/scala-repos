@@ -426,9 +426,8 @@ trait LiftCometActor
   /**
     * If the predicate cell changes, the Dependent will be notified
     */
-  def predicateChanged(which: Cell[_]): Unit = {
+  def predicateChanged(which: Cell[_]): Unit =
     poke()
-  }
 
   /**
     * The locale for the session that created the CometActor
@@ -713,9 +712,8 @@ trait BaseCometActor
   /**
     * Creates the span element acting as the real estate for comet rendering.
     */
-  def buildSpan(xml: NodeSeq): Elem = {
+  def buildSpan(xml: NodeSeq): Elem =
     parentTag.copy(child = xml) % ("id" -> spanId)
-  }
 
   /**
     * How to report an error that occurs during message dispatch
@@ -997,19 +995,17 @@ trait BaseCometActor
 
     case AnswerQuestion(what, otherListeners) =>
       askingWho.foreach { ah =>
-        {
-          reply(
-            "A null message to release the actor from its send and await reply... do not delete this message")
-          // askingWho.unlink(self)
-          ah ! ShutDown
-          this.listeners = this.listeners ::: otherListeners
-          this.askingWho = Empty
-          val aw = answerWith
-          answerWith = Empty
-          aw.foreach(_(what))
-          performReRender(true)
-          listenerTransition()
-        }
+        reply(
+          "A null message to release the actor from its send and await reply... do not delete this message")
+        // askingWho.unlink(self)
+        ah ! ShutDown
+        this.listeners = this.listeners ::: otherListeners
+        this.askingWho = Empty
+        val aw = answerWith
+        answerWith = Empty
+        aw.foreach(_(what))
+        performReRender(true)
+        listenerTransition()
       }
 
     case ShutdownIfPastLifespan =>
@@ -1200,11 +1196,10 @@ trait BaseCometActor
     * This method is Actor-safe and may be called from any thread, not
     * just the Actor's message handler thread.
     */
-  override def poke(): Unit = {
+  override def poke(): Unit =
     if (running) {
       partialUpdate(Noop)
     }
-  }
 
   /**
     * Perform a partial update of the comet component based
@@ -1263,7 +1258,7 @@ trait BaseCometActor
     */
   protected def composeFunction: PartialFunction[Any, Unit] = composeFunction_i
 
-  private def composeFunction_i: PartialFunction[Any, Unit] = {
+  private def composeFunction_i: PartialFunction[Any, Unit] =
     // if we're no longer running don't pass messages to the other handlers
     // just pass them to our handlers
     if (!_running && (millis - 20000L) > _shutDownAt)
@@ -1271,7 +1266,6 @@ trait BaseCometActor
     else
       highPriority orElse mediumPriority orElse
         _mediumPriority orElse lowPriority orElse _lowPriority
-  }
 
   /**
     * Ask another CometActor a question.  That other CometActor will

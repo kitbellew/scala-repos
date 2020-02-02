@@ -60,8 +60,7 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     "Instantiating Scala Sync Producer with properties: %s".format(
       config.props))
 
-  private def verifyRequest(request: RequestOrResponse) = {
-
+  private def verifyRequest(request: RequestOrResponse) =
     /**
       * This seems a little convoluted, but the idea is to turn on verification simply changing log4j settings
       * Also, when verification is turned on, care should be taken to see that the logs don't fill up with unnecessary
@@ -76,14 +75,13 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
         trace(request.toString)
       }
     }
-  }
 
   /**
     * Common functionality for the public send methods
     */
   private def doSend(
       request: RequestOrResponse,
-      readResponse: Boolean = true): NetworkReceive = {
+      readResponse: Boolean = true): NetworkReceive =
     lock synchronized {
       verifyRequest(request)
       getOrMakeConnection()
@@ -104,7 +102,6 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       }
       response
     }
-  }
 
   /**
     * Send a message. If the producerRequest had required.request.acks=0, then the
@@ -150,12 +147,11 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     TopicMetadataResponse.readFrom(response.payload)
   }
 
-  def close() = {
+  def close() =
     lock synchronized {
       disconnect()
       shutdown = true
     }
-  }
 
   /**
     * Disconnect from current channel, closing connection.

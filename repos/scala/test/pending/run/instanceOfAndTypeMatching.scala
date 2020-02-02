@@ -53,12 +53,11 @@ class Outer {
     }
     def compareSimpleWithInstanceOf(other: Any) = other.isInstanceOf[Inner]
 
-    def compareSharpWithTypeMatch(other: Any) = {
+    def compareSharpWithTypeMatch(other: Any) =
       other match {
         case _: Outer#Inner => true
         case _              => false
       }
-    }
     def compareSharpWithInstanceOf(other: Any) = other.isInstanceOf[Outer#Inner]
 
     def comparePathWithTypeMatch(other: Any) = other match {

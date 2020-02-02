@@ -36,13 +36,12 @@ case class Range[T](lower: T, upper: T)(implicit ord: Ordering[T]) {
     assertUpperBound(max)
   }
 
-  def mkString(sep: String) = {
+  def mkString(sep: String) =
     if (ord.equiv(lower, upper)) {
       lower.toString
     } else {
       lower.toString + sep + upper.toString
     }
-  }
 }
 
 class RangedArgs(args: Args) {

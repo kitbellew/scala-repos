@@ -61,7 +61,7 @@ sealed trait Vector extends Serializable {
   @Since("1.0.0")
   def toArray: Array[Double]
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     other match {
       case v2: Vector =>
         if (this.size != v2.size) return false
@@ -76,7 +76,6 @@ sealed trait Vector extends Serializable {
         }
       case _ => false
     }
-  }
 
   /**
     * Returns a hash code value for the vector. The hash code is based on its size and its first 128
@@ -119,10 +118,9 @@ sealed trait Vector extends Serializable {
     * Makes a deep copy of this vector.
     */
   @Since("1.1.0")
-  def copy: Vector = {
+  def copy: Vector =
     throw new NotImplementedError(
       s"copy is not implemented for ${this.getClass}.")
-  }
 
   /**
     * Applies a function `f` to all the active elements of dense and sparse vector.
@@ -196,7 +194,7 @@ sealed trait Vector extends Serializable {
 @AlphaComponent
 class VectorUDT extends UserDefinedType[Vector] {
 
-  override def sqlType: StructType = {
+  override def sqlType: StructType =
     // type: 0 = sparse, 1 = dense
     // We only use "values" for dense vectors, and "size", "indices", and "values" for sparse
     // vectors. The "values" field is nullable because we might want to add binary vectors later,
@@ -214,9 +212,8 @@ class VectorUDT extends UserDefinedType[Vector] {
           ArrayType(DoubleType, containsNull = false),
           nullable = true)
       ))
-  }
 
-  override def serialize(obj: Vector): InternalRow = {
+  override def serialize(obj: Vector): InternalRow =
     obj match {
       case SparseVector(size, indices, values) =>
         val row = new GenericMutableRow(4)
@@ -233,9 +230,8 @@ class VectorUDT extends UserDefinedType[Vector] {
         row.update(3, new GenericArrayData(values.map(_.asInstanceOf[Any])))
         row
     }
-  }
 
-  override def deserialize(datum: Any): Vector = {
+  override def deserialize(datum: Any): Vector =
     datum match {
       case row: InternalRow =>
         require(
@@ -253,18 +249,16 @@ class VectorUDT extends UserDefinedType[Vector] {
             new DenseVector(values)
         }
     }
-  }
 
   override def pyUDT: String = "pyspark.mllib.linalg.VectorUDT"
 
   override def userClass: Class[Vector] = classOf[Vector]
 
-  override def equals(o: Any): Boolean = {
+  override def equals(o: Any): Boolean =
     o match {
       case v: VectorUDT => true
       case _            => false
     }
-  }
 
   // see [SPARK-8647], this achieves the needed constant hash code without constant no.
   override def hashCode(): Int = classOf[VectorUDT].getName.hashCode()
@@ -343,12 +337,11 @@ object Vectors {
   @Since("1.0.0")
   def sparse(
       size: Int,
-      elements: JavaIterable[(JavaInteger, JavaDouble)]): Vector = {
+      elements: JavaIterable[(JavaInteger, JavaDouble)]): Vector =
     sparse(size, elements.asScala.map {
       case (i, x) =>
         (i.intValue(), x.doubleValue())
     }.toSeq)
-  }
 
   /**
     * Creates a vector of all zeros.
@@ -357,17 +350,15 @@ object Vectors {
     * @return a zero vector
     */
   @Since("1.1.0")
-  def zeros(size: Int): Vector = {
+  def zeros(size: Int): Vector =
     new DenseVector(new Array[Double](size))
-  }
 
   /**
     * Parses a string resulted from [[Vector.toString]] into a [[Vector]].
     */
   @Since("1.1.0")
-  def parse(s: String): Vector = {
+  def parse(s: String): Vector =
     parseNumeric(NumericParser.parse(s))
-  }
 
   /**
     * Parses the JSON representation of a vector into a [[Vector]].
@@ -390,7 +381,7 @@ object Vectors {
     }
   }
 
-  private[mllib] def parseNumeric(any: Any): Vector = {
+  private[mllib] def parseNumeric(any: Any): Vector =
     any match {
       case values: Array[Double] =>
         Vectors.dense(values)
@@ -399,12 +390,11 @@ object Vectors {
       case other =>
         throw new SparkException(s"Cannot parse $other.")
     }
-  }
 
   /**
     * Creates a vector instance from a breeze vector.
     */
-  private[spark] def fromBreeze(breezeVector: BV[Double]): Vector = {
+  private[spark] def fromBreeze(breezeVector: BV[Double]): Vector =
     breezeVector match {
       case v: BDV[Double] =>
         if (v.offset == 0 && v.stride == 1 && v.length == v.data.length) {
@@ -426,7 +416,6 @@ object Vectors {
       case v: BV[_] =>
         sys.error("Unsupported Breeze vector type: " + v.getClass.getName)
     }
-  }
 
   /**
     * Returns the p-norm of this vector.
@@ -631,9 +620,8 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
   override def apply(i: Int): Double = values(i)
 
   @Since("1.1.0")
-  override def copy: DenseVector = {
+  override def copy: DenseVector =
     new DenseVector(values.clone())
-  }
 
   @Since("1.6.0")
   override def foreachActive(f: (Int, Double) => Unit): Unit = {
@@ -697,7 +685,7 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
   }
 
   @Since("1.5.0")
-  override def argmax: Int = {
+  override def argmax: Int =
     if (size == 0) {
       -1
     } else {
@@ -713,7 +701,6 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
       }
       maxIdx
     }
-  }
 
   @Since("1.6.0")
   override def toJson: String = {
@@ -754,7 +741,7 @@ class SparseVector @Since("1.0.0") (
   require(
     indices.length <= size,
     s"You provided ${indices.length} indices and values, " +
-      s"which exceeds the specified vector size ${size}.")
+      s"which exceeds the specified vector size $size.")
 
   override def toString: String =
     s"($size,${indices.mkString("[", ",", "]")},${values.mkString("[", ",", "]")})"
@@ -772,9 +759,8 @@ class SparseVector @Since("1.0.0") (
   }
 
   @Since("1.1.0")
-  override def copy: SparseVector = {
+  override def copy: SparseVector =
     new SparseVector(size, indices.clone(), values.clone())
-  }
 
   private[spark] override def toBreeze: BV[Double] =
     new BSV[Double](indices, values, size)
@@ -846,7 +832,7 @@ class SparseVector @Since("1.0.0") (
   }
 
   @Since("1.5.0")
-  override def argmax: Int = {
+  override def argmax: Int =
     if (size == 0) {
       -1
     } else {
@@ -889,7 +875,6 @@ class SparseVector @Since("1.0.0") (
 
       maxIdx
     }
-  }
 
   /**
     * Create a slice of this vector based on the given indices.

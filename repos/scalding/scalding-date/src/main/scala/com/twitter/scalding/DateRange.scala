@@ -83,7 +83,7 @@ case class DateRange(val start: RichDate, val end: RichDate) {
   import DateOps._
   require(
     start <= end,
-    s"""The start "${start}" must be before or on the end "${end}".""")
+    s"""The start "$start" must be before or on the end "$end".""")
 
   /**
     * shift this by the given unit

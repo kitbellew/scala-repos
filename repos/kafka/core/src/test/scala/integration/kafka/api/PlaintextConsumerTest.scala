@@ -731,14 +731,12 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   }
 
   @Test
-  def testMultiConsumerSessionTimeoutOnStopPolling(): Unit = {
+  def testMultiConsumerSessionTimeoutOnStopPolling(): Unit =
     runMultiConsumerSessionTimeoutTest(false)
-  }
 
   @Test
-  def testMultiConsumerSessionTimeoutOnClose(): Unit = {
+  def testMultiConsumerSessionTimeoutOnClose(): Unit =
     runMultiConsumerSessionTimeoutTest(true)
-  }
 
   @Test
   def testInterceptors() {
@@ -871,10 +869,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       new StringDeserializer())
     val rebalanceListener = new ConsumerRebalanceListener {
       override def onPartitionsAssigned(
-          partitions: util.Collection[TopicPartition]) = {
+          partitions: util.Collection[TopicPartition]) =
         // keep partitions paused in this test so that we can verify the commits based on specific seeks
         testConsumer.pause(partitions)
-      }
 
       override def onPartitionsRevoked(
           partitions: util.Collection[TopicPartition]) = {}
@@ -1217,7 +1214,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     validateGroupAssignment(
       consumerPollers,
       subscriptions,
-      s"Did not get valid assignment for partitions ${subscriptions.asJava} after we added ${numOfConsumersToAdd} consumer(s)"
+      s"Did not get valid assignment for partitions ${subscriptions.asJava} after we added $numOfConsumersToAdd consumer(s)"
     )
   }
 
@@ -1232,7 +1229,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       consumerPollers: Buffer[ConsumerAssignmentPoller],
       subscriptions: Set[TopicPartition],
       msg: String,
-      waitTime: Long = 10000L): Unit = {
+      waitTime: Long = 10000L): Unit =
     TestUtils.waitUntilTrue(
       () => {
         val assignments = Buffer[Set[TopicPartition]]()
@@ -1242,7 +1239,6 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       msg,
       waitTime
     )
-  }
 
   def changeConsumerGroupSubscriptionAndValidateAssignment(
       consumerPollers: Buffer[ConsumerAssignmentPoller],
@@ -1254,10 +1250,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // since subscribe call to poller does not actually call consumer subscribe right away, wait
     // until subscribe is called on all consumers
     TestUtils.waitUntilTrue(
-      () => {
-        consumerPollers forall (poller => poller.isSubscribeRequestProcessed())
-      },
-      s"Failed to call subscribe on all consumers in the group for subscription ${subscriptions}",
+      () =>
+        consumerPollers forall (poller => poller.isSubscribeRequestProcessed()),
+      s"Failed to call subscribe on all consumers in the group for subscription $subscriptions",
       1000L
     )
 

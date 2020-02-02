@@ -81,10 +81,9 @@ class ChannelTransportTest
       override def write(
           ctx: ChannelHandlerContext,
           msg: scala.Any,
-          promise: ChannelPromise): Unit = {
+          promise: ChannelPromise): Unit =
         // we fail every single write to the pipeline
         promise.setFailure(e)
-      }
     })
 
     forAll { s: String =>
@@ -99,10 +98,9 @@ class ChannelTransportTest
       override def write(
           ctx: ChannelHandlerContext,
           msg: scala.Any,
-          promise: ChannelPromise): Unit = {
+          promise: ChannelPromise): Unit =
         // we succeed every single write to the pipeline
         promise.setSuccess()
-      }
     })
 
     forAll { s: String => assert(transport.write(s).poll == Some(Return.Unit)) }
@@ -114,10 +112,9 @@ class ChannelTransportTest
       override def write(
           ctx: ChannelHandlerContext,
           msg: scala.Any,
-          promise: ChannelPromise): Unit = {
+          promise: ChannelPromise): Unit =
         // we store pending promise to make sure it's canceled
         p = Some(promise)
-      }
     })
 
     forAll { s: String =>
@@ -134,10 +131,9 @@ class ChannelTransportTest
       override def write(
           ctx: ChannelHandlerContext,
           msg: scala.Any,
-          promise: ChannelPromise): Unit = {
+          promise: ChannelPromise): Unit =
         // we cancel every single write
         promise.cancel(false /*mayInterruptIfRunning*/ )
-      }
     })
 
     forAll { s: String =>

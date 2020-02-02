@@ -20,7 +20,7 @@ import scala.collection.convert.decorateAsScala._
 
 object MethodLevelOptsTest extends ClearAfterClass.Clearable {
   var methodOptCompiler = newCompiler(extraArgs = "-Yopt:l:method")
-  def clear(): Unit = { methodOptCompiler = null }
+  def clear(): Unit = methodOptCompiler = null
 }
 
 @RunWith(classOf[JUnit4])

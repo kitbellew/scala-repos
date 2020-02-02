@@ -19,7 +19,7 @@ object ToSetAndBackToDistinct extends SimplificationType {
 
   private val `.toSet` = invocation("toSet").from(likeCollectionClasses)
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case (qual @ ExpressionType(qualType)) `.toSet` () `.toCollection` ()
           if sameCollectionType(qualType, expr.getType().getOrAny) && (isSeq(
@@ -30,14 +30,12 @@ object ToSetAndBackToDistinct extends SimplificationType {
             .highlightFrom(qual))
       case _ => None
     }
-  }
 
-  def sameCollectionType(tp1: ScType, tp2: ScType) = {
+  def sameCollectionType(tp1: ScType, tp2: ScType) =
     (tp1, tp2) match {
       case (ScParameterizedType(des1, _), ScParameterizedType(des2, _))
           if des1.equiv(des2) =>
         true
       case _ => false
     }
-  }
 }

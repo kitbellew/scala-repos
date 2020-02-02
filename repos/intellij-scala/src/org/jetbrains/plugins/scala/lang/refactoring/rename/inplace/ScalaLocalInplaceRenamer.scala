@@ -76,11 +76,10 @@ class ScalaLocalInplaceRenamer(
 
   override def startsOnTheSameElement(
       handler: RefactoringActionHandler,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     handler match {
       case _: ScalaLocalInplaceRenameHandler =>
         ScalaRenameUtil.sameElement(elementRange, element)
       case _ => false
     }
-  }
 }

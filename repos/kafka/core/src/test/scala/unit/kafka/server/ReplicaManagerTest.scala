@@ -128,10 +128,9 @@ class ReplicaManagerTest {
       new AtomicBoolean(false),
       Option(this.getClass.getName))
     try {
-      def callback(responseStatus: Map[TopicPartition, PartitionResponse]) = {
+      def callback(responseStatus: Map[TopicPartition, PartitionResponse]) =
         assert(
           responseStatus.values.head.errorCode == Errors.INVALID_REQUIRED_ACKS.code)
-      }
       rm.appendMessages(
         timeout = 0,
         requiredAcks = 3,

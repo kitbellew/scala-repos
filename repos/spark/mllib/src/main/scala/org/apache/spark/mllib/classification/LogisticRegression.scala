@@ -167,7 +167,7 @@ class LogisticRegressionModel @Since("1.3.0") (
   }
 
   @Since("1.3.0")
-  override def save(sc: SparkContext, path: String): Unit = {
+  override def save(sc: SparkContext, path: String): Unit =
     GLMClassificationModel.SaveLoadV1_0.save(
       sc,
       path,
@@ -177,13 +177,11 @@ class LogisticRegressionModel @Since("1.3.0") (
       weights,
       intercept,
       threshold)
-  }
 
   override protected def formatVersion: String = "1.0"
 
-  override def toString: String = {
-    s"${super.toString}, numClasses = ${numClasses}, threshold = ${threshold.getOrElse("None")}"
-  }
+  override def toString: String =
+    s"${super.toString}, numClasses = $numClasses, threshold = ${threshold.getOrElse("None")}"
 }
 
 @Since("1.3.0")
@@ -258,9 +256,8 @@ class LogisticRegressionWithSGD private[mllib] (
 
   override protected[mllib] def createModel(
       weights: Vector,
-      intercept: Double) = {
+      intercept: Double) =
     new LogisticRegressionModel(weights, intercept)
-  }
 }
 
 /**
@@ -292,14 +289,13 @@ object LogisticRegressionWithSGD {
       numIterations: Int,
       stepSize: Double,
       miniBatchFraction: Double,
-      initialWeights: Vector): LogisticRegressionModel = {
+      initialWeights: Vector): LogisticRegressionModel =
     new LogisticRegressionWithSGD(
       stepSize,
       numIterations,
       0.0,
       miniBatchFraction)
       .run(input, initialWeights)
-  }
 
   /**
     * Train a logistic regression model given an RDD of (label, features) pairs. We run a fixed
@@ -318,14 +314,13 @@ object LogisticRegressionWithSGD {
       input: RDD[LabeledPoint],
       numIterations: Int,
       stepSize: Double,
-      miniBatchFraction: Double): LogisticRegressionModel = {
+      miniBatchFraction: Double): LogisticRegressionModel =
     new LogisticRegressionWithSGD(
       stepSize,
       numIterations,
       0.0,
       miniBatchFraction)
       .run(input)
-  }
 
   /**
     * Train a logistic regression model given an RDD of (label, features) pairs. We run a fixed
@@ -343,9 +338,8 @@ object LogisticRegressionWithSGD {
   def train(
       input: RDD[LabeledPoint],
       numIterations: Int,
-      stepSize: Double): LogisticRegressionModel = {
+      stepSize: Double): LogisticRegressionModel =
     train(input, numIterations, stepSize, 1.0)
-  }
 
   /**
     * Train a logistic regression model given an RDD of (label, features) pairs. We run a fixed
@@ -360,9 +354,8 @@ object LogisticRegressionWithSGD {
   @Since("1.0.0")
   def train(
       input: RDD[LabeledPoint],
-      numIterations: Int): LogisticRegressionModel = {
+      numIterations: Int): LogisticRegressionModel =
     train(input, numIterations, 1.0, 1.0)
-  }
 }
 
 /**
@@ -413,7 +406,7 @@ class LogisticRegressionWithLBFGS
     this
   }
 
-  override protected def createModel(weights: Vector, intercept: Double) = {
+  override protected def createModel(weights: Vector, intercept: Double) =
     if (numOfLinearPredictor == 1) {
       new LogisticRegressionModel(weights, intercept)
     } else {
@@ -423,7 +416,6 @@ class LogisticRegressionWithLBFGS
         numFeatures,
         numOfLinearPredictor + 1)
     }
-  }
 
   /**
     * Run Logistic Regression with the configured parameters on an input RDD
@@ -435,9 +427,8 @@ class LogisticRegressionWithLBFGS
     * or feature scaling is disabled, always uses mllib implementation.
     * If using ml implementation, uses ml code to generate initial weights.
     */
-  override def run(input: RDD[LabeledPoint]): LogisticRegressionModel = {
+  override def run(input: RDD[LabeledPoint]): LogisticRegressionModel =
     run(input, generateInitialWeights(input), userSuppliedWeights = false)
-  }
 
   /**
     * Run Logistic Regression with the configured parameters on an input RDD
@@ -455,14 +446,13 @@ class LogisticRegressionWithLBFGS
     */
   override def run(
       input: RDD[LabeledPoint],
-      initialWeights: Vector): LogisticRegressionModel = {
+      initialWeights: Vector): LogisticRegressionModel =
     run(input, initialWeights, userSuppliedWeights = true)
-  }
 
   private def run(
       input: RDD[LabeledPoint],
       initialWeights: Vector,
-      userSuppliedWeights: Boolean): LogisticRegressionModel = {
+      userSuppliedWeights: Boolean): LogisticRegressionModel =
     // ml's Logisitic regression only supports binary classifcation currently.
     if (numOfLinearPredictor == 1) {
       def runWithMlLogisitcRegression(elasticNetParam: Double) = {
@@ -503,5 +493,4 @@ class LogisticRegressionWithLBFGS
     } else {
       super.run(input, initialWeights)
     }
-  }
 }

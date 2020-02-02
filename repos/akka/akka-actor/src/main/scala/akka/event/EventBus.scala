@@ -414,12 +414,11 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
     */
   protected def mapSize: Int
 
-  def publish(event: Event): Unit = {
+  def publish(event: Event): Unit =
     mappings.get.backing.get(classify(event)) match {
       case None ⇒ ()
       case Some(refs) ⇒ refs.foreach { _ ! event }
     }
-  }
 
   def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
     if (subscriber eq null)

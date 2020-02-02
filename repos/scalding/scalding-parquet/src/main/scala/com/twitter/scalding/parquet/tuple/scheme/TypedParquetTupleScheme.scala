@@ -83,21 +83,19 @@ class ReadSupportInstanceProxy[T] extends ReadSupport[T] {
     }
   }
 
-  override def init(context: InitContext): ReadContext = {
+  override def init(context: InitContext): ReadContext =
     getDelegateInstance(context.getConfiguration).init(context)
-  }
 
   override def prepareForRead(
       configuration: Configuration,
       keyValueMetaData: JMap[String, String],
       fileSchema: MessageType,
-      readContext: ReadContext): RecordMaterializer[T] = {
+      readContext: ReadContext): RecordMaterializer[T] =
     getDelegateInstance(configuration).prepareForRead(
       configuration,
       keyValueMetaData,
       fileSchema,
       readContext)
-  }
 }
 
 /**

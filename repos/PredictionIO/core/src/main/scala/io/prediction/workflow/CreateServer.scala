@@ -292,7 +292,7 @@ class MasterActor(
   var retry = 3
 
   def undeploy(ip: String, port: Int): Unit = {
-    val serverUrl = s"https://${ip}:${port}"
+    val serverUrl = s"https://$ip:$port"
     log.info(s"Undeploying any existing engine instance at $serverUrl")
     try {
       val code = scalaj.http
@@ -379,7 +379,7 @@ class MasterActor(
     case x: Http.Bound =>
       val serverUrl = s"https://${sc.ip}:${sc.port}"
       log.info(
-        s"Engine is deployed and running. Engine API is live at ${serverUrl}.")
+        s"Engine is deployed and running. Engine API is live at $serverUrl.")
       sprayHttpListener = Some(sender)
     case x: Http.CommandFailed =>
       if (retry > 0) {

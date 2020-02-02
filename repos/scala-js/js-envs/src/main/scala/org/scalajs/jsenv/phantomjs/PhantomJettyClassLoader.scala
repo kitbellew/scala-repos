@@ -35,7 +35,7 @@ final class PhantomJettyClassLoader(
     "org.scalajs.jsenv.phantomjs.JettyWebsocketManager$$anon$2"
   )
 
-  override protected def loadClass(name: String, resolve: Boolean): Class[_] = {
+  override protected def loadClass(name: String, resolve: Boolean): Class[_] =
     if (bridgeClasses.contains(name)) {
       // Load bridgeClasses manually since they must be associated to this
       // class loader, rather than the parent class loader in order to find the
@@ -61,5 +61,4 @@ final class PhantomJettyClassLoader(
           super.loadClass(name, resolve)
       }
     }
-  }
 }

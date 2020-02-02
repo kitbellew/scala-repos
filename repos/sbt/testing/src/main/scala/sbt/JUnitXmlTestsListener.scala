@@ -126,7 +126,7 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   val testSuite = new DynamicVariable(null: TestSuite)
 
   /**Creates the output Dir*/
-  override def doInit() = { targetDir.mkdirs() }
+  override def doInit() = targetDir.mkdirs()
 
   /**
     * Starts a new, initially empty Suite with the given name.
@@ -182,9 +182,8 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     * Ends the current suite, wraps up the result and writes it to an XML file
     *  in the output folder that is named after the suite.
     */
-  override def endGroup(name: String, result: TestResult.Value) = {
+  override def endGroup(name: String, result: TestResult.Value) =
     writeSuite()
-  }
 
   // Here we normalize the name to ensure that it's a nicer filename, rather than
   // contort the user into not using spaces.

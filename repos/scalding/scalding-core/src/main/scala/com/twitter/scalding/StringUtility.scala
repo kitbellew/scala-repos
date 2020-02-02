@@ -25,7 +25,6 @@ object StringUtility {
     }
   }
 
-  def fastSplit(text: String, key: String): List[String] = {
+  def fastSplit(text: String, key: String): List[String] =
     fastSplitHelper(text, key, 0, text.length, key.length)
-  }
 }

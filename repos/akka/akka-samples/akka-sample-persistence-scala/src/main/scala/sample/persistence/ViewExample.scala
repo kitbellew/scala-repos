@@ -13,7 +13,7 @@ object ViewExample extends App {
 
     def receiveCommand: Receive = {
       case payload: String =>
-        println(s"persistentActor received ${payload} (nr = ${count})")
+        println(s"persistentActor received $payload (nr = $count)")
         persist(payload + count) { evt => count += 1 }
     }
 
@@ -35,18 +35,18 @@ object ViewExample extends App {
       case SnapshotOffer(metadata, snapshot: Int) =>
         numReplicated = snapshot
         println(
-          s"view received snapshot offer ${snapshot} (metadata = ${metadata})")
+          s"view received snapshot offer $snapshot (metadata = $metadata)")
       case payload if isPersistent =>
         numReplicated += 1
         println(
-          s"view replayed event ${payload} (num replicated = ${numReplicated})")
+          s"view replayed event $payload (num replicated = $numReplicated)")
       case SaveSnapshotSuccess(metadata) =>
-        println(s"view saved snapshot (metadata = ${metadata})")
+        println(s"view saved snapshot (metadata = $metadata)")
       case SaveSnapshotFailure(metadata, reason) =>
         println(
-          s"view snapshot failure (metadata = ${metadata}), caused by ${reason}")
+          s"view snapshot failure (metadata = $metadata), caused by $reason")
       case payload =>
-        println(s"view received other message ${payload}")
+        println(s"view received other message $payload")
     }
 
   }

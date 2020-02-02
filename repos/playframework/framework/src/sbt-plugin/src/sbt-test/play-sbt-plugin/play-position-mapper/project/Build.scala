@@ -23,11 +23,10 @@ object ApplicationBuild extends Build {
     def logAll(events: Seq[LogEvent]) = events.foreach(log)
     def trace(t: => Throwable) = ()
     def success(message: => String) = ()
-    def log(level: Level.Value, message: => String) = {
+    def log(level: Level.Value, message: => String) =
       if (level == Level.Error) synchronized {
         messages = message :: messages
       }
-    }
   }
 
   import complete.DefaultParsers._
@@ -55,9 +54,7 @@ object ApplicationBuild extends Build {
     .settings(
       version := appVersion,
       extraLoggers ~= { currentFunction => (key: ScopedKey[_]) =>
-        {
-          bufferLogger +: currentFunction(key)
-        }
+        bufferLogger +: currentFunction(key)
       },
       scalaVersion := sys.props.get("scala.version").getOrElse("2.11.7"),
       checkLogContainsTask,

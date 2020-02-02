@@ -23,8 +23,7 @@ class MapGetOrElseInspection extends OperationOnCollectionInspection {
 object MapGetOrElse extends SimplificationType() {
   def hint = InspectionBundle.message("map.getOrElse.hint")
 
-  override def getSimplification(expr: ScExpression): Option[Simplification] = {
-
+  override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.mapOnOption` (fun) `.getOrElse` (default) =>
         replacementText(qual, fun, default) match {
@@ -36,7 +35,6 @@ object MapGetOrElse extends SimplificationType() {
         }
       case _ => None
     }
-  }
 
   def replacementText(
       qual: ScExpression,

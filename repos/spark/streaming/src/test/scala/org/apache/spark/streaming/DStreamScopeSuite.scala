@@ -44,13 +44,12 @@ class DStreamScopeSuite
     ssc = new StreamingContext(new SparkContext(conf), batchDuration)
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       ssc.stop(stopSparkContext = true)
     } finally {
       super.afterAll()
     }
-  }
 
   before { assertPropertiesNotSet() }
   after { assertPropertiesNotSet() }
@@ -139,7 +138,7 @@ class DStreamScopeSuite
     assertScopeCorrect(countScopeBase.get, countScope3.get, 3000)
 
     // All streams except the input stream should share the same scopes as `countStream`
-    def testStream(stream: DStream[_]): Unit = {
+    def testStream(stream: DStream[_]): Unit =
       if (stream != inputStream) {
         val myScopeBase = stream.baseScope.map(RDDOperationScope.fromJson)
         val myScope1 = stream.getOrCompute(Time(1000)).get.scope
@@ -153,7 +152,6 @@ class DStreamScopeSuite
         // Climb upwards to test the parent streams
         stream.dependencies.foreach(testStream)
       }
-    }
     testStream(countStream)
   }
 
@@ -251,10 +249,9 @@ class DStreamScopeSuite
   }
 
   /** Assert that all the specified options are defined. */
-  private def assertDefined[T](options: Option[T]*): Unit = {
+  private def assertDefined[T](options: Option[T]*): Unit =
     options.zipWithIndex.foreach {
       case (o, i) => assert(o.isDefined, s"Option $i was empty!")
     }
-  }
 
 }

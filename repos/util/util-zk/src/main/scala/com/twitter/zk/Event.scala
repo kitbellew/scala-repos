@@ -15,9 +15,8 @@ object Event {
     new WatchedEvent(t, s, p.orNull)
 
   def unapply(
-      event: WatchedEvent): Option[(EventType, KeeperState, Option[String])] = {
+      event: WatchedEvent): Option[(EventType, KeeperState, Option[String])] =
     Some((event.getType, event.getState, Option { event.getPath }))
-  }
 }
 
 sealed trait StateEvent {
@@ -55,7 +54,7 @@ object StateEvent {
     val state = KeeperState.SaslAuthenticated
   }
 
-  def apply(w: WatchedEvent): StateEvent = {
+  def apply(w: WatchedEvent): StateEvent =
     w.getState match {
       case KeeperState.AuthFailed        => AuthFailed
       case KeeperState.SyncConnected     => Connected
@@ -70,7 +69,6 @@ object StateEvent {
         throw new IllegalArgumentException(
           "Can't convert deprecated state to StateEvent: NoSyncConnected")
     }
-  }
 }
 
 sealed trait NodeEvent {

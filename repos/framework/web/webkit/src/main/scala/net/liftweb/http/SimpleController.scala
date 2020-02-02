@@ -30,7 +30,7 @@ trait SimpleController {
 
   def httpRequest: HTTPRequest
 
-  def param(name: String): Box[String] = {
+  def param(name: String): Box[String] =
     request.params.get(name) match {
       case None => Empty
       case Some(nl) =>
@@ -39,7 +39,6 @@ trait SimpleController {
           case l   => Full(l.head)
         }
     }
-  }
 
   def post_? : Boolean = request.post_?
 

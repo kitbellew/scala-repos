@@ -42,11 +42,10 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
         (a zip b) map ((ord0.compare _).tupled) find (_ != 0) getOrElse (a.length - b.length)
     }
 
-  def extractCValues(colGroups: List[List[Column]], row: Int): List[CValue] = {
+  def extractCValues(colGroups: List[List[Column]], row: Int): List[CValue] =
     colGroups map {
       _ find (_.isDefinedAt(row)) map (_.cValue(row)) getOrElse CUndefined
     }
-  }
 
   def columnsByCPath(slice: Slice): Map[CPath, List[Column]] = {
     val byCPath = slice.columns.groupBy(_._1.selector)
@@ -70,11 +69,10 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
   def fakeSort(slice: Slice, sortKey: VectorCase[CPath]) =
     sortableCValues(slice, sortKey).sortBy(_._1).map(_._2)
 
-  def fakeConcat(slices: List[Slice]) = {
+  def fakeConcat(slices: List[Slice]) =
     slices.foldLeft(List.empty[List[CValue]]) { (acc, slice) =>
       acc ++ toCValues(slice)
     }
-  }
 
   def stripUndefineds(cvals: List[CValue]): Set[CValue] =
     (cvals filter (_ != CUndefined)).toSet

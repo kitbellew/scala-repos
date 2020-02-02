@@ -65,13 +65,12 @@ final case class HttpsRules(
     * Returns the headers implied by this set of HTTPS rules. If `enforce` is
     * false, returns nothing.
     */
-  def headers(enforce: Boolean): List[(String, String)] = {
+  def headers(enforce: Boolean): List[(String, String)] =
     if (enforce) {
       headers
     } else {
       Nil
     }
-  }
 }
 object HttpsRules {
 
@@ -308,7 +307,7 @@ final case class ContentSecurityPolicy(
     */
   def headers(
       enforce: Boolean = true,
-      logViolations: Boolean = true): List[(String, String)] = {
+      logViolations: Boolean = true): List[(String, String)] =
     if (enforce) {
       enforcedHeaders
     } else if (logViolations) {
@@ -316,7 +315,6 @@ final case class ContentSecurityPolicy(
     } else {
       Nil
     }
-  }
 }
 object ContentSecurityPolicy {
 
@@ -324,9 +322,8 @@ object ContentSecurityPolicy {
     * The default URI where security policy violations will be reported. This
     * URI is under Lift's URI namespace, at `[[LiftRules.liftPath]]`.
     */
-  def defaultReportUri = {
+  def defaultReportUri =
     new URI(LiftRules.liftPath + "/content-security-policy-report")
-  }
 
   /**
     * Creates a restrictive content security policy that disallows images from
@@ -336,9 +333,8 @@ object ContentSecurityPolicy {
     * to the same origin, but allows images from any source; the secure one only
     * differs because it adds restrictions to the image sources.
     */
-  def secure: ContentSecurityPolicy = {
+  def secure: ContentSecurityPolicy =
     ContentSecurityPolicy(imageSources = Nil)
-  }
 }
 
 /**
@@ -412,13 +408,12 @@ sealed trait FrameRestrictions {
     * Because of how frame restrictions are handled, if enforcement is turned
     * off, no headers are generated.
     */
-  def headers(enforce: Boolean = false): List[(String, String)] = {
+  def headers(enforce: Boolean = false): List[(String, String)] =
     if (enforce) {
       headers
     } else {
       Nil
     }
-  }
 }
 object FrameRestrictions {
 
@@ -500,11 +495,10 @@ object SecurityRules {
     * To tweak any of these settings, use the `SecurityRules` constructor
     * directly.
     */
-  def secure = {
+  def secure =
     apply(
       Some(HttpsRules.secure),
       Some(ContentSecurityPolicy.secure),
       enforceInOtherModes = true
     )
-  }
 }

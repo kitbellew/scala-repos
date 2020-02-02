@@ -76,9 +76,8 @@ package scalaguide.http.scalaactionscomposition {
         object LoggingAction extends ActionBuilder[Request] {
           def invokeBlock[A](
               request: Request[A],
-              block: (Request[A]) => Future[Result]) = {
+              block: (Request[A]) => Future[Result]) =
             block(request)
-          }
           override def composeAction[A](action: Action[A]) = new Logging(action)
         }
         //#actions-wrapping-builder
@@ -260,21 +259,19 @@ package scalaguide.http.scalaactionscomposition {
     def testAction[A](
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
-        expectedResponse: Int = OK) = {
+        expectedResponse: Int = OK) =
       assertAction(action, request, expectedResponse) { result => success }
-    }
 
     def assertAction[A, T: AsResult](
         action: EssentialAction,
         request: => Request[A] = FakeRequest(),
-        expectedResponse: Int = OK)(assertions: Future[Result] => T) = {
+        expectedResponse: Int = OK)(assertions: Future[Result] => T) =
       running() { app =>
         implicit val mat = ActorMaterializer()(app.actorSystem)
         val result = action(request).run()
         status(result) must_== expectedResponse
         assertions(result)
       }
-    }
 
   }
 

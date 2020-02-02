@@ -125,7 +125,7 @@ trait DB2Profile extends JdbcProfile {
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override protected def createIndex(idx: Index) = {
+    override protected def createIndex(idx: Index) =
       if (idx.unique) {
         /* Create a UNIQUE CONSTRAINT (with an automatically generated backing
          * index) because DB2 does not allow a FOREIGN KEY CONSTRAINT to
@@ -138,7 +138,6 @@ trait DB2Profile extends JdbcProfile {
         sb append ")"
         sb.toString
       } else super.createIndex(idx)
-    }
   }
 
   class ColumnDDLBuilder(column: FieldSymbol)

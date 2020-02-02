@@ -37,11 +37,10 @@ class ScParameterClauseImpl private (
   }
   override def toString: String = "ParametersClause"
 
-  def parameters: Seq[ScParameter] = {
+  def parameters: Seq[ScParameter] =
     getStubOrPsiChildren[ScParameter](
       TokenSets.PARAMETERS,
       JavaArrayFactoryUtil.ScParameterFactory)
-  }
 
   @volatile
   private var synthClause: Option[ScParameterClause] = None
@@ -121,12 +120,11 @@ class ScParameterClauseImpl private (
     this
   }
 
-  override def owner: PsiElement = {
+  override def owner: PsiElement =
     ScalaPsiUtil.getContextOfType(
       this,
       true,
       classOf[ScFunctionExpr],
       classOf[ScFunction],
       classOf[ScPrimaryConstructor])
-  }
 }

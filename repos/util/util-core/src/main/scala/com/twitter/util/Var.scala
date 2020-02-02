@@ -71,7 +71,7 @@ trait Var[+T] { self =>
       val inner = new AtomicReference(Closable.nop)
       val outer = self.observe(
         depth,
-        Observer(t => {
+        Observer { t =>
           // TODO: Right now we rely on synchronous propagation; and
           // thus also synchronous closes. We should instead perform
           // asynchronous propagation so that it is is safe &
@@ -85,7 +85,7 @@ trait Var[+T] { self =>
           // Futures eagerly.
           val done = inner.getAndSet(f(t).observe(depth + 1, obs)).close()
           assert(done.isDone)
-        })
+        }
       )
 
       Closable.sequence(outer, Closable.ref(inner))

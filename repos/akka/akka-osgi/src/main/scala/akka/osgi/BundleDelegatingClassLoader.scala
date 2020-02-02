@@ -45,26 +45,24 @@ class BundleDelegatingClassLoader(
   private val bundles = findTransitiveBundles(bundle).toList
 
   override def findClass(name: String): Class[_] = {
-    @tailrec def find(remaining: List[Bundle]): Class[_] = {
+    @tailrec def find(remaining: List[Bundle]): Class[_] =
       if (remaining.isEmpty) throw new ClassNotFoundException(name)
       else
         Try { remaining.head.loadClass(name) } match {
           case Success(cls) ⇒ cls
           case Failure(_) ⇒ find(remaining.tail)
         }
-    }
     find(bundles)
   }
 
   override def findResource(name: String): URL = {
-    @tailrec def find(remaining: List[Bundle]): URL = {
+    @tailrec def find(remaining: List[Bundle]): URL =
       if (remaining.isEmpty) getParent.getResource(name)
       else
         Option { remaining.head.getResource(name) } match {
           case Some(r) ⇒ r
           case None ⇒ find(remaining.tail)
         }
-    }
     find(bundles)
   }
 
@@ -78,7 +76,7 @@ class BundleDelegatingClassLoader(
   private def findTransitiveBundles(bundle: Bundle): Set[Bundle] = {
     @tailrec def process(
         processed: Set[Bundle],
-        remaining: Set[Bundle]): Set[Bundle] = {
+        remaining: Set[Bundle]): Set[Bundle] =
       if (remaining.isEmpty) {
         processed
       } else {
@@ -102,7 +100,6 @@ class BundleDelegatingClassLoader(
           process(processed + b, rest ++ (direct -- processed))
         }
       }
-    }
     process(Set.empty, Set(bundle))
   }
 }

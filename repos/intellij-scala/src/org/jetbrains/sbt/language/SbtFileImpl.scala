@@ -77,7 +77,7 @@ class SbtFileImpl(provider: FileViewProvider)
       .orElse(fileModule)
       .fold(Seq.empty[String])(SbtModule.getImportsFrom)
 
-  private def localObjectsWithDefinitions: Seq[PsiClass] = {
+  private def localObjectsWithDefinitions: Seq[PsiClass] =
     projectDefinitionModule.fold(Seq.empty[PsiClass]) { module =>
       val manager = ScalaPsiManager.instance(getProject)
 
@@ -89,7 +89,6 @@ class SbtFileImpl(provider: FileViewProvider)
         .flatMap(
           ClassInheritorsSearch.search(_, moduleScope, true).findAll.asScala)
     }
-  }
 
   override def getFileResolveScope: GlobalSearchScope =
     projectDefinitionModule.fold(super.getFileResolveScope)(

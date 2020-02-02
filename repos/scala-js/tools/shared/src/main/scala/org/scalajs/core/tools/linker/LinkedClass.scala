@@ -98,7 +98,7 @@ final class LinkedClass(
       hasInstances: Boolean = this.hasInstances,
       hasInstanceTests: Boolean = this.hasInstanceTests,
       hasRuntimeTypeInfo: Boolean = this.hasRuntimeTypeInfo,
-      version: Option[String] = this.version) = {
+      version: Option[String] = this.version) =
     new LinkedClass(
       name,
       kind,
@@ -119,7 +119,6 @@ final class LinkedClass(
       hasInstanceTests,
       hasRuntimeTypeInfo,
       version)
-  }
 }
 
 object LinkedClass {

@@ -35,18 +35,17 @@ class CreateTableAsSelectSuite
   override def beforeAll(): Unit = {
     super.beforeAll()
     path = Utils.createTempDir()
-    val rdd = sparkContext.parallelize(
-      (1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
+    val rdd =
+      sparkContext.parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
     caseInsensitiveContext.read.json(rdd).registerTempTable("jt")
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     try {
       caseInsensitiveContext.dropTempTable("jt")
     } finally {
       super.afterAll()
     }
-  }
 
   after {
     Utils.deleteRecursively(path)

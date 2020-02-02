@@ -33,10 +33,9 @@ trait ServletBase extends ScalatraBase with SessionSupport with Initializable {
       override def get(key: String): Option[String] =
         Option(config.getInitParameter(key))
 
-      override def iterator: Iterator[(String, String)] = {
+      override def iterator: Iterator[(String, String)] =
         for (name <- config.getInitParameterNames.asScala.toIterator)
           yield (name, config.getInitParameter(name))
-      }
     }
 
   }

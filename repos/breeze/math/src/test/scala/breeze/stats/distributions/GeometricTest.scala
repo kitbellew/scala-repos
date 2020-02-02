@@ -36,9 +36,8 @@ class GeometricTest
 
   override val VARIANCE_TOLERANCE: Double = 1e-1
 
-  def paramsClose(p: Double, q: Double) = {
+  def paramsClose(p: Double, q: Double) =
     (p - q).abs / (p.abs / 2 + q.abs / 2 + 1) < 1e-1
-  }
 
   def arbParameter = Arbitrary {
     for (p <- arbitrary[Double].map { m => (math.abs(m) % 1.0) + 1e-3 }) yield p

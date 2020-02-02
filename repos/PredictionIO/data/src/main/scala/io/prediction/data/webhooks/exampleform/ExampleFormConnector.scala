@@ -57,7 +57,7 @@ private[prediction] object ExampleFormConnector extends FormConnector {
           case Some("userActionItem") => userActionItemToEventJson(data)
           case Some(x) =>
             throw new ConnectorException(
-              s"Cannot convert unknown type ${x} to event JSON")
+              s"Cannot convert unknown type $x to event JSON")
           case None =>
             throw new ConnectorException(s"The field 'type' is required.")
         }
@@ -65,7 +65,7 @@ private[prediction] object ExampleFormConnector extends FormConnector {
         case e: ConnectorException => throw e
         case e: Exception =>
           throw new ConnectorException(
-            s"Cannot convert ${data} to event JSON. ${e.getMessage()}",
+            s"Cannot convert $data to event JSON. ${e.getMessage()}",
             e)
       }
     json

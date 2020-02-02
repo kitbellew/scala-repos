@@ -35,7 +35,7 @@ class DarkTrafficFilter[Req, Rep](
   private[this] val failedCounter = scopedStatsReceiver.counter("failed")
   private[this] val log = Logger.get("DarkTrafficFilter")
 
-  override def apply(request: Req, service: Service[Req, Rep]): Future[Rep] = {
+  override def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
     if (forwardAfterService) {
       service(request).ensure {
         darkRequest(request)
@@ -45,9 +45,8 @@ class DarkTrafficFilter[Req, Rep](
       darkRequest(request)
       rep
     }
-  }
 
-  private[this] def darkRequest(request: Req): Unit = {
+  private[this] def darkRequest(request: Req): Unit =
     if (enableSampling(request)) {
       requestsForwardedCounter.incr()
       darkService(request).onFailure { t: Throwable =>
@@ -59,5 +58,4 @@ class DarkTrafficFilter[Req, Rep](
     } else {
       requestsSkippedCounter.incr()
     }
-  }
 }

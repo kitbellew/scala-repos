@@ -52,9 +52,8 @@ private[memory] class StorageMemoryPool(lock: Object)
     * Set the [[MemoryStore]] used by this manager to evict cached blocks.
     * This must be set after construction due to initialization ordering constraints.
     */
-  final def setMemoryStore(store: MemoryStore): Unit = {
+  final def setMemoryStore(store: MemoryStore): Unit =
     _memoryStore = store
-  }
 
   /**
     * Acquire N bytes of memory to cache the given block, evicting existing ones if necessary.

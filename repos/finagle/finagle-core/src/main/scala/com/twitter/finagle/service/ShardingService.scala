@@ -28,7 +28,7 @@ class ShardingService[Req, Rep](
     hash: Req => Option[Long]
 ) extends Service[Req, Rep] {
 
-  def apply(request: Req): Future[Rep] = {
+  def apply(request: Req): Future[Rep] =
     hash(request) map { hash =>
       val shard = distributor.nodeForHash(hash)
       // TODO: a sharding service may consider fine-grained statuses.
@@ -37,7 +37,6 @@ class ShardingService[Req, Rep](
       else
         Future.exception(ShardingService.ShardNotAvailableException)
     } getOrElse (Future.exception(ShardingService.NotShardableException))
-  }
 
   override def status: Status =
     Status.bestOf[Service[Req, Rep]](distributor.nodes, _.status)
@@ -56,21 +55,17 @@ case class KetamaShardingServiceBuilder[Req, Rep](
     _numReps: Int = 160
 ) {
 
-  def nodesAndWeights(nodes: Seq[(String, Int, Service[Req, Rep])]) = {
+  def nodesAndWeights(nodes: Seq[(String, Int, Service[Req, Rep])]) =
     copy(_nodes = Some(nodes map Function.tupled { KetamaNode(_, _, _) }))
-  }
 
-  def nodes(services: Seq[(String, Service[Req, Rep])]) = {
+  def nodes(services: Seq[(String, Service[Req, Rep])]) =
     nodesAndWeights(services map Function.tupled { (_, 1, _) })
-  }
 
-  def numReps(numReps: Int) = {
+  def numReps(numReps: Int) =
     copy(_numReps = numReps)
-  }
 
-  def withHash(f: Req => Option[Long]) = {
+  def withHash(f: Req => Option[Long]) =
     copy(_hash = Some(f))
-  }
 
   def buildFactory() = {
     if (_nodes.isEmpty) {

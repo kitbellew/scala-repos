@@ -23,7 +23,7 @@ class TransactionFilter extends Filter {
   def doFilter(
       req: ServletRequest,
       res: ServletResponse,
-      chain: FilterChain): Unit = {
+      chain: FilterChain): Unit =
     if (req
           .asInstanceOf[HttpServletRequest]
           .getServletPath()
@@ -44,7 +44,6 @@ class TransactionFilter extends Filter {
         logger.debug("end transaction")
       }
     }
-  }
 
 }
 

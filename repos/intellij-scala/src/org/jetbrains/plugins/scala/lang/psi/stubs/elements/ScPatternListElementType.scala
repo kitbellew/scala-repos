@@ -16,15 +16,13 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScPatternListStubImpl
   */
 class ScPatternListElementType[Func <: ScPatternList]
     extends ScStubElementType[ScPatternListStub, ScPatternList]("pattern list") {
-  def serialize(stub: ScPatternListStub, dataStream: StubOutputStream): Unit = {
+  def serialize(stub: ScPatternListStub, dataStream: StubOutputStream): Unit =
     dataStream.writeBoolean(stub.allPatternsSimple)
-  }
 
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScPatternList,
-      parentStub: StubElement[ParentPsi]): ScPatternListStub = {
+      parentStub: StubElement[ParentPsi]): ScPatternListStub =
     new ScPatternListStubImpl(parentStub, this, psi.allPatternsSimple)
-  }
 
   def deserializeImpl(
       dataStream: StubInputStream,
@@ -38,7 +36,6 @@ class ScPatternListElementType[Func <: ScPatternList]
 
   def indexStub(stub: ScPatternListStub, sink: IndexSink): Unit = {}
 
-  def createPsi(stub: ScPatternListStub): ScPatternList = {
+  def createPsi(stub: ScPatternListStub): ScPatternList =
     new ScPatternListImpl(stub)
-  }
 }

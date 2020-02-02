@@ -348,9 +348,8 @@ object ZNode {
       val stat = znode.stat
       val children = _children
     }
-    def apply(znode: ZNode, stat: Stat, children: Seq[String]): Children = {
+    def apply(znode: ZNode, stat: Stat, children: Seq[String]): Children =
       apply(Exists(znode, stat), children.map(znode.apply))
-    }
     def unapply(z: Children) = Some((z.path, z.stat, z.children))
   }
 

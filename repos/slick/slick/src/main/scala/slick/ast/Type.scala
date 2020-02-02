@@ -426,13 +426,12 @@ class ScalaBaseType[T](
       if (ord.direction == Ordering.Desc) ordering.reverse else ordering
     val nullsFirst = if (ord.nulls == Ordering.NullsFirst) -1 else 1
     new scala.math.Ordering[T] {
-      def compare(x: T, y: T): Int = {
+      def compare(x: T, y: T): Int =
         if ((x.asInstanceOf[AnyRef] eq null) && (y
               .asInstanceOf[AnyRef] eq null)) 0
         else if (x.asInstanceOf[AnyRef] eq null) nullsFirst
         else if (y.asInstanceOf[AnyRef] eq null) -nullsFirst
         else base.compare(x, y)
-      }
     }
   }
   override def hashCode = classTag.hashCode
@@ -509,12 +508,11 @@ class ScalaOptionType[T](val elementType: ScalaType[T])
     val nullsFirst = if (ord.nulls == Ordering.NullsFirst) -1 else 1
     val base = elementType.scalaOrderingFor(ord)
     new scala.math.Ordering[Option[T]] {
-      def compare(x: Option[T], y: Option[T]): Int = {
+      def compare(x: Option[T], y: Option[T]): Int =
         if (x == None && y == None) 0
         else if (x == None) nullsFirst
         else if (y == None) -nullsFirst
         else base.compare(x.get, y.get)
-      }
     }
   }
   def mapChildren(f: Type => Type): ScalaOptionType[T] = {

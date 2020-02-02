@@ -67,12 +67,11 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
     def withConfiguration(
         f: ScalastyleConfiguration => Iterable[ProblemDescriptor])
-        : Array[ProblemDescriptor] = {
+        : Array[ProblemDescriptor] =
       ScalastyleCodeInspection
         .configuration(file.getProject)
         .map(c => f(c).toArray)
         .getOrElse(Array.empty)
-    }
 
     if (!file.isInstanceOf[ScalaFile]) Array.empty
     else
@@ -98,14 +97,11 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
           }
         }
 
-        def findPsiElement(
-            line: Int,
-            column: Option[Int]): Option[PsiElement] = {
+        def findPsiElement(line: Int, column: Option[Int]): Option[PsiElement] =
           (for {
             element <- scalaFile.depthFirst
             if element != scalaFile && atPosition(element, line, column)
           } yield element).toList.headOption
-        }
 
         def levelToProblemType(level: Level): ProblemHighlightType =
           level.name match {

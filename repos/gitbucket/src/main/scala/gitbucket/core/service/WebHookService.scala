@@ -136,9 +136,8 @@ trait WebHookService {
         val reqPromise = Promise[HttpRequest]
         val f = Future {
           val itcp = new org.apache.http.HttpRequestInterceptor {
-            def process(res: HttpRequest, ctx: HttpContext): Unit = {
+            def process(res: HttpRequest, ctx: HttpContext): Unit =
               reqPromise.success(res)
-            }
           }
           try {
             val httpClient =
@@ -174,7 +173,7 @@ trait WebHookService {
 
             val res = httpClient.execute(httpPost)
             httpPost.releaseConnection()
-            logger.debug(s"end web hook invocation for ${webHook}")
+            logger.debug(s"end web hook invocation for $webHook")
             res
           } catch {
             case e: Throwable => {
@@ -214,9 +213,7 @@ trait WebHookPullRequestService extends WebHookService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
-      context: JsonFormat.Context): Unit = {
+      sender: Account)(implicit s: Session, context: JsonFormat.Context): Unit =
     callWebHookOf(repository.owner, repository.name, WebHook.Issues) {
       val users = getAccountsByUserNames(
         Set(repository.owner, issue.openedUserName),
@@ -235,7 +232,6 @@ trait WebHookPullRequestService extends WebHookService {
         )
       }
     }
-  }
 
   def callPullRequestWebHook(
       action: String,
@@ -404,9 +400,7 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       issueCommentId: Int,
-      sender: Account)(
-      implicit s: Session,
-      context: JsonFormat.Context): Unit = {
+      sender: Account)(implicit s: Session, context: JsonFormat.Context): Unit =
     callWebHookOf(repository.owner, repository.name, WebHook.IssueComment) {
       for {
         issueComment <- getComment(
@@ -433,7 +427,6 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
           sender = sender)
       }
     }
-  }
 }
 
 object WebHookService {
@@ -455,12 +448,12 @@ object WebHookService {
         ApiPath(
           s"/${repository.full_name}"
         ) // maybe test hook on un-initalied repository
-      case 1 => ApiPath(s"/${repository.full_name}/commit/${after}")
+      case 1 => ApiPath(s"/${repository.full_name}/commit/$after")
       case _ if before.filterNot(_ == '0').isEmpty =>
         ApiPath(
-          s"/${repository.full_name}/compare/${commits.head.id}^...${after}")
+          s"/${repository.full_name}/compare/${commits.head.id}^...$after")
       case _ =>
-        ApiPath(s"/${repository.full_name}/compare/${before}...${after}")
+        ApiPath(s"/${repository.full_name}/compare/$before...$after")
     }
     val head_commit = commits.lastOption
   }

@@ -31,12 +31,11 @@ final class ScalaUsageTypeProvider extends UsageTypeProviderEx {
       element: PsiElement,
       targets: Array[UsageTarget]): UsageType = {
     import com.intellij.psi.util.PsiTreeUtil._
-    def parentOfType[T <: PsiElement: ClassTag]: Option[T] = {
+    def parentOfType[T <: PsiElement: ClassTag]: Option[T] =
       Option(
         getParentOfType[T](
           element,
           classTag[T].runtimeClass.asInstanceOf[Class[T]]))
-    }
 
     if (element.containingScalaFile.isDefined) {
 

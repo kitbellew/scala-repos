@@ -112,10 +112,9 @@ class OperatorAndBacktickedSearcher
       ContainerUtil.process(
         collectProcessor.getResults,
         new ReadActionProcessor[VirtualFile] {
-          def processInReadAction(virtualFile: VirtualFile): Boolean = {
+          def processInReadAction(virtualFile: VirtualFile): Boolean =
             !index.shouldBeFound(scope, virtualFile) || processor.process(
               virtualFile)
-          }
         }
       )
     }

@@ -43,12 +43,11 @@ private[spark] object ThreadUtils {
   /**
     * Create a thread factory that names threads with a prefix and also sets the threads to daemon.
     */
-  def namedThreadFactory(prefix: String): ThreadFactory = {
+  def namedThreadFactory(prefix: String): ThreadFactory =
     new ThreadFactoryBuilder()
       .setDaemon(true)
       .setNameFormat(prefix + "-%d")
       .build()
-  }
 
   /**
     * Wrapper over newCachedThreadPool. Thread names are formatted as prefix-ID, where ID is a
@@ -138,14 +137,13 @@ private[spark] object ThreadUtils {
     @volatile var result: T = null.asInstanceOf[T]
 
     val thread = new Thread(threadName) {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           result = body
         } catch {
           case NonFatal(e) =>
             exception = Some(e)
         }
-      }
     }
     thread.setDaemon(isDaemon)
     thread.start()

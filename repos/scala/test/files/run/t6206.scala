@@ -16,14 +16,13 @@ class Outer1 {
 
     def apply(arg: Inner): String = "inner"
 
-    def testMe = {
+    def testMe =
       List(
         self.apply(this), // a) this works
         self(this), // b) this does not work!
         this apply this,
         this(this)
       ) foreach println
-    }
   }
 }
 

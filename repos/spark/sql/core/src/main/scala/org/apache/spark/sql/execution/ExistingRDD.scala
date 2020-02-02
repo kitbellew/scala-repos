@@ -40,7 +40,7 @@ import org.apache.spark.sql.types.DataType
 object RDDConversions {
   def productToRowRdd[A <: Product](
       data: RDD[A],
-      outputTypes: Seq[DataType]): RDD[InternalRow] = {
+      outputTypes: Seq[DataType]): RDD[InternalRow] =
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
@@ -56,14 +56,13 @@ object RDDConversions {
         mutableRow
       }
     }
-  }
 
   /**
     * Convert the objects inside Row into the types Catalyst expected.
     */
   def rowToRowRdd(
       data: RDD[Row],
-      outputTypes: Seq[DataType]): RDD[InternalRow] = {
+      outputTypes: Seq[DataType]): RDD[InternalRow] =
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
@@ -79,7 +78,6 @@ object RDDConversions {
         mutableRow
       }
     }
-  }
 }
 
 /** Logical plan node for scanning data from an RDD. */
@@ -133,9 +131,8 @@ private[sql] case class PhysicalRDD(
     }
   }
 
-  override def simpleString: String = {
+  override def simpleString: String =
     s"Scan $nodeName${output.mkString("[", ",", "]")}"
-  }
 }
 
 /** Physical plan node for scanning data from a relation. */
@@ -220,9 +217,8 @@ private[sql] case class DataSourceScan(
     s"Scan $nodeName${output.mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
 
-  override def upstreams(): Seq[RDD[InternalRow]] = {
+  override def upstreams(): Seq[RDD[InternalRow]] =
     rdd :: Nil
-  }
 
   // Support codegen so that we can avoid the UnsafeRow conversion in all cases. Codegen
   // never requires UnsafeRow as input.

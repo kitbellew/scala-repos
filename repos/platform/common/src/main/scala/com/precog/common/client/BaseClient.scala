@@ -53,8 +53,7 @@ abstract class WebClient(
     path: String)(implicit executor: ExecutionContext)
     extends BaseClient {
   val client = new HttpClientXLightWeb
-  final protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A = {
+  final protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
     f(client.protocol(protocol).host(host).port(port).path(path))
-  }
 }
 // vim: set ts=4 sw=4 et:

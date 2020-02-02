@@ -104,7 +104,7 @@ class ApplyUnapplyForBindingSearcher
   }
 
   private class Unapply(binding: ScBindingPattern) {
-    def unapply(ref: PsiReference): Option[ResolvableReferenceElement] = {
+    def unapply(ref: PsiReference): Option[ResolvableReferenceElement] =
       (ref, ref.getElement.getContext) match {
         case (sref: ScStableCodeReferenceElement, x: ScConstructorPattern) =>
           sref.bind() match {
@@ -126,11 +126,10 @@ class ApplyUnapplyForBindingSearcher
           }
         case _ => None
       }
-    }
   }
 
   private class Apply(binding: ScBindingPattern) {
-    def unapply(ref: PsiReference): Option[ResolvableReferenceElement] = {
+    def unapply(ref: PsiReference): Option[ResolvableReferenceElement] =
       (ref, ref.getElement.getContext) match {
         case (sref: ResolvableReferenceExpression, x: ScMethodCall)
             if x.getInvokedExpr == ref.getElement =>
@@ -149,7 +148,6 @@ class ApplyUnapplyForBindingSearcher
           }
         case _ => None
       }
-    }
   }
 
   private object inAnonClassWithBinding {

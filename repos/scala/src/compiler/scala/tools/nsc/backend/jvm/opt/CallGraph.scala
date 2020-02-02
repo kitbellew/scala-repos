@@ -98,9 +98,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     classNode.methods.asScala.foreach(addMethod(_, classType))
   }
 
-  def addIfMissing(methodNode: MethodNode, definingClass: ClassBType): Unit = {
+  def addIfMissing(methodNode: MethodNode, definingClass: ClassBType): Unit =
     if (!callsites.contains(methodNode)) addMethod(methodNode, definingClass)
-  }
 
   def addMethod(methodNode: MethodNode, definingClass: ClassBType): Unit = {
     if (!BytecodeUtils.isAbstractMethod(methodNode) && !BytecodeUtils
@@ -234,7 +233,7 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
   def computeArgInfos(
       callee: Either[OptimizerWarning, Callee],
       callsiteInsn: MethodInsnNode,
-      prodCons: => ProdConsAnalyzer): IntMap[ArgInfo] = {
+      prodCons: => ProdConsAnalyzer): IntMap[ArgInfo] =
     if (callee.isLeft) IntMap.empty
     else {
       lazy val numArgs = Type
@@ -242,7 +241,6 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         .length + (if (callsiteInsn.getOpcode == Opcodes.INVOKESTATIC) 0 else 1)
       argInfosForSams(callee.get.samParamTypes, callsiteInsn, numArgs, prodCons)
     }
-  }
 
   def computeCapturedArgInfos(
       lmf: LambdaMetaFactoryCall,

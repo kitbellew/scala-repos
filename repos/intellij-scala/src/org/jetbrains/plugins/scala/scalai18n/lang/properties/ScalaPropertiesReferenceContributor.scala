@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.injection.ScalaPatterns
 class ScalaPropertiesReferenceContributor extends PsiReferenceContributor {
   private final val CLASS_REFERENCE_PROVIDER: JavaClassReferenceProvider =
     new JavaClassReferenceProvider {
-      override def isSoft: Boolean = {
+      override def isSoft: Boolean =
         true
-      }
     }
 
   def registerReferenceProviders(registrar: PsiReferenceRegistrar) {

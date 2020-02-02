@@ -93,9 +93,7 @@ trait IssuesService {
       owner: String,
       repository: String,
       condition: IssueSearchCondition,
-      filterUser: Map[String, String])(
-      implicit s: Session): Map[String, Int] = {
-
+      filterUser: Map[String, String])(implicit s: Session): Map[String, Int] =
     searchIssueQuery(
       Seq(owner -> repository),
       condition.copy(labels = Set.empty),
@@ -116,10 +114,9 @@ trait IssuesService {
           labelName -> t.length
       }
       .toMap
-  }
 
   def getCommitStatues(issueList: Seq[(String, String, Int)])(
-      implicit s: Session): Map[(String, String, Int), CommitStatusInfo] = {
+      implicit s: Session): Map[(String, String, Int), CommitStatusInfo] =
     if (issueList.isEmpty) {
       Map.empty
     } else {
@@ -186,7 +183,6 @@ trait IssuesService {
             description)
       }.toMap
     }
-  }
 
   /**
     * Returns the search result against  issues.
@@ -274,7 +270,7 @@ trait IssuesService {
       offset: Int,
       limit: Int,
       repos: (String, String)*)(implicit s: Session)
-      : List[(Issue, Account, Int, PullRequest, Repository, Account)] = {
+      : List[(Issue, Account, Int, PullRequest, Repository, Account)] =
     // get issues and comment count and labels
     searchIssueQueryBase(condition, true, offset, limit, repos)
       .innerJoin(PullRequests)
@@ -300,7 +296,6 @@ trait IssuesService {
           (t1, t5, t2.commentCount, t3, t4, t6)
       }
       .list
-  }
 
   private def searchIssueQueryBase(
       condition: IssueSearchCondition,
@@ -575,7 +570,7 @@ trait IssuesService {
       message: String,
       userName: String,
       owner: String,
-      repository: String)(implicit s: Session) = {
+      repository: String)(implicit s: Session) =
     extractCloseId(message).foreach { issueId =>
       for (issue <- getIssue(owner, repository, issueId) if !issue.closed) {
         createComment(
@@ -588,14 +583,13 @@ trait IssuesService {
         updateClosed(owner, repository, issue.issueId, true)
       }
     }
-  }
 
   def createReferComment(
       owner: String,
       repository: String,
       fromIssue: Issue,
       message: String,
-      loginAccount: Account)(implicit s: Session) = {
+      loginAccount: Account)(implicit s: Session) =
     StringUtil.extractIssueId(message).foreach { issueId =>
       val content = fromIssue.issueId + ":" + fromIssue.title
       if (getIssue(owner, repository, issueId).isDefined) {
@@ -613,10 +607,9 @@ trait IssuesService {
         }
       }
     }
-  }
 
   def createIssueComment(owner: String, repository: String, commit: CommitInfo)(
-      implicit s: Session) = {
+      implicit s: Session) =
     StringUtil.extractIssueId(commit.fullMessage).foreach { issueId =>
       if (getIssue(owner, repository, issueId).isDefined) {
         getAccountByMailAddress(commit.committerEmailAddress).foreach {
@@ -631,7 +624,6 @@ trait IssuesService {
         }
       }
     }
-  }
 
 }
 
@@ -652,26 +644,25 @@ object IssuesService {
       visibility: Option[String] = None,
       groups: Set[String] = Set.empty) {
 
-    def isEmpty: Boolean = {
+    def isEmpty: Boolean =
       labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned.isEmpty &&
-      state == "open" && sort == "created" && direction == "desc" && visibility.isEmpty
-    }
+        state == "open" && sort == "created" && direction == "desc" && visibility.isEmpty
 
     def nonEmpty: Boolean = !isEmpty
 
     def toFilterString: String =
       (
         List(
-          Some(s"is:${state}"),
-          author.map(author => s"author:${author}"),
-          assigned.map(assignee => s"assignee:${assignee}"),
-          mentioned.map(mentioned => s"mentions:${mentioned}")
+          Some(s"is:$state"),
+          author.map(author => s"author:$author"),
+          assigned.map(assignee => s"assignee:$assignee"),
+          mentioned.map(mentioned => s"mentions:$mentioned")
         ).flatten ++
-          labels.map(label => s"label:${label}") ++
+          labels.map(label => s"label:$label") ++
           List(
             milestone.map {
               _ match {
-                case Some(x) => s"milestone:${x}"
+                case Some(x) => s"milestone:$x"
                 case None    => "no:milestone"
               }
             },
@@ -683,9 +674,9 @@ object IssuesService {
               case ("updated", "desc")  => Some("sort:updated-desc")
               case ("updated", "asc")   => Some("sort:updated-asc")
             },
-            visibility.map(visibility => s"visibility:${visibility}")
+            visibility.map(visibility => s"visibility:$visibility")
           ).flatten ++
-          groups.map(group => s"group:${group}")
+          groups.map(group => s"group:$group")
       ).mkString(" ")
 
     def toURL: String =

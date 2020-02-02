@@ -219,7 +219,7 @@ trait TypeInferencer extends DAG {
       inner(Some(universe), Map(), Map(), graph)
     }
 
-    def applyTypes(typing: Map[DepGraph, JType], graph: DepGraph): DepGraph = {
+    def applyTypes(typing: Map[DepGraph, JType], graph: DepGraph): DepGraph =
       graph mapDown { recurse =>
         {
           case ld @ AbsoluteLoad(parent, _) =>
@@ -229,7 +229,6 @@ trait TypeInferencer extends DAG {
             RelativeLoad(recurse(parent), typing(ld))(ld.loc)
         }
       }
-    }
 
     def findGroup(spec: BucketSpec, id: Int): Option[DepGraph] = spec match {
       case UnionBucketSpec(left, right) =>

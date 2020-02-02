@@ -40,7 +40,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
   def mostSpecificForResolveResult(
       applicable: Set[ScalaResolveResult],
       hasTypeParametersCall: Boolean = false,
-      expandInnerResult: Boolean = true): Option[ScalaResolveResult] = {
+      expandInnerResult: Boolean = true): Option[ScalaResolveResult] =
     mostSpecificGeneric(
       applicable.map(r =>
         r.innerResolveResult match {
@@ -59,11 +59,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         }),
       noImplicit = false
     ).map(_.repr)
-  }
 
   def mostSpecificForImplicitParameters(
       applicable: Set[(ScalaResolveResult, ScSubstitutor)])
-      : Option[ScalaResolveResult] = {
+      : Option[ScalaResolveResult] =
     mostSpecificGeneric(
       applicable.map {
         case (r, subst) =>
@@ -86,14 +85,13 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       },
       noImplicit = true
     ).map(_.repr)
-  }
 
   def nextLayerSpecificForImplicitParameters(
       filterRest: Option[ScalaResolveResult],
       rest: Seq[ScalaResolveResult])
       : (Option[ScalaResolveResult], Seq[ScalaResolveResult]) = {
     def update(
-        r: ScalaResolveResult): InnerScalaResolveResult[ScalaResolveResult] = {
+        r: ScalaResolveResult): InnerScalaResolveResult[ScalaResolveResult] =
       r.innerResolveResult match {
         case Some(rr) =>
           new InnerScalaResolveResult(
@@ -110,23 +108,21 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             ScSubstitutor.empty,
             implicitCase = true)
       }
-    }
     val (next, r) =
       nextLayerSpecificGeneric(filterRest.map(update), rest.map(update))
     (next.map(_.repr), r.map(_.repr))
   }
 
   def mostSpecificForImplicit(
-      applicable: Set[ImplicitResolveResult]): Option[ImplicitResolveResult] = {
+      applicable: Set[ImplicitResolveResult]): Option[ImplicitResolveResult] =
     mostSpecificGeneric(
-      applicable.map(r => {
+      applicable.map { r =>
         var callByName = false
-        def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
+        def checkCallByName(clauses: Seq[ScParameterClause]): Unit =
           if (clauses.length > 0 && clauses(0).parameters.length == 1 && clauses(
                 0).parameters(0).isCallByNameParameter) {
             callByName = true
           }
-        }
         r.element match {
           case f: ScFunction => checkCallByName(f.paramClauses.clauses)
           case f: ScPrimaryConstructor =>
@@ -140,10 +136,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           r.implicitDependentSubst followed r.subst,
           callByName,
           implicitCase = true)
-      }),
+      },
       noImplicit = true
     ).map(_.repr)
-  }
 
   private class InnerScalaResolveResult[T](
       val element: PsiNamedElement,
@@ -169,7 +164,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           r2.substitutor.subst(getType(m2, r2.implicitCase)))
         def calcParams(
             tp: ScType,
-            existential: Boolean): Either[Seq[Parameter], ScType] = {
+            existential: Boolean): Either[Seq[Parameter], ScType] =
           tp match {
             case ScMethodType(_, params, _) => Left(params)
             case ScTypePolymorphicType(
@@ -233,7 +228,6 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
               }
             case _ => Right(tp)
           }
-        }
 
         val conformance = (
           calcParams(t1, existential = true),
@@ -331,7 +325,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   }
                   hasRecursiveTypeParameters
                 }
-                typeParams.foreach(tp => {
+                typeParams.foreach { tp =>
                   if (tp.lowerType() != types.Nothing) {
                     val substedLower = uSubst.subst(tp.lowerType())
                     if (!hasRecursiveTypeParameters(tp.lowerType())) {
@@ -350,7 +344,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         additional = true)
                     }
                   }
-                })
+                }
               case None => return false
             }
           case _ =>
@@ -380,7 +374,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
     * c2 is a companion object of a class from which c1 is derived.
     * @return true is c1 is derived from c2, false if c1 or c2 is None
     */
-  def isDerived(c1: Option[PsiClass], c2: Option[PsiClass]): Boolean = {
+  def isDerived(c1: Option[PsiClass], c2: Option[PsiClass]): Boolean =
     (c1, c2) match {
       case (Some(clazz1), Some(clazz2)) =>
         if (clazz1 == clazz2) return false
@@ -394,7 +388,6 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         }
       case _ => false
     }
-  }
 
   private def relativeWeight[T](
       r1: InnerScalaResolveResult[T],

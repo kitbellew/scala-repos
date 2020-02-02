@@ -32,7 +32,7 @@ object EarlyDef {
     }
     //this metod parse recursively PatVarDef {semi PatVarDef}
     @tailrec
-    def subparse: Boolean = {
+    def subparse: Boolean =
       builder.getTokenType match {
         case ScalaTokenTypes.tRBRACE =>
           builder.advanceLexer() //Ate }
@@ -60,7 +60,6 @@ object EarlyDef {
             false
           }
       }
-    }
     if (!subparse) {
       builder.restoreNewlinesState
       builder error ScalaBundle.message("unreachable.error")

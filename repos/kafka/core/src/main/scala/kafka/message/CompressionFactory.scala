@@ -30,7 +30,7 @@ object CompressionFactory {
 
   def apply(
       compressionCodec: CompressionCodec,
-      stream: OutputStream): OutputStream = {
+      stream: OutputStream): OutputStream =
     compressionCodec match {
       case DefaultCompressionCodec => new GZIPOutputStream(stream)
       case GZIPCompressionCodec    => new GZIPOutputStream(stream)
@@ -43,11 +43,10 @@ object CompressionFactory {
         throw new kafka.common.UnknownCodecException(
           "Unknown Codec: " + compressionCodec)
     }
-  }
 
   def apply(
       compressionCodec: CompressionCodec,
-      stream: InputStream): InputStream = {
+      stream: InputStream): InputStream =
     compressionCodec match {
       case DefaultCompressionCodec => new GZIPInputStream(stream)
       case GZIPCompressionCodec    => new GZIPInputStream(stream)
@@ -60,5 +59,4 @@ object CompressionFactory {
         throw new kafka.common.UnknownCodecException(
           "Unknown Codec: " + compressionCodec)
     }
-  }
 }

@@ -69,7 +69,7 @@ class HyperLogLogPlusPlusSuite extends SparkFunSuite {
       rsds: Seq[Double],
       ns: Seq[Int],
       f: Int => Int,
-      c: Int => Int): Unit = {
+      c: Int => Int): Unit =
     rsds.flatMap(rsd => ns.map(n => (rsd, n))).foreach {
       case (rsd, n) =>
         val (hll, input, buffer) = createEstimator(rsd)
@@ -86,7 +86,6 @@ class HyperLogLogPlusPlusSuite extends SparkFunSuite {
           error < hll.trueRsd * 3.0d,
           "Error should be within 3 std. errors.")
     }
-  }
 
   test("deterministic cardinality estimation") {
     val repeats = 10

@@ -114,8 +114,7 @@ object OrderedSerialization {
       packFn: T => U,
       unpackFn: U => V,
       presentFn: Try[V] => Try[T])(
-      implicit otherOrdSer: OrderedSerialization[U])
-      : OrderedSerialization[T] = {
+      implicit otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =
     new OrderedSerialization[T] {
       private[this] var cache: (T, U) = null
       private[this] def packCache(t: T): U = {
@@ -150,7 +149,6 @@ object OrderedSerialization {
       override def dynamicSize(t: T): Option[Int] =
         otherOrdSer.dynamicSize(packCache(t))
     }
-  }
 
   def viaTransform[T, U](packFn: T => U, unpackFn: U => T)(
       implicit otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] =

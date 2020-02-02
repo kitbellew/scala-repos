@@ -24,13 +24,11 @@ import Tags._
 import Utils.JumpBackByteArrayOutputStream
 
 object Serializers {
-  def serialize(stream: OutputStream, tree: Tree): Unit = {
+  def serialize(stream: OutputStream, tree: Tree): Unit =
     new Serializer().serialize(stream, tree)
-  }
 
-  def deserialize(stream: InputStream, version: String): Tree = {
+  def deserialize(stream: InputStream, version: String): Tree =
     new Deserializer(stream, version).deserialize()
-  }
 
   // true for easier debugging (not for "production", it adds 8 bytes per node)
   private final val UseDebugMagic = false
@@ -478,7 +476,7 @@ object Serializers {
       optIdent.foreach(writeIdent)
     }
 
-    def writeType(tpe: Type): Unit = {
+    def writeType(tpe: Type): Unit =
       tpe match {
         case AnyType     => buffer.write(TagAnyType)
         case NothingType => buffer.write(TagNothingType)
@@ -510,7 +508,6 @@ object Serializers {
             buffer.writeBoolean(mutable)
           }
       }
-    }
 
     def writeClassType(tpe: ClassType): Unit =
       writeString(tpe.className)
@@ -523,12 +520,11 @@ object Serializers {
     def writeReferenceType(tpe: ReferenceType): Unit =
       writeType(tpe.asInstanceOf[Type])
 
-    def writePropertyName(name: PropertyName): Unit = {
+    def writePropertyName(name: PropertyName): Unit =
       name match {
         case name: Ident         => buffer.writeBoolean(true); writeIdent(name)
         case name: StringLiteral => buffer.writeBoolean(false); writeTree(name)
       }
-    }
 
     def writePosition(pos: Position): Unit = {
       import buffer._
@@ -605,9 +601,8 @@ object Serializers {
 
     private[this] var foundArguments: Boolean = false
 
-    def deserialize(): Tree = {
+    def deserialize(): Tree =
       readTree()
-    }
 
     def readTree(): Tree = {
       import input._
@@ -835,10 +830,9 @@ object Serializers {
     def readIdents(): List[Ident] =
       List.fill(input.readInt())(readIdent())
 
-    def readOptIdent(): Option[Ident] = {
+    def readOptIdent(): Option[Ident] =
       if (input.readBoolean()) Some(readIdent())
       else None
-    }
 
     def readType(): Type = {
       val tag = input.readByte()
@@ -882,10 +876,9 @@ object Serializers {
     def readReferenceType(): ReferenceType =
       readType().asInstanceOf[ReferenceType]
 
-    def readPropertyName(): PropertyName = {
+    def readPropertyName(): PropertyName =
       if (input.readBoolean()) readIdent()
       else readTree().asInstanceOf[StringLiteral]
-    }
 
     def readPosition(): Position = {
       import input._
@@ -938,7 +931,7 @@ object Serializers {
       result
     }
 
-    def readOptHash(): Option[TreeHash] = {
+    def readOptHash(): Option[TreeHash] =
       if (input.readBoolean()) {
         val treeHash = new Array[Byte](20)
         val posHash = new Array[Byte](20)
@@ -946,11 +939,9 @@ object Serializers {
         input.readFully(posHash)
         Some(new TreeHash(treeHash, posHash))
       } else None
-    }
 
-    def readString(): String = {
+    def readString(): String =
       strings(input.readInt())
-    }
   }
 
   private class RewriteArgumentsTransformer extends Transformers.Transformer {

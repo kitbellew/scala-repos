@@ -81,9 +81,8 @@ class LineTokenizer() extends Parsers {
     * This is done to speed up header parsing. Used to speed up line tokenizing substantially
     * by using the first char in a line as lookahead for which parsers to even try.
     */
-  def firstChar(line: String): Char = {
+  def firstChar(line: String): Char =
     if (line.length == 0) '\n' else line.charAt(0)
-  }
 
   /**Finds the char in the given line that is the best indication of what kind of markdown line this is.
     * The “special” Markdown lines all start with up to three spaces. Those are skipped if present.
@@ -227,13 +226,12 @@ class LineTokenizer() extends Parsers {
     * the actual Tokenizer.
     */
   def splitLines(s: String): List[String] = {
-    def chopWindoze(line: String) = {
+    def chopWindoze(line: String) =
       if (line.endsWith("\r")) {
         line.substring(0, line.length - 1)
       } else {
         line
       }
-    }
 
     s.split('\n').map(chopWindoze(_)).toList
   }

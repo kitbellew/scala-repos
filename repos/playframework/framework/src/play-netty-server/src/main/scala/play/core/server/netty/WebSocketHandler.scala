@@ -27,8 +27,7 @@ private[server] object WebSocketHandler {
   def messageFlowToFrameProcessor(
       flow: Flow[Message, Message, _],
       bufferLimit: Int)(
-      implicit mat: Materializer): Processor[WebSocketFrame, WebSocketFrame] = {
-
+      implicit mat: Materializer): Processor[WebSocketFrame, WebSocketFrame] =
     // The reason we use a processor is that we *must* release the buffers synchronously, since Akka streams drops
     // messages, which will mean we can't release the ByteBufs in the messages.
     SynchronousMappedStreams.transform(
@@ -39,7 +38,6 @@ private[server] object WebSocketHandler {
         .run(),
       frameToMessage,
       messageToFrame)
-  }
 
   /**
     * Converts Netty frames to Play RawMessages.
@@ -68,13 +66,12 @@ private[server] object WebSocketHandler {
     * Converts Play messages to Netty frames.
     */
   private def messageToFrame(message: Message): WebSocketFrame = {
-    def byteStringToByteBuf(bytes: ByteString): ByteBuf = {
+    def byteStringToByteBuf(bytes: ByteString): ByteBuf =
       if (bytes.isEmpty) {
         Unpooled.EMPTY_BUFFER
       } else {
         Unpooled.wrappedBuffer(bytes.asByteBuffer)
       }
-    }
 
     message match {
       case TextMessage(data) => new TextWebSocketFrame(data)

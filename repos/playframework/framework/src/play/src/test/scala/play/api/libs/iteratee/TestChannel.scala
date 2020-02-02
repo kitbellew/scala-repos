@@ -18,24 +18,20 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
   private val chunks = new LinkedBlockingQueue[Input[A]]
   private val ends = new LinkedBlockingQueue[Option[Throwable]]
 
-  def push(chunk: Input[A]): Unit = {
+  def push(chunk: Input[A]): Unit =
     chunks.offer(chunk)
-  }
 
-  def end(e: Throwable): Unit = {
+  def end(e: Throwable): Unit =
     ends.offer(Some(e))
-  }
 
-  def end(): Unit = {
+  def end(): Unit =
     ends.offer(None)
-  }
 
-  private def takeChunk(timeout: Duration): Input[A] = {
+  private def takeChunk(timeout: Duration): Input[A] =
     if (timeout.isFinite)
       chunks.poll(timeout.length, timeout.unit)
     else
       chunks.take
-  }
 
   def expect(expected: A): A = expect(expected, defaultTimeout)
 
@@ -54,7 +50,7 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
   def expect(expected: A, test: (A, A) => Boolean): A =
     expect(expected, defaultTimeout, test)
 
-  def expect(expected: A, timeout: Duration, test: (A, A) => Boolean): A = {
+  def expect(expected: A, timeout: Duration, test: (A, A) => Boolean): A =
     takeChunk(timeout) match {
       case null =>
         throw new AssertionError(s"timeout ($timeout) waiting for $expected")
@@ -67,25 +63,22 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
         throw new AssertionError(
           s"expected Input.El [$expected] but found [$other]")
     }
-  }
 
   def expectEOF(): Input[A] = expectEOF(defaultTimeout)
 
-  def expectEOF(timeout: Duration): Input[A] = {
+  def expectEOF(timeout: Duration): Input[A] =
     takeChunk(timeout) match {
       case null =>
         throw new AssertionError(s"timeout ($timeout) waiting for EOF")
       case eof @ Input.EOF => eof
       case other           => throw new AssertionError(s"expected EOF but found [$other]")
     }
-  }
 
-  private def takeEnd(timeout: Duration): Option[Throwable] = {
+  private def takeEnd(timeout: Duration): Option[Throwable] =
     if (timeout.isFinite)
       ends.poll(timeout.length, timeout.unit)
     else
       ends.take
-  }
 
   def expectEnd[T](expected: Class[T]): T = expectEnd(expected, defaultTimeout)
 

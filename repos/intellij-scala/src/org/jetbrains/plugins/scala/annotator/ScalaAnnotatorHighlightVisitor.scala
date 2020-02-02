@@ -82,9 +82,8 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
     success
   }
 
-  override def clone: HighlightVisitor = {
+  override def clone: HighlightVisitor =
     new ScalaAnnotatorHighlightVisitor(project)
-  }
 
   private def runAnnotator(element: PsiElement) {
     if (DumbService.getInstance(project).isDumb) {

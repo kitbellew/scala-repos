@@ -106,15 +106,13 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     */
   def approximateUniqueCount[T <% Array[Byte]: TupleConverter](
       f: (Fields, Fields),
-      errPercent: Double = 1.0) = {
+      errPercent: Double = 1.0) =
     hyperLogLogMap[T, Double](f, errPercent) { _.estimatedSize }
-  }
 
   def hyperLogLog[T <% Array[Byte]: TupleConverter](
       f: (Fields, Fields),
-      errPercent: Double = 1.0) = {
+      errPercent: Double = 1.0) =
     hyperLogLogMap[T, HLL](f, errPercent) { hll => hll }
-  }
 
   private[this] def hyperLogLogMap[
       T <% Array[Byte]: TupleConverter,
@@ -132,9 +130,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * `fn(tuple)` is true
     */
   def count[T: TupleConverter](fieldDef: (Fields, Fields))(
-      fn: T => Boolean): Self = {
+      fn: T => Boolean): Self =
     mapPlusMap(fieldDef) { (arg: T) => if (fn(arg)) 1L else 0L } { s => s }
-  }
 
   /**
     * Opposite of RichPipe.unpivot.  See SQL/Excel for more on this function
@@ -171,7 +168,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * }
     * }}}
     */
-  def pivot(fieldDef: (Fields, Fields), defaultVal: Any = null): Self = {
+  def pivot(fieldDef: (Fields, Fields), defaultVal: Any = null): Self =
     // Make sure the fields are strings:
     mapList[(String, AnyRef), CTuple](fieldDef) { outputList =>
       val asMap = outputList.toMap
@@ -188,45 +185,40 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       // Create the cascading tuple
       new CTuple(values.toSeq: _*)
     }
-  }
 
   /**
     * Compute the count, ave and standard deviation in one pass
     * example: g.sizeAveStdev('x -> ('cntx, 'avex, 'stdevx))
     */
-  def sizeAveStdev(fieldDef: (Fields, Fields)) = {
+  def sizeAveStdev(fieldDef: (Fields, Fields)) =
     mapPlusMap(fieldDef) { (x: Double) => Moments(x) } { (mom: Moments) =>
       (mom.count, mom.mean, mom.stddev)
     }
-  }
 
   /*
    * check if a predicate is satisfied for all in the values for this key
    */
   def forall[T: TupleConverter](fieldDef: (Fields, Fields))(
-      fn: (T) => Boolean): Self = {
+      fn: (T) => Boolean): Self =
     mapReduceMap(fieldDef)(fn)({ (x: Boolean, y: Boolean) => x && y })({ x =>
       x
     })
-  }
 
   /**
     * Return the first, useful probably only for sorted case.
     */
-  def head(fd: (Fields, Fields)): Self = {
+  def head(fd: (Fields, Fields)): Self =
     //CTuple's have unknown arity so we have to put them into a Tuple1 in the middle phase:
     mapReduceMap(fd) { ctuple: CTuple => Tuple1(ctuple) } { (oldVal, newVal) =>
       oldVal
     } { result => result._1 }
-  }
   def head(f: Symbol*): Self = head(f -> f)
 
-  def last(fd: (Fields, Fields)) = {
+  def last(fd: (Fields, Fields)) =
     //CTuple's have unknown arity so we have to put them into a Tuple1 in the middle phase:
     mapReduceMap(fd) { ctuple: CTuple => Tuple1(ctuple) } { (oldVal, newVal) =>
       newVal
     } { result => result._1 }
-  }
   def last(f: Symbol*): Self = last(f -> f)
 
   /**
@@ -256,13 +248,12 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       middleSetter: TupleSetter[X],
       middleConv: TupleConverter[X],
       endSetter: TupleSetter[U],
-      sgX: Semigroup[X]): Self = {
+      sgX: Semigroup[X]): Self =
     mapReduceMap[T, X, U](fieldDef)(mapfn)((x, y) => sgX.plus(x, y))(mapfn2)(
       startConv,
       middleSetter,
       middleConv,
       endSetter)
-  }
 
   private def extremum(max: Boolean, fieldDef: (Fields, Fields)): Self = {
     //CTuple's have unknown arity so we have to put them into a Tuple1 in the middle phase:
@@ -291,9 +282,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       fieldDef: (Fields, Fields),
       start: String,
       sep: String,
-      end: String): Self = {
+      end: String): Self =
     mapList[String, String](fieldDef) { _.mkString(start, sep, end) }
-  }
   def mkString(fieldDef: (Fields, Fields), sep: String): Self =
     mkString(fieldDef, "", sep, "")
   def mkString(fieldDef: (Fields, Fields)): Self =
@@ -334,19 +324,17 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     */
   def reduce[T](fieldDef: (Fields, Fields))(fn: (T, T) => T)(
       implicit setter: TupleSetter[T],
-      conv: TupleConverter[T]): Self = {
+      conv: TupleConverter[T]): Self =
     mapReduceMap[T, T, T](fieldDef)({ t => t })(fn)({ t => t })(
       conv,
       setter,
       conv,
       setter)
-  }
   //Same as reduce(f->f)
   def reduce[T](fieldDef: Symbol*)(fn: (T, T) => T)(
       implicit setter: TupleSetter[T],
-      conv: TupleConverter[T]): Self = {
+      conv: TupleConverter[T]): Self =
     reduce(fieldDef -> fieldDef)(fn)(setter, conv)
-  }
 
   // Abstract algebra reductions (sum, times, dot):
 
@@ -359,11 +347,10 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def sum[T](fd: (Fields, Fields))(
       implicit sg: Semigroup[T],
       tconv: TupleConverter[T],
-      tset: TupleSetter[T]): Self = {
+      tset: TupleSetter[T]): Self =
     // We reverse the order because the left is the old value in reduce, and for list concat
     // we are much better off concatenating into the bigger list
     reduce[T](fd)({ (left, right) => sg.plus(right, left) })(tset, tconv)
-  }
 
   /**
     * The same as `sum(fs -> fs)`
@@ -381,11 +368,10 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def times[T](fd: (Fields, Fields))(
       implicit ring: Ring[T],
       tconv: TupleConverter[T],
-      tset: TupleSetter[T]): Self = {
+      tset: TupleSetter[T]): Self =
     // We reverse the order because the left is the old value in reduce, and for list concat
     // we are much better off concatenating into the bigger list
     reduce[T](fd)({ (left, right) => ring.times(right, left) })(tset, tconv)
-  }
 
   /**
     * The same as `times(fs -> fs)`
@@ -393,20 +379,18 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def times[T](fs: Symbol*)(
       implicit ring: Ring[T],
       tconv: TupleConverter[T],
-      tset: TupleSetter[T]): Self = {
+      tset: TupleSetter[T]): Self =
     times[T](fs -> fs)(ring, tconv, tset)
-  }
 
   /**
     * Convert a subset of fields into a list of Tuples. Need to provide the types of the tuple fields.
     */
   def toList[T](fieldDef: (Fields, Fields))(
-      implicit conv: TupleConverter[T]): Self = {
+      implicit conv: TupleConverter[T]): Self =
     // TODO(POB) this is jank in my opinion. Nulls should be filter by the user if they want
     mapList[T, List[T]](fieldDef) {
       _.filter { t => t != null }
     }
-  }
 
   /**
     * First do "times" on each pair, then "plus" them all together.
@@ -420,19 +404,17 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       implicit ttconv: TupleConverter[Tuple2[T, T]],
       ring: Ring[T],
       tconv: TupleConverter[T],
-      tset: TupleSetter[T]): Self = {
+      tset: TupleSetter[T]): Self =
     mapReduceMap[(T, T), T, T](Fields.merge(left, right) -> result) {
       init: (T, T) => ring.times(init._1, init._2)
     } { (left: T, right: T) => ring.plus(left, right) } { result => result }
-  }
 
   /**
     * How many values are there for this key
     */
   def size: Self = size('size)
-  def size(thisF: Fields): Self = {
+  def size(thisF: Fields): Self =
     mapPlusMap(() -> thisF) { (u: Unit) => 1L } { s => s }
-  }
 
   /**
     * Equivalent to sorting by a comparison function
@@ -458,9 +440,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     */
   def sortedReverseTake[T](f: (Fields, Fields), k: Int)(
       implicit conv: TupleConverter[T],
-      ord: Ordering[T]): Self = {
+      ord: Ordering[T]): Self =
     sortedTake[T](f, k)(conv, ord.reverse)
-  }
 
   /**
     * Same as above but useful when the implicit ordering makes sense.
@@ -476,9 +457,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     }
   }
 
-  def histogram(f: (Fields, Fields), binWidth: Double = 1.0) = {
+  def histogram(f: (Fields, Fields), binWidth: Double = 1.0) =
     mapPlusMap(f) { x: Double =>
       Map((math.floor(x / binWidth) * binWidth) -> 1L)
     } { map => new mathematics.Histogram(map, binWidth) }
-  }
 }

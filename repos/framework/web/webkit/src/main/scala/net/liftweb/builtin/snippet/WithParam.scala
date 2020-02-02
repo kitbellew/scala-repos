@@ -41,7 +41,7 @@ object WithParam extends DispatchSnippet {
     *  This map is used in builtin.snippet.Surround to bind content to named sections.
     *  Note that the WithParam snippet is also mapped to "bind-at"
     */
-  def render(kids: NodeSeq): NodeSeq = {
+  def render(kids: NodeSeq): NodeSeq =
     (for {
       ctx <- S.session ?~ ("FIX" + "ME: Invalid session")
       req <- S.request ?~ ("FIX" + "ME: Invalid request")
@@ -55,6 +55,5 @@ object WithParam extends DispatchSnippet {
       case Empty              => Comment("FIX" + "ME: session or request are invalid")
       case Failure(msg, _, _) => Comment(msg)
     }
-  }
 
 }

@@ -120,7 +120,7 @@ object Pregel extends Logging {
     require(
       maxIterations > 0,
       s"Maximum of iterations must be greater than 0," +
-        s" but got ${maxIterations}")
+        s" but got $maxIterations")
 
     var g =
       graph.mapVertices((vid, vdata) => vprog(vid, vdata, initialMsg)).cache()

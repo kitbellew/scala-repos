@@ -110,10 +110,9 @@ final class PNCounterMap private[akka] (
   private[akka] def decrement(
       node: UniqueAddress,
       key: String,
-      delta: Long): PNCounterMap = {
+      delta: Long): PNCounterMap =
     new PNCounterMap(
       underlying.updated(node, key, PNCounter())(_.decrement(node, delta)))
-  }
 
   /**
     * Removes an entry from the map.

@@ -1076,13 +1076,12 @@ object H5Store {
     writeAttrText(grpid, "pandas_type", "frame")
   }
 
-  private def getPandasSeriesAttribs = {
+  private def getPandasSeriesAttribs =
     List(
       ("CLASS", "ARRAY"),
       ("FLAVOR", "numpy"),
       ("TITLE", ""),
       ("VERSION", "2.3"))
-  }
 
   private def getPandasIndexAttribs[X: ST](index: Index[X]) = {
     val attribs = getPandasSeriesAttribs ++ List(("name", "N."))

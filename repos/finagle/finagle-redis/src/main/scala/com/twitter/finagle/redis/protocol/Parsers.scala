@@ -22,7 +22,7 @@ trait UnifiedProtocolCodec {
   def decodeRequestLines[T <: AnyRef](
       i: Long,
       lines: ByteArrays,
-      doneFn: ByteArrays => T): NextStep = {
+      doneFn: ByteArrays => T): NextStep =
     if (i <= 0) {
       emit(doneFn(lines.reverse))
     } else {
@@ -60,5 +60,5 @@ trait UnifiedProtocolCodec {
         } // header match
       } // readLine
     } // else
-  } // decodeRequestLines
+  // decodeRequestLines
 }

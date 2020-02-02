@@ -128,7 +128,7 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
 
   def asJsonValue: Box[JsonAST.JValue] = Full(JsonAST.JInt(get.id))
 
-  override def setFromAny(in: Any): ENUM#Value = {
+  override def setFromAny(in: Any): ENUM#Value =
     in match {
       case JsonAST.JInt(bi)                => this.set(fromInt(bi.intValue))
       case n: Int                          => this.set(fromInt(n))
@@ -144,7 +144,6 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       case s: String                       => this.set(fromInt(Helpers.toInt(s)))
       case o                               => this.set(fromInt(Helpers.toInt(o)))
     }
-  }
 
   protected def i_obscure_!(in: ENUM#Value) = defaultValue
 
@@ -248,7 +247,7 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   def defined_? = i_is_! != defaultValue
 
-  override def dbIndexFieldIndicatesSaved_? = { i_is_! != defaultValue }
+  override def dbIndexFieldIndicatesSaved_? = i_is_! != defaultValue
 
   def makeKeyJDBCFriendly(in: Int) = new java.lang.Integer(in)
 
@@ -265,15 +264,13 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   override def dbDisplay_? = false
 
-  def convertKey(in: Int): Box[Int] = {
+  def convertKey(in: Int): Box[Int] =
     if (in < 0) Empty
     else Full(in)
-  }
 
-  def convertKey(in: Long): Box[Int] = {
+  def convertKey(in: Long): Box[Int] =
     if (in < 0 || in > Integer.MAX_VALUE) Empty
     else Full(in.asInstanceOf[Int])
-  }
 
   def convertKey(in: AnyRef): Box[Int] = {
     if ((in eq null) || (in eq None)) None
@@ -382,7 +379,7 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
 
   def jdbcFriendly(field: String) = new java.lang.Integer(get)
 
-  override def setFromAny(in: Any): Int = {
+  override def setFromAny(in: Any): Int =
     in match {
       case n: Int                          => this.set(n)
       case JsonAST.JInt(bigint)            => this.set(bigint.intValue)
@@ -396,7 +393,6 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       case s: String                       => this.set(toInt(s))
       case o                               => this.set(toInt(o))
     }
-  }
 
   protected def i_obscure_!(in: Int) = 0
 

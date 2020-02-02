@@ -35,10 +35,9 @@ case class HistoricalData(
     val active: Array[Boolean])
     extends Serializable {
 
-  override def toString(): String = {
+  override def toString(): String =
     s"HistoricalData($ticker, ${timeIndex.head}, ${timeIndex.last}, " +
       s"${close.last})"
-  }
 
   def toDetailedString(): String = {
     val adjCloseStr = adjClose.mkString("[", ", ", "]")
@@ -151,15 +150,13 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
     // Check if the time is continuous
     (1 until timeIndex.size).foreach { idx =>
-      {
-        require(
-          dailyMap(timeIndex(idx)).prevDate == timeIndex(idx - 1),
-          s"Time must be continuous. " +
-            s"For ticker $ticker, there is a gap between " +
-            s"${timeIndex(idx - 1)} and ${timeIndex(idx)}. " +
-            s"Please import data to cover the gap or use a shorter range."
-        )
-      }
+      require(
+        dailyMap(timeIndex(idx)).prevDate == timeIndex(idx - 1),
+        s"Time must be continuous. " +
+          s"For ticker $ticker, there is a gap between " +
+          s"${timeIndex(idx - 1)} and ${timeIndex(idx)}. " +
+          s"Please import data to cover the gap or use a shorter range."
+      )
     }
 
     val adjReturn = timeIndex.map(t => dailyMap(t).adjReturn)
@@ -307,20 +304,18 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
     val dataSet: Seq[(TrainingData, Seq[(QueryDate, AnyRef)])] =
       Range(dsp.fromIdx, dsp.untilIdx, dsp.maxTestingWindowSize).map { idx =>
-        {
-          val trainingData = TrainingData(
-            untilIdx = idx,
-            maxWindowSize = dsp.trainingWindowSize,
-            rawDataB = rawDataB)
+        val trainingData = TrainingData(
+          untilIdx = idx,
+          maxWindowSize = dsp.trainingWindowSize,
+          rawDataB = rawDataB)
 
-          // cannot evaluate the last item as data view only last until untilIdx.
-          val testingUntilIdx =
-            math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
+        // cannot evaluate the last item as data view only last until untilIdx.
+        val testingUntilIdx =
+          math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
 
-          val queries = (idx until testingUntilIdx)
-            .map { idx => (QueryDate(idx), None) }
-          (trainingData, queries)
-        }
+        val queries = (idx until testingUntilIdx)
+          .map { idx => (QueryDate(idx), None) }
+        (trainingData, queries)
       }
 
     dataSet.map {

@@ -71,7 +71,7 @@ class PortsMatcher(
     */
   private[this] def findPortsInOffer(
       requiredPorts: Seq[Int],
-      failLog: Boolean): Option[Seq[PortWithRole]] = {
+      failLog: Boolean): Option[Seq[PortWithRole]] =
     takeEnoughPortsOrNone(expectedSize = requiredPorts.size) {
       requiredPorts.iterator.map { (port: Int) =>
         offeredPortRanges.find(_.contains(port)).map { offeredRange =>
@@ -85,13 +85,11 @@ class PortsMatcher(
         }
       }
     }
-  }
 
   /**
     * Choose random ports from offer.
     */
-  private[this] def randomPorts(
-      numberOfPorts: Int): Option[Seq[PortWithRole]] = {
+  private[this] def randomPorts(numberOfPorts: Int): Option[Seq[PortWithRole]] =
     takeEnoughPortsOrNone(expectedSize = numberOfPorts) {
       shuffledAvailablePorts.map(Some(_))
     } orElse {
@@ -100,14 +98,13 @@ class PortsMatcher(
           s"Couldn't find $numberOfPorts ports in offer for app [${app.id}]")
       None
     }
-  }
 
   /**
     * Try to find all non-zero host ports in offer and use random ports from the offer for dynamic host ports (=0).
     * Return `None` if not all host ports could be assigned this way.
     */
   private[this] def mappedPortRanges(
-      mappings: Seq[PortMapping]): Option[Seq[PortWithRole]] = {
+      mappings: Seq[PortMapping]): Option[Seq[PortWithRole]] =
     takeEnoughPortsOrNone(expectedSize = mappings.size) {
       // non-dynamic hostPorts from port mappings
       val hostPortsFromMappings: Set[Int] =
@@ -145,7 +142,6 @@ class PortsMatcher(
           }
       }
     }
-  }
 
   /**
     * Takes `expectedSize` ports from the given iterator if possible. Stops when encountering the first `None` port.
@@ -182,9 +178,8 @@ object PortsMatcher {
       role: String,
       port: Int,
       reservation: Option[MesosProtos.Resource.ReservationInfo] = None) {
-    def toRange: protos.Range = {
+    def toRange: protos.Range =
       protos.Range(port.toLong, port.toLong)
-    }
   }
 
   object PortWithRole {
@@ -208,7 +203,7 @@ object PortsMatcher {
         @tailrec
         def process(
             lastRangeOpt: Option[protos.Range],
-            next: Seq[PortWithRole]): Unit = {
+            next: Seq[PortWithRole]): Unit =
           (lastRangeOpt, next.headOption) match {
             case (None, _) =>
             case (Some(lastRange), None) =>
@@ -222,7 +217,6 @@ object PortsMatcher {
               builder += lastRange
               process(Some(nextPort.toRange), next.tail)
           }
-        }
         process(ranges.headOption.map(_.toRange), ranges.tail)
 
         builder.result()

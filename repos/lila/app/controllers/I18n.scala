@@ -27,7 +27,7 @@ object I18n extends LilaController {
             }
           } >> negotiate(
             html = Redirect {
-              s"${Env.api.Net.Protocol}${lang}.${Env.api.Net.Domain}" + {
+              s"${Env.api.Net.Protocol}$lang.${Env.api.Net.Domain}" + {
                 HTTPRequest.referer(ctx.req).fold(routes.Lobby.home.url) {
                   str =>
                     try {

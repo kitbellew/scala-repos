@@ -94,7 +94,7 @@ case class Like(left: Expression, right: Expression)
         ctx.addMutableState(
           patternClass,
           pattern,
-          s"""$pattern = ${patternClass}.compile("$regexStr");""")
+          s"""$pattern = $patternClass.compile("$regexStr");""")
 
         // We don't use nullSafeCodeGen here because we don't want to re-evaluate right again.
         val eval = left.gen(ctx)
@@ -116,13 +116,11 @@ case class Like(left: Expression, right: Expression)
       nullSafeCodeGen(
         ctx,
         ev,
-        (eval1, eval2) => {
-          s"""
-          String rightStr = ${eval2}.toString();
-          ${patternClass} $pattern = ${patternClass}.compile($escapeFunc(rightStr));
-          ${ev.value} = $pattern.matcher(${eval1}.toString()).matches();
+        (eval1, eval2) => s"""
+          String rightStr = $eval2.toString();
+          $patternClass $pattern = $patternClass.compile($escapeFunc(rightStr));
+          ${ev.value} = $pattern.matcher($eval1.toString()).matches();
         """
-        }
       )
     }
   }
@@ -149,7 +147,7 @@ case class RLike(left: Expression, right: Expression)
         ctx.addMutableState(
           patternClass,
           pattern,
-          s"""$pattern = ${patternClass}.compile("$regexStr");""")
+          s"""$pattern = $patternClass.compile("$regexStr");""")
 
         // We don't use nullSafeCodeGen here because we don't want to re-evaluate right again.
         val eval = left.gen(ctx)
@@ -171,13 +169,11 @@ case class RLike(left: Expression, right: Expression)
       nullSafeCodeGen(
         ctx,
         ev,
-        (eval1, eval2) => {
-          s"""
-          String rightStr = ${eval2}.toString();
-          ${patternClass} $pattern = ${patternClass}.compile(rightStr);
-          ${ev.value} = $pattern.matcher(${eval1}.toString()).find(0);
+        (eval1, eval2) => s"""
+          String rightStr = $eval2.toString();
+          $patternClass $pattern = $patternClass.compile(rightStr);
+          ${ev.value} = $pattern.matcher($eval1.toString()).find(0);
         """
-        }
       )
     }
   }
@@ -277,53 +273,45 @@ case class RegExpReplace(
     val classNamePattern = classOf[Pattern].getCanonicalName
     val classNameStringBuffer = classOf[java.lang.StringBuffer].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx.addMutableState("UTF8String", termLastRegex, s"$termLastRegex = null;")
+    ctx.addMutableState(classNamePattern, termPattern, s"$termPattern = null;")
     ctx.addMutableState(
       "String",
       termLastReplacement,
-      s"${termLastReplacement} = null;")
+      s"$termLastReplacement = null;")
     ctx.addMutableState(
       "UTF8String",
       termLastReplacementInUTF8,
-      s"${termLastReplacementInUTF8} = null;")
+      s"$termLastReplacementInUTF8 = null;")
     ctx.addMutableState(
       classNameStringBuffer,
       termResult,
-      s"${termResult} = new $classNameStringBuffer();")
+      s"$termResult = new $classNameStringBuffer();")
 
     nullSafeCodeGen(
       ctx,
       ev,
-      (subject, regexp, rep) => {
-        s"""
-      if (!$regexp.equals(${termLastRegex})) {
+      (subject, regexp, rep) => s"""
+      if (!$regexp.equals($termLastRegex)) {
         // regex value changed
-        ${termLastRegex} = $regexp.clone();
-        ${termPattern} = ${classNamePattern}.compile(${termLastRegex}.toString());
+        $termLastRegex = $regexp.clone();
+        $termPattern = $classNamePattern.compile($termLastRegex.toString());
       }
-      if (!$rep.equals(${termLastReplacementInUTF8})) {
+      if (!$rep.equals($termLastReplacementInUTF8)) {
         // replacement string changed
-        ${termLastReplacementInUTF8} = $rep.clone();
-        ${termLastReplacement} = ${termLastReplacementInUTF8}.toString();
+        $termLastReplacementInUTF8 = $rep.clone();
+        $termLastReplacement = $termLastReplacementInUTF8.toString();
       }
-      ${termResult}.delete(0, ${termResult}.length());
-      java.util.regex.Matcher m = ${termPattern}.matcher($subject.toString());
+      $termResult.delete(0, $termResult.length());
+      java.util.regex.Matcher m = $termPattern.matcher($subject.toString());
 
       while (m.find()) {
-        m.appendReplacement(${termResult}, ${termLastReplacement});
+        m.appendReplacement($termResult, $termLastReplacement);
       }
-      m.appendTail(${termResult});
-      ${ev.value} = UTF8String.fromString(${termResult}.toString());
+      m.appendTail($termResult);
+      ${ev.value} = UTF8String.fromString($termResult.toString());
       ${ev.isNull} = false;
     """
-      }
     )
   }
 }
@@ -372,27 +360,20 @@ case class RegExpExtract(
     val termPattern = ctx.freshName("pattern")
     val classNamePattern = classOf[Pattern].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx.addMutableState("UTF8String", termLastRegex, s"$termLastRegex = null;")
+    ctx.addMutableState(classNamePattern, termPattern, s"$termPattern = null;")
 
     nullSafeCodeGen(
       ctx,
       ev,
-      (subject, regexp, idx) => {
-        s"""
-      if (!$regexp.equals(${termLastRegex})) {
+      (subject, regexp, idx) => s"""
+      if (!$regexp.equals($termLastRegex)) {
         // regex value changed
-        ${termLastRegex} = $regexp.clone();
-        ${termPattern} = ${classNamePattern}.compile(${termLastRegex}.toString());
+        $termLastRegex = $regexp.clone();
+        $termPattern = $classNamePattern.compile($termLastRegex.toString());
       }
       java.util.regex.Matcher m =
-        ${termPattern}.matcher($subject.toString());
+        $termPattern.matcher($subject.toString());
       if (m.find()) {
         java.util.regex.MatchResult mr = m.toMatchResult();
         ${ev.value} = UTF8String.fromString(mr.group($idx));
@@ -401,7 +382,6 @@ case class RegExpExtract(
         ${ev.value} = UTF8String.EMPTY_UTF8;
         ${ev.isNull} = false;
       }"""
-      }
     )
   }
 }

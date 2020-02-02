@@ -156,33 +156,30 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
             toWritableInspector(f.dataType)): _*))
     }
 
-  def checkDataType(dt1: Seq[DataType], dt2: Seq[DataType]): Unit = {
+  def checkDataType(dt1: Seq[DataType], dt2: Seq[DataType]): Unit =
     dt1.zip(dt2).foreach {
       case (dd1, dd2) =>
         assert(
           dd1.getClass === dd2.getClass
         ) // DecimalType doesn't has the default precision info
     }
-  }
 
-  def checkValues(row1: Seq[Any], row2: Seq[Any]): Unit = {
+  def checkValues(row1: Seq[Any], row2: Seq[Any]): Unit =
     row1.zip(row2).foreach {
       case (r1, r2) =>
         checkValue(r1, r2)
     }
-  }
 
   def checkValues(
       row1: Seq[Any],
       row2: InternalRow,
-      row2Schema: StructType): Unit = {
+      row2Schema: StructType): Unit =
     row1.zip(row2.toSeq(row2Schema)).foreach {
       case (r1, r2) =>
         checkValue(r1, r2)
     }
-  }
 
-  def checkValue(v1: Any, v2: Any): Unit = {
+  def checkValue(v1: Any, v2: Any): Unit =
     (v1, v2) match {
       case (r1: Decimal, r2: Decimal) =>
         // Ignore the Decimal precision
@@ -194,7 +191,6 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       case (r1: MapData, r2: MapData) =>
       case (r1, r2)                   => assert(r1 === r2)
     }
-  }
 
   test("oi => datatype => oi") {
     val ois = dataTypes.map(toInspector)

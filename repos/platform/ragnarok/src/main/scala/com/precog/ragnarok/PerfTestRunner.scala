@@ -59,12 +59,11 @@ trait PerfTestRunner[M[+_], T] {
 
   private def merge[A: Monoid](
       run: RunResult[A],
-      f: Option[(T, T)] => A): Tree[(PerfTest, A)] = {
+      f: Option[(T, T)] => A): Tree[(PerfTest, A)] =
     fill(run) match {
       case Tree.Node((test, a, time), children) =>
         Tree.node((test, a |+| f(time)), children map (merge(_, f)))
     }
-  }
 
   def runAll[A: Monoid](test: Tree[PerfTest], n: Int)(f: Option[(T, T)] => A) =
     runAllM(test, n)(f).copoint
@@ -82,7 +81,7 @@ trait PerfTestRunner[M[+_], T] {
     }
   }
 
-  def runM[A](test: Tree[(PerfTest, A)]): M[RunResult[A]] = {
+  def runM[A](test: Tree[(PerfTest, A)]): M[RunResult[A]] =
     test match {
       case Tree.Node((test @ RunQuery(q), a), _) =>
         timeQuery(q) map {
@@ -111,7 +110,6 @@ trait PerfTestRunner[M[+_], T] {
             Tree.node((g, a, t), tests)
         }
     }
-  }
 
   private def time[A](f: => A): ((T, T), A) = {
     val start = now()
@@ -134,12 +132,11 @@ class MockPerfTestRunner[M[+_]](evalTime: => Int)(
 
   val timer = SimpleTimer
 
-  def eval(query: String): M[Result] = {
+  def eval(query: String): M[Result] =
     (()).pure[M] map { _ =>
       Thread.sleep(evalTime)
       ()
     }
-  }
 
   def startup() = ()
   def shutdown() = ()

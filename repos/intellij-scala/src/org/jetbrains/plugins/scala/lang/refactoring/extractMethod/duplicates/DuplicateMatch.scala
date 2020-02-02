@@ -71,9 +71,8 @@ class DuplicateMatch(
 
   private def checkChildren(
       subPattern: PsiElement,
-      subCandidate: PsiElement): Boolean = {
+      subCandidate: PsiElement): Boolean =
     checkElementSeq(subPattern.children.toSeq, subCandidate.children.toSeq)
-  }
 
   private def checkElement(
       subPattern: PsiElement,
@@ -121,7 +120,7 @@ class DuplicateMatch(
     }
   }
 
-  private def typesEquiv(expr1: ScExpression, expr2: ScExpression) = {
+  private def typesEquiv(expr1: ScExpression, expr2: ScExpression) =
     (expr1.getType(), expr2.getType()) match {
       case (Success(t1, _), Success(t2, _)) =>
         def extractFromSingletonType(t: ScType) =
@@ -135,6 +134,5 @@ class DuplicateMatch(
       case (Failure(_, _), Failure(_, _)) => true
       case _                              => false
     }
-  }
 
 }

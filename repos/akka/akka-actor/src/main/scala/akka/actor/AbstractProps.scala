@@ -69,7 +69,6 @@ private[akka] trait AbstractProps {
   /**
     * Create new Props from the given [[akka.japi.Creator]] with the type set to the given actorClass.
     */
-  def create[T <: Actor](actorClass: Class[T], creator: Creator[T]): Props = {
+  def create[T <: Actor](actorClass: Class[T], creator: Creator[T]): Props =
     create(classOf[CreatorConsumer], actorClass, creator)
-  }
 }

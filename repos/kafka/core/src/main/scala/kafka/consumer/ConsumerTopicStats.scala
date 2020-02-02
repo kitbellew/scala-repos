@@ -49,9 +49,8 @@ class ConsumerTopicStats(clientId: String) extends Logging {
 
   def getConsumerAllTopicStats(): ConsumerTopicMetrics = allTopicStats
 
-  def getConsumerTopicStats(topic: String): ConsumerTopicMetrics = {
+  def getConsumerTopicStats(topic: String): ConsumerTopicMetrics =
     stats.getAndMaybePut(new ClientIdAndTopic(clientId, topic))
-  }
 }
 
 /**
@@ -62,9 +61,8 @@ object ConsumerTopicStatsRegistry {
   private val globalStats =
     new Pool[String, ConsumerTopicStats](Some(valueFactory))
 
-  def getConsumerTopicStat(clientId: String) = {
+  def getConsumerTopicStat(clientId: String) =
     globalStats.getAndMaybePut(clientId)
-  }
 
   def removeConsumerTopicStat(clientId: String) {
     globalStats.remove(clientId)

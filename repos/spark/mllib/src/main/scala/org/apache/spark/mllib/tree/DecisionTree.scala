@@ -90,9 +90,8 @@ object DecisionTree extends Serializable with Logging {
     * @return DecisionTreeModel that can be used for prediction.
     */
   @Since("1.0.0")
-  def train(input: RDD[LabeledPoint], strategy: Strategy): DecisionTreeModel = {
+  def train(input: RDD[LabeledPoint], strategy: Strategy): DecisionTreeModel =
     new DecisionTree(strategy).run(input)
-  }
 
   /**
     * Method to train a decision tree model.
@@ -244,7 +243,7 @@ object DecisionTree extends Serializable with Logging {
         java.lang.Integer],
       impurity: String,
       maxDepth: Int,
-      maxBins: Int): DecisionTreeModel = {
+      maxBins: Int): DecisionTreeModel =
     trainClassifier(
       input.rdd,
       numClasses,
@@ -255,7 +254,6 @@ object DecisionTree extends Serializable with Logging {
       impurity,
       maxDepth,
       maxBins)
-  }
 
   /**
     * Method to train a decision tree model for regression.
@@ -304,7 +302,7 @@ object DecisionTree extends Serializable with Logging {
         java.lang.Integer],
       impurity: String,
       maxDepth: Int,
-      maxBins: Int): DecisionTreeModel = {
+      maxBins: Int): DecisionTreeModel =
     trainRegressor(
       input.rdd,
       categoricalFeaturesInfo
@@ -314,7 +312,6 @@ object DecisionTree extends Serializable with Logging {
       impurity,
       maxDepth,
       maxBins)
-  }
 
   /**
     * Get the node index corresponding to this data point.
@@ -336,7 +333,7 @@ object DecisionTree extends Serializable with Logging {
       node: Node,
       binnedFeatures: Array[Int],
       bins: Array[Array[Bin]],
-      unorderedFeatures: Set[Int]): Int = {
+      unorderedFeatures: Set[Int]): Int =
     if (node.isLeaf || node.split.isEmpty) {
       // Node is either leaf, or has not yet been split.
       node.id
@@ -382,7 +379,6 @@ object DecisionTree extends Serializable with Logging {
         }
       }
     }
-  }
 
   /**
     * Helper for binSeqOp, for data which can contain a mix of ordered and unordered features.
@@ -567,7 +563,7 @@ object DecisionTree extends Serializable with Logging {
         treeIndex: Int,
         nodeInfo: RandomForest.NodeIndexInfo,
         agg: Array[DTStatsAggregator],
-        baggedPoint: BaggedPoint[TreePoint]): Unit = {
+        baggedPoint: BaggedPoint[TreePoint]): Unit =
       if (nodeInfo != null) {
         val aggNodeIndex = nodeInfo.nodeIndexInGroup
         val featuresForNode = nodeInfo.featureSubset
@@ -589,7 +585,6 @@ object DecisionTree extends Serializable with Logging {
         }
         agg(aggNodeIndex).updateParent(baggedPoint.datum.label, instanceWeight)
       }
-    }
 
     /**
       * Performs a sequential aggregation over a partition.

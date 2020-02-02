@@ -337,10 +337,9 @@ private[remote] class ReliableDeliverySupervisor(
     maxSilenceTimer.foreach(_.cancel())
   }
 
-  override def postRestart(reason: Throwable): Unit = {
+  override def postRestart(reason: Throwable): Unit =
     throw new IllegalStateException(
       "BUG: ReliableDeliverySupervisor has been attempted to be restarted. This must not happen.")
-  }
 
   override def receive: Receive = {
     case FlushAndStop ⇒
@@ -512,7 +511,7 @@ private[remote] class ReliableDeliverySupervisor(
         throw new HopelessAssociation(localAddress, remoteAddress, uid, e)
     }
 
-  private def createWriter(): ActorRef = {
+  private def createWriter(): ActorRef =
     context.watch(
       context.actorOf(
         RARP(context.system)
@@ -530,7 +529,6 @@ private[remote] class ReliableDeliverySupervisor(
           .withDeploy(Deploy.local),
         "endpointWriter"
       ))
-  }
 }
 
 /**
@@ -705,14 +703,13 @@ private[remote] class EndpointWriter(
       AckIdleCheckTimer)
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     handle match {
       case Some(h) ⇒
         reader = startReadEndpoint(h)
       case None ⇒
         transport.associate(remoteAddress, refuseUid).map(Handle(_)) pipeTo self
     }
-  }
 
   override def postRestart(reason: Throwable): Unit =
     throw new IllegalStateException("EndpointWriter must not be restarted")
@@ -877,7 +874,7 @@ private[remote] class EndpointWriter(
 
   }
 
-  def scheduleBackoffTimer(): Unit = {
+  def scheduleBackoffTimer(): Unit =
     if (fullBackoff) {
       fullBackoffCount += 1
       fullBackoff = false
@@ -900,7 +897,6 @@ private[remote] class EndpointWriter(
         s.tell(BackoffTimer, ActorRef.noSender)
       }(backoffDispatcher)
     }
-  }
 
   val writing: Receive = {
     case s: Send ⇒
@@ -1122,7 +1118,7 @@ private[remote] class EndpointReader(
   val provider = RARP(context.system).provider
   var ackedReceiveBuffer = new AckedReceiveBuffer[Message]
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     receiveBuffers.get(Link(localAddress, remoteAddress)) match {
       case null ⇒
       case ResendState(`uid`, buffer) ⇒
@@ -1130,7 +1126,6 @@ private[remote] class EndpointReader(
         deliverAndAck()
       case _ ⇒
     }
-  }
 
   override def postStop(): Unit = saveState()
 
@@ -1141,7 +1136,7 @@ private[remote] class EndpointReader(
       else currentState
 
     @tailrec
-    def updateSavedState(key: Link, expectedState: ResendState): Unit = {
+    def updateSavedState(key: Link, expectedState: ResendState): Unit =
       if (expectedState eq null) {
         if (receiveBuffers.putIfAbsent(
               key,
@@ -1152,7 +1147,6 @@ private[remote] class EndpointReader(
                    expectedState,
                    merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
         updateSavedState(key, receiveBuffers.get(key))
-    }
 
     val key = Link(localAddress, remoteAddress)
     updateSavedState(key, receiveBuffers.get(key))

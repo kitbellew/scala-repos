@@ -215,7 +215,7 @@ trait ModelLibModule[M[+_]] {
 
     def determineColumns(
         schema: CSchema,
-        cpaths: Set[CPath]): Map[CPath, DoubleColumn] = {
+        cpaths: Set[CPath]): Map[CPath, DoubleColumn] =
       cpaths
         .map { cpath =>
           val jtpe = Schema.mkType(Seq(ColumnRef(cpath, CDouble)))
@@ -240,17 +240,15 @@ trait ModelLibModule[M[+_]] {
             (path, col.get)
         }
         .toMap
-    }
 
     def alignWithModels(
         schema: CSchema,
         modelWithPaths: Map[String, Set[CPath]])
-        : Map[String, Map[CPath, DoubleColumn]] = {
+        : Map[String, Map[CPath, DoubleColumn]] =
       modelWithPaths map {
         case (modelName, cpaths) =>
           (modelName, determineColumns(schema, cpaths))
       }
-    }
 
     trait LinearModelBase extends RegressionModelBase {
       case class Model(

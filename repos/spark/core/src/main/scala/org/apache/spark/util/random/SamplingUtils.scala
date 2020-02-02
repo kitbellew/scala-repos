@@ -92,14 +92,13 @@ private[spark] object SamplingUtils {
   def computeFractionForSampleSize(
       sampleSizeLowerBound: Int,
       total: Long,
-      withReplacement: Boolean): Double = {
+      withReplacement: Boolean): Double =
     if (withReplacement) {
       PoissonBounds.getUpperBound(sampleSizeLowerBound) / total
     } else {
       val fraction = sampleSizeLowerBound.toDouble / total
       BinomialBounds.getUpperBound(1e-4, total, fraction)
     }
-  }
 }
 
 /**
@@ -111,20 +110,18 @@ private[spark] object PoissonBounds {
   /**
     * Returns a lambda such that Pr[X > s] is very small, where X ~ Pois(lambda).
     */
-  def getLowerBound(s: Double): Double = {
+  def getLowerBound(s: Double): Double =
     math.max(s - numStd(s) * math.sqrt(s), 1e-15)
-  }
 
   /**
     * Returns a lambda such that Pr[X < s] is very small, where X ~ Pois(lambda).
     *
     * @param s sample size
     */
-  def getUpperBound(s: Double): Double = {
+  def getUpperBound(s: Double): Double =
     math.max(s + numStd(s) * math.sqrt(s), 1e-10)
-  }
 
-  private def numStd(s: Double): Double = {
+  private def numStd(s: Double): Double =
     // TODO: Make it tighter.
     if (s < 6.0) {
       12.0
@@ -133,7 +130,6 @@ private[spark] object PoissonBounds {
     } else {
       6.0
     }
-  }
 }
 
 /**

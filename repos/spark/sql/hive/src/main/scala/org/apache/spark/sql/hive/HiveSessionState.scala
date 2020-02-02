@@ -84,7 +84,7 @@ private[hive] class HiveSessionState(ctx: HiveContext)
       with HiveStrategies {
       override val hiveContext = ctx
 
-      override def strategies: Seq[Strategy] = {
+      override def strategies: Seq[Strategy] =
         experimentalMethods.extraStrategies ++ Seq(
           FileSourceStrategy,
           DataSourceStrategy,
@@ -104,7 +104,6 @@ private[hive] class HiveSessionState(ctx: HiveContext)
           CartesianProduct,
           DefaultJoin
         )
-      }
     }
   }
 

@@ -45,7 +45,7 @@ object ConnectionPool {
       config: String,
       injector: Injector,
       environment: Environment,
-      default: ConnectionPool): ConnectionPool = {
+      default: ConnectionPool): ConnectionPool =
     config match {
       case "default"  => default
       case "bonecp"   => new BoneConnectionPool(environment)
@@ -54,7 +54,6 @@ object ConnectionPool {
         injector.instanceOf(
           Reflect.getClass[ConnectionPool](fqcn, environment.classLoader))
     }
-  }
 
   private val PostgresFullUrl =
     "^postgres://([a-zA-Z0-9_]+):([^@]+)@([^/]+)/([^\\s]+)$".r
@@ -70,8 +69,7 @@ object ConnectionPool {
     */
   def extractUrl(
       maybeUrl: Option[String],
-      mode: Mode.Mode): (Option[String], Option[(String, String)]) = {
-
+      mode: Mode.Mode): (Option[String], Option[(String, String)]) =
     maybeUrl match {
       case Some(PostgresFullUrl(username, password, host, dbname)) =>
         Some(s"jdbc:postgresql://$host/$dbname") -> Some(username -> password)
@@ -96,5 +94,4 @@ object ConnectionPool {
         None -> None
     }
 
-  }
 }

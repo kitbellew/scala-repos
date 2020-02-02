@@ -23,7 +23,7 @@ import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.sql.{DataFrame, Row}
 
 object StopWordsRemoverSuite extends SparkFunSuite {
-  def testStopWordsRemover(t: StopWordsRemover, dataset: DataFrame): Unit = {
+  def testStopWordsRemover(t: StopWordsRemover, dataset: DataFrame): Unit =
     t.transform(dataset)
       .select("filtered", "expected")
       .collect()
@@ -31,7 +31,6 @@ object StopWordsRemoverSuite extends SparkFunSuite {
         case Row(tokens, wantedTokens) =>
           assert(tokens === wantedTokens)
       }
-  }
 }
 
 class StopWordsRemoverSuite

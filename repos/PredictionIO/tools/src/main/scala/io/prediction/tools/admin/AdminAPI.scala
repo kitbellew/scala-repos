@@ -54,7 +54,7 @@ class AdminServiceActor(val commandClient: CommandClient)
     case MissingQueryParamRejection(msg) :: _ =>
       complete(
         StatusCodes.NotFound,
-        Map("message" -> s"missing required query parameter ${msg}."))
+        Map("message" -> s"missing required query parameter $msg."))
     case AuthenticationFailedRejection(cause, challengeHeaders) :: _ =>
       complete(
         StatusCodes.Unauthorized,
@@ -73,20 +73,16 @@ class AdminServiceActor(val commandClient: CommandClient)
       }
     } ~
       path("cmd" / "app" / Segment / "data") { appName =>
-        {
-          delete {
-            respondWithMediaType(MediaTypes.`application/json`) {
-              complete(commandClient.futureAppDataDelete(appName))
-            }
+        delete {
+          respondWithMediaType(MediaTypes.`application/json`) {
+            complete(commandClient.futureAppDataDelete(appName))
           }
         }
       } ~
       path("cmd" / "app" / Segment) { appName =>
-        {
-          delete {
-            respondWithMediaType(MediaTypes.`application/json`) {
-              complete(commandClient.futureAppDelete(appName))
-            }
+        delete {
+          respondWithMediaType(MediaTypes.`application/json`) {
+            complete(commandClient.futureAppDelete(appName))
           }
         }
       } ~

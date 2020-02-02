@@ -77,13 +77,12 @@ class ChooseTypeTextExpression(
     else elem.presentableText
   }
 
-  override def calcLookupElements(): Seq[LookupElementBuilder] = {
+  override def calcLookupElements(): Seq[LookupElementBuilder] =
     super.calcLookupElements().map { le =>
       val text = le.getObject.asInstanceOf[ScTypeText]
       //if we use canonical text we still want to be able to search search by presentable text
       le.withLookupString(text.presentableText)
     }
-  }
 
   override def result(element: ScTypeText): String = element.canonicalText
 }

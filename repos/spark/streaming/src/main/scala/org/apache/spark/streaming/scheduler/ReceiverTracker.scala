@@ -212,23 +212,20 @@ private[streaming] class ReceiverTracker(
   }
 
   /** Allocate all unallocated blocks to the given batch. */
-  def allocateBlocksToBatch(batchTime: Time): Unit = {
+  def allocateBlocksToBatch(batchTime: Time): Unit =
     if (receiverInputStreams.nonEmpty) {
       receivedBlockTracker.allocateBlocksToBatch(batchTime)
     }
-  }
 
   /** Get the blocks for the given batch and all input streams. */
-  def getBlocksOfBatch(batchTime: Time): Map[Int, Seq[ReceivedBlockInfo]] = {
+  def getBlocksOfBatch(batchTime: Time): Map[Int, Seq[ReceivedBlockInfo]] =
     receivedBlockTracker.getBlocksOfBatch(batchTime)
-  }
 
   /** Get the blocks allocated to the given batch and stream. */
   def getBlocksOfBatchAndStream(
       batchTime: Time,
-      streamId: Int): Seq[ReceivedBlockInfo] = {
+      streamId: Int): Seq[ReceivedBlockInfo] =
     receivedBlockTracker.getBlocksOfBatchAndStream(batchTime, streamId)
-  }
 
   /**
     * Clean up the data and metadata of blocks and batches that are strictly
@@ -289,7 +286,7 @@ private[streaming] class ReceiverTracker(
       // Refuse it since it's scheduled to a wrong executor
       false
     } else {
-      val name = s"${typ}-${streamId}"
+      val name = s"$typ-$streamId"
       val receiverTrackingInfo = ReceiverTrackingInfo(
         streamId,
         ReceiverState.ACTIVE,
@@ -354,9 +351,8 @@ private[streaming] class ReceiverTracker(
   }
 
   /** Add new blocks for the given stream */
-  private def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean = {
+  private def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean =
     receivedBlockTracker.addBlock(receivedBlockInfo)
-  }
 
   /** Report error sent by a receiver */
   private def reportError(streamId: Int, message: String, error: String) {
@@ -426,14 +422,13 @@ private[streaming] class ReceiverTracker(
   }
 
   /** Check if any blocks are left to be processed */
-  def hasUnallocatedBlocks: Boolean = {
+  def hasUnallocatedBlocks: Boolean =
     receivedBlockTracker.hasUnallocatedReceivedBlocks
-  }
 
   /**
     * Get the list of executors excluding driver
     */
-  private def getExecutors: Seq[ExecutorCacheTaskLocation] = {
+  private def getExecutors: Seq[ExecutorCacheTaskLocation] =
     if (ssc.sc.isLocal) {
       val blockManagerId = ssc.sparkContext.env.blockManager.blockManagerId
       Seq(
@@ -454,7 +449,6 @@ private[streaming] class ReceiverTracker(
         }
         .toSeq
     }
-  }
 
   /**
     * Run the dummy Spark job to ensure that all slaves have registered. This avoids all the
@@ -480,11 +474,11 @@ private[streaming] class ReceiverTracker(
     * worker nodes as a parallel collection, and runs them.
     */
   private def launchReceivers(): Unit = {
-    val receivers = receiverInputStreams.map(nis => {
+    val receivers = receiverInputStreams.map { nis =>
       val rcvr = nis.getReceiver()
       rcvr.setReceiverId(nis.id)
       rcvr
-    })
+    }
 
     runDummySparkJob()
 
@@ -609,7 +603,7 @@ private[streaming] class ReceiverTracker(
       * Return the stored scheduled executors that are still alive.
       */
     private def getStoredScheduledExecutors(
-        receiverId: Int): Seq[TaskLocation] = {
+        receiverId: Int): Seq[TaskLocation] =
       if (receiverTrackingInfos.contains(receiverId)) {
         val scheduledLocations = receiverTrackingInfos(receiverId).scheduledLocations
         if (scheduledLocations.nonEmpty) {
@@ -625,7 +619,6 @@ private[streaming] class ReceiverTracker(
       } else {
         Nil
       }
-    }
 
     /**
       * Start a receiver along with its scheduled executors
@@ -633,10 +626,9 @@ private[streaming] class ReceiverTracker(
     private def startReceiver(
         receiver: Receiver[_],
         scheduledLocations: Seq[TaskLocation]): Unit = {
-      def shouldStartReceiver: Boolean = {
+      def shouldStartReceiver: Boolean =
         // It's okay to start when trackerState is Initialized or Started
         !(isTrackerStopping || isTrackerStopped)
-      }
 
       val receiverId = receiver.streamId
       if (!shouldStartReceiver) {

@@ -68,12 +68,11 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  override def withFixture(test: NoArgTest) = {
+  override def withFixture(test: NoArgTest) =
     if (testServer == None) {
       info("Cannot start memcached. skipping test...")
       cancel()
     } else test()
-  }
 
   test("Proxied Memcached Servers should handle a basic get/set operation") {
     Await.result(externalClient.delete("foo"))

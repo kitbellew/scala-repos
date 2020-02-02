@@ -18,7 +18,7 @@ case class ProductScore(
 ) extends Serializable
 
 object PSimRankEngineFactory extends IEngineFactory {
-  def apply() = {
+  def apply() =
     Engine(
       Map(
         "default" -> classOf[DataSource],
@@ -28,5 +28,4 @@ object PSimRankEngineFactory extends IEngineFactory {
       Map("simrank" -> classOf[SimRankAlgorithm]),
       classOf[Serving]
     )
-  }
 }

@@ -68,7 +68,7 @@ private[handler] abstract class AnnotationHelper {
     }
   }
 
-  def validateFinished: scala.util.Try[Unit] = {
+  def validateFinished: scala.util.Try[Unit] =
     if (cannotationInfo.isEmpty) {
       Success(())
     } else {
@@ -78,5 +78,4 @@ private[handler] abstract class AnnotationHelper {
         """
       Failure(new Exception(msg))
     }
-  }
 }

@@ -80,7 +80,7 @@ class DynamicConfigManager(
   private var lastExecutedChange = -1L
 
   object ConfigChangedNotificationHandler extends NotificationHandler {
-    override def processNotification(json: String) = {
+    override def processNotification(json: String) =
       Json.parseFull(json) match {
         case None => // There are no config overrides.
         // Ignore non-json notifications because they can be from the deprecated TopicConfigManager
@@ -117,7 +117,6 @@ class DynamicConfigManager(
               " \"entity_name\" : \"topic_name/client_id\"}." +
               " Received: " + json)
       }
-    }
   }
 
   private val configChangeListener = new ZkNodeChangeNotificationListener(
@@ -129,7 +128,6 @@ class DynamicConfigManager(
   /**
     * Begin watching for config changes
     */
-  def startup(): Unit = {
+  def startup(): Unit =
     configChangeListener.init()
-  }
 }

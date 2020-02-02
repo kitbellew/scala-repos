@@ -21,22 +21,19 @@ class StringConcatenationBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def concatenate: String = {
+  def concatenate: String =
     word() + " " + word() + " " + word()
-  }
 
   @Benchmark
-  def interpolate: String = {
+  def interpolate: String =
     s"${word()} ${word()} ${word()}"
-  }
 
   @Benchmark
-  def format: String = {
+  def format: String =
     "%s %s %s".format(word(), word(), word())
-  }
 
   @Benchmark
-  def stringBuilder: String = {
+  def stringBuilder: String =
     new StringBuilder()
       .append(word())
       .append(" ")
@@ -44,7 +41,6 @@ class StringConcatenationBenchmark extends StdBenchAnnotations {
       .append(" ")
       .append(word())
       .toString
-  }
 
   @Benchmark
   def sizedStringBuilder: String = {

@@ -84,24 +84,21 @@ object BundleBuilder {
                 map + (info.name -> (pair :: map.getOrElse(info.name, Nil)))
             }
 
-          def points(i: EntryInfo): Int = {
+          def points(i: EntryInfo): Int =
             (if (i.lang == lang) 4 else 0) +
               (if (i.country == country) 2 else 0) +
               (if (i.default) 1 else 0)
-          }
 
           def choose(lst: List[(EntryInfo, NodeSeq)]): NodeSeq =
             lst.reduceLeft { (a, b) =>
-              {
-                val ap = points(a._1)
-                val bp = points(b._1)
-                if (ap > bp) {
-                  a
-                } else if (bp > ap) {
-                  b
-                } else if (a._1.default) a
-                else b
-              }
+              val ap = points(a._1)
+              val bp = points(b._1)
+              if (ap > bp) {
+                a
+              } else if (bp > ap) {
+                b
+              } else if (a._1.default) a
+              else b
             }._2
 
           val res: Map[String, NodeSeq] = Map(map.map {

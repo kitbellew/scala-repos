@@ -107,11 +107,11 @@ object TopicData {
   def readFrom(buffer: ByteBuffer): TopicData = {
     val topic = readShortString(buffer)
     val partitionCount = buffer.getInt
-    val topicPartitionDataPairs = (1 to partitionCount).map(_ => {
+    val topicPartitionDataPairs = (1 to partitionCount).map { _ =>
       val partitionId = buffer.getInt
       val partitionData = FetchResponsePartitionData.readFrom(buffer)
       (partitionId, partitionData)
-    })
+    }
     TopicData(topic, Map(topicPartitionDataPairs: _*))
   }
 
@@ -183,13 +183,13 @@ object FetchResponse {
     val correlationId = buffer.getInt
     val throttleTime = if (requestVersion > 0) buffer.getInt else 0
     val topicCount = buffer.getInt
-    val pairs = (1 to topicCount).flatMap(_ => {
+    val pairs = (1 to topicCount).flatMap { _ =>
       val topicData = TopicData.readFrom(buffer)
       topicData.partitionData.map {
         case (partitionId, partitionData) =>
           (TopicAndPartition(topicData.topic, partitionId), partitionData)
       }
-    })
+    }
     FetchResponse(correlationId, Map(pairs: _*), requestVersion, throttleTime)
   }
 
@@ -206,7 +206,7 @@ object FetchResponse {
       dataGroupedByTopic: Map[
         String,
         Map[TopicAndPartition, FetchResponsePartitionData]],
-      requestVersion: Int): Int = {
+      requestVersion: Int): Int =
     headerSize(requestVersion) +
       dataGroupedByTopic.foldLeft(0) {
         case (folded, (topic, partitionDataMap)) =>
@@ -216,7 +216,6 @@ object FetchResponse {
           })
           folded + topicData.sizeInBytes
       }
-  }
 }
 
 case class FetchResponse(

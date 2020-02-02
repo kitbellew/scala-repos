@@ -77,7 +77,7 @@ object Form extends DispatchSnippet {
     }
   }
 
-  def render(kids: NodeSeq): NodeSeq = {
+  def render(kids: NodeSeq): NodeSeq =
     // yeah it's ugly, but I'm not sure
     // we could do it reliably with pattern matching
     // dpp Oct 29, 2010
@@ -89,7 +89,6 @@ object Form extends DispatchSnippet {
     } else {
       Elem(null, "form", addAjaxForm, TopScope, true, kids: _*)
     }
-  }
 
   private def addAjaxForm: MetaData = {
     val id = Helpers.nextFuncName

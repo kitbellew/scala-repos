@@ -124,7 +124,7 @@ trait ComTests extends AsyncTests {
     envs.foreach(_.await(DefaultTimeout))
   }
 
-  private def pingPongRunner(count: Int) = {
+  private def pingPongRunner(count: Int) =
     comRunner(s"""
       var seen = 0;
       scalajsCom.init(function(msg) {
@@ -133,7 +133,6 @@ trait ComTests extends AsyncTests {
           scalajsCom.close();
       });
     """)
-  }
 
   @Test
   def largeMessageTest: Unit = {

@@ -102,13 +102,12 @@ class ChannelTransport[In, Out](ch: Channel)
     // preempt them once the write event has been sent into the pipeline.
     val writeFuture = new DefaultChannelFuture(ch, false /* cancellable */ )
     writeFuture.addListener(new ChannelFutureListener {
-      def operationComplete(f: ChannelFuture): Unit = {
+      def operationComplete(f: ChannelFuture): Unit =
         if (f.isSuccess) p.setDone()
         else {
           // since we can't cancel, `f` must be an exception.
           p.setException(ChannelException(f.getCause, ch.getRemoteAddress))
         }
-      }
     })
 
     // Ordering here is important. We want to call `addListener` on

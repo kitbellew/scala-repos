@@ -54,9 +54,8 @@ object AtLeastOnceDeliveryCrashSpec {
         persist(CrashMessage) { evt ⇒ }
     }
 
-    def send() = {
+    def send() =
       deliver(testProbe.path) { id ⇒ SendingMessage(id, false) }
-    }
   }
 
 }

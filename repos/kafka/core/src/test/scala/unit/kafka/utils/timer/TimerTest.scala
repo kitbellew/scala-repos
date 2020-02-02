@@ -39,12 +39,11 @@ class TimerTest {
       output: ArrayBuffer[Int])
       extends TimerTask {
     private[this] val completed = new AtomicBoolean(false)
-    def run(): Unit = {
+    def run(): Unit =
       if (completed.compareAndSet(false, true)) {
         output.synchronized { output += id }
         latch.countDown()
       }
-    }
   }
 
   private[this] var executor: ExecutorService = null

@@ -280,9 +280,8 @@ trait ScImportsHolder extends ScalaPsiElement {
     }
   }
 
-  def addImportForPath(path: String, ref: PsiElement = null): Unit = {
+  def addImportForPath(path: String, ref: PsiElement = null): Unit =
     addImportsForPaths(Seq(path), ref)
-  }
 
   private def hasCodeBeforeImports: Boolean = {
     val firstChild = childBeforeFirstImport.getOrElse(getFirstChild)
@@ -299,24 +298,21 @@ trait ScImportsHolder extends ScalaPsiElement {
 
   protected def insertFirstImport(
       importSt: ScImportStmt,
-      first: PsiElement): PsiElement = {
+      first: PsiElement): PsiElement =
     childBeforeFirstImport match {
       case Some(elem)
           if first != null && elem.getTextRange.getEndOffset > first.getTextRange.getStartOffset =>
         addImportAfter(importSt, elem)
       case _ => addBefore(importSt, first)
     }
-  }
 
-  protected def childBeforeFirstImport: Option[PsiElement] = {
+  protected def childBeforeFirstImport: Option[PsiElement] =
     Option(getNode.findChildByType(ScalaTokenTypes.tLBRACE)).map(_.getPsi)
-  }
 
-  def addImport(element: PsiElement): PsiElement = {
+  def addImport(element: PsiElement): PsiElement =
     CodeEditUtil
       .addChildren(getNode, element.getNode, element.getNode, null)
       .getPsi
-  }
 
   def addImportBefore(element: PsiElement, anchor: PsiElement): PsiElement = {
     val anchorNode = anchor.getNode

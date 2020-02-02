@@ -36,13 +36,12 @@ object ScalateSupport {
 
   def scalateTemplateEngine(
       ctx: String,
-      init: => TemplateEngine): TemplateEngine = {
+      init: => TemplateEngine): TemplateEngine =
     templateEngineInstances.get(ctx).getOrElse {
       val engine = init
       engine.workingDirectory = new java.io.File(engine.workingDirectory, ctx)
       templateEngineInstances.putIfAbsent(ctx, engine).getOrElse(engine)
     }
-  }
 }
 
 /**
@@ -142,9 +141,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     */
   protected def createRenderContext(out: PrintWriter)(
       implicit request: HttpServletRequest,
-      response: HttpServletResponse): RenderContext = {
+      response: HttpServletResponse): RenderContext =
     new ScalatraRenderContext(this, templateEngine, out, request, response)
-  }
 
   /**
     * Creates a render context and renders directly to that.  No template

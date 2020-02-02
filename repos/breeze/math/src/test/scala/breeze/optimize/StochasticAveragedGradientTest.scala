@@ -31,9 +31,8 @@ class StochasticAveragedGradientTest extends OptimizeTestBase {
 
     def optimizeThis(init: DenseVector[Double]) = {
       val f = BatchDiffFunction.wrap(new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           ((sum((x - 3.0) :^ 2.0)), (x * 2.0) - 6.0)
-        }
       })
 
       val result = lbfgs.minimize(f, init)
@@ -50,9 +49,8 @@ class StochasticAveragedGradientTest extends OptimizeTestBase {
 
     def optimizeThis(init: DenseVector[Double]) = {
       val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
+        def calculate(x: DenseVector[Double]) =
           (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
-        }
       }
 
       val targetValue = 3 / (1.0 / 2 + 1)

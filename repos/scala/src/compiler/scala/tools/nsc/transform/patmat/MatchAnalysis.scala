@@ -126,7 +126,7 @@ trait TreeAndTypeAnalysis extends Debugging {
           val tpApprox = typer.infer.approximateAbstracts(tp)
           val pre = tpApprox.prefix
 
-          def filterChildren(children: List[Symbol]): List[Type] = {
+          def filterChildren(children: List[Symbol]): List[Type] =
             children flatMap { sym =>
               // have to filter out children which cannot match: see ticket #3683 for an example
               // compare to the fully known type `tp` (modulo abstract types),
@@ -142,15 +142,13 @@ trait TreeAndTypeAnalysis extends Debugging {
               if (subTpApprox <:< tpApprox) Some(checkableType(subTp))
               else None
             }
-          }
 
           if (grouped) {
-            def enumerateChildren(sym: Symbol) = {
+            def enumerateChildren(sym: Symbol) =
               sym.sealedChildren.toList
                 .sortBy(_.sealedSortName)
                 .filterNot(x =>
                   x.isSealed && x.isAbstractClass && !isPrimitiveValueClass(x))
-            }
 
             // enumerate only direct subclasses,
             // subclasses of subclasses are enumerated in the next iteration

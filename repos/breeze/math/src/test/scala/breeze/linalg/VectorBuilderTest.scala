@@ -29,7 +29,7 @@ class VectorBuilderTest extends FunSuite with Checkers {
   }
 
   implicit def genPair
-      : Arbitrary[(VectorBuilder[Double], VectorBuilder[Double])] = {
+      : Arbitrary[(VectorBuilder[Double], VectorBuilder[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
@@ -43,7 +43,6 @@ class VectorBuilderTest extends FunSuite with Checkers {
 
       }
     }
-  }
 
   test("Dot product is consistent") {
     check(Prop.forAll {
@@ -87,7 +86,7 @@ class VectorBuilderOpsTest
 
   val N = 3
   implicit def genTriple: Arbitrary[
-    (VectorBuilder[Double], VectorBuilder[Double], VectorBuilder[Double])] = {
+    (VectorBuilder[Double], VectorBuilder[Double], VectorBuilder[Double])] =
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
@@ -106,7 +105,6 @@ class VectorBuilderOpsTest
             zl.take(4).map(i => (i % N).abs -> math.random * z): _*))
       }
     }
-  }
 
   def genScalar: Arbitrary[Double] =
     Arbitrary(Arbitrary.arbitrary[Double].map { _ % 1e3 })

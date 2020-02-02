@@ -53,12 +53,11 @@ private[changeSignature] trait ScalaNamedElementUsageInfo {
 }
 
 private[changeSignature] object ScalaNamedElementUsageInfo {
-  def unapply(ou: UsageInfo): Option[ScalaNamedElementUsageInfo] = {
+  def unapply(ou: UsageInfo): Option[ScalaNamedElementUsageInfo] =
     ou match {
       case scUsage: ScalaNamedElementUsageInfo => Some(scUsage)
       case _                                   => None
     }
-  }
 
   def apply(
       named: PsiNamedElement): UsageInfo with ScalaNamedElementUsageInfo = {
@@ -117,12 +116,11 @@ private[changeSignature] case class MethodCallUsageInfo(
   val expr = call
   val argsInfo = OldArgsInfo(allArgs(call), method)
 
-  private def allArgs(call: ScMethodCall): Seq[ScExpression] = {
+  private def allArgs(call: ScMethodCall): Seq[ScExpression] =
     call.getInvokedExpr match {
       case mc: ScMethodCall => allArgs(mc) ++ call.argumentExpressions
       case _                => call.argumentExpressions
     }
-  }
 }
 
 private[changeSignature] case class RefExpressionUsage(
@@ -171,7 +169,7 @@ private[changeSignature] case class AnonFunUsageInfo(
     extends UsageInfo(expr)
 
 private[changeSignature] object isAnonFunUsage {
-  def unapply(ref: ScReferenceExpression): Option[AnonFunUsageInfo] = {
+  def unapply(ref: ScReferenceExpression): Option[AnonFunUsageInfo] =
     ref match {
       case ChildOf(mc: MethodInvocation)
           if mc.argumentExpressions.exists(
@@ -184,7 +182,6 @@ private[changeSignature] object isAnonFunUsage {
         Some(AnonFunUsageInfo(ref, ref))
       case _ => None
     }
-  }
 }
 
 private[changeSignature] case class ParameterUsageInfo(

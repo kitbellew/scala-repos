@@ -15,9 +15,8 @@ import sbt.serialization._
 
 object SerializersSpec extends Specification with PicklingTestUtils {
 
-  def file(path: String): java.io.File = {
+  def file(path: String): java.io.File =
     (new java.io.File(path)).getAbsoluteFile
-  }
 
   "serializers" should {
 
@@ -88,7 +87,7 @@ trait PicklingTestUtils extends Specification {
       case e: Throwable =>
         e.printStackTrace()
         throw new AssertionError(
-          s"Crash round-tripping ${t.getClass.getName}: value was: ${t}",
+          s"Crash round-tripping ${t.getClass.getName}: value was: $t",
           e)
     }
 

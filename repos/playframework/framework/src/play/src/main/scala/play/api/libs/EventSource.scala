@@ -70,9 +70,8 @@ object EventSource {
     * }}}
     */
   def flow[E: EventDataExtractor: EventNameExtractor: EventIdExtractor]
-      : Flow[E, Event, _] = {
+      : Flow[E, Event, _] =
     Flow[E].map(Event(_))
-  }
 
   //------------------
   // Event
@@ -111,20 +110,17 @@ object EventSource {
     def apply[A](a: A)(
         implicit dataExtractor: EventDataExtractor[A],
         nameExtractor: EventNameExtractor[A],
-        idExtractor: EventIdExtractor[A]): Event = {
+        idExtractor: EventIdExtractor[A]): Event =
       Event(
         dataExtractor.eventData(a),
         idExtractor.eventId(a),
         nameExtractor.eventName(a))
-    }
 
-    implicit def writeable(implicit codec: Codec): Writeable[Event] = {
+    implicit def writeable(implicit codec: Codec): Writeable[Event] =
       Writeable(event => codec.encode(event.formatted))
-    }
 
-    implicit def contentType(implicit codec: Codec): ContentTypeOf[Event] = {
+    implicit def contentType(implicit codec: Codec): ContentTypeOf[Event] =
       ContentTypeOf(Some(ContentTypes.EVENT_STREAM))
-    }
   }
 
   //------------------

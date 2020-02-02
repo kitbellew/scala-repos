@@ -64,9 +64,8 @@ object ShortestPaths {
 
     val initialMessage = makeMap()
 
-    def vertexProgram(id: VertexId, attr: SPMap, msg: SPMap): SPMap = {
+    def vertexProgram(id: VertexId, attr: SPMap, msg: SPMap): SPMap =
       addMaps(attr, msg)
-    }
 
     def sendMessage(
         edge: EdgeTriplet[SPMap, _]): Iterator[(VertexId, SPMap)] = {

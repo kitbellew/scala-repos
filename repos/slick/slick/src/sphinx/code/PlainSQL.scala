@@ -130,18 +130,17 @@ object PlainSQL extends App {
           "* " + c.name + "\t" + c.supID + "\t" + c.price + "\t" + c.sales + "\t" + c.total)
     }
 
-  def namesByPrice(price: Double): DBIO[Seq[(String, String)]] = {
+  def namesByPrice(price: Double): DBIO[Seq[(String, String)]] =
     //#sql
     sql"""select c.name, s.name
           from coffees c, suppliers s
           where c.price < $price and s.id = c.sup_id""".as[(String, String)]
-    //#sql
-  }
+  //#sql
 
   def supplierById(id: Int): DBIO[Seq[Supplier]] =
     sql"select * from suppliers where id = $id".as[Supplier]
 
-  def printParameterized: DBIO[Unit] = {
+  def printParameterized: DBIO[Unit] =
     // Perform a join to retrieve coffee names and supplier names for
     // all coffees costing less than $9.00
     namesByPrice(9.0).flatMap { l2 =>
@@ -150,7 +149,6 @@ object PlainSQL extends App {
         println("* " + t._1 + " supplied by " + t._2)
       supplierById(49).map(s => println(s"Supplier #49: $s"))
     }
-  }
 
   def coffeeByName(name: String): DBIO[Option[Coffee]] = {
     //#literal

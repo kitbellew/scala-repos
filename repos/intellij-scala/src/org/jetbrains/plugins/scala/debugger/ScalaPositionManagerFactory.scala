@@ -8,7 +8,6 @@ import com.intellij.debugger.{PositionManager, PositionManagerFactory}
   * Date: 14.10.11
   */
 class ScalaPositionManagerFactory extends PositionManagerFactory {
-  def createPositionManager(process: DebugProcess): PositionManager = {
+  def createPositionManager(process: DebugProcess): PositionManager =
     new ScalaPositionManager(process)
-  }
 }

@@ -43,13 +43,12 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       testServer map { _.stop() }
   }
 
-  override def withFixture(test: NoArgTest): Outcome = {
+  override def withFixture(test: NoArgTest): Outcome =
     if (testServer.isDefined) test()
     else {
       info("Cannot start memcached. Skipping test...")
       cancel()
     }
-  }
 
   test("set & get") {
     Await.result(client.delete("foo"))

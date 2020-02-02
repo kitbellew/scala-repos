@@ -167,14 +167,13 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
   override def toString: String =
     activeIterator.mkString("OpenAddressHashArray(", ", ", ")")
 
-  def copy: OpenAddressHashArray[V] = {
+  def copy: OpenAddressHashArray[V] =
     new OpenAddressHashArray[V](
       util.Arrays.copyOf(_index, _index.length),
       breeze.util.ArrayUtil.copyOf(_data, _data.length),
       load,
       size,
       default)
-  }
 
   // This hash code must be symmetric in the contents but ought not
   // collide trivially. based on hashmap.hashcode
@@ -216,10 +215,9 @@ object OpenAddressHashArray {
     rv
   }
 
-  private def calculateSize(size: Int): Int = {
+  private def calculateSize(size: Int): Int =
     if (size < 4) 4
     else nextPowerOfTwo(size - 1)
-  }
 
   private def nextPowerOfTwo(size: Int): Int = {
     require(size < (1 << 30))

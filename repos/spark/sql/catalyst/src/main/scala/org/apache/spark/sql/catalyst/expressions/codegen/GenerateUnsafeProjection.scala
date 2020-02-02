@@ -379,13 +379,11 @@ object GenerateUnsafeProjection
 
   def generate(
       expressions: Seq[Expression],
-      subexpressionEliminationEnabled: Boolean): UnsafeProjection = {
+      subexpressionEliminationEnabled: Boolean): UnsafeProjection =
     create(canonicalize(expressions), subexpressionEliminationEnabled)
-  }
 
-  protected def create(references: Seq[Expression]): UnsafeProjection = {
+  protected def create(references: Seq[Expression]): UnsafeProjection =
     create(references, subexpressionEliminationEnabled = false)
-  }
 
   private def create(
       expressions: Seq[Expression],

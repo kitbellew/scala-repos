@@ -10,19 +10,15 @@ object DievTest extends SpecLite {
   val random = new Random()
 
   "insert order makes no difference" ! forAll { (list: List[Int]) =>
-    {
-      val shuffledList = random.shuffle(list)
-      val dievFromList = list.foldLeft(Diev.empty[Int])(_ + _)
-      val dievFromShuffledList = shuffledList.foldLeft(Diev.empty[Int])(_ + _)
-      dievFromList must_=== (dievFromShuffledList)
-    }
+    val shuffledList = random.shuffle(list)
+    val dievFromList = list.foldLeft(Diev.empty[Int])(_ + _)
+    val dievFromShuffledList = shuffledList.foldLeft(Diev.empty[Int])(_ + _)
+    dievFromList must_=== (dievFromShuffledList)
   }
 
   "fixIntervalOrder" ! forAll { (tuple: (Int, Int)) =>
-    {
-      val expectedResult = if (tuple._1 > tuple._2) tuple.swap else tuple
-      DievInterval.fixIntervalOrder(tuple) must_=== (expectedResult)
-    }
+    val expectedResult = if (tuple._1 > tuple._2) tuple.swap else tuple
+    DievInterval.fixIntervalOrder(tuple) must_=== (expectedResult)
   }
 
   // TODO: Use data table to test subtractInterval.
@@ -32,10 +28,8 @@ object DievTest extends SpecLite {
   }
 
   "fromValuesSeq / toList" ! forAll { (list: List[Int]) =>
-    {
-      val sortedList = list.toSet.toList.sorted
-      Diev.fromValuesSeq(list).toList must_=== (sortedList)
-    }
+    val sortedList = list.toSet.toList.sorted
+    Diev.fromValuesSeq(list).toList must_=== (sortedList)
   }
 
   "++ associativity" ! forAll { (first: Diev[Int], second: Diev[Int]) =>

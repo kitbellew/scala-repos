@@ -99,7 +99,6 @@ object TriangularArray {
     data
   }
 
-  def arraySize(dim: Int): Int = {
+  def arraySize(dim: Int): Int =
     dim * (dim + 1) / 2
-  }
 }

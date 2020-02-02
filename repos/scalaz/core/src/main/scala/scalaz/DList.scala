@@ -88,10 +88,10 @@ object DList extends DListInstances {
     xs.foldRight(DList[A]())(_ ++ _)
 
   def replicate[A](n: Int, a: A): DList[A] =
-    DL(xs => {
+    DL { xs =>
       def go(m: Int): IList[A] = if (m <= 0) xs else a :: go(m - 1)
       go(n)
-    })
+    }
   def unfoldr[A, B](b: B, f: B => Option[(A, B)]): DList[A] = {
     def go(b: B, f: B => Option[(A, B)]): Trampoline[DList[A]] =
       f(b) map { case (a, c) => suspend(go(c, f)) map (a +: _) } getOrElse return_(

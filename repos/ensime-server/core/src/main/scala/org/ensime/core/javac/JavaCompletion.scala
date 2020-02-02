@@ -220,7 +220,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     // Note Scope#getLocalElements does not include fields / members of
     // enclosing classes. Need to add those manually.
     //
-    def addTypeMembers(tel: TypeElement, relevance: Int): Unit = {
+    def addTypeMembers(tel: TypeElement, relevance: Int): Unit =
       for (el <- info.getElements().getAllMembers(tel)) {
         for (info <- filterElement(
                info,
@@ -233,7 +233,6 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
           candidates += info
         }
       }
-    }
 
     var relavence = 0
     for (tel <- Option(scope.getEnclosingClass())) {

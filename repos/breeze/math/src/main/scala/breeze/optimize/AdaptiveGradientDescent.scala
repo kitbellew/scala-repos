@@ -83,9 +83,8 @@ object AdaptiveGradientDescent {
     override def determineStepSize(
         state: State,
         f: StochasticDiffFunction[T],
-        dir: T) = {
+        dir: T) =
       defaultStepSize
-    }
 
     override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
       val av = newVal + (newX dot newX) * regularizationConstant / 2.0
@@ -162,9 +161,8 @@ object AdaptiveGradientDescent {
     override def determineStepSize(
         state: State,
         f: StochasticDiffFunction[T],
-        dir: T) = {
+        dir: T) =
       defaultStepSize
-    }
 
     override protected def adjust(newX: T, newGrad: T, newVal: Double) = {
       val av = newVal + norm(newX, 1.0) * lambda

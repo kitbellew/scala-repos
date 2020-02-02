@@ -777,7 +777,7 @@ private[deploy] class Master(
   /**
     * Schedule and launch executors on workers
     */
-  private def startExecutorsOnWorkers(): Unit = {
+  private def startExecutorsOnWorkers(): Unit =
     // Right now this is a very simple FIFO scheduler. We keep trying to fit in the first app
     // in the queue, then the second app, etc.
     for (app <- waitingApps if app.coresLeft > 0) {
@@ -802,7 +802,6 @@ private[deploy] class Master(
           usableWorkers(pos))
       }
     }
-  }
 
   /**
     * Allocate a worker's resources to one or more executors.
@@ -982,12 +981,12 @@ private[deploy] class Master(
         val toRemove = math.max(RETAINED_APPLICATIONS / 10, 1)
         completedApps
           .take(toRemove)
-          .foreach(a => {
+          .foreach { a =>
             Option(appIdToUI.remove(a.id)).foreach { ui =>
               webUi.detachSparkUI(ui)
             }
             applicationMetricsSystem.removeSource(a.appSource)
-          })
+          }
         completedApps.trimStart(toRemove)
       }
       completedApps += app // Remember it in our history
@@ -1022,7 +1021,7 @@ private[deploy] class Master(
     */
   private def handleRequestExecutors(
       appId: String,
-      requestedTotal: Int): Boolean = {
+      requestedTotal: Int): Boolean =
     idToApp.get(appId) match {
       case Some(appInfo) =>
         logInfo(
@@ -1035,7 +1034,6 @@ private[deploy] class Master(
           s"Unknown application $appId requested $requestedTotal total executors.")
         false
     }
-  }
 
   /**
     * Handle a kill request from the given application.
@@ -1048,7 +1046,7 @@ private[deploy] class Master(
     */
   private def handleKillExecutors(
       appId: String,
-      executorIds: Seq[Int]): Boolean = {
+      executorIds: Seq[Int]): Boolean =
     idToApp.get(appId) match {
       case Some(appInfo) =>
         logInfo(
@@ -1072,7 +1070,6 @@ private[deploy] class Master(
           s"Unregistered application $appId requested us to kill executors!")
         false
     }
-  }
 
   /**
     * Cast the given executor IDs to integers and filter out the ones that fail.
@@ -1081,7 +1078,7 @@ private[deploy] class Master(
     * the kill interface on the driver side accepts arbitrary strings, so we need to
     * handle non-integer executor IDs just to be safe.
     */
-  private def formatExecutorIds(executorIds: Seq[String]): Seq[Int] = {
+  private def formatExecutorIds(executorIds: Seq[String]): Seq[Int] =
     executorIds.flatMap { executorId =>
       try {
         Some(executorId.toInt)
@@ -1092,7 +1089,6 @@ private[deploy] class Master(
           None
       }
     }
-  }
 
   /**
     * Ask the worker on which the specified executor is launched to kill the executor.

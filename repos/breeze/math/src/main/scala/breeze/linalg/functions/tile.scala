@@ -17,7 +17,7 @@ object tile extends UFunc {
       implicit ct: ClassTag[T],
       z: Zero[T],
       set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
-      : Impl2[DenseVector[T], Int, DenseVector[T]] = {
+      : Impl2[DenseVector[T], Int, DenseVector[T]] =
     new Impl2[DenseVector[T], Int, DenseVector[T]] {
       def apply(x: DenseVector[T], n: Int): DenseVector[T] = {
         // DenseVector is column-major, i.e., it can be considered a matrix of size (v.length x 1)
@@ -30,7 +30,6 @@ object tile extends UFunc {
         out
       }
     }
-  }
 
   implicit def tile_DV_Impl3[T: ClassTag: Zero](
       implicit impl2: Impl2[DenseVector[T], Int, DenseVector[T]],

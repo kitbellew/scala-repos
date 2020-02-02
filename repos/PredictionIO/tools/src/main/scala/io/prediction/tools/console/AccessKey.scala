@@ -31,7 +31,7 @@ object AccessKey extends Logging {
           appid = app.id,
           events = ca.accessKey.events))
       accessKey map { k =>
-        info(s"Created new access key: ${k}")
+        info(s"Created new access key: $k")
         0
       } getOrElse {
         error(s"Unable to create new access key.")
@@ -67,7 +67,7 @@ object AccessKey extends Logging {
     0
   }
 
-  def delete(ca: ConsoleArgs): Int = {
+  def delete(ca: ConsoleArgs): Int =
     try {
       storage.Storage.getMetaDataAccessKeys.delete(ca.accessKey.accessKey)
       info(s"Deleted access key ${ca.accessKey.accessKey}.")
@@ -77,5 +77,4 @@ object AccessKey extends Logging {
         error(s"Error deleting access key ${ca.accessKey.accessKey}.", e)
         1
     }
-  }
 }

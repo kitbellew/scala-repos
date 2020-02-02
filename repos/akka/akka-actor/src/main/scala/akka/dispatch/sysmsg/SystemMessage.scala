@@ -31,14 +31,13 @@ private[akka] object SystemMessageList {
   @tailrec
   private[sysmsg] def reverseInner(
       head: SystemMessage,
-      acc: SystemMessage): SystemMessage = {
+      acc: SystemMessage): SystemMessage =
     if (head eq null) acc
     else {
       val next = head.next
       head.next = acc
       reverseInner(next, head)
     }
-  }
 }
 
 /**

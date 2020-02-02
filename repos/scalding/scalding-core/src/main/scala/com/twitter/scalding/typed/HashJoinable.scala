@@ -92,7 +92,7 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
     * Recursion handles situations where we have a couple of Each ops in a row.
     * For example: pipe.forceToDisk.onComplete results in: Each -> Each -> Checkpoint
     */
-  private def isSafeToSkipForceToDisk(pipe: Pipe, mode: Mode): Boolean = {
+  private def isSafeToSkipForceToDisk(pipe: Pipe, mode: Mode): Boolean =
     pipe match {
       case eachPipe: Each =>
         if (canSkipEachOperation(eachPipe.getOperation, mode)) {
@@ -107,7 +107,6 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       case p if isSourcePipe(p) => true
       case _                    => false
     }
-  }
 
   /**
     * Checks the transform to deduce if it is safe to skip the force to disk.
@@ -118,7 +117,7 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
     */
   private def canSkipEachOperation(
       eachOperation: Operation[_],
-      mode: Mode): Boolean = {
+      mode: Mode): Boolean =
     eachOperation match {
       case f: FlatMapFunction[_, _] =>
         f.getFunction match {
@@ -132,30 +131,26 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       case _: CleanupIdentityFunction => true
       case _                          => false
     }
-  }
 
-  private def getHashJoinAutoForceRight(mode: Mode): Boolean = {
+  private def getHashJoinAutoForceRight(mode: Mode): Boolean =
     mode match {
       case h: HadoopMode =>
         val config = Config.fromHadoop(h.jobConf)
         config.getHashJoinAutoForceRight
       case _ => false //default to false
     }
-  }
 
-  private def getPreviousPipe(p: Pipe): Option[Pipe] = {
+  private def getPreviousPipe(p: Pipe): Option[Pipe] =
     if (p.getPrevious != null && p.getPrevious.length == 1)
       p.getPrevious.headOption
     else None
-  }
 
   /**
     * Return true if a pipe is a source Pipe (has no parents / previous) and isn't a
     * Splice.
     */
-  private def isSourcePipe(pipe: Pipe): Boolean = {
+  private def isSourcePipe(pipe: Pipe): Boolean =
     pipe.getParent == null &&
-    (pipe.getPrevious == null || pipe.getPrevious.isEmpty) &&
-    (!pipe.isInstanceOf[Splice])
-  }
+      (pipe.getPrevious == null || pipe.getPrevious.isEmpty) &&
+      (!pipe.isInstanceOf[Splice])
 }

@@ -65,7 +65,7 @@ class CannotHaveAttrsTest {
 
   class Attach
   @Test
-  def attachmentsAreIgnored = {
+  def attachmentsAreIgnored =
     attrlessTrees.foreach { t =>
       t.setAttachments(NoPosition.update(new Attach))
       assert(t.attachments == NoPosition)
@@ -73,5 +73,4 @@ class CannotHaveAttrsTest {
       assert(t.attachments == NoPosition)
       t.removeAttachment[Attach] // no exception
     }
-  }
 }

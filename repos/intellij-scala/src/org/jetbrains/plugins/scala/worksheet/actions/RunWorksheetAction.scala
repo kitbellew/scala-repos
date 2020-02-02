@@ -119,11 +119,11 @@ object RunWorksheetAction {
           )
         }
 
-        def runnable() = {
+        def runnable() =
           new WorksheetCompiler().compileAndRun(
             editor,
             file,
-            (className: String, addToCp: String) => {
+            (className: String, addToCp: String) =>
               ApplicationManager.getApplication invokeLater new Runnable {
                 override def run() {
                   executeWorksheet(
@@ -133,12 +133,10 @@ object RunWorksheetAction {
                     className,
                     addToCp)
                 }
-              }
-            },
+              },
             Option(editor),
             auto
           )
-        }
 
         if (WorksheetCompiler isMakeBeforeRun psiFile) {
           CompilerManager
@@ -240,9 +238,8 @@ object RunWorksheetAction {
         }
       }
 
-      override def processTerminated(event: ProcessEvent): Unit = {
+      override def processTerminated(event: ProcessEvent): Unit =
         worksheetPrinter.flushBuffer()
-      }
     }
 
     worksheetPrinter.scheduleWorksheetUpdate()
@@ -265,7 +262,7 @@ object RunWorksheetAction {
   def isScratchWorksheet(file: PsiFile): Boolean =
     isScratchWorksheet(Option(file.getVirtualFile), file.getProject)
 
-  def getModuleFor(vFile: VirtualFile, project: Project): Module = {
+  def getModuleFor(vFile: VirtualFile, project: Project): Module =
     vFile match {
       case _: VirtualFileWithId =>
         Option(
@@ -273,7 +270,6 @@ object RunWorksheetAction {
             vFile) getOrElse project.anyScalaModule.map(_.module).orNull
       case _ => project.anyScalaModule.map(_.module).orNull
     }
-  }
 
   def getModuleFor(file: PsiFile): Module =
     WorksheetCompiler.getModuleForCpName(file) flatMap {

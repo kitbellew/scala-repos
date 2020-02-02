@@ -53,13 +53,12 @@ class Timer(
     }
   }
 
-  private def addTimerTaskEntry(timerTaskEntry: TimerTaskEntry): Unit = {
+  private def addTimerTaskEntry(timerTaskEntry: TimerTaskEntry): Unit =
     if (!timingWheel.add(timerTaskEntry)) {
       // Already expired or cancelled
       if (!timerTaskEntry.cancelled)
         taskExecutor.submit(timerTaskEntry.timerTask)
     }
-  }
 
   private[this] val reinsert = (timerTaskEntry: TimerTaskEntry) =>
     addTimerTaskEntry(timerTaskEntry)

@@ -239,7 +239,7 @@ case class Netty3TransporterTLSConfig(
   * pipeline. It maintains events in order by running the task in the I/O thread.
   */
 private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
-  override def operationComplete(future: ChannelFuture): Unit = {
+  override def operationComplete(future: ChannelFuture): Unit =
     future.getChannel match {
       case nioChannel: NioSocketChannel =>
         val channelClosed =
@@ -253,7 +253,6 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
       case channel =>
         Channels.fireChannelClosedLater(channel)
     }
-  }
 }
 
 /**

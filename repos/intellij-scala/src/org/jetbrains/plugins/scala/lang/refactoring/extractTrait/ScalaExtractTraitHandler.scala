@@ -226,16 +226,15 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       new MultiMap[PsiElement, String]
 
     private def forMember[T](elem: PsiElement)(
-        action: PsiMember => Option[T]): Option[T] = {
+        action: PsiMember => Option[T]): Option[T] =
       elem match {
         case ScalaPsiUtil.inNameContext(m: ScMember) => action(m)
         case m: PsiMember                            => action(m)
         case _                                       => None
       }
-    }
 
     private object inSameClassOrAncestor {
-      def unapply(elem: PsiElement): Option[(PsiMember, PsiClass)] = {
+      def unapply(elem: PsiElement): Option[(PsiMember, PsiClass)] =
         forMember(elem) { m =>
           m.containingClass match {
             case null                                   => None
@@ -244,7 +243,6 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
             case _                                      => None
           }
         }
-      }
     }
 
     private object inSelfType {
@@ -317,12 +315,11 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
     private def collectTypeParameters(resolve: PsiElement) {
       val visitor = new ScalaRecursiveElementVisitor {
-        override def visitReference(ref: ScReferenceElement) = {
+        override def visitReference(ref: ScReferenceElement) =
           ref.resolve() match {
             case tp: ScTypeParam => typeParams += tp
             case _               =>
           }
-        }
       }
 
       resolve match {

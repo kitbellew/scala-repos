@@ -69,9 +69,8 @@ class CforTest extends SpireProperties {
     def run(
         test: => (Int => Boolean),
         incr: => (Int => Int),
-        body: => (Int => Unit)): Unit = {
+        body: => (Int => Unit)): Unit =
       cfor(0)(test, incr)(body)
-    }
     run(
       { v += 1; _ < 3 },
       { v += 10; _ + 1 }, {
@@ -100,10 +99,8 @@ class CforTest extends SpireProperties {
   property("capture value in inner class") {
     val b = collection.mutable.ArrayBuffer[Int]()
     cfor(0)(_ < 3, _ + 1) { x =>
-      {
-        class A { def f = x }
-        b += (new A().f)
-      }
+      class A { def f = x }
+      b += (new A().f)
     }
     b.toList shouldBe List(0, 1, 2)
   }

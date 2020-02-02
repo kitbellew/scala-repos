@@ -44,7 +44,7 @@ object ScopeSuggester {
       file: PsiFile,
       currentElement: ScTypeElement): Array[ScopeItem] = {
 
-    def getParent(element: PsiElement, isScriptFile: Boolean): PsiElement = {
+    def getParent(element: PsiElement, isScriptFile: Boolean): PsiElement =
       if (isScriptFile)
         PsiTreeUtil.getParentOfType(
           element,
@@ -52,7 +52,6 @@ object ScopeSuggester {
           classOf[ScalaFile])
       else
         PsiTreeUtil.getParentOfType(element, classOf[ScTemplateBody])
-    }
 
     def isSuitableParent(
         owners: Seq[ScTypeParametersOwner],
@@ -198,8 +197,7 @@ object ScopeSuggester {
         module: Module,
         result: ArrayBuffer[(PsiPackage, PsiDirectory)],
         dirContainingFile: Array[PsiDirectory])
-        : ArrayBuffer[(PsiPackage, PsiDirectory)] = {
-
+        : ArrayBuffer[(PsiPackage, PsiDirectory)] =
       if (currentPackage != null && currentPackage.getName != null) {
         val subPackages =
           currentPackage.getSubPackages(GlobalSearchScope.moduleScope(module))
@@ -230,7 +228,6 @@ object ScopeSuggester {
       } else {
         result
       }
-    }
 
     val currentPackage = ScPackageImpl
       .findPackage(typeElement.getProject, packageName)
@@ -259,7 +256,7 @@ object ScopeSuggester {
       editor: Editor,
       isReplaceAll: Boolean,
       inputName: String): PackageScopeItem = {
-    def getFilesToSearchIn(currentDirectory: PsiDirectory): Array[ScalaFile] = {
+    def getFilesToSearchIn(currentDirectory: PsiDirectory): Array[ScalaFile] =
       if (!isReplaceAll) {
         Array(typeElement.getContainingFile.asInstanceOf[ScalaFile])
       } else {
@@ -296,15 +293,13 @@ object ScopeSuggester {
         words.foreach(oneRound(_, resultBuffer))
 
         var intersectionResult = resultBuffer(0)
-        def intersect(inBuffer: ArrayBuffer[ScalaFile]) = {
+        def intersect(inBuffer: ArrayBuffer[ScalaFile]) =
           intersectionResult = intersectionResult.intersect(inBuffer)
-        }
 
         resultBuffer.foreach((element: ArrayBuffer[ScalaFile]) =>
           intersect(element))
         intersectionResult.toList.reverse.toArray
       }
-    }
 
     val inPackage =
       ScPackageImpl.findPackage(typeElement.getProject, inPackageName)
@@ -423,11 +418,10 @@ case class SimpleScopeItem(
   val fileEncloserRange =
     (fileEncloser.getTextRange, fileEncloser.getContainingFile)
 
-  def setInheretedOccurrences(occurrences: Array[ScTypeElement]) = {
+  def setInheretedOccurrences(occurrences: Array[ScTypeElement]) =
     if (occurrences != null) {
       occurrencesFromInheretors = occurrences
     }
-  }
 
   def revalidate(newName: String): ScopeItem = {
     val revalidatedOccurrences = usualOccurrencesRanges.map {
@@ -471,17 +465,14 @@ case class SimpleScopeItem(
       newNames)
   }
 
-  def isTrait: Boolean = {
+  def isTrait: Boolean =
     name.startsWith("trait")
-  }
 
-  def isClass: Boolean = {
+  def isClass: Boolean =
     name.startsWith("class")
-  }
 
-  def isObject: Boolean = {
+  def isObject: Boolean =
     name.startsWith("object")
-  }
 }
 
 case class PackageScopeItem(

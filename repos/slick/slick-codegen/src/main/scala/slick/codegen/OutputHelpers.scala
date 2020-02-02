@@ -73,21 +73,20 @@ trait OutputHelpers {
       profile: String,
       pkg: String,
       container: String,
-      parentType: Option[String]): String = {
+      parentType: Option[String]): String =
     s"""
-package ${pkg}
+package $pkg
 // AUTO-GENERATED Slick data model
 /** Stand-alone Slick data model for immediate use */
-object ${container} extends {
+object $container extends {
   val profile = $profile
-} with ${container}
+} with $container
 
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
-trait ${container}${parentType.map(t => s" extends $t").getOrElse("")} {
+trait $container${parentType.map(t => s" extends $t").getOrElse("")} {
   val profile: slick.jdbc.JdbcProfile
   import profile.api._
   ${indent(code)}
 }
       """.trim()
-  }
 }

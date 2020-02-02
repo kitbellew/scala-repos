@@ -21,7 +21,7 @@ class ScalaDocInlinedTagInspection extends LocalInspectionTool {
 
   override def buildVisitor(
       holder: ProblemsHolder,
-      isOnTheFly: Boolean): PsiElementVisitor = {
+      isOnTheFly: Boolean): PsiElementVisitor =
     new ScalaElementVisitor {
       override def visitInlinedTag(s: ScDocInlinedTag) {
         holder.registerProblem(
@@ -36,7 +36,6 @@ class ScalaDocInlinedTagInspection extends LocalInspectionTool {
           ))
       }
     }
-  }
 }
 
 class ScalaDocInlinedTagDeleteQuickFix(inlinedTag: ScDocInlinedTag)

@@ -202,34 +202,30 @@ class TopicDeletionManager(
     }
   }
 
-  def isTopicIneligibleForDeletion(topic: String): Boolean = {
+  def isTopicIneligibleForDeletion(topic: String): Boolean =
     if (isDeleteTopicEnabled) {
       topicsIneligibleForDeletion.contains(topic)
     } else
       true
-  }
 
-  def isTopicDeletionInProgress(topic: String): Boolean = {
+  def isTopicDeletionInProgress(topic: String): Boolean =
     if (isDeleteTopicEnabled) {
       controller.replicaStateMachine.isAtLeastOneReplicaInDeletionStartedState(
         topic)
     } else
       false
-  }
 
-  def isPartitionToBeDeleted(topicAndPartition: TopicAndPartition) = {
+  def isPartitionToBeDeleted(topicAndPartition: TopicAndPartition) =
     if (isDeleteTopicEnabled) {
       partitionsToBeDeleted.contains(topicAndPartition)
     } else
       false
-  }
 
-  def isTopicQueuedUpForDeletion(topic: String): Boolean = {
+  def isTopicQueuedUpForDeletion(topic: String): Boolean =
     if (isDeleteTopicEnabled) {
       topicsToBeDeleted.contains(topic)
     } else
       false
-  }
 
   /**
     * Invoked by the delete-topic-thread to wait until events that either trigger, restart or halt topic deletion occur.
@@ -281,10 +277,9 @@ class TopicDeletionManager(
     * @param topic Topic
     * @return Whether or not deletion can be retried for the topic
     */
-  private def isTopicEligibleForDeletion(topic: String): Boolean = {
+  private def isTopicEligibleForDeletion(topic: String): Boolean =
     topicsToBeDeleted.contains(topic) && (!isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(
       topic))
-  }
 
   /**
     * If the topic is queued for deletion but deletion is not currently under progress, then deletion is retried for that topic

@@ -51,7 +51,7 @@ object CaseClassBasedSetterImpl {
           case Failure(e) =>
             c.abort(
               c.enclosingPosition,
-              s"Case class ${T} is supported. Error on $tpe, ${e.getMessage}")
+              s"Case class $T is supported. Error on $tpe, ${e.getMessage}")
         }
     }
     case object DefaultSetter extends SetterBuilder {

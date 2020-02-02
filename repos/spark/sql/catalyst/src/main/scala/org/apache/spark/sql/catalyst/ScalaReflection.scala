@@ -132,7 +132,7 @@ object ScalaReflection extends ScalaReflection {
   def constructorFor[T: TypeTag]: Expression = {
     val tpe = localTypeOf[T]
     val clsName = getClassNameFromType(tpe)
-    val walkedTypePath = s"""- root class: "${clsName}"""" :: Nil
+    val walkedTypePath = s"""- root class: "$clsName"""" :: Nil
     constructorFor(tpe, None, walkedTypePath)
   }
 
@@ -448,7 +448,7 @@ object ScalaReflection extends ScalaReflection {
   def extractorsFor[T: TypeTag](inputObject: Expression): CreateNamedStruct = {
     val tpe = localTypeOf[T]
     val clsName = getClassNameFromType(tpe)
-    val walkedTypePath = s"""- root class: "${clsName}"""" :: Nil
+    val walkedTypePath = s"""- root class: "$clsName"""" :: Nil
     extractorFor(inputObject, tpe, walkedTypePath) match {
       case expressions.If(_, _, s: CreateNamedStruct)
           if tpe <:< localTypeOf[Product] =>
@@ -896,9 +896,8 @@ trait ScalaReflection {
     * or nested classes in package objects, it uses the dollar sign ($) to create
     * synthetic classes, emulating behaviour in Java bytecode.
     */
-  def getClassNameFromType(tpe: `Type`): String = {
+  def getClassNameFromType(tpe: `Type`): String =
     tpe.erasure.typeSymbol.asClass.fullName
-  }
 
   /**
     * Returns classes of input parameters of scala function object.

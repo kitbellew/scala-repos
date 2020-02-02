@@ -28,7 +28,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
   private implicit def wrapArray(arr: Array[Int]): Option[Array[Int]] =
     Some(arr)
 
-  def join(left: Index[T], right: Index[T], how: JoinType): ReIndexer[T] = {
+  def join(left: Index[T], right: Index[T], how: JoinType): ReIndexer[T] =
     if (left == right) {
       ReIndexer(None, None, right)
     } else if (left.isUnique && right.isUnique) {
@@ -55,7 +55,6 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
         case _         => factorizedJoin(left, right, how)
       }
     }
-  }
 
   // unions two indices with set semantics
   private def union(left: Index[T], right: Index[T]): ReIndexer[T] = {

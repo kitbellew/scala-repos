@@ -9,7 +9,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * Pavel Fatin
   */
 object ResolvedWithSubst {
-  def unapply(e: PsiReference): Option[(PsiElement, ScSubstitutor)] = {
+  def unapply(e: PsiReference): Option[(PsiElement, ScSubstitutor)] =
     e match {
       case null => None
       case e: ScReferenceElement =>
@@ -20,14 +20,12 @@ object ResolvedWithSubst {
         }
       case _ => Option(e.resolve).map((_, ScSubstitutor.empty))
     }
-  }
 }
 
 object ResolvesTo {
-  def unapply(ref: PsiReference): Option[PsiElement] = {
+  def unapply(ref: PsiReference): Option[PsiElement] =
     ref match {
       case null => None
       case r    => Option(r.resolve())
     }
-  }
 }

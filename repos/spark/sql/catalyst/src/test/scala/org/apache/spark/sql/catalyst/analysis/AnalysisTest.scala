@@ -50,9 +50,8 @@ trait AnalysisTest extends PlanTest {
       }
   }
 
-  protected def getAnalyzer(caseSensitive: Boolean) = {
+  protected def getAnalyzer(caseSensitive: Boolean) =
     if (caseSensitive) caseSensitiveAnalyzer else caseInsensitiveAnalyzer
-  }
 
   protected def checkAnalysis(
       inputPlan: LogicalPlan,

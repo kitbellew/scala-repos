@@ -107,9 +107,8 @@ class StringReaderTest {
     expectThrows(classOf[IOException], r.read())
   }
 
-  @Test def should_support_marking(): Unit = {
+  @Test def should_support_marking(): Unit =
     assertTrue(newReader.markSupported)
-  }
 }
 
 class BufferedReaderTest {
@@ -205,9 +204,8 @@ class BufferedReaderTest {
     assertEquals(null, r.readLine())
   }
 
-  @Test def should_support_marking(): Unit = {
+  @Test def should_support_marking(): Unit =
     assertTrue(newReader.markSupported)
-  }
 }
 
 class InputStreamReaderTest {
@@ -225,14 +223,13 @@ class InputStreamReaderTest {
     def expectRead(str: String): Unit = {
       val buf = new Array[Char](str.length)
       @tailrec
-      def readAll(readSoFar: Int): Int = {
+      def readAll(readSoFar: Int): Int =
         if (readSoFar == buf.length) readSoFar
         else {
           val newlyRead = r.read(buf, readSoFar, buf.length - readSoFar)
           if (newlyRead == -1) readSoFar
           else readAll(readSoFar + newlyRead)
         }
-      }
       assertEquals(str.length, readAll(0))
       assertEquals(str, new String(buf))
     }

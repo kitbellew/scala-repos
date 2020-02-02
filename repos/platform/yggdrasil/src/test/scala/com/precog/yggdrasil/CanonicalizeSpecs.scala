@@ -110,9 +110,8 @@ trait CanonicalizeSpec[M[+_]]
     sizes mustEqual Stream(3, 3, 3, 3, 2)
   }
 
-  def testCanonicalizeZero = {
+  def testCanonicalizeZero =
     table.canonicalize(0) must throwA[IllegalArgumentException]
-  }
 
   def testCanonicalizeBoundary = {
     val result = table.canonicalize(5)

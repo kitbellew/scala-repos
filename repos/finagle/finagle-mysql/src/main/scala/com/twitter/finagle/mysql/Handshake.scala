@@ -123,7 +123,7 @@ case class Handshake(
     if (Charset.isCompatible(init.charset)) Return(true)
     else Throw(IncompatibleCharset)
 
-  def apply(init: HandshakeInit) = {
+  def apply(init: HandshakeInit) =
     for {
       _ <- isCompatibleVersion(init)
       _ <- isCompatibleCharset(init)
@@ -137,5 +137,4 @@ case class Handshake(
       charset,
       maxPacketSize.inBytes.toInt
     )
-  }
 }

@@ -158,7 +158,7 @@ abstract class CharsetEncoder protected (
     loop()
   }
 
-  final def flush(out: ByteBuffer): CoderResult = {
+  final def flush(out: ByteBuffer): CoderResult =
     (status: @switch) match {
       case END =>
         val result = implFlush(out)
@@ -170,7 +170,6 @@ abstract class CharsetEncoder protected (
       case _ =>
         throw new IllegalStateException
     }
-  }
 
   protected def implFlush(out: ByteBuffer): CoderResult =
     CoderResult.UNDERFLOW
@@ -186,7 +185,7 @@ abstract class CharsetEncoder protected (
   protected def encodeLoop(arg1: CharBuffer, arg2: ByteBuffer): CoderResult
 
   final def encode(in: CharBuffer): ByteBuffer = {
-    def grow(out: ByteBuffer): ByteBuffer = {
+    def grow(out: ByteBuffer): ByteBuffer =
       if (out.capacity == 0) {
         ByteBuffer.allocate(1)
       } else {
@@ -195,7 +194,6 @@ abstract class CharsetEncoder protected (
         result.put(out)
         result
       }
-    }
 
     if (in.remaining == 0) {
       ByteBuffer.allocate(0)

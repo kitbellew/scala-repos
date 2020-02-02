@@ -199,11 +199,10 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
   /**
     * Helper method to create a simple RDD.
     */
-  private def newRdd: RDD[Int] = {
+  private def newRdd: RDD[Int] =
     sc.parallelize(1 to 100, 4)
       .map { i => i + 1 }
       .filter { i => i % 2 == 0 }
-  }
 
   /**
     * Helper method to create a simple sorted RDD.

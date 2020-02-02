@@ -62,7 +62,7 @@ class OfflinePartitionLeaderSelector(
 
   def selectLeader(
       topicAndPartition: TopicAndPartition,
-      currentLeaderAndIsr: LeaderAndIsr): (LeaderAndIsr, Seq[Int]) = {
+      currentLeaderAndIsr: LeaderAndIsr): (LeaderAndIsr, Seq[Int]) =
     controllerContext.partitionReplicaAssignment.get(topicAndPartition) match {
       case Some(assignedReplicas) =>
         val liveAssignedReplicas = assignedReplicas.filter(r =>
@@ -143,7 +143,6 @@ class OfflinePartitionLeaderSelector(
           "Partition %s doesn't have replicas assigned to it".format(
             topicAndPartition))
     }
-  }
 }
 
 /**

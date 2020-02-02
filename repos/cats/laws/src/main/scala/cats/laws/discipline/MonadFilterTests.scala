@@ -21,14 +21,13 @@ trait MonadFilterTests[F[_]] extends MonadTests[F] {
       EqFB: Eq[F[B]],
       EqFC: Eq[F[C]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet =
     new DefaultRuleSet(
       name = "monadFilter",
       parent = Some(monad[A, B, C]),
       "monadFilter left empty" -> forAll(laws.monadFilterLeftEmpty[A, B] _),
       "monadFilter right empty" -> forAll(laws.monadFilterRightEmpty[A, B] _),
       "monadFilter consistency" -> forAll(laws.monadFilterConsistency[A, B] _))
-  }
 }
 
 object MonadFilterTests {

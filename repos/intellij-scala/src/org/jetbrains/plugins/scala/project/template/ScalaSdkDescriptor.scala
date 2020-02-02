@@ -58,7 +58,7 @@ trait SdkDescriptor {
 
   protected def libraryProperties: ScalaLibraryProperties
 
-  def createNewLibraryConfiguration() = {
+  def createNewLibraryConfiguration() =
     new NewLibraryConfiguration(libraryName, libraryType, libraryProperties) {
       override def addRoots(editor: LibraryEditor): Unit = {
         libraryFiles
@@ -78,7 +78,6 @@ trait SdkDescriptor {
         }
       }
     }
-  }
 }
 
 object ScalaSdkDescriptor extends SdkDescriptorCompanion {
@@ -92,14 +91,13 @@ object ScalaSdkDescriptor extends SdkDescriptorCompanion {
       compilerFiles: Seq[File],
       libraryFiles: Seq[File],
       sourceFiles: Seq[File],
-      docFiles: Seq[File]) = {
+      docFiles: Seq[File]) =
     ScalaSdkDescriptor(
       version,
       compilerFiles,
       libraryFiles,
       sourceFiles,
       docFiles)
-  }
 }
 
 trait SdkDescriptorCompanion {

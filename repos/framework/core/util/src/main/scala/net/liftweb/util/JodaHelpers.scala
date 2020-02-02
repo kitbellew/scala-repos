@@ -29,7 +29,7 @@ object JodaHelpers extends JodaHelpers
 
 trait JodaHelpers {
   def dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTime
-  def toDateTime(in: Any): Box[DateTime] = {
+  def toDateTime(in: Any): Box[DateTime] =
     try {
       in match {
         case null                                  => Empty
@@ -47,5 +47,4 @@ trait JodaHelpers {
     } catch {
       case e: Exception => Failure("Bad date: " + in, Full(e), Empty)
     }
-  }
 }

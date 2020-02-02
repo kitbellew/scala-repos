@@ -191,9 +191,8 @@ trait TransSpecableModule[M[+_]]
           parent.flatMap(
             leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
 
-        def ArraySwap(node: Join)(parent: N[S], index: Int) = {
+        def ArraySwap(node: Join)(parent: N[S], index: Int) =
           parent.flatMap(leftMap(_)(trans.ArraySwap(_, index)))
-        }
 
         def InnerObjectConcat(node: Join)(parent: N[S]) =
           parent.flatMap(leftMap(_)(trans.InnerObjectConcat(_)))
@@ -240,7 +239,7 @@ trait TransSpecableModule[M[+_]]
         def binOp(node: Join)(
             leftParent: N[S],
             rightParent: => N[S],
-            op: BinaryOperation) = {
+            op: BinaryOperation) =
           for {
             pl <- leftParent
             (l, al) = get(pl)
@@ -252,7 +251,6 @@ trait TransSpecableModule[M[+_]]
               init(Leaf(Source), node)
             }
           } yield result
-        }
 
         def Filter(node: dag.Filter)(leftParent: N[S], rightParent: => N[S]) =
           for {
@@ -271,7 +269,7 @@ trait TransSpecableModule[M[+_]]
           parent.flatMap(leftMap(_)(parent =>
             op1ForUnOp(op).spec(MorphContext(ctx, node))(parent)))
 
-        def Cond(node: dag.Cond)(pred: N[S], left: N[S], right: N[S]) = {
+        def Cond(node: dag.Cond)(pred: N[S], left: N[S], right: N[S]) =
           for {
             pp <- pred
             (p, ap) = get(pp)
@@ -285,7 +283,6 @@ trait TransSpecableModule[M[+_]]
             else
               init(Leaf(Source), node)
           } yield result
-        }
 
         def Const(node: dag.Const)(underN: N[S]) = {
           val dag.Const(cv: CValue) = node // TODO !!
@@ -307,11 +304,9 @@ trait TransSpecableModule[M[+_]]
         ctx: EvaluationContext,
         get: S => (TransSpec1, DepGraph),
         set: (S, (TransSpec1, DepGraph)) => N[S],
-        init: ((TransSpec1, DepGraph)) => N[S]): N[S] = {
-
+        init: ((TransSpec1, DepGraph)) => N[S]): N[S] =
       foldDownTransSpecable(to, from)(
         transFold[N, S](to, from, ctx, get, set, init))
-    }
 
     def mkTransSpecOrderWithState[N[+_]: Monad, S](
         to: DepGraph,
@@ -319,11 +314,9 @@ trait TransSpecableModule[M[+_]]
         ctx: EvaluationContext,
         get: S => (TransSpec1, DepGraph),
         set: (S, (TransSpec1, DepGraph)) => N[S],
-        init: ((TransSpec1, DepGraph)) => N[S]): N[S] = {
-
+        init: ((TransSpec1, DepGraph)) => N[S]): N[S] =
       foldDownTransSpecableOrder(to, from)(
         transFold[N, S](to, from, ctx, get, set, init))
-    }
 
     object ConstInt {
       def unapply(c: Const) = c match {

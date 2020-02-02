@@ -39,7 +39,7 @@ case class SpecificScalaVersion(
     rev: Int,
     build: ScalaBuild)
     extends ScalaVersion {
-  def unparse = s"${major}.${minor}.${rev}${build.unparse}"
+  def unparse = s"$major.$minor.$rev${build.unparse}"
 
   def compare(that: ScalaVersion): Int = that match {
     case SpecificScalaVersion(thatMajor, thatMinor, thatRev, thatBuild) =>
@@ -85,7 +85,7 @@ object ScalaVersion {
       versionString: String,
       errorHandler: String => Unit): ScalaVersion = {
     def error() = errorHandler(
-      s"Bad version (${versionString}) not major[.minor[.revision[-suffix]]]"
+      s"Bad version ($versionString) not major[.minor[.revision[-suffix]]]"
     )
 
     def toInt(s: String) = s match {
@@ -144,7 +144,7 @@ abstract class ScalaBuild extends Ordered[ScalaBuild] {
   * A development, test, nightly, snapshot or other "unofficial" build
   */
 case class Development(id: String) extends ScalaBuild {
-  def unparse = s"-${id}"
+  def unparse = s"-$id"
 
   def compare(that: ScalaBuild) = that match {
     // sorting two development builds based on id is reasonably valid for two versions created with the same schema
@@ -175,7 +175,7 @@ case object Final extends ScalaBuild {
   * A candidate for final release
   */
 case class RC(n: Int) extends ScalaBuild {
-  def unparse = s"-RC${n}"
+  def unparse = s"-RC$n"
 
   def compare(that: ScalaBuild) = that match {
     // compare two rcs based on their RC numbers
@@ -190,7 +190,7 @@ case class RC(n: Int) extends ScalaBuild {
   * An intermediate release
   */
 case class Milestone(n: Int) extends ScalaBuild {
-  def unparse = s"-M${n}"
+  def unparse = s"-M$n"
 
   def compare(that: ScalaBuild) = that match {
     // compare two milestones based on their milestone numbers

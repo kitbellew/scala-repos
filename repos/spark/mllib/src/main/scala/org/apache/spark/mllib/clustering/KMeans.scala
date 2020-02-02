@@ -125,9 +125,8 @@ class KMeans private (
   @deprecated(
     "Support for runs is deprecated. This param will have no effect in 2.0.0.",
     "1.6.0")
-  def setRuns(runs: Int): this.type = {
+  def setRuns(runs: Int): this.type =
     internalSetRuns(runs)
-  }
 
   // Internal version of setRuns for Python API, this should be removed at the same time as setRuns
   // this is done to avoid deprecation warnings in our build.
@@ -549,7 +548,7 @@ object KMeans {
       maxIterations: Int,
       runs: Int,
       initializationMode: String,
-      seed: Long): KMeansModel = {
+      seed: Long): KMeansModel =
     new KMeans()
       .setK(k)
       .setMaxIterations(maxIterations)
@@ -557,7 +556,6 @@ object KMeans {
       .setInitializationMode(initializationMode)
       .setSeed(seed)
       .run(data)
-  }
 
   /**
     * Trains a k-means model using the given set of parameters.
@@ -576,22 +574,20 @@ object KMeans {
       k: Int,
       maxIterations: Int,
       runs: Int,
-      initializationMode: String): KMeansModel = {
+      initializationMode: String): KMeansModel =
     new KMeans()
       .setK(k)
       .setMaxIterations(maxIterations)
       .internalSetRuns(runs)
       .setInitializationMode(initializationMode)
       .run(data)
-  }
 
   /**
     * Trains a k-means model using specified parameters and the default values for unspecified.
     */
   @Since("0.8.0")
-  def train(data: RDD[Vector], k: Int, maxIterations: Int): KMeansModel = {
+  def train(data: RDD[Vector], k: Int, maxIterations: Int): KMeansModel =
     train(data, k, maxIterations, 1, K_MEANS_PARALLEL)
-  }
 
   /**
     * Trains a k-means model using specified parameters and the default values for unspecified.
@@ -601,9 +597,8 @@ object KMeans {
       data: RDD[Vector],
       k: Int,
       maxIterations: Int,
-      runs: Int): KMeansModel = {
+      runs: Int): KMeansModel =
     train(data, k, maxIterations, runs, K_MEANS_PARALLEL)
-  }
 
   /**
     * Returns the index of the closest center to the given point, as well as the squared distance.
@@ -645,17 +640,15 @@ object KMeans {
     */
   private[clustering] def fastSquaredDistance(
       v1: VectorWithNorm,
-      v2: VectorWithNorm): Double = {
+      v2: VectorWithNorm): Double =
     MLUtils.fastSquaredDistance(v1.vector, v1.norm, v2.vector, v2.norm)
-  }
 
-  private[spark] def validateInitMode(initMode: String): Boolean = {
+  private[spark] def validateInitMode(initMode: String): Boolean =
     initMode match {
       case KMeans.RANDOM           => true
       case KMeans.K_MEANS_PARALLEL => true
       case _                       => false
     }
-  }
 }
 
 /**

@@ -66,13 +66,12 @@ package mutable {
       with Sizing {
     def internalArray = array
     def setInternalSize(s: Int) = size0 = s
-    override def sizeHint(len: Int) = {
+    override def sizeHint(len: Int) =
       if (len > size && len >= 1) {
         val newarray = new Array[AnyRef](len)
         Array.copy(array, 0, newarray, 0, size0)
         array = newarray
       }
-    }
   }
 
   private[mutable] class ExposedArraySeq[T](arr: Array[AnyRef], sz: Int)

@@ -389,7 +389,7 @@ object Defaults extends BuildCommon {
       scalaSrcDir: File,
       javaSrcDir: File,
       sv: String,
-      cross: Boolean): Seq[File] = {
+      cross: Boolean): Seq[File] =
     if (cross)
       Seq(
         scalaSrcDir.getParentFile / s"${scalaSrcDir.name}-$sv",
@@ -397,7 +397,6 @@ object Defaults extends BuildCommon {
         javaSrcDir)
     else
       Seq(scalaSrcDir, javaSrcDir)
-  }
 
   def makeCrossTarget(
       t: File,
@@ -431,7 +430,7 @@ object Defaults extends BuildCommon {
       val extra =
         if (crossPaths.value) s"_${scalaBinaryVersion.value}"
         else ""
-      s"inc_compile${extra}"
+      s"inc_compile$extra"
     },
     compileIncSetup <<= compileIncSetupTask,
     console <<= consoleTask,
@@ -554,7 +553,7 @@ object Defaults extends BuildCommon {
         (art, file) <- m.artifacts if art.`type` == Artifact.DefaultType
       } yield file
     def file(id: String) =
-      files(id).headOption getOrElse sys.error(s"Missing ${id}.jar")
+      files(id).headOption getOrElse sys.error(s"Missing $id.jar")
     val allFiles = toolReport.modules.flatMap(_.artifacts.map(_._2))
     val libraryJar = file(ScalaArtifacts.LibraryID)
     val compilerJar =
@@ -731,7 +730,7 @@ object Defaults extends BuildCommon {
             yield intlStamp(f, a, Set.empty)
         if (stamps.isEmpty) Long.MinValue else stamps.max
       }
-      def intlStamp(f: File, analysis: Analysis, s: Set[File]): Long = {
+      def intlStamp(f: File, analysis: Analysis, s: Set[File]): Long =
         if (s contains f) Long.MinValue
         else
           stamps.getOrElseUpdate(
@@ -742,7 +741,6 @@ object Defaults extends BuildCommon {
                 apis.internal(f).compilation.startTime
             }.max
           )
-      }
       def noSuccessYet(test: String) = succeeded.get(test) match {
         case None     => true
         case Some(ts) => stamp(test) > ts
@@ -811,7 +809,7 @@ object Defaults extends BuildCommon {
       groups: Seq[Tests.Group],
       config: Tests.Execution,
       cp: Classpath,
-      javaHome: Option[File]): Task[Tests.Output] = {
+      javaHome: Option[File]): Task[Tests.Output] =
     allTestGroupsTask(
       s,
       frameworks,
@@ -822,7 +820,6 @@ object Defaults extends BuildCommon {
       javaHome,
       forkedParallelExecution = false,
       javaOptions = Nil)
-  }
 
   def allTestGroupsTask(
       s: TaskStreams,
@@ -832,7 +829,7 @@ object Defaults extends BuildCommon {
       config: Tests.Execution,
       cp: Classpath,
       javaHome: Option[File],
-      forkedParallelExecution: Boolean): Task[Tests.Output] = {
+      forkedParallelExecution: Boolean): Task[Tests.Output] =
     allTestGroupsTask(
       s,
       frameworks,
@@ -843,7 +840,6 @@ object Defaults extends BuildCommon {
       javaHome,
       forkedParallelExecution,
       javaOptions = Nil)
-  }
 
   def allTestGroupsTask(
       s: TaskStreams,
@@ -1342,7 +1338,7 @@ object Defaults extends BuildCommon {
       // TODO - task / setting for extra,
       Array.empty)
   }
-  def compileInputsSettings: Seq[Setting[_]] = {
+  def compileInputsSettings: Seq[Setting[_]] =
     Seq(
       compileOptions := new CompileOptions(
         (classDirectory.value +: data(dependencyClasspath.value)).toArray,
@@ -1363,7 +1359,6 @@ object Defaults extends BuildCommon {
         compileIncSetup.value,
         previousCompile.value)
     )
-  }
   def compileAnalysisSettings: Seq[Setting[_]] = Seq(
     previousCompile := {
       val setup = compileIncSetup.value

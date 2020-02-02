@@ -69,9 +69,8 @@ trait Evaluation extends Deployment {
   /** Returns both the [[Engine]] and the implementation of [[Metric]] for this
     * [[Evaluation]]
     */
-  def engineMetric: (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
+  def engineMetric: (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) =
     throw new NotImplementedError("This method is to keep the compiler happy")
-  }
 
   /** Sets both an [[Engine]] and an implementation of [[Metric]] for this
     * [[Evaluation]]
@@ -94,9 +93,8 @@ trait Evaluation extends Deployment {
   }
 
   private[prediction] def engineMetrics
-      : (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
+      : (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) =
     throw new NotImplementedError("This method is to keep the compiler happy")
-  }
 
   /** Sets an [[Engine]], an implementation of [[Metric]], and sequence of
     * implementations of [[Metric]] for this [[Evaluation]]

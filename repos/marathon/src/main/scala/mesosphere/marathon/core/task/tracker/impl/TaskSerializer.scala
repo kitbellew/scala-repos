@@ -14,30 +14,26 @@ object TaskSerializer {
 
   def fromProto(proto: Protos.MarathonTask): Task = {
 
-    def required[T](name: String, maybeValue: Option[T]): T = {
+    def required[T](name: String, maybeValue: Option[T]): T =
       maybeValue.getOrElse(
         throw new IllegalArgumentException(
           s"task[${proto.getId}]: $name must be set"))
-    }
 
     def opt[T](
         hasAttribute: Protos.MarathonTask => Boolean,
-        getAttribute: Protos.MarathonTask => T): Option[T] = {
-
+        getAttribute: Protos.MarathonTask => T): Option[T] =
       if (hasAttribute(proto)) {
         Some(getAttribute(proto))
       } else {
         None
       }
-    }
 
-    def agentInfo: Task.AgentInfo = {
+    def agentInfo: Task.AgentInfo =
       Task.AgentInfo(
         host = required("host", opt(_.hasHost, _.getHost)),
         agentId = opt(_.hasSlaveId, _.getSlaveId).map(_.getValue),
         attributes = proto.getAttributesList.iterator().asScala.toVector
       )
-    }
 
     def reservation: Option[Task.Reservation] =
       if (proto.hasReservation) {
@@ -63,7 +59,7 @@ object TaskSerializer {
         Task.NoNetworking
       }
 
-    def launchedTask: Option[Task.Launched] = {
+    def launchedTask: Option[Task.Launched] =
       if (proto.hasStagedAt) {
         Some(
           Task.Launched(
@@ -75,7 +71,6 @@ object TaskSerializer {
       } else {
         None
       }
-    }
 
     constructTask(
       taskId = Task.Id(proto.getId),
@@ -89,8 +84,7 @@ object TaskSerializer {
       taskId: Task.Id,
       agentInfo: Task.AgentInfo,
       reservationOpt: Option[Reservation],
-      launchedOpt: Option[Task.Launched]): Task = {
-
+      launchedOpt: Option[Task.Launched]): Task =
     (reservationOpt, launchedOpt) match {
 
       case (Some(reservation), Some(launched)) =>
@@ -118,7 +112,6 @@ object TaskSerializer {
           s"Unable to deserialize task $taskId, agentInfo=$agentInfo. It is neither reserved nor launched"
         throw new SerializationFailedException(msg)
     }
-  }
 
   def toProto(task: Task): Protos.MarathonTask = {
     val builder = Protos.MarathonTask.newBuilder()
@@ -131,9 +124,8 @@ object TaskSerializer {
       }
       builder.addAllAttributes(agentInfo.attributes.asJava)
     }
-    def setReservation(reservation: Task.Reservation): Unit = {
+    def setReservation(reservation: Task.Reservation): Unit =
       builder.setReservation(ReservationSerializer.toProto(reservation))
-    }
     def setLaunched(
         appVersion: Timestamp,
         status: Task.Status,
@@ -273,12 +265,10 @@ private[impl] object ReservationSerializer {
     Reservation(volumes, state)
   }
 
-  def toProto(
-      reservation: Task.Reservation): Protos.MarathonTask.Reservation = {
+  def toProto(reservation: Task.Reservation): Protos.MarathonTask.Reservation =
     Protos.MarathonTask.Reservation
       .newBuilder()
       .addAllLocalVolumeIds(reservation.volumeIds.map(_.idString).asJava)
       .setState(StateSerializer.toProto(reservation.state))
       .build()
-  }
 }

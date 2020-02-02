@@ -208,7 +208,7 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
 
   def buildCsrfCheckRequestWithJavaHandler() = new CsrfTester {
     def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
-        handleResponse: (WSResponse) => T) = {
+        handleResponse: (WSResponse) => T) =
       withServer(
         Seq(
           "play.http.filters" -> classOf[CsrfFilters].getName,
@@ -221,7 +221,6 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         handleResponse(
           await(makeRequest(WS.url("http://localhost:" + testServerPort))))
       }
-    }
   }
 
   def buildCsrfAddToken(configuration: (String, String)*) = new CsrfTester {

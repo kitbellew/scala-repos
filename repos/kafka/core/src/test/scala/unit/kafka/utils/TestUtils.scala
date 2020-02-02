@@ -92,9 +92,8 @@ object TestUtils extends Logging {
   /**
     * Create a temporary directory
     */
-  def tempDir(): File = {
+  def tempDir(): File =
     tempRelativeDir(IoTmpDir)
-  }
 
   def tempTopic(): String = "testTopic" + random.nextInt(1000000)
 
@@ -110,9 +109,8 @@ object TestUtils extends Logging {
     Runtime
       .getRuntime()
       .addShutdownHook(new Thread() {
-        override def run() = {
+        override def run() =
           CoreUtils.rm(f)
-        }
       })
     f
   }
@@ -174,7 +172,7 @@ object TestUtils extends Logging {
       enableSsl: Boolean = false,
       enableSaslPlaintext: Boolean = false,
       enableSaslSsl: Boolean = false,
-      rackInfo: Map[Int, String] = Map()): Seq[Properties] = {
+      rackInfo: Map[Int, String] = Map()): Seq[Properties] =
     (0 until numConfigs).map { node =>
       createBrokerConfig(
         node,
@@ -191,15 +189,13 @@ object TestUtils extends Logging {
         rack = rackInfo.get(node)
       )
     }
-  }
 
   def getBrokerListStrFromServers(
       servers: Seq[KafkaServer],
-      protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): String = {
+      protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): String =
     servers
       .map(s => formatAddress(s.config.hostName, s.boundPort(protocol)))
       .mkString(",")
-  }
 
   /**
     * Create a test config for the provided parameters.
@@ -458,7 +454,7 @@ object TestUtils extends Logging {
     assertFalse("Iterators have uneven length--second has more", s2.hasNext)
   }
 
-  def stackedIterator[T](s: Iterator[T]*): Iterator[T] = {
+  def stackedIterator[T](s: Iterator[T]*): Iterator[T] =
     new Iterator[T] {
       var cur: Iterator[T] = null
       val topIterator = s.iterator
@@ -481,7 +477,6 @@ object TestUtils extends Logging {
 
       def next(): T = cur.next
     }
-  }
 
   /**
     * Create a hexadecimal string for the given bytes
@@ -702,17 +697,14 @@ object TestUtils extends Logging {
 
   }
 
-  def getMessageIterator(
-      iter: Iterator[MessageAndOffset]): Iterator[Message] = {
+  def getMessageIterator(iter: Iterator[MessageAndOffset]): Iterator[Message] =
     new IteratorTemplate[Message] {
-      override def makeNext(): Message = {
+      override def makeNext(): Message =
         if (iter.hasNext)
           iter.next.message
         else
           allDone()
-      }
     }
-  }
 
   def createBrokersInZk(zkUtils: ZkUtils, ids: Seq[Int]): Seq[Broker] =
     createBrokersInZk(ids.map(kafka.admin.BrokerMetadata(_, None)), zkUtils)
@@ -766,7 +758,7 @@ object TestUtils extends Logging {
       acks: Int,
       timeout: Int,
       correlationId: Int = 0,
-      clientId: String): ProducerRequest = {
+      clientId: String): ProducerRequest =
     produceRequestWithAcks(
       Seq(topic),
       Seq(partition),
@@ -775,7 +767,6 @@ object TestUtils extends Logging {
       timeout,
       correlationId,
       clientId)
-  }
 
   @deprecated(
     "This method has been deprecated and it will be removed in a future release",
@@ -805,31 +796,29 @@ object TestUtils extends Logging {
       leaderPerPartitionMap: scala.collection.immutable.Map[Int, Int],
       controllerEpoch: Int) {
     leaderPerPartitionMap.foreach { leaderForPartition =>
-      {
-        val partition = leaderForPartition._1
-        val leader = leaderForPartition._2
-        try {
-          val currentLeaderAndIsrOpt =
-            zkUtils.getLeaderAndIsrForPartition(topic, partition)
-          var newLeaderAndIsr: LeaderAndIsr = null
-          if (currentLeaderAndIsrOpt == None)
-            newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
-          else {
-            newLeaderAndIsr = currentLeaderAndIsrOpt.get
-            newLeaderAndIsr.leader = leader
-            newLeaderAndIsr.leaderEpoch += 1
-            newLeaderAndIsr.zkVersion += 1
-          }
-          zkUtils.updatePersistentPath(
-            getTopicPartitionLeaderAndIsrPath(topic, partition),
-            zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch))
-        } catch {
-          case oe: Throwable =>
-            error(
-              "Error while electing leader for partition [%s,%d]"
-                .format(topic, partition),
-              oe)
+      val partition = leaderForPartition._1
+      val leader = leaderForPartition._2
+      try {
+        val currentLeaderAndIsrOpt =
+          zkUtils.getLeaderAndIsrForPartition(topic, partition)
+        var newLeaderAndIsr: LeaderAndIsr = null
+        if (currentLeaderAndIsrOpt == None)
+          newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
+        else {
+          newLeaderAndIsr = currentLeaderAndIsrOpt.get
+          newLeaderAndIsr.leader = leader
+          newLeaderAndIsr.leaderEpoch += 1
+          newLeaderAndIsr.zkVersion += 1
         }
+        zkUtils.updatePersistentPath(
+          getTopicPartitionLeaderAndIsrPath(topic, partition),
+          zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch))
+      } catch {
+        case oe: Throwable =>
+          error(
+            "Error while electing leader for partition [%s,%d]"
+              .format(topic, partition),
+            oe)
       }
     }
   }
@@ -1010,7 +999,7 @@ object TestUtils extends Logging {
       servers: Seq[KafkaServer],
       topic: String,
       partition: Int,
-      timeout: Long = 5000L): Unit = {
+      timeout: Long = 5000L): Unit =
     TestUtils.waitUntilTrue(
       () =>
         servers.exists { server =>
@@ -1022,7 +1011,6 @@ object TestUtils extends Logging {
         .format(topic, partition, timeout),
       waitTime = timeout
     )
-  }
 
   def writeNonsenseToFile(fileName: File, position: Long, size: Int) {
     val file = new RandomAccessFile(fileName, "rw")
@@ -1089,9 +1077,8 @@ object TestUtils extends Logging {
     )
   }
 
-  def checkIfReassignPartitionPathExists(zkUtils: ZkUtils): Boolean = {
+  def checkIfReassignPartitionPathExists(zkUtils: ZkUtils): Boolean =
     zkUtils.pathExists(ZkUtils.ReassignPartitionsPath)
-  }
 
   def verifyNonDaemonThreadsStatus(threadNamePrefix: String) {
     assertEquals(
@@ -1111,7 +1098,7 @@ object TestUtils extends Logging {
       logDirs: Array[File] = Array.empty[File],
       defaultConfig: LogConfig = LogConfig(),
       cleanerConfig: CleanerConfig = CleanerConfig(enableCleaner = false),
-      time: MockTime = new MockTime()): LogManager = {
+      time: MockTime = new MockTime()): LogManager =
     new LogManager(
       logDirs = logDirs,
       topicConfigs = Map(),
@@ -1124,7 +1111,6 @@ object TestUtils extends Logging {
       scheduler = time.scheduler,
       time = time,
       brokerState = new BrokerState())
-  }
 
   @deprecated(
     "This method has been deprecated and it will be removed in a future release.",
@@ -1347,9 +1333,8 @@ object TestUtils extends Logging {
   // a X509TrustManager to trust self-signed certs for unit tests.
   def trustAllCerts: X509TrustManager = {
     val trustManager = new X509TrustManager() {
-      override def getAcceptedIssuers: Array[X509Certificate] = {
+      override def getAcceptedIssuers: Array[X509Certificate] =
         null
-      }
       override def checkClientTrusted(
           certs: Array[X509Certificate],
           authType: String) {}
@@ -1363,12 +1348,11 @@ object TestUtils extends Logging {
   def waitAndVerifyAcls(
       expected: Set[Acl],
       authorizer: Authorizer,
-      resource: Resource) = {
+      resource: Resource) =
     TestUtils.waitUntilTrue(
       () => authorizer.getAcls(resource) == expected,
       s"expected acls $expected but got ${authorizer.getAcls(resource)}",
       waitTime = 10000)
-  }
 
   /**
     * To use this you pass in a sequence of functions that are your arrange/act/assert test on the SUT.
@@ -1430,9 +1414,8 @@ class IntEncoder(props: VerifiableProperties = null) extends Encoder[Int] {
   "0.10.0.0")
 class StaticPartitioner(props: VerifiableProperties = null)
     extends Partitioner {
-  def partition(data: Any, numPartitions: Int): Int = {
+  def partition(data: Any, numPartitions: Int): Int =
     (data.asInstanceOf[String].length % numPartitions)
-  }
 }
 
 @deprecated(

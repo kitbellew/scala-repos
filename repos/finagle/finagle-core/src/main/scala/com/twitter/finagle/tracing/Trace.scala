@@ -159,14 +159,13 @@ object Trace {
     * @param terminal true if traceId is a terminal id. Future calls to set() after a terminal
     *                 id is set will not set the traceId
     */
-  def letId[R](traceId: TraceId, terminal: Boolean = false)(f: => R): R = {
+  def letId[R](traceId: TraceId, terminal: Boolean = false)(f: => R): R =
     if (isTerminal) f
     else if (terminal) {
       Contexts.local.let(traceCtx, ctx.withTerminal(terminal)) {
         Contexts.broadcast.let(idCtx, traceId)(f)
       }
     } else Contexts.broadcast.let(idCtx, traceId)(f)
-  }
 
   /**
     * A version of [com.twitter.finagle.tracing.Trace.letId] providing an
@@ -206,7 +205,7 @@ object Trace {
     *                 attempts to set nextId will be ignored.
     */
   def letTracerAndId[R](tracer: Tracer, id: TraceId, terminal: Boolean = false)(
-      f: => R): R = {
+      f: => R): R =
     if (ctx.terminal) {
       letTracer(tracer)(f)
     } else {
@@ -219,7 +218,6 @@ object Trace {
         Contexts.broadcast.let(idCtx, newId)(f)
       }
     }
-  }
 
   /**
     * Run computation `f` with all tracing state (tracers, trace id)
@@ -240,7 +238,7 @@ object Trace {
   def traceService[T](
       service: String,
       rpc: String,
-      hostOpt: Option[InetSocketAddress] = None)(f: => T): T = {
+      hostOpt: Option[InetSocketAddress] = None)(f: => T): T =
     Trace.letId(Trace.nextId) {
       Trace.recordBinary("finagle.version", Init.finagleVersion)
       Trace.recordServiceName(service)
@@ -252,7 +250,6 @@ object Trace {
         Trace.record(Annotation.ServerSend())
       }
     }
-  }
 
   /**
     * Returns true if tracing is enabled with a good tracer pushed and the current
@@ -269,9 +266,8 @@ object Trace {
   /**
     * Record a raw record without checking if it's sampled/enabled/etc.
     */
-  private[this] def uncheckedRecord(rec: Record): Unit = {
+  private[this] def uncheckedRecord(rec: Record): Unit =
     tracers.distinct.foreach { t: Tracer => t.record(rec) }
-  }
 
   /**
     * Record a raw ''Record''.  This will record to a _unique_ set of
@@ -326,48 +322,38 @@ object Trace {
       uncheckedRecord(Record(id, Time.now, ann, Some(duration)))
   }
 
-  def record(message: String): Unit = {
+  def record(message: String): Unit =
     record(Annotation.Message(message))
-  }
 
-  def record(message: String, duration: Duration): Unit = {
+  def record(message: String, duration: Duration): Unit =
     record(Annotation.Message(message), duration)
-  }
 
   @deprecated("Use recordRpc and recordServiceName", "6.13.x")
-  def recordRpcname(service: String, rpc: String): Unit = {
+  def recordRpcname(service: String, rpc: String): Unit =
     record(Annotation.Rpcname(service, rpc))
-  }
 
-  def recordServiceName(serviceName: String): Unit = {
+  def recordServiceName(serviceName: String): Unit =
     record(Annotation.ServiceName(serviceName))
-  }
 
-  def recordRpc(name: String): Unit = {
+  def recordRpc(name: String): Unit =
     record(Annotation.Rpc(name))
-  }
 
-  def recordClientAddr(ia: InetSocketAddress): Unit = {
+  def recordClientAddr(ia: InetSocketAddress): Unit =
     record(Annotation.ClientAddr(ia))
-  }
 
-  def recordServerAddr(ia: InetSocketAddress): Unit = {
+  def recordServerAddr(ia: InetSocketAddress): Unit =
     record(Annotation.ServerAddr(ia))
-  }
 
-  def recordLocalAddr(ia: InetSocketAddress): Unit = {
+  def recordLocalAddr(ia: InetSocketAddress): Unit =
     record(Annotation.LocalAddr(ia))
-  }
 
-  def recordBinary(key: String, value: Any): Unit = {
+  def recordBinary(key: String, value: Any): Unit =
     record(Annotation.BinaryAnnotation(key, value))
-  }
 
-  def recordBinaries(annotations: Map[String, Any]): Unit = {
+  def recordBinaries(annotations: Map[String, Any]): Unit =
     if (isActivelyTracing) {
       for ((key, value) <- annotations) {
         recordBinary(key, value)
       }
     }
-  }
 }

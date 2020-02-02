@@ -13,12 +13,8 @@ class EnsimeConfigSpec extends EnsimeSpec {
 
   import EscapingStringInterpolation._
 
-  def test(
-      dir: File,
-      contents: String,
-      testFn: (EnsimeConfig) => Unit): Unit = {
+  def test(dir: File, contents: String, testFn: (EnsimeConfig) => Unit): Unit =
     testFn(EnsimeConfigProtocol.parse(contents))
-  }
 
   "EnsimeConfig" should "parse a simple config" in withTempDir { dir =>
     val abc = dir / "abc"

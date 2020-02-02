@@ -48,7 +48,7 @@ class MesosClusterSchedulerSuite
     scheduler = new MesosClusterScheduler(
       new BlackHoleMesosClusterPersistenceEngineFactory,
       conf) {
-      override def start(): Unit = { ready = true }
+      override def start(): Unit = ready = true
     }
     scheduler.start()
   }

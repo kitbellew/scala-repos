@@ -35,12 +35,11 @@ trait NormalizationSpecs[M[+_]]
   import instructions._
   import library._
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   private val line = Line(1, 1, "")
   private def load(path: String) =
@@ -116,9 +115,8 @@ trait NormalizationSpecs[M[+_]]
 
       val summaries = dag.IUI(true, model1, model2)(line)
 
-      def makeNorm(summary: DepGraph) = {
+      def makeNorm(summary: DepGraph) =
         dag.Morph2(Normalization, load("hom/numbers"), summary)(line)
-      }
 
       val input1 = makeNorm(model1)
       val input2 = makeNorm(model2)

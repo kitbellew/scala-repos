@@ -339,7 +339,7 @@ trait Slice { source =>
   // this operation.
   //
   def delete(jtype: JType): Slice = new Slice {
-    def fixArrays(columns: Map[ColumnRef, Column]): Map[ColumnRef, Column] = {
+    def fixArrays(columns: Map[ColumnRef, Column]): Map[ColumnRef, Column] =
       columns.toSeq
         .sortBy(_._1)
         .foldLeft(
@@ -357,7 +357,6 @@ trait Slice { source =>
             (arrayPaths0, acc + (ColumnRef(CPath(nodes: _*), ctype) -> col))
         }
         ._2
-    }
 
     // Used for homogeneous arrays. Constructs a function, suitable for use in a
     // flatMap, that will modify the homogeneous array according to `jType`.
@@ -640,7 +639,7 @@ trait Slice { source =>
     }
   }
 
-  def filterDefined(filter: Slice, definedness: Definedness) = {
+  def filterDefined(filter: Slice, definedness: Definedness) =
     new Slice {
       private val colValues = filter.columns.values.toArray
       lazy val defined = definedness match {
@@ -663,9 +662,8 @@ trait Slice { source =>
         col => cf.util.filter(0, source.size, defined)(col).get
       }
     }
-  }
 
-  def compact(filter: Slice, definedness: Definedness): Slice = {
+  def compact(filter: Slice, definedness: Definedness): Slice =
     new Slice {
       private val cols = filter.columns
 
@@ -709,19 +707,17 @@ trait Slice { source =>
         col => (col |> cf.util.RemapIndices(retained)).get
       }
     }
-  }
 
-  def retain(refs: Set[ColumnRef]) = {
+  def retain(refs: Set[ColumnRef]) =
     new Slice {
       val size = source.size
       val columns: Map[ColumnRef, Column] = source.columns.filterKeys(refs)
     }
-  }
 
   /**
     * Assumes that this and the previous slice (if any) are sorted.
     */
-  def distinct(prevFilter: Option[Slice], filter: Slice): Slice = {
+  def distinct(prevFilter: Option[Slice], filter: Slice): Slice =
     new Slice {
       lazy val retained: ArrayIntList = {
         val acc = new ArrayIntList
@@ -731,14 +727,13 @@ trait Slice { source =>
             rowComparatorFor(filter, filter)(_.columns.keys map (_.selector))
 
           @tailrec
-          def findSelfDistinct0(prevRow: Int, curRow: Int): ArrayIntList = {
+          def findSelfDistinct0(prevRow: Int, curRow: Int): ArrayIntList =
             if (curRow >= filter.size) acc
             else {
               val retain = selfComparator.compare(prevRow, curRow) != EQ
               if (retain) acc.add(curRow)
               findSelfDistinct0(if (retain) curRow else prevRow, curRow + 1)
             }
-          }
 
           findSelfDistinct0(prevRow, curRow)
         }
@@ -748,9 +743,7 @@ trait Slice { source =>
             rowComparatorFor(prev, filter)(_.columns.keys map (_.selector))
 
           @tailrec
-          def findStraddlingDistinct0(
-              prevRow: Int,
-              curRow: Int): ArrayIntList = {
+          def findStraddlingDistinct0(prevRow: Int, curRow: Int): ArrayIntList =
             if (curRow >= filter.size) acc
             else {
               val retain = straddleComparator.compare(prevRow, curRow) != EQ
@@ -760,7 +753,6 @@ trait Slice { source =>
               else
                 findStraddlingDistinct0(prevRow, curRow + 1)
             }
-          }
 
           findStraddlingDistinct0(prevRow, curRow)
         }
@@ -789,7 +781,6 @@ trait Slice { source =>
         col => (col |> cf.util.RemapIndices(retained)).get
       }
     }
-  }
 
   def order: spire.math.Order[Int] =
     if (columns.size == 1) {
@@ -911,9 +902,8 @@ trait Slice { source =>
     * new prefix will contain all indices less than that index, and
     * the new suffix will contain indices >= that index.
     */
-  def split(idx: Int): (Slice, Slice) = {
+  def split(idx: Int): (Slice, Slice) =
     (take(idx), drop(idx))
-  }
 
   def take(sz: Int): Slice =
     if (sz >= source.size) source
@@ -947,7 +937,7 @@ trait Slice { source =>
     }
   }
 
-  def zip(other: Slice): Slice = {
+  def zip(other: Slice): Slice =
     new Slice {
       val size = source.size min other.size
       val columns: Map[ColumnRef, Column] =
@@ -958,13 +948,12 @@ trait Slice { source =>
             } getOrElse col))
         }
     }
-  }
 
   /**
     * This creates a new slice with the same size and columns as this slice, but
     * whose values have been materialized and stored in arrays.
     */
-  def materialized: Slice = {
+  def materialized: Slice =
     new Slice {
       val size = source.size
       val columns = source.columns lazyMapValues {
@@ -1048,7 +1037,6 @@ trait Slice { source =>
           sys.error("Cannot materialise non-standard (extensible) column")
       }
     }
-  }
 
   def renderJson[M[+_]](delimiter: String)(
       implicit M: Monad[M]): (StreamT[M, CharBuffer], Boolean) = {
@@ -1336,16 +1324,14 @@ trait Slice { source =>
 
           @inline
           @tailrec
-          def power10(ln: Long, seed: Long = 1): Long = {
+          def power10(ln: Long, seed: Long = 1): Long =
             // note: we could be doing binary search here
-
             if (seed * 10 < 0) // overflow
               seed
             else if (seed * 10 > ln)
               seed
             else
               power10(ln, seed * 10)
-          }
 
           @inline
           @tailrec
@@ -1436,7 +1422,7 @@ trait Slice { source =>
 
               @inline
               @tailrec
-              def loop(idx: Int, done: Boolean): Boolean = {
+              def loop(idx: Int, done: Boolean): Boolean =
                 if (idx < keys.length) {
                   val key = keys(idx)
                   val value = values(idx)
@@ -1463,7 +1449,6 @@ trait Slice { source =>
                 } else {
                   done
                 }
-              }
 
               pushIn("{", false)
               val done = loop(0, false)
@@ -1482,7 +1467,7 @@ trait Slice { source =>
 
               @inline
               @tailrec
-              def loop(idx: Int, done: Boolean): Boolean = {
+              def loop(idx: Int, done: Boolean): Boolean =
                 if (idx < values.length) {
                   val value = values(idx)
 
@@ -1500,7 +1485,6 @@ trait Slice { source =>
                 } else {
                   done
                 }
-              }
 
               pushIn("[", false)
               val done = loop(0, false)
@@ -1519,13 +1503,12 @@ trait Slice { source =>
 
               @inline
               @tailrec
-              def loop(idx: Int): Boolean = {
+              def loop(idx: Int): Boolean =
                 if (idx < pos.length) {
                   traverseSchema(row, pos(idx)) || loop(idx + 1)
                 } else {
                   false
                 }
-              }
 
               loop(0)
             }
@@ -1666,7 +1649,7 @@ trait Slice { source =>
           }
 
         @tailrec
-        def render(row: Int, delimit: Boolean): Boolean = {
+        def render(row: Int, delimit: Boolean): Boolean =
           if (row < size) {
             if (delimit) {
               pushIn(delimiter, false)
@@ -1682,7 +1665,6 @@ trait Slice { source =>
           } else {
             delimit
           }
-        }
 
         val rendered = render(0, false)
 
@@ -1706,16 +1688,15 @@ trait Slice { source =>
     }
   }
 
-  def toRValue(row: Int): RValue = {
+  def toRValue(row: Int): RValue =
     columns.foldLeft[RValue](CUndefined) {
       case (rv, (ColumnRef(selector, _), col)) if col.isDefinedAt(row) =>
         rv.unsafeInsert(selector, col.cValue(row))
 
       case (rv, _) => rv
     }
-  }
 
-  def toJValue(row: Int) = {
+  def toJValue(row: Int) =
     columns.foldLeft[JValue](JUndefined) {
       case (jv, (ColumnRef(selector, _), col)) if col.isDefinedAt(row) =>
         CPathUtils.cPathToJPaths(selector, col.cValue(row)).foldLeft(jv) {
@@ -1724,29 +1705,26 @@ trait Slice { source =>
 
       case (jv, _) => jv
     }
-  }
 
-  def toJson(row: Int): Option[JValue] = {
+  def toJson(row: Int): Option[JValue] =
     toJValue(row) match {
       case JUndefined => None
       case jv         => Some(jv)
     }
-  }
 
   def toJsonElements: Vector[JValue] = {
-    @tailrec def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
+    @tailrec def rec(i: Int, acc: Vector[JValue]): Vector[JValue] =
       if (i < source.size) {
         toJValue(i) match {
           case JUndefined => rec(i + 1, acc)
           case jv         => rec(i + 1, acc :+ jv)
         }
       } else acc
-    }
 
     rec(0, Vector())
   }
 
-  def toString(row: Int): Option[String] = {
+  def toString(row: Int): Option[String] =
     (columns.toList.sortBy(_._1) map {
       case (ref, col) =>
         ref.toString + ": " + (if (col.isDefinedAt(row)) col.strValue(row)
@@ -1755,11 +1733,9 @@ trait Slice { source =>
       case Nil => None
       case l   => Some(l.mkString("[", ", ", "]"))
     }
-  }
 
-  def toJsonString(prefix: String = ""): String = {
+  def toJsonString(prefix: String = ""): String =
     (0 until size).map(i => prefix + " " + toJson(i)).mkString("\n")
-  }
 
   override def toString =
     (0 until size).map(toString(_).getOrElse("")).mkString("\n")
@@ -1768,18 +1744,17 @@ trait Slice { source =>
 object Slice {
   def empty: Slice = Slice(Map.empty, 0)
 
-  def apply(columns0: Map[ColumnRef, Column], dataSize: Int) = {
+  def apply(columns0: Map[ColumnRef, Column], dataSize: Int) =
     new Slice {
       val size = dataSize
       val columns = columns0
     }
-  }
 
   def updateRefs(
       rv: RValue,
       into: Map[ColumnRef, ArrayColumn[_]],
       sliceIndex: Int,
-      sliceSize: Int): Map[ColumnRef, ArrayColumn[_]] = {
+      sliceSize: Int): Map[ColumnRef, ArrayColumn[_]] =
     rv.flattenWithPath.foldLeft(into) {
       case (acc, (cpath, CUndefined)) => acc
       case (acc, (cpath, cvalue)) =>
@@ -1857,7 +1832,6 @@ object Slice {
 
         acc + (ref -> updatedColumn)
     }
-  }
 
   def fromJValues(values: Stream[JValue]): Slice =
     fromRValues(values.map(RValue.fromJValue))
@@ -1868,7 +1842,7 @@ object Slice {
     @tailrec def buildColArrays(
         from: Stream[RValue],
         into: Map[ColumnRef, ArrayColumn[_]],
-        sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) = {
+        sliceIndex: Int): (Map[ColumnRef, ArrayColumn[_]], Int) =
       from match {
         case jv #:: xs =>
           val refs = updateRefs(jv, into, sliceIndex, sliceSize)
@@ -1876,7 +1850,6 @@ object Slice {
         case _ =>
           (into, sliceIndex)
       }
-    }
 
     new Slice {
       val (columns, size) =
@@ -1939,7 +1912,7 @@ object Slice {
       sliceIndex: Int,
       sliceSize: Int,
       remapPath: Option[JPath => CPath] = None)
-      : Map[ColumnRef, ArrayColumn[_]] = {
+      : Map[ColumnRef, ArrayColumn[_]] =
     jv.flattenWithPath.foldLeft(into) {
       case (acc, (jpath, JUndefined)) => acc
       case (acc, (jpath, v)) =>
@@ -2009,7 +1982,6 @@ object Slice {
 
         acc + (ref -> updatedColumn)
     }
-  }
 
   private sealed trait SchemaNode
 

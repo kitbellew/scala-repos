@@ -70,22 +70,18 @@ class ThriftDispatchBench extends StdBenchAnnotations {
     Protocols.binaryFactory(statsReceiver = NullStatsReceiver))
 
   @Benchmark
-  def scroogeDispatch_StdTBinaryProt(): Array[Byte] = {
+  def scroogeDispatch_StdTBinaryProt(): Array[Byte] =
     Await.result(scroogeService0(payload))
-  }
 
   @Benchmark
-  def scroogeProxy_StdBinaryProt(): String = {
+  def scroogeProxy_StdBinaryProt(): String =
     Await.result(scroogeClient0.echo("hello world"))
-  }
 
   @Benchmark
-  def scroogeDispatch_CustomTBinaryProt(): Array[Byte] = {
+  def scroogeDispatch_CustomTBinaryProt(): Array[Byte] =
     Await.result(scroogeService1(payload))
-  }
 
   @Benchmark
-  def scroogeProxy_CustomTBinaryProt(): String = {
+  def scroogeProxy_CustomTBinaryProt(): String =
     Await.result(scroogeClient1.echo("hello world"))
-  }
 }

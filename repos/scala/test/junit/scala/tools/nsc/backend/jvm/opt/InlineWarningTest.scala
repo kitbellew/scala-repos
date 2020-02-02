@@ -47,9 +47,8 @@ class InlineWarningTest extends ClearAfterClass {
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
       allowMessage: StoreReporter#Info => Boolean = _ => false,
-      compiler: Global = compiler): List[ClassNode] = {
+      compiler: Global = compiler): List[ClassNode] =
     compileClasses(compiler)(scalaCode, javaCode, allowMessage)
-  }
 
   @Test
   def nonFinal(): Unit = {

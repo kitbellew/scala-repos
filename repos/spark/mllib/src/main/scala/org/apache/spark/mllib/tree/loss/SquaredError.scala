@@ -40,9 +40,8 @@ object SquaredError extends Loss {
     * @return Loss gradient
     */
   @Since("1.2.0")
-  override def gradient(prediction: Double, label: Double): Double = {
+  override def gradient(prediction: Double, label: Double): Double =
     -2.0 * (label - prediction)
-  }
 
   override private[spark] def computeError(
       prediction: Double,

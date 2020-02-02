@@ -98,7 +98,7 @@ object UniqueKeyedService extends java.io.Serializable {
 
       override def satisfiable(
           requested: DateRange,
-          mode: Mode): Try[DateRange] = {
+          mode: Mode): Try[DateRange] =
         if (requireFullySatisfiable) {
           val s = fn(requested)
           try {
@@ -114,6 +114,5 @@ object UniqueKeyedService extends java.io.Serializable {
         } else {
           super.satisfiable(requested, mode)
         }
-      }
     }
 }

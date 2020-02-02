@@ -157,7 +157,7 @@ final class SteppingInmemJournal extends InmemJournal {
     future
   }
 
-  private def doOrEnqueue(op: () ⇒ Future[Unit]): Unit = {
+  private def doOrEnqueue(op: () ⇒ Future[Unit]): Unit =
     if (queuedTokenRecipients.nonEmpty) {
       val completed = op()
       val tokenRecipient +: rest = queuedTokenRecipients
@@ -166,5 +166,4 @@ final class SteppingInmemJournal extends InmemJournal {
     } else {
       queuedOps = queuedOps :+ op
     }
-  }
 }

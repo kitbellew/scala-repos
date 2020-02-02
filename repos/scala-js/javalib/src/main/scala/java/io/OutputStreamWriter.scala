@@ -109,12 +109,11 @@ class OutputStreamWriter(
 
     @inline
     @tailrec
-    def loopFlush(): Unit = {
+    def loopFlush(): Unit =
       if (enc.flush(outBuf).isOverflow) {
         makeRoomInOutBuf()
         loopFlush()
       }
-    }
 
     loopEncode()
     loopFlush()
@@ -133,12 +132,11 @@ class OutputStreamWriter(
     outBuf = null
   }
 
-  private def ensureOpen(): Unit = {
+  private def ensureOpen(): Unit =
     if (closed)
       throw new IOException("Closed writer.")
-  }
 
-  private def makeRoomInOutBuf(): Unit = {
+  private def makeRoomInOutBuf(): Unit =
     if (outBuf.position != 0) {
       flushBuffer()
     } else {
@@ -148,7 +146,6 @@ class OutputStreamWriter(
       newBuf.put(outBuf)
       outBuf = newBuf
     }
-  }
 
   /** Flushes the internal buffer of this writer, but not the underlying
     *  output stream.

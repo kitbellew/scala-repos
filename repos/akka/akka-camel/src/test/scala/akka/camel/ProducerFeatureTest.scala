@@ -451,12 +451,11 @@ object ProducerFeatureTest {
       from("direct:producer-test-3").to(responder)
       // for two-way messaging tests (sync)
       from("direct:producer-test-2").process(new Processor() {
-        def process(exchange: Exchange) = {
+        def process(exchange: Exchange) =
           exchange.getIn.getBody match {
             case "fail" ⇒ throw new Exception("failure")
             case body ⇒ exchange.getOut.setBody("received %s" format body)
           }
-        }
       })
     }
   }

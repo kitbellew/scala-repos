@@ -40,16 +40,16 @@ private[prediction] object Common {
           if (channelMap.contains(ch)) {
             channelMap(ch)
           } else {
-            logger.error(s"Invalid channel name ${ch}.")
-            throw new IllegalArgumentException(s"Invalid channel name ${ch}.")
+            logger.error(s"Invalid channel name $ch.")
+            throw new IllegalArgumentException(s"Invalid channel name $ch.")
           }
         }
 
         (app.id, channelId)
       }
       .getOrElse {
-        logger.error(s"Invalid app name ${appName}")
-        throw new IllegalArgumentException(s"Invalid app name ${appName}")
+        logger.error(s"Invalid app name $appName")
+        throw new IllegalArgumentException(s"Invalid app name $appName")
       }
   }
 }

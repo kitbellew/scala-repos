@@ -297,13 +297,11 @@ object ScalaElementTypes {
         ScalaFileType.SCALA_LANGUAGE)
       with ICompositeElementType {
 
-    override def createNode(text: CharSequence): ASTNode = {
+    override def createNode(text: CharSequence): ASTNode =
       new ScBlockExprImpl(text)
-    }
 
-    @NotNull def createCompositeNode: ASTNode = {
+    @NotNull def createCompositeNode: ASTNode =
       new ScBlockExprImpl(null)
-    }
 
     def getErrorsCount(
         seq: CharSequence,

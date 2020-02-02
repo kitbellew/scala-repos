@@ -36,15 +36,13 @@ class Tokenizer(override val uid: String)
 
   def this() = this(Identifiable.randomUID("tok"))
 
-  override protected def createTransformFunc: String => Seq[String] = {
+  override protected def createTransformFunc: String => Seq[String] =
     _.toLowerCase.split("\\s")
-  }
 
-  override protected def validateInputType(inputType: DataType): Unit = {
+  override protected def validateInputType(inputType: DataType): Unit =
     require(
       inputType == StringType,
       s"Input type must be string type but got $inputType.")
-  }
 
   override protected def outputDataType: DataType =
     new ArrayType(StringType, true)
@@ -149,11 +147,10 @@ class RegexTokenizer(override val uid: String)
       tokens.filter(_.length >= minLength)
   }
 
-  override protected def validateInputType(inputType: DataType): Unit = {
+  override protected def validateInputType(inputType: DataType): Unit =
     require(
       inputType == StringType,
       s"Input type must be string type but got $inputType.")
-  }
 
   override protected def outputDataType: DataType =
     new ArrayType(StringType, true)

@@ -214,9 +214,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     Literal("f5") ::
     Nil
 
-  private def checkJsonTuple(jt: JsonTuple, expected: InternalRow): Unit = {
+  private def checkJsonTuple(jt: JsonTuple, expected: InternalRow): Unit =
     assert(jt.eval(null).toSeq.head === expected)
-  }
 
   test("json_tuple - hive key 1") {
     checkJsonTuple(

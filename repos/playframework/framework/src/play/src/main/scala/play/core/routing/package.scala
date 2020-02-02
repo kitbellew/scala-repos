@@ -10,15 +10,13 @@ import play.utils.UriEncoding
   */
 package object routing {
 
-  def dynamicString(dynamic: String): String = {
+  def dynamicString(dynamic: String): String =
     UriEncoding.encodePathSegment(dynamic, "utf-8")
-  }
 
-  def queryString(items: List[Option[String]]) = {
+  def queryString(items: List[Option[String]]) =
     Option(items.filter(_.isDefined).map(_.get).filterNot(_.isEmpty))
       .filterNot(_.isEmpty)
       .map("?" + _.mkString("&"))
       .getOrElse("")
-  }
 
 }

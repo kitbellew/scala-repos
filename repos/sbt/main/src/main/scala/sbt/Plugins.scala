@@ -206,12 +206,12 @@ object Plugins extends PluginsFunctions {
           (flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled)).toSet) match {
           case Left(problem) => throw AutoPluginException(problem)
           case Right(results) =>
-            log.debug(s"  :: deduced result: ${results}")
+            log.debug(s"  :: deduced result: $results")
             val selectedAtoms: List[Atom] = results.ordered
             val selectedPlugins = selectedAtoms map { a =>
               byAtomMap.getOrElse(
                 a,
-                throw AutoPluginException(s"${a} was not found in atom map."))
+                throw AutoPluginException(s"$a was not found in atom map."))
             }
             val forbidden: Set[AutoPlugin] =
               (selectedPlugins flatMap { Plugins.asExclusions }).toSet
@@ -239,7 +239,7 @@ object Plugins extends PluginsFunctions {
       log.debug(
         s"  :: sorting:: found: ${found0.toString} not found ${notFound0.toString}")
       if (limit0 < 0)
-        throw AutoPluginException(s"Failed to sort ${ns} topologically")
+        throw AutoPluginException(s"Failed to sort $ns topologically")
       else if (notFound0.isEmpty) found0
       else {
         val (found1, notFound1) = notFound0 partition { n =>

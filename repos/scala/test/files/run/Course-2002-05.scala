@@ -3,9 +3,7 @@
 //############################################################################
 
 object M0 {
-  def partition[a](
-      xs: List[a],
-      pred: a => Boolean): Tuple2[List[a], List[a]] = {
+  def partition[a](xs: List[a], pred: a => Boolean): Tuple2[List[a], List[a]] =
     if (xs.isEmpty)
       (List(), List())
     else {
@@ -15,9 +13,8 @@ object M0 {
       else
         (tailPartition._1, xs.head :: tailPartition._2)
     }
-  }
 
-  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] = {
+  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] =
     if (xs.isEmpty)
       xs
     else {
@@ -25,7 +22,6 @@ object M0 {
       val sub = partition(xs.tail, { elem: a => less(elem, pivot) });
       quicksort(less)(sub._1) ::: List(pivot) ::: quicksort(less)(sub._2)
     }
-  }
 
   def test = {
     Console.println(partition[Int](List(1, 2, 3, 4, 5, 6, 7, 8), (x => x < 0)));
@@ -52,15 +48,12 @@ object M0 {
 //############################################################################
 
 object M1 {
-  def partition[a](
-      xs: List[a],
-      pred: a => Boolean): Tuple2[List[a], List[a]] = {
+  def partition[a](xs: List[a], pred: a => Boolean): Tuple2[List[a], List[a]] =
     xs.foldRight[Tuple2[List[a], List[a]]]((List(), List())) { (x, p) =>
       if (pred(x)) (x :: p._1, p._2) else (p._1, x :: p._2)
     }
-  }
 
-  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] = {
+  def quicksort[a](less: (a, a) => Boolean)(xs: List[a]): List[a] =
     if (xs.isEmpty)
       xs
     else {
@@ -68,7 +61,6 @@ object M1 {
       val sub = partition(xs.tail, (elem: a) => less(elem, pivot));
       quicksort(less)(sub._1) ::: List(pivot) ::: quicksort(less)(sub._2)
     }
-  }
 
   def test = {
     Console.println(partition[Int](List(1, 2, 3, 4, 5, 6, 7, 8), (x => x < 0)));
@@ -96,7 +88,7 @@ object M1 {
 
 object M2 {
 
-  def powerset[a](s: List[a]): List[List[a]] = {
+  def powerset[a](s: List[a]): List[List[a]] =
     if (s.isEmpty)
       List(List())
     else {
@@ -104,7 +96,6 @@ object M2 {
       val withoutX = powerset(s.tail);
       withoutX ::: withoutX.map { s1: List[a] => x :: s1 }
     }
-  }
 
   def test = {
     Console.println(powerset(List()));
@@ -129,7 +120,7 @@ object M3 {
   type Placement = List[(Int, Int)];
 
   def queens(n: Int): List[Placement] = {
-    def placeQueens(row: Int): List[Placement] = {
+    def placeQueens(row: Int): List[Placement] =
       if (row == 0)
         List(List())
       else {
@@ -146,7 +137,6 @@ object M3 {
 
         placeQueens(row - 1) flatMap adjoinRow
       }
-    }
     placeQueens(n)
   }
 
@@ -173,7 +163,7 @@ object M4 {
 
   def queens(n: Int): List[Placement] = {
     val columns = range(1, n);
-    def placeQueens(row: Int): List[Placement] = {
+    def placeQueens(row: Int): List[Placement] =
       if (row == 0)
         List(List())
       else {
@@ -189,7 +179,6 @@ object M4 {
           col :: placement
         }
       }
-    }
     placeQueens(n);
   }
 

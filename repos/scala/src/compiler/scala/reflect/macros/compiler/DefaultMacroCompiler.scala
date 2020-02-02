@@ -46,14 +46,13 @@ abstract class DefaultMacroCompiler
     *  or be a dummy instance of a macro bundle (e.g. new MyMacro(???).expand).
     */
   def resolveMacroImpl: Tree = {
-    def tryCompile(compiler: MacroImplRefCompiler): scala.util.Try[Tree] = {
+    def tryCompile(compiler: MacroImplRefCompiler): scala.util.Try[Tree] =
       try {
         compiler.validateMacroImplRef();
         scala.util.Success(compiler.macroImplRef)
       } catch {
         case ex: MacroImplResolutionException => scala.util.Failure(ex)
       }
-    }
     val vanillaImplRef =
       MacroImplRefCompiler(macroDdef.rhs.duplicate, isImplBundle = false)
     val (maybeBundleRef, methName, targs) = macroDdef.rhs.duplicate match {
@@ -79,7 +78,7 @@ abstract class DefaultMacroCompiler
     val vanillaResult = tryCompile(vanillaImplRef)
     val bundleResult = tryCompile(bundleImplRef)
 
-    def ensureUnambiguousSuccess() = {
+    def ensureUnambiguousSuccess() =
       // we now face a hard choice of whether to report ambiguity:
       //   1) when there are eponymous methods in both bundle and object
       //   2) when both references to eponymous methods are resolved successfully
@@ -89,9 +88,8 @@ abstract class DefaultMacroCompiler
       // if (vanillaImplRef.looksCredible && bundleImplRef.looksCredible) MacroImplAmbiguousError()
       if (vanillaResult.isSuccess && bundleResult.isSuccess)
         MacroImplAmbiguousError()
-    }
 
-    def reportMostAppropriateFailure() = {
+    def reportMostAppropriateFailure() =
       typer.silent(_.typedTypeConstructor(maybeBundleRef)) match {
         case SilentResultValue(result)
             if looksLikeMacroBundleType(result.tpe) =>
@@ -102,7 +100,6 @@ abstract class DefaultMacroCompiler
         case _ =>
           vanillaResult.get
       }
-    }
 
     try {
       if (vanillaResult.isSuccess || bundleResult.isSuccess)

@@ -788,14 +788,13 @@ class StreamingContextSuite
     transformed.foreachRDD { rdd => rdd.count }
 
     def testForException(clue: String, expectedErrorMsg: String)(
-        body: => Unit): Unit = {
+        body: => Unit): Unit =
       withClue(clue) {
         val ex = intercept[IllegalStateException] {
           body
         }
         assert(ex.getMessage.toLowerCase().contains(expectedErrorMsg))
       }
-    }
 
     ssc.start()
     require(ssc.getState() === StreamingContextState.ACTIVE)
@@ -1017,13 +1016,11 @@ package object testPackage extends Assertions {
   */
 private object StreamingContextSuite extends PrivateMethodTester {
   private val _sources = PrivateMethod[ArrayBuffer[Source]]('sources)
-  private def getSources(metricsSystem: MetricsSystem): ArrayBuffer[Source] = {
+  private def getSources(metricsSystem: MetricsSystem): ArrayBuffer[Source] =
     metricsSystem.invokePrivate(_sources())
-  }
   private val _streamingSource =
     PrivateMethod[StreamingSource]('streamingSource)
   private def getStreamingSource(
-      streamingContext: StreamingContext): StreamingSource = {
+      streamingContext: StreamingContext): StreamingSource =
     streamingContext.invokePrivate(_streamingSource())
-  }
 }

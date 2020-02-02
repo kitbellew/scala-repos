@@ -38,7 +38,6 @@ object JavaPairInputDStream {
     * Java-friendly [[org.apache.spark.streaming.api.java.JavaPairInputDStream]].
     */
   implicit def fromInputDStream[K: ClassTag, V: ClassTag](
-      inputDStream: InputDStream[(K, V)]): JavaPairInputDStream[K, V] = {
+      inputDStream: InputDStream[(K, V)]): JavaPairInputDStream[K, V] =
     new JavaPairInputDStream[K, V](inputDStream)
-  }
 }

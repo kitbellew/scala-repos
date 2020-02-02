@@ -198,7 +198,7 @@ private[spark] object ImpurityCalculator {
     */
   def getCalculator(
       impurity: String,
-      stats: Array[Double]): ImpurityCalculator = {
+      stats: Array[Double]): ImpurityCalculator =
     impurity match {
       case "gini"     => new GiniCalculator(stats)
       case "entropy"  => new EntropyCalculator(stats)
@@ -207,5 +207,4 @@ private[spark] object ImpurityCalculator {
         throw new IllegalArgumentException(
           s"ImpurityCalculator builder did not recognize impurity type: $impurity")
     }
-  }
 }

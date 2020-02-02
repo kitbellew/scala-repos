@@ -89,9 +89,8 @@ object HIncrBy {
 }
 
 object HKeys {
-  def apply(keys: Seq[Array[Byte]]) = {
+  def apply(keys: Seq[Array[Byte]]) =
     new HKeys(ChannelBuffers.wrappedBuffer(keys.head))
-  }
 }
 case class HKeys(key: ChannelBuffer) extends StrictKeyCommand {
   def command = Commands.HKEYS

@@ -20,15 +20,13 @@ object ULong extends ULongInstances {
   @inline final val MinValue = ULong(0L)
   @inline final val MaxValue = ULong(-1L)
 
-  @tailrec final private[math] def pow(t: Long, b: Long, e: Long): ULong = {
+  @tailrec final private[math] def pow(t: Long, b: Long, e: Long): ULong =
     if (e == 0L) new ULong(t)
     else if ((e & 1L) == 1L) pow(t * b, b * b, e >>> 1L)
     else pow(t, b * b, e >>> 1L)
-  }
 
-  @tailrec final private[math] def gcd(a: ULong, b: ULong): ULong = {
+  @tailrec final private[math] def gcd(a: ULong, b: ULong): ULong =
     if (b == new ULong(0L)) a else gcd(b, a % b)
-  }
 
   private[spire] final val LimitAsDouble: Double =
     spire.math.pow(2.0, 64)
@@ -44,10 +42,9 @@ class ULong(val signed: Long) extends AnyVal {
   final def toInt: Int = signed.toInt
   final def toLong: Long = signed
 
-  final def toFloat: Float = {
+  final def toFloat: Float =
     if (signed < 0) (ULong.LimitAsDouble + signed.toDouble).toFloat
     else signed.toFloat
-  }
 
   // FIXME: it would be nice to write some "real" floating-point code
   // to correctly find the nearest Double.

@@ -26,7 +26,7 @@ object FTupleSpec extends Specification with ScalaCheck {
   checkEquality[F.Tuple4[A, B, C, D]]("Tuple4")
   checkEquality[F.Tuple5[A, B, C, D, E]]("Tuple5")
 
-  def checkEquality[A: Arbitrary](name: String): Unit = {
+  def checkEquality[A: Arbitrary](name: String): Unit =
     s"$name equality" should {
 
       "be commutative" in prop { (a1: A, a2: A) =>
@@ -44,7 +44,6 @@ object FTupleSpec extends Specification with ScalaCheck {
         if (a1 equals a2) (a1.hashCode == a2.hashCode) else true
       }
     }
-  }
 
   object ArbitraryTuples {
     implicit def arbTuple[A: Arbitrary, B: Arbitrary]

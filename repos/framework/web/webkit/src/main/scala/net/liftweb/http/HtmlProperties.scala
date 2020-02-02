@@ -266,7 +266,7 @@ final case class OldHtmlProperties(userAgent: Box[String])
     * If you want to change the DocType header, override this method rather than using
     * setDocType.
     */
-  def docType: Box[String] = {
+  def docType: Box[String] =
     if (S.skipDocType) {
       Empty
     } else if (S.getDocType._1) {
@@ -274,7 +274,6 @@ final case class OldHtmlProperties(userAgent: Box[String])
     } else {
       Full(DocType.xhtmlTransitional)
     }
-  }
   def encoding: Box[String] =
     Full(LiftRules.calculateXmlHeader(null, <ignore/>, contentType))
 
@@ -340,9 +339,8 @@ final case class Html5Properties(userAgent: Box[String])
   def docType: Box[String] = Full("<!DOCTYPE html>")
   def encoding: Box[String] = Empty
 
-  def contentType: Box[String] = {
+  def contentType: Box[String] =
     Full("text/html; charset=utf-8")
-  }
 
   def htmlParser: InputStream => Box[Elem] = Html5.parse _
 
@@ -373,9 +371,8 @@ final case class XHtmlInHtml5OutProperties(userAgent: Box[String])
   def docType: Box[String] = Full("<!DOCTYPE html>")
   def encoding: Box[String] = Empty
 
-  def contentType: Box[String] = {
+  def contentType: Box[String] =
     Full("text/html; charset=utf-8")
-  }
 
   def htmlParser: InputStream => Box[NodeSeq] = PCDataXmlParser.apply _
 

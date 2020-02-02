@@ -210,7 +210,7 @@ private[html] object SyntaxHigh {
     /* e.g. `val endOfLine = '\u000A'`*/
     def charlit(j: Int): String = {
       val out = new StringBuilder("'")
-      def charlit0(i: Int, bslash: Boolean): Int = {
+      def charlit0(i: Int, bslash: Boolean): Int =
         if (i == buf.length) i
         else if (i > j + 6) {
           out setLength 0; j
@@ -228,7 +228,6 @@ private[html] object SyntaxHigh {
               else charlit0(i + 1, bslash = false)
           }
         }
-      }
       charlit0(j, bslash = false)
       out.toString
     }

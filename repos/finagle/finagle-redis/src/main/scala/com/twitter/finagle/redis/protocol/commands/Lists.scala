@@ -12,9 +12,8 @@ case class LLen(key: ChannelBuffer) extends StrictKeyCommand {
 }
 
 object LLen {
-  def apply(args: Seq[Array[Byte]]): LLen = {
+  def apply(args: Seq[Array[Byte]]): LLen =
     LLen(GetMonadArg(args, CommandBytes.LLEN))
-  }
 }
 
 case class LIndex(key: ChannelBuffer, index: Long) extends StrictKeyCommand {
@@ -70,9 +69,8 @@ case class LPop(key: ChannelBuffer) extends StrictKeyCommand {
 }
 
 object LPop {
-  def apply(args: Seq[Array[Byte]]): LPop = {
+  def apply(args: Seq[Array[Byte]]): LPop =
     LPop(GetMonadArg(args, CommandBytes.LPOP))
-  }
 }
 
 case class LPush(key: ChannelBuffer, values: Seq[ChannelBuffer])
@@ -164,9 +162,8 @@ case class RPop(key: ChannelBuffer) extends StrictKeyCommand {
 }
 
 object RPop extends {
-  def apply(args: List[Array[Byte]]): RPop = {
+  def apply(args: List[Array[Byte]]): RPop =
     RPop(GetMonadArg(args, CommandBytes.RPOP))
-  }
 }
 
 case class RPush(key: ChannelBuffer, values: List[ChannelBuffer])
@@ -208,12 +205,11 @@ trait ListRangeCommand extends StrictKeyCommand {
   val end: Long
   val command: String
 
-  override def toChannelBuffer = {
+  override def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
       Seq(
         StringToChannelBuffer(command),
         key,
         StringToChannelBuffer(start.toString),
         StringToChannelBuffer(end.toString)))
-  }
 }

@@ -20,15 +20,14 @@ import org.specs2.matcher.MatchResult
   */
 object OAuthRequestVerifier {
 
-  def percentDecode(input: String): String = {
+  def percentDecode(input: String): String =
     if (input == null) {
       ""
     } else {
       java.net.URLDecoder.decode(input, "UTF-8")
     }
-  }
 
-  def percentEncode(input: String): String = {
+  def percentEncode(input: String): String =
     if (input == null) {
       ""
     } else {
@@ -38,7 +37,6 @@ object OAuthRequestVerifier {
         .replace("*", "%2A")
         .replace("%7E", "~")
     }
-  }
 
   /**
     * Verify that the given request is a valid OAuth request given the consumer key and request token

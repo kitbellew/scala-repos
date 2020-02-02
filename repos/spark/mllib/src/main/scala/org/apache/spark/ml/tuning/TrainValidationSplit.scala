@@ -165,9 +165,8 @@ class TrainValidationSplitModel private[ml] (
   }
 
   @Since("1.5.0")
-  override def transformSchema(schema: StructType): StructType = {
+  override def transformSchema(schema: StructType): StructType =
     bestModel.transformSchema(schema)
-  }
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): TrainValidationSplitModel = {

@@ -93,7 +93,7 @@ abstract class Expression extends TreeNode[Expression] {
     * @param ctx a [[CodegenContext]]
     * @return [[ExprCode]]
     */
-  def gen(ctx: CodegenContext): ExprCode = {
+  def gen(ctx: CodegenContext): ExprCode =
     ctx.subExprEliminationExprs
       .get(this)
       .map { subExprState =>
@@ -115,7 +115,6 @@ abstract class Expression extends TreeNode[Expression] {
           ve
         }
       }
-  }
 
   /**
     * Returns Java source code that can be compiled to evaluate this expression.
@@ -235,11 +234,10 @@ trait Unevaluable extends Expression {
   * `ScalaUDF`, `ScalaUDAF`, and object expressions like `MapObjects` and `Invoke`.
   */
 trait NonSQLExpression extends Expression {
-  override def sql: String = {
+  override def sql: String =
     transform {
       case a: Attribute => new PrettyAttribute(a)
     }.toString
-  }
 }
 
 /**
@@ -324,11 +322,8 @@ abstract class UnaryExpression extends Expression {
   protected def defineCodeGen(
       ctx: CodegenContext,
       ev: ExprCode,
-      f: String => String): String = {
-    nullSafeCodeGen(ctx, ev, eval => {
-      s"${ev.value} = ${f(eval)};"
-    })
-  }
+      f: String => String): String =
+    nullSafeCodeGen(ctx, ev, eval => s"${ev.value} = ${f(eval)};")
 
   /**
     * Called by unary expressions to generate a code block that returns null if its parent returns
@@ -415,11 +410,11 @@ abstract class BinaryExpression extends Expression {
   protected def defineCodeGen(
       ctx: CodegenContext,
       ev: ExprCode,
-      f: (String, String) => String): String = {
-    nullSafeCodeGen(ctx, ev, (eval1, eval2) => {
-      s"${ev.value} = ${f(eval1, eval2)};"
-    })
-  }
+      f: (String, String) => String): String =
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (eval1, eval2) => s"${ev.value} = ${f(eval1, eval2)};")
 
   /**
     * Short hand for generating binary evaluation code.
@@ -488,7 +483,7 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
 
   override def inputTypes: Seq[AbstractDataType] = Seq(inputType, inputType)
 
-  override def checkInputDataTypes(): TypeCheckResult = {
+  override def checkInputDataTypes(): TypeCheckResult =
     // First check whether left and right have the same type, then check if the type is acceptable.
     if (left.dataType != right.dataType) {
       TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
@@ -500,7 +495,6 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
     } else {
       TypeCheckResult.TypeCheckSuccess
     }
-  }
 
   override def sql: String = s"(${left.sql} $sqlOperator ${right.sql})"
 }
@@ -557,11 +551,11 @@ abstract class TernaryExpression extends Expression {
   protected def defineCodeGen(
       ctx: CodegenContext,
       ev: ExprCode,
-      f: (String, String, String) => String): String = {
-    nullSafeCodeGen(ctx, ev, (eval1, eval2, eval3) => {
-      s"${ev.value} = ${f(eval1, eval2, eval3)};"
-    })
-  }
+      f: (String, String, String) => String): String =
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (eval1, eval2, eval3) => s"${ev.value} = ${f(eval1, eval2, eval3)};")
 
   /**
     * Short hand for generating ternary evaluation code.

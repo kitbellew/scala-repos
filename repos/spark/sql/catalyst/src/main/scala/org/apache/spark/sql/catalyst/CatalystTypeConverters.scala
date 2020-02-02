@@ -39,7 +39,7 @@ object CatalystTypeConverters {
   // Since the map values can be mutable, we explicitly import scala.collection.Map at here.
   import scala.collection.Map
 
-  private def isPrimitive(dataType: DataType): Boolean = {
+  private def isPrimitive(dataType: DataType): Boolean =
     dataType match {
       case BooleanType => true
       case ByteType    => true
@@ -50,7 +50,6 @@ object CatalystTypeConverters {
       case DoubleType  => true
       case _           => false
     }
-  }
 
   private def getConverterForType(
       dataType: DataType): CatalystTypeConverter[Any, Any, Any] = {
@@ -90,7 +89,7 @@ object CatalystTypeConverters {
       * Converts a Scala type to its Catalyst equivalent while automatically handling nulls
       * and Options.
       */
-    final def toCatalyst(@Nullable maybeScalaValue: Any): CatalystType = {
+    final def toCatalyst(@Nullable maybeScalaValue: Any): CatalystType =
       if (maybeScalaValue == null) {
         null.asInstanceOf[CatalystType]
       } else if (maybeScalaValue.isInstanceOf[Option[ScalaInputType]]) {
@@ -103,15 +102,13 @@ object CatalystTypeConverters {
       } else {
         toCatalystImpl(maybeScalaValue.asInstanceOf[ScalaInputType])
       }
-    }
 
     /**
       * Given a Catalyst row, convert the value at column `column` to its Scala equivalent.
       */
-    final def toScala(row: InternalRow, column: Int): ScalaOutputType = {
+    final def toScala(row: InternalRow, column: Int): ScalaOutputType =
       if (row.isNullAt(column)) null.asInstanceOf[ScalaOutputType]
       else toScalaImpl(row, column)
-    }
 
     /**
       * Convert a Catalyst value to its Scala equivalent.
@@ -145,9 +142,8 @@ object CatalystTypeConverters {
     // toCatalyst (it calls toCatalystImpl) will do null check.
     override def toCatalystImpl(scalaValue: A): Any = udt.serialize(scalaValue)
 
-    override def toScala(catalystValue: Any): A = {
+    override def toScala(catalystValue: Any): A =
       if (catalystValue == null) null else udt.deserialize(catalystValue)
-    }
 
     override def toScalaImpl(row: InternalRow, column: Int): A =
       toScala(row.get(column, udt.sqlType))
@@ -159,7 +155,7 @@ object CatalystTypeConverters {
 
     private[this] val elementConverter = getConverterForType(elementType)
 
-    override def toCatalystImpl(scalaValue: Any): ArrayData = {
+    override def toCatalystImpl(scalaValue: Any): ArrayData =
       scalaValue match {
         case a: Array[_] =>
           new GenericArrayData(a.map(elementConverter.toCatalyst))
@@ -175,21 +171,19 @@ object CatalystTypeConverters {
           }
           new GenericArrayData(convertedIterable.toArray)
       }
-    }
 
-    override def toScala(catalystValue: ArrayData): Seq[Any] = {
+    override def toScala(catalystValue: ArrayData): Seq[Any] =
       if (catalystValue == null) {
         null
       } else if (isPrimitive(elementType)) {
         catalystValue.toArray[Any](elementType)
       } else {
         val result = new Array[Any](catalystValue.numElements())
-        catalystValue.foreach(elementType, (i, e) => {
-          result(i) = elementConverter.toScala(e)
-        })
+        catalystValue.foreach(
+          elementType,
+          (i, e) => result(i) = elementConverter.toScala(e))
         result
       }
-    }
 
     override def toScalaImpl(row: InternalRow, column: Int): Seq[Any] =
       toScala(row.getArray(column))
@@ -231,7 +225,7 @@ object CatalystTypeConverters {
         ArrayBasedMapData(convertedKeys, convertedValues)
     }
 
-    override def toScala(catalystValue: MapData): Map[Any, Any] = {
+    override def toScala(catalystValue: MapData): Map[Any, Any] =
       if (catalystValue == null) {
         null
       } else {
@@ -245,7 +239,6 @@ object CatalystTypeConverters {
 
         convertedKeys.zip(convertedValues).toMap
       }
-    }
 
     override def toScalaImpl(row: InternalRow, column: Int): Map[Any, Any] =
       toScala(row.getMap(column))
@@ -280,7 +273,7 @@ object CatalystTypeConverters {
           new GenericInternalRow(ar)
       }
 
-    override def toScala(row: InternalRow): Row = {
+    override def toScala(row: InternalRow): Row =
       if (row == null) {
         null
       } else {
@@ -292,7 +285,6 @@ object CatalystTypeConverters {
         }
         new GenericRowWithSchema(ar, structType)
       }
-    }
 
     override def toScalaImpl(row: InternalRow, column: Int): Row =
       toScala(row.getStruct(column, structType.size))
@@ -346,10 +338,9 @@ object CatalystTypeConverters {
         null
       }
     }
-    override def toScala(catalystValue: Decimal): JavaBigDecimal = {
+    override def toScala(catalystValue: Decimal): JavaBigDecimal =
       if (catalystValue == null) null
       else catalystValue.toJavaBigDecimal
-    }
     override def toScalaImpl(row: InternalRow, column: Int): JavaBigDecimal =
       row
         .getDecimal(column, dataType.precision, dataType.scale)
@@ -402,7 +393,7 @@ object CatalystTypeConverters {
     * Typical use case would be converting a collection of rows that have the same schema. You will
     * call this function once to get a converter, and apply it to every row.
     */
-  private[sql] def createToCatalystConverter(dataType: DataType): Any => Any = {
+  private[sql] def createToCatalystConverter(dataType: DataType): Any => Any =
     if (isPrimitive(dataType)) {
       // Although the `else` branch here is capable of handling inbound conversion of primitives,
       // we add some special-case handling for those types here. The motivation for this relates to
@@ -411,31 +402,28 @@ object CatalystTypeConverters {
       // will be monomorphic instead of polymorphic. In microbenchmarks, this actually resulted in
       // a measurable performance impact. Note that this optimization will be unnecessary if we
       // use code generation to construct Scala Row -> Catalyst Row converters.
-      def convert(maybeScalaValue: Any): Any = {
+      def convert(maybeScalaValue: Any): Any =
         if (maybeScalaValue.isInstanceOf[Option[Any]]) {
           maybeScalaValue.asInstanceOf[Option[Any]].orNull
         } else {
           maybeScalaValue
         }
-      }
       convert
     } else {
       getConverterForType(dataType).toCatalyst
     }
-  }
 
   /**
     * Creates a converter function that will convert Catalyst types to Scala type.
     * Typical use case would be converting a collection of rows that have the same schema. You will
     * call this function once to get a converter, and apply it to every row.
     */
-  private[sql] def createToScalaConverter(dataType: DataType): Any => Any = {
+  private[sql] def createToScalaConverter(dataType: DataType): Any => Any =
     if (isPrimitive(dataType)) {
       identity
     } else {
       getConverterForType(dataType).toScala
     }
-  }
 
   /**
     *  Converts Scala objects to Catalyst rows / types.
@@ -476,7 +464,6 @@ object CatalystTypeConverters {
     * This method is slow, and for batch conversion you should be using converter
     * produced by createToScalaConverter.
     */
-  def convertToScala(catalystValue: Any, dataType: DataType): Any = {
+  def convertToScala(catalystValue: Any, dataType: DataType): Any =
     createToScalaConverter(dataType)(catalystValue)
-  }
 }

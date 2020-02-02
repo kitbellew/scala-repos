@@ -90,7 +90,7 @@ object TraceId {
   /**
     * Deserialize a TraceId from an array of bytes.
     */
-  def deserialize(bytes: Array[Byte]): Try[TraceId] = {
+  def deserialize(bytes: Array[Byte]): Try[TraceId] =
     if (bytes.length != 32) {
       Throw(new IllegalArgumentException("Expected 32 bytes"))
     } else {
@@ -112,7 +112,6 @@ object TraceId {
         flags)
       Return(traceId)
     }
-  }
 }
 
 /**

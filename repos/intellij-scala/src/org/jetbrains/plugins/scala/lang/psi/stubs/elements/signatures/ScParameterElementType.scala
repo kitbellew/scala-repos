@@ -15,7 +15,6 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameter
 class ScParameterElementType
     extends ScParamElementType[ScParameter]("parameter") {
 
-  def createPsi(stub: ScParameterStub): ScParameter = {
+  def createPsi(stub: ScParameterStub): ScParameter =
     new ScParameterImpl(stub)
-  }
 }

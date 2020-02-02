@@ -84,7 +84,7 @@ class MessageCompressionTest extends JUnitSuite {
       messageSet.sizeInBytes)
   }
 
-  def isSnappyAvailable: Boolean = {
+  def isSnappyAvailable: Boolean =
     try {
       new org.xerial.snappy.SnappyOutputStream(new ByteArrayOutputStream())
       true
@@ -92,14 +92,12 @@ class MessageCompressionTest extends JUnitSuite {
       case e: UnsatisfiedLinkError          => false
       case e: org.xerial.snappy.SnappyError => false
     }
-  }
 
-  def isLZ4Available: Boolean = {
+  def isLZ4Available: Boolean =
     try {
       new net.jpountz.lz4.LZ4BlockOutputStream(new ByteArrayOutputStream())
       true
     } catch {
       case e: UnsatisfiedLinkError => false
     }
-  }
 }

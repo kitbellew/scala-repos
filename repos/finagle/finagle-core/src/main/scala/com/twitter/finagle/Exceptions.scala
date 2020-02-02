@@ -178,12 +178,11 @@ class NoBrokersAvailableException(
 class CancelledRequestException(cause: Throwable)
     extends RequestException(cause) {
   def this() = this(null)
-  override def exceptionMessage = {
+  override def exceptionMessage =
     if (cause == null)
       "request cancelled"
     else
       "request cancelled due to " + cause
-  }
 }
 
 /**
@@ -247,7 +246,7 @@ class NotShardableException extends NotServableException
 class ShardNotAvailableException extends NotServableException
 
 object ChannelException {
-  def apply(cause: Throwable, remoteAddress: SocketAddress) = {
+  def apply(cause: Throwable, remoteAddress: SocketAddress) =
     cause match {
       case exc: ChannelException => exc
       case _: java.net.ConnectException =>
@@ -265,7 +264,6 @@ object ChannelException {
         new ConnectionFailedException(cause, remoteAddress)
       case e => new UnknownChannelException(cause, remoteAddress)
     }
-  }
 }
 
 /**

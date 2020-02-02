@@ -21,12 +21,11 @@ class ScBlockExprImpl(text: CharSequence)
     with ScBlockExpr {
 
   //todo: bad architecture to have it duplicated here, as ScBlockExprImpl is not instance of ScalaPsiElementImpl
-  override def getContext: PsiElement = {
+  override def getContext: PsiElement =
     context match {
       case null => super.getContext
       case _    => context
     }
-  }
 
   override def toString: String = "BlockExpression"
 
@@ -56,9 +55,8 @@ class ScBlockExprImpl(text: CharSequence)
     null
   }
 
-  override def accept(visitor: ScalaElementVisitor) = {
+  override def accept(visitor: ScalaElementVisitor) =
     visitor.visitBlockExpression(this)
-  }
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {

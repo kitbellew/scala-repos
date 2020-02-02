@@ -98,15 +98,14 @@ final class Bucketizer(override val uid: String)
     SchemaUtils.appendColumn(schema, prepOutputField(schema))
   }
 
-  override def copy(extra: ParamMap): Bucketizer = {
+  override def copy(extra: ParamMap): Bucketizer =
     defaultCopy[Bucketizer](extra).setParent(parent)
-  }
 }
 
 object Bucketizer extends DefaultParamsReadable[Bucketizer] {
 
   /** We require splits to be of length >= 3 and to be in strictly increasing order. */
-  private[feature] def checkSplits(splits: Array[Double]): Boolean = {
+  private[feature] def checkSplits(splits: Array[Double]): Boolean =
     if (splits.length < 3) {
       false
     } else {
@@ -118,7 +117,6 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
       }
       true
     }
-  }
 
   /**
     * Binary searching in several buckets to place each data point.
@@ -126,7 +124,7 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
     */
   private[feature] def binarySearchForBuckets(
       splits: Array[Double],
-      feature: Double): Double = {
+      feature: Double): Double =
     if (feature == splits.last) {
       splits.length - 2
     } else {
@@ -145,7 +143,6 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
         }
       }
     }
-  }
 
   @Since("1.6.0")
   override def load(path: String): Bucketizer = super.load(path)

@@ -14,8 +14,7 @@ object EvaluateConfigurationsOriginal {
 
   def splitExpressions(
       file: File,
-      lines: Seq[String]): (Seq[(String, Int)], Seq[(String, LineRange)]) = {
+      lines: Seq[String]): (Seq[(String, Int)], Seq[(String, LineRange)]) =
     EvaluateConfigurations.splitExpressions(lines)
-  }
 
 }

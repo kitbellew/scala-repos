@@ -78,9 +78,8 @@ object Cache {
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
   def set(key: String, value: Any, expiration: Duration = Duration.Inf)(
-      implicit app: Application): Unit = {
+      implicit app: Application): Unit =
     cacheApi.set(key, value, expiration)
-  }
 
   /**
     * Set a value into the cache.
@@ -91,9 +90,8 @@ object Cache {
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
   def set(key: String, value: Any, expiration: Int)(
-      implicit app: Application): Unit = {
+      implicit app: Application): Unit =
     set(key, value, intToDuration(expiration))
-  }
 
   /**
     * Retrieve a value from the cache.
@@ -101,9 +99,8 @@ object Cache {
     * @param key Item key.
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
-  def get(key: String)(implicit app: Application): Option[Any] = {
+  def get(key: String)(implicit app: Application): Option[Any] =
     cacheApi.get[Any](key)
-  }
 
   /**
     * Retrieve a value from the cache, or set it from a default function.
@@ -114,9 +111,8 @@ object Cache {
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
   def getOrElse[A](key: String, expiration: Duration = Duration.Inf)(
-      orElse: => A)(implicit app: Application, ct: ClassTag[A]): A = {
+      orElse: => A)(implicit app: Application, ct: ClassTag[A]): A =
     cacheApi.getOrElse(key, expiration)(orElse)
-  }
 
   /**
     * Retrieve a value from the cache, or set it from a default function.
@@ -127,9 +123,8 @@ object Cache {
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
   def getOrElse[A](key: String, expiration: Int)(
-      orElse: => A)(implicit app: Application, ct: ClassTag[A]): A = {
+      orElse: => A)(implicit app: Application, ct: ClassTag[A]): A =
     getOrElse(key, intToDuration(expiration))(orElse)
-  }
 
   /**
     * Retrieve a value from the cache for the given type
@@ -139,14 +134,12 @@ object Cache {
     */
   @deprecated("Inject CacheApi into your component", "2.5.0")
   def getAs[T](
-      key: String)(implicit app: Application, ct: ClassTag[T]): Option[T] = {
+      key: String)(implicit app: Application, ct: ClassTag[T]): Option[T] =
     cacheApi.get[T](key)
-  }
 
   @deprecated("Inject CacheApi into your component", "2.5.0")
-  def remove(key: String)(implicit app: Application): Unit = {
+  def remove(key: String)(implicit app: Application): Unit =
     cacheApi.remove(key)
-  }
 }
 
 /**
@@ -165,9 +158,8 @@ trait EhCacheComponents {
   /**
     * Use this to create with the given name.
     */
-  def cacheApi(name: String): CacheApi = {
+  def cacheApi(name: String): CacheApi =
     new EhCacheApi(NamedEhCacheProvider.getNamedCache(name, ehCacheManager))
-  }
 
   lazy val defaultCacheApi: CacheApi = cacheApi("play")
 }
@@ -187,9 +179,8 @@ class EhCacheModule extends Module {
       configuration.underlying.getStringList("play.cache.bindCaches").toSeq
 
     // Creates a named cache qualifier
-    def named(name: String): NamedCache = {
+    def named(name: String): NamedCache =
       new NamedCacheImpl(name)
-    }
 
     // bind a cache with the given name
     def bindCache(name: String) = {
@@ -303,7 +294,7 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
     cache.put(element)
   }
 
-  def get[T](key: String)(implicit ct: ClassTag[T]): Option[T] = {
+  def get[T](key: String)(implicit ct: ClassTag[T]): Option[T] =
     Option(cache.get(key))
       .map(_.getObjectValue)
       .filter { v =>
@@ -311,18 +302,14 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
         ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
       }
       .asInstanceOf[Option[T]]
-  }
 
-  def getOrElse[A: ClassTag](key: String, expiration: Duration)(
-      orElse: => A) = {
+  def getOrElse[A: ClassTag](key: String, expiration: Duration)(orElse: => A) =
     get[A](key).getOrElse {
       val value = orElse
       set(key, value, expiration)
       value
     }
-  }
 
-  def remove(key: String) = {
+  def remove(key: String) =
     cache.remove(key)
-  }
 }

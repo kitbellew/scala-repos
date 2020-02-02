@@ -225,7 +225,7 @@ object Retries {
       statsReceiver: StatsReceiver,
       requeuesCounter: Counter,
       next: ServiceFactory[Req, Rep]
-  ): ServiceFactory[Req, Rep] = {
+  ): ServiceFactory[Req, Rep] =
     new ServiceFactoryProxy(next) {
       // We define the gauge inside of the ServiceFactory so that their lifetimes
       // are tied together.
@@ -284,6 +284,5 @@ object Retries {
       }
 
     }
-  }
 
 }

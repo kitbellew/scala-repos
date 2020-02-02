@@ -295,7 +295,7 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
     }
 
     class Transformer extends self.Transformer {
-      override def transform(tree: Tree): Tree = {
+      override def transform(tree: Tree): Tree =
         if (leaveAlone != null && leaveAlone(tree))
           tree
         else
@@ -355,7 +355,6 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                 dupl.clearType()
             }
           }
-      }
     }
 
     def transform(x: Tree): Tree = {

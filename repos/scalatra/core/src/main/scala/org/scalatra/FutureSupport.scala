@@ -46,13 +46,12 @@ trait FutureSupport extends AsyncSupport {
     classOf[Future[_]].isAssignableFrom(result.getClass) ||
       classOf[AsyncResult].isAssignableFrom(result.getClass)
 
-  override protected def renderResponse(actionResult: Any): Unit = {
+  override protected def renderResponse(actionResult: Any): Unit =
     actionResult match {
       case r: AsyncResult => handleFuture(r.is, r.timeout)
       case f: Future[_]   => handleFuture(f, asyncTimeout)
       case a              => super.renderResponse(a)
     }
-  }
 
   private[this] def handleFuture(f: Future[_], timeout: Duration): Unit = {
     val gotResponseAlready = new AtomicBoolean(false)
@@ -60,7 +59,7 @@ trait FutureSupport extends AsyncSupport {
     if (timeout.isFinite()) context.setTimeout(timeout.toMillis)
     else context.setTimeout(-1)
 
-    def renderFutureResult(f: Future[_]): Unit = {
+    def renderFutureResult(f: Future[_]): Unit =
       f onComplete {
         // Loop until we have a non-future result
         case Success(f2: Future[_])  => renderFutureResult(f2)
@@ -92,11 +91,10 @@ trait FutureSupport extends AsyncSupport {
           }
         }
       }
-    }
 
     context addListener new AsyncListener {
 
-      def onTimeout(event: AsyncEvent): Unit = {
+      def onTimeout(event: AsyncEvent): Unit =
         onAsyncEvent(event) {
           if (gotResponseAlready.compareAndSet(false, true)) {
             renderHaltException(
@@ -104,11 +102,10 @@ trait FutureSupport extends AsyncSupport {
             event.getAsyncContext.complete()
           }
         }
-      }
 
       def onComplete(event: AsyncEvent): Unit = {}
 
-      def onError(event: AsyncEvent): Unit = {
+      def onError(event: AsyncEvent): Unit =
         onAsyncEvent(event) {
           if (gotResponseAlready.compareAndSet(false, true)) {
             event.getThrowable match {
@@ -125,7 +122,6 @@ trait FutureSupport extends AsyncSupport {
             }
           }
         }
-      }
 
       def onStartAsync(event: AsyncEvent): Unit = {}
     }

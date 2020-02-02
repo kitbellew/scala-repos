@@ -111,22 +111,19 @@ class CodegenContext {
   def addMutableState(
       javaType: String,
       variableName: String,
-      initCode: String): Unit = {
+      initCode: String): Unit =
     mutableStates += ((javaType, variableName, initCode))
-  }
 
-  def declareMutableStates(): String = {
+  def declareMutableStates(): String =
     mutableStates
       .map {
         case (javaType, variableName, _) =>
           s"private $javaType $variableName;"
       }
       .mkString("\n")
-  }
 
-  def initMutableStates(): String = {
+  def initMutableStates(): String =
     mutableStates.map(_._3).mkString("\n")
-  }
 
   /**
     * Holding all the functions those will be added into generated class.
@@ -134,9 +131,8 @@ class CodegenContext {
   val addedFunctions: mutable.Map[String, String] =
     mutable.Map.empty[String, String]
 
-  def addNewFunction(funcName: String, funcCode: String): Unit = {
+  def addNewFunction(funcName: String, funcCode: String): Unit =
     addedFunctions += ((funcName, funcCode))
-  }
 
   /**
     * Holds expressions that are equivalent. Used to perform subexpression elimination
@@ -163,9 +159,8 @@ class CodegenContext {
   // The collection of sub-expression result resetting methods that need to be called on each row.
   val subexprFunctions = mutable.ArrayBuffer.empty[String]
 
-  def declareAddedFunctions(): String = {
+  def declareAddedFunctions(): String =
     addedFunctions.map { case (funcName, funcCode) => funcCode }.mkString("\n")
-  }
 
   final val JAVA_BOOLEAN = "boolean"
   final val JAVA_BYTE = "byte"
@@ -260,7 +255,7 @@ class CodegenContext {
       dataType: DataType,
       ordinal: Int,
       ev: ExprCode,
-      nullable: Boolean): String = {
+      nullable: Boolean): String =
     if (nullable) {
       // Can't call setNullAt on DecimalType, because we need to keep the offset
       if (dataType.isInstanceOf[DecimalType]) {
@@ -283,7 +278,6 @@ class CodegenContext {
     } else {
       s"""${setColumn(row, dataType, ordinal, ev.value)};"""
     }
-  }
 
   /**
     * Returns the name used in accessor and setter for a Java primitive type.
@@ -478,8 +472,7 @@ class CodegenContext {
     * @param isNull the code to check if the input is null.
     * @param execute the code that should only be executed when the input is not null.
     */
-  def nullSafeExec(nullable: Boolean, isNull: String)(
-      execute: String): String = {
+  def nullSafeExec(nullable: Boolean, isNull: String)(execute: String): String =
     if (nullable) {
       s"""
         if (!$isNull) {
@@ -489,7 +482,6 @@ class CodegenContext {
     } else {
       "\n" + execute
     }
-  }
 
   /**
     * List of java data types that have special accessors and setters in [[InternalRow]].
@@ -565,7 +557,7 @@ class CodegenContext {
     // elimination.
     val commonExprs =
       equivalentExpressions.getAllEquivalentExprs.filter(_.size > 1)
-    commonExprs.foreach(e => {
+    commonExprs.foreach { e =>
       val expr = e.head
       val fnName = freshName("evalExpr")
       val isNull = s"${fnName}IsNull"
@@ -609,7 +601,7 @@ class CodegenContext {
       subexprFunctions += s"$fnName($INPUT_ROW);"
       val state = SubExprEliminationState(isNull, value)
       e.foreach(subExprEliminationExprs.put(_, state))
-    })
+    }
   }
 
   /**
@@ -670,9 +662,8 @@ abstract class CodeGenerator[InType <: AnyRef, OutType <: AnyRef]
     * Create a new codegen context for expression evaluator, used to store those
     * expressions that don't support codegen
     */
-  def newCodeGenContext(): CodegenContext = {
+  def newCodeGenContext(): CodegenContext =
     new CodegenContext
-  }
 }
 
 object CodeGenerator extends Logging {
@@ -680,9 +671,8 @@ object CodeGenerator extends Logging {
   /**
     * Compile the Java source code into a Java class, using Janino.
     */
-  def compile(code: String): GeneratedClass = {
+  def compile(code: String): GeneratedClass =
     cache.get(code)
-  }
 
   /**
     * Compile the Java source code into a Java class, using Janino.

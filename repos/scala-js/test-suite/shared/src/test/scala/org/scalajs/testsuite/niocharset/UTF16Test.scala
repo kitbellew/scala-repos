@@ -162,8 +162,7 @@ class UTF16Test extends BaseUTF16Test(Charset.forName("UTF-16")) {
   }
 
   override protected def testEncode(in: CharBuffer)(
-      outParts: OutPart[ByteBuffer]*): Unit = {
+      outParts: OutPart[ByteBuffer]*): Unit =
     if (in.remaining == 0) super.testEncode(in)(outParts: _*)
     else super.testEncode(in)(BufferPart(BigEndianBOM) +: outParts: _*)
-  }
 }

@@ -275,10 +275,9 @@ class PrintWriterTest {
     def flushed: Boolean = _flushed
     def closed: Boolean = _closed
 
-    private def maybeThrow(): Unit = {
+    private def maybeThrow(): Unit =
       if (throwing)
         throw new IOException("MockStringWriter throws")
-    }
 
     private def writeOp[A](op: => A): A = {
       maybeThrow()

@@ -22,7 +22,7 @@ import java.util
 import scala.reflect.{classTag, ClassTag}
 
 private[spark] object CollectionsUtils {
-  def makeBinarySearch[K: Ordering: ClassTag]: (Array[K], K) => Int = {
+  def makeBinarySearch[K: Ordering: ClassTag]: (Array[K], K) => Int =
     // For primitive keys, we can use the natural ordering. Otherwise, use the Ordering comparator.
     classTag[K] match {
       case ClassTag.Float =>
@@ -59,5 +59,4 @@ private[spark] object CollectionsUtils {
         (l, x) =>
           util.Arrays.binarySearch(l.asInstanceOf[Array[AnyRef]], x, comparator)
     }
-  }
 }

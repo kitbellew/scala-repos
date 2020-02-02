@@ -49,14 +49,13 @@ abstract class Comment {
 
   /** A shorter version of the body. Either from `@shortDescription` or the
     *  first sentence of the body. */
-  def short: Inline = {
+  def short: Inline =
     shortDescription orElse body.summary match {
       case Some(s) =>
         closeHtmlTags(s)
       case _ =>
         Text("")
     }
-  }
 
   /** A list of authors. The empty list is used when no author is defined. */
   def authors: List[Body]

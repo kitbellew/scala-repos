@@ -10,7 +10,7 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
 trait WordSpecFileStructureViewTest extends ScalaTestTestCase {
   private val className = "WordSpecViewTest"
 
-  def addWordSpecViewTest(): Unit = {
+  def addWordSpecViewTest(): Unit =
     addFileToProject(
       className + ".scala",
       """
@@ -36,7 +36,6 @@ trait WordSpecFileStructureViewTest extends ScalaTestTestCase {
         |}
       """.stripMargin
     )
-  }
 
   def testWordSpecNormal(): Unit = {
     addWordSpecViewTest()

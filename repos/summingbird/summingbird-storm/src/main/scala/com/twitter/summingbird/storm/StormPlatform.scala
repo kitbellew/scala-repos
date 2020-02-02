@@ -367,14 +367,13 @@ abstract class Storm(
 
   }
 
-  private def dumpOptions: String = {
+  private def dumpOptions: String =
     options
       .map {
         case (k, opts) =>
           "%s -> [%s]".format(k, opts.opts.values.mkString(", "))
       }
       .mkString("\n || ")
-  }
 
   /**
     * The following operations are public.

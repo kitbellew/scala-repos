@@ -123,7 +123,7 @@ object DecompilerUtil {
 
   private def decompileInner(
       file: VirtualFile,
-      bytes: Array[Byte]): DecompilationResult = {
+      bytes: Array[Byte]): DecompilationResult =
     try {
       Decompiler.decompile(file.getName, bytes) match {
         case Some((sourceFileName, decompiledSourceText)) =>
@@ -146,7 +146,6 @@ object DecompilerUtil {
           s"Error during decompiling $file: ${t.getMessage}. Stacktrace is suppressed.")
         new DecompilationResult(isScala = false, "", file.getTimeStamp)
     }
-  }
 
   object Opcodes {
     val iconst_0 = 0x03.toByte

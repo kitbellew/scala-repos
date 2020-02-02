@@ -11,14 +11,13 @@ import scala.reflect.ClassTag
 
 object ScalaErrorHandling extends PlaySpecification with WsTestClient {
 
-  def fakeApp[A](implicit ct: ClassTag[A]) = {
+  def fakeApp[A](implicit ct: ClassTag[A]) =
     GuiceApplicationBuilder()
       .configure("play.http.errorHandler" -> ct.runtimeClass.getName)
       .routes {
         case (_, "/error") => Action(_ => throw new RuntimeException("foo"))
       }
       .build()
-  }
 
   "scala error handling" should {
     "allow providing a custom error handler" in new WithServer(
@@ -61,17 +60,15 @@ package root {
     def onClientError(
         request: RequestHeader,
         statusCode: Int,
-        message: String) = {
+        message: String) =
       Future.successful(
         Status(statusCode)("A client error occurred: " + message)
       )
-    }
 
-    def onServerError(request: RequestHeader, exception: Throwable) = {
+    def onServerError(request: RequestHeader, exception: Throwable) =
       Future.successful(
         InternalServerError("A server error occurred: " + exception.getMessage)
       )
-    }
   }
 //#root
 }
@@ -96,17 +93,15 @@ package default {
 
     override def onProdServerError(
         request: RequestHeader,
-        exception: UsefulException) = {
+        exception: UsefulException) =
       Future.successful(
         InternalServerError("A server error occurred: " + exception.getMessage)
       )
-    }
 
-    override def onForbidden(request: RequestHeader, message: String) = {
+    override def onForbidden(request: RequestHeader, message: String) =
       Future.successful(
         Forbidden("You're not allowed to access this resource.")
       )
-    }
   }
 //#default
 }

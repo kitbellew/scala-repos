@@ -82,7 +82,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     scalaLibraryLoader.loadScala(scalaSdkVersion)
   }
 
-  override protected def getTestProjectJdk: Sdk = {
+  override protected def getTestProjectJdk: Sdk =
 //    val jdkTable = JavaAwareProjectJdkTableImpl.getInstanceEx
 //    if (scalaVersion.startsWith("2.12")) {
 //      DebuggerTestUtil.findJdk8()
@@ -91,7 +91,6 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
 //      jdkTable.getInternalJdk
 //    }
     DebuggerTestUtil.findJdk8()
-  }
 
   protected def forceFSRescan() = BuildManager.getInstance.clearState(myProject)
 
@@ -193,9 +192,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       StringUtil.convertLineSeparators(text))
   }
 
-  protected def getSourceRootDir: VirtualFile = {
+  protected def getSourceRootDir: VirtualFile =
     getBaseDir.findChild("src")
-  }
 
   protected def saveProject(): Unit = {
     val applicationEx = ApplicationManagerEx.getApplicationEx

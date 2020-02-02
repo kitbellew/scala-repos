@@ -36,7 +36,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
       protocolId: String,
       locationData: String,
       project: Project,
-      scope: GlobalSearchScope): List[Location[_ <: PsiElement]] = {
+      scope: GlobalSearchScope): List[Location[_ <: PsiElement]] =
     protocolId match {
       case "scala" =>
         locationData match {
@@ -120,7 +120,6 @@ class ScalaTestLocationProvider extends SMTestLocator {
         res
       case _ => new ArrayList[Location[_ <: PsiElement]]()
     }
-  }
 
   private def searchForClassByUnqualifiedName(
       project: Project,

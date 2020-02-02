@@ -65,14 +65,13 @@ class UnreachableCodeTest extends ClearAfterClass {
   }
 
   @Test
-  def eliminateNop(): Unit = {
+  def eliminateNop(): Unit =
     assertEliminateDead(
       // reachable, but removed anyway.
       Op(NOP).dead,
       Op(RETURN),
       Op(NOP).dead
     )
-  }
 
   @Test
   def eliminateBranchOver(): Unit = {
@@ -92,7 +91,7 @@ class UnreachableCodeTest extends ClearAfterClass {
   }
 
   @Test
-  def deadLabelsRemain(): Unit = {
+  def deadLabelsRemain(): Unit =
     assertEliminateDead(
       Op(RETURN),
       Jump(GOTO, Label(1)).dead,
@@ -100,20 +99,18 @@ class UnreachableCodeTest extends ClearAfterClass {
       // will need a different opt to get rid of them
       Label(1)
     )
-  }
 
   @Test
-  def pushPopNotEliminated(): Unit = {
+  def pushPopNotEliminated(): Unit =
     assertEliminateDead(
       // not dead, visited by data flow analysis.
       Op(ACONST_NULL),
       Op(POP),
       Op(RETURN)
     )
-  }
 
   @Test
-  def nullnessNotConsidered(): Unit = {
+  def nullnessNotConsidered(): Unit =
     assertEliminateDead(
       Op(ACONST_NULL),
       Jump(IFNULL, Label(1)),
@@ -121,7 +118,6 @@ class UnreachableCodeTest extends ClearAfterClass {
       Label(1),
       Op(RETURN)
     )
-  }
 
   @Test
   def basicEliminationCompiler(): Unit = {

@@ -80,7 +80,6 @@ private[history] class HistoryPage(parent: HistoryServer)
     UIUtils.basicSparkPage(content, "History Server", true)
   }
 
-  private def makePageLink(showIncomplete: Boolean): String = {
+  private def makePageLink(showIncomplete: Boolean): String =
     UIUtils.prependBaseUri("/?" + "showIncomplete=" + showIncomplete)
-  }
 }

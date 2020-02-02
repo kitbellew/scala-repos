@@ -402,21 +402,18 @@ private[spark] object PythonRDD extends Logging {
   private val workerBroadcasts =
     new mutable.WeakHashMap[Socket, mutable.Set[Long]]()
 
-  def getWorkerBroadcasts(worker: Socket): mutable.Set[Long] = {
+  def getWorkerBroadcasts(worker: Socket): mutable.Set[Long] =
     synchronized {
       workerBroadcasts.getOrElseUpdate(worker, new mutable.HashSet[Long]())
     }
-  }
 
   /**
     * Return an RDD of values from an RDD of (Long, Array[Byte]), with preservePartitions=true
     *
     * This is useful for PySpark to have the partitioner after partitionBy()
     */
-  def valueOfPair(
-      pair: JavaPairRDD[Long, Array[Byte]]): JavaRDD[Array[Byte]] = {
+  def valueOfPair(pair: JavaPairRDD[Long, Array[Byte]]): JavaRDD[Array[Byte]] =
     pair.rdd.mapPartitions(it => it.map(_._2), true)
-  }
 
   /**
     * Adapter for calling SparkContext#runJob from Python.
@@ -446,9 +443,8 @@ private[spark] object PythonRDD extends Logging {
     *
     * @return the port number of a local socket which serves the data collected from this job.
     */
-  def collectAndServe[T](rdd: RDD[T]): Int = {
+  def collectAndServe[T](rdd: RDD[T]): Int =
     serveIterator(rdd.collect().iterator, s"serve RDD ${rdd.id}")
-  }
 
   def readRDDFromFile(
       sc: JavaSparkContext,
@@ -475,9 +471,8 @@ private[spark] object PythonRDD extends Logging {
 
   def readBroadcastFromFile(
       sc: JavaSparkContext,
-      path: String): Broadcast[PythonBroadcast] = {
+      path: String): Broadcast[PythonBroadcast] =
     sc.broadcast(new PythonBroadcast(path))
-  }
 
   def writeIteratorToStream[T](iter: Iterator[T], dataOut: DataOutputStream) {
 
@@ -776,12 +771,11 @@ private[spark] object PythonRDD extends Logging {
 
   private def getKeyValueTypes(
       keyClass: String,
-      valueClass: String): Option[(Class[_], Class[_])] = {
+      valueClass: String): Option[(Class[_], Class[_])] =
     for {
       k <- Option(keyClass)
       v <- Option(valueClass)
     } yield (Utils.classForName(k), Utils.classForName(v))
-  }
 
   private def getKeyValueConverters(
       keyConverterClass: String,
@@ -821,7 +815,7 @@ private[spark] object PythonRDD extends Logging {
       pyRDD: JavaRDD[Array[Byte]],
       batchSerialized: Boolean,
       path: String,
-      compressionCodecClass: String): Unit = {
+      compressionCodecClass: String): Unit =
     saveAsHadoopFile(
       pyRDD,
       batchSerialized,
@@ -833,7 +827,6 @@ private[spark] object PythonRDD extends Logging {
       null,
       new java.util.HashMap(),
       compressionCodecClass)
-  }
 
   /**
     * Output a Python RDD of key-value pairs to any Hadoop file system, using old Hadoop

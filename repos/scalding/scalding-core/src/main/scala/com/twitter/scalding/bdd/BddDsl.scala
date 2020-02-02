@@ -82,9 +82,8 @@ trait BddDsl extends FieldConversions with PipeOperationsConversions {
 
   case class TestCaseWhen(sources: List[TestSource], operation: PipeOperation) {
     def Then[OutputType](assertion: Buffer[OutputType] => Unit)(
-        implicit conv: TupleConverter[OutputType]): Unit = {
+        implicit conv: TupleConverter[OutputType]): Unit =
       CompleteTestCase(sources, operation, assertion).run()
-    }
   }
 
   case class CompleteTestCase[OutputType](

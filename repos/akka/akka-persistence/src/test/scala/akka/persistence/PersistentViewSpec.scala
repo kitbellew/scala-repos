@@ -16,7 +16,7 @@ object PersistentViewSpec {
       extends NamedPersistentActor(name) {
     def receiveCommand = {
       case msg ⇒
-        persist(msg) { m ⇒ probe ! s"${m}-${lastSequenceNr}" }
+        persist(msg) { m ⇒ probe ! s"$m-$lastSequenceNr" }
     }
 
     override def receiveRecover: Receive = {
@@ -53,7 +53,7 @@ object PersistentViewSpec {
         throw new TestException("boom")
 
       case payload if isPersistent ⇒
-        last = s"replicated-${payload}-${lastSequenceNr}"
+        last = s"replicated-$payload-$lastSequenceNr"
         probe ! last
 
     }
@@ -87,7 +87,7 @@ object PersistentViewSpec {
       case payload if isPersistent && shouldFailOn(payload) ⇒
         throw new TestException("boom")
       case payload ⇒
-        last = s"replicated-${payload}-${lastSequenceNr}"
+        last = s"replicated-$payload-$lastSequenceNr"
     }
 
     override def postRestart(reason: Throwable): Unit = {
@@ -110,7 +110,7 @@ object PersistentViewSpec {
 
     def receive = {
       case payload ⇒
-        probe ! s"replicated-${payload}-${lastSequenceNr}"
+        probe ! s"replicated-$payload-$lastSequenceNr"
     }
   }
 
@@ -122,7 +122,7 @@ object PersistentViewSpec {
     def receive = Actor.emptyBehavior
 
     context.become {
-      case payload ⇒ probe ! s"replicated-${payload}-${lastSequenceNr}"
+      case payload ⇒ probe ! s"replicated-$payload-$lastSequenceNr"
     }
   }
 
@@ -136,7 +136,7 @@ object PersistentViewSpec {
       case "unstash" ⇒
         unstashAll()
         context.become {
-          case msg ⇒ probe ! s"$msg-${lastSequenceNr}"
+          case msg ⇒ probe ! s"$msg-$lastSequenceNr"
         }
       case msg ⇒ stash()
     }
@@ -149,15 +149,15 @@ object PersistentViewSpec {
 
     def receive = {
       case payload if isPersistent ⇒
-        probe ! s"replicated-${payload}-${lastSequenceNr}"
-      case payload ⇒ probe ! s"normal-${payload}-${lastSequenceNr}"
+        probe ! s"replicated-$payload-$lastSequenceNr"
+      case payload ⇒ probe ! s"normal-$payload-$lastSequenceNr"
     }
   }
 
   private class SnapshottingPersistentView(name: String, probe: ActorRef)
       extends PersistentView {
     override val persistenceId: String = name
-    override val viewId: String = s"${name}-replicator"
+    override val viewId: String = s"$name-replicator"
 
     override def autoUpdateInterval: FiniteDuration =
       100.microseconds.dilated(context.system)
@@ -177,7 +177,7 @@ object PersistentViewSpec {
         last = snapshot
         probe ! last
       case payload ⇒
-        last = s"replicated-${payload}-${lastSequenceNr}"
+        last = s"replicated-$payload-$lastSequenceNr"
         probe ! last
     }
   }

@@ -54,7 +54,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       <text x="35px" y="42px">Removed</text>
     </svg></div>.toString.filter(_ != '\n')
 
-  private def makeStageEvent(stageInfos: Seq[StageInfo]): Seq[String] = {
+  private def makeStageEvent(stageInfos: Seq[StageInfo]): Seq[String] =
     stageInfos.map { stage =>
       val stageId = stage.stageId
       val attemptId = stage.attemptId
@@ -69,13 +69,13 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       val escapedName = Utility.escape(name)
       s"""
          |{
-         |  'className': 'stage job-timeline-object ${status}',
+         |  'className': 'stage job-timeline-object $status',
          |  'group': 'stages',
-         |  'start': new Date(${submissionTime}),
-         |  'end': new Date(${completionTime}),
+         |  'start': new Date($submissionTime),
+         |  'end': new Date($completionTime),
          |  'content': '<div class="job-timeline-content" data-toggle="tooltip"' +
          |   'data-placement="top" data-html="true"' +
-         |   'data-title="${Utility.escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
+         |   'data-title="${Utility.escape(escapedName)} (Stage $stageId.$attemptId)<br>' +
          |   'Status: ${status.toUpperCase}<br>' +
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
          |   '${if (status != "running") {
@@ -83,11 +83,10 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          } else {
            ""
          }}">' +
-         |    '${escapedName} (Stage ${stageId}.${attemptId})</div>',
+         |    '$escapedName (Stage $stageId.$attemptId)</div>',
          |}
        """.stripMargin
     }
-  }
 
   def makeExecutorEvent(
       executorUIDatas: HashMap[String, ExecutorUIData]): Seq[String] = {
@@ -102,9 +101,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
              |  'start': new Date(${event.startTime}),
              |  'content': '<div class="executor-event-content"' +
              |    'data-toggle="tooltip" data-placement="bottom"' +
-             |    'data-title="Executor ${executorId}<br>' +
+             |    'data-title="Executor $executorId<br>' +
              |    'Added at ${UIUtils.formatDate(new Date(event.startTime))}"' +
-             |    'data-html="true">Executor ${executorId} added</div>'
+             |    'data-html="true">Executor $executorId added</div>'
              |}
            """.stripMargin
         events += addedEvent
@@ -118,7 +117,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                |  'start': new Date(${event.finishTime.get}),
                |  'content': '<div class="executor-event-content"' +
                |    'data-toggle="tooltip" data-placement="bottom"' +
-               |    'data-title="Executor ${executorId}<br>' +
+               |    'data-title="Executor $executorId<br>' +
                |    'Removed at ${UIUtils.formatDate(
                  new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
@@ -126,7 +125,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                } else {
                  ""
                }}"' +
-               |    'data-html="true">Executor ${executorId} removed</div>'
+               |    'data-html="true">Executor $executorId removed</div>'
                |}
              """.stripMargin
           events += removedEvent
@@ -148,11 +147,11 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           |[
           |  {
           |    'id': 'executors',
-          |    'content': '<div>Executors</div>${EXECUTORS_LEGEND}',
+          |    'content': '<div>Executors</div>$EXECUTORS_LEGEND',
           |  },
           |  {
           |    'id': 'stages',
-          |    'content': '<div>Stages</div>${STAGES_LEGEND}',
+          |    'content': '<div>Stages</div>$STAGES_LEGEND',
           |  }
           |]
         """.stripMargin
@@ -177,7 +176,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       <script type="text/javascript">
       {
         Unparsed(
-          s"drawJobTimeline(${groupJsonArrayAsStr}, ${eventArrayAsStr}, ${appStartTime});")
+          s"drawJobTimeline($groupJsonArrayAsStr, $eventArrayAsStr, $appStartTime);")
       }
     </script>
   }

@@ -435,24 +435,22 @@ object ConsoleConsumer extends Logging {
       groupIdPassed = false
     }
 
-    def tryParse(parser: OptionParser, args: Array[String]) = {
+    def tryParse(parser: OptionParser, args: Array[String]) =
       try parser.parse(args: _*)
       catch {
         case e: OptionException =>
           Utils.croak(e.getMessage)
           null
       }
-    }
   }
 
-  def checkZkPathExists(zkUrl: String, path: String): Boolean = {
+  def checkZkPathExists(zkUrl: String, path: String): Boolean =
     try {
       val zk = ZkUtils.createZkClient(zkUrl, 30 * 1000, 30 * 1000)
       zk.exists(path)
     } catch {
       case _: Throwable => false
     }
-  }
 }
 
 class DefaultMessageFormatter extends MessageFormatter {

@@ -40,12 +40,11 @@ object RE {
   def apply[T](in: String, func: PartialFunction[(T, List[String]), T]) =
     new REDoer(in, Full(func))
 
-  implicit def matchResToBoolean(in: REMatcher): Boolean = {
+  implicit def matchResToBoolean(in: REMatcher): Boolean =
     in match {
       case null => false
       case _    => in.matches
     }
-  }
 
   class SuperString(val str: String) {
     def substring(re: REDoer[_]) = re.=~(str).matchStr
@@ -61,13 +60,11 @@ class REDoer[T](
     extends Function2[T, String, Box[T]] {
   val compiled = Pattern.compile(pattern)
 
-  def =~(other: String) = {
+  def =~(other: String) =
     new REMatcher(other, compiled)
-  }
 
-  def =~:(other: String) = {
+  def =~:(other: String) =
     new REMatcher(other, compiled)
-  }
 
   def apply(obj: T, other: String): Box[T] = {
     val ma = new REMatcher(other, compiled)

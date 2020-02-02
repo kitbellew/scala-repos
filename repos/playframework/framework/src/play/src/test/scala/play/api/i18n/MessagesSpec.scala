@@ -29,9 +29,8 @@ object MessagesSpec extends Specification {
     override protected def loadAllMessages = testMessages
   }
 
-  def translate(msg: String, lang: String, reg: String): Option[String] = {
+  def translate(msg: String, lang: String, reg: String): Option[String] =
     api.translate(msg, Nil)(Lang(lang, reg))
-  }
 
   def isDefinedAt(msg: String, lang: String, reg: String): Boolean =
     api.isDefinedAt(msg)(Lang(lang, reg))

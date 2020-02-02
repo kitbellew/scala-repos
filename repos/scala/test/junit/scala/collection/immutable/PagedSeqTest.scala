@@ -9,17 +9,15 @@ import org.junit.Assert._
 class PagedSeqTest {
   // should not NPE, and should equal the given Seq
   @Test
-  def test_SI6615(): Unit = {
+  def test_SI6615(): Unit =
     assertEquals(
       Seq('a'),
       PagedSeq.fromStrings(List.fill(5000)("a")).slice(4096, 4097))
-  }
 
   // should not NPE, and should be empty
   @Test
-  def test_SI9480(): Unit = {
+  def test_SI9480(): Unit =
     assertEquals(Seq(), PagedSeq.fromStrings(List("a")).slice(1))
-  }
 
   // Slices shouldn't read outside where they belong
   @Test

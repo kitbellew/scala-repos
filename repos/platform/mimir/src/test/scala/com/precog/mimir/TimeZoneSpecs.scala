@@ -44,18 +44,16 @@ trait TimeZoneSpecs[M[+_]]
   import library._
 
   val line = Line(1, 1, "")
-  def inputOp1(op: Op1, loadFrom: String) = {
+  def inputOp1(op: Op1, loadFrom: String) =
     dag.Operate(
       BuiltInFunction1Op(op),
       dag.AbsoluteLoad(Const(CString(loadFrom))(line))(line))(line)
-  }
 
-  def testEval(graph: DepGraph): Set[SEvent] = {
+  def testEval(graph: DepGraph): Set[SEvent] =
     consumeEval(graph, defaultEvaluationContext) match {
       case Success(results) => results
       case Failure(error)   => throw error
     }
-  }
 
   "changing time zones (homogenous case)" should {
     "change to the correct time zone" in {

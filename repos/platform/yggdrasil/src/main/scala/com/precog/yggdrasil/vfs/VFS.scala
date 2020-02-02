@@ -74,7 +74,7 @@ object VFSModule {
     def loop(
         stream: StreamT[M, CharBuffer],
         buf: ByteBuffer,
-        arr: Array[Byte]): StreamT[M, Array[Byte]] = {
+        arr: Array[Byte]): StreamT[M, Array[Byte]] =
       StreamT(stream.uncons map {
         case Some((cbuf, tail)) =>
           val result = encoder.encode(cbuf, buf, false)
@@ -94,7 +94,6 @@ object VFSModule {
             StreamT.Yield(Arrays.copyOf(arr, buf.position), StreamT.empty)
           }
       })
-    }
 
     val arr = new Array[Byte](bufferSize)
     loop(stream0, ByteBuffer.wrap(arr), arr)

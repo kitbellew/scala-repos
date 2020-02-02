@@ -22,9 +22,8 @@ object IntegrationTag extends Tag("integration")
   */
 trait IntegrationFunSuite extends FunSuite {
   override protected def test(testName: String, testTags: Tag*)(
-      testFun: => Unit): Unit = {
+      testFun: => Unit): Unit =
     super.test(testName, IntegrationTag +: testTags: _*)(testFun)
-  }
 }
 
 /**
@@ -77,10 +76,9 @@ class IntegrationHealthCheck(
 
   def afterDelay(delay: FiniteDuration, state: Boolean) {
     val item = HealthStatusChange(delay.fromNow, state)
-    def insert(ag: List[HealthStatusChange]): List[HealthStatusChange] = {
+    def insert(ag: List[HealthStatusChange]): List[HealthStatusChange] =
       if (ag.isEmpty || item.deadLine < ag.head.deadLine) item :: ag
       else ag.head :: insert(ag.tail)
-    }
     changes = insert(changes)
   }
 

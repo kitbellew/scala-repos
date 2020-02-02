@@ -17,13 +17,12 @@ private[flow] object OfferMatcherLaunchTokensActor {
   def props(
       conf: LaunchTokenConfig,
       taskStatusObservables: TaskStatusObservables,
-      offerMatcherManager: OfferMatcherManager): Props = {
+      offerMatcherManager: OfferMatcherManager): Props =
     Props(
       new OfferMatcherLaunchTokensActor(
         conf,
         taskStatusObservables,
         offerMatcherManager))
-  }
 }
 
 /**

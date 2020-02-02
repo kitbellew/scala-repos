@@ -180,13 +180,12 @@ private[yarn] class YarnAllocator(
     * A sequence of pending container requests at the given location that have not yet been
     * fulfilled.
     */
-  private def getPendingAtLocation(location: String): Seq[ContainerRequest] = {
+  private def getPendingAtLocation(location: String): Seq[ContainerRequest] =
     amClient
       .getMatchingRequests(RM_REQUEST_PRIORITY, location, resource)
       .asScala
       .flatMap(_.asScala)
       .toSeq
-  }
 
   /**
     * Request as many executors from the ResourceManager as needed to reach the desired total. If
@@ -363,12 +362,11 @@ private[yarn] class YarnAllocator(
     }
   }
 
-  private def hostStr(request: ContainerRequest): String = {
+  private def hostStr(request: ContainerRequest): String =
     Option(request.getNodes) match {
       case Some(nodes) => nodes.asScala.mkString(",")
       case None        => "Any"
     }
-  }
 
   /**
     * Creates a container request, handling the reflection required to use YARN features that were
@@ -377,7 +375,7 @@ private[yarn] class YarnAllocator(
   private def createContainerRequest(
       resource: Resource,
       nodes: Array[String],
-      racks: Array[String]): ContainerRequest = {
+      racks: Array[String]): ContainerRequest =
     nodeLabelConstructor
       .map { constructor =>
         constructor.newInstance(
@@ -390,7 +388,6 @@ private[yarn] class YarnAllocator(
       }
       .getOrElse(
         new ContainerRequest(resource, nodes, racks, RM_REQUEST_PRIORITY))
-  }
 
   /**
     * Handle containers granted by the RM by launching executors on them.
@@ -493,7 +490,7 @@ private[yarn] class YarnAllocator(
     * Launches executors in the allocated containers.
     */
   private def runAllocatedContainers(
-      containersToUse: ArrayBuffer[Container]): Unit = {
+      containersToUse: ArrayBuffer[Container]): Unit =
     for (container <- containersToUse) {
       numExecutorsRunning += 1
       assert(numExecutorsRunning <= targetNumExecutors)
@@ -535,7 +532,6 @@ private[yarn] class YarnAllocator(
         launcherPool.execute(executorRunnable)
       }
     }
-  }
 
   // Visible for testing.
   private[yarn] def processCompletedContainers(
@@ -569,7 +565,7 @@ private[yarn] class YarnAllocator(
             // Preemption is not the fault of the running tasks, since YARN preempts containers
             // merely to do resource sharing, and tasks that fail due to preempted executors could
             // just as easily finish on any other executor. See SPARK-8167.
-            (false, s"Container ${containerId}${onHostStr} was preempted.")
+            (false, s"Container $containerId$onHostStr was preempted.")
           // Should probably still count memory exceeded exit codes towards task failures
           case VMEM_EXCEEDED_EXIT_CODE =>
             (

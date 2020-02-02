@@ -177,9 +177,9 @@ object OneVsRestExample {
     val fprs =
       Range(0, numClasses).map(p => (p, metrics.falsePositiveRate(p.toDouble)))
 
-    println(s" Training Time ${trainingDuration} sec\n")
+    println(s" Training Time $trainingDuration sec\n")
 
-    println(s" Prediction Time ${predictionDuration} sec\n")
+    println(s" Prediction Time $predictionDuration sec\n")
 
     println(s" Confusion Matrix\n ${confusionMatrix.toString}\n")
 

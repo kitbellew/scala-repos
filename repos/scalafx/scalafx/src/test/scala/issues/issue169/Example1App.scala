@@ -39,7 +39,7 @@ import scalafx.collections.ObservableBuffer
 object Example1App extends App {
   val items: ObservableBuffer[String] = ObservableBuffer()
 
-  items.onChange((_, changes) => {
+  items.onChange { (_, changes) =>
     println(s"onChange(_, $changes")
     for (change <- changes)
       change match {
@@ -50,7 +50,7 @@ object Example1App extends App {
           println(s"  case Reorder: $change")
         case ObservableBuffer.Update(_, _) => println(s"  case Update: $change")
       }
-  })
+  }
 
   println("items += \"test\"")
   items += "test"

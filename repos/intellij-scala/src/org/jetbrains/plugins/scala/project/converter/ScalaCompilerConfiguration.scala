@@ -48,10 +48,9 @@ class ScalaCompilerConfiguration(
     rootElement.addContent(asJava(options))
   }
 
-  private def createOptionsElement(): Elem = {
+  private def createOptionsElement(): Elem =
     <component name="ScalaCompilerConfiguration">
       {defaultSettings.toXml}
       {profiles.map(_.toXml)}
     </component>
-  }
 }

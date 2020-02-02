@@ -293,7 +293,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     val hasDefaults =
       oneOverloadWithDefaults && methodHasDefaults(primaryConstructor)
 
-    def wrapTpeTree(idx: Int, argTpe: Type) = {
+    def wrapTpeTree(idx: Int, argTpe: Type) =
       if (hasDefaults) {
         val methodOpt = methodFrom(tpe.companion, s"apply$$default$$${idx + 1}")
           .orElse(
@@ -311,7 +311,6 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
         }
       } else
         (noneTpe, q"_root_.scala.None")
-    }
 
     val wrapTpeTrees = fieldsOf(tpe).zipWithIndex.map {
       case ((_, argTpe), idx) =>

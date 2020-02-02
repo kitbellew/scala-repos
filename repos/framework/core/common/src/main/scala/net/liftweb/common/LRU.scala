@@ -168,9 +168,8 @@ class LRUMap[K, V](
     * Override this method to implement a test to see if a particular
     * element can be expired from the cache.
     */
-  protected def canExpire(k: K, v: V): Boolean = {
+  protected def canExpire(k: K, v: V): Boolean =
     true
-  }
 
   /**
     * A mechanism for expiring elements from cache. This method can devolve into

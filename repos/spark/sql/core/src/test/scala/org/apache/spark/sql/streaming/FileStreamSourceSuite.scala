@@ -37,13 +37,12 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       tmp: File)
       extends AddData {
 
-    override def addData(): Offset = {
+    override def addData(): Offset =
       source.withBatchingLocked {
         val file = Utils.tempFileWith(new File(tmp, "text"))
         stringToFile(file, content).renameTo(new File(src, file.getName))
         source.currentOffset
       } + 1
-    }
   }
 
   case class AddParquetFileData(
@@ -53,14 +52,13 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       tmp: File)
       extends AddData {
 
-    override def addData(): Offset = {
+    override def addData(): Offset =
       source.withBatchingLocked {
         val file = Utils.tempFileWith(new File(tmp, "parquet"))
         content.toDS().toDF().write.parquet(file.getCanonicalPath)
         file.renameTo(new File(src, file.getName))
         source.currentOffset
       } + 1
-    }
   }
 
   /** Use `format` and `path` to create FileStreamSource via DataFrameReader */
@@ -367,7 +365,7 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
   }
 
   test("fault tolerance") {
-    def assertBatch(batch1: Option[Batch], batch2: Option[Batch]): Unit = {
+    def assertBatch(batch1: Option[Batch], batch2: Option[Batch]): Unit =
       (batch1, batch2) match {
         case (Some(b1), Some(b2)) =>
           assert(b1.end === b2.end)
@@ -375,7 +373,6 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
         case (None, None) =>
         case _            => fail(s"batch ($batch1) is not equal to batch ($batch2)")
       }
-    }
 
     val src = Utils.createTempDir("streaming.src")
     val tmp = Utils.createTempDir("streaming.tmp")
@@ -422,9 +419,9 @@ class FileStreamSourceStressTestSuite
 
     val textSource = createFileStreamSource("text", src.getCanonicalPath)
     val ds = textSource.toDS[String]().map(_.toInt + 1)
-    runStressTest(ds, data => {
-      AddTextFileData(textSource, data.mkString("\n"), src, tmp)
-    })
+    runStressTest(
+      ds,
+      data => AddTextFileData(textSource, data.mkString("\n"), src, tmp))
 
     Utils.deleteRecursively(src)
     Utils.deleteRecursively(tmp)

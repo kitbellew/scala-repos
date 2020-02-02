@@ -106,19 +106,16 @@ class MarathonFacade(
       (__ \ "version").formatNullable[String]
   )(ITEnrichedTask(_, _, _, _, _, _, _), unlift(ITEnrichedTask.unapply))
 
-  def isInBaseGroup(pathId: PathId): Boolean = {
+  def isInBaseGroup(pathId: PathId): Boolean =
     pathId.path.startsWith(baseGroup.path)
-  }
 
-  def requireInBaseGroup(pathId: PathId): Unit = {
+  def requireInBaseGroup(pathId: PathId): Unit =
     require(
       isInBaseGroup(pathId),
       s"pathId $pathId must be in baseGroup ($baseGroup)")
-  }
 
-  def marathonSendReceive: SendReceive = {
+  def marathonSendReceive: SendReceive =
     addHeader("Accept", "*/*") ~> sendReceive
-  }
 
   //app resource ----------------------------------------------
 
@@ -368,7 +365,7 @@ class MarathonFacade(
 
 object MarathonFacade {
   def extractDeploymentIds(
-      app: RestResult[AppDefinition]): scala.collection.Seq[String] = {
+      app: RestResult[AppDefinition]): scala.collection.Seq[String] =
     try {
       for (deployment <- (app.entityJson \ "deployments").as[JsArray].value)
         yield (deployment \ "id").as[String]
@@ -378,5 +375,4 @@ object MarathonFacade {
           s"while parsing:\n${app.entityPrettyJsonString}",
           e)
     }
-  }
 }

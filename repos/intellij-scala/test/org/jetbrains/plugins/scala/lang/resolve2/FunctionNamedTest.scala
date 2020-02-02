@@ -4,9 +4,8 @@ package org.jetbrains.plugins.scala.lang.resolve2
   * Pavel.Fatin, 02.02.2010
   */
 class FunctionNamedTest extends ResolveTestBase {
-  override def folderPath: String = {
+  override def folderPath: String =
     super.folderPath + "function/named/"
-  }
 
   def testClash1() = doTest()
   def testClash2() = doTest()

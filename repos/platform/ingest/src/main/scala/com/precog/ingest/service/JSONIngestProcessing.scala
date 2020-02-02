@@ -56,9 +56,8 @@ final class JSONIngestProcessing(
     with Logging {
 
   def forRequest(
-      request: HttpRequest[_]): ValidationNel[String, IngestProcessor] = {
+      request: HttpRequest[_]): ValidationNel[String, IngestProcessor] =
     Success(new IngestProcessor)
-  }
 
   case class IngestReport(ingested: Int, errors: Seq[(Int, String)])
   object IngestReport {
@@ -69,11 +68,10 @@ final class JSONIngestProcessing(
     def update(
         newParser: AsyncParser,
         newIngested: Int,
-        newErrors: Seq[(Int, String)] = Seq.empty) = {
+        newErrors: Seq[(Int, String)] = Seq.empty) =
       JSONParseState(
         newParser,
         IngestReport(report.ingested + newIngested, report.errors ++ newErrors))
-    }
   }
 
   object JSONParseState {
@@ -109,7 +107,7 @@ final class JSONIngestProcessing(
         def accumulate(
             state: JSONParseState,
             records: Vector[JValue],
-            stream: StreamT[Future, Array[Byte]]): Future[IngestReport] = {
+            stream: StreamT[Future, Array[Byte]]): Future[IngestReport] =
           stream.uncons.flatMap {
             case Some((bytes, rest)) =>
               val (parsed, updatedParser) =
@@ -159,7 +157,6 @@ final class JSONIngestProcessing(
                 IngestReport(0, errors).point[Future]
               }
           }
-        }
 
         accumulate(state, Vector.empty[JValue], stream)
       }
@@ -167,7 +164,7 @@ final class JSONIngestProcessing(
       def ingestUnbuffered(
           state: JSONParseState,
           stream: StreamT[Future, Array[Byte]],
-          streamRef: StreamRef): Future[JSONParseState] = {
+          streamRef: StreamRef): Future[JSONParseState] =
         stream.uncons.flatMap {
           case Some((bytes, rest)) =>
             // Dup and rewind to ensure we have something to parse
@@ -187,17 +184,15 @@ final class JSONIngestProcessing(
             val (parsed, finalParser) = state.parser(Done)
             ingestFinalBlock(parsed, finalParser, state, streamRef)
         }
-      }
 
       def ingestFinalBlock(
           parsed: AsyncParse,
           updatedParser: AsyncParser,
           state: JSONParseState,
-          streamRef: StreamRef) = {
+          streamRef: StreamRef) =
         ingestBlock(parsed, updatedParser, state, streamRef.terminate) {
           (_: JSONParseState).point[Future]
         }
-      }
 
       def partitionIndexed[A](as: Seq[A])(
           f: A => Boolean): (Seq[A], Seq[Int]) = {
@@ -218,7 +213,7 @@ final class JSONIngestProcessing(
           state: JSONParseState,
           streamRef: StreamRef)(
           continue: => JSONParseState => Future[JSONParseState])
-          : Future[JSONParseState] = {
+          : Future[JSONParseState] =
         (errorHandling: @unchecked) match {
           case IngestAllPossible =>
             val (toIngest, overLarge) =
@@ -285,7 +280,6 @@ final class JSONIngestProcessing(
               }
             }
         }
-      }
 
       errorHandling match {
         case StopOnFirstError =>

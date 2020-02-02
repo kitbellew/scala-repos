@@ -230,7 +230,6 @@ private[yarn] class AMDelegationTokenRenewer(
     lastCredentialsFileSuffix = nextSuffix
   }
 
-  def stop(): Unit = {
+  def stop(): Unit =
     delegationTokenRenewer.shutdown()
-  }
 }

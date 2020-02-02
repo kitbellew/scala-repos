@@ -52,9 +52,8 @@ class RDDInfo(
       bytesToString(diskSize))
   }
 
-  override def compare(that: RDDInfo): Int = {
+  override def compare(that: RDDInfo): Int =
     this.id - that.id
-  }
 }
 
 private[spark] object RDDInfo {

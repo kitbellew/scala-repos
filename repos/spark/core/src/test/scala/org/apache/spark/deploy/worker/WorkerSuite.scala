@@ -32,9 +32,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
 
   import org.apache.spark.deploy.DeployTestUtils._
 
-  def cmd(javaOpts: String*): Command = {
+  def cmd(javaOpts: String*): Command =
     Command("", Seq.empty, Map.empty, Seq.empty, Seq.empty, Seq(javaOpts: _*))
-  }
   def conf(opts: (String, String)*): SparkConf =
     new SparkConf(loadDefaults = false).setAll(opts)
 

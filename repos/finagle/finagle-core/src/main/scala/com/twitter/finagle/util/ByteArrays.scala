@@ -31,7 +31,7 @@ object ByteArrays {
   /**
     * Returns the eight bytes of `bytes` in big-endian order, starting at `i`.
     */
-  def get64be(bytes: Array[Byte], i: Int): Long = {
+  def get64be(bytes: Array[Byte], i: Int): Long =
     ((bytes(i) & 0xff).toLong << 56) |
       ((bytes(i + 1) & 0xff).toLong << 48) |
       ((bytes(i + 2) & 0xff).toLong << 40) |
@@ -40,5 +40,4 @@ object ByteArrays {
       ((bytes(i + 5) & 0xff).toLong << 16) |
       ((bytes(i + 6) & 0xff).toLong << 8) |
       (bytes(i + 7) & 0xff).toLong
-  }
 }

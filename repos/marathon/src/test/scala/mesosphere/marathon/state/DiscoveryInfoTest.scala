@@ -92,9 +92,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     JsonTestHelper.assertSerializationRoundtripWorks(f.discoveryInfoWithPort)
   }
 
-  private[this] def fromJson(json: String): DiscoveryInfo = {
+  private[this] def fromJson(json: String): DiscoveryInfo =
     Json.fromJson[DiscoveryInfo](Json.parse(json)).get
-  }
 
   test("Read empty discovery info") {
     val json =

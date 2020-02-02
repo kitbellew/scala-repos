@@ -72,7 +72,7 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
     }
 
   private def getPartitionMetadata(topic: String, protocol: SecurityProtocol)
-      : Option[Iterable[MetadataResponse.PartitionMetadata]] = {
+      : Option[Iterable[MetadataResponse.PartitionMetadata]] =
     cache.get(topic).map { partitions =>
       partitions.map {
         case (partitionId, partitionState) =>
@@ -139,11 +139,10 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
           }
       }
     }
-  }
 
   def getTopicMetadata(
       topics: Set[String],
-      protocol: SecurityProtocol): Seq[MetadataResponse.TopicMetadata] = {
+      protocol: SecurityProtocol): Seq[MetadataResponse.TopicMetadata] =
     inReadLock(partitionMetadataLock) {
       val topicsRequested = if (topics.isEmpty) cache.keySet else topics
       topicsRequested.toSeq.flatMap { topic =>
@@ -155,31 +154,26 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
         }
       }
     }
-  }
 
-  def hasTopicMetadata(topic: String): Boolean = {
+  def hasTopicMetadata(topic: String): Boolean =
     inReadLock(partitionMetadataLock) {
       cache.contains(topic)
     }
-  }
 
-  def getAllTopics(): Set[String] = {
+  def getAllTopics(): Set[String] =
     inReadLock(partitionMetadataLock) {
       cache.keySet.toSet
     }
-  }
 
-  def getNonExistingTopics(topics: Set[String]): Set[String] = {
+  def getNonExistingTopics(topics: Set[String]): Set[String] =
     inReadLock(partitionMetadataLock) {
       topics -- cache.keySet
     }
-  }
 
-  def getAliveBrokers: Seq[Broker] = {
+  def getAliveBrokers: Seq[Broker] =
     inReadLock(partitionMetadataLock) {
       aliveBrokers.values.toBuffer
     }
-  }
 
   private def addOrUpdatePartitionInfo(
       topic: String,
@@ -193,11 +187,10 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
 
   def getPartitionInfo(
       topic: String,
-      partitionId: Int): Option[PartitionStateInfo] = {
+      partitionId: Int): Option[PartitionStateInfo] =
     inReadLock(partitionMetadataLock) {
       cache.get(topic).flatMap(_.get(partitionId))
     }
-  }
 
   def updateCache(
       correlationId: Int,
@@ -263,13 +256,12 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
     PartitionStateInfo(leaderInfo, partitionState.replicas.asScala.map(_.toInt))
   }
 
-  def contains(topic: String): Boolean = {
+  def contains(topic: String): Boolean =
     inReadLock(partitionMetadataLock) {
       cache.contains(topic)
     }
-  }
 
-  private def removePartitionInfo(topic: String, partitionId: Int): Boolean = {
+  private def removePartitionInfo(topic: String, partitionId: Int): Boolean =
     cache
       .get(topic)
       .map { infos =>
@@ -278,6 +270,5 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
         true
       }
       .getOrElse(false)
-  }
 
 }

@@ -17,7 +17,7 @@ trait CollectionsSynchronizedListTest extends CollectionsOnListTest {
 
   def originalFactory: ListFactory
 
-  def factory: ListFactory = {
+  def factory: ListFactory =
     new ListFactory {
       override def implementationName: String =
         s"synchronizedList(${originalFactory.implementationName})"
@@ -31,7 +31,6 @@ trait CollectionsSynchronizedListTest extends CollectionsOnListTest {
       override def sortableUsingCollections: Boolean =
         originalFactory.sortableUsingCollections
     }
-  }
 }
 
 class CollectionsOnSynchronizedListAbstractListTest

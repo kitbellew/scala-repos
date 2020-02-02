@@ -78,9 +78,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
     val maxElement = maxElementOnLine(element, lineStart)
 
     val lineToSkip = new Range[Integer](line, line)
-    def intersectsWithLineRange(elem: PsiElement) = {
+    def intersectsWithLineRange(elem: PsiElement) =
       lineRange.intersects(elem.getTextRange)
-    }
 
     val collector = new TargetCollector(lineToSkip, intersectsWithLineRange)
     maxElement.accept(collector)
@@ -94,7 +93,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
     file.isInstanceOf[ScalaFile]
   }
 
-  override def createMethodFilter(stepTarget: SmartStepTarget) = {
+  override def createMethodFilter(stepTarget: SmartStepTarget) =
     stepTarget match {
       case methodTarget: MethodSmartStepTarget =>
         val scalaFilter = methodTarget.getMethod match {
@@ -115,7 +114,6 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           .getOrElse(super.createMethodFilter(stepTarget))
       case _ => super.createMethodFilter(stepTarget)
     }
-  }
 
   @tailrec
   private def maxElementOnLine(
@@ -150,7 +148,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           case _                             => None
         }
 
-      def addConstructor(): Unit = {
+      def addConstructor(): Unit =
         for {
           tp <- extBl.templateParents
           typeElem <- tp.typeElements.headOption
@@ -171,9 +169,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
             constr, /*needBreakpointRequest = */ generateAnonClass,
             noStopAtLines)
         }
-      }
 
-      def addMethodsIfInArgument(): Unit = {
+      def addMethodsIfInArgument(): Unit =
         PsiTreeUtil.getParentOfType(templ, classOf[MethodInvocation]) match {
           case MethodRepr(_, _, _, args)
               if args.map(stripped).contains(templ) =>
@@ -194,7 +191,6 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
             }
           case _ =>
         }
-      }
 
       addConstructor()
       addMethodsIfInArgument()

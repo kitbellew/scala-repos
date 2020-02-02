@@ -63,7 +63,7 @@ class HashSet[E]
 
   override def size(): Int = inner.size
 
-  def iterator(): Iterator[E] = {
+  def iterator(): Iterator[E] =
     new Iterator[E] {
       private val iter = inner.clone.iterator
 
@@ -76,15 +76,13 @@ class HashSet[E]
         last.get
       }
 
-      def remove(): Unit = {
+      def remove(): Unit =
         if (last.isEmpty) {
           throw new IllegalStateException()
         } else {
           last.foreach(self.remove(_))
           last = None
         }
-      }
     }
-  }
 
 }

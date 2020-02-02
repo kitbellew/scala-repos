@@ -153,7 +153,7 @@ private[v1] object AllStagesResource {
     }
   }
 
-  def convertTaskData(uiData: TaskUIData): TaskData = {
+  def convertTaskData(uiData: TaskUIData): TaskData =
     new TaskData(
       taskId = uiData.taskInfo.taskId,
       index = uiData.taskInfo.index,
@@ -169,7 +169,6 @@ private[v1] object AllStagesResource {
       errorMessage = uiData.errorMessage,
       taskMetrics = uiData.taskMetrics.map { convertUiTaskMetrics }
     )
-  }
 
   def taskMetricDistributions(
       allTaskData: Iterable[TaskUIData],
@@ -192,9 +191,8 @@ private[v1] object AllStagesResource {
         rawMetrics,
         quantiles) {
         def getSubmetrics(
-            raw: InternalTaskMetrics): Option[InternalInputMetrics] = {
+            raw: InternalTaskMetrics): Option[InternalInputMetrics] =
           raw.inputMetrics
-        }
 
         def build: InputMetricDistributions = new InputMetricDistributions(
           bytesRead = submetricQuantiles(_.bytesRead),
@@ -207,9 +205,8 @@ private[v1] object AllStagesResource {
         rawMetrics,
         quantiles) {
         def getSubmetrics(
-            raw: InternalTaskMetrics): Option[InternalOutputMetrics] = {
+            raw: InternalTaskMetrics): Option[InternalOutputMetrics] =
           raw.outputMetrics
-        }
         def build: OutputMetricDistributions = new OutputMetricDistributions(
           bytesWritten = submetricQuantiles(_.bytesWritten),
           recordsWritten = submetricQuantiles(_.recordsWritten)
@@ -221,9 +218,8 @@ private[v1] object AllStagesResource {
         InternalShuffleReadMetrics,
         ShuffleReadMetricDistributions](rawMetrics, quantiles) {
         def getSubmetrics(
-            raw: InternalTaskMetrics): Option[InternalShuffleReadMetrics] = {
+            raw: InternalTaskMetrics): Option[InternalShuffleReadMetrics] =
           raw.shuffleReadMetrics
-        }
         def build: ShuffleReadMetricDistributions =
           new ShuffleReadMetricDistributions(
             readBytes = submetricQuantiles(_.totalBytesRead),
@@ -241,9 +237,8 @@ private[v1] object AllStagesResource {
         InternalShuffleWriteMetrics,
         ShuffleWriteMetricDistributions](rawMetrics, quantiles) {
         def getSubmetrics(
-            raw: InternalTaskMetrics): Option[InternalShuffleWriteMetrics] = {
+            raw: InternalTaskMetrics): Option[InternalShuffleWriteMetrics] =
           raw.shuffleWriteMetrics
-        }
         def build: ShuffleWriteMetricDistributions =
           new ShuffleWriteMetricDistributions(
             writeBytes = submetricQuantiles(_.bytesWritten),
@@ -268,15 +263,14 @@ private[v1] object AllStagesResource {
     )
   }
 
-  def convertAccumulableInfo(acc: InternalAccumulableInfo): AccumulableInfo = {
+  def convertAccumulableInfo(acc: InternalAccumulableInfo): AccumulableInfo =
     new AccumulableInfo(
       acc.id,
       acc.name.orNull,
       acc.update.map(_.toString),
       acc.value.map(_.toString).orNull)
-  }
 
-  def convertUiTaskMetrics(internal: InternalTaskMetrics): TaskMetrics = {
+  def convertUiTaskMetrics(internal: InternalTaskMetrics): TaskMetrics =
     new TaskMetrics(
       executorDeserializeTime = internal.executorDeserializeTime,
       executorRunTime = internal.executorRunTime,
@@ -296,24 +290,21 @@ private[v1] object AllStagesResource {
         convertShuffleWriteMetrics
       }
     )
-  }
 
-  def convertInputMetrics(internal: InternalInputMetrics): InputMetrics = {
+  def convertInputMetrics(internal: InternalInputMetrics): InputMetrics =
     new InputMetrics(
       bytesRead = internal.bytesRead,
       recordsRead = internal.recordsRead
     )
-  }
 
-  def convertOutputMetrics(internal: InternalOutputMetrics): OutputMetrics = {
+  def convertOutputMetrics(internal: InternalOutputMetrics): OutputMetrics =
     new OutputMetrics(
       bytesWritten = internal.bytesWritten,
       recordsWritten = internal.recordsWritten
     )
-  }
 
   def convertShuffleReadMetrics(
-      internal: InternalShuffleReadMetrics): ShuffleReadMetrics = {
+      internal: InternalShuffleReadMetrics): ShuffleReadMetrics =
     new ShuffleReadMetrics(
       remoteBlocksFetched = internal.remoteBlocksFetched,
       localBlocksFetched = internal.localBlocksFetched,
@@ -322,16 +313,14 @@ private[v1] object AllStagesResource {
       totalBlocksFetched = internal.totalBlocksFetched,
       recordsRead = internal.recordsRead
     )
-  }
 
   def convertShuffleWriteMetrics(
-      internal: InternalShuffleWriteMetrics): ShuffleWriteMetrics = {
+      internal: InternalShuffleWriteMetrics): ShuffleWriteMetrics =
     new ShuffleWriteMetrics(
       bytesWritten = internal.bytesWritten,
       writeTime = internal.writeTime,
       recordsWritten = internal.recordsWritten
     )
-  }
 }
 
 /**
@@ -351,15 +340,13 @@ private[v1] abstract class MetricHelper[I, O](
   val data: Seq[I] = rawMetrics.flatMap(getSubmetrics)
 
   /** applies the given function to all input metrics, and returns the quantiles */
-  def submetricQuantiles(f: I => Double): IndexedSeq[Double] = {
+  def submetricQuantiles(f: I => Double): IndexedSeq[Double] =
     Distribution(data.map { d => f(d) }).get.getQuantiles(quantiles)
-  }
 
-  def metricOption: Option[O] = {
+  def metricOption: Option[O] =
     if (data.isEmpty) {
       None
     } else {
       Some(build)
     }
-  }
 }

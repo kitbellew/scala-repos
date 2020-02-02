@@ -204,11 +204,10 @@ class DataTypeSuite extends SparkFunSuite {
     assert(!arrayType.existsRecursively(_.isInstanceOf[IntegerType]))
   }
 
-  def checkDataTypeJsonRepr(dataType: DataType): Unit = {
+  def checkDataTypeJsonRepr(dataType: DataType): Unit =
     test(s"JSON - $dataType") {
       assert(DataType.fromJson(dataType.json) === dataType)
     }
-  }
 
   checkDataTypeJsonRepr(NullType)
   checkDataTypeJsonRepr(BooleanType)
@@ -239,11 +238,10 @@ class DataTypeSuite extends SparkFunSuite {
       StructField("c", DoubleType, nullable = false, metadata)))
   checkDataTypeJsonRepr(structType)
 
-  def checkDefaultSize(dataType: DataType, expectedDefaultSize: Int): Unit = {
-    test(s"Check the default size of ${dataType}") {
+  def checkDefaultSize(dataType: DataType, expectedDefaultSize: Int): Unit =
+    test(s"Check the default size of $dataType") {
       assert(dataType.defaultSize === expectedDefaultSize)
     }
-  }
 
   checkDefaultSize(NullType, 1)
   checkDefaultSize(BooleanType, 1)
@@ -270,7 +268,7 @@ class DataTypeSuite extends SparkFunSuite {
       to: DataType,
       expected: Boolean): Unit = {
     val testName =
-      s"equalsIgnoreCompatibleNullability: (from: ${from}, to: ${to})"
+      s"equalsIgnoreCompatibleNullability: (from: $from, to: $to)"
     test(testName) {
       assert(DataType.equalsIgnoreCompatibleNullability(from, to) === expected)
     }

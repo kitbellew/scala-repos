@@ -55,7 +55,7 @@ object FileToEvents extends Logging {
 
       val channelId: Option[Int] = args.channel.map { ch =>
         if (!channelMap.contains(ch)) {
-          error(s"Channel ${ch} doesn't exist in this app.")
+          error(s"Channel $ch doesn't exist in this app.")
           sys.exit(1)
         }
 

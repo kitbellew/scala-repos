@@ -85,7 +85,7 @@ abstract class InputDStream[T: ClassTag](_ssc: StreamingContext)
     * This ensures that InputDStream.compute() is called strictly on increasing
     * times.
     */
-  override private[streaming] def isTimeValid(time: Time): Boolean = {
+  override private[streaming] def isTimeValid(time: Time): Boolean =
     if (!super.isTimeValid(time)) {
       false // Time not valid
     } else {
@@ -98,7 +98,6 @@ abstract class InputDStream[T: ClassTag](_ssc: StreamingContext)
       lastValidTime = time
       true
     }
-  }
 
   override def dependencies: List[DStream[_]] = List()
 

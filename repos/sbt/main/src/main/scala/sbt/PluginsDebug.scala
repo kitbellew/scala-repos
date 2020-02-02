@@ -490,7 +490,7 @@ private[sbt] object PluginsDebug {
         case x :: Nil => s" or no longer include $x"
         case xs       => s" or remove one of ${xs.mkString(", ")}"
       }
-    s"${d.plugin.label}: directly exclude it${removePluginsString}"
+    s"${d.plugin.label}: directly exclude it$removePluginsString"
   }
 
   private[this] def pluginImpossible(

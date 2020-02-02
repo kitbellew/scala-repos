@@ -220,7 +220,7 @@ object JGitUtil {
   /**
     * Returns the repository information. It contains branch names and tag names.
     */
-  def getRepositoryInfo(owner: String, repository: String): RepositoryInfo = {
+  def getRepositoryInfo(owner: String, repository: String): RepositoryInfo =
     using(Git.open(getRepositoryDir(owner, repository))) { git =>
       try {
         // get commit count
@@ -255,7 +255,6 @@ object JGitUtil {
 
       }
     }
-  }
 
   /**
     * Returns the file list of the specified path.
@@ -326,7 +325,7 @@ object JGitUtil {
               (ObjectId, FileMode, String, Option[String]),
               Map[RevCommit, RevCommit])],
           revIterator: java.util.Iterator[RevCommit])
-          : List[(ObjectId, FileMode, String, Option[String], RevCommit)] = {
+          : List[(ObjectId, FileMode, String, Option[String], RevCommit)] =
         if (restList.isEmpty) {
           result
         } else if (!revIterator.hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
@@ -374,7 +373,6 @@ object JGitUtil {
             findLastCommits(nextResult, nextRest, revIterator)
           }
         }
-      }
 
       var fileList: List[(ObjectId, FileMode, String, Option[String])] = Nil
       useTreeWalk(revCommit) { treeWalk =>
@@ -425,7 +423,7 @@ object JGitUtil {
     */
   private def getSummaryMessage(
       fullMessage: String,
-      shortMessage: String): String = {
+      shortMessage: String): String =
     defining(fullMessage.trim.indexOf("\n")) { i =>
       defining(
         if (i >= 0) fullMessage.trim.substring(0, i).trim else fullMessage) {
@@ -434,24 +432,22 @@ object JGitUtil {
           else firstLine
       }
     }
-  }
 
   /**
     * get all file list by revision. only file.
     */
-  def getTreeId(git: Git, revision: String): Option[String] = {
+  def getTreeId(git: Git, revision: String): Option[String] =
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(revision)
       if (objectId == null) return None
       val revCommit = revWalk.parseCommit(objectId)
       Some(revCommit.getTree.name)
     }
-  }
 
   /**
     * get all file list by tree object id.
     */
-  def getAllFileListByTreeId(git: Git, treeId: String): List[String] = {
+  def getAllFileListByTreeId(git: Git, treeId: String): List[String] =
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(treeId + "^{tree}")
       if (objectId == null) return Nil
@@ -467,7 +463,6 @@ object JGitUtil {
         ret.reverse
       }
     }
-  }
 
   /**
     * Returns the commit list of the specified branch.
@@ -508,7 +503,7 @@ object JGitUtil {
     using(new RevWalk(git.getRepository)) { revWalk =>
       defining(git.getRepository.resolve(revision)) { objectId =>
         if (objectId == null) {
-          Left(s"${revision} can't be resolved.")
+          Left(s"$revision can't be resolved.")
         } else {
           revWalk.markStart(revWalk.parseCommit(objectId))
           if (path.nonEmpty) {
@@ -826,7 +821,7 @@ object JGitUtil {
   def getDefaultBranch(
       git: Git,
       repository: RepositoryService.RepositoryInfo,
-      revstr: String = ""): Option[(ObjectId, String)] = {
+      revstr: String = ""): Option[(ObjectId, String)] =
     Seq(
       Some(if (revstr.isEmpty) repository.repository.defaultBranch else revstr),
       repository.branchList.headOption
@@ -835,9 +830,8 @@ object JGitUtil {
         case None      => None
       }
       .find(_._1 != null)
-  }
 
-  def createBranch(git: Git, fromBranch: String, newBranch: String) = {
+  def createBranch(git: Git, fromBranch: String, newBranch: String) =
     try {
       git.branchCreate().setStartPoint(fromBranch).setName(newBranch).call()
       Right("Branch created.")
@@ -848,7 +842,6 @@ object JGitUtil {
       case _: InvalidRefNameException | _: JGitInternalException =>
         Left("Sorry, that name is invalid.")
     }
-  }
 
   def createDirCacheEntry(
       path: String,
@@ -942,10 +935,7 @@ object JGitUtil {
     } flatMap { objectId => getContentFromId(git, objectId, fetchLargeFile) }
   }
 
-  def getContentInfo(
-      git: Git,
-      path: String,
-      objectId: ObjectId): ContentInfo = {
+  def getContentInfo(git: Git, path: String, objectId: ObjectId): ContentInfo =
     // Viewer
     using(git.getRepository.getObjectDatabase) { db =>
       val loader = db.open(objectId)
@@ -972,7 +962,6 @@ object JGitUtil {
         ContentInfo(viewer, None, None)
       }
     }
-  }
 
   /**
     * Get object content of the given object id as byte array from the Git repository.
@@ -1032,7 +1021,7 @@ object JGitUtil {
     }
 
   def processTree(git: Git, id: ObjectId)(
-      f: (String, CanonicalTreeParser) => Unit) = {
+      f: (String, CanonicalTreeParser) => Unit) =
     using(new RevWalk(git.getRepository)) { revWalk =>
       using(new TreeWalk(git.getRepository)) { treeWalk =>
         val index = treeWalk.addTree(revWalk.parseTree(id))
@@ -1044,7 +1033,6 @@ object JGitUtil {
         }
       }
     }
-  }
 
   /**
     * Returns the identifier of the root commit (or latest merge commit) of the specified branch.
@@ -1089,13 +1077,12 @@ object JGitUtil {
               .toURI
               .toString)
           .setRefSpecs(
-            new RefSpec(
-              s"refs/heads/${requestBranch}:refs/pull/${issueId}/head")
+            new RefSpec(s"refs/heads/$requestBranch:refs/pull/$issueId/head")
               .setForceUpdate(true))
           .call
 
         val commitIdTo =
-          oldGit.getRepository.resolve(s"refs/pull/${issueId}/head").getName
+          oldGit.getRepository.resolve(s"refs/pull/$issueId/head").getName
         val commitIdFrom = getForkedCommitId(
           oldGit,
           newGit,
@@ -1118,7 +1105,7 @@ object JGitUtil {
   def getLastModifiedCommit(
       git: Git,
       startCommit: RevCommit,
-      path: String): RevCommit = {
+      path: String): RevCommit =
     return git.log
       .add(startCommit)
       .addPath(path)
@@ -1126,13 +1113,12 @@ object JGitUtil {
       .call
       .iterator
       .next
-  }
 
   def getBranches(
       owner: String,
       name: String,
       defaultBranch: String,
-      origin: Boolean): Seq[BranchInfo] = {
+      origin: Boolean): Seq[BranchInfo] =
     using(Git.open(getRepositoryDir(owner, name))) { git =>
       val repo = git.getRepository
       val defaultObject =
@@ -1184,9 +1170,8 @@ object JGitUtil {
         }
       }
     }
-  }
 
-  def getBlame(git: Git, id: String, path: String): Iterable[BlameInfo] = {
+  def getBlame(git: Git, id: String, path: String): Iterable[BlameInfo] =
     Option(git.getRepository.resolve(id))
       .map { commitId =>
         val blamer = new org.eclipse.jgit.api.BlameCommand(git.getRepository);
@@ -1229,7 +1214,6 @@ object JGitUtil {
         blameMap.values.map { b => b.copy(lines = limeMap(b.id)) }
       }
       .getOrElse(Seq.empty)
-  }
 
   /**
     * Returns sha1
@@ -1238,12 +1222,8 @@ object JGitUtil {
     * @param revstr  A git object references expression
     * @return sha1
     */
-  def getShaByRef(
-      owner: String,
-      name: String,
-      revstr: String): Option[String] = {
+  def getShaByRef(owner: String, name: String, revstr: String): Option[String] =
     using(Git.open(getRepositoryDir(owner, name))) { git =>
       Option(git.getRepository.resolve(revstr)).map(ObjectId.toString(_))
     }
-  }
 }

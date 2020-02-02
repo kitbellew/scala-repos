@@ -9,9 +9,8 @@ object AssertThrows {
     */
   private def assertThrowsBackport(
       expectedThrowable: Class[_ <: Throwable],
-      runnable: ThrowingRunnable): Unit = {
+      runnable: ThrowingRunnable): Unit =
     expectThrowsBackport(expectedThrowable, runnable)
-  }
 
   /** Backport implementation of Assert.expectThrows to be used until JUnit 4.13 is
     *  released. See org.junit.Assert.scala in jUnitRuntime.
@@ -53,25 +52,22 @@ object AssertThrows {
     def run(): Unit
   }
 
-  private def throwingRunnable(code: => Unit): ThrowingRunnable = {
+  private def throwingRunnable(code: => Unit): ThrowingRunnable =
     new ThrowingRunnable {
       def run(): Unit = code
     }
-  }
 
   def assertThrows[T <: Throwable, U](
       expectedThrowable: Class[T],
-      code: => U): Unit = {
+      code: => U): Unit =
     assertThrowsBackport(expectedThrowable, throwingRunnable {
       code
     })
-  }
 
   def expectThrows[T <: Throwable, U](
       expectedThrowable: Class[T],
-      code: => U): T = {
+      code: => U): T =
     expectThrowsBackport(expectedThrowable, throwingRunnable {
       code
     })
-  }
 }

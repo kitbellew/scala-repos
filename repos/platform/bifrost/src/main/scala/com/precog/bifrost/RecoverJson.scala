@@ -38,7 +38,7 @@ object RecoverJson {
   @tailrec private def findEndString(
       buffers: Vector[CharBuffer],
       bufferIndex: Int,
-      offset: Int): Option[(Int, Int)] = {
+      offset: Int): Option[(Int, Int)] =
     if (bufferIndex >= buffers.length)
       None
     else if (offset >= buffers(bufferIndex).limit)
@@ -56,7 +56,6 @@ object RecoverJson {
       else
         findEndString(buffers, bufferIndex, offset + 1)
     }
-  }
 
   private case class BalancedStackState(
       bufferIndex: Int,

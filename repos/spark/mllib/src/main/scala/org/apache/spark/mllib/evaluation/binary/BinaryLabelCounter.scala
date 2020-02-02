@@ -43,9 +43,8 @@ private[evaluation] class BinaryLabelCounter(
     this
   }
 
-  override def clone: BinaryLabelCounter = {
+  override def clone: BinaryLabelCounter =
     new BinaryLabelCounter(numPositives, numNegatives)
-  }
 
   override def toString: String =
     s"{numPos: $numPositives, numNeg: $numNegatives}"

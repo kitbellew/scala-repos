@@ -50,7 +50,7 @@ trait PatternExpander[Pattern, Type] {
     def sequenceList = if (exists) sequenceType :: Nil else Nil
     def repeatedList = if (exists) repeatedType :: Nil else Nil
 
-    override def toString = s"${elementType}*"
+    override def toString = s"$elementType*"
   }
   object NoRepeated extends Repeated(NoType, NoType, NoType) {
     override def toString = "<none>"

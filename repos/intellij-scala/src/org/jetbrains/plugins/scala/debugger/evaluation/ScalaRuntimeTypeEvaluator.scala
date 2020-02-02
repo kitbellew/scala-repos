@@ -122,7 +122,7 @@ object ScalaRuntimeTypeEvaluator {
     }
   }
 
-  def isSubtypeable(scType: ScType): Boolean = {
+  def isSubtypeable(scType: ScType): Boolean =
     scType match {
       case ExtractClass(psiClass) =>
         psiClass match {
@@ -133,5 +133,4 @@ object ScalaRuntimeTypeEvaluator {
         }
       case _ => false
     }
-  }
 }

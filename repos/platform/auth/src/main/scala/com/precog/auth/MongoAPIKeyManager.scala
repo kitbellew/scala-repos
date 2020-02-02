@@ -148,7 +148,7 @@ object MongoAPIKeyManager extends Logging {
 
   def findRootAPIKey(db: Database, keyCollection: String)(
       implicit context: ExecutionContext,
-      timeout: Timeout): Future[APIKeyRecord] = {
+      timeout: Timeout): Future[APIKeyRecord] =
     db(selectOne().from(keyCollection).where("isRoot" === true)) flatMap {
       case Some(keyJv) =>
         logger.info("Retrieved existing root key")
@@ -159,7 +159,6 @@ object MongoAPIKeyManager extends Logging {
         Promise.failed(
           new IllegalStateException("Could not locate existing root API key!"))
     }
-  }
 }
 
 class MongoAPIKeyManager(
@@ -230,30 +229,27 @@ class MongoAPIKeyManager(
   private def findOneMatching[A](
       keyName: String,
       keyValue: MongoPrimitive,
-      collection: String)(
-      implicit extractor: Extractor[A]): Future[Option[A]] = {
+      collection: String)(implicit extractor: Extractor[A]): Future[Option[A]] =
     database {
       selectOne().from(collection).where(keyName === keyValue)
     } map {
       _.map(_.deserialize[A])
     }
-  }
 
   private def findAllMatching[A](
       keyName: String,
       keyValue: MongoPrimitive,
-      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] = {
+      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] =
     database {
       selectAll.from(collection).where(keyName === keyValue)
     } map {
       _.map(_.deserialize[A]).toSet
     }
-  }
 
   private def findAllIncluding[A](
       keyName: String,
       keyValue: MongoPrimitive,
-      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] = {
+      collection: String)(implicit extractor: Extractor[A]): Future[Set[A]] =
     database {
       selectAll
         .from(collection)
@@ -261,7 +257,6 @@ class MongoAPIKeyManager(
     } map {
       _.map(_.deserialize[A]).toSet
     }
-  }
 
   private def findAll[A](collection: String)(
       implicit extract: Extractor[A]): Future[Seq[A]] =
@@ -320,7 +315,7 @@ class MongoAPIKeyManager(
     }
 
   private def updateAPIKey(apiKey: APIKey)(
-      f: APIKeyRecord => Option[APIKeyRecord]): Future[Option[APIKeyRecord]] = {
+      f: APIKeyRecord => Option[APIKeyRecord]): Future[Option[APIKeyRecord]] =
     findAPIKey(apiKey).flatMap {
       case Some(t) =>
         f(t) match {
@@ -333,7 +328,6 @@ class MongoAPIKeyManager(
         }
       case None => Future(None)
     }
-  }
 
   def deleteAPIKey(apiKey: APIKey): Future[Option[APIKeyRecord]] =
     findAPIKey(apiKey).flatMap {
@@ -348,7 +342,7 @@ class MongoAPIKeyManager(
       case None => Future(None)
     }
 
-  def deleteGrant(gid: GrantId): Future[Set[Grant]] = {
+  def deleteGrant(gid: GrantId): Future[Set[Grant]] =
     for {
       children <- findGrantChildren(gid)
       deletedChildren <- Future.sequence(children map { g =>
@@ -366,5 +360,4 @@ class MongoAPIKeyManager(
         Promise successful deletedChildren
       }
     } yield result
-  }
 }

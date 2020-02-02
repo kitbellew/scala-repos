@@ -124,9 +124,8 @@ object MurmurHash {
     *  @param magicB    a magic integer from a different stream
     *  @return          the updated hash value
     */
-  def extendHash(hash: Int, value: Int, magicA: Int, magicB: Int) = {
+  def extendHash(hash: Int, value: Int, magicA: Int, magicB: Int) =
     (hash ^ rotl(value * magicA, 11) * magicB) * 3 + visibleMixer
-  }
 
   /** Given a magic integer from the first stream, compute the next */
   def nextMagicA(magicA: Int) = magicA * 5 + hiddenMixerA
@@ -183,13 +182,13 @@ object MurmurHash {
   def symmetricHash[T](xs: scala.collection.TraversableOnce[T], seed: Int) = {
     var a, b, n = 0
     var c = 1
-    xs.seq.foreach(i => {
+    xs.seq.foreach { i =>
       val h = i.##
       a += h
       b ^= h
       if (h != 0) c *= h
       n += 1
-    })
+    }
     var h = startHash(seed * n)
     h = extendHash(h, a, storedMagicA(0), storedMagicB(0))
     h = extendHash(h, b, storedMagicA(1), storedMagicB(1))

@@ -98,7 +98,7 @@ class ScalaRearranger
       settings: CodeStyleSettings,
       parent: ScalaArrangementEntry,
       previous: ScalaArrangementEntry,
-      target: ScalaArrangementEntry): Int = {
+      target: ScalaArrangementEntry): Int =
     if (previous == null) {
       -1
     } else {
@@ -116,7 +116,6 @@ class ScalaRearranger
         -1
       }
     }
-  }
 
   private def getGroupingRules(settings: ArrangementSettings) = {
     var result = immutable.HashSet[ArrangementSettingsToken]()
@@ -244,7 +243,7 @@ object ScalaRearranger {
 
   private def addCondition(
       matchRules: immutable.List[ArrangementSectionRule],
-      conditions: ArrangementSettingsToken*) = {
+      conditions: ArrangementSettingsToken*) =
     if (conditions.length == 1) {
       ArrangementSectionRule.create(
         new StdArrangementMatchRule(
@@ -261,7 +260,6 @@ object ScalaRearranger {
       ArrangementSectionRule.create(new StdArrangementMatchRule(
         new StdArrangementEntryMatcher(composite))) :: matchRules
     }
-  }
 
   private def getDefaultSettings = {
     val groupingRules = immutable.List[ArrangementGroupingRule](

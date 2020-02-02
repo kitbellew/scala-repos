@@ -113,7 +113,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
   import DefaultEvolutionsApi._
   import DatabaseUrlPatterns._
 
-  def scripts(evolutions: Seq[Evolution]): Seq[Script] = {
+  def scripts(evolutions: Seq[Evolution]): Seq[Script] =
     if (evolutions.nonEmpty) {
       val application = evolutions.reverse
       val database = databaseEvolutions()
@@ -133,11 +133,9 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
       downs ++ ups
     } else Nil
-  }
 
-  def scripts(reader: EvolutionsReader): Seq[Script] = {
+  def scripts(reader: EvolutionsReader): Seq[Script] =
     scripts(reader.evolutions(database.name))
-  }
 
   /**
     * Read evolutions from the database.
@@ -174,7 +172,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
   }
 
   def evolve(scripts: Seq[Script], autocommit: Boolean): Unit = {
-    def logBefore(script: Script)(implicit conn: Connection): Unit = {
+    def logBefore(script: Script)(implicit conn: Connection): Unit =
       script match {
         case UpScript(e) => {
           val ps = prepare(
@@ -193,9 +191,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
             "update ${schema}play_evolutions set state = 'applying_down' where id = " + e.revision)
         }
       }
-    }
 
-    def logAfter(script: Script)(implicit conn: Connection): Boolean = {
+    def logAfter(script: Script)(implicit conn: Connection): Boolean =
       script match {
         case UpScript(e) => {
           execute(
@@ -206,7 +203,6 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
             "delete from ${schema}play_evolutions where id = " + e.revision)
         }
       }
-    }
 
     def updateLastProblem(message: String, revision: Int)(
         implicit conn: Connection): Boolean = {
@@ -284,7 +280,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     * @throws NonFatal error if the database is in an inconsistent state
     */
   private def checkEvolutionsState(): Unit = {
-    def createPlayEvolutionsTable()(implicit conn: Connection): Unit = {
+    def createPlayEvolutionsTable()(implicit conn: Connection): Unit =
       try {
         val createScript = database.url match {
           case SqlServerJdbcUrl() => CreatePlayEvolutionsSqlServerSql
@@ -299,7 +295,6 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         case NonFatal(ex) =>
           logger.warn("could not create ${schema}play_evolutions table", ex)
       }
-    }
 
     val autocommit = true
     implicit val connection = database.getConnection(autocommit = autocommit)
@@ -361,24 +356,19 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
   // SQL helpers
 
-  private def executeQuery(sql: String)(implicit c: Connection): ResultSet = {
+  private def executeQuery(sql: String)(implicit c: Connection): ResultSet =
     c.createStatement.executeQuery(applySchema(sql))
-  }
 
-  private def execute(sql: String)(implicit c: Connection): Boolean = {
+  private def execute(sql: String)(implicit c: Connection): Boolean =
     c.createStatement.execute(applySchema(sql))
-  }
 
-  private def prepare(sql: String)(
-      implicit c: Connection): PreparedStatement = {
+  private def prepare(sql: String)(implicit c: Connection): PreparedStatement =
     c.prepareStatement(applySchema(sql))
-  }
 
-  private def applySchema(sql: String): String = {
+  private def applySchema(sql: String): String =
     sql.replaceAll(
       "\\$\\{schema}",
       Option(schema).filter(_.trim.nonEmpty).map(_.trim + ".").getOrElse(""))
-  }
 
 }
 
@@ -544,14 +534,13 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
 class EnvironmentEvolutionsReader @Inject() (environment: Environment)
     extends ResourceEvolutionsReader {
 
-  def loadResource(db: String, revision: Int) = {
+  def loadResource(db: String, revision: Int) =
     environment
       .getExistingFile(Evolutions.fileName(db, revision))
       .map(new FileInputStream(_))
       .orElse {
         environment.resourceAsStream(Evolutions.resourceName(db, revision))
       }
-  }
 }
 
 /**
@@ -566,11 +555,10 @@ class ClassLoaderEvolutionsReader(
       classOf[ClassLoaderEvolutionsReader].getClassLoader,
     prefix: String = "")
     extends ResourceEvolutionsReader {
-  def loadResource(db: String, revision: Int) = {
+  def loadResource(db: String, revision: Int) =
     Option(
       classLoader.getResourceAsStream(
         prefix + Evolutions.resourceName(db, revision)))
-  }
 }
 
 /**

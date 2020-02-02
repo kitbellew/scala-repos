@@ -174,10 +174,9 @@ class MetricsGossipSpec
     * sometimes Sigar will not be able to return a valid value (NaN and such) so must ensure they
     * have the same Metric types
     */
-  def newSample(previousSample: Set[Metric]): Set[Metric] = {
+  def newSample(previousSample: Set[Metric]): Set[Metric] =
     // Metric.equals is based on name equality
     collector.sample.metrics.filter(previousSample.contains) ++ previousSample
-  }
 
   "A MetricsGossip" must {
     "add new NodeMetrics" in {

@@ -1,8 +1,7 @@
 class Test {
   private[this] var member = 0;
-  def foo() = {
+  def foo() =
     (() => member = 1)()
-  }
   def look = member
 }
 

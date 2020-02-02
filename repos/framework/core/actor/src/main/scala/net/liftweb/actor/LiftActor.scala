@@ -83,9 +83,8 @@ object LAScheduler extends LAScheduler with Loggable {
           }
         })
 
-      def shutdown(): Unit = {
+      def shutdown(): Unit =
         es.shutdown()
-      }
     }
   }
 
@@ -373,11 +372,10 @@ class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
     * Send a message to the mock actor, which will be recorded and not processed by the
     * message handler.
   **/
-  override def !(msg: T): Unit = {
+  override def !(msg: T): Unit =
     messagesReceived.synchronized {
       messagesReceived ::= msg
     }
-  }
 
   // We aren't required to implement a real message handler for the Mock actor
   // since the message handler never runs.
@@ -556,10 +554,9 @@ object LiftActorJ {
     case clz  => clz :: getBaseClasses(clz.getSuperclass)
   }
 
-  private def receiver(in: Method): Boolean = {
+  private def receiver(in: Method): Boolean =
     in.getParameterTypes().length == 1 &&
-    (in.getAnnotation(classOf[JavaActorBase.Receive]) != null)
-  }
+      (in.getAnnotation(classOf[JavaActorBase.Receive]) != null)
 
   private def buildPF(clz: Class[_]): DispatchVendor = {
     val methods =

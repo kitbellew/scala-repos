@@ -25,14 +25,13 @@ abstract class ScPackageContainerElementType[TypeDef <: ScPackageContainer](
 
   override def createStubImpl[ParentPsi <: PsiElement](
       psi: ScPackageContainer,
-      parent: StubElement[ParentPsi]): ScPackageContainerStub = {
+      parent: StubElement[ParentPsi]): ScPackageContainerStub =
     new ScPackageContainerStubImpl[ParentPsi](
       parent,
       this,
       psi.prefix,
       psi.ownNamePart,
       psi.isExplicit)
-  }
 
   def serialize(
       stub: ScPackageContainerStub,

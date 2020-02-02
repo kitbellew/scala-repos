@@ -13,9 +13,7 @@ class IsInstanceOf private (expectedClass: Class[_], matchableClass: Class[_])
   def this(expectedClass: Class[_]) =
     this(expectedClass, IsInstanceOf.matchableClass(expectedClass))
 
-  override protected def matches(
-      item: AnyRef,
-      mismatch: Description): Boolean = {
+  override protected def matches(item: AnyRef, mismatch: Description): Boolean =
     if (null == item) {
       mismatch.appendText("null")
       false
@@ -23,7 +21,6 @@ class IsInstanceOf private (expectedClass: Class[_], matchableClass: Class[_])
       mismatch.appendValue(item).appendText(" is a " + item.getClass.getName)
       false
     } else true
-  }
 
   override def describeTo(description: Description): Unit =
     description.appendText("an instance of ").appendText(expectedClass.getName)
@@ -31,8 +28,7 @@ class IsInstanceOf private (expectedClass: Class[_], matchableClass: Class[_])
 
 object IsInstanceOf {
 
-  private[IsInstanceOf] def matchableClass(
-      expectedClass: Class[_]): Class[_] = {
+  private[IsInstanceOf] def matchableClass(expectedClass: Class[_]): Class[_] =
     expectedClass match {
       case java.lang.Byte.TYPE      => classOf[java.lang.Byte]
       case java.lang.Boolean.TYPE   => classOf[java.lang.Boolean]
@@ -44,7 +40,6 @@ object IsInstanceOf {
       case java.lang.Double.TYPE    => classOf[java.lang.Double]
       case _                        => expectedClass
     }
-  }
 
   // @SuppressWarnings("unchecked")
   def instanceOf[T](typ: Class[_]): Matcher[T] =

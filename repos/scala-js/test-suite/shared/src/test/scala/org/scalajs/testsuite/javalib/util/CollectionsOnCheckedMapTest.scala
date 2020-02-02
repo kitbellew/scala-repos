@@ -24,19 +24,18 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
 
   def originalFactory: MapFactory
 
-  def factory: MapFactory = {
+  def factory: MapFactory =
     new MapFactory {
       override def implementationName: String =
         s"checkedMap(${originalFactory.implementationName})"
 
       def empty[K, V](
           implicit kct: ClassTag[K],
-          vct: ClassTag[V]): ju.Map[K, V] = {
+          vct: ClassTag[V]): ju.Map[K, V] =
         ju.Collections.checkedMap(
           originalFactory.empty[K, V],
           kct.runtimeClass.asInstanceOf[Class[K]],
           vct.runtimeClass.asInstanceOf[Class[V]])
-      }
 
       override def allowsNullKeys: Boolean =
         originalFactory.allowsNullKeys
@@ -44,11 +43,9 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
       override def allowsNullValues: Boolean =
         originalFactory.allowsNullValues
     }
-  }
 
-  @Test def testCheckedMap(): Unit = {
+  @Test def testCheckedMap(): Unit =
     assertNull(superMap().put(new C, new C))
-  }
 
   @Test def testCheckedMapBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)
@@ -75,19 +72,18 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
 
   def originalFactory: SortedMapFactory
 
-  def factory: SortedMapFactory = {
+  def factory: SortedMapFactory =
     new SortedMapFactory {
       override def implementationName: String =
         s"checkedSortedMap(${originalFactory.implementationName})"
 
       def empty[K, V](
           implicit kct: ClassTag[K],
-          vct: ClassTag[V]): ju.SortedMap[K, V] = {
+          vct: ClassTag[V]): ju.SortedMap[K, V] =
         ju.Collections.checkedSortedMap(
           originalFactory.empty[K, V],
           kct.runtimeClass.asInstanceOf[Class[K]],
           vct.runtimeClass.asInstanceOf[Class[V]])
-      }
 
       override def allowsNullKeys: Boolean =
         originalFactory.allowsNullKeys
@@ -95,11 +91,9 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
       override def allowsNullValues: Boolean =
         originalFactory.allowsNullValues
     }
-  }
 
-  @Test def testCheckedMap(): Unit = {
+  @Test def testCheckedMap(): Unit =
     assertNull(superMap().put(new C, new C))
-  }
 
   @Test def testCheckedMapBadInputs(): Unit = {
     assumeTrue("Needs compliant asInstanceOf", hasCompliantAsInstanceOfs)

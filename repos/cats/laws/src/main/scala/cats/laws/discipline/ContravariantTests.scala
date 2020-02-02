@@ -13,14 +13,13 @@ trait ContravariantTests[F[_]] extends InvariantTests[F] {
       implicit
       ArbFA: Arbitrary[F[A]],
       EqFA: Eq[F[A]],
-      EqFC: Eq[F[C]]): RuleSet = {
+      EqFC: Eq[F[C]]): RuleSet =
     new DefaultRuleSet(
       name = "contravariant",
       parent = Some(invariant[A, B, C]),
       "contravariant identity" -> forAll(laws.contravariantIdentity[A] _),
       "contravariant composition" -> forAll(
         laws.contravariantComposition[A, B, C] _))
-  }
 }
 
 object ContravariantTests {

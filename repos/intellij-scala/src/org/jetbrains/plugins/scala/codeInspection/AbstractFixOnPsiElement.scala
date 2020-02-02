@@ -21,7 +21,7 @@ abstract class AbstractFixOnPsiElement[T <: PsiElement](
 
   override def getFamilyName = getText
 
-  def getElement: T = {
+  def getElement: T =
     try {
       val elem = getStartElement.asInstanceOf[T]
       if (elem.isValid) elem
@@ -29,7 +29,6 @@ abstract class AbstractFixOnPsiElement[T <: PsiElement](
     } catch {
       case e: ClassCastException => null.asInstanceOf[T]
     }
-  }
 
   override def invoke(
       project: Project,
@@ -58,7 +57,7 @@ abstract class AbstractFixOnTwoPsiElements[T <: PsiElement, S <: PsiElement](
 
   override def getFamilyName = getText
 
-  def getFirstElement: T = {
+  def getFirstElement: T =
     try {
       val elem = getStartElement.asInstanceOf[T]
       if (elem.isValid) elem
@@ -66,7 +65,6 @@ abstract class AbstractFixOnTwoPsiElements[T <: PsiElement, S <: PsiElement](
     } catch {
       case e: ClassCastException => null.asInstanceOf[T]
     }
-  }
 
   def getSecondElement: S = {
     val elem = secondRef.getElement

@@ -99,13 +99,12 @@ object IntegrationTestConfig {
     val cwd = string("cwd", ".")
     val useExternalSetup = string("useExternalSetup", "false").toBoolean
 
-    def unusedForExternalSetup(block: => String): String = {
+    def unusedForExternalSetup(block: => String): String =
       if (useExternalSetup) {
         "UNUSED FOR EXTERNAL SETUP"
       } else {
         block
       }
-    }
 
     val zkHost = string("zkHost", unusedForExternalSetup("localhost"))
     val zkPort = int("zkPort", 2183 + (math.random * 100).toInt)

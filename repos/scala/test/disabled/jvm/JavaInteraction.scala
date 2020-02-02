@@ -31,9 +31,8 @@ p.getC() = java.awt.Color[r=255,g=0,b=0]
   // This test would pointlessly fail the whole build anytime the account
   // running the test could not connect to the windowing server.  The below
   // is intended to defend against this outcome.
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     try {
       Console println connect()
     } catch { case _: java.lang.InternalError => Console println expected }
-  }
 }

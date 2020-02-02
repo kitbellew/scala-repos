@@ -135,11 +135,10 @@ private object ScalaAotCompletionContributor {
 
   def createValueDeclarationFrom(
       text: String,
-      original: PsiElement): ScValueDeclaration = {
+      original: PsiElement): ScValueDeclaration =
     ScalaPsiElementFactory
       .createDeclarationFromText(s"val $text", original.getContext, original)
       .asInstanceOf[ScValueDeclaration]
-  }
 }
 
 private class MyConsumer(

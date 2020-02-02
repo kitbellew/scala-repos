@@ -164,7 +164,6 @@ class ThrottledHandler(
     tryPublish()
   }
 
-  private def doPublish(record: javalog.LogRecord) = {
+  private def doPublish(record: javalog.LogRecord) =
     super.publish(record)
-  }
 }

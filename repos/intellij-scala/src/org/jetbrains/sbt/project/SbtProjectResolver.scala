@@ -150,7 +150,7 @@ class SbtProjectResolver
 
   def createModuleDependencies(
       projects: Seq[sbtStructure.ProjectData],
-      moduleNodes: Seq[ModuleNode]): Unit = {
+      moduleNodes: Seq[ModuleNode]): Unit =
     projects.zip(moduleNodes).foreach {
       case (moduleProject, moduleNode) =>
         moduleProject.dependencies.projects.foreach { dependencyId =>
@@ -164,7 +164,6 @@ class SbtProjectResolver
           moduleNode.add(data)
         }
     }
-  }
 
   def createModules(
       projects: Seq[sbtStructure.ProjectData],
@@ -246,7 +245,7 @@ class SbtProjectResolver
 
   private def createFacet(
       project: sbtStructure.ProjectData,
-      android: sbtStructure.AndroidData): AndroidFacetNode = {
+      android: sbtStructure.AndroidData): AndroidFacetNode =
     new AndroidFacetNode(
       android.targetVersion,
       android.manifest,
@@ -257,7 +256,6 @@ class SbtProjectResolver
       android.libs,
       android.isLibrary,
       android.proguardConfig)
-  }
 
   private def createUnresolvedLibrary(
       moduleId: sbtStructure.ModuleIdentifier): LibraryNode = {
@@ -267,9 +265,8 @@ class SbtProjectResolver
   }
 
   private def createResolvedLibrary(
-      module: sbtStructure.ModuleData): LibraryNode = {
+      module: sbtStructure.ModuleData): LibraryNode =
     createLibrary(module, resolved = true)
-  }
 
   private def createLibrary(
       module: sbtStructure.ModuleData,
@@ -455,7 +452,7 @@ class SbtProjectResolver
       project: sbtStructure.ProjectData,
       scope: String)(
       selector: sbtStructure.ConfigurationData => Seq[
-        sbtStructure.DirectoryData]): Seq[String] = {
+        sbtStructure.DirectoryData]): Seq[String] =
     project.configurations
       .find(_.id == scope)
       .map(selector)
@@ -463,12 +460,11 @@ class SbtProjectResolver
       .map(_.file)
       .filter(!_.isOutsideOf(project.base))
       .map(_.path)
-  }
 
   protected def createLibraryDependencies(
       dependencies: Seq[sbtStructure.ModuleDependencyData])(
       moduleData: ModuleData,
-      libraries: Seq[LibraryData]): Seq[LibraryDependencyNode] = {
+      libraries: Seq[LibraryData]): Seq[LibraryDependencyNode] =
     dependencies.map { dependency =>
       val name = nameFor(dependency.id)
       val library = libraries
@@ -480,11 +476,10 @@ class SbtProjectResolver
       data.setScope(scopeFor(dependency.configurations))
       data
     }
-  }
 
   private def createUnmanagedDependencies(
       dependencies: Seq[sbtStructure.JarDependencyData])(
-      moduleData: ModuleData): Seq[LibraryDependencyNode] = {
+      moduleData: ModuleData): Seq[LibraryDependencyNode] =
     dependencies.groupBy(it => scopeFor(it.configurations)).toSeq.map {
       case (scope, dependency) =>
         val name = scope match {
@@ -496,7 +491,6 @@ class SbtProjectResolver
         createModuleLevelDependency(name, files, Seq.empty, Seq.empty, scope)(
           moduleData)
     }
-  }
 
   private def createModuleLevelDependency(
       name: String,

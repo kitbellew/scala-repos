@@ -153,9 +153,9 @@ private[streaming] object MasterFailureTest extends Logging {
     fs.mkdirs(testDir)
 
     // Setup the stream computation with the given operation
-    val ssc = StreamingContext.getOrCreate(checkpointDir.toString, () => {
-      setupStreams(batchDuration, operation, checkpointDir, testDir)
-    })
+    val ssc = StreamingContext.getOrCreate(
+      checkpointDir.toString,
+      () => setupStreams(batchDuration, operation, checkpointDir, testDir))
 
     // Check if setupStream was called to create StreamingContext
     // (and not created from checkpoint file)
@@ -296,11 +296,12 @@ private[streaming] object MasterFailureTest extends Logging {
         )
         Thread.sleep(sleepTime)
         // Recreate the streaming context from checkpoint
-        ssc = StreamingContext.getOrCreate(checkpointDir, () => {
-          throw new Exception(
-            "Trying to create new context when it " +
-              "should be reading from checkpoint file")
-        })
+        ssc = StreamingContext.getOrCreate(
+          checkpointDir,
+          () =>
+            throw new Exception(
+              "Trying to create new context when it " +
+                "should be reading from checkpoint file"))
       }
     }
     mergedOutput

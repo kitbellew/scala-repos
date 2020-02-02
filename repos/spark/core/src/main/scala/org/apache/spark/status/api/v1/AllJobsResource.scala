@@ -68,7 +68,7 @@ private[v1] object AllJobsResource {
   def convertJobData(
       job: JobUIData,
       listener: JobProgressListener,
-      includeStageDetails: Boolean): JobData = {
+      includeStageDetails: Boolean): JobData =
     listener.synchronized {
       val lastStageInfo = listener.stageIdToInfo.get(job.stageIds.max)
       val lastStageData = lastStageInfo.flatMap { s =>
@@ -97,5 +97,4 @@ private[v1] object AllJobsResource {
         numFailedStages = job.numFailedStages
       )
     }
-  }
 }

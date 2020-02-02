@@ -129,9 +129,8 @@ class Eval(target: Option[File]) {
   /**
     * run preprocessors on our string, returning a String that is the processed source
     */
-  def sourceForString(code: String): String = {
+  def sourceForString(code: String): String =
     preprocessors.foldLeft(code) { (acc, p) => p(acc) }
-  }
 
   /**
     * write the current checksum to a file
@@ -153,7 +152,7 @@ class Eval(target: Option[File]) {
   /**
     * val i: Int = new Eval()(new File("..."))
     */
-  def apply[T](files: File*): T = {
+  def apply[T](files: File*): T =
     if (target.isDefined) {
       val targetDir = target.get
       val unprocessedSource =
@@ -185,14 +184,12 @@ class Eval(target: Option[File]) {
         files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n"),
         true)
     }
-  }
 
   /**
     * val i: Int = new Eval()(getClass.getResourceAsStream("..."))
     */
-  def apply[T](stream: InputStream): T = {
+  def apply[T](stream: InputStream): T =
     apply(sourceForString(Source.fromInputStream(stream).mkString))
-  }
 
   /**
     * same as apply[T], but does not run preprocessors.
@@ -226,16 +223,14 @@ class Eval(target: Option[File]) {
     * converts the given file to evaluable source.
     * delegates to toSource(code: String)
     */
-  def toSource(file: File): String = {
+  def toSource(file: File): String =
     toSource(scala.io.Source.fromFile(file).mkString)
-  }
 
   /**
     * converts the given file to evaluable source.
     */
-  def toSource(code: String): String = {
+  def toSource(code: String): String =
     sourceForString(code)
-  }
 
   /**
     * Compile an entire source file into the virtual classloader.
@@ -248,9 +243,8 @@ class Eval(target: Option[File]) {
     * Like `Eval()`, but doesn't reset the virtual classloader before evaluating. So if you've
     * loaded classes with `compile`, they can be referenced/imported in code run by `inPlace`.
     */
-  def inPlace[T](code: String) = {
+  def inPlace[T](code: String) =
     apply[T](code, false)
-  }
 
   /**
     * Check if code is Eval-able.
@@ -280,11 +274,10 @@ class Eval(target: Option[File]) {
     check(scala.io.Source.fromInputStream(stream).mkString)
   }
 
-  def findClass(className: String): Class[_] = {
+  def findClass(className: String): Class[_] =
     compiler.findClass(className).getOrElse {
       throw new ClassNotFoundException("no such class: " + className)
     }
-  }
 
   private[util] def uniqueId(
       code: String,
@@ -320,13 +313,12 @@ class Eval(target: Option[File]) {
    * Wraps source code in a new class with an apply method.
    * NB: If this method is changed, make sure `codeWrapperLineOffset` is correct.
    */
-  private[this] def wrapCodeInClass(className: String, code: String) = {
+  private[this] def wrapCodeInClass(className: String, code: String) =
     "class " + className + " extends (() => Any) {\n" +
       "  def apply() = {\n" +
       code + "\n" +
       "  }\n" +
       "}\n"
-  }
 
   /*
    * Defines the number of code lines that proceed evaluated code.
@@ -591,7 +583,7 @@ class Eval(target: Option[File]) {
       }
     }
 
-    def findClass(className: String): Option[Class[_]] = {
+    def findClass(className: String): Option[Class[_]] =
       synchronized {
         cache.get(className).orElse {
           try {
@@ -603,7 +595,6 @@ class Eval(target: Option[File]) {
           }
         }
       }
-    }
 
     /**
       * Compile scala code. It can be found using the above class loader.
@@ -635,7 +626,7 @@ class Eval(target: Option[File]) {
     def apply(
         code: String,
         className: String,
-        resetState: Boolean = true): Class[_] = {
+        resetState: Boolean = true): Class[_] =
       synchronized {
         if (resetState) reset()
         findClass(className).getOrElse {
@@ -643,7 +634,6 @@ class Eval(target: Option[File]) {
           findClass(className).get
         }
       }
-    }
   }
 
   class CompilerException(val messages: List[List[String]])

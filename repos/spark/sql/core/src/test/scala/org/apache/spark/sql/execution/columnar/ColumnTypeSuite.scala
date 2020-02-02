@@ -69,15 +69,13 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
     def checkActualSize(
         columnType: ColumnType[_],
         value: Any,
-        expected: Int): Unit = {
-
+        expected: Int): Unit =
       assertResult(expected, s"Wrong actualSize for $columnType") {
         val row = new GenericMutableRow(1)
         row.update(0, CatalystTypeConverters.convertToCatalyst(value))
         val proj = UnsafeProjection.create(Array[DataType](columnType.dataType))
         columnType.actualSize(proj(row), 0)
       }
-    }
 
     checkActualSize(NULL, null, 0)
     checkActualSize(BOOLEAN, true, 1)
@@ -117,9 +115,8 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
   testColumnType(MAP_TYPE)
 
   def testNativeColumnType[T <: AtomicType](
-      columnType: NativeColumnType[T]): Unit = {
+      columnType: NativeColumnType[T]): Unit =
     testColumnType[T#InternalType](columnType)
-  }
 
   def testColumnType[JvmType](columnType: ColumnType[JvmType]): Unit = {
 

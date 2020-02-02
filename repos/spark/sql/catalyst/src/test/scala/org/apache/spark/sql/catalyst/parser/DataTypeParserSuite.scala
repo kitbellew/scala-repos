@@ -22,19 +22,15 @@ import org.apache.spark.sql.types._
 
 class DataTypeParserSuite extends SparkFunSuite {
 
-  def checkDataType(
-      dataTypeString: String,
-      expectedDataType: DataType): Unit = {
+  def checkDataType(dataTypeString: String, expectedDataType: DataType): Unit =
     test(s"parse ${dataTypeString.replace("\n", "")}") {
       assert(DataTypeParser.parse(dataTypeString) === expectedDataType)
     }
-  }
 
-  def unsupported(dataTypeString: String): Unit = {
+  def unsupported(dataTypeString: String): Unit =
     test(s"$dataTypeString is not supported") {
       intercept[DataTypeException](DataTypeParser.parse(dataTypeString))
     }
-  }
 
   checkDataType("int", IntegerType)
   checkDataType("integer", IntegerType)

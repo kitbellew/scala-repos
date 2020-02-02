@@ -120,7 +120,7 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     cleaner.shutdown()
   }
 
-  def readFromLog(log: Log): Iterable[(Int, Int)] = {
+  def readFromLog(log: Log): Iterable[(Int, Int)] =
     for (segment <- log.logSegments; entry <- segment.log;
          messageAndOffset <- {
            // create single message iterator or deep iterator depending on compression codec
@@ -133,13 +133,12 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
       val value = TestUtils.readString(messageAndOffset.message.payload).toInt
       key -> value
     }
-  }
 
   def writeDups(
       numKeys: Int,
       numDups: Int,
       log: Log,
-      codec: CompressionCodec): Seq[(Int, Int)] = {
+      codec: CompressionCodec): Seq[(Int, Int)] =
     for (dup <- 0 until numDups; key <- 0 until numKeys) yield {
       val count = counter
       log.append(
@@ -151,7 +150,6 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
       counter += 1
       (key, count)
     }
-  }
 
   @After
   def teardown() {

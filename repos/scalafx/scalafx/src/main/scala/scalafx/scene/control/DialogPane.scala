@@ -75,9 +75,8 @@ class DialogPane(
     * @return An ObjectProperty wrapping the current graphic.
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
-  def graphic_=(value: Node): Unit = {
+  def graphic_=(value: Node): Unit =
     ObjectProperty.fillProperty[jfxs.Node](this.graphic, value)
-  }
 
   /**
     * Property representing the header area of the dialog pane. Note that if this
@@ -87,9 +86,8 @@ class DialogPane(
     * javadoc.
     */
   def header: ObjectProperty[jfxs.Node] = delegate.headerProperty
-  def header_=(value: Node): Unit = {
+  def header_=(value: Node): Unit =
     ObjectProperty.fillProperty[jfxs.Node](this.header, value)
-  }
 
   /**
     * A property representing the header text for the dialog pane. The header text
@@ -102,17 +100,15 @@ class DialogPane(
     * the [[scalafx.scene.control.DialogPane]] class javadoc.</p>
     */
   def headerText: StringProperty = delegate.headerTextProperty
-  def headerText_=(value: String): Unit = {
+  def headerText_=(value: String): Unit =
     headerText() = value
-  }
 
   /**
     * Property representing the content area of the dialog.
     */
   def content: ObjectProperty[jfxs.Node] = delegate.contentProperty
-  def content_=(value: Node): Unit = {
+  def content_=(value: Node): Unit =
     ObjectProperty.fillProperty[jfxs.Node](this.content, value)
-  }
 
   /**
     * A property representing the content text for the dialog pane.
@@ -121,9 +117,8 @@ class DialogPane(
     * the content text will not be displayed in a default DialogPane instance.
     */
   def contentText: StringProperty = delegate.contentTextProperty
-  def contentText_=(value: String): Unit = {
+  def contentText_=(value: String): Unit =
     contentText() = value
-  }
 
   /**
     * A property that represents the dialog expandable content area.
@@ -132,9 +127,8 @@ class DialogPane(
     */
   def expandableContent: ObjectProperty[jfxs.Node] =
     delegate.expandableContentProperty
-  def expandableContent_=(value: Node): Unit = {
+  def expandableContent_=(value: Node): Unit =
     ObjectProperty.fillProperty[jfxs.Node](this.expandableContent, value)
-  }
 
   /**
     * Represents whether the dialogPane is expanded.

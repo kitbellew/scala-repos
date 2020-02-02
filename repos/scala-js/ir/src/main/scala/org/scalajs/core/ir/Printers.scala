@@ -45,7 +45,7 @@ object Printers {
   }
 
   class IRTreePrinter(protected val out: Writer) extends IndentationManager {
-    def printTopLevelTree(tree: Tree): Unit = {
+    def printTopLevelTree(tree: Tree): Unit =
       tree match {
         case Skip() =>
         // do not print anything
@@ -56,7 +56,6 @@ object Printers {
           print(tree)
           println()
       }
-    }
 
     protected final def printColumn(
         ts: List[Tree],
@@ -92,7 +91,7 @@ object Printers {
       print(end)
     }
 
-    protected def printBlock(tree: Tree): Unit = {
+    protected def printBlock(tree: Tree): Unit =
       tree match {
         case Block(trees) =>
           printColumn(trees, "{", ";", "}")
@@ -102,7 +101,6 @@ object Printers {
           print(tree)
           undent(); println(); print('}')
       }
-    }
 
     protected def printSig(args: List[ParamDef], resultType: Type): Unit = {
       printRow(args, "(", ", ", ")")
@@ -115,9 +113,8 @@ object Printers {
       }
     }
 
-    protected def printArgs(args: List[Tree]): Unit = {
+    protected def printArgs(args: List[Tree]): Unit =
       printRow(args, "(", ", ", ")")
-    }
 
     def print(tree: Tree): Unit = {
       tree match {
@@ -892,13 +889,12 @@ object Printers {
       out.write(c)
 
     protected def print(optimizerHints: OptimizerHints)(
-        implicit dummy: DummyImplicit): Unit = {
+        implicit dummy: DummyImplicit): Unit =
       if (optimizerHints != OptimizerHints.empty) {
         print("@hints(")
         print(optimizerHints.bits.toString)
         print(") ")
       }
-    }
 
     // Make it public
     override def println(): Unit = super.println()

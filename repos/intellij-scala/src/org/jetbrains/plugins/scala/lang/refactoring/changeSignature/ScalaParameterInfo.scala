@@ -98,9 +98,8 @@ class ScalaParameterInfo(
       .asInstanceOf[PsiExpression]
   }
 
-  override def getTypeWrapper: CanonicalTypes.Type = {
+  override def getTypeWrapper: CanonicalTypes.Type =
     if (scType != null) CanonicalTypes.createTypeWrapper(psiType) else null
-  }
 
   override def getTypeText: String =
     if (scType != null) getTypeWrapper.getTypeText else null

@@ -27,19 +27,17 @@ class LinkedList[E]()
    */
   private var _size: Double = 0
 
-  def getFirst(): E = {
+  def getFirst(): E =
     if (isEmpty())
       throw new NoSuchElementException()
     else
       peekFirst()
-  }
 
-  def getLast(): E = {
+  def getLast(): E =
     if (isEmpty())
       throw new NoSuchElementException()
     else
       peekLast()
-  }
 
   def removeFirst(): E = {
     if (isEmpty())
@@ -127,7 +125,7 @@ class LinkedList[E]()
     _size = 0
   }
 
-  private def getNodeAt(index: Int): Node[E] = {
+  private def getNodeAt(index: Int): Node[E] =
     if (index == 0) head
     else if (index == size - 1) last
     else {
@@ -143,7 +141,6 @@ class LinkedList[E]()
       }
       current
     }
-  }
 
   override def get(index: Int): E = {
     checkIndexInBounds(index)
@@ -158,7 +155,7 @@ class LinkedList[E]()
     oldValue
   }
 
-  private def addNode(nextNode: Node[E], e: E): Unit = {
+  private def addNode(nextNode: Node[E], e: E): Unit =
     if (nextNode eq head) addFirst(e)
     else if (nextNode eq null) addLast(e)
     else {
@@ -168,14 +165,13 @@ class LinkedList[E]()
 
       _size += 1
     }
-  }
 
   override def add(index: Int, element: E): Unit = {
     checkIndexOnBounds(index)
     addNode(getNodeAt(index), element)
   }
 
-  private def removeNode(node: Node[E]): E = {
+  private def removeNode(node: Node[E]): E =
     if (node eq head) removeFirst()
     else if (node eq last) removeLast()
     else {
@@ -186,7 +182,6 @@ class LinkedList[E]()
 
       node.value
     }
-  }
 
   override def remove(index: Int): E = {
     checkIndexInBounds(index)
@@ -349,14 +344,13 @@ class LinkedList[E]()
         last = -1
       }
 
-      private def checkThatHasLast(): Unit = {
+      private def checkThatHasLast(): Unit =
         if (last == -1)
           throw new IllegalStateException()
-      }
     }
   }
 
-  def descendingIterator(): Iterator[E] = {
+  def descendingIterator(): Iterator[E] =
     new Iterator[E] {
 
       private var removeEnabled = false
@@ -387,7 +381,6 @@ class LinkedList[E]()
           removeNode(nextNode.next)
       }
     }
-  }
 
   override def clone(): AnyRef =
     new LinkedList[E](this)

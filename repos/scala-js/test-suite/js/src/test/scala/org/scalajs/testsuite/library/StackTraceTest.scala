@@ -19,7 +19,7 @@ class StackTraceTest {
   import StackTraceTest._
 
   private def verifyClassMethodNames(places: (String, String)*)(
-      body: => Any): Unit = {
+      body: => Any): Unit =
     try {
       body
       throw new AssertionError("body should have thrown an exception")
@@ -39,7 +39,6 @@ class StackTraceTest {
           })
         }
     }
-  }
 
   @Test def decode_class_name_and_method_name(): Unit = {
     assumeTrue("Assume node.js", executingInNodeJS)
@@ -91,12 +90,11 @@ object StackTraceTest {
 
   class Foo extends FooTrait {
     @noinline
-    def f(x: Int): Int = {
+    def f(x: Int): Int =
       if (x > 10)
         throw new IllegalArgumentException(x.toString)
       else
         x + 4
-    }
   }
 
   class Bar {

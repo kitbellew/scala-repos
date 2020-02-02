@@ -27,7 +27,7 @@ import org.apache.spark.sql.execution.streaming.{
 trait OffsetSuite extends SparkFunSuite {
 
   /** Creates test to check all the comparisons of offsets given a `one` that is less than `two`. */
-  def compare(one: Offset, two: Offset): Unit = {
+  def compare(one: Offset, two: Offset): Unit =
     test(s"comparison $one <=> $two") {
       assert(one < two)
       assert(one <= two)
@@ -40,10 +40,9 @@ trait OffsetSuite extends SparkFunSuite {
       assert(one != two)
       assert(two != one)
     }
-  }
 
   /** Creates test to check that non-equality comparisons throw exception. */
-  def compareInvalid(one: Offset, two: Offset): Unit = {
+  def compareInvalid(one: Offset, two: Offset): Unit =
     test(s"invalid comparison $one <=> $two") {
       intercept[IllegalArgumentException] {
         assert(one < two)
@@ -66,7 +65,6 @@ trait OffsetSuite extends SparkFunSuite {
       assert(one != two)
       assert(two != one)
     }
-  }
 }
 
 class LongOffsetSuite extends OffsetSuite {

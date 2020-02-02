@@ -113,7 +113,7 @@ class DriverDataSource(
   private[this] def propsWithUserAndPassword(
       p: Properties,
       user: String,
-      password: String): Properties = {
+      password: String): Properties =
     if ((p ne null) && (user eq null) && (password eq null)) p
     else {
       val p2 = new Properties(p)
@@ -121,7 +121,6 @@ class DriverDataSource(
       if (password ne null) p2.setProperty("password", password)
       p2
     }
-  }
 
   def getConnection: Connection = {
     init
@@ -150,13 +149,12 @@ class DriverDataSource(
   def setLogWriter(out: PrintWriter): Unit =
     throw new SQLFeatureNotSupportedException()
 
-  def getParentLogger: Logger = {
+  def getParentLogger: Logger =
     try driver.asInstanceOf[{ def getParentLogger(): Logger }].getParentLogger
     catch {
       case _: NoSuchMethodException =>
         throw new SQLFeatureNotSupportedException()
     }
-  }
 
   def isWrapperFor(iface: Class[_]): Boolean = iface.isInstance(this)
 

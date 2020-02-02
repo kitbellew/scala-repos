@@ -38,7 +38,7 @@ private[ui] class StagesTab(parent: SparkUI)
   def isFairScheduler: Boolean =
     progressListener.schedulingMode == Some(SchedulingMode.FAIR)
 
-  def handleKillRequest(request: HttpServletRequest): Unit = {
+  def handleKillRequest(request: HttpServletRequest): Unit =
     if (killEnabled && parent.securityManager.checkModifyPermissions(
           request.getRemoteUser)) {
       val killFlag =
@@ -53,6 +53,5 @@ private[ui] class StagesTab(parent: SparkUI)
       // time should be limited in duration.
       Thread.sleep(100)
     }
-  }
 
 }

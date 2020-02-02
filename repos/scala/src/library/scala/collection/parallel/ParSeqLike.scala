@@ -172,12 +172,11 @@ trait ParSeqLike[
           splitter.psplitWithSignalling(until, length - until)(0) assign ctx))
     }
 
-  def reverse: Repr = {
+  def reverse: Repr =
     tasksupport.executeAndWaitResult(
       new Reverse(() => newCombiner, splitter) mapResult {
         _.resultWithTaskSupport
       })
-  }
 
   def reverseMap[S, That](f: T => S)(
       implicit bf: CanBuildFrom[Repr, S, That]): That =
@@ -302,14 +301,12 @@ trait ParSeqLike[
   } otherwise seq.updated(index, elem)(bf2seq(bf))*/
 
   def +:[U >: T, That](elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+      implicit bf: CanBuildFrom[Repr, U, That]): That =
     patch(0, mutable.ParArray(elem), 0)
-  }
 
   def :+[U >: T, That](elem: U)(
-      implicit bf: CanBuildFrom[Repr, U, That]): That = {
+      implicit bf: CanBuildFrom[Repr, U, That]): That =
     patch(length, mutable.ParArray(elem), 0)
-  }
 
   def padTo[U >: T, That](len: Int, elem: U)(
       implicit bf: CanBuildFrom[Repr, U, That]): That =

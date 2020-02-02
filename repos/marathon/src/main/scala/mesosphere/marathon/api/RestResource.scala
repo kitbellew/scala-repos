@@ -22,35 +22,31 @@ trait RestResource {
 
   protected def unknownGroup(
       id: PathId,
-      version: Option[Timestamp] = None): Response = {
+      version: Option[Timestamp] = None): Response =
     notFound(
       s"Group '$id' does not exist" + version.fold("")(v => s" in version $v"))
-  }
 
   protected def unknownTask(id: String): Response =
     notFound(s"Task '$id' does not exist")
 
   protected def unknownApp(
       id: PathId,
-      version: Option[Timestamp] = None): Response = {
+      version: Option[Timestamp] = None): Response =
     notFound(
       s"App '$id' does not exist" + version.fold("")(v => s" in version $v"))
-  }
 
-  protected def notFound(message: String): Response = {
+  protected def notFound(message: String): Response =
     Response
       .status(Status.NOT_FOUND)
       .entity(jsonObjString("message" -> message))
       .build()
-  }
 
   protected def deploymentResult(
       d: DeploymentPlan,
-      response: ResponseBuilder = Response.ok()) = {
+      response: ResponseBuilder = Response.ok()) =
     response
       .entity(jsonObjString("version" -> d.version, "deploymentId" -> d.id))
       .build()
-  }
 
   protected def status(code: Status) = Response.status(code).build()
   protected def status(code: Status, entity: AnyRef) =
@@ -84,7 +80,7 @@ trait RestResource {
     * @return returns a 422 response if there is a failure due to validation. Executes fn function if successful.
     */
   protected def withValid[T](t: T, description: Option[String] = None)(
-      fn: T => Response)(implicit validator: Validator[T]): Response = {
+      fn: T => Response)(implicit validator: Validator[T]): Response =
     //scalastyle:on
     validator(t) match {
       case f: Failure =>
@@ -95,5 +91,4 @@ trait RestResource {
       //scalastyle:on
       case Success => fn(t)
     }
-  }
 }

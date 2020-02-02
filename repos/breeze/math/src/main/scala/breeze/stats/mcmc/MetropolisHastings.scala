@@ -100,21 +100,16 @@ abstract class BaseMetropolisHastings[T](
   }
 
   // Burn in
-  cfor(0)(i => i < burnIn, i => i + 1)(i => {
-    getNext()
-  })
+  cfor(0)(i => i < burnIn, i => i + 1) { i => getNext() }
   // end burn in
 
-  def draw(): T = {
+  def draw(): T =
     if (dropCount == 0) {
       getNext()
     } else {
-      cfor(0)(i => i < dropCount, i => i + 1)(i => {
-        getNext()
-      })
+      cfor(0)(i => i < dropCount, i => i + 1) { i => getNext() }
       getNext()
     }
-  }
 }
 
 case class ArbitraryMetropolisHastings[T](
@@ -175,9 +170,9 @@ case class ThreadedBufferedRand[T](wrapped: Rand[T], bufferSize: Int = 1024 * 8)
       while (!stopWorker) {
         val buff = usedArrayQueue.poll(1, java.util.concurrent.TimeUnit.SECONDS)
         if (buff != null) {
-          cfor(0)(i => i < bufferSize, i => i + 1)(i => {
+          cfor(0)(i => i < bufferSize, i => i + 1) { i =>
             buff(i) = wrapped.draw()
-          })
+          }
           newArrayQueue.put(buff)
         }
       }
@@ -190,11 +185,10 @@ case class ThreadedBufferedRand[T](wrapped: Rand[T], bufferSize: Int = 1024 * 8)
   private var buffer: Array[T] = newArrayQueue.take()
   private var position: Int = 0
 
-  def stop() = { //In order to allow this class to be garbage collected, you must set this to true.
+  def stop() = //In order to allow this class to be garbage collected, you must set this to true.
     stopWorker = true
-  }
 
-  def draw(): T = {
+  def draw(): T =
     if (position < bufferSize) {
       position += 1
       buffer(position - 1)
@@ -204,5 +198,4 @@ case class ThreadedBufferedRand[T](wrapped: Rand[T], bufferSize: Int = 1024 * 8)
       position = 1
       buffer(0)
     }
-  }
 }

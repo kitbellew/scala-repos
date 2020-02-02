@@ -308,7 +308,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
 
   def computeMacroDefTypeFromMacroImplRef(
       macroDdef: DefDef,
-      macroImplRef: Tree): Type = {
+      macroImplRef: Tree): Type =
     macroImplRef match {
       case MacroImplReference(_, _, _, macroImpl, targs) =>
         // Step I. Transform c.Expr[T] to T and everything else to Any
@@ -358,7 +358,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       case _ =>
         ErrorType
     }
-  }
 
   /** Verifies that the body of a macro def typechecks to a reference to a static public non-overloaded method or a top-level macro bundle,
     *  and that that method is signature-wise compatible with the given macro definition.
@@ -418,7 +417,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
   def macroContext(
       typer: Typer,
       prefixTree: Tree,
-      expandeeTree: Tree): MacroContext = {
+      expandeeTree: Tree): MacroContext =
     new {
       val universe: self.global.type = self.global
       val callsiteTyper: universe.analyzer.Typer =
@@ -434,7 +433,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           expandee.pos,
           enclosingMacros.length - 1 /* exclude myself */ )
     }
-  }
 
   /** Calculate the arguments to pass to a macro implementation when expanding the provided tree.
     */
@@ -486,7 +484,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           // wrap argss in c.Expr if necessary (i.e. if corresponding macro impl param is of type c.Expr[T])
           // expand varargs (nb! varargs can apply to any parameter section, not necessarily to the last one)
           val trees =
-            map3(argss, paramss, signature)((args, defParams, implParams) => {
+            map3(argss, paramss, signature) { (args, defParams, implParams) =>
               val isVarargs = isVarArgsList(defParams)
               if (isVarargs) {
                 if (defParams.length > args.length + 1)
@@ -498,7 +496,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                   MacroTooFewArgumentsError(expandee)
               }
 
-              val wrappedArgs = mapWithIndex(args)((arg, j) => {
+              val wrappedArgs = mapWithIndex(args) { (arg, j) =>
                 val fingerprint = implParams(min(j, implParams.length - 1))
                 val duplicatedArg = duplicateAndKeepPositions(arg)
                 fingerprint match {
@@ -512,14 +510,14 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                       s"unexpected fingerprint $fingerprint in $binding with paramss being $paramss " +
                         s"corresponding to arg $arg in $argss")
                 }
-              })
+              }
 
               if (isVarargs) {
                 val (normal, varargs) =
                   wrappedArgs splitAt (defParams.length - 1)
                 normal :+ varargs // pack all varargs into a single Seq argument (varargs Scala style)
               } else wrappedArgs
-            })
+            }
           macroLogVerbose(s"trees: $trees")
 
           // STEP II: prepare type arguments of the macro expansion
@@ -635,10 +633,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       typer.infer.setError(expandee); expandee
     }
 
-    def apply(desugared: Tree): Tree = {
+    def apply(desugared: Tree): Tree =
       if (isMacroExpansionSuppressed(desugared)) onSuppressed(expandee)
       else expand(desugared)
-    }
 
     protected def expand(desugared: Tree): Tree = {
       def showDetailed(tree: Tree) =
@@ -728,7 +725,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       // so that adapt called indirectly by typer.typed knows that it needs to apply the existential fixup
       linkExpandeeAndExpanded(expandee, expanded0)
 
-      def typecheck(label: String, tree: Tree, pt: Type): Tree = {
+      def typecheck(label: String, tree: Tree, pt: Type): Tree =
         if (tree.isErrorTyped) tree
         else {
           if (macroDebugVerbose) println(s"$label (against pt = $pt): $tree")
@@ -740,7 +737,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             println(s"$label has failed: ${typer.context.reporter.errors}")
           result
         }
-      }
 
       if (isBlackbox(expandee)) {
         val expanded1 = atPos(enclosingMacroPosition.makeTransparent)(
@@ -954,7 +950,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         expandee)
     macroLogLite(s"falling back to: $fallbackSym")
 
-    def mkFallbackTree(tree: Tree): Tree = {
+    def mkFallbackTree(tree: Tree): Tree =
       tree match {
         case Select(qual, name) =>
           Select(qual, name) setPos tree.pos setSymbol fallbackSym
@@ -962,7 +958,6 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         case TypeApply(fn, args) =>
           TypeApply(mkFallbackTree(fn), args) setPos tree.pos
       }
-    }
     Fallback(mkFallbackTree(expandee))
   }
 

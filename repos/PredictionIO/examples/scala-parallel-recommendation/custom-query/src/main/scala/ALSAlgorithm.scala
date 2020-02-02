@@ -96,7 +96,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       model.items.keys.flatMap(model.productFeatures.lookup(_).headOption)
 
     val indexScores = if (queryFeatures.isEmpty) {
-      logger.info(s"No productFeatures found for query ${query}.")
+      logger.info(s"No productFeatures found for query $query.")
       Array[(Int, Double)]()
     } else {
       model.productFeatures

@@ -47,9 +47,8 @@ case class Jsonp(padding: String, json: JsValue)
 object Jsonp {
 
   implicit def contentTypeOf_Jsonp(
-      implicit codec: Codec): ContentTypeOf[Jsonp] = {
+      implicit codec: Codec): ContentTypeOf[Jsonp] =
     ContentTypeOf[Jsonp](Some(ContentTypes.JAVASCRIPT))
-  }
 
   import play.api.libs.iteratee.Execution.Implicits.trampoline
 

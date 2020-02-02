@@ -8,7 +8,7 @@ trait CollectionsOnSetFromMapTest extends SetTest {
 
   def mapFactory: MapFactory
 
-  def factory: SetFactory = {
+  def factory: SetFactory =
     new SetFactory {
       def implementationName: String =
         s"newSetFromMap(${mapFactory.implementationName})"
@@ -19,7 +19,6 @@ trait CollectionsOnSetFromMapTest extends SetTest {
       def allowsNullElement: Boolean =
         mapFactory.allowsNullKeys
     }
-  }
 }
 
 class CollectionsOnSetFromMapOnHashMapTest extends CollectionsOnSetFromMapTest {

@@ -181,7 +181,7 @@ private[collection] object RedBlackTree {
       z: A,
       zv: B,
       l: Tree[A, B1],
-      d: Tree[A, B1]): Tree[A, B1] = {
+      d: Tree[A, B1]): Tree[A, B1] =
     if (isRedTree(l) && isRedTree(l.left))
       RedTree(
         l.key,
@@ -196,13 +196,12 @@ private[collection] object RedBlackTree {
         BlackTree(z, zv, l.right.right, d))
     else
       mkTree(isBlack, z, zv, l, d)
-  }
   private[this] def balanceRight[A, B, B1 >: B](
       isBlack: Boolean,
       x: A,
       xv: B,
       a: Tree[A, B1],
-      r: Tree[A, B1]): Tree[A, B1] = {
+      r: Tree[A, B1]): Tree[A, B1] =
     if (isRedTree(r) && isRedTree(r.left))
       RedTree(
         r.left.key,
@@ -217,7 +216,6 @@ private[collection] object RedBlackTree {
         BlackTree(r.right.key, r.right.value, r.right.left, r.right.right))
     else
       mkTree(isBlack, x, xv, a, r)
-  }
   private[this] def upd[A, B, B1 >: B](
       tree: Tree[A, B],
       k: A,
@@ -527,7 +525,7 @@ private[collection] object RedBlackTree {
         right: Tree[A, B],
         leftZipper: NList[Tree[A, B]],
         rightZipper: NList[Tree[A, B]],
-        smallerDepth: Int): (NList[Tree[A, B]], Boolean, Boolean, Int) = {
+        smallerDepth: Int): (NList[Tree[A, B]], Boolean, Boolean, Int) =
       if (isBlackTree(left) && isBlackTree(right)) {
         unzipBoth(
           left.right,
@@ -571,7 +569,6 @@ private[collection] object RedBlackTree {
       } else {
         sys.error("unmatched trees in unzip: " + left + ", " + right)
       }
-    }
     unzipBoth(left, right, null, null, 0)
   }
 

@@ -39,9 +39,8 @@ object Test {
 }
 
 """
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     if (util.Properties.isJavaAtLeast("1.7")) test()
-  }
 
   def test() {
     import scala.reflect.runtime._

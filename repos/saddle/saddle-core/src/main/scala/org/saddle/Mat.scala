@@ -115,45 +115,40 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     *
     * @param i index
     */
-  def at(i: Int)(implicit st: ScalarTag[A]): Scalar[A] = {
+  def at(i: Int)(implicit st: ScalarTag[A]): Scalar[A] =
     Scalar(raw(i))
-  }
 
   /**
     * Return scalar value of Mat at at row/column
     * @param r row index
     * @param c col index
     */
-  def at(r: Int, c: Int)(implicit st: ScalarTag[A]): Scalar[A] = {
+  def at(r: Int, c: Int)(implicit st: ScalarTag[A]): Scalar[A] =
     Scalar(raw(r, c))
-  }
 
   /**
     * Access a slice of the Mat by integer offsets
     * @param r Array of row offsets
     * @param c Array of col offsets
     */
-  def at(r: Array[Int], c: Array[Int])(implicit st: ScalarTag[A]): Mat[A] = {
+  def at(r: Array[Int], c: Array[Int])(implicit st: ScalarTag[A]): Mat[A] =
     row(r).col(c)
-  }
 
   /**
     * Access a slice of the Mat by integer offsets
     * @param r Array of row offsets
     * @param c Integer col offset
     */
-  def at(r: Array[Int], c: Int)(implicit st: ScalarTag[A]): Vec[A] = {
+  def at(r: Array[Int], c: Int)(implicit st: ScalarTag[A]): Vec[A] =
     row(r).col(c)
-  }
 
   /**
     * Access a slice of the Mat by integer offsets
     * @param r Integer row offset
     * @param c Array of col offsets
     */
-  def at(r: Int, c: Array[Int])(implicit st: ScalarTag[A]): Vec[A] = {
+  def at(r: Int, c: Array[Int])(implicit st: ScalarTag[A]): Vec[A] =
     col(c).row(r)
-  }
 
   /**
     * Access a slice of the Mat by Slice parameters

@@ -27,7 +27,6 @@ private[python] class PowerIterationClusteringModelWrapper(
     model: PowerIterationClusteringModel)
     extends PowerIterationClusteringModel(model.k, model.assignments) {
 
-  def getAssignments: RDD[Array[Any]] = {
+  def getAssignments: RDD[Array[Any]] =
     model.assignments.map(x => Array(x.id, x.cluster))
-  }
 }

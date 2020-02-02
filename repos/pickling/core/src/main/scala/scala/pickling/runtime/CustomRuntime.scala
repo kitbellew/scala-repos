@@ -104,9 +104,8 @@ class Tuple2RTKnownTagUnpickler[L, R](lhs: Unpickler[L], rhs: Unpickler[R])
       reader1.hintElidedType(unpickler.tag)
     unpickler.unpickleEntry(reader1).asInstanceOf[T]
   }
-  override def unpickle(tag: String, reader: PReader): Any = {
+  override def unpickle(tag: String, reader: PReader): Any =
     (unpickleField("_1", reader, lhs), unpickleField("_2", reader, rhs))
-  }
   override def tag: FastTypeTag[(L, R)] =
     FastTypeTag
       .apply(currentMirror, s"scala.Tuple2[${lhs.tag.key},${rhs.tag.key}}]")
@@ -133,9 +132,7 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
       (tag, pickler)
     }
 
-    builder.putField(name, b => {
-      pickler1.pickle(value, b)
-    })
+    builder.putField(name, b => pickler1.pickle(value, b))
   }
 
   def pickle(picklee: (Any, Any), builder: PBuilder): Unit = {
@@ -172,7 +169,7 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
             throw PicklingException(
               s"""error in unpickle of '${this.getClass.getName}':
                                        |field name: '$name'
-                                       |field tag: '${tag1}'
+                                       |field tag: '$tag1'
                                        |message:
                                        |$msg""".stripMargin,
               cause

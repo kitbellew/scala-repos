@@ -77,11 +77,10 @@ private[spark] object LocalRDDCheckpointData {
     *
     * This method is idempotent.
     */
-  def transformStorageLevel(level: StorageLevel): StorageLevel = {
+  def transformStorageLevel(level: StorageLevel): StorageLevel =
     StorageLevel(
       useDisk = true,
       level.useMemory,
       level.deserialized,
       level.replication)
-  }
 }

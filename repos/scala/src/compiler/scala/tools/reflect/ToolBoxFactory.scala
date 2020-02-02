@@ -142,7 +142,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           transform: (analyzer.Typer, Tree) => Tree): Tree = {
         def withWrapping(tree: Tree)(op: Tree => Tree) =
           if (mode == TERMmode) wrappingIntoTerm(tree)(op) else op(tree)
-        withWrapping(verify(expr))(expr1 => {
+        withWrapping(verify(expr)) { expr1 =>
           // need to extract free terms, because otherwise you won't be able to typecheck macros against something that contains them
           val exprAndFreeTerms =
             extractFreeTerms(expr1, wrapFreeTermRefs = false)
@@ -212,7 +212,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                 NoPrefix,
                 invertedIndex(dummy.symbol.name.toTermName)))).traverse(result)
           result
-        })
+        }
       }
 
       def typecheck(
@@ -226,7 +226,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           expr,
           mode,
           withImplicitViewsDisabled = withImplicitViewsDisabled,
-          withMacrosDisabled = withMacrosDisabled)((currentTyper, expr) => {
+          withMacrosDisabled = withMacrosDisabled) { (currentTyper, expr) =>
           trace(
             "typing (implicit views = %s, macros = %s): "
               .format(!withImplicitViewsDisabled, !withMacrosDisabled))(
@@ -255,7 +255,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                     error.err.errMsg))
               EmptyTree
           }
-        })
+        }
 
       def inferImplicit(
           tree: Tree,
@@ -268,7 +268,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           tree,
           TERMmode,
           withImplicitViewsDisabled = false,
-          withMacrosDisabled = withMacrosDisabled)((currentTyper, tree) => {
+          withMacrosDisabled = withMacrosDisabled) { (currentTyper, tree) =>
           trace(
             "inferring implicit %s (macros = %s): "
               .format(if (isView) "view" else "value", !withMacrosDisabled))(
@@ -287,7 +287,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             withMacrosDisabled,
             pos,
             (pos, msg) => throw ToolBoxError(msg))
-        })
+        }
 
       private def wrapInPackageAndCompile(
           packageName: TermName,
@@ -450,12 +450,11 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       }
 
       // reporter doesn't accumulate errors, but the front-end does
-      def throwIfErrors() = {
+      def throwIfErrors() =
         if (frontEnd.hasErrors)
           throw ToolBoxError(
             "reflective compilation has failed:" + EOL + EOL + (frontEnd.infos map (_.msg) mkString EOL)
           )
-      }
     }
 
     trait CompilerApi {
@@ -544,7 +543,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         pt: u.Type,
         silent: Boolean = true,
         withMacrosDisabled: Boolean = false,
-        pos: u.Position = u.NoPosition): u.Tree = {
+        pos: u.Position = u.NoPosition): u.Tree =
       inferImplicit(
         u.EmptyTree,
         pt,
@@ -552,7 +551,6 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         silent = silent,
         withMacrosDisabled = withMacrosDisabled,
         pos = pos)
-    }
 
     def inferImplicitView(
         tree: u.Tree,

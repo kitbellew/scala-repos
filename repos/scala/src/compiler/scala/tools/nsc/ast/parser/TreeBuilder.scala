@@ -133,7 +133,7 @@ abstract class TreeBuilder {
   def addEvidenceParams(
       owner: Name,
       vparamss: List[List[ValDef]],
-      contextBounds: List[Tree]): List[List[ValDef]] = {
+      contextBounds: List[Tree]): List[List[ValDef]] =
     if (contextBounds.isEmpty) vparamss
     else {
       val mods = Modifiers(
@@ -152,7 +152,6 @@ abstract class TreeBuilder {
       else
         vparamss ::: List(evidenceParams)
     }
-  }
 
   def makePatDef(mods: Modifiers, pat: Tree, rhs: Tree) =
     gen.mkPatDef(mods, pat, rhs)

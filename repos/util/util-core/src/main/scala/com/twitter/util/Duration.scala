@@ -354,7 +354,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     s.toString()
   }
 
-  override def equals(other: Any): Boolean = {
+  override def equals(other: Any): Boolean =
     // in order to ensure that the sentinels are only equal
     // to themselves, we need to make sure we only compare nanos
     // when both instances are `Duration`s and not a sentinel subclass.
@@ -363,7 +363,6 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     } else {
       false
     }
-  }
 
   override def hashCode: Int =
     // inline java.lang.Long.hashCode to avoid the BoxesRunTime.boxToLong

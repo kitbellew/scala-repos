@@ -225,13 +225,13 @@ trait DocumentCleaner {
       } else {
         val replacements = getReplacementNodes(doc, elem)
         elem.children().foreach(_.remove())
-        replacements.foreach(n => {
+        replacements.foreach { n =>
           try {
             elem.appendChild(n)
           } catch {
             case ex: Exception => info(ex, "Failed to append cleaned child!")
           }
-        })
+        }
       }
     }
 
@@ -258,15 +258,14 @@ trait DocumentCleaner {
           val replaceNodes = getReplacementNodes(doc, div)
 
           div.children().foreach(_.remove())
-          replaceNodes.foreach(node => {
-
+          replaceNodes.foreach { node =>
             try {
               div.appendChild(node)
             } catch {
               case e: Exception => info(e, e.toString)
             }
 
-          })
+          }
         }
       } catch {
         case e: NullPointerException => {

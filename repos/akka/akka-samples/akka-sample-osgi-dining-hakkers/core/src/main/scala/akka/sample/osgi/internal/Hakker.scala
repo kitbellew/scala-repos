@@ -182,9 +182,8 @@ class Hakker(name: String, chair: Int) extends Actor {
     case Identify => identify("Initializing")
   }
 
-  def identify(busyWith: String): Unit = {
+  def identify(busyWith: String): Unit =
     sender() ! Identification(name, busyWith)
-  }
 
   def updateTable(leaderAdress: Address): Unit = {
     pubStateChange("-", "waiting")

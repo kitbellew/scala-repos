@@ -152,7 +152,7 @@ case class AhcWSRequest(
   def withRequestFilter(filter: WSRequestFilter): WSRequest =
     copy(filters = filters :+ filter)
 
-  def withRequestTimeout(timeout: Duration): WSRequest = {
+  def withRequestTimeout(timeout: Duration): WSRequest =
     timeout match {
       case Duration.Inf =>
         copy(requestTimeout = Some(-1))
@@ -163,7 +163,6 @@ case class AhcWSRequest(
           s"Request timeout must be between 0 and ${Int.MaxValue} milliseconds")
         copy(requestTimeout = Some(millis.toInt))
     }
-  }
 
   def withVirtualHost(vh: String): WSRequest = copy(virtualHost = Some(vh))
 
@@ -183,9 +182,8 @@ case class AhcWSRequest(
   }
 
   protected def filterWSRequestExecutor(
-      next: WSRequestExecutor): WSRequestExecutor = {
+      next: WSRequestExecutor): WSRequestExecutor =
     filters.foldRight(next)(_ apply _)
-  }
 
   def stream(): Future[StreamedResponse] =
     Streamed.execute(client.underlying, buildRequest())
@@ -227,12 +225,11 @@ case class AhcWSRequest(
   /**
     * Returns the body as an array of bytes.
     */
-  def getBody: Option[ByteString] = {
+  def getBody: Option[ByteString] =
     body match {
       case InMemoryBody(bytes) => Some(bytes)
       case _                   => None
     }
-  }
 
   private[libs] def authScheme(scheme: WSAuthScheme): Realm.AuthScheme =
     scheme match {
@@ -250,19 +247,17 @@ case class AhcWSRequest(
   private[libs] def auth(
       username: String,
       password: String,
-      scheme: Realm.AuthScheme = Realm.AuthScheme.BASIC): Realm = {
+      scheme: Realm.AuthScheme = Realm.AuthScheme.BASIC): Realm =
     new Realm.Builder(username, password)
       .setScheme(scheme)
       .setUsePreemptiveAuth(true)
       .build()
-  }
 
-  def contentType: Option[String] = {
+  def contentType: Option[String] =
     this.headers.find(p => p._1 == HttpHeaders.Names.CONTENT_TYPE).map {
       case (header, values) =>
         values.head
     }
-  }
 
   /**
     * Creates and returns an AHC request, running all operations on it.
@@ -388,9 +383,8 @@ case class AhcWSRequest(
           response
         }
 
-        override def onThrowable(t: Throwable) = {
+        override def onThrowable(t: Throwable) =
           result.failure(t)
-        }
       }
     )
     result.future
@@ -430,14 +424,13 @@ case class AhcWSRequest(
 }
 
 class AhcWSModule extends Module {
-  def bindings(environment: Environment, configuration: Configuration) = {
+  def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[WSAPI].to[AhcWSAPI],
       bind[AhcWSClientConfig].toProvider[AhcWSClientConfigParser].in[Singleton],
       bind[WSClientConfig].toProvider[WSConfigParser].in[Singleton],
       bind[WSClient].toProvider[WSClientProvider].in[Singleton]
     )
-  }
 }
 
 class WSClientProvider @Inject() (wsApi: WSAPI) extends Provider[WSClient] {
@@ -479,9 +472,8 @@ class AhcWSAPI @Inject() (
   */
 private class AhcWSCookie(ahcCookie: AHCCookie) extends WSCookie {
 
-  private def noneIfEmpty(value: String): Option[String] = {
+  private def noneIfEmpty(value: String): Option[String] =
     if (value.isEmpty) None else Some(value)
-  }
 
   /**
     * The underlying cookie object for the client.
@@ -567,9 +559,8 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
   /**
     * Get all the cookies.
     */
-  def cookies: Seq[WSCookie] = {
+  def cookies: Seq[WSCookie] =
     ahcResponse.getCookies.asScala.map(new AhcWSCookie(_))
-  }
 
   /**
     * Get only one cookie, using the cookie name.

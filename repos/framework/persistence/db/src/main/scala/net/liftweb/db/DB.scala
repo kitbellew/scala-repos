@@ -154,7 +154,7 @@ trait DB extends Loggable {
       postTransaction: List[Boolean => Unit],
       rolledBack: Boolean)
 
-  private def info: HashMap[ConnectionIdentifier, ConnectionHolder] = {
+  private def info: HashMap[ConnectionIdentifier, ConnectionHolder] =
     threadStore.get match {
       case null =>
         val tinfo = new HashMap[ConnectionIdentifier, ConnectionHolder]
@@ -163,7 +163,6 @@ trait DB extends Loggable {
 
       case v => v
     }
-  }
 
   private def postCommit: List[() => Unit] =
     _postCommitFuncs.get match {
@@ -198,7 +197,7 @@ trait DB extends Loggable {
         .map(c => new SuperConnection(c, () => cm.releaseConnection(c)))
 
     def jndiSuperConnection: Box[SuperConnection] =
-      jndiConnection(name).map(c => {
+      jndiConnection(name).map { c =>
         val uniqueId =
           if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
         logger.debug(
@@ -208,7 +207,7 @@ trait DB extends Loggable {
             "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
           c.close
         })
-      })
+      }
 
     val cmConn = for {
       connectionManager <- threadLocalConnectionManagers.box.flatMap(
@@ -422,7 +421,7 @@ trait DB extends Loggable {
     case _         => // NOP
   }
 
-  def statement[T](db: SuperConnection)(f: (Statement) => T): T = {
+  def statement[T](db: SuperConnection)(f: (Statement) => T): T =
     Helpers.calcTime {
       val st =
         if (loggingEnabled_?) {
@@ -440,7 +439,6 @@ trait DB extends Loggable {
     } match {
       case (time, (query, res)) => runLogger(query, time); res
     }
-  }
 
   def exec[T](db: SuperConnection, query: String)(f: (ResultSet) => T): T =
     statement(db) { st => f(st.executeQuery(query)) }
@@ -485,10 +483,9 @@ trait DB extends Loggable {
   /*
    If the column is null, return null rather than the boxed primitive
    */
-  def checkNull[T](rs: ResultSet, pos: Int, res: => T): T = {
+  def checkNull[T](rs: ResultSet, pos: Int, res: => T): T =
     if (null eq rs.getObject(pos)) null.asInstanceOf[T]
     else res
-  }
 
   private def asAny(pos: Int, rs: ResultSet, md: ResultSetMetaData): Any = {
     import java.sql.Types._
@@ -592,12 +589,11 @@ trait DB extends Loggable {
       query: String,
       params: List[Any],
       connectionIdentifier: ConnectionIdentifier)
-      : (List[String], List[List[String]]) = {
+      : (List[String], List[List[String]]) =
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         resultSetTo(setPreparedParams(ps, params).executeQuery)
       })
-  }
 
   /**
     * Executes the given parameterized query string with the given parameters.
@@ -620,12 +616,11 @@ trait DB extends Loggable {
       query: String,
       params: List[Any],
       connectionIdentifier: ConnectionIdentifier)
-      : (List[String], List[List[Any]]) = {
+      : (List[String], List[List[Any]]) =
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         resultSetToAny(setPreparedParams(ps, params).executeQuery)
       })
-  }
 
   /**
     * Executes the given parameterized update string with the given parameters.
@@ -645,12 +640,11 @@ trait DB extends Loggable {
   def runUpdate(
       query: String,
       params: List[Any],
-      connectionIdentifier: ConnectionIdentifier): Int = {
+      connectionIdentifier: ConnectionIdentifier): Int =
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         setPreparedParams(ps, params).executeUpdate
       })
-  }
 
   def runQuery(query: String): (List[String], List[List[String]]) =
     use(DefaultConnectionIdentifier)(conn => exec(conn, query)(resultSetTo))
@@ -658,7 +652,7 @@ trait DB extends Loggable {
   def performQuery(query: String): (List[String], List[List[Any]]) =
     use(DefaultConnectionIdentifier)(conn => exec(conn, query)(resultSetToAny))
 
-  def rollback(name: ConnectionIdentifier): Unit = {
+  def rollback(name: ConnectionIdentifier): Unit =
     info.get(name) match {
       case Some(ConnectionHolder(c, n, post, _)) =>
         info(name) = ConnectionHolder(c, n, post, true)
@@ -668,7 +662,6 @@ trait DB extends Loggable {
         throw new IllegalStateException(
           "Tried to rollback transaction on illegal ConnectionIdentifer or outside transaction context")
     }
-  }
 
   def rollback: Unit = rollback(DefaultConnectionIdentifier)
 

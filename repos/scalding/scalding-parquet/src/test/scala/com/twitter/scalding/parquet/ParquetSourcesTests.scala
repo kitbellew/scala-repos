@@ -27,25 +27,22 @@ abstract class ParquetSourcesTestsBase extends WordSpec {
   val fields = new Fields("foo", "bar")
   val columnStrings = Set("a", "b", "c")
 
-  def testDefaultFilter[S <: Source with HasFilterPredicate](src: S) = {
+  def testDefaultFilter[S <: Source with HasFilterPredicate](src: S) =
     "default to no filter predicate" in {
       assert(src.withFilter === None)
     }
-  }
 
-  def testReturnProvidedFilter[S <: Source with HasFilterPredicate](src: S) = {
+  def testReturnProvidedFilter[S <: Source with HasFilterPredicate](src: S) =
     "return the provided filter" in {
       assert(src.withFilter === Some(filter1))
     }
-  }
 
-  def testDefaultColumns[S <: Source with HasColumnProjection](src: S) = {
+  def testDefaultColumns[S <: Source with HasColumnProjection](src: S) =
     "default to no column projection" in {
       assert(src.columnProjectionString === None)
       assert(src.withColumns === Set())
       assert(src.withColumnProjections === Set())
     }
-  }
 
   def testReturnProvidedColumns[S <: Source with HasColumnProjection](
       src: S,
@@ -61,9 +58,8 @@ abstract class ParquetSourcesTestsBase extends WordSpec {
     }
   }
 
-  private def verifyParquetStringFormat(s: String, expected: Set[String]) = {
+  private def verifyParquetStringFormat(s: String, expected: Set[String]) =
     assert(s.split(";").toSet === expected)
-  }
 }
 
 class ParquetSourcesTests extends ParquetSourcesTestsBase {

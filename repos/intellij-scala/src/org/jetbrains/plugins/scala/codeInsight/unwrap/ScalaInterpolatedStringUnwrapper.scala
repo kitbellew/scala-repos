@@ -36,12 +36,11 @@ class ScalaInterpolatedStringUnwrapper extends ScalaUnwrapper {
 
   private def forInjection[T](e: PsiElement)(
       ifInjection: (ScExpression, ScInterpolatedStringLiteral) => T)(
-      ifNot: => T): T = {
+      ifNot: => T): T =
     e match {
       case (expr: ScExpression) childOf (lit: ScInterpolatedStringLiteral) =>
         ifInjection(expr, lit)
       case _ => ifNot
     }
-  }
 
 }

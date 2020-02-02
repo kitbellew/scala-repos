@@ -31,9 +31,8 @@ object FakeTask {
     * Utility method to create a TaskSet, potentially setting a particular sequence of preferred
     * locations for each task (given as varargs) if this sequence is not empty.
     */
-  def createTaskSet(numTasks: Int, prefLocs: Seq[TaskLocation]*): TaskSet = {
+  def createTaskSet(numTasks: Int, prefLocs: Seq[TaskLocation]*): TaskSet =
     createTaskSet(numTasks, 0, prefLocs: _*)
-  }
 
   def createTaskSet(
       numTasks: Int,

@@ -54,10 +54,9 @@ object v1 {
       permissions: Set[Permission],
       createdAt: Instant,
       expirationDate: Option[DateTime]) {
-    def isValidAt(timestamp: Instant) = {
+    def isValidAt(timestamp: Instant) =
       createdAt.isBefore(timestamp) && expirationDate.forall(
         _.isAfter(timestamp))
-    }
   }
   object GrantDetails {
     implicit val grantDetailsIso =

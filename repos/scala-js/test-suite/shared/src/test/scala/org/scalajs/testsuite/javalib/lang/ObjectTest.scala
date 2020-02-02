@@ -53,9 +53,8 @@ class ObjectTest {
     assertTrue((Array(Nil): Any).isInstanceOf[Object])
   }
 
-  @Test def null_should_not_be_an_Object(): Unit = {
+  @Test def null_should_not_be_an_Object(): Unit =
     assertFalse((null: Any).isInstanceOf[Object])
-  }
 
   @Test def everything_should_cast_to_Object_successfully_including_null()
       : Unit = {

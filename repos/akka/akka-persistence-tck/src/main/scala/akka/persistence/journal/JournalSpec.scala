@@ -76,7 +76,7 @@ abstract class JournalSpec(config: Config)
       confirms: Seq[String] = Nil): ReplayedMessage =
     ReplayedMessage(
       PersistentImpl(
-        s"a-${snr}",
+        s"a-$snr",
         snr,
         pid,
         "",
@@ -121,7 +121,7 @@ abstract class JournalSpec(config: Config)
         case WriteMessageSuccess(
             PersistentImpl(payload, `i`, `pid`, _, _, `sender`, `writerUuid`),
             _) ⇒
-          payload should be(s"a-${i}")
+          payload should be(s"a-$i")
       }
     }
   }

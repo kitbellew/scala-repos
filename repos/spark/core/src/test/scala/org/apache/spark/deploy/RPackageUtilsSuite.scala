@@ -44,11 +44,10 @@ class RPackageUtilsSuite
   private val dep1 = MavenCoordinate("a", "dep1", "c")
   private val dep2 = MavenCoordinate("a", "dep2", "d")
 
-  private def getJarPath(coord: MavenCoordinate, repo: File): File = {
+  private def getJarPath(coord: MavenCoordinate, repo: File): File =
     new File(
       IvyTestUtils.pathFromCoordinate(coord, repo, "jar", useIvyLayout = false),
       IvyTestUtils.artifactName(coord, useIvyLayout = false, ".jar"))
-  }
 
   private val lineBuffer = ArrayBuffer[String]()
 

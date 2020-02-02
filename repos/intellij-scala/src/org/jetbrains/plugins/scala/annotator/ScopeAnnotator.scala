@@ -116,14 +116,13 @@ trait ScopeAnnotator {
     case _ => element.name
   }
 
-  private def signatureOf(f: ScFunction): String = {
+  private def signatureOf(f: ScFunction): String =
     if (f.parameters.isEmpty)
       ""
     else
       f.paramClauses.clauses
         .map(clause => format(clause.parameters, clause.paramTypes))
         .mkString
-  }
 
   private def eraseType(s: String) =
     if (s.startsWith("Array[") || s.startsWith("_root_.scala.Array[")) s

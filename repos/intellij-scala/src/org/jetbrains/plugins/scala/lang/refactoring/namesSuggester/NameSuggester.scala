@@ -136,7 +136,7 @@ object NameSuggester {
         leftName <- namesByType(tp1, shortVersion = false)
         rightName <- namesByType(tp2, shortVersion = false)
       } {
-        add(s"${leftName}$separator${rightName.capitalize}")
+        add(s"$leftName$separator${rightName.capitalize}")
       }
     }
 
@@ -217,7 +217,7 @@ object NameSuggester {
       }
     }
 
-    def addForNamedElementString(name: String) = {
+    def addForNamedElementString(name: String) =
       if (name != null && name.toUpperCase == name) {
         add(deleteNonLetterFromString(name).toLowerCase)
       } else if (name == "String") {
@@ -225,7 +225,6 @@ object NameSuggester {
       } else {
         generateCamelNames(name)
       }
-    }
 
     def addForNamedElement(named: PsiNamedElement) = {
       val name = named.name
@@ -346,7 +345,6 @@ object NameSuggester {
     matcher.replaceAll("")
   }
 
-  private def deleteNonLetterFromStringFromTheEnd(s: String): String = {
+  private def deleteNonLetterFromStringFromTheEnd(s: String): String =
     s.reverse.dropWhile(!_.isLetter).reverse
-  }
 }

@@ -45,7 +45,7 @@ private[debugger] object BytecodeUtil {
 
   val returnCodes = Set(areturn, dreturn, freturn, ireturn, lreturn, voidReturn)
 
-  def iloadCode(istoreCode: Seq[Byte]): Seq[Byte] = {
+  def iloadCode(istoreCode: Seq[Byte]): Seq[Byte] =
     istoreCode match {
       case Seq(`istore_0`)  => Seq(iload_0)
       case Seq(`istore_1`)  => Seq(iload_1)
@@ -54,7 +54,6 @@ private[debugger] object BytecodeUtil {
       case Seq(`istore`, b) => Seq(iload, b)
       case _                => Nil
     }
-  }
 
   def readIstore(codeIndex: Int, bytecodes: Array[Byte]): Seq[Byte] = {
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
@@ -94,17 +93,15 @@ private[debugger] object BytecodeUtil {
     else Nil
   }
 
-  def loadCode(storeCode: Seq[Byte]): Seq[Byte] = {
+  def loadCode(storeCode: Seq[Byte]): Seq[Byte] =
     storeCode match {
       case Seq(b) => oneByteCodes.get(b).map(b => Seq(b)).getOrElse(Nil)
       case Seq(code, addr) =>
         twoBytesCodes.get(code).map(b => Seq(b, addr)).getOrElse(Nil)
       case _ => Nil
     }
-  }
 
-  def isIconst_0(codeIndex: Int, bytecodes: Array[Byte]) = {
+  def isIconst_0(codeIndex: Int, bytecodes: Array[Byte]) =
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1) false
     else bytecodes(codeIndex) == iconst_0
-  }
 }

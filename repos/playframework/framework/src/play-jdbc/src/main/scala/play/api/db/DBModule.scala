@@ -29,19 +29,17 @@ final class DBModule extends Module {
     ) ++ namedDatabaseBindings(dbs) ++ defaultDatabaseBinding(default, dbs)
   }
 
-  private def bindNamed(name: String): BindingKey[Database] = {
+  private def bindNamed(name: String): BindingKey[Database] =
     bind[Database].qualifiedWith(new NamedDatabaseImpl(name))
-  }
 
   private def namedDatabaseBindings(dbs: Set[String]): Seq[Binding[_]] =
     dbs.toSeq.map { db => bindNamed(db).to(new NamedDatabaseProvider(db)) }
 
   private def defaultDatabaseBinding(
       default: String,
-      dbs: Set[String]): Seq[Binding[_]] = {
+      dbs: Set[String]): Seq[Binding[_]] =
     if (dbs.contains(default)) Seq(bind[Database].to(bindNamed(default)))
     else Nil
-  }
 }
 
 /**

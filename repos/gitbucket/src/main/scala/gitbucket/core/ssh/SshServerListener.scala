@@ -27,20 +27,18 @@ object SshServer {
     server.setShellFactory(new NoShell(sshAddress))
   }
 
-  def start(sshAddress: SshAddress, baseUrl: String) = {
+  def start(sshAddress: SshAddress, baseUrl: String) =
     if (active.compareAndSet(false, true)) {
       configure(sshAddress, baseUrl)
       server.start()
       logger.info(s"Start SSH Server Listen on ${server.getPort}")
     }
-  }
 
-  def stop() = {
+  def stop() =
     if (active.compareAndSet(true, false)) {
       server.stop(true)
       logger.info("SSH Server is stopped.")
     }
-  }
 
   def isActive = active.get
 }
@@ -69,8 +67,7 @@ class SshServerListener
     } SshServer.start(sshAddress, baseUrl)
   }
 
-  override def contextDestroyed(sce: ServletContextEvent): Unit = {
+  override def contextDestroyed(sce: ServletContextEvent): Unit =
     SshServer.stop()
-  }
 
 }

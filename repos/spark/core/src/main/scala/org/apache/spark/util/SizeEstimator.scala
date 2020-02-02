@@ -299,7 +299,7 @@ object SizeEstimator extends Logging {
     size
   }
 
-  private def primitiveSize(cls: Class[_]): Int = {
+  private def primitiveSize(cls: Class[_]): Int =
     if (cls == classOf[Byte]) {
       BYTE_SIZE
     } else if (cls == classOf[Boolean]) {
@@ -320,7 +320,6 @@ object SizeEstimator extends Logging {
       throw new IllegalArgumentException(
         "Non-primitive class " + cls + " passed to primitiveSize()")
     }
-  }
 
   /**
     * Get or compute the ClassInfo for a given class.

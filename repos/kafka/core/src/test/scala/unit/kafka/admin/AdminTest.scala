@@ -170,13 +170,12 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
   private def getBrokersWithPartitionDir(
       servers: Iterable[KafkaServer],
       topic: String,
-      partitionId: Int): Set[Int] = {
+      partitionId: Int): Set[Int] =
     servers
       .filter(server =>
         new File(server.config.logDirs.head, topic + "-" + partitionId).exists)
       .map(_.config.brokerId)
       .toSet
-  }
 
   @Test
   def testPartitionReassignmentWithLeaderInNewReplicas() {

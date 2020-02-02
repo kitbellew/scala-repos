@@ -132,7 +132,7 @@ object LiteralGenerator {
   lazy val limitedIntegerLiteralGen: Gen[Literal] =
     for { i <- Gen.choose(-100, 100) } yield Literal.create(i, IntegerType)
 
-  def randomGen(dt: DataType): Gen[Literal] = {
+  def randomGen(dt: DataType): Gen[Literal] =
     dt match {
       case ByteType             => byteLiteralGen
       case ShortType            => shortLiteralGen
@@ -150,5 +150,4 @@ object LiteralGenerator {
         decimalLiteralGen(precision, scale)
       case dt => throw new IllegalArgumentException(s"not supported type $dt")
     }
-  }
 }

@@ -30,11 +30,10 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
 
   val N = 5
 
-  implicit def genVector: Arbitrary[DenseVector[Double]] = {
+  implicit def genVector: Arbitrary[DenseVector[Double]] =
     Arbitrary { Gen.wrap(DenseVector.rand(N)) }
-  }
 
-  implicit def genMatrix: Arbitrary[DenseMatrix[Double]] = {
+  implicit def genMatrix: Arbitrary[DenseMatrix[Double]] =
     Arbitrary {
       Gen.wrap {
         // needs to be positive semidefinite
@@ -42,14 +41,11 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
         a + a.t + DenseMatrix.eye[Double](N)
       }
     }
-  }
 
   test("Probability of mean") {
     check(Prop.forAll { (m: DenseVector[Double], s: DenseMatrix[Double]) =>
-      {
-        val b = new MultivariateGaussian(m, s)
-        b.unnormalizedLogPdf(m) == 0.0
-      }
+      val b = new MultivariateGaussian(m, s)
+      b.unnormalizedLogPdf(m) == 0.0
     })
   }
 

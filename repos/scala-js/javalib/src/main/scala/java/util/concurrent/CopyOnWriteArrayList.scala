@@ -56,11 +56,10 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
 
   def lastIndexOf(e: E, index: Int): Int = {
     @tailrec
-    def findIndex(iter: ListIterator[E]): Int = {
+    def findIndex(iter: ListIterator[E]): Int =
       if (!iter.hasPrevious) -1
       else if (iter.previous() === e) iter.nextIndex
       else findIndex(iter)
-    }
     findIndex(listIterator(size))
   }
 
@@ -124,14 +123,13 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     }
   }
 
-  def addIfAbsent(e: E): Boolean = {
+  def addIfAbsent(e: E): Boolean =
     if (contains(e)) false
     else {
       copyIfNeeded()
       innerPush(e)
       true
     }
-  }
 
   def containsAll(c: Collection[_]): Boolean =
     c.iterator.forall(this.contains(_))
@@ -181,7 +179,7 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   override def toString: String =
     iterator().mkString("[", ",", "]")
 
-  override def equals(obj: Any): Boolean = {
+  override def equals(obj: Any): Boolean =
     if (obj.asInstanceOf[AnyRef] eq this) {
       true
     } else {
@@ -192,13 +190,11 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
         case _ => false
       }
     }
-  }
 
-  override def hashCode(): Int = {
+  override def hashCode(): Int =
     iterator().foldLeft(1) { (prev, elem) =>
       31 * prev + (if (elem == null) 0 else elem.hashCode)
     }
-  }
 
   def iterator(): Iterator[E] =
     listIterator()
@@ -232,12 +228,11 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
       items: E*): js.Array[E] =
     inner.splice(index, deleteCount, items: _*)
 
-  protected def copyIfNeeded(): Unit = {
+  protected def copyIfNeeded(): Unit =
     if (requiresCopyOnWrite) {
       inner = inner.jsSlice()
       requiresCopyOnWrite = false
     }
-  }
 
   protected def innerSnapshot(): js.Array[E] = {
     requiresCopyOnWrite = true
@@ -302,14 +297,13 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
       self.innerSplice(fromIndex + index, deleteCount, items: _*)
     }
 
-    override protected def innerPush(elem: E): Unit = {
+    override protected def innerPush(elem: E): Unit =
       if (toIndex < self.size) {
         innerSplice(size, 0, elem)
       } else {
         changeSize(1)
         self.innerPush(elem)
       }
-    }
 
     override protected def copyIfNeeded(): Unit =
       self.copyIfNeeded()
@@ -321,15 +315,13 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
       toIndex += delta
   }
 
-  protected def checkIndexInBounds(index: Int): Unit = {
+  protected def checkIndexInBounds(index: Int): Unit =
     if (index < 0 || index >= size)
       throw new IndexOutOfBoundsException(index.toString)
-  }
 
-  protected def checkIndexOnBounds(index: Int): Unit = {
+  protected def checkIndexOnBounds(index: Int): Unit =
     if (index < 0 || index > size)
       throw new IndexOutOfBoundsException(index.toString)
-  }
 }
 
 private class CopyOnWriteArrayListIterator[E](

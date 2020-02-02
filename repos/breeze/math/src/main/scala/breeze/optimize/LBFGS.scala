@@ -57,18 +57,16 @@ class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(
     state.x + dir * stepSize
   protected def initialHistory(f: DiffFunction[T], x: T): History =
     new LBFGS.ApproximateInverseHessian(m)
-  protected def chooseDescentDirection(state: State, fn: DiffFunction[T]): T = {
+  protected def chooseDescentDirection(state: State, fn: DiffFunction[T]): T =
     state.history * state.grad
-  }
 
   protected def updateHistory(
       newX: T,
       newGrad: T,
       newVal: Double,
       f: DiffFunction[T],
-      oldState: State): History = {
+      oldState: State): History =
     oldState.history.updated(newX - oldState.x, newGrad :- oldState.grad)
-  }
 
   /**
     * Given a direction, perform a line search to find
@@ -158,9 +156,8 @@ object LBFGS {
 
   implicit def multiplyInverseHessian[T](
       implicit vspace: MutableInnerProductModule[T, Double])
-      : OpMulMatrix.Impl2[ApproximateInverseHessian[T], T, T] = {
+      : OpMulMatrix.Impl2[ApproximateInverseHessian[T], T, T] =
     new OpMulMatrix.Impl2[ApproximateInverseHessian[T], T, T] {
       def apply(a: ApproximateInverseHessian[T], b: T): T = a * b
     }
-  }
 }

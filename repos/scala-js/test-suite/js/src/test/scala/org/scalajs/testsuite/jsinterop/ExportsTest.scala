@@ -1006,9 +1006,8 @@ class ExportsTest {
     assertEquals(obj.x, 1)
   }
 
-  @Test def `exports_for_objects_ending_in__=_issue_1090`(): Unit = {
+  @Test def `exports_for_objects_ending_in__=_issue_1090`(): Unit =
     assertEquals(jsPackage.ExportObjSetterNamed_=().x, 1)
-  }
 
   @Test def should_expose_public_members_of_new_js_Object_issue_1899(): Unit = {
 

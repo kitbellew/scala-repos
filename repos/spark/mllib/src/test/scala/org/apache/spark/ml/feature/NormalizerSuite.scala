@@ -75,13 +75,12 @@ class NormalizerSuite
       .setOutputCol("normalized_features")
   }
 
-  def collectResult(result: DataFrame): Array[Vector] = {
+  def collectResult(result: DataFrame): Array[Vector] =
     result.select("normalized_features").collect().map {
       case Row(features: Vector) => features
     }
-  }
 
-  def assertTypeOfVector(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
+  def assertTypeOfVector(lhs: Array[Vector], rhs: Array[Vector]): Unit =
     assert(
       (lhs, rhs).zipped.forall {
         case (v1: DenseVector, v2: DenseVector)   => true
@@ -90,13 +89,11 @@ class NormalizerSuite
       },
       "The vector type should be preserved after normalization."
     )
-  }
 
-  def assertValues(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
+  def assertValues(lhs: Array[Vector], rhs: Array[Vector]): Unit =
     assert((lhs, rhs).zipped.forall { (vector1, vector2) =>
       vector1 ~== vector2 absTol 1e-5
     }, "The vector value is not correct after normalization.")
-  }
 
   test("Normalization with default parameter") {
     val result = collectResult(normalizer.transform(dataFrame))

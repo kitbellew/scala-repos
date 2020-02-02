@@ -49,7 +49,7 @@ class MarathonApp extends App {
     client
   }
 
-  def modules(): Seq[Module] = {
+  def modules(): Seq[Module] =
     Seq(
       new HttpModule(conf),
       new MetricsModule,
@@ -60,9 +60,8 @@ class MarathonApp extends App {
       new DebugModule(conf),
       new CoreGuiceModule
     ) ++ getEventsModule
-  }
 
-  def getEventsModule: Option[Module] = {
+  def getEventsModule: Option[Module] =
     conf.eventSubscriber.get flatMap {
       case "http_callback" =>
         log.info(
@@ -74,7 +73,6 @@ class MarathonApp extends App {
         log.info("Event notification disabled.")
         None
     }
-  }
 
   override lazy val conf = new AllConf(args)
 
@@ -129,11 +127,10 @@ class MarathonApp extends App {
     * presence of blocking computation.
     */
   private[this] def setConcurrentContextDefaults(): Unit = {
-    def setIfNotDefined(property: String, value: String): Unit = {
+    def setIfNotDefined(property: String, value: String): Unit =
       if (!sys.props.contains(property)) {
         sys.props += property -> value
       }
-    }
 
     setIfNotDefined("scala.concurrent.context.minThreads", "5")
     setIfNotDefined("scala.concurrent.context.numThreads", "x2")

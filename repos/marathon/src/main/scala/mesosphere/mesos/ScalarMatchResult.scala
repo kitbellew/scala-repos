@@ -51,9 +51,8 @@ case class NoMatch(
   require(requiredValue > offeredValue)
 
   def matches: Boolean = false
-  override def toString: String = {
+  override def toString: String =
     s"$resourceName${scope.note} NOT SATISFIED ($requiredValue > $offeredValue)"
-  }
 }
 
 /** A successful match of a scalar resource requirement. */
@@ -69,7 +68,7 @@ case class ScalarMatch(
   require(consumedValue >= requiredValue)
 
   def matches: Boolean = true
-  def consumedResources: Iterable[Protos.Resource] = {
+  def consumedResources: Iterable[Protos.Resource] =
     consumed.map {
       case ScalarMatch.Consumption(value, role, reservation) =>
         import mesosphere.mesos.protos.Implicits._
@@ -77,15 +76,13 @@ case class ScalarMatch(
         reservation.foreach(builder.setReservation(_))
         builder.build()
     }
-  }
 
   def roles: Iterable[String] = consumed.map(_.role)
 
   lazy val consumedValue: Double = consumed.iterator.map(_.consumedValue).sum
 
-  override def toString: String = {
+  override def toString: String =
     s"$resourceName${scope.note} SATISFIED ($requiredValue <= $consumedValue)"
-  }
 }
 
 object ScalarMatch {

@@ -115,11 +115,10 @@ trait ReductionFinderModule[M[+_]]
         specByParent: Map[DepGraph, TransSpec1]) {
 
       def buildMembers(
-          ancestor: DepGraph): List[(TransSpec1, List[Reduction])] = {
+          ancestor: DepGraph): List[(TransSpec1, List[Reduction])] =
         parentsByAncestor(ancestor) map { p =>
           (specByParent(p), reducesByParent(p) map { _.red })
         }
-      }
     }
 
     def megaReduce(node: DepGraph, st: MegaReduceState): DepGraph = {

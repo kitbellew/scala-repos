@@ -197,7 +197,7 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     * initial ignore threshold and the trailing end of the remember window (that is, which ever
     * is later in time).
     */
-  private def findNewFiles(currentTime: Long): Array[String] = {
+  private def findNewFiles(currentTime: Long): Array[String] =
     try {
       lastNewFileFindingTime = clock.getTimeMillis()
 
@@ -232,7 +232,6 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
         reset()
         Array.empty
     }
-  }
 
   /**
     * Identify whether the given `path` is a new file for the batch of `currentTime`. For it to be
@@ -310,11 +309,10 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   }
 
   /** Get file mod time from cache or fetch it from the file system */
-  private def getFileModTime(path: Path) = {
+  private def getFileModTime(path: Path) =
     fileToModTime.getOrElseUpdate(
       path.toString,
       fs.getFileStatus(path).getModificationTime())
-  }
 
   private def directoryPath: Path = {
     if (_path == null) _path = new Path(directory)
@@ -377,10 +375,9 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       }
     }
 
-    override def toString: String = {
+    override def toString: String =
       "[\n" + hadoopFiles.size + " file sets\n" +
         hadoopFiles.map(p => (p._1, p._2.mkString(", "))).mkString("\n") + "\n]"
-    }
   }
 }
 
@@ -394,10 +391,9 @@ private[streaming] object FileInputDStream {
     */
   def calculateNumBatchesToRemember(
       batchDuration: Duration,
-      minRememberDurationS: Duration): Int = {
+      minRememberDurationS: Duration): Int =
     math
       .ceil(
         minRememberDurationS.milliseconds.toDouble / batchDuration.milliseconds)
       .toInt
-  }
 }

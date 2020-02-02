@@ -70,9 +70,9 @@ private[stream] class ConnectionSourceStage(
             stageActor.watch(listener)
             if (isAvailable(out)) listener ! ResumeAccepting(1)
             val target = self
-            bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
+            bindingPromise.success(ServerBinding(localAddress) { () ⇒
               target ! Unbind; unbindPromise.future
-            }))
+            })
           case f: CommandFailed ⇒
             val ex = BindFailedException
             bindingPromise.failure(ex)
@@ -96,10 +96,9 @@ private[stream] class ConnectionSourceStage(
       setHandler(
         out,
         new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             // Ignore if still binding
             if (listener ne null) listener ! ResumeAccepting(1)
-          }
 
           override def onDownstreamFinish(): Unit = tryUnbind()
         }
@@ -137,13 +136,12 @@ private[stream] class ConnectionSourceStage(
           handler)
       }
 
-      private def tryUnbind(): Unit = {
+      private def tryUnbind(): Unit =
         if (listener ne null) {
           stageActor.unwatch(listener)
           setKeepGoing(true)
           listener ! Unbind
         }
-      }
 
       override def onTimer(timerKey: Any): Unit = timerKey match {
         case BindShutdownTimer ⇒
@@ -283,17 +281,15 @@ private[stream] object TcpConnectionStage {
     }
 
     val readHandler = new OutHandler {
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         connection ! ResumeReading
-      }
 
-      override def onDownstreamFinish(): Unit = {
+      override def onDownstreamFinish(): Unit =
         if (!isClosed(bytesIn)) connection ! ResumeReading
         else {
           connection ! Abort
           completeStage()
         }
-      }
     }
 
     setHandler(
@@ -305,16 +301,15 @@ private[stream] object TcpConnectionStage {
           connection ! Write(elem.asInstanceOf[ByteString], WriteAck)
         }
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           // Reading has stopped before, either because of cancel, or PeerClosed, so just Close now
           // (or half-close is turned off)
           if (isClosed(bytesOut) || !role.halfClose) connection ! Close
           // We still read, so we only close the write side
           else if (connection != null) connection ! ConfirmedClose
           else completeStage()
-        }
 
-        override def onUpstreamFailure(ex: Throwable): Unit = {
+        override def onUpstreamFailure(ex: Throwable): Unit =
           if (connection != null) {
             if (interpreter.log.isDebugEnabled) {
               interpreter.log.debug(
@@ -324,7 +319,6 @@ private[stream] object TcpConnectionStage {
             }
             connection ! Abort
           } else failStage(ex)
-        }
       }
     )
 

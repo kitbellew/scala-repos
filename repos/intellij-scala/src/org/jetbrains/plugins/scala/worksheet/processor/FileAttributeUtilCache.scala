@@ -15,13 +15,12 @@ object FileAttributeUtilCache {
   private val lightKeys =
     mutable.WeakHashMap[VirtualFile, mutable.HashMap[FileAttribute, String]]()
 
-  def readAttribute(attribute: FileAttribute, file: PsiFile): Option[String] = {
+  def readAttribute(attribute: FileAttribute, file: PsiFile): Option[String] =
     file.getVirtualFile match {
       case normalFile: VirtualFileWithId =>
         Option(attribute readAttributeBytes normalFile) map (new String(_))
       case other => lightKeys get other flatMap (map => map get attribute)
     }
-  }
 
   def writeAttribute(attribute: FileAttribute, file: PsiFile, data: String) {
     file.getVirtualFile match {

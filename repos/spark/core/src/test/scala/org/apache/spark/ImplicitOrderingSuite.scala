@@ -54,7 +54,7 @@ private object ImplicitOrderingSuite {
       throw new UnsupportedOperationException
   }
 
-  def basicMapExpectations(rdd: RDD[Int]): List[(Boolean, String)] = {
+  def basicMapExpectations(rdd: RDD[Int]): List[(Boolean, String)] =
     List(
       (
         rdd.map(x => (x, x)).keyOrdering.isDefined,
@@ -78,9 +78,8 @@ private object ImplicitOrderingSuite {
         rdd.map(x => (new OrderedClass, x)).keyOrdering.isDefined,
         "rdd.map(x => (new OrderedClass, x)).keyOrdering.isDefined")
     )
-  }
 
-  def otherRDDMethodExpectations(rdd: RDD[Int]): List[(Boolean, String)] = {
+  def otherRDDMethodExpectations(rdd: RDD[Int]): List[(Boolean, String)] =
     List(
       (
         rdd.groupBy(x => x).keyOrdering.isDefined,
@@ -104,5 +103,4 @@ private object ImplicitOrderingSuite {
           .isDefined,
         "rdd.groupBy((x: Int) => x, new HashPartitioner(5)).keyOrdering.isDefined")
     )
-  }
 }

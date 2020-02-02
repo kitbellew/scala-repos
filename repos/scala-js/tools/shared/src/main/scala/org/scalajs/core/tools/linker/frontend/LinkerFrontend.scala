@@ -106,18 +106,16 @@ object LinkerFrontend {
 
     // Non-deprecated version to call from the sbt plugin
     private[scalajs] def withBypassLinkingErrorsInternal(
-        bypassLinkingErrors: Boolean): Config = {
+        bypassLinkingErrors: Boolean): Config =
       copy(bypassLinkingErrors = bypassLinkingErrors)
-    }
 
     def withCheckIR(checkIR: Boolean): Config =
       copy(checkIR = checkIR)
 
     private def copy(
         bypassLinkingErrors: Boolean = bypassLinkingErrors,
-        checkIR: Boolean = checkIR): Config = {
+        checkIR: Boolean = checkIR): Config =
       new Config(bypassLinkingErrors, checkIR)
-    }
   }
 
   object Config {

@@ -274,7 +274,7 @@ private[akka] case class ActorMaterializerImpl(
   private[akka] def actorOf(
       props: Props,
       name: String,
-      dispatcher: String): ActorRef = {
+      dispatcher: String): ActorRef =
     supervisor match {
       case ref: LocalActorRef ⇒
         ref.underlying.attachChild(
@@ -300,7 +300,6 @@ private[akka] case class ActorMaterializerImpl(
         throw new IllegalStateException(
           s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
     }
-  }
 
 }
 

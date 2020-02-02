@@ -311,7 +311,7 @@ abstract class BaseBufferTest {
     }
   }
 
-  @Test def compact(): Unit = {
+  @Test def compact(): Unit =
     if (!createsReadOnly) {
       val buf = withContent(10, elemRange(0, 10): _*)
       buf.position(6)
@@ -331,7 +331,6 @@ abstract class BaseBufferTest {
       val buf = allocBuffer(10)
       expectThrows(classOf[ReadOnlyBufferException], buf.compact())
     }
-  }
 
   @Test def slice(): Unit = {
     val buf1 = withContent(10, elemRange(0, 10): _*)

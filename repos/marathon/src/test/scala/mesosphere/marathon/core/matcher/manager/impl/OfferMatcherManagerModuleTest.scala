@@ -160,9 +160,8 @@ class OfferMatcherManagerModuleTest
       "ports(*) 1->2,3->4,5->6,7->8,9->10,11->12,13->14,15->16,17->18,19->20 ... (90 more)")
   }
 
-  def makeOneCPUTask(idBase: String) = {
+  def makeOneCPUTask(idBase: String) =
     MarathonTestHelper.makeOneCPUTask(idBase).build()
-  }
 
   object f {
     import org.apache.mesos.{Protos => Mesos}

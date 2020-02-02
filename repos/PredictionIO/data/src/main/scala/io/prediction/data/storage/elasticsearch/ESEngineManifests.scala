@@ -47,7 +47,7 @@ class ESEngineManifests(
       .actionGet()
   }
 
-  def get(id: String, version: String): Option[EngineManifest] = {
+  def get(id: String, version: String): Option[EngineManifest] =
     try {
       val response = client
         .prepareGet(index, estype, esid(id, version))
@@ -63,9 +63,8 @@ class ESEngineManifests(
         error(e.getMessage)
         None
     }
-  }
 
-  def getAll(): Seq[EngineManifest] = {
+  def getAll(): Seq[EngineManifest] =
     try {
       val builder = client.prepareSearch()
       ESUtils.getAll[EngineManifest](client, builder)
@@ -74,12 +73,11 @@ class ESEngineManifests(
         error(e.getMessage)
         Seq()
     }
-  }
 
   def update(engineManifest: EngineManifest, upsert: Boolean = false): Unit =
     insert(engineManifest)
 
-  def delete(id: String, version: String): Unit = {
+  def delete(id: String, version: String): Unit =
     try {
       client
         .prepareDelete(index, estype, esid(id, version))
@@ -88,5 +86,4 @@ class ESEngineManifests(
     } catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
-  }
 }

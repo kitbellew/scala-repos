@@ -49,9 +49,8 @@ private[play] class MaterializeOnDemandPublisher[T](source: Source[T, _])(
     extends StateMachine[State](AwaitingDemand)
     with Publisher[T] {
 
-  def subscribe(subscriber: Subscriber[_ >: T]) = {
+  def subscribe(subscriber: Subscriber[_ >: T]) =
     subscriber.onSubscribe(new ForwardingSubscription(subscriber))
-  }
 
   class ForwardingSubscription(subscriber: Subscriber[_ >: T])
       extends Subscription {

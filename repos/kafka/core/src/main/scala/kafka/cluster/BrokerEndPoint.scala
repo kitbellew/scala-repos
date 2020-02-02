@@ -30,14 +30,13 @@ object BrokerEndPoint {
     * BrokerEndPoint URI is host:port or [ipv6_host]:port
     * Note that unlike EndPoint (or listener) this URI has no security information.
     */
-  def parseHostPort(connectionString: String): Option[(String, Int)] = {
+  def parseHostPort(connectionString: String): Option[(String, Int)] =
     connectionString match {
       case uriParseExp(host, port) =>
         try Some(host, port.toInt)
         catch { case e: NumberFormatException => None }
       case _ => None
     }
-  }
 
   /**
     * BrokerEndPoint URI is host:port or [ipv6_host]:port
@@ -45,14 +44,13 @@ object BrokerEndPoint {
     */
   def createBrokerEndPoint(
       brokerId: Int,
-      connectionString: String): BrokerEndPoint = {
+      connectionString: String): BrokerEndPoint =
     parseHostPort(connectionString)
       .map { case (host, port) => new BrokerEndPoint(brokerId, host, port) }
       .getOrElse {
         throw new KafkaException(
           "Unable to parse " + connectionString + " to a broker endpoint")
       }
-  }
 
   def readFrom(buffer: ByteBuffer): BrokerEndPoint = {
     val brokerId = buffer.getInt()

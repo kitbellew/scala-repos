@@ -160,7 +160,6 @@ class IndexedRowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  def closeToZero(G: BDM[Double]): Boolean = {
+  def closeToZero(G: BDM[Double]): Boolean =
     G.valuesIterator.map(math.abs).sum < 1e-6
-  }
 }

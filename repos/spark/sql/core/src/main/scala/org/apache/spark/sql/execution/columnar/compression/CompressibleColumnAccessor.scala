@@ -38,7 +38,6 @@ private[columnar] trait CompressibleColumnAccessor[T <: AtomicType]
 
   abstract override def hasNext: Boolean = super.hasNext || decoder.hasNext
 
-  override def extractSingle(row: MutableRow, ordinal: Int): Unit = {
+  override def extractSingle(row: MutableRow, ordinal: Int): Unit =
     decoder.next(row, ordinal)
-  }
 }

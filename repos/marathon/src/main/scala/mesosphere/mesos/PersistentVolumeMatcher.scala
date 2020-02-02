@@ -21,7 +21,7 @@ object PersistentVolumeMatcher {
       }.toMap
 
     def resourcesForTask(
-        task: Task.Reserved): Option[Iterable[Mesos.Resource]] = {
+        task: Task.Reserved): Option[Iterable[Mesos.Resource]] =
       if (task.reservation.volumeIds
             .map(_.idString)
             .forall(availableVolumes.contains))
@@ -29,7 +29,6 @@ object PersistentVolumeMatcher {
           availableVolumes.get(id.idString)))
       else
         None
-    }
 
     waitingTasks.toStream.flatMap { task =>
       resourcesForTask(task).flatMap(rs => Some(VolumeMatch(task, rs)))

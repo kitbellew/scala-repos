@@ -56,7 +56,7 @@ private[stat] sealed trait StreamingTestMethod extends Serializable {
     * the t-testing libraries.
     */
   protected implicit def toApacheCommonsStats(
-      summaryStats: StatCounter): StatisticalSummaryValues = {
+      summaryStats: StatCounter): StatisticalSummaryValues =
     new StatisticalSummaryValues(
       summaryStats.mean,
       summaryStats.variance,
@@ -65,7 +65,6 @@ private[stat] sealed trait StreamingTestMethod extends Serializable {
       summaryStats.min,
       summaryStats.mean * summaryStats.count
     )
-  }
 }
 
 /**

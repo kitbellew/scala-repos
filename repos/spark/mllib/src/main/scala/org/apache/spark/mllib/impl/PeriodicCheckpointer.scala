@@ -127,11 +127,10 @@ private[mllib] abstract class PeriodicCheckpointer[T](
   /**
     * Call this at the end to delete any remaining checkpoint files.
     */
-  def deleteAllCheckpoints(): Unit = {
+  def deleteAllCheckpoints(): Unit =
     while (checkpointQueue.nonEmpty) {
       removeCheckpointFile()
     }
-  }
 
   /**
     * Dequeue the oldest checkpointed Dataset, and remove its checkpoint files.

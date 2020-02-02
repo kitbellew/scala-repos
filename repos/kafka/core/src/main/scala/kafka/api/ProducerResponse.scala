@@ -29,10 +29,10 @@ object ProducerResponse {
   def readFrom(buffer: ByteBuffer): ProducerResponse = {
     val correlationId = buffer.getInt
     val topicCount = buffer.getInt
-    val statusPairs = (1 to topicCount).flatMap(_ => {
+    val statusPairs = (1 to topicCount).flatMap { _ =>
       val topic = readShortString(buffer)
       val partitionCount = buffer.getInt
-      (1 to partitionCount).map(_ => {
+      (1 to partitionCount).map { _ =>
         val partition = buffer.getInt
         val error = buffer.getShort
         val offset = buffer.getLong
@@ -40,8 +40,8 @@ object ProducerResponse {
         (
           TopicAndPartition(topic, partition),
           ProducerResponseStatus(error, offset, timestamp))
-      })
-    })
+      }
+    }
 
     val throttleTime = buffer.getInt
     ProducerResponse(
@@ -76,7 +76,7 @@ case class ProducerResponse(
     val groupedStatus = statusGroupedByTopic
     4 + /* correlation id */
     4 + /* topic count */
-    groupedStatus.foldLeft(0)((foldedTopics, currTopic) => {
+    groupedStatus.foldLeft(0) { (foldedTopics, currTopic) =>
       foldedTopics +
         shortStringLength(currTopic._1) +
         4 + /* partition count for this topic */
@@ -86,7 +86,7 @@ case class ProducerResponse(
         8 + /* offset */
         8 /* timestamp */
       }
-    }) +
+    } +
       throttleTimeSize
   }
 
@@ -95,7 +95,7 @@ case class ProducerResponse(
     buffer.putInt(correlationId)
     buffer.putInt(groupedStatus.size) // topic count
 
-    groupedStatus.foreach(topicStatus => {
+    groupedStatus.foreach { topicStatus =>
       val (topic, errorsAndOffsets) = topicStatus
       writeShortString(buffer, topic)
       buffer.putInt(errorsAndOffsets.size) // partition count
@@ -109,11 +109,11 @@ case class ProducerResponse(
           buffer.putLong(nextOffset)
           buffer.putLong(timestamp)
       }
-    })
+    }
     // Throttle time is only supported on V1 style requests
     if (requestVersion > 0)
       buffer.putInt(throttleTime)
   }
 
-  override def describe(details: Boolean): String = { toString }
+  override def describe(details: Boolean): String = toString
 }

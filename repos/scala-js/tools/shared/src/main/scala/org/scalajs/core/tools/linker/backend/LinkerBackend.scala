@@ -84,9 +84,8 @@ object LinkerBackend {
     private def copy(
         relativizeSourceMapBase: Option[URI] = relativizeSourceMapBase,
         customOutputWrapper: (String, String) = customOutputWrapper,
-        prettyPrint: Boolean = prettyPrint): Config = {
+        prettyPrint: Boolean = prettyPrint): Config =
       new Config(relativizeSourceMapBase, customOutputWrapper, prettyPrint)
-    }
   }
 
   object Config {

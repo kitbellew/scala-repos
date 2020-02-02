@@ -37,12 +37,11 @@ final class Semantics private (
       runtimeClassName: RuntimeClassNameFunction): Semantics =
     copy(runtimeClassName = runtimeClassName)
 
-  def optimized: Semantics = {
+  def optimized: Semantics =
     copy(
       asInstanceOfs = this.asInstanceOfs.optimized,
       moduleInit = this.moduleInit.optimized,
       productionMode = true)
-  }
 
   override def equals(that: Any): Boolean = that match {
     case that: Semantics =>
@@ -64,14 +63,13 @@ final class Semantics private (
     finalizeHash(acc, 4)
   }
 
-  override def toString(): String = {
+  override def toString(): String =
     s"""Semantics(
        |  asInstanceOfs  = $asInstanceOfs,
        |  moduleInit     = $moduleInit,
        |  strictFloats   = $strictFloats,
        |  productionMode = $productionMode
        |)""".stripMargin
-  }
 
   /** Checks whether the given semantics setting is Java compliant */
   def isCompliant(name: String): Boolean = name match {
@@ -96,14 +94,13 @@ final class Semantics private (
       strictFloats: Boolean = this.strictFloats,
       productionMode: Boolean = this.productionMode,
       runtimeClassName: RuntimeClassNameFunction = this.runtimeClassName)
-      : Semantics = {
+      : Semantics =
     new Semantics(
       asInstanceOfs = asInstanceOfs,
       moduleInit = moduleInit,
       strictFloats = strictFloats,
       productionMode = productionMode,
       runtimeClassName = runtimeClassName)
-  }
 }
 
 object Semantics {

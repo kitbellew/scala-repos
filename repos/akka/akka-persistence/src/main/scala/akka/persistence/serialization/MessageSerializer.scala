@@ -80,7 +80,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
             stateChange(mf.PersistentStateChangeEvent.parseFrom(bytes))
           case _ ⇒
             throw new IllegalArgumentException(
-              s"Can't deserialize object of type ${c}")
+              s"Can't deserialize object of type $c")
         }
     }
 
@@ -134,8 +134,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
       unconfirmedDeliveries.result())
   }
 
-  def stateChange(persistentStateChange: mf.PersistentStateChangeEvent)
-      : StateChangeEvent = {
+  def stateChange(
+      persistentStateChange: mf.PersistentStateChangeEvent): StateChangeEvent =
     StateChangeEvent(
       persistentStateChange.getStateIdentifier,
       if (persistentStateChange.hasTimeout)
@@ -144,7 +144,6 @@ class MessageSerializer(val system: ExtendedActorSystem)
             .asInstanceOf[duration.FiniteDuration])
       else None
     )
-  }
 
   private def atomicWriteBuilder(a: AtomicWrite) = {
     val builder = mf.AtomicWrite.newBuilder
@@ -207,7 +206,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
   //
 
   private def persistent(
-      persistentMessage: mf.PersistentMessage): PersistentRepr = {
+      persistentMessage: mf.PersistentMessage): PersistentRepr =
     PersistentRepr(
       payload(persistentMessage.getPayload),
       persistentMessage.getSequenceNr,
@@ -222,7 +221,6 @@ class MessageSerializer(val system: ExtendedActorSystem)
       if (persistentMessage.hasWriterUuid) persistentMessage.getWriterUuid
       else Undefined
     )
-  }
 
   private def atomicWrite(atomicWrite: mf.AtomicWrite): AtomicWrite = {
     import scala.collection.JavaConverters._

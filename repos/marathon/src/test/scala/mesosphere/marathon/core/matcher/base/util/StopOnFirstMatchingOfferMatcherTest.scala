@@ -113,9 +113,8 @@ class StopOnFirstMatchingOfferMatcherTest
       new OfferMatcher {
         override def matchOffer(
             deadline: Timestamp,
-            offer: Offer): Future[MatchedTaskOps] = {
+            offer: Offer): Future[MatchedTaskOps] =
           Future.successful(matching)
-        }
       }
 
     lazy val matchers: Seq[OfferMatcher] = Seq.empty

@@ -27,7 +27,7 @@ object Test extends App {
       case class record(`phase name`: String, id: String, description: String)
 
       object record {
-        def parse(lines: List[String]) = {
+        def parse(lines: List[String]) =
           lines drop (1) map { line =>
             line.split(";", -1).toList match {
               case phase$whitespace$name :: id :: description :: _ =>
@@ -38,7 +38,6 @@ object Test extends App {
               case _ => throw new Exception("format error")
             }
           }
-        }
       }
     }
 

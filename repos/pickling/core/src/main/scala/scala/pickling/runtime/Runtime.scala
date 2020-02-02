@@ -79,7 +79,7 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
   debug("InterpretedPicklerRuntime: clazz    = " + clazz)
 
   //  TODO - this pickler should know to lock the GRL before running itself, or any mirror code.
-  def genPickler: Pickler[_] = {
+  def genPickler: Pickler[_] =
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
       val fields: List[(irs.FieldIR, Boolean)] =
@@ -94,7 +94,7 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
           fieldTpe: Type,
           picklee: Any,
           builder: PBuilder,
-          pickler: Pickler[Any]): Unit = {
+          pickler: Pickler[Any]): Unit =
         if (shouldBotherAboutSharing(fieldTpe))
           picklee match {
             case null =>
@@ -106,9 +106,8 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
           }
         else
           pickler.pickle(picklee, builder)
-      }
 
-      def pickle(picklee: Any, builder: PBuilder): Unit = {
+      def pickle(picklee: Any, builder: PBuilder): Unit =
         if (picklee != null) {
           def putFields() = {
             // TODO: need to support modules and other special guys here
@@ -130,7 +129,7 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
 
                 builder.putField(
                   fir.name,
-                  b => {
+                  b =>
                     if (isEffFinal) {
                       b.hintElidedType(fldTag)
                       pickleInto(fir.tpe, fldValue, b, fldPickler)
@@ -142,7 +141,6 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
                       else ()
                       pickleInto(fir.tpe, subPicklee, b, fldPickler)
                     }
-                  }
                 )
 
               // builder.putField(fir.name, b => {
@@ -162,9 +160,7 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
           builder.beginEntry(null, FastTypeTag.Null)
           builder.endEntry()
         }
-      }
     }
-  }
 }
 
 trait UnpicklerRuntime {
@@ -200,7 +196,7 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
     shareAnalyzer.shouldBotherAboutLooping(tpe)
 
   // TODO - This method should lock the GRL before running any unpickle logic.
-  def genUnpickler: Unpickler[Any] = {
+  def genUnpickler: Unpickler[Any] =
     new Unpickler[Any] with PickleTools {
       def tag: FastTypeTag[Any] = fastTag.asInstanceOf[FastTypeTag[Any]]
       def unpickle(tagKey: String, reader: PReader): Any = {
@@ -227,7 +223,7 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                   })
 
             def fieldVals =
-              pendingFields.map(fir => {
+              pendingFields.map { fir =>
                 val freader = reader.readField(fir.name)
                 val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
                 val fstaticSym = fstaticTag.tpe.typeSymbol
@@ -243,7 +239,7 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 ':
                          |$msg
 
-                      |enclosing object has type: '${tagKey}
+                      |enclosing object has type: '$tagKey
 '
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
@@ -265,7 +261,7 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
                 freader.endEntry()
                 fval
-              })
+              }
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
@@ -295,7 +291,6 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
         } finally GRL.unlock()
       }
     }
-  }
 }
 
 class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
@@ -316,7 +311,7 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
   // debug("UnpicklerRuntime: cir = " + cir)
 
   // TODO - This method should lock the GRL before running any unpickle logic
-  def genUnpickler: Unpickler[Any] = {
+  def genUnpickler: Unpickler[Any] =
     new Unpickler[Any] with PickleTools {
       def tag: FastTypeTag[Any] = fastTag.asInstanceOf[FastTypeTag[Any]]
       def unpickle(tagKey: String, reader: PReader): Any = {
@@ -340,7 +335,7 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
               }
 
             def fieldVals =
-              pendingFields.map(fir => {
+              pendingFields.map { fir =>
                 val freader = reader.readField(fir.name)
                 val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
                 val fstaticSym = fstaticTag.tpe.typeSymbol
@@ -354,7 +349,7 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                       debug(
                         s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
                          |$msg
-                         |enclosing object has type: '${tagKey}'
+                         |enclosing object has type: '$tagKey'
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
                       throw e
@@ -373,7 +368,7 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
                 freader.endEntry()
                 fval
-              })
+              }
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
@@ -401,5 +396,4 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
         } finally GRL.unlock()
       }
     }
-  }
 }

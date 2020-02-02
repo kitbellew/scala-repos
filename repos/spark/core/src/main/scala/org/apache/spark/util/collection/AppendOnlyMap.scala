@@ -45,7 +45,7 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
 
   require(
     initialCapacity <= MAXIMUM_CAPACITY,
-    s"Can't make capacity bigger than ${MAXIMUM_CAPACITY} elements")
+    s"Can't make capacity bigger than $MAXIMUM_CAPACITY elements")
   require(initialCapacity >= 1, "Invalid initial capacity")
 
   private val LOAD_FACTOR = 0.7
@@ -221,7 +221,7 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
     val newCapacity = capacity * 2
     require(
       newCapacity <= MAXIMUM_CAPACITY,
-      s"Can't contain more than ${growThreshold} elements")
+      s"Can't contain more than $growThreshold elements")
     val newData = new Array[AnyRef](2 * newCapacity)
     val newMask = newCapacity - 1
     // Insert all our old values into the new array. Note that because our old keys are
@@ -286,7 +286,7 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
       var i = 0
       var nullValueReady = haveNullValue
       def hasNext: Boolean = (i < newIndex || nullValueReady)
-      def next(): (K, V) = {
+      def next(): (K, V) =
         if (nullValueReady) {
           nullValueReady = false
           (null.asInstanceOf[K], nullValue)
@@ -296,7 +296,6 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
           i += 1
           item
         }
-      }
     }
   }
 

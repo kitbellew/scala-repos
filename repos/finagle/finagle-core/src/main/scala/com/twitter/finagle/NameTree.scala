@@ -226,7 +226,7 @@ object NameTree {
     case Union(trees @ _*) =>
       val trees1 = trees map {
         case Weighted(Weighted.defaultWeight, t) => showSimple(t)
-        case Weighted(w, t)                      => f"${w}%.2f*${showSimple(t)}"
+        case Weighted(w, t)                      => f"$w%.2f*${showSimple(t)}"
       }
       trees1 mkString " & "
 

@@ -777,13 +777,12 @@ private[akka] class LocalActorRefProvider private[akka] (
       deadLetters
   }
 
-  def resolveActorRef(path: ActorPath): ActorRef = {
+  def resolveActorRef(path: ActorPath): ActorRef =
     if (path.root == rootPath) resolveActorRef(rootGuardian, path.elements)
     else {
       log.debug("resolve of foreign ActorPath [{}] failed", path)
       deadLetters
     }
-  }
 
   /**
     * INTERNAL API

@@ -40,16 +40,14 @@ private[netty] case class OneWayOutboxMessage(content: ByteBuffer)
     extends OutboxMessage
     with Logging {
 
-  override def sendWith(client: TransportClient): Unit = {
+  override def sendWith(client: TransportClient): Unit =
     client.send(content)
-  }
 
-  override def onFailure(e: Throwable): Unit = {
+  override def onFailure(e: Throwable): Unit =
     e match {
       case e1: RpcEnvStoppedException => logWarning(e1.getMessage)
       case e1: Throwable              => logWarning(s"Failed to send one-way RPC.", e1)
     }
-  }
 
 }
 
@@ -73,13 +71,11 @@ private[netty] case class RpcOutboxMessage(
     client.removeRpcRequest(requestId)
   }
 
-  override def onFailure(e: Throwable): Unit = {
+  override def onFailure(e: Throwable): Unit =
     _onFailure(e)
-  }
 
-  override def onSuccess(response: ByteBuffer): Unit = {
+  override def onSuccess(response: ByteBuffer): Unit =
     _onSuccess(client, response)
-  }
 
 }
 
@@ -186,7 +182,7 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     }
   }
 
-  private def launchConnectTask(): Unit = {
+  private def launchConnectTask(): Unit =
     connectFuture =
       nettyEnv.clientConnectionExecutor.submit(new Callable[Unit] {
 
@@ -214,7 +210,6 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
           drainOutbox()
         }
       })
-  }
 
   /**
     * Stop [[Inbox]] and notify the waiting messages with the cause.

@@ -47,26 +47,22 @@ object DuplicatesUtil {
     case _                                                   => true
   }
 
-  def filtered(elements: Seq[PsiElement]): Seq[PsiElement] = {
+  def filtered(elements: Seq[PsiElement]): Seq[PsiElement] =
     elements.filter(isSignificant)
-  }
 
-  def filteredChildren(element: PsiElement): Seq[PsiElement] = {
+  def filteredChildren(element: PsiElement): Seq[PsiElement] =
     filtered(element.children.toSeq)
-  }
 
-  def isUnder(element: PsiElement, parents: Seq[PsiElement]): Boolean = {
+  def isUnder(element: PsiElement, parents: Seq[PsiElement]): Boolean =
     parents.exists(PsiTreeUtil.isAncestor(_, element, false))
-  }
 
-  def canBeEquivalent(pattern: PsiElement, candidate: PsiElement): Boolean = {
+  def canBeEquivalent(pattern: PsiElement, candidate: PsiElement): Boolean =
     (pattern, candidate) match {
       case (ref: ScReferenceExpression, expr: ScExpression) => true
       case (ElementType(tp1), ElementType(tp2))             => tp1 == tp2
       //todo this expressions, return statements, infix expressions
       case _ => false
     }
-  }
 
   def withFilteredForwardSiblings(
       element: PsiElement,

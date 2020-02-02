@@ -23,13 +23,11 @@ private[streaming] class Interval(val beginTime: Time, val endTime: Time) {
 
   def duration(): Duration = endTime - beginTime
 
-  def +(time: Duration): Interval = {
+  def +(time: Duration): Interval =
     new Interval(beginTime + time, endTime + time)
-  }
 
-  def -(time: Duration): Interval = {
+  def -(time: Duration): Interval =
     new Interval(beginTime - time, endTime - time)
-  }
 
   def <(that: Interval): Boolean = {
     if (this.duration != that.duration) {

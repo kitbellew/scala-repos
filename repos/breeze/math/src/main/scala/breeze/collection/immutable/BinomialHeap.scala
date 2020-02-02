@@ -35,11 +35,10 @@ class BinomialHeap[T <% Ordered[T]]
   override val size = 0
 
   def +(x: T) = mkHeap(insertTree(Node(0, x, Nil), trees), size + 1)
-  private def insertTree(n: Node[T], t: List[Node[T]]): List[Node[T]] = {
+  private def insertTree(n: Node[T], t: List[Node[T]]): List[Node[T]] =
     if (t.isEmpty) List(n)
     else if (n.rank < t.head.rank) n :: t
     else insertTree(n.link(t.head), t.tail)
-  }
 
   def ++(other: BinomialHeap[T]) =
     mkHeap(merge(trees, other.trees, Nil), size + other.size)
@@ -69,7 +68,7 @@ class BinomialHeap[T <% Ordered[T]]
   }
 
   lazy val get = if (trees.isEmpty) None else Some(findMin(trees))
-  private def findMin(trees: List[Node[T]]): T = {
+  private def findMin(trees: List[Node[T]]): T =
     trees match {
       case (t :: Nil) => t.x
       case (t :: ts) =>
@@ -78,9 +77,8 @@ class BinomialHeap[T <% Ordered[T]]
         if (x < y) x else y
       case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
     }
-  }
 
-  def delMin() = {
+  def delMin() =
     if (trees.isEmpty) this
     else {
       def getMin(t: List[Node[T]]): (Node[T], List[Node[T]]) = t match {
@@ -95,16 +93,14 @@ class BinomialHeap[T <% Ordered[T]]
       merge(t1.reverse, t2, Nil)
       mkHeap(merge(t1.reverse, t2, Nil), size - 1)
     }
-  }
 
   private val comp = { (x: T, y: T) => x compare y }
   def iterator: Iterator[T] =
     Iterators.merge((trees map treeIterator): _*)(comp)
 
-  private def treeIterator(n: Node[T]): Iterator[T] = {
+  private def treeIterator(n: Node[T]): Iterator[T] =
     Iterators.merge(
       (Iterator.single(n.x) :: (n.children map treeIterator)): _*)(comp)
-  }
 
   override def toString() = iterator.mkString("Heap(", ",", ")")
 }
@@ -114,10 +110,9 @@ object BinomialHeap {
       rank: Int,
       x: T,
       children: List[Node[T]]) {
-    def link(n: Node[T]) = {
+    def link(n: Node[T]) =
       if (x <= n.x) Node(rank + 1, x, n :: children)
       else Node(rank + 1, n.x, this :: n.children)
-    }
   }
 
   def empty[T <% Ordered[T]]: BinomialHeap[T] = new BinomialHeap[T] {
@@ -135,9 +130,8 @@ object BinomialHeap {
   implicit def cbfForBinomialHeap[T <: B, B <% Ordered[B]]
       : CanBuildFrom[BinomialHeap[T], B, BinomialHeap[B]] =
     new CanBuildFrom[BinomialHeap[T], B, BinomialHeap[B]] {
-      def apply(): Builder[B, BinomialHeap[B]] = {
+      def apply(): Builder[B, BinomialHeap[B]] =
         empty[B].newBuilder
-      }
 
       def apply(from: BinomialHeap[T]) = apply()
     }

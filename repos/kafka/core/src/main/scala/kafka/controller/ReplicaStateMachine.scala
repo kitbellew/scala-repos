@@ -438,13 +438,11 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
 
   def replicasInState(
       topic: String,
-      state: ReplicaState): Set[PartitionAndReplica] = {
+      state: ReplicaState): Set[PartitionAndReplica] =
     replicaState.filter(r => r._1.topic.equals(topic) && r._2 == state).keySet
-  }
 
-  def isAnyReplicaInState(topic: String, state: ReplicaState): Boolean = {
+  def isAnyReplicaInState(topic: String, state: ReplicaState): Boolean =
     replicaState.exists(r => r._1.topic.equals(topic) && r._2 == state)
-  }
 
   def replicasInDeletionStates(topic: String): Set[PartitionAndReplica] = {
     val deletionStates = Set(
@@ -468,15 +466,13 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     )
   }
 
-  private def registerBrokerChangeListener() = {
+  private def registerBrokerChangeListener() =
     zkUtils.zkClient
       .subscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
-  }
 
-  private def deregisterBrokerChangeListener() = {
+  private def deregisterBrokerChangeListener() =
     zkUtils.zkClient
       .unsubscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
-  }
 
   /**
     * Invoked on startup of the replica's state machine to set the initial state for replicas of all existing partitions
@@ -503,12 +499,11 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
 
   def partitionsAssignedToBroker(
       topics: Seq[String],
-      brokerId: Int): Seq[TopicAndPartition] = {
+      brokerId: Int): Seq[TopicAndPartition] =
     controllerContext.partitionReplicaAssignment
       .filter(_._2.contains(brokerId))
       .keySet
       .toSeq
-  }
 
   /**
     * This is the zookeeper listener that triggers all the state transitions for a replica

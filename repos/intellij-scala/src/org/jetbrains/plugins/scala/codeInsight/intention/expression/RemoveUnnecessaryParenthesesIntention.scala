@@ -28,13 +28,12 @@ class RemoveUnnecessaryParenthesesIntention
   def isAvailable(
       project: Project,
       editor: Editor,
-      element: PsiElement): Boolean = {
+      element: PsiElement): Boolean =
     Option(
       PsiTreeUtil.getParentOfType(element, classOf[ScParenthesisedExpr], false))
       .exists {
         UnnecessaryParenthesesUtil.canBeStripped(_, ignoreClarifying = false)
       }
-  }
 
   def invoke(project: Project, editor: Editor, element: PsiElement) {
     Option(PsiTreeUtil.getParentOfType(element, classOf[ScParenthesisedExpr]))

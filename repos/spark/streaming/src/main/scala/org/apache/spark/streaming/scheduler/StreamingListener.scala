@@ -127,7 +127,6 @@ class StatsReportListener(numBatchInfos: Int = 10) extends StreamingListener {
   }
 
   def extractDistribution(
-      getMetric: BatchInfo => Option[Long]): Option[Distribution] = {
+      getMetric: BatchInfo => Option[Long]): Option[Distribution] =
     Distribution(batchInfos.flatMap(getMetric(_)).map(_.toDouble))
-  }
 }

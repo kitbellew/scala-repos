@@ -185,9 +185,8 @@ object Statistics {
   class Timer(val prefix: String, val phases: Seq[String]) extends Quantity {
     var nanos: Long = 0
     var timings = 0
-    def start() = {
+    def start() =
       (nanos, System.nanoTime())
-    }
     def stop(prev: TimerSnapshot) {
       val (nanos0, start) = prev
       nanos = nanos0 + System.nanoTime() - start
@@ -301,7 +300,7 @@ object Statistics {
   final val hotEnabled = false
 
   def enabled = _enabled
-  def enabled_=(cond: Boolean) = {
+  def enabled_=(cond: Boolean) =
     if (cond && !_enabled) {
       val start = System.nanoTime()
       var total = 0L
@@ -315,5 +314,4 @@ object Statistics {
           total / 10000.0 + "ns to " + total2 / 10000.0 + "ns per timer")
       _enabled = true
     }
-  }
 }

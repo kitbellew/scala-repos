@@ -151,7 +151,7 @@ class BasicHttpClient(port: Int) {
     * @param responseDesc Description of the response, for error reporting
     * @return The response
     */
-  def readResponse(responseDesc: String) = {
+  def readResponse(responseDesc: String) =
     try {
       val statusLine = reader.readLine()
       if (statusLine == null) {
@@ -182,7 +182,7 @@ class BasicHttpClient(port: Int) {
       }
       val headers = readHeaders.toMap
 
-      def readCompletely(length: Int): String = {
+      def readCompletely(length: Int): String =
         if (length == 0) {
           ""
         } else {
@@ -194,7 +194,6 @@ class BasicHttpClient(port: Int) {
           readFromOffset(0)
           new String(buf)
         }
-      }
 
       // Read body
       val body = headers.get(TRANSFER_ENCODING).filter(_ == CHUNKED).map { _ =>
@@ -231,7 +230,6 @@ class BasicHttpClient(port: Int) {
           s"Exception while reading response $responseDesc ${e.getClass.getName}: ${e.getMessage}",
           e)
     }
-  }
 
   private def consumeRemaining(reader: BufferedReader): String = {
     val writer = new StringWriter()
@@ -243,9 +241,8 @@ class BasicHttpClient(port: Int) {
     writer.toString
   }
 
-  def close() = {
+  def close() =
     s.close()
-  }
 }
 
 /**

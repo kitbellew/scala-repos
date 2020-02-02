@@ -41,10 +41,9 @@ class InformationGainStats(
     val rightPredict: Predict)
     extends Serializable {
 
-  override def toString: String = {
+  override def toString: String =
     s"gain = $gain, impurity = $impurity, left impurity = $leftImpurity, " +
       s"right impurity = $rightImpurity"
-  }
 
   override def equals(o: Any): Boolean = o match {
     case other: InformationGainStats =>
@@ -58,7 +57,7 @@ class InformationGainStats(
     case _ => false
   }
 
-  override def hashCode: Int = {
+  override def hashCode: Int =
     com.google.common.base.Objects.hashCode(
       gain: java.lang.Double,
       impurity: java.lang.Double,
@@ -66,7 +65,6 @@ class InformationGainStats(
       rightImpurity: java.lang.Double,
       leftPredict,
       rightPredict)
-  }
 }
 
 private[spark] object InformationGainStats {
@@ -106,10 +104,9 @@ private[spark] class ImpurityStats(
     val valid: Boolean = true)
     extends Serializable {
 
-  override def toString: String = {
+  override def toString: String =
     s"gain = $gain, impurity = $impurity, left impurity = $leftImpurity, " +
       s"right impurity = $rightImpurity"
-  }
 
   def leftImpurity: Double =
     if (leftImpurityCalculator != null) {
@@ -134,7 +131,7 @@ private[spark] object ImpurityStats {
     * minimum number of instances per node.
     */
   def getInvalidImpurityStats(
-      impurityCalculator: ImpurityCalculator): ImpurityStats = {
+      impurityCalculator: ImpurityCalculator): ImpurityStats =
     new ImpurityStats(
       Double.MinValue,
       impurityCalculator.calculate(),
@@ -142,19 +139,17 @@ private[spark] object ImpurityStats {
       null,
       null,
       false)
-  }
 
   /**
     * Return an [[org.apache.spark.mllib.tree.model.ImpurityStats]] object
     * that only 'impurity' and 'impurityCalculator' are defined.
     */
   def getEmptyImpurityStats(
-      impurityCalculator: ImpurityCalculator): ImpurityStats = {
+      impurityCalculator: ImpurityCalculator): ImpurityStats =
     new ImpurityStats(
       Double.NaN,
       impurityCalculator.calculate(),
       impurityCalculator,
       null,
       null)
-  }
 }

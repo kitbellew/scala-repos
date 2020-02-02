@@ -125,11 +125,10 @@ trait ShardService
       service: HttpService[ByteChunk, F[Future[HttpResponse[QueryResult]]]])(
       implicit
       F: Functor[F])
-      : HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] = {
+      : HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] =
     service map { _ map { _ map { _ map queryResultToByteChunk } } }
-  }
 
-  private def asyncHandler(state: ShardState) = {
+  private def asyncHandler(state: ShardState) =
     path("/analytics") {
       jsonAPIKey(state.apiKeyFinder) {
         path("/queries") {
@@ -150,7 +149,6 @@ trait ShardService
         }
       }
     }
-  }
 
   private def syncHandler(state: ShardState) = {
     val queryService = new SyncQueryServiceHandler(
@@ -246,7 +244,7 @@ trait ShardService
     }
   }
 
-  private def analysisHandler[A](state: ShardState) = {
+  private def analysisHandler[A](state: ShardState) =
     jsonAPIKey(state.apiKeyFinder) {
       requireAccount(state.accountFinder) {
         dataPath("/analysis/fs") {
@@ -261,15 +259,13 @@ trait ShardService
         }
       }
     }
-  }
 
-  private def dataHandler[A](state: ShardState) = {
+  private def dataHandler[A](state: ShardState) =
     dataPath("/data/fs") {
       get {
         new DataServiceHandler[A](state.platform)
       }
     }
-  }
 
   lazy val analyticsService = this.service("analytics", "2.0") {
     requestLogging(timeout) {

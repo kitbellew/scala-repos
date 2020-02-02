@@ -19,7 +19,7 @@ class MoveScalaClassesInFileHandler extends MoveAllClassesInFileHandler {
   def processMoveAllClassesInFile(
       allClasses: util.Map[PsiClass, Boolean],
       psiClass: PsiClass,
-      elementsToMove: PsiElement*): Unit = {
+      elementsToMove: PsiElement*): Unit =
     psiClass.getContainingFile match {
       case file: ScalaFile
           if ScalaApplicationSettings.getInstance().MOVE_COMPANION =>
@@ -40,5 +40,4 @@ class MoveScalaClassesInFileHandler extends MoveAllClassesInFileHandler {
           allClasses.put(psiClass, false)
       case _ =>
     }
-  }
 }

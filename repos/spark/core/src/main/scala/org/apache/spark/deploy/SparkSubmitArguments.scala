@@ -134,7 +134,7 @@ private[deploy] class SparkSubmitArguments(
   /**
     * Remove keys that don't start with "spark." from `sparkProperties`.
     */
-  private def ignoreNonSparkProperties(): Unit = {
+  private def ignoreNonSparkProperties(): Unit =
     sparkProperties.foreach {
       case (k, v) =>
         if (!k.startsWith("spark.")) {
@@ -142,7 +142,6 @@ private[deploy] class SparkSubmitArguments(
           SparkSubmit.printWarning(s"Ignoring non-spark config property: $k=$v")
         }
     }
-  }
 
   /**
     * Load arguments from environment variables, Spark properties etc.
@@ -241,13 +240,12 @@ private[deploy] class SparkSubmitArguments(
   }
 
   /** Ensure that required fields exists. Call this only once all defaults are loaded. */
-  private def validateArguments(): Unit = {
+  private def validateArguments(): Unit =
     action match {
       case SUBMIT         => validateSubmitArguments()
       case KILL           => validateKillArguments()
       case REQUEST_STATUS => validateStatusRequestArguments()
     }
-  }
 
   private def validateSubmitArguments(): Unit = {
     if (args.length == 0) {
@@ -303,11 +301,10 @@ private[deploy] class SparkSubmitArguments(
     }
   }
 
-  def isStandaloneCluster: Boolean = {
+  def isStandaloneCluster: Boolean =
     master.startsWith("spark://") && deployMode == "cluster"
-  }
 
-  override def toString: String = {
+  override def toString: String =
     s"""Parsed arguments:
     |  master                  $master
     |  deployMode              $deployMode
@@ -340,7 +337,6 @@ private[deploy] class SparkSubmitArguments(
     | --conf and those from the properties file $propertiesFile:
     |${sparkProperties.mkString("  ", "\n  ", "\n")}
     """.stripMargin
-  }
 
   /** Fill in values by parsing user options. */
   override protected def handle(opt: String, value: String): Boolean = {
@@ -490,9 +486,8 @@ private[deploy] class SparkSubmitArguments(
     false
   }
 
-  override protected def handleExtraArgs(extra: JList[String]): Unit = {
+  override protected def handleExtraArgs(extra: JList[String]): Unit =
     childArgs ++= extra.asScala
-  }
 
   private def printUsageAndExit(
       exitCode: Int,
@@ -616,9 +611,8 @@ private[deploy] class SparkSubmitArguments(
       System.setErr(stream)
 
       val sm = new SecurityManager() {
-        override def checkExit(status: Int): Unit = {
+        override def checkExit(status: Int): Unit =
           throw new SecurityException()
-        }
 
         override def checkPermission(perm: java.security.Permission): Unit = {}
       }

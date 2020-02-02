@@ -22,11 +22,10 @@ package org.apache.spark.util
   * the number of megabytes. Supports the same formats as Utils.memoryStringToMb.
   */
 private[spark] object MemoryParam {
-  def unapply(str: String): Option[Int] = {
+  def unapply(str: String): Option[Int] =
     try {
       Some(Utils.memoryStringToMb(str))
     } catch {
       case e: NumberFormatException => None
     }
-  }
 }

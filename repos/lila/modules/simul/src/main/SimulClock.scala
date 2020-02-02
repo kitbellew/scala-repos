@@ -5,7 +5,7 @@ case class SimulClock(limit: Int, increment: Int, hostExtraTime: Int) {
 
   def limitInMinutes = limit / 60
 
-  def show = s"${limitInMinutes}+${increment}"
+  def show = s"$limitInMinutes+$increment"
 
   def chessClock = chess.Clock(limit, increment)
 

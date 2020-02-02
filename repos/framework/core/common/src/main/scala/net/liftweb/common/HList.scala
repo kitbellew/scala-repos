@@ -119,21 +119,19 @@ object HLists {
     */
   implicit final class HListMethods[ListSoFar <: HList](hlist: ListSoFar)
       extends AnyRef {
-    def :+:[T](v: T): :+:[T, ListSoFar] = {
+    def :+:[T](v: T): :+:[T, ListSoFar] =
       HLists.:+:(v, hlist)
-    }
 
     /**
       * The length of this HList; note that this is O(n) in the list of elements.
       */
-    def length: Int = {
+    def length: Int =
       hlist match {
         case HNil =>
           0
         case head :+: rest =>
           1 + rest.length
       }
-    }
   }
 }
 

@@ -104,7 +104,7 @@ object ScalaRenameUtil {
     result
   }
 
-  def findSubstituteElement(elementToRename: PsiElement): PsiNamedElement = {
+  def findSubstituteElement(elementToRename: PsiElement): PsiNamedElement =
     elementToRename match {
       case primConstr: ScPrimaryConstructor     => primConstr.containingClass
       case fun: ScFunction if fun.isConstructor => fun.containingClass
@@ -120,7 +120,6 @@ object ScalaRenameUtil {
       case named: PsiNamedElement => named
       case _                      => null
     }
-  }
 
   def doRenameGenericNamedElement(
       namedElement: PsiElement,
@@ -203,11 +202,10 @@ object ScalaRenameUtil {
       listener)
   }
 
-  def setterSuffix(name: String) = {
+  def setterSuffix(name: String) =
     if (name.endsWith("_=")) "_="
     else if (name.endsWith("_$eq")) "_$eq"
     else ""
-  }
 
   def sameElement(range: RangeMarker, element: PsiElement): Boolean = {
     val newElemRange =

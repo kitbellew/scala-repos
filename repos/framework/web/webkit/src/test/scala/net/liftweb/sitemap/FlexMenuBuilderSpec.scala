@@ -52,13 +52,12 @@ object FlexMenuBuilderSpec extends WebSpec(FlexMenuBuilderSpecBoot.boot _) {
 
     "Add css class to item in the path" withSFor (testUrlPath) in {
       object MenuBuilder extends FlexMenuBuilder {
-        override def updateForPath(nodes: Elem, path: Boolean): Elem = {
+        override def updateForPath(nodes: Elem, path: Boolean): Elem =
           if (path) {
             nodes % S.mapToAttrs(Map("class" -> "active"))
           } else {
             nodes
           }
-        }
       }
       val itemInPath: NodeSeq =
         <ul><li><a href="/index">Home</a></li><li class="active"><a href="/help">Help</a><ul><li class="active"><span>Home1</span></li><li><a href="/index2">Home2</a></li></ul></li><li><a href="/help2">Help2</a></li></ul>
@@ -68,13 +67,12 @@ object FlexMenuBuilderSpec extends WebSpec(FlexMenuBuilderSpecBoot.boot _) {
 
     "Add css class to the current item" withSFor (testUrl) in {
       object MenuBuilder extends FlexMenuBuilder {
-        override def updateForCurrent(nodes: Elem, current: Boolean): Elem = {
+        override def updateForCurrent(nodes: Elem, current: Boolean): Elem =
           if (current) {
             nodes % S.mapToAttrs(Map("class" -> "active"))
           } else {
             nodes
           }
-        }
       }
       val itemInPath: NodeSeq =
         <ul><li><a href="/index">Home</a></li><li class="active"><span>Help</span></li><li><a href="/help2">Help2</a></li></ul>

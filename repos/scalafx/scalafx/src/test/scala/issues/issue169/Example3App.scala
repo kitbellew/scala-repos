@@ -44,7 +44,7 @@ object Example3App extends App {
       jfxc.FXCollections.observableArrayList[jfxc.ObservableList[String]](
         (elem: jfxc.ObservableList[String]) => Array[jfxb.Observable](elem)))
 
-  items.onChange((_, changes) => {
+  items.onChange { (_, changes) =>
     println(s"onChange(_, $changes")
     for (change <- changes)
       change match {
@@ -54,7 +54,7 @@ object Example3App extends App {
           println(s"  case Reorder: $change")
         case ObservableBuffer.Update(_, _) => println(s"  case Update: $change")
       }
-  })
+  }
 
   // Should produce `Add` notification
   println("items += ObservableBuffer(\"test\")")

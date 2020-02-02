@@ -39,9 +39,8 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     * shipping level.
     */
   def withEdges[VD2: ClassTag, ED2: ClassTag](
-      _edges: EdgeRDDImpl[ED2, VD2]): ReplicatedVertexView[VD2, ED2] = {
+      _edges: EdgeRDDImpl[ED2, VD2]): ReplicatedVertexView[VD2, ED2] =
     new ReplicatedVertexView(_edges, hasSrcId, hasDstId)
-  }
 
   /**
     * Return a new `ReplicatedVertexView` where edges are reversed and shipping levels are swapped to

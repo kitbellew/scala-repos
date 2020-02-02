@@ -212,30 +212,26 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def blankLine: Parser[Unit] = ignoreWhiteSpace ~> newLine ^^ { case _ => () }
 
-  def parentheses: Parser[String] = {
+  def parentheses: Parser[String] =
     "(" ~ (several((parentheses | not(")") ~> """.""".r))) ~ commit(")") ^^ {
       case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
     }
-  }
 
-  def brackets: Parser[String] = {
+  def brackets: Parser[String] =
     "[" ~ (several((parentheses | not("]") ~> """.""".r))) ~ commit("]") ^^ {
       case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
     }
-  }
 
-  def string: Parser[String] = {
+  def string: Parser[String] =
     "\"" ~ (several((parentheses | not("\"") ~> """.""".r))) ~ commit("\"") ^^ {
       case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
     }
-  }
 
-  def multiString: Parser[String] = {
+  def multiString: Parser[String] =
     "\"\"\"" ~ (several((parentheses | not("\"\"\"") ~> """.""".r))) ~ commit(
       "\"\"\"") ^^ {
       case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
     }
-  }
 
   def httpVerb: Parser[HttpVerb] =
     namedError(
@@ -275,23 +271,21 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def parameterType: Parser[String] = ":" ~> ignoreWhiteSpace ~> simpleType
 
-  def simpleType: Parser[String] = {
+  def simpleType: Parser[String] =
     ((stableId <~ ignoreWhiteSpace) ~ opt(typeArgs)) ^^ {
       case sid ~ ta => sid.toString + ta.getOrElse("")
     } |
       (space("(") ~ types ~ space(")")) ^^ {
         case _ ~ b ~ _ => "(" + b + ")"
       }
-  }
 
-  def typeArgs: Parser[String] = {
+  def typeArgs: Parser[String] =
     (space("[") ~ types ~ space("]") ~ opt(typeArgs)) ^^ {
       case _ ~ ts ~ _ ~ ta => "[" + ts + "]" + ta.getOrElse("")
     } |
       (space("#") ~ identifier ~ opt(typeArgs)) ^^ {
         case _ ~ id ~ ta => "#" + id + ta.getOrElse("")
       }
-  }
 
   def types: Parser[String] =
     rep1sep(simpleType, space(",")) ^^ (_ mkString ",")
@@ -387,7 +381,6 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
         }
   }
 
-  def parse(text: String): ParseResult[List[Rule]] = {
+  def parse(text: String): ParseResult[List[Rule]] =
     parser(new CharSequenceReader(text))
-  }
 }

@@ -121,7 +121,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       implicit val monoid = new Monoid[Result] {
         def zero = None
-        def append(left: Result, right: => Result): Result = {
+        def append(left: Result, right: => Result): Result =
           (for {
             l <- left
             r <- right
@@ -130,7 +130,6 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             if (res > 0) l
             else r
           }) orElse left orElse right
-        }
       }
 
       val tpe = UnaryOperationType(JDateT, JDateT)
@@ -172,7 +171,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       implicit val monoid = new Monoid[Result] {
         def zero = None
-        def append(left: Result, right: => Result): Result = {
+        def append(left: Result, right: => Result): Result =
           (for {
             l <- left
             r <- right
@@ -181,7 +180,6 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             if (res < 0) l
             else r
           }) orElse left orElse right
-        }
       }
 
       val tpe = UnaryOperationType(JDateT, JDateT)
@@ -224,9 +222,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       implicit val monoid = new Monoid[Result] {
         def zero = None
-        def append(left: Result, right: => Result): Result = {
+        def append(left: Result, right: => Result): Result =
           (for (l <- left; r <- right) yield l max r) orElse left orElse right
-        }
       }
 
       val tpe = UnaryOperationType(JNumberT, JNumberT)
@@ -287,9 +284,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       implicit val monoid = new Monoid[Result] {
         def zero = None
-        def append(left: Result, right: => Result): Result = {
+        def append(left: Result, right: => Result): Result =
           (for (l <- left; r <- right) yield l min r) orElse left orElse right
-        }
       }
 
       val tpe = UnaryOperationType(JNumberT, JNumberT)
@@ -691,7 +687,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def reducer(ctx: MorphContext): Reducer[Result] = new CReducer[Result] {
-        def reduce(schema: CSchema, range: Range) = {
+        def reduce(schema: CSchema, range: Range) =
           if (range.isEmpty) {
             None
           } else {
@@ -716,7 +712,6 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else
               None
           }
-        }
       }
 
       private val default = true
@@ -742,7 +737,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def reducer(ctx: MorphContext): Reducer[Result] = new CReducer[Result] {
-        def reduce(schema: CSchema, range: Range) = {
+        def reduce(schema: CSchema, range: Range) =
           if (range.isEmpty) {
             None
           } else {
@@ -767,7 +762,6 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else
               None
           }
-        }
       }
 
       private val default = false

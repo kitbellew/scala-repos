@@ -627,7 +627,7 @@ object WorksheetEditorPrinter {
     worksheetViewer
   }
 
-  private def getOrCreateViewerEditorFor(editor: Editor, isPlain: Boolean) = {
+  private def getOrCreateViewerEditorFor(editor: Editor, isPlain: Boolean) =
     WorksheetViewerInfo getViewer editor match {
       case editorImpl: EditorImpl => editorImpl
       case _ =>
@@ -638,7 +638,6 @@ object WorksheetEditorPrinter {
             ScalaFileType.SCALA_LANGUAGE,
             ScalaFileType.SCALA_FILE_TYPE)
     }
-  }
 
   private def createBlankEditor(project: Project): Editor = {
     val factory: EditorFactory = EditorFactory.getInstance

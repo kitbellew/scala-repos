@@ -143,13 +143,12 @@ package object sbt {
     }
   }
 
-  def using[A <: Closeable, B](resource: A)(block: A => B): B = {
+  def using[A <: Closeable, B](resource: A)(block: A => B): B =
     try {
       block(resource)
     } finally {
       resource.close()
     }
-  }
 
   def writeLinesTo(file: File, lines: String*) {
     using(new PrintWriter(new FileWriter(file))) { writer =>
@@ -189,9 +188,8 @@ package object sbt {
     case name                               => (name, "")
   }
 
-  def inWriteAction[T](body: => T): T = {
+  def inWriteAction[T](body: => T): T =
     ApplicationManager.getApplication.runWriteAction(new Computable[T] {
       def compute: T = body
     })
-  }
 }

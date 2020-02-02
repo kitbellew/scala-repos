@@ -43,13 +43,12 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
 
   def debug = false
 
-  def before = {
+  def before =
     // define the dbs
     dbs foreach {
       case (id, db) =>
         MongoDB.defineDb(id, mongo, db)
     }
-  }
 
   def isMongoRunning: Boolean =
     try {

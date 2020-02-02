@@ -117,7 +117,7 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
 
   def findAPIKey(
       apiKey: APIKey,
-      rootKey: Option[APIKey]): Response[Option[v1.APIKeyDetails]] = {
+      rootKey: Option[APIKey]): Response[Option[v1.APIKeyDetails]] =
     withJsonClient { client0 =>
       val client = rootKey.map(client0.query("authkey", _)).getOrElse(client0)
       eitherT(client.get[JValue]("apikeys/" + apiKey) map {
@@ -136,9 +136,8 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
             "Unexpected response from security service; unable to proceed." + res)
       })
     }
-  }
 
-  def findAllAPIKeys(fromRoot: APIKey): Response[Set[v1.APIKeyDetails]] = {
+  def findAllAPIKeys(fromRoot: APIKey): Response[Set[v1.APIKeyDetails]] =
     withJsonClient { client =>
       eitherT(client.query("apiKey", fromRoot).get[JValue]("apikeys/") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
@@ -151,14 +150,13 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
             "Unexpected response from security service; unable to proceed." + res)
       })
     }
-  }
 
   private val fmt = ISODateTimeFormat.dateTime()
 
   private def findPermissions(
       apiKey: APIKey,
       path: Path,
-      at: Option[DateTime]): Response[Set[Permission]] = {
+      at: Option[DateTime]): Response[Set[Permission]] =
     withJsonClient { client0 =>
       val client = at map (fmt.print(_)) map (client0
         .query("at", _)) getOrElse client0
@@ -175,7 +173,6 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
             "Unexpected response from security service; unable to proceed." + res)
       })
     }
-  }
 
   def hasCapability(
       apiKey: APIKey,

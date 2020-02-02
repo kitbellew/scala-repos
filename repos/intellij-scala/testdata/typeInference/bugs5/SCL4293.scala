@@ -5,9 +5,8 @@ object SCL4293 {
 
   object Repro extends App {
 
-    implicit def unused(x: Any): bar = {
+    implicit def unused(x: Any): bar =
       sys.error("don't run me!")
-    }
 
     def applyFunc(fxn: foo => bar): foo => bar = fxn
 

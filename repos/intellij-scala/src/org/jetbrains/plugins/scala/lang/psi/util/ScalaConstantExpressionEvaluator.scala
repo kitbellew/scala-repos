@@ -20,16 +20,15 @@ class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
   def computeExpression(
       expression: PsiElement,
       throwExceptionOnOverflow: Boolean,
-      auxEvaluator: AuxEvaluator): AnyRef = {
+      auxEvaluator: AuxEvaluator): AnyRef =
     expression match {
       case expr: ScExpression => evaluate(expr)
       case _                  => null
     }
-  }
 
   def computeConstantExpression(
       expression: PsiElement,
-      throwExceptionOnOverflow: Boolean): AnyRef = {
+      throwExceptionOnOverflow: Boolean): AnyRef =
     expression match {
       case ref: ScReferenceExpression =>
         computeConstantExpression(ref.resolve(), throwExceptionOnOverflow)
@@ -44,9 +43,8 @@ class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
       case expr: ScExpression => evaluate(expr)
       case _                  => null
     }
-  }
 
-  private def evaluate(expr: ScExpression): AnyRef = {
+  private def evaluate(expr: ScExpression): AnyRef =
     expr match {
       case l: ScLiteral => l.getValue
       case p: ScParenthesisedExpr =>
@@ -56,5 +54,4 @@ class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
         }
       case _ => null
     }
-  }
 }

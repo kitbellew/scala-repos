@@ -22,7 +22,6 @@ object Test {
   val sorted1 = c1s.sorted map (_.s)
   val sorted2 = c2s.sorted map (_.s)
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     assert(sorted1 == sorted2.reverse)
-  }
 }

@@ -197,7 +197,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       if (count == 1) Seq(method)
       list.toSeq
     }
-    def javaMethods: Seq[PsiMethod] = {
+    def javaMethods: Seq[PsiMethod] =
       PsiShortNamesCache
         .getInstance(project)
         .getMethodsByName(name, scope)
@@ -207,23 +207,17 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
           case _                   => true
         }
         .toSeq
-    }
     scalaMethods ++ javaMethods
   }
 
-  def getFieldsByName(
-      name: String,
-      scope: GlobalSearchScope): Array[PsiField] = {
+  def getFieldsByName(name: String, scope: GlobalSearchScope): Array[PsiField] =
     PsiShortNamesCache.getInstance(project).getFieldsByName(name, scope)
-  }
 
-  def getAllJavaMethodNames: Array[String] = {
+  def getAllJavaMethodNames: Array[String] =
     PsiShortNamesCache.getInstance(project).getAllMethodNames
-  }
 
-  def getAllFieldNames: Array[String] = {
+  def getAllFieldNames: Array[String] =
     PsiShortNamesCache.getInstance(project).getAllFieldNames
-  }
 
   def getClassesByName(
       name: String,
@@ -311,9 +305,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
 
   def getClassNames(
       psiPackage: PsiPackage,
-      scope: GlobalSearchScope): mutable.HashSet[String] = {
+      scope: GlobalSearchScope): mutable.HashSet[String] =
     ScalaPsiManager.instance(project).getScalaClassNames(psiPackage, scope)
-  }
 
   def getAllClassNames: Seq[String] = {
     val classNames =
@@ -334,7 +327,6 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
 }
 
 object ScalaShortNamesCacheManager {
-  def getInstance(project: Project): ScalaShortNamesCacheManager = {
+  def getInstance(project: Project): ScalaShortNamesCacheManager =
     project.getComponent(classOf[ScalaShortNamesCacheManager])
-  }
 }

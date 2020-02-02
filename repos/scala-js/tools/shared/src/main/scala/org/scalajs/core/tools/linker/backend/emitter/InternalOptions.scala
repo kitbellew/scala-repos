@@ -17,13 +17,11 @@ private[emitter] class InternalOptions private (
 
   private def copy(
       optimizeBracketSelects: Boolean = this.optimizeBracketSelects)
-      : InternalOptions = {
+      : InternalOptions =
     new InternalOptions(optimizeBracketSelects)
-  }
 }
 
 private[emitter] object InternalOptions {
-  def apply(): InternalOptions = {
+  def apply(): InternalOptions =
     new InternalOptions(optimizeBracketSelects = true)
-  }
 }

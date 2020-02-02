@@ -74,22 +74,20 @@ class Switch(startAsOn: Boolean = false) {
   /**
     * Executes the provided action and returns if the action was executed or not, if the switch is IMMEDIATELY on (i.e. no lock involved)
     */
-  def ifOn(action: ⇒ Unit): Boolean = {
+  def ifOn(action: ⇒ Unit): Boolean =
     if (switch.get) {
       action
       true
     } else false
-  }
 
   /**
     * Executes the provided action and returns if the action was executed or not, if the switch is IMMEDIATELY off (i.e. no lock involved)
     */
-  def ifOff(action: ⇒ Unit): Boolean = {
+  def ifOff(action: ⇒ Unit): Boolean =
     if (!switch.get) {
       action
       true
     } else false
-  }
 
   /**
     * Executes the provided action and returns its value if the switch is on, waiting for any pending changes to happen before (locking)

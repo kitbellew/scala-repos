@@ -141,7 +141,7 @@ abstract class LambdaLift extends InfoTransform {
       *    }
       *  }
       */
-    private def markFree(sym: Symbol, enclosure: Symbol): Boolean = {
+    private def markFree(sym: Symbol, enclosure: Symbol): Boolean =
 //      println(s"mark free: ${sym.fullLocationString} marked free in $enclosure")
       (enclosure == sym.owner.logicallyEnclosingMember) || {
         debuglog(
@@ -161,7 +161,6 @@ abstract class LambdaLift extends InfoTransform {
           !enclosure.isClass
         }
       }
-    }
 
     private def markCalled(sym: Symbol, owner: Symbol) {
 //      println(s"mark called: $sym of ${sym.owner} is called by $owner")
@@ -275,7 +274,7 @@ abstract class LambdaLift extends InfoTransform {
 
           proxies(owner) = for (fv <- freeValues.toList) yield {
             val proxyName = proxyNames.getOrElse(fv, fv.name)
-            debuglog(s"new proxy ${proxyName} in ${owner.fullLocationString}")
+            debuglog(s"new proxy $proxyName in ${owner.fullLocationString}")
             val proxy = owner.newValue(
               proxyName.toTermName,
               owner.pos,

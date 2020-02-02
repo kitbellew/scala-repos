@@ -333,7 +333,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   /** Report the status of a newly created submission. */
   private def reportSubmissionStatus(
-      submitResponse: CreateSubmissionResponse): Unit = {
+      submitResponse: CreateSubmissionResponse): Unit =
     if (submitResponse.success) {
       val submissionId = submitResponse.submissionId
       if (submissionId != null) {
@@ -350,7 +350,6 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         Option(submitResponse.message).map { ": " + _ }.getOrElse("")
       logError(s"Application submission failed$failMessage")
     }
-  }
 
   /**
     * Poll the status of the specified submission and log it.
@@ -390,17 +389,15 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   }
 
   /** Log the response sent by the server in the REST application submission protocol. */
-  private def handleRestResponse(response: SubmitRestProtocolResponse): Unit = {
+  private def handleRestResponse(response: SubmitRestProtocolResponse): Unit =
     logInfo(
       s"Server responded with ${response.messageType}:\n${response.toJson}")
-  }
 
   /** Log an appropriate error if the response sent by the server is not of the expected type. */
   private def handleUnexpectedRestResponse(
-      unexpected: SubmitRestProtocolResponse): Unit = {
+      unexpected: SubmitRestProtocolResponse): Unit =
     logError(
       s"Error: Server responded with message of unexpected type ${unexpected.messageType}.")
-  }
 
   /**
     * When a connection exception is caught, return true if all masters are lost.
@@ -411,7 +408,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
     */
   private def handleConnectionException(masterUrl: String): Boolean = {
     if (!lostMasters.contains(masterUrl)) {
-      logWarning(s"Unable to connect to server ${masterUrl}.")
+      logWarning(s"Unable to connect to server $masterUrl.")
       lostMasters += masterUrl
     }
     lostMasters.size >= masters.length
@@ -465,11 +462,10 @@ private[spark] object RestSubmissionClient {
     * Filter non-spark environment variables from any environment.
     */
   private[rest] def filterSystemEnvironment(
-      env: Map[String, String]): Map[String, String] = {
+      env: Map[String, String]): Map[String, String] =
     env.filterKeys { k =>
       // SPARK_HOME is filtered out because it is usually wrong on the remote machine (SPARK-12345)
       (k.startsWith("SPARK_") && k != "SPARK_ENV_LOADED" && k != "SPARK_HOME") ||
       k.startsWith("MESOS_")
     }
-  }
 }

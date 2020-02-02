@@ -138,9 +138,8 @@ class ListView[T](
   def cellFactory = delegate.cellFactoryProperty
   def cellFactory_=(v: (ListView[T] => ListCell[T])) {
     cellFactory() = new jfxu.Callback[jfxsc.ListView[T], jfxsc.ListCell[T]] {
-      def call(lv: jfxsc.ListView[T]) = {
+      def call(lv: jfxsc.ListView[T]) =
         v(lv)
-      }
     }
   }
 

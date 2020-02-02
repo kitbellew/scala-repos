@@ -48,11 +48,9 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
     * For every command type, creation and binding is performed only once and then stored into
     * a request attribute.
     */
-  def commandOrElse[T <: CommandType](factory: ⇒ T)(
-      implicit request: HttpServletRequest,
-      mf: Manifest[T]): T = {
+  def commandOrElse[T <: CommandType](
+      factory: ⇒ T)(implicit request: HttpServletRequest, mf: Manifest[T]): T =
     commandOption[T] getOrElse bindCommand(factory)
-  }
 
   protected def bindCommand[T <: CommandType](newCommand: T)(
       implicit request: HttpServletRequest,

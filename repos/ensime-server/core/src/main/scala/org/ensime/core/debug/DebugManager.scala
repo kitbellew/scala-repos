@@ -45,14 +45,13 @@ class DebugManager(
     }
   private var maybeVM: Option[VM] = None
 
-  def tryPendingBreaksForSourcename(sourceName: String): Unit = {
+  def tryPendingBreaksForSourcename(sourceName: String): Unit =
     for (breaks <- pendingBreaksBySourceName.get(sourceName)) {
       val toTry = mutable.HashSet() ++ breaks
       for (bp <- toTry) {
         setBreakpoint(bp.file, bp.line)
       }
     }
-  }
 
   def setBreakpoint(file: File, line: Int): Boolean = {
     val applied = maybeVM.exists { vm => vm.setBreakpoint(file, line) }
@@ -98,9 +97,8 @@ class DebugManager(
     pendingBreaksBySourceName(file.getName) = breaks
   }
 
-  def pendingBreakpoints: List[Breakpoint] = {
+  def pendingBreakpoints: List[Breakpoint] =
     pendingBreaksBySourceName.values.flatten.toList
-  }
 
   def disconnectDebugVM(): Unit = {
     withVM { vm => vm.dispose() }
@@ -115,7 +113,7 @@ class DebugManager(
       config.runtimeClasspath.mkString("\"", File.pathSeparator, "\"")
     ) ++ config.debugVMArgs
 
-  def withVM[T](action: (VM => T)): Option[T] = {
+  def withVM[T](action: (VM => T)): Option[T] =
     maybeVM.synchronized {
       try {
         for (vm <- maybeVM) yield {
@@ -131,17 +129,15 @@ class DebugManager(
           None
       }
     }
-  }
 
-  private def handleRPCWithVM()(action: (VM => RpcResponse)): RpcResponse = {
+  private def handleRPCWithVM()(action: (VM => RpcResponse)): RpcResponse =
     withVM { vm => action(vm) }.getOrElse {
       log.warning("Could not access debug VM.")
       FalseResponse
     }
-  }
 
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
-      action: ((VM, ThreadReference) => RpcResponse)): RpcResponse = {
+      action: ((VM, ThreadReference) => RpcResponse)): RpcResponse =
     withVM { vm =>
       (for (thread <- vm.threadById(threadId)) yield {
         action(vm, thread)
@@ -153,11 +149,9 @@ class DebugManager(
       log.warning("Could not access debug VM")
       FalseResponse
     }
-  }
 
-  def bgMessage(msg: String): Unit = {
+  def bgMessage(msg: String): Unit =
     broadcaster ! SendBackgroundMessageEvent(msg)
-  }
 
   // the JVM should have its own actor
   def receive: Receive = LoggingReceive { fromJvm orElse fromUser }
@@ -239,9 +233,8 @@ class DebugManager(
     case e: MethodExitEvent  =>
   }
 
-  def disposeCurrentVM(): Unit = {
+  def disposeCurrentVM(): Unit =
     withVM { vm => vm.dispose() }
-  }
   def handleStartupFailure(e: Exception): RpcResponse = {
     maybeVM = None
     log.error(e, "Failure during VM startup")

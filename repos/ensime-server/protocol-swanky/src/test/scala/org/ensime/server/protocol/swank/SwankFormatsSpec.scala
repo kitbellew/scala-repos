@@ -36,7 +36,7 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     marshal(value, Some(via))
 
   def unmarshal(from: String, to: RpcRequest): Unit = {
-    val sexp = s"(:swank-rpc ${from} 666)"
+    val sexp = s"(:swank-rpc $from 666)"
     //println(sexp + " => " + sexp.parseSexp)
     sexp.parseSexp.convertTo[RpcRequestEnvelope].req shouldBe to
   }

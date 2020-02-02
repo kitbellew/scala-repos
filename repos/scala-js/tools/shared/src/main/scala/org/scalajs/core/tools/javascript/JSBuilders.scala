@@ -45,10 +45,9 @@ class JSFileBuilder(val name: String, protected val outputWriter: Writer)
   def addFile(file: VirtualJSFile): Unit =
     addPartsOfFile(file)(!_.startsWith("//# sourceMappingURL="))
 
-  def addPartsOfFile(file: VirtualJSFile)(selector: String => Boolean): Unit = {
+  def addPartsOfFile(file: VirtualJSFile)(selector: String => Boolean): Unit =
     for (line <- file.readLines() if selector(line))
       addLine(line)
-  }
 
   /** Add a JavaScript tree representing a statement.
     *  The tree must be a valid JavaScript tree (typically obtained by
@@ -62,9 +61,8 @@ class JSFileBuilder(val name: String, protected val outputWriter: Writer)
 
   /** Closes the underlying writer(s).
     */
-  def closeWriters(): Unit = {
+  def closeWriters(): Unit =
     outputWriter.close()
-  }
 }
 
 class JSFileBuilderWithSourceMapWriter(

@@ -497,9 +497,8 @@ protected[akka] class TestSerializer extends Serializer {
 
   def identifier = 9999
 
-  def toBinary(o: AnyRef): Array[Byte] = {
+  def toBinary(o: AnyRef): Array[Byte] =
     Array.empty[Byte]
-  }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }

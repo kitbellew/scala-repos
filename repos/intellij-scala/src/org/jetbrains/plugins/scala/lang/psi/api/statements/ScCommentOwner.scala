@@ -11,11 +11,10 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
 trait ScCommentOwner {
   self: ScalaPsiElement =>
 
-  def simpleComment: Option[PsiComment] = {
+  def simpleComment: Option[PsiComment] =
     self.children.collectFirst {
       case c: PsiComment if !c.isInstanceOf[ScDocComment] => c
     }
-  }
 
   private def scDocComment: Option[ScDocComment] = self match {
     case dco: ScDocCommentOwner => dco.docComment

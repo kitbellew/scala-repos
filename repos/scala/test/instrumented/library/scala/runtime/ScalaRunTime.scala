@@ -58,11 +58,10 @@ object ScalaRunTime {
 
   /** Return the class object representing an array with element class `clazz`.
     */
-  def arrayClass(clazz: jClass[_]): jClass[_] = {
+  def arrayClass(clazz: jClass[_]): jClass[_] =
     // newInstance throws an exception if the erasure is Void.TYPE. see SI-5680
     if (clazz == java.lang.Void.TYPE) classOf[Array[Unit]]
     else java.lang.reflect.Array.newInstance(clazz, 0).getClass
-  }
 
   /** Return the class object representing elements in arrays described by a given schematic.
     */
@@ -191,7 +190,7 @@ object ScalaRunTime {
   def _hashCode(x: Product): Int = scala.util.hashing.MurmurHash3.productHash(x)
 
   /** A helper for case classes. */
-  def typedProductIterator[T](x: Product): Iterator[T] = {
+  def typedProductIterator[T](x: Product): Iterator[T] =
     new AbstractIterator[T] {
       private var c: Int = 0
       private val cmax = x.productArity
@@ -202,7 +201,6 @@ object ScalaRunTime {
         result.asInstanceOf[T]
       }
     }
-  }
 
   /** Fast path equality method for inlining; used when -optimise is set.
     */
@@ -326,12 +324,11 @@ object ScalaRunTime {
     }
 
     // Special casing Unit arrays, the value class which uses a reference array type.
-    def arrayToString(x: AnyRef) = {
+    def arrayToString(x: AnyRef) =
       if (x.getClass.getComponentType == classOf[BoxedUnit])
         0 until (array_length(x) min maxElements) map (_ => "()") mkString ("Array(", ", ", ")")
       else
         WrappedArray make x take maxElements map inner mkString ("Array(", ", ", ")")
-    }
 
     // The recursively applied attempt to prettify Array printing.
     // Note that iterator is used if possible and foreach is used as a

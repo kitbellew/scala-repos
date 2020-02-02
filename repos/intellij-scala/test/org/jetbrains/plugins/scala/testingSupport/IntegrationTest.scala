@@ -69,9 +69,7 @@ trait IntegrationTest {
       status: Int): Boolean = {
     import scala.collection.JavaConversions._
 
-    def helper(
-        root: AbstractTreeNode[_],
-        currentParentName: String): Boolean = {
+    def helper(root: AbstractTreeNode[_], currentParentName: String): Boolean =
       root.getValue.isInstanceOf[TestStructureViewElement] && {
         val presentation =
           root.getValue.asInstanceOf[TreeElement].getPresentation
@@ -82,14 +80,13 @@ trait IntegrationTest {
           .testStatus == status &&
         parentName.map(currentParentName == _).getOrElse(true)
       } ||
-      root.getChildren.toList.exists(
-        helper(
-          _,
-          root.getValue
-            .asInstanceOf[TreeElement]
-            .getPresentation
-            .getPresentableText))
-    }
+        root.getChildren.toList.exists(
+          helper(
+            _,
+            root.getValue
+              .asInstanceOf[TreeElement]
+              .getPresentation
+              .getPresentableText))
 
     var res = false
 
@@ -128,7 +125,7 @@ trait IntegrationTest {
   protected def checkConfig(
       testClass: String,
       testNames: Seq[String],
-      config: AbstractTestRunConfiguration): Boolean = {
+      config: AbstractTestRunConfiguration): Boolean =
     config.getTestClassPath == testClass && (config.getTestName match {
       case "" => testNames.isEmpty
       case configTestName =>
@@ -137,7 +134,6 @@ trait IntegrationTest {
           case (actual, required) => actual == required
         })
     })
-  }
 
   protected def checkResultTreeHasExactNamedPath(
       root: AbstractTestProxy,
@@ -257,7 +253,7 @@ trait IntegrationTest {
     semaphore.down()
 
     SwingUtilities.invokeLater(new Runnable() {
-      override def run(): Unit = {
+      override def run(): Unit =
         try {
           assert(testTreeRoot.isDefined && testTreeCheck(testTreeRoot.get))
 
@@ -267,7 +263,6 @@ trait IntegrationTest {
         } finally {
           semaphore.up()
         }
-      }
     })
 
     semaphore.waitFor()
@@ -327,8 +322,7 @@ trait IntegrationTest {
     assert(startLineNumber == sourceLine)
   }
 
-  private def parseTestName(testName: String): Seq[String] = {
+  private def parseTestName(testName: String): Seq[String] =
     testName.split("\n").map(TestRunnerUtil.unescapeTestName)
-  }
 
 }

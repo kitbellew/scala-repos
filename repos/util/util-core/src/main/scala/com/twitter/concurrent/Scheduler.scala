@@ -86,9 +86,8 @@ object Scheduler extends Scheduler {
     * @param sched the other Scheduler to swap in for the one that is
     * currently set
     */
-  def setUnsafe(sched: Scheduler): Unit = {
+  def setUnsafe(sched: Scheduler): Unit =
     self = sched
-  }
 
   def submit(r: Runnable) = self.submit(r)
   def flush() = self.flush()
@@ -152,9 +151,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
       r0 = r
     }
 
-    def flush(): Unit = {
+    def flush(): Unit =
       if (running) run()
-    }
 
     @inline def hasNext: Boolean = running && r0 != null
 
