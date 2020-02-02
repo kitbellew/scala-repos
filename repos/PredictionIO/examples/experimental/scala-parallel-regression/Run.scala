@@ -118,19 +118,18 @@ object Run {
 }
 
 class VectorSerializer
-    extends CustomSerializer[Vector](
-      format =>
-        (
-          {
-            case JArray(x) =>
-              val v = x.toArray.map { y =>
-                y match {
-                  case JDouble(z) => z
-                }
+    extends CustomSerializer[Vector](format =>
+      (
+        {
+          case JArray(x) =>
+            val v = x.toArray.map { y =>
+              y match {
+                case JDouble(z) => z
               }
-              new DenseVector(v)
-          }, {
-            case x: Vector =>
-              JArray(x.toArray.toList.map(d => JDouble(d)))
-          }
-        ))
+            }
+            new DenseVector(v)
+        }, {
+          case x: Vector =>
+            JArray(x.toArray.toList.map(d => JDouble(d)))
+        }
+      ))
