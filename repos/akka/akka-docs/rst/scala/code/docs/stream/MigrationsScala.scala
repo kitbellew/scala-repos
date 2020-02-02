@@ -17,10 +17,10 @@ class MigrationsScala extends AkkaSpec {
         //#expand-state
         Flow[Int].expand { i =>
           var state = 0
-          Iterator.continually({
+          Iterator.continually {
             state += 1
             (i, state)
-          })
+          }
         }
         //#expand-state
 

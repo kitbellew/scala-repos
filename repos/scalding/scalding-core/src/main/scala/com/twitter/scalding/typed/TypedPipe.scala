@@ -61,10 +61,10 @@ object TypedPipe extends Serializable {
     * Create a TypedPipe from a TypedSource. This is the preferred way to make a TypedPipe
     */
   def from[T](source: TypedSource[T]): TypedPipe[T] =
-    TypedPipeFactory({ (fd, mode) =>
+    TypedPipeFactory { (fd, mode) =>
       val pipe = source.read(fd, mode)
       from(pipe, source.sourceFields)(fd, mode, source.converter)
-    })
+    }
 
   /**
     * Create a TypedPipe from an Iterable in memory.
@@ -315,7 +315,7 @@ trait TypedPipe[+T] extends Serializable {
       implicit ev: T <:< (K, V)): TypedPipe[(K, Either[V, R])] =
     mapValues { (v: V) =>
       Left(v)
-    } ++ (that.mapValues { (r: R) => Right(r) })
+    } ++ that.mapValues { (r: R) => Right(r) }
 
   /**
     * If you are going to create two branches or forks,
@@ -391,13 +391,13 @@ trait TypedPipe[+T] extends Serializable {
 
   protected def onRawSingle(onPipe: Pipe => Pipe): TypedPipe[T] = {
     val self = this
-    TypedPipeFactory({ (fd, m) =>
+    TypedPipeFactory { (fd, m) =>
       val pipe = self.toPipe[T](new Fields(java.lang.Integer.valueOf(0)))(
         fd,
         m,
         singleSetter)
       TypedPipe.fromSingleField[T](onPipe(pipe))(fd, m)
-    })
+    }
   }
 
   /**
@@ -504,7 +504,7 @@ trait TypedPipe[+T] extends Serializable {
       sg: Semigroup[V]): TypedPipe[(K, V)] = {
     val fields: Fields = ('key, 'value)
     val selfKV = raiseTo[(K, V)]
-    TypedPipeFactory({ (fd, mode) =>
+    TypedPipeFactory { (fd, mode) =>
       val pipe = selfKV.toPipe(fields)(fd, mode, tup2Setter)
       val msr = new MapsideReduce(sg, 'key, 'value, None)(
         singleConverter[V],
@@ -512,7 +512,7 @@ trait TypedPipe[+T] extends Serializable {
       TypedPipe.from[(K, V)](
         pipe.eachTo(fields -> fields) { _ => msr },
         fields)(fd, mode, tuple2Converter)
-    })
+    }
   }
 
   /**
@@ -797,14 +797,14 @@ trait TypedPipe[+T] extends Serializable {
     */
   def addTrap[U >: T](trapSink: Source with TypedSink[T])(
       implicit conv: TupleConverter[U]): TypedPipe[U] =
-    TypedPipeFactory({ (flowDef, mode) =>
+    TypedPipeFactory { (flowDef, mode) =>
       val fields = trapSink.sinkFields
       // TODO: with diamonds in the graph, this might not be correct
       val pipe = RichPipe.assignName(
         fork.toPipe[T](fields)(flowDef, mode, trapSink.setter))
       flowDef.addTrap(pipe, trapSink.createTap(Write)(mode))
       TypedPipe.from[U](pipe, fields)(flowDef, mode, conv)
-    })
+    }
 }
 
 /**
@@ -1136,21 +1136,20 @@ class TypedPipeInst[T] private[scalding] (
     val destFields: Fields = ('key, 'value)
     val selfKV = raiseTo[(K, V)]
 
-    TypedPipeFactory({
-        (fd, mode) =>
-          checkMode(mode)
+    TypedPipeFactory { (fd, mode) =>
+      checkMode(mode)
 
-          val msr = new TypedMapsideReduce[K, V](
-            flatMapFn.asInstanceOf[FlatMapFn[(K, V)]],
-            sg,
-            fields,
-            'key,
-            'value,
-            None)(tup2Setter)
-          TypedPipe.from[(K, V)](inpipe.eachTo(fields -> destFields) { _ =>
-            msr
-          }, destFields)(fd, mode, tuple2Converter)
-      })
+      val msr = new TypedMapsideReduce[K, V](
+        flatMapFn.asInstanceOf[FlatMapFn[(K, V)]],
+        sg,
+        fields,
+        'key,
+        'value,
+        None)(tup2Setter)
+      TypedPipe.from[(K, V)](
+        inpipe.eachTo(fields -> destFields) { _ => msr },
+        destFields)(fd, mode, tuple2Converter)
+    }
   }
 
   override def toIterableExecution: Execution[Iterable[T]] =

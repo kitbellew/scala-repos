@@ -51,7 +51,7 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       joiner: (K, V1, Iterable[V]) => Iterator[R]): TypedPipe[(K, R)] =
     // Note, the Ordering must have that compare(x,y)== 0 being consistent with hashCode and .equals to
     // otherwise, there may be funky issues with cascading
-    TypedPipeFactory({ (fd, mode) =>
+    TypedPipeFactory { (fd, mode) =>
       val newPipe = new HashJoin(
         RichPipe.assignName(
           mapside.toPipe(('key, 'value))(fd, mode, tup2Setter)),
@@ -65,7 +65,7 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
         fd,
         mode,
         tuple2Converter)
-    })
+    }
 
   /**
     * Returns a Pipe for the mapped (rhs) pipe with checkpointing (forceToDisk) applied if needed.

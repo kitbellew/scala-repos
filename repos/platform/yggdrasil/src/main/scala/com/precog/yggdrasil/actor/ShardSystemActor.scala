@@ -123,7 +123,7 @@ trait ShardSystemActorModule extends YggConfigComponent with Logging {
              checkpointCoordination,
              permissionsFinder)) yield init
 
-    val stoppable = Stoppable.fromFuture({
+    val stoppable = Stoppable.fromFuture {
       import IngestSystem.actorStop
       logger.info("Stopping bifrost system")
       for {
@@ -136,7 +136,7 @@ trait ShardSystemActorModule extends YggConfigComponent with Logging {
         ingestActorSystem.shutdown()
         logger.info("Shard system stopped.")
       }
-    })
+    }
 
     ingestActor map { IngestSystem(_, stoppable) }
   }

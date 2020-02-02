@@ -37,7 +37,7 @@ class ClassTagTest {
   @Test def checkFloat = assertTrue(checkNotInt[Float](0.toFloat))
   @Test def checkDouble = assertTrue(checkNotInt[Double](0.toDouble))
   @Test def checkBoolean = assertTrue(checkNotInt[Boolean](false))
-  @Test def checkUnit = assertTrue(checkNotInt[Unit]({}))
+  @Test def checkUnit = assertTrue(checkNotInt[Unit] {})
 
   @Test def t9534: Unit = {
     val ct = implicitly[scala.reflect.ClassTag[Unit]]

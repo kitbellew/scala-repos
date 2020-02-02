@@ -228,10 +228,10 @@ trait ApiFormats extends ScalatraBase {
       response: HttpServletResponse): String =
     request
       .get(FormatKey)
-      .fold({
+      .fold {
         val fmt = getFormat
         request(FormatKey) = fmt
         fmt
-      })(_.asInstanceOf[String])
+      }(_.asInstanceOf[String])
 
 }

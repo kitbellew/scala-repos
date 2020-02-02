@@ -200,9 +200,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
    */
   def forall[T: TupleConverter](fieldDef: (Fields, Fields))(
       fn: (T) => Boolean): Self =
-    mapReduceMap(fieldDef)(fn)({ (x: Boolean, y: Boolean) => x && y })({ x =>
-      x
-    })
+    mapReduceMap(fieldDef)(fn) { (x: Boolean, y: Boolean) => x && y } { x => x }
 
   /**
     * Return the first, useful probably only for sorted case.
@@ -322,7 +320,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   def reduce[T](fieldDef: (Fields, Fields))(fn: (T, T) => T)(
       implicit setter: TupleSetter[T],
       conv: TupleConverter[T]): Self =
-    mapReduceMap[T, T, T](fieldDef)({ t => t })(fn)({ t => t })(
+    mapReduceMap[T, T, T](fieldDef) { t => t }(fn) { t => t }(
       conv,
       setter,
       conv,
@@ -347,7 +345,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       tset: TupleSetter[T]): Self =
     // We reverse the order because the left is the old value in reduce, and for list concat
     // we are much better off concatenating into the bigger list
-    reduce[T](fd)({ (left, right) => sg.plus(right, left) })(tset, tconv)
+    reduce[T](fd) { (left, right) => sg.plus(right, left) }(tset, tconv)
 
   /**
     * The same as `sum(fs -> fs)`
@@ -368,7 +366,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       tset: TupleSetter[T]): Self =
     // We reverse the order because the left is the old value in reduce, and for list concat
     // we are much better off concatenating into the bigger list
-    reduce[T](fd)({ (left, right) => ring.times(right, left) })(tset, tconv)
+    reduce[T](fd) { (left, right) => ring.times(right, left) }(tset, tconv)
 
   /**
     * The same as `times(fs -> fs)`

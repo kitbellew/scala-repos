@@ -151,7 +151,7 @@ object TerminateJson {
     def terminal(stack: ArrayStack[Int]): Option[CharBuffer] =
       if (stack.isEmpty) None
       else
-        Some({
+        Some {
           val sb = new StringBuilder()
           while (stack.nonEmpty)
             sb ++= (stack.pop() match {
@@ -165,7 +165,7 @@ object TerminateJson {
               case _           => sys.error("Unreachable.")
             })
           CharBuffer.wrap(sb.toString)
-        })
+        }
 
     def rec(
         stack0: ArrayStack[Int],

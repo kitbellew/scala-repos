@@ -278,7 +278,7 @@ class MacroOrderingProperties
     import JavaStreamEnrichments._
 
     val baos = new ByteArrayOutputStream
-    t.foreach({ e => orderedBuffer.write(baos, e) })
+    t.foreach { e => orderedBuffer.write(baos, e) }
     baos.toInputStream
   }
 

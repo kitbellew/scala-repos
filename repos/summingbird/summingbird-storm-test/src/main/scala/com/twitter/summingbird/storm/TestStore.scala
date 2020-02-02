@@ -31,9 +31,7 @@ object TestStore {
   private val testStores = new WeakHashMap[String, TestStore[_, _]]
 
   def apply[K, V: Semigroup](storeID: String): Option[TestStore[K, V]] =
-    (Option(testStores.get(storeID)).map { s =>
-      s.asInstanceOf[TestStore[K, V]]
-    })
+    Option(testStores.get(storeID)).map { s => s.asInstanceOf[TestStore[K, V]] }
 
   private def buildStore[K, V: Semigroup](initialData: Map[K, V]): String = {
     val storeID = UUID.randomUUID.toString

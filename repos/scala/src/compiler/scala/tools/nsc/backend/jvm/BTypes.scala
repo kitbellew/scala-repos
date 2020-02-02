@@ -380,7 +380,7 @@ abstract class BTypes {
      * Java bytecode type hierarchy.
      */
     final def conformsTo(other: BType): Either[NoClassBTypeInfo, Boolean] =
-      tryEither(Right({
+      tryEither(Right {
         assert(isRef || isPrimitive, s"conformsTo cannot handle $this")
         assert(
           other.isRef || other.isPrimitive,
@@ -436,7 +436,7 @@ abstract class BTypes {
               s"Expected primitive types $this - $other")
             this == other
         }
-      }))
+      })
 
     /**
       * Compute the upper bound of two types.

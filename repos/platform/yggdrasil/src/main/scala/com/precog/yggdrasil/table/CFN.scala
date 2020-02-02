@@ -197,12 +197,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[String]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new StrColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -210,12 +210,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Boolean]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new BoolColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -223,12 +223,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Long]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new LongColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -236,12 +236,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Double]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new DoubleColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -249,12 +249,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[BigDecimal]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new NumColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -262,11 +262,11 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new NullColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -274,11 +274,11 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new EmptyObjectColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -286,11 +286,11 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new EmptyArrayColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -298,12 +298,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[DateTime]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new DateColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 
@@ -311,12 +311,12 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Period]]]
 
-        val columns: Map[ColumnRef, Column] = (0 until max).map({ i =>
+        val columns: Map[ColumnRef, Column] = (0 until max).map { i =>
           ColumnRef(CPath(CPathIndex(i)), tpe) -> new PeriodColumn {
             def isDefinedAt(row: Int) = defined.get(row) && i < cols(row).length
             def apply(row: Int) = cols(row)(i)
           }
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         columns
 

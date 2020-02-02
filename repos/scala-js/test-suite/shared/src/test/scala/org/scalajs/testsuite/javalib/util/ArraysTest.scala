@@ -496,23 +496,23 @@ class ArraysTest {
 
     val array = Array(0, 1, 3, 4)
 
-    expectException({ Arrays.binarySearch(array, 3, 2, 2) }) {
+    expectException { Arrays.binarySearch(array, 3, 2, 2) } {
       case exception: IllegalArgumentException =>
         assertEquals("fromIndex(3) > toIndex(2)", exception.getMessage)
     }
 
     // start/end comparison is made before index ranges checks
-    expectException({ Arrays.binarySearch(array, 7, 5, 2) }) {
+    expectException { Arrays.binarySearch(array, 7, 5, 2) } {
       case exception: IllegalArgumentException =>
         assertEquals("fromIndex(7) > toIndex(5)", exception.getMessage)
     }
 
-    expectException({ Arrays.binarySearch(array, -1, 4, 2) }) {
+    expectException { Arrays.binarySearch(array, -1, 4, 2) } {
       case exception: ArrayIndexOutOfBoundsException =>
         assertEquals("Array index out of range: -1", exception.getMessage)
     }
 
-    expectException({ Arrays.binarySearch(array, 0, 5, 2) }) {
+    expectException { Arrays.binarySearch(array, 0, 5, 2) } {
       case exception: ArrayIndexOutOfBoundsException =>
         assertEquals("Array index out of range: 5", exception.getMessage)
     }

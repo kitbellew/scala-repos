@@ -134,7 +134,7 @@ trait Infer extends Checkable {
     case SingleType(pre, _)                          => isFullyDefined(pre)
     case RefinedType(ts, _)                          => ts forall isFullyDefined
     case TypeVar(_, constr) if constr.inst == NoType => false
-    case _                                           => falseIfNoInstance({ instantiate(tp); true })
+    case _                                           => falseIfNoInstance { instantiate(tp); true }
   }
 
   /** Solve constraint collected in types `tvars`.

@@ -699,11 +699,11 @@ object CodeGenerator extends Logging {
 
     def formatted = CodeFormatter.format(code)
 
-    logDebug({
+    logDebug {
       // Only add extra debugging info to byte code when we are going to print the source code.
       evaluator.setDebuggingInformation(true, true, false)
       formatted
-    })
+    }
 
     try evaluator.cook("generated.java", code)
     catch {

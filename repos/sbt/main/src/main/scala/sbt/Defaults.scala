@@ -896,7 +896,7 @@ object Defaults extends BuildCommon {
     if (includeFilters.isEmpty && excludeArgs.isEmpty)
       Seq(const(true))
     else if (includeFilters.isEmpty)
-      Seq({ (s: String) => !matches(excludeFilters, s) })
+      Seq { (s: String) => !matches(excludeFilters, s) }
     else
       includeFilters.map { f => (s: String) =>
         (f.accept(s) && !matches(excludeFilters, s))

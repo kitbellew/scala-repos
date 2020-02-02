@@ -303,7 +303,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     * This will always be non-empty
     */
   final def timeSpanToBatches: PlannerOutput[List[BatchID]] =
-    StateWithError({ in: FactoryInput =>
+    StateWithError { in: FactoryInput =>
       val (timeSpan, _) = in
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
@@ -315,7 +315,7 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
               .format(timeSpan, batcher)))
         case list => Right((in, list))
       })
-    })
+    }
 
   /**
     * This is the monadic version of readLast, returns the BatchID actually on disk

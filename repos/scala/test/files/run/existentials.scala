@@ -9,7 +9,7 @@ class Foo {
     }
 
     var x: Cell[T] forSome { type T } = new Cell(1)
-    println({ x = new Cell("abc"); x })
+    println { x = new Cell("abc"); x }
   }
 }
 
@@ -19,7 +19,7 @@ class FooW {
     def f[T](x: Any): Cell[_] = x match { case y: Cell[t] => y }
 
     var x: Cell[_] = new Cell(1)
-    println({ x = new Cell("abc"); x })
+    println { x = new Cell("abc"); x }
   }
 }
 

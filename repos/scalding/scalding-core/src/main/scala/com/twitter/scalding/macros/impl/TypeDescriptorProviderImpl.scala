@@ -315,7 +315,7 @@ object TypeDescriptorProviderImpl {
           Any,
           Any]]
     )
-    (tupleTypes.exists { _ =:= T.tpe.erasure })
+    tupleTypes.exists { _ =:= T.tpe.erasure }
   }
 
   def caseClassTypeDescriptorCommonImpl[T](

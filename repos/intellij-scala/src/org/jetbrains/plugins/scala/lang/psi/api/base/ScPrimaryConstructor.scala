@@ -90,7 +90,7 @@ trait ScPrimaryConstructor
   def methodType(result: Option[ScType]): ScType = {
     val parameters: ScParameters = parameterList
     val clauses = parameters.clauses
-    val returnType: ScType = result.getOrElse({
+    val returnType: ScType = result.getOrElse {
       val clazz = getParent.asInstanceOf[ScTypeDefinition]
       val typeParameters = clazz.typeParameters
       val parentClazz = ScalaPsiUtil.getPlaceTd(clazz)
@@ -106,7 +106,7 @@ trait ScPrimaryConstructor
         ScParameterizedType(
           designatorType,
           typeParameters.map(new ScTypeParameterType(_, ScSubstitutor.empty)))
-    })
+    }
     if (clauses.isEmpty)
       return new ScMethodType(returnType, Seq.empty, false)(
         getProject,

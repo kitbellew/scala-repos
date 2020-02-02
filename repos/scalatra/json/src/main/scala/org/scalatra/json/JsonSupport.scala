@@ -107,7 +107,7 @@ trait JsonSupport[T] extends JsonOutput[T] {
   def parsedBody(implicit request: HttpServletRequest): JValue =
     request
       .get(ParsedBodyKey)
-      .fold({
+      .fold {
         val fmt = requestFormat
         var bd: JValue = JNothing
         if (fmt == "json" || fmt == "xml") {
@@ -115,5 +115,5 @@ trait JsonSupport[T] extends JsonOutput[T] {
           request(ParsedBodyKey) = bd.asInstanceOf[AnyRef]
         }
         bd
-      })(_.asInstanceOf[JValue])
+      }(_.asInstanceOf[JValue])
 }

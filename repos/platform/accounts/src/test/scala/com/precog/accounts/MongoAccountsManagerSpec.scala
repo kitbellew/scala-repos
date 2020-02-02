@@ -215,12 +215,12 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
     val notFoundAccountId = "NOT-GOING-TO-FIND"
     val origPassword = "test password"
 
-    val account = (accountManager
+    val account = accountManager
       .createAccount(
         "test@precog.com",
         origPassword,
         new DateTime,
-        AccountPlan.Free) { _ => M.point("testapikey") })
+        AccountPlan.Free) { _ => M.point("testapikey") }
       .copoint
 
     def after =

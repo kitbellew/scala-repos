@@ -25,7 +25,7 @@ object Test {
       println("flatmapping")
       val p = Promise[Int]()
       val fp = p.future
-      val flatMapped = fp.flatMap({ (x: Int) => Future.successful(2 * x) })(ec)
+      val flatMapped = fp.flatMap { (x: Int) => Future.successful(2 * x) }(ec)
       p.success(0)
       await(flatMapped)
     }

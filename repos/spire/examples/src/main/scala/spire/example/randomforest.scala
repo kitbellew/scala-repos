@@ -245,9 +245,7 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
     if (opts.parallel)
       Forest(
-        (1 to opts.numTrees).toList.par
-          .map({ _ => growTree(sample()) })
-          .toList)
+        (1 to opts.numTrees).toList.par.map { _ => growTree(sample()) }.toList)
     else
       Forest(List.fill(opts.numTrees)(growTree(sample())))
   }

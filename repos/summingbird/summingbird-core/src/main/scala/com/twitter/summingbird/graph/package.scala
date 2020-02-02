@@ -78,13 +78,13 @@ package object graph {
         val (doneThisStep, rest) =
           todo.map { withParents(_) }.partition { _.size == 1 }
 
-        acc ++= (doneThisStep.flatten.map { n =>
+        acc ++= doneThisStep.flatten.map { n =>
           val depth = nf(n) //n is done now, so all it's neighbors must be too.
             .map { acc(_) + 1 }
             .reduceOption { _ max _ }
             .getOrElse(0)
           n -> depth
-        })
+        }
         computeDepth(rest.flatten)
       }
 

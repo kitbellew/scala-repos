@@ -266,13 +266,13 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     */
   private def sort(
       in: Iterable[ClassSerializer]): immutable.Seq[ClassSerializer] =
-    ((new ArrayBuffer[ClassSerializer](in.size) /: in) { (buf, ca) ⇒
+    (new ArrayBuffer[ClassSerializer](in.size) /: in) { (buf, ca) ⇒
       buf.indexWhere(_._1 isAssignableFrom ca._1) match {
         case -1 ⇒ buf append ca
         case x ⇒ buf insert (x, ca)
       }
       buf
-    }).to[immutable.Seq]
+    }.to[immutable.Seq]
 
   /**
     * serializerMap is a Map whose keys is the class that is serializable and values is the serializer

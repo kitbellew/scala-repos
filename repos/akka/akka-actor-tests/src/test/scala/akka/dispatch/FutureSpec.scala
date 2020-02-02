@@ -842,11 +842,11 @@ class FutureSpec
         Await.result(
           future zip Promise.successful("foo").future,
           timeout.duration) should ===((result, "foo"))
-        (intercept[RuntimeException] {
+        intercept[RuntimeException] {
           Await.result(
             future zip Promise.failed(new RuntimeException("ohnoes")).future,
             timeout.duration)
-        }).getMessage should ===("ohnoes")
+        }.getMessage should ===("ohnoes")
       }
     }
     "not recover from exception" in {
@@ -864,9 +864,9 @@ class FutureSpec
     }
     "not project a failure" in {
       f((future, result) ⇒
-        (intercept[NoSuchElementException] {
+        intercept[NoSuchElementException] {
           Await.result(future.failed, timeout.duration)
-        }).getMessage should ===(
+        }.getMessage should ===(
           "Future.failed not completed with a throwable."))
     }
     "not perform action on exception" is pending
@@ -891,49 +891,49 @@ class FutureSpec
     }
     "throw exception with 'get'" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(future, timeout.duration)
-        }).getMessage should ===(message))
+        }.getMessage should ===(message))
     }
     "throw exception with 'Await.result'" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(future, timeout.duration)
-        }).getMessage should ===(message))
+        }.getMessage should ===(message))
     }
     "retain exception with filter" in {
       f { (future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(future filter (_ ⇒ true), timeout.duration)
-        }).getMessage should ===(message)
-        (intercept[java.lang.Exception] {
+        }.getMessage should ===(message)
+        intercept[java.lang.Exception] {
           Await.result(future filter (_ ⇒ false), timeout.duration)
-        }).getMessage should ===(message)
+        }.getMessage should ===(message)
       }
     }
     "retain exception with map" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(future map (_.toString.length), timeout.duration)
-        }).getMessage should ===(message))
+        }.getMessage should ===(message))
     }
     "retain exception with flatMap" in {
       f((future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(
             future flatMap (_ ⇒ Promise.successful[Any]("foo").future),
             timeout.duration)
-        }).getMessage should ===(message))
+        }.getMessage should ===(message))
     }
     "not perform action with foreach" is pending
 
     "zip properly" in {
       f { (future, message) ⇒
-        (intercept[java.lang.Exception] {
+        intercept[java.lang.Exception] {
           Await.result(
             future zip Promise.successful("foo").future,
             timeout.duration)
-        }).getMessage should ===(message)
+        }.getMessage should ===(message)
       }
     }
     "recover from exception" in {

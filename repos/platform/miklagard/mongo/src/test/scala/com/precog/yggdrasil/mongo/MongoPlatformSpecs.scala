@@ -235,7 +235,7 @@ trait MongoPlatformSpecs
   }
 
   override def map(fs: => Fragments): Fragments =
-    (Step { startup() }) ^ fs ^ (Step { shutdown() })
+    Step { startup() } ^ fs ^ Step { shutdown() }
 
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =

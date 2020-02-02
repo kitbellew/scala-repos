@@ -157,7 +157,7 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   }
 
   override def _toForm: Box[Elem] =
-    fmapFunc({ s: List[String] => this.setFromAny(s) }) { name =>
+    fmapFunc { s: List[String] => this.setFromAny(s) } { name =>
       Full(appendFieldId(<input type={formInputType} maxlength={maxLen.toString}
                        name={name}
                        value={

@@ -56,11 +56,11 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
       slice: Slice,
       cpaths: VectorCase[CPath]): List[(List[CValue], List[CValue])] = {
     val byCPath = columnsByCPath(slice)
-    (0 until slice.size).map({ row =>
+    (0 until slice.size).map { row =>
       (
         extractCValues(cpaths.map(byCPath).toList, row),
         extractCValues(byCPath.values.toList, row))
-    })(collection.breakOut)
+    }(collection.breakOut)
   }
 
   def toCValues(slice: Slice) =

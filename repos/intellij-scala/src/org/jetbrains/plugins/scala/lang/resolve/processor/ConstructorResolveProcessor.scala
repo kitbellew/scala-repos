@@ -101,10 +101,10 @@ class ConstructorResolveProcessor(
             isAccessible = true)
           val tp = ta
             .aliasedType(TypingContext.empty)
-            .getOrElse({
+            .getOrElse {
               addResult(r)
               return true
-            })
+            }
           ScType.extractClassType(tp) match {
             case Some((clazz, s)) =>
               val constructors: Array[PsiMethod] =

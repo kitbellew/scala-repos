@@ -210,7 +210,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
       // Print result type
       mt.resultType match {
-        case mt: MethodType => printMethodType(mt, printResult)({})
+        case mt: MethodType => printMethodType(mt, printResult) {}
         case x =>
           if (printResult) {
             print(": ")
@@ -227,7 +227,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case mt @ MethodType(resType, paramSymbols) => _pmt(mt)
       case pt @ PolyType(mt, typeParams) =>
         print(typeParamString(typeParams))
-        printMethodType(mt, printResult)({})
+        printMethodType(mt, printResult) {}
       //todo consider another method types
       case x => print(": "); printType(x)
     }
@@ -262,13 +262,12 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case name =>
         val nn = processName(name)
         print(nn)
-        printMethodType(m.infoType, true)(
-          {
-            if (!m.isDeferred)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
-          }
-        )
+        printMethodType(m.infoType, true) {
+          if (!m.isDeferred)
+            print(
+              " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+        }
+
     }
     print("\n")
   }

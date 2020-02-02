@@ -19,9 +19,9 @@ class TracingFilterTest
 
   val serviceName = "bird"
   val service = Service.mk[Int, Int](Future.value)
-  val exceptingService = Service.mk[Int, Int]({ x =>
+  val exceptingService = Service.mk[Int, Int] { x =>
     Future.exception(new Exception("bummer"))
-  })
+  }
 
   var tracer: Tracer = _
   var captor: ArgumentCaptor[Record] = _

@@ -97,13 +97,13 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       val label =
         s"${getFormattedClassName(scheme)}(${compressionRatio.formatted("%.3f")})"
 
-      benchmark.addCase(label)({ i: Int =>
+      benchmark.addCase(label) { i: Int =>
         for (n <- 0L until iters) {
           compressFunc(input, buf)
           input.rewind()
           buf.rewind()
         }
-      })
+      }
     }
 
     benchmark.run()
@@ -125,7 +125,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
 
       input.rewind()
 
-      benchmark.addCase(label)({ i: Int =>
+      benchmark.addCase(label) { i: Int =>
         val rowBuf = new GenericMutableRow(1)
 
         for (n <- 0L until iters) {
@@ -134,7 +134,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
           while (decoder.hasNext)
             decoder.next(rowBuf, 0)
         }
-      })
+      }
     }
 
     benchmark.run()

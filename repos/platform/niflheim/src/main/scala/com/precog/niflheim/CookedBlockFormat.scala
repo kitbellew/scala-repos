@@ -74,13 +74,13 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
     id: SegmentId => (id.blockid, (id.cpath, id.ctype)),
     { case (blockid, (cpath, ctype)) => SegmentId(blockid, cpath, ctype) })
 
-  val SegmentsCodec = Codec.ArrayCodec({
+  val SegmentsCodec = Codec.ArrayCodec {
     Codec.CompositeCodec[SegmentId, File, (SegmentId, File)](
       SegmentIdCodec,
       FileCodec,
       identity,
       _ -> _)
-  })
+  }
 
   def writeCookedBlock(
       channel: WritableByteChannel,

@@ -115,10 +115,10 @@ object StabilizingGroup {
 
     loop(Queue.empty, Healthy)
 
-    underlying.set.changes.register(Witness({ set =>
+    underlying.set.changes.register(Witness { set =>
       // We can synchronize here because we know loop
       // is eager, and doesn't itself synchronize.
       newSet !! set
-    }))
+    })
   }
 }

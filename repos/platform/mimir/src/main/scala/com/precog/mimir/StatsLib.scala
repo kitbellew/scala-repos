@@ -2156,9 +2156,9 @@ trait StatsLibModule[M[+_]]
           def apply(row: Int) = if (indices(row) == idx) 1L else 0L
         }
 
-        val cols0: Map[ColumnRef, Column] = (0 until length.toInt).map({ idx =>
+        val cols0: Map[ColumnRef, Column] = (0 until length.toInt).map { idx =>
           ColumnRef(CPath(CPathIndex(idx)), CLong) -> makeColumn(idx)
-        })(collection.breakOut)
+        }(collection.breakOut)
 
         (n, cols0)
       }

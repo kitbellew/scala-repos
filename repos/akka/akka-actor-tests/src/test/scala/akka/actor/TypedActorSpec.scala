@@ -272,9 +272,9 @@ class TypedActorSpec
 
     "throw an IllegalStateExcpetion when TypedActor.self is called in the wrong scope" in {
       filterEvents(EventFilter[IllegalStateException]("Calling")) {
-        (intercept[IllegalStateException] {
+        intercept[IllegalStateException] {
           TypedActor.self[Foo]
-        }).getMessage should ===(
+        }.getMessage should ===(
           "Calling TypedActor.self outside of a TypedActor implementation method!")
       }
     }
@@ -400,11 +400,11 @@ class TypedActorSpec
         }.getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] { t.failingJOptionPigdog }).getMessage should ===(
+        intercept[IllegalStateException] { t.failingJOptionPigdog }.getMessage should ===(
           "expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] { t.failingOptionPigdog }).getMessage should ===(
+        intercept[IllegalStateException] { t.failingOptionPigdog }.getMessage should ===(
           "expected")
 
         t.read() should ===(1) //Make sure state is not reset after failure

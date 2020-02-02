@@ -249,7 +249,7 @@ class ZkAsyncSemaphore(
         case (_, believers) => believers
       }
       val cardinalityOfMax =
-        permitsToBelievers.values.filter({ _ == numBelieversOfMax }).size
+        permitsToBelievers.values.filter { _ == numBelieversOfMax }.size
 
       if (cardinalityOfMax == 1)
         // Consensus

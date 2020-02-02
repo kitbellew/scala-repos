@@ -359,14 +359,12 @@ object Test extends BytecodeTest {
         "SI_9124$$anon$12",
         "SI_9124$$anon$8",
         "SI_9124$$anon$9",
-        "SI_9124$O$$anon$13")
-        .map({ name =>
-          val node = loadClassNode(name)
-          val fMethod =
-            node.methods.asScala.find(_.name.startsWith("f")).get.name
-          (fMethod, node.name)
-        })
-        .toMap
+        "SI_9124$O$$anon$13").map { name =>
+        val node = loadClassNode(name)
+        val fMethod =
+          node.methods.asScala.find(_.name.startsWith("f")).get.name
+        (fMethod, node.name)
+      }.toMap
 
     // println(classes)
 

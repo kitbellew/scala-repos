@@ -2550,7 +2550,7 @@ trait Types
 
   object TypeRef extends TypeRefExtractor {
     def apply(pre: Type, sym: Symbol, args: List[Type]): Type =
-      unique({
+      unique {
         if (args ne Nil)
           if (sym.isAliasType) new AliasArgsTypeRef(pre, sym, args)
           else if (sym.isAbstractType) new AbstractArgsTypeRef(pre, sym, args)
@@ -2561,7 +2561,7 @@ trait Types
         else if (sym.isPackageClass) new PackageTypeRef(pre, sym)
         else if (sym.isModuleClass) new ModuleTypeRef(pre, sym)
         else new ClassNoArgsTypeRef(pre, sym)
-      })
+      }
   }
 
   protected def defineParentsOfTypeRef(tpe: TypeRef) = {

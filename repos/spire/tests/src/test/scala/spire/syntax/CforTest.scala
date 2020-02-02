@@ -37,10 +37,10 @@ class CforTest extends SpireProperties {
   property("functions with side effects in cfor") {
     val b = mutable.ArrayBuffer.empty[Int]
     var v = 0
-    cfor(0)({ v += 1; _ < 3 }, { v += 10; _ + 1 })({
+    cfor(0)({ v += 1; _ < 3 }, { v += 10; _ + 1 }) {
       v += 100
       x => b += x
-    })
+    }
     v shouldBe 111
     b.toList shouldBe List(0, 1, 2)
   }

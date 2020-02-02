@@ -122,12 +122,12 @@ case class PlayerAggregateAssessment(
   } || user.perfs.bestProgress > 200
 
   def reportText(maxGames: Int = 10): String = {
-    val gameLinks: String = (playerAssessments
+    val gameLinks: String = playerAssessments
       .sortBy(-_.assessment.id)
       .take(maxGames)
       .map { a =>
         a.assessment.emoticon + " http://lichess.org/" + a.gameId + "/" + a.color.name
-      })
+      }
       .mkString("\n")
 
     s"""[AUTOREPORT]

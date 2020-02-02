@@ -673,5 +673,5 @@ class ClusterClientTest
 
   def trackCacheShards(client: PartitionedClient) =
     mutable.Set.empty[Client] ++
-      ((0 until 100).map { n => client.clientOf("foo" + n) })
+      (0 until 100).map { n => client.clientOf("foo" + n) }
 }

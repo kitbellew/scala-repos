@@ -204,39 +204,39 @@ object TestActorRef {
   def apply[T <: Actor](name: String)(
       implicit t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
-    apply[T](Props({
+    apply[T](Props {
       system
         .asInstanceOf[ExtendedActorSystem]
         .dynamicAccess
         .createInstanceFor[T](t.runtimeClass, Nil)
         .recover(dynamicCreateRecover)
         .get
-    }), name)
+    }, name)
 
   def apply[T <: Actor](supervisor: ActorRef)(
       implicit t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
-    apply[T](Props({
+    apply[T](Props {
       system
         .asInstanceOf[ExtendedActorSystem]
         .dynamicAccess
         .createInstanceFor[T](t.runtimeClass, Nil)
         .recover(dynamicCreateRecover)
         .get
-    }), supervisor)
+    }, supervisor)
 
   def apply[T <: Actor](supervisor: ActorRef, name: String)(
       implicit t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
     apply[T](
-      Props({
+      Props {
         system
           .asInstanceOf[ExtendedActorSystem]
           .dynamicAccess
           .createInstanceFor[T](t.runtimeClass, Nil)
           .recover(dynamicCreateRecover)
           .get
-      }),
+      },
       supervisor,
       name
     )

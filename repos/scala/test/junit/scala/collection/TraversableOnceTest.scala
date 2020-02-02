@@ -23,10 +23,10 @@ class TraversableOnceTest {
         case t: Throwable                     => false
       }
     assert(
-      hasException({ List[Int]().maxBy(_ * 3) }),
+      hasException { List[Int]().maxBy(_ * 3) },
       "maxBy: on empty list should throw UnsupportedOperationException.")
     assert(
-      hasException({ List[Int]().minBy(_ * 3) }),
+      hasException { List[Int]().minBy(_ * 3) },
       "minBy: on empty list should throw UnsupportedOperationException.")
   }
 

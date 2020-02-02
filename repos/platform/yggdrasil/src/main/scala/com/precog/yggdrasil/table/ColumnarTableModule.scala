@@ -687,14 +687,14 @@ trait ColumnarTableModule[M[+_]]
           val groupKeyTable = jValueFromGroupKey(groupKey, fullSchema)
 
           def map(gid: GroupId): M[Table] = {
-            val subTableProjections = (sourceKeys
+            val subTableProjections = sourceKeys
               .filter(_.groupId == gid)
               .map { indexedSource =>
                 val keySchema = indexedSource.keySchema
                 val projectedKeyIndices =
                   for (k <- fullSchema) yield keySchema.indexOf(k)
                 (indexedSource.index, projectedKeyIndices, groupKey)
-              })
+              }
               .toList
 
             M.point(
@@ -799,10 +799,10 @@ trait ColumnarTableModule[M[+_]]
 
     val slices = StreamT(
       StreamT
-        .Skip({
+        .Skip {
           readStarts.getAndIncrement
           slices0.map { s => blockReads.getAndIncrement; s }
-        })
+        }
         .point[M]
     )
 
@@ -1634,9 +1634,9 @@ trait ColumnarTableModule[M[+_]]
 
                     val lslice = new Slice {
                       val size = rows
-                      val columns = lhead.columns.lazyMapValues(Remap({ i =>
+                      val columns = lhead.columns.lazyMapValues(Remap { i =>
                         offset + (i / rhead.size)
-                      })(_).get)
+                      }(_).get)
                     }
 
                     val rslice = new Slice {
@@ -2149,10 +2149,10 @@ trait ColumnarTableModule[M[+_]]
       Table(
         StreamT(
           StreamT
-            .Skip({
+            .Skip {
               println(prelude);
               slices map { s => println(f(s)); s }
-            })
+            }
             .point[M]),
         size)
 
@@ -2163,15 +2163,15 @@ trait ColumnarTableModule[M[+_]]
         appendix: String = "")(f: Slice => String): Table = {
       val preludeEffect = StreamT(
         StreamT
-          .Skip({
+          .Skip {
             logger.debug(logPrefix + " " + prelude); StreamT.empty[M, Slice]
-          })
+          }
           .point[M])
       val appendixEffect = StreamT(
         StreamT
-          .Skip({
+          .Skip {
             logger.debug(logPrefix + " " + appendix); StreamT.empty[M, Slice]
-          })
+          }
           .point[M])
       val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
         logger.trace(logPrefix + " " + f(s)); s

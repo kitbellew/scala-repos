@@ -404,7 +404,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def onUpdate: Code = actionCode(model.onUpdate)
       final def onDelete: Code = actionCode(model.onDelete)
       def rawName: String =
-        disambiguateTerm({
+        disambiguateTerm {
           val fksToSameTable =
             foreignKeys.filter(_.referencedTable == referencedTable)
           require(
@@ -414,7 +414,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           val baseName = referencedTable.TableClass.rawName.uncapitalize + "Fk"
           disambiguateTerm(
             if (fksToSameTable.size > 1) baseName + id else baseName)
-        })
+        }
       def doc =
         s"Foreign key referencing ${referencedTable.TableValue.name} (database name $dbName)"
     }

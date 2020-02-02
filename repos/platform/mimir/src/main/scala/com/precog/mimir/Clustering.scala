@@ -440,9 +440,9 @@ trait KMediansCoreSetClustering {
     val log2 = math.log(2d)
 
     def grid(center: Array[Double]): Array[Double] => GridPoint = {
-      val sideLengths: Array[Double] = (0 to maxResolution).map({ j =>
+      val sideLengths: Array[Double] = (0 to maxResolution).map { j =>
         epsilon * radiusGLB * math.pow(2d, j) / (10 * c * center.length)
-      })(collection.breakOut)
+      }(collection.breakOut)
 
       { (point: Array[Double]) =>
         val minx = distMin(point, center)

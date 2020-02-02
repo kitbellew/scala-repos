@@ -449,13 +449,13 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
 
       "calling span" in {
         check { (a: ByteString, b: Byte) ⇒
-          likeVector(a)({ _.span(_ != b) match { case (a, b) ⇒ (a, b) } })
+          likeVector(a) { _.span(_ != b) match { case (a, b) ⇒ (a, b) } }
         }
       }
 
       "calling takeWhile" in {
         check { (a: ByteString, b: Byte) ⇒
-          likeVector(a)({ _.takeWhile(_ != b) })
+          likeVector(a) { _.takeWhile(_ != b) }
         }
       }
       "calling dropWhile" in {
@@ -487,9 +487,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVector(xs)({
+              likeVector(xs) {
                 _.slice(from, until)
-              })
+              }
           }
         }
       }
@@ -498,9 +498,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVector(xs)({
+              likeVector(xs) {
                 _.drop(from).take(until - from)
-              })
+              }
           }
         }
       }
@@ -509,11 +509,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVector(xs)({ it ⇒
+              likeVector(xs) { it ⇒
                 val array = Array.ofDim[Byte](xs.length)
                 it.slice(from, until).copyToArray(array, from, until)
                 array.toSeq
-              })
+              }
           }
         }
       }

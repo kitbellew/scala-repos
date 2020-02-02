@@ -180,7 +180,7 @@ object Test extends App {
   var argName = 1
   test5(argName = (argName = 2))
   println(argName) // should be 2
-  test5({ argName = 3 })
+  test5 { argName = 3 }
   println(argName) // should be 3
   test5((argName = 4))
   println(argName) // should be 4

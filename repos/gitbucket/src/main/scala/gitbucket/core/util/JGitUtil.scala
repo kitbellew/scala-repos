@@ -291,7 +291,7 @@ object JGitUtil {
           : (ObjectId, FileMode, String, Option[String], RevCommit) =
         tuple match {
           case (oid, FileMode.TREE, name, _, commit) =>
-            (using(new TreeWalk(git.getRepository)) { walk =>
+            using(new TreeWalk(git.getRepository)) { walk =>
               walk.addTree(oid)
               // single tree child, or None
               if (walk.next() && walk.getFileMode(0) == FileMode.TREE)
@@ -304,7 +304,7 @@ object JGitUtil {
                     commit)).filterNot(_ => walk.next())
               else
                 None
-            }) match {
+            } match {
               case Some(child) => simplifyPath(child)
               case _           => tuple
             }

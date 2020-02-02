@@ -142,9 +142,9 @@ class LazyStrictTests {
     }
 
     effects += 1
-    val il = useEffectfulLazyInt({ effects += 2; 23 })
+    val il = useEffectfulLazyInt { effects += 2; 23 }
     effects += 5
-    val is = useEffectfulStrictInt({ effects += 6; 23 })
+    val is = useEffectfulStrictInt { effects += 6; 23 }
     effects += 9
 
     assertEquals(23, il)

@@ -92,7 +92,7 @@ object Scalding {
     }
 
   def emptyFlowProducer[T]: FlowProducer[TypedPipe[T]] =
-    Reader({ implicit fdm: (FlowDef, Mode) => TypedPipe.empty })
+    Reader { implicit fdm: (FlowDef, Mode) => TypedPipe.empty }
 
   def getCommutativity(
       names: List[String],
@@ -312,7 +312,7 @@ object Scalding {
     */
   def memoize[T](pf: PipeFactory[T]): PipeFactory[T] = {
     val memo = new Memo[T]
-    pf.map { rdr => Reader({ i => memo.getOrElseUpdate(i, rdr) }) }
+    pf.map { rdr => Reader { i => memo.getOrElseUpdate(i, rdr) } }
   }
 
   private def getOrElse[T <: AnyRef: ClassTag](

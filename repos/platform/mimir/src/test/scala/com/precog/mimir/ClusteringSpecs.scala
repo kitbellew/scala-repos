@@ -58,9 +58,7 @@ trait ClusteringLibSpecs[M[+_]]
       points: Array[Array[Double]],
       centers: Array[Array[Double]]): Double =
     points.foldLeft(0.0) { (cost, p) =>
-      cost + centers
-        .map({ c => (p - c).norm })
-        .qmin
+      cost + centers.map { c => (p - c).norm }.qmin
     }
 
   val ClusterIdPattern = """cluster\d+""".r
@@ -86,13 +84,11 @@ trait ClusteringLibSpecs[M[+_]]
       case _ => sys.error("not supported")
     }
 
-    val clusters: Array[Array[Double]] = clusterMap.values
-      .map({ sval =>
-        val arr = getPoint(sval)
-        arr must haveSize(dimension)
-        arr.toArray
-      })
-      .toArray
+    val clusters: Array[Array[Double]] = clusterMap.values.map { sval =>
+      val arr = getPoint(sval)
+      arr must haveSize(dimension)
+      arr.toArray
+    }.toArray
 
     val cost = kMediansCost(points, clusters)
 

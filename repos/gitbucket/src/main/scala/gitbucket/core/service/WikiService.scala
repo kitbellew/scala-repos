@@ -192,7 +192,7 @@ trait WikiService {
             p.parse(new ByteArrayInputStream(patch.getBytes("UTF-8")))
             if (!p.getErrors.isEmpty)
               throw new PatchFormatException(p.getErrors())
-            val revertInfo = (p.getFiles.asScala.map { fh =>
+            val revertInfo = p.getFiles.asScala.map { fh =>
               fh.getChangeType match {
                 case DiffEntry.ChangeType.MODIFY =>
                   val source = getWikiPage(
@@ -221,7 +221,7 @@ trait WikiService {
                     Seq(RevertInfo("DELETE", fh.getOldPath, ""))
                 case _ => Nil
               }
-            }).flatten
+            }.flatten
 
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()

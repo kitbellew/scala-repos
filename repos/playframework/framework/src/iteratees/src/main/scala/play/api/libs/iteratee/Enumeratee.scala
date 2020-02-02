@@ -904,7 +904,7 @@ object Enumeratee {
                 case other => Done(other.it, in)
               }(dec)
               .unflatten
-              .map({ s => s.it })(dec)
+              .map { s => s.it }(dec)
               .recover({
                 case NonFatal(e) =>
                   f(e, in)

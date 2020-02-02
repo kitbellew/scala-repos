@@ -225,7 +225,7 @@ trait Binder extends parser.AST {
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
     val env =
-      Env(Map(), builtIns.map({ b => b.name -> b })(collection.breakOut))
+      Env(Map(), builtIns.map { b => b.name -> b }(collection.breakOut))
 
     loop(tree, env)
   }

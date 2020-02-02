@@ -4374,9 +4374,9 @@ trait Typers
       global.packSymbols(hidden, tp, context0.owner)
 
     def isReferencedFrom(ctx: Context, sym: Symbol): Boolean = (
-      ctx.owner.isTerm && (ctx.scope.exists { dcl =>
+      ctx.owner.isTerm && ctx.scope.exists { dcl =>
         dcl.isInitialized && (dcl.info contains sym)
-      }) || {
+      } || {
         var ctx1 = ctx.outer
         while ((ctx1 != NoContext) && (ctx1.scope eq ctx.scope))
           ctx1 = ctx1.outer
@@ -5202,12 +5202,12 @@ trait Typers
 
           val retry = (typeErrors
             .forall(_.errPos != null)) && (fun :: tree :: args exists errorInResult)
-          typingStack.printTyping({
+          typingStack.printTyping {
             val funStr = ptTree(fun) + " and " + (args map ptTree mkString ", ")
             if (retry) "second try: " + funStr
             else
               "no second try: " + funStr + " because error not in result: " + typeErrors.head.errPos + "!=" + tree.pos
-          })
+          }
           if (retry) {
             val Select(qual, name) = fun
             tryTypedArgs(args, forArgMode(fun, mode)) match {
@@ -5298,12 +5298,12 @@ trait Typers
             else
               doTypedApply(tree, fun2, args, mode, pt)
           case err: SilentTypeError =>
-            onError({
+            onError {
               err.reportableErrors foreach context.issue
               err.warnings foreach { case (p, m) => context.warning(p, m) }
               args foreach (arg => typed(arg, mode, ErrorType))
               setError(tree)
-            })
+            }
         }
       }
 
@@ -5560,7 +5560,7 @@ trait Typers
                 if qual.tpe.typeArgs.nonEmpty => // TODO: somehow the new qual is not checked in refchecks
               treeCopy.SelectFromTypeTree(
                 result,
-                (TypeTreeWithDeferredRefCheck() { () =>
+                TypeTreeWithDeferredRefCheck() { () =>
                   val tp = qual.tpe; val sym = tp.typeSymbolDirect
                   // will execute during refchecks -- TODO: make private checkTypeRef in refchecks public and call that one?
                   checkBounds(
@@ -5571,7 +5571,7 @@ trait Typers
                     tp.typeArgs,
                     "")
                   qual // you only get to see the wrapped tree after running this check :-p
-                }) setType qual.tpe setPos qual.pos,
+                } setType qual.tpe setPos qual.pos,
                 name
               )
             case _ if accessibleError.isDefined =>

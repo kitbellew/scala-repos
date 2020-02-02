@@ -1914,7 +1914,7 @@ class FutureTest
     "terminate if the body throws an exception" in {
       val exc = new Exception("body exception")
       var i = 0
-      def next() = Future.value({ i += 1; i })
+      def next() = Future.value { i += 1; i }
       val done = Future.each(next()) {
         case 10 => throw exc
         case _  =>

@@ -450,9 +450,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     private[this] val pathLRU = Cache.simple[Path, Unit](
       MaxSize(maxOpenPaths),
-      OnRemoval({ (p: Path, _: Unit, _: RemovalCause) =>
+      OnRemoval { (p: Path, _: Unit, _: RemovalCause) =>
         pathActors.get(p).foreach(_ ! ReceiveTimeout)
-      })
+      }
     )
 
     private[this] var pathActors = Map.empty[Path, ActorRef]

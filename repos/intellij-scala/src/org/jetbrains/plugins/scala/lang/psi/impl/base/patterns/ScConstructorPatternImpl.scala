@@ -118,15 +118,9 @@ class ScConstructorPatternImpl(node: ASTNode)
                 case _ => emptySubst
               }
             }
-            Success(
-              ScParameterizedType(
-                refType,
-                td.getTypeParameters
-                  .map({ tp =>
-                    newSubst.subst(ScalaPsiManager.typeVariable(tp))
-                  })
-                  .toSeq),
-              Some(this))
+            Success(ScParameterizedType(refType, td.getTypeParameters.map {
+              tp => newSubst.subst(ScalaPsiManager.typeVariable(tp))
+            }.toSeq), Some(this))
           case td: ScClass   => Success(ScType.designator(td), Some(this))
           case obj: ScObject => Success(ScType.designator(obj), Some(this))
           case fun: ScFunction /*It's unapply method*/

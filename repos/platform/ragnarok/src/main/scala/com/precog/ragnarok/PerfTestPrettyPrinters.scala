@@ -111,10 +111,10 @@ trait PrettyPrinters {
           (q split "\n").toList match {
             case Nil => Nil
             case head :: tail =>
-              ("-> " + head) :: (tail.foldRight(
+              ("-> " + head) :: tail.foldRight(
                 List(" ' " + prettyResult(result), "")) {
                 " | " + _ :: _
-              })
+              }
           }
       }
 

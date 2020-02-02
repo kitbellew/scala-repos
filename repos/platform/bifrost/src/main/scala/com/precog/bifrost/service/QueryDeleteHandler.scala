@@ -45,7 +45,7 @@ class QueryDeleteHandler[A](jobManager: JobManager[Future], clock: Clock)(
   import scalaz.syntax.monad._
 
   val service = { (request: HttpRequest[A]) =>
-    Success({ (apiKey: APIKey) =>
+    Success { (apiKey: APIKey) =>
       request.parameters get 'jobId map { jobId =>
         jobManager
           .cancel(jobId, "User request through HTTP.", clock.now()) map {
@@ -59,7 +59,7 @@ class QueryDeleteHandler[A](jobManager: JobManager[Future], clock: Clock)(
           HttpResponse[A](
             HttpStatus(BadRequest, "Missing required 'jobId parameter.")))
       }
-    })
+    }
   }
 
   val metadata = DescriptionMetadata(

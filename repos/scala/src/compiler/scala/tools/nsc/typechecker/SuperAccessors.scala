@@ -318,12 +318,12 @@ abstract class SuperAccessors
                 // ... but, only if accessible (SI-6793)
                 if (sym.isParamAccessor && sym.alias != NoSymbol && isAccessibleFromSuper(
                       sym.alias)) {
-                  val result = (localTyper
+                  val result = localTyper
                     .typedPos(tree.pos) {
                       Select(
                         Super(qual, tpnme.EMPTY) setPos qual.pos,
                         sym.alias)
-                    })
+                    }
                     .asInstanceOf[Select]
                   debuglog(
                     s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"

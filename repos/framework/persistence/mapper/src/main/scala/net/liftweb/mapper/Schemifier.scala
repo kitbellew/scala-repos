@@ -218,7 +218,7 @@ object Schemifier extends Loggable {
       logFunc: (=> AnyRef) => Unit,
       stables: List[BaseMetaMapper]) {
     val th = new HashMap[String, String]()
-    (DB.use(dbId) { conn =>
+    DB.use(dbId) { conn =>
       val sConn = conn // SuperConnection(conn)
       val tables = stables.toList.filter(t => hasTable_?(t, sConn, th))
 
@@ -235,7 +235,7 @@ object Schemifier extends Loggable {
       }
 
       tables
-    }) match {
+    } match {
       case t if t.length > 0 && cnt < 1000 =>
         destroyTables_!!(dbId, cnt + 1, logFunc, t)
       case _ =>

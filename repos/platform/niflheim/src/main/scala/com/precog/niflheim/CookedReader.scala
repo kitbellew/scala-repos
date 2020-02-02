@@ -100,7 +100,7 @@ final class CookedReader(
   def snapshotRef(refConstraints: Option[Set[ColumnRef]]): Block = {
     val segments: Seq[Segment] = refConstraints map { refs =>
       load(refs.toList)
-        .map({ segs => segs flatMap (_._2) })
+        .map { segs => segs flatMap (_._2) }
         .valueOr { nel => throw nel.head }
     } getOrElse {
       metadata.valueOr(throw _).segments map {

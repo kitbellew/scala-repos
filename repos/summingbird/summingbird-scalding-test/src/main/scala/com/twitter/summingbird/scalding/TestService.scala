@@ -59,7 +59,7 @@ class TestService[K, V](
 
   /** The lasts are computed from the streams */
   lazy val lasts: Map[BatchID, Iterable[(Timestamp, (K, V))]] = {
-    (streams.toList
+    streams.toList
       .sortBy(_._1)
       .foldLeft(Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
         case (
@@ -77,7 +77,7 @@ class TestService[K, V](
       }
       .mapValues { innerMap =>
         innerMap.toSeq.map { case (k, (time, v)) => (time, (k, v)) }
-      }) + (minBatch -> Iterable.empty)
+      } + (minBatch -> Iterable.empty)
   }
 
   def lastMappable(b: BatchID): Mappable[(Timestamp, (K, V))] =

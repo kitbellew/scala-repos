@@ -164,7 +164,7 @@ trait TaskExtra {
       def mapFailure[T](f: Incomplete => T): Task[T] = mapR(f compose failM)
 
       def andFinally(fin: => Unit): Task[S] =
-        mapR(x => Result.tryValue[S]({ fin; x }))
+        mapR(x => Result.tryValue[S] { fin; x })
       def doFinally(t: Task[Unit]): Task[S] =
         flatMapR(x => t.mapR { tx => Result.tryValues[S](tx :: Nil, x) })
       def ||[T >: S](alt: Task[T]): Task[T] = flatMapR {

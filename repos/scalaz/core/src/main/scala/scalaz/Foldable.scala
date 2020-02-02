@@ -289,9 +289,9 @@ trait Foldable[F[_]] { self =>
 
   /** Insert an `A` between every A, yielding the sum. */
   def intercalate[A](fa: F[A], a: A)(implicit A: Monoid[A]): A =
-    (foldRight(fa, none[A]) { (l, oa) =>
+    foldRight(fa, none[A]) { (l, oa) =>
       some(A.append(l, oa map (A.append(a, _)) getOrElse A.zero))
-    }).getOrElse(A.zero)
+    }.getOrElse(A.zero)
 
   /**
     * Splits the elements into groups that alternatively satisfy and don't satisfy the predicate p.

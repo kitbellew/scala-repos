@@ -19,7 +19,7 @@ trait BootableActorLoaderService extends Bootable {
   lazy val applicationLoader: Option[ClassLoader] = createApplicationClassLoader
 
   protected def createApplicationClassLoader: Option[ClassLoader] =
-    Some({
+    Some {
       if (HOME.isDefined) {
         val DEPLOY = HOME.get + "/deploy"
         val DEPLOY_DIR = new File(DEPLOY)
@@ -47,7 +47,7 @@ trait BootableActorLoaderService extends Bootable {
           allJars.toArray,
           Thread.currentThread.getContextClassLoader)
       } else Thread.currentThread.getContextClassLoader
-    })
+    }
 
   abstract override def onLoad = {
     super.onLoad

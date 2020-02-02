@@ -49,7 +49,7 @@ object Agent {
       })
 
     def alter(newValue: T): Future[T] =
-      doAlter({ ref.single.update(newValue); newValue })
+      doAlter { ref.single.update(newValue); newValue }
 
     def alter(f: T ⇒ T): Future[T] = doAlter(ref.single.transformAndGet(f))
 

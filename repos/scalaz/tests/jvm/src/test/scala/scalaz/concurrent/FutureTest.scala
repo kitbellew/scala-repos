@@ -107,10 +107,10 @@ object FutureTest extends SpecLite {
   def deadlocks(depth: Int): Future[List[Long]] =
     if (depth == 1)
       Future.fork(
-        Future.delay({
+        Future.delay {
           Thread.sleep(20)
           List(System.currentTimeMillis)
-        })
+        }
       )
     else
       Future.fork(

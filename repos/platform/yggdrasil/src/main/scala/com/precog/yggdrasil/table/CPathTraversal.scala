@@ -57,9 +57,9 @@ sealed trait CPathTraversal { self =>
 
         def makeCols(
             pathToCol: Map[CPath, Set[Column]]): Array[(CPath, Column)] =
-          validPaths.flatMap({ path =>
+          validPaths.flatMap { path =>
             pathToCol.getOrElse(path, Set.empty).toList map ((path, _))
-          })(collection.breakOut)
+          }(collection.breakOut)
 
         val lCols = makeCols(left)
         val rCols = makeCols(right)

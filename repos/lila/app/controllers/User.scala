@@ -140,9 +140,9 @@ object User extends LilaController {
   private def userGames(u: UserModel, filterOption: Option[String], page: Int)(
       implicit ctx: BodyContext[_]) = {
     import lila.app.mashup.GameFilter.{All, Playing}
-    filterOption.fold({
+    filterOption.fold {
       Env.simul isHosting u.id map (_.fold(Playing, All).name)
-    })(fuccess) flatMap { filterName =>
+    }(fuccess) flatMap { filterName =>
       GameFilterMenu.paginatorOf(
         userGameSearch = userGameSearch,
         user = u,

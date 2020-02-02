@@ -155,12 +155,12 @@ object ColorSelector extends JFXApp {
   val controlRed = new SliderControl("R") {
     value = 255
   }
-  controlRed.value.onChange({
+  controlRed.value.onChange {
     changeColor()
     controlRed.changeColor(
       Color.rgb(controlRed.value.value.toInt, 0, 0),
       getForegroundColor(controlRed.value.value))
-  })
+  }
   controlRed.selectedControl.onChange(controlSelected(controlRed))
   controlRed.changeColor(
     Color.rgb(controlRed.value.value.toInt, 0, 0),
@@ -169,12 +169,12 @@ object ColorSelector extends JFXApp {
   val controlGreen = new SliderControl("G") {
     value = 255
   }
-  controlGreen.value.onChange({
+  controlGreen.value.onChange {
     changeColor()
     controlGreen.changeColor(
       Color.rgb(0, controlGreen.value.value.toInt, 0),
       getForegroundColor(controlGreen.value.value))
-  })
+  }
   controlGreen.selectedControl.onChange(controlSelected(controlGreen))
   controlGreen.changeColor(
     Color.rgb(0, controlGreen.value.value.toInt, 0),
@@ -183,11 +183,11 @@ object ColorSelector extends JFXApp {
   val controlBlue = new SliderControl("B") {
     value = 255
   }
-  controlBlue.value.onChange({
+  controlBlue.value.onChange {
     changeColor()
     controlBlue
       .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
-  })
+  }
   controlBlue.selectedControl.onChange(controlSelected(controlBlue))
   controlBlue.changeColor(
     Color.rgb(0, 0, controlBlue.value.value.toInt),
@@ -198,13 +198,13 @@ object ColorSelector extends JFXApp {
   }
   controlAlpha.value.onChange(changeColor())
   controlAlpha.selectedControl.onChange(controlSelected(controlAlpha))
-  controlAlpha.disable.onChange({
+  controlAlpha.disable.onChange {
     if (controlAlpha.selectedControl.value)
       if (controlAlpha.disable.value) synchronizedControls.remove(controlAlpha)
       else synchronizedControls.add(controlAlpha)
     changeColor()
     formatColor()
-  })
+  }
 
   val cmbWebColor = new ComboBox[WebColor](WebColor.colors) {
     promptText = "Web Color"

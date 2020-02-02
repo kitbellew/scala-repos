@@ -413,9 +413,9 @@ object ProducerFeatureTest {
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
-            context.sender() ! (msg.mapBody { body: String ⇒
+            context.sender() ! msg.mapBody { body: String ⇒
               "received %s" format body
-            })
+            }
         }
     }
   }

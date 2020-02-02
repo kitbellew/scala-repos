@@ -1044,14 +1044,14 @@ class SparkILoop(
         NamedParam[SparkIMain]("$intp", intp)(
           tagOfSparkIMain,
           classTag[SparkIMain])))
-    addThunk({
+    addThunk {
       import scala.tools.nsc.io._
       import Properties.userHome
       import scala.compat.Platform.EOL
       val autorun =
         replProps.replAutorunCode.option flatMap (f => io.File(f).safeSlurp())
       if (autorun.isDefined) intp.quietRun(autorun.get)
-    })
+    }
 
     addThunk(printWelcome())
     addThunk(initializeSpark())

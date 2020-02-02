@@ -156,7 +156,7 @@ abstract class Pickler extends SubComponent {
     private def deskolemize(sym: Symbol): Symbol =
       if (sym.isTypeSkolem) {
         val sym1 = sym.deSkolemize
-        log({
+        log {
           val what0 = sym.defString
           val what = sym1.defString match {
             case `what0` => what0
@@ -164,7 +164,7 @@ abstract class Pickler extends SubComponent {
           }
           val where = sym.enclMethod.fullLocationString
           s"deskolemizing $what in $where"
-        })
+        }
         sym1
       } else sym
 

@@ -38,5 +38,5 @@ trait SimpleWindowedService[K, V] extends BatchedWindowService[K, V] {
     if (!streamIsAvailable(batchID, mode))
       None
     else
-      Some(Reader({ implicit fdm: (FlowDef, Mode) => read(batchID) }))
+      Some(Reader { implicit fdm: (FlowDef, Mode) => read(batchID) })
 }

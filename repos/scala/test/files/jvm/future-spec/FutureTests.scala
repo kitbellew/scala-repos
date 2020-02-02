@@ -164,9 +164,9 @@ class FutureTests extends MinimalScalaTest {
             ec)) eq f)
       assert(
         ECNotUsed(ec =>
-          f.zipWith(f)({ (_, _) =>
-              fail("zipWith should not have been called")
-            })(ec)) eq f)
+          f.zipWith(f) { (_, _) =>
+            fail("zipWith should not have been called")
+          }(ec)) eq f)
     }
   }
 
@@ -263,9 +263,9 @@ class FutureTests extends MinimalScalaTest {
         test.andThen({ case _ => fail("andThen should not have been called") })(
           ec) eq test)
       ECNotUsed(ec =>
-        test.zipWith(test)({ (_, _) =>
+        test.zipWith(test) { (_, _) =>
           fail("zipWith should not have been called")
-        })(ec) eq test)
+        }(ec) eq test)
     }
   }
 
@@ -299,7 +299,7 @@ class FutureTests extends MinimalScalaTest {
 
       val future2 = for {
         a <- future0.mapTo[Int]
-        b <- (Future { (a * 2).toString }).mapTo[Int]
+        b <- Future { (a * 2).toString }.mapTo[Int]
         c <- Future { (7 * 2).toString }
       } yield b + "-" + c
 

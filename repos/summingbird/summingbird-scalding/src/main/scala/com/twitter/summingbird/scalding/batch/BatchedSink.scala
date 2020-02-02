@@ -71,7 +71,7 @@ trait BatchedSink[T] extends Sink[T] {
     }
 
   final def write(incoming: PipeFactory[T]): PipeFactory[T] =
-    StateWithError({ in: FactoryInput =>
+    StateWithError { in: FactoryInput =>
       val (timeSpan, mode) = in
       // This object combines some common scalding batching operations:
       val batchOps = new BatchedOperations(batcher)
@@ -109,7 +109,7 @@ trait BatchedSink[T] extends Sink[T] {
           optBuilt: Option[(Interval[BatchID], FlowToPipe[T])])
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
-        val flows = aFlows ++ (optBuilt.map { _._2 })
+        val flows = aFlows ++ optBuilt.map { _._2 }
         val batches = aBatches ++ (optBuilt
           .map { pair => BatchID.toIterable(pair._1) }
           .getOrElse(Iterable.empty))
@@ -132,5 +132,5 @@ trait BatchedSink[T] extends Sink[T] {
           if (existing.isEmpty) Left(err) else mergeExistingAndBuilt(None)
         case Some(Right(built)) => mergeExistingAndBuilt(Some(built))
       }
-    })
+    }
 }

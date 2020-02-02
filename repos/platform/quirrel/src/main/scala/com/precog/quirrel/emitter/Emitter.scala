@@ -372,9 +372,9 @@ trait Emitter
             else
               nextId { id =>
                 state(id) >>
-                  (StateT.apply[Id, Emission, Unit] { e =>
+                  StateT.apply[Id, Emission, Unit] { e =>
                     (e.copy(keyParts = e.keyParts + ((solve, name) -> id)), ())
-                  })
+                  }
               }
 
           s(e)
@@ -501,10 +501,10 @@ trait Emitter
             val spec = expr.buckets(dispatches)
 
             val btraces: Map[Expr, List[List[(Sigma, Expr)]]] =
-              spec.exprs.map({ expr =>
+              spec.exprs.map { expr =>
                 val btrace = buildBacktrace(trace)(expr)
                 (expr -> btrace)
-              })(collection.breakOut)
+              }(collection.breakOut)
 
             val contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]] =
               btraces map {

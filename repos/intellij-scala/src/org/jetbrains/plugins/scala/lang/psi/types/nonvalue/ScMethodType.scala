@@ -527,7 +527,7 @@ case class ScTypePolymorphicType(
             new collection.immutable.HashMap[(String, PsiElement), ScType] ++
               typeParameters
                 .zip(p.typeParameters)
-                .map({
+                .map {
                   tuple =>
                     (
                       (
@@ -545,7 +545,7 @@ case class ScTypePolymorphicType(
                         new Suspension(tuple._2.lowerType),
                         new Suspension(tuple._2.upperType),
                         tuple._2.ptp))
-                }),
+                },
             Map.empty,
             None)
         Equivalence.equivInner(

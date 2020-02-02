@@ -31,7 +31,7 @@ object Func extends FuncInstances {
   /** applicative function using [[Unapply]]. */
   def appFuncU[A, R](f: A => R)(
       implicit RR: Unapply[Applicative, R]): AppFunc[RR.M, A, RR.A] =
-    appFunc({ a: A => RR.subst(f(a)) })(RR.TC)
+    appFunc { a: A => RR.subst(f(a)) }(RR.TC)
 }
 
 private[data] abstract class FuncInstances extends FuncInstances0 {
@@ -102,9 +102,9 @@ sealed abstract class AppFunc[F[_], A, B] extends Func[F, A, B] { self =>
     implicit val FF: Applicative[F] = self.F
     implicit val GG: Applicative[G] = g.F
     implicit val GGFF: Applicative[Lambda[X => G[F[X]]]] = GG.compose(FF)
-    Func.appFunc[Lambda[X => G[F[X]]], C, B]({ c: C =>
+    Func.appFunc[Lambda[X => G[F[X]]], C, B] { c: C =>
       GG.map(g.run(c))(self.run)
-    })
+    }
   }
 
   def andThen[G[_], C](

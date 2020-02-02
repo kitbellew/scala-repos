@@ -238,7 +238,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def codec[Req1, Rep1](
       codecFactory: CodecFactory[Req1, Rep1]#Server
   ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
-    stack({ ps =>
+    stack { ps =>
       val Label(label) = ps[Label]
       val BindTo(addr) = ps[BindTo]
       val Stats(stats) = ps[Stats]
@@ -305,7 +305,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
         stack = newStack,
         params = serverParams
       )
-    })
+    }
 
   /**
     * Overrides the stack and [[com.twitter.finagle.Server]] that will be used

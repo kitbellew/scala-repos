@@ -62,7 +62,7 @@ class FlowSpec
   }
 
   val faultyFlow: Flow[Any, Any, NotUsed] ⇒ Flow[Any, Any, NotUsed] = in ⇒
-    in.via({
+    in.via {
       val stage = new PushPullGraphStage(
         (_) ⇒ fusing.Map(x: Any ⇒ x, stoppingDecider),
         Attributes.none)
@@ -108,7 +108,7 @@ class FlowSpec
       Flow.fromSinkAndSource(
         Sink.fromSubscriber(subscriber),
         Source.fromPublisher(publisher))
-    })
+    }
 
   val toPublisher: (Source[Any, _], ActorMaterializer) ⇒ Publisher[Any] =
     (f, m) ⇒ f.runWith(Sink.asPublisher(false))(m)

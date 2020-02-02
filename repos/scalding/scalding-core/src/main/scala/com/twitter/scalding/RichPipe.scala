@@ -530,7 +530,7 @@ class RichPipe(val pipe: Pipe)
   def flatten[T](fs: (Fields, Fields))(
       implicit conv: TupleConverter[TraversableOnce[T]],
       setter: TupleSetter[T]): Pipe =
-    flatMap[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] => it })(
+    flatMap[TraversableOnce[T], T](fs) { it: TraversableOnce[T] => it }(
       conv,
       setter)
 
@@ -546,7 +546,7 @@ class RichPipe(val pipe: Pipe)
   def flattenTo[T](fs: (Fields, Fields))(
       implicit conv: TupleConverter[TraversableOnce[T]],
       setter: TupleSetter[T]): Pipe =
-    flatMapTo[TraversableOnce[T], T](fs)({ it: TraversableOnce[T] => it })(
+    flatMapTo[TraversableOnce[T], T](fs) { it: TraversableOnce[T] => it }(
       conv,
       setter)
 

@@ -122,14 +122,14 @@ trait RedisClientServerIntegrationTest
             expects.isEmpty == false,
             "Test did no supply a list of expected replies.")
           val newMsgs = ReplyFormat.toString(msgs)
-          expects.foreach({ msg =>
+          expects.foreach { msg =>
             val doesMBulkReplyContainMessage = newMsgs.contains(msg)
             assert(doesMBulkReplyContainMessage == true)
-          })
+          }
         case false =>
           val actualMessages = ReplyFormat
             .toChannelBuffers(msgs)
-            .map({ msg => chanBuf2String(msg) })
+            .map { msg => chanBuf2String(msg) }
           assert(actualMessages == expects)
       }
     case EmptyMBulkReply() =>

@@ -107,14 +107,14 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * @todo collapse entries with common prefixes
     */
   def simplified: Dtab =
-    Dtab({
+    Dtab {
       val simple = this map {
         case Dentry(prefix, dst) => Dentry(prefix, dst.simplified)
       }
 
       // Negative destinations are no-ops
       simple.filter(_.dst != NameTree.Neg)
-    })
+    }
 
   def show: String = dentries0 map (_.show) mkString ";"
   override def toString = "Dtab(" + show + ")"

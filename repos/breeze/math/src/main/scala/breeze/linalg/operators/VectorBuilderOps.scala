@@ -201,7 +201,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
     }
 
   implicit def space[T: Field: ClassTag]: MutableModule[VectorBuilder[T], T] =
-    MutableModule.make[VectorBuilder[T], T]({
+    MutableModule.make[VectorBuilder[T], T] {
       (a: VectorBuilder[T], b: VectorBuilder[T], tolerance: Double) =>
         val aHV = a.toHashVector
         implicit val hvSpace: MutableVectorField[HashVector[T], T] =
@@ -209,7 +209,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
         import hvSpace._
         val diff: Double = norm(a.toHashVector - b.toHashVector)
         diff < tolerance
-    })
+    }
 
   // operations involving vectors:
 

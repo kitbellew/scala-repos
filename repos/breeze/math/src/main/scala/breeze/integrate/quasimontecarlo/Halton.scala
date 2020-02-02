@@ -69,7 +69,7 @@ class BaseUniformHaltonGenerator(val dimension: Int)
 
   private var count: Long = 0
   private val counters: Array[UnboxedIntVector] =
-    List.fill(dimension)({ new UnboxedIntVector(16) }).toArray
+    List.fill(dimension) { new UnboxedIntVector(16) }.toArray
   val permutations: Array[Array[Long]] =
     (0 to dimension).map { i =>
       val vv = new Array[Long](Halton.PRIMES(i))

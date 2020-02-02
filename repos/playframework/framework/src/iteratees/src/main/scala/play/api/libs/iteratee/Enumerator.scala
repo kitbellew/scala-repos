@@ -618,7 +618,7 @@ object Enumerator {
   def fromStream(input: java.io.InputStream, chunkSize: Int = 1024 * 8)(
       implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
     implicit val pec = ec.prepare()
-    generateM({
+    generateM {
       val buffer = new Array[Byte](chunkSize)
       val bytesRead = blocking { input.read(buffer) }
       val chunk = bytesRead match {
@@ -630,7 +630,7 @@ object Enumerator {
           Some(input)
       }
       Future.successful(chunk)
-    })(pec).onDoneEnumerating(input.close)(pec)
+    }(pec).onDoneEnumerating(input.close)(pec)
   }
 
   /**
@@ -730,17 +730,17 @@ object Enumerator {
       implicit ctx: scala.concurrent.ExecutionContext): Enumerator[E] = {
     val it = traversable.toIterator
     Enumerator.unfoldM[scala.collection.Iterator[E], E](
-      it: scala.collection.Iterator[E])({ currentIt =>
+      it: scala.collection.Iterator[E]) { currentIt =>
       if (currentIt.hasNext)
-        Future[Option[(scala.collection.Iterator[E], E)]]({
+        Future[Option[(scala.collection.Iterator[E], E)]] {
           val next = currentIt.next
           Some((currentIt -> next))
-        })(ctx)
+        }(ctx)
       else
-        Future.successful[Option[(scala.collection.Iterator[E], E)]]({
+        Future.successful[Option[(scala.collection.Iterator[E], E)]] {
           None
-        })
-    })(dec)
+        }
+    }(dec)
   }
 
   /**

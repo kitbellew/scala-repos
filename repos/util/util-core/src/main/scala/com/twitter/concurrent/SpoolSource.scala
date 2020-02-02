@@ -31,11 +31,11 @@ class SpoolSource[A](interruptHandler: PartialFunction[Throwable, Unit]) {
   private val emptyPromise = new Promise(Return(Spool.empty[A]))
 
   // set the first promise to be fulfilled by the first call to offer()
-  promiseRef.set({
+  promiseRef.set {
     val p = new Promise[Spool[A]]
     p.setInterruptHandler(interruptHandler)
     p
-  })
+  }
 
   /**
     * Gets the current outstanding Future for the next Spool value.  The returned Spool

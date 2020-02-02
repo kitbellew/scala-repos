@@ -1252,10 +1252,10 @@ abstract class GeneratedRouter extends Router {
       )
 
   def call[T](params: List[Param[_]])(generator: (Seq[_]) => Handler): Handler =
-    (params
+    params
       .foldLeft[Either[String, Seq[_]]](Right(Seq[T]())) { (seq, param) =>
         seq.right.flatMap(s => param.value.right.map(s :+ _))
-      })
+      }
       .fold(badRequest, generator)
   def fakeValue[A]: A =
     throw new UnsupportedOperationException("Can't get a fake value")

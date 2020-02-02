@@ -162,7 +162,7 @@ private[pickling] class IrScalaSymbols[
         tpe.typeSymbol.asType.asInstanceOf[tools.u.TypeSymbol])
       closedError match {
         case Nil =>
-          scala.util.Success({
+          scala.util.Success {
             val dispatchees = tools.compileTimeDispatchees(
               tpe.asInstanceOf[tools.c.universe.Type],
               tools.u.rootMirror,
@@ -170,7 +170,7 @@ private[pickling] class IrScalaSymbols[
             dispatchees.map(t =>
               new ScalaIrClass(t.asInstanceOf[u.Type], quantified, rawType))(
               collection.breakOut)
-          })
+          }
         case errors =>
           scala.util.Failure(new UnclosedSubclassesException(errors))
       }

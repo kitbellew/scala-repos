@@ -43,24 +43,15 @@ object Test extends ScaladocModelTest {
 
     // 1. check that several runs produce the same output
     val run0 = diagramString(rootPackage)
-    val run1 = diagramString(
-      model
-        .getOrElse({
-          sys.error("Scaladoc Model Test ERROR: No universe generated!")
-        })
-        .rootPackage)
-    val run2 = diagramString(
-      model
-        .getOrElse({
-          sys.error("Scaladoc Model Test ERROR: No universe generated!")
-        })
-        .rootPackage)
-    val run3 = diagramString(
-      model
-        .getOrElse({
-          sys.error("Scaladoc Model Test ERROR: No universe generated!")
-        })
-        .rootPackage)
+    val run1 = diagramString(model.getOrElse {
+      sys.error("Scaladoc Model Test ERROR: No universe generated!")
+    }.rootPackage)
+    val run2 = diagramString(model.getOrElse {
+      sys.error("Scaladoc Model Test ERROR: No universe generated!")
+    }.rootPackage)
+    val run3 = diagramString(model.getOrElse {
+      sys.error("Scaladoc Model Test ERROR: No universe generated!")
+    }.rootPackage)
 
     // any variance in the order of the diagram elements should crash the following tests:
     assert(run0 == run1)

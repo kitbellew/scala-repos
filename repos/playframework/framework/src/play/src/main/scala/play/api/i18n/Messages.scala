@@ -574,9 +574,9 @@ class DefaultMessagesApi @Inject() (
   def isDefinedAt(key: String)(implicit lang: Lang): Boolean = {
     val codesToTry = Seq(lang.code, lang.language, "default", "default.play")
 
-    codesToTry.foldLeft[Boolean](false)({ (acc, lang) =>
+    codesToTry.foldLeft[Boolean](false) { (acc, lang) =>
       acc || messages.get(lang).exists(_.isDefinedAt(key))
-    })
+    }
   }
 
   private def joinPaths(first: Option[String], second: String) = first match {

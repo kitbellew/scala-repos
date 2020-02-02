@@ -78,13 +78,13 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
   def fqn(info: CompilationInfo, p: TreePath): Option[JavaFqn] =
     element(info, p)
       .flatMap(fqn(info, _))
-      .orElse({
+      .orElse {
         p.getLeaf match {
           case t: IdentifierTree =>
             Some(JavaFqn(None, None, Some(t.getName.toString)))
           case t => None
         }
-      })
+      }
       .orElse(fqn(info, info.getTrees().getTypeMirror(p)))
 
   def fqn(info: CompilationInfo, t: Tree): Option[JavaFqn] =

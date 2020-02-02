@@ -38,7 +38,7 @@ class MonocleInjector extends SyntheticMembersInjector {
       case Some(literal: ScLiteralImpl) => literal.getValue.toString
       case _                            => ""
     }
-    fields.foreach({ i =>
+    fields.foreach { i =>
       val template = if (clazz.typeParameters.isEmpty)
         s"def $prefix${i.name}: _root_.monocle.Lens[${clazz.qualifiedName}, ${i.getType(TypingContext.empty).map(_.canonicalText).getOrElse("Any")}] = ???"
       else {
@@ -46,7 +46,7 @@ class MonocleInjector extends SyntheticMembersInjector {
         s"def $prefix${i.name}$tparams: _root_.monocle.Lens[${clazz.qualifiedName}$tparams, ${i.typeElement.get.calcType}] = ???"
       }
       buffer += template
-    })
+    }
     buffer
   }
 }

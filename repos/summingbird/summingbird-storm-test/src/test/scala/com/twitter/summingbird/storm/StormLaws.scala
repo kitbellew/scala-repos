@@ -101,7 +101,7 @@ object StormLaws {
 
     val job = mkJob(
       Storm.source(TraversableSpout(original)),
-      Storm.sink[Int]({ (x: Int) => append(x); Future.Unit })
+      Storm.sink[Int] { (x: Int) => append(x); Future.Unit }
     )
 
     StormTestRun(job)

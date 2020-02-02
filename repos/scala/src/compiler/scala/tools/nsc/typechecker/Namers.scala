@@ -1262,7 +1262,7 @@ trait Namers extends MethodSynthesis {
       if (meth.isMacro)
         typer.computeMacroDefType(ddef, resTpFromOverride)
 
-      val res = thisMethodType({
+      val res = thisMethodType {
         val rt =
           (if (!tpt.isEmpty)
              methResTp
@@ -1277,7 +1277,7 @@ trait Namers extends MethodSynthesis {
           rt.withAnnotation(
             AnnotationInfo(uncheckedVarianceClass.tpe, List(), List()))
         else rt
-      })
+      }
       pluginsTypeSig(res, typer, ddef, methResTp)
     }
 

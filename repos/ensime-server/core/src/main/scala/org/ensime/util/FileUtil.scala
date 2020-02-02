@@ -110,11 +110,11 @@ object FileUtils {
           }
           .mkString("\n")
 
-      Right({
+      Right {
         val diffFile = java.io.File.createTempFile("ensime-diff-", ".tmp").canon
         diffFile.writeString(diffContents)
         diffFile
-      })
+      }
     } catch {
       case e: Exception => Left(e)
     }

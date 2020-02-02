@@ -25,7 +25,7 @@ class BufReaderTest extends FunSuite with Checkers {
       r.discard()
       n < 0 ||
       bytes.length == 0 ||
-      throws(classOf[Reader.ReaderDiscarded])({ Await.result(r.read(n)) })
+      throws(classOf[Reader.ReaderDiscarded]) { Await.result(r.read(n)) }
     })
   }
 }

@@ -19,13 +19,13 @@ trait ModelBuilders { self: RichPresentationCompiler =>
   import rootMirror.RootPackage
 
   def locateSymbolPos(sym: Symbol, needPos: PosNeeded): Option[SourcePosition] =
-    _locateSymbolPos(sym, needPos).orElse({
+    _locateSymbolPos(sym, needPos).orElse {
       logger.debug(s"search $sym: Try Companion")
       sym.companionSymbol match {
         case NoSymbol  => None
         case s: Symbol => _locateSymbolPos(s, needPos)
       }
-    })
+    }
 
   def _locateSymbolPos(
       sym: Symbol,

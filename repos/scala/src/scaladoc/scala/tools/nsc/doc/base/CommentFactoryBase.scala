@@ -810,10 +810,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       val stop = "]" * parens
       val target = readUntil { check(stop) || isWhitespaceOrNewLine(char) }
       val title =
-        if (!check(stop)) Some({
+        if (!check(stop)) Some {
           jumpWhitespaceOrNewLine()
           inline(check(stop))
-        })
+        }
         else None
       jump(stop)
 

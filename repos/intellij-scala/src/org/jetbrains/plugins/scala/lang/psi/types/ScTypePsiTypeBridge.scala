@@ -96,7 +96,7 @@ trait ScTypePsiTypeBridge {
                 var index = 0
                 ScParameterizedType(
                   des,
-                  tps.map({ tp =>
+                  tps.map { tp =>
                     val arrayOfTypes: Array[PsiClassType] =
                       tp.getExtendsListTypes ++ tp.getImplementsListTypes
                     ScSkolemizedType(
@@ -123,7 +123,7 @@ trait ScTypePsiTypeBridge {
                             Map.empty)
                       }
                     )
-                  })
+                  }
                 ).unpackedType
               case _ =>
                 var index = 0

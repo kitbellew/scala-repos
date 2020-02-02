@@ -146,7 +146,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     val claimedIdCandidate = discovery.normalizeIdentifier(openID)
     discovery
       .discoverServer(openID)
-      .map({ server =>
+      .map { server =>
         val (claimedId, identity) =
           if (server.protocolVersion != "http://specs.openid.net/auth/2.0/server")
             (claimedIdCandidate, server.delegate.getOrElse(claimedIdCandidate))
@@ -167,7 +167,7 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         server.url + separator + parameters
           .map(pair => pair._1 + "=" + URLEncoder.encode(pair._2, "UTF-8"))
           .mkString("&")
-      })
+      }
   }
 
   /**

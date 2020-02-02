@@ -34,7 +34,7 @@ class AtomicStateTransformer[T](initState: T) {
   }
 
   final def update(oper: T => T): T =
-    updateWithState({ x: T => (Unit, oper(x)) })._2
+    updateWithState { x: T => (Unit, oper(x)) }._2
 }
 
 object InflightTuples {

@@ -143,7 +143,7 @@ object ListHelpersSpec extends Specification with ListHelpers {
       listIf(false)(1) must_== Nil
     }
     "not evaluate its argument if the predicate is false" in {
-      listIf(false)({ sys.error("stop"); 1 }) must_== Nil
+      listIf(false) { sys.error("stop"); 1 } must_== Nil
     }
   }
 

@@ -49,7 +49,7 @@ object TestHelper extends Matchers {
   def serializeSeq[T](t: Seq[T])(
       implicit orderedBuffer: OrderedSerialization[T]): InputStream = {
     val baos = new ByteArrayOutputStream
-    t.foreach({ e => orderedBuffer.write(baos, e) })
+    t.foreach { e => orderedBuffer.write(baos, e) }
     baos.toInputStream
   }
 

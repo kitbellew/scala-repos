@@ -42,9 +42,9 @@ trait OwnerAuthenticator {
           case Some(x) if (x.isAdmin) => action(repository)
           case Some(x) if (repository.owner == x.userName) =>
             action(repository)
-          case Some(x) if (getGroupMembers(repository.owner).exists { member =>
+          case Some(x) if getGroupMembers(repository.owner).exists { member =>
                 member.userName == x.userName && member.isManager == true
-              }) =>
+              } =>
             action(repository)
           case _ => Unauthorized()
         }
@@ -176,9 +176,9 @@ trait GroupManagerAuthenticator { self: ControllerBase with AccountService =>
   private def authenticate(action: => Any) =
     defining(request.paths) { paths =>
       context.loginAccount match {
-        case Some(x) if (getGroupMembers(paths(0)).exists { member =>
+        case Some(x) if getGroupMembers(paths(0)).exists { member =>
               member.userName == x.userName && member.isManager
-            }) =>
+            } =>
           action
         case _ => Unauthorized()
       }

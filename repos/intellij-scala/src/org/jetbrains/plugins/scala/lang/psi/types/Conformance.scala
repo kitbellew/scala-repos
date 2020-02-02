@@ -2155,7 +2155,7 @@ object Conformance {
             new ScSubstitutor(
               new collection.immutable.HashMap[(String, PsiElement), ScType] ++ typeParameters1
                 .zip(typeParameters2)
-                .map({
+                .map {
                   tuple =>
                     (
                       (
@@ -2173,7 +2173,7 @@ object Conformance {
                         new Suspension(tuple._2.lowerType),
                         new Suspension(tuple._2.upperType),
                         tuple._2.ptp))
-                }),
+                },
               Map.empty,
               None)
           val t = conformsInner(

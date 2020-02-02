@@ -130,13 +130,13 @@ private[akka] object NettySSLSupport {
         val trustManagers: Array[TrustManager] = {
           val trustManagerFactory = TrustManagerFactory.getInstance(
             TrustManagerFactory.getDefaultAlgorithm)
-          trustManagerFactory.init({
+          trustManagerFactory.init {
             val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
             val fin = new FileInputStream(trustStorePath)
             try trustStore.load(fin, trustStorePassword.toCharArray)
             finally Try(fin.close())
             trustStore
-          })
+          }
           trustManagerFactory.getTrustManagers
         }
         Option(SSLContext.getInstance(protocol)) map { ctx ⇒
@@ -221,13 +221,13 @@ private[akka] object NettySSLSupport {
             val pwd = settings.SSLTrustStorePassword.map(_.toCharArray).orNull
             val trustManagerFactory = TrustManagerFactory.getInstance(
               TrustManagerFactory.getDefaultAlgorithm)
-            trustManagerFactory.init({
+            trustManagerFactory.init {
               val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
               val fin = new FileInputStream(path)
               try trustStore.load(fin, pwd)
               finally Try(fin.close())
               trustStore
-            })
+            }
             trustManagerFactory.getTrustManagers
           }
         Option(SSLContext.getInstance(protocol)) map { ctx ⇒

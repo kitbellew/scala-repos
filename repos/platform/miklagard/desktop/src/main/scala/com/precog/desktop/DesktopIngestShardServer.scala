@@ -119,13 +119,13 @@ object DesktopIngestShardServer
         }
       })
 
-      Some({ (msg: String) =>
+      Some { (msg: String) =>
         EventQueue.invokeLater(new Runnable {
           def run() {
             notifyArea.append(msg + "\n")
           }
         })
-      })
+      }
     } else {
       logger.info("Skipping gui window")
       None

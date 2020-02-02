@@ -232,12 +232,12 @@ case class BaseBolt[I, O](
     try {
       val vf = tupleClass.getDeclaredField("values")
       vf.setAccessible(true)
-      Some({ t: Tuple => vf.set(t, null) })
+      Some { t: Tuple => vf.set(t, null) }
     } catch {
       case _: NoSuchFieldException =>
         try {
           val m = tupleClass.getDeclaredMethod("resetValues", null)
-          Some({ t: Tuple => m.invoke(t) })
+          Some { t: Tuple => m.invoke(t) }
         } catch {
           case _: NoSuchMethodException =>
             None

@@ -48,11 +48,11 @@ class ChannelTransportTest
   }
 
   def sendUpstreamMessage[T <: Object](msg: T) =
-    sendUpstream({
+    sendUpstream {
       val e = mock[MessageEvent]
       when(e.getMessage).thenReturn(msg)
       e
-    })
+    }
 
   def newProxyCtx() = new {
     val f = trans.write("one")
@@ -109,12 +109,12 @@ class ChannelTransportTest
     // Not yet connected.
     verify(ch, never).setReadable(Matchers.any[Boolean])
 
-    sendUpstream({
+    sendUpstream {
       val e = mock[ChannelStateEvent]
       when(e.getState).thenReturn(ChannelState.CONNECTED)
       when(e.getValue).thenReturn(java.lang.Boolean.TRUE)
       e
-    })
+    }
 
     // Initially don't do anything: we buffer one item.
     verify(ch, never).setReadable(Matchers.any[Boolean])
@@ -183,11 +183,11 @@ class ChannelTransportTest
   val exc = new Exception("sad panda")
 
   test("handle exceptions on subsequent ops") {
-    sendUpstream({
+    sendUpstream {
       val e = mock[ExceptionEvent]
       when(e.getCause).thenReturn(exc)
       e
-    })
+    }
 
     val exc1 = intercept[ChannelException] { Await.result(trans.read()) }
     assert(exc1 == ChannelException(exc, remoteAddress))
@@ -196,11 +196,11 @@ class ChannelTransportTest
   test("handle exceptions on pending reads") { // writes are taken care of by netty
     val f = trans.read()
     assert(!f.isDefined)
-    sendUpstream({
+    sendUpstream {
       val e = mock[ExceptionEvent]
       when(e.getCause).thenReturn(exc)
       e
-    })
+    }
 
     val exc1 = intercept[ChannelException] { Await.result(f) }
     assert(exc1 == ChannelException(exc, remoteAddress))
@@ -209,11 +209,11 @@ class ChannelTransportTest
   test("satisfy onClose") {
     assert(!trans.onClose.isDefined)
     val exc = new Exception("close exception")
-    sendUpstream({
+    sendUpstream {
       val e = mock[ExceptionEvent]
       when(e.getCause).thenReturn(exc)
       e
-    })
+    }
 
     assert(
       Await.result(trans.onClose) ==
@@ -227,11 +227,11 @@ class ChannelTransportTest
     sendUpstreamMessage("a")
     sendUpstreamMessage("b")
     val exc = new Exception("nope")
-    sendUpstream({
+    sendUpstream {
       val e = mock[ExceptionEvent]
       when(e.getCause).thenReturn(exc)
       e
-    })
+    }
 
     assert(f.poll == Some(Return("a")))
     assert(trans.read().poll == Some(Return("b")))

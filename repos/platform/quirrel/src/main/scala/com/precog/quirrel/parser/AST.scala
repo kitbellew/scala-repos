@@ -837,9 +837,9 @@ trait AST extends Phases {
         _dispatches ++= dispatches
 
       lazy val substitutions: Map[Dispatch, Map[String, Expr]] =
-        dispatches.map({ dispatch =>
+        dispatches.map { dispatch =>
           dispatch -> Map(params zip dispatch.actuals: _*)
-        })(collection.breakOut)
+        }(collection.breakOut)
 
       private val _constraints = attribute[Set[ProvConstraint]](checkProvenance)
       def constraints = _constraints()

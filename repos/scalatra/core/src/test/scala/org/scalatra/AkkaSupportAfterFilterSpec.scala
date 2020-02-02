@@ -29,9 +29,9 @@ class AkkaSupportAfterFilterServlet extends ScalatraServlet with FutureSupport {
   }
 
   get("/future") {
-    Future({
+    Future {
       "future"
-    })
+    }
   }
 
   after() {

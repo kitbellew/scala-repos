@@ -106,9 +106,9 @@ class RemoteServerConnector(
       if (worksheetProcess == null) return ExitCode.ABORT
 
       worksheetHook.disableRun(originalFile, Some(worksheetProcess))
-      worksheetProcess.addTerminationCallback({
+      worksheetProcess.addTerminationCallback {
         worksheetHook.enableRun(originalFile, client.isCompiledWithErrors)
-      })
+      }
 
       WorksheetProcessManager.add(originalFile, worksheetProcess)
 

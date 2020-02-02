@@ -206,11 +206,11 @@ trait CompletionControl {
           CompletionInfoList(
             context.prefix,
             makeAll(context, maxResults, caseSens)
-              .sortWith({ (c1, c2) =>
+              .sortWith { (c1, c2) =>
                 c1.relevance > c2.relevance ||
                 (c1.relevance == c2.relevance &&
                 c1.name.length < c2.name.length)
-              })
+              }
               .take(maxResults)
           )
         case _ => CompletionInfoList("", Nil)

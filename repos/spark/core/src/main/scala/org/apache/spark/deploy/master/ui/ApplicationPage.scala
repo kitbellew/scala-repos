@@ -41,9 +41,9 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
     val state = master.askWithRetry[MasterStateResponse](RequestMasterState)
     val app = state.activeApps
       .find(_.id == appId)
-      .getOrElse({
+      .getOrElse {
         state.completedApps.find(_.id == appId).getOrElse(null)
-      })
+      }
     if (app == null) {
       val msg = <div class="row-fluid">No running application with ID {appId}</div>
       return UIUtils.basicSparkPage(msg, "Not Found")

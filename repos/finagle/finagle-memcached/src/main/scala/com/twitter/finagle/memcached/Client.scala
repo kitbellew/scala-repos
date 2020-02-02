@@ -508,11 +508,11 @@ protected class ConnectedClient(
         )
     } handle {
       case t: RequestException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = keys.map { (_, t) }.toMap)
       case t: ChannelException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = keys.map { (_, t) }.toMap)
       case t: ServiceException =>
-        GetResult(failures = (keys.map { (_, t) }).toMap)
+        GetResult(failures = keys.map { (_, t) }.toMap)
     }
   }
 

@@ -252,22 +252,22 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({
+            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept {
               new InnerActor; new InnerActor
-            })(result)))))))
+            }(result)))))))
         }
 
         contextStackMustBeEmpty()
       }
 
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
-        (intercept[java.lang.IllegalStateException] {
+        intercept[java.lang.IllegalStateException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({
+            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept {
               throw new IllegalStateException("Ur state be b0rked");
               new InnerActor
-            })(result)))))))
-        }).getMessage should ===("Ur state be b0rked")
+            }(result)))))))
+        }.getMessage should ===("Ur state be b0rked")
 
         contextStackMustBeEmpty()
       }
@@ -319,9 +319,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
 
       val in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
 
-      (intercept[java.lang.IllegalStateException] {
+      intercept[java.lang.IllegalStateException] {
         in.readObject
-      }).getMessage should ===(
+      }.getMessage should ===(
         "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
           " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
     }

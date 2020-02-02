@@ -181,7 +181,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val canCallCtor =
       primaryCtor != NoSymbol &&
         primaryCtorParamsOpt.nonEmpty &&
-        (primaryCtorParamsOpt.get.forall { preSym =>
+        primaryCtorParamsOpt.get.forall { preSym =>
           // println(s"!!! tpe ${tpe.toString}, ctor param $preSym:")
           val notTransient = !transientAccessors.exists(_.name == preSym.name)
           // println(s"$notTransient")
@@ -200,7 +200,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
 
           // println(s"$notTransient, $isMethod, $getterExists, $getterIsMetod")
           // notTransient && isMethod && getterExists && getterIsMetod
-        })
+        }
 
     val (quantified, rawTpe) = tpe match {
       case ExistentialType(quantified, rtpe) => (quantified, rtpe);

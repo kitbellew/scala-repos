@@ -149,7 +149,7 @@ object JsonParser {
     def reverse(v: JValue): JValue = v match {
       case JObject(l) =>
         JObject(
-          (l.map { field => field.copy(value = reverse(field.value)) }).reverse)
+          l.map { field => field.copy(value = reverse(field.value)) }.reverse)
       case JArray(l) => JArray(l.map(reverse).reverse)
       case x         => x
     }

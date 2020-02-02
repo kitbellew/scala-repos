@@ -470,21 +470,21 @@ abstract class KafkaShardIngestActor(
       // read a fetch buffer worth of messages from kafka, deserializing each one
       // and recording the offset
 
-      val rawMessages = msTime({ t =>
+      val rawMessages = msTime { t =>
         logger.debug(
           "Kafka fetch from %s:%d in %d ms"
             .format(topic, lastCheckpoint.offset, t))
-      }) {
+      } {
         consumer.fetch(req)
       }
 
       val eventMessages: List[
         Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =
-        msTime({ t =>
+        msTime { t =>
           logger.debug(
             "Raw kafka deserialization of %d events in %d ms"
               .format(rawMessages.size, t))
-        }) {
+        } {
           rawMessages.par.map { msgAndOffset =>
             EventMessageEncoding.read(msgAndOffset.message.payload) map {
               (msgAndOffset.offset, _)
@@ -498,11 +498,11 @@ abstract class KafkaShardIngestActor(
         eventMessages.sequence[
           ({ type λ[α] = Validation[Error, α] })#λ,
           (Long, EventMessage.EventMessageExtraction)] map { messageSet =>
-          val apiKeys: List[(APIKey, Path)] = msTime({ t =>
+          val apiKeys: List[(APIKey, Path)] = msTime { t =>
             logger.debug(
               "Collected api keys from %d messages in %d ms"
                 .format(messageSet.size, t))
-          }) {
+          } {
             messageSet collect {
               case (_, \/-(IngestMessage(apiKey, path, _, _, _, _, _))) =>
                 (apiKey, path)
@@ -552,7 +552,7 @@ abstract class KafkaShardIngestActor(
                   }
               }
 
-            msTime({ t => logger.debug("Batch built in %d ms".format(t)) }) {
+            msTime { t => logger.debug("Batch built in %d ms".format(t)) } {
               buildBatch(updatedMessages, Vector.empty, fromCheckpoint)
             }
           }

@@ -62,11 +62,11 @@ private[finagle] class TTwitterServerFilter(
           }
         }
 
-        Trace.recordRpc({
+        Trace.recordRpc {
           val msg =
             new InputBuffer(request_, protocolFactory)().readMessageBegin()
           msg.name
-        })
+        }
 
         // If `header.client_id` field is non-null, then allow it to take
         // precedence over the id provided by ClientIdContext.

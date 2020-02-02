@@ -261,7 +261,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         } finally input.close()
       }
 
-    lazy val credulousTrustStoreManagers = Array({
+    lazy val credulousTrustStoreManagers = Array {
       logWarning("Using 'accept-all' trust manager for SSL connections.")
       new X509TrustManager {
         override def getAcceptedIssuers: Array[X509Certificate] = null
@@ -274,7 +274,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
             x509Certificates: Array[X509Certificate],
             s: String) {}
       }: TrustManager
-    })
+    }
 
     val sslContext =
       SSLContext.getInstance(fileServerSSLOptions.protocol.getOrElse("Default"))

@@ -109,7 +109,7 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
       implicit toProp: (=> R) => Prop,
       a: Arbitrary[T],
       s: Shrink[T]): Prop = Prop.forAll((t: T) => toProp(result(t)))
-  implicit def unitToProp(u: => Unit): Prop = booleanToProp({ u; true })
+  implicit def unitToProp(u: => Unit): Prop = booleanToProp { u; true }
   implicit def unitToProp2(u: Unit): Prop = booleanToProp(true)
   implicit def booleanToProp(b: => Boolean): Prop = Prop.secure(b)
 

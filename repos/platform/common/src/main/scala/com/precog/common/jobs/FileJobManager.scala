@@ -80,12 +80,12 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   private[this] val cache: SimpleCache[JobId, FileJobState] =
     Cache.simple[JobId, FileJobState](
       ExpireAfterAccess(Duration(5, "minutes")),
-      OnRemoval({ (jobId, job, reason) =>
+      OnRemoval { (jobId, job, reason) =>
         if (reason != RemovalCause.REPLACED)
           // Make sure to save expired entries
           saveJob(jobId, job)
         PrecogUnit
-      })
+      }
     )
 
   def shutdown = cache.invalidateAll

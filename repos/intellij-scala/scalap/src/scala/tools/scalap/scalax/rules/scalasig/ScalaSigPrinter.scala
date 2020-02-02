@@ -366,9 +366,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
       // Print result type
       mt.resultType match {
-        case mt: MethodType => printMethodType(mt, printResult, pe)({})
+        case mt: MethodType => printMethodType(mt, printResult, pe) {}
         case imt: ImplicitMethodType =>
-          printMethodType(imt, printResult, pe)({})
+          printMethodType(imt, printResult, pe) {}
         case x =>
           if (printResult) {
             print(" : ")
@@ -383,8 +383,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case pt @ PolyType(mt, typeParams) =>
         for (param <- typeParams) addTypeParameter(param)
         print(typeParamString(typeParams))
-        try printMethodType(mt, printResult)({})
-        finally for (param <- typeParams) removeTypeParameter(param)
+        try printMethodType(mt, printResult) {} finally for (param <- typeParams)
+          removeTypeParameter(param)
       //todo consider another method types
       case x => print(" : "); printType(x)
     }
@@ -425,13 +425,12 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           case Some(c: ClassSymbol) if refinementClass(c) => false
           case _                                          => true
         })
-        printMethodType(m.infoType, printResult = true)(
-          {
-            if (printBody)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
-          }
-        )
+        printMethodType(m.infoType, printResult = true) {
+          if (printBody)
+            print(
+              " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+        }
+
     }
     print("\n")
   }

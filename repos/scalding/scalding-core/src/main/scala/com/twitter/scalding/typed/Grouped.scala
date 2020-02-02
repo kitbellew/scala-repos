@@ -219,32 +219,31 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
 
   protected def groupOpWithValueSort[V2](valueSort: Option[Ordering[_ >: V1]])(
       gb: GroupBuilder => GroupBuilder): TypedPipe[(K, V2)] =
-    TypedPipeFactory({ (fd, mode) =>
+    TypedPipeFactory { (fd, mode) =>
       val pipe = Grouped.maybeBox[K, V1](keyOrdering, fd) {
         (tupleSetter, fields) =>
           val (sortOpt, ts) =
             valueSort
-              .map {
-                vs =>
-                  vs match {
-                    case ordser: OrderedSerialization[V1] =>
-                      // We get in here when we do a secondary sort
-                      // and that sort is an ordered serialization
-                      // We now need a boxed serializer for this type
-                      // Then we set the comparator on the field, and finally we box the value with our tupleSetter
-                      val (boxfn, boxordSer) =
-                        Grouped.getBoxFnAndOrder[V1](ordser, fd)
-                      val valueF = new Fields("value")
-                      valueF.setComparator(
-                        "value",
-                        new CascadingBinaryComparator(boxordSer))
-                      val ts2 = tupleSetter
-                        .asInstanceOf[TupleSetter[(K, Boxed[V1])]]
-                        .contraMap { kv1: (K, V1) => (kv1._1, boxfn(kv1._2)) }
-                      (Some(valueF), ts2)
-                    case _ =>
-                      (Some(Grouped.valueSorting(vs)), tupleSetter)
-                  }
+              .map { vs =>
+                vs match {
+                  case ordser: OrderedSerialization[V1] =>
+                    // We get in here when we do a secondary sort
+                    // and that sort is an ordered serialization
+                    // We now need a boxed serializer for this type
+                    // Then we set the comparator on the field, and finally we box the value with our tupleSetter
+                    val (boxfn, boxordSer) =
+                      Grouped.getBoxFnAndOrder[V1](ordser, fd)
+                    val valueF = new Fields("value")
+                    valueF.setComparator(
+                      "value",
+                      new CascadingBinaryComparator(boxordSer))
+                    val ts2 = tupleSetter
+                      .asInstanceOf[TupleSetter[(K, Boxed[V1])]]
+                      .contraMap { kv1: (K, V1) => (kv1._1, boxfn(kv1._2)) }
+                    (Some(valueF), ts2)
+                  case _ =>
+                    (Some(Grouped.valueSorting(vs)), tupleSetter)
+                }
               }
               .getOrElse((None, tupleSetter))
 
@@ -259,7 +258,7 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
         fd,
         mode,
         Grouped.tuple2Conv[K, V2](keyOrdering))
-    })
+    }
 }
 
 case class IdentityReduce[K, V1](

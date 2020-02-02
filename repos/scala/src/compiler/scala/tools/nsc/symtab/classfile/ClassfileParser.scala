@@ -920,7 +920,7 @@ abstract class ClassfileParser {
                 case Some(san: AnnotationInfo) =>
                   val bytes =
                     san.assocs
-                      .find({ _._1 == nme.bytes })
+                      .find { _._1 == nme.bytes }
                       .get
                       ._2
                       .asInstanceOf[ScalaSigBytes]

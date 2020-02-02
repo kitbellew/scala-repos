@@ -361,12 +361,12 @@ class VM(
       Some(DebugObjectReference(remember(objRef).uniqueID))
     else
       stackSlotForName(thread, name)
-        .map({ slot =>
+        .map { slot =>
           DebugStackSlot(
             DebugThreadId(thread.uniqueID),
             slot.frame,
             slot.offset)
-        })
+        }
         .orElse(
           fieldByName(objRef, name).flatMap { f =>
             Some(DebugObjectField(DebugObjectId(objRef.uniqueID), f.name))

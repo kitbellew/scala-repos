@@ -249,7 +249,7 @@ trait MappedNullableField[
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
+    S.fmapFunc { s: List[String] => this.setFromAny(s) } { funcName =>
       Full(appendFieldId(<input type={formInputType}
                        name={funcName}
                        value={
@@ -475,7 +475,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Create an input field for the item
     */
   override def _toForm: Box[NodeSeq] =
-    S.fmapFunc({ s: List[String] => this.setFromAny(s) }) { funcName =>
+    S.fmapFunc { s: List[String] => this.setFromAny(s) } { funcName =>
       Full(appendFieldId(<input type={formInputType}
                        name={funcName}
                        value={

@@ -34,8 +34,8 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
   "Basic types helpers" should {
 
     "be lazy" in {
-      (false.?[Int]({ throw new Exception("Bummer") }).|(3)) must_== 3
-      (true.?[Int](3).|({ throw new Exception("Bummer") })) must_== 3
+      (false.?[Int] { throw new Exception("Bummer") }.|(3)) must_== 3
+      true.?[Int](3).| { throw new Exception("Bummer") } must_== 3
     }
 
     "provide a ternary operator: (condition) ? A | B" in {

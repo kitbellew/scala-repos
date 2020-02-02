@@ -14,7 +14,7 @@ object Test extends App {
   test2(y = 1)
   test1(c = 0, b = "joke")
   test7((m = 1)) // named arguments must be top-level assignments
-  test7({ m = 1 })
+  test7 { m = 1 }
   test7 { m = 1 } // no named arguments in argument block
   test8(x = 1)
 

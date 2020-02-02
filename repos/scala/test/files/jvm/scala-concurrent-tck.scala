@@ -592,11 +592,11 @@ trait BlockContexts extends TestBase {
         orig.blockOn(thunk)
     }
 
-    val bc = getBlockContext({
+    val bc = getBlockContext {
       BlockContext.withBlockContext(customBC) {
         BlockContext.current
       }
-    })
+    }
 
     assert(bc eq customBC)
   }
@@ -609,10 +609,10 @@ trait BlockContexts extends TestBase {
         orig.blockOn(thunk)
     }
 
-    val bc = getBlockContext({
+    val bc = getBlockContext {
       BlockContext.withBlockContext(customBC) {}
       BlockContext.current
-    })
+    }
 
     assert(bc ne customBC)
   }
@@ -658,11 +658,11 @@ trait Exceptions extends TestBase {
 
 trait GlobalExecutionContext extends TestBase {
   def testNameOfGlobalECThreads(): Unit = once { done =>
-    Future({
+    Future {
       val expectedName =
         "scala-execution-context-global-" + Thread.currentThread.getId
       done(expectedName == Thread.currentThread.getName)
-    })(ExecutionContext.global)
+    }(ExecutionContext.global)
   }
 
   testNameOfGlobalECThreads()

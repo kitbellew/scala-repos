@@ -29,9 +29,9 @@ class AkkaSupportAfterFilterFilter extends ScalatraFilter with FutureSupport {
   }
 
   get("/future") {
-    Future({
+    Future {
       "future"
-    })
+    }
   }
 
   after() {

@@ -123,14 +123,12 @@ object ResolveUtils {
   def methodType(m: PsiMethod, s: ScSubstitutor, scope: GlobalSearchScope) =
     ScFunctionType(
       s.subst(ScType.create(m.getReturnType, m.getProject, scope)),
-      m.getParameterList.getParameters
-        .map({ p =>
-          val pt = p.getType
-          //scala hack: Objects in java are modelled as Any in scala
-          if (pt.equalsToText("java.lang.Object")) types.Any
-          else s.subst(ScType.create(pt, m.getProject, scope))
-        })
-        .toSeq
+      m.getParameterList.getParameters.map { p =>
+        val pt = p.getType
+        //scala hack: Objects in java are modelled as Any in scala
+        if (pt.equalsToText("java.lang.Object")) types.Any
+        else s.subst(ScType.create(pt, m.getProject, scope))
+      }.toSeq
     )(m.getProject, scope)
 
   def javaMethodType(

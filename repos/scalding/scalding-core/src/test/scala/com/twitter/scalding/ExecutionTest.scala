@@ -285,7 +285,7 @@ class ExecutionTest extends WordSpec with Matchers {
       var first = 0
       var second = 0
       var third = 0
-      val e1 = Execution.from({ first += 1; 42 })
+      val e1 = Execution.from { first += 1; 42 }
       val e2 = e1.flatMap { x =>
         second += 1
         Execution.from(2 * x)

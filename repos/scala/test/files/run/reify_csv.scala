@@ -22,7 +22,7 @@ object Test extends App {
   val fields = csv.head.split(";").map { _.trim() }.toList
   println(fields)
 
-  reify({
+  reify {
     object Csv {
       case class record(`phase name`: String, id: String, description: String)
 
@@ -42,5 +42,5 @@ object Test extends App {
     }
 
     Csv.record.parse(csv) foreach println
-  }).eval
+  }.eval
 }

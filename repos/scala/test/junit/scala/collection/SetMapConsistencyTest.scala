@@ -341,16 +341,16 @@ class SetMapConsistencyTest {
       what ++= " (%d) ".format(i)
       if (rn.nextInt(10) == 0) {
 
-        if (map1.fiddlers > 0) map1.fiddle({
+        if (map1.fiddlers > 0) map1.fiddle {
           val n = rn.nextInt(map1.fiddlers)
           what ++= ("f" + n)
           n
-        })
-        if (map2.fiddlers > 0) map2.fiddle({
+        }
+        if (map2.fiddlers > 0) map2.fiddle {
           val n = rn.nextInt(map2.fiddlers)
           what ++= ("F" + n)
           n
-        })
+        }
       }
       if (rn.nextBoolean) {
         val idx = rn.nextInt(keys.length)

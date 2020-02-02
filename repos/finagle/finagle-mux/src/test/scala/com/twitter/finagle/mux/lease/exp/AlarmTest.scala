@@ -15,7 +15,7 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        Alarm.arm({ () => new DurationAlarm(5.seconds) })
+        Alarm.arm { () => new DurationAlarm(5.seconds) }
       }
 
       localThread(conductor) {
@@ -33,9 +33,9 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        Alarm.arm({ () =>
+        Alarm.arm { () =>
           new DurationAlarm(5.seconds) min new DurationAlarm(2.seconds)
-        })
+        }
       }
 
       localThread(conductor) {
@@ -53,9 +53,9 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        Alarm.arm({ () =>
+        Alarm.arm { () =>
           new DurationAlarm(5.seconds) min new IntervalAlarm(1.second)
-        })
+        }
       }
 
       localThread(conductor) {
@@ -116,9 +116,9 @@ class AlarmTest extends FunSuite with LocalConductors {
 
     Time.withCurrentTimeFrozen { ctl =>
       localThread(conductor) {
-        Alarm.arm({ () =>
+        Alarm.arm { () =>
           new GenerationAlarm(ctr) min new IntervalAlarm(1.second)
-        })
+        }
       }
 
       localThread(conductor) {
@@ -139,9 +139,9 @@ class AlarmTest extends FunSuite with LocalConductors {
       @volatile var bool = false
 
       localThread(conductor) {
-        Alarm.arm({ () =>
+        Alarm.arm { () =>
           new PredicateAlarm(() => bool) min new IntervalAlarm(1.second)
-        })
+        }
       }
 
       localThread(conductor) {
@@ -176,7 +176,7 @@ class AlarmTest extends FunSuite with LocalConductors {
       fakePool.setSnapshot(usage)
 
       localThread(conductor) {
-        Alarm.arm({ () => new BytesAlarm(ctr, () => 5.megabytes) })
+        Alarm.arm { () => new BytesAlarm(ctr, () => 5.megabytes) }
       }
 
       localThread(conductor) {

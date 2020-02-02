@@ -159,7 +159,7 @@ abstract class Message extends HttpMessageProxy {
     }
 
     val builder = new StringBuilder(parts(0))
-    if (!(parts.exists { _.trim.startsWith("charset=") })) {
+    if (!parts.exists { _.trim.startsWith("charset=") }) {
       // No charset parameter exist, add charset after media type
       builder.append(";charset=")
       builder.append(value)

@@ -24,7 +24,7 @@ object Test extends App {
           println(realex.getClass + ": " + realex.getMessage)
       }
     print(s"testing ${tpe.typeSymbol.name}.$method: ")
-    wrap({
+    wrap {
       if (method == termNames.CONSTRUCTOR.toString) {
         val ctor = tpe.decl(termNames.CONSTRUCTOR).asMethod
         cm.reflectClass(ctor.owner.asClass).reflectConstructor(ctor)(args: _*)
@@ -32,7 +32,7 @@ object Test extends App {
         val meth = tpe.decl(TermName(method).encodedName.toTermName).asMethod
         cm.reflect(receiver).reflectMethod(meth)(args: _*)
       }
-    })
+    }
   }
 
   println("============\nAny")
