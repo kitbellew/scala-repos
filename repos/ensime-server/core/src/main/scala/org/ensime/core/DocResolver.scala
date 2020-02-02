@@ -121,14 +121,15 @@ class DocResolver(
   // and https://bugs.openjdk.java.net/browse/JDK-8025633
   private val Java8Chars = """(?:, |\(|\)|\[\])""".r
   private def toJava8Anchor(anchor: String): String =
-    Java8Chars.replaceAllIn(anchor, { m =>
-      anchor(m.start) match {
-        case ',' => "-"
-        case '(' => "-"
-        case ')' => "-"
-        case '[' => ":A"
-      }
-    })
+    Java8Chars.replaceAllIn(
+      anchor,
+      m =>
+        anchor(m.start) match {
+          case ',' => "-"
+          case '(' => "-"
+          case ')' => "-"
+          case '[' => ":A"
+        })
 
   private def toAndroidAnchor(anchor: String): String =
     anchor.replace(",", ", ")

@@ -389,7 +389,9 @@ trait RepositoryService { self: AccountService =>
               repository.repositoryName)
           else
             JGitUtil
-              .getRepositoryInfo(repository.userName, repository.repositoryName),
+              .getRepositoryInfo(
+                repository.userName,
+                repository.repositoryName),
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),
@@ -441,7 +443,9 @@ trait RepositoryService { self: AccountService =>
               repository.repositoryName)
           else
             JGitUtil
-              .getRepositoryInfo(repository.userName, repository.repositoryName),
+              .getRepositoryInfo(
+                repository.userName,
+                repository.repositoryName),
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),

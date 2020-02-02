@@ -785,14 +785,14 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       .mapValues(_.srcIds)
       .join(userFactors)
       .mapPartitions(
-        { items =>
+        items =>
           items.flatMap {
             case (_, (ids, factors)) =>
               ids.view.zip(factors)
           }
         // Preserve the partitioning because IDs are consistent with the partitioners in userInBlocks
         // and userFactors.
-        },
+        ,
         preservesPartitioning = true
       )
       .setName("userFactors")
@@ -800,12 +800,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     val itemIdAndFactors = itemInBlocks
       .mapValues(_.srcIds)
       .join(itemFactors)
-      .mapPartitions({ items =>
-        items.flatMap {
-          case (_, (ids, factors)) =>
-            ids.view.zip(factors)
-        }
-      }, preservesPartitioning = true)
+      .mapPartitions(
+        items =>
+          items.flatMap {
+            case (_, (ids, factors)) =>
+              ids.view.zip(factors)
+          },
+        preservesPartitioning = true)
       .setName("itemFactors")
       .persist(finalRDDStorageLevel)
     if (finalRDDStorageLevel != StorageLevel.NONE) {

@@ -106,10 +106,10 @@ object PlayForkRun extends AutoPlugin {
     val args = Def.spaceDelimited().parsed
     val jobService = BackgroundJobServiceKeys.jobService.value
     val handle = jobService.runInBackgroundThread(
-      resolvedScoped.value, { (_, uiContext) =>
+      resolvedScoped.value,
+      (_, uiContext) =>
         // use normal task streams log rather than the background run logger
         PlayForkProcess(playForkOptions.value, args, streams.value.log)
-      }
     )
     PlayConsoleInteractionMode.waitForCancel()
     jobService.stop(handle)
@@ -119,9 +119,10 @@ object PlayForkRun extends AutoPlugin {
   def backgroundForkRunTask = Def.inputTask[BackgroundJobHandle] {
     val args = Def.spaceDelimited().parsed
     BackgroundJobServiceKeys.jobService.value
-      .runInBackgroundThread(resolvedScoped.value, { (logger, uiContext) =>
-        PlayForkProcess(playForkOptions.value, args, logger)
-      })
+      .runInBackgroundThread(
+        resolvedScoped.value,
+        (logger, uiContext) =>
+          PlayForkProcess(playForkOptions.value, args, logger))
   }
 
   def forkConfigTask = Def.task[ForkConfig] {

@@ -11,5 +11,5 @@ object Test extends App {
   println("call A")
   foo((a, b) => a)
   println("call B twice")
-  foo((a, b) => { b; b })
+  foo { (a, b) => b; b }
 }

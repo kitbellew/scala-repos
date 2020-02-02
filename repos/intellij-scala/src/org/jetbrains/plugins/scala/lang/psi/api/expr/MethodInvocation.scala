@@ -214,12 +214,11 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       def tail: ScType = {
         setApplicabilityProblemsVar(c._2)
         setMatchedParametersVar(c._3)
-        val dependentSubst = new ScSubstitutor(() => {
+        val dependentSubst = new ScSubstitutor(() =>
           this.scalaLanguageLevel match {
             case Some(level) if level < Scala_2_10 => Map.empty
             case _                                 => c._4.toMap
-          }
-        })
+          })
         dependentSubst.subst(c._1)
       }
       if (c._2.nonEmpty)
@@ -235,12 +234,11 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             else {
               setApplicabilityProblemsVar(cd._2)
               setMatchedParametersVar(cd._3)
-              val dependentSubst = new ScSubstitutor(() => {
+              val dependentSubst = new ScSubstitutor(() =>
                 this.scalaLanguageLevel match {
                   case Some(level) if level < Scala_2_10 => Map.empty
                   case _                                 => cd._4.toMap
-                }
-              })
+                })
               dependentSubst.subst(cd._1)
             }
           }

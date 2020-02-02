@@ -308,7 +308,7 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
       rl: LiteralRow[R, V],
       rows: Seq[R]) {
     for ((row, i) <- rows.zipWithIndex)
-      rl.foreach(row, { (j, v) => rv(i, j) = v })
+      rl.foreach(row, (j, v) => rv(i, j) = v)
   }
 
 }

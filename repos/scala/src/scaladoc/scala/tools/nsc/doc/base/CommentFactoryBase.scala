@@ -222,17 +222,16 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           case tl                    => tl
         }
       val strippedComment = comment.trim.stripPrefix("/*").stripSuffix("*/")
-      val safeComment = DangerousTags.replaceAllIn(strippedComment, {
-        htmlReplacement(_)
-      })
-      val javadoclessComment = JavadocTags.replaceAllIn(safeComment, {
-        javadocReplacement(_)
-      })
+      val safeComment =
+        DangerousTags.replaceAllIn(strippedComment, htmlReplacement(_))
+      val javadoclessComment =
+        JavadocTags.replaceAllIn(safeComment, javadocReplacement(_))
       val markedTagComment =
-        SafeTags.replaceAllIn(javadoclessComment, { mtch =>
-          java.util.regex.Matcher
-            .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
-        })
+        SafeTags.replaceAllIn(
+          javadoclessComment,
+          mtch =>
+            java.util.regex.Matcher
+              .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker))
       markedTagComment.lines.toList map (cleanLine(_))
     }
 

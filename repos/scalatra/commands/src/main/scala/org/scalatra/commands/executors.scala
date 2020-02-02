@@ -65,9 +65,10 @@ abstract class BlockingExecutor[T <: Command, S](
       res match {
         case Succ(r) ⇒
           def plur(count: Int) = if (count == 1) "failure" else "failures"
-          val resultLog = r.fold({ failures ⇒
-            s"with ${failures.size} ${plur(failures.size)}\n${failures.list}"
-          }, { _ ⇒ "successfully" })
+          val resultLog = r.fold(
+            failures ⇒
+              s"with ${failures.size} ${plur(failures.size)}\n${failures.list}",
+            _ ⇒ "successfully")
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
           r
         case Fail(t) ⇒
@@ -129,9 +130,10 @@ abstract class AsyncExecutor[T <: Command, S](
       res onSuccess {
         case r ⇒
           def plur(count: Int) = if (count == 1) "failure" else "failures"
-          val resultLog = r.fold({ failures ⇒
-            s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
-          }, { _ ⇒ "successfully" })
+          val resultLog = r.fold(
+            failures ⇒
+              s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}",
+            _ ⇒ "successfully")
           logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
       }
 

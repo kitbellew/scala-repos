@@ -65,7 +65,7 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
   testRules.autoIncludeAjaxCalc.default.set(() =>
     () => (_: LiftSession) => false)
   testRules.excludePathFromContextPathRewriting.default
-    .set(() => { in: String => in.startsWith("exclude-me") })
+    .set { () => in: String => in.startsWith("exclude-me") }
 
   "LiftMerge when doing the final page merge" should {
     "merge head segments in the page body in order into main head" in new WithRules(

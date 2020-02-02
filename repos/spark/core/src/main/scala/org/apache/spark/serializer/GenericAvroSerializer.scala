@@ -103,9 +103,9 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
   def serializeDatum[R <: GenericRecord](datum: R, output: KryoOutput): Unit = {
     val encoder = EncoderFactory.get.binaryEncoder(output, null)
     val schema = datum.getSchema
-    val fingerprint = fingerprintCache.getOrElseUpdate(schema, {
-      SchemaNormalization.parsingFingerprint64(schema)
-    })
+    val fingerprint = fingerprintCache.getOrElseUpdate(
+      schema,
+      SchemaNormalization.parsingFingerprint64(schema))
     schemas.get(fingerprint) match {
       case Some(_) =>
         output.writeBoolean(true)
@@ -133,15 +133,14 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
       if (input.readBoolean()) {
         val fingerprint = input.readLong()
         schemaCache.getOrElseUpdate(
-          fingerprint, {
-            schemas.get(fingerprint) match {
-              case Some(s) => new Schema.Parser().parse(s)
-              case None =>
-                throw new SparkException(
-                  "Error reading attempting to read avro data -- encountered an unknown " +
-                    s"fingerprint: $fingerprint, not sure what schema to use.  This could happen " +
-                    "if you registered additional schemas after starting your spark context.")
-            }
+          fingerprint,
+          schemas.get(fingerprint) match {
+            case Some(s) => new Schema.Parser().parse(s)
+            case None =>
+              throw new SparkException(
+                "Error reading attempting to read avro data -- encountered an unknown " +
+                  s"fingerprint: $fingerprint, not sure what schema to use.  This could happen " +
+                  "if you registered additional schemas after starting your spark context.")
           }
         )
       } else {

@@ -1172,7 +1172,7 @@ object ScalaPsiUtil {
         parent: PsiElement,
         k: List[PsiElement] => List[PsiElement]): List[PsiElement] =
       if (parent != topLevel && parent != null)
-        inner(parent.getParent, { l => parent :: k(l) })
+        inner(parent.getParent, l => parent :: k(l))
       else k(Nil)
     inner(elem, (l: List[PsiElement]) => l)
   }

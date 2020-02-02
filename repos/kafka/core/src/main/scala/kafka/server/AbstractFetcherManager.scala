@@ -55,20 +55,19 @@ abstract class AbstractFetcherManager(
   )
 
   newGauge(
-    "MinFetchRate", {
-      new Gauge[Double] {
-        // current min fetch rate across all fetchers/topics/partitions
-        def value = {
-          val headRate: Double =
-            fetcherThreadMap.headOption
-              .map(_._2.fetcherStats.requestRate.oneMinuteRate)
-              .getOrElse(0)
+    "MinFetchRate",
+    new Gauge[Double] {
+      // current min fetch rate across all fetchers/topics/partitions
+      def value = {
+        val headRate: Double =
+          fetcherThreadMap.headOption
+            .map(_._2.fetcherStats.requestRate.oneMinuteRate)
+            .getOrElse(0)
 
-          fetcherThreadMap.foldLeft(headRate) {
-            (curMinAll, fetcherThreadMapEntry) =>
-              fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
-                .min(curMinAll)
-          }
+        fetcherThreadMap.foldLeft(headRate) {
+          (curMinAll, fetcherThreadMapEntry) =>
+            fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
+              .min(curMinAll)
         }
       }
     },

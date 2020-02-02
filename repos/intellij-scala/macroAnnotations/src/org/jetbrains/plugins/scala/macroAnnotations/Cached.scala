@@ -82,16 +82,17 @@ object Cached {
           if (analyzeCaches)
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
           else EmptyTree
-        val fields = if (hasParameters)
-          q"""
+        val fields =
+          if (hasParameters)
+            q"""
             private val $mapName = _root_.com.intellij.util.containers.ContainerUtil.
                 newConcurrentMap[(..${flatParams
-            .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
+              .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
 
             ..$analyzeCachesField
           """
-        else
-          q"""
+          else
+            q"""
             new _root_.scala.volatile()
             private var $cacheVarName: _root_.scala.Option[$retTp] = _root_.scala.None
             new _root_.scala.volatile()

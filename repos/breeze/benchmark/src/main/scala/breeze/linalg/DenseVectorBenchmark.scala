@@ -77,7 +77,7 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
   }
 
   def valueAtBench(reps: Int, size: Int, stride: Int) =
-    runWith(reps, { randomArray(size, stride = stride) }) { arr =>
+    runWith(reps, randomArray(size, stride = stride)) { arr =>
       var i = 0
       var t: Double = 0
       while (i < arr.size) {
@@ -94,7 +94,7 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
   def timeValueAtStride4(reps: Int) = valueAtBench(reps, 1024 * 8, 4)
 
   def unsafeValueAtBench(reps: Int, size: Int, stride: Int) =
-    runWith(reps, { randomArray(size, stride = stride) }) { arr =>
+    runWith(reps, randomArray(size, stride = stride)) { arr =>
       var i = 0
       var t: Double = 0
       while (i < arr.size) {
@@ -112,7 +112,7 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
     unsafeValueAtBench(reps, 1024 * 8, 4)
 
   def updateBench(reps: Int, size: Int, stride: Int) =
-    runWith(reps, { randomArray(size, stride = stride) }) { arr =>
+    runWith(reps, randomArray(size, stride = stride)) { arr =>
       var i = 0
       while (i < arr.size) {
         arr.update(i, i.toDouble)
@@ -125,7 +125,7 @@ class DenseVectorBenchmark extends BreezeBenchmark with BuildsRandomVectors {
   def timeUpdateStride4(reps: Int) = updateBench(reps, 1024 * 8, 4)
 
   def unsafeUpdateBench(reps: Int, size: Int, stride: Int) =
-    runWith(reps, { randomArray(size, stride = stride) }) { arr =>
+    runWith(reps, randomArray(size, stride = stride)) { arr =>
       var i = 0
       while (i < arr.size) {
         arr.unsafeUpdate(i, i.toDouble)

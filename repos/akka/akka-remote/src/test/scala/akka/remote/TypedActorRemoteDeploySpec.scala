@@ -51,11 +51,11 @@ class TypedActorRemoteDeploySpec extends AkkaSpec(conf) {
   "Typed actors" must {
 
     "be possible to deploy remotely and communicate with" in {
-      verify({ _.getName }, remoteName)
+      verify(_.getName, remoteName)
     }
 
     "be possible to deploy remotely and be able to dereference self" in {
-      verify({ _.getNameSelfDeref }, remoteName)
+      verify(_.getNameSelfDeref, remoteName)
     }
 
   }

@@ -2048,7 +2048,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           localTyper.typed(
             Block(
               norm.tail.map(sym =>
-                DefDef(sym, { vparamss: List[List[Symbol]] => EmptyTree })),
+                DefDef(sym, vparamss: List[List[Symbol]] => EmptyTree)),
               ddef))
         } else
           tree
@@ -2166,7 +2166,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
               mmap(List(vparams))(ValDef.apply),
               EmptyTree)
           } else
-            mbrs += DefDef(m, { paramss: List[List[Symbol]] => EmptyTree })
+            mbrs += DefDef(m, paramss: List[List[Symbol]] => EmptyTree)
         } else if (m.isValue)
           mbrs += ValDef(m).setType(NoType)
         else if (m.isClass) {

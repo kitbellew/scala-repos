@@ -50,19 +50,19 @@ object PromiseMock {
 
     // static
     private def resolve[A](value: A | js.Thenable[A]): MockPromise[A] =
-      new MockPromise[A]({
+      new MockPromise[A](
         (
             resolve: js.Function1[A | js.Thenable[A], _],
             reject: js.Function1[Any, _]) => resolve(value)
-      })
+      )
 
     // static
     private def reject(reason: Any): MockPromise[Nothing] =
-      new MockPromise[Nothing]({
+      new MockPromise[Nothing](
         (
             resolve: js.Function1[Nothing | js.Thenable[Nothing], _],
             reject: js.Function1[Any, _]) => reject(reason)
-      })
+      )
 
     def enqueue(f: js.Function0[Any]): Unit =
       queue.push(f)

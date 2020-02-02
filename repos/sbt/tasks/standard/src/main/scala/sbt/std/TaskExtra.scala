@@ -189,7 +189,7 @@ trait TaskExtra {
         val in = s.readBinary(key(t), sid)
         val pio = TaskExtra
           .processIO(s)
-          .withInput(out => { BasicIO.transferFully(in, out); out.close() })
+          .withInput { out => BasicIO.transferFully(in, out); out.close() }
         (p run pio).exitValue
       }
   }

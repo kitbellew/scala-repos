@@ -46,7 +46,7 @@ package object client {
   implicit def ResponseAsFuture(implicit M: Monad[Future]) =
     new (Response ~> Future) {
       def apply[A](res: Response[A]): Future[A] =
-        res.fold({ error => throw ClientException(error) }, identity)
+        res.fold(error => throw ClientException(error), identity)
     }
 
   implicit def FutureAsResponse(implicit M: Monad[Future]) =

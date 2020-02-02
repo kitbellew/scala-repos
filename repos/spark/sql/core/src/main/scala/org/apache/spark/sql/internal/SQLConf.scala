@@ -101,14 +101,14 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Int] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        v =>
           try v.toInt
           catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be int, but was $v")
-          }
-        },
+          },
         _.toString,
         doc,
         isPublic
@@ -121,14 +121,14 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Long] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        v =>
           try v.toLong
           catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be long, but was $v")
-          }
-        },
+          },
         _.toString,
         doc,
         isPublic
@@ -141,7 +141,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Long] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        v =>
           try v.toLong
           catch {
             case _: NumberFormatException =>
@@ -151,8 +152,7 @@ object SQLConf {
                   throw new IllegalArgumentException(
                     s"$key should be long, but was $v")
               }
-          }
-        },
+          },
         _.toString,
         doc,
         isPublic
@@ -165,14 +165,14 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Double] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        v =>
           try v.toDouble
           catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be double, but was $v")
-          }
-        },
+          },
         _.toString,
         doc,
         isPublic
@@ -185,14 +185,14 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Boolean] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        v =>
           try v.toBoolean
           catch {
             case _: IllegalArgumentException =>
               throw new IllegalArgumentException(
                 s"$key should be boolean, but was $v")
-          }
-        },
+          },
         _.toString,
         doc,
         isPublic

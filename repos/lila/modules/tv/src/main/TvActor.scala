@@ -63,22 +63,21 @@ private[tv] final class TvActor(
         .foreach { otherIds =>
           val gameIds = (previousId.toList ::: otherIds.toList.flatten).distinct
           roundSocket ! TellIds(
-            gameIds, {
-              lila.hub.actorApi.tv.Select(makeMessage(
-                "tvSelect",
-                Json.obj(
-                  "channel" -> channel.key,
-                  "id" -> game.id,
-                  "color" -> game.firstColor.name,
-                  "player" -> user.map { u =>
-                    Json.obj(
-                      "name" -> u.name,
-                      "title" -> u.title,
-                      "rating" -> player.rating)
-                  }
-                )
-              ))
-            }
+            gameIds,
+            lila.hub.actorApi.tv.Select(makeMessage(
+              "tvSelect",
+              Json.obj(
+                "channel" -> channel.key,
+                "id" -> game.id,
+                "color" -> game.firstColor.name,
+                "player" -> user.map { u =>
+                  Json.obj(
+                    "name" -> u.name,
+                    "title" -> u.title,
+                    "rating" -> player.rating)
+                }
+              )
+            ))
           )
         }
       if (channel == Tv.Channel.Best)

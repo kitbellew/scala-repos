@@ -413,12 +413,14 @@ private[tournament] final class TournamentApi(
   }
 
   private object updateTournamentStanding {
-    private val debouncer = system.actorOf(Props(new Debouncer(10 seconds, {
-      (tourId: String) =>
-        PairingRepo playingGameIds tourId foreach { ids =>
-          roundSocketHub ! TellIds(ids, TournamentStanding(tourId))
-        }
-    })))
+    private val debouncer = system.actorOf(
+      Props(
+        new Debouncer(
+          10 seconds,
+          (tourId: String) =>
+            PairingRepo playingGameIds tourId foreach { ids =>
+              roundSocketHub ! TellIds(ids, TournamentStanding(tourId))
+            })))
     def apply(tour: Tournament) {
       debouncer ! tour.id
     }

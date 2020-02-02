@@ -159,7 +159,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreA,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+            testStoreB)(t => fnA(t._2), fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -172,7 +172,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreC,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+            testStoreB)(t => fnA(t._2), fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -186,7 +186,7 @@ class VersionedBatchedStoreTest extends WordSpec {
           .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
             source,
             testStoreC,
-            testStoreB)({ t => fnA(t._2) }, fnB, fnC)
+            testStoreB)(t => fnA(t._2), fnB, fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))

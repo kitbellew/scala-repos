@@ -197,22 +197,18 @@ class BigDecimalTest {
     for (i <- 1 to 1000) {
       val d = rn.nextDouble
       assert(
-        {
-          BigDecimal.decimal(d).isDecimalDouble &&
+        BigDecimal.decimal(d).isDecimalDouble &&
           BigDecimal.binary(d).isBinaryDouble &&
-          BigDecimal.exact(d).isExactDouble
-        },
+          BigDecimal.exact(d).isExactDouble,
         s"At least one wrong BigDecimal representation for $d"
       )
     }
     for (i <- 1 to 1000) {
       val f = rn.nextFloat
       assert(
-        {
-          BigDecimal.decimal(f).isDecimalFloat &&
+        BigDecimal.decimal(f).isDecimalFloat &&
           BigDecimal.binary(f).isBinaryFloat &&
-          BigDecimal.exact(f).isExactFloat
-        },
+          BigDecimal.exact(f).isExactFloat,
         s"At least one wrong BigDecimal representation for $f"
       )
     }

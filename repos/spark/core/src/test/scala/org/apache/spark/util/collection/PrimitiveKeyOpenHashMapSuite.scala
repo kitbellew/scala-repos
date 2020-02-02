@@ -101,7 +101,7 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
     // bug where changeValue would return the wrong result when the map grew on that insert
     for (i <- 101 to 400) {
       val res =
-        map.changeValue(i.toLong, { i + "!" }, v => { assert(false); v })
+        map.changeValue(i.toLong, i + "!", v => { assert(false); v })
       assert(res === i + "!")
     }
     assert(map.size === 400)

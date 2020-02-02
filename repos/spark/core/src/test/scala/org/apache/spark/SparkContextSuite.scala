@@ -216,7 +216,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
       val future =
-        sc.parallelize(Seq(0)).foreachAsync(_ => { Thread.sleep(1000L) })
+        sc.parallelize(Seq(0)).foreachAsync { _ => Thread.sleep(1000L) }
       sc.cancelJobGroup("nonExistGroupId")
       Await.ready(future, Duration(2, TimeUnit.SECONDS))
 

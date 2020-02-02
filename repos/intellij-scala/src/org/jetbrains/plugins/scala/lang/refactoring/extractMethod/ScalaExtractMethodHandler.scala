@@ -169,7 +169,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     else if (siblings.length > 1)
       ScalaRefactoringUtil.showChooser(
         editor,
-        siblings, { (selectedValue: PsiElement) =>
+        siblings,
+        (selectedValue: PsiElement) =>
           invokeDialog(
             project,
             editor,
@@ -178,8 +179,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
             lastReturn,
             selectedValue,
             siblings(siblings.length - 1) == selectedValue,
-            lastExprType)
-        },
+            lastExprType),
         "Choose level for Extract Method",
         getTextForElement,
         (e: PsiElement) => e.getParent

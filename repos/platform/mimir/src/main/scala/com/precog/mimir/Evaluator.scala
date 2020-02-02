@@ -158,9 +158,8 @@ trait EvaluatorModule[M[+_]]
           List[DepGraph => DepGraph](
             // TODO: Predicate pullups break a SnapEngage query (see PLATFORM-951)
             //predicatePullups(_, ctx),
-            inferTypes(JType.JUniverseT), { g =>
-              megaReduce(g, findReductions(g, ctx))
-            },
+            inferTypes(JType.JUniverseT),
+            g => megaReduce(g, findReductions(g, ctx)),
             memoize
           )
         )

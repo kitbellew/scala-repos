@@ -509,7 +509,7 @@ abstract class BasicCircuitSimulator() extends Simulator() {
 
 abstract class CircuitSimulator() extends BasicCircuitSimulator() {
   def demux2(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit = {
-    val ctrlN = ctrl.map(w => { val iw = new Wire(); inverter(w, iw); iw });
+    val ctrlN = ctrl.map { w => val iw = new Wire(); inverter(w, iw); iw };
     val w0 = new Wire();
     val w1 = new Wire();
     val w2 = new Wire();

@@ -217,7 +217,7 @@ class SerializationSpecs extends Specification {
           Set(WritePermission(Path("/test/"), WriteAsAny)),
           i0,
           None)
-      )).fold({ error => throw new Exception(error.toString) }, _ => ok)
+      )).fold(error => throw new Exception(error.toString), _ => ok)
     }
 
     "Handle V1 formats" in {
@@ -307,7 +307,7 @@ class SerializationSpecs extends Specification {
           i0,
           None
         )
-      )).fold({ error => throw new Exception(error.toString) }, _ => ok)
+      )).fold(error => throw new Exception(error.toString), _ => ok)
     }
 
     "Deserialize NewGrantRequest without parentIds" in {

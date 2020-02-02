@@ -67,7 +67,7 @@ private[deploy] class DriverRunner(
   private var clock: Clock = new SystemClock()
   private var sleeper = new Sleeper {
     def sleep(seconds: Int): Unit =
-      (0 until seconds).takeWhile(f => { Thread.sleep(1000); !killed })
+      (0 until seconds).takeWhile { f => Thread.sleep(1000); !killed }
   }
 
   /** Starts a thread to run and manage the driver. */

@@ -235,12 +235,13 @@ class PowerIterationClustering private[clustering] (
     */
   private def pic(w: Graph[Double, Double]): PowerIterationClusteringModel = {
     val v = powerIter(w, maxIterations)
-    val assignments = kMeans(v, k).mapPartitions({ iter =>
-      iter.map {
-        case (id, cluster) =>
-          Assignment(id, cluster)
-      }
-    }, preservesPartitioning = true)
+    val assignments = kMeans(v, k).mapPartitions(
+      iter =>
+        iter.map {
+          case (id, cluster) =>
+            Assignment(id, cluster)
+        },
+      preservesPartitioning = true)
     new PowerIterationClusteringModel(k, assignments)
   }
 }

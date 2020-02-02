@@ -986,7 +986,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       { info =>
         val parents = info.superClass ++: info.interfaces
         parents.exists(_ == rhs) || parents.exists(isSubclass(_, rhs))
-      }, { lhsClass => lhsClass.ancestors.contains(rhs) }
+      },
+      lhsClass => lhsClass.ancestors.contains(rhs)
     )
 
   private def isSubtype(lhs: Type, rhs: Type)(

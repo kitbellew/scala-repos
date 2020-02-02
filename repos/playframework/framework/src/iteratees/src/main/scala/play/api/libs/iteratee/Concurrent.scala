@@ -451,7 +451,7 @@ object Concurrent {
                           case Step.Error(msg, e) =>
                             Done(Error(msg, e), Input.Empty)
                         }(dec)
-                        .map(i => { busy.single() = false; Left(i) })(dec),
+                        .map { i => busy.single() = false; Left(i) }(dec),
                       timeoutFuture(Right(()), duration, unit)
                     )
                   )(dec)

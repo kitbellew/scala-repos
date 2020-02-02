@@ -31,7 +31,7 @@ private[summingbird] trait OnlineDefaultConstants {
   val DEFAULT_FM_PARALLELISM = FlatMapParallelism(5)
   val DEFAULT_FM_CACHE = CacheSize(0)
   val DEFAULT_SUMMER_PARALLELISM = SummerParallelism(5)
-  val DEFAULT_ONLINE_SUCCESS_HANDLER = OnlineSuccessHandler(_ => {})
+  val DEFAULT_ONLINE_SUCCESS_HANDLER = OnlineSuccessHandler { _ => }
   val DEFAULT_ONLINE_EXCEPTION_HANDLER = OnlineExceptionHandler(Map.empty)
   val DEFAULT_SUMMER_CACHE = CacheSize(0)
   val DEFAULT_MONOID_IS_COMMUTATIVE = MonoidIsCommutative.default

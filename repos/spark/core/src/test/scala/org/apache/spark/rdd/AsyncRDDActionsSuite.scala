@@ -205,7 +205,7 @@ class AsyncRDDActionsSuite
   test("FutureAction result, timeout") {
     val f = sc
       .parallelize(1 to 100, 4)
-      .mapPartitions(itr => { Thread.sleep(20); itr })
+      .mapPartitions { itr => Thread.sleep(20); itr }
       .countAsync()
     intercept[TimeoutException] {
       Await.result(f, Duration(20, "milliseconds"))

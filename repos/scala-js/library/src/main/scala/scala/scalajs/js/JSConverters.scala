@@ -79,7 +79,7 @@ object JSConverters extends JSConvertersLowPrioImplicits {
       *  <i>provided that</i> the values of `A` do not have a `then` method.
       */
     def toJSPromise(implicit executor: ExecutionContext): Promise[A] =
-      new Promise[A]({
+      new Promise[A](
         (
             resolve: js.Function1[A | Thenable[A], _],
             reject: js.Function1[scala.Any, _]) =>
@@ -93,7 +93,7 @@ object JSConverters extends JSConvertersLowPrioImplicits {
                 case _                      => th
               })
           }
-      })
+      )
   }
 
 }

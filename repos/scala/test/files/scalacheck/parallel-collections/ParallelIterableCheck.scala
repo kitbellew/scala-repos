@@ -371,7 +371,8 @@ abstract class ParallelIterableCheck[T](collName: String)
     property("dropWhiles must be equal") = forAll(collectionPairs) {
       case (t, coll) =>
         (for ((pred, ind) <- dropWhilePredicates.zipWithIndex)
-          yield ("operator " + ind) |: t.dropWhile(pred) == coll.dropWhile(pred))
+          yield ("operator " + ind) |: t.dropWhile(pred) == coll.dropWhile(
+            pred))
           .reduceLeft(_ && _)
     }
 

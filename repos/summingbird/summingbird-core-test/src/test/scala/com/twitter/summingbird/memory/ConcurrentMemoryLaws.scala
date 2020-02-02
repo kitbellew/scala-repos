@@ -67,11 +67,11 @@ class ConcurrentMemoryLaws extends WordSpec {
       V: Monoid: Arbitrary: Equiv] =
     new TestGraphs[ConcurrentMemory, T, K, V](new ConcurrentMemory)(
       () => new ConcurrentHashMap[K, V]())(() => new LinkedBlockingQueue[T]())(
-      Producer.source[ConcurrentMemory, T](_))(s => { k => Option(s.get(k)) })({
+      Producer.source[ConcurrentMemory, T](_))(s => k => Option(s.get(k)))(
       (f, items) => unorderedEq(empty(f), items)
-    })({ (p: ConcurrentMemory, plan: ConcurrentMemoryPlan) =>
-      Await.result(plan.run, Duration.Inf)
-    })
+    )(
+      (p: ConcurrentMemory, plan: ConcurrentMemoryPlan) =>
+        Await.result(plan.run, Duration.Inf))
 
   /**
     * Tests the in-memory planner against a job with a single flatMap

@@ -752,15 +752,15 @@ object DenseVector
           sum
         } else if (n == 2) {
           var sum = 0.0
-          foreach(v => { val nn = v.abs.toDouble; sum += nn * nn })
+          foreach { v => val nn = v.abs.toDouble; sum += nn * nn }
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          foreach(v => { val nn = v.abs.toDouble; if (nn > max) max = nn })
+          foreach { v => val nn = v.abs.toDouble; if (nn > max) max = nn }
           max
         } else {
           var sum = 0.0
-          foreach(v => { val nn = v.abs.toDouble; sum += math.pow(nn, n) })
+          foreach { v => val nn = v.abs.toDouble; sum += math.pow(nn, n) }
           math.pow(sum, 1.0 / n)
         }
       }

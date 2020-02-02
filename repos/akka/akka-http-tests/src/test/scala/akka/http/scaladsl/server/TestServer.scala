@@ -32,34 +32,32 @@ object TestServer extends App {
   }
 
   val bindingFuture = Http().bindAndHandle(
-    {
-      get {
-        path("") {
-          withRequestTimeout(
-            1.milli,
-            _ ⇒
-              HttpResponse(
-                StatusCodes.EnhanceYourCalm,
-                entity =
-                  "Unable to serve response within time limit, please enchance your calm.")) {
-            Thread.sleep(1000)
-            complete(index)
+    get {
+      path("") {
+        withRequestTimeout(
+          1.milli,
+          _ ⇒
+            HttpResponse(
+              StatusCodes.EnhanceYourCalm,
+              entity =
+                "Unable to serve response within time limit, please enchance your calm.")) {
+          Thread.sleep(1000)
+          complete(index)
+        }
+      } ~
+        path("secure") {
+          authenticateBasicPF("My very secure site", auth) { user ⇒
+            complete(
+              <html><body>Hello <b>{user}</b>. Access has been granted!</body></html>)
           }
         } ~
-          path("secure") {
-            authenticateBasicPF("My very secure site", auth) { user ⇒
-              complete(
-                <html><body>Hello <b>{user}</b>. Access has been granted!</body></html>)
-            }
-          } ~
-          path("ping") {
-            complete("PONG!")
-          } ~
-          path("crash") {
-            complete(sys.error("BOOM!"))
-          }
-      } ~ pathPrefix("inner")(getFromResourceDirectory("someDir"))
-    },
+        path("ping") {
+          complete("PONG!")
+        } ~
+        path("crash") {
+          complete(sys.error("BOOM!"))
+        }
+    } ~ pathPrefix("inner")(getFromResourceDirectory("someDir")),
     interface = "localhost",
     port = 8080
   )

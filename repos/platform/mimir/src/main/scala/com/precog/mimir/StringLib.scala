@@ -302,52 +302,56 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = BinaryOperationType(StrAndDateT, JNumberT, JTextT)
       def f2(ctx: MorphContext): F2 = CF2P("builtin::str::substring::" + name) {
         case (c1: StrColumn, c2: LongColumn) =>
-          new StrFrom.SL(c1, c2, (s, n) => n >= 0, { (s, n) => f(s, n.toInt) })
+          new StrFrom.SL(c1, c2, (s, n) => n >= 0, (s, n) => f(s, n.toInt))
         case (c1: StrColumn, c2: DoubleColumn) =>
-          new StrFrom.SD(c1, c2, (s, n) => n >= 0 && (n % 1 == 0), { (s, n) =>
-            f(s, n.toInt)
-          })
+          new StrFrom.SD(
+            c1,
+            c2,
+            (s, n) => n >= 0 && (n % 1 == 0),
+            (s, n) => f(s, n.toInt))
         case (c1: StrColumn, c2: NumColumn) =>
-          new StrFrom.SN(c1, c2, (s, n) => n >= 0 && (n % 1 == 0), { (s, n) =>
-            f(s, n.toInt)
-          })
+          new StrFrom.SN(
+            c1,
+            c2,
+            (s, n) => n >= 0 && (n % 1 == 0),
+            (s, n) => f(s, n.toInt))
 
         case (c1: DateColumn, c2: LongColumn) =>
-          new StrFrom.SL(dateToStrCol(c1), c2, (s, n) => n >= 0, { (s, n) =>
-            f(s, n.toInt)
-          })
+          new StrFrom.SL(
+            dateToStrCol(c1),
+            c2,
+            (s, n) => n >= 0,
+            (s, n) => f(s, n.toInt))
         case (c1: DateColumn, c2: DoubleColumn) =>
           new StrFrom.SD(
             dateToStrCol(c1),
             c2,
-            (s, n) => n >= 0 && (n % 1 == 0), { (s, n) => f(s, n.toInt) })
+            (s, n) => n >= 0 && (n % 1 == 0),
+            (s, n) => f(s, n.toInt))
         case (c1: DateColumn, c2: NumColumn) =>
           new StrFrom.SN(
             dateToStrCol(c1),
             c2,
-            (s, n) => n >= 0 && (n % 1 == 0), { (s, n) => f(s, n.toInt) })
+            (s, n) => n >= 0 && (n % 1 == 0),
+            (s, n) => f(s, n.toInt))
       }
     }
 
     object takeLeft
-        extends Substring("takeLeft")({ (s, n) =>
-          s.substring(0, math.min(n, s.length))
-        })
+        extends Substring("takeLeft")(
+          (s, n) => s.substring(0, math.min(n, s.length)))
 
     object takeRight
-        extends Substring("takeRight")({ (s, n) =>
-          s.substring(math.max(s.length - n, 0))
-        })
+        extends Substring("takeRight")(
+          (s, n) => s.substring(math.max(s.length - n, 0)))
 
     object dropLeft
-        extends Substring("dropLeft")({ (s, n) =>
-          s.substring(math.min(n, s.length))
-        })
+        extends Substring("dropLeft")(
+          (s, n) => s.substring(math.min(n, s.length)))
 
     object dropRight
-        extends Substring("dropRight")({ (s, n) =>
-          s.substring(0, math.max(0, s.length - n))
-        })
+        extends Substring("dropRight")(
+          (s, n) => s.substring(0, math.max(0, s.length - n)))
 
     class Op2SSL(name: String, f: (String, String) => Long)
         extends Op2F2(StringNamespace, name) {

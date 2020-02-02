@@ -40,7 +40,7 @@ class FutureTests extends MinimalScalaTest {
       val ms = new mutable.HashSet[Throwable]
         with mutable.SynchronizedSet[Throwable]
       implicit val ec = scala.concurrent.ExecutionContext
-        .fromExecutor(new java.util.concurrent.ForkJoinPool(), { t => ms += t })
+        .fromExecutor(new java.util.concurrent.ForkJoinPool(), t => ms += t)
 
       class ThrowableTest(m: String) extends Throwable(m)
 

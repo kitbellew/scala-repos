@@ -42,9 +42,9 @@ private[lease] class Coordinator(
   }
 
   def sleepUntilGc(gc: () => Unit, interval: Duration) {
-    Alarm.armAndExecute({ () =>
-      new GenerationAlarm(counter) min new IntervalAlarm(interval)
-    }, gc)
+    Alarm.armAndExecute(
+      () => new GenerationAlarm(counter) min new IntervalAlarm(interval),
+      gc)
   }
 
   // TODO: given that discount should be consistent for a generation, it doesn't
@@ -58,9 +58,9 @@ private[lease] class Coordinator(
     //
     // TODO: wake up more often to see if the target
     // has changed.
-    Alarm.armAndExecute({ () =>
-      new BytesAlarm(counter, () => space.discount())
-    }, fn)
+    Alarm.armAndExecute(
+      () => new BytesAlarm(counter, () => space.discount()),
+      fn)
   }
 
   def sleepUntilFinishedDraining(
@@ -72,12 +72,12 @@ private[lease] class Coordinator(
     val elapsed = Stopwatch.start()
     // TODO: if grabbing memory info is slow, rewrite this to only check memory info occasionally
     Alarm.armAndExecute(
-      { () =>
+      () =>
         new BytesAlarm(counter, () => space.left) min
           new DurationAlarm((maxWait - elapsed()) / 2) min
           new GenerationAlarm(counter) min
-          new PredicateAlarm(() => npending() == 0)
-      }, { () =>
+          new PredicateAlarm(() => npending() == 0),
+      () =>
         // TODO MN: reenable
         if (verbose)
           log.info(
@@ -85,7 +85,6 @@ private[lease] class Coordinator(
               ((counter.info.remaining - space.minDiscount) / 100).inBytes + "; n=" + npending() +
               "; counter=" + counter + "; maxMs=" +
               ((maxWait - elapsed()) / 2).inMilliseconds.toInt)
-      }
     )
   }
 }

@@ -43,20 +43,19 @@ object JavaLangObject {
           static = false,
           Ident("getClass__jl_Class", Some("getClass__jl_Class")),
           Nil,
-          ClassType(ClassClass), {
-            GetClass(This()(ThisType))
-          })(OptimizerHints.empty.withInline(true), None),
+          ClassType(ClassClass),
+          GetClass(This()(ThisType))
+        )(OptimizerHints.empty.withInline(true), None),
         /* def hashCode(): Int = System.identityHashCode(this) */
         MethodDef(
           static = false,
           Ident("hashCode__I", Some("hashCode__I")),
           Nil,
-          IntType, {
-            Apply(
-              LoadModule(ClassType("jl_System$")),
-              Ident("identityHashCode__O__I", Some("identityHashCode")),
-              List(This()(ThisType)))(IntType)
-          }
+          IntType,
+          Apply(
+            LoadModule(ClassType("jl_System$")),
+            Ident("identityHashCode__O__I", Some("identityHashCode")),
+            List(This()(ThisType)))(IntType)
         )(OptimizerHints.empty, None),
         /* def equals(that: Object): Boolean = this eq that */
         MethodDef(
@@ -68,12 +67,11 @@ object JavaLangObject {
               AnyType,
               mutable = false,
               rest = false)),
-          BooleanType, {
-            BinaryOp(
-              BinaryOp.===,
-              This()(ThisType),
-              VarRef(Ident("that", Some("that")))(AnyType))
-          }
+          BooleanType,
+          BinaryOp(
+            BinaryOp.===,
+            This()(ThisType),
+            VarRef(Ident("that", Some("that")))(AnyType))
         )(OptimizerHints.empty.withInline(true), None),
         /* protected def clone(): Object =
          *   if (this.isInstanceOf[Cloneable]) <clone>(this)
@@ -83,24 +81,21 @@ object JavaLangObject {
           static = false,
           Ident("clone__O", Some("clone__O")),
           Nil,
-          AnyType, {
-            If(
-              IsInstanceOf(This()(ThisType), ClassType("jl_Cloneable")), {
-                Apply(
-                  LoadModule(ClassType("sjsr_package$")),
-                  Ident(
-                    "cloneObject__sjs_js_Object__sjs_js_Object",
-                    Some("cloneObject")),
-                  List(This()(ThisType)))(AnyType)
-              }, {
-                Throw(
-                  New(
-                    ClassType("jl_CloneNotSupportedException"),
-                    Ident("init___", Some("<init>")),
-                    Nil))
-              }
-            )(AnyType)
-          }
+          AnyType,
+          If(
+            IsInstanceOf(This()(ThisType), ClassType("jl_Cloneable")),
+            Apply(
+              LoadModule(ClassType("sjsr_package$")),
+              Ident(
+                "cloneObject__sjs_js_Object__sjs_js_Object",
+                Some("cloneObject")),
+              List(This()(ThisType)))(AnyType),
+            Throw(
+              New(
+                ClassType("jl_CloneNotSupportedException"),
+                Ident("init___", Some("<init>")),
+                Nil))
+          )(AnyType)
         )(OptimizerHints.empty.withInline(true), None),
         /* def toString(): String =
          *   getClass().getName() + "@" + Integer.toHexString(hashCode())
@@ -109,30 +104,29 @@ object JavaLangObject {
           static = false,
           Ident("toString__T", Some("toString__T")),
           Nil,
-          ClassType(StringClass), {
+          ClassType(StringClass),
+          BinaryOp(
+            BinaryOp.String_+,
             BinaryOp(
               BinaryOp.String_+,
-              BinaryOp(
-                BinaryOp.String_+,
-                Apply(
-                  Apply(
-                    This()(ThisType),
-                    Ident("getClass__jl_Class", Some("getClass__jl_Class")),
-                    Nil)(ClassType(ClassClass)),
-                  Ident("getName__T"),
-                  Nil)(ClassType(StringClass)),
-                // +
-                StringLiteral("@")
-              ),
-              // +
               Apply(
-                LoadModule(ClassType("jl_Integer$")),
-                Ident("toHexString__I__T"),
-                List(
-                  Apply(This()(ThisType), Ident("hashCode__I"), Nil)(IntType)))(
-                ClassType(StringClass))
-            )
-          }
+                Apply(
+                  This()(ThisType),
+                  Ident("getClass__jl_Class", Some("getClass__jl_Class")),
+                  Nil)(ClassType(ClassClass)),
+                Ident("getName__T"),
+                Nil)(ClassType(StringClass)),
+              // +
+              StringLiteral("@")
+            ),
+            // +
+            Apply(
+              LoadModule(ClassType("jl_Integer$")),
+              Ident("toHexString__I__T"),
+              List(
+                Apply(This()(ThisType), Ident("hashCode__I"), Nil)(IntType)))(
+              ClassType(StringClass))
+          )
         )(OptimizerHints.empty, None),
         /* Since wait() is not supported in any way, a correct implementation
          * of notify() and notifyAll() is to do nothing.
@@ -162,12 +156,15 @@ object JavaLangObject {
         // Exports
 
         /* JSExport for toString(). */
-        MethodDef(static = false, StringLiteral("toString"), Nil, AnyType, {
+        MethodDef(
+          static = false,
+          StringLiteral("toString"),
+          Nil,
+          AnyType,
           Apply(
             This()(ThisType),
             Ident("toString__T", Some("toString__T")),
-            Nil)(ClassType(StringClass))
-        })(OptimizerHints.empty, None)
+            Nil)(ClassType(StringClass)))(OptimizerHints.empty, None)
       )
     )(OptimizerHints.empty)
 

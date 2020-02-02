@@ -589,11 +589,10 @@ private[scalajs] final class ScalaJSClassEmitter(
                   else
                     js.If(
                       js.Apply(envField("is", className), List(obj)) ||
-                        (obj === js.Null()), {
-                        obj
-                      }, {
-                        throwError
-                      })
+                        (obj === js.Null()),
+                      obj,
+                      throwError
+                    )
               })
             )
           )
@@ -626,20 +625,21 @@ private[scalajs] final class ScalaJSClassEmitter(
           List(objParam, depthParam),
           className match {
             case Definitions.ObjectClass =>
-              val dataVarDef = genLet(Ident("data"), mutable = false, {
-                obj && (obj DOT "$classData")
-              })
+              val dataVarDef = genLet(
+                Ident("data"),
+                mutable = false,
+                obj && (obj DOT "$classData"))
               val data = dataVarDef.ref
               js.Block(
                 dataVarDef,
                 js.If(
-                  !data, {
-                    js.Return(js.BooleanLiteral(false))
-                  }, {
+                  !data,
+                  js.Return(js.BooleanLiteral(false)), {
                     val arrayDepthVarDef =
-                      genLet(Ident("arrayDepth"), mutable = false, {
-                        (data DOT "arrayDepth") || js.IntLiteral(0)
-                      })
+                      genLet(
+                        Ident("arrayDepth"),
+                        mutable = false,
+                        (data DOT "arrayDepth") || js.IntLiteral(0))
                     val arrayDepth = arrayDepthVarDef.ref
                     js.Block(
                       arrayDepthVarDef,
@@ -683,15 +683,13 @@ private[scalajs] final class ScalaJSClassEmitter(
             js.Return {
               js.If(
                 js.Apply(envField("isArrayOf", className), List(obj, depth)) ||
-                  (obj === js.Null()), {
-                  obj
-                }, {
-                  genCallHelper(
-                    "throwArrayCastException",
-                    obj,
-                    js.StringLiteral("L" + displayName + ";"),
-                    depth)
-                }
+                  (obj === js.Null()),
+                obj,
+                genCallHelper(
+                  "throwArrayCastException",
+                  obj,
+                  js.StringLiteral("L" + displayName + ";"),
+                  depth)
               )
             }
           )
@@ -851,12 +849,11 @@ private[scalajs] final class ScalaJSClassEmitter(
             js.Skip())
         case CheckedBehavior.Fatal =>
           js.If(
-            moduleInstanceVar === js.Undefined(), {
-              js.Block(
-                moduleInstanceVar := js.Null(),
-                assignModule
-              )
-            },
+            moduleInstanceVar === js.Undefined(),
+            js.Block(
+              moduleInstanceVar := js.Null(),
+              assignModule
+            ),
             js.If(
               moduleInstanceVar === js.Null(), {
                 // throw new UndefinedBehaviorError(

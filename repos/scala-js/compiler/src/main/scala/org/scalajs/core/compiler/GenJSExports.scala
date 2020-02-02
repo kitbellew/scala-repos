@@ -731,10 +731,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
                     defaultGetterArgs)
                 } else
                   genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
-              }, {
-                // Otherwise, unbox the argument
-                unboxedArg
-              }
+              },
+              // Otherwise, unbox the argument
+              unboxedArg
             )(unboxedArg.tpe)
           else
             // Otherwise, it is always the unboxed argument

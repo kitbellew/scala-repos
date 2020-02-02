@@ -524,7 +524,7 @@ private[yarn] class YarnAllocator(
 
   // Visible for testing.
   private[yarn] def processCompletedContainers(
-      completedContainers: Seq[ContainerStatus]): Unit = {
+      completedContainers: Seq[ContainerStatus]): Unit =
     for (completedContainer <- completedContainers) {
       val containerId = completedContainer.getContainerId
       val alreadyReleased = releasedContainers.remove(containerId)
@@ -626,7 +626,6 @@ private[yarn] class YarnAllocator(
         }
       }
     }
-  }
 
   /**
     * Register that some RpcCallContext has asked the AM why the executor was lost. Note that

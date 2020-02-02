@@ -247,13 +247,13 @@ private object JNotifyFileWatchService {
                   .getProperty("sun.arch.data.model") + "bits").getAbsolutePath
 
               // Hack to set java.library.path
-              System.setProperty("java.library.path", {
+              System.setProperty(
+                "java.library.path",
                 Option(System.getProperty("java.library.path"))
                   .map { existing =>
                     existing + java.io.File.pathSeparator + libs
                   }
-                  .getOrElse(libs)
-              })
+                  .getOrElse(libs))
               val fieldSysPath =
                 classOf[ClassLoader].getDeclaredField("sys_paths")
               fieldSysPath.setAccessible(true)

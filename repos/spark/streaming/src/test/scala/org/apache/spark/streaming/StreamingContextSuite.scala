@@ -342,7 +342,7 @@ class StreamingContextSuite
     sc = new SparkContext(conf)
     ssc = new StreamingContext(sc, Milliseconds(100))
     val input = ssc.receiverStream(new TestReceiver)
-    input.foreachRDD(_ => {})
+    input.foreachRDD { _ => }
     ssc.start()
     // Call `ssc.stop` at once so that it's possible that the receiver will miss "StopReceiver"
     failAfter(30000 millis) {
