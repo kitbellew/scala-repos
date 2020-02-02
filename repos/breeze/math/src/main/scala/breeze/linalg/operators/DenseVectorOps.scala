@@ -268,9 +268,10 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
-        _ / _
-      }, { (a, b) => b }, { _ % _ })
+      implicit @expand.sequence[Op](
+        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+          _ / _
+        }, { (a, b) => b }, { _ % _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], T] =
     new Op.InPlaceImpl2[DenseVector[T], T] {
       def apply(a: DenseVector[T], b: T): Unit = {

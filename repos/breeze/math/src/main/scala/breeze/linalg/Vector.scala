@@ -454,9 +454,10 @@ trait VectorOps { this: Vector.type =>
         OpSet,
         OpMod,
         OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
-        _ / _
-      }, { (a, b) => b }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op](
+        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+          _ / _
+        }, { (a, b) => b }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L)
       zero: T): BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
@@ -486,9 +487,10 @@ trait VectorOps { this: Vector.type =>
         OpSet,
         OpMod,
         OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
-        _ / _
-      }, { (a, b) => b }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op](
+        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+          _ / _
+        }, { (a, b) => b }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L)
       zero: T): BinaryRegistry[T, Vector[T], Op.type, Vector[T]] =
