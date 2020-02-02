@@ -102,7 +102,7 @@ object Combinatorics {
 
     // on a given row, we cannot have duplicate columns in a permutation
     val res = pipes
-      .reduceLeft((a, b) => { a.crossWithSmaller(b) })
+      .reduceLeft { (a, b) => a.crossWithSmaller(b) }
       .filter(allc) { x: TupleEntry =>
         Boolean
         val values = (0 until allc.size).map(i =>

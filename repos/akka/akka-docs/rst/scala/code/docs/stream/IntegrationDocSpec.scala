@@ -340,7 +340,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
         .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map { elem => println(s"before: $elem"); elem }
       .mapAsync(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsync
@@ -373,7 +373,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
         .withInputBuffer(initialSize = 4, maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
-      .map(elem => { println(s"before: $elem"); elem })
+      .map { elem => println(s"before: $elem"); elem }
       .mapAsyncUnordered(4)(service.convert)
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsyncUnordered

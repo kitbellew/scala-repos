@@ -942,15 +942,15 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
           sum
         } else if (n == 2) {
           var sum = 0.0
-          foreach(v => { val nn = f.sNorm(v); sum += nn * nn })
+          foreach { v => val nn = f.sNorm(v); sum += nn * nn }
           math.sqrt(sum)
         } else if (n == Double.PositiveInfinity) {
           var max = 0.0
-          foreach(v => { val nn = f.sNorm(v); if (nn > max) max = nn })
+          foreach { v => val nn = f.sNorm(v); if (nn > max) max = nn }
           max
         } else {
           var sum = 0.0
-          foreach(v => { val nn = f.sNorm(v); sum += math.pow(nn, n) })
+          foreach { v => val nn = f.sNorm(v); sum += math.pow(nn, n) }
           math.pow(sum, 1.0 / n)
         }
       }
@@ -963,7 +963,7 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
       override def apply(v: DenseVector[T]): Double = {
         import v._
         var sum = 0.0
-        foreach(v => { val nn = f.sNorm(v); sum += nn * nn })
+        foreach { v => val nn = f.sNorm(v); sum += nn * nn }
         math.sqrt(sum)
       }
     }

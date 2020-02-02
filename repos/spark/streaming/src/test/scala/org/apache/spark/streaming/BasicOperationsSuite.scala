@@ -598,7 +598,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     withStreamingContext(new StreamingContext(conf, Seconds(1))) { ssc =>
       val input = Seq(Seq(1), Seq(2), Seq(3), Seq(4))
       val stream = new TestInputStream[Int](ssc, input, 2)
-      stream.foreachRDD(_ => {}) // Dummy output stream
+      stream.foreachRDD { _ => } // Dummy output stream
       ssc.start()
       Thread.sleep(2000)
       def getInputFromSlice(fromMillis: Long, toMillis: Long): Set[Int] =

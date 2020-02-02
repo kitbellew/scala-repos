@@ -215,7 +215,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         ))
       val graph0 = Graph(vertices, edges)
       // Trigger initial vertex replication
-      graph0.triplets.foreach(x => {})
+      graph0.triplets.foreach { x => }
       // Change type of replicated vertices, but preserve erased type
       val graph1 = graph0.mapVertices {
         case (vid, integerOpt) =>

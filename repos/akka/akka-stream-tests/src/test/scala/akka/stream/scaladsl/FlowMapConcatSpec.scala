@@ -40,7 +40,7 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
       val input = (1 to 20).grouped(5).toList
       Source(input)
         .mapConcat(identity)
-        .map(x ⇒ { Thread.sleep(10); x })
+        .map { x ⇒ Thread.sleep(10); x }
         .runWith(Sink.fromSubscriber(s))
       val sub = s.expectSubscription()
       sub.request(100)

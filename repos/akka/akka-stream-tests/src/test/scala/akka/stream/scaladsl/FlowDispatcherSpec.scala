@@ -21,7 +21,7 @@ class FlowDispatcherSpec
 
     val probe = TestProbe()
     val p = Source(List(1, 2, 3))
-      .map(i ⇒ { probe.ref ! Thread.currentThread().getName(); i })
+      .map { i ⇒ probe.ref ! Thread.currentThread().getName(); i }
       .to(Sink.ignore)
       .run()
     probe.receiveN(3) foreach {

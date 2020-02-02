@@ -801,7 +801,7 @@ trait ColumnarTableModule[M[+_]]
       StreamT
         .Skip({
           readStarts.getAndIncrement
-          slices0.map(s => { blockReads.getAndIncrement; s })
+          slices0.map { s => blockReads.getAndIncrement; s }
         })
         .point[M]
     )

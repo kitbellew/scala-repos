@@ -202,7 +202,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         def run = counter.set(f(counter.get))
       }
       perform(_ + 1)
-      perform(x ⇒ { sec.suspend(); x * 2 })
+      perform { x ⇒ sec.suspend(); x * 2 }
       awaitCond(counter.get == 2)
       perform(_ + 4)
       perform(_ * 2)
@@ -277,7 +277,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
       }
       perform(_ + 1)
       1 to 10 foreach { _ ⇒ perform(identity) }
-      perform(x ⇒ { sec.suspend(); x * 2 })
+      perform { x ⇒ sec.suspend(); x * 2 }
       perform(_ + 8)
       sec.size should ===(13)
       sec.resume()

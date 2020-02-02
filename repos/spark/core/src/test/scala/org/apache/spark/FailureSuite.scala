@@ -92,7 +92,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
   test("failure in a map stage") {
     sc = new SparkContext("local", "test")
     val data =
-      sc.makeRDD(1 to 3).map(x => { throw new Exception; (x, x) }).groupByKey(3)
+      sc.makeRDD(1 to 3).map { x => throw new Exception; (x, x) }.groupByKey(3)
     intercept[SparkException] {
       data.collect()
     }

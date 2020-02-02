@@ -1276,7 +1276,7 @@ trait SHtml extends Loggable {
     * @attrs - the (optional) attributes for the HTML element
     */
   def link(to: String, func: () => Any, body: NodeSeq, attrs: ElemAttr*): Elem =
-    fmapFunc((a: List[String]) => { func(); true })(key =>
+    fmapFunc { (a: List[String]) => func(); true }(key =>
       attrs.foldLeft(
         <a href={Helpers.appendFuncToURL(to, key + "=_")}>{body}</a>)(_ % _))
 

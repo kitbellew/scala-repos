@@ -56,7 +56,7 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
     else {
       dbs foreach {
         case (id, _) =>
-          MongoDB.use(id)(db => { db.getName })
+          MongoDB.use(id) { db => db.getName }
       }
       true
     } catch {

@@ -284,7 +284,7 @@ class FlowSpec
     }
 
     "perform transformation operation" in {
-      val flow = Flow[Int].map(i ⇒ { testActor ! i.toString; i.toString })
+      val flow = Flow[Int].map { i ⇒ testActor ! i.toString; i.toString }
 
       val publisher = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).via(flow).to(Sink.ignore).run()

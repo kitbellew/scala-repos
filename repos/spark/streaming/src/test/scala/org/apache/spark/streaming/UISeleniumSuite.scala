@@ -70,11 +70,11 @@ class UISeleniumSuite
     val rdds = Queue(ssc.sc.parallelize(1 to 4, 4))
     val inputStream = ssc.queueStream(rdds)
     inputStream.foreachRDD { rdd =>
-      rdd.foreach(_ => {})
-      rdd.foreach(_ => {})
+      rdd.foreach { _ => }
+      rdd.foreach { _ => }
     }
     inputStream.foreachRDD { rdd =>
-      rdd.foreach(_ => {})
+      rdd.foreach { _ => }
       try rdd.foreach(_ => throw new RuntimeException("Oops"))
       catch {
         case e: SparkException if e.getMessage.contains("Oops") =>

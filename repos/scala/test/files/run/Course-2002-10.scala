@@ -16,7 +16,7 @@ object M0 {
     var i = 0;
     fib
       .take(20)
-      .foreach(n => { Console.println("fib(" + i + ") = " + n); i = i + 1 });
+      .foreach { n => Console.println("fib(" + i + ") = " + n); i = i + 1 };
     Console.println;
   }
 }
