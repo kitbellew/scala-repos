@@ -138,7 +138,7 @@ private[spark] class ClientArguments(
     var args = inputArgs
 
     // scalastyle:off println
-    while (!args.isEmpty) {
+    while (!args.isEmpty)
       args match {
         case ("--jar") :: value :: tail =>
           userJar = value
@@ -236,7 +236,6 @@ private[spark] class ClientArguments(
         case _ =>
           throw new IllegalArgumentException(getUsageMessage(args))
       }
-    }
     // scalastyle:on println
 
     if (primaryPyFile != null && primaryRFile != null)

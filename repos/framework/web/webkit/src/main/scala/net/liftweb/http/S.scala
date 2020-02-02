@@ -2646,7 +2646,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Associates a name with a function impersonated by AFuncHolder. These are basically functions
     * that are executed when a request contains the 'name' request parameter.
     */
-  def addFunctionMap(name: String, value: AFuncHolder) = {
+  def addFunctionMap(name: String, value: AFuncHolder) =
     testFunctionMap {
       (autoCleanUp.box, _oneShot.box) match {
         case (Full(true), _) =>
@@ -2745,7 +2745,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           updateFunctionMap(name, value)
       }
     }
-  }
 
   /**
     * Decorates an URL with jsessionid parameter in case cookies are disabled from the container. Also
