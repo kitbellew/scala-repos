@@ -36,40 +36,37 @@ object JodaTimeSerializers {
 }
 
 case object PeriodSerializer
-    extends CustomSerializer[Period](
-      format =>
-        (
-          {
-            case JString(p) => new Period(p)
-            case JNull      => null
-          }, {
-            case p: Period => JString(p.toString)
-          }
-        ))
+    extends CustomSerializer[Period](format =>
+      (
+        {
+          case JString(p) => new Period(p)
+          case JNull      => null
+        }, {
+          case p: Period => JString(p.toString)
+        }
+      ))
 
 case object DurationSerializer
-    extends CustomSerializer[Duration](
-      format =>
-        (
-          {
-            case JInt(d) => new Duration(d.longValue)
-            case JNull   => null
-          }, {
-            case d: Duration => JInt(d.getMillis)
-          }
-        ))
+    extends CustomSerializer[Duration](format =>
+      (
+        {
+          case JInt(d) => new Duration(d.longValue)
+          case JNull   => null
+        }, {
+          case d: Duration => JInt(d.getMillis)
+        }
+      ))
 
 case object InstantSerializer
-    extends CustomSerializer[Instant](
-      format =>
-        (
-          {
-            case JInt(i) => new Instant(i.longValue)
-            case JNull   => null
-          }, {
-            case i: Instant => JInt(i.getMillis)
-          }
-        ))
+    extends CustomSerializer[Instant](format =>
+      (
+        {
+          case JInt(i) => new Instant(i.longValue)
+          case JNull   => null
+        }, {
+          case i: Instant => JInt(i.getMillis)
+        }
+      ))
 
 object DateParser {
   def parse(s: String, format: Formats) =
@@ -80,28 +77,26 @@ object DateParser {
 }
 
 case object DateTimeSerializer
-    extends CustomSerializer[DateTime](
-      format =>
-        (
-          {
-            case JString(s) => new DateTime(DateParser.parse(s, format))
-            case JNull      => null
-          }, {
-            case d: DateTime => JString(format.dateFormat.format(d.toDate))
-          }
-        ))
+    extends CustomSerializer[DateTime](format =>
+      (
+        {
+          case JString(s) => new DateTime(DateParser.parse(s, format))
+          case JNull      => null
+        }, {
+          case d: DateTime => JString(format.dateFormat.format(d.toDate))
+        }
+      ))
 
 case object DateMidnightSerializer
-    extends CustomSerializer[DateMidnight](
-      format =>
-        (
-          {
-            case JString(s) => new DateMidnight(DateParser.parse(s, format))
-            case JNull      => null
-          }, {
-            case d: DateMidnight => JString(format.dateFormat.format(d.toDate))
-          }
-        ))
+    extends CustomSerializer[DateMidnight](format =>
+      (
+        {
+          case JString(s) => new DateMidnight(DateParser.parse(s, format))
+          case JNull      => null
+        }, {
+          case d: DateMidnight => JString(format.dateFormat.format(d.toDate))
+        }
+      ))
 
 private[ext] case class _Interval(start: Long, end: Long)
 object IntervalSerializer {

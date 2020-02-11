@@ -231,9 +231,10 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         OpSet,
         OpMod,
         OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
-        _ / _
-      }, { (a, b) => b }, { _ % _ }, { _ pow _ })
+      implicit @expand.sequence[Op](
+        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+          _ / _
+        }, { (a, b) => b }, { _ % _ }, { _ pow _ })
       op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L)
       zero: T): Op.Impl2[HashVector[T], T, HashVector[T]] =
