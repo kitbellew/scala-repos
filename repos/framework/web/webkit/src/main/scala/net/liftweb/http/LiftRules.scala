@@ -488,10 +488,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val statelessReqTest = RulesSeq[StatelessReqTestPF]
 
   val statelessSession: FactoryMaker[Req => LiftSession with StatelessSession] =
-    new FactoryMaker(
-      (req: Req) =>
-        new LiftSession(req.contextPath, Helpers.nextFuncName, Empty)
-          with StatelessSession) {}
+    new FactoryMaker((req: Req) =>
+      new LiftSession(req.contextPath, Helpers.nextFuncName, Empty)
+        with StatelessSession) {}
 
   /**
     * Holds user functions that are executed after the response is sent to client. The functions' result
@@ -613,15 +612,13 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * By default, if the parameter looks Lift-like (i.e., it starts with an F),
     * then we log a warning with the given parameter name and URI.
     */
-  val handleUnmappedParameter = new FactoryMaker[(Req, String) => Unit](
-    () => {
-      (req: Req, parameterName: String) =>
-        if (parameterName.startsWith("F"))
-          logger.warn(
-            "Unmapped Lift-like parameter seen in request [%s]: %s"
-              .format(req.uri, parameterName))
-    }
-  ) {}
+  val handleUnmappedParameter = new FactoryMaker[(Req, String) => Unit](() => {
+    (req: Req, parameterName: String) =>
+      if (parameterName.startsWith("F"))
+        logger.warn(
+          "Unmapped Lift-like parameter seen in request [%s]: %s"
+            .format(req.uri, parameterName))
+  }) {}
 
   /**
     * Set to false if you want to have 404's handled the same way in dev and production mode
@@ -809,9 +806,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * overridden client-side for more complex work.
     * lift.cometOnSessionLost reloads the current page by default.
     */
-  val noCometSessionCmd = new FactoryMaker[JsCmd](
-    () => JsCmds.Run("lift.cometOnSessionLost()")
-  ) {}
+  val noCometSessionCmd = new FactoryMaker[JsCmd](() =>
+    JsCmds.Run("lift.cometOnSessionLost()")) {}
 
   /**
     * The JsCmd to execute when the ajax session is lost. The ajax
@@ -822,9 +818,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * overridden client-side for more complex work.
     * lift.ajaxOnSessionLost reloads the page by default.
     */
-  val noAjaxSessionCmd = new FactoryMaker[JsCmd](
-    () => JsCmds.Run("lift.ajaxOnSessionLost()")
-  ) {}
+  val noAjaxSessionCmd = new FactoryMaker[JsCmd](() =>
+    JsCmds.Run("lift.ajaxOnSessionLost()")) {}
 
   /**
     * Server-side actors that represent client-side
@@ -834,9 +829,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * delayed by long computations that bar it from re-establishing
     * the long polling connection
     */
-  val clientActorLifespan = new FactoryMaker[LiftActor => Long](
-    () => (actor: LiftActor) => (30.minutes): Long
-  ) {}
+  val clientActorLifespan = new FactoryMaker[LiftActor => Long](() =>
+    (actor: LiftActor) => (30.minutes): Long) {}
 
   /**
     * Put a function that will calculate the request timeout based on the
@@ -1135,13 +1129,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val snippetWhiteList: FactoryMaker[
     () => PartialFunction[(String, String), Box[NodeSeq => NodeSeq]]] =
-    new FactoryMaker(
-      () =>
-        (
-            () =>
-              Map.empty: PartialFunction[
-                (String, String),
-                Box[NodeSeq => NodeSeq]])) {}
+    new FactoryMaker(() =>
+      (
+          () =>
+            Map.empty: PartialFunction[
+              (String, String),
+              Box[NodeSeq => NodeSeq]])) {}
 
   /**
     * This FactoryMaker can be used to disable the little used attributeSnippets
@@ -1762,8 +1755,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * some headers that should only appear once (for example "expires").  This
     * Vendor vends the list of header responses that can only appear once.
     */
-  val overwrittenReponseHeaders: FactoryMaker[List[String]] = new FactoryMaker(
-    () => List("expires")) {}
+  val overwrittenReponseHeaders: FactoryMaker[List[String]] =
+    new FactoryMaker(() => List("expires")) {}
 
   /**
     * A utility method to convert an exception to a string of stack traces
@@ -1867,11 +1860,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * include the JS settings.
     */
   val javaScriptSettings: FactoryMaker[() => Box[LiftSession => JsObj]] =
-    new FactoryMaker(
+    new FactoryMaker(() =>
       () =>
-        () =>
-          (Full((session: LiftSession) => LiftJavaScript.settings): Box[
-            LiftSession => JsObj])) {}
+        (Full((session: LiftSession) => LiftJavaScript.settings): Box[
+          LiftSession => JsObj])) {}
 
   /**
     * Define the XHTML validator

@@ -39,15 +39,14 @@ class FailureDetectorRegistrySpec extends AkkaSpec("akka.loglevel = INFO") {
       firstHeartbeatEstimate: FiniteDuration = 1.second,
       clock: Clock = FailureDetector.defaultClock)
       : FailureDetectorRegistry[String] = {
-    new DefaultFailureDetectorRegistry[String](
-      () ⇒
-        createFailureDetector(
-          threshold,
-          maxSampleSize,
-          minStdDeviation,
-          acceptableLostDuration,
-          firstHeartbeatEstimate,
-          clock))
+    new DefaultFailureDetectorRegistry[String](() ⇒
+      createFailureDetector(
+        threshold,
+        maxSampleSize,
+        minStdDeviation,
+        acceptableLostDuration,
+        firstHeartbeatEstimate,
+        clock))
   }
 
   "mark node as available after a series of successful heartbeats" in {

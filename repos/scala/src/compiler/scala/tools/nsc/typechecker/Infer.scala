@@ -665,11 +665,10 @@ trait Infer extends Checkable {
         // Note that isCompatible side-effects: subtype checks involving typevars
         // are recorded in the typevar's bounds (see TypeConstraint)
         if (!isCompatible(tp1, pt1)) {
-          throw new DeferredNoInstance(
-            () =>
-              "argument expression's type is not compatible with formal parameter type" + foundReqMsg(
-                tp1,
-                pt1))
+          throw new DeferredNoInstance(() =>
+            "argument expression's type is not compatible with formal parameter type" + foundReqMsg(
+              tp1,
+              pt1))
         }
       }
       val targs = solvedTypes(
