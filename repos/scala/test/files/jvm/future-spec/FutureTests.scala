@@ -121,11 +121,10 @@ class FutureTests extends MinimalScalaTest {
         ECNotUsed(ec =>
           f.recover({ case _ => fail("recover should not have been called") })(
             ec)) eq f)
-      assert(
-        ECNotUsed(ec =>
-          f.recoverWith({
-            case _ => fail("flatMap should not have been called")
-          })(ec)) eq f)
+      assert(ECNotUsed(ec =>
+        f.recoverWith({
+          case _ => fail("flatMap should not have been called")
+        })(ec)) eq f)
       assert(
         f.fallbackTo(f) eq f,
         "Future.fallbackTo must be the same instance as Future.fallbackTo")

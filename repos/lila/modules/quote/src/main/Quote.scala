@@ -708,7 +708,9 @@ object Quote {
       "When I asked Fischer why he had not played a certain move in our game, he replied: ‘Well, you laughed when I wrote it down!’",
       "Mikhail Tal"),
     new Quote("I look one move ahead... the best!", "Siegbert Tarrasch"),
-    new Quote("Fischer prefers to enter chess history alone.", "Miguel Najdorf"),
+    new Quote(
+      "Fischer prefers to enter chess history alone.",
+      "Miguel Najdorf"),
     new Quote(
       "Bobby is the most misunderstood, misquoted celebrity walking the face of this earth.",
       "Yasser Seirawan"),

@@ -644,7 +644,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                   forkedRepository.name).find(_._1 == originOwner).map(_._2)
               }
             };
-            originRepository <- getRepository(originOwner, originRepositoryName))
+            originRepository <- getRepository(
+              originOwner,
+              originRepositoryName))
         yield {
           using(
             Git.open(

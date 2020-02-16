@@ -899,9 +899,9 @@ object JsonAST {
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
       ).foldLeft(Set[Char]()) {
-          case (set, (start, end)) =>
-            set ++ (start to end).toSet
-        }
+        case (set, (start, end)) =>
+          set ++ (start to end).toSet
+      }
 
     /**
       * Pretty-print JSON with 2-space indentation and escape all JS-sensitive

@@ -2701,9 +2701,12 @@ object hlist {
     implicit def hlistZipWithHNil[L <: HList, P <: Poly2]
         : Aux[L, HNil, P, HNil] = constZipWith[L, HNil, P]
 
-    implicit def hlistZipWithHList[LH, RH, LT <: HList, RT <: HList, P <: Poly2](
-        implicit zipWith: ZipWith[LT, RT, P],
-        clr: Case2[P, LH, RH])
+    implicit def hlistZipWithHList[
+        LH,
+        RH,
+        LT <: HList,
+        RT <: HList,
+        P <: Poly2](implicit zipWith: ZipWith[LT, RT, P], clr: Case2[P, LH, RH])
         : Aux[LH :: LT, RH :: RT, P, clr.Result :: zipWith.Out] =
       new ZipWith[LH :: LT, RH :: RT, P] {
         type Out = clr.Result :: zipWith.Out

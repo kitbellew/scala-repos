@@ -29,6 +29,9 @@ abstract class Specs2DuplicateConfigTest extends Specs2TestCase {
       5,
       10,
       "DuplicateConfigTest.scala",
-      checkConfigAndSettings(_, "DuplicateConfigTest", "create only one config"))
+      checkConfigAndSettings(
+        _,
+        "DuplicateConfigTest",
+        "create only one config"))
   }
 }

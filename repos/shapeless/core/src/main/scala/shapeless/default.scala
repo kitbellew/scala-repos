@@ -192,7 +192,11 @@ object Default {
           def apply(l: HNil) = HNil
         }
 
-      implicit def hconsSomeHelper[H, T <: HList, ReprT <: HList, OutT <: HList](
+      implicit def hconsSomeHelper[
+          H,
+          T <: HList,
+          ReprT <: HList,
+          OutT <: HList](
           implicit
           tailHelper: Aux[T, ReprT, OutT])
           : Aux[Some[H] :: T, H :: ReprT, Option[H] :: OutT] =
@@ -201,7 +205,11 @@ object Default {
           def apply(l: Some[H] :: T) = l.head :: tailHelper(l.tail)
         }
 
-      implicit def hconsNoneHelper[H, T <: HList, ReprT <: HList, OutT <: HList](
+      implicit def hconsNoneHelper[
+          H,
+          T <: HList,
+          ReprT <: HList,
+          OutT <: HList](
           implicit
           tailHelper: Aux[T, ReprT, OutT])
           : Aux[None.type :: T, H :: ReprT, Option[H] :: OutT] =

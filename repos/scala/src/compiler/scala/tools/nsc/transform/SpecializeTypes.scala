@@ -2298,10 +2298,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     if (currentRun.compiles(m)) concreteSpecMethods += m
   }
 
-  private def makeArguments(fun: Symbol, vparams: List[Symbol]): List[Tree] = (
-    //! TODO: make sure the param types are seen from the right prefix
-    map2(fun.info.paramTypes, vparams)((tp, arg) =>
-      gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe)))
+  private def makeArguments(fun: Symbol, vparams: List[Symbol]): List[Tree] =
+    (
+      //! TODO: make sure the param types are seen from the right prefix
+      map2(fun.info.paramTypes, vparams)((tp, arg) =>
+        gen.maybeMkAsInstanceOf(Ident(arg), tp, arg.tpe)))
 
   class SpecializationTransformer(unit: CompilationUnit) extends Transformer {
     informProgress("specializing " + unit)

@@ -730,11 +730,11 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def dm_dm_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
-        { f.+(_, _) }, { f.-(_, _) }, { f.*(_, _) }, { f./(_, _) }, {
-          f.%(_, _)
-        }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: Zero: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
+    f.-(_, _)
+  }, { f.*(_, _) }, { f./(_, _) }, {
+    f.%(_, _)
+  }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
       : Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] = {
     val f = implicitly[Field[T]]
     new Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]] {
@@ -822,11 +822,11 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def opUpdate_DM_S[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
-        { f.+(_, _) }, { f.-(_, _) }, { f.*(_, _) }, { f.*(_, _) }, {
-          f./(_, _)
-        }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: Zero: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
+    f.-(_, _)
+  }, { f.*(_, _) }, { f.*(_, _) }, {
+    f./(_, _)
+  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
       : Op.InPlaceImpl2[DenseMatrix[T], T] = {
     val f = implicitly[Field[T]]
     new Op.InPlaceImpl2[DenseMatrix[T], T] {

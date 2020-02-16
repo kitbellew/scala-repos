@@ -514,12 +514,12 @@ object Config {
         }
       case None => Success((nonStrings, initConf))
     }).flatMap {
-        case (unhandled, withJar) =>
-          if (unhandled.isEmpty) Success(withJar)
-          else
-            Failure(
-              new Exception("unhandled configurations: " + unhandled.toString))
-      }
+      case (unhandled, withJar) =>
+        if (unhandled.isEmpty) Success(withJar)
+        else
+          Failure(
+            new Exception("unhandled configurations: " + unhandled.toString))
+    }
   }
 
   /**
