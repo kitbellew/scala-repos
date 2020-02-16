@@ -17,13 +17,18 @@
 
 package org.apache.spark.rdd
 
-import org.apache.spark.{LocalSparkContext, SparkContext, SparkException, SparkFunSuite}
+import org.apache.spark.{
+  LocalSparkContext,
+  SparkContext,
+  SparkException,
+  SparkFunSuite
+}
 import org.apache.spark.storage.{RDDBlockId, StorageLevel}
 
 /**
- * Fine-grained tests for local checkpointing.
- * For end-to-end tests, see CheckpointSuite.
- */
+  * Fine-grained tests for local checkpointing.
+  * For end-to-end tests, see CheckpointSuite.
+  */
 class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
 
   override def beforeEach(): Unit = {
@@ -35,15 +40,22 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     val transform = LocalRDDCheckpointData.transformStorageLevel _
     assert(transform(StorageLevel.NONE) === StorageLevel.DISK_ONLY)
     assert(transform(StorageLevel.MEMORY_ONLY) === StorageLevel.MEMORY_AND_DISK)
-    assert(transform(StorageLevel.MEMORY_ONLY_SER) === StorageLevel.MEMORY_AND_DISK_SER)
-    assert(transform(StorageLevel.MEMORY_ONLY_2) === StorageLevel.MEMORY_AND_DISK_2)
-    assert(transform(StorageLevel.MEMORY_ONLY_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
+    assert(
+      transform(StorageLevel.MEMORY_ONLY_SER) === StorageLevel.MEMORY_AND_DISK_SER)
+    assert(
+      transform(StorageLevel.MEMORY_ONLY_2) === StorageLevel.MEMORY_AND_DISK_2)
+    assert(
+      transform(StorageLevel.MEMORY_ONLY_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
     assert(transform(StorageLevel.DISK_ONLY) === StorageLevel.DISK_ONLY)
     assert(transform(StorageLevel.DISK_ONLY_2) === StorageLevel.DISK_ONLY_2)
-    assert(transform(StorageLevel.MEMORY_AND_DISK) === StorageLevel.MEMORY_AND_DISK)
-    assert(transform(StorageLevel.MEMORY_AND_DISK_SER) === StorageLevel.MEMORY_AND_DISK_SER)
-    assert(transform(StorageLevel.MEMORY_AND_DISK_2) === StorageLevel.MEMORY_AND_DISK_2)
-    assert(transform(StorageLevel.MEMORY_AND_DISK_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
+    assert(
+      transform(StorageLevel.MEMORY_AND_DISK) === StorageLevel.MEMORY_AND_DISK)
+    assert(
+      transform(StorageLevel.MEMORY_AND_DISK_SER) === StorageLevel.MEMORY_AND_DISK_SER)
+    assert(
+      transform(StorageLevel.MEMORY_AND_DISK_2) === StorageLevel.MEMORY_AND_DISK_2)
+    assert(
+      transform(StorageLevel.MEMORY_AND_DISK_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
   }
 
   test("basic lineage truncation") {
@@ -66,7 +78,8 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     assert(filteredRdd.checkpointData.isDefined)
     assert(!filteredRdd.checkpointData.get.isCheckpointed)
     assert(!filteredRdd.checkpointData.get.checkpointRDD.isDefined)
-    assert(filteredRdd.getStorageLevel === LocalRDDCheckpointData.DEFAULT_STORAGE_LEVEL)
+    assert(
+      filteredRdd.getStorageLevel === LocalRDDCheckpointData.DEFAULT_STORAGE_LEVEL)
 
     // After an action, the lineage is truncated
     val result = filteredRdd.collect()
@@ -174,14 +187,18 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     } catch {
       case se: SparkException =>
         assert(se.getMessage.contains(s"Checkpoint block $blockId not found"))
-        assert(se.getMessage.contains("rdd.checkpoint()")) // suggest an alternative
-        assert(se.getMessage.contains("fault-tolerant")) // justify the alternative
+        assert(
+          se.getMessage.contains("rdd.checkpoint()")
+        ) // suggest an alternative
+        assert(
+          se.getMessage.contains("fault-tolerant")
+        ) // justify the alternative
     }
   }
 
   /**
-   * Helper method to create a simple RDD.
-   */
+    * Helper method to create a simple RDD.
+    */
   private def newRdd: RDD[Int] = {
     sc.parallelize(1 to 100, 4)
       .map { i => i + 1 }
@@ -189,15 +206,15 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   /**
-   * Helper method to create a simple sorted RDD.
-   */
+    * Helper method to create a simple sorted RDD.
+    */
   private def newSortedRdd: RDD[Int] = newRdd.sortBy(identity)
 
   /**
-   * Helper method to test basic lineage truncation with caching.
-   *
-   * @param rdd an RDD that is both marked for caching and local checkpointing
-   */
+    * Helper method to test basic lineage truncation with caching.
+    *
+    * @param rdd an RDD that is both marked for caching and local checkpointing
+    */
   private def testBasicLineageTruncationWithCaching[T](
       rdd: RDD[T],
       targetStorageLevel: StorageLevel): Unit = {
@@ -209,19 +226,20 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     assert(rdd.checkpointData.isDefined)
     assert(rdd.checkpointData.get.isCheckpointed)
     assert(rdd.checkpointData.get.checkpointRDD.isDefined)
-    assert(rdd.dependencies.head.rdd === rdd.checkpointData.get.checkpointRDD.get)
+    assert(
+      rdd.dependencies.head.rdd === rdd.checkpointData.get.checkpointRDD.get)
     assert(rdd.collect() === result)
     assert(rdd.collect() === result)
   }
 
   /**
-   * Helper method to test indirect lineage truncation.
-   *
-   * Indirect lineage truncation here means the action is called on one of the
-   * checkpointed RDD's descendants, but not on the checkpointed RDD itself.
-   *
-   * @param rdd a locally checkpointed RDD
-   */
+    * Helper method to test indirect lineage truncation.
+    *
+    * Indirect lineage truncation here means the action is called on one of the
+    * checkpointed RDD's descendants, but not on the checkpointed RDD itself.
+    *
+    * @param rdd a locally checkpointed RDD
+    */
   private def testIndirectLineageTruncation[T](
       rdd: RDD[T],
       targetStorageLevel: StorageLevel): Unit = {
@@ -258,14 +276,14 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   /**
-   * Helper method to test checkpointing without fully draining the iterator.
-   *
-   * Not all RDD actions fully consume the iterator. As a result, a subset of the partitions
-   * may not be cached. However, since we want to truncate the lineage safely, we explicitly
-   * ensure that *all* partitions are fully cached. This method asserts this behavior.
-   *
-   * @param rdd a locally checkpointed RDD
-   */
+    * Helper method to test checkpointing without fully draining the iterator.
+    *
+    * Not all RDD actions fully consume the iterator. As a result, a subset of the partitions
+    * may not be cached. However, since we want to truncate the lineage safely, we explicitly
+    * ensure that *all* partitions are fully cached. This method asserts this behavior.
+    *
+    * @param rdd a locally checkpointed RDD
+    */
   private def testWithoutDrainingIterator[T](
       rdd: RDD[T],
       targetStorageLevel: StorageLevel,
@@ -297,10 +315,10 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   /**
-   * Helper method to test whether the checkpoint blocks are found in the cache.
-   *
-   * @param rdd a locally checkpointed RDD
-   */
+    * Helper method to test whether the checkpoint blocks are found in the cache.
+    *
+    * @param rdd a locally checkpointed RDD
+    */
   private def testCheckpointBlocksExist[T](
       rdd: RDD[T],
       targetStorageLevel: StorageLevel): Unit = {

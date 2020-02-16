@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import sbt.testing._
@@ -25,9 +24,9 @@ private[testadapter] object TaskInfo {
     def deserialize(x: JSON): TaskInfo = {
       val obj = new JSONObjExtractor(x)
       new TaskInfo(
-          obj.fld[String]      ("serializedTask"),
-          obj.fld[TaskDef]     ("taskDef"),
-          obj.fld[List[String]]("tags").toArray)
+        obj.fld[String]("serializedTask"),
+        obj.fld[TaskDef]("taskDef"),
+        obj.fld[List[String]]("tags").toArray)
     }
   }
 }

@@ -4,10 +4,10 @@ import scala.reflect.internal.Flags
 import scala.tools.nsc._
 
 /** Hacks to have our source code compatible with 2.10 and 2.11.
- *  It exposes 2.11 API in a 2.10 compiler.
- *
- *  @author Nicolas Stucki
- */
+  *  It exposes 2.11 API in a 2.10 compiler.
+  *
+  *  @author Nicolas Stucki
+  */
 trait Compat210Component {
 
   val global: Global
@@ -24,12 +24,13 @@ trait Compat210Component {
   def newDefDef(sym: Symbol, rhs: Tree)(
       mods: Modifiers = Modifiers(sym.flags),
       name: TermName = sym.name.toTermName,
-      tparams: List[TypeDef] = sym.typeParams.map(sym =>
-          newTypeDef(sym, typeBoundsTree(sym))()),
-      vparamss: List[List[ValDef]] = mapParamss(sym)(sym =>
-          newValDef(sym, EmptyTree)()),
+      tparams: List[TypeDef] =
+        sym.typeParams.map(sym => newTypeDef(sym, typeBoundsTree(sym))()),
+      vparamss: List[List[ValDef]] =
+        mapParamss(sym)(sym => newValDef(sym, EmptyTree)()),
       tpt: Tree = TypeTreeMemberType(sym)): DefDef = {
-    atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs)).setSymbol(sym)
+    atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs))
+      .setSymbol(sym)
   }
 
   def TypeTreeMemberType(sym: Symbol): TypeTree = {
@@ -44,7 +45,7 @@ trait Compat210Component {
       mods: Modifiers = Modifiers(sym.flags),
       name: TypeName = sym.name.toTypeName,
       tparams: List[TypeDef] = sym.typeParams.map(sym =>
-          newTypeDef(sym, typeBoundsTree(sym))())): TypeDef = {
+        newTypeDef(sym, typeBoundsTree(sym))())): TypeDef = {
     atPos(sym.pos)(TypeDef(mods, name, tparams, rhs)) setSymbol sym
   }
 
@@ -55,8 +56,11 @@ trait Compat210Component {
     atPos(sym.pos)(typeBoundsTree(sym.info.bounds))
 
   implicit final class GenCompat(self: global.TreeGen) {
-    def mkClassDef(mods: Modifiers, name: TypeName,
-        tparams: List[TypeDef], templ: Template): ClassDef = {
+    def mkClassDef(
+        mods: Modifiers,
+        name: TypeName,
+        tparams: List[TypeDef],
+        templ: Template): ClassDef = {
       val isInterface =
         mods.isTrait && templ.body.forall(treeInfo.isInterfaceMember)
       val mods1 = if (isInterface) mods | Flags.INTERFACE else mods

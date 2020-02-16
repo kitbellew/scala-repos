@@ -8,7 +8,10 @@ import prop._
 
 import scala.util.Try
 
-class NaturalTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class NaturalTest
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   import spire.std.bigInt._
   import ArbitrarySupport._
@@ -51,7 +54,10 @@ class NaturalTest extends PropSpec with Matchers with GeneratorDrivenPropertyChe
 
   property("x /% y") {
     forAll { (x: N, y: Positive[BigInt]) =>
-      (Natural(x.num) /% Natural(y.num)) shouldBe ((Natural(x.num / y.num), Natural(x.num % y.num)))
+      (Natural(x.num) /% Natural(y.num)) shouldBe (
+        (
+          Natural(x.num / y.num),
+          Natural(x.num % y.num)))
     }
   }
 
@@ -62,20 +68,14 @@ class NaturalTest extends PropSpec with Matchers with GeneratorDrivenPropertyChe
   }
 
   property("x.toString") {
-    forAll { x: N =>
-      Natural(x.num).toString shouldBe x.num.toString
-    }
+    forAll { x: N => Natural(x.num).toString shouldBe x.num.toString }
   }
 
   property("x.toBigInt") {
-    forAll { x: N =>
-      Natural(x.num).toBigInt shouldBe x.num
-    }
+    forAll { x: N => Natural(x.num).toBigInt shouldBe x.num }
   }
 
   property("x.toLong") {
-    forAll { x: N =>
-      Natural(x.num).toLong shouldBe x.num.toLong
-    }
+    forAll { x: N => Natural(x.num).toLong shouldBe x.num.toLong }
   }
 }

@@ -30,8 +30,10 @@ import org.scalatest.time.SpanSugar._
 import org.apache.spark.ui.SparkUICssErrorHandler
 
 class UISeleniumSuite
-  extends HiveThriftJdbcTest
-  with WebBrowser with Matchers with BeforeAndAfterAll {
+    extends HiveThriftJdbcTest
+    with WebBrowser
+    with Matchers
+    with BeforeAndAfterAll {
 
   implicit var webDriver: WebDriver = _
   var server: HiveThriftServer2 = _
@@ -95,7 +97,9 @@ class UISeleniumSuite
 
         // check whether statements exists
         queries.foreach { line =>
-          findAll(cssSelector("""ul table tbody tr td""")).map(_.text).toList should contain (line)
+          findAll(cssSelector("""ul table tbody tr td"""))
+            .map(_.text)
+            .toList should contain(line)
         }
       }
     }

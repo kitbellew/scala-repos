@@ -4,7 +4,10 @@ package settings
 import java.util
 
 import com.intellij.openapi.components._
-import com.intellij.openapi.externalSystem.settings.{AbstractExternalSystemSettings, ExternalSystemSettingsListener}
+import com.intellij.openapi.externalSystem.settings.{
+  AbstractExternalSystemSettings,
+  ExternalSystemSettingsListener
+}
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -13,22 +16,30 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.psi.PsiElement
 import com.intellij.util.containers.ContainerUtilRt
 import com.intellij.util.xmlb.annotations.AbstractCollection
-import org.jetbrains.sbt.project.settings.{SbtProjectSettings, SbtProjectSettingsListener, SbtProjectSettingsListenerAdapter, SbtTopic}
+import org.jetbrains.sbt.project.settings.{
+  SbtProjectSettings,
+  SbtProjectSettingsListener,
+  SbtProjectSettingsListenerAdapter,
+  SbtTopic
+}
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 
 @State(
   name = "ScalaSbtSettings",
   storages = Array(new Storage("sbt.xml"))
 )
 class SbtSystemSettings(project: Project)
-  extends AbstractExternalSystemSettings[SbtSystemSettings, SbtProjectSettings, SbtProjectSettingsListener](SbtTopic, project)
-  with PersistentStateComponent[SbtSystemSettingsState]{
+    extends AbstractExternalSystemSettings[
+      SbtSystemSettings,
+      SbtProjectSettings,
+      SbtProjectSettingsListener](SbtTopic, project)
+    with PersistentStateComponent[SbtSystemSettingsState] {
 
   @BeanProperty
   var customLauncherEnabled: Boolean = false
@@ -56,10 +67,14 @@ class SbtSystemSettings(project: Project)
       getPublisher.onJdkChanged(old.jdk, current.jdk)
     }
     if (old.resolveClassifiers != current.resolveClassifiers) {
-      getPublisher.onResolveClassifiersChanged(old.resolveClassifiers, current.resolveClassifiers)
+      getPublisher.onResolveClassifiersChanged(
+        old.resolveClassifiers,
+        current.resolveClassifiers)
     }
     if (old.resolveSbtClassifiers != current.resolveSbtClassifiers) {
-      getPublisher.onResolveSbtClassifiersChanged(old.resolveSbtClassifiers, current.resolveSbtClassifiers)
+      getPublisher.onResolveSbtClassifiersChanged(
+        old.resolveSbtClassifiers,
+        current.resolveSbtClassifiers)
     }
     if (old.sbtVersion != current.sbtVersion) {
       getPublisher.onSbtVersionChanged(old.sbtVersion, current.sbtVersion)
@@ -70,11 +85,11 @@ class SbtSystemSettings(project: Project)
     val state = new SbtSystemSettingsState()
     fillState(state)
     state.customLauncherEnabled = customLauncherEnabled
-    state.customLauncherPath    = customLauncherPath
-    state.maximumHeapSize       = maximumHeapSize
-    state.vmParameters          = vmParameters
-    state.customVMEnabled       = customVMEnabled
-    state.customVMPath          = customVMPath
+    state.customLauncherPath = customLauncherPath
+    state.maximumHeapSize = maximumHeapSize
+    state.vmParameters = vmParameters
+    state.customVMEnabled = customVMEnabled
+    state.customVMPath = customVMPath
     state.customSbtStructureDir = customSbtStructurePath
     state
   }
@@ -82,11 +97,11 @@ class SbtSystemSettings(project: Project)
   def loadState(state: SbtSystemSettingsState) {
     super[AbstractExternalSystemSettings].loadState(state)
     customLauncherEnabled = state.customLauncherEnabled
-    customLauncherPath    = state.customLauncherPath
-    maximumHeapSize       = state.maximumHeapSize
-    vmParameters          = state.vmParameters
-    customVMEnabled       = state.customVMEnabled
-    customVMPath          = state.customVMPath
+    customLauncherPath = state.customLauncherPath
+    maximumHeapSize = state.maximumHeapSize
+    vmParameters = state.vmParameters
+    customVMEnabled = state.customVMEnabled
+    customVMPath = state.customVMPath
     customSbtStructurePath = state.customSbtStructureDir
   }
 
@@ -98,27 +113,36 @@ class SbtSystemSettings(project: Project)
   def copyExtraSettingsFrom(settings: SbtSystemSettings) {}
 
   def getLinkedProjectSettings(module: Module): Option[SbtProjectSettings] =
-    Option(ExternalSystemApiUtil.getExternalRootProjectPath(module)).safeMap(getLinkedProjectSettings)
+    Option(ExternalSystemApiUtil.getExternalRootProjectPath(module))
+      .safeMap(getLinkedProjectSettings)
 
-  def getLinkedProjectSettings(element: PsiElement): Option[SbtProjectSettings] =
+  def getLinkedProjectSettings(
+      element: PsiElement): Option[SbtProjectSettings] =
     for {
       virtualFile <- Option(element.getContainingFile).safeMap(_.getVirtualFile)
-      projectFileIndex = ProjectRootManager.getInstance(element.getProject).getFileIndex
+      projectFileIndex = ProjectRootManager
+        .getInstance(element.getProject)
+        .getFileIndex
       module <- Option(projectFileIndex.getModuleForFile(virtualFile))
       if project == element.getProject
       projectSettings <- getLinkedProjectSettings(module)
     } yield projectSettings
 
-  override def getLinkedProjectSettings(linkedProjectPath: String): SbtProjectSettings =
+  override def getLinkedProjectSettings(
+      linkedProjectPath: String): SbtProjectSettings =
     Option(super.getLinkedProjectSettings(linkedProjectPath))
-      .getOrElse(super.getLinkedProjectSettings(ExternalSystemApiUtil.normalizePath(linkedProjectPath)))
+      .getOrElse(
+        super.getLinkedProjectSettings(
+          ExternalSystemApiUtil.normalizePath(linkedProjectPath)))
 }
 
 object SbtSystemSettings {
-  def getInstance(project: Project) = ServiceManager.getService(project, classOf[SbtSystemSettings])
+  def getInstance(project: Project) =
+    ServiceManager.getService(project, classOf[SbtSystemSettings])
 }
 
-class SbtSystemSettingsState extends AbstractExternalSystemSettings.State[SbtProjectSettings] {
+class SbtSystemSettingsState
+    extends AbstractExternalSystemSettings.State[SbtProjectSettings] {
   private val projectSettings = ContainerUtilRt.newTreeSet[SbtProjectSettings]()
 
   @BeanProperty
@@ -142,12 +166,15 @@ class SbtSystemSettingsState extends AbstractExternalSystemSettings.State[SbtPro
   @BeanProperty
   var customSbtStructureDir: String = ""
 
-  @AbstractCollection(surroundWithTag = false, elementTypes = Array(classOf[SbtProjectSettings]))
+  @AbstractCollection(
+    surroundWithTag = false,
+    elementTypes = Array(classOf[SbtProjectSettings]))
   def getLinkedExternalProjectsSettings: util.Set[SbtProjectSettings] = {
     projectSettings
   }
 
-  def setLinkedExternalProjectsSettings(settings: util.Set[SbtProjectSettings]) {
+  def setLinkedExternalProjectsSettings(
+      settings: util.Set[SbtProjectSettings]) {
     if (settings != null) {
       projectSettings.addAll(settings)
     }

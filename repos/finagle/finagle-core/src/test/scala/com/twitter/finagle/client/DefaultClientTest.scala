@@ -5,7 +5,11 @@ import com.twitter.finagle._
 import com.twitter.finagle.Address.failing
 import com.twitter.finagle.dispatch.SerialClientDispatcher
 import com.twitter.finagle.service.exp.FailureAccrualPolicy
-import com.twitter.finagle.service.{ResponseClassifier, Backoff, FailureAccrualFactory}
+import com.twitter.finagle.service.{
+  ResponseClassifier,
+  Backoff,
+  FailureAccrualFactory
+}
 import com.twitter.finagle.stats.{StatsReceiver, InMemoryStatsReceiver}
 import com.twitter.finagle.transport.{QueueTransport, Transport}
 import com.twitter.finagle.util.DefaultLogger
@@ -18,7 +22,11 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.junit.{JUnitRunner, AssertionsForJUnit}
 
 @RunWith(classOf[JUnitRunner])
-class DefaultClientTest extends FunSuite with Eventually with IntegrationPatience with AssertionsForJUnit {
+class DefaultClientTest
+    extends FunSuite
+    with Eventually
+    with IntegrationPatience
+    with AssertionsForJUnit {
   trait StatsReceiverHelper {
     val statsReceiver = new InMemoryStatsReceiver()
   }
@@ -27,7 +35,8 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     val qIn = new AsyncQueue[Int]()
     val qOut = new AsyncQueue[Int]()
 
-    val transporter: (SocketAddress, StatsReceiver) => Future[Transport[Int, Int]] = {
+    val transporter
+        : (SocketAddress, StatsReceiver) => Future[Transport[Int, Int]] = {
       case (_, _) =>
         Future.value(new QueueTransport(qIn, qOut))
     }
@@ -39,9 +48,7 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
 
   trait SourcedExceptionDispatcherHelper extends DispatcherHelper {
     val dispatcher: Transport[Int, Int] => Service[Int, Int] = { _ =>
-      Service.mk { _ =>
-        throw new SourcedException {}
-      }
+      Service.mk { _ => throw new SourcedException {} }
     }
   }
 
@@ -50,20 +57,24 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     val name = "name"
     val socket = new InetSocketAddress(0)
     val client: Client[Int, Int]
-    lazy val service: Service[Int, Int] = client.newService(Name.bound(Address(socket)), name)
+    lazy val service: Service[Int, Int] =
+      client.newService(Name.bound(Address(socket)), name)
   }
 
-  trait BaseClientHelper extends ServiceHelper { self: QueueTransportHelper with DispatcherHelper =>
+  trait BaseClientHelper extends ServiceHelper {
+    self: QueueTransportHelper with DispatcherHelper =>
     val client: Client[Int, Int] = DefaultClient[Int, Int](name, endPointer)
   }
 
-  trait SourcedExceptionHelper extends QueueTransportHelper
-    with SourcedExceptionDispatcherHelper
-    with BaseClientHelper
+  trait SourcedExceptionHelper
+      extends QueueTransportHelper
+      with SourcedExceptionDispatcherHelper
+      with BaseClientHelper
 
-  class DefaultClientHelper extends QueueTransportHelper
-    with SerialDispatcherHelper
-    with BaseClientHelper
+  class DefaultClientHelper
+      extends QueueTransportHelper
+      with SerialDispatcherHelper
+      with BaseClientHelper
 
   test("DefaultClient should successfully add sourcedexception") {
     new SourcedExceptionHelper {
@@ -85,10 +96,11 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
       new SerialClientDispatcher(_)
   }
 
-  trait TimeoutHelper extends TimingHelper
-    with QueueTransportHelper
-    with SerialDispatcherHelper
-    with ServiceHelper {
+  trait TimeoutHelper
+      extends TimingHelper
+      with QueueTransportHelper
+      with SerialDispatcherHelper
+      with ServiceHelper {
     val pool = new DefaultPool[Int, Int](0, 1, timer = timer) // pool of size 1
   }
 
@@ -106,7 +118,7 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
 
       Time.withCurrentTimeFrozen { control =>
         val f1 = service(3) // has a connection
-        val f2 = service(4)  // is queued
+        val f2 = service(4) // is queued
 
         assert(!f1.isDefined)
         assert(!f2.isDefined)
@@ -130,11 +142,12 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     }
   }
 
-  trait StatsHelper extends TimingHelper
-    with QueueTransportHelper
-    with SerialDispatcherHelper
-    with StatsReceiverHelper
-    with ServiceHelper {
+  trait StatsHelper
+      extends TimingHelper
+      with QueueTransportHelper
+      with SerialDispatcherHelper
+      with StatsReceiverHelper
+      with ServiceHelper {
 
     val pool = new DefaultPool[Int, Int](0, 1, timer = timer) // pool of size 1
     val client = new DefaultClient[Int, Int](
@@ -146,7 +159,8 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     )
   }
 
-  test("DefaultClient statsfilter should time stats on dispatch, not on queueing") {
+  test(
+    "DefaultClient statsfilter should time stats on dispatch, not on queueing") {
     val dur = 1.second
 
     new StatsHelper {
@@ -165,8 +179,9 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
         Await.result(f2)
       }
 
-      assert(statsReceiver.stats(Seq(name, "request_latency_ms")) ==
-        (Seq(dur, dur) map (_.inMillis)))
+      assert(
+        statsReceiver.stats(Seq(name, "request_latency_ms")) ==
+          (Seq(dur, dur) map (_.inMillis)))
     }
   }
 
@@ -184,12 +199,14 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     new DefaultClientHelper {
       @volatile var closed = false
 
-      val dest = Name.Bound.singleton(Var.async(Addr.Bound(Seq.empty[Address]: _*)) { _ =>
-        Closable.make { _ =>
-          closed = true
-          Future.Done
-        }
-      })
+      val dest =
+        Name.Bound.singleton(Var.async(Addr.Bound(Seq.empty[Address]: _*)) {
+          _ =>
+            Closable.make { _ =>
+              closed = true
+              Future.Done
+            }
+        })
       val svc = client.newService(dest, "test")
       assert(!closed, "client closed too early")
       val f = svc.close()
@@ -214,11 +231,12 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
     }
   }
 
-  trait DefaultFailureAccrualHelper extends TimingHelper
-    with QueueTransportHelper
-    with FailureAccuralDispatchHelper
-    with StatsReceiverHelper
-    with ServiceHelper {
+  trait DefaultFailureAccrualHelper
+      extends TimingHelper
+      with QueueTransportHelper
+      with FailureAccuralDispatchHelper
+      with StatsReceiverHelper
+      with ServiceHelper {
 
     val pool = new DefaultPool[Int, Int](0, 1, timer = timer) // pool of size 1
 
@@ -250,12 +268,12 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
         failureAccrual = { factory: ServiceFactory[Int, Int] =>
           FailureAccrualFactory.wrapper(
             statsReceiver,
-            FailureAccrualPolicy.consecutiveFailures(6, Backoff.const(3.seconds)),
+            FailureAccrualPolicy
+              .consecutiveFailures(6, Backoff.const(3.seconds)),
             name,
             DefaultLogger,
             failing,
-            ResponseClassifier.Default)(
-            timer) andThen factory
+            ResponseClassifier.Default)(timer) andThen factory
         }
       )
 
@@ -264,7 +282,9 @@ class DefaultClientTest extends FunSuite with Eventually with IntegrationPatienc
         assert(statsReceiver.counters(Seq("failure_accrual", "removals")) == 1)
         control.advance(4.seconds)
         timer.tick()
-        assert(statsReceiver.counters.get(Seq("failure_accrual", "revivals")) == None)
+        assert(
+          statsReceiver.counters
+            .get(Seq("failure_accrual", "revivals")) == None)
       }
     }
   }

@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,15 +24,16 @@ import scalaz._
 
 import blueeyes.json._
 
-
 trait JsonConverters {
 
-  def perfTestToJson[A](result: Tree[(PerfTest, A)])(f: A => List[JField]): JValue = {
+  def perfTestToJson[A](result: Tree[(PerfTest, A)])(
+      f: A => List[JField]): JValue = {
     def values(path: List[JString], test: Tree[(PerfTest, A)]): List[JValue] =
       test match {
         case Tree.Node((RunQuery(query), a), _) =>
-          JObject(JField("path", JArray(path)) ::
-            JField("query", JString(query)) :: f(a)) :: Nil
+          JObject(
+            JField("path", JArray(path)) ::
+              JField("query", JString(query)) :: f(a)) :: Nil
 
         case Tree.Node((Group(name), a), kids) =>
           val newPath = path :+ JString(name)
@@ -52,18 +53,18 @@ trait JsonConverters {
     perfTestToJson(result) {
       case NoChange(baseline, stats) =>
         JField("baseline", baseline.toJson) ::
-        JField("stats", stats.toJson) ::
-        JField("delta", JString("insignificant")) :: Nil
+          JField("stats", stats.toJson) ::
+          JField("delta", JString("insignificant")) :: Nil
 
       case Faster(baseline, stats) =>
         JField("baseline", baseline.toJson) ::
-        JField("stats", stats.toJson) ::
-        JField("delta", JString("faster")) :: Nil
+          JField("stats", stats.toJson) ::
+          JField("delta", JString("faster")) :: Nil
 
       case Slower(baseline, stats) =>
         JField("baseline", baseline.toJson) ::
-        JField("stats", stats.toJson) ::
-        JField("delta", JString("slower")) :: Nil
+          JField("stats", stats.toJson) ::
+          JField("delta", JString("slower")) :: Nil
 
       case MissingBaseline(stats) =>
         JField("stats", stats.toJson) :: Nil
@@ -76,17 +77,18 @@ trait JsonConverters {
     }
   }
 
-  def perfTestResultToJson(result: Tree[(PerfTest, Option[Statistics])]): JValue = {
+  def perfTestResultToJson(
+      result: Tree[(PerfTest, Option[Statistics])]): JValue = {
     perfTestToJson(result) {
       case Some(stats) => JField("stats", stats.toJson) :: Nil
-      case None => Nil
+      case None        => Nil
     }
   }
 }
 
-
 trait PrettyPrinters {
-  def prettyPerfTest[A](t: Tree[(PerfTest, A)])(prettyResult: A => String): String = {
+  def prettyPerfTest[A](t: Tree[(PerfTest, A)])(
+      prettyResult: A => String): String = {
     def lines(test: Tree[(PerfTest, A)]): List[String] = {
       test match {
         case Tree.Node((Group(name), _), kids) =>
@@ -110,7 +112,8 @@ trait PrettyPrinters {
           (q split "\n").toList match {
             case Nil => Nil
             case head :: tail =>
-              ("-> " + head) :: (tail.foldRight(List(" ' " + prettyResult(result), "")) {
+              ("-> " + head) :: (tail.foldRight(
+                List(" ' " + prettyResult(result), "")) {
                 " | " + _ :: _
               })
           }
@@ -137,12 +140,12 @@ trait PrettyPrinters {
     }
   }
 
-  def prettyPerfTestResult(result: Tree[(PerfTest, Option[Statistics])]): String =
+  def prettyPerfTestResult(
+      result: Tree[(PerfTest, Option[Statistics])]): String =
     prettyPerfTest(result)(_ map { s =>
       "%.1f ms  (s = %.1f ms)" format (s.mean, s.stdDev)
     } getOrElse "")
 }
-
 
 object PerfTestPrettyPrinters extends PrettyPrinters with JsonConverters {
   implicit def statsPrinter(result: Tree[(PerfTest, Option[Statistics])]) =
@@ -152,18 +155,19 @@ object PerfTestPrettyPrinters extends PrettyPrinters with JsonConverters {
     new PerfTestDeltaPrettyPrinter(result)
 }
 
-
-final class PerfTestDeltaPrettyPrinter(result: Tree[(PerfTest, PerfDelta)]) extends PrettyPrinters with JsonConverters {
+final class PerfTestDeltaPrettyPrinter(result: Tree[(PerfTest, PerfDelta)])
+    extends PrettyPrinters
+    with JsonConverters {
 
   def toJson: JValue = perfTestDeltaToJson(result)
   def toPrettyString: String = prettyPerfTestDelta(result)
 }
 
-
-final class PerfTestStatsPrettyPrinter(result: Tree[(PerfTest, Option[Statistics])]) extends PrettyPrinters with JsonConverters {
+final class PerfTestStatsPrettyPrinter(
+    result: Tree[(PerfTest, Option[Statistics])])
+    extends PrettyPrinters
+    with JsonConverters {
 
   def toJson: JValue = perfTestResultToJson(result)
   def toPrettyString: String = prettyPerfTestResult(result)
 }
-
-

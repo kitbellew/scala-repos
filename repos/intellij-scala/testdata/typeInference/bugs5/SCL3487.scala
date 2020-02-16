@@ -5,6 +5,7 @@ object SCL3487 {
   implicit val b: B[Int] = new B(1)
   def foo[TA: A, TB](implicit b: B[TB]): (TA, TB) = null
 
-  /*start*/foo/*end*/
+  /*start*/
+  foo /*end*/
 }
 //(String, Int)

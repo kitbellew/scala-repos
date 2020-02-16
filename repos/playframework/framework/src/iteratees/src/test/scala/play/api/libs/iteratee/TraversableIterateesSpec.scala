@@ -5,8 +5,10 @@ package play.api.libs.iteratee
 
 import org.specs2.mutable._
 
-object TraversableIterateesSpec extends Specification
-    with IterateeSpecification with ExecutionSpecification {
+object TraversableIterateesSpec
+    extends Specification
+    with IterateeSpecification
+    with ExecutionSpecification {
 
   "Traversable.splitOnceAt" should {
 

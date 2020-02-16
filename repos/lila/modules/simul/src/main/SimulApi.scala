@@ -1,7 +1,7 @@
 package lila.simul
 
 import akka.actor._
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 import play.api.libs.json.Json
 import scala.concurrent.duration._
 
@@ -9,13 +9,13 @@ import chess.Status
 import chess.variant.Variant
 import lila.common.Debouncer
 import lila.db.Types.Coll
-import lila.game.{ Game, GameRepo }
+import lila.game.{Game, GameRepo}
 import lila.hub.actorApi.lobby.ReloadSimuls
 import lila.hub.actorApi.map.Tell
-import lila.hub.actorApi.timeline.{ Propagate, SimulCreate, SimulJoin }
+import lila.hub.actorApi.timeline.{Propagate, SimulCreate, SimulJoin}
 import lila.memo.AsyncCache
 import lila.socket.actorApi.SendToFlag
-import lila.user.{ User, UserRepo }
+import lila.user.{User, UserRepo}
 import makeTimeout.short
 
 private[simul] final class SimulApi(
@@ -44,7 +44,8 @@ private[simul] final class SimulApi(
         hostExtraTime = setup.clockExtra * 60),
       variants = setup.variants.flatMap { chess.variant.Variant(_) },
       host = me,
-      color = setup.color)
+      color = setup.color
+    )
     repo.createdByHostId(me.id) foreach {
       _.filter(_.isNotBrandNew).map(_.id).foreach(abort)
     }
@@ -56,8 +57,8 @@ private[simul] final class SimulApi(
   def addApplicant(simulId: Simul.ID, user: User, variantKey: String) {
     WithSimul(repo.findCreated, simulId) { simul =>
       timeline ! (Propagate(SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id)
-      Variant(variantKey).filter(simul.variants.contains).fold(simul) { variant =>
-        simul addApplicant SimulApplicant(SimulPlayer(user, variant))
+      Variant(variantKey).filter(simul.variants.contains).fold(simul) {
+        variant => simul addApplicant SimulApplicant(SimulPlayer(user, variant))
       }
     }
   }
@@ -79,15 +80,21 @@ private[simul] final class SimulApi(
       repo.findCreated(simulId) flatMap {
         _ ?? { simul =>
           simul.start ?? { started =>
-            UserRepo byId started.hostId flatten s"No such host: ${simul.hostId}" flatMap { host =>
-              started.pairings.map(makeGame(started, host)).sequenceFu map { games =>
-                games.headOption foreach {
-                  case (game, _) => sendTo(simul.id, actorApi.StartSimul(game, simul.hostId))
+            UserRepo byId started.hostId flatten s"No such host: ${simul.hostId}" flatMap {
+              host =>
+                started.pairings.map(makeGame(started, host)).sequenceFu map {
+                  games =>
+                    games.headOption foreach {
+                      case (game, _) =>
+                        sendTo(
+                          simul.id,
+                          actorApi.StartSimul(game, simul.hostId))
+                    }
+                    games.foldLeft(started) {
+                      case (s, (g, hostColor)) =>
+                        s.setPairingHostColor(g.id, hostColor)
+                    }
                 }
-                games.foldLeft(started) {
-                  case (s, (g, hostColor)) => s.setPairingHostColor(g.id, hostColor)
-                }
-              }
             } flatMap update
           } >> currentHostIdsCache.clear
         }
@@ -122,11 +129,15 @@ private[simul] final class SimulApi(
               _.finish(game.status, game.winnerUserId, game.turns)
             )
             update(simul2) >> currentHostIdsCache.clear >>- {
-              if (simul2.isFinished) userRegister ! lila.hub.actorApi.SendTo(simul2.hostId,
-                lila.socket.Socket.makeMessage("simulEnd", Json.obj(
-                  "id" -> simul.id,
-                  "name" -> simul.name
-                )))
+              if (simul2.isFinished)
+                userRegister ! lila.hub.actorApi.SendTo(
+                  simul2.hostId,
+                  lila.socket.Socket.makeMessage(
+                    "simulEnd",
+                    Json.obj(
+                      "id" -> simul.id,
+                      "name" -> simul.name
+                    )))
             }
           }
         }
@@ -140,9 +151,7 @@ private[simul] final class SimulApi(
         Sequence(oldSimul.id) {
           repo.findCreated(oldSimul.id) flatMap {
             _ ?? { simul =>
-              (simul ejectCheater userId) ?? { simul2 =>
-                update(simul2).void
-              }
+              (simul ejectCheater userId) ?? { simul2 => update(simul2).void }
             }
           }
         }
@@ -150,38 +159,49 @@ private[simul] final class SimulApi(
     }
   }
 
-  private def makeGame(simul: Simul, host: User)(pairing: SimulPairing): Fu[(Game, chess.Color)] = for {
-    user ← UserRepo byId pairing.player.user flatten s"No user with id ${pairing.player.user}"
-    hostColor = simul.hostColor
-    whiteUser = hostColor.fold(host, user)
-    blackUser = hostColor.fold(user, host)
-    game1 = Game.make(
-      game = chess.Game(
-        board = chess.Board init pairing.player.variant,
-        clock = simul.clock.chessClockOf(hostColor).start.some),
-      whitePlayer = lila.game.Player.white,
-      blackPlayer = lila.game.Player.black,
-      mode = chess.Mode.Casual,
-      variant = pairing.player.variant,
-      source = lila.game.Source.Simul,
-      pgnImport = None)
-    game2 = game1
-      .updatePlayer(chess.White, _.withUser(whiteUser.id, lila.game.PerfPicker.mainOrDefault(game1)(whiteUser.perfs)))
-      .updatePlayer(chess.Black, _.withUser(blackUser.id, lila.game.PerfPicker.mainOrDefault(game1)(blackUser.perfs)))
-      .withSimulId(simul.id)
-      .withId(pairing.gameId)
-      .start
-    _ ← (GameRepo insertDenormalized game2) >>-
-      onGameStart(game2.id) >>-
-      sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
-  } yield game2 -> hostColor
+  private def makeGame(simul: Simul, host: User)(
+      pairing: SimulPairing): Fu[(Game, chess.Color)] =
+    for {
+      user ← UserRepo byId pairing.player.user flatten s"No user with id ${pairing.player.user}"
+      hostColor = simul.hostColor
+      whiteUser = hostColor.fold(host, user)
+      blackUser = hostColor.fold(user, host)
+      game1 = Game.make(
+        game = chess.Game(
+          board = chess.Board init pairing.player.variant,
+          clock = simul.clock.chessClockOf(hostColor).start.some),
+        whitePlayer = lila.game.Player.white,
+        blackPlayer = lila.game.Player.black,
+        mode = chess.Mode.Casual,
+        variant = pairing.player.variant,
+        source = lila.game.Source.Simul,
+        pgnImport = None
+      )
+      game2 = game1
+        .updatePlayer(
+          chess.White,
+          _.withUser(
+            whiteUser.id,
+            lila.game.PerfPicker.mainOrDefault(game1)(whiteUser.perfs)))
+        .updatePlayer(
+          chess.Black,
+          _.withUser(
+            blackUser.id,
+            lila.game.PerfPicker.mainOrDefault(game1)(blackUser.perfs)))
+        .withSimulId(simul.id)
+        .withId(pairing.gameId)
+        .start
+      _ ← (GameRepo insertDenormalized game2) >>-
+        onGameStart(game2.id) >>-
+        sendTo(simul.id, actorApi.StartGame(game2, simul.hostId))
+    } yield game2 -> hostColor
 
   private def update(simul: Simul) =
     repo.update(simul) >>- socketReload(simul.id) >>- publish()
 
   private def WithSimul(
-    finding: Simul.ID => Fu[Option[Simul]],
-    simulId: Simul.ID)(updating: Simul => Simul) {
+      finding: Simul.ID => Fu[Option[Simul]],
+      simulId: Simul.ID)(updating: Simul => Simul) {
     Sequence(simulId) {
       finding(simulId) flatMap {
         _ ?? { simul => update(updating(simul)) }

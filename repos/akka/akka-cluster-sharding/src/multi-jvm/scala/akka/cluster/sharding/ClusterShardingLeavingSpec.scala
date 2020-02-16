@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.sharding
 
 import java.io.File
@@ -55,7 +55,8 @@ object ClusterShardingLeavingSpec {
   }
 }
 
-abstract class ClusterShardingLeavingSpecConfig(val mode: String) extends MultiNodeConfig {
+abstract class ClusterShardingLeavingSpecConfig(val mode: String)
+    extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
   val third = role("third")
@@ -80,23 +81,40 @@ abstract class ClusterShardingLeavingSpecConfig(val mode: String) extends MultiN
     """))
 }
 
-object PersistentClusterShardingLeavingSpecConfig extends ClusterShardingLeavingSpecConfig("persistence")
-object DDataClusterShardingLeavingSpecConfig extends ClusterShardingLeavingSpecConfig("ddata")
+object PersistentClusterShardingLeavingSpecConfig
+    extends ClusterShardingLeavingSpecConfig("persistence")
+object DDataClusterShardingLeavingSpecConfig
+    extends ClusterShardingLeavingSpecConfig("ddata")
 
-class PersistentClusterShardingLeavingSpec extends ClusterShardingLeavingSpec(PersistentClusterShardingLeavingSpecConfig)
-class DDataClusterShardingLeavingSpec extends ClusterShardingLeavingSpec(DDataClusterShardingLeavingSpecConfig)
+class PersistentClusterShardingLeavingSpec
+    extends ClusterShardingLeavingSpec(
+      PersistentClusterShardingLeavingSpecConfig)
+class DDataClusterShardingLeavingSpec
+    extends ClusterShardingLeavingSpec(DDataClusterShardingLeavingSpecConfig)
 
-class PersistentClusterShardingLeavingMultiJvmNode1 extends PersistentClusterShardingLeavingSpec
-class PersistentClusterShardingLeavingMultiJvmNode2 extends PersistentClusterShardingLeavingSpec
-class PersistentClusterShardingLeavingMultiJvmNode3 extends PersistentClusterShardingLeavingSpec
-class PersistentClusterShardingLeavingMultiJvmNode4 extends PersistentClusterShardingLeavingSpec
+class PersistentClusterShardingLeavingMultiJvmNode1
+    extends PersistentClusterShardingLeavingSpec
+class PersistentClusterShardingLeavingMultiJvmNode2
+    extends PersistentClusterShardingLeavingSpec
+class PersistentClusterShardingLeavingMultiJvmNode3
+    extends PersistentClusterShardingLeavingSpec
+class PersistentClusterShardingLeavingMultiJvmNode4
+    extends PersistentClusterShardingLeavingSpec
 
-class DDataClusterShardingLeavingMultiJvmNode1 extends DDataClusterShardingLeavingSpec
-class DDataClusterShardingLeavingMultiJvmNode2 extends DDataClusterShardingLeavingSpec
-class DDataClusterShardingLeavingMultiJvmNode3 extends DDataClusterShardingLeavingSpec
-class DDataClusterShardingLeavingMultiJvmNode4 extends DDataClusterShardingLeavingSpec
+class DDataClusterShardingLeavingMultiJvmNode1
+    extends DDataClusterShardingLeavingSpec
+class DDataClusterShardingLeavingMultiJvmNode2
+    extends DDataClusterShardingLeavingSpec
+class DDataClusterShardingLeavingMultiJvmNode3
+    extends DDataClusterShardingLeavingSpec
+class DDataClusterShardingLeavingMultiJvmNode4
+    extends DDataClusterShardingLeavingSpec
 
-abstract class ClusterShardingLeavingSpec(config: ClusterShardingLeavingSpecConfig) extends MultiNodeSpec(config) with STMultiNodeSpec with ImplicitSender {
+abstract class ClusterShardingLeavingSpec(
+    config: ClusterShardingLeavingSpecConfig)
+    extends MultiNodeSpec(config)
+    with STMultiNodeSpec
+    with ImplicitSender {
   import ClusterShardingLeavingSpec._
   import config._
 
@@ -105,17 +123,20 @@ abstract class ClusterShardingLeavingSpec(config: ClusterShardingLeavingSpecConf
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒ new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir").map(s ⇒
+    new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations.foreach(dir ⇒
+        if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations.foreach(dir ⇒
+        if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -173,7 +194,8 @@ abstract class ClusterShardingLeavingSpec(config: ClusterShardingLeavingSpecConf
 
     "initialize shards" in {
       runOn(first) {
-        val shardLocations = system.actorOf(Props[ShardLocations], "shardLocations")
+        val shardLocations =
+          system.actorOf(Props[ShardLocations], "shardLocations")
         val locations = (for (n ← 1 to 10) yield {
           val id = n.toString
           region ! Ping(id)
@@ -217,4 +239,3 @@ abstract class ClusterShardingLeavingSpec(config: ClusterShardingLeavingSpecConf
 
   }
 }
-

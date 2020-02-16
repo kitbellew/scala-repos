@@ -2,9 +2,16 @@ package com.twitter.summingbird.online
 
 import com.twitter.summingbird.memory.Memory
 import com.twitter.summingbird.planner.StripNamedNode
-import com.twitter.summingbird.{ Dependants, Producer, OptionMappedProducer, NamedProducer, Source, Summer }
+import com.twitter.summingbird.{
+  Dependants,
+  Producer,
+  OptionMappedProducer,
+  NamedProducer,
+  Source,
+  Summer
+}
 import org.scalatest.FunSuite
-import scala.collection.mutable.{ Map => MMap }
+import scala.collection.mutable.{Map => MMap}
 
 class StripNameTest extends FunSuite {
 
@@ -27,25 +34,35 @@ class StripNameTest extends FunSuite {
       .name("sumByKey")
 
     val deps = Dependants(graph)
-    assert(deps.namesOf(src).map(_.id).toSet == Set("source", "map", "sumByKey"))
+    assert(
+      deps.namesOf(src).map(_.id).toSet == Set("source", "map", "sumByKey"))
     assert(deps.namesOf(mapped).map(_.id).toSet == Set("map", "sumByKey"))
     assert(deps.namesOf(summed).map(_.id).toSet == Set("sumByKey"))
 
     val (nameMap, stripped) = StripNamedNode(graph)
     val strippedDeps = Dependants(stripped)
 
-    def assertName(names: Set[String])(p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]]): Unit = {
+    def assertName(names: Set[String])(
+        p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       assert(nameMap(nodes(0)).toSet == names, s"checking ${names}")
     }
 
-    assertName(Set("source", "map", "sumByKey")) { case p @ Source(l) if l == input => p }
-    assertName(Set("map", "sumByKey")) { case p @ OptionMappedProducer(_, f) if f == fn => p }
-    assertName(Set("sumByKey")) { case p @ Summer(_, str, _) if str == store => p }
+    assertName(Set("source", "map", "sumByKey")) {
+      case p @ Source(l) if l == input => p
+    }
+    assertName(Set("map", "sumByKey")) {
+      case p @ OptionMappedProducer(_, f) if f == fn => p
+    }
+    assertName(Set("sumByKey")) {
+      case p @ Summer(_, str, _) if str == store => p
+    }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
   }
   test("merge name test") {
     /*
@@ -86,20 +103,33 @@ class StripNameTest extends FunSuite {
     val (nameMap, stripped) = StripNamedNode(graph)
     val strippedDeps = Dependants(stripped)
 
-    def assertName(names: List[String])(p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]]): Unit = {
+    def assertName(names: List[String])(
+        p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       assert(nameMap(nodes(0)) == names, s"checking ${names}")
     }
 
-    assertName(List("source0", "map0", "sumByKey")) { case p @ Source(l) if l == input0 => p }
-    assertName(List("map0", "sumByKey")) { case p @ OptionMappedProducer(_, f) if f == fn0 => p }
-    assertName(List("source1", "map1", "sumByKey")) { case p @ Source(l) if l == input1 => p }
-    assertName(List("map1", "sumByKey")) { case p @ OptionMappedProducer(_, f) if f == fn1 => p }
-    assertName(List("sumByKey")) { case p @ Summer(_, str, _) if str == store => p }
+    assertName(List("source0", "map0", "sumByKey")) {
+      case p @ Source(l) if l == input0 => p
+    }
+    assertName(List("map0", "sumByKey")) {
+      case p @ OptionMappedProducer(_, f) if f == fn0 => p
+    }
+    assertName(List("source1", "map1", "sumByKey")) {
+      case p @ Source(l) if l == input1 => p
+    }
+    assertName(List("map1", "sumByKey")) {
+      case p @ OptionMappedProducer(_, f) if f == fn1 => p
+    }
+    assertName(List("sumByKey")) {
+      case p @ Summer(_, str, _) if str == store => p
+    }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
   }
 
   test("Fan-out name test") {
@@ -149,20 +179,37 @@ class StripNameTest extends FunSuite {
     val (nameMap, stripped) = StripNamedNode(namedG)
     val strippedDeps = Dependants(stripped)
 
-    def assertName(names: List[String])(p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]]): Unit = {
+    def assertName(names: List[String])(
+        p: PartialFunction[Producer[Memory, Any], Producer[Memory, Any]])
+        : Unit = {
       val nodes = strippedDeps.nodes.collect(p)
       assert(nodes.size == 1) // Only one node
       val ordering = nameMap(nodes(0)).zipWithIndex.toMap
       val order = Ordering.by(ordering)
-      assert(names.sorted(order) == names, s"not sorted: $names != ${names.sorted(order)}")
+      assert(
+        names.sorted(order) == names,
+        s"not sorted: $names != ${names.sorted(order)}")
     }
-    assertName(List("source", "map0", "sumByKey0")) { case p @ Source(l) if l == input => p }
-    assertName(List("source", "map1", "map1.1", "sumByKey1", "also")) { case p @ Source(l) if l == input => p }
-    assertName(List("map0", "sumByKey0")) { case p @ OptionMappedProducer(_, f) if f == fn0 => p }
-    assertName(List("map1", "sumByKey1", "also")) { case p @ OptionMappedProducer(_, f) if f == fn1 => p }
-    assertName(List("sumByKey0")) { case p @ Summer(_, str, _) if str eq store0 => p }
-    assertName(List("sumByKey1", "also")) { case p @ Summer(_, str, _) if str eq store1 => p }
+    assertName(List("source", "map0", "sumByKey0")) {
+      case p @ Source(l) if l == input => p
+    }
+    assertName(List("source", "map1", "map1.1", "sumByKey1", "also")) {
+      case p @ Source(l) if l == input => p
+    }
+    assertName(List("map0", "sumByKey0")) {
+      case p @ OptionMappedProducer(_, f) if f == fn0 => p
+    }
+    assertName(List("map1", "sumByKey1", "also")) {
+      case p @ OptionMappedProducer(_, f) if f == fn1 => p
+    }
+    assertName(List("sumByKey0")) {
+      case p @ Summer(_, str, _) if str eq store0 => p
+    }
+    assertName(List("sumByKey1", "also")) {
+      case p @ Summer(_, str, _) if str eq store1 => p
+    }
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
+    assert(
+      strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }.sum == 0)
   }
 }

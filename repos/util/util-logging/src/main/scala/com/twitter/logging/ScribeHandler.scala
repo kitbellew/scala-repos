@@ -20,7 +20,12 @@ import java.io.IOException
 import java.net._
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.{ArrayBlockingQueue, LinkedBlockingQueue, TimeUnit, ThreadPoolExecutor}
+import java.util.concurrent.{
+  ArrayBlockingQueue,
+  LinkedBlockingQueue,
+  TimeUnit,
+  ThreadPoolExecutor
+}
 import java.util.{Arrays, logging => javalog}
 
 import com.twitter.concurrent.NamedPoolThreadFactory
@@ -50,52 +55,54 @@ object ScribeHandler {
   val log = Logger.get(getClass)
 
   /**
-   * Generates a HandlerFactory that returns a ScribeHandler.
-   * NOTE: ScribeHandler is usually used to write structured binary data.
-   * When used in this way, wrapping this in other handlers, such as ThrottledHandler,
-   * which emit plain-text messages into the log, will corrupt the resulting data.
-   *
-   * @param bufferTime
-   * send a scribe message no more frequently than this:
-   *
-   * @param connectBackoff
-   * don't connect more frequently than this (when the scribe server is down):
-   */
+    * Generates a HandlerFactory that returns a ScribeHandler.
+    * NOTE: ScribeHandler is usually used to write structured binary data.
+    * When used in this way, wrapping this in other handlers, such as ThrottledHandler,
+    * which emit plain-text messages into the log, will corrupt the resulting data.
+    *
+    * @param bufferTime
+    * send a scribe message no more frequently than this:
+    *
+    * @param connectBackoff
+    * don't connect more frequently than this (when the scribe server is down):
+    */
   def apply(
-    hostname: String = DefaultHostname,
-    port: Int = DefaultPort,
-    category: String = DefaultCategory,
-    bufferTime: Duration = DefaultBufferTime,
-    connectBackoff: Duration = DefaultConnectBackoff,
-    maxMessagesPerTransaction: Int = DefaultMaxMessagesPerTransaction,
-    maxMessagesToBuffer: Int = DefaultMaxMessagesToBuffer,
-    formatter: Formatter = new Formatter(),
-    level: Option[Level] = None,
-    statsReceiver: StatsReceiver = NullStatsReceiver
+      hostname: String = DefaultHostname,
+      port: Int = DefaultPort,
+      category: String = DefaultCategory,
+      bufferTime: Duration = DefaultBufferTime,
+      connectBackoff: Duration = DefaultConnectBackoff,
+      maxMessagesPerTransaction: Int = DefaultMaxMessagesPerTransaction,
+      maxMessagesToBuffer: Int = DefaultMaxMessagesToBuffer,
+      formatter: Formatter = new Formatter(),
+      level: Option[Level] = None,
+      statsReceiver: StatsReceiver = NullStatsReceiver
   ) =
-    () => new ScribeHandler(
-      hostname,
-      port,
-      category,
-      bufferTime,
-      connectBackoff,
-      maxMessagesPerTransaction,
-      maxMessagesToBuffer,
-      formatter,
-      level,
-      statsReceiver)
+    () =>
+      new ScribeHandler(
+        hostname,
+        port,
+        category,
+        bufferTime,
+        connectBackoff,
+        maxMessagesPerTransaction,
+        maxMessagesToBuffer,
+        formatter,
+        level,
+        statsReceiver)
 
   def apply(
-    hostname: String,
-    port: Int,
-    category: String,
-    bufferTime: Duration,
-    connectBackoff: Duration,
-    maxMessagesPerTransaction: Int,
-    maxMessagesToBuffer: Int,
-    formatter: Formatter,
-    level: Option[Level]
-  ): () => ScribeHandler = apply(
+      hostname: String,
+      port: Int,
+      category: String,
+      bufferTime: Duration,
+      connectBackoff: Duration,
+      maxMessagesPerTransaction: Int,
+      maxMessagesToBuffer: Int,
+      formatter: Formatter,
+      level: Option[Level]
+  ): () => ScribeHandler =
+    apply(
       hostname,
       port,
       category,
@@ -110,10 +117,10 @@ object ScribeHandler {
 }
 
 /**
- * NOTE: ScribeHandler is usually used to write structured binary data.
- * When used in this way, wrapping this in other handlers, such as ThrottledHandler,
- * which emit plain-text messages into the log, will corrupt the resulting data.
- */
+  * NOTE: ScribeHandler is usually used to write structured binary data.
+  * When used in this way, wrapping this in other handlers, such as ThrottledHandler,
+  * which emit plain-text messages into the log, will corrupt the resulting data.
+  */
 class ScribeHandler(
     hostname: String,
     port: Int,
@@ -125,21 +132,31 @@ class ScribeHandler(
     formatter: Formatter,
     level: Option[Level],
     statsReceiver: StatsReceiver)
-  extends Handler(formatter, level) {
+    extends Handler(formatter, level) {
   import ScribeHandler._
 
   def this(
-    hostname: String,
-    port: Int,
-    category: String,
-    bufferTime: Duration,
-    connectBackoff: Duration,
-    maxMessagesPerTransaction: Int,
-    maxMessagesToBuffer: Int,
-    formatter: Formatter,
-    level: Option[Level]
-  ) = this(hostname, port, category, bufferTime, connectBackoff,
-    maxMessagesPerTransaction, maxMessagesToBuffer, formatter, level, NullStatsReceiver)
+      hostname: String,
+      port: Int,
+      category: String,
+      bufferTime: Duration,
+      connectBackoff: Duration,
+      maxMessagesPerTransaction: Int,
+      maxMessagesToBuffer: Int,
+      formatter: Formatter,
+      level: Option[Level]
+  ) =
+    this(
+      hostname,
+      port,
+      category,
+      bufferTime,
+      connectBackoff,
+      maxMessagesPerTransaction,
+      maxMessagesToBuffer,
+      formatter,
+      level,
+      NullStatsReceiver)
 
   private[this] val stats = new ScribeHandlerStats(statsReceiver)
 
@@ -150,7 +167,8 @@ class ScribeHandler(
 
   @volatile private var _lastTransmission = Time.epoch
   // visible for testing
-  private[logging] def updateLastTransmission(): Unit = _lastTransmission = Time.now
+  private[logging] def updateLastTransmission(): Unit =
+    _lastTransmission = Time.now
 
   private var socket: Option[Socket] = None
 
@@ -161,14 +179,23 @@ class ScribeHandler(
   // Could be rewritten using a simple Condition (await/notify) or producer/consumer
   // with timed batching
   private[logging] val flusher = {
-    val threadFactory = new NamedPoolThreadFactory("ScribeFlusher-" + category, true)
+    val threadFactory =
+      new NamedPoolThreadFactory("ScribeFlusher-" + category, true)
     // should be 1, but this is a crude form of retry
     val queue = new ArrayBlockingQueue[Runnable](5)
     val rejectionHandler = new ThreadPoolExecutor.DiscardPolicy()
-    new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, queue, threadFactory, rejectionHandler)
+    new ThreadPoolExecutor(
+      1,
+      1,
+      0L,
+      TimeUnit.MILLISECONDS,
+      queue,
+      threadFactory,
+      rejectionHandler)
   }
 
-  private[logging] val queue = new LinkedBlockingQueue[Array[Byte]](maxMessagesToBuffer)
+  private[logging] val queue =
+    new LinkedBlockingQueue[Array[Byte]](maxMessagesToBuffer)
 
   def queueSize: Int = queue.size()
 
@@ -185,7 +212,11 @@ class ScribeHandler(
             serverType = Unknown
           } catch {
             case e: Exception =>
-              log.error("Unable to open socket to scribe server at %s:%d: %s", hostname, port, e)
+              log.error(
+                "Unable to open socket to scribe server at %s:%d: %s",
+                hostname,
+                port,
+                e)
               stats.incrConnectionFailure()
           }
         } else {
@@ -219,7 +250,8 @@ class ScribeHandler(
             readResponseExpecting(s, OLD_SCRIBE_REPLY)
 
             // Didn't get exception, so the server must be archaic.
-            log.debug("Scribe server is archaic; changing to old protocol for future requests.")
+            log.debug(
+              "Scribe server is archaic; changing to old protocol for future requests.")
             Archaic
           } catch {
             case NonFatal(_) => Modern
@@ -245,7 +277,8 @@ class ScribeHandler(
 
             try {
               outStream.write(buffer.array)
-              val expectedReply = if (isArchaicServer()) OLD_SCRIBE_REPLY else SCRIBE_REPLY
+              val expectedReply =
+                if (isArchaicServer()) OLD_SCRIBE_REPLY else SCRIBE_REPLY
 
               readResponseExpecting(s, expectedReply)
 
@@ -254,8 +287,13 @@ class ScribeHandler(
             } catch {
               case e: Exception =>
                 stats.incrDroppedRecords(count)
-                log.error(e, "Failed to send %s %d log entries to scribe server at %s:%d",
-                          category, count, hostname, port)
+                log.error(
+                  e,
+                  "Failed to send %s %d log entries to scribe server at %s:%d",
+                  category,
+                  count,
+                  hostname,
+                  port)
                 closeSocket()
             }
           }
@@ -265,7 +303,9 @@ class ScribeHandler(
       }
     }
 
-    def readResponseExpecting(socket: Socket, expectedReply: Array[Byte]): Unit = {
+    def readResponseExpecting(
+        socket: Socket,
+        expectedReply: Array[Byte]): Unit = {
       var offset = 0
 
       val inStream = socket.getInputStream()
@@ -280,11 +320,12 @@ class ScribeHandler(
         offset += n
       }
       if (!Arrays.equals(response, expectedReply)) {
-        throw new IOException("Error response from scribe server: " + response.hexlify)
+        throw new IOException(
+          "Error response from scribe server: " + response.hexlify)
       }
     }
 
-    flusher.execute( new Runnable {
+    flusher.execute(new Runnable {
       def run() { sendBatch() }
     })
   }
@@ -303,7 +344,9 @@ class ScribeHandler(
     recordHeader.putShort(2)
 
     val prefix = if (isArchaicServer()) OLD_SCRIBE_PREFIX else SCRIBE_PREFIX
-    val messageSize = (count * (recordHeader.capacity + 5)) + texts.foldLeft(0) { _ + _.length } + prefix.length + 5
+    val messageSize = (count * (recordHeader.capacity + 5)) + texts.foldLeft(0) {
+      _ + _.length
+    } + prefix.length + 5
     val buffer = ByteBuffer.wrap(new Array[Byte](messageSize + 4))
     buffer.order(ByteOrder.BIG_ENDIAN)
     // "framing":
@@ -354,35 +397,115 @@ class ScribeHandler(
 
   override def toString = {
     ("<%s level=%s hostname=%s port=%d scribe_buffer=%s " +
-     "scribe_backoff=%s scribe_max_packet_size=%d formatter=%s>").format(getClass.getName, getLevel,
-      hostname, port, bufferTime, connectBackoff, maxMessagesPerTransaction, formatter.toString)
+      "scribe_backoff=%s scribe_max_packet_size=%d formatter=%s>").format(
+      getClass.getName,
+      getLevel,
+      hostname,
+      port,
+      bufferTime,
+      connectBackoff,
+      maxMessagesPerTransaction,
+      formatter.toString)
   }
 
   private[this] val SCRIBE_PREFIX: Array[Byte] = Array[Byte](
     // version 1, call, "Log", reqid=0
-    0x80.toByte, 1, 0, 1, 0, 0, 0, 3, 'L'.toByte, 'o'.toByte, 'g'.toByte, 0, 0, 0, 0,
+    0x80.toByte,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    3,
+    'L'.toByte,
+    'o'.toByte,
+    'g'.toByte,
+    0,
+    0,
+    0,
+    0,
     // list of structs
-    15, 0, 1, 12
+    15,
+    0,
+    1,
+    12
   )
   private[this] val OLD_SCRIBE_PREFIX: Array[Byte] = Array[Byte](
     // (no version), "Log", reply, reqid=0
-    0, 0, 0, 3, 'L'.toByte, 'o'.toByte, 'g'.toByte, 1, 0, 0, 0, 0,
+    0,
+    0,
+    0,
+    3,
+    'L'.toByte,
+    'o'.toByte,
+    'g'.toByte,
+    1,
+    0,
+    0,
+    0,
+    0,
     // list of structs
-    15, 0, 1, 12
+    15,
+    0,
+    1,
+    12
   )
 
   private[this] val SCRIBE_REPLY: Array[Byte] = Array[Byte](
     // version 1, reply, "Log", reqid=0
-    0x80.toByte, 1, 0, 2, 0, 0, 0, 3, 'L'.toByte, 'o'.toByte, 'g'.toByte, 0, 0, 0, 0,
+    0x80.toByte,
+    1,
+    0,
+    2,
+    0,
+    0,
+    0,
+    3,
+    'L'.toByte,
+    'o'.toByte,
+    'g'.toByte,
+    0,
+    0,
+    0,
+    0,
     // int, fid 0, 0=ok
-    8, 0, 0, 0, 0, 0, 0, 0
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   )
   private[this] val OLD_SCRIBE_REPLY: Array[Byte] = Array[Byte](
-    0, 0, 0, 20,
+    0,
+    0,
+    0,
+    20,
     // (no version), "Log", reply, reqid=0
-    0, 0, 0, 3, 'L'.toByte, 'o'.toByte, 'g'.toByte, 2, 0, 0, 0, 0,
+    0,
+    0,
+    0,
+    3,
+    'L'.toByte,
+    'o'.toByte,
+    'g'.toByte,
+    2,
+    0,
+    0,
+    0,
+    0,
     // int, fid 0, 0=ok
-    8, 0, 0, 0, 0, 0, 0, 0
+    8,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
   )
 
   private class ScribeHandlerStats(statsReceiver: StatsReceiver) {
@@ -437,8 +560,14 @@ class ScribeHandler(
           val dropped = droppedRecords.getAndSet(0)
           val failed = connectionFailure.getAndSet(0)
           val skipped = connectionSkipped.getAndSet(0)
-          ScribeHandler.log.info("sent records: %d, per second: %d, dropped records: %d, reconnection failures: %d, reconnection skipped: %d",
-            sent, sent / period.inSeconds, dropped, failed, skipped)
+          ScribeHandler.log.info(
+            "sent records: %d, per second: %d, dropped records: %d, reconnection failures: %d, reconnection skipped: %d",
+            sent,
+            sent / period.inSeconds,
+            dropped,
+            failed,
+            skipped
+          )
 
           _lastLogStats = Time.now
         }

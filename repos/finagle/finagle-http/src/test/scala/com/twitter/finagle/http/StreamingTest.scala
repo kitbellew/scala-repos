@@ -77,7 +77,7 @@ class StreamingTest extends FunSuite with Eventually {
     }
   }
 
-  test("client: request stream fails on write") (new ClientCtx {
+  test("client: request stream fails on write")(new ClientCtx {
     // Simulate network failure by closing the transport.
     fail.setDone()
 
@@ -88,7 +88,7 @@ class StreamingTest extends FunSuite with Eventually {
     assertSecondRequestOk()
   })
 
-  test("client: response stream fails on read") (new ClientCtx {
+  test("client: response stream fails on read")(new ClientCtx {
     // Reader should be suspended in a reading state.
     val f = res.reader.read(1)
     assert(!f.isDefined)
@@ -103,7 +103,7 @@ class StreamingTest extends FunSuite with Eventually {
     assertSecondRequestOk()
   })
 
-  test("client: fail request writer") (new ClientCtx {
+  test("client: fail request writer")(new ClientCtx {
     val exc = new Exception
     req.writer.fail(exc)
     assert(!res2.isDefined)
@@ -112,7 +112,7 @@ class StreamingTest extends FunSuite with Eventually {
     assertSecondRequestOk()
   })
 
-  test("client: discard respond reader") (new ClientCtx {
+  test("client: discard respond reader")(new ClientCtx {
     res.reader.discard()
     assertSecondRequestOk()
   })
@@ -233,7 +233,7 @@ class StreamingTest extends FunSuite with Eventually {
           val writer = Reader.writable()
           fail ensure (writer.write(buf) ensure writer.close())
           Future.value(ok(writer))
-        }
+      }
     }
 
     val server = startServer(service, identity)
@@ -272,7 +272,7 @@ class StreamingTest extends FunSuite with Eventually {
           val writer = Reader.writable()
           fail ensure (writer.write(buf) ensure writer.close())
           Future.value(ok(writer))
-        }
+      }
     }
 
     val server = startServer(service, identity)
@@ -335,25 +335,30 @@ object StreamingTest {
       .build()
 
   class Custom(cmod: Modifier, smod: Modifier)
-    extends CodecFactory[Request, Response] {
+      extends CodecFactory[Request, Response] {
 
     def customize(codec: Codec[Request, Response]) =
       new Codec[Request, Response] {
         val pipelineFactory = codec.pipelineFactory
-        override def prepareServiceFactory(sf: ServiceFactory[Request, Response]) =
+        override def prepareServiceFactory(
+            sf: ServiceFactory[Request, Response]) =
           codec.prepareServiceFactory(sf)
-        override def prepareConnFactory(sf: ServiceFactory[Request, Response], ps: Stack.Params) =
+        override def prepareConnFactory(
+            sf: ServiceFactory[Request, Response],
+            ps: Stack.Params) =
           codec.prepareConnFactory(sf)
         override def newClientTransport(ch: Channel, sr: StatsReceiver) =
           codec.newClientTransport(ch, sr)
         override def newTraceInitializer = codec.newTraceInitializer
 
         // Modified Transports
-        override def newClientDispatcher(transport: Transport[Any, Any], params: Stack.Params) =
+        override def newClientDispatcher(
+            transport: Transport[Any, Any],
+            params: Stack.Params) =
           codec.newClientDispatcher(cmod(transport), params)
         override def newServerDispatcher(
-          transport: Transport[Any, Any],
-          service: Service[Request, Response]
+            transport: Transport[Any, Any],
+            service: Service[Request, Response]
         ) = codec.newServerDispatcher(smod(transport), service)
       }
 

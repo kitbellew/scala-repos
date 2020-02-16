@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -63,7 +63,7 @@ trait BasicValidationSpecs extends EvalStackSpecs {
         eval("count((//campaigns).ageRange)") mustEqual Set(SDecimal(100))
       }
     }
- 
+
     "reduce the obnoxiously large dataset" >> {
       "<root>" >> {
         eval("mean((//obnoxious).v)") mustEqual Set(SDecimal(50000.5))
@@ -149,11 +149,12 @@ trait BasicValidationSpecs extends EvalStackSpecs {
         | """.stripMargin
 
       eval(input) must throwA[FatalQueryException].like {
-        case e => e must beLike {
-          case FatalQueryException(_) => ok
-          // TODO: Check error channel for message.
-          // case FatalQueryException(Line(3, 2, " assert false a"), "Assertion failed") => ok
-        }
+        case e =>
+          e must beLike {
+            case FatalQueryException(_) => ok
+            // TODO: Check error channel for message.
+            // case FatalQueryException(Line(3, 2, " assert false a"), "Assertion failed") => ok
+          }
       }
     }
 
@@ -166,7 +167,10 @@ trait BasicValidationSpecs extends EvalStackSpecs {
     }
 
     "flatten an array into a set" in {
-      eval("flatten([1, 2, 3])") mustEqual Set(SDecimal(1), SDecimal(2), SDecimal(3))
+      eval("flatten([1, 2, 3])") mustEqual Set(
+        SDecimal(1),
+        SDecimal(2),
+        SDecimal(3))
     }
   }
 }

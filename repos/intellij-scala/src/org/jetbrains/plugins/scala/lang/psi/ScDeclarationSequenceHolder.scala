@@ -11,22 +11,29 @@ import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.plugins.scala.lang.psi.api.base.ScStableCodeReferenceElement
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScDeclaredElementsHolder
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScNamedElement
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScTypeDefinition, ScTrait, ScClass, ScObject}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScTypeDefinition,
+  ScTrait,
+  ScClass,
+  ScObject
+}
 import org.jetbrains.plugins.scala.lang.resolve.ResolveTargets
 import org.jetbrains.plugins.scala.lang.resolve.processor.BaseProcessor
 
 import scala.collection.Seq
 
 trait ScDeclarationSequenceHolder extends ScalaPsiElement {
-  override def processDeclarations(processor: PsiScopeProcessor,
-      state : ResolveState,
+  override def processDeclarations(
+      processor: PsiScopeProcessor,
+      state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     def processElement(e: PsiElement, state: ResolveState): Boolean = {
       def isOkForFakeCompanionModule(t: ScTypeDefinition): Boolean = {
         (processor match {
           case b: BaseProcessor =>
-            b.kinds.contains(ResolveTargets.OBJECT) || b.kinds.contains(ResolveTargets.VAL)
+            b.kinds.contains(ResolveTargets.OBJECT) || b.kinds.contains(
+              ResolveTargets.VAL)
           case _ => true
         }) && t.fakeCompanionModule.isDefined
       }
@@ -39,7 +46,7 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
           }
           c.getSyntheticImplicitMethod match {
             case Some(impl) => if (!processElement(impl, state)) return false
-            case _ =>
+            case _          =>
           }
           true
         case t: ScTrait =>
@@ -65,15 +72,17 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
     if (lastParent != null) {
       var run = lastParent match {
         case element: ScalaPsiElement => element.getDeepSameElementInContext
-        case _ => lastParent
+        case _                        => lastParent
       }
       while (run != null) {
         ProgressManager.checkCanceled()
         place match {
-          case id: ScStableCodeReferenceElement => run match {
-            case po: ScObject if po.isPackageObject && id.qualName == po.qualifiedName => // do nothing
-            case _ => if (!processElement(run, state)) return false
-          }
+          case id: ScStableCodeReferenceElement =>
+            run match {
+              case po: ScObject
+                  if po.isPackageObject && id.qualName == po.qualifiedName => // do nothing
+              case _                                                       => if (!processElement(run, state)) return false
+            }
           case _ => if (!processElement(run, state)) return false
         }
         run = run.getPrevSibling
@@ -81,7 +90,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
 
       //forward references are allowed (e.g. 2 local methods see each other)
       run = lastParent.getNextSibling
-      val forwardState = state.put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
+      val forwardState =
+        state.put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
       while (run != null) {
         ProgressManager.checkCanceled()
         if (!processElement(run, forwardState)) return false

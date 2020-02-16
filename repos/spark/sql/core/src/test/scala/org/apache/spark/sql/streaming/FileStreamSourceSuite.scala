@@ -30,8 +30,12 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
 
   import testImplicits._
 
-  case class AddTextFileData(source: FileStreamSource, content: String, src: File, tmp: File)
-    extends AddData {
+  case class AddTextFileData(
+      source: FileStreamSource,
+      content: String,
+      src: File,
+      tmp: File)
+      extends AddData {
 
     override def addData(): Offset = {
       source.withBatchingLocked {
@@ -46,7 +50,8 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       source: FileStreamSource,
       content: Seq[String],
       src: File,
-      tmp: File) extends AddData {
+      tmp: File)
+      extends AddData {
 
     override def addData(): Offset = {
       source.withBatchingLocked {
@@ -69,8 +74,10 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       } else {
         sqlContext.read.format(format)
       }
-    reader.stream(path)
-      .queryExecution.analyzed
+    reader
+      .stream(path)
+      .queryExecution
+      .analyzed
       .collect { case StreamingRelation(s: FileStreamSource, _) => s }
       .head
   }
@@ -103,21 +110,29 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
 
   test("FileStreamSource schema: no path") {
     val e = intercept[IllegalArgumentException] {
-      createFileStreamSourceAndGetSchema(format = None, path = None, schema = None)
+      createFileStreamSourceAndGetSchema(
+        format = None,
+        path = None,
+        schema = None)
     }
     assert("'path' is not specified" === e.getMessage)
   }
 
   test("FileStreamSource schema: path doesn't exist") {
     intercept[AnalysisException] {
-      createFileStreamSourceAndGetSchema(format = None, path = Some("/a/b/c"), schema = None)
+      createFileStreamSourceAndGetSchema(
+        format = None,
+        path = Some("/a/b/c"),
+        schema = None)
     }
   }
 
   test("FileStreamSource schema: text, no existing files, no schema") {
     withTempDir { src =>
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("text"), path = Some(src.getCanonicalPath), schema = None)
+        format = Some("text"),
+        path = Some(src.getCanonicalPath),
+        schema = None)
       assert(schema === new StructType().add("value", StringType))
     }
   }
@@ -126,7 +141,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     withTempDir { src =>
       stringToFile(new File(src, "1"), "a\nb\nc")
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("text"), path = Some(src.getCanonicalPath), schema = None)
+        format = Some("text"),
+        path = Some(src.getCanonicalPath),
+        schema = None)
       assert(schema === new StructType().add("value", StringType))
     }
   }
@@ -136,7 +153,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
       stringToFile(new File(src, "1"), "a\nb\nc")
       val userSchema = new StructType().add("userColumn", StringType)
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("text"), path = Some(src.getCanonicalPath), schema = Some(userSchema))
+        format = Some("text"),
+        path = Some(src.getCanonicalPath),
+        schema = Some(userSchema))
       assert(schema === userSchema)
     }
   }
@@ -145,29 +164,44 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     withTempDir { src =>
       val e = intercept[AnalysisException] {
         createFileStreamSourceAndGetSchema(
-          format = Some("parquet"), path = Some(new File(src, "1").getCanonicalPath), schema = None)
+          format = Some("parquet"),
+          path = Some(new File(src, "1").getCanonicalPath),
+          schema = None)
       }
-      assert("Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+      assert(
+        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
     }
   }
 
   test("FileStreamSource schema: parquet, existing files, no schema") {
     withTempDir { src =>
-      Seq("a", "b", "c").toDS().as("userColumn").toDF()
-        .write.parquet(new File(src, "1").getCanonicalPath)
+      Seq("a", "b", "c")
+        .toDS()
+        .as("userColumn")
+        .toDF()
+        .write
+        .parquet(new File(src, "1").getCanonicalPath)
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("parquet"), path = Some(src.getCanonicalPath), schema = None)
+        format = Some("parquet"),
+        path = Some(src.getCanonicalPath),
+        schema = None)
       assert(schema === new StructType().add("value", StringType))
     }
   }
 
   test("FileStreamSource schema: parquet, existing files, schema") {
     withTempPath { src =>
-      Seq("a", "b", "c").toDS().as("oldUserColumn").toDF()
-        .write.parquet(new File(src, "1").getCanonicalPath)
+      Seq("a", "b", "c")
+        .toDS()
+        .as("oldUserColumn")
+        .toDF()
+        .write
+        .parquet(new File(src, "1").getCanonicalPath)
       val userSchema = new StructType().add("userColumn", StringType)
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("parquet"), path = Some(src.getCanonicalPath), schema = Some(userSchema))
+        format = Some("parquet"),
+        path = Some(src.getCanonicalPath),
+        schema = Some(userSchema))
       assert(schema === userSchema)
     }
   }
@@ -176,9 +210,12 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     withTempDir { src =>
       val e = intercept[AnalysisException] {
         createFileStreamSourceAndGetSchema(
-          format = Some("json"), path = Some(src.getCanonicalPath), schema = None)
+          format = Some("json"),
+          path = Some(src.getCanonicalPath),
+          schema = None)
       }
-      assert("Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+      assert(
+        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
     }
   }
 
@@ -186,7 +223,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     withTempDir { src =>
       stringToFile(new File(src, "1"), "{'c': '1'}\n{'c': '2'}\n{'c': '3'}")
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("json"), path = Some(src.getCanonicalPath), schema = None)
+        format = Some("json"),
+        path = Some(src.getCanonicalPath),
+        schema = None)
       assert(schema === new StructType().add("c", StringType))
     }
   }
@@ -196,7 +235,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
       stringToFile(new File(src, "1"), "{'c': '1'}\n{'c': '2'}\n{'c', '3'}")
       val userSchema = new StructType().add("userColumn", StringType)
       val schema = createFileStreamSourceAndGetSchema(
-        format = Some("json"), path = Some(src.getCanonicalPath), schema = Some(userSchema))
+        format = Some("json"),
+        path = Some(src.getCanonicalPath),
+        schema = Some(userSchema))
       assert(schema === userSchema)
     }
   }
@@ -227,7 +268,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val src = Utils.createTempDir("streaming.src")
     val tmp = Utils.createTempDir("streaming.tmp")
 
-    val textSource = createFileStreamSource("json", src.getCanonicalPath, Some(valueSchema))
+    val textSource =
+      createFileStreamSource("json", src.getCanonicalPath, Some(valueSchema))
     val filtered = textSource.toDF().filter($"value" contains "keep")
 
     testStream(filtered)(
@@ -262,7 +304,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val tmp = Utils.createTempDir("streaming.tmp")
 
     // Add a file so that we can infer its schema
-    stringToFile(new File(src, "existing"), "{'c': 'drop1'}\n{'c': 'keep2'}\n{'c': 'keep3'}")
+    stringToFile(
+      new File(src, "existing"),
+      "{'c': 'drop1'}\n{'c': 'keep2'}\n{'c': 'keep3'}")
 
     val textSource = createFileStreamSource("json", src.getCanonicalPath)
 
@@ -270,7 +314,11 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val filtered = textSource.toDF().filter($"c" contains "keep")
 
     testStream(filtered)(
-      AddTextFileData(textSource, "{'c': 'drop4'}\n{'c': 'keep5'}\n{'c': 'keep6'}", src, tmp),
+      AddTextFileData(
+        textSource,
+        "{'c': 'drop4'}\n{'c': 'keep5'}\n{'c': 'keep6'}",
+        src,
+        tmp),
       CheckAnswer("keep2", "keep3", "keep5", "keep6")
     )
 
@@ -282,7 +330,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val src = Utils.createTempDir("streaming.src")
     val tmp = Utils.createTempDir("streaming.tmp")
 
-    val fileSource = createFileStreamSource("parquet", src.getCanonicalPath, Some(valueSchema))
+    val fileSource =
+      createFileStreamSource("parquet", src.getCanonicalPath, Some(valueSchema))
     val filtered = fileSource.toDF().filter($"value" contains "keep")
 
     testStream(filtered)(
@@ -324,7 +373,7 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           assert(b1.end === b2.end)
           assert(b1.data.as[String].collect() === b2.data.as[String].collect())
         case (None, None) =>
-        case _ => fail(s"batch ($batch1) is not equal to batch ($batch2)")
+        case _            => fail(s"batch ($batch1) is not equal to batch ($batch2)")
       }
     }
 
@@ -350,7 +399,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     assertBatch(textSource2.getNextBatch(None), textSource.getNextBatch(None))
     for (f <- 0L to textSource.currentOffset.offset) {
       val offset = LongOffset(f)
-      assertBatch(textSource2.getNextBatch(Some(offset)), textSource.getNextBatch(Some(offset)))
+      assertBatch(
+        textSource2.getNextBatch(Some(offset)),
+        textSource.getNextBatch(Some(offset)))
     }
 
     Utils.deleteRecursively(src)
@@ -359,7 +410,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
 
 }
 
-class FileStreamSourceStressTestSuite extends FileStreamSourceTest with SharedSQLContext {
+class FileStreamSourceStressTestSuite
+    extends FileStreamSourceTest
+    with SharedSQLContext {
 
   import testImplicits._
 

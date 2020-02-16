@@ -9,8 +9,8 @@ package tools.nsc
 import scala.tools.nsc.reporters.ConsoleReporter
 
 /** The main class for NSC, a compiler for the programming
- *  language Scala.
- */
+  *  language Scala.
+  */
 object MainTokenMetric {
 
   private var reporter: ConsoleReporter = _
@@ -21,7 +21,8 @@ object MainTokenMetric {
     import ast.parser.Tokens.EOF
     var totale = 0
     for (source <- fnames) {
-      val s = new UnitScanner(new CompilationUnit(compiler.getSourceFile(source)))
+      val s = new UnitScanner(
+        new CompilationUnit(compiler.getSourceFile(source)))
       s.nextToken()
       var i = 0
       while (s.token != EOF) {
@@ -31,7 +32,7 @@ object MainTokenMetric {
       Console.println(i.toString + " " + source.toString())
       totale += i
     }
-    Console.println(totale.toString()+" total")
+    Console.println(totale.toString() + " total")
   }
 
   def process(args: Array[String]) {

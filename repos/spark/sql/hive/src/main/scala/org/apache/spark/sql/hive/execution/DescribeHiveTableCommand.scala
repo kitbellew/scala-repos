@@ -29,13 +29,13 @@ import org.apache.spark.sql.execution.command.{DescribeCommand, RunnableCommand}
 import org.apache.spark.sql.hive.MetastoreRelation
 
 /**
- * Implementation for "describe [extended] table".
- */
-private[hive]
-case class DescribeHiveTableCommand(
+  * Implementation for "describe [extended] table".
+  */
+private[hive] case class DescribeHiveTableCommand(
     tableId: TableIdentifier,
     override val output: Seq[Attribute],
-    isExtended: Boolean) extends RunnableCommand {
+    isExtended: Boolean)
+    extends RunnableCommand {
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // There are two modes here:
@@ -49,11 +49,14 @@ case class DescribeHiveTableCommand(
         var results: Seq[(String, String, String)] = Nil
 
         val columns: Seq[FieldSchema] = table.hiveQlTable.getCols.asScala
-        val partitionColumns: Seq[FieldSchema] = table.hiveQlTable.getPartCols.asScala
-        results ++= columns.map(field => (field.getName, field.getType, field.getComment))
+        val partitionColumns: Seq[FieldSchema] =
+          table.hiveQlTable.getPartCols.asScala
+        results ++= columns.map(field =>
+          (field.getName, field.getType, field.getComment))
         if (partitionColumns.nonEmpty) {
           val partColumnInfo =
-            partitionColumns.map(field => (field.getName, field.getType, field.getComment))
+            partitionColumns.map(field =>
+              (field.getName, field.getType, field.getComment))
           results ++=
             partColumnInfo ++
               Seq(("# Partition Information", "", "")) ++
@@ -62,11 +65,16 @@ case class DescribeHiveTableCommand(
         }
 
         if (isExtended) {
-          results ++= Seq(("Detailed Table Information", table.hiveQlTable.getTTable.toString, ""))
+          results ++= Seq(
+            (
+              "Detailed Table Information",
+              table.hiveQlTable.getTTable.toString,
+              ""))
         }
 
-        results.map { case (name, dataType, comment) =>
-          Row(name, dataType, comment)
+        results.map {
+          case (name, dataType, comment) =>
+            Row(name, dataType, comment)
         }
 
       case o: LogicalPlan =>

@@ -88,35 +88,40 @@ class BigIntegerTest {
     assertEquals(-9999999999L, bi.longValue())
   }
 
-  @Test def `should intialise from byte array of Pos two's complement`(): Unit = {
+  @Test def `should intialise from byte array of Pos two's complement`()
+      : Unit = {
     val eBytesSignum = Array[Byte](27, -15, 65, 39)
     val eBytes = Array[Byte](27, -15, 65, 39)
     val expSignum = new BigInteger(eBytesSignum)
     assertTrue(Arrays.equals(eBytes, expSignum.toByteArray))
   }
 
-  @Test def `should intialise from byte array of Neg two's complement`(): Unit = {
+  @Test def `should intialise from byte array of Neg two's complement`()
+      : Unit = {
     val eBytesSignum = Array[Byte](-27, -15, 65, 39)
     val eBytes = Array[Byte](-27, -15, 65, 39)
     val expSignum = new BigInteger(eBytesSignum)
     assertTrue(Arrays.equals(eBytes, expSignum.toByteArray))
   }
 
-  @Test def `should intialise from Pos byte array with explicit sign`(): Unit = {
+  @Test def `should intialise from Pos byte array with explicit sign`()
+      : Unit = {
     val eBytes = Array[Byte](27, -15, 65, 39)
     val eSign = 1
     val exp = new BigInteger(eSign, eBytes)
     assertTrue(Arrays.equals(eBytes, exp.toByteArray))
   }
 
-  @Test def `should intialise from Zero byte array with explicit sign`(): Unit = {
+  @Test def `should intialise from Zero byte array with explicit sign`()
+      : Unit = {
     val eBytes = Array[Byte](0, 0, 0, 0)
     val eSign = 0
     val exp = new BigInteger(eSign, eBytes)
     assertTrue(Arrays.equals(Array[Byte](0), exp.toByteArray))
   }
 
-  @Test def `should intialise from Neg small byte array with explicit sign`(): Unit = {
+  @Test def `should intialise from Neg small byte array with explicit sign`()
+      : Unit = {
     val eBytes = Array[Byte](27)
     val eSign = -1
     val eRes = Array[Byte](-27)
@@ -124,7 +129,8 @@ class BigIntegerTest {
     assertTrue(Arrays.equals(eRes, exp.toByteArray))
   }
 
-  @Test def `should intialise from Neg byte array with explicit sign`(): Unit = {
+  @Test def `should intialise from Neg byte array with explicit sign`()
+      : Unit = {
     val eBytes = Array[Byte](27, -15, 65, 39)
     val eSign = -1
     val eRes = Array[Byte](-28, 14, -66, -39)

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import org.scalajs.core.tools.io._
@@ -32,7 +31,9 @@ final class ScalaJSFramework(
 
   def fingerprints: Array[Fingerprint] = frameworkInfo.fingerprints.toArray
 
-  def runner(args: Array[String], remoteArgs: Array[String],
+  def runner(
+      args: Array[String],
+      remoteArgs: Array[String],
       testClassLoader: ClassLoader): Runner = synchronized {
 
     if (_isRunning) {

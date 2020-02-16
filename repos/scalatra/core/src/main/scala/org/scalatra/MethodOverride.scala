@@ -1,6 +1,10 @@
 package org.scalatra
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletRequestWrapper, HttpServletResponse }
+import javax.servlet.http.{
+  HttpServletRequest,
+  HttpServletRequestWrapper,
+  HttpServletResponse
+}
 
 import org.scalatra.servlet.ServletApiImplicits
 
@@ -19,18 +23,21 @@ object MethodOverride {
 }
 
 /**
- * Mixin for clients that only support a limited set of HTTP verbs.
- * If the request is a POST and the `_method` request parameter is set,
- * the value of the `_method` parameter is treated as the request's method.
- */
+  * Mixin for clients that only support a limited set of HTTP verbs.
+  * If the request is a POST and the `_method` request parameter is set,
+  * the value of the `_method` parameter is treated as the request's method.
+  */
 trait MethodOverride extends Handler with ServletApiImplicits {
 
-  abstract override def handle(req: HttpServletRequest, res: HttpServletResponse): Unit = {
+  abstract override def handle(
+      req: HttpServletRequest,
+      res: HttpServletResponse): Unit = {
     val req2 = req.requestMethod match {
-      case Post => new HttpServletRequestWrapper(req) {
-        override def getMethod(): String =
-          methodOverride(req) getOrElse req.getMethod
-      }
+      case Post =>
+        new HttpServletRequestWrapper(req) {
+          override def getMethod(): String =
+            methodOverride(req) getOrElse req.getMethod
+        }
       case _ => req
     }
     super.handle(req2, res)
@@ -41,7 +48,9 @@ trait MethodOverride extends Handler with ServletApiImplicits {
     val methodOpt = req.parameters get ParamName
     methodOpt orElse {
       val headers = req.headers
-      val headerKeyOpt = headers.keys.find { HeaderName contains _.toUpperCase() }
+      val headerKeyOpt = headers.keys.find {
+        HeaderName contains _.toUpperCase()
+      }
       headerKeyOpt.flatMap { req.headers get _ }
     }
   }

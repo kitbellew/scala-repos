@@ -7,15 +7,18 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.{PsiDocumentManager, PsiElement}
 import org.jetbrains.plugins.scala.extensions._
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, ScParenthesisedExpr, ScReturnStmt}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScExpression,
+  ScParenthesisedExpr,
+  ScReturnStmt
+}
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
- * @author Ksenia.Sautina
- * @since 6/29/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 6/29/12
+  */
 object ExpandBooleanIntention {
   def familyName = "Expand Boolean"
 }
@@ -25,13 +28,18 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
 
   override def getText: String = "Expand boolean use to 'if else'"
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
-    val returnStmt: ScReturnStmt = PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
+  def isAvailable(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Boolean = {
+    val returnStmt: ScReturnStmt =
+      PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
     if (returnStmt == null) return false
 
     val range: TextRange = returnStmt.getTextRange
     val offset = editor.getCaretModel.getOffset
-    if (!(range.getStartOffset <= offset && offset <= range.getEndOffset)) return false
+    if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
+      return false
 
     val value = returnStmt.expr.orNull
     if (value == null) return false
@@ -43,7 +51,8 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val returnStmt: ScReturnStmt = PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
+    val returnStmt: ScReturnStmt =
+      PsiTreeUtil.getParentOfType(element, classOf[ScReturnStmt], false)
     if (returnStmt == null || !returnStmt.isValid) return
 
     val start = returnStmt.getTextRange.getStartOffset
@@ -54,12 +63,13 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
 
     value match {
       case v: ScParenthesisedExpr => expr.append(v.getText)
-      case _ => expr.append("(").append(value.getText).append(")")
+      case _                      => expr.append("(").append(value.getText).append(")")
     }
 
     expr.append("{ return true } else { return false }")
 
-    val newReturnStmt : ScExpression = ScalaPsiElementFactory.createExpressionFromText(expr.toString(), element.getManager)
+    val newReturnStmt: ScExpression = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
     inWriteAction {
       returnStmt.replaceExpression(newReturnStmt, true)

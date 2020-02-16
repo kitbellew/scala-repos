@@ -12,10 +12,9 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 import org.jetbrains.plugins.scala.util.IntentionUtils
 
 /**
- * @author Ksenia.Sautina
- * @since 5/12/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 5/12/12
+  */
 object DeMorganLawIntention {
   def familyName = "DeMorgan Law"
 }
@@ -23,8 +22,12 @@ object DeMorganLawIntention {
 class DeMorganLawIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = DeMorganLawIntention.familyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+  def isAvailable(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Boolean = {
+    val infixExpr: ScInfixExpr =
+      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null) return false
 
     val oper = infixExpr.operation.nameId.getText
@@ -34,7 +37,8 @@ class DeMorganLawIntention extends PsiElementBaseIntentionAction {
 
     val range: TextRange = infixExpr.operation.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
-    if (!(range.getStartOffset <= offset && offset <= range.getEndOffset)) return false
+    if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
+      return false
 
     val replaceOper = Map("&&" -> "||", "||" -> "&&")
     setText("Replace '" + oper + "' with " + replaceOper(oper) + "'")
@@ -43,20 +47,28 @@ class DeMorganLawIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+    val infixExpr: ScInfixExpr =
+      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
     if (infixExpr == null || !infixExpr.isValid) return
 
     val replaceOper = Map("&&" -> "||", "||" -> "&&")
 
     val start = infixExpr.getTextRange.getStartOffset
-    val diff = editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
+    val diff =
+      editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
 
     val buf = new StringBuilder
-    buf.append(IntentionUtils.negate(infixExpr.getBaseExpr)).append(" ").
-            append(replaceOper(infixExpr.operation.nameId.getText)).append(" ").
-            append(IntentionUtils.negate(infixExpr.getArgExpr))
+    buf
+      .append(IntentionUtils.negate(infixExpr.getBaseExpr))
+      .append(" ")
+      .append(replaceOper(infixExpr.operation.nameId.getText))
+      .append(" ")
+      .append(IntentionUtils.negate(infixExpr.getArgExpr))
 
-    val res = IntentionUtils.negateAndValidateExpression(infixExpr, element.getManager, buf)
+    val res = IntentionUtils.negateAndValidateExpression(
+      infixExpr,
+      element.getManager,
+      buf)
 
     inWriteAction {
       res._1.replaceExpression(res._2, true)

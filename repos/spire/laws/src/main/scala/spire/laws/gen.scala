@@ -75,7 +75,7 @@ object gen {
       10 → arbitrary[Double].map(n => Rational(n)),
       1 → rationalFromSafeLongs,
       1 → bigRational, // a rational that is guaranteed to have a big denominator
-      1 → bigRational.map(x ⇒ if(x.isZero) Rational.one else x.inverse)
+      1 → bigRational.map(x ⇒ if (x.isZero) Rational.one else x.inverse)
     )
   }
 
@@ -142,7 +142,8 @@ object gen {
   def bounds[A: Arbitrary: Order]: Gen[(A, A)] =
     arbitrary[(A, A)].map { case (x, y) => if (x <= y) (x, y) else (y, x) }
 
-  def makeBoundedInterval[A: Arbitrary: Order](f: (A, A) => Interval[A]): Gen[Interval[A]] =
+  def makeBoundedInterval[A: Arbitrary: Order](
+      f: (A, A) => Interval[A]): Gen[Interval[A]] =
     bounds[A].map { case (l, u) => f(l, u) }
 
   def openInterval[A: Arbitrary: Order]: Gen[Interval[A]] =
@@ -171,28 +172,28 @@ object gen {
       (1, arbitrary[A].map(Interval.atOrAbove(_))),
       (1, arbitrary[A].map(Interval.below(_))),
       (1, arbitrary[A].map(Interval.atOrBelow(_))),
-      (15, boundedInterval[A]))
+      (15, boundedInterval[A])
+    )
 
   def freeMonoid[A: Arbitrary]: Gen[FreeMonoid[A]] =
     for {
       as <- arbitrary[List[A]]
-    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) =>
-      acc |+| FreeMonoid(a)
-    }
+    } yield as.foldLeft(FreeMonoid.id[A]) { (acc, a) => acc |+| FreeMonoid(a) }
 
   def freeGroup[A: Arbitrary]: Gen[FreeGroup[A]] =
     for {
       aas <- arbitrary[List[Either[A, A]]]
     } yield aas.foldLeft(FreeGroup.id[A]) {
-      case (acc, Left(a)) => acc |-| FreeGroup(a)
+      case (acc, Left(a))  => acc |-| FreeGroup(a)
       case (acc, Right(a)) => acc |+| FreeGroup(a)
     }
 
   def freeAbGroup[A: Arbitrary]: Gen[FreeAbGroup[A]] =
     for {
       tpls <- arbitrary[List[(A, Short)]]
-    } yield tpls.foldLeft(FreeAbGroup.id[A]) { case (acc, (a, n)) =>
-      acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
+    } yield tpls.foldLeft(FreeAbGroup.id[A]) {
+      case (acc, (a, n)) =>
+        acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
     }
 
   val perm: Gen[Perm] =

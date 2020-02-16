@@ -3,7 +3,7 @@ object Main {
   class Generic[T] {}
 
   class Composite {
-    def contains(setup : Composite => Unit) : Composite = this
+    def contains(setup: Composite => Unit): Composite = this
   }
 
   def generic[T](parent: Composite): Generic[T] = new Generic[T]

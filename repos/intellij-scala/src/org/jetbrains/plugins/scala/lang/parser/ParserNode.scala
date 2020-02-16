@@ -3,9 +3,8 @@ package lang
 package parser
 
 /**
-* @author ilyas 
-*/
-
+  * @author ilyas
+  */
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes

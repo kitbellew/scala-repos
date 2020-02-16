@@ -5,12 +5,15 @@ import com.intellij.codeInspection.LocalInspectionTool
 import org.jetbrains.plugins.scala.codeInspection.ScalaLightInspectionFixtureTestAdapter
 
 /**
- * Nikolay.Tropin
- * 9/27/13
- */
-class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
-  protected val classOfInspection: Class[_ <: LocalInspectionTool] = classOf[MatchToPartialFunctionInspection]
-  protected val annotation: String = MatchToPartialFunctionInspection.inspectionName
+  * Nikolay.Tropin
+  * 9/27/13
+  */
+class MatchToPartialFunctionInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
+  protected val classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[MatchToPartialFunctionInspection]
+  protected val annotation: String =
+    MatchToPartialFunctionInspection.inspectionName
 
   def testInVal() = {
     val text = s"""val f: (Int) => Null = ${START}_ match $END{
@@ -27,12 +30,12 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
 
   def testInArgumentInParentheses() = {
     val text =
-    s"""list.map(${START}x => x match $END{
+      s"""list.map(${START}x => x match $END{
       |  case Some(value) =>
       |  case None =>
       |})"""
     val result =
-    """list.map {
+      """list.map {
       |  case Some(value) =>
       |  case None =>
       |}"""
@@ -43,14 +46,14 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
 
   def testInArgumentInBraces() {
     val text =
-    s"""list.map {
+      s"""list.map {
       |  ${START}x => x match $END{
       |    case Some(value) =>
       |    case None =>
       |  }
       |}"""
     val result =
-    """list.map {
+      """list.map {
       |  case Some(value) =>
       |  case None =>
       |}"""
@@ -81,13 +84,13 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
 
   def testInArgumentList() {
     val text =
-    s"""def foo(f: Int => Any, i: Int)
+      s"""def foo(f: Int => Any, i: Int)
       |foo(${START}x => x match $END{
       |  case 1 => null
       |  case _ =>
       |}, 2)"""
     val result =
-    """def foo(f: Int => Any, i: Int)
+      """def foo(f: Int => Any, i: Int)
       |foo({
       |  case 1 => null
       |  case _ =>
@@ -98,7 +101,7 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
 
   def testUseOfArgument() {
     val text =
-    s"""val f: (Int) => Null = ${START}x => x match $END{
+      s"""val f: (Int) => Null = ${START}x => x match $END{
       |  case 0 =>
       |    x + 1
       |    null
@@ -107,7 +110,7 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
       |    null
       |}"""
     val result =
-    """val f: (Int) => Null = {
+      """val f: (Int) => Null = {
       |  case x@0 =>
       |    x + 1
       |    null
@@ -143,7 +146,7 @@ class MatchToPartialFunctionInspectionTest extends ScalaLightInspectionFixtureTe
 
   def testInOverloadedMethodInfix(): Unit = {
     val text =
-     s"""
+      s"""
        |object test {
        |  object Bar {
        |      def bar(g: Int => Unit): Unit = {

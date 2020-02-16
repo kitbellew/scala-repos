@@ -1,26 +1,28 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.future
 
 import language.postfixOps
 
 import akka.testkit._
-import akka.actor.{ Actor, Props }
+import akka.actor.{Actor, Props}
 import akka.actor.Status
 import akka.util.Timeout
 import scala.concurrent.duration._
 import java.lang.IllegalStateException
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.util.{ Failure, Success }
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
+import scala.util.{Failure, Success}
 
 object FutureDocSpec {
 
   class MyActor extends Actor {
     def receive = {
-      case x: String       => sender() ! x.toUpperCase
-      case x: Int if x < 0 => sender() ! Status.Failure(new ArithmeticException("Negative values not supported"))
-      case x: Int          => sender() ! x
+      case x: String => sender() ! x.toUpperCase
+      case x: Int if x < 0 =>
+        sender() ! Status.Failure(
+          new ArithmeticException("Negative values not supported"))
+      case x: Int => sender() ! x
     }
   }
 
@@ -43,11 +45,13 @@ class FutureDocSpec extends AkkaSpec {
   val println: PartialFunction[Any, Unit] = { case _ => }
 
   "demonstrate usage custom ExecutionContext" in {
-    val yourExecutorServiceGoesHere = java.util.concurrent.Executors.newSingleThreadExecutor()
+    val yourExecutorServiceGoesHere =
+      java.util.concurrent.Executors.newSingleThreadExecutor()
     //#diy-execution-context
-    import scala.concurrent.{ ExecutionContext, Promise }
+    import scala.concurrent.{ExecutionContext, Promise}
 
-    implicit val ec = ExecutionContext.fromExecutorService(yourExecutorServiceGoesHere)
+    implicit val ec =
+      ExecutionContext.fromExecutorService(yourExecutorServiceGoesHere)
 
     // Do stuff with your brand new shiny ExecutionContext
     val f = Promise.successful("foo")
@@ -112,9 +116,7 @@ class FutureDocSpec extends AkkaSpec {
     val f1 = Future {
       "Hello" + "World"
     }
-    val f2 = f1 map { x =>
-      x.length
-    }
+    val f2 = f1 map { x => x.length }
     f2 foreach println
     //#map
     val result = Await.result(f2, 3 seconds)
@@ -128,11 +130,7 @@ class FutureDocSpec extends AkkaSpec {
       "Hello" + "World"
     }
     val f2 = Future.successful(3)
-    val f3 = f1 map { x =>
-      f2 map { y =>
-        x.length * y
-      }
-    }
+    val f3 = f1 map { x => f2 map { y => x.length * y } }
     f3 foreach println
     //#wrong-nested-map
     Await.ready(f3, 3 seconds)
@@ -144,11 +142,7 @@ class FutureDocSpec extends AkkaSpec {
       "Hello" + "World"
     }
     val f2 = Future.successful(3)
-    val f3 = f1 flatMap { x =>
-      f2 map { y =>
-        x.length * y
-      }
-    }
+    val f3 = f1 flatMap { x => f2 map { y => x.length * y } }
     f3 foreach println
     //#flat-map
     val result = Await.result(f3, 3 seconds)
@@ -248,7 +242,8 @@ class FutureDocSpec extends AkkaSpec {
     val oddActor = system.actorOf(Props[OddActor])
     //#sequence-ask
     // oddActor returns odd numbers sequentially from 1 as a List[Future[Int]]
-    val listOfFutures = List.fill(100)(akka.pattern.ask(oddActor, GetNext).mapTo[Int])
+    val listOfFutures =
+      List.fill(100)(akka.pattern.ask(oddActor, GetNext).mapTo[Int])
 
     // now we have a Future[List[Int]]
     val futureList = Future.sequence(listOfFutures)
@@ -262,7 +257,8 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of sequence" in {
     //#sequence
-    val futureList = Future.sequence((1 to 100).toList.map(x => Future(x * 2 - 1)))
+    val futureList =
+      Future.sequence((1 to 100).toList.map(x => Future(x * 2 - 1)))
     val oddSum = futureList.map(_.sum)
     oddSum foreach println
     //#sequence
@@ -404,7 +400,8 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future.successful("Yay!")
     //#successful
     //#failed
-    val otherFuture = Future.failed[String](new IllegalArgumentException("Bang!"))
+    val otherFuture =
+      Future.failed[String](new IllegalArgumentException("Bang!"))
     //#failed
     //#promise
     val promise = Promise[String]()
@@ -421,8 +418,8 @@ class FutureDocSpec extends AkkaSpec {
     // TODO after is unfortunately shadowed by ScalaTest, fix as part of #3759
     // import akka.pattern.after
 
-    val delayed = akka.pattern.after(200 millis, using = system.scheduler)(Future.failed(
-      new IllegalStateException("OHNOES")))
+    val delayed = akka.pattern.after(200 millis, using = system.scheduler)(
+      Future.failed(new IllegalStateException("OHNOES")))
     val future = Future { Thread.sleep(1000); "foo" }
     val result = Future firstCompletedOf Seq(future, delayed)
     //#after

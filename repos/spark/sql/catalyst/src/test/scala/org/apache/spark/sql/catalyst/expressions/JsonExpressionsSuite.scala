@@ -49,14 +49,16 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         |"price":8.99,"isbn":"0-553-21311-3"},{"author":"J. R. R. Tolkien","title":
         |"The Lord of the Rings","category":"fiction","reader":[{"age":25,"name":"bob"},
         |{"age":26,"name":"jack"}],"price":22.99,"isbn":"0-395-19395-8"}]
-        |""".stripMargin.replace("\n", ""))
+        |""".stripMargin.replace("\n", "")
+    )
   }
 
   test("$.store.book[0]") {
     checkEvaluation(
       GetJsonObject(Literal(json), Literal("$.store.book[0]")),
       """{"author":"Nigel Rees","title":"Sayings of the Century",
-        |"category":"reference","price":8.95}""".stripMargin.replace("\n", ""))
+        |"category":"reference","price":8.95}""".stripMargin.replace("\n", "")
+    )
   }
 
   test("$.store.book[*]") {
@@ -67,7 +69,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         |"price":8.99,"isbn":"0-553-21311-3"},{"author":"J. R. R. Tolkien","title":
         |"The Lord of the Rings","category":"fiction","reader":[{"age":25,"name":"bob"},
         |{"age":26,"name":"jack"}],"price":22.99,"isbn":"0-395-19395-8"}]
-        |""".stripMargin.replace("\n", ""))
+        |""".stripMargin.replace("\n", "")
+    )
   }
 
   test("$") {
@@ -198,7 +201,9 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("non foldable literal") {
     checkEvaluation(
-      GetJsonObject(NonFoldableLiteral(json), NonFoldableLiteral("$.fb:testid")),
+      GetJsonObject(
+        NonFoldableLiteral(json),
+        NonFoldableLiteral("$.fb:testid")),
       "1234")
   }
 
@@ -218,7 +223,9 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       JsonTuple(
         Literal("""{"f1": "value1", "f2": "value2", "f3": 3, "f5": 5.23}""") ::
           jsonTupleQuery),
-      InternalRow.fromSeq(Seq("value1", "value2", "3", null, "5.23").map(UTF8String.fromString)))
+      InternalRow.fromSeq(
+        Seq("value1", "value2", "3", null, "5.23").map(UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 2") {
@@ -226,54 +233,65 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       JsonTuple(
         Literal("""{"f1": "value12", "f3": "value3", "f2": 2, "f4": 4.01}""") ::
           jsonTupleQuery),
-      InternalRow.fromSeq(Seq("value12", "2", "value3", "4.01", null).map(UTF8String.fromString)))
+      InternalRow.fromSeq(
+        Seq("value12", "2", "value3", "4.01", null).map(UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 2 (mix of foldable fields)") {
     checkJsonTuple(
-      JsonTuple(Literal("""{"f1": "value12", "f3": "value3", "f2": 2, "f4": 4.01}""") ::
-        Literal("f1") ::
-        NonFoldableLiteral("f2") ::
-        NonFoldableLiteral("f3") ::
-        Literal("f4") ::
-        Literal("f5") ::
-        Nil),
-      InternalRow.fromSeq(Seq("value12", "2", "value3", "4.01", null).map(UTF8String.fromString)))
+      JsonTuple(
+        Literal("""{"f1": "value12", "f3": "value3", "f2": 2, "f4": 4.01}""") ::
+          Literal("f1") ::
+          NonFoldableLiteral("f2") ::
+          NonFoldableLiteral("f3") ::
+          Literal("f4") ::
+          Literal("f5") ::
+          Nil),
+      InternalRow.fromSeq(
+        Seq("value12", "2", "value3", "4.01", null).map(UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 3") {
     checkJsonTuple(
       JsonTuple(
-        Literal("""{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
+        Literal(
+          """{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
           jsonTupleQuery),
       InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(UTF8String.fromString)))
+        Seq("value13", "2", "value33", "value44", "5.01").map(
+          UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 3 (nonfoldable json)") {
     checkJsonTuple(
       JsonTuple(
-        NonFoldableLiteral(
-          """{"f1": "value13", "f4": "value44",
+        NonFoldableLiteral("""{"f1": "value13", "f4": "value44",
             | "f3": "value33", "f2": 2, "f5": 5.01}""".stripMargin)
           :: jsonTupleQuery),
       InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(UTF8String.fromString)))
+        Seq("value13", "2", "value33", "value44", "5.01").map(
+          UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 3 (nonfoldable fields)") {
     checkJsonTuple(
-      JsonTuple(Literal(
-        """{"f1": "value13", "f4": "value44",
+      JsonTuple(
+        Literal("""{"f1": "value13", "f4": "value44",
           | "f3": "value33", "f2": 2, "f5": 5.01}""".stripMargin) ::
-        NonFoldableLiteral("f1") ::
-        NonFoldableLiteral("f2") ::
-        NonFoldableLiteral("f3") ::
-        NonFoldableLiteral("f4") ::
-        NonFoldableLiteral("f5") ::
-        Nil),
+          NonFoldableLiteral("f1") ::
+          NonFoldableLiteral("f2") ::
+          NonFoldableLiteral("f3") ::
+          NonFoldableLiteral("f4") ::
+          NonFoldableLiteral("f5") ::
+          Nil),
       InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(UTF8String.fromString)))
+        Seq("value13", "2", "value33", "value44", "5.01").map(
+          UTF8String.fromString))
+    )
   }
 
   test("json_tuple - hive key 4 - null json") {
@@ -285,7 +303,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("json_tuple - hive key 5 - null and empty fields") {
     checkJsonTuple(
       JsonTuple(Literal("""{"f1": "", "f5": null}""") :: jsonTupleQuery),
-      InternalRow.fromSeq(Seq(UTF8String.fromString(""), null, null, null, null)))
+      InternalRow.fromSeq(
+        Seq(UTF8String.fromString(""), null, null, null, null)))
   }
 
   test("json_tuple - hive key 6 - invalid json (array)") {

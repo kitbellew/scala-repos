@@ -1,12 +1,13 @@
 package org.scalatra.servlet
 
-import javax.servlet.{ MultipartConfigElement, ServletContext }
+import javax.servlet.{MultipartConfigElement, ServletContext}
 
 case class MultipartConfig(
     location: Option[String] = None,
     maxFileSize: Option[Long] = None,
     maxRequestSize: Option[Long] = None,
-    fileSizeThreshold: Option[Int] = None) extends MountConfig {
+    fileSizeThreshold: Option[Int] = None)
+    extends MountConfig {
 
   def toMultipartConfigElement = {
     new MultipartConfigElement(

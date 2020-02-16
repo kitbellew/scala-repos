@@ -1,6 +1,6 @@
 package docs.camel
 
-import akka.actor.{ Props, ActorSystem }
+import akka.actor.{Props, ActorSystem}
 import akka.camel.CamelExtension
 
 import language.postfixOps
@@ -9,7 +9,7 @@ import akka.util.Timeout
 object Introduction {
   def foo(): Unit = {
     //#Consumer-mina
-    import akka.camel.{ CamelMessage, Consumer }
+    import akka.camel.{CamelMessage, Consumer}
 
     class MyEndpoint extends Consumer {
       def endpointUri = "mina2:tcp://localhost:6200?textline=true"
@@ -21,7 +21,7 @@ object Introduction {
     }
 
     // start and expose actor via tcp
-    import akka.actor.{ ActorSystem, Props }
+    import akka.actor.{ActorSystem, Props}
 
     val system = ActorSystem("some-system")
     val mina = system.actorOf(Props[MyEndpoint])
@@ -29,7 +29,7 @@ object Introduction {
   }
   def bar(): Unit = {
     //#Consumer
-    import akka.camel.{ CamelMessage, Consumer }
+    import akka.camel.{CamelMessage, Consumer}
 
     class MyEndpoint extends Consumer {
       def endpointUri = "jetty:http://localhost:8877/example"
@@ -44,8 +44,8 @@ object Introduction {
   def baz(): Unit = {
     //#Producer
     import akka.actor.Actor
-    import akka.camel.{ Producer, Oneway }
-    import akka.actor.{ ActorSystem, Props }
+    import akka.camel.{Producer, Oneway}
+    import akka.actor.{ActorSystem, Props}
 
     class Orders extends Actor with Producer with Oneway {
       def endpointUri = "jms:queue:Orders"
@@ -78,7 +78,7 @@ object Introduction {
   }
   {
     //#CamelActivation
-    import akka.camel.{ CamelMessage, Consumer }
+    import akka.camel.{CamelMessage, Consumer}
     import scala.concurrent.duration._
 
     class MyEndpoint extends Consumer {
@@ -93,13 +93,15 @@ object Introduction {
     val camel = CamelExtension(system)
     val actorRef = system.actorOf(Props[MyEndpoint])
     // get a future reference to the activation of the endpoint of the Consumer Actor
-    val activationFuture = camel.activationFutureFor(actorRef)(timeout = 10 seconds,
+    val activationFuture = camel.activationFutureFor(actorRef)(
+      timeout = 10 seconds,
       executor = system.dispatcher)
     //#CamelActivation
     //#CamelDeactivation
     system.stop(actorRef)
     // get a future reference to the deactivation of the endpoint of the Consumer Actor
-    val deactivationFuture = camel.deactivationFutureFor(actorRef)(timeout = 10 seconds,
+    val deactivationFuture = camel.deactivationFutureFor(actorRef)(
+      timeout = 10 seconds,
       executor = system.dispatcher)
     //#CamelDeactivation
   }

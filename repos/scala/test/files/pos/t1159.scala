@@ -1,5 +1,5 @@
 object test17 {
-  def main(args : Array[String]) = {
+  def main(args: Array[String]) = {
     val value =
       if (false)
         new java.lang.Float(0)

@@ -17,19 +17,32 @@ final class JUnitFramework extends Framework {
     Array(JUnitFingerprint)
   }
 
-  def runner(args: Array[String], remoteArgs: Array[String],
+  def runner(
+      args: Array[String],
+      remoteArgs: Array[String],
       testClassLoader: ClassLoader): JUnitMasterRunner = {
-    new JUnitMasterRunner(args, remoteArgs, testClassLoader,
-        parseRunSettings(args))
+    new JUnitMasterRunner(
+      args,
+      remoteArgs,
+      testClassLoader,
+      parseRunSettings(args))
   }
 
-  def slaveRunner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader, send: String => Unit): JUnitSlaveRunner = {
-    new JUnitSlaveRunner(args, remoteArgs, testClassLoader, send,
-        parseRunSettings(args))
+  def slaveRunner(
+      args: Array[String],
+      remoteArgs: Array[String],
+      testClassLoader: ClassLoader,
+      send: String => Unit): JUnitSlaveRunner = {
+    new JUnitSlaveRunner(
+      args,
+      remoteArgs,
+      testClassLoader,
+      send,
+      parseRunSettings(args))
   }
 
-  def arrayString(arr: Array[String]): String = arr.mkString("Array(", ", ", ")")
+  def arrayString(arr: Array[String]): String =
+    arr.mkString("Array(", ", ", ")")
 
   def parseRunSettings(args: Array[String]): RunSettings = {
     var quiet = false
@@ -53,7 +66,7 @@ final class JUnitFramework extends Framework {
           throw new UnsupportedOperationException("-tests")
 
         case s if s.startsWith("--tests=") =>
-            throw new UnsupportedOperationException("--tests")
+          throw new UnsupportedOperationException("--tests")
 
         case s if s.startsWith("--ignore-runners=") =>
           ignoreRunners = s.substring(17)
@@ -62,16 +75,16 @@ final class JUnitFramework extends Framework {
           runListener = s.substring(15)
 
         case s if s.startsWith("--include-categories=") =>
-            throw new UnsupportedOperationException("--include-categories")
+          throw new UnsupportedOperationException("--include-categories")
 
         case s if s.startsWith("--exclude-categories=") =>
-            throw new UnsupportedOperationException("--exclude-categories")
+          throw new UnsupportedOperationException("--exclude-categories")
 
         case s if s.startsWith("-D") && s.contains("=") =>
-            throw new UnsupportedOperationException("-Dkey=value")
+          throw new UnsupportedOperationException("-Dkey=value")
 
         case s if !s.startsWith("-") && !s.startsWith("+") =>
-            throw new UnsupportedOperationException(s)
+          throw new UnsupportedOperationException(s)
 
         case _ =>
       }
@@ -87,7 +100,13 @@ final class JUnitFramework extends Framework {
         case _    =>
       }
     }
-    new RunSettings(!noColor, decodeScalaNames, quiet, verbose, logAssert,
-        ignoreRunners, logExceptionClass)
+    new RunSettings(
+      !noColor,
+      decodeScalaNames,
+      quiet,
+      verbose,
+      logAssert,
+      ignoreRunners,
+      logExceptionClass)
   }
 }

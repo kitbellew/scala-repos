@@ -44,7 +44,9 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
     val goodMap3 = new PrimitiveKeyOpenHashMap[Int, Int](256)
     assert(goodMap3.size === 0)
     intercept[IllegalArgumentException] {
-      new PrimitiveKeyOpenHashMap[Int, Int](1 << 30 + 1) // Invalid map size: bigger than 2^30
+      new PrimitiveKeyOpenHashMap[Int, Int](
+        1 << 30 + 1
+      ) // Invalid map size: bigger than 2^30
     }
     intercept[IllegalArgumentException] {
       new PrimitiveKeyOpenHashMap[Int, Int](-1)
@@ -102,7 +104,8 @@ class PrimitiveKeyOpenHashMapSuite extends SparkFunSuite with Matchers {
     // Iterate from 101 to 400 to make sure the map grows a couple of times, because we had a
     // bug where changeValue would return the wrong result when the map grew on that insert
     for (i <- 101 to 400) {
-      val res = map.changeValue(i.toLong, { i + "!" }, v => { assert(false); v })
+      val res =
+        map.changeValue(i.toLong, { i + "!" }, v => { assert(false); v })
       assert(res === i + "!")
     }
     assert(map.size === 400)

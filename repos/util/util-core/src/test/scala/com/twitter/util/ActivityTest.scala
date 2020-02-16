@@ -11,8 +11,8 @@ class ActivityTest extends FunSuite {
     val v = Var(Activity.Pending: Activity.State[Int])
     val ref = new AtomicReference[Seq[Activity.State[Int]]]
     val act = Activity(v) flatMap {
-      case i if i%2==0 => Activity.value(-i)
-      case i => Activity.value(i)
+      case i if i % 2 == 0 => Activity.value(-i)
+      case i               => Activity.value(i)
     }
     act.states.build.register(Witness(ref))
 
@@ -47,7 +47,7 @@ class ActivityTest extends FunSuite {
     val v = Var(Activity.Pending: Activity.State[Int])
     val ref = new AtomicReference(Seq.empty: Seq[Try[String]])
     val act = Activity(v) collect {
-      case i if i%2 == 0 => "EVEN%d".format(i)
+      case i if i % 2 == 0 => "EVEN%d".format(i)
     }
     act.values.build.register(Witness(ref))
 
@@ -83,15 +83,19 @@ class ActivityTest extends FunSuite {
     assert(ref.get == Seq(Return(Seq.range(0, 10)), Throw(exc)))
 
     wits(0).notify(Return(100))
-    assert(ref.get == Seq(
-      Return(Seq.range(0, 10)), Throw(exc), Return(100 +: Seq.range(1, 10))))
+    assert(
+      ref.get == Seq(
+        Return(Seq.range(0, 10)),
+        Throw(exc),
+        Return(100 +: Seq.range(1, 10))))
   }
 
   test("Activity.future: produce an initially-pending Activity") {
     assert(Activity.future(Future.never).run.sample == Activity.Pending)
   }
 
-  test("Activity.future: produce an Activity that completes on success of the original Future") {
+  test(
+    "Activity.future: produce an Activity that completes on success of the original Future") {
     val p = new Promise[Int]
     val act = Activity.future(p)
     assert(act.run.sample == Activity.Pending)
@@ -99,7 +103,8 @@ class ActivityTest extends FunSuite {
     assert(act.run.sample == Activity.Ok(4))
   }
 
-  test("Activity.future: produce an Activity that fails on failure of the original Future") {
+  test(
+    "Activity.future: produce an Activity that fails on failure of the original Future") {
     val p = new Promise[Unit]
     val e = new Exception("gooby pls")
     val act = Activity.future(p)
@@ -108,9 +113,9 @@ class ActivityTest extends FunSuite {
     assert(act.run.sample == Activity.Failed(e))
   }
 
-  test("Activity.future: produce an Activity that doesn't propagate " +
-    "cancellation back to the parent future")
-  {
+  test(
+    "Activity.future: produce an Activity that doesn't propagate " +
+      "cancellation back to the parent future") {
     val p = new Promise[Unit]
     val obs = Activity.future(p).run.changes.register(Witness(_ => ()))
     Await.ready(obs.close())
@@ -126,13 +131,13 @@ class ActivityTest extends FunSuite {
     val ref = new AtomicReference(Seq.empty: Seq[Try[Int]])
     val b = a map {
       case 111 => throw exc1
-      case i => i
+      case i   => i
     } flatMap {
       case 222 => throw exc2
-      case i => Activity.value(i)
+      case i   => Activity.value(i)
     } transform {
       case Activity.Ok(333) => throw exc3
-      case other => Activity(Var.value(other))
+      case other            => Activity(Var.value(other))
     }
 
     b.values.build.register(Witness(ref))
@@ -152,11 +157,18 @@ class ActivityTest extends FunSuite {
     assert(ref.get == Seq(Return(1), Throw(exc1), Return(2), Throw(exc2)))
 
     w.notify(Return(3))
-    assert(ref.get == Seq(Return(1), Throw(exc1), Return(2), Throw(exc2), Return(3)))
+    assert(
+      ref.get == Seq(Return(1), Throw(exc1), Return(2), Throw(exc2), Return(3)))
 
     w.notify(Return(333))
-    assert(ref.get == Seq(Return(1), Throw(exc1), Return(2),
-      Throw(exc2), Return(3), Throw(exc3)))
+    assert(
+      ref.get == Seq(
+        Return(1),
+        Throw(exc1),
+        Return(2),
+        Throw(exc2),
+        Return(3),
+        Throw(exc3)))
   }
 
   test("Activity.sample") {
@@ -178,22 +190,29 @@ class ActivityTest extends FunSuite {
     val (b, bw) = Activity[String]()
 
     val ab = Activity.join(a, b)
-    
+
     val ref = new AtomicReference[Seq[Activity.State[(Int, String)]]]
     ab.states.build.register(Witness(ref))
-    
+
     assert(ref.get == Seq(Activity.Pending))
-    
+
     aw.notify(Return(1))
     assert(ref.get == Seq(Activity.Pending, Activity.Pending))
     bw.notify(Return("ok"))
-    assert(ref.get == Seq(Activity.Pending, Activity.Pending, Activity.Ok((1, "ok"))))
-    
+    assert(
+      ref.get == Seq(
+        Activity.Pending,
+        Activity.Pending,
+        Activity.Ok((1, "ok"))))
+
     val exc = new Exception
     aw.notify(Throw(exc))
-    assert(ref.get == Seq(
-      Activity.Pending, Activity.Pending, 
-      Activity.Ok((1, "ok")), Activity.Failed(exc)))
+    assert(
+      ref.get == Seq(
+        Activity.Pending,
+        Activity.Pending,
+        Activity.Ok((1, "ok")),
+        Activity.Failed(exc)))
   }
 
 }

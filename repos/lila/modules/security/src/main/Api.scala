@@ -8,7 +8,7 @@ import play.api.mvc.RequestHeader
 import reactivemongo.bson._
 
 import lila.db.BSON.BSONJodaDateTimeHandler
-import lila.user.{ User, UserRepo }
+import lila.user.{User, UserRepo}
 
 final class Api(
     firewall: Firewall,
@@ -18,27 +18,33 @@ final class Api(
 
   val AccessUri = "access_uri"
 
-  def loginForm = Form(mapping(
-    "username" -> nonEmptyText,
-    "password" -> nonEmptyText
-  )(authenticateUser)(_.map(u => (u.username, "")))
-    .verifying("Invalid username or password", _.isDefined)
-  )
+  def loginForm =
+    Form(
+      mapping(
+        "username" -> nonEmptyText,
+        "password" -> nonEmptyText
+      )(authenticateUser)(_.map(u => (u.username, "")))
+        .verifying("Invalid username or password", _.isDefined))
 
-  def saveAuthentication(userId: String, apiVersion: Option[Int])(implicit req: RequestHeader): Fu[String] =
+  def saveAuthentication(userId: String, apiVersion: Option[Int])(
+      implicit req: RequestHeader): Fu[String] =
     if (tor isExitNode req.remoteAddress) fufail(Api.AuthFromTorExitNode)
-    else UserRepo mustConfirmEmail userId flatMap {
-      case true => fufail(Api MustConfirmEmail userId)
-      case false =>
-        val sessionId = Random nextStringUppercase 12
-        Store.save(sessionId, userId, req, apiVersion) inject sessionId
-    }
+    else
+      UserRepo mustConfirmEmail userId flatMap {
+        case true => fufail(Api MustConfirmEmail userId)
+        case false =>
+          val sessionId = Random nextStringUppercase 12
+          Store.save(sessionId, userId, req, apiVersion) inject sessionId
+      }
 
   // blocking function, required by Play2 form
-  private def authenticateUser(usernameOrEmail: String, password: String): Option[User] =
+  private def authenticateUser(
+      usernameOrEmail: String,
+      password: String): Option[User] =
     (emailAddress.validate(usernameOrEmail) match {
       case Some(email) => UserRepo.authenticateByEmail(email, password)
-      case None        => UserRepo.authenticateById(User normalize usernameOrEmail, password)
+      case None =>
+        UserRepo.authenticateById(User normalize usernameOrEmail, password)
     }) awaitSeconds 2
 
   def restoreUser(req: RequestHeader): Fu[Option[FingerprintedUser]] =
@@ -60,15 +66,15 @@ final class Api(
 
   def locatedOpenSessions(userId: String, nb: Int): Fu[List[LocatedSession]] =
     Store.openSessions(userId, nb) map {
-      _.map { session =>
-        LocatedSession(session, geoIP(session.ip))
-      }
+      _.map { session => LocatedSession(session, geoIP(session.ip)) }
     }
 
   def dedup(userId: String, req: RequestHeader): Funit =
     reqSessionId(req) ?? { Store.dedup(userId, _) }
 
-  def setFingerprint(req: RequestHeader, fingerprint: String): Fu[Option[String]] =
+  def setFingerprint(
+      req: RequestHeader,
+      fingerprint: String): Fu[Option[String]] =
     reqSessionId(req) ?? { Store.setFingerprint(_, fingerprint) map some }
 
   def reqSessionId(req: RequestHeader) = req.session get "sessionId"
@@ -77,26 +83,31 @@ final class Api(
 
   def userIdsSharingFingerprint = userIdsSharingField("fp") _
 
-  private def userIdsSharingField(field: String)(userId: String): Fu[List[String]] =
-    tube.storeColl.distinct(
-      field,
-      BSONDocument("user" -> userId, field -> BSONDocument("$exists" -> true)).some
-    ).flatMap {
+  private def userIdsSharingField(field: String)(
+      userId: String): Fu[List[String]] =
+    tube.storeColl
+      .distinct(
+        field,
+        BSONDocument("user" -> userId, field -> BSONDocument("$exists" -> true)).some
+      )
+      .flatMap {
         case Nil => fuccess(Nil)
-        case values => tube.storeColl.distinct(
-          "user",
-          BSONDocument(
-            field -> BSONDocument("$in" -> values),
-            "user" -> BSONDocument("$ne" -> userId)
-          ).some
-        ) map lila.db.BSON.asStrings
+        case values =>
+          tube.storeColl.distinct(
+            "user",
+            BSONDocument(
+              field -> BSONDocument("$in" -> values),
+              "user" -> BSONDocument("$ne" -> userId)
+            ).some
+          ) map lila.db.BSON.asStrings
       }
 
   def recentUserIdsByFingerprint = recentUserIdsByField("fp") _
 
   def recentUserIdsByIp = recentUserIdsByField("ip") _
 
-  private def recentUserIdsByField(field: String)(value: String): Fu[List[String]] =
+  private def recentUserIdsByField(field: String)(
+      value: String): Fu[List[String]] =
     tube.storeColl.distinct(
       "user",
       BSONDocument(

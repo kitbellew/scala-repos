@@ -9,9 +9,9 @@
 package scala.annotation
 
 /** A method annotation which suppresses the creation of
- *  additional specialized forms based on enclosing specialized
- *  type parameters.
- *
- *  @since 2.10
- */
+  *  additional specialized forms based on enclosing specialized
+  *  type parameters.
+  *
+  *  @since 2.10
+  */
 class unspecialized extends scala.annotation.StaticAnnotation

@@ -10,10 +10,10 @@ package io
 import java.io.InputStream
 
 /** A distinguished object so you can avoid both null
- *  and Option.
- *
- *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
- */
+  *  and Option.
+  *
+  *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
+  */
 object NoAbstractFile extends AbstractFile {
   def absolute: AbstractFile = this
   def container: AbstractFile = this

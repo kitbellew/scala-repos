@@ -10,8 +10,8 @@ class A {
   }
 
   def f3(x: Int) = x match {
-    case _ => x
-    case 5 if true  => x // unreachable
+    case _         => x
+    case 5 if true => x // unreachable
   }
 
   def test1(x: Int) = x match {

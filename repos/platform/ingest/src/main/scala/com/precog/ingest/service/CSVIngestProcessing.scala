@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -45,9 +45,17 @@ import scala.annotation.tailrec
 
 import scalaz._
 
-class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, batchSize: Int, tmpdir: File, ingestStore: IngestStore)(implicit M: Monad[Future]) extends IngestProcessing {
+class CSVIngestProcessing(
+    apiKey: APIKey,
+    path: Path,
+    authorities: Authorities,
+    batchSize: Int,
+    tmpdir: File,
+    ingestStore: IngestStore)(implicit M: Monad[Future])
+    extends IngestProcessing {
 
-  def forRequest(request: HttpRequest[_]): ValidationNel[String, IngestProcessor] = {
+  def forRequest(
+      request: HttpRequest[_]): ValidationNel[String, IngestProcessor] = {
     val delimiter = request.parameters get 'delimiter
     val quote = request.parameters get 'quote
     val escape = request.parameters get 'escape
@@ -55,13 +63,21 @@ class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, 
     Success(new IngestProcessor(delimiter, quote, escape))
   }
 
-  final class IngestProcessor(delimiter: Option[String], quote: Option[String], escape: Option[String]) extends IngestProcessorLike with Logging {
+  final class IngestProcessor(
+      delimiter: Option[String],
+      quote: Option[String],
+      escape: Option[String])
+      extends IngestProcessorLike
+      with Logging {
     import scalaz.syntax.apply._
     import scalaz.Validation._
 
-    def writeChunkStream(chan: WritableByteChannel, chunk: ByteChunk): Future[Long] = {
+    def writeChunkStream(
+        chan: WritableByteChannel,
+        chunk: ByteChunk): Future[Long] = {
       chunk match {
-        case Left(bytes) => writeChannel(chan, bytes :: StreamT.empty[Future, Array[Byte]], 0L)
+        case Left(bytes) =>
+          writeChannel(chan, bytes :: StreamT.empty[Future, Array[Byte]], 0L)
         case Right(stream) => writeChannel(chan, stream, 0L)
       }
     }
@@ -69,10 +85,14 @@ class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, 
     def writeToFile(byteStream: ByteChunk): Future[(File, Long)] = {
       val file = File.createTempFile("async-ingest-", null, tmpdir)
       val outChannel = new FileOutputStream(file).getChannel()
-      for (written <- writeChunkStream(outChannel, byteStream)) yield (file, written)
+      for (written <- writeChunkStream(outChannel, byteStream))
+        yield (file, written)
     }
 
-    final private def writeChannel(chan: WritableByteChannel, stream: StreamT[Future, Array[Byte]], written: Long): Future[Long] = {
+    final private def writeChannel(
+        chan: WritableByteChannel,
+        stream: StreamT[Future, Array[Byte]],
+        written: Long): Future[Long] = {
       stream.uncons flatMap {
         case Some((bytes, tail)) =>
           val written0 = chan.write(ByteBuffer.wrap(bytes))
@@ -84,30 +104,36 @@ class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, 
     }
 
     def readerBuilder: ValidationNel[String, java.io.Reader => CSVReader] = {
-      def charOrError(s: Option[String], default: Char): ValidationNel[String, Char] = {
+      def charOrError(
+          s: Option[String],
+          default: Char): ValidationNel[String, Char] = {
         s map {
           case s if s.length == 1 => success(s.charAt(0))
-          case _ => failure("Expected a single character but found a string.")
+          case _                  => failure("Expected a single character but found a string.")
         } getOrElse {
           success(default)
         } toValidationNel
       }
 
       val delimiterV = charOrError(delimiter, ',')
-      val quoteV     = charOrError(quote, '"')
-      val escapeV    = charOrError(escape, '\\')
+      val quoteV = charOrError(quote, '"')
+      val escapeV = charOrError(escape, '\\')
 
-      (delimiterV |@| quoteV |@| escapeV) { (delimiter, quote, escape) =>
-        (reader: java.io.Reader) => new CSVReader(reader, delimiter, quote, escape)
+      (delimiterV |@| quoteV |@| escapeV) {
+        (delimiter, quote, escape) => (reader: java.io.Reader) =>
+          new CSVReader(reader, delimiter, quote, escape)
       }
     }
 
-    @tailrec final def readBatch(reader: CSVReader, batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) = {
+    @tailrec final def readBatch(
+        reader: CSVReader,
+        batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) = {
       if (batch.size >= batchSize) {
         (false, batch)
       } else {
         val nextRow = reader.readNext()
-        if (nextRow == null) (true, batch) else readBatch(reader, batch :+ nextRow)
+        if (nextRow == null) (true, batch)
+        else readBatch(reader, batch :+ nextRow)
       }
     }
 
@@ -118,49 +144,88 @@ class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, 
       * the header a,a,a will create objects of the form `{a:[_, _, _]}`.
       */
     def normalizeHeaders(headers: Array[String]): Array[JPath] = {
-      val positions = headers.zipWithIndex.foldLeft(Map.empty[String, List[Int]]) {
-        case (hdrs, (h, i)) =>
-          val pos = i :: hdrs.getOrElse(h, Nil)
-          hdrs + (h -> pos)
-      }
+      val positions =
+        headers.zipWithIndex.foldLeft(Map.empty[String, List[Int]]) {
+          case (hdrs, (h, i)) =>
+            val pos = i :: hdrs.getOrElse(h, Nil)
+            hdrs + (h -> pos)
+        }
 
-      positions.toList.flatMap {
-        case (h, Nil) =>
-          Nil
-        case (h, pos :: Nil) =>
-          (pos -> JPath(JPathField(h))) :: Nil
-        case (h, ps) =>
-          ps.reverse.zipWithIndex map { case (pos, i) =>
-              (pos -> JPath(JPathField(h), JPathIndex(i)))
-          }
-      }.sortBy(_._1).map(_._2).toArray
+      positions.toList
+        .flatMap {
+          case (h, Nil) =>
+            Nil
+          case (h, pos :: Nil) =>
+            (pos -> JPath(JPathField(h))) :: Nil
+          case (h, ps) =>
+            ps.reverse.zipWithIndex map {
+              case (pos, i) =>
+                (pos -> JPath(JPathField(h), JPathIndex(i)))
+            }
+        }
+        .sortBy(_._1)
+        .map(_._2)
+        .toArray
     }
 
-    def ingestSync(reader: CSVReader, jobId: Option[JobId], streamRef: StreamRef): Future[IngestResult] = {
-      def readBatches(paths: Array[JPath], reader: CSVReader, total: Int, ingested: Int, errors: Vector[(Int, String)]): Future[IngestResult] = {
+    def ingestSync(
+        reader: CSVReader,
+        jobId: Option[JobId],
+        streamRef: StreamRef): Future[IngestResult] = {
+      def readBatches(
+          paths: Array[JPath],
+          reader: CSVReader,
+          total: Int,
+          ingested: Int,
+          errors: Vector[(Int, String)]): Future[IngestResult] = {
         // TODO: handle errors in readBatch
-        M.point(readBatch(reader, Vector())) flatMap { case (done, batch) =>
-          if (batch.isEmpty) {
-            // the batch will only be empty if there's nothing left to read, but the batch size 
-            // boundary was hit on the previous read and so it was not discovered that we didn't
-            // need to continue until now. This could be cleaner via a more CPS'ed style, but meh.
-            // This empty record is just stored to send the terminated streamRef.
-            ingestStore.store(apiKey, path, authorities, Nil, jobId, streamRef.terminate) flatMap { _ =>
-              M.point(BatchResult(total, ingested, errors))
-            }
-          } else {
-            val types = CsvType.inferTypes(batch.iterator)
-            val jvals = batch map { row =>
-              (paths zip types zip row).foldLeft(JUndefined: JValue) { case (obj, ((path, tpe), s)) =>
-                  JValue.unsafeInsert(obj, path, tpe(s))
+        M.point(readBatch(reader, Vector())) flatMap {
+          case (done, batch) =>
+            if (batch.isEmpty) {
+              // the batch will only be empty if there's nothing left to read, but the batch size
+              // boundary was hit on the previous read and so it was not discovered that we didn't
+              // need to continue until now. This could be cleaner via a more CPS'ed style, but meh.
+              // This empty record is just stored to send the terminated streamRef.
+              ingestStore.store(
+                apiKey,
+                path,
+                authorities,
+                Nil,
+                jobId,
+                streamRef.terminate) flatMap { _ =>
+                M.point(BatchResult(total, ingested, errors))
+              }
+            } else {
+              val types = CsvType.inferTypes(batch.iterator)
+              val jvals = batch map { row =>
+                (paths zip types zip row).foldLeft(JUndefined: JValue) {
+                  case (obj, ((path, tpe), s)) =>
+                    JValue.unsafeInsert(obj, path, tpe(s))
+                }
+              }
+
+              ingestStore.store(
+                apiKey,
+                path,
+                authorities,
+                jvals,
+                jobId,
+                if (done) streamRef.terminate else streamRef) flatMap { _ =>
+                if (done)
+                  M.point(
+                    BatchResult(
+                      total + batch.length,
+                      ingested + batch.length,
+                      errors))
+                else
+                  readBatches(
+                    paths,
+                    reader,
+                    total + batch.length,
+                    ingested + batch.length,
+                    errors)
               }
             }
-
-            ingestStore.store(apiKey, path, authorities, jvals, jobId, if (done) streamRef.terminate else streamRef) flatMap { _ =>
-              if (done) M.point(BatchResult(total + batch.length, ingested + batch.length, errors))
-              else readBatches(paths, reader, total + batch.length, ingested + batch.length, errors)
-            }
-          }
         }
       }
 
@@ -173,18 +238,23 @@ class CSVIngestProcessing(apiKey: APIKey, path: Path, authorities: Authorities, 
       }
     }
 
-    def ingest(durability: Durability, errorHandling: ErrorHandling, storeMode: WriteMode, data: ByteChunk): Future[IngestResult] = {
+    def ingest(
+        durability: Durability,
+        errorHandling: ErrorHandling,
+        storeMode: WriteMode,
+        data: ByteChunk): Future[IngestResult] = {
       readerBuilder map { f =>
         for {
           (file, size) <- writeToFile(data)
-          result <- ingestSync(f(new InputStreamReader(new FileInputStream(file), "UTF-8")), durability.jobId, StreamRef.forWriteMode(storeMode, false))
+          result <- ingestSync(
+            f(new InputStreamReader(new FileInputStream(file), "UTF-8")),
+            durability.jobId,
+            StreamRef.forWriteMode(storeMode, false))
         } yield {
           file.delete()
           result
         }
-      } valueOr { errors =>
-        M.point(NotIngested(errors.list.mkString("; ")))
-      }
+      } valueOr { errors => M.point(NotIngested(errors.list.mkString("; "))) }
     }
   }
 }

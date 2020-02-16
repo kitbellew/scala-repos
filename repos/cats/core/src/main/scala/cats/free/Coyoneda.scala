@@ -2,11 +2,11 @@ package cats
 package free
 
 /**
- * The dual view of the Yoneda lemma. Also a free functor on `F`.
- * This is isomorphic to `F` as long as `F` itself is a functor.
- * The homomorphism from `F[A]` to `Coyoneda[F,A]` exists even when
- * `F` is not a functor.
- */
+  * The dual view of the Yoneda lemma. Also a free functor on `F`.
+  * This is isomorphic to `F` as long as `F` itself is a functor.
+  * The homomorphism from `F[A]` to `Coyoneda[F,A]` exists even when
+  * `F` is not a functor.
+  */
 sealed abstract class Coyoneda[F[_], A] extends Serializable { self =>
 
   /** The pivot between `fi` and `k`, usually existential. */
@@ -30,9 +30,9 @@ sealed abstract class Coyoneda[F[_], A] extends Serializable { self =>
     }
 
   /**
-   * Simple function composition. Allows map fusion without touching
-   * the underlying `F`.
-   */
+    * Simple function composition. Allows map fusion without touching
+    * the underlying `F`.
+    */
   final def map[B](f: A => B): Aux[F, B, Pivot] =
     apply(fi)(f compose k)
 
@@ -42,6 +42,7 @@ sealed abstract class Coyoneda[F[_], A] extends Serializable { self =>
 }
 
 object Coyoneda {
+
   /** Lift the `Pivot` type member to a parameter. It is usually more
     * convenient to use `Aux` than a structural type.
     */
@@ -59,8 +60,8 @@ object Coyoneda {
     }
 
   /**
-   * As the free functor, `Coyoneda[F, ?]` provides a functor for any `F`.
-   */
+    * As the free functor, `Coyoneda[F, ?]` provides a functor for any `F`.
+    */
   implicit def coyonedaFunctor[F[_]]: Functor[Coyoneda[F, ?]] =
     new Functor[Coyoneda[F, ?]] {
       def map[A, B](cfa: Coyoneda[F, A])(f: A => B): Coyoneda[F, B] = cfa map f

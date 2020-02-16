@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,10 +26,11 @@ import com.precog.common._
 trait ClusteringSpecs extends EvalStackSpecs {
   import stack._
 
-  def clusterSchema(obj: Map[String, SValue]): List[String] = obj("cluster1") match {
-    case SObject(ctr) => ctr.keys.toList.sorted
-    case _ => sys.error("malformed SObject")
-  }
+  def clusterSchema(obj: Map[String, SValue]): List[String] =
+    obj("cluster1") match {
+      case SObject(ctr) => ctr.keys.toList.sorted
+      case _            => sys.error("malformed SObject")
+    }
 
   def testmodel(model: Map[String, SValue], validClusters: Set[String]) = {
     model.keys mustEqual Set("clusterId", "clusterCenter")
@@ -41,10 +42,11 @@ trait ClusteringSpecs extends EvalStackSpecs {
       case SObject(v) => v.keys mustEqual Set("HeightIncm", "Weight")
     }
   }
-  
+
   "clustering" should {
     "return correctly structured results in simple case" in {
-      val input = """
+      val input =
+        """
           medals := //summer_games/london_medals
           h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
           w := medals.Weight where std::type::isNumber(medals.Weight)
@@ -59,16 +61,18 @@ trait ClusteringSpecs extends EvalStackSpecs {
         case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
-          elems("model1") must beLike { case SObject(clusters) =>
-            clusters must haveSize(3)
-            clusters.keys mustEqual Set("cluster1", "cluster2", "cluster3")
-            clusterSchema(clusters) must_== List("height", "weight")
+          elems("model1") must beLike {
+            case SObject(clusters) =>
+              clusters must haveSize(3)
+              clusters.keys mustEqual Set("cluster1", "cluster2", "cluster3")
+              clusterSchema(clusters) must_== List("height", "weight")
           }
       }
     }
 
     "assign values to a cluster" in {
-      val input = """
+      val input =
+        """
           medals := //summer_games/london_medals
 
           h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -79,7 +83,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
           std::stats::assignClusters(medals, clustering)
         """.stripMargin
 
-      val input2 = """ 
+      val input2 =
+        """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -136,7 +141,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to original data" in {
-      val input = """
+      val input =
+        """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -149,7 +155,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
         --assignments with { points: medals }
       """.stripMargin
 
-      val input2 = """ 
+      val input2 =
+        """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -162,7 +169,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to original data when clustering is `new`ed" in {
-      val input = """
+      val input =
+        """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -176,7 +184,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
         medals with { cluster: assignments }
       """.stripMargin
 
-      val input2 = """ 
+      val input2 =
+        """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -189,7 +198,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to clustering when clustering is `new`ed" in {
-      val input = """
+      val input =
+        """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -203,7 +213,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
         clustering with { cluster: assignments }
       """.stripMargin
 
-      val input2 = """ 
+      val input2 =
+        """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -230,7 +241,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
           elems("model1") must beLike {
             case SObject(obj) =>
-              obj.keys mustEqual(validClusters)
+              obj.keys mustEqual (validClusters)
           }
 
           elems("cluster") must beLike {
@@ -245,7 +256,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "make a histogram of clusters" in {
-      val input = """
+      val input =
+        """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -269,7 +281,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       results must haveAllElementsLike {
         case (ids, SObject(elems)) =>
-          elems.keys mustEqual Set("numPtsInCluster", "clusterId") 
+          elems.keys mustEqual Set("numPtsInCluster", "clusterId")
           elems("numPtsInCluster") must beLike {
             case SDecimal(d) => d must be_>=(BigDecimal(1))
           }
@@ -280,7 +292,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "assign values to a cluster when field names of cluster aren't present in data" in {
-      val input = """
+      val input =
+        """
           medals := //summer_games/london_medals
           clustering := std::stats::kMedians({ foo: medals.HeightIncm, bar: medals.Weight }, 4)
 
@@ -384,30 +397,33 @@ trait ClusteringSpecs extends EvalStackSpecs {
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
           elems("model1") must beLike {
-            case SObject(obj) => obj.keySet mustEqual (1 to 6).map("cluster" + _).toSet
+            case SObject(obj) =>
+              obj.keySet mustEqual (1 to 6).map("cluster" + _).toSet
           }
       }
     }
-    
+
     "evaluate an invalid clustering query without exploding" in {
-      val input = """
+      val input =
+        """
         | locations := //devices
         | 
         | model := std::stats::kMedians({x: locations.x, y: locations.y }, 5)
         | std::stats::assignClusters(model, locations)
         | """.stripMargin
-        
+
       eval(input) must beEmpty
     }
-    
+
     "evaluate an valid clustering query without exploding" in {
-      val input = """
+      val input =
+        """
         | locations := //devices
         | 
         | model := std::stats::kMedians({x: locations.x, y: locations.y }, 5)
         | std::stats::assignClusters(locations, model)
         | """.stripMargin
-        
+
       eval(input) must not(beEmpty)
     }
   }

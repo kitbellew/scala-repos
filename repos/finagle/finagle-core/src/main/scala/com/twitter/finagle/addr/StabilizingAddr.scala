@@ -9,7 +9,7 @@ import com.twitter.util.{Future, Time, Timer, Duration, Var}
 import scala.collection.immutable.Queue
 
 private[finagle] object StabilizingAddr {
-  private[finagle/*(testing*/] object State extends Enumeration {
+  private[finagle /*(testing*/ ] object State extends Enumeration {
     type Health = Value
     // explicitly define intuitive ids as they
     // are exported for stats.
@@ -22,24 +22,24 @@ private[finagle] object StabilizingAddr {
     q exists { case (e, _) => e == elem }
 
   /**
-   * A StabilizingAddr conservatively removes elements from a bound
-   * Addr depending on the source health (exposed through `pulse`).
-   * More specifically, removes are delayed until the source is in a
-   * healthy state for at least `grace` period.
-   *
-   * @param addr An offer for underlying address updates.
-   * @param pulse An offer for communicating group health.
-   *        Invariant: The offer should communicate Health in FIFO order
-   *        with respect to time.
-   * @param grace The duration that must elapse before an element
-   *        is removed from the group.
-   */
+    * A StabilizingAddr conservatively removes elements from a bound
+    * Addr depending on the source health (exposed through `pulse`).
+    * More specifically, removes are delayed until the source is in a
+    * healthy state for at least `grace` period.
+    *
+    * @param addr An offer for underlying address updates.
+    * @param pulse An offer for communicating group health.
+    *        Invariant: The offer should communicate Health in FIFO order
+    *        with respect to time.
+    * @param grace The duration that must elapse before an element
+    *        is removed from the group.
+    */
   def apply(
-    addr: Offer[Addr],
-    pulse: Offer[State.Health],
-    grace: Duration,
-    statsReceiver: StatsReceiver = NullStatsReceiver,
-    timer: Timer = DefaultTimer.twitter
+      addr: Offer[Addr],
+      pulse: Offer[State.Health],
+      grace: Duration,
+      statsReceiver: StatsReceiver = NullStatsReceiver,
+      timer: Timer = DefaultTimer.twitter
   ): Offer[Addr] = new Offer[Addr] {
     import State._
 
@@ -53,11 +53,11 @@ private[finagle] object StabilizingAddr {
     val stabilized = new Broker[Addr]
 
     /**
-     * Exclusively maintains the elements in current
-     * based on adds, removes, and health transitions.
-     * Removes are delayed for grace period and each health
-     * transition resets the grace period.
-     */
+      * Exclusively maintains the elements in current
+      * based on adds, removes, and health transitions.
+      * Removes are delayed for grace period and each health
+      * transition resets the grace period.
+      */
     def loop(
         remq: Queue[(Address, Time)],
         h: Health,
@@ -83,9 +83,8 @@ private[finagle] object StabilizingAddr {
               loop(remq, newh, active, needPush, srcAddr)
           }
         },
-
         addr map {
-          case addr@Addr.Bound(newSet, _) =>
+          case addr @ Addr.Bound(newSet, _) =>
             // Update our pending queue so that newly added
             // entries aren't later removed.
             var q = remq filter { case (e, _) => !(newSet contains e) }
@@ -106,7 +105,6 @@ private[finagle] object StabilizingAddr {
 
             loop(q, h, active, true, addr)
         },
-
         if (h != Healthy || remq.isEmpty) Offer.never
         else {
           // Note: remq is ordered by 'until' time.
@@ -115,13 +113,13 @@ private[finagle] object StabilizingAddr {
             loop(nextq, h, active - elem, true, srcAddr)
           }
         },
-
-        if (!needPush) Offer.never else {
+        if (!needPush) Offer.never
+        else {
           // We always bind if active is nonempty. Otherwise we
           // pass through the current active address.
           val attrs = srcAddr match {
             case Addr.Bound(_, attrs) => attrs
-            case _ => Addr.Metadata.empty
+            case _                    => Addr.Metadata.empty
           }
           val addr =
             if (active.nonEmpty) Addr.Bound(active, attrs)

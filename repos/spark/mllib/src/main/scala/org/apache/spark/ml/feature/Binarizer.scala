@@ -31,24 +31,30 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
 /**
- * :: Experimental ::
- * Binarize a column of continuous features given a threshold.
- */
+  * :: Experimental ::
+  * Binarize a column of continuous features given a threshold.
+  */
 @Experimental
 final class Binarizer(override val uid: String)
-  extends Transformer with HasInputCol with HasOutputCol with DefaultParamsWritable {
+    extends Transformer
+    with HasInputCol
+    with HasOutputCol
+    with DefaultParamsWritable {
 
   def this() = this(Identifiable.randomUID("binarizer"))
 
   /**
-   * Param for threshold used to binarize continuous features.
-   * The features greater than the threshold, will be binarized to 1.0.
-   * The features equal to or less than the threshold, will be binarized to 0.0.
-   * Default: 0.0
-   * @group param
-   */
+    * Param for threshold used to binarize continuous features.
+    * The features greater than the threshold, will be binarized to 1.0.
+    * The features equal to or less than the threshold, will be binarized to 0.0.
+    * Default: 0.0
+    * @group param
+    */
   val threshold: DoubleParam =
-    new DoubleParam(this, "threshold", "threshold used to binarize continuous features")
+    new DoubleParam(
+      this,
+      "threshold",
+      "threshold used to binarize continuous features")
 
   /** @group getParam */
   def getThreshold: Double = $(threshold)
@@ -78,7 +84,7 @@ final class Binarizer(override val uid: String)
       data.foreachActive { (index, value) =>
         if (value > td) {
           indices += index
-          values +=  1.0
+          values += 1.0
         }
       }
 
@@ -89,9 +95,13 @@ final class Binarizer(override val uid: String)
 
     inputType match {
       case DoubleType =>
-        dataset.select(col("*"), binarizerDouble(col($(inputCol))).as($(outputCol), metadata))
+        dataset.select(
+          col("*"),
+          binarizerDouble(col($(inputCol))).as($(outputCol), metadata))
       case _: VectorUDT =>
-        dataset.select(col("*"), binarizerVector(col($(inputCol))).as($(outputCol), metadata))
+        dataset.select(
+          col("*"),
+          binarizerVector(col($(inputCol))).as($(outputCol), metadata))
     }
   }
 
@@ -105,11 +115,13 @@ final class Binarizer(override val uid: String)
       case _: VectorUDT =>
         new StructField(outputColName, new VectorUDT, true)
       case other =>
-        throw new IllegalArgumentException(s"Data type $other is not supported.")
+        throw new IllegalArgumentException(
+          s"Data type $other is not supported.")
     }
 
     if (schema.fieldNames.contains(outputColName)) {
-      throw new IllegalArgumentException(s"Output column $outputColName already exists.")
+      throw new IllegalArgumentException(
+        s"Output column $outputColName already exists.")
     }
     StructType(schema.fields :+ outCol)
   }

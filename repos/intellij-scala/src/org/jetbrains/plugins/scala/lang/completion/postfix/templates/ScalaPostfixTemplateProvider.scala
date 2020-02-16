@@ -8,17 +8,22 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.containers.ContainerUtil
 
 /**
- * @author Roman.Shein
- * @since 03.09.2015.
- */
+  * @author Roman.Shein
+  * @since 03.09.2015.
+  */
 class ScalaPostfixTemplateProvider extends PostfixTemplateProvider {
-  override def getTemplates: util.Set[PostfixTemplate] = ScalaPostfixTemplateProvider.templates
+  override def getTemplates: util.Set[PostfixTemplate] =
+    ScalaPostfixTemplateProvider.templates
 
-  override def isTerminalSymbol(currentChar: Char): Boolean = currentChar == '.' || currentChar == '!'
+  override def isTerminalSymbol(currentChar: Char): Boolean =
+    currentChar == '.' || currentChar == '!'
 
   override def preExpand(file: PsiFile, editor: Editor): Unit = {}
 
-  override def preCheck(copyFile: PsiFile, realEditor: Editor, currentOffset: Int): PsiFile = copyFile
+  override def preCheck(
+      copyFile: PsiFile,
+      realEditor: Editor,
+      currentOffset: Int): PsiFile = copyFile
 
   override def afterExpand(file: PsiFile, editor: Editor): Unit = {}
 }

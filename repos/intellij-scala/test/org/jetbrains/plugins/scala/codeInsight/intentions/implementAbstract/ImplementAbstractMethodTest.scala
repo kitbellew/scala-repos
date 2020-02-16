@@ -6,9 +6,9 @@ import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * Nikolay.Tropin
- * 12/27/13
- */
+  * Nikolay.Tropin
+  * 12/27/13
+  */
 class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   def familyName: String = new ImplementAbstractMethodAction().getFamilyName
 

@@ -1,8 +1,3 @@
-
-
-
-
-
 object Test {
 
   class Empty extends Traversable[Nothing] {

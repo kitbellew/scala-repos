@@ -1,11 +1,27 @@
 package spire
 
-import spire.algebra.{Eq, EuclideanRing, Field, PartialOrder, Order, Ring, Signed}
+import spire.algebra.{
+  Eq,
+  EuclideanRing,
+  Field,
+  PartialOrder,
+  Order,
+  Ring,
+  Signed
+}
 import spire.math.{ConvertableFrom, ConvertableTo}
-import spire.math.{ScalaEquivWrapper, ScalaFractionalWrapper, ScalaIntegralWrapper, ScalaNumericWrapper, ScalaPartialOrderingWrapper, ScalaOrderingWrapper}
+import spire.math.{
+  ScalaEquivWrapper,
+  ScalaFractionalWrapper,
+  ScalaIntegralWrapper,
+  ScalaNumericWrapper,
+  ScalaPartialOrderingWrapper,
+  ScalaOrderingWrapper
+}
 
 private[spire] trait CompatPriority1 {
-  implicit def numeric[A: Ring: ConvertableFrom: Signed: Order]: scala.math.Numeric[A] =
+  implicit def numeric[A: Ring: ConvertableFrom: Signed: Order]
+      : scala.math.Numeric[A] =
     new ScalaNumericWrapper[A] {
       val partialOrder = PartialOrder[A]
       val order = Order[A]
@@ -31,7 +47,8 @@ private[spire] trait CompatPriority1 {
 }
 
 private[spire] trait CompatPriority2 extends CompatPriority1 {
-  implicit def fractional[A: Field: ConvertableFrom: Signed: Order]: scala.math.Fractional[A] =
+  implicit def fractional[A: Field: ConvertableFrom: Signed: Order]
+      : scala.math.Fractional[A] =
     new ScalaFractionalWrapper[A] {
       val order = Order[A]
       val structure = Field[A]
@@ -41,7 +58,8 @@ private[spire] trait CompatPriority2 extends CompatPriority1 {
 }
 
 private[spire] trait CompatPriority3 extends CompatPriority2 {
-  implicit def integral[A: EuclideanRing: ConvertableFrom: Signed: Order]: scala.math.Integral[A] =
+  implicit def integral[A: EuclideanRing: ConvertableFrom: Signed: Order]
+      : scala.math.Integral[A] =
     new ScalaIntegralWrapper[A] {
       val order = Order[A]
       val structure = EuclideanRing[A]

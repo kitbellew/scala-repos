@@ -9,8 +9,8 @@
 package scala.beans
 
 /** This annotation has the same functionality as
- *  `scala.beans.BeanProperty`, but the generated Bean getter will be
- *  named `isFieldName` instead of `getFieldName`.
- */
+  *  `scala.beans.BeanProperty`, but the generated Bean getter will be
+  *  named `isFieldName` instead of `getFieldName`.
+  */
 @scala.annotation.meta.field
 class BooleanBeanProperty extends scala.annotation.StaticAnnotation

@@ -11,12 +11,11 @@ trait SchedulerDriverFactory {
 }
 
 class MesosSchedulerDriverFactory @Inject() (
-  holder: MarathonSchedulerDriverHolder,
-  config: MarathonConf,
-  httpConfig: HttpConf,
-  frameworkIdUtil: FrameworkIdUtil,
-  scheduler: MarathonScheduler)
-
+    holder: MarathonSchedulerDriverHolder,
+    config: MarathonConf,
+    httpConfig: HttpConf,
+    frameworkIdUtil: FrameworkIdUtil,
+    scheduler: MarathonScheduler)
     extends SchedulerDriverFactory {
 
   /**
@@ -25,7 +24,11 @@ class MesosSchedulerDriverFactory @Inject() (
   override def createDriver(): SchedulerDriver = {
     implicit val zkTimeout = config.zkTimeoutDuration
     val frameworkId = frameworkIdUtil.fetch()
-    val driver = MarathonSchedulerDriver.newDriver(config, httpConfig, scheduler, frameworkId)
+    val driver = MarathonSchedulerDriver.newDriver(
+      config,
+      httpConfig,
+      scheduler,
+      frameworkId)
     holder.driver = Some(driver)
     driver
   }

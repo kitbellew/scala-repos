@@ -9,25 +9,28 @@ import org.apache.spark.mllib.linalg.Vectors
 
 // CHANGED
 case class RandomForestAlgorithmParams(
-  numClasses: Int,
-  numTrees: Int,
-  featureSubsetStrategy: String,
-  impurity: String,
-  maxDepth: Int,
-  maxBins: Int
+    numClasses: Int,
+    numTrees: Int,
+    featureSubsetStrategy: String,
+    impurity: String,
+    maxDepth: Int,
+    maxBins: Int
 ) extends Params
 
 class PIORandomForestModel(
-  val gendersMap: Map[String, Double],
-  val educationMap: Map[String, Double],
-  val randomForestModel: RandomForestModel
+    val gendersMap: Map[String, Double],
+    val educationMap: Map[String, Double],
+    val randomForestModel: RandomForestModel
 ) extends Serializable
 
 // extends P2LAlgorithm because the MLlib's RandomForestModel doesn't
 // contain RDD.
 class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
-  extends P2LAlgorithm[PreparedData, PIORandomForestModel, // CHANGED
-  Query, PredictedResult] {
+    extends P2LAlgorithm[
+      PreparedData,
+      PIORandomForestModel, // CHANGED
+      Query,
+      PredictedResult] {
 
   def train(data: PreparedData): PIORandomForestModel = { // CHANGED
     // CHANGED
@@ -42,25 +45,25 @@ class RandomForestAlgorithm(val ap: RandomForestAlgorithmParams) // CHANGED
       ap.impurity,
       ap.maxDepth,
       ap.maxBins)
-   new PIORandomForestModel(
-    gendersMap = data.gendersMap,
-    educationMap = data.educationMap,
-    randomForestModel = m
-   )
+    new PIORandomForestModel(
+      gendersMap = data.gendersMap,
+      educationMap = data.educationMap,
+      randomForestModel = m
+    )
   }
 
   def predict(
-    model: PIORandomForestModel, // CHANGED
-    query: Query): PredictedResult = {
+      model: PIORandomForestModel, // CHANGED
+      query: Query): PredictedResult = {
     val gendersMap = model.gendersMap
     val educationMap = model.educationMap
     val randomForestModel = model.randomForestModel
     val label = randomForestModel.predict(
-      Vectors.dense(Array(
-        gendersMap(query.gender),
-        query.age.toDouble,
-        educationMap(query.education))
-      ))
+      Vectors.dense(
+        Array(
+          gendersMap(query.gender),
+          query.age.toDouble,
+          educationMap(query.education))))
     new PredictedResult(label)
   }
 

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding.serialization
 
 import org.scalacheck.Arbitrary
@@ -45,12 +45,13 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
       (a.length == b.length) && go(0)
     }
   }
-  implicit def teq[T1: Equiv, T2: Equiv]: Equiv[(T1, T2)] = new Equiv[(T1, T2)] {
-    def equiv(a: (T1, T2), b: (T1, T2)) = {
-      Equiv[T1].equiv(a._1, b._1) &&
+  implicit def teq[T1: Equiv, T2: Equiv]: Equiv[(T1, T2)] =
+    new Equiv[(T1, T2)] {
+      def equiv(a: (T1, T2), b: (T1, T2)) = {
+        Equiv[T1].equiv(a._1, b._1) &&
         Equiv[T2].equiv(a._2, b._2)
+      }
     }
-  }
 
   def writerReader[T: Writer: Reader: Equiv](g: Gen[T]): Prop =
     forAll(g) { t =>
@@ -61,12 +62,14 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
   def writerReader[T: Writer: Reader: Equiv: Arbitrary]: Prop =
     writerReader(implicitly[Arbitrary[T]].arbitrary)
 
-  def writerReaderCollection[T: Writer: Reader, C <: Iterable[T]: Arbitrary: Equiv](implicit cbf: CanBuildFrom[Nothing, T, C]): Prop =
-    {
-      implicit val cwriter = Writer.collection[T, C]
-      implicit val creader = Reader.collection[T, C]
-      writerReader(implicitly[Arbitrary[C]].arbitrary)
-    }
+  def writerReaderCollection[
+      T: Writer: Reader,
+      C <: Iterable[T]: Arbitrary: Equiv](
+      implicit cbf: CanBuildFrom[Nothing, T, C]): Prop = {
+    implicit val cwriter = Writer.collection[T, C]
+    implicit val creader = Reader.collection[T, C]
+    writerReader(implicitly[Arbitrary[C]].arbitrary)
+  }
 
   /*
    * Test the Writer/Reader type-classes

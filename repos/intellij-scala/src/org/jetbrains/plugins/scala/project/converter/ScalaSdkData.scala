@@ -4,7 +4,11 @@ package project.converter
 import java.io.{File, StringReader}
 
 import com.google.common.io.Files
-import com.intellij.conversion.{CannotConvertException, ConversionContext, ModuleSettings}
+import com.intellij.conversion.{
+  CannotConvertException,
+  ConversionContext,
+  ModuleSettings
+}
 import com.intellij.openapi.components.StorageScheme
 import org.jdom.input.SAXBuilder
 import org.jdom.xpath.XPath
@@ -15,9 +19,13 @@ import scala.collection.JavaConverters._
 import scala.xml.{Elem, PrettyPrinter}
 
 /**
- * @author Pavel Fatin
- */
-private case class ScalaSdkData(name: String, standardLibrary: LibraryData, languageLevel: String, compilerClasspath: Seq[String]) {
+  * @author Pavel Fatin
+  */
+private case class ScalaSdkData(
+    name: String,
+    standardLibrary: LibraryData,
+    languageLevel: String,
+    compilerClasspath: Seq[String]) {
   def isEquivalentTo(compilerLibrary: LibraryData): Boolean =
     compilerClasspath.toSet == compilerLibrary.classesAsFileUrls.toSet
 
@@ -25,7 +33,7 @@ private case class ScalaSdkData(name: String, standardLibrary: LibraryData, lang
     val id = LibraryReference(ProjectLevel, name)
     id.addTo(module)
   }
-  
+
   def createIn(context: ConversionContext): Option[File] = {
     val libraryElement = createLibraryElement()
 
@@ -38,7 +46,9 @@ private case class ScalaSdkData(name: String, standardLibrary: LibraryData, lang
     }
   }
 
-  private def addDirectoryBasedLibrary(library: Elem, context: ConversionContext): File = {
+  private def addDirectoryBasedLibrary(
+      library: Elem,
+      context: ConversionContext): File = {
     val file = {
       val fileName = name.replaceAll("\\W", "_")
       suggestLibraryFile(fileName, context)
@@ -48,10 +58,14 @@ private case class ScalaSdkData(name: String, standardLibrary: LibraryData, lang
     file
   }
 
-  private def addProjectBasedLibrary(library: Elem, context: ConversionContext) {
+  private def addProjectBasedLibrary(
+      library: Elem,
+      context: ConversionContext) {
     val libraryTableElement = {
       val rootElement = context.getProjectSettings.getRootElement
-      XPath.selectSingleNode(rootElement, "component[@name='libraryTable']").asInstanceOf[Element]
+      XPath
+        .selectSingleNode(rootElement, "component[@name='libraryTable']")
+        .asInstanceOf[Element]
     }
     val libraryElement = parseXml(formatXml(library))
     libraryTableElement.addContent(libraryElement)
@@ -87,33 +101,47 @@ private object ScalaSdkData {
     ("2.11", "Scala_2_11"))
 
   def findAllIn(context: ConversionContext): Seq[ScalaSdkData] = {
-    val elements = context.getProjectLibrariesSettings.getProjectLibraries.asScala
-    elements.filter(_.getAttributeValue("type") == "Scala").map(ScalaSdkData(_)).toSeq
+    val elements =
+      context.getProjectLibrariesSettings.getProjectLibraries.asScala
+    elements
+      .filter(_.getAttributeValue("type") == "Scala")
+      .map(ScalaSdkData(_))
+      .toSeq
   }
 
   def apply(element: Element): ScalaSdkData = {
     val standardLibrary = LibraryData(element)
 
-    val compilerClasspath = XPath.selectNodes(element, "properties/compiler-classpath/root/@url").asScala
-            .map(_.asInstanceOf[Attribute].getValue)
+    val compilerClasspath = XPath
+      .selectNodes(element, "properties/compiler-classpath/root/@url")
+      .asScala
+      .map(_.asInstanceOf[Attribute].getValue)
 
     val languageLevel = languageLevelFrom(compilerClasspath)
-    
-    ScalaSdkData(standardLibrary.name, standardLibrary, languageLevel, compilerClasspath)
+
+    ScalaSdkData(
+      standardLibrary.name,
+      standardLibrary,
+      languageLevel,
+      compilerClasspath)
   }
 
   def languageLevelFrom(compilerClasspath: Seq[String]): String = {
-    val compilerJarVersions = compilerClasspath.flatMap(path => versionOf(new File(path)).toSeq)
+    val compilerJarVersions =
+      compilerClasspath.flatMap(path => versionOf(new File(path)).toSeq)
 
-    compilerJarVersions.headOption.flatMap(languageLevelFrom).getOrElse("Scala_2_11")
+    compilerJarVersions.headOption
+      .flatMap(languageLevelFrom)
+      .getOrElse("Scala_2_11")
   }
-  
+
   private def versionOf(file: File): Option[String] = {
-    val FileName = "(?:scala-compiler|scala-library|scala-reflect)-(.*?)(?:-src|-sources|-javadoc).jar".r
+    val FileName =
+      "(?:scala-compiler|scala-library|scala-reflect)-(.*?)(?:-src|-sources|-javadoc).jar".r
 
     file.getName match {
       case FileName(number) => Some(number)
-      case _ => None
+      case _                => None
     }
   }
 
@@ -131,15 +159,24 @@ private object ScalaSdkData {
     document.detachRootElement()
   }
 
-  private def suggestLibraryFile(name: String, context: ConversionContext): File = {
+  private def suggestLibraryFile(
+      name: String,
+      context: ConversionContext): File = {
     val base = Option(context.getSettingsBaseDir)
-            .getOrElse(throw new CannotConvertException("Only directory-based IDEA projects are supported"))
+      .getOrElse(
+        throw new CannotConvertException(
+          "Only directory-based IDEA projects are supported"))
 
     val candidates = {
-      val suffixes = Iterator.single("") ++ Iterator.from(2).map("_" + _.toString)
-      suffixes.map(suffix => new File(new File(base, "libraries"), s"$name$suffix.xml"))
+      val suffixes =
+        Iterator.single("") ++ Iterator.from(2).map("_" + _.toString)
+      suffixes.map(suffix =>
+        new File(new File(base, "libraries"), s"$name$suffix.xml"))
     }
 
-    candidates.find(!_.exists).getOrElse(throw new IllegalStateException("Run out of integer numbers :)"))
+    candidates
+      .find(!_.exists)
+      .getOrElse(
+        throw new IllegalStateException("Run out of integer numbers :)"))
   }
 }

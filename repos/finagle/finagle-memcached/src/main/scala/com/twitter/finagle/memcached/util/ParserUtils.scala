@@ -7,16 +7,16 @@ import org.jboss.netty.buffer.ChannelBuffer
 object ParserUtils {
 
   /**
-   * Prefer using `isDigits(ChannelBuffer)` or `DigitsPattern.matcher(input).matches()`
-   */
+    * Prefer using `isDigits(ChannelBuffer)` or `DigitsPattern.matcher(input).matches()`
+    */
   val DIGITS = "^\\d+$"
 
   val DigitsPattern = Pattern.compile(DIGITS)
 
   /**
-   * Returns true if every readable byte in the ChannelBuffer is a digit,
-   * false otherwise.
-   */
+    * Returns true if every readable byte in the ChannelBuffer is a digit,
+    * false otherwise.
+    */
   def isDigits(cb: ChannelBuffer): Boolean = {
     val len = cb.readableBytes()
     if (len == 0)
@@ -35,8 +35,8 @@ object ParserUtils {
   }
 
   /**
-   * @return true iff the Buf is non empty and every byte in the Buf is a digit.
-   */
+    * @return true iff the Buf is non empty and every byte in the Buf is a digit.
+    */
   def isDigits(buf: Buf): Boolean =
     if (buf.isEmpty) false
     else {

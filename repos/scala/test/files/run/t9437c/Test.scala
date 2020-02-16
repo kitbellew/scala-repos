@@ -3,7 +3,14 @@ import java.io.{File, FileOutputStream}
 import scala.tools.nsc.settings.ScalaVersion
 import scala.tools.partest._
 import scala.tools.asm
-import asm.{AnnotationVisitor, ClassWriter, FieldVisitor, Handle, MethodVisitor, Opcodes}
+import asm.{
+  AnnotationVisitor,
+  ClassWriter,
+  FieldVisitor,
+  Handle,
+  MethodVisitor,
+  Opcodes
+}
 import Opcodes._
 
 // This test ensures that we can read JDK 8 (classfile format 52) files with
@@ -12,15 +19,27 @@ import Opcodes._
 // that uses the class with named arguments.
 // Any failure will be dumped to std out.
 object Test extends DirectTest {
-  override def extraSettings: String = "-usejavacp -d " + testOutput.path + " -cp " + testOutput.path
+  override def extraSettings: String =
+    "-usejavacp -d " + testOutput.path + " -cp " + testOutput.path
 
   def generateCode(): Unit = {
-    val className =  "Foo"
+    val className = "Foo"
 
     val cw = new ClassWriter(0)
-    cw.visit(52, ACC_PUBLIC + ACC_SUPER, className, null, "java/lang/Object", null);
+    cw.visit(
+      52,
+      ACC_PUBLIC + ACC_SUPER,
+      className,
+      null,
+      "java/lang/Object",
+      null);
 
-    val mvC = cw.visitMethod(ACC_PUBLIC, "<init>", "(ILjava/lang/String;JFD)V", null, null);
+    val mvC = cw.visitMethod(
+      ACC_PUBLIC,
+      "<init>",
+      "(ILjava/lang/String;JFD)V",
+      null,
+      null);
     mvC.visitParameter("a", ACC_FINAL);
     mvC.visitParameter("_", ACC_FINAL);
     mvC.visitParameter("***", ACC_FINAL);
@@ -28,12 +47,22 @@ object Test extends DirectTest {
     mvC.visitParameter("ABC", ACC_FINAL);
     mvC.visitCode();
     mvC.visitVarInsn(ALOAD, 0);
-    mvC.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+    mvC.visitMethodInsn(
+      INVOKESPECIAL,
+      "java/lang/Object",
+      "<init>",
+      "()V",
+      false);
     mvC.visitInsn(RETURN);
     mvC.visitMaxs(1, 8);
     mvC.visitEnd();
 
-    val mvM = cw.visitMethod(ACC_PUBLIC, "bar", "(ILjava/lang/String;JFD)Lscala/runtime/Null$;", null, null);
+    val mvM = cw.visitMethod(
+      ACC_PUBLIC,
+      "bar",
+      "(ILjava/lang/String;JFD)Lscala/runtime/Null$;",
+      null,
+      null);
     mvM.visitParameter("a", ACC_FINAL);
     mvM.visitParameter("_", ACC_FINAL);
     mvM.visitParameter("***", ACC_FINAL);
@@ -49,16 +78,15 @@ object Test extends DirectTest {
 
     val bytes = cw.toByteArray()
 
-    val fos = new FileOutputStream(new File(s"${testOutput.path}/$className.class"))
-    try
-      fos write bytes
-    finally
-      fos.close()
+    val fos = new FileOutputStream(
+      new File(s"${testOutput.path}/$className.class"))
+    try fos write bytes
+    finally fos.close()
 
   }
 
   def code =
-"""
+    """
 class Driver {
   val constrParams = classOf[Foo].getConstructors.head.getParameters
   val methodParams = classOf[Foo].getDeclaredMethods.head.getParameters
@@ -85,8 +113,6 @@ class Driver {
       generateCode()
       compile()
       Class.forName("Driver").newInstance()
-    }
-    finally
-      System.setErr(prevErr)
+    } finally System.setErr(prevErr)
   }
 }

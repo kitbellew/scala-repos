@@ -21,24 +21,29 @@ object Item {
 }
 
 class DataSource(val dsp: DataSourceParams)
-  extends PDataSource[TrainingData,
-      EmptyEvaluationInfo, Query, EmptyActualResult] {
+    extends PDataSource[
+      TrainingData,
+      EmptyEvaluationInfo,
+      Query,
+      EmptyActualResult] {
 
   @transient lazy val logger = Logger[this.type]
   private lazy val EntityType = "movie"
 
-  override
-  def readTraining(sc: SparkContext): TrainingData = {
+  override def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()
 
     // create a RDD of (entityID, Item)
     // HOWTO: collecting items(movies)
-    val itemsRDD = eventsDb.aggregateProperties(
-      appId = dsp.appId,
-      entityType = "item"
-    )(sc).flatMap { case (entityId, properties) ⇒
-      ItemMarshaller.unmarshall(properties).map(entityId → _)
-    }
+    val itemsRDD = eventsDb
+      .aggregateProperties(
+        appId = dsp.appId,
+        entityType = "item"
+      )(sc)
+      .flatMap {
+        case (entityId, properties) ⇒
+          ItemMarshaller.unmarshall(properties).map(entityId → _)
+      }
 
     // get all user rate events
     val rateEventsRDD: RDD[Event] = eventsDb.find(
@@ -46,20 +51,24 @@ class DataSource(val dsp: DataSourceParams)
       entityType = Some("user"),
       eventNames = Some(List("rate")), // read "rate"
       // targetEntityType is optional field of an event.
-      targetEntityType = Some(Some(EntityType)))(sc)
+      targetEntityType = Some(Some(EntityType))
+    )(sc)
 
     // collect ratings
-    val ratingsRDD = rateEventsRDD.flatMap { event ⇒
-      try {
-        (event.event match {
-          case "rate" => event.properties.getOpt[Double]("rating")
-          case _ ⇒ None
-        }).map(Rating(event.entityId, event.targetEntityId.get, _))
-      } catch { case e: Exception ⇒
-        logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
-        throw e
+    val ratingsRDD = rateEventsRDD
+      .flatMap { event ⇒
+        try {
+          (event.event match {
+            case "rate" => event.properties.getOpt[Double]("rating")
+            case _ ⇒ None
+          }).map(Rating(event.entityId, event.targetEntityId.get, _))
+        } catch {
+          case e: Exception ⇒
+            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+            throw e
+        }
       }
-    }.cache()
+      .cache()
 
     new TrainingData(ratingsRDD, itemsRDD)
   }
@@ -74,9 +83,9 @@ object ItemMarshaller {
 case class Rating(user: String, item: String, rating: Double)
 
 class TrainingData(val ratings: RDD[Rating], val items: RDD[(String, Item)])
-  extends Serializable {
+    extends Serializable {
 
   override def toString =
     s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)" +
-    s"items: [${items.count()} (${items.take(2).toList}...)]"
+      s"items: [${items.count()} (${items.take(2).toList}...)]"
 }

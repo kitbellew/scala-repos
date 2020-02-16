@@ -10,16 +10,21 @@ import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettin
 import org.jetbrains.plugins.scala.util.TestUtils
 
 /**
- * User: Dmitry.Naydanov
- * Date: 10.07.14.
- */
+  * User: Dmitry.Naydanov
+  * Date: 10.07.14.
+  */
 class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   private var settings: ScalaCodeStyleSettings = null
 
   private def convertLoadedString(str: String) =
-    str.replace("$CARET_MARKER", CARET_MARKER).replace("${ScalaTypedHandler.unicodeCaseArrow}", ScalaTypedHandler.unicodeCaseArrow)
+    str
+      .replace("$CARET_MARKER", CARET_MARKER)
+      .replace(
+        "${ScalaTypedHandler.unicodeCaseArrow}",
+        ScalaTypedHandler.unicodeCaseArrow)
 
-  override def getTestDataPath: String = TestUtils.getTestDataPath + "/actions/editor/arrows"
+  override def getTestDataPath: String =
+    TestUtils.getTestDataPath + "/actions/editor/arrows"
 
   override protected def setUp(): Unit = {
     super.setUp()
@@ -66,8 +71,12 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   def testReplaceLambdaArrow() {
     settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR = true
 
-    val before1 = convertLoadedString(FileUtil.loadFile(new File(getTestDataPath + s"/${getTestName(true)}Before.test")))
-    val after1 = convertLoadedString(FileUtil.loadFile(new File(getTestDataPath + s"/${getTestName(true)}After.test")))
+    val before1 = convertLoadedString(
+      FileUtil.loadFile(
+        new File(getTestDataPath + s"/${getTestName(true)}Before.test")))
+    val after1 = convertLoadedString(
+      FileUtil.loadFile(
+        new File(getTestDataPath + s"/${getTestName(true)}After.test")))
 
     checkGeneratedTextAfterTyping(before1, after1, '>')
   }

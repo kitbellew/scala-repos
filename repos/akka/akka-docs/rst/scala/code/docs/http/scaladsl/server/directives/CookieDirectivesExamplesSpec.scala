@@ -5,7 +5,7 @@
 package docs.http.scaladsl.server.directives
 
 import akka.http.scaladsl.server._
-import akka.http.scaladsl.model.headers.{ HttpCookie, Cookie, `Set-Cookie` }
+import akka.http.scaladsl.model.headers.{HttpCookie, Cookie, `Set-Cookie`}
 import docs.http.scaladsl.server.RoutingSpec
 import akka.http.scaladsl.model.DateTime
 
@@ -31,8 +31,9 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
   "optionalCookie" in {
     val route =
       optionalCookie("userName") {
-        case Some(nameCookie) => complete(s"The logged in user is '${nameCookie.value}'")
-        case None             => complete("No user logged in")
+        case Some(nameCookie) =>
+          complete(s"The logged in user is '${nameCookie.value}'")
+        case None => complete("No user logged in")
       }
 
     // tests:
@@ -52,7 +53,12 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
     // tests:
     Get("/") ~> route ~> check {
       responseAs[String] shouldEqual "The user was logged out"
-      header[`Set-Cookie`] shouldEqual Some(`Set-Cookie`(HttpCookie("userName", value = "deleted", expires = Some(DateTime.MinValue))))
+      header[`Set-Cookie`] shouldEqual Some(
+        `Set-Cookie`(
+          HttpCookie(
+            "userName",
+            value = "deleted",
+            expires = Some(DateTime.MinValue))))
     }
   }
   "setCookie" in {
@@ -64,7 +70,8 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
     // tests:
     Get("/") ~> route ~> check {
       responseAs[String] shouldEqual "The user was logged in"
-      header[`Set-Cookie`] shouldEqual Some(`Set-Cookie`(HttpCookie("userName", value = "paul")))
+      header[`Set-Cookie`] shouldEqual Some(
+        `Set-Cookie`(HttpCookie("userName", value = "paul")))
     }
   }
 }

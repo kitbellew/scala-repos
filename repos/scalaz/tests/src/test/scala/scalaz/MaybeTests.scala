@@ -38,7 +38,9 @@ object MaybeTest extends SpecLite {
   checkAll(align.laws[Maybe])
   checkAll(equal.laws[Maybe[Int]])
 
-  "Empty is less than anything else" ! forAll { x: Maybe[Int] => Order[Maybe[Int]].greaterThanOrEqual(x, Maybe.empty) }
+  "Empty is less than anything else" ! forAll { x: Maybe[Int] =>
+    Order[Maybe[Int]].greaterThanOrEqual(x, Maybe.empty)
+  }
 
   "Empty is ignored in Maybe[A]@@Min" ! forAll { x: Maybe[Int] =>
     import syntax.monoid._
@@ -50,21 +52,35 @@ object MaybeTest extends SpecLite {
     (Max(x) |+| Max(empty)) must_=== Max(x)
   }
 
-  "Preserved through Option" ! forAll { x: Maybe[Int] => std.option.toMaybe(x.toOption) === x }
+  "Preserved through Option" ! forAll { x: Maybe[Int] =>
+    std.option.toMaybe(x.toOption) === x
+  }
 
-  "just toFailure is failure" ! forAll { (x: Int, s: String) => just(x).toFailure(s).isFailure }
+  "just toFailure is failure" ! forAll { (x: Int, s: String) =>
+    just(x).toFailure(s).isFailure
+  }
 
-  "empty toFailure is success" ! forAll { s: String => empty.toFailure(s).isSuccess }
+  "empty toFailure is success" ! forAll { s: String =>
+    empty.toFailure(s).isSuccess
+  }
 
-  "just toSuccess is success" ! forAll { (x: Int, s: String) => just(x).toSuccess(s).isSuccess }
+  "just toSuccess is success" ! forAll { (x: Int, s: String) =>
+    just(x).toSuccess(s).isSuccess
+  }
 
-  "empty toSuccess is failure" ! forAll { s: String => empty.toSuccess(s).isFailure }
+  "empty toSuccess is failure" ! forAll { s: String =>
+    empty.toSuccess(s).isFailure
+  }
 
-  "just toLeft is left" ! forAll { (x: Int, s: String) => just(x).toLeft(s).isLeft }
+  "just toLeft is left" ! forAll { (x: Int, s: String) =>
+    just(x).toLeft(s).isLeft
+  }
 
   "empty toLeft is right" ! forAll { s: String => empty.toLeft(s).isRight }
 
-  "just toRight is right" ! forAll { (x: Int, s: String) => just(x).toRight(s).isRight }
+  "just toRight is right" ! forAll { (x: Int, s: String) =>
+    just(x).toRight(s).isRight
+  }
 
   "empty toRight is left" ! forAll { s: String => empty.toRight(s).isLeft }
 
@@ -80,14 +96,18 @@ object MaybeTest extends SpecLite {
 
   "empty to option is none" ! check(empty.toOption.isEmpty)
 
-  "just orElse is just" ! forAll { (x: Int, m: Maybe[Int]) => just(x).orElse(m).isJust }
+  "just orElse is just" ! forAll { (x: Int, m: Maybe[Int]) =>
+    just(x).orElse(m).isJust
+  }
 
   "fromNullable(null) is Empty" ! check {
     val s: String = null
     Maybe.fromNullable(s).isEmpty
   }
 
-  "fromNullable(notNull) is just" ! forAll { (s: String) => Maybe.fromNullable(s) must_=== just(s) }
+  "fromNullable(notNull) is just" ! forAll { (s: String) =>
+    Maybe.fromNullable(s) must_=== just(s)
+  }
 
   object instances {
     def equal[A: Equal] = Equal[Maybe[A]]

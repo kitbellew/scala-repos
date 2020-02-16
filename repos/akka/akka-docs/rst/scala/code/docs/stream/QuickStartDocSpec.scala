@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 //#imports
 import akka.stream._
 import akka.stream.scaladsl._
 //#imports
-import akka.{ NotUsed, Done }
+import akka.{NotUsed, Done}
 import akka.actor.ActorSystem
 import akka.util.ByteString
 
@@ -17,7 +17,10 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import java.io.File
 
-class QuickStartDocSpec extends WordSpec with BeforeAndAfterAll with ScalaFutures {
+class QuickStartDocSpec
+    extends WordSpec
+    with BeforeAndAfterAll
+    with ScalaFutures {
   implicit val patience = PatienceConfig(5.seconds)
 
   //#create-materializer

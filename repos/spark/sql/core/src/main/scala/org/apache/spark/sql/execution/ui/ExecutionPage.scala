@@ -24,73 +24,99 @@ import scala.xml.Node
 import org.apache.spark.internal.Logging
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[sql] class ExecutionPage(parent: SQLTab) extends WebUIPage("execution") with Logging {
+private[sql] class ExecutionPage(parent: SQLTab)
+    extends WebUIPage("execution")
+    with Logging {
 
   private val listener = parent.listener
 
-  override def render(request: HttpServletRequest): Seq[Node] = listener.synchronized {
-    val parameterExecutionId = request.getParameter("id")
-    require(parameterExecutionId != null && parameterExecutionId.nonEmpty,
-      "Missing execution id parameter")
+  override def render(request: HttpServletRequest): Seq[Node] =
+    listener.synchronized {
+      val parameterExecutionId = request.getParameter("id")
+      require(
+        parameterExecutionId != null && parameterExecutionId.nonEmpty,
+        "Missing execution id parameter")
 
-    val executionId = parameterExecutionId.toLong
-    val content = listener.getExecution(executionId).map { executionUIData =>
-      val currentTime = System.currentTimeMillis()
-      val duration =
-        executionUIData.completionTime.getOrElse(currentTime) - executionUIData.submissionTime
+      val executionId = parameterExecutionId.toLong
+      val content = listener
+        .getExecution(executionId)
+        .map { executionUIData =>
+          val currentTime = System.currentTimeMillis()
+          val duration =
+            executionUIData.completionTime.getOrElse(currentTime) - executionUIData.submissionTime
 
-      val summary =
-        <div>
+          val summary =
+            <div>
           <ul class="unstyled">
             <li>
-              <strong>Submitted Time: </strong>{UIUtils.formatDate(executionUIData.submissionTime)}
+              <strong>Submitted Time: </strong>{
+              UIUtils.formatDate(executionUIData.submissionTime)
+            }
             </li>
             <li>
               <strong>Duration: </strong>{UIUtils.formatDuration(duration)}
             </li>
-            {if (executionUIData.runningJobs.nonEmpty) {
-              <li>
+            {
+              if (executionUIData.runningJobs.nonEmpty) {
+                <li>
                 <strong>Running Jobs: </strong>
-                {executionUIData.runningJobs.sorted.map { jobId =>
-                <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
-              }}
+                {
+                  executionUIData.runningJobs.sorted.map { jobId =>
+                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                  }
+                }
               </li>
-            }}
-            {if (executionUIData.succeededJobs.nonEmpty) {
-              <li>
+              }
+            }
+            {
+              if (executionUIData.succeededJobs.nonEmpty) {
+                <li>
                 <strong>Succeeded Jobs: </strong>
-                {executionUIData.succeededJobs.sorted.map { jobId =>
-                  <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
-                }}
+                {
+                  executionUIData.succeededJobs.sorted.map { jobId =>
+                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                  }
+                }
               </li>
-            }}
-            {if (executionUIData.failedJobs.nonEmpty) {
-              <li>
+              }
+            }
+            {
+              if (executionUIData.failedJobs.nonEmpty) {
+                <li>
                 <strong>Failed Jobs: </strong>
-                {executionUIData.failedJobs.sorted.map { jobId =>
-                  <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
-                }}
+                {
+                  executionUIData.failedJobs.sorted.map { jobId =>
+                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                  }
+                }
               </li>
-            }}
+              }
+            }
           </ul>
         </div>
 
-      val metrics = listener.getExecutionMetrics(executionId)
+          val metrics = listener.getExecutionMetrics(executionId)
 
-      summary ++
-        planVisualization(metrics, executionUIData.physicalPlanGraph) ++
-        physicalPlanDescription(executionUIData.physicalPlanDescription)
-    }.getOrElse {
-      <div>No information to display for Plan {executionId}</div>
+          summary ++
+            planVisualization(metrics, executionUIData.physicalPlanGraph) ++
+            physicalPlanDescription(executionUIData.physicalPlanDescription)
+        }
+        .getOrElse {
+          <div>No information to display for Plan {executionId}</div>
+        }
+
+      UIUtils.headerSparkPage(
+        s"Details for Query $executionId",
+        content,
+        parent,
+        Some(5000))
     }
-
-    UIUtils.headerSparkPage(s"Details for Query $executionId", content, parent, Some(5000))
-  }
-
 
   private def planVisualizationResources: Seq[Node] = {
     // scalastyle:off
-    <link rel="stylesheet" href={UIUtils.prependBaseUri("/static/sql/spark-sql-viz.css")} type="text/css"/>
+    <link rel="stylesheet" href={
+      UIUtils.prependBaseUri("/static/sql/spark-sql-viz.css")
+    } type="text/css"/>
     <script src={UIUtils.prependBaseUri("/static/d3.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/dagre-d3.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/graphlib-dot.min.js")}></script>
@@ -98,7 +124,9 @@ private[sql] class ExecutionPage(parent: SQLTab) extends WebUIPage("execution") 
     // scalastyle:on
   }
 
-  private def planVisualization(metrics: Map[Long, String], graph: SparkPlanGraph): Seq[Node] = {
+  private def planVisualization(
+      metrics: Map[Long, String],
+      graph: SparkPlanGraph): Seq[Node] = {
     val metadata = graph.allNodes.flatMap { node =>
       val nodeId = s"plan-meta-data-${node.id}"
       <div id={nodeId}>{node.desc}</div>
@@ -121,7 +149,8 @@ private[sql] class ExecutionPage(parent: SQLTab) extends WebUIPage("execution") 
   private def jobURL(jobId: Long): String =
     "%s/jobs/job?id=%s".format(UIUtils.prependBaseUri(parent.basePath), jobId)
 
-  private def physicalPlanDescription(physicalPlanDescription: String): Seq[Node] = {
+  private def physicalPlanDescription(
+      physicalPlanDescription: String): Seq[Node] = {
     <div>
       <span style="cursor: pointer;" onclick="clickPhysicalPlanDetails();">
         <span id="physical-plan-details-arrow" class="arrow-closed"></span>

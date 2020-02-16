@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor.dungeon
 
 import ReceiveTimeout.emptyReceiveTimeoutData
@@ -12,7 +11,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
 private[akka] object ReceiveTimeout {
-  final val emptyReceiveTimeoutData: (Duration, Cancellable) = (Duration.Undefined, ActorCell.emptyCancellable)
+  final val emptyReceiveTimeoutData: (Duration, Cancellable) =
+    (Duration.Undefined, ActorCell.emptyCancellable)
 }
 
 private[akka] trait ReceiveTimeout { this: ActorCell ⇒
@@ -20,11 +20,13 @@ private[akka] trait ReceiveTimeout { this: ActorCell ⇒
   import ReceiveTimeout._
   import ActorCell._
 
-  private var receiveTimeoutData: (Duration, Cancellable) = emptyReceiveTimeoutData
+  private var receiveTimeoutData: (Duration, Cancellable) =
+    emptyReceiveTimeoutData
 
   final def receiveTimeout: Duration = receiveTimeoutData._1
 
-  final def setReceiveTimeout(timeout: Duration): Unit = receiveTimeoutData = receiveTimeoutData.copy(_1 = timeout)
+  final def setReceiveTimeout(timeout: Duration): Unit =
+    receiveTimeoutData = receiveTimeoutData.copy(_1 = timeout)
 
   final def checkReceiveTimeout() {
     val recvtimeout = receiveTimeoutData
@@ -32,7 +34,9 @@ private[akka] trait ReceiveTimeout { this: ActorCell ⇒
     if (!mailbox.hasMessages) recvtimeout._1 match {
       case f: FiniteDuration ⇒
         recvtimeout._2.cancel() //Cancel any ongoing future
-        val task = system.scheduler.scheduleOnce(f, self, akka.actor.ReceiveTimeout)(this.dispatcher)
+        val task =
+          system.scheduler.scheduleOnce(f, self, akka.actor.ReceiveTimeout)(
+            this.dispatcher)
         receiveTimeoutData = (f, task)
       case _ ⇒ cancelReceiveTimeout()
     }

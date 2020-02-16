@@ -3,23 +3,24 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
-class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[SideEffectsInMonadicTransformationInspection]
-  override def hint: String = InspectionBundle.message("side.effects.in.monadic")
+  * @author Nikolay.Tropin
+  */
+class SideEffectsInMonadicTransformationTest
+    extends OperationsOnCollectionInspectionTest {
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[SideEffectsInMonadicTransformationInspection]
+  override def hint: String =
+    InspectionBundle.message("side.effects.in.monadic")
 
   def testInfixAssignment(): Unit = {
-    check(
-      s"""
+    check(s"""
         |var a = 0
         |Seq(1, 2).map(${START}a += _$END)
       """.stripMargin)
   }
 
   def testAssignment(): Unit = {
-    check(
-      s"""
+    check(s"""
          |var filtered = 0
          |Seq(1, 2).filter { x =>
          |  if (x % 2 == 0) {
@@ -31,9 +32,8 @@ class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspe
        """.stripMargin)
   }
 
-  def testInnerVar(): Unit ={
-    checkTextHasNoErrors(
-      """
+  def testInnerVar(): Unit = {
+    checkTextHasNoErrors("""
         |Seq(1, 2).map { x =>
         |  var b = true
         |  if (x == 1) {
@@ -120,8 +120,7 @@ class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspe
   }
 
   def testUpdateMethod(): Unit = {
-    check(
-      s"""
+    check(s"""
        |import scala.collection.mutable.ArrayBuffer
        |val buf = ArrayBuffer(1, 2)
        |Seq(1, 2).zipWithIndex.map{
@@ -155,15 +154,13 @@ class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspe
           |}
          """.stripMargin)
 
-    check(
-      s"""
+    check(s"""
         |Seq("1", "2").map {
         |    ${START}println(_)$END
         |}
       """.stripMargin)
 
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |def foo(i: Int) {
         |   println(i)
         |}
@@ -223,8 +220,7 @@ class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspe
   }
 
   def testExpressionsInOtherClasses(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |Seq(1, 2).filter { x =>
         |  Seq(3, 4).foreach {
         |    y => println(y)
@@ -233,8 +229,7 @@ class SideEffectsInMonadicTransformationTest extends OperationsOnCollectionInspe
         |}
       """.stripMargin)
 
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |Seq(1, 2).filter { x =>
         |  class Inner {
         |    def foo() = println(x)

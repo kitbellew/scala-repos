@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-14 Miles Sabin 
+ * Copyright (c) 2012-14 Miles Sabin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import shapeless._
 
 /*
  * Examples of optic (ie. lens/prism) usage.
- * 
+ *
  * @author Miles Sabin
  */
 package opticDemoDatatypes {
-  case class Address(street : String, city : String)
-  case class Person(name : String, age : Int, address : Address)
+  case class Address(street: String, city: String)
+  case class Person(name: String, age: Int, address: Address)
 
   sealed trait Tree[T]
   case class Node[T](left: Tree[T], right: Tree[T]) extends Tree[T]
@@ -42,7 +42,7 @@ object OpticExamples extends App {
   val mary = Person("Mary", 32, Address("Southover Street", "Brighton"))
   val ageLens = lens[Person].age
   val streetLens = lens[Person].address.street
-  
+
   val age = ageLens.get(mary)
   assert(age == 32)
 
@@ -50,7 +50,7 @@ object OpticExamples extends App {
   assert(street == "Southover Street")
 
   val mary2 = streetLens.set(mary)("Montpelier Road")
-  val mary3 = ageLens.modify(mary2)(_+1)
+  val mary3 = ageLens.modify(mary2)(_ + 1)
   assert(mary3 == Person("Mary", 33, Address("Montpelier Road", "Brighton")))
 
   // 2. Sealed family (sum of products)
@@ -99,7 +99,8 @@ object OpticExamples extends App {
 
   // 5. Optic inferred from initial data type and a path
 
-  def update[T, E](t: T)(e: E)(implicit mkLens: p.Lens[T, E]): T = mkLens().set(t)(e)
+  def update[T, E](t: T)(e: E)(implicit mkLens: p.Lens[T, E]): T =
+    mkLens().set(t)(e)
 
   val p = ^.i // a path selecting the product element labelled 'i'
 

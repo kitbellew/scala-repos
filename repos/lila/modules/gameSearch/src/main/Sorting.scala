@@ -9,9 +9,7 @@ object Sorting {
     Fields.turns -> "Moves",
     Fields.averageRating -> "Rating")
 
-  val orders = List(
-    "desc" -> "Descending",
-    "asc" -> "Ascending")
+  val orders = List("desc" -> "Descending", "asc" -> "Ascending")
 
   val default = Sorting(Fields.date, "desc")
 }

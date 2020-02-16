@@ -3,11 +3,11 @@ object callccInterpreter {
   type Answer = Value
 
   /**
-   * A continuation monad.
-   */
+    * A continuation monad.
+    */
   case class M[A](in: (A => Answer) => Answer) {
-    def bind[B](k: A => M[B])          = M[B](c => in (a => k(a) in c))
-    def map[B](f: A => B): M[B]        = bind(x => unitM(f(x)))
+    def bind[B](k: A => M[B]) = M[B](c => in(a => k(a) in c))
+    def map[B](f: A => B): M[B] = bind(x => unitM(f(x)))
     def flatMap[B](f: A => M[B]): M[B] = bind(f)
   }
 
@@ -31,7 +31,7 @@ object callccInterpreter {
 
   trait Value
   case object Wrong extends Value {
-   override def toString() = "wrong"
+    override def toString() = "wrong"
   }
   case class Num(n: Int) extends Value {
     override def toString() = n.toString()
@@ -43,18 +43,18 @@ object callccInterpreter {
   type Environment = List[Tuple2[Name, Value]]
 
   def lookup(x: Name, e: Environment): M[Value] = e match {
-    case List() => unitM(Wrong)
+    case List()       => unitM(Wrong)
     case (y, b) :: e1 => if (x == y) unitM(b) else lookup(x, e1)
   }
 
   def add(a: Value, b: Value) /*?*/ = (a, b) match {
-    case (Num(m), Num(n)) => this./*!*/unitM(Num(m + n))
-    case _ => unitM(Wrong)
+    case (Num(m), Num(n)) => this. /*!*/ unitM(Num(m + n))
+    case _                => unitM(Wrong)
   }
 
   def apply(a: Value, b: Value): M[Value] = a match {
     case Fun(k) => k(b)
-    case _ => unitM(Wrong)
+    case _      => unitM(Wrong)
   }
 
   def interp(t: Term, e: Environment): M[Value] = t match {

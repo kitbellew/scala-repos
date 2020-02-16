@@ -16,7 +16,7 @@ trait Historical[M <: SocketMember, Metadata] { self: SocketActor[M] =>
     members.values foreach send
   }
 
-  def sendMessage(message:Message)(member: M) {
+  def sendMessage(message: Message)(member: M) {
     member push {
       if (shouldSkipMessageFor(message, member)) message.skipMsg
       else message.fullMsg

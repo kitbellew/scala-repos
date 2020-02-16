@@ -4,11 +4,11 @@
 package play.api.inject
 package guice
 
-import javax.inject.{ Inject, Provider, Singleton }
+import javax.inject.{Inject, Provider, Singleton}
 
-import com.google.inject.{ ProvisionException, CreationException }
+import com.google.inject.{ProvisionException, CreationException}
 import org.specs2.mutable.Specification
-import play.api.{ Configuration, Environment }
+import play.api.{Configuration, Environment}
 
 object GuiceApplicationBuilderSpec extends Specification {
 
@@ -16,9 +16,7 @@ object GuiceApplicationBuilderSpec extends Specification {
 
     "add bindings" in {
       val injector = new GuiceApplicationBuilder()
-        .bindings(
-          new AModule,
-          bind[B].to[B1])
+        .bindings(new AModule, bind[B].to[B1])
         .injector
 
       injector.instanceOf[A] must beAnInstanceOf[A1]
@@ -44,8 +42,10 @@ object GuiceApplicationBuilderSpec extends Specification {
         .disable(classOf[AModule])
         .injector
 
-      injector.instanceOf[play.api.i18n.Langs] must throwA[com.google.inject.ConfigurationException]
-      injector.instanceOf[A] must throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[play.api.i18n.Langs] must throwA[
+        com.google.inject.ConfigurationException]
+      injector
+        .instanceOf[A] must throwA[com.google.inject.ConfigurationException]
     }
 
     "set initial configuration loader" in {
@@ -93,7 +93,8 @@ object GuiceApplicationBuilderSpec extends Specification {
         List("DEBUG", "WARN", "INFO", "ERROR", "TRACE", "OFF").forall { value =>
           val data = Map(path -> value)
           val builder = new GuiceApplicationBuilder()
-          builder.shouldDisplayLoggerDeprecationMessage(Configuration.from(data)) must_=== true
+          builder.shouldDisplayLoggerDeprecationMessage(
+            Configuration.from(data)) must_=== true
         }
       }
     }
@@ -120,7 +121,8 @@ object GuiceApplicationBuilderSpec extends Specification {
   trait B
   class B1 extends B
 
-  class ExtendConfiguration(conf: (String, Any)*) extends Provider[Configuration] {
+  class ExtendConfiguration(conf: (String, Any)*)
+      extends Provider[Configuration] {
     @Inject
     var injector: Injector = _
     lazy val get = {

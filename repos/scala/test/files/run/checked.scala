@@ -14,7 +14,6 @@ class B extends A {
   var b2 = 2
 }
 
-
 trait T {
   val t1 = 1
   var t2 = 2
@@ -34,8 +33,7 @@ abstract class NeedsXEarly {
 }
 
 // should pass
-class GoodX extends { val x = 1 } with NeedsXEarly {
-}
+class GoodX extends { val x = 1 } with NeedsXEarly {}
 
 // should throw
 class BadX extends NeedsXEarly {
@@ -76,9 +74,9 @@ class BadMixin extends LazyFields with XY {
 
 // should print 24
 class GoodMixin extends {
-        override val x = 10
-        override val y = 11
-      } with LazyFields with XY {
+  override val x = 10
+  override val y = 11
+} with LazyFields with XY {
   println("[OK]: " + needsSomeEarly)
 }
 
@@ -89,17 +87,16 @@ class TestInterference extends {
   println("[OK]: " + needsSomeEarly)
 }
 
-
 object Test extends App {
 
-  def shouldThrow(t: => Unit) = try {
-    t
-    println("[FAIL]: No UFE thrown")
-  } catch {
-    case UninitializedFieldError(msg) =>
-      println("[OK] Caught UFE: " + msg)
-  }
-
+  def shouldThrow(t: => Unit) =
+    try {
+      t
+      println("[FAIL]: No UFE thrown")
+    } catch {
+      case UninitializedFieldError(msg) =>
+        println("[OK] Caught UFE: " + msg)
+    }
 
   val d = new D()
   println(d)

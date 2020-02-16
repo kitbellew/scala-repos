@@ -7,14 +7,13 @@ object Test {
 
   def foo(b: Boolean): String = {
     try {
-      if(b)
+      if (b)
         return "Hello"
       else
         "abc"
     } finally {
-      10 match {case x => ()}
+      10 match { case x => () }
     }
   }
 
 }
-

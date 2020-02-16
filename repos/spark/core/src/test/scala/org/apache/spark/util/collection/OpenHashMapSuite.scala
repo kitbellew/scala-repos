@@ -44,7 +44,9 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     val goodMap3 = new OpenHashMap[String, String](256)
     assert(goodMap3.size === 0)
     intercept[IllegalArgumentException] {
-      new OpenHashMap[String, Int](1 << 30 + 1) // Invalid map size: bigger than 2^30
+      new OpenHashMap[String, Int](
+        1 << 30 + 1
+      ) // Invalid map size: bigger than 2^30
     }
     intercept[IllegalArgumentException] {
       new OpenHashMap[String, Int](-1)
@@ -78,7 +80,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     for ((k, v) <- map) {
       set.add((k, v))
     }
-    val expected = (1 to 1000).map(x => (x.toString, x)) :+ (null.asInstanceOf[String], -1)
+    val expected =
+      (1 to 1000).map(x => (x.toString, x)) :+ (null.asInstanceOf[String], -1)
     assert(set === expected.toSet)
   }
 
@@ -106,7 +109,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     for ((k, v) <- map) {
       set.add((k, v))
     }
-    val expected = (1 to 1000).map(_.toString).map(x => (x, x)) :+ (null.asInstanceOf[String], "-1")
+    val expected = (1 to 1000).map(_.toString).map(x => (x, x)) :+ (null
+      .asInstanceOf[String], "-1")
     assert(set === expected.toSet)
   }
 
@@ -152,7 +156,9 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     // Iterate from 101 to 400 to make sure the map grows a couple of times, because we had a
     // bug where changeValue would return the wrong result when the map grew on that insert
     for (i <- 101 to 400) {
-      val res = map.changeValue(i.toString, { i + "!" }, v => { assert(false); v })
+      val res = map.changeValue(i.toString, { i + "!" }, v => {
+        assert(false); v
+      })
       assert(res === i + "!")
     }
     assert(map.size === 400)

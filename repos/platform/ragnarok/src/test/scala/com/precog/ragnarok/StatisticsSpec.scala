@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -22,32 +22,36 @@ package com.precog.ragnarok
 import org.specs2.mutable.Specification
 import org.specs2.ScalaCheck
 
-import org.scalacheck.{ Arbitrary, Gen }
+import org.scalacheck.{Arbitrary, Gen}
 
-import scalaz.std.option.{ some => somez, _ }
+import scalaz.std.option.{some => somez, _}
 import scalaz.syntax.semigroup._
 import scalaz.syntax.applicative._
 import scalaz.syntax.foldable._
 import scalaz.std.list._
 
-
 class StatisticsSpec extends Specification with ScalaCheck {
-  def stats(xs: List[Double]): List[Option[Statistics]] = xs map (x => somez(Statistics(x)))
+  def stats(xs: List[Double]): List[Option[Statistics]] =
+    xs map (x => somez(Statistics(x)))
 
-  private def beRelativelyCloseTo(n: Double)(err: Double) = beCloseTo(n, math.abs(n * err))
+  private def beRelativelyCloseTo(n: Double)(err: Double) =
+    beCloseTo(n, math.abs(n * err))
 
-  private def statsAreEqual(a: Option[Statistics], b: Option[Statistics]) = (a, b) match {
-    case (Some(a), Some(b)) =>
-      a.mean must (beEqualTo(b.mean) or beRelativelyCloseTo(b.mean)(1e-10))
-      a.variance must (beEqualTo(b.variance) or beRelativelyCloseTo(b.variance)(1e-10))
-      a.count must_== b.count
-      a.min must_== b.min
-      a.max must_== b.max
+  private def statsAreEqual(a: Option[Statistics], b: Option[Statistics]) =
+    (a, b) match {
+      case (Some(a), Some(b)) =>
+        a.mean must (beEqualTo(b.mean) or beRelativelyCloseTo(b.mean)(1e-10))
+        a.variance must (beEqualTo(b.variance) or beRelativelyCloseTo(
+          b.variance)(1e-10))
+        a.count must_== b.count
+        a.min must_== b.min
+        a.max must_== b.max
 
-    case _ => ok
-  }
+      case _ => ok
+    }
 
-  implicit val arbDouble: Arbitrary[Double] = Arbitrary(Gen.chooseNum(-1e250, 1e250))
+  implicit val arbDouble: Arbitrary[Double] = Arbitrary(
+    Gen.chooseNum(-1e250, 1e250))
 
   "statistics is a semigroup that" should {
     todo
@@ -87,8 +91,9 @@ class StatisticsSpec extends Specification with ScalaCheck {
     }
 
     "be scalable" ! check { (xs: List[Double]) =>
-      statsAreEqual(stats(xs).suml map (_ * 0.0001), stats(xs map (_ * 0.0001)).suml)
+      statsAreEqual(
+        stats(xs).suml map (_ * 0.0001),
+        stats(xs map (_ * 0.0001)).suml)
     }
   }
 }
-

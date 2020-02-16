@@ -155,14 +155,18 @@ class ScalaUdpDocSpec extends UdpDocSpec {
   import ScalaUdpDocSpec._
 
   override def listenerProps(next: ActorRef) = Props(new Listener(next))
-  override def simpleSenderProps(remote: InetSocketAddress) = Props(new SimpleSender(remote))
-  override def connectedProps(remote: InetSocketAddress) = Props(new Connected(remote))
+  override def simpleSenderProps(remote: InetSocketAddress) =
+    Props(new SimpleSender(remote))
+  override def connectedProps(remote: InetSocketAddress) =
+    Props(new Connected(remote))
 }
 
 class JavaUdpDocSpec extends UdpDocSpec {
   import UdpDocTest._
 
   override def listenerProps(next: ActorRef) = Props(new Listener(next))
-  override def simpleSenderProps(remote: InetSocketAddress) = Props(new SimpleSender(remote))
-  override def connectedProps(remote: InetSocketAddress) = Props(new Connected(remote))
+  override def simpleSenderProps(remote: InetSocketAddress) =
+    Props(new SimpleSender(remote))
+  override def connectedProps(remote: InetSocketAddress) =
+    Props(new Connected(remote))
 }

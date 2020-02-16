@@ -11,7 +11,11 @@ import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
 import com.intellij.openapi.externalSystem.service.project.ExternalProjectRefreshCallback
 import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataManager
-import com.intellij.openapi.externalSystem.util.{DisposeAwareProjectChange, ExternalSystemApiUtil, ExternalSystemUtil}
+import com.intellij.openapi.externalSystem.util.{
+  DisposeAwareProjectChange,
+  ExternalSystemApiUtil,
+  ExternalSystemUtil
+}
 import com.intellij.openapi.fileEditor._
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ex.ProjectRootManagerEx
@@ -25,11 +29,12 @@ import org.jetbrains.sbt.settings.SbtSystemSettings
 import scala.collection.mutable
 
 /**
- * @author Nikolay Obedin
- * @since 3/24/15.
- */
-
-abstract class SbtImportNotificationProvider(project: Project, notifications: EditorNotifications)
+  * @author Nikolay Obedin
+  * @since 3/24/15.
+  */
+abstract class SbtImportNotificationProvider(
+    project: Project,
+    notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
   private val ignoredFiles = mutable.Set.empty[VirtualFile]
@@ -38,12 +43,19 @@ abstract class SbtImportNotificationProvider(project: Project, notifications: Ed
 
   def createPanel(file: VirtualFile): EditorNotificationPanel
 
-  override def createNotificationPanel(file: VirtualFile, fileEditor: FileEditor): EditorNotificationPanel =
-    if (!isIgnored(file) && isSbtFile(file) && shouldShowPanel(file, fileEditor)) createPanel(file) else null
+  override def createNotificationPanel(
+      file: VirtualFile,
+      fileEditor: FileEditor): EditorNotificationPanel =
+    if (!isIgnored(file) && isSbtFile(file) && shouldShowPanel(
+          file,
+          fileEditor)) createPanel(file)
+    else null
 
   protected def refreshProject(): Unit = {
     FileDocumentManager.getInstance.saveAllDocuments()
-    ExternalSystemUtil.refreshProjects(new ImportSpecBuilder(project, SbtProjectSystem.Id).forceWhenUptodate(true))
+    ExternalSystemUtil.refreshProjects(
+      new ImportSpecBuilder(project, SbtProjectSystem.Id)
+        .forceWhenUptodate(true))
   }
 
   protected def importProject(file: VirtualFile): Unit = {
@@ -66,48 +78,67 @@ abstract class SbtImportNotificationProvider(project: Project, notifications: Ed
 
         val sbtSystemSettings = SbtSystemSettings.getInstance(project)
 
-        val projects = ContainerUtilRt.newHashSet(sbtSystemSettings.getLinkedProjectsSettings)
+        val projects = ContainerUtilRt.newHashSet(
+          sbtSystemSettings.getLinkedProjectsSettings)
         projects.add(projectSettings)
         sbtSystemSettings.setLinkedProjectsSettings(projects)
 
-        ExternalSystemApiUtil.executeProjectChangeAction(new DisposeAwareProjectChange(project) {
-          def execute() {
-            ProjectRootManagerEx.getInstanceEx(project).mergeRootsChangesDuring(new Runnable {
-              def run() {
-                val dataManager: ProjectDataManager = ServiceManager.getService(classOf[ProjectDataManager])
-                dataManager.importData[ProjectData](Collections.singleton(externalProject), project, false)
-              }
-            })
-          }
-        })
+        ExternalSystemApiUtil.executeProjectChangeAction(
+          new DisposeAwareProjectChange(project) {
+            def execute() {
+              ProjectRootManagerEx
+                .getInstanceEx(project)
+                .mergeRootsChangesDuring(new Runnable {
+                  def run() {
+                    val dataManager: ProjectDataManager =
+                      ServiceManager.getService(classOf[ProjectDataManager])
+                    dataManager.importData[ProjectData](
+                      Collections.singleton(externalProject),
+                      project,
+                      false)
+                  }
+                })
+            }
+          })
       }
     }
 
     FileDocumentManager.getInstance.saveAllDocuments()
-    ExternalSystemUtil.refreshProject(project,
-      SbtProjectSystem.Id, projectSettings.getExternalProjectPath, callback,
-      false, ProgressExecutionMode.IN_BACKGROUND_ASYNC)
+    ExternalSystemUtil.refreshProject(
+      project,
+      SbtProjectSystem.Id,
+      projectSettings.getExternalProjectPath,
+      callback,
+      false,
+      ProgressExecutionMode.IN_BACKGROUND_ASYNC)
   }
 
   protected def getExternalProject(filePath: String): Option[String] =
-    (!project.isDisposed && Sbt.isProjectDefinitionFile(project, filePath.toFile)).option(project.getBasePath)
+    (!project.isDisposed && Sbt.isProjectDefinitionFile(
+      project,
+      filePath.toFile)).option(project.getBasePath)
 
-  protected def getProjectSettings(file: VirtualFile): Option[SbtProjectSettings] =
+  protected def getProjectSettings(
+      file: VirtualFile): Option[SbtProjectSettings] =
     for {
-      externalProjectPath <- Option(file.getCanonicalPath).flatMap(getExternalProject)
+      externalProjectPath <- Option(file.getCanonicalPath)
+        .flatMap(getExternalProject)
       sbtSettings <- Option(SbtSystemSettings.getInstance(project))
-      projectSettings <- Option(sbtSettings.getLinkedProjectSettings(externalProjectPath))
+      projectSettings <- Option(
+        sbtSettings.getLinkedProjectSettings(externalProjectPath))
     } yield {
       projectSettings
     }
 
-  protected def ignoreFile(file: VirtualFile): Unit = ignoredFiles.synchronized {
-    ignoredFiles += file
-  }
+  protected def ignoreFile(file: VirtualFile): Unit =
+    ignoredFiles.synchronized {
+      ignoredFiles += file
+    }
 
-  private def isIgnored(file: VirtualFile): Boolean = ignoredFiles.synchronized {
-    ignoredFiles.contains(file)
-  }
+  private def isIgnored(file: VirtualFile): Boolean =
+    ignoredFiles.synchronized {
+      ignoredFiles.contains(file)
+    }
 
   private def isSbtFile(file: VirtualFile): Boolean =
     Option(file.getCanonicalPath).flatMap(getExternalProject).isDefined

@@ -1,6 +1,6 @@
 package mesosphere.marathon.state
 
-import org.apache.mesos.{ Protos => MesosProtos }
+import org.apache.mesos.{Protos => MesosProtos}
 
 // TODO (if supported in the future):
 //   - user

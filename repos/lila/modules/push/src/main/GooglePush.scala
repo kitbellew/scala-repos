@@ -1,7 +1,7 @@
 package lila.push
 
 import play.api.libs.json._
-import play.api.libs.ws.{ WS, WSAuthScheme }
+import play.api.libs.ws.{WS, WSAuthScheme}
 import play.api.Play.current
 
 private final class GooglePush(
@@ -17,17 +17,21 @@ private final class GooglePush(
             "Authorization" -> s"key=$key",
             "Accept" -> "application/json",
             "Content-type" -> "application/json")
-          .post(Json.obj(
-            "to" -> device.deviceId,
-            "priority" -> "normal",
-            "notification" -> Json.obj(
-              "title" -> data.title,
-              "body" -> data.body
-            ),
-            "data" -> data.payload
-          )).flatMap {
+          .post(
+            Json.obj(
+              "to" -> device.deviceId,
+              "priority" -> "normal",
+              "notification" -> Json.obj(
+                "title" -> data.title,
+                "body" -> data.body
+              ),
+              "data" -> data.payload
+            ))
+          .flatMap {
             case res if res.status == 200 => funit
-            case res                      => fufail(s"[push] ${device.deviceId} $data ${res.status} ${res.body}")
+            case res =>
+              fufail(
+                s"[push] ${device.deviceId} $data ${res.status} ${res.body}")
           }
       }
     }

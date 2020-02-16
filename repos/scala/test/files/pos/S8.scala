@@ -7,13 +7,13 @@
 **                              ^
 ** For a given value x of type S8, type x.A should be
 ** a subtype of x.a.B.
-*/
+ */
 class S8() {
-    val a: S8 = this;
-    class A() extends a.B() {}
-    class B() {}
+  val a: S8 = this;
+  class A() extends a.B() {}
+  class B() {}
 }
 object M {
-    val x = new S8();
-    val y: x.a.B = new x.A(); //correct?
+  val x = new S8();
+  val y: x.a.B = new x.A(); //correct?
 }

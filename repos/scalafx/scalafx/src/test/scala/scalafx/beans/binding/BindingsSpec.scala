@@ -39,10 +39,10 @@ import scalafx.beans.property._
 import scalafx.delegate.SFXDelegate
 
 /**
- * Bindings Spec tests.
- *
- *
- */
+  * Bindings Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
   def bean = new Object()
@@ -81,7 +81,7 @@ class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   "BindingIncludes" should "support min" in {
-    doubleProperty1 <== min(doubleProperty2, doubleProperty3, 25, 26l, 27f, 28d)
+    doubleProperty1 <== min(doubleProperty2, doubleProperty3, 25, 26L, 27f, 28d)
     doubleProperty1() should equal(0)
     doubleProperty2() = 50
     doubleProperty3() = 43
@@ -89,7 +89,7 @@ class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
   }
 
   "BindingIncludes" should "support max" in {
-    doubleProperty1 <== max(doubleProperty2, doubleProperty3, 25, 26l, 27f, 28d)
+    doubleProperty1 <== max(doubleProperty2, doubleProperty3, 25, 26L, 27f, 28d)
     doubleProperty1() should equal(28)
     doubleProperty2() = 50
     doubleProperty3() = 43
@@ -127,7 +127,7 @@ class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
     doubleProperty1() should equal(15)
     doubleProperty1 <== when(booleanProperty1) choose 25 otherwise 16
     doubleProperty1() should equal(16)
-    doubleProperty1 <== when(booleanProperty1) choose 25l otherwise 17l
+    doubleProperty1 <== when(booleanProperty1) choose 25L otherwise 17L
     doubleProperty1() should equal(17)
     doubleProperty1 <== when(booleanProperty1) choose 25f otherwise 18f
     doubleProperty1() should equal(18)
@@ -177,12 +177,16 @@ class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
       def getWidth: Double = widthProperty.getValue
       def setWidth(v: Double) = widthProperty.setValue(v)
     }
-    class DoublePropertySFX(val delegate: DoubleHolderJFX = new DoubleHolderJFX())
-      extends SFXDelegate[DoubleHolderJFX] {
+    class DoublePropertySFX(
+        val delegate: DoubleHolderJFX = new DoubleHolderJFX())
+        extends SFXDelegate[DoubleHolderJFX] {
       val width: DoubleProperty = delegate.widthProperty
     }
 
-    val dp1 = new ObjectProperty[DoubleHolderJFX](this, "level 2 property", new DoubleHolderJFX())
+    val dp1 = new ObjectProperty[DoubleHolderJFX](
+      this,
+      "level 2 property",
+      new DoubleHolderJFX())
     val prop2 = new DoubleProperty(this, "prop2", 0.0)
     prop2() should equal(0.0)
 
@@ -192,7 +196,6 @@ class BindingsSpec extends FlatSpec with BeforeAndAfterEach {
     dp1().setWidth(3.0)
     prop2() should equal(3.0)
   }
-
 
   it should "support that select* funk..." is (pending)
 

@@ -1,19 +1,18 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence
 
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.scalatest.matchers.{ MatchResult, Matcher }
+import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.collection.immutable
 import scala.reflect.ClassTag
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.{Config, ConfigFactory}
 
 import org.apache.commons.io.FileUtils
 import org.scalatest.BeforeAndAfterEach
@@ -21,26 +20,29 @@ import org.scalatest.BeforeAndAfterEach
 import akka.actor.Props
 import akka.testkit.AkkaSpec
 
-abstract class PersistenceSpec(config: Config) extends AkkaSpec(config) with BeforeAndAfterEach with Cleanup
-  with PersistenceMatchers { this: AkkaSpec ⇒
+abstract class PersistenceSpec(config: Config)
+    extends AkkaSpec(config)
+    with BeforeAndAfterEach
+    with Cleanup
+    with PersistenceMatchers { this: AkkaSpec ⇒
   private var _name: String = _
 
   lazy val extension = Persistence(system)
   val counter = new AtomicInteger(0)
 
   /**
-   * Unique name per test.
-   */
+    * Unique name per test.
+    */
   def name = _name
 
   /**
-   * Prefix for generating a unique name per test.
-   */
+    * Prefix for generating a unique name per test.
+    */
   def namePrefix: String = system.name
 
   /**
-   * Creates a persistent actor with current name as constructor argument.
-   */
+    * Creates a persistent actor with current name as constructor argument.
+    */
   def namedPersistentActor[T <: NamedPersistentActor: ClassTag] =
     system.actorOf(Props(implicitly[ClassTag[T]].runtimeClass, name))
 
@@ -50,10 +52,15 @@ abstract class PersistenceSpec(config: Config) extends AkkaSpec(config) with Bef
 }
 
 object PersistenceSpec {
-  def config(plugin: String, test: String, serialization: String = "on", extraConfig: Option[String] = None) =
-    extraConfig.map(ConfigFactory.parseString(_)).getOrElse(ConfigFactory.empty()).withFallback(
-      ConfigFactory.parseString(
-        s"""
+  def config(
+      plugin: String,
+      test: String,
+      serialization: String = "on",
+      extraConfig: Option[String] = None) =
+    extraConfig
+      .map(ConfigFactory.parseString(_))
+      .getOrElse(ConfigFactory.empty())
+      .withFallback(ConfigFactory.parseString(s"""
       akka.actor.serialize-creators = ${serialization}
       akka.actor.serialize-messages = ${serialization}
       akka.actor.warn-about-java-serializer-usage = off
@@ -70,7 +77,8 @@ trait Cleanup { this: AkkaSpec ⇒
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒ new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir").map(s ⇒
+    new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     storageLocations.foreach(FileUtils.deleteDirectory)
@@ -95,11 +103,14 @@ case object GetState
 
 /** Additional ScalaTest matchers useful in persistence tests */
 trait PersistenceMatchers {
+
   /** Use this matcher to verify in-order execution of independent "streams" of events */
-  final class IndependentlyOrdered(prefixes: immutable.Seq[String]) extends Matcher[immutable.Seq[Any]] {
+  final class IndependentlyOrdered(prefixes: immutable.Seq[String])
+      extends Matcher[immutable.Seq[Any]] {
     override def apply(_left: immutable.Seq[Any]) = {
       val left = _left.map(_.toString)
-      val mapped = left.groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) - (-1) // ignore other messages
+      val mapped =
+        left.groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) - (-1) // ignore other messages
       val results = for {
         (pos, seq) ← mapped
         nrs = seq.map(_.replaceFirst(prefixes(pos), "").toInt)
@@ -108,12 +119,14 @@ trait PersistenceMatchers {
       } yield MatchResult(
         false,
         s"""Messages sequence with prefix ${prefixes(pos)} was not sorted! Was: $seq"""",
-        s"""Messages sequence with prefix ${prefixes(pos)} was sorted! Was: $seq"""")
+        s"""Messages sequence with prefix ${prefixes(pos)} was sorted! Was: $seq""""
+      )
 
       if (results.forall(_.matches)) MatchResult(true, "", "")
       else results.find(r ⇒ !r.matches).get
     }
   }
 
-  def beIndependentlyOrdered(prefixes: String*) = new IndependentlyOrdered(prefixes.toList)
+  def beIndependentlyOrdered(prefixes: String*) =
+    new IndependentlyOrdered(prefixes.toList)
 }

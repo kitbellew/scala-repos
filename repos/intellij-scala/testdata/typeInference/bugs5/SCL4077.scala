@@ -2,7 +2,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object SCL4077 extends App {
 
-  println(produce(Array(0,-1,5,-2,3)))
+  println(produce(Array(0, -1, 5, -2, 3)))
 
   def produce(arr: Array[Int]) = {
     val pos = new ArrayBuffer[Int]
@@ -13,7 +13,7 @@ object SCL4077 extends App {
       else
         other += a
     }
-    pos ++= /*start*/other/*end*/
+    pos ++= /*start*/ other /*end*/
   }
 }
 //ArrayBuffer[Int]

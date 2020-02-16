@@ -1,15 +1,16 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.metrics
 
 import scala.concurrent.duration._
-import akka.testkit.{ LongRunningTest, AkkaSpec }
+import akka.testkit.{LongRunningTest, AkkaSpec}
 import java.util.concurrent.ThreadLocalRandom
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class EWMASpec extends AkkaSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {
+class EWMASpec
+    extends AkkaSpec(MetricsConfig.defaultEnabled)
+    with MetricsCollectorFactory {
 
   val collector = createMetricsCollector
 
@@ -56,7 +57,8 @@ class EWMASpec extends AkkaSpec(MetricsConfig.defaultEnabled) with MetricsCollec
       val halfLife = n.toDouble / 2.8854
       val collectInterval = 1.second
       val halfLifeDuration = (halfLife * 1000).millis
-      EWMA.alpha(halfLifeDuration, collectInterval) should ===(expectedAlpha +- 0.001)
+      EWMA.alpha(halfLifeDuration, collectInterval) should ===(
+        expectedAlpha +- 0.001)
     }
 
     "calculate sane alpha from short half-life" in {
@@ -79,7 +81,8 @@ class EWMASpec extends AkkaSpec(MetricsConfig.defaultEnabled) with MetricsCollec
       (1 to 50) foreach { _ ⇒
         // wait a while between each message to give the metrics a chance to change
         Thread.sleep(100)
-        usedMemory = usedMemory ++ Array.fill(1024)(ThreadLocalRandom.current.nextInt(127).toByte)
+        usedMemory = usedMemory ++ Array.fill(1024)(
+          ThreadLocalRandom.current.nextInt(127).toByte)
         val changes = collector.sample.metrics.flatMap { latest ⇒
           streamingDataSet.get(latest.name) match {
             case None ⇒ Some(latest)

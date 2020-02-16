@@ -3,10 +3,8 @@ package org.jetbrains.plugins.scala.extensions.implementation.iterator
 import com.intellij.psi.PsiElement
 
 /**
- * Pavel.Fatin, 11.05.2010
- */
-
-
+  * Pavel.Fatin, 11.05.2010
+  */
 class ContextsIteratorTest extends IteratorTestCase {
   def testEmpty() = {
     assertIterates("", "0")
@@ -21,7 +19,9 @@ class ContextsIteratorTest extends IteratorTestCase {
   }
 
   def testThreeParents() = {
-    assertIterates("2.1, 1.1, 0", parse("0 (1.1 (2.1 (3.1)))").getFirstChild.getFirstChild.getFirstChild)
+    assertIterates(
+      "2.1, 1.1, 0",
+      parse("0 (1.1 (2.1 (3.1)))").getFirstChild.getFirstChild.getFirstChild)
   }
 
   def testSiblings() = {

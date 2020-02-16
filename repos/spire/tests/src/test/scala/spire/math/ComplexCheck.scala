@@ -9,7 +9,10 @@ import prop._
 import spire.implicits._
 import spire.laws.arb.{complex, real}
 
-class ComplexCheck extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class ComplexCheck
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
   type C = Complex[BigDecimal]
 
   val zero = Complex.zero[BigDecimal]
@@ -25,7 +28,9 @@ class ComplexCheck extends PropSpec with Matchers with GeneratorDrivenPropertyCh
   def complex2(name: String)(f: (C, C) => Unit) =
     property(name) {
       forAll { (rx: Int, ix: Int, ry: Int, iy: Int) =>
-        f(Complex(BigDecimal(rx), BigDecimal(ix)), Complex(BigDecimal(ry), BigDecimal(iy)))
+        f(
+          Complex(BigDecimal(rx), BigDecimal(ix)),
+          Complex(BigDecimal(ry), BigDecimal(iy)))
       }
     }
 
@@ -42,10 +47,15 @@ class ComplexCheck extends PropSpec with Matchers with GeneratorDrivenPropertyCh
 
   complex2("x + y == y + x") { (x: C, y: C) => near(x + y, y + x) }
   complex2("x + y - x == y") { (x: C, y: C) => near(x + y - x, y) }
-  complex2("(x / y) * y == x") { (x: C, y: C) => if (y != zero) near((x / y) * y, x) }
+  complex2("(x / y) * y == x") { (x: C, y: C) =>
+    if (y != zero) near((x / y) * y, x)
+  }
 }
 
-class ComplexCheck2 extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class ComplexCheck2
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
   type C = Complex[Real]
 
   val zero = Complex.zero[Real]
@@ -59,15 +69,11 @@ class ComplexCheck2 extends PropSpec with Matchers with GeneratorDrivenPropertyC
   }
 
   property("x + y = y + x") {
-    forAll { (x: C, y: C) =>
-      x + y shouldBe y + x
-    }
+    forAll { (x: C, y: C) => x + y shouldBe y + x }
   }
 
   property("x + (y + z) = (x + y) + z") {
-    forAll { (x: C, y: C, z: C) =>
-      x + (y + z) shouldBe (x + y) + z
-    }
+    forAll { (x: C, y: C, z: C) => x + (y + z) shouldBe (x + y) + z }
   }
 
   property("x + (-x) = x - x = 0") {
@@ -78,9 +84,7 @@ class ComplexCheck2 extends PropSpec with Matchers with GeneratorDrivenPropertyC
   }
 
   property("x * (y + z) = (x * y) + (x * z)") {
-    forAll { (x: C, y: C, z: C) =>
-      x * (y + z) shouldBe (x * y) + (x * z)
-    }
+    forAll { (x: C, y: C, z: C) => x * (y + z) shouldBe (x * y) + (x * z) }
   }
 
   property("x * 0 = 0 * x = 0") {
@@ -98,39 +102,27 @@ class ComplexCheck2 extends PropSpec with Matchers with GeneratorDrivenPropertyC
   }
 
   property("x * (y * z) = (x * y) * z") {
-    forAll { (x: C, y: C, z: C) =>
-      x * (y * z) shouldBe (x * y) * z
-    }
+    forAll { (x: C, y: C, z: C) => x * (y * z) shouldBe (x * y) * z }
   }
 
   property("x * y = y * x") {
-    forAll { (x: C, y: C) =>
-      x * y shouldBe y * x
-    }
+    forAll { (x: C, y: C) => x * y shouldBe y * x }
   }
 
   property("x / x = 1") {
-    forAll { (x: C) =>
-      if (x != zero) x / x shouldBe one
-    }
+    forAll { (x: C) => if (x != zero) x / x shouldBe one }
   }
 
   property("x^-1 = 1 / x") {
-    forAll { (x: C) =>
-      if (x != zero) x.reciprocal shouldBe one / x
-    }
+    forAll { (x: C) => if (x != zero) x.reciprocal shouldBe one / x }
   }
 
   property("x.pow(2) = x * x") {
-    forAll { (x: C) =>
-      x.pow(2) shouldBe x * x
-    }
+    forAll { (x: C) => x.pow(2) shouldBe x * x }
   }
 
   property("c = c.r iff c.isReal") {
-    forAll { (c: C) =>
-      c == c.real shouldBe c.isReal
-    }
+    forAll { (c: C) => c == c.real shouldBe c.isReal }
   }
 
   // import spire.compat._
@@ -159,7 +151,10 @@ class ComplexCheck2 extends PropSpec with Matchers with GeneratorDrivenPropertyC
   // }
 }
 
-class FastComplexCheck extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class FastComplexCheck
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
   property("encode/decode") {
     forAll { (re: Float, im: Float) =>
       val n: Long = FastComplex.encode(re, im)

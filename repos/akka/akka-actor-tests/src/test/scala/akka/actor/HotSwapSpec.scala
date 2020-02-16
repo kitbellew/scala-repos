@@ -1,15 +1,12 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import akka.testkit._
 
 object HotSwapSpec {
-  abstract class Becomer extends Actor {
-
-  }
+  abstract class Becomer extends Actor {}
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
@@ -28,7 +25,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
 
     "be able to become multiple times in its constructor" in {
       val a = system.actorOf(Props(new Becomer {
-        for (i ← 1 to 4) context.become({ case always ⇒ sender() ! i + ":" + always })
+        for (i ← 1 to 4) context.become({
+          case always ⇒ sender() ! i + ":" + always
+        })
         def receive = { case always ⇒ sender() ! "FAILURE" }
       }))
       a ! "pigdog"
@@ -37,7 +36,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
 
     "be able to become with stacking in its constructor" in {
       val a = system.actorOf(Props(new Becomer {
-        context.become({ case always ⇒ sender() ! "pigdog:" + always; context.unbecome() }, false)
+        context.become({
+          case always ⇒ sender() ! "pigdog:" + always; context.unbecome()
+        }, false)
         def receive = { case always ⇒ sender() ! "badass:" + always }
       }))
       a ! "pigdog"
@@ -48,7 +49,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
 
     "be able to become, with stacking, multiple times in its constructor" in {
       val a = system.actorOf(Props(new Becomer {
-        for (i ← 1 to 4) context.become({ case always ⇒ sender() ! i + ":" + always; context.unbecome() }, false)
+        for (i ← 1 to 4) context.become({
+          case always ⇒ sender() ! i + ":" + always; context.unbecome()
+        }, false)
         def receive = { case always ⇒ sender() ! "FAILURE" }
       }))
       a ! "pigdog"
@@ -65,7 +68,8 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "init" ⇒ sender() ! "init"
-          case "swap" ⇒ context.become({ case x: String ⇒ context.sender() ! x })
+          case "swap" ⇒
+            context.become({ case x: String ⇒ context.sender() ! x })
         }
       }))
 
@@ -80,10 +84,11 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "init" ⇒ sender() ! "init"
-          case "swap" ⇒ context.become({
-            case "swapped" ⇒ sender() ! "swapped"
-            case "revert"  ⇒ context.unbecome()
-          })
+          case "swap" ⇒
+            context.become({
+              case "swapped" ⇒ sender() ! "swapped"
+              case "revert" ⇒ context.unbecome()
+            })
         }
       }))
 
@@ -106,9 +111,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
           case "state" ⇒ sender() ! "0"
           case "swap" ⇒
             context.become({
-              case "state"   ⇒ sender() ! "1"
+              case "state" ⇒ sender() ! "1"
               case "swapped" ⇒ sender() ! "swapped"
-              case "crash"   ⇒ throw new Exception("Crash (expected)!")
+              case "crash" ⇒ throw new Exception("Crash (expected)!")
             })
             sender() ! "swapped"
         }
@@ -119,7 +124,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       expectMsg("swapped")
       a ! "state"
       expectMsg("1")
-      EventFilter[Exception](message = "Crash (expected)!", occurrences = 1) intercept { a ! "crash" }
+      EventFilter[Exception](message = "Crash (expected)!", occurrences = 1) intercept {
+        a ! "crash"
+      }
       a ! "state"
       expectMsg("0")
     }

@@ -16,12 +16,14 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import scala.collection.JavaConversions._
 
 /**
- * User: Dmitry Naydanov
- * Date: 11/7/12
- */
+  * User: Dmitry Naydanov
+  * Date: 11/7/12
+  */
 class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
 
-  def collectSlowLineMarkers(elements: util.List[PsiElement], result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
+  def collectSlowLineMarkers(
+      elements: util.List[PsiElement],
+      result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
     ScalaMacroDebuggingUtil.allMacroCalls.clear()
 
     if (!ScalaMacroDebuggingUtil.isEnabled || elements.isEmpty) return
@@ -29,7 +31,9 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
     val file = first.getContainingFile
 
     val synFile = file match {
-      case scalaFile: ScalaFile if ScalaMacroDebuggingUtil tryToLoad scalaFile => Some(scalaFile)
+      case scalaFile: ScalaFile
+          if ScalaMacroDebuggingUtil tryToLoad scalaFile =>
+        Some(scalaFile)
       case _ => None
     }
 
@@ -38,8 +42,12 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
 
     macrosFound foreach {
       case macroCall =>
-        val markerInfo = new RelatedItemLineMarkerInfo[PsiElement](macroCall, macroCall.getTextRange, Icons.NO_SCALA_SDK,
-          Pass.UPDATE_OVERRIDEN_MARKERS, new Function[PsiElement, String] {
+        val markerInfo = new RelatedItemLineMarkerInfo[PsiElement](
+          macroCall,
+          macroCall.getTextRange,
+          Icons.NO_SCALA_SDK,
+          Pass.UPDATE_OVERRIDEN_MARKERS,
+          new Function[PsiElement, String] {
             def fun(param: PsiElement): String = {
               if (!ScalaMacroDebuggingUtil.macrosToExpand.contains(macroCall)) {
                 "Expand macro"
@@ -57,12 +65,15 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
               }
               ScalaMacroDebuggingUtil.expandMacros(elt.getProject)
             }
-          }, GutterIconRenderer.Alignment.RIGHT, util.Arrays.asList[GotoRelatedItem]())
+          },
+          GutterIconRenderer.Alignment.RIGHT,
+          util.Arrays.asList[GotoRelatedItem]())
 
         result add markerInfo
         ScalaMacroDebuggingUtil.allMacroCalls.add(macroCall)
     }
   }
 
-  override def getLineMarkerInfo(psiElement: PsiElement): LineMarkerInfo[_ <: PsiElement] = null
+  override def getLineMarkerInfo(
+      psiElement: PsiElement): LineMarkerInfo[_ <: PsiElement] = null
 }

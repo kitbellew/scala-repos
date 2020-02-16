@@ -18,8 +18,8 @@ import org.scalajs.testsuite.utils.Platform._
 class StackTraceTest {
   import StackTraceTest._
 
-  private def verifyClassMethodNames(
-      places: (String, String)*)(body: => Any): Unit = {
+  private def verifyClassMethodNames(places: (String, String)*)(
+      body: => Any): Unit = {
     try {
       body
       throw new AssertionError("body should have thrown an exception")
@@ -35,7 +35,7 @@ class StackTraceTest {
              */
             val prefix = "org.scalajs.testsuite.library.StackTraceTest$"
             (elem.getClassName.startsWith(prefix + className) &&
-                elem.getMethodName == methodName)
+            elem.getMethodName == methodName)
           })
         }
     }
@@ -62,13 +62,15 @@ class StackTraceTest {
         new Foo().h(78)
       }
 
-      verifyClassMethodNames("Foo" -> "f", "FooTrait" -> "h",
-          "Baz" -> "<init>") {
+      verifyClassMethodNames("Foo" -> "f", "FooTrait" -> "h", "Baz" -> "<init>") {
         new Baz()
       }
 
-      verifyClassMethodNames("Foo" -> "f", "Bar" -> "g",
-          "Foobar$" -> "<clinit>", "Foobar$" -> "<init>") {
+      verifyClassMethodNames(
+        "Foo" -> "f",
+        "Bar" -> "g",
+        "Foobar$" -> "<clinit>",
+        "Foobar$" -> "<init>") {
         Foobar.z
       }
     } finally {

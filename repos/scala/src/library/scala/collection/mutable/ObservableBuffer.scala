@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
@@ -15,17 +13,20 @@ package mutable
 import script._
 
 /** This class is typically used as a mixin. It adds a subscription
- *  mechanism to the `Buffer` class into which this abstract
- *  class is mixed in. Class `ObservableBuffer` publishes
- *  events of the type `Message`.
- *
- *  @author  Matthias Zenger
- *  @version 1.0, 08/07/2003
- *  @since   1
- */
-@deprecated("Observables are deprecated because scripting is deprecated.", "2.11.0")
-trait ObservableBuffer[A] extends Buffer[A] with Publisher[Message[A] with Undoable]
-{
+  *  mechanism to the `Buffer` class into which this abstract
+  *  class is mixed in. Class `ObservableBuffer` publishes
+  *  events of the type `Message`.
+  *
+  *  @author  Matthias Zenger
+  *  @version 1.0, 08/07/2003
+  *  @since   1
+  */
+@deprecated(
+  "Observables are deprecated because scripting is deprecated.",
+  "2.11.0")
+trait ObservableBuffer[A]
+    extends Buffer[A]
+    with Publisher[Message[A] with Undoable] {
   type Pub <: ObservableBuffer[A]
 
   abstract override def +=(element: A): this.type = {
@@ -73,7 +74,9 @@ trait ObservableBuffer[A] extends Buffer[A] with Publisher[Message[A] with Undoa
     })
   }
 
-  abstract override def insertAll(n: Int, elems: scala.collection.Traversable[A]) {
+  abstract override def insertAll(
+      n: Int,
+      elems: scala.collection.Traversable[A]) {
     super.insertAll(n, elems)
     var curr = n - 1
     val msg = elems.foldLeft(new Script[A]() with Undoable {

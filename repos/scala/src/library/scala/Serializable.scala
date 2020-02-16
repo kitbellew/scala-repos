@@ -9,6 +9,6 @@
 package scala
 
 /**
- * Classes extending this trait are serializable across platforms (Java, .NET).
- */
+  * Classes extending this trait are serializable across platforms (Java, .NET).
+  */
 trait Serializable extends Any with java.io.Serializable

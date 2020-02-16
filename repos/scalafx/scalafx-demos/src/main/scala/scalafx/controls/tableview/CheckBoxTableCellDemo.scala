@@ -45,7 +45,7 @@ object CheckBoxTableCellDemo extends JFXApp {
 
   class Item(selected_ : Boolean, name_ : String) {
     val selected = new BooleanProperty(this, "selected", selected_)
-    val name     = new StringProperty(this, "name", name_)
+    val name = new StringProperty(this, "name", name_)
   }
 
   val data = ObservableBuffer[Item](
@@ -62,14 +62,15 @@ object CheckBoxTableCellDemo extends JFXApp {
             // We need to explicitly cast `_.value.selected` to modify boolean type parameters.
             // `scala.Boolean` type is different from `java.lang.Boolean`, but eventually represented the same way
             // by the compiler.
-            cellValueFactory = _.value.selected.asInstanceOf[ObservableValue[java.lang.Boolean, java.lang.Boolean]]
+            cellValueFactory = _.value.selected.asInstanceOf[
+              ObservableValue[java.lang.Boolean, java.lang.Boolean]]
             cellFactory = CheckBoxTableCell.forTableColumn(this)
             editable = true
             prefWidth = 180
           },
           new TableColumn[Item, String] {
             text = "Name"
-            cellValueFactory = {_.value.name}
+            cellValueFactory = { _.value.name }
             prefWidth = 180
           }
         )

@@ -12,12 +12,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding.examples
 
 import scala.collection._
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 import com.twitter.scalding._
 import com.twitter.scalding.Dsl._
@@ -88,23 +88,29 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
         outputBuffer should have size 1
 
         val expectedDiff =
-          expectedSolution.zip(iterationZeroVector.map(_._2)).
-            map { case (a, b) => math.abs(a - b) }.
-            sum
+          expectedSolution
+            .zip(iterationZeroVector.map(_._2))
+            .map { case (a, b) => math.abs(a - b) }
+            .sum
         outputBuffer.head shouldBe expectedDiff +- 0.00001
       }
       .run
       .finish
   }
 
-  private def assertVectorsEqual(expected: Array[Double], actual: Array[Double], variance: Double) {
+  private def assertVectorsEqual(
+      expected: Array[Double],
+      actual: Array[Double],
+      variance: Double) {
     actual.zipWithIndex.foreach {
       case (value, i) =>
         value shouldBe (expected(i)) +- variance
     }
   }
 
-  private def assertVectorsEqual(expected: Array[Double], actual: Array[Double]) {
+  private def assertVectorsEqual(
+      expected: Array[Double],
+      actual: Array[Double]) {
     actual.zipWithIndex.foreach {
       case (value, i) =>
         value shouldBe (expected(i))
@@ -114,56 +120,55 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
 
 object WeightedPageRankFromMatrixSpec {
 
-  def toSparseMap[Row, Col, V](iterable: Iterable[(Row, Col, V)]): Map[(Row, Col), V] =
+  def toSparseMap[Row, Col, V](
+      iterable: Iterable[(Row, Col, V)]): Map[(Row, Col), V] =
     iterable.map { entry => ((entry._1, entry._2), entry._3) }.toMap
 
   def filledColumnVector(value: Double, size: Int): List[(Int, Double)] = {
     val vector = mutable.ListBuffer[(Int, Double)]()
-    (0 until size).foreach { row =>
-      vector += new Tuple2(row, value)
-    }
+    (0 until size).foreach { row => vector += new Tuple2(row, value) }
 
     vector.toList
   }
 }
 
 /**
- * Octave/Matlab implementations to provide the expected ranks. This comes from
- * the Wikipedia page on PageRank:
- * http://en.wikipedia.org/wiki/PageRank#Computation
- *
- * function [v] = iterate(A, sv, d)
- *
- * N = size(A, 2)
- * M = (spdiags(1 ./ sum(A, 2), 0, N, N) * A)';
- * v = (d * M * sv) + (((1 - d) / N) .* ones(N, 1));
- *
- * endfunction
- *
- * iterate([0 0 0 0 1; 0.5 0 0 0 0; 0.5 0 0 0 0; 0 1 0.5 0 0; 0 0 0.5 1 0], [0.2; 0.2; 0.2; 0.2; 0.2], 0.4)
- *
- * % Parameter M adjacency matrix where M_i,j represents the link from 'j' to 'i', such that for all 'j' sum(i, M_i,j) = 1
- * % Parameter d damping factor
- * % Parameter v_quadratic_error quadratic error for v
- * % Return v, a vector of ranks such that v_i is the i-th rank from [0, 1]
- *
- * function [v] = rank(M, d, v_quadratic_error)
- *
- * N = size(M, 2); % N is equal to half the size of M
- * v = rand(N, 1);
- * v = v ./ norm(v, 2);
- * last_v = ones(N, 1) * inf;
- * M_hat = (d .* M) + (((1 - d) / N) .* ones(N, N));
- *
- * while(norm(v - last_v, 2) > v_quadratic_error)
- * last_v = v;
- * v = M_hat * v;
- * v = v ./ norm(v, 2);
- * end
- *
- * endfunction
- *
- * M = [0 0 0 0 1 ; 0.5 0 0 0 0 ; 0.5 0 0 0 0 ; 0 1 0.5 0 0 ; 0 0 0.5 1 0];
- * rank(M, 0.4, 0.001)
- *
- */
+  * Octave/Matlab implementations to provide the expected ranks. This comes from
+  * the Wikipedia page on PageRank:
+  * http://en.wikipedia.org/wiki/PageRank#Computation
+  *
+  * function [v] = iterate(A, sv, d)
+  *
+  * N = size(A, 2)
+  * M = (spdiags(1 ./ sum(A, 2), 0, N, N) * A)';
+  * v = (d * M * sv) + (((1 - d) / N) .* ones(N, 1));
+  *
+  * endfunction
+  *
+  * iterate([0 0 0 0 1; 0.5 0 0 0 0; 0.5 0 0 0 0; 0 1 0.5 0 0; 0 0 0.5 1 0], [0.2; 0.2; 0.2; 0.2; 0.2], 0.4)
+  *
+  * % Parameter M adjacency matrix where M_i,j represents the link from 'j' to 'i', such that for all 'j' sum(i, M_i,j) = 1
+  * % Parameter d damping factor
+  * % Parameter v_quadratic_error quadratic error for v
+  * % Return v, a vector of ranks such that v_i is the i-th rank from [0, 1]
+  *
+  * function [v] = rank(M, d, v_quadratic_error)
+  *
+  * N = size(M, 2); % N is equal to half the size of M
+  * v = rand(N, 1);
+  * v = v ./ norm(v, 2);
+  * last_v = ones(N, 1) * inf;
+  * M_hat = (d .* M) + (((1 - d) / N) .* ones(N, N));
+  *
+  * while(norm(v - last_v, 2) > v_quadratic_error)
+  * last_v = v;
+  * v = M_hat * v;
+  * v = v ./ norm(v, 2);
+  * end
+  *
+  * endfunction
+  *
+  * M = [0 0 0 0 1 ; 0.5 0 0 0 0 ; 0.5 0 0 0 0 ; 0 1 0.5 0 0 ; 0 0 0.5 1 0];
+  * rank(M, 0.4, 0.001)
+  *
+  */

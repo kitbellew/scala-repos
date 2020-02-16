@@ -12,7 +12,8 @@ trait WordSpecGenerator extends ScalaTestTestCase {
   def wordSpecFileName = wordSpecClassName + ".scala"
 
   def addWordSpec() {
-    addFileToProject("WordSpecTest.scala",
+    addFileToProject(
+      "WordSpecTest.scala",
       """
         |import org.scalatest._
         |

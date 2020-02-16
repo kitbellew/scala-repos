@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
@@ -72,16 +71,21 @@ object JasmineRunner {
      * `throwable.stack` to `throwable.stackdata.stack` (when it exists).
      */
 
-    val ThrowablePrototype = js.Object.getPrototypeOf(
-        (new Throwable).asInstanceOf[js.Object]).asInstanceOf[js.Object]
+    val ThrowablePrototype = js.Object
+      .getPrototypeOf((new Throwable).asInstanceOf[js.Object])
+      .asInstanceOf[js.Object]
 
-    js.Object.defineProperty(ThrowablePrototype, "stack", js.Dynamic.literal(
-        configurable = false,
-        enumerable = false,
-        get = { (self: js.Dynamic) =>
-          self.stackdata && self.stackdata.stack
-        }: js.ThisFunction
-    ).asInstanceOf[js.PropertyDescriptor])
+    js.Object.defineProperty(
+      ThrowablePrototype,
+      "stack",
+      js.Dynamic
+        .literal(
+          configurable = false,
+          enumerable = false,
+          get = { (self: js.Dynamic) => self.stackdata && self.stackdata.stack }: js.ThisFunction
+        )
+        .asInstanceOf[js.PropertyDescriptor]
+    )
   }
 
   private def handleArgs(args: Array[String]): Unit = {
@@ -90,7 +94,7 @@ object JasmineRunner {
         arg.stripPrefix("-t")
       else
         throw new IllegalArgumentException(
-            s"Unknown argument for JasmineFramework: $arg")
+          s"Unknown argument for JasmineFramework: $arg")
     }
 
     TestSuiteContext.setTags(tags.toSet)

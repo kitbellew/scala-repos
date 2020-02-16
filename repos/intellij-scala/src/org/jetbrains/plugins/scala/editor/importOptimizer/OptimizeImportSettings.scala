@@ -6,15 +6,16 @@ import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettin
 /**
   * @author Nikolay.Tropin
   */
-case class OptimizeImportSettings(addFullQualifiedImports: Boolean,
-                                  isLocalImportsCanBeRelative: Boolean,
-                                  sortImports: Boolean,
-                                  collectImports: Boolean,
-                                  isUnicodeArrow: Boolean,
-                                  spacesInImports: Boolean,
-                                  classCountToUseImportOnDemand: Int,
-                                  importLayout: Array[String],
-                                  isAlwaysUsedImport: String => Boolean) {
+case class OptimizeImportSettings(
+    addFullQualifiedImports: Boolean,
+    isLocalImportsCanBeRelative: Boolean,
+    sortImports: Boolean,
+    collectImports: Boolean,
+    isUnicodeArrow: Boolean,
+    spacesInImports: Boolean,
+    classCountToUseImportOnDemand: Int,
+    importLayout: Array[String],
+    isAlwaysUsedImport: String => Boolean) {
 
   private def this(s: ScalaCodeStyleSettings) {
     this(
@@ -32,5 +33,6 @@ case class OptimizeImportSettings(addFullQualifiedImports: Boolean,
 }
 
 object OptimizeImportSettings {
-  def apply(project: Project) = new OptimizeImportSettings(ScalaCodeStyleSettings.getInstance(project))
+  def apply(project: Project) =
+    new OptimizeImportSettings(ScalaCodeStyleSettings.getInstance(project))
 }

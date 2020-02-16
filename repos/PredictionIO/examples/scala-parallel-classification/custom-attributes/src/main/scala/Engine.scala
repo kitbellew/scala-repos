@@ -4,13 +4,13 @@ import io.prediction.controller.IEngineFactory
 import io.prediction.controller.Engine
 
 class Query(
- val  gender: String,
- val  age: Int,
- val  education: String
+    val gender: String,
+    val age: Int,
+    val education: String
 ) extends Serializable
 
 class PredictedResult(
-  val label: Double
+    val label: Double
 ) extends Serializable
 
 object ClassificationEngine extends IEngineFactory {

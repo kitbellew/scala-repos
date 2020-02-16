@@ -18,9 +18,14 @@
 package org.apache.spark.sql.streaming
 
 import org.apache.spark.SparkFunSuite
-import org.apache.spark.sql.execution.streaming.{CompositeOffset, LongOffset, Offset}
+import org.apache.spark.sql.execution.streaming.{
+  CompositeOffset,
+  LongOffset,
+  Offset
+}
 
 trait OffsetSuite extends SparkFunSuite {
+
   /** Creates test to check all the comparisons of offsets given a `one` that is less than `two`. */
   def compare(one: Offset, two: Offset): Unit = {
     test(s"comparison $one <=> $two") {
@@ -79,7 +84,7 @@ class CompositeOffsetSuite extends OffsetSuite {
     one = CompositeOffset(None :: Nil),
     two = CompositeOffset(Some(LongOffset(2)) :: Nil))
 
-  compareInvalid(                                               // sizes must be same
+  compareInvalid( // sizes must be same
     one = CompositeOffset(Nil),
     two = CompositeOffset(Some(LongOffset(2)) :: Nil))
 
@@ -92,7 +97,6 @@ class CompositeOffsetSuite extends OffsetSuite {
     two = CompositeOffset.fill(LongOffset(1), LongOffset(2)))
 
   compareInvalid(
-    one = CompositeOffset.fill(LongOffset(2), LongOffset(1)),   // vector time inconsistent
+    one = CompositeOffset.fill(LongOffset(2), LongOffset(1)), // vector time inconsistent
     two = CompositeOffset.fill(LongOffset(1), LongOffset(2)))
 }
-

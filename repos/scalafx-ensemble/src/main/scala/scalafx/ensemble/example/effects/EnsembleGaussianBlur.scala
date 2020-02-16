@@ -34,13 +34,13 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{Priority, VBox}
 
 /**
- * A sample that demonstrates a Gaussian blur effect on an image, with varying
- * degrees of blurriness.
- *
- * @see scalafx.scene.effect.GaussianBlur
- * @see scalafx.scene.effect.Effect
- * @resource /scalafx/ensemble/images/icon-48x48.png
- */
+  * A sample that demonstrates a Gaussian blur effect on an image, with varying
+  * degrees of blurriness.
+  *
+  * @see scalafx.scene.effect.GaussianBlur
+  * @see scalafx.scene.effect.Effect
+  * @resource /scalafx/ensemble/images/icon-48x48.png
+  */
 class EnsembleGaussianBlur extends EnsembleExample {
 
   def getContent = new VBox {
@@ -50,11 +50,15 @@ class EnsembleGaussianBlur extends EnsembleExample {
     padding = Insets(20, 100, 20, 100)
     children = List(
       new ImageView {
-        image = new Image(this.getClass.getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+        image = new Image(
+          this.getClass
+            .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
         effect = new GaussianBlur()
       },
       new ImageView {
-        image = new Image(this.getClass.getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+        image = new Image(
+          this.getClass
+            .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
         effect = new GaussianBlur() {
           radius = 5d
         }

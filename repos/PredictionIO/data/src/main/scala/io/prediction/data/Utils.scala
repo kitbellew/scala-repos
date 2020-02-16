@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data
 
 import org.joda.time.DateTime
@@ -45,6 +44,6 @@ private[prediction] object Utils {
   }
 
   def dateTimeToString(dt: DateTime): String = dateTimeFormatter.print(dt)
-    // dt.toString
+  // dt.toString
 
 }

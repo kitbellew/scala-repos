@@ -5,12 +5,12 @@ sealed abstract class Const {
       case (NullConst, _)                 =>
       case (_: ValueConst, _: ValueConst) =>
       case (_: ValueConst, _: TypeConst)  =>
-      case (_: TypeConst,  _: ValueConst) =>
-      case (_: TypeConst,  _: TypeConst)  =>
+      case (_: TypeConst, _: ValueConst)  =>
+      case (_: TypeConst, _: TypeConst)   =>
       case (null, _)                      =>
       case (_, null)                      =>
       case null                           =>
-      case _                              =>  // unreachable
+      case _                              => // unreachable
     }
 }
 

@@ -17,32 +17,42 @@ object SwaggerCommandSupport {
       ValueSource.Query -> ParamType.Query,
       ValueSource.Path -> ParamType.Path)
 
-  def parametersFromCommand[T <: Command](obj: T)(implicit mf: Manifest[T]): (List[Parameter], Option[Model]) = {
+  def parametersFromCommand[T <: Command](obj: T)(
+      implicit mf: Manifest[T]): (List[Parameter], Option[Model]) = {
     addModelFromCommand(obj, createParameterList(obj))
   }
 
-  private[this] def createParameterList[T <: Command](obj: T)(implicit mf: Manifest[T]): List[Parameter] = {
+  private[this] def createParameterList[T <: Command](obj: T)(
+      implicit mf: Manifest[T]): List[Parameter] = {
     mf.erasure.getMethods().foldLeft(List.empty[Parameter]) { (lst, fld) =>
-      if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld.getParameterTypes().isEmpty) {
+      if (fld.getReturnType().isAssignableFrom(classOf[Field[_]]) && fld
+            .getParameterTypes()
+            .isEmpty) {
         val f = fld.invoke(obj).asInstanceOf[Field[Any]]
         // remove if statement below to include header params in description again
-        if (f.valueSource == ValueSource.Header) lst else {
+        if (f.valueSource == ValueSource.Header) lst
+        else {
           Parameter(
             f.displayName | f.name,
             DataType(f.binding.valueManifest),
             f.description.blankOption,
             f.notes.blankOption,
             paramtypeMapping(f.valueSource),
-            if (f.isRequired) None else f.defaultValue.flatMap(_.toString.blankOption),
-            if (f.allowableValues.nonEmpty) AllowableValues(f.allowableValues) else AllowableValues.AnyValue,
+            if (f.isRequired) None
+            else f.defaultValue.flatMap(_.toString.blankOption),
+            if (f.allowableValues.nonEmpty) AllowableValues(f.allowableValues)
+            else AllowableValues.AnyValue,
             required = f.isRequired,
-            position = f.position) :: lst
+            position = f.position
+          ) :: lst
         }
       } else lst
     }
   }
 
-  private[this] def addModelFromCommand[T <: Command](obj: T, pars: List[Parameter])(implicit mf: Manifest[T]) = {
+  private[this] def addModelFromCommand[T <: Command](
+      obj: T,
+      pars: List[Parameter])(implicit mf: Manifest[T]) = {
     val (fields, parameters) = pars.partition(_.paramType == ParamType.Body)
     if (fields.nonEmpty) {
       val model = modelFromCommand(obj, fields)
@@ -58,14 +68,27 @@ object SwaggerCommandSupport {
     } else (parameters, None)
   }
 
-  private[this] def modelFromCommand[T <: Command](cmd: T, fields: List[Parameter]) = {
+  private[this] def modelFromCommand[T <: Command](
+      cmd: T,
+      fields: List[Parameter]) = {
     val modelFields = fields map { f =>
-      f.name -> ModelProperty(f.`type`, f.position, required = f.required, allowableValues = f.allowableValues)
+      f.name -> ModelProperty(
+        f.`type`,
+        f.position,
+        required = f.required,
+        allowableValues = f.allowableValues)
     }
-    Model(cmd.commandName, cmd.commandName, None, cmd.commandDescription.blankOption, modelFields)
+    Model(
+      cmd.commandName,
+      cmd.commandName,
+      None,
+      cmd.commandDescription.blankOption,
+      modelFields)
   }
 
-  class CommandOperationBuilder[B <: SwaggerOperationBuilder[_]](registerModel: Model => Unit, underlying: B) {
+  class CommandOperationBuilder[B <: SwaggerOperationBuilder[_]](
+      registerModel: Model => Unit,
+      underlying: B) {
     def parametersFromCommand[C <: Command: Manifest]: B =
       parametersFromCommand(manifest[C].erasure.newInstance().asInstanceOf[C])
 
@@ -81,24 +104,35 @@ object SwaggerCommandSupport {
     }
   }
 }
-trait SwaggerCommandSupport { this: ScalatraBase with SwaggerSupportBase with SwaggerSupportSyntax with CommandSupport =>
+trait SwaggerCommandSupport {
+  this: ScalatraBase
+    with SwaggerSupportBase
+    with SwaggerSupportSyntax
+    with CommandSupport =>
 
-  @deprecated("Use the `apiOperation.parameters` and `operation` methods to build swagger descriptions of endpoints", "2.2")
+  @deprecated(
+    "Use the `apiOperation.parameters` and `operation` methods to build swagger descriptions of endpoints",
+    "2.2")
   protected def parameters[T <: CommandType: Manifest] =
     swaggerMeta(Symbols.Parameters, parametersFromCommand[T])
 
-  @deprecated("Use the `apiOperation.parameters` and `operation` methods to build swagger descriptions of endpoints", "2.2")
+  @deprecated(
+    "Use the `apiOperation.parameters` and `operation` methods to build swagger descriptions of endpoints",
+    "2.2")
   protected def parameters[T <: CommandType: Manifest](cmd: => T) =
     swaggerMeta(Symbols.Parameters, parametersFromCommand(cmd))
 
-  protected implicit def operationBuilder2commandOpBuilder[B <: SwaggerOperationBuilder[_]](underlying: B) =
+  protected implicit def operationBuilder2commandOpBuilder[
+      B <: SwaggerOperationBuilder[_]](underlying: B) =
     new CommandOperationBuilder(registerModel(_), underlying)
 
-  private[this] def parametersFromCommand[T <: CommandType](implicit mf: Manifest[T]): List[Parameter] = {
+  private[this] def parametersFromCommand[T <: CommandType](
+      implicit mf: Manifest[T]): List[Parameter] = {
     parametersFromCommand(mf.erasure.newInstance().asInstanceOf[T])
   }
 
-  private[this] def parametersFromCommand[T <: CommandType](cmd: => T)(implicit mf: Manifest[T]): List[Parameter] = {
+  private[this] def parametersFromCommand[T <: CommandType](cmd: => T)(
+      implicit mf: Manifest[T]): List[Parameter] = {
     SwaggerCommandSupport.parametersFromCommand(cmd) match {
       case (parameters, None) => parameters
       case (parameters, Some(model)) =>

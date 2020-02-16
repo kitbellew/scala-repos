@@ -24,22 +24,21 @@ import xml.{Text, Unparsed}
 import org.specs2.matcher.XmlMatchers
 import org.specs2.mutable.Specification
 
-
 /**
- * Systems under specification for XmlParser, specifically PCDataMarkupParser.
- */
+  * Systems under specification for XmlParser, specifically PCDataMarkupParser.
+  */
 object XmlParserSpec extends Specification with XmlMatchers {
   "Xml Parser Specification".title
 
   "Multiple attributes with same name, but different namespace" should {
     "parse correctly" >> {
       val actual =
-      <lift:surround with="base" at="body">
+        <lift:surround with="base" at="body">
         <lift:Menu.builder  li_path:class="p" li_item:class="i"/>
       </lift:surround>
 
       val expected =
-      <lift:surround with="base" at="body">
+        <lift:surround with="base" at="body">
         <lift:Menu.builder  li_path:class="p" li_item:class="i"/>
       </lift:surround>
 
@@ -52,8 +51,8 @@ object XmlParserSpec extends Specification with XmlMatchers {
 
   "XML can contain PCData" in {
     val data = <foo>{
-        PCData("Hello Yak")
-      }</foo>
+      PCData("Hello Yak")
+    }</foo>
 
     val str = AltXML.toXML(data, false, true)
 
@@ -62,8 +61,8 @@ object XmlParserSpec extends Specification with XmlMatchers {
 
   "XML can contain Unparsed" in {
     val data = <foo>{
-        Unparsed("Hello & goodbye > <yak Yak")
-      }</foo>
+      Unparsed("Hello & goodbye > <yak Yak")
+    }</foo>
 
     val str = AltXML.toXML(data, false, true)
 
@@ -71,8 +70,8 @@ object XmlParserSpec extends Specification with XmlMatchers {
   }
 
   "XML cannot contain Control characters" in {
-     val data = 
-     <foo>
+    val data =
+      <foo>
       {
         '\u0085'
       }{
@@ -87,17 +86,16 @@ object XmlParserSpec extends Specification with XmlMatchers {
     val str = AltXML.toXML(data, false, true)
 
     def cntIllegal(in: Char): Int = in match {
-      case '\u0085' => 1
+      case '\u0085'                              => 1
       case c if (c >= '\u007f' && c <= '\u0095') => 1
-      case '\n' => 0
-      case '\r' => 0
-      case '\t' => 0
-      case c if c < ' ' => 1
-      case _ => 0
+      case '\n'                                  => 0
+      case '\r'                                  => 0
+      case '\t'                                  => 0
+      case c if c < ' '                          => 1
+      case _                                     => 0
     }
 
     str.toList.foldLeft(0)((a, b) => a + cntIllegal(b)) must_== 0
   }
 
 }
-

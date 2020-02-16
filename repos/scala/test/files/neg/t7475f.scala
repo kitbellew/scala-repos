@@ -15,7 +15,6 @@ trait D[T] {
   d1 // okay
   d2 // okay
 
-
   class C {
     d1
     d2

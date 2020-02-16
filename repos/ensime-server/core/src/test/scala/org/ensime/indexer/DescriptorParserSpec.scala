@@ -3,13 +3,15 @@
 package org.ensime.indexer
 
 import org.ensime.util.EnsimeSpec
-import DescriptorParser.{ parse, parseType }
+import DescriptorParser.{parse, parseType}
 import ClassName._
 import scala.util.Try
 
 class DescriptorParserSpec extends EnsimeSpec {
 
-  private val SZ = ClassName(PackageName(List("scalaz", "syntax")), "ToApplicativeOps$ApplicativeIdV$$anonfun$η$1")
+  private val SZ = ClassName(
+    PackageName(List("scalaz", "syntax")),
+    "ToApplicativeOps$ApplicativeIdV$$anonfun$η$1")
   private val S = ClassName(PackageName(List("java", "lang")), "String")
   private val A = ArrayDescriptor
   private val D = Descriptor
@@ -54,11 +56,13 @@ class DescriptorParserSpec extends EnsimeSpec {
   }
 
   it should "handle $_- in package names" in {
-    parseType("Lcom/-$random_/Foo;") should ===(ClassName(PackageName(List("com", "-$random_")), "Foo"))
+    parseType("Lcom/-$random_/Foo;") should ===(
+      ClassName(PackageName(List("com", "-$random_")), "Foo"))
   }
 
   it should "handle examples" in {
-    parseType("Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should ===(SZ)
+    parseType("Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should ===(
+      SZ)
     parseType("Ljava/lang/String;") should ===(S)
     parseType("[Ljava/lang/String;") should ===(A(S))
     parseType("[[Ljava/lang/String;") should ===(A(A(S)))
@@ -66,7 +70,8 @@ class DescriptorParserSpec extends EnsimeSpec {
     parseType("LMyAnnotation;") should ===(ClassName(root, "MyAnnotation"))
 
     // of course, SUN break their own rules for package names (capitals)
-    Try(parseType("Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;")).success
+    Try(parseType(
+      "Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;")).success
 
     // hmmm, apache, what???? dashes in package names????
     Try(parseType("Lorg/spark-project/guava/annotations/VisibleForTesting;")).success

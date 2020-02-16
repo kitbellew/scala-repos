@@ -6,12 +6,10 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala.scalajs.js.annotation
 
 /** Marks the annotated method as representing bracket call in JavaScript.
- *
- *  @see [[http://www.scala-js.org/doc/calling-javascript.html Calling JavaScript from Scala.js]]
- */
+  *
+  *  @see [[http://www.scala-js.org/doc/calling-javascript.html Calling JavaScript from Scala.js]]
+  */
 class JSBracketCall extends scala.annotation.StaticAnnotation

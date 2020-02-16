@@ -30,11 +30,12 @@ trait ForumHelper { self: UserHelper with StringHelper =>
     post.userId.flatMap(lightUser).fold(escape(post.showAuthor))(_.titleName)
 
   def authorLink(
-    post: Post,
-    cssClass: Option[String] = None,
-    withOnline: Boolean = true) = post.userId.fold(
-    Html("""<span class="%s">%s</span>""".format(~cssClass, authorName(post)))
-  ) { userId =>
+      post: Post,
+      cssClass: Option[String] = None,
+      withOnline: Boolean = true) =
+    post.userId.fold(
+      Html("""<span class="%s">%s</span>""".format(~cssClass, authorName(post)))
+    ) { userId =>
       userIdLink(userId.some, cssClass = cssClass, withOnline = withOnline)
     }
 }

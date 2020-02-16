@@ -1,28 +1,27 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 package com.precog.ragnarok
 
-import scalaz.{ Ordering => _, _ }
+import scalaz.{Ordering => _, _}
 
-import org.joda.time.{ Instant, Interval }
-
+import org.joda.time.{Instant, Interval}
 
 trait Timer[T] {
   import scala.math.Ordering.Implicits._
@@ -39,25 +38,20 @@ trait Timer[T] {
   }
 }
 
-
 /**
- * Nanosecond timer, implemented using `System.nanoTime()`.
- */
+  * Nanosecond timer, implemented using `System.nanoTime()`.
+  */
 object SimpleTimer extends Timer[Long] {
   def now() = System.nanoTime()
 
   val TimeOrdering: Ordering[Long] = Ordering.Long
 }
 
-
 /**
- * Millisecond timer, implemented using Joda Time `Instant`s.
- */
+  * Millisecond timer, implemented using Joda Time `Instant`s.
+  */
 object JodaTimer extends Timer[Instant] {
   def now() = new Instant()
 
   val TimeOrdering: Ordering[Instant] = Ordering.Long.on[Instant](_.getMillis)
 }
-
-
-

@@ -6,10 +6,10 @@ import akka.event.EventStream
 import com.codahale.metrics.MetricRegistry
 import mesosphere.marathon.io.storage.StorageProvider
 import mesosphere.marathon.metrics.Metrics
-import mesosphere.marathon.state.{ AppRepository, GroupManager, GroupRepository }
-import mesosphere.marathon.test.{ MarathonActorSupport, Mockito }
-import mesosphere.marathon.{ MarathonConf, MarathonSchedulerService }
-import mesosphere.util.{ CapConcurrentExecutions, CapConcurrentExecutionsMetrics }
+import mesosphere.marathon.state.{AppRepository, GroupManager, GroupRepository}
+import mesosphere.marathon.test.{MarathonActorSupport, Mockito}
+import mesosphere.marathon.{MarathonConf, MarathonSchedulerService}
+import mesosphere.util.{CapConcurrentExecutions, CapConcurrentExecutionsMetrics}
 
 import scala.concurrent.duration._
 
@@ -23,7 +23,8 @@ class TestGroupManagerFixture extends Mockito with MarathonActorSupport {
 
   val metricRegistry = new MetricRegistry()
   val metrics = new Metrics(metricRegistry)
-  val capMetrics = new CapConcurrentExecutionsMetrics(metrics, classOf[GroupManager])
+  val capMetrics =
+    new CapConcurrentExecutionsMetrics(metrics, classOf[GroupManager])
 
   val actorId = new AtomicInteger(0)
   def serializeExecutions() = CapConcurrentExecutions(
@@ -38,8 +39,12 @@ class TestGroupManagerFixture extends Mockito with MarathonActorSupport {
   groupRepository.zkRootName returns GroupRepository.zkRootName
 
   val groupManager = new GroupManager(
-    serializeUpdates = serializeExecutions(), scheduler = service,
-    groupRepo = groupRepository, appRepo = appRepository,
-    storage = provider, config = config, eventBus = eventBus
+    serializeUpdates = serializeExecutions(),
+    scheduler = service,
+    groupRepo = groupRepository,
+    appRepo = appRepository,
+    storage = provider,
+    config = config,
+    eventBus = eventBus
   )
 }

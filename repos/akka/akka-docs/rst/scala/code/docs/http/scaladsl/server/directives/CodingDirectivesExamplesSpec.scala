@@ -6,8 +6,13 @@ package docs.http.scaladsl.server.directives
 
 import akka.http.scaladsl.coding._
 import docs.http.scaladsl.server.RoutingSpec
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
-import akka.http.scaladsl.model.headers.{ HttpEncodings, HttpEncoding, `Accept-Encoding`, `Content-Encoding` }
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.headers.{
+  HttpEncodings,
+  HttpEncoding,
+  `Accept-Encoding`,
+  `Content-Encoding`
+}
 import akka.http.scaladsl.model.headers.HttpEncodings._
 import akka.http.scaladsl.server._
 import akka.util.ByteString
@@ -112,7 +117,9 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
       responseAs[String] shouldEqual "Request content: 'Hello'"
     }
     Post("/", helloDeflated) ~> `Content-Encoding`(deflate) ~> route ~> check {
-      rejections shouldEqual List(UnsupportedRequestEncodingRejection(gzip), UnsupportedRequestEncodingRejection(identity))
+      rejections shouldEqual List(
+        UnsupportedRequestEncodingRejection(gzip),
+        UnsupportedRequestEncodingRejection(identity))
     }
     Post("/", "hello uncompressed") ~> `Content-Encoding`(identity) ~> route ~> check {
       responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
@@ -120,7 +127,13 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
   }
 
   def haveContentEncoding(encoding: HttpEncoding): Matcher[HttpResponse] =
-    be(encoding) compose { (_: HttpResponse).header[`Content-Encoding`].map(_.encodings.head).getOrElse(HttpEncodings.identity) }
+    be(encoding) compose {
+      (_: HttpResponse)
+        .header[`Content-Encoding`]
+        .map(_.encodings.head)
+        .getOrElse(HttpEncodings.identity)
+    }
 
-  def compress(input: String, encoder: Encoder): ByteString = encoder.encode(ByteString(input))
+  def compress(input: String, encoder: Encoder): ByteString =
+    encoder.encode(ByteString(input))
 }

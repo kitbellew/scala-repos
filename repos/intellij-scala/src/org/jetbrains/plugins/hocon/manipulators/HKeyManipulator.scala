@@ -20,18 +20,21 @@ class HKeyManipulator extends AbstractElementManipulator[HKey] {
       StringUtil.escapeStringCharacters(newContent)
 
     lazy val needsQuoting =
-      newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(" ") ||
-        escapedContent != newContent || newContent.exists(HoconLexer.ForbiddenCharsAndDot.contains)
+      newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
+        " ") ||
+        escapedContent != newContent || newContent.exists(
+        HoconLexer.ForbiddenCharsAndDot.contains)
 
     val quotedEscapedContent =
-      if(allStringTypes.contains(MultilineString))
+      if (allStringTypes.contains(MultilineString))
         "\"\"\"" + newContent + "\"\"\""
-      else if(allStringTypes.contains(QuotedString) || needsQuoting)
+      else if (allStringTypes.contains(QuotedString) || needsQuoting)
         "\"" + StringUtil.escapeStringCharacters(newContent) + "\""
       else
         newContent
 
-    val newKey = HoconPsiElementFactory.createKey(quotedEscapedContent, psiManager)
+    val newKey =
+      HoconPsiElementFactory.createKey(quotedEscapedContent, psiManager)
     key.replace(newKey)
     newKey
   }

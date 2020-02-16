@@ -9,7 +9,8 @@ import java.net.URL
 import scala.tools.util.PathResolverFactory
 
 class GenericRunnerSettings(error: String => Unit) extends Settings(error) {
-  lazy val classpathURLs: Seq[URL] = PathResolverFactory.create(this).resultAsURLs
+  lazy val classpathURLs: Seq[URL] =
+    PathResolverFactory.create(this).resultAsURLs
 
   val howtorun =
     ChoiceSetting(
@@ -26,18 +27,13 @@ class GenericRunnerSettings(error: String => Unit) extends Settings(error) {
       "load a file (assumes the code is given interactively)")
 
   val execute =
-    StringSetting(
-      "-e",
-      "string",
-      "execute a single command",
-      "")
+    StringSetting("-e", "string", "execute a single command", "")
 
   val save =
     BooleanSetting(
       "-save",
       "save the compiled script (assumes the code is a script)") withAbbreviation "-savecompiled"
 
-  val nc = BooleanSetting(
-      "-nc",
-      "do not use the fsc compilation daemon") withAbbreviation "-nocompdaemon"
+  val nc =
+    BooleanSetting("-nc", "do not use the fsc compilation daemon") withAbbreviation "-nocompdaemon"
 }

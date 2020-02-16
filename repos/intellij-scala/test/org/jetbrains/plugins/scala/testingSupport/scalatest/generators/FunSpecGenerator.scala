@@ -12,7 +12,8 @@ trait FunSpecGenerator extends ScalaTestTestCase {
   def funSpecFileName = funSpecClassName + ".scala"
 
   def addFunSpec() {
-    addFileToProject("FunSpecTest.scala",
+    addFileToProject(
+      "FunSpecTest.scala",
       """
         |import org.scalatest._
         |

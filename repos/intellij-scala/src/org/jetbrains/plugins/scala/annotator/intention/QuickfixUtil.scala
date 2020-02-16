@@ -6,11 +6,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs._
 import com.intellij.psi.PsiFile
 
-/** 
-* User: Alexander Podkhalyuzin
-* Date: 23.06.2008
-*/
-
+/**
+  * User: Alexander Podkhalyuzin
+  * Date: 23.06.2008
+  */
 object QuickfixUtil {
   def ensureFileWritable(project: Project, file: PsiFile): Boolean = {
     val virtualFile = file.getVirtualFile

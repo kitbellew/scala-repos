@@ -3,4 +3,3 @@ class App(arg: String) {
     this("foo")
   }
 }
-

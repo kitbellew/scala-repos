@@ -5,11 +5,13 @@ import com.intellij.codeInspection.LocalInspectionTool
 import org.jetbrains.plugins.scala.codeInspection.ScalaLightInspectionFixtureTestAdapter
 
 /**
- * Nikolay.Tropin
- * 2014-09-23
- */
-class UselessExpressionInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
-  override protected def classOfInspection: Class[_ <: LocalInspectionTool] = classOf[ScalaUselessExpressionInspection]
+  * Nikolay.Tropin
+  * 2014-09-23
+  */
+class UselessExpressionInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
+  override protected def classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[ScalaUselessExpressionInspection]
   override protected def annotation: String = "Useless expression"
 
   def testLiteral(): Unit = {

@@ -26,7 +26,11 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.{Expression, ExpressionSet, PredicateHelper}
+import org.apache.spark.sql.catalyst.expressions.{
+  Expression,
+  ExpressionSet,
+  PredicateHelper
+}
 import org.apache.spark.sql.catalyst.util
 import org.apache.spark.sql.execution.{DataSourceScan, PhysicalRDD}
 import org.apache.spark.sql.functions._
@@ -37,7 +41,10 @@ import org.apache.spark.sql.types.{IntegerType, StructType}
 import org.apache.spark.util.{SerializableConfiguration, Utils}
 import org.apache.spark.util.collection.BitSet
 
-class FileSourceStrategySuite extends QueryTest with SharedSQLContext with PredicateHelper {
+class FileSourceStrategySuite
+    extends QueryTest
+    with SharedSQLContext
+    with PredicateHelper {
   import testImplicits._
 
   test("unpartitioned table, single partition") {
@@ -70,11 +77,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
 
   test("unpartitioned table, multiple partitions") {
     val table =
-      createTable(
-        files = Seq(
-          "file1" -> 5,
-          "file2" -> 5,
-          "file3" -> 5))
+      createTable(files = Seq("file1" -> 5, "file2" -> 5, "file3" -> 5))
 
     withSQLConf(SQLConf.FILES_MAX_PARTITION_BYTES.key -> "10") {
       checkScan(table.select('c1)) { partitions =>
@@ -95,10 +98,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
 
   test("Unpartitioned table, large file that gets split") {
     val table =
-      createTable(
-        files = Seq(
-          "file1" -> 15,
-          "file2" -> 4))
+      createTable(files = Seq("file1" -> 15, "file2" -> 4))
 
     withSQLConf(SQLConf.FILES_MAX_PARTITION_BYTES.key -> "10") {
       checkScan(table.select('c1)) { partitions =>
@@ -123,10 +123,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
 
   test("partitioned table") {
     val table =
-      createTable(
-        files = Seq(
-          "p1=1/file1" -> 10,
-          "p1=2/file2" -> 10))
+      createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
 
     // Only one file should be read.
     checkScan(table.where("p1 = 1")) { partitions =>
@@ -137,11 +134,15 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
     checkDataFilters(Set.empty)
 
     // Only one file should be read.
-    checkScan(table.where("p1 = 1 AND c1 = 1 AND (p1 + c1) = 1")) { partitions =>
-      assert(partitions.size == 1, "when checking partitions")
-      assert(partitions.head.files.size == 1, "when checking files in partition 1")
-      assert(partitions.head.files.head.partitionValues.getInt(0) == 1,
-        "when checking partition values")
+    checkScan(table.where("p1 = 1 AND c1 = 1 AND (p1 + c1) = 1")) {
+      partitions =>
+        assert(partitions.size == 1, "when checking partitions")
+        assert(
+          partitions.head.files.size == 1,
+          "when checking files in partition 1")
+        assert(
+          partitions.head.files.head.partitionValues.getInt(0) == 1,
+          "when checking partition values")
     }
     // Only the filters that do not contain the partition column should be pushed down
     checkDataFilters(Set(IsNotNull("c1"), EqualTo("c1", 1)))
@@ -149,10 +150,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
 
   test("partitioned table - after scan filters") {
     val table =
-      createTable(
-        files = Seq(
-          "p1=1/file1" -> 10,
-          "p1=2/file2" -> 10))
+      createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
 
     val df = table.where("p1 = 1 AND (p1 + c1) = 2 AND c1 = 1")
     // Filter on data only are advisory so we have to reevaluate.
@@ -174,7 +172,8 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
           "p1=2/file5_0000" -> 1,
           "p1=2/file6_0000" -> 1,
           "p1=2/file7_0000" -> 1),
-        buckets = 3)
+        buckets = 3
+      )
 
     // No partition pruning
     checkScan(table) { partitions =>
@@ -203,10 +202,12 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
     checkArgument("data filters", _.filters.toSet, _: Set[Filter])
 
   /** Helper for building checks on the arguments passed to the reader. */
-  protected def checkArgument[T](name: String, arg: LastArguments.type => T, expected: T): Unit = {
+  protected def checkArgument[T](
+      name: String,
+      arg: LastArguments.type => T,
+      expected: T): Unit = {
     if (arg(LastArguments) != expected) {
-      fail(
-        s"""
+      fail(s"""
            |Wrong $name
            |expected: $expected
            |actual: ${arg(LastArguments)}
@@ -221,35 +222,35 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
 
   /** Returns a set with all the filters present in the physical plan. */
   def getPhysicalFilters(df: DataFrame): ExpressionSet = {
-    ExpressionSet(
-      df.queryExecution.executedPlan.collect {
-        case execution.Filter(f, _) => splitConjunctivePredicates(f)
-      }.flatten)
+    ExpressionSet(df.queryExecution.executedPlan.collect {
+      case execution.Filter(f, _) => splitConjunctivePredicates(f)
+    }.flatten)
   }
 
   /** Plans the query and calls the provided validation function with the planned partitioning. */
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
-    val fileScan = df.queryExecution.executedPlan.collect {
-      case DataSourceScan(_, scan: FileScanRDD, _, _) => scan
-    }.headOption.getOrElse {
-      fail(s"No FileScan in query\n${df.queryExecution}")
-    }
+    val fileScan = df.queryExecution.executedPlan
+      .collect {
+        case DataSourceScan(_, scan: FileScanRDD, _, _) => scan
+      }
+      .headOption
+      .getOrElse {
+        fail(s"No FileScan in query\n${df.queryExecution}")
+      }
 
     func(fileScan.filePartitions)
   }
 
   /**
-   * Constructs a new table given a list of file names and sizes expressed in bytes. The table
-   * is written out in a temporary directory and any nested directories in the files names
-   * are automatically created.
-   *
-   * When `buckets` is > 0 the returned [[DataFrame]] will have metadata specifying that number of
-   * buckets.  However, it is the responsibility of the caller to assign files to each bucket
-   * by appending the bucket id to the file names.
-   */
-  def createTable(
-      files: Seq[(String, Int)],
-      buckets: Int = 0): DataFrame = {
+    * Constructs a new table given a list of file names and sizes expressed in bytes. The table
+    * is written out in a temporary directory and any nested directories in the files names
+    * are automatically created.
+    *
+    * When `buckets` is > 0 the returned [[DataFrame]] will have metadata specifying that number of
+    * buckets.  However, it is the responsibility of the caller to assign files to each bucket
+    * by appending the bucket id to the file names.
+    */
+  def createTable(files: Seq[(String, Int)], buckets: Int = 0): DataFrame = {
     val tempDir = Utils.createTempDir()
     files.foreach {
       case (name, size) =>
@@ -265,8 +266,8 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
     if (buckets > 0) {
       val bucketed = df.queryExecution.analyzed transform {
         case l @ LogicalRelation(r: HadoopFsRelation, _, _) =>
-          l.copy(relation =
-            r.copy(bucketSpec = Some(BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
+          l.copy(relation = r.copy(bucketSpec =
+            Some(BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
       }
       Dataset.newDataFrame(sqlContext, bucketed)
     } else {
@@ -289,24 +290,24 @@ class TestFileFormat extends FileFormat {
   override def toString: String = "TestFileFormat"
 
   /**
-   * When possible, this method should return the schema of the given `files`.  When the format
-   * does not support inference, or no valid files are given should return None.  In these cases
-   * Spark will require that user specify the schema manually.
-   */
+    * When possible, this method should return the schema of the given `files`.  When the format
+    * does not support inference, or no valid files are given should return None.  In these cases
+    * Spark will require that user specify the schema manually.
+    */
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] =
     Some(
       StructType(Nil)
-          .add("c1", IntegerType)
-          .add("c2", IntegerType))
+        .add("c1", IntegerType)
+        .add("c2", IntegerType))
 
   /**
-   * Prepares a write job and returns an [[OutputWriterFactory]].  Client side job preparation can
-   * be put here.  For example, user defined output committer can be configured here
-   * by setting the output committer class in the conf of spark.sql.sources.outputCommitterClass.
-   */
+    * Prepares a write job and returns an [[OutputWriterFactory]].  Client side job preparation can
+    * be put here.  For example, user defined output committer can be configured here
+    * by setting the output committer class in the conf of spark.sql.sources.outputCommitterClass.
+    */
   override def prepareWrite(
       sqlContext: SQLContext,
       job: Job,
@@ -332,7 +333,8 @@ class TestFileFormat extends FileFormat {
       partitionSchema: StructType,
       dataSchema: StructType,
       filters: Seq[Filter],
-      options: Map[String, String]): PartitionedFile => Iterator[InternalRow] = {
+      options: Map[String, String])
+      : PartitionedFile => Iterator[InternalRow] = {
 
     // Record the arguments so they can be checked in the test case.
     LastArguments.partitionSchema = partitionSchema

@@ -7,8 +7,8 @@ import scala.language.reflectiveCalls
 
 import org.specs2.mutable._
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.{ ExecutionContext, Promise, Future, Await }
-import scala.concurrent.duration.{ Duration, SECONDS }
+import scala.concurrent.{ExecutionContext, Promise, Future, Await}
+import scala.concurrent.duration.{Duration, SECONDS}
 
 object RunQueueSpec extends Specification with ExecutionSpecification {
 
@@ -20,14 +20,17 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
 
   class RunQueueTester extends QueueTester {
     val rq = new RunQueue()
-    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) = rq.schedule(body)
+    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) =
+      rq.schedule(body)
   }
 
   class NaiveQueueTester extends QueueTester {
-    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) = Future(body)
+    def schedule(body: => Future[Unit])(implicit ec: ExecutionContext) =
+      Future(body)
   }
 
-  def countOrderingErrors(runs: Int, queueTester: QueueTester)(implicit ec: ExecutionContext): Future[Int] = {
+  def countOrderingErrors(runs: Int, queueTester: QueueTester)(
+      implicit ec: ExecutionContext): Future[Int] = {
     val result = Promise[Int]()
     val runCount = new AtomicInteger(0)
     val orderingErrors = new AtomicInteger(0)
@@ -57,7 +60,9 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
     "run code in order" in {
       import ExecutionContext.Implicits.global
 
-      def percentageOfRunsWithOrderingErrors(runSize: Int, queueTester: QueueTester): Int = {
+      def percentageOfRunsWithOrderingErrors(
+          runSize: Int,
+          queueTester: QueueTester): Int = {
         val results: Seq[Future[Int]] = for (i <- 0 until 9) yield {
           countOrderingErrors(runSize, queueTester)
         }
@@ -74,7 +79,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       var errorPercentage = 0
       while (errorPercentage < 90 && runSize < 1000000) {
         runSize = runSize << 1
-        errorPercentage = percentageOfRunsWithOrderingErrors(runSize, new NaiveQueueTester())
+        errorPercentage =
+          percentageOfRunsWithOrderingErrors(runSize, new NaiveQueueTester())
       }
       //println(s"Got $errorPercentage% ordering errors on run size of $runSize")
 

@@ -11,11 +11,12 @@ import org.junit.experimental.categories.Category
 @Category(Array(classOf[SlowTests]))
 class ProjectImportingTest extends ImportingTestCase with InexactMatch {
 
-  def testSimple() = runTest(
-    new project("simple") {
-      lazy val scalaLibrary = new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
-        classes += (IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar").getAbsolutePath
-      }
+  def testSimple() =
+    runTest(new project("simple") {
+      lazy val scalaLibrary =
+        new library("SBT: org.scala-lang:scala-library:2.11.6:jar") {
+          classes += (IvyCacheDir / "org.scala-lang" / "scala-library" / "jars" / "scala-library-2.11.6.jar").getAbsolutePath
+        }
 
       libraries += scalaLibrary
 
@@ -35,15 +36,15 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
       }
     })
 
-  def testMultiModule() = runTest(
-    new project("multiModule") {
+  def testMultiModule() =
+    runTest(new project("multiModule") {
       lazy val foo = new module("foo") {
         moduleDependencies += new dependency(bar) {
           isExported := true
         }
       }
 
-      lazy val bar  = new module("bar")
+      lazy val bar = new module("bar")
       lazy val root = new module("multiModule")
 
       modules := Seq(root, foo, bar)

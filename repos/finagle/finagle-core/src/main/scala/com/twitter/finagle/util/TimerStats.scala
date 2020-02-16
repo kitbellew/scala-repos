@@ -13,16 +13,16 @@ private[finagle] object TimerStats {
   private val log = Logger.get()
 
   /**
-   * Produces a [[com.twitter.finagle.stats.Stat]] that tracks how
-   * much a task deviates from its expected time to be run.
-   *
-   * @param tickDuration the period at which the given `HashedWheelTimer` runs
-   * @param statsReceiver typically scoped to "/finagle/timer/"
-   */
+    * Produces a [[com.twitter.finagle.stats.Stat]] that tracks how
+    * much a task deviates from its expected time to be run.
+    *
+    * @param tickDuration the period at which the given `HashedWheelTimer` runs
+    * @param statsReceiver typically scoped to "/finagle/timer/"
+    */
   def deviation(
-    hwt: netty.HashedWheelTimer,
-    tickDuration: Duration,
-    statsReceiver: StatsReceiver
+      hwt: netty.HashedWheelTimer,
+      tickDuration: Duration,
+      statsReceiver: StatsReceiver
   ): Unit = {
     val deviation = statsReceiver.stat("deviation_ms")
 
@@ -41,27 +41,31 @@ private[finagle] object TimerStats {
         hwt.newTimeout(this, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
       }
     }
-    hwt.newTimeout(timerTask, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
+    hwt.newTimeout(
+      timerTask,
+      tickDuration.inMilliseconds,
+      TimeUnit.MILLISECONDS)
   }
 
   /**
-   * Produces a [[com.twitter.finagle.stats.Stat]] that tracks how
-   * many tasks are pending to be run.
-   *
-   * @param nextRunAt when the task that computes the stat should be run next
-   * @param statsReceiver typically scoped to "/finagle/timer/"
-   */
+    * Produces a [[com.twitter.finagle.stats.Stat]] that tracks how
+    * many tasks are pending to be run.
+    *
+    * @param nextRunAt when the task that computes the stat should be run next
+    * @param statsReceiver typically scoped to "/finagle/timer/"
+    */
   def hashedWheelTimerInternals(
-    hwt: netty.HashedWheelTimer,
-    nextRunAt: () => Duration,
-    statsReceiver: StatsReceiver
+      hwt: netty.HashedWheelTimer,
+      nextRunAt: () => Duration,
+      statsReceiver: StatsReceiver
   ): Unit = {
     val pendingTimeouts = statsReceiver.stat("pending_tasks")
 
     // this represents HashedWheelTimer's pending queue of tasks
     // that have yet to be scheduled into a bucket
     val queuedTimeouts: Try[util.Queue[_]] = Try {
-      val timeoutsField = classOf[netty.HashedWheelTimer].getDeclaredField("timeouts")
+      val timeoutsField =
+        classOf[netty.HashedWheelTimer].getDeclaredField("timeouts")
       timeoutsField.setAccessible(true)
       timeoutsField.get(hwt).asInstanceOf[util.Queue[_]]
     }
@@ -82,28 +86,28 @@ private[finagle] object TimerStats {
       }
 
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
-      bucketHeadField.map { headField =>
-        val head = headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
-        if (head == null) {
-          0
-        } else {
-          val nextField = head.getClass.getDeclaredField("next")
-          nextField.setAccessible(true)
-          var num = 1 // count the one we've started with.
-          var next = nextField.get(head)
-          while (next != null) {
-            num += 1
-            next = nextField.get(next)
+      bucketHeadField
+        .map { headField =>
+          val head = headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
+          if (head == null) {
+            0
+          } else {
+            val nextField = head.getClass.getDeclaredField("next")
+            nextField.setAccessible(true)
+            var num = 1 // count the one we've started with.
+            var next = nextField.get(head)
+            while (next != null) {
+              num += 1
+              next = nextField.get(next)
+            }
+            num
           }
-          num
         }
-      }.getOrElse(0)
+        .getOrElse(0)
     }
 
     def wheelTimeouts: Try[Int] =
-      buckets.map { bs =>
-        bs.map(bucketTimeouts).sum
-      }
+      buckets.map { bs => bs.map(bucketTimeouts).sum }
 
     val timerTask = new netty.TimerTask {
       override def run(timeout: netty.Timeout): Unit = {
@@ -115,7 +119,8 @@ private[finagle] object TimerStats {
           pendingTimeouts.add(qTimeouts.size() + wTimeouts)
         }
 
-        val elapsedMicros = TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startAt)
+        val elapsedMicros =
+          TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startAt)
         if (log.isLoggable(Level.TRACE))
           log.trace(s"hashedWheelTimerInternals.run took $elapsedMicros us")
         hwt.newTimeout(this, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)

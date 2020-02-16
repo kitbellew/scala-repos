@@ -15,7 +15,7 @@ import scala.tools.testing.ClearAfterClass
 
 object EmptyExceptionHandlersTest extends ClearAfterClass.Clearable {
   var noOptCompiler = newCompiler(extraArgs = "-Yopt:l:none")
-  var dceCompiler   = newCompiler(extraArgs = "-Yopt:unreachable-code")
+  var dceCompiler = newCompiler(extraArgs = "-Yopt:unreachable-code")
   def clear(): Unit = {
     noOptCompiler = null
     dceCompiler = null
@@ -27,13 +27,14 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
   ClearAfterClass.stateToClear = EmptyExceptionHandlersTest
 
   val noOptCompiler = EmptyExceptionHandlersTest.noOptCompiler
-  val dceCompiler   = EmptyExceptionHandlersTest.dceCompiler
+  val dceCompiler = EmptyExceptionHandlersTest.dceCompiler
 
   val exceptionDescriptor = "java/lang/Exception"
 
   @Test
   def eliminateEmpty(): Unit = {
-    val handlers = List(ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
+    val handlers = List(
+      ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
     val asmMethod = genMethod(handlers = handlers)(
       Label(1),
       Label(2),
@@ -46,18 +47,17 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
 
   @Test
   def eliminateHandlersGuardingNops(): Unit = {
-    val handlers = List(ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
+    val handlers = List(
+      ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
     val asmMethod = genMethod(handlers = handlers)(
-      Label(1),          // nops only
+      Label(1), // nops only
       Jump(GOTO, Label(3)),
       Label(3),
       Jump(GOTO, Label(4)),
-
-      Label(2),          // handler
+      Label(2), // handler
       Op(ACONST_NULL),
       Op(ATHROW),
-
-      Label(4),          // return
+      Label(4), // return
       Op(RETURN)
     )
     assertTrue(convertMethod(asmMethod).handlers.length == 1)
@@ -67,7 +67,8 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
 
   @Test
   def eliminateUnreachableHandler(): Unit = {
-    val code = "def f: Unit = try { } catch { case _: Exception => println(0) }; println(1)"
+    val code =
+      "def f: Unit = try { } catch { case _: Exception => println(0) }; println(1)"
 
     assertTrue(singleMethod(noOptCompiler)(code).handlers.length == 1)
     val optMethod = singleMethod(dceCompiler)(code)

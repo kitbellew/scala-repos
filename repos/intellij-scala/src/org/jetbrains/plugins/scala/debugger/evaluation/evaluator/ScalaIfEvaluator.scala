@@ -1,15 +1,21 @@
 package org.jetbrains.plugins.scala.debugger.evaluation.evaluator
 
 import com.intellij.debugger.engine.evaluation.expression.{Evaluator, Modifier}
-import com.intellij.debugger.engine.evaluation.{EvaluateExceptionUtil, EvaluationContextImpl}
+import com.intellij.debugger.engine.evaluation.{
+  EvaluateExceptionUtil,
+  EvaluationContextImpl
+}
 import com.sun.jdi.BooleanValue
 
 /**
- * User: Alefas
- * Date: 19.10.11
- */
-
-class ScalaIfEvaluator(condition: Evaluator, ifBranch: Evaluator, elseBranch: Option[Evaluator]) extends Evaluator {
+  * User: Alefas
+  * Date: 19.10.11
+  */
+class ScalaIfEvaluator(
+    condition: Evaluator,
+    ifBranch: Evaluator,
+    elseBranch: Option[Evaluator])
+    extends Evaluator {
   private var modifier: Modifier = null
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
@@ -19,8 +25,7 @@ class ScalaIfEvaluator(condition: Evaluator, ifBranch: Evaluator, elseBranch: Op
         if (v.booleanValue) {
           value = ifBranch.evaluate(context)
           modifier = ifBranch.getModifier
-        }
-        else {
+        } else {
           elseBranch match {
             case Some(branch) =>
               value = branch.evaluate(context)
@@ -32,7 +37,7 @@ class ScalaIfEvaluator(condition: Evaluator, ifBranch: Evaluator, elseBranch: Op
         }
       case _ => throw EvaluateExceptionUtil.BOOLEAN_EXPECTED
     }
-    
+
     if (elseBranch.isEmpty)
       value = context.getDebugProcess.getVirtualMachineProxy.mirrorOfVoid()
 

@@ -17,7 +17,7 @@ class FutureBenchmark extends StdBenchAnnotations {
       if (n > 0) p.respond(RespondFn)
       if (n > 1) p.respond(RespondFn)
       if (n > 2) p.respond(RespondFn)
-      j+=1
+      j += 1
     }
   }
 
@@ -124,9 +124,7 @@ object FutureBenchmark {
 
     @Setup
     def prepare() {
-      stream = (0 until FutureBenchmark.N * 100).map { i =>
-        Future.value(i)
-      }.toStream
+      stream = (0 until FutureBenchmark.N * 100).map { i => Future.value(i) }.toStream
     }
   }
 

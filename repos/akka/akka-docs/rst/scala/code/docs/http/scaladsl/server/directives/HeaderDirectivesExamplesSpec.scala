@@ -36,9 +36,7 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
 
     val route =
-      headerValue(extractHostPort) { port =>
-        complete(s"The port was $port")
-      }
+      headerValue(extractHostPort) { port => complete(s"The port was $port") }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {
@@ -106,9 +104,7 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
 
     val route =
-      headerValuePF(extractHostPort) { port =>
-        complete(s"The port was $port")
-      }
+      headerValuePF(extractHostPort) { port => complete(s"The port was $port") }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {
@@ -168,8 +164,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   "optionalHeaderValueByType-0" in {
     val route =
       optionalHeaderValueByType[Origin]() {
-        case Some(origin) ⇒ complete(s"The first origin was ${origin.origins.head}")
-        case None         ⇒ complete("No Origin header found.")
+        case Some(origin) ⇒
+          complete(s"The first origin was ${origin.origins.head}")
+        case None ⇒ complete("No Origin header found.")
       }
 
     val originHeader = Origin(HttpOrigin("http://localhost:8080"))

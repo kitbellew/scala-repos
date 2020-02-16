@@ -5,7 +5,7 @@ package play.sbt
 
 object Colors {
 
-  import play.runsupport.{ Colors => RunColors }
+  import play.runsupport.{Colors => RunColors}
 
   lazy val isANSISupported = RunColors.isANSISupported
 

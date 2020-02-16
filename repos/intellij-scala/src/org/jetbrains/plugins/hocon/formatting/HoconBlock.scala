@@ -9,9 +9,13 @@ import org.jetbrains.plugins.hocon.parser.HoconElementType
 
 import scala.collection.JavaConverters._
 
-
-class HoconBlock(formatter: HoconFormatter, node: ASTNode, indent: Indent, wrap: Wrap, alignment: Alignment)
-  extends AbstractBlock(node, wrap, alignment) {
+class HoconBlock(
+    formatter: HoconFormatter,
+    node: ASTNode,
+    indent: Indent,
+    wrap: Wrap,
+    alignment: Alignment)
+    extends AbstractBlock(node, wrap, alignment) {
 
   import org.jetbrains.plugins.hocon.CommonUtil._
 
@@ -20,7 +24,9 @@ class HoconBlock(formatter: HoconFormatter, node: ASTNode, indent: Indent, wrap:
   private val wrapCache = {
     val pathValueSeparatorType =
       if (node.getElementType == HoconElementType.ValuedField)
-        node.childrenIterator.map(_.getElementType).find(HoconTokenSets.KeyValueSeparator.contains)
+        node.childrenIterator
+          .map(_.getElementType)
+          .find(HoconTokenSets.KeyValueSeparator.contains)
       else None
     new formatter.WrapCache(pathValueSeparatorType)
   }
@@ -29,7 +35,9 @@ class HoconBlock(formatter: HoconFormatter, node: ASTNode, indent: Indent, wrap:
   override def getIndent = indent
 
   override def getChildAttributes(newChildIndex: Int) =
-    new ChildAttributes(formatter.getChildIndent(node), formatter.getChildAlignment(alignmentCache, node))
+    new ChildAttributes(
+      formatter.getChildIndent(node),
+      formatter.getChildAlignment(alignmentCache, node))
 
   def buildChildren() = children.asJava
 
@@ -40,15 +48,23 @@ class HoconBlock(formatter: HoconFormatter, node: ASTNode, indent: Indent, wrap:
     if (child1 == null)
       formatter.getFirstSpacing(node, child2.asInstanceOf[HoconBlock].getNode)
     else
-      formatter.getSpacing(node, child1.asInstanceOf[HoconBlock].getNode, child2.asInstanceOf[HoconBlock].getNode)
+      formatter.getSpacing(
+        node,
+        child1.asInstanceOf[HoconBlock].getNode,
+        child2.asInstanceOf[HoconBlock].getNode)
 
   lazy val children: Seq[Block] =
-    formatter.getChildren(node)
-      .filterNot(n => n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
-      .map(createChildBlock).toVector
+    formatter
+      .getChildren(node)
+      .filterNot(n =>
+        n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
+      .map(createChildBlock)
+      .toVector
 
   private def createChildBlock(child: ASTNode) =
-    new HoconBlock(formatter, child,
+    new HoconBlock(
+      formatter,
+      child,
       formatter.getIndent(node, child),
       formatter.getWrap(wrapCache, node, child),
       formatter.getAlignment(alignmentCache, node, child))

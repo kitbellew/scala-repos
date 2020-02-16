@@ -2,9 +2,9 @@ package org.jetbrains.plugins.scala
 package refactoring.extractMethod
 
 /**
- * Nikolay.Tropin
- * 2014-04-21
- */
+  * Nikolay.Tropin
+  * 2014-04-21
+  */
 class ScalaExtractMethodOutputTest extends ScalaExtractMethodTestBase {
   override def folderPath: String = super.folderPath + "output/"
 

@@ -3,7 +3,8 @@ object AbstractTypes {
     case Nil => Nil
     case h :: t => {
       println(h.toList)
-      /*start*/process(if (false) its else t)/*end*/
+      /*start*/
+      process(if (false) its else t) /*end*/
     }
   }
 }

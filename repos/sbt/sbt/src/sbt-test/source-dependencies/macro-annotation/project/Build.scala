@@ -10,7 +10,8 @@ object BuildSettings {
     scalaVersion := "2.11.4",
     resolvers += Resolver.sonatypeRepo("snapshots"),
     resolvers += Resolver.sonatypeRepo("releases"),
-    addCompilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.full),
+    addCompilerPlugin(
+      "org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.full),
     incOptions := incOptions.value.withNameHashing(true)
   )
 }
@@ -24,15 +25,17 @@ object MyBuild extends Build {
     settings = buildSettings ++ Seq(
       run <<= run in Compile in core
     )
-  ) aggregate(macros, core)
+  ) aggregate (macros, core)
 
   lazy val macros: Project = Project(
     "macros",
     file("macros"),
     settings = buildSettings ++ Seq(
-      libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
+      libraryDependencies <+= (scalaVersion)(
+        "org.scala-lang" % "scala-reflect" % _),
       libraryDependencies ++= (
-        if (scalaVersion.value.startsWith("2.10")) List("org.scalamacros" %% "quasiquotes" % paradiseVersion)
+        if (scalaVersion.value.startsWith("2.10"))
+          List("org.scalamacros" %% "quasiquotes" % paradiseVersion)
         else Nil
       )
     )
@@ -42,5 +45,5 @@ object MyBuild extends Build {
     "core",
     file("core"),
     settings = buildSettings
-  ) dependsOn(macros)
+  ) dependsOn (macros)
 }

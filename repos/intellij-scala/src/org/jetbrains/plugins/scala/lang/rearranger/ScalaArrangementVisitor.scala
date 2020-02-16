@@ -11,52 +11,97 @@ import com.intellij.psi.codeStyle.arrangement.std.StdArrangementTokens.EntryType
 import com.intellij.psi.codeStyle.arrangement.std.StdArrangementTokens.Modifier._
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
-import org.jetbrains.plugins.scala.lang.psi.api.base.{ScConstructor, ScModifierList, ScReferenceElement, ScStableCodeReferenceElement}
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, ScReferenceExpression}
+import org.jetbrains.plugins.scala.lang.psi.api.base.{
+  ScConstructor,
+  ScModifierList,
+  ScReferenceElement,
+  ScStableCodeReferenceElement
+}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScExpression,
+  ScReferenceExpression
+}
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackaging
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScTemplateBody
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScClass, ScTrait, ScTypeDefinition}
-import org.jetbrains.plugins.scala.lang.psi.api.{ScalaElementVisitor, ScalaFile, ScalaRecursiveElementVisitor}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScClass,
+  ScTrait,
+  ScTypeDefinition
+}
+import org.jetbrains.plugins.scala.lang.psi.api.{
+  ScalaElementVisitor,
+  ScalaFile,
+  ScalaRecursiveElementVisitor
+}
 import org.jetbrains.plugins.scala.lang.psi.types.{Any, Boolean, ScType, Unit}
 
 import scala.collection.mutable
 
 /**
- * @author Roman.Shein
- *         Date: 09.07.13
- */
-class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Document, ranges: Iterable[TextRange],
-                              groupingRules: Set[ArrangementSettingsToken]) extends ScalaElementVisitor {
+  * @author Roman.Shein
+  *         Date: 09.07.13
+  */
+class ScalaArrangementVisitor(
+    parseInfo: ScalaArrangementParseInfo,
+    document: Document,
+    ranges: Iterable[TextRange],
+    groupingRules: Set[ArrangementSettingsToken])
+    extends ScalaElementVisitor {
 
   private val arrangementEntries = mutable.Stack[ScalaArrangementEntry]()
 
-  private val splitBodyByExpressions = groupingRules.contains(SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
+  private val splitBodyByExpressions =
+    groupingRules.contains(SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
 
-  private val unseparableRanges = mutable.HashMap[ScalaArrangementEntry /*parent*/ ,
-          mutable.Queue[ScalaArrangementEntry] /*Arrangement blocks*/ ]()
+  private val unseparableRanges = mutable.HashMap[
+    ScalaArrangementEntry /*parent*/,
+    mutable.Queue[ScalaArrangementEntry] /*Arrangement blocks*/ ]()
 
   /**
-   * Traverses method body to build inter-method dependencies.
+    * Traverses method body to build inter-method dependencies.
    **/
   override def visitTypeAlias(alias: ScTypeAlias) {
-    processEntry(createNewEntry(alias.getParent,
-      expandTextRangeToComment(alias), TYPE, alias.getName, canArrange = true), alias, null)
+    processEntry(
+      createNewEntry(
+        alias.getParent,
+        expandTextRangeToComment(alias),
+        TYPE,
+        alias.getName,
+        canArrange = true),
+      alias,
+      null)
   }
 
   override def visitConstructor(constr: ScConstructor) {
-    createNewEntry(constr.getParent,
-      expandTextRangeToComment(constr), CONSTRUCTOR, null, canArrange = true)
+    createNewEntry(
+      constr.getParent,
+      expandTextRangeToComment(constr),
+      CONSTRUCTOR,
+      null,
+      canArrange = true)
   }
 
   override def visitFunction(fun: ScFunction) {
-    processEntry(createNewEntry(fun.getParent,
-      expandTextRangeToComment(fun), FUNCTION, fun.getName, canArrange = true), fun, null)
+    processEntry(
+      createNewEntry(
+        fun.getParent,
+        expandTextRangeToComment(fun),
+        FUNCTION,
+        fun.getName,
+        canArrange = true),
+      fun,
+      null)
   }
 
   override def visitFunctionDefinition(fun: ScFunctionDefinition) {
-    val entry = createNewEntry(fun.getParent, expandTextRangeToComment(fun), FUNCTION, fun.getName, canArrange = true)
+    val entry = createNewEntry(
+      fun.getParent,
+      expandTextRangeToComment(fun),
+      FUNCTION,
+      fun.getName,
+      canArrange = true)
     parseInfo.onMethodEntryCreated(fun, entry)
     fun.body match {
       case Some(body) =>
@@ -69,7 +114,12 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
   }
 
   override def visitMacroDefinition(fun: ScMacroDefinition) {
-    val entry = createNewEntry(fun.getParent, expandTextRangeToComment(fun), MACRO, fun.getName, canArrange = true)
+    val entry = createNewEntry(
+      fun.getParent,
+      expandTextRangeToComment(fun),
+      MACRO,
+      fun.getName,
+      canArrange = true)
     parseInfo.onMethodEntryCreated(fun, entry)
     processEntry(entry, fun, null)
     fun.getLastChild match {
@@ -82,54 +132,103 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
 
   override def visitFile(file: PsiFile) = file match {
     case scFile: ScalaFile => scFile.acceptChildren(this)
-    case _ =>
+    case _                 =>
   }
 
   override def visitPatternDefinition(pat: ScPatternDefinition) {
     //TODO: insert inter-field dependency here
-    processEntry(createNewEntry(pat.getParent, expandTextRangeToComment(pat), VAL,
-      pat.pList.patterns.toList.head.bindings(0).getName, canArrange = true), pat, pat.expr.orNull)
+    processEntry(
+      createNewEntry(
+        pat.getParent,
+        expandTextRangeToComment(pat),
+        VAL,
+        pat.pList.patterns.toList.head.bindings(0).getName,
+        canArrange = true),
+      pat,
+      pat.expr.orNull
+    )
   }
 
   override def visitElement(v: ScalaPsiElement) = v match {
     case packaging: ScPackaging => packaging.acceptChildren(this)
-    case _ => super.visitElement(v)
+    case _                      => super.visitElement(v)
   }
 
   override def visitClass(scClass: ScClass) =
     processEntry(
-      createNewEntry(scClass.getParent, expandTextRangeToComment(scClass), CLASS, scClass.getName, canArrange = true),
-      scClass, scClass.extendsBlock.templateBody.orNull)
-  
+      createNewEntry(
+        scClass.getParent,
+        expandTextRangeToComment(scClass),
+        CLASS,
+        scClass.getName,
+        canArrange = true),
+      scClass,
+      scClass.extendsBlock.templateBody.orNull
+    )
+
   override def visitValueDeclaration(v: ScValueDeclaration) =
-    processEntry(createNewEntry(v.getParent, expandTextRangeToComment(v), VAL, v.getName, canArrange = true), v, null)
+    processEntry(
+      createNewEntry(
+        v.getParent,
+        expandTextRangeToComment(v),
+        VAL,
+        v.getName,
+        canArrange = true),
+      v,
+      null)
 
   override def visitVariableDefinition(varr: ScVariableDefinition) {
     //TODO: insert inter-field dependency here
-    processEntry(createNewEntry(varr.getParent, expandTextRangeToComment(varr), VAR, varr.declaredElements(0).getName,
-      canArrange = true), varr, varr.expr.orNull)
+    processEntry(
+      createNewEntry(
+        varr.getParent,
+        expandTextRangeToComment(varr),
+        VAR,
+        varr.declaredElements(0).getName,
+        canArrange = true),
+      varr,
+      varr.expr.orNull)
   }
 
   override def visitVariableDeclaration(varr: ScVariableDeclaration) =
-    processEntry(createNewEntry(varr.getParent, expandTextRangeToComment(varr), VAR, varr.declaredElements(0).getName, canArrange = true),
-      varr, null)
+    processEntry(
+      createNewEntry(
+        varr.getParent,
+        expandTextRangeToComment(varr),
+        VAR,
+        varr.declaredElements(0).getName,
+        canArrange = true),
+      varr,
+      null)
 
   override def visitTypeDefinition(typedef: ScTypeDefinition) {
-    val entry = createNewEntry(typedef.getParent, expandTextRangeToComment(typedef), typedef match {
-      case _: ScClass => CLASS
-      case _: ScTrait => TRAIT
-      case _ => OBJECT
-    }, typedef.getName, canArrange = true)
+    val entry = createNewEntry(
+      typedef.getParent,
+      expandTextRangeToComment(typedef),
+      typedef match {
+        case _: ScClass => CLASS
+        case _: ScTrait => TRAIT
+        case _          => OBJECT
+      },
+      typedef.getName,
+      canArrange = true
+    )
     processEntry(entry, typedef, typedef.extendsBlock.templateBody.orNull)
   }
 
-  private def withinBounds(range: TextRange) = ranges.foldLeft(false)((acc: Boolean, current: TextRange) =>
-    acc || current.intersects(range))
+  private def withinBounds(range: TextRange) =
+    ranges.foldLeft(false)((acc: Boolean, current: TextRange) =>
+      acc || current.intersects(range))
 
-  private def getCurrentEntry = if (arrangementEntries.isEmpty) null else arrangementEntries.top
+  private def getCurrentEntry =
+    if (arrangementEntries.isEmpty) null else arrangementEntries.top
 
-  private def createNewEntry(parent: PsiElement, range: TextRange,
-                             tokenType: ArrangementSettingsToken, name: String, canArrange: Boolean) = {
+  private def createNewEntry(
+      parent: PsiElement,
+      range: TextRange,
+      tokenType: ArrangementSettingsToken,
+      name: String,
+      canArrange: Boolean) = {
     if (!withinBounds(range)) {
       null
     } else {
@@ -141,8 +240,13 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
         range
       }
       //we only arrange elements in ScTypeDefinitions and top-level elements
-      val newEntry = new ScalaArrangementEntry(currentEntry, newRange, tokenType, name, canArrange &&
-              (parent.isInstanceOf[ScTemplateBody] || parent.isInstanceOf[PsiFile]))
+      val newEntry = new ScalaArrangementEntry(
+        currentEntry,
+        newRange,
+        tokenType,
+        name,
+        canArrange &&
+          (parent.isInstanceOf[ScTemplateBody] || parent.isInstanceOf[PsiFile]))
 
       if (currentEntry == null) {
         parseInfo.addEntry(newEntry)
@@ -154,7 +258,9 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     }
   }
 
-  private def parseModifiers(modifiers: ScModifierList, entry: ScalaArrangementEntry) {
+  private def parseModifiers(
+      modifiers: ScModifierList,
+      entry: ScalaArrangementEntry) {
     if (modifiers != null) {
       for (modName <- modifiers.getModifiersStrings) {
         getModifierByName(modName).flatMap((mod: ArrangementSettingsToken) => {
@@ -168,7 +274,10 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     }
   }
 
-  private def processEntry(entry: ScalaArrangementEntry, modifiers: ScModifierListOwner, nextPsiRoot: ScalaPsiElement) {
+  private def processEntry(
+      entry: ScalaArrangementEntry,
+      modifiers: ScModifierListOwner,
+      nextPsiRoot: ScalaPsiElement) {
     if (entry == null) return
     if (modifiers != null) {
       parseModifiers(modifiers.getModifierList, entry)
@@ -176,7 +285,8 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     if (nextPsiRoot != null) {
       arrangementEntries.push(entry)
       try nextPsiRoot match {
-        case body: ScTemplateBody if splitBodyByExpressions => traverseTypedefBody(body, entry)
+        case body: ScTemplateBody if splitBodyByExpressions =>
+          traverseTypedefBody(body, entry)
         case _ => nextPsiRoot.acceptChildren(this)
       } finally {
         arrangementEntries.pop()
@@ -184,19 +294,27 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     }
   }
 
-  private def traverseTypedefBody(psiRoot: ScTemplateBody, entry: ScalaArrangementEntry) {
+  private def traverseTypedefBody(
+      psiRoot: ScTemplateBody,
+      entry: ScalaArrangementEntry) {
     genUnseparableRanges(psiRoot, entry)
     val top = arrangementEntries.top
-    val queue = unseparableRanges.getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
+    val queue =
+      unseparableRanges.getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
     //    var unseparable =
     def next() = if (queue.isEmpty) null else queue.dequeue()
-    psiRoot.getChildren.foldLeft(false, if (queue.isEmpty) null else queue.dequeue())((acc, child) => {
+    psiRoot.getChildren.foldLeft(
+      false,
+      if (queue.isEmpty) null else queue.dequeue())((acc, child) => {
       val (insideBlock, unseparable) = acc
       val childStart = child.getTextRange.getStartOffset
       //check if there are any more unseparable blocks at all
       val res = if (unseparable != null) {
         //process current child with regard to current block
-        (insideBlock, childStart >= unseparable.getStartOffset, childStart >= unseparable.getEndOffset) match {
+        (
+          insideBlock,
+          childStart >= unseparable.getStartOffset,
+          childStart >= unseparable.getEndOffset) match {
           case (false, true, false) => //entering arrange block
             arrangementEntries.push(unseparable)
             (true, unseparable)
@@ -229,15 +347,20 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     val first = node.getFirstChild
     var currentNode: PsiElement = node
     var range =
-      if (first != null && first.isInstanceOf[PsiComment] && prev != null && (!prev.isInstanceOf[PsiWhiteSpace] ||
-              prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains("\n") && prev.getPrevSibling != null)) {
-        new TextRange(node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
+      if (first != null && first
+            .isInstanceOf[PsiComment] && prev != null && (!prev
+            .isInstanceOf[PsiWhiteSpace] ||
+          prev
+            .isInstanceOf[PsiWhiteSpace] && !prev.getText.contains("\n") && prev.getPrevSibling != null)) {
+        new TextRange(
+          node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)
       } else {
         node.getTextRange
       }
     range = node.nextSibling match {
-      case Some(semicolon: PsiElement) if semicolon.getNode.getElementType == ScalaTokenTypes.tSEMICOLON =>
+      case Some(semicolon: PsiElement)
+          if semicolon.getNode.getElementType == ScalaTokenTypes.tSEMICOLON =>
         currentNode = semicolon; range.union(semicolon.getTextRange)
       case _ => range
     }
@@ -245,8 +368,10 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
       case sibling: PsiWhiteSpace =>
         if (!sibling.getText.contains("\n")) {
           sibling.getNextSibling match {
-            case comment: PsiComment => range.union(sibling.getTextRange).union(comment.getTextRange)
-            case nonComment: ScalaPsiElement => val next = nonComment.getFirstChild
+            case comment: PsiComment =>
+              range.union(sibling.getTextRange).union(comment.getTextRange)
+            case nonComment: ScalaPsiElement =>
+              val next = nonComment.getFirstChild
               if (next != null && next.isInstanceOf[PsiComment]) {
                 range.union(sibling.getTextRange).union(next.getTextRange)
               } else {
@@ -258,16 +383,20 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
           range
         }
       case comment: PsiComment => range.union(comment.getTextRange)
-      case _ => range
+      case _                   => range
     }
     res
   }
 
-  private class MethodBodyProcessor(val info: ScalaArrangementParseInfo, val baseMethod: ScFunction) extends ScalaRecursiveElementVisitor {
+  private class MethodBodyProcessor(
+      val info: ScalaArrangementParseInfo,
+      val baseMethod: ScFunction)
+      extends ScalaRecursiveElementVisitor {
 
     override def visitReference(ref: ScReferenceElement) {
       ref.resolve() match {
-        case fun: ScFunction if fun.getContainingClass == baseMethod.getContainingClass =>
+        case fun: ScFunction
+            if fun.getContainingClass == baseMethod.getContainingClass =>
           assert(baseMethod != null)
           info.registerDependency(baseMethod, fun)
         case _ =>
@@ -280,53 +409,84 @@ class ScalaArrangementVisitor(parseInfo: ScalaArrangementParseInfo, document: Do
     }
   }
 
-  private def parseProperties(method: ScFunction, entry: ScalaArrangementEntry) {
-    if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules.contains(SCALA_GETTERS_AND_SETTERS)) ||
-            entry == null) {
+  private def parseProperties(
+      method: ScFunction,
+      entry: ScalaArrangementEntry) {
+    if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules
+          .contains(SCALA_GETTERS_AND_SETTERS)) ||
+        entry == null) {
       return
     }
     val methodName = method.getName
     val psiParent = method.getParent
     if (ScalaArrangementVisitor.isJavaGetter(method)) {
-      parseInfo.registerJavaGetter((if (methodName.startsWith("get")) StringUtil.decapitalize(methodName.substring(3))
-      else StringUtil.decapitalize(methodName.substring(2)), psiParent), method, entry)
+      parseInfo.registerJavaGetter(
+        (
+          if (methodName.startsWith("get"))
+            StringUtil.decapitalize(methodName.substring(3))
+          else StringUtil.decapitalize(methodName.substring(2)),
+          psiParent),
+        method,
+        entry
+      )
     } else if (ScalaArrangementVisitor.isJavaSetter(method)) {
-      parseInfo.registerJavaSetter((StringUtil.decapitalize(methodName.substring(3)), psiParent), method, entry)
+      parseInfo.registerJavaSetter(
+        (StringUtil.decapitalize(methodName.substring(3)), psiParent),
+        method,
+        entry)
     } else if (ScalaArrangementVisitor.isScalaGetter(method)) {
       parseInfo.registerScalaGetter((methodName, psiParent), method, entry)
     } else if (ScalaArrangementVisitor.isScalaSetter(method)) {
-      parseInfo.registerScalaSetter((ScalaArrangementVisitor.removeScalaSetterEnding(methodName), psiParent), method,
+      parseInfo.registerScalaSetter(
+        (
+          ScalaArrangementVisitor.removeScalaSetterEnding(methodName),
+          psiParent),
+        method,
         entry)
     }
   }
 
-  private def genUnseparableRanges(body: ScTemplateBody, entry: ScalaArrangementEntry) = {
+  private def genUnseparableRanges(
+      body: ScTemplateBody,
+      entry: ScalaArrangementEntry) = {
     body.getChildren.foldLeft(None)((startOffset, child) => {
-      val newOffset = if (startOffset.isDefined) startOffset.get else child.getTextRange.getStartOffset
+      val newOffset =
+        if (startOffset.isDefined) startOffset.get
+        else child.getTextRange.getStartOffset
       if (child.isInstanceOf[ScExpression]) {
         if (!unseparableRanges.contains(entry)) {
           unseparableRanges += (entry -> mutable.Queue[ScalaArrangementEntry]())
         }
-        unseparableRanges.get(entry).foreach(queue =>
-          queue.enqueue(createNewEntry(body, new TextRange(newOffset,
-            child.getTextRange.getEndOffset), UNSEPARABLE_RANGE, null, canArrange = true)))
+        unseparableRanges
+          .get(entry)
+          .foreach(queue =>
+            queue.enqueue(
+              createNewEntry(
+                body,
+                new TextRange(newOffset, child.getTextRange.getEndOffset),
+                UNSEPARABLE_RANGE,
+                null,
+                canArrange = true)))
         None
       } else startOffset
-    }
-    )
+    })
   }
 }
 
 object ScalaArrangementVisitor {
   private def nameStartsWith(name: String, start: String) = {
     val length = name.length
-    name.startsWith(start) && length > start.length && !(Character.isLowerCase(name.charAt(start.length())) &&
-            (length == start.length() + 1 || Character.isLowerCase(name.charAt(start.length() + 1))))
+    name.startsWith(start) && length > start.length && !(Character.isLowerCase(
+      name.charAt(start.length())) &&
+      (length == start.length() + 1 || Character.isLowerCase(
+        name.charAt(start.length() + 1))))
   }
 
   private def hasJavaGetterName(method: ScFunction) = {
     val name = method.getName
-    if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name.charAt("getAnd".length).isUpper)) {
+    if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name
+          .charAt("getAnd".length)
+          .isUpper)) {
       method.returnType.getOrAny != Unit
     } else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean
@@ -338,22 +498,27 @@ object ScalaArrangementVisitor {
     nameStartsWith(name, "set")
   }
 
-  private def hasScalaSetterName(method: ScFunction) = method.name.endsWith("_=")
+  private def hasScalaSetterName(method: ScFunction) =
+    method.name.endsWith("_=")
 
   private def hasSetterSignature(method: ScFunction) =
     method.getParameterList.getParametersCount == 1 && (method.returnType.getOrAny match {
-      case Any => true
+      case Any                => true
       case returnType: ScType => returnType == Unit
     })
 
   private def isJavaGetter(method: ScFunction) =
     hasJavaGetterName(method) && method.getParameterList.getParametersCount == 0
 
-  private def isJavaSetter(method: ScFunction) = hasJavaSetterName(method) && hasSetterSignature(method)
+  private def isJavaSetter(method: ScFunction) =
+    hasJavaSetterName(method) && hasSetterSignature(method)
 
-  private def isScalaSetter(method: ScFunction) = hasScalaSetterName(method) && hasSetterSignature(method)
+  private def isScalaSetter(method: ScFunction) =
+    hasScalaSetterName(method) && hasSetterSignature(method)
 
-  private def isScalaGetter(method: ScFunction) = method.getParameterList.getParametersCount == 0
+  private def isScalaGetter(method: ScFunction) =
+    method.getParameterList.getParametersCount == 0
 
-  private def removeScalaSetterEnding(name: String) = name.substring(0, name.length - 4) //removing _$eq
+  private def removeScalaSetterEnding(name: String) =
+    name.substring(0, name.length - 4) //removing _$eq
 }

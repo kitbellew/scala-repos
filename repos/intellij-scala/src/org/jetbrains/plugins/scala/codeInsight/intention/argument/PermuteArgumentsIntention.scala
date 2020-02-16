@@ -6,17 +6,20 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScArgumentExprList, ScExpression}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScArgumentExprList,
+  ScExpression
+}
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.Parameter
 
 /**
- * Jason Zaugg
- */
-
+  * Jason Zaugg
+  */
 class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
   def getFamilyName = "Permute arguments"
 
-  override def getText = "Permute arguments to match the parameter declaration order"
+  override def getText =
+    "Permute arguments to match the parameter declaration order"
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     check(project, editor, element).isDefined
@@ -26,15 +29,20 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
     if (!element.isValid) return
     check(project, editor, element) match {
       case Some(x) => x()
-      case None =>
+      case None    =>
     }
   }
 
-  private def check(project: Project, editor: Editor, element: PsiElement): Option[() => Unit] = {
-    val argList = PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
+  private def check(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Option[() => Unit] = {
+    val argList =
+      PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
     if (argList == null) return None
 
-    val argsAndMatchingParams: Seq[(ScExpression, Parameter)] = argList.matchedParameters.sortBy(_._1.getTextOffset)
+    val argsAndMatchingParams: Seq[(ScExpression, Parameter)] =
+      argList.matchedParameters.sortBy(_._1.getTextOffset)
     val argumentParamIndices: Seq[Int] = argsAndMatchingParams.map(_._2.index)
     val sorted: Seq[Int] = argumentParamIndices.sorted
     if (argumentParamIndices != sorted) {

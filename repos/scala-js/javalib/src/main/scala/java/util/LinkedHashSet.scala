@@ -2,9 +2,11 @@ package java.util
 
 import scala.collection.mutable
 
-class LinkedHashSet[E] extends HashSet[E] with Set[E]
-                                          with Cloneable
-                                          with Serializable {
+class LinkedHashSet[E]
+    extends HashSet[E]
+    with Set[E]
+    with Cloneable
+    with Serializable {
   def this(initialCapacity: Int, loadFactor: Float) =
     this()
 

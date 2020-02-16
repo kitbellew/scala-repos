@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -41,72 +41,115 @@ import scalaz.syntax.std.option._
 
 object PermissionsFinder {
   import Permission._
-  def canWriteAs(permissions: Set[WritePermission], authorities: Authorities): Boolean = {
+  def canWriteAs(
+      permissions: Set[WritePermission],
+      authorities: Authorities): Boolean = {
     val permWriteAs = permissions.map(_.writeAs)
-    permWriteAs.exists(_ == WriteAsAny) || 
-    {
-      val writeAsAlls = permWriteAs.collect({ case WriteAsAll(s) if s.subsetOf(authorities.accountIds) => s })
+    permWriteAs.exists(_ == WriteAsAny) || {
+      val writeAsAlls = permWriteAs.collect({
+        case WriteAsAll(s) if s.subsetOf(authorities.accountIds) => s
+      })
 
-      permWriteAs.nonEmpty && 
-      writeAsAlls.foldLeft(authorities.accountIds)({ case (remaining, s) => remaining diff s }).isEmpty
+      permWriteAs.nonEmpty &&
+      writeAsAlls
+        .foldLeft(authorities.accountIds)({
+          case (remaining, s) => remaining diff s
+        })
+        .isEmpty
     }
   }
 }
 
-class PermissionsFinder[M[+_]: Monad](val apiKeyFinder: APIKeyFinder[M], val accountFinder: AccountFinder[M], timestampRequiredAfter: Instant) extends Logging {
+class PermissionsFinder[M[+_]: Monad](
+    val apiKeyFinder: APIKeyFinder[M],
+    val accountFinder: AccountFinder[M],
+    timestampRequiredAfter: Instant)
+    extends Logging {
   import PermissionsFinder._
   import Permission._
 
-  private def filterWritePermissions(keyDetails: v1.APIKeyDetails, path: Path, at: Option[Instant]): Set[WritePermission] = {
+  private def filterWritePermissions(
+      keyDetails: v1.APIKeyDetails,
+      path: Path,
+      at: Option[Instant]): Set[WritePermission] = {
     keyDetails.grants filter { g =>
-      (at exists { g.isValidAt _ }) || g.createdAt.isBefore(timestampRequiredAfter)
+      (at exists { g.isValidAt _ }) || g.createdAt.isBefore(
+        timestampRequiredAfter)
     } flatMap {
-      _.permissions collect { 
-        case perm @ WritePermission(path0, _) if path0.isEqualOrParentOf(path) => perm
+      _.permissions collect {
+        case perm @ WritePermission(path0, _)
+            if path0.isEqualOrParentOf(path) =>
+          perm
       }
     }
   }
 
-  def inferWriteAuthorities(apiKey: APIKey, path: Path, at: Option[Instant]): M[Option[Authorities]] = {
-    def selectWriter(writePermissions: Set[WritePermission]): M[Option[Authorities]] = {
-      lazy val accountWriter: M[Option[Authorities]] = accountFinder.findAccountByAPIKey(apiKey) map { _ map { Authorities(_) } }
-      val eithers: List[M[Option[Authorities]] \/ M[Option[Authorities]]] = writePermissions.map({
-        case WritePermission(_, WriteAsAny) => 
-          left(accountWriter)
-        case WritePermission(_, WriteAsAll(accountIds)) => 
-          (Authorities.ifPresent(accountIds).map(a => Some(a).point[M]) \/> accountWriter)
-      })(collection.breakOut)
+  def inferWriteAuthorities(
+      apiKey: APIKey,
+      path: Path,
+      at: Option[Instant]): M[Option[Authorities]] = {
+    def selectWriter(
+        writePermissions: Set[WritePermission]): M[Option[Authorities]] = {
+      lazy val accountWriter: M[Option[Authorities]] =
+        accountFinder.findAccountByAPIKey(apiKey) map {
+          _ map { Authorities(_) }
+        }
+      val eithers: List[M[Option[Authorities]] \/ M[Option[Authorities]]] =
+        writePermissions.map({
+          case WritePermission(_, WriteAsAny) =>
+            left(accountWriter)
+          case WritePermission(_, WriteAsAll(accountIds)) =>
+            (Authorities
+              .ifPresent(accountIds)
+              .map(a => Some(a).point[M]) \/> accountWriter)
+        })(collection.breakOut)
 
       // if it is possible to write as the account holder for the api key, then do so, otherwise,
       // write as the distinct set of writers that the api key has path write permissions for
-      eithers.traverse(_.bisequence[M, Option[Authorities], Option[Authorities]]) map { (perms: List[Option[Authorities] \/ Option[Authorities]]) =>
-        perms collectFirst {
-          case -\/(Some(authorities)) => authorities
-        } orElse {
-          val allOptions = perms collect { case \/-(Some(authorities)) => authorities } 
-          if (allOptions.size == 1) allOptions.headOption else None
-        }
+      eithers.traverse(
+        _.bisequence[M, Option[Authorities], Option[Authorities]]) map {
+        (perms: List[Option[Authorities] \/ Option[Authorities]]) =>
+          perms collectFirst {
+            case -\/(Some(authorities)) => authorities
+          } orElse {
+            val allOptions = perms collect {
+              case \/-(Some(authorities)) => authorities
+            }
+            if (allOptions.size == 1) allOptions.headOption else None
+          }
       }
     }
 
     apiKeyFinder.findAPIKey(apiKey, None) flatMap {
-      _ map { (filterWritePermissions(_:v1.APIKeyDetails, path, at)) andThen (selectWriter _) } getOrElse { None.point[M] }
+      _ map {
+        (filterWritePermissions(_: v1.APIKeyDetails, path, at)) andThen (selectWriter _)
+      } getOrElse { None.point[M] }
     }
   }
 
-  def writePermissions(apiKey: APIKey, path: Path, at: Instant): M[Set[WritePermission]] = {
+  def writePermissions(
+      apiKey: APIKey,
+      path: Path,
+      at: Instant): M[Set[WritePermission]] = {
     apiKeyFinder.findAPIKey(apiKey, None) map {
       case Some(details) =>
-        logger.debug("Filtering write grants from " + details + " for " + path + " at " + at)
+        logger.debug(
+          "Filtering write grants from " + details + " for " + path + " at " + at)
         filterWritePermissions(details, path, Some(at))
-      
+
       case None =>
-        logger.warn("No API key details found for %s %s at %s".format(apiKey, path.path, at.toString))
+        logger.warn(
+          "No API key details found for %s %s at %s"
+            .format(apiKey, path.path, at.toString))
         Set()
     }
   }
 
-  def checkWriteAuthorities(authorities: Authorities, apiKey: APIKey, path: Path, at: Instant): M[Boolean] = {
+  def checkWriteAuthorities(
+      authorities: Authorities,
+      apiKey: APIKey,
+      path: Path,
+      at: Instant): M[Boolean] = {
     writePermissions(apiKey, path, at) map { canWriteAs(_, authorities) }
   }
 
@@ -120,8 +163,9 @@ class PermissionsFinder[M[+_]: Monad](val apiKeyFinder: APIKeyFinder[M], val acc
     } yield {
       // FIXME: Not comprehensive/exhaustive in terms of finding all possible data you could read
       permissions flatMap {
-        case perm @ WrittenByPermission(p0, _) if p0.isEqualOrParentOf(path) => 
-          if (perm.path == Path.Root) accountPath.flatten.map(_.rootPath) else Some(perm.path)
+        case perm @ WrittenByPermission(p0, _) if p0.isEqualOrParentOf(path) =>
+          if (perm.path == Path.Root) accountPath.flatten.map(_.rootPath)
+          else Some(perm.path)
 
         case _ => None
       }

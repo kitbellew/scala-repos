@@ -4,63 +4,65 @@ import com.twitter.io.Buf
 import java.nio.ByteOrder
 
 /**
- * A [[BufReader]] provides a stateful API to extract bytes from a
- * [[Buf]]. This conveniently allows codec implementations to
- * decode frames, specifically when they need to decode and interpret
- * the bytes as a numeric value. Unless otherwise stated, [[BufReader]]
- * implementations are not thread safe.
- */
+  * A [[BufReader]] provides a stateful API to extract bytes from a
+  * [[Buf]]. This conveniently allows codec implementations to
+  * decode frames, specifically when they need to decode and interpret
+  * the bytes as a numeric value. Unless otherwise stated, [[BufReader]]
+  * implementations are not thread safe.
+  */
 private[finagle] trait BufReader {
+
   /**
-   * The remainder of bytes that the reader is capable of reading.
-   */
+    * The remainder of bytes that the reader is capable of reading.
+    */
   def remaining: Int
 
   /**
-   * Extract 8 bits, advancing the byte cursor by 1.
-   */
+    * Extract 8 bits, advancing the byte cursor by 1.
+    */
   def readByte(): Int
 
   /**
-   * Extract 16 bits, advancing the byte cursor by 2.
-   */
+    * Extract 16 bits, advancing the byte cursor by 2.
+    */
   def readShortBE(): Int
 
   /**
-   * Extract 32 bits, advancing the byte cursor by 4.
-   */
+    * Extract 32 bits, advancing the byte cursor by 4.
+    */
   def readIntBE(): Int
 
   /**
-   * Extract 64 bits, advancing the byte cursor by 8.
-   */
+    * Extract 64 bits, advancing the byte cursor by 8.
+    */
   def readLongBE(): Long
 
   /**
-   * Returns a new buffer representing a slice of this buffer, delimited
-   * by the indices `[cursor, remaining)`. Out of bounds indices are truncated.
-   * Negative indices are not accepted.
-   */
+    * Returns a new buffer representing a slice of this buffer, delimited
+    * by the indices `[cursor, remaining)`. Out of bounds indices are truncated.
+    * Negative indices are not accepted.
+    */
   def readBytes(n: Int): Buf
 
   /**
-   * Like `read`, but extracts the remainder of bytes from cursor
-   * to the length. Note, this advances the cursor to the end of
-   * the buf.
-   */
+    * Like `read`, but extracts the remainder of bytes from cursor
+    * to the length. Note, this advances the cursor to the end of
+    * the buf.
+    */
   def readAll(): Buf
 }
 
 private[finagle] object BufReader {
+
   /**
-   * Creates a [[BufReader]] that is capable of extracting
-   * numeric values in big endian order.
-   */
+    * Creates a [[BufReader]] that is capable of extracting
+    * numeric values in big endian order.
+    */
   def apply(buf: Buf): BufReader = new BufReaderImpl(buf)
 
   /**
-   * Indicates there aren't sufficient bytes to be read.
-   */
+    * Indicates there aren't sufficient bytes to be read.
+    */
   class UnderflowException(msg: String) extends Exception(msg)
 }
 
@@ -93,8 +95,8 @@ private class BufReaderImpl(underlying: Buf) extends BufReader {
     }
 
     readBytes(2).write(nums, 0)
-    ((nums(0) & 0xff) <<  8) |
-    ((nums(1) & 0xff)      )
+    ((nums(0) & 0xff) << 8) |
+      ((nums(1) & 0xff))
   }
 
   def readIntBE(): Int = {
@@ -105,9 +107,9 @@ private class BufReaderImpl(underlying: Buf) extends BufReader {
 
     readBytes(4).write(nums, 0)
     ((nums(0) & 0xff) << 24) |
-    ((nums(1) & 0xff) << 16) |
-    ((nums(2) & 0xff) <<  8) |
-    ((nums(3) & 0xff)      )
+      ((nums(1) & 0xff) << 16) |
+      ((nums(2) & 0xff) << 8) |
+      ((nums(3) & 0xff))
   }
 
   def readLongBE(): Long = {
@@ -118,13 +120,13 @@ private class BufReaderImpl(underlying: Buf) extends BufReader {
 
     readBytes(8).write(nums, 0)
     ((nums(0) & 0xff).toLong << 56) |
-    ((nums(1) & 0xff).toLong << 48) |
-    ((nums(2) & 0xff).toLong << 40) |
-    ((nums(3) & 0xff).toLong << 32) |
-    ((nums(4) & 0xff).toLong << 24) |
-    ((nums(5) & 0xff).toLong << 16) |
-    ((nums(6) & 0xff).toLong <<  8) |
-    ((nums(7) & 0xff).toLong      )
+      ((nums(1) & 0xff).toLong << 48) |
+      ((nums(2) & 0xff).toLong << 40) |
+      ((nums(3) & 0xff).toLong << 32) |
+      ((nums(4) & 0xff).toLong << 24) |
+      ((nums(5) & 0xff).toLong << 16) |
+      ((nums(6) & 0xff).toLong << 8) |
+      ((nums(7) & 0xff).toLong)
   }
 
   def readBytes(n: Int): Buf = {

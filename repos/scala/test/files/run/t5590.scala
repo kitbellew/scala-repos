@@ -1,10 +1,5 @@
-
-
-
 import java.io._
 import collection._
-
-
 
 object Test {
 

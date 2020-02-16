@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.scalajs.js.annotation
 
 import scala.annotation.Annotation

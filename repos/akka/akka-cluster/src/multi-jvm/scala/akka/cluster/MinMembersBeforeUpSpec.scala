@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import com.typesafe.config.ConfigFactory
@@ -21,9 +21,12 @@ object MinMembersBeforeUpMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(
-    "akka.cluster.min-nr-of-members = 3")).
-    withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(
+        ConfigFactory.parseString("akka.cluster.min-nr-of-members = 3"))
+      .withFallback(
+        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 object MinMembersBeforeUpWithWeaklyUpMultiJvmSpec extends MultiNodeConfig {
@@ -31,10 +34,14 @@ object MinMembersBeforeUpWithWeaklyUpMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(
+        ConfigFactory.parseString("""
       akka.cluster.min-nr-of-members = 3
-      akka.cluster.allow-weakly-up-members = on""")).
-    withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+      akka.cluster.allow-weakly-up-members = on"""))
+      .withFallback(
+        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 object MinMembersOfRoleBeforeUpMultiJvmSpec extends MultiNodeConfig {
@@ -42,12 +49,14 @@ object MinMembersOfRoleBeforeUpMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(
-    "akka.cluster.role.backend.min-nr-of-members = 2")).
-    withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(
+    debugConfig(on = false)
+      .withFallback(ConfigFactory.parseString(
+        "akka.cluster.role.backend.min-nr-of-members = 2"))
+      .withFallback(
+        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 
-  nodeConfig(first)(
-    ConfigFactory.parseString("akka.cluster.roles =[frontend]"))
+  nodeConfig(first)(ConfigFactory.parseString("akka.cluster.roles =[frontend]"))
 
   nodeConfig(second, third)(
     ConfigFactory.parseString("akka.cluster.roles =[backend]"))
@@ -65,7 +74,8 @@ class MinMembersOfRoleBeforeUpMultiJvmNode1 extends MinMembersOfRoleBeforeUpSpec
 class MinMembersOfRoleBeforeUpMultiJvmNode2 extends MinMembersOfRoleBeforeUpSpec
 class MinMembersOfRoleBeforeUpMultiJvmNode3 extends MinMembersOfRoleBeforeUpSpec
 
-abstract class MinMembersBeforeUpSpec extends MinMembersBeforeUpBase(MinMembersBeforeUpMultiJvmSpec) {
+abstract class MinMembersBeforeUpSpec
+    extends MinMembersBeforeUpBase(MinMembersBeforeUpMultiJvmSpec) {
 
   override def first: RoleName = MinMembersBeforeUpMultiJvmSpec.first
   override def second: RoleName = MinMembersBeforeUpMultiJvmSpec.second
@@ -78,11 +88,15 @@ abstract class MinMembersBeforeUpSpec extends MinMembersBeforeUpBase(MinMembersB
   }
 }
 
-abstract class MinMembersBeforeUpWithWeaklyUpSpec extends MinMembersBeforeUpBase(MinMembersBeforeUpMultiJvmSpec) {
+abstract class MinMembersBeforeUpWithWeaklyUpSpec
+    extends MinMembersBeforeUpBase(MinMembersBeforeUpMultiJvmSpec) {
 
-  override def first: RoleName = MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.first
-  override def second: RoleName = MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.second
-  override def third: RoleName = MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.third
+  override def first: RoleName =
+    MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.first
+  override def second: RoleName =
+    MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.second
+  override def third: RoleName =
+    MinMembersBeforeUpWithWeaklyUpMultiJvmSpec.third
 
   "Cluster leader" must {
     "wait with moving members to UP until minimum number of members have joined with weakly up enabled" taggedAs LongRunningTest in {
@@ -91,7 +105,8 @@ abstract class MinMembersBeforeUpWithWeaklyUpSpec extends MinMembersBeforeUpBase
   }
 }
 
-abstract class MinMembersOfRoleBeforeUpSpec extends MinMembersBeforeUpBase(MinMembersOfRoleBeforeUpMultiJvmSpec) {
+abstract class MinMembersOfRoleBeforeUpSpec
+    extends MinMembersBeforeUpBase(MinMembersOfRoleBeforeUpMultiJvmSpec) {
 
   override def first: RoleName = MinMembersOfRoleBeforeUpMultiJvmSpec.first
   override def second: RoleName = MinMembersOfRoleBeforeUpMultiJvmSpec.second
@@ -105,8 +120,8 @@ abstract class MinMembersOfRoleBeforeUpSpec extends MinMembersBeforeUpBase(MinMe
 }
 
 abstract class MinMembersBeforeUpBase(multiNodeConfig: MultiNodeConfig)
-  extends MultiNodeSpec(multiNodeConfig)
-  with MultiNodeClusterSpec {
+    extends MultiNodeSpec(multiNodeConfig)
+    with MultiNodeClusterSpec {
 
   import ClusterEvent._
 

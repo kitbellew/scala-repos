@@ -1,8 +1,8 @@
 class CallByNameInput {
   def foo(x: => Int) {
-/*start*/
+    /*start*/
     x + 44
-/*end*/
+    /*end*/
   }
 }
 /*
@@ -17,4 +17,4 @@ class CallByNameInput {
     x + 44
   }
 }
-*/
+ */

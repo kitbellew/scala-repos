@@ -8,10 +8,9 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 08.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 08.02.2008
+  */
 /*
  * SelfType ::= id [':' Type] '=>' |
  *              ['this' | '_'] ':' Type '=>'
@@ -29,8 +28,7 @@ object SelfType {
             if (!parseType(builder)) {
               selfTypeMarker.rollbackTo
               return
-            }
-            else {
+            } else {
               builder.getTokenType match {
                 case ScalaTokenTypes.tFUNTYPE => {
                   builder.advanceLexer //Ate '=>'
@@ -57,8 +55,7 @@ object SelfType {
             if (!parseType(builder)) {
               selfTypeMarker.rollbackTo
               return
-            }
-            else {
+            } else {
               builder.getTokenType match {
                 case ScalaTokenTypes.tFUNTYPE => {
                   builder.advanceLexer //Ate '=>'
@@ -88,7 +85,7 @@ object SelfType {
     }
   }
 
-  def parseType(builder : ScalaPsiBuilder) : Boolean = {
+  def parseType(builder: ScalaPsiBuilder): Boolean = {
     val typeMarker = builder.mark
     if (!InfixType.parse(builder, star = false, isPattern = true)) {
       typeMarker.drop()

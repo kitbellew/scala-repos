@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.io
 
 import org.scalajs.core.tools.io.IRFileCache.IRContainer

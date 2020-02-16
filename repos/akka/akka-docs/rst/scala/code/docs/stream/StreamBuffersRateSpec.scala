@@ -23,13 +23,12 @@ class StreamBuffersRateSpec extends AkkaSpec {
     //#materializer-buffer
     val materializer = ActorMaterializer(
       ActorMaterializerSettings(system)
-        .withInputBuffer(
-          initialSize = 64,
-          maxSize = 64))
+        .withInputBuffer(initialSize = 64, maxSize = 64))
     //#materializer-buffer
 
     //#section-buffer
-    val section = Flow[Int].map(_ * 2)
+    val section = Flow[Int]
+      .map(_ * 2)
       .withAttributes(Attributes.inputBuffer(initial = 1, max = 1))
     val flow = section.via(Flow[Int].map(_ / 2)) // the buffer size of this map is the default
     //#section-buffer
@@ -45,9 +44,11 @@ class StreamBuffersRateSpec extends AkkaSpec {
 
       val zipper = b.add(ZipWith[Tick, Int, Int]((tick, count) => count))
 
-      Source.tick(initialDelay = 3.second, interval = 3.second, Tick()) ~> zipper.in0
+      Source
+        .tick(initialDelay = 3.second, interval = 3.second, Tick()) ~> zipper.in0
 
-      Source.tick(initialDelay = 1.second, interval = 1.second, "message!")
+      Source
+        .tick(initialDelay = 1.second, interval = 1.second, "message!")
         .conflateWithSeed(seed = (_) => 1)((count, _) => count + 1) ~> zipper.in1
 
       zipper.out ~> Sink.foreach(println)

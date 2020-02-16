@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.webhooks
 
 import io.prediction.data.storage.Event
@@ -23,7 +22,6 @@ import org.json4s.DefaultFormats
 import org.json4s.JObject
 import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
-
 
 private[prediction] object ConnectorUtil {
 

@@ -21,36 +21,48 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScMember
 import org.jetbrains.plugins.scala.lang.psi.api.{ScalaElementVisitor, ScalaFile}
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScReferencePatternStub
 import org.jetbrains.plugins.scala.lang.psi.types.ScType
-import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, Success, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  Failure,
+  Success,
+  TypingContext
+}
 
 /**
- * @author Alexander Podkhalyuzin
- * Date: 28.02.2008
- */
-class ScReferencePatternImpl private (stub: StubElement[ScReferencePattern], nodeType: IElementType, node: ASTNode)
-  extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScReferencePattern with ContributedReferenceHost {
+  * @author Alexander Podkhalyuzin
+  * Date: 28.02.2008
+  */
+class ScReferencePatternImpl private (
+    stub: StubElement[ScReferencePattern],
+    nodeType: IElementType,
+    node: ASTNode)
+    extends ScalaStubBasedElementImpl(stub, nodeType, node)
+    with ScReferencePattern
+    with ContributedReferenceHost {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _ => super.accept(visitor)
+      case _                            => super.accept(visitor)
     }
   }
 
-  def this(node: ASTNode) = {this(null, null, node)}
-  def this(stub: ScReferencePatternStub) = {this(stub, ScalaElementTypes.REFERENCE_PATTERN, null)}
+  def this(node: ASTNode) = { this(null, null, node) }
+  def this(stub: ScReferencePatternStub) = {
+    this(stub, ScalaElementTypes.REFERENCE_PATTERN, null)
+  }
 
   override def isIrrefutableFor(t: Option[ScType]): Boolean = true
 
   def nameId: PsiElement = findChildByType[PsiElement](TokenSets.ID_SET)
 
-  def isWildcard: Boolean = findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
+  def isWildcard: Boolean =
+    findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
 
   override def toString: String = "ReferencePattern: " + name
 
   override def getType(ctx: TypingContext) = {
     expectedType match {
       case Some(x) => Success(x, Some(this))
-      case _ => Failure("Cannot define expected type", Some(this))
+      case _       => Failure("Cannot define expected type", Some(this))
     }
   }
 
@@ -64,17 +76,26 @@ class ScReferencePatternImpl private (stub: StubElement[ScReferencePattern], nod
       if (parent != null) {
         val navElem = parent.getNavigationElement
         navElem match {
-          case holder: ScDeclaredElementsHolder => holder.declaredElements.find(_.name == name).getOrElse(navElem)
+          case holder: ScDeclaredElementsHolder =>
+            holder.declaredElements.find(_.name == name).getOrElse(navElem)
           case x => x
         }
-      }
-      else super.getNavigationElement
+      } else super.getNavigationElement
     }
     case _ => super.getNavigationElement
   }
 
-  override def processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement, place: PsiElement): Boolean = {
-    ScalaPsiUtil.processImportLastParent(processor, state, place, lastParent, getType(TypingContext.empty))
+  override def processDeclarations(
+      processor: PsiScopeProcessor,
+      state: ResolveState,
+      lastParent: PsiElement,
+      place: PsiElement): Boolean = {
+    ScalaPsiUtil.processImportLastParent(
+      processor,
+      state,
+      place,
+      lastParent,
+      getType(TypingContext.empty))
   }
 
   override def delete() {
@@ -82,19 +103,30 @@ class ScReferencePatternImpl private (stub: StubElement[ScReferencePattern], nod
       case pList: ScPatternList if pList.patterns == Seq(this) =>
         val context: PsiElement = pList.getContext
         context.getContext.deleteChildRange(context, context)
-      case pList: ScPatternList if pList.allPatternsSimple && pList.patterns.startsWith(Seq(this)) =>
-        val end = this.nextSiblings.find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA).get.getNextSiblingNotWhitespace.getPrevSibling
+      case pList: ScPatternList
+          if pList.allPatternsSimple && pList.patterns.startsWith(Seq(this)) =>
+        val end = this.nextSiblings
+          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
+          .get
+          .getNextSiblingNotWhitespace
+          .getPrevSibling
         pList.deleteChildRange(this, end)
       case pList: ScPatternList if pList.allPatternsSimple =>
-        val start = this.prevSiblings.find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA).get.getPrevSiblingNotWhitespace.getNextSibling
+        val start = this.prevSiblings
+          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
+          .get
+          .getPrevSiblingNotWhitespace
+          .getNextSibling
         pList.deleteChildRange(start, this)
       case x =>
         // val (a, b) = t
         // val (_, b) = t
-        val anonymousRefPattern = ScalaPsiElementFactory.createWildcardPattern(getManager)
+        val anonymousRefPattern =
+          ScalaPsiElementFactory.createWildcardPattern(getManager)
         replace(anonymousRefPattern)
     }
   }
 
-  override def getOriginalElement: PsiElement = super[ScReferencePattern].getOriginalElement
+  override def getOriginalElement: PsiElement =
+    super[ScReferencePattern].getOriginalElement
 }

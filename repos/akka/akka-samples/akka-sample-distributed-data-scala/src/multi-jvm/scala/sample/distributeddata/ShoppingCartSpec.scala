@@ -16,7 +16,9 @@ object ShoppingCartSpec extends MultiNodeConfig {
   val node2 = role("node-2")
   val node3 = role("node-3")
 
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -28,7 +30,10 @@ class ShoppingCartSpecMultiJvmNode1 extends ShoppingCartSpec
 class ShoppingCartSpecMultiJvmNode2 extends ShoppingCartSpec
 class ShoppingCartSpecMultiJvmNode3 extends ShoppingCartSpec
 
-class ShoppingCartSpec extends MultiNodeSpec(ShoppingCartSpec) with STMultiNodeSpec with ImplicitSender {
+class ShoppingCartSpec
+    extends MultiNodeSpec(ShoppingCartSpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
   import ShoppingCartSpec._
   import ShoppingCart._
 
@@ -59,15 +64,20 @@ class ShoppingCartSpec extends MultiNodeSpec(ShoppingCartSpec) with STMultiNodeS
 
     "handle updates directly after start" in within(15.seconds) {
       runOn(node2) {
-        shoppingCart ! ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 2))
-        shoppingCart ! ShoppingCart.AddItem(LineItem("2", "Oranges", quantity = 3))
+        shoppingCart ! ShoppingCart.AddItem(
+          LineItem("1", "Apples", quantity = 2))
+        shoppingCart ! ShoppingCart.AddItem(
+          LineItem("2", "Oranges", quantity = 3))
       }
       enterBarrier("updates-done")
 
       awaitAssert {
         shoppingCart ! ShoppingCart.GetCart
         val cart = expectMsgType[Cart]
-        cart.items should be(Set(LineItem("1", "Apples", quantity = 2), LineItem("2", "Oranges", quantity = 3)))
+        cart.items should be(
+          Set(
+            LineItem("1", "Apples", quantity = 2),
+            LineItem("2", "Oranges", quantity = 3)))
       }
 
       enterBarrier("after-2")
@@ -75,18 +85,23 @@ class ShoppingCartSpec extends MultiNodeSpec(ShoppingCartSpec) with STMultiNodeS
 
     "handle updates from different nodes" in within(5.seconds) {
       runOn(node2) {
-        shoppingCart ! ShoppingCart.AddItem(LineItem("1", "Apples", quantity = 5))
+        shoppingCart ! ShoppingCart.AddItem(
+          LineItem("1", "Apples", quantity = 5))
         shoppingCart ! ShoppingCart.RemoveItem("2")
       }
       runOn(node3) {
-        shoppingCart ! ShoppingCart.AddItem(LineItem("3", "Bananas", quantity = 4))
+        shoppingCart ! ShoppingCart.AddItem(
+          LineItem("3", "Bananas", quantity = 4))
       }
       enterBarrier("updates-done")
 
       awaitAssert {
         shoppingCart ! ShoppingCart.GetCart
         val cart = expectMsgType[Cart]
-        cart.items should be(Set(LineItem("1", "Apples", quantity = 7), LineItem("3", "Bananas", quantity = 4)))
+        cart.items should be(
+          Set(
+            LineItem("1", "Apples", quantity = 7),
+            LineItem("3", "Bananas", quantity = 4)))
       }
 
       enterBarrier("after-3")
@@ -95,4 +110,3 @@ class ShoppingCartSpec extends MultiNodeSpec(ShoppingCartSpec) with STMultiNodeS
   }
 
 }
-

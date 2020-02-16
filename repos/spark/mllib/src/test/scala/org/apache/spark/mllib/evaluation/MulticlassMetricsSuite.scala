@@ -32,8 +32,17 @@ class MulticlassMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val confusionMatrix = Matrices.dense(3, 3, Array(2, 1, 0, 1, 3, 0, 1, 0, 1))
     val labels = Array(0.0, 1.0, 2.0)
     val predictionAndLabels = sc.parallelize(
-      Seq((0.0, 0.0), (0.0, 1.0), (0.0, 0.0), (1.0, 0.0), (1.0, 1.0),
-        (1.0, 1.0), (1.0, 1.0), (2.0, 2.0), (2.0, 0.0)), 2)
+      Seq(
+        (0.0, 0.0),
+        (0.0, 1.0),
+        (0.0, 0.0),
+        (1.0, 0.0),
+        (1.0, 1.0),
+        (1.0, 1.0),
+        (1.0, 1.0),
+        (2.0, 2.0),
+        (2.0, 0.0)),
+      2)
     val metrics = new MulticlassMetrics(predictionAndLabels)
     val delta = 0.0000001
     val fpRate0 = 1.0 / (9 - 4)
@@ -48,11 +57,15 @@ class MulticlassMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val f1measure0 = 2 * precision0 * recall0 / (precision0 + recall0)
     val f1measure1 = 2 * precision1 * recall1 / (precision1 + recall1)
     val f1measure2 = 2 * precision2 * recall2 / (precision2 + recall2)
-    val f2measure0 = (1 + 2 * 2) * precision0 * recall0 / (2 * 2 * precision0 + recall0)
-    val f2measure1 = (1 + 2 * 2) * precision1 * recall1 / (2 * 2 * precision1 + recall1)
-    val f2measure2 = (1 + 2 * 2) * precision2 * recall2 / (2 * 2 * precision2 + recall2)
+    val f2measure0 =
+      (1 + 2 * 2) * precision0 * recall0 / (2 * 2 * precision0 + recall0)
+    val f2measure1 =
+      (1 + 2 * 2) * precision1 * recall1 / (2 * 2 * precision1 + recall1)
+    val f2measure2 =
+      (1 + 2 * 2) * precision2 * recall2 / (2 * 2 * precision2 + recall2)
 
-    assert(metrics.confusionMatrix.toArray.sameElements(confusionMatrix.toArray))
+    assert(
+      metrics.confusionMatrix.toArray.sameElements(confusionMatrix.toArray))
     assert(math.abs(metrics.falsePositiveRate(0.0) - fpRate0) < delta)
     assert(math.abs(metrics.falsePositiveRate(1.0) - fpRate1) < delta)
     assert(math.abs(metrics.falsePositiveRate(2.0) - fpRate2) < delta)
@@ -69,8 +82,9 @@ class MulticlassMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(math.abs(metrics.fMeasure(1.0, 2.0) - f2measure1) < delta)
     assert(math.abs(metrics.fMeasure(2.0, 2.0) - f2measure2) < delta)
 
-    assert(math.abs(metrics.recall -
-      (2.0 + 3.0 + 1.0) / ((2 + 3 + 1) + (1 + 1 + 1))) < delta)
+    assert(
+      math.abs(metrics.recall -
+        (2.0 + 3.0 + 1.0) / ((2 + 3 + 1) + (1 + 1 + 1))) < delta)
     assert(math.abs(metrics.recall - metrics.precision) < delta)
     assert(math.abs(metrics.recall - metrics.fMeasure) < delta)
     assert(math.abs(metrics.recall - metrics.weightedRecall) < delta)

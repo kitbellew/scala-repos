@@ -23,7 +23,9 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
   def factory: CollectionFactory
 
   def testMinMax1[T <: AnyRef with Comparable[T]: ClassTag](
-      factory: CollectionFactory, toElem: Int => T, isMin: Boolean): Unit = {
+      factory: CollectionFactory,
+      toElem: Int => T,
+      isMin: Boolean): Unit = {
     val coll = factory.empty[T]
     coll.addAll(range.map(toElem))
 
@@ -44,8 +46,11 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
     }
   }
 
-  def testMinMax2[T: ClassTag](factory: CollectionFactory, toElem: Int => T,
-      isMin: Boolean, cmp: ju.Comparator[T]): Unit = {
+  def testMinMax2[T: ClassTag](
+      factory: CollectionFactory,
+      toElem: Int => T,
+      isMin: Boolean,
+      cmp: ju.Comparator[T]): Unit = {
     val coll = factory.empty[T]
     coll.addAll(range.map(toElem))
 
@@ -152,10 +157,12 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
   @Test def unmodifiableCollection(): Unit = {
     def test[E: ClassTag](toElem: Int => E): Unit = {
       val coll = factory.empty[E]
-      testCollectionUnmodifiability(ju.Collections.unmodifiableCollection(coll),
+      testCollectionUnmodifiability(
+        ju.Collections.unmodifiableCollection(coll),
         toElem(0))
       coll.addAll(range.map(toElem))
-      testCollectionUnmodifiability(ju.Collections.unmodifiableCollection(coll),
+      testCollectionUnmodifiability(
+        ju.Collections.unmodifiableCollection(coll),
         toElem(0))
     }
 

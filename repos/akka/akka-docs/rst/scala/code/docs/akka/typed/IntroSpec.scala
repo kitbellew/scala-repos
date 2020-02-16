@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.akka.typed
 
 //#imports
@@ -32,19 +32,25 @@ object IntroSpec {
   object ChatRoom {
     //#chatroom-protocol
     sealed trait Command
-    final case class GetSession(screenName: String, replyTo: ActorRef[SessionEvent])
-      extends Command
+    final case class GetSession(
+        screenName: String,
+        replyTo: ActorRef[SessionEvent])
+        extends Command
     //#chatroom-protocol
     //#chatroom-behavior
-    private final case class PostSessionMessage(screenName: String, message: String)
-      extends Command
+    private final case class PostSessionMessage(
+        screenName: String,
+        message: String)
+        extends Command
     //#chatroom-behavior
     //#chatroom-protocol
 
     sealed trait SessionEvent
-    final case class SessionGranted(handle: ActorRef[PostMessage]) extends SessionEvent
+    final case class SessionGranted(handle: ActorRef[PostMessage])
+        extends SessionEvent
     final case class SessionDenied(reason: String) extends SessionEvent
-    final case class MessagePosted(screenName: String, message: String) extends SessionEvent
+    final case class MessagePosted(screenName: String, message: String)
+        extends SessionEvent
 
     final case class PostMessage(message: String)
     //#chatroom-protocol
@@ -57,8 +63,8 @@ object IntroSpec {
         Static {
           case GetSession(screenName, client) ⇒
             sessions ::= client
-            val wrapper = ctx.spawnAdapter {
-              p: PostMessage ⇒ PostSessionMessage(screenName, p.message)
+            val wrapper = ctx.spawnAdapter { p: PostMessage ⇒
+              PostSessionMessage(screenName, p.message)
             }
             client ! SessionGranted(wrapper)
           case PostSessionMessage(screenName, message) ⇒

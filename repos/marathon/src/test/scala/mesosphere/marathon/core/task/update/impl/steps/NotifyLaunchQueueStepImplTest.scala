@@ -5,15 +5,20 @@ import mesosphere.marathon.core.launchqueue.LaunchQueue
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.core.task.bus.MarathonTaskStatus
 import mesosphere.marathon.core.task.bus.TaskStatusObservables.TaskStatusUpdate
-import mesosphere.marathon.state.{ Timestamp, PathId }
+import mesosphere.marathon.state.{Timestamp, PathId}
 import mesosphere.marathon.test.Mockito
-import org.apache.mesos.Protos.{ TaskState, TaskStatus, SlaveID }
+import org.apache.mesos.Protos.{TaskState, TaskStatus, SlaveID}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ GivenWhenThen, Matchers, FunSuite }
+import org.scalatest.{GivenWhenThen, Matchers, FunSuite}
 
 import scala.concurrent.Future
 
-class NotifyLaunchQueueStepImplTest extends FunSuite with Matchers with GivenWhenThen with Mockito with ScalaFutures {
+class NotifyLaunchQueueStepImplTest
+    extends FunSuite
+    with Matchers
+    with GivenWhenThen
+    with Mockito
+    with ScalaFutures {
   test("name") {
     new Fixture().step.name should equal("notifyLaunchQueue")
   }
@@ -21,17 +26,23 @@ class NotifyLaunchQueueStepImplTest extends FunSuite with Matchers with GivenWhe
   test("notifying launch queue") {
     val f = new Fixture
     val status = runningTaskStatus
-    val expectedUpdate = TaskStatusUpdate(updateTimestamp, Task.Id(taskId), MarathonTaskStatus(status))
+    val expectedUpdate = TaskStatusUpdate(
+      updateTimestamp,
+      Task.Id(taskId),
+      MarathonTaskStatus(status))
 
     Given("a status update")
-    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns Future.successful(None)
+    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns Future.successful(
+      None)
 
     When("calling processUpdate")
-    f.step.processUpdate(
-      updateTimestamp,
-      task = MarathonTestHelper.mininimalTask(appId),
-      status = status
-    ).futureValue
+    f.step
+      .processUpdate(
+        updateTimestamp,
+        task = MarathonTestHelper.mininimalTask(appId),
+        status = status
+      )
+      .futureValue
 
     Then("the update is passed to the LaunchQueue")
     verify(f.launchQueue).notifyOfTaskUpdate(expectedUpdate)

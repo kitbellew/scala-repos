@@ -1,19 +1,19 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.actor
 
-import java.lang.String.{ valueOf => println }
+import java.lang.String.{valueOf => println}
 
-import akka.actor.{ ActorContext, ActorRef, TypedActor, TypedProps }
+import akka.actor.{ActorContext, ActorRef, TypedActor, TypedProps}
 import akka.routing.RoundRobinGroup
 import akka.testkit._
 
-import scala.concurrent.{ Future, Await }
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 
 //Mr funny man avoids printing to stdout AND keeping docs alright
-import java.lang.String.{ valueOf => println }
+import java.lang.String.{valueOf => println}
 import akka.actor.ActorRef
 
 //#typed-actor-iface
@@ -27,7 +27,9 @@ trait Squarer {
 
   def squareNow(i: Int): Int //blocking send-request-reply
 
-  @throws(classOf[Exception]) //declare it or you will get an UndeclaredThrowableException
+  @throws(
+    classOf[Exception]
+  ) //declare it or you will get an UndeclaredThrowableException
   def squareTry(i: Int): Int //blocking send-request-reply with possible exception
   //#typed-actor-iface-methods
 }
@@ -121,8 +123,9 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
     //#typed-actor-create1
     //#typed-actor-create2
     val otherSquarer: Squarer =
-      TypedActor(system).typedActorOf(TypedProps(classOf[Squarer],
-        new SquarerImpl("foo")), "name")
+      TypedActor(system).typedActorOf(
+        TypedProps(classOf[Squarer], new SquarerImpl("foo")),
+        "name")
     //#typed-actor-create2
 
     //#typed-actor-calls
@@ -162,10 +165,7 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
     val actorRefToRemoteActor: ActorRef = system.deadLetters
     //#typed-actor-remote
     val typedActor: Foo with Bar =
-      TypedActor(system).
-        typedActorOf(
-          TypedProps[FooBar],
-          actorRefToRemoteActor)
+      TypedActor(system).typedActorOf(TypedProps[FooBar], actorRefToRemoteActor)
     //Use "typedActor" as a FooBar
     //#typed-actor-remote
   }
@@ -198,7 +198,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
   "typed router pattern" in {
     //#typed-router
-    def namedActor(): HasName = TypedActor(system).typedActorOf(TypedProps[Named]())
+    def namedActor(): HasName =
+      TypedActor(system).typedActorOf(TypedProps[Named]())
 
     // prepare routees
     val routees: List[HasName] = List.fill(5) { namedActor() }

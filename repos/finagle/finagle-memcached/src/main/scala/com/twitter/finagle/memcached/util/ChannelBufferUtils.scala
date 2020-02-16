@@ -3,7 +3,11 @@ package com.twitter.finagle.memcached.util
 import collection.mutable.ArrayBuffer
 import com.google.common.base.Strings
 import com.twitter.io.Charsets
-import org.jboss.netty.buffer.{ChannelBuffer, ChannelBuffers, ChannelBufferIndexFinder}
+import org.jboss.netty.buffer.{
+  ChannelBuffer,
+  ChannelBuffers,
+  ChannelBufferIndexFinder
+}
 import scala.language.implicitConversions
 
 private[finagle] object ChannelBufferUtils {
@@ -35,15 +39,16 @@ private[finagle] object ChannelBufferUtils {
   private val Byte0 = '0'.toByte
 
   class RichChannelBuffer(val buffer: ChannelBuffer) extends AnyVal {
+
     /**
-     * Converts `buffer` to a positive integer.
-     *
-     * We assume an encoding which corresponds with ASCII for the valid range
-     * `'0'.toByte` (48) through `'9'.toByte` (57).
-     *
-     * This conversion can fail if: the buffer is empty, too long,
-     * or the buffer contains a byte `b` where `48 <= b <= 57` is false.
-     */
+      * Converts `buffer` to a positive integer.
+      *
+      * We assume an encoding which corresponds with ASCII for the valid range
+      * `'0'.toByte` (48) through `'9'.toByte` (57).
+      *
+      * This conversion can fail if: the buffer is empty, too long,
+      * or the buffer contains a byte `b` where `48 <= b <= 57` is false.
+      */
     def toInt: Int = {
       val off = buffer.readerIndex()
       val len = buffer.readableBytes()
@@ -72,7 +77,9 @@ private[finagle] object ChannelBufferUtils {
     def split: Seq[ChannelBuffer] =
       split(FIND_SPACE, 1)
 
-    def split(indexFinder: ChannelBufferIndexFinder, delimiterLength: Int): Seq[ChannelBuffer] = {
+    def split(
+        indexFinder: ChannelBufferIndexFinder,
+        delimiterLength: Int): Seq[ChannelBuffer] = {
       val tokens = new ArrayBuffer[ChannelBuffer](5)
       var scratch = buffer
       while (scratch.capacity > 0) {
@@ -106,18 +113,23 @@ private[finagle] object ChannelBufferUtils {
   def channelBufferToString(channelBuffer: ChannelBuffer): String =
     new String(channelBufferToBytes(channelBuffer))
 
-  implicit def channelBufferToRichChannelBuffer(buffer: ChannelBuffer): RichChannelBuffer =
+  implicit def channelBufferToRichChannelBuffer(
+      buffer: ChannelBuffer): RichChannelBuffer =
     new RichChannelBuffer(buffer)
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
-    if(Strings.isNullOrEmpty(string)) null else {
+    if (Strings.isNullOrEmpty(string)) null
+    else {
       ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
     }
 
-  implicit def seqOfStringToSeqOfChannelBuffer(strings: Seq[String]): Seq[ChannelBuffer] =
-    if (strings == null) null else {
+  implicit def seqOfStringToSeqOfChannelBuffer(
+      strings: Seq[String]): Seq[ChannelBuffer] =
+    if (strings == null) null
+    else {
       strings.map { string =>
-        if(Strings.isNullOrEmpty(string)) null else {
+        if (Strings.isNullOrEmpty(string)) null
+        else {
           ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
         }
       }
@@ -126,7 +138,8 @@ private[finagle] object ChannelBufferUtils {
   implicit def stringToByteArray(string: String): Array[Byte] =
     string.getBytes
 
-  implicit def stringToChannelBufferIndexFinder(string: String): ChannelBufferIndexFinder =
+  implicit def stringToChannelBufferIndexFinder(
+      string: String): ChannelBufferIndexFinder =
     new ChannelBufferIndexFinder {
       def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
         var i = 0

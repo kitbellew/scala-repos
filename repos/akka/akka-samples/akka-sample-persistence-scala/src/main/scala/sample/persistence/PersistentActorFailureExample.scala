@@ -23,7 +23,8 @@ object PersistentActorFailureExample extends App {
   }
 
   val system = ActorSystem("example")
-  val persistentActor = system.actorOf(Props(classOf[ExamplePersistentActor]), "persistentActor-2")
+  val persistentActor =
+    system.actorOf(Props(classOf[ExamplePersistentActor]), "persistentActor-2")
 
   persistentActor ! "a"
   persistentActor ! "print"

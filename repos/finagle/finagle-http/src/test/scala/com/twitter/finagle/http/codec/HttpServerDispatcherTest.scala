@@ -90,15 +90,17 @@ class HttpServerDispatcherTest extends FunSuite {
 
     // Simulate channel closure
     out.close()
-    intercept[Reader.ReaderDiscarded] { Await.result(res.writer.write(buf("."))) }
+    intercept[Reader.ReaderDiscarded] {
+      Await.result(res.writer.write(buf(".")))
+    }
   }
 }
 
 object HttpServerDispatcherTest {
-  def mkPair[A,B] = {
+  def mkPair[A, B] = {
     val inQ = new AsyncQueue[A]
     val outQ = new AsyncQueue[B]
-    (new QueueTransport[A,B](inQ, outQ), new QueueTransport[B,A](outQ, inQ))
+    (new QueueTransport[A, B](inQ, outQ), new QueueTransport[B, A](outQ, inQ))
   }
 
   def wrap(msg: String) = ChannelBuffers.wrappedBuffer(msg.getBytes("UTF-8"))

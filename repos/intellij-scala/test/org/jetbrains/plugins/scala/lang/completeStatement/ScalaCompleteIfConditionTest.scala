@@ -2,9 +2,9 @@ package org.jetbrains.plugins.scala
 package lang.completeStatement
 
 /**
- * @author Ksenia.Sautina
- * @since 2/25/13
- */
+  * @author Ksenia.Sautina
+  * @since 2/25/13
+  */
 class ScalaCompleteIfConditionTest extends ScalaCompleteStatementTestBase {
   def testIfCondition1() {
     val fileText =

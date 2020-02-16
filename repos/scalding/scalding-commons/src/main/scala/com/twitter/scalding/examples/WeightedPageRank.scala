@@ -3,28 +3,28 @@ package com.twitter.scalding.examples
 import com.twitter.scalding._
 
 /**
- * weighted page rank for the given graph, start from the given pagerank,
- * perform one iteartion, test for convergence, if not yet, clone itself
- * and start the next page rank job with updated pagerank as input.
- *
- * This class is very similar to the PageRank class, main differences are:
- * 1. supported weighted pagerank
- * 2. the reset pagerank is pregenerated, possibly through a previous job
- * 3. dead pagerank is evenly distributed
- *
- * Options:
- * --pwd: working directory, will read/generate the following files there
- *        numnodes: total number of nodes
- *        nodes: nodes file <'src_id, 'dst_ids, 'weights, 'mass_prior>
- *        pagerank: the page rank file eg pagerank_0, pagerank_1 etc
- *        totaldiff: the current max pagerank delta
- * Optional arguments:
- * --weighted: do weighted pagerank, default false
- * --curiteration: what is the current iteration, default 0
- * --maxiterations: how many iterations to run.  Default is 20
- * --jumpprob: probability of a random jump, default is 0.1
- * --threshold: total difference before finishing early, default 0.001
- */
+  * weighted page rank for the given graph, start from the given pagerank,
+  * perform one iteartion, test for convergence, if not yet, clone itself
+  * and start the next page rank job with updated pagerank as input.
+  *
+  * This class is very similar to the PageRank class, main differences are:
+  * 1. supported weighted pagerank
+  * 2. the reset pagerank is pregenerated, possibly through a previous job
+  * 3. dead pagerank is evenly distributed
+  *
+  * Options:
+  * --pwd: working directory, will read/generate the following files there
+  *        numnodes: total number of nodes
+  *        nodes: nodes file <'src_id, 'dst_ids, 'weights, 'mass_prior>
+  *        pagerank: the page rank file eg pagerank_0, pagerank_1 etc
+  *        totaldiff: the current max pagerank delta
+  * Optional arguments:
+  * --weighted: do weighted pagerank, default false
+  * --curiteration: what is the current iteration, default 0
+  * --maxiterations: how many iterations to run.  Default is 20
+  * --jumpprob: probability of a random jump, default is 0.1
+  * --threshold: total difference before finishing early, default 0.001
+  */
 class WeightedPageRank(args: Args) extends Job(args) {
   val ROW_TYPE_1 = 1
   val ROW_TYPE_2 = 2
@@ -61,8 +61,8 @@ class WeightedPageRank(args: Args) extends Job(args) {
     .write(TypedTsv[Double](PWD + "/totaldiff"))
 
   /**
-   * test convergence, if not yet, kick off the next iteration
-   */
+    * test convergence, if not yet, kick off the next iteration
+    */
   override def next = {
     // the max diff generated above
     val totalDiff = TypedTsv[Double](PWD + "/totaldiff").toIterator.next
@@ -77,14 +77,14 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
   def getInputPagerank(fileName: String) = {
     Tsv(fileName).read
-      .mapTo((0, 1) -> ('src_id_input, 'mass_input)) {
-        input: (Int, Double) => input
+      .mapTo((0, 1) -> ('src_id_input, 'mass_input)) { input: (Int, Double) =>
+        input
       }
   }
 
   /**
-   * read the pregenerated nodes file <'src_id, 'dst_ids, 'weights, 'mass_prior>
-   */
+    * read the pregenerated nodes file <'src_id, 'dst_ids, 'weights, 'mass_prior>
+    */
   def getNodes(fileName: String) = {
     mode match {
       case Hdfs(_, conf) => {
@@ -120,37 +120,37 @@ class WeightedPageRank(args: Args) extends Job(args) {
   }
 
   /**
-   * the total number of nodes, single line file
-   */
+    * the total number of nodes, single line file
+    */
   def getNumNodes(fileName: String) = {
     Tsv(fileName).read
       .mapTo(0 -> 'size) { input: Int => input }
   }
 
   /**
-   * one iteration of pagerank
-   * inputPagerank: <'src_id_input, 'mass_input>
-   * return <'src_id, 'mass_n, 'mass_input>
-   *
-   * Here is a highlevel view of the unweighted algorithm:
-   * let
-   * N: number of nodes
-   * inputPagerank(N_i): prob of walking to node i,
-   * d(N_j): N_j's out degree
-   * then
-   * pagerankNext(N_i) = (\sum_{j points to i} inputPagerank(N_j) / d_j)
-   * deadPagerank = (1 - \sum_{i} pagerankNext(N_i)) / N
-   * randomPagerank(N_i) = userMass(N_i) * ALPHA + deadPagerank * (1-ALPHA)
-   * pagerankOutput(N_i) = randomPagerank(N_i) + pagerankNext(N_i) * (1-ALPHA)
-   *
-   * For weighted algorithm:
-   * let
-   * w(N_j, N_i): weight from N_j to N_i
-   * tw(N_j): N_j's total out weights
-   * then
-   * pagerankNext(N_i) = (\sum_{j points to i} inputPagerank(N_j) * w(N_j, N_i) / tw(N_j))
-   *
-   */
+    * one iteration of pagerank
+    * inputPagerank: <'src_id_input, 'mass_input>
+    * return <'src_id, 'mass_n, 'mass_input>
+    *
+    * Here is a highlevel view of the unweighted algorithm:
+    * let
+    * N: number of nodes
+    * inputPagerank(N_i): prob of walking to node i,
+    * d(N_j): N_j's out degree
+    * then
+    * pagerankNext(N_i) = (\sum_{j points to i} inputPagerank(N_j) / d_j)
+    * deadPagerank = (1 - \sum_{i} pagerankNext(N_i)) / N
+    * randomPagerank(N_i) = userMass(N_i) * ALPHA + deadPagerank * (1-ALPHA)
+    * pagerankOutput(N_i) = randomPagerank(N_i) + pagerankNext(N_i) * (1-ALPHA)
+    *
+    * For weighted algorithm:
+    * let
+    * w(N_j, N_i): weight from N_j to N_i
+    * tw(N_j): N_j's total out weights
+    * then
+    * pagerankNext(N_i) = (\sum_{j points to i} inputPagerank(N_j) * w(N_j, N_i) / tw(N_j))
+    *
+    */
   def doPageRank(nodeRows: RichPipe, inputPagerank: RichPipe): RichPipe = {
     // 'src_id, 'dst_ids, 'weights, 'mass_prior, 'mass_input
     val nodeJoined = nodeRows
@@ -185,7 +185,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
       }
 
     // 'sum_mass
-    val sumPagerankNext = pagerankNext.groupAll { _.sum[Double]('mass_n -> 'sum_mass) }
+    val sumPagerankNext = pagerankNext.groupAll {
+      _.sum[Double]('mass_n -> 'sum_mass)
+    }
 
     // 'deadMass
     // single row jobs
@@ -199,8 +201,10 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
     // 'src_id_r, 'mass_n_r
     // random jump probability plus dead page rank
-    val randomPagerank = nodeJoined.crossWithTiny(deadPagerank)
-      .mapTo(('src_id, 'mass_prior, 'deadMass, 'mass_input) -> ('src_id, 'mass_n, 'mass_input)) {
+    val randomPagerank = nodeJoined
+      .crossWithTiny(deadPagerank)
+      .mapTo(
+        ('src_id, 'mass_prior, 'deadMass, 'mass_input) -> ('src_id, 'mass_n, 'mass_input)) {
         ranks: (Int, Double, Double, Double) =>
           (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
       }
@@ -208,7 +212,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
     // 'src_id, 'mass_n
     // scale next page rank to 1-ALPHA
     val pagerankNextScaled = pagerankNext
-      .map('mass_n -> ('mass_n, 'mass_input)) { m: Double => ((1 - ALPHA) * m, 0.0) }
+      .map('mass_n -> ('mass_n, 'mass_input)) { m: Double =>
+        ((1 - ALPHA) * m, 0.0)
+      }
 
     // 'src_id, 'mass_n, 'mass_input
     // random probability + next probability

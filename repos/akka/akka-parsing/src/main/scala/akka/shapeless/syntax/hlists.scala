@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-13 Miles Sabin 
+ * Copyright (c) 2011-13 Miles Sabin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,23 @@ package akka.shapeless
 package syntax
 
 /**
- * Carrier for `HList` operations.
- *
- * These methods are implemented here and pimped onto the minimal `HList` types to avoid issues that would otherwise be
- * caused by the covariance of `::[H, T]`.
- *
- * @author Miles Sabin
- */
+  * Carrier for `HList` operations.
+  *
+  * These methods are implemented here and pimped onto the minimal `HList` types to avoid issues that would otherwise be
+  * caused by the covariance of `::[H, T]`.
+  *
+  * @author Miles Sabin
+  */
 final class HListOps[L <: HList](l: L) {
   import ops.hlist._
 
   /**
-   * Prepend the argument element to this `HList`.
-   */
+    * Prepend the argument element to this `HList`.
+    */
   def ::[H](h: H): H :: L = akka.shapeless.::(h, l)
 
   /**
-   * Reverses this `HList`.
-   */
+    * Reverses this `HList`.
+    */
   def reverse(implicit reverse: Reverse[L]): reverse.Out = reverse(l)
 }

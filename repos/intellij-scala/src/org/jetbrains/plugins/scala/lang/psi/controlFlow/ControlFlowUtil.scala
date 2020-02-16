@@ -5,22 +5,24 @@ import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 /**
- * @author ilyas
- */
-
+  * @author ilyas
+  */
 object ControlFlowUtil {
 
   /**
-   * Detects connected components in a control-flow graph
-   */
-  def detectConnectedComponents(cfg: Seq[Instruction]): Seq[collection.Set[Instruction]] = {
+    * Detects connected components in a control-flow graph
+    */
+  def detectConnectedComponents(
+      cfg: Seq[Instruction]): Seq[collection.Set[Instruction]] = {
     val mainSeq = new ListBuffer[Instruction]
     mainSeq ++= cfg
     mainSeq.sortBy(_.num)
     var buffer = new ArrayBuffer[collection.Set[Instruction]]
 
     @tailrec
-    def inner(next: Iterable[Instruction], currentSet: mutable.HashSet[Instruction]): Unit = {
+    def inner(
+        next: Iterable[Instruction],
+        currentSet: mutable.HashSet[Instruction]): Unit = {
       if (next.isEmpty) {
         buffer += currentSet
         mainSeq --= currentSet
@@ -37,7 +39,7 @@ object ControlFlowUtil {
     while (mainSeq.nonEmpty) {
       mainSeq.headOption match {
         case Some(h) => inner(Seq(h), new mutable.HashSet[Instruction])
-        case None =>
+        case None    =>
       }
     }
     buffer

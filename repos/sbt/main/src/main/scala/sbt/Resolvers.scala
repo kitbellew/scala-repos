@@ -6,7 +6,7 @@ package sbt
 
 import sbt.internal.librarymanagement.StringUtilities
 
-import sbt.io.{ Hash, IO }
+import sbt.io.{Hash, IO}
 
 import java.io.File
 import java.net.URI
@@ -25,7 +25,9 @@ object Resolvers {
     val from = new File(uri)
     val to = uniqueSubdirectoryFor(uri, in = info.staging)
 
-    if (from.isDirectory) Some { () => if (from.canWrite) from else creates(to) { IO.copyDirectory(from, to) } }
+    if (from.isDirectory) Some { () =>
+      if (from.canWrite) from else creates(to) { IO.copyDirectory(from, to) }
+    }
     else None
   }
 
@@ -46,18 +48,16 @@ object Resolvers {
 
     if (uri.hasFragment) {
       val revision = uri.getFragment
-      Some {
-        () =>
-          creates(localCopy) {
-            run("svn", "checkout", "-q", "-r", revision, from, to)
-          }
+      Some { () =>
+        creates(localCopy) {
+          run("svn", "checkout", "-q", "-r", revision, from, to)
+        }
       }
     } else
-      Some {
-        () =>
-          creates(localCopy) {
-            run("svn", "checkout", "-q", from, to)
-          }
+      Some { () =>
+        creates(localCopy) {
+          run("svn", "checkout", "-q", from, to)
+        }
       }
   }
 
@@ -75,7 +75,8 @@ object Resolvers {
 
   val git: Resolver = (info: ResolveInfo) => {
     val uri = info.uri.withoutMarkerScheme
-    val localCopy = uniqueSubdirectoryFor(uri.copy(scheme = "git"), in = info.staging)
+    val localCopy =
+      uniqueSubdirectoryFor(uri.copy(scheme = "git"), in = info.staging)
     val from = uri.withoutFragment.toASCIIString
 
     if (uri.hasFragment) {
@@ -86,11 +87,12 @@ object Resolvers {
           run(Some(localCopy), "git", "checkout", "-q", branch)
         }
       }
-    } else Some { () =>
-      creates(localCopy) {
-        run("git", "clone", "--depth", "1", from, localCopy.getAbsolutePath)
+    } else
+      Some { () =>
+        creates(localCopy) {
+          run("git", "clone", "--depth", "1", from, localCopy.getAbsolutePath)
+        }
       }
-    }
   }
 
   abstract class DistributedVCS {
@@ -107,12 +109,11 @@ object Resolvers {
 
       if (uri.hasFragment) {
         val branch = uri.getFragment
-        Some {
-          () =>
-            creates(localCopy) {
-              clone(from, to = localCopy)
-              checkout(branch, in = localCopy)
-            }
+        Some { () =>
+          creates(localCopy) {
+            clone(from, to = localCopy)
+            checkout(branch, in = localCopy)
+          }
         }
       } else Some { () => creates(localCopy) { clone(from, to = localCopy) } }
     }
@@ -122,8 +123,12 @@ object Resolvers {
 
   private lazy val onWindows = {
     val os = System.getenv("OSTYPE")
-    val isCygwin = (os != null) && os.toLowerCase(Locale.ENGLISH).contains("cygwin")
-    val isWindows = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).contains("windows")
+    val isCygwin =
+      (os != null) && os.toLowerCase(Locale.ENGLISH).contains("cygwin")
+    val isWindows = System
+      .getProperty("os.name", "")
+      .toLowerCase(Locale.ENGLISH)
+      .contains("windows")
     isWindows && !isCygwin
   }
 
@@ -140,23 +145,24 @@ object Resolvers {
       sys.error("Nonzero exit code (" + result + "): " + command.mkString(" "))
   }
 
-  def creates(file: File)(f: => Unit) =
-    {
-      if (!file.exists)
-        try {
-          f
-        } catch {
-          case e: Throwable =>
-            IO.delete(file)
-            throw e
-        }
-      file
-    }
+  def creates(file: File)(f: => Unit) = {
+    if (!file.exists)
+      try {
+        f
+      } catch {
+        case e: Throwable =>
+          IO.delete(file)
+          throw e
+      }
+    file
+  }
 
   def uniqueSubdirectoryFor(uri: URI, in: File) = {
     in.mkdirs()
     val base = new File(in, Hash.halfHashString(uri.normalize.toASCIIString))
-    val last = shortName(uri) match { case Some(n) => normalizeDirectoryName(n); case None => "root" }
+    val last = shortName(uri) match {
+      case Some(n) => normalizeDirectoryName(n); case None => "root"
+    }
     new File(base, last)
   }
 
@@ -168,6 +174,7 @@ object Resolvers {
   private[this] def normalizeDirectoryName(name: String): String =
     StringUtilities.normalize(dropExtensions(name))
 
-  private[this] def dropExtensions(name: String): String = name.takeWhile(_ != '.')
+  private[this] def dropExtensions(name: String): String =
+    name.takeWhile(_ != '.')
 
 }

@@ -3,10 +3,10 @@ package lila.fishnet
 import org.joda.time.DateTime
 import play.api.libs.json._
 
-import chess.format.{ Uci, Forsyth, FEN }
+import chess.format.{Uci, Forsyth, FEN}
 import chess.variant.Variant
 
-import lila.fishnet.{ Work => W }
+import lila.fishnet.{Work => W}
 
 object JsonApi {
 
@@ -14,20 +14,19 @@ object JsonApi {
     val fishnet: Request.Fishnet
     val engine: Request.Engine
 
-    def instance(ip: Client.IpAddress) = Client.Instance(
-      fishnet.version,
-      Client.Engine(engine.name),
-      ip,
-      DateTime.now)
+    def instance(ip: Client.IpAddress) =
+      Client.Instance(
+        fishnet.version,
+        Client.Engine(engine.name),
+        ip,
+        DateTime.now)
   }
 
   object Request {
 
     sealed trait Result
 
-    case class Fishnet(
-      version: Client.Version,
-      apikey: Client.Key)
+    case class Fishnet(version: Client.Version, apikey: Client.Key)
 
     sealed trait Engine {
       def name: String
@@ -35,34 +34,29 @@ object JsonApi {
 
     case class BaseEngine(name: String) extends Engine
 
-    case class FullEngine(
-      name: String,
-      options: EngineOptions) extends Engine
+    case class FullEngine(name: String, options: EngineOptions) extends Engine
 
-    case class EngineOptions(
-        threads: Option[String],
-        hash: Option[String]) {
+    case class EngineOptions(threads: Option[String], hash: Option[String]) {
       def threadsInt = threads flatMap parseIntOption
       def hashInt = hash flatMap parseIntOption
     }
 
-    case class Acquire(
-      fishnet: Fishnet,
-      engine: BaseEngine) extends Request
+    case class Acquire(fishnet: Fishnet, engine: BaseEngine) extends Request
 
-    case class PostMove(
-      fishnet: Fishnet,
-      engine: BaseEngine,
-      move: MoveResult) extends Request with Result
+    case class PostMove(fishnet: Fishnet, engine: BaseEngine, move: MoveResult)
+        extends Request
+        with Result
 
     case class MoveResult(bestmove: String) {
       def uci: Option[Uci] = Uci(bestmove)
     }
 
     case class PostAnalysis(
-      fishnet: Fishnet,
-      engine: FullEngine,
-      analysis: List[Evaluation]) extends Request with Result
+        fishnet: Fishnet,
+        engine: FullEngine,
+        analysis: List[Evaluation])
+        extends Request
+        with Result
 
     case class Evaluation(
         pv: Option[String],
@@ -89,29 +83,25 @@ object JsonApi {
   }
 
   case class Game(
-    game_id: String,
-    position: FEN,
-    variant: Variant,
-    moves: String)
+      game_id: String,
+      position: FEN,
+      variant: Variant,
+      moves: String)
 
-  def fromGame(g: W.Game) = Game(
-    game_id = g.id,
-    position = g.initialFen | FEN(Forsyth.initial),
-    variant = g.variant,
-    moves = g.moves)
+  def fromGame(g: W.Game) =
+    Game(
+      game_id = g.id,
+      position = g.initialFen | FEN(Forsyth.initial),
+      variant = g.variant,
+      moves = g.moves)
 
   sealed trait Work {
     val id: String
     val game: Game
   }
-  case class Move(
-    id: String,
-    level: Int,
-    game: Game) extends Work
+  case class Move(id: String, level: Int, game: Game) extends Work
 
-  case class Analysis(
-    id: String,
-    game: Game) extends Work
+  case class Analysis(id: String, game: Game) extends Work
 
   def fromWork(w: W): Work = w match {
     case m: W.Move     => Move(w.id.value, m.level, fromGame(m.game))
@@ -119,7 +109,8 @@ object JsonApi {
   }
 
   object readers {
-    implicit val ClientVersionReads = Reads.of[String].map(new Client.Version(_))
+    implicit val ClientVersionReads =
+      Reads.of[String].map(new Client.Version(_))
     implicit val ClientKeyReads = Reads.of[String].map(new Client.Key(_))
     implicit val EngineOptionsReads = Json.reads[Request.EngineOptions]
     implicit val BaseEngineReads = Json.reads[Request.BaseEngine]
@@ -142,7 +133,8 @@ object JsonApi {
       Json.obj(
         "work" -> (work match {
           case a: Analysis => Json.obj("type" -> "analysis", "id" -> work.id)
-          case m: Move     => Json.obj("type" -> "move", "id" -> work.id, "level" -> m.level)
+          case m: Move =>
+            Json.obj("type" -> "move", "id" -> work.id, "level" -> m.level)
         })
       ) ++ Json.toJson(work.game).as[JsObject]
     }

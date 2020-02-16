@@ -6,13 +6,15 @@ package expressions
 
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
-import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.{Guard, Pattern1}
+import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.{
+  Guard,
+  Pattern1
+}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 06.03.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
 /*
  * Generator ::= Pattern1 '<-' Expr [Guard]
  */
@@ -20,7 +22,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.{Guard, Pattern1
 object Generator {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val genMarker = builder.mark
-    if (builder.getTokenType == ScalaTokenTypes.kVAL) builder.advanceLexer() //deprecated
+    if (builder.getTokenType == ScalaTokenTypes.kVAL)
+      builder.advanceLexer() //deprecated
     if (!Pattern1.parse(builder)) {
       genMarker.drop()
       return false
@@ -35,7 +38,7 @@ object Generator {
     genMarker.done(ScalaElementTypes.GENERATOR)
     builder.getTokenType match {
       case ScalaTokenTypes.kIF => Guard parse builder
-      case _ =>
+      case _                   =>
     }
     return true
   }

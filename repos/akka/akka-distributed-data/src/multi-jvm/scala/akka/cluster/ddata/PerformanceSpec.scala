@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.ddata
 
 import scala.concurrent.Await
@@ -23,7 +23,9 @@ object PerformanceSpec extends MultiNodeConfig {
   val n4 = role("n4")
   val n5 = role("n5")
 
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
@@ -36,7 +38,8 @@ object PerformanceSpec extends MultiNodeConfig {
     akka.actor.serialize-messages = off
     """))
 
-  def countDownProps(latch: TestLatch): Props = Props(new CountDown(latch)).withDeploy(Deploy.local)
+  def countDownProps(latch: TestLatch): Props =
+    Props(new CountDown(latch)).withDeploy(Deploy.local)
 
   class CountDown(latch: TestLatch) extends Actor {
     def receive = {
@@ -55,7 +58,10 @@ class PerformanceSpecMultiJvmNode3 extends PerformanceSpec
 class PerformanceSpecMultiJvmNode4 extends PerformanceSpec
 class PerformanceSpecMultiJvmNode5 extends PerformanceSpec
 
-class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpec with ImplicitSender {
+class PerformanceSpec
+    extends MultiNodeSpec(PerformanceSpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
   import PerformanceSpec._
   import Replicator._
 
@@ -74,8 +80,13 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
     enterBarrier(from.name + "-joined")
   }
 
-  def repeat(description: String, keys: Iterable[ORSetKey[Int]], n: Int, expectedAfterReplication: Option[Set[Int]] = None)(
-    block: (ORSetKey[Int], Int, ActorRef) ⇒ Unit, afterEachKey: ORSetKey[Int] ⇒ Unit = _ ⇒ ()): Unit = {
+  def repeat(
+      description: String,
+      keys: Iterable[ORSetKey[Int]],
+      n: Int,
+      expectedAfterReplication: Option[Set[Int]] = None)(
+      block: (ORSetKey[Int], Int, ActorRef) ⇒ Unit,
+      afterEachKey: ORSetKey[Int] ⇒ Unit = _ ⇒ ()): Unit = {
 
     keys.foreach { key ⇒
       val startTime = System.nanoTime()
@@ -107,7 +118,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
     }
   }
 
-  def awaitReplicated(keys: Iterable[ORSetKey[Int]], expectedData: Set[Int]): Unit =
+  def awaitReplicated(
+      keys: Iterable[ORSetKey[Int]],
+      expectedData: Set[Int]): Unit =
     keys.foreach { key ⇒ awaitReplicated(key, expectedData) }
 
   def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit = {
@@ -115,7 +128,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       awaitAssert {
         val readProbe = TestProbe()
         replicator.tell(Get(key, ReadLocal), readProbe.ref)
-        val result = readProbe.expectMsgPF() { case g @ GetSuccess(`key`, _) ⇒ g.get(key) }
+        val result = readProbe.expectMsgPF() {
+          case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+        }
         result.elements should be(expectedData)
       }
     }
@@ -159,8 +174,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
       val n = 200 * factor
       val expected = Some((0 until n).toSet)
-      repeat("ORSet Update WriteLocal + gossip", keys, n, expected) { (key, i, replyTo) ⇒
-        replicator.tell(Update(key, ORSet(), WriteLocal)(_ + i), replyTo)
+      repeat("ORSet Update WriteLocal + gossip", keys, n, expected) {
+        (key, i, replyTo) ⇒
+          replicator.tell(Update(key, ORSet(), WriteLocal)(_ + i), replyTo)
       }
       enterBarrier("after-3")
     }
@@ -169,8 +185,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       val keys = (1 to repeatCount).map(n ⇒ ORSetKey[Int]("B" + n))
       val n = 200 * factor
       val expected = Some((0 until n).toSet ++ (0 until n).map(-_).toSet)
-      repeat("ORSet Update WriteLocal existing + gossip", keys, n, expected) { (key, i, replyTo) ⇒
-        replicator.tell(Update(key, ORSet(), WriteLocal)(_ + (-i)), replyTo)
+      repeat("ORSet Update WriteLocal existing + gossip", keys, n, expected) {
+        (key, i, replyTo) ⇒
+          replicator.tell(Update(key, ORSet(), WriteLocal)(_ + (-i)), replyTo)
       }
       enterBarrier("after-4")
     }
@@ -180,8 +197,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       val n = 200 * factor
       val expected = Some((0 until n).toSet)
       val writeTwo = WriteTo(2, timeout)
-      repeat("ORSet Update WriteTwo + gossip", keys, n, expected) { (key, i, replyTo) ⇒
-        replicator.tell(Update(key, ORSet(), writeTwo)(_ + i), replyTo)
+      repeat("ORSet Update WriteTwo + gossip", keys, n, expected) {
+        (key, i, replyTo) ⇒
+          replicator.tell(Update(key, ORSet(), writeTwo)(_ + i), replyTo)
       }
       enterBarrier("after-5")
     }
@@ -212,7 +230,9 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
         awaitAssert {
           val readProbe = TestProbe()
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
-          val result = readProbe.expectMsgPF() { case g @ GetSuccess(`key`, _) ⇒ g.get(key) }
+          val result = readProbe.expectMsgPF() {
+            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+          }
           result.value should be(3 * n)
         }
       }
@@ -230,4 +250,3 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
   }
 
 }
-

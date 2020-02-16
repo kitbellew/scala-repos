@@ -10,9 +10,11 @@ import akka.http.javadsl.server.RequestVal
 import akka.http.scaladsl.server._
 
 /**
- * INTERNAL API
- */
-private[http] abstract class StandaloneExtractionImpl[T: ClassTag] extends ExtractionImpl[T] with RequestVal[T] {
+  * INTERNAL API
+  */
+private[http] abstract class StandaloneExtractionImpl[T: ClassTag]
+    extends ExtractionImpl[T]
+    with RequestVal[T] {
   def directive: Directive1[T]
 }
 private[http] object StandaloneExtractionImpl {
@@ -23,10 +25,12 @@ private[http] object StandaloneExtractionImpl {
 }
 
 /**
- * INTERNAL API
- */
-private[http] abstract class ExtractingStandaloneExtractionImpl[T: ClassTag] extends StandaloneExtractionImpl[T] {
-  def directive: Directive1[T] = Directives.extract(extract).flatMap(Directives.onSuccess(_))
+  * INTERNAL API
+  */
+private[http] abstract class ExtractingStandaloneExtractionImpl[T: ClassTag]
+    extends StandaloneExtractionImpl[T] {
+  def directive: Directive1[T] =
+    Directives.extract(extract).flatMap(Directives.onSuccess(_))
 
   def extract(ctx: RequestContext): Future[T]
 }

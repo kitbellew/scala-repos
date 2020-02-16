@@ -6,21 +6,24 @@ package top
 
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
-import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{ClassParents, TemplateBody}
+import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{
+  ClassParents,
+  TemplateBody
+}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 06.03.2008
-* Time: 9:31:16
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  * Time: 9:31:16
+  */
 /*
  * ClassTemplate ::= [EarlyDefs] ClassParents [TemplateBody]
  *                 | TemplateBody (for 'new' statement)
  */
 
 object ClassTemplate {
-  def parse(builder: ScalaPsiBuilder): Boolean = parse(builder, nonEmpty = false)
+  def parse(builder: ScalaPsiBuilder): Boolean =
+    parse(builder, nonEmpty = false)
   def parse(builder: ScalaPsiBuilder, nonEmpty: Boolean): Boolean = {
     val extendsMarker = builder.mark
     var empty = true
@@ -47,8 +50,7 @@ object ClassTemplate {
               !nonEmpty || !empty
             }
           }
-        }
-        else {
+        } else {
           //parse template body
           TemplateBody parse builder
           extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)

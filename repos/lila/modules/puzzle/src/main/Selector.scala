@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 import reactivemongo.api.QueryOpts
-import reactivemongo.bson.{ BSONDocument, BSONInteger, BSONArray }
+import reactivemongo.bson.{BSONDocument, BSONInteger, BSONArray}
 
 import lila.db.Types.Coll
 import lila.user.User
@@ -15,8 +15,10 @@ private[puzzle] final class Selector(
     anonMinRating: Int,
     maxAttempts: Int) {
 
-  private def popularSelector(mate: Boolean) = BSONDocument(
-    Puzzle.BSONFields.voteSum -> BSONDocument("$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
+  private def popularSelector(mate: Boolean) =
+    BSONDocument(
+      Puzzle.BSONFields.voteSum -> BSONDocument(
+        "$gt" -> BSONInteger(mate.fold(anonMinRating, 0))))
 
   private def mateSelector(mate: Boolean) = BSONDocument("mate" -> mate)
 
@@ -35,7 +37,8 @@ private[puzzle] final class Selector(
     val isMate = scala.util.Random.nextBoolean
     me match {
       case None =>
-        puzzleColl.find(popularSelector(isMate) ++ mateSelector(isMate))
+        puzzleColl
+          .find(popularSelector(isMate) ++ mateSelector(isMate))
           .options(QueryOpts(skipN = Random nextInt anonSkipMax))
           .one[Puzzle]
       case Some(user) if user.perfs.puzzle.nb > maxAttempts => fuccess(none)
@@ -55,17 +58,26 @@ private[puzzle] final class Selector(
       case d             => 200
     }
 
-  private def tryRange(rating: Int, tolerance: Int, step: Int, decay: Int, ids: BSONArray, isMate: Boolean): Fu[Option[Puzzle]] =
-    puzzleColl.find(mateSelector(isMate) ++ BSONDocument(
-      Puzzle.BSONFields.id -> BSONDocument("$nin" -> ids),
-      Puzzle.BSONFields.rating -> BSONDocument(
-        "$gt" -> BSONInteger(rating - tolerance + decay),
-        "$lt" -> BSONInteger(rating + tolerance + decay)
-      )
-    )).sort(BSONDocument(Puzzle.BSONFields.voteSum -> -1))
+  private def tryRange(
+      rating: Int,
+      tolerance: Int,
+      step: Int,
+      decay: Int,
+      ids: BSONArray,
+      isMate: Boolean): Fu[Option[Puzzle]] =
+    puzzleColl
+      .find(
+        mateSelector(isMate) ++ BSONDocument(
+          Puzzle.BSONFields.id -> BSONDocument("$nin" -> ids),
+          Puzzle.BSONFields.rating -> BSONDocument(
+            "$gt" -> BSONInteger(rating - tolerance + decay),
+            "$lt" -> BSONInteger(rating + tolerance + decay)
+          )
+        ))
+      .sort(BSONDocument(Puzzle.BSONFields.voteSum -> -1))
       .one[Puzzle] flatMap {
-        case None if (tolerance + step) <= toleranceMax =>
-          tryRange(rating, tolerance + step, step, decay, ids, isMate)
-        case res => fuccess(res)
-      }
+      case None if (tolerance + step) <= toleranceMax =>
+        tryRange(rating, tolerance + step, step, decay, ids, isMate)
+      case res => fuccess(res)
+    }
 }

@@ -11,30 +11,41 @@ import com.intellij.psi.tree.IElementType
 import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base._
-import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.{ScBindingPattern, _}
+import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.{
+  ScBindingPattern,
+  _
+}
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeElement
 import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScValueStub
-import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  Failure,
+  TypingContext
+}
 
 /**
-* @author Alexander Podkhalyuzin
-*/
-
-class ScPatternDefinitionImpl private (stub: StubElement[ScValue], nodeType: IElementType, node: ASTNode)
-extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScPatternDefinition {
+  * @author Alexander Podkhalyuzin
+  */
+class ScPatternDefinitionImpl private (
+    stub: StubElement[ScValue],
+    nodeType: IElementType,
+    node: ASTNode)
+    extends ScalaStubBasedElementImpl(stub, nodeType, node)
+    with ScPatternDefinition {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _ => super.accept(visitor)
+      case _                            => super.accept(visitor)
     }
   }
 
-  def this(node: ASTNode) = {this(null, null, node)}
+  def this(node: ASTNode) = { this(null, null, node) }
 
-  def this(stub: ScValueStub) = {this(stub, ScalaElementTypes.PATTERN_DEFINITION, null)}
-  
+  def this(stub: ScValueStub) = {
+    this(stub, ScalaElementTypes.PATTERN_DEFINITION, null)
+  }
+
   override def toString: String = "ScPatternDefinition"
 
   def bindings: Seq[ScBindingPattern] = {
@@ -52,14 +63,21 @@ extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScPatternDefinition
   def getType(ctx: TypingContext) = {
     typeElement match {
       case Some(te) => te.getType(ctx)
-      case None => expr.map(_.getType(ctx)).getOrElse(Failure("Cannot infer type without an expression", Some(this)))
+      case None =>
+        expr
+          .map(_.getType(ctx))
+          .getOrElse(
+            Failure("Cannot infer type without an expression", Some(this)))
     }
   }
 
   def expr: Option[ScExpression] = {
     val stub = getStub
     if (stub != null) {
-      return stub.asInstanceOf[ScValueStub].getBodyExpr.orElse(Option(findChildByClassScala(classOf[ScExpression])))
+      return stub
+        .asInstanceOf[ScValueStub]
+        .getBodyExpr
+        .orElse(Option(findChildByClassScala(classOf[ScExpression])))
     }
     Option(findChildByClassScala(classOf[ScExpression]))
   }
@@ -68,14 +86,17 @@ extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScPatternDefinition
     val stub = getStub
     if (stub != null) {
       stub.asInstanceOf[ScValueStub].getTypeElement
-    }
-    else findChild(classOf[ScTypeElement])
+    } else findChild(classOf[ScTypeElement])
   }
 
   def pList: ScPatternList = {
     val stub = getStub
     if (stub != null) {
-      stub.getChildrenByType(ScalaElementTypes.PATTERN_LIST, JavaArrayFactoryUtil.ScPatternListFactory).apply(0)
+      stub
+        .getChildrenByType(
+          ScalaElementTypes.PATTERN_LIST,
+          JavaArrayFactoryUtil.ScPatternListFactory)
+        .apply(0)
     } else findChildByClass(classOf[ScPatternList])
   }
 }

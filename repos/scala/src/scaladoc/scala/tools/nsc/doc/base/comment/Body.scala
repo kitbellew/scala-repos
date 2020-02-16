@@ -37,9 +37,9 @@ final case class Body(blocks: Seq[Block]) {
       case _                 => Nil
     }
     (blocks flatMap { summaryInBlock(_) }).toList match {
-      case Nil => None
+      case Nil           => None
       case inline :: Nil => Some(inline)
-      case inlines => Some(Chain(inlines))
+      case inlines       => Some(Chain(inlines))
     }
   }
 }
@@ -69,14 +69,17 @@ final case class Monospace(text: Inline) extends Inline
 final case class Text(text: String) extends Inline
 abstract class EntityLink(val title: Inline) extends Inline { def link: LinkTo }
 object EntityLink {
-  def apply(title: Inline, linkTo: LinkTo) = new EntityLink(title) { def link: LinkTo = linkTo }
-  def unapply(el: EntityLink): Option[(Inline, LinkTo)] = Some((el.title, el.link))
+  def apply(title: Inline, linkTo: LinkTo) = new EntityLink(title) {
+    def link: LinkTo = linkTo
+  }
+  def unapply(el: EntityLink): Option[(Inline, LinkTo)] =
+    Some((el.title, el.link))
 }
 final case class HtmlTag(data: String) extends Inline {
   private val Pattern = """(?ms)\A<(/?)(.*?)[\s>].*\z""".r
   private val (isEnd, tagName) = data match {
     case Pattern(s1, s2) =>
-      (! s1.isEmpty, Some(s2.toLowerCase))
+      (!s1.isEmpty, Some(s2.toLowerCase))
     case _ =>
       (false, None)
   }
@@ -86,7 +89,9 @@ final case class HtmlTag(data: String) extends Inline {
   }
 
   private val TagsNotToClose = Set("br", "img")
-  def close = tagName collect { case name if !TagsNotToClose(name) => HtmlTag(s"</$name>") }
+  def close = tagName collect {
+    case name if !TagsNotToClose(name) => HtmlTag(s"</$name>")
+  }
 }
 
 /** The summary of a comment, usually its first sentence. There must be exactly one summary per body. */

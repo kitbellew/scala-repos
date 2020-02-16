@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
@@ -24,14 +23,19 @@ final class JasmineFramework extends Framework {
 
   def fingerprints: Array[Fingerprint] = Array(JasmineFingerprint)
 
-  def runner(args: Array[String], remoteArgs: Array[String],
+  def runner(
+      args: Array[String],
+      remoteArgs: Array[String],
       testClassLoader: ClassLoader): Runner = {
     acquireRunner()
     new JasmineRunner(this, args, remoteArgs, testClassLoader)
   }
 
-  def slaveRunner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader, channel: String => Unit): Runner = {
+  def slaveRunner(
+      args: Array[String],
+      remoteArgs: Array[String],
+      testClassLoader: ClassLoader,
+      channel: String => Unit): Runner = {
     acquireRunner()
     new JasmineRunner(this, args, remoteArgs, testClassLoader)
   }

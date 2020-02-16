@@ -17,7 +17,12 @@
 
 package org.apache.spark.api.r
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  DataInputStream,
+  DataOutputStream
+}
 
 import scala.collection.mutable.HashMap
 import scala.language.existentials
@@ -30,15 +35,18 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.Utils
 
 /**
- * Handler for RBackend
- * TODO: This is marked as sharable to get a handle to RBackend. Is it safe to re-use
- * this across connections ?
- */
+  * Handler for RBackend
+  * TODO: This is marked as sharable to get a handle to RBackend. Is it safe to re-use
+  * this across connections ?
+  */
 @Sharable
 private[r] class RBackendHandler(server: RBackend)
-  extends SimpleChannelInboundHandler[Array[Byte]] with Logging {
+    extends SimpleChannelInboundHandler[Array[Byte]]
+    with Logging {
 
-  override def channelRead0(ctx: ChannelHandlerContext, msg: Array[Byte]): Unit = {
+  override def channelRead0(
+      ctx: ChannelHandlerContext,
+      msg: Array[Byte]): Unit = {
     val bis = new ByteArrayInputStream(msg)
     val dis = new DataInputStream(bis)
 
@@ -94,7 +102,9 @@ private[r] class RBackendHandler(server: RBackend)
     ctx.flush()
   }
 
-  override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
+  override def exceptionCaught(
+      ctx: ChannelHandlerContext,
+      cause: Throwable): Unit = {
     // Close the connection when an exception is raised.
     cause.printStackTrace()
     ctx.close()
@@ -113,7 +123,8 @@ private[r] class RBackendHandler(server: RBackend)
         Utils.classForName(objId)
       } else {
         JVMObjectTracker.get(objId) match {
-          case None => throw new IllegalArgumentException("Object not found " + objId)
+          case None =>
+            throw new IllegalArgumentException("Object not found " + objId)
           case Some(o) =>
             obj = o
             o.getClass
@@ -125,20 +136,21 @@ private[r] class RBackendHandler(server: RBackend)
       val methods = cls.getMethods
       val selectedMethods = methods.filter(m => m.getName == methodName)
       if (selectedMethods.length > 0) {
-        val index = findMatchedSignature(
-          selectedMethods.map(_.getParameterTypes),
-          args)
+        val index =
+          findMatchedSignature(selectedMethods.map(_.getParameterTypes), args)
 
         if (index.isEmpty) {
-          logWarning(s"cannot find matching method ${cls}.$methodName. "
-            + s"Candidates are:")
+          logWarning(
+            s"cannot find matching method ${cls}.$methodName. "
+              + s"Candidates are:")
           selectedMethods.foreach { method =>
-            logWarning(s"$methodName(${method.getParameterTypes.mkString(",")})")
+            logWarning(
+              s"$methodName(${method.getParameterTypes.mkString(",")})")
           }
           throw new Exception(s"No matched method found for $cls.$methodName")
         }
 
-        val ret = selectedMethods(index.get).invoke(obj, args : _*)
+        val ret = selectedMethods(index.get).invoke(obj, args: _*)
 
         // Write status bit
         writeInt(dos, 0)
@@ -146,25 +158,25 @@ private[r] class RBackendHandler(server: RBackend)
       } else if (methodName == "<init>") {
         // methodName should be "<init>" for constructor
         val ctors = cls.getConstructors
-        val index = findMatchedSignature(
-          ctors.map(_.getParameterTypes),
-          args)
+        val index = findMatchedSignature(ctors.map(_.getParameterTypes), args)
 
         if (index.isEmpty) {
-          logWarning(s"cannot find matching constructor for ${cls}. "
-            + s"Candidates are:")
+          logWarning(
+            s"cannot find matching constructor for ${cls}. "
+              + s"Candidates are:")
           ctors.foreach { ctor =>
             logWarning(s"$cls(${ctor.getParameterTypes.mkString(",")})")
           }
           throw new Exception(s"No matched constructor found for $cls")
         }
 
-        val obj = ctors(index.get).newInstance(args : _*)
+        val obj = ctors(index.get).newInstance(args: _*)
 
         writeInt(dos, 0)
         writeObject(dos, obj.asInstanceOf[AnyRef])
       } else {
-        throw new IllegalArgumentException("invalid method " + methodName + " for object " + objId)
+        throw new IllegalArgumentException(
+          "invalid method " + methodName + " for object " + objId)
       }
     } catch {
       case e: Exception =>
@@ -178,9 +190,7 @@ private[r] class RBackendHandler(server: RBackend)
 
   // Read a number of arguments from the data input stream
   def readArgs(numArgs: Int, dis: DataInputStream): Array[java.lang.Object] = {
-    (0 until numArgs).map { _ =>
-      readObject(dis)
-    }.toArray
+    (0 until numArgs).map { _ => readObject(dis) }.toArray
   }
 
   // Find a matching method signature in an array of signatures of constructors
@@ -218,10 +228,10 @@ private[r] class RBackendHandler(server: RBackend)
             if (parameterType.isPrimitive) {
               parameterWrapperType = parameterType match {
                 case java.lang.Integer.TYPE => classOf[java.lang.Integer]
-                case java.lang.Long.TYPE => classOf[java.lang.Integer]
-                case java.lang.Double.TYPE => classOf[java.lang.Double]
+                case java.lang.Long.TYPE    => classOf[java.lang.Integer]
+                case java.lang.Double.TYPE  => classOf[java.lang.Double]
                 case java.lang.Boolean.TYPE => classOf[java.lang.Boolean]
-                case _ => parameterType
+                case _                      => parameterType
               }
             }
             if ((parameterType.isPrimitive || args(i) != null) &&
@@ -256,9 +266,9 @@ private[r] class RBackendHandler(server: RBackend)
 }
 
 /**
- * Helper singleton that tracks JVM objects returned to R.
- * This is useful for referencing these objects in RPC calls.
- */
+  * Helper singleton that tracks JVM objects returned to R.
+  * This is useful for referencing these objects in RPC calls.
+  */
 private[r] object JVMObjectTracker {
 
   // TODO: This map should be thread-safe if we want to support multiple

@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,17 +26,19 @@ import parser._
 import typer._
 import emitter._
 
-object QuirrelCacheSpecs extends Specification
+object QuirrelCacheSpecs
+    extends Specification
     with Parser
     with Compiler
     with TreeShaker
     with GroupSolver
-    with LineErrors 
+    with LineErrors
     with RandomLibrarySpec {
 
   import ast._
 
-  private def findNode[A](root: Expr)(pf: PartialFunction[Expr, A]): Option[A] = {
+  private def findNode[A](root: Expr)(
+      pf: PartialFunction[Expr, A]): Option[A] = {
     def loop(expr: Expr): Option[A] = {
       if (pf.isDefinedAt(expr)) {
         Some(pf(expr))
@@ -45,9 +47,9 @@ object QuirrelCacheSpecs extends Specification
           // special-case Let because its children
           // doesn't return all the sub-exprs
           case Let(_, _, _, c1, c2) => c1 :: c2 :: Nil
-          case e => e.children
+          case e                    => e.children
         }
-            
+
         cs.iterator map loop collectFirst {
           case Some(a) => a
         }
@@ -71,10 +73,18 @@ object QuirrelCacheSpecs extends Specification
       result must haveSize(1)
       val root = result.head
 
-      val a = findNode(root) { case NumLit(loc, _) => (loc.lineNum, loc.colNum) }
-      val b = findNode(root) { case StrLit(loc, "asdf") => (loc.lineNum, loc.colNum) }
-      val c = findNode(root) { case BoolLit(loc, _) => (loc.lineNum, loc.colNum) }
-      val d = findNode(root) { case StrLit(loc, "/abc") => (loc.lineNum, loc.colNum) }
+      val a = findNode(root) {
+        case NumLit(loc, _) => (loc.lineNum, loc.colNum)
+      }
+      val b = findNode(root) {
+        case StrLit(loc, "asdf") => (loc.lineNum, loc.colNum)
+      }
+      val c = findNode(root) {
+        case BoolLit(loc, _) => (loc.lineNum, loc.colNum)
+      }
+      val d = findNode(root) {
+        case StrLit(loc, "/abc") => (loc.lineNum, loc.colNum)
+      }
 
       a must_== Some((1, 6))
       b must_== Some((2, 6))
@@ -112,8 +122,9 @@ object QuirrelCacheSpecs extends Specification
       result3 must haveSize(1)
 
       def varLoc(name: String)(e: Expr) = {
-        findNode(e) { case Dispatch(loc, Identifier(_, `name`), _) =>
-          (loc.lineNum, loc.colNum)
+        findNode(e) {
+          case Dispatch(loc, Identifier(_, `name`), _) =>
+            (loc.lineNum, loc.colNum)
         }
       }
 

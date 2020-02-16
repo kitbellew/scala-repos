@@ -4,16 +4,15 @@
 package play.libs
 
 import java.util.Arrays
-import java.util.concurrent.{ LinkedBlockingQueue, TimeoutException }
-import java.util.concurrent.TimeUnit.{ MILLISECONDS, SECONDS }
+import java.util.concurrent.{LinkedBlockingQueue, TimeoutException}
+import java.util.concurrent.TimeUnit.{MILLISECONDS, SECONDS}
 import org.specs2.mutable._
 import play.api.libs.iteratee.ExecutionSpecification
 import scala.collection.JavaConverters
-import scala.concurrent.{ Future, Promise }
-import java.util.function.{ Consumer, Function, Predicate, Supplier }
+import scala.concurrent.{Future, Promise}
+import java.util.function.{Consumer, Function, Predicate, Supplier}
 
-object FSpec extends Specification
-    with ExecutionSpecification {
+object FSpec extends Specification with ExecutionSpecification {
 
   sequential
 
@@ -40,30 +39,38 @@ object FSpec extends Specification
     }
 
     "be able to be created from a function (with default ExecutionContext)" in {
-      F.Promise.promise(new Supplier[Int] {
-        def get() = 1
-      }).get(5, SECONDS) must equalTo(1)
+      F.Promise
+        .promise(new Supplier[Int] {
+          def get() = 1
+        })
+        .get(5, SECONDS) must equalTo(1)
     }
 
     "be able to be created from a function (with explicit ExecutionContext)" in {
       mustExecute(1) { ec =>
-        F.Promise.promise(new Supplier[Int] {
-          def get() = 1
-        }, ec).get(5, SECONDS) must equalTo(1)
+        F.Promise
+          .promise(new Supplier[Int] {
+            def get() = 1
+          }, ec)
+          .get(5, SECONDS) must equalTo(1)
       }
     }
 
     "be able to be created after a delay (with default ExecutionContext)" in {
-      F.Promise.delayed(new Supplier[Int] {
-        def get() = 1
-      }, 1, MILLISECONDS).get(5, SECONDS) must equalTo(1)
+      F.Promise
+        .delayed(new Supplier[Int] {
+          def get() = 1
+        }, 1, MILLISECONDS)
+        .get(5, SECONDS) must equalTo(1)
     }
 
     "be able to be created after a delay (with explicit ExecutionContext)" in {
       mustExecute(1) { ec =>
-        F.Promise.delayed(new Supplier[Int] {
-          def get() = 1
-        }, 1, MILLISECONDS, ec).get(5, SECONDS) must equalTo(1)
+        F.Promise
+          .delayed(new Supplier[Int] {
+            def get() = 1
+          }, 1, MILLISECONDS, ec)
+          .get(5, SECONDS) must equalTo(1)
       }
     }
 
@@ -306,21 +313,29 @@ object FSpec extends Specification
 
     "throw a promise timeout exception" in {
       //F.Promise.timeout().get(15, SECONDS) must throwA[TimeoutException] // Too slow to run for normal testing
-      F.Promise.timeout(2).get(1, SECONDS) must throwA[F.PromiseTimeoutException]
-      F.Promise.timeout(2, MILLISECONDS).get(1, SECONDS) must throwA[F.PromiseTimeoutException]
+      F.Promise
+        .timeout(2)
+        .get(1, SECONDS) must throwA[F.PromiseTimeoutException]
+      F.Promise
+        .timeout(2, MILLISECONDS)
+        .get(1, SECONDS) must throwA[F.PromiseTimeoutException]
     }
 
     "combine a sequence of promises from a vararg" in {
       mustExecute(3) { ec =>
         import F.Promise.pure
-        F.Promise.sequence[Int](ec, pure(1), pure(2), pure(3)).get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
+        F.Promise
+          .sequence[Int](ec, pure(1), pure(2), pure(3))
+          .get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
       }
     }
 
     "combine a sequence of promises from an iterable" in {
       mustExecute(3) { ec =>
         import F.Promise.pure
-        F.Promise.sequence[Int](Arrays.asList(pure(1), pure(2), pure(3)), ec).get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
+        F.Promise
+          .sequence[Int](Arrays.asList(pure(1), pure(2), pure(3)), ec)
+          .get(5, SECONDS) must equalTo(Arrays.asList(1, 2, 3))
       }
     }
 
@@ -332,7 +347,8 @@ object FSpec extends Specification
       tup._2 must equalTo("hello")
     }
 
-    def orDriver(): (Promise[Int], Promise[String], F.Promise[F.Either[Int, String]]) = {
+    def orDriver()
+        : (Promise[Int], Promise[String], F.Promise[F.Either[Int, String]]) = {
       val pl = Promise[Int]()
       val pr = Promise[String]()
       val por = F.Promise.wrap(pl.future).or(F.Promise.wrap(pr.future))

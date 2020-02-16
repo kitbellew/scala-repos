@@ -137,8 +137,8 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("WorksMixedRangeWithFourUnevenBuckets") {
     // Make sure that it works with two unequally spaced buckets and elements in each
-    val rdd = sc.parallelize(Seq(-0.01, 0.0, 1, 2, 3, 5, 6, 11.01, 12.0, 199.0,
-      200.0, 200.1))
+    val rdd = sc.parallelize(
+      Seq(-0.01, 0.0, 1, 2, 3, 5, 6, 11.01, 12.0, 199.0, 200.0, 200.1))
     val buckets = Array(0.0, 5.0, 11.0, 12.0, 200.0)
     val histogramResults = rdd.histogram(buckets)
     val expectedHistogramResults = Array(4, 2, 1, 3)
@@ -147,8 +147,21 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("WorksMixedRangeWithUnevenBucketsAndNaN") {
     // Make sure that it works with two unequally spaced buckets and elements in each
-    val rdd = sc.parallelize(Seq(-0.01, 0.0, 1, 2, 3, 5, 6, 11.01, 12.0, 199.0,
-      200.0, 200.1, Double.NaN))
+    val rdd = sc.parallelize(
+      Seq(
+        -0.01,
+        0.0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        11.01,
+        12.0,
+        199.0,
+        200.0,
+        200.1,
+        Double.NaN))
     val buckets = Array(0.0, 5.0, 11.0, 12.0, 200.0)
     val histogramResults = rdd.histogram(buckets)
     val expectedHistogramResults = Array(4, 2, 1, 3)
@@ -157,8 +170,21 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
   // Make sure this works with a NaN end bucket
   test("WorksMixedRangeWithUnevenBucketsAndNaNAndNaNRange") {
     // Make sure that it works with two unequally spaced buckets and elements in each
-    val rdd = sc.parallelize(Seq(-0.01, 0.0, 1, 2, 3, 5, 6, 11.01, 12.0, 199.0,
-      200.0, 200.1, Double.NaN))
+    val rdd = sc.parallelize(
+      Seq(
+        -0.01,
+        0.0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        11.01,
+        12.0,
+        199.0,
+        200.0,
+        200.1,
+        Double.NaN))
     val buckets = Array(0.0, 5.0, 11.0, 12.0, 200.0, Double.NaN)
     val histogramResults = rdd.histogram(buckets)
     val expectedHistogramResults = Array(4, 2, 1, 2, 3)
@@ -167,8 +193,23 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
   // Make sure this works with a NaN end bucket and an infinity
   test("WorksMixedRangeWithUnevenBucketsAndNaNAndNaNRangeAndInfinity") {
     // Make sure that it works with two unequally spaced buckets and elements in each
-    val rdd = sc.parallelize(Seq(-0.01, 0.0, 1, 2, 3, 5, 6, 11.01, 12.0, 199.0,
-      200.0, 200.1, 1.0/0.0, -1.0/0.0, Double.NaN))
+    val rdd = sc.parallelize(
+      Seq(
+        -0.01,
+        0.0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        11.01,
+        12.0,
+        199.0,
+        200.0,
+        200.1,
+        1.0 / 0.0,
+        -1.0 / 0.0,
+        Double.NaN))
     val buckets = Array(0.0, 5.0, 11.0, 12.0, 200.0, Double.NaN)
     val histogramResults = rdd.histogram(buckets)
     val expectedHistogramResults = Array(4, 2, 1, 2, 4)
@@ -178,7 +219,7 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
   test("WorksWithOutOfRangeWithInfiniteBuckets") {
     // Verify that out of range works with two buckets
     val rdd = sc.parallelize(Seq(10.01, -0.01, Double.NaN))
-    val buckets = Array(-1.0/0.0, 0.0, 1.0/0.0)
+    val buckets = Array(-1.0 / 0.0, 0.0, 1.0 / 0.0)
     val histogramResults = rdd.histogram(buckets)
     val expectedHistogramResults = Array(1, 1)
     assert(histogramResults === expectedHistogramResults)
@@ -287,14 +328,15 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(histogramResults(0) === 1)
     assert(histogramResults(1) === 1)
     assert(histogramResults.last === 1)
-    assert((2 to histogramResults.length - 2).forall(i => histogramResults(i) == 0))
+    assert(
+      (2 to histogramResults.length - 2).forall(i => histogramResults(i) == 0))
   }
 
   // Test the failure mode with an invalid RDD
   test("ThrowsExceptionOnInvalidRDDs") {
     // infinity
     intercept[UnsupportedOperationException] {
-      val rdd = sc.parallelize(Seq(1, 1.0/0.0))
+      val rdd = sc.parallelize(Seq(1, 1.0 / 0.0))
       val result = rdd.histogram(1)
     }
     // NaN

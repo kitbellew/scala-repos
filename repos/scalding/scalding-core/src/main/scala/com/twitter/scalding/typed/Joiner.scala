@@ -12,19 +12,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding.typed
 
 import com.twitter.scalding._
 
 object Joiner extends java.io.Serializable {
-  def toCogroupJoiner2[K, V, U, R](hashJoiner: (K, V, Iterable[U]) => Iterator[R]): (K, Iterator[V], Iterable[U]) => Iterator[R] = {
+  def toCogroupJoiner2[K, V, U, R](
+      hashJoiner: (K, V, Iterable[U]) => Iterator[R])
+      : (K, Iterator[V], Iterable[U]) => Iterator[R] = {
     (k: K, itv: Iterator[V], itu: Iterable[U]) =>
       itv.flatMap { hashJoiner(k, _, itu) }
   }
 
-  def hashInner2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) => itu.iterator.map { (v, _) } }
-  def hashLeft2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) => asOuter(itu.iterator).map { (v, _) } }
+  def hashInner2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) =>
+    itu.iterator.map { (v, _) }
+  }
+  def hashLeft2[K, V, U] = { (key: K, v: V, itu: Iterable[U]) =>
+    asOuter(itu.iterator).map { (v, _) }
+  }
 
   def inner2[K, V, U] = { (key: K, itv: Iterator[V], itu: Iterable[U]) =>
     itv.flatMap { v => itu.map { u => (v, u) } }
@@ -50,4 +56,3 @@ object Joiner extends java.io.Serializable {
     asOuter(itv).flatMap { v => itu.map { u => (v, u) } }
   }
 }
-

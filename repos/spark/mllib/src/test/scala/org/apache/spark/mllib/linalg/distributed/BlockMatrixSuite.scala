@@ -22,7 +22,12 @@ import java.{util => ju}
 import breeze.linalg.{DenseMatrix => BDM}
 
 import org.apache.spark.{SparkException, SparkFunSuite}
-import org.apache.spark.mllib.linalg.{DenseMatrix, Matrices, Matrix, SparseMatrix}
+import org.apache.spark.mllib.linalg.{
+  DenseMatrix,
+  Matrices,
+  Matrix,
+  SparseMatrix
+}
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 
@@ -42,9 +47,13 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0))))
+      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
+    )
 
-    gridBasedMat = new BlockMatrix(sc.parallelize(blocks, numPartitions), rowPerPart, colPerPart)
+    gridBasedMat = new BlockMatrix(
+      sc.parallelize(blocks, numPartitions),
+      rowPerPart,
+      colPerPart)
   }
 
   test("size") {
@@ -58,8 +67,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val part0 = GridPartitioner(4, 7, suggestedNumPartitions = 12)
     // scalastyle:off
     val expected0 = Array(
-      Array(0, 0, 4, 4,  8,  8, 12),
-      Array(1, 1, 5, 5,  9,  9, 13),
+      Array(0, 0, 4, 4, 8, 8, 12),
+      Array(1, 1, 5, 5, 9, 9, 13),
       Array(2, 2, 6, 6, 10, 10, 14),
       Array(3, 3, 7, 7, 11, 11, 15))
     // scalastyle:on
@@ -85,9 +94,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
 
     val part1 = GridPartitioner(2, 2, suggestedNumPartitions = 5)
-    val expected1 = Array(
-      Array(0, 2),
-      Array(1, 3))
+    val expected1 = Array(Array(0, 2), Array(1, 3))
     for (i <- 0 until 2; j <- 0 until 2) {
       assert(part1.getPartition((i, j)) === expected1(i)(j))
       assert(part1.getPartition((i, j, random.nextInt())) === expected1(i)(j))
@@ -98,9 +105,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(part1 === part2)
 
     val part3 = new GridPartitioner(2, 3, rowsPerPart = 1, colsPerPart = 2)
-    val expected3 = Array(
-      Array(0, 0, 2),
-      Array(1, 1, 3))
+    val expected3 = Array(Array(0, 0, 2), Array(1, 1, 3))
     for (i <- 0 until 2; j <- 0 until 3) {
       assert(part3.getPartition((i, j)) === expected3(i)(j))
       assert(part3.getPartition((i, j, random.nextInt())) === expected3(i)(j))
@@ -155,8 +160,12 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 0), new DenseMatrix(1, 2, Array(1.0, 0.0))), // Added block that doesn't exist in A
-      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0))))
+      (
+        (2, 0),
+        new DenseMatrix(1, 2, Array(1.0, 0.0))
+      ), // Added block that doesn't exist in A
+      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
+    )
     val rdd = sc.parallelize(blocks, numPartitions)
     val B = new BlockMatrix(rdd, rowPerPart, colPerPart)
 
@@ -179,17 +188,21 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
       ((1, 0), new DenseMatrix(1, 4, Array(1.0, 0.0, 1.0, 5.0))))
-    val C2 = new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4, m, n)
+    val C2 =
+      new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4, m, n)
     intercept[SparkException] { // partitioning doesn't match
       gridBasedMat.add(C2)
     }
     // adding BlockMatrices composed of SparseMatrices
-    val sparseBlocks = for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
-    val denseBlocks = for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
+    val sparseBlocks =
+      for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
+    val denseBlocks =
+      for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
     val sparseBM = new BlockMatrix(sc.makeRDD(sparseBlocks, 4), 4, 4, 8, 8)
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
-    assert(sparseBM.add(sparseBM).toBreeze() === sparseBM.add(denseBM).toBreeze())
+    assert(
+      sparseBM.add(sparseBM).toBreeze() === sparseBM.add(denseBM).toBreeze())
   }
 
   test("subtract") {
@@ -198,8 +211,12 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 0), new DenseMatrix(1, 2, Array(1.0, 0.0))), // Added block that doesn't exist in A
-      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0))))
+      (
+        (2, 0),
+        new DenseMatrix(1, 2, Array(1.0, 0.0))
+      ), // Added block that doesn't exist in A
+      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
+    )
     val rdd = sc.parallelize(blocks, numPartitions)
     val B = new BlockMatrix(rdd, rowPerPart, colPerPart)
 
@@ -222,17 +239,23 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
       ((1, 0), new DenseMatrix(1, 4, Array(1.0, 0.0, 1.0, 5.0))))
-    val C2 = new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4, m, n)
+    val C2 =
+      new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4, m, n)
     intercept[SparkException] { // partitioning doesn't match
       gridBasedMat.subtract(C2)
     }
     // subtracting BlockMatrices composed of SparseMatrices
-    val sparseBlocks = for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
-    val denseBlocks = for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
+    val sparseBlocks =
+      for (i <- 0 until 4) yield ((i / 2, i % 2), SparseMatrix.speye(4))
+    val denseBlocks =
+      for (i <- 0 until 4) yield ((i / 2, i % 2), DenseMatrix.eye(4))
     val sparseBM = new BlockMatrix(sc.makeRDD(sparseBlocks, 4), 4, 4, 8, 8)
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
-    assert(sparseBM.subtract(sparseBM).toBreeze() === sparseBM.subtract(denseBM).toBreeze())
+    assert(
+      sparseBM.subtract(sparseBM).toBreeze() === sparseBM
+        .subtract(denseBM)
+        .toBreeze())
   }
 
   test("multiply") {
@@ -264,15 +287,19 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       gridBasedMat.multiply(C2)
     }
     val rand = new ju.Random(42)
-    val largerAblocks = for (i <- 0 until 20) yield ((i % 5, i / 5), DenseMatrix.rand(6, 4, rand))
-    val largerBblocks = for (i <- 0 until 16) yield ((i % 4, i / 4), DenseMatrix.rand(4, 4, rand))
+    val largerAblocks =
+      for (i <- 0 until 20) yield ((i % 5, i / 5), DenseMatrix.rand(6, 4, rand))
+    val largerBblocks =
+      for (i <- 0 until 16) yield ((i % 4, i / 4), DenseMatrix.rand(4, 4, rand))
 
     // Try it with increased number of partitions
     val largeA = new BlockMatrix(sc.parallelize(largerAblocks, 10), 6, 4)
     val largeB = new BlockMatrix(sc.parallelize(largerBblocks, 8), 4, 4)
     val largeC = largeA.multiply(largeB)
     val localC = largeC.toLocalMatrix()
-    val result = largeA.toLocalMatrix().multiply(largeB.toLocalMatrix().asInstanceOf[DenseMatrix])
+    val result = largeA
+      .toLocalMatrix()
+      .multiply(largeB.toLocalMatrix().asInstanceOf[DenseMatrix])
     assert(largeC.numRows() === largeA.numRows())
     assert(largeC.numCols() === largeB.numCols())
     assert(localC ~== result absTol 1e-8)
@@ -284,9 +311,12 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 0.0, 0.0, 1.0))))
     val rdd = sc.parallelize(blocks, 2)
     val B = new BlockMatrix(rdd, colPerPart, rowPerPart)
-    val resultPartitioner = GridPartitioner(gridBasedMat.numRowBlocks, B.numColBlocks,
+    val resultPartitioner = GridPartitioner(
+      gridBasedMat.numRowBlocks,
+      B.numColBlocks,
       math.max(numPartitions, 2))
-    val (destinationsA, destinationsB) = gridBasedMat.simulateMultiply(B, resultPartitioner)
+    val (destinationsA, destinationsB) =
+      gridBasedMat.simulateMultiply(B, resultPartitioner)
     assert(destinationsA((0, 0)) === Set(0))
     assert(destinationsA((0, 1)) === Set(2))
     assert(destinationsA((1, 0)) === Set(0))
@@ -305,7 +335,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 1), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 0), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0))))
+      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
+    )
     val rdd = sc.parallelize(blocks, numPartitions)
     val wrongRowPerParts = new BlockMatrix(rdd, rowPerPart + 1, colPerPart)
     val wrongColPerParts = new BlockMatrix(rdd, rowPerPart, colPerPart + 1)
@@ -330,8 +361,10 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       ((0, 0), new DenseMatrix(2, 2, Array(0.0, 1.0, 0.0, 0.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(3.0, 0.0, 1.0, 1.0))),
       ((1, 1), new DenseMatrix(2, 2, Array(1.0, 2.0, 0.0, 1.0))),
-      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0))))
-    val dupMatrix = new BlockMatrix(sc.parallelize(duplicateBlocks, numPartitions), 2, 2)
+      ((2, 1), new DenseMatrix(1, 2, Array(1.0, 5.0)))
+    )
+    val dupMatrix =
+      new BlockMatrix(sc.parallelize(duplicateBlocks, numPartitions), 2, 2)
     intercept[SparkException] {
       dupMatrix.validate()
     }

@@ -6,13 +6,16 @@ object Test {
   def check(chars: CharSequence) {
     println("\n[check '" + chars + "'] len = " + chars.length)
     chars match {
-      case x: Predef.ArrayCharSequence  => assert(x.__arrayOfChars eq arr, ((x.__arrayOfChars, arr)))
+      case x: Predef.ArrayCharSequence =>
+        assert(x.__arrayOfChars eq arr, ((x.__arrayOfChars, arr)))
       case x: runtime.ArrayCharSequence => assert(x.xs eq arr, ((x.xs, arr)))
       case x                            => assert(false, x)
     }
 
     0 until chars.length foreach { i =>
-      println("sub(%s, %s) == '%s'".format(i, chars.length, chars.subSequence(i, chars.length)))
+      println(
+        "sub(%s, %s) == '%s'"
+          .format(i, chars.length, chars.subSequence(i, chars.length)))
       println("sub(%s, %s) == '%s'".format(0, i, chars.subSequence(0, i)))
     }
     if (chars.length >= 2)

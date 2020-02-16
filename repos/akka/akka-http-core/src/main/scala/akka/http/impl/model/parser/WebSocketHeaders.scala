@@ -8,7 +8,8 @@ import akka.http.scaladsl.model.headers._
 import akka.parboiled2._
 
 // see grammar at http://tools.ietf.org/html/rfc6455#section-4.3
-private[parser] trait WebSocketHeaders { this: Parser with CommonRules with CommonActions ⇒
+private[parser] trait WebSocketHeaders {
+  this: Parser with CommonRules with CommonActions ⇒
   import CharacterClasses._
   import Base64Parsing.rfc2045Alphabet
 
@@ -17,7 +18,8 @@ private[parser] trait WebSocketHeaders { this: Parser with CommonRules with Comm
   }
 
   def `sec-websocket-extensions` = rule {
-    oneOrMore(extension).separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
+    oneOrMore(extension)
+      .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
   }
 
   def `sec-websocket-key` = rule {
@@ -29,11 +31,13 @@ private[parser] trait WebSocketHeaders { this: Parser with CommonRules with Comm
   }
 
   def `sec-websocket-version` = rule {
-    oneOrMore(version).separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Version`(_))
+    oneOrMore(version).separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Version`(
+      _))
   }
 
   private def `base64-value-non-empty` = rule {
-    capture(oneOrMore(`base64-data`) ~ optional(`base64-padding`) | `base64-padding`)
+    capture(
+      oneOrMore(`base64-data`) ~ optional(`base64-padding`) | `base64-padding`)
   }
   private def `base64-data` = rule { 4.times(`base64-character`) }
   private def `base64-padding` = rule {
@@ -49,7 +53,8 @@ private[parser] trait WebSocketHeaders { this: Parser with CommonRules with Comm
   private def `extension-token`: Rule1[String] = token
   private def `extension-param`: Rule1[(String, String)] =
     rule {
-      token ~ optional(ws("=") ~ word) ~> ((name: String, value: Option[String]) ⇒ (name, value.getOrElse("")))
+      token ~ optional(ws("=") ~ word) ~> (
+        (name: String, value: Option[String]) ⇒ (name, value.getOrElse("")))
     }
 
   private def version = rule {

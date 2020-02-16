@@ -17,11 +17,12 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 
 @RunWith(classOf[JUnitRunner])
-class ServerBuilderTest extends FunSuite
-  with Eventually
-  with IntegrationPatience
-  with MockitoSugar
-  with IntegrationBase {
+class ServerBuilderTest
+    extends FunSuite
+    with Eventually
+    with IntegrationPatience
+    with MockitoSugar
+    with IntegrationBase {
 
   trait ServerBuilderHelper {
     val preparedFactory = mock[ServiceFactory[String, String]]
@@ -38,15 +39,19 @@ class ServerBuilderTest extends FunSuite
 
   val svc: Service[String, String] = Service.const(Future.value("hi"))
 
-  def verifyProtocolRegistry(name: String, expected: String)(build: => Server) = {
+  def verifyProtocolRegistry(name: String, expected: String)(
+      build: => Server) = {
     test(name + " registers protocol library") {
       val simple = new SimpleRegistry()
       GlobalRegistry.withRegistry(simple) {
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified = entries.count(_.key.startsWith(Seq("server", "not-specified")))
-        assert(unspecified == 0, "saw registry keys with 'not-specified' protocol")
+        val unspecified =
+          entries.count(_.key.startsWith(Seq("server", "not-specified")))
+        assert(
+          unspecified == 0,
+          "saw registry keys with 'not-specified' protocol")
         val specified = entries.count(_.key.startsWith(Seq("server", expected)))
         assert(specified > 0, "did not see expected protocol registry keys")
         server.close()
@@ -54,18 +59,22 @@ class ServerBuilderTest extends FunSuite
     }
   }
 
-  def verifyServerBoundAddress(name: String, expected: String)(build: => Server) = {
+  def verifyServerBoundAddress(name: String, expected: String)(
+      build: => Server) = {
     test(s"$name registers server with bound address") {
       val simple = new SimpleRegistry()
       GlobalRegistry.withRegistry(simple) {
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val specified = entries.filter(_.key.startsWith(Seq("server", expected)))
+        val specified =
+          entries.filter(_.key.startsWith(Seq("server", expected)))
         // Entries are in the form: Entry(List(server, fancy, test, /127.0.0.1:58904, RequestStats, unit),MILLISECONDS)
         val entry = specified.head // data is repeated as entry.key, just take the first
         val hostAndPort = entry.key.filter(_.contains("127.0.0.1")).head
-        assert(!hostAndPort.contains(":0"), "unbounded address in server registry")
+        assert(
+          !hostAndPort.contains(":0"),
+          "unbounded address in server registry")
         server.close()
       }
     }
@@ -103,8 +112,9 @@ class ServerBuilderTest extends FunSuite
     val ctx = new ServerBuilderHelper {}
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
-    val cfServer: CodecFactory[String, String]#Server =
-      { (_: ServerCodecConfig) => ctx.m.codec }
+    val cfServer: CodecFactory[String, String]#Server = {
+      (_: ServerCodecConfig) => ctx.m.codec
+    }
 
     ServerBuilder()
       .name("test")
@@ -113,18 +123,20 @@ class ServerBuilderTest extends FunSuite
       .build(svc)
   }
 
-  verifyProtocolRegistry("#codec(CodecFactory#Server)FancyCodec", expected = "fancy") {
+  verifyProtocolRegistry(
+    "#codec(CodecFactory#Server)FancyCodec",
+    expected = "fancy") {
     class FancyCodec extends CodecFactory[String, String] {
       def client = { config =>
-       new com.twitter.finagle.Codec[String, String] {
-         def pipelineFactory = null
-       }
+        new com.twitter.finagle.Codec[String, String] {
+          def pipelineFactory = null
+        }
       }
 
       def server = { config =>
         new com.twitter.finagle.Codec[String, String] {
-         def pipelineFactory = null
-       }
+          def pipelineFactory = null
+        }
       }
       override val protocolLibraryName: String = "fancy"
     }
@@ -135,18 +147,20 @@ class ServerBuilderTest extends FunSuite
       .build(svc)
   }
 
-  verifyServerBoundAddress("#codec(CodecFactory#Server)FancyCodec", expected = "fancy") {
+  verifyServerBoundAddress(
+    "#codec(CodecFactory#Server)FancyCodec",
+    expected = "fancy") {
     class FancyCodec extends CodecFactory[String, String] {
       def client = { config =>
-       new com.twitter.finagle.Codec[String, String] {
-         def pipelineFactory = null
-       }
+        new com.twitter.finagle.Codec[String, String] {
+          def pipelineFactory = null
+        }
       }
 
       def server = { config =>
         new com.twitter.finagle.Codec[String, String] {
-         def pipelineFactory = null
-       }
+          def pipelineFactory = null
+        }
       }
       override val protocolLibraryName: String = "fancy"
     }

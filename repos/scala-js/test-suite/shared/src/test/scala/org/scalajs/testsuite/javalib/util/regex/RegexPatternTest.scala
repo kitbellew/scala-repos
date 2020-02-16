@@ -35,7 +35,8 @@ class RegexPatternTest {
     matches("waz*up", "WAZZZZZZZZZZZUP")
 
     def matches(regex: String, input: String): Unit = {
-      val result = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input)
+      val result =
+        Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input)
       assertTrue(result.matches())
     }
   }
@@ -106,7 +107,11 @@ class RegexPatternTest {
     splitWithLimit("abc", "(?=a)", 2, Array("abc"))
     splitWithLimit("ab", "a", 1, Array("ab"))
 
-    def splitWithLimit(input: String, regex: String, limit: Int, expected: Array[String]): Unit = {
+    def splitWithLimit(
+        input: String,
+        regex: String,
+        limit: Int,
+        expected: Array[String]): Unit = {
       val result = Pattern.compile(regex).split(input, limit)
       assertArrayEquals(expected, result)
     }
@@ -139,7 +144,8 @@ class RegexPatternTest {
   }
 
   @Test def quote(): Unit = {
-    val splitWithQuote = Pattern.compile(Pattern.quote("$1&$2")).split("Scala$1&$2.js")
+    val splitWithQuote =
+      Pattern.compile(Pattern.quote("$1&$2")).split("Scala$1&$2.js")
     val splitNoQuote = Pattern.compile("$1&$2").split("Scala$1&$2.js")
     assertEquals("Scala.js", splitWithQuote.mkString)
     assertEquals("Scala$1&$2.js", splitNoQuote.mkString)

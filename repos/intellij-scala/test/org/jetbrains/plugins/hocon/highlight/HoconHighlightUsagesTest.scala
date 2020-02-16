@@ -3,8 +3,8 @@ package org.jetbrains.plugins.hocon.highlight
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
 
 /**
- * @author ghik
- */
+  * @author ghik
+  */
 class HoconHighlightUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
 
   import org.junit.Assert._
@@ -16,11 +16,13 @@ class HoconHighlightUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
   private def testUsages(expectedHighlights: (Int, Int, Int)*): Unit = {
     val nameNoPrefix = getTestName(false).stripPrefix("test")
     val testName = nameNoPrefix(0).toLower + nameNoPrefix.substring(1)
-    val actualHighlights = myFixture.testHighlightUsages(testName + ".conf").toSeq.map { rh =>
-      val logicalStart = myFixture.getEditor.offsetToLogicalPosition(rh.getStartOffset)
-      val length = rh.getEndOffset - rh.getStartOffset
-      (logicalStart.line, logicalStart.column, length)
-    }
+    val actualHighlights =
+      myFixture.testHighlightUsages(testName + ".conf").toSeq.map { rh =>
+        val logicalStart =
+          myFixture.getEditor.offsetToLogicalPosition(rh.getStartOffset)
+        val length = rh.getEndOffset - rh.getStartOffset
+        (logicalStart.line, logicalStart.column, length)
+      }
     assertEquals(expectedHighlights.toSet, actualHighlights.toSet)
   }
 

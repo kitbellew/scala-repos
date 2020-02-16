@@ -25,9 +25,9 @@ private[spark] trait CatalystConf {
   def orderByOrdinal: Boolean
 
   /**
-   * Returns the [[Resolver]] for the current configuration, which can be used to determin if two
-   * identifiers are equal.
-   */
+    * Returns the [[Resolver]] for the current configuration, which can be used to determin if two
+    * identifiers are equal.
+    */
   def resolver: Resolver = {
     if (caseSensitiveAnalysis) {
       caseSensitiveResolution
@@ -38,9 +38,9 @@ private[spark] trait CatalystConf {
 }
 
 /**
- * A trivial conf that is empty.  Used for testing when all
- * relations are already filled in and the analyser needs only to resolve attribute references.
- */
+  * A trivial conf that is empty.  Used for testing when all
+  * relations are already filled in and the analyser needs only to resolve attribute references.
+  */
 object EmptyConf extends CatalystConf {
   override def caseSensitiveAnalysis: Boolean = {
     throw new UnsupportedOperationException
@@ -54,5 +54,4 @@ object EmptyConf extends CatalystConf {
 case class SimpleCatalystConf(
     caseSensitiveAnalysis: Boolean,
     orderByOrdinal: Boolean = true)
-  extends CatalystConf {
-}
+    extends CatalystConf {}

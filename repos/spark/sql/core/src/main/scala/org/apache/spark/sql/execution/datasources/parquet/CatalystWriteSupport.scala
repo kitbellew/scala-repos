@@ -38,17 +38,19 @@ import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.types._
 
 /**
- * A Parquet [[WriteSupport]] implementation that writes Catalyst [[InternalRow]]s as Parquet
- * messages.  This class can write Parquet data in two modes:
- *
- *  - Standard mode: Parquet data are written in standard format defined in parquet-format spec.
- *  - Legacy mode: Parquet data are written in legacy format compatible with Spark 1.4 and prior.
- *
- * This behavior can be controlled by SQL option `spark.sql.parquet.writeLegacyFormat`.  The value
- * of this option is propagated to this class by the `init()` method and its Hadoop configuration
- * argument.
- */
-private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] with Logging {
+  * A Parquet [[WriteSupport]] implementation that writes Catalyst [[InternalRow]]s as Parquet
+  * messages.  This class can write Parquet data in two modes:
+  *
+  *  - Standard mode: Parquet data are written in standard format defined in parquet-format spec.
+  *  - Legacy mode: Parquet data are written in legacy format compatible with Spark 1.4 and prior.
+  *
+  * This behavior can be controlled by SQL option `spark.sql.parquet.writeLegacyFormat`.  The value
+  * of this option is propagated to this class by the `init()` method and its Hadoop configuration
+  * argument.
+  */
+private[parquet] class CatalystWriteSupport
+    extends WriteSupport[InternalRow]
+    with Logging {
   // A `ValueWriter` is responsible for writing a field of an `InternalRow` to the record consumer.
   // Here we are using `SpecializedGetters` rather than `InternalRow` so that we can directly access
   // data in `ArrayData` without the help of `SpecificMutableRow`.
@@ -70,7 +72,8 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
   private val timestampBuffer = new Array[Byte](12)
 
   // Reusable byte array used to write decimal values
-  private val decimalBuffer = new Array[Byte](minBytesForPrecision(DecimalType.MAX_PRECISION))
+  private val decimalBuffer =
+    new Array[Byte](minBytesForPrecision(DecimalType.MAX_PRECISION))
 
   override def init(configuration: Configuration): WriteContext = {
     val schemaString = configuration.get(CatalystWriteSupport.SPARK_ROW_SCHEMA)
@@ -85,8 +88,7 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
     val messageType = new CatalystSchemaConverter(configuration).convert(schema)
     val metadata = Map(CatalystReadSupport.SPARK_METADATA_KEY -> schemaString).asJava
 
-    logInfo(
-      s"""Initialized Parquet WriteSupport with Catalyst schema:
+    logInfo(s"""Initialized Parquet WriteSupport with Catalyst schema:
          |${schema.prettyJson}
          |and corresponding Parquet message type:
          |$messageType
@@ -106,7 +108,9 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
   }
 
   private def writeFields(
-      row: InternalRow, schema: StructType, fieldWriters: Seq[ValueWriter]): Unit = {
+      row: InternalRow,
+      schema: StructType,
+      fieldWriters: Seq[ValueWriter]): Unit = {
     var i = 0
     while (i < row.numFields) {
       if (!row.isNullAt(i)) {
@@ -150,7 +154,8 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
 
       case StringType =>
         (row: SpecializedGetters, ordinal: Int) =>
-          recordConsumer.addBinary(Binary.fromByteArray(row.getUTF8String(ordinal).getBytes))
+          recordConsumer.addBinary(
+            Binary.fromByteArray(row.getUTF8String(ordinal).getBytes))
 
       case TimestampType =>
         (row: SpecializedGetters, ordinal: Int) => {
@@ -162,9 +167,13 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
 
           // NOTE: Starting from Spark 1.5, Spark SQL `TimestampType` only has microsecond
           // precision.  Nanosecond parts of timestamp values read from INT96 are simply stripped.
-          val (julianDay, timeOfDayNanos) = DateTimeUtils.toJulianDay(row.getLong(ordinal))
+          val (julianDay, timeOfDayNanos) =
+            DateTimeUtils.toJulianDay(row.getLong(ordinal))
           val buf = ByteBuffer.wrap(timestampBuffer)
-          buf.order(ByteOrder.LITTLE_ENDIAN).putLong(timeOfDayNanos).putInt(julianDay)
+          buf
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .putLong(timeOfDayNanos)
+            .putInt(julianDay)
           recordConsumer.addBinary(Binary.fromByteArray(timestampBuffer))
         }
 
@@ -202,13 +211,15 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
 
     val int32Writer =
       (row: SpecializedGetters, ordinal: Int) => {
-        val unscaledLong = row.getDecimal(ordinal, precision, scale).toUnscaledLong
+        val unscaledLong =
+          row.getDecimal(ordinal, precision, scale).toUnscaledLong
         recordConsumer.addInteger(unscaledLong.toInt)
       }
 
     val int64Writer =
       (row: SpecializedGetters, ordinal: Int) => {
-        val unscaledLong = row.getDecimal(ordinal, precision, scale).toUnscaledLong
+        val unscaledLong =
+          row.getDecimal(ordinal, precision, scale).toUnscaledLong
         recordConsumer.addLong(unscaledLong)
       }
 
@@ -227,7 +238,8 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
           shift -= 8
         }
 
-        recordConsumer.addBinary(Binary.fromByteArray(decimalBuffer, 0, numBytes))
+        recordConsumer.addBinary(
+          Binary.fromByteArray(decimalBuffer, 0, numBytes))
       }
 
     val binaryWriterUsingUnscaledBytes =
@@ -244,11 +256,17 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
           // fixed-length byte array.
           val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
           util.Arrays.fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
-          System.arraycopy(bytes, 0, decimalBuffer, numBytes - bytes.length, bytes.length)
+          System.arraycopy(
+            bytes,
+            0,
+            decimalBuffer,
+            numBytes - bytes.length,
+            bytes.length)
           decimalBuffer
         }
 
-        recordConsumer.addBinary(Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
+        recordConsumer.addBinary(
+          Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
       }
 
     writeLegacyParquetFormat match {
@@ -259,7 +277,8 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
       case false if precision <= Decimal.MAX_LONG_DIGITS => int64Writer
 
       // Legacy mode, 1 <= precision <= 18, writes as FIXED_LEN_BYTE_ARRAY
-      case true if precision <= Decimal.MAX_LONG_DIGITS => binaryWriterUsingUnscaledLong
+      case true if precision <= Decimal.MAX_LONG_DIGITS =>
+        binaryWriterUsingUnscaledLong
 
       // Either standard or legacy mode, 19 <= precision <= 38, writes as FIXED_LEN_BYTE_ARRAY
       case _ => binaryWriterUsingUnscaledBytes
@@ -269,7 +288,9 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
   def makeArrayWriter(arrayType: ArrayType): ValueWriter = {
     val elementWriter = makeWriter(arrayType.elementType)
 
-    def threeLevelArrayWriter(repeatedGroupName: String, elementFieldName: String): ValueWriter =
+    def threeLevelArrayWriter(
+        repeatedGroupName: String,
+        elementFieldName: String): ValueWriter =
       (row: SpecializedGetters, ordinal: Int) => {
         val array = row.getArray(ordinal)
         consumeGroup {
@@ -321,7 +342,9 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
         //                                           ^~~~~~~  elementFieldName
         //     }
         //   }
-        threeLevelArrayWriter(repeatedGroupName = "list", elementFieldName = "element")
+        threeLevelArrayWriter(
+          repeatedGroupName = "list",
+          elementFieldName = "element")
 
       case (legacyMode @ true, nullableElements @ true) =>
         // Legacy mode, with nullable elements:
@@ -333,7 +356,9 @@ private[parquet] class CatalystWriteSupport extends WriteSupport[InternalRow] wi
         //                               ^~~~~ elementFieldName
         //     }
         //   }
-        threeLevelArrayWriter(repeatedGroupName = "bag", elementFieldName = "array")
+        threeLevelArrayWriter(
+          repeatedGroupName = "bag",
+          elementFieldName = "array")
 
       case (legacyMode @ true, nullableElements @ false) =>
         // Legacy mode, with non-nullable elements:

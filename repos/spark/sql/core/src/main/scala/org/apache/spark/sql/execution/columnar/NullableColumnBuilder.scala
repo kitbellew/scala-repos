@@ -22,18 +22,18 @@ import java.nio.{ByteBuffer, ByteOrder}
 import org.apache.spark.sql.catalyst.InternalRow
 
 /**
- * A stackable trait used for building byte buffer for a column containing null values.  Memory
- * layout of the final byte buffer is:
- * {{{
- *    .------------------- Null count N (4 bytes)
- *    |   .--------------- Null positions (4 x N bytes, empty if null count is zero)
- *    |   |     .--------- Non-null elements
- *    V   V     V
- *   +---+-----+---------+
- *   |   | ... | ... ... |
- *   +---+-----+---------+
- * }}}
- */
+  * A stackable trait used for building byte buffer for a column containing null values.  Memory
+  * layout of the final byte buffer is:
+  * {{{
+  *    .------------------- Null count N (4 bytes)
+  *    |   .--------------- Null positions (4 x N bytes, empty if null count is zero)
+  *    |   |     .--------- Non-null elements
+  *    V   V     V
+  *   +---+-----+---------+
+  *   |   | ... | ... ... |
+  *   +---+-----+---------+
+  * }}}
+  */
 private[columnar] trait NullableColumnBuilder extends ColumnBuilder {
   protected var nulls: ByteBuffer = _
   protected var nullCount: Int = _

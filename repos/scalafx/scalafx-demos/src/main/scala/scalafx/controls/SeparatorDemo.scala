@@ -44,7 +44,9 @@ object SeparatorDemo extends JFXApp {
   val separator = new Separator
 
   val pnlSeparator = new FlowPane {
-    children = List(new Button {text = "Button 1"}, separator, new Button {text = "Button 2"})
+    children = List(new Button { text = "Button 1" }, separator, new Button {
+      text = "Button 2"
+    })
     minHeight = 100
     prefHeight = 100
     minWidth = 100
@@ -57,7 +59,8 @@ object SeparatorDemo extends JFXApp {
     alignment = Pos.Center
     alignmentInParent = Pos.TopCenter
     hgrow = Priority.Always
-    children = List(new SeparatorControls(separator), new ControlControls(separator))
+    children =
+      List(new SeparatorControls(separator), new ControlControls(separator))
   }
 
   val mainPane = new BorderPane {
@@ -77,7 +80,8 @@ object SeparatorDemo extends JFXApp {
 
 }
 
-class SeparatorControls(target: Separator) extends PropertiesNodes[Separator](target, "Separator Controls") {
+class SeparatorControls(target: Separator)
+    extends PropertiesNodes[Separator](target, "Separator Controls") {
 
   val chbHPos = new ChoiceBox[jfxg.HPos] {
     items = ObservableBuffer(HPos.Center, HPos.Left, HPos.Right)

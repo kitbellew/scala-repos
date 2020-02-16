@@ -7,7 +7,7 @@ package akka.http.scaladsl.server.directives
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport
 import org.scalatest.FreeSpec
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.{Future, Promise}
 import akka.testkit.EventFilter
 import akka.http.scaladsl.marshallers.xml.ScalaXmlSupport._
 import akka.http.scaladsl.marshalling._
@@ -21,7 +21,9 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
 
   "The `complete` directive should" - {
     "by chainable with the `&` operator" in {
-      Get() ~> (get & complete("yeah")) ~> check { responseAs[String] shouldEqual "yeah" }
+      Get() ~> (get & complete("yeah")) ~> check {
+        responseAs[String] shouldEqual "yeah"
+      }
     }
     "be lazy in its argument evaluation, independently of application style" in {
       var i = 0
@@ -37,13 +39,17 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     "support completion from response futures" - {
       "simple case without marshaller" in {
         Get() ~> {
-          get & complete(Promise.successful(HttpResponse(entity = "yup")).future)
+          get & complete(
+            Promise.successful(HttpResponse(entity = "yup")).future)
         } ~> check { responseAs[String] shouldEqual "yup" }
       }
       "for successful futures and marshalling" in {
-        Get() ~> complete(Promise.successful("yes").future) ~> check { responseAs[String] shouldEqual "yes" }
+        Get() ~> complete(Promise.successful("yes").future) ~> check {
+          responseAs[String] shouldEqual "yes"
+        }
       }
-      "for failed futures and marshalling" in EventFilter[RuntimeException](occurrences = 1).intercept {
+      "for failed futures and marshalling" in EventFilter[RuntimeException](
+        occurrences = 1).intercept {
         object TestException extends RuntimeException
         Get() ~> complete(Promise.failed[String](TestException).future) ~>
           check {
@@ -52,7 +58,10 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           }
       }
       "for futures failed with a RejectionError" in {
-        Get() ~> complete(Promise.failed[String](RejectionError(AuthorizationFailedRejection)).future) ~>
+        Get() ~> complete(
+          Promise
+            .failed[String](RejectionError(AuthorizationFailedRejection))
+            .future) ~>
           check {
             rejection shouldEqual AuthorizationFailedRejection
           }
@@ -66,19 +75,21 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       val route =
         get {
           path("register" / Segment) { name ⇒
-            def registerUser(name: String): Future[RegistrationStatus] = Future.successful {
-              name match {
-                case "otto" ⇒ AlreadyRegistered
-                case _      ⇒ Registered(name)
+            def registerUser(name: String): Future[RegistrationStatus] =
+              Future.successful {
+                name match {
+                  case "otto" ⇒ AlreadyRegistered
+                  case _ ⇒ Registered(name)
+                }
               }
-            }
             complete {
               registerUser(name).map[ToResponseMarshallable] {
                 case Registered(_) ⇒ HttpEntity.Empty
                 case AlreadyRegistered ⇒
                   import spray.json.DefaultJsonProtocol._
                   import SprayJsonSupport._
-                  StatusCodes.BadRequest -> Map("error" -> "User already Registered")
+                  StatusCodes.BadRequest -> Map(
+                    "error" -> "User already Registered")
               }
             }
           }
@@ -119,16 +130,22 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       } ~> check {
         response shouldEqual HttpResponse(
           status = 302,
-          entity = HttpEntity(ContentTypes.`text/html(UTF-8)`,
+          entity = HttpEntity(
+            ContentTypes.`text/html(UTF-8)`,
             "The requested resource temporarily resides under <a href=\"/foo\">this URI</a>."),
-          headers = Location("/foo") :: Nil)
+          headers = Location("/foo") :: Nil
+        )
       }
     }
 
     "produce proper 'NotModified' redirections" in {
       Get() ~> {
         redirect("/foo", NotModified)
-      } ~> check { response shouldEqual HttpResponse(304, headers = Location("/foo") :: Nil) }
+      } ~> check {
+        response shouldEqual HttpResponse(
+          304,
+          headers = Location("/foo") :: Nil)
+      }
     }
   }
 
@@ -140,8 +157,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
 
     val jsonMarshaller: ToEntityMarshaller[Data] = jsonFormat2(Data.apply)
 
-    val xmlMarshaller: ToEntityMarshaller[Data] = Marshaller.combined { (data: Data) ⇒
-      <data><name>{ data.name }</name><age>{ data.age }</age></data>
+    val xmlMarshaller: ToEntityMarshaller[Data] = Marshaller.combined {
+      (data: Data) ⇒ <data><name>{data.name}</name><age>{data.age}</age></data>
     }
 
     implicit val dataMarshaller: ToResponseMarshaller[Data] =

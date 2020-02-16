@@ -9,16 +9,16 @@ private[tournament] final class Cached(
     rankingTtl: FiniteDuration) {
 
   private val nameCache = MixedCache[String, Option[String]](
-    ((id: String) => TournamentRepo byId id map2 { (tour: Tournament) => tour.fullName }),
+    ((id: String) =>
+      TournamentRepo byId id map2 { (tour: Tournament) => tour.fullName }),
     timeToLive = 6 hours,
     default = _ => none,
     logger = logger)
 
   def name(id: String): Option[String] = nameCache get id
 
-  val promotable = AsyncCache.single(
-    TournamentRepo.promotable,
-    timeToLive = createdTtl)
+  val promotable =
+    AsyncCache.single(TournamentRepo.promotable, timeToLive = createdTtl)
 
   def ranking(tour: Tournament): Fu[Ranking] =
     if (tour.isFinished) finishedRanking(tour.id)

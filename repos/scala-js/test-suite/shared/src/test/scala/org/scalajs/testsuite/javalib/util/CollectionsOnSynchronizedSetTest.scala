@@ -29,7 +29,8 @@ trait CollectionsOnSynchronizedSetTest extends CollectionsOnSetsTest {
   }
 }
 
-trait CollectionsOnSynchronizedSortedSetTest extends CollectionsOnSortedSetsTest {
+trait CollectionsOnSynchronizedSortedSetTest
+    extends CollectionsOnSortedSetsTest {
 
   def originalFactory: SortedSetFactory
 

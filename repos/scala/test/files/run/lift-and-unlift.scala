@@ -3,7 +3,7 @@ import Function.unlift
 object Test {
   def evens1(x: Int) = if (x % 2 == 0) Some(x) else None
   val evens2: PartialFunction[Int, Int] = {
-    case x if x % 2 == 0  => x
+    case x if x % 2 == 0 => x
   }
 
   def main(args: Array[String]): Unit = {

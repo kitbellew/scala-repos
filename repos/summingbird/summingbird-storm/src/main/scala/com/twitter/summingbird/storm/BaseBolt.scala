@@ -12,49 +12,67 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.storm
 
-import scala.util.{ Success, Failure }
+import scala.util.{Success, Failure}
 
-import backtype.storm.task.{ OutputCollector, TopologyContext }
+import backtype.storm.task.{OutputCollector, TopologyContext}
 import backtype.storm.topology.IRichBolt
 import backtype.storm.topology.OutputFieldsDeclarer
-import backtype.storm.tuple.{ Tuple, TupleImpl, Fields }
+import backtype.storm.tuple.{Tuple, TupleImpl, Fields}
 
-import java.util.{ Map => JMap }
-import com.twitter.summingbird.storm.option.{ AckOnEntry, AnchorTuples, MaxExecutePerSecond }
+import java.util.{Map => JMap}
+import com.twitter.summingbird.storm.option.{
+  AckOnEntry,
+  AnchorTuples,
+  MaxExecutePerSecond
+}
 import com.twitter.summingbird.online.executor.OperationContainer
-import com.twitter.summingbird.online.executor.{ InflightTuples, InputState }
+import com.twitter.summingbird.online.executor.{InflightTuples, InputState}
 import com.twitter.summingbird.option.JobId
-import com.twitter.summingbird.{ Group, JobCounters, Name, SummingbirdRuntimeStats }
+import com.twitter.summingbird.{
+  Group,
+  JobCounters,
+  Name,
+  SummingbirdRuntimeStats
+}
 import com.twitter.summingbird.online.Externalizer
 
 import scala.collection.JavaConverters._
 
-import java.util.{ List => JList }
-import org.slf4j.{ LoggerFactory, Logger }
+import java.util.{List => JList}
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
- *
- * @author Oscar Boykin
- * @author Ian O Connell
- * @author Sam Ritchie
- * @author Ashu Singhal
- */
-case class BaseBolt[I, O](jobID: JobId,
+  *
+  * @author Oscar Boykin
+  * @author Ian O Connell
+  * @author Sam Ritchie
+  * @author Ashu Singhal
+  */
+case class BaseBolt[I, O](
+    jobID: JobId,
     metrics: () => TraversableOnce[StormMetric[_]],
     anchorTuples: AnchorTuples,
     hasDependants: Boolean,
     outputFields: Fields,
     ackOnEntry: AckOnEntry,
     maxExecutePerSec: MaxExecutePerSecond,
-    executor: OperationContainer[I, O, InputState[Tuple], JList[AnyRef], TopologyContext]) extends IRichBolt {
+    executor: OperationContainer[
+      I,
+      O,
+      InputState[Tuple],
+      JList[AnyRef],
+      TopologyContext])
+    extends IRichBolt {
 
-  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(getClass)
+  @transient protected lazy val logger: Logger =
+    LoggerFactory.getLogger(getClass)
 
-  private[this] val lockedCounters = Externalizer(JobCounters.getCountersForJob(jobID).getOrElse(Nil))
+  private[this] val lockedCounters = Externalizer(
+    JobCounters.getCountersForJob(jobID).getOrElse(Nil))
 
   lazy val countersForBolt: Seq[(Group, Name)] = lockedCounters.get
 
@@ -67,17 +85,20 @@ case class BaseBolt[I, O](jobID: JobId,
   private[this] val upperBound = maxExecutePerSec.upperBound * 10
   private[this] val PERIOD_LENGTH_MS = 10000L
 
-  private[this] val rampPeriods = maxExecutePerSec.rampUptimeMS / PERIOD_LENGTH_MS
-  private[this] val deltaPerPeriod: Long = if (rampPeriods > 0) (upperBound - lowerBound) / rampPeriods else 0
+  private[this] val rampPeriods =
+    maxExecutePerSec.rampUptimeMS / PERIOD_LENGTH_MS
+  private[this] val deltaPerPeriod: Long =
+    if (rampPeriods > 0) (upperBound - lowerBound) / rampPeriods else 0
 
-  private[this] lazy val startPeriod = System.currentTimeMillis / PERIOD_LENGTH_MS
+  private[this] lazy val startPeriod =
+    System.currentTimeMillis / PERIOD_LENGTH_MS
   private[this] lazy val endRampPeriod = startPeriod + rampPeriods
 
   /*
     This is the rate limit how many tuples we allow the bolt to process per second.
     Due to variablitiy in how many things arrive we expand it out and work in 10 second blocks.
     This does a linear ramp up from the lower bound to the upper bound over the time period.
-  */
+   */
   @annotation.tailrec
   private def rateLimit(): Unit = {
     val sleepTime = this.synchronized {
@@ -127,9 +148,10 @@ case class BaseBolt[I, O](jobID: JobId,
 
   override def execute(tuple: Tuple) = {
     rateLimit()
+
     /**
-     * System ticks come with a fixed stream id
-     */
+      * System ticks come with a fixed stream id
+      */
     val curResults = if (!tuple.getSourceStreamId.equals("__tick")) {
       val tsIn = executor.decoder.invert(tuple.getValues).get // Failing to decode here is an ERROR
       // Don't hold on to the input values
@@ -145,12 +167,14 @@ case class BaseBolt[I, O](jobID: JobId,
       case (tups, res) =>
         res match {
           case Success(outs) => finish(tups, outs)
-          case Failure(t) => fail(tups, t)
+          case Failure(t)    => fail(tups, t)
         }
     }
   }
 
-  private def finish(inputs: Seq[InputState[Tuple]], results: TraversableOnce[O]) {
+  private def finish(
+      inputs: Seq[InputState[Tuple]],
+      results: TraversableOnce[O]) {
     var emitCount = 0
     if (hasDependants) {
       if (anchorTuples.anchor) {
@@ -168,16 +192,24 @@ case class BaseBolt[I, O](jobID: JobId,
     // Always ack a tuple on completion:
     if (!earlyAck) { inputs.foreach(_.ack(collector.ack(_))) }
 
-    logger.debug("bolt finished processed {} linked tuples, emitted: {}", inputs.size, emitCount)
+    logger.debug(
+      "bolt finished processed {} linked tuples, emitted: {}",
+      inputs.size,
+      emitCount)
   }
 
-  override def prepare(conf: JMap[_, _], context: TopologyContext, oc: OutputCollector) {
+  override def prepare(
+      conf: JMap[_, _],
+      context: TopologyContext,
+      oc: OutputCollector) {
     collector = oc
     metrics().foreach { _.register(context) }
     executor.init(context)
     StormStatProvider.registerMetrics(jobID, context, countersForBolt)
     SummingbirdRuntimeStats.addPlatformStatProvider(StormStatProvider)
-    logger.debug("In Bolt prepare: added jobID stat provider for jobID {}", jobID)
+    logger.debug(
+      "In Bolt prepare: added jobID stat provider for jobID {}",
+      jobID)
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {
@@ -191,9 +223,9 @@ case class BaseBolt[I, O](jobID: JobId,
   }
 
   /**
-   * This is clearly not safe, but done to deal with GC issues since
-   * storm keeps references to values
-   */
+    * This is clearly not safe, but done to deal with GC issues since
+    * storm keeps references to values
+    */
   private lazy val valuesField: Option[(Tuple) => Unit] = {
     val tupleClass = classOf[TupleImpl]
     try {

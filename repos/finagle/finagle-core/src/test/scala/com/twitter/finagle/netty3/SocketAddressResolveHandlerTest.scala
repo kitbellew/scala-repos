@@ -1,6 +1,11 @@
 package com.twitter.finagle.netty3
 
-import java.net.{UnknownHostException, InetAddress, InetSocketAddress, SocketAddress}
+import java.net.{
+  UnknownHostException,
+  InetAddress,
+  InetSocketAddress,
+  SocketAddress
+}
 
 import com.twitter.finagle.InconsistentStateException
 import org.jboss.netty.channel._
@@ -33,14 +38,18 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     when(channel.getPipeline) thenReturn pipeline
     val closeFuture = Channels.future(channel)
     when(channel.getCloseFuture) thenReturn closeFuture
-    val remoteAddress = new InetSocketAddress(InetAddress.getLoopbackAddress, 80)
+    val remoteAddress =
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 80)
     when(channel.getRemoteAddress) thenReturn remoteAddress
     val channelFuture = Channels.future(channel, true)
     val resolver = mock[SocketAddressResolver]
 
     def handleSocketAddress(proxyAddress: SocketAddress) {
       val connectRequested = new DownstreamChannelStateEvent(
-        channel, channelFuture, ChannelState.CONNECTED, proxyAddress)
+        channel,
+        channelFuture,
+        ChannelState.CONNECTED,
+        proxyAddress)
       val handler = new SocketAddressResolveHandler(resolver, remoteAddress)
       handler.handleDownstream(ctx, connectRequested)
     }
@@ -61,9 +70,10 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     import helper._
 
     val resolvedInetAddress = InetAddress.getLoopbackAddress
-    val unresolvedAddress = InetSocketAddress.createUnresolved("meow.meow", 2222)
+    val unresolvedAddress =
+      InetSocketAddress.createUnresolved("meow.meow", 2222)
     when(resolver.apply(eqTo(unresolvedAddress.getHostName)))
-        .thenReturn(Right(resolvedInetAddress))
+      .thenReturn(Right(resolvedInetAddress))
 
     handleSocketAddress(unresolvedAddress)
 
@@ -76,7 +86,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     assert(e.getState == ChannelState.CONNECTED)
     assert(e.getValue.isInstanceOf[InetSocketAddress])
     e.getValue match {
-      case address: InetSocketAddress => assert(address.getAddress == resolvedInetAddress)
+      case address: InetSocketAddress =>
+        assert(address.getAddress == resolvedInetAddress)
       case _ =>
     }
   }
@@ -85,7 +96,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     val helper = new SocketAddressResolveHandlerHelper
     import helper._
 
-    val unresolvedAddress = InetSocketAddress.createUnresolved("meow.meow", 2222)
+    val unresolvedAddress =
+      InetSocketAddress.createUnresolved("meow.meow", 2222)
     when(resolver.apply(eqTo(unresolvedAddress.getHostName)))
       .thenReturn(Left(new UnknownHostException(unresolvedAddress.getHostName)))
 
@@ -97,7 +109,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     val helper = new SocketAddressResolveHandlerHelper
     import helper._
 
-    handleSocketAddress(new InetSocketAddress(InetAddress.getLoopbackAddress, 80))
+    handleSocketAddress(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 80))
     assert(channelFuture.getCause.isInstanceOf[InconsistentStateException])
     assertClosed()
   }

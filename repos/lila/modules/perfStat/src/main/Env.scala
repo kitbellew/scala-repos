@@ -18,15 +18,17 @@ final class Env(
   }
   import settings._
 
-  lazy val storage = new PerfStatStorage(
-    coll = db(CollectionPerfStat))
+  lazy val storage = new PerfStatStorage(coll = db(CollectionPerfStat))
 
   lazy val indexer = new PerfStatIndexer(
     storage = storage,
-    sequencer = system.actorOf(Props(
-      classOf[lila.hub.Sequencer],
-      None, None, lila.log("perfStat")
-    )))
+    sequencer = system.actorOf(
+      Props(
+        classOf[lila.hub.Sequencer],
+        None,
+        None,
+        lila.log("perfStat")
+      )))
 
   lazy val jsonView = new JsonView(lightUser)
 

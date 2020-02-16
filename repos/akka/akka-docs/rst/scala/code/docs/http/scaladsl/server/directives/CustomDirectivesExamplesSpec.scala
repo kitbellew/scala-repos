@@ -1,9 +1,9 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.http.scaladsl.server.directives
 
-import akka.http.scaladsl.server.{ Directive1, Directive }
+import akka.http.scaladsl.server.{Directive1, Directive}
 import docs.http.scaladsl.server.RoutingSpec
 
 class CustomDirectivesExamplesSpec extends RoutingSpec {

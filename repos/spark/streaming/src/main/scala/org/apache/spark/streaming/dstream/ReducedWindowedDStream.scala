@@ -25,8 +25,7 @@ import org.apache.spark.rdd.{CoGroupedRDD, RDD}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.{Duration, Interval, Time}
 
-private[streaming]
-class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
+private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
     parent: DStream[(K, V)],
     reduceFunc: (V, V) => V,
     invReduceFunc: (V, V) => V,
@@ -34,14 +33,16 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
     _windowDuration: Duration,
     _slideDuration: Duration,
     partitioner: Partitioner
-  ) extends DStream[(K, V)](parent.ssc) {
+) extends DStream[(K, V)](parent.ssc) {
 
-  require(_windowDuration.isMultipleOf(parent.slideDuration),
+  require(
+    _windowDuration.isMultipleOf(parent.slideDuration),
     "The window duration of ReducedWindowedDStream (" + _windowDuration + ") " +
       "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
   )
 
-  require(_slideDuration.isMultipleOf(parent.slideDuration),
+  require(
+    _slideDuration.isMultipleOf(parent.slideDuration),
     "The slide duration of ReducedWindowedDStream (" + _slideDuration + ") " +
       "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
   )
@@ -62,7 +63,8 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
 
   override val mustCheckpoint = true
 
-  override def parentRememberDuration: Duration = rememberDuration + windowDuration
+  override def parentRememberDuration: Duration =
+    rememberDuration + windowDuration
 
   override def persist(storageLevel: StorageLevel): DStream[(K, V)] = {
     super.persist(storageLevel)
@@ -81,7 +83,8 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
     val invReduceF = invReduceFunc
 
     val currentTime = validTime
-    val currentWindow = new Interval(currentTime - windowDuration + parent.slideDuration,
+    val currentWindow = new Interval(
+      currentTime - windowDuration + parent.slideDuration,
       currentTime)
     val previousWindow = currentWindow - slideDuration
 
@@ -104,23 +107,30 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
 
     // Get the RDDs of the reduced values in "old time steps"
     val oldRDDs =
-      reducedStream.slice(previousWindow.beginTime, currentWindow.beginTime - parent.slideDuration)
+      reducedStream.slice(
+        previousWindow.beginTime,
+        currentWindow.beginTime - parent.slideDuration)
     logDebug("# old RDDs = " + oldRDDs.size)
 
     // Get the RDDs of the reduced values in "new time steps"
     val newRDDs =
-      reducedStream.slice(previousWindow.endTime + parent.slideDuration, currentWindow.endTime)
+      reducedStream.slice(
+        previousWindow.endTime + parent.slideDuration,
+        currentWindow.endTime)
     logDebug("# new RDDs = " + newRDDs.size)
 
     // Get the RDD of the reduced value of the previous window
     val previousWindowRDD =
-      getOrCompute(previousWindow.endTime).getOrElse(ssc.sc.makeRDD(Seq[(K, V)]()))
+      getOrCompute(previousWindow.endTime)
+        .getOrElse(ssc.sc.makeRDD(Seq[(K, V)]()))
 
     // Make the list of RDDs that needs to cogrouped together for reducing their reduced values
-    val allRDDs = new ArrayBuffer[RDD[(K, V)]]() += previousWindowRDD ++= oldRDDs ++= newRDDs
+    val allRDDs =
+      new ArrayBuffer[RDD[(K, V)]]() += previousWindowRDD ++= oldRDDs ++= newRDDs
 
     // Cogroup the reduced RDDs and merge the reduced values
-    val cogroupedRDD = new CoGroupedRDD[K](allRDDs.toSeq.asInstanceOf[Seq[RDD[(K, _)]]],
+    val cogroupedRDD = new CoGroupedRDD[K](
+      allRDDs.toSeq.asInstanceOf[Seq[RDD[(K, _)]]],
       partitioner)
     // val mergeValuesFunc = mergeValues(oldRDDs.size, newRDDs.size) _
 
@@ -132,16 +142,23 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
         throw new Exception("Unexpected number of sequences of reduced values")
       }
       // Getting reduced values "old time steps" that will be removed from current window
-      val oldValues = (1 to numOldValues).map(i => arrayOfValues(i)).filter(!_.isEmpty).map(_.head)
+      val oldValues = (1 to numOldValues)
+        .map(i => arrayOfValues(i))
+        .filter(!_.isEmpty)
+        .map(_.head)
       // Getting reduced values "new time steps"
       val newValues =
-        (1 to numNewValues).map(i => arrayOfValues(numOldValues + i)).filter(!_.isEmpty).map(_.head)
+        (1 to numNewValues)
+          .map(i => arrayOfValues(numOldValues + i))
+          .filter(!_.isEmpty)
+          .map(_.head)
 
       if (arrayOfValues(0).isEmpty) {
         // If previous window's reduce value does not exist, then at least new values should exist
         if (newValues.isEmpty) {
-          throw new Exception("Neither previous window has value for key, nor new values found. " +
-            "Are you sure your key class hashes consistently?")
+          throw new Exception(
+            "Neither previous window has value for key, nor new values found. " +
+              "Are you sure your key class hashes consistently?")
         }
         // Reduce the new values
         newValues.reduce(reduceF) // return
@@ -160,7 +177,8 @@ class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
       }
     }
 
-    val mergedValuesRDD = cogroupedRDD.asInstanceOf[RDD[(K, Array[Iterable[V]])]]
+    val mergedValuesRDD = cogroupedRDD
+      .asInstanceOf[RDD[(K, Array[Iterable[V]])]]
       .mapValues(mergeValues)
 
     if (filterFunc.isDefined) {

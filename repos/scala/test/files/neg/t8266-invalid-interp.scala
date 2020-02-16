@@ -1,4 +1,3 @@
-
 trait X {
   def f = Seq(
     f"a\",
