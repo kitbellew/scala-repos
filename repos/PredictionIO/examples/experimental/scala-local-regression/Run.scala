@@ -107,7 +107,8 @@ class VectorSerializer
               case JDouble(x) => x
               case _          => 0
             }.toVector
-        }, {
+        },
+        {
           case x: Vector[Double] =>
             JArray(x.toList.map(y => JDouble(y)))
         }

@@ -42,28 +42,29 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   }
 
   testSessionStatus[mux.transport.Message, mux.transport.Message](
-    "mux-transport", {
-      tr: Transport[mux.transport.Message, mux.transport.Message] =>
-        val session: mux.ClientSession =
-          new mux.ClientSession(
-            tr,
-            mux.FailureDetector.NullConfig,
-            "test",
-            NullStatsReceiver)
-        () => session.status
+    "mux-transport",
+    { tr: Transport[mux.transport.Message, mux.transport.Message] =>
+      val session: mux.ClientSession =
+        new mux.ClientSession(
+          tr,
+          mux.FailureDetector.NullConfig,
+          "test",
+          NullStatsReceiver)
+      () => session.status
     }
   )
 
   testSessionStatus[mux.transport.Message, mux.transport.Message](
-    "mux-dispatcher", {
-      tr: Transport[mux.transport.Message, mux.transport.Message] =>
-        val dispatcher = mux.ClientDispatcher.newRequestResponse(tr)
-        () => dispatcher.status
+    "mux-dispatcher",
+    { tr: Transport[mux.transport.Message, mux.transport.Message] =>
+      val dispatcher = mux.ClientDispatcher.newRequestResponse(tr)
+      () => dispatcher.status
     }
   )
 
   testSessionStatus(
-    "http-transport", { tr: Transport[Any, Any] =>
+    "http-transport",
+    { tr: Transport[Any, Any] =>
       val manager = mock[http.codec.ConnectionManager]
       when(manager.shouldClose).thenReturn(false)
       val wrappedT = new http.HttpTransport(tr, manager)
@@ -72,7 +73,8 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   )
 
   testSessionStatus(
-    "http-dispatcher", { tr: Transport[Any, Any] =>
+    "http-dispatcher",
+    { tr: Transport[Any, Any] =>
       val dispatcher = new HttpClientDispatcher(tr)
       () => dispatcher.status
     }
@@ -84,20 +86,20 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   }
 
   testSessionStatus(
-    "memcached-dispatcher", {
-      tr: Transport[memcached.protocol.Command, memcached.protocol.Response] =>
-        val cl: MyClient = new MyClient
-        val svc = cl.newDisp(tr)
-        () => svc.status
+    "memcached-dispatcher",
+    { tr: Transport[memcached.protocol.Command, memcached.protocol.Response] =>
+      val cl: MyClient = new MyClient
+      val svc = cl.newDisp(tr)
+      () => svc.status
     }
   )
 
   testSessionStatus(
-    "mysql-dispatcher", {
-      tr: Transport[mysql.transport.Packet, mysql.transport.Packet] =>
-        val handshake = mysql.Handshake(Some("username"), Some("password"))
-        val dispatcher = new mysql.ClientDispatcher(tr, handshake)
-        () => dispatcher.status
+    "mysql-dispatcher",
+    { tr: Transport[mysql.transport.Packet, mysql.transport.Packet] =>
+      val handshake = mysql.Handshake(Some("username"), Some("password"))
+      val dispatcher = new mysql.ClientDispatcher(tr, handshake)
+      () => dispatcher.status
     }
   )
 }

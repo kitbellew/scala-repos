@@ -69,7 +69,8 @@ object Setup extends LilaController with TheftPrevention {
               negotiate(
                 html = Lobby.renderHome(Results.BadRequest),
                 api = _ => fuccess(BadRequest(errorsAsJson(f)))
-              ), {
+              ),
+            {
               case config =>
                 userId ?? UserRepo.byId flatMap {
                   destUser =>

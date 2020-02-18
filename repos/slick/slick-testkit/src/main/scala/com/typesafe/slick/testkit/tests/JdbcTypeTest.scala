@@ -82,7 +82,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     materialize(p1).map(_.toSet shouldBe Set((1, "123"), (2, "45"))) flatMap {
       _ =>
         val f = materializeAsync[(Int, Blob), (Int, String)](
-          db.stream(ts.result.transactionally, bufferNext = false), {
+          db.stream(ts.result.transactionally, bufferNext = false),
+          {
             case (id, data) =>
               db.io((id, data.getBytes(1, data.length.toInt).mkString))
           })
@@ -101,7 +102,8 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
           out.writeObject(s.value)
           out.flush
           new SerialBlob(b.toByteArray)
-        }, { b =>
+        },
+        { b =>
           val in = new ObjectInputStream(b.getBinaryStream)
           Serialized[T](in.readObject().asInstanceOf[T])
         }

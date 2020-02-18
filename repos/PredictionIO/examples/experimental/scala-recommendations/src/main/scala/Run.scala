@@ -156,7 +156,8 @@ class Tuple2IntSerializer
       (
         {
           case JArray(List(JInt(x), JInt(y))) => (x.intValue, y.intValue)
-        }, {
+        },
+        {
           case x: (Int, Int) => JArray(List(JInt(x._1), JInt(x._2)))
         }
       ))

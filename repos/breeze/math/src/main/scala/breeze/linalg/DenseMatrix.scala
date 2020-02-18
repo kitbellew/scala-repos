@@ -75,7 +75,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   /** Creates a matrix with the specified data array and rows. columns inferred automatically */
   def this(rows: Int, data: Array[V], offset: Int) =
     this(
-      rows, { assert(data.length % rows == 0); data.length / rows },
+      rows,
+      { assert(data.length % rows == 0); data.length / rows },
       data,
       offset)
 

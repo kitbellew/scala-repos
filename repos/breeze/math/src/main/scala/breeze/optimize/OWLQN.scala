@@ -118,7 +118,8 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     var adjValue = newVal
     val res = space.zipMapKeyValues.mapActive(
       newX,
-      newGrad, {
+      newGrad,
+      {
         case (i, xv, v) =>
           val l1regValue = l1reg(i)
           require(l1regValue >= 0.0)

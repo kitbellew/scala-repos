@@ -106,7 +106,8 @@ private[http] object RouteImplementation
 
       case BasicAuthentication(authenticator) ⇒
         authenticateBasicAsync(
-          authenticator.realm, { creds ⇒
+          authenticator.realm,
+          { creds ⇒
             val javaCreds =
               creds match {
                 case Credentials.Missing ⇒
@@ -137,7 +138,8 @@ private[http] object RouteImplementation
 
       case OAuth2Authentication(authenticator) ⇒
         authenticateOAuth2Async(
-          authenticator.realm, { creds ⇒
+          authenticator.realm,
+          { creds ⇒
             val javaCreds =
               creds match {
                 case Credentials.Missing ⇒

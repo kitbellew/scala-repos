@@ -226,7 +226,8 @@ private[json] object Meta {
       Value(rawClassOf(clazz))
     } else {
       mappings.memoize(
-        (clazz, typeArgs), {
+        (clazz, typeArgs),
+        {
           case (t, _) =>
             val c = rawClassOf(t)
             val (pt, typeInfo) =

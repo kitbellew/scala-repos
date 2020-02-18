@@ -138,7 +138,8 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(
         inst,
-        accessor, {
+        accessor,
+        {
           case f: MappedBinary[T] =>
             val toSet = v match {
               case null            => null
@@ -287,7 +288,8 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(
         inst,
-        accessor, {
+        accessor,
+        {
           case f: MappedText[T] =>
             val toSet = v match {
               case null            => null
@@ -449,7 +451,8 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(
         inst,
-        accessor, {
+        accessor,
+        {
           case f: MappedFakeClob[T] =>
             val toSet = v match {
               case null            => null

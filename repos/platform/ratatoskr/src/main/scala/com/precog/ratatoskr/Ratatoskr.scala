@@ -167,7 +167,8 @@ object KafkaTools extends Command {
         "r",
         "range",
         "<start:stop>",
-        "show message range, e.g.: 5:10 :100 10:", { s: String =>
+        "show message range, e.g.: 5:10 :100 10:",
+        { s: String =>
           val range = MessageRange.parse(s)
           config.range =
             range.getOrElse(sys.error("Invalid range specification: " + s))
@@ -176,9 +177,8 @@ object KafkaTools extends Command {
       intOpt(
         "i",
         "trackInterval",
-        "When running a usage report, stats will be emitted every <interval> messages. Default = 50000", {
-          (i: Int) => config.trackInterval = i
-        })
+        "When running a usage report, stats will be emitted every <interval> messages. Default = 50000",
+        { (i: Int) => config.trackInterval = i })
       opt("l", "local", "dump local kafka file(s)", {
         config.operation = Some(DumpLocal)
       })
@@ -201,9 +201,8 @@ object KafkaTools extends Command {
         "k",
         "lookupDatabase",
         "accounts database name",
-        "Use this database for email lookups in usage reports", { (s: String) =>
-          config.lookupDatabase = Some(s)
-        })
+        "Use this database for email lookups in usage reports",
+        { (s: String) => config.lookupDatabase = Some(s) })
       opt(
         "v2",
         "centralToLocal",
@@ -214,12 +213,12 @@ object KafkaTools extends Command {
       opt(
         "f",
         "reportFormat",
-        "The format to use for usage reports. Either csv or json (default)", {
-          (s: String) =>
-            s.toLowerCase match {
-              case format @ ("csv" | "json") => config.reportFormat = format
-              case other                     => sys.error("Invalid report format: " + other)
-            }
+        "The format to use for usage reports. Either csv or json (default)",
+        { (s: String) =>
+          s.toLowerCase match {
+            case format @ ("csv" | "json") => config.reportFormat = format
+            case other                     => sys.error("Invalid report format: " + other)
+          }
         }
       )
       arglist("<files>", "The files to process", { (s: String) =>
@@ -686,9 +685,8 @@ object ZookeeperTools extends Command {
       opt(
         "uc",
         "update_checkpoints",
-        "Update agent state. Format = path:json", { s: String =>
-          config.updateCheckpoint = Some(s)
-        })
+        "Update agent state. Format = path:json",
+        { s: String => config.updateCheckpoint = Some(s) })
       opt("ua", "update_agents", "Update agent state. Format = path:json", {
         s: String => config.updateAgent = Some(s)
       })
@@ -826,16 +824,14 @@ object IngestTools extends Command {
         "s",
         "limit",
         "<sync-limit-messages>",
-        "if sync is greater than the specified limit an error will occur", {
-          s: Int => config.limit = s
-        })
+        "if sync is greater than the specified limit an error will occur",
+        { s: Int => config.limit = s })
       intOpt(
         "l",
         "lag",
         "<time-lag-minutes>",
-        "if update lag is greater than the specified value an error will occur", {
-          l: Int => config.lag = l
-        })
+        "if update lag is greater than the specified value an error will occur",
+        { l: Int => config.lag = l })
       opt("z", "zookeeper", "The zookeeper host:port", { s: String =>
         config.zkConn = s
       })
@@ -964,9 +960,8 @@ object ImportTools extends Command with Logging {
         "o",
         "owner",
         "<account id>",
-        "Owner account ID to insert data under", { s: String =>
-          config.accountId = s
-        })
+        "Owner account ID to insert data under",
+        { s: String => config.accountId = s })
       opt("s", "storage", "<storage root>", "directory containing data files", {
         s: String => config.storageRoot = new File(s)
       })
@@ -974,9 +969,8 @@ object ImportTools extends Command with Logging {
         "a",
         "archive",
         "<archive root>",
-        "directory containing archived data files", { s: String =>
-          config.archiveRoot = new File(s)
-        })
+        "directory containing archived data files",
+        { s: String => config.archiveRoot = new File(s) })
       arglist("<json input> ...", "json input file mappings {db}={input}", {
         s: String =>
           val parts = s.split("=")

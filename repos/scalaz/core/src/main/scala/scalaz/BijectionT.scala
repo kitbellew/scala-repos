@@ -151,7 +151,8 @@ object BijectionT extends BijectionTInstances {
   def tuple7B[A, B, C, D, E, H, I]
       : Bijection[(A, B, C, D, E, H, I), (A, (B, (C, (D, (E, (H, I))))))] =
     bijection(
-      { case (a, b, c, d, e, h, i)           => (a, (b, (c, (d, (e, (h, i)))))) }, {
+      { case (a, b, c, d, e, h, i) => (a, (b, (c, (d, (e, (h, i)))))) },
+      {
         case (a, (b, (c, (d, (e, (h, i)))))) => (a, b, c, d, e, h, i)
       })
 

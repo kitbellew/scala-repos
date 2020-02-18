@@ -323,12 +323,14 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           new StrFrom.SD(
             dateToStrCol(c1),
             c2,
-            (s, n) => n >= 0 && (n % 1 == 0), { (s, n) => f(s, n.toInt) })
+            (s, n) => n >= 0 && (n % 1 == 0),
+            { (s, n) => f(s, n.toInt) })
         case (c1: DateColumn, c2: NumColumn) =>
           new StrFrom.SN(
             dateToStrCol(c1),
             c2,
-            (s, n) => n >= 0 && (n % 1 == 0), { (s, n) => f(s, n.toInt) })
+            (s, n) => n >= 0 && (n % 1 == 0),
+            { (s, n) => f(s, n.toInt) })
       }
     }
 

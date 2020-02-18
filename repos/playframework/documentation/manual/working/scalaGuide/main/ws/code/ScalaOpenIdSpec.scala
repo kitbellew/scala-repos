@@ -44,7 +44,8 @@ object ScalaOpenIdSpec extends PlaySpecification {
       { error =>
         Logger.info(s"bad request ${error.toString}")
         Future.successful(BadRequest(error.toString))
-      }, { openId =>
+      },
+      { openId =>
         openIdClient
           .redirectURL(openId, routes.Application.openIdCallback.absoluteURL())
           .map(url => Redirect(url))

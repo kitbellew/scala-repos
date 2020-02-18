@@ -103,7 +103,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Int] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        { v =>
           try {
             v.toInt
           } catch {
@@ -124,7 +125,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Long] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        { v =>
           try {
             v.toLong
           } catch {
@@ -145,7 +147,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Long] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        { v =>
           try {
             v.toLong
           } catch {
@@ -171,7 +174,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Double] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        { v =>
           try {
             v.toDouble
           } catch {
@@ -192,7 +196,8 @@ object SQLConf {
         isPublic: Boolean = true): SQLConfEntry[Boolean] =
       SQLConfEntry(
         key,
-        defaultValue, { v =>
+        defaultValue,
+        { v =>
           try {
             v.toBoolean
           } catch {

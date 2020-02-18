@@ -101,7 +101,8 @@ class EngineManifestSerializer
                   case _ => enginemanifest
                 }
             }
-        }, {
+        },
+        {
           case enginemanifest: EngineManifest =>
             JObject(JField("id", JString(enginemanifest.id)) ::
               JField("version", JString(enginemanifest.version)) ::

@@ -89,14 +89,15 @@ object CacheIvy {
     wrap[
       UpdateReport,
       (File, Seq[ConfigurationReport], UpdateStats, Map[File, Long])](
-      rep =>
-        (rep.cachedDescriptor, rep.configurations, rep.stats, rep.stamps), {
+      rep => (rep.cachedDescriptor, rep.configurations, rep.stats, rep.stamps),
+      {
         case (cd, cs, stats, stamps) => new UpdateReport(cd, cs, stats, stamps)
       })
   }
   implicit def updateStatsFormat: Format[UpdateStats] =
     wrap[UpdateStats, (Long, Long, Long)](
-      us => (us.resolveTime, us.downloadTime, us.downloadSize), {
+      us => (us.resolveTime, us.downloadTime, us.downloadSize),
+      {
         case (rt, dt, ds) => new UpdateStats(rt, dt, ds, true)
       })
   implicit def confReportFormat(
@@ -107,7 +108,8 @@ object CacheIvy {
     wrap[
       ConfigurationReport,
       (String, Seq[ModuleReport], Seq[OrganizationArtifactReport])](
-      r => (r.configuration, r.modules, r.details), {
+      r => (r.configuration, r.modules, r.details),
+      {
         case (c, m, d) => new ConfigurationReport(c, m, d)
       })
   implicit def moduleReportFormat(
@@ -153,7 +155,8 @@ object CacheIvy {
           m.branch,
           m.configurations,
           m.licenses,
-          m.callers), {
+          m.callers),
+      {
         case (m, as, ms, s, pd, r, a, e, ed, er, p, h, ea, d, b, cs, ls, ks) =>
           new ModuleReport(
             m,
@@ -207,7 +210,8 @@ object CacheIvy {
       bf: Format[Boolean],
       df: Format[Seq[ModuleReport]]): Format[OrganizationArtifactReport] =
     wrap[OrganizationArtifactReport, (String, String, Seq[ModuleReport])](
-      m => (m.organization, m.name, m.modules), {
+      m => (m.organization, m.name, m.modules),
+      {
         case (o, n, r) => OrganizationArtifactReport(o, n, r)
       })
   implicit def callerFormat: Format[Caller] =
@@ -229,7 +233,8 @@ object CacheIvy {
           c.isForceDependency,
           c.isChangingDependency,
           c.isTransitiveDependency,
-          c.isDirectlyForceDependency), {
+          c.isDirectlyForceDependency),
+      {
         case (c, cc, ea, fd, cd, td, df) =>
           new Caller(c, cc, ea, fd, cd, td, df)
       }
@@ -237,7 +242,8 @@ object CacheIvy {
   implicit def exclusionRuleFormat(
       implicit sf: Format[String]): Format[InclExclRule] =
     wrap[InclExclRule, (String, String, String, Seq[String])](
-      e => (e.organization, e.name, e.artifact, e.configurations), {
+      e => (e.organization, e.name, e.artifact, e.configurations),
+      {
         case (o, n, a, cs) => InclExclRule(o, n, a, cs)
       })
   implicit def crossVersionFormat: Format[CrossVersion] =
@@ -248,7 +254,8 @@ object CacheIvy {
         case NoPosition                        => (0, "", 0, 0)
         case LinePosition(p, s)                => (1, p, s, 0)
         case RangePosition(p, LineRange(s, e)) => (2, p, s, e)
-      }, {
+      },
+      {
         case (0, _, _, _) => NoPosition
         case (1, p, s, _) => LinePosition(p, s)
         case (2, p, s, e) => RangePosition(p, LineRange(s, e))
@@ -297,7 +304,8 @@ object CacheIvy {
             m.inclusions,
             m.exclusions,
             m.extraAttributes,
-            m.crossVersion)), {
+            m.crossVersion)),
+      {
         case ((o, n, r, cs, br), (ch, t, f, as, incl, excl, x, cv)) =>
           ModuleID(o, n, r, cs, ch, t, f, as, incl, excl, x, cv, br)
       }

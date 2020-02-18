@@ -157,7 +157,8 @@ object VFSPathUtils extends Logging {
 
                   case otherError =>
                     IO(\/.left(otherError))
-                }, {
+                },
+                {
                   case VersionEntry(uuid, dataType, timestamp) =>
                     containsNonemptyChild(Option(
                       pathDir0.listFiles(pathFileFilter)).toList.flatten) map {

@@ -3661,7 +3661,8 @@ private[optimizer] abstract class OptimizerCore(
       def doBuildInner(localDef: LocalDef)(varDef: => VarDef)(
           cont: PreTransCont): TailRec[Tree] = {
         buildInner(
-          localDef, { tinner =>
+          localDef,
+          { tinner =>
             if (used.value) {
               cont(PreTransBlock(varDef :: Nil, tinner))
             } else {

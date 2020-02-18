@@ -127,7 +127,8 @@ object Protobuf {
             "-I" + srcDir.absolutePath,
             "--java_out=%s" format targetDir.absolutePath) ++
             protoFiles.map(_.absolutePath),
-          log, { (p, l) => p ! l })
+          log,
+          { (p, l) => p ! l })
         if (exitCode != 0)
           sys.error("protoc returned exit code: %d" format exitCode)
       }

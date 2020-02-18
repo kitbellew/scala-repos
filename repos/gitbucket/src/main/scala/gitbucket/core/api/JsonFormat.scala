@@ -23,7 +23,8 @@ object JsonFormat {
               .map(_.toDate)
               .getOrElse(
                 throw new MappingException("Can't convert " + s + " to Date"))
-        }, {
+        },
+        {
           case x: Date =>
             JString(parserISO.print(new DateTime(x).withZone(DateTimeZone.UTC)))
         }
@@ -50,7 +51,8 @@ object JsonFormat {
             ApiPath(s.substring(c.baseUrl.length))
           case JString(s) =>
             throw new MappingException("Can't convert " + s + " to ApiPath")
-        }, {
+        },
+        {
           case ApiPath(path) => JString(c.baseUrl + path)
         }
       ))

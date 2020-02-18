@@ -51,7 +51,8 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
             new Event(now, latency.milliseconds, true, { b: Boolean =>
               Try(true)
             })
-          }, {
+          },
+        {
           case (duration: Duration, f: Future[Boolean]) =>
             f onSuccess { _ =>
               assert(duration <= timeout)
