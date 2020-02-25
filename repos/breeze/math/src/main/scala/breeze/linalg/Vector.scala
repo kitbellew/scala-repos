@@ -455,9 +455,15 @@ trait VectorOps { this: Vector.type =>
         OpMod,
         OpPow) Op <: OpType](
       implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+        { _ + _ },
+        { _ - _ },
+        { _ * _ },
+        { _ * _ }, {
           _ / _
-        }, { (a, b) => b }, { _ % _ }, { _ pow _ })
+        },
+        { (a, b) => b },
+        { _ % _ },
+        { _ pow _ })
       op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L)
       zero: T): BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
@@ -488,9 +494,15 @@ trait VectorOps { this: Vector.type =>
         OpMod,
         OpPow) Op <: OpType](
       implicit @expand.sequence[Op](
-        { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, {
+        { _ + _ },
+        { _ - _ },
+        { _ * _ },
+        { _ * _ }, {
           _ / _
-        }, { (a, b) => b }, { _ % _ }, { _ pow _ })
+        },
+        { (a, b) => b },
+        { _ % _ },
+        { _ pow _ })
       op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L)
       zero: T): BinaryRegistry[T, Vector[T], Op.type, Vector[T]] =
@@ -613,11 +625,21 @@ trait VectorOps { this: Vector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](implicit @expand.sequence[Op](
-    { _ + _ }, { _ - _ }, { _ * _ }, { _ * _ }, { _ / _ }, { (a, b) => b }, {
-      _ % _
-    }, { _ pow _ })
-  op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
+        OpPow) Op <: OpType](
+      implicit @expand.sequence[Op]({ _ + _ }, {
+        _ - _
+      }, {
+        _ * _
+      }, {
+        _ * _
+      }, {
+        _ / _
+      }, { (a, b) => b }, {
+        _ % _
+      }, {
+        _ pow _
+      })
+      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       override def bindingMissing(a: Vector[T], b: T): Unit = {
         var i = 0

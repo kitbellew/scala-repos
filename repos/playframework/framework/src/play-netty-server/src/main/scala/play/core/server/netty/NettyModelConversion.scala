@@ -314,7 +314,8 @@ private[server] class NettyModelConversion(
 
     val httpContentPublisher =
       SynchronousMappedStreams.map[HttpChunk, HttpContent](
-        publisher, {
+        publisher,
+        {
           case HttpChunk.Chunk(bytes) =>
             new DefaultHttpContent(byteStringToByteBuf(bytes))
           case HttpChunk.LastChunk(trailers) =>

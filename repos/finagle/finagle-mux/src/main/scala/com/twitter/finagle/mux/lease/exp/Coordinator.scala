@@ -77,7 +77,8 @@ private[lease] class Coordinator(
           new DurationAlarm((maxWait - elapsed()) / 2) min
           new GenerationAlarm(counter) min
           new PredicateAlarm(() => npending() == 0)
-      }, { () =>
+      },
+      { () =>
         // TODO MN: reenable
         if (verbose) {
           log.info(

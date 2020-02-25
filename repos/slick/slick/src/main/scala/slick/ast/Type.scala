@@ -351,7 +351,8 @@ class TypeUtil(val tpe: Type) extends AnyVal {
 
   def replace(f: PartialFunction[Type, Type]): Type =
     f.applyOrElse(
-      tpe, { case t: Type => t.mapChildren(_.replace(f)) }: PartialFunction[
+      tpe,
+      { case t: Type => t.mapChildren(_.replace(f)) }: PartialFunction[
         Type,
         Type])
 

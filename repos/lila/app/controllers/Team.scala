@@ -195,7 +195,8 @@ object Team extends LilaController {
       case (team, request) => {
         implicit val req = ctx.body
         forms.processRequest.bindFromRequest.fold(
-          _ => fuccess(routes.Team.show(team.id).toString), {
+          _ => fuccess(routes.Team.show(team.id).toString),
+          {
             case (decision, url) =>
               api.processRequest(team, request, (decision === "accept")) inject url
           }

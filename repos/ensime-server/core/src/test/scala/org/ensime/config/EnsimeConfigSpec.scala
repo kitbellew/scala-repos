@@ -47,7 +47,8 @@ class EnsimeConfigSpec extends EnsimeSpec {
                 :reference-source-roots ()
                 :compiler-args ()
                 :runtime-deps ()
-                :test-deps ())))""", { implicit config =>
+                :test-deps ())))""",
+      { implicit config =>
         config.name shouldBe "project"
         config.scalaVersion shouldBe "2.10.4"
         val module1 = config.modules("module1")
@@ -78,7 +79,8 @@ class EnsimeConfigSpec extends EnsimeSpec {
  :cache-dir "$cache"
  :subprojects ((:name "module1"
                 :scala-version "2.10.4"
-                :targets ("$abc"))))""", { implicit config =>
+                :targets ("$abc"))))""",
+        { implicit config =>
           config.name shouldBe "project"
           config.scalaVersion shouldBe "2.10.4"
           val module1 = config.modules("module1")
@@ -110,7 +112,8 @@ class EnsimeConfigSpec extends EnsimeSpec {
  :source-mode ${if (sourceMode) "t" else "nil"}
  :subprojects ((:name "module1"
                 :scala-version "2.10.4"
-                :targets ("$abc"))))""", { implicit config =>
+                :targets ("$abc"))))""",
+          { implicit config =>
             config.sourceMode shouldBe sourceMode
             config.runtimeClasspath shouldBe Set(abc)
             config.compileClasspath shouldBe (

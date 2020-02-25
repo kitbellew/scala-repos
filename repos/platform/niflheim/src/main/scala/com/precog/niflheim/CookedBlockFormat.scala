@@ -65,7 +65,8 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
   val ColumnRefCodec = Codec.CompositeCodec[CPath, CType, (CPath, CType)](
     CPathCodec,
     CTypeCodec,
-    identity, { (a: CPath, b: CType) => (a, b) })
+    identity,
+    { (a: CPath, b: CType) => (a, b) })
 
   val SegmentIdCodec = Codec.CompositeCodec[Long, (CPath, CType), SegmentId](
     Codec.LongCodec,

@@ -430,7 +430,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
             .mkString(File.separator)
 
         statement.executeQuery(s"ADD JAR $jarFile")
-      }, { statement =>
+      },
+      { statement =>
         val queries = Seq(
           "DROP TABLE IF EXISTS smallKV",
           "CREATE TABLE smallKV(key INT, val STRING)",
@@ -572,7 +573,8 @@ class SingleSessionSuite extends HiveThriftJdbcTest {
               |AS 'org.apache.spark.sql.hive.execution.GenericUDTFCount2'
            """.stripMargin
         ).foreach(statement.execute)
-      }, { statement =>
+      },
+      { statement =>
         val rs1 = statement.executeQuery("SET foo")
 
         assert(rs1.next())

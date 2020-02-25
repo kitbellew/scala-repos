@@ -584,7 +584,8 @@ trait RestHelper extends LiftRules.DispatchPF {
   ): () => Box[LiftResponse] = () => {
     RestContinuation.async(reply => {
       asyncResolveProvider.resolveAsync(
-        asyncBoxContainer, { resolvedBox =>
+        asyncBoxContainer,
+        { resolvedBox =>
           boxToResp(resolvedBox).apply() openOr NotFoundResponse()
         }
       )

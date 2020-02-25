@@ -605,7 +605,8 @@ trait MatchAnalysis extends MatchApproximation {
           cases,
           approx.onUnknown { tm =>
             approx.fullRewrite.applyOrElse[TreeMaker, Prop](
-              tm, {
+              tm,
+              {
                 case BodyTreeMaker(_, _) =>
                   True // irrelevant -- will be discarded by symbolCase later
                 case _ => // debug.patmat("backing off due to "+ tm)

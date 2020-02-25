@@ -86,7 +86,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
       containingClass: Option[PsiClass]): PsiElement = {
     def tail(qualName: String)(simpleImport: => PsiElement): PsiElement = {
       safeBindToElement(
-        qualName, {
+        qualName,
+        {
           case (qual, true) =>
             ScalaPsiElementFactory
               .createExpressionWithContextFromText(qual, getContext, this)

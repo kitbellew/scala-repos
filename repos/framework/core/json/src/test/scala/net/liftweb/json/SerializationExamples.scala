@@ -312,7 +312,8 @@ object CustomSerializerExamples extends Specification {
             case JObject(
                 JField("start", JInt(s)) :: JField("end", JInt(e)) :: Nil) =>
               new Interval(s.longValue, e.longValue)
-          }, {
+          },
+          {
             case x: Interval =>
               JObject(
                 JField("start", JInt(BigInt(x.startTime))) ::
@@ -326,7 +327,8 @@ object CustomSerializerExamples extends Specification {
           {
             case JObject(JField("$pattern", JString(s)) :: Nil) =>
               Pattern.compile(s)
-          }, {
+          },
+          {
             case x: Pattern =>
               JObject(JField("$pattern", JString(x.pattern)) :: Nil)
           }
@@ -341,7 +343,8 @@ object CustomSerializerExamples extends Specification {
                 .parse(s)
                 .getOrElse(
                   throw new MappingException("Can't parse " + s + " to Date"))
-          }, {
+          },
+          {
             case x: Date =>
               JObject(
                 JField("$dt", JString(format.dateFormat.format(x))) :: Nil)

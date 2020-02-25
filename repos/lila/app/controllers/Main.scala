@@ -25,7 +25,8 @@ object Main extends LilaController {
     implicit val req = ctx.body
     fuccess {
       blindForm.bindFromRequest.fold(
-        err => BadRequest, {
+        err => BadRequest,
+        {
           case (enable, redirect) =>
             Redirect(redirect) withCookies lila.common.LilaCookie.cookie(
               Env.api.Accessibility.blindCookieName,

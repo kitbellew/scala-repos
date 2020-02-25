@@ -156,7 +156,8 @@ private[finagle] class ClockedDrainer(
     upkeep("open", init)
 
     coord.sleepUntilDiscountRemaining(
-      space, { () =>
+      space,
+      { () =>
         if (verbose) {
           log.info(
             "AWAIT-DISCOUNT: discount=" + space.discount() +

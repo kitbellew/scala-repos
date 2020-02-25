@@ -1954,7 +1954,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                     "completing specialized " + symbol.fullName + " calling " + original)
                   debuglog("special overload " + original + " -> " + env)
                   val t = DefDef(
-                    symbol, { vparamss: List[List[Symbol]] =>
+                    symbol,
+                    { vparamss: List[List[Symbol]] =>
                       val fun = Apply(
                         Select(This(symbol.owner), original),
                         makeArguments(original, vparamss.head))

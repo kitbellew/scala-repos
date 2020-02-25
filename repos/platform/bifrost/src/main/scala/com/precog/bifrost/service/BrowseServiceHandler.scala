@@ -114,7 +114,8 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
           {
             case ResourceError.NotFound(_) => \/.right(JUndefined)
             case otherError                => \/.left(otherError)
-          }, {
+          },
+          {
             case PathStructure(types, children) =>
               \/.right(
                 JObject(
@@ -178,7 +179,8 @@ class BrowseServiceHandler[A](
               InternalServerError,
               content = Some(JObject(
                 "errors" -> JArray("sorry, we're looking into it!".serialize))))
-          }, {
+          },
+          {
             case ResourceError.NotFound(message) =>
               HttpResponse[JValue](
                 HttpStatusCodes.NotFound,

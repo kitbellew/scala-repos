@@ -41,7 +41,8 @@ case object PeriodSerializer
         {
           case JString(p) => new Period(p)
           case JNull      => null
-        }, {
+        },
+        {
           case p: Period => JString(p.toString)
         }
       ))
@@ -52,7 +53,8 @@ case object DurationSerializer
         {
           case JInt(d) => new Duration(d.longValue)
           case JNull   => null
-        }, {
+        },
+        {
           case d: Duration => JInt(d.getMillis)
         }
       ))
@@ -63,7 +65,8 @@ case object InstantSerializer
         {
           case JInt(i) => new Instant(i.longValue)
           case JNull   => null
-        }, {
+        },
+        {
           case i: Instant => JInt(i.getMillis)
         }
       ))
@@ -82,7 +85,8 @@ case object DateTimeSerializer
         {
           case JString(s) => new DateTime(DateParser.parse(s, format))
           case JNull      => null
-        }, {
+        },
+        {
           case d: DateTime => JString(format.dateFormat.format(d.toDate))
         }
       ))
@@ -93,7 +97,8 @@ case object DateMidnightSerializer
         {
           case JString(s) => new DateMidnight(DateParser.parse(s, format))
           case JNull      => null
-        }, {
+        },
+        {
           case d: DateMidnight => JString(format.dateFormat.format(d.toDate))
         }
       ))

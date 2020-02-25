@@ -272,7 +272,8 @@ private[http] object Handshake {
           showExactOther: Boolean = true,
           caseInsensitive: Boolean = false): Expectation =
         check(_.headers.find(_.name == candidate.name))(
-          compare(candidate, caseInsensitive), {
+          compare(candidate, caseInsensitive),
+          {
             case Some(other) if showExactOther ⇒
               s"response that was missing required `$candidate` header. Found `$other` with the wrong value."
             case Some(_) ⇒ s"response with invalid `${candidate.name}` header."

@@ -815,7 +815,8 @@ abstract class GeneratedRouter extends Router {
         a17,
         a18))
       .fold(
-        badRequest, {
+        badRequest,
+        {
           case (
               a1,
               a2,
@@ -947,7 +948,8 @@ abstract class GeneratedRouter extends Router {
         a18,
         a19))
       .fold(
-        badRequest, {
+        badRequest,
+        {
           case (
               a1,
               a2,
@@ -1086,7 +1088,8 @@ abstract class GeneratedRouter extends Router {
         a19,
         a20))
       .fold(
-        badRequest, {
+        badRequest,
+        {
           case (
               a1,
               a2,
@@ -1231,7 +1234,8 @@ abstract class GeneratedRouter extends Router {
         a20,
         a21))
       .fold(
-        badRequest, {
+        badRequest,
+        {
           case (
               a1,
               a2,

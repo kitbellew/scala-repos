@@ -16,7 +16,8 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
       { b =>
         b shouldNotBe null
         if (b == True) 1 else 0
-      }, { i =>
+      },
+      { i =>
         i shouldNotBe null
         if (i == 1) True else False
       }
@@ -61,7 +62,8 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
           case EnumValue2 => 'B'
           case _          => 'C'
         }
-      }, { c =>
+      },
+      { c =>
         c shouldNotBe null
         c match {
           case 'A' => EnumValue1
@@ -116,7 +118,8 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
       { b =>
         b shouldNotBe null
         if (b == True) "y" else "n"
-      }, { i =>
+      },
+      { i =>
         i shouldNotBe null
         if (i == "y") True else False
       }

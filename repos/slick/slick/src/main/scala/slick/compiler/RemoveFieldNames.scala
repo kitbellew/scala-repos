@@ -25,7 +25,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
         .toMap
       logger.debug("Required symbols: " + requiredSyms.mkString(", "))
       val rsm2 = rsm.nodeMapServerSide(
-        false, { n =>
+        false,
+        { n =>
           val refTSyms = n
             .collect[TypeSymbol] {
               case Select(_ :@ NominalType(s, _), _)                      => s

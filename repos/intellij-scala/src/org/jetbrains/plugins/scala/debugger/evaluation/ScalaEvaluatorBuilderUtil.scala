@@ -2095,7 +2095,8 @@ object ScalaEvaluatorBuilderUtil {
 
   def localFunctionIndex(named: PsiNamedElement): Int = {
     elementsWithSameNameIndex(
-      named, {
+      named,
+      {
         case f: ScFunction if f.isLocal && f.name == named.name => true
         case Both(ScalaPsiUtil.inNameContext(LazyVal(_)), lzy: ScBindingPattern)
             if lzy.name == named.name =>

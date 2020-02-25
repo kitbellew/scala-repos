@@ -1247,7 +1247,8 @@ object Build extends sbt.Build {
         var i = 0
         val pat = "/\\*{2,3}/".r
         val replaced = pat.replaceAllIn(
-          template, { mat =>
+          template,
+          { mat =>
             val lNo = lineNo(mat.before)
             val res =
               if (mat.end - mat.start == 5)

@@ -33,7 +33,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number => number must equalTo(BigDecimal("10.23")) }
+          },
+          { number => number must equalTo(BigDecimal("10.23")) }
         )
     }
   }
@@ -45,7 +46,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { number => number must equalTo(BigDecimal("10.23")) }
+          },
+          { number => number must equalTo(BigDecimal("10.23")) }
         )
     }
 
@@ -56,7 +58,8 @@ object FormatSpec extends Specification {
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo(
               "error.real.precision")
-          }, { number => "The mapping should fail." must equalTo("Error") }
+          },
+          { number => "The mapping should fail." must equalTo("Error") }
         )
     }
 
@@ -67,7 +70,8 @@ object FormatSpec extends Specification {
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo(
               "error.real.precision")
-          }, { number => "The mapping should fail." must equalTo("Error") }
+          },
+          { number => "The mapping should fail." must equalTo("Error") }
         )
     }
   }
@@ -83,7 +87,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { uuid => uuid must equalTo(testUUID) }
+          },
+          { uuid => uuid must equalTo(testUUID) }
         )
     }
 
@@ -94,7 +99,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.uuid")
-          }, { uuid => uuid must equalTo(UUID.randomUUID()) }
+          },
+          { uuid => uuid must equalTo(UUID.randomUUID()) }
         )
     }
   }
@@ -110,7 +116,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
-          }, { char => char must equalTo(testChar) }
+          },
+          { char => char must equalTo(testChar) }
         )
     }
 
@@ -121,7 +128,8 @@ object FormatSpec extends Specification {
         .fold(
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.required")
-          }, { char => char must equalTo('X') }
+          },
+          { char => char must equalTo('X') }
         )
     }
   }

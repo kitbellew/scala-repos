@@ -104,7 +104,8 @@ class ParquetThriftCompatibilitySuite
 
       writeDirect(
         path,
-        schema, { rc =>
+        schema,
+        { rc =>
           rc.message {
             rc.field("f", 0) {
               rc.group {
@@ -126,7 +127,8 @@ class ParquetThriftCompatibilitySuite
               }
             }
           }
-        }, { rc =>
+        },
+        { rc =>
           rc.message {
             rc.field("f", 0) {
               rc.group {

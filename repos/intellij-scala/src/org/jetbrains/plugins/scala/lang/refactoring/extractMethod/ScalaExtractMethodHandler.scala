@@ -172,7 +172,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     } else if (siblings.length > 1) {
       ScalaRefactoringUtil.showChooser(
         editor,
-        siblings, { (selectedValue: PsiElement) =>
+        siblings,
+        { (selectedValue: PsiElement) =>
           invokeDialog(
             project,
             editor,

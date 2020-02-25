@@ -128,7 +128,8 @@ class VectorSerializer
               }
             }
             new DenseVector(v)
-        }, {
+        },
+        {
           case x: Vector =>
             JArray(x.toArray.toList.map(d => JDouble(d)))
         }

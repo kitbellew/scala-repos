@@ -197,7 +197,8 @@ sealed abstract class LazyEitherInstances {
 
       def cozip[A, B](a: LazyEither[E, A \/ B]) =
         a.fold(
-          e => -\/(LazyEither.lazyLeft(e)), {
+          e => -\/(LazyEither.lazyLeft(e)),
+          {
             case -\/(a) => -\/(LazyEither.lazyRight(a))
             case \/-(b) => \/-(LazyEither.lazyRight(b))
           }

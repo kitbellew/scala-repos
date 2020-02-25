@@ -83,7 +83,8 @@ object QaAnswer extends QaController {
       WithOwnAnswer(questionId, answerId) { q => a =>
         implicit val req = ctx.body
         forms.moveAnswer.bindFromRequest.fold(
-          err => renderQuestion(q), {
+          err => renderQuestion(q),
+          {
             case "question" =>
               api.answer.moveToQuestionComment(a, q) inject
                 Redirect(routes.QaQuestion.show(q.id, q.slug))

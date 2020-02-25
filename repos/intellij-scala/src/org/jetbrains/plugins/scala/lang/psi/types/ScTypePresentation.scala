@@ -44,10 +44,12 @@ import scala.collection.mutable.ArrayBuffer
 trait ScTypePresentation {
   def presentableText(t: ScType) =
     typeText(
-      t, {
+      t,
+      {
         case c: PsiClass => ScalaPsiUtil.nameWithPrefixIfNeeded(c)
         case e           => e.name
-      }, {
+      },
+      {
         case obj: ScObject
             if Set("scala.Predef", "scala").contains(obj.qualifiedName) =>
           ""

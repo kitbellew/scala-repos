@@ -22,9 +22,17 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
   implicit def implOps_SVT_DVT_InPlace[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ }, { _ * _ }, { _ / _ }, {
-        (a, b) => b
-      }, { _ % _ }, { _ pow _ }) op: Op.Impl2[T, T, T])
+      implicit @expand.sequence[Op]({ _ + _ }, {
+        _ - _
+      }, {
+        _ * _
+      }, {
+        _ / _
+      }, { (a, b) => b }, {
+        _ % _
+      }, {
+        _ pow _
+      }) op: Op.Impl2[T, T, T])
       : Op.InPlaceImpl2[SparseVector[T], DenseVector[T]] =
     new Op.InPlaceImpl2[SparseVector[T], DenseVector[T]] {
 
