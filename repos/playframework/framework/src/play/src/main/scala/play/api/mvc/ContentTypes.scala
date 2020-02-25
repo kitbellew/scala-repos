@@ -899,15 +899,17 @@ object BodyParsers extends BodyParsers {
       var pushedBytes: Long = 0
 
       val logic = new GraphStageLogic(shape) {
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            pull(in)
-          }
-          override def onDownstreamFinish(): Unit = {
-            status.success(MaxSizeNotExceeded)
-            completeStage()
-          }
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              pull(in)
+            }
+            override def onDownstreamFinish(): Unit = {
+              status.success(MaxSizeNotExceeded)
+              completeStage()
+            }
+          })
         setHandler(
           in,
           new InHandler {

@@ -60,9 +60,11 @@ object SparkTransportConf {
     conf.setIfMissing(s"spark.$module.io.serverThreads", numThreads.toString)
     conf.setIfMissing(s"spark.$module.io.clientThreads", numThreads.toString)
 
-    new TransportConf(module, new ConfigProvider {
-      override def get(name: String): String = conf.get(name)
-    })
+    new TransportConf(
+      module,
+      new ConfigProvider {
+        override def get(name: String): String = conf.get(name)
+      })
   }
 
   /**

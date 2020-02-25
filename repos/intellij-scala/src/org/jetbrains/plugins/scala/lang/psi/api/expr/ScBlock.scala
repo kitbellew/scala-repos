@@ -54,10 +54,12 @@ trait ScBlock
       val caseClauses = findChildByClassScala(classOf[ScCaseClauses])
       val clauses: Seq[ScCaseClause] = caseClauses.caseClauses
       val clausesType = clauses.foldLeft(types.Nothing: ScType)((tp, clause) =>
-        Bounds.lub(tp, clause.expr match {
-          case Some(expr) => expr.getType(TypingContext.empty).getOrNothing
-          case _          => types.Nothing
-        }))
+        Bounds.lub(
+          tp,
+          clause.expr match {
+            case Some(expr) => expr.getType(TypingContext.empty).getOrNothing
+            case _          => types.Nothing
+          }))
 
       getContext match {
         case c: ScCatchBlock =>
@@ -221,14 +223,15 @@ trait ScBlock
                 existize(des, visitedWithT),
                 typeArgs.map(existize(_, visitedWithT)))
             case ex @ ScExistentialType(q, wildcards) =>
-              new ScExistentialType(existize(q, visitedWithT), wildcards.map {
-                ex =>
+              new ScExistentialType(
+                existize(q, visitedWithT),
+                wildcards.map { ex =>
                   new ScExistentialArgument(
                     ex.name,
                     ex.args,
                     existize(ex.lowerBound, visitedWithT),
                     existize(ex.upperBound, visitedWithT))
-              })
+                })
             case _ => t
           }
         }

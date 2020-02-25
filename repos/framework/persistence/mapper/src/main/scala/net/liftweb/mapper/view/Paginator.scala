@@ -101,9 +101,11 @@ class SortedMapperPaginator[T <: Mapper[T]](
     with SortedPaginator[T, MappedField[_, T]] {
 
   val headers = _headers.toList
-  sort = (headers.indexWhere {
-    case (_, `initialSort`) => true; case _ => false
-  }, true)
+  sort = (
+    headers.indexWhere {
+      case (_, `initialSort`) => true; case _ => false
+    },
+    true)
 
   override def page =
     meta.findAll(

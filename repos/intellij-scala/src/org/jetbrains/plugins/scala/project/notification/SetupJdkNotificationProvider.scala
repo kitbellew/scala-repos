@@ -29,11 +29,13 @@ class SetupJdkNotificationProvider(
 
   project.getMessageBus
     .connect(project)
-    .subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter {
-      override def rootsChanged(event: ModuleRootEvent) {
-        notifications.updateAllNotifications()
-      }
-    })
+    .subscribe(
+      ProjectTopics.PROJECT_ROOTS,
+      new ModuleRootAdapter {
+        override def rootsChanged(event: ModuleRootEvent) {
+          notifications.updateAllNotifications()
+        }
+      })
 
   override def getKey = ProviderKey
 
@@ -60,11 +62,13 @@ object SetupJdkNotificationProvider {
       file: PsiFile): EditorNotificationPanel = {
     val panel = new EditorNotificationPanel()
     panel.setText("Project JDK is not defined")
-    panel.createActionLabel("Setup JDK", new Runnable {
-      override def run() {
-        setupSdk(project, file)
-      }
-    })
+    panel.createActionLabel(
+      "Setup JDK",
+      new Runnable {
+        override def run() {
+          setupSdk(project, file)
+        }
+      })
     panel
   }
 

@@ -71,20 +71,27 @@ object EntrywiseMatrixNorms {
             val (op, opEnd) =
               if (n == 1)
                 ((v: Int) => agg += v.abs.toDouble, identity[Double] _)
-              else if (n == 2) ((v: Int) => {
-                val nn = v.abs.toDouble
-                agg += nn * nn
-              }, (e: Double) => sqrt(e))
+              else if (n == 2)
+                (
+                  (v: Int) => {
+                    val nn = v.abs.toDouble
+                    agg += nn * nn
+                  },
+                  (e: Double) => sqrt(e))
               else if (n == Int.MaxValue) {
-                ((v: Int) => {
-                  val nn = v.abs.toDouble
-                  if (nn > agg) agg = nn
-                }, identity[Double] _)
+                (
+                  (v: Int) => {
+                    val nn = v.abs.toDouble
+                    if (nn > agg) agg = nn
+                  },
+                  identity[Double] _)
               } else {
-                ((v: Int) => {
-                  val nn = v.abs.toDouble
-                  agg += pow(v, n)
-                }, (e: Double) => pow(e, 1.0 / n))
+                (
+                  (v: Int) => {
+                    val nn = v.abs.toDouble
+                    agg += pow(v, n)
+                  },
+                  (e: Double) => pow(e, 1.0 / n))
               }
 
             def visit(a: Int): Unit = op(a)
@@ -110,20 +117,27 @@ object EntrywiseMatrixNorms {
           val (op, opEnd) =
             if (n == 1)
               ((v: Float) => agg += v.abs.toDouble, identity[Double] _)
-            else if (n == 2) ((v: Float) => {
-              val nn = v.abs.toDouble
-              agg += nn * nn
-            }, (e: Double) => sqrt(e))
+            else if (n == 2)
+              (
+                (v: Float) => {
+                  val nn = v.abs.toDouble
+                  agg += nn * nn
+                },
+                (e: Double) => sqrt(e))
             else if (n == Float.PositiveInfinity) {
-              ((v: Float) => {
-                val nn = v.abs.toDouble
-                if (nn > agg) agg = nn
-              }, identity[Double] _)
+              (
+                (v: Float) => {
+                  val nn = v.abs.toDouble
+                  if (nn > agg) agg = nn
+                },
+                identity[Double] _)
             } else {
-              ((v: Float) => {
-                val nn = v.abs.toDouble
-                agg += pow(v, n)
-              }, (e: Double) => pow(e, 1.0 / n))
+              (
+                (v: Float) => {
+                  val nn = v.abs.toDouble
+                  agg += pow(v, n)
+                },
+                (e: Double) => pow(e, 1.0 / n))
             }
 
           def visit(a: Float): Unit = op(a)
@@ -148,20 +162,27 @@ object EntrywiseMatrixNorms {
           var agg: Double = 0.0
           val (op, opEnd) =
             if (n == 1) ((v: Double) => agg += v.abs, identity[Double] _)
-            else if (n == 2) ((v: Double) => {
-              val nn = v.abs
-              agg += nn * nn
-            }, (e: Double) => sqrt(e))
+            else if (n == 2)
+              (
+                (v: Double) => {
+                  val nn = v.abs
+                  agg += nn * nn
+                },
+                (e: Double) => sqrt(e))
             else if (n == Double.PositiveInfinity) {
-              ((v: Double) => {
-                val nn = v.abs
-                if (nn > agg) agg = nn
-              }, identity[Double] _)
+              (
+                (v: Double) => {
+                  val nn = v.abs
+                  if (nn > agg) agg = nn
+                },
+                identity[Double] _)
             } else {
-              ((v: Double) => {
-                val nn = v.abs
-                agg += pow(v, n)
-              }, (e: Double) => pow(e, 1.0 / n))
+              (
+                (v: Double) => {
+                  val nn = v.abs
+                  agg += pow(v, n)
+                },
+                (e: Double) => pow(e, 1.0 / n))
             }
 
           def visit(a: Double): Unit = op(a)
@@ -186,20 +207,27 @@ object EntrywiseMatrixNorms {
             var agg: Double = 0.0
             val (op, opEnd) =
               if (n == 1) ((v: S) => agg += field.sNorm(v), identity[Double] _)
-              else if (n == 2) ((v: S) => {
-                val nn = field.sNorm(v)
-                agg += nn * nn
-              }, (e: Double) => sqrt(e))
+              else if (n == 2)
+                (
+                  (v: S) => {
+                    val nn = field.sNorm(v)
+                    agg += nn * nn
+                  },
+                  (e: Double) => sqrt(e))
               else if (n == Double.PositiveInfinity) {
-                ((v: S) => {
-                  val nn = field.sNorm(v)
-                  if (nn > agg) agg = nn
-                }, identity[Double] _)
+                (
+                  (v: S) => {
+                    val nn = field.sNorm(v)
+                    if (nn > agg) agg = nn
+                  },
+                  identity[Double] _)
               } else {
-                ((v: S) => {
-                  val nn = field.sNorm(v)
-                  agg += pow(nn, n)
-                }, (e: Double) => pow(e, 1.0 / n))
+                (
+                  (v: S) => {
+                    val nn = field.sNorm(v)
+                    agg += pow(nn, n)
+                  },
+                  (e: Double) => pow(e, 1.0 / n))
               }
 
             def visit(a: S): Unit = op(a)

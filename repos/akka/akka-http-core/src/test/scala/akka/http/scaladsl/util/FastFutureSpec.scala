@@ -140,16 +140,20 @@ class FastFutureSpec extends FreeSpec with Matchers {
         }
       }
       "Failure -> Success" in {
-        test(Failure(UnexpectedException), _.recoverWith {
-          case _ ⇒ FastFuture.successful(23)
-        }) {
+        test(
+          Failure(UnexpectedException),
+          _.recoverWith {
+            case _ ⇒ FastFuture.successful(23)
+          }) {
           _ shouldEqual Success(23)
         }
       }
       "Failure -> Failure" in {
-        test(Failure(UnexpectedException), _.recoverWith {
-          case _ ⇒ FastFuture.failed(TheException)
-        }) {
+        test(
+          Failure(UnexpectedException),
+          _.recoverWith {
+            case _ ⇒ FastFuture.failed(TheException)
+          }) {
           _ shouldEqual Failure(TheException)
         }
       }

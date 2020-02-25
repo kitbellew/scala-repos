@@ -158,46 +158,62 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       data: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedEnum[T, ENUM] =>
-          f.st(
-            if (v eq null) defaultValue else fromInt(Helpers.toInt(v.toString)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedEnum[T, ENUM] =>
+            f.st(
+              if (v eq null) defaultValue
+              else fromInt(Helpers.toInt(v.toString)))
+        })
 
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedEnum[T, ENUM] =>
-          f.st(if (isNull) defaultValue else fromInt(v.toInt))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedEnum[T, ENUM] =>
+            f.st(if (isNull) defaultValue else fromInt(v.toInt))
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedEnum[T, ENUM] =>
-          f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedEnum[T, ENUM] =>
+            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+        })
 
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedEnum[T, ENUM] =>
-          f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedEnum[T, ENUM] =>
+            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+        })
 
   def buildSetBooleanValue(
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedEnum[T, ENUM] => f.st(defaultValue)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedEnum[T, ENUM] => f.st(defaultValue)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database
@@ -416,9 +432,12 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedInt[T] => f.st(if (isNull) 0 else v.toInt)
+        })
 
   def buildSetStringValue(
       accessor: Method,
@@ -436,9 +455,12 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedInt[T] => f.st(if (isNull || !v) 0 else 1)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedInt[T] => f.st(if (isNull || !v) 0 else 1)
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database

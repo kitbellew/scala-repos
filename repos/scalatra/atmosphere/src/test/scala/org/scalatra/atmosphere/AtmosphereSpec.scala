@@ -154,12 +154,14 @@ class AtmosphereSpec extends MutableScalatraSpec {
 
       val socket = client
         .create(opts)
-        .on(Event.MESSAGE, new Function[String] {
-          def on(r: String) = {
-            latch.countDown()
-            println(r)
-          }
-        })
+        .on(
+          Event.MESSAGE,
+          new Function[String] {
+            def on(r: String) = {
+              latch.countDown()
+              println(r)
+            }
+          })
         .on(new Function[Throwable] {
           def on(t: Throwable) = {
             t.printStackTrace

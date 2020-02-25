@@ -682,9 +682,12 @@ private[kafka] class ZookeeperConsumerConnector(
     private val cond = lock.newCondition()
 
     @volatile private var allTopicsOwnedPartitionsCount = 0
-    newGauge("OwnedPartitionsCount", new Gauge[Int] {
-      def value() = allTopicsOwnedPartitionsCount
-    }, Map("clientId" -> config.clientId, "groupId" -> config.groupId))
+    newGauge(
+      "OwnedPartitionsCount",
+      new Gauge[Int] {
+        def value() = allTopicsOwnedPartitionsCount
+      },
+      Map("clientId" -> config.clientId, "groupId" -> config.groupId))
 
     private def ownedPartitionsCountMetricTags(topic: String) =
       Map(
@@ -902,9 +905,12 @@ private[kafka] class ZookeeperConsumerConnector(
               }
               .foreach {
                 case (topic, partitionThreadPairs) =>
-                  newGauge("OwnedPartitionsCount", new Gauge[Int] {
-                    def value() = partitionThreadPairs.size
-                  }, ownedPartitionsCountMetricTags(topic))
+                  newGauge(
+                    "OwnedPartitionsCount",
+                    new Gauge[Int] {
+                      def value() = partitionThreadPairs.size
+                    },
+                    ownedPartitionsCountMetricTags(topic))
               }
 
             topicRegistry = currentTopicRegistry

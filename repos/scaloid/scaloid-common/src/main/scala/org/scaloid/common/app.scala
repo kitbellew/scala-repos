@@ -288,9 +288,11 @@ class AlertDialogBuilder(
   @inline def positiveButton(
       name: CharSequence = android.R.string.yes,
       onClick: => Unit = {}): AlertDialogBuilder =
-    positiveButton(name, (_, _) => {
-      onClick
-    })
+    positiveButton(
+      name,
+      (_, _) => {
+        onClick
+      })
 
   @inline def positiveButton(
       name: CharSequence,
@@ -302,9 +304,11 @@ class AlertDialogBuilder(
   @inline def neutralButton(
       name: CharSequence = android.R.string.ok,
       onClick: => Unit = {}): AlertDialogBuilder =
-    neutralButton(name, (_, _) => {
-      onClick
-    })
+    neutralButton(
+      name,
+      (_, _) => {
+        onClick
+      })
 
   @inline def neutralButton(
       name: CharSequence,
@@ -316,9 +320,11 @@ class AlertDialogBuilder(
   @inline def negativeButton(
       name: CharSequence,
       onClick: => Unit): AlertDialogBuilder =
-    negativeButton(name, (_, _) => {
-      onClick
-    })
+    negativeButton(
+      name,
+      (_, _) => {
+        onClick
+      })
 
   @inline def negativeButton(
       name: CharSequence = android.R.string.no,

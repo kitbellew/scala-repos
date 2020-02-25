@@ -87,9 +87,11 @@ private[stream] class Throttle[T](
         if (willStop) completeStage()
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
 
       override def preStart(): Unit = previousTime = now()
 

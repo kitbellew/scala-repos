@@ -27,8 +27,10 @@ object Test {
         s"!! ExecutionContext.global.executor.getUncaughtExceptionHandler == $u")
 
     print("should just print out on uncaught: ")
-    u.uncaughtException(Thread.currentThread, new Throwable {
-      override def printStackTrace() { println("true") }
-    })
+    u.uncaughtException(
+      Thread.currentThread,
+      new Throwable {
+        override def printStackTrace() { println("true") }
+      })
   }
 }

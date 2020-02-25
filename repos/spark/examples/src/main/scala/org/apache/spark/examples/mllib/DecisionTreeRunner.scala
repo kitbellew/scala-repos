@@ -382,9 +382,11 @@ object DecisionTreeRunner {
     * due to the use of structural types, which leads to one reflection call per record.
     */
   // scalastyle:off structural.type
-  private[mllib] def meanSquaredError(model: {
-    def predict(features: Vector): Double
-  }, data: RDD[LabeledPoint]): Double = {
+  private[mllib] def meanSquaredError(
+      model: {
+        def predict(features: Vector): Double
+      },
+      data: RDD[LabeledPoint]): Double = {
     data
       .map { y =>
         val err = model.predict(y.features) - y.label

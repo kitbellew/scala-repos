@@ -427,13 +427,17 @@ package object extensions {
 
   def startCommand(project: Project, commandName: String)(
       body: => Unit): Unit = {
-    CommandProcessor.getInstance.executeCommand(project, new Runnable {
-      def run() {
-        inWriteAction {
-          body
+    CommandProcessor.getInstance.executeCommand(
+      project,
+      new Runnable {
+        def run() {
+          inWriteAction {
+            body
+          }
         }
-      }
-    }, commandName, null)
+      },
+      commandName,
+      null)
   }
 
   def inWriteAction[T](body: => T): T = {

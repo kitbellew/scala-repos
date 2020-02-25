@@ -16,12 +16,14 @@ import org.jboss.netty.{util => netty}
   */
 private[serverset2] object Epoch {
   def apply(period: Duration)(implicit timer: Timer): Epoch =
-    new Epoch(new Event[Unit] {
-      override def register(w: Witness[Unit]): Closable =
-        timer.schedule(period) {
-          w.notify(())
-        }
-    }, period)
+    new Epoch(
+      new Event[Unit] {
+        override def register(w: Witness[Unit]): Closable =
+          timer.schedule(period) {
+            w.notify(())
+          }
+      },
+      period)
 }
 
 private[serverset2] class Epoch(

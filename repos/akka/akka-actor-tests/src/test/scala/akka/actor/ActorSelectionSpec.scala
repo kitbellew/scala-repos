@@ -52,9 +52,12 @@ class ActorSelectionSpec
   val root = sysImpl.lookupRoot
 
   def empty(path: String) =
-    new EmptyLocalActorRef(sysImpl.provider, path match {
-      case RelativeActorPath(elems) ⇒ sysImpl.lookupRoot.path / elems
-    }, system.eventStream)
+    new EmptyLocalActorRef(
+      sysImpl.provider,
+      path match {
+        case RelativeActorPath(elems) ⇒ sysImpl.lookupRoot.path / elems
+      },
+      system.eventStream)
 
   val idProbe = TestProbe()
 

@@ -164,36 +164,48 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case tv: MappedBoolean[T] =>
-          tv.allSet(if (isNull) Empty else Full(v != 0L))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case tv: MappedBoolean[T] =>
+            tv.allSet(if (isNull) Empty else Full(v != 0L))
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case tv: MappedBoolean[T] =>
-          tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case tv: MappedBoolean[T] =>
+            tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
+        })
 
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case tv: MappedBoolean[T] =>
-          tv.allSet(if (v == null) Empty else Full(true))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case tv: MappedBoolean[T] =>
+            tv.allSet(if (v == null) Empty else Full(true))
+        })
 
   def buildSetBooleanValue(
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case tv: MappedBoolean[T] => tv.allSet(if (isNull) Empty else Full(v))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case tv: MappedBoolean[T] => tv.allSet(if (isNull) Empty else Full(v))
+        })
 
   /**
     * Given the driver type, return the string required to create the column in the database

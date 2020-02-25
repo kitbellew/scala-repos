@@ -509,9 +509,11 @@ object HttpEntity {
     def fromData(
         contentType: ContentType,
         chunks: Source[ByteString, Any]): HttpEntity.Chunked =
-      HttpEntity.Chunked(contentType, chunks.collect[ChunkStreamPart] {
-        case b: ByteString if b.nonEmpty ⇒ Chunk(b)
-      })
+      HttpEntity.Chunked(
+        contentType,
+        chunks.collect[ChunkStreamPart] {
+          case b: ByteString if b.nonEmpty ⇒ Chunk(b)
+        })
   }
 
   /**

@@ -51,11 +51,14 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
       semigroup: Semigroup[V]): Map[K, V] = {
     y.foldLeft(x) {
       case (z, kv) =>
-        z + ((kv._1, (x get kv._1) match {
-          case Some(u) =>
-            if (flip) semigroup.op(kv._2, u) else semigroup.op(u, kv._2)
-          case None => kv._2
-        }))
+        z + (
+          (
+            kv._1,
+            (x get kv._1) match {
+              case Some(u) =>
+                if (flip) semigroup.op(kv._2, u) else semigroup.op(u, kv._2)
+              case None => kv._2
+            }))
     }
   }
 

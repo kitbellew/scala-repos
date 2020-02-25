@@ -24,9 +24,9 @@ case class Thread(
   def isUnReadBy(user: User) = !isReadBy(user)
 
   def nbUnreadBy(user: User): Int =
-    isCreator(user).fold(posts count { post =>
-      post.isByInvited && post.isUnRead
-    }, posts count { post => post.isByCreator && post.isUnRead })
+    isCreator(user).fold(
+      posts count { post => post.isByInvited && post.isUnRead },
+      posts count { post => post.isByCreator && post.isUnRead })
 
   def nbUnread: Int = posts count (_.isUnRead)
 

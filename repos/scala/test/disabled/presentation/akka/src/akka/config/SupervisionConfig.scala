@@ -41,9 +41,10 @@ object Supervision {
         restartHandler: Procedure2[
           ActorRef,
           MaximumNumberOfRestartsWithinTimeRangeReached]) =
-      this(restartStrategy, worker.toList, { (aRef, max) =>
-        restartHandler.apply(aRef, max)
-      })
+      this(
+        restartStrategy,
+        worker.toList,
+        { (aRef, max) => restartHandler.apply(aRef, max) })
   }
 
   class Supervise(

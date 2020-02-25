@@ -2107,12 +2107,14 @@ object ScalaEvaluatorBuilderUtil {
   }
 
   def lazyValIndex(named: PsiNamedElement): Int = {
-    elementsWithSameNameIndex(named, {
-      case Both(ScalaPsiUtil.inNameContext(LazyVal(_)), lzy: ScBindingPattern)
-          if lzy.name == named.name =>
-        true
-      case _ => false
-    })
+    elementsWithSameNameIndex(
+      named,
+      {
+        case Both(ScalaPsiUtil.inNameContext(LazyVal(_)), lzy: ScBindingPattern)
+            if lzy.name == named.name =>
+          true
+        case _ => false
+      })
   }
 
   def defaultParameterMethodName(

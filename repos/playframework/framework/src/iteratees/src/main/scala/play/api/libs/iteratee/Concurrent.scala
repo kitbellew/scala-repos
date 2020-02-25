@@ -24,11 +24,13 @@ object Concurrent {
   private def timeoutFuture[A](v: A, delay: Long, unit: TimeUnit): Future[A] = {
 
     val p = Promise[A]()
-    timer.schedule(new java.util.TimerTask {
-      def run() {
-        p.success(v)
-      }
-    }, unit.toMillis(delay))
+    timer.schedule(
+      new java.util.TimerTask {
+        def run() {
+          p.success(v)
+        }
+      },
+      unit.toMillis(delay))
     p.future
   }
 

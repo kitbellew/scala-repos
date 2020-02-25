@@ -471,18 +471,24 @@ class CheckpointSuite
     val seqCollectFunc = (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
       rdd.map { case (p, a) => (p, a.toSeq) }.collect(): Any
 
-    testRDD(rdd => {
-      CheckpointSuite
-        .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner)
-    }, reliableCheckpoint, seqCollectFunc)
+    testRDD(
+      rdd => {
+        CheckpointSuite
+          .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner)
+      },
+      reliableCheckpoint,
+      seqCollectFunc)
 
     val longLineageRDD2 = generateFatPairRDD()
-    testRDDPartitions(rdd => {
-      CheckpointSuite.cogroup(
-        longLineageRDD2,
-        sc.makeRDD(1 to 2, 2).map(x => (x % 2, 1)),
-        partitioner)
-    }, reliableCheckpoint, seqCollectFunc)
+    testRDDPartitions(
+      rdd => {
+        CheckpointSuite.cogroup(
+          longLineageRDD2,
+          sc.makeRDD(1 to 2, 2).map(x => (x % 2, 1)),
+          partitioner)
+      },
+      reliableCheckpoint,
+      seqCollectFunc)
   }
 
   runTest("ZippedPartitionsRDD") { reliableCheckpoint: Boolean =>
@@ -514,23 +520,27 @@ class CheckpointSuite
   }
 
   runTest("PartitionerAwareUnionRDD") { reliableCheckpoint: Boolean =>
-    testRDD(rdd => {
-      new PartitionerAwareUnionRDD[(Int, Int)](
-        sc,
-        Array(
-          generateFatPairRDD(),
-          rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-        ))
-    }, reliableCheckpoint)
+    testRDD(
+      rdd => {
+        new PartitionerAwareUnionRDD[(Int, Int)](
+          sc,
+          Array(
+            generateFatPairRDD(),
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
+          ))
+      },
+      reliableCheckpoint)
 
-    testRDDPartitions(rdd => {
-      new PartitionerAwareUnionRDD[(Int, Int)](
-        sc,
-        Array(
-          generateFatPairRDD(),
-          rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-        ))
-    }, reliableCheckpoint)
+    testRDDPartitions(
+      rdd => {
+        new PartitionerAwareUnionRDD[(Int, Int)](
+          sc,
+          Array(
+            generateFatPairRDD(),
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
+          ))
+      },
+      reliableCheckpoint)
 
     // Test that the PartitionerAwareUnionRDD updates parent partitions
     // (PartitionerAwareUnionRDD.parents) after the parent RDD has been checkpointed and parent

@@ -89,13 +89,15 @@ object ClosableLazySpec extends Specification {
         lazy val cl: ClosableLazy[String, Unit] =
           new ClosableLazy[String, Unit] {
             protected def create() = {
-              ("banana", { () =>
-                val getResult = Future[String] {
-                  cl.get()
-                }
-                getResultPromise.completeWith(getResult)
-                Await.result(getResult, Duration(2, MINUTES))
-              })
+              (
+                "banana",
+                { () =>
+                  val getResult = Future[String] {
+                    cl.get()
+                  }
+                  getResultPromise.completeWith(getResult)
+                  Await.result(getResult, Duration(2, MINUTES))
+                })
             }
             protected def closeNotNeeded = ()
           }

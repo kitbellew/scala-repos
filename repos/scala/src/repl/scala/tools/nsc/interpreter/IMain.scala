@@ -824,12 +824,14 @@ class IMain(
       }
       val stackTrace = unwrapped stackTracePrefixString (!isWrapperInit(_))
 
-      withLastExceptionLock[String]({
-        directBind[Throwable]("lastException", unwrapped)(
-          StdReplTags.tagOfThrowable,
-          classTag[Throwable])
-        stackTrace
-      }, stackTrace)
+      withLastExceptionLock[String](
+        {
+          directBind[Throwable]("lastException", unwrapped)(
+            StdReplTags.tagOfThrowable,
+            classTag[Throwable])
+          stackTrace
+        },
+        stackTrace)
     }
 
     // TODO: split it out into a package object and a regular

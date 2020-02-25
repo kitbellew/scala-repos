@@ -245,12 +245,14 @@ object CPath {
         case head :: tail =>
           if (head.trim.length == 0) parse0(tail, acc)
           else
-            parse0(tail, (head match {
-              case "[*]"               => CPathArray
-              case IndexPattern(index) => CPathIndex(index.toInt)
+            parse0(
+              tail,
+              (head match {
+                case "[*]"               => CPathArray
+                case IndexPattern(index) => CPathIndex(index.toInt)
 
-              case name => CPathField(name)
-            }) :: acc)
+                case name => CPathField(name)
+              }) :: acc)
       }
 
     val properPath = if (path.startsWith(".")) path else "." + path

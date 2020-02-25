@@ -200,12 +200,14 @@ object WebSocket {
         json =>
           Json
             .fromJson[In](json)
-            .fold({ errors =>
-              throw WebSocketCloseException(
-                CloseMessage(
-                  Some(CloseCodes.Unacceptable),
-                  Json.stringify(JsError.toJson(errors))))
-            }, identity),
+            .fold(
+              { errors =>
+                throw WebSocketCloseException(
+                  CloseMessage(
+                    Some(CloseCodes.Unacceptable),
+                    Json.stringify(JsError.toJson(errors))))
+              },
+              identity),
         out => Json.toJson(out)
       )
     }
@@ -266,9 +268,11 @@ object WebSocket {
         // publisher however will close the socket, so, we need to ensure the enumerator only completes if EOF
         // is sent.
         val enumeratorCompletion = Promise[Enumerator[A]]()
-        val nonCompletingEnumerator = onEOF(enumerator, () => {
-          enumeratorCompletion.success(Enumerator.empty)
-        }) >>> Enumerator.flatten(enumeratorCompletion.future)
+        val nonCompletingEnumerator = onEOF(
+          enumerator,
+          () => {
+            enumeratorCompletion.success(Enumerator.empty)
+          }) >>> Enumerator.flatten(enumeratorCompletion.future)
         val publisher = Streams.enumeratorToPublisher(nonCompletingEnumerator)
         val (subscriber, _) = Streams.iterateeToSubscriber(iteratee)
         Flow.fromSinkAndSource(

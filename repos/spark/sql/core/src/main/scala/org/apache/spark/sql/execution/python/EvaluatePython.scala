@@ -92,16 +92,21 @@ object EvaluatePython {
 
     case (a: ArrayData, array: ArrayType) =>
       val values = new java.util.ArrayList[Any](a.numElements())
-      a.foreach(array.elementType, (_, e) => {
-        values.add(toJava(e, array.elementType))
-      })
+      a.foreach(
+        array.elementType,
+        (_, e) => {
+          values.add(toJava(e, array.elementType))
+        })
       values
 
     case (map: MapData, mt: MapType) =>
       val jmap = new java.util.HashMap[Any, Any](map.numElements())
-      map.foreach(mt.keyType, mt.valueType, (k, v) => {
-        jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
-      })
+      map.foreach(
+        mt.keyType,
+        mt.valueType,
+        (k, v) => {
+          jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
+        })
       jmap
 
     case (ud, udt: UserDefinedType[_]) => toJava(ud, udt.sqlType)

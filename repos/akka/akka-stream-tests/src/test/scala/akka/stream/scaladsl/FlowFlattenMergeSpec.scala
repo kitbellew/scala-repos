@@ -137,12 +137,14 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val ex = new Exception("buh")
       val latch = TestLatch()
       Source(1 to 3)
-        .flatMapMerge(10, {
-          case 1 ⇒ Source.fromPublisher(p)
-          case 2 ⇒
-            Await.ready(latch, 3.seconds)
-            throw ex
-        })
+        .flatMapMerge(
+          10,
+          {
+            case 1 ⇒ Source.fromPublisher(p)
+            case 2 ⇒
+              Await.ready(latch, 3.seconds)
+              throw ex
+          })
         .runWith(Sink.head)(mat)
       p.expectRequest()
       latch.countDown()

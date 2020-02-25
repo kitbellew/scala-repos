@@ -63,11 +63,14 @@ abstract class InlineRefactoringTestBase
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     //start to inline
     try {
-      ScalaUtils.runWriteActionDoNotRequestConfirmation(new Runnable {
-        def run() {
-          GenericInlineHandler.invoke(element, editor, new ScalaInlineHandler)
-        }
-      }, getProjectAdapter, "Test")
+      ScalaUtils.runWriteActionDoNotRequestConfirmation(
+        new Runnable {
+          def run() {
+            GenericInlineHandler.invoke(element, editor, new ScalaInlineHandler)
+          }
+        },
+        getProjectAdapter,
+        "Test")
       res = scalaFile.getText.substring(0, lastPsi.getTextOffset).trim //getImportStatements.map(_.getText()).mkString("\n")
     } catch {
       case e: RefactoringErrorHintException =>

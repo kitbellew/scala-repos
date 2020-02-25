@@ -167,11 +167,15 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     performTest(text, assumedText) { () =>
       CommandProcessor
         .getInstance()
-        .executeCommand(myFixture.getProject, new Runnable {
-          def run() {
-            myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
-          }
-        }, "", null)
+        .executeCommand(
+          myFixture.getProject,
+          new Runnable {
+            def run() {
+              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+            }
+          },
+          "",
+          null)
     }
   }
 

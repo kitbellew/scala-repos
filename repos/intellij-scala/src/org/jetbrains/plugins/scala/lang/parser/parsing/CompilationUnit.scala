@@ -77,10 +77,11 @@ object CompilationUnit {
                     parsePackagingBody(true)
                     k
                   } else {
-                    parsePackageSequence(false, {
-                      newMarker.done(ScalaElementTypes.PACKAGING);
-                      k
-                    })
+                    parsePackageSequence(
+                      false, {
+                        newMarker.done(ScalaElementTypes.PACKAGING);
+                        k
+                      })
                   }
                 }
                 case _ => {

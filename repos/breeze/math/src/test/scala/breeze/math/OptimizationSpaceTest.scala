@@ -375,16 +375,17 @@ class SparseOptimizationSpaceTest_Double
         xvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
         yvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
         zvs <- Arbitrary.arbitrary[List[(Int, Int, Double)]]
-      } yield ({
-        xvs.foreach(v => addToBuilder(xb, v))
-        xb.result()
-      }, {
-        yvs.foreach(v => addToBuilder(yb, v))
-        yb.result()
-      }, {
-        zvs.foreach(v => addToBuilder(zb, v))
-        zb.result()
-      })
+      } yield (
+        {
+          xvs.foreach(v => addToBuilder(xb, v))
+          xb.result()
+        }, {
+          yvs.foreach(v => addToBuilder(yb, v))
+          yb.result()
+        }, {
+          zvs.foreach(v => addToBuilder(zb, v))
+          zb.result()
+        })
 
     }
   }

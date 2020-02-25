@@ -181,12 +181,14 @@ sealed abstract class Heap[A] {
 
   /**Remove duplicate entries from the heap. O(n log n)*/
   def nub: Heap[A] =
-    fold(Empty[A], (_, leq, t) => {
-      val x = t.rootLabel.value
-      val xs = deleteMin
-      val zs = xs.dropWhile(leq(_, x))
-      zs.nub.insertWith(leq, x)
-    })
+    fold(
+      Empty[A],
+      (_, leq, t) => {
+        val x = t.rootLabel.value
+        val xs = deleteMin
+        val zs = xs.dropWhile(leq(_, x))
+        zs.nub.insertWith(leq, x)
+      })
 
   /**Construct heaps from each element in this heap and union them together into a new heap. O(n)*/
   def flatMap[B: Order](f: A => Heap[B]): Heap[B] =
@@ -229,11 +231,13 @@ sealed abstract class Heap[A] {
   private def splitWithList(f: List[A] => (List[A], List[A])) = {
     import std.list._
 
-    fold((Empty[A], Empty[A]), (_, leq, _) => {
-      val g = (x: List[A]) => fromDataWith(leq, x)
-      val x = f(toList)
-      (g(x._1), g(x._2))
-    })
+    fold(
+      (Empty[A], Empty[A]),
+      (_, leq, _) => {
+        val g = (x: List[A]) => fromDataWith(leq, x)
+        val x = f(toList)
+        (g(x._1), g(x._2))
+      })
   }
 
   override def toString = "<heap>"

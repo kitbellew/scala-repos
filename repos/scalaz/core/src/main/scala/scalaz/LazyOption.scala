@@ -147,10 +147,12 @@ sealed abstract class LazyOptionInstances {
       def point[A](a: => A): LazyOption[A] = lazySome(a)
       def empty[A]: LazyOption[A] = lazyNone
       def cozip[A, B](a: LazyOption[A \/ B]) =
-        a.fold({
-          case -\/(a) => -\/(lazySome(a))
-          case \/-(b) => \/-(lazySome(b))
-        }, -\/(lazyNone))
+        a.fold(
+          {
+            case -\/(a) => -\/(lazySome(a))
+            case \/-(b) => \/-(lazySome(b))
+          },
+          -\/(lazyNone))
       def zip[A, B](a: => LazyOption[A], b: => LazyOption[B]) = a zip b
       def unzip[A, B](a: LazyOption[(A, B)]) = a.unzip
 

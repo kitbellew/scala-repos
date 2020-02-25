@@ -80,11 +80,13 @@ trait IterateeSpecification {
   def timeout[A](a: => A, d: Duration)(
       implicit e: ExecutionContext): Future[A] = {
     val p = Promise[A]()
-    timer.schedule(new java.util.TimerTask {
-      def run() {
-        p.complete(Try(a))
-      }
-    }, d.toMillis)
+    timer.schedule(
+      new java.util.TimerTask {
+        def run() {
+          p.complete(Try(a))
+        }
+      },
+      d.toMillis)
     p.future
   }
 }

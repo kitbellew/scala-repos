@@ -544,16 +544,18 @@ class VM(
   }
 
   private def makeStackFrame(index: Int, frame: StackFrame): DebugStackFrame = {
-    val locals = ignoreErr({
-      frame.visibleVariables.zipWithIndex.map {
-        case (v, i) =>
-          DebugStackLocal(
-            i,
-            v.name,
-            valueSummary(frame.getValue(v)),
-            v.typeName())
-      }.toList
-    }, List.empty)
+    val locals = ignoreErr(
+      {
+        frame.visibleVariables.zipWithIndex.map {
+          case (v, i) =>
+            DebugStackLocal(
+              i,
+              v.name,
+              valueSummary(frame.getValue(v)),
+              v.typeName())
+        }.toList
+      },
+      List.empty)
 
     val numArgs = ignoreErr(frame.getArgumentValues.length, 0)
     val methodName = ignoreErr(frame.location.method().name(), "Method")

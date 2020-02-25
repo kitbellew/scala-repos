@@ -114,10 +114,12 @@ trait JdbcBackend extends RelationalBackend {
     def forName(name: String, executor: AsyncExecutor = null) =
       new InitialContext().lookup(name) match {
         case ds: DataSource =>
-          forDataSource(ds, executor match {
-            case null => AsyncExecutor.default(name)
-            case e    => e
-          })
+          forDataSource(
+            ds,
+            executor match {
+              case null => AsyncExecutor.default(name)
+              case e    => e
+            })
         case x =>
           throw new SlickException(
             "Expected a DataSource for JNDI name " + name + ", but got " + x)

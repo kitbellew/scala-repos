@@ -168,10 +168,13 @@ trait ScType {
   def recursiveVarianceUpdate(
       update: (ScType, Int) => (Boolean, ScType),
       variance: Int = 1): ScType = {
-    recursiveVarianceUpdateModifiable[Unit]((), (tp, v, T) => {
-      val (newTp, newV) = update(tp, v)
-      (newTp, newV, ())
-    }, variance)
+    recursiveVarianceUpdateModifiable[Unit](
+      (),
+      (tp, v, T) => {
+        val (newTp, newV) = update(tp, v)
+        (newTp, newV, ())
+      },
+      variance)
   }
 
   def recursiveVarianceUpdateModifiable[T](

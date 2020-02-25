@@ -431,9 +431,9 @@ private[hive] class HiveClientImpl(
       table: String,
       newParts: Seq[CatalogTablePartition]): Unit = withHiveState {
     val hiveTable = toHiveTable(getTable(db, table))
-    client.alterPartitions(table, newParts.map { p =>
-      toHivePartition(p, hiveTable)
-    }.asJava)
+    client.alterPartitions(
+      table,
+      newParts.map { p => toHivePartition(p, hiveTable) }.asJava)
   }
 
   override def getPartitionOption(
@@ -737,9 +737,10 @@ private[hive] class HiveClientImpl(
   private def toHivePartition(
       p: CatalogTablePartition,
       ht: HiveTable): HivePartition = {
-    new HivePartition(ht, p.spec.asJava, p.storage.locationUri.map { l =>
-      new Path(l)
-    }.orNull)
+    new HivePartition(
+      ht,
+      p.spec.asJava,
+      p.storage.locationUri.map { l => new Path(l) }.orNull)
   }
 
   private def fromHivePartition(hp: HivePartition): CatalogTablePartition = {

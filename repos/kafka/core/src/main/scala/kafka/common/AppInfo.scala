@@ -31,17 +31,21 @@ object AppInfo extends KafkaMetricsGroup {
       }
     }
 
-    newGauge("Version", new Gauge[String] {
-      def value = {
-        AppInfoParser.getVersion()
-      }
-    })
+    newGauge(
+      "Version",
+      new Gauge[String] {
+        def value = {
+          AppInfoParser.getVersion()
+        }
+      })
 
-    newGauge("CommitID", new Gauge[String] {
-      def value = {
-        AppInfoParser.getCommitId();
-      }
-    })
+    newGauge(
+      "CommitID",
+      new Gauge[String] {
+        def value = {
+          AppInfoParser.getCommitId();
+        }
+      })
 
     lock.synchronized {
       isRegistered = true

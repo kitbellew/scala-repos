@@ -164,9 +164,12 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       }
     val stmtTreeLineRange = statements flatMap convertStatement
     val importsLineRange = importsToLineRanges(content, imports)
-    (importsLineRange, stmtTreeLineRange.map {
-      case (stmt, _, lr)                            => (stmt, lr)
-    }, stmtTreeLineRange.map { case (stmt, tree, _) => (stmt, tree) })
+    (
+      importsLineRange,
+      stmtTreeLineRange.map {
+        case (stmt, _, lr) => (stmt, lr)
+      },
+      stmtTreeLineRange.map { case (stmt, tree, _) => (stmt, tree) })
   }
 
   /**

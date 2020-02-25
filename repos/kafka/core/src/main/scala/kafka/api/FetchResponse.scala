@@ -210,10 +210,12 @@ object FetchResponse {
     headerSize(requestVersion) +
       dataGroupedByTopic.foldLeft(0) {
         case (folded, (topic, partitionDataMap)) =>
-          val topicData = TopicData(topic, partitionDataMap.map {
-            case (topicAndPartition, partitionData) =>
-              (topicAndPartition.partition, partitionData)
-          })
+          val topicData = TopicData(
+            topic,
+            partitionDataMap.map {
+              case (topicAndPartition, partitionData) =>
+                (topicAndPartition.partition, partitionData)
+            })
           folded + topicData.sizeInBytes
       }
   }
@@ -312,10 +314,14 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
     dest,
     JavaConversions.seqAsJavaList(fetchResponse.dataGroupedByTopic.toList.map {
       case (topic, data) =>
-        new TopicDataSend(dest, TopicData(topic, data.map {
-          case (topicAndPartition, message) =>
-            (topicAndPartition.partition, message)
-        }))
+        new TopicDataSend(
+          dest,
+          TopicData(
+            topic,
+            data.map {
+              case (topicAndPartition, message) =>
+                (topicAndPartition.partition, message)
+            }))
     }))
 
   override def writeTo(channel: GatheringByteChannel): Long = {

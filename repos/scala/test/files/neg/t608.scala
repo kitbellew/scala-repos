@@ -12,7 +12,9 @@ trait CrashDueToTypeError {
     }
   }
 
-  def hylo[hs <: Bifunctor, ha, hb, hc](f: hb => hs { type s = hs; type a = ha }, g: hs {
-    type s = hs; type a = ha
-  } => hc)(x: hb): hc = g(f(x).bimap(id))
+  def hylo[hs <: Bifunctor, ha, hb, hc](
+      f: hb => hs { type s = hs; type a = ha },
+      g: hs {
+        type s = hs; type a = ha
+      } => hc)(x: hb): hc = g(f(x).bimap(id))
 }

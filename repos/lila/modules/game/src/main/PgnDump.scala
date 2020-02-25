@@ -71,10 +71,12 @@ final class PgnDump(
       imported: Option[ParsedPgn]): List[Tag] = gameLightUsers(game) match {
     case (wu, bu) =>
       List(
-        Tag(_.Event, imported.flatMap(_ tag "event") | {
-          if (game.imported) "Import"
-          else game.rated.fold("Rated game", "Casual game")
-        }),
+        Tag(
+          _.Event,
+          imported.flatMap(_ tag "event") | {
+            if (game.imported) "Import"
+            else game.rated.fold("Rated game", "Casual game")
+          }),
         Tag(_.Site, gameUrl(game.id)),
         Tag(
           _.Date,
@@ -86,9 +88,9 @@ final class PgnDump(
         Tag("BlackElo", rating(game.blackPlayer)),
         Tag("PlyCount", game.turns),
         Tag(_.Variant, game.variant.name.capitalize),
-        Tag(_.TimeControl, game.clock.fold("-") { c =>
-          s"${c.limit}+${c.increment}"
-        }),
+        Tag(
+          _.TimeControl,
+          game.clock.fold("-") { c => s"${c.limit}+${c.increment}" }),
         Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
         Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
         Tag(

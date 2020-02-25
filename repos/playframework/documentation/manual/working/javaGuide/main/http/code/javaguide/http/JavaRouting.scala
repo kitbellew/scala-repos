@@ -55,11 +55,15 @@ object JavaRouting extends Specification {
     "support reverse routing" in {
       running() { app =>
         implicit val mat = ActorMaterializer()(app.actorSystem)
-        header("Location", call(new MockJavaAction {
-          override def invocation =
-            F.Promise.pure(
-              new javaguide.http.routing.controllers.Application().index())
-        }, FakeRequest())) must beSome("/hello/Bob")
+        header(
+          "Location",
+          call(
+            new MockJavaAction {
+              override def invocation =
+                F.Promise.pure(
+                  new javaguide.http.routing.controllers.Application().index())
+            },
+            FakeRequest())) must beSome("/hello/Bob")
       }
     }
 

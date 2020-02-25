@@ -105,14 +105,16 @@ object LoadGenerator {
   ): Iterator[Event[Req, Rep]] = {
     var cur = start
     var curGroupSize = 0
-    mkHistory({ () =>
-      val evt = mkEvent(cur)
-      curGroupSize += 1
-      if (curGroupSize == groupSize) {
-        curGroupSize = 0
-        cur += interval
-      }
-      evt
-    }, num)
+    mkHistory(
+      { () =>
+        val evt = mkEvent(cur)
+        curGroupSize += 1
+        if (curGroupSize == groupSize) {
+          curGroupSize = 0
+          cur += interval
+        }
+        evt
+      },
+      num)
   }
 }

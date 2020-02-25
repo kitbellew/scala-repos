@@ -82,9 +82,13 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
 
   @Test def min_with_comparator(): Unit = {
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
-      testMinMax2(factory, toElem, true, new Comparator[T] {
-        override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
-      })
+      testMinMax2(
+        factory,
+        toElem,
+        true,
+        new Comparator[T] {
+          override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
+        })
     }
 
     test[jl.Integer](_.toInt, (x: jl.Integer, y: jl.Integer) => x.compareTo(y))
@@ -103,9 +107,13 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
 
   @Test def max_with_comparator(): Unit = {
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
-      testMinMax2(factory, toElem, false, new Comparator[T] {
-        override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
-      })
+      testMinMax2(
+        factory,
+        toElem,
+        false,
+        new Comparator[T] {
+          override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
+        })
     }
 
     test[jl.Integer](_.toInt, (x: jl.Integer, y: jl.Integer) => x.compareTo(y))

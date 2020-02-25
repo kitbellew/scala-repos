@@ -52,25 +52,33 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def createLogic(
             inheritedAttributes: Attributes): GraphStageLogic =
           new GraphStageLogic(shape) {
-            setHandler(in1, new InHandler {
-              override def onPush(): Unit = push(out1, grab(in1))
-              override def onUpstreamFinish(): Unit = complete(out1)
-            })
+            setHandler(
+              in1,
+              new InHandler {
+                override def onPush(): Unit = push(out1, grab(in1))
+                override def onUpstreamFinish(): Unit = complete(out1)
+              })
 
-            setHandler(in2, new InHandler {
-              override def onPush(): Unit = push(out2, grab(in2))
-              override def onUpstreamFinish(): Unit = complete(out2)
-            })
+            setHandler(
+              in2,
+              new InHandler {
+                override def onPush(): Unit = push(out2, grab(in2))
+                override def onUpstreamFinish(): Unit = complete(out2)
+              })
 
-            setHandler(out1, new OutHandler {
-              override def onPull(): Unit = pull(in1)
-              override def onDownstreamFinish(): Unit = cancel(in1)
-            })
+            setHandler(
+              out1,
+              new OutHandler {
+                override def onPull(): Unit = pull(in1)
+                override def onDownstreamFinish(): Unit = cancel(in1)
+              })
 
-            setHandler(out2, new OutHandler {
-              override def onPull(): Unit = pull(in2)
-              override def onDownstreamFinish(): Unit = cancel(in2)
-            })
+            setHandler(
+              out2,
+              new OutHandler {
+                override def onPull(): Unit = pull(in2)
+                override def onDownstreamFinish(): Unit = cancel(in2)
+              })
           }
 
         override def toString = "IdentityBidi"
@@ -96,29 +104,37 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def createLogic(
             inheritedAttributes: Attributes): GraphStageLogic =
           new GraphStageLogic(shape) {
-            setHandler(in1, new InHandler {
-              override def onPush(): Unit = push(out1, grab(in1))
+            setHandler(
+              in1,
+              new InHandler {
+                override def onPush(): Unit = push(out1, grab(in1))
 
-              override def onUpstreamFinish(): Unit = complete(out1)
-            })
+                override def onUpstreamFinish(): Unit = complete(out1)
+              })
 
-            setHandler(in2, new InHandler {
-              override def onPush(): Unit = push(out2, grab(in2))
+            setHandler(
+              in2,
+              new InHandler {
+                override def onPush(): Unit = push(out2, grab(in2))
 
-              override def onUpstreamFinish(): Unit = complete(out2)
-            })
+                override def onUpstreamFinish(): Unit = complete(out2)
+              })
 
-            setHandler(out1, new OutHandler {
-              override def onPull(): Unit = pull(in1)
+            setHandler(
+              out1,
+              new OutHandler {
+                override def onPull(): Unit = pull(in1)
 
-              override def onDownstreamFinish(): Unit = cancel(in1)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in1)
+              })
 
-            setHandler(out2, new OutHandler {
-              override def onPull(): Unit = pull(in2)
+            setHandler(
+              out2,
+              new OutHandler {
+                override def onPull(): Unit = pull(in2)
 
-              override def onDownstreamFinish(): Unit = cancel(in2)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in2)
+              })
           }
 
         override def toString = "IdentityBidi"
@@ -145,29 +161,37 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def createLogic(
             inheritedAttributes: Attributes): GraphStageLogic =
           new GraphStageLogic(shape) {
-            setHandler(in1, new InHandler {
-              override def onPush(): Unit = push(out1, grab(in1))
+            setHandler(
+              in1,
+              new InHandler {
+                override def onPush(): Unit = push(out1, grab(in1))
 
-              override def onUpstreamFinish(): Unit = complete(out1)
-            })
+                override def onUpstreamFinish(): Unit = complete(out1)
+              })
 
-            setHandler(in2, new InHandler {
-              override def onPush(): Unit = push(out2, grab(in2))
+            setHandler(
+              in2,
+              new InHandler {
+                override def onPush(): Unit = push(out2, grab(in2))
 
-              override def onUpstreamFinish(): Unit = complete(out2)
-            })
+                override def onUpstreamFinish(): Unit = complete(out2)
+              })
 
-            setHandler(out1, new OutHandler {
-              override def onPull(): Unit = pull(in1)
+            setHandler(
+              out1,
+              new OutHandler {
+                override def onPull(): Unit = pull(in1)
 
-              override def onDownstreamFinish(): Unit = cancel(in1)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in1)
+              })
 
-            setHandler(out2, new OutHandler {
-              override def onPull(): Unit = pull(in2)
+            setHandler(
+              out2,
+              new OutHandler {
+                override def onPull(): Unit = pull(in2)
 
-              override def onDownstreamFinish(): Unit = cancel(in2)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in2)
+              })
           }
 
         override def toString = "IdentityBidi"
@@ -197,29 +221,37 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def createLogic(
             inheritedAttributes: Attributes): GraphStageLogic =
           new GraphStageLogic(shape) {
-            setHandler(in1, new InHandler {
-              override def onPush(): Unit = push(out2, grab(in1))
+            setHandler(
+              in1,
+              new InHandler {
+                override def onPush(): Unit = push(out2, grab(in1))
 
-              override def onUpstreamFinish(): Unit = complete(out2)
-            })
+                override def onUpstreamFinish(): Unit = complete(out2)
+              })
 
-            setHandler(in2, new InHandler {
-              override def onPush(): Unit = push(out1, grab(in2))
+            setHandler(
+              in2,
+              new InHandler {
+                override def onPush(): Unit = push(out1, grab(in2))
 
-              override def onUpstreamFinish(): Unit = complete(out1)
-            })
+                override def onUpstreamFinish(): Unit = complete(out1)
+              })
 
-            setHandler(out1, new OutHandler {
-              override def onPull(): Unit = pull(in2)
+            setHandler(
+              out1,
+              new OutHandler {
+                override def onPull(): Unit = pull(in2)
 
-              override def onDownstreamFinish(): Unit = cancel(in2)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in2)
+              })
 
-            setHandler(out2, new OutHandler {
-              override def onPull(): Unit = pull(in1)
+            setHandler(
+              out2,
+              new OutHandler {
+                override def onPull(): Unit = pull(in1)
 
-              override def onDownstreamFinish(): Unit = cancel(in1)
-            })
+                override def onDownstreamFinish(): Unit = cancel(in1)
+              })
           }
 
         override def toString = "IdentityBidi"

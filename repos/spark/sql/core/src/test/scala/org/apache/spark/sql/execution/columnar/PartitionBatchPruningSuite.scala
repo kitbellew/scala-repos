@@ -61,10 +61,12 @@ class PartitionBatchPruningSuite
     // This creates accumulators, which get cleaned up after every single test,
     // so we need to do this before every test.
     val pruningData = sparkContext
-      .makeRDD((1 to 100).map { key =>
-        val string = if (((key - 1) / 10) % 2 == 0) null else key.toString
-        TestData(key, string)
-      }, 5)
+      .makeRDD(
+        (1 to 100).map { key =>
+          val string = if (((key - 1) / 10) % 2 == 0) null else key.toString
+          TestData(key, string)
+        },
+        5)
       .toDF()
     pruningData.registerTempTable("pruningData")
     sqlContext.cacheTable("pruningData")

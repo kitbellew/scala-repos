@@ -119,9 +119,12 @@ class ActivatorProjectBuilder
       settingsStep: SettingsStep): ModuleWizardStep = {
     settingsStep.addSettingsComponent(settingsComponents.getMainPanel)
 
-    new SdkSettingsStep(settingsStep, this, new Condition[SdkTypeId] {
-      def value(t: SdkTypeId): Boolean = t != null && t.isInstanceOf[JavaSdk]
-    }) {
+    new SdkSettingsStep(
+      settingsStep,
+      this,
+      new Condition[SdkTypeId] {
+        def value(t: SdkTypeId): Boolean = t != null && t.isInstanceOf[JavaSdk]
+      }) {
 
       override def updateDataModel() {
         settingsStep.getContext setProjectJdk myJdkComboBox.getSelectedJdk
@@ -164,8 +167,12 @@ class ActivatorProjectBuilder
   private def doWithProgress(body: => Unit, title: String) {
     ProgressManager
       .getInstance()
-      .runProcessWithProgressSynchronously(new Runnable {
-        override def run(): Unit = body
-      }, title, false, null)
+      .runProcessWithProgressSynchronously(
+        new Runnable {
+          override def run(): Unit = body
+        },
+        title,
+        false,
+        null)
   }
 }

@@ -159,12 +159,15 @@ private[deploy] class Master(
     webUi = new MasterWebUI(this, webUiPort)
     webUi.bind()
     masterWebUiUrl = "http://" + masterPublicAddress + ":" + webUi.boundPort
-    checkForWorkerTimeOutTask =
-      forwardMessageThread.scheduleAtFixedRate(new Runnable {
+    checkForWorkerTimeOutTask = forwardMessageThread.scheduleAtFixedRate(
+      new Runnable {
         override def run(): Unit = Utils.tryLogNonFatalError {
           self.send(CheckForWorkerTimeOut)
         }
-      }, 0, WORKER_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+      },
+      0,
+      WORKER_TIMEOUT_MS,
+      TimeUnit.MILLISECONDS)
 
     if (restServerEnabled) {
       val port = conf.getInt("spark.master.rest.port", 6066)
@@ -254,11 +257,14 @@ private[deploy] class Master(
       logInfo("I have been elected leader! New state: " + state)
       if (state == RecoveryState.RECOVERING) {
         beginRecovery(storedApps, storedDrivers, storedWorkers)
-        recoveryCompletionTask = forwardMessageThread.schedule(new Runnable {
-          override def run(): Unit = Utils.tryLogNonFatalError {
-            self.send(CompleteRecovery)
-          }
-        }, WORKER_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        recoveryCompletionTask = forwardMessageThread.schedule(
+          new Runnable {
+            override def run(): Unit = Utils.tryLogNonFatalError {
+              self.send(CompleteRecovery)
+            }
+          },
+          WORKER_TIMEOUT_MS,
+          TimeUnit.MILLISECONDS)
       }
     }
 

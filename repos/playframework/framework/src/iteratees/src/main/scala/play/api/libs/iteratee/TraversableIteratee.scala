@@ -92,9 +92,11 @@ object Traversable {
                 }
               case (x, left) if x.isEmpty => Done(inner, Input.El(left))
               case (toPush, left) =>
-                Done(inner.pureFlatFold {
-                  case Step.Cont(k) => k(Input.El(toPush)); case _ => inner
-                }, Input.El(left))
+                Done(
+                  inner.pureFlatFold {
+                    case Step.Cont(k) => k(Input.El(toPush)); case _ => inner
+                  },
+                  Input.El(left))
             }
 
           case Input.EOF => Done(inner, Input.EOF)

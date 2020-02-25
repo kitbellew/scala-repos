@@ -69,12 +69,15 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
     * @param control Control Node
     */
   protected def addNode(title: String, control: Node) {
-    controlsPane.add(new Label {
-      font = PropertiesNodes.TitleFont
-      labelFor = control
-      text = title
-      textAlignment = TextAlignment.Right
-    }.asInstanceOf[Node], 0, index)
+    controlsPane.add(
+      new Label {
+        font = PropertiesNodes.TitleFont
+        labelFor = control
+        text = title
+        textAlignment = TextAlignment.Right
+      }.asInstanceOf[Node],
+      0,
+      index)
     controlsPane.add(control, 1, index)
     index += 1
   }

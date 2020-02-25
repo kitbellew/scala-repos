@@ -138,10 +138,12 @@ object Flaggable {
       }
 
       override def show(addr: InetSocketAddress) =
-        "%s:%d".format(Option(addr.getAddress) match {
-          case Some(a) if a.isAnyLocalAddress => ""
-          case _                              => addr.getHostName
-        }, addr.getPort)
+        "%s:%d".format(
+          Option(addr.getAddress) match {
+            case Some(a) if a.isAnyLocalAddress => ""
+            case _                              => addr.getHostName
+          },
+          addr.getPort)
     }
 
   implicit val ofFile: Flaggable[File] = new Flaggable[File] {

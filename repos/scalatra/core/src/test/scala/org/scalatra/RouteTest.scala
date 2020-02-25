@@ -96,11 +96,14 @@ class RouteTestServlet extends ScalatraServlet {
     "shouldn't return"
   }
 
-  get("/fail", false, new RouteMatcher {
-    def apply(requestPath: String) = {
-      throw new RuntimeException("shouldn't execute"); None
-    }
-  }) {
+  get(
+    "/fail",
+    false,
+    new RouteMatcher {
+      def apply(requestPath: String) = {
+        throw new RuntimeException("shouldn't execute"); None
+      }
+    }) {
     "shouldn't return"
   }
 
@@ -129,9 +132,11 @@ class RouteTestServlet extends ScalatraServlet {
 class RouteTest extends ScalatraFunSuite {
   addServlet(classOf[RouteTestServlet], "/*")
 
-  addServlet(new ScalatraServlet {
-    get("/") { "root" }
-  }, "/subcontext/*")
+  addServlet(
+    new ScalatraServlet {
+      get("/") { "root" }
+    },
+    "/subcontext/*")
 
   test("routes can be a simple string") {
     get("/foo") {

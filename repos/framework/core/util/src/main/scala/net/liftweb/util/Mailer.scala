@@ -257,18 +257,24 @@ trait Mailer extends SimpleInjector {
     val subj = MimeUtility.encodeText(subject.subject, "utf-8", "Q")
     val message = new MimeMessage(session)
     message.setFrom(from)
-    message.setRecipients(Message.RecipientType.TO, info.flatMap {
-      case x: To => Some[To](x)
-      case _     => None
-    })
-    message.setRecipients(Message.RecipientType.CC, info.flatMap {
-      case x: CC => Some[CC](x)
-      case _     => None
-    })
-    message.setRecipients(Message.RecipientType.BCC, info.flatMap {
-      case x: BCC => Some[BCC](x)
-      case _      => None
-    })
+    message.setRecipients(
+      Message.RecipientType.TO,
+      info.flatMap {
+        case x: To => Some[To](x)
+        case _     => None
+      })
+    message.setRecipients(
+      Message.RecipientType.CC,
+      info.flatMap {
+        case x: CC => Some[CC](x)
+        case _     => None
+      })
+    message.setRecipients(
+      Message.RecipientType.BCC,
+      info.flatMap {
+        case x: BCC => Some[BCC](x)
+        case _      => None
+      })
     message.setSentDate(new java.util.Date())
     // message.setReplyTo(filter[MailTypes, ReplyTo](info, {case x @ ReplyTo(_) => Some(x); case _ => None}))
     message.setReplyTo(info.flatMap {

@@ -29,9 +29,11 @@ class MergeToComprehensions extends Phase {
     state.map(n =>
       ClientSideOp
         .mapResultSetMapping(n, keepType = false) { rsm =>
-          rsm.copy(from = convert(rsm.from), map = rsm.map.replace {
-            case r: Ref => r.untyped
-          })
+          rsm.copy(
+            from = convert(rsm.from),
+            map = rsm.map.replace {
+              case r: Ref => r.untyped
+            })
         }
         .infer())
 
@@ -147,9 +149,11 @@ class MergeToComprehensions extends Phase {
           // Check whether groupBy keys containing bind variables are returned for further use
           // and push the current Comprehension into a subquery if this is the case.
           val leakedPaths =
-            str1.collect({
-              case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 => rest
-            }, stopOnMatch = true)
+            str1.collect(
+              {
+                case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 => rest
+              },
+              stopOnMatch = true)
           val isParam = leakedPaths.nonEmpty && ({
             logger.debug(
               "Leaked paths to GroupBy keys: " + leakedPaths
@@ -175,10 +179,12 @@ class MergeToComprehensions extends Phase {
               if s == s1 =>
             applyReplacements(v, replacements1a, c1a).replace {
               case Apply(f: AggregateFunctionSymbol, ConstArray(ch)) :@ tpe =>
-                Apply(f, ConstArray(ch match {
-                  case StructNode(ConstArray(ch, _*)) => ch._2
-                  case n                              => n
-                }))(tpe)
+                Apply(
+                  f,
+                  ConstArray(ch match {
+                    case StructNode(ConstArray(ch, _*)) => ch._2
+                    case n                              => n
+                  }))(tpe)
             }
           case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 =>
             rest.foldLeft(b2a) { case (n, s) => n.select(s) }.infer()
@@ -492,13 +498,16 @@ class MergeToComprehensions extends Phase {
   def applyReplacements(n1: Node, r: Replacements, c: Comprehension): Node = {
     val Pure(StructNode(base), _) = c.select
     val baseM = base.iterator.toMap
-    n1.replace({
-      case n @ Select(_ :@ NominalType(ts, _), s) =>
-        r.get((ts, s)) match {
-          case Some(s2) => baseM(s2)
-          case None     => n
-        }
-    }, bottomUp = true, keepType = true)
+    n1.replace(
+      {
+        case n @ Select(_ :@ NominalType(ts, _), s) =>
+          r.get((ts, s)) match {
+            case Some(s2) => baseM(s2)
+            case None     => n
+          }
+      },
+      bottomUp = true,
+      keepType = true)
   }
 
   object FwdPathOnTypeSymbol {

@@ -225,10 +225,12 @@ trait MVCHelper extends LiftRules.DispatchPF {
     * redirect to the new URL, else display the messages
     * using S.error and redisplay the current page.
     */
-  protected def saveRedir(what: {
-    def validate: List[FieldError];
-    def save(): Boolean
-  }, where: String) = () => {
+  protected def saveRedir(
+      what: {
+        def validate: List[FieldError];
+        def save(): Boolean
+      },
+      where: String) = () => {
     what.validate match {
       case Nil => what.save(); S.redirectTo(where)
       case xs  => S.error(xs)

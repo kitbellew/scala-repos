@@ -197,9 +197,11 @@ trait Unapplies extends ast.TreeDSL {
       }
     val ifNull =
       if (constrParamss(cdef).head.isEmpty) FALSE else REF(NoneModule)
-    val body = nullSafe({
-      case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
-    }, ifNull)(Ident(unapplyParamName))
+    val body = nullSafe(
+      {
+        case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
+      },
+      ifNull)(Ident(unapplyParamName))
 
     atPos(cdef.pos.focus)(
       DefDef(caseMods, method, tparams, List(cparams), resultType, body)

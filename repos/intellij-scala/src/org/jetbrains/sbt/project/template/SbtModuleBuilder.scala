@@ -99,9 +99,13 @@ class SbtModuleBuilder
         "settings.label.create.empty.content.root.directories"))
 
     val step =
-      new SdkSettingsStep(settingsStep, this, new Condition[SdkTypeId] {
-        def value(t: SdkTypeId): Boolean = t != null && t.isInstanceOf[JavaSdk]
-      }) {
+      new SdkSettingsStep(
+        settingsStep,
+        this,
+        new Condition[SdkTypeId] {
+          def value(t: SdkTypeId): Boolean =
+            t != null && t.isInstanceOf[JavaSdk]
+        }) {
         override def updateDataModel() {
           sbtVersion = sbtVersionComboBox.getSelectedItem
           scalaVersion = scalaVersionComboBox.getSelectedItem

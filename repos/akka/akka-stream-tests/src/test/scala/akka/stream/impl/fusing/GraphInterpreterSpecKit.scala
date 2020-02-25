@@ -330,10 +330,12 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
         }
       )
 
-      setHandler(stageout, new OutHandler {
-        override def onPull(): Unit = mayFail(pull(stagein))
-        override def onDownstreamFinish(): Unit = mayFail(completeStage())
-      })
+      setHandler(
+        stageout,
+        new OutHandler {
+          override def onPull(): Unit = mayFail(pull(stagein))
+          override def onDownstreamFinish(): Unit = mayFail(completeStage())
+        })
 
       override def preStart(): Unit = mayFail(lastEvent += PreStart(stage))
       override def postStop(): Unit =

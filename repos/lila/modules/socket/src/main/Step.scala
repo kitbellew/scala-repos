@@ -75,11 +75,14 @@ object Step {
         add("comments", comments, comments.nonEmpty) _ compose
         add("variations", variations, variations.nonEmpty) _ compose
         add("opening", opening) _ compose
-        add("dests", dests.map {
-          _.map {
-            case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"
-          }.mkString(" ")
-        }) _ compose
+        add(
+          "dests",
+          dests.map {
+            _.map {
+              case (orig, dests) =>
+                s"${orig.piotr}${dests.map(_.piotr).mkString}"
+            }.mkString(" ")
+          }) _ compose
         add("drops", drops.map { drops => JsString(drops.map(_.key).mkString) }) _ compose
         add("crazy", crazyData)
     )(

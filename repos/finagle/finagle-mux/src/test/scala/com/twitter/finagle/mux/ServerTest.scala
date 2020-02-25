@@ -249,12 +249,13 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         new QueueTransport(writeq = serverToClient, readq = clientToServer)
 
       var promises: List[Promise[Response]] = Nil
-      val server = ServerDispatcher.newRequestResponse(transport, Service.mk {
-        _: Request =>
+      val server = ServerDispatcher.newRequestResponse(
+        transport,
+        Service.mk { _: Request =>
           val p = Promise[Response]()
           promises ::= p
           p
-      })
+        })
 
       clientToServer.offer(
         Message.Tdispatch(

@@ -49,10 +49,12 @@ class StreamingTest extends FunSuite with Eventually {
     val fail = new Promise[Unit]
 
     val server = startServer(echo, identity)
-    val client = connect(server.boundAddress, transport => {
-      if (!fail.isDefined) fail ensure transport.close()
-      transport
-    })
+    val client = connect(
+      server.boundAddress,
+      transport => {
+        if (!fail.isDefined) fail ensure transport.close()
+        transport
+      })
 
     val buf = Buf.Utf8(".")
     val req = get("/")
@@ -137,10 +139,12 @@ class StreamingTest extends FunSuite with Eventually {
       }
     }
 
-    val server = startServer(service, transport => {
-      if (!setFail.getAndSet(true)) fail ensure transport.close()
-      transport
-    })
+    val server = startServer(
+      service,
+      transport => {
+        if (!setFail.getAndSet(true)) fail ensure transport.close()
+        transport
+      })
     val client1 = connect(server.boundAddress, identity, "client1")
     val client2 = connect(server.boundAddress, identity, "client2")
 
@@ -188,10 +192,12 @@ class StreamingTest extends FunSuite with Eventually {
       }
     }
 
-    val server = startServer(service, transport => {
-      if (!setFail.getAndSet(true)) fail ensure transport.close()
-      transport
-    })
+    val server = startServer(
+      service,
+      transport => {
+        if (!setFail.getAndSet(true)) fail ensure transport.close()
+        transport
+      })
     val client1 = connect(server.boundAddress, identity, "client1")
     val client2 = connect(server.boundAddress, identity, "client2")
 

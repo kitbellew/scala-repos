@@ -792,9 +792,9 @@ class TypedLimitTest extends WordSpec with Matchers {
   import Dsl._
   "A TypedLimitJob" should {
     JobTest(new TypedLimitJob(_))
-      .source(TypedText.tsv[String]("input"), (0 to 100).map { i =>
-        Tuple1(i.toString)
-      })
+      .source(
+        TypedText.tsv[String]("input"),
+        (0 to 100).map { i => Tuple1(i.toString) })
       .typedSink(TypedText.tsv[String]("output")) { outBuf =>
         "not have more than the limited outputs" in {
           outBuf.size should be <= 10

@@ -648,9 +648,11 @@ object JavaStreamingContext {
       checkpointPath: String,
       creatingFunc: JFunction0[JavaStreamingContext]
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    })
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => {
+        creatingFunc.call().ssc
+      })
     new JavaStreamingContext(ssc)
   }
 
@@ -670,9 +672,12 @@ object JavaStreamingContext {
       creatingFunc: JFunction0[JavaStreamingContext],
       hadoopConf: Configuration
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    }, hadoopConf)
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => {
+        creatingFunc.call().ssc
+      },
+      hadoopConf)
     new JavaStreamingContext(ssc)
   }
 
@@ -695,9 +700,13 @@ object JavaStreamingContext {
       hadoopConf: Configuration,
       createOnError: Boolean
   ): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(checkpointPath, () => {
-      creatingFunc.call().ssc
-    }, hadoopConf, createOnError)
+    val ssc = StreamingContext.getOrCreate(
+      checkpointPath,
+      () => {
+        creatingFunc.call().ssc
+      },
+      hadoopConf,
+      createOnError)
     new JavaStreamingContext(ssc)
   }
 

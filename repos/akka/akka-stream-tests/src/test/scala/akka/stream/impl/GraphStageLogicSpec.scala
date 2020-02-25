@@ -53,9 +53,11 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
           }
         }
       )
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
     }
   }
 
@@ -64,13 +66,17 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
     val out = Outlet[Int]("out")
     override val shape = FlowShape(in, out)
     override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = push(out, grab(in))
-        override def onUpstreamFinish(): Unit = complete(out)
-      })
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = push(out, grab(in))
+          override def onUpstreamFinish(): Unit = complete(out)
+        })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
     }
   }
 
@@ -80,13 +86,15 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new GraphStageLogic(shape) {
 
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit =
-            emitMultiple(
-              out,
-              Iterator.empty,
-              () ⇒ emit(out, 42, () ⇒ completeStage()))
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit =
+              emitMultiple(
+                out,
+                Iterator.empty,
+                () ⇒ emit(out, 42, () ⇒ completeStage()))
+          })
 
       }
   }
@@ -210,12 +218,14 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
         override def createLogic(attr: Attributes) =
           new GraphStageLogic(shape) {
             setHandler(in, eagerTerminateInput)
-            setHandler(out, new OutHandler {
-              override def onPull(): Unit = {
-                completeStage()
-                testActor ! "pulled"
-              }
-            })
+            setHandler(
+              out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  completeStage()
+                  testActor ! "pulled"
+                }
+              })
             override def preStart(): Unit = testActor ! "preStart"
             override def postStop(): Unit = testActor ! "postStop"
           }

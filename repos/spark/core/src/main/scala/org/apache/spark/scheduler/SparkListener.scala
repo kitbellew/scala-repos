@@ -379,9 +379,11 @@ private[spark] object StatsReportListener extends Logging {
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
       getMetric: (TaskInfo, TaskMetrics) => Option[Long])
       : Option[Distribution] = {
-    extractDoubleDistribution(taskInfoMetrics, (info, metric) => {
-      getMetric(info, metric).map(_.toDouble)
-    })
+    extractDoubleDistribution(
+      taskInfoMetrics,
+      (info, metric) => {
+        getMetric(info, metric).map(_.toDouble)
+      })
   }
 
   def showDistribution(

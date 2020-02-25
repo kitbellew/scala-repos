@@ -463,12 +463,14 @@ trait ReificationSupport { self: SymbolTable =>
         val vparamss0 =
           mkParam(vparamss, extraFlags, excludeFlags = DEFERRED | PARAM)
         val tparams0 = mkTparams(tparams)
-        val parents0 = gen.mkParents(mods, if (mods.isCase) parents.filter {
-          case ScalaDot(tpnme.Product | tpnme.Serializable | tpnme.AnyRef) =>
-            false
-          case _ => true
-        }
-        else parents)
+        val parents0 = gen.mkParents(
+          mods,
+          if (mods.isCase) parents.filter {
+            case ScalaDot(tpnme.Product | tpnme.Serializable | tpnme.AnyRef) =>
+              false
+            case _ => true
+          }
+          else parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
         val templ =
@@ -1589,12 +1591,14 @@ trait ReificationSupport { self: SymbolTable =>
 
     object SyntacticExistentialType extends SyntacticExistentialTypeExtractor {
       def apply(tpt: Tree, where: List[Tree]): ExistentialTypeTree =
-        ExistentialTypeTree(tpt, where.map {
-          case md: MemberDef => md
-          case tree =>
-            throw new IllegalArgumentException(
-              s"$tree is not legal forSome definition")
-        })
+        ExistentialTypeTree(
+          tpt,
+          where.map {
+            case md: MemberDef => md
+            case tree =>
+              throw new IllegalArgumentException(
+                s"$tree is not legal forSome definition")
+          })
       def unapply(tree: Tree): Option[(Tree, List[MemberDef])] = tree match {
         case MaybeTypeTreeOriginal(ExistentialTypeTree(tpt, where)) =>
           Some((tpt, where))

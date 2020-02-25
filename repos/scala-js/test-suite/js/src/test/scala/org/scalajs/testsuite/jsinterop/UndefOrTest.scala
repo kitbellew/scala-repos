@@ -51,10 +51,12 @@ class UndefOrTest {
     assertEquals("ok", none[String].getOrElse("ok"))
 
     var defaultComputed = false
-    assertEquals("test", some("test") getOrElse {
-      defaultComputed = true
-      "ko"
-    })
+    assertEquals(
+      "test",
+      some("test") getOrElse {
+        defaultComputed = true
+        "ko"
+      })
     assertFalse(defaultComputed)
   }
 
@@ -124,9 +126,11 @@ class UndefOrTest {
   }
 
   @Test def collect(): Unit = {
-    assertEquals("ok", some("hello") collect {
-      case "hello" => "ok"
-    })
+    assertEquals(
+      "ok",
+      some("hello") collect {
+        case "hello" => "ok"
+      })
     assertTrue(js.isUndefined(some("hello") collect {
       case "notthis" => "ko"
     }))
@@ -141,9 +145,11 @@ class UndefOrTest {
       witness += 1
       true
     }
-    assertEquals("ok", some("hello") collect {
-      case x @ "hello" if guard(x) => "ok"
-    })
+    assertEquals(
+      "ok",
+      some("hello") collect {
+        case x @ "hello" if guard(x) => "ok"
+      })
     assertEquals(1, witness)
   }
 

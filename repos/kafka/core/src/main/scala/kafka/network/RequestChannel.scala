@@ -249,14 +249,19 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
     }
   )
 
-  newGauge("ResponseQueueSize", new Gauge[Int] {
-    def value = responseQueues.foldLeft(0) { (total, q) => total + q.size() }
-  })
+  newGauge(
+    "ResponseQueueSize",
+    new Gauge[Int] {
+      def value = responseQueues.foldLeft(0) { (total, q) => total + q.size() }
+    })
 
   for (i <- 0 until numProcessors) {
-    newGauge("ResponseQueueSize", new Gauge[Int] {
-      def value = responseQueues(i).size()
-    }, Map("processor" -> i.toString))
+    newGauge(
+      "ResponseQueueSize",
+      new Gauge[Int] {
+        def value = responseQueues(i).size()
+      },
+      Map("processor" -> i.toString))
   }
 
   /** Send a request to be handled, potentially blocking until there is room in the queue for the request */

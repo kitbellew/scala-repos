@@ -187,10 +187,12 @@ class TcpSpec
       tcpWriteProbe.close()
 
       // Need a write on the server side to detect the close event
-      awaitAssert({
-        serverConnection.write(testData)
-        serverConnection.expectClosed(_.isErrorClosed, 500.millis)
-      }, max = 5.seconds)
+      awaitAssert(
+        {
+          serverConnection.write(testData)
+          serverConnection.expectClosed(_.isErrorClosed, 500.millis)
+        },
+        max = 5.seconds)
       serverConnection.expectTerminated()
     }
 
@@ -224,10 +226,12 @@ class TcpSpec
       tcpReadProbe.tcpReadSubscription.cancel()
 
       // Need a write on the server side to detect the close event
-      awaitAssert({
-        serverConnection.write(testData)
-        serverConnection.expectClosed(_.isErrorClosed, 500.millis)
-      }, max = 5.seconds)
+      awaitAssert(
+        {
+          serverConnection.write(testData)
+          serverConnection.expectClosed(_.isErrorClosed, 500.millis)
+        },
+        max = 5.seconds)
       serverConnection.expectTerminated()
     }
 

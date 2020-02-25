@@ -83,9 +83,12 @@ class MarathonSchedulerActorTest
 
       expectMsg(5.seconds, TasksReconciled)
 
-      awaitAssert({
-        verify(driver).killTask(TaskID("task_a"))
-      }, 5.seconds, 10.millis)
+      awaitAssert(
+        {
+          verify(driver).killTask(TaskID("task_a"))
+        },
+        5.seconds,
+        10.millis)
     } finally {
       stopActor(schedulerActor)
     }

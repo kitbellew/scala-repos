@@ -370,9 +370,12 @@ object Future {
                 val notifyWinner =
                   // If we're the first to finish, invoke `cb`, passing residuals
                   if (won.compareAndSet(false, true))
-                    cb((a, fs.collect {
-                      case (i, _, rf, _, _) if i != ind => rf
-                    }))
+                    cb(
+                      (
+                        a,
+                        fs.collect {
+                          case (i, _, rf, _, _) if i != ind => rf
+                        }))
                   else {
                     Trampoline.done(
                       ()
@@ -489,9 +492,12 @@ object Future {
       implicit pool: ScheduledExecutorService =
         Strategy.DefaultTimeoutScheduler): Future[A] =
     Async { cb =>
-      pool.schedule(new Callable[Unit] {
-        def call = cb(a).run
-      }, delay.toMillis, TimeUnit.MILLISECONDS)
+      pool.schedule(
+        new Callable[Unit] {
+          def call = cb(a).run
+        },
+        delay.toMillis,
+        TimeUnit.MILLISECONDS)
     }
 
   /** Calls `Nondeterminism[Future].gatherUnordered`.

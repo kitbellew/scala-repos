@@ -160,8 +160,11 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     lazy val newPipe = toTypedPipe
       .map {
         case (r, c, x) =>
-          (r, c, if (mon.isNonZero(x)) { ring.one }
-          else { ring.zero })
+          (
+            r,
+            c,
+            if (mon.isNonZero(x)) { ring.one }
+            else { ring.zero })
       }
       .filter { kv => ring.isNonZero(kv._3) }
     MatrixLiteral(newPipe, this.sizeHint)
@@ -174,12 +177,16 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   def rowL2Normalize(
       implicit num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
-    val matD = MatrixLiteral(this.toTypedPipe.map {
-      case (r, c, x) => (r, c, num.toDouble(x))
-    }, this.sizeHint)
-    lazy val result = MatrixLiteral(this.toTypedPipe.map {
-      case (r, c, x) => (r, c, num.toDouble(x) * num.toDouble(x))
-    }, this.sizeHint).sumColVectors.toTypedPipe
+    val matD = MatrixLiteral(
+      this.toTypedPipe.map {
+        case (r, c, x) => (r, c, num.toDouble(x))
+      },
+      this.sizeHint)
+    lazy val result = MatrixLiteral(
+      this.toTypedPipe.map {
+        case (r, c, x) => (r, c, num.toDouble(x) * num.toDouble(x))
+      },
+      this.sizeHint).sumColVectors.toTypedPipe
       .map { case (r, c, x) => (r, r, 1 / scala.math.sqrt(x)) } // diagonal + inverse
     MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
   }
@@ -191,9 +198,11 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   def rowL1Normalize(
       implicit num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
-    val matD = MatrixLiteral(this.toTypedPipe.map {
-      case (r, c, x) => (r, c, num.toDouble(x).abs)
-    }, this.sizeHint)
+    val matD = MatrixLiteral(
+      this.toTypedPipe.map {
+        case (r, c, x) => (r, c, num.toDouble(x).abs)
+      },
+      this.sizeHint)
     lazy val result = matD.sumColVectors.toTypedPipe
       .map { case (r, c, x) => (r, r, 1 / x) } // diagonal + inverse
     MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD

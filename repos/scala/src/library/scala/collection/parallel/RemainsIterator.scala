@@ -701,9 +701,11 @@ trait SeqSplitter[+T]
         }
         val (selfszfrom, thatszfrom) =
           splitsizes.zip(szcum.init).span(_._2 < selfrem)
-        val (selfsizes, thatsizes) = (selfszfrom map { _._1 }, thatszfrom map {
-          _._1
-        })
+        val (selfsizes, thatsizes) = (
+          selfszfrom map { _._1 },
+          thatszfrom map {
+            _._1
+          })
 
         // split iterators
         val selfs = self.psplit(selfsizes: _*)

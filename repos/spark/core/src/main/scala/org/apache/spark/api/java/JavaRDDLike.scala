@@ -729,9 +729,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * applies a function f to all the elements of this RDD.
     */
   def foreachAsync(f: VoidFunction[T]): JavaFutureAction[Void] = {
-    new JavaFutureActionWrapper[Unit, Void](rdd.foreachAsync(x => f.call(x)), {
-      x => null.asInstanceOf[Void]
-    })
+    new JavaFutureActionWrapper[Unit, Void](
+      rdd.foreachAsync(x => f.call(x)),
+      { x => null.asInstanceOf[Void] })
   }
 
   /**

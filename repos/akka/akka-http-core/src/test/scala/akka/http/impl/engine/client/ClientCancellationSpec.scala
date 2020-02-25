@@ -18,9 +18,10 @@ class ClientCancellationSpec extends AkkaSpec("""
 
   "Http client connections" must {
     val address = TestUtils.temporaryServerAddress()
-    Http().bindAndHandleSync({ req ⇒
-      HttpResponse(headers = headers.Connection("close") :: Nil)
-    }, address.getHostName, address.getPort)(noncheckedMaterializer)
+    Http().bindAndHandleSync(
+      { req ⇒ HttpResponse(headers = headers.Connection("close") :: Nil) },
+      address.getHostName,
+      address.getPort)(noncheckedMaterializer)
 
     val addressTls = TestUtils.temporaryServerAddress()
     Http().bindAndHandleSync(

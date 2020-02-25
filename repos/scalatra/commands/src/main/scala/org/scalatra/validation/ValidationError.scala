@@ -117,27 +117,29 @@ class ValidationErrorSerializer(
     includeCode: Boolean = true,
     includeArgs: Boolean = true)
     extends CustomSerializer[ValidationError]((formats: Formats) ⇒
-      ({
-        case jo @ JObject(JField("message", _) :: _) ⇒
-          implicit val fmts = formats
-          new ValidationError(
-            (jo \ "message").extractOrElse(""),
-            (jo \ "field").extractOpt[String] map FieldName,
-            (jo \ "code").extractOpt[ErrorCode],
-            (jo \ "args").children)
-      }, {
-        case ValidationError(message, fieldName, code, args) ⇒
-          implicit val fmts = formats
-          val jv: JValue = ("message" -> message)
-          val wf: JValue =
-            fieldName map (fn ⇒ ("field" -> fn.name): JValue) getOrElse JNothing
-          val ec: JValue =
-            if (includeCode && code.isDefined)
-              ("code" -> (code map (Extraction.decompose(_)(formats))))
-            else JNothing
-          val arg: JValue =
-            if (includeArgs && args.nonEmpty)
-              ("args" -> Extraction.decompose(args)(formats))
-            else JNothing
-          jv merge wf merge ec merge arg
-      }))
+      (
+        {
+          case jo @ JObject(JField("message", _) :: _) ⇒
+            implicit val fmts = formats
+            new ValidationError(
+              (jo \ "message").extractOrElse(""),
+              (jo \ "field").extractOpt[String] map FieldName,
+              (jo \ "code").extractOpt[ErrorCode],
+              (jo \ "args").children)
+        },
+        {
+          case ValidationError(message, fieldName, code, args) ⇒
+            implicit val fmts = formats
+            val jv: JValue = ("message" -> message)
+            val wf: JValue =
+              fieldName map (fn ⇒ ("field" -> fn.name): JValue) getOrElse JNothing
+            val ec: JValue =
+              if (includeCode && code.isDefined)
+                ("code" -> (code map (Extraction.decompose(_)(formats))))
+              else JNothing
+            val arg: JValue =
+              if (includeArgs && args.nonEmpty)
+                ("args" -> Extraction.decompose(args)(formats))
+              else JNothing
+            jv merge wf merge ec merge arg
+        }))

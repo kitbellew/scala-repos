@@ -28,9 +28,12 @@ trait IntOperators extends Operators[Int] {
   def mapFunctions =
     List(-_, math.abs(_), _ % 2, _ % 3, _ % 4, _ % 150, _ % 500)
   def partialMapFunctions =
-    List({ case x          => -x }, { case 0 => -1; case x if x > 0 => x + 1 }, {
-      case x if x % 3 == 0 => x / 3
-    })
+    List(
+      { case x => -x },
+      { case 0 => -1; case x if x > 0 => x + 1 },
+      {
+        case x if x % 3 == 0 => x / 3
+      })
   def flatMapFunctions = List(
     (n: Int) =>
       if (n < 0) List() else if (n % 2 == 0) List(1, 2, 3) else List(4, 5, 6),

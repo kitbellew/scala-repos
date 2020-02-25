@@ -162,10 +162,13 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedDouble[T] =>
-          f.st(if (v == null) defaultValue else v.getTime)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDouble[T] =>
+            f.st(if (v == null) defaultValue else v.getTime)
+        })
 
   def buildSetStringValue(
       accessor: Method,
@@ -177,9 +180,12 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedDouble[T] => f.st(if (isNull) defaultValue else v)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDouble[T] => f.st(if (isNull) defaultValue else v)
+        })
 
   def buildSetActualValue(
       accessor: Method,

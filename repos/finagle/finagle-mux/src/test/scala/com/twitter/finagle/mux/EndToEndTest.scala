@@ -138,13 +138,15 @@ class EndToEndTest
     val server = Mux.server
       .configured(param.Tracer(tracer))
       .configured(param.Label("theServer"))
-      .serve("localhost:*", new Service[Request, Response] {
-        def apply(req: Request) = {
-          count += 1
-          if (count >= 1) Future.value(Response(req.body))
-          else client(req)
-        }
-      })
+      .serve(
+        "localhost:*",
+        new Service[Request, Response] {
+          def apply(req: Request) = {
+            count += 1
+            if (count >= 1) Future.value(Response(req.body))
+            else client(req)
+          }
+        })
 
     client = Mux.client
       .configured(param.Tracer(tracer))
@@ -313,9 +315,11 @@ EOF
 
       val server = Mux.server
         .configured(Lessor.Param(lessor))
-        .serve("localhost:*", new Service[mux.Request, mux.Response] {
-          def apply(req: Request) = ???
-        })
+        .serve(
+          "localhost:*",
+          new Service[mux.Request, mux.Response] {
+            def apply(req: Request) = ???
+          })
 
       val sr = new InMemoryStatsReceiver
 

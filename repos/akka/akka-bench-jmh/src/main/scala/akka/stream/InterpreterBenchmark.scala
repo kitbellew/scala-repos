@@ -79,13 +79,15 @@ object InterpreterBenchmark {
     override val in: akka.stream.Inlet[T] = Inlet[T]("in")
     in.id = 0
 
-    setHandler(in, new InHandler {
-      override def onPush(): Unit = {
-        expected -= 1
-        if (expected > 0) pull(in)
-        // Otherwise do nothing, it will exit the interpreter
-      }
-    })
+    setHandler(
+      in,
+      new InHandler {
+        override def onPush(): Unit = {
+          expected -= 1
+          if (expected > 0) pull(in)
+          // Otherwise do nothing, it will exit the interpreter
+        }
+      })
 
     def requestOne(): Unit = pull(in)
   }

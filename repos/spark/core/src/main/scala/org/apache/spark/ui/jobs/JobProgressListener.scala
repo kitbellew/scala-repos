@@ -267,10 +267,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     val stage = stageCompleted.stageInfo
     stageIdToInfo(stage.stageId) = stage
     val stageData =
-      stageIdToData.getOrElseUpdate((stage.stageId, stage.attemptId), {
-        logWarning("Stage completed for unknown stage " + stage.stageId)
-        new StageUIData
-      })
+      stageIdToData.getOrElseUpdate(
+        (stage.stageId, stage.attemptId), {
+          logWarning("Stage completed for unknown stage " + stage.stageId)
+          new StageUIData
+        })
 
     for ((id, info) <- stageCompleted.stageInfo.accumulables) {
       stageData.accumulables(id) = info
@@ -374,10 +375,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
     // tasks on the web ui that's never marked as complete.
     if (info != null && taskEnd.stageAttemptId != -1) {
       val stageData = stageIdToData
-        .getOrElseUpdate((taskEnd.stageId, taskEnd.stageAttemptId), {
-          logWarning("Task end for unknown stage " + taskEnd.stageId)
-          new StageUIData
-        })
+        .getOrElseUpdate(
+          (taskEnd.stageId, taskEnd.stageAttemptId), {
+            logWarning("Task end for unknown stage " + taskEnd.stageId)
+            new StageUIData
+          })
 
       for (accumulableInfo <- info.accumulables) {
         stageData.accumulables(accumulableInfo.id) = accumulableInfo
@@ -543,10 +545,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
   override def onExecutorMetricsUpdate(
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate) {
     for ((taskId, sid, sAttempt, accumUpdates) <- executorMetricsUpdate.accumUpdates) {
-      val stageData = stageIdToData.getOrElseUpdate((sid, sAttempt), {
-        logWarning("Metrics update for task in unknown stage " + sid)
-        new StageUIData
-      })
+      val stageData = stageIdToData.getOrElseUpdate(
+        (sid, sAttempt), {
+          logWarning("Metrics update for task in unknown stage " + sid)
+          new StageUIData
+        })
       val taskData = stageData.taskData.get(taskId)
       val metrics = TaskMetrics.fromAccumulatorUpdates(accumUpdates)
       taskData.foreach { t =>

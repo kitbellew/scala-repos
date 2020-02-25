@@ -30,11 +30,13 @@ case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
   def this(
       code: akka.japi.Function[ActorRef, Procedure[Any]],
       discardOld: Boolean) =
-    this((self: ActorRef) => {
-      val behavior = code(self)
-      val result: Actor.Receive = { case msg => behavior(msg) }
-      result
-    }, discardOld)
+    this(
+      (self: ActorRef) => {
+        val behavior = code(self)
+        val result: Actor.Receive = { case msg => behavior(msg) }
+        result
+      },
+      discardOld)
 
   /** Java API with default non-stacking behavior
     */
@@ -187,25 +189,27 @@ object Actor extends ListenerManagement {
     *  </pre>
     */
   def actorOf(clazz: Class[_ <: Actor]): ActorRef =
-    new LocalActorRef(() => {
-      import ReflectiveAccess.{createInstance, noParams, noArgs}
-      createInstance[Actor](clazz.asInstanceOf[Class[_]], noParams, noArgs) match {
-        case Right(actor) => actor
-        case Left(exception) =>
-          val cause = exception match {
-            case i: InvocationTargetException => i.getTargetException
-            case _                            => exception
-          }
+    new LocalActorRef(
+      () => {
+        import ReflectiveAccess.{createInstance, noParams, noArgs}
+        createInstance[Actor](clazz.asInstanceOf[Class[_]], noParams, noArgs) match {
+          case Right(actor) => actor
+          case Left(exception) =>
+            val cause = exception match {
+              case i: InvocationTargetException => i.getTargetException
+              case _                            => exception
+            }
 
-          throw new ActorInitializationException(
-            "Could not instantiate Actor of " + clazz +
-              "\nMake sure Actor is NOT defined inside a class/trait," +
-              "\nif so put it outside the class/trait, f.e. in a companion object," +
-              "\nOR try to change: 'actorOf[MyActor]' to 'actorOf(new MyActor)'.",
-            cause)
-      }
+            throw new ActorInitializationException(
+              "Could not instantiate Actor of " + clazz +
+                "\nMake sure Actor is NOT defined inside a class/trait," +
+                "\nif so put it outside the class/trait, f.e. in a companion object," +
+                "\nOR try to change: 'actorOf[MyActor]' to 'actorOf(new MyActor)'.",
+              cause)
+        }
 
-    }, None)
+      },
+      None)
 
   /** Creates an ActorRef out of the Actor. Allows you to pass in a factory function
     *  that creates the Actor. Please note that this function can be invoked multiple

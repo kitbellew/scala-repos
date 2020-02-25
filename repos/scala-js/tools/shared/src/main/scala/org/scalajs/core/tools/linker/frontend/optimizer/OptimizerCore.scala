@@ -393,11 +393,13 @@ private[optimizer] abstract class OptimizerCore(
                   newLabel,
                   acceptRecords = false,
                   returnedTypes = newSimpleState(Nil))
-                While(newCond, {
-                  val bodyScope =
-                    scope.withEnv(scope.env.withLabelInfo(label, info))
-                  transformStat(body)(bodyScope)
-                }, Some(Ident(newLabel, None)(labelIdent.pos)))
+                While(
+                  newCond, {
+                    val bodyScope =
+                      scope.withEnv(scope.env.withLabelInfo(label, info))
+                    transformStat(body)(bodyScope)
+                  },
+                  Some(Ident(newLabel, None)(labelIdent.pos)))
             }
         }
 

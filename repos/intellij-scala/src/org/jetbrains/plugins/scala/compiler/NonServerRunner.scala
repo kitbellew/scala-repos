@@ -81,10 +81,12 @@ class NonServerRunner(
               new InputStreamReader(p.getInputStream))
             new MyBase64StreamReader(reader, listener)
 
-            val processWaitFor = new ProcessWaitFor(p, new TaskExecutor {
-              override def executeTask(task: Runnable): Future[_] =
-                BaseOSProcessHandler.ExecutorServiceHolder.submit(task)
-            })
+            val processWaitFor = new ProcessWaitFor(
+              p,
+              new TaskExecutor {
+                override def executeTask(task: Runnable): Future[_] =
+                  BaseOSProcessHandler.ExecutorServiceHolder.submit(task)
+              })
 
             processWaitFor.setTerminationCallback(new Consumer[Integer] {
               override def consume(t: Integer) {

@@ -79,13 +79,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("send a message locally") {
     @volatile var message: String = null
-    val rpcEndpointRef = env.setupEndpoint("send-locally", new RpcEndpoint {
-      override val rpcEnv = env
+    val rpcEndpointRef = env.setupEndpoint(
+      "send-locally",
+      new RpcEndpoint {
+        override val rpcEnv = env
 
-      override def receive = {
-        case msg: String => message = msg
-      }
-    })
+        override def receive = {
+          case msg: String => message = msg
+        }
+      })
     rpcEndpointRef.send("hello")
     eventually(timeout(5 seconds), interval(10 millis)) {
       assert("hello" === message)
@@ -95,13 +97,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   test("send a message remotely") {
     @volatile var message: String = null
     // Set up a RpcEndpoint using env
-    env.setupEndpoint("send-remotely", new RpcEndpoint {
-      override val rpcEnv = env
+    env.setupEndpoint(
+      "send-remotely",
+      new RpcEndpoint {
+        override val rpcEnv = env
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case msg: String => message = msg
-      }
-    })
+        override def receive: PartialFunction[Any, Unit] = {
+          case msg: String => message = msg
+        }
+      })
 
     val anotherEnv =
       createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
@@ -352,16 +356,18 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   test("self: call in receive") {
     @volatile var callSelfSuccessfully = false
 
-    val endpointRef = env.setupEndpoint("self-receive", new RpcEndpoint {
-      override val rpcEnv = env
+    val endpointRef = env.setupEndpoint(
+      "self-receive",
+      new RpcEndpoint {
+        override val rpcEnv = env
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case m => {
-          self
-          callSelfSuccessfully = true
+        override def receive: PartialFunction[Any, Unit] = {
+          case m => {
+            self
+            callSelfSuccessfully = true
+          }
         }
-      }
-    })
+      })
 
     endpointRef.send("Foo")
 
@@ -402,14 +408,16 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     for (i <- 0 until 100) {
       @volatile var result = 0
       val endpointRef =
-        env.setupEndpoint(s"receive-in-sequence-$i", new ThreadSafeRpcEndpoint {
-          override val rpcEnv = env
+        env.setupEndpoint(
+          s"receive-in-sequence-$i",
+          new ThreadSafeRpcEndpoint {
+            override val rpcEnv = env
 
-          override def receive: PartialFunction[Any, Unit] = {
-            case m => result += 1
-          }
+            override def receive: PartialFunction[Any, Unit] = {
+              case m => result += 1
+            }
 
-        })
+          })
 
       (0 until 10) foreach { _ =>
         new Thread {
@@ -429,17 +437,19 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("stop(RpcEndpointRef) reentrant") {
     @volatile var onStopCount = 0
-    val endpointRef = env.setupEndpoint("stop-reentrant", new RpcEndpoint {
-      override val rpcEnv = env
+    val endpointRef = env.setupEndpoint(
+      "stop-reentrant",
+      new RpcEndpoint {
+        override val rpcEnv = env
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case m =>
-      }
+        override def receive: PartialFunction[Any, Unit] = {
+          case m =>
+        }
 
-      override def onStop(): Unit = {
-        onStopCount += 1
-      }
-    })
+        override def onStop(): Unit = {
+          onStopCount += 1
+        }
+      })
 
     env.stop(endpointRef)
     env.stop(endpointRef)
@@ -732,13 +742,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     try {
       @volatile var message: String = null
-      localEnv.setupEndpoint("send-authentication", new RpcEndpoint {
-        override val rpcEnv = localEnv
+      localEnv.setupEndpoint(
+        "send-authentication",
+        new RpcEndpoint {
+          override val rpcEnv = localEnv
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case msg: String => message = msg
-        }
-      })
+          override def receive: PartialFunction[Any, Unit] = {
+            case msg: String => message = msg
+          }
+        })
       val rpcEndpointRef =
         remoteEnv.setupEndpointRef(localEnv.address, "send-authentication")
       rpcEndpointRef.send("hello")

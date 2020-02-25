@@ -99,9 +99,10 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
               def makeLit[T1](s: Sum[T1]) = {
                 val (m1, fl) = recurse(memo, s.left)
                 val (m2, fr) = recurse(m1, s.right)
-                val lit = BinaryLit(fl, fr, {
-                  (f: Formula[T1], g: Formula[T1]) => Sum(f, g)
-                })
+                val lit = BinaryLit(
+                  fl,
+                  fr,
+                  { (f: Formula[T1], g: Formula[T1]) => Sum(f, g) })
                 (m2 + (s -> lit), lit)
               }
               makeLit(sum)
@@ -109,9 +110,10 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
               def makeLit[T1](p: Product[T1]) = {
                 val (m1, fl) = recurse(memo, p.left)
                 val (m2, fr) = recurse(m1, p.right)
-                val lit = BinaryLit(fl, fr, {
-                  (f: Formula[T1], g: Formula[T1]) => Product(f, g)
-                })
+                val lit = BinaryLit(
+                  fl,
+                  fr,
+                  { (f: Formula[T1], g: Formula[T1]) => Product(f, g) })
                 (m2 + (p -> lit), lit)
               }
               makeLit(prod)

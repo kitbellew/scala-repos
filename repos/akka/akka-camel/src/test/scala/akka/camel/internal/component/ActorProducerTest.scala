@@ -471,8 +471,10 @@ private[camel] trait ActorProducerFixture
   }
 
   def echoActor =
-    system.actorOf(Props(new Actor {
-      def receive = { case msg ⇒ sender() ! "received " + msg }
-    }), name = "echoActor")
+    system.actorOf(
+      Props(new Actor {
+        def receive = { case msg ⇒ sender() ! "received " + msg }
+      }),
+      name = "echoActor")
 
 }

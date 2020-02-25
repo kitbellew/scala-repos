@@ -7,10 +7,11 @@ import scalaz.scalacheck.ScalazProperties.applicative
 import scalaz.scalacheck.ScalazArbitrary._
 
 object ApplyTest extends SpecLite {
-  checkAll("List applyApplicative", {
-    implicit val F = Apply[List].applyApplicative
-    applicative.laws[λ[α => List[α] \/ α]]
-  })
+  checkAll(
+    "List applyApplicative", {
+      implicit val F = Apply[List].applyApplicative
+      applicative.laws[λ[α => List[α] \/ α]]
+    })
 
   "mapN" in {
     Apply[Option].apply2(some("1"), some("2"))(_ + _) must_=== (some("12"))

@@ -105,27 +105,35 @@ class OrcPartitionDiscoverySuite
       read.orc(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", "bar")
-        } yield Row(i, i.toString, pi, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", "bar")
+          } yield Row(i, i.toString, pi, ps))
 
-        checkAnswer(sql("SELECT intField, pi FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          _ <- Seq("foo", "bar")
-        } yield Row(i, pi))
+        checkAnswer(
+          sql("SELECT intField, pi FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            _ <- Seq("foo", "bar")
+          } yield Row(i, pi))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi = 1"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", "bar")
-        } yield Row(i, i.toString, 1, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi = 1"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", "bar")
+          } yield Row(i, i.toString, 1, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps = 'foo'"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, i.toString, pi, "foo"))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps = 'foo'"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, i.toString, pi, "foo"))
       }
     }
   }
@@ -144,27 +152,35 @@ class OrcPartitionDiscoverySuite
       read.orc(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", "bar")
-        } yield Row(i, pi, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", "bar")
+          } yield Row(i, pi, i.toString, ps))
 
-        checkAnswer(sql("SELECT intField, pi FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          _ <- Seq("foo", "bar")
-        } yield Row(i, pi))
+        checkAnswer(
+          sql("SELECT intField, pi FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            _ <- Seq("foo", "bar")
+          } yield Row(i, pi))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi = 1"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", "bar")
-        } yield Row(i, 1, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi = 1"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", "bar")
+          } yield Row(i, 1, i.toString, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps = 'foo'"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, pi, i.toString, "foo"))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps = 'foo'"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, pi, i.toString, "foo"))
       }
     }
   }
@@ -187,21 +203,27 @@ class OrcPartitionDiscoverySuite
         .registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, null.asInstanceOf[Integer])
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, i.toString, pi, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, null.asInstanceOf[Integer])
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, i.toString, pi, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi IS NULL"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, i.toString, null, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi IS NULL"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, i.toString, null, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps IS NULL"), for {
-          i <- 1 to 10
-          pi <- Seq(1, null.asInstanceOf[Integer])
-        } yield Row(i, i.toString, pi, null))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps IS NULL"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, null.asInstanceOf[Integer])
+          } yield Row(i, i.toString, pi, null))
       }
     }
   }
@@ -224,16 +246,20 @@ class OrcPartitionDiscoverySuite
         .registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, pi, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, pi, i.toString, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps IS NULL"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, pi, i.toString, null))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps IS NULL"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, pi, i.toString, null))
       }
     }
   }

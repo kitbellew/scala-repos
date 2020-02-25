@@ -96,9 +96,11 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
   // If a message send failed after retries are exhausted. The offset of the messages will also be removed from
   // the unacked offset list to avoid offset commit being stuck on that offset. In this case, the offset of that
   // message was not really acked, but was skipped. This metric records the number of skipped offsets.
-  newGauge("MirrorMaker-numDroppedMessages", new Gauge[Int] {
-    def value = numDroppedMessages.get()
-  })
+  newGauge(
+    "MirrorMaker-numDroppedMessages",
+    new Gauge[Int] {
+      def value = numDroppedMessages.get()
+    })
 
   def main(args: Array[String]) {
 

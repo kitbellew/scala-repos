@@ -192,9 +192,11 @@ class ConcurrentMemory(
                     val (post, phys) = toPhys[U](deps, hm._1, p)
                     (post, Some(phys))
                 }
-              (res.last._1, FanOut[U](res.collect {
-                case (_, Some(phys)) => phys
-              }))
+              (
+                res.last._1,
+                FanOut[U](res.collect {
+                  case (_, Some(phys)) => phys
+                }))
           }
 
         def cast[A](out: (HMap[ProdCons, PhysicalNode], PhysicalNode[A]))

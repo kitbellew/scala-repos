@@ -185,9 +185,15 @@ object TestFramework {
     if (mappedTests.isEmpty)
       (() => (), Nil, _ => () => ())
     else
-      createTestTasks(testLoader, runners.map {
-        case (tf, r) => (frameworks(tf), new TestRunner(r, listeners, log))
-      }, mappedTests, tests, log, listeners)
+      createTestTasks(
+        testLoader,
+        runners.map {
+          case (tf, r) => (frameworks(tf), new TestRunner(r, listeners, log))
+        },
+        mappedTests,
+        tests,
+        log,
+        listeners)
   }
 
   private[this] def order(

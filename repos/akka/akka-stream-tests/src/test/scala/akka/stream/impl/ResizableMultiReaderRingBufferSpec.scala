@@ -170,9 +170,12 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
         var activeCursors = List.tabulate(random.nextInt(8) + 1)(
           new StressTestCursor(_, 1 << bit))
         var stillWriting = 2 // give writing a slight bias, so as to somewhat "stretch" the buffer
-        val buf = new TestBuffer(1, 1 << bit, new Cursors {
-          def cursors = activeCursors
-        })
+        val buf = new TestBuffer(
+          1,
+          1 << bit,
+          new Cursors {
+            def cursors = activeCursors
+          })
         sb.setLength(0)
         while (activeCursors.nonEmpty) {
           log(s"Buf: ${buf.inspect}\n")

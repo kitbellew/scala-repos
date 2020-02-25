@@ -141,10 +141,13 @@ trait TestKitBase {
         .props(queue)
         .withDispatcher(CallingThreadDispatcher.Id),
       "%s-%d".format(testActorName, TestKit.testActorId.incrementAndGet))
-    awaitCond(ref match {
-      case r: RepointableRef ⇒ r.isStarted
-      case _ ⇒ true
-    }, 3.seconds.dilated, 10.millis)
+    awaitCond(
+      ref match {
+        case r: RepointableRef ⇒ r.isStarted
+        case _ ⇒ true
+      },
+      3.seconds.dilated,
+      10.millis)
     ref
   }
 

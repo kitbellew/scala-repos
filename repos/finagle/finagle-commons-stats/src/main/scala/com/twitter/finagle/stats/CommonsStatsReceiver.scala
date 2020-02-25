@@ -19,9 +19,11 @@ class CommonsStatsReceiver extends StatsReceiverWithCumulativeGauges {
 
   protected[this] def registerGauge(name: Seq[String], f: => Float): Unit = {
     Stats.STATS_PROVIDER
-      .makeGauge(variableName(name), new Supplier[java.lang.Float] {
-        def get = new java.lang.Float(f)
-      })
+      .makeGauge(
+        variableName(name),
+        new Supplier[java.lang.Float] {
+          def get = new java.lang.Float(f)
+        })
   }
 
   protected[this] def deregisterGauge(name: Seq[String]): Unit = {

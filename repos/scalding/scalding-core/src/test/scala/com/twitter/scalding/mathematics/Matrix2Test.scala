@@ -222,14 +222,18 @@ class Matrix2PropJob(args: Args) extends Job(args) {
   val mat = MatrixLiteral(tp1, NoClue)
 
   val tsv2 = TypedText.tsv[(Int, Double)]("col")
-  val col = MatrixLiteral(TypedPipe.from(tsv2).map {
-    case (idx, v) => (idx, (), v)
-  }, NoClue)
+  val col = MatrixLiteral(
+    TypedPipe.from(tsv2).map {
+      case (idx, v) => (idx, (), v)
+    },
+    NoClue)
 
   val tsv3 = TypedText.tsv[(Int, Double)]("row")
-  val row = MatrixLiteral(TypedPipe.from(tsv3).map {
-    case (idx, v) => ((), idx, v)
-  }, NoClue)
+  val row = MatrixLiteral(
+    TypedPipe.from(tsv3).map {
+      case (idx, v) => ((), idx, v)
+    },
+    NoClue)
 
   mat
     .binarizeAs[Boolean]

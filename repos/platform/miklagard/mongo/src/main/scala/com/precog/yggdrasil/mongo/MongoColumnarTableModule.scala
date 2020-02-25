@@ -283,9 +283,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         value match {
           case null =>
             acc
-              .getOrElseUpdate((rprefix, CNull), {
-                MutableNullColumn.empty()
-              })
+              .getOrElseUpdate(
+                (rprefix, CNull), {
+                  MutableNullColumn.empty()
+                })
               .asInstanceOf[MutableNullColumn]
               .unsafeTap(_.update(row, true))
 
@@ -294,65 +295,73 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             val value =
               "ObjectId(\"" + Hex.encodeHexString(objId.toByteArray) + "\")"
             val col = acc
-              .getOrElseUpdate((rprefix, CString), {
-                ArrayStrColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CString), {
+                  ArrayStrColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayStrColumn]
             col.update(row, value)
 
           case str: String =>
             val col = acc
-              .getOrElseUpdate((rprefix, CString), {
-                ArrayStrColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CString), {
+                  ArrayStrColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayStrColumn]
             col.update(row, str)
 
           case num: java.lang.Integer =>
             val col = acc
-              .getOrElseUpdate((rprefix, CLong), {
-                ArrayLongColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CLong), {
+                  ArrayLongColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayLongColumn]
             col.update(row, num.longValue)
 
           case num: java.lang.Long =>
             val col = acc
-              .getOrElseUpdate((rprefix, CLong), {
-                ArrayLongColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CLong), {
+                  ArrayLongColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayLongColumn]
             col.update(row, num.longValue)
 
           case num: java.lang.Float =>
             val col = acc
-              .getOrElseUpdate((rprefix, CDouble), {
-                ArrayDoubleColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CDouble), {
+                  ArrayDoubleColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayDoubleColumn]
             col.update(row, num.doubleValue)
 
           case num: java.lang.Double =>
             val col = acc
-              .getOrElseUpdate((rprefix, CDouble), {
-                ArrayDoubleColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CDouble), {
+                  ArrayDoubleColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayDoubleColumn]
             col.update(row, num.doubleValue)
 
           case bool: java.lang.Boolean =>
             val col = acc
-              .getOrElseUpdate((rprefix, CBoolean), {
-                ArrayBoolColumn.empty()
-              })
+              .getOrElseUpdate(
+                (rprefix, CBoolean), {
+                  ArrayBoolColumn.empty()
+                })
               .asInstanceOf[ArrayBoolColumn]
             col.update(row, bool.booleanValue)
 
           case array: java.util.ArrayList[_] if array.isEmpty =>
             val col = acc
-              .getOrElseUpdate((rprefix, CEmptyArray), {
-                MutableEmptyArrayColumn.empty()
-              })
+              .getOrElseUpdate(
+                (rprefix, CEmptyArray), {
+                  MutableEmptyArrayColumn.empty()
+                })
               .asInstanceOf[MutableEmptyArrayColumn]
             col.update(row, true)
 
@@ -368,9 +377,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             val keys = dbObj.keySet()
             if (keys.isEmpty) {
               acc
-                .getOrElseUpdate((rprefix, CEmptyObject), {
-                  MutableEmptyObjectColumn.empty()
-                })
+                .getOrElseUpdate(
+                  (rprefix, CEmptyObject), {
+                    MutableEmptyObjectColumn.empty()
+                  })
                 .asInstanceOf[MutableEmptyObjectColumn]
                 .unsafeTap(_.update(row, true))
             } else {
@@ -383,9 +393,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           case date: java.util.Date =>
             val col = acc
-              .getOrElseUpdate((rprefix, CDate), {
-                ArrayDateColumn.empty(sliceSize)
-              })
+              .getOrElseUpdate(
+                (rprefix, CDate), {
+                  ArrayDateColumn.empty(sliceSize)
+                })
               .asInstanceOf[ArrayDateColumn]
             col.update(row, new DateTime(date))
         }

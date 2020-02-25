@@ -33,13 +33,15 @@ final class Env(
       searchApi = api,
       maxPerPage = PaginatorMaxPerPage)
 
-  system.actorOf(Props(new Actor {
-    import lila.team.actorApi._
-    def receive = {
-      case InsertTeam(team) => api store team
-      case RemoveTeam(id)   => client deleteById Id(id)
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      import lila.team.actorApi._
+      def receive = {
+        case InsertTeam(team) => api store team
+        case RemoveTeam(id)   => client deleteById Id(id)
+      }
+    }),
+    name = ActorName)
 }
 
 object Env {

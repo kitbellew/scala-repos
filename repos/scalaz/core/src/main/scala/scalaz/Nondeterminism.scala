@@ -36,19 +36,25 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
       (x: (A \/ B, Seq[F[A \/ B]])) =>
         x match {
           case (-\/(a), Seq(br)) =>
-            -\/((a, map(br) {
-              case \/-(b) => b
-              case _ =>
-                sys.error(
-                  "broken residual handling in a Nondeterminism instance")
-            }))
+            -\/(
+              (
+                a,
+                map(br) {
+                  case \/-(b) => b
+                  case _ =>
+                    sys.error(
+                      "broken residual handling in a Nondeterminism instance")
+                }))
           case (\/-(b), Seq(ar)) =>
-            \/-((map(ar) {
-              case -\/(a) => a
-              case _ =>
-                sys.error(
-                  "broken residual handling in a Nondeterminism instance")
-            }, b))
+            \/-(
+              (
+                map(ar) {
+                  case -\/(a) => a
+                  case _ =>
+                    sys.error(
+                      "broken residual handling in a Nondeterminism instance")
+                },
+                b))
           case _ =>
             sys.error("broken Nondeterminism instance tossed out a residual")
         }

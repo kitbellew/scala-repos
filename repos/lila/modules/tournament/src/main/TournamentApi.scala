@@ -393,32 +393,38 @@ private[tournament] final class TournamentApi(
   }
 
   private object publish {
-    private val debouncer = system.actorOf(Props(new Debouncer(10 seconds, {
-      (_: Debouncer.Nothing) =>
-        fetchVisibleTournaments foreach { vis =>
-          site ! SendToFlag(
-            "tournament",
-            Json.obj(
-              "t" -> "reload",
-              "d" -> scheduleJsonView(vis)
-            ))
-        }
-        TournamentRepo.promotable foreach { tours =>
-          renderer ? TournamentTable(tours) map {
-            case view: play.twirl.api.Html => ReloadTournaments(view.body)
-          } pipeToSelection lobby
-        }
-    })))
+    private val debouncer = system.actorOf(
+      Props(
+        new Debouncer(
+          10 seconds,
+          { (_: Debouncer.Nothing) =>
+            fetchVisibleTournaments foreach { vis =>
+              site ! SendToFlag(
+                "tournament",
+                Json.obj(
+                  "t" -> "reload",
+                  "d" -> scheduleJsonView(vis)
+                ))
+            }
+            TournamentRepo.promotable foreach { tours =>
+              renderer ? TournamentTable(tours) map {
+                case view: play.twirl.api.Html => ReloadTournaments(view.body)
+              } pipeToSelection lobby
+            }
+          })))
     def apply() { debouncer ! Debouncer.Nothing }
   }
 
   private object updateTournamentStanding {
-    private val debouncer = system.actorOf(Props(new Debouncer(10 seconds, {
-      (tourId: String) =>
-        PairingRepo playingGameIds tourId foreach { ids =>
-          roundSocketHub ! TellIds(ids, TournamentStanding(tourId))
-        }
-    })))
+    private val debouncer = system.actorOf(
+      Props(
+        new Debouncer(
+          10 seconds,
+          { (tourId: String) =>
+            PairingRepo playingGameIds tourId foreach { ids =>
+              roundSocketHub ! TellIds(ids, TournamentStanding(tourId))
+            }
+          })))
     def apply(tour: Tournament) {
       debouncer ! tour.id
     }

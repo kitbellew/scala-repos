@@ -136,10 +136,12 @@ class HashMap[A, B] private[collection] (
   }
 
   private def writeObject(out: java.io.ObjectOutputStream) {
-    serializeTo(out, { entry =>
-      out.writeObject(entry.key)
-      out.writeObject(entry.value)
-    })
+    serializeTo(
+      out,
+      { entry =>
+        out.writeObject(entry.key)
+        out.writeObject(entry.value)
+      })
   }
 
   private def readObject(in: java.io.ObjectInputStream) {

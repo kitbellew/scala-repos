@@ -15,9 +15,11 @@ case class JsonQuestion(
         .map {
           case (filterKey, valueKeys) => {
             def build[X](dimension: Dimension[X]) =
-              Filter[X](dimension, valueKeys.flatMap {
-                Dimension.valueByKey(dimension, _)
-              }).some
+              Filter[X](
+                dimension,
+                valueKeys.flatMap {
+                  Dimension.valueByKey(dimension, _)
+                }).some
             filterKey match {
               case Perf.key             => build(Perf)
               case Phase.key            => build(Phase)

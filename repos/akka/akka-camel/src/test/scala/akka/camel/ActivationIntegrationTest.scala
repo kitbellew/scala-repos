@@ -37,15 +37,17 @@ class ActivationIntegrationTest
 
   "ActivationAware should be notified when endpoint is de-activated" in {
     val latch = TestLatch(1)
-    val actor = start(new Consumer {
-      def endpointUri = "direct:a3"
-      def receive = { case _ ⇒ {} }
+    val actor = start(
+      new Consumer {
+        def endpointUri = "direct:a3"
+        def receive = { case _ ⇒ {} }
 
-      override def postStop() {
-        super.postStop()
-        latch.countDown()
-      }
-    }, name = "direct-a3")
+        override def postStop() {
+          super.postStop()
+          latch.countDown()
+        }
+      },
+      name = "direct-a3")
     Await.result(camel.activationFutureFor(actor), timeoutDuration)
 
     system.stop(actor)

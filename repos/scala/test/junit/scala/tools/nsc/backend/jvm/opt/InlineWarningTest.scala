@@ -72,9 +72,11 @@ class InlineWarningTest extends ClearAfterClass {
       "T::m2()I is annotated @inline but cannot be inlined: the method is not final and may be overridden",
       "D::m2()I is annotated @inline but cannot be inlined: the method is not final and may be overridden"
     )
-    compile(code, allowMessage = i => {
-      count += 1; warns.exists(i.msg contains _)
-    })
+    compile(
+      code,
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     assert(count == 5, count) // TODO SD-85: 5th warning
   }
 
@@ -121,10 +123,12 @@ class InlineWarningTest extends ClearAfterClass {
       """.stripMargin
 
     var c = 0
-    compile(code, allowMessage = i => {
-      c += 1;
-      i.msg contains "operand stack at the callsite in C::t1()V contains more values"
-    })
+    compile(
+      code,
+      allowMessage = i => {
+        c += 1;
+        i.msg contains "operand stack at the callsite in C::t1()V contains more values"
+      })
     assert(c == 1, c)
   }
 
@@ -155,9 +159,12 @@ class InlineWarningTest extends ClearAfterClass {
 
     var c = 0
     val List(b) =
-      compile(scalaCode, List((javaCode, "A.java")), allowMessage = i => {
-        c += 1; warns.tail.exists(i.msg contains _)
-      })
+      compile(
+        scalaCode,
+        List((javaCode, "A.java")),
+        allowMessage = i => {
+          c += 1; warns.tail.exists(i.msg contains _)
+        })
     assert(c == 1, c)
 
     // no warnings here
@@ -227,9 +234,12 @@ class InlineWarningTest extends ClearAfterClass {
         |that would cause an IllegalAccessError when inlined into class N""".stripMargin
 
     var c = 0
-    compile(code, compiler = compilerWarnAll, allowMessage = i => {
-      c += 1; i.msg contains warn
-    })
+    compile(
+      code,
+      compiler = compilerWarnAll,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
   }
 

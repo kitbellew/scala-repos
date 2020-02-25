@@ -50,10 +50,12 @@ private[stat] object ChiSqTest extends Logging {
   case class Method(name: String, chiSqFunc: (Double, Double) => Double)
 
   // Pearson's chi-squared test: http://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test
-  val PEARSON = new Method("pearson", (observed: Double, expected: Double) => {
-    val dev = observed - expected
-    dev * dev / expected
-  })
+  val PEARSON = new Method(
+    "pearson",
+    (observed: Double, expected: Double) => {
+      val dev = observed - expected
+      dev * dev / expected
+    })
 
   // Null hypothesis for the two different types of chi-squared tests to be included in the result.
   object NullHypothesis extends Enumeration {

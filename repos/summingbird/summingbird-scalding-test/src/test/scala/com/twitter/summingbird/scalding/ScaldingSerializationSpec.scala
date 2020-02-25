@@ -75,9 +75,11 @@ class ScaldingSerializationSpecs extends WordSpec {
         source,
         testStore) { tup => List((1 -> tup._2)) }
 
-      val mode = HadoopTest(new Configuration, {
-        case x: ScaldingSource => buffer.get(x)
-      })
+      val mode = HadoopTest(
+        new Configuration,
+        {
+          case x: ScaldingSource => buffer.get(x)
+        })
       val intr = Interval.leftClosedRightOpen(
         Timestamp(0L),
         Timestamp(inWithTime.size.toLong))

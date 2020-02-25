@@ -149,14 +149,17 @@ object AdaptiveGradientDescent {
         state.history.sumOfSquaredGradients :+ (grad :* grad) :+ delta)
       val res: T = x + (dir :* stepSize :/ s)
       val tlambda = lambda * stepSize
-      space.zipMapValues.map(res, s, {
-        case (x_half, s_i) =>
-          if (x_half.abs < tlambda / s_i) {
-            0.0
-          } else {
-            (x_half - math.signum(x_half) * tlambda / s_i)
-          }
-      })
+      space.zipMapValues.map(
+        res,
+        s,
+        {
+          case (x_half, s_i) =>
+            if (x_half.abs < tlambda / s_i) {
+              0.0
+            } else {
+              (x_half - math.signum(x_half) * tlambda / s_i)
+            }
+        })
     }
 
     override def determineStepSize(

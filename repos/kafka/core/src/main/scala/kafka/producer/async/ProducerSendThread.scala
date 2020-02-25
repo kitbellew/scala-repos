@@ -43,9 +43,12 @@ class ProducerSendThread[K, V](
     null.asInstanceOf[K],
     null.asInstanceOf[V])
 
-  newGauge("ProducerQueueSize", new Gauge[Int] {
-    def value = queue.size
-  }, Map("clientId" -> clientId))
+  newGauge(
+    "ProducerQueueSize",
+    new Gauge[Int] {
+      def value = queue.size
+    },
+    Map("clientId" -> clientId))
 
   override def run {
     try {

@@ -162,9 +162,11 @@ object ResourceMatcher {
       for {
         portsMatch <- portsMatchOpt
         if meetsAllConstraints
-      } yield ResourceMatch(scalarMatchResults.collect {
-        case m: ScalarMatch => m
-      }, portsMatch)
+      } yield ResourceMatch(
+        scalarMatchResults.collect {
+          case m: ScalarMatch => m
+        },
+        portsMatch)
     } else {
       None
     }

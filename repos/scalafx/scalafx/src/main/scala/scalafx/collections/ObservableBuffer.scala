@@ -539,9 +539,12 @@ class ObservableBuffer[T](
     */
   def sort()(implicit typeTag: WeakTypeTag[T]) {
     if (typeTag.tpe <:< typeOf[Comparable[_]]) {
-      jfxc.FXCollections.sort(delegate, new ju.Comparator[T] {
-        def compare(p1: T, p2: T) = p1.asInstanceOf[Comparable[T]].compareTo(p2)
-      })
+      jfxc.FXCollections.sort(
+        delegate,
+        new ju.Comparator[T] {
+          def compare(p1: T, p2: T) =
+            p1.asInstanceOf[Comparable[T]].compareTo(p2)
+        })
     } else {
       throw new IllegalStateException(
         "Type of this Observable List does not implement " +
@@ -556,10 +559,12 @@ class ObservableBuffer[T](
     *           or `false` otherwise.
     */
   def sort(lt: (T, T) => Boolean) {
-    jfxc.FXCollections.sort(delegate, new ju.Comparator[T] {
-      def compare(p1: T, p2: T) =
-        if (lt(p1, p2)) -1 else if (lt(p2, p1)) 1 else 0
-    })
+    jfxc.FXCollections.sort(
+      delegate,
+      new ju.Comparator[T] {
+        def compare(p1: T, p2: T) =
+          if (lt(p1, p2)) -1 else if (lt(p2, p1)) 1 else 0
+      })
   }
 
   import scalafx.collections.ObservableBuffer._

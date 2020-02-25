@@ -98,11 +98,13 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     var reader: IndexReader = null
 
     try {
-      template.usingTempDirectoryWithHandler("index-activator", None)({
-        case io: IOException =>
-          error("Can't process templates list", io);
-          Map.empty[String, ActivatorRepoProcessor.DocData]
-      }, { case io: IOException => }) { extracted =>
+      template.usingTempDirectoryWithHandler("index-activator", None)(
+        {
+          case io: IOException =>
+            error("Can't process templates list", io);
+            Map.empty[String, ActivatorRepoProcessor.DocData]
+        },
+        { case io: IOException => }) { extracted =>
         ZipUtil.extract(location, extracted, null)
 
         import org.apache.lucene

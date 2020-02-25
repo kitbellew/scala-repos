@@ -49,13 +49,16 @@ trait Scheduler {
       message: Any)(
       implicit executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
-    schedule(initialDelay, interval, new Runnable {
-      def run = {
-        receiver ! message
-        if (receiver.isTerminated)
-          throw new SchedulerException("timer active for terminated actor")
-      }
-    })
+    schedule(
+      initialDelay,
+      interval,
+      new Runnable {
+        def run = {
+          receiver ! message
+          if (receiver.isTerminated)
+            throw new SchedulerException("timer active for terminated actor")
+        }
+      })
 
   /**
     * Schedules a function to be run repeatedly with an initial delay and a
@@ -109,9 +112,11 @@ trait Scheduler {
       message: Any)(
       implicit executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
-    scheduleOnce(delay, new Runnable {
-      override def run = receiver ! message
-    })
+    scheduleOnce(
+      delay,
+      new Runnable {
+        override def run = receiver ! message
+      })
 
   /**
     * Schedules a function to be run once with a delay, i.e. a time period that has

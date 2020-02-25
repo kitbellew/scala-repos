@@ -146,9 +146,11 @@ class ClusterClientTest
     val client = Client(mycluster)
 
     val count = 100
-    Await.result(Future.collect((0 until count) map { n =>
-      client.set("foo" + n, Buf.Utf8("bar" + n))
-    }), TimeOut)
+    Await.result(
+      Future.collect((0 until count) map { n =>
+        client.set("foo" + n, Buf.Utf8("bar" + n))
+      }),
+      TimeOut)
 
     val tmpClients = testServers map {
       case (server) =>

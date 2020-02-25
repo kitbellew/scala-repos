@@ -82,11 +82,14 @@ abstract class PlayableConnector(activity: SActivity) {
 
   private def startTimer() {
     timer = new Timer()
-    timer.schedule(new TimerTask {
-      def run() {
-        runOnUiThread(updateUI(ON_HEARTBEAT))
-      }
-    }, timerInterval, timerInterval)
+    timer.schedule(
+      new TimerTask {
+        def run() {
+          runOnUiThread(updateUI(ON_HEARTBEAT))
+        }
+      },
+      timerInterval,
+      timerInterval)
   }
 
   activity.onPause {

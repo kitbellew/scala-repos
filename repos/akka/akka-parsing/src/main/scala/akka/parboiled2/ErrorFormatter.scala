@@ -111,9 +111,11 @@ class ErrorFormatter(
       import RuleTrace._
       trace.terminal match {
         case NotPredicate(_, x) ⇒
-          math.max(trace.prefix.collectFirst {
-            case NonTerminal(Atomic, off) ⇒ off + x
-          } getOrElse x, len)
+          math.max(
+            trace.prefix.collectFirst {
+              case NonTerminal(Atomic, off) ⇒ off + x
+            } getOrElse x,
+            len)
         case _ ⇒ len
       }
     }

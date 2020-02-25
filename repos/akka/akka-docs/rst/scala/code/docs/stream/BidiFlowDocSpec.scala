@@ -82,12 +82,14 @@ object BidiFlowDocSpec {
           // this holds the current message length or -1 if at a boundary
           var needed = -1
 
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
-              if (isClosed(in)) run()
-              else pull(in)
-            }
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                if (isClosed(in)) run()
+                else pull(in)
+              }
+            })
           setHandler(
             in,
             new InHandler {

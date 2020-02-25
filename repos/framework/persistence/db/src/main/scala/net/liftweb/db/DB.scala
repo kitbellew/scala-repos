@@ -203,11 +203,13 @@ trait DB extends Loggable {
           if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
         logger.debug(
           "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
-        new SuperConnection(c, () => {
-          logger.debug(
-            "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
-          c.close
-        })
+        new SuperConnection(
+          c,
+          () => {
+            logger.debug(
+              "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
+            c.close
+          })
       })
 
     val cmConn = for {

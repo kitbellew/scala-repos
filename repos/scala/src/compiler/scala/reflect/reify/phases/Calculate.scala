@@ -51,9 +51,11 @@ trait Calculate {
         if (reifyDebug)
           println(
             "boundSym: %s of type %s"
-              .format(tree.symbol, (tree.productIterator.toList collect {
-                case tt: TypeTree => tt
-              }).headOption.getOrElse(TypeTree(tree.tpe))))
+              .format(
+                tree.symbol,
+                (tree.productIterator.toList collect {
+                  case tt: TypeTree => tt
+                }).headOption.getOrElse(TypeTree(tree.tpe))))
         registerLocalSymbol(tree.symbol, currMetalevel)
 
         bindRelatedSymbol(tree.symbol.sourceModule, "sourceModule")

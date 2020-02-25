@@ -46,10 +46,12 @@ abstract class JUnitRouteTestBase extends RouteTest {
     }
 
   protected def completeWithValueToString[T](value: RequestVal[T]): Route =
-    handleWith1(value, new Handler1[T] {
-      def apply(ctx: RequestContext, t: T): RouteResult =
-        ctx.complete(t.toString)
-    })
+    handleWith1(
+      value,
+      new Handler1[T] {
+        def apply(ctx: RequestContext, t: T): RouteResult =
+          ctx.complete(t.toString)
+      })
 }
 abstract class JUnitRouteTest extends JUnitRouteTestBase {
   private[this] val _systemResource = new ActorSystemResource

@@ -23,12 +23,14 @@ object MyBuild extends Build {
       fullClasspath in Runtime) map {
       case ((conf, names), p, c, t, r) =>
         println("Checking: " + conf.name)
-        checkClasspath(conf match {
-          case Provided => p
-          case Compile  => c
-          case Test     => t
-          case Runtime  => r
-        }, names.toSet)
+        checkClasspath(
+          conf match {
+            case Provided => p
+            case Compile  => c
+            case Test     => t
+            case Runtime  => r
+          },
+          names.toSet)
     }
   }
 

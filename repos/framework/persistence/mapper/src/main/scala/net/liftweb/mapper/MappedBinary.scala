@@ -311,15 +311,18 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedText[T] =>
-          val toSet = v match {
-            case null  => null
-            case other => other
-          }
-          f.data() = toSet
-          f.orgData() = toSet
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedText[T] =>
+            val toSet = v match {
+              case null  => null
+              case other => other
+            }
+            f.data() = toSet
+            f.orgData() = toSet
+        })
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit = null
@@ -473,15 +476,18 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedFakeClob[T] =>
-          val toSet = v match {
-            case null  => null
-            case other => other
-          }
-          f.data() = toSet
-          f.orgData() = toSet
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedFakeClob[T] =>
+            val toSet = v match {
+              case null  => null
+              case other => other
+            }
+            f.data() = toSet
+            f.orgData() = toSet
+        })
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit = null

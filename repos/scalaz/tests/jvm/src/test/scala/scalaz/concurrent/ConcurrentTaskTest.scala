@@ -27,9 +27,11 @@ object ConcurrentTaskTest extends SpecLite {
       def enqueue(taskId: Int) =
         q = q.enqueue((taskId, Thread.currentThread().getName))
 
-      val es = Executors.newFixedThreadPool(1, new ThreadFactory {
-        def newThread(p1: Runnable) = new Thread(p1, forked)
-      })
+      val es = Executors.newFixedThreadPool(
+        1,
+        new ThreadFactory {
+          def newThread(p1: Runnable) = new Thread(p1, forked)
+        })
 
       val sync = new SyncVar[Boolean]
 

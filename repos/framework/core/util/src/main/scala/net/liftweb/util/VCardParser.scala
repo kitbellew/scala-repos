@@ -48,9 +48,11 @@ object VCardParser extends Parsers {
   case class VCardEntry(key: VCardKey, value: List[String])
 
   lazy val multiLineSep = opt(elem('\n') ~ elem(' '))
-  lazy val value = (multiLineSep ~> elem("value", { c =>
-    !c.isControl && c != ';'
-  }) <~ multiLineSep).* ^^ { case l => l.mkString }
+  lazy val value = (multiLineSep ~> elem(
+    "value",
+    { c => !c.isControl && c != ';' }) <~ multiLineSep).* ^^ {
+    case l => l.mkString
+  }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
   lazy val key =
     elem("key", { c => c.isLetterOrDigit || c == '-' || c == '_' }).+ ^^ {

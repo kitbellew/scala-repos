@@ -29,16 +29,22 @@ private[master] class ApplicationSource(val application: ApplicationInfo)
     application.desc.name,
     System.currentTimeMillis())
 
-  metricRegistry.register(MetricRegistry.name("status"), new Gauge[String] {
-    override def getValue: String = application.state.toString
-  })
+  metricRegistry.register(
+    MetricRegistry.name("status"),
+    new Gauge[String] {
+      override def getValue: String = application.state.toString
+    })
 
-  metricRegistry.register(MetricRegistry.name("runtime_ms"), new Gauge[Long] {
-    override def getValue: Long = application.duration
-  })
+  metricRegistry.register(
+    MetricRegistry.name("runtime_ms"),
+    new Gauge[Long] {
+      override def getValue: Long = application.duration
+    })
 
-  metricRegistry.register(MetricRegistry.name("cores"), new Gauge[Int] {
-    override def getValue: Int = application.coresGranted
-  })
+  metricRegistry.register(
+    MetricRegistry.name("cores"),
+    new Gauge[Int] {
+      override def getValue: Int = application.coresGranted
+    })
 
 }

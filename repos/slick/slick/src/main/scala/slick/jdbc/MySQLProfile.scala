@@ -188,13 +188,16 @@ trait MySQLProfile extends JdbcProfile { profile =>
       )
       var first = true
       Subquery(
-        Bind(s1, j, p.replace {
-          case Select(Ref(s), ElementSymbol(2)) if s == s1 =>
-            val r = RowNum(countSym, first)
-            first = false
-            r
-          case r @ Ref(s) if s == s1 => r.untyped
-        }),
+        Bind(
+          s1,
+          j,
+          p.replace {
+            case Select(Ref(s), ElementSymbol(2)) if s == s1 =>
+              val r = RowNum(countSym, first)
+              first = false
+              r
+            case r @ Ref(s) if s == s1 => r.untyped
+          }),
         Subquery.Default
       ).infer()
     }

@@ -124,35 +124,45 @@ object Serializers {
 
     override def pickle(picklee: PlayException, builder: PBuilder): Unit = {
       def writeIntField(key: String, value: Int): Unit = {
-        builder.putField(key, { b =>
-          b.hintTag(intPickler.tag)
-          intPickler.pickle(value, b)
-        })
+        builder.putField(
+          key,
+          { b =>
+            b.hintTag(intPickler.tag)
+            intPickler.pickle(value, b)
+          })
       }
       def writeIntOptField(key: String, value: Integer): Unit = {
-        builder.putField(key, { b =>
-          b.hintTag(intOptPickler.tag)
-          intOptPickler
-            .pickle(if (value == null) None else Some(value.intValue), b)
-        })
+        builder.putField(
+          key,
+          { b =>
+            b.hintTag(intOptPickler.tag)
+            intOptPickler
+              .pickle(if (value == null) None else Some(value.intValue), b)
+          })
       }
       def writeStringField(key: String, value: String): Unit = {
-        builder.putField(key, { b =>
-          b.hintTag(stringPickler.tag)
-          stringPickler.pickle(value, b)
-        })
+        builder.putField(
+          key,
+          { b =>
+            b.hintTag(stringPickler.tag)
+            stringPickler.pickle(value, b)
+          })
       }
       def writeStringOptField(key: String, value: String): Unit = {
-        builder.putField(key, { b =>
-          b.hintTag(stringOptPickler.tag)
-          stringOptPickler.pickle(Option(value), b)
-        })
+        builder.putField(
+          key,
+          { b =>
+            b.hintTag(stringOptPickler.tag)
+            stringOptPickler.pickle(Option(value), b)
+          })
       }
       def writeThrowableField(key: String, value: Throwable): Unit = {
-        builder.putField(key, { b =>
-          b.hintTag(throwablePicklerUnpickler.tag)
-          throwablePicklerUnpickler.pickle(value, b)
-        })
+        builder.putField(
+          key,
+          { b =>
+            b.hintTag(throwablePicklerUnpickler.tag)
+            throwablePicklerUnpickler.pickle(value, b)
+          })
       }
 
       builder.pushHints()

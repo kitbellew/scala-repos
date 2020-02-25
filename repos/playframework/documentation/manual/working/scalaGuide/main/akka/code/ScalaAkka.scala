@@ -85,9 +85,11 @@ package scalaguide.akka {
 
       "allow using the scheduler" in withActorSystem { system =>
         import akka.actor._
-        val testActor = system.actorOf(Props(new Actor() {
-          def receive = { case _: String => }
-        }), name = "testActor")
+        val testActor = system.actorOf(
+          Props(new Actor() {
+            def receive = { case _: String => }
+          }),
+          name = "testActor")
         //#schedule-actor
         import scala.concurrent.duration._
 

@@ -114,10 +114,12 @@ object Trees {
 
   case class Assign(lhs: Tree, rhs: Tree)(implicit val pos: Position)
       extends Tree {
-    require(lhs match {
-      case _: VarRef | _: DotSelect | _: BracketSelect => true
-      case _                                           => false
-    }, s"Invalid lhs for Assign: $lhs")
+    require(
+      lhs match {
+        case _: VarRef | _: DotSelect | _: BracketSelect => true
+        case _                                           => false
+      },
+      s"Invalid lhs for Assign: $lhs")
   }
 
   case class Return(expr: Tree)(implicit val pos: Position) extends Tree
@@ -181,10 +183,12 @@ object Trees {
   case class Spread(items: Tree)(implicit val pos: Position) extends Tree
 
   case class Delete(prop: Tree)(implicit val pos: Position) extends Tree {
-    require(prop match {
-      case _: DotSelect | _: BracketSelect => true
-      case _                               => false
-    }, s"Invalid prop for Delete: $prop")
+    require(
+      prop match {
+        case _: DotSelect | _: BracketSelect => true
+        case _                               => false
+      },
+      s"Invalid prop for Delete: $prop")
   }
 
   /** Unary operation (always preserves pureness).

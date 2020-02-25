@@ -744,9 +744,11 @@ abstract class TreeGen {
         (if (pos != NoPosition) wrapped.withPoint(pos.point) else pos).makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
-          Function(List(atPos(pat.pos) {
-            ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
-          }), body) setPos splitpos
+          Function(
+            List(atPos(pat.pos) {
+              ValDef(Modifiers(PARAM), name.toTermName, tpt, EmptyTree)
+            }),
+            body) setPos splitpos
         case None =>
           atPos(splitpos) {
             mkVisitor(
@@ -1043,9 +1045,11 @@ abstract class TreeGen {
       case Typed(id @ Ident(name), tpt)
           if (treeInfo.isVarPattern(id) && name != nme.WILDCARD) =>
         atPos(tree.pos.withPoint(id.pos.point)) {
-          Bind(name, atPos(tree.pos.withStart(tree.pos.point)) {
-            Typed(Ident(nme.WILDCARD), tpt)
-          })
+          Bind(
+            name,
+            atPos(tree.pos.withStart(tree.pos.point)) {
+              Typed(Ident(nme.WILDCARD), tpt)
+            })
         }
       case Apply(fn @ Apply(_, _), args) =>
         treeCopy.Apply(tree, transform(fn), transformTrees(args))

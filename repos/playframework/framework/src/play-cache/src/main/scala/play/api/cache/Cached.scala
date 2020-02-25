@@ -56,9 +56,12 @@ class Cached @Inject() (cache: CacheApi) {
     * @param duration Cache duration (in seconds)
     */
   def apply(key: RequestHeader => String, duration: Int): CachedBuilder = {
-    new CachedBuilder(cache, key, {
-      case (_: ResponseHeader) => Duration(duration, SECONDS)
-    })
+    new CachedBuilder(
+      cache,
+      key,
+      {
+        case (_: ResponseHeader) => Duration(duration, SECONDS)
+      })
   }
 
   /**
@@ -144,9 +147,11 @@ object Cached {
   def apply(
       key: RequestHeader => String,
       duration: Int): UnboundCachedBuilder = {
-    new UnboundCachedBuilder(key, {
-      case (_: ResponseHeader) => Duration(duration, SECONDS)
-    })
+    new UnboundCachedBuilder(
+      key,
+      {
+        case (_: ResponseHeader) => Duration(duration, SECONDS)
+      })
   }
 
   /**

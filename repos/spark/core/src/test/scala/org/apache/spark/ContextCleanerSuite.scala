@@ -312,10 +312,12 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
       sc.env.blockManager.master
-        .getMatchingBlockIds({
-          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-          case _                                             => false
-        }, askSlaves = true)
+        .getMatchingBlockIds(
+          {
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+            case _                                             => false
+          },
+          askSlaves = true)
         .isEmpty)
   }
 
@@ -355,10 +357,12 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
       sc.env.blockManager.master
-        .getMatchingBlockIds({
-          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-          case _                                             => false
-        }, askSlaves = true)
+        .getMatchingBlockIds(
+          {
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+            case _                                             => false
+          },
+          askSlaves = true)
         .isEmpty)
   }
 }
@@ -438,10 +442,12 @@ class SortShuffleContextCleanerSuite
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
       sc.env.blockManager.master
-        .getMatchingBlockIds({
-          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-          case _                                             => false
-        }, askSlaves = true)
+        .getMatchingBlockIds(
+          {
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+            case _                                             => false
+          },
+          askSlaves = true)
         .isEmpty)
   }
 }
@@ -623,25 +629,31 @@ class CleanerTester(
       toBeCheckpointIds.synchronized { toBeCheckpointIds.isEmpty }
 
   private def getRDDBlocks(rddId: Int): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(_ match {
-      case RDDBlockId(`rddId`, _) => true
-      case _                      => false
-    }, askSlaves = true)
+    blockManager.master.getMatchingBlockIds(
+      _ match {
+        case RDDBlockId(`rddId`, _) => true
+        case _                      => false
+      },
+      askSlaves = true)
   }
 
   private def getShuffleBlocks(shuffleId: Int): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(_ match {
-      case ShuffleBlockId(`shuffleId`, _, _)      => true
-      case ShuffleIndexBlockId(`shuffleId`, _, _) => true
-      case _                                      => false
-    }, askSlaves = true)
+    blockManager.master.getMatchingBlockIds(
+      _ match {
+        case ShuffleBlockId(`shuffleId`, _, _)      => true
+        case ShuffleIndexBlockId(`shuffleId`, _, _) => true
+        case _                                      => false
+      },
+      askSlaves = true)
   }
 
   private def getBroadcastBlocks(broadcastId: Long): Seq[BlockId] = {
-    blockManager.master.getMatchingBlockIds(_ match {
-      case BroadcastBlockId(`broadcastId`, _) => true
-      case _                                  => false
-    }, askSlaves = true)
+    blockManager.master.getMatchingBlockIds(
+      _ match {
+        case BroadcastBlockId(`broadcastId`, _) => true
+        case _                                  => false
+      },
+      askSlaves = true)
   }
 
   private def blockManager = sc.env.blockManager

@@ -654,9 +654,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         new RegularSwitchMaker(scrutSym, matchFailGenOverride, unchecked)
       // TODO: if patterns allow switch but the type of the scrutinee doesn't, cast (type-test) the scrutinee to the corresponding switchable type and switch on the result
       if (regularSwitchMaker.switchableTpe(dealiasWiden(scrutSym.tpe))) {
-        val caseDefsWithDefault = regularSwitchMaker(cases map { c =>
-          (scrutSym, c)
-        }, pt)
+        val caseDefsWithDefault =
+          regularSwitchMaker(cases map { c => (scrutSym, c) }, pt)
         if (caseDefsWithDefault isEmpty) None // not worth emitting a switch.
         else {
           // match on scrutSym -- converted to an int if necessary -- not on scrut directly (to avoid duplicating scrut)

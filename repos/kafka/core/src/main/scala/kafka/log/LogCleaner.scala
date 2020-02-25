@@ -86,10 +86,12 @@ class LogCleaner(
   private val cleaners = (0 until config.numThreads).map(new CleanerThread(_))
 
   /* a metric to track the maximum utilization of any thread's buffer in the last cleaning */
-  newGauge("max-buffer-utilization-percent", new Gauge[Int] {
-    def value: Int =
-      cleaners.map(_.lastStats).map(100 * _.bufferUtilization).max.toInt
-  })
+  newGauge(
+    "max-buffer-utilization-percent",
+    new Gauge[Int] {
+      def value: Int =
+        cleaners.map(_.lastStats).map(100 * _.bufferUtilization).max.toInt
+    })
   /* a metric to track the recopy rate of each thread's last cleaning */
   newGauge(
     "cleaner-recopy-percent",
@@ -103,9 +105,11 @@ class LogCleaner(
     }
   )
   /* a metric to track the maximum cleaning time for the last cleaning from each thread */
-  newGauge("max-clean-time-secs", new Gauge[Int] {
-    def value: Int = cleaners.map(_.lastStats).map(_.elapsedSecs).max.toInt
-  })
+  newGauge(
+    "max-clean-time-secs",
+    new Gauge[Int] {
+      def value: Int = cleaners.map(_.lastStats).map(_.elapsedSecs).max.toInt
+    })
 
   /**
     * Start the background cleaning

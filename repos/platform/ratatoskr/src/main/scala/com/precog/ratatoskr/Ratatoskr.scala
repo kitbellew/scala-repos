@@ -179,18 +179,30 @@ object KafkaTools extends Command {
         "trackInterval",
         "When running a usage report, stats will be emitted every <interval> messages. Default = 50000",
         { (i: Int) => config.trackInterval = i })
-      opt("l", "local", "dump local kafka file(s)", {
-        config.operation = Some(DumpLocal)
-      })
-      opt("c", "central", "dump central kafka file(s)", {
-        config.operation = Some(DumpCentral)
-      })
-      opt("u", "unparsed", "dump raw JSON from kafka file(s)", {
-        config.operation = Some(DumpRaw)
-      })
-      opt("z", "usageReport", "Run a usage report on the given file(s)", {
-        config.operation = Some(UsageReport)
-      })
+      opt(
+        "l",
+        "local",
+        "dump local kafka file(s)", {
+          config.operation = Some(DumpLocal)
+        })
+      opt(
+        "c",
+        "central",
+        "dump central kafka file(s)", {
+          config.operation = Some(DumpCentral)
+        })
+      opt(
+        "u",
+        "unparsed",
+        "dump raw JSON from kafka file(s)", {
+          config.operation = Some(DumpRaw)
+        })
+      opt(
+        "z",
+        "usageReport",
+        "Run a usage report on the given file(s)", {
+          config.operation = Some(UsageReport)
+        })
       opt(
         "a",
         "trackArchives",
@@ -221,9 +233,10 @@ object KafkaTools extends Command {
           }
         }
       )
-      arglist("<files>", "The files to process", { (s: String) =>
-        config.files = config.files :+ (new File(s))
-      })
+      arglist(
+        "<files>",
+        "The files to process",
+        { (s: String) => config.files = config.files :+ (new File(s)) })
     }
     if (parser.parse(args)) {
       process(config)
@@ -673,23 +686,31 @@ object ZookeeperTools extends Command {
   def run(args: Array[String]) {
     val config = new Config
     val parser = new OptionParser("yggutils zk") {
-      opt("z", "zookeeper", "The zookeeper host:port", { s: String =>
-        config.zkConn = s
-      })
-      opt("c", "checkpoints", "Show bifrost checkpoint state with prefix", {
-        s: String => config.showCheckpoints = Some(s)
-      })
-      opt("a", "agents", "Show ingest agent state with prefix", { s: String =>
-        config.showAgents = Some(s)
-      })
+      opt(
+        "z",
+        "zookeeper",
+        "The zookeeper host:port",
+        { s: String => config.zkConn = s })
+      opt(
+        "c",
+        "checkpoints",
+        "Show bifrost checkpoint state with prefix",
+        { s: String => config.showCheckpoints = Some(s) })
+      opt(
+        "a",
+        "agents",
+        "Show ingest agent state with prefix",
+        { s: String => config.showAgents = Some(s) })
       opt(
         "uc",
         "update_checkpoints",
         "Update agent state. Format = path:json",
         { s: String => config.updateCheckpoint = Some(s) })
-      opt("ua", "update_agents", "Update agent state. Format = path:json", {
-        s: String => config.updateAgent = Some(s)
-      })
+      opt(
+        "ua",
+        "update_agents",
+        "Update agent state. Format = path:json",
+        { s: String => config.updateAgent = Some(s) })
     }
     if (parser.parse(args)) {
       val conn: ZkConnection = new ZkConnection(config.zkConn)
@@ -832,15 +853,21 @@ object IngestTools extends Command {
         "<time-lag-minutes>",
         "if update lag is greater than the specified value an error will occur",
         { l: Int => config.lag = l })
-      opt("z", "zookeeper", "The zookeeper host:port", { s: String =>
-        config.zkConn = s
-      })
-      opt("c", "shardpath", "The bifrost's ZK path", { s: String =>
-        config.shardZkPath = s
-      })
-      opt("r", "relaypath", "The relay's ZK path", { s: String =>
-        config.relayZkPath = s
-      })
+      opt(
+        "z",
+        "zookeeper",
+        "The zookeeper host:port",
+        { s: String => config.zkConn = s })
+      opt(
+        "c",
+        "shardpath",
+        "The bifrost's ZK path",
+        { s: String => config.shardZkPath = s })
+      opt(
+        "r",
+        "relaypath",
+        "The relay's ZK path",
+        { s: String => config.relayZkPath = s })
     }
     if (parser.parse(args)) {
       val conn = new ZkConnection(config.zkConn)
@@ -953,30 +980,38 @@ object ImportTools extends Command with Logging {
   def run(args: Array[String]) {
     val config = new Config
     val parser = new OptionParser("yggutils import") {
-      opt("t", "token", "<api key>", "authorizing API key", { s: String =>
-        config.apiKey = s
-      })
+      opt(
+        "t",
+        "token",
+        "<api key>",
+        "authorizing API key",
+        { s: String => config.apiKey = s })
       opt(
         "o",
         "owner",
         "<account id>",
         "Owner account ID to insert data under",
         { s: String => config.accountId = s })
-      opt("s", "storage", "<storage root>", "directory containing data files", {
-        s: String => config.storageRoot = new File(s)
-      })
+      opt(
+        "s",
+        "storage",
+        "<storage root>",
+        "directory containing data files",
+        { s: String => config.storageRoot = new File(s) })
       opt(
         "a",
         "archive",
         "<archive root>",
         "directory containing archived data files",
         { s: String => config.archiveRoot = new File(s) })
-      arglist("<json input> ...", "json input file mappings {db}={input}", {
-        s: String =>
+      arglist(
+        "<json input> ...",
+        "json input file mappings {db}={input}",
+        { s: String =>
           val parts = s.split("=")
           val t = (parts(0) -> parts(1))
           config.input = config.input :+ t
-      })
+        })
     }
 
     if (parser.parse(args)) {
@@ -1173,22 +1208,33 @@ object CSVTools extends Command {
   def run(args: Array[String]) {
     val config = new Config
     val parser = new OptionParser("yggutils csv") {
-      opt("d", "delimeter", "field delimeter", { s: String =>
-        if (s.length == 1) {
-          config.delimeter = s.charAt(0)
-        } else {
-          sys.error("Invalid delimeter")
-        }
-      })
-      opt("t", "mapTimestamps", "Map timestamps to expected format.", {
-        config.teaseTimestamps = true
-      })
-      opt("v", "verbose", "Map timestamps to expected format.", {
-        config.verbose = true
-      })
-      arg("<csv_file>", "csv file to convert (headers required)", { s: String =>
-        config.input = s
-      })
+      opt(
+        "d",
+        "delimeter",
+        "field delimeter",
+        { s: String =>
+          if (s.length == 1) {
+            config.delimeter = s.charAt(0)
+          } else {
+            sys.error("Invalid delimeter")
+          }
+        })
+      opt(
+        "t",
+        "mapTimestamps",
+        "Map timestamps to expected format.", {
+          config.teaseTimestamps = true
+        })
+      opt(
+        "v",
+        "verbose",
+        "Map timestamps to expected format.", {
+          config.verbose = true
+        })
+      arg(
+        "<csv_file>",
+        "csv file to convert (headers required)",
+        { s: String => config.input = s })
     }
     if (parser.parse(args)) {
       process(config)
@@ -1225,31 +1271,48 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     val parser = new OptionParser("yggutils csv") {
       opt("l", "list", "List API keys", { config.list = true })
 //      opt("c","children","List children of API key", { s: String => config.listChildren = Some(s) })
-      opt("n", "new", "New customer account at path", { s: String =>
-        config.accountId = Some(s)
-      })
+      opt(
+        "n",
+        "new",
+        "New customer account at path",
+        { s: String => config.accountId = Some(s) })
       opt("r", "root", "Show root API key", { config.showRoot = true })
-      opt("c", "create", "Create root API key", {
-        config.createRoot = true; config.showRoot = true
-      })
-      opt("a", "name", "Human-readable name for new API key", { s: String =>
-        config.newAPIKeyName = s
-      })
-      opt("x", "delete", "Delete API key", { s: String =>
-        config.delete = Some(s)
-      })
-      opt("d", "database", "APIKey database name (ie: beta_auth_v1)", {
-        s: String => config.database = s
-      })
-      opt("t", "tokens", "APIKeys collection name", { s: String =>
-        config.collection = s
-      })
-      opt("a", "archive", "Collection for deleted API keys", { s: String =>
-        config.deleted = Some(s)
-      })
-      opt("s", "servers", "Mongo server config", { s: String =>
-        config.servers = s
-      })
+      opt(
+        "c",
+        "create",
+        "Create root API key", {
+          config.createRoot = true; config.showRoot = true
+        })
+      opt(
+        "a",
+        "name",
+        "Human-readable name for new API key",
+        { s: String => config.newAPIKeyName = s })
+      opt(
+        "x",
+        "delete",
+        "Delete API key",
+        { s: String => config.delete = Some(s) })
+      opt(
+        "d",
+        "database",
+        "APIKey database name (ie: beta_auth_v1)",
+        { s: String => config.database = s })
+      opt(
+        "t",
+        "tokens",
+        "APIKeys collection name",
+        { s: String => config.collection = s })
+      opt(
+        "a",
+        "archive",
+        "Collection for deleted API keys",
+        { s: String => config.deleted = Some(s) })
+      opt(
+        "s",
+        "servers",
+        "Mongo server config",
+        { s: String => config.servers = s })
     }
     if (parser.parse(args)) {
       process(config)

@@ -701,10 +701,12 @@ object Trees {
   }
 
   case class JSDelete(prop: Tree)(implicit val pos: Position) extends Tree {
-    require(prop match {
-      case _: JSDotSelect | _: JSBracketSelect => true
-      case _                                   => false
-    }, s"Invalid prop for JSDelete: $prop")
+    require(
+      prop match {
+        case _: JSDotSelect | _: JSBracketSelect => true
+        case _                                   => false
+      },
+      s"Invalid prop for JSDelete: $prop")
 
     val tpe = NoType // cannot be in expression position
   }

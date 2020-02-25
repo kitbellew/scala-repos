@@ -404,11 +404,15 @@ private[deploy] class Worker(
             "Successfully registered with master " + masterRef.address.toSparkURL)
           registered = true
           changeMaster(masterRef, masterWebUiUrl)
-          forwordMessageScheduler.scheduleAtFixedRate(new Runnable {
-            override def run(): Unit = Utils.tryLogNonFatalError {
-              self.send(SendHeartbeat)
-            }
-          }, 0, HEARTBEAT_MILLIS, TimeUnit.MILLISECONDS)
+          forwordMessageScheduler.scheduleAtFixedRate(
+            new Runnable {
+              override def run(): Unit = Utils.tryLogNonFatalError {
+                self.send(SendHeartbeat)
+              }
+            },
+            0,
+            HEARTBEAT_MILLIS,
+            TimeUnit.MILLISECONDS)
           if (CLEANUP_ENABLED) {
             logInfo(
               s"Worker cleanup enabled; old application directories will be deleted in: $workDir")

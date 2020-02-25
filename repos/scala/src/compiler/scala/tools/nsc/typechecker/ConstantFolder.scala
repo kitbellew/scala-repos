@@ -21,21 +21,25 @@ abstract class ConstantFolder {
 
   /** If tree is a constant operation, replace with result. */
   def apply(tree: Tree): Tree =
-    fold(tree, tree match {
-      case Apply(Select(Literal(x), op), List(Literal(y))) =>
-        foldBinop(op, x, y)
-      case Select(Literal(x), op) => foldUnop(op, x)
-      case _                      => null
-    })
+    fold(
+      tree,
+      tree match {
+        case Apply(Select(Literal(x), op), List(Literal(y))) =>
+          foldBinop(op, x, y)
+        case Select(Literal(x), op) => foldUnop(op, x)
+        case _                      => null
+      })
 
   /** If tree is a constant value that can be converted to type `pt`, perform
     *  the conversion.
     */
   def apply(tree: Tree, pt: Type): Tree =
-    fold(apply(tree), tree.tpe match {
-      case ConstantType(x) => x convertTo pt
-      case _               => null
-    })
+    fold(
+      apply(tree),
+      tree.tpe match {
+        case ConstantType(x) => x convertTo pt
+        case _               => null
+      })
 
   private def fold(tree: Tree, compX: => Constant): Tree =
     try {

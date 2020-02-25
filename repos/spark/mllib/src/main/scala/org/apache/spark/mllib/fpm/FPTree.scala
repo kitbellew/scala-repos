@@ -40,12 +40,13 @@ private[fpm] class FPTree[T] extends Serializable {
     t.foreach { item =>
       val summary = summaries.getOrElseUpdate(item, new Summary)
       summary.count += count
-      val child = curr.children.getOrElseUpdate(item, {
-        val newNode = new Node(curr)
-        newNode.item = item
-        summary.nodes += newNode
-        newNode
-      })
+      val child = curr.children.getOrElseUpdate(
+        item, {
+          val newNode = new Node(curr)
+          newNode.item = item
+          summary.nodes += newNode
+          newNode
+        })
       child.count += count
       curr = child
     }

@@ -78,16 +78,20 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     }
 
   def gcd(rhs: Factors): Factors =
-    Factors(lhs.factors.flatMap {
-      case (p, le) =>
-        rhs.factors.get(p).map(re => (p, le min re))
-    }, Positive)
+    Factors(
+      lhs.factors.flatMap {
+        case (p, le) =>
+          rhs.factors.get(p).map(re => (p, le min re))
+      },
+      Positive)
 
   def lcm(rhs: Factors): Factors =
-    Factors(lhs.factors.foldLeft(rhs.factors) {
-      case (fs, (p, e)) =>
-        fs.updated(p, fs.getOrElse(p, 0) max e)
-    }, Positive)
+    Factors(
+      lhs.factors.foldLeft(rhs.factors) {
+        case (fs, (p, e)) =>
+          fs.updated(p, fs.getOrElse(p, 0) max e)
+      },
+      Positive)
 
   def unary_-(): Factors = Factors(factors, -sign)
 

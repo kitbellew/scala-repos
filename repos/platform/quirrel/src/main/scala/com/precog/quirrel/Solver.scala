@@ -190,9 +190,11 @@ trait Solver extends parser.AST with typer.Binder {
       case Add(loc, left, right) =>
         solveBinary(tree, left, right)(sub(loc), sub(loc))
       case Sub(loc, left, right) =>
-        solveBinary(tree, left, right)(add(loc), sub(loc) andThen {
-          _ andThen neg(loc)
-        })
+        solveBinary(tree, left, right)(
+          add(loc),
+          sub(loc) andThen {
+            _ andThen neg(loc)
+          })
       case Mul(loc, left, right) =>
         solveBinary(tree, left, right)(div(loc), div(loc))
       case Div(loc, left, right) =>

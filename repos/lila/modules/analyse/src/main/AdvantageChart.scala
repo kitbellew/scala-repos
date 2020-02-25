@@ -31,11 +31,12 @@ object AdvantageChart {
               case (Some(score), _) =>
                 point(move(info, advice), score.centipawns)
               case (_, Some(mate)) =>
-                point(move(info, advice), {
-                  val mateDelta = math.abs(mate)
-                  val whiteWins = mate > 0
-                  whiteWins.fold(max - mateDelta, mateDelta - max)
-                })
+                point(
+                  move(info, advice), {
+                    val mateDelta = math.abs(mate)
+                    val whiteWins = mate > 0
+                    whiteWins.fold(max - mateDelta, mateDelta - max)
+                  })
               case _ => point(move(info, none), 0)
             }
         }

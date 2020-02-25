@@ -98,10 +98,12 @@ object Analyse extends LilaController {
       fuccess {
         chess.Replay
           .plyAtFen(pov.game.pgnMoves, initialFen, pov.game.variant, atFen)
-          .fold(err => {
-            logger.info(s"RedirectAtFen: $err")
-            Redirect(url)
-          }, ply => Redirect(s"$url#$ply"))
+          .fold(
+            err => {
+              logger.info(s"RedirectAtFen: $err")
+              Redirect(url)
+            },
+            ply => Redirect(s"$url#$ply"))
       }
     }
 

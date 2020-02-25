@@ -70,9 +70,12 @@ trait SourceFieldMetadata {
   * @param metaData the metadata
   * @tparam A the type
   */
-case class SourceFieldInfoRep[A](value: A, metaData: SourceFieldMetadata {
-  type ST = A
-}) extends SourceFieldInfo {
+case class SourceFieldInfoRep[A](
+    value: A,
+    metaData: SourceFieldMetadata {
+      type ST = A
+    })
+    extends SourceFieldInfo {
   type T = A
 }
 

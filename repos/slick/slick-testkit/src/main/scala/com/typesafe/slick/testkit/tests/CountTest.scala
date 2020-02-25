@@ -80,9 +80,11 @@ class CountTest extends AsyncTest[RelationalTestDB] {
       bs ++= Seq((1L, "1a"), (1L, "1b"), (2L, "2")),
       (for {
         a <- as if a.id === 1L
-      } yield (a, (for {
-        b <- bs if b.aId === a.id
-      } yield b).length)).result
+      } yield (
+        a,
+        (for {
+          b <- bs if b.aId === a.id
+        } yield b).length)).result
         .named("directLength")
         .map(_ shouldBe Seq((1L, 2))),
       (for {

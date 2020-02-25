@@ -335,10 +335,12 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     * as a blob in your custom snapshot.
     */
   def getDeliverySnapshot: AtLeastOnceDeliverySnapshot =
-    AtLeastOnceDeliverySnapshot(deliverySequenceNr, unconfirmed.map {
-      case (deliveryId, d) ⇒
-        UnconfirmedDelivery(deliveryId, d.destination, d.message)
-    }(breakOut))
+    AtLeastOnceDeliverySnapshot(
+      deliverySequenceNr,
+      unconfirmed.map {
+        case (deliveryId, d) ⇒
+          UnconfirmedDelivery(deliveryId, d.destination, d.message)
+      }(breakOut))
 
   /**
     * If snapshot from [[#getDeliverySnapshot]] was saved it will be received during recovery

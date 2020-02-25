@@ -638,9 +638,12 @@ object Serializers {
         case TagThrow    => Throw(readTree())
         case TagContinue => Continue(readOptIdent())
         case TagMatch =>
-          Match(readTree(), List.fill(readInt()) {
-            (readTrees().map(_.asInstanceOf[Literal]), readTree())
-          }, readTree())(readType())
+          Match(
+            readTree(),
+            List.fill(readInt()) {
+              (readTrees().map(_.asInstanceOf[Literal]), readTree())
+            },
+            readTree())(readType())
         case TagDebugger => Debugger()
 
         case TagNew         => New(readClassType(), readIdent(), readTrees())

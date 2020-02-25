@@ -990,13 +990,17 @@ trait CaseClassMacros extends ReprTypes {
           def construct(args: List[Tree]): Tree =
             q"${companionRef(tpe)}(..$args)"
           def binding: (Tree, List[Tree]) =
-            (pattern, elems.map {
-              case (binder, tpe) => narrow(q"$binder", tpe)
-            })
+            (
+              pattern,
+              elems.map {
+                case (binder, tpe) => narrow(q"$binder", tpe)
+              })
           def reprBinding: (Tree, List[Tree]) =
-            (reprPattern, elems.map {
-              case (binder, tpe) => narrow1(q"$binder", tpe)
-            })
+            (
+              reprPattern,
+              elems.map {
+                case (binder, tpe) => narrow1(q"$binder", tpe)
+              })
         }
       }
 
@@ -1012,9 +1016,11 @@ trait CaseClassMacros extends ReprTypes {
           def construct(args: List[Tree]): Tree = q"new $tpe(..$args)"
           def binding: (Tree, List[Tree]) = (pattern, rhs)
           def reprBinding: (Tree, List[Tree]) =
-            (reprPattern, elems.map {
-              case (binder, _, tpe) => narrow1(q"$binder", tpe)
-            })
+            (
+              reprPattern,
+              elems.map {
+                case (binder, _, tpe) => narrow1(q"$binder", tpe)
+              })
         }
       }
 

@@ -106,10 +106,13 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
 
   // delete a document
   def delete(k: String, v: Any) {
-    delete(new BasicDBObject(k, v match {
-      case s: String if (ObjectId.isValid(s)) => new ObjectId(s)
-      case _                                  => v
-    }))
+    delete(
+      new BasicDBObject(
+        k,
+        v match {
+          case s: String if (ObjectId.isValid(s)) => new ObjectId(s)
+          case _                                  => v
+        }))
   }
 
   /*

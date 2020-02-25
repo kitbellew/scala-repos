@@ -139,14 +139,16 @@ class ThrottlerTransportAdapterSpec
       // after we remove the Blackhole we can't be certain of the state
       // of the connection, repeat until success
       here ! Lost("Blackhole 3")
-      awaitCond({
-        if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
-          true
-        else {
-          here ! Lost("Blackhole 3")
-          false
-        }
-      }, 15.seconds)
+      awaitCond(
+        {
+          if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
+            true
+          else {
+            here ! Lost("Blackhole 3")
+            false
+          }
+        },
+        15.seconds)
 
       here ! "Cleanup"
       fishForMessage(5.seconds) {

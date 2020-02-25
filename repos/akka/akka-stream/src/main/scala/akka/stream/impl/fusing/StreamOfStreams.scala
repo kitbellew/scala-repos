@@ -59,12 +59,14 @@ final class FlattenMerge[T, M](breadth: Int)
       }
     )
 
-    setHandler(out, new OutHandler {
-      override def onPull(): Unit = {
-        pull(in)
-        setHandler(out, outHandler)
-      }
-    })
+    setHandler(
+      out,
+      new OutHandler {
+        override def onPull(): Unit = {
+          pull(in)
+          setHandler(out, outHandler)
+        }
+      })
 
     val outHandler = new OutHandler {
       // could be unavailable due to async input having been executed before this notification

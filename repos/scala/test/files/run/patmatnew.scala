@@ -78,29 +78,44 @@ object Test {
 
   object TestSimpleIntSwitch {
     def run() {
-      assertEquals("s1", 1, 1 match {
-        case 3 => 3
-        case 2 => 2
-        case 1 => 1
-        case 0 => 0
-      })
-      assertEquals("s2", 1, 1 match {
-        case 1 => 1
-        case _ => 0
-      })
-      assertEquals("s2boxed", 1, (1: Any) match {
-        case 1 => 1
-        case _ => 0
-      })
-      assertEquals("s3", 1, ("hello") match {
-        case s: String => 1
-        //case _        => 0 // unreachable!
-      })
+      assertEquals(
+        "s1",
+        1,
+        1 match {
+          case 3 => 3
+          case 2 => 2
+          case 1 => 1
+          case 0 => 0
+        })
+      assertEquals(
+        "s2",
+        1,
+        1 match {
+          case 1 => 1
+          case _ => 0
+        })
+      assertEquals(
+        "s2boxed",
+        1,
+        (1: Any) match {
+          case 1 => 1
+          case _ => 0
+        })
+      assertEquals(
+        "s3",
+        1,
+        ("hello") match {
+          case s: String => 1
+          //case _        => 0 // unreachable!
+        })
       val xyz: (Int, String, Boolean) = (1, "abc", true);
-      assertEquals("s4", 1, xyz._1 match {
-        case 1 => 1
-        case _ => 0
-      })
+      assertEquals(
+        "s4",
+        1,
+        xyz._1 match {
+          case 1 => 1
+          case _ => 0
+        })
     }
   }
 
@@ -158,11 +173,13 @@ object Test {
   object TestEqualsPatternOpt {
     val NoContext = new Object
     def run() {
-      assertEquals(1, ((NoContext: Any) match {
-        case that: AnyRef if this eq that => 0
-        case NoContext                    => 1
-        case _                            => 2
-      }))
+      assertEquals(
+        1,
+        ((NoContext: Any) match {
+          case that: AnyRef if this eq that => 0
+          case NoContext                    => 1
+          case _                            => 2
+        }))
     }
   }
 
@@ -375,10 +392,12 @@ object Test {
     def run() {
       val p1 = new Person("p1", null)
       val p2 = new Person("p2", p1)
-      assertEquals((p2.name, p1.name), p2 match {
-        case aPerson @ PersonFather(f) => (aPerson.name, f.name)
-        case _                         => "No father"
-      })
+      assertEquals(
+        (p2.name, p1.name),
+        p2 match {
+          case aPerson @ PersonFather(f) => (aPerson.name, f.name)
+          case _                         => "No father"
+        })
     }
   }
 
@@ -644,11 +663,13 @@ object Test {
       val o1 = new Outer_2; val o2 = new Outer_2; val x: Any = o1.Foo(1, 2);
       val y: Any = o2.Foo(1, 2)
       assert(x != y, "equals test returns true (but should not)")
-      assert(x match {
-        case o2.Foo(x, y) => false
-        case o1.Foo(x, y) => true
-        case _            => false
-      }, "match enters wrong case")
+      assert(
+        x match {
+          case o2.Foo(x, y) => false
+          case o1.Foo(x, y) => true
+          case _            => false
+        },
+        "match enters wrong case")
     }
   }
 

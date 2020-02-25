@@ -89,12 +89,14 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
     private case class MkChild(props: Props, name: String)
         extends NoSerializationVerificationNeeded
     private val boss = system
-      .systemActorOf(Props(new Actor {
-        def receive = {
-          case MkChild(props, name) ⇒ sender() ! context.actorOf(props, name)
-          case any ⇒ sender() ! any
-        }
-      }), "dsl")
+      .systemActorOf(
+        Props(new Actor {
+          def receive = {
+            case MkChild(props, name) ⇒ sender() ! context.actorOf(props, name)
+            case any ⇒ sender() ! any
+          }
+        }),
+        "dsl")
       .asInstanceOf[RepointableActorRef]
 
     lazy val config = system.settings.config.getConfig("akka.actor.dsl")

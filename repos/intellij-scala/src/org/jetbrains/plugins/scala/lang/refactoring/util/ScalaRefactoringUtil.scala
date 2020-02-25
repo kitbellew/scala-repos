@@ -619,9 +619,10 @@ object ScalaRefactoringUtil {
       project: Project,
       occurrences: Array[PsiElement],
       editor: Editor): Seq[RangeHighlighter] = {
-    highlightOccurrences(project, occurrences.map({ el: PsiElement =>
-      el.getTextRange
-    }), editor)
+    highlightOccurrences(
+      project,
+      occurrences.map({ el: PsiElement => el.getTextRange }),
+      editor)
   }
 
   def showChooser[T <: PsiElement](

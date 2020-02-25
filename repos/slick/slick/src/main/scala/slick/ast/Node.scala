@@ -985,29 +985,35 @@ object QueryParameter {
         LiteralNode(lv) :@ (lt: TypedType[_]),
         QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(new (Any => T) {
-        def apply(param: Any) =
-          op(lv.asInstanceOf[T], re(param).asInstanceOf[T])
-        override def toString = s"($lv $name $re)"
-      }, tpe)
+      QueryParameter(
+        new (Any => T) {
+          def apply(param: Any) =
+            op(lv.asInstanceOf[T], re(param).asInstanceOf[T])
+          override def toString = s"($lv $name $re)"
+        },
+        tpe)
     case (
         QueryParameter(le, lt: TypedType[_], _),
         LiteralNode(rv) :@ (rt: TypedType[_]))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(new (Any => T) {
-        def apply(param: Any) =
-          op(le(param).asInstanceOf[T], rv.asInstanceOf[T])
-        override def toString = s"($le $name $rv)"
-      }, tpe)
+      QueryParameter(
+        new (Any => T) {
+          def apply(param: Any) =
+            op(le(param).asInstanceOf[T], rv.asInstanceOf[T])
+          override def toString = s"($le $name $rv)"
+        },
+        tpe)
     case (
         QueryParameter(le, lt: TypedType[_], _),
         QueryParameter(re, rt: TypedType[_], _))
         if lt.scalaType == tpe && rt.scalaType == tpe =>
-      QueryParameter(new (Any => T) {
-        def apply(param: Any) =
-          op(le(param).asInstanceOf[T], re(param).asInstanceOf[T])
-        override def toString = s"($le $name $re)"
-      }, tpe)
+      QueryParameter(
+        new (Any => T) {
+          def apply(param: Any) =
+            op(le(param).asInstanceOf[T], re(param).asInstanceOf[T])
+          override def toString = s"($le $name $re)"
+        },
+        tpe)
     case _ =>
       throw new SlickException(
         s"Cannot fuse nodes $l, $r as constant operations of type $tpe")

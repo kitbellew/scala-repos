@@ -49,12 +49,14 @@ object SecuritySpec extends PlaySpecification {
         request: Request[A],
         block: (AuthenticatedDbRequest[A]) => Future[Result]) = {
       AuthenticatedBuilder(req => getUserFromRequest(req))
-        .authenticate(request, { authRequest: AuthenticatedRequest[A, User] =>
-          DB.withConnection { conn =>
-            block(
-              new AuthenticatedDbRequest[A](authRequest.user, conn, request))
-          }
-        })
+        .authenticate(
+          request,
+          { authRequest: AuthenticatedRequest[A, User] =>
+            DB.withConnection { conn =>
+              block(
+                new AuthenticatedDbRequest[A](authRequest.user, conn, request))
+            }
+          })
     }
   }
 

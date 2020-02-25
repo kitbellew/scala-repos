@@ -696,9 +696,11 @@ object AkkaBuild extends Build {
     // show full stack traces and test case durations
     testOptions in Test += Tests.Argument("-oDF"),
     // don't save test output to a file
-    testListeners in (Test, test) := Seq(TestLogger(streams.value.log, { _ =>
-      streams.value.log
-    }, logBuffered.value)),
+    testListeners in (Test, test) := Seq(
+      TestLogger(
+        streams.value.log,
+        { _ => streams.value.log },
+        logBuffered.value)),
     // -v Log "test run started" / "test started" / "test run finished" events on log level "info" instead of "debug".
     // -a Show stack traces and exception class name for AssertionErrors.
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-v", "-a")

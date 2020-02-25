@@ -60,11 +60,15 @@ trait Kinds {
     private def strictnessMessage(a: Symbol, p: Symbol) =
       kindMessage(a, p)(
         "%s's bounds%s are stricter than %s's declared bounds%s"
-          .format(_, a.info, _, p.info match {
-            case tb @ TypeBounds(_, _) if tb.isEmptyBounds =>
-              " >: Nothing <: Any"
-            case tb => "" + tb
-          }))
+          .format(
+            _,
+            a.info,
+            _,
+            p.info match {
+              case tb @ TypeBounds(_, _) if tb.isEmptyBounds =>
+                " >: Nothing <: Any"
+              case tb => "" + tb
+            }))
 
     private def varianceMessage(a: Symbol, p: Symbol) =
       kindMessage(a, p)(
@@ -464,9 +468,9 @@ trait Kinds {
           else tpe.asSeenFrom(pre, owner).bounds
         if (!tpe.isHigherKinded) ProperTypeKind(bounds)
         else
-          TypeConKind(bounds, tpe.typeParams map { p =>
-            Argument(p.variance, infer(p, false))(p)
-          })
+          TypeConKind(
+            bounds,
+            tpe.typeParams map { p => Argument(p.variance, infer(p, false))(p) })
       }
     }
   }

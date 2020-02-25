@@ -111,12 +111,14 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
         self.context.clean(mergeValue),
         self.context.clean(mergeCombiners))
       if (self.partitioner == Some(partitioner)) {
-        self.mapPartitions(iter => {
-          val context = TaskContext.get()
-          new InterruptibleIterator(
-            context,
-            aggregator.combineValuesByKey(iter, context))
-        }, preservesPartitioning = true)
+        self.mapPartitions(
+          iter => {
+            val context = TaskContext.get()
+            new InterruptibleIterator(
+              context,
+              aggregator.combineValuesByKey(iter, context))
+          },
+          preservesPartitioning = true)
       } else {
         new ShuffledRDD[K, V, C](self, partitioner)
           .setSerializer(serializer)

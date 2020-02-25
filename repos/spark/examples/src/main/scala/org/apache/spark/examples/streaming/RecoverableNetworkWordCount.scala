@@ -165,9 +165,11 @@ object RecoverableNetworkWordCount {
       System.exit(1)
     }
     val Array(ip, IntParam(port), checkpointDirectory, outputPath) = args
-    val ssc = StreamingContext.getOrCreate(checkpointDirectory, () => {
-      createContext(ip, port, outputPath, checkpointDirectory)
-    })
+    val ssc = StreamingContext.getOrCreate(
+      checkpointDirectory,
+      () => {
+        createContext(ip, port, outputPath, checkpointDirectory)
+      })
     ssc.start()
     ssc.awaitTermination()
   }

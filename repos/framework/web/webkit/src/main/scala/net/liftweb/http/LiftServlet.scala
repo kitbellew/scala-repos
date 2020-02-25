@@ -109,22 +109,26 @@ class LiftServlet extends Loggable {
     val req = if (null eq reqOrg) reqOrg else reqOrg.snapshot
 
     def runFunction(doAnswer: LiftResponse => Unit) {
-      Schedule.schedule(() => {
-        val answerFunc: (=> LiftResponse) => Unit =
-          response => doAnswer(wrapState(req, session)(response))
+      Schedule.schedule(
+        () => {
+          val answerFunc: (=> LiftResponse) => Unit =
+            response => doAnswer(wrapState(req, session)(response))
 
-        func(answerFunc)
+          func(answerFunc)
 
-      }, TimeSpan(5))
+        },
+        TimeSpan(5))
 
     }
 
     if (reqOrg.request.suspendResumeSupport_?) {
       runFunction(liftResponse => {
         // do the actual write on a separate thread
-        Schedule.schedule(() => {
-          reqOrg.request.resume(reqOrg, liftResponse)
-        }, 0.seconds)
+        Schedule.schedule(
+          () => {
+            reqOrg.request.resume(reqOrg, liftResponse)
+          },
+          0.seconds)
       })
 
       reqOrg.request.suspend(cometTimeout)

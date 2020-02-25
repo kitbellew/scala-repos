@@ -189,12 +189,14 @@ trait LowPriorityDefaultReads {
                 case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, idx))
               }
           }
-          .fold(JsError.apply, { res =>
-            val builder = bf()
-            builder.sizeHint(res)
-            builder ++= res
-            JsSuccess(builder.result())
-          })
+          .fold(
+            JsError.apply,
+            { res =>
+              val builder = bf()
+              builder.sizeHint(res)
+              builder ++= res
+              JsSuccess(builder.result())
+            })
       case _ =>
         JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsarray"))))
     }

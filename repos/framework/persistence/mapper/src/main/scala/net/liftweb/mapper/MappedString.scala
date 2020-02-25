@@ -215,43 +215,60 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
       inst: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedString[T] =>
-          f.wholeSet(if (v eq null) null else v.toString)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedString[T] =>
+            f.wholeSet(if (v eq null) null else v.toString)
+        })
 
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedString[T] => f.wholeSet(if (isNull) null else v.toString)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedString[T] =>
+            f.wholeSet(if (isNull) null else v.toString)
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedString[T] => f.wholeSet(if (v eq null) null else v)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedString[T] => f.wholeSet(if (v eq null) null else v)
+        })
 
   def buildSetDateValue(
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedString[T] =>
-          f.wholeSet(if (v eq null) null else v.toString)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedString[T] =>
+            f.wholeSet(if (v eq null) null else v.toString)
+        })
 
   def buildSetBooleanValue(
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedString[T] => f.wholeSet(if (isNull) null else v.toString)
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedString[T] =>
+            f.wholeSet(if (isNull) null else v.toString)
+        })
 
   /**
     * Make sure that the field is unique in the database

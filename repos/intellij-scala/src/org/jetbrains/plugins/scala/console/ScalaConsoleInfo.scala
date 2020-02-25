@@ -54,9 +54,11 @@ object ScalaConsoleInfo {
                 ScalaLanguageConsole,
                 ConsoleHistoryController,
                 ProcessHandler)] =>
-          allConsoles.put(project, list.filter {
-            case (sConsole, _, _) => sConsole != console
-          })
+          allConsoles.put(
+            project,
+            list.filter {
+              case (sConsole, _, _) => sConsole != console
+            })
       }
     }
   }

@@ -63,13 +63,16 @@ object Sessions {
     }
 
   def addClient =
-    Out(3, Out(4, {
-      System.out.println("Waiting")
-      In { z: Int =>
-        System.out.println(z)
-        Stop()
-      }
-    }))
+    Out(
+      3,
+      Out(
+        4, {
+          System.out.println("Waiting")
+          In { z: Int =>
+            System.out.println(z)
+            Stop()
+          }
+        }))
 
   def myRun = runSession(addServer, addClient)
 }

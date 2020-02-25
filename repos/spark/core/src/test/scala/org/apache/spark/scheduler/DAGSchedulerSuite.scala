@@ -679,12 +679,14 @@ class DAGSchedulerSuite
       numShufflePartitions: Int): Unit = {
     val stageAttempt = taskSets.last
     checkStageId(stageId, attemptIdx, stageAttempt)
-    complete(stageAttempt, stageAttempt.tasks.zipWithIndex.map {
-      case (task, idx) =>
-        (
-          Success,
-          makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
-    }.toSeq)
+    complete(
+      stageAttempt,
+      stageAttempt.tasks.zipWithIndex.map {
+        case (task, idx) =>
+          (
+            Success,
+            makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
+      }.toSeq)
   }
 
   /**
@@ -1813,13 +1815,15 @@ class DAGSchedulerSuite
   }
 
   test("misbehaved accumulator should not crash DAGScheduler and SparkContext") {
-    val acc = new Accumulator[Int](0, new AccumulatorParam[Int] {
-      override def addAccumulator(t1: Int, t2: Int): Int = t1 + t2
-      override def zero(initialValue: Int): Int = 0
-      override def addInPlace(r1: Int, r2: Int): Int = {
-        throw new DAGSchedulerSuiteDummyException
-      }
-    })
+    val acc = new Accumulator[Int](
+      0,
+      new AccumulatorParam[Int] {
+        override def addAccumulator(t1: Int, t2: Int): Int = t1 + t2
+        override def zero(initialValue: Int): Int = 0
+        override def addInPlace(r1: Int, r2: Int): Int = {
+          throw new DAGSchedulerSuiteDummyException
+        }
+      })
 
     // Run this on executors
     sc.parallelize(1 to 10, 2).foreach { item => acc.add(1) }

@@ -297,13 +297,14 @@ trait LensFamilyFunctions {
     (A1 \/ A1),
     (A2 \/ A2)] =
     lensFamily(q =>
-      IndexedStore(_ match {
-        case -\/(l) => Store(_ => true, l)
-        case \/-(r) => Store(_ => false, r)
-      }, {
-        val x = q.pos
-        if (q put x) -\/(x) else \/-(x)
-      }))
+      IndexedStore(
+        _ match {
+          case -\/(l) => Store(_ => true, l)
+          case \/-(r) => Store(_ => false, r)
+        }, {
+          val x = q.pos
+          if (q put x) -\/(x) else \/-(x)
+        }))
 
   def factorLensFamily[A1, A2, B1, B2, C1, C2]: LensFamily[
     ((A1, B1) \/ (A1, C1)),
@@ -311,13 +312,15 @@ trait LensFamilyFunctions {
     (A1, B1 \/ C1),
     (A2, B2 \/ C2)] =
     lensFamily(e =>
-      IndexedStore({
-        case (a, -\/(b)) => -\/(a, b)
-        case (a, \/-(c)) => \/-(a, c)
-      }, e match {
-        case -\/((a, b)) => (a, -\/(b))
-        case \/-((a, c)) => (a, \/-(c))
-      }))
+      IndexedStore(
+        {
+          case (a, -\/(b)) => -\/(a, b)
+          case (a, \/-(c)) => \/-(a, c)
+        },
+        e match {
+          case -\/((a, b)) => (a, -\/(b))
+          case \/-((a, c)) => (a, \/-(c))
+        }))
 
   def distributeLensFamily[A1, A2, B1, B2, C1, C2]: LensFamily[
     (A1, B1 \/ C1),
@@ -326,14 +329,16 @@ trait LensFamilyFunctions {
     ((A2, B2) \/ (A2, C2))] =
     lensFamily {
       case (a, e) =>
-        IndexedStore({
-          case -\/((aa, bb)) => (aa, -\/(bb))
-          case \/-((aa, cc)) => (aa, \/-(cc))
-        }, e match {
-          case -\/(b) => -\/(a, b)
-          case \/-(c) => \/-(a, c)
+        IndexedStore(
+          {
+            case -\/((aa, bb)) => (aa, -\/(bb))
+            case \/-((aa, cc)) => (aa, \/-(cc))
+          },
+          e match {
+            case -\/(b) => -\/(a, b)
+            case \/-(c) => \/-(a, c)
 
-        })
+          })
     }
 
 }
@@ -416,35 +421,40 @@ trait LensFunctions extends LensFamilyFunctions {
 
   def predicateLens[A]: Store[A, Boolean] @> (A \/ A) =
     lens(q =>
-      Store(_ match {
-        case -\/(l) => Store(_ => true, l)
-        case \/-(r) => Store(_ => false, r)
-      }, {
-        val x = q.pos
-        if (q put x) -\/(x) else \/-(x)
-      }))
+      Store(
+        _ match {
+          case -\/(l) => Store(_ => true, l)
+          case \/-(r) => Store(_ => false, r)
+        }, {
+          val x = q.pos
+          if (q put x) -\/(x) else \/-(x)
+        }))
 
   def factorLens[A, B, C]: ((A, B) \/ (A, C)) @> (A, B \/ C) =
     lens(e =>
-      Store({
-        case (a, -\/(b)) => -\/(a, b)
-        case (a, \/-(c)) => \/-(a, c)
-      }, e match {
-        case -\/((a, b)) => (a, -\/(b))
-        case \/-((a, c)) => (a, \/-(c))
-      }))
+      Store(
+        {
+          case (a, -\/(b)) => -\/(a, b)
+          case (a, \/-(c)) => \/-(a, c)
+        },
+        e match {
+          case -\/((a, b)) => (a, -\/(b))
+          case \/-((a, c)) => (a, \/-(c))
+        }))
 
   def distributeLens[A, B, C]: (A, B \/ C) @> ((A, B) \/ (A, C)) =
     lens {
       case (a, e) =>
-        Store({
-          case -\/((aa, bb)) => (aa, -\/(bb))
-          case \/-((aa, cc)) => (aa, \/-(cc))
-        }, e match {
-          case -\/(b) => -\/(a, b)
-          case \/-(c) => \/-(a, c)
+        Store(
+          {
+            case -\/((aa, bb)) => (aa, -\/(bb))
+            case \/-((aa, cc)) => (aa, \/-(cc))
+          },
+          e match {
+            case -\/(b) => -\/(a, b)
+            case \/-(c) => \/-(a, c)
 
-        })
+          })
     }
 }
 
@@ -643,11 +653,13 @@ abstract class LensInstances extends LensInstances0 {
       lensFamilyg[S1, S2, A, A](
         s =>
           v =>
-            lens.mod(array => {
-              val copy = array.clone()
-              copy.update(n, v)
-              copy
-            }, s): Id[S2],
+            lens.mod(
+              array => {
+                val copy = array.clone()
+                copy.update(n, v)
+                copy
+              },
+              s): Id[S2],
         s => lens.get(s) apply n
       )
 

@@ -325,9 +325,12 @@ abstract class UnaryExpression extends Expression {
       ctx: CodegenContext,
       ev: ExprCode,
       f: String => String): String = {
-    nullSafeCodeGen(ctx, ev, eval => {
-      s"${ev.value} = ${f(eval)};"
-    })
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      eval => {
+        s"${ev.value} = ${f(eval)};"
+      })
   }
 
   /**
@@ -416,9 +419,12 @@ abstract class BinaryExpression extends Expression {
       ctx: CodegenContext,
       ev: ExprCode,
       f: (String, String) => String): String = {
-    nullSafeCodeGen(ctx, ev, (eval1, eval2) => {
-      s"${ev.value} = ${f(eval1, eval2)};"
-    })
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (eval1, eval2) => {
+        s"${ev.value} = ${f(eval1, eval2)};"
+      })
   }
 
   /**
@@ -558,9 +564,12 @@ abstract class TernaryExpression extends Expression {
       ctx: CodegenContext,
       ev: ExprCode,
       f: (String, String, String) => String): String = {
-    nullSafeCodeGen(ctx, ev, (eval1, eval2, eval3) => {
-      s"${ev.value} = ${f(eval1, eval2, eval3)};"
-    })
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (eval1, eval2, eval3) => {
+        s"${ev.value} = ${f(eval1, eval2, eval3)};"
+      })
   }
 
   /**

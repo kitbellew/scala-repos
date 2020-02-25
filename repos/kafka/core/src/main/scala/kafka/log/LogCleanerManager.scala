@@ -69,9 +69,11 @@ private[log] class LogCleanerManager(
 
   /* a gauge for tracking the cleanable ratio of the dirtiest log */
   @volatile private var dirtiestLogCleanableRatio = 0.0
-  newGauge("max-dirty-percent", new Gauge[Int] {
-    def value = (100 * dirtiestLogCleanableRatio).toInt
-  })
+  newGauge(
+    "max-dirty-percent",
+    new Gauge[Int] {
+      def value = (100 * dirtiestLogCleanableRatio).toInt
+    })
 
   /**
     * @return the position processed for all logs.

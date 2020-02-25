@@ -2102,10 +2102,12 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
       // Identity udf that tracks the number of times it is called.
       val countAcc = sparkContext.accumulator(0, "CallCount")
-      sqlContext.udf.register("testUdf", (x: Int) => {
-        countAcc.++=(1)
-        x
-      })
+      sqlContext.udf.register(
+        "testUdf",
+        (x: Int) => {
+          countAcc.++=(1)
+          x
+        })
 
       // Evaluates df, verifying it is equal to the expectedResult and the accumulator's value
       // is correct.

@@ -508,9 +508,12 @@ private[parquet] class CatalystRowConverter(
       val parentName = parquetSchema.getName
 
       if (isElementType(repeatedType, elementType, parentName)) {
-        newConverter(repeatedType, elementType, new ParentContainerUpdater {
-          override def set(value: Any): Unit = currentArray += value
-        })
+        newConverter(
+          repeatedType,
+          elementType,
+          new ParentContainerUpdater {
+            override def set(value: Any): Unit = currentArray += value
+          })
       } else {
         new ElementConverter(repeatedType.asGroupType().getType(0), elementType)
       }
@@ -574,9 +577,12 @@ private[parquet] class CatalystRowConverter(
       private var currentElement: Any = _
 
       private val converter =
-        newConverter(parquetType, catalystType, new ParentContainerUpdater {
-          override def set(value: Any): Unit = currentElement = value
-        })
+        newConverter(
+          parquetType,
+          catalystType,
+          new ParentContainerUpdater {
+            override def set(value: Any): Unit = currentElement = value
+          })
 
       override def getConverter(fieldIndex: Int): Converter = converter
 

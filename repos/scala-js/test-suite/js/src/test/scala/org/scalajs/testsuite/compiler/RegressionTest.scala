@@ -362,12 +362,13 @@ class RegressionTest {
          * the call itself.
          * The optimizer eliminates the useless asInstanceOf.
          */
-        concat(v, {
-          // This must be a true block
-          var x = 1
-          while (x < 5) x += 1
-          x
-        })
+        concat(
+          v, {
+            // This must be a true block
+            var x = 1
+            while (x < 5) x += 1
+            x
+          })
       }
     }
 

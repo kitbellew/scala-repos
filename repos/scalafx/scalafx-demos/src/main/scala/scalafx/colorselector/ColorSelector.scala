@@ -277,43 +277,55 @@ object ColorSelector extends JFXApp {
     add(rectangleRegion, 0, 0, 3, 1)
 
     add(controlRed, 0, 1)
-    add(new Label {
-      alignmentInParent = Pos.TopRight
-      labelFor = cmbWebColor
-      text = "Web Color"
-      textAlignment = TextAlignment.Right
-      wrapText = true
-    }, 1, 1)
+    add(
+      new Label {
+        alignmentInParent = Pos.TopRight
+        labelFor = cmbWebColor
+        text = "Web Color"
+        textAlignment = TextAlignment.Right
+        wrapText = true
+      },
+      1,
+      1)
     add(cmbWebColor, 2, 1)
 
     add(controlGreen, 0, 2)
-    add(new Label {
-      alignmentInParent = Pos.TopRight
-      labelFor = txfColorValue
-      text = "Color Value"
-      textAlignment = TextAlignment.Right
-      wrapText = true
-    }, 1, 2)
+    add(
+      new Label {
+        alignmentInParent = Pos.TopRight
+        labelFor = txfColorValue
+        text = "Color Value"
+        textAlignment = TextAlignment.Right
+        wrapText = true
+      },
+      1,
+      2)
     add(txfColorValue, 2, 2)
 
     add(controlBlue, 0, 3)
-    add(new Label {
-      alignmentInParent = Pos.TopRight
-      labelFor = cmbColorFormat
-      text = "Color Format"
-      textAlignment = TextAlignment.Right
-      wrapText = true
-    }, 1, 3)
+    add(
+      new Label {
+        alignmentInParent = Pos.TopRight
+        labelFor = cmbColorFormat
+        text = "Color Format"
+        textAlignment = TextAlignment.Right
+        wrapText = true
+      },
+      1,
+      3)
     add(cmbColorFormat, 2, 3)
 
     add(controlAlpha, 0, 4)
-    add(new Label {
-      alignmentInParent = Pos.TopRight
-      labelFor = chbDisableAlpha
-      text = "Disable Alpha"
-      textAlignment = TextAlignment.Right
-      wrapText = true
-    }, 1, 4)
+    add(
+      new Label {
+        alignmentInParent = Pos.TopRight
+        labelFor = chbDisableAlpha
+        text = "Disable Alpha"
+        textAlignment = TextAlignment.Right
+        wrapText = true
+      },
+      1,
+      4)
     add(chbDisableAlpha, 2, 4)
   }
 

@@ -42,11 +42,11 @@ object Cors {
       maxAge: Option[Duration] = None)
 
   /** A CORS policy that lets you do whatever you want.  Don't use this in production. */
-  val UnsafePermissivePolicy: Policy = Policy(allowsOrigin = { origin =>
-    Some(origin)
-  }, allowsMethods = { method => Some(method :: Nil) }, allowsHeaders = {
-    headers => Some(headers)
-  }, supportsCredentials = true)
+  val UnsafePermissivePolicy: Policy = Policy(
+    allowsOrigin = { origin => Some(origin) },
+    allowsMethods = { method => Some(method :: Nil) },
+    allowsHeaders = { headers => Some(headers) },
+    supportsCredentials = true)
 
   /**
     * An HTTP filter that handles preflight (OPTIONS) requests and sets CORS response headers
@@ -260,8 +260,10 @@ object CorsFilter {
     val headerList = Some(sep.split(headers).toSeq)
     val exposeList = sep.split(exposes).toSeq
     new Cors.HttpFilter(
-      Cors.Policy({ _ => Some(origin) }, { _ => methodList }, { _ =>
-        headerList
-      }, exposeList))
+      Cors.Policy(
+        { _ => Some(origin) },
+        { _ => methodList },
+        { _ => headerList },
+        exposeList))
   }
 }

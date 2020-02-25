@@ -243,10 +243,12 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
         } else {
           logger.trace("Non-Terminal state for " + jobId)
           // We only update cancelled if we have not yet cancelled.
-          cancelled.compareAndSet(false, job map {
-            case Job(_, _, _, _, _, Cancelled(_, _, _)) => true
-            case _                                      => false
-          } getOrElse false)
+          cancelled.compareAndSet(
+            false,
+            job map {
+              case Job(_, _, _, _, _, Cancelled(_, _, _)) => true
+              case _                                      => false
+            } getOrElse false)
         }
       }
     }

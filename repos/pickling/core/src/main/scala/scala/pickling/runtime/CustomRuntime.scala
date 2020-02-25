@@ -133,9 +133,11 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
       (tag, pickler)
     }
 
-    builder.putField(name, b => {
-      pickler1.pickle(value, b)
-    })
+    builder.putField(
+      name,
+      b => {
+        pickler1.pickle(value, b)
+      })
   }
 
   def pickle(picklee: (Any, Any), builder: PBuilder): Unit = {

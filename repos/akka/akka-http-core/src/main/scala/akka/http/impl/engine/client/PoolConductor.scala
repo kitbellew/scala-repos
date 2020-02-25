@@ -262,12 +262,14 @@ private object PoolConductor {
         shape.outArray foreach { setHandler(_, ignoreTerminateOutput) }
 
         val in = shape.in
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            val cmd = grab(in)
-            emit(shape.outArray(cmd.slotIx), cmd.rc, pullIn)
-          }
-        })
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              val cmd = grab(in)
+              emit(shape.outArray(cmd.slotIx), cmd.rc, pullIn)
+            }
+          })
         val pullIn = () ⇒ pull(in)
 
         override def preStart(): Unit = pullIn()

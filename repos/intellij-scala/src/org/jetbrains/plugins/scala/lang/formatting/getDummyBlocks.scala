@@ -456,22 +456,25 @@ object getDummyBlocks {
                 firstSibling.getElementType == ScalaDocTokenType.DOC_TAG_NAME &&
                 child.getText.trim().length() > 0) {
               val wrap = Wrap.createWrap(WrapType.NONE, false)
-              (firstSibling.getText match {
-                case "@param" | "@tparam" =>
-                  if (scalaSettings.SD_ALIGN_PARAMETERS_COMMENTS)
-                    normalAlignment
-                  else null
-                case "@return" =>
-                  if (scalaSettings.SD_ALIGN_RETURN_COMMENTS) normalAlignment
-                  else null
-                case "@throws" =>
-                  if (scalaSettings.SD_ALIGN_EXCEPTION_COMMENTS) normalAlignment
-                  else null
-                case _ =>
-                  if (scalaSettings.SD_ALIGN_OTHER_TAGS_COMMENTS)
-                    normalAlignment
-                  else null
-              }, wrap)
+              (
+                firstSibling.getText match {
+                  case "@param" | "@tparam" =>
+                    if (scalaSettings.SD_ALIGN_PARAMETERS_COMMENTS)
+                      normalAlignment
+                    else null
+                  case "@return" =>
+                    if (scalaSettings.SD_ALIGN_RETURN_COMMENTS) normalAlignment
+                    else null
+                  case "@throws" =>
+                    if (scalaSettings.SD_ALIGN_EXCEPTION_COMMENTS)
+                      normalAlignment
+                    else null
+                  case _ =>
+                    if (scalaSettings.SD_ALIGN_OTHER_TAGS_COMMENTS)
+                      normalAlignment
+                    else null
+                },
+                wrap)
             } else
               (
                 null,

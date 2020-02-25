@@ -76,13 +76,15 @@ abstract class RestartNode3Spec
       // secondSystem is a separate ActorSystem, to be able to simulate restart
       // we must transfer its address to first
       runOn(first, third) {
-        system.actorOf(Props(new Actor {
-          def receive = {
-            case a: UniqueAddress ⇒
-              secondUniqueAddress = a
-              sender() ! "ok"
-          }
-        }).withDeploy(Deploy.local), name = "address-receiver")
+        system.actorOf(
+          Props(new Actor {
+            def receive = {
+              case a: UniqueAddress ⇒
+                secondUniqueAddress = a
+                sender() ! "ok"
+            }
+          }).withDeploy(Deploy.local),
+          name = "address-receiver")
         enterBarrier("second-address-receiver-ready")
       }
 

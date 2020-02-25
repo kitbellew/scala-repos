@@ -64,13 +64,17 @@ object Play2Keys {
 
       keys foreach {
         case str: StringXmlKey =>
-          map.put(str.name, str.values.map {
-            case (k, v) => (k, new StringParsedValue(v))
-          })
+          map.put(
+            str.name,
+            str.values.map {
+              case (k, v) => (k, new StringParsedValue(v))
+            })
         case seqStr: SeqStringXmlKey =>
-          map.put(seqStr.name, seqStr.values map {
-            case (k, v) => (k, new SeqStringParsedValue(v))
-          })
+          map.put(
+            seqStr.name,
+            seqStr.values map {
+              case (k, v) => (k, new SeqStringParsedValue(v))
+            })
         case _ =>
       }
 

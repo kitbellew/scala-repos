@@ -130,10 +130,12 @@ trait WebJobManager
         for {
           initJob <- job0
           result <- start(initJob.id, timestamp)
-          job <- result.fold({ error: String =>
-            BadResponse(
-              "Server failed to return job that had been created: " + error)
-          }, _.point[Response])
+          job <- result.fold(
+            { error: String =>
+              BadResponse(
+                "Server failed to return job that had been created: " + error)
+            },
+            _.point[Response])
         } yield job
       } getOrElse job0
     }

@@ -77,10 +77,13 @@ object SuggestNamesUtil {
       case x if x(0) == "option" || x(0) == "foreach" =>
         try {
           val items = (new ScalaVariableOfTypeMacro)
-            .calculateLookupItems(Array[String](x(0) match {
-              case "option"  => "scala.Option"
-              case "foreach" => "foreach"
-            }), context, showOne = true)
+            .calculateLookupItems(
+              Array[String](x(0) match {
+                case "option"  => "scala.Option"
+                case "foreach" => "foreach"
+              }),
+              context,
+              showOne = true)
             .map(_.getObject)
             .filter(_.isInstanceOf[PsiNamedElement])
             .map(_.asInstanceOf[PsiNamedElement])

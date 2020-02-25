@@ -123,10 +123,12 @@ class TaskKillerTest
       .thenReturn(Future.successful(Some(AppDefinition(appId))))
     when(tracker.appTasksLaunchedSync(appId)).thenReturn(tasksToKill)
 
-    val result = taskKiller.kill(appId, { tasks =>
-      tasks should equal(tasksToKill)
-      tasksToKill
-    })
+    val result = taskKiller.kill(
+      appId,
+      { tasks =>
+        tasks should equal(tasksToKill)
+        tasksToKill
+      })
     result.futureValue shouldEqual tasksToKill
     verify(service, times(1)).killTasks(appId, tasksToKill)
   }

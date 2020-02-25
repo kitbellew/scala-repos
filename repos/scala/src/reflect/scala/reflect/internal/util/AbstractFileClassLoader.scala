@@ -66,13 +66,16 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     findAbstractFile(name) match {
       case null => null
       case file =>
-        new URL(null, s"memory:${file.path}", new URLStreamHandler {
-          override def openConnection(url: URL): URLConnection =
-            new URLConnection(url) {
-              override def connect() = ()
-              override def getInputStream = file.input
-            }
-        })
+        new URL(
+          null,
+          s"memory:${file.path}",
+          new URLStreamHandler {
+            override def openConnection(url: URL): URLConnection =
+              new URLConnection(url) {
+                override def connect() = ()
+                override def getInputStream = file.input
+              }
+          })
     }
   override protected def findResources(name: String): JEnumeration[URL] =
     findResource(name) match {

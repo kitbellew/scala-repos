@@ -148,11 +148,13 @@ class IndexService(path: File) {
   def buildTermClassMethodQuery(query: String): BooleanQuery = {
     new BooleanQuery {
       add(new BoostedPrefixQuery(new Term("fqn", query)), Occur.MUST)
-      add(new BooleanQuery {
-        add(ClassIndexT, Occur.SHOULD)
-        add(FieldIndexT, Occur.MUST_NOT)
-        add(MethodIndexT, Occur.SHOULD)
-      }, Occur.MUST)
+      add(
+        new BooleanQuery {
+          add(ClassIndexT, Occur.SHOULD)
+          add(FieldIndexT, Occur.MUST_NOT)
+          add(MethodIndexT, Occur.SHOULD)
+        },
+        Occur.MUST)
     }
   }
 }

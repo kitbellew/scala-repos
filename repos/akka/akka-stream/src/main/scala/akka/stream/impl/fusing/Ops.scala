@@ -770,9 +770,11 @@ private[akka] final case class MapAsync[In, Out](
         }
       )
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pushOne()
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pushOne()
+        })
     }
 }
 
@@ -1055,10 +1057,12 @@ private[stream] final class GroupedWithin[T](n: Int, d: FiniteDuration)
         }
       )
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = if (groupClosed) emitGroup()
-        override def onDownstreamFinish(): Unit = completeStage()
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = if (groupClosed) emitGroup()
+          override def onDownstreamFinish(): Unit = completeStage()
+        })
 
       override protected def onTimer(timerKey: Any) =
         if (elements > 0) closeGroup()
@@ -1174,13 +1178,17 @@ private[stream] final class TakeWithin[T](timeout: FiniteDuration)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) {
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = push(out, grab(in))
-      })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = push(out, grab(in))
+        })
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
 
       final override protected def onTimer(key: Any): Unit =
         completeStage()
@@ -1198,15 +1206,19 @@ private[stream] final class DropWithin[T](timeout: FiniteDuration)
 
       private var allow = false
 
-      setHandler(in, new InHandler {
-        override def onPush(): Unit =
-          if (allow) push(out, grab(in))
-          else pull(in)
-      })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit =
+            if (allow) push(out, grab(in))
+            else pull(in)
+        })
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
 
       final override protected def onTimer(key: Any): Unit = allow = true
 
@@ -1228,13 +1240,15 @@ private[stream] final class Reduce[T](f: (T, T) ⇒ T)
       override def toString = s"Reduce.Logic(aggregator=$aggregator)"
       var aggregator: T = _
 
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = {
-          aggregator = grab(in)
-          pull(in)
-          setHandler(in, rest)
-        }
-      })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = {
+            aggregator = grab(in)
+            pull(in)
+            setHandler(in, rest)
+          }
+        })
       def rest = new InHandler {
         override def onPush(): Unit = {
           aggregator = f(aggregator, grab(in))
@@ -1246,9 +1260,11 @@ private[stream] final class Reduce[T](f: (T, T) ⇒ T)
         }
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
+        })
     }
   override def toString = "Reduce"
 }
@@ -1262,14 +1278,18 @@ private[stream] final class RecoverWith[T, M](
   override def initialAttributes = DefaultAttributes.recoverWith
 
   override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
-    setHandler(in, new InHandler {
-      override def onPush(): Unit = push(out, grab(in))
-      override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-    })
+    setHandler(
+      in,
+      new InHandler {
+        override def onPush(): Unit = push(out, grab(in))
+        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
+      })
 
-    setHandler(out, new OutHandler {
-      override def onPull(): Unit = pull(in)
-    })
+    setHandler(
+      out,
+      new OutHandler {
+        override def onPull(): Unit = pull(in)
+      })
 
     def onFailure(ex: Throwable) =
       if (pf.isDefinedAt(ex)) switchTo(pf(ex)) else failStage(ex)

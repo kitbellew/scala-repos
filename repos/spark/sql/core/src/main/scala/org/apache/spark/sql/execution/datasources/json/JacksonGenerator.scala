@@ -64,10 +64,13 @@ private[sql] object JacksonGenerator {
 
       case (MapType(kt, vt, _), v: MapData) =>
         gen.writeStartObject()
-        v.foreach(kt, vt, { (k, v) =>
-          gen.writeFieldName(k.toString)
-          valWriter(vt, v)
-        })
+        v.foreach(
+          kt,
+          vt,
+          { (k, v) =>
+            gen.writeFieldName(k.toString)
+            valWriter(vt, v)
+          })
         gen.writeEndObject()
 
       case (StructType(ty), v: InternalRow) =>

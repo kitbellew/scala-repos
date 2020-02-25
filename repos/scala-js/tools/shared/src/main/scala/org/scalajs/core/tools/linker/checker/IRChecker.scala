@@ -970,10 +970,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
   private def lookupInfo(className: String)(
       implicit ctx: ErrorContext): Infos.ClassInfo = {
-    unit.infos.getOrElse(className, {
-      reportError(s"Cannot find info for class $className")
-      Infos.ClassInfo(className)
-    })
+    unit.infos.getOrElse(
+      className, {
+        reportError(s"Cannot find info for class $className")
+        Infos.ClassInfo(className)
+      })
   }
 
   private def tryLookupClass(className: String)(
@@ -986,16 +987,17 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
   private def lookupClass(className: String)(
       implicit ctx: ErrorContext): CheckedClass = {
-    classes.getOrElseUpdate(className, {
-      reportError(s"Cannot find class $className")
-      new CheckedClass(
-        className,
-        ClassKind.Class,
-        Some(ObjectClass),
-        Set(ObjectClass),
-        None,
-        Nil)
-    })
+    classes.getOrElseUpdate(
+      className, {
+        reportError(s"Cannot find class $className")
+        new CheckedClass(
+          className,
+          ClassKind.Class,
+          Some(ObjectClass),
+          Set(ObjectClass),
+          None,
+          Nil)
+      })
   }
 
   private def lookupClass(classType: ClassType)(

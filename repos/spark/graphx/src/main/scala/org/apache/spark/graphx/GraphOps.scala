@@ -91,9 +91,12 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       edgeDirection: EdgeDirection): VertexRDD[Array[VertexId]] = {
     val nbrs =
       if (edgeDirection == EdgeDirection.Either) {
-        graph.aggregateMessages[Array[VertexId]](ctx => {
-          ctx.sendToSrc(Array(ctx.dstId)); ctx.sendToDst(Array(ctx.srcId))
-        }, _ ++ _, TripletFields.None)
+        graph.aggregateMessages[Array[VertexId]](
+          ctx => {
+            ctx.sendToSrc(Array(ctx.dstId)); ctx.sendToDst(Array(ctx.srcId))
+          },
+          _ ++ _,
+          TripletFields.None)
       } else if (edgeDirection == EdgeDirection.Out) {
         graph.aggregateMessages[Array[VertexId]](
           ctx => ctx.sendToSrc(Array(ctx.dstId)),
@@ -130,10 +133,13 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       edgeDirection: EdgeDirection): VertexRDD[Array[(VertexId, VD)]] = {
     val nbrs = edgeDirection match {
       case EdgeDirection.Either =>
-        graph.aggregateMessages[Array[(VertexId, VD)]](ctx => {
-          ctx.sendToSrc(Array((ctx.dstId, ctx.dstAttr)))
-          ctx.sendToDst(Array((ctx.srcId, ctx.srcAttr)))
-        }, (a, b) => a ++ b, TripletFields.All)
+        graph.aggregateMessages[Array[(VertexId, VD)]](
+          ctx => {
+            ctx.sendToSrc(Array((ctx.dstId, ctx.dstAttr)))
+            ctx.sendToDst(Array((ctx.srcId, ctx.srcAttr)))
+          },
+          (a, b) => a ++ b,
+          TripletFields.All)
       case EdgeDirection.In =>
         graph.aggregateMessages[Array[(VertexId, VD)]](
           ctx => ctx.sendToDst(Array((ctx.srcId, ctx.srcAttr))),

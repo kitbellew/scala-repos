@@ -96,34 +96,41 @@ class JDBCPEvents(
       $targetEntityTypeClause
       $targetEntityIdClause
       """.replace("\n", " ")
-    new JdbcRDD(sc, () => {
-      DriverManager.getConnection(
-        client,
-        config.properties("USERNAME"),
-        config.properties("PASSWORD"))
-    }, q, lower / 1000, upper / 1000, par, (r: ResultSet) => {
-      Event(
-        eventId = Option(r.getString("id")),
-        event = r.getString("event"),
-        entityType = r.getString("entityType"),
-        entityId = r.getString("entityId"),
-        targetEntityType = Option(r.getString("targetEntityType")),
-        targetEntityId = Option(r.getString("targetEntityId")),
-        properties = Option(r.getString("properties"))
-          .map(x => DataMap(Serialization.read[JObject](x)))
-          .getOrElse(DataMap()),
-        eventTime = new DateTime(
-          r.getTimestamp("eventTime").getTime,
-          DateTimeZone.forID(r.getString("eventTimeZone"))),
-        tags = Option(r.getString("tags"))
-          .map(x => x.split(",").toList)
-          .getOrElse(Nil),
-        prId = Option(r.getString("prId")),
-        creationTime = new DateTime(
-          r.getTimestamp("creationTime").getTime,
-          DateTimeZone.forID(r.getString("creationTimeZone")))
-      )
-    }).cache()
+    new JdbcRDD(
+      sc,
+      () => {
+        DriverManager.getConnection(
+          client,
+          config.properties("USERNAME"),
+          config.properties("PASSWORD"))
+      },
+      q,
+      lower / 1000,
+      upper / 1000,
+      par,
+      (r: ResultSet) => {
+        Event(
+          eventId = Option(r.getString("id")),
+          event = r.getString("event"),
+          entityType = r.getString("entityType"),
+          entityId = r.getString("entityId"),
+          targetEntityType = Option(r.getString("targetEntityType")),
+          targetEntityId = Option(r.getString("targetEntityId")),
+          properties = Option(r.getString("properties"))
+            .map(x => DataMap(Serialization.read[JObject](x)))
+            .getOrElse(DataMap()),
+          eventTime = new DateTime(
+            r.getTimestamp("eventTime").getTime,
+            DateTimeZone.forID(r.getString("eventTimeZone"))),
+          tags = Option(r.getString("tags"))
+            .map(x => x.split(",").toList)
+            .getOrElse(Nil),
+          prId = Option(r.getString("prId")),
+          creationTime = new DateTime(
+            r.getTimestamp("creationTime").getTime,
+            DateTimeZone.forID(r.getString("creationTimeZone")))
+        )
+      }).cache()
   }
 
   def write(events: RDD[Event], appId: Int, channelId: Option[Int])(

@@ -300,11 +300,12 @@ private[spark] object StratifiedSamplingUtils extends Logging {
     }
 
     def nextPoisson(mean: Double): Int = {
-      val poisson = poissonCache.getOrElseUpdate(mean, {
-        val newPoisson = new PoissonDistribution(mean)
-        newPoisson.reseedRandomGenerator(poissonSeed)
-        newPoisson
-      })
+      val poisson = poissonCache.getOrElseUpdate(
+        mean, {
+          val newPoisson = new PoissonDistribution(mean)
+          newPoisson.reseedRandomGenerator(poissonSeed)
+          newPoisson
+        })
       poisson.sample()
     }
 

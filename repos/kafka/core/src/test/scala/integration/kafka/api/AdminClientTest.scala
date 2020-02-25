@@ -75,10 +75,12 @@ class AdminClientTest extends IntegrationTestHarness with Logging {
   @Test
   def testListGroups() {
     consumers(0).subscribe(List(topic))
-    TestUtils.waitUntilTrue(() => {
-      consumers(0).poll(0)
-      !consumers(0).assignment().isEmpty
-    }, "Expected non-empty assignment")
+    TestUtils.waitUntilTrue(
+      () => {
+        consumers(0).poll(0)
+        !consumers(0).assignment().isEmpty
+      },
+      "Expected non-empty assignment")
 
     val groups = client.listAllGroupsFlattened
     assertFalse(groups.isEmpty)
@@ -90,10 +92,12 @@ class AdminClientTest extends IntegrationTestHarness with Logging {
   @Test
   def testDescribeGroup() {
     consumers(0).subscribe(List(topic))
-    TestUtils.waitUntilTrue(() => {
-      consumers(0).poll(0)
-      !consumers(0).assignment().isEmpty
-    }, "Expected non-empty assignment")
+    TestUtils.waitUntilTrue(
+      () => {
+        consumers(0).poll(0)
+        !consumers(0).assignment().isEmpty
+      },
+      "Expected non-empty assignment")
 
     val group = client.describeGroup(groupId)
     assertEquals("consumer", group.protocolType)
@@ -110,10 +114,12 @@ class AdminClientTest extends IntegrationTestHarness with Logging {
   @Test
   def testDescribeConsumerGroup() {
     consumers(0).subscribe(List(topic))
-    TestUtils.waitUntilTrue(() => {
-      consumers(0).poll(0)
-      !consumers(0).assignment().isEmpty
-    }, "Expected non-empty assignment")
+    TestUtils.waitUntilTrue(
+      () => {
+        consumers(0).poll(0)
+        !consumers(0).assignment().isEmpty
+      },
+      "Expected non-empty assignment")
 
     val consumerSummaries = client.describeConsumerGroup(groupId)
     assertEquals(1, consumerSummaries.size)

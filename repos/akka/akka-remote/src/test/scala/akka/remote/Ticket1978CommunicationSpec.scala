@@ -208,11 +208,13 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
   ("-") must {
     if (cipherConfig.runTest && preCondition) {
-      val ignoreMe = other.actorOf(Props(new Actor {
-        def receive = {
-          case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
-        }
-      }), "echo")
+      val ignoreMe = other.actorOf(
+        Props(new Actor {
+          def receive = {
+            case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
+          }
+        }),
+        "echo")
       val otherAddress = other
         .asInstanceOf[ExtendedActorSystem]
         .provider

@@ -229,10 +229,15 @@ object Conformance {
       override def visitParameterizedType(p: ScParameterizedType) {
         p.designator match {
           case a: ScAbstractType =>
-            val subst = new ScSubstitutor(Map(a.tpt.args.zip(p.typeArgs).map {
-              case (tpt: ScTypeParameterType, tp: ScType) =>
-                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-            }: _*), Map.empty, None)
+            val subst = new ScSubstitutor(
+              Map(a.tpt.args.zip(p.typeArgs).map {
+                case (tpt: ScTypeParameterType, tp: ScType) =>
+                  (
+                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                    tp)
+              }: _*),
+              Map.empty,
+              None)
             val lower: ScType =
               subst.subst(a.lower) match {
                 case ScParameterizedType(lower, _) =>
@@ -714,15 +719,17 @@ object Conformance {
         processor.getResult
       }
 
-      result = (c.components.forall(comp => {
-        val t = conformsInner(comp, r, HashSet.empty, undefinedSubst)
-        undefinedSubst = t._2
-        t._1
-      }) && c.signatureMap.forall {
-        case (s: Signature, retType) => workWithSignature(s, retType)
-      } && c.typesMap.forall {
-        case (s, sign) => workWithTypeAlias(sign)
-      }, undefinedSubst)
+      result = (
+        c.components.forall(comp => {
+          val t = conformsInner(comp, r, HashSet.empty, undefinedSubst)
+          undefinedSubst = t._2
+          t._1
+        }) && c.signatureMap.forall {
+          case (s: Signature, retType) => workWithSignature(s, retType)
+        } && c.typesMap.forall {
+          case (s, sign) => workWithTypeAlias(sign)
+        },
+        undefinedSubst)
     }
 
     override def visitProjectionType(proj: ScProjectionType) {
@@ -1092,10 +1099,13 @@ object Conformance {
 
       p.designator match {
         case a: ScAbstractType =>
-          val subst = new ScSubstitutor(Map(a.tpt.args.zip(p.typeArgs).map {
-            case (tpt: ScTypeParameterType, tp: ScType) =>
-              ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-          }: _*), Map.empty, None)
+          val subst = new ScSubstitutor(
+            Map(a.tpt.args.zip(p.typeArgs).map {
+              case (tpt: ScTypeParameterType, tp: ScType) =>
+                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
+            }: _*),
+            Map.empty,
+            None)
           val upper: ScType =
             subst.subst(a.upper) match {
               case ScParameterizedType(upper, _) =>
@@ -1543,12 +1553,15 @@ object Conformance {
               }
             case (_, t: ScTypeParameterType)
                 if t.args.length == p2.typeArgs.length =>
-              val subst = new ScSubstitutor(Map(t.args.zip(p.typeArgs).map {
-                case (tpt: ScTypeParameterType, tp: ScType) =>
-                  (
-                    (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
-                    tp)
-              }: _*), Map.empty, None)
+              val subst = new ScSubstitutor(
+                Map(t.args.zip(p.typeArgs).map {
+                  case (tpt: ScTypeParameterType, tp: ScType) =>
+                    (
+                      (tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)),
+                      tp)
+                }: _*),
+                Map.empty,
+                None)
               result = conformsInner(
                 l,
                 subst.subst(t.upper.v),
@@ -1593,10 +1606,13 @@ object Conformance {
 
       p.designator match {
         case t: ScTypeParameterType if t.args.length == p.typeArgs.length =>
-          val subst = new ScSubstitutor(Map(t.args.zip(p.typeArgs).map {
-            case (tpt: ScTypeParameterType, tp: ScType) =>
-              ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-          }: _*), Map.empty, None)
+          val subst = new ScSubstitutor(
+            Map(t.args.zip(p.typeArgs).map {
+              case (tpt: ScTypeParameterType, tp: ScType) =>
+                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
+            }: _*),
+            Map.empty,
+            None)
           result = conformsInner(
             subst.subst(t.lower.v),
             r,
@@ -2167,24 +2183,21 @@ object Conformance {
             new ScSubstitutor(
               new collection.immutable.HashMap[(String, PsiElement), ScType] ++ typeParameters1
                 .zip(typeParameters2)
-                .map({
-                  tuple =>
-                    (
-                      (
-                        tuple._1.name,
-                        ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                      new ScTypeParameterType(
-                        tuple._2.name,
-                        tuple._2.ptp match {
-                          case p: ScTypeParam =>
-                            p.typeParameters.toList.map {
-                              new ScTypeParameterType(_, ScSubstitutor.empty)
-                            }
-                          case _ => Nil
-                        },
-                        new Suspension(tuple._2.lowerType),
-                        new Suspension(tuple._2.upperType),
-                        tuple._2.ptp))
+                .map({ tuple =>
+                  (
+                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                    new ScTypeParameterType(
+                      tuple._2.name,
+                      tuple._2.ptp match {
+                        case p: ScTypeParam =>
+                          p.typeParameters.toList.map {
+                            new ScTypeParameterType(_, ScSubstitutor.empty)
+                          }
+                        case _ => Nil
+                      },
+                      new Suspension(tuple._2.lowerType),
+                      new Suspension(tuple._2.upperType),
+                      tuple._2.ptp))
                 }),
               Map.empty,
               None)

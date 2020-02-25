@@ -442,9 +442,11 @@ object ZMembers {
       .grouped(2)
       .map {
         case score :: member :: Nil =>
-          ZMember(RequireClientProtocol.safe {
-            NumberFormat.toDouble(BytesToString(score))
-          }, ChannelBuffers.wrappedBuffer(member))
+          ZMember(
+            RequireClientProtocol.safe {
+              NumberFormat.toDouble(BytesToString(score))
+            },
+            ChannelBuffers.wrappedBuffer(member))
         case _ =>
           throw ClientError("Unexpected uneven pair of elements in members")
       }

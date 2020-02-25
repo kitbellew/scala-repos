@@ -43,10 +43,12 @@ class CombinatorPickleIntoTest extends FunSuite {
             100
           ) // FIXME: if the value is too small, we can get java.lang.ArrayIndexOutOfBoundsException
           builder.beginEntry(p, implicitly[FastTypeTag[Person]])
-          builder.putField("id", b => {
-            b.hintElidedType(FastTypeTag.Int)
-            intp.pickle(p.id, b)
-          })
+          builder.putField(
+            "id",
+            b => {
+              b.hintElidedType(FastTypeTag.Int)
+              intp.pickle(p.id, b)
+            })
           builder.endEntry()
         }
       }

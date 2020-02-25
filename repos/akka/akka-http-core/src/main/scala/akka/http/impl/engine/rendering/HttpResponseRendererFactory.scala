@@ -107,13 +107,15 @@ private[http] class HttpResponseRendererFactory(
                 if (isAvailable(out)) pull(in)
               }
           })
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = sinkIn.pull()
-            override def onDownstreamFinish(): Unit = {
-              completeStage()
-              sinkIn.cancel()
-            }
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = sinkIn.pull()
+              override def onDownstreamFinish(): Unit = {
+                completeStage()
+                sinkIn.cancel()
+              }
+            })
           sinkIn.pull()
           outStream.runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
         }

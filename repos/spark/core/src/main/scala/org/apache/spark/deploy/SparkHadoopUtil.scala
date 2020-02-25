@@ -273,12 +273,14 @@ class SparkHadoopUtil extends Logging {
       prefix: String,
       exclusionSuffix: String): Array[FileStatus] = {
     try {
-      val fileStatuses = remoteFs.listStatus(dir, new PathFilter {
-        override def accept(path: Path): Boolean = {
-          val name = path.getName
-          name.startsWith(prefix) && !name.endsWith(exclusionSuffix)
-        }
-      })
+      val fileStatuses = remoteFs.listStatus(
+        dir,
+        new PathFilter {
+          override def accept(path: Path): Boolean = {
+            val name = path.getName
+            name.startsWith(prefix) && !name.endsWith(exclusionSuffix)
+          }
+        })
       Arrays.sort(
         fileStatuses,
         new Comparator[FileStatus] {

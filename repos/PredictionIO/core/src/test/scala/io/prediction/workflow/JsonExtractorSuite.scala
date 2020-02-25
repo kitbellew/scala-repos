@@ -402,21 +402,23 @@ private case class ScalaQuery(
 
 private class UpperCaseFormat
     extends CustomSerializer[ScalaQuery](format =>
-      ({
-        case JObject(
-            JField("string", JString(string)) ::
-              JField("optional", JString(optional)) ::
-              JField("default", JString(default)) ::
-              Nil) =>
-          ScalaQuery(
-            string.toUpperCase,
-            Some(optional.toUpperCase),
-            default.toUpperCase)
-      }, {
-        case x: ScalaQuery =>
-          JObject(
-            JField("string", JString(x.string.toUpperCase)),
-            JField("optional", JString(x.optional.get.toUpperCase)),
-            JField("default", JString(x.default.toUpperCase))
-          )
-      }))
+      (
+        {
+          case JObject(
+              JField("string", JString(string)) ::
+                JField("optional", JString(optional)) ::
+                JField("default", JString(default)) ::
+                Nil) =>
+            ScalaQuery(
+              string.toUpperCase,
+              Some(optional.toUpperCase),
+              default.toUpperCase)
+        },
+        {
+          case x: ScalaQuery =>
+            JObject(
+              JField("string", JString(x.string.toUpperCase)),
+              JField("optional", JString(x.optional.get.toUpperCase)),
+              JField("default", JString(x.default.toUpperCase))
+            )
+        }))

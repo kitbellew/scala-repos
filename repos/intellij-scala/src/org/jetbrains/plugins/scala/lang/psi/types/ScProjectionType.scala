@@ -306,10 +306,14 @@ class ScProjectionType private (
     }
     isAliasType match {
       case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
-        return Equivalence.equivInner(lower match {
-          case Success(tp, _) => tp
-          case _              => return (false, uSubst)
-        }, r, uSubst, falseUndef)
+        return Equivalence.equivInner(
+          lower match {
+            case Success(tp, _) => tp
+            case _              => return (false, uSubst)
+          },
+          r,
+          uSubst,
+          falseUndef)
       case _ =>
     }
     r match {
@@ -324,10 +328,14 @@ class ScProjectionType private (
             typeArgs) =>
         r.isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
-            Equivalence.equivInner(this, lower match {
-              case Success(tp, _) => tp
-              case _              => return (false, uSubst)
-            }, uSubst, falseUndef)
+            Equivalence.equivInner(
+              this,
+              lower match {
+                case Success(tp, _) => tp
+                case _              => return (false, uSubst)
+              },
+              uSubst,
+              falseUndef)
           case _ => (false, uSubst)
         }
       case proj2 @ ScProjectionType(p1, element1, _) =>
@@ -344,10 +352,14 @@ class ScProjectionType private (
         }
         r.isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
-            Equivalence.equivInner(this, lower match {
-              case Success(tp, _) => tp
-              case _              => return (false, uSubst)
-            }, uSubst, falseUndef)
+            Equivalence.equivInner(
+              this,
+              lower match {
+                case Success(tp, _) => tp
+                case _              => return (false, uSubst)
+              },
+              uSubst,
+              falseUndef)
           case _ =>
         }
         if (actualElement != proj2.actualElement) {
@@ -584,10 +596,14 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     (this, r) match {
       case (ScDesignatorType(a: ScTypeAliasDefinition), _) =>
-        Equivalence.equivInner(a.aliasedType match {
-          case Success(tp, _) => tp
-          case _              => return (false, uSubst)
-        }, r, uSubst, falseUndef)
+        Equivalence.equivInner(
+          a.aliasedType match {
+            case Success(tp, _) => tp
+            case _              => return (false, uSubst)
+          },
+          r,
+          uSubst,
+          falseUndef)
       case (_, ScDesignatorType(element1)) =>
         if (ScEquivalenceUtil.smartEquivalence(element, element1))
           return (true, uSubst)

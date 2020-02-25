@@ -168,14 +168,16 @@ package util {
         override def preStart(): Unit =
           scheduleOnce("ToStrictTimeoutTimer", timeout)
 
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            if (emptyStream) {
-              push(out, HttpEntity.Strict(contentType, ByteString.empty))
-              completeStage()
-            } else pull(in)
-          }
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              if (emptyStream) {
+                push(out, HttpEntity.Strict(contentType, ByteString.empty))
+                completeStage()
+              } else pull(in)
+            }
+          })
 
         setHandler(
           in,

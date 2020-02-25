@@ -209,12 +209,14 @@ object ConcurrentSpec
       mustExecute(2) { unicastEC =>
         val completed = Promise[String]
 
-        val enumerator = Concurrent.unicast[String](onStart = { c =>
-          c.push("foo")
-          c.push("bar")
-        }, onComplete = {
-          completed.success("called")
-        })(unicastEC)
+        val enumerator = Concurrent.unicast[String](
+          onStart = { c =>
+            c.push("foo")
+            c.push("bar")
+          },
+          onComplete = {
+            completed.success("called")
+          })(unicastEC)
 
         val future = enumerator |>>> Cont {
           case Input.El(data) => Done(data)
@@ -230,10 +232,12 @@ object ConcurrentSpec
       mustExecute(2) { unicastEC =>
         val error = Promise[String]
 
-        val enumerator = Concurrent.unicast[String](onStart = { c =>
-          c.push("foo")
-          c.push("bar")
-        }, onError = { (err, input) => error.success(err) })(unicastEC)
+        val enumerator = Concurrent.unicast[String](
+          onStart = { c =>
+            c.push("foo")
+            c.push("bar")
+          },
+          onError = { (err, input) => error.success(err) })(unicastEC)
 
         enumerator |>> Cont {
           case Input.El(data) => Error(data, Input.Empty)
@@ -293,10 +297,12 @@ object ConcurrentSpec
         val (e0, c) = Concurrent.broadcast[Int]
         val interestCount = new AtomicInteger()
         val interestDone = new CountDownLatch(1)
-        val (e2, b) = Concurrent.broadcast(e0, { f =>
-          interestCount.incrementAndGet()
-          interestDone.countDown()
-        })(callbackEC)
+        val (e2, b) = Concurrent.broadcast(
+          e0,
+          { f =>
+            interestCount.incrementAndGet()
+            interestDone.countDown()
+          })(callbackEC)
         val i = e2 |>>> Iteratee.getChunks[Int]
         c.push(1)
         c.push(2)

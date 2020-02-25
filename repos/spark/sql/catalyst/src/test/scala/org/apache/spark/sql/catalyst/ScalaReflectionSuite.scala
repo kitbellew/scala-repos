@@ -295,11 +295,12 @@ class ScalaReflectionSuite extends SparkFunSuite {
     ("mirror", () => mirror),
     ("dataTypeFor", () => dataTypeFor[ComplexData]),
     ("constructorFor", () => constructorFor[ComplexData]),
-    ("extractorsFor", {
-      val inputObject =
-        BoundReference(0, dataTypeForComplexData, nullable = false)
-      () => extractorsFor[ComplexData](inputObject)
-    }),
+    (
+      "extractorsFor", {
+        val inputObject =
+          BoundReference(0, dataTypeForComplexData, nullable = false)
+        () => extractorsFor[ComplexData](inputObject)
+      }),
     (
       "getConstructorParameters(cls)",
       () => getConstructorParameters(classOf[ComplexData])),

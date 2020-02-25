@@ -41,10 +41,13 @@ abstract class AbstractTestFramework extends JavaTestFramework {
   def findSetUpMethod(clazz: PsiClass): PsiMethod = null
 
   def isTestClass(clazz: PsiClass, canBePotential: Boolean): Boolean = {
-    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(clazz match {
-      case wrapper: PsiClassWrapper => wrapper.definition
-      case _                        => clazz
-    }, classOf[ScTypeDefinition], false)
+    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      clazz match {
+        case wrapper: PsiClassWrapper => wrapper.definition
+        case _                        => clazz
+      },
+      classOf[ScTypeDefinition],
+      false)
     if (parent == null) return false
     val project = clazz.getProject
     val suiteClazz: PsiClass = ScalaPsiManager

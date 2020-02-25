@@ -69,9 +69,11 @@ class ExpandSums extends Phase {
             case (LiteralNode(false), LiteralNode(true)) =>
               Library.Not.typed[Boolean](pred)
             case _ =>
-              val ifDefined = map.replace({
-                case r @ Ref(s) if s == gen => silentCast(r.nodeType, from)
-              }, keepType = true)
+              val ifDefined = map.replace(
+                {
+                  case r @ Ref(s) if s == gen => silentCast(r.nodeType, from)
+                },
+                keepType = true)
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
               IfThenElse(ConstArray(pred, ifEmpty2, ifDefined))
           }
@@ -87,10 +89,14 @@ class ExpandSums extends Phase {
             case (LiteralNode(false), LiteralNode(true)) =>
               Library.Not.typed[Boolean](pred)
             case _ =>
-              val ifDefined = map.replace({
-                case r @ Ref(s) if s == gen =>
-                  silentCast(r.nodeType, from.select(ElementSymbol(2)).infer())
-              }, keepType = true)
+              val ifDefined = map.replace(
+                {
+                  case r @ Ref(s) if s == gen =>
+                    silentCast(
+                      r.nodeType,
+                      from.select(ElementSymbol(2)).infer())
+                },
+                keepType = true)
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
               if (left == Disc1) ifDefined
               else
@@ -216,9 +222,11 @@ class ExpandSums extends Phase {
       val sideInCondition =
         Select(Ref(sym) :@ extendedElementType, ElementSymbol(2)).infer()
       val on2 = on
-        .replace({
-          case Ref(s) if s == sym => sideInCondition
-        }, bottomUp = true)
+        .replace(
+          {
+            case Ref(s) if s == sym => sideInCondition
+          },
+          bottomUp = true)
         .infer()
       (extend, on2, createDisc)
     }
@@ -441,9 +449,11 @@ class ExpandSums extends Phase {
 
     val n2 = tr(n)
     logger.debug("Invalidated TypeSymbols: " + invalid.mkString(", "))
-    n2.replace({
-        case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
-      }, bottomUp = true)
+    n2.replace(
+        {
+          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+        },
+        bottomUp = true)
       .infer()
   }
 }

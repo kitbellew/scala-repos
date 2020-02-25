@@ -455,10 +455,12 @@ object Schema {
     case JObjectFixedT(fields) => {
       val keys = fields.keySet
       keys.forall { key =>
-        subsumes(ctpes.collect {
-          case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
-            (CPath(tail: _*), ctpe)
-        }, fields(key))
+        subsumes(
+          ctpes.collect {
+            case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
+              (CPath(tail: _*), ctpe)
+          },
+          fields(key))
       }
     }
 

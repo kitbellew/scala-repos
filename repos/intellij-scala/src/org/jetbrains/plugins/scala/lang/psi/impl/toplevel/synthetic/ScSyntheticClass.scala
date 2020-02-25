@@ -196,10 +196,15 @@ class ScSyntheticFunction(
       name: String,
       retType: ScType,
       paramTypes: Seq[Seq[ScType]]) =
-    this(manager, name, retType, paramTypes.mapWithIndex {
-      case (p, index) =>
-        p.map(new Parameter("", None, _, false, false, false, index))
-    }, Seq.empty)
+    this(
+      manager,
+      name,
+      retType,
+      paramTypes.mapWithIndex {
+        case (p, index) =>
+          p.map(new Parameter("", None, _, false, false, false, index))
+      },
+      Seq.empty)
 
   val typeParams: Seq[ScSyntheticTypeParameter] =
     typeParameterNames.map { name =>
@@ -358,10 +363,14 @@ class SyntheticClasses(project: Project)
             Seq.empty))
       for (un_op <- numeric_arith_unary_ops)
         nc.addMethod(
-          new ScSyntheticFunction(manager, "unary_" + un_op, nc.t match {
-            case Long | Double | Float => nc.t
-            case _                     => Int
-          }, Seq.empty))
+          new ScSyntheticFunction(
+            manager,
+            "unary_" + un_op,
+            nc.t match {
+              case Long | Double | Float => nc.t
+              case _                     => Int
+            },
+            Seq.empty))
     }
 
     for (ic <- integer) {

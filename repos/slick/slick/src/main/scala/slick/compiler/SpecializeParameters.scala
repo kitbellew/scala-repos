@@ -46,14 +46,18 @@ class SpecializeParameters extends Phase {
             _)) =>
         val compiledFetchParam =
           QueryParameter(fetch.extractor, ScalaBaseType.longType)
-        val guarded = n.replace({
-          case c2: Comprehension if c2 == c =>
-            c2.copy(fetch = Some(LiteralNode(0L)))
-        }, keepType = true)
-        val fallback = n.replace({
-          case c2: Comprehension if c2 == c =>
-            c2.copy(fetch = Some(compiledFetchParam))
-        }, keepType = true)
+        val guarded = n.replace(
+          {
+            case c2: Comprehension if c2 == c =>
+              c2.copy(fetch = Some(LiteralNode(0L)))
+          },
+          keepType = true)
+        val fallback = n.replace(
+          {
+            case c2: Comprehension if c2 == c =>
+              c2.copy(fetch = Some(compiledFetchParam))
+          },
+          keepType = true)
         ParameterSwitch(
           ConstArray(compare(fetch.extractor, 0L) -> guarded),
           fallback).infer()

@@ -80,9 +80,12 @@ trait PredicateClassifier { this: EventBus ⇒
 trait LookupClassification { this: EventBus ⇒
 
   protected final val subscribers =
-    new Index[Classifier, Subscriber](mapSize(), new Comparator[Subscriber] {
-      def compare(a: Subscriber, b: Subscriber): Int = compareSubscribers(a, b)
-    })
+    new Index[Classifier, Subscriber](
+      mapSize(),
+      new Comparator[Subscriber] {
+        def compare(a: Subscriber, b: Subscriber): Int =
+          compareSubscribers(a, b)
+      })
 
   /**
     * This is a size hint for the number of Classifiers you expect to have (use powers of 2)

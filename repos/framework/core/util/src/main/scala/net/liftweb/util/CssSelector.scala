@@ -286,19 +286,28 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   }
 
   private lazy val attrConst: Parser[String] = {
-    (('\'' ~> rep(elem("isValid", (c: Char) => {
-      c != '\'' && c >= ' '
-    })) <~ '\'') ^^ {
+    (('\'' ~> rep(
+      elem(
+        "isValid",
+        (c: Char) => {
+          c != '\'' && c >= ' '
+        })) <~ '\'') ^^ {
       case s => s.mkString
     }) |
-      (('"' ~> rep(elem("isValid", (c: Char) => {
-        c != '"' && c >= ' '
-      })) <~ '"') ^^ {
+      (('"' ~> rep(
+        elem(
+          "isValid",
+          (c: Char) => {
+            c != '"' && c >= ' '
+          })) <~ '"') ^^ {
         case s => s.mkString
       }) |
-      (rep1(elem("isValid", (c: Char) => {
-        c != '\'' && c != '"' && c > ' '
-      })) ^^ {
+      (rep1(
+        elem(
+          "isValid",
+          (c: Char) => {
+            c != '\'' && c != '"' && c > ' '
+          })) ^^ {
         case s => s.mkString
       })
 

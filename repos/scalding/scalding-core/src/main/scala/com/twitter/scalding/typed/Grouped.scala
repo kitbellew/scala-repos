@@ -109,13 +109,15 @@ object Grouped {
       if (ordser.isInstanceOf[EquivSerialization[_]]) Some(ordser) else None)
     val boxordSer = BoxedOrderedSerialization(boxfn, ordser)
 
-    WrappedSerialization.rawSetBinary(List((cls, boxordSer)), {
-      case (k: String, v: String) =>
-        FlowStateMap.mutate(flowDef) { st =>
-          val newSt = st.addConfigSetting(k + cls, v)
-          (newSt, ())
-        }
-    })
+    WrappedSerialization.rawSetBinary(
+      List((cls, boxordSer)),
+      {
+        case (k: String, v: String) =>
+          FlowStateMap.mutate(flowDef) { st =>
+            val newSt = st.addConfigSetting(k + cls, v)
+            (newSt, ())
+          }
+      })
     (boxfn, boxordSer)
   }
 

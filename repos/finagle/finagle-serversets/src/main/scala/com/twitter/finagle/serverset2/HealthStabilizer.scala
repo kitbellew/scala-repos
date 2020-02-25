@@ -76,10 +76,13 @@ private[serverset2] object HealthStabilizer {
         .dedup
         .register(Witness(u))
 
-      Closable.all(notify, gaugeListener, Closable.make { _ =>
-        gauge.remove()
-        Future.Done
-      })
+      Closable.all(
+        notify,
+        gaugeListener,
+        Closable.make { _ =>
+          gauge.remove()
+          Future.Done
+        })
     }
   }
 }

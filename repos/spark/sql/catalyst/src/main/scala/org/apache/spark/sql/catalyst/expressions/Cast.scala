@@ -156,15 +156,17 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   // UDFToBoolean
   private[this] def castToBoolean(from: DataType): Any => Any = from match {
     case StringType =>
-      buildCast[UTF8String](_, s => {
-        if (StringUtils.isTrueString(s)) {
-          true
-        } else if (StringUtils.isFalseString(s)) {
-          false
-        } else {
-          null
-        }
-      })
+      buildCast[UTF8String](
+        _,
+        s => {
+          if (StringUtils.isTrueString(s)) {
+            true
+          } else if (StringUtils.isFalseString(s)) {
+            false
+          } else {
+            null
+          }
+        })
     case TimestampType =>
       buildCast[Long](_, t => t != 0)
     case DateType =>
@@ -437,13 +439,15 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       _,
       array => {
         val values = new Array[Any](array.numElements())
-        array.foreach(fromType, (i, e) => {
-          if (e == null) {
-            values(i) = null
-          } else {
-            values(i) = elementCast(e)
-          }
-        })
+        array.foreach(
+          fromType,
+          (i, e) => {
+            if (e == null) {
+              values(i) = null
+            } else {
+              values(i) = elementCast(e)
+            }
+          })
         new GenericArrayData(values)
       }
     )
@@ -468,17 +472,19 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     }
     // TODO: Could be faster?
     val newRow = new GenericMutableRow(from.fields.length)
-    buildCast[InternalRow](_, row => {
-      var i = 0
-      while (i < row.numFields) {
-        newRow.update(
-          i,
-          if (row.isNullAt(i)) null
-          else castFuncs(i)(row.get(i, from.apply(i).dataType)))
-        i += 1
-      }
-      newRow.copy()
-    })
+    buildCast[InternalRow](
+      _,
+      row => {
+        var i = 0
+        while (i < row.numFields) {
+          newRow.update(
+            i,
+            if (row.isNullAt(i)) null
+            else castFuncs(i)(row.get(i, from.apply(i).dataType)))
+          i += 1
+        }
+        newRow.copy()
+      })
   }
 
   private[this] def cast(from: DataType, to: DataType): Any => Any = to match {

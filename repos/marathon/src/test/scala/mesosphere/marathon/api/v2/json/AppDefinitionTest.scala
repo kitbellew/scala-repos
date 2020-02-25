@@ -31,9 +31,11 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
 
-          assert(violations.exists { v =>
-            v.path.contains(path) && v.message == template
-          }, s"Violations:\n${violations.mkString}")
+          assert(
+            violations.exists { v =>
+              v.path.contains(path) && v.message == template
+            },
+            s"Violations:\n${violations.mkString}")
       }
     }
 
@@ -45,9 +47,11 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
         case Success =>
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
-          assert(!violations.exists { v =>
-            v.path.contains(path) && v.message == template
-          }, s"Violations:\n${violations.mkString}")
+          assert(
+            !violations.exists { v =>
+              v.path.contains(path) && v.message == template
+            },
+            s"Violations:\n${violations.mkString}")
       }
     }
 

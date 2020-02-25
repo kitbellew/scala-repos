@@ -624,9 +624,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         authorities: Authorities): Boolean = {
       logger.trace(
         "Checking write permission for " + path + " as " + authorities + " among " + permissions)
-      PermissionsFinder.canWriteAs(permissions filter {
-        _.path.isEqualOrParentOf(path)
-      }, authorities)
+      PermissionsFinder.canWriteAs(
+        permissions filter {
+          _.path.isEqualOrParentOf(path)
+        },
+        authorities)
     }
 
     private def promoteVersion(version: UUID): IO[PrecogUnit] = {

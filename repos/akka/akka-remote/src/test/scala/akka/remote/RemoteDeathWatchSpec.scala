@@ -84,12 +84,14 @@ akka {
       system.name,
       "unknownhost",
       2552)) / "user" / "subject"
-    system.actorOf(Props(new Actor {
-      context.watch(context.actorFor(path))
-      def receive = {
-        case t: Terminated ⇒ testActor ! t.actor.path
-      }
-    }).withDeploy(Deploy.local), name = "observer2")
+    system.actorOf(
+      Props(new Actor {
+        context.watch(context.actorFor(path))
+        def receive = {
+          case t: Terminated ⇒ testActor ! t.actor.path
+        }
+      }).withDeploy(Deploy.local),
+      name = "observer2")
 
     expectMsg(60.seconds, path)
   }

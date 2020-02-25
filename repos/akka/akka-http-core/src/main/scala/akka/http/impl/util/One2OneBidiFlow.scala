@@ -61,13 +61,15 @@ private[http] object One2OneBidiFlow {
         // race with the upstream completion and downstream cancellattion)
         private var innerFlowCancelled = false
 
-        setHandler(inIn, new InHandler {
-          override def onPush(): Unit = {
-            pending += 1
-            push(inOut, grab(inIn))
-          }
-          override def onUpstreamFinish(): Unit = complete(inOut)
-        })
+        setHandler(
+          inIn,
+          new InHandler {
+            override def onPush(): Unit = {
+              pending += 1
+              push(inOut, grab(inIn))
+            }
+            override def onUpstreamFinish(): Unit = complete(inOut)
+          })
 
         setHandler(
           inOut,
@@ -104,10 +106,12 @@ private[http] object One2OneBidiFlow {
           }
         )
 
-        setHandler(outOut, new OutHandler {
-          override def onPull(): Unit = pull(outIn)
-          override def onDownstreamFinish(): Unit = cancel(outIn)
-        })
+        setHandler(
+          outOut,
+          new OutHandler {
+            override def onPull(): Unit = pull(outIn)
+            override def onDownstreamFinish(): Unit = cancel(outIn)
+          })
       }
   }
 }

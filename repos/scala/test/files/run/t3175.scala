@@ -54,8 +54,10 @@ object Test {
     f12(strs, "jabooboo")
     println(longs(0))
     println(strs(0))
-    f13(new {
-      def update(x: Int, y: String): List[Int] = { println("hi mom"); Nil }
-    }, "irrelevant")
+    f13(
+      new {
+        def update(x: Int, y: String): List[Int] = { println("hi mom"); Nil }
+      },
+      "irrelevant")
   }
 }

@@ -701,9 +701,10 @@ class SparkILoop(
         throw ex
       case _ =>
         def fn(): Boolean =
-          try in.readYesOrNo(replayQuestionMessage, {
-            echo("\nYou must enter y or n."); fn()
-          })
+          try in.readYesOrNo(
+            replayQuestionMessage, {
+              echo("\nYou must enter y or n."); fn()
+            })
           catch { case _: RuntimeException => false }
 
         if (fn()) replay()
@@ -941,26 +942,28 @@ class SparkILoop(
 
     def reallyInterpret = {
       val reallyResult = intp.interpret(code)
-      (reallyResult, reallyResult match {
-        case IR.Error   => None
-        case IR.Success => Some(code)
-        case IR.Incomplete =>
-          if (in.interactive && code.endsWith("\n\n")) {
-            echo("You typed two blank lines.  Starting a new command.")
-            None
-          } else
-            in.readLine(ContinueString) match {
-              case null =>
-                // we know compilation is going to fail since we're at EOF and the
-                // parser thinks the input is still incomplete, but since this is
-                // a file being read non-interactively we want to fail.  So we send
-                // it straight to the compiler for the nice error message.
-                intp.compileString(code)
-                None
+      (
+        reallyResult,
+        reallyResult match {
+          case IR.Error   => None
+          case IR.Success => Some(code)
+          case IR.Incomplete =>
+            if (in.interactive && code.endsWith("\n\n")) {
+              echo("You typed two blank lines.  Starting a new command.")
+              None
+            } else
+              in.readLine(ContinueString) match {
+                case null =>
+                  // we know compilation is going to fail since we're at EOF and the
+                  // parser thinks the input is still incomplete, but since this is
+                  // a file being read non-interactively we want to fail.  So we send
+                  // it straight to the compiler for the nice error message.
+                  intp.compileString(code)
+                  None
 
-              case line => interpretStartingWith(code + "\n" + line)
-            }
-      })
+                case line => interpretStartingWith(code + "\n" + line)
+              }
+        })
     }
 
     /** Here we place ourselves between the user and the interpreter and examine

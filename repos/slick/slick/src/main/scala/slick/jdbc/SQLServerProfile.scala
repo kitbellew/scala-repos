@@ -364,9 +364,11 @@ class ProtectGroupBy extends Phase {
     case CollectionCast(f, _) => source(bs, b, f)
     case Bind(s, f, Pure(StructNode(defs), _)) =>
       val m = defs.toMap
-      val b2 = b.replace({
-        case Select(Ref(s), f) if s == bs => m(f)
-      }, keepType = true)
+      val b2 = b.replace(
+        {
+          case Select(Ref(s), f) if s == bs => m(f)
+        },
+        keepType = true)
       source(s, b2, f)
     case _ => (b, bs)
   }

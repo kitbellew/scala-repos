@@ -467,9 +467,12 @@ object CSCMatrix
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[(Int, Int), V])
           : Unit = {
         val zero = implicitly[Zero[V]].zero
-        fn.zeros(from.size - from.activeSize, from.iterator.collect {
-          case (k, v) if v != zero => k
-        }, zero)
+        fn.zeros(
+          from.size - from.activeSize,
+          from.iterator.collect {
+            case (k, v) if v != zero => k
+          },
+          zero)
         // TODO: I can use visitArray if I want to be clever
         from.activeIterator.foreach((fn.visit _).tupled)
       }

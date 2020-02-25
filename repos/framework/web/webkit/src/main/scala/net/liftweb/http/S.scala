@@ -1223,10 +1223,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     if (params.length == 0)
       ?(str)
     else
-      String.format(locale, ?(str), params.flatMap {
-        case s: AnyRef => List(s)
-        case _         => Nil
-      }.toArray: _*)
+      String.format(
+        locale,
+        ?(str),
+        params.flatMap {
+          case s: AnyRef => List(s)
+          case _         => Nil
+        }.toArray: _*)
 
   private def ?!(str: String, resBundle: List[ResourceBundle]): String =
     resBundle

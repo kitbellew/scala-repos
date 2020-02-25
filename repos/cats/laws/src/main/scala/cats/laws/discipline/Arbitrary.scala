@@ -47,9 +47,12 @@ object arbitrary extends ArbitraryInstances0 {
       implicit A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[A Ior B] =
     Arbitrary(
-      Gen.oneOf(A.arbitrary.map(Ior.left), B.arbitrary.map(Ior.right), for {
-        a <- A.arbitrary; b <- B.arbitrary
-      } yield Ior.both(a, b)))
+      Gen.oneOf(
+        A.arbitrary.map(Ior.left),
+        B.arbitrary.map(Ior.right),
+        for {
+          a <- A.arbitrary; b <- B.arbitrary
+        } yield Ior.both(a, b)))
 
   implicit def kleisliArbitrary[F[_], A, B](
       implicit F: Arbitrary[F[B]]): Arbitrary[Kleisli[F, A, B]] =

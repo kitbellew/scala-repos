@@ -227,16 +227,18 @@ object Scalding {
           minify(mode, dr)(factory).right.map { newDr =>
             val newIntr = newDr.as[Interval[Timestamp]]
             val mappable = factory(newDr)
-            ((newIntr, mode), Reader { (fdM: (FlowDef, Mode)) =>
-              TypedPipe
-                .from(mappable)
-                .flatMap { t =>
-                  fn(t).flatMap { mapped =>
-                    val time = Timestamp(timeOf(mapped))
-                    if (newIntr(time)) Some((time, mapped)) else None
+            (
+              (newIntr, mode),
+              Reader { (fdM: (FlowDef, Mode)) =>
+                TypedPipe
+                  .from(mappable)
+                  .flatMap { t =>
+                    fn(t).flatMap { mapped =>
+                      val time = Timestamp(timeOf(mapped))
+                      if (newIntr(time)) Some((time, mapped)) else None
+                    }
                   }
-                }
-            })
+              })
           }
         }
       }
@@ -253,17 +255,19 @@ object Scalding {
 
         toDateRange(timeSpan).right.map { dr =>
           val mappable = factory(dr)
-          ((timeSpan, mode), Reader { (fdM: (FlowDef, Mode)) =>
-            mappable.validateTaps(
-              fdM._2
-            ) //This can throw, but that is what this caller wants
-            TypedPipe
-              .from(mappable)
-              .flatMap { t =>
-                val time = Timestamp(timeOf(t))
-                if (timeSpan(time)) Some((time, t)) else None
-              }
-          })
+          (
+            (timeSpan, mode),
+            Reader { (fdM: (FlowDef, Mode)) =>
+              mappable.validateTaps(
+                fdM._2
+              ) //This can throw, but that is what this caller wants
+              TypedPipe
+                .from(mappable)
+                .flatMap { t =>
+                  val time = Timestamp(timeOf(t))
+                  if (timeSpan(time)) Some((time, t)) else None
+                }
+            })
         }
       }
     }
@@ -543,25 +547,29 @@ object Scalding {
           case OptionMappedProducer(producer, op) =>
             // Map in two monads here, first state then reader
             val (fmp, m) = recurse(producer)
-            (fmp.map { flowP =>
-              flowP.map { typedPipe =>
-                typedPipe.flatMap {
-                  case (time, item) =>
-                    op(item).map((time, _))
+            (
+              fmp.map { flowP =>
+                flowP.map { typedPipe =>
+                  typedPipe.flatMap {
+                    case (time, item) =>
+                      op(item).map((time, _))
+                  }
                 }
-              }
-            }, m)
+              },
+              m)
           case ValueFlatMappedProducer(producer, op) =>
             // Map in two monads here, first state then reader
             val (fmp, m) = recurse(producer)
-            (fmp.map { flowP =>
-              flowP.map { typedPipe =>
-                typedPipe.flatMap {
-                  case (time, (k, v)) =>
-                    op(v).map { u => (time, (k, u)) }
+            (
+              fmp.map { flowP =>
+                flowP.map { typedPipe =>
+                  typedPipe.flatMap {
+                    case (time, (k, v)) =>
+                      op(v).map { u => (time, (k, u)) }
+                  }
                 }
-              }
-            }, m)
+              },
+              m)
           case kfm @ KeyFlatMappedProducer(producer, op) =>
             val (fmp, m) = recurse(producer)
 
@@ -593,14 +601,16 @@ object Scalding {
             }
 
             // Map in two monads here, first state then reader
-            (maybeMerged.map { flowP =>
-              flowP.map { typedPipe =>
-                typedPipe.flatMap {
-                  case (time, (k, v)) =>
-                    op(k).map { newK => (time, (newK, v)) }
+            (
+              maybeMerged.map { flowP =>
+                flowP.map { typedPipe =>
+                  typedPipe.flatMap {
+                    case (time, (k, v)) =>
+                      op(k).map { newK => (time, (newK, v)) }
+                  }
                 }
-              }
-            }, m)
+              },
+              m)
           case FlatMappedProducer(producer, op) =>
             // Map in two monads here, first state then reader
             val shards =
@@ -612,14 +622,16 @@ object Scalding {
               else
                 fmp.mapPipe(_.shard(shards))
 
-            (fmpSharded.map { flowP =>
-              flowP.map { typedPipe =>
-                typedPipe.flatMap {
-                  case (time, item) =>
-                    op(item).map((time, _))
+            (
+              fmpSharded.map { flowP =>
+                flowP.map { typedPipe =>
+                  typedPipe.flatMap {
+                    case (time, item) =>
+                      op(item).map((time, _))
+                  }
                 }
-              }
-            }, m)
+              },
+              m)
           case MergedProducer(l, r) => {
             val (pfl, ml) = recurse(l)
             val (pfr, mr) = recurse(r, built = ml)

@@ -794,15 +794,21 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
       // Lay out a tree of ZNode.Children
       val treeRoot =
-        ZNode.Children(zkClient("/arboreal"), new Stat, 'a' to 'e' map {
-          _.toString
-        })
+        ZNode.Children(
+          zkClient("/arboreal"),
+          new Stat,
+          'a' to 'e' map {
+            _.toString
+          })
 
       val treeChildren = treeRoot +: ('a' to 'e')
         .map { c =>
-          ZNode.Children(treeRoot(c.toString), new Stat, 'a' to c map {
-            _.toString
-          })
+          ZNode.Children(
+            treeRoot(c.toString),
+            new Stat,
+            'a' to c map {
+              _.toString
+            })
         }
         .flatMap { z =>
           z +: z.children.map { c => ZNode.Children(c, new Stat, Nil) }
@@ -935,12 +941,14 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         sync(znode.path) {
           Future.exception(new KeeperException.SystemErrorException)
         }
-        Await.ready(znode.sync() map { _ =>
-          fail("Unexpected success")
-        } handle {
-          case e: KeeperException.SystemErrorException =>
-            assert(e.getPath == znode.path)
-        }, 1.second)
+        Await.ready(
+          znode.sync() map { _ =>
+            fail("Unexpected success")
+          } handle {
+            case e: KeeperException.SystemErrorException =>
+              assert(e.getPath == znode.path)
+          },
+          1.second)
       }
     }
   }

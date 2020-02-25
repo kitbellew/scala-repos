@@ -254,11 +254,13 @@ class ResizerSpec
       Thread.sleep((300 millis).dilated.toMillis)
 
       // let it cool down
-      awaitCond({
-        router ! 0 // trigger resize
-        Thread.sleep((20 millis).dilated.toMillis)
-        routeeSize(router) < z
-      }, interval = 500.millis.dilated)
+      awaitCond(
+        {
+          router ! 0 // trigger resize
+          Thread.sleep((20 millis).dilated.toMillis)
+          routeeSize(router) < z
+        },
+        interval = 500.millis.dilated)
 
     }
 

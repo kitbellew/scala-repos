@@ -122,9 +122,11 @@ object CurrentCometActor extends ThreadGlobal[LiftCometActor]
 
 object AddAListener {
   def apply(who: SimpleActor[Any]) =
-    new AddAListener(who, {
-      case _ => true
-    })
+    new AddAListener(
+      who,
+      {
+        case _ => true
+      })
 }
 
 /**
@@ -1357,10 +1359,12 @@ trait BaseCometActor
   }
 
   implicit def pairToPair(in: (String, Any)): (String, NodeSeq) =
-    (in._1, Text(in._2 match {
-      case null => "null"
-      case s    => s.toString
-    }))
+    (
+      in._1,
+      Text(in._2 match {
+        case null => "null"
+        case s    => s.toString
+      }))
 
   implicit def nodeSeqToFull(in: NodeSeq): Box[NodeSeq] = Full(in)
 

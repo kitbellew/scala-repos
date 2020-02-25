@@ -557,9 +557,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       }
       "calling duplicate" in {
         check { a: ByteString ⇒
-          likeVecIt(a)({
-            _.duplicate match { case (a, b) ⇒ (a.toSeq, b.toSeq) }
-          }, strict = false)
+          likeVecIt(a)(
+            {
+              _.duplicate match { case (a, b) ⇒ (a.toSeq, b.toSeq) }
+            },
+            strict = false)
         }
       }
 
@@ -568,9 +570,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
       // scala.collection default Iterator (see Scala issue SI-5838).
       "calling span" in {
         check { (a: ByteString, b: Byte) ⇒
-          likeVecIt(a)({
-            _.span(_ != b) match { case (a, b) ⇒ (a.toList, b.toList) }
-          }, strict = false)
+          likeVecIt(a)(
+            {
+              _.span(_ != b) match { case (a, b) ⇒ (a.toList, b.toList) }
+            },
+            strict = false)
         }
       }
 
@@ -609,9 +613,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVecIt(xs)({
-                _.slice(from, until).toSeq
-              }, strict = false)
+              likeVecIt(xs)(
+                {
+                  _.slice(from, until).toSeq
+                },
+                strict = false)
           }
         }
       }
@@ -620,9 +626,11 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVecIt(xs)({
-                _.drop(from).take(until - from).toSeq
-              }, strict = false)
+              likeVecIt(xs)(
+                {
+                  _.drop(from).take(until - from).toSeq
+                },
+                strict = false)
           }
         }
       }
@@ -631,11 +639,13 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { slice: ByteStringSlice ⇒
           slice match {
             case (xs, from, until) ⇒
-              likeVecIt(xs)({ it ⇒
-                val array = Array.ofDim[Byte](xs.length)
-                it.slice(from, until).copyToArray(array, from, until)
-                array.toSeq
-              }, strict = false)
+              likeVecIt(xs)(
+                { it ⇒
+                  val array = Array.ofDim[Byte](xs.length)
+                  it.slice(from, until).copyToArray(array, from, until)
+                  array.toSeq
+                },
+                strict = false)
           }
         }
       }

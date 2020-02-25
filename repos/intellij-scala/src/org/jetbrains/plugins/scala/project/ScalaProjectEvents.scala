@@ -16,11 +16,13 @@ class ScalaProjectEvents(project: Project)
   private val connection = project.getMessageBus.connect()
 
   override def projectOpened() = {
-    connection.subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter {
-      override def rootsChanged(event: ModuleRootEvent) {
-        listeners.foreach(_.onScalaProjectChanged())
-      }
-    })
+    connection.subscribe(
+      ProjectTopics.PROJECT_ROOTS,
+      new ModuleRootAdapter {
+        override def rootsChanged(event: ModuleRootEvent) {
+          listeners.foreach(_.onScalaProjectChanged())
+        }
+      })
   }
 
   override def projectClosed() {

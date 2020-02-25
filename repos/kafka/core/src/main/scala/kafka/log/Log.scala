@@ -131,21 +131,33 @@ class Log(
     "topic" -> topicAndPartition.topic,
     "partition" -> topicAndPartition.partition.toString)
 
-  newGauge("NumLogSegments", new Gauge[Int] {
-    def value = numberOfSegments
-  }, tags)
+  newGauge(
+    "NumLogSegments",
+    new Gauge[Int] {
+      def value = numberOfSegments
+    },
+    tags)
 
-  newGauge("LogStartOffset", new Gauge[Long] {
-    def value = logStartOffset
-  }, tags)
+  newGauge(
+    "LogStartOffset",
+    new Gauge[Long] {
+      def value = logStartOffset
+    },
+    tags)
 
-  newGauge("LogEndOffset", new Gauge[Long] {
-    def value = logEndOffset
-  }, tags)
+  newGauge(
+    "LogEndOffset",
+    new Gauge[Long] {
+      def value = logEndOffset
+    },
+    tags)
 
-  newGauge("Size", new Gauge[Long] {
-    def value = size
-  }, tags)
+  newGauge(
+    "Size",
+    new Gauge[Long] {
+      def value = size
+    },
+    tags)
 
   /** The name of this log */
   def name = dir.getName()

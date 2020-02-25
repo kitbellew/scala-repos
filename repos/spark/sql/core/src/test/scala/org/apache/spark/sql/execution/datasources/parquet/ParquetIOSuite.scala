@@ -204,10 +204,12 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     val data = (1 to 4).map(i => Tuple1((i, s"val_$i")))
     withParquetDataFrame(data) { df =>
       // Structs are converted to `Row`s
-      checkAnswer(df, data.map {
-        case Tuple1(struct) =>
-          Row(Row(struct.productIterator.toSeq: _*))
-      })
+      checkAnswer(
+        df,
+        data.map {
+          case Tuple1(struct) =>
+            Row(Row(struct.productIterator.toSeq: _*))
+        })
     }
   }
 
@@ -215,20 +217,24 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     val data = (1 to 4).map(i => Tuple1((i, Seq(Seq(s"val_$i")))))
     withParquetDataFrame(data) { df =>
       // Structs are converted to `Row`s
-      checkAnswer(df, data.map {
-        case Tuple1(struct) =>
-          Row(Row(struct.productIterator.toSeq: _*))
-      })
+      checkAnswer(
+        df,
+        data.map {
+          case Tuple1(struct) =>
+            Row(Row(struct.productIterator.toSeq: _*))
+        })
     }
   }
 
   testStandardAndLegacyModes("nested map with struct as value type") {
     val data = (1 to 4).map(i => Tuple1(Map(i -> (i, s"val_$i"))))
     withParquetDataFrame(data) { df =>
-      checkAnswer(df, data.map {
-        case Tuple1(m) =>
-          Row(m.mapValues(struct => Row(struct.productIterator.toSeq: _*)))
-      })
+      checkAnswer(
+        df,
+        data.map {
+          case Tuple1(m) =>
+            Row(m.mapValues(struct => Row(struct.productIterator.toSeq: _*)))
+        })
     }
   }
 
@@ -366,9 +372,11 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       val path = new Path(dir.toURI.toString, "part-r-0.parquet")
       makeRawParquetFile(path)
       readParquetFile(path.toString) { df =>
-        checkAnswer(df, (0 until 10).map { i =>
-          Row(i % 2 == 0, i, i.toLong, i.toFloat, i.toDouble)
-        })
+        checkAnswer(
+          df,
+          (0 until 10).map { i =>
+            Row(i % 2 == 0, i, i.toLong, i.toFloat, i.toDouble)
+          })
       }
     }
   }

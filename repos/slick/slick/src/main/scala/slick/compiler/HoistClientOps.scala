@@ -40,9 +40,11 @@ class HoistClientOps extends Phase {
                 StructNode(ConstArray.from(newDefsM.map(_.swap))),
                 new AnonTypeSymbol)).infer())
           val rsm2 = rsm
-            .copy(from = bind2, map = rsm.map.replace {
-              case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
-            })
+            .copy(
+              from = bind2,
+              map = rsm.map.replace {
+                case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
+              })
             .infer()
           logger.debug("New ResultSetMapping:", Ellipsis(rsm2, List(0, 0)))
           rsm2
@@ -171,9 +173,12 @@ class HoistClientOps extends Phase {
       shuffle(from1) match {
         case Bind(s1, bfrom1, sel1 @ Pure(StructNode(elems1), ts1))
             if !bfrom1.isInstanceOf[GroupBy] =>
-          val res = Bind(s1, CollectionCast(bfrom1, cons2), sel1.replace {
-            case Ref(s) if s == s1 => Ref(s)
-          }).infer()
+          val res = Bind(
+            s1,
+            CollectionCast(bfrom1, cons2),
+            sel1.replace {
+              case Ref(s) if s == s1 => Ref(s)
+            }).infer()
           logger.debug(
             "Pulled Bind out of CollectionCast",
             Ellipsis(res, List(0, 0)))
@@ -193,10 +198,13 @@ class HoistClientOps extends Phase {
           val defs = elems1.iterator.toMap
           val res = Bind(
             bs1,
-            Filter(s3, bfrom1, pred1.replace {
-              case Select(Ref(s), f) if s == s1 =>
-                defs(f).replace { case Ref(s) if s == bs1 => Ref(s3) }
-            }),
+            Filter(
+              s3,
+              bfrom1,
+              pred1.replace {
+                case Select(Ref(s), f) if s == s1 =>
+                  defs(f).replace { case Ref(s) if s == bs1 => Ref(s3) }
+              }),
             sel1.replace { case Ref(s) if s == bs1 => Ref(s) }
           )
           logger.debug("Pulled Bind out of Filter", Ellipsis(res, List(0, 0)))
@@ -226,13 +234,15 @@ class HoistClientOps extends Phase {
       val (recCh, recTr) = unwrap(ch, topLevel)
       if (topLevel) (recCh, recTr)
       else
-        (recCh, { n =>
-          IfThenElse(
-            ConstArray(
-              Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
-              r1,
-              r2))
-        })
+        (
+          recCh,
+          { n =>
+            IfThenElse(
+              ConstArray(
+                Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
+                r1,
+                r2))
+          })
     case Library.SilentCast(ch) :@ tpe if !topLevel =>
       val (recCh, recTr) = unwrap(ch, topLevel)
       (recCh, { n => Library.SilentCast.typed(tpe, recTr(n)) })

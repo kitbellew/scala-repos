@@ -77,9 +77,11 @@ case class RouteParams(
 
   def fromQuery[T](key: String, default: Option[T] = None)(
       implicit binder: QueryStringBindable[T]): Param[T] = {
-    Param(key, binder.bind(key, queryString).getOrElse {
-      default.map(d => Right(d)).getOrElse(Left("Missing parameter: " + key))
-    })
+    Param(
+      key,
+      binder.bind(key, queryString).getOrElse {
+        default.map(d => Right(d)).getOrElse(Left("Missing parameter: " + key))
+      })
   }
 
 }
@@ -155,9 +157,11 @@ abstract class GeneratedRouter extends Router {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right;
           a4 <- pa4.value.right; a5 <- pa5.value.right)
       yield (a1, a2, a3, a4, a5))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5) => generator(a1, a2, a3, a4, a5)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5) => generator(a1, a2, a3, a4, a5)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6](
@@ -171,9 +175,11 @@ abstract class GeneratedRouter extends Router {
     (for (a1 <- pa1.value.right; a2 <- pa2.value.right; a3 <- pa3.value.right;
           a4 <- pa4.value.right; a5 <- pa5.value.right; a6 <- pa6.value.right)
       yield (a1, a2, a3, a4, a5, a6))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6) => generator(a1, a2, a3, a4, a5, a6)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6) => generator(a1, a2, a3, a4, a5, a6)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7](
@@ -189,10 +195,12 @@ abstract class GeneratedRouter extends Router {
           a4 <- pa4.value.right; a5 <- pa5.value.right; a6 <- pa6.value.right;
           a7 <- pa7.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7) =>
-          generator(a1, a2, a3, a4, a5, a6, a7)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7) =>
+            generator(a1, a2, a3, a4, a5, a6, a7)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8](
@@ -210,10 +218,12 @@ abstract class GeneratedRouter extends Router {
           a4 <- pa4.value.right; a5 <- pa5.value.right; a6 <- pa6.value.right;
           a7 <- pa7.value.right; a8 <- pa8.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9](
@@ -232,10 +242,12 @@ abstract class GeneratedRouter extends Router {
           a4 <- pa4.value.right; a5 <- pa5.value.right; a6 <- pa6.value.right;
           a7 <- pa7.value.right; a8 <- pa8.value.right; a9 <- pa9.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
@@ -256,10 +268,12 @@ abstract class GeneratedRouter extends Router {
           a7 <- pa7.value.right; a8 <- pa8.value.right; a9 <- pa9.value.right;
           a10 <- pa10.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
@@ -292,10 +306,12 @@ abstract class GeneratedRouter extends Router {
           a7 <- pa7.value.right; a8 <- pa8.value.right; a9 <- pa9.value.right;
           a10 <- pa10.value.right; a11 <- pa11.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
@@ -331,10 +347,12 @@ abstract class GeneratedRouter extends Router {
           a10 <- pa10.value.right; a11 <- pa11.value.right;
           a12 <- pa12.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13](
@@ -372,10 +390,12 @@ abstract class GeneratedRouter extends Router {
           a10 <- pa10.value.right; a11 <- pa11.value.right;
           a12 <- pa12.value.right; a13 <- pa13.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) =>
+            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14](
@@ -416,10 +436,26 @@ abstract class GeneratedRouter extends Router {
           a12 <- pa12.value.right; a13 <- pa13.value.right;
           a14 <- pa14.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14))
-      .fold(badRequest, {
-        case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) =>
-          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)
-      })
+      .fold(
+        badRequest,
+        {
+          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) =>
+            generator(
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14)
+        })
   }
 
   def call[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15](
@@ -462,40 +498,42 @@ abstract class GeneratedRouter extends Router {
           a12 <- pa12.value.right; a13 <- pa13.value.right;
           a14 <- pa14.value.right; a15 <- pa15.value.right)
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15))
-      .fold(badRequest, {
-        case (
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15) =>
-          generator(
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15)
-      })
+      .fold(
+        badRequest,
+        {
+          case (
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15) =>
+            generator(
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15)
+        })
   }
 
   def call[
@@ -573,42 +611,44 @@ abstract class GeneratedRouter extends Router {
         a14,
         a15,
         a16))
-      .fold(badRequest, {
-        case (
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15,
-            a16) =>
-          generator(
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15,
-            a16)
-      })
+      .fold(
+        badRequest,
+        {
+          case (
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15,
+              a16) =>
+            generator(
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15,
+              a16)
+        })
   }
 
   def call[
@@ -690,44 +730,46 @@ abstract class GeneratedRouter extends Router {
         a15,
         a16,
         a17))
-      .fold(badRequest, {
-        case (
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15,
-            a16,
-            a17) =>
-          generator(
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15,
-            a16,
-            a17)
-      })
+      .fold(
+        badRequest,
+        {
+          case (
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15,
+              a16,
+              a17) =>
+            generator(
+              a1,
+              a2,
+              a3,
+              a4,
+              a5,
+              a6,
+              a7,
+              a8,
+              a9,
+              a10,
+              a11,
+              a12,
+              a13,
+              a14,
+              a15,
+              a16,
+              a17)
+        })
   }
 
   def call[

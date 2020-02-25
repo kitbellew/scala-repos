@@ -171,12 +171,15 @@ class DistributedProfile(val profiles: RelationalProfile*)
           case n =>
             var nnd = Set.empty[RelationalProfile]
             var ntt = Set.empty[RelationalProfile]
-            mapChildrenWithScope(n, { (n, sc) =>
-              val (nd, tt) = collect(n, sc)
-              nnd ++= nd
-              ntt ++= tt
-              n
-            }, scope)
+            mapChildrenWithScope(
+              n,
+              { (n, sc) =>
+                val (nd, tt) = collect(n, sc)
+                nnd ++= nd
+                ntt ++= tt
+                n
+              },
+              scope)
             (nnd, ntt)
         }
         needed += RefId(n) -> dr

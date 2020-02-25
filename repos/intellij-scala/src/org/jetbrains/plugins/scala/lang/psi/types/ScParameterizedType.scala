@@ -258,10 +258,13 @@ class ScParameterizedType private (
     (this, r) match {
       case (ScParameterizedType(ScAbstractType(tpt, lower, upper), args), _) =>
         if (falseUndef) return (false, uSubst)
-        val subst = new ScSubstitutor(Map(tpt.args.zip(args).map {
-          case (tpt: ScTypeParameterType, tp: ScType) =>
-            ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-        }: _*), Map.empty, None)
+        val subst = new ScSubstitutor(
+          Map(tpt.args.zip(args).map {
+            case (tpt: ScTypeParameterType, tp: ScType) =>
+              ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
+          }: _*),
+          Map.empty,
+          None)
         var t: (Boolean, ScUndefinedSubstitutor) =
           Conformance.conformsInner(subst.subst(upper), r, Set.empty, uSubst)
         if (!t._1) return (false, uSubst)
@@ -273,10 +276,14 @@ class ScParameterizedType private (
           _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
-            Equivalence.equivInner(lower match {
-              case Success(tp, _) => tp
-              case _              => return (false, uSubst)
-            }, r, uSubst, falseUndef)
+            Equivalence.equivInner(
+              lower match {
+                case Success(tp, _) => tp
+                case _              => return (false, uSubst)
+              },
+              r,
+              uSubst,
+              falseUndef)
           case _ => (false, uSubst)
         }
       case (
@@ -284,10 +291,14 @@ class ScParameterizedType private (
           _) =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
-            Equivalence.equivInner(lower match {
-              case Success(tp, _) => tp
-              case _              => return (false, uSubst)
-            }, r, uSubst, falseUndef)
+            Equivalence.equivInner(
+              lower match {
+                case Success(tp, _) => tp
+                case _              => return (false, uSubst)
+              },
+              r,
+              uSubst,
+              falseUndef)
           case _ => (false, uSubst)
         }
       case (
@@ -426,41 +437,47 @@ case class ScTypeParameterType(
   }
 
   def this(ptp: PsiTypeParameter, s: ScSubstitutor) = {
-    this(ptp match {
-      case tp: ScTypeParam => tp.name
-      case _               => ptp.name
-    }, ptp match {
-      case tp: ScTypeParam =>
-        tp.typeParameters.toList.map { new ScTypeParameterType(_, s) }
-      case _ => ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
-    }, ptp match {
-      case tp: ScTypeParam =>
-        new Suspension[ScType]({ () => s.subst(tp.lowerBound.getOrNothing) })
-      case _ =>
-        new Suspension[ScType]({ () =>
-          s.subst(
-            ScCompoundType(
-              ptp.getExtendsListTypes
-                .map(ScType.create(_, ptp.getProject))
-                .toSeq ++
-                ptp.getImplementsListTypes
+    this(
+      ptp match {
+        case tp: ScTypeParam => tp.name
+        case _               => ptp.name
+      },
+      ptp match {
+        case tp: ScTypeParam =>
+          tp.typeParameters.toList.map { new ScTypeParameterType(_, s) }
+        case _ =>
+          ptp.getTypeParameters.toList.map(new ScTypeParameterType(_, s))
+      },
+      ptp match {
+        case tp: ScTypeParam =>
+          new Suspension[ScType]({ () => s.subst(tp.lowerBound.getOrNothing) })
+        case _ =>
+          new Suspension[ScType]({ () =>
+            s.subst(
+              ScCompoundType(
+                ptp.getExtendsListTypes
                   .map(ScType.create(_, ptp.getProject))
-                  .toSeq,
-              Map.empty,
-              Map.empty
-            ))
-        })
-    }, ptp match {
-      case tp: ScTypeParam =>
-        new Suspension[ScType]({ () => s.subst(tp.upperBound.getOrAny) })
-      case _ =>
-        new Suspension[ScType]({ () =>
-          s.subst(
-            ScalaPsiManager
-              .instance(ptp.getProject)
-              .psiTypeParameterUpperType(ptp))
-        })
-    }, ptp)
+                  .toSeq ++
+                  ptp.getImplementsListTypes
+                    .map(ScType.create(_, ptp.getProject))
+                    .toSeq,
+                Map.empty,
+                Map.empty
+              ))
+          })
+      },
+      ptp match {
+        case tp: ScTypeParam =>
+          new Suspension[ScType]({ () => s.subst(tp.upperBound.getOrAny) })
+        case _ =>
+          new Suspension[ScType]({ () =>
+            s.subst(
+              ScalaPsiManager
+                .instance(ptp.getProject)
+                .psiTypeParameterUpperType(ptp))
+          })
+      },
+      ptp)
   }
 
   def getId: PsiElement = ScalaPsiUtil.getPsiElementId(param)

@@ -35,11 +35,15 @@ class IncrementalLexerHighlightingTest
       case '\n' =>
         CommandProcessor
           .getInstance()
-          .executeCommand(myFixture.getProject, new Runnable {
-            def run() {
-              myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
-            }
-          }, "", null)
+          .executeCommand(
+            myFixture.getProject,
+            new Runnable {
+              def run() {
+                myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+              }
+            },
+            "",
+            null)
       case a => myFixture.`type`(a)
     }
 

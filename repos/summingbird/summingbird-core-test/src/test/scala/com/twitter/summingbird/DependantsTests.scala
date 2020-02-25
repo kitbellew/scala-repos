@@ -70,9 +70,11 @@ object DependantsTest extends Properties("Dependants") {
             .dependenciesOf(t)
             .map { deps.depth(_).get }
             .max) < tdepth) &&
-        implies(tdepth > 0, Producer.dependenciesOf(t).exists {
-          deps.depth(_) == Some(tdepth - 1)
-        })
+        implies(
+          tdepth > 0,
+          Producer.dependenciesOf(t).exists {
+            deps.depth(_) == Some(tdepth - 1)
+          })
       }
   }
 

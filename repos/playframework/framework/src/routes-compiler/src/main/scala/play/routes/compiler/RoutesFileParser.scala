@@ -333,9 +333,11 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   // Absolute method consists of a series of Java identifiers representing the package name, controller and method.
   // Since the Scala parser is greedy, we can't easily extract this out, so just parse at least 3
   def absoluteMethod: Parser[List[String]] =
-    namedError(javaIdent ~ "." ~ javaIdent ~ "." ~ rep1sep(javaIdent, ".") ^^ {
-      case first ~ _ ~ second ~ _ ~ rest => first :: second :: rest
-    }, "Controller method call expected")
+    namedError(
+      javaIdent ~ "." ~ javaIdent ~ "." ~ rep1sep(javaIdent, ".") ^^ {
+        case first ~ _ ~ second ~ _ ~ rest => first :: second :: rest
+      },
+      "Controller method call expected")
 
   def call: Parser[HandlerCall] =
     opt("@") ~ absoluteMethod ~ opt(parameters) ^^ {

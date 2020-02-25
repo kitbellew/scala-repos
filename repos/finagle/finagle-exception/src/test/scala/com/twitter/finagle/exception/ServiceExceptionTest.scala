@@ -167,9 +167,14 @@ private[exception] class TestServiceException(
             hasSource)
         case "cardinality" =>
           assert(jsonValue.isNumber)
-          hasCardinality = verifyOption(jsonValue.intValue, cardinality map {
-            _ + 1
-          }, "cardinality", hasCardinality, false)
+          hasCardinality = verifyOption(
+            jsonValue.intValue,
+            cardinality map {
+              _ + 1
+            },
+            "cardinality",
+            hasCardinality,
+            false)
         case a => fail(a, "service exception")
       }
     }

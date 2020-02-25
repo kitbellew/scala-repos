@@ -58,12 +58,16 @@ VD: ClassTag](size: Int = 64) {
       while (i < edgeArray.length) {
         val srcId = edgeArray(i).srcId
         val dstId = edgeArray(i).dstId
-        localSrcIds(i) = global2local.changeValue(srcId, {
-          currLocalId += 1; local2global += srcId; currLocalId
-        }, identity)
-        localDstIds(i) = global2local.changeValue(dstId, {
-          currLocalId += 1; local2global += dstId; currLocalId
-        }, identity)
+        localSrcIds(i) = global2local.changeValue(
+          srcId, {
+            currLocalId += 1; local2global += srcId; currLocalId
+          },
+          identity)
+        localDstIds(i) = global2local.changeValue(
+          dstId, {
+            currLocalId += 1; local2global += dstId; currLocalId
+          },
+          identity)
         data(i) = edgeArray(i).attr
         if (srcId != currSrcId) {
           currSrcId = srcId

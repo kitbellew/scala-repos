@@ -281,12 +281,14 @@ object ProcessKeeper {
     def killProcess: Int = {
       // Unfortunately, there seem to be race conditions in Process.exitValue.
       // Thus this ugly workaround.
-      Await.result(Future {
-        scala.concurrent.blocking {
-          Try(process.destroy())
-          process.exitValue()
-        }
-      }, 5.seconds)
+      Await.result(
+        Future {
+          scala.concurrent.blocking {
+            Try(process.destroy())
+            process.exitValue()
+          }
+        },
+        5.seconds)
     }
     //retry on fail
     Try(killProcess) recover { case _ => killProcess } match {

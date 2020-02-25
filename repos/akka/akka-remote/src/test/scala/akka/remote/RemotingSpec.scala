@@ -179,12 +179,14 @@ class RemotingSpec
 
   private def verifySend(msg: Any)(afterSend: ⇒ Unit) {
     val bigBounceId = s"bigBounce-${ThreadLocalRandom.current.nextInt()}"
-    val bigBounceOther = remoteSystem.actorOf(Props(new Actor {
-      def receive = {
-        case x: Int ⇒ sender() ! byteStringOfSize(x)
-        case x ⇒ sender() ! x
-      }
-    }).withDeploy(Deploy.local), bigBounceId)
+    val bigBounceOther = remoteSystem.actorOf(
+      Props(new Actor {
+        def receive = {
+          case x: Int ⇒ sender() ! byteStringOfSize(x)
+          case x ⇒ sender() ! x
+        }
+      }).withDeploy(Deploy.local),
+      bigBounceId)
     val bigBounceHere = system.actorFor(
       s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
@@ -359,12 +361,14 @@ class RemotingSpec
     }
 
     "look-up actors across node boundaries" in {
-      val l = system.actorOf(Props(new Actor {
-        def receive = {
-          case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-          case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
-        }
-      }), "looker1")
+      val l = system.actorOf(
+        Props(new Actor {
+          def receive = {
+            case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
+            case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
+          }
+        }),
+        "looker1")
       // child is configured to be deployed on remote-sys (remoteSystem)
       l ! ((Props[Echo1], "child"))
       val child = expectMsgType[ActorRef]
@@ -408,12 +412,14 @@ class RemotingSpec
     }
 
     "select actors across node boundaries" in {
-      val l = system.actorOf(Props(new Actor {
-        def receive = {
-          case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-          case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
-        }
-      }), "looker2")
+      val l = system.actorOf(
+        Props(new Actor {
+          def receive = {
+            case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
+            case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
+          }
+        }),
+        "looker2")
       // child is configured to be deployed on remoteSystem
       l ! ((Props[Echo1], "child"))
       val child = expectMsgType[ActorRef]

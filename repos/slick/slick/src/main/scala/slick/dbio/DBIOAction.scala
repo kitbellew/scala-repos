@@ -417,9 +417,11 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
     as: IndexedSeq[DBIOAction[Any, NoStream, E]])
     extends DBIOAction[R, S, E] {
   def getDumpInfo =
-    DumpInfo("andThen", children = as.zipWithIndex.map {
-      case (a, i) => (String.valueOf(i + 1), a)
-    })
+    DumpInfo(
+      "andThen",
+      children = as.zipWithIndex.map {
+        case (a, i) => (String.valueOf(i + 1), a)
+      })
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
       a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] = a match {
@@ -434,9 +436,11 @@ case class SequenceAction[R, +R2, -E <: Effect](
     implicit val cbf: CanBuild[R, R2])
     extends DBIOAction[R2, NoStream, E] {
   def getDumpInfo =
-    DumpInfo("sequence", children = as.zipWithIndex.map {
-      case (a, i) => (String.valueOf(i + 1), a)
-    })
+    DumpInfo(
+      "sequence",
+      children = as.zipWithIndex.map {
+        case (a, i) => (String.valueOf(i + 1), a)
+      })
 }
 
 /** A DBIOAction that represents a `cleanUp` operation for sequencing in the DBIOAction monad. */

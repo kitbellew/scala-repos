@@ -353,14 +353,16 @@ case class NameParams(name: String, params: Option[JValue])
 
 class NameParamsSerializer
     extends CustomSerializer[NameParams](format =>
-      ({
-        case jv: JValue => WorkflowUtils.extractNameParams(jv)
-      }, {
-        case x: NameParams =>
-          JObject(
-            JField("name", JString(x.name)) ::
-              JField("params", x.params.getOrElse(JNothing)) :: Nil)
-      }))
+      (
+        {
+          case jv: JValue => WorkflowUtils.extractNameParams(jv)
+        },
+        {
+          case x: NameParams =>
+            JObject(
+              JField("name", JString(x.name)) ::
+                JField("params", x.params.getOrElse(JNothing)) :: Nil)
+        }))
 
 /** Collection of reusable workflow related utilities that touch on Apache
   * Spark. They are separated to avoid compilation problems with certain code.

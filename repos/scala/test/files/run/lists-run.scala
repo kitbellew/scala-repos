@@ -57,10 +57,12 @@ object Test_multiset {
     assert(isSubListOf(xs filterNot (vs contains), xs diff vs), "xs_subset_vs")
 
     // tests adapted from Thomas Jung
-    assert({
-      def sort(zs: List[Int]) = zs sortWith (_ > _)
-      sort(xs intersect ys) == sort(ys intersect xs)
-    }, "be symmetric after sorting")
+    assert(
+      {
+        def sort(zs: List[Int]) = zs sortWith (_ > _)
+        sort(xs intersect ys) == sort(ys intersect xs)
+      },
+      "be symmetric after sorting")
     assert(
       {
         def cardinality[A](zs: List[A], e: A): Int = zs count (e == _)

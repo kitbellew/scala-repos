@@ -255,10 +255,12 @@ object EvaluateConfigurations {
           throw new MessageOnlyException(e.getMessage)
       }
     // TODO - keep track of configuration classes defined.
-    TrackedEvalResult(result.generated, loader => {
-      val pos = RangePosition(name, range shift 1)
-      result.getValue(loader).asInstanceOf[internals.DslEntry].withPos(pos)
-    })
+    TrackedEvalResult(
+      result.generated,
+      loader => {
+        val pos = RangePosition(name, range shift 1)
+        result.getValue(loader).asInstanceOf[internals.DslEntry].withPos(pos)
+      })
   }
 
   /**

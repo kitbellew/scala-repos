@@ -207,17 +207,22 @@ private[http] final class BodyPartParser(
             BodyPartStart(
               headers,
               entityParts ⇒
-                HttpEntity.IndefiniteLength(ct, entityParts.collect {
-                  case EntityPart(data) ⇒ data
-                })))
+                HttpEntity.IndefiniteLength(
+                  ct,
+                  entityParts.collect {
+                    case EntityPart(data) ⇒ data
+                  })))
           emit(bytes)
       },
       emitFinalPartChunk: (List[HttpHeader], ContentType, ByteString) ⇒ Unit = {
         (headers, ct, bytes) ⇒
-          emit(BodyPartStart(headers, { rest ⇒
-            SubSource.kill(rest)
-            HttpEntity.Strict(ct, bytes)
-          }))
+          emit(
+            BodyPartStart(
+              headers,
+              { rest ⇒
+                SubSource.kill(rest)
+                HttpEntity.Strict(ct, bytes)
+              }))
       })(input: ByteString, offset: Int): StateResult =
     try {
       @tailrec def rec(index: Int): StateResult = {

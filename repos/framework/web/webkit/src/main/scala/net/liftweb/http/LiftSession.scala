@@ -1217,9 +1217,11 @@ class LiftSession(
     f map { fnc =>
       val func: String = {
         val funcName = Helpers.nextFuncName
-        nmessageCallback.put(funcName, S.NFuncHolder(() => {
-          fnc()
-        }))
+        nmessageCallback.put(
+          funcName,
+          S.NFuncHolder(() => {
+            fnc()
+          }))
         funcName
       }
       Helpers.appendFuncToURL(uri, func + "=_")
@@ -2240,10 +2242,12 @@ class LiftSession(
       AnonFunc(
         "x",
         SHtml
-          .jsonCall(JsRaw("x"), (p: JsonAST.JValue) => {
-            in ! p
-            JsCmds.Noop
-          })
+          .jsonCall(
+            JsRaw("x"),
+            (p: JsonAST.JValue) => {
+              in ! p
+              JsCmds.Noop
+            })
           .cmd)
 
     }
@@ -3165,10 +3169,17 @@ private object SnippetNode {
       baseNode: Node): Option[(Elem, NodeSeq, Boolean, MetaData, String)] =
     baseNode match {
       case elm: Elem if elm.prefix == "lift" || elm.prefix == "l" => {
-        Some((elm, elm.child, elm.attributes.find {
-          case p: PrefixedAttribute => p.pre == "lift" && (p.key == "parallel")
-          case _                    => false
-        }.isDefined, elm.attributes, elm.label))
+        Some(
+          (
+            elm,
+            elm.child,
+            elm.attributes.find {
+              case p: PrefixedAttribute =>
+                p.pre == "lift" && (p.key == "parallel")
+              case _ => false
+            }.isDefined,
+            elm.attributes,
+            elm.label))
       }
 
       case elm: Elem => {

@@ -121,9 +121,11 @@ class AskSpec extends AkkaSpec {
     "work for ActorSelection" in {
       implicit val timeout = Timeout(5 seconds)
       import system.dispatcher
-      val echo = system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ sender() ! x }
-      }), "select-echo")
+      val echo = system.actorOf(
+        Props(new Actor {
+          def receive = { case x ⇒ sender() ! x }
+        }),
+        "select-echo")
       val identityFuture =
         (system.actorSelection("/user/select-echo") ? Identify(None))
           .mapTo[ActorIdentity]
@@ -137,9 +139,11 @@ class AskSpec extends AkkaSpec {
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
-      val echo = system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ context.actorSelection(sender().path) ! x }
-      }), "select-echo2")
+      val echo = system.actorOf(
+        Props(new Actor {
+          def receive = { case x ⇒ context.actorSelection(sender().path) ! x }
+        }),
+        "select-echo2")
       val f = echo ? "hi"
 
       Await.result(f, 1 seconds) should ===("hi")
@@ -152,9 +156,11 @@ class AskSpec extends AkkaSpec {
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
-      val echo = system.actorOf(Props(new Actor {
-        def receive = { case x ⇒ context.actorSelection("/temp/*") ! x }
-      }), "select-echo3")
+      val echo = system.actorOf(
+        Props(new Actor {
+          def receive = { case x ⇒ context.actorSelection("/temp/*") ! x }
+        }),
+        "select-echo3")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
         Await.result(f, 1 seconds)
@@ -192,14 +198,16 @@ class AskSpec extends AkkaSpec {
       val deadListener = TestProbe()
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
-      val echo = system.actorOf(Props(new Actor {
-        def receive = {
-          case x ⇒
-            val name = sender.path.name
-            val parent = sender.path.parent
-            context.actorSelection(parent / "missing") ! x
-        }
-      }), "select-echo5")
+      val echo = system.actorOf(
+        Props(new Actor {
+          def receive = {
+            case x ⇒
+              val name = sender.path.name
+              val parent = sender.path.parent
+              context.actorSelection(parent / "missing") ! x
+          }
+        }),
+        "select-echo5")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
         Await.result(f, 1 seconds) should ===("hi")

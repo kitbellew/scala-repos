@@ -92,11 +92,14 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
       val (_, serverHostName, serverPort) =
         TestUtils.temporaryServerHostnameAndPort()
 
-      val binding = Http().bindAndHandleSync({
-        case HttpRequest(_, Uri.Path("/b"), _, _, _) ⇒
-          HttpResponse(headers = List(headers.Connection("close")))
-        case _ ⇒ HttpResponse()
-      }, serverHostName, serverPort)
+      val binding = Http().bindAndHandleSync(
+        {
+          case HttpRequest(_, Uri.Path("/b"), _, _, _) ⇒
+            HttpResponse(headers = List(headers.Connection("close")))
+          case _ ⇒ HttpResponse()
+        },
+        serverHostName,
+        serverPort)
 
       val x = Source(List("/a", "/b", "/c"))
         .map(path ⇒ HttpRequest(uri = path))

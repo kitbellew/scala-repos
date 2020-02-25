@@ -612,7 +612,9 @@ trait Typers
           //
           // TODO SI-6609 Eliminate this special case once the old pattern matcher is removed.
           def dealias(sym: Symbol) =
-            (atPos(tree.pos.makeTransparent) { gen.mkAttributedRef(sym) } setPos tree.pos, sym.owner.thisType)
+            (
+              atPos(tree.pos.makeTransparent) { gen.mkAttributedRef(sym) } setPos tree.pos,
+              sym.owner.thisType)
           sym.name match {
             case nme.List => return dealias(ListModule)
             case nme.Seq  => return dealias(SeqModule)
@@ -2119,15 +2121,16 @@ trait Typers
           || clazz.isSerializable
       )
       val impl1 = newTyper(context.make(mdef.impl, clazz, newScope))
-        .typedTemplate(mdef.impl, {
-          typedParentTypes(mdef.impl) ++ (
-            if (noSerializable) Nil
-            else {
-              clazz.makeSerializable()
-              List(TypeTree(SerializableTpe) setPos clazz.pos.focus)
-            }
-          )
-        })
+        .typedTemplate(
+          mdef.impl, {
+            typedParentTypes(mdef.impl) ++ (
+              if (noSerializable) Nil
+              else {
+                clazz.makeSerializable()
+                List(TypeTree(SerializableTpe) setPos clazz.pos.focus)
+              }
+            )
+          })
 
       val impl2 = finishMethodSynthesis(impl1, clazz, context)
 
@@ -4365,9 +4368,11 @@ trait Typers
 
             if (hasError) ErroneousAnnotation
             else
-              AnnotationInfo(annType, List(), nvPairs map { p =>
-                (p._1, p._2.get)
-              }).setOriginal(Apply(typedFun, args).setPos(ann.pos))
+              AnnotationInfo(
+                annType,
+                List(),
+                nvPairs map { p => (p._1, p._2.get) })
+                .setOriginal(Apply(typedFun, args).setPos(ann.pos))
           }
         } else {
           val typedAnn: Tree = {

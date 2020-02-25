@@ -440,26 +440,17 @@ class DefaultEventHandler[K, V](
       val messagesPerTopicPartition = messagesPerTopicAndPartition.map {
         case (topicAndPartition, messages) =>
           val rawMessages = messages.map(_.message)
-          (topicAndPartition, config.compressionCodec match {
-            case NoCompressionCodec =>
-              debug(
-                "Sending %d messages with no compression to %s"
-                  .format(messages.size, topicAndPartition))
-              new ByteBufferMessageSet(NoCompressionCodec, rawMessages: _*)
-            case _ =>
-              config.compressedTopics.size match {
-                case 0 =>
-                  debug(
-                    "Sending %d messages with compression codec %d to %s"
-                      .format(
-                        messages.size,
-                        config.compressionCodec.codec,
-                        topicAndPartition))
-                  new ByteBufferMessageSet(
-                    config.compressionCodec,
-                    rawMessages: _*)
-                case _ =>
-                  if (config.compressedTopics.contains(topicAndPartition.topic)) {
+          (
+            topicAndPartition,
+            config.compressionCodec match {
+              case NoCompressionCodec =>
+                debug(
+                  "Sending %d messages with no compression to %s"
+                    .format(messages.size, topicAndPartition))
+                new ByteBufferMessageSet(NoCompressionCodec, rawMessages: _*)
+              case _ =>
+                config.compressedTopics.size match {
+                  case 0 =>
                     debug(
                       "Sending %d messages with compression codec %d to %s"
                         .format(
@@ -469,19 +460,31 @@ class DefaultEventHandler[K, V](
                     new ByteBufferMessageSet(
                       config.compressionCodec,
                       rawMessages: _*)
-                  } else {
-                    debug(
-                      "Sending %d messages to %s with no compression as it is not in compressed.topics - %s"
-                        .format(
-                          messages.size,
-                          topicAndPartition,
-                          config.compressedTopics.toString))
-                    new ByteBufferMessageSet(
-                      NoCompressionCodec,
-                      rawMessages: _*)
-                  }
-              }
-          })
+                  case _ =>
+                    if (config.compressedTopics.contains(
+                          topicAndPartition.topic)) {
+                      debug(
+                        "Sending %d messages with compression codec %d to %s"
+                          .format(
+                            messages.size,
+                            config.compressionCodec.codec,
+                            topicAndPartition))
+                      new ByteBufferMessageSet(
+                        config.compressionCodec,
+                        rawMessages: _*)
+                    } else {
+                      debug(
+                        "Sending %d messages to %s with no compression as it is not in compressed.topics - %s"
+                          .format(
+                            messages.size,
+                            topicAndPartition,
+                            config.compressedTopics.toString))
+                      new ByteBufferMessageSet(
+                        NoCompressionCodec,
+                        rawMessages: _*)
+                    }
+                }
+            })
       }
       Some(messagesPerTopicPartition)
     } catch {

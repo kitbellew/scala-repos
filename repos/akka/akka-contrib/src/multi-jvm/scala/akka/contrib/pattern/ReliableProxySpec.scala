@@ -54,11 +54,13 @@ class ReliableProxySpec
   }
 
   def startTarget(): Unit = {
-    target = system.actorOf(Props(new Actor {
-      def receive = {
-        case x ⇒ testActor ! x
-      }
-    }).withDeploy(Deploy.local), "echo")
+    target = system.actorOf(
+      Props(new Actor {
+        def receive = {
+          case x ⇒ testActor ! x
+        }
+      }).withDeploy(Deploy.local),
+      "echo")
   }
 
   def stopProxy(): Unit = {

@@ -65,11 +65,14 @@ object Test extends App {
         val close2open = open2close.map(_.swap)
 
         @tailrec def ex(pos: Int, tape: Tape[T]): Unit =
-          if (pos < prog.length) ex((prog(pos): @switch) match {
-            case '[' if tape.isZero  => open2close(pos)
-            case ']' if !tape.isZero => close2open(pos)
-            case _                   => pos + 1
-          }, tape.execute(prog(pos)))
+          if (pos < prog.length)
+            ex(
+              (prog(pos): @switch) match {
+                case '[' if tape.isZero  => open2close(pos)
+                case ']' if !tape.isZero => close2open(pos)
+                case _                   => pos + 1
+              },
+              tape.execute(prog(pos)))
 
         println("---running---")
         ex(0, Tape.empty(func))

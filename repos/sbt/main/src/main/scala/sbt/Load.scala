@@ -1112,11 +1112,12 @@ object Load {
     // Loads a given file, or pulls from the cache.
 
     def memoLoadSettingsFile(src: File): LoadedSbtFile =
-      memoSettings.getOrElse(src, {
-        val lf = loadSettingsFile(src)
-        memoSettings.put(src, lf.clearProjects) // don't load projects twice
-        lf
-      })
+      memoSettings.getOrElse(
+        src, {
+          val lf = loadSettingsFile(src)
+          memoSettings.put(src, lf.clearProjects) // don't load projects twice
+          lf
+        })
 
     // Loads a set of sbt files, sorted by their lexical name (current behavior of sbt).
     def loadFiles(fs: Seq[File]): LoadedSbtFile =

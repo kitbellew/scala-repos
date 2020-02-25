@@ -149,9 +149,9 @@ private[persistence] class LocalSnapshotStore
   private def snapshotFileForWrite(
       metadata: SnapshotMetadata,
       extension: String = ""): File =
-    new File(snapshotDir, s"snapshot-${URLEncoder.encode(
-      metadata.persistenceId,
-      UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}${extension}")
+    new File(
+      snapshotDir,
+      s"snapshot-${URLEncoder.encode(metadata.persistenceId, UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}${extension}")
 
   private def snapshotMetadatas(
       persistenceId: String,

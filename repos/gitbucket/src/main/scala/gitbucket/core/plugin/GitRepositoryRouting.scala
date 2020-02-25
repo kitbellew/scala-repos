@@ -16,13 +16,16 @@ case class GitRepositoryRouting(
     filter: GitRepositoryFilter) {
 
   def this(urlPattern: String, localPath: String) = {
-    this(urlPattern, localPath, new GitRepositoryFilter() {
-      def filter(
-          repositoryName: String,
-          userName: Option[String],
-          settings: SystemSettings,
-          isUpdating: Boolean)(implicit session: Session): Boolean = true
-    })
+    this(
+      urlPattern,
+      localPath,
+      new GitRepositoryFilter() {
+        def filter(
+            repositoryName: String,
+            userName: Option[String],
+            settings: SystemSettings,
+            isUpdating: Boolean)(implicit session: Session): Boolean = true
+      })
   }
 
 }

@@ -734,13 +734,15 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         }
       val interfaces = interfacesOpt()
       val (statics, body) = typeBody(CLASS, name)
-      addCompanionObject(statics, atPos(pos) {
-        ClassDef(
-          mods,
-          name,
-          tparams,
-          makeTemplate(superclass :: interfaces, body))
-      })
+      addCompanionObject(
+        statics,
+        atPos(pos) {
+          ClassDef(
+            mods,
+            name,
+            tparams,
+            makeTemplate(superclass :: interfaces, body))
+        })
     }
 
     def interfaceDecl(mods: Modifiers): List[Tree] = {
@@ -756,13 +758,15 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           List(javaLangObject())
         }
       val (statics, body) = typeBody(INTERFACE, name)
-      addCompanionObject(statics, atPos(pos) {
-        ClassDef(
-          mods | Flags.TRAIT | Flags.INTERFACE | Flags.ABSTRACT,
-          name,
-          tparams,
-          makeTemplate(parents, body))
-      })
+      addCompanionObject(
+        statics,
+        atPos(pos) {
+          ClassDef(
+            mods | Flags.TRAIT | Flags.INTERFACE | Flags.ABSTRACT,
+            name,
+            tparams,
+            makeTemplate(parents, body))
+        })
     }
 
     def typeBody(
@@ -824,9 +828,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       val name = identForType()
       val (statics, body) = typeBody(AT, name)
       val templ = makeTemplate(annotationParents, body)
-      addCompanionObject(statics, atPos(pos) {
-        ClassDef(mods | Flags.JAVA_ANNOTATION, name, List(), templ)
-      })
+      addCompanionObject(
+        statics,
+        atPos(pos) {
+          ClassDef(mods | Flags.JAVA_ANNOTATION, name, List(), templ)
+        })
     }
 
     def enumDecl(mods: Modifiers): List[Tree] = {

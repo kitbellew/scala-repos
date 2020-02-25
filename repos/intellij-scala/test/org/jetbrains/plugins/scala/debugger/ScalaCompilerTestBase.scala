@@ -41,11 +41,13 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     super.setUp()
     myProject.getMessageBus
       .connect(myTestRootDisposable)
-      .subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter {
-        override def rootsChanged(event: ModuleRootEvent) {
-          forceFSRescan()
-        }
-      })
+      .subscribe(
+        ProjectTopics.PROJECT_ROOTS,
+        new ModuleRootAdapter {
+          override def rootsChanged(event: ModuleRootEvent) {
+            forceFSRescan()
+          }
+        })
     CompilerTestUtil.enableExternalCompiler()
 
     addRoots()

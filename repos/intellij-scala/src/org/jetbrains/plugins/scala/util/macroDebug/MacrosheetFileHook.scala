@@ -25,11 +25,13 @@ class MacrosheetFileHook(private val project: Project)
   }
 
   override def projectClosed() {
-    ApplicationManager.getApplication.invokeAndWait(new Runnable {
-      def run() {
-        WorksheetViewerInfo.invalidate()
-      }
-    }, ModalityState.any())
+    ApplicationManager.getApplication.invokeAndWait(
+      new Runnable {
+        def run() {
+          WorksheetViewerInfo.invalidate()
+        }
+      },
+      ModalityState.any())
   }
 
   override def disposeComponent() {}

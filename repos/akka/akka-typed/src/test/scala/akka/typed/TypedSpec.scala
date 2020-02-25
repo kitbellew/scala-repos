@@ -53,9 +53,12 @@ class TypedSpec(config: Config)
   def await[T](f: Future[T]): T =
     Await.result(f, 60.seconds.dilated(system.untyped))
 
-  val blackhole = await(system ? Create(Props(ScalaDSL.Full[Any] {
-    case _ ⇒ ScalaDSL.Same
-  }), "blackhole"))
+  val blackhole = await(
+    system ? Create(
+      Props(ScalaDSL.Full[Any] {
+        case _ ⇒ ScalaDSL.Same
+      }),
+      "blackhole"))
 
   /**
     * Run an Actor-based test. The test procedure is most conveniently

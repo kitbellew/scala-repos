@@ -22,15 +22,17 @@ private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)])
     new GraphStageLogic(shape) {
       private[this] var state = s
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = f(state) match {
-          case None ⇒ complete(out)
-          case Some((newState, v)) ⇒ {
-            push(out, v)
-            state = newState
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = f(state) match {
+            case None ⇒ complete(out)
+            case Some((newState, v)) ⇒ {
+              push(out, v)
+              state = newState
+            }
           }
-        }
-      })
+        })
     }
 }
 
@@ -58,10 +60,12 @@ private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]
         asyncHandler = ac.invoke
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit =
-          f(state).onComplete(asyncHandler)(
-            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit =
+            f(state).onComplete(asyncHandler)(
+              akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
+        })
     }
 }

@@ -124,13 +124,15 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
     var created = false
     var counter = 10
 
-    zk.exists(path, new Watcher() {
-      def process(event: WatchedEvent) {
-        if (event.getType == Watcher.Event.EventType.NodeCreated) {
-          created = true
+    zk.exists(
+      path,
+      new Watcher() {
+        def process(event: WatchedEvent) {
+          if (event.getType == Watcher.Event.EventType.NodeCreated) {
+            created = true
+          }
         }
-      }
-    })
+      })
     zwe.create()
     // Waits until the znode is created
     TestUtils.waitUntilTrue(

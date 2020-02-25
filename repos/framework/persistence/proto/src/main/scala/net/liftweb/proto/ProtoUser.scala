@@ -782,10 +782,12 @@ trait ProtoUser {
       S.notice(S.?("sign.up.message"))
       func()
     } else {
-      logUserIn(theUser, () => {
-        S.notice(S.?("welcome"))
-        func()
-      })
+      logUserIn(
+        theUser,
+        () => {
+          S.notice(S.?("welcome"))
+          func()
+        })
     }
   }
 
@@ -848,10 +850,12 @@ trait ProtoUser {
   def validateUser(id: String): NodeSeq = findUserByUniqueId(id) match {
     case Full(user) if !user.validated_? =>
       user.setValidated(true).resetUniqueId().save
-      logUserIn(user, () => {
-        S.notice(S.?("account.validated"))
-        S.redirectTo(homePage)
-      })
+      logUserIn(
+        user,
+        () => {
+          S.notice(S.?("account.validated"))
+          S.redirectTo(homePage)
+        })
 
     case _ => S.error(S.?("invalid.validation.link")); S.redirectTo(homePage)
   }
@@ -920,13 +924,15 @@ trait ProtoUser {
               homePage
           }
 
-          logUserIn(user, () => {
-            S.notice(S.?("logged.in"))
+          logUserIn(
+            user,
+            () => {
+              S.notice(S.?("logged.in"))
 
-            preLoginState()
+              preLoginState()
 
-            S.redirectTo(redir)
-          })
+              S.redirectTo(redir)
+            })
         }
 
         case Full(user) if !user.validated_? =>

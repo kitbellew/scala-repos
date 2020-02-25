@@ -1183,9 +1183,12 @@ final class Replicator(settings: ReplicatorSettings)
   def gossipTo(address: Address): Unit = {
     val to = replica(address)
     if (dataEntries.size <= maxDeltaElements) {
-      val status = Status(dataEntries.map {
-        case (key, (_, _)) ⇒ (key, getDigest(key))
-      }, chunk = 0, totChunks = 1)
+      val status = Status(
+        dataEntries.map {
+          case (key, (_, _)) ⇒ (key, getDigest(key))
+        },
+        chunk = 0,
+        totChunks = 1)
       to ! status
     } else {
       val totChunks = dataEntries.size / maxDeltaElements
@@ -1197,10 +1200,13 @@ final class Replicator(settings: ReplicatorSettings)
           statusTotChunks = totChunks
         }
         val chunk = (statusCount % totChunks).toInt
-        val status = Status(dataEntries.collect {
-          case (key, (_, _)) if math.abs(key.hashCode) % totChunks == chunk ⇒
-            (key, getDigest(key))
-        }, chunk, totChunks)
+        val status = Status(
+          dataEntries.collect {
+            case (key, (_, _)) if math.abs(key.hashCode) % totChunks == chunk ⇒
+              (key, getDigest(key))
+          },
+          chunk,
+          totChunks)
         to ! status
       }
     }

@@ -19,12 +19,16 @@ class SecurityDirectivesSpec extends RoutingSpec {
     authenticateBasicAsync[String]("MyRealm", _ ⇒ Future.successful(None))
   val dontOAuth2Auth =
     authenticateOAuth2Async[String]("MyRealm", _ ⇒ Future.successful(None))
-  val doBasicAuth = authenticateBasicPF("MyRealm", {
-    case Credentials.Provided(identifier) ⇒ identifier
-  })
-  val doOAuth2Auth = authenticateOAuth2PF("MyRealm", {
-    case Credentials.Provided(identifier) ⇒ identifier
-  })
+  val doBasicAuth = authenticateBasicPF(
+    "MyRealm",
+    {
+      case Credentials.Provided(identifier) ⇒ identifier
+    })
+  val doOAuth2Auth = authenticateOAuth2PF(
+    "MyRealm",
+    {
+      case Credentials.Provided(identifier) ⇒ identifier
+    })
   val authWithAnonymous = doBasicAuth.withAnonymousUser("We are Legion")
 
   val challenge = HttpChallenge("Basic", "MyRealm")

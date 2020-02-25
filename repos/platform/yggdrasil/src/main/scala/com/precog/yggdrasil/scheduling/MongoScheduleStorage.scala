@@ -131,9 +131,11 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
             .from(settings.reports)
             .where(".id" === id.toString) /* TODO: limit */ ) map { history =>
           taskOpt map { task =>
-            (task.deserialize[ScheduledTask], history.toSeq map {
-              _.deserialize[ScheduledRunReport]
-            })
+            (
+              task.deserialize[ScheduledTask],
+              history.toSeq map {
+                _.deserialize[ScheduledRunReport]
+              })
           }
         }
     }

@@ -52,13 +52,17 @@ class GraphStageTimersSpec extends AkkaSpec {
       new TimerGraphStageLogic(shape) {
         val tickCount = Iterator from 1
 
-        setHandler(in, new InHandler {
-          override def onPush() = push(out, grab(in))
-        })
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush() = push(out, grab(in))
+          })
 
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = pull(in)
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = pull(in)
+          })
 
         override def preStart() = {
           sideChannel.asyncCallback = getAsyncCallback(onTestEvent)
@@ -170,10 +174,12 @@ class GraphStageTimersSpec extends AkkaSpec {
           override def preStart(): Unit =
             schedulePeriodically("tick", 100.millis)
 
-          setHandler(out, new OutHandler {
-            override def onPull() = () // Do nothing
-            override def onDownstreamFinish() = completeStage()
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull() = () // Do nothing
+              override def onDownstreamFinish() = completeStage()
+            })
 
           setHandler(
             in,
@@ -224,13 +230,17 @@ class GraphStageTimersSpec extends AkkaSpec {
             new TimerGraphStageLogic(shape) {
               override def preStart(): Unit = scheduleOnce("tick", 100.millis)
 
-              setHandler(in, new InHandler {
-                override def onPush() = () // Ingore
-              })
+              setHandler(
+                in,
+                new InHandler {
+                  override def onPush() = () // Ingore
+                })
 
-              setHandler(out, new OutHandler {
-                override def onPull(): Unit = pull(in)
-              })
+              setHandler(
+                out,
+                new OutHandler {
+                  override def onPull(): Unit = pull(in)
+                })
 
               override def onTimer(timerKey: Any) = throw exception
             }

@@ -1308,9 +1308,12 @@ trait Trees extends api.Trees {
     Bind(sym.name, body) setSymbol sym
 
   def Try(body: Tree, cases: (Tree, Tree)*): Try =
-    Try(body, cases.toList map {
-      case (pat, rhs) => CaseDef(pat, EmptyTree, rhs)
-    }, EmptyTree)
+    Try(
+      body,
+      cases.toList map {
+        case (pat, rhs) => CaseDef(pat, EmptyTree, rhs)
+      },
+      EmptyTree)
 
   def Throw(tpe: Type, args: Tree*): Throw =
     Throw(New(tpe, args: _*))
@@ -1688,9 +1691,11 @@ trait Trees extends api.Trees {
       case ApplyDynamic(qual, args) =>
         treeCopy.ApplyDynamic(tree, transform(qual), transformTrees(args))
       case ReferenceToBoxed(idt) =>
-        treeCopy.ReferenceToBoxed(tree, transform(idt) match {
-          case idt1: Ident => idt1
-        })
+        treeCopy.ReferenceToBoxed(
+          tree,
+          transform(idt) match {
+            case idt1: Ident => idt1
+          })
       case _ =>
         xtransform(transformer, tree)
     }

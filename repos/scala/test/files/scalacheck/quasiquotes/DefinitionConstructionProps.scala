@@ -395,9 +395,11 @@ trait MethodConstruction { self: QuasiquoteProperties =>
       tree.mods.annotations ≈ annots,
       s"${tree.mods.annotations} =/= ${annots}")
 
-  def assertSameAnnots(tree1: { def mods: Modifiers }, tree2: {
-    def mods: Modifiers
-  }) =
+  def assertSameAnnots(
+      tree1: { def mods: Modifiers },
+      tree2: {
+        def mods: Modifiers
+      }) =
     assert(
       tree1.mods.annotations ≈ tree2.mods.annotations,
       s"${tree1.mods.annotations} =/= ${tree2.mods.annotations}")
@@ -415,9 +417,11 @@ trait MethodConstruction { self: QuasiquoteProperties =>
 
   property("unquote idents into annotation") = test {
     val idents = List(Ident(TypeName("annot1")), Ident(TypeName("annot2")))
-    assertSameAnnots(q"@..$idents def foo", idents.map { ident =>
-      Apply(Select(New(ident), termNames.CONSTRUCTOR), List())
-    })
+    assertSameAnnots(
+      q"@..$idents def foo",
+      idents.map { ident =>
+        Apply(Select(New(ident), termNames.CONSTRUCTOR), List())
+      })
   }
 
   property("unquote constructor calls into annotation") = test {

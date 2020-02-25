@@ -14,11 +14,15 @@ private[forum] final class CategApi(env: Env) {
       categs ← CategRepo withTeams teams
       views ← (categs map { categ =>
         env.postApi get (categ lastPostId troll) map { topicPost =>
-          CategView(categ, topicPost map {
-            _ match {
-              case (topic, post) => (topic, post, env.postApi lastPageOf topic)
-            }
-          }, troll)
+          CategView(
+            categ,
+            topicPost map {
+              _ match {
+                case (topic, post) =>
+                  (topic, post, env.postApi lastPageOf topic)
+              }
+            },
+            troll)
         }
       }).sequenceFu
     } yield views

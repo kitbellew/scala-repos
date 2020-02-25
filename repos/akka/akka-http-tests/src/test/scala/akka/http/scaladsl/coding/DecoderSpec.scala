@@ -52,13 +52,17 @@ class DecoderSpec extends WordSpec with CodecSpecSupport {
           override def createLogic(
               inheritedAttributes: Attributes): GraphStageLogic =
             new GraphStageLogic(shape) {
-              setHandler(in, new InHandler {
-                override def onPush(): Unit =
-                  push(out, grab(in) ++ ByteString("compressed"))
-              })
-              setHandler(out, new OutHandler {
-                override def onPull(): Unit = pull(in)
-              })
+              setHandler(
+                in,
+                new InHandler {
+                  override def onPush(): Unit =
+                    push(out, grab(in) ++ ByteString("compressed"))
+                })
+              setHandler(
+                out,
+                new OutHandler {
+                  override def onPull(): Unit = pull(in)
+                })
             }
         }
   }

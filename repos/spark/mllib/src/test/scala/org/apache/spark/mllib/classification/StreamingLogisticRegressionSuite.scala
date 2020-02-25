@@ -65,10 +65,12 @@ class StreamingLogisticRegressionSuite
     }
 
     // apply model training to input stream
-    ssc = setupStreams(input, (inputDStream: DStream[LabeledPoint]) => {
-      model.trainOn(inputDStream)
-      inputDStream.count()
-    })
+    ssc = setupStreams(
+      input,
+      (inputDStream: DStream[LabeledPoint]) => {
+        model.trainOn(inputDStream)
+        inputDStream.count()
+      })
     runStreams(ssc, numBatches, numBatches)
 
     // check accuracy of final parameter estimates
@@ -145,9 +147,11 @@ class StreamingLogisticRegressionSuite
     }
 
     // apply model predictions to test stream
-    ssc = setupStreams(testInput, (inputDStream: DStream[LabeledPoint]) => {
-      model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
-    })
+    ssc = setupStreams(
+      testInput,
+      (inputDStream: DStream[LabeledPoint]) => {
+        model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
+      })
 
     // collect the output as (true, estimated) tuples
     val output: Seq[Seq[(Double, Double)]] =
@@ -180,10 +184,12 @@ class StreamingLogisticRegressionSuite
     }
 
     // train and predict
-    ssc = setupStreams(testInput, (inputDStream: DStream[LabeledPoint]) => {
-      model.trainOn(inputDStream)
-      model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
-    })
+    ssc = setupStreams(
+      testInput,
+      (inputDStream: DStream[LabeledPoint]) => {
+        model.trainOn(inputDStream)
+        model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
+      })
 
     val output: Seq[Seq[(Double, Double)]] =
       runStreams(ssc, numBatches, numBatches)
@@ -203,10 +209,12 @@ class StreamingLogisticRegressionSuite
       .setNumIterations(10)
     val numBatches = 10
     val emptyInput = Seq.empty[Seq[LabeledPoint]]
-    ssc = setupStreams(emptyInput, (inputDStream: DStream[LabeledPoint]) => {
-      model.trainOn(inputDStream)
-      model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
-    })
+    ssc = setupStreams(
+      emptyInput,
+      (inputDStream: DStream[LabeledPoint]) => {
+        model.trainOn(inputDStream)
+        model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
+      })
     val output: Seq[Seq[(Double, Double)]] =
       runStreams(ssc, numBatches, numBatches)
   }

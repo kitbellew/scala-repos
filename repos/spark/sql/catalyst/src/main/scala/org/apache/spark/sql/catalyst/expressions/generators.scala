@@ -135,9 +135,11 @@ case class Explode(child: Expression)
           Nil
         } else {
           val rows = new Array[InternalRow](inputArray.numElements())
-          inputArray.foreach(et, (i, e) => {
-            rows(i) = InternalRow(e)
-          })
+          inputArray.foreach(
+            et,
+            (i, e) => {
+              rows(i) = InternalRow(e)
+            })
           rows
         }
       case MapType(kt, vt, _) =>
@@ -147,10 +149,13 @@ case class Explode(child: Expression)
         } else {
           val rows = new Array[InternalRow](inputMap.numElements())
           var i = 0
-          inputMap.foreach(kt, vt, (k, v) => {
-            rows(i) = InternalRow(k, v)
-            i += 1
-          })
+          inputMap.foreach(
+            kt,
+            vt,
+            (k, v) => {
+              rows(i) = InternalRow(k, v)
+              i += 1
+            })
           rows
         }
     }

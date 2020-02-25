@@ -442,19 +442,25 @@ class FutureSpec
         val yay = Promise.successful("yay!").future
 
         intercept[IllegalStateException] {
-          Await.result(Promise.failed[String](o).future recoverWith {
-            case _ if false == true ⇒ yay
-          }, timeout.duration)
+          Await.result(
+            Promise.failed[String](o).future recoverWith {
+              case _ if false == true ⇒ yay
+            },
+            timeout.duration)
         } should ===(o)
 
-        Await.result(Promise.failed[String](o).future recoverWith {
-          case _ ⇒ yay
-        }, timeout.duration) should ===("yay!")
+        Await.result(
+          Promise.failed[String](o).future recoverWith {
+            case _ ⇒ yay
+          },
+          timeout.duration) should ===("yay!")
 
         intercept[IllegalStateException] {
-          Await.result(Promise.failed[String](o).future recoverWith {
-            case _ ⇒ Promise.failed[String](r).future
-          }, timeout.duration)
+          Await.result(
+            Promise.failed[String](o).future recoverWith {
+              case _ ⇒ Promise.failed[String](r).future
+            },
+            timeout.duration)
         } should ===(r)
       }
 
@@ -939,9 +945,11 @@ class FutureSpec
     }
     "recover from exception" in {
       f((future, message) ⇒
-        Await.result(future.recover({
-          case e if e.getMessage == message ⇒ "pigdog"
-        }), timeout.duration) should ===("pigdog"))
+        Await.result(
+          future.recover({
+            case e if e.getMessage == message ⇒ "pigdog"
+          }),
+          timeout.duration) should ===("pigdog"))
     }
     "not perform action on result" is pending
     "project a failure" in {

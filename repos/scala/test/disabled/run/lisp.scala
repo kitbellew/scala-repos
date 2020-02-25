@@ -241,36 +241,54 @@ object LispCaseClasses extends Lisp {
   }
 
   val globalEnv = EmptyEnvironment
-    .extend("=", FUN({
-      case List(NUM(arg1), NUM(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
-      case List(STR(arg1), STR(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
-    }))
-    .extend("+", FUN({
-      case List(NUM(arg1), NUM(arg2)) => NUM(arg1 + arg2)
-      case List(STR(arg1), STR(arg2)) => STR(arg1 + arg2)
-    }))
-    .extend("-", FUN({
-      case List(NUM(arg1), NUM(arg2)) => NUM(arg1 - arg2)
-    }))
-    .extend("*", FUN({
-      case List(NUM(arg1), NUM(arg2)) => NUM(arg1 * arg2)
-    }))
-    .extend("/", FUN({
-      case List(NUM(arg1), NUM(arg2)) => NUM(arg1 / arg2)
-    }))
-    .extend("car", FUN({
-      case List(CONS(x, xs)) => x
-    }))
-    .extend("cdr", FUN({
-      case List(CONS(x, xs)) => xs
-    }))
-    .extend("null?", FUN({
-      case List(NIL()) => NUM(1)
-      case _           => NUM(0)
-    }))
-    .extend("cons", FUN({
-      case List(x, y) => CONS(x, y)
-    }));
+    .extend(
+      "=",
+      FUN({
+        case List(NUM(arg1), NUM(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
+        case List(STR(arg1), STR(arg2)) => NUM(if (arg1 == arg2) 1 else 0)
+      }))
+    .extend(
+      "+",
+      FUN({
+        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 + arg2)
+        case List(STR(arg1), STR(arg2)) => STR(arg1 + arg2)
+      }))
+    .extend(
+      "-",
+      FUN({
+        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 - arg2)
+      }))
+    .extend(
+      "*",
+      FUN({
+        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 * arg2)
+      }))
+    .extend(
+      "/",
+      FUN({
+        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 / arg2)
+      }))
+    .extend(
+      "car",
+      FUN({
+        case List(CONS(x, xs)) => x
+      }))
+    .extend(
+      "cdr",
+      FUN({
+        case List(CONS(x, xs)) => xs
+      }))
+    .extend(
+      "null?",
+      FUN({
+        case List(NIL()) => NUM(1)
+        case _           => NUM(0)
+      }))
+    .extend(
+      "cons",
+      FUN({
+        case List(x, y) => CONS(x, y)
+      }));
 
   def evaluate(x: Data): Data = eval(normalize(x), globalEnv);
   def evaluate(s: String): Data = evaluate(string2lisp(s));
@@ -443,36 +461,54 @@ object LispAny extends Lisp {
   }
 
   val globalEnv = EmptyEnvironment
-    .extend("=", Lambda {
-      case List(arg1, arg2) => if (arg1 == arg2) 1 else 0
-    })
-    .extend("+", Lambda {
-      case List(arg1: Int, arg2: Int)       => arg1 + arg2
-      case List(arg1: String, arg2: String) => arg1 + arg2
-    })
-    .extend("-", Lambda {
-      case List(arg1: Int, arg2: Int) => arg1 - arg2
-    })
-    .extend("*", Lambda {
-      case List(arg1: Int, arg2: Int) => arg1 * arg2
-    })
-    .extend("/", Lambda {
-      case List(arg1: Int, arg2: Int) => arg1 / arg2
-    })
+    .extend(
+      "=",
+      Lambda {
+        case List(arg1, arg2) => if (arg1 == arg2) 1 else 0
+      })
+    .extend(
+      "+",
+      Lambda {
+        case List(arg1: Int, arg2: Int)       => arg1 + arg2
+        case List(arg1: String, arg2: String) => arg1 + arg2
+      })
+    .extend(
+      "-",
+      Lambda {
+        case List(arg1: Int, arg2: Int) => arg1 - arg2
+      })
+    .extend(
+      "*",
+      Lambda {
+        case List(arg1: Int, arg2: Int) => arg1 * arg2
+      })
+    .extend(
+      "/",
+      Lambda {
+        case List(arg1: Int, arg2: Int) => arg1 / arg2
+      })
     .extend("nil", Nil)
-    .extend("cons", Lambda {
-      case List(arg1, arg2) => arg1 :: asList(arg2)
-    })
-    .extend("car", Lambda {
-      case List(x :: xs) => x
-    })
-    .extend("cdr", Lambda {
-      case List(x :: xs) => xs
-    })
-    .extend("null?", Lambda {
-      case List(Nil) => 1
-      case _         => 0
-    });
+    .extend(
+      "cons",
+      Lambda {
+        case List(arg1, arg2) => arg1 :: asList(arg2)
+      })
+    .extend(
+      "car",
+      Lambda {
+        case List(x :: xs) => x
+      })
+    .extend(
+      "cdr",
+      Lambda {
+        case List(x :: xs) => xs
+      })
+    .extend(
+      "null?",
+      Lambda {
+        case List(Nil) => 1
+        case _         => 0
+      });
 
   def evaluate(x: Data): Data = eval(normalize(x), globalEnv);
   def evaluate(s: String): Data = evaluate(string2lisp(s));

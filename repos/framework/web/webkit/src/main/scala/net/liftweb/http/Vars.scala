@@ -29,9 +29,11 @@ import scala.collection.JavaConversions._
   */
 class VarsJBridge {
   def vendSessionVar[T](default: T, e: Exception): SessionVar[T] = {
-    vendSessionVar(new Callable[T] {
-      def call() = default
-    }, e)
+    vendSessionVar(
+      new Callable[T] {
+        def call() = default
+      },
+      e)
   }
 
   def vendSessionVar[T](default: Callable[T], e: Exception): SessionVar[T] = {

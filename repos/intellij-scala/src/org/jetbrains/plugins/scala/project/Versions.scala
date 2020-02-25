@@ -37,9 +37,12 @@ trait Versions {
   protected val releaseVersionLine: Regex
 
   protected def loadVersionsOf(entity: Entity): Array[String] = {
-    loadVersionsFrom(entity.url, {
-      case releaseVersionLine(number) => number
-    }).getOrElse(entity.hardcodedVersions)
+    loadVersionsFrom(
+      entity.url,
+      {
+        case releaseVersionLine(number) => number
+      })
+      .getOrElse(entity.hardcodedVersions)
       .map(Version(_))
       .filter(_ >= entity.minVersion)
       .sorted(implicitly[Ordering[Version]].reverse)

@@ -107,10 +107,12 @@ class ScSimpleTypeElementImpl(node: ASTNode)
       if (clazz.getTypeParameters.isEmpty) {
         tp
       } else {
-        ScParameterizedType(tp, clazz.getTypeParameters.map {
-          case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
-          case ptp             => new ScTypeParameterType(ptp, subst)
-        })
+        ScParameterizedType(
+          tp,
+          clazz.getTypeParameters.map {
+            case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
+            case ptp             => new ScTypeParameterType(ptp, subst)
+          })
       }
     }
 
@@ -120,48 +122,54 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
       constr match {
         case fun: ScFunction =>
-          (fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-            val paramType: ScType =
-              subst.subst(p.getType(TypingContext.empty).getOrAny)
-            new Parameter(
-              p.name,
-              p.deprecatedName,
-              paramType,
-              paramType,
-              p.isDefaultParam,
-              p.isRepeatedParameter,
-              p.isCallByNameParameter,
-              p.index,
-              Some(p),
-              p.getDefaultExpression.flatMap(_.getType().toOption))
-          }), fun.parameterList.clauses.lastOption.exists(_.isImplicit))
+          (
+            fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
+              val paramType: ScType =
+                subst.subst(p.getType(TypingContext.empty).getOrAny)
+              new Parameter(
+                p.name,
+                p.deprecatedName,
+                paramType,
+                paramType,
+                p.isDefaultParam,
+                p.isRepeatedParameter,
+                p.isCallByNameParameter,
+                p.index,
+                Some(p),
+                p.getDefaultExpression.flatMap(_.getType().toOption))
+            }),
+            fun.parameterList.clauses.lastOption.exists(_.isImplicit))
         case f: ScPrimaryConstructor =>
-          (f.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-            val paramType: ScType =
-              subst.subst(p.getType(TypingContext.empty).getOrAny)
-            new Parameter(
-              p.name,
-              p.deprecatedName,
-              paramType,
-              paramType,
-              p.isDefaultParam,
-              p.isRepeatedParameter,
-              p.isCallByNameParameter,
-              p.index,
-              Some(p),
-              p.getDefaultExpression.flatMap(_.getType().toOption))
-          }), f.parameterList.clauses.lastOption.exists(_.isImplicit))
+          (
+            f.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
+              val paramType: ScType =
+                subst.subst(p.getType(TypingContext.empty).getOrAny)
+              new Parameter(
+                p.name,
+                p.deprecatedName,
+                paramType,
+                paramType,
+                p.isDefaultParam,
+                p.isRepeatedParameter,
+                p.isCallByNameParameter,
+                p.index,
+                Some(p),
+                p.getDefaultExpression.flatMap(_.getType().toOption))
+            }),
+            f.parameterList.clauses.lastOption.exists(_.isImplicit))
         case m: PsiMethod =>
-          (Seq(m.getParameterList.getParameters.map { p =>
-            new Parameter(
-              "",
-              None,
-              p.exactParamType(),
-              false,
-              p.isVarArgs,
-              false,
-              p.index)
-          }), false)
+          (
+            Seq(m.getParameterList.getParameters.map { p =>
+              new Parameter(
+                "",
+                None,
+                p.exactParamType(),
+                false,
+                p.isVarArgs,
+                false,
+                p.index)
+            }),
+            false)
       }
     }
 

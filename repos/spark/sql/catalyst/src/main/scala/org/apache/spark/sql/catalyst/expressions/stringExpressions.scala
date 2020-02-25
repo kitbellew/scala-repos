@@ -930,11 +930,14 @@ case class Base64(child: Expression)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(ctx, ev, (child) => {
-      s"""${ev.value} = UTF8String.fromBytes(
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (child) => {
+        s"""${ev.value} = UTF8String.fromBytes(
             org.apache.commons.codec.binary.Base64.encodeBase64($child));
        """
-    })
+      })
   }
 }
 
@@ -953,11 +956,14 @@ case class UnBase64(child: Expression)
       .decodeBase64(string.asInstanceOf[UTF8String].toString)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(ctx, ev, (child) => {
-      s"""
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (child) => {
+        s"""
          ${ev.value} = org.apache.commons.codec.binary.Base64.decodeBase64($child.toString());
        """
-    })
+      })
   }
 }
 

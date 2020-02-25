@@ -104,9 +104,11 @@ object OpenSSL {
       val configMap = new java.util.HashMap[java.lang.String, java.lang.String]
       configMap.put("ssl.cert_path", certificatePath)
       configMap.put("ssl.key_path", keyPath)
-      configMap.put("ssl.cipher_spec", Option(ciphers).getOrElse {
-        defaultCiphers
-      })
+      configMap.put(
+        "ssl.cipher_spec",
+        Option(ciphers).getOrElse {
+          defaultCiphers
+        })
 
       if (caPath != null)
         configMap.put("ssl.ca_path", caPath)

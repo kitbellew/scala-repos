@@ -153,15 +153,17 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
   def closing: Receive = {
     case CommandFailed(_: Write) =>
       connection ! ResumeWriting
-      context.become({
+      context.become(
+        {
 
-        case WritingResumed =>
-          writeAll()
-          context.unbecome()
+          case WritingResumed =>
+            writeAll()
+            context.unbecome()
 
-        case ack: Int => acknowledge(ack)
+          case ack: Int => acknowledge(ack)
 
-      }, discardOld = false)
+        },
+        discardOld = false)
 
     case Ack(ack) =>
       acknowledge(ack)
@@ -252,11 +254,13 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
       buffer(data)
       connection ! Write(data, Ack)
 
-      context.become({
-        case Received(data) => buffer(data)
-        case Ack            => acknowledge()
-        case PeerClosed     => closing = true
-      }, discardOld = false)
+      context.become(
+        {
+          case Received(data) => buffer(data)
+          case Ack            => acknowledge()
+          case PeerClosed     => closing = true
+        },
+        discardOld = false)
 
     case PeerClosed => context stop self
   }

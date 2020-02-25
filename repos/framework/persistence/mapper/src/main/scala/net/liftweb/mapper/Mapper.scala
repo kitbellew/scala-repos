@@ -207,12 +207,14 @@ trait Mapper[A <: Mapper[A]]
     * @return the form
     */
   def toForm(button: Box[String], onSuccess: String): NodeSeq =
-    toForm(button, (what: A) => {
-      what.validate match {
-        case Nil => what.save; S.redirectTo(onSuccess)
-        case xs  => S.error(xs)
-      }
-    })
+    toForm(
+      button,
+      (what: A) => {
+        what.validate match {
+          case Nil => what.save; S.redirectTo(onSuccess)
+          case xs  => S.error(xs)
+        }
+      })
 
   /**
     * Present the model as a HTML using the same formatting as toForm

@@ -389,11 +389,18 @@ trait AbstractScreen extends Factory with Loggable {
       default: => T,
       stuff: FilterOrValidate[T]*)(
       implicit man: Manifest[T]): FieldBuilder[T] = {
-    new FieldBuilder[T](name, default, man, Empty, stuff.toList.collect {
-      case AVal(v: Function1[_, _]) => v.asInstanceOf[T => List[FieldError]]
-    }, stuff.toList.collect {
-      case AFilter(v) => v.asInstanceOf[T => T]
-    }, stuff)
+    new FieldBuilder[T](
+      name,
+      default,
+      man,
+      Empty,
+      stuff.toList.collect {
+        case AVal(v: Function1[_, _]) => v.asInstanceOf[T => List[FieldError]]
+      },
+      stuff.toList.collect {
+        case AFilter(v) => v.asInstanceOf[T => T]
+      },
+      stuff)
   }
 
   protected object FilterOrValidate {
@@ -450,7 +457,9 @@ trait AbstractScreen extends Factory with Loggable {
   protected final case class DisplayIf(func: BaseField => Boolean)
       extends FilterOrValidate[Nothing]
 
-  protected def field[T](underlying: => BaseField { type ValueType = T }, stuff: FilterOrValidate[T]*)(
+  protected def field[T](
+      underlying: => BaseField { type ValueType = T },
+      stuff: FilterOrValidate[T]*)(
       implicit man: Manifest[T]): Field { type ValueType = T } = {
     val paramFieldId: Box[String] = (stuff.collect {
       case FormFieldId(id) => id
@@ -683,14 +692,21 @@ trait AbstractScreen extends Factory with Loggable {
       default: => T,
       stuff: FilterOrValidate[T]*)(
       implicit man: Manifest[T]): Field { type ValueType = T } =
-    new FieldBuilder[T](name, default, man, Empty, stuff.toList.flatMap {
-      case AVal(v: Function1[_, _]) =>
-        List(v.asInstanceOf[T => List[FieldError]])
-      case _ => Nil
-    }, stuff.toList.flatMap {
-      case AFilter(v) => List(v.asInstanceOf[T => T])
-      case _          => Nil
-    }, stuff).make
+    new FieldBuilder[T](
+      name,
+      default,
+      man,
+      Empty,
+      stuff.toList.flatMap {
+        case AVal(v: Function1[_, _]) =>
+          List(v.asInstanceOf[T => List[FieldError]])
+        case _ => Nil
+      },
+      stuff.toList.flatMap {
+        case AFilter(v) => List(v.asInstanceOf[T => T])
+        case _          => Nil
+      },
+      stuff).make
 
   protected def removeRegExChars(regEx: String): String => String =
     s =>
@@ -1400,9 +1416,11 @@ trait ScreenWizardRendered extends Loggable {
             val res = nextId._2();
             if (!ajax_?) {
               val localSnapshot = createSnapshot
-              S.seeOther(url, () => {
-                localSnapshot.restore
-              })
+              S.seeOther(
+                url,
+                () => {
+                  localSnapshot.restore
+                })
             }
             res
           })) % liftScreenAttr("nextAction")
@@ -1835,10 +1853,12 @@ trait LiftScreen
 
       // if we're not Ajax,
       if (!ajaxForms_?) {
-        S.seeOther(S.uri, () => {
-          // S.appendNotices(notices)
-          localSnapshot.restore
-        })
+        S.seeOther(
+          S.uri,
+          () => {
+            // S.appendNotices(notices)
+            localSnapshot.restore
+          })
       }
     }
 

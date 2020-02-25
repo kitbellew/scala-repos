@@ -118,13 +118,16 @@ case class ScCompoundType(
       case (true, res) => res
       case _ =>
         def updateTypeParam(tp: TypeParameter): TypeParameter = {
-          new TypeParameter(tp.name, tp.typeParams.map(updateTypeParam), {
-            val res = tp.lowerType().recursiveUpdate(update, visited + this)
-            () => res
-          }, {
-            val res = tp.upperType().recursiveUpdate(update, visited + this)
-            () => res
-          }, tp.ptp)
+          new TypeParameter(
+            tp.name,
+            tp.typeParams.map(updateTypeParam), {
+              val res = tp.lowerType().recursiveUpdate(update, visited + this)
+              () => res
+            }, {
+              val res = tp.upperType().recursiveUpdate(update, visited + this)
+              () => res
+            },
+            tp.ptp)
         }
         new ScCompoundType(
           components.map(_.recursiveUpdate(update, visited + this)),
@@ -175,17 +178,20 @@ case class ScCompoundType(
       case (true, res, _) => res
       case (_, _, newData) =>
         def updateTypeParam(tp: TypeParameter): TypeParameter = {
-          new TypeParameter(tp.name, tp.typeParams.map(updateTypeParam), {
-            val res = tp
-              .lowerType()
-              .recursiveVarianceUpdateModifiable(newData, update, 1)
-            () => res
-          }, {
-            val res = tp
-              .upperType()
-              .recursiveVarianceUpdateModifiable(newData, update, 1)
-            () => res
-          }, tp.ptp)
+          new TypeParameter(
+            tp.name,
+            tp.typeParams.map(updateTypeParam), {
+              val res = tp
+                .lowerType()
+                .recursiveVarianceUpdateModifiable(newData, update, 1)
+              () => res
+            }, {
+              val res = tp
+                .upperType()
+                .recursiveVarianceUpdateModifiable(newData, update, 1)
+              () => res
+            },
+            tp.ptp)
         }
         new ScCompoundType(
           components.map(

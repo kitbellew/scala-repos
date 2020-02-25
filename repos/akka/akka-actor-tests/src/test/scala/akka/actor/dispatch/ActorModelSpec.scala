@@ -300,10 +300,13 @@ abstract class ActorModelSpec(config: String)
     system.actorOf(Props[DispatcherActor].withDispatcher(dispatcher))
 
   def awaitStarted(ref: ActorRef): Unit = {
-    awaitCond(ref match {
-      case r: RepointableRef ⇒ r.isStarted
-      case _ ⇒ true
-    }, 1 second, 10 millis)
+    awaitCond(
+      ref match {
+        case r: RepointableRef ⇒ r.isStarted
+        case _ ⇒ true
+      },
+      1 second,
+      10 millis)
   }
 
   protected def interceptedDispatcher(): MessageDispatcherInterceptor

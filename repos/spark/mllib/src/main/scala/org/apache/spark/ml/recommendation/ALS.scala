@@ -808,12 +808,14 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     val itemIdAndFactors = itemInBlocks
       .mapValues(_.srcIds)
       .join(itemFactors)
-      .mapPartitions({ items =>
-        items.flatMap {
-          case (_, (ids, factors)) =>
-            ids.view.zip(factors)
-        }
-      }, preservesPartitioning = true)
+      .mapPartitions(
+        { items =>
+          items.flatMap {
+            case (_, (ids, factors)) =>
+              ids.view.zip(factors)
+          }
+        },
+        preservesPartitioning = true)
       .setName("itemFactors")
       .persist(finalRDDStorageLevel)
     if (finalRDDStorageLevel != StorageLevel.NONE) {

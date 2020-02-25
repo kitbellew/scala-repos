@@ -94,13 +94,17 @@ class GroupMetadataManager(
     period = config.offsetsRetentionCheckIntervalMs,
     unit = TimeUnit.MILLISECONDS)
 
-  newGauge("NumOffsets", new Gauge[Int] {
-    def value = offsetsCache.size
-  })
+  newGauge(
+    "NumOffsets",
+    new Gauge[Int] {
+      def value = offsetsCache.size
+    })
 
-  newGauge("NumGroups", new Gauge[Int] {
-    def value = groupsCache.size
-  })
+  newGauge(
+    "NumGroups",
+    new Gauge[Int] {
+      def value = groupsCache.size
+    })
 
   def currentGroups(): Iterable[GroupMetadata] = groupsCache.values
 

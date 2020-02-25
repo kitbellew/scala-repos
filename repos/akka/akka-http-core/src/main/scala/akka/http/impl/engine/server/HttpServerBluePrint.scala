@@ -379,10 +379,12 @@ private[http] object HttpServerBluePrint {
           }
         )
         // TODO: provide and use default impl for simply connecting an input and an output port as we do here
-        setHandler(requestOut, new OutHandler {
-          def onPull(): Unit = pull(requestIn)
-          override def onDownstreamFinish() = cancel(requestIn)
-        })
+        setHandler(
+          requestOut,
+          new OutHandler {
+            def onPull(): Unit = pull(requestIn)
+            override def onDownstreamFinish() = cancel(requestIn)
+          })
         setHandler(
           responseIn,
           new InHandler {
@@ -396,10 +398,12 @@ private[http] object HttpServerBluePrint {
               fail(responseOut, ex)
           }
         )
-        setHandler(responseOut, new OutHandler {
-          def onPull(): Unit = pull(responseIn)
-          override def onDownstreamFinish() = cancel(responseIn)
-        })
+        setHandler(
+          responseOut,
+          new OutHandler {
+            def onPull(): Unit = pull(responseIn)
+            override def onDownstreamFinish() = cancel(responseIn)
+          })
       }
   }
 
@@ -472,9 +476,11 @@ private[http] object HttpServerBluePrint {
     private def schedule(
         delay: FiniteDuration,
         handler: HttpRequest ⇒ HttpResponse): Cancellable =
-      materializer.scheduleOnce(delay, new Runnable {
-        def run() = trigger.invoke((self, handler(request)))
-      })
+      materializer.scheduleOnce(
+        delay,
+        new Runnable {
+          def run() = trigger.invoke((self, handler(request)))
+        })
 
     import akka.http.impl.util.JavaMapping.Implicits._
 
@@ -779,10 +785,12 @@ private[http] object HttpServerBluePrint {
               fail(toNet, ex)
           }
         )
-        setHandler(toNet, new OutHandler {
-          override def onPull(): Unit = pull(fromHttp)
-          override def onDownstreamFinish(): Unit = completeStage()
-        })
+        setHandler(
+          toNet,
+          new OutHandler {
+            override def onPull(): Unit = pull(fromHttp)
+            override def onDownstreamFinish(): Unit = completeStage()
+          })
 
         setHandler(
           fromNet,
@@ -793,10 +801,12 @@ private[http] object HttpServerBluePrint {
               fail(toHttp, ex)
           }
         )
-        setHandler(toHttp, new OutHandler {
-          override def onPull(): Unit = pull(fromNet)
-          override def onDownstreamFinish(): Unit = cancel(fromNet)
-        })
+        setHandler(
+          toHttp,
+          new OutHandler {
+            override def onPull(): Unit = pull(fromNet)
+            override def onDownstreamFinish(): Unit = cancel(fromNet)
+          })
 
         private var activeTimers = 0
         private def timeout =
@@ -850,13 +860,15 @@ private[http] object HttpServerBluePrint {
           })
 
           if (isClosed(fromNet)) {
-            setHandler(toNet, new OutHandler {
-              override def onPull(): Unit = sinkIn.pull()
-              override def onDownstreamFinish(): Unit = {
-                completeStage()
-                sinkIn.cancel()
-              }
-            })
+            setHandler(
+              toNet,
+              new OutHandler {
+                override def onPull(): Unit = sinkIn.pull()
+                override def onDownstreamFinish(): Unit = {
+                  completeStage()
+                  sinkIn.cancel()
+                }
+              })
             WebSocket.framing
               .join(frameHandler)
               .runWith(Source.empty, sinkIn.sink)(subFusingMaterializer)
@@ -869,14 +881,16 @@ private[http] object HttpServerBluePrint {
             })
             addTimeout(timeoutKey)
 
-            setHandler(toNet, new OutHandler {
-              override def onPull(): Unit = sinkIn.pull()
-              override def onDownstreamFinish(): Unit = {
-                completeStage()
-                sinkIn.cancel()
-                sourceOut.complete()
-              }
-            })
+            setHandler(
+              toNet,
+              new OutHandler {
+                override def onPull(): Unit = sinkIn.pull()
+                override def onDownstreamFinish(): Unit = {
+                  completeStage()
+                  sinkIn.cancel()
+                  sourceOut.complete()
+                }
+              })
 
             setHandler(
               fromNet,

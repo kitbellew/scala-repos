@@ -45,9 +45,11 @@ case class BlackholeterSpec() extends FlatSpec with MustMatchers {
     var pass = 0
 
     evaluating {
-      Await.result(Future.collect(1 to repeatFor map { _ =>
-        stack("hello") onSuccess { _ => pass += 1 }
-      }), 10.seconds)
+      Await.result(
+        Future.collect(1 to repeatFor map { _ =>
+          stack("hello") onSuccess { _ => pass += 1 }
+        }),
+        10.seconds)
     } must produce[TimeoutException]
 
     val passRatio = pass.toDouble / repeatFor.toDouble
@@ -65,9 +67,11 @@ case class BlackholeterSpec() extends FlatSpec with MustMatchers {
     var pass = 0
 
     evaluating {
-      Await.result(Future.collect(1 to repeatFor map { _ =>
-        stack("hello") onSuccess { _ => pass += 1 }
-      }), 10.seconds)
+      Await.result(
+        Future.collect(1 to repeatFor map { _ =>
+          stack("hello") onSuccess { _ => pass += 1 }
+        }),
+        10.seconds)
     } must produce[TimeoutException]
 
     val passRatio = pass.toDouble / repeatFor.toDouble

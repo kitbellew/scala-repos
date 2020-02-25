@@ -593,11 +593,15 @@ abstract class GraphStageLogic private[stream] (
       if (n != pos) { // If we aren't already done
         requireNotReading(in)
         if (!hasBeenPulled(in)) pull(in)
-        setHandler(in, new Reading(in, n - pos, getHandler(in))((elem: T) ⇒ {
-          result(pos) = elem
-          pos += 1
-          if (pos == n) andThen(result)
-        }, () ⇒ onClose(result.take(pos))))
+        setHandler(
+          in,
+          new Reading(in, n - pos, getHandler(in))(
+            (elem: T) ⇒ {
+              result(pos) = elem
+              pos += 1
+              if (pos == n) andThen(result)
+            },
+            () ⇒ onClose(result.take(pos))))
       } else andThen(result)
     }
 
@@ -1075,20 +1079,22 @@ abstract class GraphStageLogic private[stream] (
     private var pulled = false
 
     private val _sink =
-      new SubSink[T](name, getAsyncCallback[ActorSubscriberMessage] { msg ⇒
-        if (!closed) msg match {
-          case OnNext(e) ⇒
-            elem = e.asInstanceOf[T]
-            pulled = false
-            handler.onPush()
-          case OnComplete ⇒
-            closed = true
-            handler.onUpstreamFinish()
-          case OnError(ex) ⇒
-            closed = true
-            handler.onUpstreamFailure(ex)
-        }
-      }.invoke _)
+      new SubSink[T](
+        name,
+        getAsyncCallback[ActorSubscriberMessage] { msg ⇒
+          if (!closed) msg match {
+            case OnNext(e) ⇒
+              elem = e.asInstanceOf[T]
+              pulled = false
+              handler.onPush()
+            case OnComplete ⇒
+              closed = true
+              handler.onUpstreamFinish()
+            case OnError(ex) ⇒
+              closed = true
+              handler.onUpstreamFailure(ex)
+          }
+        }.invoke _)
 
     def sink: Graph[SinkShape[T], NotUsed] = _sink
 
@@ -1307,10 +1313,13 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       delay: FiniteDuration): Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
-    val task = interpreter.materializer.scheduleOnce(delay, new Runnable {
-      def run() =
-        getTimerAsyncCallback.invoke(Scheduled(timerKey, id, repeating = false))
-    })
+    val task = interpreter.materializer.scheduleOnce(
+      delay,
+      new Runnable {
+        def run() =
+          getTimerAsyncCallback.invoke(
+            Scheduled(timerKey, id, repeating = false))
+      })
     keyToTimers(timerKey) = Timer(id, task)
   }
 

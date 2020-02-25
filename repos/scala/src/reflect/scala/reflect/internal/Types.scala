@@ -1767,10 +1767,15 @@ trait Types
       // !!! inconsistent with TypeRef.etaExpand that uses initializedTypeParams
       if (!isHigherKinded) this
       else
-        typeFun(typeParams, RefinedType(parents map {
-          case TypeRef(pre, sym, List()) => TypeRef(pre, sym, dummyArgs)
-          case p                         => p
-        }, decls, typeSymbol))
+        typeFun(
+          typeParams,
+          RefinedType(
+            parents map {
+              case TypeRef(pre, sym, List()) => TypeRef(pre, sym, dummyArgs)
+              case p                         => p
+            },
+            decls,
+            typeSymbol))
     }
 
     override def kind = "RefinedType"

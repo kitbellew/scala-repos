@@ -20,10 +20,16 @@ class CreateAggregates extends Phase {
               val CollectionType(_, elType @ Type.Structural(StructType(els))) =
                 from.nodeType
               val s = new AnonSymbol
-              val a = Aggregate(s, from, Apply(f, ConstArray(f match {
-                case Library.CountAll => LiteralNode(1)
-                case _                => Select(Ref(s) :@ elType, els.head._1) :@ els.head._2
-              }))(n.nodeType)).infer()
+              val a = Aggregate(
+                s,
+                from,
+                Apply(
+                  f,
+                  ConstArray(f match {
+                    case Library.CountAll => LiteralNode(1)
+                    case _ =>
+                      Select(Ref(s) :@ elType, els.head._1) :@ els.head._2
+                  }))(n.nodeType)).infer()
               logger.debug("Converted aggregation function application", a)
               inlineMap(a)
 
@@ -70,9 +76,11 @@ class CreateAggregates extends Phase {
                 logger.debug(
                   "Replacement path nodes: ",
                   StructNode(ConstArray.from(replNodes)))
-                val sel3 = sel2.replace({
-                  case n @ Ref(s) => replNodes.getOrElse(s, n)
-                }, keepType = true)
+                val sel3 = sel2.replace(
+                  {
+                    case n @ Ref(s) => replNodes.getOrElse(s, n)
+                  },
+                  keepType = true)
                 val n2 = Bind(s1, from2, Pure(sel3, ts1)).infer()
                 logger.debug("Lifted aggregates into join in:", n2)
                 n2
@@ -89,10 +97,12 @@ class CreateAggregates extends Phase {
     case Bind(s1, f1, Pure(StructNode(defs1), ts1)) =>
       logger.debug("Inlining mapping Bind under Aggregate", a)
       val defs1M = defs1.iterator.toMap
-      val sel = a.select.replace({
-        case FwdPath(s :: f :: rest) if s == a.sym =>
-          rest.foldLeft(defs1M(f)) { case (n, s) => n.select(s) }.infer()
-      }, keepType = true)
+      val sel = a.select.replace(
+        {
+          case FwdPath(s :: f :: rest) if s == a.sym =>
+            rest.foldLeft(defs1M(f)) { case (n, s) => n.select(s) }.infer()
+        },
+        keepType = true)
       val a2 = Aggregate(s1, f1, sel) :@ a.nodeType
       logger.debug("Inlining mapping Bind under Aggregate", a2)
       inlineMap(a2)

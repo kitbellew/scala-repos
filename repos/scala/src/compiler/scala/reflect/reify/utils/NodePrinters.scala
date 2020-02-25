@@ -33,10 +33,12 @@ trait NodePrinters {
         s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
         s = s.replace("immutable.this.Nil", "List()")
         s = """internal\.reificationSupport\.FlagsRepr\((\d+)[lL]\)""".r
-          .replaceAllIn(s, m => {
-            flagsAreUsed = true
-            show(m.group(1).toLong)
-          })
+          .replaceAllIn(
+            s,
+            m => {
+              flagsAreUsed = true
+              show(m.group(1).toLong)
+            })
         s = s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
         s = """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
           .replaceAllIn(

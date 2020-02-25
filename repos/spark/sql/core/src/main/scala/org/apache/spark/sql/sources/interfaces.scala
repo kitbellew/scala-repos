@@ -685,9 +685,11 @@ class HDFSFileCatalog(
           }: _*)
         }
 
-        PartitionSpec(userProvidedSchema, spec.partitions.map { part =>
-          part.copy(values = castPartitionValuesToUserSchema(part.values))
-        })
+        PartitionSpec(
+          userProvidedSchema,
+          spec.partitions.map { part =>
+            part.copy(values = castPartitionValuesToUserSchema(part.values))
+          })
       case _ =>
         PartitioningUtils.parsePartitions(
           leafDirs,

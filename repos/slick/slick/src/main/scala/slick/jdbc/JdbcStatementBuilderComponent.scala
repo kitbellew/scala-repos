@@ -212,10 +212,12 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
           for {
             (defs1, on1) <- f(ls, l)
             (defs2, on2) <- f(rs, r)
-          } yield (defs1 ++ defs2, on match {
-            case LiteralNode(true) => on1 ++ on2
-            case on                => on1 ++ on2 :+ on
-          })
+          } yield (
+            defs1 ++ defs2,
+            on match {
+              case LiteralNode(true) => on1 ++ on2
+              case on                => on1 ++ on2 :+ on
+            })
         case _: Join => None
         case n       => Some((Seq((s, n)), Nil))
       }

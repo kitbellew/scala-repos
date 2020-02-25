@@ -506,9 +506,12 @@ object PlayDocsValidation {
       }
     }
 
-    assertLinksNotMissing("Relative link test", report.relativeLinks.collect {
-      case link if !relativeLinkOk(link) => link
-    }, "Bad relative link")
+    assertLinksNotMissing(
+      "Relative link test",
+      report.relativeLinks.collect {
+        case link if !relativeLinkOk(link) => link
+      },
+      "Bad relative link")
 
     assertLinksNotMissing(
       "Missing wiki resources test",

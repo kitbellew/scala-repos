@@ -33,9 +33,10 @@ class Plot() {
   private val listeners = new mutable.WeakHashMap[Plot.Listener, Unit]()
 
   def +=(pl: Series) = {
-    val (d, r) = pl.getChartStuff({ i => "Series " + (series + i) }, { i =>
-      Plot.fillPaint(series + i)
-    }, { i => Plot.stroke(series + i) })
+    val (d, r) = pl.getChartStuff(
+      { i => "Series " + (series + i) },
+      { i => Plot.fillPaint(series + i) },
+      { i => Plot.stroke(series + i) })
     datasets += d
     renderers += r
     series += d.getSeriesCount

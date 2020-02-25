@@ -176,11 +176,13 @@ class ParquetAvroCompatibilitySuite
 
       logParquetSchema(path)
 
-      checkAnswer(sqlContext.read.parquet(path), (0 until 10).map { i =>
-        Row(
-          Seq.tabulate(3)(i => s"val_$i"),
-          if (i % 3 == 0) null else Seq.tabulate(3)(identity))
-      })
+      checkAnswer(
+        sqlContext.read.parquet(path),
+        (0 until 10).map { i =>
+          Row(
+            Seq.tabulate(3)(i => s"val_$i"),
+            if (i % 3 == 0) null else Seq.tabulate(3)(identity))
+        })
     }
   }
 
@@ -209,9 +211,9 @@ class ParquetAvroCompatibilitySuite
 
       logParquetSchema(path)
 
-      checkAnswer(sqlContext.read.parquet(path), (0 until 10).map { i =>
-        Row(Seq.tabulate(3, 3)((i, j) => i * 3 + j))
-      })
+      checkAnswer(
+        sqlContext.read.parquet(path),
+        (0 until 10).map { i => Row(Seq.tabulate(3, 3)((i, j) => i * 3 + j)) })
     }
   }
 
@@ -237,10 +239,14 @@ class ParquetAvroCompatibilitySuite
 
       logParquetSchema(path)
 
-      checkAnswer(sqlContext.read.parquet(path), (0 until 10).map { i =>
-        Row(
-          Seq.tabulate(3)(i => i.toString -> Seq.tabulate(3)(j => i + j)).toMap)
-      })
+      checkAnswer(
+        sqlContext.read.parquet(path),
+        (0 until 10).map { i =>
+          Row(
+            Seq
+              .tabulate(3)(i => i.toString -> Seq.tabulate(3)(j => i + j))
+              .toMap)
+        })
     }
   }
 

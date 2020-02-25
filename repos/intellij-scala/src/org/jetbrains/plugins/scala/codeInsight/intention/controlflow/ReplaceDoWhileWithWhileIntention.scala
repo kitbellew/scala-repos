@@ -86,9 +86,13 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
               //to make action Undoable
               CommandProcessor
                 .getInstance()
-                .executeCommand(project, new Runnable() {
-                  def run() { doReplacement() }
-                }, null, null)
+                .executeCommand(
+                  project,
+                  new Runnable() {
+                    def run() { doReplacement() }
+                  },
+                  null,
+                  null)
             }
           },
           0

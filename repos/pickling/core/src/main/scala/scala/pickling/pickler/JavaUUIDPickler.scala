@@ -11,14 +11,18 @@ trait JavaUUIDPicklers extends PrimitivePicklers {
       def pickle(picklee: java.util.UUID, builder: PBuilder): Unit = {
         builder.beginEntry(picklee, tag)
 
-        builder.putField("msb", { b =>
-          b.hintElidedType(FastTypeTag.Long)
-          longPickler.pickle(picklee.getMostSignificantBits, b)
-        })
-        builder.putField("lsb", { b =>
-          b.hintElidedType(FastTypeTag.Long)
-          longPickler.pickle(picklee.getLeastSignificantBits, b)
-        })
+        builder.putField(
+          "msb",
+          { b =>
+            b.hintElidedType(FastTypeTag.Long)
+            longPickler.pickle(picklee.getMostSignificantBits, b)
+          })
+        builder.putField(
+          "lsb",
+          { b =>
+            b.hintElidedType(FastTypeTag.Long)
+            longPickler.pickle(picklee.getLeastSignificantBits, b)
+          })
         builder.endEntry()
       }
 

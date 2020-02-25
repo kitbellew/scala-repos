@@ -323,10 +323,13 @@ abstract class ScTypeDefinitionImpl protected (
         _packageName(o, sep, k)
       case _: ScClass | _: ScTrait if trunced => k("")
       case t: ScTypeDefinition =>
-        _packageName(t, sep, (s) => {
-          val name = t.name
-          k(s + transformName(encodeName, name) + sep)
-        })
+        _packageName(
+          t,
+          sep,
+          (s) => {
+            val name = t.name
+            k(s + transformName(encodeName, name) + sep)
+          })
       case p: ScPackaging =>
         _packageName(p, ".", (s) => k(s + p.getPackageName + "."))
       case f: ScalaFile              => val pn = ""; k(if (pn.length > 0) pn + "." else "")

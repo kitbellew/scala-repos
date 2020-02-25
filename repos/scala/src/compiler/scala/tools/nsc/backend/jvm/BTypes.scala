@@ -181,9 +181,10 @@ abstract class BTypes {
     * Construct the [[ClassBType]] for a parsed classfile.
     */
   def classBTypeFromClassNode(classNode: ClassNode): ClassBType = {
-    classBTypeFromInternalName.getOrElse(classNode.name, {
-      setClassInfoFromClassNode(classNode, ClassBType(classNode.name))
-    })
+    classBTypeFromInternalName.getOrElse(
+      classNode.name, {
+        setClassInfoFromClassNode(classNode, ClassBType(classNode.name))
+      })
   }
 
   private def setClassInfoFromClassNode(

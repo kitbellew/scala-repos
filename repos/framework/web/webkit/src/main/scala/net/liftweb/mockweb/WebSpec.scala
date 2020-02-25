@@ -211,15 +211,16 @@ abstract class WebSpec(boot: () => Any = () => {})
 
     def in(expectations: => Result) = {
       addFragments(
-        fragmentFactory.example(description, {
-          LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-            MockWeb.useLiftRules.doWith(true) {
-              MockWeb.testS(req, session) {
-                expectations
+        fragmentFactory.example(
+          description, {
+            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
+              MockWeb.useLiftRules.doWith(true) {
+                MockWeb.testS(req, session) {
+                  expectations
+                }
               }
             }
-          }
-        }) ^
+          }) ^
           fragmentFactory.break
       )
     }
@@ -236,13 +237,14 @@ abstract class WebSpec(boot: () => Any = () => {})
 
     def in(expectations: Req => Result) = {
       addFragments(
-        fragmentFactory.example(description, {
-          LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
-            MockWeb.useLiftRules.doWith(true) {
-              MockWeb.testReq(req)(expectations)
+        fragmentFactory.example(
+          description, {
+            LiftRulesMocker.devTestLiftRulesInstance.doWith(liftRules) {
+              MockWeb.useLiftRules.doWith(true) {
+                MockWeb.testReq(req)(expectations)
+              }
             }
-          }
-        }) ^
+          }) ^
           fragmentFactory.break
       )
     }

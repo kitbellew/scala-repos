@@ -96,11 +96,13 @@ class AkkaProtocolStressTest
     with DefaultTimeout {
 
   val systemB = ActorSystem("systemB", system.settings.config)
-  val remote = systemB.actorOf(Props(new Actor {
-    def receive = {
-      case seq: Int ⇒ sender() ! seq
-    }
-  }), "echo")
+  val remote = systemB.actorOf(
+    Props(new Actor {
+      def receive = {
+        case seq: Int ⇒ sender() ! seq
+      }
+    }),
+    "echo")
 
   val addressB =
     systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress

@@ -31,9 +31,10 @@ trait CommentFactory extends base.CommentFactoryBase {
       sym: Symbol,
       linkTarget: DocTemplateImpl,
       inTpl: DocTemplateImpl): Option[Comment] =
-    commentCache.getOrElseUpdate((sym, inTpl), {
-      defineComment(sym, linkTarget, inTpl)
-    })
+    commentCache.getOrElseUpdate(
+      (sym, inTpl), {
+        defineComment(sym, linkTarget, inTpl)
+      })
 
   /** A comment is usually created by the parser, however for some special
     * cases we have to give some `inTpl` comments (parent class for example)

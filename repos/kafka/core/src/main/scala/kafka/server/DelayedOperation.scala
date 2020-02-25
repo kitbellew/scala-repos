@@ -120,10 +120,12 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
 
   // timeout timer
   private[this] val executor =
-    Executors.newFixedThreadPool(1, new ThreadFactory() {
-      def newThread(runnable: Runnable): Thread =
-        Utils.newThread("executor-" + purgatoryName, runnable, false)
-    })
+    Executors.newFixedThreadPool(
+      1,
+      new ThreadFactory() {
+        def newThread(runnable: Runnable): Thread =
+          Utils.newThread("executor-" + purgatoryName, runnable, false)
+      })
   private[this] val timeoutTimer = new Timer(executor)
 
   /* a list of operation watching keys */

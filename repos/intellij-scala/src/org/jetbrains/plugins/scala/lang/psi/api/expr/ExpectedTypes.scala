@@ -498,11 +498,14 @@ private[expr] object ExpectedTypes {
           if (isDynamicNamed) {
             p match {
               case (ScTupleType(comps), te) if comps.length == 2 =>
-                res += ((comps(1), te.map {
-                  case t: ScTupleTypeElement if t.components.length == 2 =>
-                    t.components(1)
-                  case t => t
-                }))
+                res += (
+                  (
+                    comps(1),
+                    te.map {
+                      case t: ScTupleTypeElement if t.components.length == 2 =>
+                        t.components(1)
+                      case t => t
+                    }))
               case _ => res += p
             }
           } else {

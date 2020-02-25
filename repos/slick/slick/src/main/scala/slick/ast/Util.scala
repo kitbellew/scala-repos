@@ -92,9 +92,11 @@ final class NodeOps(val tree: Node) extends AnyVal {
     import TypeUtil.typeToTypeUtil
     if (invalid.isEmpty) tree
     else
-      replace({
-        case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
-      }, bottomUp = true)
+      replace(
+        {
+          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+        },
+        bottomUp = true)
   }
 
   def findNode(p: Node => Boolean): Option[Node] = {

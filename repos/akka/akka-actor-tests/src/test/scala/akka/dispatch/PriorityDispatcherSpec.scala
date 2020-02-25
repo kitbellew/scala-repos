@@ -25,10 +25,13 @@ object PriorityDispatcherSpec {
       }: Any ⇒ Int))
 
   class Bounded(settings: ActorSystem.Settings, config: Config)
-      extends BoundedPriorityMailbox(PriorityGenerator({
-        case i: Int ⇒ i //Reverse order
-        case 'Result ⇒ Int.MaxValue
-      }: Any ⇒ Int), 1000, 10 seconds)
+      extends BoundedPriorityMailbox(
+        PriorityGenerator({
+          case i: Int ⇒ i //Reverse order
+          case 'Result ⇒ Int.MaxValue
+        }: Any ⇒ Int),
+        1000,
+        10 seconds)
 
 }
 

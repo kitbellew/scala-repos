@@ -20,9 +20,11 @@ class MyClassPickler[A](
     builder.putField(
       "myString",
       b => b.beginEntry(picklee.myString, FastTypeTag.String).endEntry())
-    builder.putField("a", b => {
-      aPickler.pickle(picklee.a, b)
-    })
+    builder.putField(
+      "a",
+      b => {
+        aPickler.pickle(picklee.a, b)
+      })
     builder.endEntry()
   }
 

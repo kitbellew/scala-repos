@@ -80,10 +80,12 @@ abstract class ExistentialSimplificationTestBase
           assertion = false,
           message = "Expression has not existential type")
       case Failure(msg, elem) =>
-        assert(assertion = false, message = msg + " :: " + (elem match {
-          case Some(x) => x.getText
-          case None    => "empty element"
-        }))
+        assert(
+          assertion = false,
+          message = msg + " :: " + (elem match {
+            case Some(x) => x.getText
+            case None    => "empty element"
+          }))
     }
   }
 }

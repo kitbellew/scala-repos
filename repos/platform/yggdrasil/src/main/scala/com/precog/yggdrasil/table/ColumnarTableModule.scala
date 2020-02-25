@@ -1640,10 +1640,12 @@ trait ColumnarTableModule[M[+_]]
           }
         } yield back
 
-        Table(StreamT.wrapEffect(initialState map { state =>
-          StreamT.unfoldM[M, Slice, CogroupState](state getOrElse CogroupDone)(
-            step)
-        }), UnknownSize)
+        Table(
+          StreamT.wrapEffect(initialState map { state =>
+            StreamT.unfoldM[M, Slice, CogroupState](
+              state getOrElse CogroupDone)(step)
+          }),
+          UnknownSize)
       }
 
       cogroup0(
@@ -1830,9 +1832,11 @@ trait ColumnarTableModule[M[+_]]
           yield resultSize < yggConfig.maxSaneCrossSize && resultSize >= 0
 
       if (sizeCheck getOrElse true) {
-        Table(StreamT(cross0(composeSliceTransform2(spec)) map { tail =>
-          StreamT.Skip(tail)
-        }), newSize)
+        Table(
+          StreamT(cross0(composeSliceTransform2(spec)) map { tail =>
+            StreamT.Skip(tail)
+          }),
+          newSize)
       } else {
         throw EnormousCartesianException(this.size, that.size)
       }

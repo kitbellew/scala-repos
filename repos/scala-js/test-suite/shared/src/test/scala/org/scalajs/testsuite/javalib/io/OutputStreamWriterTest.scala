@@ -113,9 +113,9 @@ class OutputStreamWriterTest {
       { osw => osw.write("ab\ud83d"); osw.write("\udca9cd") },
       Array('a', 'b', 0xf0, 0x9f, 0x92, 0xa9, 'c', 'd'))
 
-    testW({ osw =>
-      osw.write("ab\ud83dzz", 1, 2); osw.write("ww\udca9cd", 2, 2)
-    }, Array('b', 0xf0, 0x9f, 0x92, 0xa9, 'c'))
+    testW(
+      { osw => osw.write("ab\ud83dzz", 1, 2); osw.write("ww\udca9cd", 2, 2) },
+      Array('b', 0xf0, 0x9f, 0x92, 0xa9, 'c'))
   }
 
   @Test def write_malformed_surrogates(): Unit = {

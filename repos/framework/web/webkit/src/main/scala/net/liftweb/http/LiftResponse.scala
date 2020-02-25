@@ -78,9 +78,13 @@ object CreatedResponse {
     val headers: List[(String, String)] =
       S.getResponseHeaders(Nil) ++ addlHeaders
 
-    new JsonResponse(new JsExp {
-      lazy val toJsCmd = jsonPrinter(json)
-    }, headers, Nil, 201)
+    new JsonResponse(
+      new JsExp {
+        lazy val toJsCmd = jsonPrinter(json)
+      },
+      headers,
+      Nil,
+      201)
   }
 
 }
@@ -368,9 +372,13 @@ object JsonResponse {
       _headers: List[(String, String)],
       _cookies: List[HTTPCookie],
       code: Int): LiftResponse = {
-    new JsonResponse(new JsExp {
-      lazy val toJsCmd = jsonPrinter(_json)
-    }, _headers, _cookies, code)
+    new JsonResponse(
+      new JsExp {
+        lazy val toJsCmd = jsonPrinter(_json)
+      },
+      _headers,
+      _cookies,
+      code)
   }
 
   lazy val jsonPrinter: JsonAST.JValue => String =
@@ -445,7 +453,13 @@ final case class InMemoryResponse(
     "InMemoryResponse(" + (new String(data, "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
 }
 
-final case class StreamingResponse(data: { def read(buf: Array[Byte]): Int }, onEnd: () => Unit, size: Long, headers: List[(String, String)], cookies: List[HTTPCookie], code: Int)
+final case class StreamingResponse(
+    data: { def read(buf: Array[Byte]): Int },
+    onEnd: () => Unit,
+    size: Long,
+    headers: List[(String, String)],
+    cookies: List[HTTPCookie],
+    code: Int)
     extends BasicResponse {
   def toResponse = this
 

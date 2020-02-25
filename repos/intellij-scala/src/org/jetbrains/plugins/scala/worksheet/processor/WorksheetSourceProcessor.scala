@@ -337,9 +337,10 @@ object WorksheetSourceProcessor {
 
     rootChildren foreach {
       case tpe: ScTypeAlias =>
-        withPrecomputeLines(tpe, {
-          objectRes append withPrint(s"defined type alias ${tpe.name}")
-        })
+        withPrecomputeLines(
+          tpe, {
+            objectRes append withPrint(s"defined type alias ${tpe.name}")
+          })
       case fun: ScFunction =>
         val hadMods =
           fun.getModifierList.accessModifier map (_.modifierFormattedText) getOrElse ""

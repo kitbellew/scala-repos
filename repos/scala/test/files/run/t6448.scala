@@ -31,12 +31,16 @@ object Test {
     import collection.parallel.mutable.ParArray
     testing("ParVector.collect") {
       val counter = new Counter()
-      (ParVector(1, 2) collect { case x if counter(x) && x < 2 => x }, counter.synchronized(counter.count))
+      (
+        ParVector(1, 2) collect { case x if counter(x) && x < 2 => x },
+        counter.synchronized(counter.count))
     }
 
     testing("ParArray.collect") {
       val counter = new Counter()
-      (ParArray(1, 2) collect { case x if counter(x) && x < 2 => x }, counter.synchronized(counter.count))
+      (
+        ParArray(1, 2) collect { case x if counter(x) && x < 2 => x },
+        counter.synchronized(counter.count))
     }
 
     object PendingTests {

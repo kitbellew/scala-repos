@@ -259,11 +259,13 @@ object Reflector {
   }
 
   def rawClassOf(t: Type): Class[_] =
-    rawClasses(t, _ match {
-      case c: Class[_]          => c
-      case p: ParameterizedType => rawClassOf(p.getRawType)
-      case x                    => sys.error("Raw type of " + x + " not known")
-    })
+    rawClasses(
+      t,
+      _ match {
+        case c: Class[_]          => c
+        case p: ParameterizedType => rawClassOf(p.getRawType)
+        case x                    => sys.error("Raw type of " + x + " not known")
+      })
 
   def unmangleName(name: String) =
     unmangledNames(name, scala.reflect.NameTransformer.decode)

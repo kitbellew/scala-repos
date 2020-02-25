@@ -273,10 +273,12 @@ object ThriftCodecTest {
 
     val _upstreamEvents = new ListBuffer[ChannelEvent]
 
-    pipeline.addLast("upstreamSink", new ChannelUpstreamHandler {
-      def handleUpstream(ctx: ChannelHandlerContext, e: ChannelEvent) =
-        _upstreamEvents += e
-    })
+    pipeline.addLast(
+      "upstreamSink",
+      new ChannelUpstreamHandler {
+        def handleUpstream(ctx: ChannelHandlerContext, e: ChannelEvent) =
+          _upstreamEvents += e
+      })
 
     var _isConnected = true
     var _isBound = true

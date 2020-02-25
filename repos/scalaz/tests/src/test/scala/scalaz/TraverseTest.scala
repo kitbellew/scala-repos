@@ -96,10 +96,12 @@ object TraverseTest extends SpecLite {
       List(some(1), none[Int]).sequence must_=== (none)
 
       val states: List[State[Int, Int]] =
-        List(State.modify[Int](_ + 1).map(_ => 0), for {
-          i <- State.get[Int]
-          _ <- State.put(i + 1)
-        } yield i)
+        List(
+          State.modify[Int](_ + 1).map(_ => 0),
+          for {
+            i <- State.get[Int]
+            _ <- State.put(i + 1)
+          } yield i)
       val state: State[Int, List[Int]] = states.sequenceU
       state.run(0) must_=== (2, (List(0, 1)))
     }

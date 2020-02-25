@@ -33,8 +33,16 @@ object Test {
     testStreamIterator(2, cons(1, cons({ print(" A"); 2 }, empty)))
     testStreamIterator(3, Stream(1, 2, 3))
     //Stream with side effect
-    testStreamIterator(3, cons(1, cons({ print(" A"); 2 }, cons({
-      print(" B"); 3
-    }, Stream.empty))))
+    testStreamIterator(
+      3,
+      cons(
+        1,
+        cons(
+          { print(" A"); 2 },
+          cons(
+            {
+              print(" B"); 3
+            },
+            Stream.empty))))
   }
 }

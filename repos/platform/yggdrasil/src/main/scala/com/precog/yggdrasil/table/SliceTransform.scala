@@ -636,17 +636,21 @@ trait SliceTransforms[M[+_]]
           composeSliceTransform2(source) andThen {
             mapper0.fold(
               { mapper =>
-                SliceTransform1.liftM[Unit]((), { (_: Unit, slice: Slice) =>
-                  val cols = mapper.map(slice.columns, 0 until slice.size)
-                  ((), Slice(cols, slice.size))
-                })
+                SliceTransform1.liftM[Unit](
+                  (),
+                  { (_: Unit, slice: Slice) =>
+                    val cols = mapper.map(slice.columns, 0 until slice.size)
+                    ((), Slice(cols, slice.size))
+                  })
               },
               { mapper =>
-                SliceTransform1[Unit]((), { (_: Unit, slice: Slice) =>
-                  mapper.map(slice.columns, 0 until slice.size) map { cols =>
-                    ((), Slice(cols, slice.size))
-                  }
-                })
+                SliceTransform1[Unit](
+                  (),
+                  { (_: Unit, slice: Slice) =>
+                    mapper.map(slice.columns, 0 until slice.size) map { cols =>
+                      ((), Slice(cols, slice.size))
+                    }
+                  })
               }
             )
           }
@@ -669,9 +673,11 @@ trait SliceTransforms[M[+_]]
             assert(derefBy.columns.size <= 1)
             derefBy.columns.headOption collect {
               case (ColumnRef(CPath.Identity, CString), c: StrColumn) =>
-                new DerefSlice(slice, {
-                  case row: Int if c.isDefinedAt(row) => CPathField(c(row))
-                })
+                new DerefSlice(
+                  slice,
+                  {
+                    case row: Int if c.isDefinedAt(row) => CPathField(c(row))
+                  })
             } getOrElse {
               slice
             }
@@ -690,22 +696,28 @@ trait SliceTransforms[M[+_]]
             assert(derefBy.columns.size <= 1)
             derefBy.columns.headOption collect {
               case (ColumnRef(CPath.Identity, CLong), c: LongColumn) =>
-                new DerefSlice(slice, {
-                  case row: Int if c.isDefinedAt(row) =>
-                    CPathIndex(c(row).toInt)
-                })
+                new DerefSlice(
+                  slice,
+                  {
+                    case row: Int if c.isDefinedAt(row) =>
+                      CPathIndex(c(row).toInt)
+                  })
 
               case (ColumnRef(CPath.Identity, CDouble), c: DoubleColumn) =>
-                new DerefSlice(slice, {
-                  case row: Int if c.isDefinedAt(row) =>
-                    CPathIndex(c(row).toInt)
-                })
+                new DerefSlice(
+                  slice,
+                  {
+                    case row: Int if c.isDefinedAt(row) =>
+                      CPathIndex(c(row).toInt)
+                  })
 
               case (ColumnRef(CPath.Identity, CNum), c: NumColumn) =>
-                new DerefSlice(slice, {
-                  case row: Int if c.isDefinedAt(row) =>
-                    CPathIndex(c(row).toInt)
-                })
+                new DerefSlice(
+                  slice,
+                  {
+                    case row: Int if c.isDefinedAt(row) =>
+                      CPathIndex(c(row).toInt)
+                  })
             } getOrElse {
               slice
             }
@@ -798,35 +810,41 @@ trait SliceTransforms[M[+_]]
         combine: (Slice, Slice) => Slice): SliceTransform1[(A, B)] = {
       (this, that) match {
         case (sta: SliceTransform1S[_], stb: SliceTransform1S[_]) =>
-          SliceTransform1S[(A, B)]((sta.initial, stb.initial), {
-            case ((a0, b0), s0) =>
-              val (a, sa) = sta.f0(a0, s0)
-              val (b, sb) = stb.f0(b0, s0)
-              assert(sa.size == sb.size)
-              ((a, b), combine(sa, sb))
-          })
+          SliceTransform1S[(A, B)](
+            (sta.initial, stb.initial),
+            {
+              case ((a0, b0), s0) =>
+                val (a, sa) = sta.f0(a0, s0)
+                val (b, sb) = stb.f0(b0, s0)
+                assert(sa.size == sb.size)
+                ((a, b), combine(sa, sb))
+            })
 
         case (sta: SliceTransform1S[_], stb) =>
-          SliceTransform1M[(A, B)]((sta.initial, stb.initial), {
-            case ((a0, b0), s0) =>
-              val (a, sa) = sta.f0(a0, s0)
-              stb.f(b0, s0) map {
-                case (b, sb) =>
-                  assert(sa.size == sb.size)
-                  ((a, b), combine(sa, sb))
-              }
-          })
+          SliceTransform1M[(A, B)](
+            (sta.initial, stb.initial),
+            {
+              case ((a0, b0), s0) =>
+                val (a, sa) = sta.f0(a0, s0)
+                stb.f(b0, s0) map {
+                  case (b, sb) =>
+                    assert(sa.size == sb.size)
+                    ((a, b), combine(sa, sb))
+                }
+            })
 
         case (sta, stb: SliceTransform1S[_]) =>
-          SliceTransform1M[(A, B)]((sta.initial, stb.initial), {
-            case ((a0, b0), s0) =>
-              sta.f(a0, s0) map {
-                case (a, sa) =>
-                  val (b, sb) = stb.f0(b0, s0)
-                  assert(sa.size == sb.size)
-                  ((a, b), combine(sa, sb))
-              }
-          })
+          SliceTransform1M[(A, B)](
+            (sta.initial, stb.initial),
+            {
+              case ((a0, b0), s0) =>
+                sta.f(a0, s0) map {
+                  case (a, sa) =>
+                    val (b, sb) = stb.f0(b0, s0)
+                    assert(sa.size == sb.size)
+                    ((a, b), combine(sa, sb))
+                }
+            })
 
         case (sta, stb) =>
           SliceTransform1[(A, B)](
@@ -923,22 +941,28 @@ trait SliceTransforms[M[+_]]
         stb: SliceTransform1S[B]): SliceTransform1S[(A, B)] = {
       (sta, stb) match {
         case (Identity, stb) =>
-          SliceTransform1S((sta.initial, stb.initial), {
-            case ((_, b0), s0) =>
-              { (b: B) => (sta.initial, b) } <-: stb.f0(b0, s0)
-          })
+          SliceTransform1S(
+            (sta.initial, stb.initial),
+            {
+              case ((_, b0), s0) =>
+                { (b: B) => (sta.initial, b) } <-: stb.f0(b0, s0)
+            })
         case (sta, Identity) =>
-          SliceTransform1S((sta.initial, stb.initial), {
-            case ((a0, _), s0) =>
-              { (a: A) => (a, stb.initial) } <-: sta.f0(a0, s0)
-          })
+          SliceTransform1S(
+            (sta.initial, stb.initial),
+            {
+              case ((a0, _), s0) =>
+                { (a: A) => (a, stb.initial) } <-: sta.f0(a0, s0)
+            })
         case (SliceTransform1S(i1, f1), SliceTransform1S(i2, f2)) =>
-          SliceTransform1S((i1, i2), {
-            case ((a0, b0), s0) =>
-              val (a, s1) = f1(a0, s0)
-              val (b, s) = f2(b0, s1)
-              ((a, b), s)
-          })
+          SliceTransform1S(
+            (i1, i2),
+            {
+              case ((a0, b0), s0) =>
+                val (a, s1) = f1(a0, s0)
+                val (b, s) = f2(b0, s1)
+                ((a, b), s)
+            })
       }
     }
 
@@ -952,49 +976,63 @@ trait SliceTransforms[M[+_]]
           chainS(sta, stb)
 
         case (SliceTransform1M(i0, f0), SliceTransform1M(i1, f1)) =>
-          SliceTransform1M((i0, i1), {
-            case ((a0, b0), s0) =>
-              for (r0 <- f0(i0, s0); r1 <- f1(i1, r0._2))
-                yield ((r0._1, r1._1), r1._2)
-          })
+          SliceTransform1M(
+            (i0, i1),
+            {
+              case ((a0, b0), s0) =>
+                for (r0 <- f0(i0, s0); r1 <- f1(i1, r0._2))
+                  yield ((r0._1, r1._1), r1._2)
+            })
 
         case (sta: SliceTransform1S[_], stb: SliceTransform1M[_]) =>
           val st = SliceTransform1SMS(sta, stb, Identity)
-          st.mapState({ case (a, b, _) => (a, b) }, {
-            case (a, b)                => (a, b, ())
-          })
+          st.mapState(
+            { case (a, b, _) => (a, b) },
+            {
+              case (a, b) => (a, b, ())
+            })
 
         case (sta: SliceTransform1M[_], stb: SliceTransform1S[_]) =>
           val st = SliceTransform1SMS(Identity, sta, stb)
-          st.mapState({ case (_, a, b) => (a, b) }, {
-            case (a, b)                => ((), a, b)
-          })
+          st.mapState(
+            { case (_, a, b) => (a, b) },
+            {
+              case (a, b) => ((), a, b)
+            })
 
         case (sta: SliceTransform1S[_], SliceTransform1SMS(stb, stc, std)) =>
           val st = SliceTransform1SMS(chainS(sta, stb), stc, std)
-          st.mapState({ case ((a, b), c, d) => (a, (b, c, d)) }, {
-            case (a, (b, c, d))             => ((a, b), c, d)
-          })
+          st.mapState(
+            { case ((a, b), c, d) => (a, (b, c, d)) },
+            {
+              case (a, (b, c, d)) => ((a, b), c, d)
+            })
 
         case (SliceTransform1SMS(sta, stb, stc), std: SliceTransform1S[_]) =>
           val st = SliceTransform1SMS(sta, stb, chainS(stc, std))
-          st.mapState({ case (a, b, (c, d)) => ((a, b, c), d) }, {
-            case ((a, b, c), d)             => (a, b, (c, d))
-          })
+          st.mapState(
+            { case (a, b, (c, d)) => ((a, b, c), d) },
+            {
+              case ((a, b, c), d) => (a, b, (c, d))
+            })
 
         case (sta: SliceTransform1M[_], SliceTransform1SMS(stb, stc, std)) =>
           val st =
             SliceTransform1SMS(Identity, sta andThen stb andThen stc, std)
-          st.mapState({ case (_, ((a, b), c), d) => (a, (b, c, d)) }, {
-            case (a, (b, c, d))                  => ((), ((a, b), c), d)
-          })
+          st.mapState(
+            { case (_, ((a, b), c), d) => (a, (b, c, d)) },
+            {
+              case (a, (b, c, d)) => ((), ((a, b), c), d)
+            })
 
         case (SliceTransform1SMS(sta, stb, stc), std: SliceTransform1M[_]) =>
           val st =
             SliceTransform1SMS(sta, stb andThen stc andThen std, Identity)
-          st.mapState({ case (a, ((b, c), d), _) => ((a, b, c), d) }, {
-            case ((a, b, c), d)                  => (a, ((b, c), d), ())
-          })
+          st.mapState(
+            { case (a, ((b, c), d), _) => ((a, b, c), d) },
+            {
+              case ((a, b, c), d) => (a, ((b, c), d), ())
+            })
 
         case (
             SliceTransform1SMS(sta, stb, stc),
@@ -1003,9 +1041,11 @@ trait SliceTransforms[M[+_]]
             sta,
             stb andThen stc andThen std andThen ste,
             stf)
-          st.mapState({
-            case (a, (((b, c), d), e), f)  => ((a, b, c), (d, e, f))
-          }, { case ((a, b, c), (d, e, f)) => (a, (((b, c), d), e), f) })
+          st.mapState(
+            {
+              case (a, (((b, c), d), e), f) => ((a, b, c), (d, e, f))
+            },
+            { case ((a, b, c), (d, e, f)) => (a, (((b, c), d), e), f) })
 
         case (MappedState1(sta, f, g), stb) =>
           (sta andThen stb).mapState(f <-: _, g <-: _)
@@ -1230,9 +1270,11 @@ trait SliceTransforms[M[+_]]
 
     private def mapS[A](st: SliceTransform2S[A])(
         f: Slice => Slice): SliceTransform2S[A] =
-      SliceTransform2S(st.initial, {
-        case (a, sl, sr) => st.f0(a, sl, sr) :-> f
-      })
+      SliceTransform2S(
+        st.initial,
+        {
+          case (a, sl, sr) => st.f0(a, sl, sr) :-> f
+        })
 
     private def map[A](st: SliceTransform2[A])(
         f: Slice => Slice): SliceTransform2[A] = st match {
@@ -1250,17 +1292,21 @@ trait SliceTransforms[M[+_]]
         stb: SliceTransform1S[B]): SliceTransform2S[(A, B)] = {
       (sta, stb) match {
         case (sta, SliceTransform1.Identity) =>
-          SliceTransform2S((sta.initial, stb.initial), {
-            case ((a0, _), sl0, sr0) =>
-              { (a: A) => (a, stb.initial) } <-: sta.f0(a0, sl0, sr0)
-          })
+          SliceTransform2S(
+            (sta.initial, stb.initial),
+            {
+              case ((a0, _), sl0, sr0) =>
+                { (a: A) => (a, stb.initial) } <-: sta.f0(a0, sl0, sr0)
+            })
         case (SliceTransform2S(i1, f1), SliceTransform1S(i2, f2)) =>
-          SliceTransform2S((i1, i2), {
-            case ((a0, b0), sl0, sr0) =>
-              val (a, s1) = f1(a0, sl0, sr0)
-              val (b, s) = f2(b0, s1)
-              ((a, b), s)
-          })
+          SliceTransform2S(
+            (i1, i2),
+            {
+              case ((a0, b0), sl0, sr0) =>
+                val (a, s1) = f1(a0, sl0, sr0)
+                val (b, s) = f2(b0, s1)
+                ((a, b), s)
+            })
       }
     }
 
@@ -1281,25 +1327,31 @@ trait SliceTransforms[M[+_]]
           SliceTransform2MS(sta, stb)
 
         case (sta: SliceTransform2M[_], stb: SliceTransform1[_]) =>
-          SliceTransform2M((sta.initial, stb.initial), {
-            case ((a0, b0), sl0, sr0) =>
-              sta.f(a0, sl0, sr0) flatMap {
-                case (a, s0) =>
-                  stb.f(b0, s0) map { case (b, s) => ((a, b), s) }
-              }
-          })
+          SliceTransform2M(
+            (sta.initial, stb.initial),
+            {
+              case ((a0, b0), sl0, sr0) =>
+                sta.f(a0, sl0, sr0) flatMap {
+                  case (a, s0) =>
+                    stb.f(b0, s0) map { case (b, s) => ((a, b), s) }
+                }
+            })
 
         case (SliceTransform2SM(sta, stb), stc) =>
           val st = SliceTransform2SM(sta, stb andThen stc)
-          st.mapState({ case (a, (b, c)) => ((a, b), c) }, {
-            case ((a, b), c)             => (a, (b, c))
-          })
+          st.mapState(
+            { case (a, (b, c)) => ((a, b), c) },
+            {
+              case ((a, b), c) => (a, (b, c))
+            })
 
         case (SliceTransform2MS(sta, stb), stc) =>
           val st = chain(sta, stb andThen stc)
-          st.mapState({ case (a, (b, c)) => ((a, b), c) }, {
-            case ((a, b), c)             => (a, (b, c))
-          })
+          st.mapState(
+            { case (a, (b, c)) => ((a, b), c) },
+            {
+              case ((a, b), c) => (a, (b, c))
+            })
 
         case (MappedState2(sta, f, g), stb) =>
           chain(sta, stb).mapState(f <-: _, g <-: _)

@@ -151,9 +151,11 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
     val ids = (1 to types.size).map("T" + _)
 
     val id = ids.toIterator
-    val typedDefinition = Parameter.replaceAllIn(definition, _ match {
-      case Parameter(n, t) => n + ": " + id.next
-    })
+    val typedDefinition = Parameter.replaceAllIn(
+      definition,
+      _ match {
+        case Parameter(n, t) => n + ": " + id.next
+      })
 
     val typeParameters = "[" + ids.mkString(", ") + "]"
     val typeArguments = "[" + types.mkString(", ") + "]"

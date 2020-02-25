@@ -366,13 +366,15 @@ final class RhinoJSEnv private (
       }
     )
 
-    scope.addFunction("clearTimeout", args => {
-      val task = ensure[TimeoutTask](
-        args(0),
-        "First argument to " +
-          "clearTimeout must be a value returned by setTimeout")
-      task.cancel()
-    })
+    scope.addFunction(
+      "clearTimeout",
+      args => {
+        val task = ensure[TimeoutTask](
+          args(0),
+          "First argument to " +
+            "clearTimeout must be a value returned by setTimeout")
+        task.cancel()
+      })
 
     scope.addFunction(
       "clearInterval",
@@ -412,12 +414,14 @@ final class RhinoJSEnv private (
         }
     )
 
-    comObj.addFunction("close", _ => {
-      // Tell JVM side we won't send anything
-      channel.closeJS()
-      // Internally register that we're done
-      clrCallback()
-    })
+    comObj.addFunction(
+      "close",
+      _ => {
+        // Tell JVM side we won't send anything
+        channel.closeJS()
+        // Internally register that we're done
+        clrCallback()
+      })
 
     ScriptableObject.putProperty(scope, "scalajsCom", comObj)
   }
@@ -443,10 +447,12 @@ final class RhinoJSEnv private (
           oldScalaJSenv
       }
 
-      scalaJSenv.addFunction("sourceMapper", args => {
-        val trace = Context.toObject(args(0), scope)
-        loader.mapStackTrace(trace, context, scope)
-      })
+      scalaJSenv.addFunction(
+        "sourceMapper",
+        args => {
+          val trace = Context.toObject(args(0), scope)
+          loader.mapStackTrace(trace, context, scope)
+        })
     }
 
     loader.insertInto(context, scope)

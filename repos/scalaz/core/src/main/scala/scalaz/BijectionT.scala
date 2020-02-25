@@ -103,12 +103,14 @@ object BijectionT extends BijectionTInstances {
 
   // Left is true, Right is false
   def eitherB[A]: Bijection[A \/ A, (Boolean, A)] =
-    bijection[Id, Id, A \/ A, (Boolean, A)](_ match {
-      case -\/(a) => (true, a)
-      case \/-(a) => (false, a)
-    }, {
-      case (p, a) => if (p) -\/(a) else \/-(a)
-    })
+    bijection[Id, Id, A \/ A, (Boolean, A)](
+      _ match {
+        case -\/(a) => (true, a)
+        case \/-(a) => (false, a)
+      },
+      {
+        case (p, a) => if (p) -\/(a) else \/-(a)
+      })
 
   def zipB[X[_], A, B](
       implicit Z: Zip[X],
@@ -127,26 +129,34 @@ object BijectionT extends BijectionTInstances {
     zipB[T => ?, A, B]
 
   def tuple3B[A, B, C]: Bijection[(A, B, C), (A, (B, C))] =
-    bijection({ case (a, b, c) => (a, (b, c)) }, {
-      case (a, (b, c))         => (a, b, c)
-    })
+    bijection(
+      { case (a, b, c) => (a, (b, c)) },
+      {
+        case (a, (b, c)) => (a, b, c)
+      })
 
   def tuple4B[A, B, C, D]: Bijection[(A, B, C, D), (A, (B, (C, D)))] =
-    bijection({ case (a, b, c, d) => (a, (b, (c, d))) }, {
-      case (a, (b, (c, d)))       => (a, b, c, d)
-    })
+    bijection(
+      { case (a, b, c, d) => (a, (b, (c, d))) },
+      {
+        case (a, (b, (c, d))) => (a, b, c, d)
+      })
 
   def tuple5B[A, B, C, D, E]
       : Bijection[(A, B, C, D, E), (A, (B, (C, (D, E))))] =
-    bijection({ case (a, b, c, d, e) => (a, (b, (c, (d, e)))) }, {
-      case (a, (b, (c, (d, e))))     => (a, b, c, d, e)
-    })
+    bijection(
+      { case (a, b, c, d, e) => (a, (b, (c, (d, e)))) },
+      {
+        case (a, (b, (c, (d, e)))) => (a, b, c, d, e)
+      })
 
   def tuple6B[A, B, C, D, E, H]
       : Bijection[(A, B, C, D, E, H), (A, (B, (C, (D, (E, H)))))] =
-    bijection({ case (a, b, c, d, e, h) => (a, (b, (c, (d, (e, h))))) }, {
-      case (a, (b, (c, (d, (e, h)))))   => (a, b, c, d, e, h)
-    })
+    bijection(
+      { case (a, b, c, d, e, h) => (a, (b, (c, (d, (e, h))))) },
+      {
+        case (a, (b, (c, (d, (e, h))))) => (a, b, c, d, e, h)
+      })
 
   def tuple7B[A, B, C, D, E, H, I]
       : Bijection[(A, B, C, D, E, H, I), (A, (B, (C, (D, (E, (H, I))))))] =

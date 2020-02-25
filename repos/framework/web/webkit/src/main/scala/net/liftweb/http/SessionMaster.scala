@@ -66,19 +66,22 @@ object SessionMaster extends LiftActor with Loggable {
     */
   @volatile var sessionCheckFuncs
       : List[(Map[String, SessionInfo], SessionInfo => Unit) => Unit] =
-    ((ses: Map[String, SessionInfo], destroyer: SessionInfo => Unit) => {
-      val now = millis
+    (
+        (
+            ses: Map[String, SessionInfo],
+            destroyer: SessionInfo => Unit) => {
+          val now = millis
 
-      for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator) {
-        if (now - session.lastServiceTime > session.inactivityLength || session.markedForTermination) {
-          logger.info(" Session " + id + " expired")
-          destroyer(info)
-        } else {
-          session.doCometActorCleanup()
-          session.cleanupUnseenFuncs()
-        }
-      }
-    }) :: Nil
+          for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator) {
+            if (now - session.lastServiceTime > session.inactivityLength || session.markedForTermination) {
+              logger.info(" Session " + id + " expired")
+              destroyer(info)
+            } else {
+              session.doCometActorCleanup()
+              session.cleanupUnseenFuncs()
+            }
+          }
+        }) :: Nil
 
   def getSession(req: Req, otherId: Box[String]): Box[LiftSession] = {
     val dead = otherId.map(killedSessions.containsKey(_)) openOr false
@@ -285,13 +288,15 @@ object SessionMaster extends LiftActor with Loggable {
         } else {
           Schedule.schedule(
             () =>
-              f(ses, shutDown => {
-                if (!shutDown.session.markedForShutDown_?) {
-                  shutDown.session.markedForShutDown_? = true
+              f(
+                ses,
+                shutDown => {
+                  if (!shutDown.session.markedForShutDown_?) {
+                    shutDown.session.markedForShutDown_? = true
 
-                  this ! RemoveSession(shutDown.session.underlyingId)
-                }
-              }),
+                    this ! RemoveSession(shutDown.session.underlyingId)
+                  }
+                }),
             0.seconds
           )
         }

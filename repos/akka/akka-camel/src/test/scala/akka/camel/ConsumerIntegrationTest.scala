@@ -46,12 +46,14 @@ class ConsumerIntegrationTest
     }
 
     "Consumer must support in-out messaging" in {
-      start(new Consumer {
-        def endpointUri = "direct:a1"
-        def receive = {
-          case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
-        }
-      }, name = "direct-a1")
+      start(
+        new Consumer {
+          def endpointUri = "direct:a1"
+          def receive = {
+            case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
+          }
+        },
+        name = "direct-a1")
       camel.sendTo("direct:a1", msg = "some message") should ===(
         "received some message")
     }
@@ -168,10 +170,12 @@ class ConsumerIntegrationTest
     }
 
     "Consumer supports manual Ack" in {
-      val ref = start(new ManualAckConsumer() {
-        def endpointUri = "direct:manual-ack"
-        def receive = { case _ ⇒ sender() ! Ack }
-      }, name = "direct-manual-ack-1")
+      val ref = start(
+        new ManualAckConsumer() {
+          def endpointUri = "direct:manual-ack"
+          def receive = { case _ ⇒ sender() ! Ack }
+        },
+        name = "direct-manual-ack-1")
       camel.template
         .asyncSendBody("direct:manual-ack", "some message")
         .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
@@ -182,10 +186,12 @@ class ConsumerIntegrationTest
 
     "Consumer handles manual Ack failure" in {
       val someException = new Exception("e1")
-      val ref = start(new ManualAckConsumer() {
-        def endpointUri = "direct:manual-ack"
-        def receive = { case _ ⇒ sender() ! Failure(someException) }
-      }, name = "direct-manual-ack-2")
+      val ref = start(
+        new ManualAckConsumer() {
+          def endpointUri = "direct:manual-ack"
+          def receive = { case _ ⇒ sender() ! Failure(someException) }
+        },
+        name = "direct-manual-ack-2")
 
       intercept[ExecutionException] {
         camel.template
@@ -196,11 +202,13 @@ class ConsumerIntegrationTest
     }
 
     "Consumer should time-out, if manual Ack not received within replyTimeout and should give a human readable error message" in {
-      val ref = start(new ManualAckConsumer() {
-        override def replyTimeout = 10 millis
-        def endpointUri = "direct:manual-ack"
-        def receive = { case _ ⇒ }
-      }, name = "direct-manual-ack-3")
+      val ref = start(
+        new ManualAckConsumer() {
+          override def replyTimeout = 10 millis
+          def endpointUri = "direct:manual-ack"
+          def receive = { case _ ⇒ }
+        },
+        name = "direct-manual-ack-3")
 
       intercept[ExecutionException] {
         camel.template

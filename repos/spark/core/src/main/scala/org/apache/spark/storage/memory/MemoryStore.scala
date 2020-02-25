@@ -526,10 +526,11 @@ private[storage] class PartiallyUnrolledIterator(
 
   private[this] var unrolledIteratorIsConsumed: Boolean = false
   private[this] var iter: Iterator[Any] = {
-    val completionIterator = CompletionIterator[Any, Iterator[Any]](unrolled, {
-      unrolledIteratorIsConsumed = true
-      memoryStore.releaseUnrollMemoryForThisTask(unrollMemory)
-    })
+    val completionIterator = CompletionIterator[Any, Iterator[Any]](
+      unrolled, {
+        unrolledIteratorIsConsumed = true
+        memoryStore.releaseUnrollMemoryForThisTask(unrollMemory)
+      })
     completionIterator ++ rest
   }
 

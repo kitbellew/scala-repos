@@ -31,9 +31,11 @@ object WorksheetViewerInfo {
       allViewers.get(editor) match {
         case null =>
         case list: List[Editor] =>
-          allViewers.put(editor, list.filter {
-            case sViewer => sViewer != viewer
-          })
+          allViewers.put(
+            editor,
+            list.filter {
+              case sViewer => sViewer != viewer
+            })
       }
     }
   }

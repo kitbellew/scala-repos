@@ -40,10 +40,12 @@ object CategoricalNaiveBayes {
         },
         mergeValue =
           (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
-            (c._1 + 1L, c._2.zip(features).map {
-              case (m, feature) =>
-                m.updated(feature, m(feature) + 1L)
-            })
+            (
+              c._1 + 1L,
+              c._2.zip(features).map {
+                case (m, feature) =>
+                  m.updated(feature, m(feature) + 1L)
+              })
           },
         mergeCombiners = (
             c1: (Long, Array[Map[String, Long]]),
@@ -53,10 +55,12 @@ object CategoricalNaiveBayes {
           val featureCounts1 = c1._2
           val featureCounts2 = c2._2
 
-          (labelCount1 + labelCount2, featureCounts1.zip(featureCounts2).map {
-            case (m1, m2) =>
-              m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
-          })
+          (
+            labelCount1 + labelCount2,
+            featureCounts1.zip(featureCounts2).map {
+              case (m1, m2) =>
+                m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
+            })
         }
       )
       .mapValues {

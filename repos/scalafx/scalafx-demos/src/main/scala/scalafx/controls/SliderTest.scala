@@ -203,9 +203,11 @@ class SliderControls(target: Slider)
   super.addNode("Show Tick Marks", chbShowTickMarks)
   super.addNode("Snap To Ticks", chbSnapToTicks)
   super.addNode("Value Changing", chbValueChanging)
-  super.addNode("Orientation", new VBox {
-    children = List(rdbHorizontal, rdbVertical)
-  })
+  super.addNode(
+    "Orientation",
+    new VBox {
+      children = List(rdbHorizontal, rdbVertical)
+    })
 
   super.addNode(btnReset)
 

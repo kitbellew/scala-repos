@@ -154,18 +154,22 @@ trait HeapBackend extends RelationalBackend with Logging {
 
     protected def createConstraintVerifier(cons: Constraint) = cons match {
       case PrimaryKey(name, columns) =>
-        createUniquenessVerifier(name, columns.map {
-          case Select(_, f: FieldSymbol) => f
-        })
+        createUniquenessVerifier(
+          name,
+          columns.map {
+            case Select(_, f: FieldSymbol) => f
+          })
       case _ => Verifier.empty
     }
 
     protected def createIndexVerifier(idx: Index) =
       if (!idx.unique) Verifier.empty
       else
-        createUniquenessVerifier(idx.name, idx.on.map {
-          case Select(_, f: FieldSymbol) => f
-        })
+        createUniquenessVerifier(
+          idx.name,
+          idx.on.map {
+            case Select(_, f: FieldSymbol) => f
+          })
 
     protected def createUniquenessVerifier(
         name: String,

@@ -2068,9 +2068,13 @@ class SparkContext(config: SparkConf)
     val callSite = getCallSite()
     var result: MapOutputStatistics = null
     val waiter =
-      dagScheduler.submitMapStage(dependency, (r: MapOutputStatistics) => {
-        result = r
-      }, callSite, localProperties.get)
+      dagScheduler.submitMapStage(
+        dependency,
+        (r: MapOutputStatistics) => {
+          result = r
+        },
+        callSite,
+        localProperties.get)
     new SimpleFutureAction[MapOutputStatistics](waiter, result)
   }
 

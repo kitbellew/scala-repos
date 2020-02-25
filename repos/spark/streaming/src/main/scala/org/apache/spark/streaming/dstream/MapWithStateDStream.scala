@@ -152,9 +152,12 @@ private[streaming] class InternalMapWithStateDStream[
           // If the RDD is not partitioned the right way, let us repartition it using the
           // partition index as the key. This is to ensure that state RDD is always partitioned
           // before creating another state RDD using it
-          MapWithStateRDD.createFromRDD[K, V, S, E](rdd.flatMap {
-            _.stateMap.getAll()
-          }, partitioner, validTime)
+          MapWithStateRDD.createFromRDD[K, V, S, E](
+            rdd.flatMap {
+              _.stateMap.getAll()
+            },
+            partitioner,
+            validTime)
         } else {
           rdd
         }

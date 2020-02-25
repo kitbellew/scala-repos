@@ -89,9 +89,12 @@ case class DateAdd(startDate: Expression, days: Expression)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(ctx, ev, (sd, d) => {
-      s"""${ev.value} = $sd + $d;"""
-    })
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (sd, d) => {
+        s"""${ev.value} = $sd + $d;"""
+      })
   }
 
   override def prettyName: String = "date_add"
@@ -115,9 +118,12 @@ case class DateSub(startDate: Expression, days: Expression)
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(ctx, ev, (sd, d) => {
-      s"""${ev.value} = $sd - $d;"""
-    })
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      (sd, d) => {
+        s"""${ev.value} = $sd - $d;"""
+      })
   }
 
   override def prettyName: String = "date_sub"
@@ -329,10 +335,13 @@ case class DateFormatClass(left: Expression, right: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val sdf = classOf[SimpleDateFormat].getName
-    defineCodeGen(ctx, ev, (timestamp, format) => {
-      s"""UTF8String.fromString((new $sdf($format.toString()))
+    defineCodeGen(
+      ctx,
+      ev,
+      (timestamp, format) => {
+        s"""UTF8String.fromString((new $sdf($format.toString()))
           .format(new java.util.Date($timestamp / 1000)))"""
-    })
+      })
   }
 
   override def prettyName: String = "date_format"
@@ -711,9 +720,12 @@ case class TimeAdd(start: Expression, interval: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(ctx, ev, (sd, i) => {
-      s"""$dtu.timestampAddInterval($sd, $i.months, $i.microseconds)"""
-    })
+    defineCodeGen(
+      ctx,
+      ev,
+      (sd, i) => {
+        s"""$dtu.timestampAddInterval($sd, $i.months, $i.microseconds)"""
+      })
   }
 }
 
@@ -763,9 +775,12 @@ case class FromUTCTimestamp(left: Expression, right: Expression)
          """.stripMargin
       }
     } else {
-      defineCodeGen(ctx, ev, (timestamp, format) => {
-        s"""$dtu.fromUTCTime($timestamp, $format.toString())"""
-      })
+      defineCodeGen(
+        ctx,
+        ev,
+        (timestamp, format) => {
+          s"""$dtu.fromUTCTime($timestamp, $format.toString())"""
+        })
     }
   }
 }
@@ -796,9 +811,12 @@ case class TimeSub(start: Expression, interval: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(ctx, ev, (sd, i) => {
-      s"""$dtu.timestampAddInterval($sd, 0 - $i.months, 0 - $i.microseconds)"""
-    })
+    defineCodeGen(
+      ctx,
+      ev,
+      (sd, i) => {
+        s"""$dtu.timestampAddInterval($sd, 0 - $i.months, 0 - $i.microseconds)"""
+      })
   }
 }
 
@@ -824,9 +842,12 @@ case class AddMonths(startDate: Expression, numMonths: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(ctx, ev, (sd, m) => {
-      s"""$dtu.dateAddMonths($sd, $m)"""
-    })
+    defineCodeGen(
+      ctx,
+      ev,
+      (sd, m) => {
+        s"""$dtu.dateAddMonths($sd, $m)"""
+      })
   }
 
   override def prettyName: String = "add_months"
@@ -853,9 +874,12 @@ case class MonthsBetween(date1: Expression, date2: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
-    defineCodeGen(ctx, ev, (l, r) => {
-      s"""$dtu.monthsBetween($l, $r)"""
-    })
+    defineCodeGen(
+      ctx,
+      ev,
+      (l, r) => {
+        s"""$dtu.monthsBetween($l, $r)"""
+      })
   }
 
   override def prettyName: String = "months_between"
@@ -907,9 +931,12 @@ case class ToUTCTimestamp(left: Expression, right: Expression)
          """.stripMargin
       }
     } else {
-      defineCodeGen(ctx, ev, (timestamp, format) => {
-        s"""$dtu.toUTCTime($timestamp, $format.toString())"""
-      })
+      defineCodeGen(
+        ctx,
+        ev,
+        (timestamp, format) => {
+          s"""$dtu.toUTCTime($timestamp, $format.toString())"""
+        })
     }
   }
 }

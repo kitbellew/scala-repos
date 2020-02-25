@@ -278,9 +278,11 @@ object WiringUI {
       .getOrElse(<span id={Helpers.nextFuncName}>{in}</span>)
 
     val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
-    addJsFunc(cell, (t: T, first: Boolean) => {
-      jsEffect(id, first, SetHtml(id, f(t, elem.child)))
-    })
+    addJsFunc(
+      cell,
+      (t: T, first: Boolean) => {
+        jsEffect(id, first, SetHtml(id, f(t, elem.child)))
+      })
     elem
   }
 
@@ -316,9 +318,11 @@ object WiringUI {
         .getOrElse(<span id={Helpers.nextFuncName}>{in}</span>)
 
       val (elem: Elem, id: String) = Helpers.findOrAddId(myElem)
-      addJsFunc(cell, (t: T, first: Boolean) => {
-        jsEffect(id, first, SetHtml(id, f(t, elem.child)))
-      })
+      addJsFunc(
+        cell,
+        (t: T, first: Boolean) => {
+          jsEffect(id, first, SetHtml(id, f(t, elem.child)))
+        })
       elem
     }
 

@@ -245,33 +245,35 @@ private[akka] final class LastOptionStage[T]
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     val p: Promise[Option[T]] = Promise()
-    (new GraphStageLogic(shape) {
-      override def preStart(): Unit = pull(in)
-      setHandler(
-        in,
-        new InHandler {
-          private[this] var prev: T = null.asInstanceOf[T]
+    (
+      new GraphStageLogic(shape) {
+        override def preStart(): Unit = pull(in)
+        setHandler(
+          in,
+          new InHandler {
+            private[this] var prev: T = null.asInstanceOf[T]
 
-          override def onPush(): Unit = {
-            prev = grab(in)
-            pull(in)
-          }
+            override def onPush(): Unit = {
+              prev = grab(in)
+              pull(in)
+            }
 
-          override def onUpstreamFinish(): Unit = {
-            val head = prev
-            prev = null.asInstanceOf[T]
-            p.trySuccess(Option(head))
-            completeStage()
-          }
+            override def onUpstreamFinish(): Unit = {
+              val head = prev
+              prev = null.asInstanceOf[T]
+              p.trySuccess(Option(head))
+              completeStage()
+            }
 
-          override def onUpstreamFailure(ex: Throwable): Unit = {
-            prev = null.asInstanceOf[T]
-            p.tryFailure(ex)
-            failStage(ex)
+            override def onUpstreamFailure(ex: Throwable): Unit = {
+              prev = null.asInstanceOf[T]
+              p.tryFailure(ex)
+              failStage(ex)
+            }
           }
-        }
-      )
-    }, p.future)
+        )
+      },
+      p.future)
   }
 
   override def toString: String = "LastOptionStage"
@@ -287,28 +289,30 @@ private[akka] final class HeadOptionStage[T]
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     val p: Promise[Option[T]] = Promise()
-    (new GraphStageLogic(shape) {
-      override def preStart(): Unit = pull(in)
-      setHandler(
-        in,
-        new InHandler {
-          override def onPush(): Unit = {
-            p.trySuccess(Option(grab(in)))
-            completeStage()
-          }
+    (
+      new GraphStageLogic(shape) {
+        override def preStart(): Unit = pull(in)
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              p.trySuccess(Option(grab(in)))
+              completeStage()
+            }
 
-          override def onUpstreamFinish(): Unit = {
-            p.trySuccess(None)
-            completeStage()
-          }
+            override def onUpstreamFinish(): Unit = {
+              p.trySuccess(None)
+              completeStage()
+            }
 
-          override def onUpstreamFailure(ex: Throwable): Unit = {
-            p.tryFailure(ex)
-            failStage(ex)
+            override def onUpstreamFailure(ex: Throwable): Unit = {
+              p.tryFailure(ex)
+              failStage(ex)
+            }
           }
-        }
-      )
-    }, p.future)
+        )
+      },
+      p.future)
   }
 
   override def toString: String = "HeadOptionStage"
@@ -453,13 +457,15 @@ final private[stream] class QueueSink[T]()
       )
     }
 
-    (stageLogic, new SinkQueue[T] {
-      override def pull(): Future[Option[T]] = {
-        val p = Promise[Option[T]]
-        stageLogic.invoke(p)
-        p.future
-      }
-    })
+    (
+      stageLogic,
+      new SinkQueue[T] {
+        override def pull(): Future[Option[T]] = {
+          val p = Promise[Option[T]]
+          stageLogic.invoke(p)
+          p.future
+        }
+      })
   }
 }
 

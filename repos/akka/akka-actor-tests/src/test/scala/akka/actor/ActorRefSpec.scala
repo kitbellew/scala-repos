@@ -469,9 +469,11 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       val parent = system.actorOf(
         Props(new Actor {
 
-          val child = context.actorOf(Props(new Actor {
-            def receive = { case _ ⇒ }
-          }), "child")
+          val child = context.actorOf(
+            Props(new Actor {
+              def receive = { case _ ⇒ }
+            }),
+            "child")
 
           def receive = {
             case name: String ⇒ sender() ! context.child(name).isDefined

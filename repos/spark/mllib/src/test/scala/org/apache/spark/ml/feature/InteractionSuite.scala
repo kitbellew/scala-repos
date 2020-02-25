@@ -40,10 +40,12 @@ class InteractionSuite
       var indices = ArrayBuilder.make[Int]
       var values = ArrayBuilder.make[Double]
       val encoder = new FeatureEncoder(cardinalities)
-      encoder.foreachNonzeroOutput(value, (i, v) => {
-        indices += i
-        values += v
-      })
+      encoder.foreachNonzeroOutput(
+        value,
+        (i, v) => {
+          indices += i
+          values += v
+        })
       Vectors
         .sparse(encoder.outputSize, indices.result(), values.result())
         .compressed

@@ -43,12 +43,14 @@ class TaskContextSuite
     sc = new SparkContext("local", "test", conf)
     val rdd = sc.makeRDD(1 to 1)
     val result = sc
-      .runJob(rdd, (tc: TaskContext, it: Iterator[Int]) => {
-        tc.getMetricsSources("jvm").count {
-          case source: JvmSource => true
-          case _                 => false
-        }
-      })
+      .runJob(
+        rdd,
+        (tc: TaskContext, it: Iterator[Int]) => {
+          tc.getMetricsSources("jvm").count {
+            case source: JvmSource => true
+            case _                 => false
+          }
+        })
       .sum
     assert(result > 0)
   }

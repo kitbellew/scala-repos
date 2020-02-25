@@ -270,9 +270,10 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
       assertTrue(ts1.contains("ONE"))
       assertFalse(ts1.contains("THREE"))
     } else {
-      expectThrows(classOf[Exception], {
-        ts1.addAll(asJavaCollection(l))
-      })
+      expectThrows(
+        classOf[Exception], {
+          ts1.addAll(asJavaCollection(l))
+        })
     }
   }
 

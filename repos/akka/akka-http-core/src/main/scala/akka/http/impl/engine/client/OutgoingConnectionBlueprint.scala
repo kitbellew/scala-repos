@@ -168,9 +168,11 @@ private[http] object OutgoingConnectionBlueprint {
         passAlong(requests, out, doFinish = false, doFail = true)
         setHandler(out, eagerTerminateOutput)
 
-        setHandler(responses, new InHandler {
-          override def onPush(): Unit = pull(responses)
-        })
+        setHandler(
+          responses,
+          new InHandler {
+            override def onPush(): Unit = pull(responses)
+          })
 
         override def preStart(): Unit = {
           pull(requests)

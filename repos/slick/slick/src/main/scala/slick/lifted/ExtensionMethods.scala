@@ -51,9 +51,12 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
   def inSet[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
     if (seq.isEmpty) om(LiteralColumn(false))
     else
-      om.column(Library.In, n, ProductNode(ConstArray.from(seq.map { v =>
-        LiteralNode(implicitly[TypedType[B1]], v)
-      })))
+      om.column(
+        Library.In,
+        n,
+        ProductNode(ConstArray.from(seq.map { v =>
+          LiteralNode(implicitly[TypedType[B1]], v)
+        })))
   def inSetBind[R](seq: Traversable[B1])(implicit om: o#to[Boolean, R]) =
     if (seq.isEmpty) om(LiteralColumn(false))
     else

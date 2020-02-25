@@ -19,15 +19,17 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     "be able to shut down its instance" in {
       val stopLatch = new TestLatch(7)
 
-      val actor = system.actorOf(RandomPool(7).props(Props(new Actor {
-        def receive = {
-          case "hello" ⇒ sender() ! "world"
-        }
+      val actor = system.actorOf(
+        RandomPool(7).props(Props(new Actor {
+          def receive = {
+            case "hello" ⇒ sender() ! "world"
+          }
 
-        override def postStop() {
-          stopLatch.countDown()
-        }
-      })), "random-shutdown")
+          override def postStop() {
+            stopLatch.countDown()
+          }
+        })),
+        "random-shutdown")
 
       actor ! "hello"
       actor ! "hello"

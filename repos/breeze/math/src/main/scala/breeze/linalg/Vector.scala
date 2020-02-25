@@ -413,9 +413,13 @@ trait VectorOps { this: Vector.type =>
   implicit def v_v_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ / _ }, { (a, b) => b }, { _ % _ }, {
-        _ pow _
-      })
+      implicit @expand.sequence[Op](
+        { _ / _ },
+        { (a, b) => b }, {
+          _ % _
+        }, {
+          _ pow _
+        })
       op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]] {
@@ -522,11 +526,21 @@ trait VectorOps { this: Vector.type =>
   @expand
   implicit def v_sField_Op[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f.*(_, _) }, {
-    f./(_, _)
-  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: ClassTag](
+      implicit @expand.sequence[Op](
+        { f.+(_, _) }, {
+          f.-(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f./(_, _)
+        }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        }) op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], T, Op.type, Vector[T]] {
       val f = implicitly[Field[T]]
@@ -546,9 +560,15 @@ trait VectorOps { this: Vector.type =>
   implicit def v_v_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ * _ }, { _ / _ }, { (a, b) => b }, {
-        _ % _
-      }, { _ pow _ })
+      implicit @expand.sequence[Op](
+        { _ * _ }, {
+          _ / _
+        },
+        { (a, b) => b }, {
+          _ % _
+        }, {
+          _ pow _
+        })
       op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
@@ -566,10 +586,15 @@ trait VectorOps { this: Vector.type =>
   @expand.valify
   implicit def v_v_Idempotent_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](implicit @expand.sequence[Op]({
-    _ + _
-  }, { _ - _ })
-  op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
+      @expand.args(OpAdd, OpSub) Op <: OpType](
+      implicit @expand.sequence[Op](
+        {
+          _ + _
+        }, {
+          _ - _
+        })
+      op: Op.Impl2[T, T, T])
+      : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -626,19 +651,21 @@ trait VectorOps { this: Vector.type =>
         OpSet,
         OpMod,
         OpPow) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, {
-        _ - _
-      }, {
-        _ * _
-      }, {
-        _ * _
-      }, {
-        _ / _
-      }, { (a, b) => b }, {
-        _ % _
-      }, {
-        _ pow _
-      })
+      implicit @expand.sequence[Op](
+        { _ + _ }, {
+          _ - _
+        }, {
+          _ * _
+        }, {
+          _ * _
+        }, {
+          _ / _
+        },
+        { (a, b) => b }, {
+          _ % _
+        }, {
+          _ pow _
+        })
       op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       override def bindingMissing(a: Vector[T], b: T): Unit = {
@@ -662,11 +689,21 @@ trait VectorOps { this: Vector.type =>
         OpMod,
         OpPow) Op <: OpType,
       T: Field: ClassTag](
-      implicit @expand.sequence[Op]({ f.+(_, _) }, {
-        f.-(_, _)
-      }, { f.*(_, _) }, { f.*(_, _) }, {
-        f./(_, _)
-      }, { (a, b) => b }, { f.%(_, _) }, { f.pow(_, _) })
+      implicit @expand.sequence[Op](
+        { f.+(_, _) }, {
+          f.-(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f.*(_, _)
+        }, {
+          f./(_, _)
+        },
+        { (a, b) => b }, {
+          f.%(_, _)
+        }, {
+          f.pow(_, _)
+        })
       op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       val f = implicitly[Field[T]]

@@ -336,11 +336,13 @@ case class PrettyAttribute(name: String, dataType: DataType = NullType)
     with Unevaluable {
 
   def this(attribute: Attribute) =
-    this(attribute.name, attribute match {
-      case a: AttributeReference => a.dataType
-      case a: PrettyAttribute    => a.dataType
-      case _                     => NullType
-    })
+    this(
+      attribute.name,
+      attribute match {
+        case a: AttributeReference => a.dataType
+        case a: PrettyAttribute    => a.dataType
+        case _                     => NullType
+      })
 
   override def toString: String = name
   override def sql: String = toString

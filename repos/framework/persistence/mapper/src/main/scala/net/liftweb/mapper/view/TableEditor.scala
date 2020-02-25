@@ -297,9 +297,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
     val bindRemovedItems =
       items.removed.map { item =>
         "^" #> customBind(item) andThen
-          ".fields" #> eachField(item, { f: MappedField[_, T] =>
-            ".form" #> <strike>{f.asHtml}</strike>
-          }) &
+          ".fields" #> eachField(
+            item,
+            { f: MappedField[_, T] => ".form" #> <strike>{f.asHtml}</strike> }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
               () => onRemove(item),
@@ -310,9 +310,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
     val bindRegularItems =
       items.items.map { item =>
         "^" #> customBind(item) andThen
-          ".fields" #> eachField(item, { f: MappedField[_, T] =>
-            ".form" #> f.toForm
-          }) &
+          ".fields" #> eachField(
+            item,
+            { f: MappedField[_, T] => ".form" #> f.toForm }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
               () => onRemove(item),

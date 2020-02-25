@@ -91,10 +91,12 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
       dClass,
       assertEmpty
     ) // accessing a private class in the same package is OK
-    check(eClass, {
-      case Some(ti: TypeInsnNode) if Set("a/C", "[La/C;")(ti.desc) => ()
-      // MatchError otherwise
-    })
+    check(
+      eClass,
+      {
+        case Some(ti: TypeInsnNode) if Set("a/C", "[La/C;")(ti.desc) => ()
+        // MatchError otherwise
+      })
   }
 
   @Test

@@ -1280,10 +1280,12 @@ class BlockManagerSuite
         StorageLevel.MEMORY_ONLY,
         tellMaster = true)
     }
-    val matchedBlockIds = store.master.getMatchingBlockIds(_ match {
-      case RDDBlockId(1, _) => true
-      case _                => false
-    }, askSlaves = true)
+    val matchedBlockIds = store.master.getMatchingBlockIds(
+      _ match {
+        case RDDBlockId(1, _) => true
+        case _                => false
+      },
+      askSlaves = true)
     assert(matchedBlockIds.toSet === Set(RDDBlockId(1, 0), RDDBlockId(1, 1)))
   }
 
@@ -1548,10 +1550,13 @@ class BlockManagerSuite
     store.blockInfoManager.lockNewBlockForWriting(
       blockId,
       new BlockInfo(StorageLevel.MEMORY_ONLY, tellMaster = false))
-    memoryStore.putBytes(blockId, 13000, () => {
-      fail(
-        "A big ByteBuffer that cannot be put into MemoryStore should not be created")
-    })
+    memoryStore.putBytes(
+      blockId,
+      13000,
+      () => {
+        fail(
+          "A big ByteBuffer that cannot be put into MemoryStore should not be created")
+      })
   }
 
   test("put a small ByteBuffer to MemoryStore") {
@@ -1559,10 +1564,13 @@ class BlockManagerSuite
     val memoryStore = store.memoryStore
     val blockId = BlockId("rdd_3_10")
     var bytes: ChunkedByteBuffer = null
-    memoryStore.putBytes(blockId, 10000, () => {
-      bytes = new ChunkedByteBuffer(ByteBuffer.allocate(10000))
-      bytes
-    })
+    memoryStore.putBytes(
+      blockId,
+      10000,
+      () => {
+        bytes = new ChunkedByteBuffer(ByteBuffer.allocate(10000))
+        bytes
+      })
     assert(memoryStore.getSize(blockId) === 10000)
   }
 

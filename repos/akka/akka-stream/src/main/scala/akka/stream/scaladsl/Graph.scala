@@ -98,12 +98,14 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
         )
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = {
-          if (pending)
-            dequeueAndDispatch()
-        }
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            if (pending)
+              dequeueAndDispatch()
+          }
+        })
     }
 
   override def toString = "Merge"
@@ -347,10 +349,12 @@ final class Interleave[T] private (
         )
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit =
-          if (!hasBeenPulled(currentUpstream)) tryPull(currentUpstream)
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull(): Unit =
+            if (!hasBeenPulled(currentUpstream)) tryPull(currentUpstream)
+        })
     }
 
   override def toString = "Interleave"
@@ -399,10 +403,12 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
     override def preStart(): Unit = {
       // all fan-in stages need to eagerly pull all inputs to get cycles started
       pull(right)
-      read(left)(l ⇒ {
-        other = l
-        readR()
-      }, () ⇒ passAlong(right, out))
+      read(left)(
+        l ⇒ {
+          other = l
+          readR()
+        },
+        () ⇒ passAlong(right, out))
     }
   }
 }
@@ -689,9 +695,11 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
         if (!noPending) pull(in)
       }
 
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = dequeueAndDispatch()
-      })
+      setHandler(
+        in,
+        new InHandler {
+          override def onPush(): Unit = dequeueAndDispatch()
+        })
 
       out.foreach { o ⇒
         setHandler(
@@ -879,9 +887,11 @@ final class Concat[T](inputPorts: Int)
         }
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull() = pull(in(activeStream))
-      })
+      setHandler(
+        out,
+        new OutHandler {
+          override def onPull() = pull(in(activeStream))
+        })
     }
 
   override def toString: String = s"Concat($inputPorts)"

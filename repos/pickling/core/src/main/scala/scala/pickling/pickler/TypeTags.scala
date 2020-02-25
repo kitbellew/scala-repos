@@ -13,10 +13,12 @@ trait TypeTagPicklers extends PrimitivePicklers {
       extends AbstractPicklerUnpickler[FastTypeTag[_]] {
     override def pickle(picklee: FastTypeTag[_], builder: PBuilder): Unit = {
       builder.beginEntry(picklee, tag)
-      builder.putField("key", { b =>
-        b.hintElidedType(stringPickler.tag)
-        stringPickler.pickle(picklee.key, b)
-      })
+      builder.putField(
+        "key",
+        { b =>
+          b.hintElidedType(stringPickler.tag)
+          stringPickler.pickle(picklee.key, b)
+        })
       builder.endEntry()
     }
 

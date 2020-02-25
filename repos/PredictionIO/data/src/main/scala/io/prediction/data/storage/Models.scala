@@ -54,23 +54,24 @@ trait Models {
 @DeveloperApi
 class ModelSerializer
     extends CustomSerializer[Model](format =>
-      ({
-        case JObject(fields) =>
-          implicit val formats = DefaultFormats
-          val seed = Model(id = "", models = Array[Byte]())
-          fields.foldLeft(seed) {
-            case (i, field) =>
-              field match {
-                case JField("id", JString(id)) => i.copy(id = id)
-                case JField("models", JString(models)) =>
-                  i.copy(models = BaseEncoding.base64.decode(models))
-                case _ => i
-              }
-          }
-      }, {
-        case i: Model =>
-          JObject(
-            JField("id", JString(i.id)) ::
+      (
+        {
+          case JObject(fields) =>
+            implicit val formats = DefaultFormats
+            val seed = Model(id = "", models = Array[Byte]())
+            fields.foldLeft(seed) {
+              case (i, field) =>
+                field match {
+                  case JField("id", JString(id)) => i.copy(id = id)
+                  case JField("models", JString(models)) =>
+                    i.copy(models = BaseEncoding.base64.decode(models))
+                  case _ => i
+                }
+            }
+        },
+        {
+          case i: Model =>
+            JObject(JField("id", JString(i.id)) ::
               JField("models", JString(BaseEncoding.base64.encode(i.models))) ::
               Nil)
-      }))
+        }))

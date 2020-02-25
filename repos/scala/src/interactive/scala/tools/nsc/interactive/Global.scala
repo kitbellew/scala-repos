@@ -253,10 +253,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   protected[interactive] def getOrCreateUnitOf(
       source: SourceFile): RichCompilationUnit =
-    unitOfFile.getOrElse(source.file, {
-      println("precondition violated: " + source + " is not loaded");
-      new Exception().printStackTrace(); new RichCompilationUnit(source)
-    })
+    unitOfFile.getOrElse(
+      source.file, {
+        println("precondition violated: " + source + " is not loaded");
+        new Exception().printStackTrace(); new RichCompilationUnit(source)
+      })
 
   /** Work through toBeRemoved list to remove any units.
     *  Then return optionally unit associated with given source.

@@ -203,9 +203,11 @@ private[stream] object TcpConnectionStage {
     private var connection: ActorRef = _
 
     // No reading until role have been decided
-    setHandler(bytesOut, new OutHandler {
-      override def onPull(): Unit = ()
-    })
+    setHandler(
+      bytesOut,
+      new OutHandler {
+        override def onPull(): Unit = ()
+      })
 
     override def preStart(): Unit = {
       setKeepGoing(true)

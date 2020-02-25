@@ -22,13 +22,15 @@ class Netty3AssumptionsTest extends FunSuite {
     bootstrap.setPipelineFactory(new ChannelPipelineFactory {
       def getPipeline = {
         val pipeline = Channels.pipeline()
-        pipeline.addLast("stfu", new SimpleChannelUpstreamHandler {
-          override def messageReceived(
-              ctx: ChannelHandlerContext,
-              e: MessageEvent) {
-            /* nothing */
-          }
-        })
+        pipeline.addLast(
+          "stfu",
+          new SimpleChannelUpstreamHandler {
+            override def messageReceived(
+                ctx: ChannelHandlerContext,
+                e: MessageEvent) {
+              /* nothing */
+            }
+          })
         pipeline
       }
     })
@@ -45,13 +47,15 @@ class Netty3AssumptionsTest extends FunSuite {
     val bootstrap = new ClientBootstrap(Netty3Transporter.channelFactory)
 
     val pipeline = Channels.pipeline
-    pipeline.addLast("stfu", new SimpleChannelUpstreamHandler {
-      override def exceptionCaught(
-          ctx: ChannelHandlerContext,
-          e: ExceptionEvent) {
-        // nothing here.
-      }
-    })
+    pipeline.addLast(
+      "stfu",
+      new SimpleChannelUpstreamHandler {
+        override def exceptionCaught(
+            ctx: ChannelHandlerContext,
+            e: ExceptionEvent) {
+          // nothing here.
+        }
+      })
     bootstrap.setPipeline(pipeline)
 
     val latch = new CountDownLatch(1)

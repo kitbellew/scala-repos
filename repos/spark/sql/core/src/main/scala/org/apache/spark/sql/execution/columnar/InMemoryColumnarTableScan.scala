@@ -190,9 +190,12 @@ private[sql] case class InMemoryRelation(
                 .flatMap(_.values))
 
             batchStats += stats
-            CachedBatch(rowCount, columnBuilders.map { builder =>
-              JavaUtils.bufferToArray(builder.build())
-            }, stats)
+            CachedBatch(
+              rowCount,
+              columnBuilders.map { builder =>
+                JavaUtils.bufferToArray(builder.build())
+              },
+              stats)
           }
 
           def hasNext: Boolean = rowIterator.hasNext

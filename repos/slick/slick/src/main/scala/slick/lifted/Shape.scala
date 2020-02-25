@@ -391,9 +391,10 @@ object ShapedValue {
   @inline implicit def shapedValueShape[T, U, Level <: ShapeLevel] =
     RepShape[Level, ShapedValue[T, U], U]
 
-  def mapToImpl[R <: Product with Serializable, U](c: Context {
-    type PrefixType = ShapedValue[_, U]
-  })(rCT: c.Expr[ClassTag[R]])(
+  def mapToImpl[R <: Product with Serializable, U](
+      c: Context {
+        type PrefixType = ShapedValue[_, U]
+      })(rCT: c.Expr[ClassTag[R]])(
       implicit rTag: c.WeakTypeTag[R],
       uTag: c.WeakTypeTag[U]): c.Tree = {
     import c.universe._
@@ -430,7 +431,8 @@ object ShapedValue {
           case ((n, _, _), z) => q"v.$n :: $z"
         }
         (
-          q"({ case $pat => new $rTag(..${fields.map(_._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
+          q"({ case $pat => new $rTag(..${fields
+            .map(_._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
           q"{ case v => $cons }: ($rTag => $uTag)")
       } else if (fields.length == 1) { // Map from single value
         (

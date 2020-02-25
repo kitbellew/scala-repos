@@ -1676,9 +1676,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
         (
           addGlobalId(Leaf(Source)),
           groupKeys map { kt =>
-            OuterObjectConcat(WrapObject(deepMap(kt) {
-              case Leaf(_) => TransSpec1.DerefArray0
-            }, "0"), WrapObject(TransSpec1.DerefArray1, "1"))
+            OuterObjectConcat(
+              WrapObject(
+                deepMap(kt) {
+                  case Leaf(_) => TransSpec1.DerefArray0
+                },
+                "0"),
+              WrapObject(TransSpec1.DerefArray1, "1"))
           },
           deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
         )

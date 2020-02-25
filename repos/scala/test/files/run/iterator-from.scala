@@ -123,8 +123,10 @@ object Test extends App {
     val treeMap = immutable.TreeMap(keyValues: _*)
     testMap(treeMap, keyValues)
     testMap(treeMap.filterKeys(_ % 2 == 0), keyValues filter (_._1 % 2 == 0))
-    testMap(treeMap mapValues (_ + 1), keyValues map {
-      case (k, v) => (k, v + 1)
-    })
+    testMap(
+      treeMap mapValues (_ + 1),
+      keyValues map {
+        case (k, v) => (k, v + 1)
+      })
   }
 }

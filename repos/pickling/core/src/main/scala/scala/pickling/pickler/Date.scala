@@ -21,10 +21,12 @@ trait DatePicklers extends PrimitivePicklers {
       def pickle(picklee: Date, builder: PBuilder): Unit = {
         builder.beginEntry(picklee, tag)
 
-        builder.putField("value", b => {
-          b.hintElidedType(implicitly[FastTypeTag[String]])
-          stringPickler.pickle(dateFormat.format(picklee), b)
-        })
+        builder.putField(
+          "value",
+          b => {
+            b.hintElidedType(implicitly[FastTypeTag[String]])
+            stringPickler.pickle(dateFormat.format(picklee), b)
+          })
 
         builder.endEntry()
       }

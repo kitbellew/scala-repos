@@ -706,9 +706,13 @@ object ScalaDocumentationProvider {
     buffer.append(if (escape) escapeHtml(param.name) else param.name)
 
     val arrow = ScalaPsiUtil.functionArrow(param.getProject)
-    buffer.append(parseType(param, t => {
-      (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(t)
-    }))
+    buffer.append(
+      parseType(
+        param,
+        t => {
+          (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(
+            t)
+        }))
     if (param.isRepeatedParameter) buffer.append("*")
     if (param.isDefaultParam) {
       buffer.append(" = ")
@@ -1095,11 +1099,12 @@ object ScalaDocumentationProvider {
 
   private def replaceWikiWithTags(comment: PsiDocComment): PsiDocComment = {
     if (!comment.isInstanceOf[ScDocComment]) return comment
-    val macroFinder = new MacroFinderImpl(comment.asInstanceOf[ScDocComment], {
-      element =>
+    val macroFinder = new MacroFinderImpl(
+      comment.asInstanceOf[ScDocComment],
+      { element =>
         val a = getWikiTextRepresentation(new MacroFinderDummy)(element)
         a._1.result()
-    })
+      })
 
     val (commentBody, tagsPart) =
       getWikiTextRepresentation(macroFinder)(comment)

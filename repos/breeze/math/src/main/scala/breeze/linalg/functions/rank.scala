@@ -30,11 +30,13 @@ object rank extends UFunc {
         val eps: Double = 2.0 * lapack.dlamch("e")
         val tol = eps * max(s)
         var n = 0
-        travS.traverse(s, new ValuesVisitor[Double] {
-          def visit(a: Double): Unit = if (a > tol) n += 1
+        travS.traverse(
+          s,
+          new ValuesVisitor[Double] {
+            def visit(a: Double): Unit = if (a > tol) n += 1
 
-          def zeros(numZero: Int, zeroValue: Double): Unit = ()
-        })
+            def zeros(numZero: Int, zeroValue: Double): Unit = ()
+          })
 
         n
       }
@@ -51,11 +53,13 @@ object rank extends UFunc {
         val (u, s, vt) = svd(m)
         // we called LAPACK for the SVD method, so this is the LAPACK definition of eps.
         var n = 0
-        travS.traverse(s, new ValuesVisitor[Double] {
-          def visit(a: Double): Unit = if (a > tol) n += 1
+        travS.traverse(
+          s,
+          new ValuesVisitor[Double] {
+            def visit(a: Double): Unit = if (a > tol) n += 1
 
-          def zeros(numZero: Int, zeroValue: Double): Unit = ()
-        })
+            def zeros(numZero: Int, zeroValue: Double): Unit = ()
+          })
 
         n
       }

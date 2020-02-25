@@ -32,9 +32,10 @@ object Test extends App {
   println("pop")
   check("2-1", immutableStack(1, 2, 3).pop.mkString("-"))
   check(3, mutableStack(1, 2, 3).pop())
-  check("2-1", {
-    val s = mutableStack(1, 2, 3); s.pop(); s.toList.mkString("-")
-  })
+  check(
+    "2-1", {
+      val s = mutableStack(1, 2, 3); s.pop(); s.toList.mkString("-")
+    })
 }
 
 // vim: set ts=2 sw=2 et:

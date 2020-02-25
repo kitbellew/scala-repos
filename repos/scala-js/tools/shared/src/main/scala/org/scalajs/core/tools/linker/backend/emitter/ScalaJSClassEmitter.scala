@@ -319,10 +319,11 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     val methodFun = if (Definitions.isConstructorName(method.name.name)) {
       // init methods have to return `this` so that we can chain them to `new`
-      js.Function(methodFun0.args, {
-        implicit val pos = methodFun0.body.pos
-        js.Block(methodFun0.body, js.Return(js.This()))
-      })(methodFun0.pos)
+      js.Function(
+        methodFun0.args, {
+          implicit val pos = methodFun0.body.pos
+          js.Block(methodFun0.body, js.Return(js.This()))
+        })(methodFun0.pos)
     } else {
       methodFun0
     }
@@ -636,9 +637,11 @@ private[scalajs] final class ScalaJSClassEmitter(
           List(objParam, depthParam),
           className match {
             case Definitions.ObjectClass =>
-              val dataVarDef = genLet(Ident("data"), mutable = false, {
-                obj && (obj DOT "$classData")
-              })
+              val dataVarDef = genLet(
+                Ident("data"),
+                mutable = false, {
+                  obj && (obj DOT "$classData")
+                })
               val data = dataVarDef.ref
               js.Block(
                 dataVarDef,
@@ -647,9 +650,11 @@ private[scalajs] final class ScalaJSClassEmitter(
                     js.Return(js.BooleanLiteral(false))
                   }, {
                     val arrayDepthVarDef =
-                      genLet(Ident("arrayDepth"), mutable = false, {
-                        (data DOT "arrayDepth") || js.IntLiteral(0)
-                      })
+                      genLet(
+                        Ident("arrayDepth"),
+                        mutable = false, {
+                          (data DOT "arrayDepth") || js.IntLiteral(0)
+                        })
                     val arrayDepth = arrayDepthVarDef.ref
                     js.Block(
                       arrayDepthVarDef,
@@ -765,9 +770,13 @@ private[scalajs] final class ScalaJSClassEmitter(
       } else if (isHijackedBoxedClass) {
         /* Hijacked boxed classes have a special isInstanceOf test. */
         val xParam = js.ParamDef(Ident("x"), rest = false)
-        (js.Function(List(xParam), js.Return {
-          genIsInstanceOf(xParam.ref, ClassType(className))
-        }), js.Undefined())
+        (
+          js.Function(
+            List(xParam),
+            js.Return {
+              genIsInstanceOf(xParam.ref, ClassType(className))
+            }),
+          js.Undefined())
       } else if (isAncestorOfHijackedClass || className == StringClass) {
         /* java.lang.String and ancestors of hijacked classes have a normal
          * ScalaJS.is.pack_Class test but with a non-standard behavior. */
@@ -782,9 +791,16 @@ private[scalajs] final class ScalaJSClassEmitter(
           (envField("noIsInstance"), js.Undefined())
         } else {
           val jsCtor = genRawJSClassConstructor(tree)
-          (js.Function(List(js.ParamDef(Ident("x"), rest = false)), js.Return {
-            js.BinaryOp(JSBinaryOp.instanceof, js.VarRef(Ident("x")), jsCtor)
-          }), js.Undefined())
+          (
+            js.Function(
+              List(js.ParamDef(Ident("x"), rest = false)),
+              js.Return {
+                js.BinaryOp(
+                  JSBinaryOp.instanceof,
+                  js.VarRef(Ident("x")),
+                  jsCtor)
+              }),
+            js.Undefined())
         }
       } else {
         // For other classes, the isInstance function can be inferred.

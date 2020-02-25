@@ -34,13 +34,15 @@ final class SQLBuilder { self =>
   }
 
   def build =
-    Result(sb.toString, { (p: PreparedStatement, idx: Int, param: Any) =>
-      var i = idx
-      for (s <- setters) {
-        s(p, i, param)
-        i += 1
-      }
-    })
+    Result(
+      sb.toString,
+      { (p: PreparedStatement, idx: Int, param: Any) =>
+        var i = idx
+        for (s <- setters) {
+          s(p, i, param)
+          i += 1
+        }
+      })
 
   def newLineIndent(): Unit = {
     currentIndentLevel += 1

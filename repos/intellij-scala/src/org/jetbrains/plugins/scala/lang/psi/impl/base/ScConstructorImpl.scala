@@ -115,10 +115,12 @@ class ScConstructorImpl(node: ASTNode)
     if (clazz.getTypeParameters.isEmpty) {
       tp
     } else {
-      ScParameterizedType(tp, clazz.getTypeParameters.map {
-        case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
-        case ptp             => new ScTypeParameterType(ptp, subst)
-      })
+      ScParameterizedType(
+        tp,
+        clazz.getTypeParameters.map {
+          case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
+          case ptp             => new ScTypeParameterType(ptp, subst)
+        })
     }
   }
 

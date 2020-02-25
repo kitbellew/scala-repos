@@ -148,9 +148,12 @@ final class JsonView(
   private def sheetNbs(userId: String, sheet: ScoreSheet, pairings: Pairings) =
     sheet match {
       case s: arena.ScoringSystem.Sheet =>
-        Json.obj("game" -> s.scores.size, "berserk" -> pairings.foldLeft(0) {
-          case (nb, p) => nb + p.berserkOf(userId)
-        }, "win" -> s.scores.count(_.isWin))
+        Json.obj(
+          "game" -> s.scores.size,
+          "berserk" -> pairings.foldLeft(0) {
+            case (nb, p) => nb + p.berserkOf(userId)
+          },
+          "win" -> s.scores.count(_.isWin))
     }
 
   private def computeStanding(tour: Tournament, page: Int): Fu[JsObject] =

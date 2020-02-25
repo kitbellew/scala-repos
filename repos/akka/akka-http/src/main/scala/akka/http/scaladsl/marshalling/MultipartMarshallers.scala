@@ -14,9 +14,9 @@ trait MultipartMarshallers {
     Marshaller strict { value ⇒
       val boundary = randomBoundary()
       val mediaType = value.mediaType withBoundary boundary
-      Marshalling.WithOpenCharset(mediaType, { charset ⇒
-        value.toEntity(charset, boundary)(log)
-      })
+      Marshalling.WithOpenCharset(
+        mediaType,
+        { charset ⇒ value.toEntity(charset, boundary)(log) })
     }
 
   /**

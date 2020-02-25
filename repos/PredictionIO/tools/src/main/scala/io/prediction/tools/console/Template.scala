@@ -110,14 +110,15 @@ object Template extends Logging {
         Option(proxyUri.getHost),
         if (proxyUri.getPort == -1) None else Some(proxyUri.getPort))
     } getOrElse {
-      (sys.props.get("http.proxyHost"), sys.props.get("http.proxyPort").map {
-        p =>
+      (
+        sys.props.get("http.proxyHost"),
+        sys.props.get("http.proxyPort").map { p =>
           try {
             Some(p.toInt)
           } catch {
             case e: NumberFormatException => None
           }
-      } getOrElse None)
+        } getOrElse None)
     }
 
     (host, port) match {

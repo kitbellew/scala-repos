@@ -300,9 +300,11 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val a1, a2 = TestProbe()
         val tm = new A
 
-        val target = sys.actorOf(Props(new Actor {
-          def receive = { case in ⇒ a1.ref forward in }
-        }), "to-be-killed")
+        val target = sys.actorOf(
+          Props(new Actor {
+            def receive = { case in ⇒ a1.ref forward in }
+          }),
+          "to-be-killed")
 
         es.subscribe(a2.ref, classOf[Any])
         es.subscribe(target, classOf[A]) should ===(true)
@@ -330,9 +332,11 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val es = sys.eventStream
         val a1, a2 = TestProbe()
 
-        val target = system.actorOf(Props(new Actor {
-          def receive = { case in ⇒ a1.ref forward in }
-        }), "to-be-killed")
+        val target = system.actorOf(
+          Props(new Actor {
+            def receive = { case in ⇒ a1.ref forward in }
+          }),
+          "to-be-killed")
 
         watch(target)
         target ! PoisonPill

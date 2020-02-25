@@ -98,18 +98,22 @@ class ParquetQuerySuite
   test("nested data - struct with array field") {
     val data = (1 to 10).map(i => Tuple1((i, Seq("val_$i"))))
     withParquetTable(data, "t") {
-      checkAnswer(sql("SELECT _1._2[0] FROM t"), data.map {
-        case Tuple1((_, Seq(string))) => Row(string)
-      })
+      checkAnswer(
+        sql("SELECT _1._2[0] FROM t"),
+        data.map {
+          case Tuple1((_, Seq(string))) => Row(string)
+        })
     }
   }
 
   test("nested data - array of struct") {
     val data = (1 to 10).map(i => Tuple1(Seq(i -> "val_$i")))
     withParquetTable(data, "t") {
-      checkAnswer(sql("SELECT _1[0]._2 FROM t"), data.map {
-        case Tuple1(Seq((_, string))) => Row(string)
-      })
+      checkAnswer(
+        sql("SELECT _1[0]._2 FROM t"),
+        data.map {
+          case Tuple1(Seq((_, string))) => Row(string)
+        })
     }
   }
 

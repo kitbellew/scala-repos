@@ -209,15 +209,16 @@ class BindingFactoryTest
     "Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
     val localDtab = Dtab.read("/foo/bar=>/test1010")
 
-    val factory = new BindingFactory(Path.read("/foo/bar"), newFactory = {
-      addr =>
+    val factory = new BindingFactory(
+      Path.read("/foo/bar"),
+      newFactory = { addr =>
         new ServiceFactory[Unit, Unit] {
           def apply(conn: ClientConnection) =
             Future.exception(new NoBrokersAvailableException("/foo/bar"))
 
           def close(deadline: Time) = Future.Done
         }
-    })
+      })
 
     val noBrokers = intercept[NoBrokersAvailableException] {
       Dtab.unwind {
@@ -293,14 +294,16 @@ class BindingFactoryTest
       {
         val localDtab = Dtab.read("/foo/bar=>/test1010")
 
-        val f = new BindingFactory(Path.read("/foo/bar"), newFactory = { addr =>
-          new ServiceFactory[Unit, Unit] {
-            def apply(conn: ClientConnection) =
-              Future.exception(new NoBrokersAvailableException("/foo/bar"))
+        val f = new BindingFactory(
+          Path.read("/foo/bar"),
+          newFactory = { addr =>
+            new ServiceFactory[Unit, Unit] {
+              def apply(conn: ClientConnection) =
+                Future.exception(new NoBrokersAvailableException("/foo/bar"))
 
-            def close(deadline: Time) = Future.Done
-          }
-        })
+              def close(deadline: Time) = Future.Done
+            }
+          })
 
         intercept[NoBrokersAvailableException] {
           Dtab.unwind {

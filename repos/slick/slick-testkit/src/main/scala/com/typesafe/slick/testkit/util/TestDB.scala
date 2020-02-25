@@ -221,10 +221,12 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
     val wrappedConn = new DelegateConnection(session.conn) {
       override def close(): Unit = ()
     }
-    profile.backend.Database.forSource(new JdbcDataSource {
-      def createConnection(): Connection = wrappedConn
-      def close(): Unit = ()
-    }, executor)
+    profile.backend.Database.forSource(
+      new JdbcDataSource {
+        def createConnection(): Connection = wrappedConn
+        def close(): Unit = ()
+      },
+      executor)
   }
   final def blockingRunOnSession[R](
       f: ExecutionContext => DBIOAction[R, NoStream, Nothing])(
@@ -233,10 +235,12 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
       def execute(runnable: Runnable): Unit = runnable.run()
       def reportFailure(t: Throwable): Unit = throw t
     }
-    val db = createSingleSessionDatabase(session, new AsyncExecutor {
-      def executionContext: ExecutionContext = ec
-      def close(): Unit = ()
-    })
+    val db = createSingleSessionDatabase(
+      session,
+      new AsyncExecutor {
+        def executionContext: ExecutionContext = ec
+        def close(): Unit = ()
+      })
     db.run(f(ec)).value.get.get
   }
   protected[this] def await[T](f: Future[T]): T =

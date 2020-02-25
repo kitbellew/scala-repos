@@ -49,9 +49,9 @@ class MemoryLaws extends WordSpec {
       K: Arbitrary,
       V: Monoid: Arbitrary: Equiv] =
     new TestGraphs[Memory, T, K, V](new Memory)(() => MutableMap.empty[K, V])(
-      () => new BufferFunc[T])(Memory.toSource(_))(s => { s.get(_) })({
-      (f, items) => f.asInstanceOf[BufferFunc[T]].buf.toList == items
-    })({ (p: Memory, plan: Memory#Plan[_]) => p.run(plan) })
+      () => new BufferFunc[T])(Memory.toSource(_))(s => { s.get(_) })(
+      { (f, items) => f.asInstanceOf[BufferFunc[T]].buf.toList == items })(
+      { (p: Memory, plan: Memory#Plan[_]) => p.run(plan) })
 
   /**
     * Tests the in-memory planner against a job with a single flatMap
@@ -194,15 +194,16 @@ class MemoryLaws extends WordSpec {
     val input = sample[List[T]]
     val srv = sample[MemoryService[T, U]]
     var buffer = Vector[(T, U)]() // closure to mutate this
-    val prod = TestGraphs.lookupJob[Memory, T, U](Memory.toSource(input), srv, {
-      tu: (T, U) => buffer = buffer :+ tu
-    })
+    val prod = TestGraphs.lookupJob[Memory, T, U](
+      Memory.toSource(input),
+      srv,
+      { tu: (T, U) => buffer = buffer :+ tu })
     mem.run(mem.plan(prod))
     // check it out:
     Equiv[List[(T, U)]]
-      .equiv((buffer.toList), TestGraphs.lookupJobInScala(input, { (t: T) =>
-        srv.get(t)
-      }))
+      .equiv(
+        (buffer.toList),
+        TestGraphs.lookupJobInScala(input, { (t: T) => srv.get(t) }))
   }
 
   /**

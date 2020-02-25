@@ -263,10 +263,13 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
   "Dispatcher configuration" must {
     "support custom mailboxType" in {
       val actor = system.actorOf(Props.empty.withDispatcher("my-dispatcher"))
-      awaitCond(actor match {
-        case r: RepointableRef ⇒ r.isStarted
-        case _ ⇒ true
-      }, 1 second, 10 millis)
+      awaitCond(
+        actor match {
+          case r: RepointableRef ⇒ r.isStarted
+          case _ ⇒ true
+        },
+        1 second,
+        10 millis)
       val queue = actor
         .asInstanceOf[ActorRefWithCell]
         .underlying

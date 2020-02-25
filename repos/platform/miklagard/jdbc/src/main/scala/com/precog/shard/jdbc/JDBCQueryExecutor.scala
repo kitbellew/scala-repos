@@ -144,9 +144,11 @@ class JDBCQueryExecutor(
                       conn.close()
                     }
                   }
-                  .bimap({ t =>
-                    logger.error("Error enumerating tables", t); t.getMessage
-                  }, x => x)
+                  .bimap(
+                    { t =>
+                      logger.error("Error enumerating tables", t); t.getMessage
+                    },
+                    x => x)
             }
 
           case _ =>
@@ -197,9 +199,11 @@ class JDBCQueryExecutor(
                       conn.close()
                     }
                   }
-                  .bimap({ t =>
-                    logger.error("Error enumerating tables", t); t.getMessage
-                  }, x => x)
+                  .bimap(
+                    { t =>
+                      logger.error("Error enumerating tables", t); t.getMessage
+                    },
+                    x => x)
             }
 
           case dbName :: collectionName :: Nil =>

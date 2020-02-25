@@ -95,9 +95,11 @@ class RuntimePickler(
         .asInstanceOf[Pickler[Any]]
       //debug(s"looked up field pickler: $fldPickler")
 
-      builder.putField(fir.name, b => {
-        pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
-      })
+      builder.putField(
+        fir.name,
+        b => {
+          pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
+        })
     }
 
     def pickleLogic(
@@ -178,9 +180,11 @@ class RuntimePickler(
         .asInstanceOf[Pickler[Any]]
       // debug(s"looked up field pickler: $fldPickler")
 
-      builder.putField(field.getName, b => {
-        pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
-      })
+      builder.putField(
+        field.getName,
+        b => {
+          pickleLogic(fldClass, fldValue, b, fldPickler, fldTag)
+        })
     }
 
     def pickleLogic(

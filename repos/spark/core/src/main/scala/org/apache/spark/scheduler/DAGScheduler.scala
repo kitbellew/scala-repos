@@ -1466,10 +1466,13 @@ private[spark] class DAGScheduler(
             logInfo(
               s"Resubmitting $mapStage (${mapStage.name}) and " +
                 s"$failedStage (${failedStage.name}) due to fetch failure")
-            messageScheduler.schedule(new Runnable {
-              override def run(): Unit =
-                eventProcessLoop.post(ResubmitFailedStages)
-            }, DAGScheduler.RESUBMIT_TIMEOUT, TimeUnit.MILLISECONDS)
+            messageScheduler.schedule(
+              new Runnable {
+                override def run(): Unit =
+                  eventProcessLoop.post(ResubmitFailedStages)
+              },
+              DAGScheduler.RESUBMIT_TIMEOUT,
+              TimeUnit.MILLISECONDS)
           }
           failedStages += failedStage
           failedStages += mapStage

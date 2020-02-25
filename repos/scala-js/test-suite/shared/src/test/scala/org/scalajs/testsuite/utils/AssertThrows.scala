@@ -62,16 +62,20 @@ object AssertThrows {
   def assertThrows[T <: Throwable, U](
       expectedThrowable: Class[T],
       code: => U): Unit = {
-    assertThrowsBackport(expectedThrowable, throwingRunnable {
-      code
-    })
+    assertThrowsBackport(
+      expectedThrowable,
+      throwingRunnable {
+        code
+      })
   }
 
   def expectThrows[T <: Throwable, U](
       expectedThrowable: Class[T],
       code: => U): T = {
-    expectThrowsBackport(expectedThrowable, throwingRunnable {
-      code
-    })
+    expectThrowsBackport(
+      expectedThrowable,
+      throwingRunnable {
+        code
+      })
   }
 }

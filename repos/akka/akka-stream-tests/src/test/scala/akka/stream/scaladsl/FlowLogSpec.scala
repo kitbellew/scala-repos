@@ -72,12 +72,17 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val debugging: javadsl.Flow[Integer, Integer, NotUsed] = javadsl.Flow
           .of(classOf[Integer])
           .log("log-1")
-          .log("log-2", new akka.japi.function.Function[Integer, Integer] {
-            def apply(i: Integer) = i
-          })
-          .log("log-3", new akka.japi.function.Function[Integer, Integer] {
-            def apply(i: Integer) = i
-          }, log)
+          .log(
+            "log-2",
+            new akka.japi.function.Function[Integer, Integer] {
+              def apply(i: Integer) = i
+            })
+          .log(
+            "log-3",
+            new akka.japi.function.Function[Integer, Integer] {
+              def apply(i: Integer) = i
+            },
+            log)
           .log("log-4", log)
 
         javadsl.Source
@@ -192,12 +197,17 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         javadsl.Source
           .single[Integer](1)
           .log("log-1")
-          .log("log-2", new akka.japi.function.Function[Integer, Integer] {
-            def apply(i: Integer) = i
-          })
-          .log("log-3", new akka.japi.function.Function[Integer, Integer] {
-            def apply(i: Integer) = i
-          }, log)
+          .log(
+            "log-2",
+            new akka.japi.function.Function[Integer, Integer] {
+              def apply(i: Integer) = i
+            })
+          .log(
+            "log-3",
+            new akka.japi.function.Function[Integer, Integer] {
+              def apply(i: Integer) = i
+            },
+            log)
           .log("log-4", log)
           .runWith(javadsl.Sink.ignore(), mat)
 

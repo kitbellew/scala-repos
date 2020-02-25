@@ -47,9 +47,11 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
     HTTP(s"mapping/${index.name}/${index.name}", Json.obj())
 
   def storeBulk(docs: Seq[(Id, JsObject)]) =
-    HTTP(s"store/bulk/${index.name}/${index.name}", JsObject(docs map {
-      case (Id(id), doc) => id -> JsString(Json.stringify(doc))
-    }))
+    HTTP(
+      s"store/bulk/${index.name}/${index.name}",
+      JsObject(docs map {
+        case (Id(id), doc) => id -> JsString(Json.stringify(doc))
+      }))
 
   private[search] def HTTP[D: Writes, R](
       url: String,

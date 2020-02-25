@@ -194,10 +194,12 @@ class GaussianMixture private (
       case None => {
         val samples =
           breezeData.takeSample(withReplacement = true, k * nSamples, seed)
-        (Array.fill(k)(1.0 / k), Array.tabulate(k) { i =>
-          val slice = samples.view(i * nSamples, (i + 1) * nSamples)
-          new MultivariateGaussian(vectorMean(slice), initCovariance(slice))
-        })
+        (
+          Array.fill(k)(1.0 / k),
+          Array.tabulate(k) { i =>
+            val slice = samples.view(i * nSamples, (i + 1) * nSamples)
+            new MultivariateGaussian(vectorMean(slice), initCovariance(slice))
+          })
       }
     }
 

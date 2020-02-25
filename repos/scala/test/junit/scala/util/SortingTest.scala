@@ -51,9 +51,11 @@ class SortingTest {
     val ys = Array.range(0, xs.length)
     val zs = {
       val temp = xs.clone;
-      java.util.Arrays.sort(temp, new java.util.Comparator[N] {
-        def compare(a: N, b: N) = a.compare(b)
-      }); temp
+      java.util.Arrays.sort(
+        temp,
+        new java.util.Comparator[N] {
+          def compare(a: N, b: N) = a.compare(b)
+        }); temp
     }
     val qxs = { val temp = xs.clone; Sorting.quickSort(temp); temp }
     val pxs = { val temp = xs.clone; Sorting.quickSort(temp)(backwardsN); temp }

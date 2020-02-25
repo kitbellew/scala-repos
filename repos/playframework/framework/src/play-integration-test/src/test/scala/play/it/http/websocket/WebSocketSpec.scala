@@ -343,9 +343,11 @@ trait WebSocketSpec
 
       "allow consuming messages" in allowConsumingMessages { _ => consumed =>
         WebSocket.using[String] { req =>
-          (Iteratee.getChunks[String].map { result =>
-            consumed.success(result)
-          }, Enumerator.empty)
+          (
+            Iteratee.getChunks[String].map { result =>
+              consumed.success(result)
+            },
+            Enumerator.empty)
         }
       }
 
@@ -367,9 +369,11 @@ trait WebSocketSpec
               .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
             p.future
           }
-          (Iteratee.ignore, tick.onDoneEnumerating {
-            cleanedUp.success(true)
-          })
+          (
+            Iteratee.ignore,
+            tick.onDoneEnumerating {
+              cleanedUp.success(true)
+            })
         }
       }
 

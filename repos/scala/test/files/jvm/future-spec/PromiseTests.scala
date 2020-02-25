@@ -303,9 +303,11 @@ class PromiseTests extends MinimalScalaTest {
 
     "recover from exception" in {
       f { (future, message) =>
-        Await.result(future.recover({
-          case e if e.getMessage == message ⇒ "pigdog"
-        }), defaultTimeout) mustBe ("pigdog")
+        Await.result(
+          future.recover({
+            case e if e.getMessage == message ⇒ "pigdog"
+          }),
+          defaultTimeout) mustBe ("pigdog")
       }
     }
 

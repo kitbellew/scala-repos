@@ -167,9 +167,11 @@ object FieldsProviderImpl {
           OptionBuilder(matchField(innerType, name))
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
-          CaseClassBuilder(name, expandMethod(tpe).map {
-            case (t, s) => matchField(t, s)
-          })
+          CaseClassBuilder(
+            name,
+            expandMethod(tpe).map {
+              case (t, s) => matchField(t, s)
+            })
         case tpe if allowUnknownTypes => Primitive(name, tpe)
         case tpe =>
           c.abort(c.enclosingPosition, s"${T.tpe} is unsupported at $tpe")

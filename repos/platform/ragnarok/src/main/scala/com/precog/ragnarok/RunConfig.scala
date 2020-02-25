@@ -135,9 +135,11 @@ object RunConfig {
         config map (_.copy(rootDir = Some(new File(rootDir)))))
 
     case "--ingest" :: db :: file :: args =>
-      fromCommandLine(args, config map { cfg =>
-        cfg.copy(ingest = cfg.ingest :+ (db -> new File(file)))
-      })
+      fromCommandLine(
+        args,
+        config map { cfg =>
+          cfg.copy(ingest = cfg.ingest :+ (db -> new File(file)))
+        })
 
     case "--timeout" :: NonNegativeInt(to) :: args =>
       fromCommandLine(args, config map (_.copy(queryTimeout = to.toInt)))

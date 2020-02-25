@@ -49,9 +49,12 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
     // Although this doesn't seem to affect the outcome that much in most of cases, there are some cases
     // where the algorithm won't converge (confirmed with the author, Galen Andrew).
     val correctedDir =
-      space.zipMapValues.map(descentDir, state.adjustedGradient, {
-        case (d, g) => if (d * g < 0) d else 0.0
-      })
+      space.zipMapValues.map(
+        descentDir,
+        state.adjustedGradient,
+        {
+          case (d, g) => if (d * g < 0) d else 0.0
+        })
 
     correctedDir
   }
@@ -104,10 +107,13 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
   override protected def takeStep(state: State, dir: T, stepSize: Double) = {
     val stepped = state.x + dir * stepSize
     val orthant = computeOrthant(state.x, state.adjustedGradient)
-    space.zipMapValues.map(stepped, orthant, {
-      case (v, ov) =>
-        v * I(math.signum(v) == math.signum(ov))
-    })
+    space.zipMapValues.map(
+      stepped,
+      orthant,
+      {
+        case (v, ov) =>
+          v * I(math.signum(v) == math.signum(ov))
+      })
   }
 
   // Adds in the regularization stuff to the gradient
@@ -143,11 +149,14 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
   }
 
   private def computeOrthant(x: T, grad: T) = {
-    val orth = space.zipMapValues.map(x, grad, {
-      case (v, gv) =>
-        if (v != 0) math.signum(v)
-        else math.signum(-gv)
-    })
+    val orth = space.zipMapValues.map(
+      x,
+      grad,
+      {
+        case (v, gv) =>
+          if (v != 0) math.signum(v)
+          else math.signum(-gv)
+      })
     orth
   }
 

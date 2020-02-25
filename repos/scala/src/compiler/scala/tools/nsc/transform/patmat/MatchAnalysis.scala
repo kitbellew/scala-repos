@@ -524,9 +524,11 @@ trait MatchAnalysis extends MatchApproximation {
       // don't rewrite List-like patterns, as List() and Nil need to distinguished for unreachability
       val approx = new TreeMakersToProps(prevBinder)
       def approximate(default: Prop) =
-        approx.approximateMatch(cases, approx.onUnknown { tm =>
-          approx.refutableRewrite.applyOrElse(tm, (_: TreeMaker) => default)
-        })
+        approx.approximateMatch(
+          cases,
+          approx.onUnknown { tm =>
+            approx.refutableRewrite.applyOrElse(tm, (_: TreeMaker) => default)
+          })
 
       val propsCasesOk = approximate(True) map caseWithoutBodyToProp
       val propsCasesFail =
@@ -907,10 +909,11 @@ trait MatchAnalysis extends MatchApproximation {
 
         private val uniques = new mutable.HashMap[Var, VariableAssignment]
         private def unique(variable: Var): VariableAssignment =
-          uniques.getOrElseUpdate(variable, {
-            val (eqTo, neqTo) = varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
-            VariableAssignment(variable, eqTo.toList, neqTo.toList)
-          })
+          uniques.getOrElseUpdate(
+            variable, {
+              val (eqTo, neqTo) = varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
+              VariableAssignment(variable, eqTo.toList, neqTo.toList)
+            })
 
         def apply(variable: Var): VariableAssignment = {
           val path = chop(variable.path)

@@ -232,9 +232,11 @@ object Templates {
 
         def timeout(duration: FiniteDuration): Future[Unit] = {
           val promise = Promise[Unit]()
-          timer.schedule(new TimerTask() {
-            def run = promise.success(())
-          }, duration.toMillis)
+          timer.schedule(
+            new TimerTask() {
+              def run = promise.success(())
+            },
+            duration.toMillis)
           promise.future
         }
 

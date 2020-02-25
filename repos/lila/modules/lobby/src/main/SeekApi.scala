@@ -34,10 +34,12 @@ final class SeekApi(
       .sort(BSONDocument("createdAt" -> -1))
       .cursor[Seek]()
 
-  private val cache = AsyncCache[CacheKey, List[Seek]](f = {
-    case ForAnon => allCursor.collect[List](maxPerPage)
-    case ForUser => allCursor.collect[List]()
-  }, timeToLive = 3.seconds)
+  private val cache = AsyncCache[CacheKey, List[Seek]](
+    f = {
+      case ForAnon => allCursor.collect[List](maxPerPage)
+      case ForUser => allCursor.collect[List]()
+    },
+    timeToLive = 3.seconds)
 
   def forAnon = cache(ForAnon)
 

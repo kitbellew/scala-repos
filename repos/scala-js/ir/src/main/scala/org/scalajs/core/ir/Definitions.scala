@@ -73,14 +73,15 @@ object Definitions {
   /** Encodes a class name. */
   def encodeClassName(fullName: String): String = {
     val base = fullName.replace("_", "$und").replace(".", "_")
-    val encoded = compressedClasses.getOrElse(base, {
-      compressedPrefixes collectFirst {
-        case (prefix, compressed) if base.startsWith(prefix) =>
-          compressed + base.substring(prefix.length)
-      } getOrElse {
-        "L" + base
-      }
-    })
+    val encoded = compressedClasses.getOrElse(
+      base, {
+        compressedPrefixes collectFirst {
+          case (prefix, compressed) if base.startsWith(prefix) =>
+            compressed + base.substring(prefix.length)
+        } getOrElse {
+          "L" + base
+        }
+      })
     if (Trees.isKeyword(encoded) || encoded.charAt(0).isDigit ||
         encoded.charAt(0) == '$') {
       "$" + encoded

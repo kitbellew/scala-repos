@@ -516,9 +516,11 @@ object Scoped {
     type Fun[M[_], Ret]
     protected def convert[M[_], Ret](f: Fun[M, Ret]): K[M] => Ret
     private[this] val inputs: K[App] =
-      a.transform(keys, new (ScopedTaskable ~> App) {
-        def apply[T](in: ScopedTaskable[T]): App[T] = in.toTask
-      })
+      a.transform(
+        keys,
+        new (ScopedTaskable ~> App) {
+          def apply[T](in: ScopedTaskable[T]): App[T] = in.toTask
+        })
     private[this] def onTasks[T](f: K[Task] => Task[T]): App[T] =
       Def.app[({ type l[L[x]] = K[(L ∙ Task)#l] })#l, Task[T]](inputs)(f)(
         AList.asplit[K, Task](a))

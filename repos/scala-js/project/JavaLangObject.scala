@@ -162,12 +162,16 @@ object JavaLangObject {
         // Exports
 
         /* JSExport for toString(). */
-        MethodDef(static = false, StringLiteral("toString"), Nil, AnyType, {
-          Apply(
-            This()(ThisType),
-            Ident("toString__T", Some("toString__T")),
-            Nil)(ClassType(StringClass))
-        })(OptimizerHints.empty, None)
+        MethodDef(
+          static = false,
+          StringLiteral("toString"),
+          Nil,
+          AnyType, {
+            Apply(
+              This()(ThisType),
+              Ident("toString__T", Some("toString__T")),
+              Nil)(ClassType(StringClass))
+          })(OptimizerHints.empty, None)
       )
     )(OptimizerHints.empty)
 

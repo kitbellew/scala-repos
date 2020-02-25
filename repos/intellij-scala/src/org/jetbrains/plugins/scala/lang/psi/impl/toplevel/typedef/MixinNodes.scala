@@ -434,9 +434,12 @@ abstract class MixinNodes {
                 Bounds.putAliases(template, ScSubstitutor.empty),
                 zSubst)
             case syn: ScSyntheticClass =>
-              (syn.getSuperTypes.map { psiType =>
-                ScType.create(psiType, syn.getProject)
-              }: Seq[ScType], ScSubstitutor.empty, ScSubstitutor.empty)
+              (
+                syn.getSuperTypes.map { psiType =>
+                  ScType.create(psiType, syn.getProject)
+                }: Seq[ScType],
+                ScSubstitutor.empty,
+                ScSubstitutor.empty)
             case clazz: PsiClass =>
               place = Option(clazz.getLastChild)
               processJava(clazz, ScSubstitutor.empty, map, place)

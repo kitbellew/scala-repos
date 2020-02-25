@@ -243,10 +243,12 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
     future.getChannel match {
       case nioChannel: NioSocketChannel =>
         val channelClosed =
-          new ChannelRunnableWrapper(nioChannel, new Runnable() {
-            override def run(): Unit =
-              Channels.fireChannelClosed(nioChannel)
-          })
+          new ChannelRunnableWrapper(
+            nioChannel,
+            new Runnable() {
+              override def run(): Unit =
+                Channels.fireChannelClosed(nioChannel)
+            })
         nioChannel.getWorker
           .executeInIoThread(channelClosed, /* alwaysAsync */ true)
 

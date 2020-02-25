@@ -432,10 +432,13 @@ object Execution {
       extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
         implicit cec: ConcurrentExecutionContext) =
-      cache.getOrElseInsert(conf, this, for {
-        futt <- toFuture(Try(get(cec)))
-        t <- futt
-      } yield (t, ExecutionCounters.empty))
+      cache.getOrElseInsert(
+        conf,
+        this,
+        for {
+          futt <- toFuture(Try(get(cec)))
+          t <- futt
+        } yield (t, ExecutionCounters.empty))
 
     // Note that unit is not optimized away, since Futures are often used with side-effects, so,
     // we ensure that get is always called in contrast to Mapped, which assumes that fn is pure.
@@ -444,12 +447,15 @@ object Execution {
       extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
         implicit cec: ConcurrentExecutionContext) =
-      cache.getOrElseInsert(conf, this, for {
-        (s, st1) <- prev.runStats(conf, mode, cache)
-        next = fn(s)
-        fut2 = next.runStats(conf, mode, cache)
-        (t, st2) <- fut2
-      } yield (t, Monoid.plus(st1, st2)))
+      cache.getOrElseInsert(
+        conf,
+        this,
+        for {
+          (s, st1) <- prev.runStats(conf, mode, cache)
+          next = fn(s)
+          fut2 = next.runStats(conf, mode, cache)
+          (t, st2) <- fut2
+        } yield (t, Monoid.plus(st1, st2)))
   }
 
   private case class Mapped[S, T](prev: Execution[S], fn: S => T)
@@ -467,16 +473,22 @@ object Execution {
       extends Execution[(T, ExecutionCounters)] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
         implicit cec: ConcurrentExecutionContext) =
-      cache.getOrElseInsert(conf, this, prev.runStats(conf, mode, cache).map {
-        case tc @ (t, c) => (tc, c)
-      })
+      cache.getOrElseInsert(
+        conf,
+        this,
+        prev.runStats(conf, mode, cache).map {
+          case tc @ (t, c) => (tc, c)
+        })
   }
   private case class ResetCounters[T](prev: Execution[T]) extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
         implicit cec: ConcurrentExecutionContext) =
-      cache.getOrElseInsert(conf, this, prev.runStats(conf, mode, cache).map {
-        case (t, _) => (t, ExecutionCounters.empty)
-      })
+      cache.getOrElseInsert(
+        conf,
+        this,
+        prev.runStats(conf, mode, cache).map {
+          case (t, _) => (t, ExecutionCounters.empty)
+        })
   }
 
   private case class TransformedConfig[T](
@@ -648,10 +660,12 @@ object Execution {
       extends Execution[T] {
     def runStats(conf: Config, mode: Mode, cache: EvalCache)(
         implicit cec: ConcurrentExecutionContext) =
-      cache.getOrElseInsert(conf, this, {
-        val (uid, nextConf) = conf.ensureUniqueId
-        fn(uid).runStats(nextConf, mode, cache)
-      })
+      cache.getOrElseInsert(
+        conf,
+        this, {
+          val (uid, nextConf) = conf.ensureUniqueId
+          fn(uid).runStats(nextConf, mode, cache)
+        })
   }
   /*
    * This allows you to run any cascading flowDef as an Execution.
@@ -714,9 +728,10 @@ object Execution {
       * Here we inline the map operation into the presentation function so we can zip after map.
       */
     override def map[U](mapFn: T => U): Execution[U] =
-      WriteExecution(head, tail, { (conf: Config, mode: Mode) =>
-        mapFn(fn(conf, mode))
-      })
+      WriteExecution(
+        head,
+        tail,
+        { (conf: Config, mode: Mode) => mapFn(fn(conf, mode)) })
 
     /* Run a list of ToWrite elements */
     private[this] def scheduleToWrites(
@@ -885,9 +900,10 @@ object Execution {
       pipe: TypedPipe[T],
       sink: TypedSink[T],
       presentType: => U): Execution[U] =
-    WriteExecution(SimpleWrite(pipe, sink), Nil, { (_: Config, _: Mode) =>
-      presentType
-    })
+    WriteExecution(
+      SimpleWrite(pipe, sink),
+      Nil,
+      { (_: Config, _: Mode) => presentType })
 
   /**
     * Here we allow both the targets to write and the sources to be generated from the config and mode.
@@ -896,10 +912,13 @@ object Execution {
   private[scalding] def write[T, U](
       fn: (Config, Mode) => (TypedPipe[T], TypedSink[T]),
       generatorFn: (Config, Mode) => U): Execution[U] =
-    WriteExecution(PreparedWrite({ (cfg: Config, m: Mode) =>
-      val r = fn(cfg, m)
-      SimpleWrite(r._1, r._2)
-    }), Nil, generatorFn)
+    WriteExecution(
+      PreparedWrite({ (cfg: Config, m: Mode) =>
+        val r = fn(cfg, m)
+        SimpleWrite(r._1, r._2)
+      }),
+      Nil,
+      generatorFn)
 
   /**
     * Convenience method to get the Args

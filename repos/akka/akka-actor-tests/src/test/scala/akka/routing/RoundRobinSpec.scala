@@ -112,9 +112,11 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     "be controlled with management messages" in {
       val actor =
-        system.actorOf(RoundRobinPool(3).props(routeeProps = Props(new Actor {
-          def receive = Actor.emptyBehavior
-        })), "round-robin-managed")
+        system.actorOf(
+          RoundRobinPool(3).props(routeeProps = Props(new Actor {
+            def receive = Actor.emptyBehavior
+          })),
+          "round-robin-managed")
 
       routeeSize(actor) should ===(3)
       actor ! AdjustPoolSize(+4)
@@ -140,12 +142,14 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       var replies = Map.empty[String, Int].withDefaultValue(0)
 
       val paths = (1 to connectionCount) map { n ⇒
-        val ref = system.actorOf(Props(new Actor {
-          def receive = {
-            case "hit" ⇒ sender() ! self.path.name
-            case "end" ⇒ doneLatch.countDown()
-          }
-        }), name = "target-" + n)
+        val ref = system.actorOf(
+          Props(new Actor {
+            def receive = {
+              case "hit" ⇒ sender() ! self.path.name
+              case "end" ⇒ doneLatch.countDown()
+            }
+          }),
+          name = "target-" + n)
         ref.path.toStringWithoutAddress
       }
 

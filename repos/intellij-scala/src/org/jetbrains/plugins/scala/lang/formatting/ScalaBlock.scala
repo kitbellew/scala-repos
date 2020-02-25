@@ -292,7 +292,10 @@ object SubBlocksContext {
       node: ASTNode,
       alignment: Alignment,
       childNodes: Seq[ASTNode]): SubBlocksContext =
-    new SubBlocksContext(Seq(), None, Map({
-      node -> SubBlocksContext(childNodes, Some(alignment))
-    }))
+    new SubBlocksContext(
+      Seq(),
+      None,
+      Map({
+        node -> SubBlocksContext(childNodes, Some(alignment))
+      }))
 }

@@ -24,14 +24,14 @@ class FileUploadSupportTestServlet
       response.setHeader("file-two", new String(fi.get).trim)
     }
     fileMultiParams.get("file-two[]") foreach { fis =>
-      response.setHeader("file-two-with-brackets", fis.foldLeft("") {
-        (acc, fi) => acc + new String(fi.get).trim
-      })
+      response.setHeader(
+        "file-two-with-brackets",
+        fis.foldLeft("") { (acc, fi) => acc + new String(fi.get).trim })
     }
     fileMultiParams.get("file-two") foreach { fis =>
-      response.setHeader("file-two-without-brackets", fis.foldLeft("") {
-        (acc, fi) => acc + new String(fi.get).trim
-      })
+      response.setHeader(
+        "file-two-without-brackets",
+        fis.foldLeft("") { (acc, fi) => acc + new String(fi.get).trim })
     }
     params.get("file") foreach { response.setHeader("file-as-param", _) }
     params("utf8-string")

@@ -299,11 +299,13 @@ trait Foldable[F[_]] { self =>
   def splitWith[A](fa: F[A])(p: A => Boolean): List[NonEmptyList[A]] =
     foldRight(fa, (List[NonEmptyList[A]](), None: Option[Boolean]))((a, b) => {
       val pa = p(a)
-      (b match {
-        case (_, None) => NonEmptyList(a) :: Nil
-        case (x, Some(q)) =>
-          if (pa == q) (a <:: x.head) :: x.tail else NonEmptyList(a) :: x
-      }, Some(pa))
+      (
+        b match {
+          case (_, None) => NonEmptyList(a) :: Nil
+          case (x, Some(q)) =>
+            if (pa == q) (a <:: x.head) :: x.tail else NonEmptyList(a) :: x
+        },
+        Some(pa))
     })._1
 
   /**

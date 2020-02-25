@@ -355,9 +355,11 @@ private object TestUserClosuresActuallyCleaned {
     rdd.aggregate(0)({ case (_, _) => return; 1 }, { case (_, _) => return; 1 })
   }
   def testTreeAggregate(rdd: RDD[Int]): Unit = {
-    rdd.treeAggregate(0)({ case (_, _) => return; 1 }, {
-      case (_, _)                      => return; 1
-    })
+    rdd.treeAggregate(0)(
+      { case (_, _) => return; 1 },
+      {
+        case (_, _) => return; 1
+      })
   }
 
   // Test pair RDD functions
@@ -372,9 +374,11 @@ private object TestUserClosuresActuallyCleaned {
   }
   def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd
-      .aggregateByKey(0)({ case (_, _) => return; 1 }, {
-        case (_, _)                    => return; 1
-      })
+      .aggregateByKey(0)(
+        { case (_, _) => return; 1 },
+        {
+          case (_, _) => return; 1
+        })
       .count()
   }
   def testFoldByKey(rdd: RDD[(Int, Int)]): Unit = {
@@ -413,9 +417,11 @@ private object TestUserClosuresActuallyCleaned {
   def testRunApproximateJob(sc: SparkContext): Unit = {
     val rdd = sc.parallelize(1 to 10, 10)
     val evaluator = new CountEvaluator(1, 0.5)
-    sc.runApproximateJob(rdd, { (ctx: TaskContext, iter: Iterator[Int]) =>
-      return; 1L
-    }, evaluator, 1000)
+    sc.runApproximateJob(
+      rdd,
+      { (ctx: TaskContext, iter: Iterator[Int]) => return; 1L },
+      evaluator,
+      1000)
   }
   def testSubmitJob(sc: SparkContext): Unit = {
     val rdd = sc.parallelize(1 to 10, 10)

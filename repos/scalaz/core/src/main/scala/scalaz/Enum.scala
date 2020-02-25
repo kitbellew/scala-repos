@@ -162,13 +162,14 @@ trait Enum[F] extends Order[F] { self =>
         lessThan(_, _)
       else
         (_: F, _: F) => false
-    EphemeralStream.cons(a, {
-      val k = succn(n, a)
-      if (cmp(k, z))
-        EphemeralStream.emptyEphemeralStream
-      else
-        fromStepTo(n, k, z)
-    })
+    EphemeralStream.cons(
+      a, {
+        val k = succn(n, a)
+        if (cmp(k, z))
+          EphemeralStream.emptyEphemeralStream
+        else
+          fromStepTo(n, k, z)
+      })
   }
 
   def fromStepToL(n: Int, a: F, z: F): List[F] = {

@@ -111,11 +111,15 @@ private[spark] class CoarseGrainedSchedulerBackend(
       val reviveIntervalMs =
         conf.getTimeAsMs("spark.scheduler.revive.interval", "1s")
 
-      reviveThread.scheduleAtFixedRate(new Runnable {
-        override def run(): Unit = Utils.tryLogNonFatalError {
-          Option(self).foreach(_.send(ReviveOffers))
-        }
-      }, 0, reviveIntervalMs, TimeUnit.MILLISECONDS)
+      reviveThread.scheduleAtFixedRate(
+        new Runnable {
+          override def run(): Unit = Utils.tryLogNonFatalError {
+            Option(self).foreach(_.send(ReviveOffers))
+          }
+        },
+        0,
+        reviveIntervalMs,
+        TimeUnit.MILLISECONDS)
     }
 
     override def receive: PartialFunction[Any, Unit] = {

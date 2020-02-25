@@ -39,12 +39,14 @@ class SbtNoImportNotificationProvider(
           notifications.updateAllNotifications()
         }
       })
-    panel.createActionLabel(SbtBundle("sbt.notification.ignore"), new Runnable {
-      override def run() = {
-        ignoreFile(file)
-        notifications.updateAllNotifications()
-      }
-    })
+    panel.createActionLabel(
+      SbtBundle("sbt.notification.ignore"),
+      new Runnable {
+        override def run() = {
+          ignoreFile(file)
+          notifications.updateAllNotifications()
+        }
+      })
     panel
   }
 }

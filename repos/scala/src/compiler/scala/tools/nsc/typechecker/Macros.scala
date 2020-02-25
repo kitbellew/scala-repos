@@ -208,9 +208,11 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       // so don't try to find a program element named "macro" that corresponds to the nucleus
       // I just named it "macro", because it's macro-related, but I could as well name it "foobar"
       val nucleus = Ident(newTermName("macro"))
-      val wrapped = Apply(nucleus, payload map {
-        case (k, v) => Assign(pickleAtom(k), pickleAtom(v))
-      })
+      val wrapped = Apply(
+        nucleus,
+        payload map {
+          case (k, v) => Assign(pickleAtom(k), pickleAtom(v))
+        })
       val pickle = gen.mkTypeApply(wrapped, targs map (_.duplicate))
 
       // assign NoType to all freshly created AST nodes

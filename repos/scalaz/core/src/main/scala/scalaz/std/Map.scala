@@ -163,9 +163,11 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       V: Show[V]): Show[XMap[K, V]] =
     Show.show(m =>
       "Map[" +:
-        Cord.mkCord(", ", m.toSeq.view.map {
-          case (k, v) => Cord(K show k, "->", V show v)
-        }: _*) :+ "]")
+        Cord.mkCord(
+          ", ",
+          m.toSeq.view.map {
+            case (k, v) => Cord(K show k, "->", V show v)
+          }: _*) :+ "]")
 
   implicit def mapOrder[K: Order, V: Order]: Order[XMap[K, V]] =
     new Order[XMap[K, V]] with MapEqual[K, V] {

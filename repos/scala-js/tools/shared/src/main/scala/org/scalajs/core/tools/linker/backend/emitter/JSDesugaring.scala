@@ -411,12 +411,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           if (isExpression(cond)) {
             js.While(transformExpr(cond), transformStat(body), newLabel)
           } else {
-            js.While(js.BooleanLiteral(true), {
-              unnest(cond) { (newCond, env0) =>
-                implicit val env = env0
-                js.If(transformExpr(newCond), transformStat(body), js.Break())
-              }
-            }, newLabel)
+            js.While(
+              js.BooleanLiteral(true), {
+                unnest(cond) { (newCond, env0) =>
+                  implicit val env = env0
+                  js.If(transformExpr(newCond), transformStat(body), js.Break())
+                }
+              },
+              newLabel)
           }
 
         case DoWhile(body, cond, label) =>
@@ -433,12 +435,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
              */
             js.While(
               js.BooleanLiteral(true), {
-                js.Block(transformStat(body), {
-                  unnest(cond) { (newCond, env0) =>
-                    implicit val env = env0
-                    js.If(transformExpr(newCond), js.Skip(), js.Break())
-                  }
-                })
+                js.Block(
+                  transformStat(body), {
+                    unnest(cond) { (newCond, env0) =>
+                      implicit val env = env0
+                      js.If(transformExpr(newCond), js.Skip(), js.Break())
+                    }
+                  })
               },
               newLabel
             )
@@ -1984,9 +1987,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           if (captureParams.isEmpty) {
             innerFunction
           } else {
-            js.Apply(js.Function(captureParams.map(transformParamDef), {
-              js.Return(innerFunction)
-            }), captureValues.map(transformExpr))
+            js.Apply(
+              js.Function(
+                captureParams.map(transformParamDef), {
+                  js.Return(innerFunction)
+                }),
+              captureValues.map(transformExpr))
           }
 
         // Invalid trees

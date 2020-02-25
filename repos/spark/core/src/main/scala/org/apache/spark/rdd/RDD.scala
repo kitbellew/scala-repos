@@ -342,10 +342,13 @@ abstract class RDD[T: ClassTag](
     val blockId = RDDBlockId(id, partition.index)
     var readCachedBlock = true
     // This method is called on executors, so we need call SparkEnv.get instead of sc.env.
-    SparkEnv.get.blockManager.getOrElseUpdate(blockId, storageLevel, () => {
-      readCachedBlock = false
-      computeOrReadCheckpoint(partition, context)
-    }) match {
+    SparkEnv.get.blockManager.getOrElseUpdate(
+      blockId,
+      storageLevel,
+      () => {
+        readCachedBlock = false
+        computeOrReadCheckpoint(partition, context)
+      }) match {
       case Left(blockResult) =>
         if (readCachedBlock) {
           val existingMetrics =
@@ -546,11 +549,13 @@ abstract class RDD[T: ClassTag](
       lb: Double,
       ub: Double,
       seed: Long): RDD[T] = {
-    this.mapPartitionsWithIndex({ (index, partition) =>
-      val sampler = new BernoulliCellSampler[T](lb, ub)
-      sampler.setSeed(seed + index)
-      sampler.sample(partition)
-    }, preservesPartitioning = true)
+    this.mapPartitionsWithIndex(
+      { (index, partition) =>
+        val sampler = new BernoulliCellSampler[T](lb, ub)
+        sampler.setSeed(seed + index)
+        sampler.sample(partition)
+      },
+      preservesPartitioning = true)
   }
 
   /**
@@ -1284,13 +1289,15 @@ abstract class RDD[T: ClassTag](
     require(sp <= 32, s"sp ($sp) must be <= 32")
     require(sp == 0 || p <= sp, s"p ($p) cannot be greater than sp ($sp)")
     val zeroCounter = new HyperLogLogPlus(p, sp)
-    aggregate(zeroCounter)((hll: HyperLogLogPlus, v: T) => {
-      hll.offer(v)
-      hll
-    }, (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
-      h1.addAll(h2)
-      h1
-    }).cardinality()
+    aggregate(zeroCounter)(
+      (hll: HyperLogLogPlus, v: T) => {
+        hll.offer(v)
+        hll
+      },
+      (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
+        h1.addAll(h2)
+        h1
+      }).cardinality()
   }
 
   /**

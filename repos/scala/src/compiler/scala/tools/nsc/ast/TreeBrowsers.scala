@@ -373,16 +373,19 @@ abstract class TreeBrowsers {
 
     /** Return the case class name and the Name, if the node defines one */
     def treeName(t: Tree): (String, Name) =
-      ((t.productPrefix, t match {
-        case UnitTree(unit)                  => newTermName("" + unit)
-        case Super(_, mix)                   => newTermName("mix: " + mix)
-        case This(qual)                      => qual
-        case Select(_, selector)             => selector
-        case Ident(name)                     => name
-        case SelectFromTypeTree(_, selector) => selector
-        case x: DefTree                      => x.name
-        case _                               => EMPTY
-      }))
+      (
+        (
+          t.productPrefix,
+          t match {
+            case UnitTree(unit)                  => newTermName("" + unit)
+            case Super(_, mix)                   => newTermName("mix: " + mix)
+            case This(qual)                      => qual
+            case Select(_, selector)             => selector
+            case Ident(name)                     => name
+            case SelectFromTypeTree(_, selector) => selector
+            case x: DefTree                      => x.name
+            case _                               => EMPTY
+          }))
 
     /** Return a list of children for the given tree node */
     def children(t: Tree): List[Tree] = t match {

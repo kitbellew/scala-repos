@@ -364,10 +364,12 @@ object Tests {
     if (results.isEmpty)
       task { Output(TestResult.Passed, Map.empty, Nil) }
     else if (parallel)
-      reduced(results.toIndexedSeq, {
-        case (Output(v1, m1, _), Output(v2, m2, _)) =>
-          Output(if (v1.id < v2.id) v2 else v1, m1 ++ m2, Iterable.empty)
-      })
+      reduced(
+        results.toIndexedSeq,
+        {
+          case (Output(v1, m1, _), Output(v2, m2, _)) =>
+            Output(if (v1.id < v2.id) v2 else v1, m1 ++ m2, Iterable.empty)
+        })
     else {
       def sequence(
           tasks: List[Task[Output]],

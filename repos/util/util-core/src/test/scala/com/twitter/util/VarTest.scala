@@ -19,10 +19,12 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     override def observe(d: Int, obs: Observer[T]) = {
       accessCount += 1
       observerCount += 1
-      Closable.all(super.observe(d, obs), Closable.make { deadline =>
-        observerCount -= 1
-        Future.Done
-      })
+      Closable.all(
+        super.observe(d, obs),
+        Closable.make { deadline =>
+          observerCount -= 1
+          Future.Done
+        })
     }
   }
 

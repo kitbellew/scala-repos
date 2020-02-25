@@ -155,12 +155,14 @@ abstract class ClusterDeathWatchSpec
       Thread.sleep(5000)
       runOn(first) {
         val path = RootActorPath(second) / "user" / "non-existing"
-        system.actorOf(Props(new Actor {
-          context.watch(context.actorFor(path))
-          def receive = {
-            case t: Terminated ⇒ testActor ! t.actor.path
-          }
-        }).withDeploy(Deploy.local), name = "observer3")
+        system.actorOf(
+          Props(new Actor {
+            context.watch(context.actorFor(path))
+            def receive = {
+              case t: Terminated ⇒ testActor ! t.actor.path
+            }
+          }).withDeploy(Deploy.local),
+          name = "observer3")
 
         expectMsg(path)
       }

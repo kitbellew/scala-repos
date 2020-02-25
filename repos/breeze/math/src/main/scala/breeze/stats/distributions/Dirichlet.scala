@@ -45,18 +45,18 @@ case class Dirichlet[T, @specialized(Int) I](params: T)(
     * Returns unnormalized probabilities for a Multinomial distribution.
     */
   def unnormalizedDraw() = {
-    mapActiveValues(params, { (v: Double) =>
-      if (v == 0.0) 0.0 else new Gamma(v, 1).draw()
-    })
+    mapActiveValues(
+      params,
+      { (v: Double) => if (v == 0.0) 0.0 else new Gamma(v, 1).draw() })
   }
 
   /**
     * Returns logNormalized probabilities. Use this if you're worried about underflow
     */
   def logDraw() = {
-    val x = mapActiveValues(params, { (v: Double) =>
-      if (v == 0.0) 0.0 else new Gamma(v, 1).logDraw()
-    })
+    val x = mapActiveValues(
+      params,
+      { (v: Double) => if (v == 0.0) 0.0 else new Gamma(v, 1).logDraw() })
     val m = softmax(x.activeValuesIterator)
     assert(!m.isInfinite, x)
     x.activeKeysIterator.foreach(i => x(i) -= m)

@@ -183,20 +183,22 @@ final private[stream] class QueueSource[T](
       }
     }
 
-    (stageLogic, new SourceQueueWithComplete[T] {
-      override def watchCompletion() = completion.future
-      override def offer(element: T): Future[QueueOfferResult] = {
-        val p = Promise[QueueOfferResult]
-        stageLogic.invoke(Offer(element, p))
-        p.future
-      }
-      override def complete(): Unit = {
-        stageLogic.invoke(Completion)
-      }
-      override def fail(ex: Throwable): Unit = {
-        stageLogic.invoke(Failure(ex))
-      }
-    })
+    (
+      stageLogic,
+      new SourceQueueWithComplete[T] {
+        override def watchCompletion() = completion.future
+        override def offer(element: T): Future[QueueOfferResult] = {
+          val p = Promise[QueueOfferResult]
+          stageLogic.invoke(Offer(element, p))
+          p.future
+        }
+        override def complete(): Unit = {
+          stageLogic.invoke(Completion)
+        }
+        override def fail(ex: Throwable): Unit = {
+          stageLogic.invoke(Failure(ex))
+        }
+      })
   }
 }
 

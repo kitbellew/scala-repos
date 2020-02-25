@@ -139,10 +139,12 @@ class InlinerTest extends ClearAfterClass {
     )
 
     // line numbers are kept, so there's a line 2 (from the inlined f)
-    assert(gConv.instructions exists {
-      case LineNumber(2, _) => true
-      case _                => false
-    }, gConv.instructions.filter(_.isInstanceOf[LineNumber]))
+    assert(
+      gConv.instructions exists {
+        case LineNumber(2, _) => true
+        case _                => false
+      },
+      gConv.instructions.filter(_.isInstanceOf[LineNumber]))
 
     assert(
       gConv.localVars.map(_.name).sorted == List("f_this", "this"),
@@ -201,10 +203,12 @@ class InlinerTest extends ClearAfterClass {
         |}
       """.stripMargin
 
-    val can = canInlineTest(code, cls => {
-      val f = cls.methods.asScala.find(_.name == "f").get
-      f.access |= ACC_SYNCHRONIZED
-    })
+    val can = canInlineTest(
+      code,
+      cls => {
+        val f = cls.methods.asScala.find(_.name == "f").get
+        f.access |= ACC_SYNCHRONIZED
+      })
     assert(can.nonEmpty && can.get.isInstanceOf[SynchronizedMethod], can)
   }
 
@@ -509,9 +513,12 @@ class InlinerTest extends ClearAfterClass {
 
     var c = 0
     val List(b) =
-      compile(scalaCode, List((javaCode, "A.java")), allowMessage = i => {
-        c += 1; i.msg contains warn
-      })
+      compile(
+        scalaCode,
+        List((javaCode, "A.java")),
+        allowMessage = i => {
+          c += 1; i.msg contains warn
+        })
     assert(c == 1, c)
     val ins = getSingleMethod(b, "g").instructions
     val invokeFlop = Invoke(INVOKEVIRTUAL, "B", "flop", "()I", false)
@@ -585,9 +592,11 @@ class InlinerTest extends ClearAfterClass {
       "T::f()I is annotated @inline but cannot be inlined: the method is not final and may be overridden"
     )
     var count = 0
-    val List(c, t) = compile(code, allowMessage = i => {
-      count += 1; warns.exists(i.msg contains _)
-    })
+    val List(c, t) = compile(
+      code,
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     // 3rd warnings because of mixin-method, see SD-86
     assert(count == 3, count)
     assertInvoke(getSingleMethod(c, "t1"), "T", "f")
@@ -632,9 +641,11 @@ class InlinerTest extends ClearAfterClass {
         |that would cause an IllegalAccessError when inlined into class C""".stripMargin
     )
     var count = 0
-    val List(c, oMirror, oModule, t) = compile(code, allowMessage = i => {
-      count += 1; warns.exists(i.msg contains _)
-    })
+    val List(c, oMirror, oModule, t) = compile(
+      code,
+      allowMessage = i => {
+        count += 1; warns.exists(i.msg contains _)
+      })
     assert(count == 3, count) // SD-86
 
 //    assertNoInvoke(getSingleMethod(oModule, "f")) // SD-86
@@ -746,9 +757,11 @@ class InlinerTest extends ClearAfterClass {
       "T1::g1()I is annotated @inline but cannot be inlined: the method is not final and may be overridden"
     )
     var count = 0
-    val List(ca, cb, t1, t2a, t2b) = compile(code, allowMessage = i => {
-      count += 1; warnings.exists(i.msg contains _)
-    })
+    val List(ca, cb, t1, t2a, t2b) = compile(
+      code,
+      allowMessage = i => {
+        count += 1; warnings.exists(i.msg contains _)
+      })
     assert(
       count == 8,
       count
@@ -1002,9 +1015,11 @@ class InlinerTest extends ClearAfterClass {
         |The callee B::f1()I contains the instruction INVOKESPECIAL Aa.f1 ()I
         |that would cause an IllegalAccessError when inlined into class T.""".stripMargin
     var c = 0
-    val List(a, b, t) = compile(code, allowMessage = i => {
-      c += 1; i.msg contains warn
-    })
+    val List(a, b, t) = compile(
+      code,
+      allowMessage = i => {
+        c += 1; i.msg contains warn
+      })
     assert(c == 1, c)
 
     assertInvoke(getSingleMethod(b, "t1"), "Aa", "f1")
@@ -1524,9 +1539,11 @@ class InlinerTest extends ClearAfterClass {
     assertSameCode(
       getSingleMethod(c, "t1"),
       List(Op(ICONST_0), Op(ICONST_1), Op(IADD), Op(IRETURN)))
-    assertEquals(getSingleMethod(c, "t2").instructions collect {
-      case i: Invoke => i.owner + "." + i.name
-    }, List("scala/runtime/IntRef.create", "C.C$$$anonfun$1"))
+    assertEquals(
+      getSingleMethod(c, "t2").instructions collect {
+        case i: Invoke => i.owner + "." + i.name
+      },
+      List("scala/runtime/IntRef.create", "C.C$$$anonfun$1"))
   }
 
   @Test

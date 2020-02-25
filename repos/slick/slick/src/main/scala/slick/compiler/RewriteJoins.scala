@@ -34,10 +34,12 @@ class RewriteJoins extends Phase {
         sj1,
         sj2,
         f1,
-        f2.replace({
-          case Ref(s) if s == s1 =>
-            Ref(sj1) :@ f1.nodeType.asCollectionType.elementType
-        }, bottomUp = true),
+        f2.replace(
+          {
+            case Ref(s) if s == s1 =>
+              Ref(sj1) :@ f1.nodeType.asCollectionType.elementType
+          },
+          bottomUp = true),
         JoinType.Inner,
         pred.replace(
           {
@@ -52,10 +54,12 @@ class RewriteJoins extends Phase {
       val refSn = Ref(sn) :@ j.nodeType.asCollectionType.elementType
       val ref1 = Select(refSn, ElementSymbol(1))
       val ref2 = Select(refSn, ElementSymbol(2))
-      val sel2 = select.replace({
-        case Ref(s) :@ tpe if s == s1 => ref1 :@ tpe
-        case Ref(s) :@ tpe if s == s2 => ref2 :@ tpe
-      }, bottomUp = true)
+      val sel2 = select.replace(
+        {
+          case Ref(s) :@ tpe if s == s1 => ref1 :@ tpe
+          case Ref(s) :@ tpe if s == s2 => ref2 :@ tpe
+        },
+        bottomUp = true)
       val (j2, invalid) = hoistFilters(j)
       val res = Bind(sn, j2, sel2.untypeReferences(invalid)).infer()
       logger.debug(
@@ -98,10 +102,16 @@ class RewriteJoins extends Phase {
     case n @ Bind(s1, f1, Bind(s2, f2, select)) =>
       logger.debug("Unnesting Bind from:", Ellipsis(n, List(0)))
       val sn, sj1, sj2 = new AnonSymbol
-      val j = Join(sj1, sj2, f1, f2.replace {
-        case Ref(s) if s == s1 =>
-          Ref(sj1) :@ f1.nodeType.asCollectionType.elementType
-      }, JoinType.Inner, LiteralNode(true)).infer()
+      val j = Join(
+        sj1,
+        sj2,
+        f1,
+        f2.replace {
+          case Ref(s) if s == s1 =>
+            Ref(sj1) :@ f1.nodeType.asCollectionType.elementType
+        },
+        JoinType.Inner,
+        LiteralNode(true)).infer()
       val refSn = Ref(sn) :@ j.nodeType.asCollectionType.elementType
       val ref1 = Select(refSn, ElementSymbol(1))
       val ref2 = Select(refSn, ElementSymbol(2))
@@ -117,10 +127,15 @@ class RewriteJoins extends Phase {
     case n @ Bind(s1, p @ Pure(f1, _), sel1) if !f1.isInstanceOf[Aggregate] =>
       logger.debug("Inlining Pure 'from' in:", n)
       val res =
-        Bind(s1, Pure(StructNode(ConstArray.empty)).infer(), sel1.replace({
-          case FwdPath(s :: rest) if s == s1 =>
-            rest.foldLeft(f1) { case (n, s) => n.select(s) }
-        }, keepType = true)) :@ n.nodeType
+        Bind(
+          s1,
+          Pure(StructNode(ConstArray.empty)).infer(),
+          sel1.replace(
+            {
+              case FwdPath(s :: rest) if s == s1 =>
+                rest.foldLeft(f1) { case (n, s) => n.select(s) }
+            },
+            keepType = true)) :@ n.nodeType
       logger.debug("Inlined Pure 'from' in:", res)
       res
 
@@ -169,10 +184,12 @@ class RewriteJoins extends Phase {
     }) match {
       case (Filter(fs1, from1, pred1), tss1) =>
         logger.debug("Hoisting Filter out of Bind from:", b)
-        val sRefs = pred1.collect({
-          case p @ FwdPath(s :: rest) if s == fs1 =>
-            (p, FwdPath(b.generator :: rest))
-        }, stopOnMatch = true)
+        val sRefs = pred1.collect(
+          {
+            case p @ FwdPath(s :: rest) if s == fs1 =>
+              (p, FwdPath(b.generator :: rest))
+          },
+          stopOnMatch = true)
         val Bind(_, _, Pure(StructNode(struct1), pts)) = b
         val foundRefs = sRefs.map {
           case (p, pOnBGen) =>
@@ -196,9 +213,13 @@ class RewriteJoins extends Phase {
         val (sel, tss) =
           if (newDefs.isEmpty) (b.select, tss1)
           else
-            (Pure(StructNode(struct1 ++ ConstArray.from(newDefs.map {
-              case (_, (pOnGen, s)) => (s, pOnGen)
-            })), pts), tss1 + pts)
+            (
+              Pure(
+                StructNode(struct1 ++ ConstArray.from(newDefs.map {
+                  case (_, (pOnGen, s)) => (s, pOnGen)
+                })),
+                pts),
+              tss1 + pts)
         val fs = new AnonSymbol
         val pred = pred1.replace {
           case p: Select =>
@@ -259,10 +280,12 @@ class RewriteJoins extends Phase {
         val replacements =
           (existingOkDefs ++ createDefs.map { case (s, n) => (n, s) }).toMap
         def rebase(n: Node): Node =
-          n.replace({
-            case (p @ FwdPath(s :: _)) :@ tpe if s == ok =>
-              Ref(replacements(p)) :@ tpe
-          }, keepType = true)
+          n.replace(
+            {
+              case (p @ FwdPath(s :: _)) :@ tpe if s == ok =>
+                Ref(replacements(p)) :@ tpe
+            },
+            keepType = true)
         val rebasedIllegalDefs = illegalDefs.map {
           case (s, n) => (s, rebase(n))
         }
@@ -370,10 +393,14 @@ class RewriteJoins extends Phase {
               },
               keepType = true
             )))
-          val on2b = and(on1Down.map(_.replace({
-            case Select(Ref(s), ElementSymbol(i)) :@ tpe if s == s2 =>
-              Ref(if (i == 0) j2b.leftGen else j2b.rightGen) :@ tpe
-          }, keepType = true)) ++ on2Keep)
+          val on2b = and(
+            on1Down.map(
+              _.replace(
+                {
+                  case Select(Ref(s), ElementSymbol(i)) :@ tpe if s == s2 =>
+                    Ref(if (i == 0) j2b.leftGen else j2b.rightGen) :@ tpe
+                },
+                keepType = true)) ++ on2Keep)
           val j2c = j2b.copy(on = on2b.infer()) :@ j2b.nodeType
           val res = j.copy(right = j2c, on = on1b.infer()) :@ j.nodeType
           logger.debug("Rearranged join conditions in:", res)
@@ -405,12 +432,21 @@ class RewriteJoins extends Phase {
         logger.debug(
           s"Bind(${if (a1) s1 else s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
         val m = p1.iterator.toMap
-        Bind(s2, f, Pure(StructNode(p2.map {
-          case (f1, n) =>
-            (f1, n.replace({
-              case Select(Ref(s), f2) if s == s1 => m(f2)
-            }, keepType = true))
-        }), ts2)).infer()
+        Bind(
+          s2,
+          f,
+          Pure(
+            StructNode(p2.map {
+              case (f1, n) =>
+                (
+                  f1,
+                  n.replace(
+                    {
+                      case Select(Ref(s), f2) if s == s1 => m(f2)
+                    },
+                    keepType = true))
+            }),
+            ts2)).infer()
       } else b
     case b => b
   }

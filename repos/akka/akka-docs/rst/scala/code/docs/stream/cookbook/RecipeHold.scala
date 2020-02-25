@@ -21,16 +21,19 @@ object HoldOps {
       new GraphStageLogic(shape) {
         private var currentValue: T = initial
 
-        setHandlers(in, out, new InHandler with OutHandler {
-          override def onPush(): Unit = {
-            currentValue = grab(in)
-            pull(in)
-          }
+        setHandlers(
+          in,
+          out,
+          new InHandler with OutHandler {
+            override def onPush(): Unit = {
+              currentValue = grab(in)
+              pull(in)
+            }
 
-          override def onPull(): Unit = {
-            push(out, currentValue)
-          }
-        })
+            override def onPull(): Unit = {
+              push(out, currentValue)
+            }
+          })
 
         override def preStart(): Unit = {
           pull(in)

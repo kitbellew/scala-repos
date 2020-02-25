@@ -49,12 +49,15 @@ class ThreadUtilsSuite extends SparkFunSuite {
     try {
       val latch = new CountDownLatch(1)
       @volatile var threadName = ""
-      executor.schedule(new Runnable {
-        override def run(): Unit = {
-          threadName = Thread.currentThread().getName()
-          latch.countDown()
-        }
-      }, 1, TimeUnit.MILLISECONDS)
+      executor.schedule(
+        new Runnable {
+          override def run(): Unit = {
+            threadName = Thread.currentThread().getName()
+            latch.countDown()
+          }
+        },
+        1,
+        TimeUnit.MILLISECONDS)
       latch.await(10, TimeUnit.SECONDS)
       assert(threadName === "this-is-a-thread-name")
     } finally {

@@ -58,12 +58,15 @@ case class MakeDecimal(child: Expression, precision: Int, scale: Int)
     Decimal(input.asInstanceOf[Long], precision, scale)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(ctx, ev, eval => {
-      s"""
+    nullSafeCodeGen(
+      ctx,
+      ev,
+      eval => {
+        s"""
         ${ev.value} = (new Decimal()).setOrNull($eval, $precision, $scale);
         ${ev.isNull} = ${ev.value} == null;
       """
-    })
+      })
   }
 }
 

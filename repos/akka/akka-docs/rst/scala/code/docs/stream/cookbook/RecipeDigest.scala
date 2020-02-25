@@ -34,11 +34,13 @@ class RecipeDigest extends RecipeSpec {
           new GraphStageLogic(shape) {
             val digest = MessageDigest.getInstance(algorithm)
 
-            setHandler(out, new OutHandler {
-              override def onPull(): Trigger = {
-                pull(in)
-              }
-            })
+            setHandler(
+              out,
+              new OutHandler {
+                override def onPull(): Trigger = {
+                  pull(in)
+                }
+              })
 
             setHandler(
               in,

@@ -184,9 +184,11 @@ object CatalystTypeConverters {
         catalystValue.toArray[Any](elementType)
       } else {
         val result = new Array[Any](catalystValue.numElements())
-        catalystValue.foreach(elementType, (i, e) => {
-          result(i) = elementConverter.toScala(e)
-        })
+        catalystValue.foreach(
+          elementType,
+          (i, e) => {
+            result(i) = elementConverter.toScala(e)
+          })
         result
       }
     }

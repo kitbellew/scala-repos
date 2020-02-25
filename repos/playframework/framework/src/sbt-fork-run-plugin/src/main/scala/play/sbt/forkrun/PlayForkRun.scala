@@ -120,9 +120,11 @@ object PlayForkRun extends AutoPlugin {
   def backgroundForkRunTask = Def.inputTask[BackgroundJobHandle] {
     val args = Def.spaceDelimited().parsed
     BackgroundJobServiceKeys.jobService.value
-      .runInBackgroundThread(resolvedScoped.value, { (logger, uiContext) =>
-        PlayForkProcess(playForkOptions.value, args, logger)
-      })
+      .runInBackgroundThread(
+        resolvedScoped.value,
+        { (logger, uiContext) =>
+          PlayForkProcess(playForkOptions.value, args, logger)
+        })
   }
 
   def forkConfigTask = Def.task[ForkConfig] {

@@ -35,12 +35,14 @@ class RecipeByteStrings extends RecipeSpec {
           new GraphStageLogic(shape) {
             private var buffer = ByteString.empty
 
-            setHandler(out, new OutHandler {
-              override def onPull(): Unit = {
-                if (isClosed(in)) emitChunk()
-                else pull(in)
-              }
-            })
+            setHandler(
+              out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  if (isClosed(in)) emitChunk()
+                  else pull(in)
+                }
+              })
             setHandler(
               in,
               new InHandler {

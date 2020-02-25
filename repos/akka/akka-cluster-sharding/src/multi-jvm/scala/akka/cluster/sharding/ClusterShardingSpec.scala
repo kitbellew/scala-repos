@@ -740,13 +740,16 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe = TestProbe()
-        awaitAssert({
-          shard.tell(Identify(1), probe.ref)
-          probe.expectMsg(
-            1 second,
-            "Shard was still around",
-            ActorIdentity(1, None))
-        }, 5 seconds, 500 millis)
+        awaitAssert(
+          {
+            shard.tell(Identify(1), probe.ref)
+            probe.expectMsg(
+              1 second,
+              "Shard was still around",
+              ActorIdentity(1, None))
+          },
+          5 seconds,
+          500 millis)
 
         //Get the path to where the shard now resides
         persistentEntitiesRegion ! Get(13)
@@ -832,13 +835,16 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe2 = TestProbe()
-        awaitAssert({
-          shard.tell(Identify(2), probe2.ref)
-          probe2.expectMsg(
-            1 second,
-            "Shard was still around",
-            ActorIdentity(2, None))
-        }, 5 seconds, 500 millis)
+        awaitAssert(
+          {
+            shard.tell(Identify(2), probe2.ref)
+            probe2.expectMsg(
+              1 second,
+              "Shard was still around",
+              ActorIdentity(2, None))
+          },
+          5 seconds,
+          500 millis)
       }
 
       enterBarrier("shard-shutdown-12")
@@ -879,10 +885,15 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         counter1 ! Stop
 
         val probe = TestProbe()
-        awaitAssert({
-          counter1.tell(Identify(1), probe.ref)
-          probe.expectMsgType[ActorIdentity](1 second).ref should not be (None)
-        }, 5.seconds, 500.millis)
+        awaitAssert(
+          {
+            counter1.tell(Identify(1), probe.ref)
+            probe
+              .expectMsgType[ActorIdentity](1 second)
+              .ref should not be (None)
+          },
+          5.seconds,
+          500.millis)
       }
 
       enterBarrier("after-14")
@@ -918,10 +929,15 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         val counter1 = system.actorSelection(
           system / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
         val probe = TestProbe()
-        awaitAssert({
-          counter1.tell(Identify(1), probe.ref)
-          probe.expectMsgType[ActorIdentity](1 second).ref should not be (None)
-        }, 5.seconds, 500 millis)
+        awaitAssert(
+          {
+            counter1.tell(Identify(1), probe.ref)
+            probe
+              .expectMsgType[ActorIdentity](1 second)
+              .ref should not be (None)
+          },
+          5.seconds,
+          500 millis)
 
         counter1 ! Get(1)
         expectMsg(2)

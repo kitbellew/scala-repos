@@ -211,9 +211,11 @@ class Parser(s: String) {
         token = it.next;
         Clause(NoTerm, rep(constructor));
       } else {
-        Clause(constructor, if (token equals ":-") {
-          token = it.next; rep(constructor)
-        } else List())
+        Clause(
+          constructor,
+          if (token equals ":-") {
+            token = it.next; rep(constructor)
+          } else List())
       }
     if (token equals ".") token = it.next else syntaxError("`.' expected");
     result

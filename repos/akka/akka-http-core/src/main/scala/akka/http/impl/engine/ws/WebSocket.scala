@@ -274,9 +274,11 @@ private[http] object WebSocket {
 
     def createLogic(effectiveAttributes: Attributes) =
       new GraphStageLogic(shape) {
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = pull(in)
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = pull(in)
+          })
         setHandler(
           in,
           new InHandler {

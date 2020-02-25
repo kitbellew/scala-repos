@@ -237,10 +237,12 @@ final class Formatter(private val dest: Appendable)
                 with_+(numberArg.toFixed(Math.max(p - sig, 0)))
               } else sciNotation(p - 1)
             case 'f' =>
-              with_+({
-                // JavaDoc: 6 is default precision
-                numberArg.toFixed(if (hasPrecision) precision else 6)
-              }, numberArg.isNaN || numberArg.isInfinite)
+              with_+(
+                {
+                  // JavaDoc: 6 is default precision
+                  numberArg.toFixed(if (hasPrecision) precision else 6)
+                },
+                numberArg.isNaN || numberArg.isInfinite)
           }
 
           def sciNotation(precision: Int) = {

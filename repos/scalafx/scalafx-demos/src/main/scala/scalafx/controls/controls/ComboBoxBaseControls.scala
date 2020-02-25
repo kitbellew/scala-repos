@@ -38,8 +38,10 @@ class ComboBoxBaseControls[T](target: ComboBoxBase[T])
   super.addNode("Armed", super.getCheckBox(target.armed))
   super.addNode("Editable", super.getCheckBox(target.editable))
   super.addNode("Prompt Text", super.getTextField(target.promptText))
-  super.addNode("Showing", new Label {
-    text <== when(target.showing) choose "Showing" otherwise "Not Showing"
-  })
+  super.addNode(
+    "Showing",
+    new Label {
+      text <== when(target.showing) choose "Showing" otherwise "Not Showing"
+    })
 
 }

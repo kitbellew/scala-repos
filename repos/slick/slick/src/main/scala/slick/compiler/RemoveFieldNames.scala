@@ -16,9 +16,11 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
       val CollectionType(_, NominalType(top, StructType(fdefs))) =
         rsm.from.nodeType
       val requiredSyms = rsm.map
-        .collect[TermSymbol]({
-          case Select(Ref(s), f) if s == rsm.generator => f
-        }, stopOnMatch = true)
+        .collect[TermSymbol](
+          {
+            case Select(Ref(s), f) if s == rsm.generator => f
+          },
+          stopOnMatch = true)
         .toSeq
         .distinct
         .zipWithIndex
@@ -88,10 +90,12 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
       logger.debug("Transformed RSM: ", rsm2)
       val CollectionType(_, fType) = rsm2.from.nodeType
       val baseRef = Ref(rsm.generator) :@ fType
-      rsm2.copy(map = rsm2.map.replace({
-        case Select(Ref(s), f) if s == rsm.generator =>
-          Select(baseRef, ElementSymbol(requiredSyms(f) + 1)).infer()
-      }, keepType = true)) :@ rsm.nodeType
+      rsm2.copy(map = rsm2.map.replace(
+        {
+          case Select(Ref(s), f) if s == rsm.generator =>
+            Select(baseRef, ElementSymbol(requiredSyms(f) + 1)).infer()
+        },
+        keepType = true)) :@ rsm.nodeType
     }
   }
 }

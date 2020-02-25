@@ -148,8 +148,10 @@ class LoggingFilter[REQUEST <: Request](
 }
 
 object LoggingFilter
-    extends LoggingFilter[Request]({
-      val log = Logger("access")
-      log.setUseParentHandlers(false)
-      log
-    }, new CommonLogFormatter)
+    extends LoggingFilter[Request](
+      {
+        val log = Logger("access")
+        log.setUseParentHandlers(false)
+        log
+      },
+      new CommonLogFormatter)

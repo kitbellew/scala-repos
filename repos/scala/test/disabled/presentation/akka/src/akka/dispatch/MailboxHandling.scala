@@ -32,10 +32,12 @@ trait MessageQueue {
 sealed trait MailboxType
 
 case class UnboundedMailbox() extends MailboxType
-case class BoundedMailbox(val capacity: Int = {
-  if (Dispatchers.MAILBOX_CAPACITY < 0) Int.MaxValue
-  else Dispatchers.MAILBOX_CAPACITY
-}, val pushTimeOut: Duration = Dispatchers.MAILBOX_PUSH_TIME_OUT)
+case class BoundedMailbox(
+    val capacity: Int = {
+      if (Dispatchers.MAILBOX_CAPACITY < 0) Int.MaxValue
+      else Dispatchers.MAILBOX_CAPACITY
+    },
+    val pushTimeOut: Duration = Dispatchers.MAILBOX_PUSH_TIME_OUT)
     extends MailboxType {
   if (capacity < 0)
     throw new IllegalArgumentException(

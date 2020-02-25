@@ -397,9 +397,11 @@ class Reloader(
   @volatile private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
-  private val watcher = fileWatchService.watch(monitoredFiles, () => {
-    changed = true
-  })
+  private val watcher = fileWatchService.watch(
+    monitoredFiles,
+    () => {
+      changed = true
+    })
   private val classLoaderVersion =
     new java.util.concurrent.atomic.AtomicInteger(0)
 

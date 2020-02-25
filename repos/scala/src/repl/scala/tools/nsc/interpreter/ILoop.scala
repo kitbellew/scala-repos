@@ -456,9 +456,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           throw ex
         case _ =>
           def fn(): Boolean =
-            try in.readYesOrNo(explain + replayQuestionMessage, {
-              echo("\nYou must enter y or n."); fn()
-            })
+            try in.readYesOrNo(
+              explain + replayQuestionMessage, {
+                echo("\nYou must enter y or n."); fn()
+              })
             catch { case _: RuntimeException => false }
 
           if (fn()) replay()

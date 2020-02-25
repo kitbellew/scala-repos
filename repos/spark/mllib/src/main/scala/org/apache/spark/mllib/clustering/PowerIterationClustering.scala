@@ -238,12 +238,14 @@ class PowerIterationClustering private[clustering] (
     */
   private def pic(w: Graph[Double, Double]): PowerIterationClusteringModel = {
     val v = powerIter(w, maxIterations)
-    val assignments = kMeans(v, k).mapPartitions({ iter =>
-      iter.map {
-        case (id, cluster) =>
-          Assignment(id, cluster)
-      }
-    }, preservesPartitioning = true)
+    val assignments = kMeans(v, k).mapPartitions(
+      { iter =>
+        iter.map {
+          case (id, cluster) =>
+            Assignment(id, cluster)
+        }
+      },
+      preservesPartitioning = true)
     new PowerIterationClusteringModel(k, assignments)
   }
 }
@@ -307,9 +309,12 @@ object PowerIterationClustering extends Logging {
         }
     }
     val gA = Graph.fromEdges(edges, 0.0)
-    val vD = gA.aggregateMessages[Double](sendMsg = ctx => {
-      ctx.sendToSrc(ctx.attr)
-    }, mergeMsg = _ + _, TripletFields.EdgeOnly)
+    val vD = gA.aggregateMessages[Double](
+      sendMsg = ctx => {
+        ctx.sendToSrc(ctx.attr)
+      },
+      mergeMsg = _ + _,
+      TripletFields.EdgeOnly)
     Graph(vD, gA.edges)
       .mapTriplets(
         e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
@@ -329,13 +334,15 @@ object PowerIterationClustering extends Logging {
   private[clustering] def randomInit(
       g: Graph[Double, Double]): Graph[Double, Double] = {
     val r = g.vertices
-      .mapPartitionsWithIndex((part, iter) => {
-        val random = new XORShiftRandom(part)
-        iter.map {
-          case (id, _) =>
-            (id, random.nextGaussian())
-        }
-      }, preservesPartitioning = true)
+      .mapPartitionsWithIndex(
+        (part, iter) => {
+          val random = new XORShiftRandom(part)
+          iter.map {
+            case (id, _) =>
+              (id, random.nextGaussian())
+          }
+        },
+        preservesPartitioning = true)
       .cache()
     val sum = r.values.map(math.abs).sum()
     val v0 = r.mapValues(x => x / sum)

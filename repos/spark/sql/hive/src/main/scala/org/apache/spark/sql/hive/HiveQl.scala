@@ -638,17 +638,21 @@ private[hive] class HiveQl(conf: ParserConf)
             outputClause) :: Nil) =>
       val (output, schemaLess) = outputClause match {
         case Token("TOK_ALIASLIST", aliases) :: Nil =>
-          (aliases.map {
-            case Token(name, Nil) =>
-              AttributeReference(cleanIdentifier(name), StringType)()
-          }, false)
+          (
+            aliases.map {
+              case Token(name, Nil) =>
+                AttributeReference(cleanIdentifier(name), StringType)()
+            },
+            false)
         case Token("TOK_TABCOLLIST", attributes) :: Nil =>
-          (attributes.map {
-            case Token("TOK_TABCOL", Token(name, Nil) :: dataType :: Nil) =>
-              AttributeReference(
-                cleanIdentifier(name),
-                nodeToDataType(dataType))()
-          }, false)
+          (
+            attributes.map {
+              case Token("TOK_TABCOL", Token(name, Nil) :: dataType :: Nil) =>
+                AttributeReference(
+                  cleanIdentifier(name),
+                  nodeToDataType(dataType))()
+            },
+            false)
         case Nil =>
           (
             List(

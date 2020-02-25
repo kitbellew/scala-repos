@@ -99,10 +99,12 @@ class ExpandTables extends Phase {
             else {
               logger.debug("Expanding tables in Distinct")
               tree2
-                .replace({
-                  case Distinct(s, f, o) =>
-                    Distinct(s, f, createResult(tables, Ref(s), o.nodeType))
-                }, bottomUp = true)
+                .replace(
+                  {
+                    case Distinct(s, f, o) =>
+                      Distinct(s, f, createResult(tables, Ref(s), o.nodeType))
+                  },
+                  bottomUp = true)
                 .infer()
             }
 

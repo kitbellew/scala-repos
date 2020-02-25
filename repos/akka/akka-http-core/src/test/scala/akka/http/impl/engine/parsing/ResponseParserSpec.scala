@@ -59,12 +59,15 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "a response with a simple body" in new Test {
-        collectBlocking(rawParse(GET, prep {
-          """HTTP/1.1 200 Ok
+        collectBlocking(
+          rawParse(
+            GET,
+            prep {
+              """HTTP/1.1 200 Ok
               |Content-Length: 4
               |
               |ABCD"""
-        })) shouldEqual Seq(Right(HttpResponse(entity = "ABCD".getBytes)))
+            })) shouldEqual Seq(Right(HttpResponse(entity = "ABCD".getBytes)))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 

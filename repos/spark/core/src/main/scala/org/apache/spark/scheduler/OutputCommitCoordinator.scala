@@ -134,10 +134,11 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       partition: PartitionId,
       attemptNumber: TaskAttemptNumber,
       reason: TaskEndReason): Unit = synchronized {
-    val authorizedCommitters = authorizedCommittersByStage.getOrElse(stage, {
-      logDebug(s"Ignoring task completion for completed stage")
-      return
-    })
+    val authorizedCommitters = authorizedCommittersByStage.getOrElse(
+      stage, {
+        logDebug(s"Ignoring task completion for completed stage")
+        return
+      })
     reason match {
       case Success =>
       // The task output has been committed successfully

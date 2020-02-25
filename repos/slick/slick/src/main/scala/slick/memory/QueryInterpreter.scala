@@ -348,9 +348,13 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             (t.elementType.asInstanceOf[ScalaNumericType[Any]].numeric, true)
           case t => (t.asInstanceOf[ScalaNumericType[Any]].numeric, false)
         }
-        reduceOptionIt[(Int, Any)](it, opt, (1, _), {
-          case ((ai, a), (bi, b)) => (ai + bi, num.plus(a, b))
-        }).map {
+        reduceOptionIt[(Int, Any)](
+          it,
+          opt,
+          (1, _),
+          {
+            case ((ai, a), (bi, b)) => (ai + bi, num.plus(a, b))
+          }).map {
           case (count, sum) =>
             if (num.isInstanceOf[Fractional[_]])
               num.asInstanceOf[Fractional[Any]].div(sum, num.fromInt(count))

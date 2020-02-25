@@ -60,12 +60,14 @@ class GraphStageDocSpec extends AkkaSpec {
           // registered handlers.
           private var counter = 1
 
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
-              push(out, counter)
-              counter += 1
-            }
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                push(out, counter)
+                counter += 1
+              }
+            })
         }
     }
     //#custom-source-example
@@ -98,16 +100,20 @@ class GraphStageDocSpec extends AkkaSpec {
 
     override def createLogic(attr: Attributes): GraphStageLogic =
       new GraphStageLogic(shape) {
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            push(out, f(grab(in)))
-          }
-        })
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            pull(in)
-          }
-        })
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              push(out, f(grab(in)))
+            }
+          })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              pull(in)
+            }
+          })
       }
   }
   //#one-to-one
@@ -134,18 +140,22 @@ class GraphStageDocSpec extends AkkaSpec {
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new GraphStageLogic(shape) {
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            val elem = grab(in)
-            if (p(elem)) push(out, elem)
-            else pull(in)
-          }
-        })
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            pull(in)
-          }
-        })
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              val elem = grab(in)
+              if (p(elem)) push(out, elem)
+              else pull(in)
+            }
+          })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              pull(in)
+            }
+          })
       }
   }
   //#many-to-one
@@ -193,16 +203,18 @@ class GraphStageDocSpec extends AkkaSpec {
 
           }
         )
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            if (lastElem.isDefined) {
-              push(out, lastElem.get)
-              lastElem = None
-            } else {
-              pull(in)
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              if (lastElem.isDefined) {
+                push(out, lastElem.get)
+                lastElem = None
+              } else {
+                pull(in)
+              }
             }
-          }
-        })
+          })
       }
   }
   //#one-to-many
@@ -243,11 +255,13 @@ class GraphStageDocSpec extends AkkaSpec {
               }
             }
           )
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                pull(in)
+              }
+            })
         }
     }
     //#simpler-one-to-many
@@ -301,12 +315,16 @@ class GraphStageDocSpec extends AkkaSpec {
             switch.foreach(callback.invoke)
           }
 
-          setHandler(in, new InHandler {
-            override def onPush(): Unit = { push(out, grab(in)) }
-          })
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = { pull(in) }
-          })
+          setHandler(
+            in,
+            new InHandler {
+              override def onPush(): Unit = { push(out, grab(in)) }
+            })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = { pull(in) }
+            })
         }
     }
     //#async-side-channel
@@ -358,20 +376,24 @@ class GraphStageDocSpec extends AkkaSpec {
 
           var open = false
 
-          setHandler(in, new InHandler {
-            override def onPush(): Unit = {
-              val elem = grab(in)
-              if (open) pull(in)
-              else {
-                push(out, elem)
-                open = true
-                scheduleOnce(None, silencePeriod)
+          setHandler(
+            in,
+            new InHandler {
+              override def onPush(): Unit = {
+                val elem = grab(in)
+                if (open) pull(in)
+                else {
+                  push(out, elem)
+                  open = true
+                  scheduleOnce(None, silencePeriod)
+                }
               }
-            }
-          })
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = { pull(in) }
-          })
+            })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = { pull(in) }
+            })
 
           override protected def onTimer(timerKey: Any): Unit = {
             open = false
@@ -415,20 +437,24 @@ class GraphStageDocSpec extends AkkaSpec {
                 push(out, elem)
 
                 // replace handler with one just forwarding
-                setHandler(in, new InHandler {
-                  override def onPush(): Unit = {
-                    push(out, grab(in))
-                  }
-                })
+                setHandler(
+                  in,
+                  new InHandler {
+                    override def onPush(): Unit = {
+                      push(out, grab(in))
+                    }
+                  })
               }
             }
           )
 
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
-          })
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                pull(in)
+              }
+            })
 
         }
 

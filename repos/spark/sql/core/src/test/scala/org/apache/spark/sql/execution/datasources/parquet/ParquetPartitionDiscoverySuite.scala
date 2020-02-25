@@ -199,11 +199,13 @@ class ParquetPartitionDiscoverySuite
       assert(message.contains(expected))
     }
 
-    check("file://path/a=10", Some {
-      PartitionValues(
-        ArrayBuffer("a"),
-        ArrayBuffer(Literal.create(10, IntegerType)))
-    })
+    check(
+      "file://path/a=10",
+      Some {
+        PartitionValues(
+          ArrayBuffer("a"),
+          ArrayBuffer(Literal.create(10, IntegerType)))
+      })
 
     check(
       "file://path/a=10/b=hello/c=1.5",
@@ -217,11 +219,13 @@ class ParquetPartitionDiscoverySuite
       }
     )
 
-    check("file://path/a=10/b_hello/c=1.5", Some {
-      PartitionValues(
-        ArrayBuffer("c"),
-        ArrayBuffer(Literal.create(1.5, DoubleType)))
-    })
+    check(
+      "file://path/a=10/b_hello/c=1.5",
+      Some {
+        PartitionValues(
+          ArrayBuffer("c"),
+          ArrayBuffer(Literal.create(1.5, DoubleType)))
+      })
 
     check("file:///", None)
     check("file:///path/_temporary", None)
@@ -489,27 +493,35 @@ class ParquetPartitionDiscoverySuite
       sqlContext.read.parquet(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", "bar")
-        } yield Row(i, i.toString, pi, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", "bar")
+          } yield Row(i, i.toString, pi, ps))
 
-        checkAnswer(sql("SELECT intField, pi FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          _ <- Seq("foo", "bar")
-        } yield Row(i, pi))
+        checkAnswer(
+          sql("SELECT intField, pi FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            _ <- Seq("foo", "bar")
+          } yield Row(i, pi))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi = 1"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", "bar")
-        } yield Row(i, i.toString, 1, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi = 1"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", "bar")
+          } yield Row(i, i.toString, 1, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps = 'foo'"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, i.toString, pi, "foo"))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps = 'foo'"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, i.toString, pi, "foo"))
       }
     }
   }
@@ -528,27 +540,35 @@ class ParquetPartitionDiscoverySuite
       sqlContext.read.parquet(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", "bar")
-        } yield Row(i, pi, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", "bar")
+          } yield Row(i, pi, i.toString, ps))
 
-        checkAnswer(sql("SELECT intField, pi FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          _ <- Seq("foo", "bar")
-        } yield Row(i, pi))
+        checkAnswer(
+          sql("SELECT intField, pi FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            _ <- Seq("foo", "bar")
+          } yield Row(i, pi))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi = 1"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", "bar")
-        } yield Row(i, 1, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi = 1"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", "bar")
+          } yield Row(i, 1, i.toString, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps = 'foo'"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, pi, i.toString, "foo"))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps = 'foo'"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, pi, i.toString, "foo"))
       }
     }
   }
@@ -570,21 +590,27 @@ class ParquetPartitionDiscoverySuite
       parquetRelation.registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, null.asInstanceOf[Integer])
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, i.toString, pi, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, null.asInstanceOf[Integer])
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, i.toString, pi, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE pi IS NULL"), for {
-          i <- 1 to 10
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, i.toString, null, ps))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE pi IS NULL"),
+          for {
+            i <- 1 to 10
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, i.toString, null, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps IS NULL"), for {
-          i <- 1 to 10
-          pi <- Seq(1, null.asInstanceOf[Integer])
-        } yield Row(i, i.toString, pi, null))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps IS NULL"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, null.asInstanceOf[Integer])
+          } yield Row(i, i.toString, pi, null))
       }
     }
   }
@@ -606,16 +632,20 @@ class ParquetPartitionDiscoverySuite
       parquetRelation.registerTempTable("t")
 
       withTempTable("t") {
-        checkAnswer(sql("SELECT * FROM t"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-          ps <- Seq("foo", null.asInstanceOf[String])
-        } yield Row(i, pi, i.toString, ps))
+        checkAnswer(
+          sql("SELECT * FROM t"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+            ps <- Seq("foo", null.asInstanceOf[String])
+          } yield Row(i, pi, i.toString, ps))
 
-        checkAnswer(sql("SELECT * FROM t WHERE ps IS NULL"), for {
-          i <- 1 to 10
-          pi <- Seq(1, 2)
-        } yield Row(i, pi, i.toString, null))
+        checkAnswer(
+          sql("SELECT * FROM t WHERE ps IS NULL"),
+          for {
+            i <- 1 to 10
+            pi <- Seq(1, 2)
+          } yield Row(i, pi, i.toString, null))
       }
     }
   }

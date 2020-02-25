@@ -74,11 +74,14 @@ class Partition(
     (replicaId == localBrokerId)
   val tags = Map("topic" -> topic, "partition" -> partitionId.toString)
 
-  newGauge("UnderReplicated", new Gauge[Int] {
-    def value = {
-      if (isUnderReplicated) 1 else 0
-    }
-  }, tags)
+  newGauge(
+    "UnderReplicated",
+    new Gauge[Int] {
+      def value = {
+        if (isUnderReplicated) 1 else 0
+      }
+    },
+    tags)
 
   def isUnderReplicated(): Boolean = {
     leaderReplicaIfLocal() match {

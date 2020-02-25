@@ -206,40 +206,52 @@ abstract class MappedDecimal[T <: Mapper[T]](
       accessor: Method,
       columnName: String): (T, Date) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedDecimal[T] =>
-          f.wholeSet(
-            if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDecimal[T] =>
+            f.wholeSet(
+              if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
+        })
 
   def buildSetStringValue(
       accessor: Method,
       columnName: String): (T, String) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedDecimal[T] =>
-          f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDecimal[T] =>
+            f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
+        })
 
   def buildSetLongValue(
       accessor: Method,
       columnName: String): (T, Long, Boolean) => Unit =
     (inst, v, isNull) =>
-      doField(inst, accessor, {
-        case f: MappedDecimal[T] =>
-          f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDecimal[T] =>
+            f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
+        })
 
   def buildSetActualValue(
       accessor: Method,
       data: AnyRef,
       columnName: String): (T, AnyRef) => Unit =
     (inst, v) =>
-      doField(inst, accessor, {
-        case f: MappedDecimal[T] =>
-          f.wholeSet(
-            if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
-      })
+      doField(
+        inst,
+        accessor,
+        {
+          case f: MappedDecimal[T] =>
+            f.wholeSet(
+              if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
+        })
 
   /**
     * Returns the SQL creation string for this field. See the note at the

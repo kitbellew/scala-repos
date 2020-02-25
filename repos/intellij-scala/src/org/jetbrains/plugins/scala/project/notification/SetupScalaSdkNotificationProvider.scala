@@ -27,11 +27,13 @@ class SetupScalaSdkNotificationProvider(
 
   project.getMessageBus
     .connect(project)
-    .subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter {
-      override def rootsChanged(event: ModuleRootEvent) {
-        notifications.updateAllNotifications()
-      }
-    })
+    .subscribe(
+      ProjectTopics.PROJECT_ROOTS,
+      new ModuleRootAdapter {
+        override def rootsChanged(event: ModuleRootEvent) {
+          notifications.updateAllNotifications()
+        }
+      })
 
   override def getKey = ProviderKey
 
@@ -67,11 +69,13 @@ object SetupScalaSdkNotificationProvider {
       file: PsiFile): EditorNotificationPanel = {
     val panel = new EditorNotificationPanel()
     panel.setText("No Scala SDK in module")
-    panel.createActionLabel("Setup Scala SDK", new Runnable {
-      override def run() {
-        setupSdk(panel, project, file)
-      }
-    })
+    panel.createActionLabel(
+      "Setup Scala SDK",
+      new Runnable {
+        override def run() {
+          setupSdk(panel, project, file)
+        }
+      })
     panel
   }
 

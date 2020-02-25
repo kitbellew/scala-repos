@@ -437,11 +437,13 @@ private[sql] object StatFunctions extends Logging {
     df.select(columns: _*)
       .queryExecution
       .toRdd
-      .aggregate(new CovarianceCounter)(seqOp = (counter, row) => {
-        counter.add(row.getDouble(0), row.getDouble(1))
-      }, combOp = (baseCounter, other) => {
-        baseCounter.merge(other)
-      })
+      .aggregate(new CovarianceCounter)(
+        seqOp = (counter, row) => {
+          counter.add(row.getDouble(0), row.getDouble(1))
+        },
+        combOp = (baseCounter, other) => {
+          baseCounter.merge(other)
+        })
   }
 
   /**

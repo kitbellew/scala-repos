@@ -316,11 +316,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       assert(
         labelSym.isLabel,
         s"trying to map a non-label symbol to an asm.Label, at: ${labelSym.pos}")
-      jumpDest.getOrElse(labelSym, {
-        val pp = new asm.Label
-        jumpDest += (labelSym -> pp)
-        pp
-      })
+      jumpDest.getOrElse(
+        labelSym, {
+          val pp = new asm.Label
+          jumpDest += (labelSym -> pp)
+          pp
+        })
     }
 
     /*

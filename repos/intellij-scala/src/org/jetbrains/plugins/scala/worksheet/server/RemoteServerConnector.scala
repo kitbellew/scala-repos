@@ -96,11 +96,14 @@ class RemoteServerConnector(
           }
 
           new NonServerRunner(project, Some(errorHandler))
-            .buildProcess(encodedArgs, (text: String) => {
-              val event =
-                Event.fromBytes(Base64Converter.decode(text.getBytes("UTF-8")))
-              eventClient.process(event)
-            })
+            .buildProcess(
+              encodedArgs,
+              (text: String) => {
+                val event =
+                  Event.fromBytes(
+                    Base64Converter.decode(text.getBytes("UTF-8")))
+                eventClient.process(event)
+              })
       }
 
       if (worksheetProcess == null) return ExitCode.ABORT

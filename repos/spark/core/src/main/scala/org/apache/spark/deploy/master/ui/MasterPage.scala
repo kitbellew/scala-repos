@@ -46,17 +46,21 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   }
 
   def handleAppKillRequest(request: HttpServletRequest): Unit = {
-    handleKillRequest(request, id => {
-      parent.master.idToApp.get(id).foreach { app =>
-        parent.master.removeApplication(app, ApplicationState.KILLED)
-      }
-    })
+    handleKillRequest(
+      request,
+      id => {
+        parent.master.idToApp.get(id).foreach { app =>
+          parent.master.removeApplication(app, ApplicationState.KILLED)
+        }
+      })
   }
 
   def handleDriverKillRequest(request: HttpServletRequest): Unit = {
-    handleKillRequest(request, id => {
-      master.ask[KillDriverResponse](RequestKillDriver(id))
-    })
+    handleKillRequest(
+      request,
+      id => {
+        master.ask[KillDriverResponse](RequestKillDriver(id))
+      })
   }
 
   private def handleKillRequest(

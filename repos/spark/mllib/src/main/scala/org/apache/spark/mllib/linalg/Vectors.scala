@@ -344,10 +344,12 @@ object Vectors {
   def sparse(
       size: Int,
       elements: JavaIterable[(JavaInteger, JavaDouble)]): Vector = {
-    sparse(size, elements.asScala.map {
-      case (i, x) =>
-        (i.intValue(), x.doubleValue())
-    }.toSeq)
+    sparse(
+      size,
+      elements.asScala.map {
+        case (i, x) =>
+          (i.intValue(), x.doubleValue())
+      }.toSeq)
   }
 
   /**

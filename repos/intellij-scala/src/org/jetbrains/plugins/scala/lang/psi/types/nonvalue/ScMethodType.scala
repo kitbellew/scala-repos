@@ -110,29 +110,37 @@ class TypeParameter(
     val upperType: () => ScType,
     val ptp: PsiTypeParameter) {
   def this(ptp: PsiTypeParameter) {
-    this(ptp match {
-      case tp: ScTypeParam => tp.name
-      case _               => ptp.getName
-    }, ptp match {
-      case tp: ScTypeParam => tp.typeParameters.map(new TypeParameter(_))
-      case _               => Seq.empty
-    }, ptp match {
-      case tp: ScTypeParam => () => tp.lowerBound.getOrNothing
-      case _               => () => Nothing //todo: lower type?
-    }, ptp match {
-      case tp: ScTypeParam => () => tp.upperBound.getOrAny
-      case _               => () => Any //todo: upper type?
-    }, ptp)
+    this(
+      ptp match {
+        case tp: ScTypeParam => tp.name
+        case _               => ptp.getName
+      },
+      ptp match {
+        case tp: ScTypeParam => tp.typeParameters.map(new TypeParameter(_))
+        case _               => Seq.empty
+      },
+      ptp match {
+        case tp: ScTypeParam => () => tp.lowerBound.getOrNothing
+        case _               => () => Nothing //todo: lower type?
+      },
+      ptp match {
+        case tp: ScTypeParam => () => tp.upperBound.getOrAny
+        case _               => () => Any //todo: upper type?
+      },
+      ptp)
   }
 
   def update(fun: ScType => ScType): TypeParameter = {
-    new TypeParameter(name, typeParams.map(_.update(fun)), {
-      val res = fun(lowerType())
-      () => res
-    }, {
-      val res = fun(upperType())
-      () => res
-    }, ptp)
+    new TypeParameter(
+      name,
+      typeParams.map(_.update(fun)), {
+        val res = fun(lowerType())
+        () => res
+      }, {
+        val res = fun(upperType())
+        () => res
+      },
+      ptp)
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeParameter]
@@ -539,24 +547,21 @@ case class ScTypePolymorphicType(
             new collection.immutable.HashMap[(String, PsiElement), ScType] ++
               typeParameters
                 .zip(p.typeParameters)
-                .map({
-                  tuple =>
-                    (
-                      (
-                        tuple._1.name,
-                        ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                      new ScTypeParameterType(
-                        tuple._2.name,
-                        tuple._2.ptp match {
-                          case p: ScTypeParam =>
-                            p.typeParameters.toList.map {
-                              new ScTypeParameterType(_, ScSubstitutor.empty)
-                            }
-                          case _ => Nil
-                        },
-                        new Suspension(tuple._2.lowerType),
-                        new Suspension(tuple._2.upperType),
-                        tuple._2.ptp))
+                .map({ tuple =>
+                  (
+                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                    new ScTypeParameterType(
+                      tuple._2.name,
+                      tuple._2.ptp match {
+                        case p: ScTypeParam =>
+                          p.typeParameters.toList.map {
+                            new ScTypeParameterType(_, ScSubstitutor.empty)
+                          }
+                        case _ => Nil
+                      },
+                      new Suspension(tuple._2.lowerType),
+                      new Suspension(tuple._2.upperType),
+                      tuple._2.ptp))
                 }),
             Map.empty,
             None)

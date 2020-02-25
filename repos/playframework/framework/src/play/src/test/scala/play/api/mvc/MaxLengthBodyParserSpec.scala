@@ -39,13 +39,15 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
       Sink
         .seq[ByteString]
         .mapMaterializedValue(future =>
-          future.transform({ bytes =>
-            bodyParsed.success(())
-            Right(bytes.fold(ByteString.empty)(_ ++ _))
-          }, { t =>
-            bodyParsed.failure(t)
-            t
-          })))
+          future.transform(
+            { bytes =>
+              bodyParsed.success(())
+              Right(bytes.fold(ByteString.empty)(_ ++ _))
+            },
+            { t =>
+              bodyParsed.failure(t)
+              t
+            })))
     (parser, bodyParsed.future)
   }
 

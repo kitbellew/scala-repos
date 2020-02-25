@@ -46,9 +46,11 @@ trait StringHelper { self: NumberHelper =>
 
   def markdownLinks(text: String) = Html {
     nl2br {
-      markdownLinkRegex.replaceAllIn(escape(text), m => {
-        s"""<a href="${m group 2}">${m group 1}</a>"""
-      })
+      markdownLinkRegex.replaceAllIn(
+        escape(text),
+        m => {
+          s"""<a href="${m group 2}">${m group 1}</a>"""
+        })
     }
   }
 

@@ -422,9 +422,11 @@ class FileStreamSourceStressTestSuite
 
     val textSource = createFileStreamSource("text", src.getCanonicalPath)
     val ds = textSource.toDS[String]().map(_.toInt + 1)
-    runStressTest(ds, data => {
-      AddTextFileData(textSource, data.mkString("\n"), src, tmp)
-    })
+    runStressTest(
+      ds,
+      data => {
+        AddTextFileData(textSource, data.mkString("\n"), src, tmp)
+      })
 
     Utils.deleteRecursively(src)
     Utils.deleteRecursively(tmp)

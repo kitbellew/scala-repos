@@ -85,9 +85,11 @@ object SVDPlusPlus {
     edges.unpersist()
 
     // Calculate initial bias and norm
-    val t0 = g.aggregateMessages[(Long, Double)](ctx => {
-      ctx.sendToSrc((1L, ctx.attr)); ctx.sendToDst((1L, ctx.attr))
-    }, (g1, g2) => (g1._1 + g2._1, g1._2 + g2._2))
+    val t0 = g.aggregateMessages[(Long, Double)](
+      ctx => {
+        ctx.sendToSrc((1L, ctx.attr)); ctx.sendToDst((1L, ctx.attr))
+      },
+      (g1, g2) => (g1._1 + g2._1, g1._2 + g2._2))
 
     val gJoinT0 = g
       .outerJoinVertices(t0) {

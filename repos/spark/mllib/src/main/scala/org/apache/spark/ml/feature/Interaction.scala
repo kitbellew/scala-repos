@@ -94,14 +94,16 @@ class Interaction @Since("1.6.0") (override val uid: String)
         indices = ArrayBuilder.make[Int]
         values = ArrayBuilder.make[Double]
         size *= currentEncoder.outputSize
-        currentEncoder.foreachNonzeroOutput(row(featureIndex), (i, a) => {
-          var j = 0
-          while (j < prevIndices.length) {
-            indices += prevIndices(j) + i * prevSize
-            values += prevValues(j) * a
-            j += 1
-          }
-        })
+        currentEncoder.foreachNonzeroOutput(
+          row(featureIndex),
+          (i, a) => {
+            var j = 0
+            while (j < prevIndices.length) {
+              indices += prevIndices(j) + i * prevSize
+              values += prevValues(j) * a
+              j += 1
+            }
+          })
         featureIndex -= 1
       }
       Vectors.sparse(size, indices.result(), values.result()).compressed

@@ -474,9 +474,11 @@ private[hive] trait HiveInspectors {
         if (o != null) {
           val array = o.asInstanceOf[ArrayData]
           val values = new java.util.ArrayList[Any](array.numElements())
-          array.foreach(elementType, (_, e) => {
-            values.add(wrapper(e))
-          })
+          array.foreach(
+            elementType,
+            (_, e) => {
+              values.add(wrapper(e))
+            })
           values
         } else {
           null
@@ -493,9 +495,12 @@ private[hive] trait HiveInspectors {
         if (o != null) {
           val map = o.asInstanceOf[MapData]
           val jmap = new java.util.HashMap[Any, Any](map.numElements())
-          map.foreach(mt.keyType, mt.valueType, (k, v) => {
-            jmap.put(keyWrapper(k), valueWrapper(v))
-          })
+          map.foreach(
+            mt.keyType,
+            mt.valueType,
+            (k, v) => {
+              jmap.put(keyWrapper(k), valueWrapper(v))
+            })
           jmap
         } else {
           null
@@ -632,9 +637,11 @@ private[hive] trait HiveInspectors {
       val list = new java.util.ArrayList[Object]
       val tpe = dataType.asInstanceOf[ArrayType].elementType
       a.asInstanceOf[ArrayData]
-        .foreach(tpe, (_, e) => {
-          list.add(wrap(e, x.getListElementObjectInspector, tpe))
-        })
+        .foreach(
+          tpe,
+          (_, e) => {
+            list.add(wrap(e, x.getListElementObjectInspector, tpe))
+          })
       list
     case x: MapObjectInspector =>
       val keyType = dataType.asInstanceOf[MapType].keyType
@@ -644,11 +651,14 @@ private[hive] trait HiveInspectors {
       // Some UDFs seem to assume we pass in a HashMap.
       val hashMap = new java.util.HashMap[Any, Any](map.numElements())
 
-      map.foreach(keyType, valueType, (k, v) => {
-        hashMap.put(
-          wrap(k, x.getMapKeyObjectInspector, keyType),
-          wrap(v, x.getMapValueObjectInspector, valueType))
-      })
+      map.foreach(
+        keyType,
+        valueType,
+        (k, v) => {
+          hashMap.put(
+            wrap(k, x.getMapKeyObjectInspector, keyType),
+            wrap(v, x.getMapValueObjectInspector, valueType))
+        })
 
       hashMap
   }
@@ -758,9 +768,11 @@ private[hive] trait HiveInspectors {
         val list = new java.util.ArrayList[Object]()
         value
           .asInstanceOf[ArrayData]
-          .foreach(dt, (_, e) => {
-            list.add(wrap(e, listObjectInspector, dt))
-          })
+          .foreach(
+            dt,
+            (_, e) => {
+              list.add(wrap(e, listObjectInspector, dt))
+            })
         ObjectInspectorFactory
           .getStandardConstantListObjectInspector(listObjectInspector, list)
       }
@@ -774,9 +786,12 @@ private[hive] trait HiveInspectors {
         val map = value.asInstanceOf[MapData]
         val jmap = new java.util.HashMap[Any, Any](map.numElements())
 
-        map.foreach(keyType, valueType, (k, v) => {
-          jmap.put(wrap(k, keyOI, keyType), wrap(v, valueOI, valueType))
-        })
+        map.foreach(
+          keyType,
+          valueType,
+          (k, v) => {
+            jmap.put(wrap(k, keyOI, keyType), wrap(v, valueOI, valueType))
+          })
 
         ObjectInspectorFactory
           .getStandardConstantMapObjectInspector(keyOI, valueOI, jmap)

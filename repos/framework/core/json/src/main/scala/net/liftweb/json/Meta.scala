@@ -127,14 +127,16 @@ private[json] object Meta {
         context: Option[Context]): List[DeclaredConstructor] = {
       Reflection.constructors(t, formats.parameterNameReader, context).map {
         case (c, args) =>
-          DeclaredConstructor(c, args.map {
-            case (name, t) =>
-              toArg(
-                unmangleName(name),
-                t,
-                visited,
-                Context(name, c.getDeclaringClass, args))
-          })
+          DeclaredConstructor(
+            c,
+            args.map {
+              case (name, t) =>
+                toArg(
+                  unmangleName(name),
+                  t,
+                  visited,
+                  Context(name, c.getDeclaringClass, args))
+            })
       }
     }
 
@@ -455,10 +457,14 @@ private[json] object Meta {
           Modifier.isStatic(f.getModifiers) || Modifier.isTransient(
             f.getModifiers))
         .map(f =>
-          (f.getName, TypeInfo(f.getType, f.getGenericType match {
-            case p: ParameterizedType => Some(p)
-            case _                    => None
-          })))
+          (
+            f.getName,
+            TypeInfo(
+              f.getType,
+              f.getGenericType match {
+                case p: ParameterizedType => Some(p)
+                case _                    => None
+              })))
       fs ::: (if (clazz.getSuperclass == null) Nil
               else fields(clazz.getSuperclass))
     }
