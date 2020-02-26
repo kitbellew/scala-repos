@@ -893,8 +893,8 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     * Represents a connection pool to a specific target host and pool configuration.
     */
   final case class HostConnectionPool private[http] (
-      setup: HostConnectionPoolSetup)(
-      private[http] val gatewayFuture: Future[PoolGateway]) { // enable test access
+      setup: HostConnectionPoolSetup)(private[http] val gatewayFuture: Future[
+    PoolGateway]) { // enable test access
 
     /**
       * Asynchronously triggers the shutdown of the host connection pool.

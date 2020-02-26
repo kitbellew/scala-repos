@@ -20,8 +20,27 @@ object Test {
         Q,
         R,
         S,
-        T])(
-      fun: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => Unit) {}
+        T])(fun: (
+      A,
+      B,
+      C,
+      D,
+      E,
+      F,
+      G,
+      H,
+      I,
+      J,
+      K,
+      L,
+      M,
+      N,
+      O,
+      P,
+      Q,
+      R,
+      S,
+      T) => Unit) {}
   def g[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       table: Tuple21[
         A,

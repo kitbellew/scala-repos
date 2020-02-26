@@ -341,20 +341,24 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     }
 
     object takeLeft
-        extends Substring("takeLeft")(
-          { (s, n) => s.substring(0, math.min(n, s.length)) })
+        extends Substring("takeLeft")({ (s, n) =>
+          s.substring(0, math.min(n, s.length))
+        })
 
     object takeRight
-        extends Substring("takeRight")(
-          { (s, n) => s.substring(math.max(s.length - n, 0)) })
+        extends Substring("takeRight")({ (s, n) =>
+          s.substring(math.max(s.length - n, 0))
+        })
 
     object dropLeft
-        extends Substring("dropLeft")(
-          { (s, n) => s.substring(math.min(n, s.length)) })
+        extends Substring("dropLeft")({ (s, n) =>
+          s.substring(math.min(n, s.length))
+        })
 
     object dropRight
-        extends Substring("dropRight")(
-          { (s, n) => s.substring(0, math.max(0, s.length - n)) })
+        extends Substring("dropRight")({ (s, n) =>
+          s.substring(0, math.max(0, s.length - n))
+        })
 
     class Op2SSL(name: String, f: (String, String) => Long)
         extends Op2F2(StringNamespace, name) {

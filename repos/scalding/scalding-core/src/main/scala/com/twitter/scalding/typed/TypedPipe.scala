@@ -1295,10 +1295,9 @@ case class WithDescriptionTypedPipe[T](
   * import Syntax.joinOnMappablePipe
   */
 class MappablePipeJoinEnrichment[T](pipe: TypedPipe[T]) {
-  def joinBy[K, U](smaller: TypedPipe[U])(
-      g: (T => K),
-      h: (U => K),
-      reducers: Int = -1)(implicit ord: Ordering[K]): CoGrouped[K, (T, U)] =
+  def joinBy[K, U](
+      smaller: TypedPipe[U])(g: (T => K), h: (U => K), reducers: Int = -1)(
+      implicit ord: Ordering[K]): CoGrouped[K, (T, U)] =
     pipe.groupBy(g).withReducers(reducers).join(smaller.groupBy(h))
   def leftJoinBy[K, U](
       smaller: TypedPipe[U])(g: (T => K), h: (U => K), reducers: Int = -1)(

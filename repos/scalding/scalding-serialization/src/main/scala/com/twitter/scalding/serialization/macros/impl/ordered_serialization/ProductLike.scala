@@ -21,11 +21,10 @@ import scala.reflect.macros.Context
 import com.twitter.scalding._
 
 object ProductLike {
-  def compareBinary(
-      c: Context)(inputStreamA: c.TermName, inputStreamB: c.TermName)(
-      elementData: List[
-        (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])])
-      : c.Tree = {
+  def compareBinary(c: Context)(
+      inputStreamA: c.TermName,
+      inputStreamB: c.TermName)(elementData: List[
+    (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])]): c.Tree = {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
 
@@ -50,10 +49,8 @@ object ProductLike {
       .getOrElse(q"0")
   }
 
-  def hash(c: Context)(element: c.TermName)(
-      elementData: List[
-        (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])])
-      : c.Tree = {
+  def hash(c: Context)(element: c.TermName)(elementData: List[
+    (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])]): c.Tree = {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
 
@@ -76,10 +73,10 @@ object ProductLike {
     """
   }
 
-  def put(c: Context)(inputStream: c.TermName, element: c.TermName)(
-      elementData: List[
-        (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])])
-      : c.Tree = {
+  def put(c: Context)(
+      inputStream: c.TermName,
+      element: c.TermName)(elementData: List[
+    (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])]): c.Tree = {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
     val innerElement = freshT("innerElement")
@@ -174,10 +171,9 @@ object ProductLike {
     }
   }
 
-  def compare(c: Context)(elementA: c.TermName, elementB: c.TermName)(
-      elementData: List[
-        (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])])
-      : c.Tree = {
+  def compare(
+      c: Context)(elementA: c.TermName, elementB: c.TermName)(elementData: List[
+    (c.universe.Type, c.universe.TermName, TreeOrderedBuf[c.type])]): c.Tree = {
     import c.universe._
 
     def freshT(id: String) = newTermName(c.fresh(id))

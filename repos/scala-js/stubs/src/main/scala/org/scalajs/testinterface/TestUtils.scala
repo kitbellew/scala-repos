@@ -19,9 +19,9 @@ object TestUtils {
       args: Seq[AnyRef]): AnyRef =
     macro newInstance_impl
 
-  def newInstance_impl(c: Context)(
-      name: c.Expr[String],
-      loader: c.Expr[ClassLoader])(args: c.Expr[Seq[AnyRef]]): c.Expr[AnyRef] =
+  def newInstance_impl(
+      c: Context)(name: c.Expr[String], loader: c.Expr[ClassLoader])(
+      args: c.Expr[Seq[AnyRef]]): c.Expr[AnyRef] =
     c.universe.reify {
 
       val clazz = loader.splice.loadClass(name.splice)

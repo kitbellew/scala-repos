@@ -313,20 +313,18 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           with EnumExpression[Enumeration#Value]
           with SquerylRecordNonNumericalExpression[Enumeration#Value]
       case None =>
-        new ConstantExpressionNode[Enumeration#Value](getValue(f).orNull)(
-          {
-            val enumOption = f flatMap { f1: TypedField[EnumType#Value] =>
-              f1.valueBox.toOption
+        new ConstantExpressionNode[Enumeration#Value](getValue(f).orNull)({
+          val enumOption = f flatMap { f1: TypedField[EnumType#Value] =>
+            f1.valueBox.toOption
+          }
+          val outMapperOption: Option[OutMapper[Enumeration#Value]] =
+            enumOption map { e: EnumType#Value =>
+              outMapperFromEnumValue(e): OutMapper[
+                Enumeration#Value
+              ] /*crashes scala 2.9.1 without explicit type */
             }
-            val outMapperOption: Option[OutMapper[Enumeration#Value]] =
-              enumOption map { e: EnumType#Value =>
-                outMapperFromEnumValue(e): OutMapper[
-                  Enumeration#Value
-                ] /*crashes scala 2.9.1 without explicit type */
-              }
-            outMapperOption.orNull
-          })
-          with EnumExpression[Enumeration#Value]
+          outMapperOption.orNull
+        }) with EnumExpression[Enumeration#Value]
           with SquerylRecordNonNumericalExpression[Enumeration#Value]
     }
 

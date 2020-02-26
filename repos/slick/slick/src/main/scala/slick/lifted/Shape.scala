@@ -391,10 +391,9 @@ object ShapedValue {
   @inline implicit def shapedValueShape[T, U, Level <: ShapeLevel] =
     RepShape[Level, ShapedValue[T, U], U]
 
-  def mapToImpl[R <: Product with Serializable, U](
-      c: Context {
-        type PrefixType = ShapedValue[_, U]
-      })(rCT: c.Expr[ClassTag[R]])(
+  def mapToImpl[R <: Product with Serializable, U](c: Context {
+    type PrefixType = ShapedValue[_, U]
+  })(rCT: c.Expr[ClassTag[R]])(
       implicit rTag: c.WeakTypeTag[R],
       uTag: c.WeakTypeTag[U]): c.Tree = {
     import c.universe._

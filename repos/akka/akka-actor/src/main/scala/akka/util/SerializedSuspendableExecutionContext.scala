@@ -16,11 +16,10 @@ private[akka] object SerializedSuspendableExecutionContext {
 
   def apply(throughput: Int)(implicit context: ExecutionContext)
       : SerializedSuspendableExecutionContext =
-    new SerializedSuspendableExecutionContext(throughput)(
-      context match {
-        case s: SerializedSuspendableExecutionContext ⇒ s.context
-        case other ⇒ other
-      })
+    new SerializedSuspendableExecutionContext(throughput)(context match {
+      case s: SerializedSuspendableExecutionContext ⇒ s.context
+      case other ⇒ other
+    })
 }
 
 /**

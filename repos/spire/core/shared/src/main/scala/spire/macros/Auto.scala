@@ -283,9 +283,9 @@ object ScalaAutoMacros {
       c: Context)(z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] =
     ScalaAlgebra[c.type](c).Ring[A](z, o)
 
-  def euclideanRingImpl[A: c.WeakTypeTag](c: Context)(
-      z: c.Expr[A],
-      o: c.Expr[A])(ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] =
+  def euclideanRingImpl[A: c.WeakTypeTag](
+      c: Context)(z: c.Expr[A], o: c.Expr[A])(
+      ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] =
     ScalaAlgebra[c.type](c).EuclideanRing[A](z, o)(ev)
 
   def fieldImpl[A: c.WeakTypeTag](c: Context)(z: c.Expr[A], o: c.Expr[A])(
@@ -335,9 +335,9 @@ object JavaAutoMacros {
       c: Context)(z: c.Expr[A], o: c.Expr[A]): c.Expr[Ring[A]] =
     JavaAlgebra[c.type](c).Ring[A](z, o)
 
-  def euclideanRingImpl[A: c.WeakTypeTag](c: Context)(
-      z: c.Expr[A],
-      o: c.Expr[A])(ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] =
+  def euclideanRingImpl[A: c.WeakTypeTag](
+      c: Context)(z: c.Expr[A], o: c.Expr[A])(
+      ev: c.Expr[Eq[A]]): c.Expr[EuclideanRing[A]] =
     JavaAlgebra[c.type](c).EuclideanRing[A](z, o)(ev)
 
   def fieldImpl[A: c.WeakTypeTag](c: Context)(z: c.Expr[A], o: c.Expr[A])(

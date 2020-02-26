@@ -61,15 +61,14 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
   def auth[A](accountManager: AccountManager[Future])(
       service: HttpService[A, Account => Future[HttpResponse[JValue]]])(
       implicit ctx: ExecutionContext) = {
-    new AuthenticationService[A, HttpResponse[JValue]](accountManager, service)(
-      {
-        case NotProvided =>
-          HttpResponse(
-            Unauthorized,
-            headers = HttpHeaders(List(("WWW-Authenticate", "Basic"))))
-        case AuthMismatch(message) =>
-          HttpResponse(Unauthorized, content = Some(message.serialize))
-      })
+    new AuthenticationService[A, HttpResponse[JValue]](accountManager, service)({
+      case NotProvided =>
+        HttpResponse(
+          Unauthorized,
+          headers = HttpHeaders(List(("WWW-Authenticate", "Basic"))))
+      case AuthMismatch(message) =>
+        HttpResponse(Unauthorized, content = Some(message.serialize))
+    })
   }
 
   sealed trait AuthenticationFailure

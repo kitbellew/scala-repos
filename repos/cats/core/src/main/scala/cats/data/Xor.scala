@@ -184,9 +184,9 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
 
   implicit def xorBifunctor: Bitraverse[Xor] =
     new Bitraverse[Xor] {
-      def bitraverse[G[_], A, B, C, D](fab: Xor[A, B])(
-          f: A => G[C],
-          g: B => G[D])(implicit G: Applicative[G]): G[Xor[C, D]] =
+      def bitraverse[G[_], A, B, C, D](
+          fab: Xor[A, B])(f: A => G[C], g: B => G[D])(
+          implicit G: Applicative[G]): G[Xor[C, D]] =
         fab match {
           case Xor.Left(a)  => G.map(f(a))(Xor.left)
           case Xor.Right(b) => G.map(g(b))(Xor.right)

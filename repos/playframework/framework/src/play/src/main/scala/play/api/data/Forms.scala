@@ -389,11 +389,9 @@ object Forms {
         A13,
         A14,
         A15,
-        R])(
-      unapply: Function1[
-        R,
-        Option[
-          (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
+        R])(unapply: Function1[
+    R,
+    Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
       : Mapping[R] = {
     new ObjectMapping15(
       apply,
@@ -466,27 +464,11 @@ object Forms {
         A14,
         A15,
         A16,
-        R])(
-      unapply: Function1[
-        R,
-        Option[
-          (
-              A1,
-              A2,
-              A3,
-              A4,
-              A5,
-              A6,
-              A7,
-              A8,
-              A9,
-              A10,
-              A11,
-              A12,
-              A13,
-              A14,
-              A15,
-              A16)]]): Mapping[R] = {
+        R])(unapply: Function1[
+    R,
+    Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]])
+      : Mapping[R] = {
     new ObjectMapping16(
       apply,
       unapply,
