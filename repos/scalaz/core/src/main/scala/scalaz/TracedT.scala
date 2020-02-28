@@ -7,8 +7,8 @@ final case class TracedT[W[_], A, B](run: W[A => B]) {
   def map[C](f: B => C)(implicit W: Functor[W]): TracedT[W, A, C] =
     TracedT(W.map(run)(_ andThen f))
 
-  def cobind[C](f: TracedT[W, A, B] => C)(
-      implicit W: Cobind[W],
+  def cobind[C](f: TracedT[W, A, B] => C)(implicit
+      W: Cobind[W],
       A: Semigroup[A]): TracedT[W, A, C] =
     TracedT(
       W.extend(run) { wf => m =>
@@ -119,8 +119,7 @@ sealed abstract class TracedTInstances extends TracedTInstances0 {
 
 object TracedT extends TracedTInstances {
 
-  def tracedTU[WAB, AB, A0, B0](wab: WAB)(
-      implicit
+  def tracedTU[WAB, AB, A0, B0](wab: WAB)(implicit
       U1: Unapply[Functor, WAB] { type A = AB },
       U2: Unapply2[Profunctor, AB] { type A = A0; type B = B0 },
       L: Leibniz.===[AB, A0 => B0]): TracedT[U1.M, A0, B0] =

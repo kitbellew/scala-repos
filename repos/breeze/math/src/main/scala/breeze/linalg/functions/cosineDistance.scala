@@ -8,8 +8,8 @@ import breeze.linalg.operators.OpMulInner
   * The cosine distance between two points: cosineDistance(a,b) = (a dot b)/(norm(a) * norm(b))
   */
 object cosineDistance extends UFunc {
-  implicit def cosineDistanceFromDotProductAndNorm[T, U](
-      implicit dot: OpMulInner.Impl2[T, U, Double],
+  implicit def cosineDistanceFromDotProductAndNorm[T, U](implicit
+      dot: OpMulInner.Impl2[T, U, Double],
       normT: norm.Impl[T, Double],
       normU: norm.Impl[U, Double]): Impl2[T, U, Double] = {
     new Impl2[T, U, Double] {

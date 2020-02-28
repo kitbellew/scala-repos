@@ -6,8 +6,8 @@ import reflect.ClassTag
 
 object Test {
 
-  def printResult[A, B](msg: String, obj: A, expected: B)(
-      implicit tag: ClassTag[A],
+  def printResult[A, B](msg: String, obj: A, expected: B)(implicit
+      tag: ClassTag[A],
       tag2: ClassTag[B]) = {
     print("  :" + msg + ": ")
     val isArray = obj match {

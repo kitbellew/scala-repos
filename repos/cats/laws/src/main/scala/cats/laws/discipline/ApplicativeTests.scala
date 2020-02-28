@@ -10,8 +10,7 @@ import Prop._
 trait ApplicativeTests[F[_]] extends ApplyTests[F] {
   def laws: ApplicativeLaws[F]
 
-  def applicative[A: Arbitrary, B: Arbitrary, C: Arbitrary](
-      implicit
+  def applicative[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
       ArbFA: Arbitrary[F[A]],
       ArbFB: Arbitrary[F[B]],
       ArbFC: Arbitrary[F[C]],

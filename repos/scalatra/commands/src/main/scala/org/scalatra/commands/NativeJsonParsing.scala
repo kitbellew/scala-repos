@@ -11,8 +11,8 @@ trait NativeJsonParsing
   self: NativeJsonSupport with CommandSupport =>
   type CommandType = JsonCommand
 
-  override protected def bindCommand[T <: CommandType](newCommand: T)(
-      implicit request: HttpServletRequest,
+  override protected def bindCommand[T <: CommandType](newCommand: T)(implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): T = {
     format match {
       case "json" | "xml" =>

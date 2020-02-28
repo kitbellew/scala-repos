@@ -25,8 +25,8 @@ import akka.http.javadsl.model._
   */
 abstract class TestResponse(
     _response: HttpResponse,
-    awaitAtMost: FiniteDuration)(
-    implicit ec: ExecutionContext,
+    awaitAtMost: FiniteDuration)(implicit
+    ec: ExecutionContext,
     materializer: Materializer) {
 
   /**

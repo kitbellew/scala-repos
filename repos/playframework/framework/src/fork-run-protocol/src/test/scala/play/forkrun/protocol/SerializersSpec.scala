@@ -92,8 +92,8 @@ trait PicklingTestUtils extends Specification {
           e)
     }
 
-  def roundTripArray[A](x: Array[A])(
-      implicit ev0: Pickler[Array[A]],
+  def roundTripArray[A](x: Array[A])(implicit
+      ev0: Pickler[Array[A]],
       ev1: Unpickler[Array[A]]): MatchResult[Any] =
     roundTripBase[Array[A]](x)((a, b) => (a.toList) must beEqualTo(b.toList)) {
       (a, b) => a.getMessage must beEqualTo(b.getMessage)

@@ -16,8 +16,8 @@ trait OFormat[A] extends OWrites[A] with Reads[A] with Format[A]
 
 object OFormat {
 
-  implicit def functionalCanBuildFormats(
-      implicit rcb: FunctionalCanBuild[Reads],
+  implicit def functionalCanBuildFormats(implicit
+      rcb: FunctionalCanBuild[Reads],
       wcb: FunctionalCanBuild[OWrites]): FunctionalCanBuild[OFormat] =
     new FunctionalCanBuild[OFormat] {
 
@@ -39,8 +39,8 @@ object OFormat {
 
     }
 
-  implicit def GenericOFormat[T](
-      implicit fjs: Reads[T],
+  implicit def GenericOFormat[T](implicit
+      fjs: Reads[T],
       tjs: OWrites[T]): Format[T] = apply(fjs, tjs)
 
   def apply[A](read: JsValue => JsResult[A], write: A => JsObject): OFormat[A] =
@@ -87,8 +87,8 @@ object Format extends PathFormat with ConstraintFormat with DefaultFormat {
   */
 trait DefaultFormat {
 
-  implicit def GenericFormat[T](
-      implicit fjs: Reads[T],
+  implicit def GenericFormat[T](implicit
+      fjs: Reads[T],
       tjs: Writes[T]): Format[T] = {
     new Format[T] {
       def reads(json: JsValue) = fjs.reads(json)

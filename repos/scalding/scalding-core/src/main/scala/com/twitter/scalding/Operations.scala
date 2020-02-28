@@ -165,8 +165,8 @@ package com.twitter.scalding {
       @transient commutativeSemigroup: Semigroup[V],
       keyFields: Fields,
       valueFields: Fields,
-      cacheSize: Option[Int])(
-      implicit conv: TupleConverter[V],
+      cacheSize: Option[Int])(implicit
+      conv: TupleConverter[V],
       set: TupleSetter[V])
       extends BaseOperation[MapsideCache[Tuple, V]](
         Fields.join(keyFields, valueFields))

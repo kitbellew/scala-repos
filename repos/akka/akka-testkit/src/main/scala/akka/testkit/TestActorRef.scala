@@ -185,8 +185,8 @@ object TestActorRef {
       name)
   }
 
-  def apply[T <: Actor](
-      implicit t: ClassTag[T],
+  def apply[T <: Actor](implicit
+      t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] = apply[T](randomName)
 
   private def dynamicCreateRecover[U]: PartialFunction[Throwable, U] = {
@@ -201,8 +201,8 @@ object TestActorRef {
       )
   }
 
-  def apply[T <: Actor](name: String)(
-      implicit t: ClassTag[T],
+  def apply[T <: Actor](name: String)(implicit
+      t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({
@@ -215,8 +215,8 @@ object TestActorRef {
       }),
       name)
 
-  def apply[T <: Actor](supervisor: ActorRef)(
-      implicit t: ClassTag[T],
+  def apply[T <: Actor](supervisor: ActorRef)(implicit
+      t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({
@@ -229,8 +229,8 @@ object TestActorRef {
       }),
       supervisor)
 
-  def apply[T <: Actor](supervisor: ActorRef, name: String)(
-      implicit t: ClassTag[T],
+  def apply[T <: Actor](supervisor: ActorRef, name: String)(implicit
+      t: ClassTag[T],
       system: ActorSystem): TestActorRef[T] =
     apply[T](
       Props({

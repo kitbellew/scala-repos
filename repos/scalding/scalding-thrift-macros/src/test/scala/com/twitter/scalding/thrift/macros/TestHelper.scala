@@ -69,9 +69,8 @@ object TestHelper extends Matchers {
     }
   }
 
-  def compareSerialized[T](a: T, b: T)(
-      implicit orderedBuffer: OrderedSerialization[T])
-      : OrderedSerialization.Result = {
+  def compareSerialized[T](a: T, b: T)(implicit
+      orderedBuffer: OrderedSerialization[T]): OrderedSerialization.Result = {
     val bufA = serializeSeq[T]((0 until 20).map(_ => a))
     val bufB = serializeSeq[T]((0 until 20).map(_ => b))
     val r = (0 until 20).map { _ => orderedBuffer.compareBinary(bufA, bufB) }

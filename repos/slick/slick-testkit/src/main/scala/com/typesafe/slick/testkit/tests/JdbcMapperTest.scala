@@ -368,8 +368,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
         new PairShape(shapes)
     }
-    implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](
-        implicit s1: Shape[_ <: Level, M1, U1, P1],
+    implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](implicit
+        s1: Shape[_ <: Level, M1, U1, P1],
         s2: Shape[_ <: Level, M2, U2, P2]) =
       new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](
         Seq(s1, s2))

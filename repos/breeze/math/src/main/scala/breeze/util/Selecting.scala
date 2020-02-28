@@ -14,9 +14,8 @@ object quickSelect extends UFunc {
 
 //  /** Quickselect from an array of T. */
 
-  implicit def implFromQSInPlace[T](
-      implicit op: quickSelect.InPlaceImpl2[Array[T], Int])
-      : Impl2[Array[T], Int, T] = {
+  implicit def implFromQSInPlace[T](implicit
+      op: quickSelect.InPlaceImpl2[Array[T], Int]): Impl2[Array[T], Int, T] = {
     new Impl2[Array[T], Int, T] {
       def apply(a: Array[T], position: Int): T = {
         val quickselected: Array[T] = a.clone()
@@ -81,8 +80,8 @@ object quickSelect extends UFunc {
 
   }
 
-  implicit def implFromQSInPlaceColl[Coll, T](
-      implicit view: Coll <:< Seq[T],
+  implicit def implFromQSInPlaceColl[Coll, T](implicit
+      view: Coll <:< Seq[T],
       ordering: Ordering[T]): Impl2[Coll, Int, T] = {
     new Impl2[Coll, Int, T] {
       def apply(a: Coll, position: Int): T = {
@@ -93,8 +92,8 @@ object quickSelect extends UFunc {
     }
   }
 
-  implicit def implFromOrdering[T, Coll](
-      implicit view: Coll <:< mutable.IndexedSeq[T],
+  implicit def implFromOrdering[T, Coll](implicit
+      view: Coll <:< mutable.IndexedSeq[T],
       ordering: Ordering[T]): InPlaceImpl2[Coll, Int] = {
     new InPlaceImpl2[Coll, Int] {
 

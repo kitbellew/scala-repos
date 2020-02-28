@@ -12,8 +12,8 @@ class AdaDeltaGradientDescent[T](
     maxIter: Int,
     tolerance: Double = 1e-5,
     improvementTolerance: Double = 1e-4,
-    minImprovementWindow: Int = 50)(
-    implicit vspace: MutableFiniteCoordinateField[T, _, Double],
+    minImprovementWindow: Int = 50)(implicit
+    vspace: MutableFiniteCoordinateField[T, _, Double],
     rand: RandBasis = Rand)
     extends StochasticGradientDescent[T](
       1d,

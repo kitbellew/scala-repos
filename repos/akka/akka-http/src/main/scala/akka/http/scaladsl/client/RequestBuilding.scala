@@ -25,13 +25,13 @@ trait RequestBuilding extends TransformerPipelineSupport {
     def apply(uri: String): HttpRequest =
       apply(uri, HttpEntity.Empty)
 
-    def apply[T](uri: String, content: T)(
-        implicit m: ToEntityMarshaller[T],
+    def apply[T](uri: String, content: T)(implicit
+        m: ToEntityMarshaller[T],
         ec: ExecutionContext): HttpRequest =
       apply(uri, Some(content))
 
-    def apply[T](uri: String, content: Option[T])(
-        implicit m: ToEntityMarshaller[T],
+    def apply[T](uri: String, content: Option[T])(implicit
+        m: ToEntityMarshaller[T],
         ec: ExecutionContext): HttpRequest =
       apply(Uri(uri), content)
 
@@ -41,13 +41,13 @@ trait RequestBuilding extends TransformerPipelineSupport {
     def apply(uri: Uri): HttpRequest =
       apply(uri, HttpEntity.Empty)
 
-    def apply[T](uri: Uri, content: T)(
-        implicit m: ToEntityMarshaller[T],
+    def apply[T](uri: Uri, content: T)(implicit
+        m: ToEntityMarshaller[T],
         ec: ExecutionContext): HttpRequest =
       apply(uri, Some(content))
 
-    def apply[T](uri: Uri, content: Option[T])(
-        implicit m: ToEntityMarshaller[T],
+    def apply[T](uri: Uri, content: Option[T])(implicit
+        m: ToEntityMarshaller[T],
         timeout: Timeout = Timeout(1.second),
         ec: ExecutionContext): HttpRequest =
       content match {

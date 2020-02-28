@@ -222,9 +222,7 @@ object SyncResultFormat {
 class SyncQueryServiceHandler(
     val execution: Execution[Future, (Option[JobId], StreamT[Future, Slice])],
     jobManager: JobManager[Future],
-    defaultFormat: SyncResultFormat)(
-    implicit
-    M: Monad[Future])
+    defaultFormat: SyncResultFormat)(implicit M: Monad[Future])
     extends QueryServiceHandler[(Option[JobId], StreamT[Future, Slice])] {
 
   import scalaz.syntax.std.option._

@@ -33,8 +33,8 @@ abstract class ProxyBatchedStore[K, V] extends batch.BatchedStore[K, V] {
   override def pruning = proxy.pruning
   override def readLast(exclusiveUB: BatchID, mode: Mode) =
     proxy.readLast(exclusiveUB, mode)
-  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit =
     proxy.writeLast(batchID, lastVals)(flowDef, mode)
 

@@ -14,8 +14,8 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
   def map[B](f: A => B)(implicit W: Functor[W]): IndexedContsT[W, M, R, O, B] =
     IndexedContsT { wbmo => run(W.map(wbmo)(f andThen _)) }
 
-  def flatten[E, B](
-      implicit ev: A =:= IndexedContsT[W, M, O, E, B],
+  def flatten[E, B](implicit
+      ev: A =:= IndexedContsT[W, M, O, E, B],
       W: Cobind[W]): IndexedContsT[W, M, R, E, B] = flatMap(ev)
 
   def flatMap[E, B](f: A => IndexedContsT[W, M, O, E, B])(
@@ -24,8 +24,8 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       run(W.cobind(wbme) { wk => { a => f(a).run(wk) } })
     }
 
-  def contramap[I](f: I => O)(
-      implicit M: Functor[M],
+  def contramap[I](f: I => O)(implicit
+      M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, R, I, A] =
     IndexedContsT { wami =>
       run(W.map(wami) { ami => { a => M.map(ami(a))(f) } })
@@ -34,13 +34,13 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
   def imap[E](f: R => E)(implicit M: Functor[M]): IndexedContsT[W, M, E, O, A] =
     IndexedContsT { wamo => M.map(run(wamo))(f) }
 
-  def bimap[E, B](f: R => E, g: A => B)(
-      implicit M: Functor[M],
+  def bimap[E, B](f: R => E, g: A => B)(implicit
+      M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, E, O, B] =
     IndexedContsT { wbmo => M.map(run(W.map(wbmo)(g andThen _)))(f) }
 
-  def xmap[E, I](f: R => E, g: I => O)(
-      implicit M: Functor[M],
+  def xmap[E, I](f: R => E, g: I => O)(implicit
+      M: Functor[M],
       W: Functor[W]): IndexedContsT[W, M, E, I, A] =
     IndexedContsT { wami =>
       M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(g) } }))(f)
@@ -48,8 +48,8 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
 
   import BijectionT._
 
-  def bmap[X >: R <: O, Z](f: Bijection[X, Z])(
-      implicit M: Functor[M],
+  def bmap[X >: R <: O, Z](f: Bijection[X, Z])(implicit
+      M: Functor[M],
       W: Functor[W]): ContsT[W, M, Z, A] =
     IndexedContsT { wami =>
       M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(f from _) } }))(
@@ -93,7 +93,8 @@ trait IndexedContsTFunctions {
 
   def shift[W[_], M[_], I, R, J, O, A](
       f: (A => IndexedContsT[W, M, I, I, O]) => IndexedContsT[W, M, R, J, J])(
-      implicit W: Comonad[W],
+      implicit
+      W: Comonad[W],
       WA: Applicative[W],
       M: Monad[M]): IndexedContsT[W, M, R, O, A] =
     IndexedContsT { k0 =>
@@ -102,8 +103,8 @@ trait IndexedContsTFunctions {
       }).run_
     }
 
-  def reset[W[_], M[_], R, O, A](v: IndexedContsT[W, M, A, O, O])(
-      implicit W: Comonad[W],
+  def reset[W[_], M[_], R, O, A](v: IndexedContsT[W, M, A, O, O])(implicit
+      W: Comonad[W],
       WA: Applicative[W],
       M: Monad[M]): IndexedContsT[W, M, R, R, A] =
     IndexedContsT { k => M.bind(v.run_)(W.copoint(k)) }
@@ -139,16 +140,16 @@ abstract class IndexedContsTInstances extends IndexedContsTInstances0 {
       implicit val M: Functor[M] = M0
     }
 
-  implicit def IndexedContsTContravariant[W[_], M[_], R, A](
-      implicit W0: Functor[W],
+  implicit def IndexedContsTContravariant[W[_], M[_], R, A](implicit
+      W0: Functor[W],
       M0: Functor[M]): Contravariant[IndexedContsT[W, M, R, ?, A]] =
     new IndexedContsTContravariant[W, M, R, A] {
       implicit val W: Functor[W] = W0
       implicit val M: Functor[M] = M0
     }
 
-  implicit def IndexedContsTBifunctor[W[_], M[_], O](
-      implicit W0: Functor[W],
+  implicit def IndexedContsTBifunctor[W[_], M[_], O](implicit
+      W0: Functor[W],
       M0: Functor[M]): Bifunctor[IndexedContsT[W, M, ?, O, ?]] =
     new IndexedContsTBifunctor[W, M, O] {
       implicit val W: Functor[W] = W0

@@ -347,8 +347,8 @@ object TaskMacro {
     }
 
   private[this] def iInitializeMacro[M[_], T](c: Context)(t: c.Expr[T])(
-      f: c.Expr[T] => c.Expr[M[T]])(
-      implicit tt: c.WeakTypeTag[T],
+      f: c.Expr[T] => c.Expr[M[T]])(implicit
+      tt: c.WeakTypeTag[T],
       mt: c.WeakTypeTag[M[T]]): c.Expr[Initialize[M[T]]] = {
     val inner: Transform[c.type, M] = new Transform[c.type, M] {
       def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
@@ -403,8 +403,8 @@ object TaskMacro {
   }
 
   private[this] def iParserMacro[M[_], T](c: Context)(t: c.Expr[T])(
-      f: c.Expr[T] => c.Expr[M[T]])(
-      implicit tt: c.WeakTypeTag[T],
+      f: c.Expr[T] => c.Expr[M[T]])(implicit
+      tt: c.WeakTypeTag[T],
       mt: c.WeakTypeTag[M[T]]): c.Expr[State => Parser[M[T]]] = {
     val inner: Transform[c.type, M] = new Transform[c.type, M] {
       def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree

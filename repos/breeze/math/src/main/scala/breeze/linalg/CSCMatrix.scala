@@ -267,8 +267,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
     }
   }
 
-  override def toDenseMatrix(
-      implicit cm: ClassTag[V],
+  override def toDenseMatrix(implicit
+      cm: ClassTag[V],
       zero: Zero[V]): DenseMatrix[V] = {
     toDense
   }

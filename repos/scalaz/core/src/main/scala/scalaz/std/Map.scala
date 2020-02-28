@@ -158,8 +158,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       }
     }
 
-  implicit def mapShow[K, V](
-      implicit K: Show[K],
+  implicit def mapShow[K, V](implicit
+      K: Show[K],
       V: Show[V]): Show[XMap[K, V]] =
     Show.show(m =>
       "Map[" +:
@@ -249,8 +249,8 @@ trait MapSubFunctions extends MapSub {
   /** Grab a value out of Map if it's present. Otherwise evaluate
     * a value to be placed at that key in the Map.
     */
-  final def getOrAdd[F[_], K, A](m: XMap[K, A], k: K)(fa: => F[A])(
-      implicit F: Applicative[F],
+  final def getOrAdd[F[_], K, A](m: XMap[K, A], k: K)(fa: => F[A])(implicit
+      F: Applicative[F],
       K: BuildKeyConstraint[K]): F[(XMap[K, A], A)] =
     (m get k)
       .map(a => F.point(m, a))

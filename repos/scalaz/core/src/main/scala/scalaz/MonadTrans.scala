@@ -55,8 +55,8 @@ trait MonadPartialOrder[G[_], F[_]] extends NaturalTransformation[F, G] {
 }
 
 sealed abstract class MonadPartialOrderFunctions1 {
-  implicit def transitive[G[_], F[_], E[_]](
-      implicit e1: MonadPartialOrder[G, F],
+  implicit def transitive[G[_], F[_], E[_]](implicit
+      e1: MonadPartialOrder[G, F],
       e2: MonadPartialOrder[F, E]): MonadPartialOrder[G, E] =
     e2 compose e1
 }

@@ -70,8 +70,8 @@ abstract class SFXEnumDelegateSpec[
     S <: SFXEnumDelegate[E]] protected (
     javaClass: Class[E],
     scalaClass: Class[S],
-    companion: SFXEnumDelegateCompanion[E, S])(
-    implicit jfx2sfx: E => S = null,
+    companion: SFXEnumDelegateCompanion[E, S])(implicit
+    jfx2sfx: E => S = null,
     sfx2jfx: S => E = null)
     extends SFXDelegateSpec[E, S](javaClass, scalaClass) {
 

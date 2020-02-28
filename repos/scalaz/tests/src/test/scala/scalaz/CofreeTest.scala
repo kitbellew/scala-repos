@@ -19,8 +19,8 @@ object CofreeTest extends SpecLite {
   type OneAndList[A] = OneAnd[List, A]
   type CofreeOption[A] = Cofree[Option, A]
 
-  implicit def cofreeEqual[F[_], A](
-      implicit F: Eq1[F],
+  implicit def cofreeEqual[F[_], A](implicit
+      F: Eq1[F],
       A: Equal[A]): Equal[Cofree[F, A]] =
     Equal.equal { (a, b) =>
       A.equal(a.head, b.head) && F.eq1(cofreeEqual[F, A]).equal(a.tail, b.tail)

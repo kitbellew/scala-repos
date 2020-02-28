@@ -29,8 +29,8 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
   def unary_~(implicit evF: F[B] =:= Id[B], evG: G[A] =:= Id[A]): PLens[A, B] =
     partial
 
-  def bimap[C, X[_, _], D](g: Bijection[C, D])(
-      implicit F: Bifunctor[X],
+  def bimap[C, X[_, _], D](g: Bijection[C, D])(implicit
+      F: Bifunctor[X],
       evF: F[B] =:= Id[B],
       evG: G[A] =:= Id[A]): Bijection[X[A, C], X[B, D]] =
     bijection(
@@ -38,18 +38,18 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
       F.bimap(_)(_from andThen evG, g.from(_)): Id[X[A, C]]
     )
 
-  def ***[C, D](g: Bijection[C, D])(
-      implicit evF: F[B] =:= Id[B],
+  def ***[C, D](g: Bijection[C, D])(implicit
+      evF: F[B] =:= Id[B],
       evG: G[A] =:= Id[A]): Bijection[(A, C), (B, D)] =
     bimap[C, Tuple2, D](g)
 
-  def ^^^[C, D](g: Bijection[C, D])(
-      implicit evF: F[B] =:= Id[B],
+  def ^^^[C, D](g: Bijection[C, D])(implicit
+      evF: F[B] =:= Id[B],
       evG: G[A] =:= Id[A]): Bijection[A \/ C, B \/ D] =
     bimap[C, \/, D](g)
 
-  def compose[C](g: BijectionT[F, G, C, A])(
-      implicit FM: Bind[F],
+  def compose[C](g: BijectionT[F, G, C, A])(implicit
+      FM: Bind[F],
       GM: Bind[G]): BijectionT[F, G, C, B] =
     bijection(
       (toK <=< g.toK).run,
@@ -57,18 +57,18 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
     )
 
   /** alias for `compose` */
-  def <=<[C](that: BijectionT[F, G, C, A])(
-      implicit FM: Bind[F],
+  def <=<[C](that: BijectionT[F, G, C, A])(implicit
+      FM: Bind[F],
       GM: Bind[G]): BijectionT[F, G, C, B] = compose(that)
 
-  def andThen[C](that: BijectionT[F, G, B, C])(
-      implicit M: Bind[F],
+  def andThen[C](that: BijectionT[F, G, B, C])(implicit
+      M: Bind[F],
       GM: Bind[G]): BijectionT[F, G, A, C] =
     that compose this
 
   /** alias for `andThen` */
-  def >=>[C](that: BijectionT[F, G, B, C])(
-      implicit M: Bind[F],
+  def >=>[C](that: BijectionT[F, G, B, C])(implicit
+      M: Bind[F],
       GM: Bind[G]): BijectionT[F, G, A, C] = andThen(that)
 
 }
@@ -86,13 +86,13 @@ object BijectionT extends BijectionTInstances {
   type Bijection[A, B] =
     BijectionT[Id, Id, A, B]
 
-  def liftBijection[F[_], G[_], A, B](t: A => B, f: B => A)(
-      implicit PF: Applicative[F],
+  def liftBijection[F[_], G[_], A, B](t: A => B, f: B => A)(implicit
+      PF: Applicative[F],
       PG: Applicative[G]): BijectionT[F, G, A, B] =
     bijection(a => PF.point(t(a)), a => PG.point(f(a)))
 
-  def bijectionId[F[_], G[_], A](
-      implicit PF: Applicative[F],
+  def bijectionId[F[_], G[_], A](implicit
+      PF: Applicative[F],
       PG: Applicative[G]): BijectionT[F, G, A, A] =
     liftBijection(x => x, x => x)
 
@@ -112,8 +112,8 @@ object BijectionT extends BijectionTInstances {
         case (p, a) => if (p) -\/(a) else \/-(a)
       })
 
-  def zipB[X[_], A, B](
-      implicit Z: Zip[X],
+  def zipB[X[_], A, B](implicit
+      Z: Zip[X],
       U: Unzip[X]): Bijection[(X[A], X[B]), X[(A, B)]] =
     bijection[Id, Id, (X[A], X[B]), X[(A, B)]](
       x => Z.zip(x._1, x._2),
@@ -169,8 +169,8 @@ object BijectionT extends BijectionTInstances {
 }
 
 sealed abstract class BijectionTInstances0 {
-  implicit def bijectionTSplit[F[_], G[_]](
-      implicit F0: Bind[F],
+  implicit def bijectionTSplit[F[_], G[_]](implicit
+      F0: Bind[F],
       G0: Bind[G]): Split[BijectionT[F, G, ?, ?]] =
     new BijectionTSplit[F, G] {
       implicit def F = F0
@@ -179,8 +179,8 @@ sealed abstract class BijectionTInstances0 {
 }
 
 sealed abstract class BijectionTInstances extends BijectionTInstances0 {
-  implicit def bijectionTCategory[F[_], G[_]](
-      implicit F0: Monad[F],
+  implicit def bijectionTCategory[F[_], G[_]](implicit
+      F0: Monad[F],
       G0: Monad[G]): Category[BijectionT[F, G, ?, ?]] =
     new BijectionTCategory[F, G] {
       implicit def F = F0

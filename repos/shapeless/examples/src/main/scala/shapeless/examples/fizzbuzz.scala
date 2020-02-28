@@ -70,8 +70,8 @@ object FizzBuzzExample {
     * implicit resolution.
     */
   object NatToFizzBuzz extends NatToFizzBuzInstances0 {
-    implicit def fizzAndBuzz[N <: Nat](
-        implicit fizz: Aux[N, Fizz.type],
+    implicit def fizzAndBuzz[N <: Nat](implicit
+        fizz: Aux[N, Fizz.type],
         buzz: Aux[N, Buzz.type]): Aux[N, FizzAndBuzz.type] =
       new NatToFizzBuzz[N] {
         type Out = FizzAndBuzz.type
@@ -93,8 +93,8 @@ object FizzBuzzExample {
         def apply = new Other[_1] :: HNil
       }
 
-    implicit def succRevFizzBuzz[N <: Nat](
-        implicit f: RevFizzBuzz[N],
+    implicit def succRevFizzBuzz[N <: Nat](implicit
+        f: RevFizzBuzz[N],
         n: NatToFizzBuzz[Succ[N]]): Aux[Succ[N], n.Out :: f.Out] =
       new RevFizzBuzz[Succ[N]] {
         type Out = n.Out :: f.Out
@@ -111,8 +111,8 @@ object FizzBuzzExample {
   object FizzBuzzResult {
     type Aux[N <: Nat, L <: HList] = FizzBuzzResult[N] { type Out = L }
 
-    implicit def fizzBuzzResult[N <: Nat, L <: HList](
-        implicit rfb: RevFizzBuzz.Aux[N, L],
+    implicit def fizzBuzzResult[N <: Nat, L <: HList](implicit
+        rfb: RevFizzBuzz.Aux[N, L],
         r: Reverse[L]): Aux[N, r.Out] =
       new FizzBuzzResult[N] {
         type Out = r.Out

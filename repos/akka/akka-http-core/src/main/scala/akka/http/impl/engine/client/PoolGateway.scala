@@ -41,7 +41,8 @@ private object PoolGateway {
   * get reused will automatically forward requests directed at them to the latest pool incarnation from the cache.
   */
 private[http] class PoolGateway(hcps: HostConnectionPoolSetup, _shutdownStartedPromise: Promise[Done])( // constructor arg only
-    implicit system: ActorSystem,
+    implicit
+    system: ActorSystem,
     fm: Materializer) {
   import PoolGateway._
   import fm.executionContext

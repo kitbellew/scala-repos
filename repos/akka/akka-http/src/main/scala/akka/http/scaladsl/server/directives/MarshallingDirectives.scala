@@ -73,8 +73,8 @@ trait MarshallingDirectives {
     * Completes the request using the given function. The input to the function is produced with the in-scope
     * entity unmarshaller and the result value of the function is marshalled with the in-scope marshaller.
     */
-  def handleWith[A, B](f: A ⇒ B)(
-      implicit um: FromRequestUnmarshaller[A],
+  def handleWith[A, B](f: A ⇒ B)(implicit
+      um: FromRequestUnmarshaller[A],
       m: ToResponseMarshaller[B]): Route =
     entity(um) { a ⇒ complete(f(a)) }
 }

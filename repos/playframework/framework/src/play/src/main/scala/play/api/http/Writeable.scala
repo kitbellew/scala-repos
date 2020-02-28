@@ -52,8 +52,8 @@ trait LowPriorityWriteables {
   /**
     * `Writeable` for `play.twirl.api.Content` values.
     */
-  implicit def writeableOf_Content[C <: play.twirl.api.Content](
-      implicit codec: Codec,
+  implicit def writeableOf_Content[C <: play.twirl.api.Content](implicit
+      codec: Codec,
       ct: ContentTypeOf[C]): Writeable[C] = {
     Writeable(content => codec.encode(content.body))
   }
@@ -68,8 +68,8 @@ trait DefaultWriteables extends LowPriorityWriteables {
   /**
     * `Writeable` for `play.twirl.api.Xml` values. Trims surrounding whitespace.
     */
-  implicit def writeableOf_XmlContent(
-      implicit codec: Codec,
+  implicit def writeableOf_XmlContent(implicit
+      codec: Codec,
       ct: ContentTypeOf[play.twirl.api.Xml]): Writeable[play.twirl.api.Xml] = {
     Writeable(xml => codec.encode(xml.body.trim))
   }

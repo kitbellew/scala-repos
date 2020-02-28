@@ -70,8 +70,8 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     b.result()
   }
 
-  def filter[To1, To2](f: (El1, El2) => Boolean)(
-      implicit cbf1: CBF[Repr1, El1, To1],
+  def filter[To1, To2](f: (El1, El2) => Boolean)(implicit
+      cbf1: CBF[Repr1, El1, To1],
       cbf2: CBF[Repr2, El2, To2]): (To1, To2) = {
     val b1 = cbf1(colls._1.repr)
     val b2 = cbf2(colls._2.repr)
@@ -127,8 +127,8 @@ object Tuple2Zipped {
         CC1[X] <: TraversableOnce[X],
         El2,
         CC2[X] <: TraversableOnce[X],
-        That](
-        implicit w1: T1 <:< CC1[El1],
+        That](implicit
+        w1: T1 <:< CC1[El1],
         w2: T2 <:< CC2[El2],
         bf: scala.collection.generic.CanBuildFrom[CC1[_], (El1, El2), That])
         : That = {
@@ -141,8 +141,8 @@ object Tuple2Zipped {
       buf.result()
     }
 
-    def zipped[El1, Repr1, El2, Repr2](
-        implicit w1: T1 => TraversableLike[El1, Repr1],
+    def zipped[El1, Repr1, El2, Repr2](implicit
+        w1: T1 => TraversableLike[El1, Repr1],
         w2: T2 => IterableLike[El2, Repr2])
         : Tuple2Zipped[El1, Repr1, El2, Repr2] = new Tuple2Zipped((x._1, x._2))
   }

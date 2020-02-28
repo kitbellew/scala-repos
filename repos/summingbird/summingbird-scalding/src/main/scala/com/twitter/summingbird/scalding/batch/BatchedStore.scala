@@ -113,8 +113,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       mode: Mode): Try[(BatchID, FlowProducer[TypedPipe[(K, V)]])]
 
   /** Record a computed batch of code */
-  def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+  def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit
 
   @transient private val logger =

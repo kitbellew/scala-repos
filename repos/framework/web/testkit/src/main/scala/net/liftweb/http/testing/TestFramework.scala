@@ -253,8 +253,8 @@ trait BaseGetPoster {
       url: String,
       httpClient: HttpClient,
       headers: List[(String, String)],
-      body: RT)(
-      implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType,
+      body: RT)(implicit
+      capture: (String, HttpClient, HttpMethodBase) => ResponseType,
       bodyToRequestEntity: RT => RequestEntity): ResponseType = {
     val poster = new PostMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
@@ -326,8 +326,8 @@ trait BaseGetPoster {
       url: String,
       httpClient: HttpClient,
       headers: List[(String, String)],
-      body: RT)(
-      implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType,
+      body: RT)(implicit
+      capture: (String, HttpClient, HttpMethodBase) => ResponseType,
       bodyToRequestEntity: RT => RequestEntity): ResponseType = {
     val poster = new PutMethod(baseUrl + url)
     poster.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
@@ -428,8 +428,8 @@ trait GetPosterHelper {
     * @param url the URL to make the request on
     * @param xml the XML to POST to the server
     */
-  def post[RT](url: String, xml: RT)(
-      implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType,
+  def post[RT](url: String, xml: RT)(implicit
+      capture: (String, HttpClient, HttpMethodBase) => ResponseType,
       bodyToRequestEntity: RT => RequestEntity): ResponseType =
     post(url, theHttpClient, Nil, xml)(capture, bodyToRequestEntity)
 
@@ -451,8 +451,8 @@ trait GetPosterHelper {
     * @param url the URL to make the request on
     * @param xml the XML to PUT to the server
     */
-  def put[RT](url: String, xml: RT)(
-      implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType,
+  def put[RT](url: String, xml: RT)(implicit
+      capture: (String, HttpClient, HttpMethodBase) => ResponseType,
       bodyToRequestEntity: RT => RequestEntity): ResponseType =
     put(url, theHttpClient, Nil, xml)(capture, bodyToRequestEntity)
 

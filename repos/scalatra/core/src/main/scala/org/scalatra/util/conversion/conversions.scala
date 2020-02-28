@@ -153,8 +153,8 @@ trait DefaultImplicitConversions extends LowPriorityImplicitConversions {
   def stringToDateFormat(format: => DateFormat): TypeConverter[String, Date] =
     safe(format.parse(_))
 
-  implicit def defaultStringToSeq[T](
-      implicit elementConverter: TypeConverter[String, T],
+  implicit def defaultStringToSeq[T](implicit
+      elementConverter: TypeConverter[String, T],
       mf: Manifest[T]): TypeConverter[String, Seq[T]] =
     stringToSeq[T](elementConverter)
 
@@ -163,13 +163,13 @@ trait DefaultImplicitConversions extends LowPriorityImplicitConversions {
       separator: String = ","): TypeConverter[String, Seq[T]] =
     safe(s => s.split(separator).toSeq.flatMap(e => elementConverter(e.trim)))
 
-  implicit def seqHead[T](
-      implicit elementConverter: TypeConverter[String, T],
+  implicit def seqHead[T](implicit
+      elementConverter: TypeConverter[String, T],
       mf: Manifest[T]): TypeConverter[Seq[String], T] =
     safeOption(_.headOption.flatMap(elementConverter(_)))
 
-  implicit def seqToSeq[T](
-      implicit elementConverter: TypeConverter[String, T],
+  implicit def seqToSeq[T](implicit
+      elementConverter: TypeConverter[String, T],
       mf: Manifest[T]): TypeConverter[Seq[String], Seq[T]] =
     safe(_.flatMap(elementConverter(_)))
 
@@ -190,8 +190,8 @@ object Conversions extends DefaultImplicitConversions {
 
   class SeqConversion(source: String) {
 
-    def asSeq[T](separator: String)(
-        implicit mf: Manifest[T],
+    def asSeq[T](separator: String)(implicit
+        mf: Manifest[T],
         tc: TypeConverter[String, T]): Option[Seq[T]] =
       stringToSeq[T](tc, separator).apply(source)
 

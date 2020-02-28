@@ -235,9 +235,9 @@ class Task[+A](val get: Future[Throwable \/ A]) {
       implicit scheduler: ScheduledExecutorService): Task[A] =
     new Task(get.unsafePerformTimed(timeoutInMillis).map(_.join))
 
-  def unsafePerformTimed(timeout: Duration)(
-      implicit scheduler: ScheduledExecutorService =
-        Strategy.DefaultTimeoutScheduler): Task[A] =
+  def unsafePerformTimed(timeout: Duration)(implicit
+      scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
+      : Task[A] =
     unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
@@ -246,9 +246,9 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     unsafePerformTimed(timeoutInMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
-  def timed(timeout: Duration)(
-      implicit scheduler: ScheduledExecutorService =
-        Strategy.DefaultTimeoutScheduler): Task[A] =
+  def timed(timeout: Duration)(implicit
+      scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
+      : Task[A] =
     unsafePerformTimed(timeout)
 
   /**
@@ -384,9 +384,8 @@ object Task {
     }))
 
   /** Create a `Task` that will evaluate `a` using the given `ExecutorService`. */
-  def apply[A](a: => A)(
-      implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-      : Task[A] =
+  def apply[A](a: => A)(implicit
+      pool: ExecutorService = Strategy.DefaultExecutorService): Task[A] =
     new Task(Future(Try(a))(pool))
 
   /**
@@ -395,9 +394,8 @@ object Task {
     * `unsafePerformIO`. The resulting `Task` cannot be rerun to repeat the effects.
     * Use with care.
     */
-  def unsafeStart[A](a: => A)(
-      implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-      : Task[A] =
+  def unsafeStart[A](a: => A)(implicit
+      pool: ExecutorService = Strategy.DefaultExecutorService): Task[A] =
     new Task(Future(Task.Try(a))(pool).unsafeStart)
 
   /**
@@ -406,9 +404,8 @@ object Task {
     * the given `ExecutorService`. Note that this forking is only described
     * by the returned `Task`--nothing occurs until the `Task` is run.
     */
-  def fork[A](a: => Task[A])(
-      implicit pool: ExecutorService = Strategy.DefaultExecutorService)
-      : Task[A] =
+  def fork[A](a: => Task[A])(implicit
+      pool: ExecutorService = Strategy.DefaultExecutorService): Task[A] =
     apply(a).join
 
   /**
@@ -420,9 +417,8 @@ object Task {
   def async[A](register: ((Throwable \/ A) => Unit) => Unit): Task[A] =
     new Task(Future.async(register))
 
-  def schedule[A](a: => A, delay: Duration)(
-      implicit pool: ScheduledExecutorService =
-        Strategy.DefaultTimeoutScheduler): Task[A] =
+  def schedule[A](a: => A, delay: Duration)(implicit
+  pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler): Task[A] =
     new Task(Future.schedule(Try(a), delay))
 
   /**

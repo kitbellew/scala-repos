@@ -14,8 +14,7 @@ trait TraverseTests[F[_]] extends FunctorTests[F] with FoldableTests[F] {
       C: Arbitrary,
       M: Arbitrary,
       X[_]: Applicative,
-      Y[_]: Applicative](
-      implicit
+      Y[_]: Applicative](implicit
       ArbFA: Arbitrary[F[A]],
       ArbXB: Arbitrary[X[B]],
       ArbYB: Arbitrary[Y[B]],

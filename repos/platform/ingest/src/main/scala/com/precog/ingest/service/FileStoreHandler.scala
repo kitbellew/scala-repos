@@ -60,8 +60,8 @@ class FileStoreHandler(
     jobManager: JobManager[Response],
     val clock: Clock,
     eventStore: EventStore[Future],
-    ingestTimeout: Timeout)(
-    implicit val M: Monad[Future],
+    ingestTimeout: Timeout)(implicit
+    val M: Monad[Future],
     executor: ExecutionContext)
     extends CustomHttpService[
       ByteChunk,

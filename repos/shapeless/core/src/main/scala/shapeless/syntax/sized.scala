@@ -21,8 +21,8 @@ import scala.collection.{GenTraversable, GenTraversableLike}
 
 object sized {
   implicit def genTraversableSizedConv[CC[X] <: GenTraversable[X], T](
-      cc: CC[T])(
-      implicit conv: CC[T] => GenTraversableLike[T, CC[T]],
+      cc: CC[T])(implicit
+      conv: CC[T] => GenTraversableLike[T, CC[T]],
       ev: AdditiveCollection[CC[T]]) =
     new SizedConv[T, CC[T]](cc)
 

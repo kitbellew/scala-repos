@@ -67,8 +67,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
   /**
     * Like [[transform]], but allows the context to change from `F` to `G`.
     */
-  def transformF[G[_], B](f: F[(S, A)] => G[(S, B)])(
-      implicit F: FlatMap[F],
+  def transformF[G[_], B](f: F[(S, A)] => G[(S, B)])(implicit
+      F: FlatMap[F],
       G: Applicative[G]): StateT[G, S, B] =
     StateT(s => f(run(s)))
 

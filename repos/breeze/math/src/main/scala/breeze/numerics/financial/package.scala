@@ -51,8 +51,8 @@ package object financial {
 
   object netPresentValue extends UFunc {
     @expand
-    implicit def reduce[@expand.args(Double, Float, Int) Scalar, T](
-        implicit iter: CanTraverseValues[T, Scalar],
+    implicit def reduce[@expand.args(Double, Float, Int) Scalar, T](implicit
+        iter: CanTraverseValues[T, Scalar],
         @expand.sequence[Scalar](0.0, 0.0f, 0) zero: Scalar)
         : Impl2[Double, T, Double] = new Impl2[Double, T, Double] {
       def apply(rate: Double, revenueStream: T): Double = {

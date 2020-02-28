@@ -22,8 +22,8 @@ sealed abstract class ZapInstances {
     }
 
   /** The product of two functors annihilates their coproduct. */
-  implicit def productCoproductZap[F[_], FF[_], G[_], GG[_]](
-      implicit d1: Zap[F, FF],
+  implicit def productCoproductZap[F[_], FF[_], G[_], GG[_]](implicit
+      d1: Zap[F, FF],
       d2: Zap[G, GG]): Zap[λ[α => (F[α] \/ G[α])], λ[α => (FF[α], GG[α])]] =
     new Zap[λ[α => (F[α] \/ G[α])], λ[α => (FF[α], GG[α])]] {
       def zapWith[A, B, C](a: (F[A] \/ G[A]), b: (FF[B], GG[B]))(
@@ -35,8 +35,8 @@ sealed abstract class ZapInstances {
     }
 
   /** The coproduct of two functors annihilates their product. */
-  implicit def coproductProductZap[F[_], FF[_], G[_], GG[_]](
-      implicit d1: Zap[FF, F],
+  implicit def coproductProductZap[F[_], FF[_], G[_], GG[_]](implicit
+      d1: Zap[FF, F],
       d2: Zap[GG, G]): Zap[λ[α => (FF[α], GG[α])], λ[α => (F[α] \/ G[α])]] =
     new Zap[λ[α => (FF[α], GG[α])], λ[α => (F[α] \/ G[α])]] {
       def zapWith[A, B, C](a: (FF[A], GG[A]), b: (F[B] \/ G[B]))(
@@ -48,8 +48,8 @@ sealed abstract class ZapInstances {
     }
 
   /** A free monad and a cofree comonad annihilate each other */
-  implicit def monadComonadZap[F[_], G[_]](
-      implicit d: Zap[F, G],
+  implicit def monadComonadZap[F[_], G[_]](implicit
+      d: Zap[F, G],
       F: Functor[F]): Zap[Free[F, ?], Cofree[G, ?]] =
     new Zap[Free[F, ?], Cofree[G, ?]] {
       def zapWith[A, B, C](ma: Free[F, A], wb: Cofree[G, B])(
@@ -61,8 +61,8 @@ sealed abstract class ZapInstances {
     }
 
   /** A cofree comonad and a free monad annihilate each other */
-  implicit def comonadMonadZap[F[_], G[_]](
-      implicit d: Zap[F, G],
+  implicit def comonadMonadZap[F[_], G[_]](implicit
+      d: Zap[F, G],
       G: Functor[G]): Zap[Cofree[F, ?], Free[G, ?]] =
     new Zap[Cofree[F, ?], Free[G, ?]] {
       def zapWith[A, B, C](wa: Cofree[F, A], mb: Free[G, B])(

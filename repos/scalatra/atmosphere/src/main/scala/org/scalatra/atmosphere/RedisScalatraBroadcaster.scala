@@ -13,8 +13,8 @@ import org.json4s.jackson.Serialization.{read, write}
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 
-final class RedisScalatraBroadcaster()(
-    implicit wireFormat: WireFormat,
+final class RedisScalatraBroadcaster()(implicit
+    wireFormat: WireFormat,
     protected var _actorSystem: ActorSystem)
     extends RedisBroadcaster
     with ScalatraBroadcaster {

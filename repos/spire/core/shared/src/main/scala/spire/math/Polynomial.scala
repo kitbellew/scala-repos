@@ -286,8 +286,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def maxOrderTermCoeff(implicit ring: Semiring[C]): C
 
   /** Returns a polynomial with the max term removed. */
-  def reductum(
-      implicit e: Eq[C],
+  def reductum(implicit
+      e: Eq[C],
       ring: Semiring[C],
       ct: ClassTag[C]): Polynomial[C]
 
@@ -327,8 +327,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * polynomial. Given 2 consecutive terms (ignoring 0 terms), a sign variation
     * is indicated when the terms have differing signs.
     */
-  def signVariations(
-      implicit ring: Semiring[C],
+  def signVariations(implicit
+      ring: Semiring[C],
       eq: Eq[C],
       signed: Signed[C]): Int = {
     var prevSign: Sign = Sign.Zero
@@ -355,8 +355,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
       f: C => D)(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[D] =
     mapTerms { case Term(c, n) => Term(f(c), n) }
 
-  def mapTerms[D: Semiring: Eq: ClassTag](f: Term[C] => Term[D])(
-      implicit ring: Semiring[C],
+  def mapTerms[D: Semiring: Eq: ClassTag](f: Term[C] => Term[D])(implicit
+      ring: Semiring[C],
       eq: Eq[C]): Polynomial[D] =
     Polynomial(terms map f)
 
@@ -409,8 +409,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
   def /~(
       rhs: Polynomial[C])(implicit field: Field[C], eq: Eq[C]): Polynomial[C] =
     (lhs /% rhs)._1
-  def /%(rhs: Polynomial[C])(
-      implicit field: Field[C],
+  def /%(rhs: Polynomial[C])(implicit
+      field: Field[C],
       eq: Eq[C]): (Polynomial[C], Polynomial[C])
   def %(
       rhs: Polynomial[C])(implicit field: Field[C], eq: Eq[C]): Polynomial[C] =

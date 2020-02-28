@@ -74,8 +74,8 @@ class DatabaseService(dir: File) extends SLF4JLogging {
     fileChecks.filter(_.filename === filename).take(1)
   }
 
-  def outOfDate(f: FileObject)(
-      implicit vfs: EnsimeVFS,
+  def outOfDate(f: FileObject)(implicit
+      vfs: EnsimeVFS,
       ec: ExecutionContext): Future[Boolean] = {
     val uri = f.getName.getURI
     val modified = f.getContent.getLastModifiedTime

@@ -60,8 +60,8 @@ private object PoolSlot {
       slotIx: Int,
       connectionFlow: Flow[HttpRequest, HttpResponse, Any],
       remoteAddress: InetSocketAddress, // TODO: remove after #16168 is cleared
-      settings: ConnectionPoolSettings)(
-      implicit system: ActorSystem,
+      settings: ConnectionPoolSettings)(implicit
+      system: ActorSystem,
       fm: Materializer): Graph[
     FanOutShape2[RequestContext, ResponseContext, RawSlotEvent],
     Any] =

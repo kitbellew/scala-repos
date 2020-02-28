@@ -174,8 +174,8 @@ abstract class ControllerBase
       includeContextPath: Boolean = true,
       includeServletPath: Boolean = true,
       absolutize: Boolean = true,
-      withSessionId: Boolean = true)(
-      implicit request: HttpServletRequest,
+      withSessionId: Boolean = true)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     if (path.startsWith("http")) path
     else baseUrl + super.url(path, params, false, false, false)
@@ -194,8 +194,8 @@ abstract class ControllerBase
   }
 
   // jenkins send message as 'application/x-www-form-urlencoded' but scalatra already parsed as multi-part-request.
-  def extractFromJsonBody[A](
-      implicit request: HttpServletRequest,
+  def extractFromJsonBody[A](implicit
+      request: HttpServletRequest,
       mf: Manifest[A]): Option[A] = {
     (request.contentType.map(_.split(";").head.toLowerCase) match {
       case Some("application/x-www-form-urlencoded") =>

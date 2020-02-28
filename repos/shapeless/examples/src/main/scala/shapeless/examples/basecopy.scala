@@ -145,8 +145,7 @@ object UpdateRepr {
       def apply(t: CNil, r: R): CNil = t
     }
 
-  implicit def cconsUpdateRepr[H, T <: Coproduct, R <: HList](
-      implicit
+  implicit def cconsUpdateRepr[H, T <: Coproduct, R <: HList](implicit
       uh: Lazy[UpdateRepr[H, R]],
       ut: Lazy[UpdateRepr[T, R]]): UpdateRepr[H :+: T, R] =
     new UpdateRepr[H :+: T, R] {
@@ -156,8 +155,7 @@ object UpdateRepr {
       }
     }
 
-  implicit def genProdUpdateRepr[T, R <: HList, Repr <: HList](
-      implicit
+  implicit def genProdUpdateRepr[T, R <: HList, Repr <: HList](implicit
       prod: HasProductGeneric[T],
       gen: LabelledGeneric.Aux[T, Repr],
       update: Lazy[UpdateRepr[Repr, R]]): UpdateRepr[T, R] =
@@ -165,8 +163,7 @@ object UpdateRepr {
       def apply(t: T, r: R): T = gen.from(update.value(gen.to(t), r))
     }
 
-  implicit def genCoprodUpdateRepr[T, R <: HList, Repr <: Coproduct](
-      implicit
+  implicit def genCoprodUpdateRepr[T, R <: HList, Repr <: Coproduct](implicit
       coprod: HasCoproductGeneric[T],
       gen: Generic.Aux[T, Repr],
       update: Lazy[UpdateRepr[Repr, R]]): UpdateRepr[T, R] =

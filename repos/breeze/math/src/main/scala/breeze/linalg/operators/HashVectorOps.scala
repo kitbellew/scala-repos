@@ -16,8 +16,8 @@ trait DenseVector_HashVector_Ops { this: HashVector.type =>
   @expand
   implicit def dv_hv_Update_Zero_Idempotent[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], HashVector[T]] {
       def apply(a: DenseVector[T], b: HashVector[T]): Unit = {
@@ -78,7 +78,8 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
   implicit def hv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -107,7 +108,8 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
   implicit def hv_dv_op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -163,8 +165,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] {
@@ -196,8 +198,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ / _ },
         { (a, b) => b }, {
           _ % _
@@ -223,7 +225,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   implicit def hv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -264,8 +267,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+        OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ + _ },
         { _ - _ },
         { _ * _ },
@@ -294,7 +297,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   implicit def hv_hv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ * _ }, {
           _ / _
         },
@@ -318,8 +322,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_hv_Idempotent_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], HashVector[T]] =
     new Op.InPlaceImpl2[HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): Unit = {
@@ -334,7 +338,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   implicit def hv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -460,8 +465,8 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   @expand
   implicit def hv_sv_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ / _ },
         { (a, b) => b },
         { _ % _ }, {
@@ -501,8 +506,8 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   @expand
   implicit def hv_sv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T])
       : Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], SparseVector[T], HashVector[T]] {
@@ -547,8 +552,8 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
     }
   }
 
-  protected def updateFromPure[T, Op, Other](
-      implicit op: UFunc.UImpl2[Op, HashVector[T], Other, HashVector[T]],
+  protected def updateFromPure[T, Op, Other](implicit
+      op: UFunc.UImpl2[Op, HashVector[T], Other, HashVector[T]],
       set: OpSet.InPlaceImpl2[HashVector[T], HashVector[T]])
       : UFunc.InPlaceImpl2[Op, HashVector[T], Other] = {
     new UFunc.InPlaceImpl2[Op, HashVector[T], Other] {
@@ -574,8 +579,8 @@ trait SparseVector_HashVector_Ops
   @expand
   implicit def sv_hv_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ / _ },
         { (a, b) => b },
         { _ % _ }, {
@@ -616,8 +621,8 @@ trait SparseVector_HashVector_Ops
   @expand
   implicit def sv_hv_Idempotent_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T])
       : Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] =
     new Op.Impl2[SparseVector[T], HashVector[T], SparseVector[T]] {
@@ -656,8 +661,8 @@ trait SparseVector_HashVector_Ops
     }
   }
 
-  protected def updateFromPureS[T, Op, Other](
-      implicit op: UFunc.UImpl2[Op, SparseVector[T], Other, SparseVector[T]],
+  protected def updateFromPureS[T, Op, Other](implicit
+      op: UFunc.UImpl2[Op, SparseVector[T], Other, SparseVector[T]],
       set: OpSet.InPlaceImpl2[SparseVector[T], SparseVector[T]])
       : UFunc.InPlaceImpl2[Op, SparseVector[T], Other] = {
     new UFunc.InPlaceImpl2[Op, SparseVector[T], Other] {
@@ -812,8 +817,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
   implicit def zipMapKV[V, R: ClassTag: Zero] =
     new CanZipMapKeyValuesHashVector[V, R]
 
-  implicit def negFromScale[V](
-      implicit scale: OpMulScalar.Impl2[HashVector[V], V, HashVector[V]],
+  implicit def negFromScale[V](implicit
+      scale: OpMulScalar.Impl2[HashVector[V], V, HashVector[V]],
       field: Ring[V]): OpNeg.Impl[HashVector[V], HashVector[V]] = {
     new OpNeg.Impl[HashVector[V], HashVector[V]] {
       override def apply(a: HashVector[V]) = {
@@ -822,8 +827,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  implicit def vAddIntoField[T](
-      implicit field: Field[T],
+  implicit def vAddIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpAdd.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
@@ -833,8 +838,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vSubIntoField[T](
-      implicit field: Field[T],
+  implicit def vSubIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpSub.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpSub.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
@@ -854,8 +859,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vDivIntoField[T](
-      implicit field: Field[T],
+  implicit def vDivIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpDiv.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
@@ -865,8 +870,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vPowInto[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def vPowInto[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T]): OpPow.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpPow.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
@@ -876,8 +881,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vAddIntoSField[T](
-      implicit field: Semiring[T],
+  implicit def vAddIntoSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[HashVector[T], T] = {
     new OpAdd.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
@@ -887,34 +892,34 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vAddSField[T](
-      implicit field: Semiring[T],
+  implicit def vAddSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpAdd.Impl2[HashVector[T], T, HashVector[T]] = {
     binaryOpFromUpdateOp(implicitly[CanCopy[HashVector[T]]], vAddIntoSField, ct)
   }
-  implicit def vSubSField[T](
-      implicit field: Ring[T],
+  implicit def vSubSField[T](implicit
+      field: Ring[T],
       ct: ClassTag[T]): OpSub.Impl2[HashVector[T], T, HashVector[T]] =
     binaryOpFromUpdateOp(implicitly[CanCopy[HashVector[T]]], vSubIntoSField, ct)
-  implicit def vMulScalarSField[T](
-      implicit field: Semiring[T],
+  implicit def vMulScalarSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpMulScalar.Impl2[HashVector[T], T, HashVector[T]] =
     binaryOpFromUpdateOp(
       implicitly[CanCopy[HashVector[T]]],
       vMulScalarIntoSField,
       ct)
-  implicit def vDivSField[T](
-      implicit field: Field[T],
+  implicit def vDivSField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.Impl2[HashVector[T], T, HashVector[T]] =
     binaryOpFromUpdateOp(implicitly[CanCopy[HashVector[T]]], vDivIntoSField, ct)
-  implicit def vPowS[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def vPowS[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T],
       zero: Zero[T]): OpPow.Impl2[HashVector[T], T, HashVector[T]] =
     binaryOpFromUpdateOp(implicitly[CanCopy[HashVector[T]]], vPowIntoS, ct)
 
-  implicit def vSubIntoSField[T](
-      implicit field: Ring[T],
+  implicit def vSubIntoSField[T](implicit
+      field: Ring[T],
       ct: ClassTag[T]): OpSub.InPlaceImpl2[HashVector[T], T] = {
     new OpSub.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
@@ -924,8 +929,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vMulScalarIntoSField[T](
-      implicit field: Semiring[T],
+  implicit def vMulScalarIntoSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[HashVector[T], T] = {
     new OpMulScalar.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
@@ -934,8 +939,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  implicit def vDivIntoSField[T](
-      implicit field: Field[T],
+  implicit def vDivIntoSField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[HashVector[T], T] = {
     new OpDiv.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
@@ -944,8 +949,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  implicit def vPowIntoS[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def vPowIntoS[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T]): OpPow.InPlaceImpl2[HashVector[T], T] = {
     new OpPow.InPlaceImpl2[HashVector[T], T] {
       override def apply(v: HashVector[T], v2: T) = {
@@ -954,8 +959,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  implicit def dotField[T](implicit field: Semiring[T])
-      : OpMulInner.Impl2[HashVector[T], HashVector[T], T] = {
+  implicit def dotField[T](implicit
+      field: Semiring[T]): OpMulInner.Impl2[HashVector[T], HashVector[T], T] = {
     new OpMulInner.Impl2[HashVector[T], HashVector[T], T] {
       override def apply(v: HashVector[T], v2: HashVector[T]): T = {
         var acc = field.zero
@@ -967,8 +972,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  def binaryOpFromUpdateOp[Op <: OpType, V, Other](
-      implicit copy: CanCopy[HashVector[V]],
+  def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
+      copy: CanCopy[HashVector[V]],
       op: UFunc.InPlaceImpl2[Op, HashVector[V], Other],
       man: ClassTag[V])
       : UFunc.UImpl2[Op, HashVector[V], Other, HashVector[V]] = {

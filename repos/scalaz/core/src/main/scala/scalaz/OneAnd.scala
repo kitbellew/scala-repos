@@ -292,8 +292,8 @@ sealed abstract class OneAndInstances0 extends OneAndInstances1 {
       def F = implicitly
     }
 
-  implicit def oneAndEqual[F[_], A](
-      implicit A: Equal[A],
+  implicit def oneAndEqual[F[_], A](implicit
+      A: Equal[A],
       FA: Equal[F[A]]): Equal[OneAnd[F, A]] =
     new OneAndEqual[F, A] {
       def OA = A
@@ -318,16 +318,16 @@ sealed abstract class OneAndInstances extends OneAndInstances0 {
       def F = implicitly
     }
 
-  implicit def oneAndShow[F[_], A](
-      implicit A: Show[A],
+  implicit def oneAndShow[F[_], A](implicit
+      A: Show[A],
       FA: Show[F[A]]): Show[OneAnd[F, A]] =
     new Show[OneAnd[F, A]] {
       override def show(f: OneAnd[F, A]) =
         Cord("OneAnd(", A.show(f.head), ",", FA.show(f.tail), ")")
     }
 
-  implicit def oneAndOrder[F[_], A](
-      implicit A: Order[A],
+  implicit def oneAndOrder[F[_], A](implicit
+      A: Order[A],
       FA: Order[F[A]]): Order[OneAnd[F, A]] =
     new Order[OneAnd[F, A]] with OneAndEqual[F, A] {
       def OA = A

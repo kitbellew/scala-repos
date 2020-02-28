@@ -21,13 +21,13 @@ object arbitrary extends ArbitraryInstances0 {
       implicit A: Arbitrary[A]): Arbitrary[Const[A, B]] =
     Arbitrary(A.arbitrary.map(Const[A, B]))
 
-  implicit def oneAndArbitrary[F[_], A](
-      implicit A: Arbitrary[A],
+  implicit def oneAndArbitrary[F[_], A](implicit
+      A: Arbitrary[A],
       F: Arbitrary[F[A]]): Arbitrary[OneAnd[F, A]] =
     Arbitrary(F.arbitrary.flatMap(fa => A.arbitrary.map(a => OneAnd(a, fa))))
 
-  implicit def xorArbitrary[A, B](
-      implicit A: Arbitrary[A],
+  implicit def xorArbitrary[A, B](implicit
+      A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[A Xor B] =
     Arbitrary(Gen.oneOf(A.arbitrary.map(Xor.left), B.arbitrary.map(Xor.right)))
 
@@ -35,16 +35,16 @@ object arbitrary extends ArbitraryInstances0 {
       implicit F: Arbitrary[F[A Xor B]]): Arbitrary[XorT[F, A, B]] =
     Arbitrary(F.arbitrary.map(XorT(_)))
 
-  implicit def validatedArbitrary[A, B](
-      implicit A: Arbitrary[A],
+  implicit def validatedArbitrary[A, B](implicit
+      A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[Validated[A, B]] =
     Arbitrary(
       Gen.oneOf(
         A.arbitrary.map(Validated.invalid),
         B.arbitrary.map(Validated.valid)))
 
-  implicit def iorArbitrary[A, B](
-      implicit A: Arbitrary[A],
+  implicit def iorArbitrary[A, B](implicit
+      A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[A Ior B] =
     Arbitrary(
       Gen.oneOf(
@@ -73,8 +73,8 @@ object arbitrary extends ArbitraryInstances0 {
         getArbitrary[A].map(Eval.later(_)),
         getArbitrary[A].map(Eval.always(_))))
 
-  implicit def prodArbitrary[F[_], G[_], A](
-      implicit F: Arbitrary[F[A]],
+  implicit def prodArbitrary[F[_], G[_], A](implicit
+      F: Arbitrary[F[A]],
       G: Arbitrary[G[A]]): Arbitrary[Prod[F, G, A]] =
     Arbitrary(
       F.arbitrary.flatMap(fa => G.arbitrary.map(ga => Prod[F, G, A](fa, ga))))
@@ -83,8 +83,8 @@ object arbitrary extends ArbitraryInstances0 {
       implicit F: Arbitrary[F[B]]): Arbitrary[Func[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Func.func[F, A, B](_ => fb)))
 
-  implicit def appFuncArbitrary[F[_], A, B](
-      implicit F: Arbitrary[F[B]],
+  implicit def appFuncArbitrary[F[_], A, B](implicit
+      F: Arbitrary[F[B]],
       FF: Applicative[F]): Arbitrary[AppFunc[F, A, B]] =
     Arbitrary(F.arbitrary.map(fb => Func.appFunc[F, A, B](_ => fb)))
 
@@ -97,8 +97,8 @@ object arbitrary extends ArbitraryInstances0 {
       implicit F: Arbitrary[A => Option[B]]): Arbitrary[PartialFunction[A, B]] =
     Arbitrary(F.arbitrary.map(Function.unlift))
 
-  implicit def coproductArbitrary[F[_], G[_], A](
-      implicit F: Arbitrary[F[A]],
+  implicit def coproductArbitrary[F[_], G[_], A](implicit
+      F: Arbitrary[F[A]],
       G: Arbitrary[G[A]]): Arbitrary[Coproduct[F, G, A]] =
     Arbitrary(
       Gen.oneOf(

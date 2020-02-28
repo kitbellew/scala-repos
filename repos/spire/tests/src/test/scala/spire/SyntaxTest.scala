@@ -350,8 +350,8 @@ trait BaseSyntaxTest {
     ((a ** 0.5) == NRoot[A].fpow(a, half))
   }
 
-  def testModuleSyntax[V, A](v: V, w: V, a: A)(
-      implicit V: Module[V, A],
+  def testModuleSyntax[V, A](v: V, w: V, a: A)(implicit
+      V: Module[V, A],
       A: Ring[A]) = {
     import spire.syntax.module._
     ((v + w) == V.plus(v, w)) &&

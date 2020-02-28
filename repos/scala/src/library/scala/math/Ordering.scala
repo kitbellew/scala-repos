@@ -368,8 +368,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple2[T1, T2](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple2[T1, T2](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2]): Ordering[(T1, T2)] =
     new Ordering[(T1, T2)] {
       def compare(x: (T1, T2), y: (T1, T2)): Int = {
@@ -381,8 +381,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple3[T1, T2, T3](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple3[T1, T2, T3](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3]): Ordering[(T1, T2, T3)] =
     new Ordering[(T1, T2, T3)] {
@@ -397,8 +397,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple4[T1, T2, T3, T4](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple4[T1, T2, T3, T4](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4]): Ordering[(T1, T2, T3, T4)] =
@@ -416,8 +416,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple5[T1, T2, T3, T4, T5](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple5[T1, T2, T3, T4, T5](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4],
@@ -440,8 +440,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple6[T1, T2, T3, T4, T5, T6](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple6[T1, T2, T3, T4, T5, T6](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4],
@@ -467,8 +467,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple7[T1, T2, T3, T4, T5, T6, T7](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple7[T1, T2, T3, T4, T5, T6, T7](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4],
@@ -497,8 +497,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple8[T1, T2, T3, T4, T5, T6, T7, T8](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple8[T1, T2, T3, T4, T5, T6, T7, T8](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4],
@@ -530,8 +530,8 @@ object Ordering extends LowPriorityOrderingImplicits {
       }
     }
 
-  implicit def Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](
-      implicit ord1: Ordering[T1],
+  implicit def Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](implicit
+      ord1: Ordering[T1],
       ord2: Ordering[T2],
       ord3: Ordering[T3],
       ord4: Ordering[T4],

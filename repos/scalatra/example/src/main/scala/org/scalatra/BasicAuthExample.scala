@@ -15,16 +15,16 @@ object BasicAuthExample {
       realm: String)
       extends BasicAuthStrategy[MyUser](app, realm) {
 
-    protected def validate(userName: String, password: String)(
-        implicit request: HttpServletRequest,
+    protected def validate(userName: String, password: String)(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse): Option[MyUser] = {
       if (userName == "scalatra" && password == "scalatra")
         Some(MyUser("scalatra"))
       else None
     }
 
-    protected def getUserId(user: MyUser)(
-        implicit request: HttpServletRequest,
+    protected def getUserId(user: MyUser)(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse): String = user.id
   }
 

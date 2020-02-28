@@ -308,8 +308,7 @@ object SexpConvert {
       def ser(n: HNil) = SexpNil
     }
 
-  implicit def deriveHCons[K <: Symbol, V, T <: HList](
-      implicit
+  implicit def deriveHCons[K <: Symbol, V, T <: HList](implicit
       key: Witness.Aux[K],
       scv: Lazy[SexpConvert[V]],
       sct: Lazy[SexpConvert[T]]): SexpConvert[FieldType[K, V] :: T] =
@@ -340,8 +339,7 @@ object SexpConvert {
     def ser(t: CNil) = SexpNil
   }
 
-  implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](
-      implicit
+  implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](implicit
       key: Witness.Aux[K],
       scv: Lazy[SexpConvert[V]],
       sct: Lazy[SexpConvert[T]]): SexpConvert[FieldType[K, V] :+: T] =
@@ -362,8 +360,8 @@ object SexpConvert {
       }
     }
 
-  implicit def deriveInstance[F, G](
-      implicit gen: LabelledGeneric.Aux[F, G],
+  implicit def deriveInstance[F, G](implicit
+      gen: LabelledGeneric.Aux[F, G],
       sg: Lazy[SexpConvert[G]]): SexpConvert[F] =
     new SexpConvert[F] {
       def deser(s: Sexp): Option[F] = sg.value.deser(s).map(gen.from)

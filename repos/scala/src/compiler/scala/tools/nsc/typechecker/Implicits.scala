@@ -1262,8 +1262,8 @@ trait Implicits {
       /* Populate implicit info map by traversing all parts of type `tp`.
        * Parameters as for `getParts`.
        */
-      def getClassParts(tp: Type)(
-          implicit infoMap: InfoMap,
+      def getClassParts(tp: Type)(implicit
+          infoMap: InfoMap,
           seen: mutable.Set[Type],
           pending: Set[Symbol]) = tp match {
         case TypeRef(pre, sym, args) =>
@@ -1303,8 +1303,8 @@ trait Implicits {
        * @param pending  The set of static symbols for which we are currently trying to collect their parts
        *                 in order to cache them in infoMapCache
        */
-      def getParts(tp: Type)(
-          implicit infoMap: InfoMap,
+      def getParts(tp: Type)(implicit
+          infoMap: InfoMap,
           seen: mutable.Set[Type],
           pending: Set[Symbol]) {
         if (seen(tp))

@@ -99,8 +99,8 @@ object OpenID {
     * From a request corresponding to the callback from the OpenID server, check the identity of the current user
     */
   @deprecated("Inject OpenIdClient into your component", "2.5.0")
-  def verifiedId(
-      implicit request: Request[_],
+  def verifiedId(implicit
+      request: Request[_],
       app: Application): Future[UserInfo] =
     app.injector.instanceOf[OpenIdClient].verifiedId(request)
 }

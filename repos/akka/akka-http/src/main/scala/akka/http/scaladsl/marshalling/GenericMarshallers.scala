@@ -13,8 +13,8 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
   implicit def throwableMarshaller[T]: Marshaller[Throwable, T] =
     Marshaller(_ ⇒ FastFuture.failed)
 
-  implicit def optionMarshaller[A, B](
-      implicit m: Marshaller[A, B],
+  implicit def optionMarshaller[A, B](implicit
+      m: Marshaller[A, B],
       empty: EmptyValue[B]): Marshaller[Option[A], B] =
     Marshaller { implicit ec ⇒
       {
@@ -25,8 +25,8 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
       }
     }
 
-  implicit def eitherMarshaller[A1, A2, B](
-      implicit m1: Marshaller[A1, B],
+  implicit def eitherMarshaller[A1, A2, B](implicit
+      m1: Marshaller[A1, B],
       m2: Marshaller[A2, B]): Marshaller[Either[A1, A2], B] =
     Marshaller { implicit ec ⇒
       {

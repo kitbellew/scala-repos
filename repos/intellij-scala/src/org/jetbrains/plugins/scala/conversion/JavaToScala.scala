@@ -70,8 +70,8 @@ object JavaToScala {
 
   def convertPsiToIntermdeiate(
       element: PsiElement,
-      externalProperties: ExternalProperties)(
-      implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
+      externalProperties: ExternalProperties)(implicit
+      associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false): IntermediateNode = {
     if (element == null) return LiteralExpression("")
@@ -628,7 +628,8 @@ object JavaToScala {
   }
 
   def hanldleAssociations(element: PsiElement, result: IntermediateNode)(
-      implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
+      implicit
+      associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false) = {
     element match {
@@ -676,7 +677,8 @@ object JavaToScala {
   val fieldParamaterMap = new mutable.HashMap[String, String]()
 
   def createClass(inClass: PsiClass, externalProperties: ExternalProperties)(
-      implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
+      implicit
+      associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false): IntermediateNode = {
 
@@ -924,8 +926,8 @@ object JavaToScala {
   }
 
   //primary constructor may apply only when there is one constructor with params
-  def handlePrimaryConstructor(constructors: Seq[PsiMethod])(
-      implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
+  def handlePrimaryConstructor(constructors: Seq[PsiMethod])(implicit
+      associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false)
       : (Option[Seq[PsiMember]], Option[PrimaryConstruction]) = {
@@ -1086,8 +1088,8 @@ object JavaToScala {
     (PsiModifier.NATIVE, ModifierType.NATIVE)
   )
 
-  def handleModifierList(owner: PsiModifierListOwner)(
-      implicit associations: ListBuffer[AssociationHelper] = new ListBuffer(),
+  def handleModifierList(owner: PsiModifierListOwner)(implicit
+      associations: ListBuffer[AssociationHelper] = new ListBuffer(),
       refs: Seq[ReferenceData] = Seq.empty,
       withComments: Boolean = false): IntermediateNode = {
 

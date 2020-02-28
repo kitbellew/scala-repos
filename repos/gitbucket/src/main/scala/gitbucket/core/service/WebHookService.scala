@@ -110,8 +110,8 @@ trait WebHookService {
     WebHooks.filter(_.byPrimaryKey(owner, repository, url)).delete
 
   def callWebHookOf(owner: String, repository: String, event: WebHook.Event)(
-      makePayload: => Option[WebHookPayload])(
-      implicit s: Session,
+      makePayload: => Option[WebHookPayload])(implicit
+      s: Session,
       c: JsonFormat.Context): Unit = {
     val webHooks = getWebHooksByEvent(owner, repository, event)
     if (webHooks.nonEmpty) {
@@ -214,8 +214,8 @@ trait WebHookPullRequestService extends WebHookService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
+      sender: Account)(implicit
+      s: Session,
       context: JsonFormat.Context): Unit = {
     callWebHookOf(repository.owner, repository.name, WebHook.Issues) {
       val users = getAccountsByUserNames(
@@ -242,8 +242,8 @@ trait WebHookPullRequestService extends WebHookService {
       repository: RepositoryService.RepositoryInfo,
       issueId: Int,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
+      sender: Account)(implicit
+      s: Session,
       context: JsonFormat.Context): Unit = {
     import WebHookService._
     callWebHookOf(repository.owner, repository.name, WebHook.PullRequest) {
@@ -309,8 +309,8 @@ trait WebHookPullRequestService extends WebHookService {
       requestRepository: RepositoryService.RepositoryInfo,
       requestBranch: String,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
+      sender: Account)(implicit
+      s: Session,
       context: JsonFormat.Context): Unit = {
     import WebHookService._
     for {
@@ -350,8 +350,8 @@ trait WebHookPullRequestReviewCommentService extends WebHookService {
       repository: RepositoryService.RepositoryInfo,
       issueId: Int,
       baseUrl: String,
-      sender: Account)(
-      implicit s: Session,
+      sender: Account)(implicit
+      s: Session,
       context: JsonFormat.Context): Unit = {
     import WebHookService._
     callWebHookOf(
@@ -404,8 +404,8 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
       repository: RepositoryService.RepositoryInfo,
       issue: Issue,
       issueCommentId: Int,
-      sender: Account)(
-      implicit s: Session,
+      sender: Account)(implicit
+      s: Session,
       context: JsonFormat.Context): Unit = {
     callWebHookOf(repository.owner, repository.name, WebHook.IssueComment) {
       for {

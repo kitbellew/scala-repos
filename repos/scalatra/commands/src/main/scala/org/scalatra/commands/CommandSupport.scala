@@ -30,8 +30,8 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
     * For every command type, creation and binding is performed only once and then stored into
     * a request attribute.
     */
-  def command[T <: CommandType](
-      implicit request: HttpServletRequest,
+  def command[T <: CommandType](implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): T = {
     def createCommand =
       commandFactories
@@ -48,26 +48,26 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
     * For every command type, creation and binding is performed only once and then stored into
     * a request attribute.
     */
-  def commandOrElse[T <: CommandType](factory: ⇒ T)(
-      implicit request: HttpServletRequest,
+  def commandOrElse[T <: CommandType](factory: ⇒ T)(implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): T = {
     commandOption[T] getOrElse bindCommand(factory)
   }
 
-  protected def bindCommand[T <: CommandType](newCommand: T)(
-      implicit request: HttpServletRequest,
+  protected def bindCommand[T <: CommandType](newCommand: T)(implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): T = {
     newCommand.bindTo(params(request), multiParams(request), request.headers)
     newCommand
   }
 
-  def commandOption[T <: CommandType](
-      implicit request: HttpServletRequest,
+  def commandOption[T <: CommandType](implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): Option[T] =
     request.get(commandRequestKey[T]).map(_.asInstanceOf[T])
 
-  private[commands] def commandRequestKey[T <: CommandType](
-      implicit request: HttpServletRequest,
+  private[commands] def commandRequestKey[T <: CommandType](implicit
+      request: HttpServletRequest,
       mf: Manifest[T]) =
     "_command_" + manifest[T].erasure.getName
 

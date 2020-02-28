@@ -33,8 +33,8 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
       Foldable[Option].foldRight[A, Z](a, b)(f))
   }
 
-  def traverse[G[_], B](f: A => G[B])(
-      implicit F: Traverse[F],
+  def traverse[G[_], B](f: A => G[B])(implicit
+      F: Traverse[F],
       G: Applicative[G]): G[OptionT[F, B]] = {
     import std.option._
     G.map(F.traverse(run)(o => Traverse[Option].traverse(o)(f)))(OptionT(_))
@@ -125,8 +125,8 @@ sealed abstract class OptionTInstances3 {
 }
 
 sealed abstract class OptionTInstances2 extends OptionTInstances3 {
-  implicit def optionTBindRec[F[_]](
-      implicit F0: Monad[F],
+  implicit def optionTBindRec[F[_]](implicit
+      F0: Monad[F],
       B0: BindRec[F]): BindRec[OptionT[F, ?]] =
     new OptionTBindRec[F] {
       implicit def F = F0

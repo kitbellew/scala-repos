@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import _root_.akka.actor._
 import org.atmosphere.cpr._
 
-final class DefaultScalatraBroadcaster()(
-    implicit wireFormat: WireFormat,
+final class DefaultScalatraBroadcaster()(implicit
+    wireFormat: WireFormat,
     system: ActorSystem)
     extends DefaultBroadcaster
     with ScalatraBroadcaster {

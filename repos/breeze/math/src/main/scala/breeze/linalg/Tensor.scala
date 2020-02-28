@@ -218,8 +218,8 @@ trait Tensor[@spec(Int) K, @spec(Double, Int, Float, Long) V]
 
 object Tensor {
 
-  implicit def liftTransposeOps[Op, K, V, T, R, RT](
-      implicit ev: T <:< Tensor[K, V],
+  implicit def liftTransposeOps[Op, K, V, T, R, RT](implicit
+      ev: T <:< Tensor[K, V],
       op: UFunc.UImpl2[Op, T, V, R],
       canTranspose: CanTranspose[R, RT])
       : UFunc.UImpl2[Op, Transpose[T], V, RT] = {
@@ -231,8 +231,8 @@ object Tensor {
 
   }
 
-  implicit def liftTransposeInPlaceOps[Op, K, V, T](
-      implicit ev: T <:< Tensor[K, V],
+  implicit def liftTransposeInPlaceOps[Op, K, V, T](implicit
+      ev: T <:< Tensor[K, V],
       op: UFunc.InPlaceImpl2[Op, T, V])
       : UFunc.InPlaceImpl2[Op, Transpose[T], V] = {
     new UFunc.InPlaceImpl2[Op, Transpose[T], V] {

@@ -67,34 +67,34 @@ final case class Kleisli[M[_], A, B](run: A => M[B]) { self =>
     Kleisli(a => M.pure(this(a)))
 
   import Liskov._
-  def unlift[N[_], FF[_]](
-      implicit M: Comonad[N],
+  def unlift[N[_], FF[_]](implicit
+      M: Comonad[N],
       ev: this.type <~< Kleisli[λ[α => N[FF[α]]], A, B]): Kleisli[FF, A, B] =
     kleisli[FF, A, B] { a => Comonad[N].copoint(ev(self) run a) }
 
-  def unliftId[N[_]](
-      implicit M: Comonad[N],
+  def unliftId[N[_]](implicit
+      M: Comonad[N],
       ev: this.type <~< Kleisli[N[?], A, B]): Reader[A, B] =
     unlift[N, Id]
 
-  def rwst[W, S](
-      implicit M: Functor[M],
+  def rwst[W, S](implicit
+      M: Functor[M],
       W: Monoid[W]): ReaderWriterStateT[M, A, W, S, B] =
     ReaderWriterStateT((r, s) => M.map(self(r)) { b => (W.zero, b, s) })
 
   def state(implicit M: Monad[M]): StateT[M, A, B] =
     StateT(a => M.map(run(a))((a, _)))
 
-  def liftMK[T[_[_], _]](
-      implicit T: MonadTrans[T],
+  def liftMK[T[_[_], _]](implicit
+      T: MonadTrans[T],
       M: Monad[M]): Kleisli[T[M, ?], A, B] =
     mapK[T[M, ?], B](ma => T.liftM(ma))
 
   def local[AA](f: AA => A): Kleisli[M, AA, B] =
     kleisli(f andThen run)
 
-  def endo(
-      implicit M: Functor[M],
+  def endo(implicit
+      M: Functor[M],
       ev: A >~> B): Endomorphic[Kleisli[M, ?, ?], A] =
     Endomorphic[Kleisli[M, ?, ?], A](map(ev.apply))
 
@@ -241,8 +241,8 @@ sealed abstract class KleisliInstances0 extends KleisliInstances1 {
 }
 
 abstract class KleisliInstances extends KleisliInstances0 {
-  implicit def kleisliArrow[F[_]](implicit F0: Monad[F])
-      : Arrow[Kleisli[F, ?, ?]] with Choice[Kleisli[F, ?, ?]] =
+  implicit def kleisliArrow[F[_]](implicit
+      F0: Monad[F]): Arrow[Kleisli[F, ?, ?]] with Choice[Kleisli[F, ?, ?]] =
     new KleisliArrow[F] {
       implicit def F: Monad[F] = F0
     }

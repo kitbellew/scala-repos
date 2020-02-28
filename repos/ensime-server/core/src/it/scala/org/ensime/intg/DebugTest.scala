@@ -394,8 +394,8 @@ trait DebugTestUtils {
     }
   }
 
-  def getVariableValue(threadId: DebugThreadId, variableName: String)(
-      implicit testkit: TestKitFix,
+  def getVariableValue(threadId: DebugThreadId, variableName: String)(implicit
+      testkit: TestKitFix,
       p: (TestActorRef[Project], TestProbe)): DebugValue = {
     import testkit._
     val project = p._1
@@ -406,8 +406,8 @@ trait DebugTestUtils {
     expectMsgType[DebugValue]
   }
 
-  def checkTopStackFrame(className: String, method: String, line: Int)(
-      implicit testkit: TestKitFix,
+  def checkTopStackFrame(className: String, method: String, line: Int)(implicit
+      testkit: TestKitFix,
       p: (TestActorRef[Project], TestProbe)): Unit = {
     import testkit._
     val project = p._1

@@ -140,8 +140,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     * If you return something other than a ScalatraRenderContext, you will
     * also want to redefine that binding.
     */
-  protected def createRenderContext(out: PrintWriter)(
-      implicit request: HttpServletRequest,
+  protected def createRenderContext(out: PrintWriter)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): RenderContext = {
     new ScalatraRenderContext(this, templateEngine, out, request, response)
   }
@@ -152,8 +152,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     * are urged to consider layoutTemplate instead.
     */
   @deprecated("not idiomatic Scalate; consider layoutTemplate instead", "2.0.0")
-  def renderTemplate(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+  def renderTemplate(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) =
     createRenderContext(response.writer).render(path, Map(attributes: _*))
 
@@ -176,8 +176,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     //    }
   }
 
-  override protected def renderUncaughtException(e: Throwable)(
-      implicit request: HttpServletRequest,
+  override protected def renderUncaughtException(e: Throwable)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     if (isScalateErrorPageEnabled) renderScalateErrorPage(e)
     else super.renderUncaughtException(e)
@@ -185,8 +185,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
 
   // Hack: Have to pass it the request and response, because we're outside the
   // scope of the super handler.
-  private[this] def renderScalateErrorPage(e: Throwable)(
-      implicit request: HttpServletRequest,
+  private[this] def renderScalateErrorPage(e: Throwable)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     response.setStatus(500)
     response.setContentType("text/html")
@@ -238,32 +238,32 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
   /**
     * Convenience method for `layoutTemplateAs("jade")`.
     */
-  protected def jade(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+  protected def jade(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     layoutTemplateAs(Set("jade"))(path, attributes: _*)
 
   /**
     * Convenience method for `layoutTemplateAs("scaml")`.
     */
-  protected def scaml(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+  protected def scaml(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     layoutTemplateAs(Set("scaml"))(path, attributes: _*)
 
   /**
     * Convenience method for `layoutTemplateAs("ssp")`.
     */
-  protected def ssp(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+  protected def ssp(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     layoutTemplateAs(Set("ssp"))(path, attributes: _*)
 
   /**
     * Convenience method for `layoutTemplateAs("mustache")`.
     */
-  protected def mustache(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+  protected def mustache(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     layoutTemplateAs(Set("mustache"))(path, attributes: _*)
 
@@ -277,8 +277,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     * layouts by passing `layout -> ""`.
     */
   protected def layoutTemplateAs(
-      ext: Set[String])(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+      ext: Set[String])(path: String, attributes: (String, Any)*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
     val uri = findTemplate(path, ext).getOrElse(path)
     val buffer = new StringWriter()
@@ -303,7 +303,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     * layouts by passing `layout -> ""`.
     */
   protected def layoutTemplate(path: String, attributes: (String, Any)*)(
-      implicit request: HttpServletRequest,
+      implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String =
     layoutTemplateAs(templateEngine.extensions)(path, attributes: _*)
 

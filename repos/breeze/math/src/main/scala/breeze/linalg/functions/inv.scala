@@ -131,8 +131,8 @@ trait pinvLowPrio { this: pinv.type =>
     * @tparam Result the result of MulRes \ TransT
     * @return
     */
-  implicit def implFromTransposeAndSolve[T, TransT, MulRes, Result](
-      implicit numericT: T => NumericOps[T],
+  implicit def implFromTransposeAndSolve[T, TransT, MulRes, Result](implicit
+      numericT: T => NumericOps[T],
       trans: CanTranspose[T, TransT],
       numericTrans: TransT => NumericOps[TransT],
       mul: OpMulMatrix.Impl2[TransT, T, MulRes],

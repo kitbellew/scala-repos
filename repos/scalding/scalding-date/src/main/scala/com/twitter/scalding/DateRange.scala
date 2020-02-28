@@ -31,8 +31,8 @@ object DateRange extends java.io.Serializable {
     * This is called parse to avoid a collision with implicit conversions
     * from String to RichDate
     */
-  def parse(truncatediso8601: String)(
-      implicit tz: TimeZone,
+  def parse(truncatediso8601: String)(implicit
+      tz: TimeZone,
       dp: DateParser): DateRange =
     DateRange(RichDate(truncatediso8601), RichDate.upperBound(truncatediso8601))
 
@@ -41,8 +41,8 @@ object DateRange extends java.io.Serializable {
     * could be construed as matching the string passed, e.g.
     * ("2011-01-02T04", "2011-01-02T05") includes two full hours (all of 4 and all of 5)
     */
-  def parse(iso8601start: String, iso8601inclusiveUpper: String)(
-      implicit tz: TimeZone,
+  def parse(iso8601start: String, iso8601inclusiveUpper: String)(implicit
+      tz: TimeZone,
       dp: DateParser): DateRange = {
 
     val start = RichDate(iso8601start)

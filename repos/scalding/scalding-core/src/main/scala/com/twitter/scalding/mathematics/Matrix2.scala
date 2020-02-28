@@ -66,13 +66,13 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   def #*#(that: Matrix2[R, C, V])(implicit ring: Ring[V]): Matrix2[R, C, V] =
     HadamardProduct(this, that, ring)
   // Matrix product
-  def *[C2](that: Matrix2[C, C2, V])(
-      implicit ring: Ring[V],
+  def *[C2](that: Matrix2[C, C2, V])(implicit
+      ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, C2, V] =
     Product(this, that, ring)
 
-  def *(that: Scalar2[V])(
-      implicit ring: Ring[V],
+  def *(that: Scalar2[V])(implicit
+      ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, C, V] = that * this
 
   def /(that: Scalar2[V])(implicit field: Field[V]): Matrix2[R, C, V] =
@@ -96,8 +96,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       .asInstanceOf[Matrix2[R, C, V]]
 
   /** equivalent to multiplying this matrix by itself, power times */
-  def ^(power: Int)(
-      implicit ev: =:=[R, C],
+  def ^(power: Int)(implicit
+      ev: =:=[R, C],
       ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, R, V] = {
     // it can possibly be pre-computed in an optimal way as g^k = ((g*g)*(g*g)...
@@ -112,8 +112,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   }
 
   // TODO: complete the rest of the API to match the old Matrix API (many methods are effectively on the TypedPipe)
-  def sumColVectors(
-      implicit ring: Ring[V],
+  def sumColVectors(implicit
+      ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, Unit, V] =
     Product(this, OneC()(colOrd), ring)
 
@@ -124,8 +124,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     * BloomFilters or CountMinSketch.
     * TODO This is a special kind of product that could be optimized like Product is
     */
-  def propagate[C2, VecV](vec: Matrix2[C, C2, VecV])(
-      implicit ev: =:=[V, Boolean],
+  def propagate[C2, VecV](vec: Matrix2[C, C2, VecV])(implicit
+      ev: =:=[V, Boolean],
       mon: Monoid[VecV],
       mj: MatrixJoiner2): Matrix2[R, C2, VecV] = {
 
@@ -145,8 +145,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     MatrixLiteral(resultPipe, this.sizeHint)
   }
 
-  def propagateRow[C2](mat: Matrix2[C, C2, Boolean])(
-      implicit ev: =:=[R, Unit],
+  def propagateRow[C2](mat: Matrix2[C, C2, Boolean])(implicit
+      ev: =:=[R, Unit],
       mon: Monoid[V],
       mj: MatrixJoiner2): Matrix2[Unit, C2, V] =
     mat.transpose
@@ -154,8 +154,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       .transpose
 
   // Binarize values, all x != 0 become 1
-  def binarizeAs[NewValT](
-      implicit mon: Monoid[V],
+  def binarizeAs[NewValT](implicit
+      mon: Monoid[V],
       ring: Ring[NewValT]): Matrix2[R, C, NewValT] = {
     lazy val newPipe = toTypedPipe
       .map {
@@ -174,8 +174,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     * Row L2 normalization
     * After this operation, the sum(|x|^2) along each row will be 1.
     */
-  def rowL2Normalize(
-      implicit num: Numeric[V],
+  def rowL2Normalize(implicit
+      num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
       this.toTypedPipe.map {
@@ -195,8 +195,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     * Row L1 normalization
     * After this operation, the sum(|x|) alone each row will be 1.
     */
-  def rowL1Normalize(
-      implicit num: Numeric[V],
+  def rowL1Normalize(implicit
+      num: Numeric[V],
       mj: MatrixJoiner2): Matrix2[R, C, Double] = {
     val matD = MatrixLiteral(
       this.toTypedPipe.map {
@@ -226,15 +226,15 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     * Consider this Matrix as the r2 row of a matrix. The current matrix must be a row,
     * which is to say, its row type must be Unit.
     */
-  def asRow[R2](r2: R2)(
-      implicit ev: R =:= Unit,
+  def asRow[R2](r2: R2)(implicit
+      ev: R =:= Unit,
       rowOrd: Ordering[R2]): Matrix2[R2, C, V] =
     MatrixLiteral(
       toTypedPipe.map { case (r, c, v) => (r2, c, v) },
       this.sizeHint)
 
-  def asCol[C2](c2: C2)(
-      implicit ev: C =:= Unit,
+  def asCol[C2](c2: C2)(implicit
+      ev: C =:= Unit,
       colOrd: Ordering[C2]): Matrix2[R, C2, V] =
     MatrixLiteral(
       toTypedPipe.map { case (r, c, v) => (r, c2, v) },
@@ -250,8 +250,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
         .map { case (_, _, x) => x }
         .sum(mon))
 
-  def write(sink: TypedSink[(R, C, V)])(
-      implicit fd: FlowDef,
+  def write(sink: TypedSink[(R, C, V)])(implicit
+      fd: FlowDef,
       m: Mode): Matrix2[R, C, V] =
     MatrixLiteral(toTypedPipe.write(sink), sizeHint)
 }
@@ -556,8 +556,8 @@ case class Sum[R, C, V](
     Sum(left.transpose, right.transpose, mon)
   override def negate(implicit g: Group[V]): Sum[R, C, V] =
     Sum(left.negate, right.negate, mon)
-  override def sumColVectors(
-      implicit ring: Ring[V],
+  override def sumColVectors(implicit
+      ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, Unit, V] =
     Sum(left.sumColVectors, right.sumColVectors, mon)
 
@@ -620,8 +620,8 @@ case class HadamardProduct[R, C, V](
 
 case class MatrixLiteral[R, C, V](
     override val toTypedPipe: TypedPipe[(R, C, V)],
-    override val sizeHint: SizeHint)(
-    implicit override val rowOrd: Ordering[R],
+    override val sizeHint: SizeHint)(implicit
+    override val rowOrd: Ordering[R],
     override val colOrd: Ordering[C])
     extends Matrix2[R, C, V] {
 
@@ -659,8 +659,8 @@ trait Scalar2[V] extends Serializable {
     Scalar2(ValuePipe.fold(value, that.value)(f.div _))
   def unary_-(implicit g: Group[V]): Scalar2[V] = map(x => g.negate(x))
 
-  def *[R, C](that: Matrix2[R, C, V])(
-      implicit ring: Ring[V],
+  def *[R, C](that: Matrix2[R, C, V])(implicit
+      ring: Ring[V],
       mj: MatrixJoiner2): Matrix2[R, C, V] =
     that match {
       case p @ Product(left, right, _, expressions) =>
@@ -733,13 +733,13 @@ object Matrix2 {
       hint: SizeHint): Matrix2[R, C, V] =
     MatrixLiteral(t, hint)
 
-  def read[R, C, V](t: TypedSource[(R, C, V)], hint: SizeHint)(
-      implicit ordr: Ordering[R],
+  def read[R, C, V](t: TypedSource[(R, C, V)], hint: SizeHint)(implicit
+      ordr: Ordering[R],
       ordc: Ordering[C]): Matrix2[R, C, V] =
     MatrixLiteral(TypedPipe.from(t), hint)
 
-  def J[R, C, V](
-      implicit ordR: Ordering[R],
+  def J[R, C, V](implicit
+      ordR: Ordering[R],
       ordC: Ordering[C],
       ring: Ring[V],
       mj: MatrixJoiner2) =

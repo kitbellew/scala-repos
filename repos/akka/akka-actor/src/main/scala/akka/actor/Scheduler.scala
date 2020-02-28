@@ -46,8 +46,8 @@ trait Scheduler {
       initialDelay: FiniteDuration,
       interval: FiniteDuration,
       receiver: ActorRef,
-      message: Any)(
-      implicit executor: ExecutionContext,
+      message: Any)(implicit
+      executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
     schedule(
       initialDelay,
@@ -109,8 +109,8 @@ trait Scheduler {
   final def scheduleOnce(
       delay: FiniteDuration,
       receiver: ActorRef,
-      message: Any)(
-      implicit executor: ExecutionContext,
+      message: Any)(implicit
+      executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
     scheduleOnce(
       delay,

@@ -32,8 +32,8 @@ trait BasicAuthSupport[UserType <: AnyRef] {
 
   def realm: String
 
-  protected def basicAuth()(
-      implicit request: HttpServletRequest,
+  protected def basicAuth()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     val baReq = new BasicAuthStrategy.BasicAuthRequest(request)
     if (!baReq.providesAuth) {
@@ -101,32 +101,32 @@ abstract class BasicAuthStrategy[UserType <: AnyRef](
   override def isValid(implicit request: HttpServletRequest) =
     request.isBasicAuth && request.providesAuth
 
-  def authenticate()(
-      implicit request: HttpServletRequest,
+  def authenticate()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) =
     validate(request.username, request.password)
 
-  protected def getUserId(user: UserType)(
-      implicit request: HttpServletRequest,
+  protected def getUserId(user: UserType)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String
-  protected def validate(userName: String, password: String)(
-      implicit request: HttpServletRequest,
+  protected def validate(userName: String, password: String)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Option[UserType]
 
-  override def afterSetUser(user: UserType)(
-      implicit request: HttpServletRequest,
+  override def afterSetUser(user: UserType)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     response.setHeader(REMOTE_USER, getUserId(user))
   }
 
-  override def unauthenticated()(
-      implicit request: HttpServletRequest,
+  override def unauthenticated()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     app halt Unauthorized(headers = Map("WWW-Authenticate" -> challenge))
   }
 
-  override def afterLogout(user: UserType)(
-      implicit request: HttpServletRequest,
+  override def afterLogout(user: UserType)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     response.setHeader(REMOTE_USER, "")
   }

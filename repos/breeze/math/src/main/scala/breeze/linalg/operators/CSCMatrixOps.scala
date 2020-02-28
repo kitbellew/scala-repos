@@ -22,8 +22,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   // don't remove
   import breeze.math.PowImplicits._
 
-  implicit def canMulSV_CSC_eq_CSC[T](
-      implicit op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
+  implicit def canMulSV_CSC_eq_CSC[T](implicit
+      op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
       zero: Zero[T])
       : OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] =
     new OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] {
@@ -40,8 +40,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
       }
     }
 
-  implicit def canMulSVt_CSC_eq_SVt[T](
-      implicit op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
+  implicit def canMulSVt_CSC_eq_SVt[T](implicit
+      op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
       zero: Zero[T],
       ct: ClassTag[T]): OpMulMatrix.Impl2[
     Transpose[SparseVector[T]],
@@ -151,8 +151,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand.valify
   implicit def csc_csc_BadOps[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpPow, OpDiv, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ pow _ }, { _ / _ }, { _ % _ }) op: Op.Impl2[
+      @expand.args(OpPow, OpDiv, OpMod) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ pow _ }, { _ / _ }, { _ % _ }) op: Op.Impl2[
         T,
         T,
         T],
@@ -1545,8 +1545,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   @expand
   implicit def csc_T_Op[
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: ClassTag](implicit
+      @expand.sequence[Op](
         { f./(_, _) }, {
           f.%(_, _)
         }, {
@@ -1601,8 +1601,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   @expand
   implicit def csc_csc_BadOp[
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: ClassTag](implicit
+      @expand.sequence[Op](
         { f./(_, _) }, {
           f.%(_, _)
         }, {
@@ -1741,8 +1741,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
     updateFromPure_CSC_T(implicitly[Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]]])
   }
 
-  implicit def implOpSolveMatrixBy_CSCD_DVD_eq_DVD[V](
-      implicit multMV: OpMulMatrix.Impl2[CSCMatrix[Double], V, V],
+  implicit def implOpSolveMatrixBy_CSCD_DVD_eq_DVD[V](implicit
+      multMV: OpMulMatrix.Impl2[CSCMatrix[Double], V, V],
       ispace: MutableInnerProductVectorSpace[V, Double])
       : OpSolveMatrixBy.Impl2[CSCMatrix[Double], V, V] = {
     new OpSolveMatrixBy.Impl2[CSCMatrix[Double], V, V] {
@@ -1760,15 +1760,15 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
  **/
 trait CSCMatrixOpsLowPrio extends SerializableLogging {
   this: CSCMatrixOps =>
-  implicit def canMulM_V_def[T, A, B <: Vector[T]](
-      implicit bb: B <:< Vector[T],
+  implicit def canMulM_V_def[T, A, B <: Vector[T]](implicit
+      bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[CSCMatrix[T], Vector[T], Vector[T]]) =
     implicitly[OpMulMatrix.Impl2[CSCMatrix[T], Vector[T], Vector[T]]]
       .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[A, B, Vector[T]]]
 
   // ibid.
-  implicit def canMulM_M_def[T, B <: Matrix[T]](
-      implicit bb: B <:< Matrix[T],
+  implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
+      bb: B <:< Matrix[T],
       op: OpMulMatrix.Impl2[CSCMatrix[T], Matrix[T], CSCMatrix[T]]) =
     op.asInstanceOf[OpMulMatrix.Impl2[CSCMatrix[T], B, CSCMatrix[T]]]
 }

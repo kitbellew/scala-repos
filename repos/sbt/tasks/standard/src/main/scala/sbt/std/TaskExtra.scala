@@ -179,8 +179,8 @@ trait TaskExtra {
     def named(s: String): Task[S] = in.copy(info = in.info.setName(s))
   }
 
-  final implicit def pipeToProcess[Key](t: Task[_])(
-      implicit streams: Task[TaskStreams[Key]],
+  final implicit def pipeToProcess[Key](t: Task[_])(implicit
+      streams: Task[TaskStreams[Key]],
       key: Task[_] => Key): ProcessPipe = new ProcessPipe {
     def #|(p: ProcessBuilder): Task[Int] = pipe0(None, p)
     def pipe(sid: String)(p: ProcessBuilder): Task[Int] = pipe0(Some(sid), p)
@@ -194,8 +194,8 @@ trait TaskExtra {
       }
   }
 
-  final implicit def binaryPipeTask[Key](in: Task[_])(
-      implicit streams: Task[TaskStreams[Key]],
+  final implicit def binaryPipeTask[Key](in: Task[_])(implicit
+      streams: Task[TaskStreams[Key]],
       key: Task[_] => Key): BinaryPipe = new BinaryPipe {
     def binary[T](f: BufferedInputStream => T): Task[T] = pipe0(None, f)
     def binary[T](sid: String)(f: BufferedInputStream => T): Task[T] =
@@ -211,8 +211,8 @@ trait TaskExtra {
 
     private def toFile(f: File) = (in: InputStream) => IO.transfer(in, f)
   }
-  final implicit def textPipeTask[Key](in: Task[_])(
-      implicit streams: Task[TaskStreams[Key]],
+  final implicit def textPipeTask[Key](in: Task[_])(implicit
+      streams: Task[TaskStreams[Key]],
       key: Task[_] => Key): TextPipe = new TextPipe {
     def text[T](f: BufferedReader => T): Task[T] = pipe0(None, f)
     def text[T](sid: String)(f: BufferedReader => T): Task[T] =
@@ -221,8 +221,8 @@ trait TaskExtra {
     private def pipe0[T](sid: Option[String], f: BufferedReader => T): Task[T] =
       streams map { s => f(s.readText(key(in), sid)) }
   }
-  final implicit def linesTask[Key](in: Task[_])(
-      implicit streams: Task[TaskStreams[Key]],
+  final implicit def linesTask[Key](in: Task[_])(implicit
+      streams: Task[TaskStreams[Key]],
       key: Task[_] => Key): TaskLines = new TaskLines {
     def lines: Task[List[String]] = lines0(None)
     def lines(sid: String): Task[List[String]] = lines0(Some(sid))

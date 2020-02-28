@@ -42,8 +42,8 @@ class TestService[K, V](
     service: String,
     inBatcher: Batcher,
     minBatch: BatchID,
-    streams: Map[BatchID, Iterable[(Timestamp, (K, Option[V]))]])(
-    implicit ord: Ordering[K],
+    streams: Map[BatchID, Iterable[(Timestamp, (K, Option[V]))]])(implicit
+    ord: Ordering[K],
     tset: TupleSetter[(Timestamp, (K, Option[V]))],
     tset2: TupleSetter[(Timestamp, (K, V))],
     tconv: TupleConverter[(Timestamp, (K, Option[V]))],

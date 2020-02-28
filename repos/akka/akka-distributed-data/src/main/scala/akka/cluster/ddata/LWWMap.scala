@@ -103,8 +103,8 @@ final class LWWMap[A] private[akka] (
     * increasing version number from a database record that is used for optimistic
     * concurrency control.
     */
-  def put(key: String, value: A)(
-      implicit node: Cluster,
+  def put(key: String, value: A)(implicit
+      node: Cluster,
       clock: Clock[A] = defaultClock[A]): LWWMap[A] =
     put(node, key, value, clock)
 

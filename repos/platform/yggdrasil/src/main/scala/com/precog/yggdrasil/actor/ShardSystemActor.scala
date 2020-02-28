@@ -69,8 +69,8 @@ trait ShardConfig extends BaseConfig {
 case class IngestSystem(ingestActor: ActorRef, stoppable: Stoppable)
 
 object IngestSystem extends Logging {
-  def actorStop(config: ShardConfig, actor: ActorRef, name: String)(
-      implicit system: ActorSystem,
+  def actorStop(config: ShardConfig, actor: ActorRef, name: String)(implicit
+      system: ActorSystem,
       executor: ExecutionContext): Future[Unit] = {
     for {
       _ <- Future(logger.debug(

@@ -24,8 +24,8 @@ trait ScalateUrlGeneratorSupport extends ScalateSupport {
     engine
   }
 
-  override protected def createRenderContext(out: PrintWriter)(
-      implicit request: HttpServletRequest,
+  override protected def createRenderContext(out: PrintWriter)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     val context = super.createRenderContext(out)
     for ((name, route) <- this.reflectRoutes)

@@ -113,8 +113,8 @@ object WrappedArray {
       case x: Array[Unit]    => new ofUnit(x)
     }).asInstanceOf[WrappedArray[T]]
 
-  implicit def canBuildFrom[T](implicit m: ClassTag[T])
-      : CanBuildFrom[WrappedArray[_], T, WrappedArray[T]] =
+  implicit def canBuildFrom[T](implicit
+      m: ClassTag[T]): CanBuildFrom[WrappedArray[_], T, WrappedArray[T]] =
     new CanBuildFrom[WrappedArray[_], T, WrappedArray[T]] {
       def apply(from: WrappedArray[_]): Builder[T, WrappedArray[T]] =
         ArrayBuilder.make[T]()(m) mapResult WrappedArray.make[T]

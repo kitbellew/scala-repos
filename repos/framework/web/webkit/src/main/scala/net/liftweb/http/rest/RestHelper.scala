@@ -342,9 +342,8 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected def serveType[T, SelectType](
       selection: Req => BoxOrRaw[SelectType])(
-      pf: PartialFunction[Req, BoxOrRaw[T]])(
-      implicit cvt: PartialFunction[(SelectType, T, Req), LiftResponse])
-      : Unit = {
+      pf: PartialFunction[Req, BoxOrRaw[T]])(implicit
+      cvt: PartialFunction[(SelectType, T, Req), LiftResponse]): Unit = {
     serve(new PartialFunction[Req, () => Box[LiftResponse]] {
       def isDefinedAt(r: Req): Boolean =
         selection(r).isDefined && pf.isDefinedAt(r)
@@ -556,7 +555,8 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected implicit def asyncToResponse[AsyncResolvableType, T](
       asyncContainer: AsyncResolvableType
   )(
-      implicit asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
+      implicit
+      asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
       responseCreator: T => LiftResponse
   ): () => Box[LiftResponse] = () => {
     RestContinuation.async(reply => {
@@ -577,9 +577,8 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected implicit def asyncBoxToResponse[AsyncResolvableType, T](
       asyncBoxContainer: AsyncResolvableType
   )(
-      implicit asyncResolveProvider: CanResolveAsync[
-        AsyncResolvableType,
-        Box[T]],
+      implicit
+      asyncResolveProvider: CanResolveAsync[AsyncResolvableType, Box[T]],
       responseCreator: T => LiftResponse
   ): () => Box[LiftResponse] = () => {
     RestContinuation.async(reply => {

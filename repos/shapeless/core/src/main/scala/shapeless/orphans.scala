@@ -43,14 +43,14 @@ trait OrphanDeriver[F[_], D] {
 class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
   import c.universe._
 
-  def materializeImpl[F[_], D, T](
-      implicit fTag: WeakTypeTag[F[_]],
+  def materializeImpl[F[_], D, T](implicit
+      fTag: WeakTypeTag[F[_]],
       dTag: WeakTypeTag[D],
       tTag: WeakTypeTag[T]): Tree =
     materializeAux[F, D, T](false)
 
-  def materializeOrphanImpl[F[_], D, T](
-      implicit fTag: WeakTypeTag[F[_]],
+  def materializeOrphanImpl[F[_], D, T](implicit
+      fTag: WeakTypeTag[F[_]],
       dTag: WeakTypeTag[D],
       tTag: WeakTypeTag[T]): Tree = {
     val inst = materializeAux[F, D, T](true)
@@ -63,8 +63,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
      """
   }
 
-  def materializeAux[F[_], D, T](proxied: Boolean)(
-      implicit fTag: WeakTypeTag[F[_]],
+  def materializeAux[F[_], D, T](proxied: Boolean)(implicit
+      fTag: WeakTypeTag[F[_]],
       dTag: WeakTypeTag[D],
       tTag: WeakTypeTag[T]): Tree = {
     val fTcTpe = fTag.tpe.typeConstructor

@@ -136,8 +136,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     * @tparam B Type of other index
     * @tparam C Result of promoting types A, B
     */
-  def concat[B, C](other: Index[B])(
-      implicit p: Promoter[T, B, C],
+  def concat[B, C](other: Index[B])(implicit
+      p: Promoter[T, B, C],
       mc: ST[C],
       oc: ORD[C]): Index[C]
 

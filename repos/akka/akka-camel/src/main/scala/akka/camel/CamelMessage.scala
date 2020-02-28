@@ -74,8 +74,8 @@ class CamelMessage(
     * using the `getCamelContext` method, and is available on the [[akka.camel.CamelExtension]].
     *
     */
-  def headerAs[T](name: String)(
-      implicit t: ClassTag[T],
+  def headerAs[T](name: String)(implicit
+      t: ClassTag[T],
       camelContext: CamelContext): Try[T] =
     Try(
       headers
@@ -155,8 +155,8 @@ class CamelMessage(
     * The CamelContext is accessible in a [[akka.camel.javaapi.UntypedConsumerActor]] and [[akka.camel.javaapi.UntypedProducerActor]]
     * using the `getCamelContext` method, and is available on the [[akka.camel.CamelExtension]].
     */
-  def withBodyAs[T](
-      implicit t: ClassTag[T],
+  def withBodyAs[T](implicit
+      t: ClassTag[T],
       camelContext: CamelContext): CamelMessage =
     withBodyAs(t.runtimeClass.asInstanceOf[Class[T]])
 

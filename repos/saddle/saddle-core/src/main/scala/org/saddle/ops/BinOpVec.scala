@@ -224,42 +224,42 @@ trait BinOpVec {
     }
   }
 
-  implicit def VecVecDotOpDDD(
-      implicit opA: BinOp[Add, Double, Double, Double],
+  implicit def VecVecDotOpDDD(implicit
+      opA: BinOp[Add, Double, Double, Double],
       opM: BinOp[Multiply, Double, Double, Double]) =
     new VecVecDot[Double, Double, Double](opA, opM)
-  implicit def VecVecDotOpDLD(
-      implicit opA: BinOp[Add, Double, Double, Double],
+  implicit def VecVecDotOpDLD(implicit
+      opA: BinOp[Add, Double, Double, Double],
       opM: BinOp[Multiply, Double, Long, Double]) =
     new VecVecDot[Double, Long, Double](opA, opM)
-  implicit def VecVecDotOpDID(
-      implicit opA: BinOp[Add, Double, Double, Double],
+  implicit def VecVecDotOpDID(implicit
+      opA: BinOp[Add, Double, Double, Double],
       opM: BinOp[Multiply, Double, Int, Double]) =
     new VecVecDot[Double, Int, Double](opA, opM)
 
-  implicit def VecVecDotOpLDD(
-      implicit opA: BinOp[Add, Double, Double, Double],
+  implicit def VecVecDotOpLDD(implicit
+      opA: BinOp[Add, Double, Double, Double],
       opM: BinOp[Multiply, Long, Double, Double]) =
     new VecVecDot[Long, Double, Double](opA, opM)
-  implicit def VecVecDotOpLLL(
-      implicit opA: BinOp[Add, Long, Long, Long],
+  implicit def VecVecDotOpLLL(implicit
+      opA: BinOp[Add, Long, Long, Long],
       opM: BinOp[Multiply, Long, Long, Long]) =
     new VecVecDot[Long, Long, Long](opA, opM)
-  implicit def VecVecDotOpLIL(
-      implicit opA: BinOp[Add, Long, Long, Long],
+  implicit def VecVecDotOpLIL(implicit
+      opA: BinOp[Add, Long, Long, Long],
       opM: BinOp[Multiply, Long, Int, Long]) =
     new VecVecDot[Long, Int, Long](opA, opM)
 
-  implicit def VecVecDotOpIDD(
-      implicit opA: BinOp[Add, Double, Double, Double],
+  implicit def VecVecDotOpIDD(implicit
+      opA: BinOp[Add, Double, Double, Double],
       opM: BinOp[Multiply, Int, Double, Double]) =
     new VecVecDot[Int, Double, Double](opA, opM)
-  implicit def VecVecDotOpILL(
-      implicit opA: BinOp[Add, Long, Long, Long],
+  implicit def VecVecDotOpILL(implicit
+      opA: BinOp[Add, Long, Long, Long],
       opM: BinOp[Multiply, Int, Long, Long]) =
     new VecVecDot[Int, Long, Long](opA, opM)
-  implicit def VecVecDotOpIII(
-      implicit opA: BinOp[Add, Int, Int, Int],
+  implicit def VecVecDotOpIII(implicit
+      opA: BinOp[Add, Int, Int, Int],
       opM: BinOp[Multiply, Int, Int, Int]) =
     new VecVecDot[Int, Int, Int](opA, opM)
 

@@ -97,8 +97,8 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
   def ~[AA, BB](k: (B \&/ A) => (BB \&/ AA)): (AA \&/ BB) =
     swapped(k)
 
-  def append[AA >: A, BB >: B](that: => (AA \&/ BB))(
-      implicit SA: Semigroup[AA],
+  def append[AA >: A, BB >: B](that: => (AA \&/ BB))(implicit
+      SA: Semigroup[AA],
       SB: Semigroup[BB]): (AA \&/ BB) =
     (this, that) match {
       case (This(a1), This(a2))    => This(SA.append(a1, a2))
@@ -387,8 +387,8 @@ sealed abstract class TheseInstances0 extends TheseInstances1 {
         fab.bitraverse(f, g)
     }
 
-  implicit final def TheseOrder[A, B](
-      implicit A: Order[A],
+  implicit final def TheseOrder[A, B](implicit
+      A: Order[A],
       B: Order[B]): Order[A \&/ B] =
     new Order[A \&/ B] {
       override def equal(x: A \&/ B, y: A \&/ B) =
@@ -442,18 +442,18 @@ sealed abstract class TheseInstances1 {
         \&/.That(f(fa))
     }
 
-  implicit def TheseEqual[A, B](
-      implicit EA: Equal[A],
+  implicit def TheseEqual[A, B](implicit
+      EA: Equal[A],
       EB: Equal[B]): Equal[A \&/ B] =
     Equal.equal(_ === _)
 
-  implicit def TheseSemigroup[A, B](
-      implicit SA: Semigroup[A],
+  implicit def TheseSemigroup[A, B](implicit
+      SA: Semigroup[A],
       SB: Semigroup[B]): Semigroup[A \&/ B] =
     Semigroup.instance(_.append(_))
 
-  implicit def TheseShow[A, B](
-      implicit SA: Show[A],
+  implicit def TheseShow[A, B](implicit
+      SA: Show[A],
       SB: Show[B]): Show[A \&/ B] =
     Show.show(_.show)
 }

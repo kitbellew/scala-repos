@@ -99,8 +99,8 @@ class AddScheduledQueryServiceHandler(
     scheduler: Scheduler[Future],
     apiKeyFinder: APIKeyFinder[Future],
     accountFinder: AccountFinder[Future],
-    clock: Clock)(
-    implicit M: Monad[Future],
+    clock: Clock)(implicit
+    M: Monad[Future],
     executor: ExecutionContext,
     addTimeout: Timeout)
     extends CustomHttpService[
@@ -198,7 +198,8 @@ class AddScheduledQueryServiceHandler(
 }
 
 class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
-    implicit executor: ExecutionContext,
+    implicit
+    executor: ExecutionContext,
     deleteTimeout: Timeout)
     extends CustomHttpService[A, Future[HttpResponse[JValue]]]
     with Logging {
@@ -226,7 +227,8 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
 }
 
 class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
-    implicit executor: ExecutionContext,
+    implicit
+    executor: ExecutionContext,
     addTimeout: Timeout)
     extends CustomHttpService[A, Future[HttpResponse[JValue]]]
     with Logging {

@@ -41,8 +41,8 @@ trait AttributesMap
     * @return an option value containing the attributed associated with the key in the underlying servlet object,
     *         or None if none exists
     */
-  def getAs[T](key: String)(
-      implicit mf: Manifest[T],
+  def getAs[T](key: String)(implicit
+      mf: Manifest[T],
       converter: TypeConverter[Any, T]): Option[T] = {
     get(key) flatMap (converter(_))
   }
@@ -55,8 +55,8 @@ trait AttributesMap
     * @return an value for the attributed associated with the key in the underlying servlet object,
     *         or throw an exception if the key doesn't exist
     */
-  def as[T](key: String)(
-      implicit mf: Manifest[T],
+  def as[T](key: String)(implicit
+      mf: Manifest[T],
       converter: TypeConverter[Any, T]): T = {
     getAs[T](key) getOrElse (throw new ScalatraException(
       "Key " + key + " not found"))
@@ -70,8 +70,8 @@ trait AttributesMap
     * @return an value for the attributed associated with the key in the underlying servlet object,
     *         or throw an exception if the key doesn't exist
     */
-  def getAsOrElse[T](key: String, default: => T)(
-      implicit mf: Manifest[T],
+  def getAsOrElse[T](key: String, default: => T)(implicit
+      mf: Manifest[T],
       converter: TypeConverter[Any, T]): T = {
     getAs[T](key) getOrElse default
   }

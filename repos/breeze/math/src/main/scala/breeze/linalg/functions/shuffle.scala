@@ -39,8 +39,8 @@ object shuffle extends UFunc {
     }
   }
 
-  implicit def implShuffle_Coll_eq_Coll[Coll, T, CollRes](
-      implicit view: Coll <:< IndexedSeq[T],
+  implicit def implShuffle_Coll_eq_Coll[Coll, T, CollRes](implicit
+      view: Coll <:< IndexedSeq[T],
       cbf: CanBuildFrom[Coll, T, CollRes]): Impl[Coll, CollRes] = {
     new Impl[Coll, CollRes] {
 
@@ -68,8 +68,8 @@ object shuffle extends UFunc {
     }
   }
 
-  implicit def implShuffle_DV_eq_DV[T](
-      implicit arrImpl: Impl[Array[T], Array[T]],
+  implicit def implShuffle_DV_eq_DV[T](implicit
+      arrImpl: Impl[Array[T], Array[T]],
       ct: ClassTag[T]): Impl[DenseVector[T], DenseVector[T]] = {
     new Impl[DenseVector[T], DenseVector[T]] {
       def apply(dv: DenseVector[T]): DenseVector[T] =
@@ -77,8 +77,8 @@ object shuffle extends UFunc {
     }
   }
 
-  implicit def implShuffle_DM_eq_DM[T](
-      implicit arrImpl: Impl[Array[T], Array[T]],
+  implicit def implShuffle_DM_eq_DM[T](implicit
+      arrImpl: Impl[Array[T], Array[T]],
       ct: ClassTag[T]): Impl[DenseMatrix[T], DenseMatrix[T]] = {
     new Impl[DenseMatrix[T], DenseMatrix[T]] {
 

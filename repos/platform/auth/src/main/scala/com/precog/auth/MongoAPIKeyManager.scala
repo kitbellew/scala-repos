@@ -61,8 +61,8 @@ object MongoAPIKeyManagerSettings {
 }
 
 object MongoAPIKeyManager extends Logging {
-  def apply(config: Configuration)(implicit executor: ExecutionContext)
-      : (APIKeyManager[Future], Stoppable) = {
+  def apply(config: Configuration)(implicit
+      executor: ExecutionContext): (APIKeyManager[Future], Stoppable) = {
     // TODO: should only require either the executor or M, not both.
     implicit val M: Monad[Future] = new FutureMonad(executor)
 
@@ -146,8 +146,8 @@ object MongoAPIKeyManager extends Logging {
     } yield rootAPIKeyRecord
   }
 
-  def findRootAPIKey(db: Database, keyCollection: String)(
-      implicit context: ExecutionContext,
+  def findRootAPIKey(db: Database, keyCollection: String)(implicit
+      context: ExecutionContext,
       timeout: Timeout): Future[APIKeyRecord] = {
     db(selectOne().from(keyCollection).where("isRoot" === true)) flatMap {
       case Some(keyJv) =>

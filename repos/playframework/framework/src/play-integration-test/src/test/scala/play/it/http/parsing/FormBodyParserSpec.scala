@@ -18,8 +18,8 @@ class FormBodyParserSpec extends PlaySpecification {
 
   "The form body parser" should {
 
-    def parse[A, B](body: B, bodyParser: BodyParser[A])(
-        implicit writeable: Writeable[B],
+    def parse[A, B](body: B, bodyParser: BodyParser[A])(implicit
+        writeable: Writeable[B],
         mat: Materializer): Either[Result, A] = {
       await(
         bodyParser(

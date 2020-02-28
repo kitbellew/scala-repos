@@ -207,8 +207,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
   import internal.constantType
   import Flag._
 
-  def mkGeneric1Impl[T[_], FR[_[_]]](
-      implicit tTag: WeakTypeTag[T[_]],
+  def mkGeneric1Impl[T[_], FR[_[_]]](implicit
+      tTag: WeakTypeTag[T[_]],
       frTag: WeakTypeTag[FR[Any]]): Tree = {
     val tpe = tTag.tpe
 
@@ -303,8 +303,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
 class IsHCons1Macros(val c: whitebox.Context) extends IsCons1Macros {
   import c.universe._
 
-  def mkIsHCons1Impl[L[_], FH[_[_]], FT[_[_]]](
-      implicit lTag: WeakTypeTag[L[_]],
+  def mkIsHCons1Impl[L[_], FH[_[_]], FT[_[_]]](implicit
+      lTag: WeakTypeTag[L[_]],
       fhTag: WeakTypeTag[FH[Any]],
       ftTag: WeakTypeTag[FT[Any]]): Tree =
     mkIsCons1(lTag.tpe, fhTag.tpe.typeConstructor, ftTag.tpe.typeConstructor)
@@ -331,8 +331,8 @@ class IsHCons1Macros(val c: whitebox.Context) extends IsCons1Macros {
 class IsCCons1Macros(val c: whitebox.Context) extends IsCons1Macros {
   import c.universe._
 
-  def mkIsCCons1Impl[L[_], FH[_[_]], FT[_[_]]](
-      implicit lTag: WeakTypeTag[L[_]],
+  def mkIsCCons1Impl[L[_], FH[_[_]], FT[_[_]]](implicit
+      lTag: WeakTypeTag[L[_]],
       fhTag: WeakTypeTag[FH[Any]],
       ftTag: WeakTypeTag[FT[Any]]): Tree =
     mkIsCons1(lTag.tpe, fhTag.tpe.typeConstructor, ftTag.tpe.typeConstructor)
@@ -426,8 +426,8 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
   import c.ImplicitCandidate
   import c.universe._
 
-  def mkSplit1Impl[L[_], FO[_[_]], FI[_[_]]](
-      implicit lTag: WeakTypeTag[L[_]],
+  def mkSplit1Impl[L[_], FO[_[_]], FI[_[_]]](implicit
+      lTag: WeakTypeTag[L[_]],
       foTag: WeakTypeTag[FO[Any]],
       fiTag: WeakTypeTag[FI[Any]]): Tree = {
     val lTpe = lTag.tpe

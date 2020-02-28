@@ -126,8 +126,8 @@ object Lazy {
   class Values[T <: HList](val values: T) extends Serializable
   object Values {
     implicit val hnilValues: Values[HNil] = new Values(HNil)
-    implicit def hconsValues[H, T <: HList](
-        implicit lh: Lazy[H],
+    implicit def hconsValues[H, T <: HList](implicit
+        lh: Lazy[H],
         t: Values[T]): Values[H :: T] =
       new Values(lh.value :: t.values)
   }

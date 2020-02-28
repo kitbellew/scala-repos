@@ -213,8 +213,8 @@ trait FieldConversions extends LowPriorityFieldConversions {
   }
 
   //Handle a pair generally:
-  implicit def tuple2ToFieldsPair[T, U](pair: (T, U))(
-      implicit tf: T => Fields,
+  implicit def tuple2ToFieldsPair[T, U](pair: (T, U))(implicit
+      tf: T => Fields,
       uf: U => Fields): (Fields, Fields) = {
     val f1 = tf(pair._1)
     val f2 = uf(pair._2)
@@ -283,14 +283,14 @@ sealed trait Field[T] extends java.io.Serializable {
 }
 
 @DefaultSerializer(classOf[serialization.IntFieldSerializer])
-case class IntField[T](override val id: java.lang.Integer)(
-    implicit override val ord: Ordering[T],
+case class IntField[T](override val id: java.lang.Integer)(implicit
+    override val ord: Ordering[T],
     override val mf: Option[Manifest[T]])
     extends Field[T]
 
 @DefaultSerializer(classOf[serialization.StringFieldSerializer])
-case class StringField[T](override val id: String)(
-    implicit override val ord: Ordering[T],
+case class StringField[T](override val id: String)(implicit
+    override val ord: Ordering[T],
     override val mf: Option[Manifest[T]])
     extends Field[T]
 

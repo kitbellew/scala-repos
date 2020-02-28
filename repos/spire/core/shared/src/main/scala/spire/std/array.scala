@@ -15,8 +15,8 @@ object ArraySupport {
     i == x.length
   }
 
-  def vectorEqv[@sp A](x: Array[A], y: Array[A])(
-      implicit ev: Eq[A],
+  def vectorEqv[@sp A](x: Array[A], y: Array[A])(implicit
+      ev: Eq[A],
       sc: AdditiveMonoid[A]): Boolean = {
     var i = 0
     while (i < x.length && i < y.length && x(i) === y(i)) i += 1
@@ -35,8 +35,8 @@ object ArraySupport {
     x.length - y.length
   }
 
-  def vectorCompare[@sp A](x: Array[A], y: Array[A])(
-      implicit ev: Order[A],
+  def vectorCompare[@sp A](x: Array[A], y: Array[A])(implicit
+      ev: Order[A],
       sc: AdditiveMonoid[A]): Int = {
     var i = 0
     while (i < x.length && i < y.length) {
@@ -112,8 +112,8 @@ object ArraySupport {
     z
   }
 
-  def axis[@sp(Float, Double) A](dimensions: Int, i: Int)(
-      implicit ct: ClassTag[A],
+  def axis[@sp(Float, Double) A](dimensions: Int, i: Int)(implicit
+      ct: ClassTag[A],
       sc: Rig[A]): Array[A] = {
     val v = new Array[A](dimensions)
     var j = 0

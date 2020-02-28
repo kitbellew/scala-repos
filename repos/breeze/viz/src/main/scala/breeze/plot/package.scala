@@ -31,8 +31,8 @@ package object plot {
       lines: Boolean = true,
       shapes: Boolean = false,
       labels: (Int) => String = null.asInstanceOf[Int => String],
-      tips: (Int) => String = null.asInstanceOf[Int => String])(
-      implicit xv: DomainFunction[X, Int, V],
+      tips: (Int) => String = null.asInstanceOf[Int => String])(implicit
+      xv: DomainFunction[X, Int, V],
       yv: DomainFunction[Y, Int, V],
       vv: V => Double): Series = new Series {
     require(xv.domain(x) == yv.domain(y), "Domains must match!")
@@ -132,8 +132,8 @@ package object plot {
       colors: Int => Paint = null.asInstanceOf[Int => Paint],
       labels: Int => String = null.asInstanceOf[Int => String],
       tips: Int => String = null.asInstanceOf[Int => String],
-      name: String = null)(
-      implicit xv: DomainFunction[X, Int, V],
+      name: String = null)(implicit
+      xv: DomainFunction[X, Int, V],
       yv: DomainFunction[Y, Int, V],
       vv: V => Double): Series = new Series {
     require(xv.domain(x) == yv.domain(y), "Domains must match!")
@@ -204,7 +204,8 @@ package object plot {
 
   /** Plots a histogram of the given data into the given number of bins */
   def hist[D, K, V](data: D, bins: HistogramBins = 10, name: String = null)(
-      implicit xv: DomainFunction[D, Int, V],
+      implicit
+      xv: DomainFunction[D, Int, V],
       vv: V => Double): Series = new Series {
     val values = xv.domain(data).map(xv(data, _)).map(vv)
     val (min, max) = (values.min, values.max)

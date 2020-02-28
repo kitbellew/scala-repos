@@ -17,8 +17,8 @@ import akka.util.Timeout
 import akka.testkit.{TestKit, AkkaSpec}
 
 private[camel] object TestSupport {
-  def start(actor: ⇒ Actor, name: String)(
-      implicit system: ActorSystem,
+  def start(actor: ⇒ Actor, name: String)(implicit
+      system: ActorSystem,
       timeout: Timeout): ActorRef =
     Await.result(
       CamelExtension(system).activationFutureFor(

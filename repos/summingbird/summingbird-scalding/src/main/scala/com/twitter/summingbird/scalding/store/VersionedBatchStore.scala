@@ -45,7 +45,8 @@ import scala.util.{Try => ScalaTry}
 object VersionedBatchStore {
   def apply[K, V, K2, V2](rootPath: String, versionsToKeep: Int)(
       pack: (BatchID, (K, V)) => (K2, V2))(unpack: ((K2, V2)) => (K, V))(
-      implicit batcher: Batcher,
+      implicit
+      batcher: Batcher,
       injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
       ordering: Ordering[K]): VersionedBatchStore[K, V, K2, V2] =
     new VersionedBatchStore(rootPath, versionsToKeep, batcher)(pack)(unpack)
@@ -127,10 +128,8 @@ class VersionedBatchStore[K, V, K2, V2](
     rootPath: String,
     versionsToKeep: Int,
     override val batcher: Batcher)(pack: (BatchID, (K, V)) => (K2, V2))(
-    unpack: ((K2, V2)) => (K, V))(
-    implicit @transient injection: Injection[
-      (K2, V2),
-      (Array[Byte], Array[Byte])],
+    unpack: ((K2, V2)) => (K, V))(implicit
+    @transient injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
     override val ordering: Ordering[K])
     extends VersionedBatchStoreBase[K, V](rootPath) {
   @transient private val logger =
@@ -156,8 +155,8 @@ class VersionedBatchStore[K, V, K2, V2](
     * into a VersionedStore directory whose tagged version is the
     * EXCLUSIVE upper bound on batchID, or "batchID.next".
     */
-  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit = {
     val newVersion = batchIDToVersion(batchID)
     val target = VersionedKeyValSource[K2, V2](

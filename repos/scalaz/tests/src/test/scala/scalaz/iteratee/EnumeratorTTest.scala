@@ -10,8 +10,8 @@ import scalaz.scalacheck.ScalaCheckBinding._
 import Id._
 
 object EnumeratorTTest extends SpecLite {
-  implicit def enumeratorTArb[F[_], A](
-      implicit FA: Arbitrary[List[A]],
+  implicit def enumeratorTArb[F[_], A](implicit
+      FA: Arbitrary[List[A]],
       F: Monad[F]): Arbitrary[EnumeratorT[A, F]] =
     Functor[Arbitrary].map(FA)(l => EnumeratorT.enumStream[A, F](l.toStream))
 

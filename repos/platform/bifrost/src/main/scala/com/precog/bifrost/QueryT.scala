@@ -46,8 +46,8 @@ final case class QueryT[Q[+_], M[+_], +A](run: M[Q[A]]) {
       f: A => B)(implicit M: Functor[M], Q: Functor[Q]): QueryT[Q, M, B] =
     QueryT(run map { _ map f })
 
-  def flatMap[B](f: A => QueryT[Q, M, B])(
-      implicit M: Monad[M],
+  def flatMap[B](f: A => QueryT[Q, M, B])(implicit
+      M: Monad[M],
       Q: SwappableMonad[Q]): QueryT[Q, M, B] = {
     QueryT(run flatMap { (state0: Q[A]) =>
       Q.swap(state0 map f map (_.run)) map { _ flatMap identity }
@@ -56,16 +56,16 @@ final case class QueryT[Q[+_], M[+_], +A](run: M[Q[A]]) {
 }
 
 trait QueryTCompanion[Q[+_]] extends QueryTInstances[Q] with QueryTHoist[Q] {
-  def apply[Q[+_], M[+_], A](a: M[A])(
-      implicit M: Functor[M],
+  def apply[Q[+_], M[+_], A](a: M[A])(implicit
+      M: Functor[M],
       Q: SwappableMonad[Q]): QueryT[Q, M, A] = {
     QueryT(M.map(a)(Q.point(_)))
   }
 }
 
 trait QueryTInstances0[Q[+_]] {
-  implicit def queryTFunctor[M[+_]](
-      implicit M0: Functor[M],
+  implicit def queryTFunctor[M[+_]](implicit
+      M0: Functor[M],
       Q0: Functor[Q]): Functor[({ type λ[α] = QueryT[Q, M, α] })#λ] =
     new QueryTFunctor[Q, M] {
       def Q = Q0
@@ -79,8 +79,8 @@ trait QueryTInstances[Q[+_]] extends QueryTInstances0[Q] {
     def Q = Q0
   }
 
-  implicit def queryTMonad[M[+_]](
-      implicit M0: Monad[M],
+  implicit def queryTMonad[M[+_]](implicit
+      M0: Monad[M],
       Q0: SwappableMonad[Q]): Monad[({ type λ[α] = QueryT[Q, M, α] })#λ] =
     new QueryTMonad[Q, M] {
       def Q = Q0

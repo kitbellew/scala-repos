@@ -80,8 +80,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     directory: String,
     filter: Path => Boolean = FileInputDStream.defaultFilter,
     newFilesOnly: Boolean = true,
-    conf: Option[Configuration] = None)(
-    implicit km: ClassTag[K],
+    conf: Option[Configuration] = None)(implicit
+    km: ClassTag[K],
     vm: ClassTag[V],
     fm: ClassTag[F])
     extends InputDStream[(K, V)](_ssc) {

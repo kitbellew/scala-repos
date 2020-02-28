@@ -24,8 +24,8 @@ object isClose extends UFunc {
       math.abs(v - v2) <= v3
   }
 
-  implicit def fromZipValues[A, B, V1, V2](
-      implicit czv: zipValues.Impl2[A, B, ZippedValues[V1, V2]],
+  implicit def fromZipValues[A, B, V1, V2](implicit
+      czv: zipValues.Impl2[A, B, ZippedValues[V1, V2]],
       base: Impl3[V1, V2, Double, Boolean]): Impl3[A, B, Double, Boolean] = {
     new Impl3[A, B, Double, Boolean] {
       override def apply(a: A, b: B, tol: Double): Boolean = {

@@ -143,8 +143,8 @@ sealed trait StateTTestsInstances {
       implicit F: Arbitrary[S => F[(S, A)]]): Arbitrary[StateT[F, S, A]] =
     Arbitrary(F.arbitrary.map(f => StateT(f)))
 
-  implicit def stateTEq[F[_], S, A](
-      implicit S: Arbitrary[S],
+  implicit def stateTEq[F[_], S, A](implicit
+      S: Arbitrary[S],
       FSA: Eq[F[(S, A)]],
       F: FlatMap[F]): Eq[StateT[F, S, A]] =
     Eq.by[StateT[F, S, A], S => F[(S, A)]](state => s => state.run(s))

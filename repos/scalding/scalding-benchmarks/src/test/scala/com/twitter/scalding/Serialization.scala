@@ -40,8 +40,8 @@ object SerializationBenchmark
 
   implicit def stringArb: Arbitrary[String] = Arbitrary(stringGen)
 
-  def collection[T, C[_]](size: Gen[Int])(
-      implicit arbT: Arbitrary[T],
+  def collection[T, C[_]](size: Gen[Int])(implicit
+      arbT: Arbitrary[T],
       cbf: CanBuildFrom[Nothing, T, C[T]]): Gen[C[T]] =
     collection[T, C](size, arbT.arbitrary)(cbf)
 

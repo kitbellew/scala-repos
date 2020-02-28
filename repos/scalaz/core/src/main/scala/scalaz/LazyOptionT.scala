@@ -96,8 +96,8 @@ sealed abstract class LazyOptionTInstances extends LazyOptionTInstances0 {
   implicit val lazyOptionTMonadTrans: Hoist[LazyOptionT] =
     new LazyOptionTHoist {}
 
-  implicit def lazyOptionTBindRec[F[_]](
-      implicit F0: Monad[F],
+  implicit def lazyOptionTBindRec[F[_]](implicit
+      F0: Monad[F],
       B0: BindRec[F]): BindRec[LazyOptionT[F, ?]] =
     new LazyOptionTBindRec[F] {
       implicit def F: Monad[F] = F0

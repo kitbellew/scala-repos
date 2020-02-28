@@ -70,8 +70,8 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     b.result()
   }
 
-  def filter[To1, To2, To3](f: (El1, El2, El3) => Boolean)(
-      implicit cbf1: CBF[Repr1, El1, To1],
+  def filter[To1, To2, To3](f: (El1, El2, El3) => Boolean)(implicit
+      cbf1: CBF[Repr1, El1, To1],
       cbf2: CBF[Repr2, El2, To2],
       cbf3: CBF[Repr3, El3, To3]): (To1, To2, To3) = {
     val b1 = cbf1(colls._1.repr)
@@ -141,8 +141,8 @@ object Tuple3Zipped {
         CC2[X] <: TraversableOnce[X],
         El3,
         CC3[X] <: TraversableOnce[X],
-        That](
-        implicit w1: T1 <:< CC1[El1],
+        That](implicit
+        w1: T1 <:< CC1[El1],
         w2: T2 <:< CC2[El2],
         w3: T3 <:< CC3[El3],
         bf: scala.collection.generic.CanBuildFrom[
@@ -159,8 +159,8 @@ object Tuple3Zipped {
       buf.result()
     }
 
-    def zipped[El1, Repr1, El2, Repr2, El3, Repr3](
-        implicit w1: T1 => TraversableLike[El1, Repr1],
+    def zipped[El1, Repr1, El2, Repr2, El3, Repr3](implicit
+        w1: T1 => TraversableLike[El1, Repr1],
         w2: T2 => IterableLike[El2, Repr2],
         w3: T3 => IterableLike[El3, Repr3])
         : Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3] =

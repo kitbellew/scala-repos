@@ -7,8 +7,8 @@ import org.scalatra.servlet.{HttpServletRequestReadOnly, ServletApiImplicits}
 
 object ScalatraContext {
 
-  private class StableValuesContext(
-      implicit val request: HttpServletRequest,
+  private class StableValuesContext(implicit
+      val request: HttpServletRequest,
       val response: HttpServletResponse,
       val servletContext: ServletContext)
       extends ScalatraContext

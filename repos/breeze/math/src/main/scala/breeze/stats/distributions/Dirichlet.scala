@@ -28,8 +28,8 @@ import breeze.storage.Zero
   * Represents a Dirichlet distribution, the conjugate prior to the multinomial.
   * @author dlwh
   */
-case class Dirichlet[T, @specialized(Int) I](params: T)(
-    implicit space: EnumeratedCoordinateField[T, I, Double],
+case class Dirichlet[T, @specialized(Int) I](params: T)(implicit
+    space: EnumeratedCoordinateField[T, I, Double],
     rand: RandBasis = Rand)
     extends ContinuousDistr[T] {
   import space._

@@ -18,8 +18,8 @@ object convert extends UFunc with MappingUFunc {
   @expand.valify
   implicit def impl2[
       @expand.args(Int, Double, Float, Long, Char, Short) From,
-      @expand.args(Int, Double, Float, Long, Char, Short, Complex) To](
-      implicit @expand.sequence[To](
+      @expand.args(Int, Double, Float, Long, Char, Short, Complex) To](implicit
+      @expand.sequence[To](
         _.toInt,
         _.toDouble,
         _.toFloat,

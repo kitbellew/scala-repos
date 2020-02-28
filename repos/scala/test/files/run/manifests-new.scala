@@ -12,8 +12,8 @@ object Test {
   }
   import SubtypeRelationship.{NONE, SAME, SUB, SUPER}
 
-  class VarianceTester[T, U, CC[_]](expected: Variances.Value)(
-      implicit ev1: TypeTag[T],
+  class VarianceTester[T, U, CC[_]](expected: Variances.Value)(implicit
+      ev1: TypeTag[T],
       ev2: TypeTag[U],
       ev3: TypeTag[CC[T]],
       ev4: TypeTag[CC[U]]) {
@@ -45,22 +45,22 @@ object Test {
         }
   }
 
-  def showsCovariance[T, U, CC[_]](
-      implicit ev1: TypeTag[T],
+  def showsCovariance[T, U, CC[_]](implicit
+      ev1: TypeTag[T],
       ev2: TypeTag[U],
       ev3: TypeTag[CC[T]],
       ev4: TypeTag[CC[U]]) =
     new VarianceTester[T, U, CC](CO) showsExpectedVariance
 
-  def showsInvariance[T, U, CC[_]](
-      implicit ev1: TypeTag[T],
+  def showsInvariance[T, U, CC[_]](implicit
+      ev1: TypeTag[T],
       ev2: TypeTag[U],
       ev3: TypeTag[CC[T]],
       ev4: TypeTag[CC[U]]) =
     new VarianceTester[T, U, CC](IN) showsExpectedVariance
 
-  def showsContravariance[T, U, CC[_]](
-      implicit ev1: TypeTag[T],
+  def showsContravariance[T, U, CC[_]](implicit
+      ev1: TypeTag[T],
       ev2: TypeTag[U],
       ev3: TypeTag[CC[T]],
       ev4: TypeTag[CC[U]]) =

@@ -66,8 +66,8 @@ object FreeTListOption {
 }
 
 object FreeTTest extends SpecLite {
-  def freeTGen[F[_], G[_], A](g: Gen[F[FreeT[F, G, A]]])(
-      implicit F: Functor[F],
+  def freeTGen[F[_], G[_], A](g: Gen[F[FreeT[F, G, A]]])(implicit
+      F: Functor[F],
       G: Applicative[G],
       A: Arbitrary[A]): Gen[FreeT[F, G, A]] =
     Gen.frequency(

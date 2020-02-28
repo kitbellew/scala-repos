@@ -34,8 +34,8 @@ object SwaggerAuthSpec {
       (app.request.header("API-TOKEN") orElse app.params.get("api_token"))
         .flatMap(_.blankOption)
     override def isValid(implicit request: HttpServletRequest) = token.isDefined
-    def authenticate()(
-        implicit request: HttpServletRequest,
+    def authenticate()(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) = {
       token match {
         case Some("token1")    => Option(Users(0))

@@ -36,8 +36,8 @@ object CumulativeSum {
   class CumulativeSumExtension[K, U, V](val pipe: TypedPipe[(K, (U, V))]) {
 
     /** Takes a sortable field and a monoid and returns the cumulative sum of that monoid **/
-    def cumulativeSum(
-        implicit sg: Semigroup[V],
+    def cumulativeSum(implicit
+        sg: Semigroup[V],
         ordU: Ordering[U],
         ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
       pipe.group
@@ -60,8 +60,8 @@ object CumulativeSum {
       * single key to go through a single scan. Instead requires the sums of the
       * partitions for a single key to go through a single scan.
       */
-    def cumulativeSum[S](partition: U => S)(
-        implicit ordS: Ordering[S],
+    def cumulativeSum[S](partition: U => S)(implicit
+        ordS: Ordering[S],
         sg: Semigroup[V],
         ordU: Ordering[U],
         ordK: Ordering[K]): TypedPipe[(K, (U, V))] = {

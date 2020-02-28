@@ -113,7 +113,8 @@ object BinaryMerge extends Merge {
   }*/
 
   private class ArrayBinaryMerge[@specialized T](a: Array[T], b: Array[T])(
-      implicit o: Order[T],
+      implicit
+      o: Order[T],
       c: ClassTag[T])
       extends BinaryMerge {
 

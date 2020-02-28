@@ -58,8 +58,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * Assumed to be a commutative operation.  If you don't want that, use .forceToReducers
     */
   def mapReduceMap[T, X, U](fieldDef: (Fields, Fields))(mapfn: T => X)(
-      redfn: (X, X) => X)(mapfn2: X => U)(
-      implicit startConv: TupleConverter[T],
+      redfn: (X, X) => X)(mapfn2: X => U)(implicit
+      startConv: TupleConverter[T],
       middleSetter: TupleSetter[X],
       middleConv: TupleConverter[X],
       endSetter: TupleSetter[U]): Self
@@ -70,7 +70,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
 
   /** Pretty much a synonym for mapReduceMap with the methods collected into a trait. */
   def aggregate[A, B, C](fieldDef: (Fields, Fields))(ag: Aggregator[A, B, C])(
-      implicit startConv: TupleConverter[A],
+      implicit
+      startConv: TupleConverter[A],
       middleSetter: TupleSetter[B],
       middleConv: TupleConverter[B],
       endSetter: TupleSetter[C]): Self =
@@ -237,8 +238,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     *
     * STRONGLY PREFER TO AVOID THIS. Try reduce or plus and an O(1) memory algorithm.
     */
-  def mapList[T, R](fieldDef: (Fields, Fields))(fn: (List[T]) => R)(
-      implicit conv: TupleConverter[T],
+  def mapList[T, R](fieldDef: (Fields, Fields))(fn: (List[T]) => R)(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[R]): Self = {
     val midset = implicitly[TupleSetter[List[T]]]
     val midconv = implicitly[TupleConverter[List[T]]]
@@ -251,8 +252,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   }
 
   def mapPlusMap[T, X, U](fieldDef: (Fields, Fields))(mapfn: T => X)(
-      mapfn2: X => U)(
-      implicit startConv: TupleConverter[T],
+      mapfn2: X => U)(implicit
+      startConv: TupleConverter[T],
       middleSetter: TupleSetter[X],
       middleConv: TupleConverter[X],
       endSetter: TupleSetter[U],
@@ -332,8 +333,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * The previous output goes into the reduce function on the left, like foldLeft,
     * so if your operation is faster for the accumulator to be on one side, be aware.
     */
-  def reduce[T](fieldDef: (Fields, Fields))(fn: (T, T) => T)(
-      implicit setter: TupleSetter[T],
+  def reduce[T](fieldDef: (Fields, Fields))(fn: (T, T) => T)(implicit
+      setter: TupleSetter[T],
       conv: TupleConverter[T]): Self = {
     mapReduceMap[T, T, T](fieldDef)({ t => t })(fn)({ t => t })(
       conv,
@@ -342,8 +343,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
       setter)
   }
   //Same as reduce(f->f)
-  def reduce[T](fieldDef: Symbol*)(fn: (T, T) => T)(
-      implicit setter: TupleSetter[T],
+  def reduce[T](fieldDef: Symbol*)(fn: (T, T) => T)(implicit
+      setter: TupleSetter[T],
       conv: TupleConverter[T]): Self = {
     reduce(fieldDef -> fieldDef)(fn)(setter, conv)
   }
@@ -356,8 +357,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     *
     * Assumed to be a commutative operation.  If you don't want that, use .forceToReducers
     */
-  def sum[T](fd: (Fields, Fields))(
-      implicit sg: Semigroup[T],
+  def sum[T](fd: (Fields, Fields))(implicit
+      sg: Semigroup[T],
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
     // We reverse the order because the left is the old value in reduce, and for list concat
@@ -369,8 +370,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * The same as `sum(fs -> fs)`
     * Assumed to be a commutative operation.  If you don't want that, use .forceToReducers
     */
-  def sum[T](fs: Symbol*)(
-      implicit sg: Semigroup[T],
+  def sum[T](fs: Symbol*)(implicit
+      sg: Semigroup[T],
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self =
     sum[T](fs -> fs)(sg, tconv, tset)
@@ -378,8 +379,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /**
     * Returns the product of all the items in this grouping
     */
-  def times[T](fd: (Fields, Fields))(
-      implicit ring: Ring[T],
+  def times[T](fd: (Fields, Fields))(implicit
+      ring: Ring[T],
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
     // We reverse the order because the left is the old value in reduce, and for list concat
@@ -390,8 +391,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /**
     * The same as `times(fs -> fs)`
     */
-  def times[T](fs: Symbol*)(
-      implicit ring: Ring[T],
+  def times[T](fs: Symbol*)(implicit
+      ring: Ring[T],
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
     times[T](fs -> fs)(ring, tconv, tset)
@@ -414,8 +415,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     * groupBy('x) { _.dot('y,'z, 'ydotz) }
     * }}}
     */
-  def dot[T](left: Fields, right: Fields, result: Fields)(
-      implicit ttconv: TupleConverter[Tuple2[T, T]],
+  def dot[T](left: Fields, right: Fields, result: Fields)(implicit
+      ttconv: TupleConverter[Tuple2[T, T]],
       ring: Ring[T],
       tconv: TupleConverter[T],
       tset: TupleSetter[T]): Self = {
@@ -454,8 +455,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /**
     * Reverse of above when the implicit ordering makes sense.
     */
-  def sortedReverseTake[T](f: (Fields, Fields), k: Int)(
-      implicit conv: TupleConverter[T],
+  def sortedReverseTake[T](f: (Fields, Fields), k: Int)(implicit
+      conv: TupleConverter[T],
       ord: Ordering[T]): Self = {
     sortedTake[T](f, k)(conv, ord.reverse)
   }
@@ -463,8 +464,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
   /**
     * Same as above but useful when the implicit ordering makes sense.
     */
-  def sortedTake[T](f: (Fields, Fields), k: Int)(
-      implicit conv: TupleConverter[T],
+  def sortedTake[T](f: (Fields, Fields), k: Int)(implicit
+      conv: TupleConverter[T],
       ord: Ordering[T]): Self = {
 
     assert(f._2.size == 1, "output field size must be 1")

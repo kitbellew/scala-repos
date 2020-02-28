@@ -11,7 +11,8 @@ import linalg.{NumericOps, Tensor}
   * @author dlwh
   */
 class ApproximateGradientFunction[K, T](f: T => Double, epsilon: Double = 1e-5)(
-    implicit zeros: CanCreateZerosLike[T, T],
+    implicit
+    zeros: CanCreateZerosLike[T, T],
     view: T <:< Tensor[K, Double],
     copy: CanCopy[T])
     extends DiffFunction[T] {

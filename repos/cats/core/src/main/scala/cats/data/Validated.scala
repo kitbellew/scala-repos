@@ -96,8 +96,8 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
       b => that.fold(_ => 1, AA.compare(b, _))
     )
 
-  def partialCompare[EE >: E, AA >: A](that: Validated[EE, AA])(
-      implicit EE: PartialOrder[EE],
+  def partialCompare[EE >: E, AA >: A](that: Validated[EE, AA])(implicit
+      EE: PartialOrder[EE],
       AA: PartialOrder[AA]): Double = fold(
     a => that.fold(EE.partialCompare(a, _), _ => -1),
     b => that.fold(_ => 1, AA.partialCompare(b, _))
@@ -196,8 +196,8 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
     * will be `Valid`, if, and only if, both this `Validated` instance and the
     * supplied `Validated` instance are also `Valid`.
     */
-  def combine[EE >: E, AA >: A](that: Validated[EE, AA])(
-      implicit EE: Semigroup[EE],
+  def combine[EE >: E, AA >: A](that: Validated[EE, AA])(implicit
+      EE: Semigroup[EE],
       AA: Semigroup[AA]): Validated[EE, AA] =
     (this, that) match {
       case (Valid(a), Valid(b))     => Valid(AA.combine(a, b))
@@ -220,8 +220,8 @@ object Validated extends ValidatedInstances with ValidatedFunctions {
 private[data] sealed abstract class ValidatedInstances
     extends ValidatedInstances1 {
 
-  implicit def validatedMonoid[A, B](
-      implicit A: Semigroup[A],
+  implicit def validatedMonoid[A, B](implicit
+      A: Semigroup[A],
       B: Monoid[B]): Monoid[Validated[A, B]] = new Monoid[Validated[A, B]] {
     def empty: Validated[A, B] = Valid(B.empty)
     def combine(x: Validated[A, B], y: Validated[A, B]): Validated[A, B] =
@@ -238,8 +238,8 @@ private[data] sealed abstract class ValidatedInstances
         x === y
     }
 
-  implicit def validatedShow[A, B](
-      implicit A: Show[A],
+  implicit def validatedShow[A, B](implicit
+      A: Show[A],
       B: Show[B]): Show[Validated[A, B]] = new Show[Validated[A, B]] {
     def show(f: Validated[A, B]): String = f.show
   }
@@ -295,8 +295,8 @@ private[data] sealed abstract class ValidatedInstances
 private[data] sealed abstract class ValidatedInstances1
     extends ValidatedInstances2 {
 
-  implicit def validatedSemigroup[A, B](
-      implicit A: Semigroup[A],
+  implicit def validatedSemigroup[A, B](implicit
+      A: Semigroup[A],
       B: Semigroup[B]): Semigroup[Validated[A, B]] =
     new Semigroup[Validated[A, B]] {
       def combine(x: Validated[A, B], y: Validated[A, B]): Validated[A, B] =

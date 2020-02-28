@@ -93,26 +93,26 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       .apply2[A, IList[A], NonEmptyList[A]](arb[A], ilistArbitrary)(nel(_, _))
 
   /** @since 7.0.3 */
-  implicit def OneAndArbitrary[F[_], A](
-      implicit A: Arbitrary[A],
+  implicit def OneAndArbitrary[F[_], A](implicit
+      A: Arbitrary[A],
       FA: Arbitrary[F[A]]): Arbitrary[OneAnd[F, A]] =
     Apply[Arbitrary].apply2(arb[A], arb[F[A]])(OneAnd.apply)
 
   /** @since 7.0.3 */
-  implicit def OneOrArbitrary[F[_], A](
-      implicit A: Arbitrary[A],
+  implicit def OneOrArbitrary[F[_], A](implicit
+      A: Arbitrary[A],
       FA: Arbitrary[F[A]]): Arbitrary[OneOr[F, A]] =
     Functor[Arbitrary].map(arb[F[A] \/ A])(OneOr(_))
 
   /** @since 7.1.0 */
-  implicit def Arbitrary_==>>[A, B](
-      implicit o: Order[A],
+  implicit def Arbitrary_==>>[A, B](implicit
+      o: Order[A],
       A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[A ==>> B] =
     Functor[Arbitrary].map(arb[List[(A, B)]])(as => ==>>.fromList(as))
 
-  implicit def Arbitrary_ISet[A](
-      implicit o: Order[A],
+  implicit def Arbitrary_ISet[A](implicit
+      o: Order[A],
       A: Arbitrary[A]): Arbitrary[ISet[A]] =
     Functor[Arbitrary].map(arb[List[A]])(as => ISet.fromList(as))
 
@@ -285,8 +285,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
   import FingerTree._
 
-  implicit def FingerArbitrary[V, A](
-      implicit a: Arbitrary[A],
+  implicit def FingerArbitrary[V, A](implicit
+      a: Arbitrary[A],
       measure: Reducer[A, V]): Arbitrary[Finger[V, A]] =
     Arbitrary(
       oneOf(
@@ -298,8 +298,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
           four(_, _, _, _): Finger[V, A])
       ))
 
-  implicit def NodeArbitrary[V, A](
-      implicit a: Arbitrary[A],
+  implicit def NodeArbitrary[V, A](implicit
+      a: Arbitrary[A],
       measure: Reducer[A, V]): Arbitrary[Node[V, A]] =
     Arbitrary(
       oneOf(
@@ -307,11 +307,11 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
         ^^(arbitrary[A], arbitrary[A], arbitrary[A])(node3[V, A](_, _, _))
       ))
 
-  implicit def FingerTreeArbitrary[V, A](
-      implicit a: Arbitrary[A],
+  implicit def FingerTreeArbitrary[V, A](implicit
+      a: Arbitrary[A],
       measure: Reducer[A, V]): Arbitrary[FingerTree[V, A]] = Arbitrary {
-    def fingerTree[A](n: Int)(
-        implicit a1: Arbitrary[A],
+    def fingerTree[A](n: Int)(implicit
+        a1: Arbitrary[A],
         measure1: Reducer[A, V]): Gen[FingerTree[V, A]] = n match {
       case 0 => empty[V, A]
       case 1 => arbitrary[A].map(single[V, A](_))
@@ -380,19 +380,18 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       case Right(b) => LazyEither.lazyRight(b)
     }
 
-  implicit def lazyEitherTArb[F[_], A, B](
-      implicit A: Arbitrary[F[LazyEither[A, B]]])
-      : Arbitrary[LazyEitherT[F, A, B]] =
+  implicit def lazyEitherTArb[F[_], A, B](implicit
+      A: Arbitrary[F[LazyEither[A, B]]]): Arbitrary[LazyEitherT[F, A, B]] =
     Functor[Arbitrary].map(A)(LazyEitherT[F, A, B](_))
 
   // backwards compatibility
-  def stateTArb[F[+_], S, A](
-      implicit A: Arbitrary[S => F[(S, A)]],
+  def stateTArb[F[+_], S, A](implicit
+      A: Arbitrary[S => F[(S, A)]],
       F: Monad[F]): Arbitrary[StateT[F, S, A]] =
     indexedStateTArb[F, S, S, A](A, F)
 
-  implicit def indexedStateTArb[F[_], S1, S2, A](
-      implicit A: Arbitrary[S1 => F[(S2, A)]],
+  implicit def indexedStateTArb[F[_], S1, S2, A](implicit
+      A: Arbitrary[S1 => F[(S2, A)]],
       F: Monad[F]): Arbitrary[IndexedStateT[F, S1, S2, A]] =
     Functor[Arbitrary].map(A)(IndexedStateT[F, S1, S2, A](_))
 
@@ -437,18 +436,17 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       implicit A: Arbitrary[(F[A => B], A)]): Arbitrary[StoreT[F, A, B]] =
     indexedStoreTArb[F, A, A, B](A)
 
-  implicit def indexedStoreTArb[F[_], I, A, B](
-      implicit A: Arbitrary[(F[A => B], I)])
-      : Arbitrary[IndexedStoreT[F, I, A, B]] =
+  implicit def indexedStoreTArb[F[_], I, A, B](implicit
+      A: Arbitrary[(F[A => B], I)]): Arbitrary[IndexedStoreT[F, I, A, B]] =
     Functor[Arbitrary].map(A)(IndexedStoreT[F, I, A, B](_))
 
-  implicit def listTArb[F[_], A](
-      implicit FA: Arbitrary[F[List[A]]],
+  implicit def listTArb[F[_], A](implicit
+      FA: Arbitrary[F[List[A]]],
       F: Applicative[F]): Arbitrary[ListT[F, A]] =
     Functor[Arbitrary].map(FA)(ListT.fromList(_))
 
-  implicit def streamTArb[F[_], A](
-      implicit FA: Arbitrary[F[Stream[A]]],
+  implicit def streamTArb[F[_], A](implicit
+      FA: Arbitrary[F[Stream[A]]],
       F: Applicative[F]): Arbitrary[StreamT[F, A]] =
     Functor[Arbitrary].map(FA)(StreamT.fromStream(_))
 
@@ -457,13 +455,13 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Gen.oneOf(posNum[Double], negNum[Double])
   }
 
-  implicit def CaseInsensitiveArbitrary[A](
-      implicit A0: Arbitrary[A],
+  implicit def CaseInsensitiveArbitrary[A](implicit
+      A0: Arbitrary[A],
       A1: FoldCase[A]): Arbitrary[CaseInsensitive[A]] =
     Functor[Arbitrary].map(A0)(CaseInsensitive(_))
 
-  implicit def dievArbitrary[A](
-      implicit A: Arbitrary[List[A]],
+  implicit def dievArbitrary[A](implicit
+      A: Arbitrary[List[A]],
       E: Enum[A]): Arbitrary[Diev[A]] =
     Functor[Arbitrary].map(A)(_.grouped(2).foldLeft(Diev.empty[A]) {
       (working, possiblePair) =>

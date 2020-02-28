@@ -140,8 +140,8 @@ case class JetDim(dimension: Int) {
   */
 object Jet extends JetInstances {
   // No-arg c.tor makes a zero Jet
-  def apply[@sp(Float, Double) T]()(
-      implicit c: ClassTag[T],
+  def apply[@sp(Float, Double) T]()(implicit
+      c: ClassTag[T],
       d: JetDim,
       s: Semiring[T]): Jet[T] = Jet(s.zero)
 
@@ -164,13 +164,13 @@ object Jet extends JetInstances {
       k: Int)(implicit c: ClassTag[T], d: JetDim, r: Rig[T]): Jet[T] =
     Jet(r.zero, k)
 
-  def one[@sp(Float, Double) T](
-      implicit c: ClassTag[T],
+  def one[@sp(Float, Double) T](implicit
+      c: ClassTag[T],
       d: JetDim,
       r: Rig[T]): Jet[T] = Jet(r.one)
 
-  def zero[@sp(Float, Double) T](
-      implicit c: ClassTag[T],
+  def zero[@sp(Float, Double) T](implicit
+      c: ClassTag[T],
       d: JetDim,
       s: Semiring[T]): Jet[T] = Jet(s.zero)
 
@@ -281,8 +281,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       br_inv *: (infinitesimal - (ar_div_br *: b.infinitesimal)))
   }
 
-  def /~(b: Jet[T])(
-      implicit c: ClassTag[T],
+  def /~(b: Jet[T])(implicit
+      c: ClassTag[T],
       f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
@@ -290,16 +290,16 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     new Jet[T](q.real.floor(), q.infinitesimal.map(r.floor))
   }
 
-  def %(b: Jet[T])(
-      implicit c: ClassTag[T],
+  def %(b: Jet[T])(implicit
+      c: ClassTag[T],
       f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     this - ((this /~ b) * b)
   }
 
-  def /%(b: Jet[T])(
-      implicit c: ClassTag[T],
+  def /%(b: Jet[T])(implicit
+      c: ClassTag[T],
       f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): (Jet[T], Jet[T]) = {
@@ -307,13 +307,13 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     (q, this - (q * b))
   }
 
-  def **(b: Int)(
-      implicit e: Eq[T],
+  def **(b: Int)(implicit
+      e: Eq[T],
       f: Field[T],
       v: VectorSpace[Array[T], T]): Jet[T] = pow(b)
 
-  def nroot(k: Int)(
-      implicit e: Eq[T],
+  def nroot(k: Int)(implicit
+      e: Eq[T],
       f: Field[T],
       r: IsReal[T],
       t: Trig[T],
@@ -321,8 +321,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     pow(f.fromInt(k).reciprocal())
   }
 
-  def **(b: Jet[T])(
-      implicit c: ClassTag[T],
+  def **(b: Jet[T])(implicit
+      c: ClassTag[T],
       e: Eq[T],
       f: Field[T],
       r: IsReal[T],
@@ -331,22 +331,22 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     pow(b)
   }
 
-  def floor()(
-      implicit c: ClassTag[T],
+  def floor()(implicit
+      c: ClassTag[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(real.floor(), infinitesimal.map(r.floor))
   }
 
-  def ceil()(
-      implicit c: ClassTag[T],
+  def ceil()(implicit
+      c: ClassTag[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(real.ceil(), infinitesimal.map(r.ceil))
   }
 
-  def round()(
-      implicit c: ClassTag[T],
+  def round()(implicit
+      c: ClassTag[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(real.round(), infinitesimal.map(r.round))
@@ -358,8 +358,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * abs(x + du) ~= x + du or -(x + du)
     */
-  def abs()(
-      implicit f: Field[T],
+  def abs()(implicit
+      f: Field[T],
       r: IsReal[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     if (real < f.zero) new Jet(-real, -infinitesimal)
@@ -367,12 +367,9 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   }
 
   // spire.math. does not define this pow generically, so there it is
-  private def powScalarToScalar(b: T, e: T)(
-      implicit
-      f: Field[T],
-      eq: Eq[T],
-      r: IsReal[T],
-      t: Trig[T]): T = {
+  private def powScalarToScalar(
+      b: T,
+      e: T)(implicit f: Field[T], eq: Eq[T], r: IsReal[T], t: Trig[T]): T = {
     if (e === f.zero) {
       f.one
     } else if (b === f.zero) {
@@ -385,8 +382,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
 
   // pow -- base is a constant, exponent (this) is a differentiable function.
   // b^(p + du) ~= b^p + b^p * log(b) du
-  def powScalarToJet(a: T)(
-      implicit
+  def powScalarToJet(a: T)(implicit
       c: ClassTag[T],
       e: Eq[T],
       f: Field[T],
@@ -405,8 +401,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     * pow -- base (this) is a differentiable function, exponent is a constant.
     * pow(a + du, p) ~= pow(a, p) + p * pow(a, p-1) du
     */
-  def pow(p: T)(
-      implicit
+  def pow(p: T)(implicit
       e: Eq[T],
       f: Field[T],
       r: IsReal[T],
@@ -417,8 +412,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   }
 
   // As above, integer exponent.
-  def pow(p: Int)(
-      implicit f: Field[T],
+  def pow(p: Int)(implicit
+      f: Field[T],
       e: Eq[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val tmp = p * f.pow(real, p - 1)
@@ -429,8 +424,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     * pow -- both base (this) and exponent are differentiable functions.
     * (a + du)^(b + dv) ~= a^b + b * a^(b-1) du + a^b log(a) dv
     */
-  def pow(b: Jet[T])(
-      implicit c: ClassTag[T],
+  def pow(b: Jet[T])(implicit
+      c: ClassTag[T],
       e: Eq[T],
       f: Field[T],
       m: Module[Array[T], T],
@@ -449,8 +444,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * log(a + du) ~= log(a) + du / a
     */
-  def log()(
-      implicit f: Field[T],
+  def log()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(spire.math.log(real), (f.one / real) *: infinitesimal)
@@ -459,8 +454,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * sqrt(a + du) ~= sqrt(a) + du / (2 sqrt(a))
     */
-  def sqrt()(
-      implicit f: Field[T],
+  def sqrt()(implicit
+      f: Field[T],
       n: NRoot[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val sa = real.sqrt
@@ -471,8 +466,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * acos(a + du) ~= acos(a) - 1 / sqrt(1 - a**2) du
     */
-  def acos()(
-      implicit f: Field[T],
+  def acos()(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
@@ -483,8 +478,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * asin(a + du) ~= asin(a) - 1 / sqrt(1 - a**2) du
     */
-  def asin()(
-      implicit f: Field[T],
+  def asin()(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
@@ -495,8 +490,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * atan(a + du) ~= atan(a) + 1 / (1 + a**2) du
     */
-  def atan()(
-      implicit f: Field[T],
+  def atan()(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
@@ -508,8 +503,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     * Defined with "this" as the y coordinate: this.atan2(a) == atan2(this, a) == atan(this / a)
     * atan2(b + dv, a + du) ~= atan2(b, a) + (- b du + a dv) / (a^2 + b^2)
     */
-  def atan2(a: Jet[T])(
-      implicit f: Field[T],
+  def atan2(a: Jet[T])(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val tmp = f.one / (a.real * a.real + real * real)
@@ -521,8 +516,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * exp(a + du) ~= exp(a) + exp(a) du
     */
-  def exp()(
-      implicit f: Field[T],
+  def exp()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val ea = spire.math.exp(real)
@@ -532,8 +527,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * sin(a + du) ~= sin(a) + cos(a) du
     */
-  def sin()(
-      implicit f: Field[T],
+  def sin()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(spire.math.sin(real), spire.math.cos(real) *: infinitesimal)
@@ -542,8 +537,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * sinh(a + du) ~= sinh(a) + cosh(a) du
     */
-  def sinh()(
-      implicit f: Field[T],
+  def sinh()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(spire.math.sinh(real), spire.math.cosh(real) *: infinitesimal)
@@ -552,8 +547,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * cos(a + du) ~= cos(a) - sin(a) du
     */
-  def cos()(
-      implicit f: Field[T],
+  def cos()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(spire.math.cos(real), -spire.math.sin(real) *: infinitesimal)
@@ -562,8 +557,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * cosh(a + du) ~= cosh(a) + sinh(a) du
     */
-  def cosh()(
-      implicit f: Field[T],
+  def cosh()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     new Jet(spire.math.cosh(real), spire.math.sinh(real) *: infinitesimal)
@@ -572,8 +567,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * tan(a + du) ~= tan(a) + (1 + tan(a)**2) du
     */
-  def tan()(
-      implicit f: Field[T],
+  def tan()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val tan_a = spire.math.tan(real)
@@ -584,8 +579,8 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
   /**
     * tanh(a + du) ~= tanh(a) + (1 - tanh(a)**2) du
     */
-  def tanh()(
-      implicit f: Field[T],
+  def tanh()(implicit
+      f: Field[T],
       t: Trig[T],
       v: VectorSpace[Array[T], T]): Jet[T] = {
     val tanh_a = spire.math.tanh(real)
@@ -628,8 +623,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
 }
 
 trait JetInstances {
-  implicit def JetAlgebra[@sp(Float, Double) T](
-      implicit
+  implicit def JetAlgebra[@sp(Float, Double) T](implicit
       c: ClassTag[T],
       d: JetDim,
       eq: Eq[T],
@@ -754,8 +748,7 @@ private[math] trait JetIsSigned[T] extends Signed[Jet[T]] {
 }
 
 @SerialVersionUID(0L)
-private[math] class JetAlgebra[@sp(Float, Double) T](
-    implicit
+private[math] class JetAlgebra[@sp(Float, Double) T](implicit
     val c: ClassTag[T],
     val d: JetDim,
     val eq: Eq[T],

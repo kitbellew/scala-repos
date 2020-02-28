@@ -55,8 +55,8 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
   final def toOption: Option[B] = right
   final def toList: List[B] = right.toList
 
-  final def to[F[_], BB >: B](
-      implicit monoidKF: MonoidK[F],
+  final def to[F[_], BB >: B](implicit
+      monoidKF: MonoidK[F],
       applicativeF: Applicative[F]): F[BB] =
     fold(_ => monoidKF.empty, applicativeF.pure, (_, b) => applicativeF.pure(b))
 
@@ -111,8 +111,8 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     fold(identity, ev.apply, (a, b) => AA.combine(a, b))
 
   // scalastyle:off cyclomatic.complexity
-  final def append[AA >: A, BB >: B](that: AA Ior BB)(
-      implicit AA: Semigroup[AA],
+  final def append[AA >: A, BB >: B](that: AA Ior BB)(implicit
+      AA: Semigroup[AA],
       BB: Semigroup[BB]): AA Ior BB = this match {
     case Ior.Left(a1) =>
       that match {
@@ -147,8 +147,8 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
         (a2, b2) => AA.eqv(a, a2) && BB.eqv(b, b2))
   )
 
-  final def show[AA >: A, BB >: B](
-      implicit AA: Show[AA],
+  final def show[AA >: A, BB >: B](implicit
+      AA: Show[AA],
       BB: Show[BB]): String = fold(
     a => s"Ior.Left(${AA.show(a)})",
     b => s"Ior.Right(${BB.show(b)})",

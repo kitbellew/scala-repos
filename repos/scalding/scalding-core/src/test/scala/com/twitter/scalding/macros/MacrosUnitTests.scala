@@ -90,13 +90,12 @@ class MacrosUnitTests extends WordSpec with Matchers {
     def fields = sys.error("dummy")
   }
 
-  def isMacroTupleConverterAvailable[T](implicit proof: TupleConverter[T] =
-    dummy.asInstanceOf[TupleConverter[T]]) =
+  def isMacroTupleConverterAvailable[T](implicit
+      proof: TupleConverter[T] = dummy.asInstanceOf[TupleConverter[T]]) =
     proof.isInstanceOf[MacroGenerated]
 
-  def isMacroTypeDescriptorAvailable[T](
-      implicit proof: TypeDescriptor[T] =
-        dummy2.asInstanceOf[TypeDescriptor[T]]) =
+  def isMacroTypeDescriptorAvailable[T](implicit
+      proof: TypeDescriptor[T] = dummy2.asInstanceOf[TypeDescriptor[T]]) =
     proof.isInstanceOf[MacroGenerated]
 
   def mgConv[T](te: TupleEntry)(implicit conv: TupleConverter[T]): T =

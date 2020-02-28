@@ -85,8 +85,8 @@ class PolynomialCheck
     runTest[A](s"$typ/sparse")
   }
 
-  def runTest[A: Eq: Field: ClassTag](name: String)(
-      implicit arb: Arbitrary[Polynomial[A]],
+  def runTest[A: Eq: Field: ClassTag](name: String)(implicit
+      arb: Arbitrary[Polynomial[A]],
       arb2: Arbitrary[A]): Unit = {
     type P = Polynomial[A]
 

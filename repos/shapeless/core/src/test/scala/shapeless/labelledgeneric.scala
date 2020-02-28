@@ -138,8 +138,7 @@ object ScalazTaggedAux {
         def apply() = "HNil"
       }
 
-    implicit def hconsTCTagged[K <: Symbol, H, HT, T <: HList](
-        implicit
+    implicit def hconsTCTagged[K <: Symbol, H, HT, T <: HList](implicit
         key: Witness.Aux[K],
         headTC: Lazy[TC[H @@ HT]],
         tailTC: Lazy[TC[T]]): TC[FieldType[K, H @@ HT] :: T] =
@@ -148,8 +147,7 @@ object ScalazTaggedAux {
           s"${key.value.name}: ${headTC.value()} :: ${tailTC.value()}"
       }
 
-    implicit def hconsTC[K <: Symbol, H, T <: HList](
-        implicit
+    implicit def hconsTC[K <: Symbol, H, T <: HList](implicit
         key: Witness.Aux[K],
         headTC: Lazy[TC[H]],
         tailTC: Lazy[TC[T]]): TC[FieldType[K, H] :: T] =
@@ -158,8 +156,7 @@ object ScalazTaggedAux {
           s"${key.value.name}: ${headTC.value()} :: ${tailTC.value()}"
       }
 
-    implicit def projectTC[F, G](
-        implicit
+    implicit def projectTC[F, G](implicit
         lgen: LabelledGeneric.Aux[F, G],
         tc: Lazy[TC[G]]): TC[F] =
       new TC[F] {

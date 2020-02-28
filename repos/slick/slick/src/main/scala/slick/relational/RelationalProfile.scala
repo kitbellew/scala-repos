@@ -97,8 +97,8 @@ trait RelationalProfile
 
     /** Create a `Compiled` query which selects all rows where the specified
       * key matches the parameter value. */
-    def findBy[P](f: (T => Rep[P]))(
-        implicit ashape: Shape[ColumnsShapeLevel, Rep[P], P, Rep[P]],
+    def findBy[P](f: (T => Rep[P]))(implicit
+        ashape: Shape[ColumnsShapeLevel, Rep[P], P, Rep[P]],
         pshape: Shape[ColumnsShapeLevel, P, P, _]): CompiledFunction[
       Rep[P] => Query[T, U, Seq],
       Rep[P],
@@ -223,8 +223,8 @@ trait RelationalSequenceComponent { self: RelationalProfile =>
       val _maxValue: Option[T],
       val _increment: Option[T],
       val _start: Option[T],
-      val _cycle: Boolean)(
-      implicit val tpe: TypedType[T],
+      val _cycle: Boolean)(implicit
+      val tpe: TypedType[T],
       val integral: Integral[T]) { seq =>
 
     def min(v: T) =
@@ -271,8 +271,8 @@ trait RelationalTypesComponent { self: RelationalProfile =>
   }
 
   trait ImplicitColumnTypes {
-    implicit def isomorphicType[A, B](
-        implicit iso: Isomorphism[A, B],
+    implicit def isomorphicType[A, B](implicit
+        iso: Isomorphism[A, B],
         ct: ClassTag[A],
         jt: BaseColumnType[B]): BaseColumnType[A] =
       MappedColumnType.base[A, B](iso.map, iso.comap)

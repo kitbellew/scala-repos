@@ -69,8 +69,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def toOption(implicit F: Functor[F]): OptionT[F, B] =
     OptionT(F.map(value)(_.toOption))
 
-  def to[G[_]](
-      implicit functorF: Functor[F],
+  def to[G[_]](implicit
+      functorF: Functor[F],
       monoidKG: MonoidK[G],
       applicativeG: Applicative[G]): F[G[B]] =
     functorF.map(value)(_.to[G, B])
@@ -121,8 +121,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def ===(that: XorT[F, A, B])(implicit eq: Eq[F[A Xor B]]): Boolean =
     eq.eqv(value, that.value)
 
-  def traverse[G[_], D](f: B => G[D])(
-      implicit traverseF: Traverse[F],
+  def traverse[G[_], D](f: B => G[D])(implicit
+      traverseF: Traverse[F],
       traverseXorA: Traverse[A Xor ?],
       applicativeG: Applicative[G]): G[XorT[F, A, D]] =
     applicativeG.map(traverseF.traverse(value)(axb =>
@@ -138,8 +138,8 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def merge[AA >: A](implicit ev: B <:< AA, F: Functor[F]): F[AA] =
     F.map(value)(_.fold(identity, ev.apply))
 
-  def combine(that: XorT[F, A, B])(
-      implicit F: Apply[F],
+  def combine(that: XorT[F, A, B])(implicit
+      F: Apply[F],
       A: Semigroup[A],
       B: Semigroup[B]): XorT[F, A, B] =
     XorT(F.map2(this.value, that.value)(_ combine _))
@@ -241,8 +241,8 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
       val F0: Traverse[F] = F
     }
 
-  implicit def xortTransLift[M[_], E](implicit M: Functor[M])
-      : TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
+  implicit def xortTransLift[M[_], E](implicit
+      M: Functor[M]): TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] {
       def liftT[A](ma: M[A]): XorT[M, E, A] =
         XorT(M.map(ma)(Xor.right))
@@ -260,8 +260,8 @@ private[data] abstract class XorTInstances1 extends XorTInstances2 {
    */
 
   /* TODO delete this when MonadCombine instance is re-enabled */
-  implicit def xorTMonoidK[F[_], L](
-      implicit F: Monad[F],
+  implicit def xorTMonoidK[F[_], L](implicit
+      F: Monad[F],
       L: Monoid[L]): MonoidK[XorT[F, L, ?]] = {
     implicit val F0 = F
     implicit val L0 = L
@@ -291,8 +291,8 @@ private[data] abstract class XorTInstances2 extends XorTInstances3 {
     new XorTMonadError[F, L] { implicit val F = F0 }
   }
 
-  implicit def xorTSemigroupK[F[_], L](
-      implicit F: Monad[F],
+  implicit def xorTSemigroupK[F[_], L](implicit
+      F: Monad[F],
       L: Semigroup[L]): SemigroupK[XorT[F, L, ?]] = {
     implicit val F0 = F
     implicit val L0 = L

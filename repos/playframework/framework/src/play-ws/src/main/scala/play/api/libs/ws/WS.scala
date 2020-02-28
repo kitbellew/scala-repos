@@ -513,8 +513,8 @@ trait WSRequest {
     */
   @deprecated("2.5.0", """Use WS.withMethod("PATCH").stream()""")
   def patchAndRetrieveStream[A, T](body: T)(
-      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
-      implicit wrt: Writeable[T],
+      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
+      wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("PATCH").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>
@@ -549,8 +549,8 @@ trait WSRequest {
     */
   @deprecated("2.5.0", """Use WS.withMethod("POST").stream()""")
   def postAndRetrieveStream[A, T](body: T)(
-      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
-      implicit wrt: Writeable[T],
+      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
+      wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("POST").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>
@@ -585,8 +585,8 @@ trait WSRequest {
     */
   @deprecated("2.5.0", """Use WS.withMethod("PUT").stream()""")
   def putAndRetrieveStream[A, T](body: T)(
-      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(
-      implicit wrt: Writeable[T],
+      consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
+      wrt: Writeable[T],
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
     withMethod("PUT").withBody(body).streamWithEnumerator().flatMap {
       case (response, enumerator) =>

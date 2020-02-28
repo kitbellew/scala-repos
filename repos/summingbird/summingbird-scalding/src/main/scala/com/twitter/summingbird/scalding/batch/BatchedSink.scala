@@ -41,8 +41,8 @@ trait BatchedSink[T] extends Sink[T] {
     * Instances may choose to write out materialized streams
     * by implementing this. This is what readStream returns.
     */
-  def writeStream(batchID: BatchID, stream: TimedPipe[T])(
-      implicit flowDef: FlowDef,
+  def writeStream(batchID: BatchID, stream: TimedPipe[T])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit
 
   /**

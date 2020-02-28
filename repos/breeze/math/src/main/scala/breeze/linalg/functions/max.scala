@@ -33,8 +33,8 @@ object max
     }
 
   @expand
-  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseValues[T, S],
       @expand.sequence[S](
         Int.MinValue,
         Double.NegativeInfinity,
@@ -97,8 +97,8 @@ object max
 
   }
 
-  implicit def maxVS[T, U, LHS, RHS, RV](
-      implicit cmvH: ScalarOf[T, LHS],
+  implicit def maxVS[T, U, LHS, RHS, RV](implicit
+      cmvH: ScalarOf[T, LHS],
       maxImpl: max.Impl2[LHS, RHS, LHS],
       cmv: CanMapValues[T, LHS, LHS, U]): Impl2[T, RHS, U] = {
     new Impl2[T, RHS, U] {
@@ -163,8 +163,8 @@ object min extends UFunc {
     }
 
   @expand
-  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseValues[T, S],
       @expand.sequence[S](
         Int.MaxValue,
         Double.PositiveInfinity,
@@ -215,8 +215,8 @@ object min extends UFunc {
 
   }
 
-  implicit def minVS[T, U, LHS, RHS, RV](
-      implicit cmvH: ScalarOf[T, LHS],
+  implicit def minVS[T, U, LHS, RHS, RV](implicit
+      cmvH: ScalarOf[T, LHS],
       maxImpl: min.Impl2[LHS, RHS, LHS],
       cmv: mapValues.Impl2[T, LHS => LHS, U]): Impl2[T, RHS, U] = {
     new Impl2[T, RHS, U] {
@@ -229,8 +229,8 @@ object min extends UFunc {
   * clip(a, lower, upper) returns an array such that all elements are "clipped" at the range (lower, upper)
   */
 object clip extends UFunc {
-  implicit def clipOrdering[T, V](
-      implicit ordering: Ordering[V],
+  implicit def clipOrdering[T, V](implicit
+      ordering: Ordering[V],
       cmv: CanMapValues[T, V, V, T]): Impl3[T, V, V, T] = {
     new Impl3[T, V, V, T] {
       import ordering.mkOrderingOps
@@ -240,8 +240,8 @@ object clip extends UFunc {
     }
   }
 
-  implicit def clipInPlaceOrdering[T, V](
-      implicit ordering: Ordering[V],
+  implicit def clipInPlaceOrdering[T, V](implicit
+      ordering: Ordering[V],
       cmv: CanTransformValues[T, V]): InPlaceImpl3[T, V, V] = {
     import ordering.mkOrderingOps
     new InPlaceImpl3[T, V, V] {
@@ -266,8 +266,8 @@ object clip extends UFunc {
   */
 object ptp extends UFunc {
   @expand
-  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseValues[T, S],
       @expand.sequence[S](
         Int.MaxValue,
         Double.PositiveInfinity,
@@ -327,8 +327,8 @@ object ptp extends UFunc {
   */
 object minMax extends UFunc {
   @expand
-  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduce[T, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseValues[T, S],
       @expand.sequence[S](
         Int.MaxValue,
         Double.PositiveInfinity,

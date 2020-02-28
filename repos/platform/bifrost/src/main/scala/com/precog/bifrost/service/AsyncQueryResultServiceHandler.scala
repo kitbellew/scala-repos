@@ -38,8 +38,8 @@ import java.nio.charset.Charset
 
 import scalaz._
 
-class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(
-    implicit executor: ExecutionContext,
+class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
+    executor: ExecutionContext,
     M: Monad[Future])
     extends CustomHttpService[
       ByteChunk,

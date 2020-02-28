@@ -529,32 +529,32 @@ trait Pattern {
     val args = List(left, right)
   }
 
-  case class LE[T](left: Expr[T], right: Expr[T])(
-      implicit num: NumericOps[T],
+  case class LE[T](left: Expr[T], right: Expr[T])(implicit
+      num: NumericOps[T],
       ord: Ordering[T])
       extends Compare[T](left, right, ord.compare(_, _) <= 0) {
     def mapArgs(f: EndoFunction[Expr[_]]) = LE(f(left), f(right))
     override def toString = left.toString + " <= " + right.toString
   }
 
-  case class LT[T](left: Expr[T], right: Expr[T])(
-      implicit num: NumericOps[T],
+  case class LT[T](left: Expr[T], right: Expr[T])(implicit
+      num: NumericOps[T],
       ord: Ordering[T])
       extends Compare[T](left, right, ord.compare(_, _) < 0) {
     def mapArgs(f: EndoFunction[Expr[_]]) = LT(f(left), f(right))
     override def toString = left.toString + " < " + right.toString
   }
 
-  case class GE[T](left: Expr[T], right: Expr[T])(
-      implicit num: NumericOps[T],
+  case class GE[T](left: Expr[T], right: Expr[T])(implicit
+      num: NumericOps[T],
       ord: Ordering[T])
       extends Compare[T](left, right, ord.compare(_, _) >= 0) {
     def mapArgs(f: EndoFunction[Expr[_]]) = GE(f(left), f(right))
     override def toString = left.toString + " >= " + right.toString
   }
 
-  case class GT[T](left: Expr[T], right: Expr[T])(
-      implicit num: NumericOps[T],
+  case class GT[T](left: Expr[T], right: Expr[T])(implicit
+      num: NumericOps[T],
       ord: Ordering[T])
       extends Compare[T](left, right, ord.compare(_, _) > 0) {
     def mapArgs(f: EndoFunction[Expr[_]]) = GT(f(left), f(right))

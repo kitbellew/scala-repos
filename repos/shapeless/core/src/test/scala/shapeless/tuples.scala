@@ -1842,8 +1842,7 @@ class TupleTests {
         at[N](_ => toi())
     }
 
-    def range[R <: HList, OutL <: HList](a: Nat, b: Nat)(
-        implicit
+    def range[R <: HList, OutL <: HList](a: Nat, b: Nat)(implicit
         range: ops.nat.Range.Aux[a.N, b.N, R],
         mapper: ops.hlist.Mapper.Aux[toInt.type, R, OutL],
         tupler: ops.hlist.Tupler[OutL]): tupler.Out = tupler(mapper(range()))

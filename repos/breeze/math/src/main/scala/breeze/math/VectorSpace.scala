@@ -300,8 +300,7 @@ trait MutableOptimizationSpace[M, V, S]
 }
 
 object VectorField {
-  def make[V, S](
-      implicit
+  def make[V, S](implicit
       _norm: norm.Impl[V, Double],
       _field: Field[S],
       _mulVV: OpMulScalar.Impl2[V, V, V],
@@ -332,8 +331,8 @@ object VectorField {
 object MutableModule {
 
   /** Construct a MutableInnerProductSpace for the given type from the available implicits */
-  def make[V, S](closeTo: (V, V, Double) => Boolean)(
-      implicit _ring: Ring[S],
+  def make[V, S](closeTo: (V, V, Double) => Boolean)(implicit
+      _ring: Ring[S],
       _zeroLike: CanCreateZerosLike[V, V],
       _ops: V <:< NumericOps[V],
       _mulVS: OpMulScalar.Impl2[V, S, V],
@@ -369,8 +368,8 @@ object MutableModule {
 object MutableInnerProductVectorSpace {
 
   /** Construct a MutableInnerProductSpace for the given type from the available implicits */
-  def make[V, S](
-      implicit _field: Field[S],
+  def make[V, S](implicit
+      _field: Field[S],
       _ops: V <:< NumericOps[V],
       _zeroLike: CanCreateZerosLike[V, V],
       _mulVS: OpMulScalar.Impl2[V, S, V],
@@ -410,8 +409,8 @@ object MutableInnerProductVectorSpace {
 object MutableInnerProductModule {
 
   /** Construct a MutableInnerProductModule for the given type from the available implicits */
-  def make[V, S](
-      implicit _ring: Ring[S],
+  def make[V, S](implicit
+      _ring: Ring[S],
       _ops: V <:< NumericOps[V],
       _zeroLike: CanCreateZerosLike[V, V],
       _mulVS: OpMulScalar.Impl2[V, S, V],
@@ -443,8 +442,7 @@ object MutableInnerProductModule {
 }
 
 object MutableVectorField {
-  def make[V, S](
-      implicit
+  def make[V, S](implicit
       _norm: norm.Impl[V, Double],
       _field: Field[S],
       _mulVV: OpMulScalar.Impl2[V, V, V],
@@ -496,8 +494,7 @@ object MutableVectorField {
 }
 
 object MutableLPVectorField {
-  def make[V, S](
-      implicit
+  def make[V, S](implicit
       _norm: norm.Impl[V, Double],
       _norm2: norm.Impl2[V, Double, Double],
       _field: Field[S],
@@ -551,8 +548,7 @@ object MutableLPVectorField {
 }
 
 object MutableCoordinateField {
-  def make[V, S](
-      implicit
+  def make[V, S](implicit
       _ops: V <:< NumericOps[V],
       _normImpl2: norm.Impl2[V, Double, Double],
       _norm: norm.Impl[V, Double],
@@ -620,8 +616,7 @@ object MutableCoordinateField {
 }
 
 object MutableFiniteCoordinateField {
-  def make[V, I, S](
-      implicit
+  def make[V, I, S](implicit
       _norm2: norm.Impl2[V, Double, Double],
       _norm: norm.Impl[V, Double],
       _field: Field[S],
@@ -708,8 +703,7 @@ object MutableFiniteCoordinateField {
 }
 
 object MutableEnumeratedCoordinateField {
-  def make[V, I, S](
-      implicit
+  def make[V, I, S](implicit
       _norm2: norm.Impl2[V, Double, Double],
       _norm: norm.Impl[V, Double],
       _field: Field[S],
@@ -827,8 +821,7 @@ object MutableOptimizationSpace {
     }
   }
 
-  def make[M, V, S](toMat: V => M, toVec: M => V)(
-      implicit
+  def make[M, V, S](toMat: V => M, toVec: M => V)(implicit
       _norm2: norm.Impl2[V, Double, Double],
       _norm: norm.Impl[V, Double],
       _field: Field[S],

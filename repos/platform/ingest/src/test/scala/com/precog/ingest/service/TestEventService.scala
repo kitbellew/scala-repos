@@ -185,8 +185,7 @@ trait TestEventService
       path: Path,
       ownerAccountId: Option[AccountId],
       sync: Boolean = true,
-      batch: Boolean = false)(data: A)(
-      implicit
+      batch: Boolean = false)(data: A)(implicit
       bi: A => Future[JValue],
       t: AsyncHttpTranscoder[A, ByteChunk])
       : Future[(HttpResponse[JValue], List[Ingest])] = {

@@ -422,8 +422,8 @@ object SIntent {
 }
 
 class RichIntent(val intent: Intent) {
-  @inline def start[T <: Activity](
-      implicit context: Context,
+  @inline def start[T <: Activity](implicit
+      context: Context,
       mt: ClassTag[T]) = {
     val clazz = mt.runtimeClass
     intent.setClass(context, clazz)
@@ -446,8 +446,8 @@ class RichIntent(val intent: Intent) {
   * [[http://blog.scaloid.org/2013/03/introducing-localservice.html]]
   */
 class LocalServiceConnection[S <: LocalService](
-    bindFlag: Int = Context.BIND_AUTO_CREATE)(
-    implicit ctx: Context,
+    bindFlag: Int = Context.BIND_AUTO_CREATE)(implicit
+    ctx: Context,
     reg: Registerable,
     mf: ClassTag[S])
     extends ServiceConnection {

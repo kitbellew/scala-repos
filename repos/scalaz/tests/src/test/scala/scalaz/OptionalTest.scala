@@ -9,8 +9,8 @@ object OptionalTest extends SpecLite {
       context: F[A],
       value: A,
       default: => A,
-      alternative: => F[A])(
-      implicit O: Optional[F],
+      alternative: => F[A])(implicit
+      O: Optional[F],
       EA: Equal[A],
       EFA: Equal[F[A]],
       SA: Show[A],
@@ -26,7 +26,8 @@ object OptionalTest extends SpecLite {
   }
 
   def undefinedTests[F[_], A](context: F[A], default: A, alternative: F[A])(
-      implicit O: Optional[F],
+      implicit
+      O: Optional[F],
       EA: Equal[A],
       EFA: Equal[F[A]],
       SA: Show[A],

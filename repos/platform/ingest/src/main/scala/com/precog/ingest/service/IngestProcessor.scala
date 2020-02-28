@@ -117,8 +117,8 @@ class DefaultIngestProcessingSelectors(
     maxFields: Int,
     batchSize: Int,
     tmpdir: File,
-    ingestStore: IngestStore)(
-    implicit M: Monad[Future],
+    ingestStore: IngestStore)(implicit
+    M: Monad[Future],
     executor: ExecutionContext) {
   import IngestProcessing._
 

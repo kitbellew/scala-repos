@@ -15,8 +15,7 @@ import org.ensime.util.map._
 class SourceResolver(
     config: EnsimeConfig
 )(
-    implicit
-    vfs: EnsimeVFS
+    implicit vfs: EnsimeVFS
 ) extends FileChangeListener
     with SLF4JLogging {
 

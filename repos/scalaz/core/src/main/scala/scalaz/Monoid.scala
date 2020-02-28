@@ -106,8 +106,8 @@ object Monoid {
   }
 
   /**A monoid for sequencing Applicative effects. */
-  def liftMonoid[F[_], M](
-      implicit F0: Applicative[F],
+  def liftMonoid[F[_], M](implicit
+      F0: Applicative[F],
       M0: Monoid[M]): Monoid[F[M]] =
     new ApplicativeMonoid[F, M] {
       implicit def F: Applicative[F] = F0

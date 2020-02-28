@@ -52,8 +52,8 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
     new APIKeyRequiredService[A, B](keyFinder, service)
   }
 
-  def invalidAPIKey[A](
-      implicit convert: JValue => A,
+  def invalidAPIKey[A](implicit
+      convert: JValue => A,
       M: Monad[Future]): String => Future[HttpResponse[A]] = { (msg: String) =>
     M.point(
       (forbidden(msg) map convert).copy(headers =
@@ -63,8 +63,7 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   // Convenience combinator for when we know our result is an `HttpResponse` and that
   // we are returning JSON.
   def jsonAPIKey[A, B](apiKeyFinder: APIKeyFinder[Future])(
-      service: HttpService[A, APIKey => Future[HttpResponse[B]]])(
-      implicit
+      service: HttpService[A, APIKey => Future[HttpResponse[B]]])(implicit
       inj: JValue => B,
       M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] = {
     jsonAPIKey(k => apiKeyFinder.findAPIKey(k, None).map(_.map(_.apiKey)))(
@@ -72,8 +71,7 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   }
 
   def jsonAPIKey[A, B](keyFinder: APIKey => Future[Option[APIKey]])(
-      service: HttpService[A, APIKey => Future[HttpResponse[B]]])(
-      implicit
+      service: HttpService[A, APIKey => Future[HttpResponse[B]]])(implicit
       inj: JValue => B,
       M: Monad[Future]): HttpService[A, Future[HttpResponse[B]]] = {
     apiKeyRequired(keyFinder) {

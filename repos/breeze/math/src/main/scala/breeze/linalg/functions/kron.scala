@@ -11,8 +11,8 @@ import breeze.generic.UFunc
   */
 object kron extends UFunc {
 
-  implicit def kronDM_M[V1, V2, M, RV](
-      implicit mul: OpMulScalar.Impl2[V1, M, DenseMatrix[RV]],
+  implicit def kronDM_M[V1, V2, M, RV](implicit
+      mul: OpMulScalar.Impl2[V1, M, DenseMatrix[RV]],
       asMat: M <:< Matrix[V2],
       man: ClassTag[RV],
       zero: Zero[RV]): Impl2[DenseMatrix[V1], M, DenseMatrix[RV]] = {

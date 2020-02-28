@@ -10,8 +10,7 @@ import org.typelevel.discipline.Laws
 trait CartesianTests[F[_]] extends Laws {
   def laws: CartesianLaws[F]
 
-  def cartesian[A: Arbitrary, B: Arbitrary, C: Arbitrary](
-      implicit
+  def cartesian[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
       iso: CartesianTests.Isomorphisms[F],
       ArbFA: Arbitrary[F[A]],
       ArbFB: Arbitrary[F[B]],

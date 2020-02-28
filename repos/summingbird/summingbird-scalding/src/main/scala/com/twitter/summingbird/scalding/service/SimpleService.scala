@@ -38,7 +38,8 @@ trait SimpleService[K, V] extends ExternalService[K, V] {
   def satisfiable(requested: DateRange, mode: Mode): Try[DateRange]
 
   def serve[W](covering: DateRange, input: TypedPipe[(Timestamp, (K, W))])(
-      implicit flowDef: FlowDef,
+      implicit
+      flowDef: FlowDef,
       mode: Mode): TypedPipe[(Timestamp, (K, (W, Option[V])))]
 
   final def lookup[W](

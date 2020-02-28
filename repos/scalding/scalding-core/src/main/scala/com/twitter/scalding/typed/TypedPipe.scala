@@ -49,8 +49,8 @@ object TypedPipe extends Serializable {
     * Create a TypedPipe from a cascading Pipe, some Fields and the type T
     * Avoid this if you can. Prefer from(TypedSource).
     */
-  def from[T](pipe: Pipe, fields: Fields)(
-      implicit flowDef: FlowDef,
+  def from[T](pipe: Pipe, fields: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       conv: TupleConverter[T]): TypedPipe[T] = {
     val localFlow = flowDef.onlyUpstreamFrom(pipe)
@@ -170,8 +170,8 @@ trait TypedPipe[+T] extends Serializable {
     * Fields API or with Cascading code.
     * Avoid this if possible. Prefer to write to TypedSink.
     */
-  final def toPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  final def toPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
     import Dsl._
@@ -183,8 +183,8 @@ trait TypedPipe[+T] extends Serializable {
   /**
     * Provide the internal implementation to get from a typed pipe to a cascading Pipe
     */
-  private[typed] def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  private[typed] def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe
 
@@ -408,8 +408,8 @@ trait TypedPipe[+T] extends Serializable {
   /**
     * This is the default means of grouping all pairs with the same key. Generally this triggers 1 Map/Reduce transition
     */
-  def group[K, V](
-      implicit ev: <:<[T, (K, V)],
+  def group[K, V](implicit
+      ev: <:<[T, (K, V)],
       ord: Ordering[K]): Grouped[K, V] =
     //If the type of T is not (K,V), then at compile time, this will fail.  It uses implicits to do
     //a compile time check that one type is equivalent to another.  If T is not (K,V), we can't
@@ -496,8 +496,8 @@ trait TypedPipe[+T] extends Serializable {
     * The main use case is to reduce the values down before a key expansion
     * such as is often done in a data cube.
     */
-  def sumByLocalKeys[K, V](
-      implicit ev: T <:< (K, V),
+  def sumByLocalKeys[K, V](implicit
+      ev: T <:< (K, V),
       sg: Semigroup[V]): TypedPipe[(K, V)] = {
     val fields: Fields = ('key, 'value)
     val selfKV = raiseTo[(K, V)]
@@ -530,8 +530,8 @@ trait TypedPipe[+T] extends Serializable {
   /**
     * Reasonably common shortcut for cases of associative/commutative reduction by Key
     */
-  def sumByKey[K, V](
-      implicit ev: T <:< (K, V),
+  def sumByKey[K, V](implicit
+      ev: T <:< (K, V),
       ord: Ordering[K],
       plus: Semigroup[V]): UnsortedGrouped[K, V] =
     group[K, V].sum[V]
@@ -594,8 +594,8 @@ trait TypedPipe[+T] extends Serializable {
     forceToDiskExecution.flatMap(_.toIterableExecution)
 
   /** use a TupleUnpacker to flatten U out into a cascading Tuple */
-  def unpackToPipe[U >: T](fieldNames: Fields)(
-      implicit fd: FlowDef,
+  def unpackToPipe[U >: T](fieldNames: Fields)(implicit
+      fd: FlowDef,
       mode: Mode,
       up: TupleUnpacker[U]): Pipe = {
     val setter = up.newSetter(fieldNames)
@@ -616,8 +616,8 @@ trait TypedPipe[+T] extends Serializable {
     * you need to do something like: toPipe(fieldNames).write(dest)
     * @return a pipe equivalent to the current pipe.
     */
-  def write(dest: TypedSink[T])(
-      implicit flowDef: FlowDef,
+  def write(dest: TypedSink[T])(implicit
+      flowDef: FlowDef,
       mode: Mode): TypedPipe[T] = {
     // Make sure that we don't render the whole pipeline twice:
     val res = fork
@@ -750,9 +750,8 @@ trait TypedPipe[+T] extends Serializable {
     hashCogroup[K, V, W, (V, W)](smaller)(Joiner.hashInner2)
 
   /** Do an leftjoin without shuffling this TypedPipe, but replicating argument to all tasks */
-  def hashLeftJoin[K, V, W](smaller: HashJoinable[K, W])(
-      implicit ev: TypedPipe[T] <:< TypedPipe[(K, V)])
-      : TypedPipe[(K, (V, Option[W]))] =
+  def hashLeftJoin[K, V, W](smaller: HashJoinable[K, W])(implicit
+      ev: TypedPipe[T] <:< TypedPipe[(K, V)]): TypedPipe[(K, (V, Option[W]))] =
     hashCogroup[K, V, W, (V, Option[W])](smaller)(Joiner.hashLeft2)
 
   /**
@@ -783,8 +782,8 @@ trait TypedPipe[+T] extends Serializable {
       reducers: Int,
       eps: Double = 1.0e-5, //272k width = 1MB per row
       delta: Double = 0.01, //5 rows (= 5 hashes)
-      seed: Int = 12345)(
-      implicit ev: TypedPipe[T] <:< TypedPipe[(K, V)],
+      seed: Int = 12345)(implicit
+      ev: TypedPipe[T] <:< TypedPipe[(K, V)],
       serialization: K => Array[Byte],
       ordering: Ordering[K]): Sketched[K, V] =
     Sketched(ev(this), reducers, delta, eps, seed)
@@ -831,8 +830,8 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
 
   override def ++[U >: Nothing](other: TypedPipe[U]): TypedPipe[U] = other
 
-  override def asPipe[U >: Nothing](fieldNames: Fields)(
-      implicit fd: FlowDef,
+  override def asPipe[U >: Nothing](fieldNames: Fields)(implicit
+      fd: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe =
     IterableSource(Iterable.empty, fieldNames)(setter, singleConverter[U])
@@ -847,14 +846,13 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
   override def sum[U >: Nothing](implicit plus: Semigroup[U]): ValuePipe[U] =
     EmptyValue
 
-  override def sumByLocalKeys[K, V](
-      implicit ev: Nothing <:< (K, V),
+  override def sumByLocalKeys[K, V](implicit
+      ev: Nothing <:< (K, V),
       sg: Semigroup[V]) = this
 
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(
-      joiner: (K, V, Iterable[W]) => Iterator[R])(
-      implicit ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)])
-      : TypedPipe[(K, R)] =
+      joiner: (K, V, Iterable[W]) => Iterator[R])(implicit
+      ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)]): TypedPipe[(K, R)] =
     this
 }
 
@@ -919,8 +917,8 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       .map(LiteralValue(_))
       .getOrElse(EmptyValue)
 
-  override def sumByLocalKeys[K, V](
-      implicit ev: T <:< (K, V),
+  override def sumByLocalKeys[K, V](implicit
+      ev: T <:< (K, V),
       sg: Semigroup[V]) = {
     val kvit = raiseTo[(K, V)] match {
       case IterablePipe(kviter) => kviter
@@ -937,8 +935,8 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
         })
   }
 
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe =
     // It is slightly more efficient to use this rather than toSourcePipe.toPipe(fieldNames)
@@ -1005,13 +1003,13 @@ class TypedPipeFactory[T] private (
 
   override def limit(count: Int) = andThen(_.limit(count))
 
-  override def sumByLocalKeys[K, V](
-      implicit ev: T <:< (K, V),
+  override def sumByLocalKeys[K, V](implicit
+      ev: T <:< (K, V),
       sg: Semigroup[V]) =
     andThen(_.sumByLocalKeys[K, V])
 
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]) = {
     // unwrap in a loop, without recursing
@@ -1032,8 +1030,8 @@ class TypedPipeFactory[T] private (
     }
 
   @annotation.tailrec
-  private def unwrap(pipe: TypedPipe[T], st: Array[StackTraceElement])(
-      implicit flowDef: FlowDef,
+  private def unwrap(pipe: TypedPipe[T], st: Array[StackTraceElement])(implicit
+      flowDef: FlowDef,
       mode: Mode): (TypedPipe[T], Array[StackTraceElement]) = pipe match {
     case TypedPipeFactory(n) =>
       val fullTrace = n match {
@@ -1116,8 +1114,8 @@ class TypedPipeInst[T] private[scalding] (
     * This approach is more efficient than untyped scalding because we
     * don't use TupleConverters/Setters after each map.
     */
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       m: Mode,
       setter: TupleSetter[U]): Pipe = {
     import Dsl.flowDefToRichFlowDef
@@ -1126,8 +1124,8 @@ class TypedPipeInst[T] private[scalding] (
     RichPipe(inpipe).flatMapTo[TupleEntry, U](fields -> fieldNames)(flatMapFn)
   }
 
-  override def sumByLocalKeys[K, V](
-      implicit ev: T <:< (K, V),
+  override def sumByLocalKeys[K, V](implicit
+      ev: T <:< (K, V),
       sg: Semigroup[V]): TypedPipe[(K, V)] = {
     import Dsl.{fields => ofields, _}
     val destFields: Fields = ('key, 'value)
@@ -1194,8 +1192,8 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
   override def sample(fraction: Double, seed: Long): TypedPipe[T] =
     MergedTypedPipe(left.sample(fraction, seed), right.sample(fraction, seed))
 
-  override def sumByLocalKeys[K, V](
-      implicit ev: T <:< (K, V),
+  override def sumByLocalKeys[K, V](implicit
+      ev: T <:< (K, V),
       sg: Semigroup[V]): TypedPipe[(K, V)] =
     MergedTypedPipe(left.sumByLocalKeys, right.sumByLocalKeys)
 
@@ -1208,8 +1206,8 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
   @annotation.tailrec
   private def flattenMerge(
       toFlatten: List[TypedPipe[T]],
-      acc: List[TypedPipe[T]])(
-      implicit fd: FlowDef,
+      acc: List[TypedPipe[T]])(implicit
+      fd: FlowDef,
       m: Mode): List[TypedPipe[T]] =
     toFlatten match {
       case MergedTypedPipe(l, r) :: rest => flattenMerge(l :: r :: rest, acc)
@@ -1219,8 +1217,8 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
       case Nil              => acc
     }
 
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
     /*
@@ -1259,8 +1257,8 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
 
 case class WithOnComplete[T](typedPipe: TypedPipe[T], fn: () => Unit)
     extends TypedPipe[T] {
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]) = {
     val pipe = typedPipe.toPipe[U](fieldNames)(flowDef, mode, setter)
@@ -1276,8 +1274,8 @@ case class WithDescriptionTypedPipe[T](
     typedPipe: TypedPipe[T],
     description: String)
     extends TypedPipe[T] {
-  override def asPipe[U >: T](fieldNames: Fields)(
-      implicit flowDef: FlowDef,
+  override def asPipe[U >: T](fieldNames: Fields)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]) = {
     val pipe = typedPipe.toPipe[U](fieldNames)(flowDef, mode, setter)

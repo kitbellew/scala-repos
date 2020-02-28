@@ -456,8 +456,8 @@ trait WebSocketSpec
       import java.util.{List => JList}
       import scala.collection.JavaConverters._
 
-      implicit def toHandler[J <: AnyRef](javaHandler: J)(
-          implicit factory: HandlerInvokerFactory[J]): Handler = {
+      implicit def toHandler[J <: AnyRef](javaHandler: J)(implicit
+          factory: HandlerInvokerFactory[J]): Handler = {
         val invoker = factory.createInvoker(
           javaHandler,
           new HandlerDef(
@@ -506,8 +506,8 @@ trait WebSocketSpec
       }
       import JWebSocket.{In, Out}
 
-      implicit def toHandler[J <: AnyRef](javaHandler: J)(
-          implicit factory: HandlerInvokerFactory[J]): Handler = {
+      implicit def toHandler[J <: AnyRef](javaHandler: J)(implicit
+          factory: HandlerInvokerFactory[J]): Handler = {
         val invoker = factory.createInvoker(
           javaHandler,
           new HandlerDef(

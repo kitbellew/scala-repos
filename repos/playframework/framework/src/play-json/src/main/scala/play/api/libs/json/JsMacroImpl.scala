@@ -54,8 +54,8 @@ object JsMacroImpl {
       methodName: String,
       mapLikeMethod: String,
       reads: Boolean,
-      writes: Boolean)(
-      implicit atag: c.WeakTypeTag[A],
+      writes: Boolean)(implicit
+      atag: c.WeakTypeTag[A],
       matag: c.WeakTypeTag[M[A]],
       natag: c.WeakTypeTag[N[A]]): c.Expr[M[A]] = {
 

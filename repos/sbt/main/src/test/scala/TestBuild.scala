@@ -255,13 +255,13 @@ object TestBuild {
     for (sch <- idGen; ssp <- idGen; frag <- optIDGen)
       yield new URI(sch, ssp, frag.orNull)
 
-  implicit def envGen(
-      implicit bGen: Gen[Build],
+  implicit def envGen(implicit
+      bGen: Gen[Build],
       tasks: Gen[Seq[Taskk]]): Gen[Env] =
     for (i <- MaxBuildsGen; bs <- listOfN(i, bGen); ts <- tasks)
       yield new Env(bs, ts)
-  implicit def buildGen(
-      implicit uGen: Gen[URI],
+  implicit def buildGen(implicit
+      uGen: Gen[URI],
       pGen: URI => Gen[Seq[Proj]]): Gen[Build] =
     for (u <- uGen; ps <- pGen(u)) yield new Build(u, ps)
 
@@ -269,8 +269,8 @@ object TestBuild {
     ig => listOfN(ig, g)
   }
 
-  implicit def genProjects(build: URI)(
-      implicit genID: Gen[String],
+  implicit def genProjects(build: URI)(implicit
+      genID: Gen[String],
       maxDeps: Gen[Int],
       count: Gen[Int],
       confs: Gen[Seq[Config]]): Gen[Seq[Proj]] =
@@ -279,14 +279,14 @@ object TestBuild {
         new Proj(id, deps.map { dep => ProjectRef(build, dep.id) }, cs)
       }
     }
-  def genConfigs(
-      implicit genName: Gen[String],
+  def genConfigs(implicit
+      genName: Gen[String],
       maxDeps: Gen[Int],
       count: Gen[Int]): Gen[Seq[Config]] =
     genAcyclicDirect[Config, String](maxDeps, genName, count)((key, deps) =>
       new Config(key, deps))
-  def genTasks(
-      implicit genName: Gen[String],
+  def genTasks(implicit
+      genName: Gen[String],
       maxDeps: Gen[Int],
       count: Gen[Int]): Gen[Seq[Taskk]] =
     genAcyclicDirect[Taskk, String](maxDeps, genName, count)((key, deps) =>

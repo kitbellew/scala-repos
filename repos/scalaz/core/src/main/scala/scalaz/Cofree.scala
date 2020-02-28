@@ -116,8 +116,8 @@ object Cofree extends CofreeInstances {
       implicit F: Functor[F]): Cofree[F, A] =
     Cofree.delay(a, F.map(f(a))(unfoldC(_)(f)))
 
-  def unfold[F[_], A, B](b: B)(f: B => (A, F[B]))(
-      implicit F: Functor[F],
+  def unfold[F[_], A, B](b: B)(f: B => (A, F[B]))(implicit
+      F: Functor[F],
       T: Functor[λ[a => Free[Function0, a]]]): Cofree[F, A] = {
     val (a, fb) = f(b)
     val nt = T.map(Trampoline.done(fb))(F.lift(unfold(_)(f)))

@@ -1,8 +1,8 @@
 import scala.reflect.macros.blackbox.Context
 
 object Impls {
-  def foo[T, U: c.WeakTypeTag, V](c: Context)(
-      implicit T: c.WeakTypeTag[T],
+  def foo[T, U: c.WeakTypeTag, V](c: Context)(implicit
+      T: c.WeakTypeTag[T],
       V: c.WeakTypeTag[V]): c.Expr[Unit] = {
     import c.universe._
     Block(

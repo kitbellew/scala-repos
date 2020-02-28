@@ -45,8 +45,8 @@ object TestStore {
   }
 
   def createBatchedStore[K, V](
-      initialData: Map[(K, BatchID), V] = Map.empty[(K, BatchID), V])(
-      implicit batcher: Batcher,
+      initialData: Map[(K, BatchID), V] = Map.empty[(K, BatchID), V])(implicit
+      batcher: Batcher,
       valueSG: Semigroup[V])
       : (String, MergeableStoreFactory[(K, BatchID), V]) = {
 

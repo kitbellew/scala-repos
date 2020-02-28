@@ -34,9 +34,8 @@ package object http {
     * implicit for it.
     */
   implicit def asyncResolvableTransform[ResolvableType, ResolvedType](
-      implicit asyncResolveProvider: CanResolveAsync[
-        ResolvableType,
-        ResolvedType],
+      implicit
+      asyncResolveProvider: CanResolveAsync[ResolvableType, ResolvedType],
       innerTransform: CanBind[ResolvedType]
   ) = {
     new CanBind[ResolvableType] {

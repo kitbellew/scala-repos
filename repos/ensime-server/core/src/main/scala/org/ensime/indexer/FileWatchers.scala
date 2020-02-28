@@ -37,8 +37,7 @@ class ClassfileWatcher(
     config: EnsimeConfig,
     listeners: Seq[FileChangeListener]
 )(
-    implicit
-    vfs: EnsimeVFS
+    implicit vfs: EnsimeVFS
 ) extends Actor
     with SLF4JLogging {
 
@@ -66,8 +65,7 @@ class SourceWatcher(
     config: EnsimeConfig,
     listeners: Seq[FileChangeListener]
 )(
-    implicit
-    vfs: EnsimeVFS
+    implicit vfs: EnsimeVFS
 ) extends Watcher
     with SLF4JLogging {
   private val impls =
@@ -92,8 +90,7 @@ private class ApachePollingFileWatcher(
     recursive: Boolean,
     listeners: Seq[FileChangeListener]
 )(
-    implicit
-    vfs: EnsimeVFS
+    implicit vfs: EnsimeVFS
 ) extends Watcher
     with SLF4JLogging {
   private val base = vfs.vfile(watched).getName.getURI

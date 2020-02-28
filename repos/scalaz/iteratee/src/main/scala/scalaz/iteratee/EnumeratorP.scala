@@ -69,8 +69,8 @@ abstract class EnumeratorP[E, F[_]] { self =>
       }
     }
 
-  def join(other: EnumeratorP[E, F])(
-      implicit order: Order[E],
+  def join(other: EnumeratorP[E, F])(implicit
+      order: Order[E],
       m: Monad[F]): EnumeratorP[(E, E), F] =
     EnumeratorP.joinE[E, E, F](m, order.order).apply(self, other)
 

@@ -105,10 +105,8 @@ class VersionedKeyValSource[K, V](
       path: String,
       sourceVersion: Option[Long],
       sinkVersion: Option[Long],
-      maxFailures: Int)(
-      implicit @transient codec: Injection[
-        (K, V),
-        (Array[Byte], Array[Byte])]) =
+      maxFailures: Int)(implicit
+      @transient codec: Injection[(K, V), (Array[Byte], Array[Byte])]) =
     this(
       path,
       sourceVersion,
@@ -220,8 +218,8 @@ class VersionedKeyValSource[K, V](
     }
   }
 
-  override def toIterator(
-      implicit config: Config,
+  override def toIterator(implicit
+      config: Config,
       mode: Mode): Iterator[(K, V)] = {
     val tap = createTap(Read)(mode)
     mode
@@ -283,7 +281,8 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
   // into the `sinkVersion` of data (or a new version) specified by
   // `src`.
   def writeIncremental(src: VersionedKeyValSource[K, V], reducers: Int = 1)(
-      implicit flowDef: FlowDef,
+      implicit
+      flowDef: FlowDef,
       mode: Mode): TypedPipe[(K, V)] = {
     val outPipe =
       if (!src.resourceExists(mode))
@@ -316,8 +315,8 @@ class RichPipeEx(pipe: Pipe) extends java.io.Serializable {
   def writeIncremental[K, V](
       src: VersionedKeyValSource[K, V],
       fields: Fields,
-      reducers: Int = 1)(
-      implicit monoid: Monoid[V],
+      reducers: Int = 1)(implicit
+      monoid: Monoid[V],
       flowDef: FlowDef,
       mode: Mode) = {
     def appendToken(pipe: Pipe, token: Int) =

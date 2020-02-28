@@ -21,8 +21,7 @@ object DebugManager {
   def apply(
       broadcaster: ActorRef
   )(
-      implicit
-      config: EnsimeConfig
+      implicit config: EnsimeConfig
   ): Props = Props(new DebugManager(broadcaster, config))
 }
 

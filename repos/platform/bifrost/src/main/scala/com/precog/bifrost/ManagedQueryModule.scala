@@ -199,8 +199,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     * This also turns the result stream into a simple StreamT[Future, A], as
     * this method is essentially the sink for managed queries.
     */
-  def completeJob[N[+_], A](result: StreamT[JobQueryTF, A])(
-      implicit M: JobQueryTFMonad,
+  def completeJob[N[+_], A](result: StreamT[JobQueryTF, A])(implicit
+      M: JobQueryTFMonad,
       t: JobQueryTF ~> N): StreamT[N, A] = {
     val finish: StreamT[JobQueryTF, A] =
       StreamT[JobQueryTF, A](M.point(StreamT.Skip {

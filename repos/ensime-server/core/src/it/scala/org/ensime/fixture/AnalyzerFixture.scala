@@ -15,8 +15,8 @@ trait AnalyzerFixture {
 }
 
 object AnalyzerFixture {
-  private[fixture] def create(search: SearchService)(
-      implicit system: ActorSystem,
+  private[fixture] def create(search: SearchService)(implicit
+      system: ActorSystem,
       config: EnsimeConfig,
       vfs: EnsimeVFS): TestActorRef[Analyzer] = {
     val indexer = TestProbe()

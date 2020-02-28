@@ -162,7 +162,8 @@ class GroupBuilder(val groupFields: Fields)
     * grouping to avoid possible errors using a mutable init object).
     */
   def foldLeft[X, T](fieldDef: (Fields, Fields))(init: X)(fn: (X, T) => X)(
-      implicit setter: TupleSetter[X],
+      implicit
+      setter: TupleSetter[X],
       conv: TupleConverter[T]): GroupBuilder = {
     val (inFields, outFields) = fieldDef
     conv.assertArityMatches(inFields)
@@ -187,8 +188,8 @@ class GroupBuilder(val groupFields: Fields)
     * so if your operation is faster for the accumulator to be on one side, be aware.
     */
   def mapReduceMap[T, X, U](fieldDef: (Fields, Fields))(mapfn: T => X)(
-      redfn: (X, X) => X)(mapfn2: X => U)(
-      implicit startConv: TupleConverter[T],
+      redfn: (X, X) => X)(mapfn2: X => U)(implicit
+      startConv: TupleConverter[T],
       middleSetter: TupleSetter[X],
       middleConv: TupleConverter[X],
       endSetter: TupleSetter[U]): GroupBuilder = {
@@ -251,8 +252,8 @@ class GroupBuilder(val groupFields: Fields)
     * state captured)
     */
   def mapStream[T, X](fieldDef: (Fields, Fields))(
-      mapfn: (Iterator[T]) => TraversableOnce[X])(
-      implicit conv: TupleConverter[T],
+      mapfn: (Iterator[T]) => TraversableOnce[X])(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[X]) = {
     val (inFields, outFields) = fieldDef
     //Check arity
@@ -290,8 +291,8 @@ class GroupBuilder(val groupFields: Fields)
     *  the initial value, for immutable serializable inits, this is not needed
     */
   override def scanLeft[X, T](fieldDef: (Fields, Fields))(init: X)(
-      fn: (X, T) => X)(
-      implicit setter: TupleSetter[X],
+      fn: (X, T) => X)(implicit
+      setter: TupleSetter[X],
       conv: TupleConverter[T]): GroupBuilder = {
     val (inFields, outFields) = fieldDef
     //Check arity
@@ -405,8 +406,8 @@ class GroupBuilder(val groupFields: Fields)
       * mapStream with state.
       */
     def mapStream[T, X](fieldDef: (Fields, Fields))(
-        mapfn: (C, Iterator[T]) => TraversableOnce[X])(
-        implicit conv: TupleConverter[T],
+        mapfn: (C, Iterator[T]) => TraversableOnce[X])(implicit
+        conv: TupleConverter[T],
         setter: TupleSetter[X]) = {
       val (inFields, outFields) = fieldDef
       //Check arity

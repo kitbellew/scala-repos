@@ -33,8 +33,8 @@ class InitialBatchedStore[K, V](
     override val proxy: BatchedStore[K, V])
     extends ProxyBatchedStore[K, V] {
   import OrderedFromOrderingExt._
-  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
+      flowDef: FlowDef,
       mode: Mode) =
     if (batchID >= firstNonZero) proxy.writeLast(batchID, lastVals)
     else

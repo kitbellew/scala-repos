@@ -66,8 +66,8 @@ object ExecutionUtil {
     */
   def runDateRangeWithParallelismSum[T](
       duration: Duration,
-      parallelism: Int = 1)(fn: DateRange => Execution[T])(
-      implicit dr: DateRange,
+      parallelism: Int = 1)(fn: DateRange => Execution[T])(implicit
+      dr: DateRange,
       semigroup: Semigroup[T]): Execution[T] = {
     require(dr.each(duration).nonEmpty, s"Date Range can not be empty")
 

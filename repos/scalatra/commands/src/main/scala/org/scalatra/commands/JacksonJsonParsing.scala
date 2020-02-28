@@ -11,8 +11,8 @@ trait JacksonJsonParsing
   self: JacksonJsonSupport with CommandSupport =>
   type CommandType = JsonCommand
 
-  override protected def bindCommand[T <: CommandType](newCommand: T)(
-      implicit request: HttpServletRequest,
+  override protected def bindCommand[T <: CommandType](newCommand: T)(implicit
+      request: HttpServletRequest,
       mf: Manifest[T]): T = {
     val requestFormat = request.contentType match {
       case Some(contentType) => mimeTypes.getOrElse(contentType, format)

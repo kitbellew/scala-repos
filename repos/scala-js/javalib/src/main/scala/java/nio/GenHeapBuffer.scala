@@ -21,9 +21,8 @@ private[nio] object GenHeapBuffer {
       capacity: Int,
       initialPosition: Int,
       initialLength: Int,
-      isReadOnly: Boolean)(
-      implicit newHeapBuffer: NewHeapBuffer[BufferType, ElementType])
-      : BufferType = {
+      isReadOnly: Boolean)(implicit
+      newHeapBuffer: NewHeapBuffer[BufferType, ElementType]): BufferType = {
     if (arrayOffset < 0 || capacity < 0 || arrayOffset + capacity > array.length)
       throw new IndexOutOfBoundsException
     val initialLimit = initialPosition + initialLength

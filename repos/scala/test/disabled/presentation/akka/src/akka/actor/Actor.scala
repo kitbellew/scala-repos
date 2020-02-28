@@ -255,9 +255,8 @@ object Actor extends ListenerManagement {
     *  }
     *  </pre>
     */
-  def spawn(body: => Unit)(
-      implicit dispatcher: MessageDispatcher =
-        Dispatchers.defaultGlobalDispatcher): Unit = {
+  def spawn(body: => Unit)(implicit
+  dispatcher: MessageDispatcher = Dispatchers.defaultGlobalDispatcher): Unit = {
     case object Spawn
     actorOf(new Actor() {
       self.dispatcher = dispatcher

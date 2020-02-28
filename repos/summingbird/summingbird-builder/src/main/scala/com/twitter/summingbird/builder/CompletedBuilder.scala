@@ -57,8 +57,8 @@ case class CompletedBuilder[P <: Platform[P], K, V](
     @transient keyCodec: Injection[K, Array[Byte]],
     @transient valCodec: Injection[V, Array[Byte]],
     id: String,
-    @transient opts: Map[String, Options])(
-    implicit val keyMf: Manifest[K],
+    @transient opts: Map[String, Options])(implicit
+    val keyMf: Manifest[K],
     val valMf: Manifest[V])
     extends Serializable {
   import SourceBuilder.adjust

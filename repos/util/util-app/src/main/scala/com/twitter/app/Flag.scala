@@ -751,8 +751,8 @@ class Flags(
     * @param name The name of the flag.
     * @param help The help string of the flag.
     */
-  def apply[T](name: String, help: String)(
-      implicit _f: Flaggable[T],
+  def apply[T](name: String, help: String)(implicit
+      _f: Flaggable[T],
       m: Manifest[T]) = {
     val f = new Flag[T](name, help, m.toString, failFastUntilParsed)
     add(f)

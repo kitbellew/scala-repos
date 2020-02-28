@@ -50,13 +50,13 @@ trait ProductTypeClassCompanion[C[_]] extends Serializable {
 
   implicit def deriveHNil: C[HNil] = typeClass.emptyProduct
 
-  implicit def deriveHCons[H, T <: HList](
-      implicit ch: Lazy[C[H]],
+  implicit def deriveHCons[H, T <: HList](implicit
+      ch: Lazy[C[H]],
       ct: Lazy[C[T]]): C[H :: T] =
     typeClass.product(ch.value, ct.value)
 
-  implicit def deriveInstance[F, G](
-      implicit gen: Generic.Aux[F, G],
+  implicit def deriveInstance[F, G](implicit
+      gen: Generic.Aux[F, G],
       cg: Lazy[C[G]]): C[F] =
     typeClass.project(cg.value, gen.to _, gen.from _)
 }
@@ -111,8 +111,7 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
       def unlabel(rec: HNil): HNil = HNil
     }
 
-  implicit def deriveHCons[HK <: Symbol, HV, TKV <: HList](
-      implicit
+  implicit def deriveHCons[HK <: Symbol, HV, TKV <: HList](implicit
       ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
       ct: Lazy[Wrap[TKV] { type V <: HList }])
@@ -126,8 +125,7 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
         rec.head :: ct.value.unlabel(rec.tail)
     }
 
-  implicit def deriveInstance[T, LKV](
-      implicit
+  implicit def deriveInstance[T, LKV](implicit
       lgen: LabelledGeneric.Aux[T, LKV],
       lwclkv: Lazy[Wrap[LKV]]): C[T] = {
     import lwclkv.value._
@@ -160,8 +158,8 @@ trait TypeClassCompanion[C[_]] extends ProductTypeClassCompanion[C] {
 
   implicit def deriveCNil: C[CNil] = typeClass.emptyCoproduct
 
-  implicit def deriveCCons[H, T <: Coproduct](
-      implicit ch: Lazy[C[H]],
+  implicit def deriveCCons[H, T <: Coproduct](implicit
+      ch: Lazy[C[H]],
       ct: Lazy[C[T]]): C[H :+: T] =
     typeClass.coproduct(ch.value, ct.value)
 }
@@ -201,8 +199,7 @@ trait LabelledTypeClassCompanion[C[_]]
       def unlabel(rec: CNil): CNil = ???
     }
 
-  implicit def deriveCCons[HK <: Symbol, HV, TKV <: Coproduct](
-      implicit
+  implicit def deriveCCons[HK <: Symbol, HV, TKV <: Coproduct](implicit
       ch: Lazy[C[HV]],
       key: Witness.Aux[HK],
       ct: Lazy[Wrap[TKV] { type V <: Coproduct }])

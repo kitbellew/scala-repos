@@ -73,8 +73,8 @@ object KleeneDemo {
     def kplus: A = StarRig[A].kplus(a)
   }
 
-  implicit def matrixHasStarRig[A](
-      implicit dim: Dim,
+  implicit def matrixHasStarRig[A](implicit
+      dim: Dim,
       sr: StarRig[A],
       ct: ClassTag[A]) =
     new StarRig[Matrix[A]] {
@@ -170,8 +170,8 @@ object KleeneDemo {
     * The matrix also has naive implementations of addition and multiplication.
     * These are not optimized--do not use this class in the wild!
     */
-  case class ArrayMatrix[A](arr: Array[A])(
-      implicit val dim: Dim,
+  case class ArrayMatrix[A](arr: Array[A])(implicit
+      val dim: Dim,
       ct: ClassTag[A])
       extends Matrix[A] { lhs =>
     def apply(x: Int, y: Int): A = arr(y * dim.n + x)
@@ -208,8 +208,8 @@ object KleeneDemo {
   }
 
   // type class instance for Kleene[Matrix[A]]
-  implicit def matrixHasKleene[A](
-      implicit dim: Dim,
+  implicit def matrixHasKleene[A](implicit
+      dim: Dim,
       ka: Kleene[A],
       ct: ClassTag[A]) =
     new Kleene[Matrix[A]] {
@@ -382,8 +382,8 @@ object KleeneDemo {
   }
 
   // type class instance for Kleene[ShortestPath[A, B]]
-  implicit def shortestPathHasKleene[A, B](
-      implicit rig: Rig[Tropical[A]],
+  implicit def shortestPathHasKleene[A, B](implicit
+      rig: Rig[Tropical[A]],
       ord: Order[Tropical[A]],
       kb: Kleene[B]) =
     new Kleene[ShortestPath[A, B]] {

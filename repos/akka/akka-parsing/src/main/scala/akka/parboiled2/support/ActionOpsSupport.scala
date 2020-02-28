@@ -134,8 +134,8 @@ object Join {
         I2 <: HList,
         O2 <: HList,
         In <: HList,
-        Out <: HList](
-        implicit i: TailSwitch.Aux[I2, I2, O, O, I, HNil, In],
+        Out <: HList](implicit
+        i: TailSwitch.Aux[I2, I2, O, O, I, HNil, In],
         o: TailSwitch.Aux[O, O, I2, I2, O2, HNil, Out])
         : Aux[I, HNil, O, Rule[I2, O2], HNil, In, Out] = `n/a`
   }

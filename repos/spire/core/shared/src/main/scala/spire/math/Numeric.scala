@@ -252,8 +252,7 @@ private[math] class RealIsNumeric
 }
 
 @SerialVersionUID(0L)
-class ComplexIsNumeric[A](
-    implicit
+class ComplexIsNumeric[A](implicit
     val algebra: Fractional[A],
     val trig: Trig[A],
     val order: IsReal[A])

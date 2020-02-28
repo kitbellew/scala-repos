@@ -172,20 +172,20 @@ object FormFieldDirectives extends FormFieldDirectives {
         implicit sfu: SFU): Directive1[T] =
       extract(fieldOfForm(fieldName, fu)).flatMap(r ⇒
         handleFieldResult(fieldName, r))
-    implicit def forString(
-        implicit sfu: SFU,
+    implicit def forString(implicit
+        sfu: SFU,
         fu: FSFFU[String]): FieldDefAux[String, Directive1[String]] =
       extractField[String, String] { fieldName ⇒ filter(fieldName, fu) }
-    implicit def forSymbol(
-        implicit sfu: SFU,
+    implicit def forSymbol(implicit
+        sfu: SFU,
         fu: FSFFU[String]): FieldDefAux[Symbol, Directive1[String]] =
       extractField[Symbol, String] { symbol ⇒ filter(symbol.name, fu) }
-    implicit def forNR[T](
-        implicit sfu: SFU,
+    implicit def forNR[T](implicit
+        sfu: SFU,
         fu: FSFFU[T]): FieldDefAux[NameReceptacle[T], Directive1[T]] =
       extractField[NameReceptacle[T], T] { nr ⇒ filter(nr.name, fu) }
-    implicit def forNUR[T](implicit sfu: SFU)
-        : FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
+    implicit def forNUR[T](implicit
+        sfu: SFU): FieldDefAux[NameUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameUnmarshallerReceptacle[T], T] { nr ⇒
         filter(nr.name, StrictForm.Field.unmarshallerFromFSU(nr.um))
       }
@@ -194,8 +194,8 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameOptionReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](nr.name, fu)
       }
-    implicit def forNDR[T](
-        implicit sfu: SFU,
+    implicit def forNDR[T](implicit
+        sfu: SFU,
         fu: FSFFOU[T]): FieldDefAux[NameDefaultReceptacle[T], Directive1[T]] =
       extractField[NameDefaultReceptacle[T], T] { nr ⇒
         filter(nr.name, fu withDefaultValue nr.default)
@@ -229,8 +229,8 @@ object FormFieldDirectives extends FormFieldDirectives {
           case _ ⇒ reject
         }
       }
-    implicit def forRVR[T](
-        implicit sfu: SFU,
+    implicit def forRVR[T](implicit
+        sfu: SFU,
         fu: FSFFU[T]): FieldDefAux[RequiredValueReceptacle[T], Directive0] =
       fieldDef[RequiredValueReceptacle[T], Directive0] { rvr ⇒
         requiredFilter(rvr.name, fu, rvr.requiredValue)
@@ -272,16 +272,14 @@ object FormFieldDirectives extends FormFieldDirectives {
     import akka.http.scaladsl.server.util.BinaryPolyFunc
     import akka.http.scaladsl.server.util.TupleOps._
 
-    implicit def forTuple[T](
-        implicit fold: FoldLeft[
-          Directive0,
-          T,
-          ConvertFieldDefAndConcatenate.type]): FieldDefAux[T, fold.Out] =
+    implicit def forTuple[T](implicit
+        fold: FoldLeft[Directive0, T, ConvertFieldDefAndConcatenate.type])
+        : FieldDefAux[T, fold.Out] =
       fieldDef[T, fold.Out](fold(pass, _))
 
     object ConvertFieldDefAndConcatenate extends BinaryPolyFunc {
-      implicit def from[P, TA, TB](
-          implicit fdef: FieldDefAux[P, Directive[TB]],
+      implicit def from[P, TA, TB](implicit
+          fdef: FieldDefAux[P, Directive[TB]],
           ev: Join[TA, TB]): BinaryPolyFunc.Case[
         Directive[TA],
         P,

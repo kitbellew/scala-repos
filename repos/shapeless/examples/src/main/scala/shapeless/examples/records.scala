@@ -28,8 +28,7 @@ object RecordExamples extends App {
   import ops.record.{Keys, Values}
   import syntax.singleton._
 
-  def printBook[B <: HList, K <: HList, V <: HList](b: B)(
-      implicit
+  def printBook[B <: HList, K <: HList, V <: HList](b: B)(implicit
       keys: Keys.Aux[B, K],
       values: Values.Aux[B, V],
       ktl: ToList[K, Any],

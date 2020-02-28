@@ -28,56 +28,56 @@ object TypedText {
   /**
     * Prefix might be "/logs/awesome"
     */
-  def hourlyTsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyTsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       TAB,
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
-  def hourlyOsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyOsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       ONE,
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
-  def hourlyCsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyCsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       COMMA,
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
-  def dailyTsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyTsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       TAB,
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
-  def dailyOsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyOsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       ONE,
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
-  def dailyCsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyCsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathTypedText[T](
       COMMA,
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
-  def dailyPrefixSuffixOsv[T](prefix: String, suffix: String)(
-      implicit dr: DateRange,
+  def dailyPrefixSuffixOsv[T](prefix: String, suffix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     require(suffix.head == '/', "suffix should include a preceding /")
@@ -137,8 +137,8 @@ trait TypedTextDelimited[T]
         safe).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
-class TimePathTypedText[T](sep: TypedSep, path: String)(
-    implicit dr: DateRange,
+class TimePathTypedText[T](sep: TypedSep, path: String)(implicit
+    dr: DateRange,
     td: TypeDescriptor[T])
     extends TimePathedSource(path, dr, DateOps.UTC)
     with TypedTextDelimited[T] {
@@ -146,8 +146,8 @@ class TimePathTypedText[T](sep: TypedSep, path: String)(
   protected override def separator = sep
 }
 
-class MostRecentTypedText[T](sep: TypedSep, path: String)(
-    implicit dr: DateRange,
+class MostRecentTypedText[T](sep: TypedSep, path: String)(implicit
+    dr: DateRange,
     td: TypeDescriptor[T])
     extends MostRecentGoodSource(path, dr, DateOps.UTC)
     with TypedTextDelimited[T] {

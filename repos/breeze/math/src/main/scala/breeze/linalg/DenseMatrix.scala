@@ -295,8 +295,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def isActive(i: Int) = true
   def allVisitableIndicesActive = true
 
-  override def toDenseMatrix(
-      implicit cm: ClassTag[V],
+  override def toDenseMatrix(implicit
+      cm: ClassTag[V],
       zero: Zero[V]): DenseMatrix[V] = {
     val result = DenseMatrix.create[V](rows, cols, new Array[V](size))
     result := this
@@ -518,8 +518,8 @@ object DenseMatrix
   }
 
   /** Horizontally tiles some matrices. They must have the same number of rows */
-  def horzcat[M, V](matrices: M*)(
-      implicit ev: M <:< Matrix[V],
+  def horzcat[M, V](matrices: M*)(implicit
+      ev: M <:< Matrix[V],
       opset: OpSet.InPlaceImpl2[DenseMatrix[V], M],
       vman: ClassTag[V],
       zero: Zero[V]) = {
@@ -541,8 +541,8 @@ object DenseMatrix
   }
 
   /** Vertically tiles some matrices. They must have the same number of columns */
-  def vertcat[V](matrices: DenseMatrix[V]*)(
-      implicit opset: OpSet.InPlaceImpl2[DenseMatrix[V], DenseMatrix[V]],
+  def vertcat[V](matrices: DenseMatrix[V]*)(implicit
+      opset: OpSet.InPlaceImpl2[DenseMatrix[V], DenseMatrix[V]],
       vman: ClassTag[V],
       zero: Zero[V]) = {
     if (matrices.isEmpty) zeros[V](0, 0)
@@ -709,8 +709,8 @@ object DenseMatrix
     }
   }
 
-  implicit def negFromScale[V](
-      implicit scale: OpMulScalar.Impl2[DenseMatrix[V], V, DenseMatrix[V]],
+  implicit def negFromScale[V](implicit
+      scale: OpMulScalar.Impl2[DenseMatrix[V], V, DenseMatrix[V]],
       field: Ring[V]) = {
     new OpNeg.Impl[DenseMatrix[V], DenseMatrix[V]] {
       override def apply(a: DenseMatrix[V]) = {
@@ -766,8 +766,8 @@ object DenseMatrix
 
   implicit def canMapValues[
       @specialized(Int, Float, Double) V,
-      @specialized(Int, Float, Double) R](implicit r: ClassTag[R])
-      : CanMapValues[DenseMatrix[V], V, R, DenseMatrix[R]] = {
+      @specialized(Int, Float, Double) R](implicit
+      r: ClassTag[R]): CanMapValues[DenseMatrix[V], V, R, DenseMatrix[R]] = {
     new CanMapValues[DenseMatrix[V], V, R, DenseMatrix[R]] {
 
       override def apply(from: DenseMatrix[V], fn: (V => R)): DenseMatrix[R] = {
@@ -990,8 +990,8 @@ object DenseMatrix
     }
   }
 
-  def binaryOpFromUpdateOp[Op <: OpType, V, Other](
-      implicit copy: CanCopy[DenseMatrix[V]],
+  def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
+      copy: CanCopy[DenseMatrix[V]],
       op: UFunc.InPlaceImpl2[Op, DenseMatrix[V], Other],
       man: ClassTag[V])
       : UFunc.UImpl2[Op, DenseMatrix[V], Other, DenseMatrix[V]] = {

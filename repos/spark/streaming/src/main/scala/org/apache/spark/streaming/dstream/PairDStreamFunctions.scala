@@ -34,8 +34,8 @@ import org.apache.spark.util.{SerializableConfiguration, SerializableJobConf}
 /**
   * Extra functions available on DStream of (key, value) pairs through an implicit conversion.
   */
-class PairDStreamFunctions[K, V](self: DStream[(K, V)])(
-    implicit kt: ClassTag[K],
+class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
+    kt: ClassTag[K],
     vt: ClassTag[V],
     ord: Ordering[K])
     extends Serializable {

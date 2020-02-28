@@ -76,8 +76,8 @@ object JDBCQueryExecutor {
   def apply(
       config: Configuration,
       jobManager: JobManager[Future],
-      jobActorSystem: ActorSystem)(
-      implicit ec: ExecutionContext,
+      jobActorSystem: ActorSystem)(implicit
+      ec: ExecutionContext,
       M: Monad[Future]): ManagedPlatform = {
     new JDBCQueryExecutor(
       new JDBCQueryExecutorConfig(config),
@@ -89,8 +89,8 @@ object JDBCQueryExecutor {
 class JDBCQueryExecutor(
     val yggConfig: JDBCQueryExecutorConfig,
     val jobManager: JobManager[Future],
-    val jobActorSystem: ActorSystem)(
-    implicit val executionContext: ExecutionContext,
+    val jobActorSystem: ActorSystem)(implicit
+    val executionContext: ExecutionContext,
     val M: Monad[Future])
     extends StandaloneQueryExecutor
     with JDBCColumnarTableModule

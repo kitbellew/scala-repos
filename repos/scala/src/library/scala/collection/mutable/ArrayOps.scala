@@ -79,8 +79,8 @@ trait ArrayOps[T]
     *  @param asTrav    A function that converts elements of this array to rows - arrays of type `U`.
     *  @return          An array obtained by concatenating rows of this array.
     */
-  def flatten[U](
-      implicit asTrav: T => scala.collection.Traversable[U],
+  def flatten[U](implicit
+      asTrav: T => scala.collection.Traversable[U],
       m: ClassTag[U]): Array[U] = {
     val b = Array.newBuilder[U]
     b.sizeHint(map {
@@ -133,8 +133,8 @@ trait ArrayOps[T]
     */
   // implementation NOTE: ct1 and ct2 can't be written as context bounds because desugared
   // implicits are put in front of asPair parameter that is supposed to guide type inference
-  def unzip[T1, T2](
-      implicit asPair: T => (T1, T2),
+  def unzip[T1, T2](implicit
+      asPair: T => (T1, T2),
       ct1: ClassTag[T1],
       ct2: ClassTag[T2]): (Array[T1], Array[T2]) = {
     val a1 = new Array[T1](length)
@@ -167,8 +167,8 @@ trait ArrayOps[T]
     */
   // implementation NOTE: ct1, ct2, ct3 can't be written as context bounds because desugared
   // implicits are put in front of asPair parameter that is supposed to guide type inference
-  def unzip3[T1, T2, T3](
-      implicit asTriple: T => (T1, T2, T3),
+  def unzip3[T1, T2, T3](implicit
+      asTriple: T => (T1, T2, T3),
       ct1: ClassTag[T1],
       ct2: ClassTag[T2],
       ct3: ClassTag[T3]): (Array[T1], Array[T2], Array[T3]) = {

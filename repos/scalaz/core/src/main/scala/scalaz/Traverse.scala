@@ -187,8 +187,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     def sequentialFusion[N[_], M[_], A, B, C](
         fa: F[A],
         amb: A => M[B],
-        bnc: B => N[C])(
-        implicit N: Applicative[N],
+        bnc: B => N[C])(implicit
+        N: Applicative[N],
         M: Applicative[M],
         MN: Equal[M[N[F[C]]]]): Boolean = {
       type MN[A] = M[N[A]]
@@ -209,8 +209,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
       *            `(a: A) => nat(Applicative[M].point[A](a)) === Applicative[N].point[A](a)`
       *            `(f: M[A => B], ma: M[A]) => nat(Applicative[M].ap(ma)(f)) === Applicative[N].ap(nat(ma))(nat(f))`
       */
-    def naturality[N[_], M[_], A](nat: (M ~> N))(fma: F[M[A]])(
-        implicit N: Applicative[N],
+    def naturality[N[_], M[_], A](nat: (M ~> N))(fma: F[M[A]])(implicit
+        N: Applicative[N],
         M: Applicative[M],
         NFA: Equal[N[F[A]]]): Boolean = {
       val n1: N[F[A]] = nat[F[A]](sequence[M, A](fma))
@@ -222,8 +222,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
     def parallelFusion[N[_], M[_], A, B](
         fa: F[A],
         amb: A => M[B],
-        anb: A => N[B])(
-        implicit N: Applicative[N],
+        anb: A => N[B])(implicit
+        N: Applicative[N],
         M: Applicative[M],
         MN: Equal[(M[F[B]], N[F[B]])]): Boolean = {
       type MN[A] = (M[A], N[A])

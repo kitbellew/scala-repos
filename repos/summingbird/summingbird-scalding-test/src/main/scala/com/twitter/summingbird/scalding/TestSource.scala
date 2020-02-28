@@ -34,7 +34,8 @@ class LocalIterableSource[+T](src: Iterable[T], valid: Boolean)
 object TestSource {
   // limit the source date range to the given range
   def apply[T](iter: Iterable[T], dateRangeOpt: Option[DateRange] = None)(
-      implicit mf: Manifest[T],
+      implicit
+      mf: Manifest[T],
       te: TimeExtractor[T],
       tc: TupleConverter[T],
       tset: TupleSetter[T])

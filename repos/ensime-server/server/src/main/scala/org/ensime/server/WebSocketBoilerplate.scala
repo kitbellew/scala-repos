@@ -72,8 +72,7 @@ object WebSocketBoilerplate {
   def actorRefAsFlow[Incoming, Outgoing](
       actor: ActorRef => ActorRef
   )(
-      implicit
-      mat: Materializer
+      implicit mat: Materializer
   ): Flow[Incoming, Outgoing, Unit] = {
     val (target, pub) = Source
       .actorRef[Outgoing](

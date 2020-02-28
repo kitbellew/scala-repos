@@ -32,15 +32,16 @@ import scala.util.control.NonFatal
 trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
 
   /** Load the range of data to do a join */
-  def readDateRange(requested: DateRange)(
-      implicit flowDef: FlowDef,
+  def readDateRange(requested: DateRange)(implicit
+      flowDef: FlowDef,
       mode: Mode): TypedPipe[(K, V)]
   def ordering: Ordering[K]
   def reducers: Option[Int]
 
   /** You can override this to use hashJoin for instance */
   def doJoin[W](in: TypedPipe[(Timestamp, (K, W))], serv: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+      implicit
+      flowDef: FlowDef,
       mode: Mode): TypedPipe[(Timestamp, (K, (W, Option[V])))] = {
     implicit val ord: Ordering[K] = ordering
     def withReducers[U, T](grouped: Grouped[U, T]) =
@@ -54,8 +55,8 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
 
   final override def serve[W](
       covering: DateRange,
-      input: TypedPipe[(Timestamp, (K, W))])(
-      implicit flowDef: FlowDef,
+      input: TypedPipe[(Timestamp, (K, W))])(implicit
+      flowDef: FlowDef,
       mode: Mode) =
     doJoin(input, readDateRange(covering))
 }

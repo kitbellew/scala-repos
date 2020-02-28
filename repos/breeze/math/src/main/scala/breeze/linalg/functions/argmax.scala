@@ -10,8 +10,8 @@ import breeze.linalg.support.CanTraverseKeyValuePairs.KeyValuePairsVisitor
   */
 object argmax extends UFunc {
   @expand
-  implicit def reduce[T, I, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseKeyValuePairs[T, I, S],
+  implicit def reduce[T, I, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseKeyValuePairs[T, I, S],
       @expand.sequence[S](
         Int.MinValue,
         Double.NegativeInfinity,
@@ -76,8 +76,8 @@ object argmax extends UFunc {
 
 object argmin extends UFunc {
   @expand
-  implicit def reduce[T, I, @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanTraverseKeyValuePairs[T, I, S],
+  implicit def reduce[T, I, @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanTraverseKeyValuePairs[T, I, S],
       @expand.sequence[S](
         Int.MaxValue,
         Double.PositiveInfinity,

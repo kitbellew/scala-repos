@@ -27,8 +27,8 @@ object CircuitBreakerSpec {
       .onOpen(openLatch.countDown())
   }
 
-  def shortCallTimeoutCb()(
-      implicit system: ActorSystem,
+  def shortCallTimeoutCb()(implicit
+      system: ActorSystem,
       ec: ExecutionContext): Breaker =
     new Breaker(
       new CircuitBreaker(
@@ -37,8 +37,8 @@ object CircuitBreakerSpec {
         50.millis.dilated,
         500.millis.dilated))
 
-  def shortResetTimeoutCb()(
-      implicit system: ActorSystem,
+  def shortResetTimeoutCb()(implicit
+      system: ActorSystem,
       ec: ExecutionContext): Breaker =
     new Breaker(
       new CircuitBreaker(
@@ -47,15 +47,15 @@ object CircuitBreakerSpec {
         1000.millis.dilated,
         50.millis.dilated))
 
-  def longCallTimeoutCb()(
-      implicit system: ActorSystem,
+  def longCallTimeoutCb()(implicit
+      system: ActorSystem,
       ec: ExecutionContext): Breaker =
     new Breaker(
       new CircuitBreaker(system.scheduler, 1, 5 seconds, 500.millis.dilated))
 
   val longResetTimeout = 5.seconds
-  def longResetTimeoutCb()(
-      implicit system: ActorSystem,
+  def longResetTimeoutCb()(implicit
+      system: ActorSystem,
       ec: ExecutionContext): Breaker =
     new Breaker(
       new CircuitBreaker(
@@ -64,8 +64,8 @@ object CircuitBreakerSpec {
         100.millis.dilated,
         longResetTimeout))
 
-  def multiFailureCb()(
-      implicit system: ActorSystem,
+  def multiFailureCb()(implicit
+      system: ActorSystem,
       ec: ExecutionContext): Breaker =
     new Breaker(
       new CircuitBreaker(

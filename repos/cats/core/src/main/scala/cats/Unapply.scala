@@ -120,9 +120,8 @@ private[cats] sealed abstract class Unapply2Instances
   // STEW: I'm not sure why these Nothing cases are needed and aren't
   // just caught by the generic cases, I'd love for someone to figure
   // that out and report back.
-  implicit def unapply2leftN[TC[_[_]], F[_, +_], AA](
-      implicit tc: TC[F[?, Nothing]])
-      : Aux2Left[TC, F[AA, Nothing], F, AA, Nothing] =
+  implicit def unapply2leftN[TC[_[_]], F[_, +_], AA](implicit
+      tc: TC[F[?, Nothing]]): Aux2Left[TC, F[AA, Nothing], F, AA, Nothing] =
     new Unapply[TC, F[AA, Nothing]] {
       type M[X] = F[X, Nothing]
       type A = AA
@@ -130,9 +129,8 @@ private[cats] sealed abstract class Unapply2Instances
       def subst: F[AA, Nothing] => M[A] = identity
     }
 
-  implicit def unapply2rightN[TC[_[_]], F[+_, _], B](
-      implicit tc: TC[F[Nothing, ?]])
-      : Aux2Right[TC, F[Nothing, B], F, Nothing, B] =
+  implicit def unapply2rightN[TC[_[_]], F[+_, _], B](implicit
+      tc: TC[F[Nothing, ?]]): Aux2Right[TC, F[Nothing, B], F, Nothing, B] =
     new Unapply[TC, F[Nothing, B]] {
       type M[X] = F[Nothing, X]
       type A = B

@@ -216,8 +216,8 @@ object Messages {
     implicit def applicationMessagesApi(
         implicit application: Application): MessagesApi =
       messagesApiCache(application)
-    implicit def applicationMessages(
-        implicit lang: Lang,
+    implicit def applicationMessages(implicit
+        lang: Lang,
         application: Application): Messages =
       new Messages(lang, messagesApiCache(application))
   }

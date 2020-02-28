@@ -45,8 +45,8 @@ object softmax extends UFunc {
     }
   }
 
-  implicit def reduceDouble[T](
-      implicit iter: CanTraverseValues[T, Double],
+  implicit def reduceDouble[T](implicit
+      iter: CanTraverseValues[T, Double],
       maxImpl: max.Impl[T, Double]): Impl[T, Double] = new Impl[T, Double] {
     def apply(v: T): Double = {
 
@@ -91,8 +91,8 @@ object softmax extends UFunc {
 
   }
 
-  implicit def reduceFloat[T](
-      implicit iter: CanTraverseValues[T, Float],
+  implicit def reduceFloat[T](implicit
+      iter: CanTraverseValues[T, Float],
       maxImpl: max.Impl[T, Float]): Impl[T, Float] = new Impl[T, Float] {
     def apply(v: T): Float = {
 

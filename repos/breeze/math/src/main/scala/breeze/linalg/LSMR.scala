@@ -29,8 +29,8 @@ object LSMR extends SerializableLogging {
       regularization: Double = 0.0,
       tolerance: Double = 1e-9,
       maxIter: Int = 1000,
-      quiet: Boolean = false)(
-      implicit multMV: OpMulMatrix.Impl2[M, V, V],
+      quiet: Boolean = false)(implicit
+      multMV: OpMulMatrix.Impl2[M, V, V],
       transA: CanTranspose[M, MT],
       multMTV: OpMulMatrix.Impl2[MT, V, V],
       ispace: MutableInnerProductVectorSpace[V, Double]): V = {

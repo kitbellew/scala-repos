@@ -19,8 +19,8 @@ import slick.relational.{RelationalProfile, RelationalTypesComponent}
 
 trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
 
-  abstract class MappedJdbcType[T, U](
-      implicit val tmd: JdbcType[U],
+  abstract class MappedJdbcType[T, U](implicit
+      val tmd: JdbcType[U],
       val classTag: ClassTag[T])
       extends JdbcType[T] {
     def map(t: T): U

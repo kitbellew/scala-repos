@@ -33,14 +33,14 @@ class InjectTests extends CatsSuite {
       }
     }
 
-  implicit def test1Arbitrary[A](
-      implicit seqArb: Arbitrary[Int],
+  implicit def test1Arbitrary[A](implicit
+      seqArb: Arbitrary[Int],
       intAArb: Arbitrary[Int => A]): Arbitrary[Test1[A]] =
     Arbitrary(
       for { s <- seqArb.arbitrary; f <- intAArb.arbitrary } yield Test1(s, f))
 
-  implicit def test2Arbitrary[A](
-      implicit seqArb: Arbitrary[Int],
+  implicit def test2Arbitrary[A](implicit
+      seqArb: Arbitrary[Int],
       intAArb: Arbitrary[Int => A]): Arbitrary[Test2[A]] =
     Arbitrary(
       for { s <- seqArb.arbitrary; f <- intAArb.arbitrary } yield Test2(s, f))
@@ -63,8 +63,8 @@ class InjectTests extends CatsSuite {
 
   test("inj") {
     forAll { (x: Int, y: Int) =>
-      def res[F[_]](
-          implicit I0: Test1Algebra :<: F,
+      def res[F[_]](implicit
+          I0: Test1Algebra :<: F,
           I1: Test2Algebra :<: F): Free[F, Int] = {
         for {
           a <- Free.inject[Test1Algebra, F](Test1(x, identity))
@@ -76,8 +76,7 @@ class InjectTests extends CatsSuite {
   }
 
   test("prj") {
-    def distr[F[_], A](f: Free[F, A])(
-        implicit
+    def distr[F[_], A](f: Free[F, A])(implicit
         F: Functor[F],
         I0: Test1Algebra :<: F,
         I1: Test2Algebra :<: F): Option[Free[F, A]] =

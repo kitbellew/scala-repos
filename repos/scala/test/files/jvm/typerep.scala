@@ -192,39 +192,39 @@ object TypeRep {
   implicit def arrayRep[A](implicit elemrep: TypeRep[A]): TypeRep[Array[A]] =
     ArrayRep(elemrep)
 
-  implicit def tuple2Rep[A1, A2](
-      implicit _1: TypeRep[A1],
+  implicit def tuple2Rep[A1, A2](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2]): TypeRep[(A1, A2)] =
     Tuple2Rep(_1, _2)
 
-  implicit def tuple3Rep[A1, A2, A3](
-      implicit _1: TypeRep[A1],
+  implicit def tuple3Rep[A1, A2, A3](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3]): TypeRep[(A1, A2, A3)] =
     Tuple3Rep(_1, _2, _3)
-  implicit def tuple4Rep[A1, A2, A3, A4](
-      implicit _1: TypeRep[A1],
+  implicit def tuple4Rep[A1, A2, A3, A4](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4]): TypeRep[Tuple4[A1, A2, A3, A4]] =
     Tuple4Rep(_1, _2, _3, _4)
-  implicit def tuple5Rep[A1, A2, A3, A4, A5](
-      implicit _1: TypeRep[A1],
+  implicit def tuple5Rep[A1, A2, A3, A4, A5](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4],
       _5: TypeRep[A5]): TypeRep[Tuple5[A1, A2, A3, A4, A5]] =
     Tuple5Rep(_1, _2, _3, _4, _5)
-  implicit def tuple6Rep[A1, A2, A3, A4, A5, A6](
-      implicit _1: TypeRep[A1],
+  implicit def tuple6Rep[A1, A2, A3, A4, A5, A6](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4],
       _5: TypeRep[A5],
       _6: TypeRep[A6]): TypeRep[Tuple6[A1, A2, A3, A4, A5, A6]] =
     Tuple6Rep(_1, _2, _3, _4, _5, _6)
-  implicit def tuple7Rep[A1, A2, A3, A4, A5, A6, A7](
-      implicit _1: TypeRep[A1],
+  implicit def tuple7Rep[A1, A2, A3, A4, A5, A6, A7](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4],
@@ -232,8 +232,8 @@ object TypeRep {
       _6: TypeRep[A6],
       _7: TypeRep[A7]): TypeRep[Tuple7[A1, A2, A3, A4, A5, A6, A7]] =
     Tuple7Rep(_1, _2, _3, _4, _5, _6, _7)
-  implicit def tuple8Rep[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit _1: TypeRep[A1],
+  implicit def tuple8Rep[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4],
@@ -242,8 +242,8 @@ object TypeRep {
       _7: TypeRep[A7],
       _8: TypeRep[A8]): TypeRep[Tuple8[A1, A2, A3, A4, A5, A6, A7, A8]] =
     Tuple8Rep(_1, _2, _3, _4, _5, _6, _7, _8)
-  implicit def tuple9Rep[A1, A2, A3, A4, A5, A6, A7, A8, A9](
-      implicit _1: TypeRep[A1],
+  implicit def tuple9Rep[A1, A2, A3, A4, A5, A6, A7, A8, A9](implicit
+      _1: TypeRep[A1],
       _2: TypeRep[A2],
       _3: TypeRep[A3],
       _4: TypeRep[A4],
@@ -254,38 +254,38 @@ object TypeRep {
       _9: TypeRep[A9]): TypeRep[Tuple9[A1, A2, A3, A4, A5, A6, A7, A8, A9]] =
     Tuple9Rep(_1, _2, _3, _4, _5, _6, _7, _8, _9)
 
-  implicit def func1Rep[A1, B](
-      implicit a1: TypeRep[A1],
+  implicit def func1Rep[A1, B](implicit
+      a1: TypeRep[A1],
       b: TypeRep[B]): TypeRep[Function1[A1, B]] =
     Function1Rep(a1, b)
-  implicit def func2Rep[A1, A2, B](
-      implicit a1: TypeRep[A1],
+  implicit def func2Rep[A1, A2, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       b: TypeRep[B]): TypeRep[Function2[A1, A2, B]] =
     Function2Rep(a1, a2, b)
-  implicit def func3Rep[A1, A2, A3, B](
-      implicit a1: TypeRep[A1],
+  implicit def func3Rep[A1, A2, A3, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       b: TypeRep[B]): TypeRep[Function3[A1, A2, A3, B]] =
     Function3Rep(a1, a2, a3, b)
-  implicit def func4Rep[A1, A2, A3, A4, B](
-      implicit a1: TypeRep[A1],
+  implicit def func4Rep[A1, A2, A3, A4, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],
       b: TypeRep[B]): TypeRep[Function4[A1, A2, A3, A4, B]] =
     Function4Rep(a1, a2, a3, a4, b)
-  implicit def func5Rep[A1, A2, A3, A4, A5, B](
-      implicit a1: TypeRep[A1],
+  implicit def func5Rep[A1, A2, A3, A4, A5, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],
       a5: TypeRep[A5],
       b: TypeRep[B]): TypeRep[Function5[A1, A2, A3, A4, A5, B]] =
     Function5Rep(a1, a2, a3, a4, a5, b)
-  implicit def func6Rep[A1, A2, A3, A4, A5, A6, B](
-      implicit a1: TypeRep[A1],
+  implicit def func6Rep[A1, A2, A3, A4, A5, A6, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],
@@ -293,8 +293,8 @@ object TypeRep {
       a6: TypeRep[A6],
       b: TypeRep[B]): TypeRep[Function6[A1, A2, A3, A4, A5, A6, B]] =
     Function6Rep(a1, a2, a3, a4, a5, a6, b)
-  implicit def func7Rep[A1, A2, A3, A4, A5, A6, A7, B](
-      implicit a1: TypeRep[A1],
+  implicit def func7Rep[A1, A2, A3, A4, A5, A6, A7, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],
@@ -303,8 +303,8 @@ object TypeRep {
       a7: TypeRep[A7],
       b: TypeRep[B]): TypeRep[Function7[A1, A2, A3, A4, A5, A6, A7, B]] =
     Function7Rep(a1, a2, a3, a4, a5, a6, a7, b)
-  implicit def func8Rep[A1, A2, A3, A4, A5, A6, A7, A8, B](
-      implicit a1: TypeRep[A1],
+  implicit def func8Rep[A1, A2, A3, A4, A5, A6, A7, A8, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],
@@ -314,8 +314,8 @@ object TypeRep {
       a8: TypeRep[A8],
       b: TypeRep[B]): TypeRep[Function8[A1, A2, A3, A4, A5, A6, A7, A8, B]] =
     Function8Rep(a1, a2, a3, a4, a5, a6, a7, a8, b)
-  implicit def func9Rep[A1, A2, A3, A4, A5, A6, A7, A8, A9, B](
-      implicit a1: TypeRep[A1],
+  implicit def func9Rep[A1, A2, A3, A4, A5, A6, A7, A8, A9, B](implicit
+      a1: TypeRep[A1],
       a2: TypeRep[A2],
       a3: TypeRep[A3],
       a4: TypeRep[A4],

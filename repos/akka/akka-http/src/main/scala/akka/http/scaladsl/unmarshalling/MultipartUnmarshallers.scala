@@ -26,14 +26,14 @@ import akka.stream.impl.fusing.SubSource
   */
 trait MultipartUnmarshallers {
 
-  implicit def defaultMultipartGeneralUnmarshaller(
-      implicit log: LoggingAdapter = NoLogging,
+  implicit def defaultMultipartGeneralUnmarshaller(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
       : FromEntityUnmarshaller[Multipart.General] =
     multipartGeneralUnmarshaller(`UTF-8`)
 
-  def multipartGeneralUnmarshaller(defaultCharset: HttpCharset)(
-      implicit log: LoggingAdapter = NoLogging,
+  def multipartGeneralUnmarshaller(defaultCharset: HttpCharset)(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
       : FromEntityUnmarshaller[Multipart.General] =
     multipartUnmarshaller[
@@ -48,8 +48,8 @@ trait MultipartUnmarshallers {
       createStrict = Multipart.General.Strict
     )
 
-  implicit def multipartFormDataUnmarshaller(
-      implicit log: LoggingAdapter = NoLogging,
+  implicit def multipartFormDataUnmarshaller(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
       : FromEntityUnmarshaller[Multipart.FormData] =
     multipartUnmarshaller[
@@ -69,14 +69,14 @@ trait MultipartUnmarshallers {
       createStrict = (_, parts) ⇒ Multipart.FormData.Strict(parts)
     )
 
-  implicit def defaultMultipartByteRangesUnmarshaller(
-      implicit log: LoggingAdapter = NoLogging,
+  implicit def defaultMultipartByteRangesUnmarshaller(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
       : FromEntityUnmarshaller[Multipart.ByteRanges] =
     multipartByteRangesUnmarshaller(`UTF-8`)
 
-  def multipartByteRangesUnmarshaller(defaultCharset: HttpCharset)(
-      implicit log: LoggingAdapter = NoLogging,
+  def multipartByteRangesUnmarshaller(defaultCharset: HttpCharset)(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null)
       : FromEntityUnmarshaller[Multipart.ByteRanges] =
     multipartUnmarshaller[
@@ -105,8 +105,8 @@ trait MultipartUnmarshallers {
       createBodyPart: (BodyPartEntity, List[HttpHeader]) ⇒ BP,
       createStreamed: (MediaType.Multipart, Source[BP, Any]) ⇒ T,
       createStrictBodyPart: (HttpEntity.Strict, List[HttpHeader]) ⇒ BPS,
-      createStrict: (MediaType.Multipart, immutable.Seq[BPS]) ⇒ T)(
-      implicit log: LoggingAdapter = NoLogging,
+      createStrict: (MediaType.Multipart, immutable.Seq[BPS]) ⇒ T)(implicit
+      log: LoggingAdapter = NoLogging,
       parserSettings: ParserSettings = null): FromEntityUnmarshaller[T] =
     Unmarshaller.withMaterializer { implicit ec ⇒ mat => entity ⇒
       if (entity.contentType.mediaType.isMultipart && mediaRange.matches(

@@ -59,7 +59,7 @@ package object client {
 
   implicit def FutureStreamAsResponseStream(implicit M: Monad[Future]) =
     implicitly[Hoist[StreamT]].hoist(FutureAsResponse)
-  implicit def ResponseStreamAsFutureStream(
-      implicit MF: Monad[Future],
+  implicit def ResponseStreamAsFutureStream(implicit
+      MF: Monad[Future],
       MR: Monad[Response]) = implicitly[Hoist[StreamT]].hoist(ResponseAsFuture)
 }

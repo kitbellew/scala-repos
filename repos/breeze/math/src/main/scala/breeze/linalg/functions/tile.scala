@@ -13,8 +13,8 @@ object tile extends UFunc {
 
   // implementations
 
-  implicit def tile_DV_Impl2[T](
-      implicit ct: ClassTag[T],
+  implicit def tile_DV_Impl2[T](implicit
+      ct: ClassTag[T],
       z: Zero[T],
       set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
       : Impl2[DenseVector[T], Int, DenseVector[T]] = {
@@ -32,8 +32,8 @@ object tile extends UFunc {
     }
   }
 
-  implicit def tile_DV_Impl3[T: ClassTag: Zero](
-      implicit impl2: Impl2[DenseVector[T], Int, DenseVector[T]],
+  implicit def tile_DV_Impl3[T: ClassTag: Zero](implicit
+      impl2: Impl2[DenseVector[T], Int, DenseVector[T]],
       set: OpSet.InPlaceImpl2[DenseVector[T], DenseVector[T]])
       : Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseVector[T], Int, Int, DenseMatrix[T]] {
@@ -73,8 +73,8 @@ object tile extends UFunc {
       }
     }
 
-  implicit def tile_DM_Impl3[T: ClassTag: Zero](
-      implicit impl2: Impl2[DenseMatrix[T], Int, DenseMatrix[T]],
+  implicit def tile_DM_Impl3[T: ClassTag: Zero](implicit
+      impl2: Impl2[DenseMatrix[T], Int, DenseMatrix[T]],
       set: OpSet.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]])
       : Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] =
     new Impl3[DenseMatrix[T], Int, Int, DenseMatrix[T]] {

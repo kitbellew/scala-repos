@@ -322,7 +322,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP request with a specified method.
     */
   def build(method: Method, content: Option[Buf])(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = {
@@ -336,7 +337,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP GET request.
     */
   def buildGet()(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = withoutContent(Method.Get)
@@ -345,7 +347,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP HEAD request.
     */
   def buildHead()(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = withoutContent(Method.Head)
@@ -354,7 +357,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP DELETE request.
     */
   def buildDelete()(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = withoutContent(Method.Delete)
@@ -363,7 +367,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP POST request.
     */
   def buildPost(content: Buf)(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = withContent(Method.Post, content)
@@ -372,7 +377,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct an HTTP PUT request.
     */
   def buildPut(content: Buf)(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.RequestEvidence[
         HasUrl,
         HasForm]
   ): Request = withContent(Method.Put, content)
@@ -381,7 +387,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     * Construct a form post request.
     */
   def buildFormPost(multipart: Boolean = false)(
-      implicit HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.PostRequestEvidence[
+      implicit
+      HTTP_REQUEST_BUILDER_IS_NOT_FULLY_SPECIFIED: RequestBuilder.PostRequestEvidence[
         HasUrl,
         HasForm]
   ): Request = {

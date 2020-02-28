@@ -33,8 +33,8 @@ class TypeclassExistenceTest extends FunSuite {
       "Expected implicit Ring[%s] instance, but it was not found." format m)
   }
 
-  def hasEuclideanRing[A](
-      implicit e: EuclideanRing[A] = null,
+  def hasEuclideanRing[A](implicit
+      e: EuclideanRing[A] = null,
       m: ClassTag[A]): Unit = {
     assert(
       e != null,
@@ -53,8 +53,8 @@ class TypeclassExistenceTest extends FunSuite {
       "Expected implicit Numeric[%s] instance, but it was not found." format m)
   }
 
-  def hasFractional[A](
-      implicit f: Fractional[A] = null,
+  def hasFractional[A](implicit
+      f: Fractional[A] = null,
       m: ClassTag[A]): Unit = {
     assert(
       f != null,
@@ -73,16 +73,16 @@ class TypeclassExistenceTest extends FunSuite {
       "Expected implicit Eq[%s] instance, but it was not found." format m)
   }
 
-  def hasConvertableFrom[A](
-      implicit ev: ConvertableFrom[A] = null,
+  def hasConvertableFrom[A](implicit
+      ev: ConvertableFrom[A] = null,
       m: ClassTag[A]): Unit = {
     assert(
       ev != null,
       "Expected implicit ConvertableFrom[%s] instance, but it was not found." format m)
   }
 
-  def hasConvertableTo[A](
-      implicit ev: ConvertableTo[A] = null,
+  def hasConvertableTo[A](implicit
+      ev: ConvertableTo[A] = null,
       m: ClassTag[A]): Unit = {
     assert(
       ev != null,

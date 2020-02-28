@@ -36,8 +36,8 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     }
   }
 
-  implicit def reduceSemiring[T, S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduceSemiring[T, S](implicit
+      iter: CanTraverseValues[T, S],
       semiring: Semiring[S]): Impl[T, S] = new Impl[T, S] {
     def apply(v: T): S = {
       class SumVisitor extends ValuesVisitor[S] {
@@ -73,8 +73,8 @@ trait VectorizedReduceUFunc extends UFunc {
     def combine(x: T, y: T): T
   }
 
-  implicit def vectorizeRows[T: ClassTag](
-      implicit helper: VectorizeHelper[T],
+  implicit def vectorizeRows[T: ClassTag](implicit
+      helper: VectorizeHelper[T],
       baseOp: UFunc.InPlaceImpl2[Op, DenseVector[T], DenseVector[T]]): Impl[
     BroadcastedRows[DenseMatrix[T], DenseVector[T]],
     DenseVector[T]] = {
@@ -130,8 +130,8 @@ trait VectorizedReduceUFunc extends UFunc {
 }
 
 sealed trait sumLowPrio { this: sum.type =>
-  implicit def sumSummableThings[CC, T](
-      implicit view: CC <:< TraversableOnce[T],
+  implicit def sumSummableThings[CC, T](implicit
+      view: CC <:< TraversableOnce[T],
       tSum: OpAdd.Impl2[T, T, T]): Impl[CC, T] = {
     new Impl[CC, T] {
       override def apply(v: CC): T = v.reduceLeft(tSum(_, _))

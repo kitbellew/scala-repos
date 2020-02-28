@@ -59,8 +59,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
   def maxOrderTermCoeff(implicit ring: Semiring[C]): C =
     if (isZero) ring.zero else coeffs(degree)
 
-  def reductum(
-      implicit e: Eq[C],
+  def reductum(implicit
+      e: Eq[C],
       ring: Semiring[C],
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeffs.length - 2
@@ -123,13 +123,13 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     new PolyDense(negArray)
   }
 
-  def +(rhs: Polynomial[C])(
-      implicit ring: Semiring[C],
+  def +(rhs: Polynomial[C])(implicit
+      ring: Semiring[C],
       eq: Eq[C]): Polynomial[C] =
     PolyDense.plusDense(lhs, rhs)
 
-  def *(rhs: Polynomial[C])(
-      implicit ring: Semiring[C],
+  def *(rhs: Polynomial[C])(implicit
+      ring: Semiring[C],
       eq: Eq[C]): Polynomial[C] = {
     if (rhs.isZero) return rhs
     if (lhs.isZero) return lhs
@@ -148,8 +148,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     Polynomial.dense(cs)
   }
 
-  def /%(rhs: Polynomial[C])(
-      implicit field: Field[C],
+  def /%(rhs: Polynomial[C])(implicit
+      field: Field[C],
       eq: Eq[C]): (Polynomial[C], Polynomial[C]) = {
     def zipSum(lcs: Array[C], rcs: Array[C])(implicit r: Ring[C]): Array[C] =
       (lcs + rcs).tail

@@ -17,8 +17,8 @@ object Binding {
   def apply[I, A](
       fieldName: String,
       cv: TypeConverter[I, A],
-      tcf: TypeConverterFactory[_])(
-      implicit mf: Manifest[I],
+      tcf: TypeConverterFactory[_])(implicit
+      mf: Manifest[I],
       mt: Manifest[A]): Binding = {
     new DefaultBinding(FieldDescriptor[A](fieldName), tcf)(mf, mt, cv)
   }
@@ -26,24 +26,24 @@ object Binding {
   def apply[I, A](
       prev: FieldDescriptor[A],
       cv: TypeConverter[I, A],
-      tcf: TypeConverterFactory[_])(
-      implicit mf: Manifest[I],
+      tcf: TypeConverterFactory[_])(implicit
+      mf: Manifest[I],
       mt: Manifest[A]): Binding = {
     new DefaultBinding(prev, tcf)(mf, mt, cv)
   }
 
-  def apply[A](initial: String)(
-      implicit ma: Manifest[A],
+  def apply[A](initial: String)(implicit
+      ma: Manifest[A],
       tcFactory: TypeConverterFactory[A]): Binding =
     apply(FieldDescriptor[A](initial))
-  def apply[A](initial: FieldDescriptor[A])(
-      implicit ma: Manifest[A],
+  def apply[A](initial: FieldDescriptor[A])(implicit
+      ma: Manifest[A],
       tcFactory: TypeConverterFactory[A]): Binding = {
     new PartialBinding(initial)
   }
 
-  private class PartialBinding[A](val field: FieldDescriptor[A])(
-      implicit val valueManifest: Manifest[A],
+  private class PartialBinding[A](val field: FieldDescriptor[A])(implicit
+      val valueManifest: Manifest[A],
       val typeConverterFactory: TypeConverterFactory[A])
       extends Binding {
     type T = A
@@ -65,8 +65,8 @@ object Binding {
 
   private class DefaultBinding[I, A](
       val field: FieldDescriptor[A],
-      val typeConverterFactory: TypeConverterFactory[_])(
-      implicit val sourceManifest: Manifest[I],
+      val typeConverterFactory: TypeConverterFactory[_])(implicit
+      val sourceManifest: Manifest[I],
       val valueManifest: Manifest[A],
       val typeConverter: TypeConverter[I, A])
       extends Binding {
@@ -199,12 +199,12 @@ trait BindingImplicits
     extends DefaultImplicitConversions
     with BindingValidatorImplicits {
 
-  implicit def stringToDateTime(implicit df: DateParser = JodaDateFormats.Web)
-      : TypeConverter[String, DateTime] =
+  implicit def stringToDateTime(implicit
+      df: DateParser = JodaDateFormats.Web): TypeConverter[String, DateTime] =
     safeOption(df.parse)
 
-  implicit def stringToDate(implicit df: DateParser = JodaDateFormats.Web)
-      : TypeConverter[String, Date] =
+  implicit def stringToDate(implicit
+      df: DateParser = JodaDateFormats.Web): TypeConverter[String, Date] =
     safeOption(df.parse(_).map(_.toDate))
 
   implicit def stringToSeqDateTime(
@@ -212,8 +212,8 @@ trait BindingImplicits
       : TypeConverter[String, Seq[DateTime]] =
     stringToSeq(stringToDateTime)
 
-  implicit def stringToSeqDate(implicit df: DateParser = JodaDateFormats.Web)
-      : TypeConverter[String, Seq[Date]] =
+  implicit def stringToSeqDate(implicit
+      df: DateParser = JodaDateFormats.Web): TypeConverter[String, Seq[Date]] =
     stringToSeq(stringToDate)
 
 }

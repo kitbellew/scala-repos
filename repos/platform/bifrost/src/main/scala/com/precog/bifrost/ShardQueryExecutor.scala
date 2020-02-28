@@ -99,8 +99,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
     with XLightWebHttpClientModule[M] {
   case class StackException(error: StackError) extends Exception(error.toString)
 
-  abstract class ShardQueryExecutor[N[+_]](N0: Monad[N])(
-      implicit mn: M ~> N,
+  abstract class ShardQueryExecutor[N[+_]](N0: Monad[N])(implicit
+      mn: M ~> N,
       nm: N ~> M)
       extends Evaluator[N](N0)
       with QueryExecutor[N, (Set[Fault], StreamT[N, Slice])] {

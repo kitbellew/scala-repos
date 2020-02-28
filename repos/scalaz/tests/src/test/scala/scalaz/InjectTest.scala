@@ -21,8 +21,8 @@ object InjectTest extends SpecLite {
   }
 
   sealed trait Test1AlgebraFunctions {
-    def test1[F[_]](keys: Seq[String])(
-        implicit F: Functor[F],
+    def test1[F[_]](keys: Seq[String])(implicit
+        F: Functor[F],
         I: Test1Algebra :<: F): Free[F, Int] =
       inject[F, Test1Algebra, Int](Test1(keys, Free.pure(_)))
   }
@@ -43,8 +43,8 @@ object InjectTest extends SpecLite {
   }
 
   sealed trait Test2AlgebraFunctions {
-    def test2[F[_]](keys: Seq[String])(
-        implicit F: Functor[F],
+    def test2[F[_]](keys: Seq[String])(implicit
+        F: Functor[F],
         I: Test2Algebra :<: F): Free[F, Int] =
       inject[F, Test2Algebra, Int](Test2(keys, Free.pure(_)))
   }
@@ -65,8 +65,8 @@ object InjectTest extends SpecLite {
   }
 
   sealed trait Test3AlgebraFunctions {
-    def test3[F[_]](keys: Seq[String])(
-        implicit F: Functor[F],
+    def test3[F[_]](keys: Seq[String])(implicit
+        F: Functor[F],
         I: Test3Algebra :<: F): Free[F, Int] =
       inject[F, Test3Algebra, Int](Test3(keys, Free.pure(_)))
   }
@@ -99,8 +99,7 @@ object InjectTest extends SpecLite {
   }
 
   "prj" in {
-    def distr[F[_], A](t: Free[F, A])(
-        implicit
+    def distr[F[_], A](t: Free[F, A])(implicit
         F: Functor[F],
         I0: Test1Algebra :<: F,
         I1: Test2Algebra :<: F,

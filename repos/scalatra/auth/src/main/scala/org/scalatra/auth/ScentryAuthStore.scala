@@ -8,14 +8,14 @@ import org.scalatra.servlet.ServletApiImplicits._
 object ScentryAuthStore {
 
   trait ScentryAuthStore {
-    def get(
-        implicit request: HttpServletRequest,
+    def get(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse): String
-    def set(value: String)(
-        implicit request: HttpServletRequest,
+    def set(value: String)(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse)
-    def invalidate()(
-        implicit request: HttpServletRequest,
+    def invalidate()(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse)
   }
 
@@ -23,19 +23,19 @@ object ScentryAuthStore {
       implicit cookieOptions: CookieOptions = CookieOptions(path = "/"))
       extends ScentryAuthStore {
 
-    def get(
-        implicit request: HttpServletRequest,
+    def get(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) =
       app.cookies.get(Scentry.scentryAuthKey) getOrElse ""
 
-    def set(value: String)(
-        implicit request: HttpServletRequest,
+    def set(value: String)(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) {
       app.cookies.update(Scentry.scentryAuthKey, value)(cookieOptions)
     }
 
-    def invalidate()(
-        implicit request: HttpServletRequest,
+    def invalidate()(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) {
       app.cookies.delete(Scentry.scentryAuthKey)(cookieOptions)
     }
@@ -44,18 +44,18 @@ object ScentryAuthStore {
 
   class SessionAuthStore(app: ScalatraContext) extends ScentryAuthStore {
 
-    def get(
-        implicit request: HttpServletRequest,
+    def get(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse): String = {
       app.session.get(Scentry.scentryAuthKey).map(_.asInstanceOf[String]).orNull
     }
-    def set(value: String)(
-        implicit request: HttpServletRequest,
+    def set(value: String)(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) {
       app.session(Scentry.scentryAuthKey) = value
     }
-    def invalidate()(
-        implicit request: HttpServletRequest,
+    def invalidate()(implicit
+        request: HttpServletRequest,
         response: HttpServletResponse) {
       app.session.invalidate()
     }

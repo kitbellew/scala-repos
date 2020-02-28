@@ -241,8 +241,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     * failure(v1) +++ failure(v2) → failure(v1 + v2)
     * }}}
     */
-  def +++[EE >: E, AA >: A](x: => Validation[EE, AA])(
-      implicit M1: Semigroup[AA],
+  def +++[EE >: E, AA >: A](x: => Validation[EE, AA])(implicit
+      M1: Semigroup[AA],
       M2: Semigroup[EE]): Validation[EE, AA] =
     this match {
       case Failure(a1) =>
@@ -301,8 +301,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     }
 
   /** If `this` and `that` are both success, or both a failure, combine them with the provided `Semigroup` for each. Otherwise, return the success. Alias for `+|+` */
-  def append[EE >: E, AA >: A](that: Validation[EE, AA])(
-      implicit es: Semigroup[EE],
+  def append[EE >: E, AA >: A](that: Validation[EE, AA])(implicit
+      es: Semigroup[EE],
       as: Semigroup[AA]): Validation[EE, AA] = (this, that) match {
     case (Success(a1), Success(a2)) => Success(as.append(a1, a2))
     case (Success(_), Failure(_))   => this
@@ -311,8 +311,8 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
   }
 
   /** If `this` and `that` are both success, or both a failure, combine them with the provided `Semigroup` for each. Otherwise, return the success. Alias for `append` */
-  def +|+[EE >: E, AA >: A](x: Validation[EE, AA])(
-      implicit es: Semigroup[EE],
+  def +|+[EE >: E, AA >: A](x: Validation[EE, AA])(implicit
+      es: Semigroup[EE],
       as: Semigroup[AA]): Validation[EE, AA] = append(x)
 
   /** If `this` is a success, return it; otherwise, if `that` is a success, return it; otherwise, combine the failures with the specified semigroup. */

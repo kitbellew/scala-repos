@@ -158,8 +158,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
   def filterNot[U](implicit partition: Partition[L, U]): partition.Suffix =
     partition.filterNot(l)
 
-  def partition[U](implicit partition: Partition[L, U])
-      : (partition.Prefix, partition.Suffix) = partition(l)
+  def partition[U](implicit
+      partition: Partition[L, U]): (partition.Prefix, partition.Suffix) =
+    partition(l)
 
   def partitionP[U](implicit partition: Partition[L, U])
       : partition.Prefix :: partition.Suffix :: HNil = partition.product(l)
@@ -363,8 +364,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       implicit split: ReverseSplit[L, N]): (split.Prefix, split.Suffix) =
     split(l)
 
-  def reverse_splitP[N <: Nat](implicit split: ReverseSplit[L, N])
-      : split.Prefix :: split.Suffix :: HNil = split.product(l)
+  def reverse_splitP[N <: Nat](implicit
+      split: ReverseSplit[L, N]): split.Prefix :: split.Suffix :: HNil =
+    split.product(l)
 
   /**
     * Splits this `HList` at the ''nth'' element, returning the reverse of the prefix and suffix as a pair. Available
@@ -374,8 +376,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       implicit split: ReverseSplit[L, n.N]): (split.Prefix, split.Suffix) =
     split(l)
 
-  def reverse_splitP(n: Nat)(implicit split: ReverseSplit[L, n.N])
-      : split.Prefix :: split.Suffix :: HNil = split.product(l)
+  def reverse_splitP(n: Nat)(implicit
+      split: ReverseSplit[L, n.N]): split.Prefix :: split.Suffix :: HNil =
+    split.product(l)
 
   /**
     * Splits this `HList` at the first occurrence of an element of type `U`, returning the prefix and suffix as a pair.
@@ -397,8 +400,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       implicit split: ReverseSplitLeft[L, U]): (split.Prefix, split.Suffix) =
     split(l)
 
-  def reverse_splitLeftP[U](implicit split: ReverseSplitLeft[L, U])
-      : split.Prefix :: split.Suffix :: HNil = split.product(l)
+  def reverse_splitLeftP[U](implicit
+      split: ReverseSplitLeft[L, U]): split.Prefix :: split.Suffix :: HNil =
+    split.product(l)
 
   /**
     * Splits this `HList` at the last occurrence of an element of type `U`, returning the prefix and suffix as a pair.
@@ -420,8 +424,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       implicit split: ReverseSplitRight[L, U]): (split.Prefix, split.Suffix) =
     split(l)
 
-  def reverse_splitRightP[U](implicit split: ReverseSplitRight[L, U])
-      : split.Prefix :: split.Suffix :: HNil = split.product(l)
+  def reverse_splitRightP[U](implicit
+      split: ReverseSplitRight[L, U]): split.Prefix :: split.Suffix :: HNil =
+    split.product(l)
 
   /**
     * Permutes this `HList` into the same order as another `HList`. An explicit type argument must be supplied.
@@ -646,8 +651,9 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * Converts this `HList` to an ordinary `List` of elements typed as the least upper bound of the types of the elements
     * of this `HList`.
     */
-  def toList[Lub](implicit toTraversableAux: ToTraversable.Aux[L, List, Lub])
-      : toTraversableAux.Out = toTraversableAux(l)
+  def toList[Lub](implicit
+      toTraversableAux: ToTraversable.Aux[L, List, Lub]): toTraversableAux.Out =
+    toTraversableAux(l)
 
   /**
     * Converts this `HList` to an `Array` of elements typed as the least upper bound of the types of the elements

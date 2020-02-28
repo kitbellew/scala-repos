@@ -542,7 +542,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     * Construct the Server, given the provided Service.
     */
   def build(service: Service[Req, Rep])(
-      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
+      implicit
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
         HasCodec,
         HasBindTo,
         HasName]
@@ -562,7 +563,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: () => Service[Req, Rep])(
-      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
+      implicit
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
   ): Server =
     build((_: ClientConnection) => serviceFactory())(
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
@@ -574,7 +576,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: (ClientConnection) => Service[Req, Rep])(
-      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
+      implicit
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
   ): Server =
     build(
       new ServiceFactory[Req, Rep] {
@@ -590,7 +593,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     * or supports transactions).
     */
   def build(serviceFactory: ServiceFactory[Req, Rep])(
-      implicit THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
+      implicit
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
         HasCodec,
         HasBindTo,
         HasName]

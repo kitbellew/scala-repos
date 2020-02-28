@@ -5,8 +5,8 @@ import scala.language.implicitConversions
 
 /** Appends the pickle/pickleTo/pickleInto operations onto any type, assuming implicits picklers are available. */
 final case class PickleOps[T](picklee: T) {
-  def pickle(
-      implicit format: PickleFormat,
+  def pickle(implicit
+      format: PickleFormat,
       pickler: Pickler[T]): format.PickleType =
     functions.pickle[T](picklee)(format, pickler)
   def pickleInto(builder: PBuilder)(implicit pickler: Pickler[T]): Unit =

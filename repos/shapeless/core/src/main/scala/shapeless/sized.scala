@@ -164,8 +164,7 @@ class SizedOps[A0, Repr: AdditiveCollection, L <: Nat](
     * Append the argument collection to this collection. The resulting collection will be statically known to have
     * ''m+n'' elements.
     */
-  def ++[B >: A0, That, M <: Nat](that: Sized[That, M])(
-      implicit
+  def ++[B >: A0, That, M <: Nat](that: Sized[That, M])(implicit
       sum: Sum[L, M],
       cbf: CanBuildFrom[Repr, B, That],
       convThat: That => GenTraversableLike[B, That],
@@ -176,8 +175,8 @@ class SizedOps[A0, Repr: AdditiveCollection, L <: Nat](
     * Map across this collection. The resulting collection will be statically known to have the same number of elements
     * as this collection.
     */
-  def map[B, That](f: A0 => B)(
-      implicit cbf: CanBuildFrom[Repr, B, That],
+  def map[B, That](f: A0 => B)(implicit
+      cbf: CanBuildFrom[Repr, B, That],
       ev: AdditiveCollection[That]) =
     wrap[That, L](s.unsized map f)
 
@@ -189,8 +188,8 @@ class SizedOps[A0, Repr: AdditiveCollection, L <: Nat](
   /**
     * Converts this `Sized` to a tuple whose elements have the same type as in `Repr`.
     */
-  def tupled[L0 <: HList, T](
-      implicit hl: ToHList.Aux[Repr, L, L0],
+  def tupled[L0 <: HList, T](implicit
+      hl: ToHList.Aux[Repr, L, L0],
       t: Tupler.Aux[L0, T]): T = t(hl(s))
 }
 
@@ -199,15 +198,15 @@ trait LowPrioritySized {
 }
 
 object Sized extends LowPrioritySized {
-  implicit def sizedOps[Repr, L <: Nat](s: Sized[Repr, L])(
-      implicit itl: IsTraversableLike[Repr],
+  implicit def sizedOps[Repr, L <: Nat](s: Sized[Repr, L])(implicit
+      itl: IsTraversableLike[Repr],
       ev: AdditiveCollection[Repr]): SizedOps[itl.A, Repr, L] =
     new SizedOps[itl.A, Repr, L](s, itl)
 
   def apply[CC[_]] = new SizedBuilder[CC]
 
-  def apply[CC[_]]()(
-      implicit cbf: CanBuildFrom[Nothing, Nothing, CC[Nothing]],
+  def apply[CC[_]]()(implicit
+      cbf: CanBuildFrom[Nothing, Nothing, CC[Nothing]],
       ev: AdditiveCollection[CC[Nothing]]) =
     new Sized[CC[Nothing], _0](cbf().result)
 

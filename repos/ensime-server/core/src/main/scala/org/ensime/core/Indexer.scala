@@ -67,7 +67,7 @@ class Indexer(
   }
 }
 object Indexer {
-  def apply(index: SearchService)(
-      implicit config: EnsimeConfig,
+  def apply(index: SearchService)(implicit
+      config: EnsimeConfig,
       vfs: EnsimeVFS): Props = Props(classOf[Indexer], index, config, vfs)
 }

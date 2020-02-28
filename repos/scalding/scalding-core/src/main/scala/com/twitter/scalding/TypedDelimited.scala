@@ -151,8 +151,8 @@ class FixedPathTypedDelimited[T](
     override val fields: Fields = Fields.ALL,
     override val skipHeader: Boolean = false,
     override val writeHeader: Boolean = false,
-    override val separator: String = "\t")(
-    implicit override val mf: Manifest[T],
+    override val separator: String = "\t")(implicit
+    override val mf: Manifest[T],
     override val conv: TupleConverter[T],
     override val tset: TupleSetter[T])
     extends FixedPathSource(p: _*)

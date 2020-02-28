@@ -62,8 +62,8 @@ object TupleOps {
     }
   }
   sealed abstract class LowLevelJoinImplicits {
-    implicit def join[P, S](implicit fold: FoldLeft[P, S, Join.Fold.type])
-        : JoinAux[P, S, fold.Out] =
+    implicit def join[P, S](implicit
+        fold: FoldLeft[P, S, Join.Fold.type]): JoinAux[P, S, fold.Out] =
       new Join[P, S] {
         type Out = fold.Out
         def apply(prefix: P, suffix: S): Out = fold(prefix, suffix)

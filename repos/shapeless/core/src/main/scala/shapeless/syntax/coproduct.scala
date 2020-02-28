@@ -82,8 +82,9 @@ final class CoproductOps[C <: Coproduct](val c: C)
       implicit partition: Partition[C, U]): Option[partition.Suffix] =
     partition.filterNot(c)
 
-  def partition[U](implicit partition: Partition[C, U])
-      : Either[partition.Prefix, partition.Suffix] = partition(c)
+  def partition[U](implicit
+      partition: Partition[C, U]): Either[partition.Prefix, partition.Suffix] =
+    partition(c)
 
   def partitionC[U](implicit partition: Partition[C, U])
       : partition.Prefix :+: partition.Suffix :+: CNil = partition.coproduct(c)

@@ -362,8 +362,8 @@ object Pickler {
       .labelled("tuple2")
 
   /** A pickler for 3-tuples, represented as `~`-tuples */
-  implicit def tuple3Pickler[T1, T2, T3](
-      implicit p1: Pickler[T1],
+  implicit def tuple3Pickler[T1, T2, T3](implicit
+      p1: Pickler[T1],
       p2: Pickler[T2],
       p3: Pickler[T3]): Pickler[(T1, T2, T3)] =
     (p1 ~ p2 ~ p3)

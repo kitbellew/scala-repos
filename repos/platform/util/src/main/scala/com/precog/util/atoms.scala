@@ -75,8 +75,8 @@ class Atom[A] extends Source[A] with Sink[A] {
     }
   }
 
-  def +=[B](b: B)(
-      implicit cbf: CanBuildFrom[A, B, A],
+  def +=[B](b: B)(implicit
+      cbf: CanBuildFrom[A, B, A],
       evidence: A <:< TraversableOnce[B]) {
     if (!isForced || setterThread != null) {
       lock.lock()
@@ -104,8 +104,8 @@ class Atom[A] extends Source[A] with Sink[A] {
     }
   }
 
-  def ++=[E](c: A)(
-      implicit unpack: Unpack[A, E],
+  def ++=[E](c: A)(implicit
+      unpack: Unpack[A, E],
       cbf: CanBuildFrom[A, E, A],
       evidence2: A <:< TraversableOnce[E]) {
     if (!isForced || setterThread != null) {
@@ -134,8 +134,8 @@ class Atom[A] extends Source[A] with Sink[A] {
     }
   }
 
-  def appendFrom[E, Coll[_]](a: Atom[Coll[E]])(
-      implicit cbf: CanBuildFrom[Coll[E], E, A],
+  def appendFrom[E, Coll[_]](a: Atom[Coll[E]])(implicit
+      cbf: CanBuildFrom[Coll[E], E, A],
       evidence: A =:= Coll[E],
       evidence2: Coll[E] <:< TraversableOnce[E]) {
     if (!isForced || setterThread != null) {

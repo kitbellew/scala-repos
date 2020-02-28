@@ -291,8 +291,8 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
   protected def ask(message: Any, timeout: Timeout): Future[Any] =
     internalAsk(message, timeout, ActorRef.noSender)
 
-  def ask(message: Any)(
-      implicit timeout: Timeout,
+  def ask(message: Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
@@ -302,8 +302,8 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
   protected def ?(message: Any)(implicit timeout: Timeout): Future[Any] =
     internalAsk(message, timeout, ActorRef.noSender)
 
-  def ?(message: Any)(
-      implicit timeout: Timeout,
+  def ?(message: Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
@@ -344,13 +344,13 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
  */
 final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
 
-  def ask(message: ActorRef ⇒ Any)(
-      implicit timeout: Timeout,
+  def ask(message: ActorRef ⇒ Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
-  def ?(message: ActorRef ⇒ Any)(
-      implicit timeout: Timeout,
+  def ?(message: ActorRef ⇒ Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
@@ -427,8 +427,8 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
   protected def ask(message: Any, timeout: Timeout): Future[Any] =
     internalAsk(message, timeout, ActorRef.noSender)
 
-  def ask(message: Any)(
-      implicit timeout: Timeout,
+  def ask(message: Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
@@ -438,8 +438,8 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
   protected def ?(message: Any)(implicit timeout: Timeout): Future[Any] =
     internalAsk(message, timeout, ActorRef.noSender)
 
-  def ?(message: Any)(
-      implicit timeout: Timeout,
+  def ?(message: Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
@@ -476,13 +476,13 @@ final class AskableActorSelection(val actorSel: ActorSelection) extends AnyVal {
 final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection)
     extends AnyVal {
 
-  def ask(message: ActorRef ⇒ Any)(
-      implicit timeout: Timeout,
+  def ask(message: ActorRef ⇒ Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 
-  def ?(message: ActorRef ⇒ Any)(
-      implicit timeout: Timeout,
+  def ?(message: ActorRef ⇒ Any)(implicit
+      timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 

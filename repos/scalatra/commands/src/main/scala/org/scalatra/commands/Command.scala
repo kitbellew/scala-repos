@@ -82,8 +82,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
       fieldName: String): Field[T] =
     bind[T](FieldDescriptor[T](fieldName))
 
-  implicit def bind[T](field: FieldDescriptor[T])(
-      implicit mf: Manifest[T],
+  implicit def bind[T](field: FieldDescriptor[T])(implicit
+      mf: Manifest[T],
       conv: TypeConverterFactory[T]): FieldDescriptor[T] = {
     val f: FieldDescriptor[T] =
       if (mf.runtimeClass.isAssignableFrom(classOf[Option[_]])) {
@@ -128,8 +128,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
   def bindTo[S, I](
       data: S,
       params: MultiParams = MultiMap.empty,
-      headers: Map[String, String] = Map.empty)(
-      implicit r: S => ValueReader[S, I],
+      headers: Map[String, String] = Map.empty)(implicit
+      r: S => ValueReader[S, I],
       mi: Manifest[I],
       multiParams: MultiParams => ValueReader[MultiParams, Seq[String]])
       : this.type = {

@@ -51,7 +51,8 @@ object Implicits {
   @throws[akka.contrib.circuitbreaker.OpenCircuitException](
     "if the call failed because the circuit breaker proxy state was OPEN")
   def askWithCircuitBreaker(circuitBreakerProxy: ActorRef, message: Any)(
-      implicit executionContext: ExecutionContext,
+      implicit
+      executionContext: ExecutionContext,
       timeout: Timeout): Future[Any] =
     circuitBreakerProxy.internalAskWithCircuitBreaker(
       message,
@@ -67,8 +68,8 @@ object Implicits {
   def askWithCircuitBreaker(
       circuitBreakerProxy: ActorRef,
       message: Any,
-      sender: ActorRef)(
-      implicit executionContext: ExecutionContext,
+      sender: ActorRef)(implicit
+      executionContext: ExecutionContext,
       timeout: Timeout): Future[Any] =
     circuitBreakerProxy.internalAskWithCircuitBreaker(message, timeout, sender)
 
@@ -98,8 +99,8 @@ final class CircuitBreakerAwareFuture(val future: Future[Any]) extends AnyVal {
 
 final class AskeableWithCircuitBreakerActor(val actorRef: ActorRef)
     extends AnyVal {
-  def askWithCircuitBreaker(message: Any)(
-      implicit executionContext: ExecutionContext,
+  def askWithCircuitBreaker(message: Any)(implicit
+      executionContext: ExecutionContext,
       timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAskWithCircuitBreaker(message, timeout, sender)
@@ -119,8 +120,8 @@ final class AskeableWithCircuitBreakerActor(val actorRef: ActorRef)
 final class AskeableWithCircuitBreakerActorSelection(
     val actorSelection: ActorSelection)
     extends AnyVal {
-  def askWithCircuitBreaker(message: Any)(
-      implicit executionContext: ExecutionContext,
+  def askWithCircuitBreaker(message: Any)(implicit
+      executionContext: ExecutionContext,
       timeout: Timeout,
       sender: ActorRef = Actor.noSender): Future[Any] =
     internalAskWithCircuitBreaker(message, timeout, sender)

@@ -1520,15 +1520,15 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       f: Z => (A1, A2, A3))(implicit a1: F[A1], a2: F[A2], a3: F[A3]): F[Z] =
     divide3(a1, a2, a3)(f)
 
-  def deriving4[A1, A2, A3, A4, Z](f: Z => (A1, A2, A3, A4))(
-      implicit a1: F[A1],
+  def deriving4[A1, A2, A3, A4, Z](f: Z => (A1, A2, A3, A4))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4]): F[Z] =
     divide4(a1, a2, a3, a4)(f)
 
-  def deriving5[A1, A2, A3, A4, A5, Z](f: Z => (A1, A2, A3, A4, A5))(
-      implicit a1: F[A1],
+  def deriving5[A1, A2, A3, A4, A5, Z](f: Z => (A1, A2, A3, A4, A5))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1536,7 +1536,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide5(a1, a2, a3, a4, a5)(f)
 
   def deriving6[A1, A2, A3, A4, A5, A6, Z](f: Z => (A1, A2, A3, A4, A5, A6))(
-      implicit a1: F[A1],
+      implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1545,8 +1546,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide6(a1, a2, a3, a4, a5, a6)(f)
 
   def deriving7[A1, A2, A3, A4, A5, A6, A7, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1556,8 +1557,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide7(a1, a2, a3, a4, a5, a6, a7)(f)
 
   def deriving8[A1, A2, A3, A4, A5, A6, A7, A8, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1568,8 +1569,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide8(a1, a2, a3, a4, a5, a6, a7, a8)(f)
 
   def deriving9[A1, A2, A3, A4, A5, A6, A7, A8, A9, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1581,8 +1582,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide9(a1, a2, a3, a4, a5, a6, a7, a8, a9)(f)
 
   def deriving10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1595,8 +1596,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide10(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)(f)
 
   def deriving11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1610,8 +1611,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide11(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)(f)
 
   def deriving12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1626,8 +1627,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
     divide12(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)(f)
 
   def deriving13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, Z](
-      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13))(
-      implicit a1: F[A1],
+      f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1658,7 +1659,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       A13,
       A14,
       Z](f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14))(
-      implicit a1: F[A1],
+      implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1705,8 +1707,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       A12,
       A13,
       A14,
-      A15))(
-      implicit a1: F[A1],
+      A15))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1758,8 +1760,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A13,
           A14,
           A15,
-          A16))(
-      implicit a1: F[A1],
+          A16))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1829,8 +1831,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A14,
           A15,
           A16,
-          A17))(
-      implicit a1: F[A1],
+          A17))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1904,8 +1906,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A15,
           A16,
           A17,
-          A18))(
-      implicit a1: F[A1],
+          A18))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -1983,8 +1985,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A16,
           A17,
           A18,
-          A19))(
-      implicit a1: F[A1],
+          A19))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -2066,8 +2068,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A17,
           A18,
           A19,
-          A20))(
-      implicit a1: F[A1],
+          A20))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -2153,8 +2155,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A18,
           A19,
           A20,
-          A21))(
-      implicit a1: F[A1],
+          A21))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
@@ -2244,8 +2246,8 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
           A19,
           A20,
           A21,
-          A22))(
-      implicit a1: F[A1],
+          A22))(implicit
+      a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],

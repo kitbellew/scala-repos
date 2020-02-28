@@ -150,13 +150,13 @@ trait ConstraintReads {
       implicit reads: Reads[A]) =
     Reads[A](js => reads.reads(js).filter(JsError(otherwise))(p))
 
-  def minLength[M](m: Int)(
-      implicit reads: Reads[M],
+  def minLength[M](m: Int)(implicit
+      reads: Reads[M],
       p: M => scala.collection.TraversableLike[_, M]) =
     filterNot[M](ValidationError("error.minLength", m))(_.size < m)
 
-  def maxLength[M](m: Int)(
-      implicit reads: Reads[M],
+  def maxLength[M](m: Int)(implicit
+      reads: Reads[M],
       p: M => scala.collection.TraversableLike[_, M]) =
     filterNot[M](ValidationError("error.maxLength", m))(_.size > m)
 
@@ -262,8 +262,9 @@ trait ConstraintWrites {
     Writes.traversableWrites[A]
   def seq[A](implicit writes: Writes[A]): Writes[Seq[A]] =
     Writes.traversableWrites[A]
-  def map[A](implicit writes: Writes[A])
-      : OWrites[collection.immutable.Map[String, A]] = Writes.mapWrites[A]
+  def map[A](implicit
+      writes: Writes[A]): OWrites[collection.immutable.Map[String, A]] =
+    Writes.mapWrites[A]
 
   /**
     * Pure Option Writer[T] which writes "null" when None which is different

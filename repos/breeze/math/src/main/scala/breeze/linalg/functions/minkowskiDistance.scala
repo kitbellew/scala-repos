@@ -8,8 +8,8 @@ import breeze.linalg.operators.OpSub
   * A Minkowski distance metric implementation between two points
   */
 object minkowskiDistance extends UFunc with minkowskiDistanceLowPrio {
-  implicit def minkowskiDistanceFromSubtractionAndNorm[T, U, V](
-      implicit sub: OpSub.Impl2[T, U, V],
+  implicit def minkowskiDistanceFromSubtractionAndNorm[T, U, V](implicit
+      sub: OpSub.Impl2[T, U, V],
       normImpl: norm.Impl2[V, Double, Double]): Impl3[T, U, Double, Double] = {
     new Impl3[T, U, Double, Double] {
       def apply(v: T, v2: U, exponent: Double): Double = {

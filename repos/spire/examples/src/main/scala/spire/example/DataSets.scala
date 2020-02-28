@@ -57,8 +57,7 @@ object DataSet {
   protected def fromLines[CC[_], F, K](
       lines: List[List[String]],
       variables: List[Variable[F]],
-      out: Output[K])(
-      implicit
+      out: Output[K])(implicit
       cbf: CanBuildFrom[Nothing, F, CC[F]]): (Int, List[(CC[F], K)]) = {
 
     // Perform our first pass, building the conversion functions.
@@ -94,8 +93,7 @@ object DataSet {
       sep: Char,
       variables: List[Variable[F]],
       out: Output[K])(cs: Int => CoordinateSpace[CC[F], F])(
-      implicit
-      cbf: CanBuildFrom[Nothing, F, CC[F]]): DataSet[CC[F], F, K] = {
+      implicit cbf: CanBuildFrom[Nothing, F, CC[F]]): DataSet[CC[F], F, K] = {
 
     val lines = readDataSet(res)
     val (dimensions, data) =

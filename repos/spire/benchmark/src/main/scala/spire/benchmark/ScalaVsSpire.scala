@@ -188,8 +188,8 @@ class ScalaVsSpireBenchmarks extends MyBenchmark {
     while (i < len) { cs(i) = gcdGeneric(as(i), bs(i)); i += 1 }
   }
 
-  @tailrec final def gcdSpire[@sp(Int) A](a: A, b: A)(
-      implicit ev1: EuclideanRing[A],
+  @tailrec final def gcdSpire[@sp(Int) A](a: A, b: A)(implicit
+      ev1: EuclideanRing[A],
       ev2: Eq[A]): A = {
     import spire.implicits._
     if (a % b === ev1.zero) b else gcdSpire(b, a % b)

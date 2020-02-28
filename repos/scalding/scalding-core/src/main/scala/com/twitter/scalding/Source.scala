@@ -207,8 +207,8 @@ abstract class Source extends java.io.Serializable {
   def validateTaps(mode: Mode): Unit = {}
 
   @deprecated("replace with Mappable.toIterator", "0.9.0")
-  def readAtSubmitter[T](
-      implicit mode: Mode,
+  def readAtSubmitter[T](implicit
+      mode: Mode,
       conv: TupleConverter[T]): Stream[T] = {
     validateTaps(mode)
     val tap = createTap(Read)(mode)
@@ -233,8 +233,8 @@ abstract class Source extends java.io.Serializable {
   */
 trait Mappable[+T] extends Source with TypedSource[T] {
 
-  final def mapTo[U](out: Fields)(mf: (T) => U)(
-      implicit flowDef: FlowDef,
+  final def mapTo[U](out: Fields)(mf: (T) => U)(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
     RichPipe(read(flowDef, mode))
@@ -245,8 +245,8 @@ trait Mappable[+T] extends Source with TypedSource[T] {
     * If you want to filter, you should use this and output a 0 or 1 length Iterable.
     * Filter does not change column names, and we generally expect to change columns here
     */
-  final def flatMapTo[U](out: Fields)(mf: (T) => TraversableOnce[U])(
-      implicit flowDef: FlowDef,
+  final def flatMapTo[U](out: Fields)(mf: (T) => TraversableOnce[U])(implicit
+      flowDef: FlowDef,
       mode: Mode,
       setter: TupleSetter[U]): Pipe = {
     RichPipe(read(flowDef, mode))
