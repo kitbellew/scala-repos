@@ -32,15 +32,15 @@ import scala.collection.breakOut
 object ClientStore {
   def apply[K, V](
       onlineStore: ReadableStore[(K, BatchID), V],
-      batchesToKeep: Int)(
-      implicit batcher: Batcher,
+      batchesToKeep: Int)(implicit
+      batcher: Batcher,
       semigroup: Semigroup[V]): ClientStore[K, V] =
     apply(ReadableStore.empty, onlineStore, batchesToKeep)
 
   // If no online store exists, supply an empty store and instruct the
   // client to keep a single batch.
-  def apply[K, V](offlineStore: ReadableStore[K, (BatchID, V)])(
-      implicit batcher: Batcher,
+  def apply[K, V](offlineStore: ReadableStore[K, (BatchID, V)])(implicit
+      batcher: Batcher,
       semigroup: Semigroup[V]): ClientStore[K, V] =
     apply(offlineStore, ReadableStore.empty, 1)
 
@@ -49,8 +49,8 @@ object ClientStore {
   def apply[K, V](
       offlineStore: ReadableStore[K, (BatchID, V)],
       onlineStore: ReadableStore[(K, BatchID), V],
-      batchesToKeep: Int)(
-      implicit batcher: Batcher,
+      batchesToKeep: Int)(implicit
+      batcher: Batcher,
       semigroup: Semigroup[V]): ClientStore[K, V] =
     new ClientStore[K, V](
       offlineStore,
@@ -64,8 +64,8 @@ object ClientStore {
       offlineStore: ReadableStore[K, (BatchID, V)],
       onlineStore: ReadableStore[(K, BatchID), V],
       batchesToKeep: Int,
-      onlineKeyFilter: K => Boolean)(
-      implicit batcher: Batcher,
+      onlineKeyFilter: K => Boolean)(implicit
+      batcher: Batcher,
       semigroup: Semigroup[V]): ClientStore[K, V] =
     new ClientStore[K, V](
       offlineStore,
@@ -80,8 +80,8 @@ object ClientStore {
       onlineStore: ReadableStore[(K, BatchID), V],
       batchesToKeep: Int,
       onlineKeyFilter: K => Boolean,
-      collector: FutureCollector[(K, Iterable[BatchID])])(
-      implicit batcher: Batcher,
+      collector: FutureCollector[(K, Iterable[BatchID])])(implicit
+      batcher: Batcher,
       semigroup: Semigroup[V]): ClientStore[K, V] =
     new ClientStore[K, V](
       offlineStore,

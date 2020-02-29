@@ -89,8 +89,8 @@ package object util {
     }
     system.eventStream.subscribe(eventStreamLogger, channel)
   }
-  private[http] def installEventStreamLoggerFor[T](
-      implicit ct: ClassTag[T],
+  private[http] def installEventStreamLoggerFor[T](implicit
+      ct: ClassTag[T],
       system: ActorSystem): Unit =
     installEventStreamLoggerFor(ct.runtimeClass)
 

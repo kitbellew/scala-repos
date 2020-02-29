@@ -54,8 +54,7 @@ object JavaCompilerFixture {
       config: EnsimeConfig,
       reportHandler: ReportHandler,
       search: SearchService
-  )(
-      implicit
+  )(implicit
       system: ActorSystem,
       vfs: EnsimeVFS
   ): JavaCompiler = {

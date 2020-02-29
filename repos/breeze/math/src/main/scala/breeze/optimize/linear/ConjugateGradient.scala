@@ -17,8 +17,8 @@ class ConjugateGradient[T, M](
     maxNormValue: Double = Double.PositiveInfinity,
     maxIterations: Int = -1,
     normSquaredPenalty: Double = 0,
-    tolerance: Double = 1e-5)(
-    implicit space: MutableInnerProductVectorSpace[T, Double],
+    tolerance: Double = 1e-5)(implicit
+    space: MutableInnerProductVectorSpace[T, Double],
     mult: OpMulMatrix.Impl2[M, T, T])
     extends SerializableLogging {
   import space._

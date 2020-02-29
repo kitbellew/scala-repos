@@ -26,8 +26,7 @@ object RichPresentationCompilerFixture {
   private[fixture] def create(
       config: EnsimeConfig,
       search: SearchService
-  )(
-      implicit
+  )(implicit
       system: ActorSystem,
       vfs: EnsimeVFS
   ): RichPresentationCompiler = {

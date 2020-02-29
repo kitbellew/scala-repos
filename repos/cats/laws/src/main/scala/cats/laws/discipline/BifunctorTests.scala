@@ -10,8 +10,7 @@ import org.typelevel.discipline.Laws
 trait BifunctorTests[F[_, _]] extends Laws {
   def laws: BifunctorLaws[F]
 
-  def bifunctor[A, A2, A3, B, B2, B3](
-      implicit
+  def bifunctor[A, A2, A3, B, B2, B3](implicit
       ArbFAB: Arbitrary[F[A, B]],
       ArbA2: Arbitrary[A => A2],
       ArbA3: Arbitrary[A2 => A3],

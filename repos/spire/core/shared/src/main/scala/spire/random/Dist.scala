@@ -120,8 +120,8 @@ trait Dist[@sp A] extends Any { self =>
 
   import scala.collection.generic.CanBuildFrom
 
-  def sample[CC[X] <: Iterable[X]](n: Int)(
-      implicit gen: Generator,
+  def sample[CC[X] <: Iterable[X]](n: Int)(implicit
+      gen: Generator,
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val b = cbf()
     b.sizeHint(n)
@@ -328,19 +328,19 @@ object Dist extends DistInstances8 {
   implicit def complex[A: Fractional: Trig: IsReal: Dist]: Dist[Complex[A]] =
     Dist(Complex(_: A, _: A))
 
-  implicit def interval[A](
-      implicit na: Dist[A],
+  implicit def interval[A](implicit
+      na: Dist[A],
       order: Order[A],
       r: AdditiveMonoid[A]): Dist[Interval[A]] =
     Dist((x: A, y: A) => if (order.lt(x, y)) Interval(x, y) else Interval(y, x))
 
-  implicit def option[A](
-      implicit no: Dist[Boolean],
+  implicit def option[A](implicit
+      no: Dist[Boolean],
       na: Dist[A]): Dist[Option[A]] =
     new DistFromGen(g => if (no(g)) Some(na(g)) else None)
 
-  implicit def either[A, B](
-      implicit no: Dist[Boolean],
+  implicit def either[A, B](implicit
+      no: Dist[Boolean],
       na: Dist[A],
       nb: Dist[B]): Dist[Either[A, B]] =
     new DistFromGen[Either[A, B]](g => if (no(g)) Right(nb(g)) else Left(na(g)))
@@ -487,13 +487,13 @@ trait DistInstances6 extends DistInstances5 {
 }
 
 trait DistInstances7 extends DistInstances6 {
-  implicit def NormedVectorSpace[V, K](implicit ev: NormedVectorSpace[V, K])
-      : NormedVectorSpace[Dist[V], Dist[K]] =
+  implicit def NormedVectorSpace[V, K](implicit
+      ev: NormedVectorSpace[V, K]): NormedVectorSpace[Dist[V], Dist[K]] =
     new DistNormedVectorSpace[V, K] { def alg = ev }
 }
 
 trait DistInstances8 extends DistInstances7 {
-  implicit def InnerProductSpace[V, K](implicit ev: InnerProductSpace[V, K])
-      : InnerProductSpace[Dist[V], Dist[K]] =
+  implicit def InnerProductSpace[V, K](implicit
+      ev: InnerProductSpace[V, K]): InnerProductSpace[Dist[V], Dist[K]] =
     new DistInnerProductSpace[V, K] { def alg = ev }
 }

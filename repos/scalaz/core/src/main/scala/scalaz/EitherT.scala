@@ -67,8 +67,8 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     bimap(f, identity)
 
   /** Binary functor traverse on this disjunction. */
-  def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(
-      implicit F: Traverse[F],
+  def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(implicit
+      F: Traverse[F],
       G: Applicative[G]): G[EitherT[F, C, D]] =
     Applicative[G].map(F.traverse(run)(Bitraverse[\/].bitraverseF(f, g)))(
       EitherT(_: F[C \/ D]))
@@ -78,8 +78,8 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     EitherT(F.map(run)(_.map(f)))
 
   /** Traverse on the right of this disjunction. */
-  def traverse[G[_], C](f: B => G[C])(
-      implicit F: Traverse[F],
+  def traverse[G[_], C](f: B => G[C])(implicit
+      F: Traverse[F],
       G: Applicative[G]): G[EitherT[F, A, C]] =
     G.map(F.traverse(run)(o => Traverse[A \/ ?].traverse(o)(f)))(EitherT(_))
 
@@ -177,8 +177,8 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     * -\/(v1) +++ -\/(v2) → -\/(v1 + v2)
     * }}}
     */
-  def +++(x: => EitherT[F, A, B])(
-      implicit M1: Semigroup[B],
+  def +++(x: => EitherT[F, A, B])(implicit
+      M1: Semigroup[B],
       M2: Semigroup[A],
       F: Apply[F]): EitherT[F, A, B] =
     EitherT(F.apply2(run, x.run)(_ +++ _))
@@ -189,15 +189,15 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     EitherT(F.map(run)(_.ensure(onLeft)(f)))
 
   /** Compare two disjunction values for equality. */
-  def ===(x: EitherT[F, A, B])(
-      implicit EA: Equal[A],
+  def ===(x: EitherT[F, A, B])(implicit
+      EA: Equal[A],
       EB: Equal[B],
       F: Apply[F]): F[Boolean] =
     F.apply2(run, x.run)(_ === _)
 
   /** Compare two disjunction values for ordering. */
-  def compare(x: EitherT[F, A, B])(
-      implicit EA: Order[A],
+  def compare(x: EitherT[F, A, B])(implicit
+      EA: Order[A],
       EB: Order[B],
       F: Apply[F]): F[Ordering] =
     F.apply2(run, x.run)(_ compare _)
@@ -239,8 +239,8 @@ object EitherT extends EitherTInstances {
       eitherT(F.point(a))
   }
 
-  def eitherTU[FAB, AB, A0, B0](fab: FAB)(
-      implicit u1: Unapply[Functor, FAB] {
+  def eitherTU[FAB, AB, A0, B0](fab: FAB)(implicit
+      u1: Unapply[Functor, FAB] {
         type A = AB
       },
       u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
@@ -298,8 +298,8 @@ object EitherT extends EitherTInstances {
       implicit F: Functor[F]): EitherT[F, A, B] =
     apply(F.map(e)(_ fold (\/.left, \/.right)))
 
-  def fromTryCatchThrowable[F[_], A, B <: Throwable](a: => F[A])(
-      implicit F: Applicative[F],
+  def fromTryCatchThrowable[F[_], A, B <: Throwable](a: => F[A])(implicit
+      F: Applicative[F],
       nn: NotNothing[B],
       ex: ClassTag[B]): EitherT[F, B, A] =
     try {
@@ -320,8 +320,8 @@ object EitherT extends EitherTInstances {
 }
 
 sealed abstract class EitherTInstances4 {
-  implicit def eitherTBindRec[F[_], E](
-      implicit F0: Monad[F],
+  implicit def eitherTBindRec[F[_], E](implicit
+      F0: Monad[F],
       B0: BindRec[F]): BindRec[EitherT[F, E, ?]] =
     new EitherTBindRec[F, E] {
       implicit def F = F0
@@ -351,8 +351,8 @@ sealed abstract class EitherTInstances1 extends EitherTInstances2 {
     new EitherTMonad[F, L] {
       implicit def F = F0
     }
-  implicit def eitherTPlus[F[_], L](
-      implicit F0: Monad[F],
+  implicit def eitherTPlus[F[_], L](implicit
+      F0: Monad[F],
       L0: Semigroup[L]): Plus[EitherT[F, L, ?]] =
     new EitherTPlus[F, L] {
       implicit def F = F0
@@ -371,8 +371,8 @@ sealed abstract class EitherTInstances0 extends EitherTInstances1 {
     new EitherTBifoldable[F] {
       implicit def F = F0
     }
-  implicit def eitherTMonadPlus[F[_], L](
-      implicit F0: Monad[F],
+  implicit def eitherTMonadPlus[F[_], L](implicit
+      F0: Monad[F],
       L0: Monoid[L]): MonadPlus[EitherT[F, L, ?]] =
     new EitherTMonadPlus[F, L] {
       implicit def F = F0

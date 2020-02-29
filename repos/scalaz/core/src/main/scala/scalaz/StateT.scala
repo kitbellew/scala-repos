@@ -72,15 +72,15 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
           F.bind[S2 => F[(S3, B)], (S3, B)](sfb)(ff => ff(t._1))
         })
 
-  def lift[M[_]](
-      implicit F: Monad[F],
+  def lift[M[_]](implicit
+      F: Monad[F],
       M: Applicative[M]): IndexedStateT[λ[α => M[F[α]]], S1, S2, A] =
     IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A](
       (m: Monad[λ[α => M[F[α]]]]) => (s: S1) => M.point(self(s)))
 
   import Liskov._
-  def unlift[M[_], FF[_], S <: S1](
-      implicit M: Comonad[M],
+  def unlift[M[_], FF[_], S <: S1](implicit
+      M: Comonad[M],
       F: Monad[λ[α => M[FF[α]]]],
       ev: this.type <~< IndexedStateT[λ[α => M[FF[α]]], S, S2, A])
       : IndexedStateT[FF, S, S2, A] =
@@ -89,14 +89,14 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
         M.copoint(ev(self)(s))
       })
 
-  def unliftId[M[_], S <: S1](
-      implicit M: Comonad[M],
+  def unliftId[M[_], S <: S1](implicit
+      M: Comonad[M],
       F: Monad[M],
       ev: this.type <~< IndexedStateT[M, S, S2, A]): IndexedState[S, S2, A] =
     unlift[M, Id, S]
 
-  def rwst[W, R](
-      implicit F: Monad[F],
+  def rwst[W, R](implicit
+      F: Monad[F],
       W: Monoid[W]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     IndexedReaderWriterStateT((r, s) =>
       F.bind[S1 => F[(S2, A)], (W, A, S2)](getF(F))((sf: (S1 => F[(S2, A)])) =>
@@ -172,8 +172,8 @@ sealed abstract class IndexedStateTInstances extends IndexedStateTInstances0 {
 }
 
 sealed abstract class StateTInstances3 extends IndexedStateTInstances {
-  implicit def stateTBindRec[S, F[_]](
-      implicit F0: Monad[F],
+  implicit def stateTBindRec[S, F[_]](implicit
+      F0: Monad[F],
       F1: BindRec[F]): BindRec[StateT[F, S, ?]] =
     new StateTBindRec[S, F] {
       implicit def F: Monad[F] = F0

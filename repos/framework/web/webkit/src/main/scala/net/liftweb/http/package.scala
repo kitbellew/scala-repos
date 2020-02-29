@@ -33,10 +33,8 @@ package object http {
     * if you're using Finagle; all you have to do is add a `CanResolveAsync`
     * implicit for it.
     */
-  implicit def asyncResolvableTransform[ResolvableType, ResolvedType](
-      implicit asyncResolveProvider: CanResolveAsync[
-        ResolvableType,
-        ResolvedType],
+  implicit def asyncResolvableTransform[ResolvableType, ResolvedType](implicit
+      asyncResolveProvider: CanResolveAsync[ResolvableType, ResolvedType],
       innerTransform: CanBind[ResolvedType]
   ) = {
     new CanBind[ResolvableType] {

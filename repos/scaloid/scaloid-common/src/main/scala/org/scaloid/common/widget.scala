@@ -476,8 +476,8 @@ object SArrayAdapter {
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/AbsoluteLayout.html android.widget.AbsoluteLayout]]`.
   */
-@deprecated("", "") class SAbsoluteLayout()(
-    implicit context: android.content.Context,
+@deprecated("", "") class SAbsoluteLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.AbsoluteLayout(context)
     with TraitAbsoluteLayout[SAbsoluteLayout] {
@@ -488,8 +488,8 @@ object SArrayAdapter {
 }
 
 @deprecated("", "") object SAbsoluteLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, SAbsoluteLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SAbsoluteLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SAbsoluteLayout => LP): SAbsoluteLayout = {
     val v = new SAbsoluteLayout
     v.<<.parent.+=(v)
@@ -528,8 +528,8 @@ trait TraitImageButton[This <: android.widget.ImageButton]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ImageButton.html android.widget.ImageButton]]`.
   */
-class SImageButton()(
-    implicit context: android.content.Context,
+class SImageButton()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ImageButton(context)
     with TraitImageButton[SImageButton] {
@@ -565,16 +565,16 @@ class SImageButton()(
 }
 
 object SImageButton extends ImageViewCompanion[SImageButton] {
-  def apply[LP <: ViewGroupLayoutParams[_, SImageButton]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SImageButton]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SImageButton => LP): SImageButton = {
     val v = new SImageButton
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SImageButton]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SImageButton]]()(implicit
+      context: Context,
       defaultLayoutParam: SImageButton => LP) = new SImageButton()
 }
 
@@ -765,8 +765,8 @@ trait TraitListView[This <: android.widget.ListView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ListView.html android.widget.ListView]]`.
   */
-class SListView()(
-    implicit context: android.content.Context,
+class SListView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ListView(context)
     with TraitListView[SListView] {
@@ -777,8 +777,8 @@ class SListView()(
 }
 
 object SListView {
-  def apply[LP <: ViewGroupLayoutParams[_, SListView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SListView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SListView => LP): SListView = {
     val v = new SListView
     v.<<.parent.+=(v)
@@ -822,8 +822,8 @@ trait TraitEditText[This <: android.widget.EditText]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/EditText.html android.widget.EditText]]`.
   */
-class SEditText()(
-    implicit context: android.content.Context,
+class SEditText()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.EditText(context)
     with TraitEditText[SEditText] {
@@ -855,16 +855,16 @@ class SEditText()(
 }
 
 object SEditText extends TextViewCompanion[SEditText] {
-  def apply[LP <: ViewGroupLayoutParams[_, SEditText]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SEditText]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SEditText => LP): SEditText = {
     val v = new SEditText
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SEditText]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SEditText]]()(implicit
+      context: Context,
       defaultLayoutParam: SEditText => LP) = new SEditText()
 }
 
@@ -1134,8 +1134,8 @@ trait TraitImageView[This <: android.widget.ImageView] extends TraitView[This] {
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ImageView.html android.widget.ImageView]]`.
   */
-class SImageView()(
-    implicit context: android.content.Context,
+class SImageView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ImageView(context)
     with TraitImageView[SImageView] {
@@ -1171,16 +1171,16 @@ class SImageView()(
 }
 
 object SImageView extends ImageViewCompanion[SImageView] {
-  def apply[LP <: ViewGroupLayoutParams[_, SImageView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SImageView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SImageView => LP): SImageView = {
     val v = new SImageView
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SImageView]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SImageView]]()(implicit
+      context: Context,
       defaultLayoutParam: SImageView => LP) = new SImageView()
 }
 
@@ -1199,8 +1199,8 @@ trait TraitAnalogClock[This <: android.widget.AnalogClock]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/AnalogClock.html android.widget.AnalogClock]]`.
   */
-class SAnalogClock()(
-    implicit context: android.content.Context,
+class SAnalogClock()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.AnalogClock(context)
     with TraitAnalogClock[SAnalogClock] {
@@ -1211,8 +1211,8 @@ class SAnalogClock()(
 }
 
 object SAnalogClock {
-  def apply[LP <: ViewGroupLayoutParams[_, SAnalogClock]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SAnalogClock]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SAnalogClock => LP): SAnalogClock = {
     val v = new SAnalogClock
     v.<<.parent.+=(v)
@@ -1257,8 +1257,8 @@ trait TraitMultiAutoCompleteTextView[
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/MultiAutoCompleteTextView.html android.widget.MultiAutoCompleteTextView]]`.
   */
-class SMultiAutoCompleteTextView()(
-    implicit context: android.content.Context,
+class SMultiAutoCompleteTextView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.MultiAutoCompleteTextView(context)
     with TraitMultiAutoCompleteTextView[SMultiAutoCompleteTextView] {
@@ -1292,7 +1292,8 @@ class SMultiAutoCompleteTextView()(
 object SMultiAutoCompleteTextView
     extends TextViewCompanion[SMultiAutoCompleteTextView] {
   def apply[LP <: ViewGroupLayoutParams[_, SMultiAutoCompleteTextView]]()(
-      implicit context: android.content.Context,
+      implicit
+      context: android.content.Context,
       defaultLayoutParam: SMultiAutoCompleteTextView => LP)
       : SMultiAutoCompleteTextView = {
     val v = new SMultiAutoCompleteTextView
@@ -1301,7 +1302,8 @@ object SMultiAutoCompleteTextView
   }
 
   def create[LP <: ViewGroupLayoutParams[_, SMultiAutoCompleteTextView]]()(
-      implicit context: Context,
+      implicit
+      context: Context,
       defaultLayoutParam: SMultiAutoCompleteTextView => LP) =
     new SMultiAutoCompleteTextView()
 }
@@ -1405,8 +1407,8 @@ trait TraitDatePicker[This <: android.widget.DatePicker]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/DatePicker.html android.widget.DatePicker]]`.
   */
-class SDatePicker()(
-    implicit context: android.content.Context,
+class SDatePicker()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.DatePicker(context)
     with TraitDatePicker[SDatePicker] {
@@ -1417,8 +1419,8 @@ class SDatePicker()(
 }
 
 object SDatePicker {
-  def apply[LP <: ViewGroupLayoutParams[_, SDatePicker]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SDatePicker]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SDatePicker => LP): SDatePicker = {
     val v = new SDatePicker
     v.<<.parent.+=(v)
@@ -1541,8 +1543,8 @@ trait TraitTableLayout[This <: android.widget.TableLayout]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TableLayout.html android.widget.TableLayout]]`.
   */
-class STableLayout()(
-    implicit context: android.content.Context,
+class STableLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TableLayout(context)
     with TraitTableLayout[STableLayout] {
@@ -1574,8 +1576,8 @@ class STableLayout()(
 }
 
 object STableLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, STableLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STableLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STableLayout => LP): STableLayout = {
     val v = new STableLayout
     v.<<.parent.+=(v)
@@ -1782,8 +1784,8 @@ trait TraitTabHost[This <: android.widget.TabHost]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TabHost.html android.widget.TabHost]]`.
   */
-class STabHost()(
-    implicit context: android.content.Context,
+class STabHost()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TabHost(context)
     with TraitTabHost[STabHost] {
@@ -1794,8 +1796,8 @@ class STabHost()(
 }
 
 object STabHost {
-  def apply[LP <: ViewGroupLayoutParams[_, STabHost]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STabHost]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STabHost => LP): STabHost = {
     val v = new STabHost
     v.<<.parent.+=(v)
@@ -1932,8 +1934,8 @@ trait TraitGridLayout[This <: android.widget.GridLayout]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/GridLayout.html android.widget.GridLayout]]`.
   */
-class SGridLayout()(
-    implicit context: android.content.Context,
+class SGridLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.GridLayout(context)
     with TraitGridLayout[SGridLayout] {
@@ -1944,8 +1946,8 @@ class SGridLayout()(
 }
 
 object SGridLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, SGridLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SGridLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SGridLayout => LP): SGridLayout = {
     val v = new SGridLayout
     v.<<.parent.+=(v)
@@ -2044,8 +2046,8 @@ trait TraitRadioGroup[This <: android.widget.RadioGroup]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/RadioGroup.html android.widget.RadioGroup]]`.
   */
-class SRadioGroup()(
-    implicit context: android.content.Context,
+class SRadioGroup()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.RadioGroup(context)
     with TraitRadioGroup[SRadioGroup] {
@@ -2077,8 +2079,8 @@ class SRadioGroup()(
 }
 
 object SRadioGroup {
-  def apply[LP <: ViewGroupLayoutParams[_, SRadioGroup]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SRadioGroup]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SRadioGroup => LP): SRadioGroup = {
     val v = new SRadioGroup
     v.<<.parent.+=(v)
@@ -2202,8 +2204,8 @@ trait TraitRatingBar[This <: android.widget.RatingBar]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/RatingBar.html android.widget.RatingBar]]`.
   */
-class SRatingBar()(
-    implicit context: android.content.Context,
+class SRatingBar()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.RatingBar(context)
     with TraitRatingBar[SRatingBar] {
@@ -2214,8 +2216,8 @@ class SRatingBar()(
 }
 
 object SRatingBar {
-  def apply[LP <: ViewGroupLayoutParams[_, SRatingBar]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SRatingBar]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SRatingBar => LP): SRatingBar = {
     val v = new SRatingBar
     v.<<.parent.+=(v)
@@ -2411,8 +2413,8 @@ trait TraitSpinner[This <: android.widget.Spinner]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/Spinner.html android.widget.Spinner]]`.
   */
-class SSpinner()(
-    implicit context: android.content.Context,
+class SSpinner()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.Spinner(context)
     with TraitSpinner[SSpinner] {
@@ -2423,8 +2425,8 @@ class SSpinner()(
 }
 
 object SSpinner {
-  def apply[LP <: ViewGroupLayoutParams[_, SSpinner]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SSpinner]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SSpinner => LP): SSpinner = {
     val v = new SSpinner
     v.<<.parent.+=(v)
@@ -2592,8 +2594,8 @@ trait TraitGridView[This <: android.widget.GridView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/GridView.html android.widget.GridView]]`.
   */
-class SGridView()(
-    implicit context: android.content.Context,
+class SGridView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.GridView(context)
     with TraitGridView[SGridView] {
@@ -2604,8 +2606,8 @@ class SGridView()(
 }
 
 object SGridView {
-  def apply[LP <: ViewGroupLayoutParams[_, SGridView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SGridView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SGridView => LP): SGridView = {
     val v = new SGridView
     v.<<.parent.+=(v)
@@ -2688,8 +2690,8 @@ trait TraitRelativeLayout[This <: android.widget.RelativeLayout]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/RelativeLayout.html android.widget.RelativeLayout]]`.
   */
-class SRelativeLayout()(
-    implicit context: android.content.Context,
+class SRelativeLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.RelativeLayout(context)
     with TraitRelativeLayout[SRelativeLayout] {
@@ -2826,8 +2828,8 @@ class SRelativeLayout()(
 }
 
 object SRelativeLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, SRelativeLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SRelativeLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SRelativeLayout => LP): SRelativeLayout = {
     val v = new SRelativeLayout
     v.<<.parent.+=(v)
@@ -3046,8 +3048,8 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/NumberPicker.html android.widget.NumberPicker]]`.
   */
-class SNumberPicker()(
-    implicit context: android.content.Context,
+class SNumberPicker()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.NumberPicker(context)
     with TraitNumberPicker[SNumberPicker] {
@@ -3058,8 +3060,8 @@ class SNumberPicker()(
 }
 
 object SNumberPicker {
-  def apply[LP <: ViewGroupLayoutParams[_, SNumberPicker]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SNumberPicker]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SNumberPicker => LP): SNumberPicker = {
     val v = new SNumberPicker
     v.<<.parent.+=(v)
@@ -3151,8 +3153,8 @@ trait TraitChronometer[This <: android.widget.Chronometer]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/Chronometer.html android.widget.Chronometer]]`.
   */
-class SChronometer()(
-    implicit context: android.content.Context,
+class SChronometer()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.Chronometer(context)
     with TraitChronometer[SChronometer] {
@@ -3184,16 +3186,16 @@ class SChronometer()(
 }
 
 object SChronometer extends TextViewCompanion[SChronometer] {
-  def apply[LP <: ViewGroupLayoutParams[_, SChronometer]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SChronometer]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SChronometer => LP): SChronometer = {
     val v = new SChronometer
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SChronometer]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SChronometer]]()(implicit
+      context: Context,
       defaultLayoutParam: SChronometer => LP) = new SChronometer()
 }
 
@@ -3280,8 +3282,8 @@ trait TraitCheckedTextView[This <: android.widget.CheckedTextView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/CheckedTextView.html android.widget.CheckedTextView]]`.
   */
-class SCheckedTextView()(
-    implicit context: android.content.Context,
+class SCheckedTextView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.CheckedTextView(context)
     with TraitCheckedTextView[SCheckedTextView] {
@@ -3313,16 +3315,16 @@ class SCheckedTextView()(
 }
 
 object SCheckedTextView extends TextViewCompanion[SCheckedTextView] {
-  def apply[LP <: ViewGroupLayoutParams[_, SCheckedTextView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SCheckedTextView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SCheckedTextView => LP): SCheckedTextView = {
     val v = new SCheckedTextView
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SCheckedTextView]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SCheckedTextView]]()(implicit
+      context: Context,
       defaultLayoutParam: SCheckedTextView => LP) = new SCheckedTextView()
 }
 
@@ -3374,8 +3376,8 @@ trait TraitTwoLineListItem[This <: android.widget.TwoLineListItem]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TwoLineListItem.html android.widget.TwoLineListItem]]`.
   */
-class STwoLineListItem()(
-    implicit context: android.content.Context,
+class STwoLineListItem()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TwoLineListItem(context)
     with TraitTwoLineListItem[STwoLineListItem] {
@@ -3386,8 +3388,8 @@ class STwoLineListItem()(
 }
 
 object STwoLineListItem {
-  def apply[LP <: ViewGroupLayoutParams[_, STwoLineListItem]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STwoLineListItem]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STwoLineListItem => LP): STwoLineListItem = {
     val v = new STwoLineListItem
     v.<<.parent.+=(v)
@@ -3613,8 +3615,8 @@ trait TraitImageSwitcher[This <: android.widget.ImageSwitcher]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ImageSwitcher.html android.widget.ImageSwitcher]]`.
   */
-class SImageSwitcher()(
-    implicit context: android.content.Context,
+class SImageSwitcher()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ImageSwitcher(context)
     with TraitImageSwitcher[SImageSwitcher] {
@@ -3625,8 +3627,8 @@ class SImageSwitcher()(
 }
 
 object SImageSwitcher {
-  def apply[LP <: ViewGroupLayoutParams[_, SImageSwitcher]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SImageSwitcher]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SImageSwitcher => LP): SImageSwitcher = {
     val v = new SImageSwitcher
     v.<<.parent.+=(v)
@@ -3741,8 +3743,8 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TimePicker.html android.widget.TimePicker]]`.
   */
-class STimePicker()(
-    implicit context: android.content.Context,
+class STimePicker()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TimePicker(context)
     with TraitTimePicker[STimePicker] {
@@ -3753,8 +3755,8 @@ class STimePicker()(
 }
 
 object STimePicker {
-  def apply[LP <: ViewGroupLayoutParams[_, STimePicker]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STimePicker]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STimePicker => LP): STimePicker = {
     val v = new STimePicker
     v.<<.parent.+=(v)
@@ -4042,8 +4044,8 @@ trait TraitExpandableListView[This <: android.widget.ExpandableListView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ExpandableListView.html android.widget.ExpandableListView]]`.
   */
-class SExpandableListView()(
-    implicit context: android.content.Context,
+class SExpandableListView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ExpandableListView(context)
     with TraitExpandableListView[SExpandableListView] {
@@ -4054,8 +4056,8 @@ class SExpandableListView()(
 }
 
 object SExpandableListView {
-  def apply[LP <: ViewGroupLayoutParams[_, SExpandableListView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SExpandableListView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SExpandableListView => LP): SExpandableListView = {
     val v = new SExpandableListView
     v.<<.parent.+=(v)
@@ -4680,8 +4682,8 @@ trait TraitSeekBar[This <: android.widget.SeekBar]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/SeekBar.html android.widget.SeekBar]]`.
   */
-class SSeekBar()(
-    implicit context: android.content.Context,
+class SSeekBar()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.SeekBar(context)
     with TraitSeekBar[SSeekBar] {
@@ -4692,8 +4694,8 @@ class SSeekBar()(
 }
 
 object SSeekBar {
-  def apply[LP <: ViewGroupLayoutParams[_, SSeekBar]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SSeekBar]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SSeekBar => LP): SSeekBar = {
     val v = new SSeekBar
     v.<<.parent.+=(v)
@@ -4845,8 +4847,8 @@ trait TraitStackView[This <: android.widget.StackView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/StackView.html android.widget.StackView]]`.
   */
-class SStackView()(
-    implicit context: android.content.Context,
+class SStackView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.StackView(context)
     with TraitStackView[SStackView] {
@@ -4857,8 +4859,8 @@ class SStackView()(
 }
 
 object SStackView {
-  def apply[LP <: ViewGroupLayoutParams[_, SStackView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SStackView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SStackView => LP): SStackView = {
     val v = new SStackView
     v.<<.parent.+=(v)
@@ -5186,8 +5188,8 @@ trait TraitViewAnimator[This <: android.widget.ViewAnimator]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ViewAnimator.html android.widget.ViewAnimator]]`.
   */
-class SViewAnimator()(
-    implicit context: android.content.Context,
+class SViewAnimator()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ViewAnimator(context)
     with TraitViewAnimator[SViewAnimator] {
@@ -5198,8 +5200,8 @@ class SViewAnimator()(
 }
 
 object SViewAnimator {
-  def apply[LP <: ViewGroupLayoutParams[_, SViewAnimator]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SViewAnimator]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SViewAnimator => LP): SViewAnimator = {
     val v = new SViewAnimator
     v.<<.parent.+=(v)
@@ -5511,8 +5513,8 @@ trait TraitCalendarView[This <: android.widget.CalendarView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/CalendarView.html android.widget.CalendarView]]`.
   */
-class SCalendarView()(
-    implicit context: android.content.Context,
+class SCalendarView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.CalendarView(context)
     with TraitCalendarView[SCalendarView] {
@@ -5523,8 +5525,8 @@ class SCalendarView()(
 }
 
 object SCalendarView {
-  def apply[LP <: ViewGroupLayoutParams[_, SCalendarView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SCalendarView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SCalendarView => LP): SCalendarView = {
     val v = new SCalendarView
     v.<<.parent.+=(v)
@@ -6153,8 +6155,8 @@ trait TraitTextSwitcher[This <: android.widget.TextSwitcher]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TextSwitcher.html android.widget.TextSwitcher]]`.
   */
-class STextSwitcher()(
-    implicit context: android.content.Context,
+class STextSwitcher()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TextSwitcher(context)
     with TraitTextSwitcher[STextSwitcher] {
@@ -6165,8 +6167,8 @@ class STextSwitcher()(
 }
 
 object STextSwitcher {
-  def apply[LP <: ViewGroupLayoutParams[_, STextSwitcher]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STextSwitcher]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STextSwitcher => LP): STextSwitcher = {
     val v = new STextSwitcher
     v.<<.parent.+=(v)
@@ -6372,8 +6374,8 @@ trait TraitLinearLayout[This <: android.widget.LinearLayout]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/LinearLayout.html android.widget.LinearLayout]]`.
   */
-class SLinearLayout()(
-    implicit context: android.content.Context,
+class SLinearLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.LinearLayout(context)
     with TraitLinearLayout[SLinearLayout] {
@@ -6419,8 +6421,8 @@ class SLinearLayout()(
 }
 
 object SLinearLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, SLinearLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SLinearLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SLinearLayout => LP): SLinearLayout = {
     val v = new SLinearLayout
     v.<<.parent.+=(v)
@@ -6560,8 +6562,8 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ZoomControls.html android.widget.ZoomControls]]`.
   */
-class SZoomControls()(
-    implicit context: android.content.Context,
+class SZoomControls()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ZoomControls(context)
     with TraitZoomControls[SZoomControls] {
@@ -6572,8 +6574,8 @@ class SZoomControls()(
 }
 
 object SZoomControls {
-  def apply[LP <: ViewGroupLayoutParams[_, SZoomControls]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SZoomControls]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SZoomControls => LP): SZoomControls = {
     val v = new SZoomControls
     v.<<.parent.+=(v)
@@ -6674,8 +6676,8 @@ trait TraitDialerFilter[This <: android.widget.DialerFilter]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/DialerFilter.html android.widget.DialerFilter]]`.
   */
-class SDialerFilter()(
-    implicit context: android.content.Context,
+class SDialerFilter()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.DialerFilter(context)
     with TraitDialerFilter[SDialerFilter] {
@@ -6686,8 +6688,8 @@ class SDialerFilter()(
 }
 
 object SDialerFilter {
-  def apply[LP <: ViewGroupLayoutParams[_, SDialerFilter]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SDialerFilter]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SDialerFilter => LP): SDialerFilter = {
     val v = new SDialerFilter
     v.<<.parent.+=(v)
@@ -6711,8 +6713,8 @@ trait TraitRadioButton[This <: android.widget.RadioButton]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/RadioButton.html android.widget.RadioButton]]`.
   */
-class SRadioButton()(
-    implicit context: android.content.Context,
+class SRadioButton()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.RadioButton(context)
     with TraitRadioButton[SRadioButton] {
@@ -6744,16 +6746,16 @@ class SRadioButton()(
 }
 
 object SRadioButton extends TextViewCompanion[SRadioButton] {
-  def apply[LP <: ViewGroupLayoutParams[_, SRadioButton]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SRadioButton]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SRadioButton => LP): SRadioButton = {
     val v = new SRadioButton
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SRadioButton]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SRadioButton]]()(implicit
+      context: Context,
       defaultLayoutParam: SRadioButton => LP) = new SRadioButton()
 }
 
@@ -6803,8 +6805,8 @@ trait TraitQuickContactBadge[This <: android.widget.QuickContactBadge]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/QuickContactBadge.html android.widget.QuickContactBadge]]`.
   */
-class SQuickContactBadge()(
-    implicit context: android.content.Context,
+class SQuickContactBadge()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.QuickContactBadge(context)
     with TraitQuickContactBadge[SQuickContactBadge] {
@@ -6840,16 +6842,16 @@ class SQuickContactBadge()(
 }
 
 object SQuickContactBadge extends ImageViewCompanion[SQuickContactBadge] {
-  def apply[LP <: ViewGroupLayoutParams[_, SQuickContactBadge]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SQuickContactBadge]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SQuickContactBadge => LP): SQuickContactBadge = {
     val v = new SQuickContactBadge
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SQuickContactBadge]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SQuickContactBadge]]()(implicit
+      context: Context,
       defaultLayoutParam: SQuickContactBadge => LP) = new SQuickContactBadge()
 }
 
@@ -7197,8 +7199,8 @@ trait TraitSearchView[This <: android.widget.SearchView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/SearchView.html android.widget.SearchView]]`.
   */
-class SSearchView()(
-    implicit context: android.content.Context,
+class SSearchView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.SearchView(context)
     with TraitSearchView[SSearchView] {
@@ -7209,8 +7211,8 @@ class SSearchView()(
 }
 
 object SSearchView {
-  def apply[LP <: ViewGroupLayoutParams[_, SSearchView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SSearchView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SSearchView => LP): SSearchView = {
     val v = new SSearchView
     v.<<.parent.+=(v)
@@ -7234,8 +7236,8 @@ trait TraitDigitalClock[This <: android.widget.DigitalClock]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/DigitalClock.html android.widget.DigitalClock]]`.
   */
-class SDigitalClock()(
-    implicit context: android.content.Context,
+class SDigitalClock()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.DigitalClock(context)
     with TraitDigitalClock[SDigitalClock] {
@@ -7267,16 +7269,16 @@ class SDigitalClock()(
 }
 
 object SDigitalClock extends TextViewCompanion[SDigitalClock] {
-  def apply[LP <: ViewGroupLayoutParams[_, SDigitalClock]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SDigitalClock]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SDigitalClock => LP): SDigitalClock = {
     val v = new SDigitalClock
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SDigitalClock]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SDigitalClock]]()(implicit
+      context: Context,
       defaultLayoutParam: SDigitalClock => LP) = new SDigitalClock()
 }
 
@@ -7331,8 +7333,8 @@ trait TraitToggleButton[This <: android.widget.ToggleButton]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ToggleButton.html android.widget.ToggleButton]]`.
   */
-class SToggleButton()(
-    implicit context: android.content.Context,
+class SToggleButton()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ToggleButton(context)
     with TraitToggleButton[SToggleButton] {
@@ -7364,16 +7366,16 @@ class SToggleButton()(
 }
 
 object SToggleButton extends TextViewCompanion[SToggleButton] {
-  def apply[LP <: ViewGroupLayoutParams[_, SToggleButton]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SToggleButton]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SToggleButton => LP): SToggleButton = {
     val v = new SToggleButton
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SToggleButton]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SToggleButton]]()(implicit
+      context: Context,
       defaultLayoutParam: SToggleButton => LP) = new SToggleButton()
 }
 
@@ -7391,8 +7393,8 @@ trait TraitButton[This <: android.widget.Button] extends TraitTextView[This] {}
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/Button.html android.widget.Button]]`.
   */
-class SButton()(
-    implicit context: android.content.Context,
+class SButton()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.Button(context)
     with TraitButton[SButton] {
@@ -7424,16 +7426,16 @@ class SButton()(
 }
 
 object SButton extends TextViewCompanion[SButton] {
-  def apply[LP <: ViewGroupLayoutParams[_, SButton]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SButton]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SButton => LP): SButton = {
     val v = new SButton
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SButton]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SButton]]()(implicit
+      context: Context,
       defaultLayoutParam: SButton => LP) = new SButton()
 }
 
@@ -7452,8 +7454,8 @@ trait TraitCheckBox[This <: android.widget.CheckBox]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/CheckBox.html android.widget.CheckBox]]`.
   */
-class SCheckBox()(
-    implicit context: android.content.Context,
+class SCheckBox()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.CheckBox(context)
     with TraitCheckBox[SCheckBox] {
@@ -7485,16 +7487,16 @@ class SCheckBox()(
 }
 
 object SCheckBox extends TextViewCompanion[SCheckBox] {
-  def apply[LP <: ViewGroupLayoutParams[_, SCheckBox]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SCheckBox]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SCheckBox => LP): SCheckBox = {
     val v = new SCheckBox
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SCheckBox]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SCheckBox]]()(implicit
+      context: Context,
       defaultLayoutParam: SCheckBox => LP) = new SCheckBox()
 }
 
@@ -7548,8 +7550,8 @@ trait TraitMediaController[This <: android.widget.MediaController]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/MediaController.html android.widget.MediaController]]`.
   */
-class SMediaController()(
-    implicit context: android.content.Context,
+class SMediaController()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.MediaController(context)
     with TraitMediaController[SMediaController] {
@@ -7560,8 +7562,8 @@ class SMediaController()(
 }
 
 object SMediaController {
-  def apply[LP <: ViewGroupLayoutParams[_, SMediaController]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SMediaController]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SMediaController => LP): SMediaController = {
     val v = new SMediaController
     v.<<.parent.+=(v)
@@ -7592,8 +7594,8 @@ trait TraitTableRow[This <: android.widget.TableRow]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TableRow.html android.widget.TableRow]]`.
   */
-class STableRow()(
-    implicit context: android.content.Context,
+class STableRow()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TableRow(context)
     with TraitTableRow[STableRow] {
@@ -7625,8 +7627,8 @@ class STableRow()(
 }
 
 object STableRow {
-  def apply[LP <: ViewGroupLayoutParams[_, STableRow]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STableRow]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STableRow => LP): STableRow = {
     val v = new STableRow
     v.<<.parent.+=(v)
@@ -7757,8 +7759,8 @@ trait TraitTabWidget[This <: android.widget.TabWidget]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TabWidget.html android.widget.TabWidget]]`.
   */
-class STabWidget()(
-    implicit context: android.content.Context,
+class STabWidget()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TabWidget(context)
     with TraitTabWidget[STabWidget] {
@@ -7769,8 +7771,8 @@ class STabWidget()(
 }
 
 object STabWidget {
-  def apply[LP <: ViewGroupLayoutParams[_, STabWidget]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STabWidget]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STabWidget => LP): STabWidget = {
     val v = new STabWidget
     v.<<.parent.+=(v)
@@ -7962,8 +7964,8 @@ trait TraitVideoView[This <: android.widget.VideoView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/VideoView.html android.widget.VideoView]]`.
   */
-class SVideoView()(
-    implicit context: android.content.Context,
+class SVideoView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.VideoView(context)
     with TraitVideoView[SVideoView] {
@@ -7974,8 +7976,8 @@ class SVideoView()(
 }
 
 object SVideoView {
-  def apply[LP <: ViewGroupLayoutParams[_, SVideoView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SVideoView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SVideoView => LP): SVideoView = {
     val v = new SVideoView
     v.<<.parent.+=(v)
@@ -8330,8 +8332,8 @@ trait TraitHorizontalScrollView[This <: android.widget.HorizontalScrollView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/HorizontalScrollView.html android.widget.HorizontalScrollView]]`.
   */
-class SHorizontalScrollView()(
-    implicit context: android.content.Context,
+class SHorizontalScrollView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.HorizontalScrollView(context)
     with TraitHorizontalScrollView[SHorizontalScrollView] {
@@ -8342,8 +8344,8 @@ class SHorizontalScrollView()(
 }
 
 object SHorizontalScrollView {
-  def apply[LP <: ViewGroupLayoutParams[_, SHorizontalScrollView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SHorizontalScrollView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SHorizontalScrollView => LP)
       : SHorizontalScrollView = {
     val v = new SHorizontalScrollView
@@ -8486,8 +8488,8 @@ trait TraitProgressBar[This <: android.widget.ProgressBar]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ProgressBar.html android.widget.ProgressBar]]`.
   */
-class SProgressBar()(
-    implicit context: android.content.Context,
+class SProgressBar()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ProgressBar(context)
     with TraitProgressBar[SProgressBar] {
@@ -8498,8 +8500,8 @@ class SProgressBar()(
 }
 
 object SProgressBar {
-  def apply[LP <: ViewGroupLayoutParams[_, SProgressBar]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SProgressBar]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SProgressBar => LP): SProgressBar = {
     val v = new SProgressBar
     v.<<.parent.+=(v)
@@ -8569,8 +8571,8 @@ trait TraitScrollView[This <: android.widget.ScrollView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ScrollView.html android.widget.ScrollView]]`.
   */
-class SScrollView()(
-    implicit context: android.content.Context,
+class SScrollView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ScrollView(context)
     with TraitScrollView[SScrollView] {
@@ -8581,8 +8583,8 @@ class SScrollView()(
 }
 
 object SScrollView {
-  def apply[LP <: ViewGroupLayoutParams[_, SScrollView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SScrollView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SScrollView => LP): SScrollView = {
     val v = new SScrollView
     v.<<.parent.+=(v)
@@ -8639,8 +8641,8 @@ trait TraitAdapterViewFlipper[This <: android.widget.AdapterViewFlipper]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/AdapterViewFlipper.html android.widget.AdapterViewFlipper]]`.
   */
-class SAdapterViewFlipper()(
-    implicit context: android.content.Context,
+class SAdapterViewFlipper()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.AdapterViewFlipper(context)
     with TraitAdapterViewFlipper[SAdapterViewFlipper] {
@@ -8651,8 +8653,8 @@ class SAdapterViewFlipper()(
 }
 
 object SAdapterViewFlipper {
-  def apply[LP <: ViewGroupLayoutParams[_, SAdapterViewFlipper]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SAdapterViewFlipper]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SAdapterViewFlipper => LP): SAdapterViewFlipper = {
     val v = new SAdapterViewFlipper
     v.<<.parent.+=(v)
@@ -8893,8 +8895,8 @@ trait TraitViewSwitcher[This <: android.widget.ViewSwitcher]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ViewSwitcher.html android.widget.ViewSwitcher]]`.
   */
-class SViewSwitcher()(
-    implicit context: android.content.Context,
+class SViewSwitcher()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ViewSwitcher(context)
     with TraitViewSwitcher[SViewSwitcher] {
@@ -8905,8 +8907,8 @@ class SViewSwitcher()(
 }
 
 object SViewSwitcher {
-  def apply[LP <: ViewGroupLayoutParams[_, SViewSwitcher]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SViewSwitcher]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SViewSwitcher => LP): SViewSwitcher = {
     val v = new SViewSwitcher
     v.<<.parent.+=(v)
@@ -8945,8 +8947,8 @@ trait TraitZoomButton[This <: android.widget.ZoomButton]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ZoomButton.html android.widget.ZoomButton]]`.
   */
-class SZoomButton()(
-    implicit context: android.content.Context,
+class SZoomButton()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ZoomButton(context)
     with TraitZoomButton[SZoomButton] {
@@ -8982,16 +8984,16 @@ class SZoomButton()(
 }
 
 object SZoomButton extends ImageViewCompanion[SZoomButton] {
-  def apply[LP <: ViewGroupLayoutParams[_, SZoomButton]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SZoomButton]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SZoomButton => LP): SZoomButton = {
     val v = new SZoomButton
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SZoomButton]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SZoomButton]]()(implicit
+      context: Context,
       defaultLayoutParam: SZoomButton => LP) = new SZoomButton()
 }
 
@@ -9087,8 +9089,8 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/Gallery.html android.widget.Gallery]]`.
   */
-@deprecated("", "") class SGallery()(
-    implicit context: android.content.Context,
+@deprecated("", "") class SGallery()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.Gallery(context)
     with TraitGallery[SGallery] {
@@ -9099,8 +9101,8 @@ object SZoomButton extends ImageViewCompanion[SZoomButton] {
 }
 
 @deprecated("", "") object SGallery {
-  def apply[LP <: ViewGroupLayoutParams[_, SGallery]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SGallery]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SGallery => LP): SGallery = {
     val v = new SGallery
     v.<<.parent.+=(v)
@@ -9561,8 +9563,8 @@ trait TraitFrameLayout[This <: android.widget.FrameLayout]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/FrameLayout.html android.widget.FrameLayout]]`.
   */
-class SFrameLayout()(
-    implicit context: android.content.Context,
+class SFrameLayout()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.FrameLayout(context)
     with TraitFrameLayout[SFrameLayout] {
@@ -9573,8 +9575,8 @@ class SFrameLayout()(
 }
 
 object SFrameLayout {
-  def apply[LP <: ViewGroupLayoutParams[_, SFrameLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SFrameLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SFrameLayout => LP): SFrameLayout = {
     val v = new SFrameLayout
     v.<<.parent.+=(v)
@@ -10808,8 +10810,8 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/TextView.html android.widget.TextView]]`.
   */
-class STextView()(
-    implicit context: android.content.Context,
+class STextView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.TextView(context)
     with TraitTextView[STextView] {
@@ -10841,16 +10843,16 @@ class STextView()(
 }
 
 object STextView extends TextViewCompanion[STextView] {
-  def apply[LP <: ViewGroupLayoutParams[_, STextView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STextView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STextView => LP): STextView = {
     val v = new STextView
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, STextView]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, STextView]]()(implicit
+      context: Context,
       defaultLayoutParam: STextView => LP) = new STextView()
 }
 
@@ -10982,8 +10984,8 @@ trait TraitViewFlipper[This <: android.widget.ViewFlipper]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/ViewFlipper.html android.widget.ViewFlipper]]`.
   */
-class SViewFlipper()(
-    implicit context: android.content.Context,
+class SViewFlipper()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.ViewFlipper(context)
     with TraitViewFlipper[SViewFlipper] {
@@ -10994,8 +10996,8 @@ class SViewFlipper()(
 }
 
 object SViewFlipper {
-  def apply[LP <: ViewGroupLayoutParams[_, SViewFlipper]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SViewFlipper]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SViewFlipper => LP): SViewFlipper = {
     val v = new SViewFlipper
     v.<<.parent.+=(v)
@@ -11522,8 +11524,8 @@ trait TraitAutoCompleteTextView[This <: android.widget.AutoCompleteTextView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/AutoCompleteTextView.html android.widget.AutoCompleteTextView]]`.
   */
-class SAutoCompleteTextView()(
-    implicit context: android.content.Context,
+class SAutoCompleteTextView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.AutoCompleteTextView(context)
     with TraitAutoCompleteTextView[SAutoCompleteTextView] {
@@ -11555,8 +11557,8 @@ class SAutoCompleteTextView()(
 }
 
 object SAutoCompleteTextView extends TextViewCompanion[SAutoCompleteTextView] {
-  def apply[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SAutoCompleteTextView => LP)
       : SAutoCompleteTextView = {
     val v = new SAutoCompleteTextView
@@ -11564,8 +11566,8 @@ object SAutoCompleteTextView extends TextViewCompanion[SAutoCompleteTextView] {
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SAutoCompleteTextView]]()(implicit
+      context: Context,
       defaultLayoutParam: SAutoCompleteTextView => LP) =
     new SAutoCompleteTextView()
 }
@@ -11770,8 +11772,8 @@ trait TraitSwitch[This <: android.widget.Switch]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/widget/Switch.html android.widget.Switch]]`.
   */
-class SSwitch()(
-    implicit context: android.content.Context,
+class SSwitch()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.widget.Switch(context)
     with TraitSwitch[SSwitch] {
@@ -11803,16 +11805,16 @@ class SSwitch()(
 }
 
 object SSwitch extends TextViewCompanion[SSwitch] {
-  def apply[LP <: ViewGroupLayoutParams[_, SSwitch]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SSwitch]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SSwitch => LP): SSwitch = {
     val v = new SSwitch
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SSwitch]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SSwitch]]()(implicit
+      context: Context,
       defaultLayoutParam: SSwitch => LP) = new SSwitch()
 }
 
@@ -11841,8 +11843,8 @@ trait TraitBaseAdapter[This <: android.widget.BaseAdapter] {
 
 }
 
-class SVerticalLayout(
-    implicit context: Context,
+class SVerticalLayout(implicit
+    context: Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends SLinearLayout {
   orientation = VERTICAL
@@ -11850,8 +11852,8 @@ class SVerticalLayout(
 
 object SVerticalLayout {
 
-  def apply[LP <: ViewGroupLayoutParams[_, SVerticalLayout]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SVerticalLayout]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SLinearLayout => LP): SVerticalLayout = {
     val v = new SVerticalLayout
     v.<<.parent.+=(v)
@@ -11860,12 +11862,12 @@ object SVerticalLayout {
 }
 
 abstract class TextViewCompanion[T <: TextView: ClassTag] {
-  def create[LP <: ViewGroupLayoutParams[_, T]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, T]]()(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T
 
-  def apply[LP <: ViewGroupLayoutParams[_, T]](txt: CharSequence)(
-      implicit context: Context,
+  def apply[LP <: ViewGroupLayoutParams[_, T]](txt: CharSequence)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v text txt
@@ -11882,8 +11884,8 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
   def apply[LP <: ViewGroupLayoutParams[_, T]](
       text: CharSequence,
       onClickListener: ViewOnClickListener,
-      interval: Int = -1)(
-      implicit context: Context,
+      interval: Int = -1)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = apply(text, onClickListener.onClickListener)
     if (interval >= 0) v.onPressAndHold(interval, onClickListener.func(v))
@@ -11892,8 +11894,8 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
 
   private def apply[LP <: ViewGroupLayoutParams[_, T]](
       text: CharSequence,
-      onClickListener: View.OnClickListener)(
-      implicit context: Context,
+      onClickListener: View.OnClickListener)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v.text = text
@@ -11904,13 +11906,13 @@ abstract class TextViewCompanion[T <: TextView: ClassTag] {
 }
 
 abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
-  def create[LP <: ViewGroupLayoutParams[_, T]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, T]]()(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T
 
   def apply[LP <: ViewGroupLayoutParams[_, T]](
-      imageResource: android.graphics.drawable.Drawable)(
-      implicit context: Context,
+      imageResource: android.graphics.drawable.Drawable)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v.imageDrawable = imageResource
@@ -11928,8 +11930,8 @@ abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
   def apply[LP <: ViewGroupLayoutParams[_, T]](
       imageResource: android.graphics.drawable.Drawable,
       onClickListener: ViewOnClickListener,
-      interval: Int = -1)(
-      implicit context: Context,
+      interval: Int = -1)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = apply(imageResource, onClickListener.onClickListener)
     if (interval >= 0) v.onPressAndHold(interval, onClickListener.func(v))
@@ -11938,8 +11940,8 @@ abstract class ImageViewCompanion[T <: ImageView: ClassTag] {
 
   private def apply[LP <: ViewGroupLayoutParams[_, T]](
       imageResource: android.graphics.drawable.Drawable,
-      onClickListener: View.OnClickListener)(
-      implicit context: Context,
+      onClickListener: View.OnClickListener)(implicit
+      context: Context,
       defaultLayoutParam: T => LP): T = {
     val v = create()
     v.imageDrawable = imageResource
@@ -11965,8 +11967,8 @@ trait TraitExtractEditText[This <: android.inputmethodservice.ExtractEditText]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/inputmethodservice/ExtractEditText.html android.inputmethodservice.ExtractEditText]]`.
   */
-class SExtractEditText()(
-    implicit context: android.content.Context,
+class SExtractEditText()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.inputmethodservice.ExtractEditText(context)
     with TraitExtractEditText[SExtractEditText] {
@@ -11998,16 +12000,16 @@ class SExtractEditText()(
 }
 
 object SExtractEditText extends TextViewCompanion[SExtractEditText] {
-  def apply[LP <: ViewGroupLayoutParams[_, SExtractEditText]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SExtractEditText]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SExtractEditText => LP): SExtractEditText = {
     val v = new SExtractEditText
     v.<<.parent.+=(v)
     v
   }
 
-  def create[LP <: ViewGroupLayoutParams[_, SExtractEditText]]()(
-      implicit context: Context,
+  def create[LP <: ViewGroupLayoutParams[_, SExtractEditText]]()(implicit
+      context: Context,
       defaultLayoutParam: SExtractEditText => LP) = new SExtractEditText()
 }
 
@@ -12517,8 +12519,8 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html android.opengl.GLSurfaceView]]`.
   */
-class SGLSurfaceView()(
-    implicit context: android.content.Context,
+class SGLSurfaceView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.opengl.GLSurfaceView(context)
     with TraitGLSurfaceView[SGLSurfaceView] {
@@ -12529,8 +12531,8 @@ class SGLSurfaceView()(
 }
 
 object SGLSurfaceView {
-  def apply[LP <: ViewGroupLayoutParams[_, SGLSurfaceView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SGLSurfaceView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SGLSurfaceView => LP): SGLSurfaceView = {
     val v = new SGLSurfaceView
     v.<<.parent.+=(v)
@@ -12567,8 +12569,8 @@ trait TraitAppWidgetHostView[This <: android.appwidget.AppWidgetHostView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/appwidget/AppWidgetHostView.html android.appwidget.AppWidgetHostView]]`.
   */
-class SAppWidgetHostView()(
-    implicit context: android.content.Context,
+class SAppWidgetHostView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.appwidget.AppWidgetHostView(context)
     with TraitAppWidgetHostView[SAppWidgetHostView] {
@@ -12579,8 +12581,8 @@ class SAppWidgetHostView()(
 }
 
 object SAppWidgetHostView {
-  def apply[LP <: ViewGroupLayoutParams[_, SAppWidgetHostView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SAppWidgetHostView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SAppWidgetHostView => LP): SAppWidgetHostView = {
     val v = new SAppWidgetHostView
     v.<<.parent.+=(v)
@@ -13074,8 +13076,8 @@ trait TraitGestureOverlayView[This <: android.gesture.GestureOverlayView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/gesture/GestureOverlayView.html android.gesture.GestureOverlayView]]`.
   */
-class SGestureOverlayView()(
-    implicit context: android.content.Context,
+class SGestureOverlayView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.gesture.GestureOverlayView(context)
     with TraitGestureOverlayView[SGestureOverlayView] {
@@ -13086,8 +13088,8 @@ class SGestureOverlayView()(
 }
 
 object SGestureOverlayView {
-  def apply[LP <: ViewGroupLayoutParams[_, SGestureOverlayView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SGestureOverlayView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SGestureOverlayView => LP): SGestureOverlayView = {
     val v = new SGestureOverlayView
     v.<<.parent.+=(v)
@@ -13426,8 +13428,8 @@ trait TraitWebView[This <: android.webkit.WebView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/webkit/WebView.html android.webkit.WebView]]`.
   */
-class SWebView()(
-    implicit context: android.content.Context,
+class SWebView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.webkit.WebView(context)
     with TraitWebView[SWebView] {
@@ -13438,8 +13440,8 @@ class SWebView()(
 }
 
 object SWebView {
-  def apply[LP <: ViewGroupLayoutParams[_, SWebView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SWebView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SWebView => LP): SWebView = {
     val v = new SWebView
     v.<<.parent.+=(v)

@@ -36,8 +36,8 @@ object TestStore {
       inBatcher: Batcher,
       initStore: Iterable[(K, V)],
       lastTime: Long,
-      pruning: PrunedSpace[(K, V)] = PrunedSpace.neverPruned)(
-      implicit ord: Ordering[K],
+      pruning: PrunedSpace[(K, V)] = PrunedSpace.neverPruned)(implicit
+      ord: Ordering[K],
       tset: TupleSetter[(K, V)],
       tconv: TupleConverter[(K, V)]) = {
     val startBatch = inBatcher.batchOf(Timestamp(0)).prev
@@ -58,8 +58,8 @@ class TestStore[K, V](
     val initBatch: BatchID,
     initStore: Iterable[(K, V)],
     lastBatch: BatchID,
-    override val pruning: PrunedSpace[(K, V)])(
-    implicit ord: Ordering[K],
+    override val pruning: PrunedSpace[(K, V)])(implicit
+    ord: Ordering[K],
     tset: TupleSetter[(K, V)],
     tconv: TupleConverter[(K, V)])
     extends batch.BatchedStore[K, V] {
@@ -103,8 +103,8 @@ class TestStore[K, V](
   }
 
   /** Instances may choose to write out the last or just compute it from the stream */
-  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(
-      implicit flowDef: FlowDef,
+  override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit = {
     val out = batches(batchID)
     lastVals.write(TypedSink[(K, V)](out))

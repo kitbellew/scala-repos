@@ -59,16 +59,16 @@ class Scentry[UserType <: AnyRef](
     _store = newStore
   }
 
-  def isAuthenticated(
-      implicit request: HttpServletRequest,
+  def isAuthenticated(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     userOption.isDefined
   }
 
   //def session = app.session
   def params(implicit request: HttpServletRequest): Params = app.params(request)
-  def redirect(uri: String)(
-      implicit request: HttpServletRequest,
+  def redirect(uri: String)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     app.redirect(uri)(request, response)
   }
@@ -86,8 +86,8 @@ class Scentry[UserType <: AnyRef](
       case (nm, fact) ⇒ (nm -> fact.asInstanceOf[StrategyFactory](app))
     }
 
-  def userOption(
-      implicit request: HttpServletRequest,
+  def userOption(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Option[UserType] =
     Option(_user) orElse {
       store.get.blankOption flatMap { key =>
@@ -102,13 +102,13 @@ class Scentry[UserType <: AnyRef](
       }
     }
 
-  def user(
-      implicit request: HttpServletRequest,
+  def user(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): UserType =
     userOption getOrElse null.asInstanceOf[UserType]
 
-  def user_=(v: UserType)(
-      implicit request: HttpServletRequest,
+  def user_=(v: UserType)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     request(scentryAuthKey) = v
     if (v != null) {
@@ -139,13 +139,13 @@ class Scentry[UserType <: AnyRef](
   }
 
   @deprecated("Use the version that uses string keys instead", "2.2")
-  def authenticate(name: Symbol, names: Symbol*)(
-      implicit request: HttpServletRequest,
+  def authenticate(name: Symbol, names: Symbol*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Option[UserType] =
     authenticate((Seq(name) ++ names.toSeq).map(_.name): _*)
 
-  def authenticate(names: String*)(
-      implicit request: HttpServletRequest,
+  def authenticate(names: String*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Option[UserType] = {
     val r = runAuthentication(names: _*) map {
       case (stratName, usr) ⇒
@@ -159,8 +159,8 @@ class Scentry[UserType <: AnyRef](
     else r
   }
 
-  private[this] def runAuthentication(names: String*)(
-      implicit request: HttpServletRequest,
+  private[this] def runAuthentication(names: String*)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) = {
     val subset =
       if (names.isEmpty) strategies.values
@@ -183,8 +183,8 @@ class Scentry[UserType <: AnyRef](
     defaultUnauthenticated = Some(() ⇒ callback)
   }
 
-  def logout()(
-      implicit request: HttpServletRequest,
+  def logout()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse) {
     val usr = user
     runCallbacks() { _.beforeLogout(usr) }

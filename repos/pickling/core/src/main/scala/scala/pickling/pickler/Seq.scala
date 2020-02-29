@@ -7,8 +7,8 @@ import scala.collection.{IndexedSeq, LinearSeq}
 // TODO(jsuereth) - Register runtime pickler generators
 
 trait SeqPicklers {
-  implicit def seqPickler[T: FastTypeTag](
-      implicit elemPickler: Pickler[T],
+  implicit def seqPickler[T: FastTypeTag](implicit
+      elemPickler: Pickler[T],
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Seq[T]],
       cbf: CanBuildFrom[Seq[T], T, Seq[T]])
@@ -17,8 +17,8 @@ trait SeqPicklers {
 }
 
 trait IndexedSeqPicklers {
-  implicit def indexedSeqPickler[T: FastTypeTag](
-      implicit elemPickler: Pickler[T],
+  implicit def indexedSeqPickler[T: FastTypeTag](implicit
+      elemPickler: Pickler[T],
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[IndexedSeq[T]],
       cbf: CanBuildFrom[IndexedSeq[T], T, IndexedSeq[T]])
@@ -27,8 +27,8 @@ trait IndexedSeqPicklers {
 }
 
 trait LinearSeqPicklers {
-  implicit def linearSeqPickler[T: FastTypeTag](
-      implicit elemPickler: Pickler[T],
+  implicit def linearSeqPickler[T: FastTypeTag](implicit
+      elemPickler: Pickler[T],
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[LinearSeq[T]],
       cbf: CanBuildFrom[LinearSeq[T], T, LinearSeq[T]])

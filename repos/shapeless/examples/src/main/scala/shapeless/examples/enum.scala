@@ -87,8 +87,8 @@ object Values {
   }
 
   object MkValues {
-    implicit def values[T, Repr <: Coproduct](
-        implicit gen: Generic.Aux[T, Repr],
+    implicit def values[T, Repr <: Coproduct](implicit
+        gen: Generic.Aux[T, Repr],
         v: Aux[T, Repr]): MkValues[T] =
       new MkValues[T] { def values = v.values }
 
@@ -100,8 +100,8 @@ object Values {
       implicit def cnilAux[A]: Aux[A, CNil] =
         new Aux[A, CNil] { def values = Nil }
 
-      implicit def cconsAux[T, L <: T, R <: Coproduct](
-          implicit l: Witness.Aux[L],
+      implicit def cconsAux[T, L <: T, R <: Coproduct](implicit
+          l: Witness.Aux[L],
           r: Aux[T, R]): Aux[T, L :+: R] =
         new Aux[T, L :+: R] { def values = l.value :: r.values }
     }

@@ -153,8 +153,8 @@ object TypedPipeDiffLaws {
       checkDiff(left, right, diff)
   }
 
-  def diffArrayLaw[T](
-      implicit arb: Arbitrary[List[Array[T]]],
+  def diffArrayLaw[T](implicit
+      arb: Arbitrary[List[Array[T]]],
       ct: ClassTag[T]): Prop = Prop.forAll {
     (left: List[Array[T]], right: List[Array[T]]) =>
       val diff = TypedPipe

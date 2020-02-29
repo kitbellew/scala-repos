@@ -90,8 +90,7 @@ object LowPriorityDerivationTests {
         new MkHListTC[HNil] {
           val tc = instance[HNil](_ => "HNil")
         }
-      implicit def hconsMkTC[H, T <: HList](
-          implicit
+      implicit def hconsMkTC[H, T <: HList](implicit
           head: Strict[TC[H]],
           tail: MkHListTC[T]): MkHListTC[H :: T] =
         new MkHListTC[H :: T] {
@@ -109,8 +108,7 @@ object LowPriorityDerivationTests {
         new MkCoproductTC[CNil] {
           val tc = instance[CNil](_ => "CNil")
         }
-      implicit def cconsMkTC[H, T <: Coproduct](
-          implicit
+      implicit def cconsMkTC[H, T <: Coproduct](implicit
           head: Strict[TC[H]],
           tail: MkCoproductTC[T]): MkCoproductTC[H :+: T] =
         new MkCoproductTC[H :+: T] {
@@ -124,16 +122,14 @@ object LowPriorityDerivationTests {
     }
 
     object MkTC {
-      implicit def genericProductMkTC[P, L <: HList](
-          implicit
+      implicit def genericProductMkTC[P, L <: HList](implicit
           gen: Generic.Aux[P, L],
           underlying: Lazy[MkHListTC[L]]): MkTC[P] =
         new MkTC[P] {
           lazy val tc =
             instance[P](n => s"Generic[${underlying.value.tc.msg(n - 1)}]")
         }
-      implicit def genericCoproductMkTC[S, C <: Coproduct](
-          implicit
+      implicit def genericCoproductMkTC[S, C <: Coproduct](implicit
           gen: Generic.Aux[S, C],
           underlying: Lazy[MkCoproductTC[C]]): MkTC[S] =
         new MkTC[S] {
@@ -172,8 +168,7 @@ object LowPriorityDerivationTests {
           val tc = instance[Double](_ => "Double")
         }
 
-      implicit def mkCollWriter[M[_], T](
-          implicit
+      implicit def mkCollWriter[M[_], T](implicit
           underlying: TC[T],
           cbf: CanBuildFrom[Nothing, T, M[T]]): MkStdTC[M[T]] =
         new MkStdTC[M[T]] {
@@ -189,8 +184,7 @@ object LowPriorityDerivationTests {
         new MkGenericTupleTC[HNil] {
           val tc = instance[HNil](_ => "")
         }
-      implicit def hconsMkTC[H, T <: HList](
-          implicit
+      implicit def hconsMkTC[H, T <: HList](implicit
           head: Strict[TC[H]],
           tail: MkGenericTupleTC[T]): MkGenericTupleTC[H :: T] =
         new MkGenericTupleTC[H :: T] {
@@ -205,8 +199,7 @@ object LowPriorityDerivationTests {
     trait MkTupleTC[T] extends MkTC[T]
 
     object MkTupleTC {
-      implicit def genericMkTC[F, G](
-          implicit
+      implicit def genericMkTC[F, G](implicit
           ev: IsTuple[F],
           gen: Generic.Aux[F, G],
           underlying: Lazy[MkGenericTupleTC[G]]): MkTupleTC[F] =
@@ -223,8 +216,7 @@ object LowPriorityDerivationTests {
         new MkHListTC[HNil] {
           val tc = instance[HNil](_ => "HNil")
         }
-      implicit def hconsMkTC[H, T <: HList](
-          implicit
+      implicit def hconsMkTC[H, T <: HList](implicit
           head: Strict[TC[H]],
           tail: MkHListTC[T]): MkHListTC[H :: T] =
         new MkHListTC[H :: T] {
@@ -240,8 +232,7 @@ object LowPriorityDerivationTests {
         new MkCoproductTC[CNil] {
           val tc = instance[CNil](_ => "CNil")
         }
-      implicit def cconsMkTC[H, T <: Coproduct](
-          implicit
+      implicit def cconsMkTC[H, T <: Coproduct](implicit
           head: Strict[TC[H]],
           tail: MkCoproductTC[T]): MkCoproductTC[H :+: T] =
         new MkCoproductTC[H :+: T] {
@@ -253,16 +244,14 @@ object LowPriorityDerivationTests {
     trait MkDefaultTC[T] extends MkTC[T]
 
     object MkDefaultTC {
-      implicit def genericCoproductMkTC[S, C <: Coproduct](
-          implicit
+      implicit def genericCoproductMkTC[S, C <: Coproduct](implicit
           gen: Generic.Aux[S, C],
           underlying: Lazy[MkCoproductTC[C]]): MkDefaultTC[S] =
         new MkDefaultTC[S] {
           lazy val tc =
             instance[S](n => s"Generic[${underlying.value.tc.msg(n - 1)}]")
         }
-      implicit def genericProductMkTC[P, L <: HList](
-          implicit
+      implicit def genericProductMkTC[P, L <: HList](implicit
           gen: Generic.Aux[P, L],
           underlying: Lazy[MkHListTC[L]]): MkDefaultTC[P] =
         new MkDefaultTC[P] {
@@ -271,8 +260,7 @@ object LowPriorityDerivationTests {
         }
     }
 
-    implicit def mkTC[T](
-        implicit
+    implicit def mkTC[T](implicit
         ev: LowPriority,
         cached: Strict[MkTC[T]]): TC[T] =
       cached.value.tc
@@ -281,8 +269,7 @@ object LowPriorityDerivationTests {
   object SimpleTCDeriver extends SimpleDeriver[TC] {
     def instance[T](msg0: Int => String) = TC.instance(msg0)
 
-    implicit def mkTC[T](
-        implicit
+    implicit def mkTC[T](implicit
         ev: LowPriority,
         cached: Strict[MkTC[T]]): TC[T] =
       cached.value.tc
@@ -295,8 +282,7 @@ object LowPriorityDerivationTests {
   object SimpleTC0Deriver extends SimpleDeriver[TC0] {
     def instance[T](msg0: Int => String) = TC0.instance(msg0)
 
-    implicit def mkTC[T](
-        implicit
+    implicit def mkTC[T](implicit
         ev: LowPriority.Ignoring[Witness.`"TC0.defaultTC"`.T],
         cached: Strict[MkTC[T]]): TC0[T] =
       cached.value.tc

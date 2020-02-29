@@ -65,8 +65,8 @@ trait FieldDescriptor[T] {
 
   def validateWith(validators: BindingValidator[T]*): FieldDescriptor[T]
 
-  def apply[S](original: Either[String, Option[S]])(
-      implicit ms: Manifest[S],
+  def apply[S](original: Either[String, Option[S]])(implicit
+      ms: Manifest[S],
       convert: TypeConverter[S, T]): DataboundFieldDescriptor[S, T]
 
   override def hashCode() = 41 + 41 * name.hashCode()
@@ -143,8 +143,8 @@ class BasicFieldDescriptor[T](
       requiredError)(valueManifest)
   }
 
-  def apply[S](original: Either[String, Option[S]])(
-      implicit ms: Manifest[S],
+  def apply[S](original: Either[String, Option[S]])(implicit
+      ms: Manifest[S],
       convert: TypeConverter[S, T]): DataboundFieldDescriptor[S, T] = {
     val conv = original.fold(
       e => ValidationError(e).failure,
@@ -189,8 +189,8 @@ trait DataboundFieldDescriptor[S, T] extends FieldDescriptor[T] {
   def field: FieldDescriptor[T]
   def original: Option[S]
   def transform(endo: T => T): DataboundFieldDescriptor[S, T]
-  def apply[V](original: Either[String, Option[V]])(
-      implicit mv: Manifest[V],
+  def apply[V](original: Either[String, Option[V]])(implicit
+      mv: Manifest[V],
       convert: TypeConverter[V, T]): DataboundFieldDescriptor[V, T] =
     this.asInstanceOf[DataboundFieldDescriptor[V, T]]
 

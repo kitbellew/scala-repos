@@ -273,8 +273,8 @@ final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
   }
 
   /** Get the value inside this Option, if it is non-empty, otherwise the supplied default. */
-  def getOrElse[M, P2 <: P](default: M)(
-      implicit shape: Shape[FlatShapeLevel, M, _, P2],
+  def getOrElse[M, P2 <: P](default: M)(implicit
+      shape: Shape[FlatShapeLevel, M, _, P2],
       ol: OptionLift[P2, O]): P =
     // P2 != P can only happen if M contains plain values, which pack to ConstColumn instead of Rep.
     // Both have the same packedShape (RepShape), so we can safely cast here:
@@ -300,12 +300,13 @@ trait ExtensionMethodConversions {
   implicit def optionColumnExtensionMethods[B1: BaseTypedType](
       c: Rep[Option[B1]]): OptionColumnExtensionMethods[B1] =
     new OptionColumnExtensionMethods[B1](c)
-  implicit def numericColumnExtensionMethods[B1](c: Rep[B1])(
-      implicit tm: BaseTypedType[B1]
+  implicit def numericColumnExtensionMethods[B1](c: Rep[B1])(implicit
+      tm: BaseTypedType[B1]
         with NumericTypedType): BaseNumericColumnExtensionMethods[B1] =
     new BaseNumericColumnExtensionMethods[B1](c)
-  implicit def numericOptionColumnExtensionMethods[B1](c: Rep[Option[B1]])(
-      implicit tm: BaseTypedType[B1]
+  implicit def numericOptionColumnExtensionMethods[B1](
+      c: Rep[Option[B1]])(implicit
+      tm: BaseTypedType[B1]
         with NumericTypedType): OptionNumericColumnExtensionMethods[B1] =
     new OptionNumericColumnExtensionMethods[B1](c)
   implicit def stringColumnExtensionMethods(

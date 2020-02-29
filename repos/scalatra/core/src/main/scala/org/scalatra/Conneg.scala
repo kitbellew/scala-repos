@@ -103,8 +103,8 @@ object Conneg {
     * Additionally, this method swallows errors silently. An invalid header value will yield an empty list rather than
     * an exception.
     */
-  def values[T](name: String)(
-      implicit req: HttpServletRequest,
+  def values[T](name: String)(implicit
+      req: HttpServletRequest,
       format: Format[T]): List[Conneg[T]] = {
     val header = req.getHeader(name)
     if (header == null) List()
@@ -112,8 +112,8 @@ object Conneg {
   }
 
   /** Retrieves the preferred supported value for the specified content-negotiation header. */
-  def preferredValue[T](name: String)(
-      implicit req: HttpServletRequest,
+  def preferredValue[T](name: String)(implicit
+      req: HttpServletRequest,
       format: Format[T]): Option[T] = {
     val all = values(name)
 

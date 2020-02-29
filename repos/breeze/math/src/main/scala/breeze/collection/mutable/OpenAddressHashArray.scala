@@ -34,7 +34,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
     protected var load: Int,
     val size: Int,
     val default: ConfigurableDefault[V] = ConfigurableDefault.default[V])(
-    implicit protected val manElem: ClassTag[V],
+    implicit
+    protected val manElem: ClassTag[V],
     val zero: Zero[V])
     extends Storage[V]
     with ArrayLike[V]
@@ -42,7 +43,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
   require(size > 0, "Size must be positive, but got " + size)
 
   def this(size: Int, default: ConfigurableDefault[V], initialSize: Int)(
-      implicit manElem: ClassTag[V],
+      implicit
+      manElem: ClassTag[V],
       zero: Zero[V]) = {
     this(
       OpenAddressHashArray.emptyIndexArray(
@@ -53,8 +55,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
       default)
   }
 
-  def this(size: Int, default: ConfigurableDefault[V])(
-      implicit manElem: ClassTag[V],
+  def this(size: Int, default: ConfigurableDefault[V])(implicit
+      manElem: ClassTag[V],
       zero: Zero[V]) = {
     this(size, default, 16)
   }

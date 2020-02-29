@@ -48,8 +48,8 @@ object Reflect {
       environment: Environment,
       config: PlayConfig,
       key: String,
-      defaultClassName: String)(
-      implicit scalaTrait: SubClassOf[ScalaTrait],
+      defaultClassName: String)(implicit
+      scalaTrait: SubClassOf[ScalaTrait],
       javaInterface: SubClassOf[JavaInterface],
       javaAdapter: ClassTag[JavaAdapter],
       javaDelegate: ClassTag[JavaDelegate],
@@ -110,8 +110,8 @@ object Reflect {
       environment: Environment,
       config: PlayConfig,
       key: String,
-      defaultClassName: String)(
-      implicit scalaTrait: SubClassOf[ScalaTrait],
+      defaultClassName: String)(implicit
+      scalaTrait: SubClassOf[ScalaTrait],
       javaInterface: SubClassOf[JavaInterface],
       default: ClassTag[Default])
       : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {

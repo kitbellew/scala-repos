@@ -36,8 +36,7 @@ trait Watcher {
 class ClassfileWatcher(
     config: EnsimeConfig,
     listeners: Seq[FileChangeListener]
-)(
-    implicit
+)(implicit
     vfs: EnsimeVFS
 ) extends Actor
     with SLF4JLogging {
@@ -65,8 +64,7 @@ class ClassfileWatcher(
 class SourceWatcher(
     config: EnsimeConfig,
     listeners: Seq[FileChangeListener]
-)(
-    implicit
+)(implicit
     vfs: EnsimeVFS
 ) extends Watcher
     with SLF4JLogging {
@@ -91,8 +89,7 @@ private class ApachePollingFileWatcher(
     selector: ExtSelector,
     recursive: Boolean,
     listeners: Seq[FileChangeListener]
-)(
-    implicit
+)(implicit
     vfs: EnsimeVFS
 ) extends Watcher
     with SLF4JLogging {

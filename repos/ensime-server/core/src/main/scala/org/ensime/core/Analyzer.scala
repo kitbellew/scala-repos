@@ -344,8 +344,7 @@ object Analyzer {
       broadcaster: ActorRef,
       indexer: ActorRef,
       search: SearchService
-  )(
-      implicit
+  )(implicit
       config: EnsimeConfig,
       vfs: EnsimeVFS
   ) = Props(new Analyzer(broadcaster, indexer, search, config, vfs))

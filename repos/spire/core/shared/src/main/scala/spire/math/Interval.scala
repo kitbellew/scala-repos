@@ -683,8 +683,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
 
   import spire.random.{Dist, Uniform}
 
-  def dist(min: A, max: A, epsilon: A)(
-      implicit u: Uniform[A],
+  def dist(min: A, max: A, epsilon: A)(implicit
+      u: Uniform[A],
       r: AdditiveGroup[A]): Dist[A] =
     u(bottom(epsilon).getOrElse(min), top(epsilon).getOrElse(max))
 
@@ -764,8 +764,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     * This method provides some of the same functionality as Scala's
     * NumericRange class.
     */
-  def iterator(step: A)(
-      implicit ev: AdditiveMonoid[A],
+  def iterator(step: A)(implicit
+      ev: AdditiveMonoid[A],
       nt: NumberTag[A]): Iterator[A] = {
 
     // build an iterator, using start, step, and continue.
@@ -1047,8 +1047,8 @@ object Interval {
       def eqv(x: Interval[A], y: Interval[A]): Boolean = x == y
     }
 
-  implicit def semiring[A](
-      implicit ev: Ring[A],
+  implicit def semiring[A](implicit
+      ev: Ring[A],
       o: Order[A]): Semiring[Interval[A]] =
     new Semiring[Interval[A]] {
       def zero: Interval[A] = Interval.point(ev.zero)

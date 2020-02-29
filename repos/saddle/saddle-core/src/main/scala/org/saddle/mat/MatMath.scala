@@ -29,8 +29,8 @@ object MatMath {
     * @param m1 Left hand matrix operand
     * @param m2 Right hand matrix operand
     */
-  def mult[A, B](m1: Mat[A], m2: Mat[B])(
-      implicit evA: NUM[A],
+  def mult[A, B](m1: Mat[A], m2: Mat[B])(implicit
+      evA: NUM[A],
       evB: NUM[B]): Mat[Double] = {
     import org.ejml.data.DenseMatrix64F
     import org.ejml.ops.CommonOps

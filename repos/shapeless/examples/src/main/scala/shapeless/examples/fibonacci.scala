@@ -38,8 +38,8 @@ object FibonacciExamples {
     implicit val fib0 = Fibonacci(0, 0)
     implicit val fib1 = Fibonacci(1, 1)
 
-    implicit def fibN[I <: Nat, L <: Nat, M <: Nat](
-        implicit l: Fibonacci[I, L],
+    implicit def fibN[I <: Nat, L <: Nat, M <: Nat](implicit
+        l: Fibonacci[I, L],
         m: Fibonacci[Succ[I], M],
         sum: Sum[L, M]) =
       new Fibonacci[Succ[Succ[I]], sum.Out]
@@ -83,8 +83,8 @@ object FibonacciExamples {
       def apply() = HNil
     }
 
-    implicit def fibsN[N <: Nat, H <: Nat, T <: HList](
-        implicit fib: Fibonacci[N, H],
+    implicit def fibsN[N <: Nat, H <: Nat, T <: HList](implicit
+        fib: Fibonacci[N, H],
         h: Witness.Aux[H],
         fibs: Fibs[N, T]) =
       new Fibs[Succ[N], H :: T] {

@@ -230,8 +230,8 @@ trait TraitViewPager[This <: android.support.v4.view.ViewPager]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/support/v4/view/ViewPager.html android.support.v4.view.ViewPager]]`.
   */
-class SViewPager()(
-    implicit context: android.content.Context,
+class SViewPager()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.support.v4.view.ViewPager(context)
     with TraitViewPager[SViewPager] {
@@ -242,8 +242,8 @@ class SViewPager()(
 }
 
 object SViewPager {
-  def apply[LP <: ViewGroupLayoutParams[_, SViewPager]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SViewPager]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SViewPager => LP): SViewPager = {
     val v = new SViewPager
     v.<<.parent.+=(v)

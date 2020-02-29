@@ -38,8 +38,8 @@ class Marshal[A](val value: A) {
   /**
     * Marshals `value` to an `HttpResponse` for the given `HttpRequest` with full content-negotiation.
     */
-  def toResponseFor(request: HttpRequest)(
-      implicit m: ToResponseMarshaller[A],
+  def toResponseFor(request: HttpRequest)(implicit
+      m: ToResponseMarshaller[A],
       ec: ExecutionContext): Future[HttpResponse] = {
     import akka.http.scaladsl.marshalling.Marshal._
     val ctn = ContentNegotiator(request.headers)

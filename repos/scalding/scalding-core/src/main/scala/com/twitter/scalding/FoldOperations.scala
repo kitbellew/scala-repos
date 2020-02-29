@@ -34,12 +34,14 @@ trait FoldOperations[+Self <: FoldOperations[Self]]
    *    grouping to avoid possible errors using a mutable init object).
    */
   def foldLeft[X, T](fieldDef: (Fields, Fields))(init: X)(fn: (X, T) => X)(
-      implicit setter: TupleSetter[X],
+      implicit
+      setter: TupleSetter[X],
       conv: TupleConverter[T]): Self
 
   //If there is an ordering, we need to reverse the list
   override def mapList[T, R](fieldDef: (Fields, Fields))(fn: (List[T]) => R)(
-      implicit conv: TupleConverter[T],
+      implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[R]): Self = {
     if (sorting.isDefined) {
       //the list is built in reverse order so we need to reverse it here

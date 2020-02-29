@@ -22,8 +22,8 @@ import org.scalacheck._
 
 object TestGraphGenerators {
   // Put the non-recursive calls first, otherwise you blow the stack
-  def genOptMap11[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genOptMap11[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -34,8 +34,8 @@ object TestGraphGenerators {
       in <- genProd1
     } yield OptionMappedProducer(in, fn)
 
-  def genOptMap12[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genOptMap12[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -46,8 +46,8 @@ object TestGraphGenerators {
       in <- genProd1
     } yield IdentityKeyedProducer(OptionMappedProducer(in, fn))
 
-  def genOptMap21[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genOptMap21[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -58,8 +58,8 @@ object TestGraphGenerators {
       in <- genProd2
     } yield OptionMappedProducer(in, fn)
 
-  def genOptMap22[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genOptMap22[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -70,8 +70,8 @@ object TestGraphGenerators {
       in <- genProd2
     } yield IdentityKeyedProducer(OptionMappedProducer(in, fn))
 
-  def aDependency[P <: Platform[P]](p: KeyedProducer[P, Int, Int])(
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def aDependency[P <: Platform[P]](p: KeyedProducer[P, Int, Int])(implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -84,8 +84,8 @@ object TestGraphGenerators {
     if (deps.size == 1) genProd2 else oneOf(deps)
   }
 
-  def aDependency1[P <: Platform[P]](p: Producer[P, Int])(
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def aDependency1[P <: Platform[P]](p: Producer[P, Int])(implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -97,8 +97,8 @@ object TestGraphGenerators {
     if (deps.size == 1) genProd1 else oneOf(deps)
   }
 
-  def aTailDependency[P <: Platform[P]](p: Producer[P, Any])(
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def aTailDependency[P <: Platform[P]](p: Producer[P, Any])(implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -110,8 +110,8 @@ object TestGraphGenerators {
     if (validDeps.size == 0) summed else oneOf(validDeps)
   }
 
-  def genMerged2[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genMerged2[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -123,8 +123,8 @@ object TestGraphGenerators {
       p2 <- oneOf(genProd2, aDependency(p1))
     } yield IdentityKeyedProducer(MergedProducer(p1, p2))
 
-  def genFlatMap22[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genFlatMap22[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -135,8 +135,8 @@ object TestGraphGenerators {
       in <- genProd2
     } yield IdentityKeyedProducer(FlatMappedProducer(in, fn))
 
-  def genFlatMap21[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genFlatMap21[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -147,8 +147,8 @@ object TestGraphGenerators {
       in <- genProd2
     } yield FlatMappedProducer(in, fn)
 
-  def genFlatMap11[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genFlatMap11[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -159,8 +159,8 @@ object TestGraphGenerators {
       in <- genProd1
     } yield FlatMappedProducer(in, fn)
 
-  def genNamedProducer11[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genNamedProducer11[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -173,8 +173,8 @@ object TestGraphGenerators {
       name <- Gen.alphaStr
     } yield NamedProducer(in, name)
 
-  def genNamedProducer22[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genNamedProducer22[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -187,8 +187,8 @@ object TestGraphGenerators {
       name <- Gen.alphaStr
     } yield IdentityKeyedProducer(NamedProducer(in, name))
 
-  def genMerged1[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genMerged1[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -200,8 +200,8 @@ object TestGraphGenerators {
       p2 <- aDependency1(p1)
     } yield MergedProducer(p1, p2)
 
-  def genFlatMap12[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genFlatMap12[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -212,8 +212,8 @@ object TestGraphGenerators {
       in <- genProd1
     } yield IdentityKeyedProducer(FlatMappedProducer(in, fn))
 
-  def genWrite22[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genWrite22[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -224,8 +224,8 @@ object TestGraphGenerators {
       p1 <- genProd2
     } yield IdentityKeyedProducer(p1.write(sink2))
 
-  def genSumByKey22[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genSumByKey22[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -236,8 +236,8 @@ object TestGraphGenerators {
       p1 <- genProd2
     } yield IdentityKeyedProducer(p1.sumByKey(testStore).mapValues(_._2))
 
-  def also1[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def also1[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -250,8 +250,8 @@ object TestGraphGenerators {
         TailProducer[P, _]]
     } yield ignored.name("Named ignore").also(out)
 
-  def also2[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def also2[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -264,8 +264,8 @@ object TestGraphGenerators {
         TailProducer[P, _]]
     } yield IdentityKeyedProducer(ignored.also(out))
 
-  def service2[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def service2[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -280,8 +280,8 @@ object TestGraphGenerators {
         in.leftJoin(service),
         postMerge))
 
-  def summed[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def summed[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -291,8 +291,8 @@ object TestGraphGenerators {
       in <- genProd2
     } yield in.sumByKey(testStore)
 
-  def written[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def written[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -302,8 +302,8 @@ object TestGraphGenerators {
       in <- genProd1
     } yield in.write(sink1)
 
-  def genProd2[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genProd2[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],
@@ -323,8 +323,8 @@ object TestGraphGenerators {
       (5, genSumByKey22)
     )
 
-  def genProd1[P <: Platform[P]](
-      implicit genSource1: Arbitrary[Producer[P, Int]],
+  def genProd1[P <: Platform[P]](implicit
+      genSource1: Arbitrary[Producer[P, Int]],
       genSource2: Arbitrary[KeyedProducer[P, Int, Int]],
       genService2: Arbitrary[P#Service[Int, Int]],
       testStore: P#Store[Int, Int],

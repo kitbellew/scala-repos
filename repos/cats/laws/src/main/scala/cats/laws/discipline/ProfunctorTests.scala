@@ -17,8 +17,7 @@ trait ProfunctorTests[F[_, _]] extends Laws {
       C: Arbitrary,
       D: Arbitrary,
       E: Arbitrary,
-      G: Arbitrary](
-      implicit
+      G: Arbitrary](implicit
       ArbFAB: Arbitrary[F[A, B]],
       ArbFCD: Arbitrary[F[C, D]],
       EqFAB: Eq[F[A, B]],

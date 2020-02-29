@@ -222,12 +222,12 @@ sealed abstract class StreamTInstances extends StreamTInstances0 {
     new StreamTMonadPlus[F] {
       implicit def F: Applicative[F] = F0
     }
-  implicit def StreamTEqual[F[_], A](
-      implicit E: Equal[F[Stream[A]]],
+  implicit def StreamTEqual[F[_], A](implicit
+      E: Equal[F[Stream[A]]],
       F: Monad[F]): Equal[StreamT[F, A]] =
     E.contramap((_: StreamT[F, A]).toStream)
-  implicit def StreamTShow[F[_], A](
-      implicit E: Show[F[Stream[A]]],
+  implicit def StreamTShow[F[_], A](implicit
+      E: Show[F[Stream[A]]],
       F: Monad[F]): Show[StreamT[F, A]] =
     Contravariant[Show].contramap(E)((_: StreamT[F, A]).toStream)
   implicit val StreamTHoist: Hoist[StreamT] = new StreamTHoist {}

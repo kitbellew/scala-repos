@@ -222,8 +222,8 @@ trait EssentialActionCaller {
     *
     * The body is serialised using the implicit writable, so that the action body parser can deserialise it.
     */
-  def call[T](action: EssentialAction, req: Request[T])(
-      implicit w: Writeable[T],
+  def call[T](action: EssentialAction, req: Request[T])(implicit
+      w: Writeable[T],
       mat: Materializer): Future[Result] =
     call(action, req, req.body)
 
@@ -232,8 +232,8 @@ trait EssentialActionCaller {
     *
     * The body is serialised using the implicit writable, so that the action body parser can deserialise it.
     */
-  def call[T](action: EssentialAction, rh: RequestHeader, body: T)(
-      implicit w: Writeable[T],
+  def call[T](action: EssentialAction, rh: RequestHeader, body: T)(implicit
+      w: Writeable[T],
       mat: Materializer): Future[Result] = {
     import play.api.http.HeaderNames._
     val newContentType =
@@ -360,16 +360,16 @@ trait ResultExtractors {
   /**
     * Extracts the content as String.
     */
-  def contentAsString(of: Future[Result])(
-      implicit timeout: Timeout,
+  def contentAsString(of: Future[Result])(implicit
+      timeout: Timeout,
       mat: Materializer = NoMaterializer): String =
     contentAsBytes(of).decodeString(charset(of).getOrElse("utf-8"))
 
   /**
     * Extracts the content as bytes.
     */
-  def contentAsBytes(of: Future[Result])(
-      implicit timeout: Timeout,
+  def contentAsBytes(of: Future[Result])(implicit
+      timeout: Timeout,
       mat: Materializer = NoMaterializer): ByteString = {
     val result = Await.result(of, timeout.duration)
     Await.result(result.body.consumeData, timeout.duration)
@@ -378,8 +378,8 @@ trait ResultExtractors {
   /**
     * Extracts the content as Json.
     */
-  def contentAsJson(of: Future[Result])(
-      implicit timeout: Timeout,
+  def contentAsJson(of: Future[Result])(implicit
+      timeout: Timeout,
       mat: Materializer = NoMaterializer): JsValue =
     Json.parse(contentAsString(of))
 

@@ -26,8 +26,8 @@ class EnumSerializer[E <: Enumeration: ClassTag](enum: E)
 
   val EnumerationClass = classOf[E#Value]
 
-  def deserialize(implicit format: Formats)
-      : PartialFunction[(TypeInfo, JValue), E#Value] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
     case (TypeInfo(EnumerationClass, _), json) =>
       json match {
         case JInt(value) if (value <= enum.maxId) => enum(value.toInt)
@@ -49,8 +49,8 @@ class EnumNameSerializer[E <: Enumeration: ClassTag](enum: E)
 
   val EnumerationClass = classOf[E#Value]
 
-  def deserialize(implicit format: Formats)
-      : PartialFunction[(TypeInfo, JValue), E#Value] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
     case (TypeInfo(EnumerationClass, _), json) =>
       json match {
         case JString(value) if (enum.values.exists(_.toString == value)) =>

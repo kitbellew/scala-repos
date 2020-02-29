@@ -67,8 +67,7 @@ object UnfoldExamples extends App {
         OutH,
         OutT <: HList,
         PCoS,
-        PCoSV](
-        implicit
+        PCoSV](implicit
         shrink: Case1.Aux[F, PCoS, (PCoSV, CoS)],
         f: Case1.Aux[F, S, (OutH, SS)],
         ut: UnfoldAux[F, E, SS, PCoS, OutT])
@@ -97,8 +96,7 @@ object UnfoldExamples extends App {
   object unfoldFibs extends Poly1 {
     implicit def case0 = at[_0](_ => (_0, _1))
     implicit def case1 = at[_1](_ => (_1, _2))
-    implicit def caseN[N <: Nat, FN <: Nat, FSN <: Nat, FSSN <: Nat](
-        implicit
+    implicit def caseN[N <: Nat, FN <: Nat, FSN <: Nat, FSSN <: Nat](implicit
         fn: Case.Aux[N, (FN, Succ[N])],
         fsn: Case.Aux[Succ[N], (FSN, Succ[Succ[N]])],
         sum: Sum.Aux[FN, FSN, FSSN],

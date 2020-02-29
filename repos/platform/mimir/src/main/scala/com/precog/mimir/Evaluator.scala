@@ -86,8 +86,8 @@ trait EvaluatorModule[M[+_]]
 
   type Evaluator[N[+_]] <: EvaluatorLike[N]
 
-  abstract class EvaluatorLike[N[+_]](N0: Monad[N])(
-      implicit mn: M ~> N,
+  abstract class EvaluatorLike[N[+_]](N0: Monad[N])(implicit
+      mn: M ~> N,
       nm: N ~> M)
       extends OpFinder
       with ReductionFinder

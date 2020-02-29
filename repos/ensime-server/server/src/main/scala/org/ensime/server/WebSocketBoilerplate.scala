@@ -49,8 +49,7 @@ object WebSocketBoilerplate {
     */
   def jsonWebsocket[Incoming, Outgoing](
       actor: ActorRef => ActorRef
-  )(
-      implicit
+  )(implicit
       m1: RootJsonFormat[Incoming],
       m2: RootJsonFormat[Outgoing],
       mat: Materializer,
@@ -71,8 +70,7 @@ object WebSocketBoilerplate {
     */
   def actorRefAsFlow[Incoming, Outgoing](
       actor: ActorRef => ActorRef
-  )(
-      implicit
+  )(implicit
       mat: Materializer
   ): Flow[Incoming, Outgoing, Unit] = {
     val (target, pub) = Source
@@ -96,8 +94,7 @@ object WebSocketBoilerplate {
     */
   def jsonMarshalledMessageFlow[Incoming, Outgoing](
       flow: Flow[Incoming, Outgoing, Unit]
-  )(
-      implicit
+  )(implicit
       m1: RootJsonFormat[Incoming],
       m2: RootJsonFormat[Outgoing],
       //mat: Materializer,

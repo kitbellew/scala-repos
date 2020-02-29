@@ -92,8 +92,8 @@ object nat {
     implicit def prod1[B <: Nat]: Aux[_0, B, _0] = new Prod[_0, B] {
       type Out = _0
     }
-    implicit def prod2[A <: Nat, B <: Nat, C <: Nat](
-        implicit prod: Prod.Aux[A, B, C],
+    implicit def prod2[A <: Nat, B <: Nat, C <: Nat](implicit
+        prod: Prod.Aux[A, B, C],
         sum: Sum[B, C]): Aux[Succ[A], B, sum.Out] = new Prod[Succ[A], B] {
       type Out = sum.Out
     }
@@ -121,8 +121,8 @@ object nat {
     implicit def div2[A <: Nat, B <: Nat](implicit lt: A < B): Aux[A, B, _0] =
       new Div[A, B] { type Out = _0 }
 
-    implicit def div3[A <: Nat, B <: Nat, C <: Nat, D <: Nat](
-        implicit diff: Diff.Aux[Succ[A], B, C],
+    implicit def div3[A <: Nat, B <: Nat, C <: Nat, D <: Nat](implicit
+        diff: Diff.Aux[Succ[A], B, C],
         div: Div.Aux[C, B, D]): Aux[Succ[A], B, Succ[D]] =
       new Div[Succ[A], B] { type Out = Succ[D] }
   }
@@ -141,7 +141,8 @@ object nat {
     type Aux[A <: Nat, B <: Nat, C <: Nat] = Mod[A, B] { type Out = C }
 
     implicit def modAux[A <: Nat, B <: Nat, C <: Nat, D <: Nat, E <: Nat](
-        implicit div: Div.Aux[A, B, C],
+        implicit
+        div: Div.Aux[A, B, C],
         prod: Prod.Aux[C, B, D],
         diff: Diff.Aux[A, D, E]): Aux[A, B, E] =
       new Mod[A, B] { type Out = E }
@@ -275,8 +276,8 @@ object nat {
     implicit def pow2[A <: Nat]: Aux[_0, Succ[A], _1] = new Pow[_0, Succ[A]] {
       type Out = _1
     }
-    implicit def pow3[N <: Nat, X <: Nat, Z <: Nat, Y <: Nat](
-        implicit ev: Pow.Aux[N, X, Z],
+    implicit def pow3[N <: Nat, X <: Nat, Z <: Nat, Y <: Nat](implicit
+        ev: Pow.Aux[N, X, Z],
         ev2: Prod.Aux[Z, X, Y]): Aux[Succ[N], X, Y] = new Pow[Succ[N], X] {
       type Out = Y
     }
@@ -307,8 +308,7 @@ object nat {
       def apply(): Out = HNil
     }
 
-    implicit def range2[A <: Nat, B <: Nat, L <: HList, LO <: HList](
-        implicit
+    implicit def range2[A <: Nat, B <: Nat, L <: HList, LO <: HList](implicit
         w: Witness.Aux[B],
         r: Range.Aux[A, B, L],
         prep: Prepend.Aux[L, B :: HNil, LO]): Aux[A, Succ[B], LO] =
@@ -325,8 +325,7 @@ object nat {
     * @author Andreas Koestler
     */
   trait LowPriorityGCD {
-    implicit def defaultCase[A <: Nat, B <: Nat, T <: Nat](
-        implicit
+    implicit def defaultCase[A <: Nat, B <: Nat, T <: Nat](implicit
         mod: Mod.Aux[A, B, T],
         gcd: GCD[B, T]): GCD.Aux[A, B, gcd.Out] = new GCD[A, B] {
       type Out = gcd.Out

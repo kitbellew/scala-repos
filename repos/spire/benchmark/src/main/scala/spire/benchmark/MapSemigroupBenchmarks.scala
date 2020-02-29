@@ -24,8 +24,7 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     * Original code from Algebird, though without the isNonZero stuff. That is
     * not, in general, deciable.
     */
-  def algebirdAdd[K, V](x: Map[K, V], y: Map[K, V])(
-      implicit
+  def algebirdAdd[K, V](x: Map[K, V], y: Map[K, V])(implicit
       semigroup: Semigroup[V],
       eq: Eq[V]): Map[K, V] = {
     val (big, small, bigOnLeft) = if (x.size > y.size) { (x, y, true) }
@@ -46,9 +45,7 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   @inline private final def add[K, V](
       x: Map[K, V],
       y: Map[K, V],
-      flip: Boolean)(
-      implicit
-      semigroup: Semigroup[V]): Map[K, V] = {
+      flip: Boolean)(implicit semigroup: Semigroup[V]): Map[K, V] = {
     y.foldLeft(x) {
       case (z, kv) =>
         z + (
@@ -63,14 +60,12 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   }
 
   def bulkAdd[K, V](x: Map[K, V], y: Map[K, V])(
-      implicit
-      semigroup: Semigroup[V]): Map[K, V] = {
+      implicit semigroup: Semigroup[V]): Map[K, V] = {
     if (x.size < y.size) add(y, x, true) else add(x, y, false)
   }
 
   def spireAdd[K, V](x: Map[K, V], y: Map[K, V])(
-      implicit
-      rng: Rng[Map[K, V]]): Map[K, V] = rng.plus(x, y)
+      implicit rng: Rng[Map[K, V]]): Map[K, V] = rng.plus(x, y)
 
   val numMaps = 1000
 

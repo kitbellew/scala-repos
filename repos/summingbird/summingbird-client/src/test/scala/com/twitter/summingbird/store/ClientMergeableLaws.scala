@@ -22,8 +22,8 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
 
   case class Machine[K, V](
       offline: Store[K, (BatchID, V)],
-      online: Store[(K, BatchID), V])(
-      implicit val batcher: Batcher,
+      online: Store[(K, BatchID), V])(implicit
+      val batcher: Batcher,
       semi: Semigroup[V]) {
     val mergeable =
       ClientMergeable(offline, MergeableStore.fromStoreNoMulti(online), 10)

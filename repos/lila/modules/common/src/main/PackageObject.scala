@@ -123,11 +123,8 @@ trait WithPlay { self: PackageObject =>
   implicit final class LilaTraversableFuture[A, M[X] <: TraversableOnce[X]](
       t: M[Fu[A]]) {
 
-    def sequenceFu(
-        implicit cbf: scala.collection.generic.CanBuildFrom[
-          M[Fu[A]],
-          A,
-          M[A]]) =
+    def sequenceFu(implicit
+        cbf: scala.collection.generic.CanBuildFrom[M[Fu[A]], A, M[A]]) =
       Future sequence t
   }
 

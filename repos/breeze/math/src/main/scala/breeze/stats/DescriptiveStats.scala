@@ -52,8 +52,8 @@ case class MeanAndVariance(mean: Double, variance: Double, count: Long) {
 
 object accumulateAndCount extends UFunc {
   @expand
-  implicit def reduce[T, @expand.args(Double, Complex, Float) Scalar](
-      implicit iter: CanTraverseValues[T, Scalar],
+  implicit def reduce[T, @expand.args(Double, Complex, Float) Scalar](implicit
+      iter: CanTraverseValues[T, Scalar],
       @expand.sequence[Scalar](0.0, Complex.zero, 0.0f) zero: Scalar)
       : Impl[T, (Scalar, Int)] = new Impl[T, (Scalar, Int)] {
     def apply(v: T): (Scalar, Int) = {
@@ -84,8 +84,8 @@ trait DescriptiveStats {
     */
   object mean extends UFunc {
     @expand
-    implicit def reduce[@expand.args(Float, Double, Complex) S, T](
-        implicit iter: CanTraverseValues[T, S],
+    implicit def reduce[@expand.args(Float, Double, Complex) S, T](implicit
+        iter: CanTraverseValues[T, S],
         @expand.sequence[S](0f, 0d, Complex.zero) z: S): Impl[T, S] =
       new Impl[T, S] {
         def apply(v: T): S = {
@@ -156,11 +156,11 @@ trait DescriptiveStats {
     * The method just calls meanAndVariance and returns the second result.
     */
   object variance extends UFunc {
-    implicit def reduceDouble[T](
-        implicit mv: meanAndVariance.Impl[T, MeanAndVariance])
-        : Impl[T, Double] = new Impl[T, Double] {
-      def apply(v: T): Double = mv(v).variance
-    }
+    implicit def reduceDouble[T](implicit
+        mv: meanAndVariance.Impl[T, MeanAndVariance]): Impl[T, Double] =
+      new Impl[T, Double] {
+        def apply(v: T): Double = mv(v).variance
+      }
   }
 
   /**
@@ -294,7 +294,8 @@ trait DescriptiveStats {
   object mode extends UFunc {
     @expand
     implicit def reduce[T, @expand.args(Double, Complex, Float, Int) Scalar](
-        implicit iter: CanTraverseValues[T, Scalar],
+        implicit
+        iter: CanTraverseValues[T, Scalar],
         @expand.sequence[Scalar](Double.NaN, Complex.nan, 0.0f, 0) initialValue: Scalar)
         : Impl[T, ModeResult[Scalar]] =
       new Impl[T, ModeResult[Scalar]] {
@@ -465,8 +466,8 @@ trait DescriptiveStats {
           }
         }
 
-      implicit def reduce[T](implicit iter: CanTraverseValues[T, Int])
-          : Impl[T, SparseVector[Int]] =
+      implicit def reduce[T](implicit
+          iter: CanTraverseValues[T, Int]): Impl[T, SparseVector[Int]] =
         new Impl[T, SparseVector[Int]] {
           def apply(x: T): SparseVector[Int] = {
             require(min(x) >= 0)

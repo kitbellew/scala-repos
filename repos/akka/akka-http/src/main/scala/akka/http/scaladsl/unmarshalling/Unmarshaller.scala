@@ -13,8 +13,8 @@ import akka.http.scaladsl.model._
 
 trait Unmarshaller[-A, B] {
 
-  def apply(value: A)(
-      implicit ec: ExecutionContext,
+  def apply(value: A)(implicit
+      ec: ExecutionContext,
       materializer: Materializer): Future[B]
 
   def transform[C](f: ExecutionContext ⇒ Materializer ⇒ Future[B] ⇒ Future[C])

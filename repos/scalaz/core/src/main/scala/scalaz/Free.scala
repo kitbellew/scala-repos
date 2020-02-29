@@ -179,8 +179,8 @@ sealed abstract class Free[S[_], A] {
     * Runs to completion, using a function that maps the resumption from `S` to a monad `M`.
     * @since 7.0.1
     */
-  final def runM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(
-      implicit S: Functor[S],
+  final def runM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(implicit
+      S: Functor[S],
       M: Monad[M]): M[A] = {
     def runM2(t: Free[S, A]): M[A] = t.resume match {
       case -\/(s) => Monad[M].bind(f(s))(runM2)
@@ -192,8 +192,8 @@ sealed abstract class Free[S[_], A] {
   /**
     * Run Free using constant stack.
     */
-  final def runRecM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(
-      implicit S: Functor[S],
+  final def runRecM[M[_]](f: S[Free[S, A]] => M[Free[S, A]])(implicit
+      S: Functor[S],
       M: Applicative[M],
       B: BindRec[M]): M[A] = {
     def go(e: S[Free[S, A]] \/ A): M[Free[S, A] \/ A] =
@@ -464,8 +464,8 @@ sealed abstract class FreeInstances
         f(a).flatMap(_.fold(tailrecM(f), point(_)))
     }
 
-  implicit def freeZip[S[_]](
-      implicit F: Functor[S],
+  implicit def freeZip[S[_]](implicit
+      F: Functor[S],
       Z: Zip[S]): Zip[Free[S, ?]] =
     new Zip[Free[S, ?]] {
       override def zip[A, B](aa: => Free[S, A], bb: => Free[S, B]) =

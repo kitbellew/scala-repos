@@ -113,9 +113,8 @@ object OrderedSerialization {
   private[this] def internalTransformer[T, U, V](
       packFn: T => U,
       unpackFn: U => V,
-      presentFn: Try[V] => Try[T])(
-      implicit otherOrdSer: OrderedSerialization[U])
-      : OrderedSerialization[T] = {
+      presentFn: Try[V] => Try[T])(implicit
+      otherOrdSer: OrderedSerialization[U]): OrderedSerialization[T] = {
     new OrderedSerialization[T] {
       private[this] var cache: (T, U) = null
       private[this] def packCache(t: T): U = {

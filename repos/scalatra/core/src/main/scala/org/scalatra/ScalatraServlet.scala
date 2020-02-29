@@ -104,8 +104,8 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
     * Attempts to find a static resource matching the request path.  Override
     * to return None to stop this.
     */
-  protected def serveStaticResource()(
-      implicit request: HttpServletRequest,
+  protected def serveStaticResource()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Option[Any] = {
     servletContext.resource(request) map { _ =>
       servletContext.getNamedDispatcher("default").forward(request, response)
@@ -116,8 +116,8 @@ trait ScalatraServlet extends HttpServlet with ServletBase with Initializable {
     * Called by default notFound if no routes matched and no static resource
     * could be found.
     */
-  protected def resourceNotFound()(
-      implicit request: HttpServletRequest,
+  protected def resourceNotFound()(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Any = {
     response.setStatus(404)
     if (isDevelopmentMode) {

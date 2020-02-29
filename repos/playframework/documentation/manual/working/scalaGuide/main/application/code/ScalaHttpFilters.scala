@@ -12,8 +12,8 @@ package simple {
   import play.api.mvc._
   import scala.concurrent.{ExecutionContext, Future}
 
-  class LoggingFilter @Inject() (
-      implicit val mat: Materializer,
+  class LoggingFilter @Inject() (implicit
+      val mat: Materializer,
       ec: ExecutionContext)
       extends Filter {
 

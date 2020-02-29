@@ -138,8 +138,8 @@ case class AffineStepMetropolisHastings[T](
     val proposalStep: Rand[T],
     init: T,
     burnIn: Long = 0,
-    dropCount: Int = 0)(
-    implicit rand: RandBasis = Rand,
+    dropCount: Int = 0)(implicit
+    rand: RandBasis = Rand,
     vectorSpace: VectorSpace[T, _])
     extends BaseMetropolisHastings[T](logLikelihood, init, burnIn, dropCount)(
       rand)

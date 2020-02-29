@@ -54,8 +54,8 @@ object AsyncMeter {
       burstSize: Int,
       burstDuration: Duration,
       maxWaiters: Int
-  )(
-      implicit timer: Timer
+  )(implicit
+      timer: Timer
   ): AsyncMeter = new AsyncMeter(burstSize, burstDuration, maxWaiters)
 
   /**

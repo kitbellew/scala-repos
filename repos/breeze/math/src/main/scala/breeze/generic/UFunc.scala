@@ -99,8 +99,8 @@ trait UFunc {
   //  @implicitNotFound("Could not find an implicit with-sink implementation for this UFunc with arguments ${S} ${V1}, ${V2}, ${V3}")
   type SinkImpl3[S, V1, V2, V3] = UFunc.SinkImpl3[this.type, S, V1, V2, V3]
 
-  implicit def canZipMapValuesImpl[T, V1, VR, U](
-      implicit handhold: ScalarOf[T, V1],
+  implicit def canZipMapValuesImpl[T, V1, VR, U](implicit
+      handhold: ScalarOf[T, V1],
       impl: Impl2[V1, V1, VR],
       canZipMapValues: CanZipMapValues[T, V1, VR, U]): Impl2[T, T, U] = {
     new Impl2[T, T, U] {
@@ -128,8 +128,8 @@ trait VariableUFunc[U <: UFunc, T <: VariableUFunc[U, T]] { self: T =>
 }
 
 trait MappingUFunc extends MappingUFuncLowPrio { this: UFunc =>
-  implicit def fromLowOrderCanMapValues[T, V, V2, U](
-      implicit handhold: ScalarOf[T, V],
+  implicit def fromLowOrderCanMapValues[T, V, V2, U](implicit
+      handhold: ScalarOf[T, V],
       impl: Impl[V, V2],
       canMapValues: CanMapValues[T, V, V2, U]): Impl[T, U] = {
     new Impl[T, U] {
@@ -137,8 +137,8 @@ trait MappingUFunc extends MappingUFuncLowPrio { this: UFunc =>
     }
   }
 
-  implicit def canMapV1DV[T, V1, V2, VR, U](
-      implicit handhold: ScalarOf[T, V1],
+  implicit def canMapV1DV[T, V1, V2, VR, U](implicit
+      handhold: ScalarOf[T, V1],
       impl: Impl2[V1, V2, VR],
       canMapValues: CanMapValues[T, V1, VR, U]): Impl2[T, V2, U] = {
     new Impl2[T, V2, U] {
@@ -149,8 +149,8 @@ trait MappingUFunc extends MappingUFuncLowPrio { this: UFunc =>
 }
 
 sealed trait MappingUFuncLowPrio { this: UFunc =>
-  implicit def canMapV2Values[T, V1, V2, VR, U](
-      implicit handhold: ScalarOf[T, V2],
+  implicit def canMapV2Values[T, V1, V2, VR, U](implicit
+      handhold: ScalarOf[T, V2],
       impl: Impl2[V1, V2, VR],
       canMapValues: CanMapValues[T, V2, VR, U]): Impl2[V1, T, U] = {
     new Impl2[V1, T, U] {
@@ -238,24 +238,24 @@ object UFunc {
     def apply(sink: S, v: V, v2: V2, v3: V3)
   }
 
-  implicit def canTransformValuesUFunc[Tag, T, V](
-      implicit canTransform: CanTransformValues[T, V],
+  implicit def canTransformValuesUFunc[Tag, T, V](implicit
+      canTransform: CanTransformValues[T, V],
       impl: UImpl[Tag, V, V]): InPlaceImpl[Tag, T] = {
     new InPlaceImpl[Tag, T] {
       def apply(v: T) = { canTransform.transform(v, impl.apply) }
     }
   }
 
-  implicit def canTransformValuesUFunc2[Tag, T, V, V2](
-      implicit canTransform: CanTransformValues[T, V],
+  implicit def canTransformValuesUFunc2[Tag, T, V, V2](implicit
+      canTransform: CanTransformValues[T, V],
       impl: UImpl2[Tag, V, V2, V]): InPlaceImpl2[Tag, T, V2] = {
     new InPlaceImpl2[Tag, T, V2] {
       def apply(v: T, v2: V2) = { canTransform.transform(v, impl.apply(_, v2)) }
     }
   }
 
-  implicit def collapseUred[Tag, V1, AxisT <: Axis, TA, VR, Result](
-      implicit handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
+  implicit def collapseUred[Tag, V1, AxisT <: Axis, TA, VR, Result](implicit
+      handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
       impl: UImpl[Tag, TA, VR],
       collapse: CanCollapseAxis[V1, AxisT, TA, VR, Result])
       : UImpl2[Tag, V1, AxisT, Result] = {
@@ -265,7 +265,8 @@ object UFunc {
   }
 
   implicit def collapseUred3[Tag, V1, AxisT <: Axis, V3, TA, VR, Result](
-      implicit handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
+      implicit
+      handhold: CanCollapseAxis.HandHold[V1, AxisT, TA],
       impl: UImpl2[Tag, TA, V3, VR],
       collapse: CanCollapseAxis[V1, AxisT, TA, VR, Result])
       : UImpl3[Tag, V1, AxisT, V3, Result] = {
@@ -313,8 +314,8 @@ object WrappedUFunc extends UFunc with WrappedUFuncLowPrio {
     }
   }
 
-  implicit def apply1[V, A1, R, V2](implicit cmv: CanMapValues[V, A1, R, V2])
-      : Impl2[WrappedUFunc1[A1, R], V, V2] = {
+  implicit def apply1[V, A1, R, V2](implicit
+      cmv: CanMapValues[V, A1, R, V2]): Impl2[WrappedUFunc1[A1, R], V, V2] = {
     new Impl2[WrappedUFunc1[A1, R], V, V2] {
       override def apply(v: WrappedUFunc1[A1, R], v2: V): V2 = cmv(v2, v.f)
     }

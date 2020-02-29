@@ -136,8 +136,8 @@ object Semigroup {
   }
 
   /**A semigroup for sequencing Apply effects. */
-  def liftSemigroup[F[_], M](
-      implicit F0: Apply[F],
+  def liftSemigroup[F[_], M](implicit
+      F0: Apply[F],
       M0: Semigroup[M]): Semigroup[F[M]] =
     new ApplySemigroup[F, M] {
       implicit def F: Apply[F] = F0

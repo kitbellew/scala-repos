@@ -33,8 +33,8 @@ import org.joda.time.DateTime
 class ObjectIdSerializer extends Serializer[ObjectId] {
   private val ObjectIdClass = classOf[ObjectId]
 
-  def deserialize(implicit format: Formats)
-      : PartialFunction[(TypeInfo, JValue), ObjectId] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), ObjectId] = {
     case (TypeInfo(ObjectIdClass, _), json) =>
       json match {
         case JsonObjectId(objectId) => objectId
@@ -58,8 +58,8 @@ class ObjectIdSerializer extends Serializer[ObjectId] {
 class PatternSerializer extends Serializer[Pattern] {
   private val PatternClass = classOf[Pattern]
 
-  def deserialize(implicit format: Formats)
-      : PartialFunction[(TypeInfo, JValue), Pattern] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), Pattern] = {
     case (TypeInfo(PatternClass, _), json) =>
       json match {
         case JsonRegex(regex) => regex
@@ -105,8 +105,8 @@ class DateSerializer extends Serializer[Date] {
 class DateTimeSerializer extends Serializer[DateTime] {
   private val DateTimeClass = classOf[DateTime]
 
-  def deserialize(implicit format: Formats)
-      : PartialFunction[(TypeInfo, JValue), DateTime] = {
+  def deserialize(implicit
+      format: Formats): PartialFunction[(TypeInfo, JValue), DateTime] = {
     case (TypeInfo(DateTimeClass, _), json) =>
       json match {
         case JsonDateTime(dt) => dt

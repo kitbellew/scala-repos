@@ -91,19 +91,19 @@ trait StandardLiftables { self: Universe =>
         case right: Right[L, R] => lift(right)
       }
 
-    implicit def liftTuple2[T1, T2](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple2[T1, T2](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2]): Liftable[Tuple2[T1, T2]] = Liftable { t =>
       SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: Nil)
     }
-    implicit def liftTuple3[T1, T2, T3](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple3[T1, T2, T3](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3]): Liftable[Tuple3[T1, T2, T3]] = Liftable { t =>
       SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: Nil)
     }
-    implicit def liftTuple4[T1, T2, T3, T4](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple4[T1, T2, T3, T4](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4]): Liftable[Tuple4[T1, T2, T3, T4]] = Liftable {
@@ -111,8 +111,8 @@ trait StandardLiftables { self: Universe =>
         SyntacticTuple(
           liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(t._4) :: Nil)
     }
-    implicit def liftTuple5[T1, T2, T3, T4, T5](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple5[T1, T2, T3, T4, T5](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -121,8 +121,8 @@ trait StandardLiftables { self: Universe =>
         SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(
           t._4) :: liftT5(t._5) :: Nil)
     }
-    implicit def liftTuple6[T1, T2, T3, T4, T5, T6](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple6[T1, T2, T3, T4, T5, T6](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -132,8 +132,8 @@ trait StandardLiftables { self: Universe =>
         SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(
           t._4) :: liftT5(t._5) :: liftT6(t._6) :: Nil)
       }
-    implicit def liftTuple7[T1, T2, T3, T4, T5, T6, T7](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple7[T1, T2, T3, T4, T5, T6, T7](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -144,8 +144,8 @@ trait StandardLiftables { self: Universe =>
         SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(
           t._4) :: liftT5(t._5) :: liftT6(t._6) :: liftT7(t._7) :: Nil)
       }
-    implicit def liftTuple8[T1, T2, T3, T4, T5, T6, T7, T8](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple8[T1, T2, T3, T4, T5, T6, T7, T8](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -158,8 +158,8 @@ trait StandardLiftables { self: Universe =>
         liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(t._4) :: liftT5(
           t._5) :: liftT6(t._6) :: liftT7(t._7) :: liftT8(t._8) :: Nil)
     }
-    implicit def liftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -173,8 +173,8 @@ trait StandardLiftables { self: Universe =>
         t._4) :: liftT5(t._5) :: liftT6(t._6) :: liftT7(t._7) :: liftT8(t._8) :: liftT9(
         t._9) :: Nil)
     }
-    implicit def liftTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
-        implicit liftT1: Liftable[T1],
+    implicit def liftTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -192,7 +192,8 @@ trait StandardLiftables { self: Universe =>
             t._9) :: liftT10(t._10) :: Nil)
       }
     implicit def liftTuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](
-        implicit liftT1: Liftable[T1],
+        implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -211,7 +212,8 @@ trait StandardLiftables { self: Universe =>
             t._9) :: liftT10(t._10) :: liftT11(t._11) :: Nil)
       }
     implicit def liftTuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12](
-        implicit liftT1: Liftable[T1],
+        implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -243,8 +245,8 @@ trait StandardLiftables { self: Universe =>
         T10,
         T11,
         T12,
-        T13](
-        implicit liftT1: Liftable[T1],
+        T13](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -279,8 +281,8 @@ trait StandardLiftables { self: Universe =>
         T11,
         T12,
         T13,
-        T14](
-        implicit liftT1: Liftable[T1],
+        T14](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -317,8 +319,8 @@ trait StandardLiftables { self: Universe =>
         T12,
         T13,
         T14,
-        T15](
-        implicit liftT1: Liftable[T1],
+        T15](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -369,8 +371,8 @@ trait StandardLiftables { self: Universe =>
         T13,
         T14,
         T15,
-        T16](
-        implicit liftT1: Liftable[T1],
+        T16](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -424,8 +426,8 @@ trait StandardLiftables { self: Universe =>
         T14,
         T15,
         T16,
-        T17](
-        implicit liftT1: Liftable[T1],
+        T17](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -483,8 +485,8 @@ trait StandardLiftables { self: Universe =>
         T15,
         T16,
         T17,
-        T18](
-        implicit liftT1: Liftable[T1],
+        T18](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -545,8 +547,8 @@ trait StandardLiftables { self: Universe =>
         T16,
         T17,
         T18,
-        T19](
-        implicit liftT1: Liftable[T1],
+        T19](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -610,8 +612,8 @@ trait StandardLiftables { self: Universe =>
         T17,
         T18,
         T19,
-        T20](
-        implicit liftT1: Liftable[T1],
+        T20](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -678,8 +680,8 @@ trait StandardLiftables { self: Universe =>
         T18,
         T19,
         T20,
-        T21](
-        implicit liftT1: Liftable[T1],
+        T21](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -750,8 +752,8 @@ trait StandardLiftables { self: Universe =>
         T19,
         T20,
         T21,
-        T22](
-        implicit liftT1: Liftable[T1],
+        T22](implicit
+        liftT1: Liftable[T1],
         liftT2: Liftable[T2],
         liftT3: Liftable[T3],
         liftT4: Liftable[T4],
@@ -853,21 +855,21 @@ trait StandardLiftables { self: Universe =>
       case Literal(const) => const
     }
 
-    implicit def unliftTuple2[T1, T2](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple2[T1, T2](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2]): Unliftable[Tuple2[T1, T2]] = Unliftable {
       case SyntacticTuple(UnliftT1(v1) :: UnliftT2(v2) :: Nil) => Tuple2(v1, v2)
     }
-    implicit def unliftTuple3[T1, T2, T3](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple3[T1, T2, T3](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3]): Unliftable[Tuple3[T1, T2, T3]] = Unliftable {
       case SyntacticTuple(
           UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: Nil) =>
         Tuple3(v1, v2, v3)
     }
-    implicit def unliftTuple4[T1, T2, T3, T4](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple4[T1, T2, T3, T4](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4]): Unliftable[Tuple4[T1, T2, T3, T4]] =
@@ -876,8 +878,8 @@ trait StandardLiftables { self: Universe =>
             UnliftT1(v1) :: UnliftT2(v2) :: UnliftT3(v3) :: UnliftT4(v4) :: Nil) =>
           Tuple4(v1, v2, v3, v4)
       }
-    implicit def unliftTuple5[T1, T2, T3, T4, T5](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple5[T1, T2, T3, T4, T5](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -888,8 +890,8 @@ trait StandardLiftables { self: Universe =>
               v5) :: Nil) =>
           Tuple5(v1, v2, v3, v4, v5)
       }
-    implicit def unliftTuple6[T1, T2, T3, T4, T5, T6](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple6[T1, T2, T3, T4, T5, T6](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -901,8 +903,8 @@ trait StandardLiftables { self: Universe =>
               v5) :: UnliftT6(v6) :: Nil) =>
           Tuple6(v1, v2, v3, v4, v5, v6)
       }
-    implicit def unliftTuple7[T1, T2, T3, T4, T5, T6, T7](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple7[T1, T2, T3, T4, T5, T6, T7](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -915,8 +917,8 @@ trait StandardLiftables { self: Universe =>
             v5) :: UnliftT6(v6) :: UnliftT7(v7) :: Nil) =>
         Tuple7(v1, v2, v3, v4, v5, v6, v7)
     }
-    implicit def unliftTuple8[T1, T2, T3, T4, T5, T6, T7, T8](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple8[T1, T2, T3, T4, T5, T6, T7, T8](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -930,8 +932,8 @@ trait StandardLiftables { self: Universe =>
             v5) :: UnliftT6(v6) :: UnliftT7(v7) :: UnliftT8(v8) :: Nil) =>
         Tuple8(v1, v2, v3, v4, v5, v6, v7, v8)
     }
-    implicit def unliftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -946,8 +948,8 @@ trait StandardLiftables { self: Universe =>
             v9) :: Nil) =>
         Tuple9(v1, v2, v3, v4, v5, v6, v7, v8, v9)
     }
-    implicit def unliftTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
-        implicit UnliftT1: Unliftable[T1],
+    implicit def unliftTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -966,7 +968,8 @@ trait StandardLiftables { self: Universe =>
           Tuple10(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)
       }
     implicit def unliftTuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](
-        implicit UnliftT1: Unliftable[T1],
+        implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -997,8 +1000,8 @@ trait StandardLiftables { self: Universe =>
         T9,
         T10,
         T11,
-        T12](
-        implicit UnliftT1: Unliftable[T1],
+        T12](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1030,8 +1033,8 @@ trait StandardLiftables { self: Universe =>
         T10,
         T11,
         T12,
-        T13](
-        implicit UnliftT1: Unliftable[T1],
+        T13](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1067,8 +1070,8 @@ trait StandardLiftables { self: Universe =>
         T11,
         T12,
         T13,
-        T14](
-        implicit UnliftT1: Unliftable[T1],
+        T14](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1106,8 +1109,8 @@ trait StandardLiftables { self: Universe =>
         T12,
         T13,
         T14,
-        T15](
-        implicit UnliftT1: Unliftable[T1],
+        T15](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1175,8 +1178,8 @@ trait StandardLiftables { self: Universe =>
         T13,
         T14,
         T15,
-        T16](
-        implicit UnliftT1: Unliftable[T1],
+        T16](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1248,8 +1251,8 @@ trait StandardLiftables { self: Universe =>
         T14,
         T15,
         T16,
-        T17](
-        implicit UnliftT1: Unliftable[T1],
+        T17](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1325,8 +1328,8 @@ trait StandardLiftables { self: Universe =>
         T15,
         T16,
         T17,
-        T18](
-        implicit UnliftT1: Unliftable[T1],
+        T18](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1407,8 +1410,8 @@ trait StandardLiftables { self: Universe =>
         T16,
         T17,
         T18,
-        T19](
-        implicit UnliftT1: Unliftable[T1],
+        T19](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1493,8 +1496,8 @@ trait StandardLiftables { self: Universe =>
         T17,
         T18,
         T19,
-        T20](
-        implicit UnliftT1: Unliftable[T1],
+        T20](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1583,8 +1586,8 @@ trait StandardLiftables { self: Universe =>
         T18,
         T19,
         T20,
-        T21](
-        implicit UnliftT1: Unliftable[T1],
+        T21](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],
@@ -1677,8 +1680,8 @@ trait StandardLiftables { self: Universe =>
         T19,
         T20,
         T21,
-        T22](
-        implicit UnliftT1: Unliftable[T1],
+        T22](implicit
+        UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2],
         UnliftT3: Unliftable[T3],
         UnliftT4: Unliftable[T4],

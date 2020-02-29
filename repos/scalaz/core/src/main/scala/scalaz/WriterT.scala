@@ -48,29 +48,29 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def map[B](f: A => B)(implicit F: Functor[F]): WriterT[F, W, B] =
     writerT(F.map(run)(wa => (wa._1, f(wa._2))))
 
-  def ap[B](f: => WriterT[F, W, A => B])(
-      implicit F: Apply[F],
+  def ap[B](f: => WriterT[F, W, A => B])(implicit
+      F: Apply[F],
       W: Semigroup[W]): WriterT[F, W, B] = writerT {
     F.apply2(f.run, run) {
       case ((w1, fab), (w2, a)) => (W.append(w1, w2), fab(a))
     }
   }
 
-  def flatMap[B](f: A => WriterT[F, W, B])(
-      implicit F: Bind[F],
+  def flatMap[B](f: A => WriterT[F, W, B])(implicit
+      F: Bind[F],
       s: Semigroup[W]): WriterT[F, W, B] =
     flatMapF(f.andThen(_.run))
 
-  def flatMapF[B](f: A => F[(W, B)])(
-      implicit F: Bind[F],
+  def flatMapF[B](f: A => F[(W, B)])(implicit
+      F: Bind[F],
       s: Semigroup[W]): WriterT[F, W, B] =
     writerT(F.bind(run) { wa =>
       val z = f(wa._2)
       F.map(z)(wb => (s.append(wa._1, wb._1), wb._2))
     })
 
-  def traverse[G[_], B](f: A => G[B])(
-      implicit G: Applicative[G],
+  def traverse[G[_], B](f: A => G[B])(implicit
+      G: Applicative[G],
       F: Traverse[F]): G[WriterT[F, W, B]] = {
     G.map(F.traverse(run) {
       case (w, a) => G.map(f(a))(b => (w, b))
@@ -88,8 +88,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def leftMap[C](f: W => C)(implicit F: Functor[F]): WriterT[F, C, A] =
     bimap(f, identity)
 
-  def bitraverse[G[_], C, D](f: W => G[C], g: A => G[D])(
-      implicit G: Applicative[G],
+  def bitraverse[G[_], C, D](f: W => G[C], g: A => G[D])(implicit
+      G: Applicative[G],
       F: Traverse[F]) =
     G.map(F.traverse[G, (W, A), (C, D)](run) {
       case (a, b) => G.tuple2(f(a), g(b))
@@ -101,8 +101,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
         case (w, a) => (w, a, s)
       })
 
-  def wpoint[G[_]](
-      implicit F: Functor[F],
+  def wpoint[G[_]](implicit
+      F: Functor[F],
       P: Applicative[G]): WriterT[F, G[W], A] =
     writerT(F.map(self.run) {
       case (w, a) => (P.point(w), a)
@@ -169,8 +169,8 @@ sealed abstract class WriterTInstances11 extends WriterTInstances12 {
 }
 
 sealed abstract class WriterTInstances10 extends WriterTInstances11 {
-  implicit def writerTApply[F[_], W](
-      implicit W0: Semigroup[W],
+  implicit def writerTApply[F[_], W](implicit
+      W0: Semigroup[W],
       F0: Apply[F]): Apply[WriterT[F, W, ?]] =
     new WriterTApply[F, W] {
       implicit def F = F0
@@ -179,8 +179,8 @@ sealed abstract class WriterTInstances10 extends WriterTInstances11 {
 }
 
 sealed abstract class WriterTInstances9 extends WriterTInstances10 {
-  implicit def writerTBind[F[_], W](
-      implicit W0: Semigroup[W],
+  implicit def writerTBind[F[_], W](implicit
+      W0: Semigroup[W],
       F0: Bind[F]): Bind[WriterT[F, W, ?]] =
     new WriterTBind[F, W] {
       implicit def F = F0
@@ -189,8 +189,8 @@ sealed abstract class WriterTInstances9 extends WriterTInstances10 {
 }
 
 sealed abstract class WriterTInstances8 extends WriterTInstances9 {
-  implicit def writerTApplicative[F[_], W](
-      implicit W0: Monoid[W],
+  implicit def writerTApplicative[F[_], W](implicit
+      W0: Monoid[W],
       F0: Applicative[F]): Applicative[WriterT[F, W, ?]] =
     new WriterTApplicative[F, W] {
       implicit def F = F0
@@ -199,8 +199,8 @@ sealed abstract class WriterTInstances8 extends WriterTInstances9 {
 }
 
 sealed abstract class WriterTInstances7 extends WriterTInstances8 {
-  implicit def writerTBindRec[F[_], W](
-      implicit W0: Semigroup[W],
+  implicit def writerTBindRec[F[_], W](implicit
+      W0: Semigroup[W],
       F0: BindRec[F],
       F1: Applicative[F]): BindRec[WriterT[F, W, ?]] =
     new WriterTBindRec[F, W] {
@@ -219,8 +219,8 @@ sealed abstract class WriterTInstances6 extends WriterTInstances7 {
 }
 
 sealed abstract class WriterTInstance5 extends WriterTInstances6 {
-  implicit def writerTMonad[F[_], W](
-      implicit W0: Monoid[W],
+  implicit def writerTMonad[F[_], W](implicit
+      W0: Monoid[W],
       F0: Monad[F]): Monad[WriterT[F, W, ?]] =
     new WriterTMonad[F, W] {
       implicit def F = F0
@@ -237,8 +237,8 @@ sealed abstract class WriterTInstances4 extends WriterTInstance5 {
       implicit E: Equal[(W, A)]): Equal[Writer[W, A]] =
     E.contramap((_: Writer[W, A]).run)
 
-  implicit def writerTMonadError[F[_], E, W](
-      implicit F0: MonadError[F, E],
+  implicit def writerTMonadError[F[_], E, W](implicit
+      F0: MonadError[F, E],
       W0: Monoid[W]): MonadError[WriterT[F, W, ?], E] =
     new WriterTMonadError[F, E, W] {
       override def F = F0
@@ -261,8 +261,8 @@ sealed abstract class WriterTInstances3 extends WriterTInstances4 {
       implicit E: Equal[F[(W, A)]]): Equal[WriterT[F, W, A]] =
     E.contramap((_: WriterT[F, W, A]).run)
 
-  implicit def writerTMonadPlus[F[_], W](
-      implicit W0: Monoid[W],
+  implicit def writerTMonadPlus[F[_], W](implicit
+      W0: Monoid[W],
       F0: MonadPlus[F]): MonadPlus[WriterT[F, W, ?]] =
     new WriterTMonadPlus[F, W] {
       def F = F0
@@ -302,8 +302,8 @@ sealed abstract class WriterTInstances0 extends WriterTInstances1 {
 }
 
 sealed abstract class WriterTInstances extends WriterTInstances0 {
-  implicit def writerTMonadListen[F[_], W](
-      implicit F0: Monad[F],
+  implicit def writerTMonadListen[F[_], W](implicit
+      F0: Monad[F],
       W0: Monoid[W]): MonadListen[WriterT[F, W, ?], W] =
     new WriterTMonadListen[F, W] {
       implicit def F = F0
@@ -324,8 +324,7 @@ sealed abstract class WriterTInstances extends WriterTInstances0 {
 trait WriterTFunctions {
   def writerT[F[_], W, A](v: F[(W, A)]): WriterT[F, W, A] = WriterT(v)
 
-  def writerTU[FAB, AB, A0, B0](fab: FAB)(
-      implicit
+  def writerTU[FAB, AB, A0, B0](fab: FAB)(implicit
       u1: Unapply[Functor, FAB] { type A = AB },
       u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
       l: Leibniz.===[AB, (A0, B0)]): WriterT[u1.M, A0, B0] =

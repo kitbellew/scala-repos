@@ -80,8 +80,8 @@ abstract class AbstractTable[T](
       targetTableQuery: TableQuery[TT])(
       targetColumns: TT => P,
       onUpdate: ForeignKeyAction = ForeignKeyAction.NoAction,
-      onDelete: ForeignKeyAction = ForeignKeyAction.NoAction)(
-      implicit unpack: Shape[_ <: FlatShapeLevel, TT, U, _],
+      onDelete: ForeignKeyAction = ForeignKeyAction.NoAction)(implicit
+      unpack: Shape[_ <: FlatShapeLevel, TT, U, _],
       unpackp: Shape[_ <: FlatShapeLevel, P, PU, _]): ForeignKeyQuery[TT, U] = {
     val targetTable: TT = targetTableQuery.shaped.value
     val q = targetTableQuery.asInstanceOf[Query[TT, U, Seq]]

@@ -42,8 +42,8 @@ trait Data0 {
 }
 
 trait Data1 extends Data0 {
-  implicit def deriveInstance[P, F, R, G](
-      implicit gen: Generic.Aux[F, G],
+  implicit def deriveInstance[P, F, R, G](implicit
+      gen: Generic.Aux[F, G],
       dg: Lazy[Data[P, G, R]]): Data[P, F, R] =
     new Data[P, F, R] {
       def gmapQ(t: F) = dg.value.gmapQ(gen.to(t))
@@ -70,8 +70,8 @@ object Data extends Data1 {
       def gmapQ(t: HNil) = Nil
     }
 
-  implicit def deriveHCons[P, H, T <: HList, R](
-      implicit ch: Lazy[Case1.Aux[P, H, R]],
+  implicit def deriveHCons[P, H, T <: HList, R](implicit
+      ch: Lazy[Case1.Aux[P, H, R]],
       dt: Lazy[Data[P, T, R]]): Data[P, H :: T, R] =
     new Data[P, H :: T, R] {
       def gmapQ(t: H :: T) = ch.value(t.head :: HNil) :: dt.value.gmapQ(t.tail)
@@ -82,8 +82,8 @@ object Data extends Data1 {
       def gmapQ(t: CNil) = Nil
     }
 
-  implicit def deriveCCons[P, H, T <: Coproduct, R](
-      implicit ch: Lazy[Case1.Aux[P, H, R]],
+  implicit def deriveCCons[P, H, T <: Coproduct, R](implicit
+      ch: Lazy[Case1.Aux[P, H, R]],
       dt: Lazy[Data[P, T, R]]): Data[P, H :+: T, R] =
     new Data[P, H :+: T, R] {
       def gmapQ(c: H :+: T) =
@@ -115,8 +115,8 @@ trait DataT0 {
 }
 
 trait DataT1 extends DataT0 {
-  implicit def deriveInstance[P, F, G](
-      implicit gen: Generic.Aux[F, G],
+  implicit def deriveInstance[P, F, G](implicit
+      gen: Generic.Aux[F, G],
       dtg: Lazy[DataT.Aux[P, G, G]]): Aux[P, F, F] =
     new DataT[P, F] {
       type Out = F
@@ -146,8 +146,8 @@ object DataT extends DataT1 {
       def gmapT(t: HNil) = HNil
     }
 
-  implicit def deriveHCons[P, H, T <: HList, OutH, OutT <: HList](
-      implicit ch: Lazy[Case1.Aux[P, H, OutH]],
+  implicit def deriveHCons[P, H, T <: HList, OutH, OutT <: HList](implicit
+      ch: Lazy[Case1.Aux[P, H, OutH]],
       dtt: Lazy[DataT.Aux[P, T, OutT]]): Aux[P, H :: T, OutH :: OutT] =
     new DataT[P, H :: T] {
       type Out = OutH :: OutT
@@ -164,7 +164,8 @@ object DataT extends DataT1 {
     }
 
   implicit def deriveCCons[P, H, T <: Coproduct, OutH, OutT <: Coproduct](
-      implicit ch: Lazy[Case1.Aux[P, H, OutH]],
+      implicit
+      ch: Lazy[Case1.Aux[P, H, OutH]],
       dtt: Lazy[DataT.Aux[P, T, OutT]]): Aux[P, H :+: T, OutH :+: OutT] =
     new DataT[P, H :+: T] {
       type Out = OutH :+: OutT
@@ -178,8 +179,7 @@ object DataT extends DataT1 {
 class EverythingAux[F, K] extends Poly
 
 object EverythingAux {
-  implicit def default[E, F <: Poly, K <: Poly, T, R](
-      implicit
+  implicit def default[E, F <: Poly, K <: Poly, T, R](implicit
       unpack: Unpack2[E, EverythingAux, F, K],
       f: Case1.Aux[F, T, R],
       data: Lazy[Data[E, T, R]],
@@ -190,8 +190,7 @@ object EverythingAux {
 class EverywhereAux[F] extends Poly
 
 object EverywhereAux {
-  implicit def default[E, F <: Poly, T, U, V](
-      implicit
+  implicit def default[E, F <: Poly, T, U, V](implicit
       unpack: Unpack1[E, EverywhereAux, F],
       data: Lazy[DataT.Aux[E, T, U]],
       f: Case1.Aux[F, U, V] = Case1[F, U, U](identity)): Case1.Aux[E, T, V] =

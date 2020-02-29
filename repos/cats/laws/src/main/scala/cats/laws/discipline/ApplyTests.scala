@@ -10,8 +10,7 @@ import Prop._
 trait ApplyTests[F[_]] extends FunctorTests[F] with CartesianTests[F] {
   def laws: ApplyLaws[F]
 
-  def apply[A: Arbitrary, B: Arbitrary, C: Arbitrary](
-      implicit
+  def apply[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
       ArbFA: Arbitrary[F[A]],
       ArbFB: Arbitrary[F[B]],
       ArbFC: Arbitrary[F[C]],

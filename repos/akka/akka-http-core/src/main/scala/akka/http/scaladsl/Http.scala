@@ -89,8 +89,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       port: Int = DefaultPortForProtocol,
       connectionContext: ConnectionContext = defaultServerHttpContext,
       settings: ServerSettings = ServerSettings(system),
-      log: LoggingAdapter = system.log)(implicit fm: Materializer)
-      : Source[IncomingConnection, Future[ServerBinding]] = {
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Source[IncomingConnection, Future[ServerBinding]] = {
     val effectivePort = if (port >= 0) port else connectionContext.defaultPort
     val tlsStage = sslTlsStage(connectionContext, Server)
     val connections: Source[Tcp.IncomingConnection, Future[Tcp.ServerBinding]] =
@@ -747,8 +747,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       .mapMaterializedValue(_ ⇒ HostConnectionPool(hcps)(gatewayFuture))
 
   private def clientFlow[T](settings: ConnectionPoolSettings)(
-      f: HttpRequest ⇒ (HttpRequest, Future[PoolGateway]))(
-      implicit system: ActorSystem,
+      f: HttpRequest ⇒ (HttpRequest, Future[PoolGateway]))(implicit
+      system: ActorSystem,
       fm: Materializer)
       : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] = {
     // a connection pool can never have more than pipeliningLimit * maxConnections requests in flight at any point

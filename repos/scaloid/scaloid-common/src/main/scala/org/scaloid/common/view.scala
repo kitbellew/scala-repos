@@ -187,8 +187,8 @@ trait TraitView[This <: android.view.View]
 
   // TODO: Make the return type as Option[TraitViewGroup[_]]
   protected def parentViewGroupIfExists[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP = (v: This) => null)
-      : TraitViewGroup[_] = {
+      implicit
+      defaultLayoutParam: This => LP = (v: This) => null): TraitViewGroup[_] = {
     val lp = defaultLayoutParam(basis)
     if (lp == null) null else lp.parent
   }
@@ -2116,8 +2116,8 @@ trait TraitView[This <: android.view.View]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/view/View.html android.view.View]]`.
   */
-class SView()(
-    implicit context: android.content.Context,
+class SView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.view.View(context)
     with TraitView[SView] {
@@ -2128,8 +2128,8 @@ class SView()(
 }
 
 object SView {
-  def apply[LP <: ViewGroupLayoutParams[_, SView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SView => LP): SView = {
     val v = new SView
     v.<<.parent.+=(v)
@@ -2789,8 +2789,8 @@ trait TraitSurfaceView[This <: android.view.SurfaceView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/view/SurfaceView.html android.view.SurfaceView]]`.
   */
-class SSurfaceView()(
-    implicit context: android.content.Context,
+class SSurfaceView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.view.SurfaceView(context)
     with TraitSurfaceView[SSurfaceView] {
@@ -2801,8 +2801,8 @@ class SSurfaceView()(
 }
 
 object SSurfaceView {
-  def apply[LP <: ViewGroupLayoutParams[_, SSurfaceView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, SSurfaceView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: SSurfaceView => LP): SSurfaceView = {
     val v = new SSurfaceView
     v.<<.parent.+=(v)
@@ -3048,8 +3048,8 @@ trait TraitTextureView[This <: android.view.TextureView]
 /**
   * Automatically generated concrete helper class of `[[https://developer.android.com/reference/android/view/TextureView.html android.view.TextureView]]`.
   */
-class STextureView()(
-    implicit context: android.content.Context,
+class STextureView()(implicit
+    context: android.content.Context,
     parentVGroup: TraitViewGroup[_] = null)
     extends android.view.TextureView(context)
     with TraitTextureView[STextureView] {
@@ -3060,8 +3060,8 @@ class STextureView()(
 }
 
 object STextureView {
-  def apply[LP <: ViewGroupLayoutParams[_, STextureView]]()(
-      implicit context: android.content.Context,
+  def apply[LP <: ViewGroupLayoutParams[_, STextureView]]()(implicit
+      context: android.content.Context,
       defaultLayoutParam: STextureView => LP): STextureView = {
     val v = new STextureView
     v.<<.parent.+=(v)

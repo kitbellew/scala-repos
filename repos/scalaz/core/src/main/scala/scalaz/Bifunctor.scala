@@ -49,8 +49,8 @@ trait Bifunctor[F[_, _]] { self =>
     bimap(faa)(f, f)
 
   /** Embed two Functors , one on each side */
-  def embed[G[_], H[_]](
-      implicit G0: Functor[G],
+  def embed[G[_], H[_]](implicit
+      G0: Functor[G],
       H0: Functor[H]): Bifunctor[λ[(α, β) => F[G[α], H[β]]]] =
     new CompositionBifunctorFunctors[F, G, H] {
       def F = self

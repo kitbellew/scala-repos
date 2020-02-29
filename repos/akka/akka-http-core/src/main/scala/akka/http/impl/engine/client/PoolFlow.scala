@@ -77,8 +77,8 @@ private object PoolFlow {
         Future[Http.OutgoingConnection]],
       remoteAddress: InetSocketAddress,
       settings: ConnectionPoolSettings,
-      log: LoggingAdapter)(
-      implicit system: ActorSystem,
+      log: LoggingAdapter)(implicit
+      system: ActorSystem,
       fm: Materializer): Flow[RequestContext, ResponseContext, NotUsed] =
     Flow.fromGraph(
       GraphDSL.create[FlowShape[RequestContext, ResponseContext]]() {

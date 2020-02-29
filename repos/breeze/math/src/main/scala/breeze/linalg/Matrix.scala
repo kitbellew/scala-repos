@@ -34,9 +34,9 @@ import breeze.stats.distributions.Rand
 trait MatrixLike[@spec(Double, Int, Float, Long) V, +Self <: Matrix[V]]
     extends Tensor[(Int, Int), V]
     with TensorLike[(Int, Int), V, Self] {
-  def map[V2, That](fn: V => V2)(
-      implicit canMapValues: CanMapValues[Self @uncheckedVariance, V, V2, That])
-      : That = values map fn
+  def map[V2, That](fn: V => V2)(implicit
+      canMapValues: CanMapValues[Self @uncheckedVariance, V, V2, That]): That =
+    values map fn
 
 }
 
@@ -289,8 +289,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
   /** Static constructor for a literal matrix. */
   def apply[
       @specialized( /* Don't remove until SI-8886 is closed*/ ) R,
-      @spec(Double, Int, Float, Long) V](rows: R*)(
-      implicit rl: LiteralRow[R, V],
+      @spec(Double, Int, Float, Long) V](rows: R*)(implicit
+      rl: LiteralRow[R, V],
       man: ClassTag[V],
       zero: Zero[V]) = {
     val nRows = rows.length

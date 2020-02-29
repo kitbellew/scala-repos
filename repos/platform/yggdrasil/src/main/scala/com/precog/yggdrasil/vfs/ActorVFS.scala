@@ -206,8 +206,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         versionDir: File,
         mimeType: MimeType,
         authorities: Authorities,
-        data: StreamT[M, Array[Byte]])(
-        implicit M: Monad[M],
+        data: StreamT[M, Array[Byte]])(implicit
+        M: Monad[M],
         IOT: IO ~> M): M[ResourceError \/ FileBlobResource] = {
       def write(
           out: FileOutputStream,

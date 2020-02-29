@@ -202,8 +202,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         scheduler: Scheduler[M],
         ctx: EvaluationContext,
         path: Path,
-        queryOptions: QueryOptions)(implicit M: Monad[M])
-        : EitherT[M, EvaluationError, StoredQueryResult] = {
+        queryOptions: QueryOptions)(implicit
+        M: Monad[M]): EitherT[M, EvaluationError, StoredQueryResult] = {
       import queryOptions.cacheControl._
       import EvaluationError._
 
@@ -296,8 +296,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         ctx: EvaluationContext,
         queryOptions: QueryOptions,
         cacheAt: Option[Path],
-        jobName: Option[String] = None)(implicit M: Monad[M])
-        : EitherT[M, EvaluationError, StoredQueryResult] = {
+        jobName: Option[String] = None)(implicit
+        M: Monad[M]): EitherT[M, EvaluationError, StoredQueryResult] = {
       import EvaluationError._
       logger.debug(
         "Executing query for %s and caching to %s".format(path, cacheAt))

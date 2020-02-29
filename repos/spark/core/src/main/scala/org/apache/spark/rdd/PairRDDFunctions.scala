@@ -62,8 +62,8 @@ import org.apache.spark.util.random.StratifiedSamplingUtils
 /**
   * Extra functions available on RDDs of (key, value) pairs through an implicit conversion.
   */
-class PairRDDFunctions[K, V](self: RDD[(K, V)])(
-    implicit kt: ClassTag[K],
+class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
+    kt: ClassTag[K],
     vt: ClassTag[V],
     ord: Ordering[K] = null)
     extends Logging

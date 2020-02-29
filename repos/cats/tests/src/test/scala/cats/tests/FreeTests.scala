@@ -82,8 +82,8 @@ sealed trait FreeTestsInstances {
     def apply[A](fa: List[A]): Option[A] = fa.headOption
   }
 
-  private def freeGen[F[_], A](maxDepth: Int)(
-      implicit F: Arbitrary[F[A]],
+  private def freeGen[F[_], A](maxDepth: Int)(implicit
+      F: Arbitrary[F[A]],
       A: Arbitrary[A]): Gen[Free[F, A]] = {
     val noGosub = Gen.oneOf(
       A.arbitrary.map(Free.pure[F, A]),
@@ -103,8 +103,8 @@ sealed trait FreeTestsInstances {
     else Gen.oneOf(noGosub, withGosub)
   }
 
-  implicit def freeArbitrary[F[_], A](
-      implicit F: Arbitrary[F[A]],
+  implicit def freeArbitrary[F[_], A](implicit
+      F: Arbitrary[F[A]],
       A: Arbitrary[A]): Arbitrary[Free[F, A]] =
     Arbitrary(freeGen[F, A](4))
 

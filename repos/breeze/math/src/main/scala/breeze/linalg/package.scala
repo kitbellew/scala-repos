@@ -167,8 +167,8 @@ package object linalg {
   /**
     * Vector cross product of 3D vectors a and b.
     */
-  def cross[V1](a: DenseVector[V1], b: DenseVector[V1])(
-      implicit ring: Ring[V1],
+  def cross[V1](a: DenseVector[V1], b: DenseVector[V1])(implicit
+      ring: Ring[V1],
       man: ClassTag[V1]): DenseVector[V1] = {
     require(a.length == 3)
     require(b.length == 3)

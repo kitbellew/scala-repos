@@ -7,8 +7,8 @@ object TestCase {
     println( /*start*/ result.head /*end*/ )
   }
 
-  def demonstrate[Coll, That](stuff: Coll)(
-      implicit ev: Coll <:< IterableLike[String, Coll],
+  def demonstrate[Coll, That](stuff: Coll)(implicit
+      ev: Coll <:< IterableLike[String, Coll],
       cbf1: CanBuildFrom[Coll, String, That]): That = {
     stuff map (_.toLowerCase)
   }

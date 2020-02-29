@@ -26,14 +26,12 @@ trait DenseMatrixMultiplyStuff
 
   // <editor-fold defaultstate="collapsed" desc=" OpMulMatrix implementations ">
 
-  implicit def implOpMulMatrix_DVTt_DMT_eq_DMT[T](
-      implicit op: OpMulMatrix.Impl2[
+  implicit def implOpMulMatrix_DVTt_DMT_eq_DMT[T](implicit
+      op: OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]])
+      : OpMulMatrix.Impl2[
+        Transpose[DenseVector[T]],
         DenseMatrix[T],
-        DenseMatrix[T],
-        DenseMatrix[T]]): OpMulMatrix.Impl2[
-    Transpose[DenseVector[T]],
-    DenseMatrix[T],
-    Transpose[DenseVector[T]]] =
+        Transpose[DenseVector[T]]] =
     new OpMulMatrix.Impl2[
       Transpose[DenseVector[T]],
       DenseMatrix[T],
@@ -45,11 +43,8 @@ trait DenseMatrixMultiplyStuff
       }
     }
 
-  implicit def implOpMulMatrix_DVT_DMT_eq_DMT[T](
-      implicit op: OpMulMatrix.Impl2[
-        DenseMatrix[T],
-        DenseMatrix[T],
-        DenseMatrix[T]])
+  implicit def implOpMulMatrix_DVT_DMT_eq_DMT[T](implicit
+      op: OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]])
       : OpMulMatrix.Impl2[DenseVector[T], DenseMatrix[T], DenseMatrix[T]] =
     new OpMulMatrix.Impl2[DenseVector[T], DenseMatrix[T], DenseMatrix[T]] {
       def apply(v: DenseVector[T], v2: DenseMatrix[T]): DenseMatrix[T] = {
@@ -674,7 +669,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   implicit def dm_dm_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ },
         { _ - _ },
         { _ * _ },
@@ -741,8 +737,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def dm_dm_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: Zero: ClassTag](implicit
+      @expand.sequence[Op](
         { f.+(_, _) }, {
           f.-(_, _)
         }, {
@@ -800,8 +796,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+        OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -853,8 +849,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def opUpdate_DM_S[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: Zero: ClassTag](implicit
+      @expand.sequence[Op](
         { f.+(_, _) }, {
           f.-(_, _)
         }, {
@@ -935,7 +931,8 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   implicit def s_dm_op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -1007,8 +1004,8 @@ trait DenseMatrixOpsLowPrio { this: DenseMatrixOps =>
   // LOL, if we explicitly annotate the type, then the implicit resolution thing will load this recursively.
   // If we don't, then everything works ok.
 
-  implicit def canMulM_V_def[T, B <: Vector[T]](
-      implicit bb: B <:< Vector[T],
+  implicit def canMulM_V_def[T, B <: Vector[T]](implicit
+      bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]) = (
     implicitly[OpMulMatrix.Impl2[DenseMatrix[T], Vector[T], DenseVector[T]]]
       .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[
@@ -1018,8 +1015,8 @@ trait DenseMatrixOpsLowPrio { this: DenseMatrixOps =>
     )
 
   // ibid.
-  implicit def canMulM_M_def[T, B <: Matrix[T]](
-      implicit bb: B <:< Matrix[T],
+  implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
+      bb: B <:< Matrix[T],
       op: OpMulMatrix.Impl2[DenseMatrix[T], Matrix[T], DenseMatrix[T]]) = (
     op.asInstanceOf[OpMulMatrix.Impl2[DenseMatrix[T], B, DenseMatrix[T]]]
   )
@@ -1373,8 +1370,8 @@ trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
 
   // </editor-fold>
 
-  implicit def op_DM_V_Semiring[T](
-      implicit ring: Semiring[T],
+  implicit def op_DM_V_Semiring[T](implicit
+      ring: Semiring[T],
       ct: ClassTag[T]): BinaryRegistry[
     DenseMatrix[T],
     Vector[T],
@@ -1523,8 +1520,8 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def dm_dm_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {
@@ -1563,8 +1560,8 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def dm_v_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {
@@ -1598,8 +1595,8 @@ trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
   @expand
   implicit def dm_s_CompOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {

@@ -259,15 +259,15 @@ class MacroOrderingProperties
   def arbMap[T: Arbitrary, U](fn: T => U): Arbitrary[U] =
     Arbitrary(gen[T].map(fn))
 
-  def collectionArb[C[_], T: Arbitrary](
-      implicit cbf: collection.generic.CanBuildFrom[Nothing, T, C[T]])
-      : Arbitrary[C[T]] = Arbitrary {
-    gen[List[T]].map { l =>
-      val builder = cbf()
-      l.foreach { builder += _ }
-      builder.result
+  def collectionArb[C[_], T: Arbitrary](implicit
+      cbf: collection.generic.CanBuildFrom[Nothing, T, C[T]]): Arbitrary[C[T]] =
+    Arbitrary {
+      gen[List[T]].map { l =>
+        val builder = cbf()
+        l.foreach { builder += _ }
+        builder.result
+      }
     }
-  }
 
   def serialize[T](t: T)(
       implicit orderedBuffer: OrderedSerialization[T]): InputStream =

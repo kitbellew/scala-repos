@@ -47,8 +47,8 @@ trait JsonImplicitConversions extends TypeConverterSupport {
   def jsonToDateFormat(format: => DateFormat): TypeConverter[JValue, Date] =
     safeOption(_.extractOpt[String] map format.parse)
 
-  implicit def jsonToSeq[T](
-      implicit elementConverter: TypeConverter[JValue, T],
+  implicit def jsonToSeq[T](implicit
+      elementConverter: TypeConverter[JValue, T],
       mf: Manifest[T]): TypeConverter[JValue, Seq[T]] =
     safe(_.extract[List[T]])
 
@@ -60,8 +60,8 @@ trait JsonImplicitConversions extends TypeConverterSupport {
     new JsonDateConversion(source, jsonToDate(_))
 
   implicit def jsonToSeqConversion(source: JValue) = new {
-    def asSeq[T](
-        implicit mf: Manifest[T],
+    def asSeq[T](implicit
+        mf: Manifest[T],
         tc: TypeConverter[JValue, T]): Option[Seq[T]] =
       jsonToSeq[T].apply(source)
   }

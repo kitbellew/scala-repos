@@ -57,8 +57,8 @@ case class PartitionedDelimitedSource[P, T](
     writeHeader: Boolean = false,
     quote: String = "\"",
     strict: Boolean = true,
-    safe: Boolean = true)(
-    implicit mt: Manifest[T],
+    safe: Boolean = true)(implicit
+    mt: Manifest[T],
     val valueSetter: TupleSetter[T],
     val valueConverter: TupleConverter[T],
     val partitionSetter: TupleSetter[P],

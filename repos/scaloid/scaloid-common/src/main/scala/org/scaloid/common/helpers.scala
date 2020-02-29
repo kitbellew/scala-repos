@@ -113,8 +113,8 @@ trait ContentHelpers {
     * }}}
     */
   def broadcastReceiver(filter: IntentFilter)(
-      onReceiveBody: (Context, Intent) => Any)(
-      implicit ctx: Context,
+      onReceiveBody: (Context, Intent) => Any)(implicit
+      ctx: Context,
       reg: Registerable) {
     val receiver = new BroadcastReceiver {
       def onReceive(context: Context, intent: Intent) {

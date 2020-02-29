@@ -83,8 +83,8 @@ object MongoQueryExecutor {
   def apply(
       config: Configuration,
       jobManager: JobManager[Future],
-      jobActorSystem: ActorSystem)(
-      implicit ec: ExecutionContext,
+      jobActorSystem: ActorSystem)(implicit
+      ec: ExecutionContext,
       M: Monad[Future]): Platform[Future, StreamT[Future, Slice]] = {
     new MongoQueryExecutor(
       new MongoQueryExecutorConfig(config),
@@ -96,8 +96,8 @@ object MongoQueryExecutor {
 class MongoQueryExecutor(
     val yggConfig: MongoQueryExecutorConfig,
     val jobManager: JobManager[Future],
-    val jobActorSystem: ActorSystem)(
-    implicit val executionContext: ExecutionContext,
+    val jobActorSystem: ActorSystem)(implicit
+    val executionContext: ExecutionContext,
     val M: Monad[Future])
     extends StandaloneQueryExecutor
     with MongoColumnarTableModule

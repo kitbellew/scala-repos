@@ -37,8 +37,8 @@ object TyApp {
 
 object KindPolyExamples {
 
-  def sameTypeArgs[T, ET, U, EU, A <: HList](t: T, u: U)(
-      implicit evt: TyApp[T, ET, A],
+  def sameTypeArgs[T, ET, U, EU, A <: HList](t: T, u: U)(implicit
+      evt: TyApp[T, ET, A],
       evu: TyApp[U, EU, A]) = {}
 
   sameTypeArgs(List(23), Set(13))
@@ -48,8 +48,8 @@ object KindPolyExamples {
   // sameTypeArgs(List(23), List("foo"))              // Does not compile
   // sameTypeArgs(Map(23 -> "foo"), Map("bar" -> 13)) // Does not compile
 
-  def sameTypeCtor[T, U, TC](t: T, u: U)(
-      implicit evt: TyApp[T, TC, _],
+  def sameTypeCtor[T, U, TC](t: T, u: U)(implicit
+      evt: TyApp[T, TC, _],
       evu: TyApp[U, TC, _]) = {}
 
   sameTypeCtor(List(23), List("foo"))

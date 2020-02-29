@@ -236,8 +236,7 @@ object LabelledGeneric {
       T,
       K <: HList,
       V <: Coproduct,
-      R <: Coproduct](
-      implicit
+      R <: Coproduct](implicit
       lab: DefaultSymbolicLabelling.Aux[T, K],
       gen: Generic.Aux[T, V],
       zip: coproduct.ZipWithKeys.Aux[K, V, R],

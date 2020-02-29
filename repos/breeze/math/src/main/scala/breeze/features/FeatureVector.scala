@@ -191,8 +191,8 @@ object FeatureVector {
     }
   }
 
-  implicit def opAddIntoFromAxpy[V, T](
-      implicit op: scaleAdd.InPlaceImpl3[V, T, FeatureVector],
+  implicit def opAddIntoFromAxpy[V, T](implicit
+      op: scaleAdd.InPlaceImpl3[V, T, FeatureVector],
       semiring: Semiring[T]): OpAdd.InPlaceImpl2[V, FeatureVector] = {
     new OpAdd.InPlaceImpl2[V, FeatureVector] {
       override def apply(v: V, v2: FeatureVector): Unit = {
@@ -232,8 +232,8 @@ object FeatureVector {
     }
   }
 
-  implicit def mulMatrixTrans[M, MTrans, MulResult, MRTrans](
-      implicit trans: CanTranspose[M, MTrans],
+  implicit def mulMatrixTrans[M, MTrans, MulResult, MRTrans](implicit
+      trans: CanTranspose[M, MTrans],
       mul: OpMulMatrix.Impl2[MTrans, FeatureVector, MulResult],
       mrTrans: CanTranspose[MulResult, MRTrans])
       : OpMulMatrix.Impl2[Transpose[FeatureVector], M, MRTrans] = {

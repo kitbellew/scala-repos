@@ -122,8 +122,8 @@ object Iteratee {
     * A partially-applied function returned by the `consume` method.
     */
   trait Consume[E] {
-    def apply[B, That]()(
-        implicit t: E => TraversableOnce[B],
+    def apply[B, That]()(implicit
+        t: E => TraversableOnce[B],
         bf: scala.collection.generic.CanBuildFrom[E, B, That])
         : Iteratee[E, That]
   }
@@ -141,8 +141,8 @@ object Iteratee {
     *
     */
   def consume[E] = new Consume[E] {
-    def apply[B, That]()(
-        implicit t: E => TraversableOnce[B],
+    def apply[B, That]()(implicit
+        t: E => TraversableOnce[B],
         bf: scala.collection.generic.CanBuildFrom[E, B, That])
         : Iteratee[E, That] = {
       fold[E, Seq[E]](Seq.empty) { (els, chunk) => chunk +: els }(dec).map {
@@ -636,8 +636,8 @@ trait Iteratee[E, +A] {
     * @param f a function for transforming the computed result into an Iteratee
     * $paramEcSingle Note: input concatenation is performed in the iteratee default execution context, not in the user-supplied context.
     */
-  def flatMapTraversable[B, X](f: A => Iteratee[E, B])(
-      implicit p: E => scala.collection.TraversableLike[X, E],
+  def flatMapTraversable[B, X](f: A => Iteratee[E, B])(implicit
+      p: E => scala.collection.TraversableLike[X, E],
       bf: scala.collection.generic.CanBuildFrom[E, X, E],
       ec: ExecutionContext): Iteratee[E, B] = {
     val pec = ec.prepare()
@@ -760,8 +760,8 @@ trait Iteratee[E, +A] {
     }(dec)
   }
 
-  def joinConcatI[AIn, X](
-      implicit in: A <:< Iteratee[E, AIn],
+  def joinConcatI[AIn, X](implicit
+      in: A <:< Iteratee[E, AIn],
       p: E => scala.collection.TraversableLike[X, E],
       bf: scala.collection.generic.CanBuildFrom[E, X, E]): Iteratee[E, AIn] = {
     this.flatMapTraversable { a =>

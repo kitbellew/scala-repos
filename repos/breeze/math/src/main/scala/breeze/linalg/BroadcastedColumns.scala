@@ -35,9 +35,8 @@ case class BroadcastedColumns[T, ColType](underlying: T)
       implicit canIterateAxis: CanIterateAxis[T, Axis._0.type, ColType]) =
     canIterateAxis(underlying, Axis._0)
 
-  def foldLeft[B](z: B)(f: (B, ColType) => B)(
-      implicit canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType])
-      : B = {
+  def foldLeft[B](z: B)(f: (B, ColType) => B)(implicit
+      canTraverseAxis: CanTraverseAxis[T, Axis._0.type, ColType]): B = {
     var acc = z
     canTraverseAxis(underlying, Axis._0) { c => acc = f(acc, c) }
     acc
@@ -53,17 +52,13 @@ object BroadcastedColumns {
       new BroadcastedDMColsISeq(bc.underlying)
   }
 
-  implicit def canMapValues[T, ColumnType, ResultColumn, Result](
-      implicit cc: CanCollapseAxis[
-        T,
-        Axis._0.type,
+  implicit def canMapValues[T, ColumnType, ResultColumn, Result](implicit
+      cc: CanCollapseAxis[T, Axis._0.type, ColumnType, ResultColumn, Result])
+      : CanMapValues[
+        BroadcastedColumns[T, ColumnType],
         ColumnType,
         ResultColumn,
-        Result]): CanMapValues[
-    BroadcastedColumns[T, ColumnType],
-    ColumnType,
-    ResultColumn,
-    Result] = {
+        Result] = {
     new CanMapValues[
       BroadcastedColumns[T, ColumnType],
       ColumnType,
@@ -80,8 +75,8 @@ object BroadcastedColumns {
   implicit def scalarOf[T, ColumnType]
       : ScalarOf[BroadcastedColumns[T, ColumnType], ColumnType] = ScalarOf.dummy
 
-  implicit def broadcastOp[Op, T, ColumnType, OpResult, Result](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
+  implicit def broadcastOp[Op, T, ColumnType, OpResult, Result](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
       op: UImpl[Op, ColumnType, OpResult],
       cc: CanCollapseAxis[T, Axis._0.type, ColumnType, OpResult, Result])
       : UImpl[Op, BroadcastedColumns[T, ColumnType], Result] = {
@@ -92,8 +87,8 @@ object BroadcastedColumns {
     }
   }
 
-  implicit def broadcastInplaceOp[Op, T, ColumnType, RHS, OpResult](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
+  implicit def broadcastInplaceOp[Op, T, ColumnType, RHS, OpResult](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
       op: InPlaceImpl[Op, ColumnType],
       cc: CanTraverseAxis[T, Axis._0.type, ColumnType])
       : InPlaceImpl[Op, BroadcastedColumns[T, ColumnType]] = {
@@ -104,8 +99,8 @@ object BroadcastedColumns {
     }
   }
 
-  implicit def broadcastOp2[Op, T, ColumnType, RHS, OpResult, Result](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
+  implicit def broadcastOp2[Op, T, ColumnType, RHS, OpResult, Result](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
       op: UImpl2[Op, ColumnType, RHS, OpResult],
       cc: CanCollapseAxis[T, Axis._0.type, ColumnType, OpResult, Result])
       : UImpl2[Op, BroadcastedColumns[T, ColumnType], RHS, Result] = {
@@ -116,8 +111,8 @@ object BroadcastedColumns {
     }
   }
 
-  implicit def broadcastInplaceOp2[Op, T, ColumnType, RHS, OpResult](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
+  implicit def broadcastInplaceOp2[Op, T, ColumnType, RHS, OpResult](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._0.type, ColumnType],
       op: InPlaceImpl2[Op, ColumnType, RHS],
       cc: CanTraverseAxis[T, Axis._0.type, ColumnType])
       : InPlaceImpl2[Op, BroadcastedColumns[T, ColumnType], RHS] = {

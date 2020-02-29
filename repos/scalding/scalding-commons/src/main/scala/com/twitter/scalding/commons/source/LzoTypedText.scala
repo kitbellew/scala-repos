@@ -28,8 +28,8 @@ object LzoTypedText {
   def lzoCsv[T: TypeDescriptor](path: String*): TypedTextDelimited[T] =
     new FixedLzoTypedText[T](COMMA, path: _*)
 
-  def hourlyLzoTsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyLzoTsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -37,8 +37,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
 
-  def hourlyLzoOsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyLzoOsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -46,8 +46,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
 
-  def hourlyLzoCsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def hourlyLzoCsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -55,8 +55,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY_HOUR + "/*")
   }
 
-  def dailyLzoTsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyLzoTsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -64,8 +64,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
 
-  def dailyLzoOsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyLzoOsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -73,8 +73,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
 
-  def dailyLzoCsv[T](prefix: String)(
-      implicit dr: DateRange,
+  def dailyLzoCsv[T](prefix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     new TimePathLzoTypedText[T](
@@ -82,8 +82,8 @@ object LzoTypedText {
       prefix + TimePathedSource.YEAR_MONTH_DAY + "/*")
   }
 
-  def dailyPrefixSuffixLzoOsv[T](prefix: String, suffix: String)(
-      implicit dr: DateRange,
+  def dailyPrefixSuffixLzoOsv[T](prefix: String, suffix: String)(implicit
+      dr: DateRange,
       td: TypeDescriptor[T]): TypedTextDelimited[T] = {
     require(prefix.last != '/', "prefix should not include trailing /")
     require(suffix.head == '/', "suffix should include a preceding /")
@@ -110,8 +110,8 @@ trait LzoTypedTextDelimited[T]
         safe).asInstanceOf[Scheme[_, _, _, _, _]])
 }
 
-class TimePathLzoTypedText[T](sep: TypedSep, path: String)(
-    implicit dr: DateRange,
+class TimePathLzoTypedText[T](sep: TypedSep, path: String)(implicit
+    dr: DateRange,
     td: TypeDescriptor[T])
     extends TimePathedSource(path, dr, DateOps.UTC)
     with LzoTypedTextDelimited[T] {
@@ -119,8 +119,8 @@ class TimePathLzoTypedText[T](sep: TypedSep, path: String)(
   protected override def separator = sep
 }
 
-class MostRecentLzoTypedText[T](sep: TypedSep, path: String)(
-    implicit dr: DateRange,
+class MostRecentLzoTypedText[T](sep: TypedSep, path: String)(implicit
+    dr: DateRange,
     td: TypeDescriptor[T])
     extends MostRecentGoodSource(path, dr, DateOps.UTC)
     with LzoTypedTextDelimited[T] {

@@ -9,8 +9,8 @@ trait Emitter[A] {
 }
 
 /** A wrapper for a 'map' function tagged for a specific output channel. */
-abstract class TaggedMapper[A, K, V](val tags: Set[Int])(
-    implicit val mA: Manifest[A],
+abstract class TaggedMapper[A, K, V](val tags: Set[Int])(implicit
+    val mA: Manifest[A],
     val wtA: WireFormat[A],
     val mK: Manifest[K],
     val wtK: WireFormat[K],

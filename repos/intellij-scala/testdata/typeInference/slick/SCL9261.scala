@@ -10,8 +10,7 @@ object SCL9261 extends App {
   }
   type HasId1[T] = HasId[T, Rep[T]]
 
-  class B[T <: AbstractTable[_], U, P](cons: Tag => T with HasId[U, P])(
-      implicit
+  class B[T <: AbstractTable[_], U, P](cons: Tag => T with HasId[U, P])(implicit
       ushape: Shape[ColumnsShapeLevel, U, U, _],
       pshape: Shape[ColumnsShapeLevel, P, U, P]
   ) extends TableQuery(cons) {}

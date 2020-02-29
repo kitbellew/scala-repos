@@ -93,8 +93,7 @@ object KMeansExample extends App {
   // k centers in d-dimensions.
 
   def genPoints[CC[_], V, @sp(Double) A](d: Int, k: Int, n: Int)(
-      f: Array[Double] => V)(
-      implicit
+      f: Array[Double] => V)(implicit
       vs: VectorSpace[V, A],
       cbf: CanBuildFrom[Nothing, V, CC[V]]): CC[V] = {
 

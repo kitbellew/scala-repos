@@ -95,8 +95,8 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
     * @param endpoint the endpoint to be activated
     * @param timeout the timeout for the Future
     */
-  def activationFutureFor(endpoint: ActorRef)(
-      implicit timeout: Timeout,
+  def activationFutureFor(endpoint: ActorRef)(implicit
+      timeout: Timeout,
       executor: ExecutionContext): Future[ActorRef] =
     (supervisor
       .ask(AwaitActivation(endpoint))(timeout))
@@ -112,8 +112,8 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
     * @param endpoint the endpoint to be deactivated
     * @param timeout the timeout of the Future
     */
-  def deactivationFutureFor(endpoint: ActorRef)(
-      implicit timeout: Timeout,
+  def deactivationFutureFor(endpoint: ActorRef)(implicit
+      timeout: Timeout,
       executor: ExecutionContext): Future[ActorRef] =
     (supervisor
       .ask(AwaitDeActivation(endpoint))(timeout))

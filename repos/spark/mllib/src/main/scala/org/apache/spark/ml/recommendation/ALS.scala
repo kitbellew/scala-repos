@@ -667,8 +667,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   @DeveloperApi
   def train[ID: ClassTag]( // scalastyle:ignore
       ratings: RDD[Rating[ID]], rank: Int = 10, numUserBlocks: Int = 10, numItemBlocks: Int = 10, maxIter: Int = 10, regParam: Double = 1.0, implicitPrefs: Boolean = false, alpha: Double = 1.0, nonnegative: Boolean = false, intermediateRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK, finalRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK, checkpointInterval: Int = 10, seed: Long = 0L)(
-      implicit ord: Ordering[ID])
-      : (RDD[(ID, Array[Float])], RDD[(ID, Array[Float])]) = {
+      implicit
+      ord: Ordering[ID]): (RDD[(ID, Array[Float])], RDD[(ID, Array[Float])]) = {
     require(
       intermediateRDDStorageLevel != StorageLevel.NONE,
       "ALS is not designed to run without persisting intermediate RDDs.")
@@ -1245,8 +1245,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       ratingBlocks: RDD[((Int, Int), RatingBlock[ID])],
       srcPart: Partitioner,
       dstPart: Partitioner,
-      storageLevel: StorageLevel)(implicit srcOrd: Ordering[ID])
-      : (RDD[(Int, InBlock[ID])], RDD[(Int, OutBlock)]) = {
+      storageLevel: StorageLevel)(implicit
+      srcOrd: Ordering[ID]): (RDD[(Int, InBlock[ID])], RDD[(Int, OutBlock)]) = {
     val inBlocks = ratingBlocks
       .map {
         case ((srcBlockId, dstBlockId), RatingBlock(srcIds, dstIds, ratings)) =>

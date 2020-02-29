@@ -155,8 +155,7 @@ trait CachedCaseClassDefns
 
   val ops: CaseClassOps
 
-  def Ops[Repr0 <: HList, LRepr0 <: HList, P0 <: Product, N <: Nat](
-      implicit
+  def Ops[Repr0 <: HList, LRepr0 <: HList, P0 <: Product, N <: Nat](implicit
       gen0: Generic.Aux[C, Repr0],
       lgen0: LabelledGeneric.Aux[C, LRepr0],
       len: Length.Aux[Repr0, N],

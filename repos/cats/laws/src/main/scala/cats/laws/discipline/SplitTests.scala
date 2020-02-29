@@ -10,8 +10,7 @@ import Prop._
 trait SplitTests[F[_, _]] extends ComposeTests[F] {
   def laws: SplitLaws[F]
 
-  def split[A, B, C, D, E, G](
-      implicit
+  def split[A, B, C, D, E, G](implicit
       ArbFAB: Arbitrary[F[A, B]],
       ArbFBC: Arbitrary[F[B, C]],
       ArbFCD: Arbitrary[F[C, D]],

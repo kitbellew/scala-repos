@@ -21,7 +21,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -63,7 +64,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_v_InPlaceOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ * _ }, {
           _ / _
         },
@@ -97,8 +99,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def dv_v_ZeroIdempotent_InPlaceOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ + _ }, { _ - _ })
+      @expand.args(OpAdd, OpSub) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ + _ }, { _ - _ })
       op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[DenseVector[T], Vector[T], Op.type] {
@@ -129,8 +131,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+        OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -189,8 +191,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+        OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -230,7 +232,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_dv_Op[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -281,7 +284,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -328,7 +332,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   implicit def dv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -543,8 +548,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
     }
   }
 
-  implicit def dvAddIntoField[T](
-      implicit field: Field[T],
+  implicit def dvAddIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpAdd.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
@@ -554,8 +559,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvSubIntoField[T](
-      implicit field: Field[T],
+  implicit def dvSubIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpSub.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
@@ -575,8 +580,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvDivIntoField[T](
-      implicit field: Field[T],
+  implicit def dvDivIntoField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpDiv.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
@@ -586,8 +591,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvPowInto[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def dvPowInto[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] = {
     new OpPow.InPlaceImpl2[DenseVector[T], DenseVector[T]] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]) = {
@@ -597,8 +602,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvAddIntoSField[T](
-      implicit field: Semiring[T],
+  implicit def dvAddIntoSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpAdd.InPlaceImpl2[DenseVector[T], T] = {
     new OpAdd.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
@@ -608,42 +613,42 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvAddSField[T](
-      implicit field: Semiring[T],
+  implicit def dvAddSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpAdd.Impl2[DenseVector[T], T, DenseVector[T]] = {
     binaryOpFromUpdateOp(
       implicitly[CanCopy[DenseVector[T]]],
       dvAddIntoSField,
       ct)
   }
-  implicit def dvSubSField[T](
-      implicit field: Ring[T],
+  implicit def dvSubSField[T](implicit
+      field: Ring[T],
       ct: ClassTag[T]): OpSub.Impl2[DenseVector[T], T, DenseVector[T]] =
     binaryOpFromUpdateOp(
       implicitly[CanCopy[DenseVector[T]]],
       dvSubIntoSField,
       ct)
-  implicit def dvMulScalarSField[T](
-      implicit field: Semiring[T],
+  implicit def dvMulScalarSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpMulScalar.Impl2[DenseVector[T], T, DenseVector[T]] =
     binaryOpFromUpdateOp(
       implicitly[CanCopy[DenseVector[T]]],
       dvMulScalarIntoSField,
       ct)
-  implicit def dvDivSField[T](
-      implicit field: Field[T],
+  implicit def dvDivSField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.Impl2[DenseVector[T], T, DenseVector[T]] =
     binaryOpFromUpdateOp(
       implicitly[CanCopy[DenseVector[T]]],
       dvDivIntoSField,
       ct)
-  implicit def dvPowS[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def dvPowS[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T]): OpPow.Impl2[DenseVector[T], T, DenseVector[T]] =
     binaryOpFromUpdateOp(implicitly[CanCopy[DenseVector[T]]], dvPowIntoS, ct)
 
-  implicit def dvSubIntoSField[T](
-      implicit field: Ring[T],
+  implicit def dvSubIntoSField[T](implicit
+      field: Ring[T],
       ct: ClassTag[T]): OpSub.InPlaceImpl2[DenseVector[T], T] = {
     new OpSub.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
@@ -653,8 +658,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 
   }
 
-  implicit def dvMulScalarIntoSField[T](
-      implicit field: Semiring[T],
+  implicit def dvMulScalarIntoSField[T](implicit
+      field: Semiring[T],
       ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[DenseVector[T], T] = {
     new OpMulScalar.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
@@ -663,8 +668,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
     }
   }
 
-  implicit def dvDivIntoSField[T](
-      implicit field: Field[T],
+  implicit def dvDivIntoSField[T](implicit
+      field: Field[T],
       ct: ClassTag[T]): OpDiv.InPlaceImpl2[DenseVector[T], T] = {
     new OpDiv.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
@@ -673,8 +678,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
     }
   }
 
-  implicit def dvPowIntoS[T](
-      implicit pow: OpPow.Impl2[T, T, T],
+  implicit def dvPowIntoS[T](implicit
+      pow: OpPow.Impl2[T, T, T],
       ct: ClassTag[T]): OpPow.InPlaceImpl2[DenseVector[T], T] = {
     new OpPow.InPlaceImpl2[DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: T) = {
@@ -834,8 +839,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
   @expand
   implicit def dv_dv_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {
@@ -874,8 +879,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
   @expand
   implicit def dv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {
@@ -908,8 +913,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
   @expand
   implicit def dv_s_CompOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](
-      implicit @expand.sequence[Op](
+      @expand.args(OpGT, OpGTE, OpLTE, OpLT, OpEq, OpNe) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ > _ }, {
           _ >= _
         }, {
@@ -947,8 +952,8 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
  **/
 trait DenseVector_GenericOps { this: DenseVector.type =>
 
-  def binaryOpFromUpdateOp[Op <: OpType, V, Other](
-      implicit copy: CanCopy[DenseVector[V]],
+  def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
+      copy: CanCopy[DenseVector[V]],
       op: UFunc.InPlaceImpl2[Op, DenseVector[V], Other],
       man: ClassTag[V])
       : UFunc.UImpl2[Op, DenseVector[V], Other, DenseVector[V]] = {

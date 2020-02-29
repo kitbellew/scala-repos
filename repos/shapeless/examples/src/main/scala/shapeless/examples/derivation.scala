@@ -159,8 +159,7 @@ object TypeClassesDemoAux {
         def show(p: HNil): String = ""
       }
 
-    implicit def deriveHCons[K <: Symbol, V, T <: HList](
-        implicit
+    implicit def deriveHCons[K <: Symbol, V, T <: HList](implicit
         key: Witness.Aux[K],
         sv: Lazy[Show[V]],
         st: Lazy[Show[T]]): Show[FieldType[K, V] :: T] =
@@ -177,8 +176,7 @@ object TypeClassesDemoAux {
         def show(p: CNil): String = ""
       }
 
-    implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](
-        implicit
+    implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](implicit
         key: Witness.Aux[K],
         sv: Lazy[Show[V]],
         st: Lazy[Show[T]]): Show[FieldType[K, V] :+: T] =
@@ -190,8 +188,8 @@ object TypeClassesDemoAux {
           }
       }
 
-    implicit def deriveInstance[F, G](
-        implicit gen: LabelledGeneric.Aux[F, G],
+    implicit def deriveInstance[F, G](implicit
+        gen: LabelledGeneric.Aux[F, G],
         sg: Lazy[Show[G]]): Show[F] =
       new Show[F] {
         def show(f: F) = sg.value.show(gen.to(f))
@@ -212,8 +210,7 @@ object TypeClassesDemoAux {
         def show2(p: HNil): String = ""
       }
 
-    implicit def deriveHCons[H, T <: HList](
-        implicit
+    implicit def deriveHCons[H, T <: HList](implicit
         sv: Lazy[Show2[H]],
         st: Lazy[Show2[T]]): Show2[H :: T] =
       new Show2[H :: T] {
@@ -224,8 +221,8 @@ object TypeClassesDemoAux {
         }
       }
 
-    implicit def deriveInstance[F, G](
-        implicit gen: Generic.Aux[F, G],
+    implicit def deriveInstance[F, G](implicit
+        gen: Generic.Aux[F, G],
         sg: Lazy[Show2[G]]): Show2[F] =
       new Show2[F] {
         def show2(f: F) = sg.value.show2(gen.to(f))

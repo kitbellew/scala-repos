@@ -6,8 +6,8 @@ import org.scalacheck.Test.check
 import Function.tupled
 
 object Test extends Properties("Either") {
-  implicit def arbitraryEither[X, Y](
-      implicit xa: Arbitrary[X],
+  implicit def arbitraryEither[X, Y](implicit
+      xa: Arbitrary[X],
       ya: Arbitrary[Y]): Arbitrary[Either[X, Y]] =
     Arbitrary[Either[X, Y]](
       oneOf(arbitrary[X].map(Left(_)), arbitrary[Y].map(Right(_))))

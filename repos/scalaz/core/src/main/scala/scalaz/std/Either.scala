@@ -6,8 +6,8 @@ import scalaz.Isomorphism._
 import scalaz.Tags.{First, Last}
 
 sealed trait EitherInstances0 {
-  implicit def eitherEqual[A, B](
-      implicit A0: Equal[A],
+  implicit def eitherEqual[A, B](implicit
+      A0: Equal[A],
       B0: Equal[B]): Equal[Either[A, B]] = new EitherEqual[A, B] {
     implicit def A = A0
     implicit def B = B0
@@ -57,16 +57,16 @@ sealed trait EitherInstances0 {
       : Semigroup[RightProjection[X, A] @@ Last] =
     new EitherLastRightSemigroup[X, A] {}
 
-  implicit def eitherLeftSemigroup[A, X](
-      implicit SemigroupA: Semigroup[A],
+  implicit def eitherLeftSemigroup[A, X](implicit
+      SemigroupA: Semigroup[A],
       MonoidX: Monoid[X]): Semigroup[LeftProjection[A, X]] =
     new EitherLeftSemigroup[A, X] {
       implicit def A = SemigroupA
       implicit def X = MonoidX
     }
 
-  implicit def eitherRightSemigroup[X, A](
-      implicit MonoidX: Monoid[X],
+  implicit def eitherRightSemigroup[X, A](implicit
+      MonoidX: Monoid[X],
       SemigroupA: Semigroup[A]): Semigroup[RightProjection[X, A]] =
     new EitherRightSemigroup[X, A] {
       implicit def X = MonoidX
@@ -277,8 +277,8 @@ trait EitherInstances extends EitherInstances0 {
       : Monad[λ[α => LeftProjection[α, R] @@ Last]] =
     Tags.Last.subst1[Monad, LeftProjection[?, R]](Monad[LeftProjection[?, R]])
 
-  implicit def eitherOrder[A, B](
-      implicit OrderA: Order[A],
+  implicit def eitherOrder[A, B](implicit
+      OrderA: Order[A],
       OrderB: Order[B]): Order[Either[A, B]] =
     new EitherOrder[A, B] {
       implicit def A = OrderA
@@ -337,16 +337,16 @@ trait EitherInstances extends EitherInstances0 {
       implicit def X = MonoidX
     }
 
-  implicit def eitherLeftMonoid[A, X](
-      implicit MonoidA: Monoid[A],
+  implicit def eitherLeftMonoid[A, X](implicit
+      MonoidA: Monoid[A],
       MonoidX: Monoid[X]): Monoid[LeftProjection[A, X]] =
     new EitherLeftMonoid[A, X] {
       implicit def A = MonoidA
       implicit def X = MonoidX
     }
 
-  implicit def eitherRightMonoid[X, A](
-      implicit MonoidX: Monoid[X],
+  implicit def eitherRightMonoid[X, A](implicit
+      MonoidX: Monoid[X],
       MonoidA: Monoid[A]): Monoid[RightProjection[X, A]] =
     new EitherRightMonoid[X, A] {
       implicit def X = MonoidX
@@ -377,8 +377,8 @@ trait EitherInstances extends EitherInstances0 {
 
     }
 
-  implicit def eitherShow[A, B](
-      implicit SA: Show[A],
+  implicit def eitherShow[A, B](implicit
+      SA: Show[A],
       SB: Show[B]): Show[Either[A, B]] = new Show[Either[A, B]] {
     override def show(f: Either[A, B]): Cord = f match {
       case Left(a)  => ("Left(": Cord) ++ SA.show(a) :- ')'

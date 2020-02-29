@@ -55,8 +55,8 @@ import cascading.tuple.{Fields, Tuple, TupleEntry}
 case class PartitionedTextLine[P](
     path: String,
     template: String,
-    encoding: String = TextLine.DEFAULT_CHARSET)(
-    implicit val valueSetter: TupleSetter[String],
+    encoding: String = TextLine.DEFAULT_CHARSET)(implicit
+    val valueSetter: TupleSetter[String],
     val valueConverter: TupleConverter[(Long, String)],
     val partitionSetter: TupleSetter[P],
     val partitionConverter: TupleConverter[P])

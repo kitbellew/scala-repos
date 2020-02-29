@@ -30,8 +30,8 @@ private[http] class RequestContextImpl(
       request: HttpRequest,
       log: LoggingAdapter,
       settings: RoutingSettings,
-      parserSettings: ParserSettings)(
-      implicit ec: ExecutionContextExecutor,
+      parserSettings: ParserSettings)(implicit
+      ec: ExecutionContextExecutor,
       materializer: Materializer) =
     this(
       request,
@@ -45,8 +45,8 @@ private[http] class RequestContextImpl(
   def this(
       request: HttpRequest,
       log: LoggingAdapter,
-      settings: RoutingSettings)(
-      implicit ec: ExecutionContextExecutor,
+      settings: RoutingSettings)(implicit
+      ec: ExecutionContextExecutor,
       materializer: Materializer) =
     this(
       request,

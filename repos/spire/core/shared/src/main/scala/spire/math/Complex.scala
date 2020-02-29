@@ -67,8 +67,8 @@ object Complex extends ComplexInstances {
     polar(f.one, (t.pi * 2 * x) / n)
   }
 
-  def rootsOfUnity[@sp(Float, Double) T](n: Int)(
-      implicit f: Field[T],
+  def rootsOfUnity[@sp(Float, Double) T](n: Int)(implicit
+      f: Field[T],
       t: Trig[T],
       r: IsReal[T]): Array[Complex[T]] = {
     val roots = new Array[Complex[T]](n)
@@ -120,8 +120,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     *
     * `sgn(z) = z / abs(z) = abs(z) / z`
     */
-  def complexSignum(
-      implicit f: Field[T],
+  def complexSignum(implicit
+      f: Field[T],
       o: IsReal[T],
       n: NRoot[T]): Complex[T] =
     if (isZero) this else this / abs
@@ -138,8 +138,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   def conjugate(implicit f: Rng[T]): Complex[T] = new Complex(real, -imag)
 
   def asTuple: (T, T) = (real, imag)
-  def asPolarTuple(
-      implicit f: Field[T],
+  def asPolarTuple(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): (T, T) = (abs, arg)
@@ -176,13 +176,13 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     (q, this - q * rhs)
   }
 
-  def **(e: T)(
-      implicit f: Field[T],
+  def **(e: T)(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = this pow e
-  def pow(e: T)(
-      implicit f: Field[T],
+  def pow(e: T)(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
@@ -231,41 +231,41 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   def %(b: Complex[T])(implicit f: Field[T], o: IsReal[T]): Complex[T] =
     this - (this /~ b) * b
 
-  def /%(b: Complex[T])(
-      implicit f: Field[T],
+  def /%(b: Complex[T])(implicit
+      f: Field[T],
       o: IsReal[T]): (Complex[T], Complex[T]) = {
     val q = this /~ b
     (q, this - q * b)
   }
 
-  def **(b: Int)(
-      implicit f: Field[T],
+  def **(b: Int)(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = pow(b)
 
-  def nroot(k: Int)(
-      implicit f: Field[T],
+  def nroot(k: Int)(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
     if (isZero) Complex.zero else pow(Complex(f.fromInt(k).reciprocal, f.zero))
 
-  def pow(b: Int)(
-      implicit f: Field[T],
+  def pow(b: Int)(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
     if (isZero) Complex.zero else Complex.polar(abs.pow(b), arg * b)
 
-  def **(b: Complex[T])(
-      implicit f: Field[T],
+  def **(b: Complex[T])(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = pow(b)
 
-  def pow(b: Complex[T])(
-      implicit f: Field[T],
+  def pow(b: Complex[T])(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] =
@@ -284,8 +284,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     }
 
   // we are going with the "principal value" definition of Log.
-  def log(
-      implicit f: Field[T],
+  def log(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = {
@@ -317,8 +317,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     new Complex(real.round, imag.round)
 
   // acos(z) = -i*(log(z + i*(sqrt(1 - z*z))))
-  def acos(
-      implicit f: Field[T],
+  def acos(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = {
@@ -329,8 +329,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   }
 
   // asin(z) = -i*(log(sqrt(1 - z*z) + i*z))
-  def asin(
-      implicit f: Field[T],
+  def asin(implicit
+      f: Field[T],
       n: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = {
@@ -341,8 +341,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   }
 
   // atan(z) = (i/2) log((i + z)/(i - z))
-  def atan(
-      implicit f: Field[T],
+  def atan(implicit
+      f: Field[T],
       r: NRoot[T],
       t: Trig[T],
       o: IsReal[T]): Complex[T] = {
@@ -781,24 +781,21 @@ private[math] class ComplexEq[A: Eq] extends Eq[Complex[A]] with Serializable {
 }
 
 @SerialVersionUID(1L)
-private[math] final class ComplexIsRingImpl[@sp(Float, Double) A](
-    implicit
+private[math] final class ComplexIsRingImpl[@sp(Float, Double) A](implicit
     val algebra: Ring[A],
     val order: IsReal[A])
     extends ComplexIsRing[A]
     with Serializable
 
 @SerialVersionUID(1L)
-private[math] final class ComplexIsFieldImpl[@sp(Float, Double) A](
-    implicit
+private[math] final class ComplexIsFieldImpl[@sp(Float, Double) A](implicit
     val algebra: Field[A],
     val order: IsReal[A])
     extends ComplexIsField[A]
     with Serializable
 
 @SerialVersionUID(1L)
-private[math] class ComplexAlgebra[@sp(Float, Double) A](
-    implicit
+private[math] class ComplexAlgebra[@sp(Float, Double) A](implicit
     val algebra: Field[A],
     val nroot: NRoot[A],
     val trig: Trig[A],

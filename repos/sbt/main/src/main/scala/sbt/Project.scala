@@ -794,16 +794,16 @@ object Project extends ProjectExtra {
     val keyToString = display.apply _
     DotGraph.generateGraph(file, graphName, rel, keyToString, keyToString)
   }
-  def relation(structure: BuildStructure, actual: Boolean)(
-      implicit display: Show[ScopedKey[_]])
-      : Relation[ScopedKey[_], ScopedKey[_]] =
+  def relation(structure: BuildStructure, actual: Boolean)(implicit
+      display: Show[ScopedKey[_]]): Relation[ScopedKey[_], ScopedKey[_]] =
     relation(structure.settings, actual)(
       structure.delegates,
       structure.scopeLocal,
       display)
 
   private[sbt] def relation(settings: Seq[Def.Setting[_]], actual: Boolean)(
-      implicit delegates: Scope => Seq[Scope],
+      implicit
+      delegates: Scope => Seq[Scope],
       scopeLocal: Def.ScopeLocal,
       display: Show[ScopedKey[_]]): Relation[ScopedKey[_], ScopedKey[_]] = {
     type Rel = Relation[ScopedKey[_], ScopedKey[_]]

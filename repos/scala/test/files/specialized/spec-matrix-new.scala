@@ -53,8 +53,8 @@ object Test {
     }
   }
 
-  def multTag[@specialized(Int) T](m: Matrix[T], n: Matrix[T])(
-      implicit at: ClassTag[T],
+  def multTag[@specialized(Int) T](m: Matrix[T], n: Matrix[T])(implicit
+      at: ClassTag[T],
       num: Numeric[T]) {
     val p = new Matrix[T](m.rows, n.cols)
     import num._

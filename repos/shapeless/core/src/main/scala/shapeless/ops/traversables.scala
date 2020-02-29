@@ -45,8 +45,8 @@ object traversable {
         if (l.isEmpty) Some(HNil) else None
     }
 
-    implicit def hlistFromTraversable[OutH, OutT <: HList](
-        implicit flt: FromTraversable[OutT],
+    implicit def hlistFromTraversable[OutH, OutT <: HList](implicit
+        flt: FromTraversable[OutT],
         oc: Typeable[OutH]) = new FromTraversable[OutH :: OutT] {
       def apply(l: GenTraversable[_]): Option[OutH :: OutT] =
         if (l.isEmpty) None
@@ -72,8 +72,8 @@ object traversable {
     */
   object ToSizedHList {
 
-    def apply[CC[T] <: GenTraversable[T], A, N <: Nat](
-        implicit ev: ToSizedHList[CC, A, N]
+    def apply[CC[T] <: GenTraversable[T], A, N <: Nat](implicit
+        ev: ToSizedHList[CC, A, N]
     ): ToSizedHList.Aux[CC, A, N, ev.Out] =
       ev
 
@@ -86,8 +86,8 @@ object traversable {
         type Out = Out0
       }
 
-    implicit def instance[CC[T] <: GenTraversable[T], A, N <: Nat](
-        implicit gt: CC[A] => GenTraversableLike[A, CC[A]],
+    implicit def instance[CC[T] <: GenTraversable[T], A, N <: Nat](implicit
+        gt: CC[A] => GenTraversableLike[A, CC[A]],
         ac: AdditiveCollection[CC[A]],
         ti: ToInt[N],
         th: ToHList[CC[A], N]

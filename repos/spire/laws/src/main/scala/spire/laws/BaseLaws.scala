@@ -28,8 +28,8 @@ trait BaseLaws[A] extends Laws {
     "signum is sign.toInt" → forAll((x: A) => x.signum == x.sign.toInt)
   )
 
-  def metricSpace[R](
-      implicit MSA: MetricSpace[A, R],
+  def metricSpace[R](implicit
+      MSA: MetricSpace[A, R],
       SR: Signed[R],
       OR: Order[R],
       ASR: AdditiveSemigroup[R]) = new SimpleRuleSet(

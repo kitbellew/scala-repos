@@ -41,8 +41,8 @@ object MetricsBasedResizerSpec {
   def routees(num: Int = 10)(implicit system: ActorSystem, timeout: Timeout) =
     (1 to num).map(_ ⇒ routee).toVector
 
-  case class TestRouter(routees: Vector[ActorRefRoutee])(
-      implicit system: ActorSystem,
+  case class TestRouter(routees: Vector[ActorRefRoutee])(implicit
+      system: ActorSystem,
       timeout: Timeout) {
 
     var msgs: Set[TestLatch] = Set()

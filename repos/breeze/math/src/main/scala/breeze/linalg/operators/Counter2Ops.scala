@@ -15,7 +15,8 @@ trait Counter2Ops {
   }
 
   private def binaryOpFromBinaryUpdateOp[K1, K2, V, Other, Op <: OpType](
-      implicit copy: CanCopy[Counter2[K1, K2, V]],
+      implicit
+      copy: CanCopy[Counter2[K1, K2, V]],
       op: InPlaceImpl2[Op, Counter2[K1, K2, V], Other]) = {
     new UImpl2[Op, Counter2[K1, K2, V], Other, Counter2[K1, K2, V]] {
       override def apply(a: Counter2[K1, K2, V], b: Other) = {
@@ -201,8 +202,8 @@ trait Counter2Ops {
     }
   }
 
-  implicit def canDivVV[K1, K2, V](
-      implicit copy: CanCopy[Counter2[K1, K2, V]],
+  implicit def canDivVV[K1, K2, V](implicit
+      copy: CanCopy[Counter2[K1, K2, V]],
       semiring: Field[V]): OpDiv.Impl2[
     Counter2[K1, K2, V],
     Counter2[K1, K2, V],
@@ -222,8 +223,8 @@ trait Counter2Ops {
     }
   }
 
-  implicit def canDivVS[K1, K2, V](
-      implicit copy: CanCopy[Counter2[K1, K2, V]],
+  implicit def canDivVS[K1, K2, V](implicit
+      copy: CanCopy[Counter2[K1, K2, V]],
       semiring: Field[V])
       : OpDiv.Impl2[Counter2[K1, K2, V], V, Counter2[K1, K2, V]] = {
     new OpDiv.Impl2[Counter2[K1, K2, V], V, Counter2[K1, K2, V]] {
@@ -270,8 +271,8 @@ trait Counter2Ops {
       }
     }
 
-  implicit def canNegate[K1, K2, V](implicit ring: Ring[V])
-      : OpNeg.Impl[Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
+  implicit def canNegate[K1, K2, V](implicit
+      ring: Ring[V]): OpNeg.Impl[Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
     new OpNeg.Impl[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       override def apply(a: Counter2[K1, K2, V]) = {
         val result = Counter2[K1, K2, V]()

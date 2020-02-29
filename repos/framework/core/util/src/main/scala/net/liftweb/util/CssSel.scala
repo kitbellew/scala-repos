@@ -1015,8 +1015,8 @@ object CanBind extends CssBindImplicits {
         Helpers.ensureUniqueId(f(info).toSeq.map(_.asHtml))
     }
 
-  implicit def iterableStringPromotableTransform[T[_], PM](
-      implicit f: T[PM] => Iterable[PM],
+  implicit def iterableStringPromotableTransform[T[_], PM](implicit
+      f: T[PM] => Iterable[PM],
       prom: PM => StringPromotable): CanBind[T[PM]] =
     new CanBind[T[PM]] {
       def apply(info: => T[PM])(ns: NodeSeq): Seq[NodeSeq] =
@@ -1043,9 +1043,8 @@ object CanBind extends CssBindImplicits {
         List(Text(info(ns)))
     }
 
-  implicit def stringIterFuncTransform[T[_]](
-      implicit f: T[String] => Iterable[String])
-      : CanBind[NodeSeq => T[String]] =
+  implicit def stringIterFuncTransform[T[_]](implicit
+      f: T[String] => Iterable[String]): CanBind[NodeSeq => T[String]] =
     new CanBind[NodeSeq => T[String]] {
       def apply(info: => NodeSeq => T[String])(ns: NodeSeq): Seq[NodeSeq] =
         f(info(ns)).toSeq.map(Text(_))

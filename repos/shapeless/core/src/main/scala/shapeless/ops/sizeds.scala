@@ -26,8 +26,8 @@ object sized {
         def apply(s: Sized[Any, Nat._0]) = HNil
       }
 
-    implicit def nonEmptySizedToHList[Repr, L <: Nat](
-        implicit itl: IsTraversableLike[Repr],
+    implicit def nonEmptySizedToHList[Repr, L <: Nat](implicit
+        itl: IsTraversableLike[Repr],
         ev: AdditiveCollection[Repr],
         ts: ToHList[Repr, L]): Aux[Repr, Succ[L], itl.A :: ts.Out] =
       new ToHList[Repr, Succ[L]] {

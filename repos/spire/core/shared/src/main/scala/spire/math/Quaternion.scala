@@ -72,8 +72,8 @@ private[math] trait QuaternionAlgebra[A]
 }
 
 trait QuaternionInstances {
-  implicit def QuaternionAlgebra[A](
-      implicit fr: Fractional[A],
+  implicit def QuaternionAlgebra[A](implicit
+      fr: Fractional[A],
       tr: Trig[A],
       isr: IsReal[A]): QuaternionAlgebra[A] =
     new QuaternionAlgebra[A] {
@@ -167,14 +167,14 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
     case n => n
   }
 
-  def quaternionSignum(
-      implicit f: Field[A],
+  def quaternionSignum(implicit
+      f: Field[A],
       o: IsReal[A],
       n: NRoot[A]): Quaternion[A] =
     if (isZero) this else this / abs
 
-  def pureSignum(
-      implicit f: Field[A],
+  def pureSignum(implicit
+      f: Field[A],
       o: IsReal[A],
       n: NRoot[A]): Quaternion[A] =
     if (isReal) Quaternion.zero[A] else (pure / pureAbs)
@@ -198,8 +198,8 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       Quaternion(f.zero, r.abs.sqrt, f.zero, f.zero)
     }
 
-  def nroot(m: Int)(
-      implicit f: Field[A],
+  def nroot(m: Int)(implicit
+      f: Field[A],
       o: IsReal[A],
       n0: NRoot[A],
       tr: Trig[A]): Quaternion[A] =
@@ -276,8 +276,8 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
 
   def **(k: Int)(implicit s: Ring[A]): Quaternion[A] = pow(k)
 
-  def fpow(k0: A)(
-      implicit f: Field[A],
+  def fpow(k0: A)(implicit
+      f: Field[A],
       o: IsReal[A],
       n0: NRoot[A],
       tr: Trig[A]): Quaternion[A] =
@@ -325,20 +325,20 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
   def %(rhs: Quaternion[A])(implicit f: Field[A], o: IsReal[A]): Quaternion[A] =
     lhs - (lhs /~ rhs)
 
-  def /%(rhs: A)(
-      implicit f: Field[A],
+  def /%(rhs: A)(implicit
+      f: Field[A],
       o: IsReal[A]): (Quaternion[A], Quaternion[A]) = {
     val q = lhs /~ rhs
     (q, lhs - q)
   }
-  def /%(rhs: Complex[A])(
-      implicit f: Field[A],
+  def /%(rhs: Complex[A])(implicit
+      f: Field[A],
       o: IsReal[A]): (Quaternion[A], Quaternion[A]) = {
     val q = lhs /~ rhs
     (q, lhs - q)
   }
-  def /%(rhs: Quaternion[A])(
-      implicit f: Field[A],
+  def /%(rhs: Quaternion[A])(implicit
+      f: Field[A],
       o: IsReal[A]): (Quaternion[A], Quaternion[A]) = {
     val q = lhs /~ rhs
     (q, lhs - q)

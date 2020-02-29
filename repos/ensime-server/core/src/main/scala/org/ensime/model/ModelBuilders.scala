@@ -376,8 +376,8 @@ object LineSourcePositionHelper {
         file
     }
 
-  def fromFqnSymbol(sym: FqnSymbol)(
-      implicit config: EnsimeConfig,
+  def fromFqnSymbol(sym: FqnSymbol)(implicit
+      config: EnsimeConfig,
       vfs: EnsimeVFS): Option[LineSourcePosition] =
     (sym.sourceFileObject, sym.line, sym.offset) match {
       case (None, _, _) => None

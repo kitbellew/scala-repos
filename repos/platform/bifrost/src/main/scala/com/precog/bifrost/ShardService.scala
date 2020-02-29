@@ -123,8 +123,7 @@ trait ShardService
 
   def shardService[F[+_]](
       service: HttpService[ByteChunk, F[Future[HttpResponse[QueryResult]]]])(
-      implicit
-      F: Functor[F])
+      implicit F: Functor[F])
       : HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] = {
     service map { _ map { _ map { _ map queryResultToByteChunk } } }
   }

@@ -42,8 +42,8 @@ object Combinatorics {
     * For (t1,t2) we want t1<t2, otherwise reject.
     * This brings down 90 tuples to the desired 45 tuples = 10C2
     */
-  def combinations[T](input: IndexedSeq[T], k: Int)(
-      implicit flowDef: FlowDef,
+  def combinations[T](input: IndexedSeq[T], k: Int)(implicit
+      flowDef: FlowDef,
       mode: Mode): Pipe = {
 
     // make k pipes with 1 column each
@@ -92,8 +92,8 @@ object Combinatorics {
     * Return a pipe with all nPk permutations, with k columns per row
     * For details, see combinations(...) above
     */
-  def permutations[T](input: IndexedSeq[T], k: Int)(
-      implicit flowDef: FlowDef,
+  def permutations[T](input: IndexedSeq[T], k: Int)(implicit
+      flowDef: FlowDef,
       mode: Mode): Pipe = {
 
     val n = input.size
@@ -166,7 +166,8 @@ object Combinatorics {
     *
     */
   def weightedSum(weights: IndexedSeq[Double], result: Double, error: Double)(
-      implicit flowDef: FlowDef,
+      implicit
+      flowDef: FlowDef,
       mode: Mode): Pipe = {
     val numWeights = weights.size
     val allColumns = (1 to numWeights).map(x => Symbol("k" + x))

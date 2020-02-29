@@ -34,8 +34,8 @@ import scala.collection.mutable
   *
   * @author dlwh
   */
-case class Multinomial[T, I](params: T)(
-    implicit ev: T => QuasiTensor[I, Double],
+case class Multinomial[T, I](params: T)(implicit
+    ev: T => QuasiTensor[I, Double],
     sumImpl: breeze.linalg.sum.Impl[T, Double],
     rand: RandBasis = Rand)
     extends DiscreteDistr[I] {

@@ -3,8 +3,8 @@ import org.scalatest.FunSuite
 
 case class MyClass[A](myString: String, a: A)
 
-class MyClassPickler[A](
-    implicit val format: PickleFormat,
+class MyClassPickler[A](implicit
+    val format: PickleFormat,
     aTypeTag: FastTypeTag[A],
     aPickler: Pickler[A],
     aUnpickler: Unpickler[A])

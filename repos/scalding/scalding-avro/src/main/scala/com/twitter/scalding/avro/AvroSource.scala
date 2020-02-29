@@ -85,7 +85,8 @@ object UnpackedAvroSource {
 }
 
 case class UnpackedAvroSource[T](paths: Seq[String], schema: Option[Schema])(
-    implicit val conv: TupleConverter[T],
+    implicit
+    val conv: TupleConverter[T],
     tset: TupleSetter[T])
     extends FixedPathSource(paths: _*)
     with UnpackedAvroFileScheme
@@ -112,8 +113,8 @@ object PackedAvroSource {
     new PackedAvroSource[T](Seq(path))
 }
 
-case class PackedAvroSource[T](paths: Seq[String])(
-    implicit val mf: Manifest[T],
+case class PackedAvroSource[T](paths: Seq[String])(implicit
+    val mf: Manifest[T],
     conv: TupleConverter[T],
     tset: TupleSetter[T],
     avroType: AvroSchemaType[T])

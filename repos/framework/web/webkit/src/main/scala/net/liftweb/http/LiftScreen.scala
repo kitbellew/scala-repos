@@ -570,8 +570,8 @@ trait AbstractScreen extends Factory with Loggable {
 
   protected def field[T](
       underlying: => Box[BaseField { type ValueType = T }],
-      stuff: FilterOrValidate[T]*)(
-      implicit man: Manifest[T],
+      stuff: FilterOrValidate[T]*)(implicit
+      man: Manifest[T],
       marker: BoxMarker): Field { type ValueType = T } = {
     val paramFieldId: Box[String] = (stuff.collect {
       case FormFieldId(id) => id

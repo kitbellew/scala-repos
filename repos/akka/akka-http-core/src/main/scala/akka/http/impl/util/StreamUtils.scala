@@ -375,8 +375,8 @@ private[http] class EnhancedByteStringSource[Mat](
     extends AnyVal {
   def join(implicit materializer: Materializer): Future[ByteString] =
     byteStringStream.runFold(ByteString.empty)(_ ++ _)
-  def utf8String(
-      implicit materializer: Materializer,
+  def utf8String(implicit
+      materializer: Materializer,
       ec: ExecutionContext): Future[String] =
     join.map(_.utf8String)
 }

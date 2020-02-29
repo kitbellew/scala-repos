@@ -31,8 +31,8 @@ object ClientMergeable {
       offlineStore: ReadableStore[K, (BatchID, V)],
       onlineStore: ReadableStore[(K, BatchID), V]
         with Mergeable[(K, BatchID), V],
-      batchesToKeep: Int)(
-      implicit batcher: Batcher,
+      batchesToKeep: Int)(implicit
+      batcher: Batcher,
       monoid: Semigroup[V]): ClientMergeable[K, V] =
     new ClientMergeable[K, V](
       offlineStore,

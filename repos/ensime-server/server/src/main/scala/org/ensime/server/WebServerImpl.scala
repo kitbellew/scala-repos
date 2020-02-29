@@ -13,8 +13,7 @@ import scala.concurrent.Future
 class WebServerImpl(
     project: ActorRef,
     broadcaster: ActorRef
-)(
-    implicit
+)(implicit
     val config: EnsimeConfig,
     val system: ActorSystem,
     val mat: Materializer,

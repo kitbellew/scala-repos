@@ -64,16 +64,16 @@ class DailySuffixTsv(prefix: String, fs: Fields = Fields.ALL)(
 }
 
 object DailySuffixTypedTsv {
-  def apply[T](prefix: String)(
-      implicit dateRange: DateRange,
+  def apply[T](prefix: String)(implicit
+      dateRange: DateRange,
       mf: Manifest[T],
       conv: TupleConverter[T],
       tset: TupleSetter[T]) =
     new DailySuffixTypedTsv[T](prefix)
 }
 
-class DailySuffixTypedTsv[T](prefix: String)(
-    implicit override val dateRange: DateRange,
+class DailySuffixTypedTsv[T](prefix: String)(implicit
+    override val dateRange: DateRange,
     override val mf: Manifest[T],
     override val conv: TupleConverter[T],
     override val tset: TupleSetter[T])

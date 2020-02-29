@@ -136,16 +136,17 @@ trait VFSModule[M[+_], Block] extends Logging {
         }
     }
 
-    def asProjection(path: Path, version: Version)(implicit M: Monad[M])
-        : Resource => EitherT[M, ResourceError, Projection] = { resource =>
-      def notAProjection =
-        notFound(
-          "Requested resource at %s version %s cannot be interpreted as a Quirrel projection."
-            .format(path.path, version))
-      resource.fold(
-        _ => EitherT.left(notAProjection.point[M]),
-        pr => EitherT.right(pr.projection)
-      )
+    def asProjection(path: Path, version: Version)(implicit
+        M: Monad[M]): Resource => EitherT[M, ResourceError, Projection] = {
+      resource =>
+        def notAProjection =
+          notFound(
+            "Requested resource at %s version %s cannot be interpreted as a Quirrel projection."
+              .format(path.path, version))
+        resource.fold(
+          _ => EitherT.left(notAProjection.point[M]),
+          pr => EitherT.right(pr.projection)
+        )
     }
   }
 
@@ -158,8 +159,8 @@ trait VFSModule[M[+_], Block] extends Logging {
         blobResource: BlobResource => A,
         projectionResource: ProjectionResource => A) = projectionResource(this)
 
-    def byteStream(requestedMimeTypes: Seq[MimeType])(implicit M: Monad[M])
-        : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
+    def byteStream(requestedMimeTypes: Seq[MimeType])(implicit
+        M: Monad[M]): OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
       import FileContent._
       // Map to the type we'll use for conversion and the type we report to the user
       // FIXME: We're dealing with MimeType in too many places here
@@ -187,8 +188,8 @@ trait VFSModule[M[+_], Block] extends Logging {
         blobResource: BlobResource => A,
         projectionResource: ProjectionResource => A) = blobResource(this)
 
-    def byteStream(requestedMimeTypes: Seq[MimeType])(implicit M: Monad[M])
-        : OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
+    def byteStream(requestedMimeTypes: Seq[MimeType])(implicit
+        M: Monad[M]): OptionT[M, (MimeType, StreamT[M, Array[Byte]])] = {
       import FileContent._
       val acceptableMimeTypes = Map(
         mimeType -> mimeType,
@@ -206,8 +207,8 @@ trait VFSModule[M[+_], Block] extends Logging {
     def toJsonElements(block: Block): Vector[JValue]
     def derefValue(block: Block): Block
     def blockSize(block: Block): Int
-    def pathStructure(selector: CPath)(implicit M: Monad[M])
-        : Projection => EitherT[M, ResourceError, PathStructure]
+    def pathStructure(selector: CPath)(implicit
+        M: Monad[M]): Projection => EitherT[M, ResourceError, PathStructure]
   }
 
   type VFSCompanion <: VFSCompanionLike

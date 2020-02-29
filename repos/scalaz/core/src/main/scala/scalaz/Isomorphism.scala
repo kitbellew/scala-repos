@@ -57,16 +57,16 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
 
     import Liskov._
 
-    def unlift[A](
-        implicit FG: Arr[F, G] <~< (F ~> G),
+    def unlift[A](implicit
+        FG: Arr[F, G] <~< (F ~> G),
         GF: Arr[G, F] <~< (G ~> F)): F[A] <=> G[A] =
       new (F[A] <=> G[A]) {
         def from = GF(self.from)
         def to = FG(self.to)
       }
 
-    def %~(f: G ~> G)(
-        implicit FG: Arr[F, G] <~< (F ~> G),
+    def %~(f: G ~> G)(implicit
+        FG: Arr[F, G] <~< (F ~> G),
         GF: Arr[G, F] <~< (G ~> F)): F ~> F =
       new (F ~> F) {
         def apply[A](a: F[A]): F[A] = GF(self.from)(f(FG(self.to)(a)))
@@ -86,8 +86,7 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
 
     import Liskov._
 
-    def unlift[A, B](
-        implicit
+    def unlift[A, B](implicit
         FG: Arr[F, G] <~< (F ~~> G),
         GF: Arr[G, F] <~< (G ~~> F)): F[A, B] <=> G[A, B] =
       new (F[A, B] <=> G[A, B]) {
@@ -95,8 +94,7 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
         def to = FG(self.to).apply _
       }
 
-    def unlift1[A](
-        implicit
+    def unlift1[A](implicit
         FG: Arr[F, G] <~< (F ~~> G),
         GF: Arr[G, F] <~< (G ~~> F)): F[A, ?] <~> G[A, ?] = {
       type FA[α] = F[A, α]
@@ -107,8 +105,7 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
       }
     }
 
-    def unlift2[A](
-        implicit
+    def unlift2[A](implicit
         FG: Arr[F, G] <~< (F ~~> G),
         GF: Arr[G, F] <~< (G ~~> F)): F[?, A] <~> G[?, A] = {
       type FA[α] = F[α, A]
@@ -119,8 +116,8 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
       }
     }
 
-    def %~(f: G ~~> G)(
-        implicit FG: Arr[F, G] <~< (F ~~> G),
+    def %~(f: G ~~> G)(implicit
+        FG: Arr[F, G] <~< (F ~~> G),
         GF: Arr[G, F] <~< (G ~~> F)): F ~~> F =
       new (F ~~> F) {
         def apply[A, B](a: F[A, B]): F[A, B] = GF(self.from)(f(FG(self.to)(a)))

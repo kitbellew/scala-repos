@@ -355,8 +355,8 @@ object DenseVector
   /**
     * Vertical concatenation of two or more column vectors into one large vector.
     */
-  def vertcat[V](vectors: DenseVector[V]*)(
-      implicit canSet: OpSet.InPlaceImpl2[DenseVector[V], DenseVector[V]],
+  def vertcat[V](vectors: DenseVector[V]*)(implicit
+      canSet: OpSet.InPlaceImpl2[DenseVector[V], DenseVector[V]],
       vman: ClassTag[V],
       zero: Zero[V]): DenseVector[V] = {
     val size = vectors.foldLeft(0)(_ + _.size)
@@ -387,8 +387,8 @@ object DenseVector
     }
   }
 
-  implicit def negFromScale[V](
-      implicit scale: OpMulScalar.Impl2[DenseVector[V], V, DenseVector[V]],
+  implicit def negFromScale[V](implicit
+      scale: OpMulScalar.Impl2[DenseVector[V], V, DenseVector[V]],
       field: Ring[V]) = {
     new OpNeg.Impl[DenseVector[V], DenseVector[V]] {
       override def apply(a: DenseVector[V]): DenseVector[V] = {

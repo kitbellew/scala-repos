@@ -366,8 +366,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
       implicit tcTag: WeakTypeTag[TC[Nothing]]): Tree =
     convertInstanceImplNatAux(i, tcTag.tpe)
 
-  def convertInstanceImplNat1[B, T <: B, TC[_ <: B, _ <: Nat]](i: Tree)(
-      implicit tTag: WeakTypeTag[T],
+  def convertInstanceImplNat1[B, T <: B, TC[_ <: B, _ <: Nat]](i: Tree)(implicit
+      tTag: WeakTypeTag[T],
       tcTag: WeakTypeTag[TC[Nothing, Nothing]]): Tree = {
     val tTpe = tTag.tpe
     val tc = tcTag.tpe.typeConstructor
@@ -405,8 +405,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
       mkWitnessWith(parent, sTpe, value, i)
     }
 
-  def convertInstanceImpl2[H, TC2[_ <: H, _], S <: H](t: Tree)(
-      implicit tc2Tag: WeakTypeTag[TC2[_, _]],
+  def convertInstanceImpl2[H, TC2[_ <: H, _], S <: H](t: Tree)(implicit
+      tc2Tag: WeakTypeTag[TC2[_, _]],
       sTag: WeakTypeTag[S]): Tree =
     extractResult(t) { (sTpe, value) =>
       val tc2 = tc2Tag.tpe.typeConstructor

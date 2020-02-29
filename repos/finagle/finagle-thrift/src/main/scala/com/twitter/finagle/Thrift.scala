@@ -110,8 +110,8 @@ object Thrift
       * @param maxReusableBufferSize Max buffer size in bytes.
       */
     case class MaxReusableBufferSize(maxReusableBufferSize: Int)
-    implicit object MaxReusableBufferSize
-        extends Stack.Param[MaxReusableBufferSize] {
+    implicit
+    object MaxReusableBufferSize extends Stack.Param[MaxReusableBufferSize] {
       val default = MaxReusableBufferSize(maxThriftBufferSize)
     }
 
@@ -120,8 +120,8 @@ object Thrift
       * @see The [[https://twitter.github.io/finagle/guide/Protocols.html?highlight=Twitter-upgraded#thrift user guide]] for details on Twitter-upgrade Thrift.
       */
     case class AttemptTTwitterUpgrade(upgrade: Boolean)
-    implicit object AttemptTTwitterUpgrade
-        extends Stack.Param[AttemptTTwitterUpgrade] {
+    implicit
+    object AttemptTTwitterUpgrade extends Stack.Param[AttemptTTwitterUpgrade] {
       val default = AttemptTTwitterUpgrade(true)
     }
   }

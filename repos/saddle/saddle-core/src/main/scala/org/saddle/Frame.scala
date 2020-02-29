@@ -918,8 +918,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @tparam U type of other Frame values
     * @tparam V type of resulting Frame values
     */
-  def concat[U, V](other: Frame[RX, CX, U], how: JoinType = OuterJoin)(
-      implicit pro: Promoter[T, U, V],
+  def concat[U, V](other: Frame[RX, CX, U], how: JoinType = OuterJoin)(implicit
+      pro: Promoter[T, U, V],
       mu: ST[U],
       md: ST[V]): Frame[RX, CX, V] = {
 
@@ -1279,8 +1279,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @tparam O2 The 1-arity type of split-out index C
     * @tparam V The type of the stacked row index
     */
-  def stack[O1, O2, V](
-      implicit splt: Splitter[CX, O1, O2],
+  def stack[O1, O2, V](implicit
+      splt: Splitter[CX, O1, O2],
       stkr: Stacker[RX, O2, V],
       ord1: ORD[O1],
       ord2: ORD[O2],
@@ -1324,8 +1324,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @tparam O2 The 1-arity type of split-out index R
     * @tparam V The type of the stacked col index
     */
-  def unstack[O1, O2, V](
-      implicit splt: Splitter[RX, O1, O2],
+  def unstack[O1, O2, V](implicit
+      splt: Splitter[RX, O1, O2],
       stkr: Stacker[CX, O2, V],
       ord1: ORD[O1],
       ord2: ORD[O2],
@@ -1414,8 +1414,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   /**
     * See concat; operates row-wise
     */
-  def rconcat[U, V](other: Frame[RX, CX, U], how: JoinType = OuterJoin)(
-      implicit wd1: Promoter[T, U, V],
+  def rconcat[U, V](other: Frame[RX, CX, U], how: JoinType = OuterJoin)(implicit
+      wd1: Promoter[T, U, V],
       mu: ST[U],
       md: ST[V]): Frame[RX, CX, V] = T.concat(other.T, how).T
 

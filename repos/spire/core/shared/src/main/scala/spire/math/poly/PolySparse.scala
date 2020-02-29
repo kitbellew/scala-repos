@@ -66,8 +66,8 @@ case class PolySparse[@sp(Double) C] private[spire] (
   def maxOrderTermCoeff(implicit ring: Semiring[C]): C =
     if (isZero) ring.zero else coeff(coeff.length - 1)
 
-  def reductum(
-      implicit e: Eq[C],
+  def reductum(implicit
+      e: Eq[C],
       ring: Semiring[C],
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeff.length - 2
@@ -170,22 +170,22 @@ case class PolySparse[@sp(Double) C] private[spire] (
     new PolySparse(exp, cs)
   }
 
-  def +(rhs0: Polynomial[C])(
-      implicit ring: Semiring[C],
+  def +(rhs0: Polynomial[C])(implicit
+      ring: Semiring[C],
       eq: Eq[C]): Polynomial[C] = {
     val rhs: PolySparse[C] = PolySparse(rhs0)
     PolySparse.addSparse(lhs, rhs)
   }
 
-  def *(rhs0: Polynomial[C])(
-      implicit ring: Semiring[C],
+  def *(rhs0: Polynomial[C])(implicit
+      ring: Semiring[C],
       eq: Eq[C]): Polynomial[C] = {
     val rhs: PolySparse[C] = PolySparse(rhs0)
     PolySparse.multiplySparse(lhs, rhs)
   }
 
-  def /%(rhs: Polynomial[C])(
-      implicit field: Field[C],
+  def /%(rhs: Polynomial[C])(implicit
+      field: Field[C],
       eq: Eq[C]): (Polynomial[C], Polynomial[C]) = {
     require(!rhs.isZero, "Can't divide by polynomial of zero!")
 

@@ -252,8 +252,8 @@ trait ScalatraBase
     }
   }
 
-  protected def renderUncaughtException(e: Throwable)(
-      implicit request: HttpServletRequest,
+  protected def renderUncaughtException(e: Throwable)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Unit = {
     status = 500
     if (isDevelopmentMode) {
@@ -688,8 +688,8 @@ trait ScalatraBase
       path: String,
       params: Iterable[(String, Any)] = Iterable.empty,
       includeContextPath: Boolean = true,
-      includeServletPath: Boolean = true)(
-      implicit request: HttpServletRequest,
+      includeServletPath: Boolean = true)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
     url(
       path,
@@ -719,8 +719,8 @@ trait ScalatraBase
       includeContextPath: Boolean = true,
       includeServletPath: Boolean = true,
       absolutize: Boolean = true,
-      withSessionId: Boolean = true)(
-      implicit request: HttpServletRequest,
+      withSessionId: Boolean = true)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
 
     val newPath = path match {
@@ -788,8 +788,8 @@ trait ScalatraBase
   /**
     * Sends a redirect response and immediately halts the current action.
     */
-  def redirect(uri: String)(
-      implicit request: HttpServletRequest,
+  def redirect(uri: String)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Nothing = {
     halt(Found(fullUrl(uri, includeServletPath = false)))
   }
@@ -811,8 +811,8 @@ trait ScalatraBase
       params: Iterable[(String, Any)] = Iterable.empty,
       includeContextPath: Boolean = true,
       includeServletPath: Boolean = true,
-      withSessionId: Boolean = true)(
-      implicit request: HttpServletRequest,
+      withSessionId: Boolean = true)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
     if (path.startsWith("http")) path
     else {

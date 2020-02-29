@@ -17,9 +17,8 @@ case class BroadcastedRows[T, RowType](underlying: T)
       implicit canIterateAxis: CanIterateAxis[T, Axis._1.type, RowType]) =
     canIterateAxis(underlying, Axis._1)
 
-  def foldLeft[B](z: B)(f: (B, RowType) => B)(
-      implicit canTraverseAxis: CanTraverseAxis[T, Axis._1.type, RowType])
-      : B = {
+  def foldLeft[B](z: B)(f: (B, RowType) => B)(implicit
+      canTraverseAxis: CanTraverseAxis[T, Axis._1.type, RowType]): B = {
     var acc = z
     canTraverseAxis(underlying, Axis._1) { c => acc = f(acc, c) }
     acc
@@ -49,8 +48,8 @@ object BroadcastedRows {
   implicit def scalarOf[T, RowType]
       : ScalarOf[BroadcastedRows[T, RowType], RowType] = ScalarOf.dummy
 
-  implicit def broadcastOp[Op, T, RowType, OpResult, Result](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
+  implicit def broadcastOp[Op, T, RowType, OpResult, Result](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: UImpl[Op, RowType, OpResult],
       cc: CanCollapseAxis[T, Axis._1.type, RowType, OpResult, Result])
       : UImpl[Op, BroadcastedRows[T, RowType], Result] = {
@@ -61,8 +60,8 @@ object BroadcastedRows {
     }
   }
 
-  implicit def broadcastInplaceOp[Op, T, RowType, RHS, OpResult](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
+  implicit def broadcastInplaceOp[Op, T, RowType, RHS, OpResult](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: InPlaceImpl[Op, RowType],
       cc: CanTraverseAxis[T, Axis._1.type, RowType])
       : InPlaceImpl[Op, BroadcastedRows[T, RowType]] = {
@@ -73,8 +72,8 @@ object BroadcastedRows {
     }
   }
 
-  implicit def broadcastOp2[Op, T, RowType, RHS, OpResult, Result](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
+  implicit def broadcastOp2[Op, T, RowType, RHS, OpResult, Result](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: UImpl2[Op, RowType, RHS, OpResult],
       cc: CanCollapseAxis[T, Axis._1.type, RowType, OpResult, Result])
       : UImpl2[Op, BroadcastedRows[T, RowType], RHS, Result] = {
@@ -85,8 +84,8 @@ object BroadcastedRows {
     }
   }
 
-  implicit def broadcastInplaceOp2[Op, T, RowType, RHS, OpResult](
-      implicit handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
+  implicit def broadcastInplaceOp2[Op, T, RowType, RHS, OpResult](implicit
+      handhold: CanCollapseAxis.HandHold[T, Axis._1.type, RowType],
       op: InPlaceImpl2[Op, RowType, RHS],
       cc: CanTraverseAxis[T, Axis._1.type, RowType])
       : InPlaceImpl2[Op, BroadcastedRows[T, RowType], RHS] = {

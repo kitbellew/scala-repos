@@ -120,13 +120,13 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   implicit def sourceToRichPipe(src: Source): RichPipe = new RichPipe(src.read)
 
   // This converts an Iterable into a Pipe or RichPipe with index (int-based) fields
-  implicit def toPipe[T](iter: Iterable[T])(
-      implicit set: TupleSetter[T],
+  implicit def toPipe[T](iter: Iterable[T])(implicit
+      set: TupleSetter[T],
       conv: TupleConverter[T]): Pipe =
     IterableSource[T](iter)(set, conv).read
 
-  implicit def iterableToRichPipe[T](iter: Iterable[T])(
-      implicit set: TupleSetter[T],
+  implicit def iterableToRichPipe[T](iter: Iterable[T])(implicit
+      set: TupleSetter[T],
       conv: TupleConverter[T]): RichPipe =
     RichPipe(toPipe(iter)(set, conv))
 

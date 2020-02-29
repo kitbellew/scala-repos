@@ -230,8 +230,8 @@ object TypedCollectionTypeConstructor {
   def set = forColl[Set]
 
   /** Get a TypedCollectionTypeConstructor for an Iterable type */
-  implicit def forColl[C[X] <: Iterable[X]](
-      implicit cbf: CanBuild[Any, C[Any]],
+  implicit def forColl[C[X] <: Iterable[X]](implicit
+      cbf: CanBuild[Any, C[Any]],
       tag: ClassTag[C[_]]): TypedCollectionTypeConstructor[C] =
     new ErasedCollectionTypeConstructor[C](cbf, tag)
 
@@ -412,8 +412,8 @@ trait ScalaType[T] extends TypedType[T] {
   final def isPrimitive = classTag.runtimeClass.isPrimitive
 }
 
-class ScalaBaseType[T](
-    implicit val classTag: ClassTag[T],
+class ScalaBaseType[T](implicit
+    val classTag: ClassTag[T],
     val ordering: scala.math.Ordering[T])
     extends ScalaType[T]
     with BaseTypedType[T] {
@@ -443,8 +443,8 @@ class ScalaBaseType[T](
   }
 }
 
-class ErasedScalaBaseType[T, E](
-    implicit val erasure: ScalaBaseType[E],
+class ErasedScalaBaseType[T, E](implicit
+    val erasure: ScalaBaseType[E],
     val ct: ClassTag[T])
     extends ScalaBaseType[T]()(ct, null) {
   override def toString =
@@ -481,8 +481,8 @@ object ScalaBaseType {
       stringType,
       optionDiscType).map(s => (s.classTag, s)).toMap
 
-  def apply[T](
-      implicit classTag: ClassTag[T],
+  def apply[T](implicit
+      classTag: ClassTag[T],
       ordering: scala.math.Ordering[T] = null): ScalaBaseType[T] =
     all.getOrElse(classTag, new ScalaBaseType[T]).asInstanceOf[ScalaBaseType[T]]
 
@@ -492,8 +492,8 @@ object ScalaBaseType {
 /** A phantom type for Option discriminator columns. Values are of type Int. */
 sealed trait OptionDisc
 
-class ScalaNumericType[T](val fromDouble: Double => T)(
-    implicit tag: ClassTag[T],
+class ScalaNumericType[T](val fromDouble: Double => T)(implicit
+    tag: ClassTag[T],
     val numeric: Numeric[T])
     extends ScalaBaseType[T]()(tag, numeric)
     with NumericTypedType {

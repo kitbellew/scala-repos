@@ -15,8 +15,8 @@ import breeze.linalg.support.CanTraverseKeyValuePairs.KeyValuePairsVisitor
  **/
 object where extends UFunc {
 
-  implicit def whereFromTraverseKeyValuePairs[T, K, V](
-      implicit trav: CanTraverseKeyValuePairs[T, K, V],
+  implicit def whereFromTraverseKeyValuePairs[T, K, V](implicit
+      trav: CanTraverseKeyValuePairs[T, K, V],
       semi: Semiring[V]): Impl[T, IndexedSeq[K]] = {
     new Impl[T, IndexedSeq[K]] {
       override def apply(v: T): IndexedSeq[K] = {
@@ -42,8 +42,8 @@ object where extends UFunc {
     }
   }
 
-  implicit def where3ArgFromTraverseKeyValuePairs[T, Q, K, V, V2, U](
-      implicit ev: Q <:< QuasiTensor[K, V2],
+  implicit def where3ArgFromTraverseKeyValuePairs[T, Q, K, V, V2, U](implicit
+      ev: Q <:< QuasiTensor[K, V2],
       trav: CanMapKeyValuePairs[T, K, V, V2, U],
       semi: Semiring[V]): Impl3[T, Q, Q, U] = {
     new Impl3[T, Q, Q, U] {

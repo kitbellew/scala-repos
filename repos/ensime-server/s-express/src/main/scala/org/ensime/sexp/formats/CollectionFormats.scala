@@ -54,8 +54,7 @@ trait CollectionFormats {
    but this only works because `IsTraversableLike` is using the evidence
    trick under the hood.
    */
-  implicit def genTraversableFormat[T[_], E](
-      implicit
+  implicit def genTraversableFormat[T[_], E](implicit
       evidence: T[E] <:< GenTraversable[E],
       cbf: CanBuildFrom[T[E], E, T[E]],
       ef: SexpFormat[E]
@@ -75,8 +74,7 @@ trait CollectionFormats {
    `SexpSymbol`, but that would overcomplicate the `SexpFormat`
    hierarchy.
    */
-  implicit def genMapFormat[M[_, _], K, V](
-      implicit
+  implicit def genMapFormat[M[_, _], K, V](implicit
       ev: M[K, V] <:< GenMap[K, V],
       cbf: CanBuildFrom[M[K, V], (K, V), M[K, V]],
       kf: SexpFormat[K],
@@ -180,8 +178,7 @@ trait CollectionFormats {
   // note that the type has to be im.NumericRange[E]
   // not im.NumericRange.{Inclusive, Exclusive}[E]
   // (same problem as above, but getting the cons is trickier)
-  implicit def numericRangeFormat[E](
-      implicit
+  implicit def numericRangeFormat[E](implicit
       nf: SexpFormat[E],
       n: Numeric[E],
       int: Integral[E]): SexpFormat[im.NumericRange[E]] =

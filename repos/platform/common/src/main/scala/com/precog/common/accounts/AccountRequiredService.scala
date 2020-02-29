@@ -37,7 +37,8 @@ import scalaz.syntax.std.option._
 class AccountRequiredService[A, B](
     accountFinder: AccountFinder[Future],
     val delegate: HttpService[A, (APIKey, Path, AccountId) => Future[B]])(
-    implicit err: (HttpFailure, String) => B,
+    implicit
+    err: (HttpFailure, String) => B,
     executor: ExecutionContext)
     extends DelegatingService[
       A,

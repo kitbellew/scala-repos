@@ -97,8 +97,8 @@ trait ApiFormats extends ScalatraBase {
   @deprecated(
     "`format` now means the same as `responseFormat`, `responseFormat` will be removed eventually",
     "2.3")
-  def responseFormat(
-      implicit request: HttpServletRequest,
+  def responseFormat(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = format
 
   /**
@@ -192,8 +192,8 @@ trait ApiFormats extends ScalatraBase {
     } contains contentType)
   }
 
-  private def getFormat(
-      implicit request: HttpServletRequest,
+  private def getFormat(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
     getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat.name
   }
@@ -234,8 +234,8 @@ trait ApiFormats extends ScalatraBase {
     * $ - the format from the `Content-Type` header, as looked up in `mimeTypes`
     * $ - the default format
     */
-  def format(
-      implicit request: HttpServletRequest,
+  def format(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): String = {
     request
       .get(FormatKey)

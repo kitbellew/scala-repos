@@ -1001,8 +1001,8 @@ object DStream {
   // it automatically. However, we still keep the old function in StreamingContext for backward
   // compatibility and forward to the following function directly.
 
-  implicit def toPairDStreamFunctions[K, V](stream: DStream[(K, V)])(
-      implicit kt: ClassTag[K],
+  implicit def toPairDStreamFunctions[K, V](stream: DStream[(K, V)])(implicit
+      kt: ClassTag[K],
       vt: ClassTag[V],
       ord: Ordering[K] = null): PairDStreamFunctions[K, V] = {
     new PairDStreamFunctions[K, V](stream)

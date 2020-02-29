@@ -63,8 +63,8 @@ object SourceBuilder {
   def nextName[T: Manifest]: String =
     "%s_%d".format(manifest[T], nextId.getAndIncrement)
 
-  def apply[T](eventSource: EventSource[T], timeOf: T => Date)(
-      implicit mf: Manifest[T],
+  def apply[T](eventSource: EventSource[T], timeOf: T => Date)(implicit
+      mf: Manifest[T],
       eventCodec: Codec[T]) = {
     implicit val te = TimeExtractor[T](timeOf(_).getTime)
     val newID = nextName[T]
@@ -96,8 +96,8 @@ case class SourceBuilder[T: Manifest] private (
     * This may be more efficient if you know you are not changing the values in
     * you flatMap.
     */
-  def flatMapKeys[K1, K2, V](fn: K1 => TraversableOnce[K2])(
-      implicit ev: T <:< (K1, V),
+  def flatMapKeys[K1, K2, V](fn: K1 => TraversableOnce[K2])(implicit
+      ev: T <:< (K1, V),
       key1Mf: Manifest[K1],
       key2Mf: Manifest[K2],
       valMf: Manifest[V]): SourceBuilder[(K2, V)] =
@@ -108,7 +108,8 @@ case class SourceBuilder[T: Manifest] private (
     flatMap(newFlatMapper(_))
 
   def write[U](sink: CompoundSink[U])(conversion: T => TraversableOnce[U])(
-      implicit batcher: Batcher,
+      implicit
+      batcher: Batcher,
       mf: Manifest[U]): SourceBuilder[T] = {
     val newNode =
       node
@@ -139,7 +140,8 @@ case class SourceBuilder[T: Manifest] private (
     )
 
   def leftJoin[K, V, JoinedValue](service: CompoundService[K, JoinedValue])(
-      implicit ev: T <:< (K, V),
+      implicit
+      ev: T <:< (K, V),
       keyMf: Manifest[K],
       valMf: Manifest[V],
       joinedMf: Manifest[JoinedValue])
@@ -164,8 +166,8 @@ case class SourceBuilder[T: Manifest] private (
     * Complete this builder instance with a BatchStore. At this point,
     * the Summingbird job can be executed on Hadoop.
     */
-  def groupAndSumTo[K, V](store: BatchedStore[K, V])(
-      implicit ev: T <:< (K, V),
+  def groupAndSumTo[K, V](store: BatchedStore[K, V])(implicit
+      ev: T <:< (K, V),
       env: Env,
       keyMf: Manifest[K],
       valMf: Manifest[V],
@@ -179,8 +181,8 @@ case class SourceBuilder[T: Manifest] private (
     * Complete this builder instance with a MergeableStore. At this point,
     * the Summingbird job can be executed on Storm.
     */
-  def groupAndSumTo[K, V](store: => MergeableStore[(K, BatchID), V])(
-      implicit ev: T <:< (K, V),
+  def groupAndSumTo[K, V](store: => MergeableStore[(K, BatchID), V])(implicit
+      ev: T <:< (K, V),
       env: Env,
       keyMf: Manifest[K],
       valMf: Manifest[V],
@@ -194,8 +196,8 @@ case class SourceBuilder[T: Manifest] private (
     * Complete this builder instance with a CompoundStore. At this
     * point, the Summingbird job can be executed on Storm or Hadoop.
     */
-  def groupAndSumTo[K, V](store: CompoundStore[K, V])(
-      implicit ev: T <:< (K, V),
+  def groupAndSumTo[K, V](store: CompoundStore[K, V])(implicit
+      ev: T <:< (K, V),
       env: Env,
       keyMf: Manifest[K],
       valMf: Manifest[V],

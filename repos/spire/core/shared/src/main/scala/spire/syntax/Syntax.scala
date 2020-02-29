@@ -42,8 +42,8 @@ trait SemigroupoidSyntax {
 }
 
 trait GroupoidSyntax extends SemigroupoidSyntax {
-  implicit def groupoidCommonOps[A](a: A)(
-      implicit ev: Groupoid[A],
+  implicit def groupoidCommonOps[A](a: A)(implicit
+      ev: Groupoid[A],
       ni: NoImplicit[Monoid[A]]): GroupoidCommonOps[A] =
     new GroupoidCommonOps[A](a)(ev)
   implicit def groupoidOps[A](a: A)(implicit ev: Groupoid[A]): GroupoidOps[A] =
@@ -250,9 +250,8 @@ trait UnboundSyntax {
   implicit def additiveActionUnboundOps[G](g: G)(
       implicit ev: AdditiveAction[_, G]): AdditiveActionUnboundOps[G] =
     new AdditiveActionUnboundOps(g)
-  implicit def multiplicativeActionUnboundOps[G](g: G)(
-      implicit ev: MultiplicativeAction[_, G])
-      : MultiplicativeActionUnboundOps[G] =
+  implicit def multiplicativeActionUnboundOps[G](g: G)(implicit
+      ev: MultiplicativeAction[_, G]): MultiplicativeActionUnboundOps[G] =
     new MultiplicativeActionUnboundOps(g)
 }
 

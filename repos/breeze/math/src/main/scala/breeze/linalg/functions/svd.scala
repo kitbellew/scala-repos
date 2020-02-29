@@ -225,8 +225,8 @@ object svd extends UFunc {
     * @return Left singular vectors matrix of size n*k, singular value vector of length k, and
     *         transpose of right singular vectors matrix of size k*m.
     */
-  implicit def Svd_Sparse_Impl[Mat, MatTranspose](
-      implicit mul: OpMulMatrixDenseVector[Mat],
+  implicit def Svd_Sparse_Impl[Mat, MatTranspose](implicit
+      mul: OpMulMatrixDenseVector[Mat],
       trans: CanTranspose[Mat, MatTranspose],
       mulTrans: OpMulMatrixDenseVector[MatTranspose],
       dimImpl: dim.Impl[Mat, (Int, Int)]): Impl3[Mat, Int, Double, DenseSVD] = {

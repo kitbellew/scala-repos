@@ -412,8 +412,8 @@ private[sbt] object SettingCompletions {
   def keyType[S](key: AttributeKey[_])(
       onSetting: Manifest[_] => S,
       onTask: Manifest[_] => S,
-      onInput: Manifest[_] => S)(
-      implicit tm: Manifest[Task[_]],
+      onInput: Manifest[_] => S)(implicit
+      tm: Manifest[Task[_]],
       im: Manifest[InputTask[_]]): S = {
     def argTpe = key.manifest.typeArguments.head
     val e = key.manifest.runtimeClass

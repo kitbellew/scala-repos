@@ -334,9 +334,8 @@ case class ScExistentialType(
   private def updateRecursive(
       tp: ScType,
       rejected: HashSet[String] = HashSet.empty,
-      variance: Int = 1)(
-      implicit update: (Int, ScExistentialArgument, ScType) => ScType)
-      : ScType = {
+      variance: Int = 1)(implicit
+      update: (Int, ScExistentialArgument, ScType) => ScType): ScType = {
     if (variance == 0) return tp //optimization
     tp match {
       case _: StdType => tp

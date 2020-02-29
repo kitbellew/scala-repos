@@ -690,8 +690,8 @@ object Scalding {
   def toPipe[T](
       dr: DateRange,
       prod: Producer[Scalding, T],
-      opts: Map[String, Options] = Map.empty)(
-      implicit fd: FlowDef,
+      opts: Map[String, Options] = Map.empty)(implicit
+      fd: FlowDef,
       mode: Mode): Try[(DateRange, TypedPipe[(Timestamp, T)])] = {
     val ts = dr.as[Interval[Timestamp]]
     val pf = planProducer(opts, prod)
@@ -708,8 +708,8 @@ object Scalding {
   def toPipeExact[T](
       dr: DateRange,
       prod: Producer[Scalding, T],
-      opts: Map[String, Options] = Map.empty)(
-      implicit fd: FlowDef,
+      opts: Map[String, Options] = Map.empty)(implicit
+      fd: FlowDef,
       mode: Mode): Try[TypedPipe[(Timestamp, T)]] = {
     val ts = dr.as[Interval[Timestamp]]
     val pf = planProducer(opts, prod)

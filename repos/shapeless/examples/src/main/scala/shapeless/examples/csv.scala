@@ -99,8 +99,8 @@ object CSVConverter {
       def to(n: HNil) = ""
     }
 
-  implicit def deriveHCons[V, T <: HList](
-      implicit scv: Lazy[CSVConverter[V]],
+  implicit def deriveHCons[V, T <: HList](implicit
+      scv: Lazy[CSVConverter[V]],
       sct: Lazy[CSVConverter[T]]): CSVConverter[V :: T] =
     new CSVConverter[V :: T] {
 
@@ -119,8 +119,8 @@ object CSVConverter {
       }
     }
 
-  implicit def deriveHConsOption[V, T <: HList](
-      implicit scv: Lazy[CSVConverter[V]],
+  implicit def deriveHConsOption[V, T <: HList](implicit
+      scv: Lazy[CSVConverter[V]],
       sct: Lazy[CSVConverter[T]]): CSVConverter[Option[V] :: T] =
     new CSVConverter[Option[V] :: T] {
 
@@ -144,8 +144,8 @@ object CSVConverter {
 
   // Anything with a Generic
 
-  implicit def deriveClass[A, R](
-      implicit gen: Generic.Aux[A, R],
+  implicit def deriveClass[A, R](implicit
+      gen: Generic.Aux[A, R],
       conv: CSVConverter[R]): CSVConverter[A] = new CSVConverter[A] {
 
     def from(s: String): Try[A] = conv.from(s).map(gen.from)

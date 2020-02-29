@@ -7,8 +7,8 @@ import spray.httpx.PlayJsonSupport
 import scala.reflect.ClassTag
 
 object SprayHttpResponse {
-  def read[T](
-      implicit reads: Reads[T],
+  def read[T](implicit
+      reads: Reads[T],
       classTag: ClassTag[T]): HttpResponse => RestResult[T] =
     responseResult.andThen { result =>
       result.map(_ => Json.fromJson(result.entityJson)).map {

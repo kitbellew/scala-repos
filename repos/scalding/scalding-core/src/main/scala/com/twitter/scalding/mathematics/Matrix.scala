@@ -51,24 +51,24 @@ import scala.annotation.tailrec
 // Implicit coversions
 // Add methods we want to add to pipes here:
 class MatrixPipeExtensions(pipe: Pipe) {
-  def toMatrix[RowT, ColT, ValT](fields: Fields)(
-      implicit conv: TupleConverter[(RowT, ColT, ValT)],
+  def toMatrix[RowT, ColT, ValT](fields: Fields)(implicit
+      conv: TupleConverter[(RowT, ColT, ValT)],
       setter: TupleSetter[(RowT, ColT, ValT)]) = {
     val matPipe = RichPipe(pipe).mapTo(fields -> ('row, 'col, 'val))(
       (tup: (RowT, ColT, ValT)) => tup)(conv, setter)
     new Matrix[RowT, ColT, ValT]('row, 'col, 'val, matPipe)
   }
   def mapToMatrix[T, RowT, ColT, ValT](fields: Fields)(
-      mapfn: T => (RowT, ColT, ValT))(
-      implicit conv: TupleConverter[T],
+      mapfn: T => (RowT, ColT, ValT))(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ColT, ValT)]) = {
     val matPipe =
       RichPipe(pipe).mapTo(fields -> ('row, 'col, 'val))(mapfn)(conv, setter)
     new Matrix[RowT, ColT, ValT]('row, 'col, 'val, matPipe)
   }
   def flatMapToMatrix[T, RowT, ColT, ValT](fields: Fields)(
-      flatMapfn: T => Iterable[(RowT, ColT, ValT)])(
-      implicit conv: TupleConverter[T],
+      flatMapfn: T => Iterable[(RowT, ColT, ValT)])(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ColT, ValT)]) = {
     val matPipe = RichPipe(pipe).flatMapTo(fields -> ('row, 'col, 'val))(
       flatMapfn)(conv, setter)
@@ -87,8 +87,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       }
       .rename('group, 'col)
   }
-  def toBlockMatrix[GroupT, RowT, ColT, ValT](fields: Fields)(
-      implicit conv: TupleConverter[(GroupT, RowT, ColT, ValT)],
+  def toBlockMatrix[GroupT, RowT, ColT, ValT](fields: Fields)(implicit
+      conv: TupleConverter[(GroupT, RowT, ColT, ValT)],
       setter: TupleSetter[(GroupT, RowT, ColT, ValT)]) = {
     val matPipe = RichPipe(pipe)
       .mapTo(fields -> ('group, 'row, 'col, 'val))(
@@ -99,8 +99,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def mapToBlockMatrix[T, GroupT, RowT, ColT, ValT](fields: Fields)(
-      mapfn: T => (GroupT, RowT, ColT, ValT))(
-      implicit conv: TupleConverter[T],
+      mapfn: T => (GroupT, RowT, ColT, ValT))(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(GroupT, RowT, ColT, ValT)]) = {
     val matPipe = RichPipe(pipe)
       .mapTo(fields -> ('group, 'row, 'col, 'val))(mapfn)(conv, setter)
@@ -110,8 +110,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def flatMapToBlockMatrix[T, GroupT, RowT, ColT, ValT](fields: Fields)(
-      flatMapfn: T => Iterable[(GroupT, RowT, ColT, ValT)])(
-      implicit conv: TupleConverter[T],
+      flatMapfn: T => Iterable[(GroupT, RowT, ColT, ValT)])(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(GroupT, RowT, ColT, ValT)]) = {
     val matPipe = RichPipe(pipe).flatMapTo(
       fields -> ('group, 'row, 'col, 'val))(flatMapfn)(conv, setter)
@@ -119,8 +119,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       new Matrix('row, 'col, 'val, groupPipeIntoMap(matPipe)))
   }
 
-  def toColVector[RowT, ValT](fields: Fields)(
-      implicit conv: TupleConverter[(RowT, ValT)],
+  def toColVector[RowT, ValT](fields: Fields)(implicit
+      conv: TupleConverter[(RowT, ValT)],
       setter: TupleSetter[(RowT, ValT)]) = {
     val vecPipe = RichPipe(pipe).mapTo(fields -> ('row, 'val))(
       (tup: (RowT, ValT)) => tup)(conv, setter)
@@ -128,7 +128,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def mapToColVector[T, RowT, ValT](fields: Fields)(mapfn: T => (RowT, ValT))(
-      implicit conv: TupleConverter[T],
+      implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
     val vecPipe =
       RichPipe(pipe).mapTo(fields -> ('row, 'val))(mapfn)(conv, setter)
@@ -136,16 +137,16 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def flatMapToColVector[T, RowT, ValT](fields: Fields)(
-      flatMapfn: T => Iterable[(RowT, ValT)])(
-      implicit conv: TupleConverter[T],
+      flatMapfn: T => Iterable[(RowT, ValT)])(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
     val vecPipe =
       RichPipe(pipe).flatMapTo(fields -> ('row, 'val))(flatMapfn)(conv, setter)
     new ColVector[RowT, ValT]('row, 'val, vecPipe)
   }
 
-  def toRowVector[ColT, ValT](fields: Fields)(
-      implicit conv: TupleConverter[(ColT, ValT)],
+  def toRowVector[ColT, ValT](fields: Fields)(implicit
+      conv: TupleConverter[(ColT, ValT)],
       setter: TupleSetter[(ColT, ValT)]) = {
     val vecPipe = RichPipe(pipe).mapTo(fields -> ('col, 'val))(
       (tup: (ColT, ValT)) => tup)(conv, setter)
@@ -153,7 +154,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def mapToRowVector[T, ColT, ValT](fields: Fields)(mapfn: T => (ColT, ValT))(
-      implicit conv: TupleConverter[T],
+      implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
     val vecPipe =
       RichPipe(pipe).mapTo(fields -> ('col, 'val))(mapfn)(conv, setter)
@@ -161,8 +163,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
   }
 
   def flatMapToRowVector[T, ColT, ValT](fields: Fields)(
-      flatMapfn: T => Iterable[(ColT, ValT)])(
-      implicit conv: TupleConverter[T],
+      flatMapfn: T => Iterable[(ColT, ValT)])(implicit
+      conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
     val vecPipe =
       RichPipe(pipe).flatMapTo(fields -> ('col, 'val))(flatMapfn)(conv, setter)
@@ -174,11 +176,11 @@ class MatrixPipeExtensions(pipe: Pipe) {
 /**
   * This is the enrichment pattern on Mappable[T] for converting to Matrix types
   */
-class MatrixMappableExtensions[T](mappable: Mappable[T])(
-    implicit fd: FlowDef,
+class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
+    fd: FlowDef,
     mode: Mode) {
-  def toMatrix[Row, Col, Val](
-      implicit ev: <:<[T, (Row, Col, Val)],
+  def toMatrix[Row, Col, Val](implicit
+      ev: <:<[T, (Row, Col, Val)],
       setter: TupleSetter[(Row, Col, Val)]): Matrix[Row, Col, Val] =
     mapToMatrix { _.asInstanceOf[(Row, Col, Val)] }
 
@@ -189,16 +191,16 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(
     new Matrix[Row, Col, Val]('row, 'col, 'val, matPipe)
   }
 
-  def toBlockMatrix[Group, Row, Col, Val](
-      implicit ev: <:<[T, (Group, Row, Col, Val)],
+  def toBlockMatrix[Group, Row, Col, Val](implicit
+      ev: <:<[T, (Group, Row, Col, Val)],
       ord: Ordering[(Group, Row)],
       setter: TupleSetter[(Group, Row, Col, Val)])
       : BlockMatrix[Group, Row, Col, Val] =
     mapToBlockMatrix { _.asInstanceOf[(Group, Row, Col, Val)] }
 
-  def mapToBlockMatrix[Group, Row, Col, Val](fn: (T) => (Group, Row, Col, Val))(
-      implicit ord: Ordering[(Group, Row)])
-      : BlockMatrix[Group, Row, Col, Val] = {
+  def mapToBlockMatrix[Group, Row, Col, Val](
+      fn: (T) => (Group, Row, Col, Val))(implicit
+      ord: Ordering[(Group, Row)]): BlockMatrix[Group, Row, Col, Val] = {
     val matPipe = TypedPipe
       .from(mappable)
       .map(fn)
@@ -211,22 +213,22 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(
     new BlockMatrix[Group, Row, Col, Val](new Matrix('row, 'col, 'val, matPipe))
   }
 
-  def toRow[Row, Val](
-      implicit ev: <:<[T, (Row, Val)],
+  def toRow[Row, Val](implicit
+      ev: <:<[T, (Row, Val)],
       setter: TupleSetter[(Row, Val)]): RowVector[Row, Val] = mapToRow {
     _.asInstanceOf[(Row, Val)]
   }
 
-  def mapToRow[Row, Val](fn: (T) => (Row, Val))(
-      implicit setter: TupleSetter[(Row, Val)],
+  def mapToRow[Row, Val](fn: (T) => (Row, Val))(implicit
+      setter: TupleSetter[(Row, Val)],
       fd: FlowDef): RowVector[Row, Val] = {
     val fields = ('row, 'val)
     val rowPipe = mappable.mapTo(fields)(fn)
     new RowVector[Row, Val]('row, 'val, rowPipe)
   }
 
-  def toCol[Col, Val](
-      implicit ev: <:<[T, (Col, Val)],
+  def toCol[Col, Val](implicit
+      ev: <:<[T, (Col, Val)],
       setter: TupleSetter[(Col, Val)]): ColVector[Col, Val] =
     mapToCol { _.asInstanceOf[(Col, Val)] }
 
@@ -280,8 +282,8 @@ object Matrix {
 trait WrappedPipe {
   def fields: Fields
   def pipe: Pipe
-  def writePipe(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def writePipe(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode) {
     val toWrite =
       if (outFields.isNone) pipe else pipe.rename(fields -> outFields)
@@ -362,8 +364,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Binarize values, all x != 0 become 1
-  def binarizeAs[NewValT](
-      implicit mon: Monoid[ValT],
+  def binarizeAs[NewValT](implicit
+      mon: Monoid[ValT],
       ring: Ring[NewValT]): Matrix[RowT, ColT, NewValT] = {
     mapValues(x =>
       if (mon.isNonZero(x)) { ring.one }
@@ -584,9 +586,8 @@ class Matrix[RowT, ColT, ValT](
     this.transpose.rowSizeAveStdev
   }
 
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res])
-      : Res = {
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[Matrix[RowT, ColT, ValT], That, Res]): Res = {
     prod(this, that)
   }
 
@@ -642,8 +643,8 @@ class Matrix[RowT, ColT, ValT](
     * Considering the matrix as a graph, propagate the column:
     * Does the calculation: \sum_{j where M(i,j) == true) c_j
     */
-  def propagate[ColValT](vec: ColVector[ColT, ColValT])(
-      implicit ev: =:=[ValT, Boolean],
+  def propagate[ColValT](vec: ColVector[ColT, ColValT])(implicit
+      ev: =:=[ValT, Boolean],
       monT: Monoid[ColValT]): ColVector[RowT, ColValT] = {
     //This cast will always succeed:
     val boolMat = this.asInstanceOf[Matrix[RowT, ColT, Boolean]]
@@ -768,9 +769,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // Zip the given row with all the rows of the matrix
-  def zip[ValU](that: ColVector[RowT, ValU])(
-      implicit pairMonoid: Monoid[(ValT, ValU)])
-      : Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: ColVector[RowT, ValU])(implicit
+      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.rowS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -795,9 +795,8 @@ class Matrix[RowT, ColT, ValT](
       sizeHint + that.sizeH)
   }
   // Zip the given row with all the rows of the matrix
-  def zip[ValU](that: RowVector[ColT, ValU])(
-      implicit pairMonoid: Monoid[(ValT, ValU)])
-      : Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: RowVector[ColT, ValU])(implicit
+      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, (that.colS, that.valS), that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -823,9 +822,8 @@ class Matrix[RowT, ColT, ValT](
   }
 
   // This creates the matrix with pairs for the entries
-  def zip[ValU](that: Matrix[RowT, ColT, ValU])(
-      implicit pairMonoid: Monoid[(ValT, ValU)])
-      : Matrix[RowT, ColT, (ValT, ValU)] = {
+  def zip[ValU](that: Matrix[RowT, ColT, ValU])(implicit
+      pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
     val (newRFields, newRPipe) =
       ensureUniqueFields(rowColValSymbols, that.rowColValSymbols, that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
@@ -977,8 +975,8 @@ class Matrix[RowT, ColT, ValT](
     * Write the matrix, optionally renaming row,col,val fields to the given fields
     * then return this.
     */
-  def write(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def write(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode): Matrix[RowT, ColT, ValT] = {
     writePipe(src, outFields)
     this
@@ -1006,8 +1004,8 @@ class Scalar[ValT](val valSym: Symbol, inPipe: Pipe)
     * Write the Scalar, optionally renaming val fields to the given fields
     * then return this.
     */
-  def write(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def write(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode) = {
     writePipe(src, outFields)
     this
@@ -1022,9 +1020,10 @@ class DiagonalMatrix[IdxT, ValT](
     extends WrappedPipe
     with java.io.Serializable {
 
-  def *[That, Res](that: That)(
-      implicit prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res])
-      : Res = { prod(this, that) }
+  def *[That, Res](that: That)(implicit
+      prod: MatrixProduct[DiagonalMatrix[IdxT, ValT], That, Res]): Res = {
+    prod(this, that)
+  }
 
   def pipe = inPipe
   def fields = (idxSym, valSym)
@@ -1066,8 +1065,8 @@ class DiagonalMatrix[IdxT, ValT](
     * Write optionally renaming val fields to the given fields
     * then return this.
     */
-  def write(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def write(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode) = {
     writePipe(src, outFields)
     this
@@ -1221,8 +1220,8 @@ class RowVector[ColT, ValT](
     * Write optionally renaming val fields to the given fields
     * then return this.
     */
-  def write(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def write(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode) = {
     writePipe(src, outFields)
     this
@@ -1357,8 +1356,8 @@ class ColVector[RowT, ValT](
     * Write optionally renaming val fields to the given fields
     * then return this.
     */
-  def write(src: Source, outFields: Fields = Fields.NONE)(
-      implicit fd: FlowDef,
+  def write(src: Source, outFields: Fields = Fields.NONE)(implicit
+      fd: FlowDef,
       mode: Mode) = {
     writePipe(src, outFields)
     this
@@ -1372,8 +1371,8 @@ class ColVector[RowT, ValT](
   */
 class BlockMatrix[RowT, GroupT, ColT, ValT](
     private val mat: Matrix[RowT, GroupT, Map[ColT, ValT]]) {
-  def dotProd[RowT2](that: BlockMatrix[GroupT, RowT2, ColT, ValT])(
-      implicit prod: MatrixProduct[
+  def dotProd[RowT2](that: BlockMatrix[GroupT, RowT2, ColT, ValT])(implicit
+      prod: MatrixProduct[
         Matrix[RowT, GroupT, Map[ColT, ValT]],
         Matrix[GroupT, RowT2, Map[ColT, ValT]],
         Matrix[RowT, RowT2, Map[ColT, ValT]]],

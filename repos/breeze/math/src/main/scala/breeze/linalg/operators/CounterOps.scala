@@ -19,8 +19,8 @@ trait CounterOps {
       }
     }
 
-  def binaryOpFromBinaryUpdateOp[K, V, Other, Op <: OpType](
-      implicit copy: CanCopy[Counter[K, V]],
+  def binaryOpFromBinaryUpdateOp[K, V, Other, Op <: OpType](implicit
+      copy: CanCopy[Counter[K, V]],
       op: UFunc.InPlaceImpl2[Op, Counter[K, V], Other])
       : UFunc.UImpl2[Op, Counter[K, V], Other, Counter[K, V]] = {
     new UFunc.UImpl2[Op, Counter[K, V], Other, Counter[K, V]] {
@@ -195,8 +195,8 @@ trait CounterOps {
     }
   }
 
-  implicit def canDivVV[K1, V](
-      implicit copy: CanCopy[Counter[K1, V]],
+  implicit def canDivVV[K1, V](implicit
+      copy: CanCopy[Counter[K1, V]],
       semiring: Field[V])
       : OpDiv.Impl2[Counter[K1, V], Counter[K1, V], Counter[K1, V]] = {
     new OpDiv.Impl2[Counter[K1, V], Counter[K1, V], Counter[K1, V]] {
@@ -211,8 +211,8 @@ trait CounterOps {
     }
   }
 
-  implicit def canDivVS[K1, V](
-      implicit copy: CanCopy[Counter[K1, V]],
+  implicit def canDivVS[K1, V](implicit
+      copy: CanCopy[Counter[K1, V]],
       semiring: Field[V]): OpDiv.Impl2[Counter[K1, V], V, Counter[K1, V]] = {
     new OpDiv.Impl2[Counter[K1, V], V, Counter[K1, V]] {
       override def apply(a: Counter[K1, V], b: V) = {
@@ -272,8 +272,8 @@ trait CounterOps {
     }
   }
 
-  implicit def canMulInner[K1, V](
-      implicit copy: CanCopy[Counter[K1, V]],
+  implicit def canMulInner[K1, V](implicit
+      copy: CanCopy[Counter[K1, V]],
       semiring: Semiring[V])
       : OpMulInner.Impl2[Counter[K1, V], Counter[K1, V], V] = {
     new OpMulInner.Impl2[Counter[K1, V], Counter[K1, V], V] {

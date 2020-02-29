@@ -47,8 +47,8 @@ class IndexBool(keys: Vec[Boolean]) extends Index[Boolean] {
   def without(locs: Array[Int]): Index[Boolean] =
     Index(array.remove(keys, locs))
 
-  def concat[B, C](x: Index[B])(
-      implicit wd: Promoter[Boolean, B, C],
+  def concat[B, C](x: Index[B])(implicit
+      wd: Promoter[Boolean, B, C],
       mc: ST[C],
       oc: ORD[C]): Index[C] =
     Index(util.Concat.append[Boolean, B, C](toArray, x.toArray))

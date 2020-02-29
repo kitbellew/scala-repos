@@ -26,8 +26,7 @@ import scala.concurrent.duration._
 class SearchService(
     config: EnsimeConfig,
     resolver: SourceResolver
-)(
-    implicit
+)(implicit
     actorSystem: ActorSystem,
     vfs: EnsimeVFS
 ) extends ClassfileIndexer

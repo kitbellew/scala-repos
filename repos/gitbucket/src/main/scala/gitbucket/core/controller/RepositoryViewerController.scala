@@ -1017,8 +1017,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       implicit context: Context): Boolean =
     hasWritePermission(owner, repository, context.loginAccount) || author == context.loginAccount.get.userName
 
-  override protected def renderUncaughtException(e: Throwable)(
-      implicit request: HttpServletRequest,
+  override protected def renderUncaughtException(e: Throwable)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): Unit = {
     e.printStackTrace()
   }

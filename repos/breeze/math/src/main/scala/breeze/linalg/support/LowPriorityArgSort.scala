@@ -8,8 +8,8 @@ import breeze.linalg.{QuasiTensor, argsort}
   * @author dlwh
  **/
 private[linalg] trait LowPriorityArgSort {
-  implicit def argsortQuasiTensorWithOrdering[Q, I, V](
-      implicit qt: Q <:< QuasiTensor[I, V],
+  implicit def argsortQuasiTensorWithOrdering[Q, I, V](implicit
+      qt: Q <:< QuasiTensor[I, V],
       ord: Ordering[V]): argsort.Impl[Q, IndexedSeq[I]] = {
     new argsort.Impl[Q, IndexedSeq[I]] {
       def apply(q: Q): IndexedSeq[I] = {

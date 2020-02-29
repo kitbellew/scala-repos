@@ -20,8 +20,7 @@ case class DMClassPrepareEvent(
 object DebugManager {
   def apply(
       broadcaster: ActorRef
-  )(
-      implicit
+  )(implicit
       config: EnsimeConfig
   ): Props = Props(new DebugManager(broadcaster, config))
 }

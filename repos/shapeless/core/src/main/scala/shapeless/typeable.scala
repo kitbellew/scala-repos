@@ -188,8 +188,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     }
 
   /** Typeable instance for `Either`. */
-  implicit def eitherTypeable[A, B](
-      implicit castA: Typeable[A],
+  implicit def eitherTypeable[A, B](implicit
+      castA: Typeable[A],
       castB: Typeable[B]): Typeable[Either[A, B]] =
     new Typeable[Either[A, B]] {
       def cast(t: Any): Option[Either[A, B]] = {
@@ -228,8 +228,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
 
   /** Typeable instance for `GenTraversable`.
     *  Note that the contents be will tested for conformance to the element type. */
-  implicit def genTraversableTypeable[CC[X] <: GenTraversable[X], T](
-      implicit mCC: ClassTag[CC[_]],
+  implicit def genTraversableTypeable[CC[X] <: GenTraversable[X], T](implicit
+      mCC: ClassTag[CC[_]],
       castT: Typeable[T]): Typeable[CC[T] with GenTraversable[T]] =
     // Nb. the apparently redundant `with GenTraversable[T]` is a workaround for a
     // Scala 2.10.x bug which causes conflicts between this instance and `anyTypeable`.
@@ -245,8 +245,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     }
 
   /** Typeable instance for `Map`. Note that the contents will be tested for conformance to the key/value types. */
-  implicit def genMapTypeable[M[X, Y], K, V](
-      implicit ev: M[K, V] <:< GenMap[K, V],
+  implicit def genMapTypeable[M[X, Y], K, V](implicit
+      ev: M[K, V] <:< GenMap[K, V],
       mM: ClassTag[M[_, _]],
       castK: Typeable[K],
       castV: Typeable[V]): Typeable[M[K, V]] =
@@ -301,8 +301,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     }
 
   /** Typeable instance for `HList`s. Note that the contents will be tested for conformance to the element types. */
-  implicit def hlistTypeable[H, T <: HList](
-      implicit castH: Typeable[H],
+  implicit def hlistTypeable[H, T <: HList](implicit
+      castH: Typeable[H],
       castT: Typeable[T]): Typeable[H :: T] =
     new Typeable[H :: T] {
       def cast(t: Any): Option[H :: T] = {
@@ -327,8 +327,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     * Typeable instance for `Coproduct`s.
     * Note that the contents will be tested for conformance to one of the element types.
     */
-  implicit def coproductTypeable[H, T <: Coproduct](
-      implicit castH: Typeable[H],
+  implicit def coproductTypeable[H, T <: Coproduct](implicit
+      castH: Typeable[H],
       castT: Typeable[T]): Typeable[H :+: T] =
     new Typeable[H :+: T] {
       def cast(t: Any): Option[H :+: T] = {

@@ -29,8 +29,8 @@ class Broadcaster
 object * extends Broadcaster
 
 object Broadcaster {
-  implicit def canBroadcastSliceColumns[From, Slice1, To, Col](
-      implicit cs2_:: : CanSlice2[From, Slice1, ::.type, To],
+  implicit def canBroadcastSliceColumns[From, Slice1, To, Col](implicit
+      cs2_:: : CanSlice2[From, Slice1, ::.type, To],
       handhold: CanCollapseAxis.HandHold[From, Axis._0.type, Col])
       : CanSlice2[From, Slice1, *.type, BroadcastedColumns[To, Col]] = {
     new CanSlice2[From, Slice1, *.type, BroadcastedColumns[To, Col]] {
@@ -56,8 +56,8 @@ object Broadcaster {
     }
   }
 
-  implicit def canBroadcastSliceRows[From, Slice1, To, Row](
-      implicit cs2_:: : CanSlice2[From, ::.type, Slice1, To],
+  implicit def canBroadcastSliceRows[From, Slice1, To, Row](implicit
+      cs2_:: : CanSlice2[From, ::.type, Slice1, To],
       handhold: CanCollapseAxis.HandHold[From, Axis._1.type, Row])
       : CanSlice2[From, *.type, Slice1, BroadcastedRows[To, Row]] = {
     new CanSlice2[From, *.type, Slice1, BroadcastedRows[To, Row]] {

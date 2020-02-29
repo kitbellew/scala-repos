@@ -101,8 +101,7 @@ object zipper {
         P,
         N <: Nat,
         LP <: HList,
-        RS <: HList](
-        implicit
+        RS <: HList](implicit
         split: Split.Aux[R, N, LP, RS],
         reverse: ReversePrepend[LP, L])
         : Aux[Zipper[C, L, R, P], N, Zipper[C, reverse.Out, RS, P]] =
@@ -130,8 +129,7 @@ object zipper {
         P,
         N <: Nat,
         RP <: HList,
-        LS <: HList](
-        implicit
+        LS <: HList](implicit
         split: Split.Aux[L, N, RP, LS],
         reverse: ReversePrepend[RP, R])
         : Aux[Zipper[C, L, R, P], N, Zipper[C, LS, reverse.Out, P]] =
@@ -159,8 +157,7 @@ object zipper {
         P,
         T,
         LP <: HList,
-        RS <: HList](
-        implicit
+        RS <: HList](implicit
         split: SplitLeft.Aux[R, T, LP, RS],
         reverse: ReversePrepend[LP, L])
         : Aux[Zipper[C, L, R, P], T, Zipper[C, reverse.Out, RS, P]] =
@@ -188,8 +185,7 @@ object zipper {
         P,
         T,
         RP <: HList,
-        R0 <: HList](
-        implicit
+        R0 <: HList](implicit
         split: SplitLeft.Aux[L, T, RP, R0],
         reverse: ReversePrepend[RP, R],
         cons: IsHCons[R0]): Aux[
@@ -212,8 +208,7 @@ object zipper {
 
     type Aux[Z, Out0] = Up[Z] { type Out = Out0 }
 
-    implicit def up[C, L <: HList, R <: HList, P](
-        implicit
+    implicit def up[C, L <: HList, R <: HList, P](implicit
         rz: Reify.Aux[Zipper[C, L, R, Some[P]], C],
         pp: Put[P, C]): Aux[Zipper[C, L, R, Some[P]], pp.Out] =
       new Up[Zipper[C, L, R, Some[P]]] {
@@ -263,8 +258,7 @@ object zipper {
         def apply(z: Zipper[C, L, R, None.type]) = z
       }
 
-    implicit def nonRootRoot[C, L <: HList, R <: HList, P, U](
-        implicit
+    implicit def nonRootRoot[C, L <: HList, R <: HList, P, U](implicit
         up: Up.Aux[Zipper[C, L, R, Some[P]], U],
         pr: Root[U]): Aux[Zipper[C, L, R, Some[P]], pr.Out] =
       new Root[Zipper[C, L, R, Some[P]]] {
@@ -330,8 +324,7 @@ object zipper {
 
     type Aux[Z, E1, E2, Out0] = Modify[Z, E1, E2] { type Out = Out0 }
 
-    implicit def modify[C, L <: HList, RH1, RT <: HList, P, RH2](
-        implicit
+    implicit def modify[C, L <: HList, RH1, RT <: HList, P, RH2](implicit
         get: Get.Aux[Zipper[C, L, RH1 :: RT, P], RH1],
         put: Put.Aux[
           Zipper[C, L, RH1 :: RT, P],
@@ -400,9 +393,8 @@ object zipper {
 
     type Aux[Z, Out0] = Reify[Z] { type Out = Out0 }
 
-    implicit def hlistReify[LR <: HList, L <: HList, R <: HList, P](
-        implicit rp: ReversePrepend.Aux[L, R, LR])
-        : Aux[Zipper[LR, L, R, P], LR] =
+    implicit def hlistReify[LR <: HList, L <: HList, R <: HList, P](implicit
+        rp: ReversePrepend.Aux[L, R, LR]): Aux[Zipper[LR, L, R, P], LR] =
       new Reify[Zipper[LR, L, R, P]] {
         type Out = LR
         def apply(z: Zipper[LR, L, R, P]) = z.prefix reverse_::: z.suffix

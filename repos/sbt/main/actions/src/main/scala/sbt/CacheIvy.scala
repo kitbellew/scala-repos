@@ -69,8 +69,8 @@ object CacheIvy {
   def names(s: Iterable[Configuration]): Set[String] = s.map(_.name).toSet
 
   import Cache._
-  implicit def wrapHL[W, H, T <: HList](
-      implicit f: W => H :+: T,
+  implicit def wrapHL[W, H, T <: HList](implicit
+      f: W => H :+: T,
       cache: InputCache[H :+: T]): InputCache[W] =
     Cache.wrapIn(f, cache)
 
@@ -100,8 +100,8 @@ object CacheIvy {
       {
         case (rt, dt, ds) => new UpdateStats(rt, dt, ds, true)
       })
-  implicit def confReportFormat(
-      implicit m: Format[String],
+  implicit def confReportFormat(implicit
+      m: Format[String],
       mr: Format[Seq[ModuleReport]],
       oar: Format[Seq[OrganizationArtifactReport]])
       : Format[ConfigurationReport] =
@@ -112,8 +112,8 @@ object CacheIvy {
       {
         case (c, m, d) => new ConfigurationReport(c, m, d)
       })
-  implicit def moduleReportFormat(
-      implicit cf: Format[Seq[Caller]],
+  implicit def moduleReportFormat(implicit
+      cf: Format[Seq[Caller]],
       ff: Format[File]): Format[ModuleReport] = {
     wrap[
       ModuleReport,
@@ -180,8 +180,8 @@ object CacheIvy {
       }
     )
   }
-  implicit def artifactFormat(
-      implicit sf: Format[String],
+  implicit def artifactFormat(implicit
+      sf: Format[String],
       uf: Format[Option[URL]]): Format[Artifact] = {
     wrap[
       Artifact,
@@ -205,8 +205,8 @@ object CacheIvy {
       { case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e) }
     )
   }
-  implicit def organizationArtifactReportFormat(
-      implicit sf: Format[String],
+  implicit def organizationArtifactReportFormat(implicit
+      sf: Format[String],
       bf: Format[Boolean],
       df: Format[Seq[ModuleReport]]): Format[OrganizationArtifactReport] =
     wrap[OrganizationArtifactReport, (String, String, Seq[ModuleReport])](
@@ -277,8 +277,8 @@ object CacheIvy {
       case f: Full  => FullValue
     }
 
-  implicit def moduleIDFormat(
-      implicit sf: Format[String],
+  implicit def moduleIDFormat(implicit
+      sf: Format[String],
       bf: Format[Boolean]): Format[ModuleID] =
     wrap[
       ModuleID,

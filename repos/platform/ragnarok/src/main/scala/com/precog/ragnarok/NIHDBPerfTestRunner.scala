@@ -138,8 +138,8 @@ final class NIHDBPerfTestRunner[T](
   val vfs =
     new SecureVFS(actorVFS, permissionsFinder, jobManager, yggConfig.clock)
 
-  def Evaluator[N[+_]](N0: Monad[N])(
-      implicit mn: Future ~> N,
+  def Evaluator[N[+_]](N0: Monad[N])(implicit
+      mn: Future ~> N,
       nm: N ~> Future): EvaluatorLike[N] = {
     new Evaluator[N](N0) {
       type YggConfig = self.YggConfig

@@ -66,8 +66,8 @@ object BasisConstraint {
   }
 
   implicit def hnilBasis[M <: HList] = new BasisConstraint[HNil, M] {}
-  implicit def hlistBasis[H, T <: HList, M <: HList](
-      implicit bct: BasisConstraint[T, M],
+  implicit def hlistBasis[H, T <: HList, M <: HList](implicit
+      bct: BasisConstraint[T, M],
       sel: Selector[M, H]) =
     new BasisConstraint[H :: T, M] {}
 }
@@ -86,8 +86,8 @@ object LUBConstraint {
   }
 
   implicit def hnilLUB[T] = new LUBConstraint[HNil, T] {}
-  implicit def hlistLUB[H, T <: HList, B](
-      implicit bct: LUBConstraint[T, B],
+  implicit def hlistLUB[H, T <: HList, B](implicit
+      bct: LUBConstraint[T, B],
       ev: H <:< B) =
     new LUBConstraint[H :: T, B] {}
 }
@@ -108,8 +108,8 @@ object KeyConstraint {
   }
 
   implicit def hnilKeys[M <: HList] = new KeyConstraint[HNil, M] {}
-  implicit def hlistKeys[K, V, T <: HList, M <: HList](
-      implicit bct: KeyConstraint[T, M],
+  implicit def hlistKeys[K, V, T <: HList, M <: HList](implicit
+      bct: KeyConstraint[T, M],
       sel: Selector[M, K]) = new KeyConstraint[FieldType[K, V] :: T, M] {}
 }
 
@@ -129,8 +129,8 @@ object ValueConstraint {
   }
 
   implicit def hnilValues[M <: HList] = new ValueConstraint[HNil, M] {}
-  implicit def hlistValues[K, V, T <: HList, M <: HList](
-      implicit bct: ValueConstraint[T, M],
+  implicit def hlistValues[K, V, T <: HList, M <: HList](implicit
+      bct: ValueConstraint[T, M],
       sel: Selector[M, V]) = new ValueConstraint[FieldType[K, V] :: T, M] {}
 }
 
@@ -152,8 +152,8 @@ object NotContainsConstraint {
   }
 
   implicit def hnilNotContains[U] = new NotContainsConstraint[HNil, U] {}
-  implicit def hlistNotContains[H, T <: HList, U](
-      implicit nc: T NotContainsConstraint U,
+  implicit def hlistNotContains[H, T <: HList, U](implicit
+      nc: T NotContainsConstraint U,
       neq: U =:!= H) =
     new NotContainsConstraint[H :: T, U] {}
 }
@@ -171,8 +171,8 @@ object IsDistinctConstraint {
       implicit idc: IsDistinctConstraint[L]): IsDistinctConstraint[L] = idc
 
   implicit def hnilIsDistinct = new IsDistinctConstraint[HNil] {}
-  implicit def hlistIsDistinct[H, T <: HList](
-      implicit d: IsDistinctConstraint[T],
+  implicit def hlistIsDistinct[H, T <: HList](implicit
+      d: IsDistinctConstraint[T],
       nc: NotContainsConstraint[T, H]): IsDistinctConstraint[H :: T] =
     new IsDistinctConstraint[H :: T] {}
 }

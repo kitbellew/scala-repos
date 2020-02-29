@@ -101,8 +101,8 @@ trait UnrestrictedStash extends Actor with StashSupport {
   * @see [[StashSupport]]
   */
 private[akka] trait StashFactory { this: Actor ⇒
-  private[akka] def createStash()(
-      implicit ctx: ActorContext,
+  private[akka] def createStash()(implicit
+      ctx: ActorContext,
       ref: ActorRef): StashSupport = new StashSupport {
     def context: ActorContext = ctx
     def self: ActorRef = ref

@@ -30,8 +30,8 @@ object squaredDistance extends UFunc with squaredDistanceLowPrio {
 sealed trait squaredDistanceLowPrio extends UFunc {
   this: squaredDistance.type =>
 
-  implicit def distanceFromDotAndSub[T, U, V](
-      implicit subImpl: OpSub.Impl2[T, U, V],
+  implicit def distanceFromDotAndSub[T, U, V](implicit
+      subImpl: OpSub.Impl2[T, U, V],
       dotImpl: OpMulInner.Impl2[V, V, Double]): Impl2[T, U, Double] = {
 
     new Impl2[T, U, Double] {

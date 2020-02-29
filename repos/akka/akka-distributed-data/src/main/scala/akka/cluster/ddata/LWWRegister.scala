@@ -50,8 +50,8 @@ object LWWRegister {
       clock: Clock[A]): LWWRegister[A] =
     new LWWRegister(node, initialValue, clock(0L, initialValue))
 
-  def apply[A](initialValue: A)(
-      implicit node: Cluster,
+  def apply[A](initialValue: A)(implicit
+      node: Cluster,
       clock: Clock[A] = defaultClock[A]): LWWRegister[A] =
     apply(node.selfUniqueAddress, initialValue, clock)
 
@@ -123,8 +123,8 @@ final class LWWRegister[A] private[akka] (
     * increasing version number from a database record that is used for optimistic
     * concurrency control.
     */
-  def withValue(value: A)(
-      implicit node: Cluster,
+  def withValue(value: A)(implicit
+      node: Cluster,
       clock: Clock[A] = defaultClock[A]): LWWRegister[A] =
     withValue(node, value)
 

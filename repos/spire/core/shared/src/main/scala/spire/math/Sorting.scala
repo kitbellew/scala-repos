@@ -19,8 +19,8 @@ object InsertionSort extends Sort {
   final def sort[@sp A: Order: ClassTag](data: Array[A]): Unit =
     sort(data, 0, data.length)
 
-  final def sort[@sp A](data: Array[A], start: Int, end: Int)(
-      implicit o: Order[A],
+  final def sort[@sp A](data: Array[A], start: Int, end: Int)(implicit
+      o: Order[A],
       ct: ClassTag[A]): Unit = {
 
     var i = start + 1
@@ -122,8 +122,8 @@ object QuickSort {
   final def sort[@sp A: Order: ClassTag](data: Array[A]): Unit =
     qsort(data, 0, data.length - 1)
 
-  final def qsort[@sp A](data: Array[A], left: Int, right: Int)(
-      implicit o: Order[A],
+  final def qsort[@sp A](data: Array[A], left: Int, right: Int)(implicit
+      o: Order[A],
       ct: ClassTag[A]): Unit = {
 
     if (right - left < limit) return InsertionSort.sort(data, left, right + 1)
@@ -135,7 +135,8 @@ object QuickSort {
   }
 
   final def partition[@sp A](data: Array[A], left: Int, right: Int, pivot: Int)(
-      implicit o: Order[A],
+      implicit
+      o: Order[A],
       ct: ClassTag[A]): Int = {
 
     val value = data(pivot)

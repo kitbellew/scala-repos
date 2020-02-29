@@ -32,8 +32,8 @@ import com.twitter.summingbird.scalding.batch.BatchedSink
   */
 // @deprecated("ignores time", "0.1.0")
 trait OfflineSink[Event] {
-  def write(batchID: BatchID, pipe: TypedPipe[Event])(
-      implicit fd: FlowDef,
+  def write(batchID: BatchID, pipe: TypedPipe[Event])(implicit
+      fd: FlowDef,
       mode: Mode)
 }
 
@@ -52,8 +52,8 @@ class BatchedSinkFromOffline[T](
     * Instances may choose to write out materialized streams
     * by implementing this. This is what readStream returns.
     */
-  def writeStream(batchID: BatchID, stream: TypedPipe[(Timestamp, T)])(
-      implicit flowDef: FlowDef,
+  def writeStream(batchID: BatchID, stream: TypedPipe[(Timestamp, T)])(implicit
+      flowDef: FlowDef,
       mode: Mode): Unit = {
     // strip the time
     offline.write(batchID, stream.values)(flowDef, mode)

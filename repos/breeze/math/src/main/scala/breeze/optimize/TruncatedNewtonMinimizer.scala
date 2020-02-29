@@ -17,8 +17,8 @@ class TruncatedNewtonMinimizer[T, H](
     maxIterations: Int = -1,
     tolerance: Double = 1e-6,
     l2Regularization: Double = 0,
-    m: Int = 0)(
-    implicit space: MutableVectorField[T, Double],
+    m: Int = 0)(implicit
+    space: MutableVectorField[T, Double],
     mult: OpMulMatrix.Impl2[H, T, T])
     extends Minimizer[T, SecondOrderFunction[T, H]]
     with SerializableLogging {

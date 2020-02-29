@@ -35,8 +35,8 @@ object BSON {
 
   object MapDocument {
 
-    implicit def MapReader[V](implicit vr: BSONDocumentReader[V])
-        : BSONDocumentReader[Map[String, V]] =
+    implicit def MapReader[V](implicit
+        vr: BSONDocumentReader[V]): BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           // mutable optimized implementation
@@ -48,16 +48,16 @@ object BSON {
         }
       }
 
-    implicit def MapWriter[V](implicit vw: BSONDocumentWriter[V])
-        : BSONDocumentWriter[Map[String, V]] =
+    implicit def MapWriter[V](implicit
+        vw: BSONDocumentWriter[V]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
           map.toStream.map { tuple => tuple._1 -> vw.write(tuple._2) }
         }
       }
 
-    implicit def MapHandler[V](
-        implicit vr: BSONDocumentReader[V],
+    implicit def MapHandler[V](implicit
+        vr: BSONDocumentReader[V],
         vw: BSONDocumentWriter[V]): BSONHandler[BSONDocument, Map[String, V]] =
       new BSONHandler[BSONDocument, Map[String, V]] {
         private val reader = MapReader[V]
@@ -69,8 +69,8 @@ object BSON {
 
   object MapValue {
 
-    implicit def MapReader[V](implicit vr: BSONReader[_ <: BSONValue, V])
-        : BSONDocumentReader[Map[String, V]] =
+    implicit def MapReader[V](implicit
+        vr: BSONReader[_ <: BSONValue, V]): BSONDocumentReader[Map[String, V]] =
       new BSONDocumentReader[Map[String, V]] {
         def read(bson: BSONDocument): Map[String, V] = {
           val valueReader = vr.asInstanceOf[BSONReader[BSONValue, V]]
@@ -82,16 +82,16 @@ object BSON {
         }
       }
 
-    implicit def MapWriter[V](implicit vw: BSONWriter[V, _ <: BSONValue])
-        : BSONDocumentWriter[Map[String, V]] =
+    implicit def MapWriter[V](implicit
+        vw: BSONWriter[V, _ <: BSONValue]): BSONDocumentWriter[Map[String, V]] =
       new BSONDocumentWriter[Map[String, V]] {
         def write(map: Map[String, V]): BSONDocument = BSONDocument {
           map.toStream.map { tuple => tuple._1 -> vw.write(tuple._2) }
         }
       }
 
-    implicit def MapHandler[V](
-        implicit vr: BSONReader[_ <: BSONValue, V],
+    implicit def MapHandler[V](implicit
+        vr: BSONReader[_ <: BSONValue, V],
         vw: BSONWriter[V, _ <: BSONValue])
         : BSONHandler[BSONDocument, Map[String, V]] =
       new BSONHandler[BSONDocument, Map[String, V]] {
@@ -108,8 +108,8 @@ object BSON {
     array.stream.filter(_.isSuccess).map { v => reader.read(v.get) }
   }
 
-  implicit def bsonArrayToListHandler[T](
-      implicit reader: BSONReader[_ <: BSONValue, T],
+  implicit def bsonArrayToListHandler[T](implicit
+      reader: BSONReader[_ <: BSONValue, T],
       writer: BSONWriter[T, _ <: BSONValue]): BSONHandler[BSONArray, List[T]] =
     new BSONHandler[BSONArray, List[T]] {
       def read(array: BSONArray) =
@@ -118,8 +118,8 @@ object BSON {
         new BSONArray(repr.map(s => scala.util.Try(writer.write(s))).to[Stream])
     }
 
-  implicit def bsonArrayToVectorHandler[T](
-      implicit reader: BSONReader[_ <: BSONValue, T],
+  implicit def bsonArrayToVectorHandler[T](implicit
+      reader: BSONReader[_ <: BSONValue, T],
       writer: BSONWriter[T, _ <: BSONValue])
       : BSONHandler[BSONArray, Vector[T]] =
     new BSONHandler[BSONArray, Vector[T]] {

@@ -54,8 +54,7 @@ object UnwrappedExamples {
         K <: Symbol,
         V,
         Rest <: HList
-    ](
-        implicit
+    ](implicit
         key: Witness.Aux[K],
         encodeV: Lazy[EncodeValue[V]],
         encodeRest: Strict[Encode[Rest]]) =
@@ -65,8 +64,7 @@ object UnwrappedExamples {
             (key.value.name -> encodeV.value.toJsonFragment(hl.head))
       }
     // the magic one!
-    implicit def encodeGeneric[T, Repr](
-        implicit
+    implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
         encodeRepr: Lazy[Encode[Repr]]) = new Encode[T] {
       def fields(t: T) = encodeRepr.value.fields(gen.to(t))
@@ -117,8 +115,7 @@ object UnwrappedExamples {
         V,
         U,
         Rest <: HList
-    ](
-        implicit
+    ](implicit
         key: Witness.Aux[K],
         uw: Strict[Unwrapped.Aux[V, U]],
         encodeV: Lazy[EncodeValue[U]],
@@ -129,8 +126,7 @@ object UnwrappedExamples {
             (key.value.name -> encodeV.value.toJsonFragment(
               uw.value.unwrap(hl.head)))
       }
-    implicit def encodeGeneric[T, Repr](
-        implicit
+    implicit def encodeGeneric[T, Repr](implicit
         gen: LabelledGeneric.Aux[T, Repr],
         encodeRepr: Lazy[Encode2[Repr]]) = new Encode2[T] {
       def fields(t: T) = encodeRepr.value.fields(gen.to(t))

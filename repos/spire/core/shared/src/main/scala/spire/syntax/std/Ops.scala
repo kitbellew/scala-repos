@@ -307,8 +307,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     b.result
   }
 
-  def qsorted(
-      implicit ev: Order[A],
+  def qsorted(implicit
+      ev: Order[A],
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
@@ -316,8 +316,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     fromArray(arr)
   }
 
-  def qsortedBy[@sp B](f: A => B)(
-      implicit ev: Order[B],
+  def qsortedBy[@sp B](f: A => B)(implicit
+      ev: Order[B],
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     implicit val ord: Order[A] = ev.on(f)
@@ -326,8 +326,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     fromArray(arr)
   }
 
-  def qsortedWith(f: (A, A) => Int)(
-      implicit ct: ClassTag[A],
+  def qsortedWith(f: (A, A) => Int)(implicit
+      ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     implicit val ord: Order[A] = Order.from(f)
     val arr = as.toArray
@@ -335,8 +335,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     fromArray(arr)
   }
 
-  def qselected(k: Int)(
-      implicit ev: Order[A],
+  def qselected(k: Int)(implicit
+      ev: Order[A],
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
@@ -344,8 +344,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     fromArray(arr)
   }
 
-  def qselectk(k: Int)(
-      implicit ev: Order[A],
+  def qselectk(k: Int)(implicit
+      ev: Order[A],
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
@@ -357,8 +357,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     }
   }
 
-  def qtopk(k: Int)(
-      implicit ev: Order[A],
+  def qtopk(k: Int)(implicit
+      ev: Order[A],
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
@@ -374,8 +374,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
 
   import spire.random.Generator
 
-  def qshuffled(
-      implicit gen: Generator,
+  def qshuffled(implicit
+      gen: Generator,
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
@@ -383,8 +383,8 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
     fromArray(arr)
   }
 
-  def qsampled(n: Int)(
-      implicit gen: Generator,
+  def qsampled(n: Int)(implicit
+      gen: Generator,
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] =
     fromArray(gen.sampleFromTraversable(as, n))

@@ -169,8 +169,8 @@ trait LowPriorityDefaultReads {
   /**
     * Generic deserializer for collections types.
     */
-  implicit def traversableReads[F[_], A](
-      implicit bf: generic.CanBuildFrom[F[_], A, F[A]],
+  implicit def traversableReads[F[_], A](implicit
+      bf: generic.CanBuildFrom[F[_], A, F[A]],
       ra: Reads[A]) = new Reads[F[A]] {
     def reads(json: JsValue) = json match {
       case JsArray(ts) =>

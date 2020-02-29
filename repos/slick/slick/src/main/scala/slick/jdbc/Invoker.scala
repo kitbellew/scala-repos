@@ -38,8 +38,8 @@ trait Invoker[+R] { self =>
   }
 
   /** Execute the statement and return a fully materialized collection. */
-  final def buildColl[C[_]](
-      implicit session: JdbcBackend#Session,
+  final def buildColl[C[_]](implicit
+      session: JdbcBackend#Session,
       canBuildFrom: CanBuildFrom[Nothing, R, C[R @uV]]): C[R @uV] = {
     val b = canBuildFrom()
     foreach({ x => b += x }, 0)

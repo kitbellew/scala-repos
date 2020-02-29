@@ -89,8 +89,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * The right side of the join is lifted to an `Option`. If at least one element on the right
     * matches, all matching elements are returned as `Some`, otherwise a single `None` row is
     * returned. */
-  def joinLeft[E2, U2, D[_], O2](q2: Query[E2, _, D])(
-      implicit ol: OptionLift[E2, O2],
+  def joinLeft[E2, U2, D[_], O2](q2: Query[E2, _, D])(implicit
+      ol: OptionLift[E2, O2],
       sh: Shape[FlatShapeLevel, O2, U2, _]) = {
     val leftGen, rightGen = new AnonSymbol
     val aliased1 = shaped.encodeRef(Ref(leftGen))
@@ -112,8 +112,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * The left side of the join is lifted to an `Option`. If at least one element on the left
     * matches, all matching elements are returned as `Some`, otherwise a single `None` row is
     * returned. */
-  def joinRight[E1 >: E, E2, U2, D[_], O1, U1](q2: Query[E2, U2, D])(
-      implicit ol: OptionLift[E1, O1],
+  def joinRight[E1 >: E, E2, U2, D[_], O1, U1](q2: Query[E2, U2, D])(implicit
+      ol: OptionLift[E1, O1],
       sh: Shape[FlatShapeLevel, O1, U1, _]) = {
     val leftGen, rightGen = new AnonSymbol
     val aliased1 =
@@ -135,8 +135,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * Both sides of the join are lifted to an `Option`. If at least one element on either side
     * matches the other side, all matching elements are returned as `Some`, otherwise a single
     * `None` row is returned. */
-  def joinFull[E1 >: E, E2, U2, D[_], O1, U1, O2](q2: Query[E2, _, D])(
-      implicit ol1: OptionLift[E1, O1],
+  def joinFull[E1 >: E, E2, U2, D[_], O1, U1, O2](q2: Query[E2, _, D])(implicit
+      ol1: OptionLift[E1, O1],
       sh1: Shape[FlatShapeLevel, O1, U1, _],
       ol2: OptionLift[E2, O2],
       sh2: Shape[FlatShapeLevel, O2, U2, _]) = {
@@ -218,8 +218,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   /** Partition this query into a query of pairs of a key and a nested query
     * containing the elements for the key, according to some discriminator
     * function. */
-  def groupBy[K, T, G, P](f: E => K)(
-      implicit kshape: Shape[_ <: FlatShapeLevel, K, T, G],
+  def groupBy[K, T, G, P](f: E => K)(implicit
+      kshape: Shape[_ <: FlatShapeLevel, K, T, G],
       vshape: Shape[_ <: FlatShapeLevel, E, _, P])
       : Query[(G, Query[P, U, Seq]), (T, Query[P, U, Seq]), C] = {
     val sym = new AnonSymbol
@@ -330,9 +330,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 object Query {
 
   /** Lift a scalar value to a Query. */
-  def apply[E, U, R](value: E)(
-      implicit unpack: Shape[_ <: FlatShapeLevel, E, U, R])
-      : Query[R, U, Seq] = {
+  def apply[E, U, R](value: E)(implicit
+      unpack: Shape[_ <: FlatShapeLevel, E, U, R]): Query[R, U, Seq] = {
     val shaped = ShapedValue(value, unpack).packedValue
     new WrappingQuery[R, U, Seq](Pure(shaped.toNode), shaped)
   }

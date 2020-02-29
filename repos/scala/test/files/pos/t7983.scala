@@ -18,8 +18,8 @@ class DivergenceTest {
 
   implicit final def intShape[Level <: ShapeLevel, T]: Shape2[Level, Int, Int] =
     ???
-  implicit final def tuple2Shape[Level <: ShapeLevel, M1, M2, U1, U2](
-      implicit u1: Shape2[_ <: Level, M1, U1],
+  implicit final def tuple2Shape[Level <: ShapeLevel, M1, M2, U1, U2](implicit
+      u1: Shape2[_ <: Level, M1, U1],
       u2: Shape2[_ <: Level, M2, U2]): Shape2[Level, (M1, M2), (U1, U2)] = ???
 
   def foo {

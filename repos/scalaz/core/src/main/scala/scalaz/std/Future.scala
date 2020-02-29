@@ -14,8 +14,8 @@ trait FutureInstances1 {
     with Catchable[Future] =
     new FutureInstance
 
-  implicit def futureSemigroup[A](
-      implicit m: Semigroup[A],
+  implicit def futureSemigroup[A](implicit
+      m: Semigroup[A],
       ec: ExecutionContext): Semigroup[Future[A]] =
     Semigroup.liftSemigroup[Future, A]
 }

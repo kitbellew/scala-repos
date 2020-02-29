@@ -23,8 +23,8 @@ trait IterableOptimizationPackage[Function, Vector, State]
 }
 
 object OptimizationPackage {
-  class LBFGSMinimizationPackage[DF, Vector]()(
-      implicit space: MutableEnumeratedCoordinateField[Vector, _, Double],
+  class LBFGSMinimizationPackage[DF, Vector]()(implicit
+      space: MutableEnumeratedCoordinateField[Vector, _, Double],
       df: DF <:< DiffFunction[Vector])
       extends IterableOptimizationPackage[DF, Vector, LBFGS[Vector]#State] {
     def minimize(fn: DF, init: Vector, options: OptimizationOption*): Vector = {
@@ -41,14 +41,14 @@ object OptimizationPackage {
     }
   }
 
-  implicit def lbfgsMinimizationPackage[DF, Vector](
-      implicit space: MutableFiniteCoordinateField[Vector, _, Double],
+  implicit def lbfgsMinimizationPackage[DF, Vector](implicit
+      space: MutableFiniteCoordinateField[Vector, _, Double],
       df: DF <:< DiffFunction[Vector]): LBFGSMinimizationPackage[DF, Vector] = {
     new LBFGSMinimizationPackage[DF, Vector]()
   }
 
-  class SecondOrderOptimizationPackage[Vector, Hessian]()(
-      implicit space: MutableFiniteCoordinateField[Vector, _, Double],
+  class SecondOrderOptimizationPackage[Vector, Hessian]()(implicit
+      space: MutableFiniteCoordinateField[Vector, _, Double],
       mult: OpMulMatrix.Impl2[Hessian, Vector, Vector])
       extends IterableOptimizationPackage[
         SecondOrderFunction[Vector, Hessian],
@@ -78,8 +78,8 @@ object OptimizationPackage {
     }
   }
 
-  implicit def secondOrderPackage[Vector, Hessian](
-      implicit space: MutableFiniteCoordinateField[Vector, _, Double],
+  implicit def secondOrderPackage[Vector, Hessian](implicit
+      space: MutableFiniteCoordinateField[Vector, _, Double],
       mult: OpMulMatrix.Impl2[Hessian, Vector, Vector]) =
     new SecondOrderOptimizationPackage[Vector, Hessian]()
 
@@ -141,8 +141,8 @@ object OptimizationPackage {
 
 trait OptimizationPackageLowPriority {
 
-  class ImmutableFirstOrderOptimizationPackage[DF, Vector]()(
-      implicit space: CoordinateField[Vector, Double],
+  class ImmutableFirstOrderOptimizationPackage[DF, Vector]()(implicit
+      space: CoordinateField[Vector, Double],
       canIterate: CanTraverseValues[Vector, Double],
       canMap: CanMapValues[Vector, Double, Double, Vector],
       canZipMap: CanZipMapValues[Vector, Double, Double, Vector],
@@ -168,8 +168,8 @@ trait OptimizationPackageLowPriority {
     }
   }
 
-  implicit def imFirstOrderPackage[DF, Vector](
-      implicit space: CoordinateField[Vector, Double],
+  implicit def imFirstOrderPackage[DF, Vector](implicit
+      space: CoordinateField[Vector, Double],
       canIterate: CanTraverseValues[Vector, Double],
       canMap: CanMapValues[Vector, Double, Double, Vector],
       canZipMap: CanZipMapValues[Vector, Double, Double, Vector],

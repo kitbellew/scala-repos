@@ -83,8 +83,7 @@ object ADTPartitionExample extends App {
   /**
     * Partition a list into a tuple of lists for each constructor.
     */
-  def partitionTuple[A, C <: Coproduct, Out <: HList](as: List[A])(
-      implicit
+  def partitionTuple[A, C <: Coproduct, Out <: HList](as: List[A])(implicit
       gen: LabelledGeneric.Aux[A, C],
       partitioner: Partitioner.Aux[C, Out],
       tupler: Tupler[Out]) = tupler(partitioner(as.map(gen.to)))
@@ -92,8 +91,8 @@ object ADTPartitionExample extends App {
   /**
     * Partition a list into a record of lists for each constructor.
     */
-  def partitionRecord[A, C <: Coproduct, Out <: HList](as: List[A])(
-      implicit gen: LabelledGeneric.Aux[A, C],
+  def partitionRecord[A, C <: Coproduct, Out <: HList](as: List[A])(implicit
+      gen: LabelledGeneric.Aux[A, C],
       partitioner: Partitioner.Aux[C, Out]): Out =
     partitioner(as.map(gen.to))
 

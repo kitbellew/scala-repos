@@ -19,8 +19,7 @@ trait ArrowTests[F[_, _]]
       C: Arbitrary,
       D: Arbitrary,
       E: Arbitrary,
-      G: Arbitrary](
-      implicit
+      G: Arbitrary](implicit
       ArbFAB: Arbitrary[F[A, B]],
       ArbFBC: Arbitrary[F[B, C]],
       ArbFCD: Arbitrary[F[C, D]],

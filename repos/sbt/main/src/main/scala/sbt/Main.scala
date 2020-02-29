@@ -319,8 +319,8 @@ object BuiltinCommands {
     keys.sortBy(_.rank)
   def withDescription(keys: Seq[AttributeKey[_]]): Seq[AttributeKey[_]] =
     keys.filter(_.description.isDefined)
-  def isTask(mf: Manifest[_])(
-      implicit taskMF: Manifest[Task[_]],
+  def isTask(mf: Manifest[_])(implicit
+      taskMF: Manifest[Task[_]],
       inputMF: Manifest[InputTask[_]]): Boolean =
     mf.runtimeClass == taskMF.runtimeClass || mf.runtimeClass == inputMF.runtimeClass
   def topNRanked(n: Int) =

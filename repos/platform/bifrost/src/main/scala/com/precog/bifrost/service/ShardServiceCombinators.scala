@@ -334,8 +334,8 @@ trait ShardServiceCombinators
   def requireAccount[A, B](accountFinder: AccountFinder[Future])(
       service: HttpService[
         A,
-        ((APIKey, AccountDetails)) => Future[HttpResponse[B]]])(
-      implicit inj: JValue => B,
+        ((APIKey, AccountDetails)) => Future[HttpResponse[B]]])(implicit
+      inj: JValue => B,
       M: Monad[Future]): HttpService[A, APIKey => Future[HttpResponse[B]]] = {
     val service0 = service map {
       (f: ((APIKey, AccountDetails)) => Future[HttpResponse[B]]) =>

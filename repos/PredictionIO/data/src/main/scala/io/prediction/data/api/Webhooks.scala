@@ -48,8 +48,8 @@ private[prediction] object Webhooks {
       log: LoggingAdapter,
       stats: Boolean,
       statsActorRef: ActorSelection
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit
+      ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
 
     val eventFuture = Future {
       WebhooksConnectors.json.get(web).map { connector =>
@@ -83,8 +83,8 @@ private[prediction] object Webhooks {
       channelId: Option[Int],
       web: String,
       log: LoggingAdapter
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit
+      ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
       WebhooksConnectors.json
         .get(web)
@@ -105,8 +105,8 @@ private[prediction] object Webhooks {
       log: LoggingAdapter,
       stats: Boolean,
       statsActorRef: ActorSelection
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit
+      ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     val eventFuture = Future {
       WebhooksConnectors.form.get(web).map { connector =>
         ConnectorUtil.toEvent(connector, data.fields.toMap)
@@ -139,8 +139,8 @@ private[prediction] object Webhooks {
       channelId: Option[Int],
       web: String,
       log: LoggingAdapter
-  )(implicit ec: ExecutionContext)
-      : Future[(StatusCode, Map[String, String])] = {
+  )(implicit
+      ec: ExecutionContext): Future[(StatusCode, Map[String, String])] = {
     Future {
       WebhooksConnectors.form
         .get(web)

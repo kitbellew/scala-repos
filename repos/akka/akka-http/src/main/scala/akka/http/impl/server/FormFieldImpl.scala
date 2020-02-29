@@ -23,8 +23,8 @@ import scala.compat.java8.OptionConverters._
 /**
   * INTERNAL API
   */
-private[http] class FormFieldImpl[T, U](receptacle: NameReceptacle[T])(
-    implicit fu: FromStrictFormFieldUnmarshaller[T],
+private[http] class FormFieldImpl[T, U](receptacle: NameReceptacle[T])(implicit
+    fu: FromStrictFormFieldUnmarshaller[T],
     tTag: ClassTag[U],
     conv: T ⇒ U)
     extends StandaloneExtractionImpl[U]
@@ -53,14 +53,14 @@ private[http] class FormFieldImpl[T, U](receptacle: NameReceptacle[T])(
     }
 }
 object FormFieldImpl {
-  def apply[T, U](receptacle: NameReceptacle[T])(
-      implicit fu: FromStrictFormFieldUnmarshaller[T],
+  def apply[T, U](receptacle: NameReceptacle[T])(implicit
+      fu: FromStrictFormFieldUnmarshaller[T],
       tTag: ClassTag[U],
       conv: T ⇒ U): FormField[U] =
     new FormFieldImpl[T, U](receptacle)(fu, tTag, conv)
 
-  def apply[T, U](receptacle: NameUnmarshallerReceptacle[T])(
-      implicit tTag: ClassTag[U],
+  def apply[T, U](receptacle: NameUnmarshallerReceptacle[T])(implicit
+      tTag: ClassTag[U],
       conv: T ⇒ U): FormField[U] =
     apply(new NameReceptacle[T](receptacle.name))(
       StrictForm.Field.unmarshallerFromFSU(receptacle.um),

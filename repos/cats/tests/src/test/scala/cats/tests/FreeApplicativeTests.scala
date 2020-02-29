@@ -14,8 +14,8 @@ import cats.data.State
 import org.scalacheck.{Arbitrary, Gen}
 
 class FreeApplicativeTests extends CatsSuite {
-  implicit def freeApplicativeArbitrary[F[_], A](
-      implicit F: Arbitrary[F[A]],
+  implicit def freeApplicativeArbitrary[F[_], A](implicit
+      F: Arbitrary[F[A]],
       A: Arbitrary[A]): Arbitrary[FreeApplicative[F, A]] =
     Arbitrary(
       Gen.oneOf(

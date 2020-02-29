@@ -483,14 +483,14 @@ object ContravariantCoyonedaUsage extends App {
     implicit val descUnit: Binfmt[Unit] = Binfmt("")
     implicit def descOption[A](implicit a: Binfmt[A]): Binfmt[Option[A]] =
       Binfmt("?<" |+| a.describe |+| ">")
-    implicit def desc_\/[A, B](
-        implicit a: Binfmt[A],
+    implicit def desc_\/[A, B](implicit
+        a: Binfmt[A],
         b: Binfmt[B]): Binfmt[A \/ B] =
       Binfmt(
         "<" |+| a.describe |+| "\\/"
           |+| b.describe |+| ">")
-    implicit def desc2Tuple[A, B](
-        implicit a: Binfmt[A],
+    implicit def desc2Tuple[A, B](implicit
+        a: Binfmt[A],
         b: Binfmt[B]): Binfmt[(A, B)] = Binfmt(a.describe |+| b.describe)
   }
 

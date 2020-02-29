@@ -20,8 +20,8 @@ trait TBddDsl extends FieldConversions with TypedPipeOperationsConversions {
     def asSource: Source =
       IterableSource(data map { Tuple1(_) }, 'tuple)
 
-    def readFromSourceAsTyped(
-        implicit flowDef: FlowDef,
+    def readFromSourceAsTyped(implicit
+        flowDef: FlowDef,
         mode: Mode): TypedPipe[T] =
       asSource.read.toTypedPipe[Tuple1[T]]('tuple) map { _._1 }
 

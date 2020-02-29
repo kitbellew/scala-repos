@@ -74,8 +74,8 @@ object PolyDefns extends Cases {
   class Compose[F, G](f: F, g: G) extends Poly
 
   object Compose {
-    implicit def composeCase[C, F <: Poly, G <: Poly, T, U, V](
-        implicit unpack: Unpack2[C, Compose, F, G],
+    implicit def composeCase[C, F <: Poly, G <: Poly, T, U, V](implicit
+        unpack: Unpack2[C, Compose, F, G],
         cG: Case1.Aux[G, T, U],
         cF: Case1.Aux[F, U, V]) = new Case[C, T :: HNil] {
       type Result = V
@@ -97,8 +97,8 @@ object PolyDefns extends Cases {
         N <: Nat,
         L <: HList,
         LOut,
-        RL <: HList](
-        implicit unpack: Unpack2[C, RotateLeft, P, N],
+        RL <: HList](implicit
+        unpack: Unpack2[C, RotateLeft, P, N],
         cP: Case.Aux[P, L, LOut],
         rotateRight: hl.RotateRight.Aux[RL, N, L]): Case.Aux[C, RL, LOut] =
       new Case[C, RL] {
@@ -122,8 +122,8 @@ object PolyDefns extends Cases {
         N <: Nat,
         L <: HList,
         LOut,
-        RL <: HList](
-        implicit unpack: Unpack2[C, RotateRight, P, N],
+        RL <: HList](implicit
+        unpack: Unpack2[C, RotateRight, P, N],
         cP: Case.Aux[P, L, LOut],
         rotateLeft: hl.RotateLeft.Aux[RL, N, L]): Case.Aux[C, RL, LOut] =
       new Case[C, RL] {

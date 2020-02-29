@@ -6,16 +6,16 @@ import collection.immutable.BitSet
 
 class QuickSort[Coll](a: Coll) {
   //should be able to sort only something with defined order (someting like a Seq)
-  def quickSort[T](
-      implicit ev0: Coll => SeqLike[T, Coll],
+  def quickSort[T](implicit
+      ev0: Coll => SeqLike[T, Coll],
       cbf: CanBuildFrom[Coll, T, Coll],
       n: Ordering[T]): Coll = {
     quickSortAnything(ev0, cbf, n)
   }
 
   //we can even sort a Set, if we really want to
-  def quickSortAnything[T](
-      implicit ev0: Coll => TraversableLike[T, Coll],
+  def quickSortAnything[T](implicit
+      ev0: Coll => TraversableLike[T, Coll],
       cbf: CanBuildFrom[Coll, T, Coll],
       n: Ordering[T]): Coll = {
     import n._
@@ -37,8 +37,8 @@ class QuickSort[Coll](a: Coll) {
 }
 
 class FilterMap[Repr](a: Repr) {
-  def filterMap[A, B, That](f: A => Option[B])(
-      implicit ev0: Repr => TraversableLike[A, Repr],
+  def filterMap[A, B, That](f: A => Option[B])(implicit
+      ev0: Repr => TraversableLike[A, Repr],
       cbf: CanBuildFrom[Repr, B, That]): That = {
     a.flatMap(e => f(e).toSeq)
   }

@@ -27,8 +27,8 @@ final class TraverseOps[F[_], A] private[syntax] (val self: F[A])(
     F.traverseM[A, G, B](self)(f)(G, FM)
 
   /** Traverse with the identity function */
-  final def sequence[G[_], B](
-      implicit ev: A === G[B],
+  final def sequence[G[_], B](implicit
+      ev: A === G[B],
       G: Applicative[G]): G[F[B]] = {
     val fgb: F[G[B]] = ev.subst[F](self)
     F.sequence(fgb)

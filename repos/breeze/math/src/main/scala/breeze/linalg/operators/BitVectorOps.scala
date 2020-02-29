@@ -26,7 +26,8 @@ trait BitVectorOps {
   @expand
   @expand.valify
   implicit def bv_bv_UpdateOp[@expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ and _ }, {
           _ or _
         }, {
@@ -46,8 +47,8 @@ trait BitVectorOps {
 
   @expand
   @expand.valify
-  implicit def bv_bv_Op[@expand.args(OpAnd, OpOr, OpXor) Op <: OpType](
-      implicit @expand.sequence[Op]({ _ and _ }, { _ or _ }, { _ xor _ })
+  implicit def bv_bv_Op[@expand.args(OpAnd, OpOr, OpXor) Op <: OpType](implicit
+      @expand.sequence[Op]({ _ and _ }, { _ or _ }, { _ xor _ })
       op: Op.InPlaceImpl2[java.util.BitSet, java.util.BitSet])
       : Op.Impl2[BitVector, BitVector, BitVector] =
     new Op.Impl2[BitVector, BitVector, BitVector] {
@@ -90,9 +91,8 @@ trait BitVectorOps {
       }
     }
   @expand
-  implicit def axpy[@expand.args(Int, Double, Float, Long) V, Vec](
-      implicit ev: Vec <:< Vector[V])
-      : scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
+  implicit def axpy[@expand.args(Int, Double, Float, Long) V, Vec](implicit
+      ev: Vec <:< Vector[V]): scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
     new scaleAdd.InPlaceImpl3[Vec, V, BitVector] {
       def apply(a: Vec, s: V, b: BitVector) {
         require(b.lengthsMatch(a), "Vectors must be the same length!")
@@ -106,8 +106,8 @@ trait BitVectorOps {
     }
   }
 
-  implicit def axpyGen[V, Vec](
-      implicit ev: Vec <:< Vector[V],
+  implicit def axpyGen[V, Vec](implicit
+      ev: Vec <:< Vector[V],
       semi: Semiring[V]): scaleAdd.InPlaceImpl3[Vec, V, BitVector] = {
     new scaleAdd.InPlaceImpl3[Vec, V, BitVector] {
       def apply(a: Vec, s: V, b: BitVector) {

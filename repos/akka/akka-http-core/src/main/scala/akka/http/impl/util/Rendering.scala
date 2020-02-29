@@ -103,8 +103,8 @@ private[http] object Renderer {
   implicit def renderableRenderer[T <: Renderable]: Renderer[T] =
     RenderableRenderer
 
-  def optionRenderer[D, T](defaultValue: D)(
-      implicit sRenderer: Renderer[D],
+  def optionRenderer[D, T](defaultValue: D)(implicit
+      sRenderer: Renderer[D],
       tRenderer: Renderer[T]): Renderer[Option[T]] =
     new Renderer[Option[T]] {
       def render[R <: Rendering](r: R, value: Option[T]): r.type =
@@ -116,8 +116,8 @@ private[http] object Renderer {
     genericSeqRenderer[Renderable, T](Rendering.`, `, Rendering.Empty)
   def seqRenderer[T: Renderer](separator: String = ", ", empty: String = "") =
     genericSeqRenderer[String, T](separator, empty)
-  def genericSeqRenderer[S, T](separator: S, empty: S)(
-      implicit sRenderer: Renderer[S],
+  def genericSeqRenderer[S, T](separator: S, empty: S)(implicit
+      sRenderer: Renderer[S],
       tRenderer: Renderer[T]): Renderer[immutable.Seq[T]] =
     new Renderer[immutable.Seq[T]] {
       def render[R <: Rendering](r: R, value: immutable.Seq[T]): r.type = {

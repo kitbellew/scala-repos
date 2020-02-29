@@ -639,8 +639,8 @@ abstract class RDD[T: ClassTag](
   def sortBy[K](
       f: (T) => K,
       ascending: Boolean = true,
-      numPartitions: Int = this.partitions.length)(
-      implicit ord: Ordering[K],
+      numPartitions: Int = this.partitions.length)(implicit
+      ord: Ordering[K],
       ctag: ClassTag[K]): RDD[T] = withScope {
     this
       .keyBy[K](f)
@@ -751,8 +751,8 @@ abstract class RDD[T: ClassTag](
     * aggregation (such as a sum or average) over each key, using [[PairRDDFunctions.aggregateByKey]]
     * or [[PairRDDFunctions.reduceByKey]] will provide much better performance.
     */
-  def groupBy[K](f: T => K, p: Partitioner)(
-      implicit kt: ClassTag[K],
+  def groupBy[K](f: T => K, p: Partitioner)(implicit
+      kt: ClassTag[K],
       ord: Ordering[K] = null): RDD[(K, Iterable[T])] = withScope {
     val cleanF = sc.clean(f)
     this.map(t => (cleanF(t), t)).groupByKey(p)
@@ -1943,8 +1943,8 @@ object RDD {
   // them automatically. However, we still keep the old functions in SparkContext for backward
   // compatibility and forward to the following functions directly.
 
-  implicit def rddToPairRDDFunctions[K, V](rdd: RDD[(K, V)])(
-      implicit kt: ClassTag[K],
+  implicit def rddToPairRDDFunctions[K, V](rdd: RDD[(K, V)])(implicit
+      kt: ClassTag[K],
       vt: ClassTag[V],
       ord: Ordering[K] = null): PairRDDFunctions[K, V] = {
     new PairRDDFunctions(rdd)
@@ -1955,8 +1955,8 @@ object RDD {
     new AsyncRDDActions(rdd)
   }
 
-  implicit def rddToSequenceFileRDDFunctions[K, V](rdd: RDD[(K, V)])(
-      implicit kt: ClassTag[K],
+  implicit def rddToSequenceFileRDDFunctions[K, V](rdd: RDD[(K, V)])(implicit
+      kt: ClassTag[K],
       vt: ClassTag[V],
       keyWritableFactory: WritableFactory[K],
       valueWritableFactory: WritableFactory[V])

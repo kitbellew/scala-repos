@@ -91,8 +91,8 @@ object hist extends UFunc {
   implicit def defaultHistWeights[
       T,
       U,
-      @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanZipAndTraverseValues[T, U, S, S],
+      @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanZipAndTraverseValues[T, U, S, S],
       iter2: CanTraverseValues[T, S]): Impl2[T, U, Histogram[S]] =
     new Impl2[T, U, Histogram[S]] {
       private val innerImpl = implicitly[Impl3[T, Int, U, Histogram[S]]]
@@ -103,8 +103,8 @@ object hist extends UFunc {
   implicit def defaultHistBinsWeights[
       T,
       U,
-      @expand.args(Int, Double, Float, Long) S](
-      implicit iter: CanZipAndTraverseValues[T, U, S, S],
+      @expand.args(Int, Double, Float, Long) S](implicit
+      iter: CanZipAndTraverseValues[T, U, S, S],
       iter2: CanTraverseValues[T, S]): Impl3[T, Int, U, Histogram[S]] =
     new Impl3[T, Int, U, Histogram[S]] {
       private val innerImpl =

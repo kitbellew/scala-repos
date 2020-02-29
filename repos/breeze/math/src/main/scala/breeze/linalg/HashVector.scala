@@ -243,7 +243,8 @@ object HashVector
   implicit def dv_hv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ * _ }, {
           _ / _
         },

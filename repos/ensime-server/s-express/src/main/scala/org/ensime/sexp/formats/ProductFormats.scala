@@ -28,8 +28,7 @@ trait LowPriorityProductFormats {
       }
     }
 
-    implicit def hListFormat[H, T <: HList](
-        implicit
+    implicit def hListFormat[H, T <: HList](implicit
         h: Lazy[SexpFormat[H]],
         t: Lazy[HListFormat[T]]
     ): HListFormat[H :: T] = new HListFormat[H :: T] {
@@ -96,8 +95,7 @@ trait LowPriorityProductFormats {
 
 trait ProductFormats extends LowPriorityProductFormats {
   // higher priority so that tuples and case classes are not ambiguous
-  implicit def tupleProductFormat[T, R <: HList, T2](
-      implicit
+  implicit def tupleProductFormat[T, R <: HList, T2](implicit
       g: Generic.Aux[T, R],
       t: ops.hlist.Tupler.Aux[R, T2],
       p: T =:= T2,

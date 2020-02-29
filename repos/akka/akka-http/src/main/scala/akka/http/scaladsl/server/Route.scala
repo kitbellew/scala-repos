@@ -23,8 +23,8 @@ object Route {
   /**
     * "Seals" a route by wrapping it with exception handling and rejection conversion.
     */
-  def seal(route: Route)(
-      implicit routingSettings: RoutingSettings,
+  def seal(route: Route)(implicit
+      routingSettings: RoutingSettings,
       parserSettings: ParserSettings = null,
       rejectionHandler: RejectionHandler = RejectionHandler.default,
       exceptionHandler: ExceptionHandler = null): Route = {
@@ -41,8 +41,8 @@ object Route {
     *
     * This conversion is also implicitly available through [[RouteResult#route2HandlerFlow]].
     */
-  def handlerFlow(route: Route)(
-      implicit routingSettings: RoutingSettings,
+  def handlerFlow(route: Route)(implicit
+      routingSettings: RoutingSettings,
       parserSettings: ParserSettings,
       materializer: Materializer,
       routingLog: RoutingLog,
@@ -55,8 +55,8 @@ object Route {
   /**
     * Turns a `Route` into an async handler function.
     */
-  def asyncHandler(route: Route)(
-      implicit routingSettings: RoutingSettings,
+  def asyncHandler(route: Route)(implicit
+      routingSettings: RoutingSettings,
       parserSettings: ParserSettings,
       materializer: Materializer,
       routingLog: RoutingLog,

@@ -37,9 +37,9 @@ object RunResult {
     implicit def forF1[Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[Z :: HNil, R, In0, Out0]): Aux[Z ⇒ R, Rule[In0, Out0]] =
       `n/a`
-    implicit def forF2[Y, Z, R, In0 <: HList, Out0 <: HList](
-        implicit x: JA[Y :: Z :: HNil, R, In0, Out0])
-        : Aux[(Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`
+    implicit def forF2[Y, Z, R, In0 <: HList, Out0 <: HList](implicit
+        x: JA[Y :: Z :: HNil, R, In0, Out0]): Aux[(Y, Z) ⇒ R, Rule[In0, Out0]] =
+      `n/a`
     implicit def forF3[X, Y, Z, R, In0 <: HList, Out0 <: HList](
         implicit x: JA[X :: Y :: Z :: HNil, R, In0, Out0])
         : Aux[(X, Y, Z) ⇒ R, Rule[In0, Out0]] = `n/a`

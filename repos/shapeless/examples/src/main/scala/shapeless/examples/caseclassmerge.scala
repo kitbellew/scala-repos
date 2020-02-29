@@ -48,8 +48,7 @@ object CaseClassMerge {
   def apply[T, U](implicit merge: CaseClassMerge[T, U]): CaseClassMerge[T, U] =
     merge
 
-  implicit def mkCCMerge[T, U, RT <: HList, RU <: HList](
-      implicit
+  implicit def mkCCMerge[T, U, RT <: HList, RU <: HList](implicit
       tgen: LabelledGeneric.Aux[T, RT],
       ugen: LabelledGeneric.Aux[U, RU],
       merger: Merger.Aux[RT, RU, RT]): CaseClassMerge[T, U] =

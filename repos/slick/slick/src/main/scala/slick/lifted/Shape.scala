@@ -267,12 +267,8 @@ class CaseClassShape[
     PlainTuple,
     PlainCaseClass <: P](
     mapLifted: LiftedTuple => LiftedCaseClass,
-    mapPlain: PlainTuple => PlainCaseClass)(
-    implicit columnShapes: Shape[
-      FlatShapeLevel,
-      LiftedTuple,
-      PlainTuple,
-      LiftedTuple],
+    mapPlain: PlainTuple => PlainCaseClass)(implicit
+    columnShapes: Shape[FlatShapeLevel, LiftedTuple, PlainTuple, LiftedTuple],
     classTag: ClassTag[PlainCaseClass])
     extends MappedScalaProductShape[
       FlatShapeLevel,
@@ -393,8 +389,8 @@ object ShapedValue {
 
   def mapToImpl[R <: Product with Serializable, U](c: Context {
     type PrefixType = ShapedValue[_, U]
-  })(rCT: c.Expr[ClassTag[R]])(
-      implicit rTag: c.WeakTypeTag[R],
+  })(rCT: c.Expr[ClassTag[R]])(implicit
+      rTag: c.WeakTypeTag[R],
       uTag: c.WeakTypeTag[U]): c.Tree = {
     import c.universe._
     val rSym = symbolOf[R]

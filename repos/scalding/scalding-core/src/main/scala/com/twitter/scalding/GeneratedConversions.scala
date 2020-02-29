@@ -15,8 +15,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 1
     }
 
-  implicit def tuple2Converter[A, B](
-      implicit gA: TupleGetter[A],
+  implicit def tuple2Converter[A, B](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B]): TupleConverter[Tuple2[A, B]] =
     new TupleConverter[Tuple2[A, B]] {
       def apply(te: TupleEntry) = {
@@ -26,8 +26,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 2
     }
 
-  implicit def tuple3Converter[A, B, C](
-      implicit gA: TupleGetter[A],
+  implicit def tuple3Converter[A, B, C](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C]): TupleConverter[Tuple3[A, B, C]] =
     new TupleConverter[Tuple3[A, B, C]] {
@@ -38,8 +38,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 3
     }
 
-  implicit def tuple4Converter[A, B, C, D](
-      implicit gA: TupleGetter[A],
+  implicit def tuple4Converter[A, B, C, D](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D]): TupleConverter[Tuple4[A, B, C, D]] =
@@ -51,8 +51,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 4
     }
 
-  implicit def tuple5Converter[A, B, C, D, E](
-      implicit gA: TupleGetter[A],
+  implicit def tuple5Converter[A, B, C, D, E](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -70,8 +70,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 5
     }
 
-  implicit def tuple6Converter[A, B, C, D, E, F](
-      implicit gA: TupleGetter[A],
+  implicit def tuple6Converter[A, B, C, D, E, F](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -91,8 +91,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 6
     }
 
-  implicit def tuple7Converter[A, B, C, D, E, F, G](
-      implicit gA: TupleGetter[A],
+  implicit def tuple7Converter[A, B, C, D, E, F, G](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -114,8 +114,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 7
     }
 
-  implicit def tuple8Converter[A, B, C, D, E, F, G, H](
-      implicit gA: TupleGetter[A],
+  implicit def tuple8Converter[A, B, C, D, E, F, G, H](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -139,8 +139,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 8
     }
 
-  implicit def tuple9Converter[A, B, C, D, E, F, G, H, I](
-      implicit gA: TupleGetter[A],
+  implicit def tuple9Converter[A, B, C, D, E, F, G, H, I](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -166,8 +166,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 9
     }
 
-  implicit def tuple10Converter[A, B, C, D, E, F, G, H, I, J](
-      implicit gA: TupleGetter[A],
+  implicit def tuple10Converter[A, B, C, D, E, F, G, H, I, J](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -196,8 +196,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 10
     }
 
-  implicit def tuple11Converter[A, B, C, D, E, F, G, H, I, J, K](
-      implicit gA: TupleGetter[A],
+  implicit def tuple11Converter[A, B, C, D, E, F, G, H, I, J, K](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -229,8 +229,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 11
     }
 
-  implicit def tuple12Converter[A, B, C, D, E, F, G, H, I, J, K, L](
-      implicit gA: TupleGetter[A],
+  implicit def tuple12Converter[A, B, C, D, E, F, G, H, I, J, K, L](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -264,8 +264,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       def arity = 12
     }
 
-  implicit def tuple13Converter[A, B, C, D, E, F, G, H, I, J, K, L, M](
-      implicit gA: TupleGetter[A],
+  implicit def tuple13Converter[A, B, C, D, E, F, G, H, I, J, K, L, M](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -302,7 +302,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
     }
 
   implicit def tuple14Converter[A, B, C, D, E, F, G, H, I, J, K, L, M, N](
-      implicit gA: TupleGetter[A],
+      implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -341,7 +342,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
     }
 
   implicit def tuple15Converter[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O](
-      implicit gA: TupleGetter[A],
+      implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -382,7 +384,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
     }
 
   implicit def tuple16Converter[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P](
-      implicit gA: TupleGetter[A],
+      implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -441,8 +444,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       N,
       O,
       P,
-      Q](
-      implicit gA: TupleGetter[A],
+      Q](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -505,8 +508,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       O,
       P,
       Q,
-      R](
-      implicit gA: TupleGetter[A],
+      R](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -572,8 +575,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       P,
       Q,
       R,
-      S](
-      implicit gA: TupleGetter[A],
+      S](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -642,8 +645,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       Q,
       R,
       S,
-      T](
-      implicit gA: TupleGetter[A],
+      T](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -715,8 +718,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       R,
       S,
       T,
-      U](
-      implicit gA: TupleGetter[A],
+      U](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],
@@ -791,8 +794,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       S,
       T,
       U,
-      V](
-      implicit gA: TupleGetter[A],
+      V](implicit
+      gA: TupleGetter[A],
       gB: TupleGetter[B],
       gC: TupleGetter[C],
       gD: TupleGetter[D],

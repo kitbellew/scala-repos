@@ -1118,8 +1118,8 @@ class SparkContext(config: SparkConf)
     */
   def hadoopFile[K, V, F <: InputFormat[K, V]](
       path: String,
-      minPartitions: Int)(
-      implicit km: ClassTag[K],
+      minPartitions: Int)(implicit
+      km: ClassTag[K],
       vm: ClassTag[V],
       fm: ClassTag[F]): RDD[(K, V)] = withScope {
     hadoopFile(
@@ -1144,16 +1144,16 @@ class SparkContext(config: SparkConf)
     * If you plan to directly cache, sort, or aggregate Hadoop writable objects, you should first
     * copy them using a `map` function.
     */
-  def hadoopFile[K, V, F <: InputFormat[K, V]](path: String)(
-      implicit km: ClassTag[K],
+  def hadoopFile[K, V, F <: InputFormat[K, V]](path: String)(implicit
+      km: ClassTag[K],
       vm: ClassTag[V],
       fm: ClassTag[F]): RDD[(K, V)] = withScope {
     hadoopFile[K, V, F](path, defaultMinPartitions)
   }
 
   /** Get an RDD for a Hadoop file with an arbitrary new API InputFormat. */
-  def newAPIHadoopFile[K, V, F <: NewInputFormat[K, V]](path: String)(
-      implicit km: ClassTag[K],
+  def newAPIHadoopFile[K, V, F <: NewInputFormat[K, V]](path: String)(implicit
+      km: ClassTag[K],
       vm: ClassTag[V],
       fm: ClassTag[F]): RDD[(K, V)] = withScope {
     newAPIHadoopFile(
@@ -1278,8 +1278,8 @@ class SparkContext(config: SparkConf)
     */
   def sequenceFile[K, V](
       path: String,
-      minPartitions: Int = defaultMinPartitions)(
-      implicit km: ClassTag[K],
+      minPartitions: Int = defaultMinPartitions)(implicit
+      km: ClassTag[K],
       vm: ClassTag[V],
       kcf: () => WritableConverter[K],
       vcf: () => WritableConverter[V]): RDD[(K, V)] = {

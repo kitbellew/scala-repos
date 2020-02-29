@@ -33,12 +33,12 @@ object PackExamples extends App {
   object Pack {
     implicit def packHNil[F[_]]: PNil[F] = PNil[F]()
 
-    implicit def packHList[F[_], H, T <: HList](
-        implicit fh: F[H],
+    implicit def packHList[F[_], H, T <: HList](implicit
+        fh: F[H],
         pt: Pack[F, T]): Pack[F, H :: T] = PCons(fh, pt)
 
-    implicit def unpack[F[_], E, L <: HList](
-        implicit pack: Pack[F, L],
+    implicit def unpack[F[_], E, L <: HList](implicit
+        pack: Pack[F, L],
         unpack: Unpack[F, L, E]): F[E] = unpack(pack)
 
     trait Unpack[F[_], L <: HList, E] {
@@ -52,8 +52,8 @@ object PackExamples extends App {
           def apply(pack: Pack[F, H :: T]): F[H] = pc.split(pack)._1
         }
 
-      implicit def unpack2[F[_], H, T <: HList, E](
-          implicit pc: IsPCons.Aux[F, H :: T, H, T],
+      implicit def unpack2[F[_], H, T <: HList, E](implicit
+          pc: IsPCons.Aux[F, H :: T, H, T],
           ut: Unpack[F, T, E]): Unpack[F, H :: T, E] =
         new Unpack[F, H :: T, E] {
           def apply(pack: Pack[F, H :: T]): F[E] = ut(pc.split(pack)._2)

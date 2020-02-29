@@ -55,8 +55,8 @@ class SetterMethodSearcher
   private def processAssignments(
       element: PsiElement,
       name: String,
-      project: Project)(
-      implicit consumer: Processor[PsiReference],
+      project: Project)(implicit
+      consumer: Processor[PsiReference],
       scope: SearchScope) = {
     val processor = new TextOccurenceProcessor {
       def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
@@ -89,8 +89,8 @@ class SetterMethodSearcher
   private def processSimpleUsages(
       element: PsiElement,
       name: String,
-      project: Project)(
-      implicit consumer: Processor[PsiReference],
+      project: Project)(implicit
+      consumer: Processor[PsiReference],
       scope: SearchScope) = {
     val processor = new TextOccurenceProcessor {
       def execute(elem: PsiElement, offsetInElement: Int): Boolean = {

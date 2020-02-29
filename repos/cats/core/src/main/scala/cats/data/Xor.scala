@@ -76,8 +76,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
       f: Validated[A, B] => Validated[AA, BB]): AA Xor BB =
     f(toValidated).toXor
 
-  def to[F[_], BB >: B](
-      implicit monoidKF: MonoidK[F],
+  def to[F[_], BB >: B](implicit
+      monoidKF: MonoidK[F],
       applicativeF: Applicative[F]): F[BB] =
     fold(_ => monoidKF.empty, applicativeF.pure)
 
@@ -107,8 +107,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
     b => that.fold(_ => 1, BB.compare(b, _))
   )
 
-  def partialCompare[AA >: A, BB >: B](that: AA Xor BB)(
-      implicit AA: PartialOrder[AA],
+  def partialCompare[AA >: A, BB >: B](that: AA Xor BB)(implicit
+      AA: PartialOrder[AA],
       BB: PartialOrder[BB]): Double = fold(
     a => that.fold(AA.partialCompare(a, _), _ => -1),
     b => that.fold(_ => 1, BB.partialCompare(b, _))
@@ -133,8 +133,8 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def merge[AA >: A](implicit ev: B <:< AA): AA = fold(identity, ev.apply)
 
-  final def combine[AA >: A, BB >: B](that: AA Xor BB)(
-      implicit AA: Semigroup[AA],
+  final def combine[AA >: A, BB >: B](that: AA Xor BB)(implicit
+      AA: Semigroup[AA],
       BB: Semigroup[BB]): AA Xor BB = this match {
     case Xor.Left(a1) =>
       that match {
@@ -174,8 +174,8 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
       def show(f: A Xor B): String = f.show
     }
 
-  implicit def xorMonoid[A, B](
-      implicit A: Semigroup[A],
+  implicit def xorMonoid[A, B](implicit
+      A: Semigroup[A],
       B: Monoid[B]): Monoid[A Xor B] =
     new Monoid[A Xor B] {
       def empty: A Xor B = Xor.Right(B.empty)
@@ -239,8 +239,8 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
 
 private[data] sealed abstract class XorInstances1 extends XorInstances2 {
 
-  implicit def xorSemigroup[A, B](
-      implicit A: Semigroup[A],
+  implicit def xorSemigroup[A, B](implicit
+      A: Semigroup[A],
       B: Semigroup[B]): Semigroup[A Xor B] =
     new Semigroup[A Xor B] {
       def combine(x: A Xor B, y: A Xor B): A Xor B = x combine y

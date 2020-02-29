@@ -10,8 +10,7 @@ trait BitraverseTests[F[_, _]]
     with BifunctorTests[F] {
   def laws: BitraverseLaws[F]
 
-  def bitraverse[G[_], A, B, C, D, E, H](
-      implicit
+  def bitraverse[G[_], A, B, C, D, E, H](implicit
       G: Applicative[G],
       C: Monoid[C],
       ArbFAB: Arbitrary[F[A, B]],

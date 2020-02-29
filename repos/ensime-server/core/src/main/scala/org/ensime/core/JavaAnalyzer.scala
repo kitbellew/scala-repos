@@ -98,8 +98,7 @@ object JavaAnalyzer {
       broadcaster: ActorRef,
       indexer: ActorRef,
       search: SearchService
-  )(
-      implicit
+  )(implicit
       config: EnsimeConfig,
       vfs: EnsimeVFS
   ) = Props(new JavaAnalyzer(broadcaster, indexer, search, config, vfs))

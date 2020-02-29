@@ -277,8 +277,7 @@ class RichPresentationCompiler(
     val parent: ActorRef,
     val indexer: ActorRef,
     val search: SearchService
-)(
-    implicit
+)(implicit
     val vfs: EnsimeVFS
 ) extends Global(settings, richReporter)
     with ModelBuilders

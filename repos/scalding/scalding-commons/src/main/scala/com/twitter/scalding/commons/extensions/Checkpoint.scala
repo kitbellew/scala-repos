@@ -79,7 +79,8 @@ object Checkpoint {
     *   setter:  provided by com.twitter.scalding.TupleConversions
     */
   def apply[A](checkpointName: String, resultFields: Fields)(flow: => Pipe)(
-      implicit args: Args,
+      implicit
+      args: Args,
       mode: Mode,
       flowDef: FlowDef,
       conv: TupleConverter[A],
@@ -116,8 +117,8 @@ object Checkpoint {
   }
 
   // Wrapper for Checkpoint when using a TypedPipe
-  def apply[A](checkpointName: String)(flow: => TypedPipe[A])(
-      implicit args: Args,
+  def apply[A](checkpointName: String)(flow: => TypedPipe[A])(implicit
+      args: Args,
       mode: Mode,
       flowDef: FlowDef,
       conv: TupleConverter[A],
@@ -149,8 +150,8 @@ object Checkpoint {
 
   // Returns the filename to use for the given checkpoint, or None if this
   // checkpoint is disabled.
-  private def getFilename(checkpointName: String)(
-      implicit args: Args,
+  private def getFilename(checkpointName: String)(implicit
+      args: Args,
       mode: Mode): Option[String] = {
     val fileArg = CheckpointArg(checkpointName, "file")
     if (fileArg.overrideValue.isDefined) {
@@ -190,8 +191,8 @@ object Checkpoint {
   }
 
   // Returns true if the given checkpoint file exists and should be read.
-  private def hasInput(checkpointName: String, filename: String)(
-      implicit args: Args,
+  private def hasInput(checkpointName: String, filename: String)(implicit
+      args: Args,
       mode: Mode): Boolean = {
     !CheckpointArg(checkpointName, "clobber").isTrue && mode.fileExists(
       filename)

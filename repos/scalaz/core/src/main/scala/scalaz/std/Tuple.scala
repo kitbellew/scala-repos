@@ -50,14 +50,14 @@ sealed trait TupleInstances1 extends TupleInstances0 {
     new Tuple1Semigroup[A1] {
       implicit def _1: Semigroup[A1] = A1
     }
-  implicit def tuple2Semigroup[A1, A2](
-      implicit A1: Semigroup[A1],
+  implicit def tuple2Semigroup[A1, A2](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2]): Semigroup[(A1, A2)] = new Tuple2Semigroup[A1, A2] {
     implicit def _1 = A1
     implicit def _2 = A2
   }
-  implicit def tuple3Semigroup[A1, A2, A3](
-      implicit A1: Semigroup[A1],
+  implicit def tuple3Semigroup[A1, A2, A3](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3]): Semigroup[(A1, A2, A3)] =
     new Tuple3Semigroup[A1, A2, A3] {
@@ -65,8 +65,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple4Semigroup[A1, A2, A3, A4](
-      implicit A1: Semigroup[A1],
+  implicit def tuple4Semigroup[A1, A2, A3, A4](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3],
       A4: Semigroup[A4]): Semigroup[(A1, A2, A3, A4)] =
@@ -76,8 +76,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple5Semigroup[A1, A2, A3, A4, A5](
-      implicit A1: Semigroup[A1],
+  implicit def tuple5Semigroup[A1, A2, A3, A4, A5](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3],
       A4: Semigroup[A4],
@@ -89,8 +89,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple6Semigroup[A1, A2, A3, A4, A5, A6](
-      implicit A1: Semigroup[A1],
+  implicit def tuple6Semigroup[A1, A2, A3, A4, A5, A6](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3],
       A4: Semigroup[A4],
@@ -104,8 +104,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple7Semigroup[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Semigroup[A1],
+  implicit def tuple7Semigroup[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3],
       A4: Semigroup[A4],
@@ -121,8 +121,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _6 = A6
       implicit def _7 = A7
     }
-  implicit def tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit A1: Semigroup[A1],
+  implicit def tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      A1: Semigroup[A1],
       A2: Semigroup[A2],
       A3: Semigroup[A3],
       A4: Semigroup[A4],
@@ -227,15 +227,15 @@ sealed trait TupleInstances1 extends TupleInstances0 {
     new Tuple1Equal[A1] {
       implicit def _1 = A1
     }
-  implicit def tuple2Equal[A1, A2](
-      implicit A1: Equal[A1],
+  implicit def tuple2Equal[A1, A2](implicit
+      A1: Equal[A1],
       A2: Equal[A2]): Equal[(A1, A2)] =
     new Tuple2Equal[A1, A2] {
       implicit def _1 = A1
       implicit def _2 = A2
     }
-  implicit def tuple3Equal[A1, A2, A3](
-      implicit A1: Equal[A1],
+  implicit def tuple3Equal[A1, A2, A3](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3]): Equal[(A1, A2, A3)] =
     new Tuple3Equal[A1, A2, A3] {
@@ -243,8 +243,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple4Equal[A1, A2, A3, A4](
-      implicit A1: Equal[A1],
+  implicit def tuple4Equal[A1, A2, A3, A4](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3],
       A4: Equal[A4]): Equal[(A1, A2, A3, A4)] =
@@ -254,8 +254,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple5Equal[A1, A2, A3, A4, A5](
-      implicit A1: Equal[A1],
+  implicit def tuple5Equal[A1, A2, A3, A4, A5](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3],
       A4: Equal[A4],
@@ -267,8 +267,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple6Equal[A1, A2, A3, A4, A5, A6](
-      implicit A1: Equal[A1],
+  implicit def tuple6Equal[A1, A2, A3, A4, A5, A6](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3],
       A4: Equal[A4],
@@ -282,8 +282,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple7Equal[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Equal[A1],
+  implicit def tuple7Equal[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3],
       A4: Equal[A4],
@@ -299,8 +299,8 @@ sealed trait TupleInstances1 extends TupleInstances0 {
       implicit def _6 = A6
       implicit def _7 = A7
     }
-  implicit def tuple8Equal[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit A1: Equal[A1],
+  implicit def tuple8Equal[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      A1: Equal[A1],
       A2: Equal[A2],
       A3: Equal[A3],
       A4: Equal[A4],
@@ -325,15 +325,15 @@ sealed trait TupleInstances2 extends TupleInstances1 {
     new Tuple1Show[A1] {
       implicit def _1 = A1
     }
-  implicit def tuple2Show[A1, A2](
-      implicit A1: Show[A1],
+  implicit def tuple2Show[A1, A2](implicit
+      A1: Show[A1],
       A2: Show[A2]): Show[(A1, A2)] =
     new Tuple2Show[A1, A2] {
       implicit def _1 = A1
       implicit def _2 = A2
     }
-  implicit def tuple3Show[A1, A2, A3](
-      implicit A1: Show[A1],
+  implicit def tuple3Show[A1, A2, A3](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3]): Show[(A1, A2, A3)] =
     new Tuple3Show[A1, A2, A3] {
@@ -341,8 +341,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple4Show[A1, A2, A3, A4](
-      implicit A1: Show[A1],
+  implicit def tuple4Show[A1, A2, A3, A4](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3],
       A4: Show[A4]): Show[(A1, A2, A3, A4)] =
@@ -352,8 +352,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple5Show[A1, A2, A3, A4, A5](
-      implicit A1: Show[A1],
+  implicit def tuple5Show[A1, A2, A3, A4, A5](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3],
       A4: Show[A4],
@@ -365,8 +365,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple6Show[A1, A2, A3, A4, A5, A6](
-      implicit A1: Show[A1],
+  implicit def tuple6Show[A1, A2, A3, A4, A5, A6](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3],
       A4: Show[A4],
@@ -380,8 +380,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple7Show[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Show[A1],
+  implicit def tuple7Show[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3],
       A4: Show[A4],
@@ -397,8 +397,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _6 = A6
       implicit def _7 = A7
     }
-  implicit def tuple8Show[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit A1: Show[A1],
+  implicit def tuple8Show[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      A1: Show[A1],
       A2: Show[A2],
       A3: Show[A3],
       A4: Show[A4],
@@ -421,15 +421,15 @@ sealed trait TupleInstances2 extends TupleInstances1 {
     new Tuple1Order[A1] {
       implicit def _1 = A1
     }
-  implicit def tuple2Order[A1, A2](
-      implicit A1: Order[A1],
+  implicit def tuple2Order[A1, A2](implicit
+      A1: Order[A1],
       A2: Order[A2]): Order[(A1, A2)] =
     new Tuple2Order[A1, A2] {
       implicit def _1 = A1
       implicit def _2 = A2
     }
-  implicit def tuple3Order[A1, A2, A3](
-      implicit A1: Order[A1],
+  implicit def tuple3Order[A1, A2, A3](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3]): Order[(A1, A2, A3)] =
     new Tuple3Order[A1, A2, A3] {
@@ -437,8 +437,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple4Order[A1, A2, A3, A4](
-      implicit A1: Order[A1],
+  implicit def tuple4Order[A1, A2, A3, A4](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3],
       A4: Order[A4]): Order[(A1, A2, A3, A4)] =
@@ -448,8 +448,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple5Order[A1, A2, A3, A4, A5](
-      implicit A1: Order[A1],
+  implicit def tuple5Order[A1, A2, A3, A4, A5](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3],
       A4: Order[A4],
@@ -461,8 +461,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple6Order[A1, A2, A3, A4, A5, A6](
-      implicit A1: Order[A1],
+  implicit def tuple6Order[A1, A2, A3, A4, A5, A6](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3],
       A4: Order[A4],
@@ -476,8 +476,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple7Order[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Order[A1],
+  implicit def tuple7Order[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3],
       A4: Order[A4],
@@ -493,8 +493,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _6 = A6
       implicit def _7 = A7
     }
-  implicit def tuple8Order[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit A1: Order[A1],
+  implicit def tuple8Order[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      A1: Order[A1],
       A2: Order[A2],
       A3: Order[A3],
       A4: Order[A4],
@@ -516,15 +516,15 @@ sealed trait TupleInstances2 extends TupleInstances1 {
     new Tuple1Monoid[A1] {
       implicit def _1 = A1
     }
-  implicit def tuple2Monoid[A1, A2](
-      implicit A1: Monoid[A1],
+  implicit def tuple2Monoid[A1, A2](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2]): Monoid[(A1, A2)] =
     new Tuple2Monoid[A1, A2] {
       implicit def _1 = A1
       implicit def _2 = A2
     }
-  implicit def tuple3Monoid[A1, A2, A3](
-      implicit A1: Monoid[A1],
+  implicit def tuple3Monoid[A1, A2, A3](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3]): Monoid[(A1, A2, A3)] =
     new Tuple3Monoid[A1, A2, A3] {
@@ -532,8 +532,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple4Monoid[A1, A2, A3, A4](
-      implicit A1: Monoid[A1],
+  implicit def tuple4Monoid[A1, A2, A3, A4](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4]): Monoid[(A1, A2, A3, A4)] =
@@ -543,8 +543,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple5Monoid[A1, A2, A3, A4, A5](
-      implicit A1: Monoid[A1],
+  implicit def tuple5Monoid[A1, A2, A3, A4, A5](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -556,8 +556,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple6Monoid[A1, A2, A3, A4, A5, A6](
-      implicit A1: Monoid[A1],
+  implicit def tuple6Monoid[A1, A2, A3, A4, A5, A6](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -571,8 +571,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple7Monoid[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Monoid[A1],
+  implicit def tuple7Monoid[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -588,8 +588,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _6 = A6
       implicit def _7 = A7
     }
-  implicit def tuple8Monoid[A1, A2, A3, A4, A5, A6, A7, A8](
-      implicit A1: Monoid[A1],
+  implicit def tuple8Monoid[A1, A2, A3, A4, A5, A6, A7, A8](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -629,15 +629,15 @@ sealed trait TupleInstances2 extends TupleInstances1 {
     new Tuple2Monad[A1] {
       implicit def _1 = A1
     }
-  implicit def tuple3Monad[A1, A2](
-      implicit A1: Monoid[A1],
+  implicit def tuple3Monad[A1, A2](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2]): Monad[(A1, A2, ?)] =
     new Tuple3Monad[A1, A2] {
       implicit def _1 = A1
       implicit def _2 = A2
     }
-  implicit def tuple4Monad[A1, A2, A3](
-      implicit A1: Monoid[A1],
+  implicit def tuple4Monad[A1, A2, A3](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3]): Monad[(A1, A2, A3, ?)] =
     new Tuple4Monad[A1, A2, A3] {
@@ -645,8 +645,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _2 = A2
       implicit def _3 = A3
     }
-  implicit def tuple5Monad[A1, A2, A3, A4](
-      implicit A1: Monoid[A1],
+  implicit def tuple5Monad[A1, A2, A3, A4](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4]): Monad[(A1, A2, A3, A4, ?)] =
@@ -656,8 +656,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _3 = A3
       implicit def _4 = A4
     }
-  implicit def tuple6Monad[A1, A2, A3, A4, A5](
-      implicit A1: Monoid[A1],
+  implicit def tuple6Monad[A1, A2, A3, A4, A5](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -669,8 +669,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _4 = A4
       implicit def _5 = A5
     }
-  implicit def tuple7Monad[A1, A2, A3, A4, A5, A6](
-      implicit A1: Monoid[A1],
+  implicit def tuple7Monad[A1, A2, A3, A4, A5, A6](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],
@@ -684,8 +684,8 @@ sealed trait TupleInstances2 extends TupleInstances1 {
       implicit def _5 = A5
       implicit def _6 = A6
     }
-  implicit def tuple8Monad[A1, A2, A3, A4, A5, A6, A7](
-      implicit A1: Monoid[A1],
+  implicit def tuple8Monad[A1, A2, A3, A4, A5, A6, A7](implicit
+      A1: Monoid[A1],
       A2: Monoid[A2],
       A3: Monoid[A3],
       A4: Monoid[A4],

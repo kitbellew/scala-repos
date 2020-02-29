@@ -121,8 +121,8 @@ sealed abstract class FreeT[S[_], M[_], A] {
     interpret(st)
 
   /** Evaluates a single layer of the free monad **/
-  def resume(
-      implicit S: Functor[S],
+  def resume(implicit
+      S: Functor[S],
       M0: BindRec[M],
       M1: Applicative[M]): M[A \/ S[FreeT[S, M, A]]] = {
     def go(ft: FreeT[S, M, A]): M[FreeT[S, M, A] \/ (A \/ S[FreeT[S, M, A]])] =
@@ -146,8 +146,8 @@ sealed abstract class FreeT[S[_], M[_], A] {
   /**
     * Runs to completion, using a function that maps the resumption from `S` to a monad `M`.
     */
-  def runM(interp: S[FreeT[S, M, A]] => M[FreeT[S, M, A]])(
-      implicit S: Functor[S],
+  def runM(interp: S[FreeT[S, M, A]] => M[FreeT[S, M, A]])(implicit
+      S: Functor[S],
       M0: BindRec[M],
       M1: Applicative[M]): M[A] = {
     def runM2(ft: FreeT[S, M, A]): M[FreeT[S, M, A] \/ A] =
@@ -281,8 +281,8 @@ sealed abstract class FreeTInstances1 extends FreeTInstances2 {
 }
 
 sealed abstract class FreeTInstances0 extends FreeTInstances1 {
-  implicit def freeTMonad[S[_], M[_]](implicit M0: Applicative[M])
-      : Monad[FreeT[S, M, ?]] with BindRec[FreeT[S, M, ?]] =
+  implicit def freeTMonad[S[_], M[_]](implicit
+      M0: Applicative[M]): Monad[FreeT[S, M, ?]] with BindRec[FreeT[S, M, ?]] =
     new FreeTMonad[S, M] {
       def M = M0
     }

@@ -27,8 +27,7 @@ object Lift extends App {
   /**
     * Lifts a function of arbitrary arity into `Option`.
     */
-  def liftO[InF, InL <: HList, R, OInL <: HList, OutF](f: InF)(
-      implicit
+  def liftO[InF, InL <: HList, R, OInL <: HList, OutF](f: InF)(implicit
       fntop: FnToProduct.Aux[InF, InL => R],
       mapped: Mapped.Aux[InL, Option, OInL],
       mapper: Mapper.Aux[get.type, OInL, InL],

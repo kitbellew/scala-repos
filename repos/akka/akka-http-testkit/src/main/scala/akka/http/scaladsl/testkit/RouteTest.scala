@@ -175,8 +175,8 @@ trait RouteTest
       type Out = HttpRequest
       def apply(request: HttpRequest, f: HttpRequest ⇒ HttpRequest) = f(request)
     }
-    implicit def injectIntoRoute(
-        implicit timeout: RouteTestTimeout,
+    implicit def injectIntoRoute(implicit
+        timeout: RouteTestTimeout,
         defaultHostInfo: DefaultHostInfo,
         routingSettings: RoutingSettings,
         executionContext: ExecutionContext,

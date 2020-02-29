@@ -84,8 +84,8 @@ object NameSuggester {
     } else result.reverse.toArray
   }
 
-  private def add(s: String)(
-      implicit validator: NameValidator,
+  private def add(s: String)(implicit
+      validator: NameValidator,
       names: ArrayBuffer[String]) {
     val name = validator.validateName(s, increaseNumber = true)
     if (!names.contains(name))
@@ -103,7 +103,8 @@ object NameSuggester {
   }
 
   private def generateNamesByType(typez: ScType, shortVersion: Boolean = true)(
-      implicit names: ArrayBuffer[String],
+      implicit
+      names: ArrayBuffer[String],
       validator: NameValidator,
       withPlurals: Boolean = true) {
     val project = validator.getProject()
@@ -262,8 +263,8 @@ object NameSuggester {
   }
 
   @tailrec
-  private def generateNamesByExpr(expr: ScExpression)(
-      implicit names: ArrayBuffer[String],
+  private def generateNamesByExpr(expr: ScExpression)(implicit
+      names: ArrayBuffer[String],
       validator: NameValidator) {
     expr match {
       case _: ScThisReference  => add("thisInstance")
@@ -296,8 +297,8 @@ object NameSuggester {
     }
   }
 
-  private def generateCamelNames(name: String)(
-      implicit names: ArrayBuffer[String],
+  private def generateCamelNames(name: String)(implicit
+      names: ArrayBuffer[String],
       validator: NameValidator) {
     if (name == "") return
     val s =

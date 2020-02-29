@@ -181,8 +181,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     *    translate tag type arguments into applied types
     *    customizable symbol filter (had to hardcode no-spec to reduce noise)
     */
-  class InternalInfo[T](value: Option[T] = None)(
-      implicit typeEvidence: ru.TypeTag[T],
+  class InternalInfo[T](value: Option[T] = None)(implicit
+      typeEvidence: ru.TypeTag[T],
       runtimeClassEvidence: ClassTag[T]) {
     private def isSpecialized(s: Symbol) = s.name.toString contains "$mc"
     private def isImplClass(s: Symbol) = s.name.toString endsWith "$class"

@@ -134,8 +134,8 @@ trait BinOpMat {
   // Binary linear alg operation on two Mats (inner product)
 
   // Binary op: matrix/vector multiplication
-  implicit def matmulOpWithVector[A, B, OP <: InnerProd](
-      implicit cb: ST[B],
+  implicit def matmulOpWithVector[A, B, OP <: InnerProd](implicit
+      cb: ST[B],
       na: NUM[A],
       nb: NUM[B]) =
     new BinOp[InnerProd, Mat[A], Vec[B], Mat[Double]] {
@@ -145,8 +145,8 @@ trait BinOpMat {
     }
 
   // Binary op: vector/matrix multiplication
-  implicit def vecmulOpWithMatrix[A, B, OP <: InnerProd](
-      implicit cb: ST[A],
+  implicit def vecmulOpWithMatrix[A, B, OP <: InnerProd](implicit
+      cb: ST[A],
       na: NUM[A],
       nb: NUM[B]) =
     new BinOp[InnerProd, Vec[A], Mat[B], Mat[Double]] {
@@ -156,8 +156,8 @@ trait BinOpMat {
     }
 
   // Binary op: matrix/matrix multiplication
-  implicit def matmulOpWithMatrix[A, B, OP <: InnerProd](
-      implicit cb: ST[B],
+  implicit def matmulOpWithMatrix[A, B, OP <: InnerProd](implicit
+      cb: ST[B],
       na: NUM[A],
       nb: NUM[B]) =
     new BinOp[InnerProd, Mat[A], Mat[B], Mat[Double]] {

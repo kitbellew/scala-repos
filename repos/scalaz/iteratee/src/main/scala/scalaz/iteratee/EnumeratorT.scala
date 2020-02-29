@@ -23,15 +23,15 @@ trait EnumeratorT[E, F[_]] { self =>
   def flatMap[B](f: E => EnumeratorT[B, F])(implicit M1: Monad[F]) =
     EnumerateeT.flatMap(f) run self
 
-  def flatten[B, G[_]](
-      implicit ev: E =:= G[B],
+  def flatten[B, G[_]](implicit
+      ev: E =:= G[B],
       MO: F |>=| G): EnumeratorT[B, F] = {
     import MO._
     flatMap(e => EnumeratorT.enumeratorTMonadTrans.liftM(MO.promote(ev(e))))
   }
 
-  def bindM[B, G[_]](f: E => G[EnumeratorT[B, F]])(
-      implicit F: Monad[F],
+  def bindM[B, G[_]](f: E => G[EnumeratorT[B, F]])(implicit
+      F: Monad[F],
       G: Monad[G]): F[G[EnumeratorT[B, F]]] = {
     import scalaz.syntax.semigroup._
     val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
@@ -53,8 +53,8 @@ trait EnumeratorT[E, F[_]] { self =>
   def zipWithIndex(implicit M: Monad[F]): EnumeratorT[(E, Long), F] =
     EnumerateeT.zipWithIndex[E, F] run self
 
-  def drainTo[M[_]](
-      implicit M: Monad[F],
+  def drainTo[M[_]](implicit
+      M: Monad[F],
       P: PlusEmpty[M],
       Z: Applicative[M]): F[M[E]] =
     (IterateeT.consume[E, F, M] &= self).run
@@ -204,9 +204,8 @@ trait EnumeratorTFunctions {
           })
     }
 
-  def enumReader[F[_]](r: => java.io.Reader)(
-      implicit MO: MonadPartialOrder[F, IO])
-      : EnumeratorT[IoExceptionOr[Char], F] = {
+  def enumReader[F[_]](r: => java.io.Reader)(implicit
+      MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[Char], F] = {
     lazy val src = r
     enumIoSource(
       get = () => IoExceptionOr(src.read),
@@ -214,9 +213,8 @@ trait EnumeratorTFunctions {
       render = ((n: Int) => n.toChar))
   }
 
-  def enumInputStream[F[_]](is: => java.io.InputStream)(
-      implicit MO: MonadPartialOrder[F, IO])
-      : EnumeratorT[IoExceptionOr[Byte], F] = {
+  def enumInputStream[F[_]](is: => java.io.InputStream)(implicit
+      MO: MonadPartialOrder[F, IO]): EnumeratorT[IoExceptionOr[Byte], F] = {
     lazy val src = is
     enumIoSource(
       get = () => IoExceptionOr(src.read),

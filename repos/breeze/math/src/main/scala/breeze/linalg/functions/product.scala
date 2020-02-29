@@ -30,8 +30,8 @@ object product extends UFunc {
     }
   }
 
-  implicit def reduceSemiring[T, S](
-      implicit iter: CanTraverseValues[T, S],
+  implicit def reduceSemiring[T, S](implicit
+      iter: CanTraverseValues[T, S],
       semiring: Semiring[S]): Impl[T, S] = new Impl[T, S] {
     def apply(v: T): S = {
       class ProductVisitor extends ValuesVisitor[S] {

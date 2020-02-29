@@ -60,8 +60,8 @@ package record {
   class SelectorMacros(val c: whitebox.Context) extends CaseClassMacros {
     import c.universe._
 
-    def applyImpl[L <: HList, K](
-        implicit lTag: WeakTypeTag[L],
+    def applyImpl[L <: HList, K](implicit
+        lTag: WeakTypeTag[L],
         kTag: WeakTypeTag[K]): Tree = {
       val lTpe = lTag.tpe.dealias
       val kTpe = kTag.tpe.dealias
@@ -109,8 +109,7 @@ package record {
         def apply(l: L): Out = HNil
       }
 
-    implicit def hconsSelectAll[L <: HList, KH, KT <: HList](
-        implicit
+    implicit def hconsSelectAll[L <: HList, KH, KT <: HList](implicit
         sh: Selector[L, KH],
         st: SelectAll[L, KT]): Aux[L, KH :: KT, sh.Out :: st.Out] =
       new SelectAll[L, KH :: KT] {
@@ -147,8 +146,8 @@ package record {
   class UpdaterMacros(val c: whitebox.Context) extends CaseClassMacros {
     import c.universe._
 
-    def applyImpl[L <: HList, F](
-        implicit lTag: WeakTypeTag[L],
+    def applyImpl[L <: HList, F](implicit
+        lTag: WeakTypeTag[L],
         fTag: WeakTypeTag[F]): Tree = {
       val lTpe = lTag.tpe.dealias
       val fTpe = fTag.tpe.dealias
@@ -230,8 +229,9 @@ package record {
   }
 
   object Modifier {
-    def apply[L <: HList, F, A, B](implicit modifier: Modifier[L, F, A, B])
-        : Aux[L, F, A, B, modifier.Out] = modifier
+    def apply[L <: HList, F, A, B](implicit
+        modifier: Modifier[L, F, A, B]): Aux[L, F, A, B, modifier.Out] =
+      modifier
 
     type Aux[L <: HList, F, A, B, Out0 <: HList] = Modifier[L, F, A, B] {
       type Out = Out0
@@ -374,8 +374,7 @@ package record {
         RemovedH,
         RemainderH <: HList,
         RemovedT <: HList,
-        RemainderT <: HList](
-        implicit
+        RemainderT <: HList](implicit
         rt: RemoveAll.Aux[L, T, (RemovedT, RemainderT)],
         rh: Remove.Aux[RemainderT, H, (RemovedH, RemainderH)])
         : Aux[L, H :: T, (RemovedH :: RemovedT, RemainderH)] =
@@ -446,8 +445,8 @@ package record {
         def apply(): Out = HNil
       }
 
-    implicit def hlistKeys[K, V, T <: HList](
-        implicit wk: Witness.Aux[K],
+    implicit def hlistKeys[K, V, T <: HList](implicit
+        wk: Witness.Aux[K],
         kt: Keys[T]): Aux[FieldType[K, V] :: T, K :: kt.Out] =
       new Keys[FieldType[K, V] :: T] {
         type Out = K :: kt.Out
@@ -504,8 +503,8 @@ package record {
         def apply(): Out = HNil
       }
 
-    implicit def hlistSwapRecord[K, V, T <: HList](
-        implicit wk: Witness.Aux[K],
+    implicit def hlistSwapRecord[K, V, T <: HList](implicit
+        wk: Witness.Aux[K],
         kt: SwapRecord[T])
         : Aux[FieldType[K, V] :: T, FieldType[V, K] :: kt.Out] =
       new SwapRecord[FieldType[K, V] :: T] {
@@ -535,8 +534,7 @@ package record {
         def apply(l: L) = l
       }
 
-    implicit def hconsFields[K, V, T <: HList](
-        implicit
+    implicit def hconsFields[K, V, T <: HList](implicit
         key: Witness.Aux[K],
         tailFields: Fields[T])
         : Aux[FieldType[K, V] :: T, (K, V) :: tailFields.Out] =
@@ -578,16 +576,14 @@ package record {
       hnilToMap[Any, Nothing, L]
 
     implicit def hsingleToMap[K, V](
-        implicit
-        wk: Witness.Aux[K]): Aux[FieldType[K, V] :: HNil, K, V] =
+        implicit wk: Witness.Aux[K]): Aux[FieldType[K, V] :: HNil, K, V] =
       new ToMap[FieldType[K, V] :: HNil] {
         type Key = K
         type Value = V
         def apply(l: FieldType[K, V] :: HNil) = Map(wk.value -> (l.head: V))
       }
 
-    implicit def hlistToMap[HK, HV, TH, TT <: HList, TK, TV, K, V](
-        implicit
+    implicit def hlistToMap[HK, HV, TH, TT <: HList, TK, TV, K, V](implicit
         tailToMap: ToMap.Aux[TH :: TT, TK, TV],
         keyLub: Lub[HK, TK, K],
         valueLub: Lub[HV, TV, V],
@@ -627,8 +623,7 @@ package record {
         def apply(l: L) = HNil
       }
 
-    implicit def hconsMapValues[HF, K, V, T <: HList](
-        implicit
+    implicit def hconsMapValues[HF, K, V, T <: HList](implicit
         hc: Case1[HF, V],
         mapValuesTail: MapValues[HF, T]): Aux[
       HF,

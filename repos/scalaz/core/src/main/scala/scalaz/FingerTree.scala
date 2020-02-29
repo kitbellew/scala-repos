@@ -1011,8 +1011,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
   /**
     * Like traverse, but with a more constraint type: we need the additional measure to construct the new tree.
     */
-  def traverseTree[F[_], V2, B](f: A => F[B])(
-      implicit ms: Reducer[B, V2],
+  def traverseTree[F[_], V2, B](f: A => F[B])(implicit
+      ms: Reducer[B, V2],
       F: Applicative[F]): F[FingerTree[V2, B]] = {
     def mkDeep(pr: Finger[V2, B])(m: FingerTree[V2, Node[V2, B]])(
         sf: Finger[V2, B]): FingerTree[V2, B] = deep(pr, m, sf)
@@ -1030,8 +1030,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     )
   }
 
-  private def traverseNode[F[_], V2, B](node: Node[V, A])(f: A => F[B])(
-      implicit ms: Reducer[B, V2],
+  private def traverseNode[F[_], V2, B](node: Node[V, A])(f: A => F[B])(implicit
+      ms: Reducer[B, V2],
       F: Applicative[F]): F[Node[V2, B]] = {
     def mkNode(x: B)(y: B)(z: B): Node[V2, B] = node3(x, y, z)
     node.fold(
@@ -1042,7 +1042,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
   }
 
   private def traverseFinger[F[_], A, B, V2](digit: Finger[V, A])(f: A => F[B])(
-      implicit ms: Reducer[B, V2],
+      implicit
+      ms: Reducer[B, V2],
       F: Applicative[F]): F[Finger[V2, B]] = {
     def mkTwo(x: B)(y: B): Finger[V2, B] = two(x, y)
     def mkThree(x: B)(y: B)(z: B): Finger[V2, B] = three(x, y, z)
@@ -1172,8 +1173,8 @@ sealed abstract class FingerTreeInstances {
       def zero = empty
     }
 
-  implicit def fingerTreeShow[V, A](
-      implicit V: Show[V],
+  implicit def fingerTreeShow[V, A](implicit
+      V: Show[V],
       A: Show[A]): Show[FingerTree[V, A]] =
     new Show[FingerTree[V, A]] {
       import std.iterable._

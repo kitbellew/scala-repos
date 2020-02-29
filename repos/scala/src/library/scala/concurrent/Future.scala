@@ -659,9 +659,8 @@ object Future {
     *  @param executor  the execution context on which the future is run
     *  @return          the `Future` holding the result of the computation
     */
-  def apply[T](body: => T)(
-      implicit @deprecatedName('execctx) executor: ExecutionContext)
-      : Future[T] =
+  def apply[T](body: => T)(implicit
+      @deprecatedName('execctx) executor: ExecutionContext): Future[T] =
     unit.map(_ => body)
 
   /** Simple version of `Future.traverse`. Asynchronously and non-blockingly transforms a `TraversableOnce[Future[A]]`
@@ -672,8 +671,8 @@ object Future {
     * @param in        the `TraversableOnce` of Futures which will be sequenced
     * @return          the `Future` of the `TraversableOnce` of results
     */
-  def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(
-      implicit cbf: CanBuildFrom[M[Future[A]], A, M[A]],
+  def sequence[A, M[X] <: TraversableOnce[X]](in: M[Future[A]])(implicit
+      cbf: CanBuildFrom[M[Future[A]], A, M[A]],
       executor: ExecutionContext): Future[M[A]] = {
     in.foldLeft(successful(cbf(in))) { (fr, fa) =>
         for (r <- fr; a <- fa) yield (r += a)
@@ -871,7 +870,8 @@ object Future {
     * @return          the `Future` of the `TraversableOnce` of results
     */
   def traverse[A, B, M[X] <: TraversableOnce[X]](in: M[A])(fn: A => Future[B])(
-      implicit cbf: CanBuildFrom[M[A], B, M[B]],
+      implicit
+      cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
     in.foldLeft(successful(cbf(in))) { (fr, a) =>
         val fb = fn(a)

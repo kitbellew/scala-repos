@@ -119,16 +119,16 @@ sealed abstract class IterateeT[E, F[_], A] {
     loop(this)
   }
 
-  def up[G[_]](
-      implicit G: Applicative[G],
+  def up[G[_]](implicit
+      G: Applicative[G],
       F: Comonad[F]): IterateeT[E, G, A] = {
     mapI(new (F ~> G) {
       def apply[A](a: F[A]) = G.point(F.copoint(a))
     })
   }
 
-  def joinI[I, B](
-      implicit outer: IterateeT[E, F, A] =:= IterateeT[E, F, StepT[I, F, B]],
+  def joinI[I, B](implicit
+      outer: IterateeT[E, F, A] =:= IterateeT[E, F, StepT[I, F, B]],
       M: Monad[F]): IterateeT[E, F, B] = {
     val M0 = IterateeT.IterateeTMonad[E, F]
     def check: StepT[I, F, B] => IterateeT[E, F, B] = _.fold(
@@ -210,8 +210,8 @@ sealed abstract class IterateeTInstances0 {
 
   implicit def IterateeMonad[E]: Monad[Iteratee[E, ?]] = IterateeTMonad[E, Id]
 
-  implicit def IterateeTMonadTransT[E, H[_[_], _]](implicit T0: MonadTrans[H])
-      : MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
+  implicit def IterateeTMonadTransT[E, H[_[_], _]](implicit
+      T0: MonadTrans[H]): MonadTrans[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
     new IterateeTMonadTransT[E, H] {
       implicit def T = T0
     }
@@ -280,8 +280,8 @@ trait IterateeTFunctions {
     cont(step)
   }
 
-  def collectT[E, F[_], A[_]](
-      implicit M: Monad[F],
+  def collectT[E, F[_], A[_]](implicit
+      M: Monad[F],
       mae: Monoid[A[E]],
       pointed: Applicative[A]): IterateeT[E, F, A[E]] = {
     import scalaz.syntax.semigroup._

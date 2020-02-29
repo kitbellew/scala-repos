@@ -53,8 +53,8 @@ trait VectorSpaceLaws[V, A] extends Laws {
     parents = Seq(module)
   )
 
-  def metricSpace(
-      implicit V: MetricSpace[V, A],
+  def metricSpace(implicit
+      V: MetricSpace[V, A],
       o: Order[A],
       A: AdditiveMonoid[A]) = new SpaceProperties(
     name = "metric space",
@@ -69,8 +69,8 @@ trait VectorSpaceLaws[V, A] extends Laws {
       V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z)))
   )
 
-  def normedVectorSpace(
-      implicit V: NormedVectorSpace[V, A],
+  def normedVectorSpace(implicit
+      V: NormedVectorSpace[V, A],
       ev0: Order[A],
       ev1: Signed[A]) = new SpaceProperties(
     name = "normed vector space",
@@ -91,8 +91,8 @@ trait VectorSpaceLaws[V, A] extends Laws {
     "additivity" → forAll((v: V, w: V) => f(v + w) === f(v) + f(w))
   )
 
-  def innerProductSpace(
-      implicit V: InnerProductSpace[V, A],
+  def innerProductSpace(implicit
+      V: InnerProductSpace[V, A],
       A: Order[A],
       A0: Signed[A]) = SpaceProperties.fromParent(
     name = "inner-product space",

@@ -614,8 +614,8 @@ final class TorsorPointOps[P](lhs: P) {
     macro Ops.binopWithEv[P, MultiplicativeTorsor[P, G], G]
 }
 
-final class IntervalPointOps[A](lhs: A)(
-    implicit o: Order[A],
+final class IntervalPointOps[A](lhs: A)(implicit
+    o: Order[A],
     ev: AdditiveGroup[A]) {
   def ±(rhs: A): Interval[A] =
     Interval(ev.minus(lhs, rhs), ev.plus(lhs, rhs))

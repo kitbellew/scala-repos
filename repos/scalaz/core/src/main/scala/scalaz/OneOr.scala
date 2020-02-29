@@ -91,8 +91,8 @@ final case class OneOr[F[_], A](run: F[A] \/ A) {
         F.foldMapLeft1(a)(z)(f)
     }
 
-  def traverse[G[_], B](f: A => G[B])(
-      implicit T: Traverse[F],
+  def traverse[G[_], B](f: A => G[B])(implicit
+      T: Traverse[F],
       F: Applicative[G]): G[OneOr[F, B]] =
     run match {
       case \/-(a) =>
@@ -267,16 +267,16 @@ sealed abstract class OneOrInstances extends OneOrInstances0 {
       def F = implicitly
     }
 
-  implicit def OneOrEqual[F[_], A](
-      implicit oa: Equal[A],
+  implicit def OneOrEqual[F[_], A](implicit
+      oa: Equal[A],
       ofa: Equal[F[A]]): Equal[OneOr[F, A]] =
     new OneOrEqual[F, A] {
       def OA = implicitly
       def OFA = implicitly
     }
 
-  implicit def OneOrShow[F[_], A](
-      implicit oa: Show[A],
+  implicit def OneOrShow[F[_], A](implicit
+      oa: Show[A],
       ofa: Show[F[A]]): Show[OneOr[F, A]] =
     new OneOrShow[F, A] {
       def OA = implicitly
@@ -290,8 +290,8 @@ sealed abstract class OneOrInstances0 extends OneOrInstances1 {
       def F = implicitly
     }
 
-  implicit def OneOrOrder[F[_], A](
-      implicit oa: Order[A],
+  implicit def OneOrOrder[F[_], A](implicit
+      oa: Order[A],
       ofa: Order[F[A]]): Order[OneOr[F, A]] =
     new OneOrOrder[F, A] {
       def OA = implicitly

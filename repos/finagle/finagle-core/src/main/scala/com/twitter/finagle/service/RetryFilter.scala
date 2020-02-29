@@ -127,8 +127,8 @@ object RetryFilter {
       statsReceiver: StatsReceiver = NullStatsReceiver
   )(
       shouldRetry: PartialFunction[(Req, Try[Rep]), Boolean]
-  )(
-      implicit timer: Timer
+  )(implicit
+      timer: Timer
   ): RetryFilter[Req, Rep] =
     new RetryFilter[Req, Rep](
       RetryPolicy.backoff(backoffs)(shouldRetry),
@@ -200,8 +200,8 @@ object RetryExceptionsFilter {
       statsReceiver: StatsReceiver = NullStatsReceiver
   )(
       shouldRetry: PartialFunction[Try[Nothing], Boolean]
-  )(
-      implicit timer: Timer
+  )(implicit
+      timer: Timer
   ): RetryExceptionsFilter[Req, Rep] =
     new RetryExceptionsFilter[Req, Rep](
       RetryPolicy.backoff(backoffs)(shouldRetry),

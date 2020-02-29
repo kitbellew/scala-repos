@@ -27,8 +27,8 @@ object Case {
     new UntypedWhen(cond.toNode)
 
   final class UntypedWhen(cond: Node) {
-    def Then[P, B](res: Rep[P])(
-        implicit om: OptionMapperDSL.arg[B, P]#to[B, P],
+    def Then[P, B](res: Rep[P])(implicit
+        om: OptionMapperDSL.arg[B, P]#to[B, P],
         bType: BaseTypedType[B]) =
       new TypedCase[B, P](ConstArray(cond, res.toNode))(
         bType,

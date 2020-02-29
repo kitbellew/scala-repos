@@ -15,8 +15,8 @@ import sbt.serialization._
 
 object Serializers {
 
-  implicit def tuple2Pickler[A, B](
-      implicit picklerA: Pickler[A],
+  implicit def tuple2Pickler[A, B](implicit
+      picklerA: Pickler[A],
       picklerB: Pickler[B],
       unpicklerA: Unpickler[A],
       unpicklerB: Unpickler[B],

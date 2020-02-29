@@ -80,7 +80,8 @@ trait TernaryUpdateRegistry[A, B, C, Op]
   }
 
   def register[AA <: A, BB <: B, CC <: C](op: InPlaceImpl3[Op, AA, BB, CC])(
-      implicit manA: ClassTag[AA],
+      implicit
+      manA: ClassTag[AA],
       manB: ClassTag[BB],
       manC: ClassTag[CC]) {
     super.register(manA.runtimeClass, manB.runtimeClass, manC.runtimeClass, op)

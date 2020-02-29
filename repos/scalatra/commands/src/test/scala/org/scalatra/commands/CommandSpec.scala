@@ -227,8 +227,8 @@ class CommandSupportSpec extends Specification with Mockito {
 
       implicit val req = mock[HttpServletRequest].smart
       val page = new ScalatraPage {
-        override def multiParams(
-            implicit request: HttpServletRequest): MultiParams = MultiMap()
+        override def multiParams(implicit
+            request: HttpServletRequest): MultiParams = MultiMap()
         override implicit def request = req
       }
       val key = page.commandRequestKey[CommandSample]

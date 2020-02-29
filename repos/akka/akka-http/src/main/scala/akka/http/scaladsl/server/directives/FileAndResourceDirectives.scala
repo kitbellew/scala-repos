@@ -176,8 +176,8 @@ trait FileAndResourceDirectives {
   /**
     * Same as `getFromBrowseableDirectories` with only one directory.
     */
-  def getFromBrowseableDirectory(directory: String)(
-      implicit renderer: DirectoryRenderer,
+  def getFromBrowseableDirectory(directory: String)(implicit
+      renderer: DirectoryRenderer,
       resolver: ContentTypeResolver): Route =
     getFromBrowseableDirectories(directory)
 
@@ -185,8 +185,8 @@ trait FileAndResourceDirectives {
     * Serves the content of the given directories as a file system browser, i.e. files are sent and directories
     * served as browseable listings.
     */
-  def getFromBrowseableDirectories(directories: String*)(
-      implicit renderer: DirectoryRenderer,
+  def getFromBrowseableDirectories(directories: String*)(implicit
+      renderer: DirectoryRenderer,
       resolver: ContentTypeResolver): Route = {
     directories.map(getFromDirectory).reduceLeft(_ ~ _) ~ listDirectoryContents(
       directories: _*)
@@ -299,9 +299,8 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
       }
   }
   object DirectoryRenderer extends LowLevelDirectoryRenderer {
-    implicit def liftMarshaller(
-        implicit _marshaller: ToEntityMarshaller[DirectoryListing])
-        : DirectoryRenderer =
+    implicit def liftMarshaller(implicit
+        _marshaller: ToEntityMarshaller[DirectoryListing]): DirectoryRenderer =
       new DirectoryRenderer {
         def marshaller(
             renderVanityFooter: Boolean): ToEntityMarshaller[DirectoryListing] =

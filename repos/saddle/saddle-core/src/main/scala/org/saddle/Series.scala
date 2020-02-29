@@ -290,8 +290,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @tparam U type of other Series Values
     * @tparam V type of resulting Series values
     */
-  def concat[U, V](other: Series[X, U])(
-      implicit pro: Promoter[T, U, V],
+  def concat[U, V](other: Series[X, U])(implicit
+      pro: Promoter[T, U, V],
       md: ST[V]): Series[X, V] =
     Series(values concat other.values, index concat other.index)
 
@@ -704,8 +704,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @tparam O1 Output row index
     * @tparam O2 Output col index
     */
-  def pivot[O1, O2](
-      implicit split: Splitter[X, O1, O2],
+  def pivot[O1, O2](implicit
+      split: Splitter[X, O1, O2],
       ord1: ORD[O1],
       ord2: ORD[O2],
       m1: ST[O1],

@@ -168,8 +168,8 @@ trait Compilable[T, C <: Compiled[T]] {
 }
 
 object Compilable extends CompilableFunctions {
-  implicit def function1IsCompilable[A, B <: Rep[_], P, U](
-      implicit ashape: Shape[ColumnsShapeLevel, A, P, A],
+  implicit def function1IsCompilable[A, B <: Rep[_], P, U](implicit
+      ashape: Shape[ColumnsShapeLevel, A, P, A],
       pshape: Shape[ColumnsShapeLevel, P, P, _],
       bexe: Executable[B, U])
       : Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] =
@@ -204,8 +204,8 @@ trait CompilableLowPriority {
 }
 
 final class Parameters[PU, PP](pshape: Shape[ColumnsShapeLevel, PU, PU, _]) {
-  def flatMap[R <: Rep[_], RU](f: PP => R)(
-      implicit rexe: Executable[R, RU],
+  def flatMap[R <: Rep[_], RU](f: PP => R)(implicit
+      rexe: Executable[R, RU],
       profile: BasicProfile): CompiledFunction[PP => R, PP, PU, R, RU] =
     new CompiledFunction[PP => R, PP, PU, R, RU](
       f,
@@ -217,7 +217,7 @@ final class Parameters[PU, PP](pshape: Shape[ColumnsShapeLevel, PU, PU, _]) {
 }
 
 object Parameters {
-  @inline def apply[U](implicit pshape: Shape[ColumnsShapeLevel, U, U, _])
-      : Parameters[U, pshape.Packed] =
+  @inline def apply[U](implicit
+      pshape: Shape[ColumnsShapeLevel, U, U, _]): Parameters[U, pshape.Packed] =
     new Parameters[U, pshape.Packed](pshape)
 }

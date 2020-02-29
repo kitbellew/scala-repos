@@ -54,8 +54,8 @@ object Test {
     }
   }
 
-  def multManifest[@specialized(Int) T](m: Matrix[T], n: Matrix[T])(
-      implicit cm: ClassManifest[T],
+  def multManifest[@specialized(Int) T](m: Matrix[T], n: Matrix[T])(implicit
+      cm: ClassManifest[T],
       num: Numeric[T]) {
     val p = new Matrix[T](m.rows, n.cols)
     import num._

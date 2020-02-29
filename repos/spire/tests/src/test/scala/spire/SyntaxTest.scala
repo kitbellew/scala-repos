@@ -33,8 +33,8 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 
   case class Positive[A](val x: A)
 
-  implicit def ArbPositive[A: Ring: Eq: Signed: Arbitrary]
-      : Arbitrary[Positive[A]] = {
+  implicit
+  def ArbPositive[A: Ring: Eq: Signed: Arbitrary]: Arbitrary[Positive[A]] = {
     Arbitrary(
       arbitrary[A]
         .map { a => if (a === Ring[A].zero) Ring[A].one else a.abs }
@@ -350,8 +350,8 @@ trait BaseSyntaxTest {
     ((a ** 0.5) == NRoot[A].fpow(a, half))
   }
 
-  def testModuleSyntax[V, A](v: V, w: V, a: A)(
-      implicit V: Module[V, A],
+  def testModuleSyntax[V, A](v: V, w: V, a: A)(implicit
+      V: Module[V, A],
       A: Ring[A]) = {
     import spire.syntax.module._
     ((v + w) == V.plus(v, w)) &&

@@ -116,8 +116,8 @@ trait MatrixGenericOps { this: Matrix.type =>
       }
     }
 
-  implicit def castOps[M1, M2, T, Op, MR](
-      implicit v1ev: M1 <:< Matrix[T],
+  implicit def castOps[M1, M2, T, Op, MR](implicit
+      v1ev: M1 <:< Matrix[T],
       v1ne: M1 =:!= Matrix[T],
       v2ev: M2 <:< Matrix[T],
       v2ne: M2 =:!= Matrix[T],
@@ -125,8 +125,8 @@ trait MatrixGenericOps { this: Matrix.type =>
     op.asInstanceOf[UFunc.UImpl2[Op, M1, M2, MR]]
   }
 
-  implicit def castUpdateOps[M1, M2, T, Op <: OpType](
-      implicit v1ev: M1 <:< Matrix[T],
+  implicit def castUpdateOps[M1, M2, T, Op <: OpType](implicit
+      v1ev: M1 <:< Matrix[T],
       v2ev: M2 <:< Matrix[T],
       op: UFunc.InPlaceImpl2[Op, Matrix[T], Matrix[T]])
       : UFunc.InPlaceImpl2[Op, M1, M2] = {
@@ -145,7 +145,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   implicit def m_m_UpdateOp[
       @expand.args(Int, Double, Float, Long, BigInt, Complex) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -179,8 +180,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def m_m_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: Zero: ClassTag](implicit
+      @expand.sequence[Op](
         { f.+(_, _) }, {
           f.-(_, _)
         }, {
@@ -225,8 +226,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
         OpDiv,
         OpSet,
         OpMod,
-        OpPow) Op <: OpType](
-      implicit @expand.sequence[Op](
+        OpPow) Op <: OpType](implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -261,8 +262,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def m_s_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: Zero: ClassTag](implicit
+      @expand.sequence[Op](
         { f.+(_, _) }, {
           f.-(_, _)
         }, {
@@ -335,7 +336,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   implicit def op_S_M[
       @expand.args(Int, Long, Float, Double, BigInt, Complex) T,
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op](
-      implicit @expand.sequence[Op](
+      implicit
+      @expand.sequence[Op](
         { _ + _ }, {
           _ - _
         }, {
@@ -373,8 +375,8 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def op_S_M[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](
-      implicit @expand.sequence[Op](
+      T: Field: Zero: ClassTag](implicit
+      @expand.sequence[Op](
         { f.+(_, _) }, {
           f.-(_, _)
         }, {
@@ -433,16 +435,16 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
 
 trait MatrixOpsLowPrio extends MatrixGenericOps {
   this: MatrixOps with Matrix.type =>
-  implicit def canMulM_V_def[T, B <: Vector[T]](
-      implicit bb: B <:< Vector[T],
+  implicit def canMulM_V_def[T, B <: Vector[T]](implicit
+      bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]) = (
     implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]].asInstanceOf[
       breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
   )
 
   // ibid.
-  implicit def canMulM_M_def[T, B <: Matrix[T]](
-      implicit bb: B <:< Matrix[T],
+  implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
+      bb: B <:< Matrix[T],
       op: OpMulMatrix.Impl2[Matrix[T], Matrix[T], Matrix[T]]) = (
     op.asInstanceOf[OpMulMatrix.Impl2[Matrix[T], B, Matrix[T]]]
   )

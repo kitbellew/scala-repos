@@ -35,66 +35,66 @@ trait BinOpFrame {
   }
 
   // concrete implementations
-  implicit def FrScEOpDDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Double, Vec[Double]]) =
     new FrScEOp[Op, X, Y, Double, Double, Double](opv)
-  implicit def FrScEOpDLD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDLD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Long, Vec[Double]]) =
     new FrScEOp[Op, X, Y, Double, Long, Double](opv)
-  implicit def FrScEOpDID[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDID[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Int, Vec[Double]]) =
     new FrScEOp[Op, X, Y, Double, Int, Double](opv)
 
-  implicit def FrScEOpLDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Double, Vec[Double]]) =
     new FrScEOp[Op, X, Y, Long, Double, Double](opv)
-  implicit def FrScEOpLLL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLLL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Long, Vec[Long]]) =
     new FrScEOp[Op, X, Y, Long, Long, Long](opv)
-  implicit def FrScEOpLIL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLIL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Int, Vec[Long]]) =
     new FrScEOp[Op, X, Y, Long, Int, Long](opv)
 
-  implicit def FrScEOpIDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpIDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Int], Double, Vec[Double]]) =
     new FrScEOp[Op, X, Y, Int, Double, Double](opv)
-  implicit def FrScEOpILL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpILL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Int], Long, Vec[Long]]) =
     new FrScEOp[Op, X, Y, Int, Long, Long](opv)
-  implicit def FrScEOpIII[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpIII[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
@@ -102,66 +102,66 @@ trait BinOpFrame {
     new FrScEOp[Op, X, Y, Int, Int, Int](opv)
 
   // comparisons
-  implicit def FrScEOpDDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Double, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Double, Double, Boolean](opv)
-  implicit def FrScEOpDLB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDLB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Long, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Double, Long, Boolean](opv)
-  implicit def FrScEOpDIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpDIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Double], Int, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Double, Int, Boolean](opv)
 
-  implicit def FrScEOpLDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Double, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Long, Double, Boolean](opv)
-  implicit def FrScEOpLLB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLLB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Long, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Long, Long, Boolean](opv)
-  implicit def FrScEOpLIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpLIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Long], Int, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Long, Int, Boolean](opv)
 
-  implicit def FrScEOpIDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpIDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Int], Double, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Int, Double, Boolean](opv)
-  implicit def FrScEOpILB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpILB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
       opv: BinOp[Op, Vec[Int], Long, Vec[Boolean]]) =
     new FrScEOp[Op, X, Y, Int, Long, Boolean](opv)
-  implicit def FrScEOpIIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpIIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
@@ -169,8 +169,8 @@ trait BinOpFrame {
     new FrScEOp[Op, X, Y, Int, Int, Boolean](opv)
 
   // and, or ops
-  implicit def FrScEOpBBB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrScEOpBBB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       cmy: ST[Y],
       cmpy: ORD[Y],
@@ -192,66 +192,66 @@ trait BinOpFrame {
 
   // concrete implementations
 
-  implicit def FrFrEOpDDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Double], Vec[Double]]) =
     new FrFrEOp[Op, X, Y, Double, Double, Double](opv)
-  implicit def FrFrEOpDID[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDID[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Int], Vec[Double]]) =
     new FrFrEOp[Op, X, Y, Double, Int, Double](opv)
-  implicit def FrFrEOpDLD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDLD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Long], Vec[Double]]) =
     new FrFrEOp[Op, X, Y, Double, Long, Double](opv)
 
-  implicit def FrFrEOpLDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Double], Vec[Double]]) =
     new FrFrEOp[Op, X, Y, Long, Double, Double](opv)
-  implicit def FrFrEOpLLL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLLL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Long], Vec[Long]]) =
     new FrFrEOp[Op, X, Y, Long, Long, Long](opv)
-  implicit def FrFrEOpLIL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLIL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Int], Vec[Long]]) =
     new FrFrEOp[Op, X, Y, Long, Int, Long](opv)
 
-  implicit def FrFrEOpIDD[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpIDD[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Int], Vec[Double], Vec[Double]]) =
     new FrFrEOp[Op, X, Y, Int, Double, Double](opv)
-  implicit def FrFrEOpILL[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpILL[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Int], Vec[Long], Vec[Long]]) =
     new FrFrEOp[Op, X, Y, Int, Long, Long](opv)
-  implicit def FrFrEOpIII[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpIII[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
@@ -259,66 +259,66 @@ trait BinOpFrame {
     new FrFrEOp[Op, X, Y, Int, Int, Int](opv)
 
   // comparisons
-  implicit def FrFrEOpDDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Double], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Double, Double, Boolean](opv)
-  implicit def FrFrEOpDLB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDLB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Long], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Double, Long, Boolean](opv)
-  implicit def FrFrEOpDIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpDIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Double], Vec[Int], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Double, Int, Boolean](opv)
 
-  implicit def FrFrEOpLDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Double], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Long, Double, Boolean](opv)
-  implicit def FrFrEOpLLB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLLB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Long], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Long, Long, Boolean](opv)
-  implicit def FrFrEOpLIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpLIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Long], Vec[Int], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Long, Int, Boolean](opv)
 
-  implicit def FrFrEOpIDB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpIDB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Int], Vec[Double], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Int, Double, Boolean](opv)
-  implicit def FrFrEOpILB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpILB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
       opv: BinOp[Op, Vec[Int], Vec[Long], Vec[Boolean]]) =
     new FrFrEOp[Op, X, Y, Int, Long, Boolean](opv)
-  implicit def FrFrEOpIIB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpIIB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],
@@ -326,8 +326,8 @@ trait BinOpFrame {
     new FrFrEOp[Op, X, Y, Int, Int, Boolean](opv)
 
   // and, or ops
-  implicit def FrFrEOpBBB[Op <: ScalarOp, X, Y](
-      implicit cm: ST[X],
+  implicit def FrFrEOpBBB[Op <: ScalarOp, X, Y](implicit
+      cm: ST[X],
       cmp: ORD[X],
       my: ST[Y],
       cmpY: ORD[Y],

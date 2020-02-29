@@ -27,8 +27,8 @@ object StackOverflow2 {
   case class A1(a: A) extends A { def eval() = this }
   case class A2(a: A, b: A) extends A { def eval() = this }
 
-  case class ApplyA[C, L <: HList, HF](c: C, l: L)(
-      implicit fntp: FnToProduct.Aux[C, HF],
+  case class ApplyA[C, L <: HList, HF](c: C, l: L)(implicit
+      fntp: FnToProduct.Aux[C, HF],
       ev: HF <:< (L => A))
       extends A {
     def eval(): A = fntp(c)(l)
@@ -55,8 +55,7 @@ object StackOverflow3 {
     def apply[T](i: Input[T]) = i.value
   }
 
-  class Preprocessor[In <: HList, Out <: HList, R](ctor: Out => R)(
-      implicit
+  class Preprocessor[In <: HList, Out <: HList, R](ctor: Out => R)(implicit
       mapped: Mapped.Aux[Out, Input, In],
       mapper: Mapper.Aux[value.type, In, Out]) {
     def apply(in: In) = ctor(in map value)
@@ -86,8 +85,8 @@ object StackOverflow4 extends App {
   def fun1(x: Int, y: Int) = x
   def fun2(x: Int, foo: Map[Int, String], bar: Seq[Seq[Int]]) = x
 
-  def wrap_fun[F, T <: HList, R](f: F)(
-      implicit fntp: FnToProduct.Aux[F, (Int :: T) => R],
+  def wrap_fun[F, T <: HList, R](f: F)(implicit
+      fntp: FnToProduct.Aux[F, (Int :: T) => R],
       fnfp: FnFromProduct.Aux[(Int :: T) => R, F]): F =
     ((x: Int :: T) => f.toProduct(x.head * 2 :: x.tail)).fromProduct
 

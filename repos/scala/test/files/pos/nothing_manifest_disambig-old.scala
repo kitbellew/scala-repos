@@ -5,8 +5,8 @@ object Test {
   def listElMani[T: Manifest](xs: List[T]) = xs
   listElMani(List())
 
-  def foo[A, C](m: C)(
-      implicit ev: C <:< Traversable[A],
+  def foo[A, C](m: C)(implicit
+      ev: C <:< Traversable[A],
       mani: Manifest[A]): (C, A, Manifest[A]) = (m, m.head, mani)
   foo(List(1, 2, 3))
 }

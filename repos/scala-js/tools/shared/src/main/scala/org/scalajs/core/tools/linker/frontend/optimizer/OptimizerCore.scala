@@ -1015,8 +1015,8 @@ private[optimizer] abstract class OptimizerCore(
       expectedType: Type,
       preTransQual: PreTransform,
       item: Ident,
-      isLhsOfAssign: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope,
+      isLhsOfAssign: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
     preTransQual match {
       case PreTransLocalDef(
@@ -1084,8 +1084,8 @@ private[optimizer] abstract class OptimizerCore(
       tree: Tree,
       cls: ClassType,
       ctor: Ident,
-      targs: List[PreTransform])(cont: PreTransCont)(
-      implicit scope: Scope,
+      targs: List[PreTransform])(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
 
     tryNewInlineableClass(cls.className) match {
@@ -1518,8 +1518,8 @@ private[optimizer] abstract class OptimizerCore(
   private def pretransformJSFunctionApply(
       tree: JSFunctionApply,
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope,
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
     val JSFunctionApply(fun, args) = tree
     implicit val pos = tree.pos
@@ -1640,8 +1640,8 @@ private[optimizer] abstract class OptimizerCore(
       args: List[PreTransform],
       target: MethodID,
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope,
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
 
     require(target.inlineable)
@@ -1750,8 +1750,8 @@ private[optimizer] abstract class OptimizerCore(
       optTReceiver: Option[PreTransform],
       targs: List[PreTransform],
       isStat: Boolean,
-      usePreTransform: Boolean)(cont: PreTransCont)(
-      implicit scope: Scope,
+      usePreTransform: Boolean)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
 
     import Intrinsics._
@@ -1972,8 +1972,8 @@ private[optimizer] abstract class OptimizerCore(
     }
   }
 
-  private def boxChar(value: Tree)(cont: PreTransCont)(
-      implicit scope: Scope,
+  private def boxChar(value: Tree)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
     pretransformNew(
       value,
@@ -1982,8 +1982,8 @@ private[optimizer] abstract class OptimizerCore(
       List(PreTransTree(value)))(cont)
   }
 
-  private def unboxChar(tvalue: PreTransform)(cont: PreTransCont)(
-      implicit scope: Scope,
+  private def unboxChar(tvalue: PreTransform)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
     val BoxesRunTimeModuleClassName = "sr_BoxesRunTime$"
     val treceiver = PreTransTree(
@@ -2009,8 +2009,8 @@ private[optimizer] abstract class OptimizerCore(
       initialValue: RecordValue,
       ctor: Ident,
       args: List[PreTransform],
-      cancelFun: CancelFun)(cont: PreTransCont)(
-      implicit scope: Scope,
+      cancelFun: CancelFun)(cont: PreTransCont)(implicit
+      scope: Scope,
       pos: Position): TailRec[Tree] = {
 
     val RecordValue(recordType, initialFieldValues) = initialValue

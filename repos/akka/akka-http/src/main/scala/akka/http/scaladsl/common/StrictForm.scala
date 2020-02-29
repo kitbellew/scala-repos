@@ -76,23 +76,23 @@ object StrictForm {
     @implicitNotFound("In order to unmarshal a `StrictForm.Field` to type `${T}` you need to supply a " +
       "`FromStringUnmarshaller[${T}]` and/or a `FromEntityUnmarshaller[${T}]`")
     sealed trait FieldUnmarshaller[T] {
-      def unmarshalString(value: String)(
-          implicit ec: ExecutionContext,
+      def unmarshalString(value: String)(implicit
+          ec: ExecutionContext,
           mat: Materializer): Future[T]
-      def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(
-          implicit ec: ExecutionContext,
+      def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
+          ec: ExecutionContext,
           mat: Materializer): Future[T]
     }
     object FieldUnmarshaller extends LowPrioImplicits {
-      implicit def fromBoth[T](
-          implicit fsu: FromStringUnmarshaller[T],
+      implicit def fromBoth[T](implicit
+          fsu: FromStringUnmarshaller[T],
           feu: FromEntityUnmarshaller[T]): FieldUnmarshaller[T] =
         new FieldUnmarshaller[T] {
           def unmarshalString(
               value: String)(implicit ec: ExecutionContext, mat: Materializer) =
             fsu(value)
-          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(
-              implicit ec: ExecutionContext,
+          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
+              ec: ExecutionContext,
               mat: Materializer) = feu(value.entity)
         }
     }
@@ -103,8 +103,8 @@ object StrictForm {
           def unmarshalString(
               value: String)(implicit ec: ExecutionContext, mat: Materializer) =
             fsu(value)
-          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(
-              implicit ec: ExecutionContext,
+          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
+              ec: ExecutionContext,
               mat: Materializer) = {
             val charsetName = value.entity.contentType
               .asInstanceOf[ContentType.NonBinary]
@@ -120,15 +120,15 @@ object StrictForm {
           def unmarshalString(
               value: String)(implicit ec: ExecutionContext, mat: Materializer) =
             feu(HttpEntity(value))
-          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(
-              implicit ec: ExecutionContext,
+          def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
+              ec: ExecutionContext,
               mat: Materializer) = feu(value.entity)
         }
     }
   }
 
-  implicit def unmarshaller(
-      implicit formDataUM: FromEntityUnmarshaller[FormData],
+  implicit def unmarshaller(implicit
+      formDataUM: FromEntityUnmarshaller[FormData],
       multipartUM: FromEntityUnmarshaller[Multipart.FormData])
       : FromEntityUnmarshaller[StrictForm] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit fm ⇒ entity ⇒

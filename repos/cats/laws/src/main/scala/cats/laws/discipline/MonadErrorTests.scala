@@ -12,8 +12,7 @@ trait MonadErrorTests[F[_], E]
     with MonadTests[F] {
   def laws: MonadErrorLaws[F, E]
 
-  def monadError[A: Arbitrary: Eq, B: Arbitrary: Eq, C: Arbitrary: Eq](
-      implicit
+  def monadError[A: Arbitrary: Eq, B: Arbitrary: Eq, C: Arbitrary: Eq](implicit
       ArbFA: Arbitrary[F[A]],
       ArbFB: Arbitrary[F[B]],
       ArbFC: Arbitrary[F[C]],

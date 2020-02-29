@@ -10,8 +10,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       f: A => B)(implicit F: Functor[F], G: Functor[G]): Coproduct[F, G, B] =
     Coproduct(run.bimap(F.lift(f), G.lift(f)))
 
-  def cobind[B](f: Coproduct[F, G, A] => B)(
-      implicit F: Cobind[F],
+  def cobind[B](f: Coproduct[F, G, A] => B)(implicit
+      F: Cobind[F],
       G: Cobind[G]): Coproduct[F, G, B] =
     Coproduct(
       run.bimap(
@@ -19,8 +19,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
         a => G.cobind(a)(x => f(rightc(x))))
     )
 
-  def duplicate(
-      implicit F: Cobind[F],
+  def duplicate(implicit
+      F: Cobind[F],
       G: Cobind[G]): Coproduct[F, G, Coproduct[F, G, A]] =
     Coproduct(
       run.bimap(
@@ -30,8 +30,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
   def copoint(implicit F: Comonad[F], G: Comonad[G]): A =
     run.fold(F.copoint(_), G.copoint(_))
 
-  def contramap[B](f: B => A)(
-      implicit F: Contravariant[F],
+  def contramap[B](f: B => A)(implicit
+      F: Contravariant[F],
       G: Contravariant[G]): Coproduct[F, G, B] =
     Coproduct(run.bimap(F.contramap(_)(f), G.contramap(_)(f)))
 
@@ -43,8 +43,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       f: A => B)(implicit F: Foldable[F], G: Foldable[G], M: Monoid[B]): B =
     run.fold(F.foldMap(_)(f), G.foldMap(_)(f))
 
-  def foldMap1[B](f: A => B)(
-      implicit F: Foldable1[F],
+  def foldMap1[B](f: A => B)(implicit
+      F: Foldable1[F],
       G: Foldable1[G],
       M: Semigroup[B]): B =
     run.fold(F.foldMap1(_)(f), G.foldMap1(_)(f))
@@ -53,8 +53,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       f: (A, => B) => B)(implicit F: Foldable1[F], G: Foldable1[G]): B =
     run.fold(F.foldMapRight1(_)(z)(f), G.foldMapRight1(_)(z)(f))
 
-  def traverse[X[_], B](g: A => X[B])(
-      implicit F: Traverse[F],
+  def traverse[X[_], B](g: A => X[B])(implicit
+      F: Traverse[F],
       G: Traverse[G],
       A: Applicative[X]): X[Coproduct[F, G, B]] =
     run.fold(
@@ -62,8 +62,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       x => A.map(G.traverse(x)(g))(rightc(_))
     )
 
-  def traverse1[X[_], B](g: A => X[B])(
-      implicit F: Traverse1[F],
+  def traverse1[X[_], B](g: A => X[B])(implicit
+      F: Traverse1[F],
       G: Traverse1[G],
       A: Apply[X]): X[Coproduct[F, G, B]] =
     run.fold(
@@ -86,8 +86,8 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
 }
 
 object Coproduct extends CoproductInstances {
-  implicit def coproductTraverse1[F[_], G[_]](
-      implicit F0: Traverse1[F],
+  implicit def coproductTraverse1[F[_], G[_]](implicit
+      F0: Traverse1[F],
       G0: Traverse1[G]): Traverse1[Coproduct[F, G, ?]] =
     new CoproductTraverse1[F, G] {
       override def F = F0
@@ -135,16 +135,16 @@ sealed abstract class CoproductInstances3 {
       implicit E: Equal[F[A] \/ G[A]]): Equal[Coproduct[F, G, A]] =
     Equal.equalBy(_.run)
 
-  implicit def coproductFunctor[F[_], G[_]](
-      implicit F0: Functor[F],
+  implicit def coproductFunctor[F[_], G[_]](implicit
+      F0: Functor[F],
       G0: Functor[G]): Functor[Coproduct[F, G, ?]] =
     new CoproductFunctor[F, G] {
       implicit def F: Functor[F] = F0
       implicit def G: Functor[G] = G0
     }
 
-  implicit def coproductFoldable[F[_], G[_]](
-      implicit F0: Foldable[F],
+  implicit def coproductFoldable[F[_], G[_]](implicit
+      F0: Foldable[F],
       G0: Foldable[G]): Foldable[Coproduct[F, G, ?]] =
     new CoproductFoldable[F, G] {
       implicit def F: Foldable[F] = F0
@@ -153,16 +153,16 @@ sealed abstract class CoproductInstances3 {
 }
 
 sealed abstract class CoproductInstances2 extends CoproductInstances3 {
-  implicit def coproductContravariant[F[_], G[_]](
-      implicit F0: Contravariant[F],
+  implicit def coproductContravariant[F[_], G[_]](implicit
+      F0: Contravariant[F],
       G0: Contravariant[G]): Contravariant[Coproduct[F, G, ?]] =
     new CoproductContravariant[F, G] {
       implicit def F: Contravariant[F] = F0
       implicit def G: Contravariant[G] = G0
     }
 
-  implicit def coproductFoldable1[F[_], G[_]](
-      implicit F0: Foldable1[F],
+  implicit def coproductFoldable1[F[_], G[_]](implicit
+      F0: Foldable1[F],
       G0: Foldable1[G]): Foldable1[Coproduct[F, G, ?]] =
     new CoproductFoldable1[F, G] {
       override def F = F0
@@ -171,8 +171,8 @@ sealed abstract class CoproductInstances2 extends CoproductInstances3 {
 }
 
 sealed abstract class CoproductInstances1 extends CoproductInstances2 {
-  implicit def coproductCobind[F[_], G[_]](
-      implicit F0: Cobind[F],
+  implicit def coproductCobind[F[_], G[_]](implicit
+      F0: Cobind[F],
       G0: Cobind[G]): Cobind[Coproduct[F, G, ?]] =
     new CoproductCobind[F, G] {
       implicit def F: Cobind[F] = F0
@@ -181,8 +181,8 @@ sealed abstract class CoproductInstances1 extends CoproductInstances2 {
 }
 
 sealed abstract class CoproductInstances0 extends CoproductInstances1 {
-  implicit def coproductTraverse[F[_], G[_]](
-      implicit F0: Traverse[F],
+  implicit def coproductTraverse[F[_], G[_]](implicit
+      F0: Traverse[F],
       G0: Traverse[G]): Traverse[Coproduct[F, G, ?]] =
     new CoproductTraverse[F, G] {
       implicit def F: Traverse[F] = F0
@@ -191,8 +191,8 @@ sealed abstract class CoproductInstances0 extends CoproductInstances1 {
 }
 
 sealed abstract class CoproductInstances extends CoproductInstances0 {
-  implicit def coproductComonad[F[_], G[_]](
-      implicit F0: Comonad[F],
+  implicit def coproductComonad[F[_], G[_]](implicit
+      F0: Comonad[F],
       G0: Comonad[G]): Comonad[Coproduct[F, G, ?]] =
     new CoproductComonad[F, G] {
       implicit def F: Comonad[F] = F0

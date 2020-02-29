@@ -108,8 +108,8 @@ object EventSource {
       * and the nameExtractor and idExtractor will implicitly resolve to `None`.
       *
       */
-    def apply[A](a: A)(
-        implicit dataExtractor: EventDataExtractor[A],
+    def apply[A](a: A)(implicit
+        dataExtractor: EventDataExtractor[A],
         nameExtractor: EventNameExtractor[A],
         idExtractor: EventIdExtractor[A]): Event = {
       Event(

@@ -90,8 +90,8 @@ class IngestServiceHandler(
     batchSize: Int,
     maxFields: Int,
     ingestTmpDir: File,
-    postMode: WriteMode)(
-    implicit val M: Monad[Future],
+    postMode: WriteMode)(implicit
+    val M: Monad[Future],
     executor: ExecutionContext)
     extends CustomHttpService[
       ByteChunk,

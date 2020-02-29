@@ -114,8 +114,8 @@ object Coyoneda extends CoyonedaInstances {
 }
 
 sealed abstract class CoyonedaInstances extends CoyonedaInstances0 {
-  implicit def coyonedaOrder[A, F[_]](
-      implicit A: Order[F[A]],
+  implicit def coyonedaOrder[A, F[_]](implicit
+      A: Order[F[A]],
       F: Functor[F]): Order[Coyoneda[F, A]] =
     new IsomorphismOrder[Coyoneda[F, A], F[A]] {
       def G = A
@@ -138,8 +138,8 @@ sealed abstract class CoyonedaInstances0 extends CoyonedaInstances1 {
 }
 
 sealed abstract class CoyonedaInstances1 extends CoyonedaInstances2 {
-  implicit def coyonedaEqual[A, F[_]](
-      implicit A: Equal[F[A]],
+  implicit def coyonedaEqual[A, F[_]](implicit
+      A: Equal[F[A]],
       F: Functor[F]): Equal[Coyoneda[F, A]] =
     new IsomorphismEqual[Coyoneda[F, A], F[A]] {
       def G = A

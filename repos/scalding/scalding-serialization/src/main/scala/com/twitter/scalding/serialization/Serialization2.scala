@@ -64,8 +64,8 @@ class Serialization2[A, B](
 }
 
 object OrderedSerialization2 {
-  def maybeOrderedSerialization2[A, B](
-      implicit ordA: Ordering[A],
+  def maybeOrderedSerialization2[A, B](implicit
+      ordA: Ordering[A],
       ordB: Ordering[B]): Ordering[(A, B)] = {
     (ordA, ordB) match {
       case (ordA: OrderedSerialization[_], ordB: OrderedSerialization[_]) =>

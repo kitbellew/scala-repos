@@ -19,8 +19,8 @@ import breeze.linalg.support.CanTraverseValues.ValuesVisitor
   * @return the rank of the matrix (number of singular values)
   */
 object rank extends UFunc {
-  implicit def implRankFromSVD[M, S](
-      implicit canSVD: svd.Impl[M, SVD[_, S]],
+  implicit def implRankFromSVD[M, S](implicit
+      canSVD: svd.Impl[M, SVD[_, S]],
       maxS: max.Impl[S, Double],
       travS: CanTraverseValues[S, Double]): Impl[M, Int] = {
     new Impl[M, Int] {
@@ -44,8 +44,8 @@ object rank extends UFunc {
 
   }
 
-  implicit def implRankTol[M, S](
-      implicit canSVD: svd.Impl[M, (_, S, _)],
+  implicit def implRankTol[M, S](implicit
+      canSVD: svd.Impl[M, (_, S, _)],
       maxS: max.Impl[S, Double],
       travS: CanTraverseValues[S, Double]): Impl2[M, Double, Int] = {
     new Impl2[M, Double, Int] {

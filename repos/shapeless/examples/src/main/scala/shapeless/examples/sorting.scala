@@ -35,8 +35,8 @@ object Sorting {
   trait NonDecreasing[L <: HList]
   implicit def hnilNonDecreasing = new NonDecreasing[HNil] {}
   implicit def hlistNonDecreasing1[H] = new NonDecreasing[H :: HNil] {}
-  implicit def hlistNonDecreasing2[H1 <: Nat, H2 <: Nat, T <: HList](
-      implicit ltEq: H1 <= H2,
+  implicit def hlistNonDecreasing2[H1 <: Nat, H2 <: Nat, T <: HList](implicit
+      ltEq: H1 <= H2,
       ndt: NonDecreasing[H2 :: T]) = new NonDecreasing[H1 :: H2 :: T] {}
 
   def acceptNonDecreasing[L <: HList](l: L)(implicit ni: NonDecreasing[L]) = l
@@ -107,8 +107,8 @@ object Sorting {
         L <: HList,
         M <: Nat,
         Rem <: HList,
-        ST <: HList](
-        implicit sl: SelectLeast[L, M, Rem],
+        ST <: HList](implicit
+        sl: SelectLeast[L, M, Rem],
         sr: SelectionSort[Rem, ST]) = new SelectionSort[L, M :: ST] {
       def apply(l: L) = {
         val (m, rem) = sl(l)

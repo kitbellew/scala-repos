@@ -34,8 +34,8 @@ object RandomForestExample extends App {
 
   def testClassification[V, @sp(Double) F, K](
       dataset: DataSet[V, F, K],
-      opts: RandomForestOptions)(
-      implicit order: Order[F],
+      opts: RandomForestOptions)(implicit
+      order: Order[F],
       classTagV: ClassTag[V],
       classTagK: ClassTag[K],
       real: IsReal[F]): Unit = {
@@ -51,8 +51,8 @@ object RandomForestExample extends App {
 
   def testRegression[V, @sp(Double) F](
       dataset: DataSet[V, F, F],
-      opts: RandomForestOptions)(
-      implicit order: Order[F],
+      opts: RandomForestOptions)(implicit
+      order: Order[F],
       classTagV: ClassTag[V],
       classTagF: ClassTag[F],
       real: IsReal[F]): Unit = {
@@ -281,8 +281,8 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
   * final predicted output is the average of the individual tress output (which
   * itself is just the mean of all outputs in the region the point lands in.
   */
-class RandomForestRegression[V, @sp(Double) F](
-    implicit val V: CoordinateSpace[V, F],
+class RandomForestRegression[V, @sp(Double) F](implicit
+    val V: CoordinateSpace[V, F],
     val order: Order[F],
     val vectorClassTag: ClassTag[V])
     extends RandomForest[V, F, F] {
@@ -326,8 +326,8 @@ class RandomForestRegression[V, @sp(Double) F](
   * Within a forest, each tree casts its vote for classification of a point and
   * the majority wins. Again, ties are broken randomly (again, not really).
   */
-class RandomForestClassification[V, @sp(Double) F, K](
-    implicit val V: CoordinateSpace[V, F],
+class RandomForestClassification[V, @sp(Double) F, K](implicit
+    val V: CoordinateSpace[V, F],
     val order: Order[F],
     val vectorClassTag: ClassTag[V])
     extends RandomForest[V, F, K] {
@@ -378,8 +378,7 @@ object RandomForest {
   def regression[V, @sp(Double) F](
       data: Array[V],
       out: Array[F],
-      options: RandomForestOptions)(
-      implicit
+      options: RandomForestOptions)(implicit
       V: CoordinateSpace[V, F],
       order: Order[F],
       ev: ClassTag[V]): V => F = {
@@ -390,8 +389,8 @@ object RandomForest {
   def regression[V, @sp(Double) F](
       data: Iterable[V],
       out: Iterable[F],
-      options: RandomForestOptions)(
-      implicit V: CoordinateSpace[V, F],
+      options: RandomForestOptions)(implicit
+      V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],
       classTagF: ClassTag[F]): V => F = {
@@ -400,8 +399,7 @@ object RandomForest {
 
   def regression[V, @sp(Double) F](
       data: Iterable[(V, F)],
-      options: RandomForestOptions)(
-      implicit
+      options: RandomForestOptions)(implicit
       V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],
@@ -413,8 +411,7 @@ object RandomForest {
   def classification[V, @sp(Double) F, K](
       data: Array[V],
       out: Array[K],
-      options: RandomForestOptions)(
-      implicit
+      options: RandomForestOptions)(implicit
       V: CoordinateSpace[V, F],
       order: Order[F],
       ev: ClassTag[V]): V => K = {
@@ -425,8 +422,8 @@ object RandomForest {
   def classification[V, @sp(Double) F, K](
       data: Iterable[V],
       out: Iterable[K],
-      options: RandomForestOptions)(
-      implicit V: CoordinateSpace[V, F],
+      options: RandomForestOptions)(implicit
+      V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],
       classTagK: ClassTag[K]): V => K = {
@@ -435,8 +432,7 @@ object RandomForest {
 
   def classification[V, @sp(Double) F, K](
       data: Iterable[(V, K)],
-      options: RandomForestOptions)(
-      implicit
+      options: RandomForestOptions)(implicit
       V: CoordinateSpace[V, F],
       order: Order[F],
       classTagV: ClassTag[V],

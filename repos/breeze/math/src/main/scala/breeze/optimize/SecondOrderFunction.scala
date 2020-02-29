@@ -120,8 +120,8 @@ object EmpiricalHessian {
   def hessian(
       df: DiffFunction[DenseVector[Double]],
       x: DenseVector[Double],
-      eps: Double = 1e-5)(
-      implicit vs: VectorSpace[DenseVector[Double], Double],
+      eps: Double = 1e-5)(implicit
+      vs: VectorSpace[DenseVector[Double], Double],
       copy: CanCopy[DenseVector[Double]]): DenseMatrix[Double] = {
     import vs._
     val n = x.length

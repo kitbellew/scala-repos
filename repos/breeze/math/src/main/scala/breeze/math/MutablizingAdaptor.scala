@@ -53,8 +53,8 @@ object MutablizingAdaptor {
     else InnerProductSpaceAdaptor(vs)
   }
 
-  def ensureMutable[V, S](vs: VectorField[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+  def ensureMutable[V, S](vs: VectorField[V, S])(implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
       : MutablizingAdaptor[VectorField, MutableVectorField, V, S] = {
@@ -64,8 +64,8 @@ object MutablizingAdaptor {
     else VectorFieldAdaptor(vs)
   }
 
-  def ensureMutable[V, S](vs: VectorRing[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+  def ensureMutable[V, S](vs: VectorRing[V, S])(implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
       : MutablizingAdaptor[VectorRing, MutableVectorRing, V, S] = {
@@ -75,8 +75,8 @@ object MutablizingAdaptor {
     else VectorRingAdaptor(vs)
   }
 
-  def ensureMutable[V, S](vs: CoordinateField[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+  def ensureMutable[V, S](vs: CoordinateField[V, S])(implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
       : MutablizingAdaptor[CoordinateField, MutableCoordinateField, V, S] = {
@@ -168,8 +168,8 @@ object MutablizingAdaptor {
           def apply(from: Wrapper): Wrapper = from
         }
 
-        def liftUpdate[Op <: OpType](implicit op: UFunc.UImpl2[Op, V, S, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, S] =
+        def liftUpdate[Op <: OpType](implicit
+            op: UFunc.UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
           new UFunc.InPlaceImpl2[Op, Wrapper, S] {
             def apply(a: Wrapper, b: S) {
               a.value = op(a.value, b)
@@ -317,16 +317,16 @@ object MutablizingAdaptor {
 //        }
 //      }
 
-        def liftUpdate[Op <: OpType](implicit op: UImpl2[Op, V, S, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, S] =
+        def liftUpdate[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
           new UFunc.InPlaceImpl2[Op, Wrapper, S] {
             def apply(a: Wrapper, b: S) {
               a.value = op(a.value, b)
             }
           }
 
-        def liftUpdateV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
+        def liftUpdateV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
           new UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) {
               a.value = op(a.value, b.value)
@@ -341,8 +341,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOpV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UImpl2[Op, Wrapper, Wrapper, Wrapper] =
+        def liftOpV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UImpl2[Op, Wrapper, Wrapper, Wrapper] =
           new UImpl2[Op, Wrapper, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) = {
               a.map(op(_, b.value))
@@ -406,7 +406,8 @@ object MutablizingAdaptor {
   }
 
   case class VectorFieldAdaptor[V, S](val underlying: VectorField[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+      implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
       extends MutablizingAdaptor[VectorField, MutableVectorField, V, S] {
@@ -474,16 +475,16 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftUpdate[Op <: OpType](implicit op: UImpl2[Op, V, S, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, S] =
+        def liftUpdate[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
           new UFunc.InPlaceImpl2[Op, Wrapper, S] {
             def apply(a: Wrapper, b: S) {
               a.value = op(a.value, b)
             }
           }
 
-        def liftUpdateV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
+        def liftUpdateV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
           new UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) {
               a.value = op(a.value, b.value)
@@ -498,8 +499,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOpV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UImpl2[Op, Wrapper, Wrapper, Wrapper] =
+        def liftOpV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UImpl2[Op, Wrapper, Wrapper, Wrapper] =
           new UImpl2[Op, Wrapper, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) = {
               a.map(op(_, b.value))
@@ -590,8 +591,8 @@ object MutablizingAdaptor {
     def map[U](f: T => U) = Ref(f(value))
   }
 
-  case class VectorRingAdaptor[V, S](val underlying: VectorRing[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+  case class VectorRingAdaptor[V, S](val underlying: VectorRing[V, S])(implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
       extends MutablizingAdaptor[VectorRing, MutableVectorRing, V, S] {
@@ -654,16 +655,16 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftUpdate[Op <: OpType](implicit op: UImpl2[Op, V, S, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, S] =
+        def liftUpdate[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
           new UFunc.InPlaceImpl2[Op, Wrapper, S] {
             def apply(a: Wrapper, b: S) {
               a.value = op(a.value, b)
             }
           }
 
-        def liftUpdateV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
+        def liftUpdateV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
           new UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) {
               a.value = op(a.value, b.value)
@@ -678,8 +679,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOpV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UImpl2[Op, Wrapper, Wrapper, Wrapper] =
+        def liftOpV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UImpl2[Op, Wrapper, Wrapper, Wrapper] =
           new UImpl2[Op, Wrapper, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) = {
               a.map(op(_, b.value))
@@ -755,7 +756,8 @@ object MutablizingAdaptor {
   }
 
   case class CoordinateFieldAdaptor[V, S](underlying: CoordinateField[V, S])(
-      implicit canIterate: CanTraverseValues[V, S],
+      implicit
+      canIterate: CanTraverseValues[V, S],
       canMap: CanMapValues[V, S, S, V],
       canMapActive: CanMapActiveValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
@@ -823,32 +825,32 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftUpdate[Op <: OpType](implicit op: UImpl2[Op, V, S, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, S] =
+        def liftUpdate[Op <: OpType](implicit
+            op: UImpl2[Op, V, S, V]): UFunc.InPlaceImpl2[Op, Wrapper, S] =
           new UFunc.InPlaceImpl2[Op, Wrapper, S] {
             def apply(a: Wrapper, b: S) {
               a.value = op(a.value, b)
             }
           }
 
-        def liftUpdateV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
+        def liftUpdateV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] =
           new UFunc.InPlaceImpl2[Op, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) {
               a.value = op(a.value, b.value)
             }
           }
 
-        def liftOp[Op <: OpType, RHS](implicit op: UImpl2[Op, V, RHS, V])
-            : UImpl2[Op, Wrapper, RHS, Wrapper] =
+        def liftOp[Op <: OpType, RHS](implicit
+            op: UImpl2[Op, V, RHS, V]): UImpl2[Op, Wrapper, RHS, Wrapper] =
           new UImpl2[Op, Wrapper, RHS, Wrapper] {
             def apply(a: Wrapper, b: RHS) = {
               a.map(op(_, b))
             }
           }
 
-        def liftOpV[Op <: OpType](implicit op: UImpl2[Op, V, V, V])
-            : UImpl2[Op, Wrapper, Wrapper, Wrapper] =
+        def liftOpV[Op <: OpType](implicit
+            op: UImpl2[Op, V, V, V]): UImpl2[Op, Wrapper, Wrapper, Wrapper] =
           new UImpl2[Op, Wrapper, Wrapper, Wrapper] {
             def apply(a: Wrapper, b: Wrapper) = {
               a.map(op(_, b.value))

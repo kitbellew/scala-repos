@@ -86,15 +86,15 @@ trait ActionLaws[G, A] extends Laws {
       }
     )
 
-  def additiveMonoidAction(
-      implicit G: AdditiveAction[A, G],
+  def additiveMonoidAction(implicit
+      G: AdditiveAction[A, G],
       G0: AdditiveMonoid[G]) = new AdditiveProperties(
     base = monoidAction(G.additive, G0.additive),
     parent = None
   )
 
-  def multiplicativeMonoidAction(
-      implicit G: MultiplicativeAction[A, G],
+  def multiplicativeMonoidAction(implicit
+      G: MultiplicativeAction[A, G],
       G0: MultiplicativeMonoid[G]) = new MultiplicativeProperties(
     base = monoidAction(G.multiplicative, G0.multiplicative),
     parent = None

@@ -27,8 +27,8 @@ trait ScalateI18nSupport extends ScalateSupport with I18nSupport {
     * Added "messages" into the template context so it can be accessed like:
     * #{messages("hello")}
     */
-  override protected def createRenderContext(out: PrintWriter)(
-      implicit request: HttpServletRequest,
+  override protected def createRenderContext(out: PrintWriter)(implicit
+      request: HttpServletRequest,
       response: HttpServletResponse): RenderContext = {
     val context = super.createRenderContext(out)
     context.attributes("messages") = messages(request)
