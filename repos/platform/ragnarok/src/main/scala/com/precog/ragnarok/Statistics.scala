@@ -71,18 +71,18 @@ case class Statistics private[ragnarok] (
 
   // Calculates the mean, variance, and count without outliers.
   private lazy val meanVarCount: (Double, Double, Int) = if (n > 2 * tails) {
-    (allMin.reverse.tail ++ allMax.tail).foldLeft((m, vn, n)) {
-      case ((m, vn, n), x) =>
-        val mprev = m + (m - x) / (n - 1)
-        val sprev = vn - (x - mprev) * (x - m)
-        (mprev, sprev, n - 1)
-    } match {
-      case (m, vn, 1) => (m, 0.0, 1)
-      case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
+      (allMin.reverse.tail ++ allMax.tail).foldLeft((m, vn, n)) {
+        case ((m, vn, n), x) =>
+          val mprev = m + (m - x) / (n - 1)
+          val sprev = vn - (x - mprev) * (x - m)
+          (mprev, sprev, n - 1)
+      } match {
+        case (m, vn, 1) => (m, 0.0, 1)
+        case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
+      }
+    } else {
+      (Double.NaN, Double.NaN, 0)
     }
-  } else {
-    (Double.NaN, Double.NaN, 0)
-  }
 
   def min: Double = allMin.last
 

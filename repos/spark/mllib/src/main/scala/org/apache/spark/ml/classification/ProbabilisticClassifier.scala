@@ -127,27 +127,27 @@ abstract class ProbabilisticClassificationModel[
     }
     if ($(probabilityCol).nonEmpty) {
       val probUDF = if ($(rawPredictionCol).nonEmpty) {
-        udf(raw2probability _).apply(col($(rawPredictionCol)))
-      } else {
-        val probabilityUDF = udf { (features: Any) =>
-          predictProbability(features.asInstanceOf[FeaturesType])
+          udf(raw2probability _).apply(col($(rawPredictionCol)))
+        } else {
+          val probabilityUDF = udf { (features: Any) =>
+            predictProbability(features.asInstanceOf[FeaturesType])
+          }
+          probabilityUDF(col($(featuresCol)))
         }
-        probabilityUDF(col($(featuresCol)))
-      }
       outputData = outputData.withColumn($(probabilityCol), probUDF)
       numColsOutput += 1
     }
     if ($(predictionCol).nonEmpty) {
       val predUDF = if ($(rawPredictionCol).nonEmpty) {
-        udf(raw2prediction _).apply(col($(rawPredictionCol)))
-      } else if ($(probabilityCol).nonEmpty) {
-        udf(probability2prediction _).apply(col($(probabilityCol)))
-      } else {
-        val predictUDF = udf { (features: Any) =>
-          predict(features.asInstanceOf[FeaturesType])
+          udf(raw2prediction _).apply(col($(rawPredictionCol)))
+        } else if ($(probabilityCol).nonEmpty) {
+          udf(probability2prediction _).apply(col($(probabilityCol)))
+        } else {
+          val predictUDF = udf { (features: Any) =>
+            predict(features.asInstanceOf[FeaturesType])
+          }
+          predictUDF(col($(featuresCol)))
         }
-        predictUDF(col($(featuresCol)))
-      }
       outputData = outputData.withColumn($(predictionCol), predUDF)
       numColsOutput += 1
     }

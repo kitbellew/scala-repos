@@ -79,13 +79,13 @@ class Performance(
     def noop = ()
 
     val overhead = if (parameters.calcOverhead) {
-      val baseline = benchmark(
-        noop,
-        BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
-      baseline.meanRepTime()
-    } else {
-      0.0
-    }
+        val baseline = benchmark(
+          noop,
+          BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
+        baseline.meanRepTime()
+      } else {
+        0.0
+      }
 
     benchmark(
       test,

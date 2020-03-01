@@ -591,10 +591,10 @@ private[ml] object FeedForwardTopology {
     for (i <- 0 until layerSizes.length - 1) {
       layers(i * 2) = new AffineLayer(layerSizes(i), layerSizes(i + 1))
       layers(i * 2 + 1) = if (softmax && i == layerSizes.length - 2) {
-        new FunctionalLayer(new SoftmaxFunction())
-      } else {
-        new FunctionalLayer(new SigmoidFunction())
-      }
+          new FunctionalLayer(new SoftmaxFunction())
+        } else {
+          new FunctionalLayer(new SigmoidFunction())
+        }
     }
     FeedForwardTopology(layers)
   }
@@ -774,35 +774,38 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
     */
   def stack(data: RDD[(Vector, Vector)]): RDD[(Double, Vector)] = {
     val stackedData = if (stackSize == 1) {
-      data.map { v =>
-        (
-          0.0,
-          Vectors.fromBreeze(BDV
-            .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
-      }
-    } else {
-      data.mapPartitions { it =>
-        it.grouped(stackSize).map { seq =>
-          val size = seq.size
-          val bigVector =
-            new Array[Double](inputSize * size + outputSize * size)
-          var i = 0
-          seq.foreach {
-            case (in, out) =>
-              System
-                .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
-              System.arraycopy(
-                out.toArray,
-                0,
-                bigVector,
-                inputSize * size + i * outputSize,
-                outputSize)
-              i += 1
+        data.map { v =>
+          (
+            0.0,
+            Vectors.fromBreeze(
+              BDV
+                .vertcat(
+                  v._1.toBreeze.toDenseVector,
+                  v._2.toBreeze.toDenseVector)))
+        }
+      } else {
+        data.mapPartitions { it =>
+          it.grouped(stackSize).map { seq =>
+            val size = seq.size
+            val bigVector =
+              new Array[Double](inputSize * size + outputSize * size)
+            var i = 0
+            seq.foreach {
+              case (in, out) =>
+                System
+                  .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
+                System.arraycopy(
+                  out.toArray,
+                  0,
+                  bigVector,
+                  inputSize * size + i * outputSize,
+                  outputSize)
+                i += 1
+            }
+            (0.0, Vectors.dense(bigVector))
           }
-          (0.0, Vectors.dense(bigVector))
         }
       }
-    }
     stackedData
   }
 

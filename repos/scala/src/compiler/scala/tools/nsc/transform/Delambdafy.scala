@@ -712,10 +712,10 @@ abstract class Delambdafy
     val arity = paramTps.length
     val isSpecialized = name1.toTypeName != sym.name
     val functionalInterface = if (!isSpecialized) {
-      currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
-    } else {
-      pack.info.decl(name1.toTypeName.prepend("J"))
-    }
+        currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
+      } else {
+        pack.info.decl(name1.toTypeName.prepend("J"))
+      }
     (functionalInterface, isSpecialized)
   }
 }

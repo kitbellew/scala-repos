@@ -192,13 +192,13 @@ private[execution] object HashedRelation {
       if (!rowKey.anyNull) {
         val existingMatchList = hashTable.get(rowKey)
         val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[InternalRow]()
-          hashTable.put(rowKey.copy(), newMatchList)
-          newMatchList
-        } else {
-          keyIsUnique = false
-          existingMatchList
-        }
+            val newMatchList = new CompactBuffer[InternalRow]()
+            hashTable.put(rowKey.copy(), newMatchList)
+            newMatchList
+          } else {
+            keyIsUnique = false
+            existingMatchList
+          }
         matchList += currentRow
       }
     }
@@ -456,12 +456,12 @@ private[joins] object UnsafeHashedRelation {
       if (!rowKey.anyNull) {
         val existingMatchList = hashTable.get(rowKey)
         val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[UnsafeRow]()
-          hashTable.put(rowKey.copy(), newMatchList)
-          newMatchList
-        } else {
-          existingMatchList
-        }
+            val newMatchList = new CompactBuffer[UnsafeRow]()
+            hashTable.put(rowKey.copy(), newMatchList)
+            newMatchList
+          } else {
+            existingMatchList
+          }
         matchList += unsafeRow
       }
     }
@@ -648,13 +648,13 @@ private[joins] object LongHashedRelation {
         maxKey = math.max(maxKey, key)
         val existingMatchList = hashTable.get(key)
         val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[UnsafeRow]()
-          hashTable.put(key, newMatchList)
-          newMatchList
-        } else {
-          keyIsUnique = false
-          existingMatchList
-        }
+            val newMatchList = new CompactBuffer[UnsafeRow]()
+            hashTable.put(key, newMatchList)
+            newMatchList
+          } else {
+            keyIsUnique = false
+            existingMatchList
+          }
         matchList += unsafeRow
       }
     }

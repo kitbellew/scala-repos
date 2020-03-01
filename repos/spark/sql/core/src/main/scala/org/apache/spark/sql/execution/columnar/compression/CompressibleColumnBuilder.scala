@@ -57,10 +57,10 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
       useCompression: Boolean): Unit = {
 
     compressionEncoders = if (useCompression) {
-      schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
-    } else {
-      Seq(PassThrough.encoder(columnType))
-    }
+        schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
+      } else {
+        Seq(PassThrough.encoder(columnType))
+      }
     super.initialize(initialSize, columnName, useCompression)
   }
 
@@ -96,10 +96,10 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     // Header = null count + null positions
     val headerSize = 4 + nulls.limit()
     val compressedSize = if (encoder.compressedSize == 0) {
-      nonNullBuffer.remaining()
-    } else {
-      encoder.compressedSize
-    }
+        nonNullBuffer.remaining()
+      } else {
+        encoder.compressedSize
+      }
 
     val compressedBuffer = ByteBuffer
     // Reserves 4 bytes for compression scheme ID

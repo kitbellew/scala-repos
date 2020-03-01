@@ -771,10 +771,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           val predictions = if (forests.isEmpty) {
-            Table.empty
-          } else {
-            Table(predict(objectTable.slices), objectTable.size)
-          }
+              Table.empty
+            } else {
+              Table(predict(objectTable.slices), objectTable.size)
+            }
 
           M.point(predictions)
         }

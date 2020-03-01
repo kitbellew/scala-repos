@@ -506,12 +506,12 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         val elems1 = new Array[HashMap[A, B]](length)
         System.arraycopy(buffer, offset0, elems1, 0, length)
         val bitmap1 = if (length == elems.length) {
-          // we can reuse the original bitmap
-          bitmap
-        } else {
-          // calculate new bitmap by keeping just bits in the kept bitmask
-          keepBits(bitmap, kept)
-        }
+            // we can reuse the original bitmap
+            bitmap
+          } else {
+            // calculate new bitmap by keeping just bits in the kept bitmask
+            keepBits(bitmap, kept)
+          }
         new HashTrieMap(bitmap1, elems1, rs)
       }
     }

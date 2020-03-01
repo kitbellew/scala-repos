@@ -191,16 +191,16 @@ private[spark] class PipedRDD[T: ClassTag](
 
       def hasNext(): Boolean = {
         val result = if (lines.hasNext) {
-          true
-        } else {
-          val exitStatus = proc.waitFor()
-          cleanup()
-          if (exitStatus != 0) {
-            throw new IllegalStateException(
-              s"Subprocess exited with status $exitStatus")
+            true
+          } else {
+            val exitStatus = proc.waitFor()
+            cleanup()
+            if (exitStatus != 0) {
+              throw new IllegalStateException(
+                s"Subprocess exited with status $exitStatus")
+            }
+            false
           }
-          false
-        }
         propagateChildException()
         result
       }

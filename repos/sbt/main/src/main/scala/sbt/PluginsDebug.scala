@@ -33,8 +33,8 @@ private[sbt] class PluginsDebug(
         case pd: EnableDeactivated => Right(pd)
       }
     val activePrefix = if (activated.nonEmpty)
-      s"Some already activated plugins define $notFoundKey: ${activated.mkString(", ")}\n"
-    else ""
+        s"Some already activated plugins define $notFoundKey: ${activated.mkString(", ")}\n"
+      else ""
     activePrefix + debugDeactivated(notFoundKey, deactivated)
   }
   private[this] def debugDeactivated(

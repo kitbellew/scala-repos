@@ -363,10 +363,10 @@ case class TungstenAggregate(
       var currentKey: UnsafeRow = null
       var currentRow: UnsafeRow = null
       var nextKey: UnsafeRow = if (sortedIter.next()) {
-        sortedIter.getKey
-      } else {
-        null
-      }
+          sortedIter.getKey
+        } else {
+          null
+        }
 
       override def next(): Boolean = {
         if (nextKey != null) {

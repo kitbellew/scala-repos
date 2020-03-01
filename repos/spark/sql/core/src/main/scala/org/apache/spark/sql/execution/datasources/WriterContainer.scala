@@ -402,15 +402,15 @@ private[sql] class DynamicPartitionWriterContainer(
       getPartitionString: UnsafeProjection): OutputWriter = {
     val configuration = taskAttemptContext.getConfiguration
     val path = if (partitionColumns.nonEmpty) {
-      val partitionPath = getPartitionString(key).getString(0)
-      configuration.set(
-        "spark.sql.sources.output.path",
-        new Path(outputPath, partitionPath).toString)
-      new Path(getWorkPath, partitionPath).toString
-    } else {
-      configuration.set("spark.sql.sources.output.path", outputPath)
-      getWorkPath
-    }
+        val partitionPath = getPartitionString(key).getString(0)
+        configuration.set(
+          "spark.sql.sources.output.path",
+          new Path(outputPath, partitionPath).toString)
+        new Path(getWorkPath, partitionPath).toString
+      } else {
+        configuration.set("spark.sql.sources.output.path", outputPath)
+        getWorkPath
+      }
     val bucketId = getBucketIdFromKey(key)
     val newWriter = super.newOutputWriter(path, bucketId)
     newWriter.initConverter(dataSchema)
@@ -457,14 +457,14 @@ private[sql] class DynamicPartitionWriterContainer(
     logInfo(s"Sorting complete. Writing out partition files one at a time.")
 
     val getBucketingKey: InternalRow => InternalRow = if (sortColumns.isEmpty) {
-      identity
-    } else {
-      UnsafeProjection.create(
-        sortingExpressions.dropRight(sortColumns.length).zipWithIndex.map {
-          case (expr, ordinal) =>
-            BoundReference(ordinal, expr.dataType, expr.nullable)
-        })
-    }
+        identity
+      } else {
+        UnsafeProjection.create(
+          sortingExpressions.dropRight(sortColumns.length).zipWithIndex.map {
+            case (expr, ordinal) =>
+              BoundReference(ordinal, expr.dataType, expr.nullable)
+          })
+      }
 
     val sortedIterator = sorter.sortedIterator()
 

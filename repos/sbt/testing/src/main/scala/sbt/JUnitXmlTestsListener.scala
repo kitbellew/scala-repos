@@ -86,14 +86,14 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
         } time={(e.duration() / 1000.0).toString}>
                                                  {
           val trace: String = if (e.throwable.isDefined) {
-            val stringWriter = new StringWriter()
-            val writer = new PrintWriter(stringWriter)
-            e.throwable.get.printStackTrace(writer)
-            writer.flush()
-            stringWriter.toString
-          } else {
-            ""
-          }
+              val stringWriter = new StringWriter()
+              val writer = new PrintWriter(stringWriter)
+              e.throwable.get.printStackTrace(writer)
+              writer.flush()
+              stringWriter.toString
+            } else {
+              ""
+            }
           e.status match {
             case TStatus.Error if (e.throwable.isDefined) =>
               <error message={e.throwable.get.getMessage} type={

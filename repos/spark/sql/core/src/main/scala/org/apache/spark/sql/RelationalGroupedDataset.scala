@@ -48,10 +48,10 @@ class RelationalGroupedDataset protected[sql] (
 
   private[this] def toDF(aggExprs: Seq[Expression]): DataFrame = {
     val aggregates = if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
-      groupingExprs ++ aggExprs
-    } else {
-      aggExprs
-    }
+        groupingExprs ++ aggExprs
+      } else {
+        aggExprs
+      }
 
     val aliasedAgg = aggregates.map(alias)
 
@@ -89,20 +89,20 @@ class RelationalGroupedDataset protected[sql] (
       f: Expression => AggregateFunction): DataFrame = {
 
     val columnExprs = if (colNames.isEmpty) {
-      // No columns specified. Use all numeric columns.
-      df.numericColumns
-    } else {
-      // Make sure all specified columns are numeric.
-      colNames.map { colName =>
-        val namedExpr = df.resolve(colName)
-        if (!namedExpr.dataType.isInstanceOf[NumericType]) {
-          throw new AnalysisException(
-            s""""$colName" is not a numeric column. """ +
-              "Aggregation function can only be applied on a numeric column.")
+        // No columns specified. Use all numeric columns.
+        df.numericColumns
+      } else {
+        // Make sure all specified columns are numeric.
+        colNames.map { colName =>
+          val namedExpr = df.resolve(colName)
+          if (!namedExpr.dataType.isInstanceOf[NumericType]) {
+            throw new AnalysisException(
+              s""""$colName" is not a numeric column. """ +
+                "Aggregation function can only be applied on a numeric column.")
+          }
+          namedExpr
         }
-        namedExpr
       }
-    }
     toDF(columnExprs.map(expr => f(expr).toAggregateExpression()))
   }
 

@@ -276,10 +276,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
     }
     val i = str.length - d
     val s = if (i > 0) {
-      sign + str.substring(0, i) + "." + str.substring(i)
-    } else {
-      sign + "0." + ("0" * -i) + str
-    }
+        sign + str.substring(0, i) + "." + str.substring(i)
+      } else {
+        sign + "0." + ("0" * -i) + str
+      }
     s.replaceAll("0+$", "").replaceAll("\\.$", "")
   }
 }

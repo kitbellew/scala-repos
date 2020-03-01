@@ -160,30 +160,30 @@ object Runner extends Logging {
       Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator))
 
     val sparkSubmitJars = if (extraJars.nonEmpty) {
-      Seq("--jars", deployedJars.map(_.toString).mkString(","))
-    } else {
-      Nil
-    }
+        Seq("--jars", deployedJars.map(_.toString).mkString(","))
+      } else {
+        Nil
+      }
 
     val sparkSubmitFiles = if (extraFiles.nonEmpty) {
-      Seq("--files", extraFiles.mkString(","))
-    } else {
-      Nil
-    }
+        Seq("--files", extraFiles.mkString(","))
+      } else {
+        Nil
+      }
 
     val sparkSubmitExtraClasspaths = if (extraClasspaths.nonEmpty) {
-      Seq("--driver-class-path", extraClasspaths.mkString(":"))
-    } else {
-      Nil
-    }
+        Seq("--driver-class-path", extraClasspaths.mkString(":"))
+      } else {
+        Nil
+      }
 
     val sparkSubmitKryo = if (ca.common.sparkKryo) {
-      Seq(
-        "--conf",
-        "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-    } else {
-      Nil
-    }
+        Seq(
+          "--conf",
+          "spark.serializer=org.apache.spark.serializer.KryoSerializer")
+      } else {
+        Nil
+      }
 
     val verbose = if (ca.common.verbose) Seq("--verbose") else Nil
 

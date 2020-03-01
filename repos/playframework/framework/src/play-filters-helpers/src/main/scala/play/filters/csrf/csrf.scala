@@ -110,13 +110,13 @@ object CSRFConfig {
     val methodBlackList = config.get[Seq[String]]("method.blackList").toSet
 
     val checkMethod: String => Boolean = if (methodWhiteList.nonEmpty) {
-      !methodWhiteList.contains(_)
-    } else {
-      if (methodBlackList.isEmpty) { _ => true }
-      else {
-        methodBlackList.contains
+        !methodWhiteList.contains(_)
+      } else {
+        if (methodBlackList.isEmpty) { _ => true }
+        else {
+          methodBlackList.contains
+        }
       }
-    }
 
     val contentTypeWhiteList =
       config.get[Seq[String]]("contentType.whiteList").toSet

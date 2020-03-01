@@ -61,14 +61,16 @@ object ScalaAfterNewCompletionUtil {
       context: ProcessingContext): (Array[ScType], Boolean) = {
     val isAfter = isAfterNew(position, context)
     val data = if (isAfter) {
-      val element = position
-      val newExpr: ScNewTemplateDefinition =
-        PsiTreeUtil.getContextOfType(element, classOf[ScNewTemplateDefinition])
-      newExpr.expectedTypes().map {
-        case ScAbstractType(_, lower, upper) => upper
-        case tp                              => tp
-      }
-    } else Array[ScType]()
+        val element = position
+        val newExpr: ScNewTemplateDefinition =
+          PsiTreeUtil.getContextOfType(
+            element,
+            classOf[ScNewTemplateDefinition])
+        newExpr.expectedTypes().map {
+          case ScAbstractType(_, lower, upper) => upper
+          case tp                              => tp
+        }
+      } else Array[ScType]()
 
     (data, isAfter)
   }

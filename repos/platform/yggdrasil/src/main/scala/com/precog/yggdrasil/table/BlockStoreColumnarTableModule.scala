@@ -270,12 +270,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 .map {
                   case (ref, columns) => {
                     val cp: Pair[ColumnRef, Column] = if (columns.size == 1) {
-                      columns.head
-                    } else {
-                      (
-                        ref,
-                        ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
-                    }
+                        columns.head
+                      } else {
+                        (
+                          ref,
+                          ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
+                      }
                     cp
                   }
                 }
@@ -1398,10 +1398,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   val (index0, head0) =
                     (index.remap(indexBuf), head.remap(headBuf))
                   val advancedM = if (flip) {
-                    joinTrans.advance(head0, index0)
-                  } else {
-                    joinTrans.advance(index0, head0)
-                  }
+                      joinTrans.advance(head0, index0)
+                    } else {
+                      joinTrans.advance(index0, head0)
+                    }
                   advancedM map {
                     case (joinTrans0, slice) =>
                       StreamT.Yield(
@@ -1673,22 +1673,22 @@ trait BlockStoreColumnarTableModule[M[+_]]
       // If we don't want unique key values (e.g. preserve duplicates), we need to add
       // in a distinct "row id" for each value to disambiguate it
       val (sourceTrans0, keyTrans0, valueTrans0) = if (!unique) {
-        (
-          addGlobalId(Leaf(Source)),
-          groupKeys map { kt =>
-            OuterObjectConcat(
-              WrapObject(
-                deepMap(kt) {
-                  case Leaf(_) => TransSpec1.DerefArray0
-                },
-                "0"),
-              WrapObject(TransSpec1.DerefArray1, "1"))
-          },
-          deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
-        )
-      } else {
-        (Leaf(Source), groupKeys, valueSpec)
-      }
+          (
+            addGlobalId(Leaf(Source)),
+            groupKeys map { kt =>
+              OuterObjectConcat(
+                WrapObject(
+                  deepMap(kt) {
+                    case Leaf(_) => TransSpec1.DerefArray0
+                  },
+                  "0"),
+                WrapObject(TransSpec1.DerefArray1, "1"))
+            },
+            deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
+          )
+        } else {
+          (Leaf(Source), groupKeys, valueSpec)
+        }
 
       writeTables(
         this.transform(sourceTrans0).slices,

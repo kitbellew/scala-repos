@@ -65,10 +65,10 @@ abstract class SparkPlan
   // the value of subexpressionEliminationEnabled will be set by the deserializer after the
   // constructor has run.
   val subexpressionEliminationEnabled: Boolean = if (sqlContext != null) {
-    sqlContext.conf.subexpressionEliminationEnabled
-  } else {
-    false
-  }
+      sqlContext.conf.subexpressionEliminationEnabled
+    } else {
+      false
+    }
 
   /**
     * Whether the "prepare" method is called.

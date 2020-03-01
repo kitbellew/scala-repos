@@ -167,10 +167,10 @@ object Attribute extends AttributeFactory {
       metadata: Metadata): Attribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
     val attrType = if (metadata.contains(TYPE)) {
-      metadata.getString(TYPE)
-    } else {
-      AttributeType.Numeric.name
-    }
+        metadata.getString(TYPE)
+      } else {
+        AttributeType.Numeric.name
+      }
     getFactory(attrType).fromMetadata(metadata)
   }
 

@@ -35,10 +35,10 @@ object RoutesCompiler {
     def unapply(file: File): Option[GeneratedSource] = {
 
       val lines: Array[String] = if (file.exists) {
-        FileUtils.readFileToString(file, implicitly[Codec].name).split('\n')
-      } else {
-        Array.empty[String]
-      }
+          FileUtils.readFileToString(file, implicitly[Codec].name).split('\n')
+        } else {
+          Array.empty[String]
+        }
 
       if (lines.contains("// @GENERATOR:play-routes-compiler")) {
         Some(new GeneratedSource {

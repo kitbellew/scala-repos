@@ -407,8 +407,7 @@ trait ContentExtractor {
     var currentScore: Int = 0
     try {
       val scoreString: String = node.attr("gravityScore")
-      currentScore =
-        if (string.isNullOrEmpty(scoreString)) 0
+      currentScore = if (string.isNullOrEmpty(scoreString)) 0
         else Integer.parseInt(scoreString)
     } catch {
       case e: NumberFormatException => {
@@ -429,8 +428,7 @@ trait ContentExtractor {
     var currentScore: Int = 0
     try {
       val countString: String = node.attr("gravityNodes")
-      currentScore =
-        if (string.isNullOrEmpty(countString)) 0
+      currentScore = if (string.isNullOrEmpty(countString)) 0
         else Integer.parseInt(countString)
     } catch {
       case e: NumberFormatException => {
@@ -596,8 +594,8 @@ trait ContentExtractor {
       trace(logPrefix + "SIBLINGCHECK: " + debugNode(currentSibling))
       b += work(currentSibling)
 
-      currentSibling =
-        if (currentSibling != null) currentSibling.previousElementSibling
+      currentSibling = if (currentSibling != null)
+          currentSibling.previousElementSibling
         else null
     }
     b

@@ -227,24 +227,24 @@ object StackTrace {
       if (encodedName.charAt(0) == '$') encodedName.substring(1)
       else encodedName
     val base = if (decompressedClasses.contains(encoded)) {
-      decompressedClasses(encoded)
-    } else {
-      @tailrec
-      def loop(i: Int): String = {
-        if (i < compressedPrefixes.length) {
-          val prefix = compressedPrefixes(i)
-          if (encoded.startsWith(prefix))
-            decompressedPrefixes(prefix) + encoded.substring(prefix.length)
-          else
-            loop(i + 1)
-        } else {
-          // no prefix matches
-          if (encoded.startsWith("L")) encoded.substring(1)
-          else encoded // just in case
+        decompressedClasses(encoded)
+      } else {
+        @tailrec
+        def loop(i: Int): String = {
+          if (i < compressedPrefixes.length) {
+            val prefix = compressedPrefixes(i)
+            if (encoded.startsWith(prefix))
+              decompressedPrefixes(prefix) + encoded.substring(prefix.length)
+            else
+              loop(i + 1)
+          } else {
+            // no prefix matches
+            if (encoded.startsWith("L")) encoded.substring(1)
+            else encoded // just in case
+          }
         }
+        loop(0)
       }
-      loop(0)
-    }
     base.replace("_", ".").replace("$und", "_")
   }
 

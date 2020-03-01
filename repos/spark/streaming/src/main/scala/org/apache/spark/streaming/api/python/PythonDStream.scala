@@ -340,10 +340,10 @@ private[python] class PythonReducedWindowedDStream(
         previous.beginTime + parent.slideDuration,
         current.beginTime)
       val subtracted = if (oldRDDs.size > 0) {
-        invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
-      } else {
-        previousRDD
-      }
+          invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
+        } else {
+          previousRDD
+        }
 
       // add the RDDs of the reduced values in "new time steps"
       val newRDDs =

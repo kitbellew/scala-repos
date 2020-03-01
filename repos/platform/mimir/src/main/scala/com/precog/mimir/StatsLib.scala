@@ -1914,22 +1914,22 @@ trait StatsLibModule[M[+_]]
 
         // if none of our rows are defined let's short-circuit out of here!
         val back = if (row == end) {
-          (ctxt, Map.empty[ColumnRef, Column])
-        } else {
-          // build the actual rank array
-          val (values, curr, lastRow) =
-            buildRankArrayIndexed(defined, range, ctxt)
+            (ctxt, Map.empty[ColumnRef, Column])
+          } else {
+            // build the actual rank array
+            val (values, curr, lastRow) =
+              buildRankArrayIndexed(defined, range, ctxt)
 
-          // build the context to be used for the next slice
-          val ctxt2 = buildRankContext(m, lastRow, curr, curr + 1L)
+            // build the context to be used for the next slice
+            val ctxt2 = buildRankContext(m, lastRow, curr, curr + 1L)
 
-          // construct the column ref and column to return
-          val col2: Column =
-            shiftColumn(ArrayLongColumn(defined, values), start)
-          val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
+            // construct the column ref and column to return
+            val col2: Column =
+              shiftColumn(ArrayLongColumn(defined, values), start)
+            val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
 
-          (ctxt2, data)
-        }
+            (ctxt2, data)
+          }
 
         back
       }
@@ -2078,25 +2078,25 @@ trait StatsLibModule[M[+_]]
 
         // if none of our rows are defined let's short-circuit out of here!
         val back = if (row == end) {
-          (ctxt, Map.empty[ColumnRef, Column])
-        } else {
-          // find a bitset of duplicate rows and the last defined row
-          val (duplicateRows, lastRow) =
-            findDuplicates(defined, definedCols, cols, range, row)
+            (ctxt, Map.empty[ColumnRef, Column])
+          } else {
+            // find a bitset of duplicate rows and the last defined row
+            val (duplicateRows, lastRow) =
+              findDuplicates(defined, definedCols, cols, range, row)
 
-          // build the actual rank array
-          val (values, curr, next) =
-            buildRankArrayUnique(defined, duplicateRows, range, ctxt)
+            // build the actual rank array
+            val (values, curr, next) =
+              buildRankArrayUnique(defined, duplicateRows, range, ctxt)
 
-          // build the context to be used for the next slice
-          val ctxt2 = buildRankContext(m, lastRow, curr, next)
+            // build the context to be used for the next slice
+            val ctxt2 = buildRankContext(m, lastRow, curr, next)
 
-          // construct the column ref and column to return
-          val col2 = shiftColumn(ArrayLongColumn(defined, values), start)
-          val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
+            // construct the column ref and column to return
+            val col2 = shiftColumn(ArrayLongColumn(defined, values), start)
+            val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
 
-          (ctxt2, data)
-        }
+            (ctxt2, data)
+          }
 
         back
       }

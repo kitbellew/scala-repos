@@ -94,11 +94,11 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
             Some((statements, lineRange))
           } else {
             val newLineRange = if (reverted) {
-              lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
-            } else {
-              lineRange.copy(start =
-                lineRange.start + closeSlashAsteriskLine + 1)
-            }
+                lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
+              } else {
+                lineRange.copy(start =
+                  lineRange.start + closeSlashAsteriskLine + 1)
+              }
             removeSlashAsterisk(
               statements.drop(closeSlashAsteriskLine + 1),
               newLineRange,

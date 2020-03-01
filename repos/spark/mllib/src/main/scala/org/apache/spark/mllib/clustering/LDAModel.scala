@@ -883,10 +883,10 @@ class DistributedLDAModel private[clustering] (
         val topIndices = argtopk(topicCounts, k)
         val sumCounts = sum(topicCounts)
         val weights = if (sumCounts != 0) {
-          topicCounts(topIndices) / sumCounts
-        } else {
-          topicCounts(topIndices)
-        }
+            topicCounts(topIndices) / sumCounts
+          } else {
+            topicCounts(topIndices)
+          }
         (docID.toLong, topIndices.toArray, weights.toArray)
     }
   }

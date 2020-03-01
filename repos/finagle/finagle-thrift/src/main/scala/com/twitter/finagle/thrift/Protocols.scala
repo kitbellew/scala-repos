@@ -191,13 +191,13 @@ object Protocols {
       val charBuffer = CharBuffer.wrap(chars, offset, count)
 
       val out = if (count * MultiByteMultiplierEstimate <= OutBufferSize) {
-        val o = outByteBuffer.get()
-        o.clear()
-        o
-      } else {
-        largerThanTlOutBuffer.incr()
-        ByteBuffer.allocate((count * MultiByteMultiplierEstimate).toInt)
-      }
+          val o = outByteBuffer.get()
+          o.clear()
+          o
+        } else {
+          largerThanTlOutBuffer.incr()
+          ByteBuffer.allocate((count * MultiByteMultiplierEstimate).toInt)
+        }
 
       val csEncoder = charsetEncoder.get()
       csEncoder.reset()

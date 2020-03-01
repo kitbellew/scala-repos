@@ -114,16 +114,16 @@ object ResourceMatcher {
     // Local volumes only need to be matched if we are making a reservation for resident tasks --
     // that means if the resources that are matched are still unreserved.
     val diskMatch = if (!selector.reserved && app.diskForVolumes > 0) {
-      scalarResourceMatch(
-        Resource.DISK,
-        app.disk + app.diskForVolumes,
-        ScalarMatchResult.Scope.IncludingLocalVolumes)
-    } else {
-      scalarResourceMatch(
-        Resource.DISK,
-        app.disk,
-        ScalarMatchResult.Scope.ExcludingLocalVolumes)
-    }
+        scalarResourceMatch(
+          Resource.DISK,
+          app.disk + app.diskForVolumes,
+          ScalarMatchResult.Scope.IncludingLocalVolumes)
+      } else {
+        scalarResourceMatch(
+          Resource.DISK,
+          app.disk,
+          ScalarMatchResult.Scope.ExcludingLocalVolumes)
+      }
 
     val scalarMatchResults = Iterable(
       scalarResourceMatch(

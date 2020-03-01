@@ -461,11 +461,11 @@ class SQLContext private[sql] (
     // TODO: use MutableProjection when rowRDD is another DataFrame and the applied
     // schema differs from the existing schema on any field data type.
     val catalystRows = if (needsConversion) {
-      val converter = CatalystTypeConverters.createToCatalystConverter(schema)
-      rowRDD.map(converter(_).asInstanceOf[InternalRow])
-    } else {
-      rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) }
-    }
+        val converter = CatalystTypeConverters.createToCatalystConverter(schema)
+        rowRDD.map(converter(_).asInstanceOf[InternalRow])
+      } else {
+        rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) }
+      }
     val logicalPlan = LogicalRDD(schema.toAttributes, catalystRows)(self)
     Dataset.newDataFrame(this, logicalPlan)
   }

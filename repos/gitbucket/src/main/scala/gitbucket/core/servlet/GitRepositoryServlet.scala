@@ -185,17 +185,17 @@ class CommitLogHook(
           val refName = command.getRefName.split("/")
           val branchName = refName.drop(2).mkString("/")
           val commits = if (refName(1) == "tags") {
-            Nil
-          } else {
-            command.getType match {
-              case ReceiveCommand.Type.DELETE => Nil
-              case _ =>
-                JGitUtil.getCommitLog(
-                  git,
-                  command.getOldId.name,
-                  command.getNewId.name)
+              Nil
+            } else {
+              command.getType match {
+                case ReceiveCommand.Type.DELETE => Nil
+                case _ =>
+                  JGitUtil.getCommitLog(
+                    git,
+                    command.getOldId.name,
+                    command.getNewId.name)
+              }
             }
-          }
 
           // Retrieve all issue count in the repository
           val issueCount =

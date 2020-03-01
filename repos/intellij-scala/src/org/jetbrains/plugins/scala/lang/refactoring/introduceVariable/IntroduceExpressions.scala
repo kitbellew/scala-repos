@@ -352,8 +352,8 @@ trait IntroduceExpressions {
     val isFunExpr = expression.isInstanceOf[ScFunctionExpr]
     val mainRange = new TextRange(startOffset, endOffset)
     val occurrences: Array[TextRange] = if (!replaceAllOccurrences) {
-      Array[TextRange](mainRange)
-    } else occurrences_
+        Array[TextRange](mainRange)
+      } else occurrences_
     val occCount = occurrences.length
 
     val mainOcc = occurrences.indexWhere(range =>

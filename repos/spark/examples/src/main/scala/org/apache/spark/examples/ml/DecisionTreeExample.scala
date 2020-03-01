@@ -191,15 +191,15 @@ object DecisionTreeExample {
 
     // Load or create test set
     val dataframes: Array[DataFrame] = if (testInput != "") {
-      // Load testInput.
-      val numFeatures = origExamples.first().getAs[Vector](1).size
-      val origTestExamples: DataFrame =
-        loadData(sqlContext, testInput, dataFormat, Some(numFeatures))
-      Array(origExamples, origTestExamples)
-    } else {
-      // Split input into training, test.
-      origExamples.randomSplit(Array(1.0 - fracTest, fracTest), seed = 12345)
-    }
+        // Load testInput.
+        val numFeatures = origExamples.first().getAs[Vector](1).size
+        val origTestExamples: DataFrame =
+          loadData(sqlContext, testInput, dataFormat, Some(numFeatures))
+        Array(origExamples, origTestExamples)
+      } else {
+        // Split input into training, test.
+        origExamples.randomSplit(Array(1.0 - fracTest, fracTest), seed = 12345)
+      }
 
     val training = dataframes(0).cache()
     val test = dataframes(1).cache()

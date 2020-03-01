@@ -641,12 +641,12 @@ trait Params extends Identifiable with Serializable {
   def explainParam(param: Param[_]): String = {
     shouldOwn(param)
     val valueStr = if (isDefined(param)) {
-      val defaultValueStr = getDefault(param).map("default: " + _)
-      val currentValueStr = get(param).map("current: " + _)
-      (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
-    } else {
-      "(undefined)"
-    }
+        val defaultValueStr = getDefault(param).map("default: " + _)
+        val currentValueStr = get(param).map("current: " + _)
+        (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
+      } else {
+        "(undefined)"
+      }
     s"${param.name}: ${param.doc} $valueStr"
   }
 

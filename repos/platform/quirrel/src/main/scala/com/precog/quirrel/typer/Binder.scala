@@ -193,12 +193,12 @@ trait Binder extends parser.AST {
           } yield Error(d, DeprecatedFunction(name, deprecation))
 
           val errors = if (actuals.length == arity) {
-            d.binding = binding
-            Set()
-          } else {
-            d.binding = NullBinding
-            Set(Error(d, IncorrectArity(arity, actuals.length)))
-          }
+              d.binding = binding
+              Set()
+            } else {
+              d.binding = NullBinding
+              Set(Error(d, IncorrectArity(arity, actuals.length)))
+            }
 
           d.isReduction = env.names(name) match {
             case ReductionBinding(_) => true

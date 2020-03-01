@@ -123,12 +123,12 @@ trait GroupSolver
         } getOrElse Set()
 
         val forestErrors2 = if (finalErrors.isEmpty) {
-          forestErrors filter {
-            case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+            forestErrors filter {
+              case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+            }
+          } else {
+            forestErrors
           }
-        } else {
-          forestErrors
-        }
 
         childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
       }
@@ -253,17 +253,17 @@ trait GroupSolver
         yield Group(None, c, r, List())
 
     val contribErrors = if (!back.isDefined) {
-      val vars = listTicVars(Some(b), constraint, sigma) map { _._2 }
+        val vars = listTicVars(Some(b), constraint, sigma) map { _._2 }
 
-      if (vars.isEmpty)
-        Set(Error(constraint, SolveLackingFreeVariables))
-      else if (vars.size == 1)
-        Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
-      else
-        Set(Error(constraint, InseparablePairedTicVariables(vars)))
-    } else {
-      Set()
-    }
+        if (vars.isEmpty)
+          Set(Error(constraint, SolveLackingFreeVariables))
+        else if (vars.size == 1)
+          Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
+        else
+          Set(Error(constraint, InseparablePairedTicVariables(vars)))
+      } else {
+        Set()
+      }
 
     (back, errors ++ contribErrors)
   }

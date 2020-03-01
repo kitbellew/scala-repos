@@ -714,11 +714,11 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private[akka] def processEvent(event: Event, source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
     val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+        stateFunc(event)
+      } else {
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
+      }
     applyState(nextState)
   }
 

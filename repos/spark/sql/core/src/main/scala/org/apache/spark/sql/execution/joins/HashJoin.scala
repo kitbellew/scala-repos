@@ -88,13 +88,13 @@ trait HashJoin {
             // value in high 32 bit and low 32 bit will be 0. To avoid the worst case that keys
             // with two same ints have hash code 0, we rotate the bits of second one.
             val rotated = if (e.dataType == IntegerType) {
-              // (e >>> 15) | (e << 17)
-              BitwiseOr(
-                ShiftRightUnsigned(e, Literal(15)),
-                ShiftLeft(e, Literal(17)))
-            } else {
-              e
-            }
+                // (e >>> 15) | (e << 17)
+                BitwiseOr(
+                  ShiftRightUnsigned(e, Literal(15)),
+                  ShiftLeft(e, Literal(17)))
+              } else {
+                e
+              }
             keyExpr = BitwiseOr(
               ShiftLeft(keyExpr, Literal(bits)),
               BitwiseAnd(Cast(rotated, LongType), Literal((1L << bits) - 1)))
@@ -121,10 +121,10 @@ trait HashJoin {
     UnsafeProjection.create(rewriteKeyExpr(streamedKeys), streamedPlan.output)
 
   @transient private[this] lazy val boundCondition = if (condition.isDefined) {
-    newPredicate(
-      condition.getOrElse(Literal(true)),
-      left.output ++ right.output)
-  } else { (r: InternalRow) => true }
+      newPredicate(
+        condition.getOrElse(Literal(true)),
+        left.output ++ right.output)
+    } else { (r: InternalRow) => true }
 
   protected def createResultProjection: (InternalRow) => InternalRow =
     UnsafeProjection.create(self.schema)
@@ -216,15 +216,15 @@ trait HashJoin {
     val ret: Iterable[InternalRow] = {
       if (!key.anyNull) {
         val temp = if (rightIter != null) {
-          rightIter.collect {
-            case r if boundCondition(joinedRow.withRight(r)) => {
-              numOutputRows += 1
-              resultProjection(joinedRow).copy()
+            rightIter.collect {
+              case r if boundCondition(joinedRow.withRight(r)) => {
+                numOutputRows += 1
+                resultProjection(joinedRow).copy()
+              }
             }
+          } else {
+            List.empty
           }
-        } else {
-          List.empty
-        }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withRight(rightNullRow)) :: Nil
@@ -248,15 +248,15 @@ trait HashJoin {
     val ret: Iterable[InternalRow] = {
       if (!key.anyNull) {
         val temp = if (leftIter != null) {
-          leftIter.collect {
-            case l if boundCondition(joinedRow.withLeft(l)) => {
-              numOutputRows += 1
-              resultProjection(joinedRow).copy()
+            leftIter.collect {
+              case l if boundCondition(joinedRow.withLeft(l)) => {
+                numOutputRows += 1
+                resultProjection(joinedRow).copy()
+              }
             }
+          } else {
+            List.empty
           }
-        } else {
-          List.empty
-        }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withLeft(leftNullRow)) :: Nil

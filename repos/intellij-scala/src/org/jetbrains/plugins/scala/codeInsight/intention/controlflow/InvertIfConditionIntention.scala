@@ -62,15 +62,15 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       case infixExpr: ScInfixExpr =>
         val oper = infixExpr.operation.nameId.getText
         val first = if (oper == "||" || oper == "&&") {
-          IntentionUtils.negate(infixExpr.getBaseExpr)
-        } else {
-          infixExpr.getBaseExpr.getText
-        }
+            IntentionUtils.negate(infixExpr.getBaseExpr)
+          } else {
+            infixExpr.getBaseExpr.getText
+          }
         val second = if (oper == "||" || oper == "&&") {
-          IntentionUtils.negate(infixExpr.getArgExpr)
-        } else {
-          infixExpr.getArgExpr.getText
-        }
+            IntentionUtils.negate(infixExpr.getArgExpr)
+          } else {
+            infixExpr.getArgExpr.getText
+          }
         val replaceOper = Map(
           "==" -> "!=",
           "!=" -> "==",

@@ -72,43 +72,43 @@ private[scalajs] object CoreJSLibs {
     var skipDepth = 0
     val lines = for (line <- originalLines) yield {
       val includeThisLine = if (skipping) {
-        if (line == "//!else" && skipDepth == 1) {
-          skipping = false
-          skipDepth = 0
-        } else if (line == "//!endif") {
-          skipDepth -= 1
-          if (skipDepth == 0)
+          if (line == "//!else" && skipDepth == 1) {
             skipping = false
-        } else if (line.startsWith("//!if ")) {
-          skipDepth += 1
-        }
-        false
-      } else {
-        if (line.startsWith("//!")) {
-          if (line.startsWith("//!if ")) {
-            val Array(_, option, op, value) = line.split(" ")
-            val optionValue = getOption(option)
-            val success = op match {
-              case "==" => optionValue == value
-              case "!=" => optionValue != value
-            }
-            if (!success) {
-              skipping = true
-              skipDepth = 1
-            }
-          } else if (line == "//!else") {
-            skipping = true
-            skipDepth = 1
+            skipDepth = 0
           } else if (line == "//!endif") {
-            // nothing to do
-          } else {
-            throw new MatchError(line)
+            skipDepth -= 1
+            if (skipDepth == 0)
+              skipping = false
+          } else if (line.startsWith("//!if ")) {
+            skipDepth += 1
           }
           false
         } else {
-          true
+          if (line.startsWith("//!")) {
+            if (line.startsWith("//!if ")) {
+              val Array(_, option, op, value) = line.split(" ")
+              val optionValue = getOption(option)
+              val success = op match {
+                case "==" => optionValue == value
+                case "!=" => optionValue != value
+              }
+              if (!success) {
+                skipping = true
+                skipDepth = 1
+              }
+            } else if (line == "//!else") {
+              skipping = true
+              skipDepth = 1
+            } else if (line == "//!endif") {
+              // nothing to do
+            } else {
+              throw new MatchError(line)
+            }
+            false
+          } else {
+            true
+          }
         }
-      }
       if (includeThisLine) line
       else "" // blank line preserves line numbers in source maps
     }

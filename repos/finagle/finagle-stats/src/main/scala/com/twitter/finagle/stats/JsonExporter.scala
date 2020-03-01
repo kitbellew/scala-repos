@@ -173,10 +173,10 @@ class JsonExporter(registry: Metrics, timer: Timer)
       }
     val histos = registry.sampleHistograms().asScala
     val counters = if (counterDeltasOn && useCounterDeltas()) {
-      getOrRegisterLatchedStats().deltas
-    } else {
-      registry.sampleCounters().asScala
-    }
+        getOrRegisterLatchedStats().deltas
+      } else {
+        registry.sampleCounters().asScala
+      }
     val values = SampledValues(gauges, counters, histos)
 
     val formatted = StatsFormatter.default(values)

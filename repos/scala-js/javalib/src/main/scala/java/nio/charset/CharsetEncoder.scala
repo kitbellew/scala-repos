@@ -121,14 +121,14 @@ abstract class CharsetEncoder protected (
         }
 
       val result2 = if (result1.isUnderflow) {
-        val remaining = in.remaining
-        if (endOfInput && remaining > 0)
-          CoderResult.malformedForLength(remaining)
-        else
+          val remaining = in.remaining
+          if (endOfInput && remaining > 0)
+            CoderResult.malformedForLength(remaining)
+          else
+            result1
+        } else {
           result1
-      } else {
-        result1
-      }
+        }
 
       if (result2.isUnderflow || result2.isOverflow) {
         result2

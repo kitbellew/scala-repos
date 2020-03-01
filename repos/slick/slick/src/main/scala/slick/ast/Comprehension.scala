@@ -95,8 +95,7 @@ final case class Comprehension(
         select = s2,
         where = w2.orElse(where),
         groupBy = g2.orElse(groupBy),
-        orderBy =
-          if (o2 eq o) orderBy
+        orderBy = if (o2 eq o) orderBy
           else orderBy.zip(o2).map { case ((_, o), n) => (n, o) },
         having = h2.orElse(having),
         distinct = distinct2.orElse(distinct),

@@ -399,37 +399,37 @@ class TungstenAggregationIterator(
   override final def next(): UnsafeRow = {
     if (hasNext) {
       val res = if (sortBased) {
-        // Process the current group.
-        processCurrentSortedGroup()
-        // Generate output row for the current group.
-        val outputRow =
-          generateOutput(currentGroupingKey, sortBasedAggregationBuffer)
-        // Initialize buffer values for the next group.
-        sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
+          // Process the current group.
+          processCurrentSortedGroup()
+          // Generate output row for the current group.
+          val outputRow =
+            generateOutput(currentGroupingKey, sortBasedAggregationBuffer)
+          // Initialize buffer values for the next group.
+          sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
 
-        outputRow
-      } else {
-        // We did not fall back to sort-based aggregation.
-        val result =
-          generateOutput(
-            aggregationBufferMapIterator.getKey,
-            aggregationBufferMapIterator.getValue)
-
-        // Pre-load next key-value pair form aggregationBufferMapIterator to make hasNext
-        // idempotent.
-        mapIteratorHasNext = aggregationBufferMapIterator.next()
-
-        if (!mapIteratorHasNext) {
-          // If there is no input from aggregationBufferMapIterator, we copy current result.
-          val resultCopy = result.copy()
-          // Then, we free the map.
-          hashMap.free()
-
-          resultCopy
+          outputRow
         } else {
-          result
+          // We did not fall back to sort-based aggregation.
+          val result =
+            generateOutput(
+              aggregationBufferMapIterator.getKey,
+              aggregationBufferMapIterator.getValue)
+
+          // Pre-load next key-value pair form aggregationBufferMapIterator to make hasNext
+          // idempotent.
+          mapIteratorHasNext = aggregationBufferMapIterator.next()
+
+          if (!mapIteratorHasNext) {
+            // If there is no input from aggregationBufferMapIterator, we copy current result.
+            val resultCopy = result.copy()
+            // Then, we free the map.
+            hashMap.free()
+
+            resultCopy
+          } else {
+            result
+          }
         }
-      }
 
       // If this is the last record, update the task's peak memory usage. Since we destroy
       // the map to create the sorter, their memory usages should not overlap, so it is safe

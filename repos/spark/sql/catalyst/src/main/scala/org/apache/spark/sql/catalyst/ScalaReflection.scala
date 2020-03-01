@@ -928,19 +928,19 @@ trait ScalaReflection {
   protected def constructParams(tpe: Type): Seq[Symbol] = {
     val constructorSymbol = tpe.member(nme.CONSTRUCTOR)
     val params = if (constructorSymbol.isMethod) {
-      constructorSymbol.asMethod.paramss
-    } else {
-      // Find the primary constructor, and use its parameter ordering.
-      val primaryConstructorSymbol: Option[Symbol] =
-        constructorSymbol.asTerm.alternatives.find(s =>
-          s.isMethod && s.asMethod.isPrimaryConstructor)
-      if (primaryConstructorSymbol.isEmpty) {
-        sys.error(
-          "Internal SQL error: Product object did not have a primary constructor.")
+        constructorSymbol.asMethod.paramss
       } else {
-        primaryConstructorSymbol.get.asMethod.paramss
+        // Find the primary constructor, and use its parameter ordering.
+        val primaryConstructorSymbol: Option[Symbol] =
+          constructorSymbol.asTerm.alternatives.find(s =>
+            s.isMethod && s.asMethod.isPrimaryConstructor)
+        if (primaryConstructorSymbol.isEmpty) {
+          sys.error(
+            "Internal SQL error: Product object did not have a primary constructor.")
+        } else {
+          primaryConstructorSymbol.get.asMethod.paramss
+        }
       }
-    }
     params.flatten
   }
 

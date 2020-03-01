@@ -59,14 +59,14 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
     if (!syntElem.isValid) return
 
     val replaceText = if (syntElem.getFirstChild.getText.contains("=")) {
-      StringUtils.repeat(
-        MyScaladocParsing.escapeSequencesForWiki.get("=").get,
-        syntElem.getFirstChild.getText.length())
-    } else {
-      MyScaladocParsing.escapeSequencesForWiki
-        .get(syntElem.getFirstChild.getText)
-        .get
-    }
+        StringUtils.repeat(
+          MyScaladocParsing.escapeSequencesForWiki.get("=").get,
+          syntElem.getFirstChild.getText.length())
+      } else {
+        MyScaladocParsing.escapeSequencesForWiki
+          .get(syntElem.getFirstChild.getText)
+          .get
+      }
     val doc = FileDocumentManager
       .getInstance()
       .getDocument(syntElem.getContainingFile.getVirtualFile)

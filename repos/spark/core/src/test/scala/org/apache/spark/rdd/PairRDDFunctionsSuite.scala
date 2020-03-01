@@ -753,10 +753,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       val trials = stratifiedData.countByKey()
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(false, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(false, fractions, seed)
-      }
+          stratifiedData.sampleByKeyExact(false, fractions, seed)
+        } else {
+          stratifiedData.sampleByKey(false, fractions, seed)
+        }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -786,10 +786,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         .mapValues(count => math.ceil(count * samplingRate).toInt)
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(true, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(true, fractions, seed)
-      }
+          stratifiedData.sampleByKeyExact(true, fractions, seed)
+        } else {
+          stratifiedData.sampleByKey(true, fractions, seed)
+        }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {

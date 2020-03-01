@@ -68,10 +68,10 @@ object URLHelper extends Logging {
 
   def tryToURL(url: String): Option[URL] = {
     val finalUrl = if (url.contains("#!")) {
-      ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+        ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
+      } else {
+        url
+      }
 
     try {
       Some(new URL(finalUrl))
@@ -82,10 +82,10 @@ object URLHelper extends Logging {
 
   def tryToURI(url: String): Option[URI] = {
     val finalUrl = if (url.contains("#!")) {
-      ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+        ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
+      } else {
+        url
+      }
 
     try {
       Some(URI.create(finalUrl))

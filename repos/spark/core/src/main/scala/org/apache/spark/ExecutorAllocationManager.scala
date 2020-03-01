@@ -414,10 +414,10 @@ private[spark] class ExecutorAllocationManager(
         s"Requesting $delta new $executorsString because tasks are backlogged" +
           s" (new desired total will be $numExecutorsTarget)")
       numExecutorsToAdd = if (delta == numExecutorsToAdd) {
-        numExecutorsToAdd * 2
-      } else {
-        1
-      }
+          numExecutorsToAdd * 2
+        } else {
+          1
+        }
       delta
     } else {
       logWarning(

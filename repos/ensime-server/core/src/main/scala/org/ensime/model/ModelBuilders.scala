@@ -90,8 +90,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         // view for later display to user.
         val byView = members.groupBy(_.viaView)
         val viaView = if (byView.size == 1) {
-          byView.keys.headOption.filter(_ != NoSymbol)
-        } else { None }
+            byView.keys.headOption.filter(_ != NoSymbol)
+          } else { None }
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.
@@ -254,8 +254,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           (nameString, nameString)
         }
       val ownerTpe = if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
-        Some(sym.owner.tpe)
-      } else None
+          Some(sym.owner.tpe)
+        } else None
       new SymbolInfo(
         name,
         localName,

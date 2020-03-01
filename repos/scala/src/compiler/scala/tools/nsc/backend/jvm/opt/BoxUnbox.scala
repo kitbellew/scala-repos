@@ -353,25 +353,26 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             for (extraction <- allConsumers) {
               val valueIndex = boxKind.extractedValueIndex(extraction)
               val replacementOps = if (valueIndex == 0) {
-                val pops = boxKind.boxedTypes.tail.map(t => getPop(t.getSize))
-                pops ::: extraction.postExtractionAdaptationOps(
-                  boxKind.boxedTypes.head)
-              } else {
-                var loadOps: List[AbstractInsnNode] = null
-                val consumeStack = boxKind.boxedTypes.zipWithIndex reverseMap {
-                  case (tp, i) =>
-                    if (i == valueIndex) {
-                      val resultSlot = getLocal(tp.getSize)
-                      loadOps =
-                        new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
-                          .postExtractionAdaptationOps(tp)
-                      new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
-                    } else {
-                      getPop(tp.getSize)
+                  val pops = boxKind.boxedTypes.tail.map(t => getPop(t.getSize))
+                  pops ::: extraction.postExtractionAdaptationOps(
+                    boxKind.boxedTypes.head)
+                } else {
+                  var loadOps: List[AbstractInsnNode] = null
+                  val consumeStack =
+                    boxKind.boxedTypes.zipWithIndex reverseMap {
+                      case (tp, i) =>
+                        if (i == valueIndex) {
+                          val resultSlot = getLocal(tp.getSize)
+                          loadOps =
+                            new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
+                              .postExtractionAdaptationOps(tp)
+                          new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
+                        } else {
+                          getPop(tp.getSize)
+                        }
                     }
+                  consumeStack ::: loadOps
                 }
-                consumeStack ::: loadOps
-              }
               toReplace(extraction.consumer) = replacementOps
               toDelete ++= extraction.allInsns - extraction.consumer
             }

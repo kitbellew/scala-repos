@@ -49,10 +49,10 @@ class PresentationReporter(handler: ReportHandler)
             val source = pos.source
             val f = source.file.absolute.path
             val posColumn = if (pos.point == -1) {
-              0
-            } else {
-              pos.column
-            }
+                0
+              } else {
+                pos.column
+              }
 
             val note = new Note(
               f,

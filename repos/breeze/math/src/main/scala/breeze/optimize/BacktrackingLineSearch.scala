@@ -37,14 +37,14 @@ class BacktrackingLineSearch(
       .iterate((State(init, initfval, initfderiv), false, 0)) {
         case (state @ State(alpha, fval, fderiv), _, iter) =>
           val multiplier = if (fval > f0 + alpha * df0 * cArmijo) {
-            shrinkStep
-          } else if (enforceWolfeConditions && (fderiv < cWolfe * df0)) {
-            growStep
-          } else if (enforceStrongWolfeConditions && (fderiv > -cWolfe * df0)) {
-            shrinkStep
-          } else {
-            1.0
-          }
+              shrinkStep
+            } else if (enforceWolfeConditions && (fderiv < cWolfe * df0)) {
+              growStep
+            } else if (enforceStrongWolfeConditions && (fderiv > -cWolfe * df0)) {
+              shrinkStep
+            } else {
+              1.0
+            }
           if (multiplier == 1.0) {
             (state, true, iter)
           } else {

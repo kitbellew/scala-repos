@@ -120,15 +120,15 @@ object SampledRDDs {
     keyCounts.keys.toSeq.sorted.foreach { key =>
       val origFrac = keyCounts(key) / numExamples.toDouble
       val approxFrac = if (sizeB != 0) {
-        keyCountsB.getOrElse(key, 0L) / sizeB.toDouble
-      } else {
-        0
-      }
+          keyCountsB.getOrElse(key, 0L) / sizeB.toDouble
+        } else {
+          0
+        }
       val exactFrac = if (sizeBExact != 0) {
-        keyCountsBExact.getOrElse(key, 0L) / sizeBExact.toDouble
-      } else {
-        0
-      }
+          keyCountsBExact.getOrElse(key, 0L) / sizeBExact.toDouble
+        } else {
+          0
+        }
       println(s"$key\t$origFrac\t$approxFrac\t$exactFrac")
     }
 

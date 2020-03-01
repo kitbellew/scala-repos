@@ -99,41 +99,41 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       rawTpeOfOwner: Type,
       isJava: Boolean): List[FieldIR] = {
     val javaFieldIRs = if (isJava) {
-      // candidates for setter/getter combo
-      val candidates = tpe.declarations.collect {
-        case sym: MethodSymbol if sym.name.toString.startsWith("get") =>
-          sym.name.toString.substring(3)
-      }
-      tpe.declarations.flatMap {
-        case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
-          val shortName = sym.name.toString.substring(3)
-          if (candidates
-                .find(_ == shortName)
-                .nonEmpty && shortName.length > 0) {
-            val rawSymTpe = sym.typeSignatureIn(rawTpeOfOwner) match {
-              case MethodType(List(param), _) => param.typeSignature
-              case _ =>
-                throw PicklingException(
-                  "expected method type for method ${sym.name.toString}")
+        // candidates for setter/getter combo
+        val candidates = tpe.declarations.collect {
+          case sym: MethodSymbol if sym.name.toString.startsWith("get") =>
+            sym.name.toString.substring(3)
+        }
+        tpe.declarations.flatMap {
+          case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
+            val shortName = sym.name.toString.substring(3)
+            if (candidates
+                  .find(_ == shortName)
+                  .nonEmpty && shortName.length > 0) {
+              val rawSymTpe = sym.typeSignatureIn(rawTpeOfOwner) match {
+                case MethodType(List(param), _) => param.typeSignature
+                case _ =>
+                  throw PicklingException(
+                    "expected method type for method ${sym.name.toString}")
+              }
+              val symTpe = existentialAbstraction(quantified, rawSymTpe)
+
+              List(
+                FieldIR(
+                  shortName,
+                  symTpe,
+                  None,
+                  None,
+                  Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
+            } else {
+              List()
             }
-            val symTpe = existentialAbstraction(quantified, rawSymTpe)
 
-            List(
-              FieldIR(
-                shortName,
-                symTpe,
-                None,
-                None,
-                Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
-          } else {
-            List()
-          }
-
-        case _ => List()
+          case _ => List()
+        }
+      } else {
+        List()
       }
-    } else {
-      List()
-    }
 
     (tpe.declarations.collect {
       case sym: MethodSymbol
@@ -294,14 +294,14 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     }
 
     val fieldIRs = if (canCallCtor) {
-      val fields = fieldIRsUsingCtor()
-      // println(s"fieldIRsUsingCtor of ${tpe.toString}: $fields")
-      fields
-    } else {
-      val fields = fieldIRsUsingAllocateInstance()
-      // println(s"fieldIRsUsingAllocateInstance of ${tpe.toString}: $fields")
-      fields
-    }
+        val fields = fieldIRsUsingCtor()
+        // println(s"fieldIRsUsingCtor of ${tpe.toString}: $fields")
+        fields
+      } else {
+        val fields = fieldIRsUsingAllocateInstance()
+        // println(s"fieldIRsUsingAllocateInstance of ${tpe.toString}: $fields")
+        fields
+      }
 
     val useGetInstance =
       if (!(tpe =:= AnyRefTpe) && tpe.typeSymbol.isJava && fieldIRs.isEmpty) {

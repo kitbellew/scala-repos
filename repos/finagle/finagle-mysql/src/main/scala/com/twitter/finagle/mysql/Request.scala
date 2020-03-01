@@ -236,17 +236,17 @@ class ExecuteRequest(
     // parameters are appended to the end of the packet
     // only if the statement has new parameters.
     val composite = if (hasNewParams) {
-      val types = BufferWriter(new Array[Byte](params.size * 2))
-      params foreach { writeTypeCode(_, types) }
-      Buffer(
-        bw,
-        Buffer(nullBitmap),
-        Buffer(Array(newParamsBound)),
-        types,
-        values)
-    } else {
-      Buffer(bw, Buffer(nullBitmap), Buffer(Array(newParamsBound)), values)
-    }
+        val types = BufferWriter(new Array[Byte](params.size * 2))
+        params foreach { writeTypeCode(_, types) }
+        Buffer(
+          bw,
+          Buffer(nullBitmap),
+          Buffer(Array(newParamsBound)),
+          types,
+          values)
+      } else {
+        Buffer(bw, Buffer(nullBitmap), Buffer(Array(newParamsBound)), values)
+      }
     Packet(seq, composite)
   }
 }

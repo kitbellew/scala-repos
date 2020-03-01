@@ -1584,7 +1584,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             newLinesOpt()
             val thenp = expr()
             val elsep = if (in.token == ELSE) { in.nextToken(); expr() }
-            else literalUnit
+              else literalUnit
             If(cond, thenp, elsep)
           }
           parseIf
@@ -2337,7 +2337,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         if (mods.hasAccessBoundary)
           syntaxError("duplicate private/protected qualifier", skipIt = false)
         result = if (in.token == THIS) { in.nextToken(); mods | Flags.LOCAL }
-        else Modifiers(mods.flags, identForType())
+          else Modifiers(mods.flags, identForType())
         accept(RBRACKET)
       }
       result

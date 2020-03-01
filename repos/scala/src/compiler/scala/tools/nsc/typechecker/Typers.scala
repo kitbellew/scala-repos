@@ -180,16 +180,17 @@ trait Typers
           for (ar <- argResultsBuff)
             paramTp = paramTp.subst(ar.subst.from, ar.subst.to)
 
-          val res = if (paramFailed || (paramTp.isErroneous && {
-                          paramFailed = true; true
-                        })) SearchFailure
-          else
-            inferImplicit(
-              fun,
-              paramTp,
-              context.reportErrors,
-              isView = false,
-              context)
+          val res =
+            if (paramFailed || (paramTp.isErroneous && {
+                  paramFailed = true; true
+                })) SearchFailure
+            else
+              inferImplicit(
+                fun,
+                paramTp,
+                context.reportErrors,
+                isView = false,
+                context)
           argResultsBuff += res
 
           if (res.isSuccess) {
@@ -2324,23 +2325,23 @@ trait Typers
           vdef.rhs
         } else {
           val tpt2 = if (sym.hasDefault) {
-            // When typechecking default parameter, replace all type parameters in the expected type by Wildcard.
-            // This allows defining "def foo[T](a: T = 1)"
-            val tparams = sym.owner.skipConstructor.info.typeParams
-            val subst =
-              new SubstTypeMap(tparams, tparams map (_ => WildcardType)) {
-                override def matches(sym: Symbol, sym1: Symbol) =
-                  if (sym.isSkolem) matches(sym.deSkolemize, sym1)
-                  else if (sym1.isSkolem) matches(sym, sym1.deSkolemize)
-                  else super[SubstTypeMap].matches(sym, sym1)
-              }
-            // allow defaults on by-name parameters
-            if (sym hasFlag BYNAMEPARAM)
-              if (tpt1.tpe.typeArgs.isEmpty)
-                WildcardType // during erasure tpt1 is Function0
-              else subst(tpt1.tpe.typeArgs(0))
-            else subst(tpt1.tpe)
-          } else tpt1.tpe
+              // When typechecking default parameter, replace all type parameters in the expected type by Wildcard.
+              // This allows defining "def foo[T](a: T = 1)"
+              val tparams = sym.owner.skipConstructor.info.typeParams
+              val subst =
+                new SubstTypeMap(tparams, tparams map (_ => WildcardType)) {
+                  override def matches(sym: Symbol, sym1: Symbol) =
+                    if (sym.isSkolem) matches(sym.deSkolemize, sym1)
+                    else if (sym1.isSkolem) matches(sym, sym1.deSkolemize)
+                    else super[SubstTypeMap].matches(sym, sym1)
+                }
+              // allow defaults on by-name parameters
+              if (sym hasFlag BYNAMEPARAM)
+                if (tpt1.tpe.typeArgs.isEmpty)
+                  WildcardType // during erasure tpt1 is Function0
+                else subst(tpt1.tpe.typeArgs(0))
+              else subst(tpt1.tpe)
+            } else tpt1.tpe
           transformedOrTyped(vdef.rhs, EXPRmode | BYVALmode, tpt2)
         }
       treeCopy.ValDef(vdef, typedMods, vdef.name, tpt1, checkDead(rhs1)) setType NoType
@@ -4603,21 +4604,21 @@ trait Typers
 
         val tparams = fun1.symbol.typeParams //@M TODO: fun.symbol.info.typeParams ? (as in typedAppliedTypeTree)
         val args1 = if (sameLength(args, tparams)) {
-          //@M: in case TypeApply we can't check the kind-arities of the type arguments,
-          // as we don't know which alternative to choose... here we do
-          map2Conserve(args, tparams) {
-            //@M! the polytype denotes the expected kind
-            (arg, tparam) =>
-              typedHigherKindedType(
-                arg,
-                mode,
-                Kind.FromParams(tparam.typeParams))
-          }
-        } else // @M: there's probably something wrong when args.length != tparams.length... (triggered by bug #320)
-          // Martin, I'm using fake trees, because, if you use args or arg.map(typedType),
-          // inferPolyAlternatives loops...  -- I have no idea why :-(
-          // ...actually this was looping anyway, see bug #278.
-          return TypedApplyWrongNumberOfTpeParametersError(fun, fun)
+            //@M: in case TypeApply we can't check the kind-arities of the type arguments,
+            // as we don't know which alternative to choose... here we do
+            map2Conserve(args, tparams) {
+              //@M! the polytype denotes the expected kind
+              (arg, tparam) =>
+                typedHigherKindedType(
+                  arg,
+                  mode,
+                  Kind.FromParams(tparam.typeParams))
+            }
+          } else // @M: there's probably something wrong when args.length != tparams.length... (triggered by bug #320)
+            // Martin, I'm using fake trees, because, if you use args or arg.map(typedType),
+            // inferPolyAlternatives loops...  -- I have no idea why :-(
+            // ...actually this was looping anyway, see bug #278.
+            return TypedApplyWrongNumberOfTpeParametersError(fun, fun)
 
         typedTypeApply(tree, mode, fun1, args1)
       case SingleType(_, _) =>
@@ -5855,9 +5856,9 @@ trait Typers
               // if symbol hasn't been fully loaded, can't check kind-arity except when we're in a pattern,
               // where we can (we can't take part in F-Bounds) and must (SI-8023)
               val pt = if (mode.typingPatternOrTypePat) {
-                tparam.initialize; ptParams
-              } else if (isComplete) ptParams
-              else Kind.Wildcard
+                  tparam.initialize; ptParams
+                } else if (isComplete) ptParams
+                else Kind.Wildcard
 
               typedHigherKindedType(arg, mode, pt)
             }
@@ -6068,18 +6069,21 @@ trait Typers
 
         // @M maybe the well-kindedness check should be done when checking the type arguments conform to the type parameters' bounds?
         val args1 = if (sameLength(args, tparams)) map2Conserve(args, tparams) {
-          (arg, tparam) =>
-            typedHigherKindedType(arg, mode, Kind.FromParams(tparam.typeParams))
-        }
-        else {
-          //@M  this branch is correctly hit for an overloaded polymorphic type. It also has to handle erroneous cases.
-          // Until the right alternative for an overloaded method is known, be very liberal,
-          // typedTypeApply will find the right alternative and then do the same check as
-          // in the then-branch above. (see pos/tcpoly_overloaded.scala)
-          // this assert is too strict: be tolerant for errors like trait A { def foo[m[x], g]=error(""); def x[g] = foo[g/*ERR: missing argument type*/] }
-          //assert(fun1.symbol.info.isInstanceOf[OverloadedType] || fun1.symbol.isError) //, (fun1.symbol,fun1.symbol.info,fun1.symbol.info.getClass,args,tparams))
-          args mapConserve (typedHigherKindedType(_, mode))
-        }
+            (arg, tparam) =>
+              typedHigherKindedType(
+                arg,
+                mode,
+                Kind.FromParams(tparam.typeParams))
+          }
+          else {
+            //@M  this branch is correctly hit for an overloaded polymorphic type. It also has to handle erroneous cases.
+            // Until the right alternative for an overloaded method is known, be very liberal,
+            // typedTypeApply will find the right alternative and then do the same check as
+            // in the then-branch above. (see pos/tcpoly_overloaded.scala)
+            // this assert is too strict: be tolerant for errors like trait A { def foo[m[x], g]=error(""); def x[g] = foo[g/*ERR: missing argument type*/] }
+            //assert(fun1.symbol.info.isInstanceOf[OverloadedType] || fun1.symbol.isError) //, (fun1.symbol,fun1.symbol.info,fun1.symbol.info.getClass,args,tparams))
+            args mapConserve (typedHigherKindedType(_, mode))
+          }
 
         //@M TODO: context.undetparams = undets_fun ?
         Typer.this.typedTypeApply(tree, mode, fun1, args1)

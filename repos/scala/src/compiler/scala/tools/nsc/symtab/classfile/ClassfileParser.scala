@@ -472,7 +472,7 @@ abstract class ClassfileParser {
       } else
         raiseLoaderLevel {
           val superType = if (jflags.isAnnotation) { u2; AnnotationClass.tpe }
-          else pool.getSuperClass(u2).tpe_*
+            else pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
             for (i <- List.range(0, ifaceCount))
@@ -790,10 +790,10 @@ abstract class ClassfileParser {
           }
           index += 1
           val restype = if (sym != null && sym.isClassConstructor) {
-            accept('V')
-            clazz.tpe_*
-          } else
-            sig2type(tparams, skiptvs)
+              accept('V')
+              clazz.tpe_*
+            } else
+              sig2type(tparams, skiptvs)
           JavaMethodType(
             sym.newSyntheticValueParams(paramtypes.toList),
             restype)
@@ -1148,16 +1148,16 @@ abstract class ClassfileParser {
           .setFlag(JAVA)
 
       val (innerClass, innerModule) = if (file == NoAbstractFile) {
-        (newStub(name.toTypeName), newStub(name.toTermName))
-      } else {
-        val cls =
-          owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
-        val mod =
-          owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
-        mod.moduleClass setInfo loaders.moduleClassLoader
-        List(cls, mod.moduleClass) foreach (_.associatedFile = file)
-        (cls, mod)
-      }
+          (newStub(name.toTypeName), newStub(name.toTermName))
+        } else {
+          val cls =
+            owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
+          val mod =
+            owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
+          mod.moduleClass setInfo loaders.moduleClassLoader
+          List(cls, mod.moduleClass) foreach (_.associatedFile = file)
+          (cls, mod)
+        }
 
       scope enter innerClass
       scope enter innerModule

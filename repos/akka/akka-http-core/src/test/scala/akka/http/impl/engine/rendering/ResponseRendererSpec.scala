@@ -644,8 +644,7 @@ class ResponseRendererSpec
             response = HttpResponse(
               200,
               headers = resCH.toList,
-              entity =
-                if (resCD)
+              entity = if (resCD)
                   HttpEntity.CloseDelimited(
                     ContentTypes.`text/plain(UTF-8)`,
                     Source.single(ByteString("ENTITY")))

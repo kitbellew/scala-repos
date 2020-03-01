@@ -153,10 +153,10 @@ private[coordinator] class GroupMetadata(
     members.remove(memberId)
     if (memberId == leaderId) {
       leaderId = if (members.isEmpty) {
-        null
-      } else {
-        members.keys.head
-      }
+          null
+        } else {
+          members.keys.head
+        }
     }
   }
 

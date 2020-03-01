@@ -75,8 +75,8 @@ object Trace {
 
       val flags = Flags(flags64)
       val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
-      } else None
+          if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
+        } else None
 
       val traceId = TraceId(
         if (trace64 == parent64) None else Some(SpanId(trace64)),

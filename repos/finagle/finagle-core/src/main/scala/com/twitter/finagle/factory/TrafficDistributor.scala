@@ -233,17 +233,17 @@ private[finagle] class TrafficDistributor[Req, Rep](
               case WeightedFactory(f, _, _) => f
             }
             val newCacheEntry = if (cache.contains(weight)) {
-              // an update that contains an existing weight class updates
-              // the balancers backing collection.
-              val cached = cache(weight)
-              cached.endpoints.update(Activity.Ok(unweighted))
-              cached.copy(size = unweighted.size)
-            } else {
-              val endpoints: BalancerEndpoints[Req, Rep] =
-                Var(Activity.Ok(unweighted))
-              val lb = newBalancer(Activity(endpoints))
-              CachedBalancer(lb, endpoints, unweighted.size)
-            }
+                // an update that contains an existing weight class updates
+                // the balancers backing collection.
+                val cached = cache(weight)
+                cached.endpoints.update(Activity.Ok(unweighted))
+                cached.copy(size = unweighted.size)
+              } else {
+                val endpoints: BalancerEndpoints[Req, Rep] =
+                  Var(Activity.Ok(unweighted))
+                val lb = newBalancer(Activity(endpoints))
+                CachedBalancer(lb, endpoints, unweighted.size)
+              }
             cache + (weight -> newCacheEntry)
         }
 
@@ -284,8 +284,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
   private[this] def updateMeanWeight(
       classes: Iterable[WeightClass[Req, Rep]]): Unit = {
     val size = classes.map(_.size).sum
-    meanWeight =
-      if (size != 0) classes.map { c => c.weight * c.size }.sum.toFloat / size
+    meanWeight = if (size != 0)
+        classes.map { c => c.weight * c.size }.sum.toFloat / size
       else 0.0f
   }
 

@@ -75,13 +75,13 @@ class serverset extends BaseServersetNamer {
   protected[this] def bind(path: Path): Option[Name.Bound] = path match {
     case Path.Utf8(hosts, rest @ _*) =>
       val addr = if (rest.nonEmpty && (rest.last contains ":")) {
-        val Array(name, endpoint) = rest.last.split(":", 2)
-        val zkPath = (rest.init :+ name).mkString("/", "/", "")
-        resolveServerset(hosts, zkPath, endpoint)
-      } else {
-        val zkPath = rest.mkString("/", "/", "")
-        resolveServerset(hosts, zkPath)
-      }
+          val Array(name, endpoint) = rest.last.split(":", 2)
+          val zkPath = (rest.init :+ name).mkString("/", "/", "")
+          resolveServerset(hosts, zkPath, endpoint)
+        } else {
+          val zkPath = rest.mkString("/", "/", "")
+          resolveServerset(hosts, zkPath)
+        }
 
       // Clients may depend on Name.Bound ids being Paths which resolve
       // back to the same Name.Bound

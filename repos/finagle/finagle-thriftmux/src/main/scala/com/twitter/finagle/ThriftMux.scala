@@ -204,12 +204,12 @@ object ThriftMux
       // classifier is used to make when deserialization happens in the stack
       // uniform whether or not a `ResponseClassifier` is wired up.
       val classifier = if (params.contains[param.ResponseClassifier]) {
-        ThriftMuxResponseClassifier.usingDeserializeCtx(
-          params[param.ResponseClassifier].responseClassifier
-        )
-      } else {
-        ThriftMuxResponseClassifier.DeserializeCtxOnly
-      }
+          ThriftMuxResponseClassifier.usingDeserializeCtx(
+            params[param.ResponseClassifier].responseClassifier
+          )
+        } else {
+          ThriftMuxResponseClassifier.DeserializeCtxOnly
+        }
       muxer.configured(param.ResponseClassifier(classifier))
     }
 

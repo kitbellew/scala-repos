@@ -518,12 +518,12 @@ trait Slice { source =>
       case (ColumnRef(path, ctpe), _) => (path, ctpe)
     })(collection.breakOut)
     val columns = if (Schema.subsumes(tuples, jtpe)) {
-      source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        source.columns filter {
+          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        }
+      } else {
+        Map.empty[ColumnRef, Column]
       }
-    } else {
-      Map.empty[ColumnRef, Column]
-    }
 
     Slice(columns, source.size)
   }
@@ -549,19 +549,20 @@ trait Slice { source =>
       .reduceOption(_ | _) getOrElse new BitSet
 
     val columns = if (subsumes) {
-      val cols = source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        val cols = source.columns filter {
+          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        }
+
+        val included = Schema.findTypes(jtpe, CPath.Identity, cols, size)
+        val includedBits = BitSetUtil.filteredRange(0, size)(included)
+
+        Map(
+          ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
+            .Either(definedBits, includedBits))
+      } else {
+        Map(
+          ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(definedBits))
       }
-
-      val included = Schema.findTypes(jtpe, CPath.Identity, cols, size)
-      val includedBits = BitSetUtil.filteredRange(0, size)(included)
-
-      Map(
-        ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
-          .Either(definedBits, includedBits))
-    } else {
-      Map(ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(definedBits))
-    }
   }
 
   def nest(selectorPrefix: CPath) = new Slice {

@@ -328,11 +328,11 @@ trait Emitter
         val ast.Where(loc, left, right) = where
 
         val state = if (e.groups contains where) {
-          val id = e.groups(where)
-          emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
-        } else {
-          emitFilter(left, right, dispatches)
-        }
+            val id = e.groups(where)
+            emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
+          } else {
+            emitFilter(left, right, dispatches)
+          }
 
         state(e)
       }

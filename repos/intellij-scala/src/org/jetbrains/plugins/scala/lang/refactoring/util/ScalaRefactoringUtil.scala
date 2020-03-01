@@ -1233,8 +1233,7 @@ object ScalaRefactoringUtil {
           val endOffset =
             if (isEnd) literalRange.getEndOffset else newRange.getEndOffset
           document.replaceString(startOffset, endOffset, text)
-          shift =
-            if (isStart) startOffset - newRange.getStartOffset
+          shift = if (isStart) startOffset - newRange.getStartOffset
             else firstPart.length
         }
       case _ =>

@@ -31,12 +31,12 @@ class ScalaDocParserErrorInspection extends LocalInspectionTool {
               val startElement: PsiElement =
                 if (a.getPrevSibling == null) a else a.getPrevSibling
               val endElement: PsiElement = if (a.getPrevSibling != null) {
-                a
-              } else if (a.getNextSibling != null) {
-                a.getNextSibling
-              } else {
-                a.getParent
-              }
+                  a
+                } else if (a.getNextSibling != null) {
+                  a.getNextSibling
+                } else {
+                  a.getParent
+                }
               holder.registerProblem(
                 holder.getManager.createProblemDescriptor(
                   startElement,

@@ -38,10 +38,10 @@ object DateTimeUtil {
     val value = value0.trim.replace(" ", "T")
 
     val parser = if (value.contains("-") || value.contains(":")) {
-      fullParser
-    } else {
-      basicParser
-    }
+        fullParser
+      } else {
+        basicParser
+      }
 
     val p = if (withOffset) parser.withOffsetParsed else parser
     p.parseDateTime(value)

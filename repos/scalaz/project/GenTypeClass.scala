@@ -222,19 +222,19 @@ object GenTypeClass {
         log: Logger): (FileStatus, sbt.File) = {
       val f = file(scalaSource)
       val (status, updatedSource) = if (f.exists()) {
-        val old = IO.read(f)
-        val updated = updateSource(old)
-        if (updated == old) {
-          log.debug("No changed %s".format(f))
-          (FileStatus.NoChange, updated)
+          val old = IO.read(f)
+          val updated = updateSource(old)
+          if (updated == old) {
+            log.debug("No changed %s".format(f))
+            (FileStatus.NoChange, updated)
+          } else {
+            log.info("Updating %s".format(f))
+            (FileStatus.Updated, updated)
+          }
         } else {
-          log.info("Updating %s".format(f))
-          (FileStatus.Updated, updated)
+          log.info("Creating %s".format(f))
+          (FileStatus.Created, source)
         }
-      } else {
-        log.info("Creating %s".format(f))
-        (FileStatus.Created, source)
-      }
       log.debug("Contents: %s".format(updatedSource))
       IO.delete(f)
       IO.write(f, updatedSource)
@@ -330,18 +330,18 @@ object GenTypeClass {
                              .mkString("."))
     val syntaxPackString1 = tc.syntaxPack.mkString(".")
     val syntaxMember = if (tc.createSyntax) {
-      if (kind.multipleParam) {
-        s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent, S] { def F = $typeClassName.this }"
-      } else {
-        s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent] { def F = $typeClassName.this }"
-      }
-    } else ""
+        if (kind.multipleParam) {
+          s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent, S] { def F = $typeClassName.this }"
+        } else {
+          s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent] { def F = $typeClassName.this }"
+        }
+      } else ""
 
     val applyMethod = if (kind.multipleParam) {
-      s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F, S]): $typeClassName[F, S] = F"""
-    } else {
-      s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F]): $typeClassName[F] = F"""
-    }
+        s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F, S]): $typeClassName[F, S] = F"""
+      } else {
+        s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F]): $typeClassName[F] = F"""
+      }
 
     val mainSource = s"""${tc.packageString0}
 
@@ -517,9 +517,12 @@ trait ${typeClassName}Syntax[F[_], S] ${extendsListText("Syntax", cti = "F")} {
 """
     }
     val syntaxSourceFile = if (tc.createSyntax) {
-      Some(
-        SourceFile(tc.syntaxPack, typeClassName + "Syntax.scala", syntaxSource))
-    } else None
+        Some(
+          SourceFile(
+            tc.syntaxPack,
+            typeClassName + "Syntax.scala",
+            syntaxSource))
+      } else None
 
     TypeClassSource(mainSourceFile, syntaxSourceFile)
   }

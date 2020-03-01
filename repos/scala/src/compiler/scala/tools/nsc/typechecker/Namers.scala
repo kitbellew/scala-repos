@@ -1387,39 +1387,40 @@ trait Namers extends MethodSynthesis {
             }
 
             val parentNamer = if (isConstr) {
-              val (cdef, nmr) = moduleNamer.getOrElse {
-                val module = companionSymbolOf(methOwner, context)
-                module.initialize // call type completer (typedTemplate), adds the
-                // module's templateNamer to classAndNamerOfModule
-                module.attachments.get[ConstructorDefaultsAttachment] match {
-                  // by martin: the null case can happen in IDE; this is really an ugly hack on top of an ugly hack but it seems to work
-                  case Some(cda) =>
-                    if (cda.companionModuleClassNamer == null) {
-                      devWarning(
-                        s"SI-6576 The companion module namer for $meth was unexpectedly null")
-                      return
-                    }
-                    val p =
-                      (cda.classWithDefault, cda.companionModuleClassNamer)
-                    moduleNamer = Some(p)
-                    p
-                  case _ =>
-                    return // fix #3649 (prevent crash in erroneous source code)
+                val (cdef, nmr) = moduleNamer.getOrElse {
+                  val module = companionSymbolOf(methOwner, context)
+                  module.initialize // call type completer (typedTemplate), adds the
+                  // module's templateNamer to classAndNamerOfModule
+                  module.attachments.get[ConstructorDefaultsAttachment] match {
+                    // by martin: the null case can happen in IDE; this is really an ugly hack on top of an ugly hack but it seems to work
+                    case Some(cda) =>
+                      if (cda.companionModuleClassNamer == null) {
+                        devWarning(
+                          s"SI-6576 The companion module namer for $meth was unexpectedly null")
+                        return
+                      }
+                      val p =
+                        (cda.classWithDefault, cda.companionModuleClassNamer)
+                      moduleNamer = Some(p)
+                      p
+                    case _ =>
+                      return // fix #3649 (prevent crash in erroneous source code)
+                  }
                 }
-              }
-              val ClassDef(_, _, rtparams, _) = resetAttrs(cdef.duplicate)
-              defTparams = rtparams.map(rt =>
-                copyTypeDef(rt)(mods = rt.mods &~ (COVARIANT | CONTRAVARIANT)))
-              nmr
-            } else
-              ownerNamer getOrElse {
-                val ctx =
-                  context.nextEnclosing(c => c.scope.toList.contains(meth))
-                assert(ctx != NoContext, meth)
-                val nmr = newNamer(ctx)
-                ownerNamer = Some(nmr)
+                val ClassDef(_, _, rtparams, _) = resetAttrs(cdef.duplicate)
+                defTparams = rtparams.map(rt =>
+                  copyTypeDef(rt)(mods =
+                    rt.mods &~ (COVARIANT | CONTRAVARIANT)))
                 nmr
-              }
+              } else
+                ownerNamer getOrElse {
+                  val ctx =
+                    context.nextEnclosing(c => c.scope.toList.contains(meth))
+                  assert(ctx != NoContext, meth)
+                  val nmr = newNamer(ctx)
+                  ownerNamer = Some(nmr)
+                  nmr
+                }
 
             val defTpt =
               // don't mess with tpt's of case copy default getters, because assigning something other than TypeTree()
@@ -1478,13 +1479,13 @@ trait Namers extends MethodSynthesis {
     private def valDefSig(vdef: ValDef) = {
       val ValDef(_, _, tpt, rhs) = vdef
       val result = if (tpt.isEmpty) {
-        if (rhs.isEmpty) {
-          MissingParameterOrValTypeError(tpt)
-          ErrorType
-        } else assignTypeToTree(vdef, typer, WildcardType)
-      } else {
-        typer.typedType(tpt).tpe
-      }
+          if (rhs.isEmpty) {
+            MissingParameterOrValTypeError(tpt)
+            ErrorType
+          } else assignTypeToTree(vdef, typer, WildcardType)
+        } else {
+          typer.typedType(tpt).tpe
+        }
       pluginsTypeSig(
         result,
         typer,

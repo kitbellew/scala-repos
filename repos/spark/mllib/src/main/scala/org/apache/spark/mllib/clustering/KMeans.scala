@@ -253,13 +253,13 @@ class KMeans private (
 
     // Only one run is allowed when initialModel is given
     val numRuns = if (initialModel.nonEmpty) {
-      if (runs > 1)
-        logWarning(
-          "Ignoring runs; one run is allowed when initialModel is given.")
-      1
-    } else {
-      runs
-    }
+        if (runs > 1)
+          logWarning(
+            "Ignoring runs; one run is allowed when initialModel is given.")
+        1
+      } else {
+        runs
+      }
 
     val centers = initialModel match {
       case Some(kMeansCenters) => {

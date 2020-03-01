@@ -459,8 +459,7 @@ trait ParserResults[+T] { this: Parser[T] =>
     f.fullStack.clear()
     if (f.traceIndex != -1 && f.traceIndex >= index) {
       if (f.traceIndex == index) {
-        f.traceParsers =
-          if (traceParsers == null) Set(this)
+        f.traceParsers = if (traceParsers == null) Set(this)
           else traceParsers
       } else {
         f.traceParsers = Set.empty

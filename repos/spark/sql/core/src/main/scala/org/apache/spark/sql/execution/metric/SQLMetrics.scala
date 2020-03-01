@@ -154,15 +154,15 @@ private object StaticsLongSQLMetricParam
         val validValues = values.filter(_ >= 0)
         val Seq(sum, min, med, max) = {
           val metric = if (validValues.length == 0) {
-            Seq.fill(4)(0L)
-          } else {
-            val sorted = validValues.sorted
-            Seq(
-              sorted.sum,
-              sorted(0),
-              sorted(validValues.length / 2),
-              sorted(validValues.length - 1))
-          }
+              Seq.fill(4)(0L)
+            } else {
+              val sorted = validValues.sorted
+              Seq(
+                sorted.sum,
+                sorted(0),
+                sorted(validValues.length / 2),
+                sorted(validValues.length - 1))
+            }
           metric.map(Utils.bytesToString)
         }
         s"\n$sum ($min, $med, $max)"

@@ -332,8 +332,7 @@ trait DocumentCleaner {
             replacementText.append(" " + prevSibNode.outerHtml() + " ")
             nodesToRemove += prevSibNode
             prevSibNode.attr("grv-usedalready", "yes")
-            prevSibNode =
-              if (prevSibNode.previousSibling() == null) null
+            prevSibNode = if (prevSibNode.previousSibling() == null) null
               else prevSibNode.previousSibling()
           }
           // add the text of the node
@@ -346,8 +345,7 @@ trait DocumentCleaner {
             replacementText.append(" " + nextSibNode.outerHtml() + " ")
             nodesToRemove += nextSibNode
             nextSibNode.attr("grv-usedalready", "yes")
-            nextSibNode =
-              if (nextSibNode.nextSibling() == null) null
+            nextSibNode = if (nextSibNode.nextSibling() == null) null
               else nextSibNode.nextSibling()
           }
 

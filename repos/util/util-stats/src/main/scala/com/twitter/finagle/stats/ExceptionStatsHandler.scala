@@ -27,10 +27,10 @@ object ExceptionStatsHandler {
     val exceptionChain = Throwables.mkString(t)
 
     val suffixes = if (rollup) {
-      exceptionChain.inits.toSeq
-    } else {
-      Seq(exceptionChain, Nil)
-    }
+        exceptionChain.inits.toSeq
+      } else {
+        Seq(exceptionChain, Nil)
+      }
 
     labels.flatMap { prefix => suffixes.map { suffix => prefix ++ suffix } }
   }

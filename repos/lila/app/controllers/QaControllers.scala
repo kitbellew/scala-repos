@@ -27,8 +27,8 @@ trait QaController extends LilaController {
               answers,
               popular,
               related,
-              answerForm =
-                if (QaAuth canAnswer q) answerForm orElse Some(forms.answer)
+              answerForm = if (QaAuth canAnswer q)
+                  answerForm orElse Some(forms.answer)
                 else None,
               captcha = captcha))
         }

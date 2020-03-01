@@ -25,8 +25,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     if ((flags & 0x0010) != 0)
       x = buffer.append("final ")
     if ((flags & 0x0400) != 0)
-      x =
-        if (clazz) buffer.append("abstract ")
+      x = if (clazz) buffer.append("abstract ")
         else buffer.append("/*deferred*/ ")
     buffer.toString()
   }

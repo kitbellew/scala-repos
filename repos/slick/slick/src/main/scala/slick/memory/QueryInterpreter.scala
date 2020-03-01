@@ -578,7 +578,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
     if (!it.hasNext) None
     else {
       val it2 = if (opt) it.collect { case Some(b) => b }
-      else it
+        else it
       var res: T = null.asInstanceOf[T]
       var first = true
       it2.foreach { b =>

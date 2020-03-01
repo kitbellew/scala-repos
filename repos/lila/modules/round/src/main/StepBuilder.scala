@@ -91,8 +91,7 @@ object StepBuilder {
           after.copy(
             nag = ad.nag.symbol.some,
             comments = ad.makeComment(false, true) :: after.comments,
-            variations =
-              if (ad.info.variation.isEmpty) after.variations
+            variations = if (ad.info.variation.isEmpty) after.variations
               else
                 makeVariation(gameId, before, ad.info, variant).toList :: after.variations
           )

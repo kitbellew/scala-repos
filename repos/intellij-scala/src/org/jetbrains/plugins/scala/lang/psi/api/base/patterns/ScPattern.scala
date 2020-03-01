@@ -332,13 +332,13 @@ trait ScPattern extends ScalaPsiElement {
           .map(_.getType(TypingContext.empty).getOrAny)
           .map(undefSubst.subst)
         val args = if (types.nonEmpty && params.last.isVarArgs) {
-          val lastType = types.last
-          val tp = ScalaPsiElementFactory.createTypeFromText(
-            s"scala.collection.Seq[${lastType.canonicalText}]",
-            cl,
-            cl)
-          types.dropRight(1) :+ tp
-        } else types
+            val lastType = types.last
+            val tp = ScalaPsiElementFactory.createTypeFromText(
+              s"scala.collection.Seq[${lastType.canonicalText}]",
+              cl,
+              cl)
+            types.dropRight(1) :+ tp
+          } else types
         if (argIndex < args.length) Some(args(argIndex))
         else None
       case _ => None

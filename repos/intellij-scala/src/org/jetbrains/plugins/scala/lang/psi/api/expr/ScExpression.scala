@@ -552,10 +552,10 @@ trait ScExpression
         .replaceExpression(expr, removeParenthesis = true)
     }
     val newExpr: ScExpression = if (ScalaPsiUtil.needParentheses(this, expr)) {
-      ScalaPsiElementFactory.createExpressionFromText(
-        "(" + expr.getText + ")",
-        getManager)
-    } else expr
+        ScalaPsiElementFactory.createExpressionFromText(
+          "(" + expr.getText + ")",
+          getManager)
+      } else expr
     val parentNode = oldParent.getNode
     val newNode = newExpr.copy.getNode
     parentNode.replaceChild(this.getNode, newNode)

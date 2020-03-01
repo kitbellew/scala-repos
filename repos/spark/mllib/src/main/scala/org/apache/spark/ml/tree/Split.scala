@@ -133,10 +133,10 @@ final class CategoricalSplit private[ml] (
 
   override private[tree] def toOld: OldSplit = {
     val oldCats = if (isLeft) {
-      categories
-    } else {
-      setComplement(categories)
-    }
+        categories
+      } else {
+        setComplement(categories)
+      }
     OldSplit(
       featureIndex,
       threshold = 0.0,

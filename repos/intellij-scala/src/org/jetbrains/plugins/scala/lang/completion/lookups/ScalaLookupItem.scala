@@ -144,20 +144,20 @@ class ScalaLookupItem(
           else fun.getType(TypingContext.empty).getOrAny
         presentation.setTypeText(presentationString(scType, substitutor))
         val tailText1 = if (isAssignment) {
-          " = " + presentationString(fun.paramClauses, substitutor)
-        } else {
-          tailText + (
-            if (!isOverloadedForClassName)
-              presentationString(fun.paramClauses, substitutor)
-            else "(...)"
-          ) + (
-            if (shouldImport && isClassName && containingClass != null)
-              " " + containingClass.getPresentation.getLocationString
-            else if (isClassName && containingClass != null)
-              " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
-            else ""
-          )
-        }
+            " = " + presentationString(fun.paramClauses, substitutor)
+          } else {
+            tailText + (
+              if (!isOverloadedForClassName)
+                presentationString(fun.paramClauses, substitutor)
+              else "(...)"
+            ) + (
+              if (shouldImport && isClassName && containingClass != null)
+                " " + containingClass.getPresentation.getLocationString
+              else if (isClassName && containingClass != null)
+                " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
+              else ""
+            )
+          }
         if (!etaExpanded)
           presentation.setTailText(tailText1)
         else presentation.setTailText(" _")

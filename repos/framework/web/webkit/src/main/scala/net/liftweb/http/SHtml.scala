@@ -2575,10 +2575,10 @@ trait SHtml extends Loggable {
                 checked(deflt.filter(_ == value).isDefined)
 
             val elem = if (idx == 0) {
-              radio ++ <input type="hidden" value={hiddenId} name={name}/>
-            } else {
-              radio
-            }
+                radio ++ <input type="hidden" value={hiddenId} name={name}/>
+              } else {
+                radio
+              }
 
             ChoiceItem(value, elem)
           }

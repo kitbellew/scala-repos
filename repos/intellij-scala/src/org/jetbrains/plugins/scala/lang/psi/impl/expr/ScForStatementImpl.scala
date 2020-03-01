@@ -201,10 +201,10 @@ class ScForStatementImpl(node: ASTNode)
           exprText.append(gen.pattern.getText)
 
           val (freshName1, freshName2) = if (forDisplay) {
-            ("x$1", "x$2")
-          } else {
-            ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
-          }
+              ("x$1", "x$2")
+            } else {
+              ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
+            }
 
           exprText
             .append(") <- (for (")

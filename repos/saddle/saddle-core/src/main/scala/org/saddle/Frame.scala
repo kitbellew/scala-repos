@@ -1668,9 +1668,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         val lst = for ((i, l, v) <- enumZip(rlens, vls)) yield {
           val fmt = "%" + l + "s"
           val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-            resetRowLabels(i + 1)
-            v.formatted(fmt)
-          } else "".formatted(fmt)
+              resetRowLabels(i + 1)
+              v.formatted(fmt)
+            } else "".formatted(fmt)
           prevRowLabels(i) = v
           res
         }

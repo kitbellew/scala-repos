@@ -265,12 +265,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       classSymToInternalName: Symbol => InternalName,
       methodSymToDescriptor: Symbol => String): InlineInfo = {
     val traitSelfType = if (classSym.isTrait) {
-      // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
-      val selfSym = classSym.typeOfThis.typeSymbol
-      if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
-    } else {
-      None
-    }
+        // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
+        val selfSym = classSym.typeOfThis.typeSymbol
+        if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
+      } else {
+        None
+      }
 
     val isEffectivelyFinal = classSym.isEffectivelyFinal
 

@@ -584,10 +584,10 @@ object CSCMatrix
       }
 
       val order: Array[Int] = if (keysAlreadySorted) {
-        VectorBuilder.range(nnz)
-      } else {
-        sortedIndices(indices)
-      }
+          VectorBuilder.range(nnz)
+        } else {
+          sortedIndices(indices)
+        }
 
       val outRows = new Array[Int](nnz)
       val outData = new Array[T](nnz)

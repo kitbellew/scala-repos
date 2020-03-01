@@ -16,7 +16,7 @@ class rollTest extends FunSuite {
     cfor(0)(i => i < M, i => i + 1)(i => {
       v(i) = i
       expected(i) = if (i - 3 < 0) { M + i - 3 }
-      else { i - 3 }
+        else { i - 3 }
     })
 
     assert(roll(v, 3) == expected)

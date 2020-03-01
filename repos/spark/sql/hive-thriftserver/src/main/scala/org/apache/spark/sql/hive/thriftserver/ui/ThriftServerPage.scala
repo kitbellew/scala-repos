@@ -77,32 +77,32 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
   private def generateSQLStatsTable(): Seq[Node] = {
     val numStatement = listener.getExecutionList.size
     val table = if (numStatement > 0) {
-      val headerRow = Seq(
-        "User",
-        "JobID",
-        "GroupID",
-        "Start Time",
-        "Finish Time",
-        "Duration",
-        "Statement",
-        "State",
-        "Detail")
-      val dataRows = listener.getExecutionList
+        val headerRow = Seq(
+          "User",
+          "JobID",
+          "GroupID",
+          "Start Time",
+          "Finish Time",
+          "Duration",
+          "Statement",
+          "State",
+          "Detail")
+        val dataRows = listener.getExecutionList
 
-      def generateDataRow(info: ExecutionInfo): Seq[Node] = {
-        val jobLink = info.jobId.map { id: String =>
-          <a href={
-            "%s/jobs/job?id=%s".format(
-              UIUtils.prependBaseUri(parent.basePath),
-              id)
-          }>
+        def generateDataRow(info: ExecutionInfo): Seq[Node] = {
+          val jobLink = info.jobId.map { id: String =>
+            <a href={
+              "%s/jobs/job?id=%s".format(
+                UIUtils.prependBaseUri(parent.basePath),
+                id)
+            }>
             [{id}]
           </a>
-        }
-        val detail =
-          if (info.state == ExecutionState.FAILED) info.detail
-          else info.executePlan
-        <tr>
+          }
+          val detail =
+            if (info.state == ExecutionState.FAILED) info.detail
+            else info.executePlan
+          <tr>
           <td>{info.userName}</td>
           <td>
             {jobLink}
@@ -115,20 +115,20 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           <td>{info.state}</td>
           {errorMessageCell(detail)}
         </tr>
-      }
+        }
 
-      Some(
-        UIUtils.listingTable(
-          headerRow,
-          generateDataRow,
-          dataRows,
-          false,
-          None,
-          Seq(null),
-          false))
-    } else {
-      None
-    }
+        Some(
+          UIUtils.listingTable(
+            headerRow,
+            generateDataRow,
+            dataRows,
+            false,
+            None,
+            Seq(null),
+            false))
+      } else {
+        None
+      }
 
     val content =
       <h5 id="sqlstat">SQL Statistics</h5> ++
@@ -149,18 +149,18 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
       errorMessage
     })
     val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
         <pre>{errorMessage}</pre>
       </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
+        // scalastyle:on
+      } else {
+        ""
+      }
     <td>{errorSummary}{details}</td>
   }
 
@@ -169,45 +169,45 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
     val sessionList = listener.getSessionList
     val numBatches = sessionList.size
     val table = if (numBatches > 0) {
-      val dataRows = sessionList
-      val headerRow = Seq(
-        "User",
-        "IP",
-        "Session ID",
-        "Start Time",
-        "Finish Time",
-        "Duration",
-        "Total Execute")
-      def generateDataRow(session: SessionInfo): Seq[Node] = {
-        val sessionLink = "%s/%s/session?id=%s"
-          .format(
-            UIUtils.prependBaseUri(parent.basePath),
-            parent.prefix,
-            session.sessionId)
-        <tr>
+        val dataRows = sessionList
+        val headerRow = Seq(
+          "User",
+          "IP",
+          "Session ID",
+          "Start Time",
+          "Finish Time",
+          "Duration",
+          "Total Execute")
+        def generateDataRow(session: SessionInfo): Seq[Node] = {
+          val sessionLink = "%s/%s/session?id=%s"
+            .format(
+              UIUtils.prependBaseUri(parent.basePath),
+              parent.prefix,
+              session.sessionId)
+          <tr>
           <td> {session.userName} </td>
           <td> {session.ip} </td>
           <td> <a href={sessionLink}> {session.sessionId} </a> </td>
           <td> {formatDate(session.startTimestamp)} </td>
           <td> {
-          if (session.finishTimestamp > 0) formatDate(session.finishTimestamp)
-        } </td>
+            if (session.finishTimestamp > 0) formatDate(session.finishTimestamp)
+          } </td>
           <td> {formatDurationOption(Some(session.totalTime))} </td>
           <td> {session.totalExecution.toString} </td>
         </tr>
+        }
+        Some(
+          UIUtils.listingTable(
+            headerRow,
+            generateDataRow,
+            dataRows,
+            true,
+            None,
+            Seq(null),
+            false))
+      } else {
+        None
       }
-      Some(
-        UIUtils.listingTable(
-          headerRow,
-          generateDataRow,
-          dataRows,
-          true,
-          None,
-          Seq(null),
-          false))
-    } else {
-      None
-    }
 
     val content =
       <h5 id="sessionstat">Session Statistics</h5> ++

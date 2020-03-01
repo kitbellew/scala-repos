@@ -1012,10 +1012,10 @@ private[spark] object Utils extends Logging {
     if (file == null) throw new NullPointerException("File must not be null")
     if (isWindows) return false
     val fileInCanonicalDir = if (file.getParent() == null) {
-      file
-    } else {
-      new File(file.getParentFile().getCanonicalFile(), file.getName())
-    }
+        file
+      } else {
+        new File(file.getParentFile().getCanonicalFile(), file.getName())
+      }
 
     !fileInCanonicalDir
       .getCanonicalFile()
@@ -1426,11 +1426,12 @@ private[spark] object Utils extends Logging {
         if (insideSpark) {
           if (skipClass(ste.getClassName)) {
             lastSparkMethod = if (ste.getMethodName == "<init>") {
-              // Spark method is a constructor; get its class name
-              ste.getClassName.substring(ste.getClassName.lastIndexOf('.') + 1)
-            } else {
-              ste.getMethodName
-            }
+                // Spark method is a constructor; get its class name
+                ste.getClassName.substring(
+                  ste.getClassName.lastIndexOf('.') + 1)
+              } else {
+                ste.getMethodName
+              }
             callStack(0) = ste.toString // Put last Spark method on top of the stack trace.
           } else {
             firstUserLine = ste.getLineNumber
@@ -2121,11 +2122,11 @@ private[spark] object Utils extends Logging {
     for (offset <- 0 to maxRetries) {
       // Do not increment port if startPort is 0, which is treated as a special port
       val tryPort = if (startPort == 0) {
-        startPort
-      } else {
-        // If the new port wraps around, do not try a privilege port
-        ((startPort + offset - 1024) % (65536 - 1024)) + 1024
-      }
+          startPort
+        } else {
+          // If the new port wraps around, do not try a privilege port
+          ((startPort + offset - 1024) % (65536 - 1024)) + 1024
+        }
       try {
         val (service, port) = startService(tryPort)
         logInfo(s"Successfully started service$serviceString on port $port.")
@@ -2244,19 +2245,19 @@ private[spark] object Utils extends Logging {
     */
   def libraryPathEnvPrefix(libraryPaths: Seq[String]): String = {
     val libraryPathScriptVar = if (isWindows) {
-      s"%${libraryPathEnvName}%"
-    } else {
-      "$" + libraryPathEnvName
-    }
+        s"%${libraryPathEnvName}%"
+      } else {
+        "$" + libraryPathEnvName
+      }
     val libraryPath = (libraryPaths :+ libraryPathScriptVar).mkString(
       "\"",
       File.pathSeparator,
       "\"")
     val ampersand = if (Utils.isWindows) {
-      " &"
-    } else {
-      ""
-    }
+        " &"
+      } else {
+        ""
+      }
     s"$libraryPathEnvName=$libraryPath$ampersand"
   }
 

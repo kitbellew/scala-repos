@@ -18,8 +18,7 @@ class ConfigParser(
   val sections = mutable.Stack[String]()
 
   def createPrefix = {
-    prefix =
-      if (sections.isEmpty) ""
+    prefix = if (sections.isEmpty) ""
       else sections.toList.reverse.mkString("", ".", ".")
   }
 

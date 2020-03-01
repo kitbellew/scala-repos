@@ -49,10 +49,10 @@ object CoreWorkflow {
     WorkflowUtils.checkUpgrade(mode, engineInstance.engineFactory)
 
     val batch = if (params.batch.nonEmpty) {
-      s"{engineInstance.engineFactory} (${params.batch}})"
-    } else {
-      engineInstance.engineFactory
-    }
+        s"{engineInstance.engineFactory} (${params.batch}})"
+      } else {
+        engineInstance.engineFactory
+      }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
 
     try {
@@ -108,10 +108,10 @@ object CoreWorkflow {
     WorkflowUtils.checkUpgrade(mode, engine.getClass.getName)
 
     val batch = if (params.batch.nonEmpty) {
-      s"{evaluation.getClass.getName} (${params.batch}})"
-    } else {
-      evaluation.getClass.getName
-    }
+        s"{evaluation.getClass.getName} (${params.batch}})"
+      } else {
+        evaluation.getClass.getName
+      }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
     val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 

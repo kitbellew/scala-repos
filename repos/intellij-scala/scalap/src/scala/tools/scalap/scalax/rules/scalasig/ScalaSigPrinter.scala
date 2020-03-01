@@ -661,15 +661,15 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             val name = processName(symbol.name)
             val res = path + name
             val typeBounds = if (name == "_") {
-              symbol match {
-                case ts: TypeSymbol =>
-                  ts.infoType match {
-                    case t: TypeBoundsType => toString(t)
-                    case _                 => ""
-                  }
-                case _ => ""
-              }
-            } else ""
+                symbol match {
+                  case ts: TypeSymbol =>
+                    ts.infoType match {
+                      case t: TypeBoundsType => toString(t)
+                      case _                 => ""
+                    }
+                  case _ => ""
+                }
+              } else ""
             val ress = StringUtil.trimStart(res, "<empty>.") + typeArgString(
               typeArgs) + typeBounds
             ress

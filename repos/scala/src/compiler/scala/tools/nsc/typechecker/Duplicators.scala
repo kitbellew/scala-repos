@@ -133,8 +133,8 @@ abstract class Duplicators extends Analyzer {
       val tpe1 = envSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
       val tpe3 = if (newClassOwner ne null) {
-        tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
-      } else tpe2
+          tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
+        } else tpe2
       tpe3
     }
 

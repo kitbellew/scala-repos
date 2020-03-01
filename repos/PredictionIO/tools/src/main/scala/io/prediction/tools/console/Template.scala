@@ -154,10 +154,10 @@ object Template extends Logging {
         }
 
         val body = if (response.code == 304) {
-          reposCache(repo).body
-        } else {
-          response.body
-        }
+            reposCache(repo).body
+          } else {
+            response.body
+          }
 
         repo -> GitHubCache(headers = response.headers, body = body)
       }.toMap

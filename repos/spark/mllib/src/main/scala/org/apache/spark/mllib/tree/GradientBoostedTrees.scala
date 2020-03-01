@@ -210,11 +210,11 @@ object GradientBoostedTrees extends Logging {
 
     // Cache input
     val persistedInput = if (input.getStorageLevel == StorageLevel.NONE) {
-      input.persist(StorageLevel.MEMORY_AND_DISK)
-      true
-    } else {
-      false
-    }
+        input.persist(StorageLevel.MEMORY_AND_DISK)
+        true
+      } else {
+        false
+      }
 
     // Prepare periodic checkpointers
     val predErrorCheckpointer = new PeriodicRDDCheckpointer[(Double, Double)](

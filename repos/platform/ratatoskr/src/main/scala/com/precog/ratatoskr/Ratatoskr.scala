@@ -1350,17 +1350,17 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
       })
 
     val rootKey: Future[APIKeyRecord] = if (config.createRoot) {
-      MongoAPIKeyManager.createRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys,
-        config.mongoSettings.grants
-      )
-    } else {
-      MongoAPIKeyManager.findRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys
-      )
-    }
+        MongoAPIKeyManager.createRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys,
+          config.mongoSettings.grants
+        )
+      } else {
+        MongoAPIKeyManager.findRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys
+        )
+      }
 
     rootKey map { k =>
       (

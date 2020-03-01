@@ -365,13 +365,13 @@ object ByteIterator {
       else {
         if (isEmpty) Iterator.empty.next
         val nDone = if (current.len >= elemSize) {
-          val nCurrent = math.min(n, current.len / elemSize)
-          getMult(xs, offset, nCurrent)
-          nCurrent
-        } else {
-          xs(offset) = getSingle
-          1
-        }
+            val nCurrent = math.min(n, current.len / elemSize)
+            getMult(xs, offset, nCurrent)
+            nCurrent
+          } else {
+            xs(offset) = getSingle
+            1
+          }
         normalize()
         getToArray(xs, offset + nDone, n - nDone, elemSize)(getSingle)(getMult)
       }

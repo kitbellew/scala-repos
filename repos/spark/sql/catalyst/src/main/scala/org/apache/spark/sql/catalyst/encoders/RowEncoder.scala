@@ -139,10 +139,10 @@ object RowEncoder {
       val convertedFields = fields.zipWithIndex.map {
         case (f, i) =>
           val method = if (f.dataType.isInstanceOf[StructType]) {
-            "getStruct"
-          } else {
-            "get"
-          }
+              "getStruct"
+            } else {
+              "get"
+            }
           If(
             Invoke(inputObject, "isNullAt", BooleanType, Literal(i) :: Nil),
             Literal.create(null, f.dataType),

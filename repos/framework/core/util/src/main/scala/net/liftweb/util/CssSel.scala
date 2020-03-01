@@ -224,11 +224,11 @@ private class SelectorMap(binds: List[CssBind])
             }
 
             val newAttr = if (calced.isEmpty) {
-              filtered
-            } else {
-              val flat: NodeSeq = calced.flatMap(a => a)
-              new UnprefixedAttribute(attr, flat, filtered)
-            }
+                filtered
+              } else {
+                val flat: NodeSeq = calced.flatMap(a => a)
+                new UnprefixedAttribute(attr, flat, filtered)
+              }
 
             elem.copy(attributes = newAttr)
           }
@@ -246,17 +246,17 @@ private class SelectorMap(binds: List[CssBind])
               }
 
               val flat: NodeSeq = if (attr == "class") {
-                if (org.isEmpty) {
-                  calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
-                    calced.takeRight(1).head
-                } else {
-                  org ++ Text(" ") ++
+                  if (org.isEmpty) {
                     calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
-                    calced.takeRight(1).head
+                      calced.takeRight(1).head
+                  } else {
+                    org ++ Text(" ") ++
+                      calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
+                      calced.takeRight(1).head
+                  }
+                } else {
+                  org ++ (calced.flatMap(a => a): NodeSeq)
                 }
-              } else {
-                org ++ (calced.flatMap(a => a): NodeSeq)
-              }
 
               val newAttr = new UnprefixedAttribute(attr, flat, filtered)
 
@@ -285,19 +285,19 @@ private class SelectorMap(binds: List[CssBind])
               }
 
               val flat: Box[NodeSeq] = if (attr == "class") {
-                val set = Set(calced.map(_.text): _*)
-                SuperString(org.text)
-                  .charSplit(' ')
-                  .toList
-                  .filter(_.length > 0)
-                  .filter(s => !set.contains(s)) match {
-                  case Nil => Empty
-                  case xs  => Full(Text(xs.mkString(" ")))
+                  val set = Set(calced.map(_.text): _*)
+                  SuperString(org.text)
+                    .charSplit(' ')
+                    .toList
+                    .filter(_.length > 0)
+                    .filter(s => !set.contains(s)) match {
+                    case Nil => Empty
+                    case xs  => Full(Text(xs.mkString(" ")))
+                  }
+                } else {
+                  if (org.text == calced.flatMap(a => a).text) Empty
+                  else Full(org)
                 }
-              } else {
-                if (org.text == calced.flatMap(a => a).text) Empty
-                else Full(org)
-              }
 
               val newAttr = flat match {
                 case Full(a) => new UnprefixedAttribute(attr, a, filtered)

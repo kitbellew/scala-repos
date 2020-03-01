@@ -1856,8 +1856,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
                   currentPeriod + 1 // to enable reads from same symbol during info-transform
                 itr = itr.next
               }
-              _validTo =
-                if (itr.pid == NoPhase.id) curPeriod
+              _validTo = if (itr.pid == NoPhase.id) curPeriod
                 else period(currentRunId, itr.pid)
             }
           } finally {

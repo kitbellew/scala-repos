@@ -1572,10 +1572,10 @@ trait ParIterableLike[
     }
     override def merge(that: Span[U, This]) =
       result = if (result._2.size == 0) {
-        (result._1 combine that.result._1, that.result._2)
-      } else {
-        (result._1, result._2 combine that.result._1 combine that.result._2)
-      }
+          (result._1 combine that.result._1, that.result._2)
+        } else {
+          (result._1, result._2 combine that.result._1 combine that.result._2)
+        }
     override def requiresStrictSplitters = true
   }
 

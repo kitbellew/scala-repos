@@ -426,8 +426,7 @@ private[math] object Logical {
           resDigits(i) = ~bi.digits(i) & (that.digits(i) - 1)
         }
       } else {
-        resDigits(i) =
-          if (iThat < iVal) -bi.digits(i) & that.digits(i)
+        resDigits(i) = if (iThat < iVal) -bi.digits(i) & that.digits(i)
           else -bi.digits(i) & (that.digits(i) - 1)
       }
 

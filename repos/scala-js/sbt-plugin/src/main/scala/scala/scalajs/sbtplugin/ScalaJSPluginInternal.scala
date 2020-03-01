@@ -141,11 +141,11 @@ object ScalaJSPluginInternal {
         def delete(classes: Iterable[File]): Unit = {
           inherited.delete(classes flatMap { classFile =>
             val scalaJSFiles = if (classFile.getPath endsWith ".class") {
-              val f =
-                FileVirtualFile.withExtension(classFile, ".class", ".sjsir")
-              if (f.exists) List(f)
-              else Nil
-            } else Nil
+                val f =
+                  FileVirtualFile.withExtension(classFile, ".class", ".sjsir")
+                if (f.exists) List(f)
+                else Nil
+              } else Nil
             classFile :: scalaJSFiles
           })
         }

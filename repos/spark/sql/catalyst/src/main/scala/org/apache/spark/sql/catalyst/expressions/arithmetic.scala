@@ -271,16 +271,16 @@ case class Divide(left: Expression, right: Expression)
     val eval1 = left.gen(ctx)
     val eval2 = right.gen(ctx)
     val isZero = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+        s"${eval2.value}.isZero()"
+      } else {
+        s"${eval2.value} == 0"
+      }
     val javaType = ctx.javaType(dataType)
     val divide = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+        s"${eval1.value}.$decimalMethod(${eval2.value})"
+      } else {
+        s"($javaType)(${eval1.value} $symbol ${eval2.value})"
+      }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;
@@ -334,16 +334,16 @@ case class Remainder(left: Expression, right: Expression)
     val eval1 = left.gen(ctx)
     val eval2 = right.gen(ctx)
     val isZero = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+        s"${eval2.value}.isZero()"
+      } else {
+        s"${eval2.value} == 0"
+      }
     val javaType = ctx.javaType(dataType)
     val remainder = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+        s"${eval1.value}.$decimalMethod(${eval2.value})"
+      } else {
+        s"($javaType)(${eval1.value} $symbol ${eval2.value})"
+      }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;

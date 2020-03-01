@@ -54,11 +54,11 @@ class DefaultRefUnpicklingRegistry(maxRefs: Int = 655536)
     val index = idx
     val len = refs.length
     val target = if (index == len) {
-      val newArr = Array.ofDim[Any](len * 2)
-      System.arraycopy(refs, 0, newArr, 0, len)
-      refs = newArr
-      newArr
-    } else refs
+        val newArr = Array.ofDim[Any](len * 2)
+        System.arraycopy(refs, 0, newArr, 0, len)
+        refs = newArr
+        newArr
+      } else refs
     target(index) = null
     idx += 1
     index

@@ -134,10 +134,10 @@ case class GetJsonObject(json: Expression, path: Expression)
     }
 
     val parsed = if (path.foldable) {
-      parsedPath
-    } else {
-      parsePath(path.eval(input).asInstanceOf[UTF8String])
-    }
+        parsedPath
+      } else {
+        parsePath(path.eval(input).asInstanceOf[UTF8String])
+      }
 
     if (parsed.isDefined) {
       try {
@@ -410,20 +410,21 @@ case class JsonTuple(children: Seq[Expression])
     // evaluate the field names as String rather than UTF8String to
     // optimize lookups from the json token, which is also a String
     val fieldNames = if (constantFields == fieldExpressions.length) {
-      // typically the user will provide the field names as foldable expressions
-      // so we can use the cached copy
-      foldableFieldNames
-    } else if (constantFields == 0) {
-      // none are foldable so all field names need to be evaluated from the input row
-      fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
-    } else {
-      // if there is a mix of constant and non-constant expressions
-      // prefer the cached copy when available
-      foldableFieldNames.zip(fieldExpressions).map {
-        case (null, expr)   => expr.eval(input).asInstanceOf[UTF8String].toString
-        case (fieldName, _) => fieldName
+        // typically the user will provide the field names as foldable expressions
+        // so we can use the cached copy
+        foldableFieldNames
+      } else if (constantFields == 0) {
+        // none are foldable so all field names need to be evaluated from the input row
+        fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
+      } else {
+        // if there is a mix of constant and non-constant expressions
+        // prefer the cached copy when available
+        foldableFieldNames.zip(fieldExpressions).map {
+          case (null, expr) =>
+            expr.eval(input).asInstanceOf[UTF8String].toString
+          case (fieldName, _) => fieldName
+        }
       }
-    }
 
     val row = Array.ofDim[Any](fieldNames.length)
 

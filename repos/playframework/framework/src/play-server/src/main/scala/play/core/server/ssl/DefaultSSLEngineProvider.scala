@@ -82,14 +82,15 @@ class DefaultSSLEngineProvider(
     // Load the configured trust manager
     val trustStoreConfig = httpsConfig.getConfig("trustStore")
     val tm = if (trustStoreConfig.getBoolean("noCaVerification")) {
-      logger.warn(
-        "HTTPS configured with no client " +
-          "side CA verification. Requires http://webid.info/ for client certificate verification.")
-      Array[TrustManager](noCATrustManager)
-    } else {
-      logger.debug("Using default trust store for client side CA verification")
-      null
-    }
+        logger.warn(
+          "HTTPS configured with no client " +
+            "side CA verification. Requires http://webid.info/ for client certificate verification.")
+        Array[TrustManager](noCATrustManager)
+      } else {
+        logger.debug(
+          "Using default trust store for client side CA verification")
+        null
+      }
 
     // Configure the SSL context
     val sslContext = SSLContext.getInstance("TLS")

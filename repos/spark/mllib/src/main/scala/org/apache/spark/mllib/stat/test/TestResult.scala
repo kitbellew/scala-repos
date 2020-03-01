@@ -61,14 +61,14 @@ trait TestResult[DF] {
 
     // String explaining what the p-value indicates.
     val pValueExplain = if (pValue <= 0.01) {
-      s"Very strong presumption against null hypothesis: $nullHypothesis."
-    } else if (0.01 < pValue && pValue <= 0.05) {
-      s"Strong presumption against null hypothesis: $nullHypothesis."
-    } else if (0.05 < pValue && pValue <= 0.1) {
-      s"Low presumption against null hypothesis: $nullHypothesis."
-    } else {
-      s"No presumption against null hypothesis: $nullHypothesis."
-    }
+        s"Very strong presumption against null hypothesis: $nullHypothesis."
+      } else if (0.01 < pValue && pValue <= 0.05) {
+        s"Strong presumption against null hypothesis: $nullHypothesis."
+      } else if (0.05 < pValue && pValue <= 0.1) {
+        s"Low presumption against null hypothesis: $nullHypothesis."
+      } else {
+        s"No presumption against null hypothesis: $nullHypothesis."
+      }
 
     s"degrees of freedom = ${degreesOfFreedom.toString} \n" +
       s"statistic = $statistic \n" +

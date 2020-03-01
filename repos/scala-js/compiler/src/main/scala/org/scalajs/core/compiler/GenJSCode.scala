@@ -250,20 +250,20 @@ abstract class GenJSCode
               unexpectedMutatedFields := mutable.Set.empty
             ) {
               val tree = if (isRawJSType(sym.tpe)) {
-                assert(
-                  !isRawJSFunctionDef(sym),
-                  s"Raw JS function def should have been recorded: $cd")
-                if (!sym.isTraitOrInterface && isScalaJSDefinedJSClass(sym))
-                  genScalaJSDefinedJSClass(cd)
-                else
-                  genRawJSClassData(cd)
-              } else if (sym.isTraitOrInterface) {
-                genInterface(cd)
-              } else if (sym.isImplClass) {
-                genImplClass(cd)
-              } else {
-                genClass(cd)
-              }
+                  assert(
+                    !isRawJSFunctionDef(sym),
+                    s"Raw JS function def should have been recorded: $cd")
+                  if (!sym.isTraitOrInterface && isScalaJSDefinedJSClass(sym))
+                    genScalaJSDefinedJSClass(cd)
+                  else
+                    genRawJSClassData(cd)
+                } else if (sym.isTraitOrInterface) {
+                  genInterface(cd)
+                } else if (sym.isImplClass) {
+                  genImplClass(cd)
+                } else {
+                  genClass(cd)
+                }
 
               generatedClasses += ((sym, tree))
             }
@@ -632,38 +632,38 @@ abstract class GenJSCode
           else encodeFieldSym(f)
 
         val irTpe = if (!isScalaJSDefinedJSClass(classSym)) {
-          toIRType(f.tpe)
-        } else {
-          val tpeEnteringPosterasure =
-            enteringPhase(currentRun.posterasurePhase)(f.tpe)
-          tpeEnteringPosterasure match {
-            case tpe: ErasedValueType =>
-              /* Here, we must store the field as the boxed representation of
-               * the value class. The default value of that field, as
-               * initialized at the time the instance is created, will
-               * therefore be null. This will not match the behavior we would
-               * get in a Scala class. To match the behavior, we would need to
-               * initialized to an instance of the boxed representation, with
-               * an underlying value set to the zero of its type. However we
-               * cannot implement that, so we live with the discrepancy.
-               * Anyway, scalac also has problems with uninitialized value
-               * class values, if they come from a generic context.
-               */
-              jstpe.ClassType(encodeClassFullName(tpe.valueClazz))
+            toIRType(f.tpe)
+          } else {
+            val tpeEnteringPosterasure =
+              enteringPhase(currentRun.posterasurePhase)(f.tpe)
+            tpeEnteringPosterasure match {
+              case tpe: ErasedValueType =>
+                /* Here, we must store the field as the boxed representation of
+                 * the value class. The default value of that field, as
+                 * initialized at the time the instance is created, will
+                 * therefore be null. This will not match the behavior we would
+                 * get in a Scala class. To match the behavior, we would need to
+                 * initialized to an instance of the boxed representation, with
+                 * an underlying value set to the zero of its type. However we
+                 * cannot implement that, so we live with the discrepancy.
+                 * Anyway, scalac also has problems with uninitialized value
+                 * class values, if they come from a generic context.
+                 */
+                jstpe.ClassType(encodeClassFullName(tpe.valueClazz))
 
-            case _ if f.tpe.typeSymbol == CharClass =>
-              /* Will be initialized to null, which will unbox to '\0' when
-               * read.
-               */
-              jstpe.ClassType(ir.Definitions.BoxedCharacterClass)
+              case _ if f.tpe.typeSymbol == CharClass =>
+                /* Will be initialized to null, which will unbox to '\0' when
+                 * read.
+                 */
+                jstpe.ClassType(ir.Definitions.BoxedCharacterClass)
 
-            case _ =>
-              /* Other types are not boxed, so we can initialized them to
-               * their true zero.
-               */
-              toIRType(f.tpe)
+              case _ =>
+                /* Other types are not boxed, so we can initialized them to
+                 * their true zero.
+                 */
+                toIRType(f.tpe)
+            }
           }
-        }
 
         js.FieldDef(name, irTpe, mutable)
       }).toList
@@ -1863,20 +1863,20 @@ abstract class GenJSCode
           }
 
           val (exceptValDef, exceptVar) = if (mightCatchJavaScriptException) {
-            val valDef = js.VarDef(
-              freshLocalIdent("e"),
-              encodeClassType(ThrowableClass),
-              mutable = false, {
-                genApplyMethod(
-                  genLoadModule(RuntimePackageModule),
-                  Runtime_wrapJavaScriptException,
-                  List(origExceptVar))
-              }
-            )
-            (valDef, valDef.ref)
-          } else {
-            (js.Skip(), origExceptVar)
-          }
+              val valDef = js.VarDef(
+                freshLocalIdent("e"),
+                encodeClassType(ThrowableClass),
+                mutable = false, {
+                  genApplyMethod(
+                    genLoadModule(RuntimePackageModule),
+                    Runtime_wrapJavaScriptException,
+                    List(origExceptVar))
+                }
+              )
+              (valDef, valDef.ref)
+            } else {
+              (js.Skip(), origExceptVar)
+            }
 
           val elseHandler: js.Tree = js.Throw(origExceptVar)
 
@@ -2009,13 +2009,13 @@ abstract class GenJSCode
           js.BooleanLiteral(l == r)
       } else if (l.isValueType) {
         val result = if (cast) {
-          val ctor = ClassCastExceptionClass.info
-            .member(nme.CONSTRUCTOR)
-            .suchThat(_.tpe.params.isEmpty)
-          js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
-        } else {
-          js.BooleanLiteral(false)
-        }
+            val ctor = ClassCastExceptionClass.info
+              .member(nme.CONSTRUCTOR)
+              .suchThat(_.tpe.params.isEmpty)
+            js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
+          } else {
+            js.BooleanLiteral(false)
+          }
         js.Block(source, result) // eval and discard source
       } else if (r.isValueType) {
         assert(!cast, s"Unexpected asInstanceOf from ref type to value type")
@@ -4705,33 +4705,33 @@ abstract class GenJSCode
       val isInImplClass = target.owner.isImplClass
 
       val (allFormalCaptures, body, allActualCaptures) = if (!isInImplClass) {
-        val thisActualCapture = genExpr(receiver)
-        val thisFormalCapture = js.ParamDef(
-          freshLocalIdent("this")(receiver.pos),
-          thisActualCapture.tpe,
-          mutable = false,
-          rest = false)(receiver.pos)
-        val thisCaptureArg = thisFormalCapture.ref
+          val thisActualCapture = genExpr(receiver)
+          val thisFormalCapture = js.ParamDef(
+            freshLocalIdent("this")(receiver.pos),
+            thisActualCapture.tpe,
+            mutable = false,
+            rest = false)(receiver.pos)
+          val thisCaptureArg = thisFormalCapture.ref
 
-        val body =
-          if (isRawJSType(receiver.tpe) && target.owner != ObjectClass) {
-            assert(
-              isScalaJSDefinedJSClass(target.owner) && !isExposed(target),
-              s"A Function lambda is trying to call an exposed JS method ${target.fullName}")
-            genApplyJSClassMethod(thisCaptureArg, target, allArgs)
-          } else {
-            genApplyMethod(thisCaptureArg, target, allArgs)
-          }
+          val body =
+            if (isRawJSType(receiver.tpe) && target.owner != ObjectClass) {
+              assert(
+                isScalaJSDefinedJSClass(target.owner) && !isExposed(target),
+                s"A Function lambda is trying to call an exposed JS method ${target.fullName}")
+              genApplyJSClassMethod(thisCaptureArg, target, allArgs)
+            } else {
+              genApplyMethod(thisCaptureArg, target, allArgs)
+            }
 
-        (
-          thisFormalCapture :: formalCaptures,
-          body,
-          thisActualCapture :: actualCaptures)
-      } else {
-        val body = genTraitImplApply(target, allArgs)
+          (
+            thisFormalCapture :: formalCaptures,
+            body,
+            thisActualCapture :: actualCaptures)
+        } else {
+          val body = genTraitImplApply(target, allArgs)
 
-        (formalCaptures, body, actualCaptures)
-      }
+          (formalCaptures, body, actualCaptures)
+        }
 
       val (patchedFormalArgs, patchedBody) = {
         patchFunBodyWithBoxes(

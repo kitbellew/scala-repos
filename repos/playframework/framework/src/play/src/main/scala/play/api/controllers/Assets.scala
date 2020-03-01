@@ -308,10 +308,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
           resource(minPath).map(_ => minPath)
         }
         val maybeMinifiedPath = if (checkForMinified) {
-          minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
-        } else {
-          path
-        }
+            minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
+          } else {
+            path
+          }
         if (!isDev) minifiedPathsCache.put(path, maybeMinifiedPath)
         maybeMinifiedPath
       }
@@ -455,17 +455,17 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       gzipAvailable: Boolean): Result = {
 
     val response = if (length > 0) {
-      Ok.sendEntity(
-        HttpEntity.Streamed(
-          akka.stream.scaladsl.Source
-            .fromPublisher(Streams.enumeratorToPublisher(resourceData))
-            .map(ByteString.apply),
-          Some(length),
-          Some(mimeType)
-        ))
-    } else {
-      Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
-    }
+        Ok.sendEntity(
+          HttpEntity.Streamed(
+            akka.stream.scaladsl.Source
+              .fromPublisher(Streams.enumeratorToPublisher(resourceData))
+              .map(ByteString.apply),
+            Some(length),
+            Some(mimeType)
+          ))
+      } else {
+        Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
+      }
     if (gzipRequested && gzipAvailable) {
       response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> "gzip")
     } else if (gzipAvailable) {

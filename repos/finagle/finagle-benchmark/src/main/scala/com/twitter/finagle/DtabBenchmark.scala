@@ -28,8 +28,7 @@ class DtabBenchmark extends StdBenchAnnotations {
 
   @Setup(Level.Iteration)
   def setup(): Unit = {
-    parsedDtab =
-      if (dtab == "") Dtab.read(baseDtab)
+    parsedDtab = if (dtab == "") Dtab.read(baseDtab)
       else Dtab.read(dtab)
   }
 

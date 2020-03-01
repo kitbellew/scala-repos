@@ -308,9 +308,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val pos = in.currentPos
           in.nextToken()
           val hi = if (in.token == EXTENDS) { in.nextToken(); typ() }
-          else EmptyTree
+            else EmptyTree
           val lo = if (in.token == SUPER) { in.nextToken(); typ() }
-          else EmptyTree
+            else EmptyTree
           val tdef = atPos(pos) {
             TypeDef(
               Modifiers(Flags.JAVA | Flags.DEFERRED),
@@ -421,7 +421,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       atPos(in.currentPos) {
         val name = identForType()
         val hi = if (in.token == EXTENDS) { in.nextToken(); bound() }
-        else EmptyTree
+          else EmptyTree
         TypeDef(
           Modifiers(Flags.JAVA | Flags.DEFERRED | Flags.PARAM),
           name,

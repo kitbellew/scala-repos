@@ -209,18 +209,18 @@ private[scalajs] final class ScalaJSClassEmitter(
     }
 
     val ctorFun = if (!isJSClass) {
-      val superCtorCall = tree.superClass.fold[js.Tree] {
-        js.Skip()
-      } { parentIdent =>
-        js.Apply(
-          js.DotSelect(encodeClassVar(parentIdent.name), js.Ident("call")),
-          List(js.This()))
+        val superCtorCall = tree.superClass.fold[js.Tree] {
+          js.Skip()
+        } { parentIdent =>
+          js.Apply(
+            js.DotSelect(encodeClassVar(parentIdent.name), js.Ident("call")),
+            List(js.This()))
+        }
+        val fieldDefs = genFieldDefs(tree)
+        js.Function(Nil, js.Block(superCtorCall :: fieldDefs))
+      } else {
+        genConstructorFunForJSClass(tree)
       }
-      val fieldDefs = genFieldDefs(tree)
-      js.Function(Nil, js.Block(superCtorCall :: fieldDefs))
-    } else {
-      genConstructorFunForJSClass(tree)
-    }
 
     val typeVar = encodeClassVar(className)
     val docComment = js.DocComment("@constructor")
@@ -230,12 +230,12 @@ private[scalajs] final class ScalaJSClassEmitter(
       js.Skip()
     } { parentIdent =>
       val (inheritedCtorDef, inheritedCtorRef) = if (!isJSClass) {
-        (js.Skip(), envField("h", parentIdent.name))
-      } else {
-        val superCtor =
-          genRawJSClassConstructor(linkedClassByName(parentIdent.name))
-        (makeInheritableCtorDef(superCtor), envField("h", className))
-      }
+          (js.Skip(), envField("h", parentIdent.name))
+        } else {
+          val superCtor =
+            genRawJSClassConstructor(linkedClassByName(parentIdent.name))
+          (makeInheritableCtorDef(superCtor), envField("h", className))
+        }
       js.Block(
         inheritedCtorDef,
         js.Assign(typeVar.prototype, js.New(inheritedCtorRef, Nil)),
@@ -318,15 +318,15 @@ private[scalajs] final class ScalaJSClassEmitter(
       method.resultType == NoType)
 
     val methodFun = if (Definitions.isConstructorName(method.name.name)) {
-      // init methods have to return `this` so that we can chain them to `new`
-      js.Function(
-        methodFun0.args, {
-          implicit val pos = methodFun0.body.pos
-          js.Block(methodFun0.body, js.Return(js.This()))
-        })(methodFun0.pos)
-    } else {
-      methodFun0
-    }
+        // init methods have to return `this` so that we can chain them to `new`
+        js.Function(
+          methodFun0.args, {
+            implicit val pos = methodFun0.body.pos
+            js.Block(methodFun0.body, js.Return(js.This()))
+          })(methodFun0.pos)
+      } else {
+        methodFun0
+      }
 
     if (method.static) {
       val Ident(methodName, origName) = method.name
@@ -573,40 +573,40 @@ private[scalajs] final class ScalaJSClassEmitter(
       }
 
       val createAsStat = if (semantics.asInstanceOfs == Unchecked) {
-        js.Skip()
-      } else {
-        envFieldDef(
-          "as",
-          className,
-          js.Function(
-            List(objParam),
-            js.Return(className match {
-              case Definitions.ObjectClass =>
-                obj
+          js.Skip()
+        } else {
+          envFieldDef(
+            "as",
+            className,
+            js.Function(
+              List(objParam),
+              js.Return(className match {
+                case Definitions.ObjectClass =>
+                  obj
 
-              case _ =>
-                val throwError = {
-                  genCallHelper(
-                    "throwClassCastException",
-                    obj,
-                    js.StringLiteral(displayName))
-                }
-                if (className == RuntimeNothingClass) {
-                  // Always throw for .asInstanceOf[Nothing], even for null
-                  throwError
-                } else {
-                  js.If(
-                    js.Apply(envField("is", className), List(obj)) ||
-                      (obj === js.Null()), {
-                      obj
-                    }, {
-                      throwError
-                    })
-                }
-            })
+                case _ =>
+                  val throwError = {
+                    genCallHelper(
+                      "throwClassCastException",
+                      obj,
+                      js.StringLiteral(displayName))
+                  }
+                  if (className == RuntimeNothingClass) {
+                    // Always throw for .asInstanceOf[Nothing], even for null
+                    throwError
+                  } else {
+                    js.If(
+                      js.Apply(envField("is", className), List(obj)) ||
+                        (obj === js.Null()), {
+                        obj
+                      }, {
+                        throwError
+                      })
+                  }
+              })
+            )
           )
-        )
-      }
+        }
 
       js.Block(createIsStat, createAsStat)
     } else {
@@ -688,30 +688,30 @@ private[scalajs] final class ScalaJSClassEmitter(
     }
 
     val createAsArrayOfStat = if (semantics.asInstanceOfs == Unchecked) {
-      js.Skip()
-    } else {
-      envFieldDef(
-        "asArrayOf",
-        className,
-        js.Function(
-          List(objParam, depthParam),
-          js.Return {
-            js.If(
-              js.Apply(envField("isArrayOf", className), List(obj, depth)) ||
-                (obj === js.Null()), {
-                obj
-              }, {
-                genCallHelper(
-                  "throwArrayCastException",
-                  obj,
-                  js.StringLiteral("L" + displayName + ";"),
-                  depth)
-              }
-            )
-          }
+        js.Skip()
+      } else {
+        envFieldDef(
+          "asArrayOf",
+          className,
+          js.Function(
+            List(objParam, depthParam),
+            js.Return {
+              js.If(
+                js.Apply(envField("isArrayOf", className), List(obj, depth)) ||
+                  (obj === js.Null()), {
+                  obj
+                }, {
+                  genCallHelper(
+                    "throwArrayCastException",
+                    obj,
+                    js.StringLiteral("L" + displayName + ";"),
+                    depth)
+                }
+              )
+            }
+          )
         )
-      )
-    }
+      }
 
     js.Block(createIsArrayOfStat, createAsArrayOfStat)
   }
@@ -752,13 +752,13 @@ private[scalajs] final class ScalaJSClassEmitter(
       else js.Undefined()
 
     val parentData = if (linkingUnit.globalInfo.isParentDataAccessed) {
-      tree.superClass.fold[js.Tree] {
-        if (isObjectClass) js.Null()
-        else js.Undefined()
-      } { parent => envField("d", parent.name) }
-    } else {
-      js.Undefined()
-    }
+        tree.superClass.fold[js.Tree] {
+          if (isObjectClass) js.Null()
+          else js.Undefined()
+        } { parent => envField("d", parent.name) }
+      } else {
+        js.Undefined()
+      }
 
     val ancestorsRecord = js.ObjectConstr(
       tree.ancestors.map(ancestor => (js.Ident(ancestor), js.IntLiteral(1))))

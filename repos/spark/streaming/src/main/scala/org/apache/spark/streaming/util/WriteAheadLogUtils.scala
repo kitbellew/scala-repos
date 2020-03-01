@@ -142,10 +142,10 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   ): WriteAheadLog = {
 
     val classNameOption = if (isDriver) {
-      sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY)
-    } else {
-      sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY)
-    }
+        sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY)
+      } else {
+        sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY)
+      }
     val wal = classNameOption
       .map { className =>
         try {

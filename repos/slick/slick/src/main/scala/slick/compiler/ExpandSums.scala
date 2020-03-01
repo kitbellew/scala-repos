@@ -255,17 +255,17 @@ class ExpandSums extends Phase {
     def optionCast(idx: Int, createDisc: Boolean): Node = {
       val ref = Select(Ref(bsym) :@ elemType2, ElementSymbol(idx + 1))
       val v = if (createDisc) {
-        val protoDisc = Select(ref, ElementSymbol(1)).infer()
-        val rest = Select(ref, ElementSymbol(2))
-        val disc = IfThenElse(
-          ConstArray(
-            Library.==.typed[Boolean](
-              silentCast(OptionType(protoDisc.nodeType), protoDisc),
-              LiteralNode(null)),
-            DiscNone,
-            Disc1))
-        ProductNode(ConstArray(disc, rest))
-      } else ref
+          val protoDisc = Select(ref, ElementSymbol(1)).infer()
+          val rest = Select(ref, ElementSymbol(2))
+          val disc = IfThenElse(
+            ConstArray(
+              Library.==.typed[Boolean](
+                silentCast(OptionType(protoDisc.nodeType), protoDisc),
+                LiteralNode(null)),
+              DiscNone,
+              Disc1))
+          ProductNode(ConstArray(disc, rest))
+        } else ref
       silentCast(trType(elemType.asInstanceOf[ProductType].children(idx)), v)
     }
     val ref = ProductNode(

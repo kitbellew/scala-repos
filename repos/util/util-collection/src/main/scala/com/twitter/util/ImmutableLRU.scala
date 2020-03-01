@@ -65,11 +65,11 @@ class ImmutableLRU[K, V] private (
     val ordWithNewKey = baseOrd + (newIdx -> key)
     // Do we need to remove an old key:
     val (evicts, finalMap, finalOrd) = if (ordWithNewKey.size > maxSize) {
-      val (minIdx, eKey) = ordWithNewKey.min
-      (Some(eKey), newMap - eKey, ordWithNewKey - minIdx)
-    } else {
-      (None, newMap, ordWithNewKey)
-    }
+        val (minIdx, eKey) = ordWithNewKey.min
+        (Some(eKey), newMap - eKey, ordWithNewKey - minIdx)
+      } else {
+        (None, newMap, ordWithNewKey)
+      }
     (evicts, new ImmutableLRU[K, V](maxSize, newIdx, finalMap, finalOrd))
   }
 

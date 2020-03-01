@@ -268,8 +268,7 @@ private[controllers] trait LilaController
     fua flatMap { _.fold(notFound(ctx))(a => op(a)) }
 
   def notFound(implicit ctx: Context): Fu[Result] = negotiate(
-    html =
-      if (HTTPRequest isSynchronousHttp ctx.req) Main notFound ctx.req
+    html = if (HTTPRequest isSynchronousHttp ctx.req) Main notFound ctx.req
       else fuccess(Results.NotFound("Resource not found")),
     api = _ => notFoundJson("Resource not found")
   )

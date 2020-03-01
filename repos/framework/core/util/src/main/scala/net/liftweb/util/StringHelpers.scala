@@ -198,10 +198,10 @@ trait StringHelpers {
       if (pos >= size) sb
       else {
         val randNum = if ((pos % 6) == 0) {
-          _random.synchronized(_random.nextInt)
-        } else {
-          lastRand
-        }
+            _random.synchronized(_random.nextInt)
+          } else {
+            lastRand
+          }
 
         sb.append((randNum & 0x1f) match {
           case n if n < 26 => ('A' + n).toChar

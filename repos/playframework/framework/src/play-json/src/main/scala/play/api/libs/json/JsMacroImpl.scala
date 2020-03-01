@@ -196,11 +196,11 @@ object JsMacroImpl {
       createImplicit(param.name, param.typeSignature)
     }
     val effectiveInferredImplicits = if (hasVarArgs) {
-      val varArgsImplicit = createImplicit(
-        applyParamImplicits.last.paramName,
-        unapplyReturnTypes.get.last)
-      applyParamImplicits.init :+ varArgsImplicit
-    } else applyParamImplicits
+        val varArgsImplicit = createImplicit(
+          applyParamImplicits.last.paramName,
+          unapplyReturnTypes.get.last)
+        applyParamImplicits.init :+ varArgsImplicit
+      } else applyParamImplicits
 
     // if any implicit is missing, abort
     val missingImplicits = effectiveInferredImplicits.collect {
@@ -283,16 +283,16 @@ object JsMacroImpl {
     """
 
     val lazyFinalTree = if (!hasRec) {
-      finalTree
-    } else {
-      // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
-      // lazy val
-      q"""
+        finalTree
+      } else {
+        // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
+        // lazy val
+        q"""
         new $LazyHelper[${matag.tpe.typeSymbol}, ${atag.tpe.typeSymbol}] {
           override lazy val lazyStuff: ${matag.tpe.typeSymbol}[${atag.tpe}] = $finalTree
         }.lazyStuff
        """
-    }
+      }
     c.Expr[M[A]](lazyFinalTree)
   }
 

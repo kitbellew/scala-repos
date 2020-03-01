@@ -146,11 +146,11 @@ object Markdown {
         val link = text.replaceAll("(^\\[\\[|\\]\\]$)", "")
 
         val (label, page) = if (link.contains('|')) {
-          val i = link.indexOf('|')
-          (link.substring(0, i), link.substring(i + 1))
-        } else {
-          (link, link)
-        }
+            val i = link.indexOf('|')
+            (link.substring(0, i), link.substring(i + 1))
+          } else {
+            (link, link)
+          }
 
         val url = repository.httpUrl
           .replaceFirst("/git/", "/")

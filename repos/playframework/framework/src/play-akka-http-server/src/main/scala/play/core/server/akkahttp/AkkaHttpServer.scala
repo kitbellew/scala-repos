@@ -234,17 +234,17 @@ class AkkaHttpServer(
       taggedRequestHeader)
 
     val source = if (request.header[Expect].contains(Expect.`100-continue`)) {
-      // If we expect 100 continue, then we must not feed the source into the accumulator until the accumulator
-      // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
-      // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
-      // https://github.com/akka/akka/issues/17782 for more details.
-      requestBodySource
-        .map(source =>
-          Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
-        .orElse(Some(Source.empty))
-    } else {
-      requestBodySource
-    }
+        // If we expect 100 continue, then we must not feed the source into the accumulator until the accumulator
+        // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
+        // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
+        // https://github.com/akka/akka/issues/17782 for more details.
+        requestBodySource
+          .map(source =>
+            Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
+          .orElse(Some(Source.empty))
+      } else {
+        requestBodySource
+      }
 
     val resultFuture: Future[Result] = source match {
       case None    => actionAccumulator.run()

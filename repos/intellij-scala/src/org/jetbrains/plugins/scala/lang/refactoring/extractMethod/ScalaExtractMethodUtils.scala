@@ -265,10 +265,10 @@ object ScalaExtractMethodUtils {
     val definition = variable.element.asInstanceOf[ScTypedDefinition]
 
     val isInside = if (elements.length > 0) {
-      val startOffset = elements(0).getTextRange.getStartOffset
-      val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
-      definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
-    } else false
+        val startOffset = elements(0).getTextRange.getStartOffset
+        val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
+        definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
+      } else false
     val retType = definition.getType(TypingContext.empty).getOrNothing
     val tp = definition match {
       case fun: ScFunction if fun.paramClauses.clauses.isEmpty =>

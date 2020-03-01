@@ -158,16 +158,17 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
 
     val indexScores: Array[(Int, Double)] = if (queryFeatures.isEmpty) {
-      logger.info(s"No productFeatures vector for query items ${query.items}.")
-      Array[(Int, Double)]()
-    } else {
-      model.productFeatures // MODIFIED
-        .mapValues { f =>
-          queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
-        }
-        .filter(_._2 > 0) // keep items with score > 0
-        .toArray // MODIFIED
-    }
+        logger.info(
+          s"No productFeatures vector for query items ${query.items}.")
+        Array[(Int, Double)]()
+      } else {
+        model.productFeatures // MODIFIED
+          .mapValues { f =>
+            queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
+          }
+          .filter(_._2 > 0) // keep items with score > 0
+          .toArray // MODIFIED
+      }
 
     val filteredScore = indexScores.view.filter {
       case (i, v) =>

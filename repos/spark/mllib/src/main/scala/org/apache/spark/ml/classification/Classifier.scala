@@ -117,13 +117,13 @@ abstract class ClassificationModel[
     }
     if (getPredictionCol != "") {
       val predUDF = if (getRawPredictionCol != "") {
-        udf(raw2prediction _).apply(col(getRawPredictionCol))
-      } else {
-        val predictUDF = udf { (features: Any) =>
-          predict(features.asInstanceOf[FeaturesType])
+          udf(raw2prediction _).apply(col(getRawPredictionCol))
+        } else {
+          val predictUDF = udf { (features: Any) =>
+            predict(features.asInstanceOf[FeaturesType])
+          }
+          predictUDF(col(getFeaturesCol))
         }
-        predictUDF(col(getFeaturesCol))
-      }
       outputData = outputData.withColumn(getPredictionCol, predUDF)
       numColsOutput += 1
     }

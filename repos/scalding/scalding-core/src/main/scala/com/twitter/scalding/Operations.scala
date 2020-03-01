@@ -656,15 +656,15 @@ package com.twitter.scalding {
         context: Tuple) = {
       var nextContext: Tuple = null
       val newContextObj = if (null == context) {
-        // First call, make a new mutable tuple to reduce allocations:
-        nextContext = Tuple.size(1)
-        first(args)
-      } else {
-        //We are updating
-        val oldValue = context.getObject(0).asInstanceOf[X]
-        nextContext = context
-        subsequent(oldValue, args)
-      }
+          // First call, make a new mutable tuple to reduce allocations:
+          nextContext = Tuple.size(1)
+          first(args)
+        } else {
+          //We are updating
+          val oldValue = context.getObject(0).asInstanceOf[X]
+          nextContext = context
+          subsequent(oldValue, args)
+        }
       nextContext.set(0, newContextObj.asInstanceOf[AnyRef])
       //Return context for reuse next time:
       nextContext

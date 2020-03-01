@@ -145,12 +145,12 @@ private[spark] object TestUtils {
     // Calling this outputs a class file in pwd. It's easier to just rename the files than
     // build a custom FileManager that controls the output location.
     val options = if (classpathUrls.nonEmpty) {
-      Seq(
-        "-classpath",
-        classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
-    } else {
-      Seq()
-    }
+        Seq(
+          "-classpath",
+          classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
+      } else {
+        Seq()
+      }
     compiler
       .getTask(
         null,

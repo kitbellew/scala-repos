@@ -498,10 +498,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
             loop(samples, relations, constraints)
 
           val observeDataErrors = if (data.provenance == InfiniteProvenance) {
-            Set(Error(expr, CannotUseDistributionWithoutSampling))
-          } else {
-            Set()
-          }
+              Set(Error(expr, CannotUseDistributionWithoutSampling))
+            } else {
+              Set()
+            }
 
           val observeSamplesErrors =
             if (samples.provenance != InfiniteProvenance) {

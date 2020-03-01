@@ -40,17 +40,17 @@ object DevModeBuild {
       }
 
       val is = if (conn.getResponseCode >= 400) {
-        conn.getErrorStream
-      } else {
-        conn.getInputStream
-      }
+          conn.getErrorStream
+        } else {
+          conn.getInputStream
+        }
 
       // The input stream may be null if there's no body
       val contents = if (is != null) {
-        val c = IO.readStream(is)
-        is.close()
-        c
-      } else ""
+          val c = IO.readStream(is)
+          is.close()
+          c
+        } else ""
       conn.disconnect()
 
       assertions.foreach { assertion =>

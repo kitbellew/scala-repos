@@ -111,15 +111,15 @@ class Node @Since("1.2.0") (
     */
   private[tree] def deepCopy(): Node = {
     val leftNodeCopy = if (leftNode.isEmpty) {
-      None
-    } else {
-      Some(leftNode.get.deepCopy())
-    }
+        None
+      } else {
+        Some(leftNode.get.deepCopy())
+      }
     val rightNodeCopy = if (rightNode.isEmpty) {
-      None
-    } else {
-      Some(rightNode.get.deepCopy())
-    }
+        None
+      } else {
+        Some(rightNode.get.deepCopy())
+      }
     new Node(
       id,
       predict,

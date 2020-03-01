@@ -99,10 +99,10 @@ private[ml] object Node {
         impurityStats = null)
     } else {
       val gain = if (oldNode.stats.nonEmpty) {
-        oldNode.stats.get.gain
-      } else {
-        0.0
-      }
+          oldNode.stats.get.gain
+        } else {
+          0.0
+        }
       new InternalNode(
         prediction = oldNode.predict.predict,
         impurity = oldNode.impurity,

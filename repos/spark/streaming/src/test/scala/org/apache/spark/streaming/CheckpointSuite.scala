@@ -216,10 +216,10 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       expectedOutput: Seq[Seq[V]],
       beforeRestart: Boolean): Unit = {
     val expectedPartialOutput = if (beforeRestart) {
-      expectedOutput.take(output.size)
-    } else {
-      expectedOutput.takeRight(output.size)
-    }
+        expectedOutput.take(output.size)
+      } else {
+        expectedOutput.takeRight(output.size)
+      }
     val setComparison = output.zip(expectedPartialOutput).forall {
       case (o, e) => o.toSet === e.toSet
     }

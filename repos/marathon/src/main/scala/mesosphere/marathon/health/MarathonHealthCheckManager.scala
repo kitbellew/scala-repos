@@ -128,10 +128,10 @@ class MarathonHealthCheckManager @Inject() (
       val newHealthChecksForVersion = healthChecksForVersion -- toRemove
       val currentHealthChecksForApp = ahcs(appId)
       val newHealthChecksForApp = if (newHealthChecksForVersion.isEmpty) {
-        currentHealthChecksForApp - appVersion
-      } else {
-        currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
-      }
+          currentHealthChecksForApp - appVersion
+        } else {
+          currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
+        }
 
       if (newHealthChecksForApp.isEmpty) ahcs -= appId
       else ahcs += (appId -> newHealthChecksForApp)

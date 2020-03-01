@@ -100,13 +100,13 @@ object Boilerplate {
       val tpesString = synTypes mkString ", "
       val params = (synVals zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val next = if (arity + 1 <= maxArity) {
-        s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
-      } else {
-        ""
-      }
+          s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
+        } else {
+          ""
+        }
 
       val n = if (arity == 1) { "" }
-      else { arity.toString }
+        else { arity.toString }
 
       val map =
         if (arity == 1)
@@ -127,10 +127,10 @@ object Boilerplate {
           s"def imap[Z](f: (${`A..N`}) => Z)(g: Z => (${`A..N`}))(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[Z] = Cartesian.imap$n(${`a..n`})(f)(g)"
 
       val tupled = if (arity != 1) {
-        s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
-      } else {
-        ""
-      }
+          s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
+        } else {
+          ""
+        }
 
       block"""
         |package cats

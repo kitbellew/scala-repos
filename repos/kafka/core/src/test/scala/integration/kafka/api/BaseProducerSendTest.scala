@@ -404,16 +404,16 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
 
       // make sure the fetched messages also respect the partitioning and ordering
       val fetchResponse1 = if (leader1.get == configs(0).brokerId) {
-        consumer1.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
-      } else {
-        consumer2.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
-      }
+          consumer1.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, partition, 0, Int.MaxValue)
+              .build())
+        } else {
+          consumer2.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, partition, 0, Int.MaxValue)
+              .build())
+        }
       val messageSet1 =
         fetchResponse1.messageSet(topic, partition).iterator.toBuffer
       assertEquals(
@@ -518,12 +518,16 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         }
       }
       val fetchResponse = if (leader0.get == configs(0).brokerId) {
-        consumer1.fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue).build())
-      } else {
-        consumer2.fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue).build())
-      }
+          consumer1.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, 0, 0, Int.MaxValue)
+              .build())
+        } else {
+          consumer2.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, 0, 0, Int.MaxValue)
+              .build())
+        }
       assertEquals(
         "Fetch response should have no message returned.",
         0,
@@ -574,16 +578,16 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         assertTrue("All request are complete.", responses.forall(_.isDone()))
         // Check the messages received by broker.
         val fetchResponse = if (leader.get == configs(0).brokerId) {
-          consumer1.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
-        } else {
-          consumer2.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
-        }
+            consumer1.fetch(
+              new FetchRequestBuilder()
+                .addFetch(topic, 0, 0, Int.MaxValue)
+                .build())
+          } else {
+            consumer2.fetch(
+              new FetchRequestBuilder()
+                .addFetch(topic, 0, 0, Int.MaxValue)
+                .build())
+          }
         val expectedNumRecords = (i + 1) * numRecords
         assertEquals(
           "Fetch response to partition 0 should have %d messages.".format(

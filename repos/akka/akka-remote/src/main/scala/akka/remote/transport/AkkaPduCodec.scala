@@ -221,34 +221,33 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     val ackAndEnvelope = AckAndEnvelopeContainer.parseFrom(raw.toArray)
 
     val ackOption = if (ackAndEnvelope.hasAck) {
-      import scala.collection.JavaConverters._
-      Some(
-        Ack(
-          SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
-          ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
-    } else None
+        import scala.collection.JavaConverters._
+        Some(
+          Ack(
+            SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
+            ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
+      } else None
 
     val messageOption = if (ackAndEnvelope.hasEnvelope) {
-      val msgPdu = ackAndEnvelope.getEnvelope
-      Some(
-        Message(
-          recipient = provider.resolveActorRefWithLocalAddress(
-            msgPdu.getRecipient.getPath,
-            localAddress),
-          recipientAddress = AddressFromURIString(msgPdu.getRecipient.getPath),
-          serializedMessage = msgPdu.getMessage,
-          senderOption =
-            if (msgPdu.hasSender)
-              Some(
-                provider.resolveActorRefWithLocalAddress(
-                  msgPdu.getSender.getPath,
-                  localAddress))
-            else None,
-          seqOption =
-            if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq))
-            else None
-        ))
-    } else None
+        val msgPdu = ackAndEnvelope.getEnvelope
+        Some(
+          Message(
+            recipient = provider.resolveActorRefWithLocalAddress(
+              msgPdu.getRecipient.getPath,
+              localAddress),
+            recipientAddress =
+              AddressFromURIString(msgPdu.getRecipient.getPath),
+            serializedMessage = msgPdu.getMessage,
+            senderOption = if (msgPdu.hasSender)
+                Some(
+                  provider.resolveActorRefWithLocalAddress(
+                    msgPdu.getSender.getPath,
+                    localAddress))
+              else None,
+            seqOption = if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq))
+              else None
+          ))
+      } else None
 
     (ackOption, messageOption)
   }

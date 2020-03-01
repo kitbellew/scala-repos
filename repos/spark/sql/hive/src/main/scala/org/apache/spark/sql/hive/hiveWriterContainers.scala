@@ -345,10 +345,10 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
           var i = 0
           while (i < fieldOIs.length) {
             outputData(i) = if (sortedIterator.getValue.isNullAt(i)) {
-              null
-            } else {
-              wrappers(i)(sortedIterator.getValue.get(i, dataTypes(i)))
-            }
+                null
+              } else {
+                wrappers(i)(sortedIterator.getValue.get(i, dataTypes(i)))
+              }
             i += 1
           }
           currentWriter.write(serializer.serialize(outputData, standardOI))

@@ -107,11 +107,11 @@ abstract class JavaAction(components: JavaHandlerComponents)
       .createAction(javaContext.request, annotations.method)
 
     val endOfChainAction = if (config.executeActionCreatorActionFirst) {
-      rootAction
-    } else {
-      baseAction.delegate = rootAction
-      baseAction
-    }
+        rootAction
+      } else {
+        baseAction.delegate = rootAction
+        baseAction
+      }
 
     val finalUserDeclaredAction =
       annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {

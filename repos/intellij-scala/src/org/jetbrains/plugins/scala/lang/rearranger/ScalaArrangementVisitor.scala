@@ -235,10 +235,10 @@ class ScalaArrangementVisitor(
 
       val currentEntry = getCurrentEntry
       val newRange = if (canArrange && document != null) {
-        ArrangementUtil.expandToLineIfPossible(range, document)
-      } else {
-        range
-      }
+          ArrangementUtil.expandToLineIfPossible(range, document)
+        } else {
+          range
+        }
       //we only arrange elements in ScTypeDefinitions and top-level elements
       val newEntry = new ScalaArrangementEntry(
         currentEntry,
@@ -310,29 +310,30 @@ class ScalaArrangementVisitor(
       val childStart = child.getTextRange.getStartOffset
       //check if there are any more unseparable blocks at all
       val res = if (unseparable != null) {
-        //process current child with regard to current block
-        (
-          insideBlock,
-          childStart >= unseparable.getStartOffset,
-          childStart >= unseparable.getEndOffset) match {
-          case (false, true, false) => //entering arrange block
-            arrangementEntries.push(unseparable)
-            (true, unseparable)
-          case (true, true, false) => (true, unseparable) //inside arrange block
-          case (true, true, true) => //leaving arrange block
-            arrangementEntries.pop()
-            val nextUnseparable = next()
-            //check whether new current block is immediately adjucent to the previous
-            //in such case leaving the previous means entering the current
-            if (childStart >= nextUnseparable.getStartOffset) {
-              arrangementEntries.push(nextUnseparable)
-              (true, nextUnseparable)
-            } else {
-              (false, nextUnseparable)
-            }
-          case _ => (false, unseparable) //outside arrange block
-        }
-      } else (false, unseparable)
+          //process current child with regard to current block
+          (
+            insideBlock,
+            childStart >= unseparable.getStartOffset,
+            childStart >= unseparable.getEndOffset) match {
+            case (false, true, false) => //entering arrange block
+              arrangementEntries.push(unseparable)
+              (true, unseparable)
+            case (true, true, false) =>
+              (true, unseparable) //inside arrange block
+            case (true, true, true) => //leaving arrange block
+              arrangementEntries.pop()
+              val nextUnseparable = next()
+              //check whether new current block is immediately adjucent to the previous
+              //in such case leaving the previous means entering the current
+              if (childStart >= nextUnseparable.getStartOffset) {
+                arrangementEntries.push(nextUnseparable)
+                (true, nextUnseparable)
+              } else {
+                (false, nextUnseparable)
+              }
+            case _ => (false, unseparable) //outside arrange block
+          }
+        } else (false, unseparable)
       child.accept(this)
       res
     })

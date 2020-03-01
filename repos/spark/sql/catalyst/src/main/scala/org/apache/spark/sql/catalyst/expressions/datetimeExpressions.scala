@@ -982,10 +982,10 @@ case class TruncDate(date: Expression, format: Expression)
 
   override def eval(input: InternalRow): Any = {
     val level = if (format.foldable) {
-      truncLevel
-    } else {
-      DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
-    }
+        truncLevel
+      } else {
+        DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
+      }
     if (level == -1) {
       // unknown format
       null

@@ -58,10 +58,10 @@ class ParquetThriftCompatibilitySuite
         )
 
         val nullablePrimitiveValues = if (i % 3 == 0) {
-          Seq.fill(nonNullablePrimitiveValues.length)(null)
-        } else {
-          nonNullablePrimitiveValues
-        }
+            Seq.fill(nonNullablePrimitiveValues.length)(null)
+          } else {
+            nonNullablePrimitiveValues
+          }
 
         val complexValues = Seq(
           Seq.tabulate(3)(n => s"arr_${i + n}"),

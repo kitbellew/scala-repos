@@ -196,16 +196,16 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     val bufferSize = env.conf.getInt("spark.buffer.size", 65536)
 
     val fileOutputStream = if (blockSize < 0) {
-      fs.create(tempOutputPath, false, bufferSize)
-    } else {
-      // This is mainly for testing purpose
-      fs.create(
-        tempOutputPath,
-        false,
-        bufferSize,
-        fs.getDefaultReplication(fs.getWorkingDirectory),
-        blockSize)
-    }
+        fs.create(tempOutputPath, false, bufferSize)
+      } else {
+        // This is mainly for testing purpose
+        fs.create(
+          tempOutputPath,
+          false,
+          bufferSize,
+          fs.getDefaultReplication(fs.getWorkingDirectory),
+          blockSize)
+      }
     val serializer = env.serializer.newInstance()
     val serializeStream = serializer.serializeStream(fileOutputStream)
     Utils.tryWithSafeFinally {

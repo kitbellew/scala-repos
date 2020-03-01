@@ -40,13 +40,13 @@ class IntegralDeltaSuite extends SparkFunSuite {
       val builder =
         TestCompressibleColumnBuilder(columnStats, columnType, scheme)
       val deltas = if (input.isEmpty) {
-        Seq.empty[Long]
-      } else {
-        (input.tail, input.init).zipped.map {
-          case (x: Int, y: Int)   => (x - y).toLong
-          case (x: Long, y: Long) => x - y
+          Seq.empty[Long]
+        } else {
+          (input.tail, input.init).zipped.map {
+            case (x: Int, y: Int)   => (x - y).toLong
+            case (x: Long, y: Long) => x - y
+          }
         }
-      }
 
       input.map { value =>
         val row = new GenericMutableRow(1)

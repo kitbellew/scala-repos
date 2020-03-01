@@ -453,8 +453,7 @@ object AkkaBuild extends Build {
     id = "akka-samples",
     base = file("akka-samples"),
     // FIXME osgiDiningHakkersSampleMavenTest temporarily removed from aggregate due to #16703
-    aggregate =
-      if (!Sample.CliOptions.aggregateSamples) Nil
+    aggregate = if (!Sample.CliOptions.aggregateSamples) Nil
       else
         Seq(
           sampleCamelJava,

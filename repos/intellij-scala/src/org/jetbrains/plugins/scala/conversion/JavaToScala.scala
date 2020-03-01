@@ -533,17 +533,19 @@ object JavaToScala {
             withArrayInitalizer = false)
         } else {
           val argList: Seq[IntermediateNode] = if (n.getArgumentList != null) {
-            if (n.getArgumentList.getExpressions.isEmpty) {
-              n.getParent match {
-                case r: PsiJavaCodeReferenceElement if n == r.getQualifier =>
-                  Seq(LiteralExpression("()"))
-                case _ => null
+              if (n.getArgumentList.getExpressions.isEmpty) {
+                n.getParent match {
+                  case r: PsiJavaCodeReferenceElement if n == r.getQualifier =>
+                    Seq(LiteralExpression("()"))
+                  case _ => null
+                }
+              } else {
+                Seq(
+                  convertPsiToIntermdeiate(
+                    n.getArgumentList,
+                    externalProperties))
               }
-            } else {
-              Seq(
-                convertPsiToIntermdeiate(n.getArgumentList, externalProperties))
-            }
-          } else null
+            } else null
           NewExpression(mtype, argList, withArrayInitalizer = false)
         }
       case t: PsiTryStatement =>
@@ -591,8 +593,8 @@ object JavaToScala {
           canBeSimpified(p))
       case p: PsiPolyadicExpression =>
         val tokenValue = if (p.getOperands.nonEmpty) {
-          p.getTokenBeforeOperand(p.getOperands.apply(1)).getText
-        } else ""
+            p.getTokenBeforeOperand(p.getOperands.apply(1)).getText
+          } else ""
         PolyadicExpression(
           p.getOperands.map(convertPsiToIntermdeiate(_, externalProperties)),
           tokenValue)
@@ -831,10 +833,10 @@ object JavaToScala {
           dropMembes: Option[Seq[PsiMember]]): Seq[IntermediateNode] = {
         val sortedMembers = sortMembers()
         val updatedMembers = if (dropMembes.isDefined) {
-          sortedMembers.filter(!dropMembes.get.contains(_))
-        } else {
-          sortedMembers
-        }
+            sortedMembers.filter(!dropMembes.get.contains(_))
+          } else {
+            sortedMembers
+          }
         updatedMembers.map(convertPsiToIntermdeiate(_, externalProperties))
       }
 
@@ -975,12 +977,12 @@ object JavaToScala {
           }
 
           val field = if (leftPart.isDefined) leftPart.get.resolve() match {
-            case f: PsiField
-                if f.getContainingClass == constructor.getContainingClass && f.getInitializer == null =>
-              Some(f)
-            case _ => None
-          }
-          else None
+              case f: PsiField
+                  if f.getContainingClass == constructor.getContainingClass && f.getInitializer == null =>
+                Some(f)
+              case _ => None
+            }
+            else None
 
           var statement: Option[PsiExpressionStatement] =
             if (field.isDefined && parent.isDefined && parent.get.getParent
@@ -1009,20 +1011,20 @@ object JavaToScala {
         for (param <- params) {
           val fieldInfo = getCorrespondedFieldInfo(param)
           val updatedField = if (fieldInfo.isEmpty) {
-            val p = convertPsiToIntermdeiate(param, null)
-              .asInstanceOf[ParameterConstruction]
-            (p.name, p.scCompType, false)
-          } else {
-            fieldInfo.foreach {
-              case (field, statement) =>
-                dropFields += field
-                dropStatements += statement
+              val p = convertPsiToIntermdeiate(param, null)
+                .asInstanceOf[ParameterConstruction]
+              (p.name, p.scCompType, false)
+            } else {
+              fieldInfo.foreach {
+                case (field, statement) =>
+                  dropFields += field
+                  dropStatements += statement
+              }
+              val p = convertPsiToIntermdeiate(
+                fieldInfo.head._1,
+                WithReferenceExpression(true)).asInstanceOf[FieldConstruction]
+              (p.name, p.ftype, p.isVar)
             }
-            val p = convertPsiToIntermdeiate(
-              fieldInfo.head._1,
-              WithReferenceExpression(true)).asInstanceOf[FieldConstruction]
-            (p.name, p.ftype, p.isVar)
-          }
           updatedParams += updatedField
         }
 

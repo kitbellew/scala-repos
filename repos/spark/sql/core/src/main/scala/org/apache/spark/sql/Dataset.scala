@@ -1866,23 +1866,23 @@ class Dataset[T] private[sql] (
        else cols).toList
 
     val ret: Seq[Row] = if (outputCols.nonEmpty) {
-      val aggExprs = statistics.flatMap {
-        case (_, colToAgg) =>
-          outputCols.map(c =>
-            Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
-      }
+        val aggExprs = statistics.flatMap {
+          case (_, colToAgg) =>
+            outputCols.map(c =>
+              Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+        }
 
-      val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
+        val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
 
-      // Pivot the data so each summary is one row
-      row.grouped(outputCols.size).toSeq.zip(statistics).map {
-        case (aggregation, (statistic, _)) =>
-          Row(statistic :: aggregation.toList: _*)
+        // Pivot the data so each summary is one row
+        row.grouped(outputCols.size).toSeq.zip(statistics).map {
+          case (aggregation, (statistic, _)) =>
+            Row(statistic :: aggregation.toList: _*)
+        }
+      } else {
+        // If there are no output columns, just output a single column that contains the stats.
+        statistics.map { case (name, _) => Row(name) }
       }
-    } else {
-      // If there are no output columns, just output a single column that contains the stats.
-      statistics.map { case (name, _) => Row(name) }
-    }
 
     // All columns are string type
     val schema = StructType(

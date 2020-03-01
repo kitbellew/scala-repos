@@ -389,10 +389,10 @@ private[hive] class HiveQl(conf: ParserConf)
         var tableDesc: CatalogTable = CatalogTable(
           name = tableIdentifier,
           tableType = if (externalTable.isDefined) {
-            CatalogTableType.EXTERNAL_TABLE
-          } else {
-            CatalogTableType.MANAGED_TABLE
-          },
+              CatalogTableType.EXTERNAL_TABLE
+            } else {
+              CatalogTableType.MANAGED_TABLE
+            },
           storage = CatalogStorageFormat(
             locationUri = None,
             inputFormat = None,
@@ -724,16 +724,16 @@ private[hive] class HiveQl(conf: ParserConf)
 
       // TODO Adds support for user-defined record reader/writer classes
       val recordReaderClass = if (useDefaultRecordReader) {
-        Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
-      } else {
-        None
-      }
+          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
+        } else {
+          None
+        }
 
       val recordWriterClass = if (useDefaultRecordWriter) {
-        Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
-      } else {
-        None
-      }
+          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
+        } else {
+          None
+        }
 
       val schema = HiveScriptIOSchema(
         inRowFormat,

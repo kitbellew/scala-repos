@@ -120,16 +120,16 @@ private[r] class RBackendHandler(server: RBackend)
     var obj: Object = null
     try {
       val cls = if (isStatic) {
-        Utils.classForName(objId)
-      } else {
-        JVMObjectTracker.get(objId) match {
-          case None =>
-            throw new IllegalArgumentException("Object not found " + objId)
-          case Some(o) =>
-            obj = o
-            o.getClass
+          Utils.classForName(objId)
+        } else {
+          JVMObjectTracker.get(objId) match {
+            case None =>
+              throw new IllegalArgumentException("Object not found " + objId)
+            case Some(o) =>
+              obj = o
+              o.getClass
+          }
         }
-      }
 
       val args = readArgs(numArgs, dis)
 

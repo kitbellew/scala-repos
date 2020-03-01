@@ -74,12 +74,12 @@ private[hive] class HadoopTableReader(
   //
   // In order keep consistency with Hive, we will let it be 0 in local mode also.
   private val _minSplitsPerRDD = if (sc.sparkContext.isLocal) {
-    0 // will splitted based on block by default.
-  } else {
-    math.max(
-      sc.hiveconf.getInt("mapred.map.tasks", 1),
-      sc.sparkContext.defaultMinPartitions)
-  }
+      0 // will splitted based on block by default.
+    } else {
+      math.max(
+        sc.hiveconf.getInt("mapred.map.tasks", 1),
+        sc.sparkContext.defaultMinPartitions)
+    }
 
   // TODO: set aws s3 credentials.
 
@@ -224,10 +224,10 @@ private[hive] class HadoopTableReader(
         val partCols = partColsDelimited.trim().split("/").toSeq
         // 'partValues[i]' contains the value for the partitioning column at 'partCols[i]'.
         val partValues = if (partSpec == null) {
-          Array.fill(partCols.size)(new String)
-        } else {
-          partCols.map(col => new String(partSpec.get(col))).toArray
-        }
+            Array.fill(partCols.size)(new String)
+          } else {
+            partCols.map(col => new String(partSpec.get(col))).toArray
+          }
 
         // Create local references so that the outer object isn't serialized.
         val tableDesc = relation.tableDesc

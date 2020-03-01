@@ -704,54 +704,57 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
         // If argument is undefined and there is a default getter, call it
         val verifiedOrDefault = if (param.hasFlag(Flags.DEFAULTPARAM)) {
-          js.If(
-            js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
-              val trgSym = {
-                if (sym.isClassConstructor) {
-                  /* Get the companion module class.
-                   * For inner classes the sym.owner.companionModule can be broken,
-                   * therefore companionModule is fetched at uncurryPhase.
-                   */
-                  val companionModule = enteringPhase(currentRun.namerPhase) {
-                    sym.owner.companionModule
+            js.If(
+              js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
+                val trgSym = {
+                  if (sym.isClassConstructor) {
+                    /* Get the companion module class.
+                     * For inner classes the sym.owner.companionModule can be broken,
+                     * therefore companionModule is fetched at uncurryPhase.
+                     */
+                    val companionModule = enteringPhase(currentRun.namerPhase) {
+                      sym.owner.companionModule
+                    }
+                    companionModule.moduleClass
+                  } else {
+                    sym.owner
                   }
-                  companionModule.moduleClass
-                } else {
-                  sym.owner
                 }
+                val defaultGetter =
+                  trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
+
+                assert(
+                  defaultGetter.exists,
+                  s"need default getter for method ${sym.fullName}")
+                assert(!defaultGetter.isOverloaded)
+
+                val trgTree = {
+                  if (sym.isClassConstructor) genLoadModule(trgSym)
+                  else js.This()(encodeClassType(trgSym))
+                }
+
+                // Pass previous arguments to defaultGetter
+                val defaultGetterArgs =
+                  result.take(defaultGetter.tpe.params.size).toList.map(_.ref)
+
+                if (isRawJSType(trgSym.toTypeConstructor)) {
+                  assert(isScalaJSDefinedJSClass(defaultGetter.owner))
+                  genApplyJSClassMethod(
+                    trgTree,
+                    defaultGetter,
+                    defaultGetterArgs)
+                } else {
+                  genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
+                }
+              }, {
+                // Otherwise, unbox the argument
+                unboxedArg
               }
-              val defaultGetter =
-                trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
-
-              assert(
-                defaultGetter.exists,
-                s"need default getter for method ${sym.fullName}")
-              assert(!defaultGetter.isOverloaded)
-
-              val trgTree = {
-                if (sym.isClassConstructor) genLoadModule(trgSym)
-                else js.This()(encodeClassType(trgSym))
-              }
-
-              // Pass previous arguments to defaultGetter
-              val defaultGetterArgs =
-                result.take(defaultGetter.tpe.params.size).toList.map(_.ref)
-
-              if (isRawJSType(trgSym.toTypeConstructor)) {
-                assert(isScalaJSDefinedJSClass(defaultGetter.owner))
-                genApplyJSClassMethod(trgTree, defaultGetter, defaultGetterArgs)
-              } else {
-                genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
-              }
-            }, {
-              // Otherwise, unbox the argument
-              unboxedArg
-            }
-          )(unboxedArg.tpe)
-        } else {
-          // Otherwise, it is always the unboxed argument
-          unboxedArg
-        }
+            )(unboxedArg.tpe)
+          } else {
+            // Otherwise, it is always the unboxed argument
+            unboxedArg
+          }
 
         result +=
           js.VarDef(

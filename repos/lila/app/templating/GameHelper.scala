@@ -208,11 +208,11 @@ trait GameHelper {
       finished: Boolean,
       result: Option[Boolean]) = {
     val res = if (finished) result match {
-      case Some(true)  => "1-0"
-      case Some(false) => "0-1"
-      case None        => "½-½"
-    }
-    else "*"
+        case Some(true)  => "1-0"
+        case Some(false) => "0-1"
+        case None        => "½-½"
+      }
+      else "*"
     s"${usernameOrId(whiteUserId)} $res ${usernameOrId(blackUserId)}"
   }
 

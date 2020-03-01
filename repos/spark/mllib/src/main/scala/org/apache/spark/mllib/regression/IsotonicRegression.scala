@@ -308,10 +308,10 @@ class IsotonicRegression private (private var isotonic: Boolean)
   @Since("1.3.0")
   def run(input: RDD[(Double, Double, Double)]): IsotonicRegressionModel = {
     val preprocessedInput = if (isotonic) {
-      input
-    } else {
-      input.map(x => (-x._1, x._2, x._3))
-    }
+        input
+      } else {
+        input.map(x => (-x._1, x._2, x._3))
+      }
 
     val pooled = parallelPoolAdjacentViolators(preprocessedInput)
 

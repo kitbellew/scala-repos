@@ -102,8 +102,8 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
             handleIncomingMessage(req, client)
           case (_, true) =>
             val cl = if (isNew) {
-              createClient(route.get, session, resource)
-            } else null
+                createClient(route.get, session, resource)
+              } else null
 
             addEventListener(resource)
             resumeIfNeeded(resource)

@@ -206,13 +206,13 @@ private[spark] class MemoryStore(
       val arrayValues = vector.toArray
       vector = null
       val entry = if (level.deserialized) {
-        new DeserializedMemoryEntry(
-          arrayValues,
-          SizeEstimator.estimate(arrayValues))
-      } else {
-        val bytes = blockManager.dataSerialize(blockId, arrayValues.iterator)
-        new SerializedMemoryEntry(bytes, bytes.size)
-      }
+          new DeserializedMemoryEntry(
+            arrayValues,
+            SizeEstimator.estimate(arrayValues))
+        } else {
+          val bytes = blockManager.dataSerialize(blockId, arrayValues.iterator)
+          new SerializedMemoryEntry(bytes, bytes.size)
+        }
       val size = entry.size
       def transferUnrollToStorage(amount: Long): Unit = {
         // Synchronize so that transfer is atomic

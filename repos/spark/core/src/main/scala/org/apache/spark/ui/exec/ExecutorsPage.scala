@@ -361,10 +361,10 @@ private[spark] object ExecutorsPage {
       statusId: Int,
       isActive: Boolean): ExecutorSummary = {
     val status = if (isActive) {
-      listener.activeStorageStatusList(statusId)
-    } else {
-      listener.deadStorageStatusList(statusId)
-    }
+        listener.activeStorageStatusList(statusId)
+      } else {
+        listener.deadStorageStatusList(statusId)
+      }
     val execId = status.blockManagerId.executorId
     val hostPort = status.blockManagerId.hostPort
     val rddBlocks = status.numBlocks

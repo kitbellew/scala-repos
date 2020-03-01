@@ -565,8 +565,7 @@ object Game {
       id = IdGenerator.game,
       whitePlayer = whitePlayer,
       blackPlayer = blackPlayer,
-      binaryPieces =
-        if (game.isStandardInit) BinaryFormat.piece.standard
+      binaryPieces = if (game.isStandardInit) BinaryFormat.piece.standard
         else BinaryFormat.piece write game.board.pieces,
       binaryPgn = ByteArray.empty,
       status = Status.Created,

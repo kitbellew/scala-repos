@@ -23,8 +23,7 @@ case class Perf(
     copy(
       glicko = g,
       nb = nb + 1,
-      recent =
-        if (nb < 10) recent
+      recent = if (nb < 10) recent
         else (g.intRating :: recent) take Perf.recentMaxSize,
       latest = date.some)
 

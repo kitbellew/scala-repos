@@ -164,16 +164,16 @@ class HistoryServerSuite
         // It is not applicable to hard-code this dynamic field in a static expected file,
         // so here we skip checking the lastUpdated field's value (setting it as "").
         val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
-          val subStrings = jsonOrg.split(",")
-          for (i <- subStrings.indices) {
-            if (subStrings(i).indexOf("lastUpdated") >= 0) {
-              subStrings(i) = "\"lastUpdated\":\"\""
+            val subStrings = jsonOrg.split(",")
+            for (i <- subStrings.indices) {
+              if (subStrings(i).indexOf("lastUpdated") >= 0) {
+                subStrings(i) = "\"lastUpdated\":\"\""
+              }
             }
+            subStrings.mkString(",")
+          } else {
+            jsonOrg
           }
-          subStrings.mkString(",")
-        } else {
-          jsonOrg
-        }
 
         val exp = IOUtils.toString(
           new FileInputStream(

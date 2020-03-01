@@ -121,16 +121,16 @@ private[spark] class BlockManager(
   // Client to read other executors' shuffle files. This is either an external service, or just the
   // standard BlockTransferService to directly connect to other Executors.
   private[spark] val shuffleClient = if (externalShuffleServiceEnabled) {
-    val transConf =
-      SparkTransportConf.fromSparkConf(conf, "shuffle", numUsableCores)
-    new ExternalShuffleClient(
-      transConf,
-      securityManager,
-      securityManager.isAuthenticationEnabled(),
-      securityManager.isSaslEncryptionEnabled())
-  } else {
-    blockTransferService
-  }
+      val transConf =
+        SparkTransportConf.fromSparkConf(conf, "shuffle", numUsableCores)
+      new ExternalShuffleClient(
+        transConf,
+        securityManager,
+        securityManager.isAuthenticationEnabled(),
+        securityManager.isSaslEncryptionEnabled())
+    } else {
+      blockTransferService
+    }
 
   // Whether to compress broadcast variables that are stored
   private val compressBroadcast =
@@ -187,14 +187,14 @@ private[spark] class BlockManager(
       blockTransferService.port)
 
     shuffleServerId = if (externalShuffleServiceEnabled) {
-      logInfo(s"external shuffle service port = $externalShuffleServicePort")
-      BlockManagerId(
-        executorId,
-        blockTransferService.hostName,
-        externalShuffleServicePort)
-    } else {
-      blockManagerId
-    }
+        logInfo(s"external shuffle service port = $externalShuffleServicePort")
+        BlockManagerId(
+          executorId,
+          blockTransferService.hostName,
+          externalShuffleServicePort)
+      } else {
+        blockManagerId
+      }
 
     master.registerBlockManager(blockManagerId, maxMemory, slaveEndpoint)
 
@@ -455,10 +455,10 @@ private[spark] class BlockManager(
         logDebug(s"Level for block $blockId is $level")
         if (level.useMemory && memoryStore.contains(blockId)) {
           val iter: Iterator[Any] = if (level.deserialized) {
-            memoryStore.getValues(blockId).get
-          } else {
-            dataDeserialize(blockId, memoryStore.getBytes(blockId).get)
-          }
+              memoryStore.getValues(blockId).get
+            } else {
+              dataDeserialize(blockId, memoryStore.getBytes(blockId).get)
+            }
           val ci =
             CompletionIterator[Any, Iterator[Any]](iter, releaseLock(blockId))
           Some(new BlockResult(ci, DataReadMethod.Memory, info.size))
@@ -817,14 +817,14 @@ private[spark] class BlockManager(
         // Since we're storing bytes, initiate the replication before storing them locally.
         // This is faster as data is already serialized and ready to send.
         val replicationFuture = if (level.replication > 1) {
-          Future {
-            // This is a blocking action and should run in futureExecutionContext which is a cached
-            // thread pool
-            replicate(blockId, bytes, level)
-          }(futureExecutionContext)
-        } else {
-          null
-        }
+            Future {
+              // This is a blocking action and should run in futureExecutionContext which is a cached
+              // thread pool
+              replicate(blockId, bytes, level)
+            }(futureExecutionContext)
+          } else {
+            null
+          }
 
         val size = bytes.size
 
@@ -832,18 +832,18 @@ private[spark] class BlockManager(
           // Put it in memory first, even if it also has useDisk set to true;
           // We will drop it to disk later if the memory store can't hold it.
           val putSucceeded = if (level.deserialized) {
-            val values = dataDeserialize(blockId, bytes)
-            memoryStore.putIterator(blockId, values, level) match {
-              case Right(_)   => true
-              case Left(iter) =>
-                // If putting deserialized values in memory failed, we will put the bytes directly to
-                // disk, so we don't need this iterator and can close it to free resources earlier.
-                iter.close()
-                false
+              val values = dataDeserialize(blockId, bytes)
+              memoryStore.putIterator(blockId, values, level) match {
+                case Right(_)   => true
+                case Left(iter) =>
+                  // If putting deserialized values in memory failed, we will put the bytes directly to
+                  // disk, so we don't need this iterator and can close it to free resources earlier.
+                  iter.close()
+                  false
+              }
+            } else {
+              memoryStore.putBytes(blockId, size, () => bytes)
             }
-          } else {
-            memoryStore.putBytes(blockId, size, () => bytes)
-          }
           if (!putSucceeded && level.useDisk) {
             logWarning(s"Persisting block $blockId to disk instead.")
             diskStore.putBytes(blockId, bytes)

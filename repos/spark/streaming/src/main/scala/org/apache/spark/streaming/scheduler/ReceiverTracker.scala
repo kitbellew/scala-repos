@@ -271,14 +271,14 @@ private[streaming] class ReceiverTracker(
 
     val scheduledLocations = receiverTrackingInfos(streamId).scheduledLocations
     val acceptableExecutors = if (scheduledLocations.nonEmpty) {
-      // This receiver is registering and it's scheduled by
-      // ReceiverSchedulingPolicy.scheduleReceivers. So use "scheduledLocations" to check it.
-      scheduledLocations.get
-    } else {
-      // This receiver is scheduled by "ReceiverSchedulingPolicy.rescheduleReceiver", so calling
-      // "ReceiverSchedulingPolicy.rescheduleReceiver" again to check it.
-      scheduleReceiver(streamId)
-    }
+        // This receiver is registering and it's scheduled by
+        // ReceiverSchedulingPolicy.scheduleReceivers. So use "scheduledLocations" to check it.
+        scheduledLocations.get
+      } else {
+        // This receiver is scheduled by "ReceiverSchedulingPolicy.rescheduleReceiver", so calling
+        // "ReceiverSchedulingPolicy.rescheduleReceiver" again to check it.
+        scheduleReceiver(streamId)
+      }
 
     def isAcceptable: Boolean = acceptableExecutors.exists {
       case loc: ExecutorCacheTaskLocation => loc.executorId == executorId
@@ -339,10 +339,10 @@ private[streaming] class ReceiverTracker(
     listenerBus.post(
       StreamingListenerReceiverStopped(newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError = if (error != null && !error.isEmpty) {
-      s"$message - $error"
-    } else {
-      s"$message"
-    }
+        s"$message - $error"
+      } else {
+        s"$message"
+      }
     logError(s"Deregistered receiver for stream $streamId: $messageWithError")
   }
 
@@ -387,10 +387,10 @@ private[streaming] class ReceiverTracker(
     listenerBus.post(
       StreamingListenerReceiverError(newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError = if (error != null && !error.isEmpty) {
-      s"$message - $error"
-    } else {
-      s"$message"
-    }
+        s"$message - $error"
+      } else {
+        s"$message"
+      }
     logWarning(
       s"Error reported by receiver for stream $streamId: $messageWithError")
   }
@@ -527,21 +527,21 @@ private[streaming] class ReceiverTracker(
         val oldScheduledExecutors = getStoredScheduledExecutors(
           receiver.streamId)
         val scheduledLocations = if (oldScheduledExecutors.nonEmpty) {
-          // Try global scheduling again
-          oldScheduledExecutors
-        } else {
-          val oldReceiverInfo = receiverTrackingInfos(receiver.streamId)
-          // Clear "scheduledLocations" to indicate we are going to do local scheduling
-          val newReceiverInfo = oldReceiverInfo.copy(
-            state = ReceiverState.INACTIVE,
-            scheduledLocations = None)
-          receiverTrackingInfos(receiver.streamId) = newReceiverInfo
-          schedulingPolicy.rescheduleReceiver(
-            receiver.streamId,
-            receiver.preferredLocation,
-            receiverTrackingInfos,
-            getExecutors)
-        }
+            // Try global scheduling again
+            oldScheduledExecutors
+          } else {
+            val oldReceiverInfo = receiverTrackingInfos(receiver.streamId)
+            // Clear "scheduledLocations" to indicate we are going to do local scheduling
+            val newReceiverInfo = oldReceiverInfo.copy(
+              state = ReceiverState.INACTIVE,
+              scheduledLocations = None)
+            receiverTrackingInfos(receiver.streamId) = newReceiverInfo
+            schedulingPolicy.rescheduleReceiver(
+              receiver.streamId,
+              receiver.preferredLocation,
+              receiverTrackingInfos,
+              getExecutors)
+          }
         // Assume there is one receiver restarting at one time, so we don't need to update
         // receiverTrackingInfos
         startReceiver(receiver, scheduledLocations)

@@ -52,39 +52,39 @@ object App extends Logging {
       appid map { id =>
         val dbInit = events.init(id)
         val r = if (dbInit) {
-          info(s"Initialized Event Store for this app ID: ${id}.")
-          val accessKeys = storage.Storage.getMetaDataAccessKeys
-          val accessKey = accessKeys.insert(
-            storage.AccessKey(
-              key = ca.accessKey.accessKey,
-              appid = id,
-              events = Seq()))
-          accessKey map { k =>
-            info("Created new app:")
-            info(s"      Name: ${ca.app.name}")
-            info(s"        ID: ${id}")
-            info(s"Access Key: ${k}")
-            0
-          } getOrElse {
-            error(s"Unable to create new access key.")
-            1
-          }
-        } else {
-          error(s"Unable to initialize Event Store for this app ID: ${id}.")
-          // revert back the meta data change
-          try {
-            apps.delete(id)
-            0
-          } catch {
-            case e: Exception =>
-              error(s"Failed to revert back the App meta-data change.", e)
-              error(s"The app ${ca.app.name} CANNOT be used!")
-              error(
-                s"Please run 'pio app delete ${ca.app.name}' " +
-                  "to delete this app!")
+            info(s"Initialized Event Store for this app ID: ${id}.")
+            val accessKeys = storage.Storage.getMetaDataAccessKeys
+            val accessKey = accessKeys.insert(
+              storage.AccessKey(
+                key = ca.accessKey.accessKey,
+                appid = id,
+                events = Seq()))
+            accessKey map { k =>
+              info("Created new app:")
+              info(s"      Name: ${ca.app.name}")
+              info(s"        ID: ${id}")
+              info(s"Access Key: ${k}")
+              0
+            } getOrElse {
+              error(s"Unable to create new access key.")
               1
+            }
+          } else {
+            error(s"Unable to initialize Event Store for this app ID: ${id}.")
+            // revert back the meta data change
+            try {
+              apps.delete(id)
+              0
+            } catch {
+              case e: Exception =>
+                error(s"Failed to revert back the App meta-data change.", e)
+                error(s"The app ${ca.app.name} CANNOT be used!")
+                error(
+                  s"Please run 'pio app delete ${ca.app.name}' " +
+                    "to delete this app!")
+                1
+            }
           }
-        }
         events.close()
         r
       } getOrElse {
@@ -294,42 +294,43 @@ object App extends Logging {
           val events = storage.Storage.getLEvents()
           // remove table
           val r1 = if (events.remove(app.id, channelId)) {
-            if (channelId.isDefined) {
-              info(s"Removed Event Store for this channel ID: ${channelId.get}")
+              if (channelId.isDefined) {
+                info(
+                  s"Removed Event Store for this channel ID: ${channelId.get}")
+              } else {
+                info(s"Removed Event Store for this app ID: ${app.id}")
+              }
+              0
             } else {
-              info(s"Removed Event Store for this app ID: ${app.id}")
+              if (channelId.isDefined) {
+                error(s"Error removing Event Store for this channel.")
+              } else {
+                error(s"Error removing Event Store for this app.")
+              }
+              1
             }
-            0
-          } else {
-            if (channelId.isDefined) {
-              error(s"Error removing Event Store for this channel.")
-            } else {
-              error(s"Error removing Event Store for this app.")
-            }
-            1
-          }
           // re-create table
           val dbInit = events.init(app.id, channelId)
           val r2 = if (dbInit) {
-            if (channelId.isDefined) {
-              info(
-                s"Initialized Event Store for this channel ID: ${channelId.get}.")
+              if (channelId.isDefined) {
+                info(
+                  s"Initialized Event Store for this channel ID: ${channelId.get}.")
+              } else {
+                info(s"Initialized Event Store for this app ID: ${app.id}.")
+              }
+              0
             } else {
-              info(s"Initialized Event Store for this app ID: ${app.id}.")
+              if (channelId.isDefined) {
+                error(
+                  s"Unable to initialize Event Store for this channel ID:" +
+                    s" ${channelId.get}.")
+              } else {
+                error(
+                  s"Unable to initialize Event Store for this appId:" +
+                    s" ${app.id}.")
+              }
+              1
             }
-            0
-          } else {
-            if (channelId.isDefined) {
-              error(
-                s"Unable to initialize Event Store for this channel ID:" +
-                  s" ${channelId.get}.")
-            } else {
-              error(
-                s"Unable to initialize Event Store for this appId:" +
-                  s" ${app.id}.")
-            }
-            1
-          }
           events.close()
           info("Done.")
           r1 + r2
@@ -374,43 +375,44 @@ object App extends Logging {
           // delete channels
           val delChannelStatus: Seq[Int] = chans.map { ch =>
             val r1 = if (events.remove(app.id, Some(ch.id))) {
-              info(s"Removed Event Store of the channel ID: ${ch.id}")
-              0
-            } else {
-              error(s"Error removing Event Store of the channel ID: ${ch.id}.")
-              1
-            }
+                info(s"Removed Event Store of the channel ID: ${ch.id}")
+                0
+              } else {
+                error(
+                  s"Error removing Event Store of the channel ID: ${ch.id}.")
+                1
+              }
             // re-create table
             val dbInit = events.init(app.id, Some(ch.id))
             val r2 = if (dbInit) {
-              info(s"Initialized Event Store of the channel ID: ${ch.id}")
-              0
-            } else {
-              error(
-                s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
-              1
-            }
+                info(s"Initialized Event Store of the channel ID: ${ch.id}")
+                0
+              } else {
+                error(
+                  s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
+                1
+              }
             r1 + r2
           }
 
           if (delChannelStatus.filter(_ != 0).isEmpty) {
             val r1 = if (events.remove(app.id)) {
-              info(s"Removed Event Store for this app ID: ${app.id}")
-              0
-            } else {
-              error(s"Error removing Event Store for this app.")
-              1
-            }
+                info(s"Removed Event Store for this app ID: ${app.id}")
+                0
+              } else {
+                error(s"Error removing Event Store for this app.")
+                1
+              }
 
             val dbInit = events.init(app.id)
             val r2 = if (dbInit) {
-              info(s"Initialized Event Store for this app ID: ${app.id}.")
-              0
-            } else {
-              error(
-                s"Unable to initialize Event Store for this appId: ${app.id}.")
-              1
-            }
+                info(s"Initialized Event Store for this app ID: ${app.id}.")
+                0
+              } else {
+                error(
+                  s"Unable to initialize Event Store for this appId: ${app.id}.")
+                1
+              }
             info("Done.")
             r1 + r2
           } else 1

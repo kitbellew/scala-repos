@@ -72,10 +72,10 @@ private[sbt] object SbtRefactorings {
         val treeName = extractSettingName(tree)
         if (name == treeName) {
           val replacement = if (acc.isEmpty) {
-            command.mkString(END_OF_LINE)
-          } else {
-            EMPTY_STRING
-          }
+              command.mkString(END_OF_LINE)
+            } else {
+              EMPTY_STRING
+            }
           (tree.pos.start, st, replacement) +: acc
         } else {
           acc

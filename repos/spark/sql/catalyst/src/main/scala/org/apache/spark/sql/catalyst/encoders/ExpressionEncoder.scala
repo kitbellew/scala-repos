@@ -107,10 +107,10 @@ object ExpressionEncoder {
     val schema = StructType(encoders.zipWithIndex.map {
       case (e, i) =>
         val (dataType, nullable) = if (e.flat) {
-          e.schema.head.dataType -> e.schema.head.nullable
-        } else {
-          e.schema -> true
-        }
+            e.schema.head.dataType -> e.schema.head.nullable
+          } else {
+            e.schema -> true
+          }
         StructField(s"_${i + 1}", dataType, nullable)
     })
 

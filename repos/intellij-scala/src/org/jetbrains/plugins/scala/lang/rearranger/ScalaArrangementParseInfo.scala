@@ -58,10 +58,10 @@ class ScalaArrangementParseInfo {
     }
     currentDependentMethods += callee
     var callerDependent = if (!methodDependencies.contains(caller)) {
-      immutable.HashSet[ScFunction]()
-    } else {
-      methodDependencies(caller)
-    }
+        immutable.HashSet[ScFunction]()
+      } else {
+        methodDependencies(caller)
+      }
     if (!callerDependent.contains(callee)) {
       callerDependent = callerDependent + callee
     }

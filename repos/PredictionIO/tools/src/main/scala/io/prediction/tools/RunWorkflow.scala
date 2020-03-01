@@ -59,10 +59,10 @@ object RunWorkflow extends Logging {
     val deployModeIndex =
       ca.common.sparkPassThrough.indexOf("--deploy-mode")
     val deployMode = if (deployModeIndex != -1) {
-      ca.common.sparkPassThrough(deployModeIndex + 1)
-    } else {
-      "client"
-    }
+        ca.common.sparkPassThrough(deployModeIndex + 1)
+      } else {
+        "client"
+      }
 
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 

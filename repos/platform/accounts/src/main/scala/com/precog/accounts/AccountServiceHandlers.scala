@@ -190,11 +190,11 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           val keyToFind = if (auth.accountId == rootAccountId) {
-            // Root can send an apiKey query param for the lookup
-            request.parameters.get('apiKey).getOrElse(auth.apiKey)
-          } else {
-            auth.apiKey
-          }
+              // Root can send an apiKey query param for the lookup
+              request.parameters.get('apiKey).getOrElse(auth.apiKey)
+            } else {
+              auth.apiKey
+            }
 
           logger.debug(
             "Looking up account ids with account: " + auth.accountId + " for API key: " + keyToFind)

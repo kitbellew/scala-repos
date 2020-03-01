@@ -35,8 +35,7 @@ abstract class ScalaMemberInfoBase[Member <: PsiElement](member: Member)
           overrides = java.lang.Boolean.FALSE
         case Some(m) if m.getLanguage.isInstanceOf[JavaLanguage] =>
           //for java only
-          overrides =
-            if (!m.hasModifierProperty(PsiModifier.ABSTRACT))
+          overrides = if (!m.hasModifierProperty(PsiModifier.ABSTRACT))
               java.lang.Boolean.TRUE
             else java.lang.Boolean.FALSE
         case _ => overrides = null

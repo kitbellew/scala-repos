@@ -328,18 +328,18 @@ object ContentTypeResolver {
       def apply(fileName: String) = {
         val lastDotIx = fileName.lastIndexOf('.')
         val mediaType = if (lastDotIx >= 0) {
-          fileName.substring(lastDotIx + 1) match {
-            case "gz" ⇒
-              fileName.lastIndexOf('.', lastDotIx - 1) match {
-                case -1 ⇒ MediaTypes.`application/octet-stream`
-                case x ⇒
-                  MediaTypes
-                    .forExtension(fileName.substring(x + 1, lastDotIx))
-                    .withComp(MediaType.Gzipped)
-              }
-            case ext ⇒ MediaTypes.forExtension(ext)
-          }
-        } else MediaTypes.`application/octet-stream`
+            fileName.substring(lastDotIx + 1) match {
+              case "gz" ⇒
+                fileName.lastIndexOf('.', lastDotIx - 1) match {
+                  case -1 ⇒ MediaTypes.`application/octet-stream`
+                  case x ⇒
+                    MediaTypes
+                      .forExtension(fileName.substring(x + 1, lastDotIx))
+                      .withComp(MediaType.Gzipped)
+                }
+              case ext ⇒ MediaTypes.forExtension(ext)
+            }
+          } else MediaTypes.`application/octet-stream`
         ContentType(mediaType, () ⇒ charset)
       }
     }

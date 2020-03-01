@@ -15,8 +15,7 @@ abstract class InputStream extends Closeable {
       var next = 0
 
       while (bytesWritten < len && next != -1) {
-        next =
-          if (bytesWritten == 0) read()
+        next = if (bytesWritten == 0) read()
           else {
             try read()
             catch { case _: IOException => -1 }

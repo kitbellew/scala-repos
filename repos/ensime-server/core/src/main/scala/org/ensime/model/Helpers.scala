@@ -82,12 +82,12 @@ trait Helpers { self: Global =>
     }
 
     val name = if (sym.isType) {
-      typeIndexerName(sym)
-    } else if (sym.isModule) {
-      typeIndexerName(sym) + "$"
-    } else {
-      symbolIndexerName(sym.owner) + "." + sym.encodedName
-    }
+        typeIndexerName(sym)
+      } else if (sym.isModule) {
+        typeIndexerName(sym) + "$"
+      } else {
+        symbolIndexerName(sym.owner) + "." + sym.encodedName
+      }
     name
       .replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
@@ -115,10 +115,10 @@ trait Helpers { self: Global =>
       else typeSym.enclosingPackage.fullName + "."
 
     val withoutArgs = if (typeSym.isNestedClass) {
-      prefix + nestedClassName(typeSym)
-    } else {
-      prefix + typeShortName(typeSym)
-    }
+        prefix + nestedClassName(typeSym)
+      } else {
+        prefix + typeShortName(typeSym)
+      }
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
                        "[" +

@@ -110,10 +110,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           .map {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+                  current.map { s => s + "." + name }
+                } else {
+                  Set(name)
+                }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -254,10 +254,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       val slice = new Slice {
         val size = size0
         val columns = if (includeIdField) {
-          columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
-            columns0 + (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
-          } getOrElse columns0
-        } else columns0
+            columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
+              columns0 + (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
+            } getOrElse columns0
+          } else columns0
       }
 
       // FIXME: If cursor is empty the generated columns won't satisfy
@@ -265,10 +265,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       // to fail unless it allows for vacuous success
 
       val nextSkip = if (hasMore) {
-        Some(skip + slice.size)
-      } else {
-        None
-      }
+          Some(skip + slice.size)
+        } else {
+          None
+        }
 
       (slice, nextSkip)
     }

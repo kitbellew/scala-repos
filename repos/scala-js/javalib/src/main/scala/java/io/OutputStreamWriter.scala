@@ -54,10 +54,10 @@ class OutputStreamWriter(
     ensureOpen()
 
     val cbuf1 = if (inBuf != "") {
-      val fullInput = CharBuffer.wrap(inBuf + cbuf.toString)
-      inBuf = ""
-      fullInput
-    } else cbuf
+        val fullInput = CharBuffer.wrap(inBuf + cbuf.toString)
+        inBuf = ""
+        fullInput
+      } else cbuf
 
     @inline
     @tailrec

@@ -109,16 +109,16 @@ object MLUtils {
 
     // Determine number of features.
     val d = if (numFeatures > 0) {
-      numFeatures
-    } else {
-      parsed.persist(StorageLevel.MEMORY_ONLY)
-      parsed
-        .map {
-          case (label, indices, values) =>
-            indices.lastOption.getOrElse(0)
-        }
-        .reduce(math.max) + 1
-    }
+        numFeatures
+      } else {
+        parsed.persist(StorageLevel.MEMORY_ONLY)
+        parsed
+          .map {
+            case (label, indices, values) =>
+              indices.lastOption.getOrElse(0)
+          }
+          .reduce(math.max) + 1
+      }
 
     parsed.map {
       case (label, indices, values) =>

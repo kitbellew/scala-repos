@@ -414,8 +414,8 @@ trait BasicBackend { self =>
                         s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
                   }
                   demand = ctx.delivered(demand)
-                  realDemand =
-                    if (demand < 0) demand - Long.MinValue else demand
+                  realDemand = if (demand < 0) demand - Long.MinValue
+                    else demand
                 } while ((state ne null) && realDemand > 0)
                 if (debug) {
                   if (state ne null)

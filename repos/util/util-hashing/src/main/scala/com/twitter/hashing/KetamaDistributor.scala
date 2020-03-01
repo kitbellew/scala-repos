@@ -23,12 +23,12 @@ class KetamaDistributor[A](
 
     _nodes foreach { node =>
       val pointsOnRing = if (oldLibMemcachedVersionComplianceMode) {
-        val percent = node.weight.toFloat / totalWeight.toFloat
-        (percent * numReps / 4 * nodeCount.toFloat + 0.0000000001).toInt
-      } else {
-        val percent = node.weight.toDouble / totalWeight.toDouble
-        (percent * nodeCount * (numReps / 4) + 0.0000000001).toInt
-      }
+          val percent = node.weight.toFloat / totalWeight.toFloat
+          (percent * numReps / 4 * nodeCount.toFloat + 0.0000000001).toInt
+        } else {
+          val percent = node.weight.toDouble / totalWeight.toDouble
+          (percent * nodeCount * (numReps / 4) + 0.0000000001).toInt
+        }
 
       for (i <- 0 until pointsOnRing) {
         val key = node.identifier + "-" + i

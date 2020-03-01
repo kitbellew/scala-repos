@@ -160,10 +160,10 @@ class LBFGSB(
         (i, Double.MaxValue)
       } else {
         val ti = if (gi < 0) {
-          (x(i) - upperBounds(i)) / gi
-        } else {
-          (x(i) - lowerBounds(i)) / gi
-        }
+            (x(i) - upperBounds(i)) / gi
+          } else {
+            (x(i) - lowerBounds(i)) / gi
+          }
         d(i) = if (0 == ti) 0 else -gi
         (i, ti)
       }
@@ -236,14 +236,14 @@ class LBFGSB(
     var starAlpha = 1.0
     for ((vIdx, i) <- freeVarIndex.zipWithIndex) {
       starAlpha = if (0 < du(i)) {
-        math.max(
-          starAlpha,
-          math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      } else {
-        math.max(
-          starAlpha,
-          math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      }
+          math.max(
+            starAlpha,
+            math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
+        } else {
+          math.max(
+            starAlpha,
+            math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
+        }
     }
 
     starAlpha

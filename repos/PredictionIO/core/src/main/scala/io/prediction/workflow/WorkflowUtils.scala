@@ -412,10 +412,10 @@ class UpgradeCheckRunner(val component: String, val engine: String)
 
   def run(): Unit = {
     val url = if (engine == "") {
-      s"$versionsHost$version/$component.json"
-    } else {
-      s"$versionsHost$version/$component/$engine.json"
-    }
+        s"$versionsHost$version/$component.json"
+      } else {
+        s"$versionsHost$version/$component/$engine.json"
+      }
     try {
       val upgradeData = Source.fromURL(url)
     } catch {

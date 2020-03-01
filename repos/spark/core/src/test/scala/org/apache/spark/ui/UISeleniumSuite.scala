@@ -311,10 +311,10 @@ class UISeleniumSuite
         JInt(attemptId) <- stage \ "attemptId"
       } {
         val exp = if (attemptId.toInt == 0 && stageId.toInt == 1) {
-          StageStatus.FAILED
-        } else {
-          StageStatus.COMPLETE
-        }
+            StageStatus.FAILED
+          } else {
+            StageStatus.COMPLETE
+          }
         status should be(exp.name())
       }
 

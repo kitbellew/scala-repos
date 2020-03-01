@@ -705,10 +705,10 @@ abstract class HiveThriftServer2Test
 
   protected def serverStartCommand(port: Int) = {
     val portConf = if (mode == ServerMode.binary) {
-      ConfVars.HIVE_SERVER2_THRIFT_PORT
-    } else {
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
-    }
+        ConfVars.HIVE_SERVER2_THRIFT_PORT
+      } else {
+        ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
+      }
 
     val driverClassPath = {
       // Writes a temporary log4j.properties and prepend it to driver classpath, so that it

@@ -168,21 +168,21 @@ object Gzip {
 
         // Try to just append to the existing buffer if there's enough room
         val finalIn = if (state.pos + 8 <= bufferSize) {
-          writeTrailer(state.buffer, state.pos)
-          state.pos = state.pos + 8
-          val buffer =
-            if (state.pos == bufferSize) state.buffer
-            else state.buffer.take(state.pos)
-          Seq(buffer)
-        } else {
-          // Create a new buffer for the trailer
-          val buffer =
-            if (state.pos == bufferSize) state.buffer
-            else state.buffer.take(state.pos)
-          val trailer = new Bytes(8)
-          writeTrailer(trailer, 0)
-          Seq(buffer, trailer)
-        }
+            writeTrailer(state.buffer, state.pos)
+            state.pos = state.pos + 8
+            val buffer =
+              if (state.pos == bufferSize) state.buffer
+              else state.buffer.take(state.pos)
+            Seq(buffer)
+          } else {
+            // Create a new buffer for the trailer
+            val buffer =
+              if (state.pos == bufferSize) state.buffer
+              else state.buffer.take(state.pos)
+            val trailer = new Bytes(8)
+            writeTrailer(trailer, 0)
+            Seq(buffer, trailer)
+          }
         Iteratee
           .flatten(Enumerator.enumerate(finalIn) >>> Enumerator.eof |>> Cont(k))
           .map(it => Done(it, Input.EOF))
@@ -263,10 +263,10 @@ object Gzip {
           if (state.inflater.finished()) {
             // Feed the current buffer
             val buffer = if (state.buffer.length > state.pos) {
-              state.buffer.take(state.pos)
-            } else {
-              state.buffer
-            }
+                state.buffer.take(state.pos)
+              } else {
+                state.buffer
+              }
             state.crc.update(buffer)
             new CheckDoneBytes {
               def continue[B](k: K[Bytes, B]) = finish(state, k, input)
@@ -308,10 +308,10 @@ object Gzip {
           input: Bytes): Iteratee[Bytes, Iteratee[Bytes, A]] = {
         // Get the left over bytes from the inflater
         val leftOver = if (input.length > state.inflater.getRemaining) {
-          Done(Unit, Input.El(input.takeRight(state.inflater.getRemaining)))
-        } else {
-          done()
-        }
+            Done(Unit, Input.El(input.takeRight(state.inflater.getRemaining)))
+          } else {
+            done()
+          }
 
         // Read the trailer, before sending an EOF
         for {

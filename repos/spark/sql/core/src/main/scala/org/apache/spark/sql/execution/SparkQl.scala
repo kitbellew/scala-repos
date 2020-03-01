@@ -254,12 +254,12 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           }
 
           val mode = if (ifNotExists.isDefined) {
-            SaveMode.Ignore
-          } else if (temp.isDefined) {
-            SaveMode.Overwrite
-          } else {
-            SaveMode.ErrorIfExists
-          }
+              SaveMode.Ignore
+            } else if (temp.isDefined) {
+              SaveMode.Overwrite
+            } else {
+              SaveMode.ErrorIfExists
+            }
 
           CreateTableUsingAsSelect(
             tableIdent,

@@ -455,8 +455,7 @@ trait ParSeqLike[
         yield new IndexWhere(pred, untilp, p)
     }
     override def merge(that: IndexWhere) =
-      result =
-        if (result == -1) that.result
+      result = if (result == -1) that.result
         else {
           if (that.result != -1) result min that.result else result
         }
@@ -484,8 +483,7 @@ trait ParSeqLike[
         yield new LastIndexWhere(pred, untilp, p)
     }
     override def merge(that: LastIndexWhere) =
-      result =
-        if (result == -1) that.result
+      result = if (result == -1) that.result
         else {
           if (that.result != -1) result max that.result else result
         }

@@ -61,8 +61,7 @@ class SelectionBenchmarks extends MyBenchmark {
     fs = if (typ == "float") mkarray(size, layout)(nextFloat) else null
     ds = if (typ == "double") mkarray(size, layout)(nextDouble) else null
     cs = if (typ == "complex") mkarray(size, layout)(nextComplex) else null
-    cs2 =
-      if (typ == "complex") cs.map(c => new FakeComplex(c.real, c.imag))
+    cs2 = if (typ == "complex") cs.map(c => new FakeComplex(c.real, c.imag))
       else null
   }
 

@@ -349,16 +349,18 @@ private[niflheim] class NIHDBActor private (
 
     val currentRawFile = rawFileFor(txLog.currentBlockId)
     val (currentLog, rawLogOffsets) = if (currentRawFile.exists) {
-      val (handler, offsets, ok) =
-        RawHandler.load(txLog.currentBlockId, currentRawFile)
-      if (!ok) {
-        logger.warn(
-          "Corruption detected and recovery performed on " + currentRawFile)
+        val (handler, offsets, ok) =
+          RawHandler.load(txLog.currentBlockId, currentRawFile)
+        if (!ok) {
+          logger.warn(
+            "Corruption detected and recovery performed on " + currentRawFile)
+        }
+        (handler, offsets)
+      } else {
+        (
+          RawHandler.empty(txLog.currentBlockId, currentRawFile),
+          Seq.empty[Long])
       }
-      (handler, offsets)
-    } else {
-      (RawHandler.empty(txLog.currentBlockId, currentRawFile), Seq.empty[Long])
-    }
 
     rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
       maxOffset = maxOffset max newMaxOffset

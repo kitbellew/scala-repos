@@ -128,13 +128,13 @@ class ExecutorClassLoader(
   private def getClassFileInputStreamFromHttpServer(
       pathInDirectory: String): InputStream = {
     val url = if (SparkEnv.get.securityManager.isAuthenticationEnabled()) {
-      val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
-      val newuri =
-        Utils.constructURIForAuthentication(uri, SparkEnv.get.securityManager)
-      newuri.toURL
-    } else {
-      new URL(classUri + "/" + urlEncode(pathInDirectory))
-    }
+        val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
+        val newuri =
+          Utils.constructURIForAuthentication(uri, SparkEnv.get.securityManager)
+        newuri.toURL
+      } else {
+        new URL(classUri + "/" + urlEncode(pathInDirectory))
+      }
     val connection: HttpURLConnection = Utils
       .setupSecureURLConnection(
         url.openConnection(),

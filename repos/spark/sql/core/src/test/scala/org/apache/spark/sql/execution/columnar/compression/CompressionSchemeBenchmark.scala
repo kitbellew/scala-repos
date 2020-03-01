@@ -74,10 +74,10 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     input.rewind()
 
     val compressedSize = if (encoder.compressedSize == 0) {
-      input.remaining()
-    } else {
-      encoder.compressedSize
-    }
+        input.remaining()
+      } else {
+        encoder.compressedSize
+      }
 
     (
       encoder.compress,

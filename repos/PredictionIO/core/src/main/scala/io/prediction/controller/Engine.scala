@@ -211,31 +211,31 @@ class Engine[TD, EI, PD, Q, P, A](
     }
 
     val models = if (persistedModels.exists(m => m.isInstanceOf[Unit.type])) {
-      // If any of persistedModels is Unit, we need to re-train the model.
-      logger.info("Some persisted models are Unit, need to re-train.")
-      val (dataSourceName, dataSourceParams) = engineParams.dataSourceParams
-      val dataSource =
-        Doer(dataSourceClassMap(dataSourceName), dataSourceParams)
+        // If any of persistedModels is Unit, we need to re-train the model.
+        logger.info("Some persisted models are Unit, need to re-train.")
+        val (dataSourceName, dataSourceParams) = engineParams.dataSourceParams
+        val dataSource =
+          Doer(dataSourceClassMap(dataSourceName), dataSourceParams)
 
-      val (preparatorName, preparatorParams) = engineParams.preparatorParams
-      val preparator =
-        Doer(preparatorClassMap(preparatorName), preparatorParams)
+        val (preparatorName, preparatorParams) = engineParams.preparatorParams
+        val preparator =
+          Doer(preparatorClassMap(preparatorName), preparatorParams)
 
-      val td = dataSource.readTrainingBase(sc)
-      val pd = preparator.prepareBase(sc, td)
+        val td = dataSource.readTrainingBase(sc)
+        val pd = preparator.prepareBase(sc, td)
 
-      val models = algorithms.zip(persistedModels).map {
-        case (algo, m) =>
-          m match {
-            case Unit => algo.trainBase(sc, pd)
-            case _    => m
-          }
+        val models = algorithms.zip(persistedModels).map {
+          case (algo, m) =>
+            m match {
+              case Unit => algo.trainBase(sc, pd)
+              case _    => m
+            }
+        }
+        models
+      } else {
+        logger.info("Using persisted model")
+        persistedModels
       }
-      models
-    } else {
-      logger.info("Using persisted model")
-      persistedModels
-    }
 
     models
       .zip(algorithms)

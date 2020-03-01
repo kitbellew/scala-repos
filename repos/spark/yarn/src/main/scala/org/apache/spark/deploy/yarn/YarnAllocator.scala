@@ -546,66 +546,66 @@ private[yarn] class YarnAllocator(
       val hostOpt = allocatedContainerToHostMap.get(containerId)
       val onHostStr = hostOpt.map(host => s" on host: $host").getOrElse("")
       val exitReason = if (!alreadyReleased) {
-        // Decrement the number of executors running. The next iteration of
-        // the ApplicationMaster's reporting thread will take care of allocating.
-        numExecutorsRunning -= 1
-        logInfo(
-          "Completed container %s%s (state: %s, exit status: %s)".format(
-            containerId,
-            onHostStr,
-            completedContainer.getState,
-            completedContainer.getExitStatus))
-        // Hadoop 2.2.X added a ContainerExitStatus we should switch to use
-        // there are some exit status' we shouldn't necessarily count against us, but for
-        // now I think its ok as none of the containers are expected to exit.
-        val exitStatus = completedContainer.getExitStatus
-        val (exitCausedByApp, containerExitReason) = exitStatus match {
-          case ContainerExitStatus.SUCCESS =>
-            (
-              false,
-              s"Executor for container $containerId exited because of a YARN event (e.g., " +
-                "pre-emption) and not because of an error in the running job.")
-          case ContainerExitStatus.PREEMPTED =>
-            // Preemption is not the fault of the running tasks, since YARN preempts containers
-            // merely to do resource sharing, and tasks that fail due to preempted executors could
-            // just as easily finish on any other executor. See SPARK-8167.
-            (false, s"Container ${containerId}${onHostStr} was preempted.")
-          // Should probably still count memory exceeded exit codes towards task failures
-          case VMEM_EXCEEDED_EXIT_CODE =>
-            (
-              true,
-              memLimitExceededLogMessage(
-                completedContainer.getDiagnostics,
-                VMEM_EXCEEDED_PATTERN))
-          case PMEM_EXCEEDED_EXIT_CODE =>
-            (
-              true,
-              memLimitExceededLogMessage(
-                completedContainer.getDiagnostics,
-                PMEM_EXCEEDED_PATTERN))
-          case _ =>
-            numExecutorsFailed += 1
-            (
-              true,
-              "Container marked as failed: " + containerId + onHostStr +
-                ". Exit status: " + completedContainer.getExitStatus +
-                ". Diagnostics: " + completedContainer.getDiagnostics)
+          // Decrement the number of executors running. The next iteration of
+          // the ApplicationMaster's reporting thread will take care of allocating.
+          numExecutorsRunning -= 1
+          logInfo(
+            "Completed container %s%s (state: %s, exit status: %s)".format(
+              containerId,
+              onHostStr,
+              completedContainer.getState,
+              completedContainer.getExitStatus))
+          // Hadoop 2.2.X added a ContainerExitStatus we should switch to use
+          // there are some exit status' we shouldn't necessarily count against us, but for
+          // now I think its ok as none of the containers are expected to exit.
+          val exitStatus = completedContainer.getExitStatus
+          val (exitCausedByApp, containerExitReason) = exitStatus match {
+            case ContainerExitStatus.SUCCESS =>
+              (
+                false,
+                s"Executor for container $containerId exited because of a YARN event (e.g., " +
+                  "pre-emption) and not because of an error in the running job.")
+            case ContainerExitStatus.PREEMPTED =>
+              // Preemption is not the fault of the running tasks, since YARN preempts containers
+              // merely to do resource sharing, and tasks that fail due to preempted executors could
+              // just as easily finish on any other executor. See SPARK-8167.
+              (false, s"Container ${containerId}${onHostStr} was preempted.")
+            // Should probably still count memory exceeded exit codes towards task failures
+            case VMEM_EXCEEDED_EXIT_CODE =>
+              (
+                true,
+                memLimitExceededLogMessage(
+                  completedContainer.getDiagnostics,
+                  VMEM_EXCEEDED_PATTERN))
+            case PMEM_EXCEEDED_EXIT_CODE =>
+              (
+                true,
+                memLimitExceededLogMessage(
+                  completedContainer.getDiagnostics,
+                  PMEM_EXCEEDED_PATTERN))
+            case _ =>
+              numExecutorsFailed += 1
+              (
+                true,
+                "Container marked as failed: " + containerId + onHostStr +
+                  ". Exit status: " + completedContainer.getExitStatus +
+                  ". Diagnostics: " + completedContainer.getDiagnostics)
 
-        }
-        if (exitCausedByApp) {
-          logWarning(containerExitReason)
+          }
+          if (exitCausedByApp) {
+            logWarning(containerExitReason)
+          } else {
+            logInfo(containerExitReason)
+          }
+          ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
         } else {
-          logInfo(containerExitReason)
+          // If we have already released this container, then it must mean
+          // that the driver has explicitly requested it to be killed
+          ExecutorExited(
+            completedContainer.getExitStatus,
+            exitCausedByApp = false,
+            s"Container $containerId exited from explicit termination request.")
         }
-        ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
-      } else {
-        // If we have already released this container, then it must mean
-        // that the driver has explicitly requested it to be killed
-        ExecutorExited(
-          completedContainer.getExitStatus,
-          exitCausedByApp = false,
-          s"Container $containerId exited from explicit termination request.")
-      }
 
       for {
         host <- hostOpt

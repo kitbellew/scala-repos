@@ -409,17 +409,17 @@ final class BaseLinker(
       targetMDef.resultType)
 
     val body = if (targetName.endsWith("__C")) {
-      // A Char needs to be boxed
-      New(
-        ClassType(Definitions.BoxedCharacterClass),
-        Ident("init___C"),
-        List(call))
-    } else if (targetName.endsWith("__V")) {
-      // Materialize an `undefined` result for void methods
-      Block(call, Undefined())
-    } else {
-      call
-    }
+        // A Char needs to be boxed
+        New(
+          ClassType(Definitions.BoxedCharacterClass),
+          Ident("init___C"),
+          List(call))
+      } else if (targetName.endsWith("__V")) {
+        // Materialize an `undefined` result for void methods
+        Block(call, Undefined())
+      } else {
+        call
+      }
 
     MethodDef(static = false, proxyIdent, params, AnyType, body)(
       OptimizerHints.empty,

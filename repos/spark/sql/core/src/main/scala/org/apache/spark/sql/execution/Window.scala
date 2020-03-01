@@ -124,32 +124,32 @@ case class Window(
     frameType match {
       case RangeFrame =>
         val (exprs, current, bound) = if (offset == 0) {
-          // Use the entire order expression when the offset is 0.
-          val exprs = orderSpec.map(_.child)
-          val projection = newMutableProjection(exprs, child.output)
-          (orderSpec, projection(), projection())
-        } else if (orderSpec.size == 1) {
-          // Use only the first order expression when the offset is non-null.
-          val sortExpr = orderSpec.head
-          val expr = sortExpr.child
-          // Create the projection which returns the current 'value'.
-          val current = newMutableProjection(expr :: Nil, child.output)()
-          // Flip the sign of the offset when processing the order is descending
-          val boundOffset = sortExpr.direction match {
-            case Descending => -offset
-            case Ascending  => offset
+            // Use the entire order expression when the offset is 0.
+            val exprs = orderSpec.map(_.child)
+            val projection = newMutableProjection(exprs, child.output)
+            (orderSpec, projection(), projection())
+          } else if (orderSpec.size == 1) {
+            // Use only the first order expression when the offset is non-null.
+            val sortExpr = orderSpec.head
+            val expr = sortExpr.child
+            // Create the projection which returns the current 'value'.
+            val current = newMutableProjection(expr :: Nil, child.output)()
+            // Flip the sign of the offset when processing the order is descending
+            val boundOffset = sortExpr.direction match {
+              case Descending => -offset
+              case Ascending  => offset
+            }
+            // Create the projection which returns the current 'value' modified by adding the offset.
+            val boundExpr = Add(
+              expr,
+              Cast(Literal.create(boundOffset, IntegerType), expr.dataType))
+            val bound = newMutableProjection(boundExpr :: Nil, child.output)()
+            (sortExpr :: Nil, current, bound)
+          } else {
+            sys.error(
+              "Non-Zero range offsets are not supported for windows " +
+                "with multiple order expressions.")
           }
-          // Create the projection which returns the current 'value' modified by adding the offset.
-          val boundExpr = Add(
-            expr,
-            Cast(Literal.create(boundOffset, IntegerType), expr.dataType))
-          val bound = newMutableProjection(boundExpr :: Nil, child.output)()
-          (sortExpr :: Nil, current, bound)
-        } else {
-          sys.error(
-            "Non-Zero range offsets are not supported for windows " +
-              "with multiple order expressions.")
-        }
         // Construct the ordering. This is used to compare the result of current value projection
         // to the result of bound value projection. This is done manually because we want to use
         // Code Generation (if it is enabled).

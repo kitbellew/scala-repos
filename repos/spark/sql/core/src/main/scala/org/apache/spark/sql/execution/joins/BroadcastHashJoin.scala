@@ -237,23 +237,26 @@ case class BroadcastHashJoin(
     val numOutput = metricTerm(ctx, "numOutputRows")
 
     val checkCondition = if (condition.isDefined) {
-      val expr = condition.get
-      // evaluate the variables from build side that used by condition
-      val eval =
-        evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
-      // filter the output via condition
-      ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
-      s"""
+        val expr = condition.get
+        // evaluate the variables from build side that used by condition
+        val eval =
+          evaluateRequiredVariables(
+            buildPlan.output,
+            buildVars,
+            expr.references)
+        // filter the output via condition
+        ctx.currentVars = input ++ buildVars
+        val ev = BindReferences
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
+          .gen(ctx)
+        s"""
          |$eval
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
-      ""
-    }
+      } else {
+        ""
+      }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
@@ -309,15 +312,18 @@ case class BroadcastHashJoin(
     // filter the output via condition
     val conditionPassed = ctx.freshName("conditionPassed")
     val checkCondition = if (condition.isDefined) {
-      val expr = condition.get
-      // evaluate the variables from build side that used by condition
-      val eval =
-        evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
-      ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
-      s"""
+        val expr = condition.get
+        // evaluate the variables from build side that used by condition
+        val eval =
+          evaluateRequiredVariables(
+            buildPlan.output,
+            buildVars,
+            expr.references)
+        ctx.currentVars = input ++ buildVars
+        val ev = BindReferences
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
+          .gen(ctx)
+        s"""
          |boolean $conditionPassed = true;
          |${eval.trim}
          |${ev.code}
@@ -325,9 +331,9 @@ case class BroadcastHashJoin(
          |  $conditionPassed = !${ev.isNull} && ${ev.value};
          |}
        """.stripMargin
-    } else {
-      s"final boolean $conditionPassed = true;"
-    }
+      } else {
+        s"final boolean $conditionPassed = true;"
+      }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
@@ -390,23 +396,26 @@ case class BroadcastHashJoin(
     val numOutput = metricTerm(ctx, "numOutputRows")
 
     val checkCondition = if (condition.isDefined) {
-      val expr = condition.get
-      // evaluate the variables from build side that used by condition
-      val eval =
-        evaluateRequiredVariables(buildPlan.output, buildVars, expr.references)
-      // filter the output via condition
-      ctx.currentVars = input ++ buildVars
-      val ev = BindReferences
-        .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-        .gen(ctx)
-      s"""
+        val expr = condition.get
+        // evaluate the variables from build side that used by condition
+        val eval =
+          evaluateRequiredVariables(
+            buildPlan.output,
+            buildVars,
+            expr.references)
+        // filter the output via condition
+        ctx.currentVars = input ++ buildVars
+        val ev = BindReferences
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
+          .gen(ctx)
+        s"""
          |$eval
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
-      ""
-    }
+      } else {
+        ""
+      }
 
     if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
       s"""

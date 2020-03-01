@@ -282,11 +282,11 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * Currently, it's only enabled in LogisticRegressionWithLBFGS
       */
     val scaler = if (useFeatureScaling) {
-      new StandardScaler(withStd = true, withMean = false)
-        .fit(input.map(_.features))
-    } else {
-      null
-    }
+        new StandardScaler(withStd = true, withMean = false)
+          .fit(input.map(_.features))
+      } else {
+        null
+      }
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.
     // TODO: Apply feature scaling to the weight vector instead of input data.
@@ -325,17 +325,17 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       optimizer.optimize(data, initialWeightsWithIntercept)
 
     val intercept = if (addIntercept && numOfLinearPredictor == 1) {
-      weightsWithIntercept(weightsWithIntercept.size - 1)
-    } else {
-      0.0
-    }
+        weightsWithIntercept(weightsWithIntercept.size - 1)
+      } else {
+        0.0
+      }
 
     var weights = if (addIntercept && numOfLinearPredictor == 1) {
-      Vectors.dense(
-        weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
-    } else {
-      weightsWithIntercept
-    }
+        Vectors.dense(
+          weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
+      } else {
+        weightsWithIntercept
+      }
 
     /**
       * The weights and intercept are trained in the scaled space; we're converting them back to

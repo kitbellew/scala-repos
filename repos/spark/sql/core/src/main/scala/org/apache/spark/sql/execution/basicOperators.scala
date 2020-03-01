@@ -145,10 +145,10 @@ case class Filter(condition: Expression, child: SparkPlan)
           BindReferences.bindReference(e, output))
         val ev = bound.gen(ctx)
         val nullCheck = if (bound.nullable) {
-          s"${ev.isNull} || "
-        } else {
-          s""
-        }
+            s"${ev.isNull} || "
+          } else {
+            s""
+          }
         s"""
          |${ev.code}
          |if (${nullCheck}!${ev.value}) continue;
@@ -263,10 +263,10 @@ case class Range(
     val ev = ExprCode("", "false", value)
     val BigInt = classOf[java.math.BigInteger].getName
     val checkEnd = if (step > 0) {
-      s"$number < $partitionEnd"
-    } else {
-      s"$number > $partitionEnd"
-    }
+        s"$number < $partitionEnd"
+      } else {
+        s"$number > $partitionEnd"
+      }
 
     ctx.addNewFunction(
       "initRange",

@@ -296,10 +296,10 @@ class AckedDeliverySpec extends AkkaSpec {
         val resends = (sndBuf.nacked ++ sndBuf.nonAcked).take(steps)
 
         val sends = if (steps - resends.size > 0) {
-          val tmp = toSend.take(steps - resends.size)
-          toSend = toSend.drop(steps - resends.size)
-          tmp
-        } else Seq.empty[Sequenced]
+            val tmp = toSend.take(steps - resends.size)
+            toSend = toSend.drop(steps - resends.size)
+            tmp
+          } else Seq.empty[Sequenced]
 
         (resends ++ sends) foreach { msg ⇒
           if (sends.contains(msg)) sndBuf = sndBuf.buffer(msg)

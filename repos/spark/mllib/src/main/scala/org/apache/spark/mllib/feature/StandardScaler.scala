@@ -148,8 +148,8 @@ class StandardScalerModel @Since("1.3.0") (
           if (withStd) {
             var i = 0
             while (i < size) {
-              values(i) =
-                if (std(i) != 0.0) (values(i) - localShift(i)) * (1.0 / std(i))
+              values(i) = if (std(i) != 0.0)
+                  (values(i) - localShift(i)) * (1.0 / std(i))
                 else 0.0
               i += 1
             }

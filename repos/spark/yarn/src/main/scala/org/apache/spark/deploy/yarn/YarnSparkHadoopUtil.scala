@@ -388,8 +388,8 @@ object YarnSparkHadoopUtil {
       key: String,
       value: String): Unit = {
     val newValue = if (env.contains(key)) {
-      env(key) + getClassPathSeparator + value
-    } else value
+        env(key) + getClassPathSeparator + value
+      } else value
     env.put(key, newValue)
   }
 

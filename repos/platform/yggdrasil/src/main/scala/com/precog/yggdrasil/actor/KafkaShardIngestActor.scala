@@ -428,15 +428,15 @@ abstract class KafkaShardIngestActor(
 
         case (offset, event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
           val newCheckpoint = if (records.isEmpty) {
-            checkpoint.skipTo(offset)
-          } else {
-            records.foldLeft(checkpoint) {
-              // TODO: This nested pattern match indicates that checkpoints are too closely
-              // coupled to the representation of event IDs.
-              case (acc, IngestRecord(EventId(pid, sid), _)) =>
-                acc.update(offset, pid, sid)
+              checkpoint.skipTo(offset)
+            } else {
+              records.foldLeft(checkpoint) {
+                // TODO: This nested pattern match indicates that checkpoints are too closely
+                // coupled to the representation of event IDs.
+                case (acc, IngestRecord(EventId(pid, sid), _)) =>
+                  acc.update(offset, pid, sid)
+              }
             }
-          }
 
           buildBatch(tail, batch :+ (offset, event), newCheckpoint)
 

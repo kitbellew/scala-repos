@@ -37,14 +37,14 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
 
   def insert(app: App): Option[Int] = DB localTx { implicit session =>
     val q = if (app.id == 0) {
-      sql"""
+        sql"""
       insert into $tableName (name, description) values(${app.name}, ${app.description})
       """
-    } else {
-      sql"""
+      } else {
+        sql"""
       insert into $tableName values(${app.id}, ${app.name}, ${app.description})
       """
-    }
+      }
     Some(q.updateAndReturnGeneratedKey().apply().toInt)
   }
 

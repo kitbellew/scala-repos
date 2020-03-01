@@ -47,14 +47,14 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
       if (st.execute) {
         val rs = st.getResultSet
         val logHeader = if (doLogResult) {
-          val meta = rs.getMetaData
-          Vector(
-            1.to(meta.getColumnCount).map(_.toString),
-            1.to(meta.getColumnCount)
-              .map(idx => meta.getColumnLabel(idx))
-              .to[ArrayBuffer]
-          )
-        } else null
+            val meta = rs.getMetaData
+            Vector(
+              1.to(meta.getColumnCount).map(_.toString),
+              1.to(meta.getColumnCount)
+                .map(idx => meta.getColumnLabel(idx))
+                .to[ArrayBuffer]
+            )
+          } else null
         val logBuffer =
           if (doLogResult) new ArrayBuffer[ArrayBuffer[Any]] else null
         var rowCount = 0

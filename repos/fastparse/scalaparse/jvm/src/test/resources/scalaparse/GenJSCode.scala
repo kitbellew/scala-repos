@@ -233,17 +233,17 @@ abstract class GenJSCode
               unexpectedMutatedFields := mutable.Set.empty
             ) {
               val tree = if (isRawJSType(sym.tpe)) {
-                assert(
-                  !isRawJSFunctionDef(sym),
-                  s"Raw JS function def should have been recorded: $cd")
-                genRawJSClassData(cd)
-              } else if (sym.isInterface) {
-                genInterface(cd)
-              } else if (sym.isImplClass) {
-                genImplClass(cd)
-              } else {
-                genClass(cd)
-              }
+                  assert(
+                    !isRawJSFunctionDef(sym),
+                    s"Raw JS function def should have been recorded: $cd")
+                  genRawJSClassData(cd)
+                } else if (sym.isInterface) {
+                  genInterface(cd)
+                } else if (sym.isImplClass) {
+                  genImplClass(cd)
+                } else {
+                  genClass(cd)
+                }
 
               currentClassInfoBuilder
                 .setEncodedName(encodeClassFullName(sym))
@@ -1369,20 +1369,20 @@ abstract class GenJSCode
           }
 
           val (exceptValDef, exceptVar) = if (mightCatchJavaScriptException) {
-            val valDef = js.VarDef(
-              freshLocalIdent("e"),
-              encodeClassType(ThrowableClass),
-              mutable = false, {
-                genApplyMethod(
-                  genLoadModule(RuntimePackageModule),
-                  Runtime_wrapJavaScriptException,
-                  List(origExceptVar))
-              }
-            )
-            (valDef, valDef.ref)
-          } else {
-            (js.Skip(), origExceptVar)
-          }
+              val valDef = js.VarDef(
+                freshLocalIdent("e"),
+                encodeClassType(ThrowableClass),
+                mutable = false, {
+                  genApplyMethod(
+                    genLoadModule(RuntimePackageModule),
+                    Runtime_wrapJavaScriptException,
+                    List(origExceptVar))
+                }
+              )
+              (valDef, valDef.ref)
+            } else {
+              (js.Skip(), origExceptVar)
+            }
 
           val elseHandler: js.Tree = js.Throw(origExceptVar)
 
@@ -1504,13 +1504,13 @@ abstract class GenJSCode
           js.BooleanLiteral(l == r)
       } else if (l.isValueType) {
         val result = if (cast) {
-          val ctor = ClassCastExceptionClass.info
-            .member(nme.CONSTRUCTOR)
-            .suchThat(_.tpe.params.isEmpty)
-          js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
-        } else {
-          js.BooleanLiteral(false)
-        }
+            val ctor = ClassCastExceptionClass.info
+              .member(nme.CONSTRUCTOR)
+              .suchThat(_.tpe.params.isEmpty)
+            js.Throw(genNew(ClassCastExceptionClass, ctor, Nil))
+          } else {
+            js.BooleanLiteral(false)
+          }
         js.Block(source, result) // eval and discard source
       } else if (r.isValueType) {
         assert(!cast, s"Unexpected asInstanceOf from ref type to value type")
@@ -3965,38 +3965,38 @@ abstract class GenJSCode
       }
 
       val (allFormalCaptures, body, allActualCaptures) = if (!isInImplClass) {
-        val thisActualCapture = genExpr(receiver)
-        val thisFormalCapture = js.ParamDef(
-          freshLocalIdent("this")(receiver.pos),
-          thisActualCapture.tpe,
-          mutable = false,
-          rest = false)(receiver.pos)
-        val thisCaptureArg = thisFormalCapture.ref
-        val (actualArgs, actualCaptures) = allArgs.splitAt(formalArgs.size)
-        val (formalCaptures, captureArgs) = makeCaptures(actualCaptures)
-        val body =
-          genApplyMethod(thisCaptureArg, target, actualArgs ::: captureArgs)
+          val thisActualCapture = genExpr(receiver)
+          val thisFormalCapture = js.ParamDef(
+            freshLocalIdent("this")(receiver.pos),
+            thisActualCapture.tpe,
+            mutable = false,
+            rest = false)(receiver.pos)
+          val thisCaptureArg = thisFormalCapture.ref
+          val (actualArgs, actualCaptures) = allArgs.splitAt(formalArgs.size)
+          val (formalCaptures, captureArgs) = makeCaptures(actualCaptures)
+          val body =
+            genApplyMethod(thisCaptureArg, target, actualArgs ::: captureArgs)
 
-        (
-          thisFormalCapture :: formalCaptures,
-          body,
-          thisActualCapture :: actualCaptures)
-      } else {
-        val (thisActualCapture :: actualArgs, actualCaptures) =
-          allArgs.splitAt(formalArgs.size + 1)
-        val (
-          thisFormalCapture :: formalCaptures,
-          thisCaptureArg :: captureArgs) =
-          makeCaptures(thisActualCapture :: actualCaptures)
-        val body = genTraitImplApply(
-          target,
-          thisCaptureArg :: actualArgs ::: captureArgs)
+          (
+            thisFormalCapture :: formalCaptures,
+            body,
+            thisActualCapture :: actualCaptures)
+        } else {
+          val (thisActualCapture :: actualArgs, actualCaptures) =
+            allArgs.splitAt(formalArgs.size + 1)
+          val (
+            thisFormalCapture :: formalCaptures,
+            thisCaptureArg :: captureArgs) =
+            makeCaptures(thisActualCapture :: actualCaptures)
+          val body = genTraitImplApply(
+            target,
+            thisCaptureArg :: actualArgs ::: captureArgs)
 
-        (
-          thisFormalCapture :: formalCaptures,
-          body,
-          thisActualCapture :: actualCaptures)
-      }
+          (
+            thisFormalCapture :: formalCaptures,
+            body,
+            thisActualCapture :: actualCaptures)
+        }
 
       val (patchedFormalArgs, patchedBody) =
         patchFunBodyWithBoxes(target, formalArgs, body)

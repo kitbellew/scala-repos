@@ -326,13 +326,13 @@ object KafkaUtils {
   ): RDD[R] = sc.withScope {
     val kc = new KafkaCluster(kafkaParams)
     val leaderMap = if (leaders.isEmpty) {
-      leadersForRanges(kc, offsetRanges)
-    } else {
-      // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
-      leaders.map {
-        case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+        leadersForRanges(kc, offsetRanges)
+      } else {
+        // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
+        leaders.map {
+          case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+        }
       }
-    }
     val cleanedHandler = sc.clean(messageHandler)
     checkOffsets(kc, offsetRanges)
     new KafkaRDD[K, V, KD, VD, R](
@@ -789,20 +789,20 @@ private[kafka] class KafkaUtilsPythonHelper {
       : DStream[V] = {
 
     val currentFromOffsets = if (!fromOffsets.isEmpty) {
-      val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)
-      if (topicsFromOffsets != topics.asScala.toSet) {
-        throw new IllegalStateException(
-          s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
-            s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
+        val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)
+        if (topicsFromOffsets != topics.asScala.toSet) {
+          throw new IllegalStateException(
+            s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
+              s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
+        }
+        Map(fromOffsets.asScala.mapValues { _.longValue() }.toSeq: _*)
+      } else {
+        val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
+        KafkaUtils.getFromOffsets(
+          kc,
+          Map(kafkaParams.asScala.toSeq: _*),
+          Set(topics.asScala.toSeq: _*))
       }
-      Map(fromOffsets.asScala.mapValues { _.longValue() }.toSeq: _*)
-    } else {
-      val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
-      KafkaUtils.getFromOffsets(
-        kc,
-        Map(kafkaParams.asScala.toSeq: _*),
-        Set(topics.asScala.toSeq: _*))
-    }
 
     KafkaUtils.createDirectStream[
       Array[Byte],

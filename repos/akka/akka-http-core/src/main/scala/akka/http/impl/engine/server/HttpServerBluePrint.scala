@@ -532,10 +532,10 @@ private[http] object HttpServerBluePrint {
                   messageEndPending =
                     r.createEntity.isInstanceOf[StreamedEntityCreator[_, _]]
                   val rs = if (r.expect100Continue) {
-                    oneHundredContinueResponsePending = true
-                    r.copy(createEntity =
-                      with100ContinueTrigger(r.createEntity))
-                  } else r
+                      oneHundredContinueResponsePending = true
+                      r.copy(createEntity =
+                        with100ContinueTrigger(r.createEntity))
+                    } else r
                   push(requestPrepOut, rs)
                 case MessageEnd ⇒
                   messageEndPending = false

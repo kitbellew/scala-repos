@@ -406,20 +406,20 @@ object DecisionTree extends Serializable with Logging {
       instanceWeight: Double,
       featuresForNode: Option[Array[Int]]): Unit = {
     val numFeaturesPerNode = if (featuresForNode.nonEmpty) {
-      // Use subsampled features
-      featuresForNode.get.length
-    } else {
-      // Use all features
-      agg.metadata.numFeatures
-    }
+        // Use subsampled features
+        featuresForNode.get.length
+      } else {
+        // Use all features
+        agg.metadata.numFeatures
+      }
     // Iterate over features.
     var featureIndexIdx = 0
     while (featureIndexIdx < numFeaturesPerNode) {
       val featureIndex = if (featuresForNode.nonEmpty) {
-        featuresForNode.get.apply(featureIndexIdx)
-      } else {
-        featureIndexIdx
-      }
+          featuresForNode.get.apply(featureIndexIdx)
+        } else {
+          featureIndexIdx
+        }
       if (unorderedFeatures.contains(featureIndex)) {
         // Unordered feature
         val featureValue = treePoint.binnedFeatures(featureIndex)
@@ -748,11 +748,11 @@ object DecisionTree extends Serializable with Logging {
     timer.stop("chooseSplits")
 
     val nodeIdUpdaters = if (nodeIdCache.nonEmpty) {
-      Array.fill[mutable.Map[Int, NodeIndexUpdater]](metadata.numTrees)(
-        mutable.Map[Int, NodeIndexUpdater]())
-    } else {
-      null
-    }
+        Array.fill[mutable.Map[Int, NodeIndexUpdater]](metadata.numTrees)(
+          mutable.Map[Int, NodeIndexUpdater]())
+      } else {
+        null
+      }
 
     // Iterate over all nodes in this group.
     nodesForGroup.foreach {
@@ -917,20 +917,20 @@ object DecisionTree extends Serializable with Logging {
     // calculate predict and impurity if current node is top node
     val level = Node.indexToLevel(node.id)
     var predictWithImpurity: Option[(Predict, Double)] = if (level == 0) {
-      None
-    } else {
-      Some((node.predict, node.impurity))
-    }
+        None
+      } else {
+        Some((node.predict, node.impurity))
+      }
 
     // For each (feature, split), calculate the gain, and select the best (feature, split).
     val (bestSplit, bestSplitStats) =
       Range(0, binAggregates.metadata.numFeaturesPerNode)
         .map { featureIndexIdx =>
           val featureIndex = if (featuresForNode.nonEmpty) {
-            featuresForNode.get.apply(featureIndexIdx)
-          } else {
-            featureIndexIdx
-          }
+              featuresForNode.get.apply(featureIndexIdx)
+            } else {
+              featureIndexIdx
+            }
           val numSplits = binAggregates.metadata.numSplits(featureIndex)
           if (binAggregates.metadata.isContinuous(featureIndex)) {
             // Cumulative sum (scanLeft) of bin statistics.
@@ -1015,22 +1015,22 @@ object DecisionTree extends Serializable with Logging {
                     nodeFeatureOffset,
                     featureValue)
                 val centroid = if (categoryStats.count != 0) {
-                  if (binAggregates.metadata.isMulticlass) {
-                    // For categorical variables in multiclass classification,
-                    // the bins are ordered by the impurity of their corresponding labels.
-                    categoryStats.calculate()
-                  } else if (binAggregates.metadata.isClassification) {
-                    // For categorical variables in binary classification,
-                    // the bins are ordered by the count of class 1.
-                    categoryStats.stats(1)
+                    if (binAggregates.metadata.isMulticlass) {
+                      // For categorical variables in multiclass classification,
+                      // the bins are ordered by the impurity of their corresponding labels.
+                      categoryStats.calculate()
+                    } else if (binAggregates.metadata.isClassification) {
+                      // For categorical variables in binary classification,
+                      // the bins are ordered by the count of class 1.
+                      categoryStats.stats(1)
+                    } else {
+                      // For categorical variables in regression,
+                      // the bins are ordered by the prediction.
+                      categoryStats.predict
+                    }
                   } else {
-                    // For categorical variables in regression,
-                    // the bins are ordered by the prediction.
-                    categoryStats.predict
+                    Double.MaxValue
                   }
-                } else {
-                  Double.MaxValue
-                }
                 (featureValue, centroid)
             }
 
@@ -1144,21 +1144,23 @@ object DecisionTree extends Serializable with Logging {
     // Sample the input only if there are continuous features.
     val continuousFeatures = Range(0, numFeatures).filter(metadata.isContinuous)
     val sampledInput = if (continuousFeatures.nonEmpty) {
-      // Calculate the number of samples for approximate quantile calculation.
-      val requiredSamples = math.max(metadata.maxBins * metadata.maxBins, 10000)
-      val fraction = if (requiredSamples < metadata.numExamples) {
-        requiredSamples.toDouble / metadata.numExamples
+        // Calculate the number of samples for approximate quantile calculation.
+        val requiredSamples =
+          math.max(metadata.maxBins * metadata.maxBins, 10000)
+        val fraction = if (requiredSamples < metadata.numExamples) {
+            requiredSamples.toDouble / metadata.numExamples
+          } else {
+            1.0
+          }
+        logDebug(
+          "fraction of data used for calculating quantiles = " + fraction)
+        input.sample(
+          withReplacement = false,
+          fraction,
+          new XORShiftRandom().nextInt())
       } else {
-        1.0
+        input.sparkContext.emptyRDD[LabeledPoint]
       }
-      logDebug("fraction of data used for calculating quantiles = " + fraction)
-      input.sample(
-        withReplacement = false,
-        fraction,
-        new XORShiftRandom().nextInt())
-    } else {
-      input.sparkContext.emptyRDD[LabeledPoint]
-    }
 
     metadata.quantileStrategy match {
       case Sort =>

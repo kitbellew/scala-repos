@@ -115,13 +115,13 @@ class OneHotEncoder(override val uid: String)
     }
 
     val outputAttrGroup = if (filteredOutputAttrNames.isDefined) {
-      val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
-        BinaryAttribute.defaultAttr.withName(name)
+        val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
+          BinaryAttribute.defaultAttr.withName(name)
+        }
+        new AttributeGroup($(outputCol), attrs)
+      } else {
+        new AttributeGroup($(outputCol))
       }
-      new AttributeGroup($(outputCol), attrs)
-    } else {
-      new AttributeGroup($(outputCol))
-    }
 
     val outputFields = inputFields :+ outputAttrGroup.toStructField()
     StructType(outputFields)

@@ -100,16 +100,16 @@ object DumpLogSegments {
     val isDeepIteration = if (options.has(deepIterationOpt)) true else false
 
     val messageParser = if (options.has(offsetsOpt)) {
-      new OffsetsMessageParser
-    } else {
-      val valueDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
-        options.valueOf(valueDecoderOpt),
-        new VerifiableProperties)
-      val keyDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
-        options.valueOf(keyDecoderOpt),
-        new VerifiableProperties)
-      new DecoderMessageParser(keyDecoder, valueDecoder)
-    }
+        new OffsetsMessageParser
+      } else {
+        val valueDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
+          options.valueOf(valueDecoderOpt),
+          new VerifiableProperties)
+        val keyDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
+          options.valueOf(keyDecoderOpt),
+          new VerifiableProperties)
+        new DecoderMessageParser(keyDecoder, valueDecoder)
+      }
 
     val misMatchesForIndexFilesMap =
       new mutable.HashMap[String, List[(Long, Long)]]

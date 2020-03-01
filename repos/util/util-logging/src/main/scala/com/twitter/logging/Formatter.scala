@@ -110,10 +110,10 @@ class Formatter(
     * Calendar to use for time zone display in date-time formatting.
     */
   val calendar = if (timezone.isDefined) {
-    new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
-  } else {
-    new GregorianCalendar
-  }
+      new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
+    } else {
+      new GregorianCalendar
+    }
   dateFormat.setCalendar(calendar)
 
   /**

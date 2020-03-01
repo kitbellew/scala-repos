@@ -441,26 +441,25 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     this.corpusSize = docs.count()
     this.vocabSize = docs.first()._2.size
     this.alpha = if (lda.getAsymmetricDocConcentration.size == 1) {
-      if (lda.getAsymmetricDocConcentration(0) == -1)
-        Vectors.dense(Array.fill(k)(1.0 / k))
-      else {
+        if (lda.getAsymmetricDocConcentration(0) == -1)
+          Vectors.dense(Array.fill(k)(1.0 / k))
+        else {
+          require(
+            lda.getAsymmetricDocConcentration(0) >= 0,
+            s"all entries in alpha must be >=0, got: $alpha")
+          Vectors.dense(Array.fill(k)(lda.getAsymmetricDocConcentration(0)))
+        }
+      } else {
         require(
-          lda.getAsymmetricDocConcentration(0) >= 0,
-          s"all entries in alpha must be >=0, got: $alpha")
-        Vectors.dense(Array.fill(k)(lda.getAsymmetricDocConcentration(0)))
+          lda.getAsymmetricDocConcentration.size == k,
+          s"alpha must have length k, got: $alpha")
+        lda.getAsymmetricDocConcentration.foreachActive {
+          case (_, x) =>
+            require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
+        }
+        lda.getAsymmetricDocConcentration
       }
-    } else {
-      require(
-        lda.getAsymmetricDocConcentration.size == k,
-        s"alpha must have length k, got: $alpha")
-      lda.getAsymmetricDocConcentration.foreachActive {
-        case (_, x) =>
-          require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
-      }
-      lda.getAsymmetricDocConcentration
-    }
-    this.eta =
-      if (lda.getTopicConcentration == -1) 1.0 / k
+    this.eta = if (lda.getTopicConcentration == -1) 1.0 / k
       else lda.getTopicConcentration
     this.randomGenerator = new Random(lda.getSeed)
 

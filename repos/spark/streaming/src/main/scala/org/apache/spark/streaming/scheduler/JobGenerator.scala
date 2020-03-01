@@ -75,14 +75,14 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     ssc.checkpointDuration != null && ssc.checkpointDir != null
 
   private lazy val checkpointWriter = if (shouldCheckpoint) {
-    new CheckpointWriter(
-      this,
-      ssc.conf,
-      ssc.checkpointDir,
-      ssc.sparkContext.hadoopConfiguration)
-  } else {
-    null
-  }
+      new CheckpointWriter(
+        this,
+        ssc.conf,
+        ssc.checkpointDir,
+        ssc.sparkContext.hadoopConfiguration)
+    } else {
+      null
+    }
 
   // eventLoop is created when generator starts.
   // This not being null means the scheduler has been started and not stopped

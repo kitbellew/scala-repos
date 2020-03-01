@@ -71,27 +71,27 @@ object GenerateUnsafeRowJoiner
     val copyBitset = Seq
       .tabulate(outputBitsetWords) { i =>
         val bits = if (bitset1Remainder > 0) {
-          if (i < bitset1Words - 1) {
-            s"$getLong(obj1, offset1 + ${i * 8})"
-          } else if (i == bitset1Words - 1) {
-            // combine last work of bitset1 and first word of bitset2
-            s"$getLong(obj1, offset1 + ${i * 8}) | ($getLong(obj2, offset2) << $bitset1Remainder)"
-          } else if (i - bitset1Words < bitset2Words - 1) {
-            // combine next two words of bitset2
-            s"($getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder))" +
-              s" | ($getLong(obj2, offset2 + ${(i - bitset1Words + 1) * 8}) << $bitset1Remainder)"
+            if (i < bitset1Words - 1) {
+              s"$getLong(obj1, offset1 + ${i * 8})"
+            } else if (i == bitset1Words - 1) {
+              // combine last work of bitset1 and first word of bitset2
+              s"$getLong(obj1, offset1 + ${i * 8}) | ($getLong(obj2, offset2) << $bitset1Remainder)"
+            } else if (i - bitset1Words < bitset2Words - 1) {
+              // combine next two words of bitset2
+              s"($getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder))" +
+                s" | ($getLong(obj2, offset2 + ${(i - bitset1Words + 1) * 8}) << $bitset1Remainder)"
+            } else {
+              // last word of bitset2
+              s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder)"
+            }
           } else {
-            // last word of bitset2
-            s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder)"
+            // they are aligned by word
+            if (i < bitset1Words) {
+              s"$getLong(obj1, offset1 + ${i * 8})"
+            } else {
+              s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})"
+            }
           }
-        } else {
-          // they are aligned by word
-          if (i < bitset1Words) {
-            s"$getLong(obj1, offset1 + ${i * 8})"
-          } else {
-            s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})"
-          }
-        }
         s"$putLong(buf, ${offset + i * 8}, $bits);"
       }
       .mkString("\n")

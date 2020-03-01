@@ -332,10 +332,10 @@ object SparkEnv extends Logging {
     }
 
     val mapOutputTracker = if (isDriver) {
-      new MapOutputTrackerMaster(conf)
-    } else {
-      new MapOutputTrackerWorker(conf)
-    }
+        new MapOutputTrackerMaster(conf)
+      } else {
+        new MapOutputTrackerWorker(conf)
+      }
 
     // Have to assign trackerEndpoint after initialization as MapOutputTrackerEndpoint
     // requires the MapOutputTracker itself
@@ -393,29 +393,31 @@ object SparkEnv extends Logging {
     val broadcastManager = new BroadcastManager(isDriver, conf, securityManager)
 
     val metricsSystem = if (isDriver) {
-      // Don't start metrics system right now for Driver.
-      // We need to wait for the task scheduler to give us an app ID.
-      // Then we can start the metrics system.
-      MetricsSystem.createMetricsSystem("driver", conf, securityManager)
-    } else {
-      // We need to set the executor ID before the MetricsSystem is created because sources and
-      // sinks specified in the metrics configuration file will want to incorporate this executor's
-      // ID into the metrics they report.
-      conf.set("spark.executor.id", executorId)
-      val ms =
-        MetricsSystem.createMetricsSystem("executor", conf, securityManager)
-      ms.start()
-      ms
-    }
+        // Don't start metrics system right now for Driver.
+        // We need to wait for the task scheduler to give us an app ID.
+        // Then we can start the metrics system.
+        MetricsSystem.createMetricsSystem("driver", conf, securityManager)
+      } else {
+        // We need to set the executor ID before the MetricsSystem is created because sources and
+        // sinks specified in the metrics configuration file will want to incorporate this executor's
+        // ID into the metrics they report.
+        conf.set("spark.executor.id", executorId)
+        val ms =
+          MetricsSystem.createMetricsSystem("executor", conf, securityManager)
+        ms.start()
+        ms
+      }
 
     // Set the sparkFiles directory, used when downloading dependencies.  In local mode,
     // this is a temporary directory; in distributed mode, this is the executor's current working
     // directory.
     val sparkFilesDir: String = if (isDriver) {
-      Utils.createTempDir(Utils.getLocalDir(conf), "userFiles").getAbsolutePath
-    } else {
-      "."
-    }
+        Utils
+          .createTempDir(Utils.getLocalDir(conf), "userFiles")
+          .getAbsolutePath
+      } else {
+        "."
+      }
 
     val outputCommitCoordinator = mockOutputCommitCoordinator.getOrElse {
       new OutputCommitCoordinator(conf, isDriver)

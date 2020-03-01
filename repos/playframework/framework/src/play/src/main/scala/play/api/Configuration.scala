@@ -46,10 +46,10 @@ object Configuration {
       // Typesafe config maintains a cache for this purpose.  So, if the passed in properties *are* the system
       // properties, use the Typesafe config cache, otherwise it should be safe to parse it ourselves.
       val systemPropertyConfig = if (properties eq System.getProperties) {
-        ConfigImpl.systemPropertiesAsConfig()
-      } else {
-        ConfigFactory.parseProperties(properties)
-      }
+          ConfigImpl.systemPropertiesAsConfig()
+        } else {
+          ConfigFactory.parseProperties(properties)
+        }
 
       // Inject our direct settings into the config.
       val directConfig: Config = ConfigFactory.parseMap(directSettings.asJava)
@@ -1030,10 +1030,10 @@ private[play] class PlayConfig(val underlying: Config) {
       path: String,
       prototypePath: String = "prototype.$path"): Map[String, PlayConfig] = {
     val prototype = if (prototypePath.isEmpty) {
-      underlying
-    } else {
-      underlying.getConfig(prototypePath.replace("$path", path))
-    }
+        underlying
+      } else {
+        underlying.getConfig(prototypePath.replace("$path", path))
+      }
     get[Map[String, Config]](path).map {
       case (key, config) =>
         key -> new PlayConfig(config.withFallback(prototype))
@@ -1075,9 +1075,9 @@ private[play] class PlayConfig(val underlying: Config) {
       parent: String = ""): PlayConfig = {
     val config = get[Config](path)
     val merged = if (underlying.hasPath(deprecated)) {
-      reportDeprecation(path, deprecated)
-      get[Config](deprecated).withFallback(config)
-    } else config
+        reportDeprecation(path, deprecated)
+        get[Config](deprecated).withFallback(config)
+      } else config
     new PlayConfig(merged)
   }
 

@@ -463,21 +463,22 @@ case class SortMergeJoin(
     val i = ctx.freshName("i")
     val numOutput = metricTerm(ctx, "numOutputRows")
     val (beforeLoop, condCheck) = if (condition.isDefined) {
-      // Split the code of creating variables based on whether it's used by condition or not.
-      val loaded = ctx.freshName("loaded")
-      val (leftBefore, leftAfter) = splitVarsByCondition(left.output, leftVars)
-      val (rightBefore, rightAfter) =
-        splitVarsByCondition(right.output, rightVars)
-      // Generate code for condition
-      ctx.currentVars = leftVars ++ rightVars
-      val cond = BindReferences.bindReference(condition.get, output).gen(ctx)
-      // evaluate the columns those used by condition before loop
-      val before = s"""
+        // Split the code of creating variables based on whether it's used by condition or not.
+        val loaded = ctx.freshName("loaded")
+        val (leftBefore, leftAfter) =
+          splitVarsByCondition(left.output, leftVars)
+        val (rightBefore, rightAfter) =
+          splitVarsByCondition(right.output, rightVars)
+        // Generate code for condition
+        ctx.currentVars = leftVars ++ rightVars
+        val cond = BindReferences.bindReference(condition.get, output).gen(ctx)
+        // evaluate the columns those used by condition before loop
+        val before = s"""
            |boolean $loaded = false;
            |$leftBefore
          """.stripMargin
 
-      val checking = s"""
+        val checking = s"""
          |$rightBefore
          |${cond.code}
          |if (${cond.isNull} || !${cond.value}) continue;
@@ -487,10 +488,10 @@ case class SortMergeJoin(
          |}
          |$rightAfter
      """.stripMargin
-      (before, checking)
-    } else {
-      (evaluateVariables(leftVars), "")
-    }
+        (before, checking)
+      } else {
+        (evaluateVariables(leftVars), "")
+      }
 
     s"""
        |while (findNextInnerJoinRows($leftInput, $rightInput)) {

@@ -432,10 +432,10 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
 
         // Verify that all the files have been read
         val expectedOutput = if (newFilesOnly) {
-          input.map(_.toString).toSet
-        } else {
-          (Seq(0) ++ input).map(_.toString).toSet
-        }
+            input.map(_.toString).toSet
+          } else {
+            (Seq(0) ++ input).map(_.toString).toSet
+          }
         assert(outputQueue.asScala.flatten.toSet === expectedOutput)
       }
     } finally {

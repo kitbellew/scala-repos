@@ -10,12 +10,12 @@ class LoggableException(msg: String, innerEx: Exception = null)
     extends Exception(msg, innerEx) {
   override lazy val getMessage = {
     val innerMessage = if (innerEx != null) {
-      "%n\tand inner Exception of type %s:%n\t\tmessage: %s".format(
-        innerEx.getClass.getName,
-        innerEx.getMessage)
-    } else {
-      ""
-    }
+        "%n\tand inner Exception of type %s:%n\t\tmessage: %s".format(
+          innerEx.getClass.getName,
+          innerEx.getMessage)
+      } else {
+        ""
+      }
     getClass.getName + " ==> " + msg + innerMessage
   }
 }

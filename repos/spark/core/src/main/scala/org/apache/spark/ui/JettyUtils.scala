@@ -146,10 +146,10 @@ private[spark] object JettyUtils extends Logging {
       servlet: HttpServlet,
       basePath: String): ServletContextHandler = {
     val prefixedPath = if (basePath == "" && path == "/") {
-      path
-    } else {
-      (basePath + path).stripSuffix("/")
-    }
+        path
+      } else {
+        (basePath + path).stripSuffix("/")
+      }
     val contextHandler = new ServletContextHandler
     val holder = new ServletHolder(servlet)
     contextHandler.setContextPath(prefixedPath)
@@ -404,10 +404,10 @@ private[spark] object JettyUtils extends Logging {
       path: String,
       query: String) = {
     val redirectServer = if (server.contains(":") && !server.startsWith("[")) {
-      s"[${server}]"
-    } else {
-      server
-    }
+        s"[${server}]"
+      } else {
+        server
+      }
     val authority = s"$redirectServer:$port"
     new URI(scheme, authority, path, query, null).toString
   }

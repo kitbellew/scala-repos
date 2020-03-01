@@ -544,9 +544,8 @@ private final class Analyzer(
         methodsCalledStatically =
           (if (returnsChar) Map(BoxedCharacterClass -> List("init___C"))
            else Map.empty),
-        instantiatedClasses =
-          (if (returnsChar) List(BoxedCharacterClass)
-           else Nil)
+        instantiatedClasses = (if (returnsChar) List(BoxedCharacterClass)
+                               else Nil)
       )
       val m = new MethodInfo(this, syntheticInfo)
       m.syntheticKind = MethodSyntheticKind.ReflectiveProxy(targetName)

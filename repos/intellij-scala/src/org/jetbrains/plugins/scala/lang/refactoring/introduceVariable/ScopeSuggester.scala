@@ -440,10 +440,10 @@ case class SimpleScopeItem(
     }
 
     val newNames = if ((newName == "") || availableNames.contains(newName)) {
-      availableNames
-    } else {
-      newName +: availableNames
-    }
+        availableNames
+      } else {
+        newName +: availableNames
+      }
 
     val updatedFileEncloser = fileEncloserRange match {
       case (range, containingFile) =>

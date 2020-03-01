@@ -18,8 +18,8 @@ object ImportDataScript extends App {
     */
   override def main(args: Array[String]): Unit = {
     val accessKey = if (args.length == 0) {
-      throw new IllegalArgumentException("access key should be passed")
-    } else args(0)
+        throw new IllegalArgumentException("access key should be passed")
+      } else args(0)
 
     val engineUrl = if (args.length > 1) args(1) else "http://localhost:7070"
     implicit val client = new EventClient(accessKey, engineUrl)

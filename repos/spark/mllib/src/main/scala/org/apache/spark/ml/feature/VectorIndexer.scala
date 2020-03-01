@@ -418,10 +418,10 @@ class VectorIndexerModel private[ml] (
     // If the input metadata specifies numFeatures, compare with expected numFeatures.
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))
     val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
-      Some(origAttrGroup.attributes.get.length)
-    } else {
-      origAttrGroup.numAttributes
-    }
+        Some(origAttrGroup.attributes.get.length)
+      } else {
+        origAttrGroup.numAttributes
+      }
     require(
       origNumFeatures.forall(_ == numFeatures),
       "VectorIndexerModel expected" +

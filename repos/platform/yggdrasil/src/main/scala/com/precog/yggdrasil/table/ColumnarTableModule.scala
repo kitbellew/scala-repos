@@ -248,8 +248,7 @@ object ColumnarTableModule extends Logging {
       val arr = new Array[String](rows)
       var row = 0
       while (row < rows) {
-        arr(row) =
-          if (col.isDefinedAt(row))
+        arr(row) = if (col.isDefinedAt(row))
             quoteIfNeeded(col.strValue(row))
           else
             ""
@@ -2245,9 +2244,9 @@ trait ColumnarTableModule[M[+_]]
           })
           .point[M])
       val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
-        logger.trace(logPrefix + " " + f(s)); s
-      }
-      else slices
+          logger.trace(logPrefix + " " + f(s)); s
+        }
+        else slices
       Table(preludeEffect ++ sliceEffect ++ appendixEffect, size)
     }
 

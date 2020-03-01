@@ -26,10 +26,10 @@ object Test extends App {
   def testOneUnreachable() {
     val i = util.Random.nextInt
     val x = if (i % 2 == 0) {
-      1
-    } else {
-      2
-    }
+        1
+      } else {
+        2
+      }
     val y = x match {
       case 0 => "good"
       case 1 => "good"
@@ -41,10 +41,10 @@ object Test extends App {
   def testDefaultUnreachable() {
     val i = util.Random.nextInt
     val x = if (i % 2 == 0) {
-      1
-    } else {
-      2
-    }
+        1
+      } else {
+        2
+      }
     val y = x match {
       case 1 => "good"
       case 2 => "good"

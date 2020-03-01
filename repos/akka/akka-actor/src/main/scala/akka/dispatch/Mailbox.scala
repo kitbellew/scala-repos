@@ -289,8 +289,7 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     */
   @tailrec private final def processMailbox(
       left: Int = java.lang.Math.max(dispatcher.throughput, 1),
-      deadlineNs: Long =
-        if (dispatcher.isThroughputDeadlineTimeDefined == true)
+      deadlineNs: Long = if (dispatcher.isThroughputDeadlineTimeDefined == true)
           System.nanoTime + dispatcher.throughputDeadlineTime.toNanos
         else 0L): Unit =
     if (shouldProcessMessage) {

@@ -375,8 +375,7 @@ object ConsoleConsumer extends Logging {
           parser,
           "Exactly one of whitelist/blacklist/topic is required.")
       topicArg = options.valueOf(topicOrFilterOpt.head)
-      filterSpec =
-        if (options.has(blacklistOpt)) new Blacklist(topicArg)
+      filterSpec = if (options.has(blacklistOpt)) new Blacklist(topicArg)
         else new Whitelist(topicArg)
     }
     val consumerProps =

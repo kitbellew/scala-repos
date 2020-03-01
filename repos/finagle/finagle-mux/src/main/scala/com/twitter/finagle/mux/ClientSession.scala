@@ -101,8 +101,7 @@ private[twitter] class ClientSession(
 
       writeLk.lockInterruptibly()
       try {
-        state =
-          if (outstanding.get() > 0) Draining
+        state = if (outstanding.get() > 0) Draining
           else {
             if (log.isLoggable(Level.FINE))
               safeLog(s"Finished draining a connection to $name", Level.FINE)

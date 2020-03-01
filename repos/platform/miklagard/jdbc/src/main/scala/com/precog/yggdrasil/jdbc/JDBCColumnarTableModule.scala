@@ -329,10 +329,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           .map {
             case (name, childType) =>
               val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+                  current.map { s => s + "." + name }
+                } else {
+                  Set(name)
+                }
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -343,7 +343,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
     case class Query(expr: String, limit: Int) {
       private val baseQuery = if (limit > 0) { expr + " LIMIT " + limit }
-      else { expr }
+        else { expr }
 
       def atOffset(offset: Long) =
         if (offset > 0) { baseQuery + " OFFSET " + offset }
@@ -469,10 +469,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           }
 
           val nextSkip = if (rowIndex == yggConfig.maxSliceSize) {
-            Some(skip + yggConfig.maxSliceSize)
-          } else {
-            None
-          }
+              Some(skip + yggConfig.maxSliceSize)
+            } else {
+              None
+            }
 
           (slice, nextSkip)
         } finally {

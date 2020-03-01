@@ -98,8 +98,8 @@ class KindProjectorSimplifyTypeProjectionInspection
             val newTypeArgs = paramType.typeArgs.map { ta =>
               currentTypeParam match {
                 case Some(tpt) if ta.presentableText == tpt.name =>
-                  currentTypeParam =
-                    if (typeParamIt.hasNext) Some(typeParamIt.next())
+                  currentTypeParam = if (typeParamIt.hasNext)
+                      Some(typeParamIt.next())
                     else None
                   tpt.getText.replace(tpt.name, "?")
                 case _ => ta.presentableText

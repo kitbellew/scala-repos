@@ -466,13 +466,13 @@ class SparkContext(config: SparkConf)
       .flatten
 
     _eventLogDir = if (isEventLogEnabled) {
-      val unresolvedDir = conf
-        .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
-        .stripSuffix("/")
-      Some(Utils.resolveURI(unresolvedDir))
-    } else {
-      None
-    }
+        val unresolvedDir = conf
+          .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
+          .stripSuffix("/")
+        Some(Utils.resolveURI(unresolvedDir))
+      } else {
+        None
+      }
 
     _eventLogCodec = {
       val compress = _conf.getBoolean("spark.eventLog.compress", false)
@@ -513,19 +513,19 @@ class SparkContext(config: SparkConf)
       }
 
     _ui = if (conf.getBoolean("spark.ui.enabled", true)) {
-      Some(
-        SparkUI.createLiveUI(
-          this,
-          _conf,
-          listenerBus,
-          _jobProgressListener,
-          _env.securityManager,
-          appName,
-          startTime = startTime))
-    } else {
-      // For tests, do not enable the UI
-      None
-    }
+        Some(
+          SparkUI.createLiveUI(
+            this,
+            _conf,
+            listenerBus,
+            _jobProgressListener,
+            _env.securityManager,
+            appName,
+            startTime = startTime))
+      } else {
+        // For tests, do not enable the UI
+        None
+      }
     // Bind the UI before starting the task scheduler to communicate
     // the bound port to the cluster manager properly
     _ui.foreach(_.bind())
@@ -598,34 +598,34 @@ class SparkContext(config: SparkConf)
       ui.foreach(_.attachHandler(handler)))
 
     _eventLogger = if (isEventLogEnabled) {
-      val logger =
-        new EventLoggingListener(
-          _applicationId,
-          _applicationAttemptId,
-          _eventLogDir.get,
-          _conf,
-          _hadoopConfiguration)
-      logger.start()
-      listenerBus.addListener(logger)
-      Some(logger)
-    } else {
-      None
-    }
+        val logger =
+          new EventLoggingListener(
+            _applicationId,
+            _applicationAttemptId,
+            _eventLogDir.get,
+            _conf,
+            _hadoopConfiguration)
+        logger.start()
+        listenerBus.addListener(logger)
+        Some(logger)
+      } else {
+        None
+      }
 
     // Optionally scale number of executors dynamically based on workload. Exposed for testing.
     val dynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(_conf)
     _executorAllocationManager = if (dynamicAllocationEnabled) {
-      Some(new ExecutorAllocationManager(this, listenerBus, _conf))
-    } else {
-      None
-    }
+        Some(new ExecutorAllocationManager(this, listenerBus, _conf))
+      } else {
+        None
+      }
     _executorAllocationManager.foreach(_.start())
 
     _cleaner = if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
-      Some(new ContextCleaner(this))
-    } else {
-      None
-    }
+        Some(new ContextCleaner(this))
+      } else {
+        None
+      }
     _cleaner.foreach(_.start())
 
     setupAndStartListenerBus()
@@ -1476,10 +1476,10 @@ class SparkContext(config: SparkConf)
     }
 
     val key = if (!isLocal && scheme == "file") {
-      env.rpcEnv.fileServer.addFile(new File(uri.getPath))
-    } else {
-      schemeCorrectedPath
-    }
+        env.rpcEnv.fileServer.addFile(new File(uri.getPath))
+      } else {
+        schemeCorrectedPath
+      }
     val timestamp = System.currentTimeMillis
     addedFiles(key) = timestamp
 
@@ -2669,14 +2669,14 @@ object SparkContext extends Logging {
         val coarseGrained =
           sc.conf.getBoolean("spark.mesos.coarse", defaultValue = true)
         val backend = if (coarseGrained) {
-          new CoarseMesosSchedulerBackend(
-            scheduler,
-            sc,
-            mesosUrl,
-            sc.env.securityManager)
-        } else {
-          new MesosSchedulerBackend(scheduler, sc, mesosUrl)
-        }
+            new CoarseMesosSchedulerBackend(
+              scheduler,
+              sc,
+              mesosUrl,
+              sc.env.securityManager)
+          } else {
+            new MesosSchedulerBackend(scheduler, sc, mesosUrl)
+          }
         scheduler.initialize(backend)
         (backend, scheduler)
 

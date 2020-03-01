@@ -152,13 +152,13 @@ private[memory] class ExecutionMemoryPool(
     lock.synchronized {
       val curMem = memoryForTask.getOrElse(taskAttemptId, 0L)
       var memoryToFree = if (curMem < numBytes) {
-        logWarning(
-          s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
-            s"of memory from the $poolName pool")
-        curMem
-      } else {
-        numBytes
-      }
+          logWarning(
+            s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
+              s"of memory from the $poolName pool")
+          curMem
+        } else {
+          numBytes
+        }
       if (memoryForTask.contains(taskAttemptId)) {
         memoryForTask(taskAttemptId) -= memoryToFree
         if (memoryForTask(taskAttemptId) <= 0) {

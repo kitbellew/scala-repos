@@ -63,41 +63,41 @@ object StaticRoutesGenerator extends RoutesGenerator {
     val routes = rules.collect { case r: Route => r }
 
     val forwardsRoutesFiles = if (task.forwardsRouter) {
-      Seq(
-        folder + ForwardsRoutesFile -> generateRouter(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          rules))
-    } else {
-      Nil
-    }
+        Seq(
+          folder + ForwardsRoutesFile -> generateRouter(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            rules))
+      } else {
+        Nil
+      }
 
     val reverseRoutesFiles = if (task.reverseRouter) {
-      Seq(
-        folder + RoutesPrefixFile -> generateRoutesPrefix(
-          sourceInfo,
-          namespace)) ++
-        generateReverseRouters(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          routes,
-          task.namespaceReverseRouter) ++
-        generateJavaScriptReverseRouters(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          routes,
-          task.namespaceReverseRouter) ++
-        generateJavaWrappers(
-          sourceInfo,
-          namespace,
-          rules,
-          task.namespaceReverseRouter)
-    } else {
-      Nil
-    }
+        Seq(
+          folder + RoutesPrefixFile -> generateRoutesPrefix(
+            sourceInfo,
+            namespace)) ++
+          generateReverseRouters(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            routes,
+            task.namespaceReverseRouter) ++
+          generateJavaScriptReverseRouters(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            routes,
+            task.namespaceReverseRouter) ++
+          generateJavaWrappers(
+            sourceInfo,
+            namespace,
+            rules,
+            task.namespaceReverseRouter)
+      } else {
+        Nil
+      }
 
     forwardsRoutesFiles ++ reverseRoutesFiles
   }
@@ -227,41 +227,41 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val routes = rules.collect { case r: Route => r }
 
     val forwardsRoutesFiles = if (task.forwardsRouter) {
-      Seq(
-        folder + ForwardsRoutesFile -> generateRouter(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          rules))
-    } else {
-      Nil
-    }
+        Seq(
+          folder + ForwardsRoutesFile -> generateRouter(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            rules))
+      } else {
+        Nil
+      }
 
     val reverseRoutesFiles = if (task.reverseRouter) {
-      Seq(
-        folder + RoutesPrefixFile -> generateRoutesPrefix(
-          sourceInfo,
-          namespace)) ++
-        generateReverseRouters(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          routes,
-          task.namespaceReverseRouter) ++
-        generateJavaScriptReverseRouters(
-          sourceInfo,
-          namespace,
-          task.additionalImports,
-          routes,
-          task.namespaceReverseRouter) ++
-        generateJavaWrappers(
-          sourceInfo,
-          namespace,
-          rules,
-          task.namespaceReverseRouter)
-    } else {
-      Nil
-    }
+        Seq(
+          folder + RoutesPrefixFile -> generateRoutesPrefix(
+            sourceInfo,
+            namespace)) ++
+          generateReverseRouters(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            routes,
+            task.namespaceReverseRouter) ++
+          generateJavaScriptReverseRouters(
+            sourceInfo,
+            namespace,
+            task.additionalImports,
+            routes,
+            task.namespaceReverseRouter) ++
+          generateJavaWrappers(
+            sourceInfo,
+            namespace,
+            rules,
+            task.namespaceReverseRouter)
+      } else {
+        Nil
+      }
 
     forwardsRoutesFiles ++ reverseRoutesFiles
   }

@@ -226,32 +226,32 @@ object DecisionTreeRunner {
 
     // Create training, test sets.
     val splits = if (testInput != "") {
-      // Load testInput.
-      val numFeatures = examples.take(1)(0).features.size
-      val origTestExamples = dataFormat match {
-        case "dense"  => MLUtils.loadLabeledPoints(sc, testInput)
-        case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
-      }
-      algo match {
-        case Classification => {
-          // classCounts: class --> # examples in class
-          val testExamples = {
-            if (classIndexMap.isEmpty) {
-              origTestExamples
-            } else {
-              origTestExamples.map(lp =>
-                LabeledPoint(classIndexMap(lp.label), lp.features))
-            }
-          }
-          Array(examples, testExamples)
+        // Load testInput.
+        val numFeatures = examples.take(1)(0).features.size
+        val origTestExamples = dataFormat match {
+          case "dense"  => MLUtils.loadLabeledPoints(sc, testInput)
+          case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
         }
-        case Regression =>
-          Array(examples, origTestExamples)
+        algo match {
+          case Classification => {
+            // classCounts: class --> # examples in class
+            val testExamples = {
+              if (classIndexMap.isEmpty) {
+                origTestExamples
+              } else {
+                origTestExamples.map(lp =>
+                  LabeledPoint(classIndexMap(lp.label), lp.features))
+              }
+            }
+            Array(examples, testExamples)
+          }
+          case Regression =>
+            Array(examples, origTestExamples)
+        }
+      } else {
+        // Split input into training, test.
+        examples.randomSplit(Array(1.0 - fracTest, fracTest))
       }
-    } else {
-      // Split input into training, test.
-      examples.randomSplit(Array(1.0 - fracTest, fracTest))
-    }
     val training = splits(0).cache()
     val test = splits(1).cache()
 

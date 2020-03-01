@@ -909,9 +909,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         val lst = for ((i, l, v) <- enumZip(ilens, vls)) yield {
           val fmt = "%" + l + "s"
           val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-            resetRowLabels(i + 1)
-            v.formatted(fmt)
-          } else "".formatted(fmt)
+              resetRowLabels(i + 1)
+              v.formatted(fmt)
+            } else "".formatted(fmt)
           prevRowLabels(i) = v
           res
         }

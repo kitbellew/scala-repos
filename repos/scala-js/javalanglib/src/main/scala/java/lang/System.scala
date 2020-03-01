@@ -249,8 +249,7 @@ object System {
     SystemProperties.value
 
   def setProperties(properties: ju.Properties): Unit = {
-    SystemProperties.value =
-      if (properties != null) properties
+    SystemProperties.value = if (properties != null) properties
       else SystemProperties.loadSystemProperties()
   }
 

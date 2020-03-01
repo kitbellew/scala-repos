@@ -222,20 +222,22 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       removeFromDriver: Boolean) {
 
     sc = if (distributed) {
-      val _sc =
-        new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
-      // Wait until all salves are up
-      try {
-        _sc.jobProgressListener.waitUntilExecutorsUp(numSlaves, 60000)
-        _sc
-      } catch {
-        case e: Throwable =>
-          _sc.stop()
-          throw e
+        val _sc =
+          new SparkContext(
+            "local-cluster[%d, 1, 1024]".format(numSlaves),
+            "test")
+        // Wait until all salves are up
+        try {
+          _sc.jobProgressListener.waitUntilExecutorsUp(numSlaves, 60000)
+          _sc
+        } catch {
+          case e: Throwable =>
+            _sc.stop()
+            throw e
+        }
+      } else {
+        new SparkContext("local", "test")
       }
-    } else {
-      new SparkContext("local", "test")
-    }
     val blockManagerMaster = sc.env.blockManager.master
     val list = List[Int](1, 2, 3, 4)
 

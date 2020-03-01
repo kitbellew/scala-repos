@@ -130,8 +130,8 @@ class ScPackagingImpl private (
     val _prefix = prefix
     val packageName = getPackageName
     val topRefName = if (packageName.indexOf(".") != -1) {
-      packageName.substring(0, packageName.indexOf("."))
-    } else packageName
+        packageName.substring(0, packageName.indexOf("."))
+      } else packageName
     val top = if (_prefix.length > 0) _prefix + "." + topRefName else topRefName
     val p = ScPackageImpl(
       JavaPsiFacade.getInstance(getProject).findPackage(top))
@@ -204,8 +204,8 @@ class ScPackagingImpl private (
         findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
       val text = getText
       val endOffset = if (text.apply(text.length - 1) == '}') {
-        text.length - 1
-      } else text.length
+          text.length - 1
+        } else text.length
       text.substring(startOffset, endOffset)
     } else {
       val text = getText

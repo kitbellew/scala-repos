@@ -1206,10 +1206,10 @@ case class KetamaClientBuilder private[memcached] (
       useOnlyResolvedAddress: Boolean = false
   ): KetamaClientBuilder = {
     val Name.Bound(va) = if (LocalMemcached.enabled) {
-      localMemcachedName
-    } else {
-      name
-    }
+        localMemcachedName
+      } else {
+        name
+      }
     copy(_group = CacheNodeGroup.fromVarAddr(va, useOnlyResolvedAddress))
   }
 

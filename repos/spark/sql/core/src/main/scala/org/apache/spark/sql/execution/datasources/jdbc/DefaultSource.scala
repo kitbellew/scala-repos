@@ -50,14 +50,14 @@ class DefaultSource extends RelationProvider with DataSourceRegister {
     }
 
     val partitionInfo = if (partitionColumn == null) {
-      null
-    } else {
-      JDBCPartitioningInfo(
-        partitionColumn,
-        lowerBound.toLong,
-        upperBound.toLong,
-        numPartitions.toInt)
-    }
+        null
+      } else {
+        JDBCPartitioningInfo(
+          partitionColumn,
+          lowerBound.toLong,
+          upperBound.toLong,
+          numPartitions.toInt)
+      }
     val parts = JDBCRelation.columnPartition(partitionInfo)
     val properties = new Properties() // Additional properties that we will pass to getConnection
     parameters.foreach(kv => properties.setProperty(kv._1, kv._2))

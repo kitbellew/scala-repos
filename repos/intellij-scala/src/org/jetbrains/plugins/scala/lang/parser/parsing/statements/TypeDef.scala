@@ -32,8 +32,8 @@ object TypeDef {
         return false
     }
     val isTypeParamClause = if (TypeParamClause parse builder) {
-      true
-    } else false
+        true
+      } else false
     builder.getTokenType match {
       case ScalaTokenTypes.tASSIGN =>
         builder.advanceLexer //Ate =

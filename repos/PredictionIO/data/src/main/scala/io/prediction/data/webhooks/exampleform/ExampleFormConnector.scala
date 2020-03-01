@@ -76,14 +76,14 @@ private[prediction] object ExampleFormConnector extends FormConnector {
 
     // two level optional data
     val context = if (data.exists(_._1.startsWith("context["))) {
-      Some(
-        ("ip" -> data.get("context[ip]")) ~
-          ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
-          ("prop2" -> data.get("context[prop2]"))
-      )
-    } else {
-      None
-    }
+        Some(
+          ("ip" -> data.get("context[ip]")) ~
+            ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
+            ("prop2" -> data.get("context[prop2]"))
+        )
+      } else {
+        None
+      }
 
     val json =
       ("event" -> data("event")) ~

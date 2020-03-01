@@ -247,23 +247,27 @@ private[parquet] class CatalystWriteSupport
         val decimal = row.getDecimal(ordinal, precision, scale)
         val bytes = decimal.toJavaBigDecimal.unscaledValue().toByteArray
         val fixedLengthBytes = if (bytes.length == numBytes) {
-          // If the length of the underlying byte array of the unscaled `BigInteger` happens to be
-          // `numBytes`, just reuse it, so that we don't bother copying it to `decimalBuffer`.
-          bytes
-        } else {
-          // Otherwise, the length must be less than `numBytes`.  In this case we copy contents of
-          // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
-          // fixed-length byte array.
-          val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
-          util.Arrays.fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
-          System.arraycopy(
-            bytes,
-            0,
-            decimalBuffer,
-            numBytes - bytes.length,
-            bytes.length)
-          decimalBuffer
-        }
+            // If the length of the underlying byte array of the unscaled `BigInteger` happens to be
+            // `numBytes`, just reuse it, so that we don't bother copying it to `decimalBuffer`.
+            bytes
+          } else {
+            // Otherwise, the length must be less than `numBytes`.  In this case we copy contents of
+            // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
+            // fixed-length byte array.
+            val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
+            util.Arrays.fill(
+              decimalBuffer,
+              0,
+              numBytes - bytes.length,
+              signByte)
+            System.arraycopy(
+              bytes,
+              0,
+              decimalBuffer,
+              numBytes - bytes.length,
+              bytes.length)
+            decimalBuffer
+          }
 
         recordConsumer.addBinary(
           Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
@@ -375,28 +379,28 @@ private[parquet] class CatalystWriteSupport
     val keyWriter = makeWriter(mapType.keyType)
     val valueWriter = makeWriter(mapType.valueType)
     val repeatedGroupName = if (writeLegacyParquetFormat) {
-      // Legacy mode:
-      //
-      //   <map-repetition> group <name> (MAP) {
-      //     repeated group map (MAP_KEY_VALUE) {
-      //                    ^~~  repeatedGroupName
-      //       required <key-type> key;
-      //       <value-repetition> <value-type> value;
-      //     }
-      //   }
-      "map"
-    } else {
-      // Standard mode:
-      //
-      //   <map-repetition> group <name> (MAP) {
-      //     repeated group key_value {
-      //                    ^~~~~~~~~  repeatedGroupName
-      //       required <key-type> key;
-      //       <value-repetition> <value-type> value;
-      //     }
-      //   }
-      "key_value"
-    }
+        // Legacy mode:
+        //
+        //   <map-repetition> group <name> (MAP) {
+        //     repeated group map (MAP_KEY_VALUE) {
+        //                    ^~~  repeatedGroupName
+        //       required <key-type> key;
+        //       <value-repetition> <value-type> value;
+        //     }
+        //   }
+        "map"
+      } else {
+        // Standard mode:
+        //
+        //   <map-repetition> group <name> (MAP) {
+        //     repeated group key_value {
+        //                    ^~~~~~~~~  repeatedGroupName
+        //       required <key-type> key;
+        //       <value-repetition> <value-type> value;
+        //     }
+        //   }
+        "key_value"
+      }
 
     (row: SpecializedGetters, ordinal: Int) => {
       val map = row.getMap(ordinal)

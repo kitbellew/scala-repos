@@ -295,12 +295,12 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
         } else None
 
       val handshake = if (config.get[Boolean]("handshake")) {
-        val data = config.get[Boolean]("data")
-        val verbose = config.get[Boolean]("verbose")
-        Some(SSLDebugHandshakeOptions(data = data, verbose = verbose))
-      } else {
-        None
-      }
+          val data = config.get[Boolean]("data")
+          val verbose = config.get[Boolean]("verbose")
+          Some(SSLDebugHandshakeOptions(data = data, verbose = verbose))
+        } else {
+          None
+        }
 
       val keygen = config.get[Boolean]("keygen")
       val session = config.get[Boolean]("session")

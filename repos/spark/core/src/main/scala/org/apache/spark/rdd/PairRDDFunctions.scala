@@ -312,12 +312,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
     val samplingFunc = if (withReplacement) {
-      StratifiedSamplingUtils
-        .getPoissonSamplingFunction(self, fractions, false, seed)
-    } else {
-      StratifiedSamplingUtils
-        .getBernoulliSamplingFunction(self, fractions, false, seed)
-    }
+        StratifiedSamplingUtils
+          .getPoissonSamplingFunction(self, fractions, false, seed)
+      } else {
+        StratifiedSamplingUtils
+          .getBernoulliSamplingFunction(self, fractions, false, seed)
+      }
     self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
   }
 
@@ -344,12 +344,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
     val samplingFunc = if (withReplacement) {
-      StratifiedSamplingUtils
-        .getPoissonSamplingFunction(self, fractions, true, seed)
-    } else {
-      StratifiedSamplingUtils
-        .getBernoulliSamplingFunction(self, fractions, true, seed)
-    }
+        StratifiedSamplingUtils
+          .getPoissonSamplingFunction(self, fractions, true, seed)
+      } else {
+        StratifiedSamplingUtils
+          .getBernoulliSamplingFunction(self, fractions, true, seed)
+      }
     self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
   }
 

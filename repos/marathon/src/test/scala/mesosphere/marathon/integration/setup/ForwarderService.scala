@@ -147,8 +147,7 @@ object ForwarderService {
       new MetricsModule,
       new HttpModule(conf),
       new ForwarderAppModule(
-        myHostPort =
-          if (conf.disableHttp()) s"localhost:${conf.httpsPort()}"
+        myHostPort = if (conf.disableHttp()) s"localhost:${conf.httpsPort()}"
           else s"localhost:${conf.httpPort()}",
         conf,
         conf),

@@ -361,8 +361,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             generatedType = genLoadModule(tree)
           } else {
             mnode.visitVarInsn(asm.Opcodes.ALOAD, 0)
-            generatedType =
-              if (tree.symbol == ArrayClass) ObjectRef
+            generatedType = if (tree.symbol == ArrayClass) ObjectRef
               else classBTypeFromSymbol(claszSymbol)
           }
 

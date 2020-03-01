@@ -32,22 +32,22 @@ object CompilerData {
     val module = target.getModule
 
     val compilerJars = if (SettingsManager.hasScalaSdk(module)) {
-      compilerJarsIn(module).flatMap {
-        case jars: CompilerJars =>
-          val absentJars = jars.files.filter(!_.exists)
-          Either.cond(
-            absentJars.isEmpty,
-            Some(jars),
-            "Scala compiler JARs not found (module '" + chunk
-              .representativeTarget()
-              .getModule
-              .getName + "'): "
-              + absentJars.map(_.getPath).mkString(", ")
-          )
+        compilerJarsIn(module).flatMap {
+          case jars: CompilerJars =>
+            val absentJars = jars.files.filter(!_.exists)
+            Either.cond(
+              absentJars.isEmpty,
+              Some(jars),
+              "Scala compiler JARs not found (module '" + chunk
+                .representativeTarget()
+                .getModule
+                .getName + "'): "
+                + absentJars.map(_.getPath).mkString(", ")
+            )
+        }
+      } else {
+        Right(None)
       }
-    } else {
-      Right(None)
-    }
 
     compilerJars.flatMap { jars =>
       val incrementalityType = SettingsManager

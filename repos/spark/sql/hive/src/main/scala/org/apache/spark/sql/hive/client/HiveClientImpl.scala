@@ -617,12 +617,12 @@ private[hive] class HiveClientImpl(
   def addJar(path: String): Unit = {
     val uri = new Path(path).toUri
     val jarURL = if (uri.getScheme == null) {
-      // `path` is a local file path without a URL scheme
-      new File(path).toURI.toURL
-    } else {
-      // `path` is a URL with a scheme
-      uri.toURL
-    }
+        // `path` is a local file path without a URL scheme
+        new File(path).toURI.toURL
+      } else {
+        // `path` is a URL with a scheme
+        uri.toURL
+      }
     clientLoader.addJar(jarURL)
     runSqlHive(s"ADD JAR $path")
   }

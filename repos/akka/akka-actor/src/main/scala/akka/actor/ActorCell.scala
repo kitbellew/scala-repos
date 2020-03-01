@@ -582,8 +582,7 @@ private[akka] class ActorCell(
 
   def unbecome(): Unit = {
     val original = behaviorStack
-    behaviorStack =
-      if (original.isEmpty || original.tail.isEmpty)
+    behaviorStack = if (original.isEmpty || original.tail.isEmpty)
         actor.receive :: emptyBehaviorStack
       else original.tail
   }
@@ -605,8 +604,8 @@ private[akka] class ActorCell(
           "Actor instance passed to actorOf can't be 'null'")
 
       // If no becomes were issued, the actors behavior is its receive method
-      behaviorStack =
-        if (behaviorStack.isEmpty) instance.receive :: behaviorStack
+      behaviorStack = if (behaviorStack.isEmpty)
+          instance.receive :: behaviorStack
         else behaviorStack
       instance
     } finally {

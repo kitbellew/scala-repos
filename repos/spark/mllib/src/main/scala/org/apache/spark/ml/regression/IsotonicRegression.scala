@@ -100,10 +100,10 @@ private[regression] trait IsotonicRegressionBase
         col($(featuresCol))
       }
     val w = if (hasWeightCol) {
-      col($(weightCol))
-    } else {
-      lit(1.0)
-    }
+        col($(weightCol))
+      } else {
+        lit(1.0)
+      }
     dataset.select(col($(labelCol)), f, w).rdd.map {
       case Row(label: Double, feature: Double, weight: Double) =>
         (label, feature, weight)

@@ -192,10 +192,10 @@ class TruncatedNewtonMinimizer[T, H](
     val memStep = state.history.memStep
     val memGradDelta = state.history.memGradDelta
     val diag = if (memStep.size > 0) {
-      computeDiagScale(memStep.head, memGradDelta.head)
-    } else {
-      1.0 / norm(grad)
-    }
+        computeDiagScale(memStep.head, memGradDelta.head)
+      } else {
+        1.0 / norm(grad)
+      }
 
     val dir: T = copy(grad)
     val as = new Array[Double](m)

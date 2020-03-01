@@ -86,7 +86,7 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
           val errorMessage = seq.mkString(EOL)
 
           val error = if (errorMessage.contains(XML_ERROR)) {
-            s"""
+              s"""
                |$errorMessage
                |Probably problem with parsing xml group, please add parens or semicolons:
                |Replace:
@@ -97,9 +97,9 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
                |val xmlGroup = <a/><b/>;
                |
              """.stripMargin
-          } else {
-            errorMessage
-          }
+            } else {
+              errorMessage
+            }
           throw new MessageOnlyException(error)
       }
     val parsedTrees = parsed match {

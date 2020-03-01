@@ -398,10 +398,10 @@ case class WholeStageCodegen(child: SparkPlan)
       row: String = null): String = {
 
     val doCopy = if (ctx.copyResult) {
-      ".copy()"
-    } else {
-      ""
-    }
+        ".copy()"
+      } else {
+        ""
+      }
     if (row != null) {
       // There is an UnsafeRow already
       s"""

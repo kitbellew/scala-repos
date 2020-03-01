@@ -414,8 +414,8 @@ class ZkUtils(
       acls: java.util.List[ACL] = DefaultAcls) {
     //Consumer path is kept open as different consumers will write under this node.
     val acl = if (path == null || path.isEmpty || path.equals(ConsumersPath)) {
-      ZooDefs.Ids.OPEN_ACL_UNSAFE
-    } else acls
+        ZooDefs.Ids.OPEN_ACL_UNSAFE
+      } else acls
 
     if (!zkClient.exists(path))
       ZkPath.createPersistent(

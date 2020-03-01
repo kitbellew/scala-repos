@@ -30,10 +30,10 @@ object Executor {
     val config = generator(args)
 
     val storm = if (args.boolean("local")) {
-      Storm.local(config.getNamedOptions)
-    } else {
-      Storm.remote(config.getNamedOptions)
-    }
+        Storm.local(config.getNamedOptions)
+      } else {
+        Storm.remote(config.getNamedOptions)
+      }
 
     storm
       .withRegistrars(config.registrars)

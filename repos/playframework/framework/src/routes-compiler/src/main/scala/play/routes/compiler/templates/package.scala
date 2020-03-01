@@ -60,10 +60,10 @@ package object templates {
       r: Route,
       paramFormat: Parameter => String): String = {
     val methodPart = if (r.call.instantiate) {
-      s"$Injector.instanceOf(classOf[${r.call.packageName}.${r.call.controller}]).${r.call.method}"
-    } else {
-      s"${r.call.packageName}.${r.call.controller}.${r.call.method}"
-    }
+        s"$Injector.instanceOf(classOf[${r.call.packageName}.${r.call.controller}]).${r.call.method}"
+      } else {
+        s"${r.call.packageName}.${r.call.controller}.${r.call.method}"
+      }
     val paramPart = r.call.parameters
       .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
@@ -79,10 +79,10 @@ package object templates {
       ident: String,
       paramFormat: Parameter => String): String = {
     val methodPart = if (r.call.instantiate) {
-      s"$ident.get.${r.call.method}"
-    } else {
-      s"$ident.${r.call.method}"
-    }
+        s"$ident.get.${r.call.method}"
+      } else {
+        s"$ident.${r.call.method}"
+      }
     val paramPart = r.call.parameters
       .map { params => params.map(paramFormat).mkString(", ") }
       .map("(" + _ + ")")
@@ -373,22 +373,22 @@ package object templates {
     }
 
     val callQueryString = if (queryParams.size == 0) {
-      ""
-    } else {
-      """ + queryString(List(%s))""".format(queryParams
-        .map { p =>
-          ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
-            p.name) + """", """ + safeKeyword(
-            localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
-        }
-        .map {
-          case (u, Parameter(name, typeName, None, Some(default))) =>
-            """if(""" + safeKeyword(localNames.getOrElse(name, name)) + """ == """ + default + """) None else Some(""" + u + """)"""
-          case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
-        }
-        .mkString(", "))
+        ""
+      } else {
+        """ + queryString(List(%s))""".format(queryParams
+          .map { p =>
+            ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
+              p.name) + """", """ + safeKeyword(
+              localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
+          }
+          .map {
+            case (u, Parameter(name, typeName, None, Some(default))) =>
+              """if(""" + safeKeyword(localNames.getOrElse(name, name)) + """ == """ + default + """) None else Some(""" + u + """)"""
+            case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
+          }
+          .mkString(", "))
 
-    }
+      }
 
     """Call("%s", %s%s)""".format(route.verb.value, callPath, callQueryString)
   }
@@ -477,25 +477,25 @@ package object templates {
     }
 
     val queryString = if (queryParams.size == 0) {
-      ""
-    } else {
-      """ + _qS([%s])""".format(queryParams
-        .map { p =>
-          val paramName: String = paramNameOnQueryString(p.name)
-          ("(\"\"\" + implicitly[QueryStringBindable[" + p.typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
-            .get(p.name)
-            .getOrElse(p.name) + """)""") -> p
-        }
-        .map {
-          case (u, Parameter(name, typeName, None, Some(default))) =>
-            """(""" + localNames
-              .get(name)
-              .getOrElse(name) + " == null ? null : " + u + ")"
-          case (u, Parameter(name, typeName, None, None)) => u
-        }
-        .mkString(", "))
+        ""
+      } else {
+        """ + _qS([%s])""".format(queryParams
+          .map { p =>
+            val paramName: String = paramNameOnQueryString(p.name)
+            ("(\"\"\" + implicitly[QueryStringBindable[" + p.typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
+              .get(p.name)
+              .getOrElse(p.name) + """)""") -> p
+          }
+          .map {
+            case (u, Parameter(name, typeName, None, Some(default))) =>
+              """(""" + localNames
+                .get(name)
+                .getOrElse(name) + " == null ? null : " + u + ")"
+            case (u, Parameter(name, typeName, None, None)) => u
+          }
+          .mkString(", "))
 
-    }
+      }
 
     "return _wA({method:\"%s\", url:%s%s})".format(
       route.verb.value,

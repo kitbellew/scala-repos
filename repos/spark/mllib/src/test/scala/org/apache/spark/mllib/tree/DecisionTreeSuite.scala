@@ -1149,14 +1149,14 @@ object DecisionTreeSuite extends SparkFunSuite {
     val arr = new Array[LabeledPoint](1000)
     for (i <- 0 until 1000) {
       val label = if (i < 100) {
-        0.0
-      } else if (i < 500) {
-        1.0
-      } else if (i < 900) {
-        0.0
-      } else {
-        1.0
-      }
+          0.0
+        } else if (i < 500) {
+          1.0
+        } else if (i < 900) {
+          0.0
+        } else {
+          1.0
+        }
       arr(i) = new LabeledPoint(label, Vectors.dense(i.toDouble, 1000.0 - i))
     }
     arr

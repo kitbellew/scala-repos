@@ -164,8 +164,7 @@ final case class AckedReceiveBuffer[T <: HasSequenceNumber](
   def receive(arrivedMsg: T): AckedReceiveBuffer[T] = {
     this.copy(
       cumulativeAck = max(arrivedMsg.seq, cumulativeAck),
-      buf =
-        if (arrivedMsg.seq > lastDelivered && !buf.contains(arrivedMsg))
+      buf = if (arrivedMsg.seq > lastDelivered && !buf.contains(arrivedMsg))
           buf + arrivedMsg
         else buf)
   }

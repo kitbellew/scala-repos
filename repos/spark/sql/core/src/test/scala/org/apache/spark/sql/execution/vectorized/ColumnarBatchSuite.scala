@@ -797,10 +797,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
     var i = 0
     while (i < NUM_ITERS) {
       val schema = if (flatSchema) {
-        RandomDataGenerator.randomSchema(random, numFields, types)
-      } else {
-        RandomDataGenerator.randomNestedSchema(random, numFields, types)
-      }
+          RandomDataGenerator.randomSchema(random, numFields, types)
+        } else {
+          RandomDataGenerator.randomNestedSchema(random, numFields, types)
+        }
       val rows = mutable.ArrayBuffer.empty[Row]
       var j = 0
       while (j < NUM_ROWS) {

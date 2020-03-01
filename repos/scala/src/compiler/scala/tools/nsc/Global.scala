@@ -796,15 +796,15 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           precision: Int) {
         val p = elliptically(s, precision)
         val w = if (width > 0 && p.length < width) {
-          import FormattableFlags.LEFT_JUSTIFY
-          val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
-          val sb = new StringBuilder
-          def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-          if (!leftly) pad()
-          sb.append(p)
-          if (leftly) pad()
-          sb.toString
-        } else p
+            import FormattableFlags.LEFT_JUSTIFY
+            val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
+            val sb = new StringBuilder
+            def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
+            if (!leftly) pad()
+            sb.append(p)
+            if (leftly) pad()
+            sb.toString
+          } else p
         formatter.out.append(w)
       }
     }

@@ -127,10 +127,10 @@ object Upgrade_0_8_3 {
           val toProperties = DataMap(fromEvent.properties.fields.map {
             case (k, v) =>
               val newK = if (obsProperties.contains(k)) {
-                val nK = k.stripPrefix("pio_")
-                logger.info(s"property ${k} will be renamed to ${nK}")
-                nK
-              } else k
+                  val nK = k.stripPrefix("pio_")
+                  logger.info(s"property ${k} will be renamed to ${nK}")
+                  nK
+                } else k
               (newK, v)
           })
 

@@ -313,12 +313,12 @@ private[spark] class MesosSchedulerBackend(
 
       val workerOffers = usableOffers.map { o =>
         val cpus = if (slaveIdToExecutorInfo.contains(o.getSlaveId.getValue)) {
-          getResource(o.getResourcesList, "cpus").toInt
-        } else {
-          // If the Mesos executor has not been started on this slave yet, set aside a few
-          // cores for the Mesos executor by offering fewer cores to the Spark executor
-          (getResource(o.getResourcesList, "cpus") - mesosExecutorCores).toInt
-        }
+            getResource(o.getResourcesList, "cpus").toInt
+          } else {
+            // If the Mesos executor has not been started on this slave yet, set aside a few
+            // cores for the Mesos executor by offering fewer cores to the Spark executor
+            (getResource(o.getResourcesList, "cpus") - mesosExecutorCores).toInt
+          }
         new WorkerOffer(o.getSlaveId.getValue, o.getHostname, cpus)
       }
 

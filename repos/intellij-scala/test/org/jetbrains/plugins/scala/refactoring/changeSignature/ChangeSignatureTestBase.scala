@@ -60,9 +60,9 @@ abstract class ChangeSignatureTestBase
     val checkSecond = secondName != null
 
     val secondFile = if (checkSecond) {
-      val secondFileText = getTextFromTestData(secondName)
-      addFileToProject(secondName, secondFileText)
-    } else null
+        val secondFileText = getTextFromTestData(secondName)
+        addFileToProject(secondName, secondFileText)
+      } else null
 
     val fileName = mainFileName(testName)
     configureByFile(fileName)

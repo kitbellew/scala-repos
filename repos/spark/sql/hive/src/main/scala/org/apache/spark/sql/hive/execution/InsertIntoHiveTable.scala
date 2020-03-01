@@ -156,17 +156,17 @@ private[hive] case class InsertIntoHiveTable(
     }
 
     val writerContainer = if (numDynamicPartitions > 0) {
-      val dynamicPartColNames =
-        partitionColumnNames.takeRight(numDynamicPartitions)
-      new SparkHiveDynamicPartitionWriterContainer(
-        jobConf,
-        fileSinkConf,
-        dynamicPartColNames,
-        child.output,
-        table)
-    } else {
-      new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
-    }
+        val dynamicPartColNames =
+          partitionColumnNames.takeRight(numDynamicPartitions)
+        new SparkHiveDynamicPartitionWriterContainer(
+          jobConf,
+          fileSinkConf,
+          dynamicPartColNames,
+          child.output,
+          table)
+      } else {
+        new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
+      }
 
     @transient val outputClass =
       writerContainer.newSerializer(table.tableDesc).getSerializedClass

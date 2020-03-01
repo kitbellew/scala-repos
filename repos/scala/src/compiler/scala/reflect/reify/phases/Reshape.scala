@@ -246,23 +246,23 @@ trait Reshape {
       */
     private def toPreTyperAnnotation(ann: AnnotationInfo): Tree = {
       val args = if (ann.assocs.isEmpty) {
-        ann.args
-      } else {
-        def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
-          (jann: @unchecked) match {
-            case LiteralAnnotArg(const) => Literal(const)
-            case ArrayAnnotArg(arr) =>
-              Apply(
-                Ident(definitions.ArrayModule),
-                arr.toList map toScalaAnnotation)
-            case NestedAnnotArg(ann) => toPreTyperAnnotation(ann)
-          }
+          ann.args
+        } else {
+          def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
+            (jann: @unchecked) match {
+              case LiteralAnnotArg(const) => Literal(const)
+              case ArrayAnnotArg(arr) =>
+                Apply(
+                  Ident(definitions.ArrayModule),
+                  arr.toList map toScalaAnnotation)
+              case NestedAnnotArg(ann) => toPreTyperAnnotation(ann)
+            }
 
-        ann.assocs map {
-          case (nme, arg) =>
-            AssignOrNamedArg(Ident(nme), toScalaAnnotation(arg))
+          ann.assocs map {
+            case (nme, arg) =>
+              AssignOrNamedArg(Ident(nme), toScalaAnnotation(arg))
+          }
         }
-      }
 
       def extractOriginal: PartialFunction[Tree, Tree] = {
         case Apply(Select(New(tpt), _), _) => tpt
@@ -326,18 +326,18 @@ trait Reshape {
       val stats1 = stats flatMap {
         case vdef @ ValDef(mods, name, tpt, rhs) if !mods.isLazy =>
           val mods1 = if (accessors.contains(vdef)) {
-            val ddef = accessors(vdef)(0) // any accessor will do
-            val Modifiers(flags, _, annotations) = mods
-            var flags1 = flags & ~LOCAL
-            if (!ddef.symbol.isPrivate) flags1 = flags1 & ~PRIVATE
-            val privateWithin1 = ddef.mods.privateWithin
-            val annotations1 =
-              accessors(vdef).foldLeft(annotations)((curr, acc) =>
-                curr ++ (acc.symbol.annotations map toPreTyperAnnotation))
-            Modifiers(flags1, privateWithin1, annotations1) setPositions mods.positions
-          } else {
-            mods
-          }
+              val ddef = accessors(vdef)(0) // any accessor will do
+              val Modifiers(flags, _, annotations) = mods
+              var flags1 = flags & ~LOCAL
+              if (!ddef.symbol.isPrivate) flags1 = flags1 & ~PRIVATE
+              val privateWithin1 = ddef.mods.privateWithin
+              val annotations1 =
+                accessors(vdef).foldLeft(annotations)((curr, acc) =>
+                  curr ++ (acc.symbol.annotations map toPreTyperAnnotation))
+              Modifiers(flags1, privateWithin1, annotations1) setPositions mods.positions
+            } else {
+              mods
+            }
           val mods2 = toPreTyperModifiers(mods1, vdef.symbol)
           val name1 = name.dropLocal
           val vdef1 = ValDef(mods2, name1.toTermName, tpt, rhs)

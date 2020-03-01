@@ -63,13 +63,13 @@ final class Formatter(private val dest: Appendable)
 
           val indexStr = matchResult(1).getOrElse("")
           val index = if (!indexStr.isEmpty) {
-            Integer.parseInt(indexStr)
-          } else if (hasFlag("<")) {
-            lastIndex
-          } else {
-            lastImplicitIndex += 1
-            lastImplicitIndex
-          }
+              Integer.parseInt(indexStr)
+            } else if (hasFlag("<")) {
+              lastIndex
+            } else {
+              lastImplicitIndex += 1
+              lastImplicitIndex
+            }
           lastIndex = index
           if (index <= 0 || index > args.length)
             throw new MissingFormatArgumentException(matchResult(5).get)

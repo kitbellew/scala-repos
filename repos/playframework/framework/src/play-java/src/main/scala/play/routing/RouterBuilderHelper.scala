@@ -46,10 +46,10 @@ private[routing] object RouterBuilderHelper {
                 val params = groups.zip(route.params).map {
                   case (param, routeParam) =>
                     val rawParam = if (routeParam.decode) {
-                      UriEncoding.decodePathSegment(param, "utf-8")
-                    } else {
-                      param
-                    }
+                        UriEncoding.decodePathSegment(param, "utf-8")
+                      } else {
+                        param
+                      }
                     routeParam.pathBindable.bind(routeParam.name, rawParam)
                 }
 

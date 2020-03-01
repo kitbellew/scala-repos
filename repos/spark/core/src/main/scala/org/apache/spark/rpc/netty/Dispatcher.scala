@@ -178,11 +178,11 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     if (shouldCallOnStop) {
       // We don't need to call `onStop` in the `synchronized` block
       val error = if (stopped) {
-        new RpcEnvStoppedException()
-      } else {
-        new SparkException(
-          s"Could not find $endpointName or it has been stopped.")
-      }
+          new RpcEnvStoppedException()
+        } else {
+          new SparkException(
+            s"Could not find $endpointName or it has been stopped.")
+        }
       callbackIfStopped(error)
     }
   }

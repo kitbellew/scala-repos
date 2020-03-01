@@ -433,17 +433,17 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
           val replicas =
             controllerContext.partitionReplicaAssignment(partition).toSet
           val partitionStateInfo = if (beingDeleted) {
-            val leaderAndIsr = new LeaderAndIsr(
-              LeaderAndIsr.LeaderDuringDelete,
-              leaderIsrAndControllerEpoch.leaderAndIsr.isr)
-            PartitionStateInfo(
-              LeaderIsrAndControllerEpoch(
-                leaderAndIsr,
-                leaderIsrAndControllerEpoch.controllerEpoch),
-              replicas)
-          } else {
-            PartitionStateInfo(leaderIsrAndControllerEpoch, replicas)
-          }
+              val leaderAndIsr = new LeaderAndIsr(
+                LeaderAndIsr.LeaderDuringDelete,
+                leaderIsrAndControllerEpoch.leaderAndIsr.isr)
+              PartitionStateInfo(
+                LeaderIsrAndControllerEpoch(
+                  leaderAndIsr,
+                  leaderIsrAndControllerEpoch.controllerEpoch),
+                replicas)
+            } else {
+              PartitionStateInfo(leaderIsrAndControllerEpoch, replicas)
+            }
           brokerIds.filter(b => b >= 0).foreach { brokerId =>
             updateMetadataRequestMap.getOrElseUpdate(
               brokerId,

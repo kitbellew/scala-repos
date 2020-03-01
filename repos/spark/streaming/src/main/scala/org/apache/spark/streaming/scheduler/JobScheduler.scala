@@ -111,11 +111,14 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
 
     // Wait for the queued jobs to complete if indicated
     val terminated = if (processAllReceivedData) {
-      jobExecutor
-        .awaitTermination(1, TimeUnit.HOURS) // just a very large period of time
-    } else {
-      jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
-    }
+        jobExecutor
+          .awaitTermination(
+            1,
+            TimeUnit.HOURS
+          ) // just a very large period of time
+      } else {
+        jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
+      }
     if (!terminated) {
       jobExecutor.shutdownNow()
     }

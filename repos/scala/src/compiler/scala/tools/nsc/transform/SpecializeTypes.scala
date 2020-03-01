@@ -753,8 +753,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           case _                          => m
         }
         info(specMember) = Forward(om)
-        info(om) =
-          if (original.isDeferred) Forward(original)
+        info(om) = if (original.isDeferred) Forward(original)
           else Implementation(original)
         typeEnv(om) =
           env ++ typeEnv(m) // add the environment for any method tparams
@@ -1481,11 +1480,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         tree modifyType fixType
         // log(" tree type: " + tree.tpe)
         val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
-          val casttpe = CastMap(tree.tpe)
-          if (casttpe <:< pt) gen.mkCast(tree, casttpe)
-          else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
-          else tree
-        } else tree
+            val casttpe = CastMap(tree.tpe)
+            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
+            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
+            else tree
+          } else tree
 
         ntree.clearType()
       }

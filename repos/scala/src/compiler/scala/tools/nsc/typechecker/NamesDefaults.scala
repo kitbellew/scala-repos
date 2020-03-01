@@ -508,8 +508,7 @@ trait NamesDefaults { self: Analyzer =>
               case None    => gen.mkAttributedRef(defGetter)
 
             }
-            default1 =
-              if (targs.isEmpty) default1
+            default1 = if (targs.isEmpty) default1
               else TypeApply(default1, targs.map(_.duplicate))
             val default2 = (default1 /: previousArgss)((tree, args) =>
               Apply(tree, args.map(_.duplicate)))

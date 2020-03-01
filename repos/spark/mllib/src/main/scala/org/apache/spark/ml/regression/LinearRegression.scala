@@ -322,29 +322,29 @@ class LinearRegression @Since("1.3.0") (
       effectiveL2RegParam)
 
     val optimizer = if ($(elasticNetParam) == 0.0 || effectiveRegParam == 0.0) {
-      new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
-    } else {
-      val standardizationParam = $(standardization)
-      def effectiveL1RegFun = (index: Int) => {
-        if (standardizationParam) {
-          effectiveL1RegParam
-        } else {
-          // If `standardization` is false, we still standardize the data
-          // to improve the rate of convergence; as a result, we have to
-          // perform this reverse standardization by penalizing each component
-          // differently to get effectively the same objective function when
-          // the training dataset is not standardized.
-          if (featuresStd(index) != 0.0)
-            effectiveL1RegParam / featuresStd(index)
-          else 0.0
+        new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
+      } else {
+        val standardizationParam = $(standardization)
+        def effectiveL1RegFun = (index: Int) => {
+          if (standardizationParam) {
+            effectiveL1RegParam
+          } else {
+            // If `standardization` is false, we still standardize the data
+            // to improve the rate of convergence; as a result, we have to
+            // perform this reverse standardization by penalizing each component
+            // differently to get effectively the same objective function when
+            // the training dataset is not standardized.
+            if (featuresStd(index) != 0.0)
+              effectiveL1RegParam / featuresStd(index)
+            else 0.0
+          }
         }
+        new BreezeOWLQN[Int, BDV[Double]](
+          $(maxIter),
+          10,
+          effectiveL1RegFun,
+          $(tol))
       }
-      new BreezeOWLQN[Int, BDV[Double]](
-        $(maxIter),
-        10,
-        effectiveL1RegFun,
-        $(tol))
-    }
 
     val initialCoefficients = Vectors.zeros(numFeatures)
     val states = optimizer.iterations(
@@ -394,10 +394,10 @@ class LinearRegression @Since("1.3.0") (
        http://stats.stackexchange.com/questions/13617/how-is-the-intercept-computed-in-glmnet
      */
     val intercept = if ($(fitIntercept)) {
-      yMean - dot(coefficients, Vectors.dense(featuresMean))
-    } else {
-      0.0
-    }
+        yMean - dot(coefficients, Vectors.dense(featuresMean))
+      } else {
+        0.0
+      }
 
     if (handlePersistence) instances.unpersist()
 
@@ -705,10 +705,10 @@ class LinearRegressionSummary private[regression] (
 
   /** Degrees of freedom */
   private val degreesOfFreedom: Long = if (model.getFitIntercept) {
-    numInstances - model.coefficients.size - 1
-  } else {
-    numInstances - model.coefficients.size
-  }
+      numInstances - model.coefficients.size - 1
+    } else {
+      numInstances - model.coefficients.size
+    }
 
   /**
     * The weighted residuals, the usual residuals rescaled by
@@ -740,21 +740,21 @@ class LinearRegressionSummary private[regression] (
         "No Std. Error of coefficients available for this LinearRegressionModel")
     } else {
       val rss = if (model.getWeightCol.isEmpty) {
-        meanSquaredError * numInstances
-      } else {
-        val t = udf { (pred: Double, label: Double, weight: Double) =>
-          math.pow(label - pred, 2.0) * weight
+          meanSquaredError * numInstances
+        } else {
+          val t = udf { (pred: Double, label: Double, weight: Double) =>
+            math.pow(label - pred, 2.0) * weight
+          }
+          predictions
+            .select(
+              t(
+                col(model.getPredictionCol),
+                col(model.getLabelCol),
+                col(model.getWeightCol)).as("wse"))
+            .agg(sum(col("wse")))
+            .first()
+            .getDouble(0)
         }
-        predictions
-          .select(
-            t(
-              col(model.getPredictionCol),
-              col(model.getLabelCol),
-              col(model.getWeightCol)).as("wse"))
-          .agg(sum(col("wse")))
-          .first()
-          .getDouble(0)
-      }
       val sigma2 = rss / degreesOfFreedom
       diagInvAtWA.map(_ * sigma2).map(math.sqrt(_))
     }
@@ -769,10 +769,10 @@ class LinearRegressionSummary private[regression] (
         "No t-statistic available for this LinearRegressionModel")
     } else {
       val estimate = if (model.getFitIntercept) {
-        Array.concat(model.coefficients.toArray, Array(model.intercept))
-      } else {
-        model.coefficients.toArray
-      }
+          Array.concat(model.coefficients.toArray, Array(model.intercept))
+        } else {
+          model.coefficients.toArray
+        }
       estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
     }
   }
@@ -1052,34 +1052,34 @@ private class LeastSquaresCostFun(
     val totalGradientArray = leastSquaresAggregator.gradient.toArray
 
     val regVal = if (effectiveL2regParam == 0.0) {
-      0.0
-    } else {
-      var sum = 0.0
-      coeffs.foreachActive { (index, value) =>
-        // The following code will compute the loss of the regularization; also
-        // the gradient of the regularization, and add back to totalGradientArray.
-        sum += {
-          if (standardization) {
-            totalGradientArray(index) += effectiveL2regParam * value
-            value * value
-          } else {
-            if (featuresStd(index) != 0.0) {
-              // If `standardization` is false, we still standardize the data
-              // to improve the rate of convergence; as a result, we have to
-              // perform this reverse standardization by penalizing each component
-              // differently to get effectively the same objective function when
-              // the training dataset is not standardized.
-              val temp = value / (featuresStd(index) * featuresStd(index))
-              totalGradientArray(index) += effectiveL2regParam * temp
-              value * temp
+        0.0
+      } else {
+        var sum = 0.0
+        coeffs.foreachActive { (index, value) =>
+          // The following code will compute the loss of the regularization; also
+          // the gradient of the regularization, and add back to totalGradientArray.
+          sum += {
+            if (standardization) {
+              totalGradientArray(index) += effectiveL2regParam * value
+              value * value
             } else {
-              0.0
+              if (featuresStd(index) != 0.0) {
+                // If `standardization` is false, we still standardize the data
+                // to improve the rate of convergence; as a result, we have to
+                // perform this reverse standardization by penalizing each component
+                // differently to get effectively the same objective function when
+                // the training dataset is not standardized.
+                val temp = value / (featuresStd(index) * featuresStd(index))
+                totalGradientArray(index) += effectiveL2regParam * temp
+                value * temp
+              } else {
+                0.0
+              }
             }
           }
         }
+        0.5 * effectiveL2regParam * sum
       }
-      0.5 * effectiveL2regParam * sum
-    }
 
     (leastSquaresAggregator.loss + regVal, new BDV(totalGradientArray))
   }

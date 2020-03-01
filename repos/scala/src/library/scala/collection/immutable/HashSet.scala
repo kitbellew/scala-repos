@@ -1072,12 +1072,12 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         val elems1 = new Array[HashSet[A]](length)
         System.arraycopy(buffer, offset0, elems1, 0, length)
         val bitmap1 = if (length == elems.length) {
-          // we can reuse the original bitmap
-          bitmap
-        } else {
-          // calculate new bitmap by keeping just bits in the kept bitmask
-          keepBits(bitmap, kept)
-        }
+            // we can reuse the original bitmap
+            bitmap
+          } else {
+            // calculate new bitmap by keeping just bits in the kept bitmask
+            keepBits(bitmap, kept)
+          }
         new HashTrieSet(bitmap1, elems1, rs)
       }
     }

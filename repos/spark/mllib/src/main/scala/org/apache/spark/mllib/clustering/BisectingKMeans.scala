@@ -164,10 +164,10 @@ class BisectingKMeans private (
     logInfo(s"Number of points: $n.")
     logInfo(s"Initial cost: ${rootSummary.cost}.")
     val minSize = if (minDivisibleClusterSize >= 1.0) {
-      math.ceil(minDivisibleClusterSize).toLong
-    } else {
-      math.ceil(minDivisibleClusterSize * n).toLong
-    }
+        math.ceil(minDivisibleClusterSize).toLong
+      } else {
+        math.ceil(minDivisibleClusterSize * n).toLong
+      }
     logInfo(s"The minimum number of points of a divisible cluster is $minSize.")
     var inactiveClusters = mutable.Seq.empty[(Long, ClusterSummary)]
     val random = new Random(seed)

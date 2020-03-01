@@ -113,8 +113,7 @@ object SizeEstimator extends Logging {
     is64bit = arch.contains("64") || arch.contains("s390x")
     isCompressedOops = getIsCompressedOops
 
-    objectSize =
-      if (!is64bit) 8
+    objectSize = if (!is64bit) 8
       else {
         if (!isCompressedOops) {
           16

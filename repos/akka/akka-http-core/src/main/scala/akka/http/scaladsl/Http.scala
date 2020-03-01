@@ -941,20 +941,20 @@ trait DefaultSSLContextCreation {
 
     // initial ssl context!
     val sslContext = if (sslConfig.config.default) {
-      log.debug(
-        "buildSSLContext: ssl-config.default is true, using default SSLContext")
-      sslConfig.validateDefaultTrustManager(config)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
-      val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
-      new ConfigSSLContextBuilder(
-        mkLogger,
-        config,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+        log.debug(
+          "buildSSLContext: ssl-config.default is true, using default SSLContext")
+        sslConfig.validateDefaultTrustManager(config)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
+        val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
+        new ConfigSSLContextBuilder(
+          mkLogger,
+          config,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters

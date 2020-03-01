@@ -1145,25 +1145,25 @@ class KafkaApis(
         request.securityProtocol)
 
       val responseBody = if (offsetsTopicMetadata.error != Errors.NONE) {
-        new GroupCoordinatorResponse(
-          Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-          Node.noNode)
-      } else {
-        val coordinatorEndpoint = offsetsTopicMetadata
-          .partitionMetadata()
-          .asScala
-          .find(_.partition == partition)
-          .map(_.leader())
+          new GroupCoordinatorResponse(
+            Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+            Node.noNode)
+        } else {
+          val coordinatorEndpoint = offsetsTopicMetadata
+            .partitionMetadata()
+            .asScala
+            .find(_.partition == partition)
+            .map(_.leader())
 
-        coordinatorEndpoint match {
-          case Some(endpoint) if !endpoint.isEmpty =>
-            new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
-          case _ =>
-            new GroupCoordinatorResponse(
-              Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-              Node.noNode)
+          coordinatorEndpoint match {
+            case Some(endpoint) if !endpoint.isEmpty =>
+              new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
+            case _ =>
+              new GroupCoordinatorResponse(
+                Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+                Node.noNode)
+          }
         }
-      }
 
       trace(
         "Sending consumer metadata %s for correlation id %d to client %s."

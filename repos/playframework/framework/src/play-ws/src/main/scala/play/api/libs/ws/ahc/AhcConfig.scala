@@ -277,19 +277,19 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
 
     // context!
     val sslContext = if (sslConfig.default) {
-      logger.info(
-        "buildSSLContext: ws.ssl.default is true, using default SSLContext")
-      validateDefaultTrustManager(sslConfig)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = buildKeyManagerFactory(sslConfig)
-      val trustManagerFactory = buildTrustManagerFactory(sslConfig)
-      new ConfigSSLContextBuilder(
-        sslConfig,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+        logger.info(
+          "buildSSLContext: ws.ssl.default is true, using default SSLContext")
+        validateDefaultTrustManager(sslConfig)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = buildKeyManagerFactory(sslConfig)
+        val trustManagerFactory = buildTrustManagerFactory(sslConfig)
+        new ConfigSSLContextBuilder(
+          sslConfig,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters

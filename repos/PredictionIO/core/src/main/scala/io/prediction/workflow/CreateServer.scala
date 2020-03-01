@@ -219,10 +219,10 @@ object CreateServer extends Logging {
         .asInstanceOf[Seq[Any]]
 
     val batch = if (engineInstance.batch.nonEmpty) {
-      s"${engineInstance.engineFactory} (${engineInstance.batch})"
-    } else {
-      engineInstance.engineFactory
-    }
+        s"${engineInstance.engineFactory} (${engineInstance.batch})"
+      } else {
+        engineInstance.engineFactory
+      }
 
     val sparkContext = WorkflowContext(
       batch = batch,
@@ -456,13 +456,13 @@ class ServerActor[Q, P](
   def receive: Actor.Receive = runRoute(myRoute)
 
   val feedbackEnabled = if (args.feedback) {
-    if (args.accessKey.isEmpty) {
-      log.error("Feedback loop cannot be enabled because accessKey is empty.")
-      false
-    } else {
-      true
-    }
-  } else false
+      if (args.accessKey.isEmpty) {
+        log.error("Feedback loop cannot be enabled because accessKey is empty.")
+        false
+      } else {
+        true
+      }
+    } else false
 
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
@@ -563,73 +563,74 @@ class ServerActor[Q, P](
                   * - prId
                   */
                 val result = if (feedbackEnabled) {
-                  implicit val formats =
-                    algorithms.headOption map { alg =>
-                      alg.querySerializer
-                    } getOrElse {
-                      Utils.json4sDefaultFormats
-                    }
-                  // val genPrId = Random.alphanumeric.take(64).mkString
-                  def genPrId: String = Random.alphanumeric.take(64).mkString
-                  val newPrId = prediction match {
-                    case id: WithPrId =>
-                      val org = id.prId
-                      if (org.isEmpty) genPrId else org
-                    case _ => genPrId
-                  }
-
-                  // also save Query's prId as prId of this pio_pr predict events
-                  val queryPrId =
-                    query match {
+                    implicit val formats =
+                      algorithms.headOption map { alg =>
+                        alg.querySerializer
+                      } getOrElse {
+                        Utils.json4sDefaultFormats
+                      }
+                    // val genPrId = Random.alphanumeric.take(64).mkString
+                    def genPrId: String = Random.alphanumeric.take(64).mkString
+                    val newPrId = prediction match {
                       case id: WithPrId =>
-                        Map("prId" -> id.prId)
-                      case _ =>
-                        Map()
+                        val org = id.prId
+                        if (org.isEmpty) genPrId else org
+                      case _ => genPrId
                     }
-                  val data = Map(
-                    // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
-                    "event" -> "predict",
-                    "eventTime" -> queryTime.toString(),
-                    "entityType" -> "pio_pr", // prediction result
-                    "entityId" -> newPrId,
-                    "properties" -> Map(
-                      "engineInstanceId" -> engineInstance.id,
-                      "query" -> query,
-                      "prediction" -> prediction)
-                  ) ++ queryPrId
-                  // At this point args.accessKey should be Some(String).
-                  val accessKey = args.accessKey.getOrElse("")
-                  val f: Future[Int] = future {
-                    scalaj.http
-                      .Http(
-                        s"http://${args.eventServerIp}:${args.eventServerPort}/" +
-                          s"events.json?accessKey=$accessKey")
-                      .postData(write(data))
-                      .header("content-type", "application/json")
-                      .asString
-                      .code
-                  }
-                  f onComplete {
-                    case Success(code) => {
-                      if (code != 201) {
-                        log.error(s"Feedback event failed. Status code: $code."
-                          + s"Data: ${write(data)}.")
+
+                    // also save Query's prId as prId of this pio_pr predict events
+                    val queryPrId =
+                      query match {
+                        case id: WithPrId =>
+                          Map("prId" -> id.prId)
+                        case _ =>
+                          Map()
+                      }
+                    val data = Map(
+                      // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
+                      "event" -> "predict",
+                      "eventTime" -> queryTime.toString(),
+                      "entityType" -> "pio_pr", // prediction result
+                      "entityId" -> newPrId,
+                      "properties" -> Map(
+                        "engineInstanceId" -> engineInstance.id,
+                        "query" -> query,
+                        "prediction" -> prediction)
+                    ) ++ queryPrId
+                    // At this point args.accessKey should be Some(String).
+                    val accessKey = args.accessKey.getOrElse("")
+                    val f: Future[Int] = future {
+                      scalaj.http
+                        .Http(
+                          s"http://${args.eventServerIp}:${args.eventServerPort}/" +
+                            s"events.json?accessKey=$accessKey")
+                        .postData(write(data))
+                        .header("content-type", "application/json")
+                        .asString
+                        .code
+                    }
+                    f onComplete {
+                      case Success(code) => {
+                        if (code != 201) {
+                          log.error(
+                            s"Feedback event failed. Status code: $code."
+                              + s"Data: ${write(data)}.")
+                        }
+                      }
+                      case Failure(t) => {
+                        log.error(s"Feedback event failed: ${t.getMessage}")
                       }
                     }
-                    case Failure(t) => {
-                      log.error(s"Feedback event failed: ${t.getMessage}")
+                    // overwrite prId in predictedResult
+                    // - if it is WithPrId,
+                    //   then overwrite with new prId
+                    // - if it is not WithPrId, no prId injection
+                    if (prediction.isInstanceOf[WithPrId]) {
+                      predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
+                    } else {
+                      predictionJValue
                     }
-                  }
-                  // overwrite prId in predictedResult
-                  // - if it is WithPrId,
-                  //   then overwrite with new prId
-                  // - if it is not WithPrId, no prId injection
-                  if (prediction.isInstanceOf[WithPrId]) {
-                    predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
-                  } else {
-                    predictionJValue
-                  }
-                } else predictionJValue
+                  } else predictionJValue
 
                 val pluginResult =
                   pluginContext.outputBlockers.values.foldLeft(result) {

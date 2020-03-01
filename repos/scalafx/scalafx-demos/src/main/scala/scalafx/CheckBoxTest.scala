@@ -43,8 +43,7 @@ object CheckBoxTest extends JFXApp {
     text = "CheckBox"
   }
   check.onAction = (event: ActionEvent) => {
-    lblCheckState.text =
-      if (check.indeterminate.get) "Indeterminate"
+    lblCheckState.text = if (check.indeterminate.get) "Indeterminate"
       else check.selected.get().toString
   }
 

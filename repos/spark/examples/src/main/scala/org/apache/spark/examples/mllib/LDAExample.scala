@@ -221,11 +221,11 @@ object LDAExample {
     // In this case, consider using coalesce() to create fewer, larger partitions.
     val df = sc.textFile(paths.mkString(",")).toDF("docs")
     val customizedStopWords: Array[String] = if (stopwordFile.isEmpty) {
-      Array.empty[String]
-    } else {
-      val stopWordText = sc.textFile(stopwordFile).collect()
-      stopWordText.flatMap(_.stripMargin.split("\\s+"))
-    }
+        Array.empty[String]
+      } else {
+        val stopWordText = sc.textFile(stopwordFile).collect()
+        stopWordText.flatMap(_.stripMargin.split("\\s+"))
+      }
     val tokenizer = new RegexTokenizer()
       .setInputCol("docs")
       .setOutputCol("rawTokens")

@@ -332,10 +332,10 @@ case class StringTranslate(
       ev,
       (src, matching, replace) => {
         val check = if (matchingExpr.foldable && replaceExpr.foldable) {
-          s"$termDict == null"
-        } else {
-          s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
-        }
+            s"$termDict == null"
+          } else {
+            s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
+          }
         s"""if ($check) {
         // Not all of them is literal or matching or replace value changed
         $termLastMatching = $matching.clone();

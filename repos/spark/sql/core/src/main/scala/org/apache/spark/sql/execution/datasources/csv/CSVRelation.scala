@@ -63,12 +63,12 @@ object CSVRelation extends Logging {
     val schemaFields = schema.fields
     val requiredFields = StructType(requiredColumns.map(schema(_))).fields
     val safeRequiredFields = if (params.dropMalformed) {
-      // If `dropMalformed` is enabled, then it needs to parse all the values
-      // so that we can decide which row is malformed.
-      requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
-    } else {
-      requiredFields
-    }
+        // If `dropMalformed` is enabled, then it needs to parse all the values
+        // so that we can decide which row is malformed.
+        requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
+      } else {
+        requiredFields
+      }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
       .filter {

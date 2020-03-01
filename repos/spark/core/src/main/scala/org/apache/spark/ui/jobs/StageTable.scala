@@ -263,18 +263,18 @@ private[ui] class FailedStageTable(
       failureReason
     })
     val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{failureReason}</pre>
         </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
+        // scalastyle:on
+      } else {
+        ""
+      }
     val failureReasonHtml = <td valign="middle">{failureReasonSummary}{details}</td>
     basicColumns ++ failureReasonHtml
   }

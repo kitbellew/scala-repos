@@ -1505,8 +1505,8 @@ trait Implicits {
       /* Re-wraps a type in a manifest before calling inferImplicit on the result */
       def findManifest(
           tp: Type,
-          manifestClass: Symbol =
-            if (full) FullManifestClass else PartialManifestClass) =
+          manifestClass: Symbol = if (full) FullManifestClass
+            else PartialManifestClass) =
         inferImplicit(
           tree,
           appliedType(manifestClass, tp),

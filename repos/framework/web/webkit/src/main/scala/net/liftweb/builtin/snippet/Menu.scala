@@ -341,10 +341,10 @@ object Menu extends DispatchSnippet {
             val rts = rt.text
             val idx = str.indexOf("%*%")
             val bodyStr = if (idx >= 0) {
-              str.substring(0, idx) + rts + str.substring(idx + 3)
-            } else {
-              str + " " + rts
-            }
+                str.substring(0, idx) + rts + str.substring(idx + 3)
+              } else {
+                str + " " + rts
+              }
 
             <title>{bodyStr}</title> % attrs
           }

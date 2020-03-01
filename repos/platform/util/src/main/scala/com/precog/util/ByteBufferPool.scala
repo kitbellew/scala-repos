@@ -75,8 +75,7 @@ final class ByteBufferPool(
 
     if (buffer == null) {
       _misses.incrementAndGet()
-      buffer =
-        if (direct) ByteBuffer.allocateDirect(capacity)
+      buffer = if (direct) ByteBuffer.allocateDirect(capacity)
         else ByteBuffer.allocate(capacity)
     } else {
       _hits.incrementAndGet()

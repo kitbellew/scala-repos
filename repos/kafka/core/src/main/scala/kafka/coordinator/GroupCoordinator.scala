@@ -233,10 +233,10 @@ class GroupCoordinator(
                 responseCallback(
                   JoinGroupResult(
                     members = if (memberId == group.leaderId) {
-                      group.currentMemberMetadata
-                    } else {
-                      Map.empty
-                    },
+                        group.currentMemberMetadata
+                      } else {
+                        Map.empty
+                      },
                     memberId = memberId,
                     generationId = group.generationId,
                     subProtocol = group.protocol,
@@ -844,8 +844,8 @@ class GroupCoordinator(
           assert(member.awaitingJoinCallback != null)
           val joinResult = JoinGroupResult(
             members = if (member.memberId == group.leaderId) {
-              group.currentMemberMetadata
-            } else { Map.empty },
+                group.currentMemberMetadata
+              } else { Map.empty },
             memberId = member.memberId,
             generationId = group.generationId,
             subProtocol = group.protocol,

@@ -515,8 +515,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     savingReader {
       savingReplayStack {
         file applyReader { reader =>
-          in =
-            if (verbose)
+          in = if (verbose)
               new SimpleReader(reader, out, interactive = true) with EchoReader
             else SimpleReader(reader, out, interactive = false)
           echo(s"Loading $file...")

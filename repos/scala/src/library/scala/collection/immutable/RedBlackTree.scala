@@ -602,10 +602,10 @@ private[collection] object RedBlackTree {
     } else {
       val zipFrom = findDepth(zipper, smallerDepth)
       val union = if (leftMost) {
-        RedTree(tree.key, tree.value, blkNewLeft, zipFrom.head)
-      } else {
-        RedTree(tree.key, tree.value, zipFrom.head, blkNewRight)
-      }
+          RedTree(tree.key, tree.value, blkNewLeft, zipFrom.head)
+        } else {
+          RedTree(tree.key, tree.value, zipFrom.head, blkNewRight)
+        }
       val zippedTree = NList.foldLeft(zipFrom.tail, union: Tree[A, B]) {
         (tree, node) =>
           if (leftMost)

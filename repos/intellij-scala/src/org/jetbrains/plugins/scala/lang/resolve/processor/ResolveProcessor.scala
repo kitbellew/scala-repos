@@ -215,11 +215,11 @@ class ResolveProcessor(
       state: ResolveState): Boolean = {
     val nameSet = state.get(ResolverEnv.nameKey)
     val elName = if (nameSet == null) {
-      val name = named.name
-      if (name == null) return false
-      if (name == "") return false
-      name
-    } else nameSet
+        val name = named.name
+        if (name == null) return false
+        if (name == "") return false
+        name
+      } else nameSet
     val nameMatches = ScalaPsiUtil.memberNamesEquals(elName, name)
     nameMatches && kindMatches(named)
   }

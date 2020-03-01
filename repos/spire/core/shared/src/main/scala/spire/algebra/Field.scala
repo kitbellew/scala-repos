@@ -34,12 +34,12 @@ trait Field[@sp(Byte, Short, Int, Long, Float, Double) A]
       val low = fromInt((value & 0x3FFFFFFF).toInt)
       val num = plus(high, low)
       val unsigned = if (exp > 0) {
-        times(num, pow(fromInt(2), exp))
-      } else if (exp < 0) {
-        div(num, pow(fromInt(2), -exp))
-      } else {
-        num
-      }
+          times(num, pow(fromInt(2), exp))
+        } else if (exp < 0) {
+          div(num, pow(fromInt(2), -exp))
+        } else {
+          num
+        }
 
       if (a < 0) negate(unsigned) else unsigned
     }

@@ -1897,17 +1897,17 @@ class LiftSession(
                           case CheckNodeSeq(md) => md
                           case it =>
                             val intersection = if (Props.devMode) {
-                              val methodNames = inst.getClass
-                                .getMethods()
-                                .map(_.getName)
-                                .toList
-                                .distinct
-                              val methodAlts = List(
-                                method,
-                                Helpers.camelify(method),
-                                Helpers.camelifyMethod(method))
-                              methodNames intersect methodAlts
-                            } else Nil
+                                val methodNames = inst.getClass
+                                  .getMethods()
+                                  .map(_.getName)
+                                  .toList
+                                  .distinct
+                                val methodAlts = List(
+                                  method,
+                                  Helpers.camelify(method),
+                                  Helpers.camelifyMethod(method))
+                                methodNames intersect methodAlts
+                              } else Nil
 
                             reportSnippetError(
                               page,

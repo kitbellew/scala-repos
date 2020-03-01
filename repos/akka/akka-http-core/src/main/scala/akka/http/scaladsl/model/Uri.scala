@@ -965,8 +965,7 @@ object Uri {
         case Slash(Segment("..", tail)) ⇒
           process(
             input = if (tail.isEmpty) Path./ else tail,
-            output =
-              if (output.startsWithSegment)
+            output = if (output.startsWithSegment)
                 if (output.tail.startsWithSlash) output.tail.tail else tail
               else output)
         case Segment("." | "..", tail) ⇒ process(tail, output)

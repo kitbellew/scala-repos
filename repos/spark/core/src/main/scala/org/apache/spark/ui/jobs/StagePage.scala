@@ -772,13 +772,13 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val executorOverhead = serializationTime + deserializationTime
           val executorRunTime = if (taskInfo.running) {
-            totalExecutionTime - executorOverhead - gettingResultTime
-          } else {
-            metricsOpt
-              .map(_.executorRunTime)
-              .getOrElse(
-                totalExecutionTime - executorOverhead - gettingResultTime)
-          }
+              totalExecutionTime - executorOverhead - gettingResultTime
+            } else {
+              metricsOpt
+                .map(_.executorRunTime)
+                .getOrElse(
+                  totalExecutionTime - executorOverhead - gettingResultTime)
+            }
           val executorComputingTime =
             executorRunTime - shuffleReadTime - shuffleWriteTime
           val executorComputingTimeProportion =
@@ -1695,18 +1695,18 @@ private[ui] class TaskPagedTable(
       error
     })
     val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{error}</pre>
         </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
+        // scalastyle:on
+      } else {
+        ""
+      }
     <td>{errorSummary}{details}</td>
   }
 }

@@ -187,8 +187,7 @@ class SliderControls(target: Slider)
   target.orientation.onChange(rdbHorizontal.selected =
     (target.orientation.get() == Orientation.Horizontal))
   tggOrientation.selectedToggle.onChange {
-    target.orientation =
-      if (rdbHorizontal.selected.get) Orientation.Horizontal
+    target.orientation = if (rdbHorizontal.selected.get) Orientation.Horizontal
       else Orientation.Vertical
   }
 

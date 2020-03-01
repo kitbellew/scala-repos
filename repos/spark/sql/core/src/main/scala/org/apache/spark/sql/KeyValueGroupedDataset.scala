@@ -237,11 +237,11 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     val namedColumns =
       columns.map(_.withInputType(resolvedVEncoder, dataAttributes).named)
     val keyColumn = if (resolvedKEncoder.flat) {
-      assert(groupingAttributes.length == 1)
-      groupingAttributes.head
-    } else {
-      Alias(CreateStruct(groupingAttributes), "key")()
-    }
+        assert(groupingAttributes.length == 1)
+        groupingAttributes.head
+      } else {
+        Alias(CreateStruct(groupingAttributes), "key")()
+      }
     val aggregate =
       Aggregate(groupingAttributes, keyColumn +: namedColumns, logicalPlan)
     val execution = new QueryExecution(sqlContext, aggregate)

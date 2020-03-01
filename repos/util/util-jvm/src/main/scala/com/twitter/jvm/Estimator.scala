@@ -146,8 +146,7 @@ class LoadAverage(interval: Double) extends Estimator[Double] {
   private[this] var load = Double.NaN
 
   def measure(m: Double) {
-    load =
-      if (load.isNaN) m
+    load = if (load.isNaN) m
       else load * a + m * (1 - a)
   }
 

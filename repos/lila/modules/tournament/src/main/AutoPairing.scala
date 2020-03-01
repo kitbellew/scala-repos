@@ -49,8 +49,7 @@ final class AutoPairing(
         whitePlayer = GamePlayer.white,
         blackPlayer = GamePlayer.black,
         mode = tour.mode,
-        variant =
-          if (tour.position.initial) tour.variant
+        variant = if (tour.position.initial) tour.variant
           else chess.variant.FromPosition,
         source = Source.Tournament,
         pgnImport = None

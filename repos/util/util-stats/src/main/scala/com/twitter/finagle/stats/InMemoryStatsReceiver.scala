@@ -67,13 +67,13 @@ class InMemoryStatsReceiver extends StatsReceiver {
       override def toString: String = {
         val vals = apply()
         val valStr = if (vals.length <= 3) {
-          vals.mkString("[", ",", "]")
-        } else {
-          val numOmitted = vals.length - 3
-          vals
-            .take(3)
-            .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
-        }
+            vals.mkString("[", ",", "]")
+          } else {
+            val numOmitted = vals.length - 3
+            vals
+              .take(3)
+              .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
+          }
         s"Stat(${name.mkString("/")}=$valStr)"
       }
     }

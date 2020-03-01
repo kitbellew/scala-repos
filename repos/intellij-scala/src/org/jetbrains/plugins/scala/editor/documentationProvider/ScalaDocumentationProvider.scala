@@ -332,11 +332,11 @@ object ScalaDocumentationProvider {
 
   private def debugMessage(msg: String, elem: PsiElement) {
     val footer = if (!elem.isValid) {
-      s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
-    } else if (elem.getContainingFile == null) {
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
-    } else
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
+        s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
+      } else if (elem.getContainingFile == null) {
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
+      } else
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
 
     LOG debug s"[ScalaDocProvider] [ $msg ] $footer"
   }

@@ -207,19 +207,19 @@ object PlayDocsValidation {
 
             // The file is either relative to current page page or absolute, under the root
             val sourceFile = if (source.startsWith("/")) {
-              source.drop(1)
-            } else {
-              markdownFile.getParentFile.getCanonicalPath
-                .stripPrefix(base.getCanonicalPath)
-                .stripPrefix("/") + "/" + source
-            }
+                source.drop(1)
+              } else {
+                markdownFile.getParentFile.getCanonicalPath
+                  .stripPrefix(base.getCanonicalPath)
+                  .stripPrefix("/") + "/" + source
+              }
 
             val sourcePos = code.getStartIndex + code.getLabel.length + 4
             val labelPos = if (code.getSource.contains("#")) {
-              sourcePos + source.length + 1
-            } else {
-              code.getStartIndex + 2
-            }
+                sourcePos + source.length + 1
+              } else {
+                code.getStartIndex + 2
+              }
 
             codeSamples += CodeSampleRef(
               sourceFile,
@@ -277,18 +277,18 @@ object PlayDocsValidation {
 
           // The file is either relative to current page page or absolute, under the root
           val sourceFile = if (source.startsWith("/")) {
-            source.drop(1)
-          } else {
-            filename
-              .dropRight(filename.length - filename.lastIndexOf('/') + 1) + source
-          }
+              source.drop(1)
+            } else {
+              filename
+                .dropRight(filename.length - filename.lastIndexOf('/') + 1) + source
+            }
 
           val sourcePos = code.getStartIndex + code.getLabel.length + 4
           val labelPos = if (code.getSource.contains("#")) {
-            sourcePos + source.length + 1
-          } else {
-            code.getStartIndex + 2
-          }
+              sourcePos + source.length + 1
+            } else {
+              code.getStartIndex + 2
+            }
 
           codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
           true

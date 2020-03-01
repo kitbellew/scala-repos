@@ -244,56 +244,57 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   // SSL configuration for the file server. This is used by Utils.setupSecureURLConnection().
   val fileServerSSLOptions = getSSLOptions("fs")
   val (sslSocketFactory, hostnameVerifier) = if (fileServerSSLOptions.enabled) {
-    val trustStoreManagers =
-      for (trustStore <- fileServerSSLOptions.trustStore) yield {
-        val input =
-          Files.asByteSource(fileServerSSLOptions.trustStore.get).openStream()
+      val trustStoreManagers =
+        for (trustStore <- fileServerSSLOptions.trustStore) yield {
+          val input =
+            Files.asByteSource(fileServerSSLOptions.trustStore.get).openStream()
 
-        try {
-          val ks = KeyStore.getInstance(KeyStore.getDefaultType)
-          ks.load(
-            input,
-            fileServerSSLOptions.trustStorePassword.get.toCharArray)
+          try {
+            val ks = KeyStore.getInstance(KeyStore.getDefaultType)
+            ks.load(
+              input,
+              fileServerSSLOptions.trustStorePassword.get.toCharArray)
 
-          val tmf = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm)
-          tmf.init(ks)
-          tmf.getTrustManagers
-        } finally {
-          input.close()
+            val tmf = TrustManagerFactory.getInstance(
+              TrustManagerFactory.getDefaultAlgorithm)
+            tmf.init(ks)
+            tmf.getTrustManagers
+          } finally {
+            input.close()
+          }
         }
+
+      lazy val credulousTrustStoreManagers = Array({
+        logWarning("Using 'accept-all' trust manager for SSL connections.")
+        new X509TrustManager {
+          override def getAcceptedIssuers: Array[X509Certificate] = null
+
+          override def checkClientTrusted(
+              x509Certificates: Array[X509Certificate],
+              s: String) {}
+
+          override def checkServerTrusted(
+              x509Certificates: Array[X509Certificate],
+              s: String) {}
+        }: TrustManager
+      })
+
+      val sslContext =
+        SSLContext.getInstance(
+          fileServerSSLOptions.protocol.getOrElse("Default"))
+      sslContext.init(
+        null,
+        trustStoreManagers.getOrElse(credulousTrustStoreManagers),
+        null)
+
+      val hostVerifier = new HostnameVerifier {
+        override def verify(s: String, sslSession: SSLSession): Boolean = true
       }
 
-    lazy val credulousTrustStoreManagers = Array({
-      logWarning("Using 'accept-all' trust manager for SSL connections.")
-      new X509TrustManager {
-        override def getAcceptedIssuers: Array[X509Certificate] = null
-
-        override def checkClientTrusted(
-            x509Certificates: Array[X509Certificate],
-            s: String) {}
-
-        override def checkServerTrusted(
-            x509Certificates: Array[X509Certificate],
-            s: String) {}
-      }: TrustManager
-    })
-
-    val sslContext =
-      SSLContext.getInstance(fileServerSSLOptions.protocol.getOrElse("Default"))
-    sslContext.init(
-      null,
-      trustStoreManagers.getOrElse(credulousTrustStoreManagers),
-      null)
-
-    val hostVerifier = new HostnameVerifier {
-      override def verify(s: String, sslSession: SSLSession): Boolean = true
+      (Some(sslContext.getSocketFactory), Some(hostVerifier))
+    } else {
+      (None, None)
     }
-
-    (Some(sslContext.getSocketFactory), Some(hostVerifier))
-  } else {
-    (None, None)
-  }
 
   def getSSLOptions(module: String): SSLOptions = {
     val opts =

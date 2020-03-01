@@ -510,10 +510,10 @@ trait EntityPage extends HtmlPage {
   ): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
     val sig = if (mbr.signature == mbr.signatureCompat) {
-      <a id={mbr.signature}/>
-    } else {
-      <a id={mbr.signature}/><a id={mbr.signatureCompat}/>
-    }
+        <a id={mbr.signature}/>
+      } else {
+        <a id={mbr.signature}/><a id={mbr.signatureCompat}/>
+      }
 
     val memberComment = memberToCommentHtml(mbr, inTpl, isSelf = false)
     <li name={mbr.definitionName} visbl={

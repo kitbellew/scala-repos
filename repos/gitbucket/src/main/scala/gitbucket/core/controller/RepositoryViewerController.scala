@@ -279,11 +279,11 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           form.lineSeparator),
         charset = form.charset,
         message = if (form.oldFileName.exists(_ == form.newFileName)) {
-          form.message.getOrElse(s"Update ${form.newFileName}")
-        } else {
-          form.message.getOrElse(
-            s"Rename ${form.oldFileName.get} to ${form.newFileName}")
-        }
+            form.message.getOrElse(s"Update ${form.newFileName}")
+          } else {
+            form.message.getOrElse(
+              s"Rename ${form.oldFileName.get} to ${form.newFileName}")
+          }
       )
 
       redirect(

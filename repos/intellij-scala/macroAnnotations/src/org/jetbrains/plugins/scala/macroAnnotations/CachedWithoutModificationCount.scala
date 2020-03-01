@@ -99,19 +99,19 @@ object CachedWithoutModificationCount {
           q"$buffer += $mapName"
         }
         val fields = if (hasParameters) {
-          q"""
+            q"""
             private val $mapName = new java.util.concurrent.ConcurrentHashMap[(..${flatParams
-            .map(_.tpt)}), $wrappedRetTp]()
+              .map(_.tpt)}), $wrappedRetTp]()
             ..$analyzeCachesField
             ..$addToBuffers
           """
-        } else {
-          q"""
+          } else {
+            q"""
             new _root_.scala.volatile()
             private var $cacheVarName: $wrappedRetTp = null.asInstanceOf[$wrappedRetTp]
             ..$analyzeCachesField
           """
-        }
+          }
 
         def getValuesFromMap: c.universe.Tree =
           q"""

@@ -473,10 +473,10 @@ object FirstOrderMinimizer {
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
       val it = if (useStochastic) {
-        this.iterations(f.withRandomBatches(batchSize), init)(space)
-      } else {
-        iterations(f: DiffFunction[T], init)
-      }
+          this.iterations(f.withRandomBatches(batchSize), init)(space)
+        } else {
+          iterations(f: DiffFunction[T], init)
+        }
 
       it.asInstanceOf[Iterator[
         FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
@@ -489,16 +489,16 @@ object FirstOrderMinimizer {
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
       val r = if (useL1) {
-        new AdaptiveGradientDescent.L1Regularization[T](
-          regularization,
-          eta = alpha,
-          maxIter = maxIterations)(space, random)
-      } else { // L2
-        new AdaptiveGradientDescent.L2Regularization[T](
-          regularization,
-          alpha,
-          maxIterations)(space, random)
-      }
+          new AdaptiveGradientDescent.L1Regularization[T](
+            regularization,
+            eta = alpha,
+            maxIter = maxIterations)(space, random)
+        } else { // L2
+          new AdaptiveGradientDescent.L2Regularization[T](
+            regularization,
+            alpha,
+            maxIterations)(space, random)
+        }
       r.iterations(f, init)
     }
 

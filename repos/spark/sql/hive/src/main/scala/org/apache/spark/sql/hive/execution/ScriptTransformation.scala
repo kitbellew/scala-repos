@@ -133,10 +133,10 @@ private[hive] case class ScriptTransformation(
 
         var scriptOutputWritable: Writable = null
         val reusedWritableObject: Writable = if (null != outputSerde) {
-          outputSerde.getSerializedClass().newInstance
-        } else {
-          null
-        }
+            outputSerde.getSerializedClass().newInstance
+          } else {
+            null
+          }
         val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
         override def hasNext: Boolean = {
@@ -276,19 +276,19 @@ private class ScriptTransformationWriterThread(
       iter.map(outputProjection).foreach { row =>
         if (inputSerde == null) {
           val data = if (len == 0) {
-            ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
-          } else {
-            val sb = new StringBuilder
-            sb.append(row.get(0, inputSchema(0)))
-            var i = 1
-            while (i < len) {
-              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-              sb.append(row.get(i, inputSchema(i)))
-              i += 1
+              ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
+            } else {
+              val sb = new StringBuilder
+              sb.append(row.get(0, inputSchema(0)))
+              var i = 1
+              while (i < len) {
+                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                sb.append(row.get(i, inputSchema(i)))
+                i += 1
+              }
+              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
+              sb.toString()
             }
-            sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
-            sb.toString()
-          }
           outputStream.write(data.getBytes(StandardCharsets.UTF_8))
         } else {
           val writable = inputSerde

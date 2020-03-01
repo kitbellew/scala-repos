@@ -399,10 +399,10 @@ trait IntroduceTypeAlias {
       typeAlias)
 
     val resultTypeElement = if (typeElementIdx == -1) {
-      replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
-    } else {
-      usualOccurrences.apply(typeElementIdx)
-    }
+        replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
+      } else {
+        usualOccurrences.apply(typeElementIdx)
+      }
 
     (
       SmartPointerManager
@@ -621,17 +621,17 @@ trait IntroduceTypeAlias {
       needCreateDirectory: Boolean,
       inNewDirectoryName: String): ScTemplateBody = {
     val newDirectoryName = if (needCreateDirectory) {
-      inNewDirectoryName
-    } else {
-      "package"
-    }
+        inNewDirectoryName
+      } else {
+        "package"
+      }
 
     val currentDirectory = suggestedDirectory
     val newDir = if (needCreateDirectory) {
-      currentDirectory.createSubdirectory(newDirectoryName)
-    } else {
-      currentDirectory
-    }
+        currentDirectory.createSubdirectory(newDirectoryName)
+      } else {
+        currentDirectory
+      }
 
     val packageObject: ScTypeDefinition =
       ScalaDirectoryService

@@ -315,14 +315,14 @@ class IndexToString private[ml] (override val uid: String)
     val inputColSchema = dataset.schema($(inputCol))
     // If the labels array is empty use column metadata
     val values = if ($(labels).isEmpty) {
-      Attribute
-        .fromStructField(inputColSchema)
-        .asInstanceOf[NominalAttribute]
-        .values
-        .get
-    } else {
-      $(labels)
-    }
+        Attribute
+          .fromStructField(inputColSchema)
+          .asInstanceOf[NominalAttribute]
+          .values
+          .get
+      } else {
+        $(labels)
+      }
     val indexer = udf { index: Double =>
       val idx = index.toInt
       if (0 <= idx && idx < values.length) {

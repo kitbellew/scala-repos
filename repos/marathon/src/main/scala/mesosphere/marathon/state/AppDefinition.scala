@@ -255,8 +255,7 @@ case class AppDefinition(
       labels =
         proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap,
       versionInfo = versionInfoFromProto,
-      upgradeStrategy =
-        if (proto.hasUpgradeStrategy)
+      upgradeStrategy = if (proto.hasUpgradeStrategy)
           UpgradeStrategy.fromProto(proto.getUpgradeStrategy)
         else UpgradeStrategy.empty,
       dependencies = proto.getDependenciesList.asScala.map(PathId.apply).toSet,

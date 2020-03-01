@@ -240,9 +240,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     import annInfo._
     val s_args = if (!args.isEmpty) args.mkString("(", ", ", ")") else ""
     val s_assocs = if (!assocs.isEmpty) (assocs map {
-      case (x, y) => x + " = " + y
-    } mkString ("(", ", ", ")"))
-    else ""
+        case (x, y) => x + " = " + y
+      } mkString ("(", ", ", ")"))
+      else ""
     s"${atp}${s_args}${s_assocs}"
   }
 

@@ -326,44 +326,49 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       type MT = T forSome { type T <: KeyedMapper[FT, T] }
 
       val ol: List[MT] = if (!j.deterministic) {
-        def filter(in: Seq[FT]): Seq[FT] =
-          in.flatMap {
-            case null                           => Nil
-            case x: Number if x.longValue == 0L => Nil
-            case x                              => List(x)
-          }
+          def filter(in: Seq[FT]): Seq[FT] =
+            in.flatMap {
+              case null                           => Nil
+              case x: Number if x.longValue == 0L => Nil
+              case x                              => List(x)
+            }
 
-        val lst: Set[FT] = Set(filter(ret.map(v =>
-          v.getSingleton.getActualField(v, j.field).get.asInstanceOf[FT])): _*)
+          val lst: Set[FT] = Set(
+            filter(
+              ret.map(v =>
+                v.getSingleton
+                  .getActualField(v, j.field)
+                  .get
+                  .asInstanceOf[FT])): _*)
 
-        j.field.dbKeyToTable
-          .asInstanceOf[MetaMapper[A]]
-          .findAll(
-            ByList(
-              j.field.dbKeyToTable.primaryKeyField
-                .asInstanceOf[MappedField[FT, A]],
-              lst.toList))
-          .asInstanceOf[List[MT]]
-      } else {
-        j.field.dbKeyToTable
-          .asInstanceOf[MetaMapper[A]]
-          .findAll(new InThing[A] {
-            type JoinType = FT
-            type InnerType = A
+          j.field.dbKeyToTable
+            .asInstanceOf[MetaMapper[A]]
+            .findAll(
+              ByList(
+                j.field.dbKeyToTable.primaryKeyField
+                  .asInstanceOf[MappedField[FT, A]],
+                lst.toList))
+            .asInstanceOf[List[MT]]
+        } else {
+          j.field.dbKeyToTable
+            .asInstanceOf[MetaMapper[A]]
+            .findAll(new InThing[A] {
+              type JoinType = FT
+              type InnerType = A
 
-            val outerField: MappedField[JoinType, A] =
-              j.field.dbKeyToTable.primaryKeyField
-                .asInstanceOf[MappedField[JoinType, A]]
-            val innerField: MappedField[JoinType, A] =
-              j.field.asInstanceOf[MappedField[JoinType, A]]
-            val innerMeta: MetaMapper[A] = j.field.fieldOwner.getSingleton
+              val outerField: MappedField[JoinType, A] =
+                j.field.dbKeyToTable.primaryKeyField
+                  .asInstanceOf[MappedField[JoinType, A]]
+              val innerField: MappedField[JoinType, A] =
+                j.field.asInstanceOf[MappedField[JoinType, A]]
+              val innerMeta: MetaMapper[A] = j.field.fieldOwner.getSingleton
 
-            def notIn = false
+              def notIn = false
 
-            val queryParams: List[QueryParam[A]] = by.toList
-          }.asInstanceOf[QueryParam[A]])
-          .asInstanceOf[List[MT]]
-      }
+              val queryParams: List[QueryParam[A]] = by.toList
+            }.asInstanceOf[QueryParam[A]])
+            .asInstanceOf[List[MT]]
+        }
 
       val map: Map[FT, MT] =
         Map(ol.map(v => (v.primaryKeyField.get, v)): _*)
@@ -1038,98 +1043,100 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           val ret = DB.use(toSave.connectionIdentifier) { conn =>
             _beforeSave(toSave)
             val ret = if (saved_?(toSave)) {
-              _beforeUpdate(toSave)
-              val ret: Boolean =
-                if (!dirty_?(toSave)) true
-                else {
-                  val ret: Boolean = DB.prepareStatement(
-                    "UPDATE " + MapperRules.quoteTableName
-                      .vend(_dbTableNameLC) + " SET " + whatToSet(toSave) + " WHERE " + thePrimaryKeyField
-                      .openOrThrowException("Cross your fingers") + " = ?",
-                    conn
-                  ) { st =>
-                    var colNum = 1
+                _beforeUpdate(toSave)
+                val ret: Boolean =
+                  if (!dirty_?(toSave)) true
+                  else {
+                    val ret: Boolean = DB.prepareStatement(
+                      "UPDATE " + MapperRules.quoteTableName
+                        .vend(_dbTableNameLC) + " SET " + whatToSet(toSave) + " WHERE " + thePrimaryKeyField
+                        .openOrThrowException("Cross your fingers") + " = ?",
+                      conn
+                    ) { st =>
+                      var colNum = 1
 
-                    // Here we apply each column's value to the prepared statement
-                    for (col <- mappedColumns) {
-                      val colVal = ??(col._2, toSave)
-                      if (!columnPrimaryKey_?(col._1) && colVal.dirty_?) {
+                      // Here we apply each column's value to the prepared statement
+                      for (col <- mappedColumns) {
+                        val colVal = ??(col._2, toSave)
+                        if (!columnPrimaryKey_?(col._1) && colVal.dirty_?) {
+                          setPreparedStatementValue(
+                            conn,
+                            st,
+                            colNum,
+                            colVal,
+                            col._1,
+                            objectSetterFor(colVal))
+                          colNum = colNum + 1
+                        }
+                      }
+
+                      for {
+                        indVal <- indexedField(toSave)
+                        indexColumnName <- thePrimaryKeyField
+                      } {
                         setPreparedStatementValue(
                           conn,
                           st,
                           colNum,
-                          colVal,
-                          col._1,
-                          objectSetterFor(colVal))
-                        colNum = colNum + 1
+                          indVal,
+                          indexColumnName,
+                          objectSetterFor(indVal))
                       }
-                    }
 
-                    for {
-                      indVal <- indexedField(toSave)
-                      indexColumnName <- thePrimaryKeyField
-                    } {
+                      st.executeUpdate
+                      true
+                    }
+                    ret
+                  }
+                _afterUpdate(toSave)
+                ret
+              } else {
+                _beforeCreate(toSave)
+
+                val query = "INSERT INTO " + MapperRules.quoteTableName.vend(
+                  _dbTableNameLC) + " (" + columnNamesForInsert + ") VALUES (" + columnQueriesForInsert + ")"
+
+                def prepStat(st: PreparedStatement) {
+                  var colNum = 1
+
+                  for (col <- mappedColumns) {
+                    if (!columnPrimaryKey_?(col._1)) {
+                      val colVal =
+                        col._2
+                          .invoke(toSave)
+                          .asInstanceOf[MappedField[AnyRef, A]]
                       setPreparedStatementValue(
                         conn,
                         st,
                         colNum,
-                        indVal,
-                        indexColumnName,
-                        objectSetterFor(indVal))
+                        colVal,
+                        col._1,
+                        objectSetterFor(colVal))
+                      colNum = colNum + 1
                     }
-
-                    st.executeUpdate
-                    true
-                  }
-                  ret
-                }
-              _afterUpdate(toSave)
-              ret
-            } else {
-              _beforeCreate(toSave)
-
-              val query = "INSERT INTO " + MapperRules.quoteTableName.vend(
-                _dbTableNameLC) + " (" + columnNamesForInsert + ") VALUES (" + columnQueriesForInsert + ")"
-
-              def prepStat(st: PreparedStatement) {
-                var colNum = 1
-
-                for (col <- mappedColumns) {
-                  if (!columnPrimaryKey_?(col._1)) {
-                    val colVal =
-                      col._2.invoke(toSave).asInstanceOf[MappedField[AnyRef, A]]
-                    setPreparedStatementValue(
-                      conn,
-                      st,
-                      colNum,
-                      colVal,
-                      col._1,
-                      objectSetterFor(colVal))
-                    colNum = colNum + 1
                   }
                 }
+
+                // Figure out which columns are auto-generated
+                val generatedColumns = (mappedColumnInfo
+                  .filter(_._2.dbAutogenerated_?)
+                  .map(_._1))
+                  .toList
+
+                val ret = conn.driverType.performInsert(
+                  conn,
+                  query,
+                  prepStat,
+                  MapperRules.quoteTableName.vend(_dbTableNameLC),
+                  generatedColumns) {
+                  case Right(count) => count == 1
+                  case Left(rs)     => runAppliers(rs)
+                }
+
+                _afterCreate(toSave)
+                toSave.persisted_? = true
+                ret
               }
-
-              // Figure out which columns are auto-generated
-              val generatedColumns = (mappedColumnInfo
-                .filter(_._2.dbAutogenerated_?)
-                .map(_._1))
-                .toList
-
-              val ret = conn.driverType.performInsert(
-                conn,
-                query,
-                prepStat,
-                MapperRules.quoteTableName.vend(_dbTableNameLC),
-                generatedColumns) {
-                case Right(count) => count == 1
-                case Left(rs)     => runAppliers(rs)
-              }
-
-              _afterCreate(toSave)
-              toSave.persisted_? = true
-              ret
-            }
             _afterSave(toSave)
             ret
           }

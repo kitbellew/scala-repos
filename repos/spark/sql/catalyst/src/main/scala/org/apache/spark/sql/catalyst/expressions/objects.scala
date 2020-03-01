@@ -70,10 +70,10 @@ case class StaticInvoke(
 
     if (propagateNull) {
       val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
-        s"${ev.isNull} = ${ev.value} == null;"
-      } else {
-        ""
-      }
+          s"${ev.isNull} = ${ev.value} == null;"
+        } else {
+          ""
+        }
 
       val argsNonNull = s"!(${argGen.map(_.isNull).mkString(" || ")})"
       s"""
@@ -163,10 +163,10 @@ case class Invoke(
     // If the function can return null, we do an extra check to make sure our null bit is still set
     // correctly.
     val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
-      s"${ev.isNull} = ${ev.value} == null;"
-    } else {
-      ""
-    }
+        s"${ev.isNull} = ${ev.value} == null;"
+      } else {
+        ""
+      }
 
     val value = unboxer(s"${obj.value}.$functionName($argString)")
 
@@ -458,19 +458,19 @@ case class MapObjects private (
     // Specifically, we have to insert the [$dataLength] in between the type and any extra nested
     // array declarations (i.e. new String[1][]).
     val arrayConstructor = if (convertedType contains "[]") {
-      val rawType = convertedType.takeWhile(_ != '[')
-      val arrayPart =
-        convertedType.reverse.takeWhile(c => c == '[' || c == ']').reverse
-      s"new $rawType[$dataLength]$arrayPart"
-    } else {
-      s"new $convertedType[$dataLength]"
-    }
+        val rawType = convertedType.takeWhile(_ != '[')
+        val arrayPart =
+          convertedType.reverse.takeWhile(c => c == '[' || c == ']').reverse
+        s"new $rawType[$dataLength]$arrayPart"
+      } else {
+        s"new $convertedType[$dataLength]"
+      }
 
     val loopNullCheck = if (primitiveElement) {
-      s"boolean ${loopVar.isNull} = ${genInputData.value}.isNullAt($loopIndex);"
-    } else {
-      s"boolean ${loopVar.isNull} = ${genInputData.isNull} || ${loopVar.value} == null;"
-    }
+        s"boolean ${loopVar.isNull} = ${genInputData.value}.isNullAt($loopIndex);"
+      } else {
+        s"boolean ${loopVar.isNull} = ${genInputData.isNull} || ${loopVar.value} == null;"
+      }
 
     s"""
       ${genInputData.code}

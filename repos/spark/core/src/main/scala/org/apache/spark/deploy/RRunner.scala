@@ -56,10 +56,10 @@ object RRunner {
     // If not, change directory to current working directory for YARN cluster mode
     val rF = new File(rFile)
     val rFileNormalized = if (!rF.exists()) {
-      new Path(rFile).getName
-    } else {
-      rFile
-    }
+        new Path(rFile).getName
+      } else {
+        rFile
+      }
 
     // Launch a SparkR backend server for the R process to connect to; this will let it see our
     // Java system properties etc.

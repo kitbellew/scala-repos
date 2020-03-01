@@ -177,13 +177,13 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       require(SparkEnv.get.blockManager.master.contains(blockId))
     }
     val storeResult = if (withWALInfo) {
-      new WriteAheadLogBasedStoreResult(
-        blockId,
-        None,
-        new WriteAheadLogRecordHandle {})
-    } else {
-      new BlockManagerBasedStoreResult(blockId, None)
-    }
+        new WriteAheadLogBasedStoreResult(
+          blockId,
+          None,
+          new WriteAheadLogRecordHandle {})
+      } else {
+        new BlockManagerBasedStoreResult(blockId, None)
+      }
     new ReceivedBlockInfo(0, None, None, storeResult)
   }
 }

@@ -347,11 +347,11 @@ object Codec {
 
       var n = sn
       val lo = if (sn < 0) {
-        n = ~sn
-        n & 0x3FL | 0x40L
-      } else {
-        n & 0x3FL
-      }
+          n = ~sn
+          n & 0x3FL | 0x40L
+        } else {
+          n & 0x3FL
+        }
 
       if ((~0x3FL & n) != 0) {
         buf.put((lo | 0x80L).toByte)

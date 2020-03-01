@@ -386,33 +386,33 @@ class LogisticRegression @Since("1.2.0") (
           regParamL2)
 
         val optimizer = if ($(elasticNetParam) == 0.0 || $(regParam) == 0.0) {
-          new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
-        } else {
-          val standardizationParam = $(standardization)
-          def regParamL1Fun = (index: Int) => {
-            // Remove the L1 penalization on the intercept
-            if (index == numFeatures) {
-              0.0
-            } else {
-              if (standardizationParam) {
-                regParamL1
+            new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
+          } else {
+            val standardizationParam = $(standardization)
+            def regParamL1Fun = (index: Int) => {
+              // Remove the L1 penalization on the intercept
+              if (index == numFeatures) {
+                0.0
               } else {
-                // If `standardization` is false, we still standardize the data
-                // to improve the rate of convergence; as a result, we have to
-                // perform this reverse standardization by penalizing each component
-                // differently to get effectively the same objective function when
-                // the training dataset is not standardized.
-                if (featuresStd(index) != 0.0) regParamL1 / featuresStd(index)
-                else 0.0
+                if (standardizationParam) {
+                  regParamL1
+                } else {
+                  // If `standardization` is false, we still standardize the data
+                  // to improve the rate of convergence; as a result, we have to
+                  // perform this reverse standardization by penalizing each component
+                  // differently to get effectively the same objective function when
+                  // the training dataset is not standardized.
+                  if (featuresStd(index) != 0.0) regParamL1 / featuresStd(index)
+                  else 0.0
+                }
               }
             }
+            new BreezeOWLQN[Int, BDV[Double]](
+              $(maxIter),
+              10,
+              regParamL1Fun,
+              $(tol))
           }
-          new BreezeOWLQN[Int, BDV[Double]](
-            $(maxIter),
-            10,
-            regParamL1Fun,
-            $(tol))
-        }
 
         val initialCoefficientsWithIntercept =
           Vectors.zeros(if ($(fitIntercept)) numFeatures + 1 else numFeatures)
@@ -675,12 +675,12 @@ class LogisticRegressionModel private[spark] (
     // Note: We should use getThreshold instead of $(threshold) since getThreshold is overridden.
     val t = getThreshold
     val rawThreshold = if (t == 0.0) {
-      Double.NegativeInfinity
-    } else if (t == 1.0) {
-      Double.PositiveInfinity
-    } else {
-      math.log(t / (1.0 - t))
-    }
+        Double.NegativeInfinity
+      } else if (t == 1.0) {
+        Double.PositiveInfinity
+      } else {
+        math.log(t / (1.0 - t))
+      }
     if (rawPrediction(1) > rawThreshold) 1 else 0
   }
 
@@ -1208,38 +1208,38 @@ private class LogisticCostFun(
 
     // regVal is the sum of coefficients squares excluding intercept for L2 regularization.
     val regVal = if (regParamL2 == 0.0) {
-      0.0
-    } else {
-      var sum = 0.0
-      coeffs.foreachActive { (index, value) =>
-        // If `fitIntercept` is true, the last term which is intercept doesn't
-        // contribute to the regularization.
-        if (index != numFeatures) {
-          // The following code will compute the loss of the regularization; also
-          // the gradient of the regularization, and add back to totalGradientArray.
-          sum += {
-            if (standardization) {
-              totalGradientArray(index) += regParamL2 * value
-              value * value
-            } else {
-              if (featuresStd(index) != 0.0) {
-                // If `standardization` is false, we still standardize the data
-                // to improve the rate of convergence; as a result, we have to
-                // perform this reverse standardization by penalizing each component
-                // differently to get effectively the same objective function when
-                // the training dataset is not standardized.
-                val temp = value / (featuresStd(index) * featuresStd(index))
-                totalGradientArray(index) += regParamL2 * temp
-                value * temp
+        0.0
+      } else {
+        var sum = 0.0
+        coeffs.foreachActive { (index, value) =>
+          // If `fitIntercept` is true, the last term which is intercept doesn't
+          // contribute to the regularization.
+          if (index != numFeatures) {
+            // The following code will compute the loss of the regularization; also
+            // the gradient of the regularization, and add back to totalGradientArray.
+            sum += {
+              if (standardization) {
+                totalGradientArray(index) += regParamL2 * value
+                value * value
               } else {
-                0.0
+                if (featuresStd(index) != 0.0) {
+                  // If `standardization` is false, we still standardize the data
+                  // to improve the rate of convergence; as a result, we have to
+                  // perform this reverse standardization by penalizing each component
+                  // differently to get effectively the same objective function when
+                  // the training dataset is not standardized.
+                  val temp = value / (featuresStd(index) * featuresStd(index))
+                  totalGradientArray(index) += regParamL2 * temp
+                  value * temp
+                } else {
+                  0.0
+                }
               }
             }
           }
         }
+        0.5 * regParamL2 * sum
       }
-      0.5 * regParamL2 * sum
-    }
 
     (logisticAggregator.loss + regVal, new BDV(totalGradientArray))
   }

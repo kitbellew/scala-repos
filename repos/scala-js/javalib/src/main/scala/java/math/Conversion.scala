@@ -304,8 +304,7 @@ private[math] object Conversion {
           result1 = '+' + result1
         result1 = 'E' + result1
 
-        result =
-          if (resLengthInChars - currentChar > 1)
+        result = if (resLengthInChars - currentChar > 1)
             result(0) + "." + result.substring(1) + result1
           else
             result + result1

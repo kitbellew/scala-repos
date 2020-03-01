@@ -70,12 +70,12 @@ class RuntimePickler(
     // debug(s"creating Logic for ${fir.name}")
     def run(builder: PBuilder, picklee: Any, im: ru.InstanceMirror): Unit = {
       val fldValue: Any = if (fir.accessor.nonEmpty) {
-        val getterMirror = im.reflectMethod(fir.accessor.get)
-        getterMirror()
-      } else {
-        val fldMirror = im.reflectField(fir.field.get)
-        fldMirror.get
-      }
+          val getterMirror = im.reflectMethod(fir.accessor.get)
+          getterMirror()
+        } else {
+          val fldMirror = im.reflectField(fir.field.get)
+          fldMirror.get
+        }
       val fldClass = if (fldValue != null) fldValue.getClass else null
 
       //debug(s"pickling field of type: ${fir.tpe.toString}")

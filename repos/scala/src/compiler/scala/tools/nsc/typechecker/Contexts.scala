@@ -549,8 +549,7 @@ trait Contexts { self: Analyzer =>
     def initRootContext(
         throwing: Boolean = false,
         checking: Boolean = false): Unit = {
-      _reporter =
-        if (checking) new CheckingReporter
+      _reporter = if (checking) new CheckingReporter
         else if (throwing) new ThrowingReporter
         else new ImmediateReporter
 

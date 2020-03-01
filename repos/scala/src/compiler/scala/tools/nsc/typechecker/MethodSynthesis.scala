@@ -148,24 +148,24 @@ trait MethodSynthesis {
     // TODO: see if we can link symbol creation & tree derivation by sharing the Field/Getter/Setter factories
     def enterGetterSetter(tree: ValDef): Unit = {
       tree.symbol = if (tree.mods.isLazy) {
-        val lazyValGetter = LazyValGetter(tree).createAndEnterSymbol()
-        enterLazyVal(tree, lazyValGetter)
-      } else {
-        val getter = Getter(tree)
-        val getterSym = getter.createAndEnterSymbol()
+          val lazyValGetter = LazyValGetter(tree).createAndEnterSymbol()
+          enterLazyVal(tree, lazyValGetter)
+        } else {
+          val getter = Getter(tree)
+          val getterSym = getter.createAndEnterSymbol()
 
-        // Create the setter if necessary.
-        if (getter.needsSetter)
-          Setter(tree).createAndEnterSymbol()
+          // Create the setter if necessary.
+          if (getter.needsSetter)
+            Setter(tree).createAndEnterSymbol()
 
-        // If the getter's abstract the tree gets the getter's symbol,
-        // otherwise, create a field (assume the getter requires storage).
-        // NOTE: we cannot look at symbol info, since we're in the process of deriving them
-        // (luckily, they only matter for lazy vals, which we've ruled out in this else branch,
-        // and `doNotDeriveField` will skip them if `!mods.isLazy`)
-        if (Field.noFieldFor(tree)) getterSym setPos tree.pos
-        else enterStrictVal(tree)
-      }
+          // If the getter's abstract the tree gets the getter's symbol,
+          // otherwise, create a field (assume the getter requires storage).
+          // NOTE: we cannot look at symbol info, since we're in the process of deriving them
+          // (luckily, they only matter for lazy vals, which we've ruled out in this else branch,
+          // and `doNotDeriveField` will skip them if `!mods.isLazy`)
+          if (Field.noFieldFor(tree)) getterSym setPos tree.pos
+          else enterStrictVal(tree)
+        }
 
       enterBeans(tree)
     }

@@ -673,11 +673,11 @@ class ImplicitCollector(
                   }
 
                   val funType = if (MacroInferUtil.isMacro(fun).isDefined) {
-                    MacroInferUtil.checkMacro(fun, Some(tp), place) match {
-                      case Some(newTp) => newTp
-                      case _           => _funType
-                    }
-                  } else _funType
+                      MacroInferUtil.checkMacro(fun, Some(tp), place) match {
+                        case Some(newTp) => newTp
+                        case _           => _funType
+                      }
+                    } else _funType
                   var substedFunType: ScType = funType
 
                   if (fun.hasTypeParameters && noReturnType) {

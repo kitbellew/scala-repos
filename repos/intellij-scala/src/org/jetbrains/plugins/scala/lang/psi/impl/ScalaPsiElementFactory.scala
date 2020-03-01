@@ -1207,11 +1207,11 @@ object ScalaPsiElementFactory {
           val strings = for (param <- params) yield {
             val extendsTypes = param.getExtendsListTypes
             val extendsTypesText = if (extendsTypes.length > 0) {
-              val typeTexts = extendsTypes.map((t: PsiClassType) =>
-                ScType.canonicalText(
-                  substitutor.subst(ScType.create(t, method.getProject))))
-              typeTexts.mkString(" <: ", " with ", "")
-            } else ""
+                val typeTexts = extendsTypes.map((t: PsiClassType) =>
+                  ScType.canonicalText(
+                    substitutor.subst(ScType.create(t, method.getProject))))
+                typeTexts.mkString(" <: ", " with ", "")
+              } else ""
             param.name + extendsTypesText
           }
           builder ++= strings.mkString("[", ", ", "]")

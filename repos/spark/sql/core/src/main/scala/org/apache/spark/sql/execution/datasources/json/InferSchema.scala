@@ -42,10 +42,10 @@ private[sql] object InferSchema {
       s"samplingRatio (${configOptions.samplingRatio}) should be greater than 0")
     val shouldHandleCorruptRecord = configOptions.permissive
     val schemaData = if (configOptions.samplingRatio > 0.99) {
-      json
-    } else {
-      json.sample(withReplacement = false, configOptions.samplingRatio, 1)
-    }
+        json
+      } else {
+        json.sample(withReplacement = false, configOptions.samplingRatio, 1)
+      }
 
     // perform schema inference on each row and merge afterwards
     val rootType = schemaData

@@ -1353,8 +1353,8 @@ trait Types
       tpe.underlyingPeriod = currentPeriod
       if (!isValid(period)) {
         // [Eugene to Paul] needs review
-        tpe.underlyingCache =
-          if (tpe.sym == NoSymbol) ThisType(rootMirror.RootClass)
+        tpe.underlyingCache = if (tpe.sym == NoSymbol)
+            ThisType(rootMirror.RootClass)
           else tpe.pre.memberType(tpe.sym).resultType
         assert(tpe.underlyingCache ne tpe, tpe)
       }
@@ -1606,8 +1606,7 @@ trait Types
             else null
           try {
             tpe.baseTypeSeqCache = undetBaseTypeSeq
-            tpe.baseTypeSeqCache =
-              if (tpe.typeSymbol.isRefinementClass)
+            tpe.baseTypeSeqCache = if (tpe.typeSymbol.isRefinementClass)
                 tpe.memo(compoundBaseTypeSeq(tpe))(
                   _.baseTypeSeq updateHead tpe.typeSymbol.tpe_*)
               else

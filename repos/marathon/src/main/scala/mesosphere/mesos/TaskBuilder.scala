@@ -48,16 +48,16 @@ class TaskBuilder(
       val numberDynamicHostPorts = hostPorts.count(_ == 0)
 
       val maybeStatic: Option[String] = if (staticHostPorts.nonEmpty) {
-        Some(s"[${staticHostPorts.mkString(", ")}] required")
-      } else {
-        None
-      }
+          Some(s"[${staticHostPorts.mkString(", ")}] required")
+        } else {
+          None
+        }
 
       val maybeDynamic: Option[String] = if (numberDynamicHostPorts > 0) {
-        Some(s"$numberDynamicHostPorts dynamic")
-      } else {
-        None
-      }
+          Some(s"$numberDynamicHostPorts dynamic")
+        } else {
+          None
+        }
 
       val portStrings = Seq(maybeStatic, maybeDynamic).flatten.mkString(" + ")
 
@@ -109,10 +109,10 @@ class TaskBuilder(
       : Some[(TaskInfo, Seq[Int])] = {
 
     val executor: Executor = if (app.executor == "") {
-      config.executor
-    } else {
-      Executor.dispatch(app.executor)
-    }
+        config.executor
+      } else {
+        Executor.dispatch(app.executor)
+      }
 
     val host: Option[String] = Some(offer.getHostname)
 

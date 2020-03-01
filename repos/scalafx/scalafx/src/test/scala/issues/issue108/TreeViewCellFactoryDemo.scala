@@ -67,8 +67,8 @@ object TreeViewCellFactoryDemo extends JFXApp {
         cellFactory = (v: TreeView[Person]) =>
           new TreeCell[Person] {
             treeItem.onChange((_, _, p) =>
-              text =
-                if (p != null) p.value().firstName + " " + p.value().lastName
+              text = if (p != null)
+                  p.value().firstName + " " + p.value().lastName
                 else "?")
           }
       }

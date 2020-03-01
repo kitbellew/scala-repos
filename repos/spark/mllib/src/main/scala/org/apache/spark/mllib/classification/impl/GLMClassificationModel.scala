@@ -92,10 +92,10 @@ private[classification] object GLMClassificationModel {
           (weights, intercept)
       }
       val threshold = if (data.isNullAt(2)) {
-        None
-      } else {
-        Some(data.getDouble(2))
-      }
+          None
+        } else {
+          Some(data.getDouble(2))
+        }
       Data(weights, intercept, threshold)
     }
   }

@@ -1497,11 +1497,11 @@ trait ContextErrors {
         val s3 =
           if (prevSym.isCase) "case class " + prevSym.name else "" + prevSym
         val where = if (currentSym.isTopLevel != prevSym.isTopLevel) {
-          val inOrOut = if (prevSym.isTopLevel) "outside of" else "in"
-          " %s package object %s".format(
-            inOrOut,
-            "" + prevSym.effectiveOwner.name)
-        } else ""
+            val inOrOut = if (prevSym.isTopLevel) "outside of" else "in"
+            " %s package object %s".format(
+              inOrOut,
+              "" + prevSym.effectiveOwner.name)
+          } else ""
 
         issueSymbolTypeError(
           currentSym,

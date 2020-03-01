@@ -1112,10 +1112,10 @@ object H5Store {
       values: Array[T]): Int = {
 
     val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
-      openFile(file, readOnly = false) -> false
-    } else {
-      createFile(file) -> true
-    }
+        openFile(file, readOnly = false) -> false
+      } else {
+        createFile(file) -> true
+      }
 
     assertException(
       fileid >= 0,
@@ -1241,10 +1241,10 @@ object H5Store {
       frame: Frame[R, C, T]): Int = {
 
     val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
-      openFile(file, readOnly = false) -> false
-    } else {
-      createFile(file) -> true
-    }
+        openFile(file, readOnly = false) -> false
+      } else {
+        createFile(file) -> true
+      }
 
     assertException(
       fileid >= 0,

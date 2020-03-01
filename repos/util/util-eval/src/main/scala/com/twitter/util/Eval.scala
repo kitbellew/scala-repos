@@ -162,10 +162,10 @@ class Eval(target: Option[File]) {
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
       val lastChecksum = if (checksumFile.exists) {
-        Source.fromFile(checksumFile).getLines().take(1).toList.head
-      } else {
-        -1
-      }
+          Source.fromFile(checksumFile).getLines().take(1).toList.head
+        } else {
+          -1
+        }
 
       if (lastChecksum != sourceChecksum) {
         compiler.reset()

@@ -171,42 +171,42 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .flatten
 
     val topScores = if (userFeature.isDefined) {
-      // the user has feature vector
-      val uf = userFeature.get
-      val indexScores: Map[Int, Double] =
-        productFeatures.par // convert to parallel collection
-          .filter {
-            case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = finalBlackList
-                )
-          }
-          .map {
-            case (i, (item, feature)) =>
-              // NOTE: feature must be defined, so can call .get
-              val s = dotProduct(uf, feature.get)
-              // Can adjust score here
-              (i, s)
-          }
-          .filter(_._2 > 0) // only keep items with score > 0
-          .seq // convert back to sequential collection
+        // the user has feature vector
+        val uf = userFeature.get
+        val indexScores: Map[Int, Double] =
+          productFeatures.par // convert to parallel collection
+            .filter {
+              case (i, (item, feature)) =>
+                feature.isDefined &&
+                  isCandidateItem(
+                    i = i,
+                    item = item,
+                    categories = query.categories,
+                    whiteList = whiteList,
+                    blackList = finalBlackList
+                  )
+            }
+            .map {
+              case (i, (item, feature)) =>
+                // NOTE: feature must be defined, so can call .get
+                val s = dotProduct(uf, feature.get)
+                // Can adjust score here
+                (i, s)
+            }
+            .filter(_._2 > 0) // only keep items with score > 0
+            .seq // convert back to sequential collection
 
-      val ord = Ordering.by[(Int, Double), Double](_._2).reverse
-      val topScores = getTopN(indexScores, query.num)(ord).toArray
+        val ord = Ordering.by[(Int, Double), Double](_._2).reverse
+        val topScores = getTopN(indexScores, query.num)(ord).toArray
 
-      topScores
+        topScores
 
-    } else {
-      // the user doesn't have feature vector.
-      // For example, new user is created after model is trained.
-      logger.info(s"No userFeature found for user ${query.user}.")
-      Array[(Int, Double)]()
-    }
+      } else {
+        // the user doesn't have feature vector.
+        // For example, new user is created after model is trained.
+        logger.info(s"No userFeature found for user ${query.user}.")
+        Array[(Int, Double)]()
+      }
 
     val itemScores = topScores.map {
       case (i, s) =>

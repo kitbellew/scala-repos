@@ -80,10 +80,10 @@ private[spark] class WholeTextFileRecordReader(
       val codec = factory.getCodec(path) // infers from file ext.
       val fileIn = fs.open(path)
       val innerBuffer = if (codec != null) {
-        ByteStreams.toByteArray(codec.createInputStream(fileIn))
-      } else {
-        ByteStreams.toByteArray(fileIn)
-      }
+          ByteStreams.toByteArray(codec.createInputStream(fileIn))
+        } else {
+          ByteStreams.toByteArray(fileIn)
+        }
 
       value = new Text(innerBuffer)
       Closeables.close(fileIn, false)

@@ -568,10 +568,10 @@ class RowMatrix @Since("1.0.0") (
     }
 
     val gamma = if (threshold < 1e-6) {
-      Double.PositiveInfinity
-    } else {
-      10 * math.log(numCols()) / threshold
-    }
+        Double.PositiveInfinity
+      } else {
+        10 * math.log(numCols()) / threshold
+      }
 
     columnSimilaritiesDIMSUM(
       computeColumnSummaryStatistics().normL2.toArray,
@@ -610,17 +610,17 @@ class RowMatrix @Since("1.0.0") (
     }
     val finalR = Matrices.fromBreeze(combinedR.toDenseMatrix)
     val finalQ = if (computeQ) {
-      try {
-        val invR = inv(combinedR)
-        this.multiply(Matrices.fromBreeze(invR))
-      } catch {
-        case err: MatrixSingularException =>
-          logWarning("R is not invertible and return Q as null")
-          null
+        try {
+          val invR = inv(combinedR)
+          this.multiply(Matrices.fromBreeze(invR))
+        } catch {
+          case err: MatrixSingularException =>
+            logWarning("R is not invertible and return Q as null")
+            null
+        }
+      } else {
+        null
       }
-    } else {
-      null
-    }
     QRDecomposition(finalQ, finalR)
   }
 

@@ -230,15 +230,15 @@ private class RandomForest(
     // Create an RDD of node Id cache.
     // At first, all the rows belong to the root nodes (node Id == 1).
     val nodeIdCache = if (strategy.useNodeIdCache) {
-      Some(
-        NodeIdCache.init(
-          data = baggedInput,
-          numTrees = numTrees,
-          checkpointInterval = strategy.checkpointInterval,
-          initVal = 1))
-    } else {
-      None
-    }
+        Some(
+          NodeIdCache.init(
+            data = baggedInput,
+            numTrees = numTrees,
+            checkpointInterval = strategy.checkpointInterval,
+            initVal = 1))
+      } else {
+        None
+      }
 
     // FIFO queue of nodes to train: (treeIndex, node)
     val nodeQueue = new mutable.Queue[(Int, Node)]()
@@ -615,12 +615,12 @@ object RandomForest extends Serializable with Logging {
       metadata: DecisionTreeMetadata,
       featureSubset: Option[Array[Int]]): Long = {
     val totalBins = if (featureSubset.nonEmpty) {
-      featureSubset.get
-        .map(featureIndex => metadata.numBins(featureIndex).toLong)
-        .sum
-    } else {
-      metadata.numBins.map(_.toLong).sum
-    }
+        featureSubset.get
+          .map(featureIndex => metadata.numBins(featureIndex).toLong)
+          .sum
+      } else {
+        metadata.numBins.map(_.toLong).sum
+      }
     if (metadata.isClassification) {
       metadata.numClasses * totalBins
     } else {

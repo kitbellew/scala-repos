@@ -202,14 +202,14 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     val leader = leaderOpt.get
 
     val messageSet = if (leader == server1.config.brokerId) {
-      val response1 = getConsumer1().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
-      response1.messageSet("new-topic", 0).iterator.toBuffer
-    } else {
-      val response2 = getConsumer2().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
-      response2.messageSet("new-topic", 0).iterator.toBuffer
-    }
+        val response1 = getConsumer1().fetch(
+          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        response1.messageSet("new-topic", 0).iterator.toBuffer
+      } else {
+        val response2 = getConsumer2().fetch(
+          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        response2.messageSet("new-topic", 0).iterator.toBuffer
+      }
     assertEquals("Should have fetched 2 messages", 2, messageSet.size)
     // Message 1
     assertTrue(

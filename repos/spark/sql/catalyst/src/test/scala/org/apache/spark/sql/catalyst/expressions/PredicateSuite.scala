@@ -190,14 +190,14 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       }
       val input = inputData.map(Literal.create(_, t))
       val expected = if (inputData(0) == null) {
-        null
-      } else if (inputData.slice(1, 10).contains(inputData(0))) {
-        true
-      } else if (inputData.slice(1, 10).contains(null)) {
-        null
-      } else {
-        false
-      }
+          null
+        } else if (inputData.slice(1, 10).contains(inputData(0))) {
+          true
+        } else if (inputData.slice(1, 10).contains(null)) {
+          null
+        } else {
+          false
+        }
       checkEvaluation(In(input(0), input.slice(1, 10)), expected)
     }
   }
@@ -241,14 +241,14 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       }
       val input = inputData.map(Literal(_))
       val expected = if (inputData(0) == null) {
-        null
-      } else if (inputData.slice(1, 10).contains(inputData(0))) {
-        true
-      } else if (inputData.slice(1, 10).contains(null)) {
-        null
-      } else {
-        false
-      }
+          null
+        } else if (inputData.slice(1, 10).contains(inputData(0))) {
+          true
+        } else if (inputData.slice(1, 10).contains(null)) {
+          null
+        } else {
+          false
+        }
       checkEvaluation(InSet(input(0), inputData.slice(1, 10).toSet), expected)
     }
   }

@@ -164,10 +164,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
           // If the executor's rpc env is not listening for incoming connections, `hostPort`
           // will be null, and the client connection should be used to contact the executor.
           val executorAddress = if (executorRef.address != null) {
-            executorRef.address
-          } else {
-            context.senderAddress
-          }
+              executorRef.address
+            } else {
+              context.senderAddress
+            }
           logInfo(
             s"Registered executor $executorRef ($executorAddress) with ID $executorId")
           addressToExecutorId(executorAddress) = executorId

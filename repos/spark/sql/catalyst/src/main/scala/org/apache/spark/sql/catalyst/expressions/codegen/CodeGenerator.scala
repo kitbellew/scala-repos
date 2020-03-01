@@ -194,10 +194,10 @@ class CodegenContext {
     */
   def freshName(name: String): String = synchronized {
     val fullName = if (freshNamePrefix == "") {
-      name
-    } else {
-      s"${freshNamePrefix}_$name"
-    }
+        name
+      } else {
+        s"${freshNamePrefix}_$name"
+      }
     if (freshNameIds.contains(fullName)) {
       val id = freshNameIds(fullName)
       freshNameIds(fullName) = id + 1
