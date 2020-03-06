@@ -624,17 +624,13 @@ trait ScFunction
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this => x.supers.map { _.info }
         case Some(x) =>
-          x.supers
-            .filter { _.info.namedElement != this }
-            .map { _.info } :+ x.info
+          x.supers.filter { _.info.namedElement != this }.map { _.info } :+ x.info
         case None =>
           signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
               x.supers.map { _.info }
             case Some(x) =>
-              x.supers
-                .filter { _.info.namedElement != this }
-                .map { _.info } :+ x.info
+              x.supers.filter { _.info.namedElement != this }.map { _.info } :+ x.info
             case None => Seq.empty
           }
       }

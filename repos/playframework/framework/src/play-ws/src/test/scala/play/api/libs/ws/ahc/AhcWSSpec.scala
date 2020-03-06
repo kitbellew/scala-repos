@@ -83,10 +83,8 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
       import scala.collection.JavaConverters._
       val paramsList: Seq[Param] = req.getQueryParams.asScala.toSeq
-      paramsList
-        .exists(p => (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
-      paramsList
-        .exists(p => (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
+      paramsList.exists(p => (p.getName == "foo") && (p.getValue == "foo1")) must beTrue
+      paramsList.exists(p => (p.getName == "foo") && (p.getValue == "foo2")) must beTrue
       paramsList.count(p => p.getName == "foo") must beEqualTo(2)
     }
 
@@ -134,8 +132,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody(<aaa>value1</aaa>)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders
-        .get("Content-Type") must_== ("fake/contenttype; charset=utf-8")
+      req.getHeaders.get("Content-Type") must_== ("fake/contenttype; charset=utf-8")
     }
 
     "Have form params on POST of content type application/x-www-form-urlencoded" in new WithApplication {
@@ -250,8 +247,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody("HELLO WORLD")
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders
-        .get("Content-Type") must_== ("text/plain; charset=US-ASCII")
+      req.getHeaders.get("Content-Type") must_== ("text/plain; charset=US-ASCII")
     }
 
     "Only send first content type header if two are sent" in new WithApplication {

@@ -548,8 +548,7 @@ private[streaming] class ReceiverTracker(
       case c: CleanupOldBlocks =>
         receiverTrackingInfos.values.flatMap(_.endpoint).foreach(_.send(c))
       case UpdateReceiverRateLimit(streamUID, newRate) =>
-        for (info <- receiverTrackingInfos
-               .get(streamUID); eP <- info.endpoint) {
+        for (info <- receiverTrackingInfos.get(streamUID); eP <- info.endpoint) {
           eP.send(UpdateRateLimit(newRate))
         }
       // Remote messages
@@ -612,8 +611,7 @@ private[streaming] class ReceiverTracker(
     private def getStoredScheduledExecutors(
         receiverId: Int): Seq[TaskLocation] = {
       if (receiverTrackingInfos.contains(receiverId)) {
-        val scheduledLocations =
-          receiverTrackingInfos(receiverId).scheduledLocations
+        val scheduledLocations = receiverTrackingInfos(receiverId).scheduledLocations
         if (scheduledLocations.nonEmpty) {
           val executors = getExecutors.toSet
           // Only return the alive executors

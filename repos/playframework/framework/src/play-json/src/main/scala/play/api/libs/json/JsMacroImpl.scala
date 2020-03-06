@@ -149,8 +149,7 @@ object JsMacroImpl {
           } =>
         apply
       case (apply: MethodSymbol)
-          if apply.paramLists.headOption
-            .map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
+          if apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes =>
         apply
     }
 

@@ -222,8 +222,7 @@ class UISeleniumSuite
         webDriver.getPageSource should include("Missing id parameter")
 
         // Check a non-exist batch
-        go to (sparkUI.appUIAddress
-          .stripSuffix("/") + "/streaming/batch/?id=12345")
+        go to (sparkUI.appUIAddress.stripSuffix("/") + "/streaming/batch/?id=12345")
         webDriver.getPageSource should include("does not exist")
       }
 

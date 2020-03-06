@@ -634,8 +634,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     */
   def leaving(address: Address): Unit = {
     // only try to update if the node is available (in the member ring)
-    if (latestGossip.members
-          .exists(m ⇒ m.address == address && m.status == Up)) {
+    if (latestGossip.members.exists(m ⇒ m.address == address && m.status == Up)) {
       val newMembers = latestGossip.members map { m ⇒
         if (m.address == address) m.copy(status = Leaving) else m
       } // mark node as LEAVING
@@ -816,8 +815,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           }
           val prunedRemoteGossip = remoteGossip.members.foldLeft(remoteGossip) {
             (g, m) ⇒
-              if (Gossip
-                    .removeUnreachableWithMemberStatus(m.status) && !localGossip.members
+              if (Gossip.removeUnreachableWithMemberStatus(m.status) && !localGossip.members
                     .contains(m)) {
                 log.debug(
                   "Cluster Node [{}] - Pruned conflicting remote gossip: {}",
@@ -907,8 +905,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           // gossip to a random alive member with preference to a member with older gossip version
           localGossip.members.collect {
             case m
-                if !localGossip
-                  .seenByNode(m.uniqueAddress) && validNodeForGossip(
+                if !localGossip.seenByNode(m.uniqueAddress) && validNodeForGossip(
                   m.uniqueAddress) ⇒
               m.uniqueAddress
           }(breakOut)
@@ -1343,8 +1340,7 @@ private[cluster] final class FirstSeedNodeProcess(
       if (timeout.hasTimeLeft) {
         // send InitJoin to remaining seed nodes (except myself)
         remainingSeedNodes foreach { a ⇒
-          context
-            .actorSelection(context.parent.path.toStringWithAddress(a)) ! InitJoin
+          context.actorSelection(context.parent.path.toStringWithAddress(a)) ! InitJoin
         }
       } else {
         // no InitJoinAck received, initialize new cluster by joining myself

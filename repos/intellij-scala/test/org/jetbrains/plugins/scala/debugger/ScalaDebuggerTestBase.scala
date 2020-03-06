@@ -241,8 +241,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def testDataProjectIsValid(): Boolean = {
-    sameSourceFiles() && loadChecksums() && checksums.keys
-      .forall(checkFile) && getImlFile != null
+    sameSourceFiles() && loadChecksums() && checksums.keys.forall(checkFile) && getImlFile != null
   }
 
   private def sameSourceFiles(): Boolean = {

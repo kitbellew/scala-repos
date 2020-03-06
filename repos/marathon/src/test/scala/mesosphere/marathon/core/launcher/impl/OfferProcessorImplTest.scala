@@ -53,8 +53,7 @@ class OfferProcessorImplTest
     offerMatcher.matchOffer(deadline, offer) returns Future.successful(
       MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasks) {
-      taskCreationHandler
-        .created(MarathonTestHelper.makeTaskFromTaskInfo(task)) returns
+      taskCreationHandler.created(MarathonTestHelper.makeTaskFromTaskInfo(task)) returns
         Future.successful(MarathonTestHelper.makeTaskFromTaskInfo(task))
     }
 
@@ -230,8 +229,7 @@ class OfferProcessorImplTest
 
     val deadline: Timestamp = clock.now() + 1.second
     And("a cooperative taskLauncher")
-    taskLauncher
-      .acceptOffer(offerId, tasksWithSource.map(_.op).take(1)) returns true
+    taskLauncher.acceptOffer(offerId, tasksWithSource.map(_.op).take(1)) returns true
 
     And("a cooperative offerMatcher")
     offerMatcher.matchOffer(deadline, offer) returns Future.successful(

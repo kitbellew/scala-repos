@@ -112,8 +112,7 @@ object JsonExtensionSpec extends Specification {
       //object User {def apply(age:Int):User = User(age,"")}
       implicit val userReads = Json.reads[User]
 
-      Json
-        .fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
+      Json.fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
         JsSuccess(User(45, "toto")))
     }
 
@@ -131,8 +130,7 @@ object JsonExtensionSpec extends Specification {
 
       implicit val userFormat = Json.format[User]
 
-      Json
-        .fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
+      Json.fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
         JsSuccess(User(45, "toto")))
       Json.toJson(User(45, "toto")) must beEqualTo(
         Json.obj("name" -> "toto", "age" -> 45))
@@ -621,8 +619,7 @@ object JsonExtensionSpec extends Specification {
 
       implicit val fmt = Json.format[CustomApply]
 
-      Json
-        .fromJson[CustomApply](Json.obj("a" -> 5, "b" -> "foo")) must beEqualTo(
+      Json.fromJson[CustomApply](Json.obj("a" -> 5, "b" -> "foo")) must beEqualTo(
         JsSuccess(CustomApply(5, "foo")))
       Json.toJson(CustomApply(5, "foo")) must beEqualTo(
         Json.obj("a" -> 5, "b" -> "foo"))

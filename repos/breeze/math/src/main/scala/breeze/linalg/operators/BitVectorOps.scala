@@ -25,8 +25,8 @@ trait BitVectorOps {
 
   @expand
   @expand.valify
-  implicit def bv_bv_UpdateOp[
-      @expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](implicit
+  implicit def bv_bv_UpdateOp[@expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](
+      implicit
       @expand.sequence[Op](
         { _ and _ }, {
           _ or _

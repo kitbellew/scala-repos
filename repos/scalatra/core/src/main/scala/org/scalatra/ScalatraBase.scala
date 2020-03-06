@@ -838,8 +838,7 @@ trait ScalatraBase
   }
 
   def serverHost(implicit request: HttpServletRequest): String = {
-    initParameter(HostNameKey)
-      .flatMap(_.blankOption) getOrElse request.getServerName
+    initParameter(HostNameKey).flatMap(_.blankOption) getOrElse request.getServerName
   }
 
   def serverPort(implicit request: HttpServletRequest): Int = {
@@ -865,8 +864,7 @@ trait ScalatraBase
   }
 
   def environment: String = {
-    sys.props
-      .get(EnvironmentKey) orElse initParameter(EnvironmentKey) getOrElse "DEVELOPMENT"
+    sys.props.get(EnvironmentKey) orElse initParameter(EnvironmentKey) getOrElse "DEVELOPMENT"
   }
 
   /**

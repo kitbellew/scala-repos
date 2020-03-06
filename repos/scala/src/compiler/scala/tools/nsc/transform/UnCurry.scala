@@ -516,8 +516,7 @@ abstract class UnCurry
                               transform(stat)
                             }
                           val presupers =
-                            treeInfo
-                              .preSuperFields(stats) map transformInConstructor
+                            treeInfo.preSuperFields(stats) map transformInConstructor
                           val rest = stats drop presupers.length
                           val supercalls =
                             rest take 1 map transformInConstructor

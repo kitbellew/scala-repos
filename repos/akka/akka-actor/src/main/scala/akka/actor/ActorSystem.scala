@@ -869,8 +869,7 @@ private[akka] class ActorSystemImpl(
     findExtension(ext) match {
       case null ⇒ //Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
-        extensions
-          .putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
+        extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null ⇒
             try { // Signal was successfully sent
               ext.createExtension(this) match { // Create and initialize the extension

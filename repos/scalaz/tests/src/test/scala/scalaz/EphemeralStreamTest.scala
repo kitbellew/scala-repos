@@ -113,8 +113,7 @@ object EphemeralStreamTest extends SpecLite {
 
   "foldRight evaluates lazily" in {
     val infiniteStream = EphemeralStream.iterate(true)(identity)
-    Foldable[EphemeralStream]
-      .foldRight(infiniteStream, true)(_ || _) must_=== (true)
+    Foldable[EphemeralStream].foldRight(infiniteStream, true)(_ || _) must_=== (true)
   }
 
   "zipL" in {

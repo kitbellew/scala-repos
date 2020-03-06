@@ -634,8 +634,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         member.cloneSymbol(sClass, flagFn(member.flags | SPECIALIZED), newName)
 
       sClass.associatedFile = clazz.sourceFile
-      currentRun
-        .symSource(sClass) = clazz.sourceFile // needed later on by mixin
+      currentRun.symSource(sClass) = clazz.sourceFile // needed later on by mixin
 
       val env = mapAnyRefsInSpecSym(env0, clazz, sClass)
       typeEnv(sClass) = env
@@ -807,8 +806,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         } else if (!sClass.isTrait && m.isMethod && m.hasFlag(LAZY)) {
           forwardToOverload(m)
 
-        } else if (m.isValue && !m.isMethod && !m
-                     .hasFlag(LAZY)) { // concrete value definition
+        } else if (m.isValue && !m.isMethod && !m.hasFlag(LAZY)) { // concrete value definition
           def mkAccessor(field: Symbol, name: Name) = {
             val newFlags = (SPECIALIZED | m
               .getterIn(clazz)
@@ -961,8 +959,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         // compiler start warning about Tuple1.scala and Tuple2.scala claiming
         // their type parameters are used in non-specializable positions.  Why is
         // unusedStvars.nonEmpty for these classes???
-        if (unusedStvars.nonEmpty && currentRun
-              .compiles(sym) && !sym.isSynthetic) {
+        if (unusedStvars.nonEmpty && currentRun.compiles(sym) && !sym.isSynthetic) {
           reporter.warning(
             sym.pos,
             "%s %s unused or used in non-specializable positions.".format(

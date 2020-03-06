@@ -641,8 +641,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case "test-jar" | "test" => Some("tests")
       case _                   =>
         // Look for extra attributes
-        art
-          .getExtraAttribute(MavenRepositoryResolver.CLASSIFIER_ATTRIBUTE) match {
+        art.getExtraAttribute(MavenRepositoryResolver.CLASSIFIER_ATTRIBUTE) match {
           case null => None
           case c    => Some(c)
         }

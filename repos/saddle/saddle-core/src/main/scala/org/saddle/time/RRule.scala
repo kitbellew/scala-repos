@@ -287,9 +287,8 @@ case class RRule private (
         RecurrenceIteratorFactory.except(i1, tmpiter)
     }
 
-    DateTimeIteratorFactory
-      .createDateTimeIterator(iterWithJoinsWithExcepts) map { dt =>
-      dt.withZone(inzone)
+    DateTimeIteratorFactory.createDateTimeIterator(iterWithJoinsWithExcepts) map {
+      dt => dt.withZone(inzone)
     }
   }
 

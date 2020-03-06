@@ -78,8 +78,7 @@ case class TungstenAggregate(
   // This is for testing. We force TungstenAggregationIterator to fall back to sort-based
   // aggregation once it has processed a given number of input rows.
   private val testFallbackStartsAt: Option[Int] = {
-    sqlContext
-      .getConf("spark.sql.TungstenAggregate.testFallbackStartsAt", null) match {
+    sqlContext.getConf("spark.sql.TungstenAggregate.testFallbackStartsAt", null) match {
       case null | ""        => None
       case fallbackStartsAt => Some(fallbackStartsAt.toInt)
     }

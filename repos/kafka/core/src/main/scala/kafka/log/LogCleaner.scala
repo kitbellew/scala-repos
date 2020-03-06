@@ -303,8 +303,7 @@ class LogCleaner(
               stats.elapsedIndexSecs,
               mb(stats.mapBytesRead) / stats.elapsedIndexSecs,
               100 * stats.elapsedIndexSecs / stats.elapsedSecs) +
-          "\tBuffer utilization: %.1f%%%n"
-            .format(100 * stats.bufferUtilization) +
+          "\tBuffer utilization: %.1f%%%n".format(100 * stats.bufferUtilization) +
           "\tCleaned %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n"
             .format(
               mb(stats.bytesRead),

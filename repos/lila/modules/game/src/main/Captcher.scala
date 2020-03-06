@@ -98,8 +98,7 @@ private final class Captcher extends Actor {
       } map { move => s"${move.orig} ${move.dest}" } toNel
 
     private def rewind(game: Game, moves: List[String]): Option[ChessGame] =
-      pgn.Reader
-        .movesWithSans(moves, safeInit, tags = Nil) map (_.state) toOption
+      pgn.Reader.movesWithSans(moves, safeInit, tags = Nil) map (_.state) toOption
 
     private def safeInit[A](list: List[A]): List[A] = list match {
       case x :: Nil => Nil

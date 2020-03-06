@@ -86,8 +86,7 @@ abstract class EventBusSpec(
       val subscribers = (1 to 10) map { _ ⇒ createNewSubscriber() }
       val events = createEvents(10)
       val classifiers = events map getClassifierFor
-      subscribers
-        .zip(classifiers) forall { case (s, c) ⇒ bus.subscribe(s, c) } should ===(
+      subscribers.zip(classifiers) forall { case (s, c) ⇒ bus.subscribe(s, c) } should ===(
         true)
       subscribers.zip(classifiers) forall {
         case (s, c) ⇒ bus.unsubscribe(s, c)

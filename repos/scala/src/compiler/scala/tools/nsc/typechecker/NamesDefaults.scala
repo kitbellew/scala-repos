@@ -154,8 +154,7 @@ trait NamesDefaults { self: Analyzer =>
         case Select(New(tpt @ TypeTree()), _) if isConstr =>
           val targsInSource = tpt.tpe match {
             case TypeRef(pre, sym, args)
-                if (!args
-                  .forall(a => context.undetparams contains a.typeSymbol)) =>
+                if (!args.forall(a => context.undetparams contains a.typeSymbol)) =>
               args.map(TypeTree(_))
             case _ =>
               Nil

@@ -2696,8 +2696,7 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(params, owner) || (resultType
-            .atOwner(owner) ne resultType))
+      if (!allSymbolsHaveOwner(params, owner) || (resultType.atOwner(owner) ne resultType))
         cloneInfo(owner)
       else
         this
@@ -2799,8 +2798,7 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType
-            .atOwner(owner) ne resultType))
+      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType.atOwner(owner) ne resultType))
         cloneInfo(owner)
       else
         this

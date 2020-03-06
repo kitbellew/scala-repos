@@ -543,14 +543,12 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
             updatedWhat = updatedWhat + whereOrAnd + (in.rawSql match {
               case null | "" => " 0 = 1 "
               case sql =>
-                " " + MapperRules.quoteColumnName
-                  .vend(in.field._dbColumnNameLC) + " IN ( " + sql + " ) "
+                " " + MapperRules.quoteColumnName.vend(in.field._dbColumnNameLC) + " IN ( " + sql + " ) "
             })
 
           case (in: InThing[A]) =>
             updatedWhat = updatedWhat + whereOrAnd +
-              MapperRules.quoteColumnName
-                .vend(in.outerField._dbColumnNameLC) + in.inKeyword +
+              MapperRules.quoteColumnName.vend(in.outerField._dbColumnNameLC) + in.inKeyword +
               "(" + in.innerMeta
               .addEndStuffs(
                 in.innerMeta.addFields(
@@ -2489,8 +2487,7 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
       obj.fieldMapperTransforms(_.asHtml).reverse ++
         obj.fieldTransforms.reverse
 
-    otherTransforms
-      .foldRight(PassThru: (NodeSeq) => NodeSeq)(_ andThen _) apply html
+    otherTransforms.foldRight(PassThru: (NodeSeq) => NodeSeq)(_ andThen _) apply html
   }
 
   /**

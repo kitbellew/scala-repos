@@ -767,8 +767,7 @@ object DecisionTree extends Serializable with Logging {
 
           // Extract info for this node.  Create children if not leaf.
           val isLeaf =
-            (stats.gain <= 0) || (Node
-              .indexToLevel(nodeIndex) == metadata.maxDepth)
+            (stats.gain <= 0) || (Node.indexToLevel(nodeIndex) == metadata.maxDepth)
           assert(node.id == nodeIndex)
           node.predict = predict
           node.isLeaf = isLeaf

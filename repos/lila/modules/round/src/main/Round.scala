@@ -92,8 +92,7 @@ private[round] final class Round(
             (_.untranslated(
               s"${pov.color.name.capitalize} is going berserk!"
             )))
-          GameRepo.save(progress) >> GameRepo
-            .goBerserk(pov) inject progress.events
+          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject progress.events
         }
       }
 

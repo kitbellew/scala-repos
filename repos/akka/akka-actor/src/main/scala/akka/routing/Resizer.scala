@@ -307,8 +307,7 @@ private[akka] final class ResizablePoolCell(
 
   override def sendMessage(envelope: Envelope): Unit = {
     if (!routerConfig.isManagementMessage(envelope.message) &&
-        resizer
-          .isTimeForResize(resizeCounter.getAndIncrement()) && resizeInProgress
+        resizer.isTimeForResize(resizeCounter.getAndIncrement()) && resizeInProgress
           .compareAndSet(false, true)) {
       super.sendMessage(Envelope(ResizablePoolActor.Resize, self, system))
     }

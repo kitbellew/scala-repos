@@ -41,8 +41,7 @@ private[api] final class UserApi(
       case None => fuccess(none)
       case Some(u) =>
         GameRepo mostUrgentGame u zip
-          (ctx.me
-            .filter(u !=) ?? { me => crosstableApi.nbGames(me.id, u.id) }) zip
+          (ctx.me.filter(u !=) ?? { me => crosstableApi.nbGames(me.id, u.id) }) zip
           relationApi.countFollowing(u.id) zip
           relationApi.countFollowers(u.id) zip
           ctx.isAuth.?? { prefApi followable u.id } zip

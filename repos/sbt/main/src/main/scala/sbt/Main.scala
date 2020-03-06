@@ -196,8 +196,7 @@ object BuiltinCommands {
         case None => ""; case Some(v) => " " + v
       }
       val current =
-        "The current project is " + Reference
-          .display(e.currentRef) + version + "\n"
+        "The current project is " + Reference.display(e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
       val built =
         if (sc.isEmpty) ""

@@ -84,8 +84,7 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
     val documentManager = PsiDocumentManager getInstance project
 
     @inline private def isDisabledOn(file: PsiFile) = {
-      WorksheetAutoRunner
-        .isSetDisabled(file) || !settings.isInteractiveMode && !WorksheetAutoRunner
+      WorksheetAutoRunner.isSetDisabled(file) || !settings.isInteractiveMode && !WorksheetAutoRunner
         .isSetEnabled(file)
     }
 

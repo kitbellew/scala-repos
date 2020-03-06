@@ -98,8 +98,7 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         val ordersInserts =
           for (u <- allUsers if u.first != "Apu" && u.first != "Snowball";
                i <- 1 to 2)
-            yield orders
-              .map(o => (o.userID, o.product, o.shipped, o.rebate)) += (u.id, "Gizmo " + ((scala.math.random * 10) + 1).toInt, i == 2, Some(
+            yield orders.map(o => (o.userID, o.product, o.shipped, o.rebate)) += (u.id, "Gizmo " + ((scala.math.random * 10) + 1).toInt, i == 2, Some(
               u.first == "Marge"))
         db.run(seq(ordersInserts: _*))
       }

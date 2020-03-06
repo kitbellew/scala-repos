@@ -106,10 +106,9 @@ trait Formats { self: Formats =>
     }
 
   def customDeserializer(implicit format: Formats) =
-    customSerializers
-      .foldLeft(Map(): PartialFunction[(TypeInfo, JValue), Any]) { (acc, x) =>
-        acc.orElse(x.deserialize)
-      }
+    customSerializers.foldLeft(Map(): PartialFunction[(TypeInfo, JValue), Any]) {
+      (acc, x) => acc.orElse(x.deserialize)
+    }
 }
 
 /** Conversions between String and Date.

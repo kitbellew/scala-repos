@@ -185,8 +185,8 @@ trait Inbox { this: ActorDSL.type ⇒
     def getRef: ActorRef = receiver
     def send(target: ActorRef, msg: AnyRef): Unit = target.tell(msg, receiver)
 
-    private val defaultTimeout: FiniteDuration =
-      Extension(system).DSLDefaultTimeout
+    private val defaultTimeout
+        : FiniteDuration = Extension(system).DSLDefaultTimeout
 
     /**
       * Receive a single message from the internal `receiver` actor. The supplied

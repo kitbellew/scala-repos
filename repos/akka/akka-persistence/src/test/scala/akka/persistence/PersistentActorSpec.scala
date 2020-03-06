@@ -1165,8 +1165,9 @@ abstract class PersistentActorSpec(config: Config)
       persistentActor ! "b"
       persistentActor ! "c"
       val expectedReplies = 2 + (nestedPersistAsyncs * 2)
-      receiveN(expectedReplies)
-        .map(_.toString) should beIndependentlyOrdered("b-", "c-")
+      receiveN(expectedReplies).map(_.toString) should beIndependentlyOrdered(
+        "b-",
+        "c-")
     }
     "allow mixed nesting of persistAsync in persist calls" in {
       val persistentActor = system.actorOf(

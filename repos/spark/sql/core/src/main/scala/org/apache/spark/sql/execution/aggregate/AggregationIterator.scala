@@ -83,26 +83,26 @@ abstract class AggregationIterator(
     var i = 0
     while (i < expressions.length) {
       val func = expressions(i).aggregateFunction
-      val funcWithBoundReferences: AggregateFunction =
-        expressions(i).mode match {
-          case Partial | Complete if func.isInstanceOf[ImperativeAggregate] =>
-            // We need to create BoundReferences if the function is not an
-            // expression-based aggregate function (it does not support code-gen) and the mode of
-            // this function is Partial or Complete because we will call eval of this
-            // function's children in the update method of this aggregate function.
-            // Those eval calls require BoundReferences to work.
-            BindReferences.bindReference(func, inputAttributes)
-          case _ =>
-            // We only need to set inputBufferOffset for aggregate functions with mode
-            // PartialMerge and Final.
-            val updatedFunc = func match {
-              case function: ImperativeAggregate =>
-                function.withNewInputAggBufferOffset(inputBufferOffset)
-              case function => function
-            }
-            inputBufferOffset += func.aggBufferSchema.length
-            updatedFunc
-        }
+      val funcWithBoundReferences
+          : AggregateFunction = expressions(i).mode match {
+        case Partial | Complete if func.isInstanceOf[ImperativeAggregate] =>
+          // We need to create BoundReferences if the function is not an
+          // expression-based aggregate function (it does not support code-gen) and the mode of
+          // this function is Partial or Complete because we will call eval of this
+          // function's children in the update method of this aggregate function.
+          // Those eval calls require BoundReferences to work.
+          BindReferences.bindReference(func, inputAttributes)
+        case _ =>
+          // We only need to set inputBufferOffset for aggregate functions with mode
+          // PartialMerge and Final.
+          val updatedFunc = func match {
+            case function: ImperativeAggregate =>
+              function.withNewInputAggBufferOffset(inputBufferOffset)
+            case function => function
+          }
+          inputBufferOffset += func.aggBufferSchema.length
+          updatedFunc
+      }
       val funcWithUpdatedAggBufferOffset = funcWithBoundReferences match {
         case function: ImperativeAggregate =>
           // Set mutableBufferOffset for this function. It is important that setting

@@ -671,8 +671,7 @@ trait AbstractScreen extends Factory with Loggable {
           .set(setFilter.foldLeft(v)((v, f) => f(v)))
 
       override def uniqueFieldId: Box[String] =
-        paramFieldId or underlying
-          .flatMap(_.uniqueFieldId) or super.uniqueFieldId
+        paramFieldId or underlying.flatMap(_.uniqueFieldId) or super.uniqueFieldId
 
       override def binding = newBinding or super.binding
 

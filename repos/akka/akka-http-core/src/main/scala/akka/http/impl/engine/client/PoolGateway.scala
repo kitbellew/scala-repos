@@ -87,8 +87,7 @@ private[http] class PoolGateway(hcps: HostConnectionPoolSetup, _shutdownStartedP
   @tailrec final def shutdown(): Future[Done] =
     state.get match {
       case x @ Running(ref, shutdownStartedPromise, shutdownCompletedPromise) ⇒
-        if (state
-              .compareAndSet(x, IsShutdown(shutdownCompletedPromise.future))) {
+        if (state.compareAndSet(x, IsShutdown(shutdownCompletedPromise.future))) {
           shutdownStartedPromise.success(Done) // trigger cache removal
           ref ! PoolInterfaceActor.Shutdown
           shutdownCompletedPromise.future

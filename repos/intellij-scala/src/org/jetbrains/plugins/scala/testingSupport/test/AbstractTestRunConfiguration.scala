@@ -574,8 +574,7 @@ abstract class AbstractTestRunConfiguration(
           params.getProgramParametersList.addParametersString(getTestArgs)
         }
 
-        for (ext <- Extensions
-               .getExtensions(RunConfigurationExtension.EP_NAME)) {
+        for (ext <- Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
           ext.updateJavaParameters(
             currentConfiguration,
             params,
@@ -690,8 +689,7 @@ abstract class AbstractTestRunConfiguration(
 trait SuiteValidityChecker {
   protected[test] def isInvalidSuite(clazz: PsiClass): Boolean = {
     val list: PsiModifierList = clazz.getModifierList
-    list != null && list
-      .hasModifierProperty(PsiModifier.ABSTRACT) || lackSuitableConstructor(
+    list != null && list.hasModifierProperty(PsiModifier.ABSTRACT) || lackSuitableConstructor(
       clazz)
   }
 

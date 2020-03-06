@@ -38,8 +38,7 @@ object PartitionSourceTestHelpers {
     def getPathDepth(): Int = 1
 
     def toPartition(tupleEntry: TupleEntry): String =
-      "{" + Util
-        .join(tupleEntry.asIterableOf(classOf[String]), "}->{", true) + "}"
+      "{" + Util.join(tupleEntry.asIterableOf(classOf[String]), "}->{", true) + "}"
 
     def toTuple(partition: String, tupleEntry: TupleEntry): Unit =
       throw new RuntimeException("toTuple for reading not implemented")

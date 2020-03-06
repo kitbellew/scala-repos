@@ -51,8 +51,7 @@ class ImportPanelConverterProvider
               children.find(_.getName == "component") match {
                 case Some(componentChild) =>
                   componentChild.getChildren.filter { elem =>
-                    elem.getName == "option" && elem
-                      .getAttribute("name") != null &&
+                    elem.getName == "option" && elem.getAttribute("name") != null &&
                     actualSettingsSet.contains(
                       elem.getAttribute("name").getValue)
                   }

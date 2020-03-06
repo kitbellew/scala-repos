@@ -78,8 +78,7 @@ object Resources {
     val path = url.getPath
     val pathSlash = if (path.last == '/') path else path + '/'
 
-    classLoader.getResource(path) != null && classLoader
-      .getResource(pathSlash) != null
+    classLoader.getResource(path) != null && classLoader.getResource(pathSlash) != null
   }
 
   private def isZipResourceDirectory(url: URL): Boolean = {

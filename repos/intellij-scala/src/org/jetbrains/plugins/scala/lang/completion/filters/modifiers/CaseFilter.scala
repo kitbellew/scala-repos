@@ -75,8 +75,7 @@ class CaseFilter extends ElementFilter {
               leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF)
             return true
         case _: ScCaseClause =>
-          if (parent.getParent.getNode
-                .findChildByType(ScalaTokenTypes.tFUNTYPE) != null)
+          if (parent.getParent.getNode.findChildByType(ScalaTokenTypes.tFUNTYPE) != null)
             return true
           else return false
         case _ =>

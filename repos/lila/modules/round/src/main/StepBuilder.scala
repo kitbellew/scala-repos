@@ -104,8 +104,7 @@ object StepBuilder {
       fromStep: Step,
       info: Info,
       variant: Variant): List[Step] = {
-    chess.Replay
-      .gameWhileValid(info.variation take 20, fromStep.fen, variant) match {
+    chess.Replay.gameWhileValid(info.variation take 20, fromStep.fen, variant) match {
       case (games, error) =>
         error foreach logChessError(gameId)
         val lastPly = games.lastOption.??(_.turns)

@@ -452,8 +452,7 @@ object ScalaRefactoringUtil {
         }
         val filter: ScLiteral => Boolean = {
           case toCheck: ScInterpolatedStringLiteral =>
-            toCheck.reference
-              .fold("")(_.refName) == prefix && toCheck.depthFirst
+            toCheck.reference.fold("")(_.refName) == prefix && toCheck.depthFirst
               .forall {
                 case ref: ScReferenceExpression =>
                   refNameToResolved.get(ref.refName).contains(ref.resolve())
@@ -1174,8 +1173,7 @@ object ScalaRefactoringUtil {
             .findElementAt(textRange.getStartOffset - 1)
             .getNode
             .getElementType
-          ScalaTokenTypes.IDENTIFIER_TOKEN_SET
-            .contains(prevElemType) || ScalaTokenTypes.KEYWORDS
+          ScalaTokenTypes.IDENTIFIER_TOKEN_SET.contains(prevElemType) || ScalaTokenTypes.KEYWORDS
             .contains(prevElemType)
         }
         shift =
@@ -1213,8 +1211,7 @@ object ScalaRefactoringUtil {
           val withNextChar = file.getText
             .substring(newRange.getStartOffset, newRange.getEndOffset + 1)
           val needBraces =
-            ScalaNamesUtil
-              .isIdentifier(withNextChar) && withNextChar.last != '$'
+            ScalaNamesUtil.isIdentifier(withNextChar) && withNextChar.last != '$'
           val text = if (needBraces) s"$${$newString}" else s"$$$newString"
           shift += (if (needBraces) 2 else 1)
           document.replaceString(
@@ -1409,8 +1406,8 @@ object ScalaRefactoringUtil {
         case _                              => false
       }
 
-      if (funDef != null && PsiTreeUtil
-            .isAncestor(candidate, funDef, true) && oneExprBody(funDef))
+      if (funDef != null && PsiTreeUtil.isAncestor(candidate, funDef, true) && oneExprBody(
+            funDef))
         funDef.body.get
       else if (isCaseClausesBlock) container(candidate.getContext, file)
       else candidate
@@ -1483,8 +1480,7 @@ object ScalaRefactoringUtil {
       return true
     }
 
-    if (elements.isEmpty || !elements
-          .exists(_.isInstanceOf[ScBlockStatement])) {
+    if (elements.isEmpty || !elements.exists(_.isInstanceOf[ScBlockStatement])) {
       showErrorHint(
         ScalaBundle.message("cannot.extract.empty.message"),
         project,

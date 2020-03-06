@@ -36,14 +36,12 @@ class CorsSupportSpec extends ScalatraSpec {
       get(
         "/",
         headers = Map(CorsSupport.OriginHeader -> "http://www.example.com")) {
-        response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+        response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
     }
     def dontTouchRegularRequest = {
       get("/") {
-        response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must beNull
+        response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must beNull
       }
     }
 
@@ -55,8 +53,7 @@ class CorsSupportSpec extends ScalatraSpec {
           CorsSupport.AccessControlRequestMethodHeader -> "GET",
           "Content-Type" -> "application/json")
       ) {
-        response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+        response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
     }
 
@@ -68,10 +65,8 @@ class CorsSupportSpec extends ScalatraSpec {
         "Content-Type" -> "application/json"
       )
       options("/", headers = hdrs) {
-        response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
-        response
-          .getHeader(CorsSupport.AccessControlAllowMethodsHeader) must_== "GET,HEAD,POST"
+        response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+        response.getHeader(CorsSupport.AccessControlAllowMethodsHeader) must_== "GET,HEAD,POST"
       }
     }
   }
@@ -109,8 +104,7 @@ class DisabledCorsSupportSpec extends ScalatraSpec {
       get(
         "/disabled/",
         headers = Map(CorsSupport.OriginHeader -> "http://www.example.com")) {
-        response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== null
+        response.getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== null
       }
     }
   }

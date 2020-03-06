@@ -426,8 +426,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
       // get the maximum requests given the browser type
       val max =
-        maxConcurrentRequests
-          .vend(req) - 2 // this request and any open comet requests
+        maxConcurrentRequests.vend(req) - 2 // this request and any open comet requests
 
       // dump the oldest requests
       which.drop(max).foreach {

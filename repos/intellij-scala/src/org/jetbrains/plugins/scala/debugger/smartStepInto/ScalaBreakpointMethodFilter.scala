@@ -56,8 +56,7 @@ class ScalaBreakpointMethodFilter(
     val method: Method = location.method
     psiMethod match {
       case None => //is created for fun expression
-        method.name == "apply" || method.name
-          .startsWith("apply$") || ScalaPositionManager
+        method.name == "apply" || method.name.startsWith("apply$") || ScalaPositionManager
           .isIndyLambda(method)
       case Some(m) =>
         val javaName = inReadAction(

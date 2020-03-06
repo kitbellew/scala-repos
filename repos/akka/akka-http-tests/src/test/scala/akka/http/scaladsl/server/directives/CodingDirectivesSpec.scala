@@ -224,10 +224,9 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
     "leave responses with an already set Content-Encoding header unchanged" in {
       Post() ~> `Accept-Encoding`(gzip) ~> {
         encodeResponseWith(Gzip) {
-          RespondWithDirectives
-            .respondWithHeader(`Content-Encoding`(identity)) {
-              completeOk
-            }
+          RespondWithDirectives.respondWithHeader(`Content-Encoding`(identity)) {
+            completeOk
+          }
         }
       } ~> check {
         response shouldEqual Ok.withHeaders(`Content-Encoding`(identity))

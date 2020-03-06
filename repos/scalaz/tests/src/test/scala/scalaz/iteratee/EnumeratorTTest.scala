@@ -44,9 +44,8 @@ object EnumeratorTTest extends SpecLite {
 
   "flatMap" in {
     val enum = enumStream[Int, Id](Stream(1, 2, 3))
-    (consume[Int, Id, List] &= enum
-      .flatMap(i => enum.map(_ + i))).run must_=== (List(2, 3, 4, 3, 4, 5, 4, 5,
-        6))
+    (consume[Int, Id, List] &= enum.flatMap(i => enum.map(_ + i))).run must_=== (
+        List(2, 3, 4, 3, 4, 5, 4, 5, 6))
   }
 
   "flatten in a generalized fashion" in {

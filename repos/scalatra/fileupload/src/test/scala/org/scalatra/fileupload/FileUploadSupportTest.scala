@@ -147,8 +147,8 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   }
 
   test("query parameters don't shadow post parameters") {
-    multipartResponse("/multipart-param?string=bar")
-      .getHeader("string") should equal("bar;foo")
+    multipartResponse("/multipart-param?string=bar").getHeader("string") should equal(
+      "bar;foo")
   }
 
   test("max size is respected") {

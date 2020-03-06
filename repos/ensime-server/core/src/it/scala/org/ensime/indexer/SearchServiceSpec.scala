@@ -181,8 +181,7 @@ class SearchServiceSpec
 
   "exact searches" should "find type aliases" in withSearchService {
     implicit service =>
-      service
-        .findUnique("org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
+      service.findUnique("org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
   }
 }
 

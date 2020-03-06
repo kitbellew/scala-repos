@@ -90,8 +90,7 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
       val ibr = ib.buildInsert
       (
         CompiledStatement(ibr.sql, ibr, serverSide.nodeType).infer(),
-        mapping
-          .map(n => mappingCompiler.compileMapping(ib.transformMapping(n))))
+        mapping.map(n => mappingCompiler.compileMapping(ib.transformMapping(n))))
     }
   }
 }

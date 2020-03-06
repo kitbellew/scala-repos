@@ -118,8 +118,7 @@ abstract class SFXDelegateSpec[J <: Object, S <: SFXDelegate[J]] protected (
   // TESTS - BEGIN
   /////////////////
 
-  "A %s"
-    .format(scalaClass.getSimpleName) should "have an implicit conversion from ScalaFX to JavaFX" in {
+  "A %s".format(scalaClass.getSimpleName) should "have an implicit conversion from ScalaFX to JavaFX" in {
     // Test if the implicit conversion exists
     assert(
       sfx2jfx != null,

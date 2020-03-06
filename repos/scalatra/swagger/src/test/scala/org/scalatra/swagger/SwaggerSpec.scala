@@ -340,8 +340,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
           if (r.nonEmpty) r reduce (_ and _) else 1.must_==(1)
         case _ =>
           val m = act \ fn must_== exp \ fn
-          m setMessage (JsonMethods
-            .compact(JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
+          m setMessage (JsonMethods.compact(JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
             .compact(JsonMethods.render(exp \ fn)) + " for field " + fn)
       }
     }

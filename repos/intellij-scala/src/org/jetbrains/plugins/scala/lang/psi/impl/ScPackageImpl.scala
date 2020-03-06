@@ -96,8 +96,7 @@ class ScPackageImpl private (val pack: PsiPackage)
         case _                   => place.getResolveScope
       }
       if (getQualifiedName == "scala") {
-        ScPackageImpl
-          .implicitlyImportedObject(place.getManager, scope, "scala") match {
+        ScPackageImpl.implicitlyImportedObject(place.getManager, scope, "scala") match {
           case Some(obj: ScObject) =>
             var newState = state
             obj.getType(TypingContext.empty).foreach {

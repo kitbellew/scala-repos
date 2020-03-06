@@ -131,10 +131,9 @@ trait SerializationSupport {
     // When sending remote messages currentTransportInformation is already set,
     // but when serializing for digests it must be set here.
     if (Serialization.currentTransportInformation.value == null)
-      Serialization.currentTransportInformation
-        .withValue(transportInformation) {
-          buildOther()
-        }
+      Serialization.currentTransportInformation.withValue(transportInformation) {
+        buildOther()
+      }
     else
       buildOther()
   }

@@ -942,8 +942,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case ""            => None
       case lineComment() => None // line comment, do nothing
       case paste() if !paste.running =>
-        paste
-          .transcript(Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
+        paste.transcript(Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
           case Some(s) => interpretStartingWith(s)
           case _       => None
         }

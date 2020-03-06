@@ -340,12 +340,12 @@ private[serverset2] object ZkSession {
           _ == WatchState.SessionState(SessionState.SyncConnected)
         }
         .toFuture
-        .unit before zkSession
-        .addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess { _ =>
-        logger.info(
-          s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
-        v() = zkSession
-        backoff.reset()
+        .unit before zkSession.addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess {
+        _ =>
+          logger.info(
+            s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
+          v() = zkSession
+          backoff.reset()
       }
 
       // Kick off a delayed reconnection on session expiration.

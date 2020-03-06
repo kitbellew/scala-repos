@@ -168,8 +168,7 @@ object SimpleBuildFileModifier {
       elementType: BuildFileElementType,
       buildFile: PsiFile,
       psiElements: PsiElement*): Option[VirtualFile] = {
-    locationProvider
-      .getAddElementLocation(module, elementType, buildFile) match {
+    locationProvider.getAddElementLocation(module, elementType, buildFile) match {
       case Some((parent, index))
           if (index == 0) || parent.getChildren.size >= index =>
         val children = parent.getChildren

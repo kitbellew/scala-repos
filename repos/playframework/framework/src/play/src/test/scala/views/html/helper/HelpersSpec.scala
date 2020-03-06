@@ -49,8 +49,7 @@ object HelpersSpec extends Specification {
       body must contain(typeAttr)
 
       // Make sure it doesn't contain it twice
-      body
-        .substring(body.indexOf(typeAttr) + typeAttr.length) must not contain (typeAttr)
+      body.substring(body.indexOf(typeAttr) + typeAttr.length) must not contain (typeAttr)
     }
   }
 
@@ -104,8 +103,7 @@ object HelpersSpec extends Specification {
       body must contain(dataTestAttr)
 
       // Make sure it doesn't have it twice, issue #478
-      body
-        .substring(body.indexOf(dataTestAttr) + dataTestAttr.length) must not contain (dataTestAttr)
+      body.substring(body.indexOf(dataTestAttr) + dataTestAttr.length) must not contain (dataTestAttr)
     }
 
     "Work as a simple select" in {

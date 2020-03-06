@@ -89,8 +89,7 @@ package object financial {
       val denominator = ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
         numPeriods) - 1.0)
-      -1 * (futureValue + presentValue * math
-        .pow(1.0 + rate, numPeriods)) / denominator
+      -1 * (futureValue + presentValue * math.pow(1.0 + rate, numPeriods)) / denominator
     }
   }
 

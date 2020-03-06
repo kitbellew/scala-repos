@@ -1861,8 +1861,7 @@ class ReassignedPartitionsIsrChangeListener(
       val topicAndPartition = TopicAndPartition(topic, partition)
       try {
         // check if this partition is still being reassigned or not
-        controllerContext.partitionsBeingReassigned
-          .get(topicAndPartition) match {
+        controllerContext.partitionsBeingReassigned.get(topicAndPartition) match {
           case Some(reassignedPartitionContext) =>
             // need to re-read leader and isr from zookeeper since the zkclient callback doesn't return the Stat object
             val newLeaderAndIsrOpt =

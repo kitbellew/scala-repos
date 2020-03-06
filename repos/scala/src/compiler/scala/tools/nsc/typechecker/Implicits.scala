@@ -970,8 +970,7 @@ trait Implicits {
         val ownerPos = owner.pos.pointOrElse(Int.MaxValue)
         sym.pos.pointOrElse(0) < ownerPos && (if (sym.hasAccessorFlag) {
                                                 val symAcc = sym.accessed // #3373
-                                                symAcc.pos
-                                                  .pointOrElse(0) < ownerPos &&
+                                                symAcc.pos.pointOrElse(0) < ownerPos &&
                                                 !(owner.ownerChain exists (o =>
                                                   (o eq sym) || (o eq symAcc))) // probably faster to iterate only once, don't feel like duplicating hasTransOwner for this case
                                               } else
@@ -1071,8 +1070,7 @@ trait Implicits {
             errors: Seq[AbsTypeError]): SearchResult = {
           // A divergent error from a nested implicit search will be found in `errors`. Stash that
           // aside to be re-issued if this implicit search fails.
-          errors
-            .collectFirst { case err: DivergentImplicitTypeError => err } foreach saveDivergent
+          errors.collectFirst { case err: DivergentImplicitTypeError => err } foreach saveDivergent
 
           if (search.isDivergent && divergentError.isEmpty) {
             // Divergence triggered by `i` at this level of the implicit search. We haven't

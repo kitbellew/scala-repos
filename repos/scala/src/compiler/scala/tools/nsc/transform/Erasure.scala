@@ -1128,8 +1128,7 @@ abstract class Erasure
                       ScalaRunTimeModule.info.member(nme.hash_).alternatives
                     def alt1 = alts find (_.info.paramTypes.head =:= qual.tpe)
                     def alt2 =
-                      ScalaRunTimeModule.info
-                        .member(nme.hash_) suchThat (_.info.paramTypes.head.typeSymbol == AnyClass)
+                      ScalaRunTimeModule.info.member(nme.hash_) suchThat (_.info.paramTypes.head.typeSymbol == AnyClass)
                     val newTree =
                       gen.mkRuntimeCall(nme.hash_, qual :: Nil) setSymbol (alt1 getOrElse alt2)
 

@@ -48,8 +48,7 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
       case window: WindowExpression => window
     }.nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
+    !expressions.exists(!_.resolved) && childrenResolved && !hasSpecialExpressions
   }
 
   override def validConstraints: Set[Expression] =
@@ -444,8 +443,7 @@ case class Aggregate(
       case window: WindowExpression => window
     }.nonEmpty)
 
-    !expressions
-      .exists(!_.resolved) && childrenResolved && !hasWindowExpressions
+    !expressions.exists(!_.resolved) && childrenResolved && !hasWindowExpressions
   }
 
   override def output: Seq[Attribute] = aggregateExpressions.map(_.toAttribute)

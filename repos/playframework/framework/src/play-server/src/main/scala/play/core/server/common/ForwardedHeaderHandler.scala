@@ -141,8 +141,7 @@ private[server] object ForwardedHeaderHandler {
       * Not RFC compliant. To be compliant we need proper header field parsing.
       */
     private def unquote(s: String): String = {
-      if (s.length >= 2 && s.charAt(0) == '"' && s
-            .charAt(s.length - 1) == '"') {
+      if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(s.length - 1) == '"') {
         s.substring(1, s.length - 1)
       } else s
     }

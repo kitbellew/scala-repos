@@ -22,8 +22,7 @@ object CanPadRight {
   // <editor-fold defaultstate="collapsed" desc=" DenseVector 1D padding ">
 
   @expand
-  implicit def implDV_OptPadDim[
-      @expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
+  implicit def implDV_OptPadDim[@expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
       : CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]] =
     new CanPadRight[DenseVector[T], Dimensions1, DenseVector[T]] {
       def apply(
@@ -187,8 +186,7 @@ object CanPadLeft {
   // <editor-fold defaultstate="collapsed" desc=" DenseVector 1D padding ">
 
   @expand
-  implicit def implDV_OptPadDim[
-      @expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
+  implicit def implDV_OptPadDim[@expand.args(Int, Long, Float, Double) T: ClassTag: Semiring]
       : CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]] =
     new CanPadLeft[DenseVector[T], Dimensions1, DenseVector[T]] {
       def apply(

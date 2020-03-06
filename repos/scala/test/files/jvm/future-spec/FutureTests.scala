@@ -565,8 +565,7 @@ class FutureTests extends MinimalScalaTest {
         } :+ Future.successful[Int](5)
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
-      Await
-        .result(Future.firstCompletedOf(futures.iterator), defaultTimeout) mustBe (5)
+      Await.result(Future.firstCompletedOf(futures.iterator), defaultTimeout) mustBe (5)
     }
 
     "find" in {

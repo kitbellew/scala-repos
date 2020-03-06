@@ -270,8 +270,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         specTp == nonSpecTp || {
           val specDesc = specTp.getDescriptor
           val nonSpecDesc = nonSpecTp.getDescriptor
-          specDesc.length == 1 && primitives
-            .contains(specDesc) && nonSpecDesc == ObjectRef.descriptor
+          specDesc.length == 1 && primitives.contains(specDesc) && nonSpecDesc == ObjectRef.descriptor
         }
       }
 
@@ -280,8 +279,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           nonSpecMethodDesc: String) = {
         val specArgs = Type.getArgumentTypes(specMethodDesc)
         val nonSpecArgs = Type.getArgumentTypes(nonSpecMethodDesc)
-        specArgs
-          .corresponds(nonSpecArgs)(sameOrSpecializedType) && sameOrSpecializedType(
+        specArgs.corresponds(nonSpecArgs)(sameOrSpecializedType) && sameOrSpecializedType(
           Type.getReturnType(specMethodDesc),
           Type.getReturnType(nonSpecMethodDesc))
       }

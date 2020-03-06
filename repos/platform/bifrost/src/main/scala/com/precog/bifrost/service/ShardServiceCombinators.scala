@@ -153,8 +153,7 @@ object ShardServiceCombinators extends Logging {
 
   private def getSortOrder(
       request: HttpRequest[_]): Validation[String, DesiredSortOrder] = {
-    request.parameters
-      .get('sortOrder) filter (_ != null) map (_.toLowerCase) map {
+    request.parameters.get('sortOrder) filter (_ != null) map (_.toLowerCase) map {
       case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
         success(TableModule.SortAscending)
       case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>

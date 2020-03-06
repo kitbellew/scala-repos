@@ -31,8 +31,8 @@ class HikariCPConfigSpec extends Specification {
 
       hikariConfig.getDataSourceProperties.getProperty("user") must beEqualTo(
         "user")
-      hikariConfig.getDataSourceProperties
-        .getProperty("password") must beEqualTo("password")
+      hikariConfig.getDataSourceProperties.getProperty("password") must beEqualTo(
+        "password")
     }
 
     "set database url" in new Configs {

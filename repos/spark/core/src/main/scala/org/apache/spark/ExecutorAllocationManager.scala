@@ -671,8 +671,7 @@ private[spark] class ExecutorAllocationManager(
         }
 
         // If this is the last pending task, mark the scheduler queue as empty
-        stageIdToTaskIndices
-          .getOrElseUpdate(stageId, new mutable.HashSet[Int]) += taskIndex
+        stageIdToTaskIndices.getOrElseUpdate(stageId, new mutable.HashSet[Int]) += taskIndex
         if (totalPendingTasks() == 0) {
           allocationManager.onSchedulerQueueEmpty()
         }

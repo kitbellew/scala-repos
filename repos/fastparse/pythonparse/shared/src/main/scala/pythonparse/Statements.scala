@@ -167,10 +167,9 @@ class Statements(indent: Int) {
       case (test, body, elifs, orelse) =>
         val (init :+ last) = (test, body) +: elifs
         val (last_test, last_body) = last
-        init
-          .foldRight(Ast.stmt.If(last_test, last_body, orelse.toSeq.flatten)) {
-            case ((test, body), rhs) => Ast.stmt.If(test, body, Seq(rhs))
-          }
+        init.foldRight(Ast.stmt.If(last_test, last_body, orelse.toSeq.flatten)) {
+          case ((test, body), rhs) => Ast.stmt.If(test, body, Seq(rhs))
+        }
     }
   }
   val space_indents = P(spaces.repX ~~ " ".repX(indent))

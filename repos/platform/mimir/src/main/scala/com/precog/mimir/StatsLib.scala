@@ -435,8 +435,7 @@ trait StatsLibModule[M[+_]]
                 var first = first0
 
                 while (row < smoothed.length) {
-                  if (values.isDefinedAt(row) && alphas
-                        .isDefinedAt(row) && betas
+                  if (values.isDefinedAt(row) && alphas.isDefinedAt(row) && betas
                         .isDefinedAt(row)) {
                     defined.set(row)
                     if (first) {
@@ -2031,8 +2030,12 @@ trait StatsLibModule[M[+_]]
 
         // compare each subsequent row against the last valid row
         while (row < end) {
-          if (defined
-                .get(row) && !isDuplicate(cols, definedCols, lastRow, row, 0)) {
+          if (defined.get(row) && !isDuplicate(
+                cols,
+                definedCols,
+                lastRow,
+                row,
+                0)) {
             duplicateRows.clear(row - start)
             lastRow = row
           }

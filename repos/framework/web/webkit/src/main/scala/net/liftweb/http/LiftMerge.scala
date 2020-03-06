@@ -301,8 +301,7 @@ private[http] trait LiftMerge {
           ("data-lift-gc" -> RenderVersion.get) ::
             (
               if (autoIncludeComet) {
-                ("data-lift-session-id" -> (S.session
-                  .map(_.uniqueId) openOr "xx")) ::
+                ("data-lift-session-id" -> (S.session.map(_.uniqueId) openOr "xx")) ::
                   S.requestCometVersions.is.toList.map {
                     case CometVersionPair(guid, version) =>
                       (s"data-lift-comet-$guid" -> version.toString)

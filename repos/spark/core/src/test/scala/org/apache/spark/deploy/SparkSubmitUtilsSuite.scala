@@ -169,8 +169,8 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
     val main = new MavenCoordinate("my.great.lib", "mylib", "0.1")
     val dep = "my.great.dep:mydep:0.5"
     // Local M2 repository
-    IvyTestUtils
-      .withRepository(main, Some(dep), Some(SparkSubmitUtils.m2Path)) { repo =>
+    IvyTestUtils.withRepository(main, Some(dep), Some(SparkSubmitUtils.m2Path)) {
+      repo =>
         val jarPath = SparkSubmitUtils.resolveMavenCoordinates(
           main.toString,
           None,
@@ -178,7 +178,7 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
           isTest = true)
         assert(jarPath.indexOf("mylib") >= 0, "should find artifact")
         assert(jarPath.indexOf("mydep") >= 0, "should find dependency")
-      }
+    }
     // Local Ivy Repository
     val settings = new IvySettings
     val ivyLocal =

@@ -363,8 +363,7 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
       if (debug) {
         assert(locals.size == orderedLocals.size)
-        val msg =
-          orderedLocals.toList filter { _ != NoSymbol } map { "  " + _ } mkString EOL
+        val msg = orderedLocals.toList filter { _ != NoSymbol } map { "  " + _ } mkString EOL
         trace("locals (%d total): %n".format(orderedLocals.size))(msg)
       }
 

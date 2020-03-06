@@ -513,8 +513,7 @@ class TNiceJoinByCountJob(args: Args) extends Job(args) {
   import com.twitter.scalding.typed.Syntax._
 
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
-    joinBy TypedPipe
-      .from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))(_._1, _._1).size
+    joinBy TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))(_._1, _._1).size
     .write(TypedText.tsv[(Int, Long)]("out"))
 
   //Also check simple joins:

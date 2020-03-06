@@ -275,8 +275,7 @@ private[ui] class FailedStageTable(
     } else {
       ""
     }
-    val failureReasonHtml =
-      <td valign="middle">{failureReasonSummary}{details}</td>
+    val failureReasonHtml = <td valign="middle">{failureReasonSummary}{details}</td>
     basicColumns ++ failureReasonHtml
   }
 }

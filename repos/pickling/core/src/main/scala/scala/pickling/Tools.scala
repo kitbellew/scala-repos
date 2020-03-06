@@ -88,8 +88,7 @@ class Tools[C <: Context](val c: C) {
   def isRelevantSubclass(baseSym: Symbol, subSym: Symbol) = {
     !blackList(baseSym) && !blackList(subSym) && subSym.isClass && {
       val subClass = subSym.asClass
-      subClass.baseClasses
-        .contains(baseSym) && !subClass.isAbstractClass && !subClass.isTrait
+      subClass.baseClasses.contains(baseSym) && !subClass.isAbstractClass && !subClass.isTrait
     }
   }
 

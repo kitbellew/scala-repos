@@ -1033,8 +1033,7 @@ object TypeDefinitionMembers {
               if (clazz != null && clazz
                     .isInstanceOf[ScClass] && !p.isEffectiveVal) {
                 //this is member only for class scope
-                if (PsiTreeUtil
-                      .isContextAncestor(clazz, place, false) && checkName(
+                if (PsiTreeUtil.isContextAncestor(clazz, place, false) && checkName(
                       p.name)) {
                   //we can accept this member
                   if (!processor.execute(

@@ -693,10 +693,9 @@ object Project extends ProjectExtra {
       key: AttributeKey[_])(implicit display: Show[ScopedKey[_]]): String = {
     val scoped = ScopedKey(scope, key)
 
-    val data =
-      scopedKeyData(structure, scope, key) map { _.description } getOrElse {
-        "No entry for key."
-      }
+    val data = scopedKeyData(structure, scope, key) map { _.description } getOrElse {
+      "No entry for key."
+    }
     val description = key.description match {
       case Some(desc) => "Description:\n\t" + desc + "\n"; case None => ""
     }
@@ -729,8 +728,8 @@ object Project extends ProjectExtra {
     val depends = cMap.get(scoped) match {
       case Some(c) => c.dependencies.toSet; case None => Set.empty
     }
-    val derivedDepends: Set[ScopedKey[_]] =
-      derivedDependencies(definingScoped).toSet
+    val derivedDepends
+        : Set[ScopedKey[_]] = derivedDependencies(definingScoped).toSet
 
     val reverse = reverseDependencies(cMap, scoped)
     val derivedReverse =

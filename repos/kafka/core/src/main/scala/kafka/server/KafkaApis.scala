@@ -974,8 +974,7 @@ class KafkaApis(
         metadataCache.getNonExistingTopics(authorizedTopics)
       if (config.autoCreateTopicsEnable && nonExistingTopics.nonEmpty) {
         authorizer.foreach { az =>
-          if (!az
-                .authorize(request.session, Create, Resource.ClusterResource)) {
+          if (!az.authorize(request.session, Create, Resource.ClusterResource)) {
             authorizedTopics --= nonExistingTopics
             unauthorizedTopics ++= nonExistingTopics
           }

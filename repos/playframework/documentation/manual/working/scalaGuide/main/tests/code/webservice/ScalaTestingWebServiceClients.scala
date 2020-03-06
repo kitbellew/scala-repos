@@ -114,8 +114,7 @@ object ScalaTestingWebServiceClients
         implicit val materializer = Play.current.materializer
         //#send-resource
         WsTestClient.withClient { client =>
-          Await
-            .result(new GitHubClient(client, "").repositories(), 10.seconds) must_== Seq(
+          Await.result(new GitHubClient(client, "").repositories(), 10.seconds) must_== Seq(
             "octocat/Hello-World")
         }
       }

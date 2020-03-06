@@ -344,12 +344,10 @@ private[graphx] class EdgePartition[
       // ... forward j to the index of the corresponding edge in `other`, and...
       while (j < other.size && other.srcIds(j) < srcId) { j += 1 }
       if (j < other.size && other.srcIds(j) == srcId) {
-        while (j < other.size && other.srcIds(j) == srcId && other
-                 .dstIds(j) < dstId) {
+        while (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) < dstId) {
           j += 1
         }
-        if (j < other.size && other.srcIds(j) == srcId && other
-              .dstIds(j) == dstId) {
+        if (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) == dstId) {
           // ... run `f` on the matching edge
           builder.add(
             srcId,

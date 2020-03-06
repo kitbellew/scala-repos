@@ -216,8 +216,7 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     catch { case NonFatal(e) ⇒ exchange.setFailure(new FailureResult(e)) }
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =
-    path
-      .findActorIn(camel.system) getOrElse (throw new ActorNotRegisteredException(
+    path.findActorIn(camel.system) getOrElse (throw new ActorNotRegisteredException(
       path.actorPath))
 
   private[this] def messageFor(exchange: CamelExchangeAdapter) =

@@ -143,8 +143,7 @@ class ByteCodeRepository[BT <: BTypes](
         case Left(e) =>
           Left(FieldNotFound(name, descriptor, classInternalName, Some(e)))
         case Right(c) =>
-          c.fields.asScala
-            .find(f => f.name == name && f.desc == descriptor) match {
+          c.fields.asScala.find(f => f.name == name && f.desc == descriptor) match {
             case Some(f) => Right((f, parent))
             case None =>
               if (c.superName == null)
@@ -179,8 +178,7 @@ class ByteCodeRepository[BT <: BTypes](
       classNode(ownerInternalName) match {
         case Left(e) => Left(List(e))
         case Right(c) =>
-          c.methods.asScala
-            .find(m => m.name == name && m.desc == descriptor) match {
+          c.methods.asScala.find(m => m.name == name && m.desc == descriptor) match {
             case Some(m) => Right((m, ownerInternalName))
             case None =>
               findInParents(

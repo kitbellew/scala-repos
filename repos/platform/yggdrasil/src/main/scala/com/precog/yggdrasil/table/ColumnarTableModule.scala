@@ -108,8 +108,7 @@ object ColumnarTableModule extends Logging {
       else if (prefix == "")
         stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
       else
-        CharBuffer
-          .wrap(prefix) :: (stream ++ (CharBuffer.wrap(suffix) :: StreamT
+        CharBuffer.wrap(prefix) :: (stream ++ (CharBuffer.wrap(suffix) :: StreamT
           .empty[M, CharBuffer]))
     }
 

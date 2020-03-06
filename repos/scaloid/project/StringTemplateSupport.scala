@@ -86,8 +86,9 @@ class StringTemplateSupport(
         .mapValues(_.map { case (k, v) => k.tail -> v })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
-          leaves
-            .map { case (k, v) => k.head -> v } ++ expand(branches, level + 1)
+          leaves.map { case (k, v) => k.head -> v } ++ expand(
+            branches,
+            level + 1)
         }
         .map(identity)
     }

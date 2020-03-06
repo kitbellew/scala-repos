@@ -52,8 +52,7 @@ class EndToEndTest extends FunSuite {
 
   class WorkItContext() {
     val streamRequest = 1
-    val httpRequest =
-      from(StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
+    val httpRequest = from(StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
     val info =
       StreamResponse.Info(Version(1, 1), StreamResponse.Status(200), Nil)
     val messages = new Broker[Buf]

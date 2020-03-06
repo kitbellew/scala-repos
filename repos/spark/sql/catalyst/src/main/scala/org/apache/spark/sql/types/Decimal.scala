@@ -268,8 +268,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   override def clone(): Decimal = new Decimal().set(this)
 
   override def compare(other: Decimal): Int = {
-    if (decimalVal
-          .eq(null) && other.decimalVal.eq(null) && _scale == other._scale) {
+    if (decimalVal.eq(null) && other.decimalVal.eq(null) && _scale == other._scale) {
       if (longVal < other.longVal) -1
       else if (longVal == other.longVal) 0
       else 1
@@ -291,8 +290,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     if (decimalVal.ne(null)) decimalVal == BIG_DEC_ZERO else longVal == 0
 
   def +(that: Decimal): Decimal = {
-    if (decimalVal
-          .eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
       Decimal(
         longVal + that.longVal,
         Math.max(precision, that.precision),
@@ -303,8 +301,7 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   }
 
   def -(that: Decimal): Decimal = {
-    if (decimalVal
-          .eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that.scale) {
       Decimal(
         longVal - that.longVal,
         Math.max(precision, that.precision),

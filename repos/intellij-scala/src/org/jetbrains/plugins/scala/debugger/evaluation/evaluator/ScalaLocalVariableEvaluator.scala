@@ -108,8 +108,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       if (frameProxy == null || myParameterIndex < 0) None
       else {
         val frameMethodName = frameProxy.location().method().name()
-        if ((myMethodName == null) || frameMethodName
-              .startsWith(myMethodName)) {
+        if ((myMethodName == null) || frameMethodName.startsWith(myMethodName)) {
           try {
             val values = frameProxy.getArgumentValues
             if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values

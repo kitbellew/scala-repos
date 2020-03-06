@@ -99,8 +99,7 @@ object ScalaStubsUtil {
                       case c: ScCompoundType =>
                         c.components.exists(checkTp)
                       case _ =>
-                        ScType
-                          .extractClass(tp, Some(inheritedClazz.getProject)) match {
+                        ScType.extractClass(tp, Some(inheritedClazz.getProject)) match {
                           case Some(otherClazz) =>
                             if (otherClazz == inheritedClazz) return true
                           case _ =>

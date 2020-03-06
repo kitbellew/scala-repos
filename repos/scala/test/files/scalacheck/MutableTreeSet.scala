@@ -140,8 +140,7 @@ package scala.collection.mutable {
         val setView = set.rangeImpl(from, until)
         setView += k
 
-        set.contains(k) && set.size == newExpectedSize && setView
-          .contains(k) == isInRange
+        set.contains(k) && set.size == newExpectedSize && setView.contains(k) == isInRange
     }
 
     property("++=") = forAll {

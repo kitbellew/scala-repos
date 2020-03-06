@@ -159,8 +159,7 @@ trait TypeDiagnostics {
         if (getter.setterIn(member.owner) != NoSymbol) DEFERRED.toLong | MUTABLE
         else DEFERRED
 
-      getter.owner
-        .newValue(getter.name.toTermName, getter.pos, flags) setInfo getter.tpe.resultType
+      getter.owner.newValue(getter.name.toTermName, getter.pos, flags) setInfo getter.tpe.resultType
     }
 
   def treeSymTypeMsg(tree: Tree): String = {

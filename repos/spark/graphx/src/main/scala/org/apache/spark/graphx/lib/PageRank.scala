@@ -161,8 +161,7 @@ object PageRank extends Logging {
         }
         .cache()
 
-      rankGraph.edges
-        .foreachPartition(x => {}) // also materializes rankGraph.vertices
+      rankGraph.edges.foreachPartition(x => {}) // also materializes rankGraph.vertices
       logInfo(s"PageRank finished iteration $iteration.")
       prevRankGraph.vertices.unpersist(false)
       prevRankGraph.edges.unpersist(false)

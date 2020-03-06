@@ -244,8 +244,7 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         allEntries.forall {
           case (k, v) =>
-            mapView
-              .contains(k) == (in(k, from, until) && entries.contains(k)) &&
+            mapView.contains(k) == (in(k, from, until) && entries.contains(k)) &&
               mapView.get(k) == (if (in(k, from, until)) entries.get(k)
                                  else None)
         }
@@ -276,8 +275,7 @@ package scala.collection.mutable {
         val mapView = map.rangeImpl(from, until)
         mapView += (k -> v)
 
-        map.contains(k) && map
-          .get(k) == Some(v) && map.size == newExpectedSize &&
+        map.contains(k) && map.get(k) == Some(v) && map.size == newExpectedSize &&
         mapView.contains(k) == isInRange &&
         mapView.get(k) == (if (isInRange) Some(v) else None)
     }

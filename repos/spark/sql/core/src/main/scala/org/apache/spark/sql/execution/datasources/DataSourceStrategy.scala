@@ -588,8 +588,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // items. So it is possible we still get an In expression here that needs to be pushed
       // down.
       case expressions.In(a: Attribute, list)
-          if list
-            .forall(_.isInstanceOf[Literal]) && a.name == bucketColumnName =>
+          if list.forall(_.isInstanceOf[Literal]) && a.name == bucketColumnName =>
         val hSet = list.map(e => e.eval(EmptyRow))
         hSet.foreach(e => matchedBuckets.set(getBucketId(a, numBuckets, e)))
       case expressions.IsNull(a: Attribute) if a.name == bucketColumnName =>

@@ -82,8 +82,7 @@ class RowTest extends FunSpec with Matchers {
         "col1" -> null,
         "col2" -> "value2"
       )
-      sampleRowWithoutCol3
-        .getValuesMap[String](List("col1", "col2")) shouldBe expected
+      sampleRowWithoutCol3.getValuesMap[String](List("col1", "col2")) shouldBe expected
     }
 
     it(

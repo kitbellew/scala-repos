@@ -349,8 +349,7 @@ class RemotingSpec
       remoteSystem.actorFor("/user/otherEcho1") ! 75
       expectMsg(75)
 
-      system
-        .actorFor("akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
+      system.actorFor("akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
       expectMsg(76)
 
       remoteSystem.actorSelection("/user/otherEcho1") ! 77
@@ -470,12 +469,10 @@ class RemotingSpec
       system.actorSelection(child.path / "*") ! Identify("idReq8")
       expectMsg(ActorIdentity("idReq8", Some(grandchild)))
 
-      system
-        .actorSelection("/user/looker2/child/grandchild/grandgrandchild") ! Identify(
+      system.actorSelection("/user/looker2/child/grandchild/grandgrandchild") ! Identify(
         "idReq9")
       expectMsg(ActorIdentity("idReq9", Some(grandgrandchild)))
-      system
-        .actorSelection(child.path / "grandchild" / "grandgrandchild") ! Identify(
+      system.actorSelection(child.path / "grandchild" / "grandgrandchild") ! Identify(
         "idReq10")
       expectMsg(ActorIdentity("idReq10", Some(grandgrandchild)))
       system.actorSelection("/user/looker2/child/*/grandgrandchild") ! Identify(

@@ -103,8 +103,7 @@ object GuiceApplicationBuilderSpec extends Specification {
       List("logger", "logger.resource", "logger.resource.test").forall { path =>
         val data = Map(path -> "NOT_A_DEPRECATED_VALUE")
         val builder = new GuiceApplicationBuilder()
-        builder
-          .shouldDisplayLoggerDeprecationMessage(Configuration.from(data)) must_=== false
+        builder.shouldDisplayLoggerDeprecationMessage(Configuration.from(data)) must_=== false
       }
     }
   }

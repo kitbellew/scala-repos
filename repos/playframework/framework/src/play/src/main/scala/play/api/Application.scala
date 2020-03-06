@@ -302,8 +302,8 @@ trait BuiltInComponents {
   lazy val cryptoConfig: CryptoConfig =
     new CryptoConfigParser(environment, configuration).get
 
-  lazy val cookieSigner: CookieSigner =
-    new CookieSignerProvider(cryptoConfig).get
+  lazy val cookieSigner
+      : CookieSigner = new CookieSignerProvider(cryptoConfig).get
   lazy val csrfTokenSigner: CSRFTokenSigner = new CSRFTokenSignerProvider(
     cookieSigner).get
   lazy val aesCrypter: AESCrypter = new AESCrypterProvider(cryptoConfig).get

@@ -913,13 +913,11 @@ private class SortMergeFullOuterJoinScanner(
     leftIndex = 0
     rightIndex = 0
 
-    while (leftRowKey != null && keyOrdering
-             .compare(leftRowKey, matchingKey) == 0) {
+    while (leftRowKey != null && keyOrdering.compare(leftRowKey, matchingKey) == 0) {
       leftMatches += leftRow.copy()
       advancedLeft()
     }
-    while (rightRowKey != null && keyOrdering
-             .compare(rightRowKey, matchingKey) == 0) {
+    while (rightRowKey != null && keyOrdering.compare(rightRowKey, matchingKey) == 0) {
       rightMatches += rightRow.copy()
       advancedRight()
     }

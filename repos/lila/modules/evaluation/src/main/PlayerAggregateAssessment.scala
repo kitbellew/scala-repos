@@ -99,8 +99,7 @@ case class PlayerAggregateAssessment(
 
   // Some statistics
   def sfAvgGiven(predicate: PlayerAssessment => Boolean): Option[Int] = {
-    val avg =
-      listAverage(playerAssessments.filter(predicate).map(_.sfAvg)).toInt
+    val avg = listAverage(playerAssessments.filter(predicate).map(_.sfAvg)).toInt
     if (playerAssessments.exists(predicate)) Some(avg) else none
   }
 

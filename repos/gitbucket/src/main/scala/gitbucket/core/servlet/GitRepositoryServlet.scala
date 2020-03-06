@@ -48,8 +48,7 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
       res: HttpServletResponse): Unit = {
     val agent = req.getHeader("USER-AGENT")
     val index = req.getRequestURI.indexOf(".git")
-    if (index >= 0 && (agent == null || agent.toLowerCase
-          .indexOf("git/") < 0)) {
+    if (index >= 0 && (agent == null || agent.toLowerCase.indexOf("git/") < 0)) {
       // redirect for browsers
       val paths = req.getRequestURI.substring(0, index).split("/")
       res.sendRedirect(
@@ -214,8 +213,7 @@ class CommitLogHook(
           // Extract new commit and apply issue comment
           val defaultBranch = repositoryInfo.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
-            if (!existIds.contains(commit.id) && !pushedIds
-                  .contains(commit.id)) {
+            if (!existIds.contains(commit.id) && !pushedIds.contains(commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)

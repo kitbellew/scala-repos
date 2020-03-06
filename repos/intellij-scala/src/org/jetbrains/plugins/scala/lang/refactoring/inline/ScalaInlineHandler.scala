@@ -78,8 +78,7 @@ class ScalaInlineHandler extends InlineHandler {
 
     element match {
       case rp: ScBindingPattern =>
-        PsiTreeUtil
-          .getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
+        PsiTreeUtil.getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
           case v @ (_: ScValue | _: ScVariable)
               if v.declaredElements.length == 1 =>
             removeElementWithNonSignificantSibilings(v)
@@ -98,8 +97,7 @@ class ScalaInlineHandler extends InlineHandler {
       settings: InlineHandler.Settings): InlineHandler.Inliner = {
     val replacementValue = element match {
       case rp: ScBindingPattern =>
-        PsiTreeUtil
-          .getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
+        PsiTreeUtil.getParentOfType(rp, classOf[ScDeclaredElementsHolder]) match {
           case v @ ScPatternDefinition.expr(e)
               if v.declaredElements == Seq(element) =>
             e.getText

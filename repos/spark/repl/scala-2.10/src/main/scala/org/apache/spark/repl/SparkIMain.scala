@@ -1265,8 +1265,7 @@ class SparkIMain(
       */
     def fullFlatName(name: String) =
       // lineRep.readPath + accessPath.replace('.', '$') + nme.NAME_JOIN_STRING + name
-      lineRep.readPath + ".INSTANCE" + accessPath
-        .replace('.', '$') + nme.NAME_JOIN_STRING + name
+      lineRep.readPath + ".INSTANCE" + accessPath.replace('.', '$') + nme.NAME_JOIN_STRING + name
 
     /** The unmangled symbol name, but supplemented with line info. */
     def disambiguated(name: Name): String = name + " (in " + lineRep + ")"

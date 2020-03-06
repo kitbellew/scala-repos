@@ -92,8 +92,7 @@ final object Aggregation {
 
     val extracted = Project extract s
     import extracted.structure
-    val toRun =
-      ts map { case KeyValue(k, t) => t.map(v => KeyValue(k, v)) } join;
+    val toRun = ts map { case KeyValue(k, t) => t.map(v => KeyValue(k, v)) } join;
     val roots = ts map { case KeyValue(k, _) => k }
     val config = extractedTaskConfig(extracted, structure, s)
 
@@ -288,8 +287,7 @@ final object Aggregation {
     }
 
   def aggregationEnabled(key: ScopedKey[_], data: Settings[Scope]): Boolean =
-    Keys.aggregate in Scope
-      .fillTaskAxis(key.scope, key.key) get data getOrElse true
+    Keys.aggregate in Scope.fillTaskAxis(key.scope, key.key) get data getOrElse true
 
   @deprecated("Use BuildUtil.aggregationRelation", "0.13.0")
   def relation(

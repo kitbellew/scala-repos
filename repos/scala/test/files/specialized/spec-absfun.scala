@@ -23,8 +23,9 @@ object Test {
   }
 
   def specialized() {
-    val pairs =
-      for { i <- 1 to Max; j <- 1 to i } yield new SpecializedPair(i, j)
+    val pairs = for { i <- 1 to Max; j <- 1 to i } yield new SpecializedPair(
+      i,
+      j)
     val time0 = System.nanoTime
     pairs foreach { p => p.first * p.second }
     val time1 = System.nanoTime

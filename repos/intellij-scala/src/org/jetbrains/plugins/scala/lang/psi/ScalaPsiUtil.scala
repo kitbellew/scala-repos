@@ -1376,8 +1376,7 @@ object ScalaPsiUtil {
     beanMethods.foreach { method =>
       val sigs =
         TypeDefinitionMembers.getSignatures(clazz).forName(method.name)._1
-      (sigs
-        .get(new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked) match {
+      (sigs.get(new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked) match {
         //partial match
         case Some(node) if !withSelfType || node.info.namedElement == method =>
           res ++= node.supers.map { _.info }

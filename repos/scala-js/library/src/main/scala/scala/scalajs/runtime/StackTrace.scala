@@ -365,8 +365,7 @@ object StackTrace {
         message.split("\n").length > stacktrace.split("\n").length
       if (!stacktrace) {
         extractOpera9(e) // use e.message
-      } else if ((message
-                   .indexOf("\n") > -1) && messageIsLongerThanStacktrace) {
+      } else if ((message.indexOf("\n") > -1) && messageIsLongerThanStacktrace) {
         // e.message may have more stack entries than e.stacktrace
         extractOpera9(e) // use e.message
       } else {

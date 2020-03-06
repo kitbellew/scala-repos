@@ -86,8 +86,7 @@ private[parquet] class CatalystWriteSupport
     this.rootFieldWriters = schema.map(_.dataType).map(makeWriter)
 
     val messageType = new CatalystSchemaConverter(configuration).convert(schema)
-    val metadata =
-      Map(CatalystReadSupport.SPARK_METADATA_KEY -> schemaString).asJava
+    val metadata = Map(CatalystReadSupport.SPARK_METADATA_KEY -> schemaString).asJava
 
     logInfo(s"""Initialized Parquet WriteSupport with Catalyst schema:
          |${schema.prettyJson}

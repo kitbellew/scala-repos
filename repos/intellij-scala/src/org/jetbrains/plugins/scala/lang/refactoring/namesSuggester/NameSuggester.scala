@@ -60,8 +60,7 @@ object NameSuggester {
 
     val result =
       (for (name <- names
-            if name != "" && ScalaNamesUtil
-              .isIdentifier(name) || name == "class")
+            if name != "" && ScalaNamesUtil.isIdentifier(name) || name == "class")
         yield {
           if (name != "class") name else "clazz"
         }).toList.reverse.toArray
@@ -179,8 +178,7 @@ object NameSuggester {
           val baseClass = JavaPsiFacade
             .getInstance(project)
             .findClass(baseFqn, GlobalSearchScope.allScope(project))
-          baseClass != null && (c
-            .isInheritor(baseClass, true) || ScEquivalenceUtil
+          baseClass != null && (c.isInheritor(baseClass, true) || ScEquivalenceUtil
             .areClassesEquivalent(c, baseClass))
         }
         val needPrefix = Map(

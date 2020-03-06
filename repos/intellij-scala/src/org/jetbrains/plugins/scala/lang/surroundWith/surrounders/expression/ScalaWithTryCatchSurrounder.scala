@@ -21,8 +21,7 @@ class ScalaWithTryCatchSurrounder extends ScalaExpressionSurrounder {
     val arrow =
       if (elements.length == 0) "=>"
       else ScalaPsiUtil.functionArrow(elements(0).getProject)
-    "try {\n" + super
-      .getTemplateAsString(elements) + s"\n} catch {\n case _ $arrow \n}"
+    "try {\n" + super.getTemplateAsString(elements) + s"\n} catch {\n case _ $arrow \n}"
   }
 
   override def getTemplateDescription = "try / catch"

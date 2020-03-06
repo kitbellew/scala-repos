@@ -2629,8 +2629,9 @@ object Forms {
     } else if (max == typeMax) {
       number verifying Constraints.min(min, strict)
     } else {
-      number verifying (Constraints
-        .min(min, strict), Constraints.max(max, strict))
+      number verifying (Constraints.min(min, strict), Constraints.max(
+        max,
+        strict))
     }
   }
 

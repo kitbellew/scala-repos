@@ -666,8 +666,7 @@ abstract class GenJSCode
                 methodDef
               } else {
                 val patches = (
-                  unmutatedMutableLocalVars
-                    .map(encodeLocalSym(_).name -> false) :::
+                  unmutatedMutableLocalVars.map(encodeLocalSym(_).name -> false) :::
                     mutatedImmutableLocalVals.map(
                       encodeLocalSym(_).name -> true)
                 ).toMap

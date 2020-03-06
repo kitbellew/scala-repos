@@ -448,8 +448,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           case _ =>
             extendsBlock match {
               case e: ScExtendsBlock if e != null =>
-                if (PsiTreeUtil
-                      .isContextAncestor(e, place, true) || !PsiTreeUtil
+                if (PsiTreeUtil.isContextAncestor(e, place, true) || !PsiTreeUtil
                       .isContextAncestor(this, place, true)) {
                   this match {
                     case t: ScTypeDefinition

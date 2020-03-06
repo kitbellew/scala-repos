@@ -388,8 +388,8 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
       route: Route,
       method: HttpMethod): AuthOperation[TypeForUser] = {
     val op =
-      route.metadata
-        .get(Symbols.Operation) map (_.asInstanceOf[AuthOperation[TypeForUser]])
+      route.metadata.get(Symbols.Operation) map (_.asInstanceOf[AuthOperation[
+        TypeForUser]])
     op map (_.copy(method = method)) getOrElse {
       val theParams =
         route.metadata.get(Symbols.Parameters) map (_.asInstanceOf[List[
@@ -398,18 +398,18 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
         ResponseMessage[_]]]) getOrElse Nil
       val responseClass = route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
         DataType]) getOrElse DataType.Void
-      val summary = (route.metadata
-        .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
+      val summary = (route.metadata.get(Symbols.Summary) map (_.asInstanceOf[
+        String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])
-      val produces = route.metadata
-        .get(Symbols.Produces) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val produces = route.metadata.get(Symbols.Produces) map (_.asInstanceOf[
+        List[String]]) getOrElse Nil
       val allows =
         route.metadata.get(Symbols.Allows) map (_.asInstanceOf[Option[
           TypeForUser] => Boolean]) getOrElse allowAll
-      val consumes = route.metadata
-        .get(Symbols.Consumes) map (_.asInstanceOf[List[String]]) getOrElse Nil
+      val consumes = route.metadata.get(Symbols.Consumes) map (_.asInstanceOf[
+        List[String]]) getOrElse Nil
       AuthOperation[TypeForUser](
         method = method,
         responseClass = responseClass,

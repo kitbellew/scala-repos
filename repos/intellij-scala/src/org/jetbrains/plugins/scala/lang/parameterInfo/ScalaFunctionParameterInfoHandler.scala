@@ -231,8 +231,7 @@ class ScalaFunctionParameterInfoHandler
                         if (namedMode) buffer.append(namedPostfix)
                         assign.getRExpression match {
                           case Some(expr: ScExpression) =>
-                            for (exprType <- expr
-                                   .getType(TypingContext.empty)) {
+                            for (exprType <- expr.getType(TypingContext.empty)) {
                               val paramType = param._1.paramType
                               if (!exprType.conforms(paramType)) isGrey = true
                             }
@@ -310,10 +309,9 @@ class ScalaFunctionParameterInfoHandler
                       false,
                       false,
                       paramIndex),
-                    t._1 + ": " + ScType
-                      .presentableText(t._2) + (if (t._3 != null)
-                                                  " = " + t._3.getText
-                                                else ""))
+                    t._1 + ": " + ScType.presentableText(t._2) + (if (t._3 != null)
+                                                                    " = " + t._3.getText
+                                                                  else ""))
               }
               applyToParameters(
                 paramsSeq,
@@ -684,8 +682,7 @@ class ScalaFunctionParameterInfoHandler
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val typeElement = constr.typeElement
             val i = constr.arguments.indexOf(args.element)
-            ScType
-              .extractClassType(typeElement.calcType, Some(file.getProject)) match {
+            ScType.extractClassType(typeElement.calcType, Some(file.getProject)) match {
               case Some((clazz: PsiClass, subst: ScSubstitutor)) =>
                 clazz match {
                   case clazz: ScClass =>
@@ -701,8 +698,7 @@ class ScalaFunctionParameterInfoHandler
                             val map = new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
-                            for (i <- 0 to Math
-                                   .min(tp.length, typeArgs.length) - 1) {
+                            for (i <- 0 to Math.min(tp.length, typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
                             val substitutor = new ScSubstitutor(
@@ -753,8 +749,7 @@ class ScalaFunctionParameterInfoHandler
                           val map = new collection.mutable.HashMap[
                             (String, PsiElement),
                             ScType]
-                          for (i <- 0 to Math
-                                 .min(tp.length, typeArgs.length) - 1) {
+                          for (i <- 0 to Math.min(tp.length, typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
                           val substitutor = new ScSubstitutor(

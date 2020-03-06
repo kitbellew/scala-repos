@@ -308,8 +308,7 @@ object TournamentRepo {
   def exists(id: String) = coll.count(BSONDocument("_id" -> id).some) map (0 !=)
 
   def isFinished(id: String): Fu[Boolean] =
-    coll
-      .count(BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map (0 !=)
+    coll.count(BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map (0 !=)
 
   def toursToWithdrawWhenEntering(tourId: String): Fu[List[Tournament]] =
     coll

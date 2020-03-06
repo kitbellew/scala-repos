@@ -138,8 +138,7 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(
       accountId: AccountId,
       keyName: Option[String] = None,
       keyDesc: Option[String] = None): M[v1.APIKeyDetails] = {
-    underlying
-      .newStandardAPIKeyRecord(accountId, keyName, keyDesc) flatMap recordDetails
+    underlying.newStandardAPIKeyRecord(accountId, keyName, keyDesc) flatMap recordDetails
   }
 
   def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean] = {

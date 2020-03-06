@@ -858,8 +858,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Is given package class a system package class that cannot be invalidated?
     */
   private def isSystemPackageClass(pkg: Symbol) =
-    pkg == RootClass || (pkg
-      .hasTransOwner(definitions.ScalaPackageClass) && !pkg
+    pkg == RootClass || (pkg.hasTransOwner(definitions.ScalaPackageClass) && !pkg
       .hasTransOwner(
         this.rootMirror.staticPackage("scala.tools").moduleClass.asClass))
 

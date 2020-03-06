@@ -91,8 +91,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     val context = getContext
     (context.isInstanceOf[ScInfixExpr] || context.isInstanceOf[ScMethodCall]) &&
     refName.endsWith("=") &&
-    !(refName.startsWith("=") || Seq("!=", "<=", ">=")
-      .contains(refName) || refName
+    !(refName.startsWith("=") || Seq("!=", "<=", ">=").contains(refName) || refName
       .exists(_.isLetterOrDigit))
   }
 
@@ -599,8 +598,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case _                                 =>
     }
 
-    if (candidates.isEmpty || (!shape && candidates
-          .forall(!_.isApplicable())) ||
+    if (candidates.isEmpty || (!shape && candidates.forall(!_.isApplicable())) ||
         (processor.isInstanceOf[CompletionProcessor] &&
         processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
       processor match {

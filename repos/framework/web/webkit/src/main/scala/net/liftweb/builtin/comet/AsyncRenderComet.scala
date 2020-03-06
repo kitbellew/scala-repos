@@ -96,8 +96,7 @@ object AsyncRenderComet {
     * asynchronous renderer.
     */
   def completeAsyncRender(command: JsCmd): Box[Unit] = {
-    pageAsyncRenderer.is
-      .map(_ ! Render(command)) ?~! "Failed to create async renderer."
+    pageAsyncRenderer.is.map(_ ! Render(command)) ?~! "Failed to create async renderer."
   }
 
   /**

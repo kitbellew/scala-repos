@@ -196,11 +196,10 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
         val in =
           new ObjectInputStream(new ByteArrayInputStream(outbuf.toByteArray))
-        JavaSerializer.currentSystem
-          .withValue(a.asInstanceOf[ActorSystemImpl]) {
-            val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
-            (deadLetters eq a.deadLetters) should ===(true)
-          }
+        JavaSerializer.currentSystem.withValue(a.asInstanceOf[ActorSystemImpl]) {
+          val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
+          (deadLetters eq a.deadLetters) should ===(true)
+        }
       } finally {
         shutdown(a)
       }
@@ -237,8 +236,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
     }
 
     "give warning for message with several bindings" in {
-      EventFilter
-        .warning(start = "Multiple serializers found", occurrences = 1) intercept {
+      EventFilter.warning(start = "Multiple serializers found", occurrences = 1) intercept {
         ser.serializerFor(classOf[Both]).getClass should (be(
           classOf[TestSerializer]) or be(classOf[JavaSerializer]))
       }
@@ -247,8 +245,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
     "resolve serializer in the order of the bindings" in {
       ser.serializerFor(classOf[A]).getClass should ===(classOf[JavaSerializer])
       ser.serializerFor(classOf[B]).getClass should ===(classOf[TestSerializer])
-      EventFilter
-        .warning(start = "Multiple serializers found", occurrences = 1) intercept {
+      EventFilter.warning(start = "Multiple serializers found", occurrences = 1) intercept {
         ser.serializerFor(classOf[C]).getClass should (be(
           classOf[TestSerializer]) or be(classOf[JavaSerializer]))
       }
@@ -272,8 +269,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         ByteArraySerializer]
 
       for (a ← Seq("foo".getBytes("UTF-8"), null: Array[Byte], Array[Byte]()))
-        byteSerializer
-          .fromBinary(byteSerializer.toBinary(a)) should be theSameInstanceAs a
+        byteSerializer.fromBinary(byteSerializer.toBinary(a)) should be theSameInstanceAs a
 
       intercept[IllegalArgumentException] {
         byteSerializer.toBinary("pigdog")
@@ -457,8 +453,7 @@ class OverriddenSystemMessageSerializationSpec
   "Overridden SystemMessage serialization" must {
 
     "resolve to a single serializer" in {
-      EventFilter
-        .warning(start = "Multiple serializers found", occurrences = 0) intercept {
+      EventFilter.warning(start = "Multiple serializers found", occurrences = 0) intercept {
         for (smc ← systemMessageClasses) {
           ser.serializerFor(smc).getClass should ===(classOf[TestSerializer])
         }

@@ -79,8 +79,8 @@ object MockHttpRequestSpec extends Specification {
       testRequest.headers += IF_MODIFIED_HEADER -> List(
         "this is not a valid date")
 
-      testRequest
-        .getDateHeader(IF_MODIFIED_HEADER) must throwA[IllegalArgumentException]
+      testRequest.getDateHeader(IF_MODIFIED_HEADER) must throwA[
+        IllegalArgumentException]
     }
 
     "throw an IllegalArgumentException for an invalid context path" in {

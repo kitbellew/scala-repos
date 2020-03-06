@@ -189,8 +189,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           case _ => None
         }
         val needInsertNLBefore =
-          (!trimmedStartLine
-            .startsWith(firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine
+          (!trimmedStartLine.startsWith(firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine
 
         selectBySettings()(
           if (needAddByType(literal))
@@ -219,8 +218,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         val indentSize =
           prevIndent + needInsertIndentInt + interpolatorPrefixLength(literal) + marginIndent
 
-        if (literal.getText
-              .substring(offset - literalOffset) == multilineQuotes) {
+        if (literal.getText.substring(offset - literalOffset) == multilineQuotes) {
           forceIndent(caretOffset, indentSize, marginCharOpt)
           caretMarker.setGreedyToRight(false)
           insertNewLine(

@@ -189,15 +189,13 @@ private[spark] class TaskSetManager(
     for (loc <- tasks(index).preferredLocations) {
       loc match {
         case e: ExecutorCacheTaskLocation =>
-          pendingTasksForExecutor
-            .getOrElseUpdate(e.executorId, new ArrayBuffer) += index
+          pendingTasksForExecutor.getOrElseUpdate(e.executorId, new ArrayBuffer) += index
         case e: HDFSCacheTaskLocation => {
           val exe = sched.getExecutorsAliveOnHost(loc.host)
           exe match {
             case Some(set) => {
               for (e <- set) {
-                pendingTasksForExecutor
-                  .getOrElseUpdate(e, new ArrayBuffer) += index
+                pendingTasksForExecutor.getOrElseUpdate(e, new ArrayBuffer) += index
               }
               logInfo(
                 s"Pending task $index has a cached location at ${e.host} " +
@@ -305,8 +303,7 @@ private[spark] class TaskSetManager(
       execId: String,
       host: String,
       locality: TaskLocality.Value): Option[(Int, TaskLocality.Value)] = {
-    speculatableTasks
-      .retain(index => !successful(index)) // Remove finished tasks from set
+    speculatableTasks.retain(index => !successful(index)) // Remove finished tasks from set
 
     def canRunOnHost(index: Int): Boolean =
       !hasAttemptOnHost(index, host) && !executorIsBlacklisted(execId, index)

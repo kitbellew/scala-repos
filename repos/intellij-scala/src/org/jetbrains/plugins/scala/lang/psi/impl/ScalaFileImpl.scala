@@ -562,8 +562,7 @@ object ScalaFileImpl {
         if (file == null) return false
         val index =
           ProjectRootManager.getInstance(place.getProject).getFileIndex
-        !(index.isInSourceContent(file) || index
-          .isInLibraryClasses(file) || index
+        !(index.isInSourceContent(file) || index.isInLibraryClasses(file) || index
           .isInLibrarySource(file))
       case _ => false
     }

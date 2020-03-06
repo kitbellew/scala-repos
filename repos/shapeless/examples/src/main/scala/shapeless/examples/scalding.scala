@@ -43,11 +43,8 @@ object ScaldingPoC extends App {
   val fasterBirds = birds.map(b => b + ("doubleSpeed" ->> b("speed") * 2))
   fasterBirds foreach println
 
-  val britishBirds =
-    birds
-      .map(b =>
-        b + ("weightKg" ->> b("weightLb") * 0.454) + ("heightM" ->> b(
-          "heightFt") * 0.305))
+  val britishBirds = birds.map(b =>
+    b + ("weightKg" ->> b("weightLb") * 0.454) + ("heightM" ->> b("heightFt") * 0.305))
   britishBirds foreach println
 
   val items =

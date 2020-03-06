@@ -214,8 +214,7 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     * absent, as an init parameter.  The default value is `DEVELOPMENT`.
     */
   def environment: String = {
-    sys.props.get(EnvironmentKey) orElse initParameters
-      .get(EnvironmentKey) getOrElse ("DEVELOPMENT")
+    sys.props.get(EnvironmentKey) orElse initParameters.get(EnvironmentKey) getOrElse ("DEVELOPMENT")
   }
 
   object initParameters extends mutable.Map[String, String] {

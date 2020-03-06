@@ -133,8 +133,7 @@ class LeaderProxyFilter @Inject() (
             LeaderProxyFilter.HEADER_MARATHON_LEADER,
             buildUrl(myHostPort).toString)
           chain.doFilter(request, response)
-        } else if (leaderDataOpt
-                     .forall(_ == myHostPort)) { // either not leader or ourselves
+        } else if (leaderDataOpt.forall(_ == myHostPort)) { // either not leader or ourselves
           log.info(
             s"Do not proxy to myself. Waiting for consistent leadership state. " +
               s"Are we leader?: false, leader: $leaderDataOpt")

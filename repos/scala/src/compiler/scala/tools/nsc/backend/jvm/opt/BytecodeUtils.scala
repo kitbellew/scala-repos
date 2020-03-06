@@ -239,11 +239,10 @@ object BytecodeUtils {
     * The number of local variable slots used for parameters and for the `this` reference.
     */
   def parametersSize(methodNode: MethodNode): Int = {
-    (Type
-      .getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
-                                                                  methodNode))
-                                                              1
-                                                            else 0)
+    (Type.getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
+                                                                     methodNode))
+                                                                 1
+                                                               else 0)
   }
 
   def labelReferences(method: MethodNode): Map[LabelNode, Set[AnyRef]] = {

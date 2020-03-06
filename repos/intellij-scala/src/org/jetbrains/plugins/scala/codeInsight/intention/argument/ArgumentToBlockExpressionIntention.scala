@@ -21,8 +21,7 @@ class ArgumentToBlockExpressionIntention extends PsiElementBaseIntentionAction {
   override def getText: String = getFamilyName
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
-    IntentionAvailabilityChecker
-      .checkIntention(this, element) && (element match {
+    IntentionAvailabilityChecker.checkIntention(this, element) && (element match {
       case Parent(list: ScArgumentExprList)
           if list.exprs.size == 1 && !list
             .exprs(0)

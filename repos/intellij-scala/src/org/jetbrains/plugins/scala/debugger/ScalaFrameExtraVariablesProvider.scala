@@ -74,10 +74,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       evaluationContext: EvaluationContext,
       alreadyCollected: util.Set[String]): util.Set[TextWithImports] = {
 
-    val method =
-      Try(evaluationContext.getFrameProxy.location().method()).toOption
-    if (method.isEmpty || DebuggerUtils
-          .isSynthetic(method.get) || ScalaSyntheticProvider
+    val method = Try(evaluationContext.getFrameProxy.location().method()).toOption
+    if (method.isEmpty || DebuggerUtils.isSynthetic(method.get) || ScalaSyntheticProvider
           .isMacroDefined(method.get))
       return Collections.emptySet()
 

@@ -216,8 +216,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
           "discovery/html/openIDProvider.html")
         ws.response.xml returns scala.xml.XML
           .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
-        ws.response
-          .header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
+        ws.response.header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
           "application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
@@ -245,8 +244,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
           "discovery/html/openIDProvider-OpenID-1.1.html")
         ws.response.xml returns scala.xml.XML
           .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
-        ws.response
-          .header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
+        ws.response.header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
           "application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"

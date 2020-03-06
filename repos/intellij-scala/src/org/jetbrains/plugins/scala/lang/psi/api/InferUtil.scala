@@ -265,8 +265,7 @@ object InferUtil {
         val evaluator = ScalaMacroEvaluator.getInstance(place.getProject)
         evaluator.isMacro(results.head.getElement) match {
           case Some(m) =>
-            evaluator
-              .checkMacro(m, MacroContext(place, Some(paramType))) match {
+            evaluator.checkMacro(m, MacroContext(place, Some(paramType))) match {
               case Some(tp) =>
                 exprs += new Expression(polymorphicSubst subst tp)
               case None => updateExpr()

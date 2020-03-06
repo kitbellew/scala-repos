@@ -58,8 +58,7 @@ class ScalaMethodFilter(
     else if (myTargetMethodSignature != null && method
                .signature() != myTargetMethodSignature.getName(process)) false
     else {
-      DebuggerUtilsEx
-        .isAssignableFrom(locationTypeName, location.declaringType) &&
+      DebuggerUtilsEx.isAssignableFrom(locationTypeName, location.declaringType) &&
       !ScalaPositionManager.shouldSkip(location, process)
     }
   }

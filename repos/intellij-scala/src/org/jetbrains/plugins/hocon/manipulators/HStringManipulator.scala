@@ -31,8 +31,7 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
       (newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
         " ")
         || (str.elementType == KeyPart && newContent.contains('.'))
-        || newContent
-          .exists(HoconLexer.ForbiddenChars.contains) || escapedContent != newContent)
+        || newContent.exists(HoconLexer.ForbiddenChars.contains) || escapedContent != newContent)
 
     val unquotedText =
       oldText.substring(0, range.getStartOffset) + escapedContent + oldText

@@ -165,8 +165,7 @@ object TestNodeProvider {
       //this should be a funSuite-like test
     } else if (getFeatureSpecBases.exists(isInheritor(clazz, _))) {
       extractFeatureSpec(expr, project)
-    } else if (getFunSpecBasesPost2_0
-                 .exists(isInheritor(clazz, _)) || getFunSpecBasesPre2_0
+    } else if (getFunSpecBasesPost2_0.exists(isInheritor(clazz, _)) || getFunSpecBasesPre2_0
                  .exists(isInheritor(clazz, _))) {
       extractFunSpec(expr, project)
     } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {

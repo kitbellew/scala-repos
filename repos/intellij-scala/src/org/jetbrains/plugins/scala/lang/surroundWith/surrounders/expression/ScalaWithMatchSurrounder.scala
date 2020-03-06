@@ -46,8 +46,7 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
     (if (elements.length == 1 && !needBraces(elements(0)))
        super.getTemplateAsString(elements)
      else
-       "(" + super
-         .getTemplateAsString(elements) + ")") + s" match {\ncase a  $arrow\n}"
+       "(" + super.getTemplateAsString(elements) + ")") + s" match {\ncase a  $arrow\n}"
   }
 
   override def getTemplateDescription = "match"

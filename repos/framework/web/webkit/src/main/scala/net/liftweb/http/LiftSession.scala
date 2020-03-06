@@ -1110,8 +1110,7 @@ class LiftSession(
 
                     PageName(request.uri + " -> " + request.path)
                     LiftRules.allowParallelSnippets.doWith(() => !Props.inGAE) {
-                      (request.location
-                        .flatMap(_.earlyResponse) or LiftRules.earlyResponse
+                      (request.location.flatMap(_.earlyResponse) or LiftRules.earlyResponse
                         .firstFull(request)) or
                         (processTemplate(
                           locTemplate,

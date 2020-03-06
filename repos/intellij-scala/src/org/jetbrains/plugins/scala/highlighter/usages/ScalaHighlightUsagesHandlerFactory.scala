@@ -49,8 +49,7 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
           case _ =>
         }
       case ScalaTokenTypes.kVAL =>
-        PsiTreeUtil
-          .getParentOfType(element, classOf[ScPatternDefinition]) match {
+        PsiTreeUtil.getParentOfType(element, classOf[ScPatternDefinition]) match {
           case pattern @ ScPatternDefinition.expr(expr)
               if pattern.pList.allPatternsSimple && pattern.pList.patterns.length == 1 =>
             return new ScalaHighlightExprResultHandler(
@@ -61,8 +60,7 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
           case _ =>
         }
       case ScalaTokenTypes.kVAR =>
-        PsiTreeUtil
-          .getParentOfType(element, classOf[ScVariableDefinition]) match {
+        PsiTreeUtil.getParentOfType(element, classOf[ScVariableDefinition]) match {
           case pattern @ ScPatternDefinition.expr(expr)
               if pattern.pList.allPatternsSimple && pattern.pList.patterns.length == 1 =>
             return new ScalaHighlightExprResultHandler(

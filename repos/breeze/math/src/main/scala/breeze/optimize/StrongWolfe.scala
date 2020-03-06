@@ -148,8 +148,7 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
       // If phi has a bounded domain, inf or nan usually indicates we took
       // too large a step.
-      if (java.lang.Double.isInfinite(c.fval) || java.lang.Double
-            .isNaN(c.fval)) {
+      if (java.lang.Double.isInfinite(c.fval) || java.lang.Double.isNaN(c.fval)) {
         t /= 2.0
         logger.error(
           "Encountered bad values in function evaluation. Decreasing step size to " + t)

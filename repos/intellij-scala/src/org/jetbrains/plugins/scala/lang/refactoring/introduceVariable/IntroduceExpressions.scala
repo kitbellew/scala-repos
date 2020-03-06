@@ -301,8 +301,7 @@ trait IntroduceExpressions {
           case extBl: ScExtendsBlock =>
             Some(extBl)
           case elem
-              if PsiTreeUtil
-                .getParentOfType(elem, classOf[ScClassParents]) != null =>
+              if PsiTreeUtil.getParentOfType(elem, classOf[ScClassParents]) != null =>
             PsiTreeUtil.getParentOfType(elem, classOf[ScExtendsBlock]) match {
               case _ childOf (_: ScNewTemplateDefinition) => None
               case extBl                                  => Some(extBl)

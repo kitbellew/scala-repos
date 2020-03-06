@@ -135,8 +135,7 @@ trait ScalaInplaceRenameHandler {
     }
     elementToRename match {
       case Both(`selected`, fun: ScFunction)
-          if Seq("apply", "unapply", "unapplySeq")
-            .contains(fun.name) || fun.isConstructor =>
+          if Seq("apply", "unapply", "unapplySeq").contains(fun.name) || fun.isConstructor =>
         specialMethodPopup(fun)
         null
       case elem =>

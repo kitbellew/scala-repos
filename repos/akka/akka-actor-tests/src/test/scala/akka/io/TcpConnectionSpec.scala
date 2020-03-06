@@ -101,8 +101,7 @@ class TcpConnectionSpec extends AkkaSpec("""
         clientChannel.socket.getKeepAlive should ===(
           true
         ) // only set after connection is established
-        EventFilter
-          .warning(pattern = "registration timeout", occurrences = 1) intercept {
+        EventFilter.warning(pattern = "registration timeout", occurrences = 1) intercept {
           selector.send(connectionActor, ChannelConnectable)
           clientChannel.socket.getKeepAlive should ===(false)
         }

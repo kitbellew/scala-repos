@@ -379,8 +379,7 @@ private trait LazyTuple4Equal[A1, A2, A3, A4]
   override def equal(
       f1: LazyTuple4[A1, A2, A3, A4],
       f2: LazyTuple4[A1, A2, A3, A4]) =
-    _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3
-      .equal(f1._3, f2._3) && _4
+    _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(f1._3, f2._3) && _4
       .equal(f1._4, f2._4)
 }
 

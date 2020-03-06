@@ -251,8 +251,8 @@ class AnalysisSuite extends AnalysisTest {
     var expected = testRelation.select((a + 1 + 2).as("col"))
     checkAnalysis(plan, expected)
 
-    plan = testRelation
-      .groupBy(a.as("a1").as("a2"))((min(a).as("min_a") + 1).as("col"))
+    plan = testRelation.groupBy(a.as("a1").as("a2"))(
+      (min(a).as("min_a") + 1).as("col"))
     expected = testRelation.groupBy(a)((min(a) + 1).as("col"))
     checkAnalysis(plan, expected)
 

@@ -321,8 +321,7 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   case class testFor(route: Route) {
     def apply(expectedResponse: String = null): String ⇒ Unit =
       exampleString ⇒
-        """(accept|reject)\s+\[([^\]]+)\]""".r
-          .findFirstMatchIn(exampleString) match {
+        """(accept|reject)\s+\[([^\]]+)\]""".r.findFirstMatchIn(exampleString) match {
           case Some(uri) ⇒
             uri.group(1) match {
               case "accept" if expectedResponse eq null ⇒

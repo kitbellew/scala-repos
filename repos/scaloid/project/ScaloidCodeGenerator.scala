@@ -56,8 +56,7 @@ class ScaloidCodeGenerator(
 
   def prefixedClassDef = {
     val name = cls.name
-    if (cls.hasBlankConstructor || CustomClassBodies.toMap
-          .isDefinedAt(name) || companionObjectBodies.toMap
+    if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(name) || companionObjectBodies.toMap
           .isDefinedAt(name))
       s"""$prefixedClassScalaDoc
          |${deprecated}class S$name$customClassGenerics($customClassExplicitArgs)$classImplicitArgs
@@ -144,8 +143,7 @@ class ScaloidCodeGenerator(
 
     private def constTypeParams = {
       val argStrings =
-        con.paramedTypes
-          .map(paramedType(_, define = true)) :+ customConstTypeParams.trim
+        con.paramedTypes.map(paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
         case Nil    => ""
         case params => params.mkString("[", ", ", "]")

@@ -51,8 +51,7 @@ object SystemPropertiesSpec extends Specification with After {
 
       sp.configure(config)
 
-      System
-        .getProperty("sun.security.ssl.allowLegacyHelloMessages") must beNull
+      System.getProperty("sun.security.ssl.allowLegacyHelloMessages") must beNull
     }
 
     // @see http://www.oracle.com/technetwork/java/javase/documentation/tlsreadme2-176330.html
@@ -73,8 +72,7 @@ object SystemPropertiesSpec extends Specification with After {
 
       sp.configure(config)
 
-      System
-        .getProperty("sun.security.ssl.allowUnsafeRenegotiation") must beNull
+      System.getProperty("sun.security.ssl.allowUnsafeRenegotiation") must beNull
     }
 
     // @see http://www.oracle.com/technetwork/java/javase/documentation/tlsreadme2-176330.html

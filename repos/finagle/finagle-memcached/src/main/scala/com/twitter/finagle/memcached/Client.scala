@@ -493,8 +493,9 @@ protected class ConnectedClient(
   import scala.collection.breakOut
 
   protected def rawGet(command: RetrievalCommand) = {
-    val keys: immutable.Set[String] =
-      command.keys.map { case Buf.Utf8(s) => s }(breakOut)
+    val keys
+        : immutable.Set[String] = command.keys.map { case Buf.Utf8(s) => s }(
+      breakOut)
 
     service(command).map {
       case Values(values) =>

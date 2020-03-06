@@ -147,8 +147,8 @@ object Dependencies {
     Seq(
       "commons-io" % "commons-io" % "2.4",
       specsMatcherExtra % Test
-    ) ++ specsBuild.map(_ % Test) ++ logback
-      .map(_ % Test) ++ scalaParserCombinators(scalaVersion)
+    ) ++ specsBuild.map(_ % Test) ++ logback.map(_ % Test) ++ scalaParserCombinators(
+      scalaVersion)
 
   private def sbtPluginDep(
       sbtVersion: String,

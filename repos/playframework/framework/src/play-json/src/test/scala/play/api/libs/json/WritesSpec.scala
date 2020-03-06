@@ -116,8 +116,7 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val CustomWrites1 = Writes.temporalWrites[LocalDate, String]("dd/MM/yyyy")
 
     "be written as number" in {
-      Writes.LocalDateNumberWrites
-        .writes(LocalDate ofEpochDay 1234567890L) aka "written date" must_== JsNumber(
+      Writes.LocalDateNumberWrites.writes(LocalDate ofEpochDay 1234567890L) aka "written date" must_== JsNumber(
         BigDecimal valueOf 106666665696000000L)
     }
 

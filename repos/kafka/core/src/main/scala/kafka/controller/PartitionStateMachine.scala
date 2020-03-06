@@ -569,8 +569,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       topic: String,
       partition: Int): LeaderIsrAndControllerEpoch = {
     val topicAndPartition = TopicAndPartition(topic, partition)
-    ReplicationUtils
-      .getLeaderIsrAndEpochForPartition(zkUtils, topic, partition) match {
+    ReplicationUtils.getLeaderIsrAndEpochForPartition(zkUtils, topic, partition) match {
       case Some(currentLeaderIsrAndEpoch) => currentLeaderIsrAndEpoch
       case None =>
         val failMsg =

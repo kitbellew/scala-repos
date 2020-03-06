@@ -252,8 +252,8 @@ trait SliceTransforms[M[+_]]
                 def stripTypes(cols: Map[ColumnRef, Column]) = {
                   cols.foldLeft(Map[CPath, Set[Column]]()) {
                     case (acc, (ColumnRef(path, _), column)) => {
-                      val set =
-                        acc get path map { _ + column } getOrElse Set(column)
+                      val set = acc get path map { _ + column } getOrElse Set(
+                        column)
                       acc.updated(path, set)
                     }
                   }

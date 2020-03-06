@@ -230,8 +230,7 @@ object getDummyBlocks {
             acc: List[ASTNode] = List()): List[ASTNode] =
           if (firstNode == null) {
             acc.reverse
-          } else if (ScalaDocNewlinedPreFormatProcessor
-                       .isWhiteSpace(firstNode)) {
+          } else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(firstNode)) {
             getNonWsSiblings(firstNode.getTreeNext, acc)
           } else {
             getNonWsSiblings(firstNode.getTreeNext, firstNode :: acc)
@@ -398,8 +397,7 @@ object getDummyBlocks {
 
     def flattenChildren(multilineNode: ASTNode, buffer: ArrayBuffer[ASTNode]) {
       for (nodeChild <- multilineNode.getChildren(null)) {
-        if (nodeChild.getText
-              .contains("\n") && nodeChild.getFirstChildNode != null) {
+        if (nodeChild.getText.contains("\n") && nodeChild.getFirstChildNode != null) {
           flattenChildren(nodeChild, buffer)
         } else {
           buffer += nodeChild

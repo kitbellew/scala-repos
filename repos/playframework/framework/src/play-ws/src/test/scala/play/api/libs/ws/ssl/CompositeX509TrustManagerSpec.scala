@@ -31,11 +31,9 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val chain = Array[X509Certificate](certificate)
         val authType = ""
 
-        mockTrustManager1
-          .checkClientTrusted(chain, authType) throws new CertificateException(
+        mockTrustManager1.checkClientTrusted(chain, authType) throws new CertificateException(
           "fake1")
-        mockTrustManager2
-          .checkClientTrusted(chain, authType) throws new CertificateException(
+        mockTrustManager2.checkClientTrusted(chain, authType) throws new CertificateException(
           "fake2")
 
         trustManager
@@ -79,8 +77,7 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val chain = Array[X509Certificate](certificate)
         val authType = ""
 
-        mockTrustManager1
-          .checkClientTrusted(chain, authType) throws new CertificateException(
+        mockTrustManager1.checkClientTrusted(chain, authType) throws new CertificateException(
           "fake1")
         mockTrustManager2.checkClientTrusted(chain, authType)
 
@@ -149,11 +146,9 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val chain = Array[X509Certificate](certificate)
         val authType = ""
 
-        mockTrustManager1
-          .checkServerTrusted(chain, authType) throws new CertificateException(
+        mockTrustManager1.checkServerTrusted(chain, authType) throws new CertificateException(
           "fake1")
-        mockTrustManager2
-          .checkServerTrusted(chain, authType) throws new CertificateException(
+        mockTrustManager2.checkServerTrusted(chain, authType) throws new CertificateException(
           "fake2")
 
         trustManager

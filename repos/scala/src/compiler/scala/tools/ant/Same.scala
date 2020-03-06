@@ -117,8 +117,8 @@ import org.apache.tools.ant.types.Mapper
     validateAttributes()
     val mapper = getMapper
     allEqualNow = true
-    val originNames: Array[String] =
-      getDirectoryScanner(origin.get).getIncludedFiles
+    val originNames
+        : Array[String] = getDirectoryScanner(origin.get).getIncludedFiles
     val bufferSize = 1024
     val originBuffer = new Array[Byte](bufferSize)
     val destBuffer = new Array[Byte](bufferSize)

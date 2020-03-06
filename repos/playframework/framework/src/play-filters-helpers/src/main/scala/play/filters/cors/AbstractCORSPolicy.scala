@@ -211,8 +211,7 @@ private[cors] trait AbstractCORSPolicy {
              * let header field-names be the empty list.
              */
             val accessControlRequestHeaders: List[String] = {
-              request.headers
-                .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
+              request.headers.get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
                 case None => List.empty[String]
                 case Some(headerVal) =>
                   headerVal.trim

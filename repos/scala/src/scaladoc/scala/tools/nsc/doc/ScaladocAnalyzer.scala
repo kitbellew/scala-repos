@@ -44,8 +44,7 @@ trait ScaladocAnalyzer extends Analyzer {
         comment.defineVariables(sym)
         val typer1 = newTyper(context.makeNewScope(docDef, context.owner))
         for (useCase <- comment.useCases) {
-          typer1
-            .silent(_.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
+          typer1.silent(_.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
             case SilentTypeError(err) =>
               reporter.warning(useCase.pos, err.errMsg)
             case _ =>

@@ -47,8 +47,7 @@ class LookupRemoteActorSpec
     "lookup remote actor" taggedAs LongRunningTest in {
       runOn(slave) {
         val hello = {
-          system
-            .actorSelection(node(master) / "user" / "service-hello") ! Identify(
+          system.actorSelection(node(master) / "user" / "service-hello") ! Identify(
             "id1")
           expectMsgType[ActorIdentity].ref.get
         }

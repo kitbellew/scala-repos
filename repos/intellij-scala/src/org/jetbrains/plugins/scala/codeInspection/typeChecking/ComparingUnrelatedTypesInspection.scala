@@ -147,10 +147,8 @@ class ComparingUnrelatedTypesInspection
   private def mayNeedHighlighting(fun: ScFunction): Boolean = {
     if (!seqFunctions.contains(fun.name)) return false
     val className = fun.containingClass.qualifiedName
-    className.startsWith("scala.collection") && className
-      .contains("Seq") && seqFunctions
+    className.startsWith("scala.collection") && className.contains("Seq") && seqFunctions
       .contains(fun.name) ||
-    Seq("scala.Option", "scala.Some")
-      .contains(className) && fun.name == "contains"
+    Seq("scala.Option", "scala.Some").contains(className) && fun.name == "contains"
   }
 }

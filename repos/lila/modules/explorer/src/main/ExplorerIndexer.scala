@@ -68,8 +68,7 @@ private final class ExplorerIndexer(
               .flatMap {
                 case res if res.status == 200 =>
                   val date =
-                    pairs.headOption
-                      .map(_._1.createdAt) ?? dateTimeFormatter.print
+                    pairs.headOption.map(_._1.createdAt) ?? dateTimeFormatter.print
                   val nb = pairs.size
                   val gameMs = (nowMillis - millis) / nb.toDouble
                   logger.info(
