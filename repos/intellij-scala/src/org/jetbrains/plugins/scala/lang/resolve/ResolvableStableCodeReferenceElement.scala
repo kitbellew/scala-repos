@@ -361,7 +361,8 @@ trait ResolvableStableCodeReferenceElement
             true // scala classes are available from default package
           // Other classes from default package are available only for top-level Scala statements
           case _ =>
-            PsiTreeUtil.getContextOfType(this, true, classOf[ScPackaging]) == null
+            PsiTreeUtil
+              .getContextOfType(this, true, classOf[ScPackaging]) == null
         }
       case _ => true
     }

@@ -37,7 +37,8 @@ object PairingSystem extends AbstractPairingSystem {
           case _   => evenOrAll(data, users)
         }
       pairings <- preps.map { prep =>
-        UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map prep.toPairing
+        UserRepo
+          .firstGetsWhite(prep.user1.some, prep.user2.some) map prep.toPairing
       }.sequenceFu
     } yield pairings
   }.chronometer

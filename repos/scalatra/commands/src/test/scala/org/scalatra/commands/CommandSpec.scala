@@ -58,8 +58,8 @@ class MixAndMatchCommand extends ParamsOnlyCommand {
 
 class CommandWithConfirmationValidation extends ParamsOnlyCommand {
   val name: Field[String] = asString("name").notBlank
-  val passwordConfirmation
-      : Field[String] = asString("passwordConfirmation").notBlank
+  val passwordConfirmation: Field[String] =
+    asString("passwordConfirmation").notBlank
   val password: Field[String] =
     asString("password").notBlank.validForConfirmation(passwordConfirmation)
 }

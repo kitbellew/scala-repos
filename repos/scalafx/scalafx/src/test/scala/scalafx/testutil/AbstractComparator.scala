@@ -121,7 +121,8 @@ private[testutil] trait AbstractComparator extends Assertions {
         pattern: String,
         parametersLength: Int,
         returnEvaluator: Class[_] => Boolean) =
-      m.getName.matches(pattern) && (m.getParameterTypes.length == parametersLength) && returnEvaluator(
+      m.getName
+        .matches(pattern) && (m.getParameterTypes.length == parametersLength) && returnEvaluator(
         m.getReturnType)
 
     private def isSetter(m: Method): Boolean =

@@ -353,7 +353,8 @@ trait PatternTypers {
       }
 
       val unapplyArg = (
-        context.owner.newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo (
+        context.owner
+          .newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo (
           if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType)) pt
           else freshUnapplyArgType()
         )

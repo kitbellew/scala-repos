@@ -38,7 +38,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
           val text = document.getText
           if (token.getElementType == HoconTokenType.HashComment) {
             val offset = CharArrayUtil.shiftForward(text, caretOffset, " \t")
-            if (offset < document.getTextLength && text.charAt(offset) != '\n') {
+            if (offset < document.getTextLength && text
+                  .charAt(offset) != '\n') {
               var prefix = "#"
               if (!StringUtil.startsWith(text, offset, prefix)) {
                 if (text.charAt(caretOffset) != ' ' && !prefix.endsWith(" ")) {

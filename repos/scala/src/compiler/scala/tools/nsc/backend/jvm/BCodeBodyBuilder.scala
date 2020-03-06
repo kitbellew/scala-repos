@@ -1056,7 +1056,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       }
 
       // first push *all* arguments. This makes sure muliple uses of the same labelDef-var will all denote the (previous) value.
-      aps foreach { case (arg, param) => genLoad(arg, locals(param).tk) } // `locals` is known to contain `param` because `genDefDef()` visited `labelDefsAtOrUnder`
+      aps foreach {
+        case (arg, param) => genLoad(arg, locals(param).tk)
+      } // `locals` is known to contain `param` because `genDefDef()` visited `labelDefsAtOrUnder`
 
       // second assign one by one to the LabelDef's variables.
       aps.reverse foreach {
@@ -1412,7 +1414,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case ZAND => genZandOrZor(and = true)
             case ZOR  => genZandOrZor(and = false)
             case code =>
-              if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(lhs).isClass) {
+              if (scalaPrimitives
+                    .isUniversalEqualityOp(code) && tpeTK(lhs).isClass) {
                 // rewrite `==` to null tests and `equals`. not needed for arrays (`equals` is reference equality).
                 if (code == EQ)
                   genEqEqPrimitive(

@@ -372,7 +372,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     def local(text: String) = ScalaBundle.message("extract.local.method", text)
     element.getParent match {
       case tbody: ScTemplateBody =>
-        PsiTreeUtil.getParentOfType(tbody, classOf[ScTemplateDefinition]) match {
+        PsiTreeUtil
+          .getParentOfType(tbody, classOf[ScTemplateDefinition]) match {
           case o: ScObject                => s"Extract method to object ${o.name}"
           case c: ScClass                 => s"Extract method to class ${c.name}"
           case t: ScTrait                 => s"Extract method to trait ${t.name}"

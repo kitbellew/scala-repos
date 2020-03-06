@@ -539,7 +539,8 @@ package object collections {
 
       def isSideEffectCollectionMethod(ref: ScReferenceExpression): Boolean = {
         val refName = ref.refName
-        (refName.endsWith("=") || refName.endsWith("=:") || sideEffectsCollectionMethods
+        (refName.endsWith("=") || refName
+          .endsWith("=:") || sideEffectsCollectionMethods
           .contains(refName)) &&
         checkResolve(
           ref,

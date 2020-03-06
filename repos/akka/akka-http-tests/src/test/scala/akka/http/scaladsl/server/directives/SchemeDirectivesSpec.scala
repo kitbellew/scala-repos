@@ -8,7 +8,9 @@ package directives
 class SchemeDirectivesSpec extends RoutingSpec {
   "the extractScheme directive" should {
     "extract the Uri scheme" in {
-      Put("http://localhost/", "Hello") ~> extractScheme { echoComplete } ~> check {
+      Put("http://localhost/", "Hello") ~> extractScheme {
+        echoComplete
+      } ~> check {
         responseAs[String] shouldEqual "http"
       }
     }
@@ -16,7 +18,9 @@ class SchemeDirectivesSpec extends RoutingSpec {
 
   """the scheme("http") directive""" should {
     "let requests with an http Uri scheme pass" in {
-      Put("http://localhost/", "Hello") ~> scheme("http") { completeOk } ~> check {
+      Put("http://localhost/", "Hello") ~> scheme("http") {
+        completeOk
+      } ~> check {
         response shouldEqual Ok
       }
     }
@@ -38,7 +42,9 @@ class SchemeDirectivesSpec extends RoutingSpec {
 
   """the scheme("https") directive""" should {
     "let requests with an https Uri scheme pass" in {
-      Put("https://localhost/", "Hello") ~> scheme("https") { completeOk } ~> check {
+      Put("https://localhost/", "Hello") ~> scheme("https") {
+        completeOk
+      } ~> check {
         response shouldEqual Ok
       }
     }

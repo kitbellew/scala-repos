@@ -116,7 +116,8 @@ object ToggleTypeAnnotation {
       }
     }
 
-    for (pattern <- element.parentsInFile.findByType(classOf[ScBindingPattern])) {
+    for (pattern <- element.parentsInFile
+           .findByType(classOf[ScBindingPattern])) {
       pattern match {
         case p: ScTypedPattern if p.typePattern.isDefined =>
           strategy.removeFromPattern(p)

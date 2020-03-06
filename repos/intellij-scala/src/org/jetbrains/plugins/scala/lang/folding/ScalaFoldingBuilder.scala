@@ -470,7 +470,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         return (isCorrectRange, range, "{...}")
       case _ =>
         val isMultilineBody =
-          (body.getText.indexOf("\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
+          (body.getText
+            .indexOf("\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
         val textRange = if (isMultilineBody) range else null
         return (isMultilineBody, textRange, "...")
     }
@@ -503,7 +504,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       processedComments: mutable.Set[PsiElement],
       descriptors: java.util.List[FoldingDescriptor]) {
     import collection.JavaConversions._
-    if (processedComments.contains(comment) || comment.getTokenType != ScalaTokenTypes.tLINE_COMMENT) {
+    if (processedComments
+          .contains(comment) || comment.getTokenType != ScalaTokenTypes.tLINE_COMMENT) {
       return
     }
 

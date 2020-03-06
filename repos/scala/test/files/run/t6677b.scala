@@ -9,7 +9,9 @@ trait A extends U
 
 trait B extends U {
   def foo = ""
-  class U11 extends U1 { class X extends super.X { foo } } // refer to foo to add $outer pointer
+  class U11 extends U1 {
+    class X extends super.X { foo }
+  } // refer to foo to add $outer pointer
   override val u = new U11
 }
 class C {

@@ -177,7 +177,8 @@ abstract class RefChecks
         if (haveDefaults.lengthCompare(1) > 0) {
           val owners = haveDefaults map (_.owner)
           // constructors of different classes are allowed to have defaults
-          if (haveDefaults.exists(x => !x.isConstructor) || owners.distinct.size < haveDefaults.size) {
+          if (haveDefaults
+                .exists(x => !x.isConstructor) || owners.distinct.size < haveDefaults.size) {
             reporter.error(
               clazz.pos,
               "in " + clazz +
@@ -477,7 +478,8 @@ abstract class RefChecks
           def isOverrideAccessOK =
             member.isPublic || { // member is public, definitely same or relaxed access
               (!other.isProtected || member.isProtected) && // if o is protected, so is m
-              ((!isRootOrNone(ob) && ob.hasTransOwner(mb)) || // m relaxes o's access boundary
+              ((!isRootOrNone(ob) && ob
+                .hasTransOwner(mb)) || // m relaxes o's access boundary
               other.isJavaDefined) // overriding a protected java member, see #3946
             }
           if (!isOverrideAccessOK) {
@@ -503,7 +505,8 @@ abstract class RefChecks
               )
             else
               overrideError("needs `override' modifier")
-          } else if (other.isAbstractOverride && other.isIncompleteIn(clazz) && !member.isAbstractOverride) {
+          } else if (other.isAbstractOverride && other
+                       .isIncompleteIn(clazz) && !member.isAbstractOverride) {
             overrideError("needs `abstract override' modifiers")
           } else if (member.isAnyOverride && (other hasFlag ACCESSOR) && other.accessed.isVariable && !other.accessed.isLazy) {
             // !?! this is not covered by the spec. We need to resolve this either by changing the spec or removing the test here.
@@ -559,7 +562,8 @@ abstract class RefChecks
           // type equality doesn't consider potentially different bounds on low/high's type params.
           // In b781e25afe this went from using memberInfo to memberType (now lowType/highType), tested by neg/override.scala.
           // TODO: was that the right fix? it seems type alias's RHS should be checked by looking at the symbol's info
-          if (pair.sameKind && lowType.substSym(low.typeParams, high.typeParams) =:= highType)
+          if (pair.sameKind && lowType
+                .substSym(low.typeParams, high.typeParams) =:= highType)
             ()
           else overrideTypeError() // (1.6)
         }
@@ -1642,7 +1646,8 @@ abstract class RefChecks
       // types of the value parameters
       mapParamss(member)(p => checkAccessibilityOfType(p.tpe))
       // upper bounds of type parameters
-      member.typeParams.map(_.info.bounds.hi.widen) foreach checkAccessibilityOfType
+      member.typeParams
+        .map(_.info.bounds.hi.widen) foreach checkAccessibilityOfType
     }
 
     private def checkByNameRightAssociativeDef(tree: DefDef) {

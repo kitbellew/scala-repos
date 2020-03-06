@@ -858,7 +858,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Is given package class a system package class that cannot be invalidated?
     */
   private def isSystemPackageClass(pkg: Symbol) =
-    pkg == RootClass || (pkg.hasTransOwner(definitions.ScalaPackageClass) && !pkg
+    pkg == RootClass || (pkg
+      .hasTransOwner(definitions.ScalaPackageClass) && !pkg
       .hasTransOwner(
         this.rootMirror.staticPackage("scala.tools").moduleClass.asClass))
 
@@ -1106,7 +1107,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   )
 
   private def formatExplain(pairs: (String, Any)*): String = (
-    pairs.toList collect { case (k, v) if v != null => "%20s: %s".format(k, v) } mkString "\n"
+    pairs.toList collect {
+      case (k, v) if v != null => "%20s: %s".format(k, v)
+    } mkString "\n"
   )
 
   /** Don't want to introduce new errors trying to report errors,

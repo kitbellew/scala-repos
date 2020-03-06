@@ -177,9 +177,8 @@ abstract class SymbolLoaders {
       classRep: ClassRepresentation[AbstractFile]) {
     ((classRep.binary, classRep.source): @unchecked) match {
       case (Some(bin), Some(src))
-          if platform.needCompile(bin, src) && !binaryOnly(
-            owner,
-            classRep.name) =>
+          if platform
+            .needCompile(bin, src) && !binaryOnly(owner, classRep.name) =>
         if (settings.verbose)
           inform("[symloader] picked up newer source file for " + src.path)
         enterToplevelsFromSource(owner, classRep.name, src)

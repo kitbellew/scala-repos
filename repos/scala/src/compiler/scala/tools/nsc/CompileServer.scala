@@ -213,18 +213,19 @@ object CompileServer {
       server.echo("Redirect dir is " + redirectDir)
     }
 
-    Console.withErr(createRedirect(redirectDir, "scala-compile-server-err.log")) {
-      Console.withOut(
-        createRedirect(redirectDir, "scala-compile-server-out.log")) {
-        Console.err.println(
-          "...starting server on socket " + server.port + "...")
-        Console.err.flush()
-        server.compileSocket setPort server.port
-        startupCallback()
-        server.run()
+    Console
+      .withErr(createRedirect(redirectDir, "scala-compile-server-err.log")) {
+        Console.withOut(
+          createRedirect(redirectDir, "scala-compile-server-out.log")) {
+          Console.err.println(
+            "...starting server on socket " + server.port + "...")
+          Console.err.flush()
+          server.compileSocket setPort server.port
+          startupCallback()
+          server.run()
 
-        server.compileSocket deletePort server.port
+          server.compileSocket deletePort server.port
+        }
       }
-    }
   }
 }

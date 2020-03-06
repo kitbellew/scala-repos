@@ -202,7 +202,9 @@ trait TypeInferencer extends DAG {
           // not using extractors due to bug
           case s: SplitGroup => {
             val Split(spec, _, _) = splits(s.parentId)
-            findGroup(spec, s.id) map { inner(jtpe, typing, splits, _) } getOrElse typing
+            findGroup(spec, s.id) map {
+              inner(jtpe, typing, splits, _)
+            } getOrElse typing
           }
 
           // not using extractors due to bug

@@ -244,8 +244,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
           grouped.sortBy { case (_, (t, _)) => t }(
             BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
         case Commutative =>
-          grouped.sortBy { case (b, (_, _)) => b }(
-            BinaryOrdering.ordSer[BatchID])
+          grouped
+            .sortBy { case (b, (_, _)) => b }(BinaryOrdering.ordSer[BatchID])
       }
 
       sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>

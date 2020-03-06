@@ -431,7 +431,8 @@ class Log(
           // format conversion)
           if (messageSizesMaybeChanged) {
             for (messageAndOffset <- validMessages.shallowIterator) {
-              if (MessageSet.entrySize(messageAndOffset.message) > config.maxMessageSize) {
+              if (MessageSet
+                    .entrySize(messageAndOffset.message) > config.maxMessageSize) {
                 // we record the original message set size instead of the trimmed size
                 // to be consistent with pre-compression bytesRejectedRate recording
                 BrokerTopicStats

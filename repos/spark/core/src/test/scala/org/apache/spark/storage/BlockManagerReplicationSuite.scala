@@ -145,15 +145,24 @@ class BlockManagerReplicationSuite
 
     // Add a new store and test whether get peers returns it
     val newStore = makeBlockManager(1000, s"store$numStores")
-    assert(master.getPeers(stores(0).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(0).blockManagerId } + newStore.blockManagerId)
-    assert(master.getPeers(stores(1).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(1).blockManagerId } + newStore.blockManagerId)
-    assert(master.getPeers(stores(2).blockManagerId).toSet ===
-      storeIds
-        .filterNot { _ == stores(2).blockManagerId } + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(0).blockManagerId).toSet ===
+        storeIds
+          .filterNot {
+            _ == stores(0).blockManagerId
+          } + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(1).blockManagerId).toSet ===
+        storeIds
+          .filterNot {
+            _ == stores(1).blockManagerId
+          } + newStore.blockManagerId)
+    assert(
+      master.getPeers(stores(2).blockManagerId).toSet ===
+        storeIds
+          .filterNot {
+            _ == stores(2).blockManagerId
+          } + newStore.blockManagerId)
     assert(master.getPeers(newStore.blockManagerId).toSet === storeIds)
 
     // Remove a store and test whether get peers returns it

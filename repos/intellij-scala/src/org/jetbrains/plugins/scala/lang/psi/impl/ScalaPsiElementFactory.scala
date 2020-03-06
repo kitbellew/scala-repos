@@ -530,7 +530,8 @@ object ScalaPsiElementFactory {
       .asInstanceOf[ScalaFile]
     val classDef = dummyFile.typeDefinitions(0)
     val p = classDef.members(0).asInstanceOf[ScPatternDefinition]
-    p.expr.getOrElse(throw new IllegalArgumentException("Expression not found")) match {
+    p.expr
+      .getOrElse(throw new IllegalArgumentException("Expression not found")) match {
       case x: ScParenthesisedExpr =>
         x.expr match {
           case Some(y) => y

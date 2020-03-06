@@ -78,9 +78,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
         sendTo = self)
     case request @ Request(key, sendTo) =>
       val name = java.net.URLEncoder.encode(key, "utf-8")
-      val task = context.child(name) getOrElse context.actorOf(
-        SbtTask.props(key, client),
-        name)
+      val task = context
+        .child(name) getOrElse context.actorOf(SbtTask.props(key, client), name)
       task ! request
     case Shutdown => shutdownWithClient(client)
   }

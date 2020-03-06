@@ -282,7 +282,8 @@ class TopicDeletionManager(
     * @return Whether or not deletion can be retried for the topic
     */
   private def isTopicEligibleForDeletion(topic: String): Boolean = {
-    topicsToBeDeleted.contains(topic) && (!isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(
+    topicsToBeDeleted
+      .contains(topic) && (!isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(
       topic))
   }
 

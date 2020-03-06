@@ -236,9 +236,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       val cb = ArgumentCaptor.forClass(classOf[AsyncCallback.VoidCallback])
       when(zk.sync(meq(path), any[AsyncCallback.VoidCallback], meq(null))) thenAnswer answer[
         AsyncCallback.VoidCallback](1) { cbValue =>
-        wait onSuccess { _ =>
-          cbValue.processResult(0, path, null)
-        } onFailure {
+        wait onSuccess { _ => cbValue.processResult(0, path, null) } onFailure {
           case ke: KeeperException =>
             cbValue.processResult(ke.code.intValue, path, null)
         }
@@ -942,9 +940,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           Future.exception(new KeeperException.SystemErrorException)
         }
         Await.ready(
-          znode.sync() map { _ =>
-            fail("Unexpected success")
-          } handle {
+          znode.sync() map { _ => fail("Unexpected success") } handle {
             case e: KeeperException.SystemErrorException =>
               assert(e.getPath == znode.path)
           },

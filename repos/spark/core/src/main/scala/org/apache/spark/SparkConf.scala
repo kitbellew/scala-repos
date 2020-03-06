@@ -190,7 +190,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
+    if (settings
+          .putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
     this
@@ -736,7 +737,8 @@ private[spark] object SparkConf extends Logging {
     * the scheduler, while the rest of the spark configs can be inherited from the driver later.
     */
   def isExecutorStartupConf(name: String): Boolean = {
-    (name.startsWith("spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
+    (name
+      .startsWith("spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
     name.startsWith("spark.ssl") ||
     name.startsWith("spark.rpc") ||
     isSparkPortConf(name)

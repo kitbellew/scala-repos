@@ -29,9 +29,8 @@ object FormUrlEncodedParserSpec extends Specification {
         "foo" -> List("bar1", "bar2"))
     }
     "decode fields with empty names" in {
-      FormUrlEncodedParser.parse("foo=bar&=") must_== Map(
-        "foo" -> List("bar"),
-        "" -> List(""))
+      FormUrlEncodedParser
+        .parse("foo=bar&=") must_== Map("foo" -> List("bar"), "" -> List(""))
     }
     "decode fields with empty values" in {
       FormUrlEncodedParser.parse("foo=bar&baz=") must_== Map(

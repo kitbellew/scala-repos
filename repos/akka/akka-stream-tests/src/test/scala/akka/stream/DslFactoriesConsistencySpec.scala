@@ -331,7 +331,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     (sSource.isAssignableFrom(s) && jSource.isAssignableFrom(j)) ||
       (sSink.isAssignableFrom(s) && jSink.isAssignableFrom(j)) ||
       (sFlow.isAssignableFrom(s) && jFlow.isAssignableFrom(j)) ||
-      (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph.isAssignableFrom(j)) ||
+      (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph
+        .isAssignableFrom(j)) ||
       (graph.isAssignableFrom(s) && graph.isAssignableFrom(j))
 
   def typeMatch(

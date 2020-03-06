@@ -97,7 +97,8 @@ abstract class CreateEntityQuickFix(
       if (file.scalaLanguageLevel.exists(_ >= Scala_2_10)) " = ???" else ""
     val params = (genericParams ++: parameters).mkString
     val text =
-      placeholder.format(keyword, ref.nameId.getText, params) + unimplementedBody
+      placeholder
+        .format(keyword, ref.nameId.getText, params) + unimplementedBody
 
     val block = ref match {
       case it if it.isQualified       => ref.qualifier.flatMap(tryToFindBlock)
@@ -168,7 +169,8 @@ object CreateEntityQuickFix {
     exp match {
       case InstanceOfClass(td: ScTemplateDefinition) => Success(td.extendsBlock)
       case th: ScThisReference
-          if PsiTreeUtil.getParentOfType(th, classOf[ScExtendsBlock], true) != null =>
+          if PsiTreeUtil
+            .getParentOfType(th, classOf[ScExtendsBlock], true) != null =>
         th.refTemplate match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
           case None =>
@@ -275,7 +277,8 @@ object CreateEntityQuickFix {
     supRef.staticSuper match {
       case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) => Some(clazz)
       case None =>
-        supRef.parents.toSeq.collect { case td: ScTemplateDefinition => td } match {
+        supRef.parents.toSeq
+          .collect { case td: ScTemplateDefinition => td } match {
           case Seq(td) =>
             td.supers match {
               case Seq(t: ScTypeDefinition) => Some(t)

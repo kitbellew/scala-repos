@@ -27,9 +27,8 @@ class LoopVariableNotUpdatedInspection
             ElementText(operator),
             _)),
         Some(body))
-        if !ref.isQualified && ComparisonOperators.contains(operator) && !isMutatedWithing(
-          body,
-          target) =>
+        if !ref.isQualified && ComparisonOperators
+          .contains(operator) && !isMutatedWithing(body, target) =>
       holder.registerProblem(
         ref.asInstanceOf[PsiReference],
         getDisplayName,

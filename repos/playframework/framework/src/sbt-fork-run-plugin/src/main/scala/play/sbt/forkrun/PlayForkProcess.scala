@@ -101,7 +101,9 @@ object PlayForkProcess {
     try process.waitFor()
     catch { case _: InterruptedException => stop() }
     try JRuntime.getRuntime.removeShutdownHook(shutdownHook)
-    catch { case _: IllegalStateException => } // thrown when already shutting down
+    catch {
+      case _: IllegalStateException =>
+    } // thrown when already shutting down
   }
 
   def timedWaitFor(process: JProcess, millis: Long): Option[Int] =

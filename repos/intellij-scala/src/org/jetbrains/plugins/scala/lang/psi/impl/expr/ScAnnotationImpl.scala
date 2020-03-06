@@ -136,7 +136,8 @@ class ScAnnotationImpl private (
               prev.delete()
             } else {
               var next = elem.getNextSibling
-              while (next != null && (ScalaPsiUtil.isLineTerminator(next) || next
+              while (next != null && (ScalaPsiUtil
+                       .isLineTerminator(next) || next
                        .isInstanceOf[PsiWhiteSpace]))
                 next = next.getNextSibling
               if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
@@ -170,7 +171,8 @@ class ScAnnotationImpl private (
               params(0).getManager))
         }
         var allowNoName: Boolean = params.length == 0 &&
-          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(attributeName) || null == attributeName)
+          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME
+            .equals(attributeName) || null == attributeName)
         var namePrefix: String = null
         if (allowNoName) {
           namePrefix = ""

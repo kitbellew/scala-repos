@@ -325,10 +325,11 @@ class Matrix[RowT, ColT, ValT](
   // Value operations
   def mapValues[ValU](fn: (ValT) => ValU)(
       implicit mon: Monoid[ValU]): Matrix[RowT, ColT, ValU] = {
-    val newPipe = pipe.flatMap(valSym -> valSym) { imp: Tuple1[ValT] => //Ensure an arity of 1
-      //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
-      mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
-    }
+    val newPipe = pipe
+      .flatMap(valSym -> valSym) { imp: Tuple1[ValT] => //Ensure an arity of 1
+        //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
+        mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
+      }
     new Matrix[RowT, ColT, ValU](
       this.rowSym,
       this.colSym,
@@ -351,10 +352,11 @@ class Matrix[RowT, ColT, ValT](
 
   // Filter values
   def filterValues(fn: (ValT) => Boolean): Matrix[RowT, ColT, ValT] = {
-    val newPipe = pipe.filter(valSym) { imp: Tuple1[ValT] => //Ensure an arity of 1
-      //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
-      fn(imp._1)
-    }
+    val newPipe =
+      pipe.filter(valSym) { imp: Tuple1[ValT] => //Ensure an arity of 1
+        //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
+        fn(imp._1)
+      }
     new Matrix[RowT, ColT, ValT](
       this.rowSym,
       this.colSym,
@@ -1054,10 +1056,11 @@ class DiagonalMatrix[IdxT, ValT](
   // Value operations
   def mapValues[ValU](fn: (ValT) => ValU)(
       implicit mon: Monoid[ValU]): DiagonalMatrix[IdxT, ValU] = {
-    val newPipe = pipe.flatMap(valSym -> valSym) { imp: Tuple1[ValT] => // Ensure an arity of 1
-      //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
-      mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
-    }
+    val newPipe = pipe
+      .flatMap(valSym -> valSym) { imp: Tuple1[ValT] => // Ensure an arity of 1
+        //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
+        mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
+      }
     new DiagonalMatrix[IdxT, ValU](this.idxSym, this.valSym, newPipe, sizeHint)
   }
 
@@ -1125,10 +1128,11 @@ class RowVector[ColT, ValT](
   // Value operations
   def mapValues[ValU](fn: (ValT) => ValU)(
       implicit mon: Monoid[ValU]): RowVector[ColT, ValU] = {
-    val newPipe = pipe.flatMap(valS -> valS) { imp: Tuple1[ValT] => // Ensure an arity of 1
-      //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
-      mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
-    }
+    val newPipe =
+      pipe.flatMap(valS -> valS) { imp: Tuple1[ValT] => // Ensure an arity of 1
+        //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
+        mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
+      }
     new RowVector[ColT, ValU](this.colS, this.valS, newPipe, sizeH)
   }
 
@@ -1274,10 +1278,11 @@ class ColVector[RowT, ValT](
   // Value operations
   def mapValues[ValU](fn: (ValT) => ValU)(
       implicit mon: Monoid[ValU]): ColVector[RowT, ValU] = {
-    val newPipe = pipe.flatMap(valS -> valS) { imp: Tuple1[ValT] => // Ensure an arity of 1
-      //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
-      mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
-    }
+    val newPipe =
+      pipe.flatMap(valS -> valS) { imp: Tuple1[ValT] => // Ensure an arity of 1
+        //This annoying Tuple1 wrapping ensures we can handle ValT that may itself be a Tuple.
+        mon.nonZeroOption(fn(imp._1)).map { Tuple1(_) }
+      }
     new ColVector[RowT, ValU](this.rowS, this.valS, newPipe, sizeH)
   }
 

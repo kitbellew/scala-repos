@@ -283,9 +283,7 @@ final case class ContentSecurityPolicy(
         }
         .mkString("; ")
 
-    reportUri.map { uri =>
-      s"$restrictionString; report-uri $uri"
-    } getOrElse {
+    reportUri.map { uri => s"$restrictionString; report-uri $uri" } getOrElse {
       restrictionString
     }
   }

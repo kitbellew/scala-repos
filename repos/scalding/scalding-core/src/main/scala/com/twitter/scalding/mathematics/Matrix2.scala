@@ -187,7 +187,9 @@ sealed trait Matrix2[R, C, V] extends Serializable {
         case (r, c, x) => (r, c, num.toDouble(x) * num.toDouble(x))
       },
       this.sizeHint).sumColVectors.toTypedPipe
-      .map { case (r, c, x) => (r, r, 1 / scala.math.sqrt(x)) } // diagonal + inverse
+      .map {
+        case (r, c, x) => (r, r, 1 / scala.math.sqrt(x))
+      } // diagonal + inverse
     MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
   }
 

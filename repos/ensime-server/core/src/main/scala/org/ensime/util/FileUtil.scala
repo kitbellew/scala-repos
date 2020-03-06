@@ -56,9 +56,7 @@ object FileUtils {
       changes.collect { case ed: TextEdit => ed }.groupBy(_.file)
     val newFiles = changes.collect { case ed: NewFile => ed }
     try {
-      val rewriteList = newFiles.map { ed =>
-        (ed.file, ed.text)
-      } ++
+      val rewriteList = newFiles.map { ed => (ed.file, ed.text) } ++
         editsByFile.map {
           case (file, fileChanges) =>
             readFile(file, cs) match {

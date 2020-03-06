@@ -45,7 +45,8 @@ class BasicAuthenticationFilter
     }
 
     val isUpdating =
-      request.getRequestURI.endsWith("/git-receive-pack") || "service=git-receive-pack"
+      request.getRequestURI
+        .endsWith("/git-receive-pack") || "service=git-receive-pack"
         .equals(request.getQueryString)
     val settings = loadSystemSettings()
 

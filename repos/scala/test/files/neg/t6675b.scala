@@ -25,7 +25,9 @@ class E {
 }
 
 class B {
-  def f1[A](x: A) = (Left(x): Either[A, A]) match { case LeftOrRight(a) => a } // no warn
+  def f1[A](x: A) = (Left(x): Either[A, A]) match {
+    case LeftOrRight(a) => a
+  } // no warn
   def f2[A](x: A) = (Left(x -> x): Either[(A, A), (A, A)]) match {
     case LeftOrRight(a) => a
   } // warn
@@ -50,7 +52,9 @@ class C {
 }
 
 class D {
-  def f1[A](x: A) = (Left(x): Either[A, A]) match { case NativelyTwo(a) => a } // warn
+  def f1[A](x: A) = (Left(x): Either[A, A]) match {
+    case NativelyTwo(a) => a
+  } // warn
   def f2[A](x: A) = (Left(x -> x): Either[(A, A), (A, A)]) match {
     case NativelyTwo(a) => a
   } // warn

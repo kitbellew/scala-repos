@@ -112,11 +112,11 @@ class NettyTransportSettings(config: Config) {
   val EnableSsl: Boolean =
     getBoolean("enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
 
-  val UseDispatcherForIo
-      : Option[String] = getString("use-dispatcher-for-io") match {
-    case "" | null ⇒ None
-    case dispatcher ⇒ Some(dispatcher)
-  }
+  val UseDispatcherForIo: Option[String] =
+    getString("use-dispatcher-for-io") match {
+      case "" | null ⇒ None
+      case dispatcher ⇒ Some(dispatcher)
+    }
 
   private[this] def optionSize(s: String): Option[Int] =
     getBytes(s).toInt match {
@@ -312,7 +312,9 @@ private[transport] object NettyTransport {
       case _ ⇒ c.getChannel
     }
     for {
-      _ ← always { channel.write(ChannelBuffers.buffer(0)) } // Force flush by waiting on a final dummy write
+      _ ← always {
+        channel.write(ChannelBuffers.buffer(0))
+      } // Force flush by waiting on a final dummy write
       _ ← always { channel.disconnect() }
     } channel.close()
   }
@@ -620,7 +622,9 @@ class NettyTransport(
             "failed to bind to {}, shutting down Netty transport",
             address)
           try { shutdown() }
-          catch { case NonFatal(e) ⇒ } // ignore possible exception during shutdown
+          catch {
+            case NonFatal(e) ⇒
+          } // ignore possible exception during shutdown
           throw e
         }
       }

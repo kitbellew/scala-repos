@@ -227,7 +227,8 @@ final class JSONIngestProcessing(
               }
             val ingestSize = toIngest.size
 
-            storage.store(apiKey, path, authorities, toIngest, jobId, streamRef) flatMap {
+            storage
+              .store(apiKey, path, authorities, toIngest, jobId, streamRef) flatMap {
               _.fold(
                 storeFailure =>
                   sys.error(

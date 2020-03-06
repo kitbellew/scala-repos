@@ -151,7 +151,8 @@ object ThrottlerTransportAdapter {
     }
 
     private def tokensGenerated(nanoTimeOfSend: Long): Int =
-      (TimeUnit.NANOSECONDS.toMillis(nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
+      (TimeUnit.NANOSECONDS
+        .toMillis(nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
   }
 
   @SerialVersionUID(1L)
@@ -293,7 +294,9 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       val naked = nakedAddress(handle.remoteAddress)
       val inMode = getInboundMode(naked)
       wrappedHandle.outboundThrottleMode.set(getOutboundMode(naked))
-      wrappedHandle.readHandlerPromise.future map { ListenerAndMode(_, inMode) } pipeTo wrappedHandle.throttlerActor
+      wrappedHandle.readHandlerPromise.future map {
+        ListenerAndMode(_, inMode)
+      } pipeTo wrappedHandle.throttlerActor
       handleTable ::= naked -> wrappedHandle
       statusPromise.success(wrappedHandle)
     case SetThrottle(address, direction, mode) ⇒

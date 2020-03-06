@@ -141,7 +141,8 @@ trait ShardService
           } ~
             requireAccount(state.accountFinder) {
               // async handler *always* returns a JSON object containing the job ID
-              shardService[({ type λ[+α] = (((APIKey, AccountDetails)) => α) })#λ] {
+              shardService[
+                ({ type λ[+α] = (((APIKey, AccountDetails)) => α) })#λ] {
                 asyncQuery(post(
                   new AsyncQueryServiceHandler(state.platform.asynchronous)))
               }
@@ -250,7 +251,8 @@ trait ShardService
       requireAccount(state.accountFinder) {
         dataPath("/analysis/fs") {
           get {
-            shardService[({ type λ[+α] = ((APIKey, AccountDetails), Path) => α })#λ] {
+            shardService[
+              ({ type λ[+α] = ((APIKey, AccountDetails), Path) => α })#λ] {
               new AnalysisServiceHandler(
                 state.platform,
                 state.scheduler,

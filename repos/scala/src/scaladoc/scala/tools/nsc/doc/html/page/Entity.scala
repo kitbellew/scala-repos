@@ -681,10 +681,12 @@ trait EntityPage extends HtmlPage {
             case Nil =>
               NodeSeq.Empty
             case List(constraint) =>
-              scala.xml.Text("This conversion will take place only if ") ++ constraintToHtml(
+              scala.xml
+                .Text("This conversion will take place only if ") ++ constraintToHtml(
                 constraint) ++ scala.xml.Text(".")
             case List(constraint1, constraint2) =>
-              scala.xml.Text("This conversion will take place only if ") ++ constraintToHtml(
+              scala.xml
+                .Text("This conversion will take place only if ") ++ constraintToHtml(
                 constraint1) ++
                 scala.xml.Text(" and at the same time ") ++ constraintToHtml(
                 constraint2) ++ scala.xml.Text(".")
@@ -722,7 +724,8 @@ trait EntityPage extends HtmlPage {
                 <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala"
                 target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
                 <br/> ++ <div class="cmt"><pre>{
-                "(" + EntityPage.lowerFirstLetter(tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
+                "(" + EntityPage
+                  .lowerFirstLetter(tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
               }</pre></div>
             }
 
@@ -1344,7 +1347,8 @@ trait EntityPage extends HtmlPage {
         scala.xml.Text(
           bt.typeParamName + " is a superclass of " + bt.lowerBound.name + " and a subclass of " +
             bt.upperBound.name + " (" + bt.typeParamName + " >: ") ++
-          typeToHtml(bt.lowerBound, hasLinks = true) ++ scala.xml.Text(" <: ") ++
+          typeToHtml(bt.lowerBound, hasLinks = true) ++ scala.xml
+          .Text(" <: ") ++
           typeToHtml(bt.upperBound, hasLinks = true) ++ scala.xml.Text(")")
       case lb: LowerBoundedTypeParamConstraint =>
         scala.xml.Text(

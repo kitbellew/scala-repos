@@ -226,7 +226,9 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
 
     {
       case x ⇒
-        directives collectFirst { case (c, d) if c isInstance x ⇒ d } getOrElse Escalate
+        directives collectFirst {
+          case (c, d) if c isInstance x ⇒ d
+        } getOrElse Escalate
     }
   }
 

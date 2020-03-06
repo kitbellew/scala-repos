@@ -604,8 +604,9 @@ object Enumeratee {
         }(dec))
 
       case Input.Empty =>
-        new CheckDone[E, E] { def continue[A](k: K[E, A]) = Cont(step(k)) } &> k(
-          Input.Empty)
+        new CheckDone[E, E] {
+          def continue[A](k: K[E, A]) = Cont(step(k))
+        } &> k(Input.Empty)
 
       case Input.EOF => Done(Cont(k), Input.EOF)
 
@@ -749,8 +750,9 @@ object Enumeratee {
           }(dec))
 
         case Input.Empty =>
-          new CheckDone[E, E] { def continue[A](k: K[E, A]) = Cont(step(k)) } &> k(
-            Input.Empty)
+          new CheckDone[E, E] {
+            def continue[A](k: K[E, A]) = Cont(step(k))
+          } &> k(Input.Empty)
 
         case Input.EOF => Done(Cont(k), Input.EOF)
       }
@@ -867,8 +869,9 @@ object Enumeratee {
           Done[E, Iteratee[E, A]](Cont(k), Input.EOF))(dec))
 
       case in =>
-        new CheckDone[E, E] { def continue[A](k: K[E, A]) = Cont(step(k)) } &> k(
-          in)
+        new CheckDone[E, E] {
+          def continue[A](k: K[E, A]) = Cont(step(k))
+        } &> k(in)
     }
 
     def continue[A](k: K[E, A]) = Cont(step(k))

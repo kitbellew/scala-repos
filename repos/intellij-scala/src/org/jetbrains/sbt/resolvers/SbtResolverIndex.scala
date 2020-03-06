@@ -41,7 +41,8 @@ class SbtResolverIndex private (
     val gaMap = mutable.HashMap.empty[String, mutable.Set[String]]
     val gavMap = mutable.HashMap.empty[String, mutable.Set[String]]
     def processArtifact(artifact: ArtifactInfo) {
-      agMap.getOrElseUpdate(artifact.getArtifactId, mutable.Set.empty) += artifact.getGroupId
+      agMap
+        .getOrElseUpdate(artifact.getArtifactId, mutable.Set.empty) += artifact.getGroupId
       gaMap.getOrElseUpdate(artifact.getGroupId, mutable.Set.empty) += artifact.getArtifactId
       gavMap.getOrElseUpdate(
         SbtResolverUtils.joinGroupArtifact(artifact),
@@ -100,11 +101,15 @@ class SbtResolverIndex private (
   }
 
   def groups() =
-    Option(groupToArtifactMap.getAllKeysWithExistingMapping) map { _.toSet } getOrElse Set.empty
+    Option(groupToArtifactMap.getAllKeysWithExistingMapping) map {
+      _.toSet
+    } getOrElse Set.empty
   def groups(artifact: String) = artifactToGroupMap.getOrEmpty(artifact)
 
   def artifacts() =
-    Option(artifactToGroupMap.getAllKeysWithExistingMapping) map { _.toSet } getOrElse Set.empty
+    Option(artifactToGroupMap.getAllKeysWithExistingMapping) map {
+      _.toSet
+    } getOrElse Set.empty
   def artifacts(group: String) = groupToArtifactMap.getOrEmpty(group)
 
   def versions(group: String, artifact: String) =

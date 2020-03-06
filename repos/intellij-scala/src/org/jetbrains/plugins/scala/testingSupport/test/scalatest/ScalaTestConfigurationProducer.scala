@@ -146,7 +146,8 @@ class ScalaTestConfigurationProducer extends {
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
     if (clazz == null) return (null, null)
     val tb = clazz.extendsBlock.templateBody.orNull
-    while (PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true) != null) {
+    while (PsiTreeUtil
+             .getParentOfType(clazz, classOf[ScTypeDefinition], true) != null) {
       clazz =
         PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
     }

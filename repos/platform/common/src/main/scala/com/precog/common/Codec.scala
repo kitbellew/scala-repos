@@ -508,9 +508,7 @@ object Codec {
 
     override def minSize(as: IndexedSeq[A]): Int = 5
     override def maxSize(as: IndexedSeq[A]): Int =
-      as.foldLeft(0) { (acc, a) =>
-        acc + elemCodec.maxSize(a)
-      } + 5
+      as.foldLeft(0) { (acc, a) => acc + elemCodec.maxSize(a) } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
       val size = as.foldLeft(0) { (acc, a) => acc + elemCodec.encodedSize(a) }

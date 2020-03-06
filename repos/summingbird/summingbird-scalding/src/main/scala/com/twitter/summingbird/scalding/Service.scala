@@ -244,8 +244,10 @@ private[scalding] object InternalService {
       case Right(_) => 1
     }
 
-    val bothPipes = (left.map { case (t, (k, v)) => (k, (t, Left(v))) } ++
-      mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) }).group
+    val bothPipes = (left.map {
+      case (t, (k, v)) => (k, (t, Left(v)))
+    } ++
+      mergeLog.map { case (t, (k, u)) => (k, (t, Right(u))) }).group
       .withReducers(
         reducers.getOrElse(-1)
       ) // jank, but scalding needs a way to maybe set reducers

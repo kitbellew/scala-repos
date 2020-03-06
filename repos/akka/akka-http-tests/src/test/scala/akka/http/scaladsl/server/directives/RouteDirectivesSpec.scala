@@ -29,7 +29,9 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       var i = 0
       Put() ~> {
         get { complete { i += 1; "get" } } ~
-          put { complete { i += 1; "put" } } ~
+          put {
+            complete { i += 1; "put" }
+          } ~
           (post & complete { i += 1; "post" })
       } ~> check {
         responseAs[String] shouldEqual "put"
@@ -107,7 +109,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       val route = get & complete(Data("Ida", 83))
 
       import akka.http.scaladsl.model.headers.Accept
-      Get().withHeaders(Accept(MediaTypes.`application/json`)) ~> route ~> check {
+      Get()
+        .withHeaders(Accept(MediaTypes.`application/json`)) ~> route ~> check {
         responseAs[String] shouldEqual
           """{
             |  "name": "Ida",
@@ -117,7 +120,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       Get().withHeaders(Accept(MediaTypes.`text/xml`)) ~> route ~> check {
         responseAs[xml.NodeSeq] shouldEqual <data><name>Ida</name><age>83</age></data>
       }
-      Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route.seal(route) ~> check {
+      Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route
+        .seal(route) ~> check {
         status shouldEqual StatusCodes.NotAcceptable
       }
     }

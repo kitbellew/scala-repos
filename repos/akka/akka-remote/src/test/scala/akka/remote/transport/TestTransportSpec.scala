@@ -60,8 +60,8 @@ class TestTransportSpec
         case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
       }
 
-      registry.logSnapshot.contains(AssociateAttempt(addressA, addressB)) should ===(
-        true)
+      registry.logSnapshot
+        .contains(AssociateAttempt(addressA, addressB)) should ===(true)
     }
 
     "fail to associate with nonexisting address" in {

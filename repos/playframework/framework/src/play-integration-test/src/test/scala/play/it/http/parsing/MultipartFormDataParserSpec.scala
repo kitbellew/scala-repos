@@ -49,11 +49,13 @@ object MultipartFormDataParserSpec extends PlaySpecification {
         parts.files must haveLength(2)
         parts.file("file1") must beSome.like {
           case filePart =>
-            PlayIO.readFileAsString(filePart.ref.file) must_== "the first file\r\n"
+            PlayIO
+              .readFileAsString(filePart.ref.file) must_== "the first file\r\n"
         }
         parts.file("file2") must beSome.like {
           case filePart =>
-            PlayIO.readFileAsString(filePart.ref.file) must_== "the second file\r\n"
+            PlayIO
+              .readFileAsString(filePart.ref.file) must_== "the second file\r\n"
         }
     }
   }

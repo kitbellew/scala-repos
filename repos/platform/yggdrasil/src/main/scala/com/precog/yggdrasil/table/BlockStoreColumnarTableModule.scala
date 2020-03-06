@@ -209,7 +209,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
       ): List[Cell] =
         if (queue.isEmpty) {
           cells
-        } else if (cells.isEmpty || cellMatrix.compare(queue.head, cells.head) == EQ) {
+        } else if (cells.isEmpty || cellMatrix
+                     .compare(queue.head, cells.head) == EQ) {
           dequeueEqual(queue, cellMatrix, queue.dequeue() :: cells)
         } else {
           cells
@@ -338,7 +339,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         keyRefs: List[ColumnRef],
         valRefs: List[ColumnRef]) {
       val name =
-        streamId + ";krefs=" + keyRefs.mkString("[", ",", "]") + ";vrefs=" + valRefs
+        streamId + ";krefs=" + keyRefs
+          .mkString("[", ",", "]") + ";vrefs=" + valRefs
           .mkString("[", ",", "]")
     }
 

@@ -441,7 +441,8 @@ object DateTimeUtils {
   }
 
   private def localTimestamp(microsec: SQLTimestamp): SQLTimestamp = {
-    absoluteMicroSecond(microsec) + defaultTimeZone.getOffset(microsec / 1000) * 1000L
+    absoluteMicroSecond(microsec) + defaultTimeZone
+      .getOffset(microsec / 1000) * 1000L
   }
 
   /**

@@ -607,7 +607,8 @@ abstract class SuperAccessors
     private def needsProtectedAccessor(sym: Symbol, pos: Position): Boolean = {
       val clazz = currentClass
       def accessibleThroughSubclassing =
-        validCurrentOwner && clazz.thisSym.isSubClass(sym.owner) && !clazz.isTrait
+        validCurrentOwner && clazz.thisSym
+          .isSubClass(sym.owner) && !clazz.isTrait
 
       val isCandidate = (
         sym.isProtected

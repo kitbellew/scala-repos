@@ -147,7 +147,9 @@ object Test {
 
     List(
       "These are doing the wrong thing under current proposal",
-      (inner1: Any) match { case _: outer2.Inner => true; case _ => false } // should be false
+      (inner1: Any) match {
+        case _: outer2.Inner => true; case _ => false
+      } // should be false
     ) foreach println
   }
 

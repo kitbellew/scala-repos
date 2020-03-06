@@ -58,7 +58,9 @@ class CookieDirectivesSpec extends RoutingSpec {
           HttpCookie("myCookie2", "foobar.com")) { completeOk }
       } ~> check {
         status shouldEqual OK
-        headers.collect { case `Set-Cookie`(x) ⇒ x } shouldEqual List(
+        headers.collect {
+          case `Set-Cookie`(x) ⇒ x
+        } shouldEqual List(
           HttpCookie("myCookie", "deleted", expires = deletedTimeStamp),
           HttpCookie("myCookie2", "deleted", expires = deletedTimeStamp))
       }
@@ -103,7 +105,9 @@ class CookieDirectivesSpec extends RoutingSpec {
           HttpCookie("myCookie2", "foobar.com")) { completeOk }
       } ~> check {
         status shouldEqual OK
-        headers.collect { case `Set-Cookie`(x) ⇒ x } shouldEqual List(
+        headers.collect {
+          case `Set-Cookie`(x) ⇒ x
+        } shouldEqual List(
           HttpCookie("myCookie", "test.com"),
           HttpCookie("myCookie2", "foobar.com"))
       }

@@ -270,9 +270,7 @@ object Console extends Logging {
           "Kick off an evaluation using an engine. This will produce an\n" +
             "engine instance. This command will pass all pass-through\n" +
             "arguments to its underlying spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "eval")
-        } children (
+        .action { (_, c) => c.copy(commands = c.commands :+ "eval") } children (
         arg[String]("<evaluation-class>") action { (x, c) =>
           c.copy(common = c.common.copy(evaluation = Some(x)))
         },
@@ -417,9 +415,7 @@ object Console extends Logging {
             "In addition, it also supports a second level of pass-through\n" +
             "arguments to the driver program, e.g.\n" +
             "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "run")
-        } children (
+        .action { (_, c) => c.copy(commands = c.commands :+ "run") } children (
         arg[String]("<main class>") action { (x, c) =>
           c.copy(mainClass = Some(x))
         } text ("Main class name of the driver program."),

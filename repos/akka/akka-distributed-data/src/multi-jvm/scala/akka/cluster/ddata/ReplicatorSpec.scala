@@ -279,8 +279,9 @@ class ReplicatorSpec
     runOn(first) {
       replicator ! Update(KeyC, GCounter(), writeTwo)(_ + 30)
       expectMsg(UpdateSuccess(KeyC, None))
-      changedProbe.expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
-        30)
+      changedProbe.expectMsgPF() {
+        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+      } should be(30)
 
       replicator ! Update(KeyY, GCounter(), writeTwo)(_ + 30)
       expectMsg(UpdateSuccess(KeyY, None))
@@ -294,21 +295,24 @@ class ReplicatorSpec
       replicator ! Get(KeyC, ReadLocal)
       val c30 = expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC) }
       c30.value should be(30)
-      changedProbe.expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
-        30)
+      changedProbe.expectMsgPF() {
+        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+      } should be(30)
 
       // replicate with gossip after WriteLocal
       replicator ! Update(KeyC, GCounter(), WriteLocal)(_ + 1)
       expectMsg(UpdateSuccess(KeyC, None))
-      changedProbe.expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
-        31)
+      changedProbe.expectMsgPF() {
+        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+      } should be(31)
 
       replicator ! Delete(KeyY, WriteLocal)
       expectMsg(DeleteSuccess(KeyY))
 
       replicator ! Get(KeyZ, readMajority)
-      expectMsgPF() { case g @ GetSuccess(KeyZ, _) ⇒ g.get(KeyZ).value } should be(
-        30)
+      expectMsgPF() {
+        case g @ GetSuccess(KeyZ, _) ⇒ g.get(KeyZ).value
+      } should be(30)
     }
     enterBarrier("update-c31")
 
@@ -324,8 +328,9 @@ class ReplicatorSpec
           expectMsg(DataDeleted(KeyY))
         }
       }
-      changedProbe.expectMsgPF() { case c @ Changed(KeyC) ⇒ c.get(KeyC).value } should be(
-        31)
+      changedProbe.expectMsgPF() {
+        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+      } should be(31)
     }
     enterBarrier("verified-c31")
 
@@ -544,11 +549,13 @@ class ReplicatorSpec
     enterBarrier("a-b-added-to-G")
     runOn(second) {
       replicator ! Get(KeyG, readAll)
-      expectMsgPF() { case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements } should be(
-        Set("a", "b"))
+      expectMsgPF() {
+        case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements
+      } should be(Set("a", "b"))
       replicator ! Get(KeyG, ReadLocal)
-      expectMsgPF() { case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements } should be(
-        Set("a", "b"))
+      expectMsgPF() {
+        case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements
+      } should be(Set("a", "b"))
     }
     enterBarrierAfterTestStep()
   }

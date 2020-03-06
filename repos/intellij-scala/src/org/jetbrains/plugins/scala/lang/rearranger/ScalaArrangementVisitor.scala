@@ -351,7 +351,8 @@ class ScalaArrangementVisitor(
             .isInstanceOf[PsiComment] && prev != null && (!prev
             .isInstanceOf[PsiWhiteSpace] ||
           prev
-            .isInstanceOf[PsiWhiteSpace] && !prev.getText.contains("\n") && prev.getPrevSibling != null)) {
+            .isInstanceOf[PsiWhiteSpace] && !prev.getText
+            .contains("\n") && prev.getPrevSibling != null)) {
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)

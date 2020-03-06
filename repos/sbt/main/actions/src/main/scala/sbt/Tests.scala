@@ -355,7 +355,9 @@ object Tests {
         case Nil => acc
       }
 
-    task { processRunnable(runnables.toList, List.empty) } dependsOn (setupTasks)
+    task {
+      processRunnable(runnables.toList, List.empty)
+    } dependsOn (setupTasks)
   }
 
   def processResults(results: Iterable[(String, SuiteResult)]): Output =

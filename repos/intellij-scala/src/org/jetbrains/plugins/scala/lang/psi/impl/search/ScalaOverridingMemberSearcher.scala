@@ -169,7 +169,8 @@ object ScalaOverridingMemberSearcher {
                 t: Signature,
                 node: TypeDefinitionMembers.SignatureNodes.Node) =
                 signsIterator.next()
-              if (PsiTreeUtil.getParentOfType(t.namedElement, classOf[PsiClass]) == inheritor) {
+              if (PsiTreeUtil
+                    .getParentOfType(t.namedElement, classOf[PsiClass]) == inheritor) {
                 val supersIterator = node.supers.iterator
                 while (supersIterator.hasNext) {
                   val s = supersIterator.next()

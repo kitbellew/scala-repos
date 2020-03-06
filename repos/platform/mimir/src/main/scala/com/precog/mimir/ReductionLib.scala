@@ -160,9 +160,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { dt =>
-          Table.constDate(Set(dt))
-        } getOrElse Table.empty
+        res map { dt => Table.constDate(Set(dt)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CDate(_) }
     }
@@ -211,9 +209,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { dt =>
-          Table.constDate(Set(dt))
-        } getOrElse Table.empty
+        res map { dt => Table.constDate(Set(dt)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CDate(_) }
     }
@@ -274,9 +270,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CNum(_) }
     }
@@ -337,9 +331,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CNum(_) }
     }
@@ -383,9 +375,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CNum(_) }
     }
@@ -509,9 +499,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         } filter (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =
-        perform(res) map { v =>
-          Table.constDouble(Set(v))
-        } getOrElse {
+        perform(res) map { v => Table.constDouble(Set(v)) } getOrElse {
           Table.empty
         }
 
@@ -559,9 +547,7 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def extract(res: Result): Table =
-        res map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        res map { v => Table.constDecimal(Set(v)) } getOrElse Table.empty
 
       def extractValue(res: Result) = res map { CNum(_) }
     }

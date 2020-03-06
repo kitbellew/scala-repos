@@ -222,9 +222,9 @@ trait LinearRegressionLibModule[M[+_]]
         val values = features map {
           case c: HomogeneousArrayColumn[_]
               if c.tpe.manifest.erasure == classOf[Array[Double]] =>
-            val mapped = range.toArray filter { r =>
-              c.isDefinedAt(r)
-            } map { i => c.asInstanceOf[HomogeneousArrayColumn[Double]](i) }
+            val mapped = range.toArray filter { r => c.isDefinedAt(r) } map {
+              i => c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
+            }
             Some(mapped)
           case other =>
             logger.warn(

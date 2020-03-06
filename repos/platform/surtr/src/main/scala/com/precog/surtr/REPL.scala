@@ -88,7 +88,9 @@ class REPLConfig(dataDir: Option[String])
     with BlockStoreColumnarTableModuleConfig {
   val defaultConfig =
     Configuration.loadResource("/default_ingest.conf", BlockFormat)
-  val config = dataDir map { defaultConfig.set("precog.storage.root", _) } getOrElse {
+  val config = dataDir map {
+    defaultConfig.set("precog.storage.root", _)
+  } getOrElse {
     defaultConfig
   }
 
@@ -286,9 +288,7 @@ trait REPL
   // %%
 
   lazy val prompt: Parser[Command] = (
-    expr ^^ { t =>
-      Eval(t)
-    }
+    expr ^^ { t => Eval(t) }
       | ":tree" ~ expr ^^ { (_, t) => PrintTree(t) }
       | ":help" ^^^ Help
       | ":quit" ^^^ Quit

@@ -129,7 +129,8 @@ object Reflector {
           while (ls.hasNext) {
             val f = ls.next()
             val mod = f.getModifiers
-            if (!(Modifier.isStatic(mod) || Modifier.isTransient(mod) || Modifier
+            if (!(Modifier.isStatic(mod) || Modifier
+                  .isTransient(mod) || Modifier
                   .isVolatile(mod) || f.isSynthetic)) {
               val st = ManifestScalaType(
                 f.getType,
@@ -211,7 +212,9 @@ object Reflector {
           val ctorParameterNames =
             if (Modifier
                   .isPublic(ctor.getModifiers) && ctor.getParameterTypes.length > 0)
-              allCatch opt { paramNameReader.lookupParameterNames(ctor) } getOrElse Nil
+              allCatch opt {
+                paramNameReader.lookupParameterNames(ctor)
+              } getOrElse Nil
             else
               Nil
           val genParams = Vector(ctor.getGenericParameterTypes: _*)

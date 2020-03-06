@@ -276,7 +276,9 @@ trait GrouperSpec[M[+_]]
 
     resultIter must haveSize((set map { _ % 2 } distinct) size)
 
-    val expectedSet = (set.toSeq groupBy { _ % 2 } values) map { _.length } map {
+    val expectedSet = (set.toSeq groupBy { _ % 2 } values) map {
+      _.length
+    } map {
       JNum(_)
     }
 

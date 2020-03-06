@@ -637,7 +637,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see Req.isIE
     */
   def legacyIeCompatibilityMode: Boolean =
-    session.map(_.legacyIeCompatibilityMode.is) openOr false // LiftRules.calcIEMode()
+    session
+      .map(_.legacyIeCompatibilityMode.is) openOr false // LiftRules.calcIEMode()
 
   /**
     * Get the current instance of HtmlProperties

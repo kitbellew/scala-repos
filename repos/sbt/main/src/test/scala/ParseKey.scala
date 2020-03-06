@@ -81,7 +81,8 @@ object ParseKey extends Properties("Key parser test") {
     }
 
   lazy val structureDefinedKey: Gen[StructureKeyMask] = structureKeyMask { s =>
-    for (scope <- TestBuild.scope(s.env); key <- oneOf(s.allAttributeKeys.toSeq))
+    for (scope <- TestBuild
+           .scope(s.env); key <- oneOf(s.allAttributeKeys.toSeq))
       yield ScopedKey(scope, key)
   }
   def structureKeyMask(genKey: Structure => Gen[ScopedKey[_]])(implicit

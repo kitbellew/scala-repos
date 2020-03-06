@@ -93,17 +93,16 @@ object Preload {
 
   def currentGame(lightUser: String => Option[LightUser])(user: User) =
     GameRepo.urgentGames(user) map { povs =>
-      povs.find { p =>
-        p.game.nonAi && p.game.hasClock && p.isMyTurn
-      } map { pov =>
-        val opponent = lila.game.Namer.playerString(pov.opponent)(lightUser)
-        CurrentGame(
-          pov = pov,
-          opponent = opponent,
-          json = Json.obj(
-            "id" -> pov.game.id,
-            "color" -> pov.color.name,
-            "opponent" -> opponent))
+      povs.find { p => p.game.nonAi && p.game.hasClock && p.isMyTurn } map {
+        pov =>
+          val opponent = lila.game.Namer.playerString(pov.opponent)(lightUser)
+          CurrentGame(
+            pov = pov,
+            opponent = opponent,
+            json = Json.obj(
+              "id" -> pov.game.id,
+              "color" -> pov.color.name,
+              "opponent" -> opponent))
       }
     }
 }

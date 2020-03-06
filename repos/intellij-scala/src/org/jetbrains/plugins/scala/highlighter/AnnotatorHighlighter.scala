@@ -192,7 +192,8 @@ object AnnotatorHighlighter {
     if (c != null && c.getParent.isInstanceOf[ScAnnotationExpr]) return
 
     val resolvedElement = refElement.resolve()
-    if (PsiTreeUtil.getParentOfType(refElement, classOf[ScImportExpr]) == null && resolvedElement
+    if (PsiTreeUtil
+          .getParentOfType(refElement, classOf[ScImportExpr]) == null && resolvedElement
           .isInstanceOf[PsiClass]) {
       annotateCollection(resolvedElement.asInstanceOf[PsiClass])
     }

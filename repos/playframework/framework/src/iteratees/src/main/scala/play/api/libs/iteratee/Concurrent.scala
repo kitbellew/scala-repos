@@ -147,8 +147,9 @@ object Concurrent {
           .sequence(ready)
           .map[Iteratee[E, Unit]] { commitReady =>
             val downToZero = atomic { implicit txn =>
-              iteratees.transform(
-                commitReady.collect { case Some(s) => s } ++ _)
+              iteratees.transform(commitReady.collect {
+                case Some(s) => s
+              } ++ _)
               (interested.length > 0 && iteratees().length <= 0)
             }
 
@@ -400,7 +401,9 @@ object Concurrent {
         }(dec))
 
       }
-      (new CheckDone[E, E] { def continue[A](cont: K[E, A]) = moreInput(cont) } &> it).unflatten
+      (new CheckDone[E, E] {
+        def continue[A](cont: K[E, A]) = moreInput(cont)
+      } &> it).unflatten
         .onComplete {
           case Success(it) =>
             state.single() = DoneIt(it.it)

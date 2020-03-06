@@ -36,10 +36,9 @@ object ControlHelpersSpec extends Specification {
     def failureBlock = { throw exception; () }
 
     "return a Failure if the tested block throws an exception" in {
-      tryo { failureBlock } must_== Failure(
-        exception.getMessage,
-        Full(exception),
-        Empty)
+      tryo {
+        failureBlock
+      } must_== Failure(exception.getMessage, Full(exception), Empty)
     }
     "return Empty if the tested block throws an exception whose class is in the ignore list - with one element" in {
       tryo(classOf[RuntimeException]) { failureBlock } must_== Empty

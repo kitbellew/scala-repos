@@ -228,7 +228,9 @@ trait ManyToMany extends BaseKeyedMapper {
           }] set ManyToMany.this.primaryKeyField.get.asInstanceOf[K]
       }
 
-      removedJoins.forall { _.delete_! } & (// continue saving even if deleting fails
+      removedJoins.forall {
+        _.delete_!
+      } & (// continue saving even if deleting fails
       children.forall(_.save) &&
       joins.forall(_.save))
     }

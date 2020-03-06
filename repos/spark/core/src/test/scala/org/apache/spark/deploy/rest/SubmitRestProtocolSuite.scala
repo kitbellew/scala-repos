@@ -31,27 +31,41 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("validate") {
     val request = new DummyRequest
-    intercept[SubmitRestProtocolException] { request.validate() } // missing everything
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing everything
     request.clientSparkVersion = "1.2.3"
-    intercept[SubmitRestProtocolException] { request.validate() } // missing name and age
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing name and age
     request.name = "something"
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only age
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only age
     request.age = 2
     intercept[SubmitRestProtocolException] { request.validate() } // age too low
     request.age = 10
     request.validate() // everything is set properly
     request.clientSparkVersion = null
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only Spark version
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only Spark version
     request.clientSparkVersion = "1.2.3"
     request.name = null
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only name
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only name
     request.message = "not-setting-name"
-    intercept[SubmitRestProtocolException] { request.validate() } // still missing name
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // still missing name
   }
 
   test("request to and from JSON") {
     val request = new DummyRequest
-    intercept[SubmitRestProtocolException] { request.toJson } // implicit validation
+    intercept[SubmitRestProtocolException] {
+      request.toJson
+    } // implicit validation
     request.clientSparkVersion = "1.2.3"
     request.active = true
     request.age = 25

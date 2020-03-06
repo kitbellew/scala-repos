@@ -364,22 +364,38 @@ abstract class BCodeIdiomatic extends SubComponent {
       }
     }
 
-    final def load(idx: Int, tk: BType) { emitVarInsn(Opcodes.ILOAD, idx, tk) } // can-multi-thread
+    final def load(idx: Int, tk: BType) {
+      emitVarInsn(Opcodes.ILOAD, idx, tk)
+    } // can-multi-thread
     final def store(idx: Int, tk: BType) {
       emitVarInsn(Opcodes.ISTORE, idx, tk)
     } // can-multi-thread
 
-    final def aload(tk: BType) { emitTypeBased(JCodeMethodN.aloadOpcodes, tk) } // can-multi-thread
+    final def aload(tk: BType) {
+      emitTypeBased(JCodeMethodN.aloadOpcodes, tk)
+    } // can-multi-thread
     final def astore(tk: BType) {
       emitTypeBased(JCodeMethodN.astoreOpcodes, tk)
     } // can-multi-thread
 
-    final def neg(tk: BType) { emitPrimitive(JCodeMethodN.negOpcodes, tk) } // can-multi-thread
-    final def add(tk: BType) { emitPrimitive(JCodeMethodN.addOpcodes, tk) } // can-multi-thread
-    final def sub(tk: BType) { emitPrimitive(JCodeMethodN.subOpcodes, tk) } // can-multi-thread
-    final def mul(tk: BType) { emitPrimitive(JCodeMethodN.mulOpcodes, tk) } // can-multi-thread
-    final def div(tk: BType) { emitPrimitive(JCodeMethodN.divOpcodes, tk) } // can-multi-thread
-    final def rem(tk: BType) { emitPrimitive(JCodeMethodN.remOpcodes, tk) } // can-multi-thread
+    final def neg(tk: BType) {
+      emitPrimitive(JCodeMethodN.negOpcodes, tk)
+    } // can-multi-thread
+    final def add(tk: BType) {
+      emitPrimitive(JCodeMethodN.addOpcodes, tk)
+    } // can-multi-thread
+    final def sub(tk: BType) {
+      emitPrimitive(JCodeMethodN.subOpcodes, tk)
+    } // can-multi-thread
+    final def mul(tk: BType) {
+      emitPrimitive(JCodeMethodN.mulOpcodes, tk)
+    } // can-multi-thread
+    final def div(tk: BType) {
+      emitPrimitive(JCodeMethodN.divOpcodes, tk)
+    } // can-multi-thread
+    final def rem(tk: BType) {
+      emitPrimitive(JCodeMethodN.remOpcodes, tk)
+    } // can-multi-thread
 
     // can-multi-thread
     final def invokespecial(
@@ -631,9 +647,15 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // ---------------- conversions ----------------
 
-    val fromByteT2T = { Array(-1, -1, I2C, -1, I2L, I2F, I2D) } // do nothing for (BYTE -> SHORT) and for (BYTE -> INT)
-    val fromCharT2T = { Array(I2B, I2S, -1, -1, I2L, I2F, I2D) } // for (CHAR  -> INT) do nothing
-    val fromShortT2T = { Array(I2B, -1, I2C, -1, I2L, I2F, I2D) } // for (SHORT -> INT) do nothing
+    val fromByteT2T = {
+      Array(-1, -1, I2C, -1, I2L, I2F, I2D)
+    } // do nothing for (BYTE -> SHORT) and for (BYTE -> INT)
+    val fromCharT2T = {
+      Array(I2B, I2S, -1, -1, I2L, I2F, I2D)
+    } // for (CHAR  -> INT) do nothing
+    val fromShortT2T = {
+      Array(I2B, -1, I2C, -1, I2L, I2F, I2D)
+    } // for (SHORT -> INT) do nothing
     val fromIntT2T = { Array(I2B, I2S, I2C, -1, I2L, I2F, I2D) }
 
     // ---------------- array load and store ----------------

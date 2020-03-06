@@ -139,8 +139,9 @@ object Traversable {
         }(dec))
 
       case Input.Empty =>
-        new CheckDone[M, M] { def continue[A](k: K[M, A]) = Cont(step(k)) } &> k(
-          Input.Empty)
+        new CheckDone[M, M] {
+          def continue[A](k: K[M, A]) = Cont(step(k))
+        } &> k(Input.Empty)
 
       case Input.EOF => Done(Cont(k), Input.EOF)
 

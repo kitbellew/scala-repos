@@ -146,9 +146,7 @@ class AppTasksResource @Inject() (
       toResponse: Iterable[Task] => Response): Response = {
 
     import scala.concurrent.ExecutionContext.Implicits.global
-    val response = future.map { tasks =>
-      toResponse(tasks)
-    } recover {
+    val response = future.map { tasks => toResponse(tasks) } recover {
       case UnknownAppException(appId, version) => unknownApp(appId, version)
     }
     result(response)

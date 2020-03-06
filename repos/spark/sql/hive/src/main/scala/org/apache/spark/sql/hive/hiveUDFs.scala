@@ -84,7 +84,8 @@ private[hive] class HiveFunctionRegistry(
             children)
           udf.dataType // Force it to check input data types.
           udf
-        } else if (classOf[UDF].isAssignableFrom(functionInfo.getFunctionClass)) {
+        } else if (classOf[UDF]
+                     .isAssignableFrom(functionInfo.getFunctionClass)) {
           val udf = HiveSimpleUDF(
             name,
             new HiveFunctionWrapper(functionClassName),

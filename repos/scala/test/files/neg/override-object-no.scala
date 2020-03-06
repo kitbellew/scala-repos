@@ -52,5 +52,7 @@ object SI9574 {
   trait B extends A { def x: Bar.type } // should not compile (SI-9574)
   trait C extends A { override object x }
   trait D { object x; def y = x }
-  trait E extends D { override val x: super.x.type = y } // OK but doesn't need object subtyping exception
+  trait E extends D {
+    override val x: super.x.type = y
+  } // OK but doesn't need object subtyping exception
 }

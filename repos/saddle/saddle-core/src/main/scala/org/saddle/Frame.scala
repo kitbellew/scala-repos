@@ -485,9 +485,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def reindexCol(cix: Index[CX]): Frame[RX, CX, T] = {
     val ixer = colIx.getIndexer(cix)
-    ixer.map { i =>
-      Frame(values.take(i), rowIx, cix)
-    } getOrElse this
+    ixer.map { i => Frame(values.take(i), rowIx, cix) } getOrElse this
   }
 
   // -----------------------------------------

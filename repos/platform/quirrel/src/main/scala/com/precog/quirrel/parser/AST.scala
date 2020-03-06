@@ -191,7 +191,9 @@ trait AST extends Phases {
       }
 
       case ArrayDef(loc, values) => {
-        val valStr = values map { indent + "  -\n" + prettyPrint(_, level + 4) } mkString "\n"
+        val valStr = values map {
+          indent + "  -\n" + prettyPrint(_, level + 4)
+        } mkString "\n"
 
         indent + "type: array\n" +
           indent + "values:\n" + valStr
@@ -909,7 +911,9 @@ trait AST extends Phases {
       val sym = 'solve
 
       def form =
-        'solve ~ (constraints.init map { _ ~ 'comma } reduceOption { _ ~ _ } map {
+        'solve ~ (constraints.init map { _ ~ 'comma } reduceOption {
+          _ ~ _
+        } map {
           _ ~ constraints.last ~ child
         } getOrElse (constraints.last ~ child))
 

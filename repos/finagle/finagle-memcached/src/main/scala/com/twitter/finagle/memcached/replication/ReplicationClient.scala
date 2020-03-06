@@ -63,7 +63,9 @@ object ReplicationClient {
         failureAccrualParams).build()
     }
     val repStatsReceiver =
-      clientBuilder map { _.statsReceiver.scope("cache_replication") } getOrElse (NullStatsReceiver)
+      clientBuilder map {
+        _.statsReceiver.scope("cache_replication")
+      } getOrElse (NullStatsReceiver)
     new BaseReplicationClient(underlyingClients, repStatsReceiver)
   }
 

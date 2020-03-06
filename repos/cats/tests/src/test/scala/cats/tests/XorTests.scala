@@ -185,8 +185,9 @@ class XorTests extends CatsSuite {
 
   test("recoverWith ignores unhandled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recoverWith { case "notxor" => Xor.right[String, Int](5) } should ===(
-      xor)
+    xor.recoverWith {
+      case "notxor" => Xor.right[String, Int](5)
+    } should ===(xor)
   }
 
   test("recoverWith ignores the right side") {

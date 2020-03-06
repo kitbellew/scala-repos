@@ -187,7 +187,8 @@ private[tournament] final class TournamentApi(
 
   def join(tourId: String, me: User) {
     Sequencing(tourId)(TournamentRepo.enterableById) { tour =>
-      PlayerRepo.join(tour.id, me, tour.perfLens) >> updateNbPlayers(tour.id) >>- {
+      PlayerRepo
+        .join(tour.id, me, tour.perfLens) >> updateNbPlayers(tour.id) >>- {
         withdrawAllNonMarathonOrUniqueBut(tour.id, me.id)
         socketReload(tour.id)
         publish()
@@ -215,10 +216,12 @@ private[tournament] final class TournamentApi(
   def withdraw(tourId: String, userId: String) {
     Sequencing(tourId)(TournamentRepo.enterableById) {
       case tour if tour.isCreated =>
-        PlayerRepo.remove(tour.id, userId) >> updateNbPlayers(tour.id) >>- socketReload(
+        PlayerRepo
+          .remove(tour.id, userId) >> updateNbPlayers(tour.id) >>- socketReload(
           tour.id) >>- publish()
       case tour if tour.isStarted =>
-        PlayerRepo.withdraw(tour.id, userId) >>- socketReload(tour.id) >>- publish()
+        PlayerRepo
+          .withdraw(tour.id, userId) >>- socketReload(tour.id) >>- publish()
       case _ => funit
     }
   }
@@ -266,7 +269,8 @@ private[tournament] final class TournamentApi(
   }
 
   private def updatePlayer(tour: Tournament)(userId: String): Funit =
-    (tour.perfType.ifTrue(tour.mode.rated) ?? { UserRepo.perfOf(userId, _) }) flatMap {
+    (tour.perfType
+      .ifTrue(tour.mode.rated) ?? { UserRepo.perfOf(userId, _) }) flatMap {
       perf =>
         PlayerRepo.update(tour.id, userId) { player =>
           PairingRepo.finishedByPlayerChronological(tour.id, userId) map {

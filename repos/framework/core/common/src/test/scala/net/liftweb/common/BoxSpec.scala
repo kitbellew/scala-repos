@@ -63,9 +63,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Box(List(1, 2, 3)) must_== Full(1)
     }
     "be used as an iterable" in {
-      Full(1) reduceLeft { (x: Int, y: Int) =>
-        x + y
-      } must_== 1
+      Full(1) reduceLeft { (x: Int, y: Int) => x + y } must_== 1
     }
     "be used as an Option" in {
       Full(1) orElse Some(2) must_== Some(1)
@@ -282,9 +280,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Empty map { _.toString } must beEmpty
     }
     "define a 'flatMap' method returning Empty" in {
-      Empty flatMap { x: Int =>
-        Full("full")
-      } must beEmpty
+      Empty flatMap { x: Int => Full("full") } must beEmpty
     }
     "define an 'elements' method returning an empty iterator" in {
       Empty.elements.hasNext must beFalse
@@ -329,10 +325,9 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
   "A Failure is an Empty Box which" should {
     "return itself if mapped or flatmapped" in {
-      Failure("error", Empty, Empty) map { _.toString } must_== Failure(
-        "error",
-        Empty,
-        Empty)
+      Failure("error", Empty, Empty) map {
+        _.toString
+      } must_== Failure("error", Empty, Empty)
       Failure("error", Empty, Empty) flatMap { x: String =>
         Full(x.toString)
       } must_== Failure("error", Empty, Empty)
@@ -350,14 +345,10 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
         Full(Failure("error", Empty, Empty)))
     }
     "return false for exist method" in {
-      Failure("error", Empty, Empty) exists { _ =>
-        true
-      } must beFalse
+      Failure("error", Empty, Empty) exists { _ => true } must beFalse
     }
     "return true for forall method" in {
-      Failure("error", Empty, Empty) forall { _ =>
-        false
-      } must beTrue
+      Failure("error", Empty, Empty) forall { _ => false } must beTrue
     }
   }
 

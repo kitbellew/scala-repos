@@ -583,7 +583,8 @@ object PlayDocsValidation {
     val grouped = report.externalLinks
       .groupBy { _.link }
       .filterNot { e =>
-        e._1.startsWith("http://localhost:") || e._1.contains("example.com") || e._1
+        e._1.startsWith("http://localhost:") || e._1
+          .contains("example.com") || e._1
           .startsWith("http://127.0.0.1")
       }
       .toSeq
@@ -676,8 +677,9 @@ object PlayDocsValidation {
     log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)
     line.foreach { l =>
       log.error(l)
-      log.error(
-        l.take(colNo - 1).map { case '\t' => '\t'; case _ => ' ' } + "^")
+      log.error(l.take(colNo - 1).map {
+        case '\t' => '\t'; case _ => ' '
+      } + "^")
     }
   }
 }

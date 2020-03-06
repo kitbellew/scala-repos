@@ -100,7 +100,8 @@ abstract class RemoteNodeRestartGateSpec
           }
         }
 
-        system.actorSelection(RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
       }
 
       runOn(second) {

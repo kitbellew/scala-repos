@@ -411,7 +411,9 @@ trait GroupSolver
     case _ =>
       (
         None,
-        listTicVars(Some(b), expr, sigma) map { case (_, id) => id } map UnableToSolveTicVariable map {
+        listTicVars(Some(b), expr, sigma) map {
+          case (_, id) => id
+        } map UnableToSolveTicVariable map {
           Error(expr, _)
         })
   }
@@ -460,7 +462,9 @@ trait GroupSolver
       }
     }
 
-    if (back.isDefined && !(errors collect { case Error(tpe) => tpe } contains ConstraintsWithinInnerSolve))
+    if (back.isDefined && !(errors collect {
+          case Error(tpe) => tpe
+        } contains ConstraintsWithinInnerSolve))
       (back, Set())
     else
       (back, errors)
@@ -798,8 +802,9 @@ trait GroupSolver
       // iterate
       if (results.isEmpty) {
         val kernels2 = kernels map { k =>
-          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map { _.expr } map enumerateParents(
-            k.sigma) unzip
+          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map {
+            _.expr
+          } map enumerateParents(k.sigma) unzip
 
           val nodes2 = nodes2Unflatten.flatten map ExprWrapper
           val sigma2: Sigma = Map(sigma2Unflatten.flatten.toSeq: _*)

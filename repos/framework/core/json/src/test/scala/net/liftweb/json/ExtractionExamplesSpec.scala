@@ -50,7 +50,8 @@ object ExtractionExamples extends Specification {
 
   "Extract with a default value" in {
     val json = parse(testJson)
-    (json \ "address2").extractOrElse(Address("Tie", "Helsinki")) mustEqual Address(
+    (json \ "address2")
+      .extractOrElse(Address("Tie", "Helsinki")) mustEqual Address(
       "Tie",
       "Helsinki")
   }

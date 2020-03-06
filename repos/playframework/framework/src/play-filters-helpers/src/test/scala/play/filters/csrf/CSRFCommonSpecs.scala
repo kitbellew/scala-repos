@@ -174,7 +174,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
           addToken(req, "foo")
             .post(Map("foo" -> "bar", TokenName -> generate))) { response =>
           response.status must_== FORBIDDEN
-          response.cookies.find(_.name.exists(_ == Session.COOKIE_NAME)) must beSome
+          response.cookies
+            .find(_.name.exists(_ == Session.COOKIE_NAME)) must beSome
             .like {
               case cookie => cookie.value must beNone
             }

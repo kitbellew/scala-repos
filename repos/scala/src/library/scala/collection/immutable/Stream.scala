@@ -1294,7 +1294,9 @@ object Stream extends SeqFactory[Stream] {
       p: A => Boolean)
       extends FilterMonadic[A, Stream[A]] {
     private var s = sl // set to null to allow GC after filtered
-    private lazy val filtered = { val f = s filter p; s = null; f } // don't set to null if throw during filter
+    private lazy val filtered = {
+      val f = s filter p; s = null; f
+    } // don't set to null if throw during filter
 
     def map[B, That](f: A => B)(
         implicit bf: CanBuildFrom[Stream[A], B, That]): That =

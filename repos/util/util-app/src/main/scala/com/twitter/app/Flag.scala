@@ -211,7 +211,9 @@ object Flaggable {
     }
 
     override def show(out: Map[K, V]) = {
-      out.toSeq map { case (k, v) => k.toString + "=" + v.toString } mkString (",")
+      out.toSeq map {
+        case (k, v) => k.toString + "=" + v.toString
+      } mkString (",")
     }
   }
 

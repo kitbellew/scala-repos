@@ -235,7 +235,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         }
       case (x, y, _, _)
           if ScalaDocTokenType.ALL_SCALADOC_TOKENS.contains(x) &&
-            ScalaDocTokenType.ALL_SCALADOC_TOKENS.contains(y) && !scalaSettings.ENABLE_SCALADOC_FORMATTING =>
+            ScalaDocTokenType.ALL_SCALADOC_TOKENS
+              .contains(y) && !scalaSettings.ENABLE_SCALADOC_FORMATTING =>
         return Spacing.getReadOnlySpacing
       case (ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS, _, _, _) =>
         return if (getText(rightNode, fileText).apply(0) == ' ') WITHOUT_SPACING
@@ -425,7 +426,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         return NO_SPACING
       case (el1, el2, _, _)
           if scalaSettings.KEEP_XML_FORMATTING &&
-            (ScalaXmlTokenTypes.XML_ELEMENTS.contains(el1) || ScalaXmlTokenTypes.XML_ELEMENTS
+            (ScalaXmlTokenTypes.XML_ELEMENTS
+              .contains(el1) || ScalaXmlTokenTypes.XML_ELEMENTS
               .contains(el2)) =>
         return Spacing.getReadOnlySpacing
       case (ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_START_DELIMITER, _, _, _) =>
@@ -1102,7 +1104,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
     if (rightNode.getElementType == ScalaTokenTypes.kELSE && right.myLastNode != null) {
       var lastNode = left.myLastNode
-      while (lastNode != null && (ScalaPsiUtil.isLineTerminator(lastNode.getPsi) ||
+      while (lastNode != null && (ScalaPsiUtil
+               .isLineTerminator(lastNode.getPsi) ||
              lastNode.getPsi.isInstanceOf[PsiWhiteSpace]))
         lastNode = lastNode.getTreePrev
       if (lastNode == null)

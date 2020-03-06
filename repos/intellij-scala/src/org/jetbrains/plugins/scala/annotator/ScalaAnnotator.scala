@@ -711,7 +711,8 @@ class ScalaAnnotator
     }
     val file = element.getContainingFile
     if (named.isValid && named.getContainingFile == file &&
-        !PsiTreeUtil.isAncestor(named, element, true)) { //to filter recursive usages
+        !PsiTreeUtil
+          .isAncestor(named, element, true)) { //to filter recursive usages
       val value: ValueUsed = element match {
         case ref: ScReferenceExpression
             if checkWrite &&
@@ -797,7 +798,8 @@ class ScalaAnnotator
     val resolve: Array[ResolveResult] = refElement.multiResolve(false)
     def processError(countError: Boolean, fixes: => Seq[IntentionAction]) {
       //todo remove when resolve of unqualified expression will be fully implemented
-      if (refElement.getManager.isInProject(refElement) && resolve.length == 0 &&
+      if (refElement.getManager
+            .isInProject(refElement) && resolve.length == 0 &&
           (fixes.nonEmpty || countError)) {
         val error = ScalaBundle.message("cannot.resolve", refElement.refName)
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
@@ -1196,7 +1198,8 @@ class ScalaAnnotator
         case _ =>
           expr.getParent match {
             case a: ScAssignStmt
-                if a.getRExpression.contains(expr) && a.isDynamicNamedAssignment =>
+                if a.getRExpression
+                  .contains(expr) && a.isDynamicNamedAssignment =>
               return
             case args: ScArgumentExprList                   => return
             case inf: ScInfixExpr if inf.getArgExpr == expr => return
@@ -1567,7 +1570,8 @@ class ScalaAnnotator
               val compareTo = scTypeParam.owner
               val parentIt = checkParentOf.parents
               //if it's a function inside function we do not highlight it unless trait or class is defined inside this function
-              parentIt.find(e => e == compareTo || e.isInstanceOf[ScFunction]) match {
+              parentIt
+                .find(e => e == compareTo || e.isInstanceOf[ScFunction]) match {
                 case Some(_: ScFunction) =>
                 case _ =>
                   def findVariance: Int = {

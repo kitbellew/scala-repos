@@ -257,9 +257,9 @@ object StreamRef {
     def validated(jv: JValue) = jv match {
       case JString("append") => Success(Append)
       case other =>
-        ((other \? "create") map { jv =>
-          (jv, Create.apply _)
-        }) orElse ((other \? "replace") map { jv => (jv, Replace.apply _) }) map {
+        ((other \? "create") map { jv => (jv, Create.apply _) }) orElse ((other \? "replace") map {
+          jv => (jv, Replace.apply _)
+        }) map {
           case (jv, f) =>
             (jv.validated[UUID]("uuid") |@| jv.validated[Boolean]("terminal")) {
               f

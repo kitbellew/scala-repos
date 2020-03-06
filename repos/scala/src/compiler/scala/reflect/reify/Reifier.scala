@@ -70,12 +70,8 @@ abstract class Reifier extends States with Phases with Errors with Utils {
 
           val tpe = typer.packedType(tree, NoSymbol)
           val ReifiedType(_, _, tpeSymtab, _, rtpe, tpeReificationIsConcrete) =
-            `package`.reifyType(global)(
-              typer,
-              universe,
-              mirror,
-              tpe,
-              concrete = false)
+            `package`
+              .reifyType(global)(typer, universe, mirror, tpe, concrete = false)
           state.reificationIsConcrete &= tpeReificationIsConcrete
           state.symtab ++= tpeSymtab
           ReifiedTree(

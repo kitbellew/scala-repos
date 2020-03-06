@@ -67,7 +67,9 @@ class FutureDirectivesSpec extends RoutingSpec {
     "propagate the exception in the failure case" in EventFilter[Exception](
       occurrences = 1,
       message = "XXX").intercept {
-      Get() ~> onSuccess(Future.failed(TestException)) { echoComplete } ~> check {
+      Get() ~> onSuccess(Future.failed(TestException)) {
+        echoComplete
+      } ~> check {
         status shouldEqual StatusCodes.InternalServerError
       }
     }
@@ -93,7 +95,9 @@ class FutureDirectivesSpec extends RoutingSpec {
 
   "The `completeOrRecoverWith` directive" should {
     "complete the request with the Future's value if the future succeeds" in {
-      Get() ~> completeOrRecoverWith(Future.successful("yes")) { echoComplete } ~> check {
+      Get() ~> completeOrRecoverWith(Future.successful("yes")) {
+        echoComplete
+      } ~> check {
         responseAs[String] shouldEqual "yes"
       }
     }

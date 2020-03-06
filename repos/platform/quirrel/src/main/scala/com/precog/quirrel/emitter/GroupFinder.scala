@@ -45,7 +45,9 @@ trait GroupFinder extends parser.AST with Tracer {
 
       val mapped = result map {
         case (sigma, where) =>
-          val dtrace = btrace map { _._2 } dropWhile { !_.isInstanceOf[Where] } collect {
+          val dtrace = btrace map { _._2 } dropWhile {
+            !_.isInstanceOf[Where]
+          } collect {
             case d: Dispatch if d.binding.isInstanceOf[LetBinding] => d
           }
 

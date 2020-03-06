@@ -49,7 +49,9 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       }
     }
     "decode the request content if no Content-Encoding header is present" in {
-      Post("/", "yes") ~> decodeRequestWith(NoCoding) { echoRequestContent } ~> check {
+      Post("/", "yes") ~> decodeRequestWith(NoCoding) {
+        echoRequestContent
+      } ~> check {
         responseAs[String] shouldEqual "yes"
       }
     }
@@ -171,7 +173,9 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       } ~> check { responseAs[String] shouldEqual "yes" }
     }
     "decode the request content if no Content-Encoding header is present" in {
-      Post("/", "yes") ~> decodeWithGzipOrNoEncoding { echoRequestContent } ~> check {
+      Post("/", "yes") ~> decodeWithGzipOrNoEncoding {
+        echoRequestContent
+      } ~> check {
         responseAs[String] shouldEqual "yes"
       }
     }
@@ -224,9 +228,10 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
     "leave responses with an already set Content-Encoding header unchanged" in {
       Post() ~> `Accept-Encoding`(gzip) ~> {
         encodeResponseWith(Gzip) {
-          RespondWithDirectives.respondWithHeader(`Content-Encoding`(identity)) {
-            completeOk
-          }
+          RespondWithDirectives
+            .respondWithHeader(`Content-Encoding`(identity)) {
+              completeOk
+            }
         }
       } ~> check {
         response shouldEqual Ok.withHeaders(`Content-Encoding`(identity))
@@ -493,7 +498,9 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       }
     }
     "reject the request when decodeing with GZIP and no Content-Encoding header is present" in {
-      Post("/", "yes") ~> decodeRequestWith(Gzip) { echoRequestContent } ~> check {
+      Post("/", "yes") ~> decodeRequestWith(Gzip) {
+        echoRequestContent
+      } ~> check {
         rejection shouldEqual UnsupportedRequestEncodingRejection(gzip)
       }
     }

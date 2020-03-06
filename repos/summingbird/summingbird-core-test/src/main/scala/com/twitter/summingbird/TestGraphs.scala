@@ -289,7 +289,9 @@ object TestGraphs {
     val firstStore = MapAlgebra.sumByKey(
       source1
         .flatMap(simpleFM1)
-        .map { case (_, kju) => kju } // drop the time from the key for the store
+        .map {
+          case (_, kju) => kju
+        } // drop the time from the key for the store
     )
 
     // create the delta stream

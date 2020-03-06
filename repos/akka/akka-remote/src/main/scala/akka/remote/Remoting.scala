@@ -679,7 +679,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       val allStatuses = transportMapping.values map { transport ⇒
         transport.managementCommand(cmd)
       }
-      Future.fold(allStatuses)(true)(_ && _) map ManagementCommandAck pipeTo sender()
+      Future
+        .fold(allStatuses)(true)(_ && _) map ManagementCommandAck pipeTo sender()
 
     case Quarantine(address, uidToQuarantineOption) ⇒
       // Stop writers
@@ -805,7 +806,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
       def shutdownAll[T](resources: TraversableOnce[T])(
           shutdown: T ⇒ Future[Boolean]): Future[Boolean] = {
-        (Future sequence resources.map(shutdown)) map { _.forall(identity) } recover {
+        (Future sequence resources.map(shutdown)) map {
+          _.forall(identity)
+        } recover {
           case NonFatal(_) ⇒ false
         }
       }

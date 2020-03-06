@@ -610,7 +610,8 @@ class AccountServiceHandlers(
               futureContent flatMap { jvalue =>
                 (jvalue \ "password").validated[String] match {
                   case Success(newPassword) =>
-                    accountManager.updateAccountPassword(account, newPassword) map {
+                    accountManager
+                      .updateAccountPassword(account, newPassword) map {
                       case true =>
                         logger.info(
                           "Password for account %s successfully updated by %s"
@@ -726,7 +727,8 @@ class AccountServiceHandlers(
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
           withAccountAdmin(request, auth) { account =>
-            accountManager.updateAccount(account.copy(plan = AccountPlan.Free)) map {
+            accountManager
+              .updateAccount(account.copy(plan = AccountPlan.Free)) map {
               case true =>
                 logger.info(
                   "Account plan for %s deleted (converted to free plan) by %s"

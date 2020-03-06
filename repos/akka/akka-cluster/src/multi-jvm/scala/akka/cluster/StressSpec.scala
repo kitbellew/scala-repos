@@ -342,7 +342,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def formatMetrics: String = {
       import akka.cluster.Member.addressOrdering
-      (formatMetricsHeader +: (nodeMetrics.toSeq.sortBy(_.address) map formatMetricsLine))
+      (formatMetricsHeader +: (nodeMetrics.toSeq
+        .sortBy(_.address) map formatMetricsLine))
         .mkString("\n")
     }
 

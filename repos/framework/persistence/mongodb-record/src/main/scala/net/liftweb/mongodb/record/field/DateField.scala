@@ -100,9 +100,7 @@ class DateField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   override def toString = value match {
     case null => "null"
     case d =>
-      valueBox.map { v =>
-        formats.dateFormat.format(v)
-      } openOr ""
+      valueBox.map { v => formats.dateFormat.format(v) } openOr ""
   }
 }
 

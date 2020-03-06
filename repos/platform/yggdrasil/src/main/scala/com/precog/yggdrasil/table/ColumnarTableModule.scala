@@ -108,7 +108,8 @@ object ColumnarTableModule extends Logging {
       else if (prefix == "")
         stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
       else
-        CharBuffer.wrap(prefix) :: (stream ++ (CharBuffer.wrap(suffix) :: StreamT
+        CharBuffer
+          .wrap(prefix) :: (stream ++ (CharBuffer.wrap(suffix) :: StreamT
           .empty[M, CharBuffer]))
     }
 
@@ -1632,9 +1633,7 @@ trait ColumnarTableModule[M[+_]]
               } map { M point _ }
             }
 
-            optM map { m =>
-              m map { Some(_) }
-            } getOrElse {
+            optM map { m => m map { Some(_) } } getOrElse {
               M.point(None)
             }
           }

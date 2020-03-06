@@ -103,7 +103,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
     if (isReferenceTo(element)) return this
     element match {
       case _: ScTrait | _: ScClass =>
-        ScalaPsiUtil.getCompanionModule(element.asInstanceOf[ScTypeDefinition]) match {
+        ScalaPsiUtil
+          .getCompanionModule(element.asInstanceOf[ScTypeDefinition]) match {
           case Some(obj: ScObject) => bindToElement(obj, containingClass)
           case _                   => this
         }

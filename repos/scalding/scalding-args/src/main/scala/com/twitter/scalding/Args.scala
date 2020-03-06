@@ -156,7 +156,8 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     */
   def restrictTo(acceptedArgs: Set[String]): Unit = {
     val invalidArgs =
-      m.keySet.filter(!_.startsWith("scalding.")) -- (acceptedArgs + "" + "tool.graph" + "hdfs" + "local")
+      m.keySet
+        .filter(!_.startsWith("scalding.")) -- (acceptedArgs + "" + "tool.graph" + "hdfs" + "local")
     if (!invalidArgs.isEmpty)
       throw ArgsException(
         "Invalid args: " + invalidArgs.map("--" + _).mkString(", "))

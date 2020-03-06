@@ -202,18 +202,19 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     if (isAnonymousOrLocalClass(classSym) && !considerAsTopLevelImplementationArtifact(
           classSym)) {
       val enclosingClass = enclosingClassForEnclosingMethodAttribute(classSym)
-      val methodOpt = enclosingMethodForEnclosingMethodAttribute(classSym) match {
-        case some @ Some(m) =>
-          if (m.owner != enclosingClass) {
-            // This should never happen. In case it does, it prevents emitting an invalid
-            // EnclosingMethod attribute: if the attribute specifies an enclosing method,
-            // it needs to exist in the specified enclosing class.
-            devWarning(
-              s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
-            None
-          } else some
-        case none => none
-      }
+      val methodOpt =
+        enclosingMethodForEnclosingMethodAttribute(classSym) match {
+          case some @ Some(m) =>
+            if (m.owner != enclosingClass) {
+              // This should never happen. In case it does, it prevents emitting an invalid
+              // EnclosingMethod attribute: if the attribute specifies an enclosing method,
+              // it needs to exist in the specified enclosing class.
+              devWarning(
+                s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
+              None
+            } else some
+          case none => none
+        }
       Some(
         EnclosingMethodEntry(
           classDesc(enclosingClass),
@@ -978,7 +979,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         val isValidSignature = wrap {
           // Alternative: scala.tools.reflect.SigParser (frontend to sun.reflect.generics.parser.SignatureParser)
           import scala.tools.asm.util.CheckClassAdapter
-          if (sym.isMethod) { CheckClassAdapter checkMethodSignature sig } // requires asm-util.jar
+          if (sym.isMethod) {
+            CheckClassAdapter checkMethodSignature sig
+          } // requires asm-util.jar
           else if (sym.isTerm) { CheckClassAdapter checkFieldSignature sig }
           else { CheckClassAdapter checkClassSignature sig }
         }

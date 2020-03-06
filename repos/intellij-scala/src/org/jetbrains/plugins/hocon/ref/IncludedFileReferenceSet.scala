@@ -65,7 +65,8 @@ class IncludedFileReferenceSet(
     new Condition[PsiFileSystemItem] {
       def value(item: PsiFileSystemItem): Boolean =
         item.isDirectory ||
-          item.getName.endsWith(ConfExt) || item.getName.endsWith(JsonExt) || item.getName
+          item.getName.endsWith(ConfExt) || item.getName
+          .endsWith(JsonExt) || item.getName
           .endsWith(PropsExt)
     }
 

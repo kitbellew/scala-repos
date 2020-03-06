@@ -423,7 +423,9 @@ trait Emitter
 
       if (!(candidates forall { _.isEmpty })) {
         candidates map { _.reverse } find { c =>
-          (c zip dtracePrefix takeWhile { case (a, b) => a == b } map { _._2 }) == dtracePrefix
+          (c zip dtracePrefix takeWhile {
+            case (a, b) => a == b
+          } map { _._2 }) == dtracePrefix
         } getOrElse Nil
       } else {
         Nil

@@ -266,7 +266,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val result = evalE(input)
       val resultCount = evalE(input2)
 
-      val count = resultCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
+      val count =
+        resultCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
       result must haveSize(count)
 
       result must haveAllElementsLike {
@@ -567,7 +568,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val results = evalE(input)
       val resultsCount = evalE(input2)
 
-      val count = resultsCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
+      val count =
+        resultsCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
       results must haveSize(count)
 
       results must haveAllElementsLike {
@@ -656,7 +658,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val results = evalE(input)
       val resultsCount = evalE(input2)
 
-      val count = resultsCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
+      val count =
+        resultsCount.collectFirst { case (_, SDecimal(d)) => d.toInt }.get
       results must haveSize(count)
 
       results must haveAllElementsLike {

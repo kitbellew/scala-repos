@@ -2696,7 +2696,8 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(params, owner) || (resultType.atOwner(owner) ne resultType))
+      if (!allSymbolsHaveOwner(params, owner) || (resultType
+            .atOwner(owner) ne resultType))
         cloneInfo(owner)
       else
         this
@@ -2798,7 +2799,8 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType.atOwner(owner) ne resultType))
+      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType
+            .atOwner(owner) ne resultType))
         cloneInfo(owner)
       else
         this
@@ -2862,7 +2864,9 @@ trait Types
 
     // TODO: check invariant that all quantifiers have the same (existing) owner
     private def quantifierOwner =
-      quantified collectFirst { case q if q.owner.exists => q.owner } getOrElse NoSymbol
+      quantified collectFirst {
+        case q if q.owner.exists => q.owner
+      } getOrElse NoSymbol
 
     // Is this existential of the form: T[Q1, ..., QN] forSome { type Q1 >: L1 <: U1, ..., QN >: LN <: UN}
     private def isStraightApplication =

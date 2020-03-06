@@ -313,9 +313,7 @@ trait TypedPipe[+T] extends Serializable {
     */
   def eitherValues[K, V, R](that: TypedPipe[(K, R)])(
       implicit ev: T <:< (K, V)): TypedPipe[(K, Either[V, R])] =
-    mapValues { (v: V) =>
-      Left(v)
-    } ++ (that.mapValues { (r: R) => Right(r) })
+    mapValues { (v: V) => Left(v) } ++ (that.mapValues { (r: R) => Right(r) })
 
   /**
     * If you are going to create two branches or forks,
@@ -376,7 +374,9 @@ trait TypedPipe[+T] extends Serializable {
 
   /** flatten an Iterable */
   def flatten[U](implicit ev: T <:< TraversableOnce[U]): TypedPipe[U] =
-    flatMap { _.asInstanceOf[TraversableOnce[U]] } // don't use ev which may not be serializable
+    flatMap {
+      _.asInstanceOf[TraversableOnce[U]]
+    } // don't use ev which may not be serializable
 
   /**
     * flatten just the values

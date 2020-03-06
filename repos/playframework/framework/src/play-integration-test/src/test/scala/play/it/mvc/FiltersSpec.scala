@@ -406,8 +406,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       }
     case POST(p"/error-async") =>
       Action.async { request =>
-        Future { throw new RuntimeException(request.body.asText.getOrElse("")) }(
-          ec)
+        Future {
+          throw new RuntimeException(request.body.asText.getOrElse(""))
+        }(ec)
       }
   }
 

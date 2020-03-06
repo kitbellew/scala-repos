@@ -176,7 +176,9 @@ private object PoolSlot {
         context.become(running(connInport, connOutport))
 
       case FromConnection(Cancel) ⇒
-        if (!isActive) { cancel(); shutdown() } // else ignore and wait for accompanying OnComplete or OnError
+        if (!isActive) {
+          cancel(); shutdown()
+        } // else ignore and wait for accompanying OnComplete or OnError
       case FromConnection(OnComplete) ⇒
         handleDisconnect(sender(), None, Some(firstRequest))
       case FromConnection(OnError(e)) ⇒
@@ -194,7 +196,9 @@ private object PoolSlot {
 
       case FromConnection(Request(n)) ⇒ request(n)
       case FromConnection(Cancel) ⇒
-        if (!isActive) { cancel(); shutdown() } // else ignore and wait for accompanying OnComplete or OnError
+        if (!isActive) {
+          cancel(); shutdown()
+        } // else ignore and wait for accompanying OnComplete or OnError
 
       case FromConnection(OnNext(response: HttpResponse)) ⇒
         val requestContext = inflightRequests.head

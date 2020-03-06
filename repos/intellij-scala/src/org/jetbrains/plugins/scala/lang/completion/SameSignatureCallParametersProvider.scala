@@ -169,7 +169,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     val position = positionFromParameters(parameters)
     val elementType = position.getNode.getElementType
     if (elementType != ScalaTokenTypes.tIDENTIFIER) return
-    PsiTreeUtil.getContextOfType(position, classOf[ScTemplateDefinition]) match {
+    PsiTreeUtil
+      .getContextOfType(position, classOf[ScTemplateDefinition]) match {
       case c: ScClass =>
         val args =
           PsiTreeUtil.getContextOfType(position, classOf[ScArgumentExprList])

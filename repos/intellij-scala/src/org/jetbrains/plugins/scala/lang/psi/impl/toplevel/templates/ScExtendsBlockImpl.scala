@@ -232,8 +232,9 @@ class ScExtendsBlockImpl private (
       case Some(parents: ScTemplateParents) =>
         parents.supers foreach { t => addClass(t) }
       case _ =>
-        ScTemplateParents.extractSupers(syntheticTypeElements, getProject) foreach {
-          t => addClass(t)
+        ScTemplateParents
+          .extractSupers(syntheticTypeElements, getProject) foreach { t =>
+          addClass(t)
         }
     }
     if (isUnderCaseClass) {

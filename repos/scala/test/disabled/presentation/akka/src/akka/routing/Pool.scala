@@ -70,7 +70,9 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
       select(_delegates) match {
         case (selectedDelegates, count) =>
           _lastSelectorCount = count
-          selectedDelegates foreach { _ forward msg } //Should we really send the same message to several actors?
+          selectedDelegates foreach {
+            _ forward msg
+          } //Should we really send the same message to several actors?
       }
   }
 

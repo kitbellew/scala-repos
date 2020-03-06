@@ -161,7 +161,8 @@ abstract class ParallelSeqCheck[T](collName: String)
           println(ccm)
         }
         ("Nil" |: s.sameElements(Nil) == coll.sameElements(Nil)) &&
-        ("toList" |: s.sameElements(s.toList) == coll.sameElements(coll.toList)) &&
+        ("toList" |: s.sameElements(s.toList) == coll
+          .sameElements(coll.toList)) &&
         ("identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
           coll.map(e => e))) &&
         ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
@@ -190,9 +191,8 @@ abstract class ParallelSeqCheck[T](collName: String)
           .startsWith(coll.tail, 1))) &&
         ("with each other" |: coll.startsWith(s)) &&
         ("modified" |: s.startsWith(collmodif) == coll.startsWith(collmodif)) &&
-        ("modified2" |: s.startsWith(collmodif, pos) == coll.startsWith(
-          collmodif,
-          pos)) &&
+        ("modified2" |: s
+          .startsWith(collmodif, pos) == coll.startsWith(collmodif, pos)) &&
         (for (sq <- startEndSeqs) yield {
           val ss = s.startsWith(sq, pos)
           val cs = coll.startsWith(fromSeq(sq), pos)
@@ -244,15 +244,12 @@ abstract class ParallelSeqCheck[T](collName: String)
   if (!isCheckingViews)
     property("patches must be equal") = forAll(collectionTripletsWith2Indices) {
       case (s, coll, pat, from, repl) =>
-        ("with seq" |: s.patch(from, pat, repl) == coll.patch(from, pat, repl)) &&
-          ("with par" |: s.patch(from, pat, repl) == coll.patch(
-            from,
-            fromSeq(pat),
-            repl)) &&
-          ("with empty" |: s.patch(from, Nil, repl) == coll.patch(
-            from,
-            fromSeq(Nil),
-            repl)) &&
+        ("with seq" |: s.patch(from, pat, repl) == coll
+          .patch(from, pat, repl)) &&
+          ("with par" |: s
+            .patch(from, pat, repl) == coll.patch(from, fromSeq(pat), repl)) &&
+          ("with empty" |: s
+            .patch(from, Nil, repl) == coll.patch(from, fromSeq(Nil), repl)) &&
           ("with one" |: (s.length == 0 || s.patch(from, List(s(0)), 1) == coll
             .patch(from, fromSeq(List(coll(0))), 1)))
     }
@@ -295,9 +292,8 @@ abstract class ParallelSeqCheck[T](collName: String)
         println(sdoub)
         println(cdoub)
       }
-      ("smaller" |: s.padTo(len / 2, someValue) == coll.padTo(
-        len / 2,
-        someValue)) &&
+      ("smaller" |: s
+        .padTo(len / 2, someValue) == coll.padTo(len / 2, someValue)) &&
       ("bigger" |: sdoub == cdoub)
   }
 

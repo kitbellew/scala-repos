@@ -4065,9 +4065,7 @@ trait EvaluatorSpecs[M[+_]]
         dag.Join(Add, Cross(None), tweets, tweets)(line),
         tweets)(line)
 
-      testEval(input) { _ =>
-        failure
-      } must throwAn[EnormousCartesianException]
+      testEval(input) { _ => failure } must throwAn[EnormousCartesianException]
     }
 
     "correctly perform a cross-filter" in {

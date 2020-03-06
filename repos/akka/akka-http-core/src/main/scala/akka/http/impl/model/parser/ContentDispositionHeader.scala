@@ -44,5 +44,7 @@ private[parser] trait ContentDispositionHeader {
     token ~> (s ⇒ test(s endsWith "*") ~ push(s))
   }
 
-  def `ext-value` = rule { word } // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
+  def `ext-value` = rule {
+    word
+  } // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
 }

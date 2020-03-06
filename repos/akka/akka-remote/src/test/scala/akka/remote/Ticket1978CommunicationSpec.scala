@@ -224,7 +224,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
       "support tell" in within(timeout.duration) {
         val here = {
-          system.actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
             None)
           expectMsgType[ActorIdentity].ref.get
         }
@@ -238,7 +239,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       "support ask" in within(timeout.duration) {
         import system.dispatcher
         val here = {
-          system.actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
             None)
           expectMsgType[ActorIdentity].ref.get
         }

@@ -31,9 +31,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           Transport[Try[Int], Try[Int]],
           Service[Try[Int], Try[Int]]) => Closable = {
         case (transport, service) =>
-          val f = transport.read() flatMap { num =>
-            service(num)
-          } respond { result => transport.write(result.flatten) }
+          val f = transport.read() flatMap { num => service(num) } respond {
+            result => transport.write(result.flatten)
+          }
           service
       }
 

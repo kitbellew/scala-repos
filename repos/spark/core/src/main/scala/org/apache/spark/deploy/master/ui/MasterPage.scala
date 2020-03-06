@@ -67,7 +67,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       request: HttpServletRequest,
       action: String => Unit): Unit = {
     if (parent.killEnabled &&
-        parent.master.securityMgr.checkModifyPermissions(request.getRemoteUser)) {
+        parent.master.securityMgr
+          .checkModifyPermissions(request.getRemoteUser)) {
       val killFlag =
         Option(request.getParameter("terminate")).getOrElse("false").toBoolean
       val id = Option(request.getParameter("id"))

@@ -48,7 +48,8 @@ class PsiClassWrapper(
   override def equals(obj: Any): Boolean = {
     obj match {
       case wrapper: PsiClassWrapper =>
-        definition.equals(wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
+        definition
+          .equals(wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
       case _ => false
     }
   }

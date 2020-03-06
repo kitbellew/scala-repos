@@ -399,7 +399,8 @@ object ScalaImportTypeFix {
       def addClazz(clazz: PsiClass) {
         if (clazz != null && clazz.qualifiedName != null && clazz.qualifiedName
               .indexOf(".") > 0 &&
-            ResolveUtils.kindMatches(clazz, kinds) && notInner(clazz, ref) && ResolveUtils
+            ResolveUtils
+              .kindMatches(clazz, kinds) && notInner(clazz, ref) && ResolveUtils
               .isAccessible(clazz, ref) &&
             !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
           buffer += ClassTypeToImport(clazz)
@@ -447,7 +448,8 @@ object ScalaImportTypeFix {
 
     for (packageQualifier <- packagesList) {
       val pack = ScPackageImpl.findPackage(myProject, packageQualifier)
-      if (pack != null && pack.getQualifiedName.indexOf('.') != -1 && ResolveUtils
+      if (pack != null && pack.getQualifiedName
+            .indexOf('.') != -1 && ResolveUtils
             .kindMatches(pack, kinds) &&
           !JavaProjectCodeInsightSettings
             .getSettings(myProject)

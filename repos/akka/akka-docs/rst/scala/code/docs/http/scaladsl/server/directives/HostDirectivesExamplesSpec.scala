@@ -60,9 +60,7 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
 
   "using-regex" in {
     val route =
-      host("api|rest".r) { prefix =>
-        complete(s"Extracted prefix: $prefix")
-      } ~
+      host("api|rest".r) { prefix => complete(s"Extracted prefix: $prefix") } ~
         host("public.(my|your)company.com".r) { captured =>
           complete(s"You came through $captured company")
         }

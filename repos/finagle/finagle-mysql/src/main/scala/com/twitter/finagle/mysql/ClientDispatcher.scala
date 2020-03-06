@@ -119,9 +119,7 @@ class ClientDispatcher(
   import ClientDispatcher._
 
   override def apply(req: Request): Future[Result] =
-    connPhase flatMap { _ =>
-      super.apply(req)
-    } onFailure {
+    connPhase flatMap { _ => super.apply(req) } onFailure {
       // a LostSyncException represents a fatal state between
       // the client / server. The error is unrecoverable
       // so we close the service.

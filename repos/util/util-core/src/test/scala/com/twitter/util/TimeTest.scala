@@ -405,9 +405,9 @@ with Eventually with IntegrationPatience {
       assert(t0 == t1)
       assert(t0.hashCode == t1.hashCode)
       val pairs = List((t0, "foo"), (t1, "bar"))
-      assert(
-        pairs.groupBy { case (time: Time, value: String) => time } == Map(
-          t0 -> pairs))
+      assert(pairs.groupBy {
+        case (time: Time, value: String) => time
+      } == Map(t0 -> pairs))
     }
 
     "now should be now" in {

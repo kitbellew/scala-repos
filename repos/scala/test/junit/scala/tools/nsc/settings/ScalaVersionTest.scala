@@ -66,7 +66,9 @@ class ScalaVersionTest {
     assertThrows[NumberFormatException] { ScalaVersion("2..") }
     assertThrows[NumberFormatException] { ScalaVersion("2...") }
     assertThrows[NumberFormatException] { ScalaVersion("2-") }
-    assertThrows[NumberFormatException] { ScalaVersion("2-.") } // scalacheck territory
+    assertThrows[NumberFormatException] {
+      ScalaVersion("2-.")
+    } // scalacheck territory
     assertThrows[NumberFormatException] { ScalaVersion("any.7") }
 
     assertThrows[NumberFormatException](

@@ -179,44 +179,32 @@ trait Parser extends RegexParsers with Filters with AST {
   ) filter (precedence & arrayDefDeref & relateRelate)
 
   private lazy val importSpec: Parser[ImportSpec] = (
-    namespace ~ "::" ~ "*" ^^ { (p, _, _) =>
-      WildcardImport(p)
-    }
+    namespace ~ "::" ~ "*" ^^ { (p, _, _) => WildcardImport(p) }
       | namespace ^^ SpecificImport
   )
 
   private lazy val namespacedId: Parser[Identifier] = (
-    namespace ~ "::" ~ id ^^ { (ns, _, id) =>
-      Identifier(ns, id)
-    }
+    namespace ~ "::" ~ id ^^ { (ns, _, id) => Identifier(ns, id) }
       | id ^^ { str => Identifier(Vector(), str) }
   )
 
   private lazy val namespace: Parser[Vector[String]] = (
-    namespace ~ "::" ~ id ^^ { (ns, _, id) =>
-      ns :+ id
-    }
+    namespace ~ "::" ~ id ^^ { (ns, _, id) => ns :+ id }
       | id ^^ { Vector(_) }
   )
 
   private lazy val formals: Parser[Vector[String]] = (
-    formals ~ "," ~ id ^^ { (fs, _, f) =>
-      fs :+ f
-    }
+    formals ~ "," ~ id ^^ { (fs, _, f) => fs :+ f }
       | id ^^ { Vector(_) }
   )
 
   private lazy val relations: Parser[Vector[Expr]] = (
-    relations ~ "~" ~ expr ^^ { (es, _, e) =>
-      es :+ e
-    }
+    relations ~ "~" ~ expr ^^ { (es, _, e) => es :+ e }
       | expr ~ "~" ~ expr ^^ { (e1, _, e2) => Vector(e1, e2) }
   )
 
   private lazy val actuals: Parser[Vector[Expr]] = (
-    actuals ~ "," ~ expr ^^ { (es, _, e) =>
-      es :+ e
-    }
+    actuals ~ "," ~ expr ^^ { (es, _, e) => es :+ e }
       | expr ^^ { Vector(_) }
   )
 
@@ -226,9 +214,7 @@ trait Parser extends RegexParsers with Filters with AST {
   )
 
   private lazy val properties: Parser[Vector[(String, Expr)]] = (
-    properties ~ "," ~ property ^^ { (ps, _, p) =>
-      ps :+ p
-    }
+    properties ~ "," ~ property ^^ { (ps, _, p) => ps :+ p }
       | property ^^ { Vector(_) }
       | "" ^^^ Vector()
   )
@@ -410,7 +396,9 @@ trait Parser extends RegexParsers with Filters with AST {
               back flatMap { x => x }
           }
 
-          Parsers.keySet filterNot { _.first intersect first isEmpty } map Parsers
+          Parsers.keySet filterNot {
+            _.first intersect first isEmpty
+          } map Parsers
         }
 
         case UnexpectedEndOfStream(Some(expect)) =>

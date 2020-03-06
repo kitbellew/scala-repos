@@ -471,7 +471,8 @@ trait KMediansCoreSetClustering {
         var i = 0
         while (i < scaledPoint.length) {
           scaledPoint(i) =
-            center(i) + math.floor(scaledPoint(i)) * sideLength + (sideLength / 2)
+            center(i) + math
+              .floor(scaledPoint(i)) * sideLength + (sideLength / 2)
           i += 1
         }
         new GridPoint(scaledPoint)

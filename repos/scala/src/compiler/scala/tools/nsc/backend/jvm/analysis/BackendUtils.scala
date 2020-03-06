@@ -246,7 +246,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     calleeInMap(insn, javaUnboxMethods)
 
   def isPredefAutoBox(insn: MethodInsnNode): Boolean = {
-    insn.owner == PredefRef.internalName && (predefAutoBoxMethods.get(insn.name) match {
+    insn.owner == PredefRef.internalName && (predefAutoBoxMethods
+      .get(insn.name) match {
       case Some(tp) => insn.desc == tp.descriptor
       case _        => false
     })

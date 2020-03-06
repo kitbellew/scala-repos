@@ -58,10 +58,14 @@ class ActorDSLSpec extends AkkaSpec {
       val res = Future.sequence(
         Seq(
           Future { i.receive() } recover { case x ⇒ x },
-          Future { Thread.sleep(100); i.select() { case "world" ⇒ 1 } } recover {
+          Future {
+            Thread.sleep(100); i.select() { case "world" ⇒ 1 }
+          } recover {
             case x ⇒ x
           },
-          Future { Thread.sleep(200); i.select() { case "hello" ⇒ 2 } } recover {
+          Future {
+            Thread.sleep(200); i.select() { case "hello" ⇒ 2 }
+          } recover {
             case x ⇒ x
           }
         ))
@@ -90,7 +94,8 @@ class ActorDSLSpec extends AkkaSpec {
       try {
         for (_ ← 1 to 1000) i.receiver ! 0
         expectNoMsg(1 second)
-        EventFilter.warning(start = "dropping message", occurrences = 1) intercept {
+        EventFilter
+          .warning(start = "dropping message", occurrences = 1) intercept {
           i.receiver ! 42
         }
         expectMsgType[Warning]

@@ -300,9 +300,8 @@ object MapTest extends SpecLite {
       fromList(List(5 -> "a", 3 -> "b"))
         .insertWith(_ + _, 7, "xxx") must_=== (fromList(
         List(3 -> "b", 5 -> "a", 7 -> "xxx")))
-      empty[Int, String].insertWith(_ + _, 5, "xxx") must_=== (singleton(
-        5,
-        "xxx"))
+      empty[Int, String]
+        .insertWith(_ + _, 5, "xxx") must_=== (singleton(5, "xxx"))
     }
 
     "insertWithKey" in {
@@ -691,12 +690,10 @@ object MapTest extends SpecLite {
     "mapKeys" in {
       fromList(List(5 -> "a", 3 -> "b")).mapKeys(_ + 1) must_=== (fromList(
         List(4 -> "b", 6 -> "a")))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ => 1) must_=== (singleton(
-        1,
-        "c"))
-      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c")).mapKeys(_ => 3) must_=== (singleton(
-        3,
-        "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 1) must_=== (singleton(1, "c"))
+      fromList(List(1 -> "b", 2 -> "a", 3 -> "d", 4 -> "c"))
+        .mapKeys(_ => 3) must_=== (singleton(3, "c"))
     }
 
     "mapKeys sound" ! forAll { a: Int ==>> Int =>
@@ -748,7 +745,8 @@ object MapTest extends SpecLite {
         (k: Int, a: String) => if (k < 5) \/.left(k * 2) else \/.right(a + a)
       val lst = fromList(List(5 -> "a", 3 -> "b", 1 -> "x", 7 -> "z"))
 
-      lst.mapEitherWithKey(f) must_=== (fromList(List(1 -> 2, 3 -> 6)), fromList(
+      lst
+        .mapEitherWithKey(f) must_=== (fromList(List(1 -> 2, 3 -> 6)), fromList(
         List(5 -> "aa", 7 -> "zz")))
       lst.mapEitherWithKey((_: Int, a: String) => \/.right(a)) must_=== (empty[
         Int,
@@ -759,7 +757,8 @@ object MapTest extends SpecLite {
   "==>> fold" should {
     "fold" in {
       val f = (a: Int, b: String) => a + b.length
-      fromList(List(5 -> "a", 3 -> "bbb")).fold(0)((_, x, z) => f(z, x)) must_== 4
+      fromList(List(5 -> "a", 3 -> "bbb"))
+        .fold(0)((_, x, z) => f(z, x)) must_== 4
     }
 
     "foldrWithKey" in {

@@ -77,9 +77,9 @@ class FutureTest
             queue add promise
             promise
           }
-          iteration onSuccess { _ =>
-            complete = true
-          } onFailure { f => failure = true }
+          iteration onSuccess { _ => complete = true } onFailure { f =>
+            failure = true
+          }
           assert(complete == false)
           assert(failure == false)
         }
@@ -155,9 +155,9 @@ class FutureTest
             promise
           }
 
-          iteration onSuccess { _ =>
-            complete = true
-          } onFailure { f => failure = true }
+          iteration onSuccess { _ => complete = true } onFailure { f =>
+            failure = true
+          }
           assert(complete == false)
           assert(failure == false)
         }

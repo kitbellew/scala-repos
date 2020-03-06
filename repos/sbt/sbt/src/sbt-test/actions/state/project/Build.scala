@@ -44,7 +44,9 @@ object MyBuild extends Build {
     }
 
   def inMemorySetting =
-    keep <<= getPrevious(keep) map { case None => 3; case Some(x) => x + 1 } keepAs (keep)
+    keep <<= getPrevious(keep) map {
+      case None => 3; case Some(x) => x + 1
+    } keepAs (keep)
   def persistedSetting =
     persisted <<= loadPrevious(persisted) map {
       case None => 17; case Some(x) => x + 1

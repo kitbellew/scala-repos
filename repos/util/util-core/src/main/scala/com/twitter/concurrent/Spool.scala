@@ -261,9 +261,7 @@ sealed trait Spool[+A] {
     */
   def toSeq: Future[Seq[A]] = {
     val as = new ArrayBuffer[A]
-    foreach { a =>
-      as += a
-    } map { _ => as }
+    foreach { a => as += a } map { _ => as }
   }
 
   /**

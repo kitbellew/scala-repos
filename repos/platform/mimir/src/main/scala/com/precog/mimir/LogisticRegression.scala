@@ -178,9 +178,7 @@ trait LogisticRegressionLibModule[M[+_]]
           val result: Set[Result] = features map {
             case c: HomogeneousArrayColumn[_]
                 if c.tpe.manifest.erasure == classOf[Array[Double]] =>
-              val mapped = range filter { r =>
-                c.isDefinedAt(r)
-              } map { i =>
+              val mapped = range filter { r => c.isDefinedAt(r) } map { i =>
                 1.0 +: c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
               }
               reduceDouble(mapped)
@@ -220,7 +218,9 @@ trait LogisticRegressionLibModule[M[+_]]
         res map {
           case seq => {
             val initialTheta: Theta = {
-              val thetaLength = seq.headOption map { _.length } getOrElse sys
+              val thetaLength = seq.headOption map {
+                _.length
+              } getOrElse sys
                 .error("unreachable: `res` would have been None")
               val thetas = Seq.fill(100)(
                 Array.fill(thetaLength - 1)(Random.nextGaussian * 10))

@@ -102,7 +102,8 @@ private[sql] class DefaultSource
         // Validate if given compression codec is supported or not.
         val shortParquetCompressionCodecNames =
           ParquetRelation.shortParquetCompressionCodecNames
-        if (!shortParquetCompressionCodecNames.contains(codecName.toLowerCase)) {
+        if (!shortParquetCompressionCodecNames
+              .contains(codecName.toLowerCase)) {
           val availableCodecs =
             shortParquetCompressionCodecNames.keys.map(_.toLowerCase)
           throw new IllegalArgumentException(s"Codec [$codecName] " +
@@ -321,7 +322,8 @@ private[sql] class DefaultSource
 
     // Create the function to set input paths at the driver side.
     val setInputPaths =
-      ParquetRelation.initializeDriverSideJobFunc(inputFiles, parquetBlockSize) _
+      ParquetRelation
+        .initializeDriverSideJobFunc(inputFiles, parquetBlockSize) _
 
     Utils.withDummyCallSite(sqlContext.sparkContext) {
       new SqlNewHadoopRDD(

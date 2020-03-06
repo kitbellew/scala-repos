@@ -46,9 +46,7 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         user: Option[User],
         query: String,
         page: Int): Fu[Paginator[VideoView]] = {
-      val q = query.split(' ').map { word =>
-        s""""$word""""
-      } mkString " "
+      val q = query.split(' ').map { word => s""""$word"""" } mkString " "
       val textScore = BSONDocument(
         "score" -> BSONDocument("$meta" -> "textScore"))
       Paginator(
@@ -154,9 +152,7 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
         .cursor[Video]()
         .collect[List]()
         .map { videos =>
-          videos.sortBy { v =>
-            -v.similarity(video)
-          } take max
+          videos.sortBy { v => -v.similarity(video) } take max
         } flatMap videoViews(user)
 
     object count {
