@@ -26,7 +26,8 @@ trait FundepMaterialization[T, U] {
   // def from(u : U) : T
 }
 
-class FundepMaterializationBundle(val c: Context { type PrefixType = Nothing }) {
+class FundepMaterializationBundle(
+    val c: Context { type PrefixType = Nothing }) {
   import c.universe._
   import definitions._
   import Flag._
@@ -127,7 +128,8 @@ object DynamicMaterialization extends LowPriority {
     macro DynamicMaterializationBundle.impl[T]
 }
 
-class DynamicMaterializationBundle(val c: Context { type PrefixType = Nothing }) {
+class DynamicMaterializationBundle(
+    val c: Context { type PrefixType = Nothing }) {
   import c.universe._
   def impl[T: c.WeakTypeTag] = {
     val tpe = weakTypeOf[T]

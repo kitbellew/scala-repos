@@ -88,7 +88,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     }
 
     val packageObjectsData = PackageObjectsData.getFor(context)
-    if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context)) { //rebuild
+    if (JavaBuilderUtil
+          .isForcedRecompilationAllJavaModules(context)) { //rebuild
       packageObjectsData.clear()
     } else {
       val additionalFiles =

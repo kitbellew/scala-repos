@@ -164,7 +164,8 @@ final class JsonView(
         page max 1)
       sheets <- rankedPlayers
         .map { p =>
-          PairingRepo.finishedByPlayerChronological(tour.id, p.player.userId) map {
+          PairingRepo
+            .finishedByPlayerChronological(tour.id, p.player.userId) map {
             pairings =>
               p.player.userId -> tour.system.scoringSystem.sheet(
                 tour,

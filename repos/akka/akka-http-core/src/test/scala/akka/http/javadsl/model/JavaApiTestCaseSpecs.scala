@@ -29,7 +29,8 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
             entity = "Unsupported method"))
       }
       "missing path" in {
-        JavaApiTestCases.handleRequest(model.HttpRequest(uri = "/blubber")) must be(
+        JavaApiTestCases
+          .handleRequest(model.HttpRequest(uri = "/blubber")) must be(
           model.HttpResponse(model.StatusCodes.NotFound, entity = "Not found"))
       }
       "happy path" - {
@@ -39,7 +40,8 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
             model.HttpResponse(entity = "Hello Peter!"))
         }
         "without name parameter" in {
-          JavaApiTestCases.handleRequest(model.HttpRequest(uri = "/hello")) must be(
+          JavaApiTestCases
+            .handleRequest(model.HttpRequest(uri = "/hello")) must be(
             model.HttpResponse(entity = "Hello Mister X!"))
         }
       }

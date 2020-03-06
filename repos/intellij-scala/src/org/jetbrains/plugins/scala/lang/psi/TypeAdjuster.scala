@@ -288,7 +288,8 @@ object TypeAdjuster extends ApplicationAdapter {
         val holder = importHolders.get(info)
         if (info.pathsToImport.nonEmpty && holder.isDefined) {
           val pathsToAdd =
-            holderToPaths.getOrElseUpdate(holder.get, Set.empty) ++ info.pathsToImport
+            holderToPaths
+              .getOrElseUpdate(holder.get, Set.empty) ++ info.pathsToImport
           holderToPaths += holder.get -> pathsToAdd
         }
       }

@@ -38,7 +38,8 @@ trait CommitStatusService {
         id
       }
       case None =>
-        (CommitStatuses returning CommitStatuses.map(_.commitStatusId)) += CommitStatus(
+        (CommitStatuses returning CommitStatuses
+          .map(_.commitStatusId)) += CommitStatus(
           userName = userName,
           repositoryName = repositoryName,
           commitId = sha,

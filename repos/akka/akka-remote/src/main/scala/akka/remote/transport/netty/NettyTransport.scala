@@ -112,11 +112,11 @@ class NettyTransportSettings(config: Config) {
   val EnableSsl: Boolean =
     getBoolean("enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
 
-  val UseDispatcherForIo
-      : Option[String] = getString("use-dispatcher-for-io") match {
-    case "" | null ⇒ None
-    case dispatcher ⇒ Some(dispatcher)
-  }
+  val UseDispatcherForIo: Option[String] =
+    getString("use-dispatcher-for-io") match {
+      case "" | null ⇒ None
+      case dispatcher ⇒ Some(dispatcher)
+    }
 
   private[this] def optionSize(s: String): Option[Int] =
     getBytes(s).toInt match {

@@ -92,7 +92,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       r1t: Set[(String, Option[String])] = r1
       _ = r1 shouldBe Set(("a", Some("a")), ("b", Some("b")), ("c", None))
       // Nested left outer, lift primitive value
-      q2 = ((xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys.map(_.b) on (_._1 === _))
+      q2 = ((xs.map(_.b) joinLeft ys.map(_.b) on (_ === _)) joinLeft ys
+        .map(_.b) on (_._1 === _))
         .to[Set]
       r2 <- mark("q2", q2.result)
       r2t: Set[((String, Option[String]), Option[String])] = r2
@@ -189,7 +190,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (None, 5))
       // Nested right outer, lift non-primitive value
       // (left-associative; not symmetrical to the nested left outer case)
-      q10 = ((ys joinRight xs on (_.b === _.b)) joinRight xs on (_._1.map(_.b) === _.b))
+      q10 = ((ys joinRight xs on (_.b === _.b)) joinRight xs on (_._1
+        .map(_.b) === _.b))
         .to[Set]
       r10 <- mark("q10", q10.result)
       r10t: Set[

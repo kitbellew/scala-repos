@@ -1265,7 +1265,8 @@ trait Typers
         }
         if (tree.isType)
           adaptType()
-        else if (mode.typingExprNotFun && treeInfo.isMacroApplication(tree) && !isMacroExpansionSuppressed(
+        else if (mode.typingExprNotFun && treeInfo
+                   .isMacroApplication(tree) && !isMacroExpansionSuppressed(
                    tree))
           macroExpand(this, tree, mode, pt)
         else if (mode.typingConstructorPattern)
@@ -1292,7 +1293,8 @@ trait Typers
               if canAdaptAnnotations(tree, this, mode, pt) => // (-1)
             adaptAnnotations(tree, this, mode, pt)
           case ct @ ConstantType(value)
-              if mode.inNone(TYPEmode | FUNmode) && (ct <:< pt) && canAdaptConstantTypeToLiteral => // (0)
+              if mode
+                .inNone(TYPEmode | FUNmode) && (ct <:< pt) && canAdaptConstantTypeToLiteral => // (0)
             adaptConstant(value)
           case OverloadedType(pre, alts) if !mode.inFunMode => // (1)
             inferExprAlternative(tree, pt)
@@ -1309,7 +1311,8 @@ trait Typers
               pt,
               original)
           case PolyType(tparams, restpe)
-              if mode.inNone(TAPPmode | PATTERNmode) && !context.inTypeConstructorAllowed => // (3)
+              if mode
+                .inNone(TAPPmode | PATTERNmode) && !context.inTypeConstructorAllowed => // (3)
             // assert((mode & HKmode) == 0) //@M a PolyType in HKmode represents an anonymous type function,
             // we're in HKmode since a higher-kinded type is expected --> hence, don't implicitly apply it to type params!
             // ticket #2197 triggered turning the assert into a guard
@@ -2668,7 +2671,8 @@ trait Typers
       if (tdef.symbol.isDeferred && tdef.symbol.info.isHigherKinded)
         checkFeature(tdef.pos, HigherKindsFeature)
 
-      treeCopy.TypeDef(tdef, typedMods, tdef.name, tparams1, rhs1) setType NoType
+      treeCopy
+        .TypeDef(tdef, typedMods, tdef.name, tparams1, rhs1) setType NoType
     }
 
     private def enterLabelDef(stat: Tree) {
@@ -2982,7 +2986,8 @@ trait Typers
             ))
 
       def mkParam(methodSym: Symbol, tp: Type = argTp) =
-        methodSym.newValueParameter(paramName, paramPos.focus, SYNTHETIC) setInfo tp
+        methodSym
+          .newValueParameter(paramName, paramPos.focus, SYNTHETIC) setInfo tp
 
       def mkDefaultCase(body: Tree) =
         atPos(tree.pos.makeTransparent) {
@@ -5959,8 +5964,8 @@ trait Typers
         if (!context.starPatterns && !isPastTyper)
           StarPatternWithVarargParametersError(tree)
 
-        treeCopy.Star(tree, typed(tree.elem, mode, pt)) setType makeFullyDefined(
-          pt)
+        treeCopy
+          .Star(tree, typed(tree.elem, mode, pt)) setType makeFullyDefined(pt)
       }
       def issueTryWarnings(tree: Try): Try = {
         def checkForCatchAll(cdef: CaseDef) {

@@ -443,14 +443,16 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
         if (fString == null) {
           s"""
             boolean ${ev.isNull} = true;
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
+            .defaultValue(dataType)};
           """
         } else {
           val eval1 = left.gen(ctx)
           s"""
             ${eval1.code}
             boolean ${ev.isNull} = ${eval1.isNull};
-            ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
+            ${ctx.javaType(dataType)} ${ev.value} = ${ctx
+            .defaultValue(dataType)};
             if (!${ev.isNull}) {
               try {
                 $sdf $formatter = new $sdf("$fString");

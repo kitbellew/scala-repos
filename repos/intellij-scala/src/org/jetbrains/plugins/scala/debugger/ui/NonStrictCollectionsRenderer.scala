@@ -92,7 +92,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
     try {
-      if (!ScalaCollectionRenderer.hasDefiniteSize(objectRef, context) || isStreamView(
+      if (!ScalaCollectionRenderer
+            .hasDefiniteSize(objectRef, context) || isStreamView(
             objectRef.referenceType())) return Success[String]("?")
     } catch {
       case e: EvaluateException => return Fail(e)
@@ -231,7 +232,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         })
 
         stringBuilder append (if (tpe != null)
-                                ScalaCollectionRenderer.transformName(tpe.name) + sizeString
+                                ScalaCollectionRenderer
+                                  .transformName(tpe.name) + sizeString
                               else "{...}")
       case _ => stringBuilder append "{...}"
     }
@@ -252,7 +254,8 @@ object NonStrictCollectionsRenderer {
       method: Method,
       context: EvaluationContext): SimpleMethodInvocationResult[_] = {
     try {
-      context.getDebugProcess.invokeMethod(context, obj, method, EMPTY_ARGS) match {
+      context.getDebugProcess
+        .invokeMethod(context, obj, method, EMPTY_ARGS) match {
         case intValue: IntegerValue => Success[Int](intValue.intValue())
         case boolValue: BooleanValue =>
           Success[Boolean](boolValue.booleanValue())

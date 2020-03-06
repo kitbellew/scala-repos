@@ -186,9 +186,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       WorksheetFileHook.this.initTopComponent(file, run = true)
       loadEvaluationResult(source, file)
 
-      WorksheetAutoRunner.getInstance(source.getProject) addListener doc(
-        source,
-        file)
+      WorksheetAutoRunner
+        .getInstance(source.getProject) addListener doc(source, file)
     }
 
     private def loadEvaluationResult(
@@ -200,7 +199,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             case ext: EditorEx =>
               PsiDocumentManager getInstance project getPsiFile ext.getDocument match {
                 case scalaFile: ScalaFile =>
-                  WorksheetEditorPrinter.loadWorksheetEvaluation(scalaFile) foreach {
+                  WorksheetEditorPrinter
+                    .loadWorksheetEvaluation(scalaFile) foreach {
                     case (result, ratio) if !result.isEmpty =>
                       val viewer = WorksheetEditorPrinter.createRightSideViewer(
                         ext,

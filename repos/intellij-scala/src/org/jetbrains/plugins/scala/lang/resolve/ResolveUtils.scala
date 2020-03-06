@@ -86,7 +86,8 @@ object ResolveUtils {
           else {
             def isStaticCorrect(clazz: PsiClass): Boolean = {
               val cclazz = clazz.getContainingClass
-              cclazz == null || (clazz.hasModifierProperty(PsiModifier.STATIC) && isStaticCorrect(
+              cclazz == null || (clazz
+                .hasModifierProperty(PsiModifier.STATIC) && isStaticCorrect(
                 cclazz))
             }
             (kinds contains OBJECT) && isStaticCorrect(c)
@@ -113,7 +114,8 @@ object ResolveUtils {
         case _: ScFun             => kinds contains METHOD
         case _: ScSyntheticValue  => kinds contains VAL
         case f: PsiField =>
-          (kinds contains VAR) || (f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds
+          (kinds contains VAR) || (f
+            .hasModifierPropertyScala(PsiModifier.FINAL) && kinds
             .contains(VAL))
         case _: PsiParameter =>
           kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
@@ -388,7 +390,8 @@ object ResolveUtils {
                   classOf[ScTemplateDefinition])
                 enclosing match {
                   case td: ScTemplateDefinition =>
-                    PsiTreeUtil.isContextAncestor(td, place, false) || PsiTreeUtil
+                    PsiTreeUtil
+                      .isContextAncestor(td, place, false) || PsiTreeUtil
                       .isContextAncestor(
                         ScalaPsiUtil
                           .getCompanionModule(td)
@@ -449,7 +452,8 @@ object ResolveUtils {
                 }
                 bind match {
                   case td: ScTemplateDefinition =>
-                    if (PsiTreeUtil.isContextAncestor(td, place, false) || PsiTreeUtil
+                    if (PsiTreeUtil
+                          .isContextAncestor(td, place, false) || PsiTreeUtil
                           .isContextAncestor(
                             ScalaPsiUtil
                               .getCompanionModule(td)

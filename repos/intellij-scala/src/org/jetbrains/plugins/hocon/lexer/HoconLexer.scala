@@ -138,7 +138,8 @@ class HoconLexer extends LexerBase {
   def continuesUnquotedChars(seq: CharSequence, index: Int) =
     index < seq.length && {
       val char = seq.charAt(index)
-      char != '.' && !ForbiddenChars.contains(char) && !isHoconWhitespace(char) && !isCStyleComment(
+      char != '.' && !ForbiddenChars
+        .contains(char) && !isHoconWhitespace(char) && !isCStyleComment(
         seq,
         index)
     }

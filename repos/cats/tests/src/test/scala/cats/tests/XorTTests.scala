@@ -178,7 +178,8 @@ class XorTTests extends CatsSuite {
 
   test("recoverWith ignores the right side") {
     val xort = XorT.right[Id, String, Int](10)
-    xort.recoverWith { case "xort" => XorT.right[Id, String, Int](5) } should ===(
+    xort
+      .recoverWith { case "xort" => XorT.right[Id, String, Int](5) } should ===(
       xort)
   }
 

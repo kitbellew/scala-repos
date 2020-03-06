@@ -300,7 +300,8 @@ case class UnwrapOption(dataType: DataType, child: Expression)
 
       boolean ${ev.isNull} = ${inputObject.value} == null || ${inputObject.value}.isEmpty();
       $javaType ${ev.value} =
-        ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($javaType)${inputObject.value}.get();
+        ${ev.isNull} ? ${ctx
+      .defaultValue(dataType)} : ($javaType)${inputObject.value}.get();
     """
   }
 }

@@ -480,7 +480,8 @@ class ReplicaManager(
       localProduceResults: Map[TopicPartition, LogAppendResult]): Boolean = {
     requiredAcks == -1 &&
     messagesPerPartition.size > 0 &&
-    localProduceResults.values.count(_.error.isDefined) < messagesPerPartition.size
+    localProduceResults.values
+      .count(_.error.isDefined) < messagesPerPartition.size
   }
 
   private def isValidRequiredAcks(requiredAcks: Short): Boolean = {
@@ -507,7 +508,8 @@ class ReplicaManager(
           .mark()
 
         // reject appending to internal topics if it is not allowed
-        if (TopicConstants.INTERNAL_TOPICS.contains(topicPartition.topic) && !internalTopicsAllowed) {
+        if (TopicConstants.INTERNAL_TOPICS
+              .contains(topicPartition.topic) && !internalTopicsAllowed) {
           (
             topicPartition,
             LogAppendResult(

@@ -152,8 +152,8 @@ object SafeDeleteProcessorUtil {
       psiMethod: PsiMethod,
       allElementsToDelete: Array[PsiElement],
       usages: util.List[UsageInfo]): Condition[PsiElement] = {
-    val references
-        : util.Collection[PsiReference] = referenceSearch(psiMethod).findAll
+    val references: util.Collection[PsiReference] =
+      referenceSearch(psiMethod).findAll
     if (psiMethod.isConstructor) {
       return findConstructorUsages(
         psiMethod,
@@ -368,7 +368,8 @@ object SafeDeleteProcessorUtil {
       allElementsToDelete: Array[PsiElement]): Boolean = {
     val methods: Array[PsiMethod] = method.findSuperMethods
     for (superMethod <- methods) {
-      if (ArrayUtilRt.find(allElementsToDelete, superMethod) < 0 && !MethodSignatureUtil
+      if (ArrayUtilRt
+            .find(allElementsToDelete, superMethod) < 0 && !MethodSignatureUtil
             .isSuperMethod(originalMethod, superMethod)) {
         return true
       }

@@ -142,7 +142,8 @@ object Test extends Properties("TreeMap") {
 
   property("span identity") = forAll { (subject: TreeMap[Int, String]) =>
     val (prefix, suffix) = subject.span(_._1 < 0)
-    prefix.forall(_._1 < 0) && suffix.forall(_._1 >= 0) && subject == prefix ++ suffix
+    prefix.forall(_._1 < 0) && suffix
+      .forall(_._1 >= 0) && subject == prefix ++ suffix
   }
 
   property("from is inclusive") = forAll { (subject: TreeMap[Int, String]) =>
@@ -177,7 +178,8 @@ object Test extends Properties("TreeMap") {
     subject.nonEmpty ==> {
       val key = oneOf(subject.keys.toSeq).sample.get
       val removed = subject - key
-      subject.contains(key) && !removed.contains(key) && subject.size - 1 == removed.size
+      subject.contains(key) && !removed
+        .contains(key) && subject.size - 1 == removed.size
     }
   }
 

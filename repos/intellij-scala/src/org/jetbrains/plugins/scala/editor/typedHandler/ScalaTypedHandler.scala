@@ -90,8 +90,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       chooseXmlTask(withAttr = true)
     } else if (file.findElementAt(offset - 2) match {
                  case i: PsiElement
-                     if !ScalaNamesUtil.isOperatorName(i.getText) && i.getText != "=" =>
-                   c == '>' || c == '/'; case _                                       => false
+                     if !ScalaNamesUtil
+                       .isOperatorName(i.getText) && i.getText != "=" =>
+                   c == '>' || c == '/'; case _                       => false
                }) {
       chooseXmlTask(withAttr = false)
     } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
@@ -201,7 +202,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           prevElement.getParent.getText == "\"\"") {
         completeMultilineString(editor, project, element, offset)
       } else if (prevType == ScalaTokenTypes.tINTERPOLATED_STRING_END && elementType != ScalaTokenTypes.tINTERPOLATED_STRING_END &&
-                 Set("f\"\"", "s\"\"").contains(prevElement.getParent.getText)) {
+                 Set("f\"\"", "s\"\"")
+                   .contains(prevElement.getParent.getText)) {
         completeMultilineString(editor, project, element, offset)
       }
     } else if (c == '.' && ScalaPsiUtil.isLineTerminator(prevElement)) {

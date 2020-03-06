@@ -571,7 +571,8 @@ class SparkILoop(
           // the end of the flattened name.
           def className = intp flatName path
           def moduleName =
-            (intp flatName path.stripSuffix(MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
+            (intp flatName path
+              .stripSuffix(MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
           if (bytes.nonEmpty) bytes
@@ -979,7 +980,8 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(code) && intp.mostRecentVar != "") {
+    } else if (Completion
+                 .looksLikeInvocation(code) && intp.mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing

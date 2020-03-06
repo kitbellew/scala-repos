@@ -153,7 +153,8 @@ trait NormalizationHelperModule[M[+_]]
             table.transform(spec)
         }
 
-        val result = resultTables reduceOption { _ concat _ } getOrElse Table.empty
+        val result =
+          resultTables reduceOption { _ concat _ } getOrElse Table.empty
 
         M.point(result)
       }

@@ -706,7 +706,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
 
           (output.toSeq.drop(a) == bytes.drop(a)) &&
           (input.asInputStream.read() == -1) &&
-          ((output.length < 1) || (input.asInputStream.read(output, 0, 1) == -1))
+          ((output.length < 1) || (input.asInputStream
+            .read(output, 0, 1) == -1))
         }
       }
 

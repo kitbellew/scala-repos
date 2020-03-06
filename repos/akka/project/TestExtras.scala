@@ -50,7 +50,8 @@ object TestExtras {
     import Keys._
 
     private[Filter] object Params {
-      val testNamesExclude = systemPropertyAsSeq("akka.test.names.exclude").toSet
+      val testNamesExclude =
+        systemPropertyAsSeq("akka.test.names.exclude").toSet
       val testTagsExlcude = systemPropertyAsSeq("akka.test.tags.exclude").toSet
       val testTagsOnly = systemPropertyAsSeq("akka.test.tags.only").toSet
     }

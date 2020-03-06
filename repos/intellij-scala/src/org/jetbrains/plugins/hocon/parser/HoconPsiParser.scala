@@ -48,10 +48,12 @@ class HoconPsiParser extends PsiParser {
 
           def entireLineComment =
             token == commentToken && (if (i > 0)
-                                        tokens.get(i - 1) == LineBreakingWhitespace
+                                        tokens
+                                          .get(i - 1) == LineBreakingWhitespace
                                       else atStreamEdge)
           def noBlankLineWhitespace =
-            Whitespace.contains(token) && text.charIterator.count(_ == '\n') <= 1
+            Whitespace
+              .contains(token) && text.charIterator.count(_ == '\n') <= 1
 
           if (i < 0) resultSoFar
           else if (noBlankLineWhitespace)
@@ -70,7 +72,8 @@ class HoconPsiParser extends PsiParser {
     var newLineSuppressedIndex: Int = 0
 
     def newLinesBeforeCurrentToken =
-      builder.rawTokenIndex > newLineSuppressedIndex && builder.rawLookup(-1) == LineBreakingWhitespace
+      builder.rawTokenIndex > newLineSuppressedIndex && builder
+        .rawLookup(-1) == LineBreakingWhitespace
 
     def suppressNewLine(): Unit = {
       newLineSuppressedIndex = builder.rawTokenIndex
@@ -81,7 +84,8 @@ class HoconPsiParser extends PsiParser {
     }
 
     def matches(matcher: Matcher) =
-      (matcher.tokenSet.contains(builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
+      (matcher.tokenSet
+        .contains(builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
         (matcher.matchNewLine && newLinesBeforeCurrentToken) || (matcher.matchEof && builder.eof)
 
     def matchesUnquoted(str: String) =

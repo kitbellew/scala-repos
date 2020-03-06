@@ -1767,9 +1767,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("external sorting updates peak execution memory") {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(sparkContext, "external sort") {
-      sql("SELECT * FROM testData2 ORDER BY a ASC, b ASC").collect()
-    }
+    AccumulatorSuite
+      .verifyPeakExecutionMemorySet(sparkContext, "external sort") {
+        sql("SELECT * FROM testData2 ORDER BY a ASC, b ASC").collect()
+      }
   }
 
   test("SPARK-9511: error with table starting with number") {

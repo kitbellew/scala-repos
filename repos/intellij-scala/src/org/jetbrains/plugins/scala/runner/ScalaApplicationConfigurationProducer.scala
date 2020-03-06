@@ -128,7 +128,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
       .asInstanceOf[T]
       .getConfigurationModule
       .getModule
-    JavaExecutionUtil.getRuntimeQualifiedName(aClass) == configuration.MAIN_CLASS_NAME &&
+    JavaExecutionUtil
+      .getRuntimeQualifiedName(aClass) == configuration.MAIN_CLASS_NAME &&
     (location.getModule == configuration.getConfigurationModule.getModule || predefinedModule == configuration.getConfigurationModule.getModule)
   }
 

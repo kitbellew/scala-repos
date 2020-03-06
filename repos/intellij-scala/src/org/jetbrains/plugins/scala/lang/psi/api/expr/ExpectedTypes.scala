@@ -126,7 +126,8 @@ private[expr] object ExpectedTypes {
         }
       //see SLS[6.16]
       case cond: ScIfStmt
-          if cond.condition.getOrElse(null: ScExpression) == expr.getSameElementInContext =>
+          if cond.condition
+            .getOrElse(null: ScExpression) == expr.getSameElementInContext =>
         Array((types.Boolean, None))
       case cond: ScIfStmt if cond.elseBranch.isDefined =>
         cond.expectedTypesEx(fromUnderscore = true)
@@ -140,11 +141,13 @@ private[expr] object ExpectedTypes {
           case _ => Array.empty
         }
       case wh: ScWhileStmt
-          if wh.condition.getOrElse(null: ScExpression) == expr.getSameElementInContext =>
+          if wh.condition
+            .getOrElse(null: ScExpression) == expr.getSameElementInContext =>
         Array((types.Boolean, None))
       case wh: ScWhileStmt => Array((types.Unit, None))
       case d: ScDoStmt
-          if d.condition.getOrElse(null: ScExpression) == expr.getSameElementInContext =>
+          if d.condition
+            .getOrElse(null: ScExpression) == expr.getSameElementInContext =>
         Array((types.Boolean, None))
       case d: ScDoStmt        => Array((types.Unit, None))
       case fb: ScFinallyBlock => Array((types.Unit, None))
@@ -184,7 +187,8 @@ private[expr] object ExpectedTypes {
         }
       //SLS[6.15]
       case a: ScAssignStmt
-          if a.getRExpression.getOrElse(null: ScExpression) == expr.getSameElementInContext =>
+          if a.getRExpression
+            .getOrElse(null: ScExpression) == expr.getSameElementInContext =>
         a.getLExpression match {
           case ref: ScReferenceExpression
               if (!a.getContext

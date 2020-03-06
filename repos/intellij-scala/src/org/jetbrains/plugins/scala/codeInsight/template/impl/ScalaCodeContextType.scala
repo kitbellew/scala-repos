@@ -15,7 +15,8 @@ class ScalaCodeContextType
       classOf[ScalaLiveTemplateContextType]) {
   def isInContext(file: PsiFile, offset: Int): Boolean = {
     if (!file.isInstanceOf[ScalaFile]) return false
-    !ScalaCommentContextType.isInContext(file, offset) && !ScalaStringContextType
+    !ScalaCommentContextType
+      .isInContext(file, offset) && !ScalaStringContextType
       .isInContext(file, offset)
   }
 }

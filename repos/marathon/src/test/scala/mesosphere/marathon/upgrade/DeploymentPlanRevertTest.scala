@@ -611,7 +611,8 @@ class DeploymentPlanRevertTest
       else if (addedIds.isEmpty)
         s"group '$groupId' remove deps {${removedIds.mkString(", ")}}"
       else
-        s"group '$groupId' change deps -{${removedIds.mkString(", ")}} +{${addedIds.mkString(", ")}}"
+        s"group '$groupId' change deps -{${removedIds
+          .mkString(", ")}} +{${addedIds.mkString(", ")}}"
 
     Deployment(
       name,

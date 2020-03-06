@@ -35,7 +35,8 @@ import scalafx.ensemble.commons.ExampleInfo
 /** Creates SBT project for a sample code. */
 object SBTProjectBuilder {
 
-  private var _parentDir = new File(System.getProperty("user.home", ".")).getCanonicalFile
+  private var _parentDir =
+    new File(System.getProperty("user.home", ".")).getCanonicalFile
 
   private val sourceSubDir = "src/main/scala/"
   private val resourceSubDir = "src/main/resources/"

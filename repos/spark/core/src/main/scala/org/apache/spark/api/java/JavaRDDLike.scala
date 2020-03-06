@@ -203,9 +203,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
-    JavaPairRDD.fromRDD(rdd.mapPartitions(fn))(
-      fakeClassTag[K2],
-      fakeClassTag[V2])
+    JavaPairRDD
+      .fromRDD(rdd.mapPartitions(fn))(fakeClassTag[K2], fakeClassTag[V2])
   }
 
   /**
@@ -310,9 +309,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * a map on the other).
     */
   def zip[U](other: JavaRDDLike[U, _]): JavaPairRDD[T, U] = {
-    JavaPairRDD.fromRDD(rdd.zip(other.rdd)(other.classTag))(
-      classTag,
-      other.classTag)
+    JavaPairRDD
+      .fromRDD(rdd.zip(other.rdd)(other.classTag))(classTag, other.classTag)
   }
 
   /**

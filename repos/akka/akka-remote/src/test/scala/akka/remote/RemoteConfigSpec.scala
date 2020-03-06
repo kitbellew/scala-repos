@@ -60,13 +60,13 @@ class RemoteConfigSpec
       WatchFailureDetectorConfig.getDouble("threshold") should ===(
         10.0 +- 0.0001)
       WatchFailureDetectorConfig.getInt("max-sample-size") should ===(200)
-      WatchFailureDetectorConfig.getMillisDuration("acceptable-heartbeat-pause") should ===(
-        10 seconds)
-      WatchFailureDetectorConfig.getMillisDuration("min-std-deviation") should ===(
-        100 millis)
+      WatchFailureDetectorConfig
+        .getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
+      WatchFailureDetectorConfig
+        .getMillisDuration("min-std-deviation") should ===(100 millis)
 
-      remoteSettings.config.getString("akka.remote.log-frame-size-exceeding") should ===(
-        "off")
+      remoteSettings.config
+        .getString("akka.remote.log-frame-size-exceeding") should ===("off")
     }
 
     "be able to parse AkkaProtocol related config elements" in {

@@ -50,7 +50,8 @@ object MediaRangeSpec extends Specification {
       MediaType.parse("foo") must beNone
     }
     "allow anything in a quoted string" in {
-      MediaRange.parse("""foo/bar, foo2/bar2; p="v,/\"\\vv"; p2=v2""") must_== Seq(
+      MediaRange
+        .parse("""foo/bar, foo2/bar2; p="v,/\"\\vv"; p2=v2""") must_== Seq(
         new MediaRange("foo", "bar", Nil, None, Nil),
         new MediaRange(
           "foo2",
@@ -98,7 +99,8 @@ object MediaRangeSpec extends Specification {
         ).inOrder)
     }
     "order by q value" in {
-      MediaRange.parse("foo1/bar1;q=0.25, foo3/bar3, foo2/bar2;q=0.5") must contain(
+      MediaRange
+        .parse("foo1/bar1;q=0.25, foo3/bar3, foo2/bar2;q=0.5") must contain(
         exactly(
           new MediaRange("foo3", "bar3", Nil, None, Nil),
           new MediaRange("foo2", "bar2", Nil, Some(0.5f), Nil),
@@ -114,7 +116,8 @@ object MediaRangeSpec extends Specification {
         ).inOrder)
     }
     "order by parameters" in {
-      MediaRange.parse("foo/bar, foo/bar;p1=v1;p2=v2, foo/bar;p1=v1") must contain(
+      MediaRange
+        .parse("foo/bar, foo/bar;p1=v1;p2=v2, foo/bar;p1=v1") must contain(
         exactly(
           new MediaRange(
             "foo",

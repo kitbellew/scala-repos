@@ -206,8 +206,9 @@ class RewriteJoins extends Phase {
           case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
-        val allRefs = foundRefs.collect { case (p, (_, Some(s))) => (p, s) } ++ newDefs
-          .map { case (p, (_, s))                                => (p, s) }
+        val allRefs =
+          foundRefs.collect { case (p, (_, Some(s))) => (p, s) } ++ newDefs
+            .map { case (p, (_, s))                  => (p, s) }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =

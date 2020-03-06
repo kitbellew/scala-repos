@@ -85,7 +85,8 @@ object OAuthRequestVerifier {
 
         // Verify the signature
         val collectedParams =
-          oauthParams.filterNot(_._1 == "oauth_signature") ++ request.queryString.toSeq
+          oauthParams
+            .filterNot(_._1 == "oauth_signature") ++ request.queryString.toSeq
             .flatMap {
               case (key, values) => values.map(value => key -> value)
             }

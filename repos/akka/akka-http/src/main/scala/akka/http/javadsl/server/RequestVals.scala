@@ -101,7 +101,8 @@ object RequestVals {
   def clientIP(): RequestVal[RemoteAddress] =
     new StandaloneExtractionImpl[RemoteAddress] {
       def directive: Directive1[RemoteAddress] =
-        MiscDirectives.extractClientIP.map(x ⇒ x: RemoteAddress) // missing covariance of Directive
+        MiscDirectives.extractClientIP
+          .map(x ⇒ x: RemoteAddress) // missing covariance of Directive
     }
 
   /**

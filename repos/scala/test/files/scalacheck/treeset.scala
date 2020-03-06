@@ -172,7 +172,8 @@ object Test extends Properties("TreeSet") {
     subject.nonEmpty ==> {
       val element = oneOf(subject.toSeq).sample.get
       val removed = subject - element
-      subject.contains(element) && !removed.contains(element) && subject.size - 1 == removed.size
+      subject.contains(element) && !removed
+        .contains(element) && subject.size - 1 == removed.size
     }
   }
 

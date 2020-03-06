@@ -431,7 +431,8 @@ trait Loc[T] {
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
 
   def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] = {
-    kids.toList.flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
+    kids.toList
+      .flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
   }
 
   def supplementalKidMenuItems: List[MenuItem] =

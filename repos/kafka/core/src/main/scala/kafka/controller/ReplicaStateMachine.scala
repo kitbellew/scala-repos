@@ -321,7 +321,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                     targetState))
             case _ =>
               // check if the leader for this partition ever existed
-              controllerContext.partitionLeadershipInfo.get(topicAndPartition) match {
+              controllerContext.partitionLeadershipInfo
+                .get(topicAndPartition) match {
                 case Some(leaderIsrAndControllerEpoch) =>
                   brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
                     List(replicaId),
@@ -361,9 +362,11 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             deletePartition = false)
           // As an optimization, the controller removes dead replicas from the ISR
           val leaderAndIsrIsEmpty: Boolean =
-            controllerContext.partitionLeadershipInfo.get(topicAndPartition) match {
+            controllerContext.partitionLeadershipInfo
+              .get(topicAndPartition) match {
               case Some(currLeaderIsrAndControllerEpoch) =>
-                controller.removeReplicaFromIsr(topic, partition, replicaId) match {
+                controller
+                  .removeReplicaFromIsr(topic, partition, replicaId) match {
                   case Some(updatedLeaderIsrAndControllerEpoch) =>
                     // send the shrunk ISR state change request to all the remaining alive replicas of the partition.
                     val currentAssignedReplicas =

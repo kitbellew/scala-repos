@@ -41,7 +41,8 @@ class SbtResolverIndex private (
     val gaMap = mutable.HashMap.empty[String, mutable.Set[String]]
     val gavMap = mutable.HashMap.empty[String, mutable.Set[String]]
     def processArtifact(artifact: ArtifactInfo) {
-      agMap.getOrElseUpdate(artifact.getArtifactId, mutable.Set.empty) += artifact.getGroupId
+      agMap
+        .getOrElseUpdate(artifact.getArtifactId, mutable.Set.empty) += artifact.getGroupId
       gaMap.getOrElseUpdate(artifact.getGroupId, mutable.Set.empty) += artifact.getArtifactId
       gavMap.getOrElseUpdate(
         SbtResolverUtils.joinGroupArtifact(artifact),

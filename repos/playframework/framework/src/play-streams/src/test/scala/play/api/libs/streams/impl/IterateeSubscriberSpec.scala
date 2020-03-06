@@ -62,7 +62,8 @@ class IterateeSubscriberSpec extends Specification {
       val iter = Iteratee.getChunks[Int]
       val subr = new IterateeSubscriber(iter)
       pubr.subscribe(subr)
-      Await.result(subr.result.unflatten, ScalaFiniteDuration(2, SECONDS)) must_== Done(
+      Await
+        .result(subr.result.unflatten, ScalaFiniteDuration(2, SECONDS)) must_== Done(
         List(1, 2, 3),
         Input.EOF)
     }

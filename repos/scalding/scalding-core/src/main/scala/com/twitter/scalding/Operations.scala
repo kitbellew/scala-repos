@@ -361,7 +361,8 @@ package com.twitter.scalding {
         cacheSize: Option[Int],
         flowProcess: FlowProcess[_]): MapsideCache[K, V] = {
       val size = cacheSize.getOrElse { getCacheSize(flowProcess) }
-      val adaptive = Option(flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY)).isDefined
+      val adaptive =
+        Option(flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY)).isDefined
       if (adaptive)
         new AdaptiveMapsideCache(flowProcess, new AdaptiveCache(size))
       else

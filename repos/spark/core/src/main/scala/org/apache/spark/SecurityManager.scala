@@ -390,7 +390,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
           "generateSecretKey: yarn mode, secret key from credentials is null")
         val rnd = new SecureRandom()
         val length =
-          sparkConf.getInt("spark.authenticate.secretBitLength", 256) / JByte.SIZE
+          sparkConf
+            .getInt("spark.authenticate.secretBitLength", 256) / JByte.SIZE
         val secret = new Array[Byte](length)
         rnd.nextBytes(secret)
 

@@ -28,9 +28,8 @@ class FrameSpec extends Specification {
   "shift-merge must work" in {
     val s1 = org.saddle.Series(Vec(1, 2, 3), Index("a", "b", "c"))
     val mergeShift = s1.join(s1.shift(1))
-    mergeShift.row("b") must_== Frame(
-      0 -> Series("b" -> 2),
-      1 -> Series("b" -> 1))
+    mergeShift
+      .row("b") must_== Frame(0 -> Series("b" -> 2), 1 -> Series("b" -> 1))
   }
 
   "map works" in {

@@ -857,7 +857,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         } else false
       }
       val result = NameTransformer.decode(name)
-      if (!isIdentifier(result) || keywordList.contains(result) || result == "=")
+      if (!isIdentifier(result) || keywordList
+            .contains(result) || result == "=")
         "`" + result + "`"
       else result
     }

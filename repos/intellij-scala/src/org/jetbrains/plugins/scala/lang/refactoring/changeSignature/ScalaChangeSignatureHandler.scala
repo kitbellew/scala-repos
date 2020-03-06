@@ -162,7 +162,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
         case c: ScClass =>
           c.constructor match {
             case Some(constr)
-                if PsiTreeUtil.isAncestor(c.nameId, element, false) || PsiTreeUtil
+                if PsiTreeUtil
+                  .isAncestor(c.nameId, element, false) || PsiTreeUtil
                   .isAncestor(constr, element, false) =>
               constr
             case _ => null

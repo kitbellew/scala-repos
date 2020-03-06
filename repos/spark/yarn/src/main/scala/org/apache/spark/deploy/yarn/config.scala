@@ -191,7 +191,8 @@ package object config {
 
   /* Driver configuration. */
 
-  private[spark] val DRIVER_CORES = ConfigBuilder("spark.driver.cores").intConf.optional
+  private[spark] val DRIVER_CORES =
+    ConfigBuilder("spark.driver.cores").intConf.optional
 
   private[spark] val DRIVER_MEMORY_OVERHEAD =
     ConfigBuilder("spark.yarn.driver.memoryOverhead")
@@ -242,10 +243,12 @@ package object config {
       .withDefault(null)
 
   // Internal config to propagate the location of the user's jar to the driver/executors
-  private[spark] val APP_JAR = ConfigBuilder("spark.yarn.user.jar").internal.stringConf.optional
+  private[spark] val APP_JAR =
+    ConfigBuilder("spark.yarn.user.jar").internal.stringConf.optional
 
   // Internal config to propagate the locations of any extra jars to add to the classpath
   // of the executors
-  private[spark] val SECONDARY_JARS = ConfigBuilder("spark.yarn.secondary.jars").internal.stringConf.toSequence.optional
+  private[spark] val SECONDARY_JARS =
+    ConfigBuilder("spark.yarn.secondary.jars").internal.stringConf.toSequence.optional
 
 }

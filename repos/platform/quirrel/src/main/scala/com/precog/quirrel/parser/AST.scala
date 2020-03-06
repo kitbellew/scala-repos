@@ -191,7 +191,8 @@ trait AST extends Phases {
       }
 
       case ArrayDef(loc, values) => {
-        val valStr = values map { indent + "  -\n" + prettyPrint(_, level + 4) } mkString "\n"
+        val valStr =
+          values map { indent + "  -\n" + prettyPrint(_, level + 4) } mkString "\n"
 
         indent + "type: array\n" +
           indent + "values:\n" + valStr

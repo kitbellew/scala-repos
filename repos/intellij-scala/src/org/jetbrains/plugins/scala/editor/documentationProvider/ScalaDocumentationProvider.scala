@@ -416,7 +416,8 @@ object ScalaDocumentationProvider {
 
             member match {
               case named: ScNamedElement =>
-                ScalaPsiUtil.superValsSignatures(named, withSelfType = false) map {
+                ScalaPsiUtil
+                  .superValsSignatures(named, withSelfType = false) map {
                   case sig => sig.namedElement
                 } foreach {
                   case od: ScDocCommentOwner => tc += od

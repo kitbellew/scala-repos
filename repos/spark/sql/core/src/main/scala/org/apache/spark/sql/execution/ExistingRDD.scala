@@ -217,7 +217,8 @@ private[sql] case class DataSourceScan(
   override def simpleString: String = {
     val metadataEntries =
       for ((key, value) <- metadata.toSeq.sorted) yield s"$key: $value"
-    s"Scan $nodeName${output.mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
+    s"Scan $nodeName${output
+      .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {

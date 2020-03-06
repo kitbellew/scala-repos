@@ -42,11 +42,14 @@ object JsonFormatsSpec extends Specification with TypeHintExamples {
   }
 
   "classFor across composite formats" in {
-    (formats.typeHints.classFor(hintsForFish) mustEqual (ShortTypeHintExamples.formats.typeHints
+    (formats.typeHints
+      .classFor(hintsForFish) mustEqual (ShortTypeHintExamples.formats.typeHints
       .classFor(hintsForFish))) and
-      (formats.typeHints.classFor(hintsForDog) mustEqual (ShortTypeHintExamples.formats.typeHints
+      (formats.typeHints
+        .classFor(hintsForDog) mustEqual (ShortTypeHintExamples.formats.typeHints
         .classFor(hintsForDog))) and
-      (formats.typeHints.classFor(hintsForAnimal) mustEqual (FullTypeHintExamples.formats.typeHints
+      (formats.typeHints
+        .classFor(hintsForAnimal) mustEqual (FullTypeHintExamples.formats.typeHints
         .classFor(hintsForAnimal)))
   }
 

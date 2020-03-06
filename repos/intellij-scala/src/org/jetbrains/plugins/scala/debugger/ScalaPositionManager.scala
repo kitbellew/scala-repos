@@ -307,7 +307,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       element match {
         case null => null
         case ws: PsiWhiteSpace
-            if document.getLineNumber(element.getTextRange.getEndOffset) == position.getLine =>
+            if document
+              .getLineNumber(element.getTextRange.getEndOffset) == position.getLine =>
           val nextElement =
             file.findElementAt(element.getTextRange.getEndOffset)
           nonWhitespaceInner(nextElement, document)

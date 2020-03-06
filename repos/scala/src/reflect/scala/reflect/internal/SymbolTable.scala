@@ -56,7 +56,8 @@ abstract class SymbolTable
   def log(msg: => AnyRef): Unit
 
   protected def elapsedMessage(msg: String, start: Long) =
-    msg + " in " + (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) - start) + "ms"
+    msg + " in " + (TimeUnit.NANOSECONDS
+      .toMillis(System.nanoTime()) - start) + "ms"
 
   def informProgress(msg: String) =
     if (settings.verbose) inform("[" + msg + "]")

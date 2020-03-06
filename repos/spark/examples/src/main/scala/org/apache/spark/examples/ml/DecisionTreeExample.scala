@@ -368,7 +368,8 @@ object DecisionTreeExample {
     val predictions =
       fullPredictions.select("prediction").rdd.map(_.getDouble(0))
     val labels = fullPredictions.select(labelColName).rdd.map(_.getDouble(0))
-    val RMSE = new RegressionMetrics(predictions.zip(labels)).rootMeanSquaredError
+    val RMSE =
+      new RegressionMetrics(predictions.zip(labels)).rootMeanSquaredError
     println(s"  Root mean squared error (RMSE): $RMSE")
   }
 }

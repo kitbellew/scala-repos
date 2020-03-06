@@ -248,7 +248,8 @@ private[sbt] object MissingBracketHandler {
       case Some(index) =>
         val text = content.substring(positionEnd, index + 1)
         val textWithoutBracket = text.substring(0, text.length - 1)
-        scala.util.Try(SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
+        scala.util
+          .Try(SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
           case scala.util.Success(_) =>
             text
           case scala.util.Failure(th) =>

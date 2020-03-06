@@ -382,7 +382,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       typez.foreach {
                         case ScParameterizedType(tp, Seq(arg))
                             if !elementAdded =>
-                          ScType.extractClass(tp, Some(place.getProject)) match {
+                          ScType
+                            .extractClass(tp, Some(place.getProject)) match {
                             case Some(clazz)
                                 if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
                               if (!scType.equiv(Nothing) && scType.conforms(

@@ -87,7 +87,8 @@ class GroupManagerTest
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
   }
 
   test("Assign dynamic service ports specified in the container") {
@@ -129,7 +130,8 @@ class GroupManagerTest
     val update = manager(minServicePort = 10, maxServicePort = 20)
       .assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 2
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 2
   }
 
   //regression for #2743
@@ -202,7 +204,8 @@ class GroupManagerTest
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
   }
 
   // Regression test for #2868

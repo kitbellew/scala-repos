@@ -13,7 +13,8 @@ class NoDeads {
   def y3[T](arg: => T) = println("foo")
   def z3 = y3(throw new Exception) // should not warn: by name arg
 
-  def nowarn1 = synchronized { throw new Exception } // should not warn: synchronized should be by name
+  def nowarn1 =
+    synchronized { throw new Exception } // should not warn: synchronized should be by name
 
   def nowarn2: Int = synchronized { // should not warn
     val i = 10 + 2

@@ -1433,7 +1433,8 @@ class ForceToDiskTest extends WordSpec with Matchers {
       .sink[(Int, Int, Int)](Tsv("out")) { outBuf =>
         (idx + ": run correctly when combined with joinWithTiny") in {
           outBuf should have size 2000
-          val correct = (1 to 1000).flatMap { y => List((1, 1, y), (-1, 1, y)) }.sorted
+          val correct =
+            (1 to 1000).flatMap { y => List((1, 1, y), (-1, 1, y)) }.sorted
           outBuf.toList.sorted shouldBe correct
         }
         idx += 1

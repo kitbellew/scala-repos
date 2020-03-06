@@ -1412,7 +1412,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case ZAND => genZandOrZor(and = true)
             case ZOR  => genZandOrZor(and = false)
             case code =>
-              if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(lhs).isClass) {
+              if (scalaPrimitives
+                    .isUniversalEqualityOp(code) && tpeTK(lhs).isClass) {
                 // rewrite `==` to null tests and `equals`. not needed for arrays (`equals` is reference equality).
                 if (code == EQ)
                   genEqEqPrimitive(

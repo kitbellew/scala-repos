@@ -58,43 +58,45 @@ trait MemberLookupBase {
 
     // (2) Or recursively go into each containing template.
     val fromParents =
-      Stream.iterate(site)(_.owner) takeWhile (!isRoot(_)) map (lookupInTemplate(
+      Stream
+        .iterate(site)(_.owner) takeWhile (!isRoot(_)) map (lookupInTemplate(
         pos,
         members,
         _))
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 
-    val links = syms flatMap { case (sym, site) => internalLink(sym, site) } match {
-      case Nil =>
-        // (3) Look at external links
-        syms.flatMap {
-          case (sym, owner) =>
-            // reconstruct the original link
-            def linkName(sym: Symbol) = {
-              def nameString(s: Symbol) =
-                s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-                                  "$"
-                                else "")
-              val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
+    val links =
+      syms flatMap { case (sym, site) => internalLink(sym, site) } match {
+        case Nil =>
+          // (3) Look at external links
+          syms.flatMap {
+            case (sym, owner) =>
+              // reconstruct the original link
+              def linkName(sym: Symbol) = {
+                def nameString(s: Symbol) =
+                  s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
+                                    "$"
+                                  else "")
+                val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
 
-              sym.ownerChain.reverse
-                .filterNot(isRoot(_))
-                .map(nameString(_))
-                .mkString(".") + packageSuffix
-            }
+                sym.ownerChain.reverse
+                  .filterNot(isRoot(_))
+                  .map(nameString(_))
+                  .mkString(".") + packageSuffix
+              }
 
-            if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
-              findExternalLink(sym, linkName(sym))
-            else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag)
-              findExternalLink(
-                sym,
-                linkName(owner) + "@" + externalSignature(sym))
-            else
-              None
-        }
-      case links => links
-    }
+              if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
+                findExternalLink(sym, linkName(sym))
+              else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag)
+                findExternalLink(
+                  sym,
+                  linkName(owner) + "@" + externalSignature(sym))
+              else
+                None
+          }
+        case links => links
+      }
     links match {
       case Nil =>
         if (warnNoLink)

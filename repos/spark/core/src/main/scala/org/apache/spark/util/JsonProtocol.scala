@@ -154,7 +154,8 @@ private[spark] object JsonProtocol {
     ("Event" -> Utils.getFormattedClassName(jobStart)) ~
       ("Job ID" -> jobStart.jobId) ~
       ("Submission Time" -> jobStart.time) ~
-      ("Stage Infos" -> jobStart.stageInfos.map(stageInfoToJson)) ~ // Added in Spark 1.2.0
+      ("Stage Infos" -> jobStart.stageInfos
+        .map(stageInfoToJson)) ~ // Added in Spark 1.2.0
       ("Stage IDs" -> jobStart.stageIds) ~
       ("Properties" -> properties)
   }
@@ -310,8 +311,10 @@ private[spark] object JsonProtocol {
     val name = accumulableInfo.name
     ("ID" -> accumulableInfo.id) ~
       ("Name" -> name) ~
-      ("Update" -> accumulableInfo.update.map { v => accumValueToJson(name, v) }) ~
-      ("Value" -> accumulableInfo.value.map { v => accumValueToJson(name, v) }) ~
+      ("Update" -> accumulableInfo.update
+        .map { v => accumValueToJson(name, v) }) ~
+      ("Value" -> accumulableInfo.value
+        .map { v => accumValueToJson(name, v) }) ~
       ("Internal" -> accumulableInfo.internal) ~
       ("Count Failed Values" -> accumulableInfo.countFailedValues) ~
       ("Metadata" -> accumulableInfo.metadata)

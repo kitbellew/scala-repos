@@ -193,7 +193,8 @@ class NIHDBProjectionSpecs
               min mustEqual 0L
               max mustEqual 0L
               data.size mustEqual 5
-              data.toJsonElements.map(_("value")) must containAllOf(expected).only.inOrder
+              data.toJsonElements
+                .map(_("value")) must containAllOf(expected).only.inOrder
           }
         }
     }

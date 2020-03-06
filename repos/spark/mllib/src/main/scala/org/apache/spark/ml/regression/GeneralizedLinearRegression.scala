@@ -469,7 +469,8 @@ object GeneralizedLinearRegression
         numInstances: Double,
         weightSum: Double): Double = {
       val wt = predictions.map(x => math.log(x._3)).sum()
-      numInstances * (math.log(deviance / numInstances * 2.0 * math.Pi) + 1.0) + 2.0 - wt
+      numInstances * (math
+        .log(deviance / numInstances * 2.0 * math.Pi) + 1.0) + 2.0 - wt
     }
 
     override def project(mu: Double): Double = {

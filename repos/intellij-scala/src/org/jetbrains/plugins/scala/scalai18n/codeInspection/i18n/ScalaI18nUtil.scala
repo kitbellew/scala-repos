@@ -288,7 +288,8 @@ object ScalaI18nUtil {
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
-        containedInPropertiesFile |= propertiesFile.findPropertyByKey(key) != null
+        containedInPropertiesFile |= propertiesFile
+          .findPropertyByKey(key) != null
       }
       containedInPropertiesFile
     }

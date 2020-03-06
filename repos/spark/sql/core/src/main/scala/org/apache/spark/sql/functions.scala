@@ -2713,7 +2713,8 @@ object functions {
     */
   def udf[RT: TypeTag, A1: TypeTag](
       f: Function1[A1, RT]): UserDefinedFunction = {
-    val inputTypes = Try(ScalaReflection.schemaFor(typeTag[A1]).dataType :: Nil).toOption
+    val inputTypes =
+      Try(ScalaReflection.schemaFor(typeTag[A1]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,

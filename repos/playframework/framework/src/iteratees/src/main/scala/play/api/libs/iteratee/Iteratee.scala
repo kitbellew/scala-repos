@@ -295,8 +295,8 @@ object Iteratee {
           i.pureFlatFold {
             case Step.Done(a, e) => Done(s :+ a, input)
             case Step.Cont(k) =>
-              k(input).flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(
-                dec)
+              k(input)
+                .flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(dec)
             case Step.Error(msg, e) => Error(msg, e)
           }(dec)
       }

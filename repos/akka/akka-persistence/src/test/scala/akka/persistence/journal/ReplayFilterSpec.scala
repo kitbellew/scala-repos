@@ -77,7 +77,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 1) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 1) intercept {
         filter ! m1
         filter ! m2
         filter ! m3
@@ -101,7 +102,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 2) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 2) intercept {
         filter ! m1
         filter ! m2
         val m3b =
@@ -127,7 +129,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 3) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 3) intercept {
         filter ! m1
         val m2b =
           m2.copy(persistent = m2.persistent.update(writerUuid = writerB))
@@ -164,7 +167,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.error(start = "Invalid replayed event", occurrences = 1) intercept {
+      EventFilter
+        .error(start = "Invalid replayed event", occurrences = 1) intercept {
         filter ! m1
         filter ! m2
         filter ! m3
@@ -186,7 +190,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.error(start = "Invalid replayed event", occurrences = 1) intercept {
+      EventFilter
+        .error(start = "Invalid replayed event", occurrences = 1) intercept {
         filter ! m1
         filter ! m2
         val m3b =
@@ -211,7 +216,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 1) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 1) intercept {
         filter ! m1
         filter ! m2
         filter ! m3
@@ -236,7 +242,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 2) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 2) intercept {
         filter ! m1
         filter ! m2
         val m3b =
@@ -263,7 +270,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
           windowSize = 100,
           maxOldWriters = 10,
           debugEnabled = false))
-      EventFilter.warning(start = "Invalid replayed event", occurrences = 3) intercept {
+      EventFilter
+        .warning(start = "Invalid replayed event", occurrences = 3) intercept {
         filter ! m1
         val m2b =
           m2.copy(persistent = m2.persistent.update(writerUuid = writerB))

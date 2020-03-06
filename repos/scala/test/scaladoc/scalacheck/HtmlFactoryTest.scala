@@ -847,7 +847,8 @@ object Test extends Properties("HtmlFactory") {
 
     property("SI-8144: Members' permalink - companion object") =
       check("some/pack/SomeType$.html") { node =>
-        ("type link" |: node.assertTypeLink("../../some/pack/SomeType$.html")) &&
+        ("type link" |: node
+          .assertTypeLink("../../some/pack/SomeType$.html")) &&
         ("member: someVal" |: node.assertMemberLink("allMembers")(
           "some.pack.SomeType#someVal",
           "../../some/pack/SomeType$.html#someVal:String"))

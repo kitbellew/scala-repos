@@ -509,7 +509,8 @@ abstract class ActorModelSpec(config: String)
 
                   System.err.println(
                     "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
-                  Iterator.continually(mq.dequeue) takeWhile (_ ne null) foreach System.err.println
+                  Iterator
+                    .continually(mq.dequeue) takeWhile (_ ne null) foreach System.err.println
                 case _ ⇒
               }
 

@@ -384,7 +384,8 @@ object JGitUtil {
               .find(_.path == treeWalk.getPathString)
               .map(_.url)
           } else None
-          fileList +:= (treeWalk.getObjectId(0), treeWalk.getFileMode(0), treeWalk.getNameString, linkUrl)
+          fileList +:= (treeWalk.getObjectId(0), treeWalk
+            .getFileMode(0), treeWalk.getNameString, linkUrl)
         }
       }
       revWalk.markStart(revCommit)

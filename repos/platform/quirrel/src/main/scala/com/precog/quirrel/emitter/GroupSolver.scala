@@ -798,8 +798,8 @@ trait GroupSolver
       // iterate
       if (results.isEmpty) {
         val kernels2 = kernels map { k =>
-          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map { _.expr } map enumerateParents(
-            k.sigma) unzip
+          val (nodes2Unflatten, sigma2Unflatten) =
+            k.nodes map { _.expr } map enumerateParents(k.sigma) unzip
 
           val nodes2 = nodes2Unflatten.flatten map ExprWrapper
           val sigma2: Sigma = Map(sigma2Unflatten.flatten.toSeq: _*)

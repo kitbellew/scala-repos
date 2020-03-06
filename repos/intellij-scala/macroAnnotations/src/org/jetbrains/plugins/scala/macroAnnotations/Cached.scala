@@ -86,7 +86,8 @@ object Cached {
         val fields = if (hasParameters) {
           q"""
             private val $mapName = _root_.com.intellij.util.containers.ContainerUtil.
-                newConcurrentMap[(..${flatParams.map(_.tpt)}), ($retTp, _root_.scala.Long)]()
+                newConcurrentMap[(..${flatParams
+            .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
 
             ..$analyzeCachesField
           """

@@ -325,7 +325,8 @@ private[akka] class TLSActor(
   private def doInbound(
       isOutboundClosed: Boolean,
       inboundState: TransferState): Boolean =
-    if (inputBunch.isDepleted(TransportIn) && transportInChoppingBlock.isEmpty) {
+    if (inputBunch
+          .isDepleted(TransportIn) && transportInChoppingBlock.isEmpty) {
       if (tracing) log.debug("closing inbound")
       try engine.closeInbound()
       catch {

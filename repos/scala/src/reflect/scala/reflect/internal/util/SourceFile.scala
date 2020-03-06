@@ -150,7 +150,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   private def charAtIsEOL(idx: Int)(p: Char => Boolean) = {
     // don't identify the CR in CR LF as a line break, since LF will do.
     def notCRLF0 =
-      content(idx) != CR || !content.isDefinedAt(idx + 1) || content(idx + 1) != LF
+      content(idx) != CR || !content
+        .isDefinedAt(idx + 1) || content(idx + 1) != LF
 
     idx < length && notCRLF0 && p(content(idx))
   }

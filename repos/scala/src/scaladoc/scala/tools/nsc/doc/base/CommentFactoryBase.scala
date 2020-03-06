@@ -570,7 +570,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
     protected val listStyles =
-      Map[String, (Seq[Block] => Block)]( // TODO Should this be defined at some list companion?
+      Map[
+        String,
+        (Seq[Block] => Block)
+      ]( // TODO Should this be defined at some list companion?
         "- " -> (UnorderedList(_)),
         "1. " -> (OrderedList(_, "decimal")),
         "I. " -> (OrderedList(_, "upperRoman")),
@@ -990,7 +993,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       * @return true only if the correct characters have been jumped */
     final def jump(chars: String): Boolean = {
       var index = 0
-      while (index < chars.length && char == chars.charAt(index) && char != endOfText) {
+      while (index < chars.length && char == chars
+               .charAt(index) && char != endOfText) {
         nextChar()
         index += 1
       }

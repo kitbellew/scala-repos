@@ -98,7 +98,8 @@ object Boilerplate {
 
       val tpes = synTypes map { tpe => s"F[$tpe]" }
       val tpesString = synTypes mkString ", "
-      val params = (synVals zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
+      val params =
+        (synVals zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val next = if (arity + 1 <= maxArity) {
         s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
       } else {
@@ -162,7 +163,8 @@ object Boilerplate {
 
       val tpes = synTypes map { tpe => s"F[$tpe]" }
       val fargs = (0 until arity) map { "f" + _ }
-      val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
+      val fparams =
+        (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
 
       val a = arity / 2
       val b = arity - a
@@ -207,7 +209,8 @@ object Boilerplate {
 
       val tpes = synTypes map { tpe => s"F[$tpe]" }
       val fargs = (0 until arity) map { "f" + _ }
-      val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
+      val fparams =
+        (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val fargsS = fargs mkString ", "
 
       val nestedProducts = (0 until (arity - 2)).foldRight(

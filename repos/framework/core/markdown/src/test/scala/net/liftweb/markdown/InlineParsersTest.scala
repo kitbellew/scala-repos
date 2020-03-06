@@ -48,7 +48,8 @@ class InlineParsersTest
   }
 
   def runExceptionParsingTests(p: Parser[String], l: List[String]) {
-    for (s <- l) evaluating { apply(p, s) } should produce[IllegalArgumentException]
+    for (s <- l)
+      evaluating { apply(p, s) } should produce[IllegalArgumentException]
   }
 
   val italicTests: List[(String, String)] = List(

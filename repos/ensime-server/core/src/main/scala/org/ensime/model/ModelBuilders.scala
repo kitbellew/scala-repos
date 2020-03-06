@@ -166,7 +166,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           Some(root)
         } else if (sym.hasPackageFlag) {
           Some(fromSymbol(sym))
-        } else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
+        } else if (!sym.nameString
+                     .contains("$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
           if (sym.isClass || sym.isTrait || sym.isModule ||
               sym.isModuleClass || sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))

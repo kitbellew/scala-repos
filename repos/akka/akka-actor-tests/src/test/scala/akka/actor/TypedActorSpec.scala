@@ -136,7 +136,8 @@ object TypedActorSpec {
     }
 
     def futureComposePigdogFrom(foo: Foo): Future[String] = {
-      implicit val timeout = TypedActor(TypedActor.context.system).DefaultReturnTimeout
+      implicit val timeout =
+        TypedActor(TypedActor.context.system).DefaultReturnTimeout
       foo.futurePigdog(500 millis).map(_.toUpperCase)
     }
 

@@ -58,7 +58,8 @@ class ScalaUnusedImportPass(
       progress: ProgressIndicator): Unit = {
     file match {
       case scalaFile: ScalaFile
-          if HighlightingLevelManager.getInstance(file.getProject) shouldInspect file =>
+          if HighlightingLevelManager
+            .getInstance(file.getProject) shouldInspect file =>
         val unusedImports: Array[ImportUsed] =
           ImportTracker getInstance file.getProject getUnusedImport scalaFile
         val annotations = collectAnnotations(
@@ -90,7 +91,8 @@ class ScalaUnusedImportPass(
     if (editor != null && !myHighlights.isEmpty) {
       if (myOptimizeImportsRunnable != null &&
           ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY &&
-          ScalaUnusedImportPass.timeToOptimizeImports(file) && file.isWritable) {
+          ScalaUnusedImportPass
+            .timeToOptimizeImports(file) && file.isWritable) {
         ScalaUnusedImportPass.invokeOnTheFlyImportOptimizer(
           myOptimizeImportsRunnable,
           file)

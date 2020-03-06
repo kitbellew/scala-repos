@@ -296,7 +296,8 @@ class EventServiceActor(
                 val events = authData.events
                 entity(as[Event]) { event =>
                   complete {
-                    if (events.isEmpty || authData.events.contains(event.event)) {
+                    if (events.isEmpty || authData.events
+                          .contains(event.event)) {
                       pluginContext.inputBlockers.values.foreach(
                         _.process(
                           EventInfo(

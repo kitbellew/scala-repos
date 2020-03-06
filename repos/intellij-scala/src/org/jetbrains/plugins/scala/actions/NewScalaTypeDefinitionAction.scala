@@ -127,7 +127,8 @@ class NewScalaTypeDefinitionAction
       val dirs = view.getDirectories
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
-        if (projectFileIndex.isInSourceContent(dir.getVirtualFile) && aPackage != null) {
+        if (projectFileIndex
+              .isInSourceContent(dir.getVirtualFile) && aPackage != null) {
           return true
         }
       }

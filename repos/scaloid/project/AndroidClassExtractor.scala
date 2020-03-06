@@ -106,7 +106,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def hasIntentAsParam(m: Method): Boolean = {
       val params = m.getParameterTypes
       if (params.length > 0)
-        "android.content.Intent".equals(m.getParameterTypes.apply(0).getName) && !superMethods(
+        "android.content.Intent"
+          .equals(m.getParameterTypes.apply(0).getName) && !superMethods(
           methodSignature(m))
       else false
     }

@@ -83,7 +83,8 @@ object StreamTest extends SpecLite {
   }
 
   "foldRight evaluates lazily" in {
-    Foldable[Stream].foldRight(Stream.continually(true), true)(_ || _) must_=== (true)
+    Foldable[Stream]
+      .foldRight(Stream.continually(true), true)(_ || _) must_=== (true)
   }
 
   "zipL" in {

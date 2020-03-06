@@ -71,7 +71,8 @@ object ConvertImplicitBoundsToImplicitParameter {
       function: ScMethodLike,
       paramOwner: ScParameterOwner,
       typeParamOwner: ScTypeParametersOwner) =
-      PsiTreeUtil.getParentOfType(element, classOf[ScParameterOwner], false) match {
+      PsiTreeUtil
+        .getParentOfType(element, classOf[ScParameterOwner], false) match {
         case x: ScFunction => (x, x, x)
         case x: ScClass    => (x.constructor.getOrElse(return Seq.empty), x, x)
         case _             => return Seq.empty

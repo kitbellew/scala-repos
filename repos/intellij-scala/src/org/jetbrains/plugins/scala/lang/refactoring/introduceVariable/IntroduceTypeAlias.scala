@@ -264,7 +264,8 @@ trait IntroduceTypeAlias {
         val currentScope = currentDataObject.currentScope
 
         //need open modal dialog in inplace mode
-        if ((StartMarkAction.canStart(project) != null) && (currentScope != null)) {
+        if ((StartMarkAction
+              .canStart(project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState =
             TemplateManagerImpl.getTemplateState(

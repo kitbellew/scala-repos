@@ -196,7 +196,8 @@ object ScalaBuilder {
 
   private lazy val sbtData = {
     val classLoader = getClass.getClassLoader
-    val pluginRoot = new File(PathManager.getJarPathForClass(getClass)).getParentFile
+    val pluginRoot =
+      new File(PathManager.getJarPathForClass(getClass)).getParentFile
     val javaClassVersion = System.getProperty("java.class.version")
 
     SbtData.from(classLoader, pluginRoot, javaClassVersion)

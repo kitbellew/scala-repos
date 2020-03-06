@@ -201,7 +201,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                                                                      0
                                                                    else STABLE)
         // TODO preserve pre-erasure info?
-        clazz.newMethod(field.getterName, field.pos, newFlags) setInfo MethodType(
+        clazz
+          .newMethod(field.getterName, field.pos, newFlags) setInfo MethodType(
           Nil,
           field.info)
       }

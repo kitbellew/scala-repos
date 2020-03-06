@@ -213,7 +213,8 @@ private[akka] class RemoteWatcher(
 
   def watchNode(watchee: InternalActorRef): Unit = {
     val watcheeAddress = watchee.path.address
-    if (!watcheeByNodes.contains(watcheeAddress) && unreachable(watcheeAddress)) {
+    if (!watcheeByNodes
+          .contains(watcheeAddress) && unreachable(watcheeAddress)) {
       // first watch to that node after a previous unreachable
       unreachable -= watcheeAddress
       failureDetector.remove(watcheeAddress)
@@ -296,7 +297,8 @@ private[akka] class RemoteWatcher(
             self,
             ExpectedFirstHeartbeat(a))
         }
-        context.actorSelection(RootActorPath(a) / self.path.elements) ! Heartbeat
+        context
+          .actorSelection(RootActorPath(a) / self.path.elements) ! Heartbeat
       }
     }
 
