@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence.query.journal.leveldb
 
 import akka.persistence.PersistentActor
@@ -27,9 +27,7 @@ class TestActor(override val persistenceId: String) extends PersistentActor {
       sender() ! s"$toSeqNr-deleted"
 
     case cmd: String ⇒
-      persist(cmd) { evt ⇒
-        sender() ! evt + "-done"
-      }
+      persist(cmd) { evt ⇒ sender() ! evt + "-done" }
   }
 
 }

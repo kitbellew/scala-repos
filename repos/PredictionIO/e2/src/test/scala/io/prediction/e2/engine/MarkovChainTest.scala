@@ -7,8 +7,11 @@ import org.scalatest.{FlatSpec, Matchers}
 
 import scala.language.reflectiveCalls
 
-class MarkovChainTest extends FlatSpec with Matchers with SharedSparkContext
-with MarkovChainFixture {
+class MarkovChainTest
+    extends FlatSpec
+    with Matchers
+    with SharedSparkContext
+    with MarkovChainFixture {
 
   "Markov chain training" should "produce a model" in {
     val matrix =

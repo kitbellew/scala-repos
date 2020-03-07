@@ -6,9 +6,10 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class InMemoryStatsReceiverTest extends FunSuite
-  with Eventually
-  with IntegrationPatience {
+class InMemoryStatsReceiverTest
+    extends FunSuite
+    with Eventually
+    with IntegrationPatience {
 
   test("clear") {
     val inMemoryStatsReceiver = new InMemoryStatsReceiver
@@ -79,7 +80,5 @@ class InMemoryStatsReceiverTest extends FunSuite
     s.add(4)
     assert("Stat(a/b=[1.0,2.0,3.0... (omitted 1 value(s))])" == s.toString)
   }
-
-
 
 }

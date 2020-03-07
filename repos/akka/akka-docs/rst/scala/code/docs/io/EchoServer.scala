@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.io
 
 import java.net.InetSocketAddress
@@ -10,9 +9,17 @@ import scala.concurrent.duration.DurationInt
 
 import com.typesafe.config.ConfigFactory
 
-import akka.actor.{ Actor, ActorDSL, ActorLogging, ActorRef, ActorSystem, Props, SupervisorStrategy }
+import akka.actor.{
+  Actor,
+  ActorDSL,
+  ActorLogging,
+  ActorRef,
+  ActorSystem,
+  Props,
+  SupervisorStrategy
+}
 import akka.actor.ActorDSL.inbox
-import akka.io.{ IO, Tcp }
+import akka.io.{IO, Tcp}
 import akka.util.ByteString
 
 object EchoServer extends App {
@@ -29,8 +36,12 @@ object EchoServer extends App {
 
     // create two EchoManager and stop the application once one dies
     val watcher = inbox()
-    watcher.watch(system.actorOf(Props(classOf[EchoManager], classOf[EchoHandler]), "echo"))
-    watcher.watch(system.actorOf(Props(classOf[EchoManager], classOf[SimpleEchoHandler]), "simple"))
+    watcher.watch(
+      system.actorOf(Props(classOf[EchoManager], classOf[EchoHandler]), "echo"))
+    watcher.watch(
+      system.actorOf(
+        Props(classOf[EchoManager], classOf[SimpleEchoHandler]),
+        "simple"))
     watcher.receive(10.minutes)
   }
 
@@ -79,7 +90,8 @@ object EchoHandler {
 }
 
 class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
-  extends Actor with ActorLogging {
+    extends Actor
+    with ActorLogging {
 
   import Tcp._
   import EchoHandler._
@@ -141,15 +153,17 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
   def closing: Receive = {
     case CommandFailed(_: Write) =>
       connection ! ResumeWriting
-      context.become({
+      context.become(
+        {
 
-        case WritingResumed =>
-          writeAll()
-          context.unbecome()
+          case WritingResumed =>
+            writeAll()
+            context.unbecome()
 
-        case ack: Int => acknowledge(ack)
+          case ack: Int => acknowledge(ack)
 
-      }, discardOld = false)
+        },
+        discardOld = false)
 
     case Ack(ack) =>
       acknowledge(ack)
@@ -225,7 +239,8 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
 
 //#simple-echo-handler
 class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
-  extends Actor with ActorLogging {
+    extends Actor
+    with ActorLogging {
 
   import Tcp._
 
@@ -239,11 +254,13 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
       buffer(data)
       connection ! Write(data, Ack)
 
-      context.become({
-        case Received(data) => buffer(data)
-        case Ack            => acknowledge()
-        case PeerClosed     => closing = true
-      }, discardOld = false)
+      context.become(
+        {
+          case Received(data) => buffer(data)
+          case Ack            => acknowledge()
+          case PeerClosed     => closing = true
+        },
+        discardOld = false)
 
     case PeerClosed => context stop self
   }

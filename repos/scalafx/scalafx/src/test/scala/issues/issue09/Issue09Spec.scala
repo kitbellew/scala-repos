@@ -42,13 +42,14 @@ class Issue09Spec extends FlatSpec {
     val b = DoubleProperty(0)
     val c = DoubleProperty(0)
 
-    val s = (a + b + c) / 2D
+    val s = (a + b + c) / 2d
 
     // Exception was thrown here:
     //   java.lang.ClassCastException: javafx.beans.binding.Bindings$20
     //     cannot be cast to javafx.beans.value.ObservableObjectValue
-    val areaSquared = when(((a + b) > c) && ((b + c) > a) && ((c + a) > b)) choose
-      (s * (s - a) * (s - b) * (s - c)) otherwise 0.0
+    val areaSquared =
+      when(((a + b) > c) && ((b + c) > a) && ((c + a) > b)) choose
+        (s * (s - a) * (s - b) * (s - c)) otherwise 0.0
 
     a() = 3
     b() = 4

@@ -15,7 +15,10 @@ import org.junit.Assert._
 class ReflectArrayTest {
 
   @inline
-  private def testBase(clazz: Class[_], length: Int, expectedClazz: Class[_],
+  private def testBase(
+      clazz: Class[_],
+      length: Int,
+      expectedClazz: Class[_],
       sampleElem: Any): Unit = {
     val array =
       java.lang.reflect.Array.newInstance(clazz, length).asInstanceOf[Array[_]]
@@ -27,13 +30,18 @@ class ReflectArrayTest {
   }
 
   @noinline
-  private def testNewInstanceNoInline(clazz: Class[_], length: Int, expectedClazz: Class[_],
+  private def testNewInstanceNoInline(
+      clazz: Class[_],
+      length: Int,
+      expectedClazz: Class[_],
       sampleElem: Any): Unit = {
     testBase(clazz, length, expectedClazz, sampleElem)
   }
 
   @inline
-  def testNewInstance(clazz: Class[_], expectedClazz: Class[_],
+  def testNewInstance(
+      clazz: Class[_],
+      expectedClazz: Class[_],
       sampleElem: Any): Unit = {
     testNewInstanceNoInline(clazz, length = 2, expectedClazz, sampleElem)
     testBase(clazz, length = 2, expectedClazz, sampleElem)
@@ -53,8 +61,14 @@ class ReflectArrayTest {
     testNewInstance(classOf[Object], classOf[Array[Object]], null)
     testNewInstance(classOf[String], classOf[Array[String]], null)
 
-    testNewInstance(classOf[java.lang.Integer], classOf[Array[java.lang.Integer]], null)
-    testNewInstance(classOf[java.lang.Long], classOf[Array[java.lang.Long]], null)
+    testNewInstance(
+      classOf[java.lang.Integer],
+      classOf[Array[java.lang.Integer]],
+      null)
+    testNewInstance(
+      classOf[java.lang.Long],
+      classOf[Array[java.lang.Long]],
+      null)
 
     testNewInstance(classOf[Array[Object]], classOf[Array[Array[Object]]], null)
     testNewInstance(classOf[Array[Int]], classOf[Array[Array[Int]]], null)

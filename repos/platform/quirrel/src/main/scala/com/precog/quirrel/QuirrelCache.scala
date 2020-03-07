@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -44,11 +44,15 @@ trait QuirrelCache extends AST { parser: Parser =>
   private case class Ignore(r: Regex) extends Rule(r)
 
   private case class Slot(lineNum: Int, colNum: Int, width: Int)
-  private case class Binding(tpe: String, name: String, rawValue: String, pos: Int) {
+  private case class Binding(
+      tpe: String,
+      name: String,
+      rawValue: String,
+      pos: Int) {
     def value: String = tpe match {
       case "p" => canonicalizePath(rawValue)
       case "s" => canonicalizeStr(rawValue)
-      case _ => rawValue
+      case _   => rawValue
     }
   }
 
@@ -88,7 +92,7 @@ trait QuirrelCache extends AST { parser: Parser =>
       val output = new StringBuilder(input.length)
 
       var i = 0
-      while (i < len) { 
+      while (i < len) {
         var j = 0
         var matched = false
         while (!matched && j < rules.length) {
@@ -119,7 +123,9 @@ trait QuirrelCache extends AST { parser: Parser =>
       (output.toString, bindings)
     }
 
-    def fromExpr(original: String, expr: Expr): (CacheKey, Map[String, Slot]) = {
+    def fromExpr(
+        original: String,
+        expr: Expr): (CacheKey, Map[String, Slot]) = {
       val lits: List[Literal] = findHoles(expr).sortBy { lit =>
         (lit.loc.lineNum, lit.loc.colNum)
       }
@@ -142,21 +148,38 @@ trait QuirrelCache extends AST { parser: Parser =>
         val s = original.substring(i)
         lit match {
           case _: BoolLit =>
-            if (s.startsWith("true")) ("b", 4) else if (s.startsWith("false")) ("b", 5) else {
-              sys.error("error recovering boolean literal from %s (%s at %s)" format (s, original, i))
+            if (s.startsWith("true")) ("b", 4)
+            else if (s.startsWith("false")) ("b", 5)
+            else {
+              sys.error(
+                "error recovering boolean literal from %s (%s at %s)" format (s, original, i))
             }
           case _: NumLit =>
-            parser.numLiteralRegex.findPrefixOf(s).map(x => ("n", x.length)).getOrElse {
-              sys.error("error recovering number literal from %s (%s at %s)" format (s, original, i))
-            }
-          case _: StrLit =>
-            parser.pathLiteralRegex.findPrefixOf(s).map(x => ("p", x.length)).orElse {
-              parser.relPathLiteralRegex.findPrefixOf(s).map(x => ("rp", x.length)).orElse {
-                parser.strLiteralRegex.findPrefixOf(s).map(x => ("s", x.length))
+            parser.numLiteralRegex
+              .findPrefixOf(s)
+              .map(x => ("n", x.length))
+              .getOrElse {
+                sys.error(
+                  "error recovering number literal from %s (%s at %s)" format (s, original, i))
               }
-            }.getOrElse {
-              sys.error("error recovering string literal from %s (%s at %s)" format (s, original, i))
-            }
+          case _: StrLit =>
+            parser.pathLiteralRegex
+              .findPrefixOf(s)
+              .map(x => ("p", x.length))
+              .orElse {
+                parser.relPathLiteralRegex
+                  .findPrefixOf(s)
+                  .map(x => ("rp", x.length))
+                  .orElse {
+                    parser.strLiteralRegex
+                      .findPrefixOf(s)
+                      .map(x => ("s", x.length))
+                  }
+              }
+              .getOrElse {
+                sys.error(
+                  "error recovering string literal from %s (%s at %s)" format (s, original, i))
+              }
         }
       }
 
@@ -189,18 +212,18 @@ trait QuirrelCache extends AST { parser: Parser =>
   }
 
   def findHoles(expr: Expr): List[Literal] = expr match {
-    
+
     // These are the kinds of literals we are interested in
     // (those whose values vary).
     case b: BoolLit => b :: Nil
-    case n: NumLit => n :: Nil
-    case s: StrLit => s :: Nil
+    case n: NumLit  => n :: Nil
+    case s: StrLit  => s :: Nil
 
     // Let#children does not return all the children, so we will
     // handle it specially.
     case Let(_, _, _, c1, c2) =>
       findHoles(c1) ++ findHoles(c2)
-    
+
     case node => node.children.flatMap(findHoles)
   }
 
@@ -210,29 +233,43 @@ trait QuirrelCache extends AST { parser: Parser =>
     sorted.map(_._2).zipWithIndex.toMap
   }
 
-  def resolveBindings(expr: Expr, bindings: IndexedSeq[Binding],
+  def resolveBindings(
+      expr: Expr,
+      bindings: IndexedSeq[Binding],
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
-    val sortedBindings = bindings.zipWithIndex.map { case (b, i) =>
-      (b, index(i))
-    }.sortBy(_._2).map(_._1).toList
+    val sortedBindings = bindings.zipWithIndex
+      .map {
+        case (b, i) =>
+          (b, index(i))
+      }
+      .sortBy(_._2)
+      .map(_._1)
+      .toList
 
-    val result = replaceLiteralsS(expr, sortedBindings, locUpdates(bindings, slots))
+    val result =
+      replaceLiteralsS(expr, sortedBindings, locUpdates(bindings, slots))
     result
   }
 
-  def locUpdates(bindings: IndexedSeq[Binding], slots: Map[String, Slot]): LineStream => LineStream = {
+  def locUpdates(
+      bindings: IndexedSeq[Binding],
+      slots: Map[String, Slot]): LineStream => LineStream = {
     val widths: Map[String, Int] = bindings.map { b =>
       (b.name, b.rawValue.length)
     }.toMap
 
-    val deltas: Map[Int, List[(Int, Int)]] = slots.toList.map {
-      case (name, Slot(lineNum, colNum, oldWidth)) =>
-        val width = widths(name)
-        val delta = width - oldWidth
-        lineNum -> (colNum, delta)
-      }.groupBy(_._1).map { case (lineNum, ds) =>
-        (lineNum, ds.map(_._2).sortBy(_._1))
+    val deltas: Map[Int, List[(Int, Int)]] = slots.toList
+      .map {
+        case (name, Slot(lineNum, colNum, oldWidth)) =>
+          val width = widths(name)
+          val delta = width - oldWidth
+          lineNum -> (colNum, delta)
+      }
+      .groupBy(_._1)
+      .map {
+        case (lineNum, ds) =>
+          (lineNum, ds.map(_._2).sortBy(_._1))
       }
 
     { (loc: LineStream) =>
@@ -253,7 +290,10 @@ trait QuirrelCache extends AST { parser: Parser =>
 
   private type BindingS[+A] = StateT[Option, List[Binding], A]
 
-  private def replaceLiteralsS(expr0: Expr, bindings: List[Binding], updateLoc: LineStream => LineStream): Option[Expr] = {
+  private def replaceLiteralsS(
+      expr0: Expr,
+      bindings: List[Binding],
+      updateLoc: LineStream => LineStream): Option[Expr] = {
     implicit val stateM = StateT.stateTMonadState[List[Binding], Option]
     import stateM._
 
@@ -316,9 +356,10 @@ trait QuirrelCache extends AST { parser: Parser =>
 
       case ObjectDef(loc, props0) =>
         for {
-          props <- (props0 map { case (prop, expr) =>
+          props <- (props0 map {
+            case (prop, expr) =>
               repl(expr) map (prop -> _)
-            }: Vector[BindingS[(String, Expr)]]).sequence
+          }: Vector[BindingS[(String, Expr)]]).sequence
         } yield ObjectDef(updateLoc(loc), props)
 
       case ArrayDef(loc, values0) =>
@@ -432,28 +473,28 @@ trait QuirrelCache extends AST { parser: Parser =>
 
     val result = for {
       expr <- repl(expr0)
-      _ <- StateT { s: List[Binding] =>
-          s.isEmpty.option((Nil, ()))
-        }: BindingS[Unit]
+      _ <- StateT { s: List[Binding] => s.isEmpty.option((Nil, ())) }: BindingS[
+        Unit]
     } yield expr
 
     result.eval(bindings)
   }
 
   class ParseCache(maxSize: Long) {
-    private val cache: mutable.Map[CacheKey, CacheValue] = Cache.simple(Cache.MaxSize(maxSize))
+    private val cache: mutable.Map[CacheKey, CacheValue] =
+      Cache.simple(Cache.MaxSize(maxSize))
 
-    def getOrElseUpdate(query: LineStream)(f: LineStream => Set[Expr]): Set[Expr] = {
+    def getOrElseUpdate(query: LineStream)(
+        f: LineStream => Set[Expr]): Set[Expr] = {
       val s = query.toString
       val (key, bindings) = CacheKey.fromString(s)
-      cache.get(key).flatMap { case (expr, slots) =>
-        resolveBindings(expr, bindings, slots) map { root =>
-          bindRoot(root, root)
-          root
-        }
-      } map { expr =>
-        Set(expr)
-      } getOrElse {
+      cache.get(key).flatMap {
+        case (expr, slots) =>
+          resolveBindings(expr, bindings, slots) map { root =>
+            bindRoot(root, root)
+            root
+          }
+      } map { expr => Set(expr) } getOrElse {
         val exprs = f(query)
         if (exprs.size == 1) {
           val value = exprs.head

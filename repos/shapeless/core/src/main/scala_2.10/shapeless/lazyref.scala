@@ -31,7 +31,9 @@ import scala.reflect.macros.Context
  */
 object LazyMacrosRef {
   def inst(c: Context) =
-    new LazyMacros(new macrocompat.RuntimeCompatContext(c.asInstanceOf[scala.reflect.macros.runtime.Context]))
+    new LazyMacros(
+      new macrocompat.RuntimeCompatContext(
+        c.asInstanceOf[scala.reflect.macros.runtime.Context]))
 
   def mkLazyImpl[I: c.WeakTypeTag](c: Context): c.Expr[Lazy[I]] = {
     import c.universe._
@@ -45,18 +47,21 @@ object LazyMacrosRef {
     val lmSym = typeOf[LazyMacrosRef.type].typeSymbol
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
-        if(lm == LazyMacrosRef) forward
+        if (lm == LazyMacrosRef) forward
         else {
           lm.asInstanceOf[
-            { def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]] }
-          ].mkLazyImpl(c)(weakTypeTag[I])
+              {
+                def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]]
+              }
+            ]
+            .mkLazyImpl(c)(weakTypeTag[I])
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
         try {
           forward
         } finally {
-            lmSym.removeAttachment[LazyMacrosRef.type]
+          lmSym.removeAttachment[LazyMacrosRef.type]
         }
     }
   }
@@ -73,18 +78,22 @@ object LazyMacrosRef {
     val lmSym = typeOf[LazyMacrosRef.type].typeSymbol
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
-        if(lm == LazyMacrosRef) forward
+        if (lm == LazyMacrosRef) forward
         else {
           lm.asInstanceOf[
-            { def mkStrictImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Strict[I]] }
-          ].mkStrictImpl(c)(weakTypeTag[I])
+              {
+                def mkStrictImpl(c: Context)(
+                    i: c.WeakTypeTag[I]): c.Expr[Strict[I]]
+              }
+            ]
+            .mkStrictImpl(c)(weakTypeTag[I])
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
         try {
           forward
         } finally {
-            lmSym.removeAttachment[LazyMacrosRef.type]
+          lmSym.removeAttachment[LazyMacrosRef.type]
         }
     }
   }

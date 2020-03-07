@@ -3,10 +3,11 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[LastIndexToLastInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[LastIndexToLastInspection]
 
   override def hint: String = InspectionBundle.message("replace.with.last")
 
@@ -23,7 +24,8 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
       """
         |val seq = Seq(1, 2)
         |seq.last
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testImplicitApply(): Unit = {
@@ -39,7 +41,8 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
       """
         |val seq = Seq(1, 2)
         |seq.last
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testLength(): Unit = {
@@ -55,20 +58,19 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
       """
         |val seq = Seq(1, 2)
         |seq.last
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testNotSeq(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |val set = Set(1, 2)
         |set(set.size - 1)
       """.stripMargin)
   }
 
   def testDiffSeqs(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |val seq = Seq(1, 2)
         |val seq2 = Seq(1, 2)
         |seq(seq2.size - 1)
@@ -76,8 +78,7 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testNotLast(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |val seq = Seq(1, 2)
         |seq(seq.size - 2)
       """.stripMargin)
@@ -86,14 +87,20 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
   def testIndexedSeq(): Unit = {
     checkTextHasNoErrors(
       """val seq = scala.collection.IndexedSeq(1, 2)
-        |seq(seq.size - 1)""".stripMargin, hint, inspectionClass)
+        |seq(seq.size - 1)""".stripMargin,
+      hint,
+      inspectionClass)
     checkTextHasNoErrors(
       """import scala.collection.immutable.Vector
         |val v = Vector(1, 2)
-        |v(v.length - 1)""".stripMargin, hint, inspectionClass)
+        |v(v.length - 1)""".stripMargin,
+      hint,
+      inspectionClass)
     checkTextHasNoErrors(
       """val buf = scala.collection.mutable.ArrayBuffer(1, 2)
-        |buf(buf.size - 1)""".stripMargin, hint, inspectionClass)
+        |buf(buf.size - 1)""".stripMargin,
+      hint,
+      inspectionClass)
   }
 
 }

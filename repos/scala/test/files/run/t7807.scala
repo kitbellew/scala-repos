@@ -2,18 +2,15 @@ object Test {
   def main(args: Array[String]) {
     try {
       println("...")
-    }
-    finally {
+    } finally {
       try {
         println("...")
-      }
-      finally {
+      } finally {
         try {
           println("...")
-        }
-        catch {
-          case ct: scala.util.control.ControlThrowable => throw(ct)
-          case t: Throwable => t.printStackTrace()
+        } catch {
+          case ct: scala.util.control.ControlThrowable => throw (ct)
+          case t: Throwable                            => t.printStackTrace()
         }
       }
     }

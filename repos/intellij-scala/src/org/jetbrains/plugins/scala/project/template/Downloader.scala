@@ -2,17 +2,23 @@ package org.jetbrains.plugins.scala.project.template
 
 import java.io.{File, FileNotFoundException}
 
-import com.intellij.execution.process.{OSProcessHandler, ProcessAdapter, ProcessEvent}
+import com.intellij.execution.process.{
+  OSProcessHandler,
+  ProcessAdapter,
+  ProcessEvent
+}
 import com.intellij.openapi.util.Key
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 object Downloader extends Downloader {
-  def downloadScala(version: String, listener: String => Unit) = download(version, listener)
+  def downloadScala(version: String, listener: String => Unit) =
+    download(version, listener)
 
-  override protected def sbtCommandsFor(version: String) = Seq(s"""set scalaVersion := "$version"""") ++
-    super.sbtCommandsFor(version)
+  override protected def sbtCommandsFor(version: String) =
+    Seq(s"""set scalaVersion := "$version"""") ++
+      super.sbtCommandsFor(version)
 }
 
 trait Downloader {
@@ -24,10 +30,13 @@ trait Downloader {
     usingTempFile("sbt-commands") { file =>
       writeLinesTo(file, sbtCommandsFor(version): _*)
       usingTempDirectory("sbt-project") { directory =>
-        val process = Runtime.getRuntime.exec(osCommandsFor(file).toArray, null, directory)
+        val process =
+          Runtime.getRuntime.exec(osCommandsFor(file).toArray, null, directory)
 
         val listenerAdapter = new ProcessAdapter {
-          override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
+          override def onTextAvailable(
+              event: ProcessEvent,
+              outputType: Key[_]) {
             val text = event.getText
             listener(text)
             buffer.append(text)
@@ -47,10 +56,12 @@ trait Downloader {
   }
 
   private def osCommandsFor(file: File) = {
-    val launcher = jarWith[this.type].getParentFile.getParentFile / "launcher" / "sbt-launch.jar"
+    val launcher = jarWith[
+      this.type].getParentFile.getParentFile / "launcher" / "sbt-launch.jar"
 
     if (launcher.exists()) {
-      Seq("java",
+      Seq(
+        "java",
         "-Djline.terminal=jline.UnsupportedTerminal",
         "-Dsbt.log.noformat=true",
         "-jar",

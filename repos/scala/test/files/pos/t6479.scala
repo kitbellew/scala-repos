@@ -5,7 +5,7 @@ object TailrecAfterTryCatch {
     1 match {
       case 2 => {
         try {
-        //  return
+          //  return
         } catch {
           case e: ClassNotFoundException =>
         }
@@ -18,12 +18,12 @@ object TailrecAfterTryCatch {
   final def good2() {
     //1 match {
     //  case 2 => {
-        try {
-          return
-        } catch {
-          case e: ClassNotFoundException =>
-        }
-        good2()
+    try {
+      return
+    } catch {
+      case e: ClassNotFoundException =>
+    }
+    good2()
     //  }
     //}
   }

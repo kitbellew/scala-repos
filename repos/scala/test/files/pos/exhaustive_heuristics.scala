@@ -2,7 +2,7 @@
 object Test {
   // List() => Nil
   List(1) match {
-    case List() =>
+    case List()  =>
     case x :: xs =>
   }
 
@@ -19,8 +19,8 @@ object Test {
   // the full rewrite List(a, b) to a :: b :: Nil, for example is planned (but not sure it's a good idea)
   List(true, false) match {
     case List(_, _, _*) =>
-    case List(node, _*)  =>
-    case Nil =>
+    case List(node, _*) =>
+    case Nil            =>
   }
 
 }

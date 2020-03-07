@@ -21,4 +21,3 @@ class Receiver extends Actor {
     case _        =>
   }
 }
-

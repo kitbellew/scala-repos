@@ -35,16 +35,16 @@ final class Env(
     blocks = blocks,
     bus = system.lilaBus)
 
-  lazy val security = new MessageSecurity(
-    follows = follows,
-    blocks = blocks,
-    getPref = getPref)
+  lazy val security =
+    new MessageSecurity(follows = follows, blocks = blocks, getPref = getPref)
 
-  system.actorOf(Props(new Actor {
-    def receive = {
-      case thread: LichessThread => api.lichessThread(thread)
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      def receive = {
+        case thread: LichessThread => api.lichessThread(thread)
+      }
+    }),
+    name = ActorName)
 }
 
 object Env {

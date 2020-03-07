@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala
 package tools.ant
 package sabbus
@@ -55,14 +54,24 @@ class Use extends ScalaMatchingTask {
       ) map (new File(sourceDir.get, _))
     if (includedFiles.length > 0)
       try {
-        log("Compiling " + includedFiles.length + " file" + (if (includedFiles.length > 1) "s" else "") + " to " + compiler.settings.d.getAbsolutePath)
+        log(
+          "Compiling " + includedFiles.length + " file" + (if (includedFiles.length > 1)
+                                                             "s"
+                                                           else
+                                                             "") + " to " + compiler.settings.d.getAbsolutePath)
         val (errors, warnings) = compiler.compile(includedFiles)
         if (errors > 0)
-          sys.error("Compilation failed with " + errors + " error" + (if (errors > 1) "s" else "") + ".")
+          sys.error(
+            "Compilation failed with " + errors + " error" + (if (errors > 1)
+                                                                "s"
+                                                              else "") + ".")
         else if (warnings > 0)
-          log("Compilation succeeded with " + warnings + " warning" + (if (warnings > 1) "s" else "") + ".")
-      }
-      catch {
+          log(
+            "Compilation succeeded with " + warnings + " warning" + (if (warnings > 1)
+                                                                       "s"
+                                                                     else
+                                                                       "") + ".")
+      } catch {
         case CompilationFailure(msg, ex) =>
           ex.printStackTrace
           val errorMsg =

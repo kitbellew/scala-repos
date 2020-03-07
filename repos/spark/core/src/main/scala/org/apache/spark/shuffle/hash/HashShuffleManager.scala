@@ -22,10 +22,12 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.shuffle._
 
 /**
- * A ShuffleManager using hashing, that creates one output file per reduce partition on each
- * mapper (possibly reusing these across waves of tasks).
- */
-private[spark] class HashShuffleManager(conf: SparkConf) extends ShuffleManager with Logging {
+  * A ShuffleManager using hashing, that creates one output file per reduce partition on each
+  * mapper (possibly reusing these across waves of tasks).
+  */
+private[spark] class HashShuffleManager(conf: SparkConf)
+    extends ShuffleManager
+    with Logging {
 
   if (!conf.getBoolean("spark.shuffle.spill", true)) {
     logWarning(
@@ -46,23 +48,31 @@ private[spark] class HashShuffleManager(conf: SparkConf) extends ShuffleManager 
   }
 
   /**
-   * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive).
-   * Called on executors by reduce tasks.
-   */
+    * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive).
+    * Called on executors by reduce tasks.
+    */
   override def getReader[K, C](
       handle: ShuffleHandle,
       startPartition: Int,
       endPartition: Int,
       context: TaskContext): ShuffleReader[K, C] = {
     new BlockStoreShuffleReader(
-      handle.asInstanceOf[BaseShuffleHandle[K, _, C]], startPartition, endPartition, context)
+      handle.asInstanceOf[BaseShuffleHandle[K, _, C]],
+      startPartition,
+      endPartition,
+      context)
   }
 
   /** Get a writer for a given partition. Called on executors by map tasks. */
-  override def getWriter[K, V](handle: ShuffleHandle, mapId: Int, context: TaskContext)
-      : ShuffleWriter[K, V] = {
+  override def getWriter[K, V](
+      handle: ShuffleHandle,
+      mapId: Int,
+      context: TaskContext): ShuffleWriter[K, V] = {
     new HashShuffleWriter(
-      shuffleBlockResolver, handle.asInstanceOf[BaseShuffleHandle[K, V, _]], mapId, context)
+      shuffleBlockResolver,
+      handle.asInstanceOf[BaseShuffleHandle[K, V, _]],
+      mapId,
+      context)
   }
 
   /** Remove a shuffle's metadata from the ShuffleManager. */

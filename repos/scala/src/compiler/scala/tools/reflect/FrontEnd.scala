@@ -8,17 +8,17 @@ trait FrontEnd {
   class Severity(val id: Int) extends severity.Value {
     var count: Int = 0
     override def toString() = this match {
-      case INFO => "INFO"
+      case INFO    => "INFO"
       case WARNING => "WARNING"
-      case ERROR => "ERROR"
-      case _ => "<unknown>"
+      case ERROR   => "ERROR"
+      case _       => "<unknown>"
     }
   }
-  val INFO    = new Severity(0)
+  val INFO = new Severity(0)
   val WARNING = new Severity(1)
-  val ERROR   = new Severity(2)
+  val ERROR = new Severity(2)
 
-  def hasErrors   = ERROR.count > 0
+  def hasErrors = ERROR.count > 0
   def hasWarnings = WARNING.count > 0
 
   case class Info(pos: Position, msg: String, severity: Severity)

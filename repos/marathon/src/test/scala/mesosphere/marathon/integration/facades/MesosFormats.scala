@@ -1,6 +1,6 @@
 package mesosphere.marathon.integration.facades
 
-import MesosFacade.{ ITResourcePortValue, ITResourceScalarValue, ITResources }
+import MesosFacade.{ITResourcePortValue, ITResourceScalarValue, ITResources}
 
 object MesosFormats {
   import MesosFacade._
@@ -8,15 +8,17 @@ object MesosFormats {
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
 
-  implicit lazy val ITResourceScalarValueFormat: Format[ITResourceScalarValue] = Format(
-    Reads.of[Double].map(ITResourceScalarValue(_)),
-    Writes(scalarValue => JsNumber(scalarValue.value))
-  )
+  implicit lazy val ITResourceScalarValueFormat: Format[ITResourceScalarValue] =
+    Format(
+      Reads.of[Double].map(ITResourceScalarValue(_)),
+      Writes(scalarValue => JsNumber(scalarValue.value))
+    )
 
-  implicit lazy val ITResourcePortValueFormat: Format[ITResourcePortValue] = Format(
-    Reads.of[String].map(ITResourcePortValue(_)),
-    Writes(portValue => JsString(portValue.portString))
-  )
+  implicit lazy val ITResourcePortValueFormat: Format[ITResourcePortValue] =
+    Format(
+      Reads.of[String].map(ITResourcePortValue(_)),
+      Writes(portValue => JsString(portValue.portString))
+    )
 
   implicit lazy val ITResourceValueFormat: Format[ITResourceValue] = Format(
     Reads[ITResourceValue] {
@@ -37,17 +39,26 @@ object MesosFormats {
 
   implicit lazy val ITAgentFormat: Format[ITAgent] = (
     (__ \ "id").format[String] ~
-    (__ \ "resources").formatNullable[ITResources].withDefault(ITResources.empty) ~
-    (__ \ "used_resources").formatNullable[ITResources].withDefault(ITResources.empty) ~
-    (__ \ "offered_resources").formatNullable[ITResources].withDefault(ITResources.empty) ~
-    (__ \ "reserved_resources").formatNullable[Map[String, ITResources]].withDefault(Map.empty) ~
-    (__ \ "unreserved_resources").formatNullable[ITResources].withDefault(ITResources.empty)
+      (__ \ "resources")
+        .formatNullable[ITResources]
+        .withDefault(ITResources.empty) ~
+      (__ \ "used_resources")
+        .formatNullable[ITResources]
+        .withDefault(ITResources.empty) ~
+      (__ \ "offered_resources")
+        .formatNullable[ITResources]
+        .withDefault(ITResources.empty) ~
+      (__ \ "reserved_resources")
+        .formatNullable[Map[String, ITResources]]
+        .withDefault(Map.empty) ~
+      (__ \ "unreserved_resources")
+        .formatNullable[ITResources]
+        .withDefault(ITResources.empty)
   )(ITAgent.apply, unlift(ITAgent.unapply))
 
   implicit lazy val ITStatusFormat: Format[ITMesosState] = (
     (__ \ "version").format[String] ~
-    (__ \ "git_tag").format[String] ~
-    (__ \ "slaves").format[Iterable[ITAgent]]
+      (__ \ "git_tag").format[String] ~
+      (__ \ "slaves").format[Iterable[ITAgent]]
   )(ITMesosState.apply, unlift(ITMesosState.unapply))
 }
-

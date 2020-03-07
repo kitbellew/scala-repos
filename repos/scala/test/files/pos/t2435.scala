@@ -2,11 +2,14 @@ object Bug {
   abstract class FChain {
     type T
 
-    def chain(constant:String) =
-      new FConstant[this.type](constant, this) //removing [this.type], everything compiles
+    def chain(constant: String) =
+      new FConstant[this.type](
+        constant,
+        this
+      ) //removing [this.type], everything compiles
   }
 
-  case class FConstant[E <: FChain](constant:String, tail:E) extends FChain {
+  case class FConstant[E <: FChain](constant: String, tail: E) extends FChain {
     type T = tail.T
   }
 

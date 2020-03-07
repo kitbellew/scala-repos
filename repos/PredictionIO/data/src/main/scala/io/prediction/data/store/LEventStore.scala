@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.store
 
 import io.prediction.data.storage.Storage
@@ -56,38 +55,41 @@ object LEventStore {
     * @return Iterator[Event]
     */
   def findByEntity(
-    appName: String,
-    entityType: String,
-    entityId: String,
-    channelName: Option[String] = None,
-    eventNames: Option[Seq[String]] = None,
-    targetEntityType: Option[Option[String]] = None,
-    targetEntityId: Option[Option[String]] = None,
-    startTime: Option[DateTime] = None,
-    untilTime: Option[DateTime] = None,
-    limit: Option[Int] = None,
-    latest: Boolean = true,
-    timeout: Duration = defaultTimeout): Iterator[Event] = {
+      appName: String,
+      entityType: String,
+      entityId: String,
+      channelName: Option[String] = None,
+      eventNames: Option[Seq[String]] = None,
+      targetEntityType: Option[Option[String]] = None,
+      targetEntityId: Option[Option[String]] = None,
+      startTime: Option[DateTime] = None,
+      untilTime: Option[DateTime] = None,
+      limit: Option[Int] = None,
+      latest: Boolean = true,
+      timeout: Duration = defaultTimeout): Iterator[Event] = {
 
     val (appId, channelId) = Common.appNameToId(appName, channelName)
 
-    Await.result(eventsDb.futureFind(
-      appId = appId,
-      channelId = channelId,
-      startTime = startTime,
-      untilTime = untilTime,
-      entityType = Some(entityType),
-      entityId = Some(entityId),
-      eventNames = eventNames,
-      targetEntityType = targetEntityType,
-      targetEntityId = targetEntityId,
-      limit = limit,
-      reversed = Some(latest)),
-      timeout)
+    Await.result(
+      eventsDb.futureFind(
+        appId = appId,
+        channelId = channelId,
+        startTime = startTime,
+        untilTime = untilTime,
+        entityType = Some(entityType),
+        entityId = Some(entityId),
+        eventNames = eventNames,
+        targetEntityType = targetEntityType,
+        targetEntityId = targetEntityId,
+        limit = limit,
+        reversed = Some(latest)
+      ),
+      timeout
+    )
   }
 
   /** Reads events generically. If entityType or entityId is not specified, it
-    * results in table scan. 
+    * results in table scan.
     *
     * @param appName return events of this app
     * @param entityType return events of this entityType
@@ -112,31 +114,35 @@ object LEventStore {
     * @return Iterator[Event]
     */
   def find(
-    appName: String,
-    entityType: Option[String] = None,
-    entityId: Option[String] = None,
-    channelName: Option[String] = None,
-    eventNames: Option[Seq[String]] = None,
-    targetEntityType: Option[Option[String]] = None,
-    targetEntityId: Option[Option[String]] = None,
-    startTime: Option[DateTime] = None,
-    untilTime: Option[DateTime] = None,
-    limit: Option[Int] = None,
-    timeout: Duration = defaultTimeout): Iterator[Event] = {
+      appName: String,
+      entityType: Option[String] = None,
+      entityId: Option[String] = None,
+      channelName: Option[String] = None,
+      eventNames: Option[Seq[String]] = None,
+      targetEntityType: Option[Option[String]] = None,
+      targetEntityId: Option[Option[String]] = None,
+      startTime: Option[DateTime] = None,
+      untilTime: Option[DateTime] = None,
+      limit: Option[Int] = None,
+      timeout: Duration = defaultTimeout): Iterator[Event] = {
 
     val (appId, channelId) = Common.appNameToId(appName, channelName)
 
-    Await.result(eventsDb.futureFind(
-      appId = appId,
-      channelId = channelId,
-      startTime = startTime,
-      untilTime = untilTime,
-      entityType = entityType,
-      entityId = entityId,
-      eventNames = eventNames,
-      targetEntityType = targetEntityType,
-      targetEntityId = targetEntityId,
-      limit = limit), timeout)
+    Await.result(
+      eventsDb.futureFind(
+        appId = appId,
+        channelId = channelId,
+        startTime = startTime,
+        untilTime = untilTime,
+        entityType = entityType,
+        entityId = entityId,
+        eventNames = eventNames,
+        targetEntityType = targetEntityType,
+        targetEntityId = targetEntityId,
+        limit = limit
+      ),
+      timeout
+    )
   }
 
 }

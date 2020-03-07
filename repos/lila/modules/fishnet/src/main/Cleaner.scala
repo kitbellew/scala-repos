@@ -20,7 +20,8 @@ private final class Cleaner(
   private def analysisTimeout(plies: Int) = plies * 6.seconds + 3.seconds
   private def analysisTimeoutBase = analysisTimeout(20)
 
-  private def durationAgo(d: FiniteDuration) = DateTime.now.minusSeconds(d.toSeconds.toInt)
+  private def durationAgo(d: FiniteDuration) =
+    DateTime.now.minusSeconds(d.toSeconds.toInt)
 
   private def cleanMoves: Unit = {
     val since = durationAgo(moveTimeout)
@@ -32,25 +33,36 @@ private final class Cleaner(
     scheduleMoves
   }
 
-  private def cleanAnalysis: Funit = analysisColl.find(BSONDocument(
-    "acquired.date" -> BSONDocument("$lt" -> durationAgo(analysisTimeoutBase))
-  )).sort(BSONDocument("acquired.date" -> 1)).cursor[Work.Analysis]().collect[List](100).flatMap {
-    _.filter { ana =>
-      ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
-    }.map { ana =>
-      repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
-        clientTimeout(ana)
-        logger.warn(s"Timeout analysis ${ana.game.id}")
-      }
-    }.sequenceFu.void
-  } andThenAnyway scheduleAnalysis
+  private def cleanAnalysis: Funit =
+    analysisColl
+      .find(
+        BSONDocument(
+          "acquired.date" -> BSONDocument(
+            "$lt" -> durationAgo(analysisTimeoutBase))
+        ))
+      .sort(BSONDocument("acquired.date" -> 1))
+      .cursor[Work.Analysis]()
+      .collect[List](100)
+      .flatMap {
+        _.filter { ana =>
+          ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
+        }.map { ana =>
+            repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
+              clientTimeout(ana)
+              logger.warn(s"Timeout analysis ${ana.game.id}")
+            }
+          }
+          .sequenceFu
+          .void
+      } andThenAnyway scheduleAnalysis
 
-  private def clientTimeout(work: Work) = work.acquiredByKey ?? repo.getClient foreach {
-    _ foreach { client =>
-      monitor.timeout(work, client)
-      logger.warn(s"Timeout client ${client.fullId}")
+  private def clientTimeout(work: Work) =
+    work.acquiredByKey ?? repo.getClient foreach {
+      _ foreach { client =>
+        monitor.timeout(work, client)
+        logger.warn(s"Timeout client ${client.fullId}")
+      }
     }
-  }
 
   private def scheduleMoves = scheduler.once(1 second)(cleanMoves)
   private def scheduleAnalysis = scheduler.once(5 second)(cleanAnalysis)

@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.camel.internal.component
 
 import language.postfixOps
@@ -39,4 +38,3 @@ class DurationConverterSpec extends WordSpec with Matchers {
   }
 
 }
-

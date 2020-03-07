@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class MapFlattenTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[MapFlattenInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[MapFlattenInspection]
 
-  override def hint: String = InspectionBundle.message("replace.map.flatten.with.flatMap")
+  override def hint: String =
+    InspectionBundle.message("replace.map.flatten.with.flatMap")
 
   def test1(): Unit = {
     doTest(

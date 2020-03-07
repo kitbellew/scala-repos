@@ -9,7 +9,10 @@ import shapeless.testutil.assertTypedEquals
 // Intentionally defined as a top-level class - (compile time) reflection API not behaving
 // the same way compared to definitions in a singleton, like CC below.
 // See https://github.com/milessabin/shapeless/issues/474
-case class DefaultCC(i: Int, s: String = "b", flagOpt: Option[Boolean] = Some(true))
+case class DefaultCC(
+    i: Int,
+    s: String = "b",
+    flagOpt: Option[Boolean] = Some(true))
 
 object DefaultTestDefinitions {
 
@@ -21,7 +24,10 @@ object DefaultTestDefinitions {
   trait Dummy
 
   trait Definitions {
-    case class CC(i: Int, s: String = "b", flagOpt: Option[Boolean] = Some(true))
+    case class CC(
+        i: Int,
+        s: String = "b",
+        flagOpt: Option[Boolean] = Some(true))
   }
 
   val definitions = new Definitions {}
@@ -48,7 +54,8 @@ class DefaultTests {
   @Test
   def simple {
     val default = Default[CC].apply()
-    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[
+      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -58,7 +65,8 @@ class DefaultTests {
   def topLevel {
     // See https://github.com/milessabin/shapeless/issues/474
     val default = Default[DefaultCC].apply()
-    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[
+      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -67,7 +75,8 @@ class DefaultTests {
   @Test
   def simpleFromPath {
     val default = Default[definitions.CC].apply()
-    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[
+      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -75,13 +84,23 @@ class DefaultTests {
 
   @Test
   def invalid {
-    illTyped(" Default[Base] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default[Base] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default[Dummy] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default[Dummy] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default[Any] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default[AnyRef] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default[Array[Int]] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default[Any] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default[AnyRef] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default[Array[Int]] ",
+      "could not find implicit value for parameter default: .*")
   }
 
   @Test
@@ -104,13 +123,23 @@ class DefaultTests {
 
   @Test
   def invalidAsRecord {
-    illTyped(" Default.AsRecord[Base] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsRecord[Base] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default.AsRecord[Dummy] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsRecord[Dummy] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default.AsRecord[Any] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default.AsRecord[AnyRef] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default.AsRecord[Array[Int]] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsRecord[Any] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsRecord[AnyRef] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsRecord[Array[Int]] ",
+      "could not find implicit value for parameter default: .*")
   }
 
   @Test
@@ -121,7 +150,8 @@ class DefaultTests {
     )
 
     val default = Default.AsOptions[CC].apply()
-    assertTypedEquals[Option[Int] :: Option[String] :: Option[Option[Boolean]] :: HNil](
+    assertTypedEquals[
+      Option[Int] :: Option[String] :: Option[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -135,7 +165,8 @@ class DefaultTests {
     )
 
     val default = Default.AsOptions[definitions.CC].apply()
-    assertTypedEquals[Option[Int] :: Option[String] :: Option[Option[Boolean]] :: HNil](
+    assertTypedEquals[
+      Option[Int] :: Option[String] :: Option[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -143,13 +174,23 @@ class DefaultTests {
 
   @Test
   def invalidAsOptions {
-    illTyped(" Default.AsOptions[Base] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsOptions[Base] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default.AsOptions[Dummy] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsOptions[Dummy] ",
+      "could not find implicit value for parameter default: .*")
 
-    illTyped(" Default.AsOptions[Any] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default.AsOptions[AnyRef] ", "could not find implicit value for parameter default: .*")
-    illTyped(" Default.AsOptions[Array[Int]] ", "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsOptions[Any] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsOptions[AnyRef] ",
+      "could not find implicit value for parameter default: .*")
+    illTyped(
+      " Default.AsOptions[Array[Int]] ",
+      "could not find implicit value for parameter default: .*")
   }
 
   @Test

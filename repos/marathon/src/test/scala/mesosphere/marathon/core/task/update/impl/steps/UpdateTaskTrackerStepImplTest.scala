@@ -2,18 +2,23 @@ package mesosphere.marathon.core.task.update.impl.steps
 
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.core.task.tracker.TaskUpdater
-import mesosphere.marathon.state.{ PathId, Timestamp }
+import mesosphere.marathon.state.{PathId, Timestamp}
 import mesosphere.marathon.test.Mockito
-import mesosphere.marathon.{ MarathonSchedulerDriverHolder, MarathonTestHelper }
-import org.apache.mesos.Protos.{ SlaveID, TaskState, TaskStatus }
+import mesosphere.marathon.{MarathonSchedulerDriverHolder, MarathonTestHelper}
+import org.apache.mesos.Protos.{SlaveID, TaskState, TaskStatus}
 import org.apache.mesos.SchedulerDriver
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ FunSuite, GivenWhenThen, Matchers }
+import org.scalatest.{FunSuite, GivenWhenThen, Matchers}
 
 import scala.concurrent.Future
 import MarathonTestHelper.Implicits._
 
-class UpdateTaskTrackerStepImplTest extends FunSuite with Matchers with ScalaFutures with Mockito with GivenWhenThen {
+class UpdateTaskTrackerStepImplTest
+    extends FunSuite
+    with Matchers
+    with ScalaFutures
+    with Mockito
+    with GivenWhenThen {
   test("name") {
     new Fixture().step.name should equal("updateTaskTracker")
   }
@@ -23,15 +28,20 @@ class UpdateTaskTrackerStepImplTest extends FunSuite with Matchers with ScalaFut
 
     Given("a running task and a working taskTracker")
     val existingTask = runningMarathonTask
-    val status = runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
-    f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns Future.successful(())
+    val status =
+      runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
+    f.taskUpdater
+      .statusUpdate(appId, status)
+      .asInstanceOf[Future[Unit]] returns Future.successful(())
 
     When("processUpdate is called")
-    f.step.processUpdate(
-      updateTimestamp,
-      existingTask,
-      status
-    ).futureValue
+    f.step
+      .processUpdate(
+        updateTimestamp,
+        existingTask,
+        status
+      )
+      .futureValue
 
     Then("taskTracker.statusUpdate is called")
     verify(f.taskUpdater).statusUpdate(appId, status)
@@ -45,16 +55,20 @@ class UpdateTaskTrackerStepImplTest extends FunSuite with Matchers with ScalaFut
 
     Given("a running task and a broken taskTracker")
     val existingTask = stagedMarathonTask
-    val status = runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
+    val status =
+      runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
     f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns
       Future.failed(new RuntimeException("I'm broken"))
 
     When("processUpdate is called")
-    val eventualFailure = f.step.processUpdate(
-      updateTimestamp,
-      existingTask,
-      status
-    ).failed.futureValue
+    val eventualFailure = f.step
+      .processUpdate(
+        updateTimestamp,
+        existingTask,
+        status
+      )
+      .failed
+      .futureValue
 
     Then("taskTracker.statusUpdate is called")
     verify(f.taskUpdater).statusUpdate(appId, status)

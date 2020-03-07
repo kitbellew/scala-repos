@@ -23,10 +23,13 @@ object Test {
     val loader = getClass.getClassLoader.asInstanceOf[URLClassLoader]
     val loaderCClass = classOf[C]
     def deserializedInThrowawayClassloader = {
-      val throwawayLoader: java.net.URLClassLoader = new java.net.URLClassLoader(loader.getURLs, ClassLoader.getSystemClassLoader) {
-        val maxMemory = Runtime.getRuntime.maxMemory()
-        val junk = new Array[Byte]((maxMemory / 2).toInt)
-      }
+      val throwawayLoader: java.net.URLClassLoader =
+        new java.net.URLClassLoader(
+          loader.getURLs,
+          ClassLoader.getSystemClassLoader) {
+          val maxMemory = Runtime.getRuntime.maxMemory()
+          val junk = new Array[Byte]((maxMemory / 2).toInt)
+        }
       val clazz = throwawayLoader.loadClass("C")
       assert(clazz != loaderCClass)
       clazz.newInstance()

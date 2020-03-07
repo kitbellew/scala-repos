@@ -2,7 +2,7 @@ package mesosphere.marathon.core.task.bus
 
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.core.task.bus.TaskStatusObservables.TaskStatusUpdate
-import mesosphere.marathon.state.{ PathId, Timestamp }
+import mesosphere.marathon.state.{PathId, Timestamp}
 import org.apache.mesos.Protos.TaskID
 import org.joda.time.DateTime
 
@@ -11,21 +11,24 @@ class TaskStatusUpdateTestHelper(val wrapped: TaskStatusUpdate) {
     withTaskId(TaskID.newBuilder().setValue(taskId).build())
   }
 
-  def withTaskId(taskId: TaskID): TaskStatusUpdateTestHelper = TaskStatusUpdateTestHelper {
-    wrapped.copy(taskId = Task.Id(taskId))
-  }
+  def withTaskId(taskId: TaskID): TaskStatusUpdateTestHelper =
+    TaskStatusUpdateTestHelper {
+      wrapped.copy(taskId = Task.Id(taskId))
+    }
 
-  def withTaskId(taskId: Task.Id): TaskStatusUpdateTestHelper = TaskStatusUpdateTestHelper {
-    wrapped.copy(taskId = taskId)
-  }
+  def withTaskId(taskId: Task.Id): TaskStatusUpdateTestHelper =
+    TaskStatusUpdateTestHelper {
+      wrapped.copy(taskId = taskId)
+    }
 
   def withAppId(appId: String): TaskStatusUpdateTestHelper = {
     withTaskId(TaskStatusUpdateTestHelper.newTaskID(appId))
   }
 
-  def withStatus(status: MarathonTaskStatus): TaskStatusUpdateTestHelper = TaskStatusUpdateTestHelper {
-    wrapped.copy(status = status)
-  }
+  def withStatus(status: MarathonTaskStatus): TaskStatusUpdateTestHelper =
+    TaskStatusUpdateTestHelper {
+      wrapped.copy(status = status)
+    }
 }
 
 object TaskStatusUpdateTestHelper {

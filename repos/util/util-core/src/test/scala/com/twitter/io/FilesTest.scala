@@ -1,6 +1,5 @@
 package com.twitter.io
 
-
 import java.io.File
 
 import org.junit.runner.RunWith

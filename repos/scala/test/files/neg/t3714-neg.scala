@@ -3,7 +3,7 @@ trait Break {
   protected val break: Int;
 }
 
-class BreakImpl(protected val break: Int) extends Break { }
+class BreakImpl(protected val break: Int) extends Break {}
 object BreakImpl {
   def apply(x: Int): Break = new BreakImpl(x)
   def unapply(x: Any) = x match {
@@ -38,4 +38,3 @@ object Test {
     assert(f4(break) == 22)
   }
 }
-

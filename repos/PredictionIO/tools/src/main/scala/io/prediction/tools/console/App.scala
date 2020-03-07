@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.console
 
 import io.prediction.data.storage
@@ -20,13 +19,13 @@ import io.prediction.data.storage
 import grizzled.slf4j.Logging
 
 case class AppArgs(
-  id: Option[Int] = None,
-  name: String = "",
-  channel: String = "",
-  dataDeleteChannel: Option[String] = None,
-  all: Boolean = false,
-  force: Boolean = false,
-  description: Option[String] = None)
+    id: Option[Int] = None,
+    name: String = "",
+    channel: String = "",
+    dataDeleteChannel: Option[String] = None,
+    all: Boolean = false,
+    force: Boolean = false,
+    description: Option[String] = None)
 
 object App extends Logging {
   def create(ca: ConsoleArgs): Int = {
@@ -41,23 +40,25 @@ object App extends Logging {
         apps.get(id) map { app =>
           error(
             s"App ID ${id} already exists and maps to the app '${app.name}'. " +
-            "Aborting.")
+              "Aborting.")
           return 1
         }
       }
-      val appid = apps.insert(storage.App(
-        id = ca.app.id.getOrElse(0),
-        name = ca.app.name,
-        description = ca.app.description))
+      val appid = apps.insert(
+        storage.App(
+          id = ca.app.id.getOrElse(0),
+          name = ca.app.name,
+          description = ca.app.description))
       appid map { id =>
         val dbInit = events.init(id)
         val r = if (dbInit) {
           info(s"Initialized Event Store for this app ID: ${id}.")
           val accessKeys = storage.Storage.getMetaDataAccessKeys
-          val accessKey = accessKeys.insert(storage.AccessKey(
-            key = ca.accessKey.accessKey,
-            appid = id,
-            events = Seq()))
+          val accessKey = accessKeys.insert(
+            storage.AccessKey(
+              key = ca.accessKey.accessKey,
+              appid = id,
+              events = Seq()))
           accessKey map { k =>
             info("Created new app:")
             info(s"      Name: ${ca.app.name}")
@@ -78,8 +79,9 @@ object App extends Logging {
             case e: Exception =>
               error(s"Failed to revert back the App meta-data change.", e)
               error(s"The app ${ca.app.name} CANNOT be used!")
-              error(s"Please run 'pio app delete ${ca.app.name}' " +
-                "to delete this app!")
+              error(
+                s"Please run 'pio app delete ${ca.app.name}' " +
+                  "to delete this app!")
               1
           }
         }
@@ -156,7 +158,8 @@ object App extends Logging {
     val channels = storage.Storage.getMetaDataChannels
     val events = storage.Storage.getLEvents()
     val status = apps.getByName(ca.app.name) map { app =>
-      info(s"The following app (including all channels) will be deleted. Are you sure?")
+      info(
+        s"The following app (including all channels) will be deleted. Are you sure?")
       info(s"    App Name: ${app.name}")
       info(s"      App ID: ${app.id}")
       info(s" Description: ${app.description.getOrElse("")}")
@@ -172,7 +175,8 @@ object App extends Logging {
         info(f"              ${ch.name}%16s | ${ch.id}%10s")
       }
 
-      val choice = if(ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+      val choice =
+        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
       choice match {
         case "YES" => {
           // delete channels
@@ -255,9 +259,9 @@ object App extends Logging {
     val apps = storage.Storage.getMetaDataApps
     val channels = storage.Storage.getMetaDataChannels
     apps.getByName(ca.app.name) map { app =>
-
       val channelId = ca.app.dataDeleteChannel.map { ch =>
-        val channelMap = channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
+        val channelMap =
+          channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
         if (!channelMap.contains(ch)) {
           error(s"Unable to delete data for channel.")
           error(s"Channel ${ch} doesn't exist.")
@@ -275,13 +279,15 @@ object App extends Logging {
         info(s"      App ID: ${app.id}")
         info(s" Description: ${app.description}")
       } else {
-        info(s"Data of the following app (default channel only) will be deleted. Are you sure?")
+        info(
+          s"Data of the following app (default channel only) will be deleted. Are you sure?")
         info(s"    App Name: ${app.name}")
         info(s"      App ID: ${app.id}")
         info(s" Description: ${app.description}")
       }
 
-      val choice = if(ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+      val choice =
+        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
 
       choice match {
         case "YES" => {
@@ -306,18 +312,21 @@ object App extends Logging {
           val dbInit = events.init(app.id, channelId)
           val r2 = if (dbInit) {
             if (channelId.isDefined) {
-              info(s"Initialized Event Store for this channel ID: ${channelId.get}.")
+              info(
+                s"Initialized Event Store for this channel ID: ${channelId.get}.")
             } else {
               info(s"Initialized Event Store for this app ID: ${app.id}.")
             }
             0
           } else {
             if (channelId.isDefined) {
-              error(s"Unable to initialize Event Store for this channel ID:" +
-                s" ${channelId.get}.")
+              error(
+                s"Unable to initialize Event Store for this channel ID:" +
+                  s" ${channelId.get}.")
             } else {
-              error(s"Unable to initialize Event Store for this appId:" +
-                s" ${app.id}.")
+              error(
+                s"Unable to initialize Event Store for this appId:" +
+                  s" ${app.id}.")
             }
             1
           }
@@ -340,8 +349,9 @@ object App extends Logging {
     val channels = storage.Storage.getMetaDataChannels
     val events = storage.Storage.getLEvents()
     val status = apps.getByName(ca.app.name) map { app =>
-      info(s"All data of the app (including default and all channels) will be deleted." +
-        " Are you sure?")
+      info(
+        s"All data of the app (including default and all channels) will be deleted." +
+          " Are you sure?")
       info(s"    App Name: ${app.name}")
       info(s"      App ID: ${app.id}")
       info(s" Description: ${app.description}")
@@ -357,7 +367,8 @@ object App extends Logging {
         info(f"              ${ch.name}%16s | ${ch.id}%10s")
       }
 
-      val choice = if(ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+      val choice =
+        if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
       choice match {
         case "YES" => {
           // delete channels
@@ -375,7 +386,8 @@ object App extends Logging {
               info(s"Initialized Event Store of the channel ID: ${ch.id}")
               0
             } else {
-              error(s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
+              error(
+                s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
               1
             }
             r1 + r2
@@ -395,7 +407,8 @@ object App extends Logging {
               info(s"Initialized Event Store for this app ID: ${app.id}.")
               0
             } else {
-              error(s"Unable to initialize Event Store for this appId: ${app.id}.")
+              error(
+                s"Unable to initialize Event Store for this appId: ${app.id}.")
               1
             }
             info("Done.")
@@ -420,7 +433,8 @@ object App extends Logging {
     val events = storage.Storage.getLEvents()
     val newChannel = ca.app.channel
     val status = apps.getByName(ca.app.name) map { app =>
-      val channelMap = channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
+      val channelMap =
+        channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
       if (channelMap.contains(newChannel)) {
         error(s"Unable to create new channel.")
         error(s"Channel ${newChannel} already exists.")
@@ -432,43 +446,49 @@ object App extends Logging {
         1
       } else {
 
-        val channelId = channels.insert(storage.Channel(
-          id = 0, // new id will be assigned
-          appid = app.id,
-          name = newChannel
-        ))
-        channelId.map { chanId =>
-          info(s"Updated Channel meta-data.")
-          // initialize storage
-          val dbInit = events.init(app.id, Some(chanId))
-          if (dbInit) {
-            info(s"Initialized Event Store for the channel: ${newChannel}.")
-            info(s"Created new channel:")
-            info(s"    Channel Name: ${newChannel}")
-            info(s"      Channel ID: ${chanId}")
-            info(s"          App ID: ${app.id}")
-            0
-          } else {
-            error(s"Unable to create new channel.")
-            error(s"Failed to initalize Event Store.")
-            // reverted back the meta data
-            try {
-              channels.delete(chanId)
+        val channelId = channels.insert(
+          storage.Channel(
+            id = 0, // new id will be assigned
+            appid = app.id,
+            name = newChannel
+          ))
+        channelId
+          .map { chanId =>
+            info(s"Updated Channel meta-data.")
+            // initialize storage
+            val dbInit = events.init(app.id, Some(chanId))
+            if (dbInit) {
+              info(s"Initialized Event Store for the channel: ${newChannel}.")
+              info(s"Created new channel:")
+              info(s"    Channel Name: ${newChannel}")
+              info(s"      Channel ID: ${chanId}")
+              info(s"          App ID: ${app.id}")
               0
-            } catch {
-              case e: Exception =>
-                error(s"Failed to revert back the Channel meta-data change.", e)
-                error(s"The channel ${newChannel} CANNOT be used!")
-                error(s"Please run 'pio app channel-delete ${app.name} ${newChannel}' " +
-                  "to delete this channel!")
-                1
+            } else {
+              error(s"Unable to create new channel.")
+              error(s"Failed to initalize Event Store.")
+              // reverted back the meta data
+              try {
+                channels.delete(chanId)
+                0
+              } catch {
+                case e: Exception =>
+                  error(
+                    s"Failed to revert back the Channel meta-data change.",
+                    e)
+                  error(s"The channel ${newChannel} CANNOT be used!")
+                  error(
+                    s"Please run 'pio app channel-delete ${app.name} ${newChannel}' " +
+                      "to delete this channel!")
+                  1
+              }
             }
           }
-        }.getOrElse {
-          error(s"Unable to create new channel.")
-          error(s"Failed to update Channel meta-data.")
-          1
-        }
+          .getOrElse {
+            error(s"Unable to create new channel.")
+            error(s"Failed to update Channel meta-data.")
+            1
+          }
       }
     } getOrElse {
       error(s"App ${ca.app.name} does not exist. Aborting.")
@@ -484,7 +504,8 @@ object App extends Logging {
     val events = storage.Storage.getLEvents()
     val deleteChannel = ca.app.channel
     val status = apps.getByName(ca.app.name) map { app =>
-      val channelMap = channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
+      val channelMap =
+        channels.getByAppid(app.id).map(c => (c.name, c.id)).toMap
       if (!channelMap.contains(deleteChannel)) {
         error(s"Unable to delete channel.")
         error(s"Channel ${deleteChannel} doesn't exist.")
@@ -495,11 +516,13 @@ object App extends Logging {
         info(s"      Channel ID: ${channelMap(deleteChannel)}")
         info(s"        App Name: ${app.name}")
         info(s"          App ID: ${app.id}")
-        val choice = if(ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
+        val choice =
+          if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
         choice match {
           case "YES" => {
             // NOTE: remove storage first before remove meta data (in case remove storage failed)
-            val dbRemoved = events.remove(app.id, Some(channelMap(deleteChannel)))
+            val dbRemoved =
+              events.remove(app.id, Some(channelMap(deleteChannel)))
             if (dbRemoved) {
               info(s"Removed Event Store for this channel: ${deleteChannel}")
               try {
@@ -511,8 +534,9 @@ object App extends Logging {
                   error(s"Unable to delete channel.", e)
                   error(s"Failed to update Channel meta-data.")
                   error(s"The channel ${deleteChannel} CANNOT be used!")
-                  error(s"Please run 'pio app channel-delete ${app.name} ${deleteChannel}' " +
-                    "to delete this channel again!")
+                  error(
+                    s"Please run 'pio app channel-delete ${app.name} ${deleteChannel}' " +
+                      "to delete this channel again!")
                   1
               }
             } else {

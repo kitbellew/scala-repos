@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import sbt.testing._
@@ -15,20 +14,25 @@ import org.scalajs.core.tools.json._
 
 import FingerprintSerializers._
 
-final class RemoteException private (msg: String, _toString: String,
-    cause: Throwable, val originalClass: String) extends Exception(msg, cause) {
+final class RemoteException private (
+    msg: String,
+    _toString: String,
+    cause: Throwable,
+    val originalClass: String)
+    extends Exception(msg, cause) {
   override def toString(): String = _toString
 }
 
 object RemoteException {
-  implicit object StackTraceDeserializer extends JSONDeserializer[StackTraceElement] {
+  implicit object StackTraceDeserializer
+      extends JSONDeserializer[StackTraceElement] {
     def deserialize(x: JSON): StackTraceElement = {
       val obj = new JSONObjExtractor(x)
       new StackTraceElement(
-          obj.fld[String]("className"),
-          obj.fld[String]("methodName"),
-          obj.fld[String]("fileName"),
-          obj.fld[Int]("lineNumber"))
+        obj.fld[String]("className"),
+        obj.fld[String]("methodName"),
+        obj.fld[String]("fileName"),
+        obj.fld[Int]("lineNumber"))
     }
   }
 
@@ -37,10 +41,10 @@ object RemoteException {
       val obj = new JSONObjExtractor(x)
 
       val e = new RemoteException(
-          obj.fld[String]("message"),
-          obj.fld[String]("toString"),
-          obj.opt[RemoteException]("cause").orNull,
-          obj.fld[String]("class"))
+        obj.fld[String]("message"),
+        obj.fld[String]("toString"),
+        obj.opt[RemoteException]("cause").orNull,
+        obj.fld[String]("class"))
 
       e.setStackTrace(obj.fld[List[StackTraceElement]]("stackTrace").toArray)
 

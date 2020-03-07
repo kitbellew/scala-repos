@@ -1,7 +1,7 @@
 package lila.app
 package templating
 
-import chess.{ Mode, Speed }
+import chess.{Mode, Speed}
 import lila.api.Context
 import lila.pref.Pref
 import lila.pref.Pref.Difficulty
@@ -33,11 +33,15 @@ trait SetupHelper { self: I18nHelper =>
     System.Arena.id.toString -> "Arena"
   )
 
-  private def variantTuple(variant: chess.variant.Variant)(implicit ctx: Context): (String, String, Option[String]) =
+  private def variantTuple(variant: chess.variant.Variant)(
+      implicit ctx: Context): (String, String, Option[String]) =
     (variant.id.toString, variant.name, variant.title.some)
 
   def translatedVariantChoices(implicit ctx: Context) = List(
-    (chess.variant.Standard.id.toString, trans.standard.str(), chess.variant.Standard.title.some)
+    (
+      chess.variant.Standard.id.toString,
+      trans.standard.str(),
+      chess.variant.Standard.title.some)
   )
 
   def translatedVariantChoicesWithVariants(implicit ctx: Context) =
@@ -68,12 +72,16 @@ trait SetupHelper { self: I18nHelper =>
       variantTuple(chess.variant.FromPosition)
 
   def translatedSpeedChoices(implicit ctx: Context) = Speed.limited map { s =>
-    (s.id.toString, {
-      (s.range.min, s.range.max) match {
-        case (0, y) => s.toString + " - " + trans.lessThanNbMinutes(y / 60 + 1)
-        case (x, y) => s.toString + " - " + trans.xToYMinutes(x / 60, y / 60 + 1)
-      }
-    }, none)
+    (
+      s.id.toString, {
+        (s.range.min, s.range.max) match {
+          case (0, y) =>
+            s.toString + " - " + trans.lessThanNbMinutes(y / 60 + 1)
+          case (x, y) =>
+            s.toString + " - " + trans.xToYMinutes(x / 60, y / 60 + 1)
+        }
+      },
+      none)
   }
 
   def translatedAnimationChoices(implicit ctx: Context) = List(
@@ -116,7 +124,9 @@ trait SetupHelper { self: I18nHelper =>
   def translatedAutoThreefoldChoices(implicit ctx: Context) = List(
     (Pref.AutoThreefold.NEVER, trans.never.str()),
     (Pref.AutoThreefold.ALWAYS, trans.always.str()),
-    (Pref.AutoThreefold.TIME, trans.whenTimeRemainingLessThanThirtySeconds.str())
+    (
+      Pref.AutoThreefold.TIME,
+      trans.whenTimeRemainingLessThanThirtySeconds.str())
   )
 
   def translatedDifficultyChoices(implicit ctx: Context) = List(
@@ -150,7 +160,8 @@ trait SetupHelper { self: I18nHelper =>
     (Pref.Message.ALWAYS, trans.always.str())
   )
 
-  def translatedBlindfoldChoices(implicit ctx: Context) = List(
-    Pref.Blindfold.NO -> trans.no.str(),
-    Pref.Blindfold.YES -> trans.yes.str())
+  def translatedBlindfoldChoices(implicit ctx: Context) =
+    List(
+      Pref.Blindfold.NO -> trans.no.str(),
+      Pref.Blindfold.YES -> trans.yes.str())
 }

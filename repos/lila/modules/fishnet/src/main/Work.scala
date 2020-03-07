@@ -29,9 +29,7 @@ object Work {
 
   case class Id(value: String) extends AnyVal with StringValue
 
-  case class Acquired(
-      clientKey: Client.Key,
-      date: DateTime) {
+  case class Acquired(clientKey: Client.Key, date: DateTime) {
 
     def ageInMillis = nowMillis - date.getMillis
 
@@ -53,7 +51,8 @@ object Work {
       mod: Boolean,
       system: Boolean) {
 
-    override def toString = if (system) "lichess" else userId orElse ip getOrElse "unknown"
+    override def toString =
+      if (system) "lichess" else userId orElse ip getOrElse "unknown"
   }
 
   case class Move(
@@ -63,13 +62,15 @@ object Work {
       level: Int,
       tries: Int,
       acquired: Option[Acquired],
-      createdAt: DateTime) extends Work {
+      createdAt: DateTime)
+      extends Work {
 
     def skill = Client.Skill.Move
 
-    def assignTo(client: Client) = copy(
-      acquired = Acquired(clientKey = client.key, date = DateTime.now).some,
-      tries = tries + 1)
+    def assignTo(client: Client) =
+      copy(
+        acquired = Acquired(clientKey = client.key, date = DateTime.now).some,
+        tries = tries + 1)
 
     def timeout = copy(acquired = none)
     def invalid = copy(acquired = none)
@@ -78,7 +79,8 @@ object Work {
 
     def similar(to: Move) = game.id == to.game.id && currentFen == to.currentFen
 
-    override def toString = s"id:$id game:${game.id} level:$level tries:$tries currentFen:$currentFen acquired:$acquired"
+    override def toString =
+      s"id:$id game:${game.id} level:$level tries:$tries currentFen:$currentFen acquired:$acquired"
   }
 
   case class Analysis(
@@ -89,13 +91,15 @@ object Work {
       nbPly: Int,
       tries: Int,
       acquired: Option[Acquired],
-      createdAt: DateTime) extends Work {
+      createdAt: DateTime)
+      extends Work {
 
     def skill = Client.Skill.Analysis
 
-    def assignTo(client: Client) = copy(
-      acquired = Acquired(clientKey = client.key, date = DateTime.now).some,
-      tries = tries + 1)
+    def assignTo(client: Client) =
+      copy(
+        acquired = Acquired(clientKey = client.key, date = DateTime.now).some,
+        tries = tries + 1)
 
     def timeout = copy(acquired = none)
     def invalid = copy(acquired = none)
@@ -104,7 +108,8 @@ object Work {
 
     def abort = copy(acquired = none)
 
-    override def toString = s"id:$id game:${game.id} tries:$tries requestedBy:$sender acquired:$acquired"
+    override def toString =
+      s"id:$id game:${game.id} tries:$tries requestedBy:$sender acquired:$acquired"
   }
 
   def makeId = Id(scala.util.Random.alphanumeric take 8 mkString)

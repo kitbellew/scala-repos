@@ -24,7 +24,11 @@ import org.apache.spark.sql.catalyst.dsl.expressions._
 import org.apache.spark.sql.catalyst.dsl.plans._
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.expressions.aggregate.{AggregateExpression, Complete, Count}
+import org.apache.spark.sql.catalyst.expressions.aggregate.{
+  AggregateExpression,
+  Complete,
+  Count
+}
 import org.apache.spark.sql.catalyst.plans.{Inner, PlanTest}
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.rules.RuleExecutor
@@ -33,7 +37,9 @@ import org.apache.spark.sql.types.StringType
 class ColumnPruningSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
-    val batches = Batch("Column pruning", FixedPoint(100),
+    val batches = Batch(
+      "Column pruning",
+      FixedPoint(100),
       ColumnPruning,
       CollapseProject) :: Nil
   }
@@ -45,7 +51,8 @@ class ColumnPruningSuite extends PlanTest {
 
     val optimized = Optimize.execute(query)
 
-    val correctAnswer = input.select('b).generate(Explode('b), join = false).analyze
+    val correctAnswer =
+      input.select('b).generate(Explode('b), join = false).analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -113,7 +120,8 @@ class ColumnPruningSuite extends PlanTest {
             Seq('a, 'b, 'c, Literal.create(null, StringType), 1),
             Seq('a, 'b, 'c, 'a, 2)),
           Seq('a, 'b, 'c, 'aa.int, 'gid.int),
-          input)).analyze
+          input)
+      ).analyze
     val optimized = Optimize.execute(query)
 
     val expected =
@@ -121,12 +129,10 @@ class ColumnPruningSuite extends PlanTest {
         Seq('aa, 'gid),
         Seq(sum('c).as("sum")),
         Expand(
-          Seq(
-            Seq('c, Literal.create(null, StringType), 1),
-            Seq('c, 'a, 2)),
+          Seq(Seq('c, Literal.create(null, StringType), 1), Seq('c, 'a, 2)),
           Seq('c, 'aa.int, 'gid.int),
-          Project(Seq('a, 'c),
-            input))).analyze
+          Project(Seq('a, 'c), input))
+      ).analyze
 
     comparePlans(optimized, expected)
   }
@@ -135,9 +141,9 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double)
     val query = Project('a :: Nil, Filter('c > Literal(0.0), input)).analyze
     val expected =
-      Project('a :: Nil,
-        Filter('c > Literal(0.0),
-          Project(Seq('a, 'c), input))).analyze
+      Project(
+        'a :: Nil,
+        Filter('c > Literal(0.0), Project(Seq('a, 'c), input))).analyze
     comparePlans(Optimize.execute(query), expected)
   }
 
@@ -164,7 +170,9 @@ class ColumnPruningSuite extends PlanTest {
     val expected = Project(Literal(1).as("1") :: Nil, input).analyze
 
     val query1 =
-      Project(Literal(1).as("1") :: Nil, Project(Literal(1).as("1") :: Nil, input)).analyze
+      Project(
+        Literal(1).as("1") :: Nil,
+        Project(Literal(1).as("1") :: Nil, input)).analyze
     comparePlans(Optimize.execute(query1), expected)
 
     val query2 =
@@ -186,7 +194,8 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .groupBy('a)('a).analyze
+        .groupBy('a)('a)
+        .analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -203,7 +212,8 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .groupBy('a)('a as 'c).analyze
+        .groupBy('a)('a as 'c)
+        .analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -221,7 +231,8 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer =
       testRelation
         .select('a)
-        .limit(2).analyze
+        .limit(2)
+        .analyze
 
     comparePlans(optimized, correctAnswer)
   }
@@ -240,7 +251,8 @@ class ColumnPruningSuite extends PlanTest {
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
       x.select('a)
-        .sortBy(SortOrder('a, Ascending)).analyze
+        .sortBy(SortOrder('a, Ascending))
+        .analyze
 
     comparePlans(optimized, analysis.EliminateSubqueryAliases(correctAnswer))
 
@@ -255,7 +267,8 @@ class ColumnPruningSuite extends PlanTest {
     val correctAnswer1 =
       x.select('a, 'b)
         .sortBy(SortOrder('a, Ascending))
-        .select('b).analyze
+        .select('b)
+        .analyze
 
     comparePlans(optimized1, analysis.EliminateSubqueryAliases(correctAnswer1))
   }
@@ -264,14 +277,22 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input.groupBy('a, 'c, 'd)('a, 'c, 'd,
-        WindowExpression(
-          AggregateExpression(Count('b), Complete, isDistinct = false),
-          WindowSpecDefinition( 'a :: Nil,
-            SortOrder('b, Ascending) :: Nil,
-            UnspecifiedFrame)).as('window)).select('a, 'c)
+      input
+        .groupBy('a, 'c, 'd)(
+          'a,
+          'c,
+          'd,
+          WindowExpression(
+            AggregateExpression(Count('b), Complete, isDistinct = false),
+            WindowSpecDefinition(
+              'a :: Nil,
+              SortOrder('b, Ascending) :: Nil,
+              UnspecifiedFrame)).as('window)
+        )
+        .select('a, 'c)
 
-    val correctAnswer = input.select('a, 'c, 'd).groupBy('a, 'c, 'd)('a, 'c).analyze
+    val correctAnswer =
+      input.select('a, 'c, 'd).groupBy('a, 'c, 'd)('a, 'c).analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -282,22 +303,39 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input.select('a, 'b, 'c, 'd,
-        WindowExpression(
-          AggregateExpression(Count('b), Complete, isDistinct = false),
-          WindowSpecDefinition( 'a :: Nil,
-            SortOrder('b, Ascending) :: Nil,
-            UnspecifiedFrame)).as('window)).where('window > 1).select('a, 'c)
+      input
+        .select(
+          'a,
+          'b,
+          'c,
+          'd,
+          WindowExpression(
+            AggregateExpression(Count('b), Complete, isDistinct = false),
+            WindowSpecDefinition(
+              'a :: Nil,
+              SortOrder('b, Ascending) :: Nil,
+              UnspecifiedFrame)).as('window)
+        )
+        .where('window > 1)
+        .select('a, 'c)
 
     val correctAnswer =
-      input.select('a, 'b, 'c)
-        .window(WindowExpression(
-          AggregateExpression(Count('b), Complete, isDistinct = false),
-          WindowSpecDefinition( 'a :: Nil,
-            SortOrder('b, Ascending) :: Nil,
-            UnspecifiedFrame)).as('window) :: Nil,
-          'a :: Nil, 'b.asc :: Nil)
-        .select('a, 'c, 'window).where('window > 1).select('a, 'c).analyze
+      input
+        .select('a, 'b, 'c)
+        .window(
+          WindowExpression(
+            AggregateExpression(Count('b), Complete, isDistinct = false),
+            WindowSpecDefinition(
+              'a :: Nil,
+              SortOrder('b, Ascending) :: Nil,
+              UnspecifiedFrame)).as('window) :: Nil,
+          'a :: Nil,
+          'b.asc :: Nil
+        )
+        .select('a, 'c, 'window)
+        .where('window > 1)
+        .select('a, 'c)
+        .analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -308,12 +346,20 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
     val originalQuery =
-      input.select('a, 'b, 'c, 'd,
-        WindowExpression(
-          AggregateExpression(Count('b), Complete, isDistinct = false),
-          WindowSpecDefinition( 'a :: Nil,
-            SortOrder('b, Ascending) :: Nil,
-            UnspecifiedFrame)).as('window)).select('a, 'c)
+      input
+        .select(
+          'a,
+          'b,
+          'c,
+          'd,
+          WindowExpression(
+            AggregateExpression(Count('b), Complete, isDistinct = false),
+            WindowSpecDefinition(
+              'a :: Nil,
+              SortOrder('b, Ascending) :: Nil,
+              UnspecifiedFrame)).as('window)
+        )
+        .select('a, 'c)
 
     val correctAnswer = input.select('a, 'c).analyze
 
@@ -325,10 +371,13 @@ class ColumnPruningSuite extends PlanTest {
   test("Column pruning on Union") {
     val input1 = LocalRelation('a.int, 'b.string, 'c.double)
     val input2 = LocalRelation('c.int, 'd.string, 'e.double)
-    val query = Project('b :: Nil,
-      Union(input1 :: input2 :: Nil)).analyze
-    val expected = Project('b :: Nil,
-      Union(Project('b :: Nil, input1) :: Project('d :: Nil, input2) :: Nil)).analyze
+    val query = Project('b :: Nil, Union(input1 :: input2 :: Nil)).analyze
+    val expected = Project(
+      'b :: Nil,
+      Union(
+        Project('b :: Nil, input1) :: Project(
+          'd :: Nil,
+          input2) :: Nil)).analyze
     comparePlans(Optimize.execute(query), expected)
   }
 
@@ -336,24 +385,28 @@ class ColumnPruningSuite extends PlanTest {
     val input = LocalRelation('key.int, 'value.string)
 
     val query =
-      Project(Seq($"x.key", $"y.key"),
+      Project(
+        Seq($"x.key", $"y.key"),
         Join(
           SubqueryAlias("x", input),
-          BroadcastHint(SubqueryAlias("y", input)), Inner, None)).analyze
+          BroadcastHint(SubqueryAlias("y", input)),
+          Inner,
+          None)).analyze
 
     val optimized = Optimize.execute(query)
 
     val expected =
       Join(
         Project(Seq($"x.key"), SubqueryAlias("x", input)),
-        BroadcastHint(
-          Project(Seq($"y.key"), SubqueryAlias("y", input))),
-        Inner, None).analyze
+        BroadcastHint(Project(Seq($"y.key"), SubqueryAlias("y", input))),
+        Inner,
+        None).analyze
 
     comparePlans(optimized, expected)
   }
 
-  implicit private def productEncoder[T <: Product : TypeTag] = ExpressionEncoder[T]()
+  implicit private def productEncoder[T <: Product: TypeTag] =
+    ExpressionEncoder[T]()
   private val func = identity[Iterator[OtherTuple]] _
 
   test("Column pruning on MapPartitions") {

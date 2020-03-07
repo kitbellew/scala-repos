@@ -5,7 +5,9 @@ import cats.arrow.NaturalTransformation
 import cats.data.Const
 
 /** Applicative Functor for Free */
-sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable { self =>
+sealed abstract class FreeApplicative[F[_], A]
+    extends Product
+    with Serializable { self =>
   // ap => apply alias needed so we can refer to both
   // FreeApplicative.ap and FreeApplicative#ap
   import FreeApplicative.{FA, Pure, Ap, ap => apply, lift}
@@ -20,7 +22,7 @@ sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable
 
   final def map[B](f: A => B): FA[F, B] =
     this match {
-      case Pure(a) => Pure(f(a))
+      case Pure(a)       => Pure(f(a))
       case Ap(pivot, fn) => apply(pivot)(fn.map(f compose _))
     }
 
@@ -29,7 +31,7 @@ sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable
     */
   final def foldMap[G[_]](f: F ~> G)(implicit G: Applicative[G]): G[A] =
     this match {
-      case Pure(a) => G.pure(a)
+      case Pure(a)       => G.pure(a)
       case Ap(pivot, fn) => G.map2(f(pivot), fn.foldMap(f))((a, g) => g(a))
     }
 
@@ -48,9 +50,9 @@ sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable
     }
 
   /** Interpret this algebra into a Monoid */
-  final def analyze[M:Monoid](f: F ~> λ[α => M]): M =
+  final def analyze[M: Monoid](f: F ~> λ[α => M]): M =
     foldMap[Const[M, ?]](new (F ~> Const[M, ?]) {
-      def apply[X](x: F[X]): Const[M,X] = Const(f(x))
+      def apply[X](x: F[X]): Const[M, X] = Const(f(x))
     }).getConst
 
   /** Compile this FreeApplicative algebra into a Free algebra. */
@@ -67,7 +69,8 @@ object FreeApplicative {
 
   private final case class Pure[F[_], A](a: A) extends FA[F, A]
 
-  private final case class Ap[F[_], P, A](pivot: F[P], fn: FA[F, P => A]) extends FA[F, A]
+  private final case class Ap[F[_], P, A](pivot: F[P], fn: FA[F, P => A])
+      extends FA[F, A]
 
   final def pure[F[_], A](a: A): FA[F, A] =
     Pure(a)
@@ -79,7 +82,8 @@ object FreeApplicative {
 
   implicit final def freeApplicative[S[_]]: Applicative[FA[S, ?]] = {
     new Applicative[FA[S, ?]] {
-      def product[A, B](fa: FA[S, A], fb: FA[S, B]): FA[S, (A, B)] = ap(fa.map((a: A) => (b: B) => (a, b)))(fb)
+      def product[A, B](fa: FA[S, A], fb: FA[S, B]): FA[S, (A, B)] =
+        ap(fa.map((a: A) => (b: B) => (a, b)))(fb)
       def map[A, B](fa: FA[S, A])(f: A => B): FA[S, B] = fa.map(f)
       override def ap[A, B](f: FA[S, A => B])(fa: FA[S, A]): FA[S, B] = fa.ap(f)
       def pure[A](a: A): FA[S, A] = Pure(a)

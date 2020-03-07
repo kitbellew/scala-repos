@@ -5,11 +5,10 @@ package api
 package base
 package types
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 13.03.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 13.03.2008
+  */
 trait ScExistentialTypeElement extends ScTypeElement {
   def quantified = findChildByClassScala(classOf[ScTypeElement])
   def clause = findChildByClassScala(classOf[ScExistentialClause])

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.util
 
 import akka.testkit.AkkaSpec
@@ -14,15 +14,18 @@ class LineNumberSpec extends AkkaSpec {
       import LineNumberSpecCodeForScala._
 
       "work for small functions" in {
-        LineNumbers(oneline) should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 12, 12))
+        LineNumbers(oneline) should ===(
+          SourceFileLines("LineNumberSpecCodeForScala.scala", 12, 12))
       }
 
       "work for larger functions" in {
-        LineNumbers(twoline) should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 14, 16))
+        LineNumbers(twoline) should ===(
+          SourceFileLines("LineNumberSpecCodeForScala.scala", 14, 16))
       }
 
       "work for partial functions" in {
-        LineNumbers(partial) should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 19, 21))
+        LineNumbers(partial) should ===(
+          SourceFileLines("LineNumberSpecCodeForScala.scala", 19, 21))
       }
 
     }
@@ -40,7 +43,8 @@ class LineNumberSpec extends AkkaSpec {
       //      }
 
       "work for anonymous classes" in {
-        LineNumbers(l.f3()) should ===(SourceFileLines("LineNumberSpecCodeForJava.java", 31, 35))
+        LineNumbers(l.f3()) should ===(
+          SourceFileLines("LineNumberSpecCodeForJava.java", 31, 35))
       }
 
     }

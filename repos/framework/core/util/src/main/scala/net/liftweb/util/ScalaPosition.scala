@@ -33,24 +33,25 @@ package io
   *  }}}
   *  @author Burak Emir (translated from work by Matthias Zenger and others)
   */
-
 /**
- * This was made private in scala 2.11.0 but there is no alternative for us to use, so here, copy/paste for now.
- * We renamed it because having a private vs public class with the same name causes errors with the assembly plugin
- * and may/(will?) cause errors at runtime.
- */
-
+  * This was made private in scala 2.11.0 but there is no alternative for us to use, so here, copy/paste for now.
+  * We renamed it because having a private vs public class with the same name causes errors with the assembly plugin
+  * and may/(will?) cause errors at runtime.
+  */
 abstract class ScalaPosition {
+
   /** Definable behavior for overflow conditions.
     */
   def checkInput(line: Int, column: Int): Unit
 
   /** Number of bits used to encode the line number */
-  final val LINE_BITS   = 20
+  final val LINE_BITS = 20
+
   /** Number of bits used to encode the column number */
   final val COLUMN_BITS = 31 - LINE_BITS // no negatives => 31
   /** Mask to decode the line number */
-  final val LINE_MASK   = (1 << LINE_BITS) - 1
+  final val LINE_MASK = (1 << LINE_BITS) - 1
+
   /** Mask to decode the column number */
   final val COLUMN_MASK = (1 << COLUMN_BITS) - 1
 

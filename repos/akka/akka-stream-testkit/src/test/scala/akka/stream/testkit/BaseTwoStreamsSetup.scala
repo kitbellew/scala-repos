@@ -1,9 +1,9 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.testkit
 
-import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import akka.stream.scaladsl._
 import org.reactivestreams.Publisher
 import scala.collection.immutable
@@ -22,15 +22,19 @@ abstract class BaseTwoStreamsSetup extends AkkaSpec {
 
   type Outputs
 
-  def setup(p1: Publisher[Int], p2: Publisher[Int]): TestSubscriber.Probe[Outputs]
+  def setup(
+      p1: Publisher[Int],
+      p2: Publisher[Int]): TestSubscriber.Probe[Outputs]
 
   def failedPublisher[T]: Publisher[T] = TestPublisher.error[T](TestException)
 
   def completedPublisher[T]: Publisher[T] = TestPublisher.empty[T]
 
-  def nonemptyPublisher[T](elems: immutable.Iterable[T]): Publisher[T] = Source(elems).runWith(Sink.asPublisher(false))
+  def nonemptyPublisher[T](elems: immutable.Iterable[T]): Publisher[T] =
+    Source(elems).runWith(Sink.asPublisher(false))
 
-  def soonToFailPublisher[T]: Publisher[T] = TestPublisher.lazyError[T](TestException)
+  def soonToFailPublisher[T]: Publisher[T] =
+    TestPublisher.lazyError[T](TestException)
 
   def soonToCompletePublisher[T]: Publisher[T] = TestPublisher.lazyEmpty[T]
 

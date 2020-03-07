@@ -12,10 +12,12 @@ trait Parsers {
     val oldReporter = global.reporter
     try {
       global.reporter = sreporter
-      val parser = newUnitParser(new CompilationUnit(newSourceFile(code, "<macro>")))
+      val parser = newUnitParser(
+        new CompilationUnit(newSourceFile(code, "<macro>")))
       val tree = gen.mkTreeOrBlock(parser.parseStatsOrPackages())
       sreporter.infos.foreach {
-        case sreporter.Info(pos, msg, sreporter.ERROR) => throw ParseException(pos, msg)
+        case sreporter.Info(pos, msg, sreporter.ERROR) =>
+          throw ParseException(pos, msg)
         case _ =>
       }
       tree

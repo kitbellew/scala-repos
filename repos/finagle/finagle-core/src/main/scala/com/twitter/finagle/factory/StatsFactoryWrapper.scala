@@ -9,8 +9,8 @@ private[finagle] object StatsFactoryWrapper {
   val role = Stack.Role("ServiceCreationStats")
 
   /**
-   * Creates a [[com.twitter.finagle.Stackable]] [[com.twitter.finagle.factory.StatsFactoryWrapper]].
-   */
+    * Creates a [[com.twitter.finagle.Stackable]] [[com.twitter.finagle.factory.StatsFactoryWrapper]].
+    */
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module1[param.Stats, ServiceFactory[Req, Rep]] {
       val role = StatsFactoryWrapper.role
@@ -27,16 +27,16 @@ private[finagle] object StatsFactoryWrapper {
 }
 
 /**
- * A [[com.twitter.finagle.ServiceFactoryProxy]] that tracks statistics on
- * [[com.twitter.finagle.Service]] creation failures and service acquisition latency.
- */
+  * A [[com.twitter.finagle.ServiceFactoryProxy]] that tracks statistics on
+  * [[com.twitter.finagle.Service]] creation failures and service acquisition latency.
+  */
 class StatsFactoryWrapper[Req, Rep](
     self: ServiceFactory[Req, Rep],
     statsReceiver: StatsReceiver)
-  extends ServiceFactoryProxy[Req, Rep](self)
-{
+    extends ServiceFactoryProxy[Req, Rep](self) {
   private[this] val failureStats = statsReceiver.scope("failures")
-  private[this] val latencyStat = statsReceiver.stat("service_acquisition_latency_ms")
+  private[this] val latencyStat =
+    statsReceiver.stat("service_acquisition_latency_ms")
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
     val elapsed = Stopwatch.start()

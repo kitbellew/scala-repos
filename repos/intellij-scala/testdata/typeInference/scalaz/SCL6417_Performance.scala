@@ -9,9 +9,11 @@ class SCL6417_Performance {
       |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
       |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
       |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))
-      |@| validateOptionalY(Some(1)) |@| validateOptionalY(Some(1))).tupled match {
+      |@| validateOptionalY(Some(1)) |@| validateOptionalY(
+      Some(1))).tupled match {
       case Success(t) =>
-        /*start*/t._12/*end*/
+        /*start*/
+        t._12 /*end*/
         print(t)
       case Failure(errors) => println(errors.toString)
     }
@@ -26,7 +28,7 @@ class SCL6417_Performance {
 
   def validateOptionalY(y: Option[Int]): ValidationNel[String, Int] = y match {
     case Some(yy) => Success(yy)
-    case None => Failure("Required!").toValidationNel
+    case None     => Failure("Required!").toValidationNel
   }
 
 }

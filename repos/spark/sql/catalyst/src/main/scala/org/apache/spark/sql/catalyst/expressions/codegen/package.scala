@@ -21,9 +21,9 @@ import org.apache.spark.sql.catalyst.rules
 import org.apache.spark.util.Utils
 
 /**
- * A collection of generators that build custom bytecode at runtime for performing the evaluation
- * of catalyst expression.
- */
+  * A collection of generators that build custom bytecode at runtime for performing the evaluation
+  * of catalyst expression.
+  */
 package object codegen {
 
   /** Canonicalizes an expression so those that differ only by names can reuse the same code. */
@@ -39,8 +39,8 @@ package object codegen {
   }
 
   /**
-   * Dumps the bytecode from a class to the screen using javap.
-   */
+    * Dumps the bytecode from a class to the screen using javap.
+    */
   object DumpByteCode {
     import scala.sys.process._
     val dumpDirectory = Utils.createTempDir()
@@ -49,16 +49,18 @@ package object codegen {
     def apply(obj: Any): Unit = {
       val generatedClass = obj.getClass
       val classLoader =
-        generatedClass
-          .getClassLoader
+        generatedClass.getClassLoader
           .asInstanceOf[scala.tools.nsc.interpreter.AbstractFileClassLoader]
       val generatedBytes = classLoader.classBytes(generatedClass.getName)
 
-      val packageDir = new java.io.File(dumpDirectory, generatedClass.getPackage.getName)
+      val packageDir =
+        new java.io.File(dumpDirectory, generatedClass.getPackage.getName)
       if (!packageDir.exists()) { packageDir.mkdir() }
 
       val classFile =
-        new java.io.File(packageDir, generatedClass.getName.split("\\.").last + ".class")
+        new java.io.File(
+          packageDir,
+          generatedClass.getName.split("\\.").last + ".class")
 
       val outfile = new java.io.FileOutputStream(classFile)
       outfile.write(generatedBytes)

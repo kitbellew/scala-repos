@@ -4,6 +4,7 @@ class SCL2292 {
   val x: Inner = new Inner
   def m(p: Inner) {}
 
-  /*start*/(new self.Inner, self.x)/*end*/
+  /*start*/
+  (new self.Inner, self.x) /*end*/
 }
 //(SCL2292.this.Inner, SCL2292.this.Inner)

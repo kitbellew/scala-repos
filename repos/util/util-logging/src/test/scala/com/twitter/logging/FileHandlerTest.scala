@@ -26,16 +26,18 @@ import org.scalatest.junit.JUnitRunner
 import com.twitter.conversions.storage._
 import com.twitter.conversions.time._
 import com.twitter.util.{TempFolder, Time}
-
-
 @RunWith(classOf[JUnitRunner])
 class FileHandlerTest extends WordSpec with TempFolder {
   def reader(filename: String) = {
-    new BufferedReader(new InputStreamReader(new FileInputStream(new File(folderName, filename))))
+    new BufferedReader(
+      new InputStreamReader(
+        new FileInputStream(new File(folderName, filename))))
   }
 
   def writer(filename: String) = {
-    new OutputStreamWriter(new FileOutputStream(new File(folderName, filename)), "UTF-8")
+    new OutputStreamWriter(
+      new FileOutputStream(new File(folderName, filename)),
+      "UTF-8")
   }
 
   "FileHandler" should {
@@ -126,9 +128,12 @@ class FileHandlerTest extends WordSpec with TempFolder {
             append = true,
             formatter = BareFormatter
           ).apply()
-          assert(handler.computeNextRollTime(1206769996722L) == Some(1206770400000L))
-          assert(handler.computeNextRollTime(1206770400000L) == Some(1206774000000L))
-          assert(handler.computeNextRollTime(1206774000001L) == Some(1206777600000L))
+          assert(
+            handler.computeNextRollTime(1206769996722L) == Some(1206770400000L))
+          assert(
+            handler.computeNextRollTime(1206770400000L) == Some(1206774000000L))
+          assert(
+            handler.computeNextRollTime(1206774000001L) == Some(1206777600000L))
         }
       }
 
@@ -140,11 +145,16 @@ class FileHandlerTest extends WordSpec with TempFolder {
             append = true,
             formatter = new Formatter(timezone = Some("GMT-7:00"))
           ).apply()
-          assert(handler.computeNextRollTime(1250354734000L) == Some(1250406000000L))
-          assert(handler.computeNextRollTime(1250404734000L) == Some(1250406000000L))
-          assert(handler.computeNextRollTime(1250406001000L) == Some(1251010800000L))
-          assert(handler.computeNextRollTime(1250486000000L) == Some(1251010800000L))
-          assert(handler.computeNextRollTime(1250496000000L) == Some(1251010800000L))
+          assert(
+            handler.computeNextRollTime(1250354734000L) == Some(1250406000000L))
+          assert(
+            handler.computeNextRollTime(1250404734000L) == Some(1250406000000L))
+          assert(
+            handler.computeNextRollTime(1250406001000L) == Some(1251010800000L))
+          assert(
+            handler.computeNextRollTime(1250486000000L) == Some(1251010800000L))
+          assert(
+            handler.computeNextRollTime(1250496000000L) == Some(1251010800000L))
         }
       }
     }
@@ -152,7 +162,13 @@ class FileHandlerTest extends WordSpec with TempFolder {
     // verify that at the proper time, the log file rolls and resets.
     "roll logs into new files" in {
       withTempFolder {
-        val handler = new FileHandler(folderName + "/test.log", Policy.Hourly, true, -1, BareFormatter, None)
+        val handler = new FileHandler(
+          folderName + "/test.log",
+          Policy.Hourly,
+          true,
+          -1,
+          BareFormatter,
+          None)
         Time.withCurrentTimeFrozen { time =>
           handler.publish(record1)
           val date = new Date(Time.now.inMilliseconds)
@@ -162,7 +178,10 @@ class FileHandlerTest extends WordSpec with TempFolder {
           handler.publish(record2)
           handler.close()
 
-          assert(reader("test-" + handler.timeSuffix(date) + ".log").readLine == "first post!")
+          assert(
+            reader(
+              "test-" + handler.timeSuffix(
+                date) + ".log").readLine == "first post!")
           assert(reader("test.log").readLine == "second post")
         }
       }
@@ -255,8 +274,7 @@ class FileHandlerTest extends WordSpec with TempFolder {
           handler.publish(record1)
           assert(new File(folderName).list().length == 2)
           handler.close()
-        }
-        finally {
+        } finally {
           // restore user.dir to its original configuration
           System.setProperty("user.dir", wdir)
         }

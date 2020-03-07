@@ -17,22 +17,27 @@
 
 package org.apache.spark.streaming.scheduler
 
-import org.apache.spark.scheduler.{LiveListenerBus, SparkListener, SparkListenerEvent}
+import org.apache.spark.scheduler.{
+  LiveListenerBus,
+  SparkListener,
+  SparkListenerEvent
+}
 import org.apache.spark.util.ListenerBus
 
 /**
- * A Streaming listener bus to forward events to StreamingListeners. This one will wrap received
- * Streaming events as WrappedStreamingListenerEvent and send them to Spark listener bus. It also
- * registers itself with Spark listener bus, so that it can receive WrappedStreamingListenerEvents,
- * unwrap them as StreamingListenerEvent and dispatch them to StreamingListeners.
- */
+  * A Streaming listener bus to forward events to StreamingListeners. This one will wrap received
+  * Streaming events as WrappedStreamingListenerEvent and send them to Spark listener bus. It also
+  * registers itself with Spark listener bus, so that it can receive WrappedStreamingListenerEvents,
+  * unwrap them as StreamingListenerEvent and dispatch them to StreamingListeners.
+  */
 private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
-  extends SparkListener with ListenerBus[StreamingListener, StreamingListenerEvent] {
+    extends SparkListener
+    with ListenerBus[StreamingListener, StreamingListenerEvent] {
 
   /**
-   * Post a StreamingListenerEvent to the Spark listener bus asynchronously. This event will be
-   * dispatched to all StreamingListeners in the thread of the Spark listener bus.
-   */
+    * Post a StreamingListenerEvent to the Spark listener bus asynchronously. This event will be
+    * dispatched to all StreamingListeners in the thread of the Spark listener bus.
+    */
   def post(event: StreamingListenerEvent) {
     sparkListenerBus.post(new WrappedStreamingListenerEvent(event))
   }
@@ -70,27 +75,28 @@ private[streaming] class StreamingListenerBus(sparkListenerBus: LiveListenerBus)
   }
 
   /**
-   * Register this one with the Spark listener bus so that it can receive Streaming events and
-   * forward them to StreamingListeners.
-   */
+    * Register this one with the Spark listener bus so that it can receive Streaming events and
+    * forward them to StreamingListeners.
+    */
   def start(): Unit = {
     sparkListenerBus.addListener(this) // for getting callbacks on spark events
   }
 
   /**
-   * Unregister this one with the Spark listener bus and all StreamingListeners won't receive any
-   * events after that.
-   */
+    * Unregister this one with the Spark listener bus and all StreamingListeners won't receive any
+    * events after that.
+    */
   def stop(): Unit = {
     sparkListenerBus.removeListener(this)
   }
 
   /**
-   * Wrapper for StreamingListenerEvent as SparkListenerEvent so that it can be posted to Spark
-   * listener bus.
-   */
-  private case class WrappedStreamingListenerEvent(streamingListenerEvent: StreamingListenerEvent)
-    extends SparkListenerEvent {
+    * Wrapper for StreamingListenerEvent as SparkListenerEvent so that it can be posted to Spark
+    * listener bus.
+    */
+  private case class WrappedStreamingListenerEvent(
+      streamingListenerEvent: StreamingListenerEvent)
+      extends SparkListenerEvent {
 
     // Do not log streaming events in event log as history server does not support streaming
     // events (SPARK-12140). TODO Once SPARK-12140 is resolved we should set it to true.

@@ -1,4 +1,4 @@
-class BipClass { }
+class BipClass {}
 trait BipTrait {
   self: BipClass =>
 

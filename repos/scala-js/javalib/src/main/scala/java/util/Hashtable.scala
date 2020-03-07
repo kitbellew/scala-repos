@@ -6,7 +6,10 @@ import scala.collection.mutable
 import scala.collection.JavaConversions._
 
 class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
-    extends ju.Dictionary[K,V] with ju.Map[K, V] with Cloneable with Serializable {
+    extends ju.Dictionary[K, V]
+    with ju.Map[K, V]
+    with Cloneable
+    with Serializable {
 
   def this() =
     this(mutable.HashMap.empty[Box[Any], V])
@@ -51,7 +54,9 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
   // protected def rehash(): Unit
 
   def put(key: K, value: V): V =
-    inner.put(Box(key.asInstanceOf[AnyRef]), value).getOrElse(null.asInstanceOf[V])
+    inner
+      .put(Box(key.asInstanceOf[AnyRef]), value)
+      .getOrElse(null.asInstanceOf[V])
 
   def remove(key: Any): V = {
     if (key == null)

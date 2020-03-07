@@ -10,41 +10,45 @@ import scala.concurrent._
 import scala.util.Try
 
 /**
- * Scaloid marries Android code with Scala resulting in easier to understand
- * and maintain code.
- *
- *
- * @example
- *
- * {{{
- * import org.scaloid.common._
- *
- * class MainActivity extends SActivity {
- *
- *   onCreate {
- *     contentView = new SVerticalLayout {
- *       setTheme(android.R.style.Theme_Holo_NoActionBar)
- *
- *       style {
- *         case b:SButton => b.textSize(22 dip)
- *       }
- *
- *       STextView("Welcome").textSize(22 sp).<<.marginBottom(22 dip).>>
- *
- *       val name = SEditText()
- *       STextView("What is your name?").<<.marginBottom(22 dip).>>
- *
- *       SButton("GO").onClick(longToast("Hello, " + name.getText))
- *     }.padding(20 dip)
- *   }
- * }
- * }}}
- *
- * @see [[http://scaloid.org]]
- *
- * @author Sung-Ho Lee
- */
-package object common extends Logger with SystemServices with Helpers with Implicits {
+  * Scaloid marries Android code with Scala resulting in easier to understand
+  * and maintain code.
+  *
+  *
+  * @example
+  *
+  * {{{
+  * import org.scaloid.common._
+  *
+  * class MainActivity extends SActivity {
+  *
+  *   onCreate {
+  *     contentView = new SVerticalLayout {
+  *       setTheme(android.R.style.Theme_Holo_NoActionBar)
+  *
+  *       style {
+  *         case b:SButton => b.textSize(22 dip)
+  *       }
+  *
+  *       STextView("Welcome").textSize(22 sp).<<.marginBottom(22 dip).>>
+  *
+  *       val name = SEditText()
+  *       STextView("What is your name?").<<.marginBottom(22 dip).>>
+  *
+  *       SButton("GO").onClick(longToast("Hello, " + name.getText))
+  *     }.padding(20 dip)
+  *   }
+  * }
+  * }}}
+  *
+  * @see [[http://scaloid.org]]
+  *
+  * @author Sung-Ho Lee
+  */
+package object common
+    extends Logger
+    with SystemServices
+    with Helpers
+    with Implicits {
 
   val idSequence = new java.util.concurrent.atomic.AtomicInteger(0)
 
@@ -57,8 +61,8 @@ package object common extends Logger with SystemServices with Helpers with Impli
   }
 
   /**
-   * Provides handler instance and runOnUiThread() utility method.
-   */
+    * Provides handler instance and runOnUiThread() utility method.
+    */
   lazy val handler = new Handler(Looper.getMainLooper)
 
   lazy val uiThread = Looper.getMainLooper.getThread
@@ -92,4 +96,3 @@ package object common extends Logger with SystemServices with Helpers with Impli
   private[scaloid] trait NoGetterForThisProperty
 
 }
-

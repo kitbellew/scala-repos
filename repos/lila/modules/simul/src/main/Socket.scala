@@ -9,8 +9,8 @@ import actorApi._
 import lila.common.LightUser
 import lila.hub.actorApi.round.MoveEvent
 import lila.hub.TimeBomb
-import lila.socket.actorApi.{ Connected => _, _ }
-import lila.socket.{ SocketActor, History, Historical }
+import lila.socket.actorApi.{Connected => _, _}
+import lila.socket.{SocketActor, History, Historical}
 
 private[simul] final class Socket(
     simulId: String,
@@ -19,13 +19,17 @@ private[simul] final class Socket(
     jsonView: JsonView,
     lightUser: String => Option[LightUser],
     uidTimeout: Duration,
-    socketTimeout: Duration) extends SocketActor[Member](uidTimeout) with Historical[Member, Messadata] {
+    socketTimeout: Duration)
+    extends SocketActor[Member](uidTimeout)
+    with Historical[Member, Messadata] {
 
   private val timeBomb = new TimeBomb(socketTimeout)
 
   private var delayedCrowdNotification = false
 
-  private def redirectPlayer(game: lila.game.Game, colorOption: Option[chess.Color]) {
+  private def redirectPlayer(
+      game: lila.game.Game,
+      colorOption: Option[chess.Color]) {
     colorOption foreach { color =>
       val player = game player color
       player.userId foreach { userId =>
@@ -38,11 +42,13 @@ private[simul] final class Socket(
 
   def receiveSpecific = {
 
-    case StartGame(game, hostId)       => redirectPlayer(game, game.playerByUserId(hostId) map (!_.color))
+    case StartGame(game, hostId) =>
+      redirectPlayer(game, game.playerByUserId(hostId) map (!_.color))
 
-    case StartSimul(firstGame, hostId) => redirectPlayer(firstGame, firstGame.playerByUserId(hostId) map (_.color))
+    case StartSimul(firstGame, hostId) =>
+      redirectPlayer(firstGame, firstGame.playerByUserId(hostId) map (_.color))
 
-    case HostIsOn(gameId)              => notifyVersion("hostGame", gameId, Messadata())
+    case HostIsOn(gameId) => notifyVersion("hostGame", gameId, Messadata())
 
     case Reload =>
       getSimul(simulId) foreach {
@@ -68,15 +74,19 @@ private[simul] final class Socket(
       if (timeBomb.boom) self ! PoisonPill
     }
 
-    case lila.chat.actorApi.ChatLine(_, line) => line match {
-      case line: lila.chat.UserLine =>
-        notifyVersion("message", lila.chat.Line toJson line, Messadata(line.troll))
-      case _ =>
-    }
+    case lila.chat.actorApi.ChatLine(_, line) =>
+      line match {
+        case line: lila.chat.UserLine =>
+          notifyVersion(
+            "message",
+            lila.chat.Line toJson line,
+            Messadata(line.troll))
+        case _ =>
+      }
 
     case GetVersion => sender ! history.version
 
-    case Socket.GetUserIds  => sender ! userIds
+    case Socket.GetUserIds => sender ! userIds
 
     case Join(uid, user) =>
       val (enumerator, channel) = Concurrent.broadcast[JsValue]

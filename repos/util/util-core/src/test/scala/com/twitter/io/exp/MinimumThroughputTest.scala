@@ -11,48 +11,39 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
-class MinimumThroughputTest
-  extends FunSuite
-  with MockitoSugar
-{
+class MinimumThroughputTest extends FunSuite with MockitoSugar {
   test("Reader - negative minBps") {
     intercept[AssertionError] {
-      MinimumThroughput.reader(
-        mock[Reader],
-        -1,
-        Timer.Nil)
+      MinimumThroughput.reader(mock[Reader], -1, Timer.Nil)
     }
   }
 
   test("Reader - faster than min") {
     val buf = Buf.UsAscii("soylent green is made of...") // 27 bytes
-    val reader = MinimumThroughput.reader(
-      BufReader(buf),
-      0d,
-      Timer.Nil)
+    val reader = MinimumThroughput.reader(BufReader(buf), 0d, Timer.Nil)
 
     // read from the beginning
     Await.result(reader.read(13)) match {
       case Some(b) => assert(b == Buf.UsAscii("soylent green"))
-      case _ => fail()
+      case _       => fail()
     }
 
     // a no-op read
     Await.result(reader.read(0)) match {
       case Some(b) => assert(b == Buf.Empty)
-      case _ => fail()
+      case _       => fail()
     }
 
     // read to the end
     Await.result(reader.read(20)) match {
       case Some(b) => assert(b == Buf.UsAscii(" is made of..."))
-      case _ => fail()
+      case _       => fail()
     }
 
     // read past the end
     Await.result(reader.read(20)) match {
       case None =>
-      case _ => fail()
+      case _    => fail()
     }
   }
 
@@ -84,7 +75,7 @@ class MinimumThroughputTest
       // do a read of 1 byte in 0 time — which is ok.
       Await.result(reader.read(1)) match {
         case Some(b) => assert(b == buf.slice(0, 1))
-        case _ => fail()
+        case _       => fail()
       }
 
       val ex = intercept[BelowThroughputException] {
@@ -147,16 +138,13 @@ class MinimumThroughputTest
 
     Await.result(reader.read(1)) match {
       case None =>
-      case _ => fail()
+      case _    => fail()
     }
   }
 
   test("Reader - discard is passed through to underlying") {
     val underlying = mock[Reader]
-    val reader = MinimumThroughput.reader(
-      underlying,
-      1,
-      Timer.Nil)
+    val reader = MinimumThroughput.reader(underlying, 1, Timer.Nil)
 
     reader.discard()
     verify(underlying).discard()
@@ -226,10 +214,7 @@ class MinimumThroughputTest
       .thenReturn(Future.never)
 
     val timer = new MockTimer()
-    val writer = MinimumThroughput.writer(
-      underlying,
-      1d,
-      timer)
+    val writer = MinimumThroughput.writer(underlying, 1d, timer)
 
     Time.withCurrentTimeFrozen { tc =>
       val f = writer.write(buf)
@@ -252,10 +237,7 @@ class MinimumThroughputTest
     when(underlying.write(buf))
       .thenReturn(Future.exception(ex))
 
-    val writer = MinimumThroughput.writer(
-      underlying,
-      1d,
-      Timer.Nil)
+    val writer = MinimumThroughput.writer(underlying, 1d, Timer.Nil)
 
     val thrown = intercept[RuntimeException] {
       Await.result(writer.write(buf))
@@ -266,10 +248,7 @@ class MinimumThroughputTest
   test("Writer - fail is passed through to underlying") {
     val underlying = mock[Writer]
 
-    val writer = MinimumThroughput.writer(
-      underlying,
-      1d,
-      Timer.Nil)
+    val writer = MinimumThroughput.writer(underlying, 1d, Timer.Nil)
 
     val ex = new RuntimeException()
     writer.fail(ex)

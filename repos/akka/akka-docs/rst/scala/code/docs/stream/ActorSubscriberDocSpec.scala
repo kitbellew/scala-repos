@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 import akka.actor.Actor
@@ -42,7 +42,8 @@ object ActorSubscriberDocSpec {
       Router(RoundRobinRoutingLogic(), routees)
     }
 
-    override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxQueueSize) {
+    override val requestStrategy = new MaxInFlightRequestStrategy(
+      max = MaxQueueSize) {
       override def inFlightInternally: Int = queue.size
     }
 
@@ -79,7 +80,8 @@ class ActorSubscriberDocSpec extends AkkaSpec {
 
     //#actor-subscriber-usage
     val N = 117
-    Source(1 to N).map(WorkerPool.Msg(_, replyTo))
+    Source(1 to N)
+      .map(WorkerPool.Msg(_, replyTo))
       .runWith(Sink.actorSubscriber(WorkerPool.props))
     //#actor-subscriber-usage
 

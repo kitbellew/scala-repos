@@ -236,8 +236,10 @@ object mon {
       def move(platform: String) = inc(s"push.send.$platform.move")()
       def finish(platform: String) = inc(s"push.send.$platform.finish")()
       object challenge {
-        def create(platform: String) = inc(s"push.send.$platform.challenge_create")()
-        def accept(platform: String) = inc(s"push.send.$platform.challenge_accept")()
+        def create(platform: String) =
+          inc(s"push.send.$platform.challenge_create")()
+        def accept(platform: String) =
+          inc(s"push.send.$platform.challenge_accept")()
       }
     }
   }
@@ -250,7 +252,8 @@ object mon {
         def notFound = apply("not_found")
         def notAcquired = apply("not_acquired")
         def abort = apply("abort")
-        private def apply(r: String) = inc(s"fishnet.client.result.$skill.$client.$r")
+        private def apply(r: String) =
+          inc(s"fishnet.client.result.$skill.$client.$r")
       }
       object status {
         val enabled = rec("fishnet.client.status.enabled")
@@ -300,7 +303,8 @@ object mon {
     res
   }
 
-  def since[A](path: RecPath)(start: Long) = path(this)(System.nanoTime() - start)
+  def since[A](path: RecPath)(start: Long) =
+    path(this)(System.nanoTime() - start)
 
   type Rec = Long => Unit
   type Inc = () => Unit

@@ -40,10 +40,9 @@ import scalafx.scene.input.{Clipboard, ClipboardContent, DataFormat}
 import scalafx.scene.layout.VBox
 
 /**
- * @author Jarek Sacha 
- */
+  * @author Jarek Sacha
+  */
 object ClipboardTester extends JFXApp {
-
 
   stage = new PrimaryStage {
     scene = new Scene {
@@ -55,7 +54,8 @@ object ClipboardTester extends JFXApp {
             onAction = handle {
               val systemClipboard = Clipboard.systemClipboard
               val contentTypes = systemClipboard.contentTypes
-              println(s"\nClipboard contains " + contentTypes.size + " type(s).")
+              println(
+                s"\nClipboard contains " + contentTypes.size + " type(s).")
               contentTypes.foreach { ct =>
                 println("Checking content type: " + ct)
                 val ctContent = systemClipboard.getContent(ct)
@@ -113,8 +113,6 @@ object ClipboardTester extends JFXApp {
               )
             }
           }
-
-
         )
       }
     }

@@ -1,19 +1,27 @@
 package org.jetbrains.plugins.scala
 package debugger.evaluateExpression
 
-import org.jetbrains.plugins.scala.debugger.{ScalaDebuggerTestCase, ScalaVersion_2_11, ScalaVersion_2_12}
+import org.jetbrains.plugins.scala.debugger.{
+  ScalaDebuggerTestCase,
+  ScalaVersion_2_11,
+  ScalaVersion_2_12
+}
 
 /**
   * Nikolay.Tropin
   * 12/9/13
   */
+class ScalaImportedEvaluationTest
+    extends ScalaImportedEvaluationTestBase
+    with ScalaVersion_2_11
 
-class ScalaImportedEvaluationTest extends ScalaImportedEvaluationTestBase with ScalaVersion_2_11
-
-class ScalaImportedEvaluationTest_212 extends ScalaImportedEvaluationTestBase with ScalaVersion_2_12
+class ScalaImportedEvaluationTest_212
+    extends ScalaImportedEvaluationTestBase
+    with ScalaVersion_2_12
 
 abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
-  addFileWithBreakpoints("ImportFromObject.scala",
+  addFileWithBreakpoints(
+    "ImportFromObject.scala",
     s"""
        |object ImportFromObject {
        |  def main(args: Array[String]) {
@@ -23,7 +31,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
        |}
     """.stripMargin.trim()
   )
-  addFileWithBreakpoints("test/Stuff.scala",
+  addFileWithBreakpoints(
+    "test/Stuff.scala",
     s"""
        |package test
        |object Stuff {
@@ -42,7 +51,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("ImportFromPackageObject.scala",
+  addFileWithBreakpoints(
+    "ImportFromPackageObject.scala",
     s"""
        |object ImportFromPackageObject {
        |  def main(args: Array[String]) {
@@ -52,7 +62,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
        |}
     """.stripMargin.trim()
   )
-  addFileWithBreakpoints("test/stuff/package.scala",
+  addFileWithBreakpoints(
+    "test/stuff/package.scala",
     s"""
        |package test
        |package object stuff {
@@ -82,7 +93,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("StopInsidePackageObject.scala",
+  addFileWithBreakpoints(
+    "StopInsidePackageObject.scala",
     s"""
        |object StopInsidePackageObject {
        |  def main(args: Array[String]) {
@@ -101,7 +113,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("StopInsideClassInPackageObject.scala",
+  addFileWithBreakpoints(
+    "StopInsideClassInPackageObject.scala",
     s"""
        |object StopInsideClassInPackageObject {
        |  def main(args: Array[String]) {
@@ -121,7 +134,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("StopInsideValueClass.scala",
+  addFileWithBreakpoints(
+    "StopInsideValueClass.scala",
     s"""
        |object StopInsideValueClass {
        |  def main(args: Array[String]) {
@@ -140,7 +154,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("ImportVal.scala",
+  addFileWithBreakpoints(
+    "ImportVal.scala",
     s"""
        |object ImportVal {
        |  def main(args: Array[String]) {
@@ -166,7 +181,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("ImportProjectionType.scala",
+  addFileWithBreakpoints(
+    "ImportProjectionType.scala",
     s"""
        |object ImportProjectionType {
        |
@@ -202,7 +218,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("ImportJava.scala",
+  addFileWithBreakpoints(
+    "ImportJava.scala",
     s"""
        |object ImportJava {
        |  def main(args: Array[String]) {
@@ -218,7 +235,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
        |}
     """.stripMargin.trim()
   )
-  addFileWithBreakpoints("test/JavaClass.java",
+  addFileWithBreakpoints(
+    "test/JavaClass.java",
     s"""
        |package test;
        |
@@ -254,7 +272,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("implicits/package.scala",
+  addFileWithBreakpoints(
+    "implicits/package.scala",
     s"""
        |package object implicits {
        |  implicit def intToString(x: Int) = x.toString + x.toString
@@ -268,8 +287,10 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
        |    def naoborot() = !b
        |  }
        |}
-    """.stripMargin.trim)
-  addFileWithBreakpoints("ImportedImplicits.scala",
+    """.stripMargin.trim
+  )
+  addFileWithBreakpoints(
+    "ImportedImplicits.scala",
     s"""
        |import implicits._
        |object ImportedImplicits {
@@ -279,7 +300,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
        |    ""$bp
        |  }
        |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
 
   def testImportedImplicits() {
     runDebugger() {
@@ -293,8 +315,9 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
     }
   }
 
-  addFileWithBreakpoints("ImportedFromOuterThis.scala",
-   s"""
+  addFileWithBreakpoints(
+    "ImportedFromOuterThis.scala",
+    s"""
       |object ImportedFromOuterThis {
       |  def main(args: Array[String]) {
       |    val o = new OuterThis
@@ -319,7 +342,8 @@ abstract class ScalaImportedEvaluationTestBase extends ScalaDebuggerTestCase {
       |class GGG {
       |  def foo() = 1
       |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
 
   def testImportedFromOuterThis(): Unit = {
     runDebugger() {

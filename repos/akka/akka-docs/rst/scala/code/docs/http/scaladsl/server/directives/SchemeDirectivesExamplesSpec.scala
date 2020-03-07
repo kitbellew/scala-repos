@@ -8,9 +8,7 @@ import docs.http.scaladsl.server.RoutingSpec
 class SchemeDirectivesExamplesSpec extends RoutingSpec {
   "example-1" in {
     val route =
-      extractScheme { scheme =>
-        complete(s"The scheme is '${scheme}'")
-      }
+      extractScheme { scheme => complete(s"The scheme is '${scheme}'") }
 
     // tests:
     Get("https://www.example.com/") ~> route ~> check {
@@ -36,7 +34,8 @@ class SchemeDirectivesExamplesSpec extends RoutingSpec {
     // tests:
     Get("http://www.example.com/hello") ~> route ~> check {
       status shouldEqual MovedPermanently
-      header[Location] shouldEqual Some(Location(Uri("https://www.example.com/hello")))
+      header[Location] shouldEqual Some(
+        Location(Uri("https://www.example.com/hello")))
     }
 
     Get("https://www.example.com/hello") ~> route ~> check {

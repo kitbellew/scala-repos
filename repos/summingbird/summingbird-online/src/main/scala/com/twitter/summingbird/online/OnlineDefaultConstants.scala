@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.summingbird.online
 
@@ -39,11 +39,13 @@ private[summingbird] trait OnlineDefaultConstants {
   val DEFAULT_MAX_FUTURE_WAIT_TIME = MaxFutureWaitTime(Duration.fromSeconds(60))
   val DEFAULT_FLUSH_FREQUENCY = FlushFrequency(Duration.fromSeconds(10))
   val DEFAULT_USE_ASYNC_CACHE = UseAsyncCache(false)
-  val DEFAULT_ASYNC_POOL_SIZE = AsyncPoolSize(Runtime.getRuntime().availableProcessors())
-  val DEFAULT_SOFT_MEMORY_FLUSH_PERCENT = SoftMemoryFlushPercent(80.0F)
+  val DEFAULT_ASYNC_POOL_SIZE = AsyncPoolSize(
+    Runtime.getRuntime().availableProcessors())
+  val DEFAULT_SOFT_MEMORY_FLUSH_PERCENT = SoftMemoryFlushPercent(80.0f)
   val DEFAULT_VALUE_COMBINER_CACHE_SIZE = ValueCombinerCacheSize(100)
   val DEFAULT_MAX_EMIT_PER_EXECUTE = MaxEmitPerExecute(Int.MaxValue)
   val DEFAULT_SUMMER_BATCH_MULTIPLIER = SummerBatchMultiplier(1)
 }
 
-private[summingbird] object OnlineDefaultConstants extends OnlineDefaultConstants
+private[summingbird] object OnlineDefaultConstants
+    extends OnlineDefaultConstants

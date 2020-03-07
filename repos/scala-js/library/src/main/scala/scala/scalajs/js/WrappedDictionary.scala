@@ -17,8 +17,8 @@ import scala.collection.generic.CanBuildFrom
 @inline
 class WrappedDictionary[A](val dict: Dictionary[A])
     extends mutable.AbstractMap[String, A]
-       with mutable.Map[String, A]
-       with mutable.MapLike[String, A, WrappedDictionary[A]] {
+    with mutable.Map[String, A]
+    with mutable.MapLike[String, A, WrappedDictionary[A]] {
 
   import WrappedDictionary._
 
@@ -83,8 +83,8 @@ object WrappedDictionary {
   private def safeHasOwnProperty(dict: Dictionary[_], key: String): Boolean =
     Cache.safeHasOwnProperty(dict, key)
 
-  private final class DictionaryIterator[+A](
-      dict: Dictionary[A]) extends Iterator[(String, A)] {
+  private final class DictionaryIterator[+A](dict: Dictionary[A])
+      extends Iterator[(String, A)] {
     private[this] val keys = Object.keys(dict.asInstanceOf[Object])
     private[this] var index: Int = 0
     def hasNext(): Boolean = index < keys.length
@@ -97,9 +97,11 @@ object WrappedDictionary {
 
   def empty[A]: WrappedDictionary[A] = new WrappedDictionary(Dictionary.empty)
 
-  type CBF[A] = CanBuildFrom[WrappedDictionary[_], (String, A), WrappedDictionary[A]]
+  type CBF[A] =
+    CanBuildFrom[WrappedDictionary[_], (String, A), WrappedDictionary[A]]
   implicit def canBuildFrom[A]: CBF[A] = new CBF[A] {
-    def apply(from: WrappedDictionary[_]): Builder[(String, A), WrappedDictionary[A]] =
+    def apply(from: WrappedDictionary[_])
+        : Builder[(String, A), WrappedDictionary[A]] =
       new WrappedDictionaryBuilder[A]
     def apply(): Builder[(String, A), WrappedDictionary[A]] =
       new WrappedDictionaryBuilder[A]

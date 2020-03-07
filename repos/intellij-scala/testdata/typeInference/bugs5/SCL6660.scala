@@ -19,7 +19,9 @@ object SCL6660 {
     }
 
     object Conversions extends Implicits with DoubleConversion
-    object DoubleConversion extends Implicits with DoubleConversion // Scala plugin 0.30.380 does not like this line, even though it's ultimately unused.
+    object DoubleConversion
+        extends Implicits
+        with DoubleConversion // Scala plugin 0.30.380 does not like this line, even though it's ultimately unused.
   }
 
   object Main extends App {
@@ -27,8 +29,9 @@ object SCL6660 {
     def foo(s: String) = ""
 
     {
-      import Problematic.Conversions.{int2jvalue,double2jvalue}
-      /*start*/foo(5)/*end*/
+      import Problematic.Conversions.{int2jvalue, double2jvalue}
+      /*start*/
+      foo(5) /*end*/
     }
   }
 }

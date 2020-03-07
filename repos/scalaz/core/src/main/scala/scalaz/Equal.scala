@@ -2,12 +2,12 @@ package scalaz
 
 ////
 /**
- * A type safe alternative to universal equality (`scala.Any#==`).
- *
- * @see [[scalaz.Equal.EqualLaw]]
- */
+  * A type safe alternative to universal equality (`scala.Any#==`).
+  *
+  * @see [[scalaz.Equal.EqualLaw]]
+  */
 ////
-trait Equal[F]  { self =>
+trait Equal[F] { self =>
   ////
   def equal(a1: F, a2: F): Boolean
 

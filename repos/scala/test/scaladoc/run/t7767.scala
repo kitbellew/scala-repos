@@ -12,7 +12,12 @@ object Test extends ScaladocModelTest {
 
   def testModel(rootPackage: Package) = {
     import access._
-    val comment = rootPackage._class("Docable")._value("foo").comment.map(_.body.toString.trim).getOrElse("")
+    val comment = rootPackage
+      ._class("Docable")
+      ._value("foo")
+      .comment
+      .map(_.body.toString.trim)
+      .getOrElse("")
     assert(comment.contains("Doc"), comment)
   }
 }

@@ -1,10 +1,13 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.persistence
 
 import akka.actor._
-import akka.persistence.AtLeastOnceDelivery.{ AtLeastOnceDeliverySnapshot, UnconfirmedWarning }
+import akka.persistence.AtLeastOnceDelivery.{
+  AtLeastOnceDeliverySnapshot,
+  UnconfirmedWarning
+}
 import akka.testkit._
 import com.typesafe.config._
 
@@ -26,25 +29,41 @@ object AtLeastOnceDeliverySpec {
   case class ActionAck(id: Long)
   case object Boom
   case object SaveSnap
-  case class Snap(deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
+  case class Snap(
+      deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
 
-  def senderProps(testActor: ActorRef, name: String,
-                  redeliverInterval: FiniteDuration, warnAfterNumberOfUnconfirmedAttempts: Int,
-                  redeliveryBurstLimit: Int,
-                  destinations: Map[String, ActorPath],
-                  async: Boolean, actorSelectionDelivery: Boolean = false): Props =
-    Props(new Sender(testActor, name, redeliverInterval, warnAfterNumberOfUnconfirmedAttempts,
-      redeliveryBurstLimit, destinations, async, actorSelectionDelivery))
+  def senderProps(
+      testActor: ActorRef,
+      name: String,
+      redeliverInterval: FiniteDuration,
+      warnAfterNumberOfUnconfirmedAttempts: Int,
+      redeliveryBurstLimit: Int,
+      destinations: Map[String, ActorPath],
+      async: Boolean,
+      actorSelectionDelivery: Boolean = false): Props =
+    Props(
+      new Sender(
+        testActor,
+        name,
+        redeliverInterval,
+        warnAfterNumberOfUnconfirmedAttempts,
+        redeliveryBurstLimit,
+        destinations,
+        async,
+        actorSelectionDelivery))
 
-  class Sender(testActor: ActorRef,
-               name: String,
-               override val redeliverInterval: FiniteDuration,
-               override val warnAfterNumberOfUnconfirmedAttempts: Int,
-               override val redeliveryBurstLimit: Int,
-               destinations: Map[String, ActorPath],
-               async: Boolean,
-               actorSelectionDelivery: Boolean)
-    extends PersistentActor with AtLeastOnceDelivery with ActorLogging {
+  class Sender(
+      testActor: ActorRef,
+      name: String,
+      override val redeliverInterval: FiniteDuration,
+      override val warnAfterNumberOfUnconfirmedAttempts: Int,
+      override val redeliveryBurstLimit: Int,
+      destinations: Map[String, ActorPath],
+      async: Boolean,
+      actorSelectionDelivery: Boolean)
+      extends PersistentActor
+      with AtLeastOnceDelivery
+      with ActorLogging {
 
     override def persistenceId: String = name
 
@@ -53,11 +72,14 @@ object AtLeastOnceDeliverySpec {
 
     def updateState(evt: Evt): Unit = evt match {
       case AcceptedReq(payload, destination) if actorSelectionDelivery ⇒
-        log.debug(s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
-        deliver(context.actorSelection(destination))(deliveryId ⇒ Action(deliveryId, payload))
+        log.debug(
+          s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+        deliver(context.actorSelection(destination))(deliveryId ⇒
+          Action(deliveryId, payload))
 
       case AcceptedReq(payload, destination) ⇒
-        log.debug(s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
+        log.debug(
+          s"deliver(destination, deliveryId ⇒ Action(deliveryId, $payload)), recovery: " + recoveryRunning)
         deliver(destination)(deliveryId ⇒ Action(deliveryId, payload))
 
       case ReqDone(id) ⇒
@@ -141,7 +163,9 @@ object AtLeastOnceDeliverySpec {
   def unreliableProps(dropMod: Int, target: ActorRef): Props =
     Props(new Unreliable(dropMod, target))
 
-  class Unreliable(dropMod: Int, target: ActorRef) extends Actor with ActorLogging {
+  class Unreliable(dropMod: Int, target: ActorRef)
+      extends Actor
+      with ActorLogging {
     var count = 0
     def receive = {
       case msg ⇒
@@ -155,7 +179,9 @@ object AtLeastOnceDeliverySpec {
     }
   }
 
-  class DeliverToStarSelection(name: String) extends PersistentActor with AtLeastOnceDelivery {
+  class DeliverToStarSelection(name: String)
+      extends PersistentActor
+      with AtLeastOnceDelivery {
     override def persistenceId = name
 
     override def receiveCommand = {
@@ -170,17 +196,28 @@ object AtLeastOnceDeliverySpec {
 
 }
 
-abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(config) with ImplicitSender {
+abstract class AtLeastOnceDeliverySpec(config: Config)
+    extends PersistenceSpec(config)
+    with ImplicitSender {
   import akka.persistence.AtLeastOnceDeliverySpec._
 
   "AtLeastOnceDelivery" must {
     List(true, false).foreach { deliverUsingActorSelection ⇒
-
       s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
         val probe = TestProbe()
         val probeA = TestProbe()
-        val destinations = Map("A" -> system.actorOf(destinationProps(probeA.ref)).path)
-        val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = false), name)
+        val destinations =
+          Map("A" -> system.actorOf(destinationProps(probeA.ref)).path)
+        val snd = system.actorOf(
+          senderProps(
+            probe.ref,
+            name,
+            1000.millis,
+            5,
+            1000,
+            destinations,
+            async = false),
+          name)
         snd.tell(Req("a"), probe.ref)
         probe.expectMsg(ReqAck)
         probeA.expectMsg(Action(1, "a"))
@@ -191,8 +228,19 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
         val probe = TestProbe()
         val probeA = TestProbe()
         val dst = system.actorOf(destinationProps(probeA.ref))
-        val destinations = Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
-        val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = false, actorSelectionDelivery = deliverUsingActorSelection), name)
+        val destinations =
+          Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+        val snd = system.actorOf(
+          senderProps(
+            probe.ref,
+            name,
+            1000.millis,
+            5,
+            1000,
+            destinations,
+            async = false,
+            actorSelectionDelivery = deliverUsingActorSelection),
+          name)
         snd.tell(Req("a-1"), probe.ref)
         probe.expectMsg(ReqAck)
         probeA.expectMsg(Action(1, "a-1"))
@@ -214,7 +262,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
     }
 
     "not allow using actorSelection with wildcards" in {
-      system.actorOf(Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
+      system.actorOf(
+        Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
       expectMsgType[Failure[_]].toString should include("not supported")
     }
 
@@ -222,8 +271,18 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = false), name)
+      val destinations =
+        Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          5,
+          1000,
+          destinations,
+          async = false),
+        name)
       snd.tell(Req("a-1"), probe.ref)
       probe.expectMsg(ReqAck)
       probeA.expectMsg(Action(1, "a-1"))
@@ -256,8 +315,18 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = false), name)
+      val destinations =
+        Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          5,
+          1000,
+          destinations,
+          async = false),
+        name)
       snd.tell(Req("a-1"), probe.ref)
       probe.expectMsg(ReqAck)
       probeA.expectMsg(Action(1, "a-1"))
@@ -284,7 +353,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       // a-4 was re-delivered but lost
       probeA.expectMsgAllOf(
         Action(5, "a-5"), // re-delivered
-        Action(4, "a-4")) // re-delivered, 3rd time
+        Action(4, "a-4")
+      ) // re-delivered, 3rd time
 
       probeA.expectNoMsg(1.second)
     }
@@ -293,8 +363,18 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = false), name)
+      val destinations =
+        Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          5,
+          1000,
+          destinations,
+          async = false),
+        name)
       snd.tell(Req("a-1"), probe.ref)
       probe.expectMsg(ReqAck)
       probeA.expectMsg(Action(1, "a-1"))
@@ -332,18 +412,31 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       val probeA = TestProbe()
       val probeB = TestProbe()
       val destinations = Map("A" -> probeA.ref.path, "B" -> probeB.ref.path)
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 3, 1000, destinations, async = false), name)
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          3,
+          1000,
+          destinations,
+          async = false),
+        name)
       snd.tell(Req("a-1"), probe.ref)
       snd.tell(Req("b-1"), probe.ref)
       snd.tell(Req("b-2"), probe.ref)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
-      val unconfirmed = probe.receiveWhile(5.seconds) {
-        case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
-      }.flatten
-      unconfirmed.map(_.destination).toSet should ===(Set(probeA.ref.path, probeB.ref.path))
-      unconfirmed.map(_.message).toSet should be(Set(Action(1, "a-1"), Action(2, "b-1"), Action(3, "b-2")))
+      val unconfirmed = probe
+        .receiveWhile(5.seconds) {
+          case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
+        }
+        .flatten
+      unconfirmed.map(_.destination).toSet should ===(
+        Set(probeA.ref.path, probeB.ref.path))
+      unconfirmed.map(_.message).toSet should be(
+        Set(Action(1, "a-1"), Action(2, "b-1"), Action(3, "b-2")))
       system.stop(snd)
     }
 
@@ -358,8 +451,18 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
       val destinations = Map(
         "A" -> system.actorOf(unreliableProps(2, dstA), "unreliable-a").path,
         "B" -> system.actorOf(unreliableProps(5, dstB), "unreliable-b").path,
-        "C" -> system.actorOf(unreliableProps(3, dstC), "unreliable-c").path)
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = true), name)
+        "C" -> system.actorOf(unreliableProps(3, dstC), "unreliable-c").path
+      )
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          5,
+          1000,
+          destinations,
+          async = true),
+        name)
       val N = 100
       for (n ← 1 to N) {
         snd.tell(Req("a-" + n), probe.ref)
@@ -371,18 +474,37 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
         snd.tell(Req("c-" + n), probe.ref)
       }
       val deliverWithin = 20.seconds
-      probeA.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }.toSet should ===((1 to N).map(n ⇒ "a-" + n).toSet)
-      probeB.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }.toSet should ===((1 to N).map(n ⇒ "b-" + n).toSet)
-      probeC.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }.toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
+      probeA
+        .receiveN(N, deliverWithin)
+        .map { case a: Action ⇒ a.payload }
+        .toSet should ===((1 to N).map(n ⇒ "a-" + n).toSet)
+      probeB
+        .receiveN(N, deliverWithin)
+        .map { case a: Action ⇒ a.payload }
+        .toSet should ===((1 to N).map(n ⇒ "b-" + n).toSet)
+      probeC
+        .receiveN(N, deliverWithin)
+        .map { case a: Action ⇒ a.payload }
+        .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }
 
     "limit the number of messages redelivered at once" taggedAs (TimingTest) in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations = Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
+      val destinations =
+        Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
 
-      val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 2, destinations, async = true), name)
+      val snd = system.actorOf(
+        senderProps(
+          probe.ref,
+          name,
+          1000.millis,
+          5,
+          2,
+          destinations,
+          async = true),
+        name)
 
       val N = 10
       for (n ← 1 to N) {
@@ -406,8 +528,11 @@ abstract class AtLeastOnceDeliverySpec(config: Config) extends PersistenceSpec(c
   }
 }
 
-class LeveldbAtLeastOnceDeliverySpec extends AtLeastOnceDeliverySpec(
-  PersistenceSpec.config("leveldb", "AtLeastOnceDeliverySpec"))
+class LeveldbAtLeastOnceDeliverySpec
+    extends AtLeastOnceDeliverySpec(
+      PersistenceSpec.config("leveldb", "AtLeastOnceDeliverySpec"))
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class InmemAtLeastOnceDeliverySpec extends AtLeastOnceDeliverySpec(PersistenceSpec.config("inmem", "AtLeastOnceDeliverySpec"))
+class InmemAtLeastOnceDeliverySpec
+    extends AtLeastOnceDeliverySpec(
+      PersistenceSpec.config("inmem", "AtLeastOnceDeliverySpec"))

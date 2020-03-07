@@ -43,11 +43,11 @@ import org.apache.spark.streaming.scheduler.rate.RateEstimator
 import org.apache.spark.util.Utils
 
 class DirectKafkaStreamSuite
-  extends SparkFunSuite
-  with BeforeAndAfter
-  with BeforeAndAfterAll
-  with Eventually
-  with Logging {
+    extends SparkFunSuite
+    with BeforeAndAfter
+    with BeforeAndAfterAll
+    with Eventually
+    with Logging {
   val sparkConf = new SparkConf()
     .setMaster("local[4]")
     .setAppName(this.getClass.getSimpleName)
@@ -83,8 +83,8 @@ class DirectKafkaStreamSuite
     }
   }
 
-
-  test("basic stream receiving with multiple topics and smallest starting offset") {
+  test(
+    "basic stream receiving with multiple topics and smallest starting offset") {
     val topics = Set("basic1", "basic2", "basic3")
     val data = Map("a" -> 7, "b" -> 9)
     topics.foreach { t =>
@@ -99,8 +99,11 @@ class DirectKafkaStreamSuite
 
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-        ssc, kafkaParams, topics)
+      KafkaUtils
+        .createDirectStream[String, String, StringDecoder, StringDecoder](
+          ssc,
+          kafkaParams,
+          topics)
     }
 
     val allReceived = new ConcurrentLinkedQueue[(String, String)]()
@@ -108,34 +111,40 @@ class DirectKafkaStreamSuite
     // hold a reference to the current offset ranges, so it can be used downstream
     var offsetRanges = Array[OffsetRange]()
 
-    stream.transform { rdd =>
-      // Get the offset ranges in the RDD
-      offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
-      rdd
-    }.foreachRDD { rdd =>
-      for (o <- offsetRanges) {
-        logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
+    stream
+      .transform { rdd =>
+        // Get the offset ranges in the RDD
+        offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+        rdd
       }
-      val collected = rdd.mapPartitionsWithIndex { (i, iter) =>
-      // For each partition, get size of the range in the partition,
-      // and the number of items in the partition
-        val off = offsetRanges(i)
-        val all = iter.toSeq
-        val partSize = all.size
-        val rangeSize = off.untilOffset - off.fromOffset
-        Iterator((partSize, rangeSize))
-      }.collect
+      .foreachRDD { rdd =>
+        for (o <- offsetRanges) {
+          logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
+        }
+        val collected = rdd.mapPartitionsWithIndex { (i, iter) =>
+          // For each partition, get size of the range in the partition,
+          // and the number of items in the partition
+          val off = offsetRanges(i)
+          val all = iter.toSeq
+          val partSize = all.size
+          val rangeSize = off.untilOffset - off.fromOffset
+          Iterator((partSize, rangeSize))
+        }.collect
 
-      // Verify whether number of elements in each partition
-      // matches with the corresponding offset range
-      collected.foreach { case (partSize, rangeSize) =>
-        assert(partSize === rangeSize, "offset ranges are wrong")
+        // Verify whether number of elements in each partition
+        // matches with the corresponding offset range
+        collected.foreach {
+          case (partSize, rangeSize) =>
+            assert(partSize === rangeSize, "offset ranges are wrong")
+        }
       }
+    stream.foreachRDD { rdd =>
+      allReceived.addAll(Arrays.asList(rdd.collect(): _*))
     }
-    stream.foreachRDD { rdd => allReceived.addAll(Arrays.asList(rdd.collect(): _*)) }
     ssc.start()
     eventually(timeout(20000.milliseconds), interval(200.milliseconds)) {
-      assert(allReceived.size === totalSent,
+      assert(
+        allReceived.size === totalSent,
         "didn't get expected number of messages, messages:\n" +
           allReceived.asScala.mkString("\n"))
     }
@@ -153,7 +162,10 @@ class DirectKafkaStreamSuite
     )
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition)).right.get(topicPartition).offset
+      kc.getLatestLeaderOffsets(Set(topicPartition))
+        .right
+        .get(topicPartition)
+        .offset
     }
 
     // Send some initial messages before starting context
@@ -166,17 +178,23 @@ class DirectKafkaStreamSuite
     // Setup context and kafka stream with largest offset
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-        ssc, kafkaParams, Set(topic))
+      KafkaUtils
+        .createDirectStream[String, String, StringDecoder, StringDecoder](
+          ssc,
+          kafkaParams,
+          Set(topic))
     }
     assert(
-      stream.asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
+      stream
+        .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
       "Start offset not from latest"
     )
 
     val collectedData = new ConcurrentLinkedQueue[String]()
-    stream.map { _._2 }.foreachRDD { rdd => collectedData.addAll(Arrays.asList(rdd.collect(): _*)) }
+    stream.map { _._2 }.foreachRDD { rdd =>
+      collectedData.addAll(Arrays.asList(rdd.collect(): _*))
+    }
     ssc.start()
     val newData = Map("b" -> 10)
     kafkaTestUtils.sendMessages(topic, newData)
@@ -185,7 +203,6 @@ class DirectKafkaStreamSuite
     }
     assert(!collectedData.contains("a"))
   }
-
 
   test("creating stream by offset") {
     val topic = "offset"
@@ -198,7 +215,10 @@ class DirectKafkaStreamSuite
     )
     val kc = new KafkaCluster(kafkaParams)
     def getLatestOffset(): Long = {
-      kc.getLatestLeaderOffsets(Set(topicPartition)).right.get(topicPartition).offset
+      kc.getLatestLeaderOffsets(Set(topicPartition))
+        .right
+        .get(topicPartition)
+        .offset
     }
 
     // Send some initial messages before starting context
@@ -211,18 +231,28 @@ class DirectKafkaStreamSuite
     // Setup context and kafka stream with largest offset
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder, String](
-        ssc, kafkaParams, Map(topicPartition -> 11L),
+      KafkaUtils.createDirectStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder,
+        String](
+        ssc,
+        kafkaParams,
+        Map(topicPartition -> 11L),
         (m: MessageAndMetadata[String, String]) => m.message())
     }
     assert(
-      stream.asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
+      stream
+        .asInstanceOf[DirectKafkaInputDStream[_, _, _, _, _]]
         .fromOffsets(topicPartition) >= offsetBeforeStart,
       "Start offset not from latest"
     )
 
     val collectedData = new ConcurrentLinkedQueue[String]()
-    stream.foreachRDD { rdd => collectedData.addAll(Arrays.asList(rdd.collect(): _*)) }
+    stream.foreachRDD { rdd =>
+      collectedData.addAll(Arrays.asList(rdd.collect(): _*))
+    }
     ssc.start()
     val newData = Map("b" -> 10)
     kafkaTestUtils.sendMessages(topic, newData)
@@ -245,8 +275,8 @@ class DirectKafkaStreamSuite
 
     // Send data to Kafka and wait for it to be received
     def sendDataAndWaitForReceive(data: Seq[Int]) {
-      val strings = data.map { _.toString}
-      kafkaTestUtils.sendMessages(topic, strings.map { _ -> 1}.toMap)
+      val strings = data.map { _.toString }
+      kafkaTestUtils.sendMessages(topic, strings.map { _ -> 1 }.toMap)
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
         assert(strings.forall { DirectKafkaStreamSuite.collectedData.contains })
       }
@@ -255,12 +285,16 @@ class DirectKafkaStreamSuite
     // Setup the streaming context
     ssc = new StreamingContext(sparkConf, Milliseconds(100))
     val kafkaStream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-        ssc, kafkaParams, Set(topic))
+      KafkaUtils
+        .createDirectStream[String, String, StringDecoder, StringDecoder](
+          ssc,
+          kafkaParams,
+          Set(topic))
     }
     val keyedStream = kafkaStream.map { v => "key" -> v._2.toInt }
-    val stateStream = keyedStream.updateStateByKey { (values: Seq[Int], state: Option[Int]) =>
-      Some(values.sum + state.getOrElse(0))
+    val stateStream = keyedStream.updateStateByKey {
+      (values: Seq[Int], state: Option[Int]) =>
+        Some(values.sum + state.getOrElse(0))
     }
     ssc.checkpoint(testDir.getAbsolutePath)
 
@@ -272,7 +306,9 @@ class DirectKafkaStreamSuite
 
     // This is ensure all the data is eventually receiving only once
     stateStream.foreachRDD { (rdd: RDD[(String, Int)]) =>
-      rdd.collect().headOption.foreach { x => DirectKafkaStreamSuite.total = x._2 }
+      rdd.collect().headOption.foreach { x =>
+        DirectKafkaStreamSuite.total = x._2
+      }
     }
     ssc.start()
 
@@ -293,12 +329,15 @@ class DirectKafkaStreamSuite
 
     // Recover context from checkpoints
     ssc = new StreamingContext(testDir.getAbsolutePath)
-    val recoveredStream = ssc.graph.getInputStreams().head.asInstanceOf[DStream[(String, String)]]
+    val recoveredStream =
+      ssc.graph.getInputStreams().head.asInstanceOf[DStream[(String, String)]]
 
     // Verify offset ranges have been recovered
     val recoveredOffsetRanges = getOffsetRanges(recoveredStream)
     assert(recoveredOffsetRanges.size > 0, "No offset ranges recovered")
-    val earlierOffsetRangesAsSets = offsetRangesBeforeStop.map { x => (x._1, x._2.toSet) }
+    val earlierOffsetRangesAsSets = offsetRangesBeforeStop.map { x =>
+      (x._1, x._2.toSet)
+    }
     assert(
       recoveredOffsetRanges.forall { or =>
         earlierOffsetRangesAsSets.contains((or._1, or._2.toSet))
@@ -333,16 +372,22 @@ class DirectKafkaStreamSuite
     ssc.addStreamingListener(collector)
 
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
-        ssc, kafkaParams, Set(topic))
+      KafkaUtils
+        .createDirectStream[String, String, StringDecoder, StringDecoder](
+          ssc,
+          kafkaParams,
+          Set(topic))
     }
 
     val allReceived = new ConcurrentLinkedQueue[(String, String)]
 
-    stream.foreachRDD { rdd => allReceived.addAll(Arrays.asList(rdd.collect(): _*)) }
+    stream.foreachRDD { rdd =>
+      allReceived.addAll(Arrays.asList(rdd.collect(): _*))
+    }
     ssc.start()
     eventually(timeout(20000.milliseconds), interval(200.milliseconds)) {
-      assert(allReceived.size === totalSent,
+      assert(
+        allReceived.size === totalSent,
         "didn't get expected number of messages, messages:\n" +
           allReceived.asScala.mkString("\n"))
 
@@ -358,33 +403,47 @@ class DirectKafkaStreamSuite
     val topic = "maxMessagesPerPartition"
     val kafkaStream = getDirectKafkaStream(topic, None)
 
-    val input = Map(TopicAndPartition(topic, 0) -> 50L, TopicAndPartition(topic, 1) -> 50L)
-    assert(kafkaStream.maxMessagesPerPartition(input).get ==
-      Map(TopicAndPartition(topic, 0) -> 10L, TopicAndPartition(topic, 1) -> 10L))
+    val input = Map(
+      TopicAndPartition(topic, 0) -> 50L,
+      TopicAndPartition(topic, 1) -> 50L)
+    assert(
+      kafkaStream.maxMessagesPerPartition(input).get ==
+        Map(
+          TopicAndPartition(topic, 0) -> 10L,
+          TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("maxMessagesPerPartition with no lag") {
     val topic = "maxMessagesPerPartition"
-    val rateController = Some(new ConstantRateController(0, new ConstantEstimator(100), 100))
+    val rateController =
+      Some(new ConstantRateController(0, new ConstantEstimator(100), 100))
     val kafkaStream = getDirectKafkaStream(topic, rateController)
 
-    val input = Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
+    val input =
+      Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
     assert(kafkaStream.maxMessagesPerPartition(input).isEmpty)
   }
 
   test("maxMessagesPerPartition respects max rate") {
     val topic = "maxMessagesPerPartition"
-    val rateController = Some(new ConstantRateController(0, new ConstantEstimator(100), 1000))
+    val rateController =
+      Some(new ConstantRateController(0, new ConstantEstimator(100), 1000))
     val kafkaStream = getDirectKafkaStream(topic, rateController)
 
-    val input = Map(TopicAndPartition(topic, 0) -> 1000L, TopicAndPartition(topic, 1) -> 1000L)
-    assert(kafkaStream.maxMessagesPerPartition(input).get ==
-      Map(TopicAndPartition(topic, 0) -> 10L, TopicAndPartition(topic, 1) -> 10L))
+    val input = Map(
+      TopicAndPartition(topic, 0) -> 1000L,
+      TopicAndPartition(topic, 1) -> 1000L)
+    assert(
+      kafkaStream.maxMessagesPerPartition(input).get ==
+        Map(
+          TopicAndPartition(topic, 0) -> 10L,
+          TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("using rate controller") {
     val topic = "backpressure"
-    val topicPartitions = Set(TopicAndPartition(topic, 0), TopicAndPartition(topic, 1))
+    val topicPartitions =
+      Set(TopicAndPartition(topic, 0), TopicAndPartition(topic, 1))
     kafkaTestUtils.createTopic(topic, 2)
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
@@ -397,23 +456,32 @@ class DirectKafkaStreamSuite
     kafkaTestUtils.sendMessages(topic, messages)
 
     val sparkConf = new SparkConf()
-      // Safe, even with streaming, because we're using the direct API.
-      // Using 1 core is useful to make the test more predictable.
+    // Safe, even with streaming, because we're using the direct API.
+    // Using 1 core is useful to make the test more predictable.
       .setMaster("local[1]")
       .setAppName(this.getClass.getSimpleName)
       .set("spark.streaming.kafka.maxRatePerPartition", "100")
 
     // Setup the streaming context
-    ssc = new StreamingContext(sparkConf, Milliseconds(batchIntervalMilliseconds))
+    ssc =
+      new StreamingContext(sparkConf, Milliseconds(batchIntervalMilliseconds))
 
     val kafkaStream = withClue("Error creating direct stream") {
       val kc = new KafkaCluster(kafkaParams)
-      val messageHandler = (mmd: MessageAndMetadata[String, String]) => (mmd.key, mmd.message)
-      val m = kc.getEarliestLeaderOffsets(topicPartitions)
-        .fold(e => Map.empty[TopicAndPartition, Long], m => m.mapValues(lo => lo.offset))
+      val messageHandler =
+        (mmd: MessageAndMetadata[String, String]) => (mmd.key, mmd.message)
+      val m = kc
+        .getEarliestLeaderOffsets(topicPartitions)
+        .fold(
+          e => Map.empty[TopicAndPartition, Long],
+          m => m.mapValues(lo => lo.offset))
 
-      new DirectKafkaInputDStream[String, String, StringDecoder, StringDecoder, (String, String)](
-          ssc, kafkaParams, m, messageHandler) {
+      new DirectKafkaInputDStream[
+        String,
+        String,
+        StringDecoder,
+        StringDecoder,
+        (String, String)](ssc, kafkaParams, m, messageHandler) {
         override protected[streaming] val rateController =
           Some(new DirectKafkaRateController(id, estimator))
       }
@@ -423,7 +491,9 @@ class DirectKafkaStreamSuite
 
     // Used for assertion failure messages.
     def dataToString: String =
-      collectedData.asScala.map(_.mkString("[", ",", "]")).mkString("{", ", ", "}")
+      collectedData.asScala
+        .map(_.mkString("[", ",", "]"))
+        .mkString("{", ", ", "}")
 
     // This is to collect the raw data received from Kafka
     kafkaStream.foreachRDD { (rdd: RDD[(String, String)], time: Time) =>
@@ -436,14 +506,17 @@ class DirectKafkaStreamSuite
     // Try different rate limits.
     // Wait for arrays of data to appear matching the rate.
     Seq(100, 50, 20).foreach { rate =>
-      collectedData.clear()       // Empty this buffer on each pass.
-      estimator.updateRate(rate)  // Set a new rate.
+      collectedData.clear() // Empty this buffer on each pass.
+      estimator.updateRate(rate) // Set a new rate.
       // Expect blocks of data equal to "rate", scaled by the interval length in secs.
       val expectedSize = Math.round(rate * batchIntervalMilliseconds * 0.001)
-      eventually(timeout(5.seconds), interval(batchIntervalMilliseconds.milliseconds)) {
+      eventually(
+        timeout(5.seconds),
+        interval(batchIntervalMilliseconds.milliseconds)) {
         // Assert that rate estimator values are used to determine maxMessagesPerPartition.
         // Funky "-" in message makes the complete assertion message read better.
-        assert(collectedData.asScala.exists(_.size == expectedSize),
+        assert(
+          collectedData.asScala.exists(_.size == expectedSize),
           s" - No arrays of size $expectedSize for rate $rate found in $dataToString")
       }
     }
@@ -454,12 +527,17 @@ class DirectKafkaStreamSuite
   /** Get the generated offset ranges from the DirectKafkaStream */
   private def getOffsetRanges[K, V](
       kafkaStream: DStream[(K, V)]): Seq[(Time, Array[OffsetRange])] = {
-    kafkaStream.generatedRDDs.mapValues { rdd =>
-      rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
-    }.toSeq.sortBy { _._1 }
+    kafkaStream.generatedRDDs
+      .mapValues { rdd =>
+        rdd.asInstanceOf[KafkaRDD[K, V, _, _, (K, V)]].offsetRanges
+      }
+      .toSeq
+      .sortBy { _._1 }
   }
 
-  private def getDirectKafkaStream(topic: String, mockRateController: Option[RateController]) = {
+  private def getDirectKafkaStream(
+      topic: String,
+      mockRateController: Option[RateController]) = {
     val batchIntervalMilliseconds = 100
 
     val sparkConf = new SparkConf()
@@ -468,12 +546,23 @@ class DirectKafkaStreamSuite
       .set("spark.streaming.kafka.maxRatePerPartition", "100")
 
     // Setup the streaming context
-    ssc = new StreamingContext(sparkConf, Milliseconds(batchIntervalMilliseconds))
+    ssc =
+      new StreamingContext(sparkConf, Milliseconds(batchIntervalMilliseconds))
 
-    val earliestOffsets = Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
-    val messageHandler = (mmd: MessageAndMetadata[String, String]) => (mmd.key, mmd.message)
-    new DirectKafkaInputDStream[String, String, StringDecoder, StringDecoder, (String, String)](
-      ssc, Map[String, String](), earliestOffsets, messageHandler) {
+    val earliestOffsets =
+      Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
+    val messageHandler = (mmd: MessageAndMetadata[String, String]) =>
+      (mmd.key, mmd.message)
+    new DirectKafkaInputDStream[
+      String,
+      String,
+      StringDecoder,
+      StringDecoder,
+      (String, String)](
+      ssc,
+      Map[String, String](),
+      earliestOffsets,
+      messageHandler) {
       override protected[streaming] val rateController = mockRateController
     }
   }
@@ -488,22 +577,25 @@ object DirectKafkaStreamSuite {
     val numRecordsStarted = new AtomicLong(0L)
     val numRecordsCompleted = new AtomicLong(0L)
 
-    override def onBatchSubmitted(batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
+    override def onBatchSubmitted(
+        batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
       numRecordsSubmitted.addAndGet(batchSubmitted.batchInfo.numRecords)
     }
 
-    override def onBatchStarted(batchStarted: StreamingListenerBatchStarted): Unit = {
+    override def onBatchStarted(
+        batchStarted: StreamingListenerBatchStarted): Unit = {
       numRecordsStarted.addAndGet(batchStarted.batchInfo.numRecords)
     }
 
-    override def onBatchCompleted(batchCompleted: StreamingListenerBatchCompleted): Unit = {
+    override def onBatchCompleted(
+        batchCompleted: StreamingListenerBatchCompleted): Unit = {
       numRecordsCompleted.addAndGet(batchCompleted.batchInfo.numRecords)
     }
   }
 }
 
 private[streaming] class ConstantEstimator(@volatile private var rate: Long)
-  extends RateEstimator {
+    extends RateEstimator {
 
   def updateRate(newRate: Long): Unit = {
     rate = newRate
@@ -516,8 +608,11 @@ private[streaming] class ConstantEstimator(@volatile private var rate: Long)
       schedulingDelay: Long): Option[Double] = Some(rate)
 }
 
-private[streaming] class ConstantRateController(id: Int, estimator: RateEstimator, rate: Long)
-  extends RateController(id, estimator) {
+private[streaming] class ConstantRateController(
+    id: Int,
+    estimator: RateEstimator,
+    rate: Long)
+    extends RateController(id, estimator) {
   override def publish(rate: Long): Unit = ()
   override def getLatestRate(): Long = rate
 }

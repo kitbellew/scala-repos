@@ -10,28 +10,35 @@ import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.expr._
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{TypeResult, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  TypeResult,
+  TypingContext
+}
 
 import scala.collection.Seq
 
 /**
- * @author Alexander Podkhalyuzin
- * Date: 06.03.2008
- */
-
-class ScInfixExprImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScInfixExpr {
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
+class ScInfixExprImpl(node: ASTNode)
+    extends ScalaPsiElementImpl(node)
+    with ScInfixExpr {
   override def toString: String = "InfixExpression"
 
   override def argumentExpressions: Seq[ScExpression] = {
-    if (isLeftAssoc) Seq(lOp) else rOp match {
-      case tuple: ScTuple => tuple.exprs
-      case t: ScParenthesisedExpr => t.expr match {
-        case Some(expr) => Seq(expr)
-        case None => Seq(t)
+    if (isLeftAssoc) Seq(lOp)
+    else
+      rOp match {
+        case tuple: ScTuple => tuple.exprs
+        case t: ScParenthesisedExpr =>
+          t.expr match {
+            case Some(expr) => Seq(expr)
+            case None       => Seq(t)
+          }
+        case unit: ScUnitExpr => Seq.empty
+        case expr             => Seq(expr)
       }
-      case unit: ScUnitExpr => Seq.empty
-      case expr => Seq(expr)
-    }
   }
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
@@ -42,7 +49,8 @@ class ScInfixExprImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScIn
         val lText = lOp.getText
         val rText = rOp.getText
         val exprText = s"$lText = $lText ${r.element.name} $rText"
-        val newExpr = ScalaPsiElementFactory.createExpressionWithContextFromText(exprText, getContext, this)
+        val newExpr = ScalaPsiElementFactory
+          .createExpressionWithContextFromText(exprText, getContext, this)
         newExpr.getType(TypingContext.empty)
       case _ => super.innerType(ctx)
     }
@@ -55,7 +63,7 @@ class ScInfixExprImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScIn
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
       case visitor: ScalaElementVisitor => visitor.visitInfixExpression(this)
-      case _ => super.accept(visitor)
+      case _                            => super.accept(visitor)
     }
   }
 }

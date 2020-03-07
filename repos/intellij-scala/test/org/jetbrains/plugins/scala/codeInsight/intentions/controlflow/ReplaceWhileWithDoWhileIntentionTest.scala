@@ -5,9 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.controlflow.ReplaceWhil
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * User: Nikolay.Tropin
- * Date: 4/17/13
- */
+  * User: Nikolay.Tropin
+  * Date: 4/17/13
+  */
 class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = ReplaceWhileWithDoWhileIntention.familyName
 

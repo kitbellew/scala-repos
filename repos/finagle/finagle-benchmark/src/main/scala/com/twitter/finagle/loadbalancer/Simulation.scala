@@ -13,38 +13,38 @@ private object LatencyProfile {
   private val rng = Rng("seed".hashCode)
 
   /**
-   * Creates a latency profile from a file where each line
-   * represents recorded latencies.
-   */
+    * Creates a latency profile from a file where each line
+    * represents recorded latencies.
+    */
   def fromFile(path: java.net.URL): () => Duration = {
     val latencies = Source.fromURL(path).getLines.toIndexedSeq map {
-      line: String => Duration.fromNanoseconds((line.toDouble*1000000).toLong)
+      line: String => Duration.fromNanoseconds((line.toDouble * 1000000).toLong)
     }
     val size = latencies.size
     var i = rng.nextInt(size)
-    () => { i = i + 1; latencies(i%size) }
+    () => { i = i + 1; latencies(i % size) }
   }
 
   /**
-   * Returns a function which generates a duration between `low`
-   * and `high` when applied.
-   */
+    * Returns a function which generates a duration between `low`
+    * and `high` when applied.
+    */
   def between(low: Duration, high: Duration): () => Duration = {
     require(low <= high)
     () => low + ((high - low) * math.random)
   }
 
   /**
-   * Returns a function which represents the given latency probability distribution.
-   */
+    * Returns a function which represents the given latency probability distribution.
+    */
   def apply(
-    min: Duration,
-    p50: Duration,
-    p90: Duration,
-    p95: Duration,
-    p99: Duration,
-    p999: Duration,
-    p9999: Duration
+      min: Duration,
+      p50: Duration,
+      p90: Duration,
+      p95: Duration,
+      p99: Duration,
+      p999: Duration,
+      p9999: Duration
   ): () => Duration = {
     val dist = Seq(
       0.5 -> between(min, p50),
@@ -59,12 +59,12 @@ private object LatencyProfile {
   }
 
   /**
-   * Creates a function that applies the probability distribution in
-   * `dist` over the latency functions in `latencies`.
-   */
+    * Creates a function that applies the probability distribution in
+    * `dist` over the latency functions in `latencies`.
+    */
   def apply(
-    dist: Seq[Double],
-    latencies: IndexedSeq[() => Duration]
+      dist: Seq[Double],
+      latencies: IndexedSeq[() => Duration]
   ): () => Duration = {
     val drv = Drv(dist)
     () => latencies(drv(rng))()
@@ -72,49 +72,55 @@ private object LatencyProfile {
 }
 
 private[finagle] class LatencyProfile(stopWatch: () => Duration) {
+
   /** Increase latency returned from `next` by `factor`. */
-  def slowBy(factor: Long)(next: () => Duration) = () => { next()*factor }
+  def slowBy(factor: Long)(next: () => Duration) = () => { next() * factor }
 
   /**
-   * Increases the latency returned from `next` by `factor` while `stopWatch` is
-   * within `start` and `end`.
-   */
-  def slowWithin(start: Duration, end: Duration, factor: Long)(next: () => Duration) = () => {
+    * Increases the latency returned from `next` by `factor` while `stopWatch` is
+    * within `start` and `end`.
+    */
+  def slowWithin(start: Duration, end: Duration, factor: Long)(
+      next: () => Duration) = () => {
     val time = stopWatch()
-    if (time >= start && time <= end) next()*factor else next()
+    if (time >= start && time <= end) next() * factor else next()
   }
 
   /**
-   * Progressively improve latencies returned from `next` while `stopWatch` is still
-   * within the window terminated at `end`.
-   */
-  def warmup(end: Duration, maxFactor: Double = 5.0)(next: () => Duration) = () => {
-    val time = stopWatch()
-    val factor = if (time < end) (1.0/time.inNanoseconds)*(end.inNanoseconds) else 1.0
-    Duration.fromNanoseconds((next().inNanoseconds*factor.min(maxFactor)).toLong)
-  }
+    * Progressively improve latencies returned from `next` while `stopWatch` is still
+    * within the window terminated at `end`.
+    */
+  def warmup(end: Duration, maxFactor: Double = 5.0)(next: () => Duration) =
+    () => {
+      val time = stopWatch()
+      val factor =
+        if (time < end) (1.0 / time.inNanoseconds) * (end.inNanoseconds)
+        else 1.0
+      Duration.fromNanoseconds(
+        (next().inNanoseconds * factor.min(maxFactor)).toLong)
+    }
 }
 
 /**
- * Creates a ServiceFactory that applies a latency profile to Services
- * it creates.
- */
+  * Creates a ServiceFactory that applies a latency profile to Services
+  * it creates.
+  */
 private[finagle] class LatencyFactory(sr: StatsReceiver) {
 
   def apply(
-    name: Int,
-    next: () => Duration,
-    _weight: Double = 1.0
+      name: Int,
+      next: () => Duration,
+      _weight: Double = 1.0
   ): ServiceFactory[Unit, Unit] = {
     val service = new Service[Unit, Unit] {
       implicit val timer = DefaultTimer.twitter
       val load = new AtomicInteger(0)
       val maxload = new AtomicInteger(0)
       val gauges = Seq(
-        sr.scope("load").addGauge(""+name) { load.get() },
-        sr.scope("maxload").addGauge(""+name) { maxload.get() }
+        sr.scope("load").addGauge("" + name) { load.get() },
+        sr.scope("maxload").addGauge("" + name) { maxload.get() }
       )
-      val count = sr.scope("count").counter(""+name)
+      val count = sr.scope("count").counter("" + name)
 
       def apply(req: Unit) = {
         synchronized {
@@ -144,14 +150,15 @@ private[finagle] object Simulation extends com.twitter.app.App {
   val bal = flag("bal", "p2c", "Load balancer")
 
   def main() {
-    val Qpms = qps()/1000
-    val Rem = qps()%1000
+    val Qpms = qps() / 1000
+    val Rem = qps() % 1000
 
     val stats = new SummarizingStatsReceiver
     val noBrokers = new NoBrokersAvailableException
     val newFactory = new LatencyFactory(stats)
 
-    val data = getClass.getClassLoader.getResource("resources/real_latencies.data")
+    val data =
+      getClass.getClassLoader.getResource("resources/real_latencies.data")
     val dist = LatencyProfile.fromFile(data)
     val stable: Set[ServiceFactory[Unit, Unit]] =
       Seq.tabulate(nstable())(i => newFactory(i, dist)).toSet
@@ -161,34 +168,39 @@ private[finagle] object Simulation extends com.twitter.app.App {
       Activity(underlying.map { facs => Activity.Ok(facs) })
 
     val factory = bal() match {
-      case "p2c" => Balancers.p2c().newBalancer(
-        activity,
-        statsReceiver=stats.scope("p2c"),
-        noBrokers)
+      case "p2c" =>
+        Balancers
+          .p2c()
+          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
 
-      case "ewma" => Balancers.p2cPeakEwma().newBalancer(
-        activity,
-        statsReceiver=stats.scope("p2c"),
-        noBrokers)
+      case "ewma" =>
+        Balancers
+          .p2cPeakEwma()
+          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
 
       case "aperture" =>
-        Balancers.aperture().newBalancer(
-          activity,
-          statsReceiver=stats.scope("aperture"),
-          noBrokers)
+        Balancers
+          .aperture()
+          .newBalancer(
+            activity,
+            statsReceiver = stats.scope("aperture"),
+            noBrokers)
     }
 
     val balancer = factory.toService
 
     val latstat = stats.stat("latency")
-    def call() = Stat.timeFuture(latstat, TimeUnit.MILLISECONDS) { balancer(()) }
+    def call() = Stat.timeFuture(latstat, TimeUnit.MILLISECONDS) {
+      balancer(())
+    }
 
     val stopWatch = Stopwatch.start()
     val p = new LatencyProfile(stopWatch)
 
-    val coldStart = p.warmup(10.seconds)_ andThen p.slowWithin(19.seconds, 23.seconds, 10)
-    underlying() += newFactory(nstable()+1, coldStart(dist))
-    underlying() += newFactory(nstable()+2, p.slowBy(2)(dist))
+    val coldStart =
+      p.warmup(10.seconds) _ andThen p.slowWithin(19.seconds, 23.seconds, 10)
+    underlying() += newFactory(nstable() + 1, coldStart(dist))
+    underlying() += newFactory(nstable() + 2, p.slowBy(2)(dist))
 
     var ms = 0
     while (stopWatch() < dur()) {
@@ -200,17 +212,19 @@ private[finagle] object Simulation extends com.twitter.app.App {
         n += 1
       }
 
-      if (Rem > 0 && ms%(1000/Rem) == 0) { call() }
+      if (Rem > 0 && ms % (1000 / Rem) == 0) { call() }
 
       ms += 1
 
-      if (ms%1000==0) {
-        println("-"*100)
+      if (ms % 1000 == 0) {
+        println("-" * 100)
         println("Requests at %s".format(stopWatch()))
 
-        val lines = for ((name, fn) <- stats.gauges.toSeq) yield (name.mkString("/"), fn())
+        val lines =
+          for ((name, fn) <- stats.gauges.toSeq)
+            yield (name.mkString("/"), fn())
         for ((name, value) <- lines.sortBy(_._1))
-          println(name+" "+value)
+          println(name + " " + value)
       }
     }
 

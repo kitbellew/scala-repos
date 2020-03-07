@@ -10,8 +10,7 @@ package org.scalajs.testsuite.utils
 import org.scalajs.jasminetest.JasmineTest
 
 object PlatformTest extends JasmineTest {
-  when("typedarray").
-  describe("org.scalajs.testsuite.utils.Platform") {
+  when("typedarray").describe("org.scalajs.testsuite.utils.Platform") {
     it("areTypedArraysSupported should be true") {
       // Note that if we don't have the tag set we can't say anything
       // on the typed arrays support.

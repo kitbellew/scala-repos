@@ -1,15 +1,14 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import language.postfixOps
 
-import akka.testkit.{ AkkaSpec, EventFilter }
+import akka.testkit.{AkkaSpec, EventFilter}
 import akka.actor.ActorDSL._
 import akka.event.Logging.Warning
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import java.util.concurrent.TimeoutException
 
@@ -56,10 +55,16 @@ class ActorDSLSpec extends AkkaSpec {
     "support queueing multiple queries" in {
       val i = inbox()
       import system.dispatcher
-      val res = Future.sequence(Seq(
-        Future { i.receive() } recover { case x ⇒ x },
-        Future { Thread.sleep(100); i.select() { case "world" ⇒ 1 } } recover { case x ⇒ x },
-        Future { Thread.sleep(200); i.select() { case "hello" ⇒ 2 } } recover { case x ⇒ x }))
+      val res = Future.sequence(
+        Seq(
+          Future { i.receive() } recover { case x ⇒ x },
+          Future {
+            Thread.sleep(100); i.select() { case "world" ⇒ 1 }
+          } recover { case x ⇒ x },
+          Future {
+            Thread.sleep(200); i.select() { case "hello" ⇒ 2 }
+          } recover { case x ⇒ x }
+        ))
       Thread.sleep(1000)
       res.isCompleted should ===(false)
       i.receiver ! 42
@@ -85,7 +90,9 @@ class ActorDSLSpec extends AkkaSpec {
       try {
         for (_ ← 1 to 1000) i.receiver ! 0
         expectNoMsg(1 second)
-        EventFilter.warning(start = "dropping message", occurrences = 1) intercept {
+        EventFilter.warning(
+          start = "dropping message",
+          occurrences = 1) intercept {
           i.receiver ! 42
         }
         expectMsgType[Warning]
@@ -136,7 +143,7 @@ class ActorDSLSpec extends AkkaSpec {
           case "info" ⇒ sender() ! "A"
           case "switch" ⇒
             becomeStacked { // this will stack upon the "A" behavior
-              case "info"   ⇒ sender() ! "B"
+              case "info" ⇒ sender() ! "B"
               case "switch" ⇒ unbecome() // return to the "A" behavior
             }
           case "lobotomize" ⇒ unbecome() // OH NOES: Actor.emptyBehavior
@@ -192,7 +199,7 @@ class ActorDSLSpec extends AkkaSpec {
         //#supervise-with
         superviseWith(OneForOneStrategy() {
           case e: Exception if e.getMessage == "hello" ⇒ Stop
-          case _: Exception                            ⇒ Resume
+          case _: Exception ⇒ Resume
         })
         //#supervise-with
         val child = actor("child")(new Act {
@@ -240,7 +247,8 @@ class ActorDSLSpec extends AkkaSpec {
         become {
           case 1 ⇒ stash()
           case 2 ⇒
-            testActor ! 2; unstashAll(); becomeStacked {
+            testActor ! 2; unstashAll();
+            becomeStacked {
               case 1 ⇒ testActor ! 1; unbecome()
             }
         }

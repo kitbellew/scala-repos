@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.tools.ant.sabbus
 
 import java.net.URL
@@ -42,5 +41,5 @@ object Compilers extends scala.collection.DefaultMap[String, Compiler] {
   }
 
   private def freeMemoryString: String =
-    (Runtime.getRuntime.freeMemory/1048576.0).formatted("%10.2f") + " MB"
+    (Runtime.getRuntime.freeMemory / 1048576.0).formatted("%10.2f") + " MB"
 }

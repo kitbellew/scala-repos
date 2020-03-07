@@ -8,7 +8,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import docs.http.scaladsl.server.RoutingSpec
 import akka.http.scaladsl.model.MediaTypes.`application/json`
 import akka.http.scaladsl.model._
-import spray.json.{ JsValue, DefaultJsonProtocol }
+import spray.json.{JsValue, DefaultJsonProtocol}
 
 //# person-case-class
 case class Person(name: String, favoriteNumber: Int)
@@ -26,15 +26,20 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
 
     val route = post {
       entity(as[Person]) { person =>
-        complete(s"Person: ${person.name} - favorite number: ${person.favoriteNumber}")
+        complete(
+          s"Person: ${person.name} - favorite number: ${person.favoriteNumber}")
       }
     }
 
     // tests:
-    Post("/", HttpEntity(`application/json`, """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
+    Post(
+      "/",
+      HttpEntity(
+        `application/json`,
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
       route ~> check {
-        responseAs[String] shouldEqual "Person: Jane - favorite number: 42"
-      }
+      responseAs[String] shouldEqual "Person: Jane - favorite number: 42"
+    }
   }
 
   "example-entity-with-raw-json" in {
@@ -42,15 +47,21 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
 
     val route = post {
       entity(as[JsValue]) { json =>
-        complete(s"Person: ${json.asJsObject.fields("name")} - favorite number: ${json.asJsObject.fields("favoriteNumber")}")
+        complete(
+          s"Person: ${json.asJsObject.fields("name")} - favorite number: ${json.asJsObject
+            .fields("favoriteNumber")}")
       }
     }
 
     // tests:
-    Post("/", HttpEntity(`application/json`, """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
+    Post(
+      "/",
+      HttpEntity(
+        `application/json`,
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
       route ~> check {
-        responseAs[String] shouldEqual """Person: "Jane" - favorite number: 42"""
-      }
+      responseAs[String] shouldEqual """Person: "Jane" - favorite number: 42"""
+    }
   }
 
   "example-completeWith-with-json" in {
@@ -65,7 +76,9 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val route = get {
-      completeWith(instanceOf[Person]) { completionFunction => findPerson(completionFunction) }
+      completeWith(instanceOf[Person]) { completionFunction =>
+        findPerson(completionFunction)
+      }
     }
 
     // tests:
@@ -92,11 +105,15 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    Post("/", HttpEntity(`application/json`, """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
+    Post(
+      "/",
+      HttpEntity(
+        `application/json`,
+        """{ "name": "Jane", "favoriteNumber" : 42 }""")) ~>
       route ~> check {
-        mediaType shouldEqual `application/json`
-        responseAs[String] should include(""""name": "Jane"""")
-        responseAs[String] should include(""""favoriteNumber": 42""")
-      }
+      mediaType shouldEqual `application/json`
+      responseAs[String] should include(""""name": "Jane"""")
+      responseAs[String] should include(""""favoriteNumber": 42""")
+    }
   }
 }

@@ -27,18 +27,24 @@ import org.apache.spark.deploy.mesos.MesosDriverDescription
 import org.apache.spark.scheduler.cluster.mesos.MesosClusterSubmissionState
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[mesos] class MesosClusterPage(parent: MesosClusterUI) extends WebUIPage("") {
+private[mesos] class MesosClusterPage(parent: MesosClusterUI)
+    extends WebUIPage("") {
   def render(request: HttpServletRequest): Seq[Node] = {
     val state = parent.scheduler.getSchedulerState()
-    val queuedHeaders = Seq("Driver ID", "Submit Date", "Main Class", "Driver Resources")
+    val queuedHeaders =
+      Seq("Driver ID", "Submit Date", "Main Class", "Driver Resources")
     val driverHeaders = queuedHeaders ++
       Seq("Start Date", "Mesos Slave ID", "State")
     val retryHeaders = Seq("Driver ID", "Submit Date", "Description") ++
       Seq("Last Failed Status", "Next Retry Time", "Attempt Count")
-    val queuedTable = UIUtils.listingTable(queuedHeaders, queuedRow, state.queuedDrivers)
-    val launchedTable = UIUtils.listingTable(driverHeaders, driverRow, state.launchedDrivers)
-    val finishedTable = UIUtils.listingTable(driverHeaders, driverRow, state.finishedDrivers)
-    val retryTable = UIUtils.listingTable(retryHeaders, retryRow, state.pendingRetryDrivers)
+    val queuedTable =
+      UIUtils.listingTable(queuedHeaders, queuedRow, state.queuedDrivers)
+    val launchedTable =
+      UIUtils.listingTable(driverHeaders, driverRow, state.launchedDrivers)
+    val finishedTable =
+      UIUtils.listingTable(driverHeaders, driverRow, state.finishedDrivers)
+    val retryTable =
+      UIUtils.listingTable(retryHeaders, retryRow, state.pendingRetryDrivers)
     val content =
       <p>Mesos Framework ID: {state.frameworkId}</p>
       <div class="row-fluid">
@@ -72,7 +78,9 @@ private[mesos] class MesosClusterPage(parent: MesosClusterUI) extends WebUIPage(
       <td><a href={s"driver?id=$id"}>{id}</a></td>
       <td>{state.driverDescription.submissionDate}</td>
       <td>{state.driverDescription.command.mainClass}</td>
-      <td>cpus: {state.driverDescription.cores}, mem: {state.driverDescription.mem}</td>
+      <td>cpus: {state.driverDescription.cores}, mem: {
+      state.driverDescription.mem
+    }</td>
       <td>{state.startDate}</td>
       <td>{state.slaveId.getValue}</td>
       <td>{stateString(state.mesosTaskStatus)}</td>

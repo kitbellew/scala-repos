@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.jdbc
 
 import grizzled.slf4j.Logging
@@ -22,8 +21,13 @@ import io.prediction.data.storage.StorageClientConfig
 import scalikejdbc._
 
 /** JDBC implementation of [[EngineInstances]] */
-class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: String)
-  extends EngineInstances with Logging {
+class JDBCEngineInstances(
+    client: String,
+    config: StorageClientConfig,
+    prefix: String)
+    extends EngineInstances
+    with Logging {
+
   /** Database table name for this data access object */
   val tableName = JDBCUtils.prefixTableName(prefix, "engineinstances")
   DB autoCommit { implicit session =>
@@ -86,8 +90,10 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
       preparatorParams,
       algorithmsParams,
       servingParams
-    FROM $tableName WHERE id = $id""".map(resultToEngineInstance).
-      single().apply()
+    FROM $tableName WHERE id = $id"""
+      .map(resultToEngineInstance)
+      .single()
+      .apply()
   }
 
   def getAll(): Seq[EngineInstance] = DB localTx { implicit session =>
@@ -112,15 +118,15 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
   }
 
   def getLatestCompleted(
-    engineId: String,
-    engineVersion: String,
-    engineVariant: String): Option[EngineInstance] =
+      engineId: String,
+      engineVersion: String,
+      engineVariant: String): Option[EngineInstance] =
     getCompleted(engineId, engineVersion, engineVariant).headOption
 
   def getCompleted(
-    engineId: String,
-    engineVersion: String,
-    engineVariant: String): Seq[EngineInstance] = DB localTx { implicit s =>
+      engineId: String,
+      engineVersion: String,
+      engineVariant: String): Seq[EngineInstance] = DB localTx { implicit s =>
     sql"""
     SELECT
       id,
@@ -144,8 +150,7 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
       engineId = $engineId AND
       engineVersion = $engineVersion AND
       engineVariant = $engineVariant
-    ORDER BY startTime DESC""".
-      map(resultToEngineInstance).list().apply()
+    ORDER BY startTime DESC""".map(resultToEngineInstance).list().apply()
   }
 
   def update(i: EngineInstance): Unit = DB localTx { implicit session =>
@@ -189,6 +194,7 @@ class JDBCEngineInstances(client: String, config: StorageClientConfig, prefix: S
       dataSourceParams = rs.string("datasourceParams"),
       preparatorParams = rs.string("preparatorParams"),
       algorithmsParams = rs.string("algorithmsParams"),
-      servingParams = rs.string("servingParams"))
+      servingParams = rs.string("servingParams")
+    )
   }
 }

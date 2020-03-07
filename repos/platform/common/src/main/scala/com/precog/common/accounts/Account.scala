@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -21,7 +21,13 @@ package com.precog.common
 package accounts
 
 import com.precog.common.Path
-import com.precog.common.security.{ APIKey, Permission, ReadPermission, WritePermission, DeletePermission }
+import com.precog.common.security.{
+  APIKey,
+  Permission,
+  ReadPermission,
+  WritePermission,
+  DeletePermission
+}
 import Permission._
 
 import blueeyes.json._
@@ -49,24 +55,27 @@ object AccountPlan {
 
   implicit val iso = Iso.hlist(AccountPlan.apply _, AccountPlan.unapply _)
   val schema = "type" :: HNil
-  implicit val (decomposer, extractor) = serializationV[AccountPlan](schema, None)
+  implicit val (decomposer, extractor) =
+    serializationV[AccountPlan](schema, None)
 }
 
-case class Account(accountId: AccountId,
-                   email: String,
-                   passwordHash: String,
-                   passwordSalt: String,
-                   accountCreationDate: DateTime,
-                   apiKey: APIKey,
-                   rootPath: Path,
-                   plan: AccountPlan,
-                   parentId: Option[String] = None,
-                   lastPasswordChangeTime: Option[DateTime] = None,
-                   profile: Option[JValue] = None)
+case class Account(
+    accountId: AccountId,
+    email: String,
+    passwordHash: String,
+    passwordSalt: String,
+    accountCreationDate: DateTime,
+    apiKey: APIKey,
+    rootPath: Path,
+    plan: AccountPlan,
+    parentId: Option[String] = None,
+    lastPasswordChangeTime: Option[DateTime] = None,
+    profile: Option[JValue] = None)
 
 object Account {
   implicit val iso = Iso.hlist(Account.apply _, Account.unapply _)
-  val schemaV1     = "accountId" :: "email" :: "passwordHash" :: "passwordSalt" :: "accountCreationDate" :: "apiKey" :: "rootPath" :: "plan" :: "parentId" :: "lastPasswordChangeTime" :: "profile" :: HNil
+  val schemaV1 =
+    "accountId" :: "email" :: "passwordHash" :: "passwordSalt" :: "accountCreationDate" :: "apiKey" :: "rootPath" :: "plan" :: "parentId" :: "lastPasswordChangeTime" :: "profile" :: HNil
 
   val extractorPreV = extractorV[Account](schemaV1, None)
   val extractorV1 = extractorV[Account](schemaV1, Some("1.1".v))
@@ -79,7 +88,8 @@ object Account {
   def randomSalt() = {
     val saltBytes = new Array[Byte](256)
     randomSource.nextBytes(saltBytes)
-    saltBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(collection.breakOut) : String
+    saltBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(
+      collection.breakOut): String
   }
 
   // FIXME: Remove when there are no SHA1 hashes in the accounts db
@@ -98,11 +108,14 @@ object Account {
     md.update(dataBytes, 0, dataBytes.length)
     val hashBytes = md.digest()
 
-    hashBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(collection.breakOut) : String
+    hashBytes.flatMap(byte => Integer.toHexString(0xFF & byte))(
+      collection.breakOut): String
   }
 
-  def newAccountPermissions(accountId: AccountId, accountPath: Path): Set[Permission] = {
-    // Path is "/" so that an account may read data it wrote no matter what path it exists under. 
+  def newAccountPermissions(
+      accountId: AccountId,
+      accountPath: Path): Set[Permission] = {
+    // Path is "/" so that an account may read data it wrote no matter what path it exists under.
     // See AccessControlSpec, NewGrantRequest
     Set[Permission](
       WritePermission(accountPath, WriteAsAny),
@@ -115,10 +128,11 @@ object Account {
 case class WrappedAccountId(accountId: AccountId)
 
 object WrappedAccountId {
-  implicit val wrappedAccountIdIso = Iso.hlist(WrappedAccountId.apply _, WrappedAccountId.unapply _)
+  implicit val wrappedAccountIdIso =
+    Iso.hlist(WrappedAccountId.apply _, WrappedAccountId.unapply _)
 
   val schema = "accountId" :: HNil
 
-  implicit val (wrappedAccountIdDecomposer, wrappedAccountIdExtractor) = serializationV[WrappedAccountId](schema, None)
+  implicit val (wrappedAccountIdDecomposer, wrappedAccountIdExtractor) =
+    serializationV[WrappedAccountId](schema, None)
 }
-

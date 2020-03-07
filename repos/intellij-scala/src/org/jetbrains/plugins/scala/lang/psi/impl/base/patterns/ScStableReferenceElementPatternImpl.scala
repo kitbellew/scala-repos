@@ -12,18 +12,20 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScStableReferenceE
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
- * @author ilyas
- */
-
-class ScStableReferenceElementPatternImpl(node : ASTNode) extends ScalaPsiElementImpl(node) with ScStableReferenceElementPattern {
+  * @author ilyas
+  */
+class ScStableReferenceElementPatternImpl(node: ASTNode)
+    extends ScalaPsiElementImpl(node)
+    with ScStableReferenceElementPattern {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
       case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _ => super.accept(visitor)
+      case _                            => super.accept(visitor)
     }
   }
 
   override def toString: String = "StableElementPattern"
 
-  override def getType(ctx:TypingContext) = wrap(getReferenceExpression) flatMap {e => e.getType(TypingContext.empty)}
+  override def getType(ctx: TypingContext) =
+    wrap(getReferenceExpression) flatMap { e => e.getType(TypingContext.empty) }
 }

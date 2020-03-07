@@ -44,11 +44,10 @@ private[ui] case class ExecutorSummaryInfo(
     maxMemory: Long,
     executorLogs: Map[String, String])
 
-
 private[ui] class ExecutorsPage(
     parent: ExecutorsTab,
     threadDumpEnabled: Boolean)
-  extends WebUIPage("") {
+    extends WebUIPage("") {
   private val listener = parent.listener
   // When GCTimePercent is edited change ToolTips.TASK_TIME to match
   private val GCTimePercent = 0.1
@@ -93,12 +92,17 @@ private[ui] class ExecutorsPage(
             <!-- Place the shuffle write tooltip on the left (rather than the default position
               of on top) because the shuffle write column is the last column on the right side and
               the tooltip is wider than the column, so it doesn't fit on top. -->
-            <span data-toggle="tooltip" data-placement="left" title={ToolTips.SHUFFLE_WRITE}>
+            <span data-toggle="tooltip" data-placement="left" title={
+        ToolTips.SHUFFLE_WRITE
+      }>
               Shuffle Write
             </span>
           </th>
           {if (logsExist) <th class="sorttable_nosort">Logs</th> else Seq.empty}
-          {if (threadDumpEnabled) <th class="sorttable_nosort">Thread Dump</th> else Seq.empty}
+          {
+        if (threadDumpEnabled) <th class="sorttable_nosort">Thread Dump</th>
+        else Seq.empty
+      }
         </thead>
         <tbody>
           {execInfoSorted.map(execRow(_, logsExist))}
@@ -150,8 +154,16 @@ private[ui] class ExecutorsPage(
         {Utils.bytesToString(diskUsed)}
       </td>
       <td>{info.totalCores}</td>
-      {taskData(info.maxTasks, info.activeTasks, info.failedTasks, info.completedTasks,
-      info.totalTasks, info.totalDuration, info.totalGCTime)}
+      {
+      taskData(
+        info.maxTasks,
+        info.activeTasks,
+        info.failedTasks,
+        info.completedTasks,
+        info.totalTasks,
+        info.totalDuration,
+        info.totalGCTime)
+    }
       <td sorttable_customkey={info.totalInputBytes.toString}>
         {Utils.bytesToString(info.totalInputBytes)}
       </td>
@@ -162,38 +174,41 @@ private[ui] class ExecutorsPage(
         {Utils.bytesToString(info.totalShuffleWrite)}
       </td>
       {
-        if (logsExist) {
-          <td>
+      if (logsExist) {
+        <td>
             {
-              info.executorLogs.map { case (logName, logUrl) =>
-                <div>
+          info.executorLogs.map {
+            case (logName, logUrl) =>
+              <div>
                   <a href={logUrl}>
                     {logName}
                   </a>
                 </div>
-              }
-            }
-          </td>
+          }
         }
+          </td>
       }
+    }
       {
-        if (threadDumpEnabled) {
-          if (info.isActive) {
-            val encodedId = URLEncoder.encode(info.id, "UTF-8")
-            <td>
+      if (threadDumpEnabled) {
+        if (info.isActive) {
+          val encodedId = URLEncoder.encode(info.id, "UTF-8")
+          <td>
               <a href={s"threadDump/?executorId=${encodedId}"}>Thread Dump</a>
             </td>
-          } else {
-            <td> </td>
-          }
         } else {
-          Seq.empty
+          <td> </td>
         }
+      } else {
+        Seq.empty
       }
+    }
     </tr>
   }
 
-  private def execSummaryRow(execInfo: Seq[ExecutorSummary], rowName: String): Seq[Node] = {
+  private def execSummaryRow(
+      execInfo: Seq[ExecutorSummary],
+      rowName: String): Seq[Node] = {
     val maximumMemory = execInfo.map(_.maxMemory).sum
     val memoryUsed = execInfo.map(_.memoryUsed).sum
     val diskUsed = execInfo.map(_.diskUsed).sum
@@ -213,13 +228,17 @@ private[ui] class ExecutorsPage(
         {Utils.bytesToString(diskUsed)}
       </td>
       <td>{totalCores}</td>
-      {taskData(execInfo.map(_.maxTasks).sum,
-      execInfo.map(_.activeTasks).sum,
-      execInfo.map(_.failedTasks).sum,
-      execInfo.map(_.completedTasks).sum,
-      execInfo.map(_.totalTasks).sum,
-      execInfo.map(_.totalDuration).sum,
-      execInfo.map(_.totalGCTime).sum)}
+      {
+      taskData(
+        execInfo.map(_.maxTasks).sum,
+        execInfo.map(_.activeTasks).sum,
+        execInfo.map(_.failedTasks).sum,
+        execInfo.map(_.completedTasks).sum,
+        execInfo.map(_.totalTasks).sum,
+        execInfo.map(_.totalDuration).sum,
+        execInfo.map(_.totalGCTime).sum
+      )
+    }
       <td sorttable_customkey={totalInputBytes.toString}>
         {Utils.bytesToString(totalInputBytes)}
       </td>
@@ -232,8 +251,9 @@ private[ui] class ExecutorsPage(
     </tr>
   }
 
-  private def execSummary(activeExecInfo: Seq[ExecutorSummary], deadExecInfo: Seq[ExecutorSummary]):
-    Seq[Node] = {
+  private def execSummary(
+      activeExecInfo: Seq[ExecutorSummary],
+      deadExecInfo: Seq[ExecutorSummary]): Seq[Node] = {
     val totalExecInfo = activeExecInfo ++ deadExecInfo
     val activeRow = execSummaryRow(activeExecInfo, "Active");
     val deadRow = execSummaryRow(deadExecInfo, "Dead");
@@ -254,7 +274,9 @@ private[ui] class ExecutorsPage(
         <th><span data-toggle="tooltip" title={ToolTips.INPUT}>Input</span></th>
         <th><span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>Shuffle Read</span></th>
         <th>
-          <span data-toggle="tooltip" data-placement="left" title={ToolTips.SHUFFLE_WRITE}>
+          <span data-toggle="tooltip" data-placement="left" title={
+      ToolTips.SHUFFLE_WRITE
+    }>
             Shuffle Write
           </span>
         </th>
@@ -299,30 +321,30 @@ private[ui] class ExecutorsPage(
       }
 
     val tableData =
-    <td style={
-      if (activeTasks > 0) {
-        "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
-      } else {
-        ""
-      }
+      <td style={
+        if (activeTasks > 0) {
+          "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
+        } else {
+          ""
+        }
       }>{activeTasks}</td>
     <td style={
-      if (failedTasks > 0) {
-        "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
-      } else {
-        ""
-      }
+        if (failedTasks > 0) {
+          "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
+        } else {
+          ""
+        }
       }>{failedTasks}</td>
     <td>{completedTasks}</td>
     <td>{totalTasks}</td>
     <td sorttable_customkey={totalDuration.toString} style={
-      // Red if GC time over GCTimePercent of total time
-      if (totalGCTime > GCTimePercent * totalDuration) {
-        "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
-      } else {
-        ""
-      }
-    }>
+        // Red if GC time over GCTimePercent of total time
+        if (totalGCTime > GCTimePercent * totalDuration) {
+          "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
+        } else {
+          ""
+        }
+      }>
       {Utils.msDurationToString(totalDuration)}
       ({Utils.msDurationToString(totalGCTime)})
     </td>;
@@ -332,6 +354,7 @@ private[ui] class ExecutorsPage(
 }
 
 private[spark] object ExecutorsPage {
+
   /** Represent an executor's info as a map given a storage status index */
   def getExecInfo(
       listener: ExecutorsListener,
@@ -358,7 +381,8 @@ private[spark] object ExecutorsPage {
     val totalGCTime = listener.executorToJvmGCTime.getOrElse(execId, 0L)
     val totalInputBytes = listener.executorToInputBytes.getOrElse(execId, 0L)
     val totalShuffleRead = listener.executorToShuffleRead.getOrElse(execId, 0L)
-    val totalShuffleWrite = listener.executorToShuffleWrite.getOrElse(execId, 0L)
+    val totalShuffleWrite =
+      listener.executorToShuffleWrite.getOrElse(execId, 0L)
     val executorLogs = listener.executorToLogUrls.getOrElse(execId, Map.empty)
 
     new ExecutorSummary(

@@ -1,18 +1,20 @@
 //package org.apache.spark
 package io.prediction.workflow
 
-import _root_.io.netty.util.internal.logging.{Slf4JLoggerFactory, InternalLoggerFactory}
+import _root_.io.netty.util.internal.logging.{
+  Slf4JLoggerFactory,
+  InternalLoggerFactory
+}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Suite
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 
-
 /** Manages a local `sc` {@link SparkContext} variable, correctly stopping it
   * after each test. */
-trait LocalSparkContext 
-extends BeforeAndAfterEach with BeforeAndAfterAll { self: Suite =>
+trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
+  self: Suite =>
 
   @transient var sc: SparkContext = _
 
@@ -52,6 +54,7 @@ object LocalSparkContext {
   }
 
 }
+
 /** Shares a local `SparkContext` between all tests in a suite and closes it at the end */
 trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
 
@@ -72,4 +75,3 @@ trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
     super.afterAll()
   }
 }
-

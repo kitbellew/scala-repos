@@ -64,8 +64,6 @@ class NotFoundBenchmark extends StdBenchAnnotations {
   @Benchmark
   def set_Cutoff_NotFound: Set[String] =
     notFoundSet(HitsCutoff)
-
-
   @Benchmark
   def map_90_Baseline: Map[String, String] =
     baselineMap(Hits90)

@@ -36,7 +36,8 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
 
     @inline
     def rawToInt(x: Double): Int =
-      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic]).asInstanceOf[Int]
+      (x.asInstanceOf[js.Dynamic] | 0.asInstanceOf[js.Dynamic])
+        .asInstanceOf[Int]
 
     @inline
     def _24msbOf(x: Double): Int = rawToInt(x / (1 << 24).toDouble)
@@ -56,7 +57,8 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
     val mulLo = mul.toInt & ((1 << 24) - 1)
 
     val loProd = oldSeedLo.toDouble * mulLo.toDouble + 0xB
-    val hiProd = oldSeedLo.toDouble * mulHi.toDouble + oldSeedHi.toDouble * mulLo.toDouble
+    val hiProd =
+      oldSeedLo.toDouble * mulHi.toDouble + oldSeedHi.toDouble * mulLo.toDouble
     val newSeedHi =
       (_24msbOf(loProd) + _24lsbOf(hiProd)) & ((1 << 24) - 1)
     val newSeedLo =
@@ -74,7 +76,8 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
 
   def nextDouble(): Double = {
     // ((next(26).toLong << 27) + next(27)) / (1L << 53).toDouble
-    ((next(26).toDouble * (1L << 27).toDouble) + next(27).toDouble) / (1L << 53).toDouble
+    ((next(26).toDouble * (1L << 27).toDouble) + next(
+      27).toDouble) / (1L << 53).toDouble
   }
 
   def nextBoolean(): Boolean = next(1) != 0
@@ -102,7 +105,7 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
       def loop(): Int = {
         val bits = next(31)
         val value = bits % n
-        if (bits - value + (n-1) < 0) loop()
+        if (bits - value + (n - 1) < 0) loop()
         else value
       }
 
@@ -151,19 +154,19 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
        * Rejection sampling throws away about 20% of the pairs.
        */
       do {
-        x = nextDouble()*2-1
-        y = nextDouble()*2-1
-        rds = x*x + y*y
+        x = nextDouble() * 2 - 1
+        y = nextDouble() * 2 - 1
+        rds = x * x + y * y
       } while (rds == 0 || rds > 1)
 
       val c = Math.sqrt(-2 * Math.log(rds) / rds)
 
       // Save y*c for next time
-      nextNextGaussian = y*c
+      nextNextGaussian = y * c
       haveNextNextGaussian = true
 
       // And return x*c
-      x*c
+      x * c
     }
   }
 }
@@ -172,7 +175,7 @@ object Random {
 
   /** Generate a random long from JS RNG to seed a new Random */
   private def randomSeed(): Long =
-    (randomInt().toLong << 32) | (randomInt().toLong & 0xffffffffL)
+    (randomInt().toLong << 32) | (randomInt().toLong & 0xFFFFFFFFL)
 
   private def randomInt(): Int =
     (Math.floor(js.Math.random() * 4294967296.0) - 2147483648.0).toInt

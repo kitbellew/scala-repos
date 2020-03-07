@@ -5,8 +5,8 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 abstract class SbtOptionsProvider {
   def vmOptionsFor(project: Project, path: String): Seq[String]
 }

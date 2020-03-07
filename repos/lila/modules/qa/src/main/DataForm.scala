@@ -6,7 +6,8 @@ import play.api.i18n.Lang
 
 private[qa] final class DataForm(
     val captcher: akka.actor.ActorSelection,
-    detectLanguage: lila.common.DetectLanguage) extends lila.hub.CaptchedForm {
+    detectLanguage: lila.common.DetectLanguage)
+    extends lila.hub.CaptchedForm {
 
   lazy val question = Form(
     mapping(
@@ -20,12 +21,13 @@ private[qa] final class DataForm(
     )(QuestionData.apply)(QuestionData.unapply)
       .verifying(captchaFailMessage, validateCaptcha _))
 
-  def editQuestion(q: Question) = question fill QuestionData(
-    title = q.title,
-    body = q.body,
-    `hidden-tags` = q.tags mkString ",",
-    gameId = "",
-    move = "")
+  def editQuestion(q: Question) =
+    question fill QuestionData(
+      title = q.title,
+      body = q.body,
+      `hidden-tags` = q.tags mkString ",",
+      gameId = "",
+      move = "")
 
   lazy val answer = Form(
     mapping(
@@ -42,9 +44,10 @@ private[qa] final class DataForm(
         .verifying(languageMessage, validateLanguage _)
     ))
 
-  lazy val moveAnswer = Form(single(
-    "to" -> nonEmptyText
-  ))
+  lazy val moveAnswer = Form(
+    single(
+      "to" -> nonEmptyText
+    ))
 
   lazy val comment = Form(
     mapping(
@@ -53,11 +56,13 @@ private[qa] final class DataForm(
     )(CommentData.apply)(CommentData.unapply)
   )
 
-  val vote = Form(single(
-    "vote" -> number
-  ))
+  val vote = Form(
+    single(
+      "vote" -> number
+    ))
 
-  private val languageMessage = "I didn't understand that. Is it written in English?"
+  private val languageMessage =
+    "I didn't understand that. Is it written in English?"
 
   private def validateLanguage(str: String) =
     detectLanguage(str).awaitSeconds(5).??(_ == Lang("en"))
@@ -70,12 +75,10 @@ private[qa] case class QuestionData(
     gameId: String,
     move: String) {
 
-  def tags = `hidden-tags`.split(',').toList.map(_.trim.toLowerCase).filter(_.nonEmpty)
+  def tags =
+    `hidden-tags`.split(',').toList.map(_.trim.toLowerCase).filter(_.nonEmpty)
 }
 
-private[qa] case class AnswerData(
-  body: String,
-  gameId: String,
-  move: String)
+private[qa] case class AnswerData(body: String, gameId: String, move: String)
 
 private[qa] case class CommentData(body: String)

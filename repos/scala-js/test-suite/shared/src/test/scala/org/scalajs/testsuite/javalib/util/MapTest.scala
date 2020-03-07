@@ -246,22 +246,21 @@ trait MapTest {
   @Test def should_put_a_whole_map_into(): Unit = {
     val mp = factory.empty[String, String]
 
-    val m = mu.Map[String, String](
-      "X" -> "y")
+    val m = mu.Map[String, String]("X" -> "y")
     mp.putAll(mutableMapAsJavaMap(m))
     assertEquals(1, mp.size)
     assertEquals("y", mp.get("X"))
 
-    val nullMap = mu.Map[String, String](
-      (null: String) -> "y",
-      "X" -> "y")
+    val nullMap = mu.Map[String, String]((null: String) -> "y", "X" -> "y")
 
     if (factory.allowsNullKeys) {
       mp.putAll(mutableMapAsJavaMap(nullMap))
       assertEquals("y", mp.get(null))
       assertEquals("y", mp.get("X"))
     } else {
-      expectThrows(classOf[NullPointerException], mp.putAll(mutableMapAsJavaMap(nullMap)))
+      expectThrows(
+        classOf[NullPointerException],
+        mp.putAll(mutableMapAsJavaMap(nullMap)))
     }
   }
 
@@ -299,18 +298,10 @@ trait MapTest {
 
     assertTrue(values.isEmpty)
 
-    val hm1 = mu.HashMap(
-      "ONE" -> "one",
-      "TWO" -> "two")
-    val hm2 = mu.HashMap(
-      "ONE" -> null,
-      "TWO" -> "two")
-    val hm3 = mu.HashMap(
-      (null: String) -> "one",
-      "TWO" -> "two")
-    val hm4 = mu.HashMap(
-      (null: String) -> null,
-      "TWO" -> "two")
+    val hm1 = mu.HashMap("ONE" -> "one", "TWO" -> "two")
+    val hm2 = mu.HashMap("ONE" -> null, "TWO" -> "two")
+    val hm3 = mu.HashMap((null: String) -> "one", "TWO" -> "two")
+    val hm4 = mu.HashMap((null: String) -> null, "TWO" -> "two")
 
     assertEquals(2, new SimpleQueryableMap(hm1).values.size)
     assertEquals(2, new SimpleQueryableMap(hm2).values.size)
@@ -364,15 +355,9 @@ trait MapTest {
     assertTrue(numValues.contains(-0.0))
     assertTrue(numValues.contains(Double.NaN))
 
-    val hm1 = mu.HashMap(
-      1.0 -> null,
-      2.0 -> 2.0)
-    val hm2 = mu.HashMap(
-      (null: Any) -> 1.0,
-      2.0 -> 2.0)
-    val hm3 = mu.HashMap(
-      (null: Any) -> null,
-      2.0 -> 2.0)
+    val hm1 = mu.HashMap(1.0 -> null, 2.0 -> 2.0)
+    val hm2 = mu.HashMap((null: Any) -> 1.0, 2.0 -> 2.0)
+    val hm3 = mu.HashMap((null: Any) -> null, 2.0 -> 2.0)
 
     assertFalse(new SimpleQueryableMap(hm1).values.contains(1.0))
     assertTrue(new SimpleQueryableMap(hm2).values.contains(1.0))
@@ -383,7 +368,8 @@ trait MapTest {
     assertTrue(new SimpleQueryableMap(hm3).values.contains(null))
   }
 
-  @Test def values_should_side_effect_clear_remove_retain_on_the_related_map(): Unit = {
+  @Test def values_should_side_effect_clear_remove_retain_on_the_related_map()
+      : Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -460,18 +446,10 @@ trait MapTest {
 
     assertTrue(keySet.isEmpty)
 
-    val hm1 = mu.HashMap(
-      "ONE" -> "one",
-      "TWO" -> "two")
-    val hm2 = mu.HashMap(
-      "ONE" -> null,
-      "TWO" -> "two")
-    val hm3 = mu.HashMap(
-      (null: String) -> "one",
-      "TWO" -> "two")
-    val hm4 = mu.HashMap(
-      (null: String) -> null,
-      "TWO" -> "two")
+    val hm1 = mu.HashMap("ONE" -> "one", "TWO" -> "two")
+    val hm2 = mu.HashMap("ONE" -> null, "TWO" -> "two")
+    val hm3 = mu.HashMap((null: String) -> "one", "TWO" -> "two")
+    val hm4 = mu.HashMap((null: String) -> null, "TWO" -> "two")
 
     assertEquals(2, new SimpleQueryableMap(hm1).keySet.size)
     assertEquals(2, new SimpleQueryableMap(hm2).keySet.size)
@@ -528,15 +506,9 @@ trait MapTest {
     assertTrue(numkeySet.contains(-0.0))
     assertTrue(numkeySet.contains(Double.NaN))
 
-    val hm1 = mu.HashMap(
-      1.0 -> null,
-      2.0 -> 2.0)
-    val hm2 = mu.HashMap(
-      (null: Any) -> 1.0,
-      2.0 -> 2.0)
-    val hm3 = mu.HashMap(
-      (null: Any) -> null,
-      2.0 -> 2.0)
+    val hm1 = mu.HashMap(1.0 -> null, 2.0 -> 2.0)
+    val hm2 = mu.HashMap((null: Any) -> 1.0, 2.0 -> 2.0)
+    val hm3 = mu.HashMap((null: Any) -> null, 2.0 -> 2.0)
 
     assertTrue(new SimpleQueryableMap(hm1).keySet.contains(1.0))
     assertFalse(new SimpleQueryableMap(hm2).keySet.contains(1.0))
@@ -547,7 +519,8 @@ trait MapTest {
     assertTrue(new SimpleQueryableMap(hm3).keySet.contains(null))
   }
 
-  @Test def keySet_should_side_effect_clear_remove_retain_on_the_related_map(): Unit = {
+  @Test def keySet_should_side_effect_clear_remove_retain_on_the_related_map()
+      : Unit = {
     val mp = factory.empty[String, String]
 
     mp.put("ONE", "one")
@@ -599,7 +572,7 @@ trait MapTest {
     assertTrue(mp.containsKey("TWO"))
     assertFalse(mp.containsKey("THREE"))
   }
-  
+
 }
 
 object MapFactory {

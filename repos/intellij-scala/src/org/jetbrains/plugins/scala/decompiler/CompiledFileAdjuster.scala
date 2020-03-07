@@ -4,12 +4,11 @@ package decompiler
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
- * @author ilyas
- */
-
+  * @author ilyas
+  */
 trait CompiledFileAdjuster {
 
-  protected var sourceFileName : String = ""
+  protected var sourceFileName: String = ""
   protected var compiled = false
   protected var virtualFile: VirtualFile = null
 

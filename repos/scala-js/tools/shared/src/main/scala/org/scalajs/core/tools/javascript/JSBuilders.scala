@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.javascript
 
 import scala.annotation.tailrec
@@ -15,25 +14,26 @@ import scala.collection.mutable
 
 import java.io._
 import java.util.regex.Pattern
-import java.net.{ URI, URISyntaxException }
+import java.net.{URI, URISyntaxException}
 
 import org.scalajs.core.ir.Position
 import org.scalajs.core.tools.io._
 
 /** An abstract builder taking IR or JSTrees */
 trait JSTreeBuilder {
+
   /** Add a JavaScript tree representing a statement.
-   *  The tree must be a valid JavaScript tree (typically obtained by
-   *  desugaring a full-fledged IR tree).
-   */
+    *  The tree must be a valid JavaScript tree (typically obtained by
+    *  desugaring a full-fledged IR tree).
+    */
   def addJSTree(tree: Trees.Tree): Unit
 
   /** Completes the builder. */
   def complete(): Unit = ()
 }
 
-class JSFileBuilder(val name: String,
-    protected val outputWriter: Writer) extends JSTreeBuilder {
+class JSFileBuilder(val name: String, protected val outputWriter: Writer)
+    extends JSTreeBuilder {
   def addLine(line: String): Unit = {
     outputWriter.write(line)
     outputWriter.write('\n')
@@ -51,9 +51,9 @@ class JSFileBuilder(val name: String,
   }
 
   /** Add a JavaScript tree representing a statement.
-   *  The tree must be a valid JavaScript tree (typically obtained by
-   *  desugaring a full-fledged IR tree).
-   */
+    *  The tree must be a valid JavaScript tree (typically obtained by
+    *  desugaring a full-fledged IR tree).
+    */
   def addJSTree(tree: Trees.Tree): Unit = {
     val printer = new Printers.JSTreePrinter(outputWriter)
     printer.printTopLevelTree(tree)
@@ -61,13 +61,15 @@ class JSFileBuilder(val name: String,
   }
 
   /** Closes the underlying writer(s).
-   */
+    */
   def closeWriters(): Unit = {
     outputWriter.close()
   }
 }
 
-class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
+class JSFileBuilderWithSourceMapWriter(
+    n: String,
+    ow: Writer,
     protected val sourceMapWriter: SourceMapWriter)
     extends JSFileBuilder(n, ow) {
 
@@ -121,8 +123,8 @@ class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
   }
 
   override def addJSTree(tree: Trees.Tree): Unit = {
-    val printer = new Printers.JSTreePrinterWithSourceMap(
-        outputWriter, sourceMapWriter)
+    val printer =
+      new Printers.JSTreePrinterWithSourceMap(outputWriter, sourceMapWriter)
     printer.printTopLevelTree(tree)
     // Do not close the printer: we do not have ownership of the writers
   }
@@ -134,13 +136,18 @@ class JSFileBuilderWithSourceMapWriter(n: String, ow: Writer,
 
 }
 
-class JSFileBuilderWithSourceMap(n: String, ow: Writer,
+class JSFileBuilderWithSourceMap(
+    n: String,
+    ow: Writer,
     sourceMapOutputWriter: Writer,
     relativizeSourceMapBasePath: Option[URI] = None)
     extends JSFileBuilderWithSourceMapWriter(
-        n, ow,
-        new SourceMapWriter(sourceMapOutputWriter, n,
-            relativizeSourceMapBasePath)) {
+      n,
+      ow,
+      new SourceMapWriter(
+        sourceMapOutputWriter,
+        n,
+        relativizeSourceMapBasePath)) {
 
   override def complete(): Unit = {
     addLine("//# sourceMappingURL=" + name + ".map")

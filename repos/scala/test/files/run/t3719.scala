@@ -7,7 +7,7 @@ object Days extends Enumeration {
       this match {
         case Sun => false
         case Sat => false
-        case _ => true
+        case _   => true
       }
   }
 }
@@ -16,13 +16,13 @@ object Test extends App {
   def dayElementsShouldBeNamed(): List[String] =
     Days.values.toList.sorted.map(x => x.toString)
 
-  def nameOfMon(): String =  {
+  def nameOfMon(): String = {
     import Days._
     val d: Day = Mon
     d.toString
   }
 
-  def nameOfTue(): String =  {
+  def nameOfTue(): String = {
     import Days._
     val d: Day = Tue
     d.toString

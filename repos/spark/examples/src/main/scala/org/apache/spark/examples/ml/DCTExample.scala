@@ -51,4 +51,3 @@ object DCTExample {
   }
 }
 // scalastyle:on println
-

@@ -5,8 +5,8 @@ import java.util.Locale
 sealed trait HttpMethod {
 
   /**
-   * Flag as to whether the method is "safe", as defined by RFC 2616.
-   */
+    * Flag as to whether the method is "safe", as defined by RFC 2616.
+    */
   val isSafe: Boolean
 }
 
@@ -57,20 +57,20 @@ object HttpMethod {
     }: _*)
 
   /**
-   * Maps a String as an HttpMethod.
-   *
-   * @param name a string representing an HttpMethod
-   * @return the matching common HttpMethod, or an instance of `ExtensionMethod`
-   * if no method matches
-   */
+    * Maps a String as an HttpMethod.
+    *
+    * @param name a string representing an HttpMethod
+    * @return the matching common HttpMethod, or an instance of `ExtensionMethod`
+    * if no method matches
+    */
   def apply(name: String): HttpMethod = {
     val canonicalName = name.toUpperCase(Locale.ENGLISH)
     methodMap.getOrElse(canonicalName, ExtensionMethod(canonicalName))
   }
 
   /**
-   * The set of common HTTP methods: GET, HEAD, POST, PUT, DELETE, TRACE,
-   * CONNECT, and PATCH.
-   */
+    * The set of common HTTP methods: GET, HEAD, POST, PUT, DELETE, TRACE,
+    * CONNECT, and PATCH.
+    */
   val methods: Set[HttpMethod] = methodMap.values.toSet
 }

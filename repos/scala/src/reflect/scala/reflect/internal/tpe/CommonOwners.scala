@@ -40,10 +40,11 @@ private[internal] trait CommonOwners {
           result = result.owner
     }
     def traverse(tp: Type) = tp.normalize match {
-      case ThisType(sym)                => register(sym)
-      case TypeRef(NoPrefix, sym, args) => register(sym.owner) ; args foreach traverse
-      case SingleType(NoPrefix, sym)    => register(sym.owner)
-      case _                            => mapOver(tp)
+      case ThisType(sym) => register(sym)
+      case TypeRef(NoPrefix, sym, args) =>
+        register(sym.owner); args foreach traverse
+      case SingleType(NoPrefix, sym) => register(sym.owner)
+      case _                         => mapOver(tp)
     }
   }
 

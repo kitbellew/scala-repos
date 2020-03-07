@@ -19,22 +19,28 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScTypeParametersOwner
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScClass
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScParamClauseStub
 
-
 /**
- * @author Alexander Podkhalyuzin
- * Date: 22.02.2008
- */
+  * @author Alexander Podkhalyuzin
+  * Date: 22.02.2008
+  */
+class ScParameterClauseImpl private (
+    stub: StubElement[ScParameterClause],
+    nodeType: IElementType,
+    node: ASTNode)
+    extends ScalaStubBasedElementImpl(stub, nodeType, node)
+    with ScParameterClause {
 
-class ScParameterClauseImpl private (stub: StubElement[ScParameterClause], nodeType: IElementType, node: ASTNode)
-  extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScParameterClause {
+  def this(node: ASTNode) = { this(null, null, node) }
 
-  def this(node: ASTNode) = {this(null, null, node)}
-
-  def this(stub: ScParamClauseStub) = {this(stub, ScalaElementTypes.PARAM_CLAUSE, null)}
+  def this(stub: ScParamClauseStub) = {
+    this(stub, ScalaElementTypes.PARAM_CLAUSE, null)
+  }
   override def toString: String = "ParametersClause"
 
   def parameters: Seq[ScParameter] = {
-    getStubOrPsiChildren[ScParameter](TokenSets.PARAMETERS, JavaArrayFactoryUtil.ScParameterFactory)
+    getStubOrPsiChildren[ScParameter](
+      TokenSets.PARAMETERS,
+      JavaArrayFactoryUtil.ScParameterFactory)
   }
 
   @volatile
@@ -55,7 +61,7 @@ class ScParameterClauseImpl private (stub: StubElement[ScParameterClause], nodeT
             case p: ScPrimaryConstructor =>
               p.containingClass match {
                 case c: ScClass => c
-                case _ => return parameters
+                case _          => return parameters
               }
             case _ => return parameters
           }
@@ -64,7 +70,9 @@ class ScParameterClauseImpl private (stub: StubElement[ScParameterClause], nodeT
           if (synthClauseModCount == modCount) return synthClause
           SYNTH_LOCK synchronized { //it's important for all calculations to have the same psi here
             if (synthClauseModCount == modCount) return synthClause
-            synthClause = ScalaPsiUtil.syntheticParamClause(typeParametersOwner, clauses,
+            synthClause = ScalaPsiUtil.syntheticParamClause(
+              typeParametersOwner,
+              clauses,
               typeParametersOwner.isInstanceOf[ScClass])
             synthClauseModCount = modCount
             synthClause
@@ -94,7 +102,8 @@ class ScParameterClauseImpl private (stub: StubElement[ScParameterClause], nodeT
     val vararg =
       if (params.length == 0) false
       else params(params.length - 1).isRepeatedParameter
-    val rParen = if (vararg) params(params.length - 1).getNode else getLastChild.getNode
+    val rParen =
+      if (vararg) params(params.length - 1).getNode else getLastChild.getNode
     val node = getNode
     if (params.length > 0 && !vararg) {
       val comma = ScalaPsiElementFactory.createComma(getManager).getNode
@@ -113,6 +122,11 @@ class ScParameterClauseImpl private (stub: StubElement[ScParameterClause], nodeT
   }
 
   override def owner: PsiElement = {
-    ScalaPsiUtil.getContextOfType(this, true, classOf[ScFunctionExpr], classOf[ScFunction], classOf[ScPrimaryConstructor])
+    ScalaPsiUtil.getContextOfType(
+      this,
+      true,
+      classOf[ScFunctionExpr],
+      classOf[ScFunction],
+      classOf[ScPrimaryConstructor])
   }
 }

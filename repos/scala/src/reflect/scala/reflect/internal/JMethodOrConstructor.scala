@@ -8,16 +8,19 @@ package internal
 
 import scala.language.implicitConversions
 
-import java.lang.annotation.{ Annotation => jAnnotation }
+import java.lang.annotation.{Annotation => jAnnotation}
 import java.lang.reflect.{
-  Member => jMember, Constructor => jConstructor, Method => jMethod,
-  AnnotatedElement => jAnnotatedElement, Type => jType,
+  Member => jMember,
+  Constructor => jConstructor,
+  Method => jMethod,
+  AnnotatedElement => jAnnotatedElement,
+  Type => jType,
   TypeVariable => jTypeVariable
 }
 
 /** This class tries to abstract over some of the duplication
- *  in java.lang.reflect.{ Method, Constructor }.
- */
+  *  in java.lang.reflect.{ Method, Constructor }.
+  */
 class JMethodOrConstructor(val member: jMember with jAnnotatedElement) {
   def isVarArgs: Boolean = member match {
     case m: jMethod         => m.isVarArgs
@@ -42,6 +45,8 @@ class JMethodOrConstructor(val member: jMember with jAnnotatedElement) {
 }
 
 object JMethodOrConstructor {
-  implicit def liftMethodToJmoc(m: jMethod): JMethodOrConstructor              = new JMethodOrConstructor(m)
-  implicit def liftConstructorToJmoc(m: jConstructor[_]): JMethodOrConstructor = new JMethodOrConstructor(m)
+  implicit def liftMethodToJmoc(m: jMethod): JMethodOrConstructor =
+    new JMethodOrConstructor(m)
+  implicit def liftConstructorToJmoc(m: jConstructor[_]): JMethodOrConstructor =
+    new JMethodOrConstructor(m)
 }

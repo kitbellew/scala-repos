@@ -8,15 +8,19 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.expr._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  Failure,
+  TypingContext
+}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 07.03.2008
-* Time: 9:24:19
-*/
-
-class ScParenthesisedExprImpl(node: ASTNode) extends ScalaPsiElementImpl(node) with ScParenthesisedExpr {
+  * @author Alexander Podkhalyuzin
+  * Date: 07.03.2008
+  * Time: 9:24:19
+  */
+class ScParenthesisedExprImpl(node: ASTNode)
+    extends ScalaPsiElementImpl(node)
+    with ScParenthesisedExpr {
   override def toString: String = "ExpressionInParenthesis"
 
   protected override def innerType(ctx: TypingContext) = {
@@ -35,7 +39,7 @@ class ScParenthesisedExprImpl(node: ASTNode) extends ScalaPsiElementImpl(node) w
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
       case visitor: ScalaElementVisitor => visitor.visitExprInParent(this)
-      case _ => super.accept(visitor)
+      case _                            => super.accept(visitor)
     }
   }
 

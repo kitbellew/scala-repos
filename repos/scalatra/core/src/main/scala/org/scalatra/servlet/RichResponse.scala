@@ -1,8 +1,8 @@
 package org.scalatra
 package servlet
 
-import java.io.{ OutputStream, PrintWriter }
-import javax.servlet.http.{ HttpServletResponse, Cookie => ServletCookie }
+import java.io.{OutputStream, PrintWriter}
+import javax.servlet.http.{HttpServletResponse, Cookie => ServletCookie}
 
 import org.scalatra.util.RicherString._
 
@@ -12,9 +12,9 @@ import scala.collection.mutable.Map
 case class RichResponse(res: HttpServletResponse) {
 
   /**
-   * Note: the servlet API doesn't remember the reason.  If a custom
-   * reason was set, it will be returned incorrectly here,
-   */
+    * Note: the servlet API doesn't remember the reason.  If a custom
+    * reason was set, it will be returned incorrectly here,
+    */
   def status: ResponseStatus = ResponseStatus(res.getStatus)
 
   def status_=(statusLine: ResponseStatus): Unit = {
@@ -26,7 +26,7 @@ case class RichResponse(res: HttpServletResponse) {
     def get(key: String): Option[String] =
       res.getHeaders(key) match {
         case xs if xs.isEmpty => None
-        case xs => Some(xs.asScala mkString ",")
+        case xs               => Some(xs.asScala mkString ",")
       }
 
     def iterator: Iterator[(String, String)] =

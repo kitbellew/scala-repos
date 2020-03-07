@@ -8,18 +8,18 @@ import java.util.Locale
 import scala.collection.immutable
 import scala.concurrent.Future
 
-import java.net.{ URI, URISyntaxException }
+import java.net.{URI, URISyntaxException}
 
 import play.api.LoggerLike
-import play.api.http.{ HttpErrorHandler, HeaderNames, HttpVerbs }
-import play.api.mvc.{ RequestHeader, Results, Result }
+import play.api.http.{HttpErrorHandler, HeaderNames, HttpVerbs}
+import play.api.mvc.{RequestHeader, Results, Result}
 
 /**
- * An abstraction for providing [[play.api.mvc.Action]]s and [[play.api.mvc.Filter]]s that support Cross-Origin
- * Resource Sharing (CORS)
- *
- * @see [[http://www.w3.org/TR/cors/ CORS specification]]
- */
+  * An abstraction for providing [[play.api.mvc.Action]]s and [[play.api.mvc.Filter]]s that support Cross-Origin
+  * Resource Sharing (CORS)
+  *
+  * @see [[http://www.w3.org/TR/cors/ CORS specification]]
+  */
 private[cors] trait AbstractCORSPolicy {
 
   protected val logger: LoggerLike
@@ -29,14 +29,16 @@ private[cors] trait AbstractCORSPolicy {
   protected def errorHandler: HttpErrorHandler
 
   /**
-   * HTTP Methods supported by Play
-   */
+    * HTTP Methods supported by Play
+    */
   private val SupportedHttpMethods: Set[String] = {
     import HttpVerbs._
     immutable.HashSet(GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS)
   }
 
-  protected def filterRequest(next: RequestHeader => Future[Result], request: RequestHeader): Future[Result] = {
+  protected def filterRequest(
+      next: RequestHeader => Future[Result],
+      request: RequestHeader): Future[Result] = {
     (request.headers.get(HeaderNames.ORIGIN), request.method) match {
       case (None, _) =>
         /* http://www.w3.org/TR/cors/#resource-requests
@@ -44,7 +46,8 @@ private[cors] trait AbstractCORSPolicy {
          * If the Origin header is not present terminate this set of steps.
          */
         next(request)
-      case (Some(originHeader), _) if originHeader.isEmpty || !isValidOrigin(originHeader) =>
+      case (Some(originHeader), _)
+          if originHeader.isEmpty || !isValidOrigin(originHeader) =>
         /*
          * If the value of the Origin header is not a case-sensitive match for any of the values in list of origins, do
          * not set any additional headers and terminate this set of steps.
@@ -75,10 +78,14 @@ private[cors] trait AbstractCORSPolicy {
    *
    * @see [[http://www.w3.org/TR/cors/#resource-requests Simple Cross-Origin Request, Actual Request, and Redirects]]
    */
-  private def handleCORSRequest(next: RequestHeader => Future[Result], request: RequestHeader): Future[Result] = {
+  private def handleCORSRequest(
+      next: RequestHeader => Future[Result],
+      request: RequestHeader): Future[Result] = {
     val origin = {
       val originOpt = request.headers.get(HeaderNames.ORIGIN)
-      assume(originOpt.isDefined, "The presence of the ORIGIN header should guaranteed at this point.")
+      assume(
+        originOpt.isDefined,
+        "The presence of the ORIGIN header should guaranteed at this point.")
       originOpt.get
     }
 
@@ -134,28 +141,34 @@ private[cors] trait AbstractCORSPolicy {
        * with as values the header field names given in the list of exposed headers.
        */
       if (corsConfig.exposedHeaders.nonEmpty) {
-        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig.exposedHeaders.mkString(",")
+        headerBuilder += HeaderNames.ACCESS_CONTROL_EXPOSE_HEADERS -> corsConfig.exposedHeaders
+          .mkString(",")
       }
 
       import play.api.libs.iteratee.Execution.Implicits.trampoline
 
-      val taggedRequest = request.copy(tags = request.tags + (CORSFilter.RequestTag -> origin))
+      val taggedRequest =
+        request.copy(tags = request.tags + (CORSFilter.RequestTag -> origin))
       // We must recover any errors so that we can add the headers to them to allow clients to see the result
-      val result = try {
-        next(taggedRequest).recoverWith {
+      val result =
+        try {
+          next(taggedRequest).recoverWith {
+            case e: Throwable => errorHandler.onServerError(taggedRequest, e)
+          }
+        } catch {
           case e: Throwable => errorHandler.onServerError(taggedRequest, e)
         }
-      } catch {
-        case e: Throwable => errorHandler.onServerError(taggedRequest, e)
-      }
       result.map(_.withHeaders(headerBuilder.result(): _*))
     }
   }
 
-  private def handlePreFlightCORSRequest(request: RequestHeader): Future[Result] = {
+  private def handlePreFlightCORSRequest(
+      request: RequestHeader): Future[Result] = {
     val origin = {
       val originOpt = request.headers.get(HeaderNames.ORIGIN)
-      assume(originOpt.isDefined, "The presence of the ORIGIN header should guaranteed at this point.")
+      assume(
+        originOpt.isDefined,
+        "The presence of the ORIGIN header should guaranteed at this point.")
       originOpt.get
     }
 
@@ -179,7 +192,8 @@ private[cors] trait AbstractCORSPolicy {
           handleInvalidCORSRequest(request)
         case Some(requestMethod) =>
           val accessControlRequestMethod = requestMethod.trim
-          val methodPredicate = corsConfig.isHttpMethodAllowed // call def to get function val
+          val methodPredicate =
+            corsConfig.isHttpMethodAllowed // call def to get function val
           /* http://www.w3.org/TR/cors/#resource-preflight-requests
            * § 6.2.5
            * If method is not a case-sensitive match for any of the
@@ -187,7 +201,7 @@ private[cors] trait AbstractCORSPolicy {
            * headers and terminate this set of steps.
            */
           if (!SupportedHttpMethods.contains(accessControlRequestMethod) ||
-            !methodPredicate(accessControlRequestMethod)) {
+              !methodPredicate(accessControlRequestMethod)) {
             handleInvalidCORSRequest(request)
           } else {
             /* http://www.w3.org/TR/cors/#resource-preflight-requests
@@ -198,14 +212,19 @@ private[cors] trait AbstractCORSPolicy {
              * let header field-names be the empty list.
              */
             val accessControlRequestHeaders: List[String] = {
-              request.headers.get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
+              request.headers.get(
+                HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
                 case None => List.empty[String]
                 case Some(headerVal) =>
-                  headerVal.trim.split(',').map(_.trim.toLowerCase(java.util.Locale.ENGLISH))(collection.breakOut)
+                  headerVal.trim
+                    .split(',')
+                    .map(_.trim.toLowerCase(java.util.Locale.ENGLISH))(
+                      collection.breakOut)
               }
             }
 
-            val headerPredicate = corsConfig.isHttpHeaderAllowed // call def to get function val
+            val headerPredicate =
+              corsConfig.isHttpHeaderAllowed // call def to get function val
             /* http://www.w3.org/TR/cors/#resource-preflight-requests
              * § 6.2.6
              * If any of the header field-names is not a ASCII case-insensitive
@@ -286,7 +305,8 @@ private[cors] trait AbstractCORSPolicy {
                * headers from Access-Control-Allow-Headers can be enough.
                */
               if (!accessControlRequestHeaders.isEmpty) {
-                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders.mkString(",")
+                headerBuilder += HeaderNames.ACCESS_CONTROL_ALLOW_HEADERS -> accessControlRequestHeaders
+                  .mkString(",")
               }
 
               Future.successful {
@@ -298,8 +318,11 @@ private[cors] trait AbstractCORSPolicy {
     }
   }
 
-  private def handleInvalidCORSRequest(request: RequestHeader): Future[Result] = {
-    logger.trace(s"""Invalid CORS request;Origin=${request.headers.get(HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers.get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
+  private def handleInvalidCORSRequest(
+      request: RequestHeader): Future[Result] = {
+    logger.trace(s"""Invalid CORS request;Origin=${request.headers.get(
+      HeaderNames.ORIGIN)};Method=${request.method};${HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS}=${request.headers
+      .get(HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS)}""")
     Future.successful(Results.Forbidden)
   }
 
@@ -319,7 +342,12 @@ private[cors] trait AbstractCORSPolicy {
 
   private def isSameOrigin(origin: String, request: RequestHeader): Boolean = {
     val hostUri = new URI(origin.toLowerCase(Locale.ENGLISH))
-    val originUri = new URI((if (request.secure) "https://" else "http://") + request.host.toLowerCase(Locale.ENGLISH))
-    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
+    val originUri = new URI(
+      (if (request.secure) "https://" else "http://") + request.host
+        .toLowerCase(Locale.ENGLISH))
+    (
+      hostUri.getScheme,
+      hostUri.getHost,
+      hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
   }
 }

@@ -19,11 +19,11 @@ import scala.collection.generic.{CanBuildFrom, GenericCompanion, SeqFactory}
 @inline
 final class WrappedArray[A](val array: Array[A])
     extends mutable.AbstractBuffer[A]
-       with scala.collection.generic.GenericTraversableTemplate[A, WrappedArray]
-       with mutable.IndexedSeq[A]
-       with mutable.BufferLike[A, WrappedArray[A]]
-       with mutable.ArrayLike[A, WrappedArray[A]]
-       with Builder[A, WrappedArray[A]] {
+    with scala.collection.generic.GenericTraversableTemplate[A, WrappedArray]
+    with mutable.IndexedSeq[A]
+    with mutable.BufferLike[A, WrappedArray[A]]
+    with mutable.ArrayLike[A, WrappedArray[A]]
+    with Builder[A, WrappedArray[A]] {
 
   /** Creates a new empty [[WrappedArray]]. */
   def this() = this(Array())
@@ -60,7 +60,8 @@ final class WrappedArray[A](val array: Array[A])
     this
   }
 
-  @inline def insertAll(n: Int,
+  @inline def insertAll(
+      n: Int,
       elems: scala.collection.Traversable[A]): Unit = {
     array.splice(n, 0, elems.toSeq: _*)
   }
@@ -76,10 +77,11 @@ final class WrappedArray[A](val array: Array[A])
 }
 
 /** Factory for [[WrappedArray]]. Mainly provides the relevant
- *  [[scala.collection.generic.CanBuildFrom CanBuildFroms]]s and implicit
- *  conversions.
- */
+  *  [[scala.collection.generic.CanBuildFrom CanBuildFroms]]s and implicit
+  *  conversions.
+  */
 object WrappedArray extends SeqFactory[WrappedArray] {
+
   /** Standard CBF for [[WrappedArray]] */
   implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, WrappedArray[A]] =
     ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]

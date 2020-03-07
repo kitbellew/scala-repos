@@ -5,7 +5,10 @@ import com.twitter.finagle._
 import com.twitter.finagle.transport.Transport
 import com.twitter.util.{Future, Promise, Return, Time}
 import io.netty.channel.{
-  Channel, ChannelHandlerContext, ChannelFutureListener, ChannelFuture,
+  Channel,
+  ChannelHandlerContext,
+  ChannelFutureListener,
+  ChannelFuture,
   SimpleChannelInboundHandler
 }
 import java.net.SocketAddress
@@ -13,13 +16,14 @@ import java.security.cert.Certificate
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * A [[Transport]] implementation based on Netty's [[Channel]].
- *
- * Note: During the construction, a `ChannelTransport` inserts the terminating
- * inbound channel handler into the channel's pipeline so any inbound channel
- * handlers inserted after that won't get any of the inbound traffic.
- */
-private[netty4] class ChannelTransport[In, Out](ch: Channel) extends Transport[In, Out] {
+  * A [[Transport]] implementation based on Netty's [[Channel]].
+  *
+  * Note: During the construction, a `ChannelTransport` inserts the terminating
+  * inbound channel handler into the channel's pipeline so any inbound channel
+  * handlers inserted after that won't get any of the inbound traffic.
+  */
+private[netty4] class ChannelTransport[In, Out](ch: Channel)
+    extends Transport[In, Out] {
   private[this] val queue = new AsyncQueue[Out]
 
   private[this] val failed = new AtomicBoolean(false)
@@ -73,7 +77,9 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel) extends Transport[I
             p.setException(ChannelException(f.cause, remoteAddress))
       })
 
-      p.setInterruptHandler { case _ => op.cancel(true /* mayInterruptIfRunning */) }
+      p.setInterruptHandler {
+        case _ => op.cancel(true /* mayInterruptIfRunning */ )
+      }
       p
     }
   }
@@ -91,7 +97,6 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel) extends Transport[I
     // listeners of two promises, which continue to share state via Linked and
     // is a gain in space-efficiency.
     p.become(queue.poll())
-
 
     // Note: We don't raise on queue.poll's future, because it doesn't set an
     // interrupt handler, but perhaps we should; and perhaps we should always
@@ -115,21 +120,29 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel) extends Transport[I
 
   def localAddress: SocketAddress = ch.localAddress
 
-  def remoteAddress: SocketAddress= ch.remoteAddress
+  def remoteAddress: SocketAddress = ch.remoteAddress
 
   override def toString = s"Transport<channel=$ch, onClose=$closed>"
 
-  ch.pipeline().addLast("finagleChannelTransport", new SimpleChannelInboundHandler[Out]() {
-    override def channelRead0(ctx: ChannelHandlerContext, msg: Out): Unit = {
-      queue.offer(msg)
-    }
+  ch.pipeline()
+    .addLast(
+      "finagleChannelTransport",
+      new SimpleChannelInboundHandler[Out]() {
+        override def channelRead0(
+            ctx: ChannelHandlerContext,
+            msg: Out): Unit = {
+          queue.offer(msg)
+        }
 
-    override def channelInactive(ctx: ChannelHandlerContext): Unit = {
-      fail(new ChannelClosedException(remoteAddress))
-    }
+        override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+          fail(new ChannelClosedException(remoteAddress))
+        }
 
-    override def exceptionCaught(ctx: ChannelHandlerContext, e: Throwable): Unit = {
-      fail(ChannelException(e, remoteAddress))
-    }
-  })
+        override def exceptionCaught(
+            ctx: ChannelHandlerContext,
+            e: Throwable): Unit = {
+          fail(ChannelException(e, remoteAddress))
+        }
+      }
+    )
 }

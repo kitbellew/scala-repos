@@ -9,14 +9,12 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 11.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 11.02.2008
+  */
 /*
  *  ImportSelectors ::=  {  {ImportSelector  , } (ImportSelector |  _ )  }
  */
-
 
 object ImportSelectors extends ParserNode {
   def parse(builder: ScalaPsiBuilder): Boolean = {
@@ -50,7 +48,10 @@ object ImportSelectors extends ParserNode {
               return true
             }
             case _ => {
-              ParserUtils.parseLoopUntilRBrace(builder, () => {}) //we need to find closing brace, otherwise we can miss important things
+              ParserUtils.parseLoopUntilRBrace(
+                builder,
+                () => {}
+              ) //we need to find closing brace, otherwise we can miss important things
               builder.restoreNewlinesState
               importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTORS)
               return true

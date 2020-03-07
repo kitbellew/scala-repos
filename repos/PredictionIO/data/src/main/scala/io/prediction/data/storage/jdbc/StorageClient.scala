@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.jdbc
 
 import grizzled.slf4j.Logging
@@ -23,7 +22,8 @@ import scalikejdbc._
 
 /** JDBC implementation of [[BaseStorageClient]] */
 class StorageClient(val config: StorageClientConfig)
-  extends BaseStorageClient with Logging {
+    extends BaseStorageClient
+    with Logging {
   override val prefix = "JDBC"
 
   if (!config.properties.contains("URL")) {
@@ -45,6 +45,7 @@ class StorageClient(val config: StorageClientConfig)
     config.properties("USERNAME"),
     config.properties("PASSWORD"),
     settings)
+
   /** JDBC connection URL. Connections are managed by ScalikeJDBC. */
   val client = config.properties("URL")
 }

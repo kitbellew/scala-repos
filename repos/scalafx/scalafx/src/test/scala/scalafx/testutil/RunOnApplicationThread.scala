@@ -36,7 +36,8 @@ trait RunOnApplicationThread extends SuiteMixin {
   abstract override def withFixture(test: NoArgTest): Outcome = {
     BootstrapApplication.launch()
     val appThreadLatch = new CountDownLatch(1)
-    val superWith = super.withFixture _ // required to access to super withFixture method from within runnable for a trait
+    val superWith =
+      super.withFixture _ // required to access to super withFixture method from within runnable for a trait
     var testException: Exception = null
     var outcome: Outcome = null
     Platform.runLater(new Runnable() {

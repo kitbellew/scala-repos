@@ -3,17 +3,17 @@ package com.twitter.finagle
 import com.twitter.util.{Closable, Var, FuturePool}
 
 /**
- * A Resolver that asynchronously resolves an inet address.
- *
- * Used by ResolutionRaceTest.
- */
+  * A Resolver that asynchronously resolves an inet address.
+  *
+  * Used by ResolutionRaceTest.
+  */
 class TestAsyncInetResolver extends Resolver {
   val scheme: String = "asyncinet"
 
   private[this] object Port {
     val range = 1 to 65535
     def unapply(str: String): Option[Int] = {
-      try Some(Integer.parseInt(str)) filter(range contains _)
+      try Some(Integer.parseInt(str)) filter (range contains _)
       catch { case _: NumberFormatException => None }
     }
   }
@@ -22,7 +22,7 @@ class TestAsyncInetResolver extends Resolver {
     def unapply(str: String): Option[(String, Int)] =
       str.split(':') match {
         case Array(host, Port(port)) => Some((host, port))
-        case _ => None
+        case _                       => None
       }
   }
 
@@ -37,7 +37,7 @@ class TestAsyncInetResolver extends Resolver {
         Closable.nop
       }
 
-    case _ => Var.value(Addr.Failed(spec +" is not a host:port"))
+    case _ => Var.value(Addr.Failed(spec + " is not a host:port"))
   }
 
 }

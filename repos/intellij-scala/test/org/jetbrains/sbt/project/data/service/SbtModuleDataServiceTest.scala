@@ -10,14 +10,16 @@ import org.jetbrains.sbt.project.module.SbtModule
 import org.jetbrains.sbt.resolvers.{SbtResolver, SbtResolverIndexesManager}
 
 /**
- * @author Nikolay Obedin
- * @since 6/9/15.
- */
+  * @author Nikolay Obedin
+  * @since 6/9/15.
+  */
 class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
 
   import ExternalSystemDataDsl._
 
-  private def generateProject(imports: Seq[String], resolvers: Set[SbtResolver]): DataNode[ProjectData] =
+  private def generateProject(
+      imports: Seq[String],
+      resolvers: Set[SbtResolver]): DataNode[ProjectData] =
     new project {
       name := getProject.getName
       ideDirectoryPath := getProject.getBasePath
@@ -30,11 +32,11 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
       }
     }.build.toDataNode
 
-
   def doTest(imports: Seq[String], resolvers: Set[SbtResolver]): Unit = {
     FileUtil.delete(SbtResolverIndexesManager.DEFAULT_INDEXES_DIR)
     importProjectData(generateProject(imports, resolvers))
-    val module = ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module =
+      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
 
     if (imports.nonEmpty)
       assert(SbtModule.getImportsFrom(module) == imports)
@@ -45,7 +47,6 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
     resolvers.forall(r => SbtResolverIndexesManager().find(r).isDefined)
   }
 
-
   def testEmptyImportsAndResolvers(): Unit =
     doTest(Seq.empty, Set.empty)
 
@@ -53,14 +54,29 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
     doTest(Seq("first import", "second import"), Set.empty)
 
   def testNonEmptyResolvers(): Unit =
-    doTest(Seq.empty, Set(
-      SbtResolver(SbtResolver.Kind.Maven, "maven resolver", "http:///nothing"),
-      SbtResolver(SbtResolver.Kind.Ivy, "ivy resolver", getProject.getBasePath)))
+    doTest(
+      Seq.empty,
+      Set(
+        SbtResolver(
+          SbtResolver.Kind.Maven,
+          "maven resolver",
+          "http:///nothing"),
+        SbtResolver(
+          SbtResolver.Kind.Ivy,
+          "ivy resolver",
+          getProject.getBasePath))
+    )
 
   def testNonEmptyImportsAndResolvers(): Unit =
-    doTest(Seq("first import", "second import"), Set(
-      SbtResolver(SbtResolver.Kind.Maven, "maven resolver", "http://nothing"),
-      SbtResolver(SbtResolver.Kind.Ivy, "ivy resolver", getProject.getBasePath)))
+    doTest(
+      Seq("first import", "second import"),
+      Set(
+        SbtResolver(SbtResolver.Kind.Maven, "maven resolver", "http://nothing"),
+        SbtResolver(
+          SbtResolver.Kind.Ivy,
+          "ivy resolver",
+          getProject.getBasePath))
+    )
 
   def testModuleIsNull(): Unit = {
     val testProject = new project {

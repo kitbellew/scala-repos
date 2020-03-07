@@ -7,7 +7,6 @@ object A {
   }
 }
 
-
 object Test extends App {
   A.run
 }

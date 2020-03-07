@@ -29,21 +29,21 @@ object ValidationTest extends SpecLite {
 
     val voi: Validation[String, Option[Int]] = vi map (Some(_))
     val ovi: Option[Validation[String, Int]] = vi.point[Option]
-    voi must_===(Validation.success[String, Option[Int]](Some(0)))
-    ovi must_===(Some(vi))
+    voi must_=== (Validation.success[String, Option[Int]](Some(0)))
+    ovi must_=== (Some(vi))
 
     {
       import syntax.functor._
       val voi2: Validation[String, Option[Int]] = vi.fpoint[Option]
-      voi2 must_===(Validation.success[String, Option[Int]](Some(0)))
+      voi2 must_=== (Validation.success[String, Option[Int]](Some(0)))
       println("hi")
     }
   }
 
   "show" in {
     import syntax.show._
-    Validation.success[String, Int](0).shows must_===("Success(0)")
-    Validation.failure[String, Int]("fail").shows must_===("Failure(\"fail\")")
+    Validation.success[String, Int](0).shows must_=== ("Success(0)")
+    Validation.failure[String, Int]("fail").shows must_=== ("Failure(\"fail\")")
   }
 
   "ap2" should {
@@ -51,8 +51,10 @@ object ValidationTest extends SpecLite {
       import syntax.show._
       val fail1 = Failure("1").toValidationNel
       val fail2 = Failure("2").toValidationNel
-      val f = (_:Int) + (_:Int)
-      Apply[ValidationNel[String, ?]].ap2(fail1, fail2)(Success(f)).shows must_===("""Failure(["1","2"])""")
+      val f = (_: Int) + (_: Int)
+      Apply[ValidationNel[String, ?]]
+        .ap2(fail1, fail2)(Success(f))
+        .shows must_=== ("""Failure(["1","2"])""")
     }
   }
 
@@ -61,8 +63,10 @@ object ValidationTest extends SpecLite {
       import syntax.show._
       val fail1 = Failure("1").toValidationNel
       val fail2 = Failure("2").toValidationNel
-      val f = (_:Int) + (_:Int)
-      Apply[ValidationNel[String, ?]].apply2(fail1, fail2)(f).shows must_===("""Failure(["1","2"])""")
+      val f = (_: Int) + (_: Int)
+      Apply[ValidationNel[String, ?]]
+        .apply2(fail1, fail2)(f)
+        .shows must_=== ("""Failure(["1","2"])""")
     }
   }
 
@@ -72,15 +76,15 @@ object ValidationTest extends SpecLite {
       val fail1 = Validation.failure[String, Int]("1").toValidationNel
       val fail2 = Validation.failure[String, Int]("2").toValidationNel
 
-      (fail1 findSuccess fail2).shows must_===("""Failure(["1","2"])""")
+      (fail1 findSuccess fail2).shows must_=== ("""Failure(["1","2"])""")
     }
 
     "return first success" in {
       val succ = Validation.success[String, Int](1).toValidationNel
       val fail = Validation.failure[String, Int]("2").toValidationNel
 
-      (succ findSuccess fail).shows must_===(succ.shows)
-      (fail findSuccess succ).shows must_===(succ.shows)
+      (succ findSuccess fail).shows must_=== (succ.shows)
+      (fail findSuccess succ).shows must_=== (succ.shows)
     }
   }
 
@@ -88,22 +92,45 @@ object ValidationTest extends SpecLite {
     import syntax.std.string._
     import syntax.validation._
     def errmsg(i: Int) = "Int must be positive: " + i
-    (List("1", "2", "3") map (_.parseInt.leftMap(_.toString) excepting { case i if i < 0 => errmsg(i) })) must_===(List(1.success[String], 2.success[String], 3.success[String]))
+    (List("1", "2", "3") map (_.parseInt.leftMap(_.toString) excepting {
+      case i if i < 0 => errmsg(i)
+    })) must_=== (List(1.success[String], 2.success[String], 3.success[String]))
 
-    (List("1", "-2", "3") map (_.parseInt.leftMap(_.toString) excepting { case i if i < 0 => errmsg(i) })) must_===(List(1.success[String], errmsg(-2).failure[Int], 3.success[String]))
+    (List("1", "-2", "3") map (_.parseInt.leftMap(_.toString) excepting {
+      case i if i < 0 => errmsg(i)
+    })) must_=== (List(
+      1.success[String],
+      errmsg(-2).failure[Int],
+      3.success[String]))
 
-    implicit val ShowAny: Show[Any] = Show.showA; implicit val EqualAny: Equal[Any] = Equal.equalA
+    implicit val ShowAny: Show[Any] = Show.showA;
+    implicit val EqualAny: Equal[Any] = Equal.equalA
     def errmsgA(i: Int): Any = errmsg(i)
-    (List("1", "2", "3") map (_.parseInt.leftMap(_.toString) excepting { case i if i < 0 => errmsgA(i) })) must_===(List(1.success[Any], 2.success[Any], 3.success[Any]))
+    (List("1", "2", "3") map (_.parseInt.leftMap(_.toString) excepting {
+      case i if i < 0 => errmsgA(i)
+    })) must_=== (List(1.success[Any], 2.success[Any], 3.success[Any]))
 
-    (List("1", "-2", "3") map (_.parseInt.leftMap(_.toString) excepting { case i if i < 0 => errmsgA(i) })) must_===(List(1.success[Any], errmsgA(-2).failure[Int], 3.success[Any]))
+    (List("1", "-2", "3") map (_.parseInt.leftMap(_.toString) excepting {
+      case i if i < 0 => errmsgA(i)
+    })) must_=== (List(
+      1.success[Any],
+      errmsgA(-2).failure[Int],
+      3.success[Any]))
   }
 
   "ensure" in {
     import syntax.std.string._
     import syntax.validation._
-    List("1", "2") map (_.parseInt.leftMap(_.toString).ensure("Fail")(_ >= 0)) must_===(List(1.success[String], 2.success[String]))
-    List("1", "-2") map (_.parseInt.leftMap(_.toString).ensure("Fail")(_ >= 0)) must_===(List(1.success[String], "Fail".failure[Int]))
+    List("1", "2") map (_.parseInt
+      .leftMap(_.toString)
+      .ensure("Fail")(_ >= 0)) must_=== (List(
+      1.success[String],
+      2.success[String]))
+    List("1", "-2") map (_.parseInt
+      .leftMap(_.toString)
+      .ensure("Fail")(_ >= 0)) must_=== (List(
+      1.success[String],
+      "Fail".failure[Int]))
   }
 
   "toMaybe" ! forAll { x: Validation[String, Int] =>

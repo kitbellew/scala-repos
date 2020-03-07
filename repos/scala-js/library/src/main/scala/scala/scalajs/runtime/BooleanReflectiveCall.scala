@@ -3,9 +3,9 @@ package scala.scalajs.runtime
 import java.lang.{Boolean => JBoolean}
 
 /** Explicit box for boolean values when doing a reflective call.
- *  This class and its methods are only here to properly support reflective
- *  calls on booleans.
- */
+  *  This class and its methods are only here to properly support reflective
+  *  calls on booleans.
+  */
 class BooleanReflectiveCall(value: Boolean) {
 
   // Methods of java.lang.Boolean

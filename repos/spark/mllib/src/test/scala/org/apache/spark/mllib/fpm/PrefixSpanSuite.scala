@@ -32,7 +32,7 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
           2 / length(unique(transactionInfo(prefixSpanSeqs)$sequenceID)), maxlen = 2 ))
       resSeq = as(freqItemSeq, "data.frame")
       resSeq
-    */
+     */
 
     val sequences = Array(
       Array(0, 1, 0, 3, 0, 4, 0, 5, 0),
@@ -45,7 +45,10 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rdd = sc.parallelize(sequences, 2).cache()
 
     val result1 = PrefixSpan.genFreqPatterns(
-      rdd, minCount = 2L, maxPatternLength = 50, maxLocalProjDBSize = 16L)
+      rdd,
+      minCount = 2L,
+      maxPatternLength = 50,
+      maxLocalProjDBSize = 16L)
     val expectedValue1 = Array(
       (Array(0, 1, 0), 4L),
       (Array(0, 1, 0, 3, 0), 2L),
@@ -70,7 +73,10 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
     compareInternalResults(expectedValue1, result1.collect())
 
     val result2 = PrefixSpan.genFreqPatterns(
-      rdd, minCount = 3, maxPatternLength = 50, maxLocalProjDBSize = 32L)
+      rdd,
+      minCount = 3,
+      maxPatternLength = 50,
+      maxLocalProjDBSize = 32L)
     val expectedValue2 = Array(
       (Array(0, 1, 0), 4L),
       (Array(0, 3, 0), 5L),
@@ -81,7 +87,10 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
     compareInternalResults(expectedValue2, result2.collect())
 
     val result3 = PrefixSpan.genFreqPatterns(
-      rdd, minCount = 2, maxPatternLength = 2, maxLocalProjDBSize = 32L)
+      rdd,
+      minCount = 2,
+      maxPatternLength = 2,
+      maxLocalProjDBSize = 32L)
     val expectedValue3 = Array(
       (Array(0, 1, 0), 4L),
       (Array(0, 1, 0, 3, 0), 2L),
@@ -101,7 +110,8 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
     compareInternalResults(expectedValue3, result3.collect())
   }
 
-  test("PrefixSpan internal (integer seq, -1 delim) run, variable-size itemsets") {
+  test(
+    "PrefixSpan internal (integer seq, -1 delim) run, variable-size itemsets") {
     val sequences = Array(
       Array(0, 1, 0, 1, 2, 3, 0, 1, 3, 0, 4, 0, 3, 6, 0),
       Array(0, 1, 4, 0, 3, 0, 2, 3, 0, 1, 5, 0),
@@ -109,7 +119,10 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0, 5, 0, 7, 0, 1, 6, 0, 3, 0, 2, 0, 3, 0))
     val rdd = sc.parallelize(sequences, 2).cache()
     val result = PrefixSpan.genFreqPatterns(
-      rdd, minCount = 2, maxPatternLength = 5, maxLocalProjDBSize = 128L)
+      rdd,
+      minCount = 2,
+      maxPatternLength = 5,
+      maxLocalProjDBSize = 128L)
 
     /*
       To verify results, create file "prefixSpanSeqs" with content
@@ -250,14 +263,14 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       (Array(0, 2, 3, 0, 1, 0), 2L),
       (Array(0, 1, 0, 3, 0, 1, 0), 2L),
       (Array(0, 1, 0, 2, 3, 0, 1, 0), 2L),
-      (Array(0, 1, 0, 2, 0, 1, 0), 2L))
+      (Array(0, 1, 0, 2, 0, 1, 0), 2L)
+    )
 
     compareInternalResults(expectedValue, result.collect())
   }
 
   test("PrefixSpan projections with multiple partial starts") {
-    val sequences = Seq(
-      Array(Array(1, 2), Array(1, 2, 3)))
+    val sequences = Seq(Array(Array(1, 2), Array(1, 2, 3)))
     val rdd = sc.parallelize(sequences, 2)
     val prefixSpan = new PrefixSpan()
       .setMinSupport(1.0)
@@ -275,7 +288,8 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       (Array(Array(2), Array(1)), 1L),
       (Array(Array(2), Array(2)), 1L),
       (Array(Array(2), Array(3)), 1L),
-      (Array(Array(3)), 1L))
+      (Array(Array(3)), 1L)
+    )
     compareResults(expected, model.freqSequences.collect())
   }
 
@@ -351,8 +365,9 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       (Array(Array(3)), 2L),
       (Array(Array(1), Array(3)), 2L),
       (Array(Array(1, 2)), 3L)
-    ).map { case (pattern, count) =>
-      (pattern.map(itemSet => itemSet.map(intToString)), count)
+    ).map {
+      case (pattern, count) =>
+        (pattern.map(itemSet => itemSet.map(intToString)), count)
     }
     compareResults(expected, model.freqSequences.collect())
   }
@@ -360,8 +375,9 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
   private def compareResults[Item](
       expectedValue: Array[(Array[Array[Item]], Long)],
       actualValue: Array[PrefixSpan.FreqSequence[Item]]): Unit = {
-    val expectedSet = expectedValue.map { case (pattern: Array[Array[Item]], count: Long) =>
-      (pattern.map(itemSet => itemSet.toSet).toSeq, count)
+    val expectedSet = expectedValue.map {
+      case (pattern: Array[Array[Item]], count: Long) =>
+        (pattern.map(itemSet => itemSet.toSet).toSeq, count)
     }.toSet
     val actualSet = actualValue.map { x =>
       (x.sequence.map(_.toSet).toSeq, x.freq)

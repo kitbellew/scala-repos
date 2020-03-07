@@ -2,7 +2,7 @@ package org.scalajs.core.compiler.test.util
 
 import scala.tools.nsc._
 import reporters.{Reporter, ConsoleReporter}
-import scala.reflect.internal.util.{ SourceFile, BatchSourceFile }
+import scala.reflect.internal.util.{SourceFile, BatchSourceFile}
 
 import org.scalajs.core.compiler.ScalaJSPlugin
 
@@ -23,10 +23,13 @@ abstract class DirectTest {
 
   def newScalaJSCompiler(args: String*): Global = {
     val settings = newSettings(
-        List(
-            "-d", testOutputPath,
-            "-bootclasspath", scalaLibPath,
-            "-classpath", scalaJSLibPath) ++
+      List(
+        "-d",
+        testOutputPath,
+        "-bootclasspath",
+        scalaLibPath,
+        "-classpath",
+        scalaJSLibPath) ++
         extraArgs ++ args.toList)
 
     lazy val global: Global = new Global(settings, newReporter(settings)) {
@@ -69,7 +72,8 @@ abstract class DirectTest {
   def defaultGlobal: Global = newScalaJSCompiler()
 
   def testOutputPath: String = sys.props("scala.scalajs.compiler.test.output")
-  def scalaJSLibPath: String = sys.props("scala.scalajs.compiler.test.scalajslib")
-  def scalaLibPath: String   = sys.props("scala.scalajs.compiler.test.scalalib")
+  def scalaJSLibPath: String =
+    sys.props("scala.scalajs.compiler.test.scalajslib")
+  def scalaLibPath: String = sys.props("scala.scalajs.compiler.test.scalalib")
 
 }

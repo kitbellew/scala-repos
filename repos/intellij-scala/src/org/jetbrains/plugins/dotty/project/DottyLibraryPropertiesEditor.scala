@@ -2,11 +2,17 @@ package org.jetbrains.plugins.dotty.project
 
 import java.awt.event.{ActionEvent, ActionListener}
 
-import com.intellij.openapi.roots.libraries.ui.{LibraryEditorComponent, LibraryPropertiesEditor}
+import com.intellij.openapi.roots.libraries.ui.{
+  LibraryEditorComponent,
+  LibraryPropertiesEditor
+}
 import com.intellij.openapi.ui.Messages
 import org.jetbrains.plugins.dotty.project.template.DottyDownloader
 import org.jetbrains.plugins.scala.extensions
-import org.jetbrains.plugins.scala.project.{ScalaLanguageLevel, ScalaLibraryProperties}
+import org.jetbrains.plugins.scala.project.{
+  ScalaLanguageLevel,
+  ScalaLibraryProperties
+}
 
 import scala.runtime.BoxedUnit
 import scala.util.Failure
@@ -14,13 +20,16 @@ import scala.util.Failure
 /**
   * @author Nikolay.Tropin
   */
-class DottyLibraryPropertiesEditor(editorComponent: LibraryEditorComponent[ScalaLibraryProperties]) extends LibraryPropertiesEditor {
+class DottyLibraryPropertiesEditor(
+    editorComponent: LibraryEditorComponent[ScalaLibraryProperties])
+    extends LibraryPropertiesEditor {
 
   private val updateSnapshotAction = new ActionListener {
 
     override def actionPerformed(e: ActionEvent): Unit = {
       val version: String = ScalaLanguageLevel.Dotty.version
-      val result = extensions.withProgressSynchronouslyTry(s"Downloading Dotty $version (via SBT)") {
+      val result = extensions.withProgressSynchronouslyTry(
+        s"Downloading Dotty $version (via SBT)") {
         case listener =>
           DottyDownloader.downloadDotty(version, s => listener(s))
           BoxedUnit.UNIT
@@ -28,7 +37,10 @@ class DottyLibraryPropertiesEditor(editorComponent: LibraryEditorComponent[Scala
 
       result match {
         case Failure(exc) =>
-          Messages.showErrorDialog(editorComponent.getProject, exc.getMessage, s"Error downloading Dotty $version")
+          Messages.showErrorDialog(
+            editorComponent.getProject,
+            exc.getMessage,
+            s"Error downloading Dotty $version")
         case _ =>
       }
     }

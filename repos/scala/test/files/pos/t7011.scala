@@ -1,7 +1,7 @@
 object bar {
-	def foo {
+  def foo {
     lazy val x = 42
 
-    {()=>x}
+    { () => x }
   }
 }

@@ -7,15 +7,17 @@ import scala.collection.mutable
 import _root_.java.lang.{Boolean => JBoolean, Long => JLong}
 
 /**
- * Map-based mock client for testing
- *
- * Note: expiry and flags are ignored on update operations.
- */
+  * Map-based mock client for testing
+  *
+  * Note: expiry and flags are ignored on update operations.
+  */
 class MockClient(val map: mutable.Map[String, Buf]) extends Client {
   def this() = this(mutable.Map[String, Buf]())
 
   def this(contents: Map[String, Array[Byte]]) =
-    this(mutable.Map[String, Buf]() ++ (contents mapValues { v => Buf.ByteArray.Owned(v) }))
+    this(mutable.Map[String, Buf]() ++ (contents mapValues { v =>
+      Buf.ByteArray.Owned(v)
+    }))
 
   def this(contents: Map[String, String])(implicit m: Manifest[String]) =
     this(contents mapValues { _.getBytes })
@@ -28,7 +30,10 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       keys foreach { key =>
         map.get(key) match {
           case Some(v: Buf) =>
-            hits += (key -> Value(Buf.Utf8(key), v, Some(Interpreter.generateCasUnique(v))))
+            hits += (key -> Value(
+              Buf.Utf8(key),
+              v,
+              Some(Interpreter.generateCasUnique(v))))
           case _ =>
             misses += key
         }
@@ -46,16 +51,16 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     Future.value(GetsResult(_get(keys)))
 
   /**
-   * Note: expiry and flags are ignored.
-   */
+    * Note: expiry and flags are ignored.
+    */
   def set(key: String, flags: Int, expiry: Time, value: Buf) = {
     map.synchronized { map(key) = value }
     Future.Unit
   }
 
   /**
-   * Note: expiry and flags are ignored.
-   */
+    * Note: expiry and flags are ignored.
+    */
   def add(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
     Future.value(
       map.synchronized {
@@ -69,9 +74,13 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     )
 
   /**
-   * Note: expiry and flags are ignored.
-   */
-  def append(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
+    * Note: expiry and flags are ignored.
+    */
+  def append(
+      key: String,
+      flags: Int,
+      expiry: Time,
+      value: Buf): Future[JBoolean] =
     Future.value(
       map.synchronized {
         map.get(key) match {
@@ -85,9 +94,13 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     )
 
   /**
-   * Note: expiry and flags are ignored.
-   */
-  def prepend(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
+    * Note: expiry and flags are ignored.
+    */
+  def prepend(
+      key: String,
+      flags: Int,
+      expiry: Time,
+      value: Buf): Future[JBoolean] =
     Future.value(
       map.synchronized {
         map.get(key) match {
@@ -101,9 +114,13 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     )
 
   /**
-   * Note: expiry and flags are ignored.
-   */
-  def replace(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
+    * Note: expiry and flags are ignored.
+    */
+  def replace(
+      key: String,
+      flags: Int,
+      expiry: Time,
+      value: Buf): Future[JBoolean] =
     Future.value(
       map.synchronized {
         if (map.contains(key)) {
@@ -116,21 +133,22 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     )
 
   /**
-   * Checks if value is same as previous value, if not, do a swap and return true.
-   *
-   * Note: expiry and flags are ignored.
-   */
+    * Checks if value is same as previous value, if not, do a swap and return true.
+    *
+    * Note: expiry and flags are ignored.
+    */
   def checkAndSet(
-    key: String,
-    flags: Int,
-    expiry: Time,
-    value: Buf,
-    casUnique: Buf
+      key: String,
+      flags: Int,
+      expiry: Time,
+      value: Buf,
+      casUnique: Buf
   ): Future[CasResult] =
     Future.value(
       map.synchronized {
         map.get(key) match {
-          case Some(previousValue) if Interpreter.generateCasUnique(previousValue) == casUnique =>
+          case Some(previousValue)
+              if Interpreter.generateCasUnique(previousValue) == casUnique =>
             map(key) = value
             CasResult.Stored
 
@@ -164,7 +182,8 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
               Some(newValue)
             } catch {
               case _: NumberFormatException =>
-                throw new ClientError("cannot increment or decrement non-numeric value")
+                throw new ClientError(
+                  "cannot increment or decrement non-numeric value")
             }
 
           case None =>

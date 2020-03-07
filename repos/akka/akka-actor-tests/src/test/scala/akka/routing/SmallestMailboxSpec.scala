@@ -1,34 +1,37 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.routing
 
 import java.util.concurrent.ConcurrentHashMap
 import scala.concurrent.Await
-import akka.actor.{ Props, Actor }
-import akka.testkit.{ TestLatch, ImplicitSender, DefaultTimeout, AkkaSpec }
+import akka.actor.{Props, Actor}
+import akka.testkit.{TestLatch, ImplicitSender, DefaultTimeout, AkkaSpec}
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class SmallestMailboxSpec extends AkkaSpec("akka.actor.serialize-messages = off")
-  with DefaultTimeout with ImplicitSender {
+class SmallestMailboxSpec
+    extends AkkaSpec("akka.actor.serialize-messages = off")
+    with DefaultTimeout
+    with ImplicitSender {
 
   "smallest mailbox pool" must {
 
     "deliver messages to idle actor" in {
       val usedActors = new ConcurrentHashMap[Int, String]()
-      val router = system.actorOf(SmallestMailboxPool(3).props(routeeProps = Props(new Actor {
-        def receive = {
-          case (busy: TestLatch, receivedLatch: TestLatch) ⇒
-            usedActors.put(0, self.path.toString)
-            self ! "another in busy mailbox"
-            receivedLatch.countDown()
-            Await.ready(busy, TestLatch.DefaultTimeout)
-          case (msg: Int, receivedLatch: TestLatch) ⇒
-            usedActors.put(msg, self.path.toString)
-            receivedLatch.countDown()
-          case s: String ⇒
-        }
-      })))
+      val router = system.actorOf(
+        SmallestMailboxPool(3).props(routeeProps = Props(new Actor {
+          def receive = {
+            case (busy: TestLatch, receivedLatch: TestLatch) ⇒
+              usedActors.put(0, self.path.toString)
+              self ! "another in busy mailbox"
+              receivedLatch.countDown()
+              Await.ready(busy, TestLatch.DefaultTimeout)
+            case (msg: Int, receivedLatch: TestLatch) ⇒
+              usedActors.put(msg, self.path.toString)
+              receivedLatch.countDown()
+            case s: String ⇒
+          }
+        })))
 
       val busy = TestLatch(1)
       val received0 = TestLatch(1)

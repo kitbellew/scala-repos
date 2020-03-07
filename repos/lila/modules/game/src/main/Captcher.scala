@@ -4,10 +4,10 @@ import scala.concurrent.duration._
 import scala.concurrent.Future
 
 import akka.actor._
-import akka.pattern.{ ask, pipe }
-import chess.format.{ Forsyth, pgn }
-import chess.{ Game => ChessGame, Color }
-import scalaz.{ NonEmptyList, OptionT }
+import akka.pattern.{ask, pipe}
+import chess.format.{Forsyth, pgn}
+import chess.{Game => ChessGame, Color}
+import scalaz.{NonEmptyList, OptionT}
 
 import lila.common.Captcha, Captcha._
 import lila.db.api.$find
@@ -19,11 +19,11 @@ private final class Captcher extends Actor {
 
   def receive = {
 
-    case AnyCaptcha             => sender ! Impl.current
+    case AnyCaptcha => sender ! Impl.current
 
     case GetCaptcha(id: String) => Impl get id pipeTo sender
 
-    case actorApi.NewCaptcha    => Impl.refresh
+    case actorApi.NewCaptcha => Impl.refresh
 
     case ValidCaptcha(id: String, solution: String) =>
       Impl get id map (_ valid solution) pipeTo sender
@@ -45,7 +45,8 @@ private final class Captcher extends Actor {
     // Private stuff
 
     private val capacity = 512
-    private var challenges: NonEmptyList[Captcha] = NonEmptyList(Captcha.default)
+    private var challenges: NonEmptyList[Captcha] = NonEmptyList(
+      Captcha.default)
 
     private def add(c: Captcha) {
       find(c.gameId) ifNone {
@@ -70,7 +71,9 @@ private final class Captcher extends Actor {
     private def fromGame(game: Game): OptionT[Fu, Captcha] =
       optionT(GameRepo getOptionPgn game.id) flatMap { makeCaptcha(game, _) }
 
-    private def makeCaptcha(game: Game, moves: List[String]): OptionT[Fu, Captcha] =
+    private def makeCaptcha(
+        game: Game,
+        moves: List[String]): OptionT[Fu, Captcha] =
       optionT(Future {
         for {
           rewinded ← rewind(game, moves)
@@ -78,20 +81,27 @@ private final class Captcher extends Actor {
           moves = rewinded.situation.destinations map {
             case (from, dests) => from.key -> dests.mkString
           }
-        } yield Captcha(game.id, fen(rewinded), rewinded.player.white, solutions, moves = moves)
+        } yield Captcha(
+          game.id,
+          fen(rewinded),
+          rewinded.player.white,
+          solutions,
+          moves = moves)
       })
 
     private def solve(game: ChessGame): Option[Captcha.Solutions] =
       game.situation.moves.toList flatMap {
-        case (_, moves) => moves filter { move =>
-          (move.after situationOf !game.player).checkMate
-        }
-      } map { move =>
-        s"${move.orig} ${move.dest}"
-      } toNel
+        case (_, moves) =>
+          moves filter { move =>
+            (move.after situationOf !game.player).checkMate
+          }
+      } map { move => s"${move.orig} ${move.dest}" } toNel
 
     private def rewind(game: Game, moves: List[String]): Option[ChessGame] =
-      pgn.Reader.movesWithSans(moves, safeInit, tags = Nil) map (_.state) toOption
+      pgn.Reader.movesWithSans(
+        moves,
+        safeInit,
+        tags = Nil) map (_.state) toOption
 
     private def safeInit[A](list: List[A]): List[A] = list match {
       case x :: Nil => Nil
@@ -99,6 +109,7 @@ private final class Captcher extends Actor {
       case _        => Nil
     }
 
-    private def fen(game: ChessGame): String = Forsyth >> game takeWhile (_ != ' ')
+    private def fen(game: ChessGame): String =
+      Forsyth >> game takeWhile (_ != ' ')
   }
 }

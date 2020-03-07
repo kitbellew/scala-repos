@@ -1,12 +1,12 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
-import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
 import akka.stream.testkit._
 import akka.stream.testkit.scaladsl.TestSource
 import akka.stream.testkit.scaladsl.TestSink
@@ -29,7 +29,11 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .expand(Iterator.continually(_))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       for (i ← 1 to 100) {
         // Order is important here: If the request comes first it will be extrapolated!
@@ -45,7 +49,11 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .expand(Iterator.continually(_))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       publisher.sendNext(42)
 
@@ -67,7 +75,11 @@ class FlowExpandSpec extends AkkaSpec {
       val subscriber = TestSubscriber.probe[Int]()
 
       // Simply repeat the last element as an extrapolation step
-      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .expand(Iterator.continually(_))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       publisher.sendNext(1)
       subscriber.requestNext(1)
@@ -84,18 +96,26 @@ class FlowExpandSpec extends AkkaSpec {
 
     "work on a variable rate chain" in {
       val future = Source(1 to 100)
-        .map { i ⇒ if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i }
+        .map { i ⇒
+          if (ThreadLocalRandom.current().nextBoolean()) Thread.sleep(10); i
+        }
         .expand(Iterator.continually(_))
         .runFold(Set.empty[Int])(_ + _)
 
-      Await.result(future, 10.seconds) should contain theSameElementsAs (1 to 100).toSet
+      Await.result(
+        future,
+        10.seconds) should contain theSameElementsAs (1 to 100).toSet
     }
 
     "backpressure publisher when subscriber is slower" in {
       val publisher = TestPublisher.probe[Int]()
       val subscriber = TestSubscriber.probe[Int]()
 
-      Source.fromPublisher(publisher).expand(Iterator.continually(_)).to(Sink.fromSubscriber(subscriber)).run()
+      Source
+        .fromPublisher(publisher)
+        .expand(Iterator.continually(_))
+        .to(Sink.fromSubscriber(subscriber))
+        .run()
 
       publisher.sendNext(1)
       subscriber.requestNext(1)
@@ -129,7 +149,8 @@ class FlowExpandSpec extends AkkaSpec {
 
     "work properly with finite extrapolations" in {
       val (source, sink) =
-        TestSource.probe[Int]
+        TestSource
+          .probe[Int]
           .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
           .toMat(TestSink.probe)(Keep.both)
           .run()

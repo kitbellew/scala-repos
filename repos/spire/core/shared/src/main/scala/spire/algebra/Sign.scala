@@ -2,15 +2,15 @@ package spire
 package algebra
 
 /**
- * A simple ADT representing the `Sign` of an object.
- */
+  * A simple ADT representing the `Sign` of an object.
+  */
 sealed abstract class Sign(val toInt: Int) {
   import Sign._
 
   def unary_-(): Sign = this match {
     case Positive => Negative
     case Negative => Positive
-    case Zero => Zero
+    case Zero     => Zero
   }
 
   def *(that: Sign): Sign = Sign(this.toInt * that.toInt)
@@ -35,7 +35,8 @@ object Sign {
     def signum(a: Sign): Int = a.toInt
     def abs(a: Sign): Sign = if (a == Negative) Positive else a
 
-    def compare(x: Sign, y: Sign): Int = java.lang.Integer.signum(x.toInt - y.toInt)
+    def compare(x: Sign, y: Sign): Int =
+      java.lang.Integer.signum(x.toInt - y.toInt)
   }
 
   implicit final val SignAlgebra = new SignAlgebra
@@ -43,12 +44,13 @@ object Sign {
   implicit final val SignMultiplicativeGroup: MultiplicativeCMonoid[Sign] =
     Multiplicative(SignAlgebra)
 
-  implicit def SignAction[A](implicit A: AdditiveGroup[A]): MultiplicativeAction[A, Sign] =
+  implicit def SignAction[A](
+      implicit A: AdditiveGroup[A]): MultiplicativeAction[A, Sign] =
     new MultiplicativeAction[A, Sign] {
       def gtimesl(s: Sign, a: A): A = s match {
         case Positive => a
         case Negative => A.negate(a)
-        case Zero => A.zero
+        case Zero     => A.zero
       }
       def gtimesr(a: A, s: Sign): A = gtimesl(s, a)
     }

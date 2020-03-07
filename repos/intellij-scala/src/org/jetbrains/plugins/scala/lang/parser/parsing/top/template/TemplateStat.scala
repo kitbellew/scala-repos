@@ -10,11 +10,10 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Expr
 import org.jetbrains.plugins.scala.lang.parser.parsing.statements._
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 13.02.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 13.02.2008
+  */
 /*
  *  TemplateStat ::= Import
  *              | {AttributeClause} {Modifier} Def

@@ -10,48 +10,52 @@ package scala
 package collection
 package immutable
 
-import HashMap.{ HashTrieMap, HashMapCollision1, HashMap1 }
-import HashSet.{ HashTrieSet, HashSetCollision1, HashSet1 }
-import scala.annotation.unchecked.{ uncheckedVariance => uV }
+import HashMap.{HashTrieMap, HashMapCollision1, HashMap1}
+import HashSet.{HashTrieSet, HashSetCollision1, HashSet1}
+import scala.annotation.unchecked.{uncheckedVariance => uV}
 import scala.annotation.tailrec
 
 /** Abandons any pretense of type safety for speed.  You can't say I
- *  didn't try: see r23934.
- */
-private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) extends AbstractIterator[T] {
+  *  didn't try: see r23934.
+  */
+private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
+    extends AbstractIterator[T] {
   outer =>
 
   private[immutable] def getElem(x: AnyRef): T
 
-  def initDepth                                     = 0
-  def initArrayStack: Array[Array[Iterable[T @uV]]] = new Array[Array[Iterable[T]]](6)
-  def initPosStack                                  = new Array[Int](6)
-  def initArrayD: Array[Iterable[T @uV]]            = elems
-  def initPosD                                      = 0
-  def initSubIter: Iterator[T]                      = null // to traverse collision nodes
+  def initDepth = 0
+  def initArrayStack: Array[Array[Iterable[T @uV]]] =
+    new Array[Array[Iterable[T]]](6)
+  def initPosStack = new Array[Int](6)
+  def initArrayD: Array[Iterable[T @uV]] = elems
+  def initPosD = 0
+  def initSubIter: Iterator[T] = null // to traverse collision nodes
 
-  private[this] var depth                                     = initDepth
+  private[this] var depth = initDepth
   private[this] var arrayStack: Array[Array[Iterable[T @uV]]] = initArrayStack
-  private[this] var posStack                                  = initPosStack
-  private[this] var arrayD: Array[Iterable[T @uV]]            = initArrayD
-  private[this] var posD                                      = initPosD
-  private[this] var subIter                                   = initSubIter
+  private[this] var posStack = initPosStack
+  private[this] var arrayD: Array[Iterable[T @uV]] = initArrayD
+  private[this] var posD = initPosD
+  private[this] var subIter = initSubIter
 
-  private[this] def getElems(x: Iterable[T]): Array[Iterable[T]] = (x match {
-    case x: HashTrieMap[_, _] => x.elems
-    case x: HashTrieSet[_]    => x.elems
-  }).asInstanceOf[Array[Iterable[T]]]
+  private[this] def getElems(x: Iterable[T]): Array[Iterable[T]] =
+    (x match {
+      case x: HashTrieMap[_, _] => x.elems
+      case x: HashTrieSet[_]    => x.elems
+    }).asInstanceOf[Array[Iterable[T]]]
 
-  private[this] def collisionToArray(x: Iterable[T]): Array[Iterable[T]] = (x match {
-    case x: HashMapCollision1[_, _] => x.kvs.map(x => HashMap(x)).toArray
-    case x: HashSetCollision1[_]    => x.ks.map(x => HashSet(x)).toArray
-  }).asInstanceOf[Array[Iterable[T]]]
+  private[this] def collisionToArray(x: Iterable[T]): Array[Iterable[T]] =
+    (x match {
+      case x: HashMapCollision1[_, _] => x.kvs.map(x => HashMap(x)).toArray
+      case x: HashSetCollision1[_]    => x.ks.map(x => HashSet(x)).toArray
+    }).asInstanceOf[Array[Iterable[T]]]
 
   private[this] type SplitIterators = ((Iterator[T], Int), Iterator[T])
 
   private def isTrie(x: AnyRef) = x match {
-    case _: HashTrieMap[_,_] | _: HashTrieSet[_] => true
-    case _                                       => false
+    case _: HashTrieMap[_, _] | _: HashTrieSet[_] => true
+    case _                                        => false
   }
   private def isContainer(x: AnyRef) = x match {
     case _: HashMap1[_, _] | _: HashSet1[_] => true
@@ -59,12 +63,13 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
   }
 
   final class DupIterator(xs: Array[Iterable[T]]) extends {
-    override val initDepth                                     = outer.depth
-    override val initArrayStack: Array[Array[Iterable[T @uV]]] = outer.arrayStack
-    override val initPosStack                                  = outer.posStack
-    override val initArrayD: Array[Iterable[T @uV]]            = outer.arrayD
-    override val initPosD                                      = outer.posD
-    override val initSubIter                                   = outer.subIter
+    override val initDepth = outer.depth
+    override val initArrayStack: Array[Array[Iterable[T @uV]]] =
+      outer.arrayStack
+    override val initPosStack = outer.posStack
+    override val initArrayD: Array[Iterable[T @uV]] = outer.arrayD
+    override val initPosD = outer.posD
+    override val initSubIter = outer.subIter
   } with TrieIterator[T](xs) {
     final override def getElem(x: AnyRef): T = outer.getElem(x)
   }
@@ -75,22 +80,25 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
     final override def getElem(x: AnyRef): T = outer.getElem(x)
   }
 
-  private[this] def iteratorWithSize(arr: Array[Iterable[T]]): (Iterator[T], Int) =
+  private[this] def iteratorWithSize(
+      arr: Array[Iterable[T]]): (Iterator[T], Int) =
     (newIterator(arr), arr.map(_.size).sum)
 
-  private[this] def arrayToIterators(arr: Array[Iterable[T]]): SplitIterators = {
+  private[this] def arrayToIterators(
+      arr: Array[Iterable[T]]): SplitIterators = {
     val (fst, snd) = arr.splitAt(arr.length / 2)
 
     (iteratorWithSize(snd), newIterator(fst))
   }
   private[this] def splitArray(ad: Array[Iterable[T]]): SplitIterators =
     if (ad.length > 1) arrayToIterators(ad)
-    else ad(0) match {
-      case _: HashMapCollision1[_, _] | _: HashSetCollision1[_] =>
-        arrayToIterators(collisionToArray(ad(0)))
-      case _ =>
-        splitArray(getElems(ad(0)))
-    }
+    else
+      ad(0) match {
+        case _: HashMapCollision1[_, _] | _: HashSetCollision1[_] =>
+          arrayToIterators(collisionToArray(ad(0)))
+        case _ =>
+          splitArray(getElems(ad(0)))
+      }
 
   def hasNext = (subIter ne null) || depth >= 0
   def next(): T = {
@@ -104,7 +112,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
   }
 
   @tailrec private[this] def next0(elems: Array[Iterable[T]], i: Int): T = {
-    if (i == elems.length-1) { // reached end of level, pop stack
+    if (i == elems.length - 1) { // reached end of level, pop stack
       depth -= 1
       if (depth >= 0) {
         arrayD = arrayStack(depth)
@@ -133,8 +141,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
       arrayD = getElems(m)
       posD = 0
       next0(getElems(m), 0)
-    }
-    else {
+    } else {
       subIter = m.iterator
       next()
     }
@@ -172,8 +179,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
       val buff = subIter.toBuffer
       subIter = null
       ((buff.iterator, buff.length), this)
-    }
-    else {
+    } else {
       // otherwise find the topmost array stack element
       if (depth > 0) {
         // 2) topmost comes before (is not) arrayD
@@ -185,14 +191,16 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
           val szsnd = snd(0).size
           // modify this - pop
           depth -= 1
-          1 until arrayStack.length foreach (i => arrayStack(i - 1) = arrayStack(i))
+          1 until arrayStack.length foreach (i =>
+            arrayStack(i - 1) = arrayStack(i))
           arrayStack(arrayStack.length - 1) = Array[Iterable[T]](null)
           posStack = posStack.tail ++ Array[Int](0)
           // we know that `this` is not empty, since it had something on the arrayStack and arrayStack elements are always non-empty
           ((newIterator(snd), szsnd), this)
         } else {
           // 2b) more than a single entry left on top
-          val (fst, snd) = arrayStack(0).splitAt(arrayStack(0).length - (arrayStack(0).length - posStack(0) + 1) / 2)
+          val (fst, snd) = arrayStack(0).splitAt(
+            arrayStack(0).length - (arrayStack(0).length - posStack(0) + 1) / 2)
           arrayStack(0) = fst
           (iteratorWithSize(snd), this)
         }
@@ -206,10 +214,10 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]]) e
             if (isTrie(m)) getElems(m)
             else collisionToArray(m)
           )
-        }
-        else {
+        } else {
           // 3b) arrayD has more free elements
-          val (fst, snd) = arrayD.splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
+          val (fst, snd) =
+            arrayD.splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
           arrayD = fst
           (iteratorWithSize(snd), this)
         }

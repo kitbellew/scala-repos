@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import language.postfixOps
@@ -44,7 +43,7 @@ class ReceiveTimeoutSpec extends AkkaSpec {
         context.setReceiveTimeout(500 milliseconds)
 
         def receive = {
-          case Tick           ⇒ ()
+          case Tick ⇒ ()
           case ReceiveTimeout ⇒ timeoutLatch.open
         }
       }))
@@ -98,12 +97,16 @@ class ReceiveTimeoutSpec extends AkkaSpec {
         context.setReceiveTimeout(1 second)
 
         def receive = {
-          case ReceiveTimeout  ⇒ timeoutLatch.open
+          case ReceiveTimeout ⇒ timeoutLatch.open
           case TransperentTick ⇒
         }
       }))
 
-      val ticks = system.scheduler.schedule(100.millis, 100.millis, timeoutActor, TransperentTick)(system.dispatcher)
+      val ticks = system.scheduler.schedule(
+        100.millis,
+        100.millis,
+        timeoutActor,
+        TransperentTick)(system.dispatcher)
 
       Await.ready(timeoutLatch, TestLatch.DefaultTimeout)
       ticks.cancel()

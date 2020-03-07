@@ -27,7 +27,9 @@ class TestSet(s0: Set[Int], s1: Set[Int]) {
   def checkSubSet(pre: String, s0: Set[Int], s1: Set[Int]) {
     for (e <- s0.iterator)
       if (!(s1 contains e)) {
-        assert(false, pre+" element: "+e+"\n S0 = "+s0+"\n S1 = "+s1)
+        assert(
+          false,
+          pre + " element: " + e + "\n S0 = " + s0 + "\n S1 = " + s1)
       }
   }
   for (i <- 0 until Iterations) {
@@ -40,10 +42,12 @@ class TestSet(s0: Set[Int], s1: Set[Int]) {
       checkSubSet("missing", s1, s0)
     }
     if (res0 != res1)
-      assert(false, "DIFFERENCE , operation = "+explain(n, s0)+", value ="+(n >> 3)+
-             ", result0 = "+res0+", result1 = "+res1)
+      assert(
+        false,
+        "DIFFERENCE , operation = " + explain(n, s0) + ", value =" + (n >> 3) +
+          ", result0 = " + res0 + ", result1 = " + res1)
   }
-  Console.println("succeeded for "+Iterations+" iterations.")
+  Console.println("succeeded for " + Iterations + " iterations.")
 }
 object Test extends App {
   def t3954 {
@@ -62,5 +66,7 @@ object Test extends App {
   t3954
 
   new TestSet(HashSet.empty, new LinkedHashSet)
-  new TestSet(new ImmutableSetAdaptor(collection.immutable.Set.empty[Int]), new LinkedHashSet)
+  new TestSet(
+    new ImmutableSetAdaptor(collection.immutable.Set.empty[Int]),
+    new LinkedHashSet)
 }

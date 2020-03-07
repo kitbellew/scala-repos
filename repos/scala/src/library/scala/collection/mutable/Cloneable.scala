@@ -6,18 +6,16 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
 
 /** A trait for cloneable collections.
- *
- *  @since 2.8
- *
- *  @tparam A    Type of the elements contained in the collection, covariant and with reference types as upperbound.
- */
+  *
+  *  @since 2.8
+  *
+  *  @tparam A    Type of the elements contained in the collection, covariant and with reference types as upperbound.
+  */
 trait Cloneable[+A <: AnyRef] extends scala.Cloneable {
   override def clone(): A = super.clone().asInstanceOf[A]
 }

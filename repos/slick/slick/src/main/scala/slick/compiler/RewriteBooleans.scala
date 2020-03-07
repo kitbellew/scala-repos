@@ -22,7 +22,7 @@ class RewriteBooleans extends Phase {
   def rewriteRec(n: Node): Node = {
     val n2 = n.mapChildren(rewriteRec, true)
     val n3 = rewrite(n2)
-    if(n3 ne n2) logger.debug(s"Rewriting $n2 to $n3")
+    if (n3 ne n2) logger.debug(s"Rewriting $n2 to $n3")
     n3
   }
 
@@ -37,7 +37,9 @@ class RewriteBooleans extends Phase {
       toFake(Apply(sym, ch)(n.nodeType).infer())
     // Where clauses, join conditions and case clauses need real boolean predicates
     case n @ Comprehension(_, _, _, where, _, _, having, _, _, _) =>
-      n.copy(where = where.map(toReal), having = having.map(toReal)) :@ n.nodeType
+      n.copy(
+        where = where.map(toReal),
+        having = having.map(toReal)) :@ n.nodeType
     case n @ Join(_, _, _, _, _, on) =>
       n.copy(on = toReal(on)) :@ n.nodeType
     case cond @ IfThenElse(_) =>
@@ -49,22 +51,22 @@ class RewriteBooleans extends Phase {
     * conversion to a real boolean. */
   def toFake(n: Node) = n match {
     case ToRealBoolean(ch) => ch
-    case _ => ToFakeBoolean.typed(n.nodeType, n).infer()
+    case _                 => ToFakeBoolean.typed(n.nodeType, n).infer()
   }
 
   /** Create a conversion to a real boolean, cancelling out an existing
     * conversion to a fake boolean. */
   def toReal(n: Node) = n match {
     case ToFakeBoolean(ch) => ch
-    case _ => ToRealBoolean.typed(n.nodeType, n).infer()
+    case _                 => ToRealBoolean.typed(n.nodeType, n).infer()
   }
 
   /** Check if a type is equivalent to the Scala Boolean type or a (possibly
     * nested) Option of that type. */
   def isBooleanLike(t: Type): Boolean = t match {
     case t: TypedType[_] if t.scalaType == ScalaBaseType.booleanType => true
-    case t: OptionType => isBooleanLike(t.elementType)
-    case _ => false
+    case t: OptionType                                               => isBooleanLike(t.elementType)
+    case _                                                           => false
   }
 }
 

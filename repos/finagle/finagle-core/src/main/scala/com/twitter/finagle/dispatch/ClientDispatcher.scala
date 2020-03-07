@@ -9,14 +9,14 @@ import com.twitter.util._
 import java.net.InetSocketAddress
 
 /**
- * Dispatches requests one at a time; concurrent requests are queued.
- *
- * @param statsReceiver typically scoped to `clientName/dispatcher`
- */
+  * Dispatches requests one at a time; concurrent requests are queued.
+  *
+  * @param statsReceiver typically scoped to `clientName/dispatcher`
+  */
 abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     trans: Transport[In, Out],
     statsReceiver: StatsReceiver)
-  extends Service[Req, Rep] {
+    extends Service[Req, Rep] {
 
   def this(trans: Transport[In, Out]) =
     this(trans, NullStatsReceiver)
@@ -30,32 +30,31 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
 
   private[this] val localAddress: InetSocketAddress = trans.localAddress match {
     case ia: InetSocketAddress => ia
-    case _ => new InetSocketAddress(0)
+    case _                     => new InetSocketAddress(0)
   }
-
 
   // satisfy pending requests on transport close
   trans.onClose.respond { res =>
     val exc = res match {
       case Return(exc) => exc
-      case Throw(exc) => exc
+      case Throw(exc)  => exc
     }
 
     semaphore.fail(exc)
   }
 
   /**
-   * Dispatch a request, satisfying Promise `p` with the response;
-   * the returned Future is satisfied when the dispatch is complete:
-   * only one request is admitted at any given time.
-   *
-   * Note that GenSerialClientDispatcher manages interrupts,
-   * satisfying `p` should it be interrupted -- implementors beware:
-   * use only `updateIfEmpty` variants for satisfying the Promise.
-   *
-   * GenSerialClientDispatcher will also attempt to satisfy the promise
-   * if the returned `Future[Unit]` fails.
-   */
+    * Dispatch a request, satisfying Promise `p` with the response;
+    * the returned Future is satisfied when the dispatch is complete:
+    * only one request is admitted at any given time.
+    *
+    * Note that GenSerialClientDispatcher manages interrupts,
+    * satisfying `p` should it be interrupted -- implementors beware:
+    * use only `updateIfEmpty` variants for satisfying the Promise.
+    *
+    * GenSerialClientDispatcher will also attempt to satisfy the promise
+    * if the returned `Future[Unit]` fails.
+    */
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit]
 
   private[this] def tryDispatch(req: Req, p: Promise[Rep]): Future[Unit] =
@@ -66,9 +65,10 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
       case None =>
         Trace.recordClientAddr(localAddress)
 
-        p.setInterruptHandler { case intr =>
-          if (p.updateIfEmpty(Throw(intr)))
-            trans.close()
+        p.setInterruptHandler {
+          case intr =>
+            if (p.updateIfEmpty(Throw(intr)))
+              trans.close()
         }
 
         dispatch(req, p)
@@ -80,13 +80,13 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     semaphore.acquire().respond {
       case Return(permit) =>
         tryDispatch(req, p).respond {
-          case t@Throw(_) =>
+          case t @ Throw(_) =>
             p.updateIfEmpty(t.cast[Rep])
             permit.release()
           case Return(_) =>
             permit.release()
         }
-      case t@Throw(_) =>
+      case t @ Throw(_) =>
         p.update(t.cast[Rep])
     }
 
@@ -108,14 +108,14 @@ object GenSerialClientDispatcher {
 }
 
 /**
- * @param statsReceiver typically scoped to `clientName/dispatcher`
- */
+  * @param statsReceiver typically scoped to `clientName/dispatcher`
+  */
 class SerialClientDispatcher[Req, Rep](
     trans: Transport[Req, Rep],
     statsReceiver: StatsReceiver)
-  extends GenSerialClientDispatcher[Req, Rep, Req, Rep](
-    trans,
-    statsReceiver) {
+    extends GenSerialClientDispatcher[Req, Rep, Req, Rep](
+      trans,
+      statsReceiver) {
 
   import GenSerialClientDispatcher.wrapWriteException
 
@@ -125,12 +125,14 @@ class SerialClientDispatcher[Req, Rep](
   private[this] val readTheTransport: Unit => Future[Rep] = _ => trans.read()
 
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit] =
-    trans.write(req)
+    trans
+      .write(req)
       .rescue(wrapWriteException)
       .flatMap(readTheTransport)
       .respond(rep => p.updateIfEmpty(rep))
       .unit
 
   protected def write(req: Req): Future[Unit] = trans.write(req)
-  protected def read(permit: Permit): Future[Rep] = trans.read().ensure { permit.release() }
+  protected def read(permit: Permit): Future[Rep] =
+    trans.read().ensure { permit.release() }
 }

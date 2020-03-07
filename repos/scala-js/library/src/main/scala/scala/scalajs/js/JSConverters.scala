@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 import scala.language.implicitConversions
@@ -27,8 +26,8 @@ sealed abstract class JSConvertersLowPrioImplicits { this: JSConverters.type =>
 }
 
 /** A collection of decorators that allow converting Scala types to
- *  corresponding JS facade types
- */
+  *  corresponding JS facade types
+  */
 object JSConverters extends JSConvertersLowPrioImplicits {
 
   implicit class JSRichOption[T](val opt: Option[T]) extends AnyVal {
@@ -36,8 +35,8 @@ object JSConverters extends JSConvertersLowPrioImplicits {
       opt.fold[UndefOr[T]](undefined)(v => v)
   }
 
-  implicit class JSRichGenTraversableOnce[T](
-      val col: GenTraversableOnce[T]) extends AnyVal {
+  implicit class JSRichGenTraversableOnce[T](val col: GenTraversableOnce[T])
+      extends AnyVal {
     @inline final def toJSArray: Array[T] = genTraversableOnce2jsArray(col)
   }
 
@@ -55,30 +54,35 @@ object JSConverters extends JSConvertersLowPrioImplicits {
     new JSRichGenTraversableOnce(coll)
 
   /** Special case for scala.Array of [[genTravConvertible2JSRichGenTrav]].
-   *  Needed for the 2.10.x series.
-   */
+    *  Needed for the 2.10.x series.
+    */
   @inline
   implicit def array2JSRichGenTrav[T](
       arr: scala.Array[T]): JSRichGenTraversableOnce[T] =
     new JSRichGenTraversableOnce(arr)
 
   @inline
-  implicit def JSRichFutureThenable[A](f: Future[Thenable[A]]): JSRichFuture[A] =
+  implicit def JSRichFutureThenable[A](
+      f: Future[Thenable[A]]): JSRichFuture[A] =
     new JSRichFuture[A](f.asInstanceOf[Future[A | Thenable[A]]])
 
-  final class JSRichFuture[A](val self: Future[A | Thenable[A]]) extends AnyVal {
+  final class JSRichFuture[A](val self: Future[A | Thenable[A]])
+      extends AnyVal {
+
     /** Converts the Future to a JavaScript [[Promise]].
-     *
-     *  Attention! The nature of the [[Promise]] class, from the ECMAScript
-     *  specification, makes this method inherently un-typeable, because it is
-     *  not type parametric.
-     *
-     *  The signature of the `toJSPromise` method is only valid
-     *  <i>provided that</i> the values of `A` do not have a `then` method.
-     */
+      *
+      *  Attention! The nature of the [[Promise]] class, from the ECMAScript
+      *  specification, makes this method inherently un-typeable, because it is
+      *  not type parametric.
+      *
+      *  The signature of the `toJSPromise` method is only valid
+      *  <i>provided that</i> the values of `A` do not have a `then` method.
+      */
     def toJSPromise(implicit executor: ExecutionContext): Promise[A] = {
       new Promise[A]({
-        (resolve: js.Function1[A | Thenable[A], _], reject: js.Function1[scala.Any, _]) =>
+        (
+            resolve: js.Function1[A | Thenable[A], _],
+            reject: js.Function1[scala.Any, _]) =>
           self onComplete {
             case scala.util.Success(value) =>
               resolve(value)

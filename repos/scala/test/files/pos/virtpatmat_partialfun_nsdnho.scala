@@ -3,7 +3,7 @@ class Test {
   // at scala.Predef$.assert(Predef.scala:185)
   // at scala.tools.nsc.Global.assert(Global.scala:187)
   // at scala.tools.nsc.typechecker.SuperAccessors$SuperAccTransformer.transform(SuperAccessors.scala:291)
-  val a: (Map[Int, Int] => (Any => Any)) = { m => { case _ => m - 1} }
+  val a: (Map[Int, Int] => (Any => Any)) = { m => { case _ => m - 1 } }
 
   // patmat-crash.scala:9: error: erroneous or inaccessible type
   val b: (Int => (Any => Any)) = { m => { case _ => m } }

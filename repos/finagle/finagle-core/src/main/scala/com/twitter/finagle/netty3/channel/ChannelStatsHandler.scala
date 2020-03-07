@@ -6,37 +6,47 @@ import java.io.IOException
 import java.util.concurrent.atomic.{AtomicInteger, AtomicLong}
 import java.util.logging.{Level, Logger}
 import org.jboss.netty.buffer.ChannelBuffer
-import org.jboss.netty.channel.{ChannelHandlerContext, ChannelStateEvent,
-  ExceptionEvent, MessageEvent, WriteCompletionEvent, SimpleChannelHandler}
+import org.jboss.netty.channel.{
+  ChannelHandlerContext,
+  ChannelStateEvent,
+  ExceptionEvent,
+  MessageEvent,
+  WriteCompletionEvent,
+  SimpleChannelHandler
+}
 
 /**
- * A [[org.jboss.netty.channel.ChannelHandler]] that tracks channel/connection
- * statistics. The handler is meant to be shared by all
- * [[org.jboss.netty.channel.Channel Channels]] within a Finagle client or
- * server in order to consolidate statistics across a number of channels.
- */
+  * A [[org.jboss.netty.channel.ChannelHandler]] that tracks channel/connection
+  * statistics. The handler is meant to be shared by all
+  * [[org.jboss.netty.channel.Channel Channels]] within a Finagle client or
+  * server in order to consolidate statistics across a number of channels.
+  */
 class ChannelStatsHandler(statsReceiver: StatsReceiver)
-  extends SimpleChannelHandler
-{
+    extends SimpleChannelHandler {
   private[this] val log = Logger.getLogger(getClass.getName)
   private[this] val connectionCount: AtomicLong = new AtomicLong()
   private[this] var elapsed: () => Duration = null
 
-  private[this] val connects                = statsReceiver.counter("connects")
-  private[this] val connectionDuration      = statsReceiver.stat("connection_duration")
-  private[this] val connectionReceivedBytes = statsReceiver.stat("connection_received_bytes")
-  private[this] val connectionSentBytes     = statsReceiver.stat("connection_sent_bytes")
-  private[this] val receivedBytes           = statsReceiver.counter("received_bytes")
-  private[this] val sentBytes               = statsReceiver.counter("sent_bytes")
-  private[this] val closeChans              = statsReceiver.counter("closechans")
-  private[this] val writable                = statsReceiver.counter("socket_writable_ms")
-  private[this] val unwritable              = statsReceiver.counter("socket_unwritable_ms")
-  private[this] val exceptions              = statsReceiver.scope("exn")
-  private[this] val connections             = statsReceiver.addGauge("connections") {
+  private[this] val connects = statsReceiver.counter("connects")
+  private[this] val connectionDuration =
+    statsReceiver.stat("connection_duration")
+  private[this] val connectionReceivedBytes =
+    statsReceiver.stat("connection_received_bytes")
+  private[this] val connectionSentBytes =
+    statsReceiver.stat("connection_sent_bytes")
+  private[this] val receivedBytes = statsReceiver.counter("received_bytes")
+  private[this] val sentBytes = statsReceiver.counter("sent_bytes")
+  private[this] val closeChans = statsReceiver.counter("closechans")
+  private[this] val writable = statsReceiver.counter("socket_writable_ms")
+  private[this] val unwritable = statsReceiver.counter("socket_unwritable_ms")
+  private[this] val exceptions = statsReceiver.scope("exn")
+  private[this] val connections = statsReceiver.addGauge("connections") {
     connectionCount.get()
   }
 
-  override def channelOpen(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
+  override def channelOpen(
+      ctx: ChannelHandlerContext,
+      e: ChannelStateEvent): Unit = {
     elapsed = Stopwatch.start()
     ctx.setAttachment(new AtomicLong(0), new AtomicLong(0))
     connects.incr()
@@ -45,8 +55,11 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelOpen(ctx, e)
   }
 
-  override def writeComplete(ctx: ChannelHandlerContext, e: WriteCompletionEvent) {
-    val (_, channelWriteCount) = ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
+  override def writeComplete(
+      ctx: ChannelHandlerContext,
+      e: WriteCompletionEvent) {
+    val (_, channelWriteCount) =
+      ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
 
     channelWriteCount.getAndAdd(e.getWrittenAmount)
     sentBytes.incr(e.getWrittenAmount.toInt)
@@ -57,7 +70,8 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     e.getMessage match {
       case buffer: ChannelBuffer =>
-        val (channelReadCount, _) = ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
+        val (channelReadCount, _) =
+          ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
         val readableBytes = buffer.readableBytes
         channelReadCount.getAndAdd(readableBytes)
         receivedBytes.incr(readableBytes)
@@ -72,7 +86,9 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
   private[this] val closesCount = statsReceiver.counter("closes")
   private[this] val closedCount = statsReceiver.counter("closed")
 
-  override def closeRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
+  override def closeRequested(
+      ctx: ChannelHandlerContext,
+      e: ChannelStateEvent) {
     closesCount.incr()
     super.closeRequested(ctx, e)
   }
@@ -96,26 +112,32 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelClosed(ctx, e)
   }
 
-  override def exceptionCaught(ctx: ChannelHandlerContext, evt: ExceptionEvent) {
-    val m = if (evt.getCause != null) evt.getCause.getClass.getName else "unknown"
+  override def exceptionCaught(
+      ctx: ChannelHandlerContext,
+      evt: ExceptionEvent) {
+    val m =
+      if (evt.getCause != null) evt.getCause.getClass.getName else "unknown"
     exceptions.counter(m).incr()
     // If no Monitor is active, then log the exception so we don't fail silently.
     if (!Monitor.isActive) {
       val level = evt.getCause match {
         case t: IOException => Level.FINE
-        case _ => Level.WARNING
+        case _              => Level.WARNING
       }
       log.log(level, "ChannelStatsHandler caught an exception", evt.getCause)
     }
     super.exceptionCaught(ctx, evt)
   }
 
-  private[this] var hasBeenWritable = true //netty channels start in writable state
+  private[this] var hasBeenWritable =
+    true //netty channels start in writable state
   private[this] var since = Time.now
 
   private[this] def socketDuration(now: Time): Duration = now - since
 
-  override def channelInterestChanged(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
+  override def channelInterestChanged(
+      ctx: ChannelHandlerContext,
+      e: ChannelStateEvent): Unit = {
     val now = Time.now
     super.channelInterestChanged(ctx, e)
     val isWritable = ctx.getChannel.isWritable()

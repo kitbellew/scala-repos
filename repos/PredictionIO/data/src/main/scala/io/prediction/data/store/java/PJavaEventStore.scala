@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.store.java
 
 import io.prediction.data.storage.Event
@@ -50,16 +49,16 @@ object PJavaEventStore {
     * @return JavaRDD[Event]
     */
   def find(
-    appName: String,
-    channelName: Option[String],
-    startTime: Option[DateTime],
-    untilTime: Option[DateTime],
-    entityType: Option[String],
-    entityId: Option[String],
-    eventNames: Option[java.util.List[String]],
-    targetEntityType: Option[Option[String]],
-    targetEntityId: Option[Option[String]],
-    sc: SparkContext): JavaRDD[Event] = {
+      appName: String,
+      channelName: Option[String],
+      startTime: Option[DateTime],
+      untilTime: Option[DateTime],
+      entityType: Option[String],
+      entityId: Option[String],
+      eventNames: Option[java.util.List[String]],
+      targetEntityType: Option[Option[String]],
+      targetEntityId: Option[Option[String]],
+      sc: SparkContext): JavaRDD[Event] = {
 
     val eventNamesSeq = eventNames.map(JavaConversions.asScalaBuffer(_).toSeq)
 
@@ -89,20 +88,20 @@ object PJavaEventStore {
     * @return JavaRDD[(String, PropertyMap)] JavaRDD of entityId and PropetyMap pair
     */
   def aggregateProperties(
-    appName: String,
-    entityType: String,
-    channelName: Option[String],
-    startTime: Option[DateTime],
-    untilTime: Option[DateTime],
-    required: Option[java.util.List[String]],
-    sc: SparkContext): JavaRDD[(String, PropertyMap)] = {
+      appName: String,
+      entityType: String,
+      channelName: Option[String],
+      startTime: Option[DateTime],
+      untilTime: Option[DateTime],
+      required: Option[java.util.List[String]],
+      sc: SparkContext): JavaRDD[(String, PropertyMap)] = {
 
     PEventStore.aggregateProperties(
       appName,
-    entityType,
-    channelName,
-    startTime,
-    untilTime
+      entityType,
+      channelName,
+      startTime,
+      untilTime
     )(sc)
   }
 

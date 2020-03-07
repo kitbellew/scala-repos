@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,7 +24,7 @@ import com.precog.common.serialization._
 
 import blueeyes.json._
 import blueeyes.json.serialization._
-import blueeyes.core.http.{ MimeTypes, MimeType }
+import blueeyes.core.http.{MimeTypes, MimeType}
 import IsoSerialization._
 import DefaultSerialization._
 import Versioned._
@@ -43,16 +43,18 @@ sealed trait ContentEncoding {
 }
 
 object ContentEncoding {
-  val decomposerV1: Decomposer[ContentEncoding] = new Decomposer[ContentEncoding] {
-    def decompose(ce: ContentEncoding) = JObject("encoding" -> ce.id.serialize)
-  }
+  val decomposerV1: Decomposer[ContentEncoding] =
+    new Decomposer[ContentEncoding] {
+      def decompose(ce: ContentEncoding) =
+        JObject("encoding" -> ce.id.serialize)
+    }
 
   val extractorV1: Extractor[ContentEncoding] = new Extractor[ContentEncoding] {
     override def validated(obj: JValue): Validation[Error, ContentEncoding] = {
       obj.validated[String]("encoding").flatMap {
         case "uncompressed" => Success(RawUTF8Encoding)
         case "base64"       => Success(Base64Encoding)
-        case invalid => Failure(Invalid("Unknown encoding " + invalid))
+        case invalid        => Failure(Invalid("Unknown encoding " + invalid))
       }
     }
   }
@@ -73,18 +75,21 @@ object Base64Encoding extends ContentEncoding {
   def decode(compressed: String) = Base64.decodeBase64(compressed)
 }
 
-case class FileContent(data: Array[Byte], mimeType: MimeType, encoding: ContentEncoding)
+case class FileContent(
+    data: Array[Byte],
+    mimeType: MimeType,
+    encoding: ContentEncoding)
 
 object FileContent {
   import MimeTypes._
   val XQuirrelData = MimeType("application", "x-quirrel-data")
   val XQuirrelScript = MimeType("text", "x-quirrel-script")
   val XJsonStream = MimeType("application", "x-json-stream")
-  val ApplicationJson = application/json
-  val TextCSV = text/csv
-  val TextPlain = text/plain
+  val ApplicationJson = application / json
+  val TextCSV = text / csv
+  val TextPlain = text / plain
   val AnyMimeType = MimeType("*", "*")
-  val OctetStream = application/`octet-stream`
+  val OctetStream = application / `octet-stream`
 
   val stringTypes = Set(XQuirrelScript, ApplicationJson, TextCSV, TextPlain)
 
@@ -107,14 +112,25 @@ object FileContent {
     def validated(jv: JValue) = {
       jv match {
         case JObject(fields) =>
-          (fields.get("encoding").toSuccess(Invalid("File data object missing encoding field.")).flatMap(_.validated[ContentEncoding]) |@|
-           fields.get("mimeType").toSuccess(Invalid("File data object missing MIME type.")).flatMap(_.validated[MimeType]) |@|
-           fields.get("data").toSuccess(Invalid("File data object missing data field.")).flatMap(_.validated[String])) { (encoding, mimeType, contentString) =>
-            FileContent(encoding.decode(contentString), mimeType, encoding)
+          (fields
+            .get("encoding")
+            .toSuccess(Invalid("File data object missing encoding field."))
+            .flatMap(_.validated[ContentEncoding]) |@|
+            fields
+              .get("mimeType")
+              .toSuccess(Invalid("File data object missing MIME type."))
+              .flatMap(_.validated[MimeType]) |@|
+            fields
+              .get("data")
+              .toSuccess(Invalid("File data object missing data field."))
+              .flatMap(_.validated[String])) {
+            (encoding, mimeType, contentString) =>
+              FileContent(encoding.decode(contentString), mimeType, encoding)
           }
 
         case _ =>
-          Failure(Invalid("File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+          Failure(Invalid(
+            "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
       }
     }
   }

@@ -9,15 +9,16 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Level
 
 /**
- * Global initialization of Finagle.
- */
+  * Global initialization of Finagle.
+  */
 private[twitter] object Init {
   private val log = DefaultLogger
 
   // Used to record Finagle versioning in trace info.
   private val unknownVersion = "?"
   private val _finagleVersion = new AtomicReference[String](unknownVersion)
-  private val _finagleBuildRevision = new AtomicReference[String](unknownVersion)
+  private val _finagleBuildRevision =
+    new AtomicReference[String](unknownVersion)
 
   def finagleVersion: String = _finagleVersion.get
 
@@ -42,7 +43,9 @@ private[twitter] object Init {
     } catch {
       case NonFatal(exc) =>
         log.log(
-          Level.WARNING, s"Exception while loading Finagle's build.properties: $path", exc)
+          Level.WARNING,
+          s"Exception while loading Finagle's build.properties: $path",
+          exc)
         None
     }
   }
@@ -55,8 +58,9 @@ private[twitter] object Init {
       "finagle-core_2.11",
       "finagle-core_2.12"
     )
-    candidates.flatMap { c => tryProps(s"/com/twitter/$c/build.properties") }
-      .headOption
+    candidates.flatMap { c =>
+      tryProps(s"/com/twitter/$c/build.properties")
+    }.headOption
   }
 
   private[this] val once = Once {
@@ -67,15 +71,16 @@ private[twitter] object Init {
     _finagleVersion.set(p.getProperty("version", unknownVersion))
     _finagleBuildRevision.set(p.getProperty("build_revision", unknownVersion))
 
-    log.info("Finagle version %s (rev=%s) built at %s".format(
-      finagleVersion,
-      finagleBuildRevision,
-      p.getProperty("build_name", "?")
-    ))
+    log.info(
+      "Finagle version %s (rev=%s) built at %s".format(
+        finagleVersion,
+        finagleBuildRevision,
+        p.getProperty("build_name", "?")
+      ))
   }
 
   /**
-   * Runs the initialization if it has not yet run.
-   */
+    * Runs the initialization if it has not yet run.
+    */
   def apply(): Unit = once()
 }

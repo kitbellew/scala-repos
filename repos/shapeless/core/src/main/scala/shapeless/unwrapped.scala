@@ -31,9 +31,9 @@ object Unwrapped extends UnwrappedInstances {
 
 trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
   implicit def unwrapAnyVal[W <: AnyVal, Repr, UI, UF](implicit
-    gen: Generic.Aux[W, Repr],
-    avh: AnyValHelper.Aux[Repr, UI],
-    chain: Strict[Unwrapped.Aux[UI, UF]]
+      gen: Generic.Aux[W, Repr],
+      avh: AnyValHelper.Aux[Repr, UI],
+      chain: Strict[Unwrapped.Aux[UI, UF]]
   ) = new Unwrapped[W] {
     type U = UF
     def unwrap(w: W): U = chain.value.unwrap(avh.unwrap(gen.to(w)))
@@ -57,7 +57,7 @@ trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
   }
 
   implicit def newtypeUnwrapped[UI, Ops, UF](implicit
-    chain: Strict[Unwrapped.Aux[UI, UF]]
+      chain: Strict[Unwrapped.Aux[UI, UF]]
   ) = chain.value.asInstanceOf[Unwrapped.Aux[Newtype[UI, Ops], UF]]
 
 }

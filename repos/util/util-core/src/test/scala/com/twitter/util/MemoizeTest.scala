@@ -89,7 +89,9 @@ class MemoizeTest extends FunSuite {
 
     startUpLatch.countDown()
     val (successes, failures) =
-      Await.result(computation, 200.milliseconds).toList partition { _.isReturn }
+      Await.result(computation, 200.milliseconds).toList partition {
+        _.isReturn
+      }
 
     // One of the times, the computation must have failed.
     assert(failures == List(Throw(TheException)))

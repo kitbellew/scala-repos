@@ -35,8 +35,10 @@ package generic
   * @see [[scala.collection.generic.IsTraversableLike]]
   */
 trait IsSeqLike[Repr] {
+
   /** The type of elements we can traverse over. */
   type A
+
   /** A conversion from the representation type `Repr` to a `SeqLike[A,Repr]`. */
   val conversion: Repr => SeqLike[A, Repr]
 }
@@ -50,7 +52,8 @@ object IsSeqLike {
       val conversion = implicitly[String => SeqLike[Char, String]]
     }
 
-  implicit def seqLikeRepr[C[_], A0](implicit conv: C[A0] => SeqLike[A0,C[A0]]): IsSeqLike[C[A0]] { type A = A0 } =
+  implicit def seqLikeRepr[C[_], A0](implicit
+      conv: C[A0] => SeqLike[A0, C[A0]]): IsSeqLike[C[A0]] { type A = A0 } =
     new IsSeqLike[C[A0]] {
       type A = A0
       val conversion = conv

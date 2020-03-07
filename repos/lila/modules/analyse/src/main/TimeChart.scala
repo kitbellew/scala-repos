@@ -5,7 +5,7 @@ import scala.concurrent.Future
 import chess.Color
 import play.api.libs.json.Json
 
-import lila.game.{ Game, Namer }
+import lila.game.{Game, Namer}
 
 final class TimeChart(game: Game, moves: List[String]) {
 

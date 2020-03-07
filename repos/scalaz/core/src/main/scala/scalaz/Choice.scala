@@ -2,13 +2,12 @@ package scalaz
 
 ////
 /**
- *
- */
+  *
+  */
 ////
 trait Choice[=>:[_, _]] extends Category[=>:] { self =>
   ////
   def choice[A, B, C](f: => A =>: C, g: => B =>: C): (A \/ B) =>: C
-
 
   // derived functions
 

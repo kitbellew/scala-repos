@@ -3,8 +3,8 @@ package lila.analyse
 import akka.actor._
 import akka.pattern.pipe
 import com.typesafe.config.Config
-import scala.util.{ Success, Failure }
-import spray.caching.{ LruCache, Cache }
+import scala.util.{Success, Failure}
+import spray.caching.{LruCache, Cache}
 
 import lila.common.PimpedConfig._
 

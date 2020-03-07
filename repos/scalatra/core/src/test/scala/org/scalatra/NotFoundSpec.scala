@@ -22,38 +22,49 @@ class NotFoundSpec extends ScalatraSpec {
       should pass in a filter by default $methodNotAllowedFilterPass
   """
 
-  addFilter(new ScalatraFilter {
-    post("/filtered/get") { "wrong method" }
-  }, "/filtered/*")
+  addFilter(
+    new ScalatraFilter {
+      post("/filtered/get") { "wrong method" }
+    },
+    "/filtered/*")
 
-  addServlet(new ScalatraServlet {
-    get("/fall-through") { "fell through" }
-    get("/get") { "servlet get" }
-  }, "/filtered/*")
+  addServlet(
+    new ScalatraServlet {
+      get("/fall-through") { "fell through" }
+      get("/get") { "servlet get" }
+    },
+    "/filtered/*")
 
-  addServlet(new ScalatraServlet {
-    get("/get") { "foo" }
-    post("/no-get") { "foo" }
-    put("/no-get") { "foo" }
+  addServlet(
+    new ScalatraServlet {
+      get("/get") { "foo" }
+      post("/no-get") { "foo" }
+      put("/no-get") { "foo" }
 
-    error {
-      case t: Throwable => t.printStackTrace()
-    }
-  }, "/default/*")
+      error {
+        case t: Throwable => t.printStackTrace()
+      }
+    },
+    "/default/*")
 
-  addServlet(new ScalatraServlet {
-    post("/no-get") { "foo" }
-    put("/no-get") { "foo" }
+  addServlet(
+    new ScalatraServlet {
+      post("/no-get") { "foo" }
+      put("/no-get") { "foo" }
 
-    notFound { "custom not found" }
-    methodNotAllowed { _ => "custom method not allowed" }
-  }, "/custom/*")
+      notFound { "custom not found" }
+      methodNotAllowed { _ => "custom method not allowed" }
+    },
+    "/custom/*"
+  )
 
-  addServlet(new ScalatraServlet {
-    post("/no-get") { "foo" }
-    notFound { "fell through" }
-    methodNotAllowed { _ => pass() }
-  }, "/pass-from-not-allowed/*")
+  addServlet(
+    new ScalatraServlet {
+      post("/no-get") { "foo" }
+      notFound { "fell through" }
+      methodNotAllowed { _ => pass() }
+    },
+    "/pass-from-not-allowed/*")
 
   def customNotFound = get("/custom/matches-nothing") {
     body must_== "custom not found"

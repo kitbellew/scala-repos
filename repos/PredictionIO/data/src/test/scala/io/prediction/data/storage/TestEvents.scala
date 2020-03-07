@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.joda.time.DateTime
@@ -29,8 +28,7 @@ trait TestEvents {
     event = "$set",
     entityType = "user",
     entityId = "u1",
-    properties = DataMap(
-      """{
+    properties = DataMap("""{
         "a" : 1,
         "b" : "value2",
         "d" : [1, 2, 3],
@@ -77,8 +75,7 @@ trait TestEvents {
     event = "$set",
     entityType = "user",
     entityId = "u2",
-    properties = DataMap(
-      """{
+    properties = DataMap("""{
         "a" : 21,
         "b" : "value12",
         "d" : [7, 5, 6],
@@ -106,8 +103,7 @@ trait TestEvents {
     event = "$set",
     entityType = "user",
     entityId = "u3",
-    properties = DataMap(
-      """{
+    properties = DataMap("""{
         "a" : 22,
         "b" : "value13",
         "d" : [5, 6, 1],
@@ -123,7 +119,8 @@ trait TestEvents {
 
   val u3e3 = u3e1.copy(
     event = "$set",
-    properties = DataMap("""{"b" : "value10", "f": "new12", "d" : [1, 3, 2]}"""),
+    properties =
+      DataMap("""{"b" : "value10", "f": "new12", "d" : [1, 3, 2]}"""),
     eventTime = u3BaseTime.plusDays(2)
   )
 
@@ -175,8 +172,7 @@ trait TestEvents {
     entityId = "my_entity_id4",
     targetEntityType = Some("my_target_entity_type4"),
     targetEntityId = Some("my_target_entity_id4"),
-    properties = DataMap(
-      """{
+    properties = DataMap("""{
         "prop1" : 1,
         "prop2" : "value2",
         "prop3" : [1, 2, 3],

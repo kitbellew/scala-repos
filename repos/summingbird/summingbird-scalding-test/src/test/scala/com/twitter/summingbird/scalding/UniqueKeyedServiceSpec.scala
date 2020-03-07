@@ -8,23 +8,27 @@ import com.twitter.summingbird.scalding.service._
 import org.scalatest.WordSpec
 
 /**
- * Test Job for UniqueKeyedService
- */
+  * Test Job for UniqueKeyedService
+  */
 class UniqueKeyJoinJob(args: Args) extends Job(args) {
 
   // K: Int, W: Long, V: String
-  val input = TypedTsv[(Timestamp, (Int, Long))]("input0") // left side of the join
+  val input =
+    TypedTsv[(Timestamp, (Int, Long))]("input0") // left side of the join
   val serv = TypedTsv[(Int, String)]("input1") // service to be looked up
-  val versionedSource = VersionedKeyValSource[Int, String]("input2") // source to be looked up
+  val versionedSource =
+    VersionedKeyValSource[Int, String]("input2") // source to be looked up
 
-  val uniqueKeyJoiner = UniqueKeyedService.fromAndThen[(Int, String), Int, String](
-    dr => versionedSource,
-    pipe => pipe.map {
-      case (key, value) => (key, value)
-    },
-    inputReducers = Some(1),
-    requireFullySatisfiable = false
-  )
+  val uniqueKeyJoiner =
+    UniqueKeyedService.fromAndThen[(Int, String), Int, String](
+      dr => versionedSource,
+      pipe =>
+        pipe.map {
+          case (key, value) => (key, value)
+        },
+      inputReducers = Some(1),
+      requireFullySatisfiable = false
+    )
 
   val output = uniqueKeyJoiner
     .doJoin(TypedPipe.from(input), TypedPipe.from(serv))
@@ -32,8 +36,8 @@ class UniqueKeyJoinJob(args: Args) extends Job(args) {
 }
 
 /**
- * Test for UniqueKeyedService using UniqueKeyJoinJob
- */
+  * Test for UniqueKeyedService using UniqueKeyJoinJob
+  */
 class UniqueKeyedServiceSpec extends WordSpec {
 
   val input = List(
@@ -61,11 +65,13 @@ class UniqueKeyedServiceSpec extends WordSpec {
         .source(TypedTsv[(Timestamp, (Int, Long))]("input0"), input)
         .source(TypedTsv[(Int, String)]("input1"), service)
         .source(VersionedKeyValSource[Int, String]("input2"), typedSource)
-        .sink[(Timestamp, (Int, (Long, Option[String])))](TypedTsv[(Timestamp, (Int, (Long, Option[String])))]("output")) { outBuf =>
-          // Make sure the doJoin outputs exact number of records for the inputs.
-          assert(input.size == outBuf.size)
-          // Make sure the result is exact as expected.
-          assert(outBuf.toSet == expectedResult)
+        .sink[(Timestamp, (Int, (Long, Option[String])))](
+          TypedTsv[(Timestamp, (Int, (Long, Option[String])))]("output")) {
+          outBuf =>
+            // Make sure the doJoin outputs exact number of records for the inputs.
+            assert(input.size == outBuf.size)
+            // Make sure the result is exact as expected.
+            assert(outBuf.toSet == expectedResult)
         }
         .run
         .finish

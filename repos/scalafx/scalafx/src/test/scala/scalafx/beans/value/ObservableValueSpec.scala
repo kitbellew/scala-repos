@@ -27,7 +27,10 @@
 
 package scalafx.beans.value
 
-import javafx.beans.value.{ChangeListener, ObservableValue => JFXObservableValue}
+import javafx.beans.value.{
+  ChangeListener,
+  ObservableValue => JFXObservableValue
+}
 
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
@@ -38,10 +41,10 @@ import scalafx.beans.binding.BindingIncludes._
 import scalafx.beans.property.DoubleProperty
 
 /**
- * ObservableValue Spec tests.
- *
- *
- */
+  * ObservableValue Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class ObservableValueSpec extends FlatSpec with BeforeAndAfterEach {
   var property: DoubleProperty = null
@@ -62,10 +65,9 @@ class ObservableValueSpec extends FlatSpec with BeforeAndAfterEach {
 
   it should "support anonymous change listeners with parameters" in {
     var invalidateCalled = false
-    property onChange {
-      (obs, oldV, newV) =>
-        invalidateCalled = true
-        obs should equal(property)
+    property onChange { (obs, oldV, newV) =>
+      invalidateCalled = true
+      obs should equal(property)
     }
     invalidateCalled should be(false)
     property() = 100
@@ -96,7 +98,9 @@ class ObservableValueSpec extends FlatSpec with BeforeAndAfterEach {
     // val subscription = property.onChange ...
     // ...
     // subscription.cancel()
-    val listener: ChangeListener[Number] = (obs: JFXObservableValue[_ <: Number], oldV: Number, newV: Number) => invalidateCalled = true
+    val listener: ChangeListener[Number] =
+      (obs: JFXObservableValue[_ <: Number], oldV: Number, newV: Number) =>
+        invalidateCalled = true
     property addListener listener
     invalidateCalled should be(false)
     property() = 100

@@ -2,7 +2,7 @@ package mesosphere.marathon.state
 
 import scala.collection.JavaConverters._
 import mesosphere.marathon.Protos
-import org.apache.mesos.{ Protos => MesosProtos }
+import org.apache.mesos.{Protos => MesosProtos}
 
 case class DiscoveryInfo(ports: Seq[DiscoveryInfo.Port] = Seq.empty) {
   def toProto: Protos.DiscoveryInfo = {
@@ -22,7 +22,9 @@ object DiscoveryInfo {
   }
 
   case class Port(number: Int, name: String, protocol: String) {
-    require(Port.AllowedProtocols(protocol), "protocol can only be 'tcp' or 'udp'")
+    require(
+      Port.AllowedProtocols(protocol),
+      "protocol can only be 'tcp' or 'udp'")
 
     def toProto: MesosProtos.Port = {
       MesosProtos.Port.newBuilder

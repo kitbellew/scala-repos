@@ -4,13 +4,13 @@ import com.intellij.codeInsight.completion.CompletionType
 import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 
 /**
- * @author Alexander Podkhalyuzin
- */
-
-class ScalaSmartAnonymousFunctionCompletionTest extends ScalaCodeInsightTestBase {
+  * @author Alexander Podkhalyuzin
+  */
+class ScalaSmartAnonymousFunctionCompletionTest
+    extends ScalaCodeInsightTestBase {
   def testAbstractTypeInfoFromFirstClause() {
     val fileText =
-"""
+      """
 def foo[T](x: T)(y: T => Int) = 1
 foo(2)(<caret>)
 """.replaceAll("\r", "").trim()
@@ -18,7 +18,7 @@ foo(2)(<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo[T](x: T)(y: T => Int) = 1
 foo(2)((i: Int) =><caret>)
 """.replaceAll("\r", "").trim()
@@ -29,7 +29,7 @@ foo(2)((i: Int) =><caret>)
 
   def testSimpleCaseTest() {
     val fileText =
-"""
+      """
 def foo(x: String => String) = 1
 foo {<caret>}
 """.replaceAll("\r", "").trim()
@@ -37,7 +37,7 @@ foo {<caret>}
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo(x: String => String) = 1
 foo {case s: String =><caret>}
 """.replaceAll("\r", "").trim()
@@ -48,7 +48,7 @@ foo {case s: String =><caret>}
 
   def testSimple() {
     val fileText =
-"""
+      """
 def foo(x: String => String) = 1
 foo(<caret>)
 """.replaceAll("\r", "").trim()
@@ -56,7 +56,7 @@ foo(<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo(x: String => String) = 1
 foo((s: String) =><caret>)
 """.replaceAll("\r", "").trim()
@@ -67,7 +67,7 @@ foo((s: String) =><caret>)
 
   def testJustTuple() {
     val fileText =
-"""
+      """
 def foo(x: Tuple2[Int, Int] => Int) = 1
 foo(<caret>)
 """.replaceAll("\r", "").trim()
@@ -75,7 +75,7 @@ foo(<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo(x: Tuple2[Int, Int] => Int) = 1
 foo((tuple: (Int, Int)) =><caret>)
 """.replaceAll("\r", "").trim()
@@ -86,7 +86,7 @@ foo((tuple: (Int, Int)) =><caret>)
 
   def testCaseTuple() {
     val fileText =
-"""
+      """
 def foo(x: Tuple2[Int, Int] => Int) = 1
 foo{<caret>}
 """.replaceAll("\r", "").trim()
@@ -94,7 +94,7 @@ foo{<caret>}
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo(x: Tuple2[Int, Int] => Int) = 1
 foo{case (i: Int, i0: Int) =><caret>}
 """.replaceAll("\r", "").trim()
@@ -105,7 +105,7 @@ foo{case (i: Int, i0: Int) =><caret>}
 
   def testAbstractTypeInfoWithUpper() {
     val fileText =
-"""
+      """
 def foo[T <: Runnable](x: (T, String) => String) = 1
 foo(<caret>)
 """.replaceAll("\r", "").trim()
@@ -113,7 +113,7 @@ foo(<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo[T <: Runnable](x: (T, String) => String) = 1
 foo((value: Runnable, s: String) =><caret>)
 """.replaceAll("\r", "").trim()
@@ -124,7 +124,7 @@ foo((value: Runnable, s: String) =><caret>)
 
   def testAbstractTypeInfoWithLower() {
     val fileText =
-"""
+      """
 def foo[T >: Int](x: (T, String) => String) = 1
 foo(<caret>)
 """.replaceAll("\r", "").trim()
@@ -132,7 +132,7 @@ foo(<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo[T >: Int](x: (T, String) => String) = 1
 foo((value: Int, s: String) =><caret>)
 """.replaceAll("\r", "").trim()
@@ -143,7 +143,7 @@ foo((value: Int, s: String) =><caret>)
 
   def testAbstractTypeInfoTypeParameters() {
     val fileText =
-"""
+      """
 def foo[T <: Runnable](x: T => String) = 1
 class X extends Runnable
 foo[X](<caret>)
@@ -152,7 +152,7 @@ foo[X](<caret>)
     val (activeLookup, prefix) = complete(2, CompletionType.SMART)
 
     val resultText =
-"""
+      """
 def foo[T <: Runnable](x: T => String) = 1
 class X extends Runnable
 foo[X]((x: X) =><caret>)
@@ -161,7 +161,6 @@ foo[X]((x: X) =><caret>)
     completeLookupItem(activeLookup.find(le => le.getLookupString == "").get)
     checkResultByText(resultText)
   }
-
 
   def testFewParams() {
     val fileText =

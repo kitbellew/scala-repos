@@ -31,12 +31,15 @@ import org.apache.spark.deploy.SparkHadoopUtil
 import org.apache.spark.internal.Logging
 
 /**
- * :: DeveloperApi ::
- * Parses and holds information about inputFormat (and files) specified as a parameter.
- */
+  * :: DeveloperApi ::
+  * Parses and holds information about inputFormat (and files) specified as a parameter.
+  */
 @DeveloperApi
-class InputFormatInfo(val configuration: Configuration, val inputFormatClazz: Class[_],
-    val path: String) extends Logging {
+class InputFormatInfo(
+    val configuration: Configuration,
+    val inputFormatClazz: Class[_],
+    val path: String)
+    extends Logging {
 
   var mapreduceInputFormat: Boolean = false
   var mapredInputFormat: Boolean = false
@@ -60,39 +63,39 @@ class InputFormatInfo(val configuration: Configuration, val inputFormatClazz: Cl
     case that: InputFormatInfo => {
       // not checking config - that should be fine, right ?
       this.inputFormatClazz == that.inputFormatClazz &&
-        this.path == that.path
+      this.path == that.path
     }
     case _ => false
   }
 
   private def validate() {
-    logDebug("validate InputFormatInfo : " + inputFormatClazz + ", path  " + path)
+    logDebug(
+      "validate InputFormatInfo : " + inputFormatClazz + ", path  " + path)
 
     try {
-      if (classOf[org.apache.hadoop.mapreduce.InputFormat[_, _]].isAssignableFrom(
-        inputFormatClazz)) {
+      if (classOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
+            .isAssignableFrom(inputFormatClazz)) {
         logDebug("inputformat is from mapreduce package")
         mapreduceInputFormat = true
-      }
-      else if (classOf[org.apache.hadoop.mapred.InputFormat[_, _]].isAssignableFrom(
-        inputFormatClazz)) {
+      } else if (classOf[org.apache.hadoop.mapred.InputFormat[_, _]]
+                   .isAssignableFrom(inputFormatClazz)) {
         logDebug("inputformat is from mapred package")
         mapredInputFormat = true
-      }
-      else {
-        throw new IllegalArgumentException("Specified inputformat " + inputFormatClazz +
-          " is NOT a supported input format ? does not implement either of the supported hadoop " +
+      } else {
+        throw new IllegalArgumentException(
+          "Specified inputformat " + inputFormatClazz +
+            " is NOT a supported input format ? does not implement either of the supported hadoop " +
             "api's")
       }
-    }
-    catch {
+    } catch {
       case e: ClassNotFoundException => {
-        throw new IllegalArgumentException("Specified inputformat " + inputFormatClazz +
-          " cannot be found ?", e)
+        throw new IllegalArgumentException(
+          "Specified inputformat " + inputFormatClazz +
+            " cannot be found ?",
+          e)
       }
     }
   }
-
 
   // This method does not expect failures, since validate has already passed ...
   private def prefLocsFromMapreduceInputFormat(): Set[SplitInfo] = {
@@ -101,8 +104,9 @@ class InputFormatInfo(val configuration: Configuration, val inputFormatClazz: Cl
     FileInputFormat.setInputPaths(conf, path)
 
     val instance: org.apache.hadoop.mapreduce.InputFormat[_, _] =
-      ReflectionUtils.newInstance(inputFormatClazz.asInstanceOf[Class[_]], conf).asInstanceOf[
-        org.apache.hadoop.mapreduce.InputFormat[_, _]]
+      ReflectionUtils
+        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], conf)
+        .asInstanceOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
     val job = Job.getInstance(conf)
 
     val retval = new ArrayBuffer[SplitInfo]()
@@ -121,34 +125,34 @@ class InputFormatInfo(val configuration: Configuration, val inputFormatClazz: Cl
     FileInputFormat.setInputPaths(jobConf, path)
 
     val instance: org.apache.hadoop.mapred.InputFormat[_, _] =
-      ReflectionUtils.newInstance(inputFormatClazz.asInstanceOf[Class[_]], jobConf).asInstanceOf[
-        org.apache.hadoop.mapred.InputFormat[_, _]]
+      ReflectionUtils
+        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], jobConf)
+        .asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
 
     val retval = new ArrayBuffer[SplitInfo]()
-    instance.getSplits(jobConf, jobConf.getNumMapTasks()).foreach(
-        elem => retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem)
-    )
+    instance
+      .getSplits(jobConf, jobConf.getNumMapTasks())
+      .foreach(elem =>
+        retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
 
     retval.toSet
-   }
+  }
 
   private def findPreferredLocations(): Set[SplitInfo] = {
-    logDebug("mapreduceInputFormat : " + mapreduceInputFormat + ", mapredInputFormat : " +
-      mapredInputFormat + ", inputFormatClazz : " + inputFormatClazz)
+    logDebug(
+      "mapreduceInputFormat : " + mapreduceInputFormat + ", mapredInputFormat : " +
+        mapredInputFormat + ", inputFormatClazz : " + inputFormatClazz)
     if (mapreduceInputFormat) {
       prefLocsFromMapreduceInputFormat()
-    }
-    else {
+    } else {
       assert(mapredInputFormat)
       prefLocsFromMapredInputFormat()
     }
   }
 }
 
-
-
-
 object InputFormatInfo {
+
   /**
     Computes the preferred locations based on input(s) and returned a location to block map.
     Typical use of this method for allocation would follow some algo like this:
@@ -166,8 +170,9 @@ object InputFormatInfo {
     If a node 'dies', follow same procedure.
 
     PS: I know the wording here is weird, hopefully it makes some sense !
-  */
-  def computePreferredLocations(formats: Seq[InputFormatInfo]): Map[String, Set[SplitInfo]] = {
+    */
+  def computePreferredLocations(
+      formats: Seq[InputFormatInfo]): Map[String, Set[SplitInfo]] = {
 
     val nodeToSplit = new HashMap[String, HashSet[SplitInfo]]
     for (inputSplit <- formats) {

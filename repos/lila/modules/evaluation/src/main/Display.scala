@@ -25,6 +25,7 @@ object Display {
       case _         => 1
     }
 
-  def holdSig(pa: PlayerAssessment): Int = if (pa.flags.suspiciousHoldAlert) 5 else 1
+  def holdSig(pa: PlayerAssessment): Int =
+    if (pa.flags.suspiciousHoldAlert) 5 else 1
 
 }

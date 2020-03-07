@@ -4,12 +4,15 @@ package math
 import spire.algebra.{Order, PartialOrder}
 import spire.syntax.order._
 
-
 object Searching {
   final def search[@sp A: Order](as: Array[A], item: A): Int =
     search(as, item, 0, as.length - 1)
 
-  final def search[@sp A: Order](as: Array[A], item: A, lower: Int, upper: Int): Int = {
+  final def search[@sp A: Order](
+      as: Array[A],
+      item: A,
+      lower: Int,
+      upper: Int): Int = {
     var first = lower
     var last = upper
     while (first <= last) {
@@ -26,7 +29,11 @@ object Searching {
   final def search[@sp A: Order](as: IndexedSeq[A], item: A): Int =
     search(as, item, 0, as.length - 1)
 
-  final def search[@sp A: Order](as: IndexedSeq[A], item: A, lower: Int, upper: Int): Int = {
+  final def search[@sp A: Order](
+      as: IndexedSeq[A],
+      item: A,
+      lower: Int,
+      upper: Int): Int = {
     var first = lower
     var last = upper
     while (first <= last) {
@@ -50,7 +57,8 @@ object Searching {
     * With n is the size of the poset and w <= n its width, the algorithm requires
     * O(w) space and O(w*n) time.
     */
-  final def minimalElements[A](as: Iterable[A])(implicit ev: PartialOrder[A]): Seq[A] = {
+  final def minimalElements[A](as: Iterable[A])(
+      implicit ev: PartialOrder[A]): Seq[A] = {
     import scala.collection.mutable.ArrayBuffer
     // the minimal elements for the first elements of as
     var candidates = ArrayBuffer.empty[A]

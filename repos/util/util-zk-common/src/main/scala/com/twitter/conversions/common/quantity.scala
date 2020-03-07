@@ -18,10 +18,12 @@ object quantity {
   }
 
   /** Implicit conversion of Duration to CommonDuration */
-  implicit def commonDuration(d: Duration): CommonDurationAdapter = new CommonDurationAdapter(d)
+  implicit def commonDuration(d: Duration): CommonDurationAdapter =
+    new CommonDurationAdapter(d)
 
   class DurationAmountAdapter(a: Amount[java.lang.Long, CommonTime]) {
-    def toDuration: Duration = Duration(a.getValue.longValue, translateUnit(a.getUnit))
+    def toDuration: Duration =
+      Duration(a.getValue.longValue, translateUnit(a.getUnit))
 
     def translateUnit(unit: CommonTime): TimeUnit = unit match {
       case CommonTime.DAYS         => TimeUnit.DAYS
@@ -35,6 +37,7 @@ object quantity {
   }
 
   /** Implicit conversion of Amount to DurationAmountAdapter */
-  implicit def commonDuration(a: Amount[java.lang.Long, CommonTime]): DurationAmountAdapter =
+  implicit def commonDuration(
+      a: Amount[java.lang.Long, CommonTime]): DurationAmountAdapter =
     new DurationAmountAdapter(a)
 }

@@ -44,10 +44,12 @@ class EnsembleToolBar extends EnsembleExample {
         new Button {
           text = "Home"
           minWidth = 75
-        }, new Button {
+        },
+        new Button {
           text = "Options"
           minWidth = 75
-        }, new Button {
+        },
+        new Button {
           text = "Help"
           minWidth = 75
         }

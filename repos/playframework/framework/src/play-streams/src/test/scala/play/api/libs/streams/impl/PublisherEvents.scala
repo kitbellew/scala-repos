@@ -16,7 +16,8 @@ trait PublisherEvents[T] {
 
   import PublisherEvents._
 
-  case class BoundedSubscription[T, U >: T](pr: Publisher[T], sr: Subscriber[U]) extends Subscription {
+  case class BoundedSubscription[T, U >: T](pr: Publisher[T], sr: Subscriber[U])
+      extends Subscription {
     def cancel(): Unit = {
       record(Cancel)
     }
@@ -33,7 +34,8 @@ trait PublisherEvents[T] {
     }
   }
 
-  private def forSubscription(f: BoundedSubscription[T, _] => Any)(implicit ec: ExecutionContext): Future[Unit] = {
+  private def forSubscription(f: BoundedSubscription[T, _] => Any)(
+      implicit ec: ExecutionContext): Future[Unit] = {
     publisher.subscription.future.map { sn =>
       f(sn)
       ()
@@ -41,26 +43,18 @@ trait PublisherEvents[T] {
   }
 
   def onSubscribe()(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onSubscribe(sn)
-    }
+    forSubscription { sn => sn.sr.onSubscribe(sn) }
   }
 
   def onNext(element: T)(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.onNext(element)
-    }
+    forSubscription { sn => sn.onNext(element) }
   }
 
   def onError(t: Throwable)(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onError(t)
-    }
+    forSubscription { sn => sn.sr.onError(t) }
   }
 
   def onComplete()(implicit ec: ExecutionContext): Unit = {
-    forSubscription { sn =>
-      sn.sr.onComplete()
-    }
+    forSubscription { sn => sn.sr.onComplete() }
   }
 }

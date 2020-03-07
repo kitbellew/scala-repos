@@ -6,24 +6,30 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.extensions._
-import org.jetbrains.plugins.scala.format.{StringFormatter, StringParser, StringPart}
+import org.jetbrains.plugins.scala.format.{
+  StringFormatter,
+  StringParser,
+  StringPart
+}
 import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.util.MultilineStringUtil
 
 /**
- * Pavel Fatin
- */
-
-abstract class AbstractFormatConversionIntention(name: String,
-                                                 parser: StringParser,
-                                                 formatter: StringFormatter,
-                                                 eager: Boolean = false) extends PsiElementBaseIntentionAction {
+  * Pavel Fatin
+  */
+abstract class AbstractFormatConversionIntention(
+    name: String,
+    parser: StringParser,
+    formatter: StringFormatter,
+    eager: Boolean = false)
+    extends PsiElementBaseIntentionAction {
   setText(name)
 
   override def getFamilyName = name
 
-  private def findTargetIn(element: PsiElement): Option[(PsiElement, Seq[StringPart])] = {
+  private def findTargetIn(
+      element: PsiElement): Option[(PsiElement, Seq[StringPart])] = {
     val candidates = {
       val list = element :: element.parentsInFile.toList
       if (eager) list.reverse else list
@@ -34,7 +40,10 @@ abstract class AbstractFormatConversionIntention(name: String,
     }
   }
 
-  override def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
+  override def isAvailable(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Boolean = {
     findTargetIn(element).isDefined
   }
 

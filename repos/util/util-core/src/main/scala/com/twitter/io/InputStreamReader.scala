@@ -6,10 +6,15 @@ import com.twitter.concurrent.AsyncMutex
 import com.twitter.util.{Closable, CloseAwaitably, Future, FuturePool, Time}
 
 /**
- * Provides the Reader API for an InputStream
- */
-class InputStreamReader private[io] (inputStream: InputStream, maxBufferSize: Int, pool: FuturePool)
-    extends Reader with Closable with CloseAwaitably {
+  * Provides the Reader API for an InputStream
+  */
+class InputStreamReader private[io] (
+    inputStream: InputStream,
+    maxBufferSize: Int,
+    pool: FuturePool)
+    extends Reader
+    with Closable
+    with CloseAwaitably {
   private[this] val mutex = new AsyncMutex()
   @volatile private[this] var discarded = false
 
@@ -17,11 +22,11 @@ class InputStreamReader private[io] (inputStream: InputStream, maxBufferSize: In
     this(inputStream, maxBufferSize, FuturePool.interruptibleUnboundedPool)
 
   /**
-   * Asynchronously read at most min(`n`, `maxBufferSize`) bytes from
-   * the InputStream. The returned future represents the results of
-   * the read operation.  Any failure indicates an error; an empty buffer
-   * indicates that the stream has completed.
-   */
+    * Asynchronously read at most min(`n`, `maxBufferSize`) bytes from
+    * the InputStream. The returned future represents the results of
+    * the read operation.  Any failure indicates an error; an empty buffer
+    * indicates that the stream has completed.
+    */
   def read(n: Int): Future[Option[Buf]] = {
     if (discarded)
       return Future.exception(new Reader.ReaderDiscarded())
@@ -40,7 +45,8 @@ class InputStreamReader private[io] (inputStream: InputStream, maxBufferSize: In
             None
           else
             Some(Buf.ByteArray.Owned(buffer, 0, c))
-        } catch { case exc: InterruptedException =>
+        } catch {
+          case exc: InterruptedException =>
             discarded = true
             throw exc
         }
@@ -51,13 +57,13 @@ class InputStreamReader private[io] (inputStream: InputStream, maxBufferSize: In
   }
 
   /**
-   * Discard this reader: its output is no longer required.
-   */
+    * Discard this reader: its output is no longer required.
+    */
   def discard() { discarded = true }
 
   /**
-   * Discards this Reader and closes the underlying InputStream
-   */
+    * Discards this Reader and closes the underlying InputStream
+    */
   def close(deadline: Time) = closeAwaitably {
     discard()
     pool { inputStream.close() }
@@ -66,6 +72,8 @@ class InputStreamReader private[io] (inputStream: InputStream, maxBufferSize: In
 
 object InputStreamReader {
   val DefaultMaxBufferSize = 4096
-  def apply(inputStream: InputStream, maxBufferSize: Int = DefaultMaxBufferSize) =
+  def apply(
+      inputStream: InputStream,
+      maxBufferSize: Int = DefaultMaxBufferSize) =
     new InputStreamReader(inputStream, maxBufferSize)
 }

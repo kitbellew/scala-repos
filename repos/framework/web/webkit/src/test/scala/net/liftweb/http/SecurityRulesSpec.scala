@@ -18,7 +18,7 @@ package http
 
 import java.net.URI
 
-import scala.concurrent.duration.{Duration,SECONDS,DAYS}
+import scala.concurrent.duration.{Duration, SECONDS, DAYS}
 
 import org.specs2.mutable.Specification
 
@@ -50,7 +50,8 @@ class HttpsRulesSpec extends Specification {
 class ContentSecurityPolicySpec extends Specification {
   "ContentSecurityPolicy" should {
     "default to accepting images from everywhere" in {
-      ContentSecurityPolicy().imageSources must_== List(ContentSourceRestriction.All)
+      ContentSecurityPolicy().imageSources must_== List(
+        ContentSourceRestriction.All)
     }
 
     "default to allowing script eval and script sources only from self" in {
@@ -61,7 +62,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "default to allowing everything else only from self" in {
-      ContentSecurityPolicy().defaultSources must_== List(ContentSourceRestriction.Self)
+      ContentSecurityPolicy().defaultSources must_== List(
+        ContentSourceRestriction.Self)
       ContentSecurityPolicy().connectSources must_== Nil
       ContentSecurityPolicy().fontSources must_== Nil
       ContentSecurityPolicy().frameSources must_== Nil
@@ -71,7 +73,8 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "provide a secure setting that drops image sources to the default restrictions" in {
-      ContentSecurityPolicy.secure.defaultSources must_== List(ContentSourceRestriction.Self)
+      ContentSecurityPolicy.secure.defaultSources must_== List(
+        ContentSourceRestriction.Self)
       ContentSecurityPolicy.secure.imageSources must_== Nil
       ContentSecurityPolicy.secure.connectSources must_== Nil
       ContentSecurityPolicy.secure.fontSources must_== Nil
@@ -82,21 +85,24 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "default to reporting to the CSP default report URI" in {
-      ContentSecurityPolicy().reportUri must_== Some(ContentSecurityPolicy.defaultReportUri)
+      ContentSecurityPolicy().reportUri must_== Some(
+        ContentSecurityPolicy.defaultReportUri)
     }
 
     "provide [X-]Content-Security-Policy if enforcement is enabled" in {
       ContentSecurityPolicy()
         .headers(enforce = true, logViolations = true)
         .collect {
-          case (headerName, _) if headerName.contains("Content-Security-Policy") =>
+          case (headerName, _)
+              if headerName.contains("Content-Security-Policy") =>
             headerName
         } must_== List("Content-Security-Policy", "X-Content-Security-Policy")
 
       ContentSecurityPolicy()
         .headers(enforce = true, logViolations = false)
         .collect {
-          case (headerName, _) if headerName.contains("Content-Security-Policy") =>
+          case (headerName, _)
+              if headerName.contains("Content-Security-Policy") =>
             headerName
         } must_== List("Content-Security-Policy", "X-Content-Security-Policy")
     }
@@ -105,9 +111,12 @@ class ContentSecurityPolicySpec extends Specification {
       ContentSecurityPolicy()
         .headers(enforce = false, logViolations = true)
         .collect {
-          case (headerName, _) if headerName.contains("Content-Security-Policy") =>
+          case (headerName, _)
+              if headerName.contains("Content-Security-Policy") =>
             headerName
-        } must_== List("Content-Security-Policy-Report-Only", "X-Content-Security-Policy-Report-Only")
+        } must_== List(
+        "Content-Security-Policy-Report-Only",
+        "X-Content-Security-Policy-Report-Only")
     }
 
     "provide no headers with enforcement and logging disabled" in {
@@ -152,7 +161,8 @@ class ContentSecurityPolicySpec extends Specification {
     "combine restrictions for multiple content types correctly" in {
       ContentSecurityPolicy(
         defaultSources = List(ContentSourceRestriction.Self),
-        fontSources = List(ContentSourceRestriction.Host("https://base.*.example.com")),
+        fontSources =
+          List(ContentSourceRestriction.Host("https://base.*.example.com")),
         frameSources = List(ContentSourceRestriction.Scheme("data")),
         imageSources = List(ContentSourceRestriction.All),
         mediaSources = List(ContentSourceRestriction.None),
@@ -196,7 +206,8 @@ class ContentSecurityPolicySpec extends Specification {
 class FrameRestrictionsSpec extends Specification {
   "FrameRestrictions" should {
     "provide the correct X-Frame-Options setting for SameOrigin restrictions" in {
-      FrameRestrictions.SameOrigin.headers must_== List("X-Frame-Options" -> "SAMEORIGIN")
+      FrameRestrictions.SameOrigin.headers must_== List(
+        "X-Frame-Options" -> "SAMEORIGIN")
     }
 
     "provide the correct X-Frame-Options setting for Deny restrictions" in {
@@ -216,7 +227,8 @@ class SecurityRulesSpec extends Specification {
     }
 
     "default to same-origin frame restrictions" in {
-      SecurityRules().frameRestrictions must_== Some(FrameRestrictions.SameOrigin)
+      SecurityRules().frameRestrictions must_== Some(
+        FrameRestrictions.SameOrigin)
     }
 
     "default to enforcing in no modes and logging in all modes" in {

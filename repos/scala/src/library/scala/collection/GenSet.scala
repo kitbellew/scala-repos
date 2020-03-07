@@ -6,33 +6,28 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala
 package collection
 
-
 import generic._
 
-
 /** A trait for sets which may possibly
- *  have their operations implemented in parallel.
- *
- *  @author Martin Odersky
- *  @author Aleksandar Prokopec
- *  @since 2.9
- */
+  *  have their operations implemented in parallel.
+  *
+  *  @author Martin Odersky
+  *  @author Aleksandar Prokopec
+  *  @since 2.9
+  */
 trait GenSet[A]
-extends GenSetLike[A, GenSet[A]]
-   with GenIterable[A]
-   with GenericSetTemplate[A, GenSet]
-{
+    extends GenSetLike[A, GenSet[A]]
+    with GenIterable[A]
+    with GenericSetTemplate[A, GenSet] {
   override def companion: GenericCompanion[GenSet] = GenSet
   def seq: Set[A]
 }
 
-
 object GenSet extends GenTraversableFactory[GenSet] {
-  implicit def canBuildFrom[A] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+  implicit def canBuildFrom[A] =
+    ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
   def newBuilder[A] = Set.newBuilder
 }
-

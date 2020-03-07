@@ -59,6 +59,7 @@ class EnsembleButton extends EnsembleExample {
         text = "Disabled Button"
         disable = true
         maxWidth = Double.MaxValue
-      })
+      }
+    )
   }
 }

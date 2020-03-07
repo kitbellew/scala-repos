@@ -63,8 +63,10 @@ case class AnswerWithQuestion(answer: Answer, question: Question)
 case class Vote(up: Set[String], down: Set[String], score: Int) {
 
   def add(user: String, v: Boolean) = (if (v) addUp _ else addDown _)(user)
-  def addUp(user: String) = copy(up = up + user, down = down - user).computeScore
-  def addDown(user: String) = copy(up = up - user, down = down + user).computeScore
+  def addUp(user: String) =
+    copy(up = up + user, down = down - user).computeScore
+  def addDown(user: String) =
+    copy(up = up - user, down = down + user).computeScore
 
   def of(userId: String): Option[Boolean] =
     if (up(userId)) Some(true)
@@ -75,10 +77,10 @@ case class Vote(up: Set[String], down: Set[String], score: Int) {
 }
 
 case class Comment(
-  id: CommentId, // random string
-  userId: String,
-  body: String,
-  createdAt: DateTime)
+    id: CommentId, // random string
+    userId: String,
+    body: String,
+    createdAt: DateTime)
 
 object Comment {
 

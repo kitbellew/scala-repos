@@ -26,7 +26,8 @@ class BinaryCLMTTest extends Specification {
       write(clmt.copy(castles = clmt.castles without White)) must_== {
         "00110000" :: _0_ :: List.fill(3)(_0_)
       }
-      write(clmt.copy(castles = clmt.castles.without(Black, QueenSide))) must_== {
+      write(
+        clmt.copy(castles = clmt.castles.without(Black, QueenSide))) must_== {
         "11100000" :: _0_ :: List.fill(3)(_0_)
       }
       write(clmt.copy(lastMove = Some(A1 -> A2))) must_== {
@@ -53,7 +54,8 @@ class BinaryCLMTTest extends Specification {
       write(clmt.copy(check = Some(Pos.H8))) must_== {
         "11110000" :: _0_ :: List.fill(3)(_0_) ::: List("00111111")
       }
-      write(clmt.copy(lastMoveTime = Some(99999), check = Some(Pos.H8))) must_== {
+      write(
+        clmt.copy(lastMoveTime = Some(99999), check = Some(Pos.H8))) must_== {
         "11110000" :: _0_ :: "00000001" :: "10000110" :: "10011111" :: "00111111" :: Nil
       }
     }
@@ -80,13 +82,16 @@ class BinaryCLMTTest extends Specification {
       read("11110000" :: _0_ :: _0_ :: _0_ :: "00000010" :: Nil) must_== {
         clmt.copy(lastMoveTime = Some(2))
       }
-      read("11110000" :: _0_ :: "00000001" :: "10000110" :: "10011111" :: Nil) must_== {
+      read(
+        "11110000" :: _0_ :: "00000001" :: "10000110" :: "10011111" :: Nil) must_== {
         clmt.copy(lastMoveTime = Some(99999))
       }
-      read("11110000" :: _0_ :: List.fill(3)(_0_) ::: List("00000010")) must_== {
+      read(
+        "11110000" :: _0_ :: List.fill(3)(_0_) ::: List("00000010")) must_== {
         clmt.copy(check = A3.some)
       }
-      read("11110000" :: _0_ :: "00000001" :: "10000110" :: "10011111" :: "00111111" :: Nil) must_== {
+      read(
+        "11110000" :: _0_ :: "00000001" :: "10000110" :: "10011111" :: "00111111" :: Nil) must_== {
         clmt.copy(lastMoveTime = Some(99999), check = Some(H8))
       }
     }

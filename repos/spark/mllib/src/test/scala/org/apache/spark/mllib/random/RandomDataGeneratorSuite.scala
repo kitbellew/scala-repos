@@ -53,13 +53,14 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
     assert(array5.equals(array6))
   }
 
-  def distributionChecks(gen: RandomDataGenerator[Double],
+  def distributionChecks(
+      gen: RandomDataGenerator[Double],
       mean: Double = 0.0,
       stddev: Double = 1.0,
       epsilon: Double = 0.01) {
     for (seed <- 0 until 5) {
       gen.setSeed(seed.toLong)
-      val sample = (0 until 100000).map { _ => gen.nextValue()}
+      val sample = (0 until 100000).map { _ => gen.nextValue() }
       val stats = new StatCounter(sample)
       assert(math.abs(stats.mean - mean) < epsilon)
       assert(math.abs(stats.stdev - stddev) < epsilon)
@@ -89,7 +90,8 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
         val expectedMean = math.exp(mean + 0.5 * vari)
 
         // variance of log normal = (e^var - 1) * e^(2 * mean + var)
-        val expectedStd = math.sqrt((math.exp(vari) - 1.0) * math.exp(2.0 * mean + vari))
+        val expectedStd =
+          math.sqrt((math.exp(vari) - 1.0) * math.exp(2.0 * mean + vari))
 
         // since sampling error increases with variance, let's set
         // the absolute tolerance as a percentage
@@ -145,7 +147,8 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
 
         val expectedMean = math.exp(Gamma.logGamma(1 + (1 / alpha))) * beta
         val expectedVariance = math.exp(
-          Gamma.logGamma(1 + (2 / alpha))) * beta * beta - expectedMean * expectedMean
+          Gamma.logGamma(
+            1 + (2 / alpha))) * beta * beta - expectedMean * expectedMean
         val expectedStd = math.sqrt(expectedVariance)
         distributionChecks(weibull, expectedMean, expectedStd, 0.1)
     }

@@ -16,22 +16,26 @@ object QueueExecutionContext {
     if (js.isUndefined(js.Dynamic.global.Promise)) timeouts()
     else promises()
 
-  private final class TimeoutsExecutionContext extends ExecutionContextExecutor {
+  private final class TimeoutsExecutionContext
+      extends ExecutionContextExecutor {
     def execute(runnable: Runnable): Unit = {
-      js.Dynamic.global.setTimeout({ () =>
-        try {
-          runnable.run()
-        } catch {
-          case t: Throwable => reportFailure(t)
-        }
-      }, 0)
+      js.Dynamic.global.setTimeout(
+        { () =>
+          try {
+            runnable.run()
+          } catch {
+            case t: Throwable => reportFailure(t)
+          }
+        },
+        0)
     }
 
     def reportFailure(t: Throwable): Unit =
       t.printStackTrace()
   }
 
-  private final class PromisesExecutionContext extends ExecutionContextExecutor {
+  private final class PromisesExecutionContext
+      extends ExecutionContextExecutor {
     private val resolvedUnitPromise = js.Promise.resolve[Unit](())
 
     def execute(runnable: Runnable): Unit = {

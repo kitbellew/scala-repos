@@ -22,10 +22,12 @@ object InlineInfoTest extends ClearAfterClass.Clearable {
   var compiler = newCompiler(extraArgs = "-Yopt:l:classpath")
   def clear(): Unit = { compiler = null }
 
-  def notPerRun: List[Clearable] = List(
-    compiler.genBCode.bTypes.classBTypeFromInternalName,
-    compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
-    compiler.genBCode.bTypes.byteCodeRepository.parsedClasses)
+  def notPerRun: List[Clearable] =
+    List(
+      compiler.genBCode.bTypes.classBTypeFromInternalName,
+      compiler.genBCode.bTypes.byteCodeRepository.compilingClasses,
+      compiler.genBCode.bTypes.byteCodeRepository.parsedClasses
+    )
   notPerRun foreach compiler.perRunCaches.unrecordCache
 }
 
@@ -61,12 +63,23 @@ class InlineInfoTest extends ClearAfterClass {
       """.stripMargin
 //    val classes = compile(code) // SD-86
     InlineInfoTest.notPerRun.foreach(_.clear())
-    val classes = compileClasses(compiler)(code, allowMessage = _ => true) // SD-86 inline warnings
+    val classes =
+      compileClasses(compiler)(
+        code,
+        allowMessage = _ => true
+      ) // SD-86 inline warnings
 
-    val fromSyms = classes.map(c => compiler.genBCode.bTypes.classBTypeFromInternalName(c.name).info.get.inlineInfo)
+    val fromSyms = classes.map(c =>
+      compiler.genBCode.bTypes
+        .classBTypeFromInternalName(c.name)
+        .info
+        .get
+        .inlineInfo)
 
     val fromAttrs = classes.map(c => {
-      assert(c.attrs.asScala.exists(_.isInstanceOf[InlineInfoAttribute]), c.attrs)
+      assert(
+        c.attrs.asScala.exists(_.isInstanceOf[InlineInfoAttribute]),
+        c.attrs)
       compiler.genBCode.bTypes.inlineInfoFromClassfile(c)
     })
 

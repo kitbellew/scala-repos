@@ -91,7 +91,8 @@ class EnsembleAdvancedBarChart extends EnsembleExample {
     }
 
     // Assign data using a helper function
-    def xyData(ys: Seq[Number]) = ObservableBuffer(years zip ys map (xy => XYChart.Data(xy._1, xy._2)))
+    def xyData(ys: Seq[Number]) =
+      ObservableBuffer(years zip ys map (xy => XYChart.Data(xy._1, xy._2)))
     val series4 = XYChart.Series("Data Series 4", xyData(Seq(786, 2100, 450)))
 
     // Setup chart

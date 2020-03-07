@@ -10,8 +10,6 @@
 **      Redistribution and use permitted under the MIT license.         **
 **                                                                      **
 \************************************************************************/
-
-
 package spire
 package random
 package rng
@@ -22,25 +20,35 @@ import java.nio.ByteBuffer
 import java.util
 
 /**
- * This is a Scala implementation of the Well19937a PRNG based on WELL19937a.c.
- *
- * <p>The acronym WELL stands for Well Equidistributed Long-period Linear.
- *
- * <p><b>Reference: </b>
- * François Panneton, Pierre L'Ecuyer and Makoto Matsumoto:
- * "Improved Long-Period Generators Based on Linear Recurrences Modulo 2",
- * <i>ACM Transactions on Mathematical Software,</i> Vol. 32, No. 1, January 2006, pp 1--16.
- *
- * @see <a href="http://www.iro.umontreal.ca/~panneton/well/WELL19937a.c">WELL19937a.c</a>
- * @see <a href="http://www.iro.umontreal.ca/~panneton/WELLRNG.html">Well PRNG Home Page</a>
- * @see <a href="http://en.wikipedia.org/wiki/Well_Equidistributed_Long-period_Linear">WELL @ Wikipedia</a>
- * @author <a href="mailto:dusan.kysel@gmail.com">Dušan Kysel</a>
- */
-final class Well19937a protected[random](state: Array[Int], i0: Int) extends IntBasedGenerator {
+  * This is a Scala implementation of the Well19937a PRNG based on WELL19937a.c.
+  *
+  * <p>The acronym WELL stands for Well Equidistributed Long-period Linear.
+  *
+  * <p><b>Reference: </b>
+  * François Panneton, Pierre L'Ecuyer and Makoto Matsumoto:
+  * "Improved Long-Period Generators Based on Linear Recurrences Modulo 2",
+  * <i>ACM Transactions on Mathematical Software,</i> Vol. 32, No. 1, January 2006, pp 1--16.
+  *
+  * @see <a href="http://www.iro.umontreal.ca/~panneton/well/WELL19937a.c">WELL19937a.c</a>
+  * @see <a href="http://www.iro.umontreal.ca/~panneton/WELLRNG.html">Well PRNG Home Page</a>
+  * @see <a href="http://en.wikipedia.org/wiki/Well_Equidistributed_Long-period_Linear">WELL @ Wikipedia</a>
+  * @author <a href="mailto:dusan.kysel@gmail.com">Dušan Kysel</a>
+  */
+final class Well19937a protected[random] (state: Array[Int], i0: Int)
+    extends IntBasedGenerator {
 
-  import Well19937a.{UpperMask, LowerMask, R, BYTES, mat0pos, mat0neg, mat1, mat3pos}
+  import Well19937a.{
+    UpperMask,
+    LowerMask,
+    R,
+    BYTES,
+    mat0pos,
+    mat0neg,
+    mat1,
+    mat3pos
+  }
 
-  private var i : Int = i0
+  private var i: Int = i0
 
   def copyInit: Well19937a = new Well19937a(state.clone(), i)
 
@@ -54,7 +62,8 @@ final class Well19937a protected[random](state: Array[Int], i0: Int) extends Int
   }
 
   def setSeedBytes(bytes: Array[Byte]): Unit = {
-    val bs = if (bytes.length < BYTES) util.Arrays.copyOf(bytes, BYTES) else bytes
+    val bs =
+      if (bytes.length < BYTES) util.Arrays.copyOf(bytes, BYTES) else bytes
     val bb = ByteBuffer.wrap(bs)
 
     cfor(0)(_ < R, _ + 1) { i => state(i) = bb.getInt }
@@ -70,7 +79,8 @@ final class Well19937a protected[random](state: Array[Int], i0: Int) extends Int
     val z2: Int = mat3pos(9, state(vm2(i))) ^ mat0pos(1, state(vm3(i)))
 
     state(i) = z1 ^ z2
-    state(vrm1(i)) = mat1(z0) ^ mat0neg(-9, z1) ^ mat0neg(-21, z2) ^ mat0pos(21, state(i))
+    state(vrm1(i)) =
+      mat1(z0) ^ mat0neg(-9, z1) ^ mat0neg(-21, z2) ^ mat0pos(21, state(i))
     i = vrm1(i)
 
     state(i)
@@ -83,10 +93,10 @@ object Well19937a extends GeneratorCompanion[Well19937a, (Array[Int], Int)] {
   @inline private val LowerMask = 0x80000000 // = Int.MinValue
 
   // Number of bits in the pool.
-  @inline private final val K : Int = 19937
+  @inline private final val K: Int = 19937
 
   // Length of the pool in ints.
-  @inline private final val R : Int = (K + 31) / 32
+  @inline private final val R: Int = (K + 31) / 32
 
   // Length of the pool in ints -1.
   // @inline private final val R_1 : Int = R - 1
@@ -108,7 +118,7 @@ object Well19937a extends GeneratorCompanion[Well19937a, (Array[Int], Int)] {
 
   @inline private final def mat0pos(t: Int, v: Int) = v ^ (v >>> t)
   @inline private final def mat0neg(t: Int, v: Int) = v ^ (v << -t)
-  @inline private final def mat1(v: Int)            = v
+  @inline private final def mat1(v: Int) = v
   @inline private final def mat3pos(t: Int, v: Int) = v >>> t
 
   def randomSeed(): (Array[Int], Int) =

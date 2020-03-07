@@ -3,7 +3,11 @@ package org.jetbrains.plugins.scala.debugger
 import com.intellij.debugger.SourcePosition
 import com.intellij.debugger.engine.SourcePositionProvider
 import com.intellij.debugger.impl.{DebuggerContextImpl, PositionUtil}
-import com.intellij.debugger.ui.tree.{FieldDescriptor, LocalVariableDescriptor, NodeDescriptor}
+import com.intellij.debugger.ui.tree.{
+  FieldDescriptor,
+  LocalVariableDescriptor,
+  NodeDescriptor
+}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.ScalaLanguage
@@ -15,13 +19,14 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 import scala.annotation.tailrec
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class ScalaSourcePositionProvider extends SourcePositionProvider {
-  override def computeSourcePosition(descriptor: NodeDescriptor,
-                                     project: Project,
-                                     context: DebuggerContextImpl,
-                                     nearest: Boolean): SourcePosition = {
+  override def computeSourcePosition(
+      descriptor: NodeDescriptor,
+      project: Project,
+      context: DebuggerContextImpl,
+      nearest: Boolean): SourcePosition = {
 
     val contextElement = PositionUtil.getContextElement(context)
     if (contextElement == null) return null
@@ -31,22 +36,26 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
 
     descriptor match {
       case _: FieldDescriptor | _: LocalVariableDescriptor =>
-      case _ => return null
+      case _                                               => return null
     }
 
     val name = descriptor.getName
     resolveReferenceWithName(name, contextElement) match {
       case bp: ScBindingPattern => SourcePosition.createFromElement(bp)
-      case _ => null
+      case _                    => null
     }
   }
 
   @tailrec
-  private def resolveReferenceWithName(name: String, context: PsiElement): PsiElement = {
+  private def resolveReferenceWithName(
+      name: String,
+      context: PsiElement): PsiElement = {
     if (!ScalaNamesUtil.isIdentifier(name)) return null
     if (name == "$outer" || name.startsWith("x$")) return null
 
-    val ref = ScalaPsiElementFactory.createExpressionWithContextFromText(name, context, context).asInstanceOf[ScReferenceExpression]
+    val ref = ScalaPsiElementFactory
+      .createExpressionWithContextFromText(name, context, context)
+      .asInstanceOf[ScReferenceExpression]
 
     ref.resolve() match {
       case null if name.contains("$") =>

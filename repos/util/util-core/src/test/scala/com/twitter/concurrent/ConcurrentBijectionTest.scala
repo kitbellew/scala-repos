@@ -12,13 +12,13 @@ class ConcurrentBijectionTest extends WordSpec {
     val b = new ConcurrentBijection[Int, Int]
     b ++= (1 -> 1) :: (2 -> 3) :: (100 -> 2) :: Nil
 
-    assert(b.get(1)        == Some(1))
+    assert(b.get(1) == Some(1))
     assert(b.getReverse(1) == Some(1))
 
-    assert(b.get(2)        == Some(3))
+    assert(b.get(2) == Some(3))
     assert(b.getReverse(3) == Some(2))
 
-    assert(b.get(100)      == Some(2))
+    assert(b.get(100) == Some(2))
     assert(b.getReverse(2) == Some(100))
   }
 
@@ -27,22 +27,22 @@ class ConcurrentBijectionTest extends WordSpec {
 
     b += (1 -> 2)
 
-    assert(b.get(1)        == Some(2))
+    assert(b.get(1) == Some(2))
     assert(b.getReverse(2) == Some(1))
 
     // Introduce a new forward mapping. This should delete the old
     // one.
     b += (1 -> 3)
     assert(b.getReverse(2) == None)
-    assert(b.get(1)        == Some(3))
+    assert(b.get(1) == Some(3))
     assert(b.getReverse(3) == Some(1))
 
     // Now, introduce a new reverse mapping for 3, which should kill
     // the existing 1 -> 3 mapping.
     b += (100 -> 3)
     assert(b.getReverse(3) == Some(100))
-    assert(b.get(1)        == None)  // the old forward mapping was killed.
-    assert(b.get(100)      == Some(3))
+    assert(b.get(1) == None) // the old forward mapping was killed.
+    assert(b.get(100) == Some(3))
 
   }
 

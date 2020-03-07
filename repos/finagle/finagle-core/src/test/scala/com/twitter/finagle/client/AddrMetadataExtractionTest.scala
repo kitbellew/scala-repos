@@ -31,10 +31,12 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
       }
 
     def verify(addr: Var[Addr], name: Name, expected: Addr.Metadata) = {
-      val factory = new StackBuilder[ServiceFactory[String, String]](nilStack[String, String])
+      val factory = new StackBuilder[ServiceFactory[String, String]](
+        nilStack[String, String])
         .push(verifyModule(expected))
         .push(AddrMetadataExtraction.module)
-        .make(Stack.Params.empty + LoadBalancerFactory.Dest(addr) + BindingFactory.Dest(name))
+        .make(Stack.Params.empty + LoadBalancerFactory.Dest(
+          addr) + BindingFactory.Dest(name))
 
       factory()
     }
@@ -51,7 +53,8 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
   })
 
   test("add bound name path id")(new Ctx {
-    Await.result(verify(vaddrBound, bound, metadata ++ Addr.Metadata("id" -> "/baz")))
+    Await.result(
+      verify(vaddrBound, bound, metadata ++ Addr.Metadata("id" -> "/baz")))
   })
 
   test("empty for Addr.Neg")(new Ctx {
@@ -68,6 +71,9 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
 
   test("just id for Addr.Failed")(new Ctx {
     Await.result(
-      verify(Var(Addr.Failed(new RuntimeException)), bound, Addr.Metadata("id" -> "/baz")))
+      verify(
+        Var(Addr.Failed(new RuntimeException)),
+        bound,
+        Addr.Metadata("id" -> "/baz")))
   })
 }

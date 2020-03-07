@@ -13,14 +13,15 @@ import generic._
 import scala.annotation.tailrec
 
 /** A template trait for indexed sequences of type `IndexedSeq[A]` which optimizes
- *  the implementation of several methods under the assumption of fast random access.
- *
- *  $indexedSeqInfo
- *
- *  @define willNotTerminateInf
- *  @define mayNotTerminateInf
- */
-trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { self =>
+  *  the implementation of several methods under the assumption of fast random access.
+  *
+  *  $indexedSeqInfo
+  *
+  *  @define willNotTerminateInf
+  *  @define mayNotTerminateInf
+  */
+trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
+  self =>
 
   override /*IterableLike*/
   def isEmpty: Boolean = { length == 0 }
@@ -39,10 +40,12 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
   }
 
   override /*IterableLike*/
-  def forall(p: A => Boolean): Boolean = prefixLengthImpl(p, expectTrue = true) == length
+  def forall(p: A => Boolean): Boolean =
+    prefixLengthImpl(p, expectTrue = true) == length
 
   override /*IterableLike*/
-  def exists(p: A => Boolean): Boolean = prefixLengthImpl(p, expectTrue = false) != length
+  def exists(p: A => Boolean): Boolean =
+    prefixLengthImpl(p, expectTrue = false) != length
 
   override /*IterableLike*/
   def find(p: A => Boolean): Option[A] = {
@@ -74,10 +77,12 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
 
   override /*IterableLike*/
   def reduceRight[B >: A](op: (A, B) => B): B =
-    if (length > 0) foldr(0, length - 1, this(length - 1), op) else super.reduceRight(op)
+    if (length > 0) foldr(0, length - 1, this(length - 1), op)
+    else super.reduceRight(op)
 
   override /*IterableLike*/
-  def zip[A1 >: A, B, That](that: GenIterable[B])(implicit bf: CanBuildFrom[Repr, (A1, B), That]): That = that match {
+  def zip[A1 >: A, B, That](that: GenIterable[B])(
+      implicit bf: CanBuildFrom[Repr, (A1, B), That]): That = that match {
     case that: IndexedSeq[_] =>
       val b = bf(repr)
       var i = 0
@@ -93,7 +98,8 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
   }
 
   override /*IterableLike*/
-  def zipWithIndex[A1 >: A, That](implicit bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
+  def zipWithIndex[A1 >: A, That](
+      implicit bf: CanBuildFrom[Repr, (A1, Int), That]): That = {
     val b = bf(repr)
     val len = length
     b.sizeHint(len)
@@ -107,10 +113,10 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
 
   override /*IterableLike*/
   def slice(from: Int, until: Int): Repr = {
-    val lo    = math.max(from, 0)
-    val hi    = math.min(math.max(until, 0), length)
+    val lo = math.max(from, 0)
+    val hi = math.min(math.max(until, 0), length)
     val elems = math.max(hi - lo, 0)
-    val b     = newBuilder
+    val b = newBuilder
     b.sizeHint(elems)
 
     var i = lo
@@ -277,4 +283,3 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] { 
       super.endsWith(that)
   }
 }
-

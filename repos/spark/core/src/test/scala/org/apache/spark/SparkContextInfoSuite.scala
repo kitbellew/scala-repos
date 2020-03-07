@@ -79,7 +79,8 @@ package object testPackage extends Assertions {
   def runCallSiteTest(sc: SparkContext) {
     val rdd = sc.makeRDD(Array(1, 2, 3, 4), 2)
     val rddCreationSite = rdd.getCreationSite
-    val curCallSite = sc.getCallSite().shortForm // note: 2 lines after definition of "rdd"
+    val curCallSite =
+      sc.getCallSite().shortForm // note: 2 lines after definition of "rdd"
 
     val rddCreationLine = rddCreationSite match {
       case CALL_SITE_REGEX(func, file, line) => {
@@ -92,7 +93,9 @@ package object testPackage extends Assertions {
 
     curCallSite match {
       case CALL_SITE_REGEX(func, file, line) => {
-        assert(func === "getCallSite") // this is correct because we called it from outside of Spark
+        assert(
+          func === "getCallSite"
+        ) // this is correct because we called it from outside of Spark
         assert(file === "SparkContextInfoSuite.scala")
         assert(line.toInt === rddCreationLine.toInt + 2)
       }

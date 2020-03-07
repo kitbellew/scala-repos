@@ -22,8 +22,11 @@ import java.io.File
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.test.SharedSQLContext
 
-class ParquetInteroperabilitySuite extends ParquetCompatibilityTest with SharedSQLContext {
-  test("parquet files with different physical schemas but share the same logical schema") {
+class ParquetInteroperabilitySuite
+    extends ParquetCompatibilityTest
+    with SharedSQLContext {
+  test(
+    "parquet files with different physical schemas but share the same logical schema") {
     import ParquetCompatibilityTest._
 
     // This test case writes two Parquet files, both representing the following Catalyst schema
@@ -48,18 +51,21 @@ class ParquetInteroperabilitySuite extends ParquetCompatibilityTest with SharedS
           |}
         """.stripMargin
 
-      writeDirect(avroStylePath, avroStyleSchema, { rc =>
-        rc.message {
-          rc.field("f", 0) {
-            rc.group {
-              rc.field("array", 0) {
-                rc.addInteger(0)
-                rc.addInteger(1)
+      writeDirect(
+        avroStylePath,
+        avroStyleSchema,
+        { rc =>
+          rc.message {
+            rc.field("f", 0) {
+              rc.group {
+                rc.field("array", 0) {
+                  rc.addInteger(0)
+                  rc.addInteger(1)
+                }
               }
             }
           }
-        }
-      })
+        })
 
       logParquetSchema(avroStylePath)
 
@@ -69,22 +75,23 @@ class ParquetInteroperabilitySuite extends ParquetCompatibilityTest with SharedS
           |}
         """.stripMargin
 
-      writeDirect(protobufStylePath, protobufStyleSchema, { rc =>
-        rc.message {
-          rc.field("f", 0) {
-            rc.addInteger(2)
-            rc.addInteger(3)
+      writeDirect(
+        protobufStylePath,
+        protobufStyleSchema,
+        { rc =>
+          rc.message {
+            rc.field("f", 0) {
+              rc.addInteger(2)
+              rc.addInteger(3)
+            }
           }
-        }
-      })
+        })
 
       logParquetSchema(protobufStylePath)
 
       checkAnswer(
         sqlContext.read.parquet(dir.getCanonicalPath),
-        Seq(
-          Row(Seq(0, 1)),
-          Row(Seq(2, 3))))
+        Seq(Row(Seq(0, 1)), Row(Seq(2, 3))))
     }
   }
 }

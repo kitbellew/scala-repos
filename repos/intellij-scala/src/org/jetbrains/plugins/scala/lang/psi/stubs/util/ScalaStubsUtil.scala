@@ -4,7 +4,6 @@ package psi
 package stubs
 package util
 
-
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
@@ -20,50 +19,75 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.templates.ScExtendsBlockImpl
 import org.jetbrains.plugins.scala.lang.psi.stubs.elements.ScTemplateDefinitionElementType
 import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScFileStubImpl
-import org.jetbrains.plugins.scala.lang.psi.stubs.index.{ScDirectInheritorsIndex, ScSelfTypeInheritorsIndex}
-import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
+import org.jetbrains.plugins.scala.lang.psi.stubs.index.{
+  ScDirectInheritorsIndex,
+  ScSelfTypeInheritorsIndex
+}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{
+  Success,
+  TypingContext
+}
 import org.jetbrains.plugins.scala.lang.psi.types.{ScCompoundType, ScType}
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 24.10.2008
- */
-
+  * User: Alexander Podkhalyuzin
+  * Date: 24.10.2008
+  */
 object ScalaStubsUtil {
-  def getClassInheritors(clazz: PsiClass, scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
+  def getClassInheritors(
+      clazz: PsiClass,
+      scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
     val name: String = clazz.name
     if (name == null) return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     val iterator: java.util.Iterator[ScExtendsBlock] =
-      StubIndex.getElements(ScDirectInheritorsIndex.KEY, name, clazz.getProject, new ScalaSourceFilterScope(scope, clazz.getProject), classOf[ScExtendsBlock]).iterator
+      StubIndex
+        .getElements(
+          ScDirectInheritorsIndex.KEY,
+          name,
+          clazz.getProject,
+          new ScalaSourceFilterScope(scope, clazz.getProject),
+          classOf[ScExtendsBlock])
+        .iterator
     while (iterator.hasNext) {
       val extendsBlock: PsiElement = iterator.next
       val stub = extendsBlock.asInstanceOf[ScExtendsBlockImpl].getStub
       if (stub != null) {
-        if (stub.getParentStub.getStubType.isInstanceOf[ScTemplateDefinitionElementType[_ <: ScTemplateDefinition]]) {
-          inheritors += stub.getParentStub.getPsi.asInstanceOf[ScTemplateDefinition]
+        if (stub.getParentStub.getStubType
+              .isInstanceOf[ScTemplateDefinitionElementType[
+                _ <: ScTemplateDefinition]]) {
+          inheritors += stub.getParentStub.getPsi
+            .asInstanceOf[ScTemplateDefinition]
         }
-      }
-      else {
+      } else {
         extendsBlock.getParent match {
           case tp: ScTemplateDefinition => inheritors += tp
-          case _ =>
+          case _                        =>
         }
       }
     }
     inheritors.toSeq
   }
 
-  def getSelfTypeInheritors(clazz: PsiClass, scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
+  def getSelfTypeInheritors(
+      clazz: PsiClass,
+      scope: GlobalSearchScope): Seq[ScTemplateDefinition] = {
     val name: String = clazz.name
     if (name == null) return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     def processClass(inheritedClazz: PsiClass) {
       inReadAction {
         val iterator: java.util.Iterator[ScSelfTypeElement] =
-          StubIndex.getElements(ScSelfTypeInheritorsIndex.KEY, name, inheritedClazz.getProject, scope, classOf[ScSelfTypeElement]).iterator
+          StubIndex
+            .getElements(
+              ScSelfTypeInheritorsIndex.KEY,
+              name,
+              inheritedClazz.getProject,
+              scope,
+              classOf[ScSelfTypeElement])
+            .iterator
         while (iterator.hasNext) {
           val selfTypeElement = iterator.next
           selfTypeElement.typeElement match {
@@ -75,7 +99,9 @@ object ScalaStubsUtil {
                       case c: ScCompoundType =>
                         c.components.exists(checkTp)
                       case _ =>
-                        ScType.extractClass(tp, Some(inheritedClazz.getProject)) match {
+                        ScType.extractClass(
+                          tp,
+                          Some(inheritedClazz.getProject)) match {
                           case Some(otherClazz) =>
                             if (otherClazz == inheritedClazz) return true
                           case _ =>
@@ -84,7 +110,9 @@ object ScalaStubsUtil {
                     false
                   }
                   if (checkTp(tp)) {
-                    val clazz = PsiTreeUtil.getContextOfType(selfTypeElement, classOf[ScTemplateDefinition])
+                    val clazz = PsiTreeUtil.getContextOfType(
+                      selfTypeElement,
+                      classOf[ScTemplateDefinition])
                     if (clazz != null) inheritors += clazz
                   }
                 case _ =>
@@ -95,12 +123,14 @@ object ScalaStubsUtil {
       }
     }
     processClass(clazz)
-    ClassInheritorsSearch.search(clazz, scope, true).forEach(new Processor[PsiClass] {
-      def process(t: PsiClass) = {
-        processClass(t)
-        true
-      }
-    })
+    ClassInheritorsSearch
+      .search(clazz, scope, true)
+      .forEach(new Processor[PsiClass] {
+        def process(t: PsiClass) = {
+          processClass(t)
+          true
+        }
+      })
     inheritors.toSeq
   }
 
@@ -110,8 +140,10 @@ object ScalaStubsUtil {
     dataStream.writeName(stub.packageName)
     dataStream.writeName(stub.getFileName)
   }
-  
-  def deserializeFileStubElement(dataStream: StubInputStream, parentStub: Object) = {
+
+  def deserializeFileStubElement(
+      dataStream: StubInputStream,
+      parentStub: Object) = {
     val script = dataStream.readBoolean
     val compiled = dataStream.readBoolean
     val packName = dataStream.readName
@@ -119,5 +151,6 @@ object ScalaStubsUtil {
     new ScFileStubImpl(null, packName, fileName, compiled, script)
   }
 
-  private val LOG = Logger.getInstance("#org.jetbrains.plugins.scala.lang.psi.stubs.util.ScalaStubsUtil")
+  private val LOG = Logger.getInstance(
+    "#org.jetbrains.plugins.scala.lang.psi.stubs.util.ScalaStubsUtil")
 }

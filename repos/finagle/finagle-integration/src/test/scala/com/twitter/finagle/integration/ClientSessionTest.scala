@@ -16,14 +16,14 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 
 /**
- * We want client session statuses to reflect the status of their underlying transports.
- */
+  * We want client session statuses to reflect the status of their underlying transports.
+  */
 @RunWith(classOf[JUnitRunner])
 class ClientSessionTest extends FunSuite with MockitoSugar {
 
   def testSessionStatus[Req, Rep](
-    name: String,
-    sessionFac: (Transport[Req, Rep]) => () => Status
+      name: String,
+      sessionFac: (Transport[Req, Rep]) => () => Status
   ): Unit = {
 
     test(s"$name: session status reflects underlying transport") {
@@ -45,7 +45,11 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
     "mux-transport",
     { tr: Transport[mux.transport.Message, mux.transport.Message] =>
       val session: mux.ClientSession =
-        new mux.ClientSession(tr, mux.FailureDetector.NullConfig, "test", NullStatsReceiver)
+        new mux.ClientSession(
+          tr,
+          mux.FailureDetector.NullConfig,
+          "test",
+          NullStatsReceiver)
       () => session.status
     }
   )
@@ -77,7 +81,8 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   )
 
   class MyClient extends com.twitter.finagle.Memcached.Client {
-    def newDisp(transport: Transport[In, Out]): Service[In, Out] = super.newDispatcher(transport)
+    def newDisp(transport: Transport[In, Out]): Service[In, Out] =
+      super.newDispatcher(transport)
   }
 
   testSessionStatus(
@@ -95,5 +100,6 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
       val handshake = mysql.Handshake(Some("username"), Some("password"))
       val dispatcher = new mysql.ClientDispatcher(tr, handshake)
       () => dispatcher.status
-    })
+    }
+  )
 }

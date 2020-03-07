@@ -10,7 +10,7 @@ import org.scalacheck.{Arbitrary, Prop}
 import org.scalacheck.Prop._
 
 object OrderLaws {
-  def apply[A : Eq : Arbitrary] = new OrderLaws[A] {
+  def apply[A: Eq: Arbitrary] = new OrderLaws[A] {
     def Equ = Eq[A]
     def Arb = implicitly[Arbitrary[A]]
   }
@@ -24,38 +24,25 @@ trait OrderLaws[A] extends Laws {
   def partialOrder(implicit A: PartialOrder[A]) = new OrderProperties(
     name = "partialOrder",
     parent = None,
-    "reflexitivity" → forAll((x: A) =>
-      x <= x
-    ),
-    "antisymmetry" → forAll((x: A, y: A) =>
-      (x <= y && y <= x) imp (x === y)
-    ),
+    "reflexitivity" → forAll((x: A) => x <= x),
+    "antisymmetry" → forAll((x: A, y: A) => (x <= y && y <= x) imp (x === y)),
     "transitivity" → forAll((x: A, y: A, z: A) =>
-      (x <= y && y <= z) imp (x <= z)
-    ),
-    "gteqv" → forAll((x: A, y: A) =>
-      (x <= y) === (y >= x)
-    ),
-    "lt" → forAll((x: A, y: A) =>
-      (x < y) === (x <= y && x =!= y)
-    ),
-    "gt" → forAll((x: A, y: A) =>
-      (x < y) === (y > x)
-    )
+      (x <= y && y <= z) imp (x <= z)),
+    "gteqv" → forAll((x: A, y: A) => (x <= y) === (y >= x)),
+    "lt" → forAll((x: A, y: A) => (x < y) === (x <= y && x =!= y)),
+    "gt" → forAll((x: A, y: A) => (x < y) === (y > x))
   )
 
   def order(implicit A: Order[A]) = new OrderProperties(
     name = "order",
     parent = Some(partialOrder),
-    "totality" → forAll((x: A, y: A) =>
-      x <= y || y <= x
-    )
+    "totality" → forAll((x: A, y: A) => x <= y || y <= x)
   )
 
   class OrderProperties(
-    name: String,
-    parent: Option[OrderProperties],
-    props: (String, Prop)*
+      name: String,
+      parent: Option[OrderProperties],
+      props: (String, Prop)*
   ) extends DefaultRuleSet(name, parent, props: _*)
 
 }

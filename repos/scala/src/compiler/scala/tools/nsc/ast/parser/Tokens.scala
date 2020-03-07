@@ -16,7 +16,8 @@ object Tokens extends CommonTokens {
   /** identifiers */
   final val IDENTIFIER = 10
   final val BACKQUOTED_IDENT = 11
-  def isIdentifier(code: Int) = code == IDENTIFIER || code == BACKQUOTED_IDENT // used by ide
+  def isIdentifier(code: Int) =
+    code == IDENTIFIER || code == BACKQUOTED_IDENT // used by ide
 
   /** modifiers */
   final val IMPLICIT = 40

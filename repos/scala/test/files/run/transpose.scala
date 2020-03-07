@@ -7,6 +7,9 @@ object Test {
     assert(wrap(Nil.transpose) == Nil)
     assert(wrap(List(List(1, 2), List(1)).transpose) == null)
     assert(wrap(List(List(1), List(1, 2)).transpose) == null)
-    assert(wrap(List(List(1, 2), List(1, 2)).transpose) == List(List(1, 1), List(2, 2)))
+    assert(
+      wrap(List(List(1, 2), List(1, 2)).transpose) == List(
+        List(1, 1),
+        List(2, 2)))
   }
 }

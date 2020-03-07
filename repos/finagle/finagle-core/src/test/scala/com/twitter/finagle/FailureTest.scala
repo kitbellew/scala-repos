@@ -8,11 +8,12 @@ import org.scalatest.junit.{JUnitRunner, AssertionsForJUnit}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @RunWith(classOf[JUnitRunner])
-class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenPropertyChecks {
-  val exc = Gen.oneOf[Throwable](
-    null,
-    new Exception("first"),
-    new Exception("second"))
+class FailureTest
+    extends FunSuite
+    with AssertionsForJUnit
+    with GeneratorDrivenPropertyChecks {
+  val exc =
+    Gen.oneOf[Throwable](null, new Exception("first"), new Exception("second"))
 
   val flag = Gen.oneOf(
     0L,
@@ -21,7 +22,7 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
     Failure.Wrapped,
     Failure.Naming)
 
-  val flag2 = for (f1 <- flag; f2 <- flag if f1 != f2) yield f1|f2
+  val flag2 = for (f1 <- flag; f2 <- flag if f1 != f2) yield f1 | f2
 
   test("simple failures with a cause") {
     val why = "boom!"
@@ -46,7 +47,7 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
     val e = new Exception
 
     for (flags <- Seq(flag, flag2)) {
-      forAll(flags.suchThat(_!=0)) { f =>
+      forAll(flags.suchThat(_ != 0)) { f =>
         Failure(e, f).isFlagged(f) &&
         Failure(e).flagged(f) == Failure(e, f) &&
         Failure(e, f) != Failure(e, f).unflagged(f) &&
@@ -60,7 +61,7 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
     val parent = Failure("sadface", Failure.Restartable)
 
     val f = Failure.adapt(parent, Failure.Interrupted)
-    assert(f.flags == (Failure.Restartable|Failure.Interrupted))
+    assert(f.flags == (Failure.Restartable | Failure.Interrupted))
     assert(f.getCause == parent)
     assert(f.getMessage == "sadface")
     assert(f != parent)
@@ -78,7 +79,10 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
   }
 
   test("Failure.show") {
-    assert(Failure("ok", Failure.Restartable|Failure.Interrupted).show == Failure("ok", Failure.Interrupted))
+    assert(
+      Failure("ok", Failure.Restartable | Failure.Interrupted).show == Failure(
+        "ok",
+        Failure.Interrupted))
     val inner = new Exception
     assert(Failure.wrap(inner).show == inner)
     assert(Failure.wrap(Failure.wrap(inner)).show == inner)
@@ -102,8 +106,12 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
     assertFail(Failure("ok", Failure.Restartable), Failure("ok"))
 
     assertFail(Failure("ok"), Failure("ok"))
-    assertFail(Failure("ok", Failure.Interrupted), Failure("ok", Failure.Interrupted))
-    assertFail(Failure("ok", Failure.Interrupted|Failure.Restartable), Failure("ok", Failure.Interrupted))
+    assertFail(
+      Failure("ok", Failure.Interrupted),
+      Failure("ok", Failure.Interrupted))
+    assertFail(
+      Failure("ok", Failure.Interrupted | Failure.Restartable),
+      Failure("ok", Failure.Interrupted))
 
     val inner = new Exception
     assertFail(Failure.wrap(inner), inner)
@@ -111,7 +119,10 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
 
   test("Failure.flagsOf") {
     val failures = Seq(
-      Failure("abc", new Exception, Failure.Interrupted|Failure.Restartable|Failure.Naming|Failure.Wrapped),
+      Failure(
+        "abc",
+        new Exception,
+        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure.Wrapped),
       Failure("abc"),
       new Exception
     )
@@ -125,4 +136,3 @@ class FailureTest extends FunSuite with AssertionsForJUnit with GeneratorDrivenP
     }
   }
 }
-

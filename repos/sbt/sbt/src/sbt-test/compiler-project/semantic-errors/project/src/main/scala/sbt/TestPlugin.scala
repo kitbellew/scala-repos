@@ -8,8 +8,10 @@ object TestPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    val savedReporter = settingKey[xsbti.Reporter]("Saved reporter that collects compilation failures.")
-    val problems = taskKey[Array[xsbti.Problem]]("Problems reported during compilation.")
+    val savedReporter = settingKey[xsbti.Reporter](
+      "Saved reporter that collects compilation failures.")
+    val problems =
+      taskKey[Array[xsbti.Problem]]("Problems reported during compilation.")
   }
   import autoImport._
   override def projectSettings = Seq(
