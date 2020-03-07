@@ -8,15 +8,18 @@ import com.intellij.openapi.externalSystem.importing.ImportSpecBuilder
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.{VirtualFile, VirtualFileAdapter, VirtualFileEvent}
+import com.intellij.openapi.vfs.{
+  VirtualFile,
+  VirtualFileAdapter,
+  VirtualFileEvent
+}
 import org.jetbrains.sbt.project.SbtProjectSystem
 import org.jetbrains.sbt.settings.SbtSystemSettings
 
-
 /**
- * @author Nikolay Obedin
- * @since 3/23/15.
- */
+  * @author Nikolay Obedin
+  * @since 3/23/15.
+  */
 class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
   override def contentsChanged(event: VirtualFileEvent): Unit =
     reimportIfNeeded(event.getFile)
@@ -26,7 +29,8 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
 
   private def reimportIfNeeded(file: VirtualFile): Unit = {
     val settings = Option(
-      SbtSystemSettings.getInstance(project)
+      SbtSystemSettings
+        .getInstance(project)
         .getLinkedProjectSettings(project.getBasePath))
 
     if (settings.fold(false)(_.useOurOwnAutoImport) && isBuildFile(file)) {
@@ -34,13 +38,14 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
         override def run(): Unit =
           ExternalSystemUtil.refreshProjects(
             new ImportSpecBuilder(project, SbtProjectSystem.Id)
-                    .forceWhenUptodate()
-                    .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC)
+              .forceWhenUptodate()
+              .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC)
           )
       })
     }
   }
 
   private def isBuildFile(file: VirtualFile): Boolean =
-    Option(file.getCanonicalPath).fold(false)(path => Sbt.isProjectDefinitionFile(project, path.toFile))
+    Option(file.getCanonicalPath).fold(false)(path =>
+      Sbt.isProjectDefinitionFile(project, path.toFile))
 }

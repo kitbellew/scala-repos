@@ -8,10 +8,11 @@ class DynMacro extends Dynamic {
 }
 
 object DynMacro extends DynMacro {
-  def applyDynamicMacro(c: Context)(s: c.Expr[String])(xs: c.Expr[Any]*): c.Expr[DynMacro] = {
+  def applyDynamicMacro(c: Context)(s: c.Expr[String])(
+      xs: c.Expr[Any]*): c.Expr[DynMacro] = {
     import c.universe._
     val Literal(Constant(n: String)) = s.tree
     val args = xs.map(_.tree.toString).mkString("(", ", ", ")")
-    c.Expr(q"println(${ n + args }); ${c.prefix.tree}")
+    c.Expr(q"println(${n + args}); ${c.prefix.tree}")
   }
 }

@@ -9,19 +9,19 @@ case class Request(
     team: String,
     user: String,
     message: String,
-    date: DateTime) {
-}
+    date: DateTime) {}
 
 object Request {
 
   def makeId(team: String, user: String) = user + "@" + team
 
-  def make(team: String, user: String, message: String): Request = new Request(
-    id = makeId(team, user),
-    user = user,
-    team = team,
-    message = message.trim,
-    date = DateTime.now)
+  def make(team: String, user: String, message: String): Request =
+    new Request(
+      id = makeId(team, user),
+      user = user,
+      team = team,
+      message = message.trim,
+      date = DateTime.now)
 
   import lila.db.JsTube, JsTube.Helpers._
   import play.api.libs.json._
@@ -29,7 +29,7 @@ object Request {
   private[team] lazy val tube = JsTube(
     (__.json update readDate('date)) andThen Json.reads[Request],
     Json.writes[Request] andThen (__.json update writeDate('date))
-  ) 
+  )
 }
 
 case class RequestWithUser(request: Request, user: User) {

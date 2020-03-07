@@ -23,10 +23,15 @@ import org.apache.spark.sql.hive.test.TestHiveSingleton
 
 case class Cases(lower: String, UPPER: String)
 
-class HiveParquetSuite extends QueryTest with ParquetTest with TestHiveSingleton {
+class HiveParquetSuite
+    extends QueryTest
+    with ParquetTest
+    with TestHiveSingleton {
 
   test("Case insensitive attribute names") {
-    withParquetTable((1 to 4).map(i => Cases(i.toString, i.toString)), "cases") {
+    withParquetTable(
+      (1 to 4).map(i => Cases(i.toString, i.toString)),
+      "cases") {
       val expected = (1 to 4).map(i => Row(i.toString))
       checkAnswer(sql("SELECT upper FROM cases"), expected)
       checkAnswer(sql("SELECT LOWER FROM cases"), expected)
@@ -71,7 +76,9 @@ class HiveParquetSuite extends QueryTest with ParquetTest with TestHiveSingleton
           sql("INSERT OVERWRITE TABLE p SELECT * FROM t")
           sql("INSERT OVERWRITE TABLE p SELECT * FROM t")
           sql("INSERT OVERWRITE TABLE p SELECT * FROM t")
-          checkAnswer(sql("SELECT * FROM p"), sql("SELECT * FROM t").collect().toSeq)
+          checkAnswer(
+            sql("SELECT * FROM p"),
+            sql("SELECT * FROM t").collect().toSeq)
         }
       }
     }

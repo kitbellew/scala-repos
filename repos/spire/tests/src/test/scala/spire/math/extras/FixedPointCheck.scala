@@ -12,7 +12,10 @@ import spire.math.Rational
 
 import scala.util.Try
 
-class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class FixedPointCheck
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   implicit val arbFixedScale: Arbitrary[FixedScale] =
     Arbitrary(arbitrary[Int].map(_.abs).filter(_ > 0).map(FixedScale))
@@ -40,7 +43,8 @@ class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropert
     }
   }
 
-  def build(x: Long, y0: Long, z: Byte, noZero: Boolean): (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
+  def build(x: Long, y0: Long, z: Byte, noZero: Boolean)
+      : (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
     val y = if (y0 == 0L && noZero) 1L else y0
     val d = z.toInt.abs % 11
     val denom = 10 ** (d)
@@ -53,7 +57,11 @@ class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropert
   type F2[A] = (A, A) => A
 
   import scala.util.{Success, Try}
-  def testBinop2(name: String, noZero: Boolean, f: S2[FixedPoint], g: F2[Rational]) =
+  def testBinop2(
+      name: String,
+      noZero: Boolean,
+      f: S2[FixedPoint],
+      g: F2[Rational]) =
     property(name) {
       forAll { (x: Long, y: Long, s: FixedScale) =>
         implicit val scale = s
@@ -71,18 +79,23 @@ class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropert
       }
     }
 
-  def testBinop(name: String, noZero: Boolean, f: S2[FixedPoint], g: F2[Rational]) =
+  def testBinop(
+      name: String,
+      noZero: Boolean,
+      f: S2[FixedPoint],
+      g: F2[Rational]) =
     property(name) {
       forAll { (x: Long, y: Long, z: Byte) =>
         val (_, denom, fx, fy, ax, ay) = build(x, y, z, noZero)
         val az = g(ax, ay)
 
-        val ofz = try {
-          implicit val scale = FixedScale(denom)
-          Some(f(fx, fy, scale))
-        } catch {
-          case _: FixedPointOverflow => None
-        }
+        val ofz =
+          try {
+            implicit val scale = FixedScale(denom)
+            Some(f(fx, fy, scale))
+          } catch {
+            case _: FixedPointOverflow => None
+          }
 
         ofz match {
           case Some(fz) =>
@@ -114,19 +127,24 @@ class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropert
   type SH2[A] = (A, Long, FixedScale) => A
   type FH2[A] = (A, Long) => A
 
-  def testHalfop(name: String, noZero: Boolean, f: SH2[FixedPoint], g: FH2[Rational]) =
+  def testHalfop(
+      name: String,
+      noZero: Boolean,
+      f: SH2[FixedPoint],
+      g: FH2[Rational]) =
     property(name) {
       forAll { (x: Long, y0: Long, z: Byte) =>
         val y = if (noZero && y0 == 0) 1L else y0
         val (d, denom, fx, ax) = buildHalf(x, z)
         val az = g(ax, y)
 
-        val ofz = try {
-          implicit val scale = FixedScale(denom)
-          Some(f(fx, y, scale))
-        } catch {
-          case _: FixedPointOverflow => None
-        }
+        val ofz =
+          try {
+            implicit val scale = FixedScale(denom)
+            Some(f(fx, y, scale))
+          } catch {
+            case _: FixedPointOverflow => None
+          }
 
         ofz match {
           case Some(fz) =>
@@ -154,12 +172,13 @@ class FixedPointCheck extends PropSpec with Matchers with GeneratorDrivenPropert
 
       val az = Rational(x, denom).pow(k)
 
-      val ofz = try {
-        implicit val scale = FixedScale(denom)
-        Some(new FixedPoint(x).pow(k))
-      } catch {
-        case _: FixedPointOverflow => None
-      }
+      val ofz =
+        try {
+          implicit val scale = FixedScale(denom)
+          Some(new FixedPoint(x).pow(k))
+        } catch {
+          case _: FixedPointOverflow => None
+        }
 
       ofz match {
         case Some(fz) =>

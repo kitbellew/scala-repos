@@ -23,12 +23,13 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.{StreamingContext, Time}
 
 /**
- * An input stream that always returns the same RDD on each timestep. Useful for testing.
- */
+  * An input stream that always returns the same RDD on each timestep. Useful for testing.
+  */
 class ConstantInputDStream[T: ClassTag](_ssc: StreamingContext, rdd: RDD[T])
-  extends InputDStream[T](_ssc) {
+    extends InputDStream[T](_ssc) {
 
-  require(rdd != null,
+  require(
+    rdd != null,
     "parameter rdd null is illegal, which will lead to NPE in the following transformation")
 
   override def start() {}

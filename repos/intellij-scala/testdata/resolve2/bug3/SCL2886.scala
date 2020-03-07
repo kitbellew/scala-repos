@@ -4,15 +4,16 @@ object SCL2886 {
   }
 
   trait C {
-    self:  B =>
+    self: B =>
 
     def foo(x: X)
 
     def foo(x: Int)
   }
   trait D {
-    self:  B =>
+    self: B =>
     val x: X = sys.exit()
-    /* line: 9 */foo(x)
+    /* line: 9 */
+    foo(x)
   }
 }

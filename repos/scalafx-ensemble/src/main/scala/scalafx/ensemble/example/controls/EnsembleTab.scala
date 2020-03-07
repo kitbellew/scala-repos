@@ -34,7 +34,6 @@ import scalafx.scene.control.{Tab, TabPane}
 import scalafx.scene.layout.{Priority, VBox}
 import scalafx.scene.text.{Font, Text}
 
-
 class EnsembleTab extends EnsembleExample {
 
   def getContent = new VBox {

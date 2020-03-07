@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.specs2.mutable._
@@ -58,7 +57,8 @@ class BiMapSpec extends Specification {
     "getOrElse return default values for invalid key" in {
       val keys = Seq(999, -1, -2)
       val defaults = Seq(1234, 5678, 987)
-      val biValues = keys.zip(defaults).map{ case (k,d) => bi.getOrElse(k, d) }
+      val biValues =
+        keys.zip(defaults).map { case (k, d) => bi.getOrElse(k, d) }
 
       biValues must beEqualTo(defaults)
     }

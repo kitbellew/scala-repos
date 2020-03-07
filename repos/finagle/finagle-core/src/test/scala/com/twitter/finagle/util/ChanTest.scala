@@ -9,7 +9,8 @@ import java.util.concurrent.CountDownLatch
 
 @RunWith(classOf[JUnitRunner])
 class ChanTest extends FunSuite {
-  test("Proc should admit one at a time, in the order received, queueing items") {
+  test(
+    "Proc should admit one at a time, in the order received, queueing items") {
     val threads = Buffer[Thread]()
     val l = new CountDownLatch(1)
     val b = new CyclicBarrier(2)
@@ -41,7 +42,7 @@ class ChanTest extends FunSuite {
 
   test("Proc should swallow exceptions") {
     val p = Proc[Int] { _ => throw new RuntimeException }
-    assert((p ! 4) ===((): Unit))
+    assert((p ! 4) === ((): Unit))
   }
 
 }

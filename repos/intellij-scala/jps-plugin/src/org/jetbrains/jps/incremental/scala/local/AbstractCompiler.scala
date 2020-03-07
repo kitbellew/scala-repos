@@ -8,16 +8,18 @@ import xsbti._
 import xsbti.compile.ExtendedCompileProgress
 
 /**
- * Nikolay.Tropin
- * 11/18/13
- */
+  * Nikolay.Tropin
+  * 11/18/13
+  */
 abstract class AbstractCompiler extends Compiler {
 
   def getReporter(client: Client): Reporter = new ClientReporter(client)
 
-  def getLogger(client: Client): Logger = new ClientLogger(client) with JavacOutputParsing
+  def getLogger(client: Client): Logger =
+    new ClientLogger(client) with JavacOutputParsing
 
-  def getProgress(client: Client): ExtendedCompileProgress = new ClientProgress(client)
+  def getProgress(client: Client): ExtendedCompileProgress =
+    new ClientProgress(client)
 
   private class ClientLogger(val client: Client) extends Logger {
     def error(msg: F0[String]) {
@@ -87,8 +89,8 @@ abstract class AbstractCompiler extends Compiler {
       }
 
       val kind = sev match {
-        case Severity.Info => Kind.INFO
-        case Severity.Warn => Kind.WARNING
+        case Severity.Info  => Kind.INFO
+        case Severity.Warn  => Kind.WARNING
         case Severity.Error => Kind.ERROR
       }
 
@@ -104,10 +106,10 @@ abstract class AbstractCompiler extends Compiler {
       client.message(kind, messageWithLineAndPointer, source, line, column)
     }
 
-    def toOption[T](value: Maybe[T]): Option[T] = if (value.isDefined) Some(value.get) else None
+    def toOption[T](value: Maybe[T]): Option[T] =
+      if (value.isDefined) Some(value.get) else None
 
     def comment(p1: Position, p2: String) {} // TODO
   }
 
 }
-

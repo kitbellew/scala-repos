@@ -16,7 +16,10 @@ class SourceTrackingMonitorTest extends FunSuite with MockitoSugar {
     val logger = mock[Logger]
     val monitor = new SourceTrackingMonitor(logger, "qux")
     val e = new Exception
-    val f1 = new Failure("foo", Some(e), sources = Map(Failure.Source.Service -> "tweet"))
+    val f1 = new Failure(
+      "foo",
+      Some(e),
+      sources = Map(Failure.Source.Service -> "tweet"))
     val f2 = new Failure("bar", Some(f1))
     val exc = new RequestException(f2)
     exc.serviceName = "user"
@@ -45,6 +48,7 @@ class SourceTrackingMonitorTest extends FunSuite with MockitoSugar {
     monitor.handle(rejected)
 
     verify(logger).log(mockitoEq(Level.FINE), any(), mockitoEq(rejected))
-    verify(logger, never()).log(mockitoEq(Level.WARNING), any(), mockitoEq(rejected))
+    verify(logger, never())
+      .log(mockitoEq(Level.WARNING), any(), mockitoEq(rejected))
   }
 }

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster
 
 import com.typesafe.config.ConfigFactory
@@ -16,7 +16,9 @@ object JoinInProgressMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""
+      .withFallback(
+        ConfigFactory
+          .parseString("""
           akka.cluster {
             # simulate delay in gossip by turning it off
             gossip-interval = 300 s
@@ -25,15 +27,15 @@ object JoinInProgressMultiJvmSpec extends MultiNodeConfig {
               acceptable-heartbeat-pause = 1 second
             }
           }""")
-        .withFallback(MultiNodeClusterSpec.clusterConfig)))
+          .withFallback(MultiNodeClusterSpec.clusterConfig)))
 }
 
 class JoinInProgressMultiJvmNode1 extends JoinInProgressSpec
 class JoinInProgressMultiJvmNode2 extends JoinInProgressSpec
 
 abstract class JoinInProgressSpec
-  extends MultiNodeSpec(JoinInProgressMultiJvmSpec)
-  with MultiNodeClusterSpec {
+    extends MultiNodeSpec(JoinInProgressMultiJvmSpec)
+    with MultiNodeClusterSpec {
 
   import JoinInProgressMultiJvmSpec._
 

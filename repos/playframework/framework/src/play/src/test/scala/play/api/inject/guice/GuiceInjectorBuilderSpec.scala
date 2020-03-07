@@ -8,7 +8,7 @@ import com.google.inject.AbstractModule
 import java.io.File
 import java.net.URLClassLoader
 import org.specs2.mutable.Specification
-import play.api.{ Configuration, Environment, Mode }
+import play.api.{Configuration, Environment, Mode}
 
 object GuiceInjectorBuilderSpec extends Specification {
 
@@ -18,7 +18,8 @@ object GuiceInjectorBuilderSpec extends Specification {
       val env = new GuiceInjectorBuilder()
         .in(Environment.simple(mode = Mode.Dev))
         .bindings(new EnvironmentModule)
-        .injector.instanceOf[Environment]
+        .injector
+        .instanceOf[Environment]
 
       env.mode must_== Mode.Dev
     }
@@ -30,7 +31,8 @@ object GuiceInjectorBuilderSpec extends Specification {
         .in(Mode.Dev)
         .in(classLoader)
         .bindings(new EnvironmentModule)
-        .injector.instanceOf[Environment]
+        .injector
+        .instanceOf[Environment]
 
       env.rootPath must_== new File("test")
       env.mode must_== Mode.Dev
@@ -44,7 +46,8 @@ object GuiceInjectorBuilderSpec extends Specification {
         .configure("c" -> 3)
         .configure("d.1" -> 4, "d.2" -> 5)
         .bindings(new ConfigurationModule)
-        .injector.instanceOf[Configuration]
+        .injector
+        .instanceOf[Configuration]
 
       conf.subKeys must contain(allOf("a", "b", "c", "d"))
       conf.getInt("a") must beSome(1)
@@ -61,9 +64,7 @@ object GuiceInjectorBuilderSpec extends Specification {
           Seq(new ConfigurationModule),
           new AModule,
           Seq(new BModule))
-        .bindings(
-          bind[C].to[C1],
-          Seq(bind[D].to[D1]))
+        .bindings(bind[C].to[C1], Seq(bind[D].to[D1]))
         .injector
 
       injector.instanceOf[Environment] must beAnInstanceOf[Environment]
@@ -78,9 +79,7 @@ object GuiceInjectorBuilderSpec extends Specification {
       val injector = new GuiceInjectorBuilder()
         .in(Mode.Dev)
         .configure("a" -> 1)
-        .bindings(
-          new EnvironmentModule,
-          new ConfigurationModule)
+        .bindings(new EnvironmentModule, new ConfigurationModule)
         .overrides(
           bind[Environment] to Environment.simple(),
           new SetConfigurationModule(Configuration("b" -> 2)))
@@ -106,8 +105,10 @@ object GuiceInjectorBuilderSpec extends Specification {
         .disable(classOf[AModule], classOf[CModule]) // C won't be disabled
         .injector
 
-      injector.instanceOf[Environment] must throwA[com.google.inject.ConfigurationException]
-      injector.instanceOf[A] must throwA[com.google.inject.ConfigurationException]
+      injector.instanceOf[Environment] must throwA[
+        com.google.inject.ConfigurationException]
+      injector
+        .instanceOf[A] must throwA[com.google.inject.ConfigurationException]
 
       injector.instanceOf[Configuration] must beAnInstanceOf[Configuration]
       injector.instanceOf[B] must beAnInstanceOf[B1]
@@ -125,8 +126,10 @@ object GuiceInjectorBuilderSpec extends Specification {
         .injector
       injector.instanceOf[A] must beAnInstanceOf[A1]
       injector.instanceOf[B] must beAnInstanceOf[B1]
-      injector.instanceOf[B1] must throwA[com.google.inject.ConfigurationException]
-      injector.instanceOf[C1] must throwA[com.google.inject.ConfigurationException]
+      injector
+        .instanceOf[B1] must throwA[com.google.inject.ConfigurationException]
+      injector
+        .instanceOf[C1] must throwA[com.google.inject.ConfigurationException]
     }
 
   }

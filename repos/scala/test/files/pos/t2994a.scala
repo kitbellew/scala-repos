@@ -17,7 +17,6 @@ object Naturals {
   type _5 = SUCC[_4]
   type _6 = SUCC[_5]
 
-
   // crashes scala-2.8.0 beta1
   trait MUL[n <: NAT, m <: NAT] extends NAT {
     trait curry[n[_[_], _], s[_]] { type f[z <: NAT] = n[s, z] }

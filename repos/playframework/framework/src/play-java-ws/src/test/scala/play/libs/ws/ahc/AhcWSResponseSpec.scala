@@ -12,11 +12,12 @@ import scala.collection.JavaConverters._
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
 
-import org.asynchttpclient.{ Response }
+import org.asynchttpclient.{Response}
 
 object AhcWSResponseSpec extends Specification with Mockito {
 
-  private val emptyMap = new java.util.HashMap[String, java.util.Collection[String]]
+  private val emptyMap =
+    new java.util.HashMap[String, java.util.Collection[String]]
 
   "getUnderlying" should {
 
@@ -93,6 +94,6 @@ object AhcWSResponseSpec extends Specification with Mockito {
   getBodyAsStream
   asByteArray
   getUri
-  */
+ */
 
 }

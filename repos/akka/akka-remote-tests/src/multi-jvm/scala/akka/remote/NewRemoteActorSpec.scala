@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote
 
 import akka.actor.Terminated
@@ -9,7 +9,7 @@ import language.postfixOps
 import akka.actor.Actor
 import akka.actor.ActorRef
 import akka.actor.Props
-import testkit.{ STMultiNodeSpec, MultiNodeConfig, MultiNodeSpec }
+import testkit.{STMultiNodeSpec, MultiNodeConfig, MultiNodeSpec}
 import akka.testkit._
 import com.typesafe.config.ConfigFactory
 import scala.concurrent.duration._
@@ -46,8 +46,11 @@ object NewRemoteActorMultiJvmSpec extends MultiNodeConfig {
 class NewRemoteActorMultiJvmNode1 extends NewRemoteActorSpec
 class NewRemoteActorMultiJvmNode2 extends NewRemoteActorSpec
 
-class NewRemoteActorSpec extends MultiNodeSpec(NewRemoteActorMultiJvmSpec)
-  with STMultiNodeSpec with ImplicitSender with DefaultTimeout {
+class NewRemoteActorSpec
+    extends MultiNodeSpec(NewRemoteActorMultiJvmSpec)
+    with STMultiNodeSpec
+    with ImplicitSender
+    with DefaultTimeout {
   import NewRemoteActorMultiJvmSpec._
 
   def initialParticipants = roles.size
@@ -74,7 +77,9 @@ class NewRemoteActorSpec extends MultiNodeSpec(NewRemoteActorMultiJvmSpec)
     "be locally instantiated on a remote node (with null parameter) and be able to communicate through its RemoteActorRef" in {
 
       runOn(master) {
-        val actor = system.actorOf(Props(classOf[SomeActorWithParam], null), "service-hello-null")
+        val actor = system.actorOf(
+          Props(classOf[SomeActorWithParam], null),
+          "service-hello-null")
         actor.isInstanceOf[RemoteActorRef] should ===(true)
         actor.path.address should ===(node(slave).address)
 
@@ -101,7 +106,8 @@ class NewRemoteActorSpec extends MultiNodeSpec(NewRemoteActorMultiJvmSpec)
       enterBarrier("done")
     }
 
-    "be able to shutdown system when using remote deployed actor" in within(20 seconds) {
+    "be able to shutdown system when using remote deployed actor" in within(
+      20 seconds) {
       runOn(master) {
         val actor = system.actorOf(Props[SomeActor], "service-hello3")
         actor.isInstanceOf[RemoteActorRef] should ===(true)

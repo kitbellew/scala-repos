@@ -4,10 +4,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.controlflow.SplitElseIf
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * @author Ksenia.Sautina
- * @since 6/6/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 6/6/12
+  */
 class SplitElseIfIntentionTest extends ScalaIntentionTestBase {
   val familyName = SplitElseIfIntention.familyName
 

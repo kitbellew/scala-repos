@@ -14,12 +14,17 @@ final class DummyFramework extends Framework {
 
   def fingerprints: Array[Fingerprint] = Array(DummyFingerprint)
 
-  def runner(args: Array[String], remoteArgs: Array[String],
+  def runner(
+      args: Array[String],
+      remoteArgs: Array[String],
       testClassLoader: ClassLoader): MasterRunner =
     new MasterRunner(args, remoteArgs, testClassLoader)
 
-  def slaveRunner(args: Array[String], remoteArgs: Array[String],
-      testClassLoader: ClassLoader, send: String => Unit): SlaveRunner =
+  def slaveRunner(
+      args: Array[String],
+      remoteArgs: Array[String],
+      testClassLoader: ClassLoader,
+      send: String => Unit): SlaveRunner =
     new SlaveRunner(args, remoteArgs, testClassLoader, send)
 
 }

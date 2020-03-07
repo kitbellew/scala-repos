@@ -10,8 +10,8 @@ trait SemigroupKTests[F[_]] extends Laws {
   def laws: SemigroupKLaws[F]
 
   def semigroupK[A: Arbitrary](implicit
-    ArbFA: Arbitrary[F[A]],
-    EqFA: Eq[F[A]]
+      ArbFA: Arbitrary[F[A]],
+      EqFA: Eq[F[A]]
   ): RuleSet = {
     new RuleSet {
       val name = "semigroupK"

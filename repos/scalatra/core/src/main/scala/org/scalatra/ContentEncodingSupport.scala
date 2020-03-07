@@ -1,25 +1,31 @@
 package org.scalatra
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
- * Scalatra handler for gzipped responses.
- */
+  * Scalatra handler for gzipped responses.
+  */
 trait ContentEncodingSupport extends Handler { self: ScalatraBase =>
 
-  abstract override def handle(req: HttpServletRequest, res: HttpServletResponse): Unit = {
+  abstract override def handle(
+      req: HttpServletRequest,
+      res: HttpServletResponse): Unit = {
     withRequestResponse(req, res) {
       super.handle(decodedRequest(req), encodedResponse(req, res))
     }
   }
 
   /** Encodes the response if necessary. */
-  private def encodedResponse(req: HttpServletRequest, res: HttpServletResponse): HttpServletResponse = {
-    Conneg.preferredEncoding.map { encoding =>
-      val encoded = encoding(res)
-      ScalatraBase.onRenderedCompleted { _ => encoded.end() }
-      encoded
-    }.getOrElse(res)
+  private def encodedResponse(
+      req: HttpServletRequest,
+      res: HttpServletResponse): HttpServletResponse = {
+    Conneg.preferredEncoding
+      .map { encoding =>
+        val encoded = encoding(res)
+        ScalatraBase.onRenderedCompleted { _ => encoded.end() }
+        encoded
+      }
+      .getOrElse(res)
   }
 
   /** Decodes the request if necessary. */

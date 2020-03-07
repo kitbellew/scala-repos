@@ -29,14 +29,16 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
   override val dataSourceName: String = "json"
 
   // JSON does not write data of NullType and does not play well with BinaryType.
-  override protected def supportsDataType(dataType: DataType): Boolean = dataType match {
-    case _: NullType => false
-    case _: BinaryType => false
-    case _: CalendarIntervalType => false
-    case _ => true
-  }
+  override protected def supportsDataType(dataType: DataType): Boolean =
+    dataType match {
+      case _: NullType             => false
+      case _: BinaryType           => false
+      case _: CalendarIntervalType => false
+      case _                       => true
+    }
 
-  test("save()/load() - partitioned table - simple queries - partition columns in data") {
+  test(
+    "save()/load() - partitioned table - simple queries - partition columns in data") {
     withTempDir { file =>
       val basePath = new Path(file.getCanonicalPath)
       val fs = basePath.getFileSystem(SparkHadoopUtil.get.conf)
@@ -50,10 +52,12 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
       }
 
       val dataSchemaWithPartition =
-        StructType(dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
+        StructType(
+          dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read.format(dataSourceName)
+        hiveContext.read
+          .format(dataSourceName)
           .option("dataSchema", dataSchemaWithPartition.json)
           .load(file.getCanonicalPath))
     }
@@ -66,19 +70,25 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
       val schema =
         new StructType()
           .add("array", ArrayType(LongType))
-          .add("map", MapType(StringType, new StructType().add("innerField", LongType)))
+          .add(
+            "map",
+            MapType(StringType, new StructType().add("innerField", LongType)))
 
       val data =
         Row(Seq(1L, 2L, 3L), Map("m1" -> Row(4L))) ::
           Row(Seq(5L, 6L, 7L), Map("m2" -> Row(10L))) :: Nil
-      val df = hiveContext.createDataFrame(sparkContext.parallelize(data), schema)
+      val df =
+        hiveContext.createDataFrame(sparkContext.parallelize(data), schema)
 
       // Write the data out.
       df.write.format(dataSourceName).save(file.getCanonicalPath)
 
       // Read it back and check the result.
       checkAnswer(
-        hiveContext.read.format(dataSourceName).schema(schema).load(file.getCanonicalPath),
+        hiveContext.read
+          .format(dataSourceName)
+          .schema(schema)
+          .load(file.getCanonicalPath),
         df
       )
     }
@@ -96,14 +106,18 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
         Row(new BigDecimal("10.02")) ::
           Row(new BigDecimal("20000.99")) ::
           Row(new BigDecimal("10000")) :: Nil
-      val df = hiveContext.createDataFrame(sparkContext.parallelize(data), schema)
+      val df =
+        hiveContext.createDataFrame(sparkContext.parallelize(data), schema)
 
       // Write the data out.
       df.write.format(dataSourceName).save(file.getCanonicalPath)
 
       // Read it back and check the result.
       checkAnswer(
-        hiveContext.read.format(dataSourceName).schema(schema).load(file.getCanonicalPath),
+        hiveContext.read
+          .format(dataSourceName)
+          .schema(schema)
+          .load(file.getCanonicalPath),
         df
       )
     }

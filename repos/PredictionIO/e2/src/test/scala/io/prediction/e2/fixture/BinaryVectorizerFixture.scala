@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.e2.fixture
 
 import scala.collection.immutable.HashMap
@@ -23,9 +22,9 @@ trait BinaryVectorizerFixture {
 
   def base = {
     new {
-      val maps : Seq[HashMap[String, String]] = Seq(
+      val maps: Seq[HashMap[String, String]] = Seq(
         HashMap("food" -> "orange", "music" -> "rock", "hobby" -> "scala"),
-        HashMap("food" -> "orange", "music" -> "pop", "hobby" ->"running"),
+        HashMap("food" -> "orange", "music" -> "pop", "hobby" -> "running"),
         HashMap("food" -> "banana", "music" -> "rock", "hobby" -> "guitar"),
         HashMap("food" -> "banana", "music" -> "rock", "hobby" -> "guitar")
       )
@@ -33,7 +32,6 @@ trait BinaryVectorizerFixture {
       val properties = HashSet("food", "hobby")
     }
   }
-
 
   def testArrays = {
     new {
@@ -48,12 +46,8 @@ trait BinaryVectorizerFixture {
     }
   }
 
-  def vecSum (vec1 : Vector, vec2 : Vector) : Array[Double] = {
-    (0 until vec1.size).map(
-      k => vec1(k) + vec2(k)
-    ).toArray
+  def vecSum(vec1: Vector, vec2: Vector): Array[Double] = {
+    (0 until vec1.size).map(k => vec1(k) + vec2(k)).toArray
   }
 
 }
-
-

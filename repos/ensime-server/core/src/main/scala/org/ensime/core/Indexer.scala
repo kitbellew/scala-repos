@@ -19,26 +19,36 @@ class Indexer(
     index: SearchService,
     implicit val config: EnsimeConfig,
     implicit val vfs: EnsimeVFS
-) extends Actor with ActorLogging {
+) extends Actor
+    with ActorLogging {
 
   private def typeResult(hit: FqnSymbol) = TypeSearchResult(
-    hit.fqn, hit.fqn.split("\\.").last, hit.declAs,
+    hit.fqn,
+    hit.fqn.split("\\.").last,
+    hit.declAs,
     LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs)
   )
 
   def oldSearchTypes(query: String, max: Int) =
-    index.searchClasses(query, max).filterNot {
-      name => name.fqn.endsWith("$") || name.fqn.endsWith("$class")
-    }.map(typeResult)
+    index
+      .searchClasses(query, max)
+      .filterNot { name =>
+        name.fqn.endsWith("$") || name.fqn.endsWith("$class")
+      }
+      .map(typeResult)
 
   def oldSearchSymbols(terms: List[String], max: Int) =
     index.searchClassesMethods(terms, max).flatMap {
       case hit if hit.declAs == DeclaredAs.Class => Some(typeResult(hit))
-      case hit if hit.declAs == DeclaredAs.Method => Some(MethodSearchResult(
-        hit.fqn, hit.fqn.split("\\.").last, hit.declAs,
-        LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs),
-        hit.fqn.split("\\.").init.mkString(".")
-      ))
+      case hit if hit.declAs == DeclaredAs.Method =>
+        Some(
+          MethodSearchResult(
+            hit.fqn,
+            hit.fqn.split("\\.").last,
+            hit.declAs,
+            LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs),
+            hit.fqn.split("\\.").init.mkString(".")
+          ))
       case _ => None // were never supported
     }
 
@@ -57,5 +67,7 @@ class Indexer(
   }
 }
 object Indexer {
-  def apply(index: SearchService)(implicit config: EnsimeConfig, vfs: EnsimeVFS): Props = Props(classOf[Indexer], index, config, vfs)
+  def apply(index: SearchService)(implicit
+      config: EnsimeConfig,
+      vfs: EnsimeVFS): Props = Props(classOf[Indexer], index, config, vfs)
 }

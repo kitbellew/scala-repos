@@ -8,7 +8,7 @@ import javax.inject.Inject
 import org.specs2.mutable.Specification
 import play.api.inject.Binding
 import play.api.inject.guice.GuiceInjectorBuilder
-import play.api.{ PlayConfig, PlayException, Configuration, Environment }
+import play.api.{PlayConfig, PlayException, Configuration, Environment}
 
 import scala.reflect.ClassTag
 
@@ -35,11 +35,17 @@ object ReflectSpec extends Specification {
       }
 
       "return a configured Scala implementation" in {
-        doQuack(bindings(classOf[CustomDuck].getName, "NoDuck")) must_== "custom quack"
+        doQuack(
+          bindings(
+            classOf[CustomDuck].getName,
+            "NoDuck")) must_== "custom quack"
       }
 
       "return a configured Java implementation" in {
-        doQuack(bindings(classOf[CustomJavaDuck].getName, "NoDuck")) must_== "java quack"
+        doQuack(
+          bindings(
+            classOf[CustomJavaDuck].getName,
+            "NoDuck")) must_== "java quack"
       }
 
       "throw an exception if a configured class doesn't exist" in {
@@ -47,15 +53,26 @@ object ReflectSpec extends Specification {
       }
 
       "throw an exception if a configured class doesn't implement either of the interfaces" in {
-        doQuack(bindings[CustomDuck](classOf[NotADuck].getName)) must throwA[PlayException]
+        doQuack(bindings[CustomDuck](classOf[NotADuck].getName)) must throwA[
+          PlayException]
       }
 
     }
   }
 
-  def bindings(configured: String, defaultClassName: String): Seq[Binding[_]] = {
-    Reflect.bindingsFromConfiguration[Duck, JavaDuck, JavaDuckAdapter, JavaDuckDelegate, DefaultDuck](
-      Environment.simple(), PlayConfig(Configuration.from(Map("duck" -> configured))), "duck", defaultClassName)
+  def bindings(
+      configured: String,
+      defaultClassName: String): Seq[Binding[_]] = {
+    Reflect.bindingsFromConfiguration[
+      Duck,
+      JavaDuck,
+      JavaDuckAdapter,
+      JavaDuckDelegate,
+      DefaultDuck](
+      Environment.simple(),
+      PlayConfig(Configuration.from(Map("duck" -> configured))),
+      "duck",
+      defaultClassName)
   }
 
   def bindings[Default: ClassTag](configured: String): Seq[Binding[_]] = {

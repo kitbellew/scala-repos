@@ -7,14 +7,14 @@ package akka.http.scaladsl.server
 import akka.actor._
 import akka.dispatch.MessageDispatcher
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpRequest, HttpResponse, Uri }
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.stream.{ ActorMaterializer, OverflowStrategy }
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
+import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.stream.{ActorMaterializer, OverflowStrategy}
 import akka.util.Index
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Future
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 object ConnectionTestApp {
   val testConf: Config = ConfigFactory.parseString("""
@@ -36,7 +36,9 @@ object ConnectionTestApp {
 
   val sourceActor = {
     // Our superPool expects (HttpRequest, Int) as input
-    val source = Source.actorRef[(HttpRequest, Int)](10000, OverflowStrategy.dropNew).buffer(20000, OverflowStrategy.fail)
+    val source = Source
+      .actorRef[(HttpRequest, Int)](10000, OverflowStrategy.dropNew)
+      .buffer(20000, OverflowStrategy.fail)
     val sink = Sink.foreach[(Try[HttpResponse], Int)] {
       case (resp, id) ⇒ handleResponse(resp, id)
     }
@@ -56,10 +58,12 @@ object ConnectionTestApp {
   }
 
   def sendSingle(uri: Uri, id: Int): Unit = {
-    val connectionFlow: Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
+    val connectionFlow
+        : Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
       Http().outgoingConnection(uri.authority.host.address, uri.authority.port)
     val responseFuture: Future[HttpResponse] =
-      Source.single(buildRequest(uri))
+      Source
+        .single(buildRequest(uri))
         .via(connectionFlow)
         .runWith(Sink.head)
 
@@ -90,7 +94,10 @@ object ConnectionTestApp {
     }
 
     readLine()
-    println("===================== \n\n" + system.asInstanceOf[ActorSystemImpl].printTree + "\n\n========================")
+    println(
+      "===================== \n\n" + system
+        .asInstanceOf[ActorSystemImpl]
+        .printTree + "\n\n========================")
     readLine()
     system.terminate()
   }

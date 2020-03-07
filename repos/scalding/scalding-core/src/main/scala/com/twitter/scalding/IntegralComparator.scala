@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.twitter.scalding
 
@@ -24,9 +24,13 @@ import java.util.Comparator
 /*
  * Handles numerical hashing properly
  */
-class IntegralComparator extends Comparator[AnyRef] with Hasher[AnyRef] with Serializable {
+class IntegralComparator
+    extends Comparator[AnyRef]
+    with Hasher[AnyRef]
+    with Serializable {
 
-  val integralTypes: Set[Class[_]] = Set(classOf[java.lang.Long],
+  val integralTypes: Set[Class[_]] = Set(
+    classOf[java.lang.Long],
     classOf[java.lang.Integer],
     classOf[java.lang.Short],
     classOf[java.lang.Byte])
@@ -56,9 +60,7 @@ class IntegralComparator extends Comparator[AnyRef] with Hasher[AnyRef] with Ser
     if (null == obj) {
       0
     } else if (isIntegral(obj)) {
-      obj.asInstanceOf[Number]
-        .longValue
-        .hashCode
+      obj.asInstanceOf[Number].longValue.hashCode
     } else {
       //Use the default:
       obj.hashCode

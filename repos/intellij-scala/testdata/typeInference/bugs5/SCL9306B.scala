@@ -11,6 +11,7 @@ object SCL9306B extends App {
 
   val func3: (A => B) = { a: A => new B }
 
-  /*start*/func3(new C)/*end*/
+  /*start*/
+  func3(new C) /*end*/
 }
 //SCL9306B.D

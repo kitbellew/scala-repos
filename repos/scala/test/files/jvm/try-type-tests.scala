@@ -23,7 +23,7 @@ trait TryStandard {
 
   def testFlatMapFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.flatMap{ x => assert(false); Try(()) }
+    val n = t.flatMap { x => assert(false); Try(()) }
   }
 
   def testMapSuccess(): Unit = {
@@ -47,36 +47,36 @@ trait TryStandard {
     val t = Success(1)
     val n = t.filter(x => x < 0)
     n match {
-      case Success(v) => assert(false)
+      case Success(v)                         => assert(false)
       case Failure(e: NoSuchElementException) => assert(true)
-      case _          => assert(false)
+      case _                                  => assert(false)
     }
   }
 
   def testFilterFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.filter{ x => assert(false); true }
+    val n = t.filter { x => assert(false); true }
   }
 
   def testRescueSuccess(): Unit = {
     val t = Success(1)
-    t.recoverWith{ case x => assert(false); Try(()) }
+    t.recoverWith { case x => assert(false); Try(()) }
   }
 
   def testRescueFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.recoverWith{ case x => Try(1) }
+    val n = t.recoverWith { case x => Try(1) }
     assert(n.get == 1)
   }
 
   def testRecoverSuccess(): Unit = {
     val t = Success(1)
-    t.recover{ case x => assert(false); 99 }
+    t.recover { case x => assert(false); 99 }
   }
 
   def testRecoverFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val n = t.recover{ case x => 1 }
+    val n = t.recover { case x => 1 }
     assert(n.get == 1)
   }
 
@@ -91,7 +91,7 @@ trait TryStandard {
     val n = t.failed
     n match {
       case Failure(e: UnsupportedOperationException) => assert(true)
-      case _ => assert(false)
+      case _                                         => assert(false)
     }
   }
 
@@ -100,7 +100,7 @@ trait TryStandard {
     val n = t.failed
     n match {
       case Success(e: Exception) => assert(true)
-      case _ => assert(false)
+      case _                     => assert(false)
     }
   }
 
@@ -148,11 +148,12 @@ trait TryStandard {
 
   def testFoldFailureFailure(): Unit = {
     val t = Failure(new Exception("foo"))
-    val res = try {
-      t.fold(_ => throw new Exception("bar"), "Returns " + _)
-    } catch {
-      case e: Throwable => "Throws " + e
-    }
+    val res =
+      try {
+        t.fold(_ => throw new Exception("bar"), "Returns " + _)
+      } catch {
+        case e: Throwable => "Throws " + e
+      }
     assert(res == "Throws java.lang.Exception: bar")
   }
 
@@ -181,8 +182,6 @@ trait TryStandard {
   testFoldSuccessFailure()
 }
 
-object Test
-extends App
-with TryStandard {
+object Test extends App with TryStandard {
   System.exit(0)
 }

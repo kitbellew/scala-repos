@@ -6,7 +6,8 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
-case class TestAnnouncement(ia: InetSocketAddress, addr: String) extends Announcement {
+case class TestAnnouncement(ia: InetSocketAddress, addr: String)
+    extends Announcement {
   def unannounce() = Future.Done
 }
 
@@ -25,13 +26,14 @@ class AnnouncerTest extends FunSuite {
   }
 
   test("reject unknown announcers") {
-    assert(Await.ready(Announcer.announce(addr, "unkown!foobar")).poll.get.isThrow)
+    assert(
+      Await.ready(Announcer.announce(addr, "unkown!foobar")).poll.get.isThrow)
   }
 
   test("resolve ServiceLoaded announcers") {
     Await.result(Announcer.announce(addr, "test!xyz")) match {
       case p: Proxy => assert(p.self == TestAnnouncement(addr, "xyz"))
-      case _ => assert(false)
+      case _        => assert(false)
     }
   }
 
@@ -41,7 +43,8 @@ class AnnouncerTest extends FunSuite {
   }
 
   test("get an announcer instance") {
-    val anmt = Await.result(Announcer.get(classOf[TestAnnouncer]).get.announce(addr, "foo"))
+    val anmt = Await.result(
+      Announcer.get(classOf[TestAnnouncer]).get.announce(addr, "foo"))
     assert(anmt == TestAnnouncement(addr, "foo"))
   }
 }

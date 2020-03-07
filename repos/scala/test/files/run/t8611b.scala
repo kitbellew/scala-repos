@@ -5,8 +5,7 @@ abstract class NotWorkingEnum extends Enumeration {
   type ExtendedValue = Value with KrafsDescription
 
   def Enum(inDescription: String): ExtendedValue = {
-    new Val(nextId) with KrafsDescription {
-    }
+    new Val(nextId) with KrafsDescription {}
   }
 }
 
@@ -15,8 +14,7 @@ abstract class WorkingEnum extends Enumeration {
   type ExtendedValue = Value
 
   def Enum(inDescription: String): ExtendedValue = {
-    new Val(nextId) {
-    }
+    new Val(nextId) {}
   }
 }
 
@@ -39,7 +37,7 @@ object Test extends App {
     pipp match {
       case NotWorkingTab.a => ???
       case NotWorkingTab.b =>
-      case _ => ???
+      case _               => ???
     }
   }
 
@@ -48,7 +46,7 @@ object Test extends App {
     stuff match {
       case WorkingTab.a =>
       case WorkingTab.b => ???
-      case _ => ???
+      case _            => ???
     }
   }
 }

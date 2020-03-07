@@ -8,8 +8,8 @@ import com.twitter.io.Buf
 import com.twitter.util.{Await, SynchronizedLruMap}
 
 /**
- * An in-process memcached server.
- */
+  * An in-process memcached server.
+  */
 @deprecated("Moved into test", "7.0.0")
 class Server(address: SocketAddress) {
   val concurrencyLevel = 16

@@ -10,7 +10,7 @@ sealed trait Op[+A] {
   def flatMap[B](f: A => Op[B]): Op[B] =
     this match {
       case FlatMap(a, g) => FlatMap(a, (x: Any) => g(x).flatMap(f))
-      case o => FlatMap(o, f)
+      case o             => FlatMap(o, f)
     }
 
   def map[B](f: A => B): Op[B] =
@@ -28,16 +28,17 @@ sealed trait Op[+A] {
       case FlatMap(a, f) =>
         a match {
           case Const(x) => f(x).resume(gen)
-          case More(k) => Left(() => FlatMap(k(), f))
-          case Next(g) => f(g(gen)).resume(gen)
-          case FlatMap(b, g) => (FlatMap(b, (x: Any) => FlatMap(g(x), f)): Op[A]).resume(gen)
+          case More(k)  => Left(() => FlatMap(k(), f))
+          case Next(g)  => f(g(gen)).resume(gen)
+          case FlatMap(b, g) =>
+            (FlatMap(b, (x: Any) => FlatMap(g(x), f)): Op[A]).resume(gen)
         }
     }
 
   def run(gen: Generator): A = {
     def loop(e: Either[() => Op[A], A]): A = e match {
       case Right(a) => a
-      case Left(k) => loop(k().resume(gen))
+      case Left(k)  => loop(k().resume(gen))
     }
     loop(resume(gen))
   }
@@ -91,13 +92,17 @@ trait RandomCompanion[G <: Generator] { self =>
     size.random(this).flatMap(stringOfSize)
 
   def stringOfSize(n: Int): Random[String, G] =
-    char.foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }.map(_.toString)
+    char
+      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
+      .map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
-    def collection[CC[_]](size: Size)(implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
+    def collection[CC[_]](size: Size)(
+        implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
       size.random(self).flatMap(collectionOfSize(_))
 
-    def collectionOfSize[CC[_]](n: Int)(implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
+    def collectionOfSize[CC[_]](n: Int)(
+        implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Random[CC[A], G] =
       foldLeftOfSize(n)(cbf()) { (b, a) => b += a; b }.map(_.result)
 
     def foldLeftOfSize[B](n: Int)(init: => B)(f: (B, A) => B): Random[B, G] = {
@@ -109,10 +114,12 @@ trait RandomCompanion[G <: Generator] { self =>
 
     def unfold[B](init: B)(f: (B, A) => Option[B]): Random[B, G] = {
       def loop(mb: Op[B], ma: Op[A]): Op[B] =
-        mb.flatMap(b => ma.flatMap(a => f(b, a) match {
-          case Some(b2) => More(() => loop(Const(b2), ma))
-          case None => Const(b)
-        }))
+        mb.flatMap(b =>
+          ma.flatMap(a =>
+            f(b, a) match {
+              case Some(b2) => More(() => loop(Const(b2), ma))
+              case None     => Const(b)
+            }))
       spawn(loop(Const(init), More(() => lhs.op)))
     }
   }
@@ -121,7 +128,11 @@ trait RandomCompanion[G <: Generator] { self =>
     r1 and r2
   def tuple3[A, B, C](r1: R[A], r2: R[B], r3: R[C]): R[(A, B, C)] =
     for { a <- r1; b <- r2; c <- r3 } yield (a, b, c)
-  def tuple4[A, B, C, D](r1: R[A], r2: R[B], r3: R[C], r4: R[D]): R[(A, B, C, D)] =
+  def tuple4[A, B, C, D](
+      r1: R[A],
+      r2: R[B],
+      r3: R[C],
+      r4: R[D]): R[(A, B, C, D)] =
     for { a <- r1; b <- r2; c <- r3; d <- r4 } yield (a, b, c, d)
 }
 
@@ -164,7 +175,9 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
     size.random(companion).flatMap(listOfSize)
 
   def listOfSize(n: Int): Random[List[A], G] =
-    companion.RandomOps(this).foldLeftOfSize(n)(List.empty[A])((as, a) => a :: as)
+    companion
+      .RandomOps(this)
+      .foldLeftOfSize(n)(List.empty[A])((as, a) => a :: as)
 }
 
 class RandomCmwc5[+A](op: Op[A]) extends Random[A, rng.Cmwc5](op) {
@@ -181,11 +194,13 @@ object Size {
   def between(n1: Int, n2: Int): Size = Between(n1, n2)
 
   case class Exact(n: Int) extends Size {
-    def random[G <: Generator](r: RandomCompanion[G]): Random[Int, G] = r.spawn(Const(n))
+    def random[G <: Generator](r: RandomCompanion[G]): Random[Int, G] =
+      r.spawn(Const(n))
   }
 
   case class Between(n1: Int, n2: Int) extends Size {
-    def random[G <: Generator](r: RandomCompanion[G]): Random[Int, G] = r.int(n1, n2)
+    def random[G <: Generator](r: RandomCompanion[G]): Random[Int, G] =
+      r.int(n1, n2)
   }
 }
 

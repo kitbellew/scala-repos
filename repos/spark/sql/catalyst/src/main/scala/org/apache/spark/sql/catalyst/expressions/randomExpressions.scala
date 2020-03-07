@@ -20,26 +20,29 @@ package org.apache.spark.sql.catalyst.expressions
 import org.apache.spark.TaskContext
 import org.apache.spark.sql.AnalysisException
 import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.catalyst.expressions.codegen.{CodegenContext, ExprCode}
+import org.apache.spark.sql.catalyst.expressions.codegen.{
+  CodegenContext,
+  ExprCode
+}
 import org.apache.spark.sql.types.{DataType, DoubleType}
 import org.apache.spark.util.Utils
 import org.apache.spark.util.random.XORShiftRandom
 
 /**
- * A Random distribution generating expression.
- * TODO: This can be made generic to generate any type of random distribution, or any type of
- * StructType.
- *
- * Since this expression is stateful, it cannot be a case object.
- */
+  * A Random distribution generating expression.
+  * TODO: This can be made generic to generate any type of random distribution, or any type of
+  * StructType.
+  *
+  * Since this expression is stateful, it cannot be a case object.
+  */
 abstract class RDG extends LeafExpression with Nondeterministic {
 
   protected def seed: Long
 
   /**
-   * Record ID within each partition. By being transient, the Random Number Generator is
-   * reset every time we serialize and deserialize and initialize it.
-   */
+    * Record ID within each partition. By being transient, the Random Number Generator is
+    * reset every time we serialize and deserialize and initialize it.
+    */
   @transient protected var rng: XORShiftRandom = _
 
   override protected def initInternal(): Unit = {
@@ -56,19 +59,25 @@ abstract class RDG extends LeafExpression with Nondeterministic {
 
 /** Generate a random column with i.i.d. uniformly distributed values in [0, 1). */
 case class Rand(seed: Long) extends RDG {
-  override protected def evalInternal(input: InternalRow): Double = rng.nextDouble()
+  override protected def evalInternal(input: InternalRow): Double =
+    rng.nextDouble()
 
   def this() = this(Utils.random.nextLong())
 
-  def this(seed: Expression) = this(seed match {
-    case IntegerLiteral(s) => s
-    case _ => throw new AnalysisException("Input argument to rand must be an integer literal.")
-  })
+  def this(seed: Expression) =
+    this(seed match {
+      case IntegerLiteral(s) => s
+      case _ =>
+        throw new AnalysisException(
+          "Input argument to rand must be an integer literal.")
+    })
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val rngTerm = ctx.freshName("rng")
     val className = classOf[XORShiftRandom].getName
-    ctx.addMutableState(className, rngTerm,
+    ctx.addMutableState(
+      className,
+      rngTerm,
       s"$rngTerm = new $className(${seed}L + org.apache.spark.TaskContext.getPartitionId());")
     ev.isNull = "false"
     s"""
@@ -79,19 +88,25 @@ case class Rand(seed: Long) extends RDG {
 
 /** Generate a random column with i.i.d. gaussian random distribution. */
 case class Randn(seed: Long) extends RDG {
-  override protected def evalInternal(input: InternalRow): Double = rng.nextGaussian()
+  override protected def evalInternal(input: InternalRow): Double =
+    rng.nextGaussian()
 
   def this() = this(Utils.random.nextLong())
 
-  def this(seed: Expression) = this(seed match {
-    case IntegerLiteral(s) => s
-    case _ => throw new AnalysisException("Input argument to randn must be an integer literal.")
-  })
+  def this(seed: Expression) =
+    this(seed match {
+      case IntegerLiteral(s) => s
+      case _ =>
+        throw new AnalysisException(
+          "Input argument to randn must be an integer literal.")
+    })
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val rngTerm = ctx.freshName("rng")
     val className = classOf[XORShiftRandom].getName
-    ctx.addMutableState(className, rngTerm,
+    ctx.addMutableState(
+      className,
+      rngTerm,
       s"$rngTerm = new $className(${seed}L + org.apache.spark.TaskContext.getPartitionId());")
     ev.isNull = "false"
     s"""

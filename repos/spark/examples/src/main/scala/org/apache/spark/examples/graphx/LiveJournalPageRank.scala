@@ -19,9 +19,9 @@
 package org.apache.spark.examples.graphx
 
 /**
- * Uses GraphX to run PageRank on a LiveJournal social network graph. Download the dataset from
- * http://snap.stanford.edu/data/soc-LiveJournal1.html.
- */
+  * Uses GraphX to run PageRank on a LiveJournal social network graph. Download the dataset from
+  * http://snap.stanford.edu/data/soc-LiveJournal1.html.
+  */
 object LiveJournalPageRank {
   def main(args: Array[String]) {
     if (args.length < 1) {

@@ -22,9 +22,8 @@ final class Env(
   private val analysisColl = db(config getString "collection.analysis")
   private val clientColl = db(config getString "collection.client")
 
-  private val repo = new FishnetRepo(
-    analysisColl = analysisColl,
-    clientColl = clientColl)
+  private val repo =
+    new FishnetRepo(analysisColl = analysisColl, clientColl = clientColl)
 
   private val moveDb = new MoveDB
 
@@ -46,9 +45,7 @@ final class Env(
     saveAnalysis = saveAnalysis,
     offlineMode = OfflineMode)(system)
 
-  val player = new Player(
-    moveDb = moveDb,
-    uciMemo = uciMemo)
+  val player = new Player(moveDb = moveDb, uciMemo = uciMemo)
 
   val analyser = new Analyser(
     repo = repo,
@@ -65,18 +62,20 @@ final class Env(
     monitor = monitor,
     scheduler = scheduler)
 
-  new MainWatcher(
-    repo = repo,
-    bus = bus,
-    scheduler = scheduler)
+  new MainWatcher(repo = repo, bus = bus, scheduler = scheduler)
 
   // api actor
-  system.actorOf(Props(new Actor {
-    def receive = {
-      case lila.hub.actorApi.fishnet.AutoAnalyse(gameId) =>
-        analyser(gameId, Work.Sender(userId = none, ip = none, mod = false, system = true))
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      def receive = {
+        case lila.hub.actorApi.fishnet.AutoAnalyse(gameId) =>
+          analyser(
+            gameId,
+            Work.Sender(userId = none, ip = none, mod = false, system = true))
+      }
+    }),
+    name = ActorName
+  )
 
   def cli = new lila.common.Cli {
     def process = {

@@ -24,26 +24,40 @@ object Dependencies {
   lazy val utilLogic = "org.scala-sbt" %% "util-logic" % utilVersion
   lazy val utilTracking = "org.scala-sbt" %% "util-tracking" % utilVersion
   lazy val utilScripted = "org.scala-sbt" %% "util-scripted" % utilVersion
-  lazy val libraryManagement = "org.scala-sbt" %% "librarymanagement" % librarymanagementVersion
-  lazy val launcherInterface = "org.scala-sbt" % "launcher-interface" % "1.0.0-M1"
+  lazy val libraryManagement =
+    "org.scala-sbt" %% "librarymanagement" % librarymanagementVersion
+  lazy val launcherInterface =
+    "org.scala-sbt" % "launcher-interface" % "1.0.0-M1"
   lazy val rawLauncher = "org.scala-sbt" % "launcher" % "1.0.0-M1"
   lazy val testInterface = "org.scala-sbt" % "test-interface" % "1.0"
 
-  lazy val incrementalcompiler = "org.scala-sbt" %% "incrementalcompiler" % incrementalcompilerVersion
-  lazy val incrementalcompilerCompile = "org.scala-sbt" %% "incrementalcompiler-compile" % incrementalcompilerVersion
-  lazy val compilerInterface = "org.scala-sbt" % "compiler-interface" % incrementalcompilerVersion
-  lazy val compilerBrdige = "org.scala-sbt" %% "compiler-bridge" % incrementalcompilerVersion
-  lazy val compilerClasspath = "org.scala-sbt" %% "incrementalcompiler-classpath" % incrementalcompilerVersion
-  lazy val compilerApiInfo = "org.scala-sbt" %% "incrementalcompiler-apiinfo" % incrementalcompilerVersion
-  lazy val compilerIvyIntegration = "org.scala-sbt" %% "incrementalcompiler-ivy-integration" % incrementalcompilerVersion
+  lazy val incrementalcompiler =
+    "org.scala-sbt" %% "incrementalcompiler" % incrementalcompilerVersion
+  lazy val incrementalcompilerCompile =
+    "org.scala-sbt" %% "incrementalcompiler-compile" % incrementalcompilerVersion
+  lazy val compilerInterface =
+    "org.scala-sbt" % "compiler-interface" % incrementalcompilerVersion
+  lazy val compilerBrdige =
+    "org.scala-sbt" %% "compiler-bridge" % incrementalcompilerVersion
+  lazy val compilerClasspath =
+    "org.scala-sbt" %% "incrementalcompiler-classpath" % incrementalcompilerVersion
+  lazy val compilerApiInfo =
+    "org.scala-sbt" %% "incrementalcompiler-apiinfo" % incrementalcompilerVersion
+  lazy val compilerIvyIntegration =
+    "org.scala-sbt" %% "incrementalcompiler-ivy-integration" % incrementalcompilerVersion
 
   lazy val jline = "jline" % "jline" % "2.13"
-  lazy val ivy = "org.scala-sbt.ivy" % "ivy" % "2.3.0-sbt-2cc8d2761242b072cedb0a04cb39435c4fa24f9a"
+  lazy val ivy =
+    "org.scala-sbt.ivy" % "ivy" % "2.3.0-sbt-2cc8d2761242b072cedb0a04cb39435c4fa24f9a"
   lazy val jsch = "com.jcraft" % "jsch" % "0.1.46" intransitive ()
   lazy val sbinary = "org.scala-tools.sbinary" %% "sbinary" % "0.4.2"
   lazy val sbtSerialization = "org.scala-sbt" %% "serialization" % "0.1.2"
-  lazy val scalaCompiler = Def.setting { "org.scala-lang" % "scala-compiler" % scalaVersion.value }
-  lazy val scalaReflect = Def.setting { "org.scala-lang" % "scala-reflect" % scalaVersion.value }
+  lazy val scalaCompiler = Def.setting {
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value
+  }
+  lazy val scalaReflect = Def.setting {
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value
+  }
   lazy val scalaCheck = "org.scalacheck" %% "scalacheck" % "1.11.4"
   lazy val specs2 = "org.specs2" %% "specs2" % "2.3.11"
   lazy val junit = "junit" % "junit" % "4.11"
@@ -52,7 +66,7 @@ object Dependencies {
     Def.setting {
       scalaVersion.value match {
         case sv if (sv startsWith "2.9.") || (sv startsWith "2.10.") => Nil
-        case _ => ("org.scala-lang.modules" %% name % moduleVersion) :: Nil
+        case _                                                       => ("org.scala-lang.modules" %% name % moduleVersion) :: Nil
       }
     }
   lazy val scalaXml = scala211Module("scala-xml", "1.0.1")
@@ -68,11 +82,17 @@ object Dependencies {
   val aether = "org.eclipse.aether" % "aether" % aetherVersion
   val aetherImpl = "org.eclipse.aether" % "aether-impl" % aetherVersion
   val aetherUtil = "org.eclipse.aether" % "aether-util" % aetherVersion
-  val aetherTransportFile = "org.eclipse.aether" % "aether-transport-file" % aetherVersion
-  val aetherTransportWagon = "org.eclipse.aether" % "aether-transport-wagon" % aetherVersion
-  val aetherTransportHttp = "org.eclipse.aether" % "aether-transport-http" % aetherVersion
-  val aetherConnectorBasic = "org.eclipse.aether" % "aether-connector-basic" % aetherVersion
-  val sisuPlexus = ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1").exclude("javax.enterprise", "cdi-api").exclude("com.google.code.findbugs", "jsr305")
+  val aetherTransportFile =
+    "org.eclipse.aether" % "aether-transport-file" % aetherVersion
+  val aetherTransportWagon =
+    "org.eclipse.aether" % "aether-transport-wagon" % aetherVersion
+  val aetherTransportHttp =
+    "org.eclipse.aether" % "aether-transport-http" % aetherVersion
+  val aetherConnectorBasic =
+    "org.eclipse.aether" % "aether-connector-basic" % aetherVersion
+  val sisuPlexus = ("org.eclipse.sisu" % "org.eclipse.sisu.plexus" % "0.3.0.M1")
+    .exclude("javax.enterprise", "cdi-api")
+    .exclude("com.google.code.findbugs", "jsr305")
   val guice = "com.google.inject" % "guice" % "3.0"
   val guava = "com.google.guava" % "guava" % "18.0"
   val javaxInject = "javax.inject" % "javax.inject" % "1"
@@ -84,7 +104,7 @@ object Dependencies {
   val mvnWagonProviderApi = "org.apache.maven.wagon" % "wagon-provider-api" % mvnWagonVersion
   val mvnWagonLwHttp = "org.apache.maven.wagon" % "wagon-http-lightweight" % mvnWagonVersion
   val mvnWagonFile = "org.apache.maven.wagon" % "wagon-file" % mvnWagonVersion
-  */
+   */
   def aetherLibs =
     Seq(
       guava,

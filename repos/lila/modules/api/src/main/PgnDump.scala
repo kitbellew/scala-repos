@@ -1,10 +1,10 @@
 package lila.api
 
-import chess.format.pgn.{ Pgn, Parser }
+import chess.format.pgn.{Pgn, Parser}
 import lila.db.api.$query
 import lila.db.Implicits._
 import lila.game.Game
-import lila.game.{ GameRepo, Query }
+import lila.game.{GameRepo, Query}
 import play.api.libs.iteratee._
 
 final class PgnDump(
@@ -14,9 +14,12 @@ final class PgnDump(
 
   def apply(game: Game, initialFen: Option[String]): Pgn = {
     val pgn = dumper(game, initialFen)
-    game.tournamentId.flatMap(tournamentName).orElse {
-      game.simulId.flatMap(simulName)
-    }.fold(pgn)(pgn.withEvent)
+    game.tournamentId
+      .flatMap(tournamentName)
+      .orElse {
+        game.simulId.flatMap(simulName)
+      }
+      .fold(pgn)(pgn.withEvent)
   }
 
   def filename(game: Game) = dumper filename game
@@ -33,7 +36,8 @@ final class PgnDump(
     pimpQB($query byIds ids).sort(Query.sortCreated).cursor[Game]()
   }
 
-  private def PgnStream(cursor: reactivemongo.api.Cursor[Game]): Enumerator[String] = {
+  private def PgnStream(
+      cursor: reactivemongo.api.Cursor[Game]): Enumerator[String] = {
     val toPgn = Enumeratee.mapM[Game].apply[String] { game =>
       GameRepo initialFen game map { initialFen =>
         apply(game, initialFen).toString + "\n\n\n"

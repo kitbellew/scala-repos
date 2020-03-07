@@ -22,34 +22,35 @@ import scala.reflect._
 import org.apache.spark.util.collection.OpenHashSet
 
 /**
- * A fast hash map implementation for primitive, non-null keys. This hash map supports
- * insertions and updates, but not deletions. This map is about an order of magnitude
- * faster than java.util.HashMap, while using much less space overhead.
- *
- * Under the hood, it uses our OpenHashSet implementation.
- */
-private[graphx]
-class GraphXPrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag,
-                              @specialized(Long, Int, Double) V: ClassTag](
-    val keySet: OpenHashSet[K], var _values: Array[V])
-  extends Iterable[(K, V)]
-  with Serializable {
+  * A fast hash map implementation for primitive, non-null keys. This hash map supports
+  * insertions and updates, but not deletions. This map is about an order of magnitude
+  * faster than java.util.HashMap, while using much less space overhead.
+  *
+  * Under the hood, it uses our OpenHashSet implementation.
+  */
+private[graphx] class GraphXPrimitiveKeyOpenHashMap[
+    @specialized(Long, Int) K: ClassTag,
+    @specialized(Long, Int, Double) V: ClassTag](
+    val keySet: OpenHashSet[K],
+    var _values: Array[V])
+    extends Iterable[(K, V)]
+    with Serializable {
 
   /**
-   * Allocate an OpenHashMap with a fixed initial capacity
-   */
+    * Allocate an OpenHashMap with a fixed initial capacity
+    */
   def this(initialCapacity: Int) =
     this(new OpenHashSet[K](initialCapacity), new Array[V](initialCapacity))
 
   /**
-   * Allocate an OpenHashMap with a default initial capacity, providing a true
-   * no-argument constructor.
-   */
+    * Allocate an OpenHashMap with a default initial capacity, providing a true
+    * no-argument constructor.
+    */
   def this() = this(64)
 
   /**
-   * Allocate an OpenHashMap with a fixed initial capacity
-   */
+    * Allocate an OpenHashMap with a fixed initial capacity
+    */
   def this(keySet: OpenHashSet[K]) = this(keySet, new Array[V](keySet.capacity))
 
   require(classTag[K] == classTag[Long] || classTag[K] == classTag[Int])
@@ -78,7 +79,6 @@ class GraphXPrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag,
     _oldValues = null
   }
 
-
   /** Set the value for a key */
   def setMerge(k: K, v: V, mergeF: (V, V) => V) {
     val pos = keySet.addWithoutResize(k)
@@ -92,13 +92,12 @@ class GraphXPrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag,
     _oldValues = null
   }
 
-
   /**
-   * If the key doesn't exist yet in the hash map, set its value to defaultValue; otherwise,
-   * set its value to mergeValue(oldValue).
-   *
-   * @return the newly updated value.
-   */
+    * If the key doesn't exist yet in the hash map, set its value to defaultValue; otherwise,
+    * set its value to mergeValue(oldValue).
+    *
+    * @return the newly updated value.
+    */
   def changeValue(k: K, defaultValue: => V, mergeValue: (V) => V): V = {
     val pos = keySet.addWithoutResize(k)
     if ((pos & OpenHashSet.NONEXISTENCE_MASK) != 0) {

@@ -18,6 +18,7 @@
 package org.apache.spark.util
 
 private[spark] object SparkExitCode {
+
   /** The default uncaught exception handler was reached. */
   val UNCAUGHT_EXCEPTION = 50
 

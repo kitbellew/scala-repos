@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 //#imports
 
-import akka.{ Done, NotUsed }
+import akka.{Done, NotUsed}
 import akka.actor.ActorSystem
-import akka.stream.{ ClosedShape, ActorMaterializer, OverflowStrategy }
+import akka.stream.{ClosedShape, ActorMaterializer, OverflowStrategy}
 import akka.stream.scaladsl._
 
 import scala.concurrent.Await
@@ -25,7 +25,10 @@ object TwitterStreamQuickstartDocSpec {
 
   final case class Tweet(author: Author, timestamp: Long, body: String) {
     def hashtags: Set[Hashtag] =
-      body.split(" ").collect { case t if t.startsWith("#") => Hashtag(t) }.toSet
+      body
+        .split(" ")
+        .collect { case t if t.startsWith("#") => Hashtag(t) }
+        .toSet
   }
 
   val akka = Hashtag("#akka")
@@ -36,12 +39,18 @@ object TwitterStreamQuickstartDocSpec {
       Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
       Tweet(Author("bantonsson"), System.currentTimeMillis, "#akka !") ::
       Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") ::
-      Tweet(Author("ktosopl"), System.currentTimeMillis, "#akka on the rocks!") ::
+      Tweet(
+        Author("ktosopl"),
+        System.currentTimeMillis,
+        "#akka on the rocks!") ::
       Tweet(Author("mmartynas"), System.currentTimeMillis, "wow #akka !") ::
       Tweet(Author("akkateam"), System.currentTimeMillis, "#akka rocks!") ::
       Tweet(Author("bananaman"), System.currentTimeMillis, "#bananas rock!") ::
       Tweet(Author("appleman"), System.currentTimeMillis, "#apples rock!") ::
-      Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
+      Tweet(
+        Author("drama"),
+        System.currentTimeMillis,
+        "we compared #apples to #oranges!") ::
       Nil)
 }
 
@@ -155,7 +164,9 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
       val completion: Future[Done] =
         Source(1 to 10)
           .map(i => { println(s"map => $i"); i })
-          .runForeach { i => readLine(s"Element = $i; continue reading? [press enter]\n") }
+          .runForeach { i =>
+            readLine(s"Element = $i; continue reading? [press enter]\n")
+          }
 
       Await.ready(completion, 1.minute)
       //#backpressure-by-readline
@@ -186,7 +197,8 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
   }
 
   "materialize multiple times" in {
-    val tweetsInMinuteFromNow = tweets // not really in second, just acting as if
+    val tweetsInMinuteFromNow =
+      tweets // not really in second, just acting as if
 
     //#tweets-runnable-flow-materialized-twice
     val sumSink = Sink.fold[Int, Int](0)(_ + _)

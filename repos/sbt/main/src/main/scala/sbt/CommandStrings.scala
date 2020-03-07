@@ -6,6 +6,7 @@ package sbt
 import sbt.io.Path
 
 object CommandStrings {
+
   /** The prefix used to identify a request to execute the remaining input on source changes.*/
   val AboutCommand = "about"
   val TasksCommand = "tasks"
@@ -17,7 +18,9 @@ object CommandStrings {
   val BootCommand = "boot"
 
   val EvalCommand = "eval"
-  val evalBrief = (EvalCommand + " <expression>", "Evaluates a Scala expression and prints the result and type.")
+  val evalBrief = (
+    EvalCommand + " <expression>",
+    "Evaluates a Scala expression and prints the result and type.")
   val evalDetailed =
     EvalCommand + """ <expression>
 
@@ -30,7 +33,8 @@ object CommandStrings {
 
   def actHelp = showHelp ++ multiTaskHelp
 
-  def multiTaskHelp = Help(MultiTaskCommand, (multiTaskSyntax, multiTaskBrief), multiTaskDetailed)
+  def multiTaskHelp =
+    Help(MultiTaskCommand, (multiTaskSyntax, multiTaskBrief), multiTaskDetailed)
   def multiTaskDetailed =
     s"""$multiTaskSyntax
 
@@ -38,8 +42,10 @@ object CommandStrings {
   def multiTaskSyntax = s"""$MultiTaskCommand <task>+"""
   def multiTaskBrief = """Executes all of the specified tasks concurrently."""
 
-  def showHelp = Help(ShowCommand, (s"$ShowCommand <key>", showBrief), showDetailed)
-  def showBrief = "Displays the result of evaluating the setting or task associated with 'key'."
+  def showHelp =
+    Help(ShowCommand, (s"$ShowCommand <key>", showBrief), showDetailed)
+  def showBrief =
+    "Displays the result of evaluating the setting or task associated with 'key'."
   def showDetailed =
     s"""$ShowCommand <setting>
 
@@ -59,7 +65,9 @@ $ShowCommand <task>
   val ExportCommand = "export"
   val ExportStream = "export"
 
-  val lastGrepBrief = (LastGrepCommand, "Shows lines from the last output for 'key' that match 'pattern'.")
+  val lastGrepBrief = (
+    LastGrepCommand,
+    "Shows lines from the last output for 'key' that match 'pattern'.")
   val lastGrepDetailed =
     LastGrepCommand + """ <pattern>
 	Displays lines from the logging of previous commands that match `pattern`.
@@ -70,7 +78,9 @@ $ShowCommand <task>
 	<pattern> is a regular expression interpreted by java.util.Pattern.  Matching text is highlighted (when highlighting is supported and enabled).
 	See also '""" + LastCommand + "'."
 
-  val lastBrief = (LastCommand, "Displays output from a previous command or the output from a specific task.")
+  val lastBrief = (
+    LastCommand,
+    "Displays output from a previous command or the output from a specific task.")
   val lastDetailed =
     LastCommand + """
 	Prints the logging for the previous command, typically at a more verbose level.
@@ -80,7 +90,9 @@ $ShowCommand <task>
 
 	See also '""" + LastGrepCommand + "'."
 
-  val exportBrief = (ExportCommand + " <tasks>+", "Executes tasks and displays the equivalent command lines.")
+  val exportBrief = (
+    ExportCommand + " <tasks>+",
+    "Executes tasks and displays the equivalent command lines.")
   val exportDetailed =
     s"""$ExportCommand [--last] <task>+
 	Runs the specified tasks and prints the equivalent command lines or other exportable information for those runs.
@@ -96,7 +108,9 @@ $ShowCommand <task>
 """
 
   val InspectCommand = "inspect"
-  val inspectBrief = (InspectCommand + " [uses|tree|definitions] <key>", "Prints the value for 'key', the defining scope, delegates, related definitions, and dependencies.")
+  val inspectBrief = (
+    InspectCommand + " [uses|tree|definitions] <key>",
+    "Prints the value for 'key', the defining scope, delegates, related definitions, and dependencies.")
   val inspectDetailed = s"""
     |$InspectCommand <key>
     |
@@ -135,7 +149,9 @@ $ShowCommand <task>
   """.stripMargin.trim
 
   val SetCommand = "set"
-  val setBrief = (s"$SetCommand [every] <setting>", "Evaluates a Setting and applies it to the current project.")
+  val setBrief = (
+    s"$SetCommand [every] <setting>",
+    "Evaluates a Setting and applies it to the current project.")
   val setDetailed =
     SetCommand + """ [every] <setting-expression>
 
@@ -154,17 +170,25 @@ $ShowCommand <task>
 """
 
   def SessionCommand = "session"
-  def sessionBrief = (SessionCommand, "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
+  def sessionBrief =
+    (
+      SessionCommand,
+      "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
 
   def settingsPreamble = commonPreamble("settings")
-  def tasksPreamble = commonPreamble("tasks") + """
+  def tasksPreamble =
+    commonPreamble(
+      "tasks") + """
 Tasks produce values.  Use the 'show' command to run the task and print the resulting value."""
 
-  def commonPreamble(label: String) = """
+  def commonPreamble(label: String) =
+    """
 This is a list of %s defined for the current project.
-It does not list the scopes the %<s are defined in; use the 'inspect' command for that.""".format(label)
+It does not list the scopes the %<s are defined in; use the 'inspect' command for that."""
+      .format(label)
 
-  def settingsBrief(label: String) = (label, "Lists the " + label + " defined for the current project.")
+  def settingsBrief(label: String) =
+    (label, "Lists the " + label + " defined for the current project.")
   def settingsDetailed(label: String) =
     """
 Syntax summary
@@ -184,12 +208,19 @@ Syntax summary
 """.format(label, BasicCommandStrings.HelpCommand)
 
   def moreAvailableMessage(label: String, search: Boolean) =
-    "More %s may be %s by increasing verbosity.  See '%s %s'.\n".format(label, if (search) "searched" else "viewed", BasicCommandStrings.HelpCommand, label)
+    "More %s may be %s by increasing verbosity.  See '%s %s'.\n".format(
+      label,
+      if (search) "searched" else "viewed",
+      BasicCommandStrings.HelpCommand,
+      label)
 
   def aboutBrief = "Displays basic information about sbt and the build."
   def aboutDetailed = aboutBrief
 
-  def projectBrief = (ProjectCommand, "Displays the current project or changes to the provided `project`.")
+  def projectBrief =
+    (
+      ProjectCommand,
+      "Displays the current project or changes to the provided `project`.")
   def projectDetailed =
     ProjectCommand +
       """
@@ -223,7 +254,8 @@ Syntax summary
 	Use n+1 dots to change to the nth parent.
 	For example, 'project ....' is equivalent to three consecutive 'project ..' commands."""
 
-  def projectsBrief = "Lists the names of available projects or temporarily adds/removes extra builds to the session."
+  def projectsBrief =
+    "Lists the names of available projects or temporarily adds/removes extra builds to the session."
   def projectsDetailed =
     ProjectsCommand + """
 	List the names of available builds and the projects defined in those builds.
@@ -253,9 +285,13 @@ Syntax summary
 
   def LoadProjectImpl = "loadp"
   def LoadProject = "reload"
-  def LoadProjectBrief = (LoadProject, "(Re)loads the current project or changes to plugins project or returns from it.")
-  def LoadProjectDetailed = LoadProject +
-    s"""
+  def LoadProjectBrief =
+    (
+      LoadProject,
+      "(Re)loads the current project or changes to plugins project or returns from it.")
+  def LoadProjectDetailed =
+    LoadProject +
+      s"""
 
 \t(Re)loads the project in the current directory.
 

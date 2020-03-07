@@ -18,7 +18,11 @@ import scala.reflect.macros.whitebox
   * Author: Svyatoslav Ilinskiy
   * Date: 9/18/15.
   */
-class Cached(synchronized: Boolean, modificationCount: ModCount, psiElement: Any) extends StaticAnnotation {
+class Cached(
+    synchronized: Boolean,
+    modificationCount: ModCount,
+    psiElement: Any)
+    extends StaticAnnotation {
   def macroTransform(annottees: Any*) = macro Cached.cachedImpl
 }
 
@@ -32,17 +36,18 @@ object Cached {
 
     def parameters: (Boolean, ModCount.Value, Tree) = {
       @tailrec
-      def modCountParam(modCount: c.universe.Tree): ModCount.Value = modCount match {
-        case q"modificationCount = $v" => modCountParam(v)
-        case q"ModCount.$v" => ModCount.withName(v.toString)
-        case q"$v" => ModCount.withName(v.toString)
-      }
+      def modCountParam(modCount: c.universe.Tree): ModCount.Value =
+        modCount match {
+          case q"modificationCount = $v" => modCountParam(v)
+          case q"ModCount.$v"            => ModCount.withName(v.toString)
+          case q"$v"                     => ModCount.withName(v.toString)
+        }
 
       c.prefix.tree match {
         case q"new Cached(..$params)" if params.length == 3 =>
           val synch: Boolean = params.head match {
             case q"synchronized = $v" => c.eval[Boolean](c.Expr(v))
-            case q"$v" => c.eval[Boolean](c.Expr(v))
+            case q"$v"                => c.eval[Boolean](c.Expr(v))
           }
           val modCount: ModCount.Value = modCountParam(params(1))
           val psiElement = params(2)
@@ -75,12 +80,14 @@ object Cached {
         val hasParameters: Boolean = flatParams.nonEmpty
 
         val analyzeCachesField =
-          if(analyzeCaches) q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
+          if (analyzeCaches)
+            q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
           else EmptyTree
         val fields = if (hasParameters) {
           q"""
             private val $mapName = _root_.com.intellij.util.containers.ContainerUtil.
-                newConcurrentMap[(..${flatParams.map(_.tpt)}), ($retTp, _root_.scala.Long)]()
+                newConcurrentMap[(..${flatParams
+            .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
 
             ..$analyzeCachesField
           """
@@ -101,7 +108,8 @@ object Cached {
               case _ => (_root_.scala.None, 0L)
             }
           """
-        def putValuesIntoMap: c.universe.Tree = q"$mapName.put((..$paramNames), ($cacheVarName.get, $modCountVarName))"
+        def putValuesIntoMap: c.universe.Tree =
+          q"$mapName.put((..$paramNames), ($cacheVarName.get, $modCountVarName))"
 
         val getValuesIfHasParams =
           if (hasParameters) {
@@ -137,7 +145,8 @@ object Cached {
             """
           }
 
-        val actualCalculation = transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
+        val actualCalculation =
+          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
 
         val currModCount = modCount match {
           case ModCount.getBlockModificationCount =>
@@ -154,10 +163,12 @@ object Cached {
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
           ..$currModCount
           def cacheHasExpired(opt: Option[Any], cacheCount: Long) = opt.isEmpty || currModCount != cacheCount
-          ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()" else EmptyTree}
+          ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
+        else EmptyTree}
           $functionContentsInSynchronizedBlock
         """
-        val updatedDef = DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef =
+          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
         val res = q"""
           ..$fields
           $updatedDef

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl.fusing
 
 import akka.stream.impl.ConstantFun
@@ -21,7 +21,8 @@ class InterpreterStressSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
   "Interpreter" must {
 
-    "work with a massive chain of maps" in new OneBoundedSetup[Int](Vector.fill(chainLength)(map): _*) {
+    "work with a massive chain of maps" in new OneBoundedSetup[Int](
+      Vector.fill(chainLength)(map): _*) {
       lastEvents() should be(Set.empty)
       val tstamp = System.nanoTime()
 
@@ -40,10 +41,12 @@ class InterpreterStressSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
       val time = (System.nanoTime() - tstamp) / (1000.0 * 1000.0 * 1000.0)
       // Not a real benchmark, just for sanity check
-      info(s"Chain finished in $time seconds ${(chainLength * repetition) / (time * 1000 * 1000)} million maps/s")
+      info(
+        s"Chain finished in $time seconds ${(chainLength * repetition) / (time * 1000 * 1000)} million maps/s")
     }
 
-    "work with a massive chain of maps with early complete" in new OneBoundedSetup[Int](
+    "work with a massive chain of maps with early complete" in new OneBoundedSetup[
+      Int](
       Vector.fill(halfLength)(map) ++
         Seq(Take(repetition / 2).toGS) ++
         Vector.fill(halfLength)(map): _*) {
@@ -69,10 +72,12 @@ class InterpreterStressSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
       val time = (System.nanoTime() - tstamp) / (1000.0 * 1000.0 * 1000.0)
       // Not a real benchmark, just for sanity check
-      info(s"Chain finished in $time seconds ${(chainLength * repetition) / (time * 1000 * 1000)} million maps/s")
+      info(
+        s"Chain finished in $time seconds ${(chainLength * repetition) / (time * 1000 * 1000)} million maps/s")
     }
 
-    "work with a massive chain of takes" in new OneBoundedSetup[Int](Vector.fill(chainLength / 10)(Take(1))) {
+    "work with a massive chain of takes" in new OneBoundedSetup[Int](
+      Vector.fill(chainLength / 10)(Take(1))) {
       lastEvents() should be(Set.empty)
 
       downstream.requestOne()
@@ -83,7 +88,8 @@ class InterpreterStressSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     }
 
-    "work with a massive chain of drops" in new OneBoundedSetup[Int](Vector.fill(chainLength / 1000)(dropOne): _*) {
+    "work with a massive chain of drops" in new OneBoundedSetup[Int](
+      Vector.fill(chainLength / 1000)(dropOne): _*) {
       lastEvents() should be(Set.empty)
 
       downstream.requestOne()

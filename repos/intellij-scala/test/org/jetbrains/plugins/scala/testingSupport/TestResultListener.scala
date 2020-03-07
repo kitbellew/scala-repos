@@ -8,7 +8,8 @@ import com.intellij.openapi.util.Key
   * @author Roman.Shein
   *         Date: 03.03.14
   */
-class TestResultListener(private val testConfigurationName: String) extends ProcessListener {
+class TestResultListener(private val testConfigurationName: String)
+    extends ProcessListener {
 
   def waitForTestEnd(duration: Int): String = {
     var i = 0
@@ -17,7 +18,10 @@ class TestResultListener(private val testConfigurationName: String) extends Proc
       i += 1
     }
 
-    assert(terminated, "test " + testConfigurationName + " did not terminate correctly; captured outputs:\n" + builder.toString())
+    assert(
+      terminated,
+      "test " + testConfigurationName + " did not terminate correctly; captured outputs:\n" + builder
+        .toString())
     builder.toString()
   }
 
@@ -25,7 +29,9 @@ class TestResultListener(private val testConfigurationName: String) extends Proc
 
   private var terminated = false
 
-  override def onTextAvailable(event: ProcessEvent, outputType: Key[_]): Unit = {
+  override def onTextAvailable(
+      event: ProcessEvent,
+      outputType: Key[_]): Unit = {
     val text = event.getText
     import TestResultListener._
     if (text.contains(testResultPrefix) && text.contains(testResultSuffix)) {
@@ -37,7 +43,9 @@ class TestResultListener(private val testConfigurationName: String) extends Proc
     }
   }
 
-  override def processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean): Unit = {
+  override def processWillTerminate(
+      event: ProcessEvent,
+      willBeDestroyed: Boolean): Unit = {
     //TODO: implement me
   }
 

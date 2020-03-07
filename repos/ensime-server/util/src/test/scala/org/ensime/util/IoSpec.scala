@@ -2,7 +2,7 @@
 // Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
 package org.ensime.util
 
-import Predef.{ any2stringadd => _ }
+import Predef.{any2stringadd => _}
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 

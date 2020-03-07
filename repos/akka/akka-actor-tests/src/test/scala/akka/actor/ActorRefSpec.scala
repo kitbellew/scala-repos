@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.actor
 
 import language.postfixOps
@@ -31,7 +30,7 @@ object ActorRefSpec {
       case "complexRequest2" ⇒
         val worker = context.actorOf(Props[WorkerActor])
         worker ! ReplyTo(sender())
-      case "workDone"      ⇒ replyTo ! "complexReply"
+      case "workDone" ⇒ replyTo ! "complexReply"
       case "simpleRequest" ⇒ sender() ! "simpleReply"
     }
   }
@@ -56,9 +55,9 @@ object ActorRefSpec {
   class SenderActor(replyActor: ActorRef, latch: TestLatch) extends Actor {
 
     def receive = {
-      case "complex"  ⇒ replyActor ! "complexRequest"
+      case "complex" ⇒ replyActor ! "complexRequest"
       case "complex2" ⇒ replyActor ! "complexRequest2"
-      case "simple"   ⇒ replyActor ! "simpleRequest"
+      case "simple" ⇒ replyActor ! "simpleRequest"
       case "complexReply" ⇒ {
         latch.countDown()
       }
@@ -71,7 +70,7 @@ object ActorRefSpec {
   class OuterActor(val inner: ActorRef) extends Actor {
     def receive = {
       case "self" ⇒ sender() ! self
-      case x      ⇒ inner forward x
+      case x ⇒ inner forward x
     }
   }
 
@@ -80,18 +79,19 @@ object ActorRefSpec {
 
     def receive = {
       case "self" ⇒ sender() ! self
-      case x      ⇒ inner forward x
+      case x ⇒ inner forward x
     }
   }
 
-  class FailingInheritingOuterActor(_inner: ActorRef) extends OuterActor(_inner) {
+  class FailingInheritingOuterActor(_inner: ActorRef)
+      extends OuterActor(_inner) {
     val fail = new InnerActor
   }
 
   class InnerActor extends Actor {
     def receive = {
       case "innerself" ⇒ sender() ! self
-      case other       ⇒ sender() ! other
+      case other ⇒ sender() ! other
     }
   }
 
@@ -100,7 +100,7 @@ object ActorRefSpec {
 
     def receive = {
       case "innerself" ⇒ sender() ! self
-      case other       ⇒ sender() ! other
+      case other ⇒ sender() ! other
     }
   }
 
@@ -113,15 +113,16 @@ object ActorRefSpec {
 class ActorRefSpec extends AkkaSpec with DefaultTimeout {
   import akka.actor.ActorRefSpec._
 
-  def promiseIntercept(f: ⇒ Actor)(to: Promise[Actor]): Actor = try {
-    val r = f
-    to.success(r)
-    r
-  } catch {
-    case e: Throwable ⇒
-      to.failure(e)
-      throw e
-  }
+  def promiseIntercept(f: ⇒ Actor)(to: Promise[Actor]): Actor =
+    try {
+      val r = f
+      to.success(r)
+      r
+    } catch {
+      case e: Throwable ⇒
+        to.failure(e)
+        throw e
+    }
 
   def wrap[T](f: Promise[Actor] ⇒ T): T = {
     val result = Promise[Actor]()
@@ -138,13 +139,16 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         new Actor { def receive = { case _ ⇒ } }
       }
 
-      def contextStackMustBeEmpty(): Unit = ActorCell.contextStack.get.headOption should ===(None)
+      def contextStackMustBeEmpty(): Unit =
+        ActorCell.contextStack.get.headOption should ===(None)
 
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
             actorOf(Props(new Actor {
-              val nested = promiseIntercept(new Actor { def receive = { case _ ⇒ } })(result)
+              val nested = promiseIntercept(new Actor {
+                def receive = { case _ ⇒ }
+              })(result)
               def receive = { case _ ⇒ }
             })))
         }
@@ -155,7 +159,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(promiseIntercept(new FailingOuterActor(actorOf(Props(new InnerActor))))(result))))
+            actorOf(Props(promiseIntercept(
+              new FailingOuterActor(actorOf(Props(new InnerActor))))(result))))
         }
 
         contextStackMustBeEmpty()
@@ -164,7 +169,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept(new FailingInnerActor)(result)))))))
+            actorOf(
+              Props(new OuterActor(actorOf(
+                Props(promiseIntercept(new FailingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -173,7 +180,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(promiseIntercept(new FailingInheritingOuterActor(actorOf(Props(new InnerActor))))(result))))
+            actorOf(
+              Props(promiseIntercept(new FailingInheritingOuterActor(
+                actorOf(Props(new InnerActor))))(result))))
         }
 
         contextStackMustBeEmpty()
@@ -182,7 +191,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new FailingOuterActor(actorOf(Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(
+              Props(new FailingOuterActor(actorOf(Props(
+                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -191,7 +202,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new FailingInheritingOuterActor(actorOf(Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(
+              Props(new FailingInheritingOuterActor(actorOf(Props(
+                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -200,7 +213,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new FailingInheritingOuterActor(actorOf(Props(promiseIntercept(new FailingInnerActor)(result)))))))
+            actorOf(
+              Props(new FailingInheritingOuterActor(actorOf(
+                Props(promiseIntercept(new FailingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -220,7 +235,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new FailingOuterActor(actorOf(Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(
+              Props(new FailingOuterActor(actorOf(Props(
+                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -229,7 +246,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(
+              Props(new OuterActor(actorOf(Props(
+                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -238,7 +257,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({ new InnerActor; new InnerActor })(result)))))))
+            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({
+              new InnerActor; new InnerActor
+            })(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -247,7 +268,10 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         (intercept[java.lang.IllegalStateException] {
           wrap(result ⇒
-            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({ throw new IllegalStateException("Ur state be b0rked"); new InnerActor })(result)))))))
+            actorOf(Props(new OuterActor(actorOf(Props(promiseIntercept({
+              throw new IllegalStateException("Ur state be b0rked");
+              new InnerActor
+            })(result)))))))
         }).getMessage should ===("Ur state be b0rked")
 
         contextStackMustBeEmpty()
@@ -302,8 +326,9 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
 
       (intercept[java.lang.IllegalStateException] {
         in.readObject
-      }).getMessage should ===("Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
-        " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
+      }).getMessage should ===(
+        "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
+          " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
     }
 
     "return EmptyLocalActorRef on deserialize if not present in actor hierarchy (and remoting is not enabled)" in {
@@ -327,14 +352,21 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       expectTerminated(ref)
 
       JavaSerializer.currentSystem.withValue(sysImpl) {
-        val in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
-        in.readObject should ===(new EmptyLocalActorRef(sysImpl.provider, ref.path, system.eventStream))
+        val in =
+          new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+        in.readObject should ===(
+          new EmptyLocalActorRef(
+            sysImpl.provider,
+            ref.path,
+            system.eventStream))
       }
     }
 
     "support nested actorOfs" in {
       val a = system.actorOf(Props(new Actor {
-        val nested = system.actorOf(Props(new Actor { def receive = { case _ ⇒ } }))
+        val nested = system.actorOf(Props(new Actor {
+          def receive = { case _ ⇒ }
+        }))
         def receive = { case _ ⇒ sender() ! nested }
       }))
 
@@ -345,7 +377,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "support advanced nested actorOfs" in {
-      val a = system.actorOf(Props(new OuterActor(system.actorOf(Props(new InnerActor)))))
+      val a = system.actorOf(
+        Props(new OuterActor(system.actorOf(Props(new InnerActor)))))
       val inner = Await.result(a ? "innerself", timeout.duration)
 
       Await.result(a ? a, timeout.duration) should ===(a)
@@ -414,14 +447,15 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         val boss = system.actorOf(Props(new Actor {
 
           override val supervisorStrategy =
-            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(classOf[Throwable]))
+            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(
+              List(classOf[Throwable]))
 
-          val ref = context.actorOf(
-            Props(new Actor {
-              def receive = { case _ ⇒ }
-              override def preRestart(reason: Throwable, msg: Option[Any]) = latch.countDown()
-              override def postRestart(reason: Throwable) = latch.countDown()
-            }))
+          val ref = context.actorOf(Props(new Actor {
+            def receive = { case _ ⇒ }
+            override def preRestart(reason: Throwable, msg: Option[Any]) =
+              latch.countDown()
+            override def postRestart(reason: Throwable) = latch.countDown()
+          }))
 
           def receive = { case "sendKill" ⇒ ref ! Kill }
         }))
@@ -432,15 +466,21 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "be able to check for existence of children" in {
-      val parent = system.actorOf(Props(new Actor {
+      val parent = system.actorOf(
+        Props(new Actor {
 
-        val child = context.actorOf(
-          Props(new Actor {
-            def receive = { case _ ⇒ }
-          }), "child")
+          val child = context.actorOf(
+            Props(new Actor {
+              def receive = { case _ ⇒ }
+            }),
+            "child")
 
-        def receive = { case name: String ⇒ sender() ! context.child(name).isDefined }
-      }), "parent")
+          def receive = {
+            case name: String ⇒ sender() ! context.child(name).isDefined
+          }
+        }),
+        "parent"
+      )
 
       assert(Await.result((parent ? "child"), timeout.duration) === true)
       assert(Await.result((parent ? "whatnot"), timeout.duration) === false)

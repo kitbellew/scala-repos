@@ -55,12 +55,16 @@ object FilesSpec extends Specification with After {
         writeFile(destination, "already exists")
 
         val to = TemporaryFile(file).moveTo(destination, replace = false)
-        new String(java.nio.file.Files.readAllBytes(to.toPath)) must contain("already exists")
+        new String(java.nio.file.Files.readAllBytes(to.toPath)) must contain(
+          "already exists")
       }
 
       "works when using compile time dependency injection" in {
         val context = ApplicationLoader.createContext(
-          new Environment(new java.io.File("."), ApplicationLoader.getClass.getClassLoader, Mode.Test))
+          new Environment(
+            new java.io.File("."),
+            ApplicationLoader.getClass.getClassLoader,
+            Mode.Test))
         val appLoader = new ApplicationLoader {
           def load(context: Context) = {
             (new BuiltInComponentsFromContext(context) {
@@ -70,13 +74,14 @@ object FilesSpec extends Specification with After {
         }
         val app = appLoader.load(context)
         Play.start(app)
-        val tempFile = try {
-          val tempFile = TemporaryFile()
-          tempFile.file.exists must beTrue
-          tempFile.file
-        } finally {
-          Play.stop(app)
-        }
+        val tempFile =
+          try {
+            val tempFile = TemporaryFile()
+            tempFile.file.exists must beTrue
+            tempFile.file
+          } finally {
+            Play.stop(app)
+          }
         tempFile.exists must beFalse
       }
 
@@ -90,7 +95,8 @@ object FilesSpec extends Specification with After {
       val file = new File(parentDirectory, "file.txt")
       writeFile(file, "file content")
 
-      retry(new String(PlayIO.readFile(file), utf8) must beEqualTo("file content"))
+      retry(
+        new String(PlayIO.readFile(file), utf8) must beEqualTo("file content"))
     }
 
     "read file content as a String" in {

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.analyzer
 
 sealed trait SymbolRequirement {
@@ -24,21 +23,26 @@ object SymbolRequirement {
     def accessModule(moduleName: String): SymbolRequirement =
       AccessModule(origin, moduleName)
 
-    def callOnModule(moduleName: String, methodName: String): SymbolRequirement =
+    def callOnModule(
+        moduleName: String,
+        methodName: String): SymbolRequirement =
       multiple(accessModule(moduleName), callMethod(moduleName, methodName))
 
-    def callOnModule(moduleName: String,
+    def callOnModule(
+        moduleName: String,
         methodName: Traversable[String]): SymbolRequirement = {
       val methodCalls = methodName.map(callMethod(moduleName, _)).toList
       multipleInternal(accessModule(moduleName) :: methodCalls)
     }
 
-    def instantiateClass(className: String,
+    def instantiateClass(
+        className: String,
         constructor: String): SymbolRequirement = {
       InstantiateClass(origin, className, constructor)
     }
 
-    def instantiateClass(className: String,
+    def instantiateClass(
+        className: String,
         constructors: Traversable[String]): SymbolRequirement = {
       multipleInternal(constructors.toList.map(instantiateClass(className, _)))
     }
@@ -52,15 +56,20 @@ object SymbolRequirement {
     def callMethod(className: String, methodName: String): SymbolRequirement =
       CallMethod(origin, className, methodName, statically = false)
 
-    def callMethods(className: String,
+    def callMethods(
+        className: String,
         methodNames: Traversable[String]): SymbolRequirement = {
       multipleInternal(methodNames.toList.map(callMethod(className, _)))
     }
 
-    def callMethodStatically(className: String, methodName: String): SymbolRequirement =
+    def callMethodStatically(
+        className: String,
+        methodName: String): SymbolRequirement =
       CallMethod(origin, className, methodName, statically = true)
 
-    def callStaticMethod(className: String, methodName: String): SymbolRequirement =
+    def callStaticMethod(
+        className: String,
+        methodName: String): SymbolRequirement =
       CallStaticMethod(origin, className, methodName)
 
     def optional(requirement: SymbolRequirement): SymbolRequirement = {
@@ -92,17 +101,32 @@ object SymbolRequirement {
   }
 
   private[analyzer] object Nodes {
-    case class AccessModule(origin: String, moduleName: String) extends SymbolRequirement
-    case class InstantiateClass(origin: String, className: String,
-        constructor: String) extends SymbolRequirement
-    case class InstanceTests(origin: String, className: String) extends SymbolRequirement
-    case class ClassData(origin: String, className: String) extends SymbolRequirement
-    case class CallMethod(origin: String, className: String, methodName: String,
-        statically: Boolean) extends SymbolRequirement
-    case class CallStaticMethod(origin: String, className: String,
-        methodName: String) extends SymbolRequirement
-    case class Optional(requirement: SymbolRequirement) extends SymbolRequirement
-    case class Multiple(requirements: List[SymbolRequirement]) extends SymbolRequirement
+    case class AccessModule(origin: String, moduleName: String)
+        extends SymbolRequirement
+    case class InstantiateClass(
+        origin: String,
+        className: String,
+        constructor: String)
+        extends SymbolRequirement
+    case class InstanceTests(origin: String, className: String)
+        extends SymbolRequirement
+    case class ClassData(origin: String, className: String)
+        extends SymbolRequirement
+    case class CallMethod(
+        origin: String,
+        className: String,
+        methodName: String,
+        statically: Boolean)
+        extends SymbolRequirement
+    case class CallStaticMethod(
+        origin: String,
+        className: String,
+        methodName: String)
+        extends SymbolRequirement
+    case class Optional(requirement: SymbolRequirement)
+        extends SymbolRequirement
+    case class Multiple(requirements: List[SymbolRequirement])
+        extends SymbolRequirement
     case object NoRequirement extends SymbolRequirement
   }
 }

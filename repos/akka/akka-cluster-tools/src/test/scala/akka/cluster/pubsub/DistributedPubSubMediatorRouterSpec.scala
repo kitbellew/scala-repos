@@ -1,9 +1,9 @@
 package akka.cluster.pubsub
 
 import akka.testkit._
-import akka.routing.{ ConsistentHashingRoutingLogic, RouterEnvelope }
+import akka.routing.{ConsistentHashingRoutingLogic, RouterEnvelope}
 import org.scalatest.WordSpecLike
-import akka.actor.{ ActorRef }
+import akka.actor.{ActorRef}
 import com.typesafe.config.ConfigFactory
 
 case class WrappedMessage(msg: String) extends RouterEnvelope {
@@ -22,7 +22,8 @@ object DistributedPubSubMediatorRouterSpec {
   """
 }
 
-trait DistributedPubSubMediatorRouterSpec { this: WordSpecLike with TestKit with ImplicitSender ⇒
+trait DistributedPubSubMediatorRouterSpec {
+  this: WordSpecLike with TestKit with ImplicitSender ⇒
   def nonUnwrappingPubSub(mediator: ActorRef, testActor: ActorRef, msg: Any) {
 
     val path = testActor.path.toStringWithoutAddress
@@ -41,7 +42,10 @@ trait DistributedPubSubMediatorRouterSpec { this: WordSpecLike with TestKit with
 
       mediator ! DistributedPubSubMediator.Put(testActor)
 
-      mediator ! DistributedPubSubMediator.Send(path, msg, localAffinity = false)
+      mediator ! DistributedPubSubMediator.Send(
+        path,
+        msg,
+        localAffinity = false)
       expectMsg(msg)
 
       mediator ! DistributedPubSubMediator.Remove(path)
@@ -63,7 +67,9 @@ trait DistributedPubSubMediatorRouterSpec { this: WordSpecLike with TestKit with
       expectMsgClass(classOf[DistributedPubSubMediator.SubscribeAck])
 
       mediator ! DistributedPubSubMediator.Publish("topic", msg)
-      expectMsg(msg) // Publish(... sendOneMessageToEachGroup = false) does not use provided RoutingLogic
+      expectMsg(
+        msg
+      ) // Publish(... sendOneMessageToEachGroup = false) does not use provided RoutingLogic
 
       mediator ! DistributedPubSubMediator.Unsubscribe("topic", testActor)
       expectMsgClass(classOf[DistributedPubSubMediator.UnsubscribeAck])
@@ -71,10 +77,16 @@ trait DistributedPubSubMediatorRouterSpec { this: WordSpecLike with TestKit with
 
     "keep the RouterEnvelope when sending to a topic for a group" in {
 
-      mediator ! DistributedPubSubMediator.Subscribe("topic", Some("group"), testActor)
+      mediator ! DistributedPubSubMediator.Subscribe(
+        "topic",
+        Some("group"),
+        testActor)
       expectMsgClass(classOf[DistributedPubSubMediator.SubscribeAck])
 
-      mediator ! DistributedPubSubMediator.Publish("topic", msg, sendOneMessageToEachGroup = true)
+      mediator ! DistributedPubSubMediator.Publish(
+        "topic",
+        msg,
+        sendOneMessageToEachGroup = true)
       expectMsg(msg)
 
       mediator ! DistributedPubSubMediator.Unsubscribe("topic", testActor)
@@ -84,8 +96,10 @@ trait DistributedPubSubMediatorRouterSpec { this: WordSpecLike with TestKit with
 }
 
 class DistributedPubSubMediatorWithRandomRouterSpec
-  extends AkkaSpec(DistributedPubSubMediatorRouterSpec.config("random"))
-  with DistributedPubSubMediatorRouterSpec with DefaultTimeout with ImplicitSender {
+    extends AkkaSpec(DistributedPubSubMediatorRouterSpec.config("random"))
+    with DistributedPubSubMediatorRouterSpec
+    with DefaultTimeout
+    with ImplicitSender {
 
   val mediator = DistributedPubSub(system).mediator
 
@@ -101,8 +115,11 @@ class DistributedPubSubMediatorWithRandomRouterSpec
 }
 
 class DistributedPubSubMediatorWithHashRouterSpec
-  extends AkkaSpec(DistributedPubSubMediatorRouterSpec.config("consistent-hashing"))
-  with DistributedPubSubMediatorRouterSpec with DefaultTimeout with ImplicitSender {
+    extends AkkaSpec(
+      DistributedPubSubMediatorRouterSpec.config("consistent-hashing"))
+    with DistributedPubSubMediatorRouterSpec
+    with DefaultTimeout
+    with ImplicitSender {
 
   "DistributedPubSubMediator with Consistent Hash router" must {
     "not be allowed" when {
@@ -113,9 +130,12 @@ class DistributedPubSubMediatorWithHashRouterSpec
       }
       "constructed by settings" in {
         intercept[IllegalArgumentException] {
-          val config = ConfigFactory.parseString(DistributedPubSubMediatorRouterSpec.config("random"))
-            .withFallback(system.settings.config).getConfig("akka.cluster.pub-sub")
-          DistributedPubSubSettings(config).withRoutingLogic(ConsistentHashingRoutingLogic(system))
+          val config = ConfigFactory
+            .parseString(DistributedPubSubMediatorRouterSpec.config("random"))
+            .withFallback(system.settings.config)
+            .getConfig("akka.cluster.pub-sub")
+          DistributedPubSubSettings(config).withRoutingLogic(
+            ConsistentHashingRoutingLogic(system))
         }
       }
     }

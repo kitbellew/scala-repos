@@ -15,10 +15,14 @@ import scala.concurrent.Future
 /**
   * Notify the launch queue of this update.
   */
-class NotifyLaunchQueueStepImpl @Inject() (launchQueue: LaunchQueue) extends TaskStatusUpdateStep {
+class NotifyLaunchQueueStepImpl @Inject() (launchQueue: LaunchQueue)
+    extends TaskStatusUpdateStep {
   override def name: String = "notifyLaunchQueue"
 
-  override def processUpdate(timestamp: Timestamp, task: Task, status: TaskStatus): Future[_] = {
+  override def processUpdate(
+      timestamp: Timestamp,
+      task: Task,
+      status: TaskStatus): Future[_] = {
     val taskId = Task.Id(status.getTaskId)
     val update = TaskStatusUpdate(timestamp, taskId, MarathonTaskStatus(status))
     launchQueue.notifyOfTaskUpdate(update)

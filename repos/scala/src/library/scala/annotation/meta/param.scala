@@ -8,6 +8,6 @@
 package scala.annotation.meta
 
 /**
- * Consult the documentation in package [[scala.annotation.meta]].
- */
+  * Consult the documentation in package [[scala.annotation.meta]].
+  */
 final class param extends scala.annotation.StaticAnnotation

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.testkit.metrics
 
 import com.codahale.metrics._
@@ -18,7 +18,8 @@ private[akka] trait MemoryUsageSnapshotting extends MetricsPrefix {
       metrics.get(key("heap-used")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("heap-max")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("heap-committed")).asInstanceOf[Gauge[Long]].getValue,
-      metrics.get(key("heap-usage")).asInstanceOf[RatioGauge].getValue)
+      metrics.get(key("heap-usage")).asInstanceOf[RatioGauge].getValue
+    )
   }
 
   def getTotalSnapshot = {
@@ -27,7 +28,8 @@ private[akka] trait MemoryUsageSnapshotting extends MetricsPrefix {
       metrics.get(key("total-init")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("total-used")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("total-max")).asInstanceOf[Gauge[Long]].getValue,
-      metrics.get(key("total-committed")).asInstanceOf[Gauge[Long]].getValue)
+      metrics.get(key("total-committed")).asInstanceOf[Gauge[Long]].getValue
+    )
   }
 
   def getNonHeapSnapshot = {
@@ -37,14 +39,19 @@ private[akka] trait MemoryUsageSnapshotting extends MetricsPrefix {
       metrics.get(key("non-heap-used")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("non-heap-max")).asInstanceOf[Gauge[Long]].getValue,
       metrics.get(key("non-heap-committed")).asInstanceOf[Gauge[Long]].getValue,
-      metrics.get(key("non-heap-usage")).asInstanceOf[RatioGauge].getValue)
+      metrics.get(key("non-heap-usage")).asInstanceOf[RatioGauge].getValue
+    )
   }
 
   private def key(k: String) = prefix + "." + k
 
 }
 
-private[akka] case class TotalMemoryUsage(init: Long, used: Long, max: Long, comitted: Long) {
+private[akka] case class TotalMemoryUsage(
+    init: Long,
+    used: Long,
+    max: Long,
+    comitted: Long) {
 
   def diff(other: TotalMemoryUsage): TotalMemoryUsage =
     TotalMemoryUsage(
@@ -55,7 +62,12 @@ private[akka] case class TotalMemoryUsage(init: Long, used: Long, max: Long, com
 
 }
 
-private[akka] case class HeapMemoryUsage(init: Long, used: Long, max: Long, comitted: Long, usage: Double) {
+private[akka] case class HeapMemoryUsage(
+    init: Long,
+    used: Long,
+    max: Long,
+    comitted: Long,
+    usage: Double) {
 
   def diff(other: HeapMemoryUsage): HeapMemoryUsage =
     HeapMemoryUsage(
@@ -66,7 +78,12 @@ private[akka] case class HeapMemoryUsage(init: Long, used: Long, max: Long, comi
       this.usage - other.usage)
 }
 
-private[akka] case class NonHeapMemoryUsage(init: Long, used: Long, max: Long, comitted: Long, usage: Double) {
+private[akka] case class NonHeapMemoryUsage(
+    init: Long,
+    used: Long,
+    max: Long,
+    comitted: Long,
+    usage: Double) {
 
   def diff(other: NonHeapMemoryUsage): NonHeapMemoryUsage =
     NonHeapMemoryUsage(

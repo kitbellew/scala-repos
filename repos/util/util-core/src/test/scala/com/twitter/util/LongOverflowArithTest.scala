@@ -24,7 +24,7 @@ class LongOverflowArithTest extends WordSpec {
         val bigC = BigInt(a) + BigInt(b)
         if (bigC.abs > Long.MaxValue)
           intercept[LongOverflowException] {
-          LongOverflowArith.add(a, b)
+            LongOverflowArith.add(a, b)
           }
         else
           assert(LongOverflowArith.add(a, b) == bigC.toLong)

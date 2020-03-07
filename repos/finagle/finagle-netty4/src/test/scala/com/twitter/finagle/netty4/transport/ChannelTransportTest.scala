@@ -3,7 +3,11 @@ package com.twitter.finagle.netty4.transport
 import com.twitter.conversions.time._
 import com.twitter.finagle._
 import com.twitter.util.{Throw, Return, Await, Future}
-import io.netty.channel.{ChannelPromise, ChannelHandlerContext, ChannelOutboundHandlerAdapter}
+import io.netty.channel.{
+  ChannelPromise,
+  ChannelHandlerContext,
+  ChannelOutboundHandlerAdapter
+}
 import io.netty.channel.embedded.EmbeddedChannel
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
@@ -11,8 +15,10 @@ import org.scalatest.{OneInstancePerTest, FunSuite}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @RunWith(classOf[JUnitRunner])
-class ChannelTransportTest extends FunSuite
-  with GeneratorDrivenPropertyChecks with OneInstancePerTest {
+class ChannelTransportTest
+    extends FunSuite
+    with GeneratorDrivenPropertyChecks
+    with OneInstancePerTest {
 
   val timeout = 10.seconds
 
@@ -38,9 +44,10 @@ class ChannelTransportTest extends FunSuite
   test("channel.write before transport.read") {
     forAll { ss: Seq[String] =>
       val written = ss.map(s => channel.writeInbound(s))
-      written.zip(ss).foreach { case (w, s) =>
-        assertSeenWhatsWritten(w, s, transport.read())
-        assert(transport.status == Status.Open)
+      written.zip(ss).foreach {
+        case (w, s) =>
+          assertSeenWhatsWritten(w, s, transport.read())
+          assert(transport.status == Status.Open)
       }
     }
 
@@ -54,9 +61,10 @@ class ChannelTransportTest extends FunSuite
       val seen = ss.map(_ => transport.read())
       val written = ss.map(s => channel.writeInbound(s))
 
-      written.zip(ss).zip(seen).foreach { case ((w, s), f) =>
-        assertSeenWhatsWritten(w, s, f)
-        assert(transport.status == Status.Open)
+      written.zip(ss).zip(seen).foreach {
+        case ((w, s), f) =>
+          assertSeenWhatsWritten(w, s, f)
+          assert(transport.status == Status.Open)
       }
     }
 
@@ -70,34 +78,43 @@ class ChannelTransportTest extends FunSuite
   test("write (failure)") {
     val e = new Exception()
     channel.pipeline.addLast(new ChannelOutboundHandlerAdapter {
-      override def write(ctx: ChannelHandlerContext, msg: scala.Any, promise: ChannelPromise): Unit = {
+      override def write(
+          ctx: ChannelHandlerContext,
+          msg: scala.Any,
+          promise: ChannelPromise): Unit = {
         // we fail every single write to the pipeline
         promise.setFailure(e)
       }
     })
 
     forAll { s: String =>
-      assert(transport.write(s).poll == Some(Throw(ChannelException(e, transport.remoteAddress))))
+      assert(
+        transport.write(s).poll == Some(
+          Throw(ChannelException(e, transport.remoteAddress))))
     }
   }
 
   test("write (ok)") {
     channel.pipeline.addLast(new ChannelOutboundHandlerAdapter {
-      override def write(ctx: ChannelHandlerContext, msg: scala.Any, promise: ChannelPromise): Unit = {
+      override def write(
+          ctx: ChannelHandlerContext,
+          msg: scala.Any,
+          promise: ChannelPromise): Unit = {
         // we succeed every single write to the pipeline
         promise.setSuccess()
       }
     })
 
-    forAll { s: String =>
-      assert(transport.write(s).poll == Some(Return.Unit))
-    }
+    forAll { s: String => assert(transport.write(s).poll == Some(Return.Unit)) }
   }
 
   test("write (interrupted by caller)") {
     var p: Option[ChannelPromise] = None
     channel.pipeline.addLast(new ChannelOutboundHandlerAdapter {
-      override def write(ctx: ChannelHandlerContext, msg: scala.Any, promise: ChannelPromise): Unit = {
+      override def write(
+          ctx: ChannelHandlerContext,
+          msg: scala.Any,
+          promise: ChannelPromise): Unit = {
         // we store pending promise to make sure it's canceled
         p = Some(promise)
       }
@@ -114,14 +131,18 @@ class ChannelTransportTest extends FunSuite
 
   test("write (canceled by callee)") {
     channel.pipeline.addLast(new ChannelOutboundHandlerAdapter {
-      override def write(ctx: ChannelHandlerContext, msg: scala.Any, promise: ChannelPromise): Unit = {
+      override def write(
+          ctx: ChannelHandlerContext,
+          msg: scala.Any,
+          promise: ChannelPromise): Unit = {
         // we cancel every single write
-        promise.cancel(false /*mayInterruptIfRunning*/)
+        promise.cancel(false /*mayInterruptIfRunning*/ )
       }
     })
 
     forAll { s: String =>
-      val thrown = intercept[Exception](Await.result(transport.write(s), timeout))
+      val thrown =
+        intercept[Exception](Await.result(transport.write(s), timeout))
       assert(thrown.isInstanceOf[CancelledWriteException])
     }
   }
@@ -132,7 +153,8 @@ class ChannelTransportTest extends FunSuite
     assert(transport.status == Status.Busy)
 
     forAll { s: String =>
-      val thrown = intercept[Exception](Await.result(transport.write(s), timeout))
+      val thrown =
+        intercept[Exception](Await.result(transport.write(s), timeout))
       assert(thrown.isInstanceOf[DroppedWriteException])
     }
   }
@@ -152,7 +174,10 @@ class ChannelTransportTest extends FunSuite
     assert(!transport.onClose.isDefined)
     channel.pipeline.fireExceptionCaught(e)
 
-    assert(Await.result(transport.onClose, timeout) == ChannelException(e, transport.remoteAddress))
+    assert(
+      Await.result(transport.onClose, timeout) == ChannelException(
+        e,
+        transport.remoteAddress))
     assert(transport.status == Status.Closed)
   }
 
@@ -160,7 +185,8 @@ class ChannelTransportTest extends FunSuite
     assert(!transport.onClose.isDefined)
 
     Await.ready(transport.close(), timeout)
-    intercept[ChannelClosedException](throw Await.result(transport.onClose, timeout))
+    intercept[ChannelClosedException](
+      throw Await.result(transport.onClose, timeout))
     assert(transport.status == Status.Closed)
     assert(!channel.isOpen)
   }

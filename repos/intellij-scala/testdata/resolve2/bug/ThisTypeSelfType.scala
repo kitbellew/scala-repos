@@ -7,7 +7,7 @@ class OGO {
 
   val x: this.type = this
 
-  x./* line: 2 */foo
+  x. /* line: 2 */ foo
 
-  new OGO()./* resolved: false */foo
+  new OGO(). /* resolved: false */ foo
 }

@@ -1,4 +1,3 @@
-
 class Test {
   // parses
   def f1 = {
@@ -12,7 +11,7 @@ class Test {
     import scala._
   }
   def f2b = {
-    import scala.collection.mutable.{ Map => MMap }
+    import scala.collection.mutable.{Map => MMap}
   }
   def f(): Unit = {
     locally {
@@ -25,9 +24,7 @@ class Test {
     import scala._
     5
   }
-  locally { (x: Int) =>
-    import scala.util._
-  }
+  locally { (x: Int) => import scala.util._ }
   1 match {
     case 1 => import scala.concurrent._
   }

@@ -15,31 +15,42 @@ object TimeTest extends SpecLite {
   private[this] val smallIntArb = Arbitrary(Gen.choose(1, 100000))
 
   implicit val DurationArbitrary: Arbitrary[Duration] =
-    Arbitrary(Gen.oneOf(
-      gen[Long].map{Duration.ofNanos},
-      gen[Long].map{Duration.ofMillis},
-      gen[Int].map{Duration.ofSeconds(_)}
-    ))
+    Arbitrary(
+      Gen.oneOf(
+        gen[Long].map { Duration.ofNanos },
+        gen[Long].map { Duration.ofMillis },
+        gen[Int].map { Duration.ofSeconds(_) }
+      ))
 
   implicit val PeriodArbitrary: Arbitrary[Period] =
-    Apply[Arbitrary].apply3(smallIntArb, smallIntArb, smallIntArb)(Period.of(_, _, _))
+    Apply[Arbitrary].apply3(smallIntArb, smallIntArb, smallIntArb)(
+      Period.of(_, _, _))
 
   implicit val LocalDateArbitrary: Arbitrary[LocalDate] =
-    Arbitrary(Apply[Gen].apply3(
-      Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE), Gen.choose(1, 12), Gen.choose(1, 28)
-    )(LocalDate.of(_, _, _)))
+    Arbitrary(
+      Apply[Gen].apply3(
+        Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE),
+        Gen.choose(1, 12),
+        Gen.choose(1, 28)
+      )(LocalDate.of(_, _, _)))
 
   implicit val LocalTimeArbitrary: Arbitrary[LocalTime] =
-    Arbitrary(Apply[Gen].apply4(
-      Gen.choose(0, 23), Gen.choose(0, 59), Gen.choose(0, 59), Gen.choose(0, 999999999)
-    )(LocalTime.of(_, _, _, _)))
+    Arbitrary(
+      Apply[Gen].apply4(
+        Gen.choose(0, 23),
+        Gen.choose(0, 59),
+        Gen.choose(0, 59),
+        Gen.choose(0, 999999999)
+      )(LocalTime.of(_, _, _, _)))
 
   implicit val YearArbitrary: Arbitrary[Year] =
     Arbitrary(Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE).map(Year.of(_)))
 
   implicit val YearMonthArbitrary: Arbitrary[YearMonth] =
     Arbitrary(
-      Apply[Gen].apply2(Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE), Gen.choose(1, 12))(YearMonth.of(_, _))
+      Apply[Gen].apply2(
+        Gen.choose(Year.MIN_VALUE, Year.MAX_VALUE),
+        Gen.choose(1, 12))(YearMonth.of(_, _))
     )
 
   implicit val MonthDayArbitrary: Arbitrary[MonthDay] =

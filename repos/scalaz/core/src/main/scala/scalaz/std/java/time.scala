@@ -14,7 +14,8 @@ trait TimeInstances extends TimeInstances0 {
     new Monoid[Duration] with Order[Duration] {
       override def zero = Duration.ZERO
       override def append(f1: Duration, f2: => Duration) = f1 plus f2
-      override def order(a1: Duration, a2: Duration) = Ordering.fromInt(a1 compareTo a2)
+      override def order(a1: Duration, a2: Duration) =
+        Ordering.fromInt(a1 compareTo a2)
     }
 
   implicit val periodInstance: Monoid[Period] with Equal[Period] =
@@ -31,8 +32,10 @@ trait TimeInstances extends TimeInstances0 {
       Ordering.fromInt(x compareTo y)
   }
 
-  implicit val monthDayInstance: Order[MonthDay] = orderFromInt[MonthDay](_ compareTo _)
-  implicit val localTimeInstance: Order[LocalTime] = orderFromInt[LocalTime](_ compareTo _)
+  implicit val monthDayInstance: Order[MonthDay] =
+    orderFromInt[MonthDay](_ compareTo _)
+  implicit val localTimeInstance: Order[LocalTime] =
+    orderFromInt[LocalTime](_ compareTo _)
 
   implicit val yearInstance: Enum[Year] = new Enum[Year] {
     override def pred(a: Year) = a.minusYears(1)

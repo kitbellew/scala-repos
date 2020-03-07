@@ -43,18 +43,23 @@ final class Env(
     isDonor = Env.donation.isDonor,
     isHostingSimul = Env.simul.isHosting,
     isStreamer = Env.tv.isStreamer.apply,
-    insightShare = Env.insight.share) _
+    insightShare = Env.insight.share
+  ) _
 
   system.actorOf(Props(new actor.Renderer), name = RendererName)
 
-  system.actorOf(Props(new actor.Router(
-    baseUrl = Env.api.Net.BaseUrl,
-    protocol = Env.api.Net.Protocol,
-    domain = Env.api.Net.Domain
-  )), name = RouterName)
+  system.actorOf(
+    Props(
+      new actor.Router(
+        baseUrl = Env.api.Net.BaseUrl,
+        protocol = Env.api.Net.Protocol,
+        domain = Env.api.Net.Domain
+      )),
+    name = RouterName)
 
   lila.log.boot.info("Preloading modules")
-  List(Env.socket,
+  List(
+    Env.socket,
     Env.site,
     Env.tournament,
     Env.lobby,

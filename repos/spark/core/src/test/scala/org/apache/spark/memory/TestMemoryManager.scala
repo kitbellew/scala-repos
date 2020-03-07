@@ -21,7 +21,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.storage.BlockId
 
 class TestMemoryManager(conf: SparkConf)
-  extends MemoryManager(conf, numCores = 1, Long.MaxValue, Long.MaxValue) {
+    extends MemoryManager(conf, numCores = 1, Long.MaxValue, Long.MaxValue) {
 
   override private[memory] def acquireExecutionMemory(
       numBytes: Long,
@@ -39,8 +39,10 @@ class TestMemoryManager(conf: SparkConf)
       grant
     }
   }
-  override def acquireStorageMemory(blockId: BlockId, numBytes: Long): Boolean = true
-  override def acquireUnrollMemory(blockId: BlockId, numBytes: Long): Boolean = true
+  override def acquireStorageMemory(blockId: BlockId, numBytes: Long): Boolean =
+    true
+  override def acquireUnrollMemory(blockId: BlockId, numBytes: Long): Boolean =
+    true
   override def releaseStorageMemory(numBytes: Long): Unit = {}
   override private[memory] def releaseExecutionMemory(
       numBytes: Long,

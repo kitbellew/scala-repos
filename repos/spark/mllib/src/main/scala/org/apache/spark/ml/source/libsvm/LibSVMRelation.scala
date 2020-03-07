@@ -41,15 +41,18 @@ private[libsvm] class LibSVMOutputWriter(
     path: String,
     dataSchema: StructType,
     context: TaskAttemptContext)
-  extends OutputWriter {
+    extends OutputWriter {
 
   private[this] val buffer = new Text()
 
   private val recordWriter: RecordWriter[NullWritable, Text] = {
     new TextOutputFormat[NullWritable, Text]() {
-      override def getDefaultWorkFile(context: TaskAttemptContext, extension: String): Path = {
+      override def getDefaultWorkFile(
+          context: TaskAttemptContext,
+          extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get("spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId =
+          configuration.get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId$extension")
@@ -61,9 +64,10 @@ private[libsvm] class LibSVMOutputWriter(
     val label = row.get(0)
     val vector = row.get(1).asInstanceOf[Vector]
     val sb = new StringBuilder(label.toString)
-    vector.foreachActive { case (i, v) =>
-      sb += ' '
-      sb ++= s"${i + 1}:$v"
+    vector.foreachActive {
+      case (i, v) =>
+        sb += ' '
+        sb ++= s"${i + 1}:$v"
     }
     buffer.set(sb.mkString)
     recordWriter.write(NullWritable.get(), buffer)
@@ -75,35 +79,35 @@ private[libsvm] class LibSVMOutputWriter(
 }
 
 /**
- * `libsvm` package implements Spark SQL data source API for loading LIBSVM data as [[DataFrame]].
- * The loaded [[DataFrame]] has two columns: `label` containing labels stored as doubles and
- * `features` containing feature vectors stored as [[Vector]]s.
- *
- * To use LIBSVM data source, you need to set "libsvm" as the format in [[DataFrameReader]] and
- * optionally specify options, for example:
- * {{{
- *   // Scala
- *   val df = sqlContext.read.format("libsvm")
- *     .option("numFeatures", "780")
- *     .load("data/mllib/sample_libsvm_data.txt")
- *
- *   // Java
- *   DataFrame df = sqlContext.read().format("libsvm")
- *     .option("numFeatures, "780")
- *     .load("data/mllib/sample_libsvm_data.txt");
- * }}}
- *
- * LIBSVM data source supports the following options:
- *  - "numFeatures": number of features.
- *    If unspecified or nonpositive, the number of features will be determined automatically at the
- *    cost of one additional pass.
- *    This is also useful when the dataset is already split into multiple files and you want to load
- *    them separately, because some features may not present in certain files, which leads to
- *    inconsistent feature dimensions.
- *  - "vectorType": feature vector type, "sparse" (default) or "dense".
- *
- *  @see [[https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/ LIBSVM datasets]]
- */
+  * `libsvm` package implements Spark SQL data source API for loading LIBSVM data as [[DataFrame]].
+  * The loaded [[DataFrame]] has two columns: `label` containing labels stored as doubles and
+  * `features` containing feature vectors stored as [[Vector]]s.
+  *
+  * To use LIBSVM data source, you need to set "libsvm" as the format in [[DataFrameReader]] and
+  * optionally specify options, for example:
+  * {{{
+  *   // Scala
+  *   val df = sqlContext.read.format("libsvm")
+  *     .option("numFeatures", "780")
+  *     .load("data/mllib/sample_libsvm_data.txt")
+  *
+  *   // Java
+  *   DataFrame df = sqlContext.read().format("libsvm")
+  *     .option("numFeatures, "780")
+  *     .load("data/mllib/sample_libsvm_data.txt");
+  * }}}
+  *
+  * LIBSVM data source supports the following options:
+  *  - "numFeatures": number of features.
+  *    If unspecified or nonpositive, the number of features will be determined automatically at the
+  *    cost of one additional pass.
+  *    This is also useful when the dataset is already split into multiple files and you want to load
+  *    them separately, because some features may not present in certain files, which leads to
+  *    inconsistent feature dimensions.
+  *  - "vectorType": feature vector type, "sparse" (default) or "dense".
+  *
+  *  @see [[https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/ LIBSVM datasets]]
+  */
 @Since("1.6.0")
 class DefaultSource extends FileFormat with DataSourceRegister {
 
@@ -112,9 +116,10 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
   private def verifySchema(dataSchema: StructType): Unit = {
     if (dataSchema.size != 2 ||
-      (!dataSchema(0).dataType.sameType(DataTypes.DoubleType)
+        (!dataSchema(0).dataType.sameType(DataTypes.DoubleType)
         || !dataSchema(1).dataType.sameType(new VectorUDT()))) {
-      throw new IOException(s"Illegal schema for libsvm data, schema=${dataSchema}")
+      throw new IOException(
+        s"Illegal schema for libsvm data, schema=${dataSchema}")
     }
   }
   override def inferSchema(
@@ -124,7 +129,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     Some(
       StructType(
         StructField("label", DoubleType, nullable = false) ::
-        StructField("features", new VectorUDT(), nullable = false) :: Nil))
+          StructField("features", new VectorUDT(), nullable = false) :: Nil))
   }
 
   override def prepareWrite(
@@ -138,7 +143,9 @@ class DefaultSource extends FileFormat with DataSourceRegister {
           bucketId: Option[Int],
           dataSchema: StructType,
           context: TaskAttemptContext): OutputWriter = {
-        if (bucketId.isDefined) { sys.error("LibSVM doesn't support bucketing") }
+        if (bucketId.isDefined) {
+          sys.error("LibSVM doesn't support bucketing")
+        }
         new LibSVMOutputWriter(path, dataSchema, context)
       }
     }
@@ -158,9 +165,13 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     verifySchema(dataSchema)
     val dataFiles = inputFiles.filterNot(_.getPath.getName startsWith "_")
 
-    val path = if (dataFiles.length == 1) dataFiles(0).getPath.toUri.toString
-    else if (dataFiles.isEmpty) throw new IOException("No input path specified for libsvm data")
-    else throw new IOException("Multiple input paths are not supported for libsvm data.")
+    val path =
+      if (dataFiles.length == 1) dataFiles(0).getPath.toUri.toString
+      else if (dataFiles.isEmpty)
+        throw new IOException("No input path specified for libsvm data")
+      else
+        throw new IOException(
+          "Multiple input paths are not supported for libsvm data.")
 
     val numFeatures = options.getOrElse("numFeatures", "-1").toInt
     val vectorType = options.getOrElse("vectorType", "sparse")
@@ -168,12 +179,14 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val sc = sqlContext.sparkContext
     val baseRdd = MLUtils.loadLibSVMFile(sc, path, numFeatures)
     val sparse = vectorType == "sparse"
-    baseRdd.map { pt =>
-      val features = if (sparse) pt.features.toSparse else pt.features.toDense
-      Row(pt.label, features)
-    }.mapPartitions { externalRows =>
-      val converter = RowEncoder(dataSchema)
-      externalRows.map(converter.toRow)
-    }
+    baseRdd
+      .map { pt =>
+        val features = if (sparse) pt.features.toSparse else pt.features.toDense
+        Row(pt.label, features)
+      }
+      .mapPartitions { externalRows =>
+        val converter = RowEncoder(dataSchema)
+        externalRows.map(converter.toRow)
+      }
   }
 }

@@ -3,12 +3,12 @@ package pythonparse
 import utest._
 
 /**
- * Tests to cover most basic syntactic constructs. It's likely there are
- * interactions between the constructs that will cause problems, but these
- * are just to make sure that at a basic level each construct is supported.
- */
-object UnitTests extends TestSuite{
-  val tests = TestSuite{
+  * Tests to cover most basic syntactic constructs. It's likely there are
+  * interactions between the constructs that will cause problems, but these
+  * are just to make sure that at a basic level each construct is supported.
+  */
+object UnitTests extends TestSuite {
+  val tests = TestSuite {
     import Ast.expr._
     import Ast.stmt._
     import Ast.expr_context._
@@ -18,9 +18,9 @@ object UnitTests extends TestSuite{
     import Ast._
     implicit def strName(s: Symbol) = Name(identifier(s.name), Load)
     implicit def strIdent(s: Symbol) = identifier(s.name)
-    'exprs{
-      def expr(expected: Ast.expr, s: String*) = s.map(TestUtils.check(Expressions.test, expected, _)).head
-
+    'exprs {
+      def expr(expected: Ast.expr, s: String*) =
+        s.map(TestUtils.check(Expressions.test, expected, _)).head
 
       'primitives {
         'int - expr(Num(1.0), "1")
@@ -37,14 +37,16 @@ object UnitTests extends TestSuite{
             'a,
             operator.Add,
             'b
-          ), "a + b")
+          ),
+          "a + b")
         'precedence - expr(
           BinOp(
             BinOp(Num(1.0), Mult, Num(2.0)),
             Add,
             BinOp(Num(3.0), Div, Num(4.0))
           ),
-          "1*2+3/4", "1 * 2  + 3  / 4"
+          "1*2+3/4",
+          "1 * 2  + 3  / 4"
         )
         'unary - expr(
           UnaryOp(
@@ -72,7 +74,7 @@ object UnitTests extends TestSuite{
           "a < b <= c > d >= e == f != g in h not in i"
         )
       }
-      'chained{
+      'chained {
         'attributes - expr(
           Attribute(Attribute('a, 'b, Load), 'c, Load),
           "a.b.c"
@@ -81,25 +83,39 @@ object UnitTests extends TestSuite{
           Call(
             Call(
               Call('a, Nil, Nil, None, None),
-              Seq('x), Seq(keyword('y, 'z)), Some('wtf), Some('omg)
+              Seq('x),
+              Seq(keyword('y, 'z)),
+              Some('wtf),
+              Some('omg)
             ),
-            Nil, Nil, None, Some('lol)
+            Nil,
+            Nil,
+            None,
+            Some('lol)
           ),
           "a()(x,y=z, *wtf, **omg)(**lol)"
         )
         'slicing - expr(
-          Subscript('abc, slice.ExtSlice(Seq(slice.Index('d), slice.Slice(Some('e), Some('f), Some('None)))), Load),
+          Subscript(
+            'abc,
+            slice.ExtSlice(
+              Seq(
+                slice.Index('d),
+                slice.Slice(Some('e), Some('f), Some('None)))),
+            Load),
           "abc[d, e:f:]"
         )
       }
-      'enclosed{
+      'enclosed {
         'list - expr(
           List(Seq(Num(1.0), Num(2.0), Str("a")), Load),
-          "[1, 2, 'a']", "[1,2, 'a']"
+          "[1, 2, 'a']",
+          "[1,2, 'a']"
         )
         'list0 - expr(
           List(Seq(Num(1.0)), Load),
-          "[1]", "[   1]"
+          "[1]",
+          "[   1]"
         )
         'tuple - expr(
           Tuple(Seq(Num(1.0), Num(2.0), Str("a")), Load),
@@ -126,14 +142,16 @@ object UnitTests extends TestSuite{
         )
 
         'list_comp2 - expr(
-          ListComp(Tuple(Seq('x, 'y), Load), Seq(
-            comprehension(
-              Tuple(Seq('z, 'a), Load),
-              Tuple(Seq('b, 'c), Load),
-              Seq('d, 'e)
-            ),
-            comprehension('j, 'k, Nil)
-          )),
+          ListComp(
+            Tuple(Seq('x, 'y), Load),
+            Seq(
+              comprehension(
+                Tuple(Seq('z, 'a), Load),
+                Tuple(Seq('b, 'c), Load),
+                Seq('d, 'e)
+              ),
+              comprehension('j, 'k, Nil)
+            )),
           "[(x, y) for (z, a) in (b, c) if d if e for j in k]"
         )
         'set_comp - expr(
@@ -151,7 +169,8 @@ object UnitTests extends TestSuite{
       }
     }
     'stmts {
-      def stmt(expected: Seq[Ast.stmt], s: String*) = s.map(TestUtils.check(Statements.file_input, expected, _)).head
+      def stmt(expected: Seq[Ast.stmt], s: String*) =
+        s.map(TestUtils.check(Statements.file_input, expected, _)).head
       // Statements which only have expressions within them
       'simple {
 
@@ -171,8 +190,11 @@ object UnitTests extends TestSuite{
         )
         'pyramid - stmt(
           Seq(
-            Pass, Return(None), Return(Some(Num(1))),
-            Delete(Seq('x)), Raise(Some('Foo), None, None),
+            Pass,
+            Return(None),
+            Return(Some(Num(1))),
+            Delete(Seq('x)),
+            Raise(Some('Foo), None, None),
             Assert('False, None)
           ),
           """pass; return; return 1;
@@ -186,7 +208,11 @@ object UnitTests extends TestSuite{
           "import a.b.c"
         )
         'import2 - stmt(
-          Seq(Import(Seq(alias(identifier("a.b.c"), Some('d)), alias(identifier("e"), Some('f))))),
+          Seq(
+            Import(
+              Seq(
+                alias(identifier("a.b.c"), Some('d)),
+                alias(identifier("e"), Some('f))))),
           "import a.b.c as d, e as f"
         )
         'import3 - stmt(
@@ -194,11 +220,19 @@ object UnitTests extends TestSuite{
           "from x import y"
         )
         'import4 - stmt(
-          Seq(ImportFrom(Some(identifier("x.y")), Seq(alias('y, Some('z))), None)),
+          Seq(
+            ImportFrom(
+              Some(identifier("x.y")),
+              Seq(alias('y, Some('z))),
+              None)),
           "from x.y import y as z"
         )
         'import5 - stmt(
-          Seq(ImportFrom(Some(identifier("x.y")), Seq(alias('y, Some('z))), Some(1))),
+          Seq(
+            ImportFrom(
+              Some(identifier("x.y")),
+              Seq(alias('y, Some('z))),
+              Some(1))),
           "from .x.y import y as z"
         )
         'import6 - stmt(
@@ -219,7 +253,7 @@ object UnitTests extends TestSuite{
         )
       }
       // Statements which can have other statements within them
-      'compound{
+      'compound {
         'while - stmt(
           Seq(While('True, Seq(Pass), Nil)),
           """while True: pass"""
@@ -232,7 +266,12 @@ object UnitTests extends TestSuite{
             |""".stripMargin
         )
         'while3 - stmt(
-          Seq(While('True, Seq(Expr(Call('func, Seq(Num(1)), Nil, None, None)), Pass), Nil), Pass),
+          Seq(
+            While(
+              'True,
+              Seq(Expr(Call('func, Seq(Num(1)), Nil, None, None)), Pass),
+              Nil),
+            Pass),
           """while True:
             |    func(
             |1
@@ -242,28 +281,37 @@ object UnitTests extends TestSuite{
             |""".stripMargin
         )
         'for - stmt(
-          Seq(For(Tuple(Seq('x, 'y), Load), Call('range, Seq(Num(10)), Nil, None, None), Seq(Print(None, Seq('x), true)), Nil)),
+          Seq(
+            For(
+              Tuple(Seq('x, 'y), Load),
+              Call('range, Seq(Num(10)), Nil, None, None),
+              Seq(Print(None, Seq('x), true)),
+              Nil)),
           """for x, y in range(10):
             |  print x""".stripMargin
         )
         'if - stmt(
-          Seq(If(
-            'a,
-            Seq(If(
-              'b,
-              Seq(Pass),
-              Seq(Print(None, Seq(Num(1)), true))
+          Seq(
+            If(
+              'a,
+              Seq(
+                If(
+                  'b,
+                  Seq(Pass),
+                  Seq(Print(None, Seq(Num(1)), true))
+                )),
+              Seq(
+                If(
+                  'c,
+                  Seq(Pass),
+                  Seq(
+                    If(
+                      'd,
+                      Seq(Pass),
+                      Seq(Pass)
+                    ))
+                ))
             )),
-            Seq(If(
-              'c,
-              Seq(Pass),
-              Seq(If(
-                'd,
-                Seq(Pass),
-                Seq(Pass)
-              ))
-            ))
-          )),
           """if a:
             |  if b:
             |    pass
@@ -277,10 +325,12 @@ object UnitTests extends TestSuite{
         )
 
         'forelse - stmt(
-          Seq(For(Name('w, Load), Tuple(Seq('x, 'y, 'z), Load),
-            Seq(For(Tuple(Seq('a, 'b), Load), 'c, Seq(Pass), Nil)),
-            Seq(Pass)
-          )),
+          Seq(
+            For(
+              Name('w, Load),
+              Tuple(Seq('x, 'y, 'z), Load),
+              Seq(For(Tuple(Seq('a, 'b), Load), 'c, Seq(Pass), Nil)),
+              Seq(Pass))),
           """for w in x, y, z:
             |  for a, b in c:
             |    pass
@@ -293,7 +343,19 @@ object UnitTests extends TestSuite{
           """class Foo: pass""".stripMargin
         )
         'class2 - stmt(
-          Seq(ClassDef('Foo, Seq(BinOp('A, BitOr, 'B)), Seq(Pass), Seq('foo, Call(Attribute('bar, 'baz, Load), Seq(Num(1)), Nil, None, None)))),
+          Seq(
+            ClassDef(
+              'Foo,
+              Seq(BinOp('A, BitOr, 'B)),
+              Seq(Pass),
+              Seq(
+                'foo,
+                Call(
+                  Attribute('bar, 'baz, Load),
+                  Seq(Num(1)),
+                  Nil,
+                  None,
+                  None)))),
           """@foo
             |@bar.baz(1)
             |class Foo(A | B):
@@ -301,18 +363,28 @@ object UnitTests extends TestSuite{
           """.stripMargin
         )
         'function - stmt(
-          Seq(FunctionDef('foo, arguments(Seq(Name('x, Param)), None, None, Nil), Seq(Return(Some('x))), Nil)),
+          Seq(
+            FunctionDef(
+              'foo,
+              arguments(Seq(Name('x, Param)), None, None, Nil),
+              Seq(Return(Some('x))),
+              Nil)),
           """def foo(x):
             |  return x
           """.stripMargin
         )
         'function2 - stmt(
-          Seq(FunctionDef(
-            'foo,
-            arguments(Seq(Name('x, Param), Name('y, Param)), None, Some('z), Seq(Num(1))),
-            Seq(Return(Some('x))),
-            Seq('dec)
-          )),
+          Seq(
+            FunctionDef(
+              'foo,
+              arguments(
+                Seq(Name('x, Param), Name('y, Param)),
+                None,
+                Some('z),
+                Seq(Num(1))),
+              Seq(Return(Some('x))),
+              Seq('dec)
+            )),
           """@dec
             |def foo(x, y=1, **z):
             |  return x
@@ -323,7 +395,15 @@ object UnitTests extends TestSuite{
           "with x as y: return y"
         )
         'with2 - stmt(
-          Seq(With('x, Some(Name('y, Load)), Seq(With('a, Some(Name('b, Load)), Seq(Return(Some(Tuple(Seq('y, 'b), Load)))))))),
+          Seq(
+            With(
+              'x,
+              Some(Name('y, Load)),
+              Seq(
+                With(
+                  'a,
+                  Some(Name('b, Load)),
+                  Seq(Return(Some(Tuple(Seq('y, 'b), Load)))))))),
           "with x as y, a as b: return y, b"
         )
       }

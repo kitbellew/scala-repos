@@ -20,7 +20,14 @@ import java.io.{File, FileOutputStream, FilenameFilter, OutputStream}
 import java.nio.charset.Charset
 import java.util.{Calendar, Date, logging => javalog}
 
-import com.twitter.util.{TwitterDateFormat, HandleSignal, Return, StorageUnit, Time, Try}
+import com.twitter.util.{
+  TwitterDateFormat,
+  HandleSignal,
+  Return,
+  StorageUnit,
+  Time,
+  Try
+}
 
 sealed abstract class Policy
 object Policy {
@@ -33,30 +40,36 @@ object Policy {
   case object SigHup extends Policy
   case class MaxSize(size: StorageUnit) extends Policy
 
-
   private[this] val singletonPolicyNames: Map[String, Policy] =
-    Map("never" -> Never, "hourly" -> Hourly, "daily" -> Daily, "sighup" -> SigHup)
+    Map(
+      "never" -> Never,
+      "hourly" -> Hourly,
+      "daily" -> Daily,
+      "sighup" -> SigHup)
 
   // Regex object that matches "Weekly(n)" and extracts the `dayOfWeek` number.
   private[this] val weeklyRegex = """(?i)weekly\(([1-7]+)\)""".r
 
   /**
-   * Parse a string into a Policy object. Parsing rules are as follows:
-   *
-   * - Case-insensitive names of singleton Policy objects (e.g. Never, Hourly,
-   *   Daily) are parsed into their corresponding objects.
-   * - "Weekly(n)" is parsed into `Weekly` objects with `n` as the day-of-week
-   *   integer, as defined by the constants in java.util.Calendar.
-   * - util-style data size strings (e.g. 3.megabytes, 1.gigabyte) are
-   *   parsed into `StorageUnit` objects and used to produce `MaxSize` policies.
-   *   See `StorageUnit.parse(String)` for more details.
-   */
+    * Parse a string into a Policy object. Parsing rules are as follows:
+    *
+    * - Case-insensitive names of singleton Policy objects (e.g. Never, Hourly,
+    *   Daily) are parsed into their corresponding objects.
+    * - "Weekly(n)" is parsed into `Weekly` objects with `n` as the day-of-week
+    *   integer, as defined by the constants in java.util.Calendar.
+    * - util-style data size strings (e.g. 3.megabytes, 1.gigabyte) are
+    *   parsed into `StorageUnit` objects and used to produce `MaxSize` policies.
+    *   See `StorageUnit.parse(String)` for more details.
+    */
   def parse(s: String): Policy =
-    (s, singletonPolicyNames.get(s.toLowerCase), Try(StorageUnit.parse(s.toLowerCase))) match {
+    (
+      s,
+      singletonPolicyNames.get(s.toLowerCase),
+      Try(StorageUnit.parse(s.toLowerCase))) match {
       case (weeklyRegex(dayOfWeek), _, _) => Weekly(dayOfWeek.toInt)
-      case (_, Some(singleton), _) => singleton
-      case (_, _, Return(storageUnit)) => MaxSize(storageUnit)
-      case _ => throw new Exception("Invalid log roll policy: " + s)
+      case (_, Some(singleton), _)        => singleton
+      case (_, _, Return(storageUnit))    => MaxSize(storageUnit)
+      case _                              => throw new Exception("Invalid log roll policy: " + s)
     }
 }
 
@@ -64,34 +77,42 @@ object FileHandler {
   val UTF8 = Charset.forName("UTF-8")
 
   /**
-   * Generates a HandlerFactory that returns a FileHandler
-   *
-   * @param filename
-   * Filename to log to.
-   *
-   * @param rollPolicy
-   * When to roll the logfile.
-   *
-   * @param append
-   * Append to an existing logfile, or truncate it?
-   *
-   * @param rotateCount
-   * How many rotated logfiles to keep around, maximum. -1 means to keep them all.
-   */
+    * Generates a HandlerFactory that returns a FileHandler
+    *
+    * @param filename
+    * Filename to log to.
+    *
+    * @param rollPolicy
+    * When to roll the logfile.
+    *
+    * @param append
+    * Append to an existing logfile, or truncate it?
+    *
+    * @param rotateCount
+    * How many rotated logfiles to keep around, maximum. -1 means to keep them all.
+    */
   def apply(
-    filename: String,
-    rollPolicy: Policy = Policy.Never,
-    append: Boolean = true,
-    rotateCount: Int = -1,
-    formatter: Formatter = new Formatter(),
-    level: Option[Level] = None
-  ) = () => new FileHandler(filename, rollPolicy, append, rotateCount, formatter, level)
+      filename: String,
+      rollPolicy: Policy = Policy.Never,
+      append: Boolean = true,
+      rotateCount: Int = -1,
+      formatter: Formatter = new Formatter(),
+      level: Option[Level] = None
+  ) =
+    () =>
+      new FileHandler(
+        filename,
+        rollPolicy,
+        append,
+        rotateCount,
+        formatter,
+        level)
 }
 
 /**
- * A log handler that writes log entries into a file, and rolls this file
- * at a requested interval (hourly, daily, or weekly).
- */
+  * A log handler that writes log entries into a file, and rolls this file
+  * at a requested interval (hourly, daily, or weekly).
+  */
 class FileHandler(
     path: String,
     rollPolicy: Policy,
@@ -99,7 +120,7 @@ class FileHandler(
     rotateCount: Int,
     formatter: Formatter,
     level: Option[Level])
-  extends Handler(formatter, level) {
+    extends Handler(formatter, level) {
 
   // This converts relative paths to absolute paths, as expected
   val (filename, name) = {
@@ -125,7 +146,7 @@ class FileHandler(
 
   private val maxFileSize: Option[StorageUnit] = rollPolicy match {
     case Policy.MaxSize(size) => Some(size)
-    case _ => None
+    case _                    => None
   }
 
   openLog()
@@ -181,15 +202,15 @@ class FileHandler(
   }
 
   /**
-   * Compute the suffix for a rolled logfile, based on the roll policy.
-   */
+    * Compute the suffix for a rolled logfile, based on the roll policy.
+    */
   def timeSuffix(date: Date) = {
     val dateFormat = rollPolicy match {
-      case Policy.Never => TwitterDateFormat("yyyy")
-      case Policy.SigHup => TwitterDateFormat("yyyy")
-      case Policy.Hourly => TwitterDateFormat("yyyyMMdd-HH")
-      case Policy.Daily => TwitterDateFormat("yyyyMMdd")
-      case Policy.Weekly(_) => TwitterDateFormat("yyyyMMdd")
+      case Policy.Never      => TwitterDateFormat("yyyy")
+      case Policy.SigHup     => TwitterDateFormat("yyyy")
+      case Policy.Hourly     => TwitterDateFormat("yyyyMMdd-HH")
+      case Policy.Daily      => TwitterDateFormat("yyyyMMdd")
+      case Policy.Weekly(_)  => TwitterDateFormat("yyyyMMdd")
       case Policy.MaxSize(_) => TwitterDateFormat("yyyyMMdd-HHmmss")
     }
     dateFormat.setCalendar(formatter.calendar)
@@ -197,9 +218,9 @@ class FileHandler(
   }
 
   /**
-   * Return the time (in absolute milliseconds) of the next desired
-   * logfile roll.
-   */
+    * Return the time (in absolute milliseconds) of the next desired
+    * logfile roll.
+    */
   def computeNextRollTime(now: Long): Option[Long] = {
     lazy val next = {
       val n = formatter.calendar.clone.asInstanceOf[Calendar]
@@ -209,7 +230,6 @@ class FileHandler(
       n.set(Calendar.MINUTE, 0)
       n
     }
-
 
     val rv = rollPolicy match {
       case Policy.MaxSize(_) | Policy.Never | Policy.SigHup => None
@@ -235,20 +255,24 @@ class FileHandler(
   }
 
   /**
-   * Delete files when "too many" have accumulated.
-   * This duplicates logrotate's "rotate count" option.
-   */
+    * Delete files when "too many" have accumulated.
+    * This duplicates logrotate's "rotate count" option.
+    */
   private def removeOldFiles() {
     if (rotateCount >= 0) {
       // collect files which are not `filename`, but which share the prefix/suffix
       val prefixName = new File(filenamePrefix).getName
       val rotatedFiles =
-        new File(filename).getParentFile().listFiles(
-          new FilenameFilter {
-            def accept(f: File, fname: String): Boolean =
-              fname != name && fname.startsWith(prefixName) && fname.endsWith(filenameSuffix)
-          }
-        ).sortBy(_.getName)
+        new File(filename)
+          .getParentFile()
+          .listFiles(
+            new FilenameFilter {
+              def accept(f: File, fname: String): Boolean =
+                fname != name && fname.startsWith(prefixName) && fname.endsWith(
+                  filenameSuffix)
+            }
+          )
+          .sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)
       rotatedFiles.take(toDeleteCount).foreach(_.delete())
@@ -257,7 +281,8 @@ class FileHandler(
 
   def roll() = synchronized {
     stream.close()
-    val newFilename = filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
+    val newFilename =
+      filenamePrefix + "-" + timeSuffix(new Date(openTime)) + filenameSuffix
     new File(filename).renameTo(new File(newFilename))
     openLog()
     removeOldFiles()

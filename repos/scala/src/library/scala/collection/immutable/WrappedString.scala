@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package immutable
@@ -16,24 +14,30 @@ import generic._
 import mutable.{Builder, StringBuilder}
 
 /**
- *  This class serves as a wrapper augmenting `String`s with all the operations
- *  found in indexed sequences.
- *
- *  The difference between this class and `StringOps` is that calling transformer
- *  methods such as `filter` and `map` will yield an object of type `WrappedString`
- *  rather than a `String`.
- *
- *  @param self    a string contained within this wrapped string
- *
- *  @since 2.8
- *  @define Coll `WrappedString`
- *  @define coll wrapped string
- */
-@deprecatedInheritance("Inherit from StringLike instead of WrappedString.", "2.11.0")
-class WrappedString(val self: String) extends AbstractSeq[Char] with IndexedSeq[Char] with StringLike[WrappedString] {
+  *  This class serves as a wrapper augmenting `String`s with all the operations
+  *  found in indexed sequences.
+  *
+  *  The difference between this class and `StringOps` is that calling transformer
+  *  methods such as `filter` and `map` will yield an object of type `WrappedString`
+  *  rather than a `String`.
+  *
+  *  @param self    a string contained within this wrapped string
+  *
+  *  @since 2.8
+  *  @define Coll `WrappedString`
+  *  @define coll wrapped string
+  */
+@deprecatedInheritance(
+  "Inherit from StringLike instead of WrappedString.",
+  "2.11.0")
+class WrappedString(val self: String)
+    extends AbstractSeq[Char]
+    with IndexedSeq[Char]
+    with StringLike[WrappedString] {
 
   override protected[this] def thisCollection: WrappedString = this
-  override protected[this] def toCollection(repr: WrappedString): WrappedString = repr
+  override protected[this] def toCollection(
+      repr: WrappedString): WrappedString = repr
 
   /** Creates a string builder buffer as builder for this class */
   override protected[this] def newBuilder = WrappedString.newBuilder
@@ -51,14 +55,16 @@ class WrappedString(val self: String) extends AbstractSeq[Char] with IndexedSeq[
 }
 
 /** A companion object for wrapped strings.
- *
- *  @since 2.8
- */
+  *
+  *  @since 2.8
+  */
 object WrappedString {
-  implicit def canBuildFrom: CanBuildFrom[WrappedString, Char, WrappedString] = new CanBuildFrom[WrappedString, Char, WrappedString] {
-    def apply(from: WrappedString) = newBuilder
-    def apply() = newBuilder
-  }
+  implicit def canBuildFrom: CanBuildFrom[WrappedString, Char, WrappedString] =
+    new CanBuildFrom[WrappedString, Char, WrappedString] {
+      def apply(from: WrappedString) = newBuilder
+      def apply() = newBuilder
+    }
 
-  def newBuilder: Builder[Char, WrappedString] = StringBuilder.newBuilder mapResult (x => new WrappedString(x))
+  def newBuilder: Builder[Char, WrappedString] =
+    StringBuilder.newBuilder mapResult (x => new WrappedString(x))
 }

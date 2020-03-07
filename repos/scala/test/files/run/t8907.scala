@@ -5,7 +5,9 @@ object Test extends StoreReporterDirectTest {
   def code = ???
 
   def compileCode(code: String) = {
-    val classpath = List(sys.props("partest.lib"), testOutput.path) mkString sys.props("path.separator")
+    val classpath =
+      List(sys.props("partest.lib"), testOutput.path) mkString sys.props(
+        "path.separator")
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(code)
   }
 
@@ -28,12 +30,15 @@ object Test extends StoreReporterDirectTest {
         }
       }
     """)
-    assert(storeReporter.infos.isEmpty, storeReporter.infos.mkString("\n")) // Included a MissingRequirementError before.
+    assert(
+      storeReporter.infos.isEmpty,
+      storeReporter.infos.mkString("\n")
+    ) // Included a MissingRequirementError before.
   }
 
   def deleteClass(name: String) {
     val classFile = new File(testOutput.path, name + ".class")
     assert(classFile.exists)
-    assert(classFile.delete())  
+    assert(classFile.delete())
   }
 }

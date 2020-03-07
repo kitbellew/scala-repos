@@ -8,7 +8,7 @@ package scala.foo
   override def foo(): Unit = ???
 }
 
-@deprecated("","") class F {
+@deprecated("", "") class F {
   // 1.4 a class inside a deprecated class should work too
   class G extends A
 }
@@ -22,17 +22,17 @@ class C {
 // and also should not trigger the "deprecation is useless"
 // warning
 class D extends C {
-  @deprecated("","") override def foo(): Unit = ???
+  @deprecated("", "") override def foo(): Unit = ???
 }
 
 // 2.2 overriding from a deprecated class should be fine
-@deprecated("","") class E extends C {
+@deprecated("", "") class E extends C {
   override def foo(): Unit = ???
 }
 
 // 2.3 overriding from deeper inside a deprecated class
 // should work too
-@deprecated("","") class H {
+@deprecated("", "") class H {
   class I extends C {
     override def foo(): Unit = ???
   }

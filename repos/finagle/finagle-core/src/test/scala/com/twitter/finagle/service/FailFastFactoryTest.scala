@@ -2,7 +2,13 @@ package com.twitter.finagle.service
 
 import com.twitter.conversions.time._
 import com.twitter.finagle.stats.InMemoryStatsReceiver
-import com.twitter.finagle.{FailedFastException, Service, ServiceFactory, SourcedException, Status}
+import com.twitter.finagle.{
+  FailedFastException,
+  Service,
+  ServiceFactory,
+  SourcedException,
+  Status
+}
 import com.twitter.util._
 import java.util.concurrent.atomic.AtomicInteger
 import org.junit.runner.RunWith
@@ -15,10 +21,11 @@ import org.scalatest.mock.MockitoSugar
 import scala.language.reflectiveCalls
 
 @RunWith(classOf[JUnitRunner])
-class FailFastFactoryTest extends FunSuite
-  with MockitoSugar
-  with Conductors
-  with IntegrationPatience {
+class FailFastFactoryTest
+    extends FunSuite
+    with MockitoSugar
+    with Conductors
+    with IntegrationPatience {
 
   def newCtx() = new {
     val timer = new MockTimer
@@ -30,7 +37,8 @@ class FailFastFactoryTest extends FunSuite
     when(underlying.close(any[Time])).thenReturn(Future.Done)
     val stats = new InMemoryStatsReceiver
     val label = "test"
-    val failfast = new FailFastFactory(underlying, stats, timer, label, backoffs = backoffs)
+    val failfast =
+      new FailFastFactory(underlying, stats, timer, label, backoffs = backoffs)
 
     val p, q, r = new Promise[Service[Int, Int]]
     when(underlying()).thenReturn(p)
@@ -120,7 +128,7 @@ class FailFastFactoryTest extends FunSuite
       assert {
         failfast().poll match {
           case Some(Throw(_: FailedFastException)) => true
-          case _ => false
+          case _                                   => false
         }
       }
       verify(underlying).apply() // nothing new
@@ -145,7 +153,7 @@ class FailFastFactoryTest extends FunSuite
       assert {
         failfast().poll match {
           case Some(Return(s)) => s eq service
-          case _ => false
+          case _               => false
         }
       }
     }
@@ -166,9 +174,9 @@ class FailFastFactoryTest extends FunSuite
       assert(failfast.status == underlying.status)
 
       val status = underlying.status match {
-        case Status.Open => Status.Closed
+        case Status.Open   => Status.Closed
         case Status.Closed => Status.Open
-        case status => fail(s"bad status $status")
+        case status        => fail(s"bad status $status")
       }
       when(underlying.status).thenReturn(status)
       assert(failfast.status == underlying.status)
@@ -190,7 +198,8 @@ class FailFastFactoryTest extends FunSuite
       val ffe = intercept[FailedFastException] {
         failfast().poll.get.get
       }
-      assert(ffe.getMessage().contains("twitter.github.io/finagle/guide/FAQ.html"))
+      assert(
+        ffe.getMessage().contains("twitter.github.io/finagle/guide/FAQ.html"))
     }
   }
 
@@ -238,7 +247,12 @@ class FailFastFactoryTest extends FunSuite
       val ctx = newCtx()
       import ctx._
 
-      val failfast = new FailFastFactory(underlying, stats, timer, label, backoffs = Stream.empty)
+      val failfast = new FailFastFactory(
+        underlying,
+        stats,
+        timer,
+        label,
+        backoffs = Stream.empty)
       failfast()
     }
   }

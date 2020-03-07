@@ -9,8 +9,8 @@ import com.twitter.util.{Await, Future, JavaTimer}
 import scala.util.Random
 
 /**
- * An example of a streaming HTTP server using chunked transfer encoding.
- */
+  * An example of a streaming HTTP server using chunked transfer encoding.
+  */
 object HttpStreamingServer {
   val random = new Random
   implicit val timer = new JavaTimer
@@ -19,7 +19,7 @@ object HttpStreamingServer {
   def ints(): AsyncStream[Int] =
     random.nextInt +::
       AsyncStream.fromFuture(Future.sleep(100.millis)).flatMap(_ => ints())
-  
+
   def main(args: Array[String]): Unit = {
     val service = new Service[Request, Response] {
       // Only one stream exists.
@@ -37,11 +37,11 @@ object HttpStreamingServer {
       }
     }
 
-    Await.result(Http.server
+    Await.result(
+      Http.server
       // Translate buffered writes into HTTP chunks.
-      .withStreaming(enabled = true)
-      // Listen on port 8080.
-      .serve("0.0.0.0:8080", service)
-    )
+        .withStreaming(enabled = true)
+        // Listen on port 8080.
+        .serve("0.0.0.0:8080", service))
   }
 }

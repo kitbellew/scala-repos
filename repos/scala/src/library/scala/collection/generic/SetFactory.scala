@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package generic
@@ -15,4 +13,5 @@ package generic
 import scala.language.higherKinds
 
 abstract class SetFactory[CC[X] <: Set[X] with SetLike[X, CC[X]]]
-  extends GenSetFactory[CC] with GenericSeqCompanion[CC]
+    extends GenSetFactory[CC]
+    with GenericSeqCompanion[CC]

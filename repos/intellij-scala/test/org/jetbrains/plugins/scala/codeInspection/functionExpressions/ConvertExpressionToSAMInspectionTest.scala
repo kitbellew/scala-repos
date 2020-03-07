@@ -2,30 +2,36 @@ package org.jetbrains.plugins.scala.codeInspection.functionExpressions
 
 import com.intellij.codeInspection.LocalInspectionTool
 import org.jetbrains.plugins.scala.codeInspection.SAM.ConvertExpressionToSAMInspection
-import org.jetbrains.plugins.scala.codeInspection.{InspectionBundle, ScalaLightInspectionFixtureTestAdapter}
+import org.jetbrains.plugins.scala.codeInspection.{
+  InspectionBundle,
+  ScalaLightInspectionFixtureTestAdapter
+}
 import org.jetbrains.plugins.scala.project.settings.ScalaCompilerConfiguration
 import org.jetbrains.plugins.scala.util.TestUtils.ScalaSdkVersion
 
 /**
- * Author: Svyatoslav Ilinskiy
- * Date: 6/30/15
- */
-class ConvertExpressionToSAMInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
+  * Author: Svyatoslav Ilinskiy
+  * Date: 6/30/15
+  */
+class ConvertExpressionToSAMInspectionTest
+    extends ScalaLightInspectionFixtureTestAdapter {
   override protected def setUp(): Unit = {
     super.setUp()
 
-    val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProject).defaultProfile
+    val defaultProfile =
+      ScalaCompilerConfiguration.instanceIn(getProject).defaultProfile
     val newSettings = defaultProfile.getSettings
     newSettings.experimental = true
     defaultProfile.setSettings(newSettings)
   }
 
-
   override protected def libVersion: ScalaSdkVersion = ScalaSdkVersion._2_11
 
-  override protected def classOfInspection: Class[_ <: LocalInspectionTool] = classOf[ConvertExpressionToSAMInspection]
+  override protected def classOfInspection: Class[_ <: LocalInspectionTool] =
+    classOf[ConvertExpressionToSAMInspection]
 
-  override protected def annotation: String = InspectionBundle.message("convert.expression.to.sam")
+  override protected def annotation: String =
+    InspectionBundle.message("convert.expression.to.sam")
 
   def testThreadRunnable(): Unit = {
     val code =

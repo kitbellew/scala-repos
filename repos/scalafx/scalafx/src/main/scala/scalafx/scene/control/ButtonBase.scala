@@ -36,37 +36,38 @@ import scalafx.delegate.{FireDelegate, SFXDelegate}
 import scalafx.scene.input.MouseEvent
 
 object ButtonBase {
-  implicit def sfxButtonBase2jfx(v: ButtonBase): jfxsc.ButtonBase = if (v != null) v.delegate else null
+  implicit def sfxButtonBase2jfx(v: ButtonBase): jfxsc.ButtonBase =
+    if (v != null) v.delegate else null
 }
 
 abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
-  extends Labeled(delegate)
-  with FireDelegate[jfxsc.ButtonBase]
-  with SFXDelegate[jfxsc.ButtonBase] {
+    extends Labeled(delegate)
+    with FireDelegate[jfxsc.ButtonBase]
+    with SFXDelegate[jfxsc.ButtonBase] {
 
   /**
-   * Indicates that the button has been "armed" such that a mouse release will cause the button's action to be invoked.
-   */
+    * Indicates that the button has been "armed" such that a mouse release will cause the button's action to be invoked.
+    */
   def armed: ReadOnlyBooleanProperty = delegate.armedProperty
 
   /**
-   * The button's action, which is invoked whenever the button is fired.
-   */
+    * The button's action, which is invoked whenever the button is fired.
+    */
   def onAction = delegate.onActionProperty
   def onAction_=(implicit aeh: jfxe.EventHandler[jfxe.ActionEvent]) {
     onAction() = aeh
   }
 
   /**
-   * Arms the button.
-   */
+    * Arms the button.
+    */
   def arm() {
     delegate.arm()
   }
 
   /**
-   * Disarms the button.
-   */
+    * Disarms the button.
+    */
   def disarm() {
     delegate.disarm()
   }
@@ -74,7 +75,8 @@ abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
   // for now only a few examples
 
   def addOnMouseEnteredHandler(handler: (MouseEvent) => Unit) {
-    delegate.addEventHandler(jfxsi.MouseEvent.MOUSE_ENTERED,
+    delegate.addEventHandler(
+      jfxsi.MouseEvent.MOUSE_ENTERED,
       new jfxe.EventHandler[jfxsi.MouseEvent]() {
         @Override
         def handle(me: jfxsi.MouseEvent) {
@@ -84,7 +86,8 @@ abstract class ButtonBase(override val delegate: jfxsc.ButtonBase)
   }
 
   def addOnMouseExitedHandler(handler: (MouseEvent) => Unit) {
-    delegate.addEventHandler(jfxsi.MouseEvent.MOUSE_EXITED,
+    delegate.addEventHandler(
+      jfxsi.MouseEvent.MOUSE_EXITED,
       new jfxe.EventHandler[jfxsi.MouseEvent]() {
         @Override
         def handle(me: jfxsi.MouseEvent) {

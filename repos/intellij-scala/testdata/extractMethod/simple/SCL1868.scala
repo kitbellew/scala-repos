@@ -1,5 +1,5 @@
 object A {
-  def foo = /*start*/42 + 239/*end*/
+  def foo = /*start*/ 42 + 239 /*end*/
 
 }
 /*
@@ -10,4 +10,4 @@ object A {
     42 + 239
   }
 }
-*/
+ */

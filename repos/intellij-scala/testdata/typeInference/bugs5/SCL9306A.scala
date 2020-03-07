@@ -7,6 +7,7 @@ object SCL9306B extends App {
 
   def func1: (A => B) = { a: A => new B }
 
-  /*start*/func1(new C)/*end*/
+  /*start*/
+  func1(new C) /*end*/
 }
 //SCL9306B.D

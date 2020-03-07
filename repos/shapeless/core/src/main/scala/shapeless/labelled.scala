@@ -21,23 +21,26 @@ import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
 object labelled {
+
   /**
-   * The type of fields with keys of singleton type `K` and value type `V`.
-   */
+    * The type of fields with keys of singleton type `K` and value type `V`.
+    */
   type FieldType[K, +V] = V with KeyTag[K, V]
   trait KeyTag[K, +V]
 
   /**
-   * Yields a result encoding the supplied value with the singleton type `K' of its key.
-   */
+    * Yields a result encoding the supplied value with the singleton type `K' of its key.
+    */
   def field[K] = new FieldBuilder[K]
 
   class FieldBuilder[K] {
-    def apply[V](v : V): FieldType[K, V] = v.asInstanceOf[FieldType[K, V]]
+    def apply[V](v: V): FieldType[K, V] = v.asInstanceOf[FieldType[K, V]]
   }
 }
 
-trait DefaultSymbolicLabelling[T] extends DepFn0 with Serializable { type Out <: HList }
+trait DefaultSymbolicLabelling[T] extends DepFn0 with Serializable {
+  type Out <: HList
+}
 
 object DefaultSymbolicLabelling {
   type Aux[T, Out0] = DefaultSymbolicLabelling[T] { type Out = Out0 }
@@ -49,11 +52,11 @@ object DefaultSymbolicLabelling {
 }
 
 /**
- * Polymorphic function that allows modifications on record fields while preserving the
- * original key types.
- *
- * @author Dario Rexin
- */
+  * Polymorphic function that allows modifications on record fields while preserving the
+  * original key types.
+  *
+  * @author Dario Rexin
+  */
 trait FieldPoly extends Poly1 {
   import labelled._
 
@@ -69,13 +72,13 @@ trait FieldPoly extends Poly1 {
 }
 
 /**
- * Field with values of type `V`.
- *
- * Record keys of this form should be objects which extend this trait. Keys may also be arbitrary singleton typed
- * values, however keys of this form enforce the type of their values.
- *
- * @author Miles Sabin
- */
+  * Field with values of type `V`.
+  *
+  * Record keys of this form should be objects which extend this trait. Keys may also be arbitrary singleton typed
+  * values, however keys of this form enforce the type of their values.
+  *
+  * @author Miles Sabin
+  */
 trait FieldOf[V] {
   import labelled._
 
@@ -83,16 +86,23 @@ trait FieldOf[V] {
 }
 
 @macrocompat.bundle
-class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with CaseClassMacros {
+class LabelledMacros(val c: whitebox.Context)
+    extends SingletonTypeUtils
+    with CaseClassMacros {
   import labelled._
   import c.universe._
 
   def mkDefaultSymbolicLabellingImpl[T](implicit tTag: WeakTypeTag[T]): Tree = {
     val tTpe = weakTypeOf[T]
     val labels: List[String] =
-      if(isProduct(tTpe)) fieldsOf(tTpe).map { f => nameAsString(f._1) }
-      else if(isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe => nameAsString(nameOf(tpe)) }
-      else c.abort(c.enclosingPosition, s"$tTpe is not case class like or the root of a sealed family of types")
+      if (isProduct(tTpe)) fieldsOf(tTpe).map { f => nameAsString(f._1) }
+      else if (isCoproduct(tTpe)) ctorsOf(tTpe).map { tpe =>
+        nameAsString(nameOf(tpe))
+      }
+      else
+        c.abort(
+          c.enclosingPosition,
+          s"$tTpe is not case class like or the root of a sealed family of types")
 
     val labelTpes = labels.map(SingletonSymbolType(_))
     val labelValues = labels.map(mkSingletonSymbol)
@@ -117,7 +127,11 @@ class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with Ca
   def unionTypeImpl(tpeSelector: Tree): Tree =
     labelledTypeImpl(tpeSelector, "union", cnilTpe, cconsTpe)
 
-  def labelledTypeImpl(tpeSelector: Tree, variety: String, nilTpe: Type, consTpe: Type): Tree = {
+  def labelledTypeImpl(
+      tpeSelector: Tree,
+      variety: String,
+      nilTpe: Type,
+      consTpe: Type): Tree = {
     def mkFieldTpe(keyTpe: Type, valueTpe: Type): Type =
       appliedType(fieldTypeTpe, List(keyTpe, valueTpe))
 
@@ -130,11 +144,15 @@ class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with Ca
           case Array(key, value) =>
             val keyTpe =
               parseLiteralType(key)
-                .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal type $key"))
+                .getOrElse(
+                  c.abort(c.enclosingPosition, s"Malformed literal type $key"))
 
             val valueTpe =
               parseType(value)
-                .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal or standard type $value"))
+                .getOrElse(
+                  c.abort(
+                    c.enclosingPosition,
+                    s"Malformed literal or standard type $value"))
 
             (keyTpe, valueTpe)
 
@@ -143,9 +161,10 @@ class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with Ca
         }
 
     val labelledTpe =
-      fields.foldRight(nilTpe) { case ((keyTpe, valueTpe), acc) =>
-        val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
-        appliedType(consTpe, List(fieldTpe, acc))
+      fields.foldRight(nilTpe) {
+        case ((keyTpe, valueTpe), acc) =>
+          val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
+          appliedType(consTpe, List(fieldTpe, acc))
       }
 
     typeCarrier(labelledTpe)
@@ -157,7 +176,11 @@ class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with Ca
   def coproductTypeImpl(tpeSelector: Tree): Tree =
     nonLabelledTypeImpl(tpeSelector, "coproduct", cnilTpe, cconsTpe)
 
-  def nonLabelledTypeImpl(tpeSelector: Tree, variety: String, nilTpe: Type, consTpe: Type): Tree = {
+  def nonLabelledTypeImpl(
+      tpeSelector: Tree,
+      variety: String,
+      nilTpe: Type,
+      consTpe: Type): Tree = {
     val q"${tpeString: String}" = tpeSelector
     val elemTypes =
       if (tpeString.trim.isEmpty)
@@ -165,12 +188,16 @@ class LabelledMacros(val c: whitebox.Context) extends SingletonTypeUtils with Ca
       else
         tpeString.split(",").map(_.trim).map { elemTypeStr =>
           parseType(elemTypeStr)
-            .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal or standard type $elemTypeStr"))
+            .getOrElse(
+              c.abort(
+                c.enclosingPosition,
+                s"Malformed literal or standard type $elemTypeStr"))
         }
 
     val tpe =
-      elemTypes.foldRight(nilTpe) { case (elemTpe, acc) =>
-        appliedType(consTpe, List(elemTpe, acc))
+      elemTypes.foldRight(nilTpe) {
+        case (elemTpe, acc) =>
+          appliedType(consTpe, List(elemTpe, acc))
       }
 
     typeCarrier(tpe)

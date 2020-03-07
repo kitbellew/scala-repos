@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.contrib.pattern
 
 import akka.testkit.AkkaSpec
@@ -43,8 +42,13 @@ object ReliableProxyDocSpec {
   //#demo-transition
 
   class WatchingProxyParent(targetPath: ActorPath) extends Actor {
-    val proxy = context.watch(context.actorOf(
-      ReliableProxy.props(targetPath, 100.millis, reconnectAfter = 500.millis, maxReconnects = 3)))
+    val proxy = context.watch(
+      context.actorOf(
+        ReliableProxy.props(
+          targetPath,
+          100.millis,
+          reconnectAfter = 500.millis,
+          maxReconnects = 3)))
 
     var client: Option[ActorRef] = None
 

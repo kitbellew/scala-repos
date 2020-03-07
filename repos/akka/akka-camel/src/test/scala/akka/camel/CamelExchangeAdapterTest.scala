@@ -1,15 +1,14 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.camel
 
 import language.implicitConversions
 
 import internal.CamelExchangeAdapter
 import org.apache.camel.impl.DefaultExchange
-import org.apache.camel.{ Exchange, ExchangePattern }
-import akka.camel.TestSupport.{ SharedCamelSystem }
+import org.apache.camel.{Exchange, ExchangePattern}
+import akka.camel.TestSupport.{SharedCamelSystem}
 import org.scalatest.FunSuite
 
 class CamelExchangeAdapterTest extends FunSuite with SharedCamelSystem {
@@ -93,10 +92,12 @@ class CamelExchangeAdapterTest extends FunSuite with SharedCamelSystem {
 
   test("mustCreateResponseMessageFromOutMessageWithAdditionalHeader") {
     val m = sampleInOut.toResponseMessage(Map("x" -> "y"))
-    assert(m === CamelMessage("test-out", Map("key-out" -> "val-out", "x" -> "y")))
+    assert(
+      m === CamelMessage("test-out", Map("key-out" -> "val-out", "x" -> "y")))
   }
 
-  test("mustCreateFailureMessageFromExceptionAndInMessageWithAdditionalHeader") {
+  test(
+    "mustCreateFailureMessageFromExceptionAndInMessageWithAdditionalHeader") {
     val e1 = sampleInOnly
     e1.setException(new Exception("test1"))
     assert(e1.toAkkaCamelException.getMessage === "test1")
@@ -111,7 +112,8 @@ class CamelExchangeAdapterTest extends FunSuite with SharedCamelSystem {
 
   }
 
-  test("mustCreateFailureMessageFromExceptionAndOutMessageWithAdditionalHeader") {
+  test(
+    "mustCreateFailureMessageFromExceptionAndOutMessageWithAdditionalHeader") {
     val e1 = sampleInOut
     e1.setException(new Exception("test2"))
     assert(e1.toAkkaCamelException.getMessage === "test2")

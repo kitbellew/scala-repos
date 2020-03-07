@@ -9,8 +9,8 @@ trait MonoidKTests[F[_]] extends SemigroupKTests[F] {
   def laws: MonoidKLaws[F]
 
   def monoidK[A: Arbitrary](implicit
-    ArbFA: Arbitrary[F[A]],
-    EqFA: Eq[F[A]]
+      ArbFA: Arbitrary[F[A]],
+      EqFA: Eq[F[A]]
   ): RuleSet = {
     new RuleSet {
       val name = "monoidK"
@@ -25,6 +25,6 @@ trait MonoidKTests[F[_]] extends SemigroupKTests[F] {
 }
 
 object MonoidKTests {
-  def apply[F[_] : MonoidK]: MonoidKTests[F] =
+  def apply[F[_]: MonoidK]: MonoidKTests[F] =
     new MonoidKTests[F] { def laws: MonoidKLaws[F] = MonoidKLaws[F] }
 }

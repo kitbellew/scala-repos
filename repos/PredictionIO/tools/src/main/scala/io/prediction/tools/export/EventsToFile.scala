@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools.export
 
 import io.prediction.controller.Utils
@@ -27,47 +26,32 @@ import org.apache.spark.sql.SQLContext
 import org.json4s.native.Serialization._
 
 case class EventsToFileArgs(
-  env: String = "",
-  logFile: String = "",
-  appId: Int = 0,
-  channel: Option[String] = None,
-  outputPath: String = "",
-  format: String = "parquet",
-  verbose: Boolean = false,
-  debug: Boolean = false)
+    env: String = "",
+    logFile: String = "",
+    appId: Int = 0,
+    channel: Option[String] = None,
+    outputPath: String = "",
+    format: String = "parquet",
+    verbose: Boolean = false,
+    debug: Boolean = false)
 
 object EventsToFile extends Logging {
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[EventsToFileArgs]("EventsToFile") {
-      opt[String]("env") action { (x, c) =>
-        c.copy(env = x)
-      }
-      opt[String]("log-file") action { (x, c) =>
-        c.copy(logFile = x)
-      }
-      opt[Int]("appid") action { (x, c) =>
-        c.copy(appId = x)
-      }
-      opt[String]("channel") action { (x, c) =>
-        c.copy(channel = Some(x))
-      }
-      opt[String]("format") action { (x, c) =>
-        c.copy(format = x)
-      }
-      opt[String]("output") action { (x, c) =>
-        c.copy(outputPath = x)
-      }
-      opt[Unit]("verbose") action { (x, c) =>
-        c.copy(verbose = true)
-      }
-      opt[Unit]("debug") action { (x, c) =>
-        c.copy(debug = true)
-      }
+      opt[String]("env") action { (x, c) => c.copy(env = x) }
+      opt[String]("log-file") action { (x, c) => c.copy(logFile = x) }
+      opt[Int]("appid") action { (x, c) => c.copy(appId = x) }
+      opt[String]("channel") action { (x, c) => c.copy(channel = Some(x)) }
+      opt[String]("format") action { (x, c) => c.copy(format = x) }
+      opt[String]("output") action { (x, c) => c.copy(outputPath = x) }
+      opt[Unit]("verbose") action { (x, c) => c.copy(verbose = true) }
+      opt[Unit]("debug") action { (x, c) => c.copy(debug = true) }
     }
     parser.parse(args, EventsToFileArgs()) map { args =>
       // get channelId
       val channels = Storage.getMetaDataChannels
-      val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
+      val channelMap =
+        channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
 
       val channelId: Option[Int] = args.channel.map { ch =>
         if (!channelMap.contains(ch)) {

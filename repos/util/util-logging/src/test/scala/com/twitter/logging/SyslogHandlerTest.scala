@@ -51,9 +51,17 @@ class SyslogHandlerTest extends WordSpec {
       SyslogFuture.sync
       val p = new DatagramPacket(new Array[Byte](1024), 1024)
       serverSocket.receive(p)
-      assert(new String(p.getData, 0, p.getLength) == "<9>2008-03-29T05:53:16 raccoon.local whiskey: fatal message!")
+      assert(
+        new String(
+          p.getData,
+          0,
+          p.getLength) == "<9>2008-03-29T05:53:16 raccoon.local whiskey: fatal message!")
       serverSocket.receive(p)
-      assert(new String(p.getData, 0, p.getLength) == "<11>2008-03-29T05:53:16 raccoon.local whiskey: error message!")
+      assert(
+        new String(
+          p.getData,
+          0,
+          p.getLength) == "<11>2008-03-29T05:53:16 raccoon.local whiskey: error message!")
     }
 
     "with server name" in {
@@ -74,7 +82,11 @@ class SyslogHandlerTest extends WordSpec {
       SyslogFuture.sync
       val p = new DatagramPacket(new Array[Byte](1024), 1024)
       serverSocket.receive(p)
-      assert(new String(p.getData, 0, p.getLength) == "<9>2008-03-29T05:53:16 raccoon.local [pingd] whiskey: fatal message!")
+      assert(
+        new String(
+          p.getData,
+          0,
+          p.getLength) == "<9>2008-03-29T05:53:16 raccoon.local [pingd] whiskey: fatal message!")
     }
 
     "with BSD time format" in {
@@ -95,7 +107,11 @@ class SyslogHandlerTest extends WordSpec {
       SyslogFuture.sync
       val p = new DatagramPacket(new Array[Byte](1024), 1024)
       serverSocket.receive(p)
-      assert(new String(p.getData, 0, p.getLength) == "<9>Mar 29 05:53:16 raccoon.local whiskey: fatal message!")
+      assert(
+        new String(
+          p.getData,
+          0,
+          p.getLength) == "<9>Mar 29 05:53:16 raccoon.local whiskey: fatal message!")
     }
   }
 }

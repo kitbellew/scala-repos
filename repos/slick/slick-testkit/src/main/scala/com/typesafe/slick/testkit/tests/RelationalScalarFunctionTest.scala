@@ -7,7 +7,7 @@ class RelationalScalarFunctionTest extends AsyncTest[RelationalTestDB] {
 
   def test = {
     def check[T](q: Rep[T], exp: T) = q.result.map(_ shouldBe exp)
-    def checkLit[T : ColumnType](v: T) = check(LiteralColumn(v), v)
+    def checkLit[T: ColumnType](v: T) = check(LiteralColumn(v), v)
     val s = "abcdefghijklmnopqrstuvwxyz"
 
     seq(
@@ -22,10 +22,9 @@ class RelationalScalarFunctionTest extends AsyncTest[RelationalTestDB] {
       checkLit(-17.5),
       checkLit(17.5f),
       checkLit(-17.5f),
-      checkLit(42l),
-      checkLit(-42l),
+      checkLit(42L),
+      checkLit(-42L),
       checkLit("foo"),
-
       check("42".asColumnOf[Int], 42),
       check(LiteralColumn("foo").length, 3),
       check(LiteralColumn("foo") ++ "bar", "foobar"),
@@ -51,19 +50,22 @@ class RelationalScalarFunctionTest extends AsyncTest[RelationalTestDB] {
       check(LiteralColumn(1.4).floor, 1.0),
       check(LiteralColumn(-1.5).floor, -2.0),
       check(LiteralColumn(-10.0).sign, -1),
-      Functions.pi.toDegrees.result.map(_.should(r => r > 179.9999 && r < 180.0001)),
-      (Functions.pi.toDegrees.toRadians - Functions.pi).abs.result.map(_.should(_ <= 0.00001)),
-
+      Functions.pi.toDegrees.result.map(_.should(r =>
+        r > 179.9999 && r < 180.0001)),
+      (Functions.pi.toDegrees.toRadians - Functions.pi).abs.result
+        .map(_.should(_ <= 0.00001)),
       check(LiteralColumn(s).substring(3, 5), s.substring(3, 5)),
       check(LiteralColumn(s).substring(3), s.substring(3)),
       check(LiteralColumn(s).take(3), s.take(3)),
       check(LiteralColumn(s).drop(3), s.drop(3)),
-      ifCap(rcap.replace)(check(LiteralColumn(s).replace("cd", "XXX"), s.replace("cd", "XXX"))),
+      ifCap(rcap.replace)(
+        check(LiteralColumn(s).replace("cd", "XXX"), s.replace("cd", "XXX"))),
       ifCap(rcap.reverse)(check(LiteralColumn(s).reverseString, s.reverse)),
-      ifCap(rcap.indexOf)(seq(
-        check(LiteralColumn(s).indexOf("o"), s.indexOf("o")),
-        check(LiteralColumn(s).indexOf("7"), s.indexOf("7"))
-      )),
+      ifCap(rcap.indexOf)(
+        seq(
+          check(LiteralColumn(s).indexOf("o"), s.indexOf("o")),
+          check(LiteralColumn(s).indexOf("7"), s.indexOf("7"))
+        )),
       ifCap(rcap.repeat)(check(LiteralColumn(s) * 2, s * 2))
     )
   }

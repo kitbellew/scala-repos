@@ -23,18 +23,31 @@ import scala.xml.Node
 
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[ui] class EnvironmentPage(parent: EnvironmentTab) extends WebUIPage("") {
+private[ui] class EnvironmentPage(parent: EnvironmentTab)
+    extends WebUIPage("") {
   private val listener = parent.listener
 
   def render(request: HttpServletRequest): Seq[Node] = {
     val runtimeInformationTable = UIUtils.listingTable(
-      propertyHeader, jvmRow, listener.jvmInformation, fixedWidth = true)
+      propertyHeader,
+      jvmRow,
+      listener.jvmInformation,
+      fixedWidth = true)
     val sparkPropertiesTable = UIUtils.listingTable(
-      propertyHeader, propertyRow, listener.sparkProperties, fixedWidth = true)
+      propertyHeader,
+      propertyRow,
+      listener.sparkProperties,
+      fixedWidth = true)
     val systemPropertiesTable = UIUtils.listingTable(
-      propertyHeader, propertyRow, listener.systemProperties, fixedWidth = true)
+      propertyHeader,
+      propertyRow,
+      listener.systemProperties,
+      fixedWidth = true)
     val classpathEntriesTable = UIUtils.listingTable(
-      classPathHeaders, classPathRow, listener.classpathEntries, fixedWidth = true)
+      classPathHeaders,
+      classPathRow,
+      listener.classpathEntries,
+      fixedWidth = true)
     val content =
       <span>
         <h4>Runtime Information</h4> {runtimeInformationTable}
@@ -48,7 +61,10 @@ private[ui] class EnvironmentPage(parent: EnvironmentTab) extends WebUIPage("") 
 
   private def propertyHeader = Seq("Name", "Value")
   private def classPathHeaders = Seq("Resource", "Source")
-  private def jvmRow(kv: (String, String)) = <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
-  private def propertyRow(kv: (String, String)) = <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
-  private def classPathRow(data: (String, String)) = <tr><td>{data._1}</td><td>{data._2}</td></tr>
+  private def jvmRow(kv: (String, String)) =
+    <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
+  private def propertyRow(kv: (String, String)) =
+    <tr><td>{kv._1}</td><td>{kv._2}</td></tr>
+  private def classPathRow(data: (String, String)) =
+    <tr><td>{data._1}</td><td>{data._2}</td></tr>
 }

@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.actor
 
-import akka.actor.{ Props, Actor }
-import akka.testkit.{ ImplicitSender, AkkaSpec }
+import akka.actor.{Props, Actor}
+import akka.testkit.{ImplicitSender, AkkaSpec}
 
 object InitializationDocSpec {
 
@@ -57,7 +57,8 @@ class InitializationDocSpec extends AkkaSpec with ImplicitSender {
   "Message based initialization example" must {
 
     "work correctly" in {
-      val example = system.actorOf(Props[MessageInitExample], "messageInitExample")
+      val example =
+        system.actorOf(Props[MessageInitExample], "messageInitExample")
       val probe = "U OK?"
 
       example ! probe

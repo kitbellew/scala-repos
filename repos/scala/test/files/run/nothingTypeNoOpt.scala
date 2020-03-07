@@ -13,7 +13,7 @@ class C {
     var y = 0
     // cannot assign an object of type Nothing$ to Int
     if (x) y = ???
-    else   y = 1
+    else y = 1
     y
   }
 
@@ -21,7 +21,7 @@ class C {
     var y = 0
     // tests that whatever is emitted after the throw is valid (what? depends on opts, presence of stack map frames)
     if (x) y = throw new Error("")
-    else   y = 1
+    else y = 1
     y
   }
 

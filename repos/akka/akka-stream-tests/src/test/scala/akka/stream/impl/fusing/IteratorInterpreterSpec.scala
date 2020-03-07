@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl.fusing
 
 import akka.testkit.AkkaSpec
@@ -14,15 +14,17 @@ class IteratorInterpreterSpec extends AkkaSpec {
   "IteratorInterpreter" must {
 
     "work in the happy case" in {
-      val itr = new IteratorInterpreter[Int, Int]((1 to 10).iterator, Seq(
-        Map((x: Int) ⇒ x + 1, stoppingDecider))).iterator
+      val itr = new IteratorInterpreter[Int, Int](
+        (1 to 10).iterator,
+        Seq(Map((x: Int) ⇒ x + 1, stoppingDecider))).iterator
 
       itr.toSeq should be(2 to 11)
     }
 
     "hasNext should not affect elements" in {
-      val itr = new IteratorInterpreter[Int, Int]((1 to 10).iterator, Seq(
-        Map((x: Int) ⇒ x, stoppingDecider))).iterator
+      val itr = new IteratorInterpreter[Int, Int](
+        (1 to 10).iterator,
+        Seq(Map((x: Int) ⇒ x, stoppingDecider))).iterator
 
       itr.hasNext should be(true)
       itr.hasNext should be(true)
@@ -34,22 +36,26 @@ class IteratorInterpreterSpec extends AkkaSpec {
     }
 
     "work with ops that need extra pull for complete" in {
-      val itr = new IteratorInterpreter[Int, Int]((1 to 10).iterator, Seq(NaiveTake(1))).iterator
+      val itr = new IteratorInterpreter[Int, Int](
+        (1 to 10).iterator,
+        Seq(NaiveTake(1))).iterator
 
       itr.toSeq should be(Seq(1))
     }
 
     "throw exceptions on empty iterator" in {
-      val itr = new IteratorInterpreter[Int, Int](List(1).iterator, Seq(
-        Map((x: Int) ⇒ x, stoppingDecider))).iterator
+      val itr = new IteratorInterpreter[Int, Int](
+        List(1).iterator,
+        Seq(Map((x: Int) ⇒ x, stoppingDecider))).iterator
 
       itr.next() should be(1)
       a[NoSuchElementException] should be thrownBy { itr.next() }
     }
 
     "throw exceptions when chain fails" in {
-      val itr = new IteratorInterpreter[Int, Int](List(1, 2, 3).iterator, Seq(
-        new PushStage[Int, Int] {
+      val itr = new IteratorInterpreter[Int, Int](
+        List(1, 2, 3).iterator,
+        Seq(new PushStage[Int, Int] {
           override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
             if (elem == 2) ctx.fail(new ArithmeticException())
             else ctx.push(elem)
@@ -63,8 +69,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
     }
 
     "throw exceptions when op in chain throws" in {
-      val itr = new IteratorInterpreter[Int, Int](List(1, 2, 3).iterator, Seq(
-        new PushStage[Int, Int] {
+      val itr = new IteratorInterpreter[Int, Int](
+        List(1, 2, 3).iterator,
+        Seq(new PushStage[Int, Int] {
           override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
             if (elem == 2) throw new ArithmeticException()
             else ctx.push(elem)
@@ -78,8 +85,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
     }
 
     "work with an empty iterator" in {
-      val itr = new IteratorInterpreter[Int, Int](Iterator.empty, Seq(
-        Map((x: Int) ⇒ x + 1, stoppingDecider))).iterator
+      val itr = new IteratorInterpreter[Int, Int](
+        Iterator.empty,
+        Seq(Map((x: Int) ⇒ x + 1, stoppingDecider))).iterator
 
       itr.hasNext should be(false)
       a[NoSuchElementException] should be thrownBy { itr.next() }
@@ -89,7 +97,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       val testBytes = (1 to 10).map(ByteString(_))
 
       def newItr(threshold: Int) =
-        new IteratorInterpreter[ByteString, ByteString](testBytes.iterator, Seq(ByteStringBatcher(threshold))).iterator
+        new IteratorInterpreter[ByteString, ByteString](
+          testBytes.iterator,
+          Seq(ByteStringBatcher(threshold))).iterator
 
       val itr1 = newItr(20)
       itr1.next() should be(ByteString(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
@@ -108,7 +118,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       itr3.hasNext should be(false)
 
       val itr4 =
-        new IteratorInterpreter[ByteString, ByteString](Iterator.empty, Seq(ByteStringBatcher(10))).iterator
+        new IteratorInterpreter[ByteString, ByteString](
+          Iterator.empty,
+          Seq(ByteStringBatcher(10))).iterator
 
       itr4.hasNext should be(false)
     }
@@ -130,13 +142,16 @@ class IteratorInterpreterSpec extends AkkaSpec {
     }
   }
 
-  case class ByteStringBatcher(threshold: Int, compact: Boolean = true) extends PushPullStage[ByteString, ByteString] {
+  case class ByteStringBatcher(threshold: Int, compact: Boolean = true)
+      extends PushPullStage[ByteString, ByteString] {
     require(threshold > 0, "Threshold must be positive")
 
     private var buf = ByteString.empty
     private var passthrough = false
 
-    override def onPush(elem: ByteString, ctx: Context[ByteString]): SyncDirective = {
+    override def onPush(
+        elem: ByteString,
+        ctx: Context[ByteString]): SyncDirective = {
       if (passthrough) ctx.push(elem)
       else {
         buf = buf ++ elem
@@ -154,7 +169,8 @@ class IteratorInterpreterSpec extends AkkaSpec {
       else ctx.pull()
     }
 
-    override def onUpstreamFinish(ctx: Context[ByteString]): TerminationDirective = {
+    override def onUpstreamFinish(
+        ctx: Context[ByteString]): TerminationDirective = {
       if (passthrough || buf.isEmpty) ctx.finish()
       else ctx.absorbTermination()
     }

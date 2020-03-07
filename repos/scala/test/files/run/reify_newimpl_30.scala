@@ -1,5 +1,5 @@
 import scala.reflect.runtime.universe._
-import scala.tools.reflect.{ ToolBox, ToolBoxError }
+import scala.tools.reflect.{ToolBox, ToolBoxError}
 import scala.tools.reflect.Eval
 
 object Test extends App {

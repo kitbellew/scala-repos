@@ -21,7 +21,8 @@ class HttpNackFilterTest extends FunSuite {
     val flakyService = new Service[Request, Response] {
       def apply(req: Request): Future[Response] = {
         if (n.get < 0) Future.exception(new Exception)
-        else if (n.getAndIncrement == 0) Future.exception(Failure.rejected("unhappy"))
+        else if (n.getAndIncrement == 0)
+          Future.exception(Failure.rejected("unhappy"))
         else Future.value(Response(Status.Ok))
       }
     }
@@ -40,7 +41,10 @@ class HttpNackFilterTest extends FunSuite {
       val client =
         Http.client
           .configured(Stats(clientSr))
-          .newService(Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])), "http")
+          .newService(
+            Name.bound(
+              Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+            "http")
 
       assert(Await.result(client(request)).status == Status.Ok)
       assert(clientSr.counters(Seq("http", "retries", "requeues")) == 1)
@@ -68,7 +72,8 @@ class HttpNackFilterTest extends FunSuite {
           .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
           .codec(com.twitter.finagle.http.Http())
           .reportTo(clientSr)
-          .hostConnectionLimit(1).build()
+          .hostConnectionLimit(1)
+          .build()
 
       assert(Await.result(client(request)).status == Status.Ok)
       assert(clientSr.counters(Seq("http", "retries", "requeues")) == 1)
@@ -92,7 +97,10 @@ class HttpNackFilterTest extends FunSuite {
       val client =
         Http.client
           .configured(Stats(clientSr))
-          .newService(Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])), "http")
+          .newService(
+            Name.bound(
+              Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+            "http")
 
       assert(Await.result(client(request)).status == Status.Ok)
       assert(clientSr.counters(Seq("http", "retries", "requeues")) == 1)
@@ -115,12 +123,17 @@ class HttpNackFilterTest extends FunSuite {
       val client =
         Http.client
           .configured(Stats(clientSr))
-          .newService(Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])), "http-client")
+          .newService(
+            Name.bound(
+              Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+            "http-client")
 
       val rep = Await.result(client(request))
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
-      assert(clientSr.counters.get(Seq("http-client", "requeue", "requeues")) == None)
+      assert(
+        clientSr.counters.get(
+          Seq("http-client", "requeue", "requeues")) == None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)
@@ -140,12 +153,17 @@ class HttpNackFilterTest extends FunSuite {
       val client =
         Http.client
           .configured(Stats(clientSr))
-          .newService(Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])), "http-client")
+          .newService(
+            Name.bound(
+              Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+            "http-client")
 
       val rep = Await.result(client(request))
       assert(rep.status == Status.InternalServerError)
       assert(rep.headerMap.get(HttpNackFilter.Header) == None)
-      assert(clientSr.counters.get(Seq("http-client", "requeue", "requeues")) == None)
+      assert(
+        clientSr.counters.get(
+          Seq("http-client", "requeue", "requeues")) == None)
 
       assert(serverSr.counters.get(Seq("myservice", "success")) == None)
       assert(serverSr.counters(Seq("myservice", "failures")) == 1)

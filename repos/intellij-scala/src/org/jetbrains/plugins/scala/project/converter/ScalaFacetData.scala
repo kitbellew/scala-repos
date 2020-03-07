@@ -5,18 +5,22 @@ import com.intellij.conversion.ModuleSettings
 import org.jdom.Element
 
 /**
- * @author Pavel Fatin
- */
-private case class ScalaFacetData(languageLevel: String,
-                                  basePackage: Option[String],
-                                  fscEnabled: Boolean,
-                                  compilerLibrary: Option[LibraryReference],
-                                  maximumHeapSize: Int,
-                                  vmOptions: Seq[String],
-                                  compilerSettings: ScalaCompilerSettings) {
+  * @author Pavel Fatin
+  */
+private case class ScalaFacetData(
+    languageLevel: String,
+    basePackage: Option[String],
+    fscEnabled: Boolean,
+    compilerLibrary: Option[LibraryReference],
+    maximumHeapSize: Int,
+    vmOptions: Seq[String],
+    compilerSettings: ScalaCompilerSettings) {
   def removeFrom(module: ModuleSettings) {
-    val facetElement = ScalaFacetData.scalaFacetElementIn(module).getOrElse(
-      throw new IllegalStateException("Cannot remove Scala facet from module: " + module.getModuleName))
+    val facetElement = ScalaFacetData
+      .scalaFacetElementIn(module)
+      .getOrElse(
+        throw new IllegalStateException(
+          "Cannot remove Scala facet from module: " + module.getModuleName))
 
     facetElement.detach()
   }
@@ -30,13 +34,17 @@ private object ScalaFacetData {
     Option(module.getFacetElement("scala"))
 
   def findIn(module: ModuleSettings): Option[ScalaFacetData] =
-    scalaFacetElementIn(module).map(element => ScalaFacetData(new FacetProperties(element)))
+    scalaFacetElementIn(module).map(element =>
+      ScalaFacetData(new FacetProperties(element)))
 
   def apply(properties: FacetProperties): ScalaFacetData = {
     val compilerSettings = ScalaCompilerSettings.from(properties)
 
-    val compilerLibraryId = properties.option("compilerLibraryLevel").flatMap { level =>
-      properties.option("compilerLibraryName").map(LibraryReference(Level.fromFacetTitle(level), _))
+    val compilerLibraryId = properties.option("compilerLibraryLevel").flatMap {
+      level =>
+        properties
+          .option("compilerLibraryName")
+          .map(LibraryReference(Level.fromFacetTitle(level), _))
     }
 
     new ScalaFacetData(

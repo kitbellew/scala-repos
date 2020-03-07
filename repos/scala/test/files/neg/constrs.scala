@@ -3,7 +3,9 @@ object test {
   abstract class Test(x: Int) {
     type T;
     val u = x;
-    def this(y: Int)(z: Int)(t: this.T) = { this(this.u + y + z); Console.println(x) }
+    def this(y: Int)(z: Int)(t: this.T) = {
+      this(this.u + y + z); Console.println(x)
+    }
   }
 
   class Foo(x: Int) {

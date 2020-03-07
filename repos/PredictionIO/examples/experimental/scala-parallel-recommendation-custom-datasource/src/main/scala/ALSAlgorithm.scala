@@ -13,13 +13,11 @@ import org.apache.spark.mllib.recommendation.ALSModel
 
 import grizzled.slf4j.Logger
 
-case class ALSAlgorithmParams(
-  rank: Int,
-  numIterations: Int,
-  lambda: Double) extends Params
+case class ALSAlgorithmParams(rank: Int, numIterations: Int, lambda: Double)
+    extends Params
 
 class ALSAlgorithm(val ap: ALSAlgorithmParams)
-  extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
+    extends PAlgorithm[PreparedData, ALSModel, Query, PredictedResult] {
 
   @transient lazy val logger = Logger[this.type]
 
@@ -27,10 +25,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     // Convert user and item String IDs to Int index for MLlib
     val userStringIntMap = BiMap.stringInt(data.ratings.map(_.user))
     val itemStringIntMap = BiMap.stringInt(data.ratings.map(_.item))
-    val mllibRatings = data.ratings.map( r =>
+    val mllibRatings = data.ratings.map(r =>
       // MLlibRating requires integer index for user and item
-      MLlibRating(userStringIntMap(r.user), itemStringIntMap(r.item), r.rating)
-    )
+      MLlibRating(userStringIntMap(r.user), itemStringIntMap(r.item), r.rating))
     val m = ALS.train(mllibRatings, ap.rank, ap.numIterations, ap.lambda)
     new ALSModel(
       rank = m.rank,
@@ -42,18 +39,22 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
     // Convert String ID to Int index for Mllib
-    model.userStringIntMap.get(query.user).map { userInt =>
-      // create inverse view of itemStringIntMap
-      val itemIntStringMap = model.itemStringIntMap.inverse
-      // recommendProducts() returns Array[MLlibRating], which uses item Int
-      // index. Convert it to String ID for returning PredictedResult
-      val itemScores = model.recommendProducts(userInt, query.num)
-        .map (r => ItemScore(itemIntStringMap(r.product), r.rating))
-      new PredictedResult(itemScores)
-    }.getOrElse{
-      logger.info(s"No prediction for unknown user ${query.user}.")
-      new PredictedResult(Array.empty)
-    }
+    model.userStringIntMap
+      .get(query.user)
+      .map { userInt =>
+        // create inverse view of itemStringIntMap
+        val itemIntStringMap = model.itemStringIntMap.inverse
+        // recommendProducts() returns Array[MLlibRating], which uses item Int
+        // index. Convert it to String ID for returning PredictedResult
+        val itemScores = model
+          .recommendProducts(userInt, query.num)
+          .map(r => ItemScore(itemIntStringMap(r.product), r.rating))
+        new PredictedResult(itemScores)
+      }
+      .getOrElse {
+        logger.info(s"No prediction for unknown user ${query.user}.")
+        new PredictedResult(Array.empty)
+      }
   }
 
 }

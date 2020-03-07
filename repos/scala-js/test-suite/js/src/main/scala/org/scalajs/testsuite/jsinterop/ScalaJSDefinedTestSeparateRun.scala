@@ -11,8 +11,8 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation._
 
 /** Elements of ScalaJSDefinedTest in `src/test/` to be compiled in a
- *  separate compiler run, to test separate compilation.
- */
+  *  separate compiler run, to test separate compilation.
+  */
 object ScalaJSDefinedTestSeparateRun {
 
   @ScalaJSDefined

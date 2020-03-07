@@ -5,22 +5,26 @@ import com.twitter.finagle.{Addr, Dtab, NameTree, Namer, Resolver, Path, Name}
 import com.twitter.util.{Var, Activity}
 
 /**
- * A namer for serverset paths of the form /zk-hosts/path... where zk-hosts is
- * a zk connect string like 'zk.foo.com:2181'.  Naming is performed by way of a
- * Resolver.
- */
+  * A namer for serverset paths of the form /zk-hosts/path... where zk-hosts is
+  * a zk connect string like 'zk.foo.com:2181'.  Naming is performed by way of a
+  * Resolver.
+  */
 private[twitter] trait BaseServersetNamer extends Namer {
 
   /** Resolve a resolver string to a Var[Addr]. */
-  protected[this] def resolve(spec: String): Var[Addr] = Resolver.eval(spec) match {
-    case Name.Bound(addr) => addr
-    case _ => Var.value(Addr.Neg)
-  }
+  protected[this] def resolve(spec: String): Var[Addr] =
+    Resolver.eval(spec) match {
+      case Name.Bound(addr) => addr
+      case _                => Var.value(Addr.Neg)
+    }
 
-  protected[this] def resolveServerset(hosts: String, path: String) = 
+  protected[this] def resolveServerset(hosts: String, path: String) =
     resolve(s"zk2!$hosts!$path")
 
-  protected[this] def resolveServerset(hosts: String, path: String, endpoint: String) = 
+  protected[this] def resolveServerset(
+      hosts: String,
+      path: String,
+      endpoint: String) =
     resolve(s"zk2!$hosts!$path!$endpoint")
 
   /** Bind a name. */
@@ -36,8 +40,8 @@ private[twitter] trait BaseServersetNamer extends Namer {
       // it resolves negatively.
       Activity(name.addr map {
         case Addr.Bound(_, _) => Activity.Ok(NameTree.Leaf(name))
-        case Addr.Neg => Activity.Ok(NameTree.Neg)
-        case Addr.Pending => Activity.Pending
+        case Addr.Neg         => Activity.Ok(NameTree.Neg)
+        case Addr.Pending     => Activity.Pending
         case Addr.Failed(exc) => Activity.Failed(exc)
       })
 
@@ -46,30 +50,30 @@ private[twitter] trait BaseServersetNamer extends Namer {
 }
 
 /**
- * The serverset namer takes [[com.twitter.finagle.Path Paths]] of the form
- *
- * {{{
- * hosts/path...
- * }}}
- *
- * and returns a dynamic represention of the resolution of the path into a
- * tree of [[com.twitter.finagle.Name Names]].
- *
- * The namer synthesizes nodes for each endpoint in the serverset.
- * Endpoint names are delimited by the ':' character. For example
- *
- * {{{
- * /$/com.twitter.serverset/sdzookeeper.local.twitter.com:2181/twitter/service/cuckoo/prod/read:http
- * }}}
- *
- * is the endpoint `http` of serverset `/twitter/service/cuckoo/prod/read` on
- * the ensemble `sdzookeeper.local.twitter.com:2181`.
- */
+  * The serverset namer takes [[com.twitter.finagle.Path Paths]] of the form
+  *
+  * {{{
+  * hosts/path...
+  * }}}
+  *
+  * and returns a dynamic represention of the resolution of the path into a
+  * tree of [[com.twitter.finagle.Name Names]].
+  *
+  * The namer synthesizes nodes for each endpoint in the serverset.
+  * Endpoint names are delimited by the ':' character. For example
+  *
+  * {{{
+  * /$/com.twitter.serverset/sdzookeeper.local.twitter.com:2181/twitter/service/cuckoo/prod/read:http
+  * }}}
+  *
+  * is the endpoint `http` of serverset `/twitter/service/cuckoo/prod/read` on
+  * the ensemble `sdzookeeper.local.twitter.com:2181`.
+  */
 class serverset extends BaseServersetNamer {
   private[this] val idPrefix = Path.Utf8("$", "com.twitter.serverset")
 
   protected[this] def bind(path: Path): Option[Name.Bound] = path match {
-    case Path.Utf8(hosts, rest@_*) =>
+    case Path.Utf8(hosts, rest @ _*) =>
       val addr = if (rest.nonEmpty && (rest.last contains ":")) {
         val Array(name, endpoint) = rest.last.split(":", 2)
         val zkPath = (rest.init :+ name).mkString("/", "/", "")

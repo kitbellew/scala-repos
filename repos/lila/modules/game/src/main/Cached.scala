@@ -8,19 +8,19 @@ import chess.variant.Variant
 
 import lila.db.api.$count
 import lila.db.BSON._
-import lila.memo.{ AsyncCache, MongoCache, ExpireSetMemo, Builder }
-import lila.user.{ User, UidNb }
+import lila.memo.{AsyncCache, MongoCache, ExpireSetMemo, Builder}
+import lila.user.{User, UidNb}
 import tube.gameTube
 import UidNb.UidNbBSONHandler
 
-final class Cached(
-    mongoCache: MongoCache.Builder,
-    defaultTtl: FiniteDuration) {
+final class Cached(mongoCache: MongoCache.Builder, defaultTtl: FiniteDuration) {
 
   def nbImportedBy(userId: String): Fu[Int] = count(Query imported userId)
-  def clearNbImportedByCache(userId: String) = count.remove(Query imported userId)
+  def clearNbImportedByCache(userId: String) =
+    count.remove(Query imported userId)
 
-  def nbPlaying(userId: String): Fu[Int] = countShortTtl(Query nowPlaying userId)
+  def nbPlaying(userId: String): Fu[Int] =
+    countShortTtl(Query nowPlaying userId)
 
   private implicit val userHandler = User.userBSONHandler
 
@@ -48,15 +48,20 @@ final class Cached(
     private val cache = Builder.size[String, chess.Division](5000)
 
     def apply(game: Game, initialFen: Option[String]): chess.Division =
-      if (!Variant.divisionSensibleVariants.contains(game.variant)) chess.Division.empty
-      else Option(cache getIfPresent game.id) | {
-        val div = chess.Replay.boards(
-          moveStrs = game.pgnMoves,
-          initialFen = initialFen,
-          variant = game.variant
-        ).toOption.fold(chess.Division.empty)(chess.Divider.apply)
-        cache.put(game.id, div)
-        div
-      }
+      if (!Variant.divisionSensibleVariants.contains(game.variant))
+        chess.Division.empty
+      else
+        Option(cache getIfPresent game.id) | {
+          val div = chess.Replay
+            .boards(
+              moveStrs = game.pgnMoves,
+              initialFen = initialFen,
+              variant = game.variant
+            )
+            .toOption
+            .fold(chess.Division.empty)(chess.Divider.apply)
+          cache.put(game.id, div)
+          div
+        }
   }
 }

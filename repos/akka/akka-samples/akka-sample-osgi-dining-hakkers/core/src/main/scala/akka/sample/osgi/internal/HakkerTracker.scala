@@ -44,14 +44,10 @@ class HakkerTracker extends PersistentActor {
       hakker ! SubscribeToHakkerStateChanges
 
     case HakkerStateChange(name, _, "eating") =>
-      persist(StartedEating(name)) { evt =>
-        state = state.updated(evt)
-      }
+      persist(StartedEating(name)) { evt => state = state.updated(evt) }
 
     case HakkerStateChange(name, "eating", _) =>
-      persist(StoppedEating(name)) { evt =>
-        state = state.updated(evt)
-      }
+      persist(StoppedEating(name)) { evt => state = state.updated(evt) }
 
     case GetEatingCount(name) =>
       sender() ! EatingCount(name, 17)

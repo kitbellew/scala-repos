@@ -18,14 +18,14 @@
 package org.apache.spark.sql.execution.datasources
 
 /**
- * A container for bucketing information.
- * Bucketing is a technology for decomposing data sets into more manageable parts, and the number
- * of buckets is fixed so it does not fluctuate with data.
- *
- * @param numBuckets number of buckets.
- * @param bucketColumnNames the names of the columns that used to generate the bucket id.
- * @param sortColumnNames the names of the columns that used to sort data in each bucket.
- */
+  * A container for bucketing information.
+  * Bucketing is a technology for decomposing data sets into more manageable parts, and the number
+  * of buckets is fixed so it does not fluctuate with data.
+  *
+  * @param numBuckets number of buckets.
+  * @param bucketColumnNames the names of the columns that used to generate the bucket id.
+  * @param sortColumnNames the names of the columns that used to sort data in each bucket.
+  */
 private[sql] case class BucketSpec(
     numBuckets: Int,
     bucketColumnNames: Seq[String],
@@ -46,7 +46,7 @@ private[sql] object BucketingUtils {
 
   def getBucketId(fileName: String): Option[Int] = fileName match {
     case bucketedFileName(bucketId) => Some(bucketId.toInt)
-    case other => None
+    case other                      => None
   }
 
   def bucketIdToString(id: Int): String = f"_$id%05d"

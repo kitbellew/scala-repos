@@ -4,8 +4,14 @@ import com.twitter.finagle.service.FailingFactory
 import com.twitter.finagle.stats.{StatsReceiver, NullStatsReceiver}
 import com.twitter.finagle.util.OnReady
 import com.twitter.finagle.{
-  ClientConnection, Group, NoBrokersAvailableException, Service, ServiceFactory,
-  ServiceProxy, Status}
+  ClientConnection,
+  Group,
+  NoBrokersAvailableException,
+  Service,
+  ServiceFactory,
+  ServiceProxy,
+  Status
+}
 import com.twitter.util._
 import scala.annotation.tailrec
 import scala.util.Random
@@ -16,18 +22,21 @@ object HeapBalancer {
 }
 
 /**
- * An efficient load balancer that operates on Activity[Set[ServiceFactory[Req, Rep]]].
- */
+  * An efficient load balancer that operates on Activity[Set[ServiceFactory[Req, Rep]]].
+  */
 class HeapBalancer[Req, Rep](
-  factories: Activity[Set[ServiceFactory[Req, Rep]]],
-  statsReceiver: StatsReceiver,
-  emptyException: Throwable,
-  rng: Random
-) extends ServiceFactory[Req, Rep] with OnReady {
+    factories: Activity[Set[ServiceFactory[Req, Rep]]],
+    statsReceiver: StatsReceiver,
+    emptyException: Throwable,
+    rng: Random
+) extends ServiceFactory[Req, Rep]
+    with OnReady {
 
   import HeapBalancer._
 
-  private[this] val sizeGauge = statsReceiver.addGauge("size") { synchronized { size } }
+  private[this] val sizeGauge = statsReceiver.addGauge("size") {
+    synchronized { size }
+  }
   private[this] val adds = statsReceiver.counter("adds")
   private[this] val removes = statsReceiver.counter("removes")
 
@@ -37,10 +46,10 @@ class HeapBalancer[Req, Rep](
   // to 0 represent downed nodes. This allows us to maintain
   // a single heap and still load balance in downed scenarios.
   case class Node(
-    factory: ServiceFactory[Req, Rep],
-    var load: Int,
-    var index: Int,
-    var downq: Node = null
+      factory: ServiceFactory[Req, Rep],
+      var load: Int,
+      var index: Int,
+      var downq: Node = null
   )
 
   // Linked list of downed nodes.
@@ -75,7 +84,6 @@ class HeapBalancer[Req, Rep](
 
   private[this] val observation = factories.run.changes respond {
     case Activity.Pending =>
-
     case Activity.Ok(newSet) =>
       updateGroup(newSet)
       ready.setDone()
@@ -92,8 +100,8 @@ class HeapBalancer[Req, Rep](
 
   private[this] val loadGauge = statsReceiver.addGauge("load") {
     val loads = synchronized {
-      heap drop(1) map { n =>
-        if (n.load < 0) n.load+Penalty
+      heap drop (1) map { n =>
+        if (n.load < 0) n.load + Penalty
         else n.load
       }
     }
@@ -152,11 +160,11 @@ class HeapBalancer[Req, Rep](
     var n = downq
     var m = null: Node
     while (n != null) {
-      if (n.index < 0) {  // discarded node
+      if (n.index < 0) { // discarded node
         n = n.downq
         if (m == null) downq = n
         else m.downq = n
-      } else if (n.factory.status == Status.Open) {  // revived node
+      } else if (n.factory.status == Status.Open) { // revived node
         n.load -= Penalty
         fixUp(heap, n.index)
         val o = n.downq
@@ -164,14 +172,15 @@ class HeapBalancer[Req, Rep](
         n = o
         if (m == null) downq = n
         else m.downq = n
-      } else {  // unchanged
+      } else { // unchanged
         m = n
         n = n.downq
       }
     }
 
     n = heap(1)
-    if (n.factory.status == Status.Open || n.load >= 0) n else {
+    if (n.factory.status == Status.Open || n.load >= 0) n
+    else {
       // Mark as down.
       n.downq = downq
       downq = n
@@ -182,8 +191,7 @@ class HeapBalancer[Req, Rep](
   }
 
   private[this] class Wrapped(n: Node, underlying: Service[Req, Rep])
-    extends ServiceProxy[Req, Rep](underlying)
-  {
+      extends ServiceProxy[Req, Rep](underlying) {
     override def close(deadline: Time) =
       super.close(deadline) ensure {
         put(n)
@@ -211,7 +219,7 @@ class HeapBalancer[Req, Rep](
   }
 
   private[this] val nodesClosable: Closable = Closable.make { deadline =>
-    Closable.all(synchronized(heap).map(_.factory):_*).close(deadline)
+    Closable.all(synchronized(heap).map(_.factory): _*).close(deadline)
   }
 
   def close(deadline: Time) = {
@@ -219,9 +227,9 @@ class HeapBalancer[Req, Rep](
   }
 
   /**
-   * HeapBalancer status is the best of its constituent nodes, excluding
-   * the heap(0) node because our implementation is 1-indexed.
-   */
+    * HeapBalancer status is the best of its constituent nodes, excluding
+    * the heap(0) node because our implementation is 1-indexed.
+    */
   override def status: Status = Status.bestOf(heap.drop(1), nodeStatus)
 
   private[this] val nodeStatus: Node => Status = _.factory.status

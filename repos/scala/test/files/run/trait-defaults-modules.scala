@@ -1,6 +1,6 @@
 trait T1 { def a: Any }
 
-trait T2 extends T1 { object a; object b; private object c; def usec: Any = c}
+trait T2 extends T1 { object a; object b; private object c; def usec: Any = c }
 trait T3 extends T2
 
 class C1 extends T1 { object a; object b }

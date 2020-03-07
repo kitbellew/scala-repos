@@ -1,7 +1,7 @@
 package docs.stream.cookbook
 
 import akka.NotUsed
-import akka.actor.{ Props, ActorRef, Actor }
+import akka.actor.{Props, ActorRef, Actor}
 import akka.stream.ClosedShape
 import akka.stream.scaladsl._
 import akka.stream.testkit._
@@ -20,15 +20,22 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       case object ReplenishTokens
 
-      def props(maxAvailableTokens: Int, tokenRefreshPeriod: FiniteDuration,
-                tokenRefreshAmount: Int): Props =
-        Props(new Limiter(maxAvailableTokens, tokenRefreshPeriod, tokenRefreshAmount))
+      def props(
+          maxAvailableTokens: Int,
+          tokenRefreshPeriod: FiniteDuration,
+          tokenRefreshAmount: Int): Props =
+        Props(
+          new Limiter(
+            maxAvailableTokens,
+            tokenRefreshPeriod,
+            tokenRefreshAmount))
     }
 
     class Limiter(
-      val maxAvailableTokens: Int,
-      val tokenRefreshPeriod: FiniteDuration,
-      val tokenRefreshAmount: Int) extends Actor {
+        val maxAvailableTokens: Int,
+        val tokenRefreshPeriod: FiniteDuration,
+        val tokenRefreshAmount: Int)
+        extends Actor {
       import Limiter._
       import context.dispatcher
       import akka.actor.Status
@@ -45,7 +52,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       val open: Receive = {
         case ReplenishTokens =>
-          permitTokens = math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
+          permitTokens =
+            math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
         case WantToPass =>
           permitTokens -= 1
           sender() ! MayPass
@@ -54,7 +62,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       val closed: Receive = {
         case ReplenishTokens =>
-          permitTokens = math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
+          permitTokens =
+            math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
           releaseWaiting()
         case WantToPass =>
           waitQueue = waitQueue.enqueue(sender())
@@ -70,7 +79,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       override def postStop(): Unit = {
         replenishTimer.cancel()
-        waitQueue foreach (_ ! Status.Failure(new IllegalStateException("limiter stopped")))
+        waitQueue foreach (_ ! Status.Failure(
+          new IllegalStateException("limiter stopped")))
       }
     }
     //#global-limiter-actor
@@ -78,7 +88,9 @@ class RecipeGlobalRateLimit extends RecipeSpec {
     "work" in {
 
       //#global-limiter-flow
-      def limitGlobal[T](limiter: ActorRef, maxAllowedWait: FiniteDuration): Flow[T, T, NotUsed] = {
+      def limitGlobal[T](
+          limiter: ActorRef,
+          maxAllowedWait: FiniteDuration): Flow[T, T, NotUsed] = {
         import akka.pattern.ask
         import akka.util.Timeout
         Flow[T].mapAsync(4)((element: T) => {
@@ -94,18 +106,24 @@ class RecipeGlobalRateLimit extends RecipeSpec {
       // Use a large period and emulate the timer by hand instead
       val limiter = system.actorOf(Limiter.props(2, 100.days, 1), "limiter")
 
-      val source1 = Source.fromIterator(() => Iterator.continually("E1")).via(limitGlobal(limiter, 2.seconds))
-      val source2 = Source.fromIterator(() => Iterator.continually("E2")).via(limitGlobal(limiter, 2.seconds))
+      val source1 = Source
+        .fromIterator(() => Iterator.continually("E1"))
+        .via(limitGlobal(limiter, 2.seconds))
+      val source2 = Source
+        .fromIterator(() => Iterator.continually("E2"))
+        .via(limitGlobal(limiter, 2.seconds))
 
       val probe = TestSubscriber.manualProbe[String]()
 
-      RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
-        import GraphDSL.Implicits._
-        val merge = b.add(Merge[String](2))
-        source1 ~> merge ~> Sink.fromSubscriber(probe)
-        source2 ~> merge
-        ClosedShape
-      }).run()
+      RunnableGraph
+        .fromGraph(GraphDSL.create() { implicit b =>
+          import GraphDSL.Implicits._
+          val merge = b.add(Merge[String](2))
+          source1 ~> merge ~> Sink.fromSubscriber(probe)
+          source2 ~> merge
+          ClosedShape
+        })
+        .run()
 
       probe.expectSubscription().request(1000)
 

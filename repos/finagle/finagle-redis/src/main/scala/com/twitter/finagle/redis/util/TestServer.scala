@@ -15,14 +15,19 @@ object RedisCluster { self =>
 
   def address: Option[InetSocketAddress] = instanceStack.head.address
   def address(i: Int) = instanceStack(i).address
-  def addresses: Seq[Option[InetSocketAddress]] = instanceStack.map { i => i.address }
+  def addresses: Seq[Option[InetSocketAddress]] = instanceStack.map { i =>
+    i.address
+  }
 
   def hostAddresses(): String = {
     require(instanceStack.length > 0)
-    addresses.map { address =>
-      val addy = address.get
-      "%s:%d".format(addy.getHostName(), addy.getPort())
-    }.sorted.mkString(",")
+    addresses
+      .map { address =>
+        val addy = address.get
+        "%s:%d".format(addy.getHostName(), addy.getPort())
+      }
+      .sorted
+      .mkString(",")
   }
 
   def start(count: Int = 1) {
@@ -41,11 +46,13 @@ object RedisCluster { self =>
   }
 
   // Make sure the process is always killed eventually
-  Runtime.getRuntime().addShutdownHook(new Thread {
-    override def run() {
-      self.instanceStack.foreach { instance => instance.stop() }
-    }
-  });
+  Runtime
+    .getRuntime()
+    .addShutdownHook(new Thread {
+      override def run() {
+        self.instanceStack.foreach { instance => instance.stop() }
+      }
+    });
 }
 
 class ExternalRedis() {
@@ -58,7 +65,9 @@ class ExternalRedis() {
     val p = new ProcessBuilder("redis-server", "--help").start()
     p.waitFor()
     val exitValue = p.exitValue()
-    require(exitValue == 0 || exitValue == 1, "redis-server binary must be present.")
+    require(
+      exitValue == 0 || exitValue == 1,
+      "redis-server binary must be present.")
   }
 
   private[this] def findAddress() {
@@ -71,11 +80,13 @@ class ExternalRedis() {
         Thread.sleep(5)
       }
     }
-    address.getOrElse { sys.error("Couldn't get an address for the external redis instance") }
+    address.getOrElse {
+      sys.error("Couldn't get an address for the external redis instance")
+    }
   }
 
   protected def createConfigFile(port: Int): File = {
-    val f = File.createTempFile("redis-"+rand.nextInt(1000), ".tmp")
+    val f = File.createTempFile("redis-" + rand.nextInt(1000), ".tmp")
     f.deleteOnExit()
     val out = new PrintWriter(new BufferedWriter(new FileWriter(f)))
     val conf = "port %s".format(port)

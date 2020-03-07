@@ -10,43 +10,44 @@ object ExternalCompile {
     System.getProperty("os.name").toLowerCase().indexOf("win") >= 0
 
   val scalaJSExternalCompileConfigSettings: Seq[Setting[_]] = inTask(compile)(
-      Defaults.runnerTask
+    Defaults.runnerTask
   ) ++ Seq(
-      fork in compile := true,
-      trapExit in compile := true,
-      javaOptions in compile += "-Xmx512M",
+    fork in compile := true,
+    trapExit in compile := true,
+    javaOptions in compile += "-Xmx512M",
+    compile := {
+      val inputs = (compileInputs in compile).value
+      import inputs.config._
 
-      compile := {
-        val inputs = (compileInputs in compile).value
-        import inputs.config._
+      val s = streams.value
+      val logger = s.log
+      val cacheDir = s.cacheDirectory
 
-        val s = streams.value
-        val logger = s.log
-        val cacheDir = s.cacheDirectory
+      // Discover classpaths
 
-        // Discover classpaths
+      def cpToString(cp: Seq[File]) =
+        cp.map(_.getAbsolutePath).mkString(java.io.File.pathSeparator)
 
-        def cpToString(cp: Seq[File]) =
-          cp.map(_.getAbsolutePath).mkString(java.io.File.pathSeparator)
+      val compilerCp = inputs.compilers.scalac.scalaInstance.allJars
+      val cpStr = cpToString(classpath)
 
-        val compilerCp = inputs.compilers.scalac.scalaInstance.allJars
-        val cpStr = cpToString(classpath)
+      // List all my dependencies (recompile if any of these changes)
 
-        // List all my dependencies (recompile if any of these changes)
-
-        val allMyDependencies = classpath filterNot (_ == classesDirectory) flatMap { cpFile =>
+      val allMyDependencies =
+        classpath filterNot (_ == classesDirectory) flatMap { cpFile =>
           if (cpFile.isDirectory) (cpFile ** "*.class").get
           else Seq(cpFile)
         }
 
-        // Compile
+      // Compile
 
-        val cachedCompile = FileFunction.cached(cacheDir / "compile",
-            FilesInfo.lastModified, FilesInfo.exists) { dependencies =>
-
+      val cachedCompile = FileFunction.cached(
+        cacheDir / "compile",
+        FilesInfo.lastModified,
+        FilesInfo.exists) {
+        dependencies =>
           logger.info(
-              "Compiling %d Scala sources to %s..." format (
-              sources.size, classesDirectory))
+            "Compiling %d Scala sources to %s..." format (sources.size, classesDirectory))
 
           if (classesDirectory.exists)
             IO.delete(classesDirectory)
@@ -72,12 +73,14 @@ object ExternalCompile {
 
           def doCompile(sourcesArgs: List[String]): Unit = {
             val run = (runner in compile).value
-            run.run("scala.tools.nsc.Main", compilerCp,
-                "-cp" :: cpStr ::
+            run.run(
+              "scala.tools.nsc.Main",
+              compilerCp,
+              "-cp" :: cpStr ::
                 "-d" :: classesDirectory.getAbsolutePath() ::
                 options ++:
                 sourcesArgs,
-                patchedLogger) foreach sys.error
+              patchedLogger) foreach sys.error
           }
 
           /* Crude way of overcoming the Windows limitation on command line
@@ -87,7 +90,7 @@ object ExternalCompile {
               (sourcesArgs.map(_.length).sum > 1536)) {
             IO.withTemporaryFile("sourcesargs", ".txt") { sourceListFile =>
               IO.writeLines(sourceListFile, sourcesArgs)
-              doCompile(List("@"+sourceListFile.getAbsolutePath()))
+              doCompile(List("@" + sourceListFile.getAbsolutePath()))
             }
           } else {
             doCompile(sourcesArgs)
@@ -95,21 +98,20 @@ object ExternalCompile {
 
           // Output is all files in classesDirectory
           (classesDirectory ** AllPassFilter).get.toSet
-        }
+      }
 
-        cachedCompile((sources ++ allMyDependencies).toSet)
+      cachedCompile((sources ++ allMyDependencies).toSet)
 
-        // We do not have dependency analysis when compiling externally
-        sbt.inc.Analysis.Empty
-      },
-
-      // Make sure jsDependencyManifest runs after compile, otherwise compile
-      // might remove the entire directory afterwards.
-      jsDependencyManifest <<= jsDependencyManifest.dependsOn(compile)
+      // We do not have dependency analysis when compiling externally
+      sbt.inc.Analysis.Empty
+    },
+    // Make sure jsDependencyManifest runs after compile, otherwise compile
+    // might remove the entire directory afterwards.
+    jsDependencyManifest <<= jsDependencyManifest.dependsOn(compile)
   )
 
   val scalaJSExternalCompileSettings = (
-      inConfig(Compile)(scalaJSExternalCompileConfigSettings) ++
+    inConfig(Compile)(scalaJSExternalCompileConfigSettings) ++
       inConfig(Test)(scalaJSExternalCompileConfigSettings)
   )
 

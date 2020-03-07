@@ -21,7 +21,6 @@ import scala.annotation.tailrec
   * @author Alexander Podkhalyuzin
   *         Date: 22.05.2008
   */
-
 class DefinitionsFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment]) return false
@@ -32,27 +31,33 @@ class DefinitionsFilter extends ElementFilter {
         case _: ScClassParameter =>
           return true
         case _: ScReferenceExpression =>
-        case _ => return false
+        case _                        => return false
       }
       @tailrec
       def findParent(p: PsiElement): PsiElement = {
         if (p == null) return null
         p.getParent match {
-          case parent@(_: ScBlock | _: ScCaseClause | _: ScTemplateBody | _: ScClassParameter | _: ScalaFile) =>
+          case parent @ (_: ScBlock | _: ScCaseClause | _: ScTemplateBody |
+              _: ScClassParameter | _: ScalaFile) =>
             parent match {
               case clause: ScCaseClause =>
                 clause.funType match {
-                  case Some(elem) => if (leaf.getTextRange.getStartOffset <= elem.getTextRange.getStartOffset) return null
+                  case Some(elem) =>
+                    if (leaf.getTextRange.getStartOffset <= elem.getTextRange.getStartOffset)
+                      return null
                   case _ => return null
                 }
               case _ =>
             }
-            if (!parent.isInstanceOf[ScalaFile] || parent.asInstanceOf[ScalaFile].isScriptFile())
+            if (!parent.isInstanceOf[ScalaFile] || parent
+                  .asInstanceOf[ScalaFile]
+                  .isScriptFile())
               if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-                leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-                (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+                  leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
+                  (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
                   (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-                    !parent.getPrevSibling.getPrevSibling.getLastChild.isInstanceOf[PsiErrorElement])))
+                  !parent.getPrevSibling.getPrevSibling.getLastChild
+                    .isInstanceOf[PsiErrorElement])))
                 return p
             null
           case _ => findParent(p.getParent)

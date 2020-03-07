@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.webhooks.examplejson
 
 import io.prediction.data.webhooks.JsonConnector
@@ -62,28 +61,36 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
   implicit val json4sFormats: Formats = DefaultFormats
 
   override def toEventJson(data: JObject): JObject = {
-    val common = try {
-      data.extract[Common]
-    } catch {
-      case e: Exception => throw new ConnectorException(
-        s"Cannot extract Common field from ${data}. ${e.getMessage()}", e)
-    }
-
-    val json = try {
-      common.`type` match {
-        case "userAction" =>
-          toEventJson(common = common, userAction = data.extract[UserAction])
-        case "userActionItem" =>
-          toEventJson(common = common, userActionItem = data.extract[UserActionItem])
-        case x: String =>
+    val common =
+      try {
+        data.extract[Common]
+      } catch {
+        case e: Exception =>
           throw new ConnectorException(
-            s"Cannot convert unknown type '${x}' to Event JSON.")
+            s"Cannot extract Common field from ${data}. ${e.getMessage()}",
+            e)
       }
-    } catch {
-      case e: ConnectorException => throw e
-      case e: Exception => throw new ConnectorException(
-        s"Cannot convert ${data} to eventJson. ${e.getMessage()}", e)
-    }
+
+    val json =
+      try {
+        common.`type` match {
+          case "userAction" =>
+            toEventJson(common = common, userAction = data.extract[UserAction])
+          case "userActionItem" =>
+            toEventJson(
+              common = common,
+              userActionItem = data.extract[UserActionItem])
+          case x: String =>
+            throw new ConnectorException(
+              s"Cannot convert unknown type '${x}' to Event JSON.")
+        }
+      } catch {
+        case e: ConnectorException => throw e
+        case e: Exception =>
+          throw new ConnectorException(
+            s"Cannot convert ${data} to eventJson. ${e.getMessage()}",
+            e)
+      }
 
     json
   }
@@ -101,7 +108,7 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
           ("context" -> userAction.context) ~
             ("anotherProperty1" -> userAction.anotherProperty1) ~
             ("anotherProperty2" -> userAction.anotherProperty2)
-          ))
+        ))
     json
   }
 
@@ -120,34 +127,34 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
           ("context" -> userActionItem.context) ~
             ("anotherPropertyA" -> userActionItem.anotherPropertyA) ~
             ("anotherPropertyB" -> userActionItem.anotherPropertyB)
-          ))
+        ))
     json
   }
 
   // Common required fields
   case class Common(
-    `type`: String
+      `type`: String
   )
 
   // User Actions fields
-  case class UserAction (
-    userId: String,
-    event: String,
-    context: Option[JObject],
-    anotherProperty1: Int,
-    anotherProperty2: Option[String],
-    timestamp: String
+  case class UserAction(
+      userId: String,
+      event: String,
+      context: Option[JObject],
+      anotherProperty1: Int,
+      anotherProperty2: Option[String],
+      timestamp: String
   )
 
   // UserActionItem fields
-  case class UserActionItem (
-    userId: String,
-    event: String,
-    itemId: String,
-    context: JObject,
-    anotherPropertyA: Option[Double],
-    anotherPropertyB: Option[Boolean],
-    timestamp: String
+  case class UserActionItem(
+      userId: String,
+      event: String,
+      itemId: String,
+      context: JObject,
+      anotherPropertyA: Option[Double],
+      anotherPropertyB: Option[Boolean],
+      timestamp: String
   )
 
 }

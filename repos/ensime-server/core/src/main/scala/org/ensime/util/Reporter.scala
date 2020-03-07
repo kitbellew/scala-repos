@@ -18,7 +18,9 @@ trait ReportHandler {
   def reportJavaNotes(notes: List[Note]): Unit = {}
 }
 
-class PresentationReporter(handler: ReportHandler) extends Reporter with PositionBackCompat {
+class PresentationReporter(handler: ReportHandler)
+    extends Reporter
+    with PositionBackCompat {
 
   val log = LoggerFactory.getLogger(classOf[PresentationReporter])
   private var enabled = true
@@ -32,7 +34,11 @@ class PresentationReporter(handler: ReportHandler) extends Reporter with Positio
     }
   }
 
-  override def info0(pos: Position, msg: String, severity: Severity, force: Boolean): Unit = {
+  override def info0(
+      pos: Position,
+      msg: String,
+      severity: Severity,
+      force: Boolean): Unit = {
     severity.count += 1
     try {
       if (severity.id == 0) {
@@ -70,7 +76,7 @@ class PresentationReporter(handler: ReportHandler) extends Reporter with Positio
   def formatMessage(msg: String): String = {
     augmentString(msg).map {
       case '\n' | '\r' => ' '
-      case c => c
+      case c           => c
     }
   }
 }

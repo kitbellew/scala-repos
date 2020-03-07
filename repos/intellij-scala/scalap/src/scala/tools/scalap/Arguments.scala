@@ -3,13 +3,11 @@
 **  __\ \/ /__/ __ |/ /__/ __ |/ ___/  (c) 2003-2010, LAMP/EPFL
 ** /____/\___/_/ |_/____/_/ |_/_/      http://scala-lang.org/
 **
-*/
-
+ */
 
 package scala.tools.scalap
 
 import scala.collection.mutable._
-
 
 object Arguments {
 
@@ -54,8 +52,7 @@ object Arguments {
         error("missing '" + separator + "' in binding '" + str + "'")
         ("", "")
       } else
-        (str.substring(0, eqls).trim(),
-           str.substring(eqls + 1).trim())
+        (str.substring(0, eqls).trim(), str.substring(eqls + 1).trim())
     }
 
     def parse(args: Array[String]): Arguments = {
@@ -89,7 +86,8 @@ object Arguments {
               error("missing argument for '" + args(i) + "'")
               i += 1
             } else {
-              res.addBinding(args(i),
+              res.addBinding(
+                args(i),
                 parseBinding(args(i + 1), optionalBindings(args(i))));
               i += 2
             }
@@ -99,7 +97,9 @@ object Arguments {
             while ((i == j) && iter.hasNext) {
               val prefix = iter.next
               if (args(i) startsWith prefix) {
-                res.addPrefixed(prefix, args(i).substring(prefix.length()).trim());
+                res.addPrefixed(
+                  prefix,
+                  args(i).substring(prefix.length()).trim());
                 i += 1
               }
             }
@@ -110,7 +110,8 @@ object Arguments {
                 if (args(i) startsWith prefix) {
                   val arg = args(i).substring(prefix.length()).trim()
                   i = i + 1
-                  res.addBinding(prefix,
+                  res.addBinding(
+                    prefix,
                     parseBinding(arg, prefixedBindings(prefix)));
                 }
               }
@@ -177,25 +178,25 @@ class Arguments {
 
   def getSuffixes(prefix: String): Set[String] =
     prefixes.get(prefix) match {
-      case None => new HashSet
+      case None      => new HashSet
       case Some(set) => set
     }
 
   def containsSuffix(prefix: String, suffix: String): Boolean =
     prefixes.get(prefix) match {
-      case None => false
+      case None      => false
       case Some(set) => set contains suffix
     }
 
   def getBindings(tag: String): Map[String, String] =
     bindings.get(tag) match {
-      case None => new HashMap
+      case None      => new HashMap
       case Some(map) => map
     }
 
   def getBinding(option: String, key: String): Option[String] =
     bindings.get(option) match {
-      case None => None
+      case None      => None
       case Some(map) => map get key
     }
 

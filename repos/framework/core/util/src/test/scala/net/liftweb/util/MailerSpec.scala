@@ -23,7 +23,15 @@ import org.specs2.mutable.Specification
 
 import common._
 
-import Mailer.{From, To, Subject, PlainMailBodyType, XHTMLMailBodyType, XHTMLPlusImages, PlusImageHolder}
+import Mailer.{
+  From,
+  To,
+  Subject,
+  PlainMailBodyType,
+  XHTMLMailBodyType,
+  XHTMLPlusImages,
+  PlusImageHolder
+}
 
 import scala.io.Source
 
@@ -33,8 +41,8 @@ trait MailerForTesting {
 }
 
 /**
- * Systems under specification for Lift Mailer.
- */
+  * Systems under specification for Lift Mailer.
+  */
 object MailerSpec extends Specification {
   "Mailer Specification".title
   sequential
@@ -59,7 +67,7 @@ object MailerSpec extends Specification {
     eventually {
       lastMessage.isEmpty must_== false
     }
-    lastMessage openOrThrowException("Checked")
+    lastMessage openOrThrowException ("Checked")
   }
 
   "A Mailer" should {
@@ -105,9 +113,13 @@ object MailerSpec extends Specification {
     }
 
     "deliver emails with attachments as mixed multipart" in {
-      val attachmentBytes = Source.fromInputStream(
-        getClass.getClassLoader.getResourceAsStream("net/liftweb/util/Html5ParserSpec.page1.html")
-      ).map(_.toByte).toArray
+      val attachmentBytes = Source
+        .fromInputStream(
+          getClass.getClassLoader.getResourceAsStream(
+            "net/liftweb/util/Html5ParserSpec.page1.html")
+        )
+        .map(_.toByte)
+        .toArray
       val msg = doNewMessage {
         sendMail(
           From("sender@nowhere.com"),

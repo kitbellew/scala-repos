@@ -30,7 +30,6 @@ import java.net.{URL, InetAddress}
 import snippet.Counter
 import net.liftweb.common.Full
 
-
 object OneShot extends Specification with RequestKit with XmlMatchers {
   sequential
 
@@ -42,8 +41,11 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
     }
   }
 
-  private val host_ = System.getProperty("net.liftweb.webapptest.oneshot.host", reachableLocalAddress)
-  private val port_ = System.getProperty("net.liftweb.webapptest.oneshot.port", "8181").toInt
+  private val host_ = System.getProperty(
+    "net.liftweb.webapptest.oneshot.host",
+    reachableLocalAddress)
+  private val port_ =
+    System.getProperty("net.liftweb.webapptest.oneshot.port", "8181").toInt
 
   private lazy val baseUrl_ = new URL("http://%s:%s".format(host_, port_))
 
@@ -58,14 +60,15 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       val tmp = LiftRules.sessionCreator
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
-        
-        val bx = 
+
+        val bx =
           for {
             resp <- get("/cv_int")
             xml <- resp.xml
           } yield xml
-        
-        bx.openOrThrowException("legacy code") must ==/ (<int>45</int>).when(jetty.running)
+
+        bx.openOrThrowException("legacy code") must ==/(<int>45</int>)
+          .when(jetty.running)
       } finally {
         LiftRules.sessionCreator = tmp
       }
@@ -75,15 +78,16 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       val tmp = LiftRules.sessionCreator
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
-        
-      val bx = 
-        for {
-          resp <- get("/cv_int/33")
-          resp2 <- resp.get("/cv_int")
-          xml <- resp2.xml
-        } yield xml
 
-      bx.openOrThrowException("legacy code") must ==/ (<int>33</int>).when(jetty.running)
+        val bx =
+          for {
+            resp <- get("/cv_int/33")
+            resp2 <- resp.get("/cv_int")
+            xml <- resp2.xml
+          } yield xml
+
+        bx.openOrThrowException("legacy code") must ==/(<int>33</int>)
+          .when(jetty.running)
       } finally {
         LiftRules.sessionCreator = tmp
       }
@@ -93,18 +97,20 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       val tmp = LiftRules.sessionCreator
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
-        
-      val bx = 
-        for {
-          resp <- get("/cv_int/33")
-          resp2 <- resp.get("/cv_int")
-          xml <- resp2.xml
-          resp3 <- get("/cv_int")
-          xml2 <- resp3.xml
-        } yield (xml, xml2)
 
-      bx.openOrThrowException("legacy code")._1 must ==/ (<int>33</int>).when(jetty.running)
-      bx.openOrThrowException("legacy code")._2 must ==/ (<int>45</int>).when(jetty.running)
+        val bx =
+          for {
+            resp <- get("/cv_int/33")
+            resp2 <- resp.get("/cv_int")
+            xml <- resp2.xml
+            resp3 <- get("/cv_int")
+            xml2 <- resp3.xml
+          } yield (xml, xml2)
+
+        bx.openOrThrowException("legacy code")._1 must ==/(<int>33</int>)
+          .when(jetty.running)
+        bx.openOrThrowException("legacy code")._2 must ==/(<int>45</int>)
+          .when(jetty.running)
       } finally {
         LiftRules.sessionCreator = tmp
       }
@@ -125,8 +131,10 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
             xml2 <- resp3.xml
           } yield (xml, xml2)
 
-        bx.openOrThrowException("legacy code")._1 must ==/(<int>33</int>).when(jetty.running)
-        bx.openOrThrowException("legacy code")._2 must ==/(<str>meow</str>).when(jetty.running)
+        bx.openOrThrowException("legacy code")._1 must ==/(<int>33</int>)
+          .when(jetty.running)
+        bx.openOrThrowException("legacy code")._2 must ==/(<str>meow</str>)
+          .when(jetty.running)
 
       } finally {
         LiftRules.sessionCreator = tmp
@@ -166,7 +174,6 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
         resp.get("/oneshot?" + urlEncode(name.text) + "=3")
       }
 
-
       Counter.x must be_>=(2).when(jetty.running)
     }
   }
@@ -177,6 +184,4 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
     }
   }
 
-
 }
-

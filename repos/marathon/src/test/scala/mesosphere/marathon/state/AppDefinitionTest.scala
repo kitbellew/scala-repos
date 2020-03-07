@@ -2,8 +2,8 @@ package mesosphere.marathon.state
 
 import mesosphere.marathon.Protos.ServiceDefinition
 import mesosphere.marathon.state.PathId._
-import mesosphere.marathon.{ MarathonSpec, Protos }
-import org.apache.mesos.{ Protos => mesos }
+import mesosphere.marathon.{MarathonSpec, Protos}
+import org.apache.mesos.{Protos => mesos}
 import org.scalatest.Matchers
 
 import scala.collection.JavaConverters._
@@ -31,7 +31,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(proto1.getCmd.getShell)
     assert("bash foo-*/start -Dhttp.port=$PORT" == proto1.getCmd.getValue)
     assert(5 == proto1.getInstances)
-    assert(Seq(8080, 8081) == proto1.getPortDefinitionsList.asScala.map(_.getNumber))
+    assert(
+      Seq(8080, 8081) == proto1.getPortDefinitionsList.asScala.map(_.getNumber))
     assert("//cmd" == proto1.getExecutor)
     assert(4 == getScalarResourceValue(proto1, "cpus"), 1e-6)
     assert(256 == getScalarResourceValue(proto1, "mem"), 1e-6)
@@ -40,7 +41,12 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(1.0 == proto1.getUpgradeStrategy.getMinimumHealthCapacity)
     assert(1.0 == proto1.getUpgradeStrategy.getMaximumOverCapacity)
     assert(proto1.hasAcceptedResourceRoles)
-    assert(proto1.getAcceptedResourceRoles == Protos.ResourceRoles.newBuilder().addRole("a").addRole("b").build())
+    assert(
+      proto1.getAcceptedResourceRoles == Protos.ResourceRoles
+        .newBuilder()
+        .addRole("a")
+        .addRole("b")
+        .build())
 
     val app2 = AppDefinition(
       id = "play".toPath,
@@ -63,7 +69,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(!proto2.getCmd.getShell)
     assert(Seq("a", "b", "c") == proto2.getCmd.getArgumentsList.asScala)
     assert(5 == proto2.getInstances)
-    assert(Seq(8080, 8081) == proto2.getPortDefinitionsList.asScala.map(_.getNumber))
+    assert(
+      Seq(8080, 8081) == proto2.getPortDefinitionsList.asScala.map(_.getNumber))
     assert("//cmd" == proto2.getExecutor)
     assert(4 == getScalarResourceValue(proto2, "cpus"), 1e-6)
     assert(256 == getScalarResourceValue(proto2, "mem"), 1e-6)
@@ -102,7 +109,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     proto.getCmd.hasValue should be(true)
     proto.getCmd.getShell should be(false)
     proto.getCmd.getValue should be("bash")
-    proto.getCmd.getArgumentsList.asScala should be(Seq("bash", "foo-*/start", "-Dhttp.port=$PORT"))
+    proto.getCmd.getArgumentsList.asScala should be(
+      Seq("bash", "foo-*/start", "-Dhttp.port=$PORT"))
 
     val read = AppDefinition().mergeFromProto(proto)
     read should be(app)
@@ -126,7 +134,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
     val proto = app.toProto
     proto.getId should be("app-with-ip-address")
-    proto.hasIpAddress should be (true)
+    proto.hasIpAddress should be(true)
 
     val read = AppDefinition().mergeFromProto(proto)
     read should be(app)
@@ -145,7 +153,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
             "baz" -> "buzz"
           ),
           discoveryInfo = DiscoveryInfo(
-            ports = Vector(DiscoveryInfo.Port(name = "http", number = 80, protocol = "tcp"))
+            ports = Vector(
+              DiscoveryInfo.Port(name = "http", number = 80, protocol = "tcp"))
           )
         )
       )
@@ -153,8 +162,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
     val proto = app.toProto
 
-    proto.getIpAddress.hasDiscoveryInfo should be (true)
-    proto.getIpAddress.getDiscoveryInfo.getPortsList.size() should be (1)
+    proto.getIpAddress.hasDiscoveryInfo should be(true)
+    proto.getIpAddress.getDiscoveryInfo.getPortsList.size() should be(1)
     val read = AppDefinition().mergeFromProto(proto)
     read should equal(app)
   }
@@ -180,7 +189,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("Read obsolete ports from proto") {
-    val cmd = mesos.CommandInfo.newBuilder.setValue("bash foo-*/start -Dhttp.port=$PORT")
+    val cmd = mesos.CommandInfo.newBuilder
+      .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
     val proto1 = ServiceDefinition.newBuilder
       .setId("/app")
@@ -228,6 +238,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   def getScalarResourceValue(proto: ServiceDefinition, name: String) = {
     proto.getResourcesList.asScala
       .find(_.getName == name)
-      .get.getScalar.getValue
+      .get
+      .getScalar
+      .getValue
   }
 }

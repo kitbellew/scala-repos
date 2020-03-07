@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.webhooks.segmentio
 
 import io.prediction.data.webhooks.ConnectorTestUtil
@@ -200,7 +199,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
 
     "convert page to event JSON" in {
       val page =
-       s"""
+        s"""
           |{ $commonFields
           |  "type": "page",
           |  "name": "pageName",
@@ -262,7 +261,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
 
     "convert track to event JSON" in {
       val track =
-       s"""
+        s"""
           |{ $commonFields
           |  "user_id": "some_user_id",
           |  "type": "track",

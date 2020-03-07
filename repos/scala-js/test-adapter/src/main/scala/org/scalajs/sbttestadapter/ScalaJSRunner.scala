@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.testadapter
 
 import org.scalajs.core.tools.io._
@@ -40,8 +39,8 @@ final class ScalaJSRunner private[testadapter] (
   private[this] val slaves = TrieMap.empty[Long, ComJSRunner]
 
   /** An object used as lock for the loggers. Ensures output does not get
-   *  interleaved.
-   */
+    *  interleaved.
+    */
   private[testadapter] val loggerLock = new Object
 
   // Constructor body
@@ -149,8 +148,8 @@ final class ScalaJSRunner private[testadapter] (
   }
 
   /** Starts the stopping sequence of all slaves.
-   *  The returned future will be completed when all slaves are closing.
-   */
+    *  The returned future will be completed when all slaves are closing.
+    */
   private def stopSlaves(deadline: Deadline): Try[Unit] = {
     val slaves = this.slaves.values.toList // .toList to make it strict
 
@@ -162,7 +161,7 @@ final class ScalaJSRunner private[testadapter] (
     // Then process all their messages and close them
     val slavesClosed = for (slave <- slaves) yield Try {
       ComUtils.receiveLoop(slave, deadline)(
-          msgHandler(slave) orElse ComUtils.doneHandler)
+        msgHandler(slave) orElse ComUtils.doneHandler)
       slave.close()
     }
 

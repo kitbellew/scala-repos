@@ -6,9 +6,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScDocCommentOwn
 import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
 
 /**
- * @author Nikolay.Tropin
- */
-
+  * @author Nikolay.Tropin
+  */
 trait ScCommentOwner {
   self: ScalaPsiElement =>
 
@@ -20,7 +19,7 @@ trait ScCommentOwner {
 
   private def scDocComment: Option[ScDocComment] = self match {
     case dco: ScDocCommentOwner => dco.docComment
-    case _ => None
+    case _                      => None
   }
 
   def allComments: Seq[PsiComment] = scDocComment.toSeq ++ simpleComment

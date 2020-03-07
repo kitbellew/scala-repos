@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
@@ -16,36 +14,35 @@ import generic._
 import scala.collection.parallel.mutable.ParHashSet
 
 /** This class implements mutable sets using a hashtable.
- *
- *  @author  Matthias Zenger
- *  @author  Martin Odersky
- *  @version 2.0, 31/12/2006
- *  @since   1
- *  @see [[http://docs.scala-lang.org/overviews/collections/concrete-mutable-collection-classes.html#hash_tables "Scala's Collection Library overview"]]
- *  section on `Hash Tables` for more information.
- *
- *  @define Coll `mutable.HashSet`
- *  @define coll mutable hash set
- *  @define thatinfo the class of the returned collection. In the standard library configuration,
- *    `That` is always `HashSet[B]` because an implicit of type `CanBuildFrom[HashSet, B, HashSet[B]]`
- *    is defined in object `HashSet`.
- *  @define bfinfo an implicit value of class `CanBuildFrom` which determines the
- *    result class `That` from the current representation type `Repr`
- *    and the new element type `B`. This is usually the `canBuildFrom` value
- *    defined in object `HashSet`.
- *  @define mayNotTerminateInf
- *  @define willNotTerminateInf
- */
+  *
+  *  @author  Matthias Zenger
+  *  @author  Martin Odersky
+  *  @version 2.0, 31/12/2006
+  *  @since   1
+  *  @see [[http://docs.scala-lang.org/overviews/collections/concrete-mutable-collection-classes.html#hash_tables "Scala's Collection Library overview"]]
+  *  section on `Hash Tables` for more information.
+  *
+  *  @define Coll `mutable.HashSet`
+  *  @define coll mutable hash set
+  *  @define thatinfo the class of the returned collection. In the standard library configuration,
+  *    `That` is always `HashSet[B]` because an implicit of type `CanBuildFrom[HashSet, B, HashSet[B]]`
+  *    is defined in object `HashSet`.
+  *  @define bfinfo an implicit value of class `CanBuildFrom` which determines the
+  *    result class `That` from the current representation type `Repr`
+  *    and the new element type `B`. This is usually the `canBuildFrom` value
+  *    defined in object `HashSet`.
+  *  @define mayNotTerminateInf
+  *  @define willNotTerminateInf
+  */
 @SerialVersionUID(1L)
 class HashSet[A] private[collection] (contents: FlatHashTable.Contents[A])
-extends AbstractSet[A]
-   with Set[A]
-   with GenericSetTemplate[A, HashSet]
-   with SetLike[A, HashSet[A]]
-   with FlatHashTable[A]
-   with CustomParallelizable[A, ParHashSet[A]]
-   with Serializable
-{
+    extends AbstractSet[A]
+    with Set[A]
+    with GenericSetTemplate[A, HashSet]
+    with SetLike[A, HashSet[A]]
+    with FlatHashTable[A]
+    with CustomParallelizable[A, ParHashSet[A]]
+    with Serializable {
   initWithContents(contents)
 
   def this() = this(null)
@@ -56,9 +53,9 @@ extends AbstractSet[A]
 
   def contains(elem: A): Boolean = containsElem(elem)
 
-  def += (elem: A): this.type = { addElem(elem); this }
+  def +=(elem: A): this.type = { addElem(elem); this }
 
-  def -= (elem: A): this.type = { removeElem(elem); this }
+  def -=(elem: A): this.type = { removeElem(elem); this }
 
   override def par = new ParHashSet(hashTableContents)
 
@@ -91,19 +88,20 @@ extends AbstractSet[A]
   }
 
   /** Toggles whether a size map is used to track hash map statistics.
-   */
-  def useSizeMap(t: Boolean) = if (t) {
-    if (!isSizeMapDefined) sizeMapInitAndRebuild()
-  } else sizeMapDisable()
+    */
+  def useSizeMap(t: Boolean) =
+    if (t) {
+      if (!isSizeMapDefined) sizeMapInitAndRebuild()
+    } else sizeMapDisable()
 
 }
 
 /** $factoryInfo
- *  @define Coll `mutable.HashSet`
- *  @define coll mutable hash set
- */
+  *  @define Coll `mutable.HashSet`
+  *  @define coll mutable hash set
+  */
 object HashSet extends MutableSetFactory[HashSet] {
-  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, HashSet[A]] = setCanBuildFrom[A]
+  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, HashSet[A]] =
+    setCanBuildFrom[A]
   override def empty[A]: HashSet[A] = new HashSet[A]
 }
-

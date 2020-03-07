@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
   */
 trait PropSpecGenerator extends ScalaTestTestCase {
   def addPropSpec() {
-    addFileToProject("PropSpecTest.scala",
+    addFileToProject(
+      "PropSpecTest.scala",
       """
         |import org.scalatest._
         |

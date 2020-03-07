@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.ddata
 
 import scala.concurrent.duration._
@@ -20,9 +20,9 @@ import akka.cluster.ddata.Replicator.WriteLocal
 import com.typesafe.config.ConfigFactory
 
 /**
- * This "sample" simulates lots of data entries, and can be used for
- * optimizing replication (e.g. catch-up when adding more nodes).
- */
+  * This "sample" simulates lots of data entries, and can be used for
+  * optimizing replication (e.g. catch-up when adding more nodes).
+  */
 object LotsOfDataBot {
 
   def main(args: Array[String]): Unit = {
@@ -35,9 +35,10 @@ object LotsOfDataBot {
   def startup(ports: Seq[String]): Unit = {
     ports.foreach { port ⇒
       // Override the configuration of the port
-      val config = ConfigFactory.parseString("akka.remote.netty.tcp.port=" + port).
-        withFallback(ConfigFactory.load(
-          ConfigFactory.parseString("""
+      val config = ConfigFactory
+        .parseString("akka.remote.netty.tcp.port=" + port)
+        .withFallback(ConfigFactory.load(ConfigFactory.parseString(
+          """
             passive = off
             max-entries = 100000
             akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
@@ -101,7 +102,8 @@ class LotsOfDataBot extends Actor with ActorLogging {
         if (count == maxEntries) {
           log.info("Reached {} entries", count)
           tickTask.cancel()
-          tickTask = context.system.scheduler.schedule(1.seconds, 1.seconds, self, Tick)
+          tickTask =
+            context.system.scheduler.schedule(1.seconds, 1.seconds, self, Tick)
         }
         val key = ORSetKey[String]((count % maxEntries).toString)
         if (count <= 100)
@@ -141,4 +143,3 @@ class LotsOfDataBot extends Actor with ActorLogging {
   override def postStop(): Unit = tickTask.cancel()
 
 }
-

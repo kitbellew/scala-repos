@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -83,17 +83,23 @@ trait NIHDBPlatformSpecs extends ParseEvalStackSpecs[Future] {
   type TestStack = NIHDBTestStack
   val stack = NIHDBTestStack
 
-  override def map(fs: => Fragments): Fragments = step { stack.startup() } ^ fs ^ step { stack.shutdown() }
+  override def map(fs: => Fragments): Fragments =
+    step { stack.startup() } ^ fs ^ step { stack.shutdown() }
 }
 
 object NIHDBTestStack extends NIHDBTestStack {
-  def startup() { }
+  def startup() {}
 
-  def shutdown() { }
+  def shutdown() {}
 }
 
-trait NIHDBTestActors extends ActorVFSModule with ActorPlatformSpecs with YggConfigComponent {
-  trait NIHDBTestActorsConfig extends BaseConfig with BlockStoreColumnarTableModuleConfig {
+trait NIHDBTestActors
+    extends ActorVFSModule
+    with ActorPlatformSpecs
+    with YggConfigComponent {
+  trait NIHDBTestActorsConfig
+      extends BaseConfig
+      with BlockStoreColumnarTableModuleConfig {
     val cookThreshold = 10
     val storageTimeout = Timeout(300 * 1000)
     val quiescenceTimeout = Duration(300, "seconds")
@@ -102,31 +108,58 @@ trait NIHDBTestActors extends ActorVFSModule with ActorPlatformSpecs with YggCon
   }
 
   type YggConfig <: NIHDBTestActorsConfig
-  implicit val M: Monad[Future] with Comonad[Future] = new blueeyes.bkka.UnsafeFutureComonad(executor, yggConfig.storageTimeout.duration)
+  implicit val M: Monad[Future] with Comonad[Future] =
+    new blueeyes.bkka.UnsafeFutureComonad(
+      executor,
+      yggConfig.storageTimeout.duration)
 
-  val accountFinder = new StaticAccountFinder[Future](TestStack.testAccount, TestStack.testAPIKey, Some("/"))
+  val accountFinder = new StaticAccountFinder[Future](
+    TestStack.testAccount,
+    TestStack.testAPIKey,
+    Some("/"))
   val apiKeyFinder = new StaticAPIKeyFinder[Future](TestStack.testAPIKey)
-  val permissionsFinder = new PermissionsFinder(apiKeyFinder, accountFinder, yggConfig.clock.instant())
+  val permissionsFinder = new PermissionsFinder(
+    apiKeyFinder,
+    accountFinder,
+    yggConfig.clock.instant())
   val jobManager = new InMemoryJobManager[Future]
 
-  val masterChef = actorSystem.actorOf(Props(Chef(VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)), VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
-  val resourceBuilder = new ResourceBuilder(actorSystem, yggConfig.clock, masterChef, yggConfig.cookThreshold, yggConfig.storageTimeout)
+  val masterChef = actorSystem.actorOf(
+    Props(
+      Chef(
+        VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+        VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+  val resourceBuilder = new ResourceBuilder(
+    actorSystem,
+    yggConfig.clock,
+    masterChef,
+    yggConfig.cookThreshold,
+    yggConfig.storageTimeout)
 
-  val projectionsActor = actorSystem.actorOf(Props(new PathRoutingActor(yggConfig.dataDir, yggConfig.storageTimeout.duration, yggConfig.quiescenceTimeout, 10, yggConfig.clock)))
+  val projectionsActor = actorSystem.actorOf(
+    Props(
+      new PathRoutingActor(
+        yggConfig.dataDir,
+        yggConfig.storageTimeout.duration,
+        yggConfig.quiescenceTimeout,
+        10,
+        yggConfig.clock)))
 }
 
-trait NIHDBTestStack extends TestStackLike[Future]
+trait NIHDBTestStack
+    extends TestStackLike[Future]
     with SecureVFSModule[Future, Slice]
     with LongIdMemoryDatasetConsumer[Future]
     with NIHDBTestActors
     with VFSColumnarTableModule { self =>
 
-  abstract class YggConfig extends ParseEvalStackSpecConfig
+  abstract class YggConfig
+      extends ParseEvalStackSpecConfig
       with IdSourceConfig
       with EvaluatorConfig
       with StandaloneShardSystemConfig
       with ColumnarTableModuleConfig
-      with BlockStoreColumnarTableModuleConfig 
+      with BlockStoreColumnarTableModuleConfig
       with NIHDBTestActorsConfig {
     val ingestConfig = None
   }
@@ -137,9 +170,12 @@ trait NIHDBTestStack extends TestStackLike[Future]
 
   //val accountFinder = None
 
-  def Evaluator[N[+_]](N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
-    new Evaluator[N](N0)(mn,nm) {
-      val report = new LoggingQueryLogger[N, instructions.Line] with ExceptionQueryLogger[N, instructions.Line] with TimingQueryLogger[N, instructions.Line] {
+  def Evaluator[N[+_]](
+      N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
+    new Evaluator[N](N0)(mn, nm) {
+      val report = new LoggingQueryLogger[N, instructions.Line]
+        with ExceptionQueryLogger[N, instructions.Line]
+        with TimingQueryLogger[N, instructions.Line] {
         val M = N0
       }
       class YggConfig extends EvaluatorConfig {
@@ -148,12 +184,18 @@ trait NIHDBTestStack extends TestStackLike[Future]
       }
       val yggConfig = new YggConfig
       def freshIdScanner = self.freshIdScanner
-  }
+    }
 
-  val actorVFS = new ActorVFS(projectionsActor, yggConfig.storageTimeout, yggConfig.storageTimeout)
-  val vfs = new SecureVFS(actorVFS, permissionsFinder, jobManager, yggConfig.clock)
+  val actorVFS = new ActorVFS(
+    projectionsActor,
+    yggConfig.storageTimeout,
+    yggConfig.storageTimeout)
+  val vfs =
+    new SecureVFS(actorVFS, permissionsFinder, jobManager, yggConfig.clock)
 
-  val report = new LoggingQueryLogger[Future, instructions.Line] with ExceptionQueryLogger[Future, instructions.Line] with TimingQueryLogger[Future, instructions.Line] {
+  val report = new LoggingQueryLogger[Future, instructions.Line]
+    with ExceptionQueryLogger[Future, instructions.Line]
+    with TimingQueryLogger[Future, instructions.Line] {
     implicit def M = self.M
   }
 
@@ -162,13 +204,19 @@ trait NIHDBTestStack extends TestStackLike[Future]
   object Table extends TableCompanion
 }
 
-class NIHDBBasicValidationSpecs extends BasicValidationSpecs with NIHDBPlatformSpecs
+class NIHDBBasicValidationSpecs
+    extends BasicValidationSpecs
+    with NIHDBPlatformSpecs
 
 class NIHDBHelloQuirrelSpecs extends HelloQuirrelSpecs with NIHDBPlatformSpecs
 
-class NIHDBLogisticRegressionSpecs extends LogisticRegressionSpecs with NIHDBPlatformSpecs
+class NIHDBLogisticRegressionSpecs
+    extends LogisticRegressionSpecs
+    with NIHDBPlatformSpecs
 
-class NIHDBLinearRegressionSpecs extends LinearRegressionSpecs with NIHDBPlatformSpecs
+class NIHDBLinearRegressionSpecs
+    extends LinearRegressionSpecs
+    with NIHDBPlatformSpecs
 
 class NIHDNormalizationSpecs extends NormalizationSpecs with NIHDBPlatformSpecs
 
@@ -180,12 +228,16 @@ class NIHDBRandomForestSpecs extends RandomForestSpecs with NIHDBPlatformSpecs
 
 class NIHDBMiscStackSpecs extends MiscStackSpecs with NIHDBPlatformSpecs
 
-class NIHDBNonObjectStackSpecs extends NonObjectStackSpecs with NIHDBPlatformSpecs
+class NIHDBNonObjectStackSpecs
+    extends NonObjectStackSpecs
+    with NIHDBPlatformSpecs
 
 class NIHDBRankSpecs extends RankSpecs with NIHDBPlatformSpecs
 
 class NIHDBRenderStackSpecs extends RenderStackSpecs with NIHDBPlatformSpecs
 
-class NIHDBUndefinedLiteralSpecs extends UndefinedLiteralSpecs with NIHDBPlatformSpecs
+class NIHDBUndefinedLiteralSpecs
+    extends UndefinedLiteralSpecs
+    with NIHDBPlatformSpecs
 
 class NIHDBRandomSpecs extends RandomStackSpecs with NIHDBPlatformSpecs

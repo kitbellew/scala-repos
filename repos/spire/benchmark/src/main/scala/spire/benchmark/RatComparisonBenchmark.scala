@@ -15,18 +15,19 @@ import org.apfloat._
 
 import org.jscience.mathematics.number
 
-object RatComparisonBenchmarks extends MyRunner(classOf[RatComparisonBenchmarks])
+object RatComparisonBenchmarks
+    extends MyRunner(classOf[RatComparisonBenchmarks])
 
 class RatComparisonBenchmarks extends MyBenchmark {
   @Param(Array("100"))
-  var size:Int = 0
+  var size: Int = 0
 
-  var spires:Array[Rational] = null
-  var aps:Array[Aprational] = null
-  var jscis:Array[number.Rational] = null
+  var spires: Array[Rational] = null
+  var aps: Array[Aprational] = null
+  var jscis: Array[number.Rational] = null
 
-  var nums:Array[Int] = null
-  var denoms:Array[Int] = null
+  var nums: Array[Int] = null
+  var denoms: Array[Int] = null
 
   override protected def setUp(): Unit = {
     nums = init(size)(nextInt)
@@ -48,12 +49,12 @@ class RatComparisonBenchmarks extends MyBenchmark {
     if (false) assert(verify())
   }
 
-  def spireToAp(r:Rational) = new Aprational(
+  def spireToAp(r: Rational) = new Aprational(
     new Apint(r.numerator.toBigInt.bigInteger),
     new Apint(r.denominator.toBigInt.bigInteger)
   )
 
-  def spireToJsci(r:Rational) = number.Rational.valueOf(
+  def spireToJsci(r: Rational) = number.Rational.valueOf(
     number.LargeInteger.valueOf(r.numerator.toBigInt.bigInteger),
     number.LargeInteger.valueOf(r.denominator.toBigInt.bigInteger)
   )
@@ -95,7 +96,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     true
   }
 
-  def timeBuildSpire(reps:Int) = run(reps) {
+  def timeBuildSpire(reps: Int) = run(reps) {
     val len = size
     val ns = Array.ofDim[Rational](len)
     var i = 0
@@ -106,7 +107,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     ns.length
   }
 
-  def timeBuildAp(reps:Int) = run(reps) {
+  def timeBuildAp(reps: Int) = run(reps) {
     val len = size
     val ns = Array.ofDim[Aprational](len)
     var i = 0
@@ -117,7 +118,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     ns.length
   }
 
-  def timeBuildJsci(reps:Int) = run(reps) {
+  def timeBuildJsci(reps: Int) = run(reps) {
     val len = size
     val ns = Array.ofDim[number.Rational](len)
     var i = 0
@@ -131,7 +132,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     ns.length
   }
 
-  def timeSumSpire(reps:Int) = run(reps) {
+  def timeSumSpire(reps: Int) = run(reps) {
     val len = size
     var total = Rational(0, 1)
     var i = 0
@@ -139,7 +140,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     total
   }
 
-  def timeSumAp(reps:Int) = run(reps) {
+  def timeSumAp(reps: Int) = run(reps) {
     val len = size
     var total = new Aprational(new Apint(0), new Apint(1))
     var i = 0
@@ -147,7 +148,7 @@ class RatComparisonBenchmarks extends MyBenchmark {
     total
   }
 
-  def timeSumJsci(reps:Int) = run(reps) {
+  def timeSumJsci(reps: Int) = run(reps) {
     val len = size
     var total = number.Rational.ZERO
     var i = 0

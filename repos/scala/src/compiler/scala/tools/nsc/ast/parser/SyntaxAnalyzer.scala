@@ -9,8 +9,14 @@ package ast.parser
 import javac._
 
 /** An nsc sub-component.
- */
-abstract class SyntaxAnalyzer extends SubComponent with Parsers with MarkupParsers with Scanners with JavaParsers with JavaScanners {
+  */
+abstract class SyntaxAnalyzer
+    extends SubComponent
+    with Parsers
+    with MarkupParsers
+    with Scanners
+    with JavaParsers
+    with JavaScanners {
   import global._
 
   val phaseName = "parser"
@@ -22,23 +28,24 @@ abstract class SyntaxAnalyzer extends SubComponent with Parsers with MarkupParse
     private var depth: Int = 0
     private def lower[T](body: => T): T = {
       depth += 1
-      try body finally depth -= 1
+      try body
+      finally depth -= 1
     }
     def currentDepth = depth
 
     /** Prune this tree and all trees beneath it. Can be overridden. */
     def prune(md: MemberDef): Boolean = (
-         md.mods.isSynthetic
-      || md.mods.isParamAccessor
-      || nme.isConstructorName(md.name)
-      || (md.name containsName nme.ANON_CLASS_NAME)
+      md.mods.isSynthetic
+        || md.mods.isParamAccessor
+        || nme.isConstructorName(md.name)
+        || (md.name containsName nme.ANON_CLASS_NAME)
     )
 
     override def traverse(t: Tree): Unit = t match {
       case md: MemberDef if prune(md) =>
       case md @ PackageDef(_, stats)  => traverseTrees(stats)
-      case md: ImplDef                => onMember(md) ; lower(traverseTrees(md.impl.body))
-      case md: ValOrDefDef            => onMember(md) ; lower(traverse(md.rhs))
+      case md: ImplDef                => onMember(md); lower(traverseTrees(md.impl.body))
+      case md: ValOrDefDef            => onMember(md); lower(traverse(md.rhs))
       case _                          => super.traverse(t)
     }
   }
@@ -50,9 +57,9 @@ abstract class SyntaxAnalyzer extends SubComponent with Parsers with MarkupParse
     // If a single line, outputs the line; if it spans multiple lines
     // outputs NN,NN with start and end lines, e.g. 15,25.
     def outputPos(md: MemberDef): String = {
-      val pos   = md.pos
+      val pos = md.pos
       val start = pos.focusStart.line
-      val end   = pos.focusEnd.line
+      val end = pos.focusEnd.line
 
       if (start == end) "" + start else s"$start,$end"
     }
@@ -71,8 +78,7 @@ abstract class SyntaxAnalyzer extends SubComponent with Parsers with MarkupParse
       if (style == "sed") {
         outputFn = outputForSed
         traverse(unit.body)
-      }
-      else {
+      } else {
         outputFn = outputForScreen
         println(path)
         traverse(unit.body)

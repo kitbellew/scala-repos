@@ -23,7 +23,9 @@ class SpanIdTest extends FunSuite {
   }
 
   test("represent a span with the ID 123 as the hex '000000000000007b'") {
-    assert(SpanId(123L).toString == "000000000000007b") // padded for lexical ordering
+    assert(
+      SpanId(123L).toString == "000000000000007b"
+    ) // padded for lexical ordering
   }
 
   test("be equal if the underlying value is equal") {

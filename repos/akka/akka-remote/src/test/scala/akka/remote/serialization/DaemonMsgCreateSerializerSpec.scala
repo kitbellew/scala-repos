@@ -1,7 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote.serialization
 
 import language.postfixOps
@@ -9,9 +8,16 @@ import language.postfixOps
 import akka.serialization.SerializationExtension
 import com.typesafe.config.ConfigFactory
 import akka.testkit.AkkaSpec
-import akka.actor.{ Actor, Address, Props, Deploy, OneForOneStrategy, SupervisorStrategy }
-import akka.remote.{ DaemonMsgCreate, RemoteScope }
-import akka.routing.{ RoundRobinPool, FromConfig }
+import akka.actor.{
+  Actor,
+  Address,
+  Props,
+  Deploy,
+  OneForOneStrategy,
+  SupervisorStrategy
+}
+import akka.remote.{DaemonMsgCreate, RemoteScope}
+import akka.routing.{RoundRobinPool, FromConfig}
 import scala.concurrent.duration._
 
 object DaemonMsgCreateSerializerSpec {
@@ -34,7 +40,8 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
   "Serialization" must {
 
     "resolve DaemonMsgCreateSerializer" in {
-      ser.serializerFor(classOf[DaemonMsgCreate]).getClass should ===(classOf[DaemonMsgCreateSerializer])
+      ser.serializerFor(classOf[DaemonMsgCreate]).getClass should ===(
+        classOf[DaemonMsgCreateSerializer])
     }
 
     "serialize and de-serialize DaemonMsgCreate with FromClassCreator" in {
@@ -76,15 +83,19 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
         val deploy1 = Deploy(
           path = "path1",
           config = ConfigFactory.parseString("a=1"),
-          routerConfig = RoundRobinPool(nrOfInstances = 5, supervisorStrategy = supervisorStrategy),
+          routerConfig = RoundRobinPool(
+            nrOfInstances = 5,
+            supervisorStrategy = supervisorStrategy),
           scope = RemoteScope(Address("akka", "Test", "host1", 1921)),
-          dispatcher = "mydispatcher")
+          dispatcher = "mydispatcher"
+        )
         val deploy2 = Deploy(
           path = "path2",
           config = ConfigFactory.parseString("a=2"),
           routerConfig = FromConfig,
           scope = RemoteScope(Address("akka", "Test", "host2", 1922)),
-          dispatcher = Deploy.NoDispatcherGiven)
+          dispatcher = Deploy.NoDispatcherGiven
+        )
         DaemonMsgCreate(
           props = Props[MyActor].withDispatcher("my-disp").withDeploy(deploy1),
           deploy = deploy2,
@@ -94,10 +105,17 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
     }
 
     def verifySerialization(msg: DaemonMsgCreate): Unit = {
-      assertDaemonMsgCreate(msg, ser.deserialize(ser.serialize(msg).get, classOf[DaemonMsgCreate]).get.asInstanceOf[DaemonMsgCreate])
+      assertDaemonMsgCreate(
+        msg,
+        ser
+          .deserialize(ser.serialize(msg).get, classOf[DaemonMsgCreate])
+          .get
+          .asInstanceOf[DaemonMsgCreate])
     }
 
-    def assertDaemonMsgCreate(expected: DaemonMsgCreate, got: DaemonMsgCreate): Unit = {
+    def assertDaemonMsgCreate(
+        expected: DaemonMsgCreate,
+        got: DaemonMsgCreate): Unit = {
       // can't compare props.creator when function
       got.props.clazz should ===(expected.props.clazz)
       got.props.args.length should ===(expected.props.args.length)
@@ -114,4 +132,3 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
 
   }
 }
-

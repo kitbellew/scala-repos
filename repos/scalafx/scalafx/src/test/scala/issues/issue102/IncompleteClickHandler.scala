@@ -34,7 +34,6 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout.{StackPane, VBox}
 
-
 /** Illustrated [[https://github.com/scalafx/scalafx/issues/102 Issue 102]]
   *
   * When event handler is created from a code block (rather than a function),
@@ -77,9 +76,11 @@ object IncompleteClickHandler extends JFXApp {
         children = new VBox {
           spacing = 10
           children = Seq(
-            new Label("If Issue 102 is not fixed, some buttons below may not respond correctly."),
+            new Label(
+              "If Issue 102 is not fixed, some buttons below may not respond correctly."),
             new Button {
-              text = "Button 1: Buggy event handler: should print two messages, but prints one."
+              text =
+                "Button 1: Buggy event handler: should print two messages, but prints one."
               // Disable as old buggy handler no longer compiles
               disable = true
               //              onAction = {
@@ -88,7 +89,8 @@ object IncompleteClickHandler extends JFXApp {
               //              }
             },
             new Button {
-              text = "Button 2: Buggy event handler: should print two messages, but prints none."
+              text =
+                "Button 2: Buggy event handler: should print two messages, but prints none."
               // Disable as old buggy handler no longer compiles
               disable = true
               //              onAction = (ae: java.awt.event.ActionEvent) => {
@@ -97,14 +99,16 @@ object IncompleteClickHandler extends JFXApp {
               //              }
             },
             new Button {
-              text = "Button 3: Former buggy event handler: should print two messages, used to print none."
+              text =
+                "Button 3: Former buggy event handler: should print two messages, used to print none."
               onAction = () => {
                 println("Button 3 - Message 1")
                 println("Button 3 - Message 2")
               }
             },
             new Button {
-              text = "Button 4: Buggy event handler: should print two messages, but prints none."
+              text =
+                "Button 4: Buggy event handler: should print two messages, but prints none."
               // Disable as old buggy handler no longer compiles
               disable = true
               //              onAction = (ae: javafx.event.ActionEvent) => {

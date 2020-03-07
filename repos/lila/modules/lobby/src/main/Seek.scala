@@ -1,6 +1,6 @@
 package lila.lobby
 
-import chess.{ Mode, Clock, Speed }
+import chess.{Mode, Clock, Speed}
 import org.joda.time.DateTime
 import ornicar.scalalib.Random
 import play.api.libs.json._
@@ -8,7 +8,7 @@ import play.api.libs.json._
 import actorApi.LobbyUser
 import lila.game.PerfPicker
 import lila.rating.RatingRange
-import lila.user.{ User, Perfs }
+import lila.user.{User, Perfs}
 
 // correspondence chess, persistent
 case class Seek(
@@ -41,7 +41,8 @@ case class Seek(
 
   private def compatibilityProperties = (variant, mode, daysPerTurn)
 
-  lazy val realRatingRange: Option[RatingRange] = RatingRange noneIfDefault ratingRange
+  lazy val realRatingRange: Option[RatingRange] =
+    RatingRange noneIfDefault ratingRange
 
   def rating = perfType map (_.key) flatMap user.ratingMap.get
 
@@ -61,7 +62,8 @@ case class Seek(
       "name" -> perfType.map(_.name))
   )
 
-  lazy val perfType = PerfPicker.perfType(Speed.Correspondence, realVariant, daysPerTurn)
+  lazy val perfType =
+    PerfPicker.perfType(Speed.Correspondence, realVariant, daysPerTurn)
 }
 
 object Seek {
@@ -69,31 +71,33 @@ object Seek {
   val idSize = 8
 
   def make(
-    variant: chess.variant.Variant,
-    daysPerTurn: Option[Int],
-    mode: Mode,
-    color: String,
-    user: User,
-    ratingRange: RatingRange,
-    blocking: Set[String]): Seek = new Seek(
-    _id = Random nextStringUppercase idSize,
-    variant = variant.id,
-    daysPerTurn = daysPerTurn,
-    mode = mode.id,
-    color = color,
-    user = LobbyUser.make(user, blocking),
-    ratingRange = ratingRange.toString,
-    createdAt = DateTime.now)
+      variant: chess.variant.Variant,
+      daysPerTurn: Option[Int],
+      mode: Mode,
+      color: String,
+      user: User,
+      ratingRange: RatingRange,
+      blocking: Set[String]): Seek =
+    new Seek(
+      _id = Random nextStringUppercase idSize,
+      variant = variant.id,
+      daysPerTurn = daysPerTurn,
+      mode = mode.id,
+      color = color,
+      user = LobbyUser.make(user, blocking),
+      ratingRange = ratingRange.toString,
+      createdAt = DateTime.now)
 
-  def renew(seek: Seek) = new Seek(
-    _id = Random nextStringUppercase idSize,
-    variant = seek.variant,
-    daysPerTurn = seek.daysPerTurn,
-    mode = seek.mode,
-    color = seek.color,
-    user = seek.user,
-    ratingRange = seek.ratingRange,
-    createdAt = DateTime.now)
+  def renew(seek: Seek) =
+    new Seek(
+      _id = Random nextStringUppercase idSize,
+      variant = seek.variant,
+      daysPerTurn = seek.daysPerTurn,
+      mode = seek.mode,
+      color = seek.color,
+      user = seek.user,
+      ratingRange = seek.ratingRange,
+      createdAt = DateTime.now)
 
   import reactivemongo.bson.Macros
   import lila.db.BSON.MapValue.MapHandler

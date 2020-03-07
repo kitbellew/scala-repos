@@ -4,23 +4,24 @@ import com.twitter.finagle.Status
 import com.twitter.finagle.util.Rng
 
 /**
- * An O(1), concurrent, weighted fair load balancer. This uses the
- * ideas behind "power of 2 choices" [1] combined with O(1) biased
- * coin flipping through the aliasing method, described in
- * [[com.twitter.finagle.util.Drv Drv]].
- *
- * [1] Michael Mitzenmacher. 2001. The Power of Two Choices in
- * Randomized Load Balancing. IEEE Trans. Parallel Distrib. Syst. 12,
- * 10 (October 2001), 1094-1104.
- */
+  * An O(1), concurrent, weighted fair load balancer. This uses the
+  * ideas behind "power of 2 choices" [1] combined with O(1) biased
+  * coin flipping through the aliasing method, described in
+  * [[com.twitter.finagle.util.Drv Drv]].
+  *
+  * [1] Michael Mitzenmacher. 2001. The Power of Two Choices in
+  * Randomized Load Balancing. IEEE Trans. Parallel Distrib. Syst. 12,
+  * 10 (October 2001), 1094-1104.
+  */
 private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
+
   /**
-   * Our sturdy coin flipper.
-   */
+    * Our sturdy coin flipper.
+    */
   protected def rng: Rng
 
   protected class Distributor(val vector: Vector[Node])
-    extends DistributorT[Node] {
+      extends DistributorT[Node] {
     type This = Distributor
 
     // Indicates if we've seen any down nodes during pick which we expected to be available
@@ -48,7 +49,8 @@ private trait P2C[Req, Rep] { self: Balancer[Req, Rep] =>
       val vec = if (up.isEmpty) down else up
       val size = vec.size
 
-      if (size == 1) vec.head else {
+      if (size == 1) vec.head
+      else {
         val a = rng.nextInt(size)
         var b = rng.nextInt(size)
 

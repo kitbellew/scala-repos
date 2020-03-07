@@ -1,14 +1,14 @@
 /**
- * @author Vlad Ureche
- */
+  * @author Vlad Ureche
+  */
 package scala.tools.nsc.doc
 package html.page.diagram
 
 object DiagramStats {
 
   class TimeTracker(title: String) {
-    var totalTime: Long = 0l
-    var maxTime: Long = 0l
+    var totalTime: Long = 0L
+    var maxTime: Long = 0L
     var instances: Int = 0
 
     def addTime(ms: Long) = {
@@ -26,7 +26,7 @@ object DiagramStats {
         print("  " + "=" * title.length)
         print("    count:        " + instances + " items")
         print("    total time:   " + totalTime + " ms")
-        print("    average time: " + (totalTime/instances) + " ms")
+        print("    average time: " + (totalTime / instances) + " ms")
         print("    maximum time: " + maxTime + " ms")
         print("")
       }

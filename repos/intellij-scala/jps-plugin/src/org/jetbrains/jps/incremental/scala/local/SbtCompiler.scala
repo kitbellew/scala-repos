@@ -10,17 +10,23 @@ import sbt.compiler._
 import sbt.inc.{Analysis, AnalysisStore, IncOptions, Locate}
 
 /**
- * @author Pavel Fatin
- */
-class SbtCompiler(javac: JavaCompiler, scalac: Option[AnalyzingCompiler], fileToStore: File => AnalysisStore) extends AbstractCompiler {
+  * @author Pavel Fatin
+  */
+class SbtCompiler(
+    javac: JavaCompiler,
+    scalac: Option[AnalyzingCompiler],
+    fileToStore: File => AnalysisStore)
+    extends AbstractCompiler {
   def compile(compilationData: CompilationData, client: Client) {
 
     client.progress("Searching for changed files...")
 
     val order = compilationData.order match {
       case CompileOrder.Mixed => xsbti.compile.CompileOrder.Mixed
-      case CompileOrder.JavaThenScala => xsbti.compile.CompileOrder.JavaThenScala
-      case CompileOrder.ScalaThenJava => xsbti.compile.CompileOrder.ScalaThenJava
+      case CompileOrder.JavaThenScala =>
+        xsbti.compile.CompileOrder.JavaThenScala
+      case CompileOrder.ScalaThenJava =>
+        xsbti.compile.CompileOrder.ScalaThenJava
     }
 
     val compileOutput = CompileOutput(compilationData.output)
@@ -38,18 +44,21 @@ class SbtCompiler(javac: JavaCompiler, scalac: Option[AnalyzingCompiler], fileTo
     val reporter = getReporter(client)
     val logger = getLogger(client)
 
-    val outputToAnalysisMap = compilationData.outputToCacheMap.map { case (output, cache) =>
-      val analysis = fileToStore(cache).get().map(_._1).getOrElse(Analysis.Empty)
-      (output, analysis)
+    val outputToAnalysisMap = compilationData.outputToCacheMap.map {
+      case (output, cache) =>
+        val analysis =
+          fileToStore(cache).get().map(_._1).getOrElse(Analysis.Empty)
+        (output, analysis)
     }
 
     val incOptions = compilationData.sbtIncOptions match {
       case None => IncOptions.Default
       case Some(opt) =>
-        IncOptions.Default.withNameHashing(opt.nameHashing)
-                          .withRecompileOnMacroDef(opt.recompileOnMacroDef)
-                          .withTransitiveStep(opt.transitiveStep)
-                          .withRecompileAllFraction(opt.recompileAllFraction)
+        IncOptions.Default
+          .withNameHashing(opt.nameHashing)
+          .withRecompileOnMacroDef(opt.recompileOnMacroDef)
+          .withTransitiveStep(opt.transitiveStep)
+          .withRecompileAllFraction(opt.recompileAllFraction)
     }
 
     try {

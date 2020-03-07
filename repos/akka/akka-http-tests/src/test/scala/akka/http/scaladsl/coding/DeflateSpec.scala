@@ -6,7 +6,7 @@ package akka.http.scaladsl.coding
 
 import akka.util.ByteString
 
-import java.io.{ InputStream, OutputStream }
+import java.io.{InputStream, OutputStream}
 import java.util.zip._
 
 class DeflateSpec extends CoderSpec {

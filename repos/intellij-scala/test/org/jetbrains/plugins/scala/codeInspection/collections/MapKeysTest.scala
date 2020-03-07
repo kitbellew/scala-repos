@@ -3,10 +3,11 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
-class MapKeysTest extends OperationsOnCollectionInspectionTest{
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[MapKeysInspection]
+  * @author Nikolay.Tropin
+  */
+class MapKeysTest extends OperationsOnCollectionInspectionTest {
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[MapKeysInspection]
 
   override val hint: String = InspectionBundle.message("replace.with.keys")
   val setHint = InspectionBundle.message("replace.with.keySet")
@@ -29,13 +30,22 @@ class MapKeysTest extends OperationsOnCollectionInspectionTest{
   }
 
   def test3(): Unit = {
-    checkTextHasError(s"Map(1 -> 2).${START}map(_._1).toSet$END", setHint, inspectionClass)
+    checkTextHasError(
+      s"Map(1 -> 2).${START}map(_._1).toSet$END",
+      setHint,
+      inspectionClass)
     testFix("Map(1 -> 2).map(_._1).toSet", "Map(1 -> 2).keySet", setHint)
   }
 
   def test4(): Unit = {
-    checkTextHasError(s"Map(1 -> 2).${START}map(_._1).toIterator$END", iteratorHint, inspectionClass)
-    testFix("Map(1 -> 2).map(_._1).toIterator", "Map(1 -> 2).keysIterator", iteratorHint)
+    checkTextHasError(
+      s"Map(1 -> 2).${START}map(_._1).toIterator$END",
+      iteratorHint,
+      inspectionClass)
+    testFix(
+      "Map(1 -> 2).map(_._1).toIterator",
+      "Map(1 -> 2).keysIterator",
+      iteratorHint)
   }
 
   def test5(): Unit = {
@@ -43,8 +53,9 @@ class MapKeysTest extends OperationsOnCollectionInspectionTest{
   }
 }
 
-class MapValuesTest extends OperationsOnCollectionInspectionTest{
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[MapValuesInspection]
+class MapValuesTest extends OperationsOnCollectionInspectionTest {
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[MapValuesInspection]
 
   override val hint: String = InspectionBundle.message("replace.with.values")
   val iteratorHint = InspectionBundle.message("replace.with.valuesIterator")
@@ -66,8 +77,14 @@ class MapValuesTest extends OperationsOnCollectionInspectionTest{
   }
 
   def test3(): Unit = {
-    checkTextHasError(s"Map(1 -> 2).${START}map(_._2).toIterator$END", iteratorHint, inspectionClass)
-    testFix("Map(1 -> 2).map(_._2).toIterator", "Map(1 -> 2).valuesIterator", iteratorHint)
+    checkTextHasError(
+      s"Map(1 -> 2).${START}map(_._2).toIterator$END",
+      iteratorHint,
+      inspectionClass)
+    testFix(
+      "Map(1 -> 2).map(_._2).toIterator",
+      "Map(1 -> 2).valuesIterator",
+      iteratorHint)
   }
 
   def test4(): Unit = {

@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory
 import ch.qos.logback.core.AppenderBase
 import ch.qos.logback.classic.spi.ILoggingEvent
 import scala.collection.mutable.ListBuffer
-import ch.qos.logback.classic.{ Logger, LoggerContext, Level }
+import ch.qos.logback.classic.{Logger, LoggerContext, Level}
 
 /**
- * Test utility for testing Play logs
- */
+  * Test utility for testing Play logs
+  */
 object LogTester {
 
   def withLogBuffer[T](block: LogBuffer => T) = {
@@ -46,12 +46,18 @@ class LogBuffer extends AppenderBase[ILoggingEvent] {
     buffer.append(eventObject)
   }
 
-  def find(level: Option[Level] = None,
-    logger: Option[String] = None,
-    messageContains: Option[String] = None): List[ILoggingEvent] = buffer.synchronized {
-    val byLevel = level.fold(buffer) { l => buffer.filter(_.getLevel == l) }
-    val byLogger = logger.fold(byLevel) { l => byLevel.filter(_.getLoggerName == l) }
-    val byMessageContains = logger.fold(byLogger) { m => byLogger.filter(_.getMessage.contains(m)) }
-    byMessageContains.toList
-  }
+  def find(
+      level: Option[Level] = None,
+      logger: Option[String] = None,
+      messageContains: Option[String] = None): List[ILoggingEvent] =
+    buffer.synchronized {
+      val byLevel = level.fold(buffer) { l => buffer.filter(_.getLevel == l) }
+      val byLogger = logger.fold(byLevel) { l =>
+        byLevel.filter(_.getLoggerName == l)
+      }
+      val byMessageContains = logger.fold(byLogger) { m =>
+        byLogger.filter(_.getMessage.contains(m))
+      }
+      byMessageContains.toList
+    }
 }

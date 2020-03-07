@@ -34,7 +34,8 @@ import scalafx.delegate.SFXDelegate
 import scalafx.event.EventType
 
 object MouseEvent {
-  implicit def sfxMouseEvent2jfx(me: MouseEvent): jfxsi.MouseEvent = if (me != null) me.delegate else null
+  implicit def sfxMouseEvent2jfx(me: MouseEvent): jfxsi.MouseEvent =
+    if (me != null) me.delegate else null
 
   val Any: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.ANY
 
@@ -46,34 +47,40 @@ object MouseEvent {
 
   val MouseEntered: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_ENTERED
 
-  val MouseEnteredTarget: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_ENTERED_TARGET
+  val MouseEnteredTarget: EventType[jfxsi.MouseEvent] =
+    jfxsi.MouseEvent.MOUSE_ENTERED_TARGET
 
   val MouseExited: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_EXITED
 
-  val MouseExitedTarget: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_EXITED_TARGET
+  val MouseExitedTarget: EventType[jfxsi.MouseEvent] =
+    jfxsi.MouseEvent.MOUSE_EXITED_TARGET
 
   val MouseMoved: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_MOVED
 
   val MousePressed: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_PRESSED
 
-  val MouseReleased: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_RELEASED
+  val MouseReleased: EventType[jfxsi.MouseEvent] =
+    jfxsi.MouseEvent.MOUSE_RELEASED
 
 }
 
-class MouseEvent(override val delegate: jfxsi.MouseEvent) extends InputEvent(delegate) with SFXDelegate[jfxsi.MouseEvent] {
+class MouseEvent(override val delegate: jfxsi.MouseEvent)
+    extends InputEvent(delegate)
+    with SFXDelegate[jfxsi.MouseEvent] {
 
   /**
-   * Which, if any, of the mouse buttons is responsible for this event.
-   */
+    * Which, if any, of the mouse buttons is responsible for this event.
+    */
   def button: MouseButton = delegate.getButton
 
   /**
-   * Returns number of mouse clicks associated with this event.
-   */
+    * Returns number of mouse clicks associated with this event.
+    */
   def clickCount: Int = delegate.getClickCount
 
   /** Gets the event type of this event. */
-  override def eventType: EventType[_ <: jfxsi.MouseEvent] = delegate.getEventType()
+  override def eventType: EventType[_ <: jfxsi.MouseEvent] =
+    delegate.getEventType()
 
   /** Returns information about the pick. */
   def pickResult: PickResult = delegate.getPickResult
@@ -94,63 +101,63 @@ class MouseEvent(override val delegate: jfxsi.MouseEvent) extends InputEvent(del
   def z = delegate.getZ
 
   /**
-   * Whether or not the Alt modifier is down on this event.
-   */
+    * Whether or not the Alt modifier is down on this event.
+    */
   def altDown: Boolean = delegate.isAltDown
 
   /**
-   * Whether or not the Control modifier is down on this event.
-   */
+    * Whether or not the Control modifier is down on this event.
+    */
   def controlDown: Boolean = delegate.isControlDown
 
   /**
-   * Determines whether this event will be followed by DRAG_DETECTED event.
-   */
+    * Determines whether this event will be followed by DRAG_DETECTED event.
+    */
   def dragDetect: Boolean = delegate.isDragDetect
 
   /**
-   * Augments drag detection behavior.
-   */
+    * Augments drag detection behavior.
+    */
   def dragDetect_=(detected: Boolean) {
     delegate.setDragDetect(detected)
   }
 
   /**
-   * Whether or not the Meta modifier is down on this event.
-   */
+    * Whether or not the Meta modifier is down on this event.
+    */
   def metaDown: Boolean = delegate.isMetaDown
 
   /**
-   * Returns true if middle button (button 2) is currently pressed.
-   */
+    * Returns true if middle button (button 2) is currently pressed.
+    */
   def middleButtonDown: Boolean = delegate.isMiddleButtonDown
 
   /** Returns true if this mouse event is the popup menu trigger event for the platform. */
   def popupTrigger: Boolean = delegate.isPopupTrigger
 
   /**
-   * Returns true if primary button (button 1, usually the left) is currently pressed.
-   */
+    * Returns true if primary button (button 1, usually the left) is currently pressed.
+    */
   def primaryButtonDown: Boolean = delegate.isPrimaryButtonDown
 
   /**
-   * Returns true if secondary button (button 1, usually the right) is currently pressed.
-   */
+    * Returns true if secondary button (button 1, usually the right) is currently pressed.
+    */
   def secondaryButtonDown: Boolean = delegate.isSecondaryButtonDown
 
   /**
-   * Whether or not the Shift modifier is down on this event.
-   */
+    * Whether or not the Shift modifier is down on this event.
+    */
   def shiftDown: Boolean = delegate.isShiftDown
 
   /**
-   * Returns whether or not the host platform common shortcut modifier is down on this event.
-   */
+    * Returns whether or not the host platform common shortcut modifier is down on this event.
+    */
   def shortcutDown: Boolean = delegate.isShortcutDown
 
   /**
-   * Indicates whether the mouse cursor stayed in the system-provided hysteresis area since last pressed event that occurred before this event.
-   */
+    * Indicates whether the mouse cursor stayed in the system-provided hysteresis area since last pressed event that occurred before this event.
+    */
   def stillSincePress: Boolean = delegate.isStillSincePress
 
   /** Indicates whether this event is synthesized from using a touch screen instead of usual mouse event source devices like mouse or track pad. */

@@ -1,7 +1,7 @@
 package lila.tournament
 
 import chess.Color
-import lila.game.{ Game, PovRef, IdGenerator }
+import lila.game.{Game, PovRef, IdGenerator}
 
 import org.joda.time.DateTime
 
@@ -63,16 +63,17 @@ private[tournament] object Pairing {
 
   case class LastOpponents(hash: Map[String, String])
 
-  def apply(tourId: String, u1: String, u2: String): Pairing = new Pairing(
-    id = IdGenerator.game,
-    tourId = tourId,
-    status = chess.Status.Created,
-    user1 = u1,
-    user2 = u2,
-    winner = none,
-    turns = none,
-    berserk1 = 0,
-    berserk2 = 0)
+  def apply(tourId: String, u1: String, u2: String): Pairing =
+    new Pairing(
+      id = IdGenerator.game,
+      tourId = tourId,
+      status = chess.Status.Created,
+      user1 = u1,
+      user2 = u2,
+      winner = none,
+      turns = none,
+      berserk1 = 0,
+      berserk2 = 0)
 
   case class Prep(tourId: String, user1: String, user2: String) {
     def toPairing(firstGetsWhite: Boolean) =
@@ -80,7 +81,10 @@ private[tournament] object Pairing {
       else Pairing(tourId, user2, user1)
   }
 
-  def prep(tour: Tournament, ps: (Player, Player)) = Pairing.Prep(tour.id, ps._1.userId, ps._2.userId)
-  def prep(tour: Tournament, u1: String, u2: String) = Pairing.Prep(tour.id, u1, u2)
-  def prep(tour: Tournament, p1: Player, p2: Player) = Pairing.Prep(tour.id, p1.userId, p2.userId)
+  def prep(tour: Tournament, ps: (Player, Player)) =
+    Pairing.Prep(tour.id, ps._1.userId, ps._2.userId)
+  def prep(tour: Tournament, u1: String, u2: String) =
+    Pairing.Prep(tour.id, u1, u2)
+  def prep(tour: Tournament, p1: Player, p2: Player) =
+    Pairing.Prep(tour.id, p1.userId, p2.userId)
 }

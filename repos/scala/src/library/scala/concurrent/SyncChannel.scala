@@ -9,16 +9,16 @@
 package scala.concurrent
 
 /** A `SyncChannel` allows one to exchange data synchronously between
- *  a reader and a writer thread. The writer thread is blocked until the
- *  data to be written has been read by a corresponding reader thread.
- *
- *  @author  Philipp Haller
- *  @version 2.0, 04/17/2008
- */
+  *  a reader and a writer thread. The writer thread is blocked until the
+  *  data to be written has been read by a corresponding reader thread.
+  *
+  *  @author  Philipp Haller
+  *  @version 2.0, 04/17/2008
+  */
 class SyncChannel[A] {
 
   private var pendingWrites = List[(A, SyncVar[Boolean])]()
-  private var pendingReads  = List[SyncVar[A]]()
+  private var pendingReads = List[SyncVar[A]]()
 
   def write(data: A) {
     // create write request
@@ -27,7 +27,7 @@ class SyncChannel[A] {
     this.synchronized {
       // check whether there is a reader waiting
       if (!pendingReads.isEmpty) {
-        val readReq  = pendingReads.head
+        val readReq = pendingReads.head
         pendingReads = pendingReads.tail
 
         // let reader continue
@@ -35,8 +35,7 @@ class SyncChannel[A] {
 
         // resolve write request
         writeReq set true
-      }
-      else {
+      } else {
         // enqueue write request
         pendingWrites = pendingWrites ::: List((data, writeReq))
       }
@@ -61,8 +60,7 @@ class SyncChannel[A] {
 
         // resolve read request
         readReq set data
-      }
-      else {
+      } else {
         // enqueue read request
         pendingReads = pendingReads ::: List(readReq)
       }

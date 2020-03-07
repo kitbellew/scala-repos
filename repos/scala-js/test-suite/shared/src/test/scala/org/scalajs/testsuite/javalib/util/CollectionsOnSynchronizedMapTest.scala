@@ -32,7 +32,8 @@ trait CollectionsOnSynchronizedMapTest extends CollectionsOnMapsTest {
   }
 }
 
-trait CollectionsOnSynchronizedSortedMapTest extends CollectionsOnSortedMapsTest {
+trait CollectionsOnSynchronizedSortedMapTest
+    extends CollectionsOnSortedMapsTest {
 
   def originalFactory: SortedMapFactory
 

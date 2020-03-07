@@ -6,11 +6,10 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js.annotation
 
 /** IMPLEMENTATION DETAIL: Saves the fully qualified JS name of a symbol.
- *
- *  Do not use this annotation yourself.
- */
+  *
+  *  Do not use this annotation yourself.
+  */
 class JSFullName(fullName: String) extends scala.annotation.StaticAnnotation

@@ -25,40 +25,55 @@ import org.apache.spark.{SparkConf, SparkFunSuite}
 import org.apache.spark.util.Utils
 
 /**
- * Tests for the REST application submission protocol.
- */
+  * Tests for the REST application submission protocol.
+  */
 class SubmitRestProtocolSuite extends SparkFunSuite {
 
   test("validate") {
     val request = new DummyRequest
-    intercept[SubmitRestProtocolException] { request.validate() } // missing everything
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing everything
     request.clientSparkVersion = "1.2.3"
-    intercept[SubmitRestProtocolException] { request.validate() } // missing name and age
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing name and age
     request.name = "something"
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only age
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only age
     request.age = 2
     intercept[SubmitRestProtocolException] { request.validate() } // age too low
     request.age = 10
     request.validate() // everything is set properly
     request.clientSparkVersion = null
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only Spark version
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only Spark version
     request.clientSparkVersion = "1.2.3"
     request.name = null
-    intercept[SubmitRestProtocolException] { request.validate() } // missing only name
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // missing only name
     request.message = "not-setting-name"
-    intercept[SubmitRestProtocolException] { request.validate() } // still missing name
+    intercept[SubmitRestProtocolException] {
+      request.validate()
+    } // still missing name
   }
 
   test("request to and from JSON") {
     val request = new DummyRequest
-    intercept[SubmitRestProtocolException] { request.toJson } // implicit validation
+    intercept[SubmitRestProtocolException] {
+      request.toJson
+    } // implicit validation
     request.clientSparkVersion = "1.2.3"
     request.active = true
     request.age = 25
     request.name = "jung"
     val json = request.toJson
     assertJsonEquals(json, dummyRequestJson)
-    val newRequest = SubmitRestProtocolMessage.fromJson(json, classOf[DummyRequest])
+    val newRequest =
+      SubmitRestProtocolMessage.fromJson(json, classOf[DummyRequest])
     assert(newRequest.clientSparkVersion === "1.2.3")
     assert(newRequest.clientSparkVersion === "1.2.3")
     assert(newRequest.active)
@@ -73,7 +88,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     response.success = true
     val json = response.toJson
     assertJsonEquals(json, dummyResponseJson)
-    val newResponse = SubmitRestProtocolMessage.fromJson(json, classOf[DummyResponse])
+    val newResponse =
+      SubmitRestProtocolMessage.fromJson(json, classOf[DummyResponse])
     assert(newResponse.serverSparkVersion === "3.3.4")
     assert(newResponse.serverSparkVersion === "3.3.4")
     assert(newResponse.success)
@@ -119,19 +135,28 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, submitDriverRequestJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(json, classOf[CreateSubmissionRequest])
+    val newMessage =
+      SubmitRestProtocolMessage.fromJson(json, classOf[CreateSubmissionRequest])
     assert(newMessage.clientSparkVersion === "1.2.3")
     assert(newMessage.appResource === "honey-walnut-cherry.jar")
     assert(newMessage.mainClass === "org.apache.spark.examples.SparkPie")
     assert(newMessage.sparkProperties("spark.app.name") === "SparkPie")
-    assert(newMessage.sparkProperties("spark.jars") === "mayonnaise.jar,ketchup.jar")
+    assert(
+      newMessage.sparkProperties("spark.jars") === "mayonnaise.jar,ketchup.jar")
     assert(newMessage.sparkProperties("spark.files") === "fireball.png")
-    assert(newMessage.sparkProperties("spark.driver.memory") === s"${Utils.DEFAULT_DRIVER_MEM_MB}m")
+    assert(
+      newMessage.sparkProperties(
+        "spark.driver.memory") === s"${Utils.DEFAULT_DRIVER_MEM_MB}m")
     assert(newMessage.sparkProperties("spark.driver.cores") === "180")
-    assert(newMessage.sparkProperties("spark.driver.extraJavaOptions") ===
-      " -Dslices=5 -Dcolor=mostly_red")
-    assert(newMessage.sparkProperties("spark.driver.extraClassPath") === "food-coloring.jar")
-    assert(newMessage.sparkProperties("spark.driver.extraLibraryPath") === "pickle.jar")
+    assert(
+      newMessage.sparkProperties("spark.driver.extraJavaOptions") ===
+        " -Dslices=5 -Dcolor=mostly_red")
+    assert(
+      newMessage.sparkProperties(
+        "spark.driver.extraClassPath") === "food-coloring.jar")
+    assert(
+      newMessage.sparkProperties(
+        "spark.driver.extraLibraryPath") === "pickle.jar")
     assert(newMessage.sparkProperties("spark.driver.supervise") === "false")
     assert(newMessage.sparkProperties("spark.executor.memory") === "256m")
     assert(newMessage.sparkProperties("spark.cores.max") === "10000")
@@ -150,7 +175,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, submitDriverResponseJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(json, classOf[CreateSubmissionResponse])
+    val newMessage = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[CreateSubmissionResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.success)
@@ -166,7 +193,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, killDriverResponseJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(json, classOf[KillSubmissionResponse])
+    val newMessage =
+      SubmitRestProtocolMessage.fromJson(json, classOf[KillSubmissionResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.success)
@@ -186,7 +214,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, driverStatusResponseJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(json, classOf[SubmissionStatusResponse])
+    val newMessage = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[SubmissionStatusResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.driverState === "RUNNING")
@@ -204,7 +234,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, errorJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(json, classOf[ErrorResponse])
+    val newMessage =
+      SubmitRestProtocolMessage.fromJson(json, classOf[ErrorResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.message === "Field not found in submit request: X")
   }
@@ -299,14 +330,18 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     """.stripMargin
 
   /** Assert that the contents in the two JSON strings are equal after ignoring whitespace. */
-  private def assertJsonEquals(jsonString1: String, jsonString2: String): Unit = {
+  private def assertJsonEquals(
+      jsonString1: String,
+      jsonString2: String): Unit = {
     val trimmedJson1 = jsonString1.trim
     val trimmedJson2 = jsonString2.trim
     val json1 = compact(render(parse(trimmedJson1)))
     val json2 = compact(render(parse(trimmedJson2)))
     // Put this on a separate line to avoid printing comparison twice when test fails
     val equals = json1 == json2
-    assert(equals, "\"[%s]\" did not equal \"[%s]\"".format(trimmedJson1, trimmedJson2))
+    assert(
+      equals,
+      "\"[%s]\" did not equal \"[%s]\"".format(trimmedJson1, trimmedJson2))
   }
 }
 

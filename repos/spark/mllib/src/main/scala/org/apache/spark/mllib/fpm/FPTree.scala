@@ -21,9 +21,9 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 /**
- * FP-Tree data structure used in FP-Growth.
- * @tparam T item type
- */
+  * FP-Tree data structure used in FP-Growth.
+  * @tparam T item type
+  */
 private[fpm] class FPTree[T] extends Serializable {
 
   import FPTree._
@@ -40,12 +40,13 @@ private[fpm] class FPTree[T] extends Serializable {
     t.foreach { item =>
       val summary = summaries.getOrElseUpdate(item, new Summary)
       summary.count += count
-      val child = curr.children.getOrElseUpdate(item, {
-        val newNode = new Node(curr)
-        newNode.item = item
-        summary.nodes += newNode
-        newNode
-      })
+      val child = curr.children.getOrElseUpdate(
+        item, {
+          val newNode = new Node(curr)
+          newNode.item = item
+          summary.nodes += newNode
+          newNode
+        })
       child.count += count
       curr = child
     }
@@ -54,8 +55,9 @@ private[fpm] class FPTree[T] extends Serializable {
 
   /** Merges another FP-Tree. */
   def merge(other: FPTree[T]): this.type = {
-    other.transactions.foreach { case (t, c) =>
-      add(t, c)
+    other.transactions.foreach {
+      case (t, c) =>
+        add(t, c)
     }
     this
   }
@@ -84,11 +86,13 @@ private[fpm] class FPTree[T] extends Serializable {
   /** Returns all transactions under this node. */
   private def getTransactions(node: Node[T]): Iterator[(List[T], Long)] = {
     var count = node.count
-    node.children.iterator.flatMap { case (item, child) =>
-      getTransactions(child).map { case (t, c) =>
-        count -= c
-        (item :: t, c)
-      }
+    node.children.iterator.flatMap {
+      case (item, child) =>
+        getTransactions(child).map {
+          case (t, c) =>
+            count -= c
+            (item :: t, c)
+        }
     } ++ {
       if (count > 0) {
         Iterator.single((Nil, count))
@@ -102,15 +106,17 @@ private[fpm] class FPTree[T] extends Serializable {
   def extract(
       minCount: Long,
       validateSuffix: T => Boolean = _ => true): Iterator[(List[T], Long)] = {
-    summaries.iterator.flatMap { case (item, summary) =>
-      if (validateSuffix(item) && summary.count >= minCount) {
-        Iterator.single((item :: Nil, summary.count)) ++
-          project(item).extract(minCount).map { case (t, c) =>
-            (item :: t, c)
-          }
-      } else {
-        Iterator.empty
-      }
+    summaries.iterator.flatMap {
+      case (item, summary) =>
+        if (validateSuffix(item) && summary.count >= minCount) {
+          Iterator.single((item :: Nil, summary.count)) ++
+            project(item).extract(minCount).map {
+              case (t, c) =>
+                (item :: t, c)
+            }
+        } else {
+          Iterator.empty
+        }
     }
   }
 }

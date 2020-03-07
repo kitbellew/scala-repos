@@ -11,14 +11,15 @@ trait CoflatMapTests[F[_]] extends Laws {
   def laws: CoflatMapLaws[F]
 
   def coflatMap[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
-    ArbFA: Arbitrary[F[A]],
-    EqFA: Eq[F[A]],
-    EqFC: Eq[F[C]]
+      ArbFA: Arbitrary[F[A]],
+      EqFA: Eq[F[A]],
+      EqFC: Eq[F[C]]
   ): RuleSet = {
     new DefaultRuleSet(
       name = "coflatMap",
       parent = None,
-      "coflatMap associativity" -> forAll(laws.coflatMapAssociativity[A, B, C] _))
+      "coflatMap associativity" -> forAll(
+        laws.coflatMapAssociativity[A, B, C] _))
   }
 }
 

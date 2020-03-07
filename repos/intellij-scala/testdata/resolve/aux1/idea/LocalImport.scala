@@ -15,7 +15,7 @@ abstract class Client {
   import builder._
 
   // Class in named element
-  val d = new D<ref>escription
+  val d = new D < ref > escription
 
   // Type alias
   val den: Den

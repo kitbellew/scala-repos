@@ -18,7 +18,7 @@ trait TimeoutTests extends JSEnvTest {
     setTimeout(function() { console.log("3"); }, 300);
     setTimeout(function() { console.log("4"); },   0);
     """ hasOutput
-    """|4
+      """|4
        |2
        |1
        |3
@@ -42,7 +42,7 @@ trait TimeoutTests extends JSEnvTest {
     setTimeout(function() { console.log("3"); }, 300);
     setTimeout(function() { console.log("4"); },   0);
     """ hasOutput
-    """|4
+      """|4
        |2
        |3
        |""".stripMargin
@@ -62,7 +62,7 @@ trait TimeoutTests extends JSEnvTest {
     setTimeout(function(msg) { console.log(msg); }, 300, "Hello World");
     setTimeout(function() { console.log("4"); },   0);
     """ hasOutput
-    """|4
+      """|4
        |2
        |1foobar
        |Hello World
@@ -88,7 +88,7 @@ trait TimeoutTests extends JSEnvTest {
       clearInterval(i3);
     }, 10000);
     """ hasOutput
-    """|each 1300
+      """|each 1300
        |each 2200
        |each 1300
        |each 3100
@@ -104,7 +104,7 @@ trait TimeoutTests extends JSEnvTest {
        |each 3100
        |""".stripMargin
 
-     assertTrue("Execution took too little time", deadline.isOverdue())
+    assertTrue("Execution took too little time", deadline.isOverdue())
 
   }
 

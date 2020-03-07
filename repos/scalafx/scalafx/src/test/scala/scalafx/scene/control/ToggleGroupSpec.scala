@@ -36,10 +36,12 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * ToggleGroup Spec tests.
- *
- *
- */
+  * ToggleGroup Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class ToggleGroupSpec
-  extends SimpleSFXDelegateSpec[jfxsc.ToggleGroup, ToggleGroup](classOf[jfxsc.ToggleGroup], classOf[ToggleGroup])
+    extends SimpleSFXDelegateSpec[jfxsc.ToggleGroup, ToggleGroup](
+      classOf[jfxsc.ToggleGroup],
+      classOf[ToggleGroup])

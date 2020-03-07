@@ -38,11 +38,8 @@ final class Env(
     password = ApplePushPassword,
     enabled = ApplePushEnabled)
 
-  private lazy val pushApi = new PushApi(
-    googlePush,
-    applePush,
-    getLightUser,
-    roundSocketHub)
+  private lazy val pushApi =
+    new PushApi(googlePush, applePush, getLightUser, roundSocketHub)
 
   system.actorOf(Props(new Actor {
     override def preStart() {
@@ -53,7 +50,8 @@ final class Env(
       case lila.game.actorApi.FinishGame(game, _, _) => pushApi finish game
       case move: lila.hub.actorApi.round.MoveEvent   => pushApi move move
       case lila.challenge.Event.Create(c)            => pushApi challengeCreate c
-      case lila.challenge.Event.Accept(c, joinerId)  => pushApi.challengeAccept(c, joinerId)
+      case lila.challenge.Event.Accept(c, joinerId) =>
+        pushApi.challengeAccept(c, joinerId)
     }
   }))
 }
@@ -65,8 +63,9 @@ object Env {
     system = lila.common.PlayApp.system,
     getLightUser = lila.user.Env.current.lightUser,
     roundSocketHub = lila.hub.Env.current.socket.round,
-    appleCertificate = path => lila.common.PlayApp.withApp {
-      _.classloader.getResourceAsStream(path)
-    },
+    appleCertificate = path =>
+      lila.common.PlayApp.withApp {
+        _.classloader.getResourceAsStream(path)
+      },
     config = lila.common.PlayApp loadConfig "push")
 }

@@ -15,17 +15,17 @@ private[sbtplugin] final class FrameworkDetector(jsEnv: JSEnv) {
   import FrameworkDetector._
 
   /**
-   *  Detects which of the test frameworks in `frameworks` exists on
-   *  the classpath.
-   *
-   *  Each potential name in each [[sbt.TestFramework TestFramework]] is checked
-   *  for existance (on the JavaScript global namespace, using nested bracket select).
-   *
-   *  Returns a map with found frameworks and the first name with an existing
-   *  definition on the classpath.
-   *
-   *  Note: No JavaScript type tests are performed by this method
-   */
+    *  Detects which of the test frameworks in `frameworks` exists on
+    *  the classpath.
+    *
+    *  Each potential name in each [[sbt.TestFramework TestFramework]] is checked
+    *  for existance (on the JavaScript global namespace, using nested bracket select).
+    *
+    *  Returns a map with found frameworks and the first name with an existing
+    *  definition on the classpath.
+    *
+    *  Note: No JavaScript type tests are performed by this method
+    */
   def detect(frameworks: Seq[TestFramework]): Map[TestFramework, String] = {
     val data = frameworks.map(_.implClassNames.toList).toList.toJSON
 

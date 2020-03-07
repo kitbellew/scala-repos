@@ -16,46 +16,60 @@ import org.jetbrains.jps.{ModuleChunk, ProjectPaths}
 import scala.collection.JavaConverters._
 
 /**
- * @author Pavel Fatin
- */
-case class CompilationData(sources: Seq[File],
-                           classpath: Seq[File],
-                           output: File,
-                           scalaOptions: Seq[String],
-                           javaOptions: Seq[String],
-                           order: CompileOrder,
-                           cacheFile: File,
-                           outputToCacheMap: Map[File, File],
-                           outputGroups: Seq[(File, File)],
-                           sbtIncOptions: Option[SbtIncrementalOptions])
+  * @author Pavel Fatin
+  */
+case class CompilationData(
+    sources: Seq[File],
+    classpath: Seq[File],
+    output: File,
+    scalaOptions: Seq[String],
+    javaOptions: Seq[String],
+    order: CompileOrder,
+    cacheFile: File,
+    outputToCacheMap: Map[File, File],
+    outputGroups: Seq[(File, File)],
+    sbtIncOptions: Option[SbtIncrementalOptions])
 
 object CompilationData {
-  def from(sources: Seq[File], context: CompileContext, chunk: ModuleChunk): Either[String, CompilationData] = {
+  def from(
+      sources: Seq[File],
+      context: CompileContext,
+      chunk: ModuleChunk): Either[String, CompilationData] = {
     val target = chunk.representativeTarget
     val module = target.getModule
 
     outputsNotSpecified(chunk) match {
       case Some(message) => return Left(message)
-      case None =>
+      case None          =>
     }
     val output = target.getOutputDir
     checkOrCreate(output)
 
-    val classpath = ProjectPaths.getCompilationClasspathFiles(chunk, chunk.containsTests, false, true).asScala.toSeq
-    val compilerSettings = SettingsManager.getProjectSettings(module.getProject).getCompilerSettings(chunk)
-    val noBootCp = if (CompilerData.isDotty(chunk)) Nil else Seq("-nobootcp", "-javabootclasspath", File.pathSeparator)
+    val classpath = ProjectPaths
+      .getCompilationClasspathFiles(chunk, chunk.containsTests, false, true)
+      .asScala
+      .toSeq
+    val compilerSettings = SettingsManager
+      .getProjectSettings(module.getProject)
+      .getCompilerSettings(chunk)
+    val noBootCp =
+      if (CompilerData.isDotty(chunk)) Nil
+      else Seq("-nobootcp", "-javabootclasspath", File.pathSeparator)
     val scalaOptions = noBootCp ++: compilerSettings.getCompilerOptions
     val order = compilerSettings.getCompileOrder
 
     createOutputToCacheMap(context).map { outputToCacheMap =>
+      val cacheFile = outputToCacheMap.getOrElse(
+        output,
+        throw new RuntimeException(
+          "Unknown build target output directory: " + output))
 
-      val cacheFile = outputToCacheMap.getOrElse(output,
-        throw new RuntimeException("Unknown build target output directory: " + output))
-
-      val relevantOutputToCacheMap = (outputToCacheMap - output).filter(p => classpath.contains(p._1))
+      val relevantOutputToCacheMap =
+        (outputToCacheMap - output).filter(p => classpath.contains(p._1))
 
       val commonOptions = {
-        val encoding = context.getProjectDescriptor.getEncodingConfiguration.getPreferredModuleChunkEncoding(chunk)
+        val encoding = context.getProjectDescriptor.getEncodingConfiguration
+          .getPreferredModuleChunkEncoding(chunk)
         Option(encoding).map(Seq("-encoding", _)).getOrElse(Seq.empty)
       }
 
@@ -63,31 +77,49 @@ object CompilationData {
 
       val outputGroups = createOutputGroups(chunk)
 
-      CompilationData(sources, classpath, output, commonOptions ++ scalaOptions, commonOptions ++ javaOptions,
-        order, cacheFile, relevantOutputToCacheMap, outputGroups, Some(compilerSettings.getSbtIncrementalOptions))
+      CompilationData(
+        sources,
+        classpath,
+        output,
+        commonOptions ++ scalaOptions,
+        commonOptions ++ javaOptions,
+        order,
+        cacheFile,
+        relevantOutputToCacheMap,
+        outputGroups,
+        Some(compilerSettings.getSbtIncrementalOptions)
+      )
     }
   }
-
 
   def checkOrCreate(output: File) {
     if (!output.exists()) {
       try {
-        if (!output.mkdirs()) throw new IOException("Cannot create output directory: " + output.toString)
+        if (!output.mkdirs())
+          throw new IOException(
+            "Cannot create output directory: " + output.toString)
       } catch {
-        case t: Throwable => throw new IOException("Cannot create output directory: " + output.toString, t)
+        case t: Throwable =>
+          throw new IOException(
+            "Cannot create output directory: " + output.toString,
+            t)
       }
     }
   }
 
   def outputsNotSpecified(chunk: ModuleChunk): Option[String] = {
-    chunk.getTargets.asScala.find(_.getOutputDir == null)
-            .map("Output directory not specified for module " + _.getModule.getName)
+    chunk.getTargets.asScala
+      .find(_.getOutputDir == null)
+      .map("Output directory not specified for module " + _.getModule.getName)
   }
 
-  private def javaOptionsFor(context: CompileContext, chunk: ModuleChunk): Seq[String] = {
+  private def javaOptionsFor(
+      context: CompileContext,
+      chunk: ModuleChunk): Seq[String] = {
     val compilerConfig = {
       val project = context.getProjectDescriptor.getProject
-      JpsJavaExtensionService.getInstance.getOrCreateCompilerConfiguration(project)
+      JpsJavaExtensionService.getInstance.getOrCreateCompilerConfiguration(
+        project)
     }
 
     val options = new util.ArrayList[String]()
@@ -99,13 +131,19 @@ object CompilationData {
       compilerConfig.getAnnotationProcessingProfile(module)
     }
 
-    JavaBuilder.addCompilationOptions(options, context, chunk, annotationProcessingProfile)
+    JavaBuilder.addCompilationOptions(
+      options,
+      context,
+      chunk,
+      annotationProcessingProfile)
 
     options.asScala
   }
 
   // TODO JavaBuilder.loadCommonJavacOptions should be public
-  def addCommonJavacOptions(options: util.ArrayList[String], compilerOptions: JpsJavaCompilerOptions) {
+  def addCommonJavacOptions(
+      options: util.ArrayList[String],
+      compilerOptions: JpsJavaCompilerOptions) {
     if (compilerOptions.DEBUGGING_INFO) {
       options.add("-g")
     }
@@ -120,18 +158,21 @@ object CompilationData {
 
     if (!compilerOptions.ADDITIONAL_OPTIONS_STRING.isEmpty) {
       // TODO extract VM options
-      options.addAll(compilerOptions.ADDITIONAL_OPTIONS_STRING.split("\\s+").toSeq.asJava)
+      options.addAll(
+        compilerOptions.ADDITIONAL_OPTIONS_STRING.split("\\s+").toSeq.asJava)
     }
   }
 
-  private def createOutputToCacheMap(context: CompileContext): Either[String, Map[File, File]] = {
-    val targetToOutput = targetsIn(context).map(target => (target, target.getOutputDir))
+  private def createOutputToCacheMap(
+      context: CompileContext): Either[String, Map[File, File]] = {
+    val targetToOutput =
+      targetsIn(context).map(target => (target, target.getOutputDir))
 
     outputClashesIn(targetToOutput).toLeft {
       val paths = context.getProjectDescriptor.dataManager.getDataPaths
 
       for ((target, output) <- targetToOutput.toMap)
-      yield (output, new File(paths.getTargetDataRoot(target), "cache.dat"))
+        yield (output, new File(paths.getTargetDataRoot(target), "cache.dat"))
     }
   }
 
@@ -152,14 +193,16 @@ object CompilationData {
     }
 
     val buildTargetIndex = context.getProjectDescriptor.getBuildTargetIndex
-    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala.flatMap(buildTargetIndex.getAllTargets(_).asScala)
+    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala
+      .flatMap(buildTargetIndex.getAllTargets(_).asScala)
 
     targets.distinct.filterNot { target =>
       buildTargetIndex.isDummy(target) || isExcluded(target)
     }
   }
 
-  private def outputClashesIn(targetToOutput: Seq[(ModuleBuildTarget, File)]): Option[String] = {
+  private def outputClashesIn(
+      targetToOutput: Seq[(ModuleBuildTarget, File)]): Option[String] = {
     val outputToTargetsMap = targetToOutput.groupBy(_._2).mapValues(_.map(_._1))
 
     val errors = outputToTargetsMap.collect {
@@ -168,8 +211,11 @@ object CompilationData {
         "Output path %s is shared between: %s".format(output, targetNames)
     }
 
-    if (errors.isEmpty) None else Some(errors.mkString("\n") +
-            "\nPlease configure separate output paths to proceed with the compilation." +
-            "\nTIP: you can use Project Artifacts to combine compiled classes if needed.")
+    if (errors.isEmpty) None
+    else
+      Some(
+        errors.mkString("\n") +
+          "\nPlease configure separate output paths to proceed with the compilation." +
+          "\nTIP: you can use Project Artifacts to combine compiled classes if needed.")
   }
 }

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.workflow
 
 import io.prediction.data.storage.EngineInstance
@@ -26,10 +25,10 @@ trait EngineServerPlugin {
   def start(context: EngineServerPluginContext): Unit
 
   def process(
-    engineInstance: EngineInstance,
-    query: JValue,
-    prediction: JValue,
-    context: EngineServerPluginContext): JValue
+      engineInstance: EngineInstance,
+      query: JValue,
+      prediction: JValue,
+      context: EngineServerPluginContext): JValue
 
   def handleREST(arguments: Seq[String]): String
 }

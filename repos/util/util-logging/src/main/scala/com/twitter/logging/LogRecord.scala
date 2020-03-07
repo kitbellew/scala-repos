@@ -19,15 +19,16 @@ package com.twitter.logging
 import java.util.{logging => javalog}
 
 /**
- * Wrapper around {@link java.util.logging.LogRecord}. Should only be accessed from a single thread.
- *
- * Messages are formatted by Java's LogRecord using {@link java.text.MessageFormat} whereas
- * this class uses a regular {@link java.text.StringFormat}
- *
- * This class takes {@link com.twitter.logging.Logger} into account when inferring the
- * `sourceMethod` and `sourceClass` names.
- */
-class LogRecord(level: javalog.Level, msg: String) extends javalog.LogRecord(level, msg) {
+  * Wrapper around {@link java.util.logging.LogRecord}. Should only be accessed from a single thread.
+  *
+  * Messages are formatted by Java's LogRecord using {@link java.text.MessageFormat} whereas
+  * this class uses a regular {@link java.text.StringFormat}
+  *
+  * This class takes {@link com.twitter.logging.Logger} into account when inferring the
+  * `sourceMethod` and `sourceClass` names.
+  */
+class LogRecord(level: javalog.Level, msg: String)
+    extends javalog.LogRecord(level, msg) {
   private[this] var inferred = false
   private[this] var sourceClassName: String = null
   private[this] var sourceMethodName: String = null
@@ -68,7 +69,7 @@ class LogRecord(level: javalog.Level, msg: String) extends javalog.LogRecord(lev
 
     val (cName, mName) = elt match {
       case Some(element) => (element.getClassName, element.getMethodName)
-      case None => (super.getSourceClassName, super.getSourceMethodName)
+      case None          => (super.getSourceClassName, super.getSourceMethodName)
     }
     setSourceMethodName(mName)
     setSourceClassName(cName)

@@ -16,8 +16,8 @@
 
 package com.twitter.summingbird.online
 
-import com.twitter.algebird.{ MapAlgebra, Semigroup }
-import com.twitter.storehaus.{ ReadableStore, JMapStore }
+import com.twitter.algebird.{MapAlgebra, Semigroup}
+import com.twitter.storehaus.{ReadableStore, JMapStore}
 import com.twitter.storehaus.algebra.MergeableStore
 import com.twitter.summingbird._
 import com.twitter.summingbird.memory._
@@ -25,17 +25,16 @@ import com.twitter.summingbird.planner._
 import com.twitter.util.Future
 import org.scalatest.WordSpec
 import scala.collection.JavaConverters._
-import scala.collection.mutable.{ Map => MMap }
+import scala.collection.mutable.{Map => MMap}
 import org.scalacheck._
 import Gen._
 import Arbitrary._
 import org.scalacheck.Prop._
-import scala.util.{ Try, Success, Failure }
+import scala.util.{Try, Success, Failure}
 
 /**
- * Tests for Summingbird's Storm planner.
- */
-
+  * Tests for Summingbird's Storm planner.
+  */
 class PlannerSpec extends WordSpec {
   implicit def extractor[T]: TimeExtractor[T] = TimeExtractor(_ => 0L)
   private type MemoryDag = Dag[Memory]
@@ -49,14 +48,12 @@ class PlannerSpec extends WordSpec {
   implicit def testStore: Memory#Store[Int, Int] = MMap[Int, Int]()
 
   implicit val arbIntSource: Arbitrary[Producer[Memory, Int]] =
-    Arbitrary(Gen.listOfN(100, Arbitrary.arbitrary[Int]).map {
-      x: List[Int] =>
-        Memory.toSource(x)
+    Arbitrary(Gen.listOfN(100, Arbitrary.arbitrary[Int]).map { x: List[Int] =>
+      Memory.toSource(x)
     })
   implicit val arbTupleSource: Arbitrary[KeyedProducer[Memory, Int, Int]] =
     Arbitrary(Gen.listOfN(100, Arbitrary.arbitrary[(Int, Int)]).map {
-      x: List[(Int, Int)] =>
-        IdentityKeyedProducer(Memory.toSource(x))
+      x: List[(Int, Int)] => IdentityKeyedProducer(Memory.toSource(x))
     })
 
   def arbSource1 = sample[Producer[Memory, Int]]
@@ -67,28 +64,25 @@ class PlannerSpec extends WordSpec {
     val store2 = testStore
     val store3 = testStore
 
-    val h = arbSource1.name("name1")
-      .flatMap { i: Int =>
-        List(i, i)
-      }
+    val h = arbSource1
+      .name("name1")
+      .flatMap { i: Int => List(i, i) }
       .name("name1PostFM")
-    val h2 = arbSource2.name("name2")
-      .flatMap { tup: (Int, Int) =>
-        List(tup._1, tup._2)
-      }.name("name2PostFM")
+    val h2 = arbSource2
+      .name("name2")
+      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }
+      .name("name2PostFM")
 
     val combined = h2.merge(h)
 
-    val s1 = combined.name("combinedPipes")
-      .map { i: Int =>
-        (i, i * 2)
-      }
+    val s1 = combined
+      .name("combinedPipes")
+      .map { i: Int => (i, i * 2) }
 
-    val s2 = combined.map { i: Int =>
-      (i, i * 3)
-    }
+    val s2 = combined.map { i: Int => (i, i * 3) }
 
-    val tail = s1.sumByKey(store1)
+    val tail = s1
+      .sumByKey(store1)
       .name("Store one writter")
       .also(s2)
       .sumByKey(store2)
@@ -111,32 +105,27 @@ class PlannerSpec extends WordSpec {
     val store2 = testStore
     val store3 = testStore
 
-    val h = arbSource1.name("name1")
-      .flatMap { i: Int =>
-        List(i, i)
-      }
+    val h = arbSource1
+      .name("name1")
+      .flatMap { i: Int => List(i, i) }
       .name("name1PostFM")
-    val h2 = arbSource2.name("name2")
-      .flatMap { tup: (Int, Int) =>
-        List(tup._1, tup._2)
-      }.name("name2PostFM")
+    val h2 = arbSource2
+      .name("name2")
+      .flatMap { tup: (Int, Int) => List(tup._1, tup._2) }
+      .name("name2PostFM")
 
     val combined = h2.merge(h)
 
-    val s1 = combined.name("combinedPipes")
-      .map { i: Int =>
-        (i, i * 2)
-      }
+    val s1 = combined
+      .name("combinedPipes")
+      .map { i: Int => (i, i * 2) }
 
-    val s2 = combined.map { i: Int =>
-      (i, i * 3)
-    }
+    val s2 = combined.map { i: Int => (i, i * 3) }
 
-    val s3 = combined.map { i: Int =>
-      (i, i * 4)
-    }
+    val s3 = combined.map { i: Int => (i, i * 4) }
 
-    val tail = s1.sumByKey(store1)
+    val tail = s1
+      .sumByKey(store1)
       .name("Store one writter")
       .also(s2)
       .sumByKey(store2)
@@ -182,11 +171,15 @@ class PlannerSpec extends WordSpec {
   }
   "Chained SumByKey with extra Also is okay" in {
     val store1 = testStore
-    val part1: TailProducer[Memory, (Int, (Option[Int], Int))] = arbSource1.map { i => (i % 10, i * i) }.sumByKey(store1).name("Sarnatsky")
+    val part1: TailProducer[Memory, (Int, (Option[Int], Int))] =
+      arbSource1.map { i => (i % 10, i * i) }.sumByKey(store1).name("Sarnatsky")
     val store2 = testStore
-    val part2 = part1.mapValues { case (optV, v) => v }
-      .mapKeys(_ => 1).name("Preexpanded")
-      .sumByKey(store2).name("All done")
+    val part2 = part1
+      .mapValues { case (optV, v) => v }
+      .mapKeys(_ => 1)
+      .name("Preexpanded")
+      .sumByKey(store2)
+      .name("All done")
     Try(OnlinePlan(part1.also(part2))) match {
       case Success(graph) =>
         TopologyPlannerLaws.dumpGraph(graph)

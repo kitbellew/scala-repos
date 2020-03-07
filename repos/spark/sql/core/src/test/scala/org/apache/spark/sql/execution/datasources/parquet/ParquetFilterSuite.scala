@@ -27,7 +27,10 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.dsl.expressions._
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.planning.PhysicalOperation
-import org.apache.spark.sql.execution.datasources.{DataSourceStrategy, LogicalRelation}
+import org.apache.spark.sql.execution.datasources.{
+  DataSourceStrategy,
+  LogicalRelation
+}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.sources.HadoopFsRelation
@@ -35,18 +38,21 @@ import org.apache.spark.sql.test.SharedSQLContext
 import org.apache.spark.sql.types._
 
 /**
- * A test suite that tests Parquet filter2 API based filter pushdown optimization.
- *
- * NOTE:
- *
- * 1. `!(a cmp b)` is always transformed to its negated form `a cmp' b` by the
- *    `BooleanSimplification` optimization rule whenever possible. As a result, predicate `!(a < 1)`
- *    results in a `GtEq` filter predicate rather than a `Not`.
- *
- * 2. `Tuple1(Option(x))` is used together with `AnyVal` types like `Int` to ensure the inferred
- *    data type is nullable.
- */
-class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContext {
+  * A test suite that tests Parquet filter2 API based filter pushdown optimization.
+  *
+  * NOTE:
+  *
+  * 1. `!(a cmp b)` is always transformed to its negated form `a cmp' b` by the
+  *    `BooleanSimplification` optimization rule whenever possible. As a result, predicate `!(a < 1)`
+  *    results in a `GtEq` filter predicate rather than a `Not`.
+  *
+  * 2. `Tuple1(Option(x))` is used together with `AnyVal` types like `Int` to ensure the inferred
+  *    data type is nullable.
+  */
+class ParquetFilterSuite
+    extends QueryTest
+    with ParquetTest
+    with SharedSQLContext {
 
   private def checkFilterPredicate(
       df: DataFrame,
@@ -63,20 +69,32 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
           .where(Column(predicate))
 
         var maybeRelation: Option[HadoopFsRelation] = None
-        val maybeAnalyzedPredicate = query.queryExecution.optimizedPlan.collect {
-          case PhysicalOperation(_, filters, LogicalRelation(relation: HadoopFsRelation, _, _)) =>
-            maybeRelation = Some(relation)
-            filters
-        }.flatten.reduceLeftOption(_ && _)
-        assert(maybeAnalyzedPredicate.isDefined, "No filter is analyzed from the given query")
+        val maybeAnalyzedPredicate = query.queryExecution.optimizedPlan
+          .collect {
+            case PhysicalOperation(
+                _,
+                filters,
+                LogicalRelation(relation: HadoopFsRelation, _, _)) =>
+              maybeRelation = Some(relation)
+              filters
+          }
+          .flatten
+          .reduceLeftOption(_ && _)
+        assert(
+          maybeAnalyzedPredicate.isDefined,
+          "No filter is analyzed from the given query")
 
         val (_, selectedFilters) =
-          DataSourceStrategy.selectFilters(maybeRelation.get, maybeAnalyzedPredicate.toSeq)
+          DataSourceStrategy.selectFilters(
+            maybeRelation.get,
+            maybeAnalyzedPredicate.toSeq)
         assert(selectedFilters.nonEmpty, "No filter is pushed down")
 
         selectedFilters.foreach { pred =>
           val maybeFilter = ParquetFilters.createFilter(df.schema, pred)
-          assert(maybeFilter.isDefined, s"Couldn't generate filter predicate for $pred")
+          assert(
+            maybeFilter.isDefined,
+            s"Couldn't generate filter predicate for $pred")
           // Doesn't bother checking type parameters here (e.g. `Eq[Integer]`)
           maybeFilter.exists(_.getClass === filterClass)
         }
@@ -85,40 +103,58 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
     }
   }
 
-  private def checkFilterPredicate
-      (predicate: Predicate, filterClass: Class[_ <: FilterPredicate], expected: Seq[Row])
-      (implicit df: DataFrame): Unit = {
-    checkFilterPredicate(df, predicate, filterClass, checkAnswer(_, _: Seq[Row]), expected)
+  private def checkFilterPredicate(
+      predicate: Predicate,
+      filterClass: Class[_ <: FilterPredicate],
+      expected: Seq[Row])(implicit df: DataFrame): Unit = {
+    checkFilterPredicate(
+      df,
+      predicate,
+      filterClass,
+      checkAnswer(_, _: Seq[Row]),
+      expected)
   }
 
-  private def checkFilterPredicate[T]
-      (predicate: Predicate, filterClass: Class[_ <: FilterPredicate], expected: T)
-      (implicit df: DataFrame): Unit = {
+  private def checkFilterPredicate[T](
+      predicate: Predicate,
+      filterClass: Class[_ <: FilterPredicate],
+      expected: T)(implicit df: DataFrame): Unit = {
     checkFilterPredicate(predicate, filterClass, Seq(Row(expected)))(df)
   }
 
-  private def checkBinaryFilterPredicate
-      (predicate: Predicate, filterClass: Class[_ <: FilterPredicate], expected: Seq[Row])
-      (implicit df: DataFrame): Unit = {
+  private def checkBinaryFilterPredicate(
+      predicate: Predicate,
+      filterClass: Class[_ <: FilterPredicate],
+      expected: Seq[Row])(implicit df: DataFrame): Unit = {
     def checkBinaryAnswer(df: DataFrame, expected: Seq[Row]) = {
       assertResult(expected.map(_.getAs[Array[Byte]](0).mkString(",")).sorted) {
         df.rdd.map(_.getAs[Array[Byte]](0).mkString(",")).collect().toSeq.sorted
       }
     }
 
-    checkFilterPredicate(df, predicate, filterClass, checkBinaryAnswer _, expected)
+    checkFilterPredicate(
+      df,
+      predicate,
+      filterClass,
+      checkBinaryAnswer _,
+      expected)
   }
 
-  private def checkBinaryFilterPredicate
-      (predicate: Predicate, filterClass: Class[_ <: FilterPredicate], expected: Array[Byte])
-      (implicit df: DataFrame): Unit = {
+  private def checkBinaryFilterPredicate(
+      predicate: Predicate,
+      filterClass: Class[_ <: FilterPredicate],
+      expected: Array[Byte])(implicit df: DataFrame): Unit = {
     checkBinaryFilterPredicate(predicate, filterClass, Seq(Row(expected)))(df)
   }
 
   test("filter pushdown - boolean") {
-    withParquetDataFrame((true :: false :: Nil).map(b => Tuple1.apply(Option(b)))) { implicit df =>
+    withParquetDataFrame(
+      (true :: false :: Nil).map(b => Tuple1.apply(Option(b)))) { implicit df =>
       checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
-      checkFilterPredicate('_1.isNotNull, classOf[NotEq[_]], Seq(Row(true), Row(false)))
+      checkFilterPredicate(
+        '_1.isNotNull,
+        classOf[NotEq[_]],
+        Seq(Row(true), Row(false)))
 
       checkFilterPredicate('_1 === true, classOf[Eq[_]], true)
       checkFilterPredicate('_1 <=> true, classOf[Eq[_]], true)
@@ -129,11 +165,17 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
   test("filter pushdown - integer") {
     withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i)))) { implicit df =>
       checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
-      checkFilterPredicate('_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(Row.apply(_)))
+      checkFilterPredicate(
+        '_1.isNotNull,
+        classOf[NotEq[_]],
+        (1 to 4).map(Row.apply(_)))
 
       checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
       checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 =!= 1, classOf[NotEq[_]], (2 to 4).map(Row.apply(_)))
+      checkFilterPredicate(
+        '_1 =!= 1,
+        classOf[NotEq[_]],
+        (2 to 4).map(Row.apply(_)))
 
       checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
       checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
@@ -148,85 +190,118 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
       checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
 
       checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
-      checkFilterPredicate('_1 < 2 || '_1 > 3, classOf[Operators.Or], Seq(Row(1), Row(4)))
+      checkFilterPredicate(
+        '_1 < 2 || '_1 > 3,
+        classOf[Operators.Or],
+        Seq(Row(1), Row(4)))
     }
   }
 
   test("filter pushdown - long") {
-    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toLong)))) { implicit df =>
-      checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
-      checkFilterPredicate('_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(Row.apply(_)))
+    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toLong)))) {
+      implicit df =>
+        checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
+        checkFilterPredicate(
+          '_1.isNotNull,
+          classOf[NotEq[_]],
+          (1 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 =!= 1, classOf[NotEq[_]], (2 to 4).map(Row.apply(_)))
+        checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
+        checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
+        checkFilterPredicate(
+          '_1 =!= 1,
+          classOf[NotEq[_]],
+          (2 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
-      checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
-      checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
-      checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
+        checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
+        checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
+        checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
+        checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
-      checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
-      checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
-      checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
+        checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
+        checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
+        checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
+        checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
-      checkFilterPredicate('_1 < 2 || '_1 > 3, classOf[Operators.Or], Seq(Row(1), Row(4)))
+        checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
+        checkFilterPredicate(
+          '_1 < 2 || '_1 > 3,
+          classOf[Operators.Or],
+          Seq(Row(1), Row(4)))
     }
   }
 
   test("filter pushdown - float") {
-    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toFloat)))) { implicit df =>
-      checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
-      checkFilterPredicate('_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(Row.apply(_)))
+    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toFloat)))) {
+      implicit df =>
+        checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
+        checkFilterPredicate(
+          '_1.isNotNull,
+          classOf[NotEq[_]],
+          (1 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 =!= 1, classOf[NotEq[_]], (2 to 4).map(Row.apply(_)))
+        checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
+        checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
+        checkFilterPredicate(
+          '_1 =!= 1,
+          classOf[NotEq[_]],
+          (2 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
-      checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
-      checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
-      checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
+        checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
+        checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
+        checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
+        checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
-      checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
-      checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
-      checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
+        checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
+        checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
+        checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
+        checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
-      checkFilterPredicate('_1 < 2 || '_1 > 3, classOf[Operators.Or], Seq(Row(1), Row(4)))
+        checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
+        checkFilterPredicate(
+          '_1 < 2 || '_1 > 3,
+          classOf[Operators.Or],
+          Seq(Row(1), Row(4)))
     }
   }
 
   test("filter pushdown - double") {
-    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toDouble)))) { implicit df =>
-      checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
-      checkFilterPredicate('_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(Row.apply(_)))
+    withParquetDataFrame((1 to 4).map(i => Tuple1(Option(i.toDouble)))) {
+      implicit df =>
+        checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
+        checkFilterPredicate(
+          '_1.isNotNull,
+          classOf[NotEq[_]],
+          (1 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
-      checkFilterPredicate('_1 =!= 1, classOf[NotEq[_]], (2 to 4).map(Row.apply(_)))
+        checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
+        checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
+        checkFilterPredicate(
+          '_1 =!= 1,
+          classOf[NotEq[_]],
+          (2 to 4).map(Row.apply(_)))
 
-      checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
-      checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
-      checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
-      checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
+        checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
+        checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
+        checkFilterPredicate('_1 <= 1, classOf[LtEq[_]], 1)
+        checkFilterPredicate('_1 >= 4, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
-      checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
-      checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
-      checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
-      checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
+        checkFilterPredicate(Literal(1) === '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(1) <=> '_1, classOf[Eq[_]], 1)
+        checkFilterPredicate(Literal(2) > '_1, classOf[Lt[_]], 1)
+        checkFilterPredicate(Literal(3) < '_1, classOf[Gt[_]], 4)
+        checkFilterPredicate(Literal(1) >= '_1, classOf[LtEq[_]], 1)
+        checkFilterPredicate(Literal(4) <= '_1, classOf[GtEq[_]], 4)
 
-      checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
-      checkFilterPredicate('_1 < 2 || '_1 > 3, classOf[Operators.Or], Seq(Row(1), Row(4)))
+        checkFilterPredicate(!('_1 < 4), classOf[GtEq[_]], 4)
+        checkFilterPredicate(
+          '_1 < 2 || '_1 > 3,
+          classOf[Operators.Or],
+          Seq(Row(1), Row(4)))
     }
   }
 
@@ -235,12 +310,16 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
     withParquetDataFrame((1 to 4).map(i => Tuple1(i.toString))) { implicit df =>
       checkFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
       checkFilterPredicate(
-        '_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(i => Row.apply(i.toString)))
+        '_1.isNotNull,
+        classOf[NotEq[_]],
+        (1 to 4).map(i => Row.apply(i.toString)))
 
       checkFilterPredicate('_1 === "1", classOf[Eq[_]], "1")
       checkFilterPredicate('_1 <=> "1", classOf[Eq[_]], "1")
       checkFilterPredicate(
-        '_1 =!= "1", classOf[NotEq[_]], (2 to 4).map(i => Row.apply(i.toString)))
+        '_1 =!= "1",
+        classOf[NotEq[_]],
+        (2 to 4).map(i => Row.apply(i.toString)))
 
       checkFilterPredicate('_1 < "2", classOf[Lt[_]], "1")
       checkFilterPredicate('_1 > "3", classOf[Gt[_]], "4")
@@ -255,7 +334,10 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
       checkFilterPredicate(Literal("4") <= '_1, classOf[GtEq[_]], "4")
 
       checkFilterPredicate(!('_1 < "4"), classOf[GtEq[_]], "4")
-      checkFilterPredicate('_1 < "2" || '_1 > "3", classOf[Operators.Or], Seq(Row("1"), Row("4")))
+      checkFilterPredicate(
+        '_1 < "2" || '_1 > "3",
+        classOf[Operators.Or],
+        Seq(Row("1"), Row("4")))
     }
   }
 
@@ -271,10 +353,14 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
 
       checkBinaryFilterPredicate('_1.isNull, classOf[Eq[_]], Seq.empty[Row])
       checkBinaryFilterPredicate(
-        '_1.isNotNull, classOf[NotEq[_]], (1 to 4).map(i => Row.apply(i.b)).toSeq)
+        '_1.isNotNull,
+        classOf[NotEq[_]],
+        (1 to 4).map(i => Row.apply(i.b)).toSeq)
 
       checkBinaryFilterPredicate(
-        '_1 =!= 1.b, classOf[NotEq[_]], (2 to 4).map(i => Row.apply(i.b)).toSeq)
+        '_1 =!= 1.b,
+        classOf[NotEq[_]],
+        (2 to 4).map(i => Row.apply(i.b)).toSeq)
 
       checkBinaryFilterPredicate('_1 < 2.b, classOf[Lt[_]], 1.b)
       checkBinaryFilterPredicate('_1 > 3.b, classOf[Gt[_]], 4.b)
@@ -290,11 +376,14 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
 
       checkBinaryFilterPredicate(!('_1 < 4.b), classOf[GtEq[_]], 4.b)
       checkBinaryFilterPredicate(
-        '_1 < 2.b || '_1 > 3.b, classOf[Operators.Or], Seq(Row(1.b), Row(4.b)))
+        '_1 < 2.b || '_1 > 3.b,
+        classOf[Operators.Or],
+        Seq(Row(1.b), Row(4.b)))
     }
   }
 
-  test("SPARK-6554: don't push down predicates which reference partition columns") {
+  test(
+    "SPARK-6554: don't push down predicates which reference partition columns") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -311,7 +400,8 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
     }
   }
 
-  test("SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
+  test(
+    "SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -322,20 +412,27 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
         // If the "part = 1" filter gets pushed down, this query will throw an exception since
         // "part" is not a valid column in the actual Parquet file
         checkAnswer(
-          sqlContext.read.parquet(dir.getCanonicalPath).filter("a > 0 and (part = 0 or a > 1)"),
+          sqlContext.read
+            .parquet(dir.getCanonicalPath)
+            .filter("a > 0 and (part = 0 or a > 1)"),
           (2 to 3).map(i => Row(i, i.toString, 1)))
       }
     }
   }
 
-  test("SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
+  test(
+    "SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}"
-        (1 to 3).map(i => (i, i + 1, i + 2, i + 3)).toDF("a", "b", "c", "d").
-          write.partitionBy("a").parquet(path)
+        (1 to 3)
+          .map(i => (i, i + 1, i + 2, i + 3))
+          .toDF("a", "b", "c", "d")
+          .write
+          .partitionBy("a")
+          .parquet(path)
 
         // The filter "a > 1 or b < 2" will not get pushed down, and the projection is empty,
         // this query will throw an exception since the project from combinedFilter expect
@@ -353,8 +450,12 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}"
-        (1 to 3).map(i => (i, i + 1, i + 2, i + 3)).toDF("a", "b", "c", "d").
-          write.partitionBy("a").parquet(path)
+        (1 to 3)
+          .map(i => (i, i + 1, i + 2, i + 3))
+          .toDF("a", "b", "c", "d")
+          .write
+          .partitionBy("a")
+          .parquet(path)
 
         // test the generate new projection case
         // when projects != partitionAndNormalColumnProjs
@@ -362,17 +463,21 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
         val df1 = sqlContext.read.parquet(dir.getCanonicalPath)
 
         checkAnswer(
-          df1.filter("a > 1 or b > 2").orderBy("a").selectExpr("a", "b", "c", "d"),
+          df1
+            .filter("a > 1 or b > 2")
+            .orderBy("a")
+            .selectExpr("a", "b", "c", "d"),
           (2 to 3).map(i => Row(i, i + 1, i + 2, i + 3)))
       }
     }
   }
 
-
-  test("SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
+  test(
+    "SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
     import testImplicits._
 
-    withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true",
+    withSQLConf(
+      SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true",
       SQLConf.PARQUET_SCHEMA_MERGING_ENABLED.key -> "true") {
       withTempPath { dir =>
         val pathOne = s"${dir.getCanonicalPath}/table1"
@@ -382,21 +487,30 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
 
         // If the "c = 1" filter gets pushed down, this query will throw an exception which
         // Parquet emits. This is a Parquet issue (PARQUET-389).
-        val df = sqlContext.read.parquet(pathOne, pathTwo).filter("c = 1").selectExpr("c", "b", "a")
-        checkAnswer(
-          df,
-          Row(1, "1", null))
+        val df = sqlContext.read
+          .parquet(pathOne, pathTwo)
+          .filter("c = 1")
+          .selectExpr("c", "b", "a")
+        checkAnswer(df, Row(1, "1", null))
 
         // The fields "a" and "c" only exist in one Parquet file.
-        assert(df.schema("a").metadata.getBoolean(StructType.metadataKeyForOptionalField))
-        assert(df.schema("c").metadata.getBoolean(StructType.metadataKeyForOptionalField))
+        assert(
+          df.schema("a")
+            .metadata
+            .getBoolean(StructType.metadataKeyForOptionalField))
+        assert(
+          df.schema("c")
+            .metadata
+            .getBoolean(StructType.metadataKeyForOptionalField))
 
         val pathThree = s"${dir.getCanonicalPath}/table3"
         df.write.parquet(pathThree)
 
         // We will remove the temporary metadata when writing Parquet file.
         val schema = sqlContext.read.parquet(pathThree).schema
-        assert(schema.forall(!_.metadata.contains(StructType.metadataKeyForOptionalField)))
+        assert(
+          schema.forall(
+            !_.metadata.contains(StructType.metadataKeyForOptionalField)))
 
         val pathFour = s"${dir.getCanonicalPath}/table4"
         val dfStruct = sparkContext.parallelize(Seq((1, 1))).toDF("a", "b")
@@ -408,36 +522,61 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
 
         // If the "s.c = 1" filter gets pushed down, this query will throw an exception which
         // Parquet emits.
-        val dfStruct3 = sqlContext.read.parquet(pathFour, pathFive).filter("s.c = 1")
+        val dfStruct3 = sqlContext.read
+          .parquet(pathFour, pathFive)
+          .filter("s.c = 1")
           .selectExpr("s")
         checkAnswer(dfStruct3, Row(Row(null, 1)))
 
         // The fields "s.a" and "s.c" only exist in one Parquet file.
         val field = dfStruct3.schema("s").dataType.asInstanceOf[StructType]
-        assert(field("a").metadata.getBoolean(StructType.metadataKeyForOptionalField))
-        assert(field("c").metadata.getBoolean(StructType.metadataKeyForOptionalField))
+        assert(
+          field("a").metadata
+            .getBoolean(StructType.metadataKeyForOptionalField))
+        assert(
+          field("c").metadata
+            .getBoolean(StructType.metadataKeyForOptionalField))
 
         val pathSix = s"${dir.getCanonicalPath}/table6"
         dfStruct3.write.parquet(pathSix)
 
         // We will remove the temporary metadata when writing Parquet file.
         val forPathSix = sqlContext.read.parquet(pathSix).schema
-        assert(forPathSix.forall(!_.metadata.contains(StructType.metadataKeyForOptionalField)))
+        assert(
+          forPathSix.forall(
+            !_.metadata.contains(StructType.metadataKeyForOptionalField)))
 
         // sanity test: make sure optional metadata field is not wrongly set.
         val pathSeven = s"${dir.getCanonicalPath}/table7"
-        (1 to 3).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathSeven)
+        (1 to 3)
+          .map(i => (i, i.toString))
+          .toDF("a", "b")
+          .write
+          .parquet(pathSeven)
         val pathEight = s"${dir.getCanonicalPath}/table8"
-        (4 to 6).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathEight)
+        (4 to 6)
+          .map(i => (i, i.toString))
+          .toDF("a", "b")
+          .write
+          .parquet(pathEight)
 
-        val df2 = sqlContext.read.parquet(pathSeven, pathEight).filter("a = 1").selectExpr("a", "b")
-        checkAnswer(
-          df2,
-          Row(1, "1"))
+        val df2 = sqlContext.read
+          .parquet(pathSeven, pathEight)
+          .filter("a = 1")
+          .selectExpr("a", "b")
+        checkAnswer(df2, Row(1, "1"))
 
         // The fields "a" and "b" exist in both two Parquet files. No metadata is set.
-        assert(!df2.schema("a").metadata.contains(StructType.metadataKeyForOptionalField))
-        assert(!df2.schema("b").metadata.contains(StructType.metadataKeyForOptionalField))
+        assert(
+          !df2
+            .schema("a")
+            .metadata
+            .contains(StructType.metadataKeyForOptionalField))
+        assert(
+          !df2
+            .schema("b")
+            .metadata
+            .contains(StructType.metadataKeyForOptionalField))
       }
     }
   }
@@ -468,7 +607,11 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"
-        (1 to 5).map(i => (i, (i % 2).toString)).toDF("a", "b").write.parquet(path)
+        (1 to 5)
+          .map(i => (i, (i % 2).toString))
+          .toDF("a", "b")
+          .write
+          .parquet(path)
 
         checkAnswer(
           sqlContext.read.parquet(path).where("not (a = 2) or not(b in ('1'))"),
@@ -482,21 +625,21 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
   }
 
   test("SPARK-12218 Converting conjunctions into Parquet filter predicates") {
-    val schema = StructType(Seq(
-      StructField("a", IntegerType, nullable = false),
-      StructField("b", StringType, nullable = true),
-      StructField("c", DoubleType, nullable = true)
-    ))
+    val schema = StructType(
+      Seq(
+        StructField("a", IntegerType, nullable = false),
+        StructField("b", StringType, nullable = true),
+        StructField("c", DoubleType, nullable = true)
+      ))
 
-    assertResult(Some(and(
-      lt(intColumn("a"), 10: Integer),
-      gt(doubleColumn("c"), 1.5: java.lang.Double)))
-    ) {
+    assertResult(
+      Some(
+        and(
+          lt(intColumn("a"), 10: Integer),
+          gt(doubleColumn("c"), 1.5: java.lang.Double)))) {
       ParquetFilters.createFilter(
         schema,
-        sources.And(
-          sources.LessThan("a", 10),
-          sources.GreaterThan("c", 1.5D)))
+        sources.And(sources.LessThan("a", 10), sources.GreaterThan("c", 1.5d)))
     }
 
     assertResult(None) {
@@ -523,7 +666,11 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
         withTempPath { dir =>
           val path = s"${dir.getCanonicalPath}/table1"
-          (1 to 5).map(i => (i.toFloat, i%3)).toDF("a", "b").write.parquet(path)
+          (1 to 5)
+            .map(i => (i.toFloat, i % 3))
+            .toDF("a", "b")
+            .write
+            .parquet(path)
 
           // When a filter is pushed to Parquet, Parquet can apply it to every row.
           // So, we can check the number of rows returned from the Parquet
@@ -534,10 +681,12 @@ class ParquetFilterSuite extends QueryTest with ParquetTest with SharedSQLContex
           val df1 = sqlContext.read.parquet(path).where("not (b in (1))")
           assert(stripSparkFilter(df1).count == 3)
 
-          val df2 = sqlContext.read.parquet(path).where("not (b in (1,3) or a <= 2)")
+          val df2 =
+            sqlContext.read.parquet(path).where("not (b in (1,3) or a <= 2)")
           assert(stripSparkFilter(df2).count == 2)
 
-          val df3 = sqlContext.read.parquet(path).where("not (b in (1,3) and a <= 2)")
+          val df3 =
+            sqlContext.read.parquet(path).where("not (b in (1,3) and a <= 2)")
           assert(stripSparkFilter(df3).count == 4)
 
           val df4 = sqlContext.read.parquet(path).where("not (a <= 2)")

@@ -4,12 +4,12 @@ import java.text.Normalizer
 import java.util.regex.Matcher.quoteReplacement
 
 case class Page(
-  id: String,
-  slug: String,
-  number: Int,
-  lang: String,
-  title: String,
-  body: String) {
+    id: String,
+    slug: String,
+    number: Int,
+    lang: String,
+    title: String,
+    body: String) {
 
   def isDefaultLang = lang == Page.DefaultLang
 }
@@ -37,7 +37,7 @@ object Page {
   import lila.db.JsTube
   import play.api.libs.json._
 
-  private[wiki] lazy val tube = JsTube(Json.reads[Page], Json.writes[Page]) 
+  private[wiki] lazy val tube = JsTube(Json.reads[Page], Json.writes[Page])
 
   // does not lowercase
   private def slugify(input: String) = {
@@ -49,4 +49,3 @@ object Page {
   private def dropNumber(input: String) =
     """^\d+_(.+)$""".r.replaceAllIn(input, m => quoteReplacement(m group 1))
 }
-

@@ -12,18 +12,18 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding.serialization
 
 import java.util.concurrent.atomic.AtomicReference
-import java.io.{ InputStream, OutputStream }
+import java.io.{InputStream, OutputStream}
 
 /**
- * This interface is a way of wrapping a value in a marker class
- * whose class identity is used to control which serialization we
- * use. This is an internal implementation detail about how we
- * interact with cascading and hadoop. Users should never care.
- */
+  * This interface is a way of wrapping a value in a marker class
+  * whose class identity is used to control which serialization we
+  * use. This is an internal implementation detail about how we
+  * interact with cascading and hadoop. Users should never care.
+  */
 trait Boxed[+K] {
   def get: K
 }
@@ -530,12 +530,15 @@ class Boxed249[K](override val get: K) extends Boxed[K]
 
 class Boxed250[K](override val get: K) extends Boxed[K]
 
-case class BoxedOrderedSerialization[K](box: K => Boxed[K],
-  ord: OrderedSerialization[K]) extends OrderedSerialization[Boxed[K]] {
+case class BoxedOrderedSerialization[K](
+    box: K => Boxed[K],
+    ord: OrderedSerialization[K])
+    extends OrderedSerialization[Boxed[K]] {
 
   override def compare(a: Boxed[K], b: Boxed[K]) = ord.compare(a.get, b.get)
   override def hash(k: Boxed[K]) = ord.hash(k.get)
-  override def compareBinary(a: InputStream, b: InputStream) = ord.compareBinary(a, b)
+  override def compareBinary(a: InputStream, b: InputStream) =
+    ord.compareBinary(a, b)
   override def read(from: InputStream) = ord.read(from).map(box)
   override def write(into: OutputStream, bk: Boxed[K]) = ord.write(into, bk.get)
   override def staticSize = ord.staticSize
@@ -811,16 +814,21 @@ object Boxed {
     ({ t: Any => new Boxed247(t) }, classOf[Boxed247[Any]]),
     ({ t: Any => new Boxed248(t) }, classOf[Boxed248[Any]]),
     ({ t: Any => new Boxed249(t) }, classOf[Boxed249[Any]]),
-    ({ t: Any => new Boxed250(t) }, classOf[Boxed250[Any]]))
+    ({ t: Any => new Boxed250(t) }, classOf[Boxed250[Any]])
+  )
 
-  private[this] val boxes: AtomicReference[List[(Any => Boxed[Any], Class[_ <: Boxed[Any]])]] =
+  private[this] val boxes
+      : AtomicReference[List[(Any => Boxed[Any], Class[_ <: Boxed[Any]])]] =
     new AtomicReference(allBoxes)
 
   def allClasses: Seq[Class[_ <: Boxed[_]]] = allBoxes.map(_._2)
 
-  private[this] val boxedCache = new java.util.concurrent.ConcurrentHashMap[AnyRef, (Any => Boxed[Any], Class[Boxed[Any]])]()
+  private[this] val boxedCache = new java.util.concurrent.ConcurrentHashMap[
+    AnyRef,
+    (Any => Boxed[Any], Class[Boxed[Any]])]()
 
-  private[scalding] def nextCached[K](cacheKey: Option[AnyRef]): (K => Boxed[K], Class[Boxed[K]]) =
+  private[scalding] def nextCached[K](
+      cacheKey: Option[AnyRef]): (K => Boxed[K], Class[Boxed[K]]) =
     cacheKey match {
       case Some(cls) =>
         val untypedRes = Option(boxedCache.get(cls)) match {
@@ -838,8 +846,9 @@ object Boxed {
     case list @ (h :: tail) if boxes.compareAndSet(list, tail) =>
       h.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
     case (h :: tail) => next[K]() // Try again
-    case Nil => sys.error(
-      """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
+    case Nil =>
+      sys.error(
+        """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
          |
          |Explanation: Scalding's ordered serialization logic internally uses
          |a large, but fixed, supply of unique wrapper types to box values in

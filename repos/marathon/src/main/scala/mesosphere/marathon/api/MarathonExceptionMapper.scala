@@ -2,17 +2,17 @@ package mesosphere.marathon.api
 
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response.Status
-import javax.ws.rs.core.{ MediaType, Response }
-import javax.ws.rs.ext.{ ExceptionMapper, Provider }
+import javax.ws.rs.core.{MediaType, Response}
+import javax.ws.rs.ext.{ExceptionMapper, Provider}
 
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.google.inject.Singleton
 import com.sun.jersey.api.NotFoundException
 import mesosphere.marathon.api.v2.Validation._
-import mesosphere.marathon.{ Exception => _, _ }
+import mesosphere.marathon.{Exception => _, _}
 import org.slf4j.LoggerFactory
-import play.api.libs.json.{ JsResultException, JsValue, Json }
+import play.api.libs.json.{JsResultException, JsValue, Json}
 
 import scala.concurrent.TimeoutException
 
@@ -26,8 +26,7 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
     // WebApplicationException are things like invalid requests etc, no need to log a stack trace
     if (!exception.isInstanceOf[WebApplicationException]) {
       log.warn("mapping exception to status code", exception)
-    }
-    else {
+    } else {
       log.info("mapping exception to status code", exception)
     }
 
@@ -77,19 +76,22 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
       )
     case e: JsResultException =>
       val errors = e.errors.map {
-        case (path, errs) => Json.obj("path" -> path.toString(), "errors" -> errs.map(_.message))
+        case (path, errs) =>
+          Json.obj("path" -> path.toString(), "errors" -> errs.map(_.message))
       }
       Json.obj(
         "message" -> s"Invalid JSON",
         "details" -> errors
       )
     case ValidationFailedException(obj, failure) => Json.toJson(failure)
-    case e: WebApplicationException =>
+    case e: WebApplicationException              =>
       //scalastyle:off null
       if (Status.fromStatusCode(e.getResponse.getStatus) != null) {
-        Json.obj("message" -> Status.fromStatusCode(e.getResponse.getStatus).getReasonPhrase)
-      }
-      else {
+        Json.obj(
+          "message" -> Status
+            .fromStatusCode(e.getResponse.getStatus)
+            .getReasonPhrase)
+      } else {
         Json.obj("message" -> e.getMessage)
       }
     case _ =>

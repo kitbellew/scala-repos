@@ -69,7 +69,7 @@ class CachedTests {
   @Test
   def scalaDocExample {
     import ScalaDocExample._
-    
+
     val first = First.msg
     val second = Second.msg
     val firstCached = First.msgCached

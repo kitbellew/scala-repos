@@ -6,13 +6,11 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 
 /**
- * A marker trait for mutable data structures such as mutable collections
- *
- * @since 2.8
- */
+  * A marker trait for mutable data structures such as mutable collections
+  *
+  * @since 2.8
+  */
 trait Mutable

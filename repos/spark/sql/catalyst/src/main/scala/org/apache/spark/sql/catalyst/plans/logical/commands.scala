@@ -21,20 +21,22 @@ import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference}
 import org.apache.spark.sql.types.StringType
 
 /**
- * A logical node that represents a non-query command to be executed by the system.  For example,
- * commands can be used by parsers to represent DDL operations.  Commands, unlike queries, are
- * eagerly executed.
- */
+  * A logical node that represents a non-query command to be executed by the system.  For example,
+  * commands can be used by parsers to represent DDL operations.  Commands, unlike queries, are
+  * eagerly executed.
+  */
 trait Command
 
 /**
- * Returned for the "DESCRIBE [EXTENDED] FUNCTION functionName" command.
- * @param functionName The function to be described.
- * @param isExtended True if "DESCRIBE EXTENDED" is used. Otherwise, false.
- */
+  * Returned for the "DESCRIBE [EXTENDED] FUNCTION functionName" command.
+  * @param functionName The function to be described.
+  * @param isExtended True if "DESCRIBE EXTENDED" is used. Otherwise, false.
+  */
 private[sql] case class DescribeFunction(
     functionName: String,
-    isExtended: Boolean) extends LogicalPlan with Command {
+    isExtended: Boolean)
+    extends LogicalPlan
+    with Command {
 
   override def children: Seq[LogicalPlan] = Seq.empty
   override val output: Seq[Attribute] = Seq(
@@ -42,11 +44,14 @@ private[sql] case class DescribeFunction(
 }
 
 /**
- * Returned for the "SHOW FUNCTIONS" command, which will list all of the
- * registered function list.
- */
+  * Returned for the "SHOW FUNCTIONS" command, which will list all of the
+  * registered function list.
+  */
 private[sql] case class ShowFunctions(
-    db: Option[String], pattern: Option[String]) extends LogicalPlan with Command {
+    db: Option[String],
+    pattern: Option[String])
+    extends LogicalPlan
+    with Command {
   override def children: Seq[LogicalPlan] = Seq.empty
   override val output: Seq[Attribute] = Seq(
     AttributeReference("function", StringType, nullable = false)())

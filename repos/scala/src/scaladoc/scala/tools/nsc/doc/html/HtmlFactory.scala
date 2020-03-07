@@ -8,8 +8,8 @@ package doc
 package html
 
 import model._
-import java.io.{ File => JFile }
-import io.{ Streamable, Directory }
+import java.io.{File => JFile}
+import io.{Streamable, Directory}
 import scala.collection._
 import page.diagram._
 
@@ -52,7 +52,6 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
     "MaterialIcons-Regular.eot",
     "MaterialIcons-Regular.ttf",
     "MaterialIcons-Regular.woff",
-
     "index.js",
     "jquery.js",
     "jquery.mousewheel.min.js",
@@ -62,17 +61,14 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
     "template.js",
     "tools.tooltip.js",
     "modernizr.custom.js",
-
     "index.css",
     "ref-index.css",
     "template.css",
     "diagrams.css",
-
     "class_diagram.png",
     "object_diagram.png",
     "trait_diagram.png",
     "type_diagram.png",
-
     "ownderbg2.gif",
     "ownerbg.gif",
     "ownerbg2.gif"
@@ -114,10 +110,13 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
 
     def writeTemplate(tpl: DocTemplateEntity) {
       if (!(written contains tpl)) {
-        val diagramGenerator: DiagramGenerator = new DotDiagramGenerator(universe.settings, universe.dotRunner)
+        val diagramGenerator: DiagramGenerator =
+          new DotDiagramGenerator(universe.settings, universe.dotRunner)
         writeForThis(page.EntityPage(universe, diagramGenerator, tpl, reporter))
         written += tpl
-        tpl.templates collect { case d: DocTemplateEntity => d } map writeTemplate
+        tpl.templates collect {
+          case d: DocTemplateEntity => d
+        } map writeTemplate
       }
     }
 

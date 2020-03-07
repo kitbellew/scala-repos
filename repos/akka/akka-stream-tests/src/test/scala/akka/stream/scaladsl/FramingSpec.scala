@@ -1,15 +1,20 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import java.nio.ByteOrder
 
 import akka.stream.scaladsl.Framing.FramingException
-import akka.stream.stage.{ Context, PushPullStage, SyncDirective, TerminationDirective }
+import akka.stream.stage.{
+  Context,
+  PushPullStage,
+  SyncDirective,
+  TerminationDirective
+}
 import akka.testkit.AkkaSpec
-import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
-import akka.util.{ ByteString, ByteStringBuilder }
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
+import akka.util.{ByteString, ByteStringBuilder}
 
 import scala.collection.immutable
 import scala.concurrent.Await
@@ -25,7 +30,9 @@ class FramingSpec extends AkkaSpec {
   class Rechunker extends PushPullStage[ByteString, ByteString] {
     private var rechunkBuffer = ByteString.empty
 
-    override def onPush(chunk: ByteString, ctx: Context[ByteString]): SyncDirective = {
+    override def onPush(
+        chunk: ByteString,
+        ctx: Context[ByteString]): SyncDirective = {
       rechunkBuffer ++= chunk
       rechunk(ctx)
     }
@@ -34,26 +41,30 @@ class FramingSpec extends AkkaSpec {
       rechunk(ctx)
     }
 
-    override def onUpstreamFinish(ctx: Context[ByteString]): TerminationDirective = {
+    override def onUpstreamFinish(
+        ctx: Context[ByteString]): TerminationDirective = {
       if (rechunkBuffer.isEmpty) ctx.finish()
       else ctx.absorbTermination()
     }
 
     private def rechunk(ctx: Context[ByteString]): SyncDirective = {
-      if (!ctx.isFinishing && ThreadLocalRandom.current().nextBoolean()) ctx.pull()
+      if (!ctx.isFinishing && ThreadLocalRandom.current().nextBoolean())
+        ctx.pull()
       else {
         val nextChunkSize =
           if (rechunkBuffer.isEmpty) 0
           else ThreadLocalRandom.current().nextInt(0, rechunkBuffer.size + 1)
         val newChunk = rechunkBuffer.take(nextChunkSize)
         rechunkBuffer = rechunkBuffer.drop(nextChunkSize)
-        if (ctx.isFinishing && rechunkBuffer.isEmpty) ctx.pushAndFinish(newChunk)
+        if (ctx.isFinishing && rechunkBuffer.isEmpty)
+          ctx.pushAndFinish(newChunk)
         else ctx.push(newChunk)
       }
     }
   }
 
-  val rechunk = Flow[ByteString].transform(() ⇒ new Rechunker).named("rechunker")
+  val rechunk =
+    Flow[ByteString].transform(() ⇒ new Rechunker).named("rechunker")
 
   "Delimiter bytes based framing" must {
 
@@ -61,11 +72,17 @@ class FramingSpec extends AkkaSpec {
     val baseTestSequences = List("", "foo", "hello world").map(ByteString(_))
 
     // Helper to simplify testing
-    def simpleLines(delimiter: String, maximumBytes: Int, allowTruncation: Boolean = true) =
-      Framing.delimiter(ByteString(delimiter), maximumBytes, allowTruncation).map(_.utf8String)
+    def simpleLines(
+        delimiter: String,
+        maximumBytes: Int,
+        allowTruncation: Boolean = true) =
+      Framing
+        .delimiter(ByteString(delimiter), maximumBytes, allowTruncation)
+        .map(_.utf8String)
         .named("lineFraming")
 
-    def completeTestSequences(delimiter: ByteString): immutable.Iterable[ByteString] =
+    def completeTestSequences(
+        delimiter: ByteString): immutable.Iterable[ByteString] =
       for (prefix ← delimiter.indices; s ← baseTestSequences)
         yield delimiter.take(prefix) ++ s
 
@@ -85,26 +102,37 @@ class FramingSpec extends AkkaSpec {
     "Respect maximum line settings" in {
       // The buffer will contain more than 1 bytes, but the individual frames are less
       Await.result(
-        Source.single(ByteString("a\nb\nc\nd\n")).via(simpleLines("\n", 1)).limit(100).runWith(Sink.seq),
+        Source
+          .single(ByteString("a\nb\nc\nd\n"))
+          .via(simpleLines("\n", 1))
+          .limit(100)
+          .runWith(Sink.seq),
         3.seconds) should ===(List("a", "b", "c", "d"))
 
       an[FramingException] should be thrownBy {
         Await.result(
-          Source.single(ByteString("ab\n")).via(simpleLines("\n", 1)).limit(100).runWith(Sink.seq),
+          Source
+            .single(ByteString("ab\n"))
+            .via(simpleLines("\n", 1))
+            .limit(100)
+            .runWith(Sink.seq),
           3.seconds)
       }
     }
 
     "work with empty streams" in {
       Await.result(
-        Source.empty.via(simpleLines("\n", 256)).runFold(Vector.empty[String])(_ :+ _),
+        Source.empty
+          .via(simpleLines("\n", 256))
+          .runFold(Vector.empty[String])(_ :+ _),
         3.seconds) should ===(Vector.empty)
     }
 
     "report truncated frames" in {
       an[FramingException] should be thrownBy {
         Await.result(
-          Source.single(ByteString("I have no end"))
+          Source
+            .single(ByteString("I have no end"))
             .via(simpleLines("\n", 256, allowTruncation = false))
             .grouped(1000)
             .runWith(Sink.head),
@@ -114,7 +142,8 @@ class FramingSpec extends AkkaSpec {
 
     "allow truncated frames if configured so" in {
       Await.result(
-        Source.single(ByteString("I have no end"))
+        Source
+          .single(ByteString("I have no end"))
           .via(simpleLines("\n", 256, allowTruncation = true))
           .grouped(1000)
           .runWith(Sink.head),
@@ -128,16 +157,21 @@ class FramingSpec extends AkkaSpec {
     val referenceChunk = ByteString(scala.util.Random.nextString(0x100001))
 
     val byteOrders = List(ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN)
-    val frameLengths = List(0, 1, 2, 3, 0xFF, 0x100, 0x101, 0xFFF, 0x1000, 0x1001, 0xFFFF, 0x10000, 0x10001)
+    val frameLengths = List(0, 1, 2, 3, 0xFF, 0x100, 0x101, 0xFFF, 0x1000,
+      0x1001, 0xFFFF, 0x10000, 0x10001)
     val fieldLengths = List(1, 2, 3, 4)
     val fieldOffsets = List(0, 1, 2, 3, 15, 16, 31, 32, 44, 107)
 
-    def encode(payload: ByteString, fieldOffset: Int, fieldLength: Int, byteOrder: ByteOrder): ByteString = {
+    def encode(
+        payload: ByteString,
+        fieldOffset: Int,
+        fieldLength: Int,
+        byteOrder: ByteOrder): ByteString = {
       val header = {
         val h = (new ByteStringBuilder).putInt(payload.size)(byteOrder).result()
         byteOrder match {
           case ByteOrder.LITTLE_ENDIAN ⇒ h.take(fieldLength)
-          case ByteOrder.BIG_ENDIAN    ⇒ h.drop(4 - fieldLength)
+          case ByteOrder.BIG_ENDIAN ⇒ h.drop(4 - fieldLength)
         }
       }
 
@@ -152,41 +186,54 @@ class FramingSpec extends AkkaSpec {
         fieldLength ← fieldLengths
       } {
 
-        val encodedFrames = frameLengths.filter(_ < (1L << (fieldLength * 8))).map { length ⇒
-          val payload = referenceChunk.take(length)
-          encode(payload, fieldOffset, fieldLength, byteOrder)
-        }
+        val encodedFrames =
+          frameLengths.filter(_ < (1L << (fieldLength * 8))).map { length ⇒
+            val payload = referenceChunk.take(length)
+            encode(payload, fieldOffset, fieldLength, byteOrder)
+          }
 
         Await.result(
           Source(encodedFrames)
             .via(rechunk)
-            .via(Framing.lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
+            .via(Framing
+              .lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
             .grouped(10000)
             .runWith(Sink.head),
-          3.seconds) should ===(encodedFrames)
+          3.seconds
+        ) should ===(encodedFrames)
       }
 
     }
 
     "work with empty streams" in {
       Await.result(
-        Source.empty.via(Framing.lengthField(4, 0, Int.MaxValue, ByteOrder.BIG_ENDIAN)).runFold(Vector.empty[ByteString])(_ :+ _),
+        Source.empty
+          .via(Framing.lengthField(4, 0, Int.MaxValue, ByteOrder.BIG_ENDIAN))
+          .runFold(Vector.empty[ByteString])(_ :+ _),
         3.seconds) should ===(Vector.empty)
     }
 
     "report oversized frames" in {
       an[FramingException] should be thrownBy {
         Await.result(
-          Source.single(encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
-            .via(Framing.lengthField(1, 0, 99, ByteOrder.BIG_ENDIAN)).runFold(Vector.empty[ByteString])(_ :+ _),
-          3.seconds)
+          Source
+            .single(
+              encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
+            .via(Framing.lengthField(1, 0, 99, ByteOrder.BIG_ENDIAN))
+            .runFold(Vector.empty[ByteString])(_ :+ _),
+          3.seconds
+        )
       }
 
       an[FramingException] should be thrownBy {
         Await.result(
-          Source.single(encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
-            .via(Framing.lengthField(1, 0, 100, ByteOrder.BIG_ENDIAN)).runFold(Vector.empty[ByteString])(_ :+ _),
-          3.seconds)
+          Source
+            .single(
+              encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
+            .via(Framing.lengthField(1, 0, 100, ByteOrder.BIG_ENDIAN))
+            .runFold(Vector.empty[ByteString])(_ :+ _),
+          3.seconds
+        )
       }
     }
 
@@ -196,20 +243,27 @@ class FramingSpec extends AkkaSpec {
         byteOrder ← byteOrders
         fieldOffset ← fieldOffsets
         fieldLength ← fieldLengths
-        frameLength ← frameLengths if frameLength < (1 << (fieldLength * 8)) && (frameLength != 0)
+        frameLength ← frameLengths
+        if frameLength < (1 << (fieldLength * 8)) && (frameLength != 0)
       } {
 
-        val fullFrame = encode(referenceChunk.take(frameLength), fieldOffset, fieldLength, byteOrder)
+        val fullFrame = encode(
+          referenceChunk.take(frameLength),
+          fieldOffset,
+          fieldLength,
+          byteOrder)
         val partialFrame = fullFrame.dropRight(1)
 
         an[FramingException] should be thrownBy {
           Await.result(
             Source(List(fullFrame, partialFrame))
               .via(rechunk)
-              .via(Framing.lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
+              .via(Framing
+                .lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
               .grouped(10000)
               .runWith(Sink.head),
-            3.seconds)
+            3.seconds
+          )
         }
       }
     }
@@ -217,12 +271,14 @@ class FramingSpec extends AkkaSpec {
     "support simple framing adapter" in {
       val rechunkBidi = BidiFlow.fromFlowsMat(rechunk, rechunk)(Keep.left)
       val codecFlow =
-        Framing.simpleFramingProtocol(1024)
+        Framing
+          .simpleFramingProtocol(1024)
           .atop(rechunkBidi)
           .atop(Framing.simpleFramingProtocol(1024).reversed)
           .join(Flow[ByteString]) // Loopback
 
-      val testMessages = List.fill(100)(referenceChunk.take(Random.nextInt(1024)))
+      val testMessages =
+        List.fill(100)(referenceChunk.take(Random.nextInt(1024)))
       Await.result(
         Source(testMessages).via(codecFlow).limit(1000).runWith(Sink.seq),
         3.seconds) should ===(testMessages)

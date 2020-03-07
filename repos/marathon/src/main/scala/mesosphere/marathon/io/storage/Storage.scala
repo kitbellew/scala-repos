@@ -1,6 +1,6 @@
 package mesosphere.marathon.io.storage
 
-import java.io.{ File, FileInputStream, InputStream, OutputStream }
+import java.io.{File, FileInputStream, InputStream, OutputStream}
 import java.net.URI
 
 import org.apache.hadoop.conf.Configuration
@@ -75,9 +75,7 @@ trait StorageItem {
     * Store this item with given item input.
     */
   def store(from: StorageItem): StorageItem = {
-    IO.using(from.inputStream()) { in =>
-      store(out => IO.transfer(in, out))
-    }
+    IO.using(from.inputStream()) { in => store(out => IO.transfer(in, out)) }
   }
 
   /**
@@ -124,9 +122,8 @@ object StorageProvider {
     case _          => false
   }
 
-  def examples: Map[String, String] = Map (
+  def examples: Map[String, String] = Map(
     "hdfs" -> "hdfs://localhost:54310/path/to/store",
     "file" -> "file:///var/log/store"
   )
 }
-

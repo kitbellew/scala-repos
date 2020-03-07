@@ -4,58 +4,72 @@ import com.twitter.finagle.Failure
 import com.twitter.finagle.stats.StatsReceiver
 import com.twitter.util.{Duration, Monitor, Stopwatch}
 import io.netty.buffer.ByteBuf
-import io.netty.channel.{ChannelDuplexHandler, ChannelHandlerContext, ChannelPromise}
+import io.netty.channel.{
+  ChannelDuplexHandler,
+  ChannelHandlerContext,
+  ChannelPromise
+}
 import io.netty.channel.ChannelHandler.Sharable
 import io.netty.util.AttributeKey
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicLong
 import java.util.logging.{Level, Logger}
 
-
-private[channel] case class ChannelStats(bytesRead: AtomicLong, bytesWritten: AtomicLong)
+private[channel] case class ChannelStats(
+    bytesRead: AtomicLong,
+    bytesWritten: AtomicLong)
 
 private[netty4] object ChannelStatsHandler {
-  private[channel] val ConnectionStatsKey = AttributeKey.valueOf[ChannelStats]("channel_stats")
-  private[channel] val ConnectionDurationKey = AttributeKey.valueOf[Stopwatch.Elapsed]("connection_duration")
-  private[channel] val ChannelWasWritableKey = AttributeKey.valueOf[Boolean]("channel_has_been_writable")
-  private[channel] val ChannelWritableDurationKey = AttributeKey.valueOf[Stopwatch.Elapsed]("channel_writable_duration")
+  private[channel] val ConnectionStatsKey =
+    AttributeKey.valueOf[ChannelStats]("channel_stats")
+  private[channel] val ConnectionDurationKey =
+    AttributeKey.valueOf[Stopwatch.Elapsed]("connection_duration")
+  private[channel] val ChannelWasWritableKey =
+    AttributeKey.valueOf[Boolean]("channel_has_been_writable")
+  private[channel] val ChannelWritableDurationKey =
+    AttributeKey.valueOf[Stopwatch.Elapsed]("channel_writable_duration")
 }
 
 /**
- * A [[io.netty.channel.ChannelDuplexHandler]] that tracks channel/connection
- * statistics. The handler is meant to be shared by all
- * [[io.netty.channel.Channel Channels]] within a Finagle client or
- * server in order to consolidate statistics across a number of channels.
- */
+  * A [[io.netty.channel.ChannelDuplexHandler]] that tracks channel/connection
+  * statistics. The handler is meant to be shared by all
+  * [[io.netty.channel.Channel Channels]] within a Finagle client or
+  * server in order to consolidate statistics across a number of channels.
+  */
 @Sharable
 private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
-  extends ChannelDuplexHandler {
+    extends ChannelDuplexHandler {
   import ChannelStatsHandler._
 
   private[this] val log = Logger.getLogger(getClass.getName)
   private[this] val connectionCount: AtomicLong = new AtomicLong()
 
-  private[this] val connects                = statsReceiver.counter("connects")
-  private[this] val connectionDuration      = statsReceiver.stat("connection_duration")
-  private[this] val connectionReceivedBytes = statsReceiver.stat("connection_received_bytes")
-  private[this] val connectionSentBytes     = statsReceiver.stat("connection_sent_bytes")
-  private[this] val receivedBytes           = statsReceiver.counter("received_bytes")
-  private[this] val sentBytes               = statsReceiver.counter("sent_bytes")
-  private[this] val closeChans              = statsReceiver.counter("closechans")
-  private[this] val writable                = statsReceiver.counter("socket_writable_ms")
-  private[this] val unwritable              = statsReceiver.counter("socket_unwritable_ms")
-  private[this] val exceptions              = statsReceiver.scope("exn")
-  private[this] val closesCount             = statsReceiver.counter("closes")
-  private[this] val connections             = statsReceiver.addGauge("connections") {
+  private[this] val connects = statsReceiver.counter("connects")
+  private[this] val connectionDuration =
+    statsReceiver.stat("connection_duration")
+  private[this] val connectionReceivedBytes =
+    statsReceiver.stat("connection_received_bytes")
+  private[this] val connectionSentBytes =
+    statsReceiver.stat("connection_sent_bytes")
+  private[this] val receivedBytes = statsReceiver.counter("received_bytes")
+  private[this] val sentBytes = statsReceiver.counter("sent_bytes")
+  private[this] val closeChans = statsReceiver.counter("closechans")
+  private[this] val writable = statsReceiver.counter("socket_writable_ms")
+  private[this] val unwritable = statsReceiver.counter("socket_unwritable_ms")
+  private[this] val exceptions = statsReceiver.scope("exn")
+  private[this] val closesCount = statsReceiver.counter("closes")
+  private[this] val connections = statsReceiver.addGauge("connections") {
     connectionCount.get()
   }
 
-
-
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
-    ctx.attr(ChannelWasWritableKey).set(true) //netty channels start in writable state
+    ctx
+      .attr(ChannelWasWritableKey)
+      .set(true) //netty channels start in writable state
     ctx.attr(ChannelWritableDurationKey).set(Stopwatch.start())
-    ctx.attr(ConnectionStatsKey).set(ChannelStats(new AtomicLong(0), new AtomicLong(0)))
+    ctx
+      .attr(ConnectionStatsKey)
+      .set(ChannelStats(new AtomicLong(0), new AtomicLong(0)))
     connects.incr()
     connectionCount.incrementAndGet()
 
@@ -63,7 +77,10 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelActive(ctx)
   }
 
-  override def write(ctx: ChannelHandlerContext, msg: Object, p: ChannelPromise) {
+  override def write(
+      ctx: ChannelHandlerContext,
+      msg: Object,
+      p: ChannelPromise) {
     val channelWriteCount = ctx.attr(ConnectionStatsKey).get.bytesWritten
 
     msg match {
@@ -116,14 +133,13 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
     if (!Monitor.isActive) {
       val level = cause match {
         case t: IOException => Level.FINE
-        case f: Failure => f.logLevel
-        case _ => Level.WARNING
+        case f: Failure     => f.logLevel
+        case _              => Level.WARNING
       }
       log.log(level, "ChannelStatsHandler caught an exception", cause)
     }
     super.exceptionCaught(ctx, cause)
   }
-
 
   override def channelWritabilityChanged(ctx: ChannelHandlerContext): Unit = {
     val isWritable = ctx.channel.isWritable()

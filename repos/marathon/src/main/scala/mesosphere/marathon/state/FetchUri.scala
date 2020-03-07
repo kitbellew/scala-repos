@@ -1,6 +1,6 @@
 package mesosphere.marathon.state
 
-import org.apache.mesos.{ Protos => mesos }
+import org.apache.mesos.{Protos => mesos}
 import scala.collection.immutable.Seq
 
 /**
@@ -13,7 +13,8 @@ case class FetchUri(
     cache: Boolean = false) {
 
   def toProto(): mesos.CommandInfo.URI =
-    mesos.CommandInfo.URI.newBuilder()
+    mesos.CommandInfo.URI
+      .newBuilder()
       .setValue(uri)
       .setExecutable(executable)
       .setExtract(extract)
@@ -35,11 +36,11 @@ object FetchUri {
 
   def isExtract(uri: String): Boolean = {
     uri.endsWith(".tgz") ||
-      uri.endsWith(".tar.gz") ||
-      uri.endsWith(".tbz2") ||
-      uri.endsWith(".tar.bz2") ||
-      uri.endsWith(".txz") ||
-      uri.endsWith(".tar.xz") ||
-      uri.endsWith(".zip")
+    uri.endsWith(".tar.gz") ||
+    uri.endsWith(".tbz2") ||
+    uri.endsWith(".tar.bz2") ||
+    uri.endsWith(".txz") ||
+    uri.endsWith(".tar.xz") ||
+    uri.endsWith(".zip")
   }
 }

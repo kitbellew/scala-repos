@@ -5,7 +5,9 @@ import org.specs2.mutable._
 
 class ScalateUrlGeneratorSupportTest extends Specification {
 
-  val servlet = new ScalatraServlet with ScalateSupport with ScalateUrlGeneratorSupport {
+  val servlet = new ScalatraServlet
+    with ScalateSupport
+    with ScalateUrlGeneratorSupport {
 
     val cat: String = "meea"
 
@@ -20,7 +22,8 @@ class ScalateUrlGeneratorSupportTest extends Specification {
       servlet.reflectRoutes must haveValue(servlet.singleNamed)
     }
     "be indexed by their names" in {
-      servlet.reflectRoutes must havePair("simpleString" -> servlet.simpleString)
+      servlet.reflectRoutes must havePair(
+        "simpleString" -> servlet.simpleString)
       servlet.reflectRoutes must havePair("singleNamed" -> servlet.singleNamed)
     }
   }

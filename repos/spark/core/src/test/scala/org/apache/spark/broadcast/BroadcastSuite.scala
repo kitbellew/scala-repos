@@ -34,12 +34,15 @@ class DummyBroadcastClass(rdd: RDD[Int]) extends Serializable {
   val bid = broadcast.id
 
   def doSomething(): Set[(Int, Boolean)] = {
-    rdd.map { x =>
-      val bm = SparkEnv.get.blockManager
-      // Check if broadcast block was fetched
-      val isFound = bm.getLocalValues(BroadcastBlockId(bid)).isDefined
-      (x, isFound)
-    }.collect().toSet
+    rdd
+      .map { x =>
+        val bm = SparkEnv.get.blockManager
+        // Check if broadcast block was fetched
+        val isFound = bm.getLocalValues(BroadcastBlockId(bid)).isDefined
+        (x, isFound)
+      }
+      .collect()
+      .toSet
   }
 }
 
@@ -66,10 +69,14 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     val conf = new SparkConf
     conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     conf.set("spark.broadcast.compress", "true")
-    sc = new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test", conf)
+    sc = new SparkContext(
+      "local-cluster[%d, 1, 1024]".format(numSlaves),
+      "test",
+      conf)
     val list = List[Int](1, 2, 3, 4)
     val broadcast = sc.broadcast(list)
-    val results = sc.parallelize(1 to numSlaves).map(x => (x, broadcast.value.sum))
+    val results =
+      sc.parallelize(1 to numSlaves).map(x => (x, broadcast.value.sum))
     assert(results.collect().toSet === (1 to numSlaves).map(x => (x, 10)).toSet)
   }
 
@@ -86,14 +93,16 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       val data: Array[Byte] = new Array[Byte](size)
       rand.nextBytes(data)
       val blocks = blockifyObject(data, blockSize, serializer, compressionCodec)
-      val unblockified = unBlockifyObject[Array[Byte]](blocks, serializer, compressionCodec)
+      val unblockified =
+        unBlockifyObject[Array[Byte]](blocks, serializer, compressionCodec)
       assert(unblockified === data)
     }
   }
 
   test("Test Lazy Broadcast variables with TorrentBroadcast") {
     val numSlaves = 2
-    sc = new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
+    sc =
+      new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
     val rdd = sc.parallelize(1 to numSlaves)
     val results = new DummyBroadcastClass(rdd).doSomething()
 
@@ -112,7 +121,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     testUnpersistTorrentBroadcast(distributed = true, removeFromDriver = false)
   }
 
-  test("Unpersisting TorrentBroadcast on executors and driver in distributed mode") {
+  test(
+    "Unpersisting TorrentBroadcast on executors and driver in distributed mode") {
     testUnpersistTorrentBroadcast(distributed = true, removeFromDriver = true)
   }
 
@@ -121,7 +131,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     testPackage.runCallSiteTest(sc)
   }
 
-  test("Broadcast variables cannot be created after SparkContext is stopped (SPARK-5065)") {
+  test(
+    "Broadcast variables cannot be created after SparkContext is stopped (SPARK-5065)") {
     sc = new SparkContext("local", "test")
     sc.stop()
     val thrown = intercept[IllegalStateException] {
@@ -138,13 +149,15 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   /**
-   * Verify the persistence of state associated with an TorrentBroadcast in a local-cluster.
-   *
-   * This test creates a broadcast variable, uses it on all executors, and then unpersists it.
-   * In between each step, this test verifies that the broadcast blocks are present only on the
-   * expected nodes.
-   */
-  private def testUnpersistTorrentBroadcast(distributed: Boolean, removeFromDriver: Boolean) {
+    * Verify the persistence of state associated with an TorrentBroadcast in a local-cluster.
+    *
+    * This test creates a broadcast variable, uses it on all executors, and then unpersists it.
+    * In between each step, this test verifies that the broadcast blocks are present only on the
+    * expected nodes.
+    */
+  private def testUnpersistTorrentBroadcast(
+      distributed: Boolean,
+      removeFromDriver: Boolean) {
     val numSlaves = if (distributed) 2 else 0
 
     // Verify that blocks are persisted only on the driver
@@ -182,22 +195,27 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       assert(statuses.size === expectedNumBlocks)
     }
 
-    testUnpersistBroadcast(distributed, numSlaves, afterCreation,
-      afterUsingBroadcast, afterUnpersist, removeFromDriver)
+    testUnpersistBroadcast(
+      distributed,
+      numSlaves,
+      afterCreation,
+      afterUsingBroadcast,
+      afterUnpersist,
+      removeFromDriver)
   }
 
   /**
-   * This test runs in 4 steps:
-   *
-   * 1) Create broadcast variable, and verify that all state is persisted on the driver.
-   * 2) Use the broadcast variable on all executors, and verify that all state is persisted
-   *    on both the driver and the executors.
-   * 3) Unpersist the broadcast, and verify that all state is removed where they should be.
-   * 4) [Optional] If removeFromDriver is false, we verify that the broadcast is re-usable.
-   */
+    * This test runs in 4 steps:
+    *
+    * 1) Create broadcast variable, and verify that all state is persisted on the driver.
+    * 2) Use the broadcast variable on all executors, and verify that all state is persisted
+    *    on both the driver and the executors.
+    * 3) Unpersist the broadcast, and verify that all state is removed where they should be.
+    * 4) [Optional] If removeFromDriver is false, we verify that the broadcast is re-usable.
+    */
   private def testUnpersistBroadcast(
       distributed: Boolean,
-      numSlaves: Int,  // used only when distributed = true
+      numSlaves: Int, // used only when distributed = true
       afterCreation: (Long, BlockManagerMaster) => Unit,
       afterUsingBroadcast: (Long, BlockManagerMaster) => Unit,
       afterUnpersist: (Long, BlockManagerMaster) => Unit,
@@ -228,8 +246,13 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     // Use broadcast variable on all executors
     val partitions = 10
     assert(partitions > numSlaves)
-    val results = sc.parallelize(1 to partitions, partitions).map(x => (x, broadcast.value.sum))
-    assert(results.collect().toSet === (1 to partitions).map(x => (x, list.sum)).toSet)
+    val results = sc
+      .parallelize(1 to partitions, partitions)
+      .map(x => (x, broadcast.value.sum))
+    assert(
+      results.collect().toSet === (1 to partitions)
+        .map(x => (x, list.sum))
+        .toSet)
     afterUsingBroadcast(broadcast.id, blockManagerMaster)
 
     // Unpersist broadcast
@@ -249,8 +272,13 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       intercept[SparkException] { broadcast.unpersist() }
       intercept[SparkException] { broadcast.destroy(blocking = true) }
     } else {
-      val results = sc.parallelize(1 to partitions, partitions).map(x => (x, broadcast.value.sum))
-      assert(results.collect().toSet === (1 to partitions).map(x => (x, list.sum)).toSet)
+      val results = sc
+        .parallelize(1 to partitions, partitions)
+        .map(x => (x, broadcast.value.sum))
+      assert(
+        results.collect().toSet === (1 to partitions)
+          .map(x => (x, list.sum))
+          .toSet)
     }
   }
 }

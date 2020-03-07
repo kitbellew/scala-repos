@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding
 
 import java.io.File
@@ -27,9 +27,10 @@ object ExpandLibJarsGlobs {
       System.arraycopy(inputArgs, 0, newArgs, 0, inputArgs.length)
 
       val existing = newArgs(libJarsIdx)
-      val replacement = existing.split(",").flatMap { element =>
-        fromGlob(element).map(_.toString)
-      }.mkString(",")
+      val replacement = existing
+        .split(",")
+        .flatMap { element => fromGlob(element).map(_.toString) }
+        .mkString(",")
 
       newArgs(libJarsIdx) = replacement
       newArgs
@@ -37,11 +38,13 @@ object ExpandLibJarsGlobs {
   }
 
   //tree from Duncan McGregor @ http://stackoverflow.com/questions/2637643/how-do-i-list-all-files-in-a-subdirectory-in-scala
-  private[this] def tree(root: File, skipHidden: Boolean = false): Stream[File] =
+  private[this] def tree(
+      root: File,
+      skipHidden: Boolean = false): Stream[File] =
     if (!root.exists || (skipHidden && root.isHidden)) Stream.empty
-    else root #:: (
-      root.listFiles match {
-        case null => Stream.empty
+    else
+      root #:: (root.listFiles match {
+        case null  => Stream.empty
         case files => files.toStream.flatMap(tree(_, skipHidden))
       })
 
@@ -54,12 +57,15 @@ object ExpandLibJarsGlobs {
     val matcher: PathMatcher = fs.getPathMatcher(s"glob:$absoluteGlob")
 
     val parentPath =
-      if (absoluteGlob.getFileName.toString.contains("*")) absoluteGlob.getParent else absoluteGlob
+      if (absoluteGlob.getFileName.toString.contains("*"))
+        absoluteGlob.getParent
+      else absoluteGlob
 
     val pathStream = tree(parentPath.toFile).map(_.toPath)
 
     val globMatchingPaths = pathStream.filter(matcher.matches)
 
-    if (filesOnly) globMatchingPaths.filter(_.toFile.isFile) else globMatchingPaths
+    if (filesOnly) globMatchingPaths.filter(_.toFile.isFile)
+    else globMatchingPaths
   }
 }

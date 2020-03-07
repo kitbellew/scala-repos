@@ -1,11 +1,11 @@
 package mesosphere.marathon.state
 
-import org.apache.mesos.{ Protos => MesosProtos }
-import mesosphere.marathon.{ Protos, MarathonSpec }
+import org.apache.mesos.{Protos => MesosProtos}
+import mesosphere.marathon.{Protos, MarathonSpec}
 import mesosphere.marathon.api.JsonTestHelper
 import mesosphere.marathon.state.DiscoveryInfo.Port
 import org.scalatest.Matchers
-import play.api.libs.json.{ JsPath, JsError, Json }
+import play.api.libs.json.{JsPath, JsError, Json}
 import scala.collection.JavaConverters._
 
 class DiscoveryInfoTest extends MarathonSpec with Matchers {
@@ -45,7 +45,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val proto = f.discoveryInfoWithPort.toProto
 
     val portProto =
-      MesosProtos.Port.newBuilder()
+      MesosProtos.Port
+        .newBuilder()
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")
@@ -66,7 +67,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val f = fixture()
 
     val portProto =
-      MesosProtos.Port.newBuilder()
+      MesosProtos.Port
+        .newBuilder()
         .setName("http")
         .setNumber(80)
         .setProtocol("tcp")
@@ -170,10 +172,10 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(JsError(
-      JsPath() \ "ports",
-      "There may be only one port with a particular port number/protocol combination.")
-    )
+    readResult should be(
+      JsError(
+        JsPath() \ "ports",
+        "There may be only one port with a particular port number/protocol combination."))
   }
 
   test("Read discovery info with two ports with duplicate name") {
@@ -188,10 +190,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(JsError(
-      JsPath() \ "ports",
-      "Port names are not unique.")
-    )
+    readResult should be(
+      JsError(JsPath() \ "ports", "Port names are not unique."))
   }
 
   test("Read discovery info with a port with an invalid protocol") {
@@ -205,9 +205,9 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
       """
 
     val readResult = Json.fromJson[DiscoveryInfo](Json.parse(json))
-    readResult should be(JsError(
-      (JsPath() \ "ports")(0) \ "protocol",
-      "Invalid protocol. Only 'udp' or 'tcp' are allowed.")
-    )
+    readResult should be(
+      JsError(
+        (JsPath() \ "ports")(0) \ "protocol",
+        "Invalid protocol. Only 'udp' or 'tcp' are allowed."))
   }
 }

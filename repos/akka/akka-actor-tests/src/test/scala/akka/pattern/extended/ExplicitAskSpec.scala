@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.pattern.extended
 
 import akka.actor._
@@ -34,11 +34,13 @@ class ExplicitAskSpec extends AkkaSpec {
     "work for ActorSelection" in {
       implicit val timeout = Timeout(5.seconds)
 
-      val target = system.actorOf(Props(new Actor {
-        def receive = {
-          case Request(respondTo) ⇒ respondTo ! Response(self)
-        }
-      }), "select-echo")
+      val target = system.actorOf(
+        Props(new Actor {
+          def receive = {
+            case Request(respondTo) ⇒ respondTo ! Response(self)
+          }
+        }),
+        "select-echo")
 
       val selection = system.actorSelection("/user/select-echo")
       val f = selection ? (respondTo ⇒ Request(respondTo))

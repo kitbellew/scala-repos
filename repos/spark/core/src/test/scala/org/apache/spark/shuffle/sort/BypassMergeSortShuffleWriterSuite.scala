@@ -38,20 +38,27 @@ import org.apache.spark.shuffle.IndexShuffleBlockResolver
 import org.apache.spark.storage._
 import org.apache.spark.util.Utils
 
-class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
+class BypassMergeSortShuffleWriterSuite
+    extends SparkFunSuite
+    with BeforeAndAfterEach {
 
   @Mock(answer = RETURNS_SMART_NULLS) private var blockManager: BlockManager = _
-  @Mock(answer = RETURNS_SMART_NULLS) private var diskBlockManager: DiskBlockManager = _
+  @Mock(answer = RETURNS_SMART_NULLS) private var diskBlockManager
+      : DiskBlockManager = _
   @Mock(answer = RETURNS_SMART_NULLS) private var taskContext: TaskContext = _
-  @Mock(answer = RETURNS_SMART_NULLS) private var blockResolver: IndexShuffleBlockResolver = _
-  @Mock(answer = RETURNS_SMART_NULLS) private var dependency: ShuffleDependency[Int, Int, Int] = _
+  @Mock(answer = RETURNS_SMART_NULLS) private var blockResolver
+      : IndexShuffleBlockResolver = _
+  @Mock(answer = RETURNS_SMART_NULLS) private var dependency
+      : ShuffleDependency[Int, Int, Int] = _
 
   private var taskMetrics: TaskMetrics = _
   private var tempDir: File = _
   private var outputFile: File = _
   private val conf: SparkConf = new SparkConf(loadDefaults = false)
-  private val temporaryFilesCreated: mutable.Buffer[File] = new ArrayBuffer[File]()
-  private val blockIdToFileMap: mutable.Map[BlockId, File] = new mutable.HashMap[BlockId, File]
+  private val temporaryFilesCreated: mutable.Buffer[File] =
+    new ArrayBuffer[File]()
+  private val blockIdToFileMap: mutable.Map[BlockId, File] =
+    new mutable.HashMap[BlockId, File]
   private var shuffleHandle: BypassMergeSortShuffleHandle[Int, Int] = _
 
   override def beforeEach(): Unit = {
@@ -79,16 +86,22 @@ class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfte
         null
       }
     }).when(blockResolver)
-      .writeIndexFileAndCommit(anyInt, anyInt, any(classOf[Array[Long]]), any(classOf[File]))
+      .writeIndexFileAndCommit(
+        anyInt,
+        anyInt,
+        any(classOf[Array[Long]]),
+        any(classOf[File]))
     when(blockManager.diskBlockManager).thenReturn(diskBlockManager)
-    when(blockManager.getDiskWriter(
-      any[BlockId],
-      any[File],
-      any[SerializerInstance],
-      anyInt(),
-      any[ShuffleWriteMetrics]
-    )).thenAnswer(new Answer[DiskBlockObjectWriter] {
-      override def answer(invocation: InvocationOnMock): DiskBlockObjectWriter = {
+    when(
+      blockManager.getDiskWriter(
+        any[BlockId],
+        any[File],
+        any[SerializerInstance],
+        anyInt(),
+        any[ShuffleWriteMetrics]
+      )).thenAnswer(new Answer[DiskBlockObjectWriter] {
+      override def answer(
+          invocation: InvocationOnMock): DiskBlockObjectWriter = {
         val args = invocation.getArguments
         new DiskBlockObjectWriter(
           args(1).asInstanceOf[File],
@@ -101,9 +114,10 @@ class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfte
         )
       }
     })
-    when(diskBlockManager.createTempShuffleBlock()).thenAnswer(
-      new Answer[(TempShuffleBlockId, File)] {
-        override def answer(invocation: InvocationOnMock): (TempShuffleBlockId, File) = {
+    when(diskBlockManager.createTempShuffleBlock())
+      .thenAnswer(new Answer[(TempShuffleBlockId, File)] {
+        override def answer(
+            invocation: InvocationOnMock): (TempShuffleBlockId, File) = {
           val blockId = new TempShuffleBlockId(UUID.randomUUID)
           val file = new File(tempDir, blockId.name)
           blockIdToFileMap.put(blockId, file)
@@ -111,11 +125,12 @@ class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfte
           (blockId, file)
         }
       })
-    when(diskBlockManager.getFile(any[BlockId])).thenAnswer(
-      new Answer[File] {
-        override def answer(invocation: InvocationOnMock): File = {
-          blockIdToFileMap.get(invocation.getArguments.head.asInstanceOf[BlockId]).get
-        }
+    when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
+      override def answer(invocation: InvocationOnMock): File = {
+        blockIdToFileMap
+          .get(invocation.getArguments.head.asInstanceOf[BlockId])
+          .get
+      }
     })
   }
 
@@ -166,8 +181,12 @@ class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfte
     writer.stop( /* success = */ true)
     assert(temporaryFilesCreated.nonEmpty)
     assert(writer.getPartitionLengths.sum === outputFile.length())
-    assert(writer.getPartitionLengths.count(_ == 0L) === 4) // should be 4 zero length files
-    assert(temporaryFilesCreated.count(_.exists()) === 0) // check that temporary files were deleted
+    assert(
+      writer.getPartitionLengths.count(_ == 0L) === 4
+    ) // should be 4 zero length files
+    assert(
+      temporaryFilesCreated.count(_.exists()) === 0
+    ) // check that temporary files were deleted
     val shuffleWriteMetrics = taskContext.taskMetrics().shuffleWriteMetrics.get
     assert(shuffleWriteMetrics.bytesWritten === outputFile.length())
     assert(shuffleWriteMetrics.recordsWritten === records.length)
@@ -207,7 +226,9 @@ class BypassMergeSortShuffleWriterSuite extends SparkFunSuite with BeforeAndAfte
     assert(temporaryFilesCreated.count(_.exists()) === 3)
 
     writer.stop( /* success = */ false)
-    assert(temporaryFilesCreated.count(_.exists()) === 0) // check that temporary files were deleted
+    assert(
+      temporaryFilesCreated.count(_.exists()) === 0
+    ) // check that temporary files were deleted
   }
 
   test("cleanup of intermediate files after errors") {

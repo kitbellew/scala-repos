@@ -13,7 +13,8 @@ trait SprayJsonTestSupport {
 
     via match {
       case None =>
-        println(s"check and add the following assertion: $value = ${json.prettyPrint}")
+        println(
+          s"check and add the following assertion: $value = ${json.prettyPrint}")
       case Some(expected) => json shouldBe expected.parseJson
     }
 

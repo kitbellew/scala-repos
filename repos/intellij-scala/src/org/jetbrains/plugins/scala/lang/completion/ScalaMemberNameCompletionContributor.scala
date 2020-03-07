@@ -5,38 +5,50 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackaging
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScClass, ScObject, ScTrait, ScTypeDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScClass,
+  ScObject,
+  ScTrait,
+  ScTypeDefinition
+}
 
 import scala.collection.mutable
 
-
 /**
- * @author Alefas
- * @since 31.03.12
- */
+  * @author Alefas
+  * @since 31.03.12
+  */
 class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
   //suggest class name
-  extend(CompletionType.BASIC, ScalaSmartCompletionContributor.superParentsPattern(classOf[ScTypeDefinition]),
+  extend(
+    CompletionType.BASIC,
+    ScalaSmartCompletionContributor.superParentsPattern(
+      classOf[ScTypeDefinition]),
     new CompletionProvider[CompletionParameters]() {
-      def addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+      def addCompletions(
+          parameters: CompletionParameters,
+          context: ProcessingContext,
+          result: CompletionResultSet) {
         val position = positionFromParameters(parameters)
-        val fileName = parameters.getOriginalFile.getVirtualFile.getNameWithoutExtension
+        val fileName =
+          parameters.getOriginalFile.getVirtualFile.getNameWithoutExtension
         val classesNames: mutable.HashSet[String] = mutable.HashSet.empty
         val objectNames: mutable.HashSet[String] = mutable.HashSet.empty
         val parent = position.getContext.getContext
         if (parent == null) return
         parent.getChildren.foreach {
-          case c: ScClass => classesNames += c.name
-          case t: ScTrait => classesNames += t.name
+          case c: ScClass  => classesNames += c.name
+          case t: ScTrait  => classesNames += t.name
           case o: ScObject => objectNames += o.name
-          case _ =>
+          case _           =>
         }
         val shouldCompleteFileName = parent match {
-          case f: ScalaFile => true
+          case f: ScalaFile   => true
           case p: ScPackaging => true
-          case _ => false
+          case _              => false
         }
-        if (shouldCompleteFileName && !classesNames.contains(fileName) && !objectNames.contains(fileName)) {
+        if (shouldCompleteFileName && !classesNames.contains(
+              fileName) && !objectNames.contains(fileName)) {
           result.addElement(LookupElementBuilder.create(fileName))
         }
         position.getContext match {
@@ -51,5 +63,6 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
           case _ =>
         }
       }
-    })
+    }
+  )
 }

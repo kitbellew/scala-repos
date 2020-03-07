@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -35,11 +35,17 @@ object RecoverJson {
   case object Quote extends Balanced
   case object EscapeChar extends Balanced
 
-  @tailrec private def findEndString(buffers: Vector[CharBuffer], bufferIndex: Int, offset: Int): Option[(Int, Int)] = {
+  @tailrec private def findEndString(
+      buffers: Vector[CharBuffer],
+      bufferIndex: Int,
+      offset: Int): Option[(Int, Int)] = {
     if (bufferIndex >= buffers.length)
       None
     else if (offset >= buffers(bufferIndex).limit)
-      findEndString(buffers, bufferIndex + 1, offset % buffers(bufferIndex).limit)
+      findEndString(
+        buffers,
+        bufferIndex + 1,
+        offset % buffers(bufferIndex).limit)
     else {
       val char = buffers(bufferIndex).get(offset)
 
@@ -52,7 +58,10 @@ object RecoverJson {
     }
   }
 
-  private case class BalancedStackState(bufferIndex: Int, offset: Int, stack: Stack[Balanced]) {
+  private case class BalancedStackState(
+      bufferIndex: Int,
+      offset: Int,
+      stack: Stack[Balanced]) {
     def increment(balanced: Balanced) = BalancedStackState(
       bufferIndex,
       offset + 1,
@@ -71,15 +80,17 @@ object RecoverJson {
   }
 
   private def balancedStack(buffers: Vector[CharBuffer]) = {
-    @tailrec @inline def buildState(accum: BalancedStackState): BalancedStackState =
+    @tailrec @inline def buildState(
+        accum: BalancedStackState): BalancedStackState =
       if (accum.bufferIndex >= buffers.length)
         accum
       else if (accum.offset >= buffers(accum.bufferIndex).limit)
-        buildState(BalancedStackState(
-          accum.bufferIndex + 1,
-          accum.offset % buffers(accum.bufferIndex).limit,
-          accum.stack
-        ))
+        buildState(
+          BalancedStackState(
+            accum.bufferIndex + 1,
+            accum.offset % buffers(accum.bufferIndex).limit,
+            accum.stack
+          ))
       else {
         val buffer = buffers(accum.bufferIndex)
         var char = buffer.get(accum.offset)
@@ -111,24 +122,26 @@ object RecoverJson {
               case _ => accum
             }
 
-            buildState(findEndString(buffers, next.bufferIndex, next.offset + 1) map { case (bufferIndex, offset) =>
-              // Jump over the string
-              BalancedStackState(
-                bufferIndex,
-                offset + 1,
-                next.stack
-              )
-            } getOrElse {
-              // String didn't end
-              val lastBuffer = buffers(buffers.length - 1)
-              val lastCharacter = lastBuffer.get(lastBuffer.length - 1)
-              val quoted = next.stack push Quote
-              BalancedStackState(
-                buffers.length,
-                0,
-                if (lastCharacter == '\\') quoted push EscapeChar else quoted
-              )
-            })
+            buildState(
+              findEndString(buffers, next.bufferIndex, next.offset + 1) map {
+                case (bufferIndex, offset) =>
+                  // Jump over the string
+                  BalancedStackState(
+                    bufferIndex,
+                    offset + 1,
+                    next.stack
+                  )
+              } getOrElse {
+                // String didn't end
+                val lastBuffer = buffers(buffers.length - 1)
+                val lastCharacter = lastBuffer.get(lastBuffer.length - 1)
+                val quoted = next.stack push Quote
+                BalancedStackState(
+                  buffers.length,
+                  0,
+                  if (lastCharacter == '\\') quoted push EscapeChar else quoted
+                )
+              })
 
           case _ => buildState(accum.skip)
         }
@@ -143,13 +156,13 @@ object RecoverJson {
     val BlankElement = "null"
 
     def balancedToString(b: Balanced): String = b match {
-      case Brace => "}"
-      case Bracket => "]"
-      case Colon(v) => ":" + balancedToString(v)
-      case Key(v) => "\"null\"" + balancedToString(v)
-      case Quote => "\""
+      case Brace      => "}"
+      case Bracket    => "]"
+      case Colon(v)   => ":" + balancedToString(v)
+      case Key(v)     => "\"null\"" + balancedToString(v)
+      case Quote      => "\""
       case EscapeChar => "\\"
-      case NullValue => "null"
+      case NullValue  => "null"
     }
 
     val stringStack = balancedStack(buffers).map(balancedToString)
@@ -157,7 +170,8 @@ object RecoverJson {
     // ,null <- 5
     val lastChar = buffers.last.get(buffers.last.length - 1)
     val needsComma = lastChar != ',' || stringStack.size > 1
-    val closerBuffer = CharBuffer.allocate(stringStack.map(_.length).sum + 4 + (if (needsComma) 1 else 0))
+    val closerBuffer = CharBuffer.allocate(
+      stringStack.map(_.length).sum + 4 + (if (needsComma) 1 else 0))
 
     @tailrec def addToCloserBuffer(s: Stack[String]) {
       if (s.length == 1) {

@@ -14,7 +14,12 @@ import org.jetbrains.plugins.scala.compiler.CompilationProcess
 import org.jetbrains.plugins.scala.components.StopWorksheetAction
 import org.jetbrains.plugins.scala.extensions
 import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
-import org.jetbrains.plugins.scala.worksheet.actions.{CleanWorksheetAction, CopyWorksheetAction, RunWorksheetAction, InteractiveStatusDisplay}
+import org.jetbrains.plugins.scala.worksheet.actions.{
+  CleanWorksheetAction,
+  CopyWorksheetAction,
+  RunWorksheetAction,
+  InteractiveStatusDisplay
+}
 import org.jetbrains.plugins.scala.worksheet.interactive.WorksheetAutoRunner
 import org.jetbrains.plugins.scala.worksheet.processor.WorksheetCompiler
 
@@ -25,35 +30,46 @@ import org.jetbrains.plugins.scala.worksheet.processor.WorksheetCompiler
 class WorksheetUiConstructor(base: JComponent, project: Project) {
   private val (baseSize, hh, wh) = calculateDeltas(base)
 
-  
-  def initTopPanel(panel: JPanel, file: VirtualFile, run: Boolean, exec: Option[CompilationProcess]) = {
+  def initTopPanel(
+      panel: JPanel,
+      file: VirtualFile,
+      run: Boolean,
+      exec: Option[CompilationProcess]) = {
     val layout = new BoxLayout(panel, BoxLayout.LINE_AXIS)
     panel setLayout layout
     panel setAlignmentX 0.0f //leftmost
 
-    import WorksheetUiConstructor._  
-    
+    import WorksheetUiConstructor._
+
     @inline def addSplitter(): Unit = addChild(panel, createSplitter())
     @inline def addFiller(): Unit = {
       panel.getComponent(0) match {
-        case child: JComponent => 
+        case child: JComponent =>
           addChild(panel, createFillerFor(child))
-        case _ => 
-      }  
+        case _ =>
+      }
     }
-    
+
     var statusDisplayN: InteractiveStatusDisplay = null
-    
+
     extensions.inReadAction {
       statusDisplayN = new InteractiveStatusDisplay()
       statusDisplayN.init(panel)
-      if (run) statusDisplayN.onSuccessfulCompiling() else statusDisplayN.onStartCompiling()
-      
+      if (run) statusDisplayN.onSuccessfulCompiling()
+      else statusDisplayN.onStartCompiling()
+
       addChild(panel, Box.createHorizontalGlue())
 
       if (RunWorksheetAction.isScratchWorksheet(Option(file), project)) {
         addSplitter()
-        addChild(panel, createSelectClassPathList(Option(RunWorksheetAction.getModuleFor(PsiManager getInstance project findFile file).getName), file))
+        addChild(
+          panel,
+          createSelectClassPathList(
+            Option(
+              RunWorksheetAction
+                .getModuleFor(PsiManager getInstance project findFile file)
+                .getName),
+            file))
         addChild(panel, new JLabel("Use class path of module:  "))
       }
 
@@ -61,20 +77,22 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
       addChild(panel, createMakeProjectChb(file))
       addChild(panel, createAutoRunChb(file))
 
-      
       addSplitter()
 
       new CopyWorksheetAction().init(panel)
       addFiller()
       new CleanWorksheetAction().init(panel)
       addFiller()
-      if (run) new RunWorksheetAction().init(panel) else exec foreach (new StopWorksheetAction(_).init(panel))
+      if (run) new RunWorksheetAction().init(panel)
+      else exec foreach (new StopWorksheetAction(_).init(panel))
     }
 
     Option(statusDisplayN)
   }
-  
-  private def createSelectClassPathList(defaultModule: Option[String], file: VirtualFile) = {
+
+  private def createSelectClassPathList(
+      defaultModule: Option[String],
+      file: VirtualFile) = {
     val modulesBox = new ModulesComboBox()
 
     modulesBox fillModules project
@@ -82,7 +100,8 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
 
     defaultModule foreach {
       case nn =>
-        val foundModule: Module = ModuleManager getInstance project findModuleByName nn
+        val foundModule: Module =
+          ModuleManager getInstance project findModuleByName nn
         if (foundModule != null) modulesBox setSelectedModule foundModule
     }
 
@@ -92,24 +111,30 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
 
         if (m == null) return
 
-        WorksheetCompiler.setModuleForCpName(PsiManager getInstance project findFile file, m.getName)
+        WorksheetCompiler.setModuleForCpName(
+          PsiManager getInstance project findFile file,
+          m.getName)
       }
     })
 
-    WorksheetUiConstructor.fixUnboundMaxSize(modulesBox, isSquare = false)  
-    
+    WorksheetUiConstructor.fixUnboundMaxSize(modulesBox, isSquare = false)
+
     modulesBox
   }
 
   def createMakeProjectChb(file: VirtualFile): JCheckBox = {
     createCheckBox(
       "Make project",
-      WorksheetCompiler.isMakeBeforeRun(PsiManager getInstance project findFile file),
-      box =>  new ChangeListener {
-        override def stateChanged(e: ChangeEvent) {
-          WorksheetCompiler.setMakeBeforeRun(PsiManager getInstance project findFile file, box.isSelected)
+      WorksheetCompiler.isMakeBeforeRun(
+        PsiManager getInstance project findFile file),
+      box =>
+        new ChangeListener {
+          override def stateChanged(e: ChangeEvent) {
+            WorksheetCompiler.setMakeBeforeRun(
+              PsiManager getInstance project findFile file,
+              box.isSelected)
+          }
         }
-      }
     )
   }
 
@@ -117,62 +142,71 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     val psiFile = PsiManager getInstance project findFile file
 
     import org.jetbrains.plugins.scala.worksheet.interactive.WorksheetAutoRunner._
-    
+
     createCheckBox(
       "Interactive Mode",
-      if (isSetEnabled(psiFile)) true else if (isSetDisabled(psiFile)) false else ScalaProjectSettings.getInstance(project).isInteractiveMode,
-      box => new ChangeListener {
-        override def stateChanged(e: ChangeEvent) {
-          WorksheetAutoRunner.setAutorun(psiFile, box.isSelected)
+      if (isSetEnabled(psiFile)) true
+      else if (isSetDisabled(psiFile)) false
+      else ScalaProjectSettings.getInstance(project).isInteractiveMode,
+      box =>
+        new ChangeListener {
+          override def stateChanged(e: ChangeEvent) {
+            WorksheetAutoRunner.setAutorun(psiFile, box.isSelected)
+          }
         }
-      }
     )
   }
-  
-  private def createCheckBox(title: String, isSelected: Boolean, listener: JCheckBox => ChangeListener) = {
+
+  private def createCheckBox(
+      title: String,
+      isSelected: Boolean,
+      listener: JCheckBox => ChangeListener) = {
     val box = new JCheckBox(title, isSelected)
     box addChangeListener listener(box)
     box.setAlignmentX(Component.CENTER_ALIGNMENT)
-    
+
     box
   }
-  
+
   private def calculateDeltas(comp: JComponent) = {
     val baseSize = comp.getPreferredSize
     val hh = baseSize.height / 5
     val wh = baseSize.width / 5
-    
+
     (baseSize, hh, wh)
   }
-  
+
   private def createFillerFor(comp: JComponent) = {
     val (baseSize, hh, wh) = calculateDeltas(comp)
-    
+
     WorksheetUiConstructor.createFiller(baseSize.height + hh, wh)
   }
-  
-  def createFiller() = WorksheetUiConstructor.createFiller(baseSize.height + hh, wh)
+
+  def createFiller() =
+    WorksheetUiConstructor.createFiller(baseSize.height + hh, wh)
 }
 
 object WorksheetUiConstructor {
   def fixUnboundMaxSize(comp: JComponent, isSquare: Boolean = true) {
     val preferredSize = comp.getPreferredSize
-    
+
     val size = if (isSquare) {
       val sqSize = Math.max(preferredSize.width, preferredSize.height)
       new Dimension(sqSize, sqSize)
     } else new Dimension(preferredSize.width, preferredSize.height)
-    
+
     comp setMaximumSize size
   }
 
   def addChild(parent: JComponent, child: Component, idx: Int = 0) {
-    parent.add(child, 0)  
+    parent.add(child, 0)
   }
 
   def createSplitter() = {
     val separator = new JSeparator(SwingConstants.VERTICAL)
-    val size = new Dimension(separator.getPreferredSize.width, separator.getMaximumSize.height)
+    val size = new Dimension(
+      separator.getPreferredSize.width,
+      separator.getMaximumSize.height)
     separator setMaximumSize size
 
     separator

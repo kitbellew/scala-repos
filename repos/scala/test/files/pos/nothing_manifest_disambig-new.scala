@@ -7,6 +7,8 @@ object Test {
   def listElMani[T: TypeTag](xs: List[T]) = xs
   listElMani(List())
 
-  def foo[A, C](m : C)(implicit ev: C <:< Traversable[A], mani: TypeTag[A]): (C, A, TypeTag[A]) = (m, m.head, mani)
-  foo(List(1,2,3))
+  def foo[A, C](m: C)(implicit
+      ev: C <:< Traversable[A],
+      mani: TypeTag[A]): (C, A, TypeTag[A]) = (m, m.head, mani)
+  foo(List(1, 2, 3))
 }

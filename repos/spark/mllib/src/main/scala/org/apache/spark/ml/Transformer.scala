@@ -28,19 +28,19 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
 /**
- * :: DeveloperApi ::
- * Abstract class for transformers that transform one dataset into another.
- */
+  * :: DeveloperApi ::
+  * Abstract class for transformers that transform one dataset into another.
+  */
 @DeveloperApi
 abstract class Transformer extends PipelineStage {
 
   /**
-   * Transforms the dataset with optional parameters
-   * @param dataset input dataset
-   * @param firstParamPair the first param pair, overwrite embedded params
-   * @param otherParamPairs other param pairs, overwrite embedded params
-   * @return transformed dataset
-   */
+    * Transforms the dataset with optional parameters
+    * @param dataset input dataset
+    * @param firstParamPair the first param pair, overwrite embedded params
+    * @param otherParamPairs other param pairs, overwrite embedded params
+    * @return transformed dataset
+    */
   @varargs
   def transform(
       dataset: DataFrame,
@@ -53,31 +53,34 @@ abstract class Transformer extends PipelineStage {
   }
 
   /**
-   * Transforms the dataset with provided parameter map as additional parameters.
-   * @param dataset input dataset
-   * @param paramMap additional parameters, overwrite embedded params
-   * @return transformed dataset
-   */
+    * Transforms the dataset with provided parameter map as additional parameters.
+    * @param dataset input dataset
+    * @param paramMap additional parameters, overwrite embedded params
+    * @return transformed dataset
+    */
   def transform(dataset: DataFrame, paramMap: ParamMap): DataFrame = {
     this.copy(paramMap).transform(dataset)
   }
 
   /**
-   * Transforms the input dataset.
-   */
+    * Transforms the input dataset.
+    */
   def transform(dataset: DataFrame): DataFrame
 
   override def copy(extra: ParamMap): Transformer
 }
 
 /**
- * :: DeveloperApi ::
- * Abstract class for transformers that take one input column, apply transformation, and output the
- * result as a new column.
- */
+  * :: DeveloperApi ::
+  * Abstract class for transformers that take one input column, apply transformation, and output the
+  * result as a new column.
+  */
 @DeveloperApi
 abstract class UnaryTransformer[IN, OUT, T <: UnaryTransformer[IN, OUT, T]]
-  extends Transformer with HasInputCol with HasOutputCol with Logging {
+    extends Transformer
+    with HasInputCol
+    with HasOutputCol
+    with Logging {
 
   /** @group setParam */
   def setInputCol(value: String): T = set(inputCol, value).asInstanceOf[T]
@@ -86,27 +89,28 @@ abstract class UnaryTransformer[IN, OUT, T <: UnaryTransformer[IN, OUT, T]]
   def setOutputCol(value: String): T = set(outputCol, value).asInstanceOf[T]
 
   /**
-   * Creates the transform function using the given param map. The input param map already takes
-   * account of the embedded param map. So the param values should be determined solely by the input
-   * param map.
-   */
+    * Creates the transform function using the given param map. The input param map already takes
+    * account of the embedded param map. So the param values should be determined solely by the input
+    * param map.
+    */
   protected def createTransformFunc: IN => OUT
 
   /**
-   * Returns the data type of the output column.
-   */
+    * Returns the data type of the output column.
+    */
   protected def outputDataType: DataType
 
   /**
-   * Validates the input type. Throw an exception if it is invalid.
-   */
+    * Validates the input type. Throw an exception if it is invalid.
+    */
   protected def validateInputType(inputType: DataType): Unit = {}
 
   override def transformSchema(schema: StructType): StructType = {
     val inputType = schema($(inputCol)).dataType
     validateInputType(inputType)
     if (schema.fieldNames.contains($(outputCol))) {
-      throw new IllegalArgumentException(s"Output column ${$(outputCol)} already exists.")
+      throw new IllegalArgumentException(
+        s"Output column ${$(outputCol)} already exists.")
     }
     val outputFields = schema.fields :+
       StructField($(outputCol), outputDataType, nullable = false)

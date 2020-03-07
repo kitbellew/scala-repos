@@ -22,7 +22,8 @@ class PromiseSpec extends PlaySpecification {
     }
 
     "Thrown values" in new WithApplication() {
-      val p = Promise.timeout(42, 100).map[Int] { _ => throw new Exception("foo") }
+      val p =
+        Promise.timeout(42, 100).map[Int] { _ => throw new Exception("foo") }
       await(p.filter(_ => true)) must throwAn[Exception](message = "foo")
     }
 

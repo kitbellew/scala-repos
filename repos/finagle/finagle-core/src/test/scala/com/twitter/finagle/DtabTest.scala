@@ -19,7 +19,7 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
     val d1 = Dtab.read("/foo => /bar")
     val d2 = Dtab.read("/foo=>/biz;/biz=>/$/inet/0/8080;/bar=>/$/inet/0/9090")
 
-    assert(d1++d2 == Dtab.read("""
+    assert(d1 ++ d2 == Dtab.read("""
       /foo=>/bar;
       /foo=>/biz;
       /biz=>/$/inet/0/8080;
@@ -54,8 +54,9 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
     b += Dentry.read("/c => /d")
     val dtab = b.result
 
-    val dtab1: Dtab = dtab map { case Dentry(a, b) =>
-      Dentry.read("%s=>%s".format(a.show.toUpperCase, b.show.toUpperCase))
+    val dtab1: Dtab = dtab map {
+      case Dentry(a, b) =>
+        Dentry.read("%s=>%s".format(a.show.toUpperCase, b.show.toUpperCase))
     }
 
     assert(dtab1.size == 2)
@@ -67,7 +68,8 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("Allows trailing semicolon") {
-    val dtab = try {
+    val dtab =
+      try {
         Dtab.read("""
           /b => /c;
           /a => /b;

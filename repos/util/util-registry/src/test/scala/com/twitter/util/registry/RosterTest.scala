@@ -42,7 +42,8 @@ class RosterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("Roster#update logs noisily when the key is good but the registry is inconsistent") {
+  test(
+    "Roster#update logs noisily when the key is good but the registry is inconsistent") {
     val expected =
       "expected there to be a value at key \"(foo,baz)\" in registry but it was empty."
     withRoster { (roster, log) =>

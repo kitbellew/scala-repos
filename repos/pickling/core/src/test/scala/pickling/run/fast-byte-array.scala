@@ -10,23 +10,23 @@ import org.scalatest.FunSuite
 
 class FastArrayOutputTest extends FunSuite {
 
-    test("allocating chunks") {
-        //allocate a dummy to grab the preallocated array
-        val dummy = new FastByteArrayOutput
-        val out = new FastByteArrayOutput
-        val size = 10000
-        for (_ <- 1 to size) out.putByte(0x0f)
-        val result = out.result
-        assert(result.length == size)
-        assert(result.forall( _ == 0x0f))
-        //release the preallocated array
-        dummy.result
-    }
+  test("allocating chunks") {
+    //allocate a dummy to grab the preallocated array
+    val dummy = new FastByteArrayOutput
+    val out = new FastByteArrayOutput
+    val size = 10000
+    for (_ <- 1 to size) out.putByte(0x0f)
+    val result = out.result
+    assert(result.length == size)
+    assert(result.forall(_ == 0x0f))
+    //release the preallocated array
+    dummy.result
+  }
 
 }
 
 object Primitives extends Properties("fast byte array primitive tests") {
-  
+
   def roundTrip[T: Pickler: Unpickler: FastTypeTag](obj: T): Boolean = {
     try {
       //val dummy = new FastByteArrayOutput
@@ -43,7 +43,7 @@ object Primitives extends Properties("fast byte array primitive tests") {
         throw e
     }
   }
-  
+
   property("Int") = Prop forAll { (i: Int) => roundTrip[Int](i) }
   property("Double") = Prop forAll { (d: Double) => roundTrip[Double](d) }
   property("Long") = Prop forAll { (l: Long) => roundTrip[Long](l) }
@@ -53,7 +53,8 @@ object Primitives extends Properties("fast byte array primitive tests") {
   property("Short") = Prop forAll { (s: Short) => roundTrip[Short](s) }
   property("Byte") = Prop forAll { (b: Byte) => roundTrip[Byte](b) }
   property("String") = Prop forAll { (s: String) => roundTrip[String](s) }
-  property("(Int, String)") = Prop forAll { (p: (Int, String)) => roundTrip[(Int,String)](p) }
+  property("(Int, String)") = Prop forAll { (p: (Int, String)) =>
+    roundTrip[(Int, String)](p)
+  }
 
 }
-

@@ -29,7 +29,10 @@ class Counter {
 object TestCodec {
   def apply[A: Manifest](firstStage: Stage, encoder: Encoder[A]) = {
     val counter = new Counter()
-    val codec = new Codec(firstStage, encoder, { n => counter.readBytes += n },
+    val codec = new Codec(
+      firstStage,
+      encoder,
+      { n => counter.readBytes += n },
       { n => counter.writtenBytes += n })
     val testCodec = new TestCodec(codec)
     (testCodec, counter)
@@ -37,9 +40,9 @@ object TestCodec {
 }
 
 /**
- * Netty doesn't appear to have a good set of fake objects yet, so this wraps a Codec in a fake
- * environment that collects emitted objects and returns them.
- */
+  * Netty doesn't appear to have a good set of fake objects yet, so this wraps a Codec in a fake
+  * environment that collects emitted objects and returns them.
+  */
 class TestCodec[A](val codec: Codec[A]) {
   val downstreamOutput = new mutable.ListBuffer[AnyRef]
   val upstreamOutput = new mutable.ListBuffer[AnyRef]
@@ -58,7 +61,7 @@ class TestCodec[A](val codec: Codec[A]) {
   private def toStrings(wrapped: Seq[Any]): Seq[String] = wrapped.map { item =>
     item match {
       case x: Array[Byte] => new String(x, "UTF-8")
-      case x => x.toString
+      case x              => x.toString
     }
   }
 
@@ -79,7 +82,7 @@ class TestCodec[A](val codec: Codec[A]) {
 
   val context = pipeline.getContext(codec)
   val sink = new AbstractChannelSink() {
-    def eventSunk(pipeline: ChannelPipeline, event: ChannelEvent) { }
+    def eventSunk(pipeline: ChannelPipeline, event: ChannelEvent) {}
   }
   val channel = new AbstractChannel(null, null, pipeline, sink) {
     def getRemoteAddress() = null
@@ -95,13 +98,21 @@ class TestCodec[A](val codec: Codec[A]) {
 
   def apply(buffer: ChannelBuffer) = {
     upstreamOutput.clear()
-    codec.messageReceived(context, new UpstreamMessageEvent(pipeline.getChannel, buffer, null))
+    codec.messageReceived(
+      context,
+      new UpstreamMessageEvent(pipeline.getChannel, buffer, null))
     upstreamOutput.toList
   }
 
   def send(obj: Any): Seq[String] = {
     downstreamOutput.clear()
-    codec.handleDownstream(context, new DownstreamMessageEvent(pipeline.getChannel, Channels.future(pipeline.getChannel), obj, null))
+    codec.handleDownstream(
+      context,
+      new DownstreamMessageEvent(
+        pipeline.getChannel,
+        Channels.future(pipeline.getChannel),
+        obj,
+        null))
     getDownstream
   }
 

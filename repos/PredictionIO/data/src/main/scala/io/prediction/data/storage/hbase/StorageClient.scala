@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.hbase
 
 import io.prediction.data.storage.BaseStorageClient
@@ -29,13 +28,14 @@ import org.apache.hadoop.hbase.client.HBaseAdmin
 import grizzled.slf4j.Logging
 
 case class HBClient(
-  val conf: Configuration,
-  val connection: HConnection,
-  val admin: HBaseAdmin
+    val conf: Configuration,
+    val connection: HConnection,
+    val admin: HBaseAdmin
 )
 
 class StorageClient(val config: StorageClientConfig)
-  extends BaseStorageClient with Logging {
+    extends BaseStorageClient
+    with Logging {
 
   val conf = HBaseConfiguration.create()
 
@@ -56,16 +56,18 @@ class StorageClient(val config: StorageClientConfig)
         "correct ZooKeeper ensemble.")
       throw e
     case e: ZooKeeperConnectionException =>
-      error("Cannot connect to ZooKeeper (ZooKeeper ensemble: " +
-        conf.get("hbase.zookeeper.quorum") + "). Please make sure that the " +
-        "configuration is pointing at the correct ZooKeeper ensemble. By " +
-        "default, HBase manages its own ZooKeeper, so if you have not " +
-        "configured HBase to use an external ZooKeeper, that means your " +
-        "HBase is not started or configured properly.")
+      error(
+        "Cannot connect to ZooKeeper (ZooKeeper ensemble: " +
+          conf.get("hbase.zookeeper.quorum") + "). Please make sure that the " +
+          "configuration is pointing at the correct ZooKeeper ensemble. By " +
+          "default, HBase manages its own ZooKeeper, so if you have not " +
+          "configured HBase to use an external ZooKeeper, that means your " +
+          "HBase is not started or configured properly.")
       throw e
     case e: Exception => {
-      error("Failed to connect to HBase." +
-        " Please check if HBase is running properly.")
+      error(
+        "Failed to connect to HBase." +
+          " Please check if HBase is running properly.")
       throw e
     }
   }
@@ -78,6 +80,5 @@ class StorageClient(val config: StorageClientConfig)
     admin = new HBaseAdmin(connection)
   )
 
-  override
-  val prefix = "HB"
+  override val prefix = "HB"
 }

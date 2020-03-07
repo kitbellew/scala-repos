@@ -14,21 +14,21 @@ case class Post(
 
   def isUnRead = !isRead
 
-  def similar(other: Post) = text == other.text && isByCreator == other.isByCreator
+  def similar(other: Post) =
+    text == other.text && isByCreator == other.isByCreator
 }
 
 object Post {
 
   val idSize = 8
 
-  def make(
-    text: String,
-    isByCreator: Boolean): Post = Post(
-    id = Random nextStringUppercase idSize,
-    text = text,
-    isByCreator = isByCreator,
-    isRead = false,
-    createdAt = DateTime.now)
+  def make(text: String, isByCreator: Boolean): Post =
+    Post(
+      id = Random nextStringUppercase idSize,
+      text = text,
+      isByCreator = isByCreator,
+      isRead = false,
+      createdAt = DateTime.now)
 
   import lila.db.JsTube
   import JsTube.Helpers._

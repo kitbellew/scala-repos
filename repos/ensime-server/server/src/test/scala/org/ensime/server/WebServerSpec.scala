@@ -32,7 +32,8 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
   def restHandler(in: RpcRequest): Future[EnsimeServerMessage] =
     Future.successful(SendBackgroundMessageEvent("hello"))
 
-  val expected = """{"typehint":"SendBackgroundMessageEvent","detail":"hello","code":105}""".parseJson
+  val expected =
+    """{"typehint":"SendBackgroundMessageEvent","detail":"hello","code":105}""".parseJson
 
   val probe = TestProbe()
   def websocketHandler(target: ActorRef): ActorRef = probe.ref
@@ -41,10 +42,13 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
     if (filename != "foo-1.0-javadoc.jar" || entry != "bar/Baz.html") None
     else Some(ByteString("hello"))
 
-  def docJars(): Set[File] = Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))
+  def docJars(): Set[File] =
+    Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))
 
   "WebServer" should "respond to REST queries" in {
-    Post("/rpc", """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
+    Post(
+      "/rpc",
+      """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
       status shouldBe StatusCodes.OK
       responseAs[JsValue] shouldBe expected
     }
@@ -103,16 +107,21 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
 }
 
 /**
- * Equivalent for akka-http-testkit use (non-trivial ordering of mixins)
- * http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0/scala/http/routing-dsl/testkit.html
- */
+  * Equivalent for akka-http-testkit use (non-trivial ordering of mixins)
+  * http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0/scala/http/routing-dsl/testkit.html
+  */
 abstract class HttpFlatSpec
-    extends FlatSpecLike with BeforeAndAfterAll
+    extends FlatSpecLike
+    with BeforeAndAfterAll
     with ScalatestRouteTest
-    with TestKitBase with DefaultTimeout with ImplicitSender
-    with Matchers with SLF4JLogging {
+    with TestKitBase
+    with DefaultTimeout
+    with ImplicitSender
+    with Matchers
+    with SLF4JLogging {
   def actorRefFactory = system
-  implicit val routeTimeout: RouteTestTimeout = RouteTestTimeout(timeout.duration.dilated)
+  implicit val routeTimeout: RouteTestTimeout = RouteTestTimeout(
+    timeout.duration.dilated)
   implicit val mat = ActorMaterializer()
 
   override protected def beforeAll(): Unit = {

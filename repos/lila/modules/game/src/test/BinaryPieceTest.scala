@@ -44,7 +44,11 @@ class BinaryPieceTest extends Specification {
         }
       }
       "A1 black knight, B1 white bishop, C1 white queen" in {
-        write(Map(A1 -> Black.knight, B1 -> White.bishop, C1 -> White.queen)) must_== {
+        write(
+          Map(
+            A1 -> Black.knight,
+            B1 -> White.bishop,
+            C1 -> White.queen)) must_== {
           "11000101" :: "00100000" :: List.fill(30)(noop)
         }
       }

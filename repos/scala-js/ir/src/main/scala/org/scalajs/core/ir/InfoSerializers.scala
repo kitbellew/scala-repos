@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 import java.io._
@@ -16,11 +15,11 @@ import Infos._
 object InfoSerializers {
 
   /** Scala.js IR File Magic Number
-   *
-   *    CA FE : first part of magic number of Java class files
-   *    4A 53 : "JS" in ASCII
-   *
-   */
+    *
+    *    CA FE : first part of magic number of Java class files
+    *    4A 53 : "JS" in ASCII
+    *
+    */
   final val IRMagicNumber = 0xCAFE4A53
 
   def serialize(stream: OutputStream, classInfo: ClassInfo): Unit = {
@@ -123,10 +122,19 @@ object InfoSerializers {
         val accessedModules = readStrings()
         val usedInstanceTests = readStrings()
         val accessedClassData = readStrings()
-        MethodInfo(encodedName, isStatic, isAbstract, isExported,
-            methodsCalled, methodsCalledStatically, staticMethodsCalled,
-            instantiatedClasses, accessedModules, usedInstanceTests,
-            accessedClassData)
+        MethodInfo(
+          encodedName,
+          isStatic,
+          isAbstract,
+          isExported,
+          methodsCalled,
+          methodsCalledStatically,
+          staticMethodsCalled,
+          instantiatedClasses,
+          accessedModules,
+          usedInstanceTests,
+          accessedClassData
+        )
       }
 
       val methods0 = readList(readMethod())
@@ -136,15 +144,20 @@ object InfoSerializers {
         methods0
       }
 
-      val info = ClassInfo(encodedName, isExported, kind,
-          superClass, interfaces, methods)
+      val info = ClassInfo(
+        encodedName,
+        isExported,
+        kind,
+        superClass,
+        interfaces,
+        methods)
 
       (version, info)
     }
 
     /** Reads the Scala.js IR header and verifies the version compatibility.
-     *  Returns the emitted binary version.
-     */
+      *  Returns the emitted binary version.
+      */
     def readHeader(): String = {
       // Check magic number
       if (input.readInt() != IRMagicNumber)
@@ -154,8 +167,10 @@ object InfoSerializers {
       val version = input.readUTF()
       val supported = ScalaJSVersions.binarySupported
       if (!supported.contains(version)) {
-        throw new IRVersionNotSupportedException(version, supported,
-            s"This version ($version) of Scala.js IR is not supported. " +
+        throw new IRVersionNotSupportedException(
+          version,
+          supported,
+          s"This version ($version) of Scala.js IR is not supported. " +
             s"Supported versions are: ${supported.mkString(", ")}")
       }
 

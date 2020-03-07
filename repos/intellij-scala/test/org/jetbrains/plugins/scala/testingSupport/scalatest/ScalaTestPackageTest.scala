@@ -9,7 +9,8 @@ trait ScalaTestPackageTest extends ScalaTestTestCase {
   protected val secondPackageName = "secondPackage"
 
   protected def addFiles(): Unit = {
-    addFileToProject(packageName + "/Test1.scala",
+    addFileToProject(
+      packageName + "/Test1.scala",
       """
         |package myPackage
         |
@@ -20,9 +21,11 @@ trait ScalaTestPackageTest extends ScalaTestTestCase {
         |  test("Test1") {
         |  }
         |}
-      """.stripMargin.trim())
+      """.stripMargin.trim()
+    )
 
-    addFileToProject(packageName + "/Test2.scala",
+    addFileToProject(
+      packageName + "/Test2.scala",
       """
         |package myPackage
         |
@@ -33,9 +36,11 @@ trait ScalaTestPackageTest extends ScalaTestTestCase {
         |  test("Test2") {
         |  }
         |}
-      """.stripMargin.trim())
+      """.stripMargin.trim()
+    )
 
-    addFileToProject(secondPackageName + "/Test1.scala",
+    addFileToProject(
+      secondPackageName + "/Test1.scala",
       """
         |package secondPackage
         |
@@ -45,24 +50,35 @@ trait ScalaTestPackageTest extends ScalaTestTestCase {
         |
         |  test("SecondTest") {}
         |}
-      """.stripMargin.trim())
+      """.stripMargin.trim()
+    )
   }
 
   def testPackageTestRun(): Unit = {
     addFiles()
-    runTestByConfig(createTestFromPackage(packageName), checkPackageConfigAndSettings(_, packageName),
-      root => checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "Test1") &&
-        checkResultTreeHasExactNamedPath(root, "[root]", "Test2", "Test2") &&
-        checkResultTreeDoesNotHaveNodes(root, "SecondTest"))
+    runTestByConfig(
+      createTestFromPackage(packageName),
+      checkPackageConfigAndSettings(_, packageName),
+      root =>
+        checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "Test1") &&
+          checkResultTreeHasExactNamedPath(root, "[root]", "Test2", "Test2") &&
+          checkResultTreeDoesNotHaveNodes(root, "SecondTest")
+    )
   }
 
   def testModuleTestRun(): Unit = {
     addFiles()
-    runTestByConfig(createTestFromModule(testClassName),
+    runTestByConfig(
+      createTestFromModule(testClassName),
       checkPackageConfigAndSettings(_, generatedName = "ScalaTests in 'src'"),
-      root => checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "Test1") &&
-        checkResultTreeHasExactNamedPath(root, "[root]", "Test2", "Test2") &&
-        checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "SecondTest")
+      root =>
+        checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "Test1") &&
+          checkResultTreeHasExactNamedPath(root, "[root]", "Test2", "Test2") &&
+          checkResultTreeHasExactNamedPath(
+            root,
+            "[root]",
+            "Test1",
+            "SecondTest")
     )
   }
 }

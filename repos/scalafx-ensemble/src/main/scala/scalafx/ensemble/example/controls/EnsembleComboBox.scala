@@ -34,19 +34,26 @@ import scalafx.scene.control.ComboBox
 import scalafx.scene.layout.{Priority, VBox}
 
 /**
- * A sample that shows both an un-editable and an editable ComboBox.
- *
- * @see scalafx.scene.control.ComboBox
- * @see scalafx.scene.control.ComboBoxBuilder
- */
+  * A sample that shows both an un-editable and an editable ComboBox.
+  *
+  * @see scalafx.scene.control.ComboBox
+  * @see scalafx.scene.control.ComboBoxBuilder
+  */
 class EnsembleComboBox extends EnsembleExample {
 
   val strings = ObservableBuffer(
-    "Option 1", "Option 2", "Option 3",
-    "Option 4", "Option 5", "Option 6",
+    "Option 1",
+    "Option 2",
+    "Option 3",
+    "Option 4",
+    "Option 5",
+    "Option 6",
     "Longer ComboBox item",
-    "Option 7", "Option 8", "Option 9",
-    "Option 10", "Option 12")
+    "Option 7",
+    "Option 8",
+    "Option 9",
+    "Option 10",
+    "Option 12")
 
   def getContent = {
     new VBox {
@@ -65,7 +72,8 @@ class EnsembleComboBox extends EnsembleExample {
           promptText = "Edit or Choose..."
           editable = true
           items = strings
-        })
+        }
+      )
     }
   }
 }
