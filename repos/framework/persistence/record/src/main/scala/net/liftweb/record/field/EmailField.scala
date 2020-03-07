@@ -30,15 +30,16 @@ import S._
 object EmailField {
   def emailPattern = ProtoRules.emailRegexPattern.vend
 
-  def validEmailAddr_?(email: String): Boolean = emailPattern.matcher(email).matches
+  def validEmailAddr_?(email: String): Boolean =
+    emailPattern.matcher(email).matches
 }
 
 trait EmailTypedField extends TypedField[String] {
   private def validateEmail(emailValue: ValueType): List[FieldError] = {
     toBoxMyType(emailValue) match {
-      case Full(email) if (optional_? && email.isEmpty) => Nil
+      case Full(email) if (optional_? && email.isEmpty)      => Nil
       case Full(email) if EmailField.validEmailAddr_?(email) => Nil
-      case _ => Text(S.?("invalid.email.address"))
+      case _                                                 => Text(S.?("invalid.email.address"))
     }
   }
 
@@ -46,8 +47,11 @@ trait EmailTypedField extends TypedField[String] {
 }
 
 class EmailField[OwnerType <: Record[OwnerType]](rec: OwnerType, maxLength: Int)
-  extends StringField[OwnerType](rec, maxLength) with EmailTypedField
+    extends StringField[OwnerType](rec, maxLength)
+    with EmailTypedField
 
-class OptionalEmailField[OwnerType <: Record[OwnerType]](rec: OwnerType, maxLength: Int)
-  extends OptionalStringField[OwnerType](rec, maxLength) with EmailTypedField
-
+class OptionalEmailField[OwnerType <: Record[OwnerType]](
+    rec: OwnerType,
+    maxLength: Int)
+    extends OptionalStringField[OwnerType](rec, maxLength)
+    with EmailTypedField

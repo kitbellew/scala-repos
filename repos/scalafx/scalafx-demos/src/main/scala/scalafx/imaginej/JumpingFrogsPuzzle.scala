@@ -50,11 +50,9 @@ import scalafx.scene.input.MouseEvent
 import scalafx.scene.paint.Color
 import scalafx.scene.shape.{Circle, Rectangle}
 
-
 /**
- * @author Luc Duponcheel <luc.duponcheel@gmail.com>
- */
-
+  * @author Luc Duponcheel <luc.duponcheel@gmail.com>
+  */
 object Constants {
   //
   // absolute
@@ -121,10 +119,10 @@ object Constants {
   //
   // canvas
   //
-  val CANVAS_WIDTH = (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (NUMBER_OF_STONES - 1) * STONE_GAP
+  val CANVAS_WIDTH =
+    (NUMBER_OF_STONES + 1) * STONE_TOTAL_WIDTH + (NUMBER_OF_STONES - 1) * STONE_GAP
   //
 }
-
 
 ///////////
 // model //
@@ -209,7 +207,6 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
       optionalFrogMap(i - 1).get.movesToRight &&
       optionalFrogMap(i - 2) == None
 
-
   private def positionSingleton(frog: Frog) =
     for {
       (i, Some(`frog`)) <- optionalFrogMap
@@ -217,7 +214,7 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
 
   private def update(next: Int => Int) = (frog: Frog) => {
     optionalFrogMap = for {
-      entry@(i, _) <- optionalFrogMap
+      entry @ (i, _) <- optionalFrogMap
       j <- positionSingleton(frog)
     } yield {
       if (i == j) {
@@ -286,11 +283,13 @@ abstract class FrogShape(startPosition: Int, frog: Frog) extends Circle {
   radius = FROG_RADIUS
 }
 
-case class GreenFrogShape(startPosition: Int, frog: Frog) extends FrogShape(startPosition, frog) {
+case class GreenFrogShape(startPosition: Int, frog: Frog)
+    extends FrogShape(startPosition, frog) {
   fill = GREEN_FROG_FILL
 }
 
-case class RedFrogShape(startPosition: Int, frog: Frog) extends FrogShape(startPosition, frog) {
+case class RedFrogShape(startPosition: Int, frog: Frog)
+    extends FrogShape(startPosition, frog) {
   fill = RED_FROG_FILL
 }
 
@@ -327,25 +326,28 @@ object theViewValues {
 // view
 //
 class View(position: FrogShape => Int, val frogShapes: List[FrogShape]) {
-  private def update(length: Int, next: (Double, Double) => Double) = (frogShape: FrogShape) => {
-    val frogShapeCenterX = FIRST_FROG_CENTER_X + STONE_STEP * position(frogShape)
-    val frogShapeCenterY = FROG_CENTER_Y
+  private def update(length: Int, next: (Double, Double) => Double) =
+    (frogShape: FrogShape) => {
+      val frogShapeCenterX =
+        FIRST_FROG_CENTER_X + STONE_STEP * position(frogShape)
+      val frogShapeCenterY = FROG_CENTER_Y
 
-    Timeline(Seq(
-      at(length * TIME s) {
-        frogShape.centerY -> (frogShapeCenterY - length * STONE_STEP / 2)
-      },
-      at(length * TIME s) {
-        frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP / 2)
-      },
-      at(2 * length * TIME s) {
-        frogShape.centerY -> frogShapeCenterY
-      },
-      at(2 * length * TIME s) {
-        frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP)
-      }
-    )).play()
-  }
+      Timeline(
+        Seq(
+          at(length * TIME s) {
+            frogShape.centerY -> (frogShapeCenterY - length * STONE_STEP / 2)
+          },
+          at(length * TIME s) {
+            frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP / 2)
+          },
+          at(2 * length * TIME s) {
+            frogShape.centerY -> frogShapeCenterY
+          },
+          at(2 * length * TIME s) {
+            frogShape.centerX -> next(frogShapeCenterX, length * STONE_STEP)
+          }
+        )).play()
+    }
 
   val jumpOneRight = update(1, _ + _)
 
@@ -367,8 +369,8 @@ class Control {
   def update(model: Model, view: View) {
     view.frogShapes.foreach {
       case `theDummyFrogShape` =>
-      case frogShape           => frogShape.onMouseClicked = {
-        (_: MouseEvent) =>
+      case frogShape =>
+        frogShape.onMouseClicked = { (_: MouseEvent) =>
           val frog = frogShape.getFrog
           if (model.canJumpOneRight(frog)) {
             view.jumpOneRight(frogShape)
@@ -384,7 +386,7 @@ class Control {
             model.jumpTwoLeft(frog)
           }
           update(model, view)
-      }
+        }
     }
   }
 }
@@ -393,12 +395,12 @@ class Control {
 // mvc //
 /////////
 
-object theModel extends Model(
-  theModelValues.optionalFrogMap)
+object theModel extends Model(theModelValues.optionalFrogMap)
 
-object theView extends View(
-  theModel.position compose (_.getFrog),
-  theViewValues.frogShapes) {
+object theView
+    extends View(
+      theModel.position compose (_.getFrog),
+      theViewValues.frogShapes) {
   theControl.update(theModel, this)
 }
 
@@ -418,4 +420,3 @@ object JumpingFrogsPuzzle extends JFXApp {
     }
   }
 }
-

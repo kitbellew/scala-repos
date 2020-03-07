@@ -32,7 +32,6 @@ class ProtocolsBenchmark extends StdBenchAnnotations {
     "\u270A\u270B\u270C\u270D\u270E\u270F"
   )
 
-
   private[this] val ttransport =
     new TReusableMemoryTransport(new TByteArrayOutputStream(10000))
 
@@ -42,13 +41,14 @@ class ProtocolsBenchmark extends StdBenchAnnotations {
   @Setup(Level.Iteration)
   def setup(): Unit = {
     baselineProtocol = new TBinaryProtocol(ttransport)
-    protocolsProtocol =
-      Protocols
-        .binaryFactory(statsReceiver = NullStatsReceiver)
-        .getProtocol(ttransport)
+    protocolsProtocol = Protocols
+      .binaryFactory(statsReceiver = NullStatsReceiver)
+      .getProtocol(ttransport)
   }
 
-  private[this] def writeStrings(ss: Array[String], tprotocol: TProtocol): Int = {
+  private[this] def writeStrings(
+      ss: Array[String],
+      tprotocol: TProtocol): Int = {
     ttransport.reset()
     var i = 0
     while (i < ss.length) {

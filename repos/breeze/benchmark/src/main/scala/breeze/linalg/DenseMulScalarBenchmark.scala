@@ -22,8 +22,8 @@ import breeze.benchmark.{MyRunner, BreezeBenchmark}
 import spire.syntax.cfor._
 
 /**
- * Created by dlwh on 8/14/15.
- */
+  * Created by dlwh on 8/14/15.
+  */
 class DenseMulScalarBenchmark extends BreezeBenchmark {
   assert(usingNatives)
 
@@ -32,9 +32,7 @@ class DenseMulScalarBenchmark extends BreezeBenchmark {
   def timeSmallDVMulScalar(reps: Int) = {
     var sum = 0.0
     var q = dv2
-    cforRange(0 until reps) { rep =>
-      q = dv :* q
-    }
+    cforRange(0 until reps) { rep => q = dv :* q }
     q
   }
 
@@ -44,9 +42,7 @@ class DenseMulScalarBenchmark extends BreezeBenchmark {
     cforRange(0 until reps) { rep =>
       val ad = dv.data
       val bd = b.data
-      cforRange(0 until dv.length) { i =>
-        result(i) = ad(i) * bd(i)
-      }
+      cforRange(0 until dv.length) { i => result(i) = ad(i) * bd(i) }
       b = new DenseVector(result)
       result = new Array[Double](dv.length)
     }
@@ -76,6 +72,5 @@ class DenseMulScalarBenchmark extends BreezeBenchmark {
 
 }
 
-
-
-object DenseMulScalarBenchmark extends MyRunner(classOf[DenseMulScalarBenchmark])
+object DenseMulScalarBenchmark
+    extends MyRunner(classOf[DenseMulScalarBenchmark])

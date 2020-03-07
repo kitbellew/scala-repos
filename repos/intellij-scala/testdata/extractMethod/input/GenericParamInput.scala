@@ -4,9 +4,9 @@ abstract class GenericParamInput[T] {
   def foo {
 
     val y = x
-/*start*/
+    /*start*/
     println(y)
-/*end*/
+    /*end*/
   }
 }
 /*
@@ -25,4 +25,4 @@ abstract class GenericParamInput[T] {
     println(y)
   }
 }
-*/
+ */

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.jasminetest
 
 import sbt.testing._
@@ -18,15 +17,17 @@ import scala.scalajs.js.annotation.JSExport
 
 import org.scalajs.testinterface.TestUtils
 
-final class JasmineTask(private val runner: JasmineRunner,
-    _taskDef: TaskDef) extends Task {
+final class JasmineTask(private val runner: JasmineRunner, _taskDef: TaskDef)
+    extends Task {
 
   def tags(): Array[String] = Array()
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] =
     throw new UnsupportedOperationException("Jasmine only supports JavaScript")
 
-  def execute(eventHandler: EventHandler, loggers: Array[Logger],
+  def execute(
+      eventHandler: EventHandler,
+      loggers: Array[Logger],
       continuation: Array[Task] => Unit): Unit = {
     val doneCont = () => continuation(Array())
     val jasmine = global.jasmine
@@ -48,12 +49,13 @@ final class JasmineTask(private val runner: JasmineRunner,
     } catch {
       case t: Throwable =>
         // Jasmine itself failed. Issue a failure
-        eventHandler.handle(new JasmineEvent(
-            taskDef   = taskDef,
-            status    = Status.Failure,
-            selector  = new SuiteSelector,
+        eventHandler.handle(
+          new JasmineEvent(
+            taskDef = taskDef,
+            status = Status.Failure,
+            selector = new SuiteSelector,
             throwable = new OptionalThrowable(t)
-        ))
+          ))
         for (log <- loggers) {
           log.error("Problem executing code in tests: " + t.toString)
           log.trace(t)

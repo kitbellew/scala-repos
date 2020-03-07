@@ -9,10 +9,10 @@
 package scala.annotation
 
 /** If this annotation is present on a method or its enclosing class,
- *  the strictfp flag will be emitted.
- *
- *  @author Paul Phillips
- *  @version 2.9
- *  @since 2.9
- */
+  *  the strictfp flag will be emitted.
+  *
+  *  @author Paul Phillips
+  *  @version 2.9
+  *  @since 2.9
+  */
 class strictfp extends scala.annotation.StaticAnnotation

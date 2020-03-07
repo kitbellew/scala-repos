@@ -4,8 +4,7 @@ import com.twitter.finagle.builder.Cluster
 import com.twitter.concurrent.Spool
 import com.twitter.util.{Return, Promise}
 
-class DynamicCluster[U](initial: Seq[U])
-  extends Cluster[U] {
+class DynamicCluster[U](initial: Seq[U]) extends Cluster[U] {
 
   def this() = this(Seq[U]())
 
@@ -21,7 +20,6 @@ class DynamicCluster[U](initial: Seq[U])
     set -= f
     performChange(Cluster.Rem(f))
   }
-
 
   private[this] def performChange(change: Cluster.Change[U]) = synchronized {
     val newTail = new Promise[Spool[Cluster.Change[U]]]

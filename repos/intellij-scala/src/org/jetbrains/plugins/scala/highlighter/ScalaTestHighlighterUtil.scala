@@ -1,7 +1,10 @@
 package org.jetbrains.plugins.scala.highlighter
 
 import com.intellij.openapi.project.Project
-import org.jetbrains.plugins.scala.settings.{ScalaProjectSettings, ScalaProjectSettingsUtil}
+import org.jetbrains.plugins.scala.settings.{
+  ScalaProjectSettings,
+  ScalaProjectSettingsUtil
+}
 
 /**
   * @author Roman.Shein
@@ -10,11 +13,39 @@ import org.jetbrains.plugins.scala.settings.{ScalaProjectSettings, ScalaProjectS
 object ScalaTestHighlighterUtil {
 
   private val scalaTestKeywords =
-    Set("in", "ignore", "is", "be", "taggedAs", "when", "that", "which", "must", "can", "should", "behave", "feature",
-      "scenario", "like", "pending", "it", "they", "behavior", "describe", "property", "test")
+    Set(
+      "in",
+      "ignore",
+      "is",
+      "be",
+      "taggedAs",
+      "when",
+      "that",
+      "which",
+      "must",
+      "can",
+      "should",
+      "behave",
+      "feature",
+      "scenario",
+      "like",
+      "pending",
+      "it",
+      "they",
+      "behavior",
+      "describe",
+      "property",
+      "test"
+    )
 
   //TODO it is possible for this to create some false-positives, but it is very unlikely
-  def isHighlightableScalaTestKeyword(classFqn: String, methodName: String, project: Project) =
-    classFqn != null && ScalaProjectSettings.getInstance(project).isCustomScalatestSyntaxHighlighting &&
-      classFqn.startsWith("org.scalatest") && scalaTestKeywords.contains(methodName)
+  def isHighlightableScalaTestKeyword(
+      classFqn: String,
+      methodName: String,
+      project: Project) =
+    classFqn != null && ScalaProjectSettings
+      .getInstance(project)
+      .isCustomScalatestSyntaxHighlighting &&
+      classFqn.startsWith("org.scalatest") && scalaTestKeywords.contains(
+      methodName)
 }

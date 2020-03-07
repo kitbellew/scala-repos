@@ -6,7 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
 package scala.tools.ant.sabbus
 
 import java.io.File
@@ -42,7 +41,9 @@ trait TaskArgs extends CompilationPathProperty {
   }
 
   def setParams(input: String) {
-    extraArgs ++= input.split(' ').map { s => val a = new Argument; a.setValue(s); a }
+    extraArgs ++= input.split(' ').map { s =>
+      val a = new Argument; a.setValue(s); a
+    }
   }
 
   def createCompilerArg(): Argument = {
@@ -96,6 +97,6 @@ trait TaskArgs extends CompilationPathProperty {
 
   def extraArgsFlat: Seq[String] = extraArgs flatMap { a =>
     val parts = a.getParts
-    if(parts eq null) Seq[String]() else parts.toSeq
+    if (parts eq null) Seq[String]() else parts.toSeq
   }
 }

@@ -26,14 +26,21 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, Success}
 import org.jetbrains.plugins.scala.lang.psi.types.{ScParameterizedType, ScType}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 22.02.2008
-*/
-
-class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElementType, node: ASTNode)
-  extends ScalaStubBasedElementImpl(stub, nodeType, node) with ScTypeBoundsOwnerImpl with ScTypeParam with PsiClassFake {
-  def this(node: ASTNode) = {this(null, null, node)}
-  def this(stub: ScTypeParamStub) = {this(stub, ScalaElementTypes.TYPE_PARAM, null)}
+  * @author Alexander Podkhalyuzin
+  * Date: 22.02.2008
+  */
+class ScTypeParamImpl private (
+    stub: StubElement[ScTypeParam],
+    nodeType: IElementType,
+    node: ASTNode)
+    extends ScalaStubBasedElementImpl(stub, nodeType, node)
+    with ScTypeBoundsOwnerImpl
+    with ScTypeParam
+    with PsiClassFake {
+  def this(node: ASTNode) = { this(null, null, node) }
+  def this(stub: ScTypeParamStub) = {
+    this(stub, ScalaElementTypes.TYPE_PARAM, null)
+  }
 
   override def toString: String = "TypeParameter: " + name
 
@@ -59,8 +66,8 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
 
   def getIndex: Int = 0
   def getOwner: PsiTypeParameterListOwner = getContext.getContext match {
-    case c : PsiTypeParameterListOwner => c
-    case _ => null
+    case c: PsiTypeParameterListOwner => c
+    case _                            => null
   }
 
   override def getContainingClass: ScTemplateDefinition = null
@@ -72,7 +79,7 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
     }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null => false
-      case x => x.getText == "+"
+      case x    => x.getText == "+"
     }
   }
 
@@ -83,7 +90,7 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
     }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null => false
-      case x => x.getText == "-"
+      case x    => x.getText == "-"
     }
   }
 
@@ -95,9 +102,11 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
     getText
   }
 
-  def owner: ScTypeParametersOwner = getContext.getContext.asInstanceOf[ScTypeParametersOwner]
+  def owner: ScTypeParametersOwner =
+    getContext.getContext.asInstanceOf[ScTypeParametersOwner]
 
-  override def getUseScope  = new LocalSearchScope(owner).intersectWith(super.getUseScope)
+  override def getUseScope =
+    new LocalSearchScope(owner).intersectWith(super.getUseScope)
 
   def nameId = findLastChildByType(TokenSets.ID_SET)
 
@@ -141,7 +150,8 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
       case Success(t, _) =>
         val psiType = if (hasTypeParameters) {
           t match {
-            case ScParameterizedType(des, _) => ScType.toPsi(des, getProject, getResolveScope)
+            case ScParameterizedType(des, _) =>
+              ScType.toPsi(des, getProject, getResolveScope)
             case _ => ScType.toPsi(t, getProject, getResolveScope)
           }
         } else {
@@ -149,7 +159,7 @@ class ScTypeParamImpl private (stub: StubElement[ScTypeParam], nodeType: IElemen
         }
         psiType match {
           case x: PsiClassType => Array(x)
-          case _ => Array() // TODO
+          case _               => Array() // TODO
         }
       case Failure(_, _) => Array()
     }

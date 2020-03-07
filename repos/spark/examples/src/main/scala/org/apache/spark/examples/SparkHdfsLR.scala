@@ -28,14 +28,14 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.spark._
 
 /**
- * Logistic regression based classification.
- *
- * This is an example implementation for learning how to use Spark. For more conventional use,
- * please refer to either org.apache.spark.mllib.classification.LogisticRegressionWithSGD or
- * org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS based on your needs.
- */
+  * Logistic regression based classification.
+  *
+  * This is an example implementation for learning how to use Spark. For more conventional use,
+  * please refer to either org.apache.spark.mllib.classification.LogisticRegressionWithSGD or
+  * org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS based on your needs.
+  */
 object SparkHdfsLR {
-  val D = 10   // Number of dimensions
+  val D = 10 // Number of dimensions
   val rand = new Random(42)
 
   case class DataPoint(x: Vector[Double], y: Double)
@@ -78,14 +78,14 @@ object SparkHdfsLR {
     val ITERATIONS = args(1).toInt
 
     // Initialize w to a random value
-    var w = DenseVector.fill(D) {2 * rand.nextDouble - 1}
+    var w = DenseVector.fill(D) { 2 * rand.nextDouble - 1 }
     println("Initial w: " + w)
 
     for (i <- 1 to ITERATIONS) {
       println("On iteration " + i)
-      val gradient = points.map { p =>
-        p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y
-      }.reduce(_ + _)
+      val gradient = points
+        .map { p => p.x * (1 / (1 + exp(-p.y * (w.dot(p.x)))) - 1) * p.y }
+        .reduce(_ + _)
       w -= gradient
     }
 

@@ -1,8 +1,4 @@
-
-
-
 import scala.collection.immutable._
-
 
 // ticket #3511
 object Test {

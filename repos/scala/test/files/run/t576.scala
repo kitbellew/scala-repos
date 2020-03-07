@@ -16,9 +16,9 @@ object Test {
   val x2 = new A
 
   val x3 = new { self =>
-    override def equals(other : Any) = other match {
-      case that: self.type    => true
-      case _                  => false
+    override def equals(other: Any) = other match {
+      case that: self.type => true
+      case _               => false
     }
   }
   val x4 = new { self =>

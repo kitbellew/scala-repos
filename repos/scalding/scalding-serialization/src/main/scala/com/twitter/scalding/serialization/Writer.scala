@@ -12,16 +12,16 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package com.twitter.scalding.serialization
 
 import java.io.OutputStream
 
 /**
- * This is a specialized typeclass to make it easier to implement Serializations.
- * The specialization *should* mean that there is no boxing and if the JIT
- * does its work, Writer should compose well (via collections, Tuple2, Option, Either)
- */
+  * This is a specialized typeclass to make it easier to implement Serializations.
+  * The specialization *should* mean that there is no boxing and if the JIT
+  * does its work, Writer should compose well (via collections, Tuple2, Option, Either)
+  */
 trait Writer[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) -T] {
   def write(os: OutputStream, t: T): Unit
 }
@@ -29,8 +29,9 @@ trait Writer[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) -T] {
 object Writer {
   import JavaStreamEnrichments._
 
-  def write[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) T](os: OutputStream,
-    t: T)(implicit w: Writer[T]): Unit =
+  def write[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) T](
+      os: OutputStream,
+      t: T)(implicit w: Writer[T]): Unit =
     w.write(os, t)
   /*
    * Instances below
@@ -78,29 +79,38 @@ object Writer {
       } else os.write(0: Byte)
   }
 
-  implicit def either[L: Writer, R: Writer]: Writer[Either[L, R]] = new Writer[Either[L, R]] {
-    val lw = implicitly[Writer[L]]
-    val rw = implicitly[Writer[R]]
-    def write(os: OutputStream, e: Either[L, R]) = e match {
-      case Left(l) =>
-        os.write(0: Byte)
-        lw.write(os, l)
-      case Right(r) =>
-        os.write(1: Byte)
-        rw.write(os, r)
+  implicit def either[L: Writer, R: Writer]: Writer[Either[L, R]] =
+    new Writer[Either[L, R]] {
+      val lw = implicitly[Writer[L]]
+      val rw = implicitly[Writer[R]]
+      def write(os: OutputStream, e: Either[L, R]) = e match {
+        case Left(l) =>
+          os.write(0: Byte)
+          lw.write(os, l)
+        case Right(r) =>
+          os.write(1: Byte)
+          rw.write(os, r)
+      }
     }
-  }
 
-  implicit def tuple2[T1: Writer, T2: Writer]: Writer[(T1, T2)] = new Writer[(T1, T2)] {
-    val w1 = implicitly[Writer[T1]]
-    val w2 = implicitly[Writer[T2]]
-    def write(os: OutputStream, tup: (T1, T2)) = {
-      w1.write(os, tup._1)
-      w2.write(os, tup._2)
+  implicit def tuple2[T1: Writer, T2: Writer]: Writer[(T1, T2)] =
+    new Writer[(T1, T2)] {
+      val w1 = implicitly[Writer[T1]]
+      val w2 = implicitly[Writer[T2]]
+      def write(os: OutputStream, tup: (T1, T2)) = {
+        w1.write(os, tup._1)
+        w2.write(os, tup._2)
+      }
     }
-  }
 
-  implicit def array[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) T: Writer]: Writer[Array[T]] =
+  implicit def array[@specialized(
+    Boolean,
+    Byte,
+    Short,
+    Int,
+    Long,
+    Float,
+    Double) T: Writer]: Writer[Array[T]] =
     new Writer[Array[T]] {
       val writerT = implicitly[Writer[T]]
       def write(os: OutputStream, a: Array[T]) = {
@@ -121,10 +131,7 @@ object Writer {
     def write(os: OutputStream, c: C) = {
       val size = c.size
       os.writePosVarInt(size)
-      c.foreach { t: T =>
-        writerT.write(os, t)
-      }
+      c.foreach { t: T => writerT.write(os, t) }
     }
   }
 }
-

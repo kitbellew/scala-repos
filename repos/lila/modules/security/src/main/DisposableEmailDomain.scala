@@ -22,17 +22,17 @@ final class DisposableEmailDomain(
     }
   }
 
-  private[security] def setDomains(json: JsValue): Unit = try {
-    val ds = json.as[List[String]]
-    matchers = ds.map { d =>
-      val regex = s"""(.+\\.|)${d.replace(".", "\\.")}"""
-      makeMatcher(regex)
+  private[security] def setDomains(json: JsValue): Unit =
+    try {
+      val ds = json.as[List[String]]
+      matchers = ds.map { d =>
+        val regex = s"""(.+\\.|)${d.replace(".", "\\.")}"""
+        makeMatcher(regex)
+      }
+      failed = false
+    } catch {
+      case e: Exception => onError(e)
     }
-    failed = false
-  }
-  catch {
-    case e: Exception => onError(e)
-  }
 
   private var failed = false
 
@@ -42,7 +42,8 @@ final class DisposableEmailDomain(
       failed = true
       busOption.foreach { bus =>
         bus.publish(
-          lila.hub.actorApi.slack.Error(s"Disposable emails list: ${e.getMessage}\nPlease fix $providerUrl"),
+          lila.hub.actorApi.slack.Error(
+            s"Disposable emails list: ${e.getMessage}\nPlease fix $providerUrl"),
           'slack)
       }
     }

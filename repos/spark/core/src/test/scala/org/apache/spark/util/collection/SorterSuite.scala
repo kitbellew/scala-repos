@@ -33,7 +33,8 @@ class SorterSuite extends SparkFunSuite with Logging {
     val data2 = data0.clone()
 
     Arrays.sort(data0)
-    new Sorter(new IntArraySortDataFormat).sort(data1, 0, data1.length, Ordering.Int)
+    new Sorter(new IntArraySortDataFormat)
+      .sort(data1, 0, data1.length, Ordering.Int)
     new Sorter(new KeyReuseIntArraySortDataFormat)
       .sort(data2, 0, data2.length, Ordering[IntWrapper])
 
@@ -53,27 +54,34 @@ class SorterSuite extends SparkFunSuite with Logging {
 
     // Map from generated keys to values, to verify correctness later
     val kvMap =
-      keyValueArray.grouped(2).map { case Array(k, v) => k.doubleValue() -> v.intValue() }.toMap
+      keyValueArray
+        .grouped(2)
+        .map { case Array(k, v) => k.doubleValue() -> v.intValue() }
+        .toMap
 
     Arrays.sort(keys)
     new Sorter(new KVArraySortDataFormat[Double, Number])
       .sort(keyValueArray, 0, keys.length, Ordering.Double)
 
-    keys.zipWithIndex.foreach { case (k, i) =>
-      assert(k === keyValueArray(2 * i))
-      assert(kvMap(k) === keyValueArray(2 * i + 1))
+    keys.zipWithIndex.foreach {
+      case (k, i) =>
+        assert(k === keyValueArray(2 * i))
+        assert(kvMap(k) === keyValueArray(2 * i + 1))
     }
   }
 
   // http://www.envisage-project.eu/timsort-specification-and-verification/
   test("SPARK-5984 TimSort bug") {
     val data = TestTimSort.getTimSortBugTestSet(67108864)
-    new Sorter(new IntArraySortDataFormat).sort(data, 0, data.length, Ordering.Int)
+    new Sorter(new IntArraySortDataFormat)
+      .sort(data, 0, data.length, Ordering.Int)
     (0 to data.length - 2).foreach(i => assert(data(i) <= data(i + 1)))
   }
 
   /** Runs an experiment several times. */
-  def runExperiment(name: String, skip: Boolean = false)(f: => Unit, prepare: () => Unit): Unit = {
+  def runExperiment(name: String, skip: Boolean = false)(
+      f: => Unit,
+      prepare: () => Unit): Unit = {
     if (skip) {
       logInfo(s"Skipped experiment $name.")
       return
@@ -95,16 +103,16 @@ class SorterSuite extends SparkFunSuite with Logging {
   }
 
   /**
-   * This provides a simple benchmark for comparing the Sorter with Java internal sorting.
-   * Ideally these would be executed one at a time, each in their own JVM, so their listing
-   * here is mainly to have the code. Running multiple tests within the same JVM session would
-   * prevent JIT inlining overridden methods and hence hurt the performance.
-   *
-   * The goal of this code is to sort an array of key-value pairs, where the array physically
-   * has the keys and values alternating. The basic Java sorts work only on the keys, so the
-   * real Java solution is to make Tuple2s to store the keys and values and sort an array of
-   * those, while the Sorter approach can work directly on the input data format.
-   */
+    * This provides a simple benchmark for comparing the Sorter with Java internal sorting.
+    * Ideally these would be executed one at a time, each in their own JVM, so their listing
+    * here is mainly to have the code. Running multiple tests within the same JVM session would
+    * prevent JIT inlining overridden methods and hence hurt the performance.
+    *
+    * The goal of this code is to sort an array of key-value pairs, where the array physically
+    * has the keys and values alternating. The basic Java sorts work only on the keys, so the
+    * real Java solution is to make Tuple2s to store the keys and values and sort an array of
+    * those, while the Sorter approach can work directly on the input data format.
+    */
   ignore("Sorter benchmark for key-value pairs") {
     val numElements = 25000000 // 25 mil
     val rand = new XORShiftRandom(123)
@@ -119,12 +127,19 @@ class SorterSuite extends SparkFunSuite with Logging {
     val prepareKvTupleArray = () => {
       System.arraycopy(kvTuples, 0, kvTupleArray, 0, numElements)
     }
-    runExperiment("Tuple-sort using Arrays.sort()")({
-      Arrays.sort(kvTupleArray, new Comparator[AnyRef] {
-        override def compare(x: AnyRef, y: AnyRef): Int =
-          x.asInstanceOf[(JFloat, _)]._1.compareTo(y.asInstanceOf[(JFloat, _)]._1)
-      })
-    }, prepareKvTupleArray)
+    runExperiment("Tuple-sort using Arrays.sort()")(
+      {
+        Arrays.sort(
+          kvTupleArray,
+          new Comparator[AnyRef] {
+            override def compare(x: AnyRef, y: AnyRef): Int =
+              x.asInstanceOf[(JFloat, _)]
+                ._1
+                .compareTo(y.asInstanceOf[(JFloat, _)]._1)
+          })
+      },
+      prepareKvTupleArray
+    )
 
     // Test our Sorter where each element alternates between Float and Integer, non-primitive
 
@@ -145,22 +160,28 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     val sorter = new Sorter(new KVArraySortDataFormat[JFloat, AnyRef])
-    runExperiment("KV-sort using Sorter")({
-      sorter.sort(keyValueArray, 0, numElements, new Comparator[JFloat] {
-        override def compare(x: JFloat, y: JFloat): Int = x.compareTo(y)
-      })
-    }, prepareKeyValueArray)
+    runExperiment("KV-sort using Sorter")(
+      {
+        sorter.sort(
+          keyValueArray,
+          0,
+          numElements,
+          new Comparator[JFloat] {
+            override def compare(x: JFloat, y: JFloat): Int = x.compareTo(y)
+          })
+      },
+      prepareKeyValueArray)
   }
 
   /**
-   * Tests for sorting with primitive keys with/without key reuse. Java's Arrays.sort is used as
-   * reference, which is expected to be faster but it can only sort a single array. Sorter can be
-   * used to sort parallel arrays.
-   *
-   * Ideally these would be executed one at a time, each in their own JVM, so their listing
-   * here is mainly to have the code. Running multiple tests within the same JVM session would
-   * prevent JIT inlining overridden methods and hence hurt the performance.
-   */
+    * Tests for sorting with primitive keys with/without key reuse. Java's Arrays.sort is used as
+    * reference, which is expected to be faster but it can only sort a single array. Sorter can be
+    * used to sort parallel arrays.
+    *
+    * Ideally these would be executed one at a time, each in their own JVM, so their listing
+    * here is mainly to have the code. Running multiple tests within the same JVM session would
+    * prevent JIT inlining overridden methods and hence hurt the performance.
+    */
   ignore("Sorter benchmark for primitive int array") {
     val numElements = 25000000 // 25 mil
     val rand = new XORShiftRandom(123)
@@ -181,34 +202,47 @@ class SorterSuite extends SparkFunSuite with Logging {
       System.arraycopy(intObjects, 0, intObjectArray, 0, numElements)
     }
 
-    runExperiment("Java Arrays.sort() on non-primitive int array")({
-      Arrays.sort(intObjectArray, new Comparator[JInteger] {
-        override def compare(x: JInteger, y: JInteger): Int = x.compareTo(y)
-      })
-    }, prepareIntObjectArray)
+    runExperiment("Java Arrays.sort() on non-primitive int array")(
+      {
+        Arrays.sort(
+          intObjectArray,
+          new Comparator[JInteger] {
+            override def compare(x: JInteger, y: JInteger): Int = x.compareTo(y)
+          })
+      },
+      prepareIntObjectArray)
 
     val intPrimitiveArray = new Array[Int](numElements)
     val prepareIntPrimitiveArray = () => {
       System.arraycopy(ints, 0, intPrimitiveArray, 0, numElements)
     }
 
-    runExperiment("Java Arrays.sort() on primitive int array")({
-      Arrays.sort(intPrimitiveArray)
-    }, prepareIntPrimitiveArray)
+    runExperiment("Java Arrays.sort() on primitive int array")(
+      {
+        Arrays.sort(intPrimitiveArray)
+      },
+      prepareIntPrimitiveArray)
 
     val sorterWithoutKeyReuse = new Sorter(new IntArraySortDataFormat)
-    runExperiment("Sorter without key reuse on primitive int array")({
-      sorterWithoutKeyReuse.sort(intPrimitiveArray, 0, numElements, Ordering[Int])
-    }, prepareIntPrimitiveArray)
+    runExperiment("Sorter without key reuse on primitive int array")(
+      {
+        sorterWithoutKeyReuse
+          .sort(intPrimitiveArray, 0, numElements, Ordering[Int])
+      },
+      prepareIntPrimitiveArray)
 
     val sorterWithKeyReuse = new Sorter(new KeyReuseIntArraySortDataFormat)
-    runExperiment("Sorter with key reuse on primitive int array")({
-      sorterWithKeyReuse.sort(intPrimitiveArray, 0, numElements, Ordering[IntWrapper])
-    }, prepareIntPrimitiveArray)
+    runExperiment("Sorter with key reuse on primitive int array")(
+      {
+        sorterWithKeyReuse
+          .sort(intPrimitiveArray, 0, numElements, Ordering[IntWrapper])
+      },
+      prepareIntPrimitiveArray)
   }
 }
 
-abstract class AbstractIntArraySortDataFormat[K] extends SortDataFormat[K, Array[Int]] {
+abstract class AbstractIntArraySortDataFormat[K]
+    extends SortDataFormat[K, Array[Int]] {
 
   override def swap(data: Array[Int], pos0: Int, pos1: Int): Unit = {
     val tmp = data(pos0)
@@ -216,12 +250,21 @@ abstract class AbstractIntArraySortDataFormat[K] extends SortDataFormat[K, Array
     data(pos1) = tmp
   }
 
-  override def copyElement(src: Array[Int], srcPos: Int, dst: Array[Int], dstPos: Int) {
+  override def copyElement(
+      src: Array[Int],
+      srcPos: Int,
+      dst: Array[Int],
+      dstPos: Int) {
     dst(dstPos) = src(srcPos)
   }
 
   /** Copy a range of elements starting at src(srcPos) to dest, starting at destPos. */
-  override def copyRange(src: Array[Int], srcPos: Int, dst: Array[Int], dstPos: Int, length: Int) {
+  override def copyRange(
+      src: Array[Int],
+      srcPos: Int,
+      dst: Array[Int],
+      dstPos: Int,
+      length: Int) {
     System.arraycopy(src, srcPos, dst, dstPos, length)
   }
 
@@ -248,13 +291,17 @@ class IntWrapper(var key: Int = 0) extends Ordered[IntWrapper] {
 }
 
 /** SortDataFormat for Array[Int] with reused keys. */
-class KeyReuseIntArraySortDataFormat extends AbstractIntArraySortDataFormat[IntWrapper] {
+class KeyReuseIntArraySortDataFormat
+    extends AbstractIntArraySortDataFormat[IntWrapper] {
 
   override def newKey(): IntWrapper = {
     new IntWrapper()
   }
 
-  override def getKey(data: Array[Int], pos: Int, reuse: IntWrapper): IntWrapper = {
+  override def getKey(
+      data: Array[Int],
+      pos: Int,
+      reuse: IntWrapper): IntWrapper = {
     if (reuse == null) {
       new IntWrapper(data(pos))
     } else {

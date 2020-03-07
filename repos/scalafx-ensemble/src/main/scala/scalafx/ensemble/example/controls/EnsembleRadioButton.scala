@@ -62,6 +62,7 @@ class EnsembleRadioButton extends EnsembleExample {
         maxHeight = 50
         text = "Disabled!!"
         disable = true
-      })
+      }
+    )
   }
 }

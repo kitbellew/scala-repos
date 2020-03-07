@@ -39,9 +39,9 @@ private[master] class ExecutorDesc(
     other match {
       case info: ExecutorDesc =>
         fullId == info.fullId &&
-        worker.id == info.worker.id &&
-        cores == info.cores &&
-        memory == info.memory
+          worker.id == info.worker.id &&
+          cores == info.cores &&
+          memory == info.memory
       case _ => false
     }
   }

@@ -22,21 +22,25 @@ import java.io._
 import scala.reflect.ClassTag
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.serializer.{DeserializationStream, SerializationStream, Serializer}
+import org.apache.spark.serializer.{
+  DeserializationStream,
+  SerializationStream,
+  Serializer
+}
 import org.apache.spark.util.Utils
 
-
 /**
- * Stores data in a single on-disk directory with one file per application and worker.
- * Files are deleted when applications and workers are removed.
- *
- * @param dir Directory to store files. Created if non-existent (but not recursively).
- * @param serializer Used to serialize our objects.
- */
+  * Stores data in a single on-disk directory with one file per application and worker.
+  * Files are deleted when applications and workers are removed.
+  *
+  * @param dir Directory to store files. Created if non-existent (but not recursively).
+  * @param serializer Used to serialize our objects.
+  */
 private[master] class FileSystemPersistenceEngine(
     val dir: String,
     val serializer: Serializer)
-  extends PersistenceEngine with Logging {
+    extends PersistenceEngine
+    with Logging {
 
   new File(dir).mkdir()
 
@@ -58,7 +62,9 @@ private[master] class FileSystemPersistenceEngine(
 
   private def serializeIntoFile(file: File, value: AnyRef) {
     val created = file.createNewFile()
-    if (!created) { throw new IllegalStateException("Could not create file: " + file) }
+    if (!created) {
+      throw new IllegalStateException("Could not create file: " + file)
+    }
     val fileOut = new FileOutputStream(file)
     var out: SerializationStream = null
     Utils.tryWithSafeFinally {

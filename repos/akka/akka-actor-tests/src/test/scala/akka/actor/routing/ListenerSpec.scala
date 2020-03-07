@@ -22,15 +22,16 @@ class ListenerSpec extends AkkaSpec {
         }
       }))
 
-      def newListener = system.actorOf(Props(new Actor {
-        def receive = {
-          case "bar" ⇒
-            barCount.incrementAndGet
-            barLatch.countDown()
-          case "foo" ⇒
-            fooLatch.countDown()
-        }
-      }))
+      def newListener =
+        system.actorOf(Props(new Actor {
+          def receive = {
+            case "bar" ⇒
+              barCount.incrementAndGet
+              barLatch.countDown()
+            case "foo" ⇒
+              fooLatch.countDown()
+          }
+        }))
 
       val a1 = newListener
       val a2 = newListener

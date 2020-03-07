@@ -32,7 +32,8 @@ class HashingTFSuite extends SparkFunSuite with MLlibTestSparkContext {
       (hashingTF.indexOf("b"), 2.0),
       (hashingTF.indexOf("c"), 1.0),
       (hashingTF.indexOf("d"), 1.0))
-    assert(termFreqs.map(_._1).forall(i => i >= 0 && i < n),
+    assert(
+      termFreqs.map(_._1).forall(i => i >= 0 && i < n),
       "index must be in range [0, #features)")
     assert(termFreqs.map(_._1).toSet.size === 4, "expecting perfect hashing")
     val expected = Vectors.sparse(n, termFreqs)
@@ -46,6 +47,9 @@ class HashingTFSuite extends SparkFunSuite with MLlibTestSparkContext {
       "a b c d a b c".split(" "),
       "c b a c b a a".split(" "))
     val docs = sc.parallelize(localDocs, 2)
-    assert(hashingTF.transform(docs).collect().toSet === localDocs.map(hashingTF.transform).toSet)
+    assert(
+      hashingTF.transform(docs).collect().toSet === localDocs
+        .map(hashingTF.transform)
+        .toSet)
   }
 }

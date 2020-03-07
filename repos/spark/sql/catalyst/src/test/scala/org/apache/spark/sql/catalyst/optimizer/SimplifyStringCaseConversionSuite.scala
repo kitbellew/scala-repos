@@ -28,7 +28,9 @@ class SimplifyStringCaseConversionSuite extends PlanTest {
 
   object Optimize extends RuleExecutor[LogicalPlan] {
     val batches =
-      Batch("Simplify CaseConversionExpressions", Once,
+      Batch(
+        "Simplify CaseConversionExpressions",
+        Once,
         SimplifyCaseConversionExpressions) :: Nil
   }
 

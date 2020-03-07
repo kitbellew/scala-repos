@@ -93,7 +93,10 @@ class RFormulaParserSuite extends SparkFunSuite {
     checkParse("y ~ ._a:._x", "y", Seq("._a:._x"))
     checkParse("y ~ foo:bar", "y", Seq("foo:bar"))
     checkParse("y ~ a : b : c", "y", Seq("a:b:c"))
-    checkParse("y ~ q + a:b:c + b:c + c:d + z", "y", Seq("q", "a:b:c", "b:c", "c:d", "z"))
+    checkParse(
+      "y ~ q + a:b:c + b:c + c:d + z",
+      "y",
+      Seq("q", "a:b:c", "b:c", "c:d", "z"))
   }
 
   test("parse basic interactions with dot") {
@@ -133,8 +136,10 @@ class RFormulaParserSuite extends SparkFunSuite {
         "Sepal.Width:Species",
         "Petal.Length:Petal.Width",
         "Petal.Length:Species",
-        "Petal.Width:Species"),
-      schema)
+        "Petal.Width:Species"
+      ),
+      schema
+    )
   }
 
   // Test data generated in R with terms.formula(y ~ .:. - Species:., data = iris)
@@ -159,7 +164,9 @@ class RFormulaParserSuite extends SparkFunSuite {
         "Sepal.Length:Petal.Width",
         "Sepal.Width:Petal.Length",
         "Sepal.Width:Petal.Width",
-        "Petal.Length:Petal.Width"),
-      schema)
+        "Petal.Length:Petal.Width"
+      ),
+      schema
+    )
   }
 }

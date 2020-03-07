@@ -1,15 +1,12 @@
 sealed abstract class Base
 
-
 object Test1 {
   sealed abstract class Base
 
   object Base {
-    case object Down extends Base {
-    }
+    case object Down extends Base {}
 
-    case object Up extends Base {
-    }
+    case object Up extends Base {}
 
     (d1: Base, d2: Base) =>
       (d1, d2) match {
@@ -23,11 +20,9 @@ object Test2 {
   sealed abstract class Base
 
   object Base {
-    case object Down extends Base {
-    }
+    case object Down extends Base {}
 
-    case object Up extends Base {
-    }
+    case object Up extends Base {}
 
     (d1: Base, d2: Base) =>
       (d1) match {
@@ -35,7 +30,6 @@ object Test2 {
       }
   }
 }
-
 
 object Test4 {
   sealed abstract class Base

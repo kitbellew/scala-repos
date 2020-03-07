@@ -1,7 +1,11 @@
 package com.twitter.finagle.memcached.integration
 
 import com.twitter.conversions.time._
-import com.twitter.finagle.builder.{ClientBuilder, Server => MServer, ServerBuilder}
+import com.twitter.finagle.builder.{
+  ClientBuilder,
+  Server => MServer,
+  ServerBuilder
+}
 import com.twitter.finagle.memcached.Client
 import com.twitter.finagle.memcached.protocol.text.Memcached
 import com.twitter.finagle.memcached.protocol.{Command, Response}
@@ -17,9 +21,10 @@ import org.scalatest.{BeforeAndAfter, FunSuite}
 class ProxyTest extends FunSuite with BeforeAndAfter {
 
   type MemcacheService = Service[Command, Response]
+
   /**
-   * Note: This integration test requires a real Memcached server to run.
-   */
+    * Note: This integration test requires a real Memcached server to run.
+    */
   var externalClient: Client = null
   var server: MServer = null
   var serverAddress: InetSocketAddress = null
@@ -47,7 +52,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
         .build(proxyService)
 
       serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
-      externalClient = Client("%s:%d".format(serverAddress.getHostName, serverAddress.getPort))
+      externalClient =
+        Client("%s:%d".format(serverAddress.getHostName, serverAddress.getPort))
     }
   }
 
@@ -66,8 +72,7 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
     if (testServer == None) {
       info("Cannot start memcached. skipping test...")
       cancel()
-    }
-    else test()
+    } else test()
   }
 
   test("Proxied Memcached Servers should handle a basic get/set operation") {
@@ -90,9 +95,7 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
         val stats = Await.result(externalClient.stats(arg))
         assert(stats != null)
         assert(!stats.isEmpty)
-        stats.foreach { line =>
-          assert(line.startsWith("STAT"))
-        }
+        stats.foreach { line => assert(line.startsWith("STAT")) }
       }
       externalClient.release()
     }
@@ -107,12 +110,11 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
       assert(slabs != null)
       assert(!slabs.isEmpty)
       val n = slabs.head.split(" ")(1).split(":")(0).toInt
-      val stats = Await.result(externalClient.stats(Some("cachedump " + n + " 100")))
+      val stats =
+        Await.result(externalClient.stats(Some("cachedump " + n + " 100")))
       assert(stats != null)
       assert(!stats.isEmpty)
-      stats.foreach { stat =>
-        assert(stat.startsWith("ITEM"))
-      }
+      stats.foreach { stat => assert(stat.startsWith("ITEM")) }
       assert(stats.find { stat => stat.contains("foo") }.isDefined)
       externalClient.release()
     }

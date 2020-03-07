@@ -1,14 +1,20 @@
 package org.jetbrains.plugins.scala.hierarchy
 
 import com.intellij.ide.hierarchy.call.CallHierarchyNodeDescriptor
-import com.intellij.ide.hierarchy.{HierarchyNodeDescriptor, HierarchyTreeStructure}
+import com.intellij.ide.hierarchy.{
+  HierarchyNodeDescriptor,
+  HierarchyTreeStructure
+}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.searches.OverridingMethodsSearch
 import com.intellij.psi.{PsiElement, PsiMethod, _}
 import com.intellij.util.ArrayUtil
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.base.ScReferenceElement
-import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScFunction, ScFunctionDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.statements.{
+  ScFunction,
+  ScFunctionDefinition
+}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -16,14 +22,21 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * @author Alexander Podkhalyuzin
   */
-class ScalaCalleeMethodsTreeStructure(project: Project, method: PsiMethod, myScopeType: String)
-  extends HierarchyTreeStructure(project, new CallHierarchyNodeDescriptor(project, null, method, true, false)) {
+class ScalaCalleeMethodsTreeStructure(
+    project: Project,
+    method: PsiMethod,
+    myScopeType: String)
+    extends HierarchyTreeStructure(
+      project,
+      new CallHierarchyNodeDescriptor(project, null, method, true, false)) {
 
-  protected final def buildChildren(descriptor: HierarchyNodeDescriptor): Array[AnyRef] = {
-    val enclosingElement: PsiMember = descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
+  protected final def buildChildren(
+      descriptor: HierarchyNodeDescriptor): Array[AnyRef] = {
+    val enclosingElement: PsiMember =
+      descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
     val method: PsiMethod = enclosingElement match {
       case method: PsiMethod => method
-      case _ => return ArrayUtil.EMPTY_OBJECT_ARRAY
+      case _                 => return ArrayUtil.EMPTY_OBJECT_ARRAY
     }
     val methods: ArrayBuffer[PsiMethod] = new ArrayBuffer[PsiMethod]
     method match {
@@ -38,44 +51,65 @@ class ScalaCalleeMethodsTreeStructure(project: Project, method: PsiMethod, mySco
         val body = method.getBody
         ScalaCalleeMethodsTreeStructure.visitor(body, methods)
     }
-    val baseMethod: PsiMethod = getBaseDescriptor.asInstanceOf[CallHierarchyNodeDescriptor].getTargetElement.asInstanceOf[PsiMethod]
+    val baseMethod: PsiMethod = getBaseDescriptor
+      .asInstanceOf[CallHierarchyNodeDescriptor]
+      .getTargetElement
+      .asInstanceOf[PsiMethod]
     val baseClass: PsiClass = baseMethod.containingClass
-    val methodToDescriptorMap: mutable.HashMap[PsiMethod, CallHierarchyNodeDescriptor] =
+    val methodToDescriptorMap
+        : mutable.HashMap[PsiMethod, CallHierarchyNodeDescriptor] =
       new mutable.HashMap[PsiMethod, CallHierarchyNodeDescriptor]
-    val result: ArrayBuffer[CallHierarchyNodeDescriptor] = new ArrayBuffer[CallHierarchyNodeDescriptor]
-    for (calledMethod <- methods if isInScope(baseClass, calledMethod, myScopeType)) {
+    val result: ArrayBuffer[CallHierarchyNodeDescriptor] =
+      new ArrayBuffer[CallHierarchyNodeDescriptor]
+    for (calledMethod <- methods
+         if isInScope(baseClass, calledMethod, myScopeType)) {
       methodToDescriptorMap.get(calledMethod) match {
         case Some(d) => d.incrementUsageCount()
         case _ =>
-          val d = new CallHierarchyNodeDescriptor(myProject, descriptor, calledMethod, false, false)
+          val d = new CallHierarchyNodeDescriptor(
+            myProject,
+            descriptor,
+            calledMethod,
+            false,
+            false)
           methodToDescriptorMap.put(calledMethod, d)
           result += d
       }
     }
     val overridingMethods: Array[PsiMethod] =
-      OverridingMethodsSearch.search(method, method.getUseScope, true).toArray(PsiMethod.EMPTY_ARRAY)
-    for (overridingMethod <- overridingMethods if isInScope(baseClass, overridingMethod, myScopeType)) {
-      val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(myProject, descriptor, overridingMethod, false, false)
+      OverridingMethodsSearch
+        .search(method, method.getUseScope, true)
+        .toArray(PsiMethod.EMPTY_ARRAY)
+    for (overridingMethod <- overridingMethods
+         if isInScope(baseClass, overridingMethod, myScopeType)) {
+      val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(
+        myProject,
+        descriptor,
+        overridingMethod,
+        false,
+        false)
       if (!result.contains(node)) result += node
     }
     result.toArray
   }
 
-
 }
 
 object ScalaCalleeMethodsTreeStructure {
-  private[hierarchy] def visitor(element: PsiElement, methods: ArrayBuffer[PsiMethod]): Unit = {
+  private[hierarchy] def visitor(
+      element: PsiElement,
+      methods: ArrayBuffer[PsiMethod]): Unit = {
     if (element == null) return
     element match {
       case ref: ScReferenceElement =>
         val resolve = ref.resolve()
         resolve match {
           case meth: PsiMethod => methods += meth
-          case _ =>
+          case _               =>
         }
       case callExpression: PsiMethodCallExpression =>
-        val methodExpression: PsiReferenceExpression = callExpression.getMethodExpression
+        val methodExpression: PsiReferenceExpression =
+          callExpression.getMethodExpression
         val method: PsiMethod = methodExpression.resolve.asInstanceOf[PsiMethod]
         if (method != null) {
           methods += method
@@ -92,4 +126,3 @@ object ScalaCalleeMethodsTreeStructure {
     }
   }
 }
-

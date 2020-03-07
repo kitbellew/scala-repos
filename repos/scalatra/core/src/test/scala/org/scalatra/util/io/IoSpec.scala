@@ -3,7 +3,7 @@ package io
 
 import java.io._
 
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 import scala.io.Source
 
@@ -54,10 +54,11 @@ class IoSpec extends WordSpec with Matchers {
       val in = new InputStream {
         def read() = throw e
       }
-      val caught = try {
-        copy(in, new ByteArrayOutputStream)
-        None
-      } catch { case ex: Throwable => Some(ex) }
+      val caught =
+        try {
+          copy(in, new ByteArrayOutputStream)
+          None
+        } catch { case ex: Throwable => Some(ex) }
       caught should equal(Some(e))
     }
   }
@@ -93,4 +94,3 @@ class IoSpec extends WordSpec with Matchers {
     }
   }
 }
-

@@ -18,4 +18,3 @@ object Test {
     println(Bug.bug(Right(5)))
   }
 }
-

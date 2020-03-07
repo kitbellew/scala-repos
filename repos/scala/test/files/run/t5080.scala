@@ -1,11 +1,9 @@
-
 import scala.language.implicitConversions
 import scala.language.reflectiveCalls
 
 object Test extends App {
 
-  abstract class Value {
-  }
+  abstract class Value {}
 
   case class Num(value: Int) extends Value {
     override def toString = value.toString;
@@ -15,7 +13,7 @@ object Test extends App {
     def toInt =
       x match {
         case Num(n) => n
-        case _ => throw new RuntimeException
+        case _      => throw new RuntimeException
       }
   }
 

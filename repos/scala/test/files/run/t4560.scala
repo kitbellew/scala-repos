@@ -7,8 +7,7 @@
 // TEST 1
 // self-type is other trait
 
-
-import scala.language.{ reflectiveCalls }
+import scala.language.{reflectiveCalls}
 
 trait Aa
 trait Ab
@@ -66,4 +65,3 @@ object Test {
     Test3.fail()
   }
 }
-

@@ -7,5 +7,5 @@ object RecursiveValueNeedsType {
     val xxx = foo(param = null)
     val param = bar(xxx)
   }
-  
+
 }

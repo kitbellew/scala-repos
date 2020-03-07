@@ -1,12 +1,11 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.io
 
 //#imports
-import akka.actor.{ Actor, ActorRef, Props }
-import akka.io.{ IO, Tcp }
+import akka.actor.{Actor, ActorRef, Props}
+import akka.io.{IO, Tcp}
 import akka.util.ByteString
 import java.net.InetSocketAddress
 //#imports
@@ -16,7 +15,7 @@ import scala.concurrent.duration._
 
 class DemoActor extends Actor {
   //#manager
-  import akka.io.{ IO, Tcp }
+  import akka.io.{IO, Tcp}
   import context.system // implicitly used by IO(Tcp)
 
   val manager = IO(Tcp)

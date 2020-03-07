@@ -40,13 +40,15 @@ final class SlaveRunner(
     None // <- ignored
   }
 
-  override def serializeTask(task: Task,
+  override def serializeTask(
+      task: Task,
       serializer: TaskDef => String): String = {
     ensureSeenHello()
     super.serializeTask(task, serializer)
   }
 
-  override def deserializeTask(task: String,
+  override def deserializeTask(
+      task: String,
       deserializer: String => TaskDef): Task = {
     ensureSeenHello()
     super.deserializeTask(task, deserializer)

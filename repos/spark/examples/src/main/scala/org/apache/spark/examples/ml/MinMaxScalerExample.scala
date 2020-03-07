@@ -31,7 +31,8 @@ object MinMaxScalerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val dataFrame = sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val dataFrame =
+      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
 
     val scaler = new MinMaxScaler()
       .setInputCol("features")

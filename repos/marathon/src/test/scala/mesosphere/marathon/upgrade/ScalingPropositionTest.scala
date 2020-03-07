@@ -2,12 +2,13 @@ package mesosphere.marathon.upgrade
 
 import mesosphere.marathon.MarathonTestHelper
 import mesosphere.marathon.core.task.Task
-import mesosphere.marathon.state.{ PathId, Timestamp }
-import org.scalatest.{ FunSuite, Matchers }
+import mesosphere.marathon.state.{PathId, Timestamp}
+import org.scalatest.{FunSuite, Matchers}
 
 class ScalingPropositionTest extends FunSuite with Matchers {
 
-  test("propose - empty tasksToKill should lead to ScalingProposition(None, _)") {
+  test(
+    "propose - empty tasksToKill should lead to ScalingProposition(None, _)") {
     val proposition = ScalingProposition.propose(
       runningTasks = noTasks,
       toKill = Some(noTasks),
@@ -18,7 +19,8 @@ class ScalingPropositionTest extends FunSuite with Matchers {
     proposition.tasksToKill shouldBe empty
   }
 
-  test("propose - nonEmpty tasksToKill should be ScalingProposition(Some(_), _)") {
+  test(
+    "propose - nonEmpty tasksToKill should be ScalingProposition(Some(_), _)") {
     val task = MarathonTestHelper.stagedTaskForApp()
     val proposition = ScalingProposition.propose(
       runningTasks = Iterable(task),
@@ -63,7 +65,8 @@ class ScalingPropositionTest extends FunSuite with Matchers {
     proposition.tasksToStart shouldBe Some(42)
   }
 
-  test("Determine tasks to kill and start when none are sentenced and need to scale") {
+  test(
+    "Determine tasks to kill and start when none are sentenced and need to scale") {
     val proposition = ScalingProposition.propose(
       runningTasks = Iterable(createTask(1), createTask(2), createTask(3)),
       toKill = Some(noTasks),
@@ -146,11 +149,17 @@ class ScalingPropositionTest extends FunSuite with Matchers {
 
   // Helper functions
 
-  private def createTask(index: Long) = MarathonTestHelper.runningTask(s"task-$index", appVersion = Timestamp(index), startedAt = Timestamp.now().toDateTime.getMillis)
+  private def createTask(index: Long) =
+    MarathonTestHelper.runningTask(
+      s"task-$index",
+      appVersion = Timestamp(index),
+      startedAt = Timestamp.now().toDateTime.getMillis)
 
-  private def noConstraintsToMeet(running: Iterable[Task], killCount: Int) = Iterable.empty[Task]
+  private def noConstraintsToMeet(running: Iterable[Task], killCount: Int) =
+    Iterable.empty[Task]
 
-  private def killToMeetConstraints(tasks: Task*): (Iterable[Task], Int) => Iterable[Task] =
+  private def killToMeetConstraints(
+      tasks: Task*): (Iterable[Task], Int) => Iterable[Task] =
     (running: Iterable[Task], killCount: Int) => tasks
 
   private def noTasks = Iterable.empty[Task]

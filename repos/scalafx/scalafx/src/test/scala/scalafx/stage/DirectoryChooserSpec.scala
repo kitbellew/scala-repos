@@ -36,12 +36,13 @@ import scalafx.Includes._
 import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
- * DirectoryChooser Spec tests.
- *
- *
- */
+  * DirectoryChooser Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class DirectoryChooserSpec
-  extends SimpleSFXDelegateSpec[jfxs.DirectoryChooser, DirectoryChooser](
-    classOf[jfxs.DirectoryChooser], classOf[DirectoryChooser])
-  with RunOnApplicationThread
+    extends SimpleSFXDelegateSpec[jfxs.DirectoryChooser, DirectoryChooser](
+      classOf[jfxs.DirectoryChooser],
+      classOf[DirectoryChooser])
+    with RunOnApplicationThread

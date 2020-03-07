@@ -26,9 +26,10 @@ object FakesSpec extends PlaySpecification {
 
     "allow adding routes inline" in {
       running(_.routes {
-        case ("GET", "/inline") => Action {
-          Results.Ok("inline route")
-        }
+        case ("GET", "/inline") =>
+          Action {
+            Results.Ok("inline route")
+          }
       }) { app =>
         route(app, FakeRequest("GET", "/inline")) must beSome.which { result =>
           status(result) must equalTo(OK)
@@ -42,11 +43,15 @@ object FakesSpec extends PlaySpecification {
   }
 
   "FakeRequest" should {
-    def app = GuiceApplicationBuilder().routes {
-      case (PUT, "/process") => Action { req =>
-        Results.Ok(req.headers.get(CONTENT_TYPE) getOrElse "")
-      }
-    }.build()
+    def app =
+      GuiceApplicationBuilder()
+        .routes {
+          case (PUT, "/process") =>
+            Action { req =>
+              Results.Ok(req.headers.get(CONTENT_TYPE) getOrElse "")
+            }
+        }
+        .build()
 
     "Define Content-Type header based on body" in new WithApplication(app) {
       val xml =
@@ -96,9 +101,12 @@ object FakesSpec extends PlaySpecification {
     }
   }
 
-  def contentTypeForFakeRequest[T](request: FakeRequest[AnyContentAsJson])(implicit mat: Materializer): String = {
+  def contentTypeForFakeRequest[T](request: FakeRequest[AnyContentAsJson])(
+      implicit mat: Materializer): String = {
     var testContentType: Option[String] = None
-    val action = Action { request => testContentType = request.headers.get(CONTENT_TYPE); Ok }
+    val action = Action { request =>
+      testContentType = request.headers.get(CONTENT_TYPE); Ok
+    }
     val headers = new WrappedRequest(request)
     val execution = (new TestActionCaller).call(action, headers, request.body)
     Await.result(execution, Duration(3, TimeUnit.SECONDS))
@@ -108,4 +116,3 @@ object FakesSpec extends PlaySpecification {
 }
 
 class TestActionCaller extends EssentialActionCaller with Writeables
-

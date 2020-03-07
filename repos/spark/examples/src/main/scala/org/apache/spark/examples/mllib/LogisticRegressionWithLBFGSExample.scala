@@ -20,7 +20,10 @@ package org.apache.spark.examples.mllib
 
 import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
-import org.apache.spark.mllib.classification.{LogisticRegressionModel, LogisticRegressionWithLBFGS}
+import org.apache.spark.mllib.classification.{
+  LogisticRegressionModel,
+  LogisticRegressionWithLBFGS
+}
 import org.apache.spark.mllib.evaluation.MulticlassMetrics
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.util.MLUtils
@@ -47,9 +50,10 @@ object LogisticRegressionWithLBFGSExample {
       .run(training)
 
     // Compute raw scores on the test set.
-    val predictionAndLabels = test.map { case LabeledPoint(label, features) =>
-      val prediction = model.predict(features)
-      (prediction, label)
+    val predictionAndLabels = test.map {
+      case LabeledPoint(label, features) =>
+        val prediction = model.predict(features)
+        (prediction, label)
     }
 
     // Get evaluation metrics.
@@ -59,7 +63,8 @@ object LogisticRegressionWithLBFGSExample {
 
     // Save and load model
     model.save(sc, "target/tmp/scalaLogisticRegressionWithLBFGSModel")
-    val sameModel = LogisticRegressionModel.load(sc,
+    val sameModel = LogisticRegressionModel.load(
+      sc,
       "target/tmp/scalaLogisticRegressionWithLBFGSModel")
     // $example off$
 

@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package docs.stream
 
 import akka.stream._
@@ -12,7 +12,7 @@ import scala.math._
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.collection.immutable
-import akka.testkit.{ AkkaSpec, TestLatch }
+import akka.testkit.{AkkaSpec, TestLatch}
 
 class RateTransformationDocSpec extends AkkaSpec {
 
@@ -33,7 +33,8 @@ class RateTransformationDocSpec extends AkkaSpec {
       }
     //#conflate-summarize
 
-    val fut = Source.fromIterator(() => Iterator.continually(Random.nextGaussian))
+    val fut = Source
+      .fromIterator(() => Iterator.continually(Random.nextGaussian))
       .via(statsFlow)
       .grouped(10)
       .runWith(Sink.head)
@@ -66,7 +67,8 @@ class RateTransformationDocSpec extends AkkaSpec {
       .expand(Iterator.continually(_))
     //#expand-last
 
-    val (probe, fut) = TestSource.probe[Double]
+    val (probe, fut) = TestSource
+      .probe[Double]
       .via(lastFlow)
       .grouped(10)
       .toMat(Sink.head)(Keep.both)
@@ -87,7 +89,8 @@ class RateTransformationDocSpec extends AkkaSpec {
     val realDriftFlow = Flow[Double]
       .expand(d => { latch.countDown(); Iterator.from(0).map(d -> _) })
 
-    val (pub, sub) = TestSource.probe[Double]
+    val (pub, sub) = TestSource
+      .probe[Double]
       .via(realDriftFlow)
       .toMat(TestSink.probe[(Double, Int)])(Keep.both)
       .run()

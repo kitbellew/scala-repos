@@ -35,11 +35,14 @@ final class Env(
     maxFollow = MaxFollow,
     maxBlock = MaxBlock)
 
-  private[relation] val actor = system.actorOf(Props(new RelationActor(
-    getOnlineUserIds = getOnlineUserIds,
-    lightUser = lightUser,
-    api = api
-  )), name = ActorName)
+  private[relation] val actor = system.actorOf(
+    Props(
+      new RelationActor(
+        getOnlineUserIds = getOnlineUserIds,
+        lightUser = lightUser,
+        api = api
+      )),
+    name = ActorName)
 
   {
     import scala.concurrent.duration._

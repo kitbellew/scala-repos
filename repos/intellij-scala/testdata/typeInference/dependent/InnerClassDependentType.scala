@@ -12,7 +12,8 @@ object InnerClassDependentType {
   object B {
     var a = new A(1)
     val a2 = (new A(1)).inner
-    /*start*/a2.map/*end*/
+    /*start*/
+    a2.map /*end*/
   }
 
 }

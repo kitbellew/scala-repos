@@ -1,8 +1,9 @@
 import org.scalacheck._, Prop._, Gen._, Arbitrary._
 import scala.reflect.runtime.universe._, Flag._, internal.reificationSupport._
 
-object TypecheckedProps extends QuasiquoteProperties("typechecked")
-                           with TypecheckedTypes {
+object TypecheckedProps
+    extends QuasiquoteProperties("typechecked")
+    with TypecheckedTypes {
   property("tuple term") = test {
     val q"(..$elements)" = typecheck(q"(1, 2)")
     assert(elements ≈ List(q"1", q"2"))
@@ -12,7 +13,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
     val enums = fq"x <- xs" :: fq"x1 = x + 1" :: fq"if x1 % 2 == 0" :: Nil
     val body = q"x1"
     val xs = q"val xs = List(1, 2, 3)"
-    val q"$_; for(..$enums0) yield $body0" = typecheck(q"$xs; for(..$enums) yield $body")
+    val q"$_; for(..$enums0) yield $body0" =
+      typecheck(q"$xs; for(..$enums) yield $body")
     assert(enums0 ≈ enums)
     assert(body0 ≈ body)
     val q"$_; for(..$enums1) $body1" = typecheck(q"$xs; for(..$enums) $body")
@@ -72,7 +74,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
 
   property("class with param (2)") = test {
     val paramName = TermName("y")
-    val q"{class $_($param)}" = typecheck(q"class Test(val $paramName: Int = 3)")
+    val q"{class $_($param)}" =
+      typecheck(q"class Test(val $paramName: Int = 3)")
 
     assert(param.name == paramName)
     assert(param.rhs ≈ q"3")
@@ -81,7 +84,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
   property("class with params") = test {
     val pName1 = TermName("x1")
     val pName2 = TermName("x2")
-    val q"{class $_($param1)(..$params2)}" = typecheck(q"class Test(val x0: Float)(val $pName1: Int = 3, $pName2: String)")
+    val q"{class $_($param1)(..$params2)}" = typecheck(
+      q"class Test(val x0: Float)(val $pName1: Int = 3, $pName2: String)")
 
     val List(p1, p2, _*) = params2
 
@@ -93,7 +97,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
   property("implicit class") = test {
     val clName = TypeName("Test")
     val paramName = TermName("x")
-    val q"{implicit class $name($param)}" = typecheck(q"implicit class $clName(val $paramName: String)")
+    val q"{implicit class $name($param)}" =
+      typecheck(q"implicit class $clName(val $paramName: String)")
 
     assert(name == clName)
     assert(param.name == paramName)
@@ -103,7 +108,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
     val lazyName = TermName("x")
     val lazyRhsVal = 42
     val lazyRhs = Literal(Constant(lazyRhsVal))
-    val q"{lazy val $pname = $rhs}" = typecheck(q"{lazy val $lazyName = $lazyRhsVal}")
+    val q"{lazy val $pname = $rhs}" =
+      typecheck(q"{lazy val $lazyName = $lazyRhsVal}")
 
     assert(pname == lazyName)
     assert(rhs ≈ lazyRhs)
@@ -112,7 +118,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
   property("class with lazy") = test {
     val clName = TypeName("Test")
     val paramName = TermName("x")
-    val q"class $name{lazy val $pname = $_}" = typecheck(q"class $clName {lazy val $paramName = 42}")
+    val q"class $name{lazy val $pname = $_}" =
+      typecheck(q"class $clName {lazy val $paramName = 42}")
 
     assert(name == clName)
     assert(pname == paramName)
@@ -134,7 +141,8 @@ object TypecheckedProps extends QuasiquoteProperties("typechecked")
   }
 
   property("partial function") = test {
-    val q"{ case ..$cases }: $ascr" = typecheck(q"{ case 1 => () }: PartialFunction[Int, Unit]")
+    val q"{ case ..$cases }: $ascr" =
+      typecheck(q"{ case 1 => () }: PartialFunction[Int, Unit]")
     assert(cases ≈ q"{ case 1 => () }".cases)
   }
 }
@@ -150,14 +158,16 @@ trait TypecheckedTypes { self: QuasiquoteProperties =>
   }
 
   property("this type select") = test {
-    val q"class $_ { $_; type $_ = $tpt }" = typecheck(q"class C { type A = Int; type B = this.A }")
+    val q"class $_ { $_; type $_ = $tpt }" =
+      typecheck(q"class C { type A = Int; type B = this.A }")
     val tq"this.$name" = tpt
     val TypeName("A") = name
   }
 
   property("super type select") = test {
     val q"$_; class $_ extends $_ { type $_ = $tpt }" =
-      typecheck(q"class C1 { type A = Int }; class C2 extends C1 { type B = super[C1].A }")
+      typecheck(
+        q"class C1 { type A = Int }; class C2 extends C1 { type B = super[C1].A }")
     val tq"$empty.super[$c1].$a" = tpt
     val TypeName("") = empty
     val TypeName("C1") = c1

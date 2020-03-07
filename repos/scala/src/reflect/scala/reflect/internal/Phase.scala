@@ -15,15 +15,16 @@ abstract class Phase(val prev: Phase) {
   val id: Id = if (prev eq null) 0 else prev.id + 1
 
   /** New flags visible after this phase has completed */
-  def nextFlags: Long = 0l
+  def nextFlags: Long = 0L
 
   /** New flags visible once this phase has started */
-  def newFlags: Long = 0l
+  def newFlags: Long = 0L
 
-  val fmask = (
-    if (prev eq null) Flags.InitialFlags
-    else prev.flagMask | prev.nextFlags | newFlags
-  )
+  val fmask =
+    (
+      if (prev eq null) Flags.InitialFlags
+      else prev.flagMask | prev.nextFlags | newFlags
+    )
   def flagMask: Long = fmask
 
   private var nx: Phase = NoPhase
@@ -41,24 +42,27 @@ abstract class Phase(val prev: Phase) {
   def checkable: Boolean = true
 
   // NOTE: sbt injects its own phases which extend this class, and not GlobalPhase, so we must implement this logic here
-  private val _erasedTypes = ((prev ne null) && (prev ne NoPhase)) && (prev.name == "erasure" || prev.erasedTypes)
+  private val _erasedTypes =
+    ((prev ne null) && (prev ne NoPhase)) && (prev.name == "erasure" || prev.erasedTypes)
   def erasedTypes: Boolean = _erasedTypes // overridden in back-end
-  final val flatClasses: Boolean   = ((prev ne null) && (prev ne NoPhase)) && (prev.name == "flatten"    || prev.flatClasses)
-  final val specialized: Boolean   = ((prev ne null) && (prev ne NoPhase)) && (prev.name == "specialize" || prev.specialized)
-  final val refChecked: Boolean    = ((prev ne null) && (prev ne NoPhase)) && (prev.name == "refchecks"  || prev.refChecked)
-
+  final val flatClasses: Boolean =
+    ((prev ne null) && (prev ne NoPhase)) && (prev.name == "flatten" || prev.flatClasses)
+  final val specialized: Boolean =
+    ((prev ne null) && (prev ne NoPhase)) && (prev.name == "specialize" || prev.specialized)
+  final val refChecked: Boolean =
+    ((prev ne null) && (prev ne NoPhase)) && (prev.name == "refchecks" || prev.refChecked)
 
   /** This is used only in unsafeTypeParams, and at this writing is
-   *  overridden to false in parser, namer, typer, and erasure. (And NoPhase.)
-   */
+    *  overridden to false in parser, namer, typer, and erasure. (And NoPhase.)
+    */
   def keepsTypeParams = true
   def run(): Unit
 
   override def toString() = name
   override def hashCode = id.## + name.##
   override def equals(other: Any) = other match {
-    case x: Phase   => id == x.id && name == x.name
-    case _          => false
+    case x: Phase => id == x.id && name == x.name
+    case _        => false
   }
 }
 

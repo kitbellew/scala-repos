@@ -1,16 +1,15 @@
 object Bug {
 
-  class C  {
+  class C {
     val x = 1
   }
 
-
-  class A  {
+  class A {
     class B extends C {
       def foo() = {
-/*start*/
+        /*start*/
         x + 1
-/*end*/
+        /*end*/
       }
     }
   }
@@ -37,4 +36,4 @@ object Bug {
     }
   }
 }
-*/
+ */

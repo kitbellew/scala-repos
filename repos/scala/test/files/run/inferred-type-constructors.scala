@@ -1,7 +1,7 @@
 package p {
   trait TCon[+CC[X]] {
-    def fPublic: CC[Int]                        = ???
-    private[p] def fPackagePrivate: CC[Int]     = ???
+    def fPublic: CC[Int] = ???
+    private[p] def fPackagePrivate: CC[Int] = ???
     protected[p] def fPackageProtected: CC[Int] = ???
   }
   trait Iterable[+A] extends TCon[Iterable]
@@ -37,7 +37,10 @@ object Test {
   def extract[A, CC[X]](xs: CC[A]): CC[A] = xs
   def whatis[T: TypeTag](x: T): Unit = {
     val tpe = typeOf[T]
-    val access = tpe.typeSymbol.asInstanceOf[scala.reflect.internal.HasFlags].accessString.replaceAllLiterally("package ", "")
+    val access = tpe.typeSymbol
+      .asInstanceOf[scala.reflect.internal.HasFlags]
+      .accessString
+      .replaceAllLiterally("package ", "")
     println(f"$access%15s $tpe")
   }
 
@@ -113,7 +116,7 @@ object Test {
 
     whatis(extract(Nil))
     whatis(extract(Vector()))
-    whatis(extract(Map[Int,Int]()))
+    whatis(extract(Map[Int, Int]()))
     whatis(extract(Set[Int]()))
     whatis(extract(Seq[Int]()))
     whatis(extract(Array[Int]()))

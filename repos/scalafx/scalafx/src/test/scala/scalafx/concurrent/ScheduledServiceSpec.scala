@@ -35,13 +35,17 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * ScheduledService Spec tests.
- *
- *
- */
+  * ScheduledService Spec tests.
+  *
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class ScheduledServiceSpec[T]
-  extends SimpleSFXDelegateSpec[jfxc.ScheduledService[T], ScheduledService[T]](classOf[jfxc.ScheduledService[T]], classOf[ScheduledService[T]]) {
+    extends SimpleSFXDelegateSpec[
+      jfxc.ScheduledService[T],
+      ScheduledService[T]](
+      classOf[jfxc.ScheduledService[T]],
+      classOf[ScheduledService[T]]) {
 
   override protected def getScalaClassInstance = ScheduledService[T](null)
 

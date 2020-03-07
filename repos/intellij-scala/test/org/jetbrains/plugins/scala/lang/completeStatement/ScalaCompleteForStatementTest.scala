@@ -2,9 +2,9 @@ package org.jetbrains.plugins.scala
 package lang.completeStatement
 
 /**
- * @author Ksenia.Sautina
- * @since 2/25/13
- */
+  * @author Ksenia.Sautina
+  * @since 2/25/13
+  */
 class ScalaCompleteForStatementTest extends ScalaCompleteStatementTestBase {
 
   def testForStatement1() {
@@ -169,6 +169,5 @@ class ScalaCompleteForStatementTest extends ScalaCompleteStatementTestBase {
 
     checkScalaFileByText(fileText, resultText)
   }
-
 
 }

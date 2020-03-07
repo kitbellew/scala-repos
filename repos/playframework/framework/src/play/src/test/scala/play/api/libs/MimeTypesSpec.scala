@@ -17,4 +17,3 @@ object MimeTypesSpec extends Specification {
   }
 
 }
-

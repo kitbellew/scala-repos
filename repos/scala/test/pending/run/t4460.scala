@@ -6,7 +6,6 @@ class B(val x: Int) {
   def this() = this()
 }
 
-object Test extends B(2) with A  {
-  def main(args: Array[String]) {  }
+object Test extends B(2) with A {
+  def main(args: Array[String]) {}
 }
-

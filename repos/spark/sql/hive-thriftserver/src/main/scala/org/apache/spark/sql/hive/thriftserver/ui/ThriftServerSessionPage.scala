@@ -25,13 +25,17 @@ import scala.xml.Node
 import org.apache.commons.lang3.StringEscapeUtils
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2.{ExecutionInfo, ExecutionState}
+import org.apache.spark.sql.hive.thriftserver.HiveThriftServer2.{
+  ExecutionInfo,
+  ExecutionState
+}
 import org.apache.spark.ui._
 import org.apache.spark.ui.UIUtils._
 
 /** Page for Spark Web UI that shows statistics of a streaming job */
 private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
-  extends WebUIPage("session") with Logging {
+    extends WebUIPage("session")
+    with Logging {
 
   private val listener = parent.listener
   private val startTime = Calendar.getInstance().getTime()
@@ -48,14 +52,14 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         require(sessionStat != null, "Invalid sessionID[" + parameterId + "]")
 
         generateBasicStats() ++
-        <br/> ++
-        <h4>
+          <br/> ++
+          <h4>
         User {sessionStat.userName},
         IP {sessionStat.ip},
         Session created at {formatDate(sessionStat.startTimestamp)},
         Total run {sessionStat.totalExecution} SQL
         </h4> ++
-        generateSQLStatsTable(sessionStat.sessionId)
+          generateSQLStatsTable(sessionStat.sessionId)
       }
     UIUtils.headerSparkPage("JDBC/ODBC Session", content, parent, Some(5000))
   }
@@ -68,7 +72,9 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         <strong>Started at: </strong> {startTime.toString}
       </li>
       <li>
-        <strong>Time since start: </strong>{formatDurationVerbose(timeSinceStart)}
+        <strong>Time since start: </strong>{
+      formatDurationVerbose(timeSinceStart)
+    }
       </li>
     </ul>
   }
@@ -79,17 +85,31 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
       .filter(_.sessionId == sessionID)
     val numStatement = executionList.size
     val table = if (numStatement > 0) {
-      val headerRow = Seq("User", "JobID", "GroupID", "Start Time", "Finish Time", "Duration",
-        "Statement", "State", "Detail")
+      val headerRow = Seq(
+        "User",
+        "JobID",
+        "GroupID",
+        "Start Time",
+        "Finish Time",
+        "Duration",
+        "Statement",
+        "State",
+        "Detail")
       val dataRows = executionList.sortBy(_.startTimestamp).reverse
 
       def generateDataRow(info: ExecutionInfo): Seq[Node] = {
         val jobLink = info.jobId.map { id: String =>
-          <a href={"%s/jobs/job?id=%s".format(UIUtils.prependBaseUri(parent.basePath), id)}>
+          <a href={
+            "%s/jobs/job?id=%s".format(
+              UIUtils.prependBaseUri(parent.basePath),
+              id)
+          }>
             [{id}]
           </a>
         }
-        val detail = if (info.state == ExecutionState.FAILED) info.detail else info.executePlan
+        val detail =
+          if (info.state == ExecutionState.FAILED) info.detail
+          else info.executePlan
         <tr>
           <td>{info.userName}</td>
           <td>
@@ -105,8 +125,15 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         </tr>
       }
 
-      Some(UIUtils.listingTable(headerRow, generateDataRow,
-        dataRows, false, None, Seq(null), false))
+      Some(
+        UIUtils.listingTable(
+          headerRow,
+          generateDataRow,
+          dataRows,
+          false,
+          None,
+          Seq(null),
+          false))
     } else {
       None
     }
@@ -124,19 +151,18 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
   private def errorMessageCell(errorMessage: String): Seq[Node] = {
     val isMultiline = errorMessage.indexOf('\n') >= 0
-    val errorSummary = StringEscapeUtils.escapeHtml4(
-      if (isMultiline) {
-        errorMessage.substring(0, errorMessage.indexOf('\n'))
-      } else {
-        errorMessage
-      })
+    val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
+      errorMessage.substring(0, errorMessage.indexOf('\n'))
+    } else {
+      errorMessage
+    })
     val details = if (isMultiline) {
       // scalastyle:off
       <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
       </span> ++
-      <div class="stacktrace-details collapsed">
+        <div class="stacktrace-details collapsed">
         <pre>{errorMessage}</pre>
       </div>
       // scalastyle:on
@@ -152,18 +178,27 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val numBatches = sessionList.size
     val table = if (numBatches > 0) {
       val dataRows =
-        sessionList.sortBy(_.startTimestamp).reverse.map ( session =>
-        Seq(
-          session.userName,
-          session.ip,
-          session.sessionId,
-          formatDate(session.startTimestamp),
-          formatDate(session.finishTimestamp),
-          formatDurationOption(Some(session.totalTime)),
-          session.totalExecution.toString
-        )
-      ).toSeq
-      val headerRow = Seq("User", "IP", "Session ID", "Start Time", "Finish Time", "Duration",
+        sessionList
+          .sortBy(_.startTimestamp)
+          .reverse
+          .map(session =>
+            Seq(
+              session.userName,
+              session.ip,
+              session.sessionId,
+              formatDate(session.startTimestamp),
+              formatDate(session.finishTimestamp),
+              formatDurationOption(Some(session.totalTime)),
+              session.totalExecution.toString
+            ))
+          .toSeq
+      val headerRow = Seq(
+        "User",
+        "IP",
+        "Session ID",
+        "Start Time",
+        "Finish Time",
+        "Duration",
         "Total Execute")
       Some(listingTable(headerRow, dataRows))
     } else {
@@ -172,7 +207,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
     val content =
       <h5>Session Statistics</h5> ++
-      <div>
+        <div>
         <ul class="unstyled">
           {table.getOrElse("No statistics have been generated yet.")}
         </ul>
@@ -181,10 +216,9 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     content
   }
 
-
   /**
-   * Returns a human-readable string representing a duration such as "5 second 35 ms"
-   */
+    * Returns a human-readable string representing a duration such as "5 second 35 ms"
+    */
   private def formatDurationOption(msOption: Option[Long]): String = {
     msOption.map(formatDurationVerbose).getOrElse(emptyCell)
   }
@@ -197,4 +231,3 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     UIUtils.listingTable(headers, generateDataRow, data, fixedWidth = true)
   }
 }
-

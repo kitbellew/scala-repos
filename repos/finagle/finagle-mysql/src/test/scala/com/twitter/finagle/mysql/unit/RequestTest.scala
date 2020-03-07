@@ -27,8 +27,8 @@ class SimpleCommandRequestTest extends FunSuite {
 class HandshakeResponseTest extends FunSuite {
   val username = Some("username")
   val password = Some("password")
-  val salt = Array[Byte](70,38,43,66,74,48,79,126,76,66,
-                          70,118,67,40,63,68,120,80,103,54)
+  val salt = Array[Byte](70, 38, 43, 66, 74, 48, 79, 126, 76, 66, 70, 118, 67,
+    40, 63, 68, 120, 80, 103, 54)
   val req = HandshakeResponse(
     username,
     password,
@@ -80,7 +80,7 @@ class ExecuteRequestTest extends FunSuite {
     br.skip(10) // payload header (10bytes)
     br.skip(1) // new params bound flag
     val restSize = br.takeRest().size
-    assert(restSize == ((numOfParams+7)/8))
+    assert(restSize == ((numOfParams + 7) / 8))
   }
 
   // supported types
@@ -91,7 +91,7 @@ class ExecuteRequestTest extends FunSuite {
   val shortVal = 2.toShort
   val intVal = 3
   val longVal = 4L
-  val floatVal = 1.5F
+  val floatVal = 1.5f
   val doubleVal = 2.345
   val cal = Calendar.getInstance()
   val millis = cal.getTimeInMillis
@@ -206,22 +206,29 @@ class ExecuteRequestTest extends FunSuite {
       assert(br.readDouble() == doubleVal)
     }
 
-    val timestampValueLocal = new TimestampValue(TimeZone.getDefault(), TimeZone.getDefault())
+    val timestampValueLocal =
+      new TimestampValue(TimeZone.getDefault(), TimeZone.getDefault())
 
     test("java.sql.Timestamp") {
-      val raw = RawValue(Type.Timestamp, Charset.Binary, true, br.readLengthCodedBytes())
+      val raw = RawValue(
+        Type.Timestamp,
+        Charset.Binary,
+        true,
+        br.readLengthCodedBytes())
       val timestampValueLocal(ts) = raw
       assert(ts == timestamp)
     }
 
     test("java.sql.Date") {
-      val raw = RawValue(Type.Date, Charset.Binary, true, br.readLengthCodedBytes())
+      val raw =
+        RawValue(Type.Date, Charset.Binary, true, br.readLengthCodedBytes())
       val DateValue(d) = raw
       assert(d.toString == sqlDate.toString)
     }
 
     test("java.util.Date") {
-      val raw = RawValue(Type.DateTime, Charset.Binary, true, br.readLengthCodedBytes())
+      val raw =
+        RawValue(Type.DateTime, Charset.Binary, true, br.readLengthCodedBytes())
       val timestampValueLocal(dt) = raw
       assert(dt.getTime == timestamp.getTime)
     }

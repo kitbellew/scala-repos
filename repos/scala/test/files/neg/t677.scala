@@ -1,3 +1,3 @@
 object ga {
-  val zx: Nothing = {() => 4}
+  val zx: Nothing = { () => 4 }
 }

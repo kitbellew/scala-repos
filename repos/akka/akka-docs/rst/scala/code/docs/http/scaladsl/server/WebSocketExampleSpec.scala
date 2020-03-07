@@ -6,7 +6,7 @@ package docs.http.scaladsl.server
 
 import akka.http.scaladsl.model.ws.BinaryMessage
 import akka.stream.scaladsl.Sink
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class WebSocketExampleSpec extends WordSpec with Matchers {
   "core-example" in {
@@ -14,11 +14,11 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     //#websocket-example-using-core
     import akka.actor.ActorSystem
     import akka.stream.ActorMaterializer
-    import akka.stream.scaladsl.{ Source, Flow }
+    import akka.stream.scaladsl.{Source, Flow}
     import akka.http.scaladsl.Http
     import akka.http.scaladsl.model.ws.UpgradeToWebSocket
-    import akka.http.scaladsl.model.ws.{ TextMessage, Message }
-    import akka.http.scaladsl.model.{ HttpResponse, Uri, HttpRequest }
+    import akka.http.scaladsl.model.ws.{TextMessage, Message}
+    import akka.http.scaladsl.model.{HttpResponse, Uri, HttpRequest}
     import akka.http.scaladsl.model.HttpMethods._
 
     implicit val system = ActorSystem()
@@ -34,7 +34,8 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
           // rather we simply stream it back as the tail of the response
           // this means we might start sending the response even before the
           // end of the incoming message has been received
-          case tm: TextMessage ⇒ TextMessage(Source.single("Hello ") ++ tm.textStream) :: Nil
+          case tm: TextMessage ⇒
+            TextMessage(Source.single("Hello ") ++ tm.textStream) :: Nil
           case bm: BinaryMessage =>
             // ignore binary messages but drain content to avoid the stream being clogged
             bm.dataStream.runWith(Sink.ignore)
@@ -47,14 +48,18 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
       case req @ HttpRequest(GET, Uri.Path("/greeter"), _, _, _) ⇒
         req.header[UpgradeToWebSocket] match {
           case Some(upgrade) ⇒ upgrade.handleMessages(greeterWebSocketService)
-          case None          ⇒ HttpResponse(400, entity = "Not a valid websocket request!")
+          case None ⇒
+            HttpResponse(400, entity = "Not a valid websocket request!")
         }
       case _: HttpRequest ⇒ HttpResponse(404, entity = "Unknown resource!")
     }
     //#websocket-request-handling
 
     val bindingFuture =
-      Http().bindAndHandleSync(requestHandler, interface = "localhost", port = 8080)
+      Http().bindAndHandleSync(
+        requestHandler,
+        interface = "localhost",
+        port = 8080)
 
     println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
     Console.readLine()
@@ -68,9 +73,9 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     pending // compile-time only test
     import akka.actor.ActorSystem
     import akka.stream.ActorMaterializer
-    import akka.stream.scaladsl.{ Source, Flow }
+    import akka.stream.scaladsl.{Source, Flow}
     import akka.http.scaladsl.Http
-    import akka.http.scaladsl.model.ws.{ TextMessage, Message }
+    import akka.http.scaladsl.model.ws.{TextMessage, Message}
     import akka.http.scaladsl.server.Directives
 
     implicit val system = ActorSystem()
@@ -83,7 +88,8 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     val greeterWebSocketService =
       Flow[Message]
         .collect {
-          case tm: TextMessage ⇒ TextMessage(Source.single("Hello ") ++ tm.textStream)
+          case tm: TextMessage ⇒
+            TextMessage(Source.single("Hello ") ++ tm.textStream)
           // ignore binary messages
         }
 

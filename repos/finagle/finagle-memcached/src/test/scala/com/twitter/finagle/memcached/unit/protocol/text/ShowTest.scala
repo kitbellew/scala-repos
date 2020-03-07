@@ -5,7 +5,11 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
 import com.twitter.finagle.memcached.protocol.{
-  Error => MemcacheError, ClientError, NonexistentCommand, ServerError}
+  Error => MemcacheError,
+  ClientError,
+  NonexistentCommand,
+  ServerError
+}
 import com.twitter.io.Buf
 
 @RunWith(classOf[JUnitRunner])

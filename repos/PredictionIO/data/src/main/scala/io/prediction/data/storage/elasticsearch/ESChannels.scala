@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-  
 package io.prediction.data.storage.elasticsearch
 
 import grizzled.slf4j.Logging
@@ -29,7 +28,8 @@ import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
 
 class ESChannels(client: Client, config: StorageClientConfig, index: String)
-    extends Channels with Logging {
+    extends Channels
+    with Logging {
 
   implicit val formats = DefaultFormats.lossless
   private val estype = "channels"
@@ -47,8 +47,11 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
       (estype ->
         ("properties" ->
           ("name" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices.preparePutMapping(index).setType(estype).
-      setSource(compact(render(json))).get
+    indices
+      .preparePutMapping(index)
+      .setType(estype)
+      .setSource(compact(render(json)))
+      .get
   }
 
   def insert(channel: Channel): Option[Int] = {
@@ -65,10 +68,7 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
 
   def get(id: Int): Option[Channel] = {
     try {
-      val response = client.prepareGet(
-        index,
-        estype,
-        id.toString).get()
+      val response = client.prepareGet(index, estype, id.toString).get()
       Some(read[Channel](response.getSourceAsString))
     } catch {
       case e: ElasticsearchException =>
@@ -80,8 +80,10 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
 
   def getByAppid(appid: Int): Seq[Channel] = {
     try {
-      val builder = client.prepareSearch(index).setTypes(estype).
-        setPostFilter(termFilter("appid", appid))
+      val builder = client
+        .prepareSearch(index)
+        .setTypes(estype)
+        .setPostFilter(termFilter("appid", appid))
       ESUtils.getAll[Channel](client, builder)
     } catch {
       case e: ElasticsearchException =>
@@ -92,8 +94,10 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
 
   def update(channel: Channel): Boolean = {
     try {
-      val response = client.prepareIndex(index, estype, channel.id.toString).
-        setSource(write(channel)).get()
+      val response = client
+        .prepareIndex(index, estype, channel.id.toString)
+        .setSource(write(channel))
+        .get()
       true
     } catch {
       case e: ElasticsearchException =>

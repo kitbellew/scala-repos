@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2015-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.impl.fusing
 
 import akka.NotUsed
-import akka.stream.{ OverflowStrategy, Attributes }
+import akka.stream.{OverflowStrategy, Attributes}
 import akka.stream.stage.AbstractStage.PushPullGraphStage
 import akka.testkit.AkkaSpec
-import akka.stream.scaladsl.{ Merge, Broadcast, Balance, Zip }
+import akka.stream.scaladsl.{Merge, Broadcast, Balance, Zip}
 import GraphInterpreter._
 
 class GraphInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
@@ -122,7 +122,11 @@ class GraphInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should ===(Set.empty)
 
       source2.onNext("Meaning of life")
-      lastEvents() should ===(Set(OnNext(sink, (42, "Meaning of life")), RequestOne(source1), RequestOne(source2)))
+      lastEvents() should ===(
+        Set(
+          OnNext(sink, (42, "Meaning of life")),
+          RequestOne(source1),
+          RequestOne(source2)))
     }
 
     "implement Broadcast" in new TestSetup {
@@ -202,7 +206,12 @@ class GraphInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       lastEvents() should ===(Set.empty)
 
       source2.onNext(2)
-      lastEvents() should ===(Set(OnNext(sink1, (1, 2)), OnNext(sink2, (1, 2)), RequestOne(source1), RequestOne(source2)))
+      lastEvents() should ===(
+        Set(
+          OnNext(sink1, (1, 2)),
+          OnNext(sink2, (1, 2)),
+          RequestOne(source1),
+          RequestOne(source2)))
 
     }
 

@@ -6,12 +6,13 @@ import org.apache.commons.io.FileUtils
 import Directory._
 
 /**
- * Removes session associated temporary files when session is destroyed.
- */
+  * Removes session associated temporary files when session is destroyed.
+  */
 class SessionCleanupListener extends HttpSessionListener {
 
   def sessionCreated(se: HttpSessionEvent): Unit = {}
 
-  def sessionDestroyed(se: HttpSessionEvent): Unit = FileUtils.deleteDirectory(getTemporaryDir(se.getSession.getId))
+  def sessionDestroyed(se: HttpSessionEvent): Unit =
+    FileUtils.deleteDirectory(getTemporaryDir(se.getSession.getId))
 
 }

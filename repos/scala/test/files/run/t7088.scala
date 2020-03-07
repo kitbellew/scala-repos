@@ -1,5 +1,5 @@
 object Test {
-  type Tag[X] = {type Tag = X}
+  type Tag[X] = { type Tag = X }
   type TaggedArray[T] = Array[T] with Tag[Any]
 
   def method[T: scala.reflect.ClassTag](a: TaggedArray[T], value: T) {

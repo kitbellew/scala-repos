@@ -30,7 +30,7 @@ class RDDInfo(
     val parentIds: Seq[Int],
     val callSite: String = "",
     val scope: Option[RDDOperationScope] = None)
-  extends Ordered[RDDInfo] {
+    extends Ordered[RDDInfo] {
 
   var numCachedPartitions = 0
   var memSize = 0L
@@ -43,8 +43,13 @@ class RDDInfo(
     import Utils.bytesToString
     ("RDD \"%s\" (%d) StorageLevel: %s; CachedPartitions: %d; TotalPartitions: %d; " +
       "MemorySize: %s; DiskSize: %s").format(
-        name, id, storageLevel.toString, numCachedPartitions, numPartitions,
-        bytesToString(memSize), bytesToString(diskSize))
+      name,
+      id,
+      storageLevel.toString,
+      numCachedPartitions,
+      numPartitions,
+      bytesToString(memSize),
+      bytesToString(diskSize))
   }
 
   override def compare(that: RDDInfo): Int = {
@@ -56,7 +61,13 @@ private[spark] object RDDInfo {
   def fromRdd(rdd: RDD[_]): RDDInfo = {
     val rddName = Option(rdd.name).getOrElse(Utils.getFormattedClassName(rdd))
     val parentIds = rdd.dependencies.map(_.rdd.id)
-    new RDDInfo(rdd.id, rddName, rdd.partitions.length,
-      rdd.getStorageLevel, parentIds, rdd.creationSite.shortForm, rdd.scope)
+    new RDDInfo(
+      rdd.id,
+      rddName,
+      rdd.partitions.length,
+      rdd.getStorageLevel,
+      parentIds,
+      rdd.creationSite.shortForm,
+      rdd.scope)
   }
 }

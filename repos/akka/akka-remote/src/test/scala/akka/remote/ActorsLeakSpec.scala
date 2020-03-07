@@ -1,13 +1,13 @@
 /**
- *  Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  *  Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.remote
 
 import java.util.concurrent.TimeoutException
 
 import akka.actor._
 import akka.actor.dungeon.ChildrenContainer
-import akka.remote.transport.ThrottlerTransportAdapter.{ ForceDisassociate }
+import akka.remote.transport.ThrottlerTransportAdapter.{ForceDisassociate}
 import akka.testkit._
 import akka.testkit.TestActors.EchoActor
 import com.typesafe.config.ConfigFactory
@@ -39,9 +39,16 @@ object ActorsLeakSpec {
           val cell = wc.underlying
 
           cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(_, toDie, reason) ⇒ Nil
-            case x @ (ChildrenContainer.TerminatedChildrenContainer | ChildrenContainer.EmptyChildrenContainer) ⇒ Nil
-            case n: ChildrenContainer.NormalChildrenContainer ⇒ cell.childrenRefs.children.toList
+            case ChildrenContainer.TerminatingChildrenContainer(
+                _,
+                toDie,
+                reason) ⇒
+              Nil
+            case x @ (ChildrenContainer.TerminatedChildrenContainer |
+                ChildrenContainer.EmptyChildrenContainer) ⇒
+              Nil
+            case n: ChildrenContainer.NormalChildrenContainer ⇒
+              cell.childrenRefs.children.toList
             case x ⇒ Nil
           }
         case _ ⇒ Nil
@@ -61,18 +68,22 @@ object ActorsLeakSpec {
 
 }
 
-class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender {
+class ActorsLeakSpec
+    extends AkkaSpec(ActorsLeakSpec.config)
+    with ImplicitSender {
   import ActorsLeakSpec._
 
   "Remoting" must {
 
     "not leak actors" in {
       val ref = system.actorOf(Props[EchoActor], "echo")
-      val echoPath = RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
+      val echoPath =
+        RootActorPath(RARP(system).provider.getDefaultAddress) / "user" / "echo"
 
-      val targets = List("/system/endpointManager", "/system/transports").map { path ⇒
-        system.actorSelection(path) ! Identify(0)
-        expectMsgType[ActorIdentity].getRef
+      val targets = List("/system/endpointManager", "/system/transports").map {
+        path ⇒
+          system.actorSelection(path) ! Identify(0)
+          expectMsgType[ActorIdentity].getRef
       }
 
       val initialActors = targets.flatMap(collectLiveActors).toSet
@@ -82,7 +93,8 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
         val remoteSystem = ActorSystem(
           "remote",
-          ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
+          ConfigFactory
+            .parseString("akka.remote.netty.tcp.port = 0")
             .withFallback(config))
 
         try {
@@ -103,7 +115,8 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
         val remoteSystem = ActorSystem(
           "remote",
-          ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
+          ConfigFactory
+            .parseString("akka.remote.netty.tcp.port = 0")
             .withFallback(config))
         val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
@@ -115,22 +128,26 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
           // This will make sure that no SHUTDOWN message gets through
           Await.ready(
-            RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)),
+            RARP(system).provider.transport
+              .managementCommand(ForceDisassociate(remoteAddress)),
             3.seconds)
 
         } finally {
           remoteSystem.terminate()
         }
 
-        EventFilter.warning(pattern = "Association with remote system", occurrences = 1).intercept {
-          Await.ready(remoteSystem.whenTerminated, 10.seconds)
-        }
+        EventFilter
+          .warning(pattern = "Association with remote system", occurrences = 1)
+          .intercept {
+            Await.ready(remoteSystem.whenTerminated, 10.seconds)
+          }
       }
 
       // Remote idle for too long case
       val remoteSystem = ActorSystem(
         "remote",
-        ConfigFactory.parseString("akka.remote.netty.tcp.port = 0")
+        ConfigFactory
+          .parseString("akka.remote.netty.tcp.port = 0")
           .withFallback(config))
       val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
@@ -143,7 +160,8 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
         probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
         // Watch a remote actor - this results in system message traffic
-        system.actorSelection(RootActorPath(remoteAddress) / "user" / "stoppable") ! Identify(1)
+        system.actorSelection(
+          RootActorPath(remoteAddress) / "user" / "stoppable") ! Identify(1)
         val remoteActor = expectMsgType[ActorIdentity].ref.get
         watch(remoteActor)
         remoteActor ! "stop"
@@ -152,16 +170,19 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
         // This will make sure that no SHUTDOWN message gets through
         Await.ready(
-          RARP(system).provider.transport.managementCommand(ForceDisassociate(remoteAddress)),
+          RARP(system).provider.transport
+            .managementCommand(ForceDisassociate(remoteAddress)),
           3.seconds)
 
       } finally {
         remoteSystem.terminate()
       }
 
-      EventFilter.warning(pattern = "Association with remote system", occurrences = 1).intercept {
-        Await.ready(remoteSystem.whenTerminated, 10.seconds)
-      }
+      EventFilter
+        .warning(pattern = "Association with remote system", occurrences = 1)
+        .intercept {
+          Await.ready(remoteSystem.whenTerminated, 10.seconds)
+        }
 
       EventFilter[TimeoutException](occurrences = 1).intercept {}
 

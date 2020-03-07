@@ -3,11 +3,9 @@
 **  __\ \/ /__/ __ |/ /__/ __ |/ ___/    (c) 2003-2010, LAMP/EPFL
 ** /____/\___/_/ |_/____/_/ |_/_/        http://scala-lang.org/
 **
-*/
-
+ */
 
 package scala.tools.scalap
-
 
 object Names {
 
@@ -31,7 +29,7 @@ object Names {
   operatorName(':') = "$colon"
 
   /** Replace operator symbols by corresponding "$op_name" in names.
-   */
+    */
   def encode(name: String): String = {
     var i = 0
     val len = name.length()
@@ -47,12 +45,12 @@ object Names {
       } else
         res.append(c)
       i = i + 1
-     }
-     res.toString()
+    }
+    res.toString()
   }
 
   /** Replace "$op_name" by corresponding operator symbols in names.
-   */
+    */
   def decode(name: String): String = {
     var i = 0
     val len = name.length()
@@ -79,7 +77,7 @@ object Names {
   }
 
   /** Looks up the array entry for the operator name.
-   */
+    */
   def lookup(string: String): String = {
     var i = 0
     var res: String = null

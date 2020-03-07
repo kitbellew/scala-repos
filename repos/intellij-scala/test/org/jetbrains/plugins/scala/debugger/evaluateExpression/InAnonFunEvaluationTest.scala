@@ -1,16 +1,23 @@
 package org.jetbrains.plugins.scala
 package debugger.evaluateExpression
 
-import org.jetbrains.plugins.scala.debugger.{ScalaDebuggerTestCase, ScalaVersion_2_11, ScalaVersion_2_12}
+import org.jetbrains.plugins.scala.debugger.{
+  ScalaDebuggerTestCase,
+  ScalaVersion_2_11,
+  ScalaVersion_2_12
+}
 
 /**
- * Nikolay.Tropin
- * 8/2/13
- */
+  * Nikolay.Tropin
+  * 8/2/13
+  */
+class InAnonFunEvaluationTest
+    extends InAnonFunEvaluationTestBase
+    with ScalaVersion_2_11
 
-class InAnonFunEvaluationTest extends InAnonFunEvaluationTestBase with ScalaVersion_2_11
-
-class InAnonFunEvaluationTest_212 extends InAnonFunEvaluationTestBase with ScalaVersion_2_12 {
+class InAnonFunEvaluationTest_212
+    extends InAnonFunEvaluationTestBase
+    with ScalaVersion_2_12 {
   //todo SCL-9139
   override def testPartialFunction(): Unit = {
     runDebugger() {
@@ -25,9 +32,10 @@ class InAnonFunEvaluationTest_212 extends InAnonFunEvaluationTestBase with Scala
   }
 }
 
-abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase{
+abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase {
 
-  addFileWithBreakpoints("FunctionValue.scala",
+  addFileWithBreakpoints(
+    "FunctionValue.scala",
     s"""
        |object FunctionValue {
        |  def main(args: Array[String]) {
@@ -53,7 +61,8 @@ abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase{
     }
   }
 
-  addFileWithBreakpoints("PartialFunction.scala",
+  addFileWithBreakpoints(
+    "PartialFunction.scala",
     s"""
        |object PartialFunction {
        |  val name = "name"
@@ -84,7 +93,8 @@ abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase{
     }
   }
 
-  addFileWithBreakpoints("FunctionExpr.scala",
+  addFileWithBreakpoints(
+    "FunctionExpr.scala",
     s"""
        |object FunctionExpr {
        |  val name = "name"
@@ -114,7 +124,8 @@ abstract class InAnonFunEvaluationTestBase extends ScalaDebuggerTestCase{
     }
   }
 
-  addFileWithBreakpoints("ForStmt.scala",
+  addFileWithBreakpoints(
+    "ForStmt.scala",
     s"""
        |object ForStmt {
        |  val name = "name"

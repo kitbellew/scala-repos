@@ -2,13 +2,16 @@
 // Licence: http://www.gnu.org/licenses/gpl-3.0.en.html
 package org.ensime.sexp.formats
 
-import collection.{ immutable => im }
+import collection.{immutable => im}
 
 import org.ensime.sexp._
 
 // http://docs.scala-lang.org/overviews/collections/overview.html
-class CollectionFormatsSpec extends FormatSpec
-    with ProductFormats with CollectionFormats with BasicFormats {
+class CollectionFormatsSpec
+    extends FormatSpec
+    with ProductFormats
+    with CollectionFormats
+    with BasicFormats {
 
   val foo = SexpString("foo")
   val foos: List[String] = List("foo", "foo")
@@ -64,7 +67,9 @@ class CollectionFormatsSpec extends FormatSpec
 
   it should "support SortedMap" in {
     assertFormat(collection.SortedMap[String, String](), SexpNil)
-    assertFormat(collection.SortedMap("foo" -> "foo"), SexpList(SexpList(foo, foo)))
+    assertFormat(
+      collection.SortedMap("foo" -> "foo"),
+      SexpList(SexpList(foo, foo)))
   }
 
   "CollectionFormats immutable variants of the traits" should "support Traversable" in {
@@ -134,18 +139,24 @@ class CollectionFormatsSpec extends FormatSpec
     assertFormat(
       im.Range(-100, 100),
       SexpList(
-        SexpSymbol(":start"), SexpNumber(-100),
-        SexpSymbol(":end"), SexpNumber(100),
-        SexpSymbol(":step"), SexpNumber(1)
+        SexpSymbol(":start"),
+        SexpNumber(-100),
+        SexpSymbol(":end"),
+        SexpNumber(100),
+        SexpSymbol(":step"),
+        SexpNumber(1)
       )
     )
 
     assertFormat(
       im.Range(-100, 100, 2),
       SexpList(
-        SexpSymbol(":start"), SexpNumber(-100),
-        SexpSymbol(":end"), SexpNumber(100),
-        SexpSymbol(":step"), SexpNumber(2)
+        SexpSymbol(":start"),
+        SexpNumber(-100),
+        SexpSymbol(":end"),
+        SexpNumber(100),
+        SexpSymbol(":step"),
+        SexpNumber(2)
       )
     )
   }

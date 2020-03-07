@@ -9,10 +9,9 @@
 package scala
 package runtime
 
-
 /**
- * Dummy class which exist only to satisfy the JVM. It corresponds
- * to `scala.Nothing`. If such type appears in method
- * signatures, it is erased to this one.
- */
+  * Dummy class which exist only to satisfy the JVM. It corresponds
+  * to `scala.Nothing`. If such type appears in method
+  * signatures, it is erased to this one.
+  */
 sealed abstract class Nothing$ extends Throwable

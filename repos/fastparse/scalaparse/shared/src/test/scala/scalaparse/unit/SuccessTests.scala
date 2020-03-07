@@ -4,10 +4,10 @@ import scalaparse.{TestUtil, Scala}
 import fastparse._
 import utest._
 import TestUtil._
-object SuccessTests extends TestSuite{
+object SuccessTests extends TestSuite {
 
   println("running")
-  def tests = TestSuite{
+  def tests = TestSuite {
 
     * - check("package torimatomeru")
 
@@ -318,8 +318,7 @@ object SuccessTests extends TestSuite{
       |  }
       |}
       |
-    """.
-        stripMargin
+    """.stripMargin
     )
     * - check(
       """
@@ -920,7 +919,7 @@ object SuccessTests extends TestSuite{
     )
 
     * - check(
-        """object immutable {
+      """object immutable {
           |  new (((String)))
           |}
       """.stripMargin
@@ -1123,12 +1122,12 @@ object SuccessTests extends TestSuite{
         |}
       """.stripMargin
     )
-      * - check(
-        """class FunctionalBuilder{
+    * - check(
+      """class FunctionalBuilder{
           |  a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a(a1, a2), a3), a4), a5), a6), a7), a8), a9), a10), a11), a12), a13), a14), a15), a16), a17), a18), a19), a20), a21), a22)
           |}
         """.stripMargin
-      )
+    )
     * - check(
       """class HtmlPage {
         |  <meta http-equiv="content-type" content={ 1 }/>
@@ -1193,7 +1192,7 @@ object SuccessTests extends TestSuite{
       """.stripMargin
     )
     * - check(
-    """object X{
+      """object X{
       |  // parses as ~?>.$(1)
       |  ~?>$ 1
       |}
@@ -1223,13 +1222,11 @@ object SuccessTests extends TestSuite{
         |}
       """.stripMargin
     )
-    * - check(// This should parse as a postfix call
+    * - check( // This should parse as a postfix call
       """object Foo{
         |  x_!toString
         |}
-      """.stripMargin
-    )
-
+      """.stripMargin)
 
     // Pull these bits out and combine them to avoid escaping issues
     val slash = "\\"
@@ -1267,7 +1264,6 @@ object SuccessTests extends TestSuite{
         |}
       """.stripMargin
     )
-
 
     * - check(
       """

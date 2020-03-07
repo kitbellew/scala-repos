@@ -14,7 +14,8 @@ import org.scalatest.mock.MockitoSugar
 @RunWith(classOf[JUnitRunner])
 class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
 
-  case class ValidateThriftServiceContext(p: Promise[Array[Byte]] = new Promise[Array[Byte]]){
+  case class ValidateThriftServiceContext(
+      p: Promise[Array[Byte]] = new Promise[Array[Byte]]) {
     def newValidate() = new ValidateThriftService(service, protocolFactory)
 
     lazy val service: Service[ThriftClientRequest, Array[Byte]] = {
@@ -55,7 +56,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
     assert(validate.isAvailable)
   }
 
-  test("ValidateThriftService should invalidate connection on bad TApplicationException") {
+  test(
+    "ValidateThriftService should invalidate connection on bad TApplicationException") {
     val c = ValidateThriftServiceContext()
     import c._
 
@@ -64,7 +66,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       TApplicationException.INVALID_MESSAGE_TYPE,
       TApplicationException.MISSING_RESULT,
       TApplicationException.UNKNOWN,
-      TApplicationException.WRONG_METHOD_NAME)
+      TApplicationException.WRONG_METHOD_NAME
+    )
 
     for (typ <- codes) {
       val buf = new OutputBuffer(protocolFactory)
@@ -74,7 +77,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       buf().writeMessageEnd()
       val validate = newValidate()
       val arr = buf.toArray
-      when(service(Matchers.any[ThriftClientRequest])).thenReturn(Future.value(arr))
+      when(service(Matchers.any[ThriftClientRequest]))
+        .thenReturn(Future.value(arr))
       assert(validate.isAvailable)
       val f = validate(req)
       assert(f.isDefined)
@@ -91,11 +95,13 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("ValidateThriftService should not invalidate connection on OK TApplicationException") {
+  test(
+    "ValidateThriftService should not invalidate connection on OK TApplicationException") {
     val c = ValidateThriftServiceContext()
     import c._
 
-    val codes = Seq(TApplicationException.INTERNAL_ERROR,
+    val codes = Seq(
+      TApplicationException.INTERNAL_ERROR,
       TApplicationException.UNKNOWN_METHOD)
 
     for (typ <- codes) {
@@ -106,7 +112,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       buf().writeMessageEnd()
       val validate = newValidate()
       val arr = buf.toArray
-      when(service(Matchers.any[ThriftClientRequest])).thenReturn(Future.value(arr))
+      when(service(Matchers.any[ThriftClientRequest]))
+        .thenReturn(Future.value(arr))
       assert(validate.isAvailable)
       val f = validate(req)
       assert(f.isDefined)
@@ -114,7 +121,7 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       assert(validate.isAvailable)
       assert(validate(req).poll match {
         case Some(Return(_)) => true
-        case _ => false
+        case _               => false
       })
     }
   }

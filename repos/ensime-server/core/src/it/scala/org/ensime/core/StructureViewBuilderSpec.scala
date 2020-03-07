@@ -7,7 +7,8 @@ import org.ensime.api._
 import org.ensime.util.EnsimeSpec
 import scala.collection.mutable.ListBuffer
 
-class StructureViewBuilderSpec extends EnsimeSpec
+class StructureViewBuilderSpec
+    extends EnsimeSpec
     with IsolatedRichPresentationCompilerFixture
     with RichPresentationCompilerTestUtils
     with ReallyRichPresentationCompilerFixture {
@@ -15,9 +16,9 @@ class StructureViewBuilderSpec extends EnsimeSpec
   def original = EnsimeConfigFixture.EmptyTestProject
 
   def getStructure(
-    config: EnsimeConfig,
-    cc: RichCompilerControl,
-    content: String
+      config: EnsimeConfig,
+      cc: RichCompilerControl,
+      content: String
   ): List[String] = {
 
     val result = ListBuffer[String]()
@@ -42,7 +43,9 @@ class StructureViewBuilderSpec extends EnsimeSpec
   "StructureViewBuilder" should "show top level classes and objects" in {
     withPresCompiler { (config, cc) =>
       val structure = getStructure(
-        config, cc, """
+        config,
+        cc,
+        """
             package com.example
             import org.scalatest._
             class Test {
@@ -65,7 +68,9 @@ class StructureViewBuilderSpec extends EnsimeSpec
 
   it should "show nested members" in withPresCompiler { (config, cc) =>
     val structure = getStructure(
-      config, cc, """
+      config,
+      cc,
+      """
             package com.example
             object Test {
               type TestType = Int
@@ -91,7 +96,9 @@ class StructureViewBuilderSpec extends EnsimeSpec
 
   it should "skip accessors" in withPresCompiler { (config, cc) =>
     val structure = getStructure(
-      config, cc, """
+      config,
+      cc,
+      """
             package com.example
             class Test(val accessor: String)
             class CaseTest(x: String, y: Int)

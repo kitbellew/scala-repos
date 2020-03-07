@@ -2,9 +2,9 @@ package org.jetbrains.plugins.scala
 package lang.completeStatement
 
 /**
- * @author Ksenia.Sautina
- * @since 2/25/13
- */
+  * @author Ksenia.Sautina
+  * @since 2/25/13
+  */
 class ScalaCompleteFormatTest extends ScalaCompleteStatementTestBase {
   def testFormat() {
     val fileText =

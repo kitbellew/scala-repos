@@ -2,15 +2,16 @@ package spire
 package algebra
 package free
 
-final class FreeGroup[A] private (val terms: Vector[Either[A, A]]) extends AnyVal { lhs =>
+final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
+    extends AnyVal { lhs =>
 
   /**
-   * Map each term to type `B` and sum them using `B`'s [[Group]].
-   */
+    * Map each term to type `B` and sum them using `B`'s [[Group]].
+    */
   def run[B](f: A => B)(implicit B: Group[B]): B =
     terms.foldLeft(B.id) {
       case (sum, Right(a)) => B.op(sum, f(a))
-      case (sum, Left(a)) => B.opInverse(sum, f(a))
+      case (sum, Left(a))  => B.opInverse(sum, f(a))
     }
 
   def |+|(rhs: FreeGroup[A]): FreeGroup[A] =
@@ -21,9 +22,7 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]]) extends AnyVa
 
   def inverse: FreeGroup[A] = {
     val bldr = Vector.newBuilder[Either[A, A]]
-    terms.reverseIterator foreach { term =>
-      bldr += term.swap
-    }
+    terms.reverseIterator foreach { term => bldr += term.swap }
     new FreeGroup(bldr.result())
   }
 
@@ -31,7 +30,7 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]]) extends AnyVa
     def annihilated(x: Either[A, A], y: Either[A, A]): Boolean = (x, y) match {
       case (Left(x0), Right(y0)) => x0 == y0
       case (Right(x0), Left(y0)) => x0 == y0
-      case _ => false
+      case _                     => false
     }
 
     def loop(acc: Vector[Either[A, A]]): Vector[Either[A, A]] =
@@ -51,11 +50,11 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]]) extends AnyVa
     if (terms.isEmpty) "e"
     else {
       val init = terms.head match {
-        case Left(h) => s"($h).inverse"
+        case Left(h)  => s"($h).inverse"
         case Right(h) => h.toString
       }
       val tail = terms.tail.map {
-        case Left(x) => s" |-| $x"
+        case Left(x)  => s" |-| $x"
         case Right(x) => s" |+| $x"
       }
       init + tail.mkString
@@ -68,10 +67,12 @@ object FreeGroup { companion =>
   final def apply[A](a: A): FreeGroup[A] = lift(a)
   final def lift[A](a: A): FreeGroup[A] = new FreeGroup[A](Vector(Right(a)))
 
-  implicit def FreeGroupGroup[A]: Group[FreeGroup[A]] = new Group[FreeGroup[A]] {
-    def id: FreeGroup[A] = companion.id
-    def op(a: FreeGroup[A], b: FreeGroup[A]): FreeGroup[A] = a |+| b
-    def inverse(a: FreeGroup[A]): FreeGroup[A] = a.inverse
-    override def opInverse(a: FreeGroup[A], b: FreeGroup[A]): FreeGroup[A] = a |-| b
-  }
+  implicit def FreeGroupGroup[A]: Group[FreeGroup[A]] =
+    new Group[FreeGroup[A]] {
+      def id: FreeGroup[A] = companion.id
+      def op(a: FreeGroup[A], b: FreeGroup[A]): FreeGroup[A] = a |+| b
+      def inverse(a: FreeGroup[A]): FreeGroup[A] = a.inverse
+      override def opInverse(a: FreeGroup[A], b: FreeGroup[A]): FreeGroup[A] =
+        a |-| b
+    }
 }

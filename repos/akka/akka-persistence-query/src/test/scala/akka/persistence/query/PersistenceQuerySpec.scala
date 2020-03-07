@@ -9,11 +9,14 @@ import akka.actor.ActorSystem
 import akka.persistence.journal.EventSeq
 import akka.persistence.journal.ReadEventAdapter
 import com.typesafe.config.ConfigFactory
-import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpecLike }
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class PersistenceQuerySpec extends WordSpecLike with Matchers with BeforeAndAfterAll {
+class PersistenceQuerySpec
+    extends WordSpecLike
+    with Matchers
+    with BeforeAndAfterAll {
 
   val eventAdaptersConfig =
     s"""
@@ -27,14 +30,19 @@ class PersistenceQuerySpec extends WordSpecLike with Matchers with BeforeAndAfte
   "ReadJournal" must {
     "be found by full config key" in {
       withActorSystem() { system ⇒
-        PersistenceQuery.get(system).readJournalFor[DummyReadJournal](DummyReadJournal.Identifier)
+        PersistenceQuery
+          .get(system)
+          .readJournalFor[DummyReadJournal](DummyReadJournal.Identifier)
       }
     }
 
     "throw if unable to find query journal by config key" in {
       withActorSystem() { system ⇒
         intercept[IllegalArgumentException] {
-          PersistenceQuery.get(system).readJournalFor[DummyReadJournal](DummyReadJournal.Identifier + "-unknown")
+          PersistenceQuery
+            .get(system)
+            .readJournalFor[DummyReadJournal](
+              DummyReadJournal.Identifier + "-unknown")
         }.getMessage should include("missing persistence read journal")
       }
     }
@@ -42,7 +50,8 @@ class PersistenceQuerySpec extends WordSpecLike with Matchers with BeforeAndAfte
   }
 
   private val systemCounter = new AtomicInteger()
-  private def withActorSystem(conf: String = "")(block: ActorSystem ⇒ Unit): Unit = {
+  private def withActorSystem(conf: String = "")(
+      block: ActorSystem ⇒ Unit): Unit = {
     val config =
       DummyReadJournalProvider.config
         .withFallback(DummyJavaReadJournalProvider.config)
@@ -51,7 +60,8 @@ class PersistenceQuerySpec extends WordSpecLike with Matchers with BeforeAndAfte
         .withFallback(ConfigFactory.load())
 
     val sys = ActorSystem(s"sys-${systemCounter.incrementAndGet()}", config)
-    try block(sys) finally Await.ready(sys.terminate(), 10.seconds)
+    try block(sys)
+    finally Await.ready(sys.terminate(), 10.seconds)
   }
 }
 
@@ -61,6 +71,6 @@ object ExampleQueryModels {
 }
 
 class PrefixStringWithPAdapter extends ReadEventAdapter {
-  override def fromJournal(event: Any, manifest: String) = EventSeq.single("p-" + event)
+  override def fromJournal(event: Any, manifest: String) =
+    EventSeq.single("p-" + event)
 }
-

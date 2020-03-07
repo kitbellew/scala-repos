@@ -39,29 +39,32 @@ class ParserUtilsTest extends FunSuite {
   val strings =
     Seq(
       "123" -> true,
-      "1"   -> true,
-      ""    -> false,
-      " "   -> false,
-      "x"   -> false,
-      " 9"  -> false,
-      "9 "  -> false
+      "1" -> true,
+      "" -> false,
+      " " -> false,
+      "x" -> false,
+      " 9" -> false,
+      "9 " -> false
     )
 
   test("isDigits: Buf") {
-    strings foreach { case (str, expected) =>
-      assert(isDigitsBuf(str) == expected)
+    strings foreach {
+      case (str, expected) =>
+        assert(isDigitsBuf(str) == expected)
     }
   }
 
   test("isDigits: Buf.ByteBuffer") {
-    strings foreach { case (str, expected) =>
-      assert(isDigitsBB(str) == expected)
+    strings foreach {
+      case (str, expected) =>
+        assert(isDigitsBB(str) == expected)
     }
   }
 
   test("isDigits: Buf.ByteArray") {
-    strings foreach { case (str, expected) =>
-      assert(isDigitsBA(str) == expected)
+    strings foreach {
+      case (str, expected) =>
+        assert(isDigitsBA(str) == expected)
     }
   }
 }

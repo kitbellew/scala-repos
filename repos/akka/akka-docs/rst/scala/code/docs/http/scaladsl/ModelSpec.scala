@@ -34,7 +34,8 @@ class ModelSpec extends AkkaSpec {
     import MediaTypes._
     import HttpCharsets._
     val userData = ByteString("abc")
-    val authorization = headers.Authorization(BasicHttpCredentials("user", "pass"))
+    val authorization =
+      headers.Authorization(BasicHttpCredentials("user", "pass"))
     HttpRequest(
       PUT,
       uri = "/user",
@@ -80,12 +81,16 @@ class ModelSpec extends AkkaSpec {
     // a method that extracts basic HTTP credentials from a request
     def credentialsOfRequest(req: HttpRequest): Option[User] =
       for {
-        Authorization(BasicHttpCredentials(user, pass)) <- req.header[Authorization]
+        Authorization(BasicHttpCredentials(user, pass)) <- req
+          .header[Authorization]
       } yield User(user, pass)
     //#headers
 
-    credentialsOfRequest(HttpRequest(headers = List(auth))) should be(Some(User("joe", "josepp")))
+    credentialsOfRequest(HttpRequest(headers = List(auth))) should be(
+      Some(User("joe", "josepp")))
     credentialsOfRequest(HttpRequest()) should be(None)
-    credentialsOfRequest(HttpRequest(headers = List(Authorization(GenericHttpCredentials("Other", Map.empty[String, String]))))) should be(None)
+    credentialsOfRequest(HttpRequest(headers = List(Authorization(
+      GenericHttpCredentials("Other", Map.empty[String, String]))))) should be(
+      None)
   }
 }

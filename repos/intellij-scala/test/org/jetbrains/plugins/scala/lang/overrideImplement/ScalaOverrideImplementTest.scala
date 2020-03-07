@@ -7,16 +7,29 @@ import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil
 import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
 
 /**
- * @author Alefas
- * @since 14.05.12
- */
-class ScalaOverrideImplementTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
+  * @author Alefas
+  * @since 14.05.12
+  */
+class ScalaOverrideImplementTest
+    extends ScalaLightPlatformCodeInsightTestCaseAdapter {
 
-  def runTest(methodName: String, fileText: String, expectedText: String, isImplement: Boolean,
-              needsInferType: Boolean = true) {
-    configureFromFileTextAdapter("dummy.scala", fileText.replace("\r", "").stripMargin.trim)
-    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY = needsInferType
-    ScalaOIUtil.invokeOverrideImplement(getProjectAdapter, getEditorAdapter, getFileAdapter, isImplement, methodName)
+  def runTest(
+      methodName: String,
+      fileText: String,
+      expectedText: String,
+      isImplement: Boolean,
+      needsInferType: Boolean = true) {
+    configureFromFileTextAdapter(
+      "dummy.scala",
+      fileText.replace("\r", "").stripMargin.trim)
+    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
+      needsInferType
+    ScalaOIUtil.invokeOverrideImplement(
+      getProjectAdapter,
+      getEditorAdapter,
+      getFileAdapter,
+      isImplement,
+      methodName)
     checkResultByText(expectedText.replace("\r", "").stripMargin.trim)
   }
 

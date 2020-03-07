@@ -22,7 +22,10 @@ import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.sql.Row
 
-class MaxAbsScalerSuite extends SparkFunSuite with MLlibTestSparkContext with DefaultReadWriteTest {
+class MaxAbsScalerSuite
+    extends SparkFunSuite
+    with MLlibTestSparkContext
+    with DefaultReadWriteTest {
   test("MaxAbsScaler fit basic case") {
     val data = Array(
       Vectors.dense(1, 0, 100),
@@ -36,16 +39,24 @@ class MaxAbsScalerSuite extends SparkFunSuite with MLlibTestSparkContext with De
       Vectors.sparse(3, Array(0, 2), Array(-1, -1)),
       Vectors.sparse(3, Array(0), Array(-0.75)))
 
-    val df = sqlContext.createDataFrame(data.zip(expected)).toDF("features", "expected")
+    val df = sqlContext
+      .createDataFrame(data.zip(expected))
+      .toDF("features", "expected")
     val scaler = new MaxAbsScaler()
       .setInputCol("features")
       .setOutputCol("scaled")
 
     val model = scaler.fit(df)
-    model.transform(df).select("expected", "scaled").collect()
-      .foreach { case Row(vector1: Vector, vector2: Vector) =>
-      assert(vector1.equals(vector2), s"MaxAbsScaler ut error: $vector2 should be $vector1")
-    }
+    model
+      .transform(df)
+      .select("expected", "scaled")
+      .collect()
+      .foreach {
+        case Row(vector1: Vector, vector2: Vector) =>
+          assert(
+            vector1.equals(vector2),
+            s"MaxAbsScaler ut error: $vector2 should be $vector1")
+      }
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
@@ -59,10 +70,10 @@ class MaxAbsScalerSuite extends SparkFunSuite with MLlibTestSparkContext with De
   }
 
   test("MaxAbsScalerModel read/write") {
-    val instance = new MaxAbsScalerModel(
-      "myMaxAbsScalerModel", Vectors.dense(1.0, 10.0))
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
+    val instance =
+      new MaxAbsScalerModel("myMaxAbsScalerModel", Vectors.dense(1.0, 10.0))
+        .setInputCol("myInputCol")
+        .setOutputCol("myOutputCol")
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.maxAbs === instance.maxAbs)
   }

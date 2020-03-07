@@ -23,10 +23,14 @@ import scala.xml.Node
 
 import org.apache.spark.deploy.Command
 import org.apache.spark.deploy.mesos.MesosDriverDescription
-import org.apache.spark.scheduler.cluster.mesos.{MesosClusterRetryState, MesosClusterSubmissionState}
+import org.apache.spark.scheduler.cluster.mesos.{
+  MesosClusterRetryState,
+  MesosClusterSubmissionState
+}
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver") {
+private[ui] class DriverPage(parent: MesosClusterUI)
+    extends WebUIPage("driver") {
 
   override def render(request: HttpServletRequest): Seq[Node] = {
     val driverId = request.getParameter("id")
@@ -46,11 +50,13 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
     val commandEnvHeaders = Seq("Command environment variable", "Value")
     val launchedHeaders = Seq("Launched property", "Value")
     val commandHeaders = Seq("Command property", "Value")
-    val retryHeaders = Seq("Last failed status", "Next retry time", "Retry count")
+    val retryHeaders =
+      Seq("Last failed status", "Next retry time", "Retry count")
     val driverDescription = Iterable.apply(driverState.description)
     val submissionState = Iterable.apply(driverState.submissionState)
     val command = Iterable.apply(driverState.description.command)
-    val schedulerProperties = Iterable.apply(driverState.description.schedulerProperties)
+    val schedulerProperties =
+      Iterable.apply(driverState.description.schedulerProperties)
     val commandEnv = Iterable.apply(driverState.description.command.environment)
     val driverTable =
       UIUtils.listingTable(driverHeaders, driverRow, driverDescription)
@@ -64,7 +70,9 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
       UIUtils.listingTable(launchedHeaders, launchedRow, submissionState)
     val retryTable =
       UIUtils.listingTable(
-        retryHeaders, retryRow, Iterable.apply(driverState.description.retryState))
+        retryHeaders,
+        retryRow,
+        Iterable.apply(driverState.description.retryState))
     val content =
       <p>Driver state information for driver id {driverId}</p>
         <a href={UIUtils.prependBaseUri("/")}>Back to Drivers</a>
@@ -89,9 +97,11 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
     UIUtils.basicSparkPage(content, s"Details for Job $driverId")
   }
 
-  private def launchedRow(submissionState: Option[MesosClusterSubmissionState]): Seq[Node] = {
-    submissionState.map { state =>
-      <tr>
+  private def launchedRow(
+      submissionState: Option[MesosClusterSubmissionState]): Seq[Node] = {
+    submissionState
+      .map { state =>
+        <tr>
         <td>Mesos Slave ID</td>
         <td>{state.slaveId.getValue}</td>
       </tr>
@@ -111,12 +121,15 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
         <td>Last Task Status</td>
         <td>{state.mesosTaskStatus.map(_.toString).getOrElse("")}</td>
       </tr>
-    }.getOrElse(Seq[Node]())
+      }
+      .getOrElse(Seq[Node]())
   }
 
-  private def propertiesRow(properties: collection.Map[String, String]): Seq[Node] = {
-    properties.map { case (k, v) =>
-      <tr>
+  private def propertiesRow(
+      properties: collection.Map[String, String]): Seq[Node] = {
+    properties.map {
+      case (k, v) =>
+        <tr>
         <td>{k}</td><td>{v}</td>
       </tr>
     }.toSeq
@@ -136,7 +149,9 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
       <td>Java options</td><td>{command.javaOpts.mkString((" "))}</td>
     </tr>
     <tr>
-      <td>Library path entries</td><td>{command.libraryPathEntries.mkString((" "))}</td>
+      <td>Library path entries</td><td>{
+      command.libraryPathEntries.mkString((" "))
+    }</td>
     </tr>
   }
 
@@ -161,9 +176,11 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
     </tr>
   }
 
-  private def retryRow(retryState: Option[MesosClusterRetryState]): Seq[Node] = {
-    retryState.map { state =>
-      <tr>
+  private def retryRow(
+      retryState: Option[MesosClusterRetryState]): Seq[Node] = {
+    retryState
+      .map { state =>
+        <tr>
         <td>
           {state.lastFailureStatus}
         </td>
@@ -174,6 +191,7 @@ private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver")
           {state.retries}
         </td>
       </tr>
-    }.getOrElse(Seq[Node]())
+      }
+      .getOrElse(Seq[Node]())
   }
 }

@@ -12,6 +12,7 @@ trait SCL6605A {
   val bb: BB
   val ff: FF
   val gg = if (true) bb else ff
-  /*start*/gg/*end*/
+  /*start*/
+  gg /*end*/
 }
 //SCL6605A.this.T[SCL6605A.this.EE]

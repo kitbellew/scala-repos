@@ -2,27 +2,33 @@ package org.jetbrains.plugins.scala
 package codeInspection
 package scaladoc
 
-import com.intellij.codeInspection.{LocalInspectionTool, ProblemHighlightType, ProblemsHolder}
+import com.intellij.codeInspection.{
+  LocalInspectionTool,
+  ProblemHighlightType,
+  ProblemsHolder
+}
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.scaladoc.lexer.ScalaDocTokenType
 import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocTag
 
-
 /**
- * User: Dmitry Naydanov
- * Date: 12/17/11
- */
-
-class ScalaDocMissingParameterDescriptionInspection extends LocalInspectionTool {
+  * User: Dmitry Naydanov
+  * Date: 12/17/11
+  */
+class ScalaDocMissingParameterDescriptionInspection
+    extends LocalInspectionTool {
 
   override def getDisplayName: String = "Missing Parameter Description"
 
-  override def buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = {
+  override def buildVisitor(
+      holder: ProblemsHolder,
+      isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
-        if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(s.name) || s.getValueElement == null) {
+        if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
+              s.name) || s.getValueElement == null) {
           return
         }
 
@@ -33,14 +39,17 @@ class ScalaDocMissingParameterDescriptionInspection extends LocalInspectionTool 
           }
         }
 
-        holder.registerProblem(holder.getManager.createProblemDescriptor(
-          if (s.getValueElement != null) s.getValueElement else s, getDisplayName, true,
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING, isOnTheFly))
+        holder.registerProblem(
+          holder.getManager.createProblemDescriptor(
+            if (s.getValueElement != null) s.getValueElement else s,
+            getDisplayName,
+            true,
+            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+            isOnTheFly))
       }
     }
   }
 }
-
 
 object ScalaDocMissingParameterDescriptionInspection {
   import org.jetbrains.plugins.scala.lang.scaladoc.parser.parsing.MyScaladocParsing._

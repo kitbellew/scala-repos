@@ -60,14 +60,14 @@ class PriorityQueueTest {
     case class Rect(x: Int, y: Int)
 
     val areaComp = new Comparator[Rect] {
-      def compare(a: Rect, b: Rect): Int = (a.x*a.y) - (b.x*b.y)
+      def compare(a: Rect, b: Rect): Int = (a.x * a.y) - (b.x * b.y)
     }
 
     val pq = new PriorityQueue[Rect](11, areaComp)
 
-    assertTrue(pq.add(Rect(1,2)))
-    assertTrue(pq.add(Rect(2,3)))
-    assertTrue(pq.add(Rect(1,3)))
+    assertTrue(pq.add(Rect(1, 2)))
+    assertTrue(pq.add(Rect(2, 3)))
+    assertTrue(pq.add(Rect(1, 3)))
 
     val first = pq.poll()
     assertEquals(1, first.x)
@@ -176,7 +176,8 @@ class PriorityQueueTest {
     assertEquals(6, pq.size())
   }
 
-  @Test def should_check_contained_values_even_in_double_corner_cases(): Unit = {
+  @Test def should_check_contained_values_even_in_double_corner_cases()
+      : Unit = {
     val pq = new PriorityQueue[Double]()
 
     assertTrue(pq.add(11111.0))

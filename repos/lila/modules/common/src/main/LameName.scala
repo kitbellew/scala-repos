@@ -5,8 +5,8 @@ object LameName {
   def apply(n: String) = {
     val name = n.toLowerCase
     (lameUsernames exists name.contains) ||
-      (lamePrefixes exists name.startsWith) ||
-      (lameSuffixes exists name.endsWith)
+    (lamePrefixes exists name.startsWith) ||
+    (lameSuffixes exists name.endsWith)
   }
 
   private val lamePrefixes = "_" :: "-" :: (for {
@@ -42,7 +42,8 @@ object LameName {
       "whore",
       "nazi",
       "mortez",
-      "buttsex")
+      "buttsex"
+    )
     replacement <- List("" -> "", "o" -> "0", "i" -> "1", "s" -> "5")
   } yield base.replace(replacement._1, replacement._2)
 }

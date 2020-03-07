@@ -34,7 +34,8 @@ class CollectionsOnSynchronizedCollectionAbstractListTest
   def originalFactory: CollectionFactory = new AbstractListFactory
 }
 
-class CollectionsOnSynchronizedCollectionArrayListTest extends CollectionsSynchronizedCollectionTest {
+class CollectionsOnSynchronizedCollectionArrayListTest
+    extends CollectionsSynchronizedCollectionTest {
   def originalFactory: CollectionFactory = new ArrayListFactory
 }
 
@@ -69,4 +70,3 @@ class CollectionsOnSynchronizedCollectionArrayDequeTest
   def originalFactory: CollectionFactory =
     new ArrayDequeFactory
 }
-

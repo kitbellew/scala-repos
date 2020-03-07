@@ -6,19 +6,26 @@ import com.intellij.codeInspection._
 import com.intellij.psi.{PsiElement, PsiElementVisitor}
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScClassParameter
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScClass, ScTypeDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScClass,
+  ScTypeDefinition
+}
 
-
-class CaseClassParamInspection extends AbstractInspection("CaseClassParam", "Case Class Parameter") {
-  override def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
+class CaseClassParamInspection
+    extends AbstractInspection("CaseClassParam", "Case Class Parameter") {
+  override def actionFor(
+      holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case c: ScClass if c.isCase =>
-      for{
+      for {
         paramClause <- c.allClauses.take(1)
-        classParam@(__ : ScClassParameter) <- paramClause.parameters
+        classParam @ (__ : ScClassParameter) <- paramClause.parameters
         if classParam.isVal && classParam.isCaseClassVal
       } {
-        holder.registerProblem(classParam, ScalaBundle.message("val.on.case.class.param.redundant"),
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING, new RemoveValQuickFix(classParam))
+        holder.registerProblem(
+          classParam,
+          ScalaBundle.message("val.on.case.class.param.redundant"),
+          ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+          new RemoveValQuickFix(classParam))
       }
   }
 }

@@ -21,27 +21,31 @@ import java.nio.{ByteBuffer, ByteOrder}
 
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.catalyst.InternalRow
-import org.apache.spark.sql.execution.columnar.{ColumnBuilder, NativeColumnBuilder}
+import org.apache.spark.sql.execution.columnar.{
+  ColumnBuilder,
+  NativeColumnBuilder
+}
 import org.apache.spark.sql.types.AtomicType
 
 /**
- * A stackable trait that builds optionally compressed byte buffer for a column.  Memory layout of
- * the final byte buffer is:
- * {{{
- *    .----------------------- Null count N (4 bytes)
- *    |   .------------------- Null positions (4 x N bytes, empty if null count is zero)
- *    |   |     .------------- Compression scheme ID (4 bytes)
- *    |   |     |   .--------- Compressed non-null elements
- *    V   V     V   V
- *   +---+-----+---+---------+
- *   |   | ... |   | ... ... |
- *   +---+-----+---+---------+
- *    \-------/ \-----------/
- *     header         body
- * }}}
- */
+  * A stackable trait that builds optionally compressed byte buffer for a column.  Memory layout of
+  * the final byte buffer is:
+  * {{{
+  *    .----------------------- Null count N (4 bytes)
+  *    |   .------------------- Null positions (4 x N bytes, empty if null count is zero)
+  *    |   |     .------------- Compression scheme ID (4 bytes)
+  *    |   |     |   .--------- Compressed non-null elements
+  *    V   V     V   V
+  *   +---+-----+---+---------+
+  *   |   | ... |   | ... ... |
+  *   +---+-----+---+---------+
+  *    \-------/ \-----------/
+  *     header         body
+  * }}}
+  */
 private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
-  extends ColumnBuilder with Logging {
+    extends ColumnBuilder
+    with Logging {
 
   this: NativeColumnBuilder[T] with WithCompressionSchemes =>
 
@@ -52,12 +56,11 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
       columnName: String,
       useCompression: Boolean): Unit = {
 
-    compressionEncoders =
-      if (useCompression) {
-        schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
-      } else {
-        Seq(PassThrough.encoder(columnType))
-      }
+    compressionEncoders = if (useCompression) {
+      schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
+    } else {
+      Seq(PassThrough.encoder(columnType))
+    }
     super.initialize(initialSize, columnName, useCompression)
   }
 
@@ -65,7 +68,9 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     encoder.compressionRatio < 0.8
   }
 
-  private def gatherCompressibilityStats(row: InternalRow, ordinal: Int): Unit = {
+  private def gatherCompressibilityStats(
+      row: InternalRow,
+      ordinal: Int): Unit = {
     var i = 0
     while (i < compressionEncoders.length) {
       compressionEncoders(i).gatherCompressibilityStats(row, ordinal)
@@ -84,7 +89,8 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     val nonNullBuffer = buildNonNulls()
     val encoder: Encoder[T] = {
       val candidate = compressionEncoders.minBy(_.compressionRatio)
-      if (isWorthCompressing(candidate)) candidate else PassThrough.encoder(columnType)
+      if (isWorthCompressing(candidate)) candidate
+      else PassThrough.encoder(columnType)
     }
 
     // Header = null count + null positions
@@ -96,14 +102,15 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     }
 
     val compressedBuffer = ByteBuffer
-      // Reserves 4 bytes for compression scheme ID
+    // Reserves 4 bytes for compression scheme ID
       .allocate(headerSize + 4 + compressedSize)
       .order(ByteOrder.nativeOrder)
       // Write the header
       .putInt(nullCount)
       .put(nulls)
 
-    logDebug(s"Compressor for [$columnName]: $encoder, ratio: ${encoder.compressionRatio}")
+    logDebug(
+      s"Compressor for [$columnName]: $encoder, ratio: ${encoder.compressionRatio}")
     encoder.compress(nonNullBuffer, compressedBuffer)
   }
 }

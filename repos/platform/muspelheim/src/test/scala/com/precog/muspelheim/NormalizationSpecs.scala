@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,20 +26,25 @@ trait NormalizationSpecs extends EvalStackSpecs {
   import stack._
 
   def summaryHeight(obj: Map[String, SValue]) = {
-    obj("count") must beLike { case SDecimal(d) =>
-      d.toDouble mustEqual 993
+    obj("count") must beLike {
+      case SDecimal(d) =>
+        d.toDouble mustEqual 993
     }
-    obj("mean") must beLike { case SDecimal(d) =>
-      d.toDouble mustEqual 176.4370594159114
+    obj("mean") must beLike {
+      case SDecimal(d) =>
+        d.toDouble mustEqual 176.4370594159114
     }
-    obj("min") must beLike { case SDecimal(d) =>
-      d.toDouble mustEqual 140
+    obj("min") must beLike {
+      case SDecimal(d) =>
+        d.toDouble mustEqual 140
     }
-    obj("max") must beLike { case SDecimal(d) =>
-      d.toDouble mustEqual 208
+    obj("max") must beLike {
+      case SDecimal(d) =>
+        d.toDouble mustEqual 208
     }
-    obj("stdDev") must beLike { case SDecimal(d) =>
-      d.toDouble mustEqual 11.56375193112367
+    obj("stdDev") must beLike {
+      case SDecimal(d) =>
+        d.toDouble mustEqual 11.56375193112367
     }
   }
 
@@ -49,10 +54,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(medals.HeightIncm)
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
 
     result must haveSize(1)
-    
+
     result must haveAllElementsLike {
       case (ids, SObject(model)) => {
         ids must haveSize(0)
@@ -76,24 +81,26 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary and another reduction on the same dataset" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | height := medals.HeightIncm
       | summary(height).model1 with { sqVariance: variance(height) ^ 2 }
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
 
     result must haveSize(1)
-    
+
     result must haveAllElementsLike {
       case (ids, SObject(obj)) => {
         ids must haveSize(0)
 
         summaryHeight(obj)
 
-        obj("sqVariance") must beLike { case SDecimal(d) =>
-          d.toDouble mustEqual 17881.13433742673
+        obj("sqVariance") must beLike {
+          case SDecimal(d) =>
+            d.toDouble mustEqual 17881.13433742673
         }
       }
       case _ => ko
@@ -101,7 +108,9 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   def makeObject(query: String): Map[String, SValue] = {
-    val result = evalE(query) collect { case (_, SObject(values)) => values("model1") }
+    val result = evalE(query) collect {
+      case (_, SObject(values)) => values("model1")
+    }
     val SObject(obj) = result.head
     obj
   }
@@ -132,14 +141,14 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(medals.Age)
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
 
     val weightResult = makeObject(weight)
     val heightResult = makeObject(height)
     val ageResult = makeObject(age)
 
     result must haveSize(1)
-    
+
     result must haveAllElementsLike {
       case (ids, SObject(models)) => {
         ids must haveSize(0)
@@ -151,7 +160,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
             summary mustEqual heightResult
           }
 
-          case SObject(summary) => 
+          case SObject(summary) =>
             summary mustEqual ageResult
 
           case SArray(model) => {
@@ -172,7 +181,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary with object" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | data := {height: [medals.HeightIncm], weight: medals.Weight, age: medals.Age}
       | summary(data)
@@ -187,7 +197,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema2 = """
+    val schema2 =
+      """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -197,7 +208,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema3 = """
+    val schema3 =
+      """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -207,7 +219,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema4 = """
+    val schema4 =
+      """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -218,12 +231,14 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
 
     result must haveSize(1)
 
     def makeObject(query: String): Map[String, SValue] = {
-      val result = evalE(query) collect { case (_, SObject(values)) => values("model1") }
+      val result = evalE(query) collect {
+        case (_, SObject(values)) => values("model1")
+      }
       val SObject(obj) = result.head
       obj
     }
@@ -244,7 +259,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
         obj mustEqual obj3
       else if (Set("age").subsetOf(obj.keySet))
         obj mustEqual obj1
-      else 
+      else
         ko
     }
 
@@ -264,7 +279,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary with object (2)" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -274,7 +290,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(fields)
     """.stripMargin
 
-    val expectedInput = """
+    val expectedInput =
+      """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -302,7 +319,9 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val expected0 = evalE(expectedInput)
 
     val result = result0 collect { case (ids, value) if ids.size == 1 => value }
-    val expected = expected0 collect { case (ids, value) if ids.size == 1 => value }
+    val expected = expected0 collect {
+      case (ids, value) if ids.size == 1 => value
+    }
 
     result mustEqual expected
   }
@@ -315,7 +334,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, summary.model1)
     """.stripMargin
 
-    val expectedInput = """
+    val expectedInput =
+      """
       | medals := //summer_games/london_medals
       |
       | meanHeight := mean(medals.HeightIncm)
@@ -324,8 +344,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | { HeightIncm: (medals.HeightIncm - meanHeight) / stdDevHeight }
     """.stripMargin
 
-    val result = evalE(input) 
-    val expected = evalE(expectedInput) 
+    val result = evalE(input)
+    val expected = evalE(expectedInput)
 
     val resultValues = result collect {
       case (ids, value) if ids.size == 1 => value
@@ -339,7 +359,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "return empty set when there exists fields in summary not present in data" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | summary := summary(height).model1 with { foobar: { mean: 12, stdDev: 18 }}
@@ -350,7 +371,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "normalize data with multiple fields" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -361,7 +383,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, summary.model1)
     """.stripMargin
 
-    val expectedInput = """
+    val expectedInput =
+      """
       | medals := //summer_games/london_medals
       |
       | fields := { 
@@ -386,8 +409,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | }
     """.stripMargin
 
-    val result = evalE(input) 
-    val expected = evalE(expectedInput) 
+    val result = evalE(input)
+    val expected = evalE(expectedInput)
 
     expected.size mustEqual result.size
 
@@ -411,7 +434,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | { norm: normalized } with medals
     """.stripMargin
 
-    val expectedInput = """
+    val expectedInput =
+      """
       | medals := //summer_games/london_medals
       |
       | meanHeight := mean(medals.HeightIncm)
@@ -420,8 +444,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | { norm: { HeightIncm: (medals.HeightIncm - meanHeight) / stdDevHeight } } with medals
     """.stripMargin
 
-    val result = evalE(input) 
-    val expected = evalE(expectedInput) 
+    val result = evalE(input)
+    val expected = evalE(expectedInput)
 
     val resultValues = result collect {
       case (ids, value) if ids.size == 1 => value
@@ -441,34 +465,37 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, {HeightIncm: {stdDev: 18}})
     """.stripMargin
 
-    val inputDenorm = """
+    val inputDenorm =
+      """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::denormalize(medals, {HeightIncm: {mean: 23}})
     """.stripMargin
 
-    val resultNorm = evalE(inputNorm) 
-    val resultDenorm = evalE(inputDenorm) 
+    val resultNorm = evalE(inputNorm)
+    val resultDenorm = evalE(inputDenorm)
 
     resultNorm must beEmpty
     resultDenorm must beEmpty
   }
 
   "return empty set when normalizing and denormalizing with non-present schema" in {
-    val inputNorm = """
+    val inputNorm =
+      """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::normalize(medals, {foobar: {mean: 23, stdDev: 18}})
     """.stripMargin
 
-    val inputDenorm = """
+    val inputDenorm =
+      """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::denormalize(medals, {foobar: {mean: 23, stdDev: 18}})
     """.stripMargin
 
-    val resultNorm = evalE(inputNorm) 
-    val resultDenorm = evalE(inputDenorm) 
+    val resultNorm = evalE(inputNorm)
+    val resultDenorm = evalE(inputDenorm)
 
     resultNorm must beEmpty
     resultDenorm must beEmpty
@@ -485,13 +512,14 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::denormalize(normalized, summary.model1)
     """.stripMargin
 
-    val expectedInput = """
+    val expectedInput =
+      """
       | medals := //summer_games/london_medals
       | { HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm) }
     """.stripMargin
 
-    val result = evalE(input) 
-    val expected = evalE(expectedInput) 
+    val result = evalE(input)
+    val expected = evalE(expectedInput)
 
     val resultValues = result collect {
       case (ids, value) if ids.size == 1 => value
@@ -505,7 +533,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "denormalize normalized data and join with original data" in {
-    val input = """
+    val input =
+      """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       |
@@ -517,13 +546,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | denormalized with { originalHeight: medals.HeightIncm }
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
 
     result must haveAllElementsLike {
       case (ids, SObject(obj)) => {
         ids must haveSize(1)
         obj.keySet mustEqual Set("originalHeight", "HeightIncm")
-        
+
         obj("originalHeight") mustEqual obj("HeightIncm")
       }
 
@@ -532,7 +561,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "denormalize normalized data after clustering" in {
-    val input = """
+    val input =
+      """
       | conversions := //conversions
       |
       | ageNum := conversions.customer.age where std::type::isNumber(conversions.customer.age)
@@ -547,14 +577,16 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::denormalize(clustering, summary)
     """.stripMargin
 
-    val result = evalE(input) 
+    val result = evalE(input)
     result must not beEmpty
 
     val clusterIds = (1 to 10) map { "cluster" + _.toString }
 
-    def clusterSchema(obj: Map[String, SValue], clusterId: String): Set[String] = obj(clusterId) match {
+    def clusterSchema(
+        obj: Map[String, SValue],
+        clusterId: String): Set[String] = obj(clusterId) match {
       case SObject(ctr) => ctr.keySet
-      case _ => sys.error("malformed SObject")
+      case _            => sys.error("malformed SObject")
     }
 
     result must haveAllElementsLike {
@@ -562,16 +594,17 @@ trait NormalizationSpecs extends EvalStackSpecs {
         ids must haveSize(0)
         elems.keySet mustEqual Set("model1")
 
-        elems("model1") must beLike { case SObject(clusters) =>
-          clusters must haveSize(10)
-          clusters.keySet mustEqual clusterIds.toSet
-          
-          val checkClusters = clusterIds.forall { clusterId =>
-            clusterSchema(clusters, clusterId) == Set("age", "income")
-          }
+        elems("model1") must beLike {
+          case SObject(clusters) =>
+            clusters must haveSize(10)
+            clusters.keySet mustEqual clusterIds.toSet
 
-          if (checkClusters) ok
-          else ko
+            val checkClusters = clusterIds.forall { clusterId =>
+              clusterSchema(clusters, clusterId) == Set("age", "income")
+            }
+
+            if (checkClusters) ok
+            else ko
         }
 
       case _ => ko

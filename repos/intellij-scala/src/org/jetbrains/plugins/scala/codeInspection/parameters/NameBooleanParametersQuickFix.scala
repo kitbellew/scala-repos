@@ -7,12 +7,13 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
 import org.jetbrains.plugins.scala.util.IntentionUtils
 
 /**
- * @author Ksenia.Sautina
- * @since 5/10/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 5/10/12
+  */
 class NameBooleanParametersQuickFix(element: ScLiteral)
-        extends AbstractFixOnPsiElement(ScalaBundle.message("name.boolean.params"), element){
+    extends AbstractFixOnPsiElement(
+      ScalaBundle.message("name.boolean.params"),
+      element) {
 
   def doApplyFix(project: Project) {
     val elem = getElement
@@ -20,7 +21,7 @@ class NameBooleanParametersQuickFix(element: ScLiteral)
 
     IntentionUtils.addNameToArgumentsFix(elem, onlyBoolean = true) match {
       case Some(x) => x()
-      case None =>
+      case None    =>
     }
   }
 }

@@ -32,7 +32,8 @@ class RequeueFilterTest extends FunSuite {
     }
 
     assert(minRetries * percentRequeues == stats.counter("requeues")())
-    assert(Seq(minRetries * percentRequeues) == stats.stat("requeues_per_request")())
+    assert(
+      Seq(minRetries * percentRequeues) == stats.stat("requeues_per_request")())
     // the budget is not considered exhausted if we only used
     // our maxRetriesPerReq
     assert(0 == stats.counter("budget_exhausted")())
@@ -71,7 +72,8 @@ class RequeueFilterTest extends FunSuite {
 
     val minRetries = 10
     val percentRequeues = 0.5 // allow only 50% to be used
-    val retryBudget = RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis)
+    val retryBudget =
+      RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis)
     val filter = new RequeueFilter[String, Int](
       retryBudget,
       Backoff.constant(Duration.Zero),

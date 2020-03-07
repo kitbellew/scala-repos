@@ -3,7 +3,8 @@ import Keys._
 
 object Dependencies {
   val android = "com.google.android" % "android" % "4.1.1.4" % "provided"
-  val android_support_v4 = "com.google.android" % "support-v4" % "r7" % "provided"
+  val android_support_v4 =
+    "com.google.android" % "support-v4" % "r7" % "provided"
   val scaloidVersion = "4.3-SNAPSHOT"
   val scaloid = "org.scaloid" %% "scaloid" % scaloidVersion
 
@@ -27,17 +28,14 @@ object ScaloidBuild extends Build {
     crossScalaVersions := Seq("2.11.7"), // only 2.11.x for now
     version := scaloidVersion,
     publishMavenStyle := true,
-    publishTo <<= version {
-      (v: String) =>
-        val nexus = "https://oss.sonatype.org/"
-        if (v.trim.endsWith("SNAPSHOT"))
-          Some("snapshots" at nexus + "content/repositories/snapshots")
-        else
-          Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    publishTo <<= version { (v: String) =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT"))
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
-    pomIncludeRepository := {
-      _ => false
-    },
+    pomIncludeRepository := { _ => false },
     pomExtra :=
       <url>http://scaloid.org</url>
         <licenses>
@@ -60,20 +58,20 @@ object ScaloidBuild extends Build {
           </developer>
         </developers>,
     scalacOptions := Seq(
-      "-target:jvm-1.6", "-deprecation", "-feature"
+      "-target:jvm-1.6",
+      "-deprecation",
+      "-feature"
     ),
-    javacOptions ++= Seq(
-      "-source", "1.6",
-      "-target", "1.6"),
-    resolvers += "Android Repository" at (new File(System.getenv("ANDROID_HOME")) / "extras" / "android" / "m2repository").getCanonicalFile.toURI.toString,
-    addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
+    javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
+    resolvers += "Android Repository" at (new File(System.getenv(
+      "ANDROID_HOME")) / "extras" / "android" / "m2repository").getCanonicalFile.toURI.toString,
+    addCompilerPlugin(
+      "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   )
 
   // configure prompt to show current project
   override lazy val settings = super.settings :+ {
-    shellPrompt := {
-      s => Project.extract(s).currentProject.id + "> "
-    }
+    shellPrompt := { s => Project.extract(s).currentProject.id + "> " }
   }
 
   //  root project
@@ -87,8 +85,16 @@ object ScaloidBuild extends Build {
     .settings(name := "scaloid", exportJars := true)
     .settings(basicSettings: _*)
     .settings(scaloidSettings: _*)
-    .settings(libraryDependencies ++= Seq(robolectric, scalaTest, junit, junitInterface, android),
-      libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _))
+    .settings(
+      libraryDependencies ++= Seq(
+        robolectric,
+        scalaTest,
+        junit,
+        junitInterface,
+        android),
+      libraryDependencies <+= (scalaVersion)(
+        "org.scala-lang" % "scala-reflect" % _)
+    )
     //RobolectricTestRunner requires "fork" to reflect test code changes without sbt restart.
     .settings(fork in Test := true)
 
@@ -107,4 +113,3 @@ object ScaloidBuild extends Build {
     .settings(libraryDependencies += scaloid)
     .dependsOn(common)
 }
-

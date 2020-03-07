@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.cluster.ddata
 
 import scala.concurrent.duration._
@@ -19,7 +19,9 @@ object ReplicatorPruningSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(ConfigFactory.parseString("""
+  commonConfig(
+    ConfigFactory.parseString(
+      """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -31,7 +33,10 @@ class ReplicatorPruningSpecMultiJvmNode1 extends ReplicatorPruningSpec
 class ReplicatorPruningSpecMultiJvmNode2 extends ReplicatorPruningSpec
 class ReplicatorPruningSpecMultiJvmNode3 extends ReplicatorPruningSpec
 
-class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with STMultiNodeSpec with ImplicitSender {
+class ReplicatorPruningSpec
+    extends MultiNodeSpec(ReplicatorPruningSpec)
+    with STMultiNodeSpec
+    with ImplicitSender {
   import ReplicatorPruningSpec._
   import Replicator._
 
@@ -39,9 +44,12 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
 
   implicit val cluster = Cluster(system)
   val maxPruningDissemination = 3.seconds
-  val replicator = system.actorOf(Replicator.props(
-    ReplicatorSettings(system).withGossipInterval(1.second)
-      .withPruning(pruningInterval = 1.second, maxPruningDissemination)), "replicator")
+  val replicator = system.actorOf(
+    Replicator.props(
+      ReplicatorSettings(system)
+        .withGossipInterval(1.second)
+        .withPruning(pruningInterval = 1.second, maxPruningDissemination)),
+    "replicator")
   val timeout = 2.seconds.dilated
 
   val KeyA = GCounterKey("A")
@@ -71,12 +79,18 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
 
       // we need the UniqueAddress
       val memberProbe = TestProbe()
-      cluster.subscribe(memberProbe.ref, initialStateMode = InitialStateAsEvents, classOf[MemberUp])
+      cluster.subscribe(
+        memberProbe.ref,
+        initialStateMode = InitialStateAsEvents,
+        classOf[MemberUp])
       val thirdUniqueAddress = {
-        val member = memberProbe.fishForMessage(3.seconds) {
-          case MemberUp(m) if m.address == node(third).address ⇒ true
-          case _ ⇒ false
-        }.asInstanceOf[MemberUp].member
+        val member = memberProbe
+          .fishForMessage(3.seconds) {
+            case MemberUp(m) if m.address == node(third).address ⇒ true
+            case _ ⇒ false
+          }
+          .asInstanceOf[MemberUp]
+          .member
         member.uniqueAddress
       }
 
@@ -86,7 +100,8 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
       replicator ! Update(KeyB, ORSet(), WriteAll(timeout))(_ + "a" + "b" + "c")
       expectMsg(UpdateSuccess(KeyB, None))
 
-      replicator ! Update(KeyC, PNCounterMap(), WriteAll(timeout))(_ increment "x" increment "y")
+      replicator ! Update(KeyC, PNCounterMap(), WriteAll(timeout))(
+        _ increment "x" increment "y")
       expectMsg(UpdateSuccess(KeyC, None))
 
       enterBarrier("updates-done")
@@ -194,4 +209,3 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
   }
 
 }
-

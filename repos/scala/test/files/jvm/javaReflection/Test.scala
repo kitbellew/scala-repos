@@ -48,30 +48,33 @@ getSimpleName / getCanonicalName / isAnonymousClass / isLocalClass / isSynthetic
   - Scala-defined classes are never synthetic for Java reflection. The implementation
     checks for the SYNTHETEIC flag, which does not seem to be added by scalac (maybe this
     will change some day).
-*/
-
+  */
 object Test {
 
-  def tr[T](m: => T): String = try {
-    val r = m
-    if (r == null) "null"
-    else r.toString
-  } catch { case e: InternalError => e.getMessage }
+  def tr[T](m: => T): String =
+    try {
+      val r = m
+      if (r == null) "null"
+      else r.toString
+    } catch { case e: InternalError => e.getMessage }
 
   def assertNotAnonymous(c: Class[_]) = {
-    val an = try {
-      c.isAnonymousClass
-    } catch {
-      // isAnonymousClass is implemented using getSimpleName, which may throw.
-      case e: InternalError => false
-    }
+    val an =
+      try {
+        c.isAnonymousClass
+      } catch {
+        // isAnonymousClass is implemented using getSimpleName, which may throw.
+        case e: InternalError => false
+      }
     assert(!an, c)
   }
 
   def ruleMemberOrLocal(c: Class[_]) = {
     // if it throws, then it's because of the call from isLocalClass to isAnonymousClass.
     // we know that isAnonymousClass is always false, so it has to be a local class.
-    val loc = try { c.isLocalClass } catch { case e: InternalError => true }
+    val loc =
+      try { c.isLocalClass }
+      catch { case e: InternalError => true }
     if (loc)
       assert(!c.isMemberClass, c)
     if (c.isMemberClass)
@@ -80,7 +83,9 @@ object Test {
 
   def ruleMemberDeclaring(c: Class[_]) = {
     if (c.isMemberClass)
-      assert(c.getDeclaringClass.getDeclaredClasses.toList.map(_.getName) contains c.getName)
+      assert(
+        c.getDeclaringClass.getDeclaredClasses.toList
+          .map(_.getName) contains c.getName)
   }
 
   def ruleScalaAnonClassIsLocal(c: Class[_]) = {
@@ -102,10 +107,13 @@ object Test {
   def showClass(name: String) = {
     val c = Class.forName(name)
 
-    println(s"${c.getName} / ${tr(c.getCanonicalName)} (canon) / ${tr(c.getSimpleName)} (simple)")
-    println( "- declared cls: "+ c.getDeclaredClasses.toList.sortBy(_.getName))
-    println(s"- enclosing   : ${c.getDeclaringClass} (declaring cls) / ${c.getEnclosingClass} (cls) / ${c.getEnclosingConstructor} (constr) / ${c.getEnclosingMethod} (meth)")
-    println(s"- properties  : ${tr(c.isLocalClass)} (local) / ${c.isMemberClass} (member)")
+    println(
+      s"${c.getName} / ${tr(c.getCanonicalName)} (canon) / ${tr(c.getSimpleName)} (simple)")
+    println("- declared cls: " + c.getDeclaredClasses.toList.sortBy(_.getName))
+    println(
+      s"- enclosing   : ${c.getDeclaringClass} (declaring cls) / ${c.getEnclosingClass} (cls) / ${c.getEnclosingConstructor} (constr) / ${c.getEnclosingMethod} (meth)")
+    println(
+      s"- properties  : ${tr(c.isLocalClass)} (local) / ${c.isMemberClass} (member)")
 
     assertNotAnonymous(c)
     assert(!c.isSynthetic, c)
@@ -118,19 +126,26 @@ object Test {
   }
 
   def main(args: Array[String]): Unit = {
-    def isAnonFunClassName(s: String) = s.contains("$anonfun$") || s.contains("$lambda$")
+    def isAnonFunClassName(s: String) =
+      s.contains("$anonfun$") || s.contains("$lambda$")
 
-    val classfiles = new java.io.File(sys.props("partest.output")).listFiles().toList.map(_.getName).collect({
-      // exclude files from Test.scala, just take those from Classes_1.scala
-      case s if !s.startsWith("Test") && s.endsWith(".class") => s.substring(0, s.length - 6)
-    }).sortWith((a, b) => {
-      // sort such that first there are all anonymous functions, then all other classes.
-      // within those categories, sort lexically.
-      // this makes the check file smaller: it differs for anonymous functions between -Ydelambdafy:inline/method.
-      // the other classes are the same.
-      if (isAnonFunClassName(a)) !isAnonFunClassName(b) || a < b
-      else !isAnonFunClassName(b) && a < b
-    })
+    val classfiles = new java.io.File(sys.props("partest.output"))
+      .listFiles()
+      .toList
+      .map(_.getName)
+      .collect({
+        // exclude files from Test.scala, just take those from Classes_1.scala
+        case s if !s.startsWith("Test") && s.endsWith(".class") =>
+          s.substring(0, s.length - 6)
+      })
+      .sortWith((a, b) => {
+        // sort such that first there are all anonymous functions, then all other classes.
+        // within those categories, sort lexically.
+        // this makes the check file smaller: it differs for anonymous functions between -Ydelambdafy:inline/method.
+        // the other classes are the same.
+        if (isAnonFunClassName(a)) !isAnonFunClassName(b) || a < b
+        else !isAnonFunClassName(b) && a < b
+      })
 
     classfiles foreach showClass
   }

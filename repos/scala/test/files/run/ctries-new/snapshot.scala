@@ -1,11 +1,5 @@
-
-
-
-
 import collection._
 import collection.concurrent.TrieMap
-
-
 
 object SnapshotSpec extends Spec {
 
@@ -52,7 +46,11 @@ object SnapshotSpec extends Spec {
       }
     }
 
-    def consistentReadOnly(name: String, readonly: Map[Wrap, Int], sz: Int, N: Int) {
+    def consistentReadOnly(
+        name: String,
+        readonly: Map[Wrap, Int],
+        sz: Int,
+        N: Int) {
       @volatile var e: Exception = null
 
       // reads possible entries once and stores them
@@ -71,14 +69,18 @@ object SnapshotSpec extends Spec {
           val initial = mutable.Map[Wrap, Int]()
           for (i <- 0 until sz) trie.get(new Wrap(i)) match {
             case Some(i) => initial.put(new Wrap(i), i)
-            case None => // do nothing
+            case None    => // do nothing
           }
 
           for (k <- 0 until N) {
             for (i <- 0 until sz) {
               val tres = trie.get(new Wrap(i))
               val ires = initial.get(new Wrap(i))
-              if (tres != ires) println(i, "initially: " + ires, "traversal %d: %s".format(k, tres))
+              if (tres != ires)
+                println(
+                  i,
+                  "initially: " + ires,
+                  "traversal %d: %s".format(k, tres))
               assert(tres == ires)
             }
           }
@@ -96,25 +98,32 @@ object SnapshotSpec extends Spec {
     }
 
     // traverses the trie `rep` times and modifies each entry
-    class Modifier(trie: TrieMap[Wrap, Int], index: Int, rep: Int, sz: Int) extends Thread {
+    class Modifier(trie: TrieMap[Wrap, Int], index: Int, rep: Int, sz: Int)
+        extends Thread {
       setName("Modifier %d".format(index))
 
       override def run() {
         for (k <- 0 until rep) {
           for (i <- 0 until sz) trie.putIfAbsent(new Wrap(i), i) match {
             case Some(_) => trie.remove(new Wrap(i))
-            case None => // do nothing
+            case None    => // do nothing
           }
         }
       }
     }
 
     // removes all the elements from the trie
-    class Remover(trie: TrieMap[Wrap, Int], index: Int, totremovers: Int, sz: Int) extends Thread {
+    class Remover(
+        trie: TrieMap[Wrap, Int],
+        index: Int,
+        totremovers: Int,
+        sz: Int)
+        extends Thread {
       setName("Remover %d".format(index))
 
       override def run() {
-        for (i <- 0 until sz) trie.remove(new Wrap((i + sz / totremovers * index) % sz))
+        for (i <- 0 until sz)
+          trie.remove(new Wrap((i + sz / totremovers * index) % sz))
       }
     }
 
@@ -146,7 +155,8 @@ object SnapshotSpec extends Spec {
       val threads = for (i <- 0 until W) yield new Remover(ct, i, W, sz)
 
       threads.foreach(_.start())
-      for (i <- 0 until S) consistentReadOnly("non-qr", ct.readOnlySnapshot(), sz, 5)
+      for (i <- 0 until S)
+        consistentReadOnly("non-qr", ct.readOnlySnapshot(), sz, 5)
       threads.foreach(_.join())
     }
 
@@ -161,11 +171,16 @@ object SnapshotSpec extends Spec {
       val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
-      for (i <- 0 until S) consistentReadOnly("non-qm", ct.readOnlySnapshot(), sz, 5)
+      for (i <- 0 until S)
+        consistentReadOnly("non-qm", ct.readOnlySnapshot(), sz, 5)
       threads.foreach(_.join())
     }
 
-    def consistentNonReadOnly(name: String, trie: TrieMap[Wrap, Int], sz: Int, N: Int) {
+    def consistentNonReadOnly(
+        name: String,
+        trie: TrieMap[Wrap, Int],
+        sz: Int,
+        N: Int) {
       @volatile var e: Exception = null
 
       // reads possible entries once and stores them
@@ -184,7 +199,7 @@ object SnapshotSpec extends Spec {
           val initial = mutable.Map[Wrap, Int]()
           for (i <- 0 until sz) trie.get(new Wrap(i)) match {
             case Some(i) => initial.put(new Wrap(i), i)
-            case None => // do nothing
+            case None    => // do nothing
           }
 
           for (k <- 0 until N) {

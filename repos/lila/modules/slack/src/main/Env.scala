@@ -5,7 +5,12 @@ import com.typesafe.config.Config
 
 import lila.common.PimpedConfig._
 import lila.hub.actorApi.slack.Event
-import lila.hub.actorApi.{ DonationEvent, Deploy, RemindDeployPre, RemindDeployPost }
+import lila.hub.actorApi.{
+  DonationEvent,
+  Deploy,
+  RemindDeployPre,
+  RemindDeployPost
+}
 
 final class Env(
     config: Config,
@@ -13,13 +18,13 @@ final class Env(
     system: ActorSystem) {
 
   private val IncomingUrl = config getString "incoming.url"
-  private val IncomingDefaultChannel = config getString "incoming.default_channel"
+  private val IncomingDefaultChannel =
+    config getString "incoming.default_channel"
 
   lazy val api = new SlackApi(client, getLightUser)
 
-  private lazy val client = new SlackClient(
-    url = IncomingUrl,
-    defaultChannel = IncomingDefaultChannel)
+  private lazy val client =
+    new SlackClient(url = IncomingUrl, defaultChannel = IncomingDefaultChannel)
 
   system.actorOf(Props(new Actor {
     override def preStart() {

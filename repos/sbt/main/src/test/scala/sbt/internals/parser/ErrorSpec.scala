@@ -9,22 +9,25 @@ import sbt.internal.util.MessageOnlyException
 import scala.io.Source
 
 class ErrorSpec extends AbstractSpec with ScalaCheck {
-  implicit val splitter: SplitExpressions.SplitExpression = EvaluateConfigurations.splitExpressions
+  implicit val splitter: SplitExpressions.SplitExpression =
+    EvaluateConfigurations.splitExpressions
 
   "Parser " should {
 
     "contains file name and line number" in {
-      val rootPath = getClass.getClassLoader.getResource("").getPath + "/error-format/"
+      val rootPath =
+        getClass.getClassLoader.getResource("").getPath + "/error-format/"
       println(s"Reading files from: $rootPath")
       foreach(new File(rootPath).listFiles) { file =>
         print(s"Processing ${file.getName}: ")
         val buildSbt = Source.fromFile(file).getLines().mkString("\n")
-        SbtParser(file, buildSbt.lines.toSeq) must throwA[MessageOnlyException].like {
-          case exp =>
-            val message = exp.getMessage
-            println(s"${exp.getMessage}")
-            message must contain(file.getName)
-        }
+        SbtParser(file, buildSbt.lines.toSeq) must throwA[MessageOnlyException]
+          .like {
+            case exp =>
+              val message = exp.getMessage
+              println(s"${exp.getMessage}")
+              message must contain(file.getName)
+          }
         containsLineNumber(buildSbt)
       }
     }
@@ -38,7 +41,12 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
           | } /* */ //
           |}
         """.stripMargin
-      MissingBracketHandler.findMissingText(buildSbt, buildSbt.length, 2, "fake.txt", new MessageOnlyException("fake")) must throwA[MessageOnlyException]
+      MissingBracketHandler.findMissingText(
+        buildSbt,
+        buildSbt.length,
+        2,
+        "fake.txt",
+        new MessageOnlyException("fake")) must throwA[MessageOnlyException]
     }
 
     "handle xml error " in {
@@ -47,7 +55,8 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
           |val a = <a/><b/>
           |val s = '
         """.stripMargin
-      SbtParser(SbtParser.FAKE_FILE, buildSbt.lines.toSeq) must throwA[MessageOnlyException].like {
+      SbtParser(SbtParser.FAKE_FILE, buildSbt.lines.toSeq) must throwA[
+        MessageOnlyException].like {
         case exp =>
           val message = exp.getMessage
           println(s"${exp.getMessage}")
@@ -60,7 +69,8 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
   private def containsLineNumber(buildSbt: String) = {
     try {
       split(buildSbt)
-      throw new IllegalStateException(s"${classOf[MessageOnlyException].getName} expected")
+      throw new IllegalStateException(
+        s"${classOf[MessageOnlyException].getName} expected")
     } catch {
       case exception: MessageOnlyException =>
         val error = exception.getMessage

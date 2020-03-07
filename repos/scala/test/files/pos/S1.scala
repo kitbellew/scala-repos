@@ -6,8 +6,8 @@
 ** method foo's type parameter bounds [T <: S1.this.type]
 **        foo(this);
 **           ^
-*/
+ */
 class S1() {
-    def foo[T <: this.type](x: T) = x;
-    foo[this.type](this);
+  def foo[T <: this.type](x: T) = x;
+  foo[this.type](this);
 }

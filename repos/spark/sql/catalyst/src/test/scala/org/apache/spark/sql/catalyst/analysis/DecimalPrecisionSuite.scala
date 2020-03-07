@@ -23,11 +23,17 @@ import org.apache.spark.sql.catalyst.{SimpleCatalystConf, TableIdentifier}
 import org.apache.spark.sql.catalyst.dsl.expressions._
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.aggregate._
-import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
+import org.apache.spark.sql.catalyst.expressions.Literal.{
+  FalseLiteral,
+  TrueLiteral
+}
 import org.apache.spark.sql.catalyst.plans.PlanTest
-import org.apache.spark.sql.catalyst.plans.logical.{LocalRelation, Project, Union}
+import org.apache.spark.sql.catalyst.plans.logical.{
+  LocalRelation,
+  Project,
+  Union
+}
 import org.apache.spark.sql.types._
-
 
 class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
   val conf = new SimpleCatalystConf(caseSensitiveAnalysis = true)
@@ -54,27 +60,42 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
     catalog.registerTable(TableIdentifier("table"), relation)
   }
 
-  private def checkType(expression: Expression, expectedType: DataType): Unit = {
+  private def checkType(
+      expression: Expression,
+      expectedType: DataType): Unit = {
     val plan = Project(Seq(Alias(expression, "c")()), relation)
     assert(analyzer.execute(plan).schema.fields(0).dataType === expectedType)
   }
 
-  private def checkComparison(expression: Expression, expectedType: DataType): Unit = {
+  private def checkComparison(
+      expression: Expression,
+      expectedType: DataType): Unit = {
     val plan = Project(Alias(expression, "c")() :: Nil, relation)
-    val comparison = analyzer.execute(plan).collect {
-      case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e
-    }.head
+    val comparison = analyzer
+      .execute(plan)
+      .collect {
+        case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e
+      }
+      .head
     assert(comparison.left.dataType === expectedType)
     assert(comparison.right.dataType === expectedType)
   }
 
-  private def checkUnion(left: Expression, right: Expression, expectedType: DataType): Unit = {
+  private def checkUnion(
+      left: Expression,
+      right: Expression,
+      expectedType: DataType): Unit = {
     val plan =
-      Union(Project(Seq(Alias(left, "l")()), relation),
+      Union(
+        Project(Seq(Alias(left, "l")()), relation),
         Project(Seq(Alias(right, "r")()), relation))
-    val (l, r) = analyzer.execute(plan).collect {
-      case Union(Seq(child1, child2)) => (child1.output.head, child2.output.head)
-    }.head
+    val (l, r) = analyzer
+      .execute(plan)
+      .collect {
+        case Union(Seq(child1, child2)) =>
+          (child1.output.head, child2.output.head)
+      }
+      .head
     assert(l.dataType === expectedType)
     assert(r.dataType === expectedType)
   }

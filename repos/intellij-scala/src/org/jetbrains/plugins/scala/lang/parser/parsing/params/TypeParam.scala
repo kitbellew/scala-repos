@@ -10,10 +10,9 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
 import org.jetbrains.plugins.scala.lang.parser.parsing.types.Type
 
 /**
- * @author Alexander Podkhalyuzin
- * Date: 06.03.2008
- */
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
 /*
  * TypeParam ::= {Annotation} (id | '_') [TypeParamClause] ['>:' Type] ['<:'Type] {'<%' Type} {':' Type}
  */
@@ -23,14 +22,14 @@ object TypeParam {
     val paramMarker = builder.mark
     val annotationMarker = builder.mark
     var exist = false
-    while (Annotation.parse(builder)) {exist = true}
+    while (Annotation.parse(builder)) { exist = true }
     if (exist) annotationMarker.done(ScalaElementTypes.ANNOTATIONS)
     else annotationMarker.drop()
 
     if (mayHaveVariance) {
       builder.getTokenText match {
         case "+" | "-" => builder.advanceLexer()
-        case _ =>
+        case _         =>
       }
     }
     builder.getTokenType match {

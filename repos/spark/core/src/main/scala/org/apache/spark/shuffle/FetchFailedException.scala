@@ -22,11 +22,11 @@ import org.apache.spark.storage.BlockManagerId
 import org.apache.spark.util.Utils
 
 /**
- * Failed to fetch a shuffle block. The executor catches this exception and propagates it
- * back to DAGScheduler (through TaskEndReason) so we'd resubmit the previous stage.
- *
- * Note that bmAddress can be null.
- */
+  * Failed to fetch a shuffle block. The executor catches this exception and propagates it
+  * back to DAGScheduler (through TaskEndReason) so we'd resubmit the previous stage.
+  *
+  * Note that bmAddress can be null.
+  */
 private[spark] class FetchFailedException(
     bmAddress: BlockManagerId,
     shuffleId: Int,
@@ -34,7 +34,7 @@ private[spark] class FetchFailedException(
     reduceId: Int,
     message: String,
     cause: Throwable = null)
-  extends Exception(message, cause) {
+    extends Exception(message, cause) {
 
   def this(
       bmAddress: BlockManagerId,
@@ -45,15 +45,20 @@ private[spark] class FetchFailedException(
     this(bmAddress, shuffleId, mapId, reduceId, cause.getMessage, cause)
   }
 
-  def toTaskEndReason: TaskEndReason = FetchFailed(bmAddress, shuffleId, mapId, reduceId,
-    Utils.exceptionString(this))
+  def toTaskEndReason: TaskEndReason =
+    FetchFailed(
+      bmAddress,
+      shuffleId,
+      mapId,
+      reduceId,
+      Utils.exceptionString(this))
 }
 
 /**
- * Failed to get shuffle metadata from [[org.apache.spark.MapOutputTracker]].
- */
+  * Failed to get shuffle metadata from [[org.apache.spark.MapOutputTracker]].
+  */
 private[spark] class MetadataFetchFailedException(
     shuffleId: Int,
     reduceId: Int,
     message: String)
-  extends FetchFailedException(null, shuffleId, -1, reduceId, message)
+    extends FetchFailedException(null, shuffleId, -1, reduceId, message)

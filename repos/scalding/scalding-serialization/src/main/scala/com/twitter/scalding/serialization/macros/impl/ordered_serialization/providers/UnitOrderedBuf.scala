@@ -19,7 +19,11 @@ import scala.language.experimental.macros
 import scala.reflect.macros.Context
 
 import com.twitter.scalding._
-import com.twitter.scalding.serialization.macros.impl.ordered_serialization.{ CompileTimeLengthTypes, ProductLike, TreeOrderedBuf }
+import com.twitter.scalding.serialization.macros.impl.ordered_serialization.{
+  CompileTimeLengthTypes,
+  ProductLike,
+  TreeOrderedBuf
+}
 import CompileTimeLengthTypes._
 import java.nio.ByteBuffer
 import com.twitter.scalding.serialization.OrderedSerialization
@@ -36,7 +40,9 @@ object UnitOrderedBuf {
       override val ctx: c.type = c
       override val tpe = outerType
 
-      override def compareBinary(inputStreamA: ctx.TermName, inputStreamB: ctx.TermName) =
+      override def compareBinary(
+          inputStreamA: ctx.TermName,
+          inputStreamB: ctx.TermName) =
         q"0"
 
       override def hash(element: ctx.TermName): ctx.Tree =
@@ -59,4 +65,3 @@ object UnitOrderedBuf {
     }
   }
 }
-

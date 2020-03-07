@@ -15,13 +15,16 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 
 /**
- *  User: Alexander Podkhalyuzin
- *  Date: 14.10.2008
- */
-
-class ScFunctionStubImpl[ParentPsi <: PsiElement](parent: StubElement[ParentPsi],
-                                                  elemType: IStubElementType[_ <: StubElement[_ <: PsiElement], _ <: PsiElement])
-extends StubBaseWrapper[ScFunction](parent, elemType) with ScFunctionStub {
+  *  User: Alexander Podkhalyuzin
+  *  Date: 14.10.2008
+  */
+class ScFunctionStubImpl[ParentPsi <: PsiElement](
+    parent: StubElement[ParentPsi],
+    elemType: IStubElementType[
+      _ <: StubElement[_ <: PsiElement],
+      _ <: PsiElement])
+    extends StubBaseWrapper[ScFunction](parent, elemType)
+    with ScFunctionStub {
   private var name: StringRef = _
   private var declaration: Boolean = false
   private var annotations: Array[StringRef] = Array[StringRef]()
@@ -33,11 +36,23 @@ extends StubBaseWrapper[ScFunction](parent, elemType) with ScFunctionStub {
   private var _implicit: Boolean = false
   private var local: Boolean = false
 
-  def this(parent: StubElement[ParentPsi],
-          elemType: IStubElementType[_ <: StubElement[_ <: PsiElement], _ <: PsiElement],
-          name: String, isDeclaration: Boolean, annotations: Array[String], typeText: String, bodyText: String,
-          assign: Boolean, isImplicit: Boolean, isLocal: Boolean) = {
-    this(parent, elemType.asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+  def this(
+      parent: StubElement[ParentPsi],
+      elemType: IStubElementType[
+        _ <: StubElement[_ <: PsiElement],
+        _ <: PsiElement],
+      name: String,
+      isDeclaration: Boolean,
+      annotations: Array[String],
+      typeText: String,
+      bodyText: String,
+      assign: Boolean,
+      isImplicit: Boolean,
+      isLocal: Boolean) = {
+    this(
+      parent,
+      elemType
+        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = StringRef.fromString(name)
     this.declaration = isDeclaration
     this.annotations = annotations.map(StringRef.fromString)
@@ -48,11 +63,23 @@ extends StubBaseWrapper[ScFunction](parent, elemType) with ScFunctionStub {
     local = isLocal
   }
 
-  def this(parent: StubElement[ParentPsi],
-          elemType: IStubElementType[_ <: StubElement[_ <: PsiElement], _ <: PsiElement],
-          name: StringRef, isDeclaration: Boolean, annotations: Array[StringRef], typeText: StringRef, bodyText: StringRef,
-          assign: Boolean, isImplicit: Boolean, isLocal: Boolean) = {
-    this(parent, elemType.asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
+  def this(
+      parent: StubElement[ParentPsi],
+      elemType: IStubElementType[
+        _ <: StubElement[_ <: PsiElement],
+        _ <: PsiElement],
+      name: StringRef,
+      isDeclaration: Boolean,
+      annotations: Array[StringRef],
+      typeText: StringRef,
+      bodyText: StringRef,
+      assign: Boolean,
+      isImplicit: Boolean,
+      isLocal: Boolean) = {
+    this(
+      parent,
+      elemType
+        .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
     this.name = name
     this.declaration = isDeclaration
     this.annotations = annotations
@@ -80,7 +107,9 @@ extends StubBaseWrapper[ScFunction](parent, elemType) with ScFunctionStub {
     }
     val res: Option[ScTypeElement] =
       if (getReturnTypeText != "") {
-        Some(ScalaPsiElementFactory.createTypeElementFromText(getReturnTypeText, getPsi, null))
+        Some(
+          ScalaPsiElementFactory
+            .createTypeElementFromText(getReturnTypeText, getPsi, null))
       } else None
     myReturnTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -89,11 +118,14 @@ extends StubBaseWrapper[ScFunction](parent, elemType) with ScFunctionStub {
   def getBodyExpression: Option[ScExpression] = {
     if (myBodyExpression != null) {
       val body = myBodyExpression.get
-      if (body != null && (body.isEmpty || (body.get.getContext eq getPsi))) return body
+      if (body != null && (body.isEmpty || (body.get.getContext eq getPsi)))
+        return body
     }
     val res: Option[ScExpression] =
       if (getBodyText != "") {
-        Some(ScalaPsiElementFactory.createExpressionWithContextFromText(getBodyText, getPsi, null))
+        Some(
+          ScalaPsiElementFactory
+            .createExpressionWithContextFromText(getBodyText, getPsi, null))
       } else None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res

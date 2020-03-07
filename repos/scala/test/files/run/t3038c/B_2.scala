@@ -1,4 +1,3 @@
-
 class B extends A {
   lazy val b0 = 71
   lazy val b1 = 72

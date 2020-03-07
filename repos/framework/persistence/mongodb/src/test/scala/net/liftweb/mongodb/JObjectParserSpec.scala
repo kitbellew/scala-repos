@@ -26,7 +26,7 @@ import org.specs2.mutable.Specification
 
 import com.mongodb.DBObject
 
-object JObjectParserSpec extends Specification  {
+object JObjectParserSpec extends Specification {
   "JObjectParser Specification".title
 
   def buildTestData: (ObjectId, DBObject) = {
@@ -40,9 +40,7 @@ object JObjectParserSpec extends Specification  {
       val (oid, dbo) = buildTestData
       val xval = tryo(dbo.get("x").asInstanceOf[ObjectId])
 
-      xval.toList map { x =>
-        x must_== oid
-      }
+      xval.toList map { x => x must_== oid }
 
       xval.isDefined must_== true
     }
@@ -51,9 +49,7 @@ object JObjectParserSpec extends Specification  {
         val (oid, dbo) = buildTestData
         val xval = tryo(dbo.get("x").asInstanceOf[String])
 
-        xval.toList map { x =>
-          x must_== oid.toString
-        }
+        xval.toList map { x => x must_== oid.toString }
 
         xval.isDefined must_== true
       }

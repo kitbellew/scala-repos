@@ -9,9 +9,10 @@ private[stream] trait From[A, B] {
 }
 
 private[stream] object Bijections {
+
   /**
-   * Convert an A to a B.
-   */
+    * Convert an A to a B.
+    */
   def from[A, B](a: A)(implicit ev: From[A, B]): B =
     ev.apply(a)
 
@@ -33,7 +34,7 @@ private[stream] object Bijections {
     def apply(method: StreamRequest.Method) =
       method match {
         case StreamRequest.Method.Custom(name) => HttpMethod.valueOf(name)
-        case _ => HttpMethod.valueOf(method.toString.toUpperCase)
+        case _                                 => HttpMethod.valueOf(method.toString.toUpperCase)
       }
   }
 

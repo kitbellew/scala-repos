@@ -1,11 +1,11 @@
 package mesosphere.util
 
-import akka.testkit.{ TestProbe, TestActorRef, TestKit }
-import akka.actor.{ Status, Props, ActorSystem }
+import akka.testkit.{TestProbe, TestActorRef, TestKit}
+import akka.actor.{Status, Props, ActorSystem}
 import mesosphere.marathon.MarathonSpec
 import mesosphere.marathon.test.MarathonActorSupport
-import org.scalatest.{ Matchers, BeforeAndAfterAll }
-import scala.concurrent.{ Future, Await, Promise }
+import org.scalatest.{Matchers, BeforeAndAfterAll}
+import scala.concurrent.{Future, Await, Promise}
 import scala.concurrent.duration._
 
 class PromiseActorTest
@@ -25,7 +25,8 @@ class PromiseActorTest
 
   test("Success with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
+    val future: Future[Symbol] =
+      PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply('Answer)
 
@@ -43,7 +44,8 @@ class PromiseActorTest
 
   test("State.Success with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
+    val future: Future[Symbol] =
+      PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply(Status.Success('Answer))
 
@@ -64,7 +66,8 @@ class PromiseActorTest
 
   test("State.Failure with askWithoutTimeout") {
     val probe = TestProbe()
-    val future: Future[Symbol] = PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
+    val future: Future[Symbol] =
+      PromiseActor.askWithoutTimeout(system, probe.ref, 'Question)
     probe.expectMsg('Question)
     probe.reply(Status.Failure(new IllegalStateException("error")))
 

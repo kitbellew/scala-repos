@@ -54,11 +54,14 @@ final class KeyCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode one key to EXPIREAT at future timestamp", CodecTest) {
-    assert(codec(wrap("EXPIREAT moo 100\r\n")) ==
-      List(ExpireAt(moo, Time.fromMilliseconds(100*1000))))
+    assert(
+      codec(wrap("EXPIREAT moo 100\r\n")) ==
+        List(ExpireAt(moo, Time.fromMilliseconds(100 * 1000))))
   }
 
-  test("Correctly encode one key to EXPIREAT a future interpolated timestamp", CodecTest) {
+  test(
+    "Correctly encode one key to EXPIREAT a future interpolated timestamp",
+    CodecTest) {
     val time = Time.now + 10.seconds
     unwrap(codec(wrap("EXPIREAT foo %d\r\n".format(time.inSeconds)))) {
       case ExpireAt(foo, timestamp) => {
@@ -75,13 +78,17 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("MOVE boo moo \r\n")) == List(Move(boo, moo)))
   }
 
-  test("Throw a ClientError if MOVE is called with no key or database", CodecTest) {
+  test(
+    "Throw a ClientError if MOVE is called with no key or database",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("MOVE\r\n"))
     }
   }
 
-  test("Throw a ClientError if MOVE is called with a key but no database", CodecTest) {
+  test(
+    "Throw a ClientError if MOVE is called with a key but no database",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("MOVE foo\r\n"))
     }
@@ -105,21 +112,28 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("PEXPIRE baz -1\r\n")) == List(PExpire(baz, -1L)))
   }
 
-  test("Correctly encode one key to PEXPIREAT at a future timestamp", CodecTest) {
-    assert(codec(wrap("PEXPIREAT boo 100000\r\n")) ==
-      List(PExpireAt(boo, Time.fromMilliseconds(100000))))
+  test(
+    "Correctly encode one key to PEXPIREAT at a future timestamp",
+    CodecTest) {
+    assert(
+      codec(wrap("PEXPIREAT boo 100000\r\n")) ==
+        List(PExpireAt(boo, Time.fromMilliseconds(100000))))
   }
 
-  test("Correctly encode one key to PEXPIREAT at a future interpolated timestamp", CodecTest) {
+  test(
+    "Correctly encode one key to PEXPIREAT at a future interpolated timestamp",
+    CodecTest) {
     val time = Time.now + 10.seconds
-    unwrap(codec(wrap("PEXPIREAT foo %d\r\n".format(time.inMilliseconds))))  {
+    unwrap(codec(wrap("PEXPIREAT foo %d\r\n".format(time.inMilliseconds)))) {
       case PExpireAt(foo, timestamp) => {
         assert(timestamp.inMilliseconds == time.inMilliseconds)
       }
     }
   }
 
-  test("Correctly encode a PTTL, time to live in milliseconds, for a key", CodecTest) {
+  test(
+    "Correctly encode a PTTL, time to live in milliseconds, for a key",
+    CodecTest) {
     assert(codec(wrap("PTTL foo\r\n")) == List(PTtl(foo)))
   }
 
@@ -129,7 +143,9 @@ final class KeyCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Throw a ClientError if RENAME is called without a second argument", CodecTest) {
+  test(
+    "Throw a ClientError if RENAME is called without a second argument",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("RENAME foo\r\n"))
     }
@@ -139,13 +155,17 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("RENAME foo bar\r\n")) == List(Rename(foo, bar)))
   }
 
-  test("Throw a ClientError if RENAMEX is called with no arguments", CodecTest) {
+  test(
+    "Throw a ClientError if RENAMEX is called with no arguments",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("RENAMENX\r\n"))
     }
   }
 
-  test("Throw a ClientError if RENAMEX is called without a second argument", CodecTest) {
+  test(
+    "Throw a ClientError if RENAMEX is called without a second argument",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("RENAMENX foo\r\n"))
     }
@@ -159,7 +179,9 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("RANDOMKEY\r\n")) == List(Randomkey()))
   }
 
-  test("Correctly encode a TTL, time to live in seconds, for a key", CodecTest) {
+  test(
+    "Correctly encode a TTL, time to live in seconds, for a key",
+    CodecTest) {
     assert(codec(wrap("TTL foo\r\n")) == List(Ttl(foo)))
   }
 

@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.scala.debugger
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 private[debugger] object BytecodeUtil {
   import org.jetbrains.plugins.scala.decompiler.DecompilerUtil.Opcodes._
 
@@ -47,12 +47,12 @@ private[debugger] object BytecodeUtil {
 
   def iloadCode(istoreCode: Seq[Byte]): Seq[Byte] = {
     istoreCode match {
-      case Seq(`istore_0`) =>  Seq(iload_0)
-      case Seq(`istore_1`) =>  Seq(iload_1)
-      case Seq(`istore_2`) =>  Seq(iload_2)
-      case Seq(`istore_3`) =>  Seq(iload_3)
+      case Seq(`istore_0`)  => Seq(iload_0)
+      case Seq(`istore_1`)  => Seq(iload_1)
+      case Seq(`istore_2`)  => Seq(iload_2)
+      case Seq(`istore_3`)  => Seq(iload_3)
       case Seq(`istore`, b) => Seq(iload, b)
-      case _ => Nil
+      case _                => Nil
     }
   }
 
@@ -60,8 +60,8 @@ private[debugger] object BytecodeUtil {
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
     bytecodes(codeIndex) match {
       case c @ (`istore_0` | `istore_1` | `istore_2` | `istore_3`) => Seq(c)
-      case `istore` => Seq(istore, bytecodes(codeIndex + 1))
-      case _ => Nil
+      case `istore`                                                => Seq(istore, bytecodes(codeIndex + 1))
+      case _                                                       => Nil
     }
   }
 
@@ -69,8 +69,8 @@ private[debugger] object BytecodeUtil {
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1) return Nil
     bytecodes(codeIndex) match {
       case c @ (`iload_0` | `iload_1` | `iload_2` | `iload_3`) => Seq(c)
-      case `iload` => Seq(iload, bytecodes(codeIndex + 1))
-      case _ => Nil
+      case `iload`                                             => Seq(iload, bytecodes(codeIndex + 1))
+      case _                                                   => Nil
     }
   }
 
@@ -79,7 +79,8 @@ private[debugger] object BytecodeUtil {
 
     val bytecode = bytecodes(codeIndex)
     if (oneByteStoreCodes contains bytecode) Seq(bytecode)
-    else if (twoBytesStoreCodes contains bytecode) Seq(bytecode, bytecodes(codeIndex + 1))
+    else if (twoBytesStoreCodes contains bytecode)
+      Seq(bytecode, bytecodes(codeIndex + 1))
     else Nil
   }
 
@@ -88,14 +89,16 @@ private[debugger] object BytecodeUtil {
 
     val bytecode = bytecodes(codeIndex)
     if (oneByteLoadCodes contains bytecode) Seq(bytecode)
-    else if (twoBytesLoadCodes contains bytecode) Seq(bytecode, bytecodes(codeIndex + 1))
+    else if (twoBytesLoadCodes contains bytecode)
+      Seq(bytecode, bytecodes(codeIndex + 1))
     else Nil
   }
 
   def loadCode(storeCode: Seq[Byte]): Seq[Byte] = {
     storeCode match {
       case Seq(b) => oneByteCodes.get(b).map(b => Seq(b)).getOrElse(Nil)
-      case Seq(code, addr) => twoBytesCodes.get(code).map(b => Seq(b, addr)).getOrElse(Nil)
+      case Seq(code, addr) =>
+        twoBytesCodes.get(code).map(b => Seq(b, addr)).getOrElse(Nil)
       case _ => Nil
     }
   }

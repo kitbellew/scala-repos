@@ -33,28 +33,30 @@ object Post {
   val idSize = 8
 
   def make(
-    topicId: String,
-    categId: String,
-    author: Option[String],
-    userId: Option[String],
-    ip: Option[String],
-    text: String,
-    number: Int,
-    lang: Option[String],
-    troll: Boolean,
-    hidden: Boolean): Post = Post(
-    id = Random nextStringUppercase idSize,
-    topicId = topicId,
-    author = author,
-    userId = userId,
-    ip = ip,
-    text = text,
-    number = number,
-    lang = lang,
-    troll = troll,
-    hidden = hidden,
-    createdAt = DateTime.now,
-    categId = categId)
+      topicId: String,
+      categId: String,
+      author: Option[String],
+      userId: Option[String],
+      ip: Option[String],
+      text: String,
+      number: Int,
+      lang: Option[String],
+      troll: Boolean,
+      hidden: Boolean): Post =
+    Post(
+      id = Random nextStringUppercase idSize,
+      topicId = topicId,
+      author = author,
+      userId = userId,
+      ip = ip,
+      text = text,
+      number = number,
+      lang = lang,
+      troll = troll,
+      hidden = hidden,
+      createdAt = DateTime.now,
+      categId = categId
+    )
 
   import lila.db.JsTube
   import JsTube.Helpers._

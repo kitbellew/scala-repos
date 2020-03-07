@@ -7,7 +7,7 @@ import javax.inject._
 
 import play.api.test._
 import java.util.concurrent.atomic.AtomicInteger
-import play.api.mvc.{ Results, Action }
+import play.api.mvc.{Results, Action}
 import play.api.http
 
 import scala.concurrent.duration._
@@ -67,14 +67,16 @@ class CachedSpec extends PlaySpecification {
           .timeToLiveSeconds(60)
           .timeToIdleSeconds(30)
           .diskExpiryThreadIntervalSeconds(0)
-          .persistence(new PersistenceConfiguration().strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
+          .persistence(new PersistenceConfiguration()
+            .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
       cacheManager.addCache(diskEhcache)
       val diskEhcache2 = cacheManager.getCache("disk")
       assert(diskEhcache2 != null)
       val diskCache = new EhCacheApi(diskEhcache2)
       val diskCached = new Cached(diskCache)
       val invoked = new AtomicInteger()
-      val action = diskCached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action = diskCached(_ => "foo")(
+        Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       contentAsString(result1) must_== "1"
       invoked.get() must_== 1
@@ -108,24 +110,28 @@ class CachedSpec extends PlaySpecification {
 
     "use etags for values" in new WithApplication() {
       val invoked = new AtomicInteger()
-      val action = Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action =
+        Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       status(result1) must_== 200
       invoked.get() must_== 1
       val etag = header(ETAG, result1)
       etag must beSome(matching("""([wW]/)?"([^"]|\\")*"""")) //"""
-      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get)).run()
+      val result2 =
+        action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get)).run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }
 
     "support wildcard etags" in new WithApplication() {
       val invoked = new AtomicInteger()
-      val action = Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action =
+        Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       status(result1) must_== 200
       invoked.get() must_== 1
-      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*")).run()
+      val result2 =
+        action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*")).run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }
@@ -134,9 +140,15 @@ class CachedSpec extends PlaySpecification {
       val action = Cached(_.uri)(Action(Results.Ok))
       val resultA = action(FakeRequest("GET", "/a")).run()
       status(resultA) must_== 200
-      status(action(FakeRequest("GET", "/a").withHeaders(IF_NONE_MATCH -> "foo")).run) must_== 200
-      status(action(FakeRequest("GET", "/b").withHeaders(IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
-      status(action(FakeRequest("GET", "/c").withHeaders(IF_NONE_MATCH -> "*")).run) must_== 200
+      status(action(FakeRequest("GET", "/a").withHeaders(
+        IF_NONE_MATCH -> "foo")).run) must_== 200
+      status(
+        action(FakeRequest("GET", "/b").withHeaders(
+          IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
+      status(
+        action(
+          FakeRequest("GET", "/c").withHeaders(
+            IF_NONE_MATCH -> "*")).run) must_== 200
     }
   }
 
@@ -152,9 +164,7 @@ class CachedSpec extends PlaySpecification {
 
   "Cached EssentialAction composition" should {
     "cache infinite ok results" in new WithApplication() {
-      val cacheOk = Cached.empty { x =>
-        x.uri
-      }.includeStatus(200)
+      val cacheOk = Cached.empty { x => x.uri }.includeStatus(200)
 
       val actionOk = cacheOk.build(dummyAction)
       val actionNotFound = cacheOk.build(notFoundAction)
@@ -173,9 +183,7 @@ class CachedSpec extends PlaySpecification {
     }
 
     "cache everything for infinite" in new WithApplication() {
-      val cache = Cached.everything { x =>
-        x.uri
-      }
+      val cache = Cached.everything { x => x.uri }
 
       val actionOk = cache.build(dummyAction)
       val actionNotFound = cache.build(notFoundAction)
@@ -225,8 +233,8 @@ class CachedSpec extends PlaySpecification {
       defaultCache.set("int", 31)
       defaultCache.get[Int]("int") must beSome(31)
 
-      defaultCache.set("long", 31l)
-      defaultCache.get[Long]("long") must beSome(31l)
+      defaultCache.set("long", 31L)
+      defaultCache.get[Long]("long") must beSome(31L)
 
       defaultCache.set("double", 3.14)
       defaultCache.get[Double]("double") must beSome(3.14)
@@ -242,7 +250,7 @@ class CachedSpec extends PlaySpecification {
       val defaultCache = app.injector.instanceOf[CacheApi]
       defaultCache.set("foo", "bar")
       defaultCache.set("int", 31)
-      defaultCache.set("long", 31l)
+      defaultCache.set("long", 31L)
       defaultCache.set("double", 3.14)
       defaultCache.set("boolean", true)
       defaultCache.set("unit", ())
@@ -300,13 +308,15 @@ class SomeComponent @Inject() (@NamedCache("custom") cache: CacheApi) {
 
 class CachedController @Inject() (cached: Cached) {
   val invoked = new AtomicInteger()
-  val action = cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+  val action =
+    cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
 }
 
 class NamedCachedController @Inject() (
     @NamedCache("custom") val cache: CacheApi,
     @NamedCache("custom") val cached: Cached) {
   val invoked = new AtomicInteger()
-  val action = cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+  val action =
+    cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
   def isCached(key: String): Boolean = cache.get[String](key).isDefined
 }

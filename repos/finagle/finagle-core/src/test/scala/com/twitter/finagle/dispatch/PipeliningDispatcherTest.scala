@@ -50,7 +50,9 @@ class PipeliningDispatcherTest extends FunSuite with MockitoSugar {
     dispatcher("0")
     dispatcher("1")
     dispatcher("2")
-    assertGaugeSize(2) // as noted above, the "0" has been removed from the queue
+    assertGaugeSize(
+      2
+    ) // as noted above, the "0" has been removed from the queue
 
     // then even if we fulfil them out of order...
     p2.setValue("2")

@@ -7,9 +7,7 @@ import org.scalatest.{Matchers, FunSuite}
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class RetryBudgetTest extends FunSuite
-  with Matchers
-{
+class RetryBudgetTest extends FunSuite with Matchers {
 
   test("Empty") {
     val rb = RetryBudget.Empty
@@ -32,16 +30,16 @@ class RetryBudgetTest extends FunSuite
   }
 
   def newRetryBudget(
-    ttl: Duration = 60.seconds,
-    minRetriesPerSec: Int = 0,
-    maxPercentOver: Double = 0.0
+      ttl: Duration = 60.seconds,
+      minRetriesPerSec: Int = 0,
+      maxPercentOver: Double = 0.0
   ): RetryBudget =
     RetryBudget(ttl, minRetriesPerSec, maxPercentOver, Stopwatch.timeMillis)
 
   def testBudget(
-    ttl: Duration = 60.seconds,
-    minRetriesPerSec: Int = 0,
-    percentCanRetry: Double = 0.0
+      ttl: Duration = 60.seconds,
+      minRetriesPerSec: Int = 0,
+      percentCanRetry: Double = 0.0
   ): Unit = withClue(s"percentCanRetry=$percentCanRetry:") {
     // freeze time to simplify the tests
     Time.withCurrentTimeFrozen { _ =>
@@ -69,7 +67,7 @@ class RetryBudgetTest extends FunSuite
       // because TokenRetryBudget.ScaleFactor doesn't give us
       // perfect precision, we give ourselves a small error margin.
       val expectedRetries = (nReqs * percentCanRetry).toInt + minRetries
-      expectedRetries should be (retried +- 1)
+      expectedRetries should be(retried +- 1)
     }
   }
 
@@ -132,9 +130,7 @@ class RetryBudgetTest extends FunSuite
     assert(!rb.tryWithdraw())
 
     val nReqs = 10000
-    0.until(nReqs).foreach { _ =>
-      rb.deposit()
-    }
+    0.until(nReqs).foreach { _ => rb.deposit() }
 
     val expectedRetries = (nReqs * percent).toInt
     assert(expectedRetries == rb.balance)

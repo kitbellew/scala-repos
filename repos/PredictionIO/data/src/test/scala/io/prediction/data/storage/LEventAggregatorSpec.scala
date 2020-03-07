@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.specs2.mutable._
@@ -52,7 +51,6 @@ class LEventAggregatorSpec extends Specification with TestEvents {
       result must beEqualTo(expected)
     }
 
-
     "aggregate deleted entity correctly" in {
       val events = Vector(u1e5, u2e2, u1e3, u1ed, u1e1, u2e3, u2e1, u1e4, u1e2)
 
@@ -65,29 +63,28 @@ class LEventAggregatorSpec extends Specification with TestEvents {
     }
   }
 
-
   "LEventAggregator.aggregatePropertiesSingle()" should {
 
     "aggregate single entity properties as DataMap correctly" in {
-        val events = Vector(u1e5, u1e3, u1e1, u1e4, u1e2)
-        val eventsIt = events.toIterator
+      val events = Vector(u1e5, u1e3, u1e1, u1e4, u1e2)
+      val eventsIt = events.toIterator
 
-        val result: Option[DataMap] = LEventAggregator
-          .aggregatePropertiesSingle(eventsIt)
-        val expected = DataMap(u1)
+      val result: Option[DataMap] = LEventAggregator
+        .aggregatePropertiesSingle(eventsIt)
+      val expected = DataMap(u1)
 
-        result must beEqualTo(Some(expected))
+      result must beEqualTo(Some(expected))
     }
 
     "aggregate single entity properties as PropertyMap correctly" in {
-        val events = Vector(u1e5, u1e3, u1e1, u1e4, u1e2)
-        val eventsIt = events.toIterator
+      val events = Vector(u1e5, u1e3, u1e1, u1e4, u1e2)
+      val eventsIt = events.toIterator
 
-        val result: Option[PropertyMap] = LEventAggregator
-          .aggregatePropertiesSingle(eventsIt)
-        val expected = PropertyMap(u1, u1BaseTime, u1LastTime)
+      val result: Option[PropertyMap] = LEventAggregator
+        .aggregatePropertiesSingle(eventsIt)
+      val expected = PropertyMap(u1, u1BaseTime, u1LastTime)
 
-        result must beEqualTo(Some(expected))
+      result must beEqualTo(Some(expected))
     }
 
     "aggregate deleted entity correctly" in {

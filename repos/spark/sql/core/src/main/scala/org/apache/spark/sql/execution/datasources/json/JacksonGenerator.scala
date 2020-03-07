@@ -24,29 +24,33 @@ import org.apache.spark.sql.catalyst.util.{ArrayData, DateTimeUtils, MapData}
 import org.apache.spark.sql.types._
 
 private[sql] object JacksonGenerator {
+
   /** Transforms a single InternalRow to JSON using Jackson
-   *
-   * TODO: make the code shared with the other apply method.
-   *
-   * @param rowSchema the schema object used for conversion
-   * @param gen a JsonGenerator object
-   * @param row The row to convert
-   */
-  def apply(rowSchema: StructType, gen: JsonGenerator)(row: InternalRow): Unit = {
+    *
+    * TODO: make the code shared with the other apply method.
+    *
+    * @param rowSchema the schema object used for conversion
+    * @param gen a JsonGenerator object
+    * @param row The row to convert
+    */
+  def apply(rowSchema: StructType, gen: JsonGenerator)(
+      row: InternalRow): Unit = {
     def valWriter: (DataType, Any) => Unit = {
       case (_, null) | (NullType, _) => gen.writeNull()
-      case (StringType, v) => gen.writeString(v.toString)
-      case (TimestampType, v: Long) => gen.writeString(DateTimeUtils.toJavaTimestamp(v).toString)
-      case (IntegerType, v: Int) => gen.writeNumber(v)
-      case (ShortType, v: Short) => gen.writeNumber(v)
-      case (FloatType, v: Float) => gen.writeNumber(v)
-      case (DoubleType, v: Double) => gen.writeNumber(v)
-      case (LongType, v: Long) => gen.writeNumber(v)
-      case (DecimalType(), v: Decimal) => gen.writeNumber(v.toJavaBigDecimal)
-      case (ByteType, v: Byte) => gen.writeNumber(v.toInt)
+      case (StringType, v)           => gen.writeString(v.toString)
+      case (TimestampType, v: Long) =>
+        gen.writeString(DateTimeUtils.toJavaTimestamp(v).toString)
+      case (IntegerType, v: Int)        => gen.writeNumber(v)
+      case (ShortType, v: Short)        => gen.writeNumber(v)
+      case (FloatType, v: Float)        => gen.writeNumber(v)
+      case (DoubleType, v: Double)      => gen.writeNumber(v)
+      case (LongType, v: Long)          => gen.writeNumber(v)
+      case (DecimalType(), v: Decimal)  => gen.writeNumber(v.toJavaBigDecimal)
+      case (ByteType, v: Byte)          => gen.writeNumber(v.toInt)
       case (BinaryType, v: Array[Byte]) => gen.writeBinary(v)
-      case (BooleanType, v: Boolean) => gen.writeBoolean(v)
-      case (DateType, v: Int) => gen.writeString(DateTimeUtils.toJavaDate(v).toString)
+      case (BooleanType, v: Boolean)    => gen.writeBoolean(v)
+      case (DateType, v: Int) =>
+        gen.writeString(DateTimeUtils.toJavaDate(v).toString)
       // For UDT values, they should be in the SQL type's corresponding value type.
       // We should not see values in the user-defined class at here.
       // For example, VectorUDT's SQL type is an array of double. So, we should expect that v is
@@ -60,10 +64,13 @@ private[sql] object JacksonGenerator {
 
       case (MapType(kt, vt, _), v: MapData) =>
         gen.writeStartObject()
-        v.foreach(kt, vt, { (k, v) =>
-          gen.writeFieldName(k.toString)
-          valWriter(vt, v)
-        })
+        v.foreach(
+          kt,
+          vt,
+          { (k, v) =>
+            gen.writeFieldName(k.toString)
+            valWriter(vt, v)
+          })
         gen.writeEndObject()
 
       case (StructType(ty), v: InternalRow) =>

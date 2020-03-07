@@ -5,10 +5,13 @@ package play.api.libs.streams.impl
 
 import org.specs2.mutable.Specification
 import play.api.libs.iteratee._
-import scala.concurrent.duration.{ FiniteDuration => ScalaFiniteDuration, SECONDS }
-import scala.concurrent.{ Await, Promise }
+import scala.concurrent.duration.{
+  FiniteDuration => ScalaFiniteDuration,
+  SECONDS
+}
+import scala.concurrent.{Await, Promise}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{ Failure, Success, Try }
+import scala.util.{Failure, Success, Try}
 
 class IterateeSubscriberSpec extends Specification {
 
@@ -59,7 +62,9 @@ class IterateeSubscriberSpec extends Specification {
       val iter = Iteratee.getChunks[Int]
       val subr = new IterateeSubscriber(iter)
       pubr.subscribe(subr)
-      Await.result(subr.result.unflatten, ScalaFiniteDuration(2, SECONDS)) must_== Done(List(1, 2, 3), Input.EOF)
+      Await.result(
+        subr.result.unflatten,
+        ScalaFiniteDuration(2, SECONDS)) must_== Done(List(1, 2, 3), Input.EOF)
     }
 
     "consume one element (on-subscribe/cont-step/on-next/cont-step/on-complete/done-step)" in {
@@ -216,7 +221,8 @@ class IterateeSubscriberSpec extends Specification {
       val testEnv = new TestEnv[Int]
 
       testEnv.errorStep("iteratee error", Input.El(99))
-      testEnv.next must_== Result(Success(Error("iteratee error", Input.El(99))))
+      testEnv.next must_== Result(
+        Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
 
       testEnv.onSubscribe()
@@ -232,7 +238,8 @@ class IterateeSubscriberSpec extends Specification {
 
       testEnv.errorStep("iteratee error", Input.El(99))
       testEnv.next must_== Cancel
-      testEnv.next must_== Result(Success(Error("iteratee error", Input.El(99))))
+      testEnv.next must_== Result(
+        Success(Error("iteratee error", Input.El(99))))
       testEnv.isEmptyAfterDelay() must beTrue
     }
 

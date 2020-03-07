@@ -5,9 +5,9 @@ import com.intellij.codeInsight.completion.CompletionType
 import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 
 /**
- * @author Alefas
- * @since 04.09.13
- */
+  * @author Alefas
+  * @since 04.09.13
+  */
 class ScalaSuperParametersTest extends ScalaCodeInsightTestBase {
   def testConstructorCall() {
     val fileText =
@@ -34,7 +34,8 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y, z").get)
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "x, y, z").get)
     checkResultByText(resultText)
   }
 
@@ -63,7 +64,8 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 
@@ -92,7 +94,8 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 
@@ -131,7 +134,8 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 
@@ -170,7 +174,8 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y, z").get)
+    completeLookupItem(
+      activeLookup.find(le => le.getLookupString == "x, y, z").get)
     checkResultByText(resultText)
   }
 

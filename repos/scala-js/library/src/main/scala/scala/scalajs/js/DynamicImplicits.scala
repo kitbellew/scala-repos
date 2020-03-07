@@ -6,18 +6,17 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package scala.scalajs.js
 
 import scala.language.implicitConversions
 
 /** Provides implicit conversions and operations to write in JavaScript
- *  style with [[Dynamic js.Dynamic]].
- *
- *  Be **very** careful when importing members of this object. You may want
- *  to selectively import the implicits that you want to reduce the likelihood
- *  of making mistakes.
- */
+  *  style with [[Dynamic js.Dynamic]].
+  *
+  *  Be **very** careful when importing members of this object. You may want
+  *  to selectively import the implicits that you want to reduce the likelihood
+  *  of making mistakes.
+  */
 object DynamicImplicits {
   @inline implicit def truthValue(x: Dynamic): Boolean =
     (!(!x)).asInstanceOf[Boolean]

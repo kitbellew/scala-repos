@@ -5,15 +5,17 @@ package play.api.templates
 
 import akka.util.ByteString
 import org.specs2.mutable._
-import play.api.http.{ HttpEntity, Writeable }
+import play.api.http.{HttpEntity, Writeable}
 import play.api.mvc.Results
 import play.core.j.JavaResults
-import play.mvc.{ Results => JResults }
+import play.mvc.{Results => JResults}
 
 object TemplatesSpec extends Specification {
   "toHtmlArgs" should {
     "escape attribute values" in {
-      PlayMagic.toHtmlArgs(Map('foo -> """bar <>&"'""")).body must_== """foo="bar &lt;&gt;&amp;&quot;&#x27;""""
+      PlayMagic
+        .toHtmlArgs(Map('foo -> """bar <>&"'"""))
+        .body must_== """foo="bar &lt;&gt;&amp;&quot;&#x27;""""
     }
   }
 
@@ -45,6 +47,6 @@ object TemplatesSpec extends Specification {
 
   def consume(entity: HttpEntity): String = entity match {
     case HttpEntity.Strict(data, _) => string(data)
-    case _ => throw new IllegalArgumentException("Expected strict body")
+    case _                          => throw new IllegalArgumentException("Expected strict body")
   }
 }

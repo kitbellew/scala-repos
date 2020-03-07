@@ -2,7 +2,7 @@ package lila.game
 
 import chess.variant.Variant
 import org.joda.time.DateTime
-import scala.util.{ Try, Success, Failure }
+import scala.util.{Try, Success, Failure}
 
 import chess._
 
@@ -27,7 +27,8 @@ object BinaryFormat {
 
     private type MT = Int // tenths of seconds
     private val size = 16
-    private val encodeList: List[(MT, Int)] = List(1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400, 600).zipWithIndex
+    private val encodeList: List[(MT, Int)] = List(1, 5, 10, 15, 20, 30, 40, 50,
+      60, 80, 100, 150, 200, 300, 400, 600).zipWithIndex
     private val encodeMap: Map[MT, Int] = encodeList.toMap
     private val decodeList: List[(Int, MT)] = encodeList.map(x => x._2 -> x._1)
     private val decodeMap: Map[Int, MT] = decodeList.toMap
@@ -41,7 +42,8 @@ object BinaryFormat {
     }
 
     def write(mts: Vector[MT]): ByteArray = ByteArray {
-      def enc(mt: MT) = encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
+      def enc(mt: MT) =
+        encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
       (mts grouped 2 map {
         case Vector(a, b) => (enc(a) << 4) + enc(b)
         case Vector(a)    => enc(a) << 4
@@ -50,9 +52,7 @@ object BinaryFormat {
 
     def read(ba: ByteArray): Vector[MT] = {
       def dec(x: Int) = decodeMap get x getOrElse decodeMap(size - 1)
-      ba.value map toInt flatMap { k =>
-        Array(dec(k >> 4), dec(k & 15))
-      }
+      ba.value map toInt flatMap { k => Array(dec(k >> 4), dec(k & 15)) }
     }.toVector
   }
 
@@ -67,40 +67,51 @@ object BinaryFormat {
         timer(clock.timerOption getOrElse 0d) map (_.toByte)
     }
 
-    def read(ba: ByteArray, whiteBerserk: Boolean, blackBerserk: Boolean): Color => Clock = color => ba.value map toInt match {
-      case Array(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12) =>
-        readTimer(b9, b10, b11, b12) match {
-          case 0 => PausedClock(
-            color = color,
-            limit = readClockLimit(b1),
-            increment = b2,
-            whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
-            blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
-            whiteBerserk = whiteBerserk,
-            blackBerserk = blackBerserk)
-          case timer => RunningClock(
-            color = color,
-            limit = readClockLimit(b1),
-            increment = b2,
-            whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
-            blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
-            whiteBerserk = whiteBerserk,
-            blackBerserk = blackBerserk,
-            timer = timer.toDouble / 100)
+    def read(
+        ba: ByteArray,
+        whiteBerserk: Boolean,
+        blackBerserk: Boolean): Color => Clock =
+      color =>
+        ba.value map toInt match {
+          case Array(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12) =>
+            readTimer(b9, b10, b11, b12) match {
+              case 0 =>
+                PausedClock(
+                  color = color,
+                  limit = readClockLimit(b1),
+                  increment = b2,
+                  whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
+                  blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
+                  whiteBerserk = whiteBerserk,
+                  blackBerserk = blackBerserk
+                )
+              case timer =>
+                RunningClock(
+                  color = color,
+                  limit = readClockLimit(b1),
+                  increment = b2,
+                  whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
+                  blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
+                  whiteBerserk = whiteBerserk,
+                  blackBerserk = blackBerserk,
+                  timer = timer.toDouble / 100
+                )
+            }
+          // compatibility with 5 bytes timers
+          // #TODO remove me! But fix the DB first!
+          case Array(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, _) =>
+            PausedClock(
+              color = color,
+              limit = readClockLimit(b1),
+              increment = b2,
+              whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
+              blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
+              whiteBerserk = whiteBerserk,
+              blackBerserk = blackBerserk
+            )
+          case x =>
+            sys error s"BinaryFormat.clock.read invalid bytes: ${ba.showBytes}"
         }
-      // compatibility with 5 bytes timers
-      // #TODO remove me! But fix the DB first!
-      case Array(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, _) =>
-        PausedClock(
-          color = color,
-          limit = readClockLimit(b1),
-          increment = b2,
-          whiteTime = readSignedInt24(b3, b4, b5).toFloat / 100,
-          blackTime = readSignedInt24(b6, b7, b8).toFloat / 100,
-          whiteBerserk = whiteBerserk,
-          blackBerserk = blackBerserk)
-      case x => sys error s"BinaryFormat.clock.read invalid bytes: ${ba.showBytes}"
-    }
 
     private def decay = (since.getMillis / 10) - 10
 
@@ -154,24 +165,34 @@ object BinaryFormat {
 
     def read(ba: ByteArray): CastleLastMoveTime = {
       ba.value map toInt match {
-        case Array(b1, b2, b3, b4, b5)     => doRead(b1, b2, b3, b4, b5, None)
-        case Array(b1, b2, b3, b4, b5, b6) => doRead(b1, b2, b3, b4, b5, b6.some)
-        case x                             => sys error s"BinaryFormat.clmt.read invalid bytes: ${ba.showBytes}"
+        case Array(b1, b2, b3, b4, b5) => doRead(b1, b2, b3, b4, b5, None)
+        case Array(b1, b2, b3, b4, b5, b6) =>
+          doRead(b1, b2, b3, b4, b5, b6.some)
+        case x =>
+          sys error s"BinaryFormat.clmt.read invalid bytes: ${ba.showBytes}"
       }
     }
 
     private def posAt(x: Int, y: Int) = Pos.posAt(x + 1, y + 1)
 
-    private def doRead(b1: Int, b2: Int, b3: Int, b4: Int, b5: Int, b6: Option[Int]) =
+    private def doRead(
+        b1: Int,
+        b2: Int,
+        b3: Int,
+        b4: Int,
+        b5: Int,
+        b6: Option[Int]) =
       CastleLastMoveTime(
-        castles = Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
+        castles =
+          Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
         lastMove = for {
           from ← posAt((b1 & 15) >> 1, ((b1 & 1) << 2) + (b2 >> 6))
           to ← posAt((b2 & 63) >> 3, b2 & 7)
           if from != to
         } yield from -> to,
         lastMoveTime = readInt24(b3, b4, b5).some filter (0 !=),
-        check = b6 flatMap { x => posAt(x >> 3, x & 7) })
+        check = b6 flatMap { x => posAt(x >> 3, x & 7) }
+      )
   }
 
   object piece {
@@ -195,7 +216,9 @@ object BinaryFormat {
         Array(int >> 4, int & 0x0F)
       }
       def intPiece(int: Int): Option[Piece] =
-        intToRole(int & 7, variant) map { role => Piece(Color((int & 8) == 0), role) }
+        intToRole(int & 7, variant) map { role =>
+          Piece(Color((int & 8) == 0), role)
+        }
       val pieceInts = ba.value flatMap splitInts
       (Pos.all zip pieceInts flatMap {
         case (pos, int) => intPiece(int) map (pos -> _)
@@ -205,17 +228,18 @@ object BinaryFormat {
     // cache standard start position
     val standard = write(Board.init(chess.variant.Standard).pieces)
 
-    private def intToRole(int: Int, variant: Variant): Option[Role] = int match {
-      case 6                      => Some(Pawn)
-      case 1                      => Some(King)
-      case 2                      => Some(Queen)
-      case 3                      => Some(Rook)
-      case 4                      => Some(Knight)
-      case 5                      => Some(Bishop)
-      // Legacy from when we used to have an 'Antiking' piece
-      case 7 if variant.antichess => Some(King)
-      case _                      => None
-    }
+    private def intToRole(int: Int, variant: Variant): Option[Role] =
+      int match {
+        case 6 => Some(Pawn)
+        case 1 => Some(King)
+        case 2 => Some(Queen)
+        case 3 => Some(Rook)
+        case 4 => Some(Knight)
+        case 5 => Some(Bishop)
+        // Legacy from when we used to have an 'Antiking' piece
+        case 7 if variant.antichess => Some(King)
+        case _                      => None
+      }
     private def roleToInt(role: Role): Int = role match {
       case Pawn   => 6
       case King   => 1

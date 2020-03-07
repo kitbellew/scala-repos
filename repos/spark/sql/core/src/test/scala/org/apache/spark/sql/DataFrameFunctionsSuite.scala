@@ -24,8 +24,8 @@ import org.apache.spark.sql.test.SharedSQLContext
 import org.apache.spark.sql.types._
 
 /**
- * Test suite for functions in [[org.apache.spark.sql.functions]].
- */
+  * Test suite for functions in [[org.apache.spark.sql.functions]].
+  */
 class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
@@ -48,7 +48,8 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   // Turn this on once we add a rule to the analyzer to throw a friendly exception
-  ignore("array: throw exception if putting columns of different types into an array") {
+  ignore(
+    "array: throw exception if putting columns of different types into an array") {
     val df = Seq((0, "str")).toDF("a", "b")
     intercept[AnalysisException] {
       df.select(array("a", "b"))
@@ -59,10 +60,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val row = df.select(struct("a", "b")).first()
 
-    val expectedType = StructType(Seq(
-      StructField("a", IntegerType, nullable = false),
-      StructField("b", StringType)
-    ))
+    val expectedType = StructType(
+      Seq(
+        StructField("a", IntegerType, nullable = false),
+        StructField("b", StringType)
+      ))
     assert(row.schema(0).dataType === expectedType)
     assert(row.getAs[Row](0) === Row(1, "str"))
   }
@@ -71,10 +73,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val row = df.select(struct((col("a") * 2).as("c"), col("b"))).first()
 
-    val expectedType = StructType(Seq(
-      StructField("c", IntegerType, nullable = false),
-      StructField("b", StringType)
-    ))
+    val expectedType = StructType(
+      Seq(
+        StructField("c", IntegerType, nullable = false),
+        StructField("b", StringType)
+      ))
     assert(row.schema(0).dataType === expectedType)
     assert(row.getAs[Row](0) === Row(2, "str"))
   }
@@ -83,10 +86,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val result = df.select(struct((col("a") * 2), col("b")))
 
-    val expectedType = StructType(Seq(
-      StructField("col1", IntegerType, nullable = false),
-      StructField("b", StringType)
-    ))
+    val expectedType = StructType(
+      Seq(
+        StructField("col1", IntegerType, nullable = false),
+        StructField("b", StringType)
+      ))
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Row(Row(2, "str")))
   }
@@ -95,10 +99,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str1"), (2, "str2")).toDF("a", "b")
     val result = df.select(struct((col("a") * 2), lit(5.0)))
 
-    val expectedType = StructType(Seq(
-      StructField("col1", IntegerType, nullable = false),
-      StructField("col2", DoubleType, nullable = false)
-    ))
+    val expectedType = StructType(
+      Seq(
+        StructField("col1", IntegerType, nullable = false),
+        StructField("col2", DoubleType, nullable = false)
+      ))
 
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Seq(Row(Row(2, 5.0)), Row(Row(4, 5.0))))
@@ -108,10 +113,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str1"), (2, "str2")).toDF("a", "b")
     val result = df.select(struct(lit("v"), lit(5.0)))
 
-    val expectedType = StructType(Seq(
-      StructField("col1", StringType, nullable = false),
-      StructField("col2", DoubleType, nullable = false)
-    ))
+    val expectedType = StructType(
+      Seq(
+        StructField("col1", StringType, nullable = false),
+        StructField("col2", DoubleType, nullable = false)
+      ))
 
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Seq(Row(Row("v", 5.0)), Row(Row("v", 5.0))))
@@ -136,18 +142,16 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
 
   test("bin") {
     val df = Seq[(Integer, Integer)]((12, null)).toDF("a", "b")
-    checkAnswer(
-      df.select(bin("a"), bin("b")),
-      Row("1100", null))
-    checkAnswer(
-      df.selectExpr("bin(a)", "bin(b)"),
-      Row("1100", null))
+    checkAnswer(df.select(bin("a"), bin("b")), Row("1100", null))
+    checkAnswer(df.selectExpr("bin(a)", "bin(b)"), Row("1100", null))
   }
 
   test("if function") {
     val df = Seq((1, 2)).toDF("a", "b")
     checkAnswer(
-      df.selectExpr("if(a = 1, 'one', 'not_one')", "if(b = 1, 'one', 'not_one')"),
+      df.selectExpr(
+        "if(a = 1, 'one', 'not_one')",
+        "if(b = 1, 'one', 'not_one')"),
       Row("one", "not_one"))
   }
 
@@ -161,36 +165,48 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq(("ABC", Array[Byte](1, 2, 3, 4, 5, 6))).toDF("a", "b")
     checkAnswer(
       df.select(md5($"a"), md5($"b")),
-      Row("902fbdd2b1df0c4f70b4a5d23525e932", "6ac1e56bc78f031059be7be854522c4c"))
+      Row(
+        "902fbdd2b1df0c4f70b4a5d23525e932",
+        "6ac1e56bc78f031059be7be854522c4c"))
 
     checkAnswer(
       df.selectExpr("md5(a)", "md5(b)"),
-      Row("902fbdd2b1df0c4f70b4a5d23525e932", "6ac1e56bc78f031059be7be854522c4c"))
+      Row(
+        "902fbdd2b1df0c4f70b4a5d23525e932",
+        "6ac1e56bc78f031059be7be854522c4c"))
   }
 
   test("misc sha1 function") {
     val df = Seq(("ABC", "ABC".getBytes(StandardCharsets.UTF_8))).toDF("a", "b")
     checkAnswer(
       df.select(sha1($"a"), sha1($"b")),
-      Row("3c01bdbb26f358bab27f267924aa2c9a03fcfdb8", "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8"))
+      Row(
+        "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8",
+        "3c01bdbb26f358bab27f267924aa2c9a03fcfdb8"))
 
     val dfEmpty = Seq(("", "".getBytes(StandardCharsets.UTF_8))).toDF("a", "b")
     checkAnswer(
       dfEmpty.selectExpr("sha1(a)", "sha1(b)"),
-      Row("da39a3ee5e6b4b0d3255bfef95601890afd80709", "da39a3ee5e6b4b0d3255bfef95601890afd80709"))
+      Row(
+        "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+        "da39a3ee5e6b4b0d3255bfef95601890afd80709"))
   }
 
   test("misc sha2 function") {
     val df = Seq(("ABC", Array[Byte](1, 2, 3, 4, 5, 6))).toDF("a", "b")
     checkAnswer(
       df.select(sha2($"a", 256), sha2($"b", 256)),
-      Row("b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
-        "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89"))
+      Row(
+        "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89")
+    )
 
     checkAnswer(
       df.selectExpr("sha2(a, 256)", "sha2(b, 256)"),
-      Row("b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
-        "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89"))
+      Row(
+        "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "7192385c3c0605de55bb9476ce1d90748190ecb32a8eed7f5207b30cf6a1fe89")
+    )
 
     intercept[IllegalArgumentException] {
       df.select(sha2($"a", 1024))
@@ -310,7 +326,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
         Row(null, null))
     )
 
-    val df2 = Seq((Array[Array[Int]](Array(2), Array(1), Array(2, 4), null), "x")).toDF("a", "b")
+    val df2 =
+      Seq((Array[Array[Int]](Array(2), Array(1), Array(2, 4), null), "x"))
+        .toDF("a", "b")
     checkAnswer(
       df2.selectExpr("sort_array(a, true)", "sort_array(a, false)"),
       Seq(

@@ -7,9 +7,15 @@ import scala.pickling.binary._
 import java.lang.{Runtime => JRuntime}
 
 // for Java Serialization:
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream, ObjectInputStream}
+import java.io.{
+  ByteArrayInputStream,
+  ByteArrayOutputStream,
+  ObjectOutputStream,
+  ObjectInputStream
+}
 
-object TraversableIntBenchFreeMem extends scala.pickling.testing.PicklingBenchmark {
+object TraversableIntBenchFreeMem
+    extends scala.pickling.testing.PicklingBenchmark {
   override val enableOutput = false
 
   val coll = (1 to size).toVector
@@ -23,7 +29,8 @@ object TraversableIntBenchFreeMem extends scala.pickling.testing.PicklingBenchma
   }
 }
 
-object TraversableJavaIntBenchFreeMem extends scala.pickling.testing.PicklingBenchmark {
+object TraversableJavaIntBenchFreeMem
+    extends scala.pickling.testing.PicklingBenchmark {
   override val enableOutput = false
 
   val coll = (1 to size).toVector
@@ -43,7 +50,8 @@ object TraversableJavaIntBenchFreeMem extends scala.pickling.testing.PicklingBen
   }
 }
 
-object TraversableKryoIntBenchFreeMem extends scala.pickling.testing.PicklingBenchmark {
+object TraversableKryoIntBenchFreeMem
+    extends scala.pickling.testing.PicklingBenchmark {
   override val enableOutput = false
 
   var ser: KryoSerializer = _

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.workflow
 
 import io.prediction.controller.EngineParams
@@ -54,11 +53,7 @@ object CoreWorkflow {
     } else {
       engineInstance.engineFactory
     }
-    val sc = WorkflowContext(
-      batch,
-      env,
-      params.sparkEnv,
-      mode.capitalize)
+    val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
 
     try {
 
@@ -72,23 +67,22 @@ object CoreWorkflow {
       val instanceId = Storage.getMetaDataEngineInstances
 
       val kryo = KryoInstantiator.newKryoInjection
-      
+
       logger.info("Inserting persistent model")
-      Storage.getModelDataModels.insert(Model(
-        id = engineInstance.id,
-        models = kryo(models)))
+      Storage.getModelDataModels.insert(
+        Model(id = engineInstance.id, models = kryo(models)))
 
       logger.info("Updating engine instance")
       val engineInstances = Storage.getMetaDataEngineInstances
-      engineInstances.update(engineInstance.copy(
-        status = "COMPLETED",
-        endTime = DateTime.now
+      engineInstances.update(
+        engineInstance.copy(
+          status = "COMPLETED",
+          endTime = DateTime.now
         ))
 
       logger.info("Training completed successfully.")
     } catch {
-      case e @(
-          _: StopAfterReadInterruption |
+      case e @ (_: StopAfterReadInterruption |
           _: StopAfterPrepareInterruption) => {
         logger.info(s"Training interrupted by $e.")
       }
@@ -118,11 +112,7 @@ object CoreWorkflow {
     } else {
       evaluation.getClass.getName
     }
-    val sc = WorkflowContext(
-      batch,
-      env,
-      params.sparkEnv,
-      mode.capitalize)
+    val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
     val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 
     logger.info(s"Starting evaluation instance ID: $evaluationInstanceId")
@@ -135,8 +125,9 @@ object CoreWorkflow {
       evaluator,
       params)
 
-    if (evaluatorResult.noSave) { 
-      logger.info(s"This evaluation result is not inserted into database: $evaluatorResult")
+    if (evaluatorResult.noSave) {
+      logger.info(
+        s"This evaluation result is not inserted into database: $evaluatorResult")
     } else {
       val evaluatedEvaluationInstance = evaluationInstance.copy(
         status = "EVALCOMPLETED",
@@ -159,5 +150,3 @@ object CoreWorkflow {
     logger.info("runEvaluation completed")
   }
 }
-
-

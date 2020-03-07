@@ -27,10 +27,10 @@ import org.apache.spark.util.StatCounter
 object EnsembleTestHelper {
 
   /**
-   * Aggregates all values in data, and tests whether the empirical mean and stddev are within
-   * epsilon of the expected values.
-   * @param data  Every element of the data should be an i.i.d. sample from some distribution.
-   */
+    * Aggregates all values in data, and tests whether the empirical mean and stddev are within
+    * epsilon of the expected values.
+    * @param data  Every element of the data should be an i.i.d. sample from some distribution.
+    */
   def testRandomArrays(
       data: Array[Array[Double]],
       numCols: Int,
@@ -52,25 +52,28 @@ object EnsembleTestHelper {
       input: Seq[LabeledPoint],
       requiredAccuracy: Double) {
     val predictions = input.map(x => model.predict(x.features))
-    val numOffPredictions = predictions.zip(input).count { case (prediction, expected) =>
-      prediction != expected.label
+    val numOffPredictions = predictions.zip(input).count {
+      case (prediction, expected) =>
+        prediction != expected.label
     }
     val accuracy = (input.length - numOffPredictions).toDouble / input.length
-    assert(accuracy >= requiredAccuracy,
+    assert(
+      accuracy >= requiredAccuracy,
       s"validateClassifier calculated accuracy $accuracy but required $requiredAccuracy.")
   }
 
   /**
-   * Validates a tree ensemble model for regression.
-   */
+    * Validates a tree ensemble model for regression.
+    */
   def validateRegressor(
       model: TreeEnsembleModel,
       input: Seq[LabeledPoint],
       required: Double,
       metricName: String = "mse") {
     val predictions = input.map(x => model.predict(x.features))
-    val errors = predictions.zip(input).map { case (prediction, point) =>
-      point.label - prediction
+    val errors = predictions.zip(input).map {
+      case (prediction, point) =>
+        point.label - prediction
     }
     val metric = metricName match {
       case "mse" =>
@@ -79,11 +82,14 @@ object EnsembleTestHelper {
         errors.map(math.abs).sum / errors.size
     }
 
-    assert(metric <= required,
+    assert(
+      metric <= required,
       s"validateRegressor calculated $metricName $metric but required $required.")
   }
 
-  def generateOrderedLabeledPoints(numFeatures: Int, numInstances: Int): Array[LabeledPoint] = {
+  def generateOrderedLabeledPoints(
+      numFeatures: Int,
+      numInstances: Int): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](numInstances)
     for (i <- 0 until numInstances) {
       val label = if (i < numInstances / 10) {

@@ -4,9 +4,9 @@ import actorApi._
 import akka.actor.ActorSelection
 import lila.db.api._
 import lila.hub.actorApi.forum.MakeTeam
-import lila.hub.actorApi.timeline.{ Propagate, TeamJoin, TeamCreate }
+import lila.hub.actorApi.timeline.{Propagate, TeamJoin, TeamCreate}
 import lila.user.tube.userTube
-import lila.user.{ User, UserContext }
+import lila.user.{User, UserContext}
 import org.joda.time.Period
 import tube._
 
@@ -33,20 +33,22 @@ final class TeamApi(
       createdBy = me)
     $insert(team) >>
       MemberRepo.add(team.id, me.id) >>- {
-        (cached.teamIdsCache invalidate me.id)
-        (forum ! MakeTeam(team.id, team.name))
-        (indexer ! InsertTeam(team))
-        (timeline ! Propagate(
-          TeamCreate(me.id, team.id)
-        ).toFollowersOf(me.id))
-      } inject team
+      (cached.teamIdsCache invalidate me.id)
+      (forum ! MakeTeam(team.id, team.name))
+      (indexer ! InsertTeam(team))
+      (timeline ! Propagate(
+        TeamCreate(me.id, team.id)
+      ).toFollowersOf(me.id))
+    } inject team
   }
 
   def update(team: Team, edit: TeamEdit, me: User): Funit = edit.trim |> { e =>
     team.copy(
       location = e.location,
       description = e.description,
-      open = e.isOpen) |> { team => $update(team) >>- (indexer ! InsertTeam(team)) }
+      open = e.isOpen) |> { team =>
+      $update(team) >>- (indexer ! InsertTeam(team))
+    }
   }
 
   def mine(me: User): Fu[List[Team]] = $find.byIds[Team](cached teamIds me.id)
@@ -56,38 +58,45 @@ final class TeamApi(
   def hasCreatedRecently(me: User): Fu[Boolean] =
     TeamRepo.userHasCreatedSince(me.id, creationPeriod)
 
-  def requestsWithUsers(team: Team): Fu[List[RequestWithUser]] = for {
-    requests ← RequestRepo findByTeam team.id
-    users ← $find.byOrderedIds[User](requests map (_.user))
-  } yield requests zip users map {
-    case (request, user) => RequestWithUser(request, user)
-  }
+  def requestsWithUsers(team: Team): Fu[List[RequestWithUser]] =
+    for {
+      requests ← RequestRepo findByTeam team.id
+      users ← $find.byOrderedIds[User](requests map (_.user))
+    } yield requests zip users map {
+      case (request, user) => RequestWithUser(request, user)
+    }
 
-  def requestsWithUsers(user: User): Fu[List[RequestWithUser]] = for {
-    teamIds ← TeamRepo teamIdsByCreator user.id
-    requests ← RequestRepo findByTeams teamIds
-    users ← $find.byOrderedIds[User](requests map (_.user))
-  } yield requests zip users map {
-    case (request, user) => RequestWithUser(request, user)
-  }
+  def requestsWithUsers(user: User): Fu[List[RequestWithUser]] =
+    for {
+      teamIds ← TeamRepo teamIdsByCreator user.id
+      requests ← RequestRepo findByTeams teamIds
+      users ← $find.byOrderedIds[User](requests map (_.user))
+    } yield requests zip users map {
+      case (request, user) => RequestWithUser(request, user)
+    }
 
-  def join(teamId: String)(implicit ctx: UserContext): Fu[Option[Requesting]] = for {
-    teamOption ← $find.byId[Team](teamId)
-    result ← ~(teamOption |@| ctx.me.filter(_.canTeam))({
-      case (team, user) if team.open =>
-        (doJoin(team, user.id) inject Joined(team).some): Fu[Option[Requesting]]
-      case (team, user) =>
-        fuccess(Motivate(team).some: Option[Requesting])
-    })
-  } yield result
+  def join(teamId: String)(implicit ctx: UserContext): Fu[Option[Requesting]] =
+    for {
+      teamOption ← $find.byId[Team](teamId)
+      result ← ~(teamOption |@| ctx.me.filter(_.canTeam))({
+        case (team, user) if team.open =>
+          (doJoin(team, user.id) inject Joined(team).some): Fu[
+            Option[Requesting]]
+        case (team, user) =>
+          fuccess(Motivate(team).some: Option[Requesting])
+      })
+    } yield result
 
-  def requestable(teamId: String, user: User): Fu[Option[Team]] = for {
-    teamOption ← $find.byId[Team](teamId)
-    able ← teamOption.??(requestable(_, user))
-  } yield teamOption filter (_ => able)
+  def requestable(teamId: String, user: User): Fu[Option[Team]] =
+    for {
+      teamOption ← $find.byId[Team](teamId)
+      able ← teamOption.??(requestable(_, user))
+    } yield teamOption filter (_ => able)
 
   def requestable(team: Team, user: User): Fu[Boolean] =
-    RequestRepo.exists(team.id, user.id).map { _ -> belongsTo(team.id, user.id) } map {
+    RequestRepo.exists(team.id, user.id).map {
+      _ -> belongsTo(team.id, user.id)
+    } map {
       case (false, false) => true
       case _              => false
     }
@@ -95,41 +104,47 @@ final class TeamApi(
   def createRequest(team: Team, setup: RequestSetup, user: User): Funit =
     requestable(team, user) flatMap {
       _ ?? {
-        val request = Request.make(team = team.id, user = user.id, message = setup.message)
+        val request =
+          Request.make(team = team.id, user = user.id, message = setup.message)
         val rwu = RequestWithUser(request, user)
         $insert(request) >> (cached.nbRequests remove team.createdBy)
       }
     }
 
-  def processRequest(team: Team, request: Request, accept: Boolean): Funit = for {
-    _ ← $remove(request)
-    _ ← cached.nbRequests remove team.createdBy
-    userOption ← $find.byId[User](request.user)
-    _ ← userOption.filter(_ => accept).??(user =>
-      doJoin(team, user.id) >>- notifier.acceptRequest(team, request)
-    )
-  } yield ()
+  def processRequest(team: Team, request: Request, accept: Boolean): Funit =
+    for {
+      _ ← $remove(request)
+      _ ← cached.nbRequests remove team.createdBy
+      userOption ← $find.byId[User](request.user)
+      _ ← userOption
+        .filter(_ => accept)
+        .??(user =>
+          doJoin(team, user.id) >>- notifier.acceptRequest(team, request))
+    } yield ()
 
-  def doJoin(team: Team, userId: String): Funit = (!belongsTo(team.id, userId)) ?? {
-    MemberRepo.add(team.id, userId) >>
-      TeamRepo.incMembers(team.id, +1) >>- {
+  def doJoin(team: Team, userId: String): Funit =
+    (!belongsTo(team.id, userId)) ?? {
+      MemberRepo.add(team.id, userId) >>
+        TeamRepo.incMembers(team.id, +1) >>- {
         cached.teamIdsCache invalidate userId
         timeline ! Propagate(TeamJoin(userId, team.id)).toFollowersOf(userId)
       }
-  } recover lila.db.recoverDuplicateKey(e => ())
+    } recover lila.db.recoverDuplicateKey(e => ())
 
-  def quit(teamId: String)(implicit ctx: UserContext): Fu[Option[Team]] = for {
-    teamOption ← $find.byId[Team](teamId)
-    result ← ~(teamOption |@| ctx.me)({
-      case (team, user) => doQuit(team, user.id) inject team.some
-    })
-  } yield result
+  def quit(teamId: String)(implicit ctx: UserContext): Fu[Option[Team]] =
+    for {
+      teamOption ← $find.byId[Team](teamId)
+      result ← ~(teamOption |@| ctx.me)({
+        case (team, user) => doQuit(team, user.id) inject team.some
+      })
+    } yield result
 
-  def doQuit(team: Team, userId: String): Funit = belongsTo(team.id, userId) ?? {
-    MemberRepo.remove(team.id, userId) >>
-      TeamRepo.incMembers(team.id, -1) >>-
-      (cached.teamIdsCache invalidate userId)
-  }
+  def doQuit(team: Team, userId: String): Funit =
+    belongsTo(team.id, userId) ?? {
+      MemberRepo.remove(team.id, userId) >>
+        TeamRepo.incMembers(team.id, -1) >>-
+        (cached.teamIdsCache invalidate userId)
+    }
 
   def quitAll(userId: String): Funit = MemberRepo.removeByUser(userId)
 

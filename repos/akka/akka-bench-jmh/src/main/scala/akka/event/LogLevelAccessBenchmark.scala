@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.event
 
 import java.util.concurrent.TimeUnit
@@ -25,9 +25,12 @@ class LogLevelAccessBenchmark {
    */
 
   val NoopBus = new LoggingBus {
-    override def subscribe(subscriber: Subscriber, to: Classifier): Boolean = true
+    override def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
+      true
     override def publish(event: Event): Unit = ()
-    override def unsubscribe(subscriber: Subscriber, from: Classifier): Boolean = true
+    override def unsubscribe(
+        subscriber: Subscriber,
+        from: Classifier): Boolean = true
     override def unsubscribe(subscriber: Subscriber): Unit = ()
   }
 

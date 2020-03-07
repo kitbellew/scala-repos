@@ -10,19 +10,26 @@ import org.jetbrains.plugins.scala.extensions.PsiElementExt
 import org.jetbrains.plugins.scala.lang.lexer.ScalaXmlTokenTypes._
 
 /**
- * @author Pavel Fatin
- */
+  * @author Pavel Fatin
+  */
 class ScalaAttributeValueSelectioner extends ExtendWordSelectionHandlerBase {
   def canSelect(e: PsiElement) = isPartOfAttributeValue(e)
 
-  override def select(e: PsiElement, editorText: CharSequence, cursorOffset: Int, editor: Editor) = {
+  override def select(
+      e: PsiElement,
+      editorText: CharSequence,
+      cursorOffset: Int,
+      editor: Editor) = {
     val result = super.select(e, editorText, cursorOffset, editor)
 
     val start = e.prevElements.toSeq.takeWhile(isPartOfAttributeValue).last
     val end = e.nextElements.toSeq.takeWhile(isPartOfAttributeValue).last
 
     if (start != end) {
-      result.add(new TextRange(start.getTextRange.getStartOffset, end.getTextRange.getEndOffset))
+      result.add(
+        new TextRange(
+          start.getTextRange.getStartOffset,
+          end.getTextRange.getEndOffset))
     }
 
     result

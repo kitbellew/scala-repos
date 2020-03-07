@@ -17,7 +17,7 @@
 package shapeless
 
 class TypeableTests {
-  import java.{ lang => jl }
+  import java.{lang => jl}
 
   import org.junit.Test
   import org.junit.Assert._
@@ -47,7 +47,7 @@ class TypeableTests {
     val cl = l.cast[Long]
     assertTrue(cl.isDefined)
 
-    val f: Any = 23.0F
+    val f: Any = 23.0f
     val cf = f.cast[Float]
     assertTrue(cf.isDefined)
 
@@ -86,7 +86,7 @@ class TypeableTests {
     val cl = l.cast[jl.Long]
     assertTrue(cl.isDefined)
 
-    val f: Any = 23.0F
+    val f: Any = 23.0f
     val cf = f.cast[jl.Float]
     assertTrue(cf.isDefined)
 
@@ -423,12 +423,12 @@ class TypeableTests {
       val `List[(String, T)]` = TypeCase[List[(String, T)]]
 
       t match {
-        case T(t) => Some(t)
-        case `List[T]`(lt) => lt.headOption
-        case `(String, T)`(s, t) => typed[String](s) ; Some(t)
+        case T(t)                             => Some(t)
+        case `List[T]`(lt)                    => lt.headOption
+        case `(String, T)`(s, t)              => typed[String](s); Some(t)
         case `List[(String, T)]`((s, t) :: _) => typed[String](s); Some(t)
-        case `List[(String, T)]`(lst) => assertTrue(lst.isEmpty) ; None
-        case _ => None
+        case `List[(String, T)]`(lst)         => assertTrue(lst.isEmpty); None
+        case _                                => None
       }
     }
 
@@ -517,10 +517,10 @@ class TypeableTests {
     val a: Any = ()
     assertEquals("Typeable[Any]", typeableString(a))
 
-    val av: AnyVal =  7
+    val av: AnyVal = 7
     assertEquals("Typeable[AnyVal]", typeableString(av))
 
-    val ar: AnyRef =  ""
+    val ar: AnyRef = ""
     assertEquals("Typeable[AnyRef]", typeableString(ar))
 
     val f: Foo = Foo(0, "", true)
@@ -531,16 +531,16 @@ class TypeableTests {
 
     val i1: A with B = new C
     assertEquals("Typeable[A with B]", typeableString(i1))
-    assertEquals("Typeable[A]", typeableString(new A{}))
+    assertEquals("Typeable[A]", typeableString(new A {}))
 
-    val o: Option[Long] = Some(4l)
+    val o: Option[Long] = Some(4L)
     assertEquals("Typeable[Option[Long]]", typeableString(o))
 
     val e: Either[Long, String] = Right("")
     assertEquals("Typeable[Either[Long, String]]", typeableString(e))
-    assertEquals("Typeable[Right[Long]]", typeableString(Right(3l)))
+    assertEquals("Typeable[Right[Long]]", typeableString(Right(3L)))
 
-    val l: List[Int] = List(1,2)
+    val l: List[Int] = List(1, 2)
     assertEquals("Typeable[List[Int]]", typeableString(l))
 
     val m: Map[Int, String] = Map(1 -> "one", 2 -> "two")

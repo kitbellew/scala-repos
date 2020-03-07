@@ -6,7 +6,11 @@ import javax.swing.Icon
 import com.intellij.ide.IdeView
 import com.intellij.ide.actions.CreateTemplateInPackageAction
 import com.intellij.ide.fileTemplates.{FileTemplateManager, JavaTemplateUtil}
-import com.intellij.openapi.actionSystem.{CommonDataKeys, DataContext, LangDataKeys}
+import com.intellij.openapi.actionSystem.{
+  CommonDataKeys,
+  DataContext,
+  LangDataKeys
+}
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -17,19 +21,32 @@ import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefinition
 
 /**
- * User: Dmitry.Naydanov
- * Date: 27.03.15.
- */
-abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](txt: String, description: String, icon: Icon)
-  extends CreateTemplateInPackageAction[T](txt, description, icon, JavaModuleSourceRootTypes.SOURCES) {
-  override def checkPackageExists(psiDirectory: PsiDirectory) = JavaDirectoryService.getInstance.getPackage(psiDirectory) != null
+  * User: Dmitry.Naydanov
+  * Date: 27.03.15.
+  */
+abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
+    txt: String,
+    description: String,
+    icon: Icon)
+    extends CreateTemplateInPackageAction[T](
+      txt,
+      description,
+      icon,
+      JavaModuleSourceRootTypes.SOURCES) {
+  override def checkPackageExists(psiDirectory: PsiDirectory) =
+    JavaDirectoryService.getInstance.getPackage(psiDirectory) != null
 
   override def getNavigationElement(t: T): PsiElement = t.extendsBlock
 
-  override def isAvailable(dataContext: DataContext): Boolean = super.isAvailable(dataContext) && isUnderSourceRoots(dataContext)
+  override def isAvailable(dataContext: DataContext): Boolean =
+    super.isAvailable(dataContext) && isUnderSourceRoots(dataContext)
 
-  def createFromTemplate(directory: PsiDirectory, name: String, fileName: String, templateName: String,
-                         parameters: String*): PsiFile = {
+  def createFromTemplate(
+      directory: PsiDirectory,
+      name: String,
+      fileName: String,
+      templateName: String,
+      parameters: String*): PsiFile = {
     val templateManager = FileTemplateManager.getDefaultInstance
     val template = templateManager getInternalTemplate templateName
     val project = directory.getProject
@@ -37,7 +54,9 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](txt: String, des
 
     JavaTemplateUtil.setPackageNameAttribute(properties, directory)
     properties.setProperty(NewTypeDefinitionBase.NAME_TEMPLATE_PROPERTY, name)
-    properties.setProperty(NewTypeDefinitionBase.LOW_CASE_NAME_TEMPLATE_PROPERTY, name.substring(0, 1).toLowerCase + name.substring(1))
+    properties.setProperty(
+      NewTypeDefinitionBase.LOW_CASE_NAME_TEMPLATE_PROPERTY,
+      name.substring(0, 1).toLowerCase + name.substring(1))
 
     for (j <- 0.until(parameters.length, 2)) {
       properties.setProperty(parameters(j), parameters(j + 1))
@@ -45,9 +64,13 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](txt: String, des
 
     var text: String = null
 
-    try text = template getText properties catch {
+    try text = template getText properties
+    catch {
       case e: Exception =>
-        throw new RuntimeException("Unable to load template for " + templateManager.internalTemplateToSubject(templateName), e)
+        throw new RuntimeException(
+          "Unable to load template for " + templateManager
+            .internalTemplateToSubject(templateName),
+          e)
     }
 
     val file = createFile(fileName, text, project)
@@ -56,17 +79,21 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](txt: String, des
   }
 
   protected def isUnderSourceRoots(dataContext: DataContext): Boolean =
-    (dataContext getData LangDataKeys.MODULE.getName, dataContext getData LangDataKeys.IDE_VIEW.getName,
-     dataContext getData CommonDataKeys.PROJECT.getName) match {
+    (
+      dataContext getData LangDataKeys.MODULE.getName,
+      dataContext getData LangDataKeys.IDE_VIEW.getName,
+      dataContext getData CommonDataKeys.PROJECT.getName) match {
       case (module: Module, view: IdeView, project: Project) =>
         if (!Option(module).exists(checkModule)) return false
 
-        val projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex
+        val projectFileIndex =
+          ProjectRootManager.getInstance(project).getFileIndex
         val dirs = view.getDirectories
 
         for (dir <- dirs) {
           if (projectFileIndex.isInSourceContent(dir.getVirtualFile) &&
-            JavaDirectoryService.getInstance.getPackage(dir) != null) return true
+              JavaDirectoryService.getInstance.getPackage(dir) != null)
+            return true
         }
 
         false
@@ -77,8 +104,13 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](txt: String, des
 
   protected def getFileType: FileType
 
-  protected def createFile(name: String, text: String, project: Project): PsiFile =
-    PsiFileFactory.getInstance(project).createFileFromText(name, getFileType, text)
+  protected def createFile(
+      name: String,
+      text: String,
+      project: Project): PsiFile =
+    PsiFileFactory
+      .getInstance(project)
+      .createFileFromText(name, getFileType, text)
 }
 
 object NewTypeDefinitionBase {

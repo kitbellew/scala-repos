@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,8 +30,13 @@ import com.precog.util._
 import scala.collection.mutable.{Map => MMap}
 import scala.collection.mutable.ArrayBuffer
 
-case class CTree(path: CPath, fields: MMap[String, CTree], indices: ArrayBuffer[CTree], types: MMap[CType, Int]) {
-  def getField(s: String): CTree = fields.getOrElseUpdate(s, CTree.empty(CPath(path.nodes :+ CPathField(s))))
+case class CTree(
+    path: CPath,
+    fields: MMap[String, CTree],
+    indices: ArrayBuffer[CTree],
+    types: MMap[CType, Int]) {
+  def getField(s: String): CTree =
+    fields.getOrElseUpdate(s, CTree.empty(CPath(path.nodes :+ CPathField(s))))
   def getIndex(n: Int): CTree = {
     var i = indices.length
     while (i <= n) {
@@ -52,7 +57,12 @@ case class CTree(path: CPath, fields: MMap[String, CTree], indices: ArrayBuffer[
 }
 
 object CTree {
-  def empty(path: CPath) = CTree(path, MMap.empty[String, CTree], ArrayBuffer.empty[CTree], MMap.empty[CType, Int])
+  def empty(path: CPath) =
+    CTree(
+      path,
+      MMap.empty[String, CTree],
+      ArrayBuffer.empty[CTree],
+      MMap.empty[CType, Int])
 }
 
 object Segments {
@@ -60,7 +70,11 @@ object Segments {
     Segments(id, 0, CTree.empty(CPath.Identity), ArrayBuffer.empty[Segment])
 }
 
-case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]) {
+case class Segments(
+    id: Long,
+    var length: Int,
+    t: CTree,
+    a: ArrayBuffer[Segment]) {
 
   override def equals(that: Any): Boolean = that match {
     case Segments(`id`, length2, t2, a2) =>
@@ -83,9 +97,11 @@ case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]
 
   def addNull(row: Int, tree: CTree): Unit = addNullType(row, tree, CNull)
 
-  def addEmptyArray(row: Int, tree: CTree): Unit = addNullType(row, tree, CEmptyArray)
+  def addEmptyArray(row: Int, tree: CTree): Unit =
+    addNullType(row, tree, CEmptyArray)
 
-  def addEmptyObject(row: Int, tree: CTree): Unit = addNullType(row, tree, CEmptyObject)
+  def addEmptyObject(row: Int, tree: CTree): Unit =
+    addNullType(row, tree, CEmptyObject)
 
   def addTrue(row: Int, tree: CTree) {
     val n = tree.getType(CBoolean)
@@ -204,7 +220,7 @@ case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]
       addLong(row, tree, j)
     } else {
       val n = tree.getType(CNum)
-  
+
       if (n >= 0) {
         val seg = a(n).asInstanceOf[ArraySegment[BigDecimal]]
         seg.defined.set(row)
@@ -247,16 +263,16 @@ case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]
 
   def initializeSegments(row: Int, j: JValue, tree: CTree): Unit = {
     j match {
-      case JNull => addNull(row, tree)
-      case JTrue => addTrue(row, tree)
+      case JNull  => addNull(row, tree)
+      case JTrue  => addTrue(row, tree)
       case JFalse => addFalse(row, tree)
-  
-      case JString(s) => addString(row, tree, s)
-      case JNumLong(n) => addLong(row, tree, n)
+
+      case JString(s)    => addString(row, tree, s)
+      case JNumLong(n)   => addLong(row, tree, n)
       case JNumDouble(n) => addDouble(row, tree, n)
       case JNumBigDec(n) => addBigDecimal(row, tree, n)
-      case JNumStr(s) => addNum(row, tree, s)
-  
+      case JNumStr(s)    => addNum(row, tree, s)
+
       case JObject(m) =>
         if (m.isEmpty) {
           addEmptyObject(row, tree)
@@ -266,7 +282,7 @@ case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]
               initializeSegments(row, j, tree.getField(key))
           }
         }
-  
+
       case JArray(js) =>
         if (js.isEmpty) {
           addEmptyArray(row, tree)
@@ -277,7 +293,7 @@ case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]
             i += 1
           }
         }
-  
+
       case JUndefined => ()
     }
   }

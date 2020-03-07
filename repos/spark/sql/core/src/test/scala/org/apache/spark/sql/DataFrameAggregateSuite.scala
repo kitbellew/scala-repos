@@ -23,7 +23,12 @@ import org.apache.spark.sql.internal.SQLConf
 import org.apache.spark.sql.test.SharedSQLContext
 import org.apache.spark.sql.types.DecimalType
 
-case class Fact(date: Int, hour: Int, minute: Int, room_name: String, temp: Double)
+case class Fact(
+    date: Int,
+    hour: Int,
+    minute: Int,
+    room_name: String,
+    temp: Double)
 
 class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
@@ -90,20 +95,28 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         Row(null, null, 113000.0) :: Nil
     )
 
-    val df0 = sqlContext.sparkContext.parallelize(Seq(
-      Fact(20151123, 18, 35, "room1", 18.6),
-      Fact(20151123, 18, 35, "room2", 22.4),
-      Fact(20151123, 18, 36, "room1", 17.4),
-      Fact(20151123, 18, 36, "room2", 25.6))).toDF()
+    val df0 = sqlContext.sparkContext
+      .parallelize(
+        Seq(
+          Fact(20151123, 18, 35, "room1", 18.6),
+          Fact(20151123, 18, 35, "room2", 22.4),
+          Fact(20151123, 18, 36, "room1", 17.4),
+          Fact(20151123, 18, 36, "room2", 25.6)))
+      .toDF()
 
-    val cube0 = df0.cube("date", "hour", "minute", "room_name").agg(Map("temp" -> "avg"))
+    val cube0 =
+      df0.cube("date", "hour", "minute", "room_name").agg(Map("temp" -> "avg"))
     assert(cube0.where("date IS NULL").count > 0)
   }
 
   test("grouping and grouping_id") {
     checkAnswer(
-      courseSales.cube("course", "year")
-        .agg(grouping("course"), grouping("year"), grouping_id("course", "year")),
+      courseSales
+        .cube("course", "year")
+        .agg(
+          grouping("course"),
+          grouping("year"),
+          grouping_id("course", "year")),
       Row("Java", 2012, 0, 0, 0) ::
         Row("Java", 2013, 0, 0, 0) ::
         Row("Java", null, 0, 1, 1) ::
@@ -127,10 +140,15 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
 
     val w = Window.orderBy(sum("earnings"))
     checkAnswer(
-      courseSales.cube("course", "year")
-        .agg(sum("earnings"),
+      courseSales
+        .cube("course", "year")
+        .agg(
+          sum("earnings"),
           grouping_id("course", "year"),
-          rank().over(Window.partitionBy(grouping_id("course", "year")).orderBy(sum("earnings")))),
+          rank().over(
+            Window
+              .partitionBy(grouping_id("course", "year"))
+              .orderBy(sum("earnings")))),
       Row("Java", 2012, 20000.0, 0, 2) ::
         Row("Java", 2013, 30000.0, 0, 3) ::
         Row("Java", null, 50000.0, 1, 1) ::
@@ -145,15 +163,26 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
 
   test("rollup overlapping columns") {
     checkAnswer(
-      testData2.rollup($"a" + $"b" as "foo", $"b" as "bar").agg(sum($"a" - $"b") as "foo"),
-      Row(2, 1, 0) :: Row(3, 2, -1) :: Row(3, 1, 1) :: Row(4, 2, 0) :: Row(4, 1, 2) :: Row(5, 2, 1)
-        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(5, null, 1)
+      testData2
+        .rollup($"a" + $"b" as "foo", $"b" as "bar")
+        .agg(sum($"a" - $"b") as "foo"),
+      Row(2, 1, 0) :: Row(3, 2, -1) :: Row(3, 1, 1) :: Row(4, 2, 0) :: Row(
+        4,
+        1,
+        2) :: Row(5, 2, 1)
+        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
+        5,
+        null,
+        1)
         :: Row(null, null, 3) :: Nil
     )
 
     checkAnswer(
       testData2.rollup("a", "b").agg(sum("b")),
-      Row(1, 1, 1) :: Row(1, 2, 2) :: Row(2, 1, 1) :: Row(2, 2, 2) :: Row(3, 1, 1) :: Row(3, 2, 2)
+      Row(1, 1, 1) :: Row(1, 2, 2) :: Row(2, 1, 1) :: Row(2, 2, 2) :: Row(
+        3,
+        1,
+        1) :: Row(3, 2, 2)
         :: Row(1, null, 3) :: Row(2, null, 3) :: Row(3, null, 3)
         :: Row(null, null, 9) :: Nil
     )
@@ -162,15 +191,24 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   test("cube overlapping columns") {
     checkAnswer(
       testData2.cube($"a" + $"b", $"b").agg(sum($"a" - $"b")),
-      Row(2, 1, 0) :: Row(3, 2, -1) :: Row(3, 1, 1) :: Row(4, 2, 0) :: Row(4, 1, 2) :: Row(5, 2, 1)
-        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(5, null, 1)
+      Row(2, 1, 0) :: Row(3, 2, -1) :: Row(3, 1, 1) :: Row(4, 2, 0) :: Row(
+        4,
+        1,
+        2) :: Row(5, 2, 1)
+        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
+        5,
+        null,
+        1)
         :: Row(null, 1, 3) :: Row(null, 2, 0)
         :: Row(null, null, 3) :: Nil
     )
 
     checkAnswer(
       testData2.cube("a", "b").agg(sum("b")),
-      Row(1, 1, 1) :: Row(1, 2, 2) :: Row(2, 1, 1) :: Row(2, 2, 2) :: Row(3, 1, 1) :: Row(3, 2, 2)
+      Row(1, 1, 1) :: Row(1, 2, 2) :: Row(2, 1, 1) :: Row(2, 2, 2) :: Row(
+        3,
+        1,
+        1) :: Row(3, 2, 2)
         :: Row(1, null, 3) :: Row(2, null, 3) :: Row(3, null, 3)
         :: Row(null, 1, 3) :: Row(null, 2, 6)
         :: Row(null, null, 9) :: Nil
@@ -206,17 +244,13 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   }
 
   test("average") {
-    checkAnswer(
-      testData2.agg(avg('a), mean('a)),
-      Row(2.0, 2.0))
+    checkAnswer(testData2.agg(avg('a), mean('a)), Row(2.0, 2.0))
 
     checkAnswer(
       testData2.agg(avg('a), sumDistinct('a)), // non-partial
       Row(2.0, 6.0) :: Nil)
 
-    checkAnswer(
-      decimalData.agg(avg('a)),
-      Row(new java.math.BigDecimal(2.0)))
+    checkAnswer(decimalData.agg(avg('a)), Row(new java.math.BigDecimal(2.0)))
 
     checkAnswer(
       decimalData.agg(avg('a), sumDistinct('a)), // non-partial
@@ -227,18 +261,16 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
       Row(new java.math.BigDecimal(2.0)))
     // non-partial
     checkAnswer(
-      decimalData.agg(avg('a cast DecimalType(10, 2)), sumDistinct('a cast DecimalType(10, 2))),
+      decimalData.agg(
+        avg('a cast DecimalType(10, 2)),
+        sumDistinct('a cast DecimalType(10, 2))),
       Row(new java.math.BigDecimal(2.0), new java.math.BigDecimal(6)) :: Nil)
   }
 
   test("null average") {
-    checkAnswer(
-      testData3.agg(avg('b)),
-      Row(2.0))
+    checkAnswer(testData3.agg(avg('b)), Row(2.0))
 
-    checkAnswer(
-      testData3.agg(avg('b), countDistinct('b)),
-      Row(2.0, 1))
+    checkAnswer(testData3.agg(avg('b), countDistinct('b)), Row(2.0, 1))
 
     checkAnswer(
       testData3.agg(avg('b), sumDistinct('b)), // non-partial
@@ -247,9 +279,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
 
   test("zero average") {
     val emptyTableData = Seq.empty[(Int, Int)].toDF("a", "b")
-    checkAnswer(
-      emptyTableData.agg(avg('a)),
-      Row(null))
+    checkAnswer(emptyTableData.agg(avg('a)), Row(null))
 
     checkAnswer(
       emptyTableData.agg(avg('a), sumDistinct('b)), // non-partial
@@ -276,12 +306,18 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
     )
 
     checkAnswer(
-      testData3.agg(count('a), count('b), count(lit(1)), countDistinct('a), countDistinct('b)),
+      testData3.agg(
+        count('a),
+        count('b),
+        count(lit(1)),
+        countDistinct('a),
+        countDistinct('b)),
       Row(2, 1, 2, 2, 1)
     )
 
     checkAnswer(
-      testData3.agg(count('b), countDistinct('b), sumDistinct('b)), // non-partial
+      testData3
+        .agg(count('b), countDistinct('b), sumDistinct('b)), // non-partial
       Row(1, 1, 2)
     )
   }
@@ -331,22 +367,18 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   test("zero stddev") {
     val emptyTableData = Seq.empty[(Int, Int)].toDF("a", "b")
     checkAnswer(
-    emptyTableData.agg(stddev('a), stddev_pop('a), stddev_samp('a)),
-    Row(null, null, null))
+      emptyTableData.agg(stddev('a), stddev_pop('a), stddev_samp('a)),
+      Row(null, null, null))
   }
 
   test("zero sum") {
     val emptyTableData = Seq.empty[(Int, Int)].toDF("a", "b")
-    checkAnswer(
-      emptyTableData.agg(sum('a)),
-      Row(null))
+    checkAnswer(emptyTableData.agg(sum('a)), Row(null))
   }
 
   test("zero sum distinct") {
     val emptyTableData = Seq.empty[(Int, Int)].toDF("a", "b")
-    checkAnswer(
-      emptyTableData.agg(sumDistinct('a)),
-      Row(null))
+    checkAnswer(emptyTableData.agg(sumDistinct('a)), Row(null))
   }
 
   test("moments") {
@@ -371,10 +403,25 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
   test("zero moments") {
     val input = Seq((1, 2)).toDF("a", "b")
     checkAnswer(
-      input.agg(stddev('a), stddev_samp('a), stddev_pop('a), variance('a),
-        var_samp('a), var_pop('a), skewness('a), kurtosis('a)),
-      Row(Double.NaN, Double.NaN, 0.0, Double.NaN, Double.NaN, 0.0,
-        Double.NaN, Double.NaN))
+      input.agg(
+        stddev('a),
+        stddev_samp('a),
+        stddev_pop('a),
+        variance('a),
+        var_samp('a),
+        var_pop('a),
+        skewness('a),
+        kurtosis('a)),
+      Row(
+        Double.NaN,
+        Double.NaN,
+        0.0,
+        Double.NaN,
+        Double.NaN,
+        0.0,
+        Double.NaN,
+        Double.NaN)
+    )
 
     checkAnswer(
       input.agg(
@@ -385,16 +432,30 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         expr("var_samp(a)"),
         expr("var_pop(a)"),
         expr("skewness(a)"),
-        expr("kurtosis(a)")),
-      Row(Double.NaN, Double.NaN, 0.0, Double.NaN, Double.NaN, 0.0,
-        Double.NaN, Double.NaN))
+        expr("kurtosis(a)")
+      ),
+      Row(
+        Double.NaN,
+        Double.NaN,
+        0.0,
+        Double.NaN,
+        Double.NaN,
+        0.0,
+        Double.NaN,
+        Double.NaN)
+    )
   }
 
   test("null moments") {
     val emptyTableData = Seq.empty[(Int, Int)].toDF("a", "b")
 
     checkAnswer(
-      emptyTableData.agg(variance('a), var_samp('a), var_pop('a), skewness('a), kurtosis('a)),
+      emptyTableData.agg(
+        variance('a),
+        var_samp('a),
+        var_pop('a),
+        skewness('a),
+        kurtosis('a)),
       Row(null, null, null, null, null))
 
     checkAnswer(

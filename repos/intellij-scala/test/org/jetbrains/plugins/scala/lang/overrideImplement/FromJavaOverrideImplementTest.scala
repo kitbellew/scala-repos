@@ -3,30 +3,51 @@ package lang.overrideImplement
 
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.testFramework.builders.JavaModuleFixtureBuilder
-import com.intellij.testFramework.fixtures.{JavaCodeInsightFixtureTestCase, ModuleFixture}
+import com.intellij.testFramework.fixtures.{
+  JavaCodeInsightFixtureTestCase,
+  ModuleFixture
+}
 import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil
 import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
 import org.junit.Assert.assertEquals
 
 /**
- * Nikolay.Tropin
- * 12/18/13
- */
+  * Nikolay.Tropin
+  * 12/18/13
+  */
 class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
-  protected override def tuneFixture(moduleBuilder: JavaModuleFixtureBuilder[_ <: ModuleFixture]) {
+  protected override def tuneFixture(
+      moduleBuilder: JavaModuleFixtureBuilder[_ <: ModuleFixture]) {
     moduleBuilder.setMockJdkLevel(JavaModuleFixtureBuilder.MockJdkLevel.jdk15)
     moduleBuilder.addJdk(IdeaTestUtil.getMockJdk14Path.getPath)
   }
 
-  def runTest(methodName: String, javaText: String, scalaText: String, expectedText: String,
-              isImplement: Boolean, needsInferType: Boolean = true) {
+  def runTest(
+      methodName: String,
+      javaText: String,
+      scalaText: String,
+      expectedText: String,
+      isImplement: Boolean,
+      needsInferType: Boolean = true) {
     myFixture.addFileToProject("JavaDummy.java", javaText.stripMargin.trim)
-    val scalaFile = myFixture.configureByText("ScalaDummy.scala", scalaText.replace("\r", "").stripMargin.trim)
-    val oldSpecifyRetType = ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
-    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY = needsInferType
-    ScalaOIUtil.invokeOverrideImplement(myFixture.getProject, myFixture.getEditor, scalaFile, isImplement, methodName)
-    assertEquals(expectedText.replace("\r", "").stripMargin.trim, scalaFile.getText.stripMargin.trim)
-    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY = oldSpecifyRetType
+    val scalaFile = myFixture.configureByText(
+      "ScalaDummy.scala",
+      scalaText.replace("\r", "").stripMargin.trim)
+    val oldSpecifyRetType =
+      ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
+    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
+      needsInferType
+    ScalaOIUtil.invokeOverrideImplement(
+      myFixture.getProject,
+      myFixture.getEditor,
+      scalaFile,
+      isImplement,
+      methodName)
+    assertEquals(
+      expectedText.replace("\r", "").stripMargin.trim,
+      scalaFile.getText.stripMargin.trim)
+    ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
+      oldSpecifyRetType
   }
 
   def testDefaultImplementations(): Unit = {
@@ -50,7 +71,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def foo(): Int = super.foo()
         |}
       """
-    runTest("foo", javaText, scalaText, expectedText, isImplement = false, needsInferType = true)
+    runTest(
+      "foo",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testVarargImplement() {
@@ -72,7 +99,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  def vararg(args: Int*): Unit = ???
         |}
       """
-    runTest("vararg", javaText, scalaText, expectedText, isImplement = true, needsInferType = true)
+    runTest(
+      "vararg",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = true,
+      needsInferType = true)
   }
 
   def testVarargOverride() {
@@ -94,7 +127,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def vararg(args: Int*): Unit = super.vararg(args: _*)
         |}
       """
-    runTest("vararg", javaText, scalaText, expectedText, isImplement = false, needsInferType = true)
+    runTest(
+      "vararg",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testKeywordNames() {
@@ -116,7 +155,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def `def`(`val`: Int) = super.`def`(`val`)
         |}
       """
-    runTest("def", javaText, scalaText, expectedText, isImplement = false, needsInferType = false)
+    runTest(
+      "def",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = false)
   }
 
   def testWithOverrideAnnotation() {
@@ -144,7 +189,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method(number: Int): Unit = super.method(number)
         |}
       """
-    runTest("method", javaText, scalaText, expected, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expected,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testWithoutOverrideAnnotation() {
@@ -171,7 +222,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method(number: Int): Unit = super.method(number)
         |}
       """
-    runTest("method", javaText, scalaText, expected, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expected,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testSimpleGenerics() {
@@ -195,7 +252,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method(arg: Int): Int = super.method(arg)
         |}
       """
-    runTest("method", javaText, scalaText, expected, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expected,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testSimpleGenerics2() {
@@ -219,7 +282,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method(arg: S): S = super.method(arg)
         |}
       """
-    runTest("method", javaText, scalaText, expected, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expected,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testGenerics() {
@@ -243,7 +312,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method(arg: JavaDummy[_ <: Int, _ >: Boolean]): Int = super.method(arg)
         |}
       """
-    runTest("method", javaText, scalaText, expectedText, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testTypeParameter() {
@@ -271,7 +346,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def method[S <: JavaDummy[Int] with DummyInterface[Int]](arg: Int): Int = super.method(arg)
         |}
       """
-    runTest("method", javaText, scalaText, expectedText, isImplement = false, needsInferType = true)
+    runTest(
+      "method",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = true)
   }
 
   def testQueryLikeMethod() {
@@ -293,7 +374,13 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |  override def getValue: Int = super.getValue
         |}
       """
-    runTest("getValue", javaText, scalaText, expectedText, isImplement = false, needsInferType = true)
+    runTest(
+      "getValue",
+      javaText,
+      scalaText,
+      expectedText,
+      isImplement = false,
+      needsInferType = true)
 
   }
 

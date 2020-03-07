@@ -10,10 +10,9 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 05.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 05.02.2008
+  */
 /*
  * TmplDef ::= {Annotation} {Modifier}
             [case] class ClassDef
@@ -25,11 +24,15 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.Annotation
 object TmplDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val templateMarker = builder.mark
-    templateMarker.setCustomEdgeTokenBinders(ScalaTokenBinders.PRECEEDING_COMMENTS_TOKEN, null)
+    templateMarker.setCustomEdgeTokenBinders(
+      ScalaTokenBinders.PRECEEDING_COMMENTS_TOKEN,
+      null)
     val annotationsMarker = builder.mark
     while (Annotation.parse(builder)) {}
     annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
-    annotationsMarker.setCustomEdgeTokenBinders(ScalaTokenBinders.DEFAULT_LEFT_EDGE_BINDER, null)
+    annotationsMarker.setCustomEdgeTokenBinders(
+      ScalaTokenBinders.DEFAULT_LEFT_EDGE_BINDER,
+      null)
     //parsing modifiers
     val modifierMarker = builder.mark
     while (Modifier.parse(builder)) {}
@@ -91,4 +94,3 @@ object TmplDef {
     }
   }
 }
-

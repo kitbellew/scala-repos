@@ -1,10 +1,11 @@
 package org.jetbrains.plugins.scala.codeInspection.collections
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class RangeToIndicesTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[RangeToIndicesInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[RangeToIndicesInspection]
 
   override def hint: String = "Replace with seq.indices"
 

@@ -62,7 +62,8 @@ class LinkedListTest extends AbstractListTest {
     assertEquals(6, ll.size())
   }
 
-  @Test def `could_be_instantiated_with_a_prepopulated_Collection_-_LinkedListTest`(): Unit = {
+  @Test def `could_be_instantiated_with_a_prepopulated_Collection_-_LinkedListTest`()
+      : Unit = {
     val s = Seq(1, 5, 2, 3, 4)
     val l = asJavaCollection(s)
     val ll = new LinkedList[Int](l)

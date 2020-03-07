@@ -15,44 +15,47 @@ import DurationConversions._
 trait DurationConversions extends Any {
   protected def durationIn(unit: TimeUnit): FiniteDuration
 
-  def nanoseconds  = durationIn(NANOSECONDS)
-  def nanos        = nanoseconds
-  def nanosecond   = nanoseconds
-  def nano         = nanoseconds
+  def nanoseconds = durationIn(NANOSECONDS)
+  def nanos = nanoseconds
+  def nanosecond = nanoseconds
+  def nano = nanoseconds
 
   def microseconds = durationIn(MICROSECONDS)
-  def micros       = microseconds
-  def microsecond  = microseconds
-  def micro        = microseconds
+  def micros = microseconds
+  def microsecond = microseconds
+  def micro = microseconds
 
   def milliseconds = durationIn(MILLISECONDS)
-  def millis       = milliseconds
-  def millisecond  = milliseconds
-  def milli        = milliseconds
+  def millis = milliseconds
+  def millisecond = milliseconds
+  def milli = milliseconds
 
-  def seconds      = durationIn(SECONDS)
-  def second       = seconds
+  def seconds = durationIn(SECONDS)
+  def second = seconds
 
-  def minutes      = durationIn(MINUTES)
-  def minute       = minutes
+  def minutes = durationIn(MINUTES)
+  def minute = minutes
 
-  def hours        = durationIn(HOURS)
-  def hour         = hours
+  def hours = durationIn(HOURS)
+  def hour = hours
 
-  def days         = durationIn(DAYS)
-  def day          = days
+  def days = durationIn(DAYS)
+  def day = days
 
-  def nanoseconds[C](c: C)(implicit ev: Classifier[C]): ev.R = ev.convert(nanoseconds)
+  def nanoseconds[C](c: C)(implicit ev: Classifier[C]): ev.R =
+    ev.convert(nanoseconds)
   def nanos[C](c: C)(implicit ev: Classifier[C]): ev.R = nanoseconds(c)
   def nanosecond[C](c: C)(implicit ev: Classifier[C]): ev.R = nanoseconds(c)
   def nano[C](c: C)(implicit ev: Classifier[C]): ev.R = nanoseconds(c)
 
-  def microseconds[C](c: C)(implicit ev: Classifier[C]): ev.R = ev.convert(microseconds)
+  def microseconds[C](c: C)(implicit ev: Classifier[C]): ev.R =
+    ev.convert(microseconds)
   def micros[C](c: C)(implicit ev: Classifier[C]): ev.R = microseconds(c)
   def microsecond[C](c: C)(implicit ev: Classifier[C]): ev.R = microseconds(c)
   def micro[C](c: C)(implicit ev: Classifier[C]): ev.R = microseconds(c)
 
-  def milliseconds[C](c: C)(implicit ev: Classifier[C]): ev.R = ev.convert(milliseconds)
+  def milliseconds[C](c: C)(implicit ev: Classifier[C]): ev.R =
+    ev.convert(milliseconds)
   def millis[C](c: C)(implicit ev: Classifier[C]): ev.R = milliseconds(c)
   def millisecond[C](c: C)(implicit ev: Classifier[C]): ev.R = milliseconds(c)
   def milli[C](c: C)(implicit ev: Classifier[C]): ev.R = milliseconds(c)
@@ -71,8 +74,8 @@ trait DurationConversions extends Any {
 }
 
 /**
- * This object just holds some cogs which make the DSL machine work, not for direct consumption.
- */
+  * This object just holds some cogs which make the DSL machine work, not for direct consumption.
+  */
 object DurationConversions {
   trait Classifier[C] {
     type R

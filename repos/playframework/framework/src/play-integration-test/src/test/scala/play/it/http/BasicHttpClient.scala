@@ -3,7 +3,7 @@
  */
 package play.it.http
 
-import java.net.{ SocketTimeoutException, Socket }
+import java.net.{SocketTimeoutException, Socket}
 import java.io._
 import play.api.test.Helpers._
 import org.apache.commons.io.IOUtils
@@ -13,30 +13,38 @@ import scala.annotation.tailrec
 object BasicHttpClient {
 
   /**
-   * Very basic HTTP client, for when we want to be very low level about our assertions.
-   *
-   * Can only work with requests that are entirely ascii, any binary or multi byte characters and it will break.
-   *
-   * @param port The port to connect to
-   * @param checkClosed Whether to check if the channel is closed after receiving the responses
-   * @param trickleFeed A timeout to use between sending request body chunks
-   * @param requests The requests to make
-   * @return The parsed number of responses.  This may be more than the number of requests, if continue headers are sent.
-   */
-  def makeRequests(port: Int, checkClosed: Boolean = false, trickleFeed: Option[Long] = None)(requests: BasicRequest*): Seq[BasicResponse] = {
+    * Very basic HTTP client, for when we want to be very low level about our assertions.
+    *
+    * Can only work with requests that are entirely ascii, any binary or multi byte characters and it will break.
+    *
+    * @param port The port to connect to
+    * @param checkClosed Whether to check if the channel is closed after receiving the responses
+    * @param trickleFeed A timeout to use between sending request body chunks
+    * @param requests The requests to make
+    * @return The parsed number of responses.  This may be more than the number of requests, if continue headers are sent.
+    */
+  def makeRequests(
+      port: Int,
+      checkClosed: Boolean = false,
+      trickleFeed: Option[Long] = None)(
+      requests: BasicRequest*): Seq[BasicResponse] = {
     val client = new BasicHttpClient(port)
     try {
       var requestNo = 0
       val responses = requests.flatMap { request =>
         requestNo += 1
-        client.sendRequest(request, requestNo.toString, trickleFeed = trickleFeed)
+        client.sendRequest(
+          request,
+          requestNo.toString,
+          trickleFeed = trickleFeed)
       }
 
       if (checkClosed) {
         try {
           val line = client.reader.readLine()
           if (line != null) {
-            throw new RuntimeException("Unexpected data after responses received: " + line)
+            throw new RuntimeException(
+              "Unexpected data after responses received: " + line)
           }
         } catch {
           case timeout: SocketTimeoutException => throw timeout
@@ -50,14 +58,19 @@ object BasicHttpClient {
     }
   }
 
-  def pipelineRequests(port: Int, requests: BasicRequest*): Seq[BasicResponse] = {
+  def pipelineRequests(
+      port: Int,
+      requests: BasicRequest*): Seq[BasicResponse] = {
     val client = new BasicHttpClient(port)
 
     try {
       var requestNo = 0
       requests.foreach { request =>
         requestNo += 1
-        client.sendRequest(request, requestNo.toString, waitForResponses = false)
+        client.sendRequest(
+          request,
+          requestNo.toString,
+          waitForResponses = false)
       }
       for (i <- 0 until requests.length) yield {
         client.readResponse(requestNo.toString)
@@ -75,17 +88,20 @@ class BasicHttpClient(port: Int) {
   val reader = new BufferedReader(new InputStreamReader(s.getInputStream))
 
   /**
-   * Send a request
-   *
-   * @param request The request to send
-   * @param waitForResponses Whether we should wait for responses
-   * @param trickleFeed Whether bodies should be trickle fed.  Trickle feeding will simulate a more realistic network
-   *                    environment.
-   * @return The responses (may be more than one if Expect: 100-continue header is present) if requested to wait for
-   *         them
-   */
-  def sendRequest(request: BasicRequest, requestDesc: String, waitForResponses: Boolean = true,
-    trickleFeed: Option[Long] = None): Seq[BasicResponse] = {
+    * Send a request
+    *
+    * @param request The request to send
+    * @param waitForResponses Whether we should wait for responses
+    * @param trickleFeed Whether bodies should be trickle fed.  Trickle feeding will simulate a more realistic network
+    *                    environment.
+    * @return The responses (may be more than one if Expect: 100-continue header is present) if requested to wait for
+    *         them
+    */
+  def sendRequest(
+      request: BasicRequest,
+      requestDesc: String,
+      waitForResponses: Boolean = true,
+      trickleFeed: Option[Long] = None): Seq[BasicResponse] = {
     out.write(s"${request.method} ${request.uri} ${request.version}\r\n")
     out.write("Host: localhost\r\n")
     request.headers.foreach { header =>
@@ -130,11 +146,11 @@ class BasicHttpClient(port: Int) {
   }
 
   /**
-   * Read a response
-   *
-   * @param responseDesc Description of the response, for error reporting
-   * @return The response
-   */
+    * Read a response
+    *
+    * @param responseDesc Description of the response, for error reporting
+    * @return The response
+    */
   def readResponse(responseDesc: String) = {
     try {
       val statusLine = reader.readLine()
@@ -146,8 +162,10 @@ class BasicHttpClient(port: Int) {
 
       val (version, status, reasonPhrase) = statusLine.split(" ", 3) match {
         case Array(v, s, r) => (v, s.toInt, r)
-        case Array(v, s) => (v, s.toInt, "")
-        case _ => throw new RuntimeException("Invalid status line for response " + responseDesc + ": " + statusLine)
+        case Array(v, s)    => (v, s.toInt, "")
+        case _ =>
+          throw new RuntimeException(
+            "Invalid status line for response " + responseDesc + ": " + statusLine)
       }
       // Read headers
       def readHeaders: List[(String, String)] = {
@@ -157,7 +175,7 @@ class BasicHttpClient(port: Int) {
         } else {
           val parsed = header.split(":", 2) match {
             case Array(name, value) => (name.trim(), value.trim())
-            case Array(name) => (name, "")
+            case Array(name)        => (name, "")
           }
           parsed :: readHeaders
         }
@@ -210,7 +228,8 @@ class BasicHttpClient(port: Int) {
         throw io
       case e: Exception =>
         throw new RuntimeException(
-          s"Exception while reading response $responseDesc ${e.getClass.getName}: ${e.getMessage}", e)
+          s"Exception while reading response $responseDesc ${e.getClass.getName}: ${e.getMessage}",
+          e)
     }
   }
 
@@ -230,26 +249,34 @@ class BasicHttpClient(port: Int) {
 }
 
 /**
- * A basic response
- *
- * @param version The HTTP version
- * @param status The HTTP status code
- * @param reasonPhrase The HTTP reason phrase
- * @param headers The HTTP response headers
- * @param body The body, left is a plain body, right is for chunked bodies, which is a sequence of chunks and a map of
- *             trailers
- */
-case class BasicResponse(version: String, status: Int, reasonPhrase: String, headers: Map[String, String],
-  body: Either[String, (Seq[String], Map[String, String])])
+  * A basic response
+  *
+  * @param version The HTTP version
+  * @param status The HTTP status code
+  * @param reasonPhrase The HTTP reason phrase
+  * @param headers The HTTP response headers
+  * @param body The body, left is a plain body, right is for chunked bodies, which is a sequence of chunks and a map of
+  *             trailers
+  */
+case class BasicResponse(
+    version: String,
+    status: Int,
+    reasonPhrase: String,
+    headers: Map[String, String],
+    body: Either[String, (Seq[String], Map[String, String])])
 
 /**
- * A basic request
- *
- * @param method The HTTP request method
- * @param uri The URI
- * @param version The HTTP version
- * @param headers The HTTP request headers
- * @param body The body
- */
-case class BasicRequest(method: String, uri: String, version: String, headers: Map[String, String], body: String)
-
+  * A basic request
+  *
+  * @param method The HTTP request method
+  * @param uri The URI
+  * @param version The HTTP version
+  * @param headers The HTTP request headers
+  * @param body The body
+  */
+case class BasicRequest(
+    method: String,
+    uri: String,
+    version: String,
+    headers: Map[String, String],
+    body: String)

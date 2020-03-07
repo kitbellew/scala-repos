@@ -48,4 +48,3 @@ object LocalSparkContext {
     System.clearProperty("spark.driver.port")
   }
 }
-

@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 final case class Position(
@@ -22,7 +21,7 @@ final case class Position(
   def isEmpty: Boolean = {
     def isEmptySlowPath(): Boolean = {
       source.getScheme == null && source.getRawAuthority == null &&
-        source.getRawQuery == null && source.getRawFragment == null
+      source.getRawQuery == null && source.getRawFragment == null
     }
     source.getRawPath == "" && isEmptySlowPath()
   }

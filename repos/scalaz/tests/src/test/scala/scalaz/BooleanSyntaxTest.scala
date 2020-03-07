@@ -7,27 +7,17 @@ object BooleanSyntaxTest extends SpecLite {
   "boolean syntax" in {
     import syntax.std.boolean._
 
-    "and" ! forAll { (p:Boolean, q:Boolean) =>
-      p /\ q == (p && q)
-    }
+    "and" ! forAll { (p: Boolean, q: Boolean) => p /\ q == (p && q) }
 
-    "or" ! forAll { (p:Boolean, q:Boolean) =>
-      p \/ q == (p || q)
-    }
+    "or" ! forAll { (p: Boolean, q: Boolean) => p \/ q == (p || q) }
 
-    "nand" ! forAll { (p:Boolean, q:Boolean) =>
-      p !&& q == !(p && q)
-    }
+    "nand" ! forAll { (p: Boolean, q: Boolean) => p !&& q == !(p && q) }
 
-    "nor" ! forAll { (p:Boolean, q:Boolean) =>
-      p !|| q == !(p || q)
-    }
+    "nor" ! forAll { (p: Boolean, q: Boolean) => p !|| q == !(p || q) }
 
-    "conditional" ! forAll { (p:Boolean, q:Boolean) =>
-      p --> q == (!p || q)
-    }
+    "conditional" ! forAll { (p: Boolean, q: Boolean) => p --> q == (!p || q) }
 
-    "inverse conditional" ! forAll { (p:Boolean, q:Boolean) =>
+    "inverse conditional" ! forAll { (p: Boolean, q: Boolean) =>
       p <-- q == (p || !q)
     }
 
@@ -38,25 +28,19 @@ object BooleanSyntaxTest extends SpecLite {
       assert(!(false <--> true))
     }
 
-    "negate conditional" ! forAll { (p:Boolean, q:Boolean) =>
+    "negate conditional" ! forAll { (p: Boolean, q: Boolean) =>
       p -/> q == (p && !q)
     }
 
-    "negate inverse conditional" ! forAll { (p:Boolean, q:Boolean) =>
+    "negate inverse conditional" ! forAll { (p: Boolean, q: Boolean) =>
       p <\- q == (!p && q)
     }
 
-    "true.option" ! forAll { (i: Int) =>
-      true.option(i).exists(_ == i)
-    }
+    "true.option" ! forAll { (i: Int) => true.option(i).exists(_ == i) }
 
-    "false.option" ! forAll { (i: Int) =>
-      false.option(i).isEmpty
-    }
+    "false.option" ! forAll { (i: Int) => false.option(i).isEmpty }
 
-    "boolean.whenM" ! forAll { (b: Boolean) =>
-      b.whenM(None).isDefined != b
-    }
+    "boolean.whenM" ! forAll { (b: Boolean) => b.whenM(None).isDefined != b }
 
     "boolean.unlessM" ! forAll { (b: Boolean) =>
       b.unlessM(None).isDefined == b
@@ -80,9 +64,7 @@ object BooleanSyntaxTest extends SpecLite {
       b.prevent[Option](s) == (!b).option(s)
     }
 
-    "true.??" ! forAll { (s: String) =>
-      true ?? s == s
-    }
+    "true.??" ! forAll { (s: String) => true ?? s == s }
 
     "false.??" ! forAll { (s: String) =>
       false ?? s == implicitly[Monoid[String]].zero
@@ -92,8 +74,6 @@ object BooleanSyntaxTest extends SpecLite {
       true !? s == implicitly[Monoid[String]].zero
     }
 
-    "false.!?" ! forAll { (s: String) =>
-      false !? s == s
-    }
+    "false.!?" ! forAll { (s: String) => false !? s == s }
   }
 }

@@ -26,25 +26,31 @@ import org.apache.spark.sql.execution.datasources.parquet.ParquetCompatibilityTe
 import org.apache.spark.sql.hive.test.TestHiveSingleton
 import org.apache.spark.sql.internal.SQLConf
 
-class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHiveSingleton {
+class ParquetHiveCompatibilitySuite
+    extends ParquetCompatibilityTest
+    with TestHiveSingleton {
+
   /**
-   * Set the staging directory (and hence path to ignore Parquet files under)
-   * to that set by [[HiveConf.ConfVars.STAGINGDIR]].
-   */
+    * Set the staging directory (and hence path to ignore Parquet files under)
+    * to that set by [[HiveConf.ConfVars.STAGINGDIR]].
+    */
   private val stagingDir = new HiveConf().getVar(HiveConf.ConfVars.STAGINGDIR)
 
   override protected def logParquetSchema(path: String): Unit = {
-    val schema = readParquetSchema(path, { path =>
-      !path.getName.startsWith("_") && !path.getName.startsWith(stagingDir)
-    })
+    val schema = readParquetSchema(
+      path,
+      { path =>
+        !path.getName.startsWith("_") && !path.getName.startsWith(stagingDir)
+      })
 
-    logInfo(
-      s"""Schema of the Parquet file written by parquet-avro:
+    logInfo(s"""Schema of the Parquet file written by parquet-avro:
          |$schema
        """.stripMargin)
   }
 
-  private def testParquetHiveCompatibility(row: Row, hiveTypes: String*): Unit = {
+  private def testParquetHiveCompatibility(
+      row: Row,
+      hiveTypes: String*): Unit = {
     withTable("parquet_compat") {
       withTempPath { dir =>
         val path = dir.getCanonicalPath
@@ -55,7 +61,9 @@ class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHi
         // Don't convert Hive metastore Parquet tables to let Hive write those Parquet files.
         withSQLConf(HiveContext.CONVERT_METASTORE_PARQUET.key -> "false") {
           withTempTable("data") {
-            val fields = hiveTypes.zipWithIndex.map { case (typ, index) => s"  col_$index $typ" }
+            val fields = hiveTypes.zipWithIndex.map {
+              case (typ, index) => s"  col_$index $typ"
+            }
 
             val ddl =
               s"""CREATE TABLE parquet_compat(
@@ -65,8 +73,7 @@ class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHi
                  |LOCATION '$path'
                """.stripMargin
 
-            logInfo(
-              s"""Creating testing Parquet table with the following DDL:
+            logInfo(s"""Creating testing Parquet table with the following DDL:
                  |$ddl
                """.stripMargin)
 
@@ -75,7 +82,8 @@ class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHi
             val schema = sqlContext.table("parquet_compat").schema
             val rowRDD = sqlContext.sparkContext.parallelize(rows).coalesce(1)
             sqlContext.createDataFrame(rowRDD, schema).registerTempTable("data")
-            sqlContext.sql("INSERT INTO TABLE parquet_compat SELECT * FROM data")
+            sqlContext.sql(
+              "INSERT INTO TABLE parquet_compat SELECT * FROM data")
           }
         }
 
@@ -93,11 +101,20 @@ class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHi
   test("simple primitives") {
     testParquetHiveCompatibility(
       Row(true, 1.toByte, 2.toShort, 3, 4.toLong, 5.1f, 6.1d, "foo"),
-      "BOOLEAN", "TINYINT", "SMALLINT", "INT", "BIGINT", "FLOAT", "DOUBLE", "STRING")
+      "BOOLEAN",
+      "TINYINT",
+      "SMALLINT",
+      "INT",
+      "BIGINT",
+      "FLOAT",
+      "DOUBLE",
+      "STRING")
   }
 
   test("SPARK-10177 timestamp") {
-    testParquetHiveCompatibility(Row(Timestamp.valueOf("2015-08-24 00:31:00")), "TIMESTAMP")
+    testParquetHiveCompatibility(
+      Row(Timestamp.valueOf("2015-08-24 00:31:00")),
+      "TIMESTAMP")
   }
 
   test("array") {
@@ -107,18 +124,17 @@ class ParquetHiveCompatibilitySuite extends ParquetCompatibilityTest with TestHi
         Seq[String]("foo", null, "bar", null),
         Seq[Seq[Integer]](
           Seq[Integer](1: Integer, null),
-          Seq[Integer](2: Integer, null))),
+          Seq[Integer](2: Integer, null))
+      ),
       "ARRAY<INT>",
       "ARRAY<STRING>",
-      "ARRAY<ARRAY<INT>>")
+      "ARRAY<ARRAY<INT>>"
+    )
   }
 
   test("map") {
     testParquetHiveCompatibility(
-      Row(
-        Map[Integer, String](
-          (1: Integer) -> "foo",
-          (2: Integer) -> null)),
+      Row(Map[Integer, String]((1: Integer) -> "foo", (2: Integer) -> null)),
       "MAP<INT, STRING>")
   }
 

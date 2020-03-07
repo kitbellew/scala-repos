@@ -17,7 +17,10 @@ import Arbitrary.arbitrary
 import spire.math.ArbitrarySupport._
 import Ordinal._
 
-class FactorsCheck extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class FactorsCheck
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   import Factors.{zero, one}
 
@@ -25,9 +28,7 @@ class FactorsCheck extends PropSpec with Matchers with GeneratorDrivenPropertyCh
     Arbitrary(arbitrary[SafeLong].map(n => Factors(n)))
 
   property("Factors(n).value = n") {
-    forAll { (n: Long) =>
-      Factors(n).value shouldBe n
-    }
+    forAll { (n: Long) => Factors(n).value shouldBe n }
   }
 
   property("Factors(n) + Factors(m) = n + m") {

@@ -27,7 +27,7 @@ abstract class Page {
   def createFileOutputStream(site: HtmlFactory, suffix: String = "") = {
     val file = new File(site.siteRoot, absoluteLinkTo(thisPage.path) + suffix)
     val folder = file.getParentFile
-    if (! folder.exists) {
+    if (!folder.exists) {
       folder.mkdirs
     }
     new FileOutputStream(file.getPath)
@@ -38,8 +38,7 @@ abstract class Page {
     val w = Channels.newWriter(fos.getChannel, site.encoding)
     try {
       fn(w)
-    }
-    finally {
+    } finally {
       w.close()
       fos.close()
     }
@@ -52,35 +51,39 @@ abstract class Page {
 
   def kindToString(mbr: MemberEntity) =
     mbr match {
-      case c: Class => if (c.isCaseClass) "case class" else "class"
-      case _: Trait => "trait"
-      case _: Package => "package"
-      case _: Object => "object"
-      case _: AbstractType => "type"
-      case _: AliasType => "type"
-      case _: Constructor => "new"
-      case v: Def => "def"
+      case c: Class                => if (c.isCaseClass) "case class" else "class"
+      case _: Trait                => "trait"
+      case _: Package              => "package"
+      case _: Object               => "object"
+      case _: AbstractType         => "type"
+      case _: AliasType            => "type"
+      case _: Constructor          => "new"
+      case v: Def                  => "def"
       case v: Val if (v.isLazyVal) => "lazy val"
-      case v: Val if (v.isVal) => "val"
-      case v: Val if (v.isVar) => "var"
-      case _ => sys.error("Cannot create kind for: " + mbr + " of class " + mbr.getClass)
+      case v: Val if (v.isVal)     => "val"
+      case v: Val if (v.isVar)     => "var"
+      case _ =>
+        sys.error(
+          "Cannot create kind for: " + mbr + " of class " + mbr.getClass)
     }
 
   def templateToPath(tpl: TemplateEntity): List[String] = {
     def doName(tpl: TemplateEntity): String =
-      (if (tpl.inPackageObject) "package$$" else "") + NameTransformer.encode(tpl.name) + (if (tpl.isObject) "$" else "")
+      (if (tpl.inPackageObject) "package$$" else "") + NameTransformer.encode(
+        tpl.name) + (if (tpl.isObject) "$" else "")
     def downPacks(pack: Package): List[String] =
-      if (pack.isRootPackage) Nil else (doName(pack) :: downPacks(pack.inTemplate))
+      if (pack.isRootPackage) Nil
+      else (doName(pack) :: downPacks(pack.inTemplate))
     def downInner(nme: String, tpl: TemplateEntity): (String, Package) = {
       tpl.inTemplate match {
         case inPkg: Package => (nme + ".html", inPkg)
-        case inTpl => downInner(doName(inTpl) + "$" + nme, inTpl)
+        case inTpl          => downInner(doName(inTpl) + "$" + nme, inTpl)
       }
     }
     val (file, pack) =
       tpl match {
         case p: Package => ("index.html", p)
-        case _ => downInner(doName(tpl), tpl)
+        case _          => downInner(doName(tpl), tpl)
       }
     file :: downPacks(pack)
   }
@@ -93,24 +96,26 @@ abstract class Page {
   /** A relative link from this page to some destination path.
     * @param destPath The path that the link will point to. */
   def relativeLinkTo(destPath: List[String]): String = {
-    def relativize(from: List[String], to: List[String]): List[String] = (from, to) match {
-      case (f :: fs, t :: ts) if (f == t) => // both paths are identical to that point
-        relativize(fs, ts)
-      case (fss, tss) =>
-        List.fill(fss.length - 1)("..") ::: tss
-    }
+    def relativize(from: List[String], to: List[String]): List[String] =
+      (from, to) match {
+        case (f :: fs, t :: ts)
+            if (f == t) => // both paths are identical to that point
+          relativize(fs, ts)
+        case (fss, tss) =>
+          List.fill(fss.length - 1)("..") ::: tss
+      }
     relativize(thisPage.path.reverse, destPath.reverse).mkString("/")
   }
 
   protected def inlineToStr(inl: comment.Inline): String = inl match {
-    case comment.Chain(items) => items flatMap (inlineToStr(_)) mkString ""
-    case comment.Italic(in) => inlineToStr(in)
-    case comment.Bold(in) => inlineToStr(in)
-    case comment.Underline(in) => inlineToStr(in)
-    case comment.Monospace(in) => inlineToStr(in)
-    case comment.Text(text) => text
-    case comment.Summary(in) => inlineToStr(in)
+    case comment.Chain(items)                      => items flatMap (inlineToStr(_)) mkString ""
+    case comment.Italic(in)                        => inlineToStr(in)
+    case comment.Bold(in)                          => inlineToStr(in)
+    case comment.Underline(in)                     => inlineToStr(in)
+    case comment.Monospace(in)                     => inlineToStr(in)
+    case comment.Text(text)                        => text
+    case comment.Summary(in)                       => inlineToStr(in)
     case comment.EntityLink(comment.Text(text), _) => text
-    case _ => inl.toString
+    case _                                         => inl.toString
   }
 }

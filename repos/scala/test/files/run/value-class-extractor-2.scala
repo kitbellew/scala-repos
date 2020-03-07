@@ -1,10 +1,11 @@
 final class Opt[+A >: Null](val value: A) extends AnyVal {
-  def get: A  = value
+  def get: A = value
   def isEmpty = value == null
 }
 object Opt {
   final val None = new Opt[Null](null)
-  def apply[A >: Null](value: A): Opt[A] = if (value == null) None else new Opt[A](value)
+  def apply[A >: Null](value: A): Opt[A] =
+    if (value == null) None else new Opt[A](value)
 }
 
 object ValueOpt {

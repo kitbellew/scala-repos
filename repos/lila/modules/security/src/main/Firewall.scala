@@ -7,9 +7,9 @@ import org.joda.time.DateTime
 import ornicar.scalalib.Random
 import play.api.libs.json._
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ RequestHeader, Handler, Action, Cookies }
+import play.api.mvc.{RequestHeader, Handler, Action, Cookies}
 import play.modules.reactivemongo.json.ImplicitBSONHandlers._
-import spray.caching.{ LruCache, Cache }
+import spray.caching.{LruCache, Cache}
 
 import lila.common.LilaCookie
 import lila.common.PimpedJson._
@@ -31,19 +31,20 @@ final class Firewall(
   //     }
   //   }
 
-  def blocks(req: RequestHeader): Fu[Boolean] = if (enabled) {
-    cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
-      blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
-    } addEffect { v =>
-      if (v) lila.mon.security.firewall.block()
-    }
-  }
-  else fuccess(false)
+  def blocks(req: RequestHeader): Fu[Boolean] =
+    if (enabled) {
+      cookieName.fold(blocksIp(req.remoteAddress)) { cn =>
+        blocksIp(req.remoteAddress) map (_ || blocksCookies(req.cookies, cn))
+      } addEffect { v => if (v) lila.mon.security.firewall.block() }
+    } else fuccess(false)
 
   def accepts(req: RequestHeader): Fu[Boolean] = blocks(req) map (!_)
 
   def blockIp(ip: String): Funit = validIp(ip) ?? {
-    $update(Json.obj("_id" -> ip), Json.obj("_id" -> ip, "date" -> $date(DateTime.now)), upsert = true) >>- refresh
+    $update(
+      Json.obj("_id" -> ip),
+      Json.obj("_id" -> ip, "date" -> $date(DateTime.now)),
+      upsert = true) >>- refresh
   }
 
   def unblockIps(ips: Iterable[String]): Funit =
@@ -62,13 +63,17 @@ final class Firewall(
   }
 
   private def formatReq(req: RequestHeader) =
-    "%s %s %s".format(req.remoteAddress, req.uri, req.headers.get("User-Agent") | "?")
+    "%s %s %s".format(
+      req.remoteAddress,
+      req.uri,
+      req.headers.get("User-Agent") | "?")
 
   private def blocksCookies(cookies: Cookies, name: String) =
     (cookies get name).isDefined
 
   // http://stackoverflow.com/questions/106179/regular-expression-to-match-hostname-or-ip-address
-  private val ipRegex = """^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$""".r
+  private val ipRegex =
+    """^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$""".r
 
   private def validIp(ip: String) =
     (ipRegex matches ip) && ip != "127.0.0.1" && ip != "0.0.0.0"
@@ -77,15 +82,14 @@ final class Firewall(
 
   private lazy val ips = new {
     private val cache: Cache[Set[IP]] = LruCache(timeToLive = cachedIpsTtl)
-    private def strToIp(ip: String) = InetAddress.getByName(ip).getAddress.toVector
+    private def strToIp(ip: String) =
+      InetAddress.getByName(ip).getAddress.toVector
     def apply: Fu[Set[IP]] = cache(true)(fetch)
     def clear { cache.clear }
     def contains(ip: String) = apply map (_ contains strToIp(ip))
     def fetch: Fu[Set[IP]] =
       firewallTube.coll.distinct("_id") map { res =>
         lila.db.BSON.asStringSet(res) map strToIp
-      } addEffect { ips =>
-        lila.mon.security.firewall.ip(ips.size)
-      }
+      } addEffect { ips => lila.mon.security.firewall.ip(ips.size) }
   }
 }

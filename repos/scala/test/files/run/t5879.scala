@@ -1,6 +1,5 @@
 import collection.immutable.HashMap
 
-
 object Test {
 
   def main(args: Array[String]) {

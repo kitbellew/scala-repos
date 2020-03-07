@@ -14,12 +14,15 @@ import scala.reflect.macros.whitebox
   * Author: Svyatoslav Ilinskiy
   * Date: 9/25/15.
   */
-class CachedInsidePsiElement(psiElement: Any, dependencyItem: Object) extends StaticAnnotation {
-  def macroTransform(annottees: Any*) = macro CachedInsidePsiElement.cachedInsidePsiElementImpl
+class CachedInsidePsiElement(psiElement: Any, dependencyItem: Object)
+    extends StaticAnnotation {
+  def macroTransform(annottees: Any*) =
+    macro CachedInsidePsiElement.cachedInsidePsiElementImpl
 }
 
 object CachedInsidePsiElement {
-  def cachedInsidePsiElementImpl(c: whitebox.Context)(annottees: c.Tree*): c.Expr[Any] = {
+  def cachedInsidePsiElementImpl(c: whitebox.Context)(
+      annottees: c.Tree*): c.Expr[Any] = {
     import CachedMacroUtil._
     import c.universe._
     implicit val x: c.type = c
@@ -50,7 +53,8 @@ object CachedInsidePsiElement {
         val analyzeCaches = analyzeCachesEnabled(c)
         val provider = TypeName("MyProvider")
 
-        val actualCalculation = transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
+        val actualCalculation =
+          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
 
         val analyzeCachesEnterCacheArea =
           if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
@@ -61,10 +65,13 @@ object CachedInsidePsiElement {
           ..$analyzeCachesEnterCacheArea
           $cachesUtilFQN.get($elem, $key, new $cachesUtilFQN.$provider[Any, $retTp]($elem, _ => $cachedFunName())($dependencyItem))
           """
-        val updatedDef = DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef =
+          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
         val res = q"""
           private val $key = $cachesUtilFQN.getOrCreateKey[$keyTypeFQN[$cachedValueTypeFQN[$retTp]]]($keyId)
-          ${if (analyzeCaches) q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)" else EmptyTree}
+          ${if (analyzeCaches)
+          q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
+        else EmptyTree}
 
           ..$updatedDef
           """

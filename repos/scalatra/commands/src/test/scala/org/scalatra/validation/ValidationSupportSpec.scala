@@ -1,7 +1,7 @@
 package org.scalatra
 package validation
 
-import org.json4s.{ DefaultFormats, Formats }
+import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.commands._
 import org.specs2.mutable.Specification
 
@@ -28,7 +28,8 @@ class ValidationSupportSpec extends Specification {
       ageValidatedForm.bindTo(params)
 
       ageValidatedForm.a.validation must_== params("name").toUpperCase.success
-      ageValidatedForm.lower.validation must_== params("surname").toLowerCase.success
+      ageValidatedForm.lower.validation must_== params(
+        "surname").toLowerCase.success
       ageValidatedForm.age.validation must_== 18.success
 
     }
@@ -46,7 +47,11 @@ class ValidationSupportSpec extends Specification {
 
       ageValidatedForm.errors must contain { x: Binding => x.name == "age" }
 
-      ageValidatedForm.legalAge.validation aka "the validation result" must_== Failure(ValidationError("Age must be greater than or equal to 18", FieldName("age"), ValidationFail))
+      ageValidatedForm.legalAge.validation aka "the validation result" must_== Failure(
+        ValidationError(
+          "Age must be greater than or equal to 18",
+          FieldName("age"),
+          ValidationFail))
     }
 
     "evaluate non-exhaustive validation as 'accepted'" in {
@@ -64,4 +69,3 @@ class ValidationSupportSpec extends Specification {
 
   }
 }
-

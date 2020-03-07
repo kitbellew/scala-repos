@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.stream.scaladsl
 
 import akka.NotUsed
@@ -29,7 +29,8 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
   "produce onError when iterator throws" in {
     val iterable = new immutable.Iterable[Int] {
       override def iterator: Iterator[Int] =
-        (1 to 3).iterator.map(x ⇒ if (x == 2) throw new IllegalStateException("not two") else x)
+        (1 to 3).iterator.map(x ⇒
+          if (x == 2) throw new IllegalStateException("not two") else x)
     }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()
@@ -38,9 +39,10 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
     sub.request(1)
     c.expectNext(1)
     c.expectNoMsg(100.millis)
-    EventFilter[IllegalStateException](message = "not two", occurrences = 1).intercept {
-      sub.request(2)
-    }
+    EventFilter[IllegalStateException](message = "not two", occurrences = 1)
+      .intercept {
+        sub.request(2)
+      }
     c.expectError().getMessage should be("not two")
     sub.request(2)
     c.expectNoMsg(100.millis)
@@ -48,7 +50,8 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
 
   "produce onError when Source construction throws" in {
     val iterable = new immutable.Iterable[Int] {
-      override def iterator: Iterator[Int] = throw new IllegalStateException("no good iterator")
+      override def iterator: Iterator[Int] =
+        throw new IllegalStateException("no good iterator")
     }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()
@@ -60,7 +63,8 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
   "produce onError when hasNext throws" in {
     val iterable = new immutable.Iterable[Int] {
       override def iterator: Iterator[Int] = new Iterator[Int] {
-        override def hasNext: Boolean = throw new IllegalStateException("no next")
+        override def hasNext: Boolean =
+          throw new IllegalStateException("no next")
         override def next(): Int = -1
       }
     }
@@ -167,7 +171,10 @@ abstract class AbstractFlowIteratorSpec extends AkkaSpec {
     }
 
     "produce elements with two transformation steps" in assertAllStagesStopped {
-      val p = createSource(4).filter(_ % 2 == 0).map(_ * 2).runWith(Sink.asPublisher(false))
+      val p = createSource(4)
+        .filter(_ % 2 == 0)
+        .map(_ * 2)
+        .runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
       p.subscribe(c)
       val sub = c.expectSubscription()

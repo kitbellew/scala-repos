@@ -21,23 +21,36 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import scala.collection.convert.wrapAsJava
 
 /**
- * User: Dmitry.Naydanov
- * Date: 11.04.14.
- */
+  * User: Dmitry.Naydanov
+  * Date: 11.04.14.
+  */
 object WorksheetDiffSplitters {
   private val COLOR1 = Color.GRAY
   private val COLOR2 = Color.LIGHT_GRAY
 
-  def createSimpleSplitter(originalEditor: Editor, viewerEditor: Editor,
-                           intervals: Iterable[(Int, Int)], changes: Iterable[(Int, Int)], prop: Float) = {
-    new SimpleWorksheetSplitter(originalEditor, viewerEditor, intervals, changes, prop)
+  def createSimpleSplitter(
+      originalEditor: Editor,
+      viewerEditor: Editor,
+      intervals: Iterable[(Int, Int)],
+      changes: Iterable[(Int, Int)],
+      prop: Float) = {
+    new SimpleWorksheetSplitter(
+      originalEditor,
+      viewerEditor,
+      intervals,
+      changes,
+      prop)
   }
 
-  class WorksheetEditingSides(originalEditor: Editor, viewerEditor: Editor) extends EditingSides {
+  class WorksheetEditingSides(originalEditor: Editor, viewerEditor: Editor)
+      extends EditingSides {
     private val left = new WeakReference(originalEditor)
     private val right = new WeakReference(viewerEditor)
 
-    private lazy val lineBlocks = createLineBlocks(originalEditor.getDocument, viewerEditor.getDocument, originalEditor.getProject)
+    private lazy val lineBlocks = createLineBlocks(
+      originalEditor.getDocument,
+      viewerEditor.getDocument,
+      originalEditor.getProject)
 
     override def getEditor(side: FragmentSide) = side match {
       case FragmentSide.SIDE1 => left.get()
@@ -47,19 +60,28 @@ object WorksheetDiffSplitters {
     override def getLineBlocks: LineBlocks = lineBlocks
   }
 
-
-  private def createLineBlocks(original: Document, viewer: Document, project: Project) =
+  private def createLineBlocks(
+      original: Document,
+      viewer: Document,
+      project: Project) =
     ChangeList.build(original, viewer, project).getLineBlocks
 
   private def getVisibleInterval(editor: Editor) = {
-    val line = editor.xyToLogicalPosition(new Point(0, editor.getScrollingModel.getVerticalScrollOffset)).line
+    val line = editor
+      .xyToLogicalPosition(
+        new Point(0, editor.getScrollingModel.getVerticalScrollOffset))
+      .line
     (line, editor.getComponent.getHeight / editor.getLineHeight + 1)
   }
 
-  class SimpleWorksheetSplitter(editor1: Editor, editor2: Editor,
-                                private var intervals: Iterable[(Int, Int)],
-                                private var changes: Iterable[(Int, Int)], prop: Float)
-    extends Splitter (false, prop) with DiffSplitterI {
+  class SimpleWorksheetSplitter(
+      editor1: Editor,
+      editor2: Editor,
+      private var intervals: Iterable[(Int, Int)],
+      private var changes: Iterable[(Int, Int)],
+      prop: Float)
+      extends Splitter(false, prop)
+      with DiffSplitterI {
     setDividerWidth(30)
     setFirstComponent(editor1.getComponent)
     setSecondComponent(editor2.getComponent)
@@ -69,7 +91,9 @@ object WorksheetDiffSplitters {
       override def mouseReleased(mouseEvent: MouseEvent) {
         val f = getProportion
 
-        Option(PsiDocumentManager.getInstance(editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
+        Option(
+          PsiDocumentManager.getInstance(
+            editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
           case file: ScalaFile =>
             WorksheetEditorPrinter.saveOnlyRatio(file, f)
           case _ =>
@@ -85,7 +109,9 @@ object WorksheetDiffSplitters {
 
     def getChanges = changes
 
-    def update(newIntervals: Iterable[(Int, Int)], newChanges: Iterable[(Int, Int)]) = {
+    def update(
+        newIntervals: Iterable[(Int, Int)],
+        newChanges: Iterable[(Int, Int)]) = {
       intervals = newIntervals
       changes = newChanges
       redrawDiffs()
@@ -93,7 +119,8 @@ object WorksheetDiffSplitters {
 
     override def getComponent: JComponent = this
 
-    override def getVisibleAreaListener: VisibleAreaListener = visibleAreaListener
+    override def getVisibleAreaListener: VisibleAreaListener =
+      visibleAreaListener
 
     override def redrawDiffs(): Unit = getDivider.repaint()
 
@@ -104,7 +131,9 @@ object WorksheetDiffSplitters {
         val height = getHeight
         val editorHeight = editor1.getComponent.getHeight
 
-        val gg = g.create(0, height - editorHeight, width, editorHeight).asInstanceOf[Graphics2D]
+        val gg = g
+          .create(0, height - editorHeight, width, editorHeight)
+          .asInstanceOf[Graphics2D]
         var flag = false
 
         val (firstVisible1, lastVisible1) = getVisibleInterval(editor1)
@@ -115,18 +144,24 @@ object WorksheetDiffSplitters {
 
         val plainPolygons = intervals zip changes collect {
           case ((from, to), (offset, spaces))
-            if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to && firstVisible2 <=
-              (offset - to + from) && lastVisible2 >= (offset + spaces) =>
+              if spaces != 0 && firstVisible1 <= from && lastVisible1 >= to && firstVisible2 <=
+                (offset - to + from) && lastVisible2 >= (offset + spaces) =>
             flag = !flag
             new DividerPolygon(
-              (from + 1)*lineHeight1,
-              (offset - to + from - firstVisible2 + 1)*lineHeight2,
-              (to + 1)*lineHeight1,
-              (offset + spaces - firstVisible2 + 1)*lineHeight2, if (flag) COLOR1 else COLOR2, false
+              (from + 1) * lineHeight1,
+              (offset - to + from - firstVisible2 + 1) * lineHeight2,
+              (to + 1) * lineHeight1,
+              (offset + spaces - firstVisible2 + 1) * lineHeight2,
+              if (flag) COLOR1 else COLOR2,
+              false
             )
         }
 
-        DividerPolygon.paintPolygons(new util.ArrayList[DividerPolygon](wrapAsJava asJavaCollection plainPolygons), gg, width)
+        DividerPolygon.paintPolygons(
+          new util.ArrayList[DividerPolygon](
+            wrapAsJava asJavaCollection plainPolygons),
+          gg,
+          width)
         gg.dispose()
       }
     }

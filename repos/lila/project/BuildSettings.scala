@@ -27,7 +27,9 @@ object BuildSettings {
   def compile(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "compile")
   def provided(deps: ModuleID*): Seq[ModuleID] = deps map (_ % "provided")
 
-  def project(name: String, deps: Seq[sbt.ClasspathDep[sbt.ProjectReference]] = Seq.empty) =
+  def project(
+      name: String,
+      deps: Seq[sbt.ClasspathDep[sbt.ProjectReference]] = Seq.empty) =
     Project(
       name,
       file("modules/" + name),
@@ -39,8 +41,13 @@ object BuildSettings {
     )
 
   val compilerOptions = Seq(
-    "-deprecation", "-unchecked", "-feature", "-language:_",
-    "-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm-1.8")
+    "-deprecation",
+    "-unchecked",
+    "-feature",
+    "-language:_",
+    "-Ybackend:GenBCode",
+    "-Ydelambdafy:method",
+    "-target:jvm-1.8")
 
   val srcMain = Seq(
     scalaSource in Compile <<= (sourceDirectory in Compile)(identity),

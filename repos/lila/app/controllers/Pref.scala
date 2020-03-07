@@ -13,47 +13,40 @@ object Pref extends LilaController {
   private def api = Env.pref.api
   private def forms = Env.pref.forms
 
-  def form(categSlug: String) = Auth { implicit ctx =>
-    me =>
-      lila.pref.PrefCateg(categSlug) match {
-        case None => notFound
-        case Some(categ) =>
-          Ok(html.account.pref(me, forms prefOf ctx.pref, categ)).fuccess
-      }
+  def form(categSlug: String) = Auth { implicit ctx => me =>
+    lila.pref.PrefCateg(categSlug) match {
+      case None => notFound
+      case Some(categ) =>
+        Ok(html.account.pref(me, forms prefOf ctx.pref, categ)).fuccess
+    }
   }
 
-  def formApply = AuthBody { implicit ctx =>
-    me =>
-      implicit val req = ctx.body
-      FormFuResult(forms.pref) { err =>
-        fuccess(err.toString)
-      } { data =>
-        api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
-      }
+  def formApply = AuthBody { implicit ctx => me =>
+    implicit val req = ctx.body
+    FormFuResult(forms.pref) { err => fuccess(err.toString) } { data =>
+      api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
+    }
   }
 
-  def miniFormApply = AuthBody { implicit ctx =>
-    me =>
-      implicit val req = ctx.body
-      FormFuResult(forms.miniPref) { err =>
-        fuccess("nope")
-      } { data =>
-        api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
-      }
+  def miniFormApply = AuthBody { implicit ctx => me =>
+    implicit val req = ctx.body
+    FormFuResult(forms.miniPref) { err => fuccess("nope") } { data =>
+      api.setPref(data(ctx.pref), notifyChange = true) inject Ok("saved")
+    }
   }
 
   def set(name: String) = OpenBody { implicit ctx =>
     implicit val req = ctx.body
     (setters get name) ?? {
-      case (form, fn) => FormResult(form) { v =>
-        fn(v, ctx) map { cookie => Ok(()).withCookies(cookie) }
-      }
+      case (form, fn) =>
+        FormResult(form) { v =>
+          fn(v, ctx) map { cookie => Ok(()).withCookies(cookie) }
+        }
     }
   }
 
-  def saveTag(name: String, value: String) = Auth { implicit ctx =>
-    me =>
-      api.saveTag(me, name, value)
+  def saveTag(name: String, value: String) = Auth { implicit ctx => me =>
+    api.saveTag(me, name, value)
   }
 
   private lazy val setters = Map(
@@ -64,7 +57,8 @@ object Pref extends LilaController {
     "soundSet" -> (forms.soundSet -> save("soundSet") _),
     "bg" -> (forms.bg -> save("bg") _),
     "bgImg" -> (forms.bgImg -> save("bgImg") _),
-    "is3d" -> (forms.is3d -> save("is3d") _))
+    "is3d" -> (forms.is3d -> save("is3d") _)
+  )
 
   private def save(name: String)(value: String, ctx: Context): Fu[Cookie] =
     ctx.me ?? {

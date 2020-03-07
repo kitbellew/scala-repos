@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage
 
 import org.json4s._
@@ -26,7 +25,7 @@ import scala.collection.JavaConversions
   * @group Event Data
   */
 case class DataMapException(msg: String, cause: Exception)
-  extends Exception(msg, cause) {
+    extends Exception(msg, cause) {
   def this(msg: String) = this(msg, null)
 }
 
@@ -38,8 +37,8 @@ case class DataMapException(msg: String, cause: Exception)
   * @param fields Map of property name to JValue
   * @group Event Data
   */
-class DataMap (
-  val fields: Map[String, JValue]
+class DataMap(
+    val fields: Map[String, JValue]
 ) extends Serializable {
   @transient lazy implicit private val formats = DefaultFormats +
     new DateTimeJson4sSupport.Serializer
@@ -74,8 +73,8 @@ class DataMap (
   def get[T: Manifest](name: String): T = {
     require(name)
     fields(name) match {
-      case JNull => throw new DataMapException(
-        s"The required field $name cannot be null.")
+      case JNull =>
+        throw new DataMapException(s"The required field $name cannot be null.")
       case x: JValue => x.extract[T]
     }
   }
@@ -113,15 +112,15 @@ class DataMap (
     * @return Return the property value of type T
     */
   def get[T](name: String, clazz: java.lang.Class[T]): T = {
-    val manifest =  new Manifest[T] {
+    val manifest = new Manifest[T] {
       override def erasure: Class[_] = clazz
       override def runtimeClass: Class[_] = clazz
     }
 
     fields.get(name) match {
-      case None => null.asInstanceOf[T]
+      case None        => null.asInstanceOf[T]
       case Some(JNull) => null.asInstanceOf[T]
-      case Some(x) => x.extract[T](formats, manifest)
+      case Some(x)     => x.extract[T](formats, manifest)
     }
   }
 
@@ -133,10 +132,11 @@ class DataMap (
     */
   def getStringList(name: String): java.util.List[String] = {
     fields.get(name) match {
-      case None => null
+      case None        => null
       case Some(JNull) => null
       case Some(x) =>
-        JavaConversions.seqAsJavaList(x.extract[List[String]](formats, manifest[List[String]]))
+        JavaConversions.seqAsJavaList(
+          x.extract[List[String]](formats, manifest[List[String]]))
     }
   }
 
@@ -146,7 +146,7 @@ class DataMap (
     * @param that Right hand side DataMap
     * @return A new DataMap
     */
-  def ++ (that: DataMap): DataMap = DataMap(this.fields ++ that.fields)
+  def ++(that: DataMap): DataMap = DataMap(this.fields ++ that.fields)
 
   /** Creates a new DataMap from this DataMap by removing all elements of
     * another collection.
@@ -154,7 +154,7 @@ class DataMap (
     * @param that A collection containing the removed property names
     * @return A new DataMap
     */
-  def -- (that: GenTraversableOnce[String]): DataMap =
+  def --(that: GenTraversableOnce[String]): DataMap =
     DataMap(this.fields -- that)
 
   /** Tests whether the DataMap is empty.
@@ -189,16 +189,13 @@ class DataMap (
     toJObject().extract[T]
   }
 
-  override
-  def toString: String = s"DataMap($fields)"
+  override def toString: String = s"DataMap($fields)"
 
-  override
-  def hashCode: Int = 41 + fields.hashCode
+  override def hashCode: Int = 41 + fields.hashCode
 
-  override
-  def equals(other: Any): Boolean = other match {
+  override def equals(other: Any): Boolean = other match {
     case that: DataMap => that.canEqual(this) && this.fields.equals(that.fields)
-    case _ => false
+    case _             => false
   }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[DataMap]
@@ -209,6 +206,7 @@ class DataMap (
   * @group Event Data
   */
 object DataMap {
+
   /** Create an empty DataMap
     * @return an empty DataMap
     */

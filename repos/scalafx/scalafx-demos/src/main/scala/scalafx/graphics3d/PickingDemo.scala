@@ -112,7 +112,10 @@ object PickingDemo extends JFXApp {
         case Some(n) =>
           println("Picked node: '" + n.id() + "'")
           val p = pickResult.intersectedPoint
-          group.children += createMarker(x = p.x + n.translateX(), y = p.y + n.translateY(), z = p.z + n.translateZ())
+          group.children += createMarker(
+            x = p.x + n.translateX(),
+            y = p.y + n.translateY(),
+            z = p.z + n.translateZ())
         case None => println("Picked nothing.")
       }
     }
@@ -121,16 +124,16 @@ object PickingDemo extends JFXApp {
       angleY() = anchorAngleY + anchorX - event.sceneX
     }
 
-
   }
 
-  private def createMarker(x: Double, y: Double, z: Double): Sphere = new Sphere(35) {
-    material = new PhongMaterial {
-      diffuseColor = Color.Gold
-      specularColor = Color.LightGreen
+  private def createMarker(x: Double, y: Double, z: Double): Sphere =
+    new Sphere(35) {
+      material = new PhongMaterial {
+        diffuseColor = Color.Gold
+        specularColor = Color.LightGreen
+      }
+      translateX = x
+      translateY = y
+      translateZ = z
     }
-    translateX = x
-    translateY = y
-    translateZ = z
-  }
 }

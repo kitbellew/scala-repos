@@ -36,12 +36,14 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
- * Insets Spec tests.
- *
- */
+  * Insets Spec tests.
+  *
+  */
 @RunWith(classOf[JUnitRunner])
 class InsetsSpec
-  extends SimpleSFXDelegateSpec[jfxg.Insets, Insets](classOf[jfxg.Insets], classOf[Insets]) {
+    extends SimpleSFXDelegateSpec[jfxg.Insets, Insets](
+      classOf[jfxg.Insets],
+      classOf[Insets]) {
 
   override protected def getScalaClassInstance = Insets.Empty
 

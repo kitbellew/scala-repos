@@ -2,13 +2,11 @@ package lila.bookmark
 
 import lila.db.api._
 import lila.game.tube.gameTube
-import lila.game.{ Game, GameRepo }
+import lila.game.{Game, GameRepo}
 import lila.user.User
 import tube.bookmarkTube
 
-final class BookmarkApi(
-    cached: Cached,
-    paginator: PaginatorBuilder) {
+final class BookmarkApi(cached: Cached, paginator: PaginatorBuilder) {
 
   def toggle(gameId: String, userId: String): Funit =
     $find.byId[Game](gameId) flatMap {
@@ -20,7 +18,8 @@ final class BookmarkApi(
       }
     }
 
-  def bookmarked(game: Game, user: User): Boolean = cached.bookmarked(game.id, user.id)
+  def bookmarked(game: Game, user: User): Boolean =
+    cached.bookmarked(game.id, user.id)
 
   def gameIds(userId: String): Set[String] = cached gameIds userId
 

@@ -8,30 +8,35 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Properties
 
 /**
- * The source code for this object has been purloined from one of the
- * SBT Plugin's dev mode tests.
- */
+  * The source code for this object has been purloined from one of the
+  * SBT Plugin's dev mode tests.
+  */
 object DevModeBuild {
 
   val MaxAttempts = 10
-  val WaitTime = 500l
+  val WaitTime = 500L
   val ConnectTimeout = 10000
   val ReadTimeout = 10000
 
   @tailrec
-  def verifyResourceContains(path: String, status: Int, assertions: Seq[String], attempts: Int): Unit = {
+  def verifyResourceContains(
+      path: String,
+      status: Int,
+      assertions: Seq[String],
+      attempts: Int): Unit = {
     println(s"Attempt $attempts at $path")
     val messages = ListBuffer.empty[String]
     try {
       val url = new java.net.URL("http://localhost:9000" + path)
       val conn = url.openConnection().asInstanceOf[java.net.HttpURLConnection]
       conn.setConnectTimeout(ConnectTimeout)
-      conn.setReadTimeout(ReadTimeout)      
+      conn.setReadTimeout(ReadTimeout)
 
       if (status == conn.getResponseCode) {
         messages += s"Resource at $path returned $status as expected"
       } else {
-        throw new RuntimeException(s"Resource at $path returned ${conn.getResponseCode} instead of $status")
+        throw new RuntimeException(
+          s"Resource at $path returned ${conn.getResponseCode} instead of $status")
       }
 
       val is = if (conn.getResponseCode >= 400) {
@@ -52,7 +57,8 @@ object DevModeBuild {
         if (contents.contains(assertion)) {
           messages += s"Resource at $path contained $assertion"
         } else {
-          throw new RuntimeException(s"Resource at $path didn't contain '$assertion':\n$contents")
+          throw new RuntimeException(
+            s"Resource at $path didn't contain '$assertion':\n$contents")
         }
       }
 

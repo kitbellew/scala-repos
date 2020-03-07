@@ -22,10 +22,13 @@ class DateTest {
       x.compareTo(y)
     }
 
-    assertTrue(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)) < 0)
-    assertTrue(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)) > 0)
+    assertTrue(
+      compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)) < 0)
+    assertTrue(
+      compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)) > 0)
     assertEquals(0, compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5)))
-    assertTrue(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)) < 0)
+    assertTrue(
+      compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)) < 0)
     assertEquals(0, compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
   }
 
@@ -33,10 +36,13 @@ class DateTest {
     def compare(x: Any, y: Any): Int =
       x.asInstanceOf[Comparable[Any]].compareTo(y)
 
-    assertTrue(compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)) < 0)
-    assertTrue(compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)) > 0)
+    assertTrue(
+      compare(new Date(97, 11, 5, 0, 0), new Date(98, 11, 5, 0, 0)) < 0)
+    assertTrue(
+      compare(new Date(98, 11, 5, 0, 0), new Date(97, 11, 5, 0, 0)) > 0)
     assertEquals(0, compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5)))
-    assertTrue(compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)) < 0)
+    assertTrue(
+      compare(new Date(97, 11, 5, 0, 0), new Date(97, 11, 5, 0, 1)) < 0)
     assertEquals(0, compare(new Date(97, 11, 5), new Date(97, 11, 5, 0, 0)))
   }
 
@@ -45,8 +51,8 @@ class DateTest {
       assertEquals(0, new Date(s).compareTo(v))
 
     test("Nov 5 1997 5:23:27 GMT", new Date(Date.UTC(97, 10, 5, 5, 23, 27)))
-    test("Nov 1 1997 GMT", new Date(Date.UTC(97,10,1, 0, 0, 0)))
-    test("Jan 1 1970 18:11:01 GMT", new Date(Date.UTC(70,0,1,18,11,1)))
+    test("Nov 1 1997 GMT", new Date(Date.UTC(97, 10, 1, 0, 0, 0)))
+    test("Jan 1 1970 18:11:01 GMT", new Date(Date.UTC(70, 0, 1, 18, 11, 1)))
   }
 
   @Test def after(): Unit = {

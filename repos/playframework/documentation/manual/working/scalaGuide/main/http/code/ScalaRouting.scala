@@ -21,9 +21,10 @@ package controllers {
 
     // #show-client-action
     def show(id: Long) = Action {
-      Client.findById(id).map { client =>
-        Ok(views.html.Clients.display(client))
-      }.getOrElse(NotFound)
+      Client
+        .findById(id)
+        .map { client => Ok(views.html.Clients.display(client)) }
+        .getOrElse(NotFound)
     }
     // #show-client-action
 
@@ -38,9 +39,9 @@ package controllers {
 
     // #show-page-action
     def show(page: String) = Action {
-      loadContentFromDatabase(page).map { htmlContent =>
-        Ok(htmlContent).as("text/html")
-      }.getOrElse(NotFound)
+      loadContentFromDatabase(page)
+        .map { htmlContent => Ok(htmlContent).as("text/html") }
+        .getOrElse(NotFound)
     }
     // #show-page-action
   }
@@ -76,23 +77,24 @@ package defaultvalue.controllers {
 // ###replace: package controllers
 package reverse.controllers {
 
-import play.api._
-import play.api.mvc._
+  import play.api._
+  import play.api.mvc._
 
-class Application extends Controller {
+  class Application extends Controller {
 
-  def hello(name: String) = Action {
-    Ok("Hello " + name + "!")
+    def hello(name: String) = Action {
+      Ok("Hello " + name + "!")
+    }
+
   }
-
-}
 // #reverse-controller
 }
 
 object ScalaRoutingSpec extends Specification {
   "the scala router" should {
     "support simple routing with a long parameter" in {
-      contentOf(FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
+      contentOf(
+        FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
     }
     "support a static path" in {
       contentOf(FakeRequest("GET", "/clients/all")) must_== "all clients"
@@ -110,19 +112,32 @@ object ScalaRoutingSpec extends Specification {
       contentOf(FakeRequest("GET", "/foo")) must_== "showing page foo"
     }
     "support passing parameters from the query string" in {
-      contentOf(FakeRequest("GET", "/?page=foo"), classOf[query.Routes]) must_== "showing page foo"
+      contentOf(
+        FakeRequest("GET", "/?page=foo"),
+        classOf[query.Routes]) must_== "showing page foo"
     }
     "support fixed values for parameters" in {
-      contentOf(FakeRequest("GET", "/foo"), classOf[fixed.Routes]) must_== "showing page foo"
-      contentOf(FakeRequest("GET", "/"), classOf[fixed.Routes]) must_== "showing page home"
+      contentOf(
+        FakeRequest("GET", "/foo"),
+        classOf[fixed.Routes]) must_== "showing page foo"
+      contentOf(
+        FakeRequest("GET", "/"),
+        classOf[fixed.Routes]) must_== "showing page home"
     }
     "support default values for parameters" in {
-      contentOf(FakeRequest("GET", "/clients"), classOf[defaultvalue.Routes]) must_== "clients page 1"
-      contentOf(FakeRequest("GET", "/clients?page=2"), classOf[defaultvalue.Routes]) must_== "clients page 2"
+      contentOf(
+        FakeRequest("GET", "/clients"),
+        classOf[defaultvalue.Routes]) must_== "clients page 1"
+      contentOf(
+        FakeRequest("GET", "/clients?page=2"),
+        classOf[defaultvalue.Routes]) must_== "clients page 2"
     }
     "support optional values for parameters" in {
       contentOf(FakeRequest("GET", "/api/list-all")) must_== "version None"
-      contentOf(FakeRequest("GET", "/api/list-all?version=3.0")) must_== "version Some(3.0)"
+      contentOf(
+        FakeRequest(
+          "GET",
+          "/api/list-all?version=3.0")) must_== "version Some(3.0)"
     }
     "support reverse routing" in {
       import reverse.controllers.routes
@@ -139,7 +154,9 @@ object ScalaRoutingSpec extends Specification {
 
   }
 
-  def contentOf(rh: RequestHeader, router: Class[_ <: Router] = classOf[Routes]) = {
+  def contentOf(
+      rh: RequestHeader,
+      router: Class[_ <: Router] = classOf[Routes]) = {
     running() { app =>
       implicit val mat = ActorMaterializer()(app.actorSystem)
       contentAsString(app.injector.instanceOf(router).routes(rh) match {

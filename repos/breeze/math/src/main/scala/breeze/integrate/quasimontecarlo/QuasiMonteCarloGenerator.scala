@@ -14,7 +14,7 @@ package breeze.integrate.quasimontecarlo
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-*/
+ */
 
 trait QuasiMonteCarloGenerator {
   /*
@@ -33,11 +33,13 @@ trait QuasiMonteCarloGenerator {
    * Using this is purely a performance optimization and should
    * be done extremely carefully.
    */
-  def getNextUnsafe: Array[Double] // This must return an array of length this.dimension
+  def getNextUnsafe
+      : Array[Double] // This must return an array of length this.dimension
 
   def getNext: Array[Double] = getNextUnsafe.clone()
 
-  def getNextInto(to: Array[Double]) = java.lang.System.arraycopy(getNextUnsafe, 0, to, 0, dimension)
+  def getNextInto(to: Array[Double]) =
+    java.lang.System.arraycopy(getNextUnsafe, 0, to, 0, dimension)
 
   def numGenerated: Long
 }

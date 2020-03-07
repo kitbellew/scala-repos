@@ -7,34 +7,37 @@ import com.twitter.io.Reader
 import org.jboss.netty.buffer.{ChannelBuffer, ChannelBuffers}
 import org.jboss.netty.handler.codec.embedder.{DecoderEmbedder, EncoderEmbedder}
 import org.jboss.netty.handler.codec.http.{
-  DefaultHttpResponse, HttpResponse, HttpResponseDecoder, HttpResponseEncoder,
+  DefaultHttpResponse,
+  HttpResponse,
+  HttpResponseDecoder,
+  HttpResponseEncoder,
   HttpResponseStatus
 }
 
 import Bijections._
 
 /**
- * Rich HttpResponse
- */
+  * Rich HttpResponse
+  */
 abstract class Response extends Message with HttpResponseProxy {
 
   /**
-   * Arbitrary user-defined context associated with this response object.
-   * [[com.twitter.collection.RecordSchema.Record RecordSchema.Record]] is
-   * used here, rather than [[com.twitter.finagle.Context Context]] or similar
-   * out-of-band mechanisms, to make the connection between the response and its
-   * associated context explicit.
-   */
+    * Arbitrary user-defined context associated with this response object.
+    * [[com.twitter.collection.RecordSchema.Record RecordSchema.Record]] is
+    * used here, rather than [[com.twitter.finagle.Context Context]] or similar
+    * out-of-band mechanisms, to make the connection between the response and its
+    * associated context explicit.
+    */
   val ctx: Response.Schema.Record = Response.Schema.newRecord()
 
   def isRequest = false
 
-  def status: Status          = from(getStatus)
+  def status: Status = from(getStatus)
   def status_=(value: Status) { setStatus(from(value)) }
-  def statusCode: Int                     = getStatus.getCode
-  def statusCode_=(value: Int)            { setStatus(HttpResponseStatus.valueOf(value)) }
+  def statusCode: Int = getStatus.getCode
+  def statusCode_=(value: Int) { setStatus(HttpResponseStatus.valueOf(value)) }
 
-  def getStatusCode(): Int      = statusCode
+  def getStatusCode(): Int = statusCode
   def setStatusCode(value: Int) { statusCode = value }
 
   /** Encode as an HTTP message */
@@ -50,18 +53,19 @@ abstract class Response extends Message with HttpResponseProxy {
 }
 
 object Response {
+
   /**
-   * Utility class to make it possible to mock/spy a Response.
-   */
+    * Utility class to make it possible to mock/spy a Response.
+    */
   class Ok extends Response {
     val httpResponse = apply.httpResponse
   }
 
   /**
-   * [[com.twitter.collection.RecordSchema RecordSchema]] declaration, used
-   * to generate [[com.twitter.collection.RecordSchema.Record Record]] instances
-   * for Response.ctx.
-   */
+    * [[com.twitter.collection.RecordSchema RecordSchema]] declaration, used
+    * to generate [[com.twitter.collection.RecordSchema.Record Record]] instances
+    * for Response.ctx.
+    */
   val Schema: RecordSchema = new RecordSchema
 
   /** Decode a [[Response]] from a String */
@@ -78,7 +82,7 @@ object Response {
     assert(res ne null)
     Response(res)
   }
-  
+
   /** Create Response. */
   def apply(): Response =
     apply(Version.Http11, Status.Ok)
@@ -88,8 +92,8 @@ object Response {
     apply(new DefaultHttpResponse(from(version), from(status)))
 
   /**
-   * Create a Response from version, status, and Reader.
-   */
+    * Create a Response from version, status, and Reader.
+    */
   def apply(version: Version, status: Status, reader: Reader): Response = {
     val res = new DefaultHttpResponse(from(version), from(status))
     res.setChunked(true)
@@ -115,6 +119,8 @@ object Response {
   private[http] def apply(httpRequest: Request): Response =
     new Response {
       final val httpResponse =
-        new DefaultHttpResponse(httpRequest.getProtocolVersion, HttpResponseStatus.OK)
+        new DefaultHttpResponse(
+          httpRequest.getProtocolVersion,
+          HttpResponseStatus.OK)
     }
 }

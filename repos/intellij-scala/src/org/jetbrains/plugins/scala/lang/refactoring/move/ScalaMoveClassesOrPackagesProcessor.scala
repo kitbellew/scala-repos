@@ -11,28 +11,38 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinitio
 import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
 
 /**
- * Nikolay.Tropin
- * 11/29/13
- */
-class ScalaMoveClassesOrPackagesProcessor(project: Project,
-                                          elements: Array[PsiElement],
-                                          moveDestination: MoveDestination,
-                                          searchInComments: Boolean,
-                                          searchInNonJavaFiles: Boolean,
-                                          moveCallback: MoveCallback) extends
-{
+  * Nikolay.Tropin
+  * 11/29/13
+  */
+class ScalaMoveClassesOrPackagesProcessor(
+    project: Project,
+    elements: Array[PsiElement],
+    moveDestination: MoveDestination,
+    searchInComments: Boolean,
+    searchInNonJavaFiles: Boolean,
+    moveCallback: MoveCallback)
+    extends {
   private val expandedElements =
     if (ScalaApplicationSettings.getInstance().MOVE_COMPANION)
       elements.flatMap {
-        case td: ScTypeDefinition => td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
+        case td: ScTypeDefinition =>
+          td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
         case e => List(e)
       }
     else elements
 
-} with MoveClassesOrPackagesProcessor(project, expandedElements, moveDestination, searchInComments, searchInNonJavaFiles, moveCallback){
+} with MoveClassesOrPackagesProcessor(
+  project,
+  expandedElements,
+  moveDestination,
+  searchInComments,
+  searchInNonJavaFiles,
+  moveCallback) {
   extensions.inWriteAction {
     expandedElements.foreach(c =>
-      ScalaMoveUtil.saveMoveDestination(c, moveDestination.getTargetDirectory(c.getContainingFile)))
+      ScalaMoveUtil.saveMoveDestination(
+        c,
+        moveDestination.getTargetDirectory(c.getContainingFile)))
   }
 
 }
