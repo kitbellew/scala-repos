@@ -98,7 +98,8 @@ object RelationSpecs
         case DynamicProvenance(_) => ok
       }
       (in.relations.values.map(_.toList)) must beLike {
-        case (DynamicProvenance(_) :: Nil) :: (StaticProvenance("/foo") :: Nil) :: Nil =>
+        case (DynamicProvenance(_) :: Nil) :: (StaticProvenance(
+              "/foo") :: Nil) :: Nil =>
           ok
       }
       tree.provenance must beLike {

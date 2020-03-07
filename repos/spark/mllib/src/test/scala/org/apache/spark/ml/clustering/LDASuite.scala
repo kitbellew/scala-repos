@@ -151,7 +151,8 @@ class LDASuite
     lda.setDocConcentration(Range(0, lda.getK).map(_ + 2.0).toArray)
     lda.transformSchema(dummyDF.schema)
     lda.setDocConcentration(Range(0, lda.getK - 1).map(_ + 2.0).toArray)
-    withClue("LDA docConcentration validity check failed for bad array length") {
+    withClue(
+      "LDA docConcentration validity check failed for bad array length") {
       intercept[IllegalArgumentException] {
         lda.transformSchema(dummyDF.schema)
       }

@@ -155,7 +155,8 @@ private[ui] class ActiveBatchTable(
   }
 
   private def runningBatchRow(batch: BatchUIData): Seq[Node] = {
-    baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>processing</td> ++ {
+    baseRow(batch) ++ createOutputOperationProgressBar(
+      batch) ++ <td>processing</td> ++ {
       if (firstFailureReason.nonEmpty) {
         getFirstFailureTableCell(batch)
       } else {
@@ -165,7 +166,8 @@ private[ui] class ActiveBatchTable(
   }
 
   private def waitingBatchRow(batch: BatchUIData): Seq[Node] = {
-    baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>queued</td> ++ {
+    baseRow(batch) ++ createOutputOperationProgressBar(
+      batch) ++ <td>queued</td> ++ {
       if (firstFailureReason.nonEmpty) {
         // Waiting batches have not run yet, so must have no failure reasons.
         <td>-</td>

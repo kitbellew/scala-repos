@@ -411,7 +411,9 @@ class ClosureCleanerSuite2
     val closure2 = () => Array[String]("a", "b", "c")
     val closure3 = (s: String, arr: Array[Long]) => s + arr.mkString(", ")
     val closure4 = () => localValue
-    val closure5 = () => new NonSerializable(5) // we're just serializing the class information
+    val closure5 =
+      () =>
+        new NonSerializable(5) // we're just serializing the class information
     val closure1r = closure1()
     val closure2r = closure2()
     val closure3r = closure3("g", Array(1, 5, 8))

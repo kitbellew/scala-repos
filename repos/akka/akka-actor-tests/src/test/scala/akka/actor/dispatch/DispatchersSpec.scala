@@ -262,7 +262,9 @@ class DispatchersSpec
 
     "use balancing-pool router with special routees mailbox of deployment config" in {
       system
-        .actorOf(FromConfig.props(Props[ThreadNameEcho]), name = "balanced") ! "what's the name?"
+        .actorOf(
+          FromConfig.props(Props[ThreadNameEcho]),
+          name = "balanced") ! "what's the name?"
       val Expected =
         """(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)""".r
       expectMsgPF() {

@@ -561,7 +561,8 @@ trait KnownTypeClassConstraint extends TypeClassConstraint {
 
   /** toString for debugging */
   override def toString =
-    typeExplanation(typeParamName) + " (" + typeParamName + ": " + typeClassEntity.name + ")"
+    typeExplanation(
+      typeParamName) + " (" + typeParamName + ": " + typeClassEntity.name + ")"
 }
 
 /** A constraint involving a type parameter */

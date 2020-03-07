@@ -26,7 +26,10 @@ class ProtectedBranchServiceSpec
     it("should empty is disabled") {
       withTestDB { implicit session =>
         assert(
-          getProtectedBranchInfo("user1", "repo1", "branch") == ProtectedBranchInfo
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch") == ProtectedBranchInfo
             .disabled("user1", "repo1"))
       }
     }
@@ -34,13 +37,10 @@ class ProtectedBranchServiceSpec
       withTestDB { implicit session =>
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
-        assert(
-          getProtectedBranchInfo("user1", "repo1", "branch") == ProtectedBranchInfo(
-            "user1",
-            "repo1",
-            true,
-            Nil,
-            false))
+        assert(getProtectedBranchInfo(
+          "user1",
+          "repo1",
+          "branch") == ProtectedBranchInfo("user1", "repo1", true, Nil, false))
         enableBranchProtection(
           "user1",
           "repo1",
@@ -48,7 +48,10 @@ class ProtectedBranchServiceSpec
           true,
           Seq("hoge", "huge"))
         assert(
-          getProtectedBranchInfo("user1", "repo1", "branch") == ProtectedBranchInfo(
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch") == ProtectedBranchInfo(
             "user1",
             "repo1",
             true,
@@ -56,7 +59,10 @@ class ProtectedBranchServiceSpec
             true))
         disableBranchProtection("user1", "repo1", "branch")
         assert(
-          getProtectedBranchInfo("user1", "repo1", "branch") == ProtectedBranchInfo
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch") == ProtectedBranchInfo
             .disabled("user1", "repo1"))
       }
     }
@@ -65,10 +71,16 @@ class ProtectedBranchServiceSpec
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
         assert(
-          getProtectedBranchInfo("user1", "repo1", "branch").includeAdministrators == false)
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch").includeAdministrators == false)
         enableBranchProtection("user1", "repo1", "branch", true, Nil)
         assert(
-          getProtectedBranchInfo("user1", "repo1", "branch").includeAdministrators == false)
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch").includeAdministrators == false)
       }
     }
     it("getProtectedBranchList") {

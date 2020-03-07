@@ -113,7 +113,10 @@ object Http
   // Only record payload sizes when streaming is disabled.
   private[this] val nonChunkedPayloadSize
       : Stackable[ServiceFactory[Request, Response]] =
-    new Stack.Module2[param.Streaming, Stats, ServiceFactory[Request, Response]] {
+    new Stack.Module2[
+      param.Streaming,
+      Stats,
+      ServiceFactory[Request, Response]] {
       override def role: Stack.Role = PayloadSizeFilter.Role
       override def description: String = PayloadSizeFilter.Description
 

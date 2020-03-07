@@ -235,7 +235,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
         req("text/xml").forcedBodyAsXml should_== Full(parsedXml)
       }
 
-      "with invalid XML should return a Failure" in new mockXmlReq("epic fail") {
+      "with invalid XML should return a Failure" in new mockXmlReq(
+        "epic fail") {
         req("text/palin").forcedBodyAsXml should beAnInstanceOf[Failure]
         req("text/xml").forcedBodyAsXml should beAnInstanceOf[Failure]
       }

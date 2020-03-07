@@ -42,7 +42,8 @@ class SeqIdFilterTest
     val filter = new SeqIdFilter
     val filtered = filter andThen service
 
-    test("SeqIdFilter(%s) maintain seqids passed in by the client".format(how)) {
+    test(
+      "SeqIdFilter(%s) maintain seqids passed in by the client".format(how)) {
       val f = filtered(
         new ThriftClientRequest(
           mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
@@ -79,7 +80,8 @@ class SeqIdFilterTest
       }
     }
 
-    test("SeqIdFilter(%s) fail when sequence ids are out of order".format(how)) {
+    test(
+      "SeqIdFilter(%s) fail when sequence ids are out of order".format(how)) {
       Time.withCurrentTimeFrozen { _ =>
         val filtered = new SeqIdFilter andThen service
         val expected =

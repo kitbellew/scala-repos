@@ -24,7 +24,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       text: String): String = {
     val settings = ScalaCodeStyleSettings.getInstance(file.getProject)
     if (!file
-          .isInstanceOf[ScalaFile] || !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 || endOffsets.length != 1)
+          .isInstanceOf[
+            ScalaFile] || !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 || endOffsets.length != 1)
       return null
     findOuterString(file.findElementAt(startOffsets(0))) match {
       case Some(element)

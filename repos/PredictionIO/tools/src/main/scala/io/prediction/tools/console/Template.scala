@@ -187,7 +187,8 @@ object Template extends Logging {
 
   def meta(repo: String, name: String, org: String): Unit = {
     try {
-      httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+      httpOptionalProxy(
+        s"http://meta.prediction.io/templates/$repo/$org/$name").asString
     } catch {
       case e: Throwable => debug("Template metadata unavailable.")
     }

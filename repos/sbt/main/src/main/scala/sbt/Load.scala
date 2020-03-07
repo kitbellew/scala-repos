@@ -297,7 +297,8 @@ object Load {
         }
     }
     ss.map(s =>
-      s mapConstant setResolved(s.key) mapReferenced mapSpecial(s.key) mapInit setDefining)
+      s mapConstant setResolved(s.key) mapReferenced mapSpecial(
+        s.key) mapInit setDefining)
   }
   def setDefinitionKey[T](tk: Task[T], key: ScopedKey[_]): Task[T] =
     if (isDummy(tk)) tk
@@ -1037,7 +1038,10 @@ object Load {
       lazy val defaultSbtFiles = configurationSources(transformedProject.base)
       // Grabs the plugin settings for old-style sbt plugins.
       def pluginSettings(f: Plugins) = {
-        val included = loadedPlugins.detected.plugins.values.filter(f.include) // don't apply the filter to AutoPlugins, only Plugins
+        val included =
+          loadedPlugins.detected.plugins.values.filter(
+            f.include
+          ) // don't apply the filter to AutoPlugins, only Plugins
         included.flatMap(p =>
           p.settings.filter(isProjectThis) ++ p.projectSettings)
       }

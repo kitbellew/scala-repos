@@ -155,7 +155,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("a failing service should be revived on a backoff mechanism by default") {
+  test(
+    "a failing service should be revived on a backoff mechanism by default") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -409,7 +410,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("a failing service should go back to the Busy state after probing fails") {
+  test(
+    "a failing service should go back to the Busy state after probing fails") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -510,7 +512,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("A failure during probing that does not mark dead moves back to probing") {
+  test(
+    "A failure during probing that does not mark dead moves back to probing") {
     val policy = new FailureAccrualPolicy {
       var markDead = true
 

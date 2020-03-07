@@ -144,7 +144,8 @@ class AhcWSRequestSpec extends Specification with Mockito {
       queryParams.exists(p =>
         (p.getName == "q") && (p.getValue == "playframework")) must beTrue
       queryParams
-        .exists(p => (p.getName.equals("src")) && (p.getValue == null)) must beTrue
+        .exists(p =>
+          (p.getName.equals("src")) && (p.getValue == null)) must beTrue
     }
 
     "not support a query string with more than 2 = per part" in {

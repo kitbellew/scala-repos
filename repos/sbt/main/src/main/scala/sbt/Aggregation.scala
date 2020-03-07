@@ -268,12 +268,14 @@ final object Aggregation {
       key: ScopedKey[T],
       extra: BuildUtil[_],
       mask: ScopeMask): Seq[ScopedKey[T]] =
-    projectAggregates(key.scope.project.toOption, extra, reverse = true) flatMap {
-      ref =>
-        val toResolve = key.scope.copy(project = Select(ref))
-        val resolved = Resolve(extra, Global, key.key, mask)(toResolve)
-        val skey = ScopedKey(resolved, key.key)
-        if (aggregationEnabled(skey, extra.data)) skey :: Nil else Nil
+    projectAggregates(
+      key.scope.project.toOption,
+      extra,
+      reverse = true) flatMap { ref =>
+      val toResolve = key.scope.copy(project = Select(ref))
+      val resolved = Resolve(extra, Global, key.key, mask)(toResolve)
+      val skey = ScopedKey(resolved, key.key)
+      if (aggregationEnabled(skey, extra.data)) skey :: Nil else Nil
     }
 
   def aggregatedKeys[T](

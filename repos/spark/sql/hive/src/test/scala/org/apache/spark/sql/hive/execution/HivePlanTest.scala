@@ -32,7 +32,8 @@ class HivePlanTest extends QueryTest with TestHiveSingleton {
     val optimized =
       sql("SELECT cos(null) AS c FROM t").queryExecution.optimizedPlan
     val correctAnswer =
-      sql("SELECT cast(null as double) AS c FROM t").queryExecution.optimizedPlan
+      sql(
+        "SELECT cast(null as double) AS c FROM t").queryExecution.optimizedPlan
 
     comparePlans(optimized, correctAnswer)
   }

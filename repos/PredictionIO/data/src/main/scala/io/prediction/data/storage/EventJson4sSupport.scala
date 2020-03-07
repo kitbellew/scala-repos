@@ -112,29 +112,32 @@ object EventJson4sSupport {
   @DeveloperApi
   def writeJson: PartialFunction[Any, JValue] = {
     case d: Event => {
-      JObject(JField(
-        "eventId",
-        d.eventId.map(eid => JString(eid)).getOrElse(JNothing)) ::
-        JField("event", JString(d.event)) ::
-        JField("entityType", JString(d.entityType)) ::
-        JField("entityId", JString(d.entityId)) ::
+      JObject(
         JField(
-          "targetEntityType",
-          d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
-        JField(
-          "targetEntityId",
-          d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
-        JField("properties", d.properties.toJObject) ::
-        JField("eventTime", JString(DataUtils.dateTimeToString(d.eventTime))) ::
-        // disable tags from API for now
-        // JField("tags", JArray(d.tags.toList.map(JString(_)))) ::
-        // disable tags from API for now
-        JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
-        // don't show creationTime for now
-        JField(
-          "creationTime",
-          JString(DataUtils.dateTimeToString(d.creationTime))) ::
-        Nil)
+          "eventId",
+          d.eventId.map(eid => JString(eid)).getOrElse(JNothing)) ::
+          JField("event", JString(d.event)) ::
+          JField("entityType", JString(d.entityType)) ::
+          JField("entityId", JString(d.entityId)) ::
+          JField(
+            "targetEntityType",
+            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
+          JField(
+            "targetEntityId",
+            d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
+          JField("properties", d.properties.toJObject) ::
+          JField(
+            "eventTime",
+            JString(DataUtils.dateTimeToString(d.eventTime))) ::
+          // disable tags from API for now
+          // JField("tags", JArray(d.tags.toList.map(JString(_)))) ::
+          // disable tags from API for now
+          JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
+          // don't show creationTime for now
+          JField(
+            "creationTime",
+            JString(DataUtils.dateTimeToString(d.creationTime))) ::
+          Nil)
     }
   }
 
@@ -181,23 +184,26 @@ object EventJson4sSupport {
   @DeveloperApi
   def serializeToJValue: PartialFunction[Any, JValue] = {
     case d: Event => {
-      JObject(JField("event", JString(d.event)) ::
-        JField("entityType", JString(d.entityType)) ::
-        JField("entityId", JString(d.entityId)) ::
-        JField(
-          "targetEntityType",
-          d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
-        JField(
-          "targetEntityId",
-          d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
-        JField("properties", d.properties.toJObject) ::
-        JField("eventTime", JString(DataUtils.dateTimeToString(d.eventTime))) ::
-        JField("tags", JArray(d.tags.toList.map(JString(_)))) ::
-        JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
-        JField(
-          "creationTime",
-          JString(DataUtils.dateTimeToString(d.creationTime))) ::
-        Nil)
+      JObject(
+        JField("event", JString(d.event)) ::
+          JField("entityType", JString(d.entityType)) ::
+          JField("entityId", JString(d.entityId)) ::
+          JField(
+            "targetEntityType",
+            d.targetEntityType.map(JString(_)).getOrElse(JNothing)) ::
+          JField(
+            "targetEntityId",
+            d.targetEntityId.map(JString(_)).getOrElse(JNothing)) ::
+          JField("properties", d.properties.toJObject) ::
+          JField(
+            "eventTime",
+            JString(DataUtils.dateTimeToString(d.eventTime))) ::
+          JField("tags", JArray(d.tags.toList.map(JString(_)))) ::
+          JField("prId", d.prId.map(JString(_)).getOrElse(JNothing)) ::
+          JField(
+            "creationTime",
+            JString(DataUtils.dateTimeToString(d.creationTime))) ::
+          Nil)
     }
   }
 

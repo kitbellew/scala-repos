@@ -369,8 +369,11 @@ object CSCMatrix
     }
   }
 
-  implicit def canCopySparse[
-      @spec(Double, Int, Float, Long) V: ClassTag: Zero] =
+  implicit def canCopySparse[@spec(
+    Double,
+    Int,
+    Float,
+    Long) V: ClassTag: Zero] =
     new CanCopyCSCMatrix[V]
 
   implicit def canCreateZerosLike[V: ClassTag: Zero]

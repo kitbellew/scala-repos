@@ -88,7 +88,8 @@ class EncoderResolutionSuite extends PlanTest {
     assert(e.getMessage.contains("Null value appeared in non-nullable field"))
   }
 
-  test("the real number of fields doesn't match encoder schema: tuple encoder") {
+  test(
+    "the real number of fields doesn't match encoder schema: tuple encoder") {
     val encoder = ExpressionEncoder[(String, Long)]
 
     {

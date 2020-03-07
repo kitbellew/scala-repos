@@ -683,7 +683,8 @@ object MapTest extends SpecLite {
       val f = (a: String, k: Int, b: String) =>
         (a + " " + k.toString + "-" + b, b + "X")
       fromList(List(5 -> "a", 3 -> "b"))
-        .mapAccumWithKey("Everything:")(f) must_=== ("Everything: 3-b 5-a", fromList(
+        .mapAccumWithKey("Everything:")(
+          f) must_=== ("Everything: 3-b 5-a", fromList(
         List(3 -> "bX", 5 -> "aX")))
     }
 
@@ -803,8 +804,8 @@ object MapTest extends SpecLite {
     "fromListWithKey" in {
       val f = (k: Int, a1: String, a2: String) => k.toString + a1 + a2
 
-      fromListWithKey(List(5 -> "a", 5 -> "b", 3 -> "b", 3 -> "a", 5 -> "a"))(f) must_=== (fromList(
-        List(3 -> "3ab", 5 -> "5a5ba")))
+      fromListWithKey(List(5 -> "a", 5 -> "b", 3 -> "b", 3 -> "a", 5 -> "a"))(
+        f) must_=== (fromList(List(3 -> "3ab", 5 -> "5a5ba")))
       fromListWithKey(List.empty[(Int, String)])(f) must_=== (empty[
         Int,
         String])

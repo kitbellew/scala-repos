@@ -256,9 +256,13 @@ class StateMapSuite extends SparkFunSuite {
 
     val numTypeMapOps = 2 // 0 = put a new value, 1 = remove value
     val numSets = 3
-    val numOpsPerSet = 3 // to test seq of ops like update -> remove -> update in same set
+    val numOpsPerSet =
+      3 // to test seq of ops like update -> remove -> update in same set
     val numTotalOps = numOpsPerSet * numSets
-    val numKeys = math.pow(numTypeMapOps, numTotalOps).toInt // to get all combinations of ops
+    val numKeys =
+      math
+        .pow(numTypeMapOps, numTotalOps)
+        .toInt // to get all combinations of ops
 
     val refMap = new mutable.HashMap[Int, (Int, Long)]()
     var prevSetRefMap: immutable.Map[Int, (Int, Long)] = null

@@ -839,14 +839,14 @@ private[stream] final class GraphInterpreter(
     for (i ← portStates.indices) {
       portStates(i) match {
         case InReady ⇒
-          builder.append(
-            s"""  ${nameIn(i)} -> ${nameOut(i)} [label=shouldPull; color=blue]""")
+          builder.append(s"""  ${nameIn(i)} -> ${nameOut(
+            i)} [label=shouldPull; color=blue]""")
         case OutReady ⇒
-          builder.append(
-            s"""  ${nameOut(i)} -> ${nameIn(i)} [label=shouldPush; color=red];""")
+          builder.append(s"""  ${nameOut(i)} -> ${nameIn(
+            i)} [label=shouldPush; color=red];""")
         case x if (x | InClosed | OutClosed) == (InClosed | OutClosed) ⇒
-          builder.append(
-            s"""  ${nameIn(i)} -> ${nameOut(i)} [style=dotted; label=closed dir=both];""")
+          builder.append(s"""  ${nameIn(i)} -> ${nameOut(
+            i)} [style=dotted; label=closed dir=both];""")
         case _ ⇒
       }
       builder.append("\n")

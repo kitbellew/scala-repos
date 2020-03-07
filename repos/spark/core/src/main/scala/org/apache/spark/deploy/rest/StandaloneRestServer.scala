@@ -167,7 +167,10 @@ private[rest] class StandaloneSubmitRequestServlet(
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
     val command = new Command(
       "org.apache.spark.deploy.worker.DriverWrapper",
-      Seq("{{WORKER_URL}}", "{{USER_JAR}}", mainClass) ++ appArgs, // args to the DriverWrapper
+      Seq(
+        "{{WORKER_URL}}",
+        "{{USER_JAR}}",
+        mainClass) ++ appArgs, // args to the DriverWrapper
       environmentVariables,
       extraClassPath,
       extraLibraryPath,

@@ -68,7 +68,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 = nums.first() // This will run "locally" in the current thread
+          val answer2 =
+            nums.first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -96,7 +97,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 = nums.first() // This will run "locally" in the current thread
+          val answer2 =
+            nums.first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -215,7 +217,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     assert(sc.getLocalProperty("Foo") === null)
   }
 
-  test("mutation in parent local property does not affect child (SPARK-10563)") {
+  test(
+    "mutation in parent local property does not affect child (SPARK-10563)") {
     sc = new SparkContext("local", "test")
     val originalTestValue: String = "original-value"
     var threadTestValue: String = null

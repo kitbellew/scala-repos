@@ -892,7 +892,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case JSDotMethodApply(receiver, method, args) =>
           allowSideEffects && test(receiver) && (args forall test)
         case JSBracketMethodApply(receiver, method, args) =>
-          allowSideEffects && test(receiver) && test(method) && (args forall test)
+          allowSideEffects && test(receiver) && test(
+            method) && (args forall test)
         case JSSuperBracketSelect(_, qualifier, item) =>
           allowSideEffects && test(qualifier) && test(item)
         case LoadJSModule(_) =>
@@ -940,7 +941,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   fTpe)
           }
           js.Block(for {
-            (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems
+            (
+              RecordType.Field(fName, fOrigName, fTpe, fMutable),
+              fRhs) <- fields zip elems
           } yield {
             doVarDef(
               makeRecordFieldIdent(ident, fName, fOrigName),
@@ -982,7 +985,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   fTpe)
           }
           js.Block(for {
-            (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems
+            (
+              RecordType.Field(fName, fOrigName, fTpe, fMutable),
+              fRhs) <- fields zip elems
           } yield {
             doAssign(
               VarRef(makeRecordFieldIdent(ident, fName, fOrigName))(fTpe),
@@ -1201,7 +1206,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     // add the break statement
                     newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                     // desugar alternatives into several cases falling through
-                    caze <- (newValues.init map (v => (v, js.Skip()))) :+ (newValues.last, newBody)
+                    caze <- (newValues.init map (v =>
+                      (v, js.Skip()))) :+ (newValues.last, newBody)
                   } yield {
                     caze
                   }

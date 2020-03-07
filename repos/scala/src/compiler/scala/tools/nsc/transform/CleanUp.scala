@@ -46,7 +46,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       try if (newStaticInits.isEmpty) templ
       else
         deriveTemplate(templ)(body =>
-          staticConstructor(body, localTyper, templ.pos)(newStaticInits.toList) :: body)
+          staticConstructor(body, localTyper, templ.pos)(
+            newStaticInits.toList) :: body)
       finally clearStatics()
     }
     private def mkTerm(prefix: String): TermName = unit.freshTermName(prefix)
@@ -141,7 +142,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               methodCache,
               ApplyDynamic(
                 gen.mkAttributedIdent(StructuralCallSite_dummy),
-                LIT(StructuralCallSite_bootstrap) :: LIT(dummyMethodType) :: Nil)
+                LIT(StructuralCallSite_bootstrap) :: LIT(
+                  dummyMethodType) :: Nil)
                 .setType(StructuralCallSite.tpe)
             ),
             ValDef(
@@ -153,7 +155,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                 def methodSymRHS =
                   ((REF(forReceiverSym) DOT Class_getMethod)(
                     LIT(method),
-                    (REF(methodCache) DOT StructuralCallSite_getParameterTypes)()))
+                    (REF(
+                      methodCache) DOT StructuralCallSite_getParameterTypes)()))
                 def cacheAdd =
                   ((REF(methodCache) DOT StructuralCallSite_add)(
                     REF(forReceiverSym),
@@ -303,7 +306,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             // exception catching machinery
             val invokeExc =
               currentOwner
-                .newValue(mkTerm(""), ad.pos) setInfo InvocationTargetExceptionClass.tpe
+                .newValue(
+                  mkTerm(""),
+                  ad.pos) setInfo InvocationTargetExceptionClass.tpe
             def catchVar =
               Bind(
                 invokeExc,
@@ -314,8 +319,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               Throw(Apply(Select(Ident(invokeExc), nme.getCause), Nil))
 
             // try { method.invoke } catch { case e: InvocationTargetExceptionClass => throw e.getCause() }
-            fixResult(
-              TRY(invocation) CATCH { CASE(catchVar) ==> catchBody } ENDTRY)
+            fixResult(TRY(invocation) CATCH {
+              CASE(catchVar) ==> catchBody
+            } ENDTRY)
           }
 
           /* A possible primitive method call, represented by methods in BoxesRunTime. */
@@ -324,7 +330,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           def genValueCallWithTest = {
             getPrimitiveReplacementForStructuralCall(methSym.name) match {
               case Some((operator, test)) =>
-                IF(test(qual1())) THEN genValueCall(operator) ELSE genDefaultCall
+                IF(test(qual1())) THEN genValueCall(
+                  operator) ELSE genDefaultCall
               case _ =>
                 genDefaultCall
             }
@@ -334,7 +341,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           def genArrayCall = fixResult(
             methSym.name match {
               case nme.length =>
-                REF(boxMethod(IntClass)) APPLY (REF(arrayLengthMethod) APPLY args)
+                REF(boxMethod(IntClass)) APPLY (REF(
+                  arrayLengthMethod) APPLY args)
               case nme.update =>
                 REF(arrayUpdateMethod) APPLY List(
                   args(0),
@@ -532,7 +540,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           fn @ Select(qual, _),
           (arg @ Literal(Constant(symname: String))) :: Nil)
           if treeInfo
-            .isQualifierSafeToElide(qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
+            .isQualifierSafeToElide(
+              qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
         super.transform(
           treeCopy.ApplyDynamic(
             tree,
@@ -556,8 +565,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           List(
             elem0,
             Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
-          if wrapArrayMeth.symbol == Predef_wrapArray(elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(
-            elemtpt.tpe) =>
+          if wrapArrayMeth.symbol == Predef_wrapArray(
+            elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(elemtpt.tpe) =>
         super.transform(
           treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
 

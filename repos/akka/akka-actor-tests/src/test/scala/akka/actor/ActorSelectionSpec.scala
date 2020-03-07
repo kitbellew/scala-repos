@@ -203,10 +203,14 @@ class ActorSelectionSpec
 
     "select actors by their string path representation" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
-        askNode(looker, SelectString(pathOf.path.toStringWithoutAddress)) should ===(
+        askNode(
+          looker,
+          SelectString(pathOf.path.toStringWithoutAddress)) should ===(
           Some(result))
         // with trailing /
-        askNode(looker, SelectString(pathOf.path.toStringWithoutAddress + "/")) should ===(
+        askNode(
+          looker,
+          SelectString(pathOf.path.toStringWithoutAddress + "/")) should ===(
           Some(result))
       }
       for {
@@ -217,11 +221,14 @@ class ActorSelectionSpec
 
     "select actors by their root-anchored relative path" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
-        askNode(looker, SelectString(pathOf.path.toStringWithoutAddress)) should ===(
+        askNode(
+          looker,
+          SelectString(pathOf.path.toStringWithoutAddress)) should ===(
           Some(result))
         askNode(
           looker,
-          SelectString(pathOf.path.elements.mkString("/", "/", "/"))) should ===(
+          SelectString(
+            pathOf.path.elements.mkString("/", "/", "/"))) should ===(
           Some(result))
       }
       for {

@@ -74,10 +74,12 @@ private[util] trait Props extends Logger {
     getInt(name) openOr defVal // props.get(name).map(toInt(_)) getOrElse defVal
   def getLong(name: String): Box[Long] = get(name).flatMap(asLong)
   def getLong(name: String, defVal: Long): Long =
-    getLong(name) openOr defVal // props.get(name).map(toLong(_)) getOrElse defVal
+    getLong(
+      name) openOr defVal // props.get(name).map(toLong(_)) getOrElse defVal
   def getBool(name: String): Box[Boolean] = get(name).map(toBoolean)
   def getBool(name: String, defVal: Boolean): Boolean =
-    getBool(name) openOr defVal // props.get(name).map(toBoolean(_)) getOrElse defVal
+    getBool(
+      name) openOr defVal // props.get(name).map(toBoolean(_)) getOrElse defVal
   def get(name: String, defVal: String): String = get(name) getOrElse defVal
 
   /**

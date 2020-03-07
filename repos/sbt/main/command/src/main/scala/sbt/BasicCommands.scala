@@ -280,7 +280,8 @@ object BasicCommands {
       case Right(from) =>
         val notFound = notReadable(from)
         if (notFound.isEmpty)
-          readLines(from) ::: s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
+          readLines(
+            from) ::: s // this means that all commands from all files are loaded, parsed, and inserted before any are executed
         else {
           s.log.error(
             "Command file(s) not readable: \n\t" + notFound.mkString("\n\t"))
@@ -305,7 +306,9 @@ object BasicCommands {
       val assign = token(OptSpace ~ '=' ~ OptSpace)
       val sfree = removeAliases(s)
       val to =
-        matched(sfree.combinedParser, partial = true).failOnException | any.+.string
+        matched(
+          sfree.combinedParser,
+          partial = true).failOnException | any.+.string
       val base = (OptSpace ~> (name ~ (assign ~> to.?).?).?)
       applyEffect(base)(t => runAlias(s, t))
     }

@@ -200,7 +200,9 @@ object SizeEstimator extends Logging {
     * (size of all non-static fields plus the java.lang.Object size), and any fields that are
     * pointers to objects.
     */
-  private class ClassInfo(val shellSize: Long, val pointerFields: List[Field]) {}
+  private class ClassInfo(
+      val shellSize: Long,
+      val pointerFields: List[Field]) {}
 
   private def estimate(
       obj: AnyRef,
@@ -237,7 +239,8 @@ object SizeEstimator extends Logging {
 
   // Estimate the size of arrays larger than ARRAY_SIZE_FOR_SAMPLING by sampling.
   private val ARRAY_SIZE_FOR_SAMPLING = 400
-  private val ARRAY_SAMPLE_SIZE = 100 // should be lower than ARRAY_SIZE_FOR_SAMPLING
+  private val ARRAY_SAMPLE_SIZE =
+    100 // should be lower than ARRAY_SIZE_FOR_SAMPLING
 
   private def visitArray(
       array: AnyRef,

@@ -228,7 +228,13 @@ final class JSONIngestProcessing(
             val ingestSize = toIngest.size
 
             storage
-              .store(apiKey, path, authorities, toIngest, jobId, streamRef) flatMap {
+              .store(
+                apiKey,
+                path,
+                authorities,
+                toIngest,
+                jobId,
+                streamRef) flatMap {
               _.fold(
                 storeFailure =>
                   sys.error(
@@ -332,7 +338,11 @@ final class JSONIngestProcessing(
           }
 
         case GlobalDurability(jobId) =>
-          ingestJSONChunk(errorHandling, storeMode, Some(jobId), dataStream) map {
+          ingestJSONChunk(
+            errorHandling,
+            storeMode,
+            Some(jobId),
+            dataStream) map {
             case IngestReport(ingested, errors) =>
               BatchResult(ingested + errors.size, ingested, Vector(errors: _*))
           }

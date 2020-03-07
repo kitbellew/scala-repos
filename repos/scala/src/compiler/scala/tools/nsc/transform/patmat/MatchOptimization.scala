@@ -69,7 +69,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // is there an earlier test that checks our condition and whose dependencies are implied by ours?
             dependencies find {
               case (priorTest, deps) =>
-                ((simplify(priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
+                ((simplify(
+                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
                   (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
                 ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
             } foreach {
@@ -291,7 +292,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           tms match {
             case (btm @ BodyTreeMaker(body, _)) :: Nil =>
               Some((EmptyTree, btm.substitution(body)))
-            case (gtm @ GuardTreeMaker(guard)) :: (btm @ BodyTreeMaker(body, _)) :: Nil =>
+            case (gtm @ GuardTreeMaker(guard)) :: (btm @ BodyTreeMaker(
+                  body,
+                  _)) :: Nil =>
               Some((gtm.substitution(guard), btm.substitution(body)))
             case _ => None
           }
@@ -510,9 +513,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                       body) =>
                   Some(CaseDef(pattern, guard, body))
                 // alternatives
-                case AlternativesTreeMaker(_, altss, pos) :: GuardAndBodyTreeMakers(
-                      guard,
-                      body) if alternativesSupported =>
+                case AlternativesTreeMaker(
+                      _,
+                      altss,
+                      pos) :: GuardAndBodyTreeMakers(guard, body)
+                    if alternativesSupported =>
                   val switchableAlts = altss map {
                     case SwitchableTreeMaker(pattern) :: Nil =>
                       Some(pattern)
@@ -674,7 +679,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
     // for the catch-cases in a try/catch
     private object typeSwitchMaker extends SwitchMaker {
       val unchecked = false
-      val alternativesSupported = false // TODO: needs either back-end support of flattening of alternatives during typers
+      val alternativesSupported =
+        false // TODO: needs either back-end support of flattening of alternatives during typers
       val canJump = false
 
       // TODO: there are more treemaker-sequences that can be handled by type tests
@@ -714,9 +720,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           body: Tree = defaultBody): CaseDef = {
         import CODE._;
         atPos(body.pos) {
-          (CASE(Bind(
-            scrutSym,
-            Typed(Ident(nme.WILDCARD), TypeTree(ThrowableTpe)))) IF guard) ==> body
+          (CASE(
+            Bind(
+              scrutSym,
+              Typed(
+                Ident(nme.WILDCARD),
+                TypeTree(ThrowableTpe)))) IF guard) ==> body
         }
       }
     }

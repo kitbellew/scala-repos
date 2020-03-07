@@ -71,7 +71,9 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         "gzip;q=0.6, identity;q=0.5" !! gzipped |
         "*;q=0.7, gzip;q=0.6, identity;q=0.4" !! gzipped |
         "" !! plain |> { (codings, expectedEncoding) =>
-        header(CONTENT_ENCODING, requestAccepting(codings)) must be equalTo (expectedEncoding)
+        header(
+          CONTENT_ENCODING,
+          requestAccepting(codings)) must be equalTo (expectedEncoding)
       }
     }
 
@@ -85,7 +87,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
 
     "not gzip HEAD requests" in withApplication(Ok) { implicit mat =>
       checkNotGzipped(
-        route(FakeRequest("HEAD", "/").withHeaders(ACCEPT_ENCODING -> "gzip")).get,
+        route(
+          FakeRequest("HEAD", "/").withHeaders(ACCEPT_ENCODING -> "gzip")).get,
         "")
     }
 

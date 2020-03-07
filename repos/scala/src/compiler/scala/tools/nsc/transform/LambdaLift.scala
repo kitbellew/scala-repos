@@ -253,8 +253,8 @@ abstract class LambdaLift extends InfoTransform {
           //         package - subclass might have the same name), avoids a VerifyError in the case
           //         that a sub-class happens to lifts out a method with the *same* name.
           if (originalName.isTermName && calledFromInner(sym))
-            newTermNameCached(
-              nonAnon(sym.enclClass.fullName('$')) + nme.EXPAND_SEPARATOR_STRING + name)
+            newTermNameCached(nonAnon(
+              sym.enclClass.fullName('$')) + nme.EXPAND_SEPARATOR_STRING + name)
           else
             name
         }
@@ -482,7 +482,9 @@ abstract class LambdaLift extends InfoTransform {
             treeCopy.ValDef(tree, mods, name, tpt1, factoryCall)
           } else tree
         case Return(Block(stats, value)) =>
-          Block(stats, treeCopy.Return(tree, value)) setType tree.tpe setPos tree.pos
+          Block(
+            stats,
+            treeCopy.Return(tree, value)) setType tree.tpe setPos tree.pos
         case Return(expr) =>
           assert(sym == currentMethod, sym)
           tree

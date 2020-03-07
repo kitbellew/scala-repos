@@ -39,7 +39,9 @@ case class JarManifest(
         }>
         {
           for (InjectorDescriptor(version, iface, impl, srcs) <- injtors) {
-            <psi-injector version={version.toString} ifnterface={iface} implementation={
+            <psi-injector version={version.toString} ifnterface={
+              iface
+            } implementation={
               impl
             }>
           {

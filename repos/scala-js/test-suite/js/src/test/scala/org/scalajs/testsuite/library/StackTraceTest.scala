@@ -62,7 +62,10 @@ class StackTraceTest {
         new Foo().h(78)
       }
 
-      verifyClassMethodNames("Foo" -> "f", "FooTrait" -> "h", "Baz" -> "<init>") {
+      verifyClassMethodNames(
+        "Foo" -> "f",
+        "FooTrait" -> "h",
+        "Baz" -> "<init>") {
         new Baz()
       }
 

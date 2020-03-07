@@ -586,7 +586,8 @@ trait Infer extends Checkable {
       foreach3(tparams, tvars, targs) { (tparam, tvar, targ) =>
         val retract = (
           targ.typeSymbol == NothingClass // only retract Nothings
-            && (restpe.isWildcard || !varianceInType(restpe)(tparam).isPositive) // don't retract covariant occurrences
+            && (restpe.isWildcard || !varianceInType(restpe)(
+              tparam).isPositive) // don't retract covariant occurrences
         )
 
         buf += (
@@ -800,7 +801,8 @@ trait Infer extends Checkable {
           if (pos == -1) {
             if (positionalAllowed) { // treat assignment as positional argument
               argPos(index) = index
-              res = UnitTpe // TODO: this is a bit optimistic, the name may not refer to a mutable variable...
+              res =
+                UnitTpe // TODO: this is a bit optimistic, the name may not refer to a mutable variable...
             } else // unknown parameter name
               namesOK = false
           } else if (argPos.contains(pos)) { // parameter specified twice
@@ -911,7 +913,11 @@ trait Infer extends Checkable {
           methTypeArgs(undetparams, formals, restpe, args, pt)
         val restpeInst = restpe.instantiateTypeParams(okparams, okargs)
         // #2665: must use weak conformance, not regular one (follow the monomorphic case above)
-        exprTypeArgs(leftUndet, restpeInst, pt, useWeaklyCompatible = true) match {
+        exprTypeArgs(
+          leftUndet,
+          restpeInst,
+          pt,
+          useWeaklyCompatible = true) match {
           case null => false
           case _    => isWithinBounds(NoPrefix, NoSymbol, okparams, okargs)
         }
@@ -1517,7 +1523,8 @@ trait Infer extends Checkable {
 
           // See ticket #2486 for an example of code which would incorrectly
           // fail if we didn't allow for pattpMatchesPt.
-          if (isPopulated(tp, pt1) && isInstantiatable(tvars ++ ptvars) || pattpMatchesPt)
+          if (isPopulated(tp, pt1) && isInstantiatable(
+                tvars ++ ptvars) || pattpMatchesPt)
             ptvars foreach instantiateTypeVar
           else {
             PatternTypeIncompatibleWithPtError1(tree0, pattp, pt)
@@ -1746,7 +1753,11 @@ trait Infer extends Checkable {
         // separate method to help the inliner
         private def isAltApplicable(pt: Type)(alt: Symbol) =
           context inSilentMode {
-            isApplicable(undetparams, followType(alt), argtpes, pt) && !context.reporter.hasErrors
+            isApplicable(
+              undetparams,
+              followType(alt),
+              argtpes,
+              pt) && !context.reporter.hasErrors
           }
         private def rankAlternatives(sym1: Symbol, sym2: Symbol) =
           isStrictlyMoreSpecific(followType(sym1), followType(sym2), sym1, sym2)

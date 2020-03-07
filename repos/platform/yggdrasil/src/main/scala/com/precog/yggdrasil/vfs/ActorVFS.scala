@@ -376,7 +376,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       for {
         // it's necessary to group by path then traverse since each path will respond to ingest independently.
         // -- a bit of a leak of implementation detail, but that's the actor model for you.
-        allResults <- (data groupBy { case (offset, msg) => msg.path }).toStream traverse {
+        allResults <- (data groupBy {
+          case (offset, msg) => msg.path
+        }).toStream traverse {
           case (path, subset) =>
             (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
         }
@@ -788,7 +790,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 } yield {
                   logger.trace("Sent insert message for " + msg + " to nihdb")
                   // FIXME: We aren't actually guaranteed success here because NIHDB might do something screwy.
-                  maybeCompleteJob(msg, terminal, UpdateSuccess(msg.path)) pipeTo requestor
+                  maybeCompleteJob(
+                    msg,
+                    terminal,
+                    UpdateSuccess(msg.path)) pipeTo requestor
                   PrecogUnit
                 }
             )
@@ -953,7 +958,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       case IngestBundle(messages, permissions) =>
         logger.debug(
           "Received ingest request for %d messages.".format(messages.size))
-        processEventMessages(messages.toStream, permissions, sender).unsafePerformIO
+        processEventMessages(
+          messages.toStream,
+          permissions,
+          sender).unsafePerformIO
 
       case msg @ Read(_, version) =>
         logger.debug("Received Read request " + msg)

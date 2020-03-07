@@ -131,8 +131,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       implicit def pick3Letters = AbcdStringGen.pickN(3, List("a", "b", "c"))
 
       forAll { (s: String) =>
-        (!(new scala.collection.immutable.StringOps(s)).isEmpty) ==> permuteAllParsers(
-          s)
+        (!(new scala.collection.immutable.StringOps(
+          s)).isEmpty) ==> permuteAllParsers(s)
       }
     }
     "provide a repNN parser succeeding if an input can be parsed n times with a parser" in {
@@ -140,8 +140,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       implicit def pick3Letters = AbcdStringGen.pickN(3, List("a", "a", "a"))
 
       forAll { (s: String) =>
-        (!(new scala.collection.immutable.StringOps(s)).isEmpty) ==> repNNParser(
-          s)
+        (!(new scala.collection.immutable.StringOps(
+          s)).isEmpty) ==> repNNParser(s)
       }
     }
   }

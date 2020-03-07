@@ -130,7 +130,8 @@ trait Slice { source =>
             ref,
             pairs
               .map(_._2)
-              .reduceLeft((c1, c2) => Column.unionRightSemigroup.append(c1, c2)))
+              .reduceLeft((c1, c2) =>
+                Column.unionRightSemigroup.append(c1, c2)))
       } toMap
     }
   }
@@ -404,10 +405,10 @@ trait Slice { source =>
 
       (jType, cType, cPath) match {
         case (JUnionT(aJType, bJType), _, _) =>
-          flattenDeleteTree(aJType, cType, cPath) andThen (_ flatMap flattenDeleteTree(
-            bJType,
+          flattenDeleteTree(
+            aJType,
             cType,
-            cPath))
+            cPath) andThen (_ flatMap flattenDeleteTree(bJType, cType, cPath))
         case (JTextT, CString, CPath.Identity) =>
           delete
         case (JBooleanT, CBoolean, CPath.Identity) =>
@@ -417,11 +418,17 @@ trait Slice { source =>
         case (JObjectUnfixedT, _, CPath(CPathField(_), _*)) =>
           delete
         case (JObjectFixedT(fields), _, CPath(CPathField(name), cPath @ _*)) =>
-          fields get name map (flattenDeleteTree(_, cType, CPath(cPath: _*))) getOrElse (retain)
+          fields get name map (flattenDeleteTree(
+            _,
+            cType,
+            CPath(cPath: _*))) getOrElse (retain)
         case (JArrayUnfixedT, _, CPath(CPathArray | CPathIndex(_), _*)) =>
           delete
         case (JArrayFixedT(elems), cType, CPath(CPathIndex(i), cPath @ _*)) =>
-          elems get i map (flattenDeleteTree(_, cType, CPath(cPath: _*))) getOrElse (retain)
+          elems get i map (flattenDeleteTree(
+            _,
+            cType,
+            CPath(cPath: _*))) getOrElse (retain)
         case (
             JArrayFixedT(elems),
             CArrayType(cElemType),

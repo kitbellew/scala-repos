@@ -33,7 +33,9 @@ import scalafx.delegate._
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/geometry/VerticalDirection.html javafx.geometry.VerticalDirection]] */
 object VerticalDirection
-    extends SFXEnumDelegateCompanion[jfxg.VerticalDirection, VerticalDirection] {
+    extends SFXEnumDelegateCompanion[
+      jfxg.VerticalDirection,
+      VerticalDirection] {
 
   /** The down direction. */
   val Down = new VerticalDirection(jfxg.VerticalDirection.DOWN)

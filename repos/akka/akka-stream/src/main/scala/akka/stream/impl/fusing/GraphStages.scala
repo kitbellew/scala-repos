@@ -257,7 +257,9 @@ object GraphStages {
     BidiBreaker.asInstanceOf[Graph[BidiShape[T1, T1, T2, T2], Future[Breaker]]]
 
   private object TerminationWatcher
-      extends GraphStageWithMaterializedValue[FlowShape[Any, Any], Future[Done]] {
+      extends GraphStageWithMaterializedValue[
+        FlowShape[Any, Any],
+        Future[Done]] {
     val in = Inlet[Any]("terminationWatcher.in")
     val out = Outlet[Any]("terminationWatcher.out")
     override val shape = FlowShape(in, out)

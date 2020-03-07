@@ -103,7 +103,8 @@ trait Mappable16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 }
 
 trait Mappable17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
-    extends Mappable[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
+    extends Mappable[
+      Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
   def converter[
       Z >: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
     TupleConverter.asSuperConverter(

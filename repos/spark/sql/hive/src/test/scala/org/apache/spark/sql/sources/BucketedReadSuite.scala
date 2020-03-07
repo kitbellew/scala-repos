@@ -339,7 +339,8 @@ class BucketedReadSuite
       shuffleRight = false)
   }
 
-  test("only shuffle one side when join bucketed table and non-bucketed table") {
+  test(
+    "only shuffle one side when join bucketed table and non-bucketed table") {
     val bucketSpec = Some(BucketSpec(8, Seq("i", "j"), Nil))
     testBucketing(
       bucketSpec,

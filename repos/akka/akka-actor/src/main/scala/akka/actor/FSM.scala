@@ -467,7 +467,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (if (repeat) "repeating " else "") + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " + (if (repeat) "repeating "
+                      else "") + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }

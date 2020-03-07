@@ -30,8 +30,9 @@ object ClassHelpersSpec extends Specification {
 
   "The findType function" should {
     "return a Full can with the found class when given the type, the name, and a list of packages to conform to" in {
-      findType[java.util.List[Object]]("ArrayList", List("java.util")) must_== Full(
-        classOf[java.util.ArrayList[Object]])
+      findType[java.util.List[Object]](
+        "ArrayList",
+        List("java.util")) must_== Full(classOf[java.util.ArrayList[Object]])
     }
     "return an Empty can if the class cannot be coerced to the expected type" in {
       findType[String]("ClassHelpers", List("net.liftweb.util")) must_== Empty
@@ -47,20 +48,30 @@ object ClassHelpersSpec extends Specification {
         classOf[ClassHelpers])
     }
     "return a Full can with the found class when given the name and a list of packages" in {
-      findClass("ClassHelpers", List("net.liftweb.util", "java.util")) must_== Full(
+      findClass(
+        "ClassHelpers",
+        List("net.liftweb.util", "java.util")) must_== Full(
         classOf[ClassHelpers])
-      findClass("ArrayList", List("net.liftweb.util", "java.util")) must_== Full(
+      findClass(
+        "ArrayList",
+        List("net.liftweb.util", "java.util")) must_== Full(
         classOf[java.util.ArrayList[_]])
     }
     "return a Full can with the found class when given the name, a list of packages and a target type to conform to" in {
-      findClass("ArrayList", List("java.util"), classOf[java.util.List[Object]]) must_== Full(
+      findClass(
+        "ArrayList",
+        List("java.util"),
+        classOf[java.util.List[Object]]) must_== Full(
         classOf[java.util.ArrayList[Object]])
     }
     "return an Empty can if no class is found given a name and package" in {
       findClass("ClassHelpers", List("net.liftweb.nothere")) must_== Empty
     }
     "return an Empty can if the class cannot be coerced to the expected type" in {
-      findClass("ClassHelpers", List("net.liftweb.util"), classOf[String]) must_== Empty
+      findClass(
+        "ClassHelpers",
+        List("net.liftweb.util"),
+        classOf[String]) must_== Empty
     }
   }
 
@@ -69,7 +80,9 @@ object ClassHelpersSpec extends Specification {
       findClass(
         List(
           ("wrong name", List("net.liftweb.util", "other.package")),
-          ("ClassHelpers", List("net.liftweb.util", "other.package")))) must_== Full(
+          (
+            "ClassHelpers",
+            List("net.liftweb.util", "other.package")))) must_== Full(
         classOf[ClassHelpers])
     }
     "use a list of modifiers functions to try to modify the original name in order to find the class" in {
@@ -167,14 +180,19 @@ object ClassHelpersSpec extends Specification {
       invokeMethod(classOf[String], "", "length") must_== Full(0)
     }
     "return a Full can with the result if the method is an existing static method on the class" in {
-      invokeMethod(classOf[java.util.Calendar], null, "getInstance").isEmpty must_== false
+      invokeMethod(
+        classOf[java.util.Calendar],
+        null,
+        "getInstance").isEmpty must_== false
     }
     "throw an exception if the method throws an exception" in {
       class SpecificException extends Exception
       class TestSnippet { def throwException = throw new SpecificException }
       val testSnippet = new TestSnippet
-      invokeMethod(testSnippet.getClass, testSnippet, "throwException") must throwA[
-        SpecificException]
+      invokeMethod(
+        testSnippet.getClass,
+        testSnippet,
+        "throwException") must throwA[SpecificException]
     }
   }
 
@@ -213,8 +231,11 @@ object ClassHelpersSpec extends Specification {
         .apply() must_== Full(0)
     }
     "The invoker function will throw the cause exception if the method can't be called" in {
-      (() => createInvoker("get", "").openOrThrowException("Test").apply)() must throwA[
-        Exception]
+      (
+          () =>
+            createInvoker("get", "")
+              .openOrThrowException("Test")
+              .apply)() must throwA[Exception]
     }
   }
 

@@ -75,7 +75,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       // is too small then the RunQueueTester probably isn't doing anything. We use
       // dynamic run sizing because the actual size that produces errors will vary
       // depending on the environment in which this test is run.
-      var runSize = 8 // This usually reaches 8192 on my dev machine with 10 simultaneous queues
+      var runSize =
+        8 // This usually reaches 8192 on my dev machine with 10 simultaneous queues
       var errorPercentage = 0
       while (errorPercentage < 90 && runSize < 1000000) {
         runSize = runSize << 1
@@ -85,7 +86,9 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       //println(s"Got $errorPercentage% ordering errors on run size of $runSize")
 
       // Now show that this run length works fine with the RunQueueTester
-      percentageOfRunsWithOrderingErrors(runSize, new RunQueueTester()) must_== 0
+      percentageOfRunsWithOrderingErrors(
+        runSize,
+        new RunQueueTester()) must_== 0
     }
 
     "use the ExecutionContext exactly once per scheduled item" in {

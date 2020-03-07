@@ -49,7 +49,10 @@ class Parsed private (
   def bufferHead = args.head
   def headLength = bufferHead.length + 1
   def bufferTail =
-    new Parsed(buffer drop headLength, cursor - headLength, delimited) withVerbosity verbosity
+    new Parsed(
+      buffer drop headLength,
+      cursor - headLength,
+      delimited) withVerbosity verbosity
 
   def prev = new Parsed(buffer, cursor - 1, delimited) withVerbosity verbosity
   def currentChar = buffer(cursor)

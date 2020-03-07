@@ -325,7 +325,8 @@ object MethodResolveProcessor {
                 isUnderscore =>
             ConformanceExtResult(problems)
           case fun: ScFun
-              if fun.paramClauses == Seq() || fun.paramClauses == Seq(Seq()) || isUnderscore =>
+              if fun.paramClauses == Seq() || fun.paramClauses == Seq(
+                Seq()) || isUnderscore =>
             addExpectedTypeProblems()
             ConformanceExtResult(problems)
           case method: PsiMethod
@@ -543,7 +544,10 @@ object MethodResolveProcessor {
             typez.recursiveUpdate {
               case tpt: ScTypeParameterType =>
                 typeParameters.find(tp =>
-                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (tpt.name, tpt.getId)) match {
+                  (
+                    tp.name,
+                    ScalaPsiUtil.getPsiElementId(
+                      tp.ptp)) == (tpt.name, tpt.getId)) match {
                   case None => (true, tpt)
                   case _ =>
                     hasRecursiveTypeParameters = true
@@ -553,7 +557,12 @@ object MethodResolveProcessor {
             }
             hasRecursiveTypeParameters
           }
-          for (TypeParameter(name, typeParams, lowerType, upperType, tParam) <- typeParameters) {
+          for (TypeParameter(
+                 name,
+                 typeParams,
+                 lowerType,
+                 upperType,
+                 tParam) <- typeParameters) {
             if (lowerType() != Nothing) {
               val substedLower = s.subst(unSubst.subst(lowerType()))
               if (!hasRecursiveTypeParameters(substedLower)) {

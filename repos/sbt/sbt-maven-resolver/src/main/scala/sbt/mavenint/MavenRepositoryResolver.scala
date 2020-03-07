@@ -128,7 +128,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       mrid: ModuleRevisionId,
       packaging: String,
       extension: String): String =
-    s"${mrid.getOrganisation}:${aetherArtifactIdFromMrid(mrid)}:$extension:$packaging:${mrid.getRevision}"
+    s"${mrid.getOrganisation}:${aetherArtifactIdFromMrid(
+      mrid)}:$extension:$packaging:${mrid.getRevision}"
 
   // Handles appending licenses to the module descriptor fromthe pom.
   private def addLicenseInfo(
@@ -291,8 +292,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   def getArtifactProperties(
       dd: ModuleRevisionId): java.util.Map[String, String] = {
     val m = new java.util.HashMap[String, String]
-    Option(dd.getExtraAttribute(PomExtraDependencyAttributes.ScalaVersionKey)) foreach {
-      sv => m.put(SbtPomExtraProperties.POM_SCALA_VERSION, sv)
+    Option(
+      dd.getExtraAttribute(
+        PomExtraDependencyAttributes.ScalaVersionKey)) foreach { sv =>
+      m.put(SbtPomExtraProperties.POM_SCALA_VERSION, sv)
     }
     getSbtVersion(dd) foreach { sv =>
       m.put(SbtPomExtraProperties.POM_SBT_VERSION, sv)
@@ -424,7 +427,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         ModuleId
           .newInstance(d.getArtifact.getGroupId, d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
-        new OverrideDependencyDescriptorMediator(null, d.getArtifact.getVersion) {
+        new OverrideDependencyDescriptorMediator(
+          null,
+          d.getArtifact.getVersion) {
           override def mediate(
               dd: DependencyDescriptor): DependencyDescriptor = {
             super.mediate(dd)
@@ -642,7 +647,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case _                   =>
         // Look for extra attributes
         art
-          .getExtraAttribute(MavenRepositoryResolver.CLASSIFIER_ATTRIBUTE) match {
+          .getExtraAttribute(
+            MavenRepositoryResolver.CLASSIFIER_ATTRIBUTE) match {
           case null => None
           case c    => Some(c)
         }

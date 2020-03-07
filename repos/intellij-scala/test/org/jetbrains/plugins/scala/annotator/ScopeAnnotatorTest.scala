@@ -235,11 +235,15 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     assertClashes("class C(p: Any) { val p = null }", "p")
     assertMatches(
       messages("class C(a: Any, b: Any) { val a = null; val b = null }")) {
-      case Error("b", _) :: Error("a", _) :: Error("a", _) :: Error("b", _) :: Nil =>
+      case Error("b", _) :: Error("a", _) :: Error("a", _) :: Error(
+            "b",
+            _) :: Nil =>
     }
     assertMatches(
       messages("class C(a: Any)(b: Any) { val b = null; val a = null }")) {
-      case Error("a", _) :: Error("b", _) :: Error("a", _) :: Error("b", _) :: Nil =>
+      case Error("a", _) :: Error("b", _) :: Error("a", _) :: Error(
+            "b",
+            _) :: Nil =>
     }
     assertClashes("class C(val p: Any) { val p = null }", "p")
     assertClashes("class C(var p: Any) { val p = null }", "p")

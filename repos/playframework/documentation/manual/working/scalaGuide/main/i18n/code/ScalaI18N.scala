@@ -31,7 +31,8 @@ package scalaguide.i18n.scalai18n {
 
         "escape parameter substitution" in {
 //#parameter-escaping
-          Messages("example.formatting") == "When using MessageFormat, '{0}' is replaced with the first parameter."
+          Messages(
+            "example.formatting") == "When using MessageFormat, '{0}' is replaced with the first parameter."
 //#parameter-escaping
         }
       }

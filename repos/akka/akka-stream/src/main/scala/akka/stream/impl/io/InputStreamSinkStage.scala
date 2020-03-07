@@ -35,7 +35,9 @@ private[stream] object InputStreamSinkStage {
   * INTERNAL API
   */
 final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
-    extends GraphStageWithMaterializedValue[SinkShape[ByteString], InputStream] {
+    extends GraphStageWithMaterializedValue[
+      SinkShape[ByteString],
+      InputStream] {
 
   val in = Inlet[ByteString]("InputStreamSink.in")
   override def initialAttributes: Attributes = DefaultAttributes.inputStreamSink

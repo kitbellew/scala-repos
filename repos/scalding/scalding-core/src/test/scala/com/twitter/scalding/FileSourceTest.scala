@@ -263,19 +263,23 @@ class FileSourceTest extends WordSpec with Matchers {
     }
 
     "remove /* from a path ending in /*" in {
-      TestFixedPathSource("test_data/2013/06/*").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource(
+        "test_data/2013/06/*").hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name" in {
-      TestFixedPathSource("test_data/2013/06").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource(
+        "test_data/2013/06").hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name/" in {
-      TestFixedPathSource("test_data/2013/06/").hdfsWritePath shouldBe "test_data/2013/06/"
+      TestFixedPathSource(
+        "test_data/2013/06/").hdfsWritePath shouldBe "test_data/2013/06/"
     }
 
     "leave path as-is when it ends in * without a preceeding /" in {
-      TestFixedPathSource("test_data/2013/06*").hdfsWritePath shouldBe "test_data/2013/06*"
+      TestFixedPathSource(
+        "test_data/2013/06*").hdfsWritePath shouldBe "test_data/2013/06*"
     }
   }
 

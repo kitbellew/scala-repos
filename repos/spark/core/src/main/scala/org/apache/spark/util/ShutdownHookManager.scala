@@ -188,7 +188,9 @@ private[util] class SparkShutdownHookManager {
   def runAll(): Unit = {
     shuttingDown = true
     var nextHook: SparkShutdownHook = null
-    while ({ nextHook = hooks.synchronized { hooks.poll() }; nextHook != null }) {
+    while ({
+      nextHook = hooks.synchronized { hooks.poll() }; nextHook != null
+    }) {
       Try(Utils.logUncaughtExceptions(nextHook.run()))
     }
   }

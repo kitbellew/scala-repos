@@ -54,14 +54,19 @@ object PluginManagement {
       emptyContext)
 
   def extractOverrides(classpath: Classpath): Set[ModuleID] =
-    classpath flatMap { _.metadata get Keys.moduleID.key map keepOverrideInfo } toSet;
+    classpath flatMap {
+      _.metadata get Keys.moduleID.key map keepOverrideInfo
+    } toSet;
 
   def keepOverrideInfo(m: ModuleID): ModuleID =
     ModuleID(m.organization, m.name, m.revision, crossVersion = m.crossVersion)
 
   final class PluginClassLoader(p: ClassLoader)
       extends URLClassLoader(Array(), p) {
-    private[this] val urlSet = new collection.mutable.HashSet[URI] // remember: don't use hashCode/equals on URL
+    private[this] val urlSet =
+      new collection.mutable.HashSet[
+        URI
+      ] // remember: don't use hashCode/equals on URL
     def add(urls: Seq[URL]): Unit = synchronized {
       for (url <- urls)
         if (urlSet.add(url.toURI))

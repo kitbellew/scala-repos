@@ -79,7 +79,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
     verify(serverSet).join(localAddress, EmptyEndpointMap.asJava, Status.ALIVE)
   }
 
-  test("ZookeeperServerSetCluster registers the server with multiple endpoints") {
+  test(
+    "ZookeeperServerSetCluster registers the server with multiple endpoints") {
     val serverSet = mock[ServerSet]
     when(
       serverSet.join(anyObject, anyObject, anyObject[Status])
@@ -114,7 +115,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
       }
     }
 
-    test("ZookeeperServerSetCluster is able to block till server set is ready") {
+    test(
+      "ZookeeperServerSetCluster is able to block till server set is ready") {
       forClient(None) { (cluster, registerHost) =>
         assert(!cluster.ready.isDefined)
 

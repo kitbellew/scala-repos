@@ -638,10 +638,12 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
             val isIndyLambda = (
               Type.getType(implMethod.getDesc) == expectedImplMethodType // (1)
-                && (isStatic || implMethod.getOwner == indyParamTypes(0).getInternalName) // (2)
+                && (isStatic || implMethod.getOwner == indyParamTypes(
+                  0).getInternalName) // (2)
                 && samMethodType.getArgumentTypes.corresponds(
                   instantiatedMethodArgTypes)((samArgType, instArgType) =>
-                  samArgType == instArgType || isReference(samArgType) && isReference(
+                  samArgType == instArgType || isReference(
+                    samArgType) && isReference(
                     instArgType
                   )) // (3)
             )

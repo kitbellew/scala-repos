@@ -106,7 +106,11 @@ trait TypersTracking {
         if (pt.isWildcard || context.inTypeConstructorAllowed) ""
         else s": pt=$pt"
       def all_s =
-        List(tree_s, pt_s, mode, fullSiteString(context)) filterNot (_ == "") mkString " "
+        List(
+          tree_s,
+          pt_s,
+          mode,
+          fullSiteString(context)) filterNot (_ == "") mkString " "
 
       atLowerIndent(show(indented("""|-- """ + all_s)))
     }

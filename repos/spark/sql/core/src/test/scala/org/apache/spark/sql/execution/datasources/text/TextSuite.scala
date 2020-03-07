@@ -46,7 +46,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
     verifyFrame(sqlContext.read.text(testFile).toDF())
   }
 
-  test("SPARK-12562 verify write.text() can handle column name beyond `value`") {
+  test(
+    "SPARK-12562 verify write.text() can handle column name beyond `value`") {
     val df =
       sqlContext.read.text(testFile).withColumnRenamed("value", "adwrasdf")
 

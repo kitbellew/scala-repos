@@ -25,8 +25,11 @@ trait BitVectorOps {
 
   @expand
   @expand.valify
-  implicit def bv_bv_UpdateOp[
-      @expand.args(OpAnd, OpOr, OpXor, OpSet) Op <: OpType](implicit
+  implicit def bv_bv_UpdateOp[@expand.args(
+    OpAnd,
+    OpOr,
+    OpXor,
+    OpSet) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ and _ }, {
           _ or _
@@ -123,7 +126,10 @@ trait BitVectorOps {
   }
 
   implicit val canDot_BV_BV: OpMulInner.Impl2[BitVector, BitVector, Boolean] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[BitVector, BitVector, Boolean] {
+    new breeze.linalg.operators.OpMulInner.Impl2[
+      BitVector,
+      BitVector,
+      Boolean] {
       def apply(a: BitVector, b: BitVector): Boolean = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
         a.data intersects b.data
@@ -134,7 +140,10 @@ trait BitVectorOps {
   @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](
       implicit @expand.sequence[T](0.0, 0.0f, 0, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[
+        BitVector,
+        DenseVector[T],
+        T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, DenseVector[T], T] {
       def apply(a: BitVector, b: DenseVector[T]) = {
         val ad = a.data
@@ -163,7 +172,10 @@ trait BitVectorOps {
         BitVector,
         SparseVector[T],
         T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[BitVector, SparseVector[T], T] {
+    new breeze.linalg.operators.OpMulInner.Impl2[
+      BitVector,
+      SparseVector[T],
+      T] {
       def apply(a: BitVector, b: SparseVector[T]): T = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
         if (b.activeSize == 0) return zero

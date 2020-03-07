@@ -106,8 +106,9 @@ object ThreadPoolsSpec extends PlaySpecification {
       val myExecutionContext: ExecutionContext =
         akkaSystem.dispatchers.lookup("my-context")
       //#my-context-usage
-      await(Future(Thread.currentThread().getName)(myExecutionContext)) must startWith(
-        "application-my-context")
+      await(
+        Future(Thread.currentThread().getName)(
+          myExecutionContext)) must startWith("application-my-context")
 
       //#my-context-explicit
       Future {

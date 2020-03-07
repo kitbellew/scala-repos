@@ -793,7 +793,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def flatMap[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
-    Series(toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
+    Series(
+      toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
   }
 
   /**
@@ -1332,13 +1333,19 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     implicit def ordV = stkr.ord
     implicit def clmV = stkr.tag
 
-    val (lft, rgt) = splt(rowIx) // lft = row index w/o pivot level; rgt = pivot level
+    val (lft, rgt) =
+      splt(rowIx) // lft = row index w/o pivot level; rgt = pivot level
 
     val rix = lft.uniques // Final row index
     val uix = rgt.uniques
-    val cix = stkr(colIx, uix) // Final col index (colIx stacked w/unique pivot labels)
+    val cix =
+      stkr(colIx, uix) // Final col index (colIx stacked w/unique pivot labels)
 
-    val grps = IndexGrouper(rgt, sorted = false).groups // Group by pivot label. Each unique label will get its
+    val grps =
+      IndexGrouper(
+        rgt,
+        sorted =
+          false).groups // Group by pivot label. Each unique label will get its
     //   own column in the final frame.
     if (values.length > 0) {
       val len = uix.length
@@ -1352,8 +1359,14 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
 
         for (currVec <- values) { // For each column vec of original frame
-          val vals = currVec.take(taker) //   take values corresponding to current pivot label
-          val v = ixer.rTake.map(vals.take(_)).getOrElse(vals) //   map values to be in correspondence to rix
+          val vals =
+            currVec.take(
+              taker
+            ) //   take values corresponding to current pivot label
+          val v =
+            ixer.rTake
+              .map(vals.take(_))
+              .getOrElse(vals) //   map values to be in correspondence to rix
           result(loc) = v //   and save vec in array.
 
           loc += len // Increment offset into result array
@@ -1607,7 +1620,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         if (lst.length > 0) lst.max else 0
       }
 
-      var prevColMask = clens.map(x => (x._1, false)) // recalls whether we printed a column's label at level L-1
+      var prevColMask =
+        clens.map(x =>
+          (
+            x._1,
+            false
+          )) // recalls whether we printed a column's label at level L-1
       var prevColLabel = "" // recalls previous column's label at level L
 
       // build columns header

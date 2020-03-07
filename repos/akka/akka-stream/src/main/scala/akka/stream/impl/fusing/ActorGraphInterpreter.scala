@@ -360,7 +360,8 @@ private[stream] object ActorGraphInterpreter {
       } else {
         downstreamDemand += elements
         if (downstreamDemand < 0)
-          downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+          downstreamDemand =
+            Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
       }
     }

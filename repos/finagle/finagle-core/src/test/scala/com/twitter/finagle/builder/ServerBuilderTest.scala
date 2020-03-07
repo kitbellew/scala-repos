@@ -34,7 +34,9 @@ class ServerBuilderTest
       preparedFactory.asInstanceOf[ServiceFactory[Any, Nothing]]
 
     val m = new MockChannel
-    when(m.codec.prepareConnFactory(any[ServiceFactory[String, String]])) thenReturn preparedFactory
+    when(
+      m.codec.prepareConnFactory(
+        any[ServiceFactory[String, String]])) thenReturn preparedFactory
   }
 
   val svc: Service[String, String] = Service.const(Future.value("hi"))
@@ -70,7 +72,8 @@ class ServerBuilderTest
         val specified =
           entries.filter(_.key.startsWith(Seq("server", expected)))
         // Entries are in the form: Entry(List(server, fancy, test, /127.0.0.1:58904, RequestStats, unit),MILLISECONDS)
-        val entry = specified.head // data is repeated as entry.key, just take the first
+        val entry =
+          specified.head // data is repeated as entry.key, just take the first
         val hostAndPort = entry.key.filter(_.contains("127.0.0.1")).head
         assert(
           !hostAndPort.contains(":0"),

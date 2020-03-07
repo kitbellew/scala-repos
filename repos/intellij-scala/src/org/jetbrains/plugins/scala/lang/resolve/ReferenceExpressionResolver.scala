@@ -155,7 +155,9 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         result =
           reference.doResolve(reference, processor(smartProcessor = false))
       } else {
-        val candidatesS = processor(smartProcessor = true).candidatesS //let's try to avoid treeWalkUp
+        val candidatesS =
+          processor(smartProcessor =
+            true).candidatesS //let's try to avoid treeWalkUp
         if (candidatesS.isEmpty || candidatesS.forall(!_.isApplicable())) {
           // it has another resolve only in one case:
           // clazz.ref(expr)

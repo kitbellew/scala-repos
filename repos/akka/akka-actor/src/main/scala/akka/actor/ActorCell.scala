@@ -356,9 +356,9 @@ private[akka] object ActorCell {
 
   final val emptyActorRefSet: Set[ActorRef] = immutable.HashSet.empty
 
-  final val terminatedProps
-      : Props = Props((throw new IllegalActorStateException(
-    "This Actor has been terminated")): Actor)
+  final val terminatedProps: Props = Props(
+    (throw new IllegalActorStateException(
+      "This Actor has been terminated")): Actor)
 
   final val undefinedUid = 0
 

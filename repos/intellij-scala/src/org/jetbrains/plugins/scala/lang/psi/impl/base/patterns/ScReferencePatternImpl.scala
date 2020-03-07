@@ -72,7 +72,11 @@ class ScReferencePatternImpl private (
 
   override def getNavigationElement = getContainingFile match {
     case sf: ScalaFile if sf.isCompiled => {
-      val parent = PsiTreeUtil.getParentOfType(this, classOf[ScMember]) // there is no complicated pattern-based declarations in decompiled files
+      val parent =
+        PsiTreeUtil.getParentOfType(
+          this,
+          classOf[ScMember]
+        ) // there is no complicated pattern-based declarations in decompiled files
       if (parent != null) {
         val navElem = parent.getNavigationElement
         navElem match {

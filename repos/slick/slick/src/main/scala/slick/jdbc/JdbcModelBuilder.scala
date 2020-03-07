@@ -403,7 +403,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     final def buildModel(builders: Builders): Option[m.ForeignKey] = {
       assert(meta.size >= 1)
       assert(
-        tableBuilder.namer.qualifiedName == tableNamersByQName(fk.fkTable).qualifiedName)
+        tableBuilder.namer.qualifiedName == tableNamersByQName(
+          fk.fkTable).qualifiedName)
       if (!enabled) None
       else
         Some(

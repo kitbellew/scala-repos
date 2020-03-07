@@ -616,7 +616,8 @@ private[hive] class HiveMetastoreCatalog(
           location = fileCatalog,
           partitionSchema = partitionSchema,
           dataSchema = mergedSchema,
-          bucketSpec = None, // We don't support hive bucketed tables, only ones we write out.
+          bucketSpec =
+            None, // We don't support hive bucketed tables, only ones we write out.
           fileFormat = new DefaultSource(),
           options = parquetOptions
         )

@@ -288,7 +288,9 @@ trait AssignClusterModule[M[+_]]
                           TableModule.paths.Value,
                           CPathField(model.name),
                           CPathField("clusterCenter"))
-                        ColumnRef(path0 \ path.dropPrefix(pref).get, CDouble) -> col
+                        ColumnRef(
+                          path0 \ path.dropPrefix(pref).get,
+                          CDouble) -> col
                     }.toMap
 
                     val idPath = CPath(

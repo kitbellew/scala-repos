@@ -22,8 +22,9 @@ object ManifestScalaType {
                java.lang.Double]) ManifestScalaType.DoubleType
     else if (mf.runtimeClass == classOf[BigInt] || mf.runtimeClass == classOf[
                java.math.BigInteger]) ManifestScalaType.BigIntType
-    else if (mf.runtimeClass == classOf[BigDecimal] || mf.runtimeClass == classOf[
-               java.math.BigDecimal]) ManifestScalaType.BigDecimalType
+    else if (mf.runtimeClass == classOf[
+               BigDecimal] || mf.runtimeClass == classOf[java.math.BigDecimal])
+      ManifestScalaType.BigDecimalType
     else if (mf.runtimeClass == classOf[Boolean] || mf.runtimeClass == classOf[
                java.lang.Boolean]) ManifestScalaType.BooleanType
     else if (mf.runtimeClass == classOf[String] || mf.runtimeClass == classOf[

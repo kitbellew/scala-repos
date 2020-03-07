@@ -97,7 +97,8 @@ object IListTest extends SpecLite {
 
   "mapAccumRight" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (xs.reverse, xs
+    xs.mapAccumRight(IList[Int]())((c, a) =>
+      (c :+ a, f(a))) must_=== (xs.reverse, xs
       .map(f))
   }
 
@@ -397,7 +398,8 @@ object IListTest extends SpecLite {
   }
 
   "toEphemeralStream" ! forAll { ns: List[Int] =>
-    IList(ns: _*).toEphemeralStream.toList must_=== EphemeralStream(ns: _*).toList
+    IList(ns: _*).toEphemeralStream.toList must_=== EphemeralStream(
+      ns: _*).toList
   }
 
   "toList" ! forAll { ns: List[Int] => IList(ns: _*).toList must_=== ns }

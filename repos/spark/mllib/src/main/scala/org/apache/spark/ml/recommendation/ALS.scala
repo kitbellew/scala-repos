@@ -1303,7 +1303,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             while (j < dstPtrs(i + 1)) {
               val dstBlockId = encoder.blockId(dstEncodedIndices(j))
               if (!seen(dstBlockId)) {
-                activeIds(dstBlockId) += i // add the local index in this out-block
+                activeIds(
+                  dstBlockId) += i // add the local index in this out-block
                 seen(dstBlockId) = true
               }
               j += 1

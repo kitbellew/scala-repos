@@ -88,7 +88,9 @@ final class Api(
     tube.storeColl
       .distinct(
         field,
-        BSONDocument("user" -> userId, field -> BSONDocument("$exists" -> true)).some
+        BSONDocument(
+          "user" -> userId,
+          field -> BSONDocument("$exists" -> true)).some
       )
       .flatMap {
         case Nil => fuccess(Nil)

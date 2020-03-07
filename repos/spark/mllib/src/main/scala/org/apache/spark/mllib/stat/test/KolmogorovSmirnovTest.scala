@@ -78,7 +78,8 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
         searchOneSampleCandidates(partDiffs) // candidates: local extrema
       }
       .collect()
-    val ksStat = searchOneSampleStatistic(localData, n) // result: global extreme
+    val ksStat =
+      searchOneSampleStatistic(localData, n) // result: global extreme
     evalOneSampleP(ksStat, n.toLong)
   }
 

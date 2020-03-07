@@ -176,30 +176,39 @@ class LocalActorRefProviderSpec
     }
 
     "throw suitable exceptions for malformed actor names" in {
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, null)).getMessage should include(
-        "null")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "")).getMessage should include(
-        "empty")
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, null)).getMessage should include("null")
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "")).getMessage should include("empty")
       intercept[InvalidActorNameException](
         system.actorOf(Props.empty, "$hallo")).getMessage should include(
         "not start with `$`")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "a%")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "a%")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%3")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%3")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%xx")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%xx")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%0G")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%0G")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%gg")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%gg")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "%1t")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "%1t")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "a?")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "a?")).getMessage should include(
         "Invalid actor path element")
-      intercept[InvalidActorNameException](system.actorOf(Props.empty, "üß")).getMessage should include(
+      intercept[InvalidActorNameException](
+        system.actorOf(Props.empty, "üß")).getMessage should include(
         "include only ASCII")
 
       intercept[InvalidActorNameException](

@@ -33,13 +33,17 @@ class UIUtilsSuite extends SparkFunSuite {
 
     verify(
       """test <a href="/link" text </a>""",
-      <span class="description-input">{"""test <a href="/link" text </a>"""}</span>,
+      <span class="description-input">{
+        """test <a href="/link" text </a>"""
+      }</span>,
       "Badly formatted text should make the description be treated as a streaming instead of HTML"
     )
 
     verify(
       """test <a href="link"> text </a>""",
-      <span class="description-input">{"""test <a href="link"> text </a>"""}</span>,
+      <span class="description-input">{
+        """test <a href="link"> text </a>"""
+      }</span>,
       "Non-relative links should make the description be treated as a string instead of HTML"
     )
 

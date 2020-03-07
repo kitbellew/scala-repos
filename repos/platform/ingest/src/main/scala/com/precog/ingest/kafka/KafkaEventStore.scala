@@ -65,7 +65,8 @@ object KafkaEventStore {
         centralConfig.get[String]("zk.connect")))
     centralConfig
       .get[String]("zk.connect")
-      .toSuccess(NEL("central.zk.connect configuration parameter is required")) map {
+      .toSuccess(
+        NEL("central.zk.connect configuration parameter is required")) map {
       centralZookeeperHosts =>
         val serviceUID = ZookeeperSystemCoordination.extractServiceUID(config)
         val coordination = ZookeeperSystemCoordination(

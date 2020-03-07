@@ -48,8 +48,9 @@ class FormBodyParserSpec extends PlaySpecification {
     }
 
     "not bind erroneous body" in new WithApplication() {
-      parse(Json.obj("age" -> "Alice"), BodyParsers.parse.form(userForm)) must beLeft(
-        Results.BadRequest)
+      parse(
+        Json.obj("age" -> "Alice"),
+        BodyParsers.parse.form(userForm)) must beLeft(Results.BadRequest)
     }
 
     "allow users to override the error reporting behaviour" in new WithApplication() {

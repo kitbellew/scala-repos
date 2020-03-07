@@ -141,7 +141,8 @@ class AppsResource @Inject() (
       }
 
       def app(appId: PathId): Response = {
-        result(appInfoService.selectApp(appId, allAuthorized, resolvedEmbed)) match {
+        result(
+          appInfoService.selectApp(appId, allAuthorized, resolvedEmbed)) match {
           case Some(appInfo) =>
             checkAuthorization(ViewApp, appInfo.app)
             ok(jsonObjString("app" -> appInfo))

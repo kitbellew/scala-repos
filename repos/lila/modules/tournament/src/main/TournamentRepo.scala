@@ -291,8 +291,8 @@ object TournamentRepo {
   def lastFinishedDaily(variant: Variant): Fu[Option[Tournament]] =
     coll
       .find(
-        finishedSelect ++ sinceSelect(DateTime.now minusDays 1) ++ variantSelect(
-          variant) ++
+        finishedSelect ++ sinceSelect(
+          DateTime.now minusDays 1) ++ variantSelect(variant) ++
           BSONDocument("schedule.freq" -> Schedule.Freq.Daily.name)
       )
       .sort(BSONDocument("startsAt" -> -1))
@@ -309,7 +309,10 @@ object TournamentRepo {
 
   def isFinished(id: String): Fu[Boolean] =
     coll
-      .count(BSONDocument("_id" -> id, "status" -> Status.Finished.id).some) map (0 !=)
+      .count(
+        BSONDocument(
+          "_id" -> id,
+          "status" -> Status.Finished.id).some) map (0 !=)
 
   def toursToWithdrawWhenEntering(tourId: String): Fu[List[Tournament]] =
     coll

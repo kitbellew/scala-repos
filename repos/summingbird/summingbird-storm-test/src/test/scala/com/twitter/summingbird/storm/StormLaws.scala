@@ -95,9 +95,10 @@ object StormLaws {
     StormLaws.outputList += x
   }
 
-  def runWithOutSummer(original: List[Int])(mkJob: (
-      Producer[Storm, Int],
-      Storm#Sink[Int]) => TailProducer[Storm, Int]): List[Int] = {
+  def runWithOutSummer(original: List[Int])(
+      mkJob: (
+          Producer[Storm, Int],
+          Storm#Sink[Int]) => TailProducer[Storm, Int]): List[Int] = {
     val cluster = new LocalCluster()
 
     val job = mkJob(

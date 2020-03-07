@@ -647,9 +647,11 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
 
       assert(st.counters(Seq(clientName, "failure_accrual", "removals")) == 1)
       assert(
-        st.counters(Seq(clientName, "retries", "requeues")) == failureAccrualFailures - 1)
+        st.counters(
+          Seq(clientName, "retries", "requeues")) == failureAccrualFailures - 1)
       assert(
-        st.counters(Seq(clientName, "failures", "restartable")) == failureAccrualFailures)
+        st.counters(
+          Seq(clientName, "failures", "restartable")) == failureAccrualFailures)
       client.close()
     }
   }

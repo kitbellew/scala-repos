@@ -39,7 +39,10 @@ object CanFilter {
     DenseVector[Double],
     FIRKernel1D[Double],
     DenseVector[Double]] = {
-    new CanFilter[DenseVector[Double], FIRKernel1D[Double], DenseVector[Double]] {
+    new CanFilter[
+      DenseVector[Double],
+      FIRKernel1D[Double],
+      DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
           kernel: FIRKernel1D[Double],
@@ -73,7 +76,10 @@ object CanFilter {
     DenseVector[Double],
     DenseVector[Double],
     DenseVector[Double]] = {
-    new CanFilter[DenseVector[Double], DenseVector[Double], DenseVector[Double]] {
+    new CanFilter[
+      DenseVector[Double],
+      DenseVector[Double],
+      DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
           kernel: DenseVector[Double],

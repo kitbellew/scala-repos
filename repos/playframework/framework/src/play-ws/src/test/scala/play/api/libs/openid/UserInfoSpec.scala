@@ -21,10 +21,11 @@ object UserInfoSpec extends Specification {
     }
     "successfully be created using the value of the openid.identity field" in {
       // For testing the claimed_id is removed to check that id contains the identity value.
-      val userInfo = UserInfo(createDefaultResponse(
-        claimedId,
-        identity,
-        defaultSigned) - "openid.claimed_id")
+      val userInfo = UserInfo(
+        createDefaultResponse(
+          claimedId,
+          identity,
+          defaultSigned) - "openid.claimed_id")
       userInfo.id must be equalTo identity
       userInfo.attributes must beEmpty
     }

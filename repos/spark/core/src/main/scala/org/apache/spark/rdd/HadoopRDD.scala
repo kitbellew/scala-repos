@@ -420,7 +420,9 @@ private[spark] object HadoopRDD extends Logging {
     * Analogous to [[org.apache.spark.rdd.MapPartitionsRDD]], but passes in an InputSplit to
     * the given function rather than the index of the partition.
     */
-  private[spark] class HadoopMapPartitionsWithSplitRDD[U: ClassTag, T: ClassTag](
+  private[spark] class HadoopMapPartitionsWithSplitRDD[
+      U: ClassTag,
+      T: ClassTag](
       prev: RDD[T],
       f: (InputSplit, Iterator[T]) => Iterator[U],
       preservesPartitioning: Boolean = false)

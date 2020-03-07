@@ -431,7 +431,9 @@ class H5StoreSpec extends Specification {
       val taskListR = for (i <- 1 to 100) yield new Callable[Unit] {
         def call() {
           H5Store
-            .readFrame[DateTime, Int, Double](tmp, "f%s".format(100 + i)) must_== df2
+            .readFrame[DateTime, Int, Double](
+              tmp,
+              "f%s".format(100 + i)) must_== df2
           H5Store
             .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
         }
@@ -447,7 +449,9 @@ class H5StoreSpec extends Specification {
             H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
           else
             H5Store
-              .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
+              .readFrame[DateTime, Int, Double](
+                tmp,
+                "f%s".format(i)) must_== df1
         }
       }
 

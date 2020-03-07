@@ -54,15 +54,15 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   // builds a string via the StringBuilding StringBuilder
   def comment: Rule0 = rule {
-    ws('(') ~ clearSB() ~ zeroOrMore(ctext | `quoted-cpair` | `nested-comment`) ~ ws(
-      ')')
+    ws('(') ~ clearSB() ~ zeroOrMore(
+      ctext | `quoted-cpair` | `nested-comment`) ~ ws(')')
   }
 
   def `nested-comment` = {
     var saved: String = null
     rule {
-      &('(') ~ run(saved = sb.toString) ~ (comment ~ prependSB(saved + " (") ~ appendSB(
-        ')') | setSB(saved) ~ test(false))
+      &('(') ~ run(saved = sb.toString) ~ (comment ~ prependSB(
+        saved + " (") ~ appendSB(')') | setSB(saved) ~ test(false))
     }
   }
 
@@ -89,18 +89,19 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `day-name` =
     rule(
-      "Sun" ~ push(0) | "Mon" ~ push(1) | "Tue" ~ push(2) | "Wed" ~ push(3) | "Thu" ~ push(
-        4) | "Fri" ~ push(5) | "Sat" ~ push(6))
+      "Sun" ~ push(0) | "Mon" ~ push(1) | "Tue" ~ push(2) | "Wed" ~ push(
+        3) | "Thu" ~ push(4) | "Fri" ~ push(5) | "Sat" ~ push(6))
 
   def date1 = rule { day ~ `date-sep` ~ month ~ `date-sep` ~ year }
 
   def day = rule { digit2 }
 
   def month =
-    rule("Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(4) | "May" ~ push(
-      5) | "Jun" ~ push(6) | "Jul" ~ push(7) |
-      "Aug" ~ push(8) | "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(11) | "Dec" ~ push(
-      12))
+    rule(
+      "Jan" ~ push(1) | "Feb" ~ push(2) | "Mar" ~ push(3) | "Apr" ~ push(
+        4) | "May" ~ push(5) | "Jun" ~ push(6) | "Jul" ~ push(7) |
+        "Aug" ~ push(8) | "Sep" ~ push(9) | "Oct" ~ push(10) | "Nov" ~ push(
+        11) | "Dec" ~ push(12))
 
   def year = rule { digit4 }
 
@@ -121,8 +122,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `day-name-l` =
     rule(
-      "Sunday" ~ push(0) | "Monday" ~ push(1) | "Tuesday" ~ push(2) | "Wednesday" ~ push(
-        3) | "Thursday" ~ push(4) |
+      "Sunday" ~ push(0) | "Monday" ~ push(1) | "Tuesday" ~ push(
+        2) | "Wednesday" ~ push(3) | "Thursday" ~ push(4) |
         "Friday" ~ push(5) | "Saturday" ~ push(6))
 
   def `asctime-date` = rule {
@@ -384,8 +385,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   }
 
   def `byte-range-spec` = rule {
-    `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (ByteRange(_: Long, _)) | run(
-      ByteRange.fromOffset(_)))
+    `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (ByteRange(
+      _: Long,
+      _)) | run(ByteRange.fromOffset(_)))
   }
 
   def `byte-ranges-specifier` = rule {
@@ -457,7 +459,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
         | `transfer-extension`)
 
   def `transfer-extension` = rule {
-    token ~ zeroOrMore(ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings
+    token ~ zeroOrMore(
+      ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings
       .Extension(_, _))
   }
 
@@ -487,8 +490,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   // parses a potentially long series of digits and extracts its Long value capping at Int.MaxValue in case of overflows
   def longNumberCappedAtIntMaxValue = rule {
-    capture((1 to 11).times(DIGIT)) ~> (s ⇒ math.min(s.toLong, Int.MaxValue)) ~ zeroOrMore(
-      DIGIT) ~ OWS
+    capture((1 to 11).times(DIGIT)) ~> (s ⇒
+      math.min(s.toLong, Int.MaxValue)) ~ zeroOrMore(DIGIT) ~ OWS
   }
 
   // parses a potentially long series of digits and extracts its Long value capping at 999,999,999,999,999,999 in case of overflows

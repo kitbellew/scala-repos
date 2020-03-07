@@ -57,7 +57,9 @@ trait Grouped[K, +V]
     with HashJoinable[K, V]
     with Sortable[
       V,
-      ({ type t[+x] = SortedGrouped[K, x] with Reversable[SortedGrouped[K, x]] })#t]
+      ({
+        type t[+x] = SortedGrouped[K, x] with Reversable[SortedGrouped[K, x]]
+      })#t]
     with WithReducers[Grouped[K, V]]
     with WithDescription[Grouped[K, V]]
 
@@ -539,7 +541,8 @@ case class IdentityValueSortedReduce[K, V1](
       // If its an ordered serialization we need to unbox
       val mappedGB =
         if (valueSort.isInstanceOf[OrderedSerialization[_]])
-          gb.mapStream[Boxed[V1], V1](Grouped.valueField -> Grouped.valueField) {
+          gb.mapStream[Boxed[V1], V1](
+            Grouped.valueField -> Grouped.valueField) {
             it: Iterator[Boxed[V1]] => it.map(_.get)
           }
         else

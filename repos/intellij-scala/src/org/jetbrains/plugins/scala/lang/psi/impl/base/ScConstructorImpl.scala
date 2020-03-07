@@ -232,7 +232,8 @@ class ScConstructorImpl(node: ASTNode)
               buffer += workWithResolveResult(constr, r, subst, s, ref)
             case ScalaResolveResult(clazz: PsiClass, subst)
                 if !clazz
-                  .isInstanceOf[ScTemplateDefinition] && clazz.isAnnotationType =>
+                  .isInstanceOf[
+                    ScTemplateDefinition] && clazz.isAnnotationType =>
               val params = clazz.getMethods.flatMap {
                 case p: PsiAnnotationMethod =>
                   val paramType = subst.subst(

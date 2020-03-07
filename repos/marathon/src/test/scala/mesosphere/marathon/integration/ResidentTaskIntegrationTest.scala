@@ -92,7 +92,8 @@ class ResidentTaskIntegrationTest
   test("resident task is launched completely on reserved resources") { f =>
     Given("A resident app")
     val app =
-      f.residentApp(portDefinitions = Seq.empty /* prevent problems by randomized port assignment */ )
+      f.residentApp(portDefinitions =
+        Seq.empty /* prevent problems by randomized port assignment */ )
 
     When("A task is launched")
     f.createSuccessfully(app)

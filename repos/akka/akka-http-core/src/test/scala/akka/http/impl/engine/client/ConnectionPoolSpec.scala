@@ -101,7 +101,8 @@ class ConnectionPoolSpec
 
       val responseEntityPub = TestPublisher.probe[ByteString]()
 
-      override def testServerHandler(connNr: Int): HttpRequest ⇒ HttpResponse = {
+      override def testServerHandler(
+          connNr: Int): HttpRequest ⇒ HttpResponse = {
         case request @ HttpRequest(_, Uri.Path("/a"), _, _, _) ⇒
           val entity = HttpEntity.Chunked.fromData(
             ContentTypes.`text/plain(UTF-8)`,
@@ -430,7 +431,8 @@ class ConnectionPoolSpec
         maxOpenRequests: Int = 8,
         pipeliningLimit: Int = 1,
         idleTimeout: Duration = 5.seconds,
-        ccSettings: ClientConnectionSettings = ClientConnectionSettings(system)) = {
+        ccSettings: ClientConnectionSettings =
+          ClientConnectionSettings(system)) = {
       val settings = new ConnectionPoolSettingsImpl(
         maxConnections,
         maxRetries,
@@ -449,7 +451,8 @@ class ConnectionPoolSpec
         maxOpenRequests: Int = 8,
         pipeliningLimit: Int = 1,
         idleTimeout: Duration = 5.seconds,
-        ccSettings: ClientConnectionSettings = ClientConnectionSettings(system)) = {
+        ccSettings: ClientConnectionSettings =
+          ClientConnectionSettings(system)) = {
       val settings = new ConnectionPoolSettingsImpl(
         maxConnections,
         maxRetries,

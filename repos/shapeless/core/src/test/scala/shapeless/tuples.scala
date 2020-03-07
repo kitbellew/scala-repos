@@ -1305,8 +1305,10 @@ class TupleTests {
     val l4 = (("a", 1.0), ("b", 2.0), ("c", 3.0))
 
     val z2 = l3.zipOne(l4)
-    typed[
-      ((Int, String, Double), (Int, String, Double), (Int, String, Double))](z2)
+    typed[(
+        (Int, String, Double),
+        (Int, String, Double),
+        (Int, String, Double))](z2)
     assertEquals(((1, "a", 1.0), (2, "b", 2.0), (3, "c", 3.0)), z2)
 
     val mc2 = l3.mapConst(())
@@ -1318,13 +1320,17 @@ class TupleTests {
     assertEquals((("a", "b", "c"), (1.0, 2.0, 3.0)), t2)
 
     val t3 = z2.transpose
-    typed[
-      ((Int, Int, Int), (String, String, String), (Double, Double, Double))](t3)
+    typed[(
+        (Int, Int, Int),
+        (String, String, String),
+        (Double, Double, Double))](t3)
     assertEquals(((1, 2, 3), ("a", "b", "c"), (1.0, 2.0, 3.0)), t3)
 
     val t4 = t3.transpose
-    typed[
-      ((Int, String, Double), (Int, String, Double), (Int, String, Double))](t4)
+    typed[(
+        (Int, String, Double),
+        (Int, String, Double),
+        (Int, String, Double))](t4)
     assertEquals(z2, t4)
   }
 

@@ -336,7 +336,9 @@ trait EntityPage extends HtmlPage {
                   <ol id="linearization">
                     {
                 (tpl :: tpl.linearizationTemplates).map(wte =>
-                  <li class="in" name={wte.qualifiedName}><span>{wte.name}</span></li>)
+                  <li class="in" name={wte.qualifiedName}><span>{
+                    wte.name
+                  }</span></li>)
               }
                   </ol>
                 </div>
@@ -445,7 +447,9 @@ trait EntityPage extends HtmlPage {
         <div id="inheritedMembers">
         {
       // linearization
-      NodeSeq fromSeq (for ((superTpl, superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
+      NodeSeq fromSeq (for ((
+                              superTpl,
+                              superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
         yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
           typeToHtmlWithStupidTypes(tpl, superTpl, superType)
@@ -682,7 +686,8 @@ trait EntityPage extends HtmlPage {
               NodeSeq.Empty
             case List(constraint) =>
               scala.xml
-                .Text("This conversion will take place only if ") ++ constraintToHtml(
+                .Text(
+                  "This conversion will take place only if ") ++ constraintToHtml(
                 constraint) ++ scala.xml.Text(".")
             case List(constraint1, constraint2) =>
               scala.xml
@@ -725,7 +730,8 @@ trait EntityPage extends HtmlPage {
                 target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
                 <br/> ++ <div class="cmt"><pre>{
                 "(" + EntityPage
-                  .lowerFirstLetter(tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
+                  .lowerFirstLetter(
+                    tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
               }</pre></div>
             }
 
@@ -755,7 +761,9 @@ trait EntityPage extends HtmlPage {
       if (fvs.isEmpty || isReduced) NodeSeq.Empty
       else {
         <dt>Attributes</dt>
-        <dd>{fvs map { fv => { inlineToHtml(fv.text) ++ scala.xml.Text(" ") } }}</dd>
+        <dd>{
+          fvs map { fv => { inlineToHtml(fv.text) ++ scala.xml.Text(" ") } }
+        }</dd>
       }
     }
 
@@ -806,7 +814,9 @@ trait EntityPage extends HtmlPage {
         <dd>{
           mbr.annotations.map { annot =>
             <xml:group>
-                <span class="name">@{templateToHtml(annot.annotationClass)}</span>{
+                <span class="name">@{
+              templateToHtml(annot.annotationClass)
+            }</span>{
               if (showArguments(annot)) argumentsToHtml(annot.arguments)
               else NodeSeq.Empty
             }
@@ -869,7 +879,9 @@ trait EntityPage extends HtmlPage {
         val version: NodeSeq =
           orEmpty(comment.version) {
             <dt>Version</dt>
-            <dd>{for (body <- comment.version.toList) yield bodyToHtml(body)}</dd>
+            <dd>{
+              for (body <- comment.version.toList) yield bodyToHtml(body)
+            }</dd>
           }
 
         val sinceVersion: NodeSeq =
@@ -1163,7 +1175,9 @@ trait EntityPage extends HtmlPage {
               case _ => Text("")
             }
             vlsss map { vlss =>
-              <span class="params">({implicitCheck(vlss) ++ params0(vlss)})</span>
+              <span class="params">({
+                implicitCheck(vlss) ++ params0(vlss)
+              })</span>
             }
           }
           mbr match {
@@ -1179,7 +1193,9 @@ trait EntityPage extends HtmlPage {
           mbr match {
             case tme: MemberEntity
                 if (tme.isDef || tme.isVal || tme.isLazyVal || tme.isVar) =>
-              <span class="result">: {typeToHtml(tme.resultType, hasLinks)}</span>
+              <span class="result">: {
+                typeToHtml(tme.resultType, hasLinks)
+              }</span>
 
             case abt: MemberEntity with AbstractType =>
               val b2s = boundsToHtml(abt.hi, abt.lo, hasLinks)
@@ -1188,7 +1204,9 @@ trait EntityPage extends HtmlPage {
               else NodeSeq.Empty
 
             case alt: MemberEntity with AliasType =>
-              <span class="result alias"> = {typeToHtml(alt.alias, hasLinks)}</span>
+              <span class="result alias"> = {
+                typeToHtml(alt.alias, hasLinks)
+              }</span>
 
             case tpl: MemberTemplateEntity if !tpl.parentTypes.isEmpty =>
               <span class="result"> extends {
@@ -1327,7 +1345,8 @@ trait EntityPage extends HtmlPage {
     constraint match {
       case ktcc: KnownTypeClassConstraint =>
         scala.xml.Text(
-          ktcc.typeExplanation(ktcc.typeParamName) + " (" + ktcc.typeParamName + ": ") ++
+          ktcc.typeExplanation(
+            ktcc.typeParamName) + " (" + ktcc.typeParamName + ": ") ++
           templateToHtml(ktcc.typeClassEntity) ++ scala.xml.Text(")")
       case tcc: TypeClassConstraint =>
         scala.xml.Text(tcc.typeParamName + " is ") ++

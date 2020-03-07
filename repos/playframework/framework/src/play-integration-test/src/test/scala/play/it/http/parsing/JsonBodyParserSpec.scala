@@ -44,11 +44,17 @@ object JsonBodyParserSpec extends PlaySpecification {
         .like {
           case json => (json \ "foo").as[String] must_== "bär"
         }
-      parse("""{"foo":"bär"}""", Some("application/json"), "utf-16") must beRight
+      parse(
+        """{"foo":"bär"}""",
+        Some("application/json"),
+        "utf-16") must beRight
         .like {
           case json => (json \ "foo").as[String] must_== "bär"
         }
-      parse("""{"foo":"bär"}""", Some("application/json"), "utf-32") must beRight
+      parse(
+        """{"foo":"bär"}""",
+        Some("application/json"),
+        "utf-32") must beRight
         .like {
           case json => (json \ "foo").as[String] must_== "bär"
         }
@@ -86,7 +92,11 @@ object JsonBodyParserSpec extends PlaySpecification {
         Some("application/xml"),
         "utf-8",
         BodyParsers.parse.json) must beLeft
-      parse("""{"foo":"bar"}""", None, "utf-8", BodyParsers.parse.json) must beLeft
+      parse(
+        """{"foo":"bar"}""",
+        None,
+        "utf-8",
+        BodyParsers.parse.json) must beLeft
     }
 
     "gracefully handle invalid json" in new WithApplication() {
@@ -109,8 +119,16 @@ object JsonBodyParserSpec extends PlaySpecification {
         Some("application/json"),
         "utf-8",
         fooParser) must beRight
-      parse("""{"foo":"bar"}""", Some("application/json"), "utf-8", fooParser) must beLeft
-      parse("""{"a":1}""", Some("application/json"), "utf-8", fooParser) must beLeft
+      parse(
+        """{"foo":"bar"}""",
+        Some("application/json"),
+        "utf-8",
+        fooParser) must beLeft
+      parse(
+        """{"a":1}""",
+        Some("application/json"),
+        "utf-8",
+        fooParser) must beLeft
     }
 
     "validate json content using implicit reads" in new WithApplication() {

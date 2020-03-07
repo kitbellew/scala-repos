@@ -65,7 +65,9 @@ private[http] final class BodyPartParser(
         errorInfo.withSummaryPrepended("Illegal multipart header").formatPretty)
   }
 
-  private[this] var output = collection.immutable.Queue.empty[Output] // FIXME this probably is too wasteful
+  private[this] var output =
+    collection.immutable.Queue
+      .empty[Output] // FIXME this probably is too wasteful
   private[this] var state: ByteString ⇒ StateResult = tryParseInitialBoundary
   private[this] var terminated = false
 
@@ -304,10 +306,8 @@ private[http] final class BodyPartParser(
   def boundaryLength = needle.length - 2
 
   @tailrec def boundary(input: ByteString, offset: Int, ix: Int = 2): Boolean =
-    (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(ix)) && boundary(
-      input,
-      offset,
-      ix + 1)
+    (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(
+      ix)) && boundary(input, offset, ix + 1)
 
   def crlf(input: ByteString, offset: Int): Boolean =
     byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'

@@ -20,8 +20,14 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def dv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -231,8 +237,14 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def dv_dv_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -283,8 +295,14 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def dv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -331,8 +349,14 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def dv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpSet,
+        OpMod) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -431,7 +455,10 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   @expand.valify
   implicit def canDot_DV_V[@expand.args(Int, Double, Float, Long) T](
       implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], Vector[T], T] = {
+      : breeze.linalg.operators.OpMulInner.Impl2[
+        DenseVector[T],
+        Vector[T],
+        T] = {
     new breeze.linalg.operators.OpMulInner.Impl2[DenseVector[T], Vector[T], T] {
       def apply(a: DenseVector[T], b: Vector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")

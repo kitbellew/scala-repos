@@ -143,7 +143,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       mbox: MessageQueue with ExecutableMailbox): Unit = {
     try {
       donationInProgress.value = true
-      while (donateFrom(mbox)) {} //When we reregister, first donate messages to another actor
+      while (donateFrom(
+               mbox)) {} //When we reregister, first donate messages to another actor
     } finally { donationInProgress.value = false }
 
     if (!mbox.isEmpty) //If we still have messages left to process, reschedule for execution
@@ -155,7 +156,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     */
   protected def donateFrom(
       donorMbox: MessageQueue with ExecutableMailbox): Boolean = {
-    val actors = members // copy to prevent concurrent modifications having any impact
+    val actors =
+      members // copy to prevent concurrent modifications having any impact
 
     // we risk to pick a thief which is unregistered from the dispatcher in the meantime, but that typically means
     // the dispatcher is being shut down...
@@ -177,7 +179,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       donorMbox: MessageQueue with ExecutableMailbox): Boolean =
     try {
       donationInProgress.value = true
-      val actors = members // copy to prevent concurrent modifications having any impact
+      val actors =
+        members // copy to prevent concurrent modifications having any impact
       doFindDonorRecipient(
         donorMbox,
         actors,
@@ -220,7 +223,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     var recipient: ActorRef = null
 
     while ((i < prSz) && (recipient eq null)) {
-      val actor = potentialRecipients((i + startIndex) % prSz) //Wrap-around, one full lap
+      val actor =
+        potentialRecipients((i + startIndex) % prSz) //Wrap-around, one full lap
       val mbox = getMailbox(actor)
 
       if ((mbox ne donorMbox) && mbox.isEmpty) { //Don't donate to yourself

@@ -226,8 +226,9 @@ class FlowGraphDocSpec extends AkkaSpec {
     //#flow-graph-matvalue
 
     Await
-      .result(Source(1 to 10).via(foldFlow).runWith(Sink.head), 3.seconds) should ===(
-      55)
+      .result(
+        Source(1 to 10).via(foldFlow).runWith(Sink.head),
+        3.seconds) should ===(55)
 
     //#flow-graph-matvalue-cycle
     import GraphDSL.Implicits._

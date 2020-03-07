@@ -60,7 +60,10 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
     }
   }
 
-  test("Correctly fail after a watched key is modified", RedisTest, ClientTest) {
+  test(
+    "Correctly fail after a watched key is modified",
+    RedisTest,
+    ClientTest) {
     withRedisClient { client =>
       Await.result(client.set(foo, bar))
       Await.result(client.watch(Seq(foo)))

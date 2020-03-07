@@ -914,7 +914,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         autoMigrateRegion ! Get(1)
         expectMsg(2)
         lastSender.path should ===(
-          node(third) / "user" / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
+          node(
+            third) / "user" / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
 
         //Kill region 3
         system.actorSelection(lastSender.path.parent.parent) ! PoisonPill

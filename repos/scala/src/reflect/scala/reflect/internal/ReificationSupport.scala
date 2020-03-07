@@ -786,11 +786,14 @@ trait ReificationSupport { self: SymbolTable =>
               Select(New(SyntacticAppliedType(ident, targs)), nme.CONSTRUCTOR),
               Nil,
               argss) =>
-            Some((
-              Nil,
-              SyntacticApplied(SyntacticAppliedType(ident, targs), argss) :: Nil,
-              noSelfType,
-              Nil))
+            Some(
+              (
+                Nil,
+                SyntacticApplied(
+                  SyntacticAppliedType(ident, targs),
+                  argss) :: Nil,
+                noSelfType,
+                Nil))
           case SyntacticBlock(
               SyntacticClassDef(
                 _,

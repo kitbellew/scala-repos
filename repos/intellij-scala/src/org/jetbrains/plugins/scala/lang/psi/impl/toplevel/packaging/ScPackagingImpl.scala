@@ -201,7 +201,8 @@ class ScPackagingImpl private (
   def getBodyText: String = {
     if (isExplicit) {
       val startOffset =
-        findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
+        findChildByType[PsiElement](
+          ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
       val text = getText
       val endOffset = if (text.apply(text.length - 1) == '}') {
         text.length - 1

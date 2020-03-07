@@ -308,7 +308,8 @@ object TestBuild {
   def genAcyclic[A, T](maxDeps: Gen[Int], keys: List[T])(
       make: T => Gen[Seq[A] => A]): Gen[Seq[A]] =
     genAcyclic(maxDeps, keys, Nil) flatMap { pairs =>
-      sequence(pairs.map { case (key, deps) => mapMake(key, deps, make) }) flatMap {
+      sequence(
+        pairs.map { case (key, deps) => mapMake(key, deps, make) }) flatMap {
         inputs =>
           val made = new collection.mutable.HashMap[T, A]
           for ((key, deps, mk) <- inputs)

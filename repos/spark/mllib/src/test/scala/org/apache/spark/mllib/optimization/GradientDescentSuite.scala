@@ -159,8 +159,10 @@ class GradientDescentSuite
     )
 
     assert(
-      (newWeights1(0) ~= (newWeights0(0) - initialWeightsWithIntercept(0)) absTol 1e-5) &&
-        (newWeights1(1) ~= (newWeights0(1) - initialWeightsWithIntercept(1)) absTol 1e-5),
+      (newWeights1(0) ~= (newWeights0(0) - initialWeightsWithIntercept(
+        0)) absTol 1e-5) &&
+        (newWeights1(1) ~= (newWeights0(1) - initialWeightsWithIntercept(
+          1)) absTol 1e-5),
       "The different between newWeights with/without regularization " +
         "should be initialWeightsWithIntercept."
     )

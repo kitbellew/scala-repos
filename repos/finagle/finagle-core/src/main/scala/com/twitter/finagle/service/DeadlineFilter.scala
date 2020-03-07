@@ -10,7 +10,8 @@ object DeadlineFilter {
 
   val role = new Stack.Role("DeadlineAdmissionControl")
 
-  private[this] val DefaultTolerance = 170.milliseconds // max empirically measured clock skew
+  private[this] val DefaultTolerance =
+    170.milliseconds // max empirically measured clock skew
   private[this] val DefaultRejectPeriod = 10.seconds
 
   // In the case of large delays, don't want to reject too many requests

@@ -179,7 +179,8 @@ class ImplicitCollector(
               case e: ScTemplateParents => placeCalculated = true
               case m: ScModifierListOwner
                   if m.hasModifierProperty("implicit") =>
-                placeCalculated = true //we need to check that, otherwise we will be outside
+                placeCalculated =
+                  true //we need to check that, otherwise we will be outside
               case _ =>
             }
             if (predicate.isEmpty)

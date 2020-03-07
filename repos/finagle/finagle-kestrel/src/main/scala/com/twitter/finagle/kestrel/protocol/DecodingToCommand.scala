@@ -78,8 +78,9 @@ private[kestrel] class DecodingToCommand
       case Seq(ABORT)       => Abort(queueName, timeout)
       case Seq(PEEK)        => Peek(queueName, timeout)
       case _ =>
-        throw new NonexistentCommand(
-          tokens.map { case Buf.Utf8(s) => s }.mkString)
+        throw new NonexistentCommand(tokens.map {
+          case Buf.Utf8(s) => s
+        }.mkString)
     }
   }
 }

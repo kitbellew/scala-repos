@@ -205,7 +205,8 @@ class EntityStoreCacheTest
     content.get("a") should be(empty)
   }
 
-  test("Names will list all entries (versioned and unversioned) in cached mode") {
+  test(
+    "Names will list all entries (versioned and unversioned) in cached mode") {
     Given("A pre-filled entityCache")
     val names = Set("a", "b", "c")
     val now = Timestamp.now()
@@ -223,7 +224,8 @@ class EntityStoreCacheTest
     entityCache.cacheOpt.get.values.flatten should have size 3
   }
 
-  test("Names will list all entries (versioned and unversioned) in direct mode") {
+  test(
+    "Names will list all entries (versioned and unversioned) in direct mode") {
     Given("A store with three entries")
     val names = Set("a", "b", "c")
     val now = Timestamp.now()

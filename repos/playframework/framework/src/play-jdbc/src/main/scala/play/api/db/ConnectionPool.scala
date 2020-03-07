@@ -83,7 +83,8 @@ object ConnectionPool {
           .findFirstMatchIn(url)
           .map(_ => "")
           .getOrElse(defaultProperties)
-        Some(s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") -> Some(
+        Some(
+          s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") -> Some(
           username -> password)
 
       case Some(url @ H2DefaultUrl())

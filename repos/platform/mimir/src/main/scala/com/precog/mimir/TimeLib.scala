@@ -549,7 +549,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         case (c1: NumColumn, c2: StrColumn) =>
           new DateColumn {
             def isDefinedAt(row: Int) =
-              checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(row) <= Long.MaxValue
+              checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(
+                row) <= Long.MaxValue
 
             def apply(row: Int) = {
               val time = c1(row)
@@ -563,7 +564,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         case (c1: DoubleColumn, c2: StrColumn) =>
           new DateColumn {
             def isDefinedAt(row: Int) =
-              checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(row) <= Long.MaxValue
+              checkDefined(c1, c2, row) && c1(row) >= Long.MinValue && c1(
+                row) <= Long.MaxValue
 
             def apply(row: Int) = {
               val time = c1(row)

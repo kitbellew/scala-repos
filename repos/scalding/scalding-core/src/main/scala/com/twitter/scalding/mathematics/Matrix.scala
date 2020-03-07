@@ -1208,7 +1208,8 @@ class RowVector[ColT, ValT](
   }
 
   def toMatrix[RowT](rowId: RowT): Matrix[RowT, ColT, ValT] = {
-    val rowSym = newSymbol(Set(colS, valS), 'row) //Matrix.newSymbol(Set(colS, valS), 'row)
+    val rowSym =
+      newSymbol(Set(colS, valS), 'row) //Matrix.newSymbol(Set(colS, valS), 'row)
     val newPipe = inPipe
       .map(() -> rowSym) { u: Unit => rowId }
       .project(rowSym, colS, valS)
@@ -1345,7 +1346,8 @@ class ColVector[RowT, ValT](
   }
 
   def toMatrix[ColT](colIdx: ColT): Matrix[RowT, ColT, ValT] = {
-    val colSym = newSymbol(Set(rowS, valS), 'col) //Matrix.newSymbol(Set(rowS, valS), 'col)
+    val colSym =
+      newSymbol(Set(rowS, valS), 'col) //Matrix.newSymbol(Set(rowS, valS), 'col)
     val newPipe = inPipe
       .map(() -> colSym) { u: Unit => colIdx }
       .project(rowS, colSym, valS)

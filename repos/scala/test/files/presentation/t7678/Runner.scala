@@ -29,11 +29,17 @@ object Test extends InteractiveTest {
             getMemberClass(sym, tpnme.WeakTypeTag)) == WeakTypeTagClass)
           assert(
             TypeTagsClass
-              .map(sym => getMemberModule(sym, nme.WeakTypeTag)) == WeakTypeTagModule)
+              .map(sym =>
+                getMemberModule(sym, nme.WeakTypeTag)) == WeakTypeTagModule)
           assert(
-            getMemberMethod(ReflectPackage, nme.materializeClassTag) == materializeClassTag)
-          assert(ReflectApiPackage.map(sym =>
-            getMemberMethod(sym, nme.materializeWeakTypeTag)) == materializeWeakTypeTag)
+            getMemberMethod(
+              ReflectPackage,
+              nme.materializeClassTag) == materializeClassTag)
+          assert(
+            ReflectApiPackage.map(sym =>
+              getMemberMethod(
+                sym,
+                nme.materializeWeakTypeTag)) == materializeWeakTypeTag)
           assert(ReflectApiPackage.map(sym =>
             getMemberMethod(sym, nme.materializeTypeTag)) == materializeTypeTag)
           ()

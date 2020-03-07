@@ -182,7 +182,9 @@ private[hive] class IsolatedClientLoader(
 
   // Check to make sure that the root classloader does not know about Hive.
   assert(
-    Try(rootClassLoader.loadClass("org.apache.hadoop.hive.conf.HiveConf")).isFailure)
+    Try(
+      rootClassLoader.loadClass(
+        "org.apache.hadoop.hive.conf.HiveConf")).isFailure)
 
   /** All jars used by the hive specific classloader. */
   protected def allJars = execJars.toArray

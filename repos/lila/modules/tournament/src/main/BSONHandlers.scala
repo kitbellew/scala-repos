@@ -13,7 +13,8 @@ object BSONHandlers {
     new BSONHandler[BSONString, StartingPosition] {
       def read(bsonStr: BSONString): StartingPosition =
         StartingPosition
-          .byEco(bsonStr.value) err s"No such starting position: ${bsonStr.value}"
+          .byEco(
+            bsonStr.value) err s"No such starting position: ${bsonStr.value}"
       def write(x: StartingPosition) = BSONString(x.eco)
     }
 

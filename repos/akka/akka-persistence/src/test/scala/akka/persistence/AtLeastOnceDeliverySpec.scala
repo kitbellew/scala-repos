@@ -29,7 +29,8 @@ object AtLeastOnceDeliverySpec {
   case class ActionAck(id: Long)
   case object Boom
   case object SaveSnap
-  case class Snap(deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
+  case class Snap(
+      deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
 
   def senderProps(
       testActor: ActorRef,
@@ -261,7 +262,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
     }
 
     "not allow using actorSelection with wildcards" in {
-      system.actorOf(Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
+      system.actorOf(
+        Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
       expectMsgType[Failure[_]].toString should include("not supported")
     }
 

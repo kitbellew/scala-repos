@@ -200,7 +200,8 @@ trait DerbyProfile extends JdbcProfile {
          * CONSTRAINT. */
         val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
           table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append " UNIQUE("
+        sb append "CONSTRAINT " append quoteIdentifier(
+          idx.name) append " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString

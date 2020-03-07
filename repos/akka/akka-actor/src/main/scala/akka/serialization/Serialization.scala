@@ -189,7 +189,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         def unique(
             possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
           possibilities.size == 1 ||
-            (possibilities forall (_._1 isAssignableFrom possibilities(0)._1)) ||
+            (possibilities forall (_._1 isAssignableFrom possibilities(
+              0)._1)) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
         val ser = bindings filter { _._1 isAssignableFrom clazz } match {

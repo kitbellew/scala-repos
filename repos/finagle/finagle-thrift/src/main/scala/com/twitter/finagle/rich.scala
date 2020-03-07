@@ -194,7 +194,8 @@ private[twitter] object ThriftUtil {
       (for {
         baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
           Some(iface.getName)
-        serviceCls <- findClass[BinaryService](baseName + "$FinagleService") orElse
+        serviceCls <- findClass[BinaryService](
+          baseName + "$FinagleService") orElse
           findClass[BinaryService](baseName + "$FinagledService")
         baseClass <- findClass1(baseName)
       } yield {
@@ -223,7 +224,8 @@ private[twitter] object ThriftUtil {
       for {
         baseName <- findRootWithSuffix(iface.getName, "$FutureIface") orElse
           Some(iface.getName)
-        serviceCls <- findClass[BinaryService](baseName + "$FinagleService") orElse
+        serviceCls <- findClass[BinaryService](
+          baseName + "$FinagleService") orElse
           findClass[BinaryService](baseName + "$FinagledService")
         cons <- findConstructor(serviceCls, iface, classOf[TProtocolFactory])
       } yield cons.newInstance(impl, protocolFactory)

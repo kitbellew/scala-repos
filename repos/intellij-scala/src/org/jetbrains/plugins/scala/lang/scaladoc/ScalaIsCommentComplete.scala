@@ -67,7 +67,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
         val text: String =
           commentText.substring(lexer.getTokenStart, lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
-        if (text.endsWith(expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
+        if (text.endsWith(
+              expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
               .charAt(endOffset) == '\n') {
           return true
         }

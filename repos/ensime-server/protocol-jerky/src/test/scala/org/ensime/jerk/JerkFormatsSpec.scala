@@ -122,7 +122,10 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      TypeByNameAtPointReq("foo.bar", Left(file1), OffsetRange(1, 10)): RpcRequest,
+      TypeByNameAtPointReq(
+        "foo.bar",
+        Left(file1),
+        OffsetRange(1, 10)): RpcRequest,
       s"""{"typehint":"TypeByNameAtPointReq","name":"foo.bar","file":"$file1","range":{"from":1,"to":10}}"""
     )
 
@@ -176,7 +179,10 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      RefactorReq(1, RenameRefactorDesc("bar", file1, 1, 100), false): RpcRequest,
+      RefactorReq(
+        1,
+        RenameRefactorDesc("bar", file1, 1, 100),
+        false): RpcRequest,
       s"""{"procId":1,"params":{"newName":"bar","typehint":"RenameRefactorDesc","end":100,"file":"$file1","start":1},"typehint":"RefactorReq","interactive":false}"""
     )
 
@@ -388,7 +394,12 @@ class JerkFormatsSpec
       s"""{"line":57,"exception":33,"typehint":"DebugExceptionEvent","file":"$file1","threadName":"threadNameStr","threadId":13}"""
     )
     roundtrip(
-      DebugExceptionEvent(33L, dtid, "threadNameStr", None, None): EnsimeServerMessage,
+      DebugExceptionEvent(
+        33L,
+        dtid,
+        "threadNameStr",
+        None,
+        None): EnsimeServerMessage,
       """{"typehint":"DebugExceptionEvent","exception":33,"threadId":13,"threadName":"threadNameStr"}"""
     )
 
@@ -454,7 +465,11 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      DebugArrayInstance(3, "typeName", "elementType", DebugObjectId(5L)): EnsimeServerMessage,
+      DebugArrayInstance(
+        3,
+        "typeName",
+        "elementType",
+        DebugObjectId(5L)): EnsimeServerMessage,
       """{"elementTypeName":"elementType","typehint":"DebugArrayInstance","typeName":"typeName","length":3,"objectId":{"id":5}}"""
     )
 
@@ -474,7 +489,10 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      DebugBacktrace(List(debugStackFrame), dtid, "thread1"): EnsimeServerMessage,
+      DebugBacktrace(
+        List(debugStackFrame),
+        dtid,
+        "thread1"): EnsimeServerMessage,
       s"""{"typehint":"DebugBacktrace","frames":[{"thisObjectId":{"id":7},"methodName":"method1","locals":[{"index":3,"name":"name1","summary":"summary1","typeName":"type1"},{"index":4,"name":"name2","summary":"summary2","typeName":"type2"}],"pcLocation":{"file":"$file1","line":57},"className":"class1","numArgs":4,"index":7}],"threadId":13,"threadName":"thread1"}"""
     )
 
@@ -538,12 +556,22 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      new SymbolInfo("name", "localName", None, typeInfo, false): EnsimeServerMessage,
+      new SymbolInfo(
+        "name",
+        "localName",
+        None,
+        typeInfo,
+        false): EnsimeServerMessage,
       """{"typehint":"SymbolInfo","name":"name","localName":"localName","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"isCallable":false}"""
     )
 
     roundtrip(
-      new NamedTypeMemberInfo("typeX", typeInfo, None, None, DeclaredAs.Method): EnsimeServerMessage,
+      new NamedTypeMemberInfo(
+        "typeX",
+        typeInfo,
+        None,
+        None,
+        DeclaredAs.Method): EnsimeServerMessage,
       """{"typehint":"NamedTypeMemberInfo","name":"typeX","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"declAs":{"typehint":"Method"}}"""
     )
 
@@ -575,12 +603,14 @@ class JerkFormatsSpec
 
   it should "support search related responses" in {
     roundtrip(
-      SymbolSearchResults(List(methodSearchRes, typeSearchRes)): EnsimeServerMessage,
+      SymbolSearchResults(
+        List(methodSearchRes, typeSearchRes)): EnsimeServerMessage,
       s"""{"typehint":"SymbolSearchResults","syms":[{"name":"abc","localName":"a","pos":{"typehint":"LineSourcePosition","file":"$abd","line":10},"typehint":"MethodSearchResult","ownerName":"ownerStr","declAs":{"typehint":"Method"}},{"name":"abc","localName":"a","pos":{"typehint":"LineSourcePosition","file":"$abd","line":10},"typehint":"TypeSearchResult","declAs":{"typehint":"Trait"}}]}"""
     )
 
     roundtrip(
-      ImportSuggestions(List(List(methodSearchRes, typeSearchRes))): EnsimeServerMessage,
+      ImportSuggestions(
+        List(List(methodSearchRes, typeSearchRes))): EnsimeServerMessage,
       s"""{"typehint":"ImportSuggestions","symLists":[[{"name":"abc","localName":"a","pos":{"typehint":"LineSourcePosition","file":"$abd","line":10},"typehint":"MethodSearchResult","ownerName":"ownerStr","declAs":{"typehint":"Method"}},{"name":"abc","localName":"a","pos":{"typehint":"LineSourcePosition","file":"$abd","line":10},"typehint":"TypeSearchResult","declAs":{"typehint":"Trait"}}]]}"""
     )
 
@@ -597,7 +627,12 @@ class JerkFormatsSpec
 
   it should "support ranges and semantic highlighting" in {
     roundtrip(
-      ERangePositions(ERangePosition(batchSourceFile, 75, 70, 90) :: Nil): EnsimeServerMessage,
+      ERangePositions(
+        ERangePosition(
+          batchSourceFile,
+          75,
+          70,
+          90) :: Nil): EnsimeServerMessage,
       s"""{"typehint":"ERangePositions","positions":[{"file":"/abc","offset":75,"start":70,"end":90}]}"""
     )
 
@@ -618,7 +653,8 @@ class JerkFormatsSpec
     )
 
     roundtrip(
-      ImplicitInfos(List(ImplicitConversionInfo(5, 6, symbolInfo))): EnsimeServerMessage,
+      ImplicitInfos(
+        List(ImplicitConversionInfo(5, 6, symbolInfo))): EnsimeServerMessage,
       """{"typehint":"ImplicitInfos","infos":[{"typehint":"ImplicitConversionInfo","start":5,"end":6,"fun":{"name":"name","localName":"localName","type":{"name":"type1","fullName":"FOO.type1","typehint":"BasicTypeInfo","typeArgs":[],"members":[],"declAs":{"typehint":"Method"}},"isCallable":false}}]}"""
     )
 

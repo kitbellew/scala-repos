@@ -107,7 +107,11 @@ trait SymbolTables {
       val bindingAttachment =
         reification.attachments.get[ReifyBindingAttachment].get
       add(
-        ValDef(NoMods, freshName(name0), TypeTree(), reification) updateAttachment bindingAttachment)
+        ValDef(
+          NoMods,
+          freshName(name0),
+          TypeTree(),
+          reification) updateAttachment bindingAttachment)
     }
 
     private def remove(sym: Symbol): SymbolTable = {
@@ -248,7 +252,11 @@ trait SymbolTables {
               alias => {
                 val canonicalName = currtab.symName(sym)
                 val aliasName = alias._2
-                ValDef(NoMods, aliasName, TypeTree(), Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
+                ValDef(
+                  NoMods,
+                  aliasName,
+                  TypeTree(),
+                  Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
                   sym,
                   aliasName)
               })

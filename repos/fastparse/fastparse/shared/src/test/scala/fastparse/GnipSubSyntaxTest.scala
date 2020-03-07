@@ -31,7 +31,8 @@ object GnipSubSyntaxTest extends TestSuite {
     private def orClause =
       P(
         !(("-" ~~ keywordGroupWithoutOrClause
-          .rep(min = 1)) ~ "OR") ~ keywordGroupWithoutOrClause ~ ("OR" !) ~ gnipKeywordPhrase)
+          .rep(min =
+            1)) ~ "OR") ~ keywordGroupWithoutOrClause ~ ("OR" !) ~ gnipKeywordPhrase)
     private def gnipKeywordPhrase: Parser[String] =
       P(keywordGroup.rep(min = 1)) !
 

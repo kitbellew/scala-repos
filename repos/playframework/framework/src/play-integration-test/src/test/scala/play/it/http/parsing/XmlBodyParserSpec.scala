@@ -32,7 +32,10 @@ object XmlBodyParserSpec extends PlaySpecification {
     }
 
     "parse XML bodies" in new WithApplication() {
-      parse("<foo>bar</foo>", Some("application/xml; charset=utf-8"), "utf-8") must beRight
+      parse(
+        "<foo>bar</foo>",
+        Some("application/xml; charset=utf-8"),
+        "utf-8") must beRight
         .like {
           case xml => xml.text must_== "bar"
         }
@@ -45,7 +48,10 @@ object XmlBodyParserSpec extends PlaySpecification {
         "iso-8859-1") must beRight.like {
         case xml => xml.text must_== "bär"
       }
-      parse("<foo>bär</foo>", Some("application/xml; charset=utf-16"), "utf-16") must beRight
+      parse(
+        "<foo>bär</foo>",
+        Some("application/xml; charset=utf-16"),
+        "utf-16") must beRight
         .like {
           case xml => xml.text must_== "bär"
         }
@@ -58,7 +64,10 @@ object XmlBodyParserSpec extends PlaySpecification {
         "iso-8859-1") must beRight.like {
         case xml => xml.text must_== "bär"
       }
-      parse("<foo>bär</foo>", Some("text/xml; charset=utf-16"), "utf-16") must beRight
+      parse(
+        "<foo>bär</foo>",
+        Some("text/xml; charset=utf-16"),
+        "utf-16") must beRight
         .like {
           case xml => xml.text must_== "bär"
         }

@@ -59,7 +59,9 @@ class InterpolatedStringParserTest extends SimpleTestCase {
 
   def testFormattedExpression() {
     assertMatches(parse("$foo%d")) {
-      case Injection(ElementText("foo"), Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
+      case Injection(
+            ElementText("foo"),
+            Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
     }
   }
 
@@ -73,7 +75,9 @@ class InterpolatedStringParserTest extends SimpleTestCase {
 
   def testFormattedBlockExpression() {
     assertMatches(parse("${foo}%d")) {
-      case Injection(ElementText("foo"), Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
+      case Injection(
+            ElementText("foo"),
+            Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
     }
   }
 
@@ -108,7 +112,9 @@ class InterpolatedStringParserTest extends SimpleTestCase {
 
   def testMultiline() {
     assertMatches(parse("$foo%d", multiline = true)) {
-      case Injection(ElementText("foo"), Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
+      case Injection(
+            ElementText("foo"),
+            Some(Specifier(Span(_, 0, 2), "%d"))) :: Nil =>
     }
   }
 

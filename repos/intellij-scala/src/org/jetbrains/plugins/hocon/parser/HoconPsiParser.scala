@@ -85,7 +85,8 @@ class HoconPsiParser extends PsiParser {
 
     def matches(matcher: Matcher) =
       (matcher.tokenSet
-        .contains(builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
+        .contains(
+          builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
         (matcher.matchNewLine && newLinesBeforeCurrentToken) || (matcher.matchEof && builder.eof)
 
     def matchesUnquoted(str: String) =

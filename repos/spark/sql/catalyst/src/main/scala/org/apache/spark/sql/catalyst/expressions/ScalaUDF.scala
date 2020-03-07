@@ -476,20 +476,21 @@ case class ScalaUDF(
       }
 
     case 13 =>
-      val func = function.asInstanceOf[(
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any) => Any]
+      val func = function.asInstanceOf[
+        (
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any,
+            Any) => Any]
       val child0 = children(0)
       val child1 = children(1)
       val child2 = children(2)

@@ -146,7 +146,9 @@ class CachedSpec extends PlaySpecification {
         action(FakeRequest("GET", "/b").withHeaders(
           IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
       status(
-        action(FakeRequest("GET", "/c").withHeaders(IF_NONE_MATCH -> "*")).run) must_== 200
+        action(
+          FakeRequest("GET", "/c").withHeaders(
+            IF_NONE_MATCH -> "*")).run) must_== 200
     }
   }
 

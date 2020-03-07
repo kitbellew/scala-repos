@@ -199,7 +199,10 @@ object Team extends LilaController {
           _ => fuccess(routes.Team.show(team.id).toString),
           {
             case (decision, url) =>
-              api.processRequest(team, request, (decision === "accept")) inject url
+              api.processRequest(
+                team,
+                request,
+                (decision === "accept")) inject url
           }
         )
       }

@@ -285,7 +285,9 @@ case class DefaultOptimalSizeExploringResizer(
         else
           optimize(currentSize)
       }
-    Math.max(lowerBound, Math.min(proposedChange + currentSize, upperBound)) - currentSize
+    Math.max(
+      lowerBound,
+      Math.min(proposedChange + currentSize, upperBound)) - currentSize
   }
 
   private def optimize(currentSize: PoolSize): Int = {

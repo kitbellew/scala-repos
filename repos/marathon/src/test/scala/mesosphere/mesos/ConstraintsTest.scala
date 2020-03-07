@@ -57,7 +57,9 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     val tasks =
       0.to(9)
         .map(num =>
-          makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue"))) ++
+          makeSampleTask(
+            s"$num",
+            Map("rack" -> "rack-1", "color" -> "blue"))) ++
         10.to(19)
           .map(num =>
             makeSampleTask(
@@ -65,7 +67,9 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
               Map("rack" -> "rack-1", "color" -> "green"))) ++
         20.to(29)
           .map(num =>
-            makeSampleTask(s"$num", Map("rack" -> "rack-2", "color" -> "blue"))) ++
+            makeSampleTask(
+              s"$num",
+              Map("rack" -> "rack-2", "color" -> "blue"))) ++
         30.to(39)
           .map(num =>
             makeSampleTask(
@@ -78,16 +82,20 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     Then("20 tasks got selected and evenly distributed")
     result should have size 20
     result
-      .count(_.agentInfo.attributes.exists(_.getText.getValue == "rack-1")) should be(
+      .count(
+        _.agentInfo.attributes
+          .exists(_.getText.getValue == "rack-1")) should be(10)
+    result
+      .count(
+        _.agentInfo.attributes
+          .exists(_.getText.getValue == "rack-2")) should be(10)
+    result
+      .count(
+        _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(
       10)
     result
-      .count(_.agentInfo.attributes.exists(_.getText.getValue == "rack-2")) should be(
-      10)
-    result
-      .count(_.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(
-      10)
-    result
-      .count(_.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
+      .count(
+        _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
       10)
   }
 

@@ -1020,7 +1020,8 @@ class EndToEndTest
   private def budget: RetryBudget =
     RetryBudget(1.minute, minRetriesPerSec = 0, percentCanRetry = 1.0)
 
-  test("thriftmux server + thriftmux client: auto requeues retryable failures") {
+  test(
+    "thriftmux server + thriftmux client: auto requeues retryable failures") {
     new ThriftMuxFailServer {
       val sr = new InMemoryStatsReceiver
       val client =

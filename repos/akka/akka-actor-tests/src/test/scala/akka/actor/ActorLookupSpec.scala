@@ -184,8 +184,9 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
     "find actors by looking up their path" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
         Await
-          .result(looker ? LookupPath(pathOf.path), timeout.duration) should ===(
-          result)
+          .result(
+            looker ? LookupPath(pathOf.path),
+            timeout.duration) should ===(result)
       }
       for {
         looker ← all
@@ -253,8 +254,9 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       def check(target: ActorRef) {
         for (looker ← all) {
           Await
-            .result(looker ? LookupPath(target.path), timeout.duration) should ===(
-            target)
+            .result(
+              looker ? LookupPath(target.path),
+              timeout.duration) should ===(target)
           Await.result(
             looker ? LookupString(target.path.toString),
             timeout.duration) should ===(target)
@@ -308,8 +310,9 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       a.path.elements.head should ===("temp")
       Await.result(c2 ? LookupPath(a.path), timeout.duration) should ===(a)
       Await
-        .result(c2 ? LookupString(a.path.toString), timeout.duration) should ===(
-        a)
+        .result(
+          c2 ? LookupString(a.path.toString),
+          timeout.duration) should ===(a)
       Await.result(
         c2 ? LookupString(a.path.toStringWithoutAddress),
         timeout.duration) should ===(a)
@@ -317,8 +320,9 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
         c2 ? LookupString("../../" + a.path.elements.mkString("/")),
         timeout.duration) should ===(a)
       Await
-        .result(c2 ? LookupString(a.path.toString + "/"), timeout.duration) should ===(
-        a)
+        .result(
+          c2 ? LookupString(a.path.toString + "/"),
+          timeout.duration) should ===(a)
       Await.result(
         c2 ? LookupString(a.path.toStringWithoutAddress + "/"),
         timeout.duration) should ===(a)

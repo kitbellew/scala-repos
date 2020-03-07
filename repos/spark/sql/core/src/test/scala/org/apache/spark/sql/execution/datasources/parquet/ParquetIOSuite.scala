@@ -730,7 +730,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       var hash1: Int = 0
       var hash2: Int = 0
       (false :: true :: Nil).foreach { v =>
-        withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> v.toString) {
+        withSQLConf(
+          SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> v.toString) {
           val df = sqlContext.read.parquet(dir.getCanonicalPath)
           val rows = df.queryExecution.toRdd.map(_.copy()).collect()
           val unsafeRows = rows.map(_.asInstanceOf[UnsafeRow])

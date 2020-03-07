@@ -153,13 +153,17 @@ object ListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs, xs
+    xs.mapAccumLeft(
+      List[Int](),
+      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs, xs
       .map(f))
   }
 
   "mapAccumRight" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(List[Int](), (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs
+    xs.mapAccumRight(
+      List[Int](),
+      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs
       .map(f))
   }
 

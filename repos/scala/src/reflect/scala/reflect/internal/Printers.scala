@@ -69,13 +69,15 @@ trait Printers extends api.Printers { self: SymbolTable =>
   class TreePrinter(out: PrintWriter) extends super.TreePrinter {
     protected var indentMargin = 0
     protected val indentStep = 2
-    protected var indentString = "                                        " // 40
+    protected var indentString =
+      "                                        " // 40
 
     printTypes = settings.printtypes.value
     printIds = settings.uniqid.value
     printOwners = settings.Yshowsymowners.value
     printKinds = settings.Yshowsymkinds.value
-    printMirrors = false // typically there's no point to print mirrors inside the compiler, as there is only one mirror there
+    printMirrors =
+      false // typically there's no point to print mirrors inside the compiler, as there is only one mirror there
     printPositions = settings.Xprintpos.value
 
     def indent() = indentMargin += indentStep
@@ -1147,9 +1149,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
           if (printRootPkg && checkRootPackage(tree))
             print(s"${printedName(nme.ROOTPKG)}.")
           val printParentheses =
-            needsParentheses(qual)(insideAnnotated = false) || isIntLitWithDecodedOp(
-              qual,
-              name)
+            needsParentheses(qual)(insideAnnotated =
+              false) || isIntLitWithDecodedOp(qual, name)
           if (printParentheses)
             print("(", resolveSelect(qual), ").", printedName(name))
           else print(resolveSelect(qual), ".", printedName(name))

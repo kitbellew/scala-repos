@@ -342,7 +342,9 @@ class KMeans private (
             scal(1.0 / count, sum)
             val newCenter = new VectorWithNorm(sum)
             if (KMeans
-                  .fastSquaredDistance(newCenter, centers(run)(j)) > epsilon * epsilon) {
+                  .fastSquaredDistance(
+                    newCenter,
+                    centers(run)(j)) > epsilon * epsilon) {
               changed = true
             }
             centers(run)(j) = newCenter

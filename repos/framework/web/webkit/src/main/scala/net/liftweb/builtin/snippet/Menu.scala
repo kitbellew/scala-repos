@@ -176,7 +176,9 @@ object Menu extends DispatchSnippet {
                   true,
                   <xml:group> <a href={
                     uri
-                  }>{text}</a>{ifExpandCurrent(buildUlLine(kids))}</xml:group>) %
+                  }>{text}</a>{
+                    ifExpandCurrent(buildUlLine(kids))
+                  }</xml:group>) %
                   S.prefixedAttrsToMetaData("li_item", liMap)
               )
 
@@ -222,7 +224,9 @@ object Menu extends DispatchSnippet {
                   true,
                   <xml:group> <a href={
                     uri
-                  }>{text}</a>{ifExpandAll(buildUlLine(kids))}</xml:group>) % li)
+                  }>{text}</a>{
+                    ifExpandAll(buildUlLine(kids))
+                  }</xml:group>) % li)
           }
         }
 

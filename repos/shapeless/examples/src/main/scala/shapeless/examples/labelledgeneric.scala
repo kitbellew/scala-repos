@@ -55,7 +55,8 @@ object LabelledGenericExamples extends App {
   println
 
   // Add a new field, map back into ExtendedBook
-  val extended = bookExtGen.from(rec + ('inPrint ->> true)) // Static type is ExtendedBook
+  val extended =
+    bookExtGen.from(rec + ('inPrint ->> true)) // Static type is ExtendedBook
   println(extended)
   println
 

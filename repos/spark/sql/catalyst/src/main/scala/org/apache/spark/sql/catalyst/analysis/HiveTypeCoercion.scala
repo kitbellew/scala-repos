@@ -249,7 +249,8 @@ object HiveTypeCoercion {
       case s: Union
           if s.childrenResolved &&
             s.children
-              .forall(_.output.length == s.children.head.output.length) && !s.resolved =>
+              .forall(
+                _.output.length == s.children.head.output.length) && !s.resolved =>
         val newChildren: Seq[LogicalPlan] =
           buildNewChildrenWithWiderTypes(s.children)
         s.makeCopy(Array(newChildren))

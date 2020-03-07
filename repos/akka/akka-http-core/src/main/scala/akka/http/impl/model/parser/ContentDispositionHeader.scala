@@ -11,7 +11,9 @@ private[parser] trait ContentDispositionHeader {
 
   // http://tools.ietf.org/html/rfc6266#section-4.1
   def `content-disposition` = rule {
-    `disposition-type` ~ zeroOrMore(ws(';') ~ `disposition-parm`) ~ EOI ~> (_.toMap) ~> (`Content-Disposition`(
+    `disposition-type` ~ zeroOrMore(
+      ws(
+        ';') ~ `disposition-parm`) ~ EOI ~> (_.toMap) ~> (`Content-Disposition`(
       _,
       _))
   }
@@ -32,8 +34,10 @@ private[parser] trait ContentDispositionHeader {
   }
 
   def `filename-parm` =
-    rule(ignoreCase("filename") ~ OWS ~ ws('=') ~ push("filename") ~ word
-      | ignoreCase("filename*") ~ OWS ~ ws('=') ~ push("filename") ~ `ext-value`)
+    rule(
+      ignoreCase("filename") ~ OWS ~ ws('=') ~ push("filename") ~ word
+        | ignoreCase("filename*") ~ OWS ~ ws('=') ~ push(
+          "filename") ~ `ext-value`)
 
   def `disp-ext-parm` =
     rule(

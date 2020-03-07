@@ -251,7 +251,8 @@ private[r] class RBackendHandler(server: RBackend)
           val parameterTypes = parameterTypesOfMethods(index)
 
           (0 until numArgs).map { i =>
-            if (parameterTypes(i) == classOf[Seq[Any]] && args(i).getClass.isArray) {
+            if (parameterTypes(i) == classOf[Seq[Any]] && args(
+                  i).getClass.isArray) {
               // Convert a Java array to scala Seq
               args(i) = args(i).asInstanceOf[Array[_]].toSeq
             }

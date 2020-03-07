@@ -53,7 +53,8 @@ class ReadHandleTest extends FunSuite {
     }
   }
 
-  test("ReadHandle.buffered should not synchronize on send when buffer is full") {
+  test(
+    "ReadHandle.buffered should not synchronize on send when buffer is full") {
     new BufferedReadHandle {
       0 until N foreach { _ => assert((messages ! msg(0)).isDefined == true) }
       assert((messages ! msg(0)).isDefined == false)
@@ -97,7 +98,8 @@ class ReadHandleTest extends FunSuite {
     }
   }
 
-  test("ReadHandle.buffered should when closed propagate immediately if empty") {
+  test(
+    "ReadHandle.buffered should when closed propagate immediately if empty") {
     new BufferedReadHandle {
       val closed = (close ?)
       assert(closed.isDefined == false)

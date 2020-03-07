@@ -114,7 +114,8 @@ class TasksResourceTest
     noMoreInteractions(taskKiller)
   }
 
-  test("killTask without authentication is denied when the affected app exists") {
+  test(
+    "killTask without authentication is denied when the affected app exists") {
     Given("An unauthenticated request")
     auth.authenticated = false
     val req = auth.request

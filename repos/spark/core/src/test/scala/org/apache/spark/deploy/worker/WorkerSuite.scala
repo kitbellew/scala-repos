@@ -41,11 +41,14 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test isUseLocalNodeSSLConfig") {
     Worker.isUseLocalNodeSSLConfig(cmd("-Dasdf=dfgh")) shouldBe false
     Worker
-      .isUseLocalNodeSSLConfig(cmd("-Dspark.ssl.useNodeLocalConf=true")) shouldBe true
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=true")) shouldBe true
     Worker
-      .isUseLocalNodeSSLConfig(cmd("-Dspark.ssl.useNodeLocalConf=false")) shouldBe false
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=false")) shouldBe false
     Worker
-      .isUseLocalNodeSSLConfig(cmd("-Dspark.ssl.useNodeLocalConf=")) shouldBe false
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=")) shouldBe false
   }
 
   test("test maybeUpdateSSLSettings") {

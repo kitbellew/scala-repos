@@ -111,11 +111,13 @@ private[puzzle] final class PuzzleApi(
           val a2 = a1.copy(vote = v.some)
           attemptColl.update(
             BSONDocument("_id" -> a2.id),
-            BSONDocument("$set" -> BSONDocument(Attempt.BSONFields.vote -> v))) zip
+            BSONDocument(
+              "$set" -> BSONDocument(Attempt.BSONFields.vote -> v))) zip
             puzzleColl.update(
               BSONDocument("_id" -> p2.id),
-              BSONDocument("$set" -> BSONDocument(
-                Puzzle.BSONFields.vote -> p2.vote))) map {
+              BSONDocument(
+                "$set" -> BSONDocument(
+                  Puzzle.BSONFields.vote -> p2.vote))) map {
             case _ => p2 -> a2
           }
       }
@@ -131,7 +133,8 @@ private[puzzle] final class PuzzleApi(
     def playedIds(user: User, max: Int): Fu[BSONArray] =
       attemptColl.distinct(
         Attempt.BSONFields.puzzleId,
-        BSONDocument(Attempt.BSONFields.userId -> user.id).some) map BSONArray.apply
+        BSONDocument(
+          Attempt.BSONFields.userId -> user.id).some) map BSONArray.apply
 
     def hasVoted(user: User): Fu[Boolean] =
       attemptColl

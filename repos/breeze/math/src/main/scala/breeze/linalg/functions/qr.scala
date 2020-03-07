@@ -6,8 +6,10 @@ import com.github.fommil.netlib.LAPACK.{getInstance => lapack}
 import spire.implicits.{cforRange, cforRange2}
 
 sealed private[this] trait QRMode
-private[this] case object CompleteQR extends QRMode // Q and R have dimensions (m, m), (m, n)
-private[this] case object ReducedQR extends QRMode // Q and R have dimensions (m, k), (k, n) with k = min(m, n)
+private[this] case object CompleteQR
+    extends QRMode // Q and R have dimensions (m, m), (m, n)
+private[this] case object ReducedQR
+    extends QRMode // Q and R have dimensions (m, k), (k, n) with k = min(m, n)
 
 /**
   * QR Factorization

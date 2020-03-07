@@ -224,7 +224,8 @@ import scala.language.implicitConversions"""
     }
     def objectLines = {
       val comp = if (isCardinal) cardinalCompanion else floatingCompanion
-      interpolate(comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (implicitCoercions map interpolate)
+      interpolate(
+        comp + allCompanions + "\n" + nonUnitCompanions).trim.lines.toList ++ (implicitCoercions map interpolate)
     }
 
     /** Makes a set of binary operations based on the given set of ops, args, and resultFn.

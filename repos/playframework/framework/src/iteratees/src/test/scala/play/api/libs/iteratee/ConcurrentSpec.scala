@@ -257,7 +257,9 @@ object ConcurrentSpec
           endInvokedTwice.countDown()
         })(unicastEC)
 
-        Await.result(enumerator |>>> Iteratee.getChunks[String], Duration.Inf) must_== Nil
+        Await.result(
+          enumerator |>>> Iteratee.getChunks[String],
+          Duration.Inf) must_== Nil
         endInvokedTwice.await(10, TimeUnit.SECONDS) must_== true
       }
     }

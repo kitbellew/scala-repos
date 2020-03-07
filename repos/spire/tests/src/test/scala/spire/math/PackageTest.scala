@@ -32,7 +32,9 @@ class PackageTest extends FunSuite {
       pow(BigDecimal("1.00000001"), BigDecimal("2000000000")) === BigDecimal(
         "485165146.8932734862594042197965646"))
     assert(
-      pow(BigDecimal(Double.MaxValue) * 100, BigDecimal("0.00001")) === BigDecimal(
+      pow(
+        BigDecimal(Double.MaxValue) * 100,
+        BigDecimal("0.00001")) === BigDecimal(
         "1.007169457206495657176075115660221"))
   }
 

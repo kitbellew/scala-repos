@@ -47,9 +47,11 @@ case class BroadcastNestedLoopJoin(
 
   override def requiredChildDistribution: Seq[Distribution] = buildSide match {
     case BuildLeft =>
-      BroadcastDistribution(IdentityBroadcastMode) :: UnspecifiedDistribution :: Nil
+      BroadcastDistribution(
+        IdentityBroadcastMode) :: UnspecifiedDistribution :: Nil
     case BuildRight =>
-      UnspecifiedDistribution :: BroadcastDistribution(IdentityBroadcastMode) :: Nil
+      UnspecifiedDistribution :: BroadcastDistribution(
+        IdentityBroadcastMode) :: Nil
   }
 
   private[this] def genResultProjection: InternalRow => InternalRow = {

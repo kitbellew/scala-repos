@@ -586,7 +586,9 @@ object Uri {
             else
               build(
                 Slash(
-                  decode(string.substring(ix + 1, segmentEnd), charset) :: path),
+                  decode(
+                    string.substring(ix + 1, segmentEnd),
+                    charset) :: path),
                 ix - 1)
           else if (segmentEnd == 0) build(path, ix - 1, ix + 1)
           else build(path, ix - 1, segmentEnd)

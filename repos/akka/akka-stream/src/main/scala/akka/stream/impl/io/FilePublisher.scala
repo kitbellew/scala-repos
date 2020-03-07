@@ -65,8 +65,8 @@ private[akka] final class FilePublisher(
 
   val buf = ByteBuffer.allocate(chunkSize)
   var readBytesTotal = 0L
-  var availableChunks
-      : Vector[ByteString] = Vector.empty // TODO possibly resign read-ahead-ing and make fusable as Stage
+  var availableChunks: Vector[ByteString] =
+    Vector.empty // TODO possibly resign read-ahead-ing and make fusable as Stage
 
   private var chan: FileChannel = _
 

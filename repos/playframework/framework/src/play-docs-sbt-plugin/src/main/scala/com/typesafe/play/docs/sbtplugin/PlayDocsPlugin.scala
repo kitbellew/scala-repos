@@ -142,7 +142,8 @@ object PlayDocsPlugin extends AutoPlugin {
     docsVersion := PlayVersion.current,
     docsName := "play-docs",
     docsJarFile <<= docsJarFileSetting,
-    PlayDocsKeys.resources := Seq(PlayDocsDirectoryResource(manualPath.value)) ++
+    PlayDocsKeys.resources := Seq(
+      PlayDocsDirectoryResource(manualPath.value)) ++
       docsJarFile.value
         .map(jar => PlayDocsJarFileResource(jar, Some("play/docs/content")))
         .toSeq,

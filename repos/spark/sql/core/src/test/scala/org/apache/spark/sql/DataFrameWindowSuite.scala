@@ -417,7 +417,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test("SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
+  test(
+    "SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
     val src = Seq((0, 3, 5))
       .toDF("a", "b", "c")
       .withColumn("Data", struct("a", "b"))

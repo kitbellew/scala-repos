@@ -63,8 +63,8 @@ private[v1] class OneStageResource(ui: SparkUI) {
   def taskSummary(
       @PathParam("stageId") stageId: Int,
       @PathParam("stageAttemptId") stageAttemptId: Int,
-      @DefaultValue("0.05,0.25,0.5,0.75,0.95") @QueryParam("quantiles") quantileString: String)
-      : TaskMetricDistributions = {
+      @DefaultValue("0.05,0.25,0.5,0.75,0.95") @QueryParam(
+        "quantiles") quantileString: String): TaskMetricDistributions = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val quantiles = quantileString.split(",").map { s =>
         try {

@@ -48,7 +48,8 @@ class BasicTest extends ApplicabilityTestBase {
       case ExcessArgument(Expression("A")) :: Nil =>
     }
     assertProblems("()", "(A, B)") {
-      case ExcessArgument(Expression("A")) :: ExcessArgument(Expression("B")) :: Nil =>
+      case ExcessArgument(Expression("A")) :: ExcessArgument(
+            Expression("B")) :: Nil =>
     }
     assertProblems("(p: A)", "(A, B)") {
       case ExcessArgument(Expression("B")) :: Nil =>

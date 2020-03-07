@@ -46,7 +46,8 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       val result: Future[Result] = listPlaces().apply(FakeRequest())
       status(result) === OK
       contentType(result) === Some("application/json")
-      contentAsString(result) === """[{"name":"Sandleford","location":{"lat":51.377797,"long":-1.318965}},{"name":"Watership Down","location":{"lat":51.235685,"long":-1.309197}}]"""
+      contentAsString(
+        result) === """[{"name":"Sandleford","location":{"lat":51.377797,"long":-1.318965}},{"name":"Watership Down","location":{"lat":51.235685,"long":-1.309197}}]"""
     }
 
     "allow handling JSON" in {
@@ -110,7 +111,8 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
 
       status(result) === OK
       contentType(result) === Some("application/json")
-      contentAsString(result) === """{"status":"OK","message":"Place 'Nuthanger Farm' saved."}"""
+      contentAsString(
+        result) === """{"status":"OK","message":"Place 'Nuthanger Farm' saved."}"""
     }
 
     "allow handling JSON with BodyParser" in {
@@ -163,7 +165,8 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       val bodyText: String = contentAsString(result)
       status(result) === OK
       contentType(result) === Some("application/json")
-      contentAsString(result) === """{"status":"OK","message":"Place 'Nuthanger Farm' saved."}"""
+      contentAsString(
+        result) === """{"status":"OK","message":"Place 'Nuthanger Farm' saved."}"""
     }
   }
 

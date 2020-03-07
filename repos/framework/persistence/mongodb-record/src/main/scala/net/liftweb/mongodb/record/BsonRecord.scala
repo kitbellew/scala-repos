@@ -83,7 +83,8 @@ trait BsonMetaRecord[BaseRecord <: BsonRecord[BaseRecord]]
     *   using asDBObject
     */
   def asDBObject(inst: BaseRecord): DBObject = {
-    val dbo = BasicDBObjectBuilder.start // use this so regex patterns can be stored.
+    val dbo =
+      BasicDBObjectBuilder.start // use this so regex patterns can be stored.
 
     for {
       field <- fields(inst)

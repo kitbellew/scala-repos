@@ -50,8 +50,8 @@ private[akka] trait SubscriptionWithCursor[T]
   var active = true
 
   /** Do not increment directly, use `moreRequested(Long)` instead (it provides overflow protection)! */
-  var totalDemand
-      : Long = 0 // number of requested but not yet dispatched elements
+  var totalDemand: Long =
+    0 // number of requested but not yet dispatched elements
   var cursor: Int = 0 // buffer cursor, managed by buffer
 }
 
@@ -178,7 +178,9 @@ private[akka] trait SubscriberManagement[T]
     val desired = Math
       .min(
         Int.MaxValue,
-        Math.min(maxRequested(subscriptions), buffer.maxAvailable) - pendingFromUpstream)
+        Math.min(
+          maxRequested(subscriptions),
+          buffer.maxAvailable) - pendingFromUpstream)
       .toInt
     if (desired > 0) {
       pendingFromUpstream += desired

@@ -755,7 +755,8 @@ abstract class HadoopFsRelationTest
     }
   }
 
-  test("SPARK-9899 Disable customized output committer when speculation is on") {
+  test(
+    "SPARK-9899 Disable customized output committer when speculation is on") {
     val clonedConf = new Configuration(hadoopConfiguration)
     val speculationEnabled =
       sqlContext.sparkContext.conf

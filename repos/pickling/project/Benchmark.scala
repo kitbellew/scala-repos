@@ -11,7 +11,8 @@ object Benchmark {
     val projectCP = wrappedProjectCP
       .map(_.data)
       .mkString(java.io.File.pathSeparatorChar.toString)
-    val toolCP = projectCP // TODO: segregate compiler jars from the rest of dependencies
+    val toolCP =
+      projectCP // TODO: segregate compiler jars from the rest of dependencies
     val libraryCP = projectCP
 
     for (len <- config) {
@@ -69,10 +70,16 @@ object Benchmark {
   def benchmarkSettings = Seq(
     // MISC
     listInt := benchTask("ListIntBench", 100000 to 1000000 by 100000).evaluated,
-    vectorKryo := benchTask("KryoVectorBench", 100000 to 1000000 by 100000).evaluated,
-    arrayInt := benchTask("ArrayIntBench", 500000 to 5000000 by 500000).evaluated,
+    vectorKryo := benchTask(
+      "KryoVectorBench",
+      100000 to 1000000 by 100000).evaluated,
+    arrayInt := benchTask(
+      "ArrayIntBench",
+      500000 to 5000000 by 500000).evaluated,
     // PAPER
-    travIntPick := benchTask("TraversableIntBench", 100000 to 1000000 by 100000).evaluated,
+    travIntPick := benchTask(
+      "TraversableIntBench",
+      100000 to 1000000 by 100000).evaluated,
     travIntJava := benchTask(
       "TraversableJavaIntBench",
       100000 to 1000000 by 100000).evaluated,
@@ -106,17 +113,41 @@ object Benchmark {
     geoTrellisKryo := benchTask(
       "GeoTrellisKryoBench",
       5000000 to 50000000 by 5000000).evaluated,
-    evactor1Pick := benchTask("EvactorPicklingBench", 1000 to 10000 by 1000).evaluated,
-    evactor1Java := benchTask("EvactorJavaBench", 1000 to 10000 by 1000).evaluated,
-    evactor1Kryo := benchTask("EvactorKryoBench", 1000 to 10000 by 1000).evaluated,
-    evactor2Pick := benchTask("EvactorPicklingBench", 20000 to 40000 by 2000).evaluated,
-    evactor2Java := benchTask("EvactorJavaBench", 20000 to 40000 by 2000).evaluated,
-    evactor2Kryo := benchTask("EvactorKryoBench", 20000 to 40000 by 2000).evaluated,
-    sparklrPick := benchTask("SparkLRPicklingBench", 20000 to 40000 by 2000).evaluated,
-    sparklrJava := benchTask("SparkLRJavaBench", 20000 to 40000 by 2000).evaluated,
-    sparklrKryo := benchTask("SparkLRKryoBench", 20000 to 40000 by 2000).evaluated,
-    graphPick := benchTask("WikiGraphPicklingBench", 5000 to 14000 by 1000).evaluated,
-    graphJava := benchTask("WikiGraphJavaBench", 5000 to 14000 by 1000).evaluated,
-    graphKryo := benchTask("WikiGraphKryoBench", 5000 to 14000 by 1000).evaluated
+    evactor1Pick := benchTask(
+      "EvactorPicklingBench",
+      1000 to 10000 by 1000).evaluated,
+    evactor1Java := benchTask(
+      "EvactorJavaBench",
+      1000 to 10000 by 1000).evaluated,
+    evactor1Kryo := benchTask(
+      "EvactorKryoBench",
+      1000 to 10000 by 1000).evaluated,
+    evactor2Pick := benchTask(
+      "EvactorPicklingBench",
+      20000 to 40000 by 2000).evaluated,
+    evactor2Java := benchTask(
+      "EvactorJavaBench",
+      20000 to 40000 by 2000).evaluated,
+    evactor2Kryo := benchTask(
+      "EvactorKryoBench",
+      20000 to 40000 by 2000).evaluated,
+    sparklrPick := benchTask(
+      "SparkLRPicklingBench",
+      20000 to 40000 by 2000).evaluated,
+    sparklrJava := benchTask(
+      "SparkLRJavaBench",
+      20000 to 40000 by 2000).evaluated,
+    sparklrKryo := benchTask(
+      "SparkLRKryoBench",
+      20000 to 40000 by 2000).evaluated,
+    graphPick := benchTask(
+      "WikiGraphPicklingBench",
+      5000 to 14000 by 1000).evaluated,
+    graphJava := benchTask(
+      "WikiGraphJavaBench",
+      5000 to 14000 by 1000).evaluated,
+    graphKryo := benchTask(
+      "WikiGraphKryoBench",
+      5000 to 14000 by 1000).evaluated
   )
 }

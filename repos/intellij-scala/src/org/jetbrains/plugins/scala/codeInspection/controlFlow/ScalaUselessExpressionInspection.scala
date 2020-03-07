@@ -94,7 +94,9 @@ class ScalaUselessExpressionInspection
       }
     }
     def isInReturnPositionForUnitFunction: Boolean = {
-      Option(PsiTreeUtil.getParentOfType(expr, classOf[ScFunctionDefinition])) match {
+      Option(
+        PsiTreeUtil
+          .getParentOfType(expr, classOf[ScFunctionDefinition])) match {
         case Some(fun) if fun.returnType.getOrAny == types.Unit =>
           fun.returnUsages().contains(expr)
         case _ => false

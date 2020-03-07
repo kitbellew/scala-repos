@@ -9,7 +9,9 @@ import com.intellij.openapi.vfs.VirtualFile
   * @author Pavel Fatin
   */
 class SbtProjectImportProvider(builder: SbtProjectImportBuilder)
-    extends AbstractExternalProjectImportProvider(builder, SbtProjectSystem.Id) {
+    extends AbstractExternalProjectImportProvider(
+      builder,
+      SbtProjectSystem.Id) {
 
   override def getId = Sbt.Name
 

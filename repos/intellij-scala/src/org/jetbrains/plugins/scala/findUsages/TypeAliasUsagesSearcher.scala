@@ -49,7 +49,10 @@ class TypeAliasUsagesSearcher
     }
     val name: String = ta.name
     if (name == null || StringUtil.isEmptyOrSpaces(name)) return
-    val scope: SearchScope = inReadAction(parameters.getEffectiveSearchScope) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
+    val scope: SearchScope =
+      inReadAction(
+        parameters.getEffectiveSearchScope
+      ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
     val collector: SearchRequestCollector = parameters.getOptimizer
     val session: SearchSession = collector.getSearchSession
     collector.searchWord(

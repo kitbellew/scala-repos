@@ -337,7 +337,8 @@ object LiftedEmbedding extends App {
         ),
         // "sales" and "total" will use the default value 0:
         coffees
-          .map(c => (c.name, c.supID, c.price)) += ("Colombian_Decaf", 101, 8.99)
+          .map(c =>
+            (c.name, c.supID, c.price)) += ("Colombian_Decaf", 101, 8.99)
       )
 
       // Get the statement without having to specify a value to insert:

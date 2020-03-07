@@ -24,7 +24,8 @@ private[akka] sealed trait ClientOp // messages sent to from Conductor to Player
 private[akka] sealed trait ServerOp // messages sent to from Player to Conductor
 private[akka] sealed trait CommandOp // messages sent from TestConductorExt to Conductor
 private[akka] sealed trait NetworkOp // messages sent over the wire
-private[akka] sealed trait UnconfirmedClientOp extends ClientOp // unconfirmed messages going to the Player
+private[akka] sealed trait UnconfirmedClientOp
+    extends ClientOp // unconfirmed messages going to the Player
 private[akka] sealed trait ConfirmedClientOp extends ClientOp
 
 /**

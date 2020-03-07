@@ -603,7 +603,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
       if (s.isEmpty)
         None
       else
-        lookupr((EphemeralStream.emptyEphemeralStream, s.head(), s.tail())) map {
+        lookupr(
+          (EphemeralStream.emptyEphemeralStream, s.head(), s.tail())) map {
           case (l, (k, v), r) => Store(w => l.reverse ++ cons((k, w), r), v)
         })
   }

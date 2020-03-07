@@ -84,7 +84,8 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  test("BaggedPoint RDD: with subsampling without replacement (fraction = 1.0)") {
+  test(
+    "BaggedPoint RDD: with subsampling without replacement (fraction = 1.0)") {
     val numSubsamples = 100
     val (expectedMean, expectedStddev) = (1.0, 0)
 
@@ -105,7 +106,8 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  test("BaggedPoint RDD: with subsampling without replacement (fraction = 0.5)") {
+  test(
+    "BaggedPoint RDD: with subsampling without replacement (fraction = 0.5)") {
     val numSubsamples = 100
     val subsample = 0.5
     val (expectedMean, expectedStddev) =

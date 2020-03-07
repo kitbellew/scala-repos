@@ -300,7 +300,11 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
           // Handle ORDER BY, SORT BY, DISTRIBUTE BY, and CLUSTER BY clause.
           val withSort =
-            (orderByClause, sortByClause, distributeByClause, clusterByClause) match {
+            (
+              orderByClause,
+              sortByClause,
+              distributeByClause,
+              clusterByClause) match {
               case (Some(totalOrdering), None, None, None) =>
                 Sort(
                   totalOrdering.children.map(nodeToSortOrder),
@@ -351,7 +355,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           val windowDefinitions = windowClause.map(_.children.collect {
             case Token(
                 "TOK_WINDOWDEF",
-                Token(windowName, Nil) :: Token("TOK_WINDOWSPEC", spec) :: Nil) =>
+                Token(windowName, Nil) :: Token(
+                  "TOK_WINDOWSPEC",
+                  spec) :: Nil) =>
               windowName -> nodesToWindowSpecification(spec)
           }.toMap)
           // Handle cases like

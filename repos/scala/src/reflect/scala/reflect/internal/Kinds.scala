@@ -470,7 +470,9 @@ trait Kinds {
         else
           TypeConKind(
             bounds,
-            tpe.typeParams map { p => Argument(p.variance, infer(p, false))(p) })
+            tpe.typeParams map { p =>
+              Argument(p.variance, infer(p, false))(p)
+            })
       }
     }
   }

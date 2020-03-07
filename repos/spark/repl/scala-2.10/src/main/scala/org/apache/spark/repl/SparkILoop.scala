@@ -71,8 +71,8 @@ class SparkILoop(
   def this(in0: BufferedReader, out: JPrintWriter) = this(Some(in0), out, None)
   def this() = this(None, new JPrintWriter(Console.out, true), None)
 
-  private var in
-      : InteractiveReader = _ // the input stream from which commands come
+  private var in: InteractiveReader =
+    _ // the input stream from which commands come
 
   // NOTE: Exposed in package for testing
   private[repl] var settings: Settings = _
@@ -451,7 +451,10 @@ class SparkILoop(
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
         val statsMsg =
-          List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+          List(
+            typeMsg,
+            termMsg,
+            implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
           "%2d) %-30s %s%s".format(

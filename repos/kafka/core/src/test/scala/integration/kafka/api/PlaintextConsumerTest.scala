@@ -811,8 +811,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // commit sync and verify onCommit is called
     val commitCountBefore = MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
-    testConsumer.commitSync(Map[TopicPartition, OffsetAndMetadata](
-      (tp, new OffsetAndMetadata(2L))).asJava)
+    testConsumer.commitSync(
+      Map[TopicPartition, OffsetAndMetadata](
+        (tp, new OffsetAndMetadata(2L))).asJava)
     assertEquals(2, testConsumer.committed(tp).offset)
     assertEquals(
       commitCountBefore + 1,
@@ -821,7 +822,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // commit async and verify onCommit is called
     val commitCallback = new CountConsumerCommitCallback()
     testConsumer.commitAsync(
-      Map[TopicPartition, OffsetAndMetadata]((tp, new OffsetAndMetadata(5L))).asJava,
+      Map[TopicPartition, OffsetAndMetadata](
+        (tp, new OffsetAndMetadata(5L))).asJava,
       commitCallback)
     awaitCommitCallback(testConsumer, commitCallback)
     assertEquals(5, testConsumer.committed(tp).offset)

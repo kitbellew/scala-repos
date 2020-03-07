@@ -761,7 +761,11 @@ object MutablizingAdaptor {
       canMap: CanMapValues[V, S, S, V],
       canMapActive: CanMapActiveValues[V, S, S, V],
       canZipMap: CanZipMapValues[V, S, S, V])
-      extends MutablizingAdaptor[CoordinateField, MutableCoordinateField, V, S] {
+      extends MutablizingAdaptor[
+        CoordinateField,
+        MutableCoordinateField,
+        V,
+        S] {
     type Wrapper = Ref[V]
 
     def wrap(v: V): Wrapper = Ref(v)

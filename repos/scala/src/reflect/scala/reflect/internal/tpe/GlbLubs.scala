@@ -69,7 +69,8 @@ private[internal] trait GlbLubs {
       tp: Type,
       ts: List[Type],
       tsElimSub: List[Type]) = {
-    val typeSym = ts.head.typeSymbol // we're uniform, the `.head` is as good as any.
+    val typeSym =
+      ts.head.typeSymbol // we're uniform, the `.head` is as good as any.
     def fbounds = findRecursiveBounds(ts) map (_._2)
     def isRecursive = typeSym.typeParams exists fbounds.contains
 

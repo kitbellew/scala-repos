@@ -83,7 +83,8 @@ trait CompactSpec[M[+_]]
 
   def undefineTable(fullTable: Table): Table = fullTable match {
     case cTable: ColumnarTable =>
-      val slices = cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
+      val slices =
+        cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
       val numSlices = slices.size
 
       val maskedSlices = slices.map { slice =>
@@ -113,7 +114,8 @@ trait CompactSpec[M[+_]]
 
   def undefineColumn(fullTable: Table, path: CPath): Table = fullTable match {
     case cTable: ColumnarTable =>
-      val slices = cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
+      val slices =
+        cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
       val numSlices = slices.size
 
       val maskedSlices = slices.map { slice =>

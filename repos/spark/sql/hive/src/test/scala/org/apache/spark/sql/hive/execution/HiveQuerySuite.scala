@@ -1153,7 +1153,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
   }
 
-  test("SPARK-5592: get java.net.URISyntaxException when dynamic partitioning") {
+  test(
+    "SPARK-5592: get java.net.URISyntaxException when dynamic partitioning") {
     sql(
       """
       |create table sc as select *

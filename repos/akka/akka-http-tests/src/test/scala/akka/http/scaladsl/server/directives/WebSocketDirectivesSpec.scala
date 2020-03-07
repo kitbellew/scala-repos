@@ -45,7 +45,10 @@ class WebSocketDirectivesSpec extends RoutingSpec {
     "choose subprotocol from offered ones" in {
       val wsClient = WSProbe()
 
-      WS("http://localhost/", wsClient.flow, List("other", "echo", "greeter")) ~> websocketMultipleProtocolRoute ~>
+      WS(
+        "http://localhost/",
+        wsClient.flow,
+        List("other", "echo", "greeter")) ~> websocketMultipleProtocolRoute ~>
         check {
           expectWebSocketUpgradeWithProtocol { protocol ⇒
             protocol shouldEqual "echo"
@@ -65,7 +68,10 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         }
     }
     "reject websocket requests if no subprotocol matches" in {
-      WS("http://localhost/", Flow[Message], List("other")) ~> websocketMultipleProtocolRoute ~> check {
+      WS(
+        "http://localhost/",
+        Flow[Message],
+        List("other")) ~> websocketMultipleProtocolRoute ~> check {
         rejections.collect {
           case UnsupportedWebSocketSubprotocolRejection(p) ⇒ p
         }.toSet shouldEqual Set("greeter", "echo")

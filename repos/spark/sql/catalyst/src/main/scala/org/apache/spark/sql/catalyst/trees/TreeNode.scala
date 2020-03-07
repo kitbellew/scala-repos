@@ -304,8 +304,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     */
   protected def transformChildren(
       rule: PartialFunction[BaseType, BaseType],
-      nextOperation: (BaseType, PartialFunction[BaseType, BaseType]) => BaseType)
-      : BaseType = {
+      nextOperation: (
+          BaseType,
+          PartialFunction[BaseType, BaseType]) => BaseType): BaseType = {
     var changed = false
     val newArgs = productIterator.map {
       case arg: TreeNode[_] if containsChild(arg) =>

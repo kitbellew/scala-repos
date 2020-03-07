@@ -143,8 +143,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     protected val pi = "3.1415926535897932384626433832795"
     protected val alwaysAliasSubqueries = true
     protected val supportsLiteralGroupBy = false
-    protected val quotedJdbcFns
-        : Option[Seq[Library.JdbcFunction]] = None // quote all by default
+    protected val quotedJdbcFns: Option[Seq[Library.JdbcFunction]] =
+      None // quote all by default
 
     // Mutable state accessible to subclasses
     protected val b = new SQLBuilder
@@ -567,7 +567,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       }
 
       val qtn = quoteTableName(from)
-      symbolName(gen) = qtn // Alias table to itself because UPDATE does not support aliases
+      symbolName(gen) =
+        qtn // Alias table to itself because UPDATE does not support aliases
       b"update $qtn set "
       b.sep(select, ", ")(field => b += symbolName(field) += " = ?")
       if (!where.isEmpty) {
@@ -604,7 +605,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             "Unsupported shape: " + o + " -- A single SQL comprehension is required")
       }
       val qtn = quoteTableName(from)
-      symbolName(gen) = qtn // Alias table to itself because DELETE does not support aliases
+      symbolName(gen) =
+        qtn // Alias table to itself because DELETE does not support aliases
       b"delete from $qtn"
       if (!where.isEmpty) {
         b" where "
@@ -785,8 +787,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     protected def createIndex(idx: Index): String = {
       val b = new StringBuilder append "create "
       if (idx.unique) b append "unique "
-      b append "index " append quoteIdentifier(idx.name) append " on " append quoteTableName(
-        tableNode) append " ("
+      b append "index " append quoteIdentifier(
+        idx.name) append " on " append quoteTableName(tableNode) append " ("
       addIndexColumnList(idx.on, b, idx.table.tableName)
       b append ")"
       b.toString
@@ -800,7 +802,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     }
 
     protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(
+        fk.name) append " foreign key("
       addForeignKeyColumnList(
         fk.linearizedSourceColumns,
         sb,
@@ -822,18 +825,19 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     }
 
     protected def addPrimaryKey(pk: PrimaryKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(pk.name) append " primary key("
+      sb append "constraint " append quoteIdentifier(
+        pk.name) append " primary key("
       addPrimaryKeyColumnList(pk.columns, sb, tableNode.tableName)
       sb append ")"
     }
 
     protected def dropForeignKey(fk: ForeignKey): String =
-      "alter table " + quoteTableName(tableNode) + " drop constraint " + quoteIdentifier(
-        fk.name)
+      "alter table " + quoteTableName(
+        tableNode) + " drop constraint " + quoteIdentifier(fk.name)
 
     protected def dropPrimaryKey(pk: PrimaryKey): String =
-      "alter table " + quoteTableName(tableNode) + " drop constraint " + quoteIdentifier(
-        pk.name)
+      "alter table " + quoteTableName(
+        tableNode) + " drop constraint " + quoteIdentifier(pk.name)
 
     protected def addIndexColumnList(
         columns: IndexedSeq[Node],

@@ -343,7 +343,9 @@ trait ModelFactoryImplicitSupport {
       case (tparam, constr) => {
         uniteConstraints(constr) match {
           case (loBounds, upBounds) =>
-            (loBounds filter (_ != NothingTpe), upBounds filter (_ != AnyTpe)) match {
+            (
+              loBounds filter (_ != NothingTpe),
+              upBounds filter (_ != AnyTpe)) match {
               case (Nil, Nil) =>
                 Nil
               case (List(lo), List(up)) if (lo == up) =>
@@ -625,7 +627,8 @@ trait ModelFactoryImplicitSupport {
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
-    localShouldDocument(aSym) && (!aSym.isConstructor) && (aSym.owner != AnyValClass) &&
+    localShouldDocument(
+      aSym) && (!aSym.isConstructor) && (aSym.owner != AnyValClass) &&
     (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
     (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
     (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&

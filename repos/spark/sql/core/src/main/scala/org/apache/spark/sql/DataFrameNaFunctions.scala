@@ -372,7 +372,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       val shouldReplace = cols.exists(colName => columnEquals(colName, f.name))
       if (f.dataType
-            .isInstanceOf[NumericType] && targetColumnType == DoubleType && shouldReplace) {
+            .isInstanceOf[
+              NumericType] && targetColumnType == DoubleType && shouldReplace) {
         replaceCol(f, replacementMap)
       } else if (f.dataType == targetColumnType && shouldReplace) {
         replaceCol(f, replacementMap)

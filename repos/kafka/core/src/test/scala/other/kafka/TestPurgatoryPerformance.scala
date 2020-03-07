@@ -245,7 +245,8 @@ object TestPurgatoryPerformance {
     private[this] val samples = {
       val normalMean = math.log(pct50)
       val normalStDev =
-        (math.log(pct75) - normalMean) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
+        (math.log(
+          pct75) - normalMean) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
       val dist = new LogNormalDistribution(normalMean, normalStDev)
       (0 until sampleSize).map { _ => dist.next().toLong }.toArray
     }

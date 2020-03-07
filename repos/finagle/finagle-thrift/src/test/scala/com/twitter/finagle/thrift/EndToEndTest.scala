@@ -355,7 +355,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     server.close()
   }
 
-  test("serveIface works with X.FutureIface, X[Future] with extended services") {
+  test(
+    "serveIface works with X.FutureIface, X[Future] with extended services") {
     // 1. Server extends X.FutureIface.
     class ExtendedEchoService1 extends ExtendedEcho.FutureIface {
       override def echo(msg: String): Future[String] = Future.value(msg)

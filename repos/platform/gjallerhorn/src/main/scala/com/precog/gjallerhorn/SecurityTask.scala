@@ -216,7 +216,10 @@ class SecurityTask(settings: Settings)
       val grantId = (g \ "grantId").deserialize[String]
 
       val p2 = p + text(4) + "/"
-      createChildGrant(apiKey2, grantId, ("read", p2, accountId1 :: Nil) :: Nil) must beLike {
+      createChildGrant(
+        apiKey2,
+        grantId,
+        ("read", p2, accountId1 :: Nil) :: Nil) must beLike {
         case ApiFailure(
             400,
             "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>
@@ -234,7 +237,10 @@ class SecurityTask(settings: Settings)
       addToGrant(apiKey2, apiKey1, grantId).complete()
 
       val p2 = p + text(4) + "/"
-      createChildGrant(apiKey2, grantId, ("read", p2, accountId2 :: Nil) :: Nil) must beLike {
+      createChildGrant(
+        apiKey2,
+        grantId,
+        ("read", p2, accountId2 :: Nil) :: Nil) must beLike {
         case ApiFailure(
             400,
             "{\"error\":\"Requestor lacks permissions to create grant.\"}") =>

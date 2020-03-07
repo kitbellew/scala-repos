@@ -114,7 +114,8 @@ object Challenge extends LilaController {
         _ ?? { opponent =>
           restriction(opponent) flatMap {
             case Some(r) =>
-              BadRequest(jsonError(r.replace("{{user}}", opponent.username))).fuccess
+              BadRequest(
+                jsonError(r.replace("{{user}}", opponent.username))).fuccess
             case _ =>
               env.api.rematchOf(g, me) map {
                 _.fold(

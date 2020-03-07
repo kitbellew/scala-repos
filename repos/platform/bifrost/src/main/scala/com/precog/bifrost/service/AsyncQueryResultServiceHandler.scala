@@ -82,10 +82,13 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                             val headers =
                               HttpHeaders.Empty + `Content-Type`(mimeType)
                             val data = data0
-                            val prefix = ("""{ "errors": %s, "warnings": %s, "data": """ format (
-                              JArray(errors.toList map (_.value)).renderCompact,
-                              JArray(warnings.toList map (_.value)).renderCompact
-                            )).getBytes(Utf8)
+                            val prefix =
+                              ("""{ "errors": %s, "warnings": %s, "data": """ format (
+                                JArray(
+                                  errors.toList map (_.value)).renderCompact,
+                                JArray(
+                                  warnings.toList map (_.value)).renderCompact
+                              )).getBytes(Utf8)
                             val suffix = " }".getBytes(Utf8) :: StreamT
                               .empty[Future, Array[Byte]]
 

@@ -62,13 +62,15 @@ object ValidatePullRequest extends AutoPlugin {
    */
 
   // settings
-  val PullIdEnvVarName = "ghprbPullId" // Set by "GitHub pull request builder plugin"
+  val PullIdEnvVarName =
+    "ghprbPullId" // Set by "GitHub pull request builder plugin"
 
   val TargetBranchEnvVarName = "PR_TARGET_BRANCH"
   val TargetBranchJenkinsEnvVarName = "ghprbTargetBranch"
 
   val SourceBranchEnvVarName = "PR_SOURCE_BRANCH"
-  val SourcePullIdJenkinsEnvVarName = "ghprbPullId" // used to obtain branch name in form of "pullreq/17397"
+  val SourcePullIdJenkinsEnvVarName =
+    "ghprbPullId" // used to obtain branch name in form of "pullreq/17397"
   val sourceBranch =
     settingKey[String]("Branch containing the changes of this PR")
 

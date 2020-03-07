@@ -43,10 +43,13 @@ private[akka] object Mailbox {
    */
 
   // Primary status
-  final val Open = 0 // _status is not initialized in AbstractMailbox, so default must be zero! Deliberately without type ascription to make it a compile-time constant
-  final val Closed = 1 // Deliberately without type ascription to make it a compile-time constant
+  final val Open =
+    0 // _status is not initialized in AbstractMailbox, so default must be zero! Deliberately without type ascription to make it a compile-time constant
+  final val Closed =
+    1 // Deliberately without type ascription to make it a compile-time constant
   // Secondary status: Scheduled bit may be added to Open/Suspended
-  final val Scheduled = 2 // Deliberately without type ascription to make it a compile-time constant
+  final val Scheduled =
+    2 // Deliberately without type ascription to make it a compile-time constant
   // Shifted by 2: the suspend count!
   final val shouldScheduleMask = 3
   final val shouldNotProcessMask = ~2
@@ -55,7 +58,8 @@ private[akka] object Mailbox {
 
   // mailbox debugging helper using println (see below)
   // since this is a compile-time constant, scalac will elide code behind if (Mailbox.debug) (RK checked with 2.9.1)
-  final val debug = false // Deliberately without type ascription to make it a compile-time constant
+  final val debug =
+    false // Deliberately without type ascription to make it a compile-time constant
 }
 
 /**
@@ -119,8 +123,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   protected var _statusDoNotCallMeDirectly: Status = _ //0 by default
 
   @volatile
-  protected var _systemQueueDoNotCallMeDirectly
-      : SystemMessage = _ //null by default
+  protected var _systemQueueDoNotCallMeDirectly: SystemMessage =
+    _ //null by default
 
   @inline
   final def currentStatus: Mailbox.Status =
@@ -395,7 +399,10 @@ trait MessageQueue {
   /**
     * Try to enqueue the message to this queue, or throw an exception.
     */
-  def enqueue(receiver: ActorRef, handle: Envelope): Unit // NOTE: receiver is used only in two places, but cannot be removed
+  def enqueue(
+      receiver: ActorRef,
+      handle: Envelope)
+      : Unit // NOTE: receiver is used only in two places, but cannot be removed
 
   /**
     * Try to dequeue the next message from this queue, return null failing that.

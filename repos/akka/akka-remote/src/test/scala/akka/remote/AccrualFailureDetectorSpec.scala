@@ -74,12 +74,17 @@ class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
         1600 -> 10.8,
         1700 -> 15.3)
       for ((timeDiff, expectedPhi) ← test) {
-        fd.phi(timeDiff = timeDiff, mean = 1000.0, stdDeviation = 100.0) should ===(
-          expectedPhi +- (0.1))
+        fd.phi(
+          timeDiff = timeDiff,
+          mean = 1000.0,
+          stdDeviation = 100.0) should ===(expectedPhi +- (0.1))
       }
 
       // larger stdDeviation results => lower phi
-      fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 500.0) should be < (fd
+      fd.phi(
+        timeDiff = 1100,
+        mean = 1000.0,
+        stdDeviation = 500.0) should be < (fd
         .phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 100.0))
     }
 

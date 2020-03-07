@@ -195,8 +195,11 @@ object NonlinearMinimizer {
     * AdmmObj(x, u, z) = f(x) + rho/2*||x - z + u||2
     * dAdmmObj/dx = df/dx + rho*(x - z + u)
     */
-  case class ProximalPrimal[T](primal: DiffFunction[T], u: T, z: T, rho: Double)(
-      implicit space: MutableInnerProductModule[T, Double])
+  case class ProximalPrimal[T](
+      primal: DiffFunction[T],
+      u: T,
+      z: T,
+      rho: Double)(implicit space: MutableInnerProductModule[T, Double])
       extends DiffFunction[T] {
 
     import space._

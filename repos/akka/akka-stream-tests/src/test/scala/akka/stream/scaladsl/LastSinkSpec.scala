@@ -22,8 +22,9 @@ class LastSinkSpec extends AkkaSpec with ScriptedTest {
 
     "yield the last value" in assertAllStagesStopped {
       Await
-        .result(Source(1 to 42).map(identity).runWith(Sink.last), 1.second) should be(
-        42)
+        .result(
+          Source(1 to 42).map(identity).runWith(Sink.last),
+          1.second) should be(42)
     }
 
     "yield the first error" in assertAllStagesStopped {

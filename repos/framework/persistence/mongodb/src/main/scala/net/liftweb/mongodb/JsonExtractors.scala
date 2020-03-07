@@ -59,7 +59,9 @@ object JsonRegex {
   def unapply(json: JValue): Option[Pattern] = {
     json match {
       case JObject(
-          JField("$regex", JString(regex)) :: JField("$flags", JInt(f)) :: Nil) =>
+          JField("$regex", JString(regex)) :: JField(
+            "$flags",
+            JInt(f)) :: Nil) =>
         Some(Pattern.compile(regex, f.intValue))
       case _ =>
         None

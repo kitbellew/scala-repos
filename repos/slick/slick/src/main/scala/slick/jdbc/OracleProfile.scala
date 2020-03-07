@@ -186,7 +186,8 @@ trait OracleProfile extends JdbcProfile {
         }
         b"\)"
       case Library.==(l, r)
-          if (l.nodeType != UnassignedType) && jdbcTypeFor(l.nodeType).sqlType == Types.BLOB =>
+          if (l.nodeType != UnassignedType) && jdbcTypeFor(
+            l.nodeType).sqlType == Types.BLOB =>
         b"\(dbms_lob.compare($l, $r) = 0\)"
       case _ => super.expr(c, skipParens)
     }
@@ -207,9 +208,11 @@ trait OracleProfile extends JdbcProfile {
     }
 
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
-      sb append "constraint " append quoteIdentifier(fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(
+        fk.name) append " foreign key("
       addForeignKeyColumnList(fk.linearizedSourceColumns, sb, table.tableName)
-      sb append ") references " append quoteIdentifier(fk.targetTable.tableName) append "("
+      sb append ") references " append quoteIdentifier(
+        fk.targetTable.tableName) append "("
       addForeignKeyColumnList(
         fk.linearizedTargetColumnsForOriginalTargetTable,
         sb,
@@ -232,7 +235,8 @@ trait OracleProfile extends JdbcProfile {
          * CONSTRAINT. */
         val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
           table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append " UNIQUE("
+        sb append "CONSTRAINT " append quoteIdentifier(
+          idx.name) append " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString
@@ -430,7 +434,9 @@ trait OracleProfile extends JdbcProfile {
       ti: JdbcType[T],
       idx: Int): ResultConverter[JdbcResultConverterDomain, Option[T]] =
     if (ti.scalaType == ScalaBaseType.stringType)
-      (new OptionResultConverter[String](ti.asInstanceOf[JdbcType[String]], idx) {
+      (new OptionResultConverter[String](
+        ti.asInstanceOf[JdbcType[String]],
+        idx) {
         override def read(pr: ResultSet) = {
           val v = ti.getValue(pr, idx)
           if ((v eq null) || v.length == 0) None else Some(v)

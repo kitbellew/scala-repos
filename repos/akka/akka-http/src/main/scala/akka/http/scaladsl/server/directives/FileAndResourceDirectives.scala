@@ -96,7 +96,9 @@ trait FileAndResourceDirectives {
       classLoader: ClassLoader = defaultClassLoader): Route =
     if (!resourceName.endsWith("/"))
       get {
-        Option(classLoader.getResource(resourceName)) flatMap ResourceFile.apply match {
+        Option(
+          classLoader.getResource(
+            resourceName)) flatMap ResourceFile.apply match {
           case Some(ResourceFile(url, length, lastModified)) ⇒
             conditionalFor(length, lastModified) {
               if (length > 0) {
@@ -260,7 +262,9 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
         if (file.isDirectory) None
         else Some(ResourceFile(url, file.length(), file.lastModified()))
       case "jar" ⇒
-        val path = new URI(url.getPath).getPath // remove "file:" prefix and normalize whitespace
+        val path =
+          new URI(
+            url.getPath).getPath // remove "file:" prefix and normalize whitespace
         val bangIndex = path.indexOf('!')
         val filePath = path.substring(0, bangIndex)
         val resourcePath = path.substring(bangIndex + 2)

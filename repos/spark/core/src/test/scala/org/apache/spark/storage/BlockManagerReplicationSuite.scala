@@ -321,7 +321,8 @@ class BlockManagerReplicationSuite
 
     // Add a failable block manager with a mock transfer service that does not
     // allow receiving of blocks. So attempts to use it as a replication target will fail.
-    val failableTransfer = mock(classOf[BlockTransferService]) // this wont actually work
+    val failableTransfer =
+      mock(classOf[BlockTransferService]) // this wont actually work
     when(failableTransfer.hostName).thenReturn("some-hostname")
     when(failableTransfer.port).thenReturn(1000)
     val memManager =

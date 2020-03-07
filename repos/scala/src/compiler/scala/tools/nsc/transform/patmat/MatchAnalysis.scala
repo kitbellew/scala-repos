@@ -137,7 +137,8 @@ trait TreeAndTypeAnalysis extends Debugging {
                 nestedMemberType(sym, pre, tpApprox.typeSymbol.owner)
               val subTp =
                 appliedType(memberType, sym.typeParams.map(_ => WildcardType))
-              val subTpApprox = typer.infer.approximateAbstracts(subTp) // TODO: needed?
+              val subTpApprox =
+                typer.infer.approximateAbstracts(subTp) // TODO: needed?
               // debug.patmat("subtp"+(subTpApprox <:< tpApprox, subTpApprox, tpApprox))
               if (subTpApprox <:< tpApprox) Some(checkableType(subTp))
               else None
@@ -355,7 +356,11 @@ trait MatchApproximation
             boundFrom map (CODE.REF(_)))
           // debug.patmat ("normalize subst: "+ normalize)
 
-          val okSubst = Substitution(unboundFrom, unboundTo map (normalize(_))) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
+          val okSubst =
+            Substitution(
+              unboundFrom,
+              unboundTo map (normalize(_))
+            ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
           pointsToBound ++= ((okSubst.from, okSubst.to).zipped filter {
             (f, t) => pointsToBound exists (sym => t.exists(_.symbol == sym))
           })._1
@@ -460,7 +465,8 @@ trait MatchApproximation
           cases: List[List[TreeMaker]],
           treeMakerToProp: TreeMakerToProp = conservative) = {
         val testss = cases.map { _ map (tm => Test(treeMakerToProp(tm), tm)) }
-        substitutionComputed = true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
+        substitutionComputed =
+          true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
         testss
       }
     }
@@ -539,7 +545,10 @@ trait MatchAnalysis extends MatchApproximation {
           removeVarEq(propsCasesFail, modelNull = true)
         val (eqAxiomsOk, symbolicCasesOk) =
           removeVarEq(propsCasesOk, modelNull = true)
-        val eqAxioms = simplify(And(eqAxiomsOk, eqAxiomsFail)) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
+        val eqAxioms =
+          simplify(
+            And(eqAxiomsOk, eqAxiomsFail)
+          ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
 
         val prefix = mutable.ArrayBuffer[Prop]()
         prefix += eqAxioms
@@ -911,7 +920,8 @@ trait MatchAnalysis extends MatchApproximation {
         private def unique(variable: Var): VariableAssignment =
           uniques.getOrElseUpdate(
             variable, {
-              val (eqTo, neqTo) = varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
+              val (eqTo, neqTo) =
+                varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
               VariableAssignment(variable, eqTo.toList, neqTo.toList)
             })
 

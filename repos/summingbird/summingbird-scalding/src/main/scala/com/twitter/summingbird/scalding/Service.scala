@@ -268,7 +268,8 @@ private[scalding] object InternalService {
           /*
            * This is a lookup, and there is an existing value
            */
-          val currentU = Some(sum(optu, u)) // isn't u already a sum and optu prev value?
+          val currentU =
+            Some(sum(optu, u)) // isn't u already a sum and optu prev value?
           val joinResult = Some((time, (v, currentU)))
           val sumResult = Semigroup
             .sumOption(valueExpansion((v, currentU)))

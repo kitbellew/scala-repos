@@ -369,7 +369,8 @@ private[math] object BitLevel {
       i = 0
       while (i < resultLen - 1) {
         result(i) =
-          (source(i + intCount) >>> count) | (source(i + intCount + 1) << leftShiftCount)
+          (source(i + intCount) >>> count) | (source(
+            i + intCount + 1) << leftShiftCount)
         i += 1
       }
       result(i) = source(i + intCount) >>> count

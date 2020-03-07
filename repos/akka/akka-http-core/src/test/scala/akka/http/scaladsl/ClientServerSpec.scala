@@ -491,7 +491,9 @@ class ClientServerSpec
             Chunked(`chunkedContentType`, chunkStream),
             HttpProtocols.`HTTP/1.1`) = serverIn.expectNext()
           uri shouldEqual Uri(s"http://$hostname:$port/chunked")
-          Await.result(chunkStream.limit(5).runWith(Sink.seq), 100.millis) shouldEqual chunks
+          Await.result(
+            chunkStream.limit(5).runWith(Sink.seq),
+            100.millis) shouldEqual chunks
 
           val serverOutSub = serverOut.expectSubscription()
           serverOutSub.expectRequest()
@@ -504,7 +506,9 @@ class ClientServerSpec
             List(Age(42), Server(_), Date(_)),
             Chunked(`chunkedContentType`, chunkStream2),
             HttpProtocols.`HTTP/1.1`) = clientIn.expectNext()
-          Await.result(chunkStream2.limit(1000).runWith(Sink.seq), 100.millis) shouldEqual chunks
+          Await.result(
+            chunkStream2.limit(1000).runWith(Sink.seq),
+            100.millis) shouldEqual chunks
 
           clientOutSub.sendComplete()
           serverInSub.request(1)
@@ -572,8 +576,9 @@ class ClientServerSpec
     }
     val connSourceSub = connSource.expectSubscription()
 
-    def openNewClientConnection(settings: ClientConnectionSettings =
-      ClientConnectionSettings(system)) = {
+    def openNewClientConnection(
+        settings: ClientConnectionSettings =
+          ClientConnectionSettings(system)) = {
       val requestPublisherProbe = TestPublisher.manualProbe[HttpRequest]()
       val responseSubscriberProbe = TestSubscriber.manualProbe[HttpResponse]()
 

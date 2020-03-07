@@ -61,10 +61,10 @@ trait Enumeratee2TFunctions {
                       if right.forall(order(left, _) == LT) =>
                     for {
                       _ <- head[J, IterateeM]
-                      a <- iterateeT[J, IterateeM, StepM[A]](advance(
-                        left,
-                        rbuf,
-                        scont(contf)) >>== (step(_, rbuf).value))
+                      a <- iterateeT[J, IterateeM, StepM[A]](
+                        advance(left, rbuf, scont(contf)) >>== (step(
+                          _,
+                          rbuf).value))
                     } yield a
 
                   case (Some(left), Some(right)) =>

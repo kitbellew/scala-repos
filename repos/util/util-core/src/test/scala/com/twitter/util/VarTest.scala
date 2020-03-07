@@ -54,7 +54,8 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     v0.changes.register(Witness({ i => result = result * 2 })) // result = 6
     assert(result == 6)
 
-    result = 1 // reset the value, but this time the ordering will go v0, v4 because of depth
+    result =
+      1 // reset the value, but this time the ordering will go v0, v4 because of depth
     v0() = 4 // trigger recomputation, supplied value is unused
     // v0 observation: result = result*2 = 2
     // v4 observation: result = result+2 = 4
@@ -65,9 +66,16 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val v1 = Var(2)
     var result = 0
 
-    val o1 = v1.changes.register(Witness({ i => result = result + i })) // result = 2
-    val o2 = v1.changes.register(Witness({ i => result = result * i * i })) // result = 2 * 2 * 2 = 8
-    val o3 = v1.changes.register(Witness({ i => result = result + result + i })) // result = 8 + 8 + 2 = 18
+    val o1 =
+      v1.changes.register(Witness({ i => result = result + i })) // result = 2
+    val o2 =
+      v1.changes.register(Witness({ i =>
+        result = result * i * i
+      })) // result = 2 * 2 * 2 = 8
+    val o3 =
+      v1.changes.register(Witness({ i =>
+        result = result + result + i
+      })) // result = 8 + 8 + 2 = 18
 
     assert(result == 18) // ensure those three things happened in sequence
 

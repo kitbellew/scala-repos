@@ -34,8 +34,8 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
         Posts.length.result
           .zip(Posts.filter(_.title =!= "post 1").map(_.title).to[List].result)
           .map(res => assertEquals((3, List("post 2", "post 3")), res)),
-        sql"""select * from #${quoteIdentifier("POSTS")} where #${quoteIdentifier(
-          "id")} = 2"""
+        sql"""select * from #${quoteIdentifier(
+          "POSTS")} where #${quoteIdentifier("id")} = 2"""
           .as[PostsRow]
           .head
           .map(res => assertEquals(PostsRow(2, "post 2", Some(1)), res)),
@@ -49,14 +49,20 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
           DBIO.seq(
             Large += oData,
             Large += oData2,
-            sql"""select * from #${quoteIdentifier("LARGE")} where #${quoteIdentifier(
-              "id")} = 0"""
+            sql"""select * from #${quoteIdentifier(
+              "LARGE")} where #${quoteIdentifier("id")} = 0"""
               .as[LargeRow]
               .head
               .map(res => assertEquals(oData, res))
           )
         },
-        (X.map(r => (r.pk, r.pk2, r.column, r.schemaNameXX, r.schemaNameX)) += (1, 1, 1, 1.1, "test"))
+        (X.map(r =>
+          (
+            r.pk,
+            r.pk2,
+            r.column,
+            r.schemaNameXX,
+            r.schemaNameX)) += (1, 1, 1, 1.1, "test"))
           .map { _ =>
             // testing name and types especially in case of collisions
             import slick.lifted._
@@ -73,10 +79,14 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
               (r.postsFk: ForeignKeyQuery[Posts, PostsRow]) == null
             })
             X.map(r => {
-              (r.categoriesFk2: ForeignKeyQuery[Categories, CategoriesRow]) == null
+              (r.categoriesFk2: ForeignKeyQuery[
+                Categories,
+                CategoriesRow]) == null
             })
             X.map(r => {
-              (r.categoriesFk3: ForeignKeyQuery[Categories, CategoriesRow]) == null
+              (r.categoriesFk3: ForeignKeyQuery[
+                Categories,
+                CategoriesRow]) == null
             })
             X.map(r => { (r.index1X: Index) == null })
             X.map(r => { (r.index2: Index) == null })

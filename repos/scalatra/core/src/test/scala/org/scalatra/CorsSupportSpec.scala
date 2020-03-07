@@ -37,7 +37,8 @@ class CorsSupportSpec extends ScalatraSpec {
         "/",
         headers = Map(CorsSupport.OriginHeader -> "http://www.example.com")) {
         response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+          .getHeader(
+            CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
     }
     def dontTouchRegularRequest = {
@@ -56,7 +57,8 @@ class CorsSupportSpec extends ScalatraSpec {
           "Content-Type" -> "application/json")
       ) {
         response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+          .getHeader(
+            CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
       }
     }
 
@@ -69,9 +71,11 @@ class CorsSupportSpec extends ScalatraSpec {
       )
       options("/", headers = hdrs) {
         response
-          .getHeader(CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
+          .getHeader(
+            CorsSupport.AccessControlAllowOriginHeader) must_== "http://www.example.com"
         response
-          .getHeader(CorsSupport.AccessControlAllowMethodsHeader) must_== "GET,HEAD,POST"
+          .getHeader(
+            CorsSupport.AccessControlAllowMethodsHeader) must_== "GET,HEAD,POST"
       }
     }
   }

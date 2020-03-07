@@ -450,7 +450,9 @@ final case class InMemoryResponse(
   def size = data.length
 
   override def toString =
-    "InMemoryResponse(" + (new String(data, "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
+    "InMemoryResponse(" + (new String(
+      data,
+      "UTF-8")) + ", " + headers + ", " + cookies + ", " + code + ")"
 }
 
 final case class StreamingResponse(

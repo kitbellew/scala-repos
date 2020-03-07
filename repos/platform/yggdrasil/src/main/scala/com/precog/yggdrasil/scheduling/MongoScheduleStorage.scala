@@ -100,7 +100,8 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
         .into(collection))
 
   def deleteTask(id: UUID) = EitherT {
-    database(selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
+    database(
+      selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
       case Some(taskjv) =>
         for {
           _ <- insertTask(\/-(taskjv), settings.deletedTasks)
@@ -124,7 +125,8 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
         .into(settings.reports)) map { _ => PrecogUnit }
 
   def statusFor(id: UUID, limit: Option[Int]) = {
-    database(selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
+    database(
+      selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
       taskOpt =>
         database(
           selectAll

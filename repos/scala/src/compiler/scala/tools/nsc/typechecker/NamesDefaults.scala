@@ -174,7 +174,9 @@ trait NamesDefaults { self: Analyzer =>
       // never used for constructor calls, they always have a stable qualifier
       def blockWithQualifier(qual: Tree, selected: Name) = {
         val sym = blockTyper.context.owner
-          .newValue(unit.freshTermName(nme.QUAL_PREFIX), newFlags = ARTIFACT) setInfo uncheckedBounds(
+          .newValue(
+            unit.freshTermName(nme.QUAL_PREFIX),
+            newFlags = ARTIFACT) setInfo uncheckedBounds(
           qual.tpe) setPos (qual.pos.makeTransparent)
         blockTyper.context.scope enter sym
         val vd = atPos(sym.pos)(ValDef(sym, qual) setType NoType)
@@ -337,10 +339,14 @@ trait NamesDefaults { self: Analyzer =>
           val body =
             if (byName) {
               val res = blockTyper.typed(Function(List(), arg))
-              new ChangeOwnerTraverser(context.owner, res.symbol) traverse arg // fixes #2290
+              new ChangeOwnerTraverser(
+                context.owner,
+                res.symbol) traverse arg // fixes #2290
               res
             } else {
-              new ChangeOwnerTraverser(context.owner, sym) traverse arg // fixes #4502
+              new ChangeOwnerTraverser(
+                context.owner,
+                sym) traverse arg // fixes #4502
               if (repeated) arg match {
                 case WildcardStarArg(expr) => expr
                 case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
@@ -680,7 +686,8 @@ trait NamesDefaults { self: Analyzer =>
               if isAmbiguousAssignment(typer, params(paramPos), arg) =>
             AmbiguousReferenceInNamesDefaultError(arg, name)
           case paramPos if paramPos != argIndex =>
-            positionalAllowed = false // named arg is not in original parameter order: require names after this
+            positionalAllowed =
+              false // named arg is not in original parameter order: require names after this
             argPos(argIndex) = paramPos // fix up the arg position
             rhs
           case _ => rhs

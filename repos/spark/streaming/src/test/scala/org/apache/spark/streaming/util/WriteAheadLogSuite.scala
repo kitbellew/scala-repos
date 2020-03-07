@@ -385,7 +385,8 @@ class FileBasedWriteAheadLogSuite
     assert(readDataUsingReader(testFile) === (dataToWrite.dropRight(1)))
   }
 
-  test("FileBasedWriteAheadLogReader - handles errors when file doesn't exist") {
+  test(
+    "FileBasedWriteAheadLogReader - handles errors when file doesn't exist") {
     // Write data manually for testing the sequential reader
     val dataToWrite = generateRandomData()
     writeDataUsingWriter(testFile, dataToWrite)
@@ -405,7 +406,8 @@ class FileBasedWriteAheadLogSuite
     assert(readDataUsingReader(testFile) === Nil)
   }
 
-  test("FileBasedWriteAheadLogRandomReader - reading data using random reader") {
+  test(
+    "FileBasedWriteAheadLogRandomReader - reading data using random reader") {
     // Write data manually for testing the random reader
     val writtenData = generateRandomData()
     val segments =

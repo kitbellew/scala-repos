@@ -415,7 +415,9 @@ class StackClientTest
       // of trying to connect to them
       .replace(
         LoadBalancerFactory.role,
-        new Stack.Module1[LoadBalancerFactory.Dest, ServiceFactory[Unit, Unit]] {
+        new Stack.Module1[
+          LoadBalancerFactory.Dest,
+          ServiceFactory[Unit, Unit]] {
           val role = new Stack.Role("role")
           val description = "description"
           def make(

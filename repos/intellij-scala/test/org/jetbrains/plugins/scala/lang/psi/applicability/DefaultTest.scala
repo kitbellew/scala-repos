@@ -42,7 +42,8 @@ class DefaultTest extends ApplicabilityTestBase {
       case ExcessArgument(Expression("B")) :: Nil =>
     }
     assertProblems("(a: A = null)", "(A, B, C)") {
-      case ExcessArgument(Expression("B")) :: ExcessArgument(Expression("C")) :: Nil =>
+      case ExcessArgument(Expression("B")) :: ExcessArgument(
+            Expression("C")) :: Nil =>
     }
     assertProblems("(a: A = null, b: B = null)", "(A, B, C)") {
       case ExcessArgument(Expression("C")) :: Nil =>

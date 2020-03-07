@@ -363,9 +363,9 @@ class JDBCSuite
     // are applied for columns with Filter producing wrong results. On the other hand, JDBCRDD
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
-    assert(
-      sql("SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
-        Row(1)))
+    assert(sql(
+      "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
+      Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
@@ -703,12 +703,16 @@ class JDBCSuite
       doCompileFilter(Or(EqualTo("col0", 2), EqualTo("col1", "ghi")))
         === "(col0 = 2) OR (col1 = 'ghi')")
     assert(doCompileFilter(LessThan("col0", 5)) === "col0 < 5")
-    assert(doCompileFilter(LessThan(
-      "col3",
-      Timestamp
-        .valueOf("1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
     assert(
-      doCompileFilter(LessThan("col4", Date.valueOf("1983-08-04"))) === "col4 < '1983-08-04'")
+      doCompileFilter(
+        LessThan(
+          "col3",
+          Timestamp
+            .valueOf(
+              "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
+    assert(
+      doCompileFilter(
+        LessThan("col4", Date.valueOf("1983-08-04"))) === "col4 < '1983-08-04'")
     assert(doCompileFilter(LessThanOrEqual("col0", 5)) === "col0 <= 5")
     assert(doCompileFilter(GreaterThan("col0", 3)) === "col0 > 3")
     assert(doCompileFilter(GreaterThanOrEqual("col0", 3)) === "col0 >= 3")

@@ -588,7 +588,8 @@ object Project extends ProjectExtra {
       commands in axis get structure.data toList;
 
     val allCommands =
-      commandsIn(ref) ++ commandsIn(BuildRef(ref.build)) ++ (commands in Global get structure.data toList)
+      commandsIn(ref) ++ commandsIn(
+        BuildRef(ref.build)) ++ (commands in Global get structure.data toList)
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
@@ -770,7 +771,11 @@ object Project extends ProjectExtra {
       providedBy +
       definedAt +
       printDepScopes("Dependencies", "derived from", depends, derivedDepends) +
-      printDepScopes("Reverse dependencies", "derives", reverse, derivedReverse) +
+      printDepScopes(
+        "Reverse dependencies",
+        "derives",
+        reverse,
+        derivedReverse) +
       printScopes("Delegates", delegates(structure, scope, key)) +
       printScopes("Related", related, 10)
   }

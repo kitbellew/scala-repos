@@ -121,15 +121,17 @@ class SparkIMain(
   @DeveloperApi
   lazy val getClassOutputDirectory = outputDir
 
-  private val virtualDirectory = new PlainFile(outputDir) // "directory" for classfiles
+  private val virtualDirectory =
+    new PlainFile(outputDir) // "directory" for classfiles
   /** Jetty server that will serve our classes to worker nodes */
   private var currentSettings: Settings = initialSettings
   private var printResults = true // whether to print result lines
   private var totalSilence = false // whether to print anything
   private var _initializeComplete = false // compiler is initialized
-  private var _isInitialized
-      : Future[Boolean] = null // set up initialization future
-  private var bindExceptions = true // whether to bind the lastException variable
+  private var _isInitialized: Future[Boolean] =
+    null // set up initialization future
+  private var bindExceptions =
+    true // whether to bind the lastException variable
   private var _executionWrapper = "" // code to be wrapped around all lines
 
   /** We're going to go to some trouble to initialize the compiler asynchronously.
@@ -140,14 +142,14 @@ class SparkIMain(
     *  on the future.
     */
   private var _classLoader: AbstractFileClassLoader = null // active classloader
-  private val _compiler
-      : Global = newCompiler(settings, reporter) // our private compiler
+  private val _compiler: Global =
+    newCompiler(settings, reporter) // our private compiler
 
   private trait ExposeAddUrl extends URLClassLoader {
     def addNewUrl(url: URL) = this.addURL(url)
   }
-  private var _runtimeClassLoader
-      : URLClassLoader with ExposeAddUrl = null // wrapper exposing addURL
+  private var _runtimeClassLoader: URLClassLoader with ExposeAddUrl =
+    null // wrapper exposing addURL
 
   private val nextReqId = {
     var counter = 0
@@ -771,7 +773,8 @@ class SparkIMain(
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
         val subs = t collect { case sub => sub }
-        subs map (t0 => "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
+        subs map (t0 =>
+          "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
       }) mkString "\n"
     )
     // If the last tree is a bare expression, pinpoint where it begins using the
@@ -1162,7 +1165,10 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot = rootMirror.getClassByName(newTypeName(readPath)) // the outermost wrapper
+      val readRoot =
+        rootMirror.getClassByName(
+          newTypeName(readPath)
+        ) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "")   => sym
         case (sym, name) => afterTyper(termMember(sym, name))

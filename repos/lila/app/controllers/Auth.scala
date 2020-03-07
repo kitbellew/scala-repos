@@ -148,7 +148,8 @@ object Auth extends LilaController {
                     case (user, email) =>
                       env.emailConfirm.send(user, email) >> {
                         if (env.emailConfirm.effective)
-                          Redirect(routes.Auth.checkYourEmail(user.username)).fuccess
+                          Redirect(
+                            routes.Auth.checkYourEmail(user.username)).fuccess
                         else saveAuthAndRedirect(user)
                       }
                   }
@@ -167,7 +168,8 @@ object Auth extends LilaController {
                   email,
                   false,
                   apiVersion.some)
-                .flatten(s"No user could be created for ${data.username}") flatMap mobileUserOk
+                .flatten(
+                  s"No user could be created for ${data.username}") flatMap mobileUserOk
             }
           )
       )

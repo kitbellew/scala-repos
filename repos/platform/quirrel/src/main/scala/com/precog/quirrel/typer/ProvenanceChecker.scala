@@ -135,10 +135,10 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     Set[Error])
               } else {
                 val prov = UnifiedProvenance(prov1, prov2)
-                (prov, addedConstr ++ Set(Related(prov1, prov2)), addedErrors): (
-                    Provenance,
-                    Set[ProvConstraint],
-                    Set[Error])
+                (
+                  prov,
+                  addedConstr ++ Set(Related(prov1, prov2)),
+                  addedErrors): (Provenance, Set[ProvConstraint], Set[Error])
               }
             } else if (unified.isDefined) {
               (unified.get, addedConstr, addedErrors): (
@@ -794,9 +794,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     case IdentityPolicy.Product(left, right) => {
                       val recLeft = rec(left)
                       val recRight = rec(right)
-                      unifyProvenance(relations)(recLeft, recRight) getOrElse ProductProvenance(
+                      unifyProvenance(relations)(
                         recLeft,
-                        recRight)
+                        recRight) getOrElse ProductProvenance(recLeft, recRight)
                     }
 
                     case (_: IdentityPolicy.Retain) => actuals.head.provenance
@@ -859,7 +859,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     val (rightErrors, rightConst, rightProv) = rec(right0)
 
                     val prov =
-                      unifyProvenance(relations)(leftProv, rightProv) getOrElse ProductProvenance(
+                      unifyProvenance(relations)(
+                        leftProv,
+                        rightProv) getOrElse ProductProvenance(
                         leftProv,
                         rightProv)
                     val (err, const, finalProv) = compute(prov, prov)
@@ -1266,22 +1268,34 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
     private def associateLeft: Provenance = this match {
       case UnifiedProvenance(_, _) =>
-        findChildren(this, true).toList sorted Provenance.order.toScalaOrdering reduceLeft UnifiedProvenance
+        findChildren(
+          this,
+          true).toList sorted Provenance.order.toScalaOrdering reduceLeft UnifiedProvenance
 
       case ProductProvenance(_, _) =>
-        findChildren(this, false).toList sorted Provenance.order.toScalaOrdering reduceLeft ProductProvenance
+        findChildren(
+          this,
+          false).toList sorted Provenance.order.toScalaOrdering reduceLeft ProductProvenance
 
       case CoproductProvenance(_, _) =>
-        findChildren(this, false).toList sorted Provenance.order.toScalaOrdering reduceLeft CoproductProvenance
+        findChildren(
+          this,
+          false).toList sorted Provenance.order.toScalaOrdering reduceLeft CoproductProvenance
 
       case DerivedUnionProvenance(_, _) =>
-        findChildren(this, false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedUnionProvenance
+        findChildren(
+          this,
+          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedUnionProvenance
 
       case DerivedIntersectProvenance(_, _) =>
-        findChildren(this, false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedIntersectProvenance
+        findChildren(
+          this,
+          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedIntersectProvenance
 
       case DerivedDifferenceProvenance(_, _) =>
-        findChildren(this, false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedDifferenceProvenance
+        findChildren(
+          this,
+          false).toList sorted Provenance.order.toScalaOrdering reduceLeft DerivedDifferenceProvenance
 
       case prov => prov
     }
@@ -1308,11 +1322,17 @@ trait ProvenanceChecker extends parser.AST with Binder {
     def makeCanonical: Provenance = {
       this match {
         case UnifiedProvenance(left, right) =>
-          UnifiedProvenance(left.makeCanonical, right.makeCanonical).associateLeft
+          UnifiedProvenance(
+            left.makeCanonical,
+            right.makeCanonical).associateLeft
         case ProductProvenance(left, right) =>
-          ProductProvenance(left.makeCanonical, right.makeCanonical).associateLeft
+          ProductProvenance(
+            left.makeCanonical,
+            right.makeCanonical).associateLeft
         case CoproductProvenance(left, right) =>
-          CoproductProvenance(left.makeCanonical, right.makeCanonical).associateLeft
+          CoproductProvenance(
+            left.makeCanonical,
+            right.makeCanonical).associateLeft
         case DerivedUnionProvenance(left, right) =>
           DerivedUnionProvenance(left.makeCanonical, right.makeCanonical)
         case DerivedIntersectProvenance(left, right) =>

@@ -14,7 +14,8 @@ import scala.collection.mutable.{Buffer => SBuffer}
   * in little endian byte order, which conforms to the mysql spec.
   */
 object Buffer {
-  val NullLength = -1 // denotes a SQL NULL value when reading a length coded binary.
+  val NullLength =
+    -1 // denotes a SQL NULL value when reading a length coded binary.
   val EmptyString = new String
   val EmptyByteArray = new Array[Byte](0)
 

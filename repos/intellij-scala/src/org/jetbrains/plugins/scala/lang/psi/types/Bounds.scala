@@ -494,7 +494,9 @@ object Bounds {
       checkWeak: Boolean)(implicit stopAddingUpperBound: Boolean): ScType = {
     val baseClassDesignator = baseClass.baseDesignator
     if (baseClass.getTypeParameters.length == 0) return baseClassDesignator
-    (baseClass.superSubstitutor(clazz1), baseClass.superSubstitutor(clazz2)) match {
+    (
+      baseClass.superSubstitutor(clazz1),
+      baseClass.superSubstitutor(clazz2)) match {
       case (Some(superSubst1), Some(superSubst2)) =>
         val tp = ScParameterizedType(
           baseClassDesignator,

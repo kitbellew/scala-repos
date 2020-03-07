@@ -63,7 +63,9 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
       val closingTag = openingTag.getClosingTag
 
       if (closingTag != null && closingTag.getTextLength > 3 && closingTag.getText
-            .substring(2, closingTag.getTextLength - 1) == openingTag.getTagName) {
+            .substring(
+              2,
+              closingTag.getTextLength - 1) == openingTag.getTagName) {
         extensions.inWriteAction {
           val offsetInName =
             editor.getCaretModel.getOffset - element.getTextOffset + 1

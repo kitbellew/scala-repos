@@ -73,7 +73,10 @@ class Accumulator[T] private[spark] (
       internal,
       countFailedValues) {
 
-  def this(initialValue: T, param: AccumulatorParam[T], name: Option[String]) = {
+  def this(
+      initialValue: T,
+      param: AccumulatorParam[T],
+      name: Option[String]) = {
     this(initialValue, param, name, false /* internal */ )
   }
 

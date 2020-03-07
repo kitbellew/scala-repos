@@ -45,7 +45,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getString(key).toLowerCase(Locale.ROOT) match {
       case "off" ⇒ Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (_ > Duration.Zero, key + " > 0s, or off")
+        cc.getMillisDuration(
+          key) requiring (_ > Duration.Zero, key + " > 0s, or off")
     }
   }
   val PeriodicTasksInitialDelay: FiniteDuration =
@@ -63,7 +64,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getString(key).toLowerCase(Locale.ROOT) match {
       case "off" ⇒ Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
+        cc.getMillisDuration(
+          key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 
@@ -72,7 +74,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getString(key).toLowerCase(Locale.ROOT) match {
       case "off" ⇒ Duration.Undefined
       case _ ⇒
-        cc.getMillisDuration(key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
+        cc.getMillisDuration(
+          key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 
@@ -81,7 +84,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getString(key).toLowerCase(Locale.ROOT) match {
       case "off" ⇒ Duration.Zero
       case _ ⇒
-        cc.getMillisDuration(key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
+        cc.getMillisDuration(
+          key) requiring (_ >= Duration.Zero, key + " >= 0s, or off")
     }
   }
 

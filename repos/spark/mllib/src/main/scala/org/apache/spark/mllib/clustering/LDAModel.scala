@@ -796,7 +796,8 @@ class DistributedLDAModel private[clustering] (
   @Since("1.3.0")
   lazy val logLikelihood: Double = {
     // TODO: generalize this for asymmetric (non-scalar) alpha
-    val alpha = this.docConcentration(0) // To avoid closure capture of enclosing object
+    val alpha =
+      this.docConcentration(0) // To avoid closure capture of enclosing object
     val eta = this.topicConcentration
     assert(eta > 1.0)
     assert(alpha > 1.0)
@@ -826,7 +827,8 @@ class DistributedLDAModel private[clustering] (
   @Since("1.3.0")
   lazy val logPrior: Double = {
     // TODO: generalize this for asymmetric (non-scalar) alpha
-    val alpha = this.docConcentration(0) // To avoid closure capture of enclosing object
+    val alpha =
+      this.docConcentration(0) // To avoid closure capture of enclosing object
     val eta = this.topicConcentration
     // Term vertices: Compute phi_{wk}.  Use to compute prior log probability.
     // Doc vertex: Compute theta_{kj}.  Use to compute prior log probability.

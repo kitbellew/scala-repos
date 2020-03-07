@@ -93,7 +93,9 @@ object LoggingSpec extends Specification {
       object MyObj extends Logger {
         val l = 1 to 10
         info("Starting test")
-        trace("result", l.foldLeft(0)(trace("lhs", _) + trace("rhs", _))) must_== l
+        trace(
+          "result",
+          l.foldLeft(0)(trace("lhs", _) + trace("rhs", _))) must_== l
           .foldLeft(0)(_ + _)
         val x = 1
       }

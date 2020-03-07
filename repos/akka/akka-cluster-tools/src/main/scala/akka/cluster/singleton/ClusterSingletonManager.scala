@@ -41,7 +41,8 @@ object ClusterSingletonManagerSettings {
     new ClusterSingletonManagerSettings(
       singletonName = config.getString("singleton-name"),
       role = roleOption(config.getString("role")),
-      removalMargin = Duration.Zero, // defaults to ClusterSettins.DownRemovalMargin
+      removalMargin =
+        Duration.Zero, // defaults to ClusterSettins.DownRemovalMargin
       handOverRetryInterval =
         config.getDuration("hand-over-retry-interval", MILLISECONDS).millis)
 

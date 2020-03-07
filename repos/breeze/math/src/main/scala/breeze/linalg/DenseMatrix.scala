@@ -122,11 +122,13 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   def apply(row: Int, col: Int) = {
     if (row < -rows || row >= rows)
-      throw new IndexOutOfBoundsException(
-        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+      throw new IndexOutOfBoundsException((
+        row,
+        col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
     if (col < -cols || col >= cols)
-      throw new IndexOutOfBoundsException(
-        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+      throw new IndexOutOfBoundsException((
+        row,
+        col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
     val trueRow = if (row < 0) row + rows else row
     val trueCol = if (col < 0) col + cols else col
     data(linearIndex(trueRow, trueCol))
@@ -155,11 +157,13 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   def update(row: Int, col: Int, v: V): Unit = {
     if (row < -rows || row >= rows)
-      throw new IndexOutOfBoundsException(
-        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+      throw new IndexOutOfBoundsException((
+        row,
+        col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
     if (col < -cols || col >= cols)
-      throw new IndexOutOfBoundsException(
-        (row, col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
+      throw new IndexOutOfBoundsException((
+        row,
+        col) + " not in [-" + rows + "," + rows + ") x [-" + cols + "," + cols + ")")
     val trueRow = if (row < 0) row + rows else row
     val trueCol = if (col < 0) col + cols else col
     data(linearIndex(trueRow, trueCol)) = v
@@ -431,8 +435,8 @@ object DenseMatrix
       rows: Int,
       cols: Int): DenseMatrix[V] = {
     val data = new Array[V](rows * cols)
-    if (implicitly[Zero[V]] != null && rows * cols != 0 && data(0) != implicitly[
-          Zero[V]].zero)
+    if (implicitly[Zero[V]] != null && rows * cols != 0 && data(
+          0) != implicitly[Zero[V]].zero)
       ArrayUtil.fill(data, 0, data.length, implicitly[Zero[V]].zero)
     DenseMatrix.create(rows, cols, data)
   }
@@ -498,10 +502,11 @@ object DenseMatrix
     * @tparam V
     * @return
     */
-  override def ones[
-      @specialized(Int, Float, Double, Long) V: ClassTag: Zero: Semiring](
-      rows: Int,
-      cols: Int): DenseMatrix[V] = {
+  override def ones[@specialized(
+    Int,
+    Float,
+    Double,
+    Long) V: ClassTag: Zero: Semiring](rows: Int, cols: Int): DenseMatrix[V] = {
     val data = new Array[V](rows * cols)
     if (rows * cols != 0 && data(0) != implicitly[Semiring[V]].one)
       ArrayUtil.fill(data, 0, data.length, implicitly[Semiring[V]].one)

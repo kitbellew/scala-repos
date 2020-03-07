@@ -1163,8 +1163,9 @@ object ExecutionCounters {
       override def isNonZero(that: ExecutionCounters) = that.keys.nonEmpty
       def zero = ExecutionCounters.empty
       def plus(left: ExecutionCounters, right: ExecutionCounters) = {
-        fromMap(
-          (left.keys ++ right.keys).map { k => (k, left(k) + right(k)) }.toMap)
+        fromMap((left.keys ++ right.keys).map { k =>
+          (k, left(k) + right(k))
+        }.toMap)
       }
     }
 }

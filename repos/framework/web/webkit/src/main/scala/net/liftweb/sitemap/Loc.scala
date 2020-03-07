@@ -143,7 +143,9 @@ trait Loc[T] {
       case menu =>
         menu._parent match {
           case Full(parentMenu: Menu) =>
-            if (!params.collect { case i: Loc.UseParentParams => true }.isEmpty) {
+            if (!params.collect {
+                  case i: Loc.UseParentParams => true
+                }.isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
             } else {
               Nil
@@ -285,7 +287,8 @@ trait Loc[T] {
   }
 
   protected object accessTestRes
-      extends RequestVar[Either[Boolean, Box[() => LiftResponse]]](_testAccess) {
+      extends RequestVar[Either[Boolean, Box[() => LiftResponse]]](
+        _testAccess) {
     override val __nameSalt = randomString(10)
   }
 

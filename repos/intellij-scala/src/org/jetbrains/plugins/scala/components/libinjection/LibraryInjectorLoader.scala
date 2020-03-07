@@ -600,7 +600,8 @@ object LibraryInjectorLoader {
 
   val HELPER_LIBRARY_NAME = "scala-plugin-dev"
   val INJECTOR_MANIFEST_NAME = "intellij-compat.xml"
-  val INJECTOR_MODULE_NAME = "ijscala-plugin-injector-compile.iml" // TODO: use UUID
+  val INJECTOR_MODULE_NAME =
+    "ijscala-plugin-injector-compile.iml" // TODO: use UUID
 
   def getInstance(project: Project) =
     project.getComponent(classOf[LibraryInjectorLoader])

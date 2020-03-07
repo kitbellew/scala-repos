@@ -299,7 +299,10 @@ class MultiReaderTest
 
         val handle = MultiReaderHelper.merge(va)
         assert(
-          ISet((handle.messages ??), (handle.messages ??), (handle.messages ??)) ==
+          ISet(
+            (handle.messages ??),
+            (handle.messages ??),
+            (handle.messages ??)) ==
             ISet(ms(0), ms(1), ms(2))
         )
       }

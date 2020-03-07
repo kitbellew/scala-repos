@@ -110,7 +110,8 @@ class NettyTransportSettings(config: Config) {
   }
 
   val EnableSsl: Boolean =
-    getBoolean("enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
+    getBoolean(
+      "enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
 
   val UseDispatcherForIo: Option[String] =
     getString("use-dispatcher-for-io") match {
@@ -594,7 +595,8 @@ class NettyTransport(
           schemeIdentifier,
           system.name,
           Some(settings.Hostname),
-          if (settings.PortSelector == 0) None else Some(settings.PortSelector)) match {
+          if (settings.PortSelector == 0) None
+          else Some(settings.PortSelector)) match {
           case Some(address) ⇒
             addressFromSocketAddress(
               newServerChannel.getLocalAddress,

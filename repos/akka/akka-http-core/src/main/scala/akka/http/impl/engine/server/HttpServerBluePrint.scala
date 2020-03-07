@@ -178,7 +178,8 @@ private[http] object HttpServerBluePrint {
               else hdrs
 
             val entity =
-              createEntity(entityCreator) withSizeLimit settings.parserSettings.maxContentLength
+              createEntity(
+                entityCreator) withSizeLimit settings.parserSettings.maxContentLength
             push(
               out,
               HttpRequest(

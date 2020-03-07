@@ -78,10 +78,12 @@ object WebAPIKeyFinder {
             NEL("Configuration property \"service.protocol\" is required")) |@|
         serviceConfig
           .get[String]("host")
-          .toSuccess(NEL("Configuration property \"service.host\" is required")) |@|
+          .toSuccess(
+            NEL("Configuration property \"service.host\" is required")) |@|
         serviceConfig
           .get[Int]("port")
-          .toSuccess(NEL("Configuration property \"service.port\" is required")) |@|
+          .toSuccess(
+            NEL("Configuration property \"service.port\" is required")) |@|
         serviceConfig
           .get[String]("path")
           .toSuccess(
@@ -123,7 +125,9 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
       eitherT(client.get[JValue]("apikeys/" + apiKey) map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
           (((_: Extractor.Error).message) <-: jvalue
-            .validated[v1.APIKeyDetails] :-> { details => Some(details) }).disjunction
+            .validated[v1.APIKeyDetails] :-> { details =>
+            Some(details)
+          }).disjunction
 
         case res @ HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
           logger.warn("apiKey " + apiKey + " not found:\n" + res)

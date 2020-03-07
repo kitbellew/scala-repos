@@ -83,7 +83,9 @@ object Step {
                 s"${orig.piotr}${dests.map(_.piotr).mkString}"
             }.mkString(" ")
           }) _ compose
-        add("drops", drops.map { drops => JsString(drops.map(_.key).mkString) }) _ compose
+        add(
+          "drops",
+          drops.map { drops => JsString(drops.map(_.key).mkString) }) _ compose
         add("crazy", crazyData)
     )(
       Json.obj(

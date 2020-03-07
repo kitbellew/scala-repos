@@ -401,7 +401,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             candidate match {
               case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>
                 if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
-                  fun.getParamByName(ref.refName, arguments.indexOf(args)) match {
+                  fun.getParamByName(
+                    ref.refName,
+                    arguments.indexOf(args)) match {
                     case Some(param) =>
                       var state = ResolveState.initial
                         .put(ScSubstitutor.key, subst)

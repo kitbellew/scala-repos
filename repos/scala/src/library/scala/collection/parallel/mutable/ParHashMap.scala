@@ -165,8 +165,8 @@ class ParHashMap[K, V] private[collection] (
       if (e eq null) Nil
       else if (index(elemHashCode(e.key)) == i) check(e.next)
       else
-        ("Element " + e.key + " at " + i + " with " + elemHashCode(e.key) + " maps to " + index(
-          elemHashCode(e.key))) :: check(e.next)
+        ("Element " + e.key + " at " + i + " with " + elemHashCode(
+          e.key) + " maps to " + index(elemHashCode(e.key))) :: check(e.next)
     check(table(i))
   }
 }
@@ -352,5 +352,6 @@ private[parallel] object ParHashMapCombiner {
   private[mutable] val nonmasklength = 32 - discriminantbits
 
   def apply[K, V] =
-    new ParHashMapCombiner[K, V](HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+    new ParHashMapCombiner[K, V](
+      HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 }

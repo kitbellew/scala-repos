@@ -137,7 +137,9 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
     println(
       "%s has picked up %s and %s and starts to eat"
         .format(name, left.path.name, right.path.name))
-    goto(Eating) using TakenChopsticks(Some(left), Some(right)) forMax (5.seconds)
+    goto(Eating) using TakenChopsticks(
+      Some(left),
+      Some(right)) forMax (5.seconds)
   }
 
   // When the results of the other grab comes back,
@@ -184,7 +186,12 @@ object DiningHakkersOnFsm {
       for (i <- 1 to 5) yield system.actorOf(Props[Chopstick], "Chopstick" + i)
     // Create 5 awesome fsm hakkers and assign them their left and right chopstick
     val hakkers = for {
-      (name, i) <- List("Ghosh", "Boner", "Klang", "Krasser", "Manie").zipWithIndex
+      (name, i) <- List(
+        "Ghosh",
+        "Boner",
+        "Klang",
+        "Krasser",
+        "Manie").zipWithIndex
     } yield system.actorOf(
       Props(classOf[FSMHakker], name, chopsticks(i), chopsticks((i + 1) % 5)))
 

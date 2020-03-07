@@ -54,7 +54,9 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
     def cannotMatch = {
       import Manifest._
       that
-        .isInstanceOf[AnyValManifest[_]] || (that eq AnyVal) || (that eq Nothing) || (that eq Null)
+        .isInstanceOf[
+          AnyValManifest[
+            _]] || (that eq AnyVal) || (that eq Nothing) || (that eq Null)
     }
 
     // This is wrong, and I don't know how it can be made right

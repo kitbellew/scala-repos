@@ -305,7 +305,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         override val awaitAtMost = 10000.millis
 
         val x = NotEnoughDataException
-        val numChunks = 12000 // failed starting from 4000 with sbt started with `-Xss2m`
+        val numChunks =
+          12000 // failed starting from 4000 with sbt started with `-Xss2m`
         val oneChunk = "1\r\nz\n"
         val manyChunks = (oneChunk * numChunks) + "0\r\n"
 
@@ -599,7 +600,9 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         parser: HttpRequestParser,
         expected: Either[RequestOutput, HttpRequest]*): Matcher[Seq[String]] =
       equal(expected.map(strictEqualify))
-        .matcher[Seq[Either[RequestOutput, StrictEqualHttpRequest]]] compose multiParse(
+        .matcher[
+          Seq[
+            Either[RequestOutput, StrictEqualHttpRequest]]] compose multiParse(
         parser)
 
     def multiParse(parser: HttpRequestParser)(input: Seq[String])

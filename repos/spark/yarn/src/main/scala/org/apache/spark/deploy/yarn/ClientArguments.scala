@@ -173,8 +173,8 @@ private[spark] class ClientArguments(
           println(s"${args(0)} is deprecated and is not used anymore.")
           args = tail
 
-        case ("--master-memory" |
-            "--driver-memory") :: MemoryParam(value) :: tail =>
+        case ("--master-memory" | "--driver-memory") :: MemoryParam(
+              value) :: tail =>
           if (args(0) == "--master-memory") {
             println(
               "--master-memory is deprecated. Use --driver-memory instead.")
@@ -193,8 +193,8 @@ private[spark] class ClientArguments(
           numExecutors = value
           args = tail
 
-        case ("--worker-memory" |
-            "--executor-memory") :: MemoryParam(value) :: tail =>
+        case ("--worker-memory" | "--executor-memory") :: MemoryParam(
+              value) :: tail =>
           if (args(0) == "--worker-memory") {
             println(
               "--worker-memory is deprecated. Use --executor-memory instead.")
@@ -202,8 +202,8 @@ private[spark] class ClientArguments(
           executorMemory = value
           args = tail
 
-        case ("--worker-cores" |
-            "--executor-cores") :: IntParam(value) :: tail =>
+        case ("--worker-cores" | "--executor-cores") :: IntParam(
+              value) :: tail =>
           if (args(0) == "--worker-cores") {
             println(
               "--worker-cores is deprecated. Use --executor-cores instead.")

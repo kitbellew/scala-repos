@@ -174,7 +174,9 @@ object Exception {
     *  to catch exactly what you specify, use `catchingPromiscuously` instead.
     */
   def catching[T](exceptions: Class[_]*): Catch[T] =
-    new Catch(pfFromExceptions(exceptions: _*)) withDesc (exceptions map (_.getName) mkString ", ")
+    new Catch(
+      pfFromExceptions(
+        exceptions: _*)) withDesc (exceptions map (_.getName) mkString ", ")
 
   def catching[T](c: Catcher[T]): Catch[T] = new Catch(c)
 

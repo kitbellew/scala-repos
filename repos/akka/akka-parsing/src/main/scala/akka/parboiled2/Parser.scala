@@ -354,7 +354,8 @@ abstract class Parser(
         }
       case x: CollectingRuleTraces if !x.reportQuiet ⇒
         val saved = x.minErrorIndex
-        x.minErrorIndex = Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
+        x.minErrorIndex =
+          Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
         saved
       case _ ⇒ -1
     }
@@ -570,7 +571,8 @@ abstract class Parser(
   }
 
   protected class __SubParserInput extends ParserInput {
-    val offset = _cursor // the number of chars the input the sub-parser sees is offset from the outer input start
+    val offset =
+      _cursor // the number of chars the input the sub-parser sees is offset from the outer input start
     def getLine(line: Int): String = ??? // TODO
     def sliceCharArray(start: Int, end: Int): Array[Char] =
       input.sliceCharArray(start + offset, end + offset)
@@ -689,8 +691,10 @@ object Parser {
   private class CollectingRuleTraces(
       var minErrorIndex: Int, // the smallest index at which a mismatch triggers a StartTracingException
       val reportQuiet: Boolean, // do we need to trace mismatches from quiet rules?
-      val traceNr: Int = 0, // the zero-based index number of the RuleTrace we are currently building
-      var errorMismatches: Int = 0 // the number of times we have already seen a mismatch at >= minErrorIndex
+      val traceNr: Int =
+        0, // the zero-based index number of the RuleTrace we are currently building
+      var errorMismatches: Int =
+        0 // the number of times we have already seen a mismatch at >= minErrorIndex
   ) extends ErrorAnalysisPhase {
     def applyOffset(offset: Int) = minErrorIndex -= offset
   }

@@ -116,7 +116,8 @@ trait SegmentFormatSupport {
 
   def genArraySegment(length: Int): Gen[ArraySegment[_]] =
     for {
-      ctype <- genCValueType(2) filter (_ != CBoolean) // Note: CArrayType(CBoolean) is OK!
+      ctype <- genCValueType(
+        2) filter (_ != CBoolean) // Note: CArrayType(CBoolean) is OK!
       segment <- genArraySegmentForCType(ctype, length)
     } yield segment
 
@@ -174,7 +175,8 @@ trait SegmentFormatMatchers { self: Specification with ScalaCheck =>
     format.writer.writeSegment(out, segment0) must beLike {
       case Success(_) =>
         format.reader
-          .readSegment(new InMemoryReadableByteChannel(out.toArray)) must beLike {
+          .readSegment(
+            new InMemoryReadableByteChannel(out.toArray)) must beLike {
           case Success(segment1) =>
             //
             areEqual(segment0, segment1)

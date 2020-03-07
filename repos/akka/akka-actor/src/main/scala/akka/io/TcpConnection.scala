@@ -41,8 +41,8 @@ private[io] abstract class TcpConnection(
   private[this] var writingSuspended = false
   private[this] var readingSuspended = pullMode
   private[this] var interestedInResume: Option[ActorRef] = None
-  var closedMessage
-      : CloseInformation = _ // for ConnectionClosed message in postStop
+  var closedMessage: CloseInformation =
+    _ // for ConnectionClosed message in postStop
   private var watchedActor: ActorRef = context.system.deadLetters
 
   def signDeathPact(actor: ActorRef): Unit = {
@@ -153,7 +153,9 @@ private[io] abstract class TcpConnection(
   }
 
   /** connection is closed on our side and we're waiting from confirmation from the other side */
-  def closing(info: ConnectionInfo, closeCommander: Option[ActorRef]): Receive = {
+  def closing(
+      info: ConnectionInfo,
+      closeCommander: Option[ActorRef]): Receive = {
     case SuspendReading ⇒ suspendReading(info)
     case ResumeReading ⇒ resumeReading(info)
     case ChannelReadable ⇒ doRead(info, closeCommander)
@@ -454,7 +456,10 @@ private[io] abstract class TcpConnection(
 
     def doWrite(info: ConnectionInfo): PendingWrite = {
       @tailrec def writeToChannel(data: ByteString): PendingWrite = {
-        val writtenBytes = channel.write(buffer) // at first we try to drain the remaining bytes from the buffer
+        val writtenBytes =
+          channel.write(
+            buffer
+          ) // at first we try to drain the remaining bytes from the buffer
         if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
         if (buffer.hasRemaining) {
           // we weren't able to write all bytes from the buffer, so we need to try again later

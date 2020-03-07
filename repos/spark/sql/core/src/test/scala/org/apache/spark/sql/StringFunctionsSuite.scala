@@ -59,7 +59,9 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
       df.select(
         regexp_replace($"a", "(\\d+)", "num"),
         regexp_extract($"a", "(\\d+)-(\\d+)", 1)),
-      Row("num-num", "100") :: Row("num-num", "100") :: Row("num-num", "100") :: Nil
+      Row("num-num", "100") :: Row("num-num", "100") :: Row(
+        "num-num",
+        "100") :: Nil
     )
 
     // for testing the mutable state of the expression in code gen.

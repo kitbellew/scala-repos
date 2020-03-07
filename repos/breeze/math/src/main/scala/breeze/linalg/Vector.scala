@@ -525,7 +525,14 @@ trait VectorOps { this: Vector.type =>
 
   @expand
   implicit def v_sField_Op[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: ClassTag](implicit
       @expand.sequence[Op](
         { f.+(_, _) }, {
@@ -812,7 +819,11 @@ trait VectorOps { this: Vector.type =>
         Vector[T],
         zipValues.type,
         ZippedValues[T, T]] = {
-    new BinaryRegistry[Vector[T], Vector[T], zipValues.type, ZippedValues[T, T]] {
+    new BinaryRegistry[
+      Vector[T],
+      Vector[T],
+      zipValues.type,
+      ZippedValues[T, T]] {
       protected override def bindingMissing(
           a: Vector[T],
           b: Vector[T]): ZippedValues[T, T] = {

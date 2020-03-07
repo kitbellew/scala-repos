@@ -668,8 +668,14 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand.valify
   implicit def dm_dm_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ },
         { _ - _ },
@@ -848,7 +854,14 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   @expand
   implicit def opUpdate_DM_S[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
         { f.+(_, _) }, {
@@ -890,8 +903,14 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand.valify
   implicit def op_DM_S[
       @expand.args(Int, Long, Float, Double) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpMod, OpDiv, OpPow) Op]
-      : Op.Impl2[DenseMatrix[T], T, DenseMatrix[T]] = {
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpMod,
+        OpDiv,
+        OpPow) Op]: Op.Impl2[DenseMatrix[T], T, DenseMatrix[T]] = {
     val uop = implicitly[Op.InPlaceImpl2[DenseMatrix[T], T]]
     new Op.Impl2[DenseMatrix[T], T, DenseMatrix[T]] {
       override def apply(a: DenseMatrix[T], b: T) = {
@@ -906,7 +925,14 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
 
   @expand
   implicit def op_DM_S[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag]:
 //  (implicit @expand.sequence[Op]({f.+(_,_)}, {f.-(_,_)}, {f.*(_,_)}, {f.*(_,_)}, {f./(_,_)}, {f.%(_,_)},{f.pow(_,_)}) op: Op.Impl2[T,T,T]):
   Op.Impl2[DenseMatrix[T], T, DenseMatrix[T]] = {
@@ -930,8 +956,14 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
   @expand.valify
   implicit def s_dm_op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _

@@ -107,10 +107,11 @@ class ScalaOIUtilTest extends SimpleTestCase {
     Assert.assertEquals(names.toList, unimplementedIn(code).toList)
   }
 
-  private def unimplementedIn(@Language(
-    value = "Scala",
-    prefix = Prefix,
-    suffix = Suffix) code: String) = {
+  private def unimplementedIn(
+      @Language(
+        value = "Scala",
+        prefix = Prefix,
+        suffix = Suffix) code: String) = {
     val text: String = "" + code + Suffix
     val file: ScalaFile = text.parse
     val templateDefinitions: Seq[ScTemplateDefinition] =

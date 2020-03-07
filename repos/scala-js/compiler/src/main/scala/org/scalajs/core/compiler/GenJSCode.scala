@@ -3417,7 +3417,8 @@ abstract class GenJSCode
                       case _             => false
                     }
                     if (rtClass == BoxedDoubleClass &&
-                        toTypeKind(implMethodSym.tpe.resultType) == DoubleKind &&
+                        toTypeKind(
+                          implMethodSym.tpe.resultType) == DoubleKind &&
                         isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
                       // This must be an Int, and not a Double
                       IntegerReflectiveCallClass
@@ -3890,7 +3891,8 @@ abstract class GenJSCode
         isStat: Boolean,
         superIn: Option[Symbol] = None)(implicit pos: Position): js.Tree = {
       def noSpread = !args.exists(_.isInstanceOf[js.JSSpread])
-      val argc = args.size // meaningful only for methods that don't have varargs
+      val argc =
+        args.size // meaningful only for methods that don't have varargs
 
       def requireNotSuper(): Unit = {
         if (superIn.isDefined) {

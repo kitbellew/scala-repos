@@ -43,27 +43,28 @@ private[tests] trait CoreTestDefs
       with AskScopeCompletionAt {
 
     override def runTest() {
-      askAllSources(ScopeCompletionMarker) { pos => askScopeCompletionAt(pos) } {
-        (pos, members) =>
-          withResponseDelimiter {
-            reporter.println("[response] askScopeCompletion at " + format(pos))
-            try {
-              // exclude members not from source (don't have position), for more focused and self contained tests.
-              def eligible(sym: compiler.Symbol) =
-                sym.pos != compiler.NoPosition
-              val filtered = members.filter(member => eligible(member.sym))
+      askAllSources(ScopeCompletionMarker) { pos =>
+        askScopeCompletionAt(pos)
+      } { (pos, members) =>
+        withResponseDelimiter {
+          reporter.println("[response] askScopeCompletion at " + format(pos))
+          try {
+            // exclude members not from source (don't have position), for more focused and self contained tests.
+            def eligible(sym: compiler.Symbol) =
+              sym.pos != compiler.NoPosition
+            val filtered = members.filter(member => eligible(member.sym))
 
-              reporter.println("retrieved %d members".format(filtered.size))
-              compiler ask { () =>
-                reporter.println(
-                  filtered.map(_.forceInfoString).sorted mkString "\n")
-              }
-            } catch {
-              case t: Throwable =>
-                t.printStackTrace()
+            reporter.println("retrieved %d members".format(filtered.size))
+            compiler ask { () =>
+              reporter.println(
+                filtered.map(_.forceInfoString).sorted mkString "\n")
             }
-
+          } catch {
+            case t: Throwable =>
+              t.printStackTrace()
           }
+
+        }
       }
     }
   }

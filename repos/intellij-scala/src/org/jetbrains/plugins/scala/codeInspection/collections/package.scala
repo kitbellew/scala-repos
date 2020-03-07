@@ -603,8 +603,8 @@ package object collections {
                 ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
             Some(ref),
             _)
-            if isSideEffectCollectionMethod(ref) || isSetter(ref) || hasUnitReturnType(
-              ref) =>
+            if isSideEffectCollectionMethod(ref) || isSetter(
+              ref) || hasUnitReturnType(ref) =>
           itself
         case MethodRepr(itself, None, Some(ref @ definedOutside(_)), _)
             if hasUnitReturnType(ref) =>

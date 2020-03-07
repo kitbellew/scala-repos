@@ -134,7 +134,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       result.group("/test".toPath).get.version should be(timestamp)
     }
 
-    it("can do an update by applying a change function with a path identifier") {
+    it(
+      "can do an update by applying a change function with a path identifier") {
       Given("an existing group with two subgroups")
       val current = Group.empty.copy(groups = Set(
         Group(

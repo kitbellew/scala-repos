@@ -46,7 +46,9 @@ class WebServerSpec extends HttpFlatSpec with WebServer {
     Set(File("foo-javadoc.jar"), File("bar-javadoc.jar"))
 
   "WebServer" should "respond to REST queries" in {
-    Post("/rpc", """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
+    Post(
+      "/rpc",
+      """{"typehint":"ConnectionInfoReq"}""".parseJson) ~> route ~> check {
       status shouldBe StatusCodes.OK
       responseAs[JsValue] shouldBe expected
     }

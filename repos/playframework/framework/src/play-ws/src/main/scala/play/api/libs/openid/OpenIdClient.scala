@@ -269,7 +269,9 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
 
   case class UrlIdentifier(url: String) {
     def normalize =
-      catching(classOf[MalformedURLException], classOf[URISyntaxException]) opt {
+      catching(
+        classOf[MalformedURLException],
+        classOf[URISyntaxException]) opt {
         def port(p: Int) = p match {
           case 80 | 443 => -1
           case port     => port

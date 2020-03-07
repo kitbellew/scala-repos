@@ -85,7 +85,10 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(
       desc.partitionColumns ==
         CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn("hour", "string", comment = Some("hour of the day")) :: Nil)
+          CatalogColumn(
+            "hour",
+            "string",
+            comment = Some("hour of the day")) :: Nil)
     assert(
       desc.storage.serdeProperties ==
         Map(
@@ -147,7 +150,10 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(
       desc.partitionColumns ==
         CatalogColumn("dt", "string", comment = Some("date type")) ::
-          CatalogColumn("hour", "string", comment = Some("hour of the day")) :: Nil)
+          CatalogColumn(
+            "hour",
+            "string",
+            comment = Some("hour of the day")) :: Nil)
     assert(desc.storage.serdeProperties == Map())
     assert(
       desc.storage.inputFormat == Some(

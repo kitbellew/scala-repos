@@ -362,7 +362,14 @@ private[spark] object Utils extends Logging {
     // `file` and `localhost` are not used. Just to prevent URI from parsing `fileName` as
     // scheme or host. The prefix "/" is required because URI doesn't accept a relative path.
     // We should remove it after we get the raw path.
-    new URI("file", null, "localhost", -1, "/" + fileName, null, null).getRawPath
+    new URI(
+      "file",
+      null,
+      "localhost",
+      -1,
+      "/" + fileName,
+      null,
+      null).getRawPath
       .substring(1)
   }
 
@@ -1432,7 +1439,8 @@ private[spark] object Utils extends Logging {
             } else {
               ste.getMethodName
             }
-            callStack(0) = ste.toString // Put last Spark method on top of the stack trace.
+            callStack(0) =
+              ste.toString // Put last Spark method on top of the stack trace.
           } else {
             firstUserLine = ste.getLineNumber
             firstUserFile = ste.getFileName

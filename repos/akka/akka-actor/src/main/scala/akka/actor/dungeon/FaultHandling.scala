@@ -274,7 +274,8 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       finally clearFailed() // must happen in any case, so that failure is propagated
 
       val freshActor = newActor()
-      actor = freshActor // this must happen before postRestart has a chance to fail
+      actor =
+        freshActor // this must happen before postRestart has a chance to fail
       if (freshActor eq failedActor)
         setActorFields(
           freshActor,

@@ -18,9 +18,15 @@ object Unidoc extends Plugin {
   val unidocSettings = Seq(
     unidocDirectory <<= crossTarget { _ / "unidoc" },
     unidocExclude := Seq.empty,
-    unidocAllSources <<= (thisProjectRef, buildStructure, unidocExclude) flatMap allSources,
+    unidocAllSources <<= (
+      thisProjectRef,
+      buildStructure,
+      unidocExclude) flatMap allSources,
     unidocSources <<= unidocAllSources map { _.flatten },
-    unidocAllClasspaths <<= (thisProjectRef, buildStructure, unidocExclude) flatMap allClasspaths,
+    unidocAllClasspaths <<= (
+      thisProjectRef,
+      buildStructure,
+      unidocExclude) flatMap allClasspaths,
     unidocClasspath <<= unidocAllClasspaths map {
       _.flatten.map(_.data).distinct
     },
@@ -60,12 +66,16 @@ object Unidoc extends Plugin {
   }
 
   def unidocTask: Def.Initialize[Task[File]] = {
-    (compilers, unidocSources, unidocDirectory, scalacOptions in doc, streams) map {
-      (compilers, sources, target, options, s) =>
-        {
-          Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
-          target
-        }
+    (
+      compilers,
+      unidocSources,
+      unidocDirectory,
+      scalacOptions in doc,
+      streams) map { (compilers, sources, target, options, s) =>
+      {
+        Doc.scaladoc("Scalatra", s.cacheDirectory, compilers.scalac, options)
+        target
+      }
     }
   }
 }

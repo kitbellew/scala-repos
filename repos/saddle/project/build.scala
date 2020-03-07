@@ -49,7 +49,8 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-        unmanagedClasspath in (LocalProject("saddle-core"), Test) <++= (fullClasspath in (LocalProject(
+        unmanagedClasspath in (LocalProject(
+          "saddle-core"), Test) <++= (fullClasspath in (LocalProject(
           "saddle-test-framework"), Test)),
         libraryDependencies <++= scalaVersion(v =>
           Seq(

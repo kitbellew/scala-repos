@@ -431,8 +431,9 @@ class LiftSession(
   private var ajaxRequests =
     scala.collection.mutable.Map[String, List[AjaxRequestInfo]]()
 
-  private[http] def withAjaxRequests[T](fn: (
-      scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) = {
+  private[http] def withAjaxRequests[T](
+      fn: (
+          scala.collection.mutable.Map[String, List[AjaxRequestInfo]]) => T) = {
     ajaxRequests.synchronized { fn(ajaxRequests) }
   }
 
@@ -1506,7 +1507,9 @@ class LiftSession(
       }.headOption
 
     for {
-      template <- Templates(name, S.locale) ?~ ("Template " + name + " not found")
+      template <- Templates(
+        name,
+        S.locale) ?~ ("Template " + name + " not found")
       res <- findElem(
         processSurroundAndInclude(name.mkString("/", "/", ""), template))
     } yield res
@@ -1560,7 +1563,8 @@ class LiftSession(
       (LiftRules.snippet(cls) or
         LiftSession
           .findSnippetClass(cls)
-          .flatMap(c => instantiateOrRedirect(c) or findSnippetObject(cls))) match {
+          .flatMap(c =>
+            instantiateOrRedirect(c) or findSnippetObject(cls))) match {
       case Full(inst: StatefulSnippet) =>
         inst.addName(cls); S.overrideSnippetForClass(cls, inst); Full(inst)
       case Full(ret)     => Full(ret)
@@ -1871,7 +1875,10 @@ class LiftSession(
                       }
 
                       def isFuncNodeSeq(meth: Method): Boolean = {
-                        (classOf[Function1[_, _]] isAssignableFrom meth.getReturnType) &&
+                        (classOf[
+                          Function1[
+                            _,
+                            _]] isAssignableFrom meth.getReturnType) &&
                         testGeneric(meth.getGenericReturnType)
                       }
 

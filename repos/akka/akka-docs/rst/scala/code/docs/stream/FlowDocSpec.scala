@@ -27,7 +27,8 @@ class FlowDocSpec extends AkkaSpec {
     source.map(_ => 0) // has no effect on source, since it's immutable
     source.runWith(Sink.fold(0)(_ + _)) // 55
 
-    val zeroes = source.map(_ => 0) // returns new Source[Int], with `map()` appended
+    val zeroes =
+      source.map(_ => 0) // returns new Source[Int], with `map()` appended
     zeroes.runWith(Sink.fold(0)(_ + _)) // 0
     //#source-immutable
   }

@@ -281,7 +281,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         val specArgs = Type.getArgumentTypes(specMethodDesc)
         val nonSpecArgs = Type.getArgumentTypes(nonSpecMethodDesc)
         specArgs
-          .corresponds(nonSpecArgs)(sameOrSpecializedType) && sameOrSpecializedType(
+          .corresponds(nonSpecArgs)(
+            sameOrSpecializedType) && sameOrSpecializedType(
           Type.getReturnType(specMethodDesc),
           Type.getReturnType(nonSpecMethodDesc))
       }
@@ -336,9 +337,11 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       for (i <- invokeArgTypes.indices) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) {
           res(i) = None
-        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(i).getDescriptor == ObjectRef.descriptor) {
+        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(
+                     i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
-        } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(i).getDescriptor == ObjectRef.descriptor) {
+        } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(
+                     i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaBox(invokeArgTypes(i)))
         } else {
           assert(!isPrimitiveType(invokeArgTypes(i)), invokeArgTypes(i))
@@ -415,12 +418,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
 
     val bodyReturnType = Type.getReturnType(lambdaBodyHandle.getDesc)
     val invocationReturnType = Type.getReturnType(invocation.desc)
-    if (isPrimitiveType(invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
+    if (isPrimitiveType(
+          invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (invocationReturnType.getSort == Type.VOID) getPop(1)
         else getScalaUnbox(invocationReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
-    } else if (isPrimitiveType(bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
+    } else if (isPrimitiveType(
+                 bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (bodyReturnType.getSort == Type.VOID) getBoxedUnit
         else getScalaBox(bodyReturnType)
@@ -459,7 +464,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           callee = bodyMethodNode,
           calleeDeclarationClass = bodyDeclClassType,
           safeToInline = canInlineFromSource,
-          safeToRewrite = false, // the lambda body method is not a trait interface method
+          safeToRewrite =
+            false, // the lambda body method is not a trait interface method
           canInlineFromSource = canInlineFromSource,
           annotatedInline = false,
           annotatedNoInline = false,

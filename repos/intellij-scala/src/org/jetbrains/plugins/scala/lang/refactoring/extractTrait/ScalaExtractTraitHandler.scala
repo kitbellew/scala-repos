@@ -293,7 +293,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
               conflicts.putValue(m, message)
             case m: ScMember
                 if clazz
-                  .isInstanceOf[ScNewTemplateDefinition] && m.containingClass == clazz && !selected
+                  .isInstanceOf[
+                    ScNewTemplateDefinition] && m.containingClass == clazz && !selected
                   .contains(m) =>
               val message = ScalaBundle.message(
                 "member.of.anonymous.class.cannot.be.used.in.extracted.member",

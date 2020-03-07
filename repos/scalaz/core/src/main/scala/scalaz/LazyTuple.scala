@@ -436,7 +436,10 @@ private trait LazyTuple3Order[A1, A2, A3]
   implicit def _3: Order[A3]
   import Ordering.EQ
   def order(f1: LazyTuple3[A1, A2, A3], f2: LazyTuple3[A1, A2, A3]) =
-    (_1.order(f1._1, f2._1), _2.order(f1._2, f2._2), _3.order(f1._3, f2._3)) match {
+    (
+      _1.order(f1._1, f2._1),
+      _2.order(f1._2, f2._2),
+      _3.order(f1._3, f2._3)) match {
       case (EQ, EQ, ord) => ord
       case (EQ, ord, _)  => ord
       case (ord, _, _)   => ord

@@ -84,7 +84,10 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
   }
 }
 
-private[spark] class ZippedPartitionsRDD2[A: ClassTag, B: ClassTag, V: ClassTag](
+private[spark] class ZippedPartitionsRDD2[
+    A: ClassTag,
+    B: ClassTag,
+    V: ClassTag](
     sc: SparkContext,
     var f: (Iterator[A], Iterator[B]) => Iterator[V],
     var rdd1: RDD[A],

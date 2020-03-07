@@ -101,9 +101,11 @@ object ScalaCsrf extends PlaySpecification {
       }
       //#csrf-check
 
-      await(save(FakeRequest("POST", "/")
-        .withCookies(Cookie("foo", "bar"))
-        .withHeaders(CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
+      await(
+        save(FakeRequest("POST", "/")
+          .withCookies(Cookie("foo", "bar"))
+          .withHeaders(
+            CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
     }
 
     "allow per action token handling" in new WithApplication() {
@@ -161,9 +163,11 @@ object ScalaCsrf extends PlaySpecification {
       def form = GetAction { implicit req => Ok(views.html.itemsForm) }
       //#csrf-actions
 
-      await(save(FakeRequest("POST", "/")
-        .withCookies(Cookie("foo", "bar"))
-        .withHeaders(CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
+      await(
+        save(FakeRequest("POST", "/")
+          .withCookies(Cookie("foo", "bar"))
+          .withHeaders(
+            CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
       val body =
         await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome

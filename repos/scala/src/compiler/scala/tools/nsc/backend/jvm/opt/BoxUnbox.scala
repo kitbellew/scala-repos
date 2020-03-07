@@ -363,7 +363,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                     if (i == valueIndex) {
                       val resultSlot = getLocal(tp.getSize)
                       loadOps =
-                        new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
+                        new VarInsnNode(
+                          tp.getOpcode(ILOAD),
+                          resultSlot) :: extraction
                           .postExtractionAdaptationOps(tp)
                       new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
                     } else {
@@ -850,7 +852,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
-               if isRuntimeRefConstructor(initCall); kind <- checkKind(initCall))
+               if isRuntimeRefConstructor(initCall);
+               kind <- checkKind(initCall))
             yield (InstanceCreation(ti, dupOp, initCall), kind)
 
         case _ => None

@@ -267,7 +267,11 @@ object ThriftCodecTest {
       factory: SunkChannelFactory,
       pipeline: ChannelPipeline,
       sink: SunkChannelSink)
-      extends AbstractChannel(null /*parent*/, null /*factory*/, pipeline, sink) {
+      extends AbstractChannel(
+        null /*parent*/,
+        null /*factory*/,
+        pipeline,
+        sink) {
     def upstreamEvents: Seq[ChannelEvent] = _upstreamEvents
     def downstreamEvents: Seq[ChannelEvent] = sink.events
 

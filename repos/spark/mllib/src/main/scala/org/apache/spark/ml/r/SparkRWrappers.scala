@@ -84,7 +84,8 @@ private[r] object SparkRWrappers {
         val pValuesR =
           Array(m.summary.pValues.last) ++ m.summary.pValues.dropRight(1)
         if (m.getFitIntercept) {
-          Array(m.intercept) ++ m.coefficients.toArray ++ coefficientStandardErrorsR ++
+          Array(
+            m.intercept) ++ m.coefficients.toArray ++ coefficientStandardErrorsR ++
             tValuesR ++ pValuesR
         } else {
           m.coefficients.toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR

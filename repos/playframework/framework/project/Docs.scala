@@ -51,7 +51,9 @@ object Docs {
     apiDocs <<= apiDocsTask,
     ivyConfigurations += Webjars,
     extractWebjars <<= extractWebjarContents,
-    allConfs in Global <<= (thisProjectRef, buildStructure) flatMap allConfsTask,
+    allConfs in Global <<= (
+      thisProjectRef,
+      buildStructure) flatMap allConfsTask,
     mappings in (Compile, packageBin) <++= (
       baseDirectory,
       apiDocs,

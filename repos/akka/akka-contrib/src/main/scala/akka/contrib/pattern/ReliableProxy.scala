@@ -135,7 +135,9 @@ object ReliableProxy {
 private[akka] trait ReliableProxyDebugLogging extends ActorLogging {
   this: Actor ⇒
   val debug: Boolean =
-    Try(context.system.settings.config.getBoolean("akka.reliable-proxy.debug")) getOrElse false
+    Try(
+      context.system.settings.config
+        .getBoolean("akka.reliable-proxy.debug")) getOrElse false
 
   def enabled: Boolean = debug && log.isDebugEnabled
 

@@ -25,7 +25,8 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       rejection shouldEqual MissingCookieRejection("userName")
     }
     Get("/") ~> Route.seal(route) ~> check {
-      responseAs[String] shouldEqual "Request is missing required cookie 'userName'"
+      responseAs[
+        String] shouldEqual "Request is missing required cookie 'userName'"
     }
   }
   "optionalCookie" in {

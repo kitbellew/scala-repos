@@ -118,7 +118,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
             |}""".stripMarginWithNewline("\n")
       }
       Get().withHeaders(Accept(MediaTypes.`text/xml`)) ~> route ~> check {
-        responseAs[xml.NodeSeq] shouldEqual <data><name>Ida</name><age>83</age></data>
+        responseAs[
+          xml.NodeSeq] shouldEqual <data><name>Ida</name><age>83</age></data>
       }
       Get().withHeaders(Accept(MediaTypes.`text/plain`)) ~> Route
         .seal(route) ~> check {

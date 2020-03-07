@@ -376,7 +376,9 @@ private[parallel] abstract class HashMapCombiner[K, V]
 
 private[parallel] object HashMapCombiner {
   def apply[K, V] =
-    new HashMapCombiner[K, V] {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+    new HashMapCombiner[
+      K,
+      V] {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 
   private[immutable] val rootbits = 5
   private[immutable] val rootsize = 1 << 5

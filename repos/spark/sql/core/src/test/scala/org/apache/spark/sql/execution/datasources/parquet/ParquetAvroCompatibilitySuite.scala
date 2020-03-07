@@ -186,7 +186,8 @@ class ParquetAvroCompatibilitySuite
     }
   }
 
-  ignore("nullable arrays (parquet-avro 1.7.0 does not properly support this)") {
+  ignore(
+    "nullable arrays (parquet-avro 1.7.0 does not properly support this)") {
     // TODO Complete this test case after upgrading to parquet-mr 1.8+
   }
 

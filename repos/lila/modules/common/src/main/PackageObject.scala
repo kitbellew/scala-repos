@@ -26,7 +26,9 @@ trait PackageObject extends Steroids with WithFuture {
 
   // from scalaz. We don't want to import all OptionTFunctions, because of the clash with `some`
   def optionT[M[_]] =
-    new (({ type λ[α] = M[Option[α]] })#λ ~> ({ type λ[α] = OptionT[M, α] })#λ) {
+    new (({ type λ[α] = M[Option[α]] })#λ ~> ({
+      type λ[α] = OptionT[M, α]
+    })#λ) {
       def apply[A](a: M[Option[A]]) = new OptionT[M, A](a)
     }
 

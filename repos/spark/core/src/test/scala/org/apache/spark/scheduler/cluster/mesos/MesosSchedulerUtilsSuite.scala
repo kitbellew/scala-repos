@@ -66,8 +66,8 @@ class MesosSchedulerUtilsSuite
       "zone" -> Set("us-east-1a", "us-east-1b")
     )
     utils
-      .parseConstraintString("tachyon:true;zone:us-east-1a,us-east-1b") should be(
-      expectedMap)
+      .parseConstraintString(
+        "tachyon:true;zone:us-east-1a,us-east-1b") should be(expectedMap)
   }
 
   test("parse an empty constraint string correctly") {
@@ -94,11 +94,17 @@ class MesosSchedulerUtilsSuite
       Map("tachyon" -> Value.Text.newBuilder().setValue("false").build())
 
     utils
-      .matchesAttributeRequirements(parsedConstraints, noTachyonOffer) shouldBe false
+      .matchesAttributeRequirements(
+        parsedConstraints,
+        noTachyonOffer) shouldBe false
     utils
-      .matchesAttributeRequirements(parsedConstraints, tachyonTrueOffer) shouldBe true
+      .matchesAttributeRequirements(
+        parsedConstraints,
+        tachyonTrueOffer) shouldBe true
     utils
-      .matchesAttributeRequirements(parsedConstraints, tachyonFalseOffer) shouldBe true
+      .matchesAttributeRequirements(
+        parsedConstraints,
+        tachyonFalseOffer) shouldBe true
   }
 
   test("subset match is performed for set attributes") {
@@ -116,7 +122,9 @@ class MesosSchedulerUtilsSuite
     val parsedConstraints = utils.parseConstraintString(zoneConstraintStr)
 
     utils
-      .matchesAttributeRequirements(parsedConstraints, supersetConstraint) shouldBe true
+      .matchesAttributeRequirements(
+        parsedConstraints,
+        supersetConstraint) shouldBe true
   }
 
   test("less than equal match is performed on scalar attributes") {
@@ -159,7 +167,9 @@ class MesosSchedulerUtilsSuite
 
     utils
       .matchesAttributeRequirements(trueConstraint, offerAttribs) shouldBe true
-    utils.matchesAttributeRequirements(falseConstraint, offerAttribs) shouldBe false
+    utils.matchesAttributeRequirements(
+      falseConstraint,
+      offerAttribs) shouldBe false
   }
 
 }

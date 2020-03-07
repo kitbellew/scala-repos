@@ -253,7 +253,8 @@ object PlayBuild extends Build {
   lazy val PlayProject = PlayCrossBuiltProject("Play", "play")
     .enablePlugins(SbtTwirl)
     .settings(
-      libraryDependencies ++= runtime(scalaVersion.value) ++ scalacheckDependencies,
+      libraryDependencies ++= runtime(
+        scalaVersion.value) ++ scalacheckDependencies,
       sourceGenerators in Compile <+= (
         version,
         scalaVersion,

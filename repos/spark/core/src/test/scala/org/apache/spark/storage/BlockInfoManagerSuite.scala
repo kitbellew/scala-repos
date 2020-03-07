@@ -232,7 +232,8 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     }
   }
 
-  test("assertBlockIsLockedForWriting throws exception if block is not locked") {
+  test(
+    "assertBlockIsLockedForWriting throws exception if block is not locked") {
     intercept[SparkException] {
       blockInfoManager.assertBlockIsLockedForWriting("block")
     }

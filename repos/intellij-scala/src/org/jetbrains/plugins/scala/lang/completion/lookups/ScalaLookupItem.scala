@@ -305,7 +305,9 @@ class ScalaLookupItem(
           val useFullyQualifiedName =
             PsiTreeUtil.getParentOfType(ref, classOf[ScImportStmt]) != null &&
               PsiTreeUtil
-                .getParentOfType(ref, classOf[ScImportSelectors]) == null //do not complete in sel
+                .getParentOfType(
+                  ref,
+                  classOf[ScImportSelectors]) == null //do not complete in sel
           if (ref == null) return
           while (ref.getParent != null && ref.getParent
                    .isInstanceOf[ScReferenceElement] &&

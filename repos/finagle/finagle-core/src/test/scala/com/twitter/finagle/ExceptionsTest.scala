@@ -87,7 +87,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("ServiceTimeoutException should have a good explanation when filled in") {
+  test(
+    "ServiceTimeoutException should have a good explanation when filled in") {
     val exc = new ServiceTimeoutException(Duration.Top)
     exc.serviceName = "finagle"
     assert(exc.getMessage.contains(exc.serviceName))

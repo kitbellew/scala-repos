@@ -568,7 +568,11 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
 
         case v: VarInsnNode if isLive =>
           val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
-          maxLocals = math.max(maxLocals, v.`var` + longSize + 1) // + 1 because local numbers are 0-based
+          maxLocals =
+            math.max(
+              maxLocals,
+              v.`var` + longSize + 1
+            ) // + 1 because local numbers are 0-based
 
         case i: IincInsnNode if isLive =>
           maxLocals = math.max(maxLocals, i.`var` + 1)
@@ -613,8 +617,9 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     AsmAnalyzer.sizeOKForBasicValue(method) && {
       def isSubType(aRefDesc: String, bClass: InternalName): Boolean =
         aRefDesc == bClass || bClass == ObjectRef.internalName || {
-          (bTypeForDescriptorOrInternalNameFromClassfile(aRefDesc) conformsTo classBTypeFromParsedClassfile(
-            bClass)).getOrElse(false)
+          (bTypeForDescriptorOrInternalNameFromClassfile(
+            aRefDesc) conformsTo classBTypeFromParsedClassfile(bClass))
+            .getOrElse(false)
         }
 
       lazy val typeAnalyzer = new NonLubbingTypeFlowAnalyzer(method, owner)
@@ -941,7 +946,9 @@ object LocalOptImpls {
       */
     def removeJumpToSuccessor(insn: AbstractInsnNode): Boolean = insn match {
       case JumpNonJsr(jump)
-          if nextExecutableInstruction(jump, alsoKeep = Set(jump.label)) contains jump.label =>
+          if nextExecutableInstruction(
+            jump,
+            alsoKeep = Set(jump.label)) contains jump.label =>
         replaceJumpByPop(jump)
         true
 
@@ -965,7 +972,9 @@ object LocalOptImpls {
         // don't skip over jump targets, see doc comment
         nextExecutableInstruction(jump, alsoKeep = jumpTargets) match {
           case Some(Goto(goto)) =>
-            if (nextExecutableInstruction(goto, alsoKeep = Set(jump.label)) contains jump.label) {
+            if (nextExecutableInstruction(
+                  goto,
+                  alsoKeep = Set(jump.label)) contains jump.label) {
               val newJump =
                 new JumpInsnNode(negateJumpOpcode(jump.getOpcode), goto.label)
               method.instructions.set(jump, newJump)

@@ -236,8 +236,8 @@ abstract class ClusterShardingCustomShardAllocationSpec(
 
       runOn(first) {
         system
-          .actorSelection(node(second) / "system" / "sharding" / "Entity") ! Identify(
-          None)
+          .actorSelection(
+            node(second) / "system" / "sharding" / "Entity") ! Identify(None)
         val secondRegion = expectMsgType[ActorIdentity].ref.get
         allocator ! UseRegion(secondRegion)
         expectMsg(UseRegionAck)

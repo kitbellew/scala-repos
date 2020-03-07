@@ -230,7 +230,11 @@ object DBIOAction {
         : DBIOAction[Seq[R], NoStream, E] = {
       if (g.length == 1) {
         if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
-          new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
+          new SynchronousDatabaseAction.Fused[
+            Seq[R],
+            NoStream,
+            BasicBackend,
+            E] {
             def run(context: BasicBackend#Context) =
               g.head
                 .asInstanceOf[
@@ -241,7 +245,11 @@ object DBIOAction {
         } else g.head.map(_ :: Nil)
       } else {
         if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
-          new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
+          new SynchronousDatabaseAction.Fused[
+            Seq[R],
+            NoStream,
+            BasicBackend,
+            E] {
             def run(context: BasicBackend#Context) = {
               val b = new ArrayBuffer[R](g.length)
               g.foreach(a =>

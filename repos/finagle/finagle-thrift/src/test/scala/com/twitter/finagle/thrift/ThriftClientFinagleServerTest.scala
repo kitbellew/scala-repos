@@ -71,7 +71,8 @@ class ThriftClientFinagleServerTest
     assert(exc != null)
   }
 
-  test("thrift client with finagle server should handle complex return values") {
+  test(
+    "thrift client with finagle server should handle complex return values") {
     assert(client.complex_return("a string").arg_two == "a string")
   }
 

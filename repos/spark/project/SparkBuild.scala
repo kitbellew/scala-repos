@@ -230,7 +230,9 @@ object SparkBuild extends PomBuild {
     publishLocal in MavenCompile <<= publishTask(
       publishLocalConfiguration in MavenCompile,
       deliverLocal),
-    publishLocalBoth <<= Seq(publishLocal in MavenCompile, publishLocal).dependOn,
+    publishLocalBoth <<= Seq(
+      publishLocal in MavenCompile,
+      publishLocal).dependOn,
     javacOptions in (Compile, doc) ++= {
       val versionParts = System.getProperty("java.version").split("[+.\\-]+", 3)
       var major = versionParts(0).toInt

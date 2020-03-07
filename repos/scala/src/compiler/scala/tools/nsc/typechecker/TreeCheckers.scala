@@ -349,7 +349,8 @@ abstract class TreeCheckers extends Analyzer {
             if (sym.hasGetter && !sym.isOuterField && !sym.isOuterAccessor) {
               assertFn(
                 sym.getterIn(sym.owner) != NoSymbol,
-                ownerstr(sym) + " has getter but cannot be found. " + sym.ownerChain)
+                ownerstr(
+                  sym) + " has getter but cannot be found. " + sym.ownerChain)
             }
           case Apply(fn, args) =>
             if (args exists (_ == EmptyTree))
@@ -504,7 +505,8 @@ abstract class TreeCheckers extends Analyzer {
             if (tree.tpe eq null)
               errorFn(
                 s"tree.tpe=null for " + tree.shortClass + " (symbol: " + classString(
-                  tree.symbol) + " " + signature(tree.symbol) + "), last seen tpe was " + oldtpe)
+                  tree.symbol) + " " + signature(
+                  tree.symbol) + "), last seen tpe was " + oldtpe)
             else if (oldtpe =:= tree.tpe)
               ()
             else

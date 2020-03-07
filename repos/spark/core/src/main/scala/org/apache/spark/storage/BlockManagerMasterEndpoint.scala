@@ -167,7 +167,9 @@ private[spark] class BlockManagerMasterEndpoint(
     // The dispatcher is used as an implicit argument into the Future sequence construction.
     val removeMsg = RemoveRdd(rddId)
     Future.sequence(
-      blockManagerInfo.values.map { bm => bm.slaveEndpoint.ask[Int](removeMsg) }.toSeq
+      blockManagerInfo.values.map { bm =>
+        bm.slaveEndpoint.ask[Int](removeMsg)
+      }.toSeq
     )
   }
 
@@ -194,7 +196,9 @@ private[spark] class BlockManagerMasterEndpoint(
       removeFromDriver || !info.blockManagerId.isDriver
     }
     Future.sequence(
-      requiredBlockManagers.map { bm => bm.slaveEndpoint.ask[Int](removeMsg) }.toSeq
+      requiredBlockManagers.map { bm =>
+        bm.slaveEndpoint.ask[Int](removeMsg)
+      }.toSeq
     )
   }
 

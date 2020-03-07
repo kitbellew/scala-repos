@@ -35,8 +35,10 @@ private[this] case class HtmlState(
     htmlDescendant: Boolean = false, // any descendant of HTML
     headChild: Boolean = false, // direct child of a HEAD in its proper place
     bodyDescendant: Boolean = false, // any descendant of BODY
-    headInBodyChild: Boolean = false, // direct child of a HEAD/HEAD_* somewhere in BODY
-    tailInBodyChild: Boolean = false, // direct child of a TAIL somewhere in BODY
+    headInBodyChild: Boolean =
+      false, // direct child of a HEAD/HEAD_* somewhere in BODY
+    tailInBodyChild: Boolean =
+      false, // direct child of a TAIL somewhere in BODY
     bodyChild: Boolean = false, // direct child of body
     mergeHeadAndTail: Boolean // false if we're not doing head/tail merging
 )

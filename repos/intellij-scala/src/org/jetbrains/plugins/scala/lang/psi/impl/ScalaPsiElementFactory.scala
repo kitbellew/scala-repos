@@ -368,7 +368,11 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScParameters = {
-    createElementWithContext(text, context, child, ParamClauses.parse(_)) match {
+    createElementWithContext(
+      text,
+      context,
+      child,
+      ParamClauses.parse(_)) match {
       case parameters: ScParameters => parameters
       case _                        => null
     }
@@ -531,7 +535,8 @@ object ScalaPsiElementFactory {
     val classDef = dummyFile.typeDefinitions(0)
     val p = classDef.members(0).asInstanceOf[ScPatternDefinition]
     p.expr
-      .getOrElse(throw new IllegalArgumentException("Expression not found")) match {
+      .getOrElse(
+        throw new IllegalArgumentException("Expression not found")) match {
       case x: ScParenthesisedExpr =>
         x.expr match {
           case Some(y) => y
@@ -1415,7 +1420,11 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScExpression = {
-    createElementWithContext(s"foo($text)", context, child, Expr.parse(_)) match {
+    createElementWithContext(
+      s"foo($text)",
+      context,
+      child,
+      Expr.parse(_)) match {
       case call: ScMethodCall =>
         val res =
           if (call.argumentExpressions.size > 0)
@@ -1431,7 +1440,11 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScExpression = {
-    createElementWithContext(s"$text", context, child, ConstrExpr.parse(_)) match {
+    createElementWithContext(
+      s"$text",
+      context,
+      child,
+      ConstrExpr.parse(_)) match {
       case expr: ScExpression =>
         expr.setContext(context, child)
         expr
@@ -1604,7 +1617,11 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScTypeParamClause = {
-    createElementWithContext(text, context, child, TypeParamClause.parse(_)) match {
+    createElementWithContext(
+      text,
+      context,
+      child,
+      TypeParamClause.parse(_)) match {
       case clause: ScTypeParamClause => clause
       case _                         => null
     }
@@ -1647,7 +1664,11 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScPatternList = {
-    createElementWithContext(s"val $text = 239", context, child, Def.parse(_)) match {
+    createElementWithContext(
+      s"val $text = 239",
+      context,
+      child,
+      Def.parse(_)) match {
       case patternDef: ScPatternDefinition =>
         val res = patternDef.pList
         res.setContext(context, child)
@@ -1824,7 +1845,9 @@ object ScalaPsiElementFactory {
   }
 
   def createXmlEndTag(tagName: String, manager: PsiManager): ScXmlEndTag = {
-    createScalaFile("val a = <" + tagName + "></" + tagName + ">", manager).getFirstChild.getLastChild.getFirstChild.getLastChild
+    createScalaFile(
+      "val a = <" + tagName + "></" + tagName + ">",
+      manager).getFirstChild.getLastChild.getFirstChild.getLastChild
       .asInstanceOf[ScXmlEndTag]
   }
 

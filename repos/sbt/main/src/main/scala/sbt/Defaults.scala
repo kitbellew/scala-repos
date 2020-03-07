@@ -327,14 +327,18 @@ object Defaults extends BuildCommon {
       excludeFilter in unmanagedResources),
     watchSources in ConfigGlobal ++= unmanagedResources.value,
     resourceGenerators :== Nil,
-    resourceGenerators <+= (discoveredSbtPlugins, resourceManaged) map PluginDiscovery.writeDescriptors,
+    resourceGenerators <+= (
+      discoveredSbtPlugins,
+      resourceManaged) map PluginDiscovery.writeDescriptors,
     managedResources <<= generate(resourceGenerators),
     resources <<= Classpaths.concat(managedResources, unmanagedResources)
   )
   lazy val outputConfigPaths = Seq(
     cacheDirectory := crossTarget.value / CacheDirectoryName / thisProject.value.id / configuration.value.name,
-    classDirectory := crossTarget.value / (prefix(configuration.value.name) + "classes"),
-    target in doc := crossTarget.value / (prefix(configuration.value.name) + "api")
+    classDirectory := crossTarget.value / (prefix(
+      configuration.value.name) + "classes"),
+    target in doc := crossTarget.value / (prefix(
+      configuration.value.name) + "api")
   )
   def addBaseSources = Seq(
     unmanagedSources := {
@@ -474,7 +478,9 @@ object Defaults extends BuildCommon {
       val structure = Project structure state
       val configurations =
         Project.getProject(ref, structure).toList.flatMap(_.configurations)
-      configurations.flatMap { conf => key in (ref, conf) get structure.data } join
+      configurations.flatMap { conf =>
+        key in (ref, conf) get structure.data
+      } join
     }
   def watchTransitiveSourcesTask: Initialize[Task[Seq[File]]] = {
     import ScopeFilter.Make.{inDependencies => inDeps, _}
@@ -605,7 +611,8 @@ object Defaults extends BuildCommon {
             .toIterable)
         .toMap,
       definedTests <<= detectTests,
-      definedTestNames <<= definedTests map (_.map(_.name).distinct) storeAs definedTestNames triggeredBy compile,
+      definedTestNames <<= definedTests map (_.map(
+        _.name).distinct) storeAs definedTestNames triggeredBy compile,
       testFilter in testQuick <<= testQuickFilter,
       executeTests <<= (
         streams in test,
@@ -973,7 +980,8 @@ object Defaults extends BuildCommon {
   def sourceMappings =
     (unmanagedSources, unmanagedSourceDirectories, baseDirectory) map {
       (srcs, sdirs, base) =>
-        (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(base) | flat)
+        (srcs --- sdirs --- base) pair (relativeTo(sdirs) | relativeTo(
+          base) | flat)
     }
   def resourceMappings =
     relativeMappings(unmanagedResources, unmanagedResourceDirectories)
@@ -1483,7 +1491,12 @@ object Defaults extends BuildCommon {
       aggregate: Boolean = false): Initialize[Seq[V]] =
     Def.bind((loadedBuild, thisProjectRef).identity) {
       case (lb, base) =>
-        transitiveDependencies(base, lb, includeRoot, classpath, aggregate) map init join;
+        transitiveDependencies(
+          base,
+          lb,
+          includeRoot,
+          classpath,
+          aggregate) map init join;
     }
 
   def transitiveDependencies(
@@ -1543,9 +1556,9 @@ object Defaults extends BuildCommon {
   lazy val testSettings: Seq[Setting[_]] = configSettings ++ testTasks
 
   lazy val itSettings: Seq[Setting[_]] = inConfig(IntegrationTest)(testSettings)
-  lazy val defaultConfigs
-      : Seq[Setting[_]] = inConfig(Compile)(compileSettings) ++ inConfig(Test)(
-    testSettings) ++ inConfig(Runtime)(Classpaths.configSettings)
+  lazy val defaultConfigs: Seq[Setting[_]] =
+    inConfig(Compile)(compileSettings) ++ inConfig(Test)(
+      testSettings) ++ inConfig(Runtime)(Classpaths.configSettings)
 
   // settings that are not specific to a configuration
   @deprecated("Settings now split into AutoPlugins.", "0.13.2")
@@ -2084,7 +2097,8 @@ object Classpaths {
             .plugins
             .pluginData
             .resolvers
-          explicit orElse bootRepositories(appConfiguration.value) getOrElse externalResolvers.value
+          explicit orElse bootRepositories(
+            appConfiguration.value) getOrElse externalResolvers.value
         },
         ivyConfiguration := new InlineIvyConfiguration(
           ivyPaths.value,
@@ -2105,7 +2119,10 @@ object Classpaths {
           loadedBuild,
           thisProjectRef) map { (pid, sbtDep, classifiers, lb, ref) =>
           val pluginClasspath = lb.units(ref.build).unit.plugins.fullClasspath
-          val pluginJars = pluginClasspath.filter(_.data.isFile) // exclude directories: an approximation to whether they've been published
+          val pluginJars =
+            pluginClasspath.filter(
+              _.data.isFile
+            ) // exclude directories: an approximation to whether they've been published
           val pluginIDs: Seq[ModuleID] = pluginJars.flatMap(_ get moduleID.key)
           GetClassifiersModule(
             pid,
@@ -2547,7 +2564,11 @@ object Classpaths {
       settingsData,
       buildDependencies) flatMap internalDependencies0
   def unmanagedDependencies: Initialize[Task[Classpath]] =
-    (thisProjectRef, configuration, settingsData, buildDependencies) flatMap unmanagedDependencies0
+    (
+      thisProjectRef,
+      configuration,
+      settingsData,
+      buildDependencies) flatMap unmanagedDependencies0
   def mkIvyConfiguration: Initialize[Task[IvyConfiguration]] =
     (
       fullResolvers,
@@ -2759,7 +2780,9 @@ object Classpaths {
       org: String,
       version: String): Seq[ModuleID] =
     if (auto)
-      modifyForPlugin(plugin, ModuleID(org, ScalaArtifacts.LibraryID, version)) :: Nil
+      modifyForPlugin(
+        plugin,
+        ModuleID(org, ScalaArtifacts.LibraryID, version)) :: Nil
     else
       Nil
   def addUnmanagedLibrary: Seq[Setting[_]] = Seq(

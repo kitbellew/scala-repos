@@ -62,7 +62,8 @@ object TestGraphs {
       leftAndRight: Iterable[(K, (Long, Either[U, V]))],
       valuesFn: ((Long, (U, Option[V]))) => TraversableOnce[(Long, V)]): List[(
       K,
-      List[(Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] = {
+      List[
+        (Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] = {
     leftAndRight
       .groupBy(_._1)
       .mapValues {
@@ -84,7 +85,8 @@ object TestGraphs {
               /*
                * This is a lookup, and there is an existing value
                */
-              val currentV = Some(sum(optv, v)) // isn't u already a sum and optu prev value?
+              val currentV =
+                Some(sum(optv, v)) // isn't u already a sum and optu prev value?
               val joinResult = Some((time, (u, currentV)))
               val sumResult = Semigroup
                 .sumOption(valuesFn(time, (u, currentV)))

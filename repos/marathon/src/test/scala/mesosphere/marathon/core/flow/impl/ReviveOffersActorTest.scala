@@ -196,7 +196,8 @@ class ReviveOffersActorTest
     f.verifyNoMoreInteractions()
   }
 
-  test("Check revives if last offersWanted == true and more than 5.seconds ago") {
+  test(
+    "Check revives if last offersWanted == true and more than 5.seconds ago") {
     val f = new Fixture()
     Given("that we received various flipping offers wanted requests")
     f.actorRef.start()

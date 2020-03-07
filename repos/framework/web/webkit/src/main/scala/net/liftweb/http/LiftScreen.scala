@@ -1340,7 +1340,11 @@ trait ScreenWizardRendered extends Loggable {
         myNotices match {
           case Nil => basicLabel
           case _ =>
-            val maxN = myNotices.map(_._1).sortWith { _.id > _.id }.head // get the maximum type of notice (Error > Warning > Notice)
+            val maxN =
+              myNotices
+                .map(_._1)
+                .sortWith { _.id > _.id }
+                .head // get the maximum type of notice (Error > Warning > Notice)
             val metaData: MetaData =
               noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
@@ -1409,9 +1413,8 @@ trait ScreenWizardRendered extends Loggable {
       val ret =
         (<form id={nextId._1} action={url}
                method="post">{
-          S.formGroup(-1)(
-            SHtml.hidden(() => snapshot.restore()) % liftScreenAttr(
-              "restoreAction"))
+          S.formGroup(-1)(SHtml.hidden(() =>
+            snapshot.restore()) % liftScreenAttr("restoreAction"))
         }{fields}{
           S.formGroup(4)(SHtml.hidden(() => {
             val res = nextId._2();
@@ -1444,7 +1447,9 @@ trait ScreenWizardRendered extends Loggable {
           <form id={cancelId._1} action={url} method="post">{
             SHtml.hidden(() => {
               snapshot.restore();
-              val res = cancelId._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
+              val res =
+                cancelId
+                  ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
               if (!ajax_?) {
                 S.seeOther(Referer.get)
               }
@@ -1461,9 +1466,9 @@ trait ScreenWizardRendered extends Loggable {
 
     def bindScreenInfo: CssBindFunc = (currentScreenNumber, screenCount) match {
       case (Full(num), Full(cnt)) =>
-        replaceChildren(_.screenInfo) #> (nsSetChildren(_.screenNumber, num) & nsSetChildren(
-          _.totalScreens,
-          cnt))
+        replaceChildren(_.screenInfo) #> (nsSetChildren(
+          _.screenNumber,
+          num) & nsSetChildren(_.totalScreens, cnt))
       case _ => remove(_.screenInfo)
     }
 
@@ -1693,7 +1698,8 @@ trait LiftScreen
   protected def defaultXml: NodeSeq = _defaultXml.get
 
   private object ScreenVars
-      extends TransientRequestVar[Map[String, (NonCleanAnyVar[_], Any)]](Map()) {
+      extends TransientRequestVar[Map[String, (NonCleanAnyVar[_], Any)]](
+        Map()) {
     override lazy val __nameSalt = Helpers.nextFuncName
   }
 
@@ -1961,7 +1967,8 @@ trait LiftScreen
   protected def doFinish(): JsCmd = {
     val fMap: Map[String, () => JsCmd] = LocalActions.get.get
     if (!LocalAction.get.isEmpty)
-      fMap.get(LocalAction.get) map (_()) getOrElse (throw new IllegalArgumentException(
+      fMap.get(
+        LocalAction.get) map (_()) getOrElse (throw new IllegalArgumentException(
         "No local action available with that binding"))
     else {
       validate match {
@@ -2034,9 +2041,9 @@ trait StringField extends FieldIdentifier with StringValidators {
 object LiftScreenRules extends Factory with FormVendor {
   private def m[T](implicit man: Manifest[T]): Manifest[T] = man
 
-  val allTemplatePath
-      : FactoryMaker[List[String]] = new FactoryMaker[List[String]](() =>
-    List("templates-hidden", "wizard-all")) {}
+  val allTemplatePath: FactoryMaker[List[String]] =
+    new FactoryMaker[List[String]](() =>
+      List("templates-hidden", "wizard-all")) {}
   val messageStyles: FactoryMaker[NoticeType.Value => MetaData] =
     new FactoryMaker[NoticeType.Value => MetaData](() =>
       {

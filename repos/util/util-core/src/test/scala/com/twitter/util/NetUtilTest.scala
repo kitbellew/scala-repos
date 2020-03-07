@@ -77,8 +77,10 @@ class NetUtilTest extends WordSpec {
 
     "inetAddressToInt" in {
       assert(NetUtil.inetAddressToInt(InetAddress.getByName("0.0.0.0")) == 0)
-      assert(NetUtil
-        .inetAddressToInt(InetAddress.getByName("255.255.255.255")) == 0xFFFFFFFF)
+      assert(
+        NetUtil
+          .inetAddressToInt(
+            InetAddress.getByName("255.255.255.255")) == 0xFFFFFFFF)
       assert(NetUtil
         .inetAddressToInt(InetAddress.getByName("255.255.255.0")) == 0xFFFFFF00)
       assert(

@@ -54,11 +54,13 @@ class ModelSpec extends Specification {
     }
 
     "convert a populated allowable values property of an ApiProperty annotation" in {
-      swaggerProperties[WithAllowableValues].allowableValues must_== AllowableValuesList(
+      swaggerProperties[
+        WithAllowableValues].allowableValues must_== AllowableValuesList(
         List("item1", "item2"))
     }
     "convert a populated allowable values property of an ApiProperty annotation when it is a range" in {
-      swaggerProperties[WithAllowableRangeValues].allowableValues must_== AllowableRangeValues(
+      swaggerProperties[
+        WithAllowableRangeValues].allowableValues must_== AllowableRangeValues(
         Range.inclusive(1, 10))
     }
     "convert a required=false annotation of a model field" in {

@@ -228,7 +228,9 @@ class RewriteJoins extends Phase {
             allRefs
               .get(p)
               .map(s =>
-                Select(Ref(fs) :@ b.nodeType.asCollectionType.elementType, s) :@ p.nodeType)
+                Select(
+                  Ref(fs) :@ b.nodeType.asCollectionType.elementType,
+                  s) :@ p.nodeType)
               .getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()

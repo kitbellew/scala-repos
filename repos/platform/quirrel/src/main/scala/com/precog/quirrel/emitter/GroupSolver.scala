@@ -479,10 +479,10 @@ trait GroupSolver
       case Relate(_, _, _, in) => isTranspecable(in, from, sigma)
 
       case Cond(_, pred, left, right) =>
-        isTranspecable(pred, from, sigma) && isTranspecable(left, from, sigma) && isTranspecable(
-          right,
+        isTranspecable(pred, from, sigma) && isTranspecable(
+          left,
           from,
-          sigma)
+          sigma) && isTranspecable(right, from, sigma)
 
       case to @ Dispatch(_, id, actuals) => {
         to.binding match {
@@ -719,8 +719,8 @@ trait GroupSolver
         sigma)
 
     case t @ TicVar(_, name)
-        if b.isDefined && (t.binding == SolveBinding(b.get) || t.binding == FreeBinding(
-          b.get)) => {
+        if b.isDefined && (t.binding == SolveBinding(
+          b.get) || t.binding == FreeBinding(b.get)) => {
       t.binding match {
         case SolveBinding(b2) => Set((Some(b2), name))
         case FreeBinding(b2)  => Set((Some(b2), name))

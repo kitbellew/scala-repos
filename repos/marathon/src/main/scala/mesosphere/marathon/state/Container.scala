@@ -72,8 +72,8 @@ object Container {
 
     implicit val dockerValidator = validator[Docker] { docker =>
       docker.image is notEmpty
-      docker.portMappings is optional(every(PortMapping.portMappingValidator)) and optional(
-        uniquePortNames)
+      docker.portMappings is optional(
+        every(PortMapping.portMappingValidator)) and optional(uniquePortNames)
     }
   }
 

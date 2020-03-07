@@ -84,8 +84,8 @@ class CacheStatistics private (id: String, name: String) {
 
   override def toString: String = {
     import scala.collection.JavaConversions._
-    val calcTimes
-        : Set[Long] = calculationTimes.toSet //efficient because not conccurent
+    val calcTimes: Set[Long] =
+      calculationTimes.toSet //efficient because not conccurent
 
     if (calculationTimes.nonEmpty) {
       val (maxTime, minTime, averageTime) =

@@ -10,7 +10,12 @@ object ConsistencySpec {
   val minThreads = 1
   val maxThreads = 2000
   val factor = 1.5d
-  val threads = ThreadPoolConfig.scaledPoolSize(minThreads, factor, maxThreads) // Make sure we have more threads than cores
+  val threads =
+    ThreadPoolConfig.scaledPoolSize(
+      minThreads,
+      factor,
+      maxThreads
+    ) // Make sure we have more threads than cores
 
   val config = s"""
       consistency-dispatcher {

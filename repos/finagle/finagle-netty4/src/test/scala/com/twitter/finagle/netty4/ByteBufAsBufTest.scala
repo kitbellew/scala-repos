@@ -27,7 +27,8 @@ class ByteBufAsBufTest
     assert(buf.length == 3)
   }
 
-  test("writes to underlying ByteBuf are reflected in containing ByteBufAsBuf") {
+  test(
+    "writes to underlying ByteBuf are reflected in containing ByteBufAsBuf") {
     assert(Buf.ByteArray.Owned(bytes) == buf)
     val newBytes = Array[Byte](10, 20, 30, 40)
     underlying.writerIndex(0)

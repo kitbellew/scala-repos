@@ -136,7 +136,8 @@ object AccumulatorSpec extends Specification {
       }
 
       "Scala asJava" in withMaterializer { implicit m =>
-        await(FutureConverters.toScala(sum.asJava.run(source.asJava, m))) must_== 6
+        await(
+          FutureConverters.toScala(sum.asJava.run(source.asJava, m))) must_== 6
       }
     }
   }

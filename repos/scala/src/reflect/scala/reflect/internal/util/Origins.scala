@@ -49,7 +49,8 @@ abstract class Origins {
 
   // Create a stack and whittle it down to the interesting part.
   def readStack(): Array[StackTraceElement] = (
-    Thread.currentThread.getStackTrace dropWhile (x => !isCutoff(x)) dropWhile isCutoff drop 1
+    Thread.currentThread.getStackTrace dropWhile (x =>
+      !isCutoff(x)) dropWhile isCutoff drop 1
   )
 
   def apply[T](body: => T): T = {

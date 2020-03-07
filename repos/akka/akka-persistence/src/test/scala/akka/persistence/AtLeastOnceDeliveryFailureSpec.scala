@@ -117,7 +117,8 @@ object AtLeastOnceDeliveryFailureSpec {
     }
 
     private def debugMessage(msg: String): String =
-      s"[sender] ${msg} (mode = ${if (recoveryRunning) "replay" else "live"} snr = ${lastSequenceNr} state = ${state.sorted})"
+      s"[sender] ${msg} (mode = ${if (recoveryRunning) "replay"
+      else "live"} snr = ${lastSequenceNr} state = ${state.sorted})"
 
     override protected def onRecoveryFailure(
         cause: Throwable,

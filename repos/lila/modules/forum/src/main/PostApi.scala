@@ -26,7 +26,8 @@ final class PostApi(
 
   def makePost(categ: Categ, topic: Topic, data: DataForm.PostData)(
       implicit ctx: UserContext): Fu[Post] =
-    lastNumberOf(topic) zip detectLanguage(data.text) zip userIds(topic) flatMap {
+    lastNumberOf(topic) zip detectLanguage(data.text) zip userIds(
+      topic) flatMap {
       case ((number, lang), topicUserIds) =>
         val post = Post.make(
           topicId = topic.id,

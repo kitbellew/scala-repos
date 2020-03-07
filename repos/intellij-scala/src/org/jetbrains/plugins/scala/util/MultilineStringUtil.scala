@@ -88,9 +88,9 @@ object MultilineStringUtil {
   }
 
   def needAddStripMargin(element: PsiElement, marginChar: String): Boolean = {
-    findAllMethodCallsOnMLString(element, "stripMargin").isEmpty && !hasMarginChars(
+    findAllMethodCallsOnMLString(
       element,
-      marginChar)
+      "stripMargin").isEmpty && !hasMarginChars(element, marginChar)
   }
 
   def needAddByType(literal: ScLiteral): Boolean = literal match {
@@ -260,7 +260,8 @@ object MultilineStringUtil {
             val quotesIndent = settings.getSmartLength(
               document.getText.substring(startLineOffset, literalStart))
             val marginIndent =
-              quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
+              quotesIndent + interpolatorPrefixLength(
+                literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -269,7 +270,8 @@ object MultilineStringUtil {
               document.getText.substring(startLineOffset, literalStart))
             val quotesIndent = oldIndent + settings.regularIndent
             val marginIndent =
-              quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
+              quotesIndent + interpolatorPrefixLength(
+                literal) + settings.marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }

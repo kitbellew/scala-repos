@@ -11,8 +11,14 @@ import spire.implicits.cforRange
 
 //  Options fot the singular value decomposition (SVD) of a real M-by-N matrix
 sealed private[this] abstract class SVDMode(val JOBZ: String)
-private[this] case object CompleteSVD extends SVDMode("A") // all M columns of U and all N rows of V**T are returned in the arrays U and VT
-private[this] case object ReducedSVD extends SVDMode("S") // the first min(M,N) columns of U and the first min(M,N) rows of V**T are returned in the arrays U and VT
+private[this] case object CompleteSVD
+    extends SVDMode(
+      "A"
+    ) // all M columns of U and all N rows of V**T are returned in the arrays U and VT
+private[this] case object ReducedSVD
+    extends SVDMode(
+      "S"
+    ) // the first min(M,N) columns of U and the first min(M,N) rows of V**T are returned in the arrays U and VT
 
 /**
   * Computes the SVD of a M-by-N matrix

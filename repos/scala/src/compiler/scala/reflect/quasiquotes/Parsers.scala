@@ -127,7 +127,9 @@ trait Parsers { self: Quasiquotes =>
           owner: Name,
           implicitmod: Int,
           caseParam: Boolean): ValDef =
-        if (isHole && lookingAhead { in.token == COMMA || in.token == RPAREN }) {
+        if (isHole && lookingAhead {
+              in.token == COMMA || in.token == RPAREN
+            }) {
           ParamPlaceholder(implicitmod, ident())
         } else super.param(owner, implicitmod, caseParam)
 

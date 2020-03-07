@@ -12,7 +12,8 @@ import akka.http.scaladsl.model._
 import StatusCodes._
 import AuthenticationFailedRejection._
 
-trait RejectionHandler extends (immutable.Seq[Rejection] ⇒ Option[Route]) { self ⇒
+trait RejectionHandler extends (immutable.Seq[Rejection] ⇒ Option[Route]) {
+  self ⇒
   import RejectionHandler._
 
   /**

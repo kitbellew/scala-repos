@@ -19,17 +19,20 @@ object HttpSpec extends org.specs2.mutable.Specification {
         .aka("absolute URL 1") must_== "http://playframework.com/playframework")
         .and(Call("GET", "/playframework")
           .absoluteURL(secure = false)(req)
-          .aka("absolute URL 2") must_== ("http://playframework.com/playframework"))
+          .aka(
+            "absolute URL 2") must_== ("http://playframework.com/playframework"))
     }
 
     "have HTTPS scheme" in {
       (Call("GET", "/playframework")
         .absoluteURL()(req.copy(secure = true))
-        .aka("absolute URL 1") must_== ("https://playframework.com/playframework")) and (Call(
+        .aka(
+          "absolute URL 1") must_== ("https://playframework.com/playframework")) and (Call(
         "GET",
         "/playframework")
         .absoluteURL(secure = true)(req)
-        .aka("absolute URL 2") must_== ("https://playframework.com/playframework"))
+        .aka(
+          "absolute URL 2") must_== ("https://playframework.com/playframework"))
     }
   }
 
@@ -42,17 +45,20 @@ object HttpSpec extends org.specs2.mutable.Specification {
         .aka("absolute URL 1") must_== "ws://playframework.com/playframework")
         .and(Call("GET", "/playframework")
           .webSocketURL(secure = false)(req)
-          .aka("absolute URL 2") must_== ("ws://playframework.com/playframework"))
+          .aka(
+            "absolute URL 2") must_== ("ws://playframework.com/playframework"))
     }
 
     "have WSS scheme" in {
       (Call("GET", "/playframework")
         .webSocketURL()(req.copy(secure = true))
-        .aka("absolute URL 1") must_== ("wss://playframework.com/playframework")) and (Call(
+        .aka(
+          "absolute URL 1") must_== ("wss://playframework.com/playframework")) and (Call(
         "GET",
         "/playframework")
         .webSocketURL(secure = true)(req)
-        .aka("absolute URL 2") must_== ("wss://playframework.com/playframework"))
+        .aka(
+          "absolute URL 2") must_== ("wss://playframework.com/playframework"))
     }
   }
 

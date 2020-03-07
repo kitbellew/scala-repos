@@ -8,7 +8,8 @@ import java.net.InetSocketAddress
 @RunWith(classOf[JUnitRunner])
 class SocksProxyFlagsTest extends FunSuite with BeforeAndAfter {
 
-  test("SocksProxyFlags should respect -socksProxyHost / -socksProxyPort flags") {
+  test(
+    "SocksProxyFlags should respect -socksProxyHost / -socksProxyPort flags") {
     val port = 80 // never bound
     socksProxyHost.let("localhost") {
       socksProxyPort.let(port) {

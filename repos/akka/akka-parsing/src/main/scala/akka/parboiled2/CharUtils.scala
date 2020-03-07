@@ -71,7 +71,9 @@ object CharUtils {
     * Efficiently converts the given long into an upper-case hex string.
     */
   def upperHexString(long: Long): String =
-    appendUpperHexString(new JStringBuilder(numberOfHexDigits(long)), long).toString
+    appendUpperHexString(
+      new JStringBuilder(numberOfHexDigits(long)),
+      long).toString
 
   /**
     * Append the lower-case hex representation of the given long to the given StringBuilder.
@@ -89,7 +91,9 @@ object CharUtils {
     * Efficiently converts the given long into a lower-case hex string.
     */
   def lowerHexString(long: Long): String =
-    appendLowerHexString(new JStringBuilder(numberOfHexDigits(long)), long).toString
+    appendLowerHexString(
+      new JStringBuilder(numberOfHexDigits(long)),
+      long).toString
 
   /**
     * Append the lower-case hex representation of the given long to the given StringBuilder.

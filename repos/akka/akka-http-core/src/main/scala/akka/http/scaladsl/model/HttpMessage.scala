@@ -323,7 +323,8 @@ object HttpRequest {
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||
         hostHeader.get.host
-          .equalsIgnoreCase(uri.authority.host) && hostHeader.get.port == uri.authority.port)
+          .equalsIgnoreCase(
+            uri.authority.host) && hostHeader.get.port == uri.authority.port)
       uri
     else
       throw IllegalUriException(
@@ -345,7 +346,8 @@ object HttpRequest {
         case 0 ⇒ // ok
         case 4 if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' ⇒ // ok
         case 5
-            if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' && c(4) == 's' ⇒ // ok
+            if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' && c(
+              4) == 's' ⇒ // ok
         case _ ⇒
           throw new IllegalArgumentException(
             """`uri` must have scheme "http", "https" or no scheme""")

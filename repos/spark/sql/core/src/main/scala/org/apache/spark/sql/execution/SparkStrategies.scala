@@ -675,11 +675,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           opts,
           false,
           _) =>
-        ExecutedCommand(CreateTempTableUsing(
-          tableIdent,
-          userSpecifiedSchema,
-          provider,
-          opts)) :: Nil
+        ExecutedCommand(
+          CreateTempTableUsing(
+            tableIdent,
+            userSpecifiedSchema,
+            provider,
+            opts)) :: Nil
       case c: CreateTableUsing if !c.temporary =>
         sys.error(
           "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")

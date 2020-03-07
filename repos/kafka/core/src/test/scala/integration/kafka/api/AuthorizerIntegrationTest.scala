@@ -289,7 +289,10 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       1,
       "",
       1000,
-      Map(tp -> new requests.OffsetCommitRequest.PartitionData(0, "metadata")).asJava)
+      Map(
+        tp -> new requests.OffsetCommitRequest.PartitionData(
+          0,
+          "metadata")).asJava)
   }
 
   private def createHeartbeatRequest = {

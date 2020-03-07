@@ -53,7 +53,9 @@ trait PicklerRegistry {
     *             In those situations, the pickler should be able to handle arbitrary (existential) type parameters.
     * @param p  The pickler to register.
     */
-  def registerPickler[T](key: String, p: Pickler[T]): Unit // TODO - Return old pickler if one existed?
+  def registerPickler[T](
+      key: String,
+      p: Pickler[T]): Unit // TODO - Return old pickler if one existed?
   /** Registers an unpickler with this registry for future use.
     * @param key  The type key for the unpickler. Note: In reflective scenarios this may not include type parameters.
     *             In those situations, the unpickler should be able to handle arbitrary (existential) type parameters.

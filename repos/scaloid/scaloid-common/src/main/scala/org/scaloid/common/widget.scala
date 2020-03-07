@@ -3510,9 +3510,10 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
     basis.setShareIntent(p); basis
   }
 
-  @inline def onShareTargetSelected(f: (
-      android.widget.ShareActionProvider,
-      android.content.Intent) => Boolean): This = {
+  @inline def onShareTargetSelected(
+      f: (
+          android.widget.ShareActionProvider,
+          android.content.Intent) => Boolean): This = {
     basis.setOnShareTargetSelectedListener(
       new android.widget.ShareActionProvider.OnShareTargetSelectedListener {
         def onShareTargetSelected(

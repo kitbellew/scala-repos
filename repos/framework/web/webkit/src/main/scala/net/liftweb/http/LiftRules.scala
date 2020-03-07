@@ -1117,7 +1117,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val externalTemplateResolver: FactoryMaker[
     () => PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
     new FactoryMaker(() =>
-      (() => Map.empty: PartialFunction[(Locale, List[String]), Box[NodeSeq]])) {}
+      (
+          () =>
+            Map.empty: PartialFunction[
+              (Locale, List[String]),
+              Box[NodeSeq]])) {}
 
   /**
     * There may be times when you want to entirely control the templating process.  You can insert a function
@@ -1851,7 +1855,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   @volatile var autoIncludeComet: LiftSession => Boolean = session => true
 
   val autoIncludeAjaxCalc: FactoryMaker[() => LiftSession => Boolean] =
-    new FactoryMaker(() => () => (session: LiftSession) => session.stateful_?) {}
+    new FactoryMaker(() =>
+      () => (session: LiftSession) => session.stateful_?) {}
 
   /**
     * Tells Lift which JavaScript settings to use. If Empty, does not
@@ -1866,8 +1871,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Define the XHTML validator
     */
-  @volatile var xhtmlValidator
-      : Box[XHtmlValidator] = Empty // Full(TransitionalXHTML1_0Validator)
+  @volatile var xhtmlValidator: Box[XHtmlValidator] =
+    Empty // Full(TransitionalXHTML1_0Validator)
 
   @volatile var ajaxPostTimeout = 5000
 

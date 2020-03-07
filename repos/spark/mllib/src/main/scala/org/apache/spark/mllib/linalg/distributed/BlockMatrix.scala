@@ -153,7 +153,8 @@ class BlockMatrix @Since("1.3.0") (
     extends DistributedMatrix
     with Logging {
 
-  private type MatrixBlock = ((Int, Int), Matrix) // ((blockRowIndex, blockColIndex), sub-matrix)
+  private type MatrixBlock =
+    ((Int, Int), Matrix) // ((blockRowIndex, blockColIndex), sub-matrix)
 
   /**
     * Alternate constructor for BlockMatrix without the input of the number of rows and columns.
@@ -464,7 +465,8 @@ class BlockMatrix @Since("1.3.0") (
   private[distributed] def simulateMultiply(
       other: BlockMatrix,
       partitioner: GridPartitioner): (BlockDestinations, BlockDestinations) = {
-    val leftMatrix = blockInfo.keys.collect() // blockInfo should already be cached
+    val leftMatrix =
+      blockInfo.keys.collect() // blockInfo should already be cached
     val rightMatrix = other.blocks.keys.collect()
     val leftDestinations = leftMatrix.map {
       case (rowIndex, colIndex) =>

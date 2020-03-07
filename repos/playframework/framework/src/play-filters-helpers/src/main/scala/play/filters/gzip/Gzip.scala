@@ -51,7 +51,9 @@ object Gzip {
 
     new CheckDoneBytes {
 
-      def step[A](state: State, k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
+      def step[A](
+          state: State,
+          k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
         case Input.EOF => {
           state.deflater.finish()
           deflateUntilFinished(state, k)
@@ -227,7 +229,9 @@ object Gzip {
 
     new CheckDoneBytes {
 
-      def step[A](state: State, k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
+      def step[A](
+          state: State,
+          k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
         case Input.EOF => {
           Error("Premature end of gzip stream", Input.EOF)
         }

@@ -372,26 +372,25 @@ class ActorContextSpec
       })
 
     def `04 must stop a child actor`(): Unit =
-      sync(setup("ctx04") {
-        (ctx, startWith) ⇒
-          val self = ctx.self
-          startWith
-            .mkChild(
-              Some("A"),
-              ctx.spawnAdapter(ChildEvent),
-              self,
-              inert = true) {
-              case (subj, child) ⇒
-                subj ! Kill(child, self)
-                child
-            }
-            .expectMessageKeep(500.millis) { (msg, child) ⇒
-              msg should ===(Killed)
-              ctx.watch(child)
-            }
-            .expectTermination(500.millis) { (t, child) ⇒
-              t.ref should ===(child)
-            }
+      sync(setup("ctx04") { (ctx, startWith) ⇒
+        val self = ctx.self
+        startWith
+          .mkChild(
+            Some("A"),
+            ctx.spawnAdapter(ChildEvent),
+            self,
+            inert = true) {
+            case (subj, child) ⇒
+              subj ! Kill(child, self)
+              child
+          }
+          .expectMessageKeep(500.millis) { (msg, child) ⇒
+            msg should ===(Killed)
+            ctx.watch(child)
+          }
+          .expectTermination(500.millis) { (t, child) ⇒
+            t.ref should ===(child)
+          }
       })
 
     def `05 must reset behavior upon Restart`(): Unit =

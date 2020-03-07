@@ -87,7 +87,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     * Maps the method symbol for an unbox method to the primitive type of the result.
     * For example, the method symbol for `Byte.unbox()`) is mapped to the PrimitiveBType BYTE. */
   lazy val unboxResultType: Map[Symbol, PrimitiveBType] = {
-    for ((valueClassSym, unboxMethodSym) <- currentRun.runDefinitions.unboxMethod)
+    for ((
+           valueClassSym,
+           unboxMethodSym) <- currentRun.runDefinitions.unboxMethod)
       yield unboxMethodSym -> primitiveTypeToBType(valueClassSym)
   }
 
@@ -115,18 +117,18 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val jlCharSequenceRef: ClassBType = classBTypeFromSymbol(
     JavaCharSequenceClass)
   lazy val jlThrowableRef: ClassBType = classBTypeFromSymbol(ThrowableClass)
-  lazy val jlCloneableRef
-      : ClassBType = classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
+  lazy val jlCloneableRef: ClassBType =
+    classBTypeFromSymbol(JavaCloneableClass) // java/lang/Cloneable
   lazy val jiSerializableRef: ClassBType = classBTypeFromSymbol(
     JavaSerializableClass
   ) // java/io/Serializable
   lazy val jlClassCastExceptionRef: ClassBType = classBTypeFromSymbol(
     ClassCastExceptionClass
   ) // java/lang/ClassCastException
-  lazy val juMapRef
-      : ClassBType = classBTypeFromSymbol(JavaUtilMap) // java/util/Map
-  lazy val juHashMapRef
-      : ClassBType = classBTypeFromSymbol(JavaUtilHashMap) // java/util/HashMap
+  lazy val juMapRef: ClassBType =
+    classBTypeFromSymbol(JavaUtilMap) // java/util/Map
+  lazy val juHashMapRef: ClassBType =
+    classBTypeFromSymbol(JavaUtilHashMap) // java/util/HashMap
   lazy val sbScalaBeanInfoRef: ClassBType = classBTypeFromSymbol(
     requiredClass[scala.beans.ScalaBeanInfo])
   lazy val jliSerializedLambdaRef: ClassBType = classBTypeFromSymbol(
@@ -220,7 +222,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       val name = getName(primitive.name.toString, boxed.name.toString)
       (
         name,
-        methodNameAndType(PredefModule.moduleClass, newTermName(name)).methodType)
+        methodNameAndType(
+          PredefModule.moduleClass,
+          newTermName(name)).methodType)
     })(collection.breakOut)
   }
 

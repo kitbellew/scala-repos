@@ -662,7 +662,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
 
-  test("network events in client RpcEnv when another RpcEnv is in server mode") {
+  test(
+    "network events in client RpcEnv when another RpcEnv is in server mode") {
     val clientEnv =
       createRpcEnv(new SparkConf(), "client", 0, clientMode = true)
     val serverEnv =

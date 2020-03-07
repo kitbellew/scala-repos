@@ -182,8 +182,8 @@ abstract class ClusterDeathWatchSpec
 
       runOn(first) {
         system
-          .actorSelection(RootActorPath(fifth) / "user" / "subject5") ! Identify(
-          "subject5")
+          .actorSelection(
+            RootActorPath(fifth) / "user" / "subject5") ! Identify("subject5")
         val subject5 = expectMsgType[ActorIdentity].ref.get
         watch(subject5)
 

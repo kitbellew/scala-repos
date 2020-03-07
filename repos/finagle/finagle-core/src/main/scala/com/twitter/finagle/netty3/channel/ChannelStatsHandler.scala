@@ -129,7 +129,8 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.exceptionCaught(ctx, evt)
   }
 
-  private[this] var hasBeenWritable = true //netty channels start in writable state
+  private[this] var hasBeenWritable =
+    true //netty channels start in writable state
   private[this] var since = Time.now
 
   private[this] def socketDuration(now: Time): Duration = now - since

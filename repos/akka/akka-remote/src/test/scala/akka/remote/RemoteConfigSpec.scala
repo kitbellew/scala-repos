@@ -49,7 +49,8 @@ class RemoteConfigSpec
       Transports.head._2 should ===(Nil)
       Adapters should ===(
         Map(
-          "gremlin" -> classOf[akka.remote.transport.FailureInjectorProvider].getName,
+          "gremlin" -> classOf[
+            akka.remote.transport.FailureInjectorProvider].getName,
           "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
 
       WatchFailureDetectorImplementationClass should ===(
@@ -92,8 +93,9 @@ class RemoteConfigSpec
       import s._
 
       ConnectionTimeout should ===(15.seconds)
-      ConnectionTimeout should ===(new AkkaProtocolSettings(
-        RARP(system).provider.remoteSettings.config).HandshakeTimeout)
+      ConnectionTimeout should ===(
+        new AkkaProtocolSettings(
+          RARP(system).provider.remoteSettings.config).HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))

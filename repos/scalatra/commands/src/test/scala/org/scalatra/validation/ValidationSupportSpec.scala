@@ -28,7 +28,8 @@ class ValidationSupportSpec extends Specification {
       ageValidatedForm.bindTo(params)
 
       ageValidatedForm.a.validation must_== params("name").toUpperCase.success
-      ageValidatedForm.lower.validation must_== params("surname").toLowerCase.success
+      ageValidatedForm.lower.validation must_== params(
+        "surname").toLowerCase.success
       ageValidatedForm.age.validation must_== 18.success
 
     }

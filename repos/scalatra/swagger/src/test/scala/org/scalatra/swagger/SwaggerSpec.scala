@@ -70,14 +70,20 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     finally { s.close() }
   } //58468
 
-  val listResourceJValue = readJson("api-docs.json") // merge (("basePath" -> ("http://localhost:" + port)):JValue)
+  val listResourceJValue =
+    readJson(
+      "api-docs.json"
+    ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
   val petOperationsJValue =
-    readJson("pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+    readJson(
+      "pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
   val storeOperationsJValue =
-    readJson("store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+    readJson(
+      "store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
   val userOperationsJValue =
-    readJson("user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+    readJson(
+      "user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
 
   private def readJson(file: String) = {
     val f = if (file startsWith "/") file else "/" + file
@@ -180,7 +186,11 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         verifyCommon(
           bo.get,
           petOperationsJValue,
-          List("/pet/{petId}", "/pet/findByTags", "/pet/findByStatus", "/pet/")) and
+          List(
+            "/pet/{petId}",
+            "/pet/findByTags",
+            "/pet/findByStatus",
+            "/pet/")) and
         petOperations
           .map(verifyOperation(bo.get, petOperationsJValue, _))
           .reduce(_ and _) and
@@ -341,7 +351,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         case _ =>
           val m = act \ fn must_== exp \ fn
           m setMessage (JsonMethods
-            .compact(JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
+            .compact(
+              JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
             .compact(JsonMethods.render(exp \ fn)) + " for field " + fn)
       }
     }
@@ -396,9 +407,9 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     (apiOperation[Pet]("getPetById")
       summary "Find pet by ID"
       notes "Returns a pet based on ID"
-      responseMessages (StringResponseMessage(400, "Invalid ID supplied"), StringResponseMessage(
-        404,
-        "Pet not found"))
+      responseMessages (StringResponseMessage(
+        400,
+        "Invalid ID supplied"), StringResponseMessage(404, "Pet not found"))
       parameter pathParam[String]("petId")
         .description("ID of pet that needs to be fetched")
       produces ("application/json", "application/xml")

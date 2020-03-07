@@ -190,7 +190,9 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       .map {
         case (r, c, x) => (r, r, 1 / scala.math.sqrt(x))
       } // diagonal + inverse
-    MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
+    MatrixLiteral(
+      result,
+      SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
   }
 
   /**
@@ -207,7 +209,9 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       this.sizeHint)
     lazy val result = matD.sumColVectors.toTypedPipe
       .map { case (r, c, x) => (r, r, 1 / x) } // diagonal + inverse
-    MatrixLiteral(result, SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
+    MatrixLiteral(
+      result,
+      SizeHint.asDiagonal(this.sizeHint.setRowsToCols)) * matD
   }
 
   def getRow(index: R): Matrix2[Unit, C, V] =

@@ -297,7 +297,10 @@ object BackendReporting {
           callsiteName,
           callsiteDesc) =>
         s"""The operand stack at the callsite in ${BackendReporting
-             .methodSignature(callsiteClass, callsiteName, callsiteDesc)} contains more values than the
+             .methodSignature(
+               callsiteClass,
+               callsiteName,
+               callsiteDesc)} contains more values than the
            |arguments expected by the callee $calleeMethodSig. These values would be discarded
            |when entering an exception handler declared in the inlined method.""".stripMargin
 
@@ -325,10 +328,8 @@ object BackendReporting {
           callsiteClass,
           callsiteName,
           callsiteDesc) =>
-        s"""The size of the callsite method ${BackendReporting.methodSignature(
-             callsiteClass,
-             callsiteName,
-             callsiteDesc)}
+        s"""The size of the callsite method ${BackendReporting
+             .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.
          """.stripMargin
     }

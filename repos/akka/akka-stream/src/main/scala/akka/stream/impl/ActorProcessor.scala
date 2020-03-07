@@ -243,7 +243,8 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
       } else {
         downstreamDemand += elements
         if (downstreamDemand < 1)
-          downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+          downstreamDemand =
+            Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         pump.pump()
       }
     case Cancel(subscription) ⇒

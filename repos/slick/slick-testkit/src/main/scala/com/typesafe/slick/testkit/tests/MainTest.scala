@@ -19,7 +19,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
   lazy val users = TableQuery[Users]
 
   class Orders(tag: Tag)
-      extends Table[(Int, Int, String, Boolean, Option[Boolean])](tag, "orders") {
+      extends Table[(Int, Int, String, Boolean, Option[Boolean])](
+        tag,
+        "orders") {
     def userID = column[Int]("userID")
     def orderID = column[Int]("orderID", O.PrimaryKey, O.AutoInc)
     def product = column[String]("product")
@@ -99,7 +101,12 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
           for (u <- allUsers if u.first != "Apu" && u.first != "Snowball";
                i <- 1 to 2)
             yield orders
-              .map(o => (o.userID, o.product, o.shipped, o.rebate)) += (u.id, "Gizmo " + ((scala.math.random * 10) + 1).toInt, i == 2, Some(
+              .map(o =>
+                (
+                  o.userID,
+                  o.product,
+                  o.shipped,
+                  o.rebate)) += (u.id, "Gizmo " + ((scala.math.random * 10) + 1).toInt, i == 2, Some(
               u.first == "Marge"))
         db.run(seq(ordersInserts: _*))
       }
@@ -116,7 +123,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         val q4 = for {
           u <- users
           o <- u.orders
-          if (o.orderID === (for { o2 <- orders filter (o.userID === _.userID) } yield o2.orderID).max)
+          if (o.orderID === (for {
+            o2 <- orders filter (o.userID === _.userID)
+          } yield o2.orderID).max)
         } yield (u.first, o.orderID)
         q4.result.statements.toSeq.length.should(_ >= 1)
 

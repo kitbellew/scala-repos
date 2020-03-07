@@ -383,7 +383,10 @@ package object templates {
         }
         .map {
           case (u, Parameter(name, typeName, None, Some(default))) =>
-            """if(""" + safeKeyword(localNames.getOrElse(name, name)) + """ == """ + default + """) None else Some(""" + u + """)"""
+            """if(""" + safeKeyword(
+              localNames.getOrElse(
+                name,
+                name)) + """ == """ + default + """) None else Some(""" + u + """)"""
           case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
         }
         .mkString(", "))
@@ -406,7 +409,8 @@ package object templates {
       .getOrElse(Nil)
       .filter { p => localNames.contains(p.name) && p.fixed.isDefined }
       .map { p =>
-        localNames(p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
+        localNames(
+          p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
       }).filterNot(_.isEmpty).map(_.mkString(" && "))
   }
 

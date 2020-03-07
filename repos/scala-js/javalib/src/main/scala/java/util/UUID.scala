@@ -98,7 +98,8 @@ final class UUID private (
       "0000".substring(s.length) + s
     }
 
-    paddedHex8(i1) + "-" + paddedHex4(i2 >>> 16) + "-" + paddedHex4(i2 & 0xffff) + "-" +
+    paddedHex8(i1) + "-" + paddedHex4(i2 >>> 16) + "-" + paddedHex4(
+      i2 & 0xffff) + "-" +
       paddedHex4(i3 >>> 16) + "-" + paddedHex4(i3 & 0xffff) + paddedHex8(i4)
   }
 

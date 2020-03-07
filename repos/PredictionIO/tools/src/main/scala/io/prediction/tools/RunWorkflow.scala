@@ -151,9 +151,11 @@ object RunWorkflow extends Logging {
           .getOrElse(Seq()) ++
         (if (deployMode == "cluster") Seq("--deploy-mode", "cluster")
          else Seq()) ++
-        (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Seq()) ++
+        (if (ca.common.batch != "") Seq("--batch", ca.common.batch)
+         else Seq()) ++
         (if (ca.common.verbose) Seq("--verbose") else Seq()) ++
-        (if (ca.common.skipSanityCheck) Seq("--skip-sanity-check") else Seq()) ++
+        (if (ca.common.skipSanityCheck) Seq("--skip-sanity-check")
+         else Seq()) ++
         (if (ca.common.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
         (if (ca.common.stopAfterPrepare) {
            Seq("--stop-after-prepare")
@@ -168,7 +170,8 @@ object RunWorkflow extends Logging {
           .orElse(ca.common.evaluation)
           .map(x => Seq("--engine-params-generator-class", x))
           .getOrElse(Seq()) ++
-        (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Seq()) ++
+        (if (ca.common.batch != "") Seq("--batch", ca.common.batch)
+         else Seq()) ++
         Seq("--json-extractor", ca.common.jsonExtractor.toString)
 
     info(s"Submission command: ${sparkSubmit.mkString(" ")}")

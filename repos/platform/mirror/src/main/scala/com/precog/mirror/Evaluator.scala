@@ -312,7 +312,9 @@ trait EvaluatorModule
 
           handleBinary(
             packed,
-            unifyProvenance(expr.relations)(pred.provenance, left.provenance).get,
+            unifyProvenance(expr.relations)(
+              pred.provenance,
+              left.provenance).get,
             loopForJoin(env, restrict)(right),
             right.provenance) {
             case (JArray(JBool(pred) :: left :: Nil), right) =>

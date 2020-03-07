@@ -97,8 +97,8 @@ class Accumulable[R, T] private (
   def this(initialValue: R, param: AccumulableParam[R, T]) =
     this(initialValue, param, None)
 
-  @volatile @transient private var value_
-      : R = initialValue // Current value on driver
+  @volatile @transient private var value_ : R =
+    initialValue // Current value on driver
   val zero = param.zero(initialValue) // Zero value to be passed to executors
   private var deserialized = false
 

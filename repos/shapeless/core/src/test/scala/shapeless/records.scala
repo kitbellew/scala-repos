@@ -362,19 +362,19 @@ class RecordTests {
         HNil
 
     val r2 = r1 + (boolField1 ->> true)
-    typed[
-      FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-        boolField1.type,
-        Boolean] :: HNil](r2)
+    typed[FieldType[intField1.type, Int] :: FieldType[
+      stringField1.type,
+      String] :: FieldType[boolField1.type, Boolean] :: HNil](r2)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (boolField1 ->> true) :: HNil,
       r2)
 
     val r3 = r2 + (doubleField1 ->> 2.0)
-    typed[
-      FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-        boolField1.type,
-        Boolean] :: FieldType[doubleField1.type, Double] :: HNil](r3)
+    typed[FieldType[intField1.type, Int] :: FieldType[
+      stringField1.type,
+      String] :: FieldType[boolField1.type, Boolean] :: FieldType[
+      doubleField1.type,
+      Double] :: HNil](r3)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (boolField1 ->> true) :: (doubleField1 ->> 2.0) :: HNil,
       r3)
@@ -393,17 +393,19 @@ class RecordTests {
         HNil
 
     val r2 = r1 + ("boolField1" ->> true)
-    typed[FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-      wBoolField1.T,
-      Boolean] :: HNil](r2)
+    typed[FieldType[wIntField1.T, Int] :: FieldType[
+      wStringField1.T,
+      String] :: FieldType[wBoolField1.T, Boolean] :: HNil](r2)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("boolField1" ->> true) :: HNil,
       r2)
 
     val r3 = r2 + ("doubleField1" ->> 2.0)
-    typed[FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-      wBoolField1.T,
-      Boolean] :: FieldType[wDoubleField1.T, Double] :: HNil](r3)
+    typed[FieldType[wIntField1.T, Int] :: FieldType[
+      wStringField1.T,
+      String] :: FieldType[wBoolField1.T, Boolean] :: FieldType[
+      wDoubleField1.T,
+      Double] :: HNil](r3)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("boolField1" ->> true) :: ("doubleField1" ->> 2.0) :: HNil,
       r3)
@@ -432,9 +434,9 @@ class RecordTests {
     val rm2 = r1.remove(stringField1)
     typed[(
         String,
-        FieldType[intField1.type, Int] :: FieldType[boolField1.type, Boolean] :: FieldType[
-          doubleField1.type,
-          Double] :: HNil)](rm2)
+        FieldType[intField1.type, Int] :: FieldType[
+          boolField1.type,
+          Boolean] :: FieldType[doubleField1.type, Double] :: HNil)](rm2)
     assertEquals("foo", rm2._1)
     assertEquals(
       (intField1 ->> 23) :: (boolField1 ->> true) :: (doubleField1 ->> 2.0) :: HNil,
@@ -443,9 +445,9 @@ class RecordTests {
     val rm3 = r1.remove(boolField1)
     typed[(
         Boolean,
-        FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-          doubleField1.type,
-          Double] :: HNil)](rm3)
+        FieldType[intField1.type, Int] :: FieldType[
+          stringField1.type,
+          String] :: FieldType[doubleField1.type, Double] :: HNil)](rm3)
     assertEquals(true, rm3._1)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (doubleField1 ->> 2.0) :: HNil,
@@ -454,9 +456,9 @@ class RecordTests {
     val rm4 = r1.remove(doubleField1)
     typed[(
         Double,
-        FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-          boolField1.type,
-          Boolean] :: HNil)](rm4)
+        FieldType[intField1.type, Int] :: FieldType[
+          stringField1.type,
+          String] :: FieldType[boolField1.type, Boolean] :: HNil)](rm4)
     assertEquals(2.0, rm4._1, Double.MinPositiveValue)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (boolField1 ->> true) :: HNil,
@@ -471,28 +473,25 @@ class RecordTests {
       r2)
 
     val r3 = r1 - stringField1
-    typed[
-      FieldType[intField1.type, Int] :: FieldType[boolField1.type, Boolean] :: FieldType[
-        doubleField1.type,
-        Double] :: HNil](r3)
+    typed[FieldType[intField1.type, Int] :: FieldType[
+      boolField1.type,
+      Boolean] :: FieldType[doubleField1.type, Double] :: HNil](r3)
     assertEquals(
       (intField1 ->> 23) :: (boolField1 ->> true) :: (doubleField1 ->> 2.0) :: HNil,
       r3)
 
     val r4 = r1 - boolField1
-    typed[
-      FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-        doubleField1.type,
-        Double] :: HNil](r4)
+    typed[FieldType[intField1.type, Int] :: FieldType[
+      stringField1.type,
+      String] :: FieldType[doubleField1.type, Double] :: HNil](r4)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (doubleField1 ->> 2.0) :: HNil,
       r4)
 
     val r5 = r1 - doubleField1
-    typed[
-      FieldType[intField1.type, Int] :: FieldType[stringField1.type, String] :: FieldType[
-        boolField1.type,
-        Boolean] :: HNil](r5)
+    typed[FieldType[intField1.type, Int] :: FieldType[
+      stringField1.type,
+      String] :: FieldType[boolField1.type, Boolean] :: HNil](r5)
     assertEquals(
       (intField1 ->> 23) :: (stringField1 ->> "foo") :: (boolField1 ->> true) :: HNil,
       r5)
@@ -508,12 +507,11 @@ class RecordTests {
         HNil
 
     val rm1 = r1.remove("intField1")
-    typed[
-      (
-          Int,
-          FieldType[wStringField1.T, String] :: FieldType[
-            wBoolField1.T,
-            Boolean] :: FieldType[wDoubleField1.T, Double] :: HNil)](rm1)
+    typed[(
+        Int,
+        FieldType[wStringField1.T, String] :: FieldType[
+          wBoolField1.T,
+          Boolean] :: FieldType[wDoubleField1.T, Double] :: HNil)](rm1)
     assertEquals(23, rm1._1)
     assertEquals(
       ("stringField1" ->> "foo") :: ("boolField1" ->> true) :: ("doubleField1" ->> 2.0) :: HNil,
@@ -522,9 +520,9 @@ class RecordTests {
     val rm2 = r1.remove("stringField1")
     typed[(
         String,
-        FieldType[wIntField1.T, Int] :: FieldType[wBoolField1.T, Boolean] :: FieldType[
-          wDoubleField1.T,
-          Double] :: HNil)](rm2)
+        FieldType[wIntField1.T, Int] :: FieldType[
+          wBoolField1.T,
+          Boolean] :: FieldType[wDoubleField1.T, Double] :: HNil)](rm2)
     assertEquals("foo", rm2._1)
     assertEquals(
       ("intField1" ->> 23) :: ("boolField1" ->> true) :: ("doubleField1" ->> 2.0) :: HNil,
@@ -533,9 +531,9 @@ class RecordTests {
     val rm3 = r1.remove("boolField1")
     typed[(
         Boolean,
-        FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-          wDoubleField1.T,
-          Double] :: HNil)](rm3)
+        FieldType[wIntField1.T, Int] :: FieldType[
+          wStringField1.T,
+          String] :: FieldType[wDoubleField1.T, Double] :: HNil)](rm3)
     assertEquals(true, rm3._1)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("doubleField1" ->> 2.0) :: HNil,
@@ -544,9 +542,9 @@ class RecordTests {
     val rm4 = r1.remove("doubleField1")
     typed[(
         Double,
-        FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-          wBoolField1.T,
-          Boolean] :: HNil)](rm4)
+        FieldType[wIntField1.T, Int] :: FieldType[
+          wStringField1.T,
+          String] :: FieldType[wBoolField1.T, Boolean] :: HNil)](rm4)
     assertEquals(2.0, rm4._1, Double.MinPositiveValue)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("boolField1" ->> true) :: HNil,
@@ -561,25 +559,25 @@ class RecordTests {
       r2)
 
     val r3 = r1 - "stringField1"
-    typed[FieldType[wIntField1.T, Int] :: FieldType[wBoolField1.T, Boolean] :: FieldType[
-      wDoubleField1.T,
-      Double] :: HNil](r3)
+    typed[FieldType[wIntField1.T, Int] :: FieldType[
+      wBoolField1.T,
+      Boolean] :: FieldType[wDoubleField1.T, Double] :: HNil](r3)
     assertEquals(
       ("intField1" ->> 23) :: ("boolField1" ->> true) :: ("doubleField1" ->> 2.0) :: HNil,
       r3)
 
     val r4 = r1 - "boolField1"
-    typed[FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-      wDoubleField1.T,
-      Double] :: HNil](r4)
+    typed[FieldType[wIntField1.T, Int] :: FieldType[
+      wStringField1.T,
+      String] :: FieldType[wDoubleField1.T, Double] :: HNil](r4)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("doubleField1" ->> 2.0) :: HNil,
       r4)
 
     val r5 = r1 - "doubleField1"
-    typed[FieldType[wIntField1.T, Int] :: FieldType[wStringField1.T, String] :: FieldType[
-      wBoolField1.T,
-      Boolean] :: HNil](r5)
+    typed[FieldType[wIntField1.T, Int] :: FieldType[
+      wStringField1.T,
+      String] :: FieldType[wBoolField1.T, Boolean] :: HNil](r5)
     assertEquals(
       ("intField1" ->> 23) :: ("stringField1" ->> "foo") :: ("boolField1" ->> true) :: HNil,
       r5)
@@ -910,7 +908,8 @@ class RecordTests {
     {
       val f = rs.fields
       assertTypedEquals(
-        ("first".narrow -> Some(2)) :: ("second".narrow -> Some(true)) :: ("third" -> Option
+        ("first".narrow -> Some(2)) :: ("second".narrow -> Some(
+          true)) :: ("third" -> Option
           .empty[String]) :: HNil,
         f)
     }

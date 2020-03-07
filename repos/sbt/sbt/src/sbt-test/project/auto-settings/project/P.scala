@@ -18,15 +18,21 @@ object B extends Build {
 
   // version should be from the explicit settings call
   lazy val c =
-    project("c", "0.9") settings (version := "0.9") settingSets (buildScalaFiles)
+    project(
+      "c",
+      "0.9") settings (version := "0.9") settingSets (buildScalaFiles)
 
   // version should be from d/build.sbt
   lazy val d =
-    project("d", "1.3") settings (version := "0.9") settingSets (buildScalaFiles, defaultSbtFiles)
+    project(
+      "d",
+      "1.3") settings (version := "0.9") settingSets (buildScalaFiles, defaultSbtFiles)
 
   // version should be from global/user.sbt
   lazy val e =
-    project("e", "1.1") settings (version := "0.9") settingSets (buildScalaFiles, defaultSbtFiles, sbtFiles(
+    project(
+      "e",
+      "1.1") settings (version := "0.9") settingSets (buildScalaFiles, defaultSbtFiles, sbtFiles(
       file("../explicit/a.txt")), userSettings)
 
   def project(id: String, expectedVersion: String): Project =

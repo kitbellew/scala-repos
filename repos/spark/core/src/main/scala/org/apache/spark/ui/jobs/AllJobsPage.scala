@@ -370,7 +370,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           activeJobsTable
       }
       if (shouldShowCompletedJobs) {
-        content ++= <h4 id="completed">Completed Jobs ({completedJobNumStr})</h4> ++
+        content ++= <h4 id="completed">Completed Jobs ({
+          completedJobNumStr
+        })</h4> ++
           completedJobsTable
       }
       if (shouldShowFailedJobs) {

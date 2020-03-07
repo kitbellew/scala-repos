@@ -93,9 +93,11 @@ object UnliftableProps extends QuasiquoteProperties("unliftable") {
 
   property("unlift list (2)") = test {
     val orig2 = List(List(1, 2), List(3))
-    val q"f(${l3: List[List[Int]]})" = q"f($orig2)" // q"f(List(List(1, 2), List(3)))
+    val q"f(${l3: List[List[Int]]})" =
+      q"f($orig2)" // q"f(List(List(1, 2), List(3)))
     assert(l3 == orig2)
-    val q"f(..${l4: List[List[Int]]})" = q"f(..$orig2)" // q"f(List(1, 2), List(3))"
+    val q"f(..${l4: List[List[Int]]})" =
+      q"f(..$orig2)" // q"f(List(1, 2), List(3))"
     assert(l4 == orig2)
     val q"f(...${l5: List[List[Int]]})" = q"f(...$orig2)" // q"f(1, 2)(3)
     assert(l5 == orig2)

@@ -100,7 +100,8 @@ class SortSuite extends SparkPlanTest with SharedSQLContext {
        nullable <- Seq(true, false);
        sortOrder <- Seq('a.asc :: Nil, 'a.desc :: Nil);
        randomDataGenerator <- RandomDataGenerator.forType(dataType, nullable)) {
-    test(s"sorting on $dataType with nullable=$nullable, sortOrder=$sortOrder") {
+    test(
+      s"sorting on $dataType with nullable=$nullable, sortOrder=$sortOrder") {
       val inputData = Seq.fill(1000)(randomDataGenerator())
       val inputDf = sqlContext.createDataFrame(
         sparkContext.parallelize(Random.shuffle(inputData).map(v => Row(v))),

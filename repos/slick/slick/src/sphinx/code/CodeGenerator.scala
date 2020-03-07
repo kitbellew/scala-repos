@@ -29,7 +29,10 @@ object CodeGenerator extends App {
     //#customization
     import slick.codegen.SourceCodeGenerator
     // fetch data model
-    val modelAction = H2Profile.createModel(Some(H2Profile.defaultTables)) // you can filter specific tables here
+    val modelAction =
+      H2Profile.createModel(
+        Some(H2Profile.defaultTables)
+      ) // you can filter specific tables here
     val modelFuture = db.run(modelAction)
     // customize code generator
     val codegenFuture = modelFuture.map(model =>

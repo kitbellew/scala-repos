@@ -432,7 +432,9 @@ class LightArrayRevolverSchedulerSpec
           val counter = new AtomicInteger
           val terminated = future {
             var rounds = 0
-            while (Try(sched.scheduleOnce(Duration.Zero)(())(localEC)).isSuccess) {
+            while (Try(
+                     sched.scheduleOnce(Duration.Zero)(())(
+                       localEC)).isSuccess) {
               Thread.sleep(1)
               driver.wakeUp(step)
               rounds += 1

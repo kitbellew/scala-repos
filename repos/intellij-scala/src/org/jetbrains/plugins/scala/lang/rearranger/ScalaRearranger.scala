@@ -258,8 +258,9 @@ object ScalaRearranger {
         composite.addOperand(
           new ArrangementAtomMatchCondition(condition, condition))
       }
-      ArrangementSectionRule.create(new StdArrangementMatchRule(
-        new StdArrangementEntryMatcher(composite))) :: matchRules
+      ArrangementSectionRule.create(
+        new StdArrangementMatchRule(
+          new StdArrangementEntryMatcher(composite))) :: matchRules
     }
   }
 

@@ -119,7 +119,8 @@ class FlowMapBenchmark {
   @Benchmark
   @OperationsPerInvocation(100000)
   def flow_map_100k_elements(): Unit = {
-    val lock = new Lock() // todo rethink what is the most lightweight way to await for a streams completion
+    val lock =
+      new Lock() // todo rethink what is the most lightweight way to await for a streams completion
     lock.acquire()
 
     flow.runWith(Sink.onComplete(_ ⇒ lock.release()))(materializer)

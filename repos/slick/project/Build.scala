@@ -16,7 +16,8 @@ import com.typesafe.sbt.sdlc.Plugin._
 object SlickBuild extends Build {
 
   val slickVersion = "3.2.0-SNAPSHOT"
-  val binaryCompatSlickVersion = "3.2.0" // Slick base version for binary compatibility checks
+  val binaryCompatSlickVersion =
+    "3.2.0" // Slick base version for binary compatibility checks
   val scalaVersions = Seq("2.11.7", "2.12.0-M2")
 
   /** Dependencies for reuse in different parts of the build */
@@ -227,7 +228,8 @@ object SlickBuild extends Build {
     settings =
       Defaults.coreDefaultSettings ++ sdlcSettings ++ inConfig(config("macro"))(
         Defaults.configSettings) ++ sharedSettings ++ fmppSettings ++ site.settings ++ site
-        .sphinxSupport() ++ mimaDefaultSettings ++ extTarget("slick") ++ commonSdlcSettings ++ osgiSettings ++ Seq(
+        .sphinxSupport() ++ mimaDefaultSettings ++ extTarget(
+        "slick") ++ commonSdlcSettings ++ osgiSettings ++ Seq(
         name := "Slick",
         description := "Scala Language-Integrated Connection Kit",
         libraryDependencies ++= Dependencies.mainDependencies,
@@ -270,8 +272,10 @@ object SlickBuild extends Build {
         unmanagedClasspath in Compile <++= products in config("macro"),
         libraryDependencies <+= scalaVersion(
           "org.scala-lang" % "scala-compiler" % _ % "provided"),
-        mappings in (Compile, packageSrc) <++= mappings in (config("macro"), packageSrc),
-        mappings in (Compile, packageBin) <++= mappings in (config("macro"), packageBin),
+        mappings in (Compile, packageSrc) <++= mappings in (config(
+          "macro"), packageSrc),
+        mappings in (Compile, packageBin) <++= mappings in (config(
+          "macro"), packageBin),
         OsgiKeys.exportPackage := Seq(
           "slick",
           "slick.*",
@@ -493,9 +497,11 @@ object SlickBuild extends Build {
           val fmppSrc = srcDir / "scala"
           val inFiles = fmppSrc ** "*.fm"
           (srcs pair (Path
-            .relativeTo(base) | Path.flat)) ++ // Add generated sources to sources JAR
+            .relativeTo(
+              base) | Path.flat)) ++ // Add generated sources to sources JAR
             (inFiles pair (Path
-              .relativeTo(fmppSrc) | Path.flat)) // Add *.fm files to sources JAR
+              .relativeTo(
+                fmppSrc) | Path.flat)) // Add *.fm files to sources JAR
         }
     )
   lazy val fmppTask =
@@ -542,7 +548,8 @@ object SlickBuild extends Build {
             val src = srcDir / "codegen"
             val inFiles = src ** "*.scala"
             (srcs pair (Path
-              .relativeTo(base) | Path.flat)) ++ // Add generated sources to sources JAR
+              .relativeTo(
+                base) | Path.flat)) ++ // Add generated sources to sources JAR
               (inFiles pair (Path
                 .relativeTo(src) | Path.flat)) // Add *.fm files to sources JAR
           }

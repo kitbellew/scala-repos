@@ -165,7 +165,8 @@ trait MemberLookupBase {
         def completeSearch(syms: List[Symbol]) =
           syms flatMap (lookupInTemplate(pos, rest, _))
 
-        completeSearch(lookupInTemplate(pos, tplName, container, OnlyTerm)) match {
+        completeSearch(
+          lookupInTemplate(pos, tplName, container, OnlyTerm)) match {
           case Nil =>
             completeSearch(lookupInTemplate(pos, tplName, container, OnlyType))
           case syms => syms
@@ -202,7 +203,8 @@ trait MemberLookupBase {
       else if (member.endsWith("!"))
         typeSyms
       else if (member.endsWith("*"))
-        cleanupBogusClasses(container.info.nonPrivateDecls) filter signatureMatch
+        cleanupBogusClasses(
+          container.info.nonPrivateDecls) filter signatureMatch
       else
         strategy match {
           case BothTypeAndTerm => termSyms ::: typeSyms

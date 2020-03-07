@@ -76,8 +76,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
     }
 
-    isInIncreasingOrder(batchInfosSubmitted.asScala.map(_.submissionTime)) should be(
-      true)
+    isInIncreasingOrder(
+      batchInfosSubmitted.asScala.map(_.submissionTime)) should be(true)
 
     // SPARK-6766: processingStartTime of batch info should not be None when starting
     val batchInfosStarted = collector.batchInfosStarted
@@ -95,8 +95,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
     }
 
-    isInIncreasingOrder(batchInfosStarted.asScala.map(_.submissionTime)) should be(
-      true)
+    isInIncreasingOrder(
+      batchInfosStarted.asScala.map(_.submissionTime)) should be(true)
     isInIncreasingOrder(
       batchInfosStarted.asScala.map(_.processingStartTime.get)) should be(true)
 
@@ -118,8 +118,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       info.streamIdToInputInfo should be(Map(0 -> StreamInputInfo(0, 1L)))
     }
 
-    isInIncreasingOrder(batchInfosCompleted.asScala.map(_.submissionTime)) should be(
-      true)
+    isInIncreasingOrder(
+      batchInfosCompleted.asScala.map(_.submissionTime)) should be(true)
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.processingStartTime.get)) should be(
       true)

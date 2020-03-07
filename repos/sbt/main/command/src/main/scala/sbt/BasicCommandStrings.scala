@@ -80,7 +80,8 @@ ${runEarly(level.toString)}
     s"$EarlyCommand$sep$command"
   }
   private[sbt] def isEarlyCommand(s: String): Boolean = {
-    s.startsWith(EarlyCommand) && s != Compat.FailureWall && s != Compat.ClearOnFailure
+    s.startsWith(
+      EarlyCommand) && s != Compat.FailureWall && s != Compat.ClearOnFailure
   }
 
   val EarlyCommand = "--"

@@ -55,10 +55,10 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     val literals = literalsOf(host)
     if (literals.isEmpty) return
 
-    if (injectUsingIntention(registrar, host, literals) || injectInInterpolation(
+    if (injectUsingIntention(
           registrar,
           host,
-          literals)) return
+          literals) || injectInInterpolation(registrar, host, literals)) return
 
     if (ScalaProjectSettings
           .getInstance(host.getProject)
@@ -218,7 +218,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
     element match {
       case host: PsiLanguageInjectionHost =>
-        Option(registry getLanguageFor (host, element.getContainingFile)) flatMap {
+        Option(
+          registry getLanguageFor (host, element.getContainingFile)) flatMap {
           injectedLanguage =>
             ScalaLanguageInjector withInjectionSupport { support =>
               ScalaLanguageInjector performSimpleInjection (literals, injectedLanguage, new BaseInjection(
@@ -344,7 +345,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               val parameters = m.getParameterList.getParameters
               if (parameters.isEmpty) None
               else
-                parameters(index.min(parameters.size - 1)).getModifierList.toOption
+                parameters(
+                  index.min(parameters.size - 1)).getModifierList.toOption
             case _ => None
           }
         }

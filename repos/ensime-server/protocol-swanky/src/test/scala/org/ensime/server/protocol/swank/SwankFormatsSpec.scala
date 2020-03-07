@@ -143,7 +143,10 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:type-by-name-at-point "foo.bar" "$file1" (1 10))""",
-      TypeByNameAtPointReq("foo.bar", Left(file1), OffsetRange(1, 10)): RpcRequest
+      TypeByNameAtPointReq(
+        "foo.bar",
+        Left(file1),
+        OffsetRange(1, 10)): RpcRequest
     )
 
     unmarshal(
@@ -197,7 +200,10 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:diff-refactor 1 (end 100 file "$file1" newName "bar" start 1) nil)""",
-      RefactorReq(1, RenameRefactorDesc("bar", file1, 1, 100), false): RpcRequest
+      RefactorReq(
+        1,
+        RenameRefactorDesc("bar", file1, 1, 100),
+        false): RpcRequest
     )
 
     unmarshal(
@@ -473,7 +479,11 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      DebugArrayInstance(3, "typeName", "elementType", DebugObjectId(5L)): DebugValue,
+      DebugArrayInstance(
+        3,
+        "typeName",
+        "elementType",
+        DebugObjectId(5L)): DebugValue,
       """(:val-type arr :length 3 :type-name "typeName" :element-type-name "elementType" :object-id "5")"""
     )
 
@@ -562,7 +572,12 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      new NamedTypeMemberInfo("typeX", typeInfo, None, None, DeclaredAs.Method): EntityInfo,
+      new NamedTypeMemberInfo(
+        "typeX",
+        typeInfo,
+        None,
+        None,
+        DeclaredAs.Method): EntityInfo,
       """(:name "typeX" :type (:arrow-type nil :name "type1" :decl-as method :full-name "FOO.type1") :decl-as method)"""
     )
 
@@ -599,12 +614,14 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
   it should "marshal search related responses" in {
     marshal(
-      new SymbolSearchResults(List(methodSearchRes, typeSearchRes)): SymbolSearchResults,
+      new SymbolSearchResults(
+        List(methodSearchRes, typeSearchRes)): SymbolSearchResults,
       s"""((:type method :name "abc" :local-name "a" :decl-as method :pos (:type line :file "$abd" :line 10) :owner-name "ownerStr") (:type type :name "abc" :local-name "a" :decl-as trait :pos (:type line :file "$abd" :line 10)))"""
     )
 
     marshal(
-      new ImportSuggestions(List(List(methodSearchRes, typeSearchRes))): ImportSuggestions,
+      new ImportSuggestions(
+        List(List(methodSearchRes, typeSearchRes))): ImportSuggestions,
       s"""(((:type method :name "abc" :local-name "a" :decl-as method :pos (:type line :file "$abd" :line 10) :owner-name "ownerStr") (:type type :name "abc" :local-name "a" :decl-as trait :pos (:type line :file "$abd" :line 10))))"""
     )
 
@@ -642,7 +659,8 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      ImplicitInfos(List(ImplicitConversionInfo(5, 6, symbolInfo))): ImplicitInfos,
+      ImplicitInfos(
+        List(ImplicitConversionInfo(5, 6, symbolInfo))): ImplicitInfos,
       s"""((:type conversion :start 5 :end 6 :fun $symbolInfoStr))"""
     )
 

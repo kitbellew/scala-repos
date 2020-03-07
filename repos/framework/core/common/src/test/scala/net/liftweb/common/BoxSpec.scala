@@ -308,8 +308,10 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
   "A Failure is an Empty Box which" can {
     "return its cause as an exception" in {
       case class LiftException(m: String) extends Exception
-      Failure("error", Full(new LiftException("broken")), Empty).exception must_== Full(
-        new LiftException("broken"))
+      Failure(
+        "error",
+        Full(new LiftException("broken")),
+        Empty).exception must_== Full(new LiftException("broken"))
     }
     "return a chained list of causes" in {
       Failure(

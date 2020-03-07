@@ -137,7 +137,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
           |SELECT r.*
           |FROM testData l join testData2 r on (l.key = r.a)
         """.stripMargin),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(3, 2) :: Nil
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
+        3,
+        2) :: Nil
     )
   }
 
@@ -889,9 +891,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("UNION") {
     checkAnswer(
       sql("SELECT * FROM lowerCaseData UNION SELECT * FROM upperCaseData"),
-      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(3, "C") :: Row(
+      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(
         3,
-        "c") ::
+        "C") :: Row(3, "c") ::
         Row(4, "D") :: Row(4, "d") :: Row(5, "E") :: Row(6, "F") :: Nil
     )
     checkAnswer(
@@ -899,9 +901,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       Row(1, "a") :: Row(2, "b") :: Row(3, "c") :: Row(4, "d") :: Nil)
     checkAnswer(
       sql("SELECT * FROM lowerCaseData UNION ALL SELECT * FROM lowerCaseData"),
-      Row(1, "a") :: Row(1, "a") :: Row(2, "b") :: Row(2, "b") :: Row(3, "c") :: Row(
+      Row(1, "a") :: Row(1, "a") :: Row(2, "b") :: Row(2, "b") :: Row(
         3,
-        "c") ::
+        "c") :: Row(3, "c") ::
         Row(4, "d") :: Row(4, "d") :: Nil
     )
   }
@@ -911,9 +913,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql(
         "SELECT n,l FROM lowerCaseData UNION SELECT N as x1, L as x2 FROM upperCaseData"),
-      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(3, "C") :: Row(
+      Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(
         3,
-        "c") ::
+        "C") :: Row(3, "c") ::
         Row(4, "D") :: Row(4, "d") :: Row(5, "E") :: Row(6, "F") :: Nil
     )
     // Column type mismatches are not allowed, forcing a type coercion.
@@ -1921,21 +1923,33 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       structDf.select($"record.a", $"record.b"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(3, 2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
+        3,
+        2) :: Nil)
 
     checkAnswer(
       structDf.select($"record.*"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(3, 2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
+        3,
+        2) :: Nil)
 
     checkAnswer(
       structDf.select($"record.*", $"record.*"),
-      Row(1, 1, 1, 1) :: Row(1, 2, 1, 2) :: Row(2, 1, 2, 1) :: Row(2, 2, 2, 2) ::
+      Row(1, 1, 1, 1) :: Row(1, 2, 1, 2) :: Row(2, 1, 2, 1) :: Row(
+        2,
+        2,
+        2,
+        2) ::
         Row(3, 1, 3, 1) :: Row(3, 2, 3, 2) :: Nil)
 
     checkAnswer(
       sql("select struct(a, b) as r1, struct(b, a) as r2 from testData2")
         .select($"r1.*", $"r2.*"),
-      Row(1, 1, 1, 1) :: Row(1, 2, 2, 1) :: Row(2, 1, 1, 2) :: Row(2, 2, 2, 2) ::
+      Row(1, 1, 1, 1) :: Row(1, 2, 2, 1) :: Row(2, 1, 1, 2) :: Row(
+        2,
+        2,
+        2,
+        2) ::
         Row(3, 1, 1, 3) :: Row(3, 2, 2, 3) :: Nil
     )
 
@@ -1944,7 +1958,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       "structTable")
     checkAnswer(
       sql("SELECT record.* FROM structTable"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(3, 2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
+        3,
+        2) :: Nil)
 
     checkAnswer(
       sql("""
@@ -2015,7 +2031,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         Row(Row(3, 1)) :: Row(Row(3, 2)) :: Nil)
     checkAnswer(
       nestedStructData.select($"record.r1.*"),
-      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(3, 2) :: Nil)
+      Row(1, 1) :: Row(1, 2) :: Row(2, 1) :: Row(2, 2) :: Row(3, 1) :: Row(
+        3,
+        2) :: Nil)
 
     // Try with a registered table
     withTempTable("nestedStructTable") {
@@ -2031,9 +2049,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         nestedStructData.select($"record.r1.*"))
 
       // Try resolving something not there.
-      assert(intercept[AnalysisException](
-        sql("SELECT abc.* FROM nestedStructTable")).getMessage
-        .contains("cannot resolve"))
+      assert(
+        intercept[AnalysisException](
+          sql("SELECT abc.* FROM nestedStructTable")).getMessage
+          .contains("cannot resolve"))
     }
 
     // Create paths with unusual characters

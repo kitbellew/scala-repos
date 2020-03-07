@@ -77,11 +77,17 @@ class KeyFrameSpec
     var callCount1 = 0
     var callCount2 = 0
     // Call the handler 3 times
-    KeyFrame(10 ms, onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
+    KeyFrame(
+      10 ms,
+      onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
       .handle(null)
-    KeyFrame(10 ms, onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
+    KeyFrame(
+      10 ms,
+      onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
       .handle(null)
-    KeyFrame(10 ms, onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
+    KeyFrame(
+      10 ms,
+      onFinished = handle { callCount1 += 1; callCount2 += 1 }).onFinished
       .handle(null)
     // Verify that three calls were made
     callCount2 should equal(3)

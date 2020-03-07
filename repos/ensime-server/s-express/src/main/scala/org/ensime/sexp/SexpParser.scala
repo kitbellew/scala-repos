@@ -154,8 +154,9 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
 
   private def SexpSymbolP: Rule1[SexpAtom] = rule {
     // ? allowed at the end of symbol names
-    capture(oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
-      SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
+    capture(
+      oneOrMore(SymbolStartCharPredicate) ~ zeroOrMore(
+        SymbolBodyCharPredicate) ~ optional('?')) ~> { sym: String =>
       if (sym == "nil") SexpNil
       else SexpSymbol(sym)
     }

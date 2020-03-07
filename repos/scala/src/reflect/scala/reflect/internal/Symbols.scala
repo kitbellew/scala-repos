@@ -390,7 +390,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         MODULEVAR | (if (this.isClass) PrivateLocal | SYNTHETIC else 0)
       val newInfo = thisType.memberType(accessor).finalResultType
       val mval =
-        newVariable(newName, accessor.pos.focus, newFlags.toLong) addAnnotation VolatileAttr
+        newVariable(
+          newName,
+          accessor.pos.focus,
+          newFlags.toLong) addAnnotation VolatileAttr
 
       if (this.isClass)
         mval setInfoAndEnter newInfo
@@ -520,7 +523,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       newValueParameter(name, owner.pos.focus, SYNTHETIC) setInfo argtype
 
     def newSyntheticTypeParam(name: String, newFlags: Long): TypeSymbol =
-      newTypeParameter(newTypeName(name), NoPosition, newFlags) setInfo TypeBounds.empty
+      newTypeParameter(
+        newTypeName(name),
+        NoPosition,
+        newFlags) setInfo TypeBounds.empty
     def newSyntheticTypeParams(num: Int): List[TypeSymbol] =
       (0 until num).toList map (n => newSyntheticTypeParam("T" + n, 0L))
 
@@ -1037,7 +1043,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       }
 
     def isStrictFP =
-      hasAnnotation(ScalaStrictFPAttr) || (enclClass hasAnnotation ScalaStrictFPAttr)
+      hasAnnotation(
+        ScalaStrictFPAttr) || (enclClass hasAnnotation ScalaStrictFPAttr)
     def isSerializable =
       info.baseClasses.exists(p =>
         p == SerializableClass || p == JavaSerializableClass)
@@ -1098,7 +1105,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       * Stability and volatility are checked separately to allow volatile paths in patterns that amount to equality checks. SI-6815
       */
     final def isStable =
-      isTerm && !isMutable && !(hasFlag(BYNAMEPARAM)) && (!isMethod || hasStableFlag)
+      isTerm && !isMutable && !(hasFlag(
+        BYNAMEPARAM)) && (!isMethod || hasStableFlag)
     final def hasVolatileType =
       tpe.isVolatile && !hasAnnotation(uncheckedStableClass)
 
@@ -2702,7 +2710,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def setterIn(
         base: Symbol,
         hasExpandedName: Boolean = needsExpandedSetterName): Symbol =
-      base.info decl setterNameInBase(base, hasExpandedName) filter (_.hasAccessorFlag)
+      base.info decl setterNameInBase(
+        base,
+        hasExpandedName) filter (_.hasAccessorFlag)
 
     def needsExpandedSetterName = (
       if (isMethod) hasStableFlag && !isLazy
@@ -3022,7 +3032,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     private def compose(ss: String*) = ss filter (_ != "") mkString " "
 
     def isSingletonExistential =
-      nme.isSingletonName(name) && (info.bounds.hi.typeSymbol isSubClass SingletonClass)
+      nme.isSingletonName(
+        name) && (info.bounds.hi.typeSymbol isSubClass SingletonClass)
 
     /** String representation of existentially bound variable */
     def existentialToString =

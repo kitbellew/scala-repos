@@ -63,7 +63,11 @@ object GenerateMainSources extends TestCodeGenerator {
             }
           })
     },
-    new Config("CG8", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2-simple.sql")) {
+    new Config(
+      "CG8",
+      StandardTestDBs.H2Mem,
+      "H2Mem",
+      Seq("/dbs/h2-simple.sql")) {
       override def generator =
         tdb.profile
           .createModel(ignoreInvalidDefaults = false)

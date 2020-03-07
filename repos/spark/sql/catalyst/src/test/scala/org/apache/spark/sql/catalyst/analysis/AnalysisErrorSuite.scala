@@ -224,7 +224,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "bad casts",
     testRelation.select(Literal(1).cast(BinaryType).as('badCast)),
-    "cannot cast" :: Literal(1).dataType.simpleString :: BinaryType.simpleString :: Nil
+    "cannot cast" :: Literal(
+      1).dataType.simpleString :: BinaryType.simpleString :: Nil
   )
 
   errorTest(
@@ -241,12 +242,14 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "non-boolean filters",
     testRelation.where(Literal(1)),
-    "filter" :: "'1'" :: "not a boolean" :: Literal(1).dataType.simpleString :: Nil)
+    "filter" :: "'1'" :: "not a boolean" :: Literal(
+      1).dataType.simpleString :: Nil)
 
   errorTest(
     "non-boolean join conditions",
     testRelation.join(testRelation, condition = Some(Literal(1))),
-    "condition" :: "'1'" :: "not a boolean" :: Literal(1).dataType.simpleString :: Nil
+    "condition" :: "'1'" :: "not a boolean" :: Literal(
+      1).dataType.simpleString :: Nil
   )
 
   errorTest(
@@ -314,7 +317,9 @@ class AnalysisErrorSuite extends AnalysisTest {
     val plan =
       Aggregate(
         Nil,
-        Alias(sum(AttributeReference("a", LongType)(exprId = ExprId(1))), "b")() :: Nil,
+        Alias(
+          sum(AttributeReference("a", LongType)(exprId = ExprId(1))),
+          "b")() :: Nil,
         LocalRelation(AttributeReference("a", LongType)(exprId = ExprId(2))))
 
     assert(plan.resolved)

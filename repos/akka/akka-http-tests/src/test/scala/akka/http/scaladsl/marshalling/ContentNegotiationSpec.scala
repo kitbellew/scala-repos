@@ -143,8 +143,10 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
       |Accept-Charset: UTF-16""" test { accept ⇒
       accept(`text/plain`, `text/html`, `audio/ogg`) should select(
         `text/html` withCharset `UTF-16`)
-      accept(`text/plain`, `text/html` withCharset `UTF-8`, `audio/ogg`) should select(
-        `text/plain` withCharset `UTF-16`)
+      accept(
+        `text/plain`,
+        `text/html` withCharset `UTF-8`,
+        `audio/ogg`) should select(`text/plain` withCharset `UTF-16`)
       accept(
         `audio/ogg`,
         `application/javascript`,

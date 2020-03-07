@@ -162,7 +162,12 @@ class NettyBlockTransferService(
     val array = JavaUtils.bufferToArray(blockData.nioByteBuffer())
 
     client.sendRpc(
-      new UploadBlock(appId, execId, blockId.toString, levelBytes, array).toByteBuffer,
+      new UploadBlock(
+        appId,
+        execId,
+        blockId.toString,
+        levelBytes,
+        array).toByteBuffer,
       new RpcResponseCallback {
         override def onSuccess(response: ByteBuffer): Unit = {
           logTrace(s"Successfully uploaded block $blockId")

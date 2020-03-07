@@ -65,9 +65,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -85,7 +86,9 @@ trait TakeRangeSpec[M[+_]]
 
     val expected = Stream(
       JObject(
-        JField("value", JNum(12)) :: JField("key", JArray(JNum(2) :: Nil)) :: Nil),
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
       JObject(
         JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
           "key",
@@ -102,9 +105,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -130,9 +134,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -158,9 +163,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -186,9 +192,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -209,9 +216,10 @@ trait TakeRangeSpec[M[+_]]
         JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
           "key",
           JArray(JNum(3) :: Nil)) :: Nil),
-      JObject(JField("value", JString("ack")) :: JField(
-        "key",
-        JArray(JNum(4) :: Nil)) :: Nil)
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
     )
 
     results.copoint must_== expected
@@ -224,9 +232,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -254,9 +263,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -290,7 +300,9 @@ trait TakeRangeSpec[M[+_]]
 
     val expected = Stream(
       JObject(
-        JField("value", JNum(12)) :: JField("key", JArray(JNum(2) :: Nil)) :: Nil),
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
       JObject(
         JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
           "key",
@@ -323,9 +335,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -378,9 +391,10 @@ trait TakeRangeSpec[M[+_]]
           JField("value", JString("foo")) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
             "key",
@@ -413,11 +427,14 @@ trait TakeRangeSpec[M[+_]]
     val results = toJson(table.takeRange(0, 5))
 
     val expected = Stream(
-      JObject(JField("value", JString("foo")) :: JField(
-        "key",
-        JArray(JNum(1) :: Nil)) :: Nil),
       JObject(
-        JField("value", JNum(12)) :: JField("key", JArray(JNum(2) :: Nil)) :: Nil),
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
       JObject(
         JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
           "key",

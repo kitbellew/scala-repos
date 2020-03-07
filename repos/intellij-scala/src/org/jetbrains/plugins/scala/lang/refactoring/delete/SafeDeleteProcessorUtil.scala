@@ -198,7 +198,11 @@ object SafeDeleteProcessorUtil {
         case x: PsiMethod =>
           usages.add(new SafeDeleteOverridingMethodUsageInfo(x, psiMethod))
         case x: ScNamedElement =>
-          val info = new SafeDeleteUsageInfo(x, psiMethod) // TODO SafeDeleteOverridingMemberUsageInfo
+          val info =
+            new SafeDeleteUsageInfo(
+              x,
+              psiMethod
+            ) // TODO SafeDeleteOverridingMemberUsageInfo
           usages.add(info)
       }
     }
@@ -425,7 +429,9 @@ object SafeDeleteProcessorUtil {
     }
     for (reference <- references) {
       val element: PsiElement = reference.getElement
-      if (!isInside(element, allElementsToDelete) && !isInside(element, deleted) && !facade.getResolveHelper
+      if (!isInside(element, allElementsToDelete) && !isInside(
+            element,
+            deleted) && !facade.getResolveHelper
             .isAccessible(method, privateModifierList, element, null, null)) {
         return false
       }

@@ -13,7 +13,8 @@ case class Assessible(analysed: Analysed) {
   import analysed._
 
   def suspiciousErrorRate(color: Color): Boolean =
-    listAverage(Accuracy.diffsList(Pov(game, color), analysis)) < (game.speed match {
+    listAverage(
+      Accuracy.diffsList(Pov(game, color), analysis)) < (game.speed match {
       case Speed.Bullet => 25
       case Speed.Blitz  => 20
       case _            => 15

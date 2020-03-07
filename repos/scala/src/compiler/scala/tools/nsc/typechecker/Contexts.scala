@@ -62,7 +62,10 @@ trait Contexts { self: Analyzer =>
       s"it is both defined in $owner and imported subsequently by \n$imp")
 
   private lazy val startContext = NoContext.make(
-    Template(List(), noSelfType, List()) setSymbol global.NoSymbol setType global.NoType,
+    Template(
+      List(),
+      noSelfType,
+      List()) setSymbol global.NoSymbol setType global.NoType,
     rootMirror.RootClass,
     rootMirror.RootClass.info.decls
   )
@@ -527,7 +530,8 @@ trait Contexts { self: Analyzer =>
       c.variance = variance
       c.diagUsedDefaults = diagUsedDefaults
       c.openImplicits = openImplicits
-      c.contextMode = contextMode // note: ConstructorSuffix, a bit within `mode`, is conditionally overwritten below.
+      c.contextMode =
+        contextMode // note: ConstructorSuffix, a bit within `mode`, is conditionally overwritten below.
 
       // Fields that may take on a different value in the child
       c.prefix = prefixInChild
@@ -1131,10 +1135,10 @@ trait Contexts { self: Analyzer =>
       *  the search continuing as long as no qualifying name is found.
       */
     def lookupSymbol(name: Name, qualifies: Symbol => Boolean): NameLookup = {
-      var lookupError
-          : NameLookup = null // set to non-null if a definite error is encountered
-      var inaccessible
-          : NameLookup = null // records inaccessible symbol for error reporting in case none is found
+      var lookupError: NameLookup =
+        null // set to non-null if a definite error is encountered
+      var inaccessible: NameLookup =
+        null // records inaccessible symbol for error reporting in case none is found
       var defSym: Symbol = NoSymbol // the directly found symbol
       var pre: Type = NoPrefix // the prefix type of defSym, if a class member
       var cx: Context = this // the context under consideration
@@ -1177,7 +1181,8 @@ trait Contexts { self: Analyzer =>
       }
 
       def lookupInScope(scope: Scope) =
-        (scope lookupUnshadowedEntries name filter (e => qualifies(e.sym))).toList
+        (scope lookupUnshadowedEntries name filter (e =>
+          qualifies(e.sym))).toList
 
       def newOverloaded(owner: Symbol, pre: Type, entries: List[ScopeEntry]) =
         logResult(s"overloaded symbol in $pre")(
@@ -1223,7 +1228,11 @@ trait Contexts { self: Analyzer =>
       def imp2Explicit = imp2 isExplicitImport name
 
       def lookupImport(imp: ImportInfo, requireExplicit: Boolean) =
-        importedAccessibleSymbol(imp, name, requireExplicit, record = true) filter qualifies
+        importedAccessibleSymbol(
+          imp,
+          name,
+          requireExplicit,
+          record = true) filter qualifies
 
       // Java: A single-type-import declaration d in a compilation unit c of package p
       // that imports a type named n shadows, throughout c, the declarations of:
@@ -1364,8 +1373,9 @@ trait Contexts { self: Analyzer =>
   abstract class ContextReporter(
       private[this] var _errorBuffer: mutable.LinkedHashSet[AbsTypeError] =
         null,
-      private[this] var _warningBuffer: mutable.LinkedHashSet[
-        (Position, String)] = null)
+      private[this] var _warningBuffer: mutable.LinkedHashSet[(
+          Position,
+          String)] = null)
       extends Reporter {
     type Error = AbsTypeError
     type Warning = (Position, String)
@@ -1408,7 +1418,8 @@ trait Contexts { self: Analyzer =>
 
     @inline final def propagatingErrorsTo[T](target: ContextReporter)(
         expr: => T): T = {
-      val res = expr // TODO: make sure we're okay skipping the try/finally overhead
+      val res =
+        expr // TODO: make sure we're okay skipping the try/finally overhead
       if ((this ne target) && hasErrors) { // `this eq target` in e.g., test/files/neg/divergent-implicit.scala
         // assert(target.errorBuffer ne _errorBuffer)
         target ++= errors

@@ -47,7 +47,8 @@ class LineTokenizerTest extends FlatSpec with ShouldMatchers {
 
   it should "preprocess the input correctly" in {
     tokenizer
-      .tokenize("[foo]: http://example.com/  \"Optional Title Here\"") should equal(
+      .tokenize(
+        "[foo]: http://example.com/  \"Optional Title Here\"") should equal(
       (new MarkdownLineReader(
         List(),
         Map(

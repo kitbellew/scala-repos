@@ -95,7 +95,8 @@ sealed trait FreeTestsInstances {
       for {
         fDepth <- nextDepth
         freeDepth <- nextDepth
-        f <- arbFunction1[A, Free[F, A]](Arbitrary(freeGen[F, A](fDepth))).arbitrary
+        f <- arbFunction1[A, Free[F, A]](
+          Arbitrary(freeGen[F, A](fDepth))).arbitrary
         freeFA <- freeGen[F, A](freeDepth)
       } yield freeFA.flatMap(f)
 

@@ -760,7 +760,8 @@ object JGitUtil {
     */
   def getBranchesOfCommit(git: Git, commitId: String): List[String] =
     using(new RevWalk(git.getRepository)) { revWalk =>
-      defining(revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
+      defining(
+        revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
         commit =>
           git.getRepository.getAllRefs.entrySet.asScala
             .filter { e =>
@@ -782,7 +783,8 @@ object JGitUtil {
     */
   def getTagsOfCommit(git: Git, commitId: String): List[String] =
     using(new RevWalk(git.getRepository)) { revWalk =>
-      defining(revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
+      defining(
+        revWalk.parseCommit(git.getRepository.resolve(commitId + "^0"))) {
         commit =>
           git.getRepository.getAllRefs.entrySet.asScala
             .filter { e =>

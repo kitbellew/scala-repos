@@ -88,14 +88,15 @@ private[this] class MVarImpl[A](
               ) // someone has taken the value, try and write it again
             } yield ()
           case None =>
-            value.compareAndSet(v, Some(a)) flatMap { set => // There is no value, so it's time to try and write one.
-              if (!set)
-                write(
-                  a,
-                  read
-                ) // If the value has changed, the write will fail so we'll need to try it again.
-              else
-                readLatch.release // If the write succeeded, release a thread waiting for a value.
+            value.compareAndSet(v, Some(a)) flatMap {
+              set => // There is no value, so it's time to try and write one.
+                if (!set)
+                  write(
+                    a,
+                    read
+                  ) // If the value has changed, the write will fail so we'll need to try it again.
+                else
+                  readLatch.release // If the write succeeded, release a thread waiting for a value.
             }
         })
     }

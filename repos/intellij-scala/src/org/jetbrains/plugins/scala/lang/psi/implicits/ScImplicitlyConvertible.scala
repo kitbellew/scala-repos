@@ -405,7 +405,10 @@ class ScImplicitlyConvertible(
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       f.typeParameters.find(tp =>
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (tpt.name, tpt.getId)) match {
+                        (
+                          tp.name,
+                          ScalaPsiUtil.getPsiElementId(
+                            tp)) == (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

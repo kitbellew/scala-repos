@@ -92,7 +92,9 @@ trait ItemsList[T <: Mapper[T]] {
         unsorted
       case Some(field) =>
         unsorted.sortWith { (a, b) =>
-          ((field.actualField(a).get: Any, field.actualField(b).get: Any) match {
+          ((
+            field.actualField(a).get: Any,
+            field.actualField(b).get: Any) match {
             case (aval: String, bval: String) =>
               aval.toLowerCase < bval.toLowerCase
             case (aval: Ordered[_], bval: Ordered[_]) =>
@@ -299,7 +301,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
         "^" #> customBind(item) andThen
           ".fields" #> eachField(
             item,
-            { f: MappedField[_, T] => ".form" #> <strike>{f.asHtml}</strike> }) &
+            { f: MappedField[_, T] =>
+              ".form" #> <strike>{f.asHtml}</strike>
+            }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
               () => onRemove(item),

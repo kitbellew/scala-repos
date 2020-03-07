@@ -249,6 +249,7 @@ package object config {
   // Internal config to propagate the locations of any extra jars to add to the classpath
   // of the executors
   private[spark] val SECONDARY_JARS =
-    ConfigBuilder("spark.yarn.secondary.jars").internal.stringConf.toSequence.optional
+    ConfigBuilder(
+      "spark.yarn.secondary.jars").internal.stringConf.toSequence.optional
 
 }

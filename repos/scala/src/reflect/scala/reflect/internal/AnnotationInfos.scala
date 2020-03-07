@@ -23,9 +23,14 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
 
     /** The annotations on this type. */
     def annotations: List[AnnotationInfo] // Annotations on this type.
-    def setAnnotations(annots: List[AnnotationInfo]): Self // Replace annotations with argument list.
-    def withAnnotations(annots: List[AnnotationInfo]): Self // Add annotations to this type.
-    def filterAnnotations(p: AnnotationInfo => Boolean): Self // Retain only annotations meeting the condition.
+    def setAnnotations(
+        annots: List[AnnotationInfo])
+        : Self // Replace annotations with argument list.
+    def withAnnotations(
+        annots: List[AnnotationInfo]): Self // Add annotations to this type.
+    def filterAnnotations(
+        p: AnnotationInfo => Boolean)
+        : Self // Retain only annotations meeting the condition.
     def withoutAnnotations: Self // Remove all annotations from this type.
 
     def staticAnnotations = annotations filter (_.isStatic)
@@ -422,8 +427,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
       def reverseEngineerArgs(
           jargs: List[(Name, ClassfileAnnotArg)]): List[Tree] = jargs match {
         case (name, jarg) :: rest =>
-          AssignOrNamedArg(Ident(name), reverseEngineerArg(jarg)) :: reverseEngineerArgs(
-            rest)
+          AssignOrNamedArg(
+            Ident(name),
+            reverseEngineerArg(jarg)) :: reverseEngineerArgs(rest)
         case Nil => Nil
       }
       if (ann.javaArgs.isEmpty) ann.scalaArgs

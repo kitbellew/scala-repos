@@ -23,10 +23,11 @@ trait ExecutionSpecification {
     testExecution(ec1 => testExecution(ec2 => f(ec1, ec2)))
   }
 
-  def testExecution[A](f: (
-      TestExecutionContext,
-      TestExecutionContext,
-      TestExecutionContext) => A): A = {
+  def testExecution[A](
+      f: (
+          TestExecutionContext,
+          TestExecutionContext,
+          TestExecutionContext) => A): A = {
     testExecution(ec1 =>
       testExecution(ec2 => testExecution(ec3 => f(ec1, ec2, ec3))))
   }

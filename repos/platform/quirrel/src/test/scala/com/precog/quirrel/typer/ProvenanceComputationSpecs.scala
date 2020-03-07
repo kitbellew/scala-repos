@@ -1137,11 +1137,14 @@ object ProvenanceComputationSpecs
     }
 
     "identify dispatch to unquantified function with a consistent dynamic provenance" in {
-      val tree = compileSingle("""
+      val tree =
+        compileSingle(
+          """
         | foo := //foo
         | histogram := solve 'a
         |   'a + count(foo where foo = 'a) 
-        | histogram + histogram""".stripMargin) // if not consistent, binary op will fail
+        | histogram + histogram""".stripMargin
+        ) // if not consistent, binary op will fail
       tree.provenance must beLike { case DynamicProvenance(_) => ok }
       tree.errors must beEmpty
     }

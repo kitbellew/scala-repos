@@ -168,7 +168,8 @@ class HeartbeatReceiverSuite
     assert(!trackedExecutors.contains(executorId2))
   }
 
-  test("expire dead hosts should kill executors with replacement (SPARK-8119)") {
+  test(
+    "expire dead hosts should kill executors with replacement (SPARK-8119)") {
     // Set up a fake backend and cluster manager to simulate killing executors
     val rpcEnv = sc.env.rpcEnv
     val fakeClusterManager = new FakeClusterManager(rpcEnv)

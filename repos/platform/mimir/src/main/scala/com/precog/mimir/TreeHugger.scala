@@ -43,10 +43,11 @@ class Code extends UsefulStuff {
     val BIF2: ClassSymbol = RootClass.newClass("Set[BIF2]")
   }
 
-  val imports = BLOCK(IMPORT("bytecode.Library") :: IMPORT(
-    "bytecode.BuiltInFunc1") :: IMPORT("java.lang.Math") :: IMPORT(
-    "java.lang.String") :: IMPORT("bytecode.BuiltInFunc2") :: IMPORT(
-    "yggdrasil._") :: Nil: _*) inPackage ("mimir") inPackage ("com.precog")
+  val imports = BLOCK(
+    IMPORT("bytecode.Library") :: IMPORT("bytecode.BuiltInFunc1") :: IMPORT(
+      "java.lang.Math") :: IMPORT("java.lang.String") :: IMPORT(
+      "bytecode.BuiltInFunc2") :: IMPORT(
+      "yggdrasil._") :: Nil: _*) inPackage ("mimir") inPackage ("com.precog")
 
   val methods: Array[String] = classOf[Math].getMethods.map(_.getName)
   val parameters = classOf[Math].getMethods.map(_.getParameterTypes)
@@ -72,10 +73,10 @@ class Code extends UsefulStuff {
 
   def trait2: Tree = {
     TRAITDEF("Genlib") withParents ("GenOpcode", "GenLibrary") := BLOCK(
-      (DEF("_mathlib1") withFlags (Flags.OVERRIDE) := REF("super._mathlib1") SEQ_++ (sym.Set UNAPPLY (ID(
-        m1)))) ::
-        (DEF("_mathlib2") withFlags (Flags.OVERRIDE) := REF("super._mathlib2") SEQ_++ (sym.Set UNAPPLY (ID(
-          m2)))) ::
+      (DEF("_mathlib1") withFlags (Flags.OVERRIDE) := REF(
+        "super._mathlib1") SEQ_++ (sym.Set UNAPPLY (ID(m1)))) ::
+        (DEF("_mathlib2") withFlags (Flags.OVERRIDE) := REF(
+          "super._mathlib2") SEQ_++ (sym.Set UNAPPLY (ID(m2)))) ::
         methodsAll: _*
     )
   }

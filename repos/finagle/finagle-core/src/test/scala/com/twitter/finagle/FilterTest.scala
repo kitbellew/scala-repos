@@ -137,7 +137,8 @@ class FilterTest extends FunSuite {
     assert(distributed == composed)
   }
 
-  test("Filter.TypeAgnostic.Identity is a left and right identity for andThen") {
+  test(
+    "Filter.TypeAgnostic.Identity is a left and right identity for andThen") {
     // The property that we want is that it is a left and right identity
     // *for the filter that is produced by toFilter*. We don't care
     // whether it is an identity at the TypeAgnostic level, because

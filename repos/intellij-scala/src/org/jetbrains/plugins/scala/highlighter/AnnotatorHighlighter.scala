@@ -133,7 +133,8 @@ object AnnotatorHighlighter {
       val text = resolvedType.canonicalText
       if (text == null) return
 
-      if (text.startsWith(SCALA_COLLECTION_IMMUTABLE_BASE) || SCALA_PREDEF_IMMUTABLE_BASES
+      if (text.startsWith(
+            SCALA_COLLECTION_IMMUTABLE_BASE) || SCALA_PREDEF_IMMUTABLE_BASES
             .contains(text)) {
         simpleAnnotate(
           ScalaBundle.message("scala.immutable.collection"),
@@ -193,7 +194,9 @@ object AnnotatorHighlighter {
 
     val resolvedElement = refElement.resolve()
     if (PsiTreeUtil
-          .getParentOfType(refElement, classOf[ScImportExpr]) == null && resolvedElement
+          .getParentOfType(
+            refElement,
+            classOf[ScImportExpr]) == null && resolvedElement
           .isInstanceOf[PsiClass]) {
       annotateCollection(resolvedElement.asInstanceOf[PsiClass])
     }

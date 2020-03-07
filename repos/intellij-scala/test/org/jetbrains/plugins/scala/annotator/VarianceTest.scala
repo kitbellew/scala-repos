@@ -60,7 +60,8 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testFunctionInsideFunction() {
-    assertMatches(messages("trait H[+S] { def outer = {def inner(s: S) = s }}")) {
+    assertMatches(
+      messages("trait H[+S] { def outer = {def inner(s: S) = s }}")) {
       case Nil =>
     }
   }

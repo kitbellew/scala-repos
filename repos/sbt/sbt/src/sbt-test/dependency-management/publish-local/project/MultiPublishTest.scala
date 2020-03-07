@@ -15,7 +15,10 @@ object MultiPublishTest extends Build {
   )
 
   lazy val root =
-    Project("root", file(".")) dependsOn (sub) aggregate (sub) settings (mavenStyle, interProject, name := "Publish Test")
+    Project(
+      "root",
+      file(
+        ".")) dependsOn (sub) aggregate (sub) settings (mavenStyle, interProject, name := "Publish Test")
 
   lazy val sub =
     Project("sub", file("sub")) settings (mavenStyle, name := "Sub Project")

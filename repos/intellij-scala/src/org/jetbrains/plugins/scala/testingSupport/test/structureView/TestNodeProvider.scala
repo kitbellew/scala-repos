@@ -353,17 +353,20 @@ object TestNodeProvider {
         }
       case _ => None
     }).exists(refExpr =>
-      checkRefExpr(refExpr, "pendingUntilFixed", List("java.lang.String")) || checkRefExpr(
+      checkRefExpr(
         refExpr,
-        "pendingUntilFixed"))
+        "pendingUntilFixed",
+        List("java.lang.String")) || checkRefExpr(refExpr, "pendingUntilFixed"))
   }
 
   private def extractScalaTestScInfixExpr(
       expr: ScInfixExpr,
       entry: ExtractEntry,
       project: Project): Option[TestStructureViewElement] = {
-    if (entry.canIgnore && (checkScInfixExpr(expr, "ignore", List("void")) || checkIgnoreExpr(
-          expr))) {
+    if (entry.canIgnore && (checkScInfixExpr(
+          expr,
+          "ignore",
+          List("void")) || checkIgnoreExpr(expr))) {
       Some(
         ignoredScalaTestElement(
           expr,
@@ -522,7 +525,10 @@ object TestNodeProvider {
           expr,
           getMethodCallTestName(expr),
           entry.children(())))
-    } else if (checkScMethodCall(expr, entry.funName, entry.args: _*) || checkScMethodCallApply(
+    } else if (checkScMethodCall(
+                 expr,
+                 entry.funName,
+                 entry.args: _*) || checkScMethodCallApply(
                  expr,
                  entry.funName,
                  scMethodCallDefaultArg: _*)) {

@@ -134,12 +134,14 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     def nonpat =
       New(
         _scala_xml_Elem,
-        List(List(
-          pre,
-          label,
-          attrs,
-          scope,
-          if (empty) Literal(Constant(true)) else Literal(Constant(false))) ::: starArgs))
+        List(
+          List(
+            pre,
+            label,
+            attrs,
+            scope,
+            if (empty) Literal(Constant(true))
+            else Literal(Constant(false))) ::: starArgs))
 
     atPos(pos) { if (isPattern) pat else nonpat }
   }

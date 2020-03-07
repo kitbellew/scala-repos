@@ -18,20 +18,23 @@ private[parser] trait LinkHeader {
   }
 
   def `link-value` = rule {
-    ws('<') ~ UriReference('>') ~ ws('>') ~ oneOrMore(ws(';') ~ `link-param`) ~> (sanitize(
-      _)) ~> (LinkValue(_, _: _*))
+    ws('<') ~ UriReference('>') ~ ws('>') ~ oneOrMore(
+      ws(';') ~ `link-param`) ~> (sanitize(_)) ~> (LinkValue(_, _: _*))
   }
 
   def `link-param` =
     rule(
       ws("rel") ~ ws('=') ~ `relation-types` ~> LinkParams.rel
-        | ws("anchor") ~ ws('=') ~ ws('"') ~ UriReference('"') ~ ws('"') ~> LinkParams.anchor
+        | ws("anchor") ~ ws('=') ~ ws('"') ~ UriReference('"') ~ ws(
+          '"') ~> LinkParams.anchor
         | ws("rev") ~ ws('=') ~ `relation-types` ~> LinkParams.rev
         | ws("hreflang") ~ ws('=') ~ language ~> LinkParams.hreflang
         | ws("media") ~ ws('=') ~ word ~> LinkParams.media
         | ws("title") ~ ws('=') ~ word ~> LinkParams.title
-        | ws("title*") ~ ws('=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
-        | ws("type") ~ ws('=') ~ (ws('"') ~ `link-media-type` ~ ws('"') | `link-media-type`) ~> LinkParams.`type`)
+        | ws("title*") ~ ws(
+          '=') ~ word ~> LinkParams.`title*` // support full `ext-value` notation from http://tools.ietf.org/html/rfc5987#section-3.2.1
+        | ws("type") ~ ws('=') ~ (ws('"') ~ `link-media-type` ~ ws(
+          '"') | `link-media-type`) ~> LinkParams.`type`)
   // TODO: support `link-extension`
 
   def `relation-types` =

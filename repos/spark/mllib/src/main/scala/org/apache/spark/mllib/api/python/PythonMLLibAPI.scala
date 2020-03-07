@@ -1137,7 +1137,9 @@ private[python] class PythonMLLibAPI extends Serializable {
       clusterCenters.asScala.toArray,
       clusterWeights.asScala.toArray)
       .update(data, decayFactor, timeUnit)
-    List[AnyRef](model.clusterCenters, Vectors.dense(model.clusterWeights)).asJava
+    List[AnyRef](
+      model.clusterCenters,
+      Vectors.dense(model.clusterWeights)).asJava
   }
 
   /**

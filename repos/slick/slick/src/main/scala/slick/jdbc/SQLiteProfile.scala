@@ -224,8 +224,10 @@ trait SQLiteProfile extends JdbcProfile {
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {
-    override protected val foreignKeys = Nil // handled directly in addTableOptions
-    override protected val primaryKeys = Nil // handled directly in addTableOptions
+    override protected val foreignKeys =
+      Nil // handled directly in addTableOptions
+    override protected val primaryKeys =
+      Nil // handled directly in addTableOptions
 
     override protected def addTableOptions(b: StringBuilder) {
       for (pk <- table.primaryKeys) {

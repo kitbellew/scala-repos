@@ -124,9 +124,10 @@ final class KeyClientServerIntegrationSuite
     ClientServerTest,
     RedisTest) {
     withRedisClient { client =>
-      assert(Await
-        .result(client(ExpireAt(boo, Time.now + 3600.seconds))) == IntegerReply(
-        0))
+      assert(
+        Await
+          .result(
+            client(ExpireAt(boo, Time.now + 3600.seconds))) == IntegerReply(0))
     }
   }
 
@@ -136,9 +137,10 @@ final class KeyClientServerIntegrationSuite
     RedisTest) {
     withRedisClient { client =>
       assert(Await.result(client(Set(foo, bar))) == OKStatusReply)
-      assert(Await
-        .result(client(ExpireAt(foo, Time.now + 3600.seconds))) == IntegerReply(
-        1))
+      assert(
+        Await
+          .result(
+            client(ExpireAt(foo, Time.now + 3600.seconds))) == IntegerReply(1))
     }
   }
 
@@ -209,8 +211,8 @@ final class KeyClientServerIntegrationSuite
       assert(Await.result(client(Select(fromDb))) == OKStatusReply)
       assert(Await.result(client(Set(baz, bar))) == OKStatusReply)
       assert(
-        Await.result(client(Move(baz, string2ChanBuf(toDb.toString)))) == IntegerReply(
-          1))
+        Await.result(
+          client(Move(baz, string2ChanBuf(toDb.toString)))) == IntegerReply(1))
     }
   }
 
@@ -359,7 +361,10 @@ final class KeyClientServerIntegrationSuite
     }
   }
 
-  test("RANDOMKEY should return an EmptyBulkReply", ClientServerTest, RedisTest) {
+  test(
+    "RANDOMKEY should return an EmptyBulkReply",
+    ClientServerTest,
+    RedisTest) {
     withRedisClient { client =>
       assert(Await.result(client(Randomkey())).isInstanceOf[EmptyBulkReply])
     }

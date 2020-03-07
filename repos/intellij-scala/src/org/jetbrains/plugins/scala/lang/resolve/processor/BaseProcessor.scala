@@ -347,7 +347,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case proj @ ScProjectionType(des, elem, _) =>
         val s: ScSubstitutor =
           if (updateWithProjectionSubst)
-            new ScSubstitutor(Map.empty, Map.empty, Some(proj)) followed proj.actualSubst
+            new ScSubstitutor(
+              Map.empty,
+              Map.empty,
+              Some(proj)) followed proj.actualSubst
           else proj.actualSubst
         processElement(
           proj.actualElement,
@@ -422,7 +425,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       visitedAliases: HashSet[ScTypeAlias],
       visitedTypeParameter: HashSet[ScTypeParameterType]): Boolean = {
     val subst = state.get(ScSubstitutor.key)
-    val compound = state.get(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY) //todo: looks like ugly workaround
+    val compound =
+      state.get(
+        BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
+      ) //todo: looks like ugly workaround
     val newSubst =
       compound match {
         case Some(_) => subst

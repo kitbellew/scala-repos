@@ -60,13 +60,15 @@ private[akka] trait LoadMetrics { self: Executor ⇒
   * INTERNAL API
   */
 private[akka] object MessageDispatcher {
-  val UNSCHEDULED = 0 //WARNING DO NOT CHANGE THE VALUE OF THIS: It relies on the faster init of 0 in AbstractMessageDispatcher
+  val UNSCHEDULED =
+    0 //WARNING DO NOT CHANGE THE VALUE OF THIS: It relies on the faster init of 0 in AbstractMessageDispatcher
   val SCHEDULED = 1
   val RESCHEDULED = 2
 
   // dispatcher debugging helper using println (see below)
   // since this is a compile-time constant, scalac will elide code behind if (MessageDispatcher.debug) (RK checked with 2.9.1)
-  final val debug = false // Deliberately without type ascription to make it a compile-time constant
+  final val debug =
+    false // Deliberately without type ascription to make it a compile-time constant
   lazy val actors = new Index[MessageDispatcher, ActorRef](16, _ compareTo _)
   def printActors(): Unit =
     if (debug) {
@@ -104,10 +106,10 @@ abstract class MessageDispatcher(
   val mailboxes = prerequisites.mailboxes
   val eventStream = prerequisites.eventStream
 
-  @volatile private[this] var _inhabitantsDoNotCallMeDirectly
-      : Long = _ // DO NOT TOUCH!
-  @volatile private[this] var _shutdownScheduleDoNotCallMeDirectly
-      : Int = _ // DO NOT TOUCH!
+  @volatile private[this] var _inhabitantsDoNotCallMeDirectly: Long =
+    _ // DO NOT TOUCH!
+  @volatile private[this] var _shutdownScheduleDoNotCallMeDirectly: Int =
+    _ // DO NOT TOUCH!
 
   private final def addInhabitants(add: Long): Long = {
     val old = Unsafe.instance.getAndAddLong(this, inhabitantsOffset, add)

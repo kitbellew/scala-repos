@@ -455,8 +455,8 @@ abstract class TailCalls extends Transform {
   class TailPosLabelsTraverser extends Traverser {
     val tailLabels = new scala.collection.mutable.HashSet[Symbol]()
 
-    private var maybeTail
-        : Boolean = true // since we start in the rhs of a DefDef
+    private var maybeTail: Boolean =
+      true // since we start in the rhs of a DefDef
 
     def traverse(tree: Tree, maybeTailNew: Boolean): Unit = {
       val saved = maybeTail

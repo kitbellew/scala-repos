@@ -66,8 +66,8 @@ trait Tuples { this: Types =>
       : JSON[(A, B, C, D, E)] = new JSON[(A, B, C, D, E)] {
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: e :: _) =>
-        (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](d) |@| fromJSON[
-          E](e)) { (a, b, c, d, e) => (a, b, c, d, e) }
+        (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](
+          d) |@| fromJSON[E](e)) { (a, b, c, d, e) => (a, b, c, d, e) }
       case x => failure(UnexpectedJSONError(x, classOf[JArray])).toValidationNel
     }
 
@@ -81,8 +81,10 @@ trait Tuples { this: Types =>
       : JSON[(A, B, C, D, E, F)] = new JSON[(A, B, C, D, E, F)] {
     def read(json: JValue) = json match {
       case JArray(a :: b :: c :: d :: e :: f :: _) =>
-        (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](d) |@| fromJSON[
-          E](e) |@| fromJSON[F](f)) { (a, b, c, d, e, f) => (a, b, c, d, e, f) }
+        (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c) |@| fromJSON[D](
+          d) |@| fromJSON[E](e) |@| fromJSON[F](f)) { (a, b, c, d, e, f) =>
+          (a, b, c, d, e, f)
+        }
       case x => failure(UnexpectedJSONError(x, classOf[JArray])).toValidationNel
     }
 

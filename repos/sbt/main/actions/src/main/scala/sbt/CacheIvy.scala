@@ -446,10 +446,12 @@ object CacheIvy {
         exists(p.baseDirectory) :+: p.ivyHome.map(exists.apply) :+: HNil
     implicit def ivyScalaHL =
       (i: IvyScala) =>
-        i.scalaFullVersion :+: i.scalaBinaryVersion :+: names(i.configurations) :+: i.checkExplicit :+: i.filterImplicit :+: HNil
+        i.scalaFullVersion :+: i.scalaBinaryVersion :+: names(
+          i.configurations) :+: i.checkExplicit :+: i.filterImplicit :+: HNil
     implicit def configurationToHL =
       (c: Configuration) =>
-        c.name :+: c.description :+: c.isPublic :+: names(c.extendsConfigs) :+: c.transitive :+: HNil
+        c.name :+: c.description :+: c.isPublic :+: names(
+          c.extendsConfigs) :+: c.transitive :+: HNil
 
     implicit def passwordToHL =
       (s: PasswordAuthentication) =>

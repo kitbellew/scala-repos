@@ -396,7 +396,9 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
           "testlink3" :: Nil
     }
 
-    "rewrite a hrefs everywhere" in new WithLiftContext(testRules, testSession) {
+    "rewrite a hrefs everywhere" in new WithLiftContext(
+      testRules,
+      testSession) {
       val result =
         URLRewriter.doWith((_: String) => "rewritten") {
           testSession.merge(

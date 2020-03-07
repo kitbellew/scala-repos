@@ -109,7 +109,9 @@ class CachedMacros(override val c: whitebox.Context)
           // Trying to derive them in a standalone way raised
           // https://github.com/fommil/spray-json-shapeless/issues/14.
           val tree = mkImpl[T](
-            (tree, actualType) => q"_root_.shapeless.Cached[$actualType]($tree)",
+            (
+                tree,
+                actualType) => q"_root_.shapeless.Cached[$actualType]($tree)",
             q"null.asInstanceOf[_root_.shapeless.Cached[_root_.scala.Nothing]]"
           )
 

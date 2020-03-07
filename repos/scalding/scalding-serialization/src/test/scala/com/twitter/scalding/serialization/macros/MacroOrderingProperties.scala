@@ -632,7 +632,8 @@ class MacroOrderingProperties
     checkAreSame(a, b)
   }
 
-  test("Test out comparing Set(\"asdf\", \"jkl\") and  Set(\"jkl\", \"asdf\")") {
+  test(
+    "Test out comparing Set(\"asdf\", \"jkl\") and  Set(\"jkl\", \"asdf\")") {
     val a = Set("asdf", "jkl")
     val b = Set("jkl", "asdf")
     checkWithInputs(a, b)

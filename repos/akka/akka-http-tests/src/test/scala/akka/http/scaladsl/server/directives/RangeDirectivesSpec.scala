@@ -38,7 +38,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     }
 
     "return a Content-Range header for a ranged request with a single range" in {
-      Get() ~> addHeader(Range(ByteRange(0, 1))) ~> completeWithRangedBytes(10) ~> check {
+      Get() ~> addHeader(Range(ByteRange(0, 1))) ~> completeWithRangedBytes(
+        10) ~> check {
         headers should contain(`Content-Range`(ContentRange(0, 1, 10)))
         status shouldEqual PartialContent
         responseAs[Array[Byte]] shouldEqual bytes(2)
@@ -46,7 +47,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     }
 
     "return a partial response for a ranged request with a single range with undefined lastBytePosition" in {
-      Get() ~> addHeader(Range(ByteRange.fromOffset(5))) ~> completeWithRangedBytes(
+      Get() ~> addHeader(
+        Range(ByteRange.fromOffset(5))) ~> completeWithRangedBytes(
         10) ~> check {
         responseAs[Array[Byte]] shouldEqual Array[Byte](5, 6, 7, 8, 9)
       }
@@ -60,14 +62,15 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     }
 
     "return a partial response for a ranged request with a overlapping suffix range" in {
-      Get() ~> addHeader(Range(ByteRange.suffix(100))) ~> completeWithRangedBytes(
-        10) ~> check {
+      Get() ~> addHeader(
+        Range(ByteRange.suffix(100))) ~> completeWithRangedBytes(10) ~> check {
         responseAs[Array[Byte]] shouldEqual bytes(10)
       }
     }
 
     "be transparent to non-GET requests" in {
-      Post() ~> addHeader(Range(ByteRange(1, 2))) ~> completeWithRangedBytes(5) ~> check {
+      Post() ~> addHeader(Range(ByteRange(1, 2))) ~> completeWithRangedBytes(
+        5) ~> check {
         responseAs[Array[Byte]] shouldEqual bytes(5)
       }
     }
@@ -101,7 +104,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     }
 
     "return a mediaType of 'multipart/byteranges' for a ranged request with multiple ranges" in {
-      Get() ~> addHeader(Range(ByteRange(0, 10), ByteRange(0, 10))) ~> completeWithRangedBytes(
+      Get() ~> addHeader(
+        Range(ByteRange(0, 10), ByteRange(0, 10))) ~> completeWithRangedBytes(
         10) ~> check {
         mediaType
           .withParams(Map.empty) shouldEqual MediaTypes.`multipart/byteranges`
@@ -129,7 +133,9 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
           case Multipart.ByteRanges.BodyPart(range, entity, unit, headers) ⇒
             range shouldEqual ContentRange.Default(5, 10, Some(39))
             unit shouldEqual RangeUnits.Bytes
-            Await.result(entity.dataBytes.utf8String, 100.millis) shouldEqual "random"
+            Await.result(
+              entity.dataBytes.utf8String,
+              100.millis) shouldEqual "random"
         }
       }
     }
@@ -159,7 +165,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
 
     "reject a request with too many requested ranges" in {
       val ranges = (1 to 20).map(a ⇒ ByteRange.fromOffset(a))
-      Get() ~> addHeader(Range(ranges)) ~> completeWithRangedBytes(100) ~> check {
+      Get() ~> addHeader(Range(ranges)) ~> completeWithRangedBytes(
+        100) ~> check {
         rejection shouldEqual TooManyRangesRejection(10)
       }
     }

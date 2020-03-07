@@ -32,7 +32,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
   )(Car, unlift(Car.unapply))
 
   import java.text.SimpleDateFormat
-  val dateFormat = "yyyy-MM-dd'T'HH:mm:ssX" // Iso8601 format (forgot timezone stuff)
+  val dateFormat =
+    "yyyy-MM-dd'T'HH:mm:ssX" // Iso8601 format (forgot timezone stuff)
   val dateParser = new SimpleDateFormat(dateFormat)
 
   case class Post(body: String, created_at: Option[Date])
@@ -285,8 +286,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
     "Serialize and deserialize BigDecimals" in {
       val n = BigDecimal("12345678901234567890.42")
       val json = toJson(n)
-      json must equalTo(JsNumber(n)) and (fromJson[BigDecimal](json) must equalTo(
-        JsSuccess(n)))
+      json must equalTo(JsNumber(n)) and (fromJson[BigDecimal](
+        json) must equalTo(JsSuccess(n)))
     }
 
     "Not lose precision when parsing BigDecimals" in {

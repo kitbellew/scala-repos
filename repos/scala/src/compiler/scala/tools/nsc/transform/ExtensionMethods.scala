@@ -53,7 +53,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         val index = alts indexOf imeth
         assert(index >= 0, alts + " does not contain " + imeth)
         def altName(index: Int) = newTermName(imeth.name + "$extension" + index)
-        altName(index) #:: ((0 until alts.length).toStream filter (index != _) map altName)
+        altName(
+          index) #:: ((0 until alts.length).toStream filter (index != _) map altName)
       case tpe =>
         assert(
           tpe != NoType,
@@ -231,7 +232,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           val origThis = currentOwner
           val origTpeParams =
             tparams
-              .map(_.symbol) ::: origThis.typeParams // method type params ++ class type params
+              .map(
+                _.symbol) ::: origThis.typeParams // method type params ++ class type params
           val origParams = vparamss.flatten map (_.symbol)
           val companion = origThis.companionModule
 

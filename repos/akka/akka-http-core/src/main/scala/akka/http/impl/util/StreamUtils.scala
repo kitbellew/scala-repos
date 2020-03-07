@@ -356,7 +356,10 @@ private[http] object StreamUtils {
   object OneTimeValve {
     def apply(): OneTimeValve = new OneTimeValve {
       val promise = Promise[Unit]()
-      val _source = Source.fromFuture(promise.future).drop(1) // we are only interested in the completion event
+      val _source =
+        Source
+          .fromFuture(promise.future)
+          .drop(1) // we are only interested in the completion event
 
       def source[T]: Source[T, NotUsed] =
         _source.asInstanceOf[

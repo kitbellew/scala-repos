@@ -276,8 +276,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   }
 
   def isNonNullMethodInvocation(mi: MethodInsnNode): Boolean = {
-    isJavaBox(mi) || isScalaBox(mi) || isPredefAutoBox(mi) || isRefCreate(mi) || isRefZero(
-      mi)
+    isJavaBox(mi) || isScalaBox(mi) || isPredefAutoBox(mi) || isRefCreate(
+      mi) || isRefZero(mi)
   }
 
   def isModuleLoad(insn: AbstractInsnNode, moduleName: InternalName): Boolean =
@@ -412,7 +412,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     }
 
     visitInternalName(classNode.name)
-    innerClasses ++= classBTypeFromParsedClassfile(classNode.name).info.get.nestedClasses
+    innerClasses ++= classBTypeFromParsedClassfile(
+      classNode.name).info.get.nestedClasses
 
     visitInternalName(classNode.superName)
     classNode.interfaces.asScala foreach visitInternalName
@@ -550,7 +551,11 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
           insn match {
             case v: VarInsnNode =>
               val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
-              maxLocals = math.max(maxLocals, v.`var` + longSize + 1) // + 1 because local numbers are 0-based
+              maxLocals =
+                math.max(
+                  maxLocals,
+                  v.`var` + longSize + 1
+                ) // + 1 because local numbers are 0-based
 
             case i: IincInsnNode =>
               maxLocals = math.max(maxLocals, i.`var` + 1)

@@ -139,7 +139,8 @@ trait SQLServerProfile extends JdbcProfile {
       tmd: JdbcType[_],
       sym: Option[FieldSymbol]): String = tmd.sqlType match {
     case java.sql.Types.VARCHAR =>
-      sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+      sym.flatMap(
+        _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
         case Some(l) =>
           if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
         case None =>
@@ -192,7 +193,8 @@ trait SQLServerProfile extends JdbcProfile {
     override def expr(n: Node, skipParens: Boolean = false): Unit = n match {
       // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
       case c @ LiteralNode(v)
-          if c.volatileHint && jdbcTypeFor(c.nodeType) == columnTypes.timeJdbcType =>
+          if c.volatileHint && jdbcTypeFor(
+            c.nodeType) == columnTypes.timeJdbcType =>
         b"cast("
         super.expr(n, skipParens)
         b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"
@@ -225,7 +227,8 @@ trait SQLServerProfile extends JdbcProfile {
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {
       val updateAction = fk.onUpdate.action
       val deleteAction = fk.onDelete.action
-      sb append "constraint " append quoteIdentifier(fk.name) append " foreign key("
+      sb append "constraint " append quoteIdentifier(
+        fk.name) append " foreign key("
       addForeignKeyColumnList(
         fk.linearizedSourceColumns,
         sb,

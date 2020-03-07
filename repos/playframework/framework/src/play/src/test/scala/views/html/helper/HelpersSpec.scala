@@ -31,7 +31,8 @@ object HelpersSpec extends Specification {
       body must contain(idAttr)
 
       // Make sure it doesn't have it twice, issue #478
-      body.substring(body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
+      body.substring(
+        body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
     }
 
     "default to a type of text" in {
@@ -50,7 +51,8 @@ object HelpersSpec extends Specification {
 
       // Make sure it doesn't contain it twice
       body
-        .substring(body.indexOf(typeAttr) + typeAttr.length) must not contain (typeAttr)
+        .substring(
+          body.indexOf(typeAttr) + typeAttr.length) must not contain (typeAttr)
     }
   }
 
@@ -87,7 +89,8 @@ object HelpersSpec extends Specification {
       body must contain(idAttr)
 
       // Make sure it doesn't have it twice, issue #478
-      body.substring(body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
+      body.substring(
+        body.indexOf(idAttr) + idAttr.length) must not contain (idAttr)
     }
 
     "allow setting custom data attributes" in {
@@ -105,7 +108,9 @@ object HelpersSpec extends Specification {
 
       // Make sure it doesn't have it twice, issue #478
       body
-        .substring(body.indexOf(dataTestAttr) + dataTestAttr.length) must not contain (dataTestAttr)
+        .substring(
+          body.indexOf(
+            dataTestAttr) + dataTestAttr.length) must not contain (dataTestAttr)
     }
 
     "Work as a simple select" in {
@@ -204,7 +209,9 @@ object HelpersSpec extends Specification {
     }
 
     "fill the fields out if less than the min but the maximum is high" in {
-      renderFoo(form.bind(Map("foo[0]" -> "a", "foo[123]" -> "b")), 4) must exactly(
+      renderFoo(
+        form.bind(Map("foo[0]" -> "a", "foo[123]" -> "b")),
+        4) must exactly(
         "foo[0]:a",
         "foo[123]:b",
         "foo[124]:",

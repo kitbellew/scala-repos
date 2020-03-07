@@ -227,7 +227,8 @@ object StandardTestDBs {
             .as[(String, String)]
           constraintStatements = constraints.collect {
             case (c, t) if !c.startsWith("SQL") =>
-              sqlu"alter table #${profile.quoteIdentifier(t)} drop constraint #${profile.quoteIdentifier(c)}"
+              sqlu"alter table #${profile.quoteIdentifier(
+                t)} drop constraint #${profile.quoteIdentifier(c)}"
           }
           _ <- DBIO.sequence(constraintStatements)
           tables <- localTables

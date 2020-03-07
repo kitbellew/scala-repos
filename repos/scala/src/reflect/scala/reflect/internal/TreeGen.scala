@@ -243,7 +243,9 @@ abstract class TreeGen {
       val pkgQualifier =
         if (needsPackageQualifier) {
           val packageObject = qualsym.packageObject
-          Select(qual, nme.PACKAGE) setSymbol packageObject setType packageObject.typeOfThis
+          Select(
+            qual,
+            nme.PACKAGE) setSymbol packageObject setType packageObject.typeOfThis
         } else qual
 
       val tree = Select(pkgQualifier, sym)
@@ -466,21 +468,25 @@ abstract class TreeGen {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
         if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
           vparamss1 = List() :: vparamss1
-        val superCall = pendingSuperCall // we can't know in advance which of the parents will end up as a superclass
+        val superCall =
+          pendingSuperCall // we can't know in advance which of the parents will end up as a superclass
         // this requires knowing which of the parents is a type macro and which is not
         // and that's something that cannot be found out before typer
         // (the type macros aren't in the trunk yet, but there is a plan for them to land there soon)
         // this means that we don't know what will be the arguments of the super call
         // therefore here we emit a dummy which gets populated when the template is named and typechecked
-        Some(atPos(
-          wrappingPos(superPos, lvdefs ::: vparamss1.flatten).makeTransparent)(
-          DefDef(
-            constrMods,
-            nme.CONSTRUCTOR,
-            List(),
-            vparamss1,
-            TypeTree(),
-            Block(lvdefs ::: List(superCall), Literal(Constant(()))))))
+        Some(
+          atPos(
+            wrappingPos(
+              superPos,
+              lvdefs ::: vparamss1.flatten).makeTransparent)(
+            DefDef(
+              constrMods,
+              nme.CONSTRUCTOR,
+              List(),
+              vparamss1,
+              TypeTree(),
+              Block(lvdefs ::: List(superCall), Literal(Constant(()))))))
       }
     }
     constr foreach (ensureNonOverlapping(_, parents ::: gvdefs, focus = false))
@@ -741,7 +747,8 @@ abstract class TreeGen {
     def makeClosure(pos: Position, pat: Tree, body: Tree): Tree = {
       def wrapped = wrappingPos(List(pat, body))
       def splitpos =
-        (if (pos != NoPosition) wrapped.withPoint(pos.point) else pos).makeTransparent
+        (if (pos != NoPosition) wrapped.withPoint(pos.point)
+         else pos).makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
           Function(
@@ -830,7 +837,9 @@ abstract class TreeGen {
         val rhs1 = mkFor(
           List(ValFrom(defpat1, rhs).setPos(t.pos)),
           Yield(
-            Block(pdefs, atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(
+            Block(
+              pdefs,
+              atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(
               pdefs)))
         val allpats = (pat :: pats) map (_.duplicate)
         val pos1 =

@@ -232,7 +232,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/abcdef?ghi=12") ~> route ~> check {
-      responseAs[String] shouldEqual "The path is /abcdef and the query is ghi=12"
+      responseAs[
+        String] shouldEqual "The path is /abcdef and the query is ghi=12"
     }
     //#
   }
@@ -391,7 +392,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    Get("/") ~> RawHeader("id", "12345") ~> RawHeader("id2", "67890") ~> route ~> check {
+    Get("/") ~> RawHeader("id", "12345") ~> RawHeader(
+      "id2",
+      "67890") ~> route ~> check {
       header("id") shouldEqual None
       header("id2").get.value shouldEqual "67890"
     }
@@ -713,7 +716,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual s"RoutingSettings.renderVanityFooter = true"
+      responseAs[
+        String] shouldEqual s"RoutingSettings.renderVanityFooter = true"
     }
     //#
   }
@@ -733,7 +737,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     Get("/") ~> route ~> check {
-      responseAs[String] shouldEqual s"RoutingSettings.fileGetConditional = false"
+      responseAs[
+        String] shouldEqual s"RoutingSettings.fileGetConditional = false"
     }
     //#
   }

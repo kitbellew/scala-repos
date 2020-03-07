@@ -22,13 +22,15 @@ import org.apache.spark.streaming.Time
 private[streaming] trait PythonStreamingListener {
 
   /** Called when a receiver has been started */
-  def onReceiverStarted(receiverStarted: JavaStreamingListenerReceiverStarted) {}
+  def onReceiverStarted(
+      receiverStarted: JavaStreamingListenerReceiverStarted) {}
 
   /** Called when a receiver has reported an error */
   def onReceiverError(receiverError: JavaStreamingListenerReceiverError) {}
 
   /** Called when a receiver has been stopped */
-  def onReceiverStopped(receiverStopped: JavaStreamingListenerReceiverStopped) {}
+  def onReceiverStopped(
+      receiverStopped: JavaStreamingListenerReceiverStopped) {}
 
   /** Called when a batch of jobs has been submitted for processing. */
   def onBatchSubmitted(batchSubmitted: JavaStreamingListenerBatchSubmitted) {}

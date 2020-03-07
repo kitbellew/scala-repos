@@ -25,7 +25,8 @@ class HttpConfigurationSpec extends AkkaSpec {
     }
     "have default client and pool `parsing` settings" in {
       ServerSettings(system).parserSettings.toString should ===(
-        ConnectionPoolSettings(system).connectionSettings.parserSettings.toString)
+        ConnectionPoolSettings(
+          system).connectionSettings.parserSettings.toString)
     }
     "have default client and pool `client` settings" in {
       ClientConnectionSettings(system).toString should ===(

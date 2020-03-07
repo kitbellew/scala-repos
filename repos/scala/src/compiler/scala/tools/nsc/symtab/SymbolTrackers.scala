@@ -148,7 +148,8 @@ trait SymbolTrackers {
           indicatorString + indent + symString(root) + (
             if (children.isEmpty) ""
             else
-              children map (c => c.indentString(indent + "    ")) mkString ("\n", "\n", "")
+              children map (c =>
+                c.indentString(indent + "    ")) mkString ("\n", "\n", "")
           )
         }
       }

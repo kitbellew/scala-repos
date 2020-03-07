@@ -286,7 +286,8 @@ private[akka] final case class Unwatch(watchee: ActorRef, watcher: ActorRef)
   * INTERNAL API
   */
 @SerialVersionUID(1L)
-private[akka] case object NoMessage extends SystemMessage // switched into the mailbox to signal termination
+private[akka] case object NoMessage
+    extends SystemMessage // switched into the mailbox to signal termination
 
 /**
   * INTERNAL API

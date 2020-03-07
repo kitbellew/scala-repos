@@ -76,7 +76,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           `UTF-16` withQValue 0,
           HttpCharsetRange.`*` withQValue 0.8)
           .renderedTo("ISO-8859-1, UTF-16;q=0.0, *;q=0.8")
-      `Accept-Charset`(`UTF-16` withQValue 0.234567).toString shouldEqual "Accept-Charset: UTF-16;q=0.235"
+      `Accept-Charset`(
+        `UTF-16` withQValue 0.234567).toString shouldEqual "Accept-Charset: UTF-16;q=0.235"
       "Accept-Charset: UTF-16, unsupported42" =!= `Accept-Charset`(
         `UTF-16`,
         HttpCharset.custom("unsupported42"))
@@ -182,7 +183,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "Authorization" in {
-      BasicHttpCredentials("Aladdin", "open sesame").token shouldEqual "QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+      BasicHttpCredentials(
+        "Aladdin",
+        "open sesame").token shouldEqual "QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
       "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=
         Authorization(BasicHttpCredentials("Aladdin", "open sesame"))
       "Authorization: bAsIc QWxhZGRpbjpvcGVuIHNlc2FtZQ==" =!=

@@ -18,7 +18,11 @@ package object openid {
 
   implicit def urlToRichUrl(url: URL) = new RichUrl[URL] {
     def hostAndPath =
-      new URL(url.getProtocol, url.getHost, url.getPort, url.getPath).toExternalForm
+      new URL(
+        url.getProtocol,
+        url.getHost,
+        url.getPort,
+        url.getPath).toExternalForm
   }
 
   def readFixture(filePath: String): String = this.synchronized {

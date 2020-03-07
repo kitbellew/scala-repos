@@ -96,7 +96,8 @@ class PartitioningSuite
     }
   }
 
-  test("RangePartitioner for keys that are not Comparable (but with Ordering)") {
+  test(
+    "RangePartitioner for keys that are not Comparable (but with Ordering)") {
     // Row does not extend Comparable, but has an implicit Ordering defined.
     implicit object RowOrdering extends Ordering[Item] {
       override def compare(x: Item, y: Item): Int = x.value - y.value

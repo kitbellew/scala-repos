@@ -92,9 +92,9 @@ private[reconcile] class OfferMatcherReconciler(
       val tasksByAppFuture = taskTracker.tasksByApp()
       val rootGroupFuture = groupRepository.rootGroupOrEmpty()
 
-      for { tasksByApp <- tasksByAppFuture; rootGroup <- rootGroupFuture } yield createTaskOps(
-        tasksByApp,
-        rootGroup)
+      for {
+        tasksByApp <- tasksByAppFuture; rootGroup <- rootGroupFuture
+      } yield createTaskOps(tasksByApp, rootGroup)
     }
   }
 

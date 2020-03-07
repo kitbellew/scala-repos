@@ -80,7 +80,8 @@ class IsrExpirationTest {
    */
   @Test
   def testIsrExpirationForStuckFollowers() {
-    val log = getLogWithLogEndOffset(15L, 2) // set logEndOffset for leader to 15L
+    val log =
+      getLogWithLogEndOffset(15L, 2) // set logEndOffset for leader to 15L
 
     // create one partition and all replicas
     val partition0 =
@@ -126,7 +127,8 @@ class IsrExpirationTest {
    */
   @Test
   def testIsrExpirationIfNoFetchRequestMade() {
-    val log = getLogWithLogEndOffset(15L, 1) // set logEndOffset for leader to 15L
+    val log =
+      getLogWithLogEndOffset(15L, 1) // set logEndOffset for leader to 15L
 
     // create one partition and all replicas
     val partition0 =

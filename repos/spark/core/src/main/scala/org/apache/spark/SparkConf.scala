@@ -512,7 +512,10 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       if (detected.nonEmpty) {
         logWarning(
           "Detected deprecated memory fraction settings: " +
-            detected.mkString("[", ", ", "]") + ". As of Spark 1.6, execution and storage " +
+            detected.mkString(
+              "[",
+              ", ",
+              "]") + ". As of Spark 1.6, execution and storage " +
             "memory management are unified. All memory fractions used in the old model are " +
             "now deprecated and no longer read. If you wish to use the old memory management, " +
             s"you may explicitly enable `$legacyMemoryManagementKey` (not recommended).")
@@ -738,7 +741,8 @@ private[spark] object SparkConf extends Logging {
     */
   def isExecutorStartupConf(name: String): Boolean = {
     (name
-      .startsWith("spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
+      .startsWith(
+        "spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
     name.startsWith("spark.ssl") ||
     name.startsWith("spark.rpc") ||
     isSparkPortConf(name)

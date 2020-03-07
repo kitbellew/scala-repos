@@ -38,8 +38,9 @@ class ConfigSpec
         settings.SerializeAllMessages should ===(true)
 
         getInt("akka.scheduler.ticks-per-wheel") should ===(512)
-        getDuration("akka.scheduler.tick-duration", TimeUnit.MILLISECONDS) should ===(
-          10)
+        getDuration(
+          "akka.scheduler.tick-duration",
+          TimeUnit.MILLISECONDS) should ===(10)
         getString("akka.scheduler.implementation") should ===(
           "akka.actor.LightArrayRevolverScheduler")
 
@@ -53,8 +54,9 @@ class ConfigSpec
           10)
         settings.DefaultVirtualNodesFactor should ===(10)
 
-        getDuration("akka.actor.unstarted-push-timeout", TimeUnit.MILLISECONDS) should ===(
-          10.seconds.toMillis)
+        getDuration(
+          "akka.actor.unstarted-push-timeout",
+          TimeUnit.MILLISECONDS) should ===(10.seconds.toMillis)
         settings.UnstartedPushTimeout.duration should ===(10.seconds)
 
         settings.Loggers.size should ===(1)
@@ -62,8 +64,9 @@ class ConfigSpec
         getStringList("akka.loggers").get(0) should ===(
           classOf[DefaultLogger].getName)
 
-        getDuration("akka.logger-startup-timeout", TimeUnit.MILLISECONDS) should ===(
-          5.seconds.toMillis)
+        getDuration(
+          "akka.logger-startup-timeout",
+          TimeUnit.MILLISECONDS) should ===(5.seconds.toMillis)
         settings.LoggerStartTimeout.duration should ===(5.seconds)
 
         getString("akka.logging-filter") should ===(
@@ -87,8 +90,9 @@ class ConfigSpec
           c.getDuration("shutdown-timeout", TimeUnit.MILLISECONDS) should ===(
             1 * 1000)
           c.getInt("throughput") should ===(5)
-          c.getDuration("throughput-deadline-time", TimeUnit.MILLISECONDS) should ===(
-            0)
+          c.getDuration(
+            "throughput-deadline-time",
+            TimeUnit.MILLISECONDS) should ===(0)
           c.getBoolean("attempt-teamwork") should ===(true)
         }
 
@@ -158,8 +162,9 @@ class ConfigSpec
 
         {
           c.getInt("mailbox-capacity") should ===(1000)
-          c.getDuration("mailbox-push-timeout-time", TimeUnit.MILLISECONDS) should ===(
-            10 * 1000)
+          c.getDuration(
+            "mailbox-push-timeout-time",
+            TimeUnit.MILLISECONDS) should ===(10 * 1000)
           c.getString("mailbox-type") should ===(
             "akka.dispatch.UnboundedMailbox")
         }

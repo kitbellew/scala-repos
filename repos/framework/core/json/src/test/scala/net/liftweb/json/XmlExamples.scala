@@ -27,14 +27,16 @@ object XmlExamples extends Specification {
 
   "Basic conversion example" in {
     val json = toJson(users1)
-    compactRender(json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":"1","name":"Harry"},{"id":"2","name":"David","nickname":"Dave"}]}}"""
+    compactRender(
+      json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":"1","name":"Harry"},{"id":"2","name":"David","nickname":"Dave"}]}}"""
   }
 
   "Conversion transformation example 1" in {
     val json = toJson(users1).transformField {
       case JField("id", JString(s)) => JField("id", JInt(s.toInt))
     }
-    compactRender(json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":1,"name":"Harry"},{"id":2,"name":"David","nickname":"Dave"}]}}"""
+    compactRender(
+      json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":1,"name":"Harry"},{"id":2,"name":"David","nickname":"Dave"}]}}"""
   }
 
   "Conversion transformation example 2" in {
@@ -42,7 +44,8 @@ object XmlExamples extends Specification {
       case JField("id", JString(s))   => JField("id", JInt(s.toInt))
       case JField("user", x: JObject) => JField("user", JArray(x :: Nil))
     }
-    compactRender(json) mustEqual """{"users":{"user":[{"id":1,"name":"Harry"}]}}"""
+    compactRender(
+      json) mustEqual """{"users":{"user":[{"id":1,"name":"Harry"}]}}"""
   }
 
   "Primitive array example" in {
@@ -116,7 +119,8 @@ object XmlExamples extends Specification {
 
   "Grouped text example" in {
     val json = toJson(groupedText)
-    compactRender(json) mustEqual """{"g":{"group":"foobar","url":"http://example.com/test"}}"""
+    compactRender(
+      json) mustEqual """{"g":{"group":"foobar","url":"http://example.com/test"}}"""
   }
 
   val users1 =

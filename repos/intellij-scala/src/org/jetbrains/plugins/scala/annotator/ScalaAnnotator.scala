@@ -919,7 +919,8 @@ class ScalaAnnotator
       }
     }
 
-    if (isAdvancedHighlightingEnabled(refElement) && resolve.length != 1 && !goodDoc) {
+    if (isAdvancedHighlightingEnabled(
+          refElement) && resolve.length != 1 && !goodDoc) {
       val parent = refElement.getParent
       def addCreateApplyOrUnapplyFix(
           messageKey: String,
@@ -1040,7 +1041,8 @@ class ScalaAnnotator
     }
 
     if (refElement
-          .isInstanceOf[ScDocResolvableCodeReference] && resolve.length > 0 || refElement.isSoft)
+          .isInstanceOf[
+            ScDocResolvableCodeReference] && resolve.length > 0 || refElement.isSoft)
       return
     if (isAdvancedHighlightingEnabled(refElement) && resolve.length != 1) {
       refElement.getParent match {

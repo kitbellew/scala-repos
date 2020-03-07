@@ -186,7 +186,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
 
       node.getPsi match {
         case sc: ScalaPsiElement =>
-          (sc.getPrevSiblingNotWhitespace, sc.getNextSiblingNotWhitespace) match {
+          (
+            sc.getPrevSiblingNotWhitespace,
+            sc.getNextSiblingNotWhitespace) match {
             case (a1: PsiElement, a2: PsiElement)
                 if a1.getNode.getElementType == ScalaTokenTypes.tCOLON && a2.getNode.getElementType == ScalaTokenTypes.tASSIGN =>
               val startElement =
@@ -418,7 +420,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     val children = node.getPsi.asInstanceOf[ScMatchStmt].children
     var index = 0
     for (ch <- children) {
-      if (ch.isInstanceOf[PsiElement] && ch.getNode.getElementType == ScalaTokenTypes.kMATCH) {
+      if (ch.isInstanceOf[
+            PsiElement] && ch.getNode.getElementType == ScalaTokenTypes.kMATCH) {
         val result = node.getText.substring(index + MATCH_KEYWORD.length)
         return result.indexOf("\n") != -1
       } else {
@@ -433,11 +436,13 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     var offset = 0
     var passedMatch = false
     for (ch <- children) {
-      if (ch.isInstanceOf[PsiElement] && ch.getNode.getElementType == ScalaTokenTypes.kMATCH) {
+      if (ch.isInstanceOf[
+            PsiElement] && ch.getNode.getElementType == ScalaTokenTypes.kMATCH) {
         offset += MATCH_KEYWORD.length
         passedMatch = true
       } else if (passedMatch) {
-        if (ch.isInstanceOf[PsiElement] && ch.getNode.getElementType == TokenType.WHITE_SPACE)
+        if (ch.isInstanceOf[
+              PsiElement] && ch.getNode.getElementType == TokenType.WHITE_SPACE)
           offset += ch.getTextLength
         return offset
       } else {
@@ -452,7 +457,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     var next = node.getTreeNext
     var flag = false
     while (next != null && (next.getPsi
-             .isInstanceOf[LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
+             .isInstanceOf[
+               LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
       if (next.getElementType == ScalaElementTypes.IMPORT_STMT) flag = true
       next = next.getTreeNext
     }
@@ -471,7 +477,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       case _ =>
         val isMultilineBody =
           (body.getText
-            .indexOf("\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
+            .indexOf(
+              "\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
         val textRange = if (isMultilineBody) range else null
         return (isMultilineBody, textRange, "...")
     }
@@ -491,7 +498,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     var next = node
     var last = next.getTextRange.getEndOffset
     while (next != null && (next.getPsi
-             .isInstanceOf[LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
+             .isInstanceOf[
+               LeafPsiElement] || next.getElementType == ScalaElementTypes.IMPORT_STMT)) {
       if (next.getElementType == ScalaElementTypes.IMPORT_STMT || next.getElementType == ScalaTokenTypes.tSEMICOLON)
         last = next.getTextRange.getEndOffset
       next = next.getTreeNext
@@ -505,7 +513,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       descriptors: java.util.List[FoldingDescriptor]) {
     import collection.JavaConversions._
     if (processedComments
-          .contains(comment) || comment.getTokenType != ScalaTokenTypes.tLINE_COMMENT) {
+          .contains(
+            comment) || comment.getTokenType != ScalaTokenTypes.tLINE_COMMENT) {
       return
     }
 
@@ -527,8 +536,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         }
       }
       current = current.getNextSibling
-      if (current != null && (isCustomRegionStart(current.getText) || isCustomRegionEnd(
-            current.getText))) {
+      if (current != null && (isCustomRegionStart(
+            current.getText) || isCustomRegionEnd(current.getText))) {
         flag = false
       }
     }
@@ -559,7 +568,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         val elementType: IElementType = node.getElementType
         if (elementType == ScalaTokenTypes.tLINE_COMMENT && isCustomRegionEnd(
               node.getText) && !isWorksheetResults(node)) {
-          if ((isTagRegion && isTagRegionEnd(node.getText)) || (!isTagRegion && isSimpleRegionEnd(
+          if ((isTagRegion && isTagRegionEnd(
+                node.getText)) || (!isTagRegion && isSimpleRegionEnd(
                 node.getText))) {
             if (!processedRegions.contains(current) && stack.isEmpty) {
               end = current

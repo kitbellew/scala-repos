@@ -184,7 +184,8 @@ class BasicRouteSpecs extends RoutingSpec {
           authorize(false) { completeOk }
       } ~> check {
         status shouldEqual StatusCodes.MethodNotAllowed
-        responseAs[String] shouldEqual "HTTP method not allowed, supported methods: POST"
+        responseAs[
+          String] shouldEqual "HTTP method not allowed, supported methods: POST"
       }
 
       Get("/abc") ~> Route.seal {

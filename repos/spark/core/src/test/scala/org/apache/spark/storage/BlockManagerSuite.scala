@@ -183,8 +183,14 @@ class BlockManagerSuite
 
   test("BlockManagerId object caching") {
     val id1 = BlockManagerId("e1", "XXX", 1)
-    val id2 = BlockManagerId("e1", "XXX", 1) // this should return the same object as id1
-    val id3 = BlockManagerId("e1", "XXX", 2) // this should return a different object
+    val id2 =
+      BlockManagerId(
+        "e1",
+        "XXX",
+        1
+      ) // this should return the same object as id1
+    val id3 =
+      BlockManagerId("e1", "XXX", 2) // this should return a different object
     assert(id2 === id1, "id2 is not same as id1")
     assert(id2.eq(id1), "id2 is not the same object as id1")
     assert(id3 != id1, "id3 is same as id1")
@@ -587,7 +593,8 @@ class BlockManagerSuite
     assert(locations.map(_.host) === Seq(localHost, localHost, otherHost))
   }
 
-  test("SPARK-9591: getRemoteBytes from another location when Exception throw") {
+  test(
+    "SPARK-9591: getRemoteBytes from another location when Exception throw") {
     conf.set("spark.shuffle.io.maxRetries", "0")
     store = makeBlockManager(8000, "executor1")
     store2 = makeBlockManager(8000, "executor2")

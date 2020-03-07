@@ -36,7 +36,8 @@ trait WsTestClient {
     */
   def wsUrl(url: String)(implicit
       port: Port,
-      client: WSClient = WS.client(play.api.Play.privateMaybeApplication.get)) = {
+      client: WSClient =
+        WS.client(play.api.Play.privateMaybeApplication.get)) = {
     WS.clientUrl("http://localhost:" + port + url)
   }
 

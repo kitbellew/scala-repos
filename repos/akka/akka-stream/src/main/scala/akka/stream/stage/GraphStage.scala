@@ -460,7 +460,8 @@ abstract class GraphStageLogic private[stream] (
     else {
       // Slow path on failure
       if ((interpreter
-            .portStates(conn(in)) & (InReady | InFailed)) == (InReady | InFailed)) {
+            .portStates(
+              conn(in)) & (InReady | InFailed)) == (InReady | InFailed)) {
         interpreter.connectionSlots(connection) match {
           case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
           case _ ⇒
@@ -483,7 +484,9 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
     if ((interpreter
-          .portStates(conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
+          .portStates(
+            conn(
+              out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
       interpreter.push(conn(out), elem)
     } else {
       // Detailed error information should not add overhead to the hot path

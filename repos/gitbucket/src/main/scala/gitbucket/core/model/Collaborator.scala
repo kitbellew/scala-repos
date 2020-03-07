@@ -10,10 +10,15 @@ trait CollaboratorComponent extends TemplateComponent { self: Profile =>
       with BasicTemplate {
     val collaboratorName = column[String]("COLLABORATOR_NAME")
     def * =
-      (userName, repositoryName, collaboratorName) <> (Collaborator.tupled, Collaborator.unapply)
+      (
+        userName,
+        repositoryName,
+        collaboratorName) <> (Collaborator.tupled, Collaborator.unapply)
 
     def byPrimaryKey(owner: String, repository: String, collaborator: String) =
-      byRepository(owner, repository) && (collaboratorName === collaborator.bind)
+      byRepository(
+        owner,
+        repository) && (collaboratorName === collaborator.bind)
   }
 }
 

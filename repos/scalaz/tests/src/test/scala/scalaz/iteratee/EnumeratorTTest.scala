@@ -80,7 +80,10 @@ object EnumeratorTTest extends SpecLite {
 
   "zipWithIndex in combination with another function" in {
     val enum = enumStream[Int, Id](Stream(3, 4, 4, 5))
-    (consume[(Int, Long), Id, List] &= enum.uniq.zipWithIndex).run must_=== (List(
+    (consume[
+      (Int, Long),
+      Id,
+      List] &= enum.uniq.zipWithIndex).run must_=== (List(
       (3, 0L),
       (4, 1L),
       (5, 2L)))

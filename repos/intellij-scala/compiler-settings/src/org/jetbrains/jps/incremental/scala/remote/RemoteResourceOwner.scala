@@ -23,13 +23,15 @@ trait RemoteResourceOwner {
     val encodedArgs =
       arguments.map(s => Base64Converter.encode(s.getBytes("UTF-8")))
     using(new Socket(address, port)) { socket =>
-      using(new DataOutputStream(
-        new BufferedOutputStream(socket.getOutputStream))) { output =>
+      using(
+        new DataOutputStream(
+          new BufferedOutputStream(socket.getOutputStream))) { output =>
         createChunks(command, encodedArgs).foreach(_.writeTo(output))
         output.flush()
         if (client != null) {
-          using(new DataInputStream(
-            new BufferedInputStream(socket.getInputStream))) { input =>
+          using(
+            new DataInputStream(
+              new BufferedInputStream(socket.getInputStream))) { input =>
             handle(input, client)
           }
         }

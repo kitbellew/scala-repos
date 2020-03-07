@@ -262,7 +262,8 @@ private[sbt] object SettingCompletions {
         definedScopes.flatMap(s => axis(s).toOption.map(name)).toSet
       val fullChoices: Map[String, T] = getChoices(allScopes.toSeq)
       val completions = fixedCompletions { (seen, level) =>
-        completeScope(seen, level, definedChoices, fullChoices)(description).toSet
+        completeScope(seen, level, definedChoices, fullChoices)(
+          description).toSet
       }
       Act.optionalAxis(
         inParser ~> token(Space) ~> token(

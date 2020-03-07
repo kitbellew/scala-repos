@@ -41,9 +41,9 @@ trait FreeSpecScopeTest extends FreeSpecGenerator {
       "ComplexFreeSpec.scala",
       checkConfigAndSettings(_, "ComplexFreeSpec", testNames: _*),
       root =>
-        checkResultTreeHasExactNamedPath(root, path1: _*) && checkResultTreeHasExactNamedPath(
+        checkResultTreeHasExactNamedPath(
           root,
-          path2: _*) &&
+          path1: _*) && checkResultTreeHasExactNamedPath(root, path2: _*) &&
           checkResultTreeDoesNotHaveNodes(
             root,
             "Innermost scope",

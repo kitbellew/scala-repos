@@ -37,7 +37,10 @@ class TimePathedSourceTest extends WordSpec with Matchers {
     }
 
     "work for path ending with /*" in {
-      TestTimePathedSource("/my/path/*", dateRange, utcTZ).hdfsWritePath startsWith "/my/path"
+      TestTimePathedSource(
+        "/my/path/*",
+        dateRange,
+        utcTZ).hdfsWritePath startsWith "/my/path"
     }
   }
 }

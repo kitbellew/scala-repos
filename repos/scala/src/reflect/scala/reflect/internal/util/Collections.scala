@@ -25,10 +25,10 @@ trait Collections {
       xs3: List[C])(f: (A, B, C) => Boolean): Boolean = (
     if (xs1.isEmpty) xs2.isEmpty && xs3.isEmpty
     else
-      !xs2.isEmpty && !xs3.isEmpty && f(xs1.head, xs2.head, xs3.head) && corresponds3(
-        xs1.tail,
-        xs2.tail,
-        xs3.tail)(f)
+      !xs2.isEmpty && !xs3.isEmpty && f(
+        xs1.head,
+        xs2.head,
+        xs3.head) && corresponds3(xs1.tail, xs2.tail, xs3.tail)(f)
   )
 
   /** All these mm methods are "deep map" style methods for

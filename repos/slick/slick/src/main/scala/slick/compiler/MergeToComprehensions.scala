@@ -435,10 +435,12 @@ class MergeToComprehensions extends Phase {
       val p2 = applyReplacements(p1, replacements1a, c1a)
       val c2 =
         if (c1a.groupBy.isEmpty)
-          c1a.copy(where = Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
+          c1a.copy(where =
+            Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
         else
           c1a
-            .copy(having = Some(c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
+            .copy(having =
+              Some(c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
       logger.debug("Merged Filter into Comprehension:", c2)
       (c2, replacements1a)
 

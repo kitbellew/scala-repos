@@ -165,7 +165,10 @@ class RequestRendererSpec
         HttpRequest(
           PUT,
           "/abc/xyz",
-          entity = Chunked(ContentTypes.`text/plain(UTF-8)`, source())) should renderTo {
+          entity =
+            Chunked(
+              ContentTypes.`text/plain(UTF-8)`,
+              source())) should renderTo {
           """PUT /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -209,7 +212,10 @@ class RequestRendererSpec
         HttpRequest(
           POST,
           "/abc/xyz",
-          entity = Chunked(ContentTypes.`text/plain(UTF-8)`, Source(chunks))) should renderTo {
+          entity =
+            Chunked(
+              ContentTypes.`text/plain(UTF-8)`,
+              Source(chunks))) should renderTo {
           """POST /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -237,7 +243,10 @@ class RequestRendererSpec
         HttpRequest(
           POST,
           "/abc/xyz",
-          entity = Chunked(ContentTypes.`text/plain(UTF-8)`, Source(chunks))) should renderTo {
+          entity =
+            Chunked(
+              ContentTypes.`text/plain(UTF-8)`,
+              Source(chunks))) should renderTo {
           """POST /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -291,7 +300,10 @@ class RequestRendererSpec
         }
       }
       "if a default is set but an explicit User-Agent header given" in new TestSetup() {
-        HttpRequest(GET, "/abc", List(`User-Agent`("user-ua/1.0"))) should renderTo {
+        HttpRequest(
+          GET,
+          "/abc",
+          List(`User-Agent`("user-ua/1.0"))) should renderTo {
           """GET /abc HTTP/1.1
             |User-Agent: user-ua/1.0
             |Host: test.com:8080
@@ -334,7 +346,10 @@ class RequestRendererSpec
 
     "properly use URI from Raw-Request-URI header if present" - {
       "GET request with Raw-Request-URI" in new TestSetup() {
-        HttpRequest(GET, "/abc", List(`Raw-Request-URI`("/def"))) should renderTo {
+        HttpRequest(
+          GET,
+          "/abc",
+          List(`Raw-Request-URI`("/def"))) should renderTo {
           """GET /def HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -344,7 +359,10 @@ class RequestRendererSpec
       }
 
       "GET request with Raw-Request-URI sends raw URI even with invalid utf8 characters" in new TestSetup() {
-        HttpRequest(GET, "/abc", List(`Raw-Request-URI`("/def%80%fe%ff"))) should renderTo {
+        HttpRequest(
+          GET,
+          "/abc",
+          List(`Raw-Request-URI`("/def%80%fe%ff"))) should renderTo {
           """GET /def%80%fe%ff HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0

@@ -64,7 +64,9 @@ abstract private[converter] class AbstractStringConverterDelegateSpec[
     scalaClass: Class[S])(implicit
     jfx2sfx: C => D = null,
     sfx2jfx: D => C = null)
-    extends SimpleSFXDelegateSpec[C, D](javaConverterClass, scalaConverterClass) {
+    extends SimpleSFXDelegateSpec[C, D](
+      javaConverterClass,
+      scalaConverterClass) {
 
   private def runConverterForExamples() {
 

@@ -168,7 +168,8 @@ class PrefixSpan private (
           val items = mutable.ArrayBuilder.make[Int]
           itemsets.foreach { item =>
             if (itemToInt.contains(item)) {
-              items += itemToInt(item) + 1 // using 1-indexing in internal format
+              items += itemToInt(
+                item) + 1 // using 1-indexing in internal format
             }
           }
           val result = items.result()

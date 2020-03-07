@@ -88,7 +88,8 @@ object Test {
     val setpos2b = bigInts4 map mkNumbers
 
     val sets2 =
-      setneg1 ++ setneg1b ++ setneg2 ++ setneg2b ++ List(zero) ++ setpos1 ++ setpos1b ++ setpos2 ++ setpos2b
+      setneg1 ++ setneg1b ++ setneg2 ++ setneg2b ++ List(
+        zero) ++ setpos1 ++ setpos1b ++ setpos2 ++ setpos2b
 
     for (set <- sets2; x <- set; y <- set) {
       if (!isIffy(x, y)) {

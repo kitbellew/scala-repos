@@ -442,7 +442,10 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
 
   @deprecated("This implicit conversion will be removed in the future", "2.2")
   implicit protected def modelToSwagger(cls: Class[_]): (String, Model) = {
-    val mod = Swagger.modelToSwagger(Reflector.scalaTypeOf(cls)).get // TODO: the use of .get is pretty dangerous, but it's deprecated
+    val mod =
+      Swagger
+        .modelToSwagger(Reflector.scalaTypeOf(cls))
+        .get // TODO: the use of .get is pretty dangerous, but it's deprecated
     mod.id -> mod
   }
 
@@ -586,7 +589,10 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     swaggerParam(name, model).fromHeader
   protected def pathParam[T: Manifest: NotNothing](
       name: String): ParameterBuilder[T] =
-    swaggerParam[T](name, allowsCollection = false, allowsOption = false).fromPath
+    swaggerParam[T](
+      name,
+      allowsCollection = false,
+      allowsOption = false).fromPath
   protected def pathParam(name: String, model: Model): ModelParameterBuilder =
     swaggerParam(name, model).fromPath
 
@@ -676,8 +682,9 @@ trait SwaggerSupport
           Parameter]]) getOrElse Nil
       val errors = route.metadata.get(Symbols.Errors) map (_.asInstanceOf[List[
         ResponseMessage[_]]]) getOrElse Nil
-      val responseClass = route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
-        DataType]) getOrElse DataType.Void
+      val responseClass =
+        route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
+          DataType]) getOrElse DataType.Void
       val summary = (route.metadata
         .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])

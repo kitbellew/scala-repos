@@ -107,7 +107,12 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((1L, 3.5), (3L, 3.0), (2L, 3.0)).toString,
-            "b" -> List((1L, 6.0), (2L, 5.0), (3L, 4.0), (4L, 3.0), (5L, 2.0)).toString)
+            "b" -> List(
+              (1L, 6.0),
+              (2L, 5.0),
+              (3L, 4.0),
+              (4L, 3.0),
+              (5L, 2.0)).toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
           whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant
             .get("a")
@@ -127,7 +132,12 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((1L, 3.5), (2L, 3.0), (3L, 3.0)).toString,
-            "b" -> List((1L, 6.0), (2L, 5.0), (3L, 4.0), (4L, 3.0), (5L, 2.0)).toString)
+            "b" -> List(
+              (1L, 6.0),
+              (2L, 5.0),
+              (3L, 4.0),
+              (4L, 3.0),
+              (5L, 2.0)).toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
           whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant
             .get("a")
@@ -148,7 +158,12 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((3L, 3.0), (2L, 3.0), (1L, 3.5)).toString,
-            "b" -> List((6L, 1.0), (5L, 2.0), (4L, 3.0), (3L, 4.0), (2L, 5.0)).toString)
+            "b" -> List(
+              (6L, 1.0),
+              (5L, 2.0),
+              (4L, 3.0),
+              (3L, 4.0),
+              (2L, 5.0)).toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
           whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant
             .get("a")

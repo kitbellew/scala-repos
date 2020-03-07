@@ -180,7 +180,8 @@ object SerializationBugs extends Specification {
     val jsonA = """ { "data": { "foo": "string" }, "success": true } """
     val jsonB = """ { "data": { "bar": "string" }, "success": true } """
 
-    (read[SomeContainer[TypeA]](jsonA) mustEqual SomeContainer(TypeA("string"))) and
+    (read[SomeContainer[TypeA]](jsonA) mustEqual SomeContainer(
+      TypeA("string"))) and
       (read[SomeContainer[TypeB]](jsonB) mustEqual SomeContainer(
         TypeB("string")))
   }

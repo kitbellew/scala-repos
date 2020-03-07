@@ -33,7 +33,8 @@ private[akka] final case class ClientConnectionSettingsImpl(
 }
 
 object ClientConnectionSettingsImpl
-    extends SettingsCompanion[ClientConnectionSettingsImpl]("akka.http.client") {
+    extends SettingsCompanion[ClientConnectionSettingsImpl](
+      "akka.http.client") {
   def fromSubConfig(root: Config, inner: Config) = {
     val c = inner.withFallback(root.getConfig(prefix))
     new ClientConnectionSettingsImpl(
@@ -42,7 +43,8 @@ object ClientConnectionSettingsImpl
       connectingTimeout = c getFiniteDuration "connecting-timeout",
       idleTimeout = c getPotentiallyInfiniteDuration "idle-timeout",
       requestHeaderSizeHint = c getIntBytes "request-header-size-hint",
-      websocketRandomFactory = Randoms.SecureRandomInstances, // can currently only be overridden from code
+      websocketRandomFactory =
+        Randoms.SecureRandomInstances, // can currently only be overridden from code
       socketOptions =
         SocketOptionSettings.fromSubConfig(root, c.getConfig("socket-options")),
       parserSettings =

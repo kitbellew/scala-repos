@@ -48,7 +48,10 @@ trait Definitions extends api.StandardDefinitions {
       parents: List[Type],
       flags: Long = 0L): ClassSymbol = {
     val clazz = owner.newClassSymbol(name, NoPosition, flags)
-    clazz setInfoAndEnter ClassInfoType(parents, newScope, clazz) markAllCompleted
+    clazz setInfoAndEnter ClassInfoType(
+      parents,
+      newScope,
+      clazz) markAllCompleted
   }
   private def newMethod(
       owner: Symbol,
@@ -558,7 +561,8 @@ trait Definitions extends api.StandardDefinitions {
       ArrayModule_overloadedApply.suchThat(
         _.tpe.resultType =:= arrayType(tp)
       ) // (p1: AnyVal1, ps: AnyVal1*): Array[AnyVal1]
-    lazy val ArrayClass = getRequiredClass("scala.Array") // requiredClass[scala.Array[_]]
+    lazy val ArrayClass =
+      getRequiredClass("scala.Array") // requiredClass[scala.Array[_]]
     lazy val Array_apply = getMemberMethod(ArrayClass, nme.apply)
     lazy val Array_update = getMemberMethod(ArrayClass, nme.update)
     lazy val Array_length = getMemberMethod(ArrayClass, nme.length)
@@ -600,7 +604,10 @@ trait Definitions extends api.StandardDefinitions {
 
     // scala.reflect
     lazy val ReflectPackage = requiredModule[scala.reflect.`package`.type]
-    lazy val ReflectApiPackage = getPackageObjectIfDefined("scala.reflect.api") // defined in scala-reflect.jar, so we need to be careful
+    lazy val ReflectApiPackage =
+      getPackageObjectIfDefined(
+        "scala.reflect.api"
+      ) // defined in scala-reflect.jar, so we need to be careful
     lazy val ReflectRuntimePackage = getPackageObjectIfDefined(
       "scala.reflect.runtime"
     ) // defined in scala-reflect.jar, so we need to be careful
@@ -609,7 +616,10 @@ trait Definitions extends api.StandardDefinitions {
     def ReflectRuntimeCurrentMirror =
       ReflectRuntimePackage.map(sym => getMemberMethod(sym, nme.currentMirror))
 
-    lazy val UniverseClass = getClassIfDefined("scala.reflect.api.Universe") // defined in scala-reflect.jar, so we need to be careful
+    lazy val UniverseClass =
+      getClassIfDefined(
+        "scala.reflect.api.Universe"
+      ) // defined in scala-reflect.jar, so we need to be careful
     def UniverseInternal = getMemberValue(UniverseClass, nme.internal)
 
     lazy val PartialManifestModule =
@@ -620,23 +630,38 @@ trait Definitions extends api.StandardDefinitions {
     lazy val OptManifestClass = requiredClass[scala.reflect.OptManifest[_]]
     lazy val NoManifest = requiredModule[scala.reflect.NoManifest.type]
 
-    lazy val TreesClass = getClassIfDefined("scala.reflect.api.Trees") // defined in scala-reflect.jar, so we need to be careful
+    lazy val TreesClass =
+      getClassIfDefined(
+        "scala.reflect.api.Trees"
+      ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val ExprsClass = getClassIfDefined("scala.reflect.api.Exprs") // defined in scala-reflect.jar, so we need to be careful
+    lazy val ExprsClass =
+      getClassIfDefined(
+        "scala.reflect.api.Exprs"
+      ) // defined in scala-reflect.jar, so we need to be careful
     def ExprClass = ExprsClass.map(sym => getMemberClass(sym, tpnme.Expr))
     def ExprSplice = ExprClass.map(sym => getMemberMethod(sym, nme.splice))
     def ExprValue = ExprClass.map(sym => getMemberMethod(sym, nme.value))
 
     lazy val ClassTagModule = requiredModule[scala.reflect.ClassTag[_]]
     lazy val ClassTagClass = requiredClass[scala.reflect.ClassTag[_]]
-    lazy val TypeTagsClass = getClassIfDefined("scala.reflect.api.TypeTags") // defined in scala-reflect.jar, so we need to be careful
+    lazy val TypeTagsClass =
+      getClassIfDefined(
+        "scala.reflect.api.TypeTags"
+      ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val ApiUniverseClass = getClassIfDefined("scala.reflect.api.Universe") // defined in scala-reflect.jar, so we need to be careful
+    lazy val ApiUniverseClass =
+      getClassIfDefined(
+        "scala.reflect.api.Universe"
+      ) // defined in scala-reflect.jar, so we need to be careful
     lazy val JavaUniverseClass = getClassIfDefined(
       "scala.reflect.api.JavaUniverse"
     ) // defined in scala-reflect.jar, so we need to be careful
 
-    lazy val MirrorClass = getClassIfDefined("scala.reflect.api.Mirror") // defined in scala-reflect.jar, so we need to be careful
+    lazy val MirrorClass =
+      getClassIfDefined(
+        "scala.reflect.api.Mirror"
+      ) // defined in scala-reflect.jar, so we need to be careful
 
     lazy val TypeCreatorClass = getClassIfDefined(
       "scala.reflect.api.TypeCreator"
@@ -1049,8 +1074,8 @@ trait Definitions extends api.StandardDefinitions {
         //    Scopes()
         // must filter out "universal" members (getClass is deferred for some reason)
         val deferredMembers = (
-          tp membersBasedOnFlags (excludedFlags = BridgeAndPrivateFlags, requiredFlags =
-            METHOD)
+          tp membersBasedOnFlags (excludedFlags =
+            BridgeAndPrivateFlags, requiredFlags = METHOD)
             filter (mem =>
               mem.isDeferredNotJavaDefault && !isUniversalMember(
                 mem
@@ -1134,8 +1159,8 @@ trait Definitions extends api.StandardDefinitions {
       def matchesParams(member: Symbol) = member.paramss match {
         case Nil => paramTypes.isEmpty
         case ps :: rest =>
-          (rest.isEmpty || isImplicitParamss(rest)) && (ps corresponds paramTypes)(
-            _.tpe =:= _)
+          (rest.isEmpty || isImplicitParamss(
+            rest)) && (ps corresponds paramTypes)(_.tpe =:= _)
       }
       tp member name filter matchesParams match {
         case NoSymbol => NoType
@@ -1441,7 +1466,10 @@ trait Definitions extends api.StandardDefinitions {
     lazy val SetterTargetClass = requiredClass[meta.setter]
     lazy val ObjectTargetClass = requiredClass[meta.companionObject]
     lazy val ClassTargetClass = requiredClass[meta.companionClass]
-    lazy val MethodTargetClass = requiredClass[meta.companionMethod] // TODO: module, moduleClass? package, packageObject?
+    lazy val MethodTargetClass =
+      requiredClass[
+        meta.companionMethod
+      ] // TODO: module, moduleClass? package, packageObject?
     lazy val LanguageFeatureAnnot = requiredClass[meta.languageFeature]
 
     // Language features
@@ -1726,7 +1754,9 @@ trait Definitions extends api.StandardDefinitions {
           "" // be more resistant to error conditions, e.g. neg/t3222.scala
         else if (sym.isTopLevel) sym.javaClassName
         else
-          flatNameString(sym.owner, separator) + nme.NAME_JOIN_STRING + sym.simpleName
+          flatNameString(
+            sym.owner,
+            separator) + nme.NAME_JOIN_STRING + sym.simpleName
       def signature1(etp: Type): String = {
         if (etp.typeSymbol == ArrayClass)
           "[" + signature1(erasure(etp.dealiasWiden.typeArgs.head))

@@ -170,7 +170,8 @@ object Source {
         createBufferedSource(inputStream, bufferSize, reset, close)(codec)
       else reset
 
-    new BufferedSource(inputStream, bufferSize)(codec) withReset resetFn withClose close
+    new BufferedSource(inputStream, bufferSize)(
+      codec) withReset resetFn withClose close
   }
 
   def fromInputStream(is: InputStream, enc: String): BufferedSource =
@@ -190,7 +191,8 @@ object Source {
     */
   def fromResource(
       resource: String,
-      classLoader: ClassLoader = Thread.currentThread().getContextClassLoader())(
+      classLoader: ClassLoader =
+        Thread.currentThread().getContextClassLoader())(
       implicit codec: Codec): BufferedSource =
     fromInputStream(classLoader.getResourceAsStream(resource))
 

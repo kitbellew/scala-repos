@@ -30,7 +30,14 @@ trait WSTestSetupBase extends Matchers {
         (Some(m), maskedBytes(data, m)._1)
       } else (None, data)
     send(
-      frameHeader(opcode, data.length, fin, theMask, rsv1, rsv2, rsv3) ++ theData)
+      frameHeader(
+        opcode,
+        data.length,
+        fin,
+        theMask,
+        rsv1,
+        rsv2,
+        rsv3) ++ theData)
   }
 
   def sendWSCloseFrame(closeCode: Int, mask: Boolean = false): Unit =

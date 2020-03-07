@@ -222,7 +222,8 @@ class MongoAPIKeyManager(
       clock.instant(),
       expiration)
     logger.debug("Adding grant: " + ng)
-    database(insert(ng.serialize.asInstanceOf[JObject]).into(settings.grants)) map {
+    database(
+      insert(ng.serialize.asInstanceOf[JObject]).into(settings.grants)) map {
       _ => logger.debug("Add complete for " + ng); ng
     }
   }
@@ -292,7 +293,10 @@ class MongoAPIKeyManager(
 
   def findDeletedAPIKey(apiKey: APIKey) =
     ToPlusOps[({ type λ[α] = Future[Option[α]] })#λ, APIKeyRecord](
-      findOneMatching[APIKeyRecord]("apiKey", apiKey, settings.deletedAPIKeys)) <+>
+      findOneMatching[APIKeyRecord](
+        "apiKey",
+        apiKey,
+        settings.deletedAPIKeys)) <+>
       findOneMatching[APIKeyRecord]("tid", apiKey, settings.deletedAPIKeys)
 
   def findDeletedGrant(gid: GrantId) =

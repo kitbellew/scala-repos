@@ -52,8 +52,9 @@ abstract class JsonSupportSpec
 
   "The " + name should {
     "provide unmarshalling support for a case class" in {
-      HttpEntity(MediaTypes.`application/json`, Employee.json) should unmarshalToValue(
-        Employee.simple)
+      HttpEntity(
+        MediaTypes.`application/json`,
+        Employee.json) should unmarshalToValue(Employee.simple)
     }
     "provide marshalling support for a case class" in {
       val marshalled = marshal(Employee.simple)
@@ -68,8 +69,9 @@ abstract class JsonSupportSpec
           |}""".stripMarginWithNewline("\n")
     }
     "use UTF-8 as the default charset for JSON source decoding" in {
-      HttpEntity(MediaTypes.`application/json`, Employee.utf8json) should unmarshalToValue(
-        Employee.utf8)
+      HttpEntity(
+        MediaTypes.`application/json`,
+        Employee.utf8json) should unmarshalToValue(Employee.utf8)
     }
     "provide proper error messages for requirement errors" in {
       val result = unmarshal(

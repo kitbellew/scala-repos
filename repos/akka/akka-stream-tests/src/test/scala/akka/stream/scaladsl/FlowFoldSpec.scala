@@ -44,8 +44,9 @@ class FlowFoldSpec extends AkkaSpec {
 
     "work when using Flow.fold" in assertAllStagesStopped {
       Await
-        .result(inputSource via foldFlow runWith Sink.head, 3.seconds) should be(
-        expected)
+        .result(
+          inputSource via foldFlow runWith Sink.head,
+          3.seconds) should be(expected)
     }
 
     "work when using Source.fold + Flow.fold + Sink.fold" in assertAllStagesStopped {

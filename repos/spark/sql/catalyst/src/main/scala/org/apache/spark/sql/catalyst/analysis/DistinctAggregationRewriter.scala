@@ -240,7 +240,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       // Construct the expand operator.
       val expand = Expand(
         regularAggProjection ++ distinctAggProjections,
-        groupByAttrs ++ distinctAggChildAttrs ++ Seq(gid) ++ regularAggChildAttrMap
+        groupByAttrs ++ distinctAggChildAttrs ++ Seq(
+          gid) ++ regularAggChildAttrMap
           .map(_._2),
         a.child)
 

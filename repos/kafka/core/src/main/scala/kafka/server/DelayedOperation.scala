@@ -350,7 +350,9 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     * A background reaper to expire delayed operations that have timed out
     */
   private class ExpiredOperationReaper
-      extends ShutdownableThread("ExpirationReaper-%d".format(brokerId), false) {
+      extends ShutdownableThread(
+        "ExpirationReaper-%d".format(brokerId),
+        false) {
 
     override def doWork() {
       timeoutTimer.advanceClock(200L)

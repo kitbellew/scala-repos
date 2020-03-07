@@ -36,7 +36,9 @@ private[netty4] class Netty4ClientChannelInitializer[In, Out](
     params: Stack.Params,
     encoder: Option[FrameEncoder[In]] = None,
     decoderFactory: Option[() => FrameDecoder[Out]] = None)
-    extends AbstractNetty4ClientChannelInitializer[In, Out](transportP, params) {
+    extends AbstractNetty4ClientChannelInitializer[In, Out](
+      transportP,
+      params) {
   import Netty4ClientChannelInitializer._
 
   private[this] val encodeHandler = encoder.map(new EncodeHandler[In](_))
@@ -102,7 +104,9 @@ private[netty4] class RawNetty4ClientChannelInitializer[In, Out](
     transportP: Promise[Transport[In, Out]],
     params: Stack.Params,
     pipeCb: ChannelPipeline => Unit)
-    extends AbstractNetty4ClientChannelInitializer[In, Out](transportP, params) {
+    extends AbstractNetty4ClientChannelInitializer[In, Out](
+      transportP,
+      params) {
 
   override def initChannel(ch: SocketChannel): Unit = {
     super.initChannel(ch)

@@ -60,8 +60,8 @@ class ScopedKeySpec extends Specification {
   {file:/hello/}/compile:doc::fullClasspath
     ${beParsedAs(
       "{file:/hello/}/compile:doc::fullClasspath",
-      ThisScope in (BuildRef(new URI("file:/hello/")), ConfigKey("compile"), AttributeKey(
-        "doc")),
+      ThisScope in (BuildRef(new URI("file:/hello/")), ConfigKey(
+        "compile"), AttributeKey("doc")),
       "fullClasspath")}
                                                                 """
 

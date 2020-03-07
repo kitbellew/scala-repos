@@ -471,12 +471,12 @@ class RemotingSpec
       expectMsg(ActorIdentity("idReq8", Some(grandchild)))
 
       system
-        .actorSelection("/user/looker2/child/grandchild/grandgrandchild") ! Identify(
-        "idReq9")
+        .actorSelection(
+          "/user/looker2/child/grandchild/grandgrandchild") ! Identify("idReq9")
       expectMsg(ActorIdentity("idReq9", Some(grandgrandchild)))
       system
-        .actorSelection(child.path / "grandchild" / "grandgrandchild") ! Identify(
-        "idReq10")
+        .actorSelection(
+          child.path / "grandchild" / "grandgrandchild") ! Identify("idReq10")
       expectMsg(ActorIdentity("idReq10", Some(grandgrandchild)))
       system.actorSelection("/user/looker2/child/*/grandgrandchild") ! Identify(
         "idReq11")
@@ -588,7 +588,8 @@ class RemotingSpec
     }
 
     "allow messages up to payload size" in {
-      val maxProtocolOverhead = 500 // Make sure we're still under size after the message is serialized, etc
+      val maxProtocolOverhead =
+        500 // Make sure we're still under size after the message is serialized, etc
       val big = byteStringOfSize(maxPayloadBytes - maxProtocolOverhead)
       verifySend(big) {
         expectMsg(3.seconds, big)

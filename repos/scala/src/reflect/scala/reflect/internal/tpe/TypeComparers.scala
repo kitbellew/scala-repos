@@ -199,13 +199,16 @@ trait TypeComparers {
       sym2: Symbol) = {
     def ignoreVariance(sym: Symbol) =
       !(sym.isHigherOrderTypeParameter && sym.logicallyEnclosingMember.isMethod)
-    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(sym2) || sym1.variance == sym2.variance
+    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(
+      sym2) || sym1.variance == sym2.variance
   }
 
   private def methodHigherOrderTypeParamsSubVariance(
       low: Symbol,
       high: Symbol) =
-    !settings.isScala211 || methodHigherOrderTypeParamsSameVariance(low, high) || low.variance.isInvariant
+    !settings.isScala211 || methodHigherOrderTypeParamsSameVariance(
+      low,
+      high) || low.variance.isInvariant
 
   def isSameType2(tp1: Type, tp2: Type): Boolean = {
     def retry(lhs: Type, rhs: Type) =
@@ -382,7 +385,9 @@ trait TypeComparers {
     typeRelationPreCheck(tp1, tp2) match {
       case state if state.isKnown => state.booleanValue
       case _ if typeHasAnnotations(tp1) || typeHasAnnotations(tp2) =>
-        annotationsConform(tp1, tp2) && (tp1.withoutAnnotations <:< tp2.withoutAnnotations)
+        annotationsConform(
+          tp1,
+          tp2) && (tp1.withoutAnnotations <:< tp2.withoutAnnotations)
       case _ => isSubType2(tp1, tp2, depth)
     }
 
@@ -456,8 +461,8 @@ trait TypeComparers {
     def retry(lhs: Type, rhs: Type) =
       ((lhs ne tp1) || (rhs ne tp2)) && isSubType(lhs, rhs, depth)
 
-    if (isSingleType(tp1) && isSingleType(tp2) || isConstantType(tp1) && isConstantType(
-          tp2))
+    if (isSingleType(tp1) && isSingleType(tp2) || isConstantType(
+          tp1) && isConstantType(tp2))
       return (tp1 =:= tp2) || isThisAndSuperSubtype(tp1, tp2) || retry(
         tp1.underlying,
         tp2)

@@ -170,9 +170,13 @@ trait EvaluatorTestSupport[M[+_]]
 
   object Table extends TableCompanion
 
-  private var initialIndices = collection.mutable.Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
-  private var currentIndex = 0 // if we were doing this for real: j.u.c.a.AtomicInteger
-  private val indexLock = new AnyRef // if we were doing this for real: DIE IN A FIRE!!!
+  private var initialIndices =
+    collection.mutable
+      .Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
+  private var currentIndex =
+    0 // if we were doing this for real: j.u.c.a.AtomicInteger
+  private val indexLock =
+    new AnyRef // if we were doing this for real: DIE IN A FIRE!!!
 
   class YggConfig
       extends IdSourceConfig

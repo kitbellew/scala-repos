@@ -207,7 +207,8 @@ object CssSelectorSpec extends Specification with XmlMatchers {
     "select a class" in {
       CssSelectorParser
         .parse(".foo")
-        .openOrThrowException("If the box is empty, we want a failure") must_== ClassSelector(
+        .openOrThrowException(
+          "If the box is empty, we want a failure") must_== ClassSelector(
         "foo",
         Empty)
     }
@@ -490,7 +491,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "substitute multiple Strings by id" in {
       ("#foo" #> "hello" &
-        "#baz" #> "bye")(<b><div id="baz">Hello</div><span id="foo"/></b>) must be_==(
+        "#baz" #> "bye")(
+        <b><div id="baz">Hello</div><span id="foo"/></b>) must be_==(
         NodeSeq fromSeq <b>{Text("bye")}{Text("hello")}</b>)
     }
 
@@ -616,7 +618,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
         }
       }
 
-      ".noMail" #> collapseUnless(cachedMessageList.map(_.isEmpty).openOr(true)) {
+      ".noMail" #> collapseUnless(
+        cachedMessageList.map(_.isEmpty).openOr(true)) {
         "tbody [id]" #> messageListId &
           "*" #> PassThru
       }

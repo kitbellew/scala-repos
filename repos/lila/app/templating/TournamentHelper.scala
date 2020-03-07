@@ -33,7 +33,8 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
 
   def tournamentLink(tourId: String): Html = Html {
     val url = routes.Tournament.show(tourId)
-    s"""<a class="text" data-icon="g" href="$url">${tournamentIdToName(tourId)}</a>"""
+    s"""<a class="text" data-icon="g" href="$url">${tournamentIdToName(
+      tourId)}</a>"""
   }
 
   def tournamentIdToName(id: String) =
@@ -67,7 +68,8 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
     }
 
   private def longTournamentDescription(tour: Tournament) =
-    s"${tour.nbPlayers} players compete in the ${showEnglishDate(tour.startsAt)} ${tour.fullName}. " +
+    s"${tour.nbPlayers} players compete in the ${showEnglishDate(
+      tour.startsAt)} ${tour.fullName}. " +
       s"${tour.clock.show} ${tour.mode.name} games are played during ${tour.minutes} minutes. " +
       tour.winnerId.fold("Winner is not yet decided.") { winnerId =>
         s"${usernameOrId(winnerId)} takes the prize home!"

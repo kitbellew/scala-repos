@@ -77,7 +77,8 @@ object LTuple2Properties extends Properties("LTuple2 Properties") {
     }
   }
 
-  property("Hash code of the LTuple2 is the same as a tuple2 would have been") = {
+  property(
+    "Hash code of the LTuple2 is the same as a tuple2 would have been") = {
     forAll { (a1: Int, b1: String) =>
       val ltup1 = LTuple2(a1, b1)
 

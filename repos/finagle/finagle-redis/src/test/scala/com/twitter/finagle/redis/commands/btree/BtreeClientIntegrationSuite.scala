@@ -46,7 +46,8 @@ final class BtreeClientIntegrationSuite
     testBcard(client, dict)
   }
 
-  test("Correctly return value for outerkey, innerkey pair using BGET command") {
+  test(
+    "Correctly return value for outerkey, innerkey pair using BGET command") {
     testBget(client, dict)
   }
 
@@ -59,7 +60,8 @@ final class BtreeClientIntegrationSuite
     testBrangeInclusiveStart(client, dict)
   }
 
-  test("Correctly return BRANGE from start to end key that exists for outerkey") {
+  test(
+    "Correctly return BRANGE from start to end key that exists for outerkey") {
     testBrangeInclusiveEnd(client, dict)
   }
 
@@ -88,7 +90,8 @@ final class BtreeClientIntegrationSuite
     testBrem(client, dict)
   }
 
-  test("Correctly return cardinality function for outerkey using BCARD command") {
+  test(
+    "Correctly return cardinality function for outerkey using BCARD command") {
     testBcard(client, dict)
   }
 

@@ -99,7 +99,10 @@ object SimplePattern extends ParserNode {
       return true
     }
     if (lookAhead(builder, ScalaTokenTypes.tIDENTIFIER) &&
-        !lookAhead(builder, ScalaTokenTypes.tIDENTIFIER, ScalaTokenTypes.tDOT) &&
+        !lookAhead(
+          builder,
+          ScalaTokenTypes.tIDENTIFIER,
+          ScalaTokenTypes.tDOT) &&
         !lookAhead(
           builder,
           ScalaTokenTypes.tIDENTIFIER,
@@ -207,8 +210,9 @@ object SimplePattern extends ParserNode {
                 withComma = false) && Pattern.parse(builder)) {
             while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
               builder.advanceLexer() // eat comma
-              if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(
-                    withComma = false)) Pattern.parse(builder)
+              if (!parseSeqWildcard(withComma =
+                    false) && !parseSeqWildcardBinding(withComma = false))
+                Pattern.parse(builder)
             }
           }
           builder.getTokenType match {

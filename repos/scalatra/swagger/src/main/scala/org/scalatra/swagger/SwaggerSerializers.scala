@@ -227,7 +227,9 @@ object SwaggerSerializers {
     case DataType.ContainerDataType("List" | "Array", _, _) =>
       ("type" -> "array") ~ ("format" -> None)
     case DataType.ContainerDataType("Set", Some(dt), _) =>
-      ("type" -> "array") ~ ("items" -> writeDataType(dt, "$ref")) ~ ("uniqueItems" -> true)
+      ("type" -> "array") ~ ("items" -> writeDataType(
+        dt,
+        "$ref")) ~ ("uniqueItems" -> true)
     case DataType.ContainerDataType("Set", _, _) =>
       ("type" -> "array") ~ ("uniqueItems" -> true)
     case DataType.ValueDataType(name, _, qualifiedName) =>

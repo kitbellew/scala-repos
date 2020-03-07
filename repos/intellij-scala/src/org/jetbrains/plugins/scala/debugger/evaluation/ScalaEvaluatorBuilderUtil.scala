@@ -1915,10 +1915,12 @@ object ScalaEvaluatorBuilderUtil {
       case Null      => "_root_.scala.reflect.ClassManifest.Null"
       case Singleton => "_root_.scala.reflect.ClassManifest.Object"
       case JavaArrayType(arg) =>
-        "_root_.scala.reflect.ClassManifest.arrayType(" + classManifestText(arg) + ")"
+        "_root_.scala.reflect.ClassManifest.arrayType(" + classManifestText(
+          arg) + ")"
       case ScParameterizedType(ScDesignatorType(clazz: ScClass), Seq(arg))
           if clazz.qualifiedName == "scala.Array" =>
-        "_root_.scala.reflect.ClassManifest.arrayType(" + classManifestText(arg) + ")"
+        "_root_.scala.reflect.ClassManifest.arrayType(" + classManifestText(
+          arg) + ")"
       /*case ScParameterizedType(des, args) =>
         ScType.extractClass(des, Option(expr.getProject)) match {
           case Some(clazz) =>

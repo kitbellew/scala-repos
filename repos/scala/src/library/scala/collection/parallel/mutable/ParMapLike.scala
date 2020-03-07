@@ -32,10 +32,9 @@ trait ParMapLike[
     K,
     V,
     +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[K, V],
-    +Sequential <: scala.collection.mutable.Map[K, V] with scala.collection.mutable.MapLike[
+    +Sequential <: scala.collection.mutable.Map[
       K,
-      V,
-      Sequential]]
+      V] with scala.collection.mutable.MapLike[K, V, Sequential]]
     extends scala.collection.GenMapLike[K, V, Repr]
     with scala.collection.parallel.ParMapLike[K, V, Repr, Sequential]
     with Growable[(K, V)]

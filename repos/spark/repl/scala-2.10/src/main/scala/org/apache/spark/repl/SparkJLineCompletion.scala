@@ -172,13 +172,16 @@ class SparkJLineCompletion(val intp: SparkIMain)
       debugging(tp + " completions ==> ")(filtered(memberNames))
 
     override def follow(s: String): Option[CompletionAware] =
-      debugging(tp + " -> '" + s + "' ==> ")(Some(TypeMemberCompletion(
-        memberNamed(s).tpe)) filterNot (_ eq NoTypeCompletion))
+      debugging(tp + " -> '" + s + "' ==> ")(
+        Some(
+          TypeMemberCompletion(
+            memberNamed(s).tpe)) filterNot (_ eq NoTypeCompletion))
 
     override def alternativesFor(id: String): List[String] =
       debugging(id + " alternatives ==> ") {
         val alts =
-          members filter (x => x.isMethod && tos(x) == id) map methodSignatureString
+          members filter (x =>
+            x.isMethod && tos(x) == id) map methodSignatureString
 
         if (alts.nonEmpty) "" :: alts else Nil
       }

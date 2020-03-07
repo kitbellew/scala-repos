@@ -174,7 +174,8 @@ private[streaming] class MapWithStateRDD[
       mappingFunction,
       batchTime,
       timeoutThresholdTime,
-      removeTimedoutData = doFullScan // remove timedout data only when full scan is enabled
+      removeTimedoutData =
+        doFullScan // remove timedout data only when full scan is enabled
     )
     Iterator(newRecord)
   }

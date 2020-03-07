@@ -442,7 +442,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
       .glom()
       .flatMap(poolAdjacentViolators)
       .collect()
-      .sortBy(x => (x._2, x._1)) // Sort again because collect() doesn't promise ordering.
+      .sortBy(x =>
+        (x._2, x._1)) // Sort again because collect() doesn't promise ordering.
     poolAdjacentViolators(parallelStepResult)
   }
 }

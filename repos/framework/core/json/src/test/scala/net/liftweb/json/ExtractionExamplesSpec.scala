@@ -117,7 +117,8 @@ object ExtractionExamples extends Specification {
 
   "Timestamp extraction example" in {
     val json = parse("""{"timestamp":"2009-09-04T18:06:22Z"}""")
-    new Date((json \ "timestamp").extract[java.sql.Timestamp].getTime) mustEqual date(
+    new Date(
+      (json \ "timestamp").extract[java.sql.Timestamp].getTime) mustEqual date(
       "2009-09-04T18:06:22Z")
   }
 

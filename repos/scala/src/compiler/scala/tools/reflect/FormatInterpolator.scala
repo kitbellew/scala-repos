@@ -436,7 +436,9 @@ abstract class FormatInterpolator {
     import SpecifierGroups.CC
     def hasCC =
       (op.length == 2 ||
-        falsely { errorAt(CC, "Date/time conversion must have two characters") })
+        falsely {
+          errorAt(CC, "Date/time conversion must have two characters")
+        })
     def goodCC =
       ("HIklMSLNpzZsQBbhAaCYyjmdeRTrDFc" contains cc) ||
         falsely {

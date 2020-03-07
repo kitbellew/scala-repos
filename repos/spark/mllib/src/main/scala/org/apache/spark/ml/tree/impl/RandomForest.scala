@@ -722,7 +722,8 @@ private[ml] object RandomForest extends Logging {
       return ImpurityStats.getInvalidImpurityStats(parentImpurityCalculator)
     }
 
-    val leftImpurity = leftImpurityCalculator.calculate() // Note: This equals 0 if count = 0
+    val leftImpurity =
+      leftImpurityCalculator.calculate() // Note: This equals 0 if count = 0
     val rightImpurity = rightImpurityCalculator.calculate()
 
     val leftWeight = leftCount / totalCount.toDouble

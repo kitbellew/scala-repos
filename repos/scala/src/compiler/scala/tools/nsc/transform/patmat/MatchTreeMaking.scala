@@ -170,7 +170,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       // sub patterns bound to wildcard (_) are never stored as they can't be referenced
       // dirty debuggers will have to get dirty to see the wildcards
       lazy val storedBinders: Set[Symbol] =
-        (if (debugInfoEmitVars) subPatBinders.toSet else Set.empty) ++ extraStoredBinders -- ignoredSubPatBinders
+        (if (debugInfoEmitVars) subPatBinders.toSet
+         else Set.empty) ++ extraStoredBinders -- ignoredSubPatBinders
 
       // e.g., mutable fields of a case class in ProductExtractorTreeMaker
       def extraStoredBinders: Set[Symbol]
@@ -197,7 +198,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         * (Even though we don't do so anymore -- see SI-5158, SI-5739 and SI-6070.)
         */
       override def subPatternsAsSubstitution =
-        Substitution(subPatBinders, subPatRefs) >> super.subPatternsAsSubstitution
+        Substitution(
+          subPatBinders,
+          subPatRefs) >> super.subPatternsAsSubstitution
 
       def bindSubPats(in: Tree): Tree =
         if (!emitVars) in

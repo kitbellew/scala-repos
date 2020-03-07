@@ -209,7 +209,8 @@ class ExpandSums extends Phase {
       val (disc, createDisc) = findDisc(elemType) match {
         case Some(path) =>
           logger.debug(
-            "Using existing column " + Path(path) + " as discriminator in " + elemType)
+            "Using existing column " + Path(
+              path) + " as discriminator in " + elemType)
           (FwdPath(extendGen :: path.reverse), true)
         case None =>
           logger.debug("No suitable discriminator column found in " + elemType)
@@ -431,8 +432,9 @@ class ExpandSums extends Phase {
 
       // Fix Untyped nulls in else clauses
       case cond @ IfThenElse(clauses) if (clauses.last match {
-            case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) => true;
-            case _                                                       => false
+            case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
+              true;
+            case _ => false
           }) =>
         cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 

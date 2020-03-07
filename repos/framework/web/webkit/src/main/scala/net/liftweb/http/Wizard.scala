@@ -34,9 +34,9 @@ object WizardRules extends Factory with FormVendor {
 
   private def m[T](implicit man: Manifest[T]): Manifest[T] = man
 
-  val allTemplatePath
-      : FactoryMaker[List[String]] = new FactoryMaker[List[String]](() =>
-    List("templates-hidden", "wizard-all")) {}
+  val allTemplatePath: FactoryMaker[List[String]] =
+    new FactoryMaker[List[String]](() =>
+      List("templates-hidden", "wizard-all")) {}
 
   private object currentWizards extends SessionVar[Set[String]](Set())
 
@@ -92,7 +92,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
   @volatile private[this] var _screenList: List[Screen] = Nil
 
   private object ScreenVars
-      extends TransientRequestVar[Map[String, (NonCleanAnyVar[_], Any)]](Map()) {
+      extends TransientRequestVar[Map[String, (NonCleanAnyVar[_], Any)]](
+        Map()) {
     override lazy val __nameSalt = Helpers.nextFuncName
   }
 
@@ -256,7 +257,10 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
 
     renderAll(
       CurrentScreen.is
-        .map(s => Text((s.myScreenNum + 1).toString)), //currentScreenNumber: Box[NodeSeq],
+        .map(s =>
+          Text(
+            (s.myScreenNum + 1).toString
+          )), //currentScreenNumber: Box[NodeSeq],
       Full(Text(screenCount.toString)), //screenCount: Box[NodeSeq],
       wizardTop, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],

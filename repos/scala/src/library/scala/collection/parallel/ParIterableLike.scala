@@ -697,8 +697,12 @@ trait ParIterableLike[
 
   def partition(pred: T => Boolean): (Repr, Repr) = {
     tasksupport.executeAndWaitResult(
-      new Partition(pred, combinerFactory, combinerFactory, splitter) mapResult {
-        p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
+      new Partition(
+        pred,
+        combinerFactory,
+        combinerFactory,
+        splitter) mapResult { p =>
+        (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
       }
     )
   }
@@ -844,13 +848,14 @@ trait ParIterableLike[
     } else {
       val cntx = new DefaultSignalling with AtomicIndexFlag
       cntx.setIndexFlag(Int.MaxValue)
-      tasksupport.executeAndWaitResult(new TakeWhile(
-        0,
-        pred,
-        combinerFactory,
-        splitter assign cntx) mapResult {
-        _._1.resultWithTaskSupport
-      })
+      tasksupport.executeAndWaitResult(
+        new TakeWhile(
+          0,
+          pred,
+          combinerFactory,
+          splitter assign cntx) mapResult {
+          _._1.resultWithTaskSupport
+        })
     }
   }
 
@@ -904,7 +909,12 @@ trait ParIterableLike[
     val cntx = new DefaultSignalling with AtomicIndexFlag
     cntx.setIndexFlag(Int.MaxValue)
     tasksupport.executeAndWaitResult(
-      new Span(0, pred, combinerFactory, combinerFactory, splitter assign cntx) mapResult {
+      new Span(
+        0,
+        pred,
+        combinerFactory,
+        combinerFactory,
+        splitter assign cntx) mapResult {
         _._2.resultWithTaskSupport
       }
     )
@@ -1547,14 +1557,21 @@ trait ParIterableLike[
       cbfBefore: CombinerFactory[U, This],
       cbfAfter: CombinerFactory[U, This],
       protected[this] val pit: IterableSplitter[T])
-      extends Transformer[(Combiner[U, This], Combiner[U, This]), Span[U, This]] {
+      extends Transformer[
+        (Combiner[U, This], Combiner[U, This]),
+        Span[U, This]] {
     @volatile var result: (Combiner[U, This], Combiner[U, This]) = null
     def leaf(prev: Option[(Combiner[U, This], Combiner[U, This])]) =
       if (pos < pit.indexFlag) {
         // val lst = pit.toList
         // val pa = mutable.ParArray(lst: _*)
         // val str = "At leaf we will iterate: " + pa.splitter.toList
-        result = pit.span2combiners(pred, cbfBefore(), cbfAfter()) // do NOT reuse old combiners here, lest ye be surprised
+        result =
+          pit.span2combiners(
+            pred,
+            cbfBefore(),
+            cbfAfter()
+          ) // do NOT reuse old combiners here, lest ye be surprised
         // println("\nAt leaf result is: " + result)
         if (result._2.size > 0) pit.setIndexFlagIfLesser(pos)
       } else {
@@ -1759,7 +1776,9 @@ trait ParIterableLike[
       z: U,
       op: (U, U) => U,
       cbf: CombinerFactory[U, That])
-      extends StrictSplitterCheckTask[Combiner[U, That], FromScanTree[U, That]] {
+      extends StrictSplitterCheckTask[
+        Combiner[U, That],
+        FromScanTree[U, That]] {
     @volatile var result: Combiner[U, That] = null
     def leaf(prev: Option[Combiner[U, That]]) {
       val cb = reuse(prev, cbf())

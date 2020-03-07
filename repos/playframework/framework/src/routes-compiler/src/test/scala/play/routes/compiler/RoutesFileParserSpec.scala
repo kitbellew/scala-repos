@@ -127,21 +127,25 @@ object RoutesFileParserSpec extends Specification {
     }
 
     "parse argument type" in {
-      parseRoute("GET /s p.c.m(i: Int)").call.parameters.get.head.typeName must_== "Int"
+      parseRoute(
+        "GET /s p.c.m(i: Int)").call.parameters.get.head.typeName must_== "Int"
     }
 
     "parse argument default value" in {
-      parseRoute("GET /s p.c.m(i: Int ?= 3)").call.parameters.get.head.default must beSome(
+      parseRoute(
+        "GET /s p.c.m(i: Int ?= 3)").call.parameters.get.head.default must beSome(
         "3")
     }
 
     "parse argument fixed value" in {
-      parseRoute("GET /s p.c.m(i: Int = 3)").call.parameters.get.head.fixed must beSome(
+      parseRoute(
+        "GET /s p.c.m(i: Int = 3)").call.parameters.get.head.fixed must beSome(
         "3")
     }
 
     "parse argument with complex name" in {
-      parseRoute("GET /s p.c.m(`b[]`: List[String] ?= [])").call.parameters must_== Some(
+      parseRoute(
+        "GET /s p.c.m(`b[]`: List[String] ?= [])").call.parameters must_== Some(
         Seq(Parameter("`b[]`", "List[String]", None, Some("[]"))))
     }
 
@@ -161,7 +165,8 @@ object RoutesFileParserSpec extends Specification {
     }
 
     "parse a comment with a route" in {
-      parseRoute("# some comment\nGET /s p.c.m").comments must containTheSameElementsAs(
+      parseRoute(
+        "# some comment\nGET /s p.c.m").comments must containTheSameElementsAs(
         Seq(Comment(" some comment")))
     }
 

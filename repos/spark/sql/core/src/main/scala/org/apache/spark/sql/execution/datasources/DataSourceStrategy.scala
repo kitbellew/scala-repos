@@ -119,7 +119,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         l,
         projects,
         filters,
-        (a, f) => toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray, f))) :: Nil
+        (
+            a,
+            f) =>
+          toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray, f))) :: Nil
 
     case PhysicalOperation(
         projects,
@@ -129,7 +132,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         l,
         projects,
         filters,
-        (a, _) => toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray))) :: Nil
+        (
+            a,
+            _) =>
+          toCatalystRDD(l, a, t.buildScan(a.map(_.name).toArray))) :: Nil
 
     // Scanning partitioned HadoopFsRelation
     case PhysicalOperation(
@@ -434,8 +440,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
     while (resultIdx < requiredColumns.length) {
       val attr = requiredColumns(resultIdx)
-      if (inputIdx < dataColumns.length && requiredColumns(resultIdx) == dataColumns(
-            inputIdx)) {
+      if (inputIdx < dataColumns.length && requiredColumns(
+            resultIdx) == dataColumns(inputIdx)) {
         result.setColumn(resultIdx, input.column(inputIdx))
         inputIdx += 1
       } else {
@@ -545,7 +551,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val mutableRow = new SpecificMutableRow(Seq(bucketColumn.dataType))
     mutableRow(0) = Cast(Literal(value), bucketColumn.dataType).eval(null)
     val bucketIdGeneration = UnsafeProjection.create(
-      HashPartitioning(bucketColumn :: Nil, numBuckets).partitionIdExpression :: Nil,
+      HashPartitioning(
+        bucketColumn :: Nil,
+        numBuckets).partitionIdExpression :: Nil,
       bucketColumn :: Nil)
 
     bucketIdGeneration(mutableRow).getInt(0)

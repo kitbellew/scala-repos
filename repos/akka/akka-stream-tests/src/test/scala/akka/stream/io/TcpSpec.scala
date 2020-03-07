@@ -572,7 +572,11 @@ class TcpSpec
         }
         val address = temporaryServerAddress()
         val probe1 = TestSubscriber.manualProbe[Tcp.IncomingConnection]()
-        val bind = Tcp(system).bind(address.getHostName, address.getPort) // TODO getHostString in Java7
+        val bind =
+          Tcp(system).bind(
+            address.getHostName,
+            address.getPort
+          ) // TODO getHostString in Java7
         // Bind succeeded, we have a local address
         val binding1 =
           Await.result(bind.to(Sink.fromSubscriber(probe1)).run(), 3.second)

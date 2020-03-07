@@ -297,8 +297,13 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   }
 
   //type KeyDude = T forSome {type T}
-  type OtherMapper = KeyedMapper[_, _] // T forSome {type T <: KeyedMapper[KeyDude, T]}
-  type OtherMetaMapper = KeyedMetaMapper[_, _] // T forSome {type T <: KeyedMetaMapper[KeyDude, OtherMapper]}
+  type OtherMapper =
+    KeyedMapper[_, _] // T forSome {type T <: KeyedMapper[KeyDude, T]}
+  type OtherMetaMapper =
+    KeyedMetaMapper[
+      _,
+      _
+    ] // T forSome {type T <: KeyedMetaMapper[KeyDude, OtherMapper]}
   //type OtherMapper = KeyedMapper[_, (T forSome {type T})]
   //type OtherMetaMapper = KeyedMetaMapper[_, OtherMapper]
 
@@ -528,7 +533,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           // For vals, add "AND $fieldname = ? [OR $fieldname = ?]*" to the query. The number
           // of fields you add onto the query is equal to vals.length
           case ByList(field, orgVals) =>
-            val vals = Set(orgVals: _*).toList // faster than list.removeDuplicates
+            val vals =
+              Set(orgVals: _*).toList // faster than list.removeDuplicates
 
             if (vals.isEmpty) updatedWhat = updatedWhat + whereOrAnd + " 0 = 1 "
             else
@@ -1046,7 +1052,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
                 else {
                   val ret: Boolean = DB.prepareStatement(
                     "UPDATE " + MapperRules.quoteTableName
-                      .vend(_dbTableNameLC) + " SET " + whatToSet(toSave) + " WHERE " + thePrimaryKeyField
+                      .vend(_dbTableNameLC) + " SET " + whatToSet(
+                      toSave) + " WHERE " + thePrimaryKeyField
                       .openOrThrowException("Cross your fingers") + " = ?",
                     conn
                   ) { st =>
@@ -1360,8 +1367,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
 
   private val _mappedFields = new HashMap[String, Method];
 
-  private[mapper] var mappedFieldList
-      : List[FieldHolder] = Nil; // new Array[Triple[String, Method, MappedField[Any,Any]]]();
+  private[mapper] var mappedFieldList: List[FieldHolder] =
+    Nil; // new Array[Triple[String, Method, MappedField[Any,Any]]]();
 
   private var mappedCallbacks: List[(String, Method)] = Nil
 

@@ -300,7 +300,8 @@ object SparkSubmit {
 
       // Make sure YARN is included in our build if we're trying to use it
       if (!Utils
-            .classIsLoadable("org.apache.spark.deploy.yarn.Client") && !Utils.isTesting) {
+            .classIsLoadable(
+              "org.apache.spark.deploy.yarn.Client") && !Utils.isTesting) {
         printErrorAndExit(
           "Could not load YARN classes. " +
             "This copy of Spark may not have been compiled with YARN support.")

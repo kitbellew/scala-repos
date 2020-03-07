@@ -500,7 +500,8 @@ class TaskTrackerImplTest
     verify(state, times(1)).update(any())
   }
 
-  test("Should store if state and health changed (no health present at first)") {
+  test(
+    "Should store if state and health changed (no health present at first)") {
     val sampleTask = makeSampleTask(TEST_APP_NAME)
     val status = Protos.TaskStatus.newBuilder
       .setState(Protos.TaskState.TASK_RUNNING)

@@ -72,7 +72,8 @@ object ThriftServiceIfaceExample {
       new TimeoutFilter[Req, Rep](duration, exc, timer)
     }
     val filteredLog =
-      timeoutFilter(2.seconds) andThen uppercaseFilter andThen clientServiceIface.log
+      timeoutFilter(
+        2.seconds) andThen uppercaseFilter andThen clientServiceIface.log
 
     filteredLog(Log.Args("hello", 2))
     // [2] Server received: 'HELLO'

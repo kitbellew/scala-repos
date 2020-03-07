@@ -62,7 +62,8 @@ class ScalaBreakpointMethodFilter(
       case Some(m) =>
         val javaName = inReadAction(
           if (m.isConstructor) "<init>" else ScalaNamesUtil.toJavaName(m.name))
-        javaName == method.name && signatureMatches(method) && !ScalaPositionManager
+        javaName == method.name && signatureMatches(
+          method) && !ScalaPositionManager
           .shouldSkip(location, process)
 
     }

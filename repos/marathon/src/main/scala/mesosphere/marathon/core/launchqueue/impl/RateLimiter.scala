@@ -54,7 +54,9 @@ private[launchqueue] class RateLimiter(clock: Clock) {
         } else {
           log.info(
             s"$message. Task launch delay for [${app.id}] changed from [$priorTimeLeft] to [$timeLeft].")
-          taskLaunchDelays += ((app.id, app.versionInfo.lastConfigChangeVersion) -> newDelay)
+          taskLaunchDelays += ((
+            app.id,
+            app.versionInfo.lastConfigChangeVersion) -> newDelay)
         }
         newDelay.deadline
 

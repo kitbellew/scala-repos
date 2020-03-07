@@ -639,7 +639,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               controllerId,
               controllerEpoch,
               r.deletePartition,
-              Set(new TopicPartition(r.replica.topic, r.replica.partition)).asJava)
+              Set(
+                new TopicPartition(
+                  r.replica.topic,
+                  r.replica.partition)).asJava)
             controller.sendRequest(
               broker,
               ApiKeys.STOP_REPLICA,

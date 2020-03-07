@@ -17,6 +17,7 @@ object Test extends App {
   assert(ProductClass(-1) == NoSymbol)
   assert(ProductClass(0) == UnitClass)
   assert(ProductClass(23) == NoSymbol)
-  assert(
-    (1 to 22).forall { i => ProductClass(i).name.toString == s"Product$i" })
+  assert((1 to 22).forall { i =>
+    ProductClass(i).name.toString == s"Product$i"
+  })
 }

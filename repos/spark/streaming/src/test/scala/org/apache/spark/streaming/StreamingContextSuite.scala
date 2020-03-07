@@ -194,7 +194,8 @@ class StreamingContextSuite
     assert(ssc.scheduler.isStarted === false)
   }
 
-  test("start should set job group and description of streaming jobs correctly") {
+  test(
+    "start should set job group and description of streaming jobs correctly") {
     ssc = new StreamingContext(conf, batchDuration)
     ssc.sc.setJobGroup("non-streaming", "non-streaming", true)
     val sc = ssc.sc
@@ -805,7 +806,9 @@ class StreamingContextSuite
     testForException("no error on adding transformation after start", "start") {
       input.map { x => x * 2 }
     }
-    testForException("no error on adding output operation after start", "start") {
+    testForException(
+      "no error on adding output operation after start",
+      "start") {
       transformed.foreachRDD { rdd => rdd.collect() }
     }
 

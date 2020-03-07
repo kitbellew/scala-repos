@@ -171,7 +171,10 @@ object Configuration {
     val originLine = Option(origin.lineNumber: java.lang.Integer).orNull
     val originUrl = Option(origin.url)
     val originSourceName = Option(origin.filename).orNull
-    new PlayException.ExceptionSource("Configuration error", message, e.orNull) {
+    new PlayException.ExceptionSource(
+      "Configuration error",
+      message,
+      e.orNull) {
       def line = originLine
       def position = null
       def input = originUrl.map(PlayIO.readUrlAsString).orNull

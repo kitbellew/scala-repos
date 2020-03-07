@@ -19,8 +19,8 @@ import akka.dispatch.UnboundedMailbox
 
 private[akka] trait Dispatch { this: ActorCell ⇒
 
-  @volatile private var _mailboxDoNotCallMeDirectly
-      : Mailbox = _ //This must be volatile since it isn't protected by the mailbox status
+  @volatile private var _mailboxDoNotCallMeDirectly: Mailbox =
+    _ //This must be volatile since it isn't protected by the mailbox status
 
   @inline final def mailbox: Mailbox =
     Unsafe.instance

@@ -148,8 +148,8 @@ object CSRFConfig {
         }
       }
 
-      (protectHeaders.isEmpty || foundHeaderValues(protectHeaders)) && !foundHeaderValues(
-        bypassHeaders)
+      (protectHeaders.isEmpty || foundHeaderValues(
+        protectHeaders)) && !foundHeaderValues(bypassHeaders)
     }
 
     CSRFConfig(

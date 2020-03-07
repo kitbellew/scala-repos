@@ -30,7 +30,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 //    rewriteFinalTraitMethodInvocations()
 
     for (request <- collectAndOrderInlineRequests) {
-      val Right(callee) = request.callsite.callee // collectAndOrderInlineRequests returns callsites with a known callee
+      val Right(callee) =
+        request.callsite.callee // collectAndOrderInlineRequests returns callsites with a known callee
 
       // TODO: if the request has downstream requests, create a snapshot to which we could roll back in case some downstream callsite cannot be inlined
       // (Needs to revert modifications to the callee method, but also the call graph)
@@ -449,7 +450,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val calleeParamTypes = calleAsmType.getArgumentTypes
 
     for (argTp <- calleeParamTypes) {
-      val opc = argTp.getOpcode(ISTORE) // returns the correct xSTORE instruction for argTp
+      val opc =
+        argTp.getOpcode(
+          ISTORE
+        ) // returns the correct xSTORE instruction for argTp
       argStores.insert(
         new VarInsnNode(opc, nextLocalIndex)
       ) // "insert" is "prepend" - the last argument is on the top of the stack
@@ -552,7 +556,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // If the callsite has other argument values than the receiver on the stack, these are pop'ed
       // and stored into locals before the null check, so in that case the maxStack doesn't grow.
       val stackSlotForNullCheck =
-        if (!isStaticMethod(callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty)
+        if (!isStaticMethod(
+              callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty)
           1
         else 0
       callsiteStackHeight + stackSlotForNullCheck
@@ -936,10 +941,11 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
             val methodRefClass = classBTypeFromParsedClassfile(mi.owner)
             for {
-              (methodNode, methodDeclClassNode) <- byteCodeRepository.methodNode(
-                methodRefClass.internalName,
-                mi.name,
-                mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
+              (methodNode, methodDeclClassNode) <- byteCodeRepository
+                .methodNode(
+                  methodRefClass.internalName,
+                  mi.name,
+                  mi.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
               methodDeclClass = classBTypeFromParsedClassfile(
                 methodDeclClassNode)
               res <- canInlineCall(

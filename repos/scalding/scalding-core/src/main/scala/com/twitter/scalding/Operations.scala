@@ -296,7 +296,9 @@ package com.twitter.scalding {
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     private[this] def mergeTraversableOnce[K, V: Semigroup](
         items: TraversableOnce[(K, V)]): Map[K, V] = {
-      val mutable = scala.collection.mutable.OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
+      val mutable =
+        scala.collection.mutable
+          .OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
       val innerIter = items.toIterator
       while (innerIter.hasNext) {
         val (k, v) = innerIter.next
@@ -488,7 +490,9 @@ package com.twitter.scalding {
    */
   class SideEffectMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (C, S) => T, // function that takes a context and a tuple and generate a new tuple
+      @transient fn: (
+          C,
+          S) => T, // function that takes a context and a tuple and generate a new tuple
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[S],
@@ -512,7 +516,11 @@ package com.twitter.scalding {
    */
   class SideEffectFlatMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (C, S) => TraversableOnce[T], // function that takes a context and a tuple, returns TraversableOnce of T
+      @transient fn: (
+          C,
+          S) => TraversableOnce[
+        T
+      ], // function that takes a context and a tuple, returns TraversableOnce of T
       ef: C => Unit, // end function to clean up context object
       fields: Fields,
       conv: TupleConverter[S],

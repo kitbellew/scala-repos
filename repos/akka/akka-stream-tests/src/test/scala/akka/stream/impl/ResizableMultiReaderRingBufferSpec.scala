@@ -11,11 +11,17 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
 
   "A ResizableMultiReaderRingBuffer" should {
 
-    "initially be empty (1)" in new Test(iSize = 2, mSize = 4, cursorCount = 1) {
+    "initially be empty (1)" in new Test(
+      iSize = 2,
+      mSize = 4,
+      cursorCount = 1) {
       inspect shouldEqual "0 0 (size=0, writeIx=0, readIx=0, cursors=1)"
     }
 
-    "initially be empty (2)" in new Test(iSize = 4, mSize = 4, cursorCount = 3) {
+    "initially be empty (2)" in new Test(
+      iSize = 4,
+      mSize = 4,
+      cursorCount = 3) {
       inspect shouldEqual "0 0 0 0 (size=0, writeIx=0, readIx=0, cursors=3)"
     }
 
@@ -154,7 +160,8 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
             counter == COUNTER_LIMIT
           } catch {
             case NothingToReadException ⇒
-              log("FAILED\n"); false // ok, we currently can't read, try again later
+              log("FAILED\n");
+              false // ok, we currently can't read, try again later
           }
         }
         override def toString: String =
@@ -169,7 +176,8 @@ class ResizableMultiReaderRingBufferSpec extends WordSpec with ShouldMatchers {
         var counter = 1
         var activeCursors = List
           .tabulate(random.nextInt(8) + 1)(new StressTestCursor(_, 1 << bit))
-        var stillWriting = 2 // give writing a slight bias, so as to somewhat "stretch" the buffer
+        var stillWriting =
+          2 // give writing a slight bias, so as to somewhat "stretch" the buffer
         val buf = new TestBuffer(
           1,
           1 << bit,

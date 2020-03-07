@@ -31,7 +31,9 @@ class FormattedStringParserTest extends SimpleTestCase {
 
   def testFormatSpecifierWithArgument() {
     assertMatches(parse("%d", 1)) {
-      case Injection(ElementText("1"), Some(Specifier(Span(_, 1, 3), "%d"))) :: Nil =>
+      case Injection(
+            ElementText("1"),
+            Some(Specifier(Span(_, 1, 3), "%d"))) :: Nil =>
     }
   }
 
@@ -48,7 +50,8 @@ class FormattedStringParserTest extends SimpleTestCase {
       case UnboundSpecifier(Specifier(Span(_, 1, 3), "%d")) :: Nil =>
     }
     assertMatches(parse("foo %d")) {
-      case Text("foo ") :: UnboundSpecifier(Specifier(Span(_, 5, 7), "%d")) :: Nil =>
+      case Text("foo ") :: UnboundSpecifier(
+            Specifier(Span(_, 5, 7), "%d")) :: Nil =>
     }
   }
 
@@ -80,7 +83,9 @@ class FormattedStringParserTest extends SimpleTestCase {
             Text("B") ::
             Injection(ElementText("2"), Some(Specifier(Span(_, 5, 7), "%s"))) ::
             Text("C") ::
-            Injection(ElementText("3"), Some(Specifier(Span(_, 8, 10), "%c"))) ::
+            Injection(
+              ElementText("3"),
+              Some(Specifier(Span(_, 8, 10), "%c"))) ::
             Text("D") ::
             Nil =>
     }
@@ -104,20 +109,25 @@ class FormattedStringParserTest extends SimpleTestCase {
 
   def testFormatSpecifierWithOutOfBoundPositionalArgument() {
     assertMatches(parse("%3$d", 3, 5)) {
-      case UnboundPositionalSpecifier(Specifier(Span(_, 1, 5), "%d"), 3) :: UnboundExpression(
-            ElementText("3")) ::
+      case UnboundPositionalSpecifier(
+            Specifier(Span(_, 1, 5), "%d"),
+            3) :: UnboundExpression(ElementText("3")) ::
             UnboundExpression(ElementText("5")) :: Nil =>
     }
     assertMatches(parse("foo %1$d")) {
       case Text("foo ") ::
-            UnboundPositionalSpecifier(Specifier(Span(_, 5, 9), "%d"), 1) :: Nil =>
+            UnboundPositionalSpecifier(
+              Specifier(Span(_, 5, 9), "%d"),
+              1) :: Nil =>
     }
   }
 
   def testPositionalArgumentThanOrdinaryArgument() {
     assertMatches(parse("%2$d%s", 3, 5)) {
       case Injection(ElementText("5"), Some(Specifier(Span(_, 1, 5), "%d"))) ::
-            Injection(ElementText("3"), Some(Specifier(Span(_, 5, 7), "%s"))) :: Nil =>
+            Injection(
+              ElementText("3"),
+              Some(Specifier(Span(_, 5, 7), "%s"))) :: Nil =>
     }
   }
 

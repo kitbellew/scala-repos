@@ -59,7 +59,8 @@ object StreamLayout {
     if (inset.size != shape.inlets.size)
       problems ::= "shape has duplicate inlets: " + ins(shape.inlets)
     if (inset != inPorts)
-      problems ::= s"shape has extra ${ins(inset -- inPorts)}, module has extra ${ins(inPorts -- inset)}"
+      problems ::= s"shape has extra ${ins(
+        inset -- inPorts)}, module has extra ${ins(inPorts -- inset)}"
     if (inset.intersect(upstreams.keySet).nonEmpty)
       problems ::= s"found connected inlets ${inset.intersect(upstreams.keySet)}"
     if (outset.size != shape.outlets.size)
@@ -171,7 +172,8 @@ object StreamLayout {
   }
   case class Atomic(module: Module) extends MaterializedValueNode {
     override def toString: String =
-      f"Atomic(${module.attributes.nameOrDefault(module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
+      f"Atomic(${module.attributes.nameOrDefault(
+        module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
   }
   case class Transform(f: Any ⇒ Any, dep: MaterializedValueNode)
       extends MaterializedValueNode {
@@ -899,7 +901,9 @@ private[stream] abstract class MaterializerSession(
     new ju.HashMap[OutPort, Publisher[Any]] :: Nil
   private var matValSrcStack: List[
     ju.Map[MaterializedValueNode, List[MaterializedValueSource[Any]]]] =
-    new ju.HashMap[MaterializedValueNode, List[MaterializedValueSource[Any]]] :: Nil
+    new ju.HashMap[
+      MaterializedValueNode,
+      List[MaterializedValueSource[Any]]] :: Nil
 
   /*
    * Please note that this stack keeps track of the scoped modules wrapped in CopiedModule but not the CopiedModule
@@ -1037,8 +1041,8 @@ private[stream] abstract class MaterializerSession(
     }
 
     if (MaterializerSession.Debug) {
-      println(
-        f"resolving module [${System.identityHashCode(module)}%08x] computation ${module.materializedValueComputation}")
+      println(f"resolving module [${System.identityHashCode(
+        module)}%08x] computation ${module.materializedValueComputation}")
       println(s"  matValSrc = $matValSrc")
       println(s"  matVals =\n    ${materializedValues.asScala
         .map(p ⇒ "%08x".format(System.identityHashCode(p._1)) -> p._2)

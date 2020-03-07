@@ -120,8 +120,9 @@ class SimplifyJumpsTest {
     // Label(22) will be re-written (jump-chain collapsing), so in a second round, the IFGE is still
     // rewritten to IFLT
     val twoRounds =
-      genMethod()(List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(
-        22) :: rest: _*)
+      genMethod()(
+        List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(
+          22) :: rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(twoRounds))
     assertSameCode(
       instructionsFromMethod(twoRounds),

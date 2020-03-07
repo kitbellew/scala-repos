@@ -259,7 +259,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "terminate with a failure if there is an exception thrown" in {
       val t = new RuntimeException("expected")
-      EventFilter[RuntimeException](message = "expected", occurrences = 1) intercept
+      EventFilter[RuntimeException](
+        message = "expected",
+        occurrences = 1) intercept
         whenReady(
           Source
             .unfold((0, 1)) {

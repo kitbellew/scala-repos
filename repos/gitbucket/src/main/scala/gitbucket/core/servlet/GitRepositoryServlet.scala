@@ -220,7 +220,8 @@ class CommitLogHook(
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)
                 // close issues
-                if (refName(1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
+                if (refName(
+                      1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
                   closeIssuesFromMessage(
                     commit.fullMessage,
                     pusher,

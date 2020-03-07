@@ -61,7 +61,8 @@ class DescriptorParserSpec extends EnsimeSpec {
   }
 
   it should "handle examples" in {
-    parseType("Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should ===(
+    parseType(
+      "Lscalaz/syntax/ToApplicativeOps$ApplicativeIdV$$anonfun$η$1;") should ===(
       SZ)
     parseType("Ljava/lang/String;") should ===(S)
     parseType("[Ljava/lang/String;") should ===(A(S))
@@ -70,11 +71,14 @@ class DescriptorParserSpec extends EnsimeSpec {
     parseType("LMyAnnotation;") should ===(ClassName(root, "MyAnnotation"))
 
     // of course, SUN break their own rules for package names (capitals)
-    Try(parseType(
-      "Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;")).success
+    Try(
+      parseType(
+        "Lcom/sun/tools/corba/se/idl/toJavaPortable/NameModifierImpl;")).success
 
     // hmmm, apache, what???? dashes in package names????
-    Try(parseType("Lorg/spark-project/guava/annotations/VisibleForTesting;")).success
+    Try(
+      parseType(
+        "Lorg/spark-project/guava/annotations/VisibleForTesting;")).success
   }
 
   it should "be invertible" in {

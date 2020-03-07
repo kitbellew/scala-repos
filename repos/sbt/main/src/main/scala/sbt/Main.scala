@@ -40,10 +40,12 @@ final class xMain extends xsbti.AppMain {
     import BasicCommandStrings.runEarly
     import BuiltinCommands.{initialize, defaults}
     import CommandStrings.{BootCommand, DefaultsCommand, InitCommand}
-    runManaged(initialState(
-      configuration,
-      Seq(defaults, early),
-      runEarly(DefaultsCommand) :: runEarly(InitCommand) :: BootCommand :: Nil))
+    runManaged(
+      initialState(
+        configuration,
+        Seq(defaults, early),
+        runEarly(DefaultsCommand) :: runEarly(
+          InitCommand) :: BootCommand :: Nil))
   }
 }
 final class ScriptMain extends xsbti.AppMain {
@@ -222,7 +224,9 @@ object BuiltinCommands {
       .flatMap(_ => quiet(e.runTask(Keys.scalaInstance, s)._2))
     (scalaVersion, scalaHome, instance) match {
       case (sv, Some(home), Some(si)) =>
-        "local Scala version " + selectScalaVersion(sv, si) + " at " + home.getAbsolutePath
+        "local Scala version " + selectScalaVersion(
+          sv,
+          si) + " at " + home.getAbsolutePath
       case (_, Some(home), None) =>
         "a local Scala build at " + home.getAbsolutePath
       case (sv, None, Some(si))   => "Scala " + selectScalaVersion(sv, si)

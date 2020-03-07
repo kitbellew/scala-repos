@@ -69,7 +69,8 @@ class FileAndResourceDirectivesSpec
       val file = File.createTempFile("akkaHttpTest", null)
       try {
         writeAllText("ABCDEFGHIJKLMNOPQRSTUVWXYZ", file)
-        Get() ~> addHeader(Range(ByteRange(0, 10))) ~> getFromFile(file) ~> check {
+        Get() ~> addHeader(Range(ByteRange(0, 10))) ~> getFromFile(
+          file) ~> check {
           status shouldEqual StatusCodes.PartialContent
           headers should contain(`Content-Range`(ContentRange(0, 10, 26)))
           responseAs[String] shouldEqual "ABCDEFGHIJK"
@@ -94,7 +95,8 @@ class FileAndResourceDirectivesSpec
             .awaitResult(3.seconds)
             .strictParts
           parts
-            .map(_.entity.data.utf8String) should contain theSameElementsAs List(
+            .map(
+              _.entity.data.utf8String) should contain theSameElementsAs List(
             "BCDEFGHIJK",
             "QRSTUVWXYZ")
         }
@@ -236,7 +238,8 @@ class FileAndResourceDirectivesSpec
       Get("subDirectory/empty.pdf") ~> getFromResourceDirectory("") ~> verify
     }
     "return the resource content from an archive" in {
-      Get("Config.class") ~> getFromResourceDirectory("com/typesafe/config") ~> check {
+      Get("Config.class") ~> getFromResourceDirectory(
+        "com/typesafe/config") ~> check {
         mediaType shouldEqual `application/octet-stream`
         responseEntity
           .toStrict(1.second)
@@ -328,7 +331,9 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render the union of several directories" in {
-      Get() ~> listDirectoryContents(base + "/someDir", base + "/subDirectory") ~> check {
+      Get() ~> listDirectoryContents(
+        base + "/someDir",
+        base + "/subDirectory") ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>
             |<head><title>Index of /</title></head>
@@ -351,7 +356,8 @@ class FileAndResourceDirectivesSpec
     }
     "properly render an empty sub directory with vanity footer" in {
       val settings = 0 // shadow implicit
-      Get("/emptySub/") ~> listDirectoryContents(base + "/subDirectory") ~> check {
+      Get("/emptySub/") ~> listDirectoryContents(
+        base + "/subDirectory") ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>
             |<head><title>Index of /emptySub/</title></head>

@@ -167,16 +167,16 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
            * this current node all the way up to the source.
            */
           case FlatMapNode(_)
-              if hasSummerAsDependantProducer(currentProducer) && allTransDepsMergeableWithSource(
-                dep) =>
+              if hasSummerAsDependantProducer(
+                currentProducer) && allTransDepsMergeableWithSource(dep) =>
             true
           /*
            * if the current node can't be merged with a source, but the transitive deps can
            * then split now.
            */
           case _
-              if ((!mergableWithSource(currentProducer)) && allTransDepsMergeableWithSource(
-                dep)) =>
+              if ((!mergableWithSource(
+                currentProducer)) && allTransDepsMergeableWithSource(dep)) =>
             true
           case _ => false
         }

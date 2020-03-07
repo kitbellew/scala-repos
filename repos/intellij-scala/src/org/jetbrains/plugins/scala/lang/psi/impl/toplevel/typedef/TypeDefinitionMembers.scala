@@ -233,7 +233,9 @@ object TypeDefinitionMembers {
               }
             }
           case f: ScFunction
-              if nonBridge(place, f) && !f.isConstructor && f.parameters.isEmpty =>
+              if nonBridge(
+                place,
+                f) && !f.isConstructor && f.parameters.isEmpty =>
             addSignature(new PhysicalSignature(f, subst))
           case o: ScObject if nonBridge(place, o) =>
             addSignature(new Signature(o.name, Seq.empty, 0, subst, o))
@@ -1025,7 +1027,8 @@ object TypeDefinitionMembers {
           elem match {
             case p: ScClassParameter
                 if processValsForScala && !p.isVar && !p.isVal &&
-                  (checkName(p.name) || checkNameGetSetIs(p.name)) && isScalaProcessor =>
+                  (checkName(p.name) || checkNameGetSetIs(
+                    p.name)) && isScalaProcessor =>
               val clazz = PsiTreeUtil.getContextOfType(
                 p,
                 true,

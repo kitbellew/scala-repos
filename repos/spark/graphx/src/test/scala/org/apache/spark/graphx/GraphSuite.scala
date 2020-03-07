@@ -110,10 +110,12 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       }
       // partitionBy(RandomVertexCut) puts identical edges in the same partition
       assert(
-        nonemptyParts(mkGraph(identicalEdges).partitionBy(RandomVertexCut)).count === 1)
+        nonemptyParts(
+          mkGraph(identicalEdges).partitionBy(RandomVertexCut)).count === 1)
       // partitionBy(EdgePartition1D) puts same-source edges in the same partition
       assert(
-        nonemptyParts(mkGraph(sameSrcEdges).partitionBy(EdgePartition1D)).count === 1)
+        nonemptyParts(
+          mkGraph(sameSrcEdges).partitionBy(EdgePartition1D)).count === 1)
       // partitionBy(CanonicalRandomVertexCut) puts edges that are identical modulo direction into
       // the same partition
       assert(
@@ -121,7 +123,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
           CanonicalRandomVertexCut)).count === 1)
       // partitionBy(EdgePartition2D) puts identical edges in the same partition
       assert(
-        nonemptyParts(mkGraph(identicalEdges).partitionBy(EdgePartition2D)).count === 1)
+        nonemptyParts(
+          mkGraph(identicalEdges).partitionBy(EdgePartition2D)).count === 1)
 
       // partitionBy(EdgePartition2D) ensures that vertices need only be replicated to 2 * sqrt(p)
       // partitions

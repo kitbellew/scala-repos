@@ -203,7 +203,10 @@ trait Implicits {
   private final val sizeLimit = 50000
   private type Infos = List[ImplicitInfo]
   private type Infoss = List[List[ImplicitInfo]]
-  private type InfoMap = LinkedHashMap[Symbol, List[ImplicitInfo]] // A map from class symbols to their associated implicits
+  private type InfoMap =
+    LinkedHashMap[Symbol, List[
+      ImplicitInfo
+    ]] // A map from class symbols to their associated implicits
   private val implicitsCache = new LinkedHashMap[Type, Infoss]
   private val infoMapCache = new LinkedHashMap[Symbol, InfoMap]
   private val improvesCache =
@@ -549,8 +552,8 @@ trait Implicits {
       }
       val dtor1 = stripped(core(dtor))
       val dted1 = stripped(core(dted))
-      overlaps(dtor1, dted1) && (dtor1 =:= dted1 || complexity(dtor1) > complexity(
-        dted1))
+      overlaps(dtor1, dted1) && (dtor1 =:= dted1 || complexity(
+        dtor1) > complexity(dted1))
     }
 
     /** The expected type with all undetermined type parameters replaced with wildcards. */
@@ -969,7 +972,8 @@ trait Implicits {
       def comesBefore(sym: Symbol, owner: Symbol) = {
         val ownerPos = owner.pos.pointOrElse(Int.MaxValue)
         sym.pos.pointOrElse(0) < ownerPos && (if (sym.hasAccessorFlag) {
-                                                val symAcc = sym.accessed // #3373
+                                                val symAcc =
+                                                  sym.accessed // #3373
                                                 symAcc.pos
                                                   .pointOrElse(0) < ownerPos &&
                                                 !(owner.ownerChain exists (o =>
@@ -1151,7 +1155,8 @@ trait Implicits {
             case sr if sr.isDivergent => Nil
             case sr if sr.isFailure   => rankImplicits(otherPending, acc)
             case newBest =>
-              best = newBest // firstPending is our new best, since we already pruned last time around:
+              best =
+                newBest // firstPending is our new best, since we already pruned last time around:
               val pendingImprovingBest = undoLog undo {
                 otherPending filterNot firstPendingImproves
               }
@@ -1275,7 +1280,8 @@ trait Implicits {
               if (infos1.nonEmpty && !(pre =:= infos1.head.pre.prefix)) {
                 log(
                   s"Ignoring implicit members of $pre#$sym as it is also visible via another prefix: ${infos1.head.pre.prefix}")
-                infoMap(sym) = List() // ambiguous prefix - ignore implicit members
+                infoMap(sym) =
+                  List() // ambiguous prefix - ignore implicit members
               }
             case None =>
               if (pre.isStable && !pre.typeSymbol.isExistentiallyBound) {
@@ -1620,7 +1626,10 @@ trait Implicits {
                   |however typetag -> manifest conversion requires Scala reflection, which is not present on the classpath.
                   |to proceed put scala-reflect.jar on your compilation classpath and recompile.""")
           }
-          if (resolveClassTag(pos, tp, allowMaterialization = true) == EmptyTree) {
+          if (resolveClassTag(
+                pos,
+                tp,
+                allowMaterialization = true) == EmptyTree) {
             throw new TypeError(
               pos,
               sm"""to create a manifest here, it is necessary to interoperate with the type tag `$tagInScope` in scope.

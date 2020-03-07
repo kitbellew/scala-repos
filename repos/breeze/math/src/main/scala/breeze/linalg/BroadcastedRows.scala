@@ -35,7 +35,11 @@ object BroadcastedRows {
 
   implicit def canMapValues[T, RowType, ResultRow, Result](
       implicit cc: CanCollapseAxis[T, Axis._1.type, RowType, ResultRow, Result])
-      : CanMapValues[BroadcastedRows[T, RowType], RowType, ResultRow, Result] = {
+      : CanMapValues[
+        BroadcastedRows[T, RowType],
+        RowType,
+        ResultRow,
+        Result] = {
     new CanMapValues[BroadcastedRows[T, RowType], RowType, ResultRow, Result] {
       def apply(
           from: BroadcastedRows[T, RowType],

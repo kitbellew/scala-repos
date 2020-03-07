@@ -92,9 +92,8 @@ object Util {
     val timestamp = formatter.format(new Date)
     val content = versionLine(version) + "\ntimestamp=" + timestamp
     val f = dir / "xsbt.version.properties"
-    if (!f.exists || f.lastModified < lastCompilationTime(analysis) || !containsVersion(
-          f,
-          version)) {
+    if (!f.exists || f.lastModified < lastCompilationTime(
+          analysis) || !containsVersion(f, version)) {
       s.log.info("Writing version information to " + f + " :\n" + content)
       IO.write(f, content)
     }
@@ -172,7 +171,9 @@ object %s {
     inConfig(Compile)(
       Seq(
         scalaKeywords := getScalaKeywords,
-        generateKeywords <<= (sourceManaged, scalaKeywords) map writeScalaKeywords,
+        generateKeywords <<= (
+          sourceManaged,
+          scalaKeywords) map writeScalaKeywords,
         sourceGenerators <+= generateKeywords map (x => Seq(x))
       ))
 }
@@ -197,7 +198,10 @@ object Licensed {
   def settings: Seq[Setting[_]] = Seq(
     notice <<= baseDirectory(_ / "NOTICE"),
     unmanagedResources in Compile <++= (notice, extractLicenses) map { _ +: _ },
-    extractLicenses <<= (baseDirectory in ThisBuild, notice, streams) map extractLicenses0
+    extractLicenses <<= (
+      baseDirectory in ThisBuild,
+      notice,
+      streams) map extractLicenses0
   )
   def extractLicenses0(base: File, note: File, s: TaskStreams): Seq[File] =
     if (!note.exists) Nil

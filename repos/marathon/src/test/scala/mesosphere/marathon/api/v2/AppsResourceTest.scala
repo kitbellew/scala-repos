@@ -216,7 +216,8 @@ class AppsResourceTest
     response.getStatus should be(200)
   }
 
-  test("Replace an existing application using ports instead of portDefinitions") {
+  test(
+    "Replace an existing application using ports instead of portDefinitions") {
     Given("An app and group")
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
@@ -425,12 +426,18 @@ class AppsResourceTest
       Set(app1, app2))
 
     search(cmd = None, id = None, label = Some("b==2")) should be(Set(app1))
-    search(cmd = Some("party"), id = Some("app"), label = Some("a==1")) should be(
-      Set(app1))
-    search(cmd = Some("work"), id = Some("app"), label = Some("a==1")) should be(
-      Set(app2))
-    search(cmd = Some("hard"), id = Some("service-a"), label = Some("a==1")) should be(
-      Set(app1))
+    search(
+      cmd = Some("party"),
+      id = Some("app"),
+      label = Some("a==1")) should be(Set(app1))
+    search(
+      cmd = Some("work"),
+      id = Some("app"),
+      label = Some("a==1")) should be(Set(app2))
+    search(
+      cmd = Some("hard"),
+      id = Some("service-a"),
+      label = Some("a==1")) should be(Set(app1))
     search(cmd = Some(""), id = Some(""), label = Some("")) should be(
       Set(app1, app2))
   }

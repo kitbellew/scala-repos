@@ -342,10 +342,11 @@ trait Erasure {
           !(psyms exists (qsym =>
             (psym ne qsym) && (qsym isNonBottomSubClass psym)))
         val cs = parents.iterator
-          .filter { p => // isUnshadowed is a bit expensive, so try classes first
-            val psym = p.typeSymbol
-            psym.initialize
-            psym.isClass && !psym.isTrait && isUnshadowed(psym)
+          .filter {
+            p => // isUnshadowed is a bit expensive, so try classes first
+              val psym = p.typeSymbol
+              psym.initialize
+              psym.isClass && !psym.isTrait && isUnshadowed(psym)
           }
         (if (cs.hasNext) cs
          else parents.iterator.filter(p => isUnshadowed(p.typeSymbol))).next()

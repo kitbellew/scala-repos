@@ -95,7 +95,8 @@ abstract class RestartNode2SpecSpec
         seedNode1Address = Cluster(seed1System).selfAddress
         List(seed2) foreach { r ⇒
           system
-            .actorSelection(RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
+            .actorSelection(
+              RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
           expectMsg(5.seconds, "ok")
         }
       }

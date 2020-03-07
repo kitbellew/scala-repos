@@ -431,7 +431,8 @@ class LogisticRegression @Since("1.2.0") (
               initialCoefficientsWithInterceptArray(index) = value
           }
           if ($(fitIntercept)) {
-            initialCoefficientsWithInterceptArray(numFeatures) == optInitialModel.get.intercept
+            initialCoefficientsWithInterceptArray(
+              numFeatures) == optInitialModel.get.intercept
           }
         } else if ($(fitIntercept)) {
           /*
@@ -1095,8 +1096,8 @@ private class LogisticAggregator(
 
             features.foreachActive { (index, value) =>
               if (featuresStd(index) != 0.0 && value != 0.0) {
-                localGradientSumArray(index) += multiplier * (value / featuresStd(
-                  index))
+                localGradientSumArray(
+                  index) += multiplier * (value / featuresStd(index))
               }
             }
 

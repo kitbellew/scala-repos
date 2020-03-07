@@ -149,25 +149,25 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
             val resultVN: N[EvaluationError \/ Table] = {
               bytecode map { instrs =>
-                ((systemError _) <-: (StackException(_)) <-: decorate(instrs).disjunction) traverse {
-                  dag =>
-                    applyQueryOptions(opts) {
-                      logger.debug("[QID:%d] Evaluating query".format(qid))
+                ((systemError _) <-: (StackException(_)) <-: decorate(
+                  instrs).disjunction) traverse { dag =>
+                  applyQueryOptions(opts) {
+                    logger.debug("[QID:%d] Evaluating query".format(qid))
 
-                      if (queryLogger.isDebugEnabled) {
-                        eval(dag, evaluationContext, true) map {
-                          _.logged(
-                            queryLogger,
-                            "[QID:" + qid + "]",
-                            "begin result stream",
-                            "end result stream") { slice =>
-                            "size: " + slice.size
-                          }
+                    if (queryLogger.isDebugEnabled) {
+                      eval(dag, evaluationContext, true) map {
+                        _.logged(
+                          queryLogger,
+                          "[QID:" + qid + "]",
+                          "begin result stream",
+                          "end result stream") { slice =>
+                          "size: " + slice.size
                         }
-                      } else {
-                        eval(dag, evaluationContext, true)
                       }
+                    } else {
+                      eval(dag, evaluationContext, true)
                     }
+                  }
                 }
               } getOrElse {
                 // compilation errors will be reported as warnings, but there are no results so

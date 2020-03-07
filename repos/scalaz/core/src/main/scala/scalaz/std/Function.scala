@@ -139,7 +139,9 @@ trait FunctionInstances extends FunctionInstances0 {
         case \/-(b) => g(b)
       }
 
-      override def split[A, B, C, D](f: A => B, g: C => D): ((A, C)) => (B, D) = {
+      override def split[A, B, C, D](
+          f: A => B,
+          g: C => D): ((A, C)) => (B, D) = {
         case (a, c) => (f(a), g(c))
       }
     }

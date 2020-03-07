@@ -483,17 +483,20 @@ object TopicCommand extends Logging {
         parser,
         options,
         reportUnderReplicatedPartitionsOpt,
-        allTopicLevelOpts -- Set(describeOpt) + reportUnavailablePartitionsOpt + topicsWithOverridesOpt)
+        allTopicLevelOpts -- Set(
+          describeOpt) + reportUnavailablePartitionsOpt + topicsWithOverridesOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,
         reportUnavailablePartitionsOpt,
-        allTopicLevelOpts -- Set(describeOpt) + reportUnderReplicatedPartitionsOpt + topicsWithOverridesOpt)
+        allTopicLevelOpts -- Set(
+          describeOpt) + reportUnderReplicatedPartitionsOpt + topicsWithOverridesOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,
         topicsWithOverridesOpt,
-        allTopicLevelOpts -- Set(describeOpt) + reportUnderReplicatedPartitionsOpt + reportUnavailablePartitionsOpt)
+        allTopicLevelOpts -- Set(
+          describeOpt) + reportUnderReplicatedPartitionsOpt + reportUnavailablePartitionsOpt)
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,

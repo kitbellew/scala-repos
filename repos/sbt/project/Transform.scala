@@ -60,8 +60,10 @@ object Transform {
     inputSources <<= inputSourceDirectories.map(dirs =>
       (dirs ** (-DirectoryFilter)).get),
     fileMappings in transformSources <<= transformSourceMappings,
-    transformSources <<= (fileMappings in transformSources, sourceProperties) map {
-      (rs, props) => rs map { case (in, out) => transform(in, out, props) }
+    transformSources <<= (
+      fileMappings in transformSources,
+      sourceProperties) map { (rs, props) =>
+      rs map { case (in, out) => transform(in, out, props) }
     },
     sourceGenerators <+= transformSources
   )
@@ -71,9 +73,12 @@ object Transform {
         ((ss --- sdirs) pair (rebase(sdirs, sm) | flat(sm))).toSeq
     }
   def configSettings = transResourceSettings ++ Seq(
-    resourceProperties <<= (organization, version, scalaVersion, isSnapshot) map {
-      (org, v, sv, isSnapshot) =>
-        Map("org" -> org, "sbt.version" -> v, "scala.version" -> sv)
+    resourceProperties <<= (
+      organization,
+      version,
+      scalaVersion,
+      isSnapshot) map { (org, v, sv, isSnapshot) =>
+      Map("org" -> org, "sbt.version" -> v, "scala.version" -> sv)
     }
   )
   def transResourceSettings = Seq(

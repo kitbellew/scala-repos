@@ -201,7 +201,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
         try actorFor(endpoint.path)
           .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
         catch { case NonFatal(e) ⇒ Future.failed(e) }
-      implicit val ec = camel.system.dispatcher // FIXME which ExecutionContext should be used here?
+      implicit val ec =
+        camel.system.dispatcher // FIXME which ExecutionContext should be used here?
       async.onComplete(action andThen { _ ⇒ callback.done(false) })
       false
     }
@@ -217,7 +218,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =
     path
-      .findActorIn(camel.system) getOrElse (throw new ActorNotRegisteredException(
+      .findActorIn(
+        camel.system) getOrElse (throw new ActorNotRegisteredException(
       path.actorPath))
 
   private[this] def messageFor(exchange: CamelExchangeAdapter) =

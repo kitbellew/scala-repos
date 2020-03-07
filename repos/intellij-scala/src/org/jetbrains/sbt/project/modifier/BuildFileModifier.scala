@@ -58,7 +58,10 @@ trait BuildFileModifier {
                 applyChanges(changes, project, vfsFileToCopy)
                 res = true
               } else {
-                previewChanges(module.getProject, changes, vfsFileToCopy) match {
+                previewChanges(
+                  module.getProject,
+                  changes,
+                  vfsFileToCopy) match {
                   case Some(acceptedChanges) if acceptedChanges.nonEmpty =>
                     applyChanges(acceptedChanges, project, vfsFileToCopy)
                     res = true

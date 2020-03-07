@@ -262,7 +262,8 @@ object PlayRun {
 
     val filter = Set("--no-exit-sbt")
     val filtered = args.filterNot(filter)
-    val devSettings = Seq.empty[(String, String)] // there are no dev settings in a prod website
+    val devSettings =
+      Seq.empty[(String, String)] // there are no dev settings in a prod website
 
     // Parse HTTP port argument
     val (properties, httpPort, httpsPort, httpAddress) = Reloader.filterArgs(

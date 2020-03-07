@@ -74,13 +74,13 @@ trait LinkConverter { self: RequestCache =>
           }
       }
       // convert username@SHA to link
-      .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) {
-        m =>
-          getAccountByUserName(m.group(2)).map { _ =>
-            s"""<a href="${context.path}/${m
-              .group(2)}/${repository.name}/commit/${m
-              .group(3)}">${m.group(2)}@${m.group(3).substring(0, 7)}</a>"""
-          }
+      .replaceBy(
+        ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) { m =>
+        getAccountByUserName(m.group(2)).map { _ =>
+          s"""<a href="${context.path}/${m
+            .group(2)}/${repository.name}/commit/${m
+            .group(3)}">${m.group(2)}@${m.group(3).substring(0, 7)}</a>"""
+        }
       }
       // convert username#Num to link
       .replaceBy(

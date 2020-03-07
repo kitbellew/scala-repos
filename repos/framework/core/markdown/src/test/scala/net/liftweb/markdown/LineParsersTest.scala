@@ -135,7 +135,9 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
 
   it should "parse link definitions" in {
     val p = linkDefinitionStart
-    apply(p, "[foo]: http://example.com/  \"Optional Title Here\"") should equal(
+    apply(
+      p,
+      "[foo]: http://example.com/  \"Optional Title Here\"") should equal(
       new LinkDefinitionStart("foo", "http://example.com/"),
       Some("Optional Title Here"))
     apply(p, "[foo]: http://example.com/") should equal(
@@ -144,10 +146,14 @@ class LineParsersTest extends FlatSpec with ShouldMatchers with LineParsers {
     apply(p, "[Foo]: http://example.com/  'Optional Title Here'") should equal(
       new LinkDefinitionStart("foo", "http://example.com/"),
       Some("Optional Title Here"))
-    apply(p, "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
+    apply(
+      p,
+      "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
       new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
       Some("Optional Title Here"))
-    apply(p, "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
+    apply(
+      p,
+      "[Foo]: http://example.com/?bla=<>  (Optional Title Here)") should equal(
       new LinkDefinitionStart("foo", "http://example.com/?bla=&lt;&gt;"),
       Some("Optional Title Here"))
   }

@@ -12,7 +12,8 @@ trait Intf {
     def zero: M[Nothing]
     def one[T](x: Rep[T]): M[T]
     def guard[T](cond: Rep[Boolean], dann: => Rep[T]): M[T]
-    def isSuccess[T, U](x: Rep[T])(f: Rep[T] => M[U]): Rep[Boolean] // used for isDefinedAt
+    def isSuccess[T, U](
+        x: Rep[T])(f: Rep[T] => M[U]): Rep[Boolean] // used for isDefinedAt
   }
 
   abstract class Maybe[+A] {

@@ -299,8 +299,8 @@ trait StdNames {
     final val ExceptionsATTR: NameType = "Exceptions"
     final val InnerClassesATTR: NameType = "InnerClasses"
     final val MethodParametersATTR: NameType = "MethodParameters"
-    final val RuntimeAnnotationATTR
-        : NameType = "RuntimeVisibleAnnotations" // RetentionPolicy.RUNTIME
+    final val RuntimeAnnotationATTR: NameType =
+      "RuntimeVisibleAnnotations" // RetentionPolicy.RUNTIME
     final val ScalaATTR: NameType = "Scala"
     final val ScalaSignatureATTR: NameType = "ScalaSig"
     final val SignatureATTR: NameType = "Signature"
@@ -339,7 +339,8 @@ trait StdNames {
     val SUPER_PREFIX_STRING = "super$"
     val WHILE_PREFIX = "while$"
     val FRESH_PREFIX = "fresh"
-    val FRESH_SUFFIX = "macro$" // uses a keyword to avoid collisions with mangled names
+    val FRESH_SUFFIX =
+      "macro$" // uses a keyword to avoid collisions with mangled names
     val QUAL_PREFIX = "qual$"
     val NAMEDARG_PREFIX = "x$"
 
@@ -374,12 +375,12 @@ trait StdNames {
     val QUASIQUOTE_TUPLE: NameType = "$quasiquote$tuple$"
     val QUASIQUOTE_UNLIFT_HELPER: String = "$quasiquote$unlift$helper$"
     val MIXIN_CONSTRUCTOR: NameType = "$init$"
-    val MODULE_INSTANCE_FIELD
-        : NameType = NameTransformer.MODULE_INSTANCE_NAME // "MODULE$"
+    val MODULE_INSTANCE_FIELD: NameType =
+      NameTransformer.MODULE_INSTANCE_NAME // "MODULE$"
     val OUTER: NameType = "$outer"
     val OUTER_LOCAL: NameType = OUTER.localName
-    val OUTER_SYNTH
-        : NameType = "<outer>" // emitted by virtual pattern matcher, replaced by outer accessor in explicitouter
+    val OUTER_SYNTH: NameType =
+      "<outer>" // emitted by virtual pattern matcher, replaced by outer accessor in explicitouter
     val ROOTPKG: NameType = "_root_"
     val SELECTOR_DUMMY: NameType = "<unapply-selector>"
     val SELF: NameType = "$this"
@@ -702,8 +703,8 @@ trait StdNames {
     val classOf: NameType = "classOf"
     val clone_ : NameType = "clone"
     val collection: NameType = "collection"
-    val conforms
-        : NameType = "$conforms" // dollar prefix to avoid accidental shadowing
+    val conforms: NameType =
+      "$conforms" // dollar prefix to avoid accidental shadowing
     val copy: NameType = "copy"
     val create: NameType = "create"
     val currentMirror: NameType = "currentMirror"

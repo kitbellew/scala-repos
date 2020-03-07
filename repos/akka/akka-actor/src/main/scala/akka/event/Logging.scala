@@ -54,7 +54,8 @@ trait LoggingBus extends ActorEventBus {
     * subscriptions!
     */
   def setLogLevel(level: LogLevel): Unit = guard.withGuard {
-    val logLvl = _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
+    val logLvl =
+      _logLevel // saves (2 * AllLogLevel.size - 1) volatile reads (because of the loops below)
     for {
       l ← AllLogLevels
       // subscribe if previously ignored and now requested

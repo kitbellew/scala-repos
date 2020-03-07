@@ -186,7 +186,11 @@ object Test extends App {
   println(argName) // should be 4
   test5 { argName = 5 }
   println(argName) // should be 5
-  val a: Unit = test1(a = 10, b = "2") // local values a and b exist, but it's not ambiguous since they're vals
+  val a: Unit =
+    test1(
+      a = 10,
+      b = "2"
+    ) // local values a and b exist, but it's not ambiguous since they're vals
 
   // dependent types and copy method
   val a11 = new A2

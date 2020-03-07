@@ -214,7 +214,10 @@ private class StringIteratorReader(val iter: Iterator[String])
       if (next >= length) { // end of input
         n = -1
       } else {
-        n = Math.min(length - next, len).toInt // lesser of amount of input available or buf size
+        n =
+          Math
+            .min(length - next, len)
+            .toInt // lesser of amount of input available or buf size
         if (n == length - next) {
           str.getChars(
             (next - start).toInt,
@@ -231,7 +234,12 @@ private class StringIteratorReader(val iter: Iterator[String])
         }
         next += n
         if (n < len) {
-          val m = read(cbuf, off + n, len - n) // have more space, fetch more input from iter
+          val m =
+            read(
+              cbuf,
+              off + n,
+              len - n
+            ) // have more space, fetch more input from iter
           if (m != -1) n += m
         }
       }

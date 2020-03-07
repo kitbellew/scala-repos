@@ -518,9 +518,8 @@ trait ContentExtractor {
       if (e.tagName != "p")
     } {
       trace(logPrefix + "CLEANUP  NODE: " + e.id + " class: " + e.attr("class"))
-      if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(e) || !isNodeScoreThreshholdMet(
-            node,
-            e)) {
+      if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(
+            e) || !isNodeScoreThreshholdMet(node, e)) {
         try {
           e.remove()
         } catch {

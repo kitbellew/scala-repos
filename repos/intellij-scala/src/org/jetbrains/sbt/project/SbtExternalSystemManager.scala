@@ -186,7 +186,8 @@ object SbtExternalSystemManager {
         val optName = opt.split('=').head + "="
         userOptions.exists(_.startsWith(optName))
       }
-    Seq(s"-Xmx${settings.getMaximumHeapSize}M") ++ userOptions ++ ideaProxyOptions
+    Seq(
+      s"-Xmx${settings.getMaximumHeapSize}M") ++ userOptions ++ ideaProxyOptions
   }
 
   private def proxyOptionsFor(http: HttpConfigurable): Seq[String] = {

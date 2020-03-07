@@ -204,13 +204,15 @@ package scala.collection.mutable {
     property("headOption") = forAll {
       (set: mutable.TreeSet[K], from: Option[K], until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
-        setView.headOption == Try(keysInView(set.iterator, from, until).next()).toOption
+        setView.headOption == Try(
+          keysInView(set.iterator, from, until).next()).toOption
     }
 
     property("lastOption") = forAll {
       (set: mutable.TreeSet[K], from: Option[K], until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
-        setView.lastOption == Try(keysInView(set.iterator, from, until).max).toOption
+        setView.lastOption == Try(
+          keysInView(set.iterator, from, until).max).toOption
     }
 
     property("clear") = forAll {

@@ -1377,7 +1377,10 @@ object ScalaPsiUtil {
       val sigs =
         TypeDefinitionMembers.getSignatures(clazz).forName(method.name)._1
       (sigs
-        .get(new PhysicalSignature(method, ScSubstitutor.empty)): @unchecked) match {
+        .get(
+          new PhysicalSignature(
+            method,
+            ScSubstitutor.empty)): @unchecked) match {
         //partial match
         case Some(node) if !withSelfType || node.info.namedElement == method =>
           res ++= node.supers.map { _.info }
@@ -2572,7 +2575,11 @@ object ScalaPsiUtil {
                 }
               val fun = ScFunctionType(returnType, params)(project, scalaScope)
               val subbed = sub.subst(fun)
-              extrapolateWildcardBounds(subbed, expected, project, scalaScope) match {
+              extrapolateWildcardBounds(
+                subbed,
+                expected,
+                project,
+                scalaScope) match {
                 case s @ Some(_) => s
                 case _           => Some(subbed)
               }

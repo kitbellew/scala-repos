@@ -503,7 +503,8 @@ private[spark] object BLAS extends Serializable with Logging {
       var colCounterForB = 0 // the column to be updated in C
       if (!B.isTransposed) { // Expensive to put the check inside the loop
         while (colCounterForB < nB) {
-          var colCounterForA = 0 // The column of A to multiply with the row of B
+          var colCounterForA =
+            0 // The column of A to multiply with the row of B
           val Bstart = colCounterForB * kB
           val Cstart = colCounterForB * mA
           while (colCounterForA < kA) {
@@ -520,7 +521,8 @@ private[spark] object BLAS extends Serializable with Logging {
         }
       } else {
         while (colCounterForB < nB) {
-          var colCounterForA = 0 // The column of A to multiply with the row of B
+          var colCounterForA =
+            0 // The column of A to multiply with the row of B
           val Cstart = colCounterForB * mA
           while (colCounterForA < kA) {
             var i = AcolPtrs(colCounterForA)

@@ -175,12 +175,12 @@ trait BasicActionComponent { self: BasicProfile =>
 
   //////////////////////////////////////////////////////////// Query Actions
 
-  type QueryActionExtensionMethods[R, S <: NoStream] <: QueryActionExtensionMethodsImpl[
-    R,
-    S]
-  type StreamingQueryActionExtensionMethods[R, T] <: StreamingQueryActionExtensionMethodsImpl[
-    R,
-    T]
+  type QueryActionExtensionMethods[
+      R,
+      S <: NoStream] <: QueryActionExtensionMethodsImpl[R, S]
+  type StreamingQueryActionExtensionMethods[
+      R,
+      T] <: StreamingQueryActionExtensionMethodsImpl[R, T]
 
   def createQueryActionExtensionMethods[R, S <: NoStream](
       tree: Node,

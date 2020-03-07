@@ -385,7 +385,10 @@ class ScProjectionType private (
             case o: ScObject =>
             case t: ScTypedDefinition =>
               val s: ScSubstitutor =
-                new ScSubstitutor(Map.empty, Map.empty, Some(p1)) followed proj2.actualSubst
+                new ScSubstitutor(
+                  Map.empty,
+                  Map.empty,
+                  Some(p1)) followed proj2.actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
                   return Equivalence.equivInner(

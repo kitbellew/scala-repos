@@ -183,7 +183,10 @@ trait ParSeqLike[
       implicit bf: CanBuildFrom[Repr, S, That]): That =
     if (bf(repr).isCombiner) {
       tasksupport.executeAndWaitResult(
-        new ReverseMap[S, That](f, () => bf(repr).asCombiner, splitter) mapResult {
+        new ReverseMap[S, That](
+          f,
+          () => bf(repr).asCombiner,
+          splitter) mapResult {
           _.resultWithTaskSupport
         }
       )
@@ -248,7 +251,8 @@ trait ParSeqLike[
   def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(
       implicit bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
-    if (patch.isParSeq && bf(repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
+    if (patch.isParSeq && bf(
+          repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
       val that = patch.asParSeq
       val pits = splitter.psplitWithSignalling(
         from,

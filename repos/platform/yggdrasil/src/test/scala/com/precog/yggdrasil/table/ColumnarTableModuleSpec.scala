@@ -340,8 +340,8 @@ trait ColumnarTableModuleSpec[M[+_]]
           JObject(
             JField(
               "key",
-              JArray(
-                JNum(-3090012080927607325L) :: JNum(2875286661755661474L) :: Nil)) ::
+              JArray(JNum(-3090012080927607325L) :: JNum(
+                2875286661755661474L) :: Nil)) ::
               JField(
                 "value",
                 JObject(List(

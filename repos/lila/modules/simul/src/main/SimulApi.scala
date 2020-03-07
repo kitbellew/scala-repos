@@ -50,13 +50,15 @@ private[simul] final class SimulApi(
       _.filter(_.isNotBrandNew).map(_.id).foreach(abort)
     }
     (repo create simul) >>- publish() >>- {
-      timeline ! (Propagate(SimulCreate(me.id, simul.id, simul.fullName)) toFollowersOf me.id)
+      timeline ! (Propagate(
+        SimulCreate(me.id, simul.id, simul.fullName)) toFollowersOf me.id)
     } inject simul
   }
 
   def addApplicant(simulId: Simul.ID, user: User, variantKey: String) {
     WithSimul(repo.findCreated, simulId) { simul =>
-      timeline ! (Propagate(SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id)
+      timeline ! (Propagate(
+        SimulJoin(user.id, simul.id, simul.fullName)) toFollowersOf user.id)
       Variant(variantKey).filter(simul.variants.contains).fold(simul) {
         variant => simul addApplicant SimulApplicant(SimulPlayer(user, variant))
       }
@@ -113,7 +115,9 @@ private[simul] final class SimulApi(
     Sequence(simulId) {
       repo.findCreated(simulId) flatMap {
         _ ?? { simul =>
-          (repo remove simul) >>- sendTo(simul.id, actorApi.Aborted) >>- publish()
+          (repo remove simul) >>- sendTo(
+            simul.id,
+            actorApi.Aborted) >>- publish()
         }
       }
     }

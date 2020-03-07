@@ -36,7 +36,8 @@ object MyBuild extends Build {
 
   lazy val check = InputKey[Unit]("check")
   def parser: Parser[(Configuration, Seq[String])] =
-    (Space ~> token(cp(Compile) | cp(Runtime) | cp(Provided) | cp(Test))) ~ spaceDelimited(
+    (Space ~> token(
+      cp(Compile) | cp(Runtime) | cp(Provided) | cp(Test))) ~ spaceDelimited(
       "<module-names>")
   def cp(c: Configuration): Parser[Configuration] = c.name ^^^ c
   def checkClasspath(cp: Seq[Attributed[File]], names: Set[String]) = {

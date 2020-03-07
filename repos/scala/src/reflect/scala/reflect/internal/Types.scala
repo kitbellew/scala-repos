@@ -263,7 +263,8 @@ trait Types
     // the only thingies that we want to splice are: 1) type parameters, 2) abstract type members
     // the thingies that we don't want to splice are: 1) concrete types (obviously), 2) existential skolems
     def isSpliceable = {
-      this.isInstanceOf[TypeRef] && typeSymbol.isAbstractType && !typeSymbol.isExistential
+      this.isInstanceOf[
+        TypeRef] && typeSymbol.isAbstractType && !typeSymbol.isExistential
     }
 
     def companion = {
@@ -1528,7 +1529,8 @@ trait Types
   }
 
   protected def computeBaseClasses(tpe: Type): List[Symbol] = {
-    val parents = tpe.parents // adriaan says tpe.parents does work sometimes, so call it only once
+    val parents =
+      tpe.parents // adriaan says tpe.parents does work sometimes, so call it only once
     val baseTail =
       (
         if (parents.isEmpty || parents.head.isInstanceOf[PackageTypeRef]) Nil
@@ -2645,7 +2647,9 @@ trait Types
 
     private def areTrivialParams(ps: List[Symbol]): Boolean = ps match {
       case p :: rest =>
-        p.tpe.isTrivial && !typesContain(paramTypes, p) && !(resultType contains p) &&
+        p.tpe.isTrivial && !typesContain(
+          paramTypes,
+          p) && !(resultType contains p) &&
           areTrivialParams(rest)
       case _ =>
         true
@@ -2999,7 +3003,11 @@ trait Types
     def withTypeVars(op: Type => Boolean, depth: Depth): Boolean = {
       val quantifiedFresh = cloneSymbols(quantified)
       val tvars = quantifiedFresh map (tparam => TypeVar(tparam))
-      val underlying1 = underlying.instantiateTypeParams(quantified, tvars) // fuse subst quantified -> quantifiedFresh -> tvars
+      val underlying1 =
+        underlying.instantiateTypeParams(
+          quantified,
+          tvars
+        ) // fuse subst quantified -> quantifiedFresh -> tvars
       op(underlying1) && {
         solve(
           tvars,
@@ -3764,7 +3772,8 @@ trait Types
   abstract class LazyPolyType(override val typeParams: List[Symbol])
       extends LazyType {
     override def safeToString =
-      (if (typeParams.isEmpty) "" else typeParamsString(this)) + super.safeToString
+      (if (typeParams.isEmpty) ""
+       else typeParamsString(this)) + super.safeToString
   }
 
 // Creators ---------------------------------------------------------------
@@ -3858,7 +3867,9 @@ trait Types
     val sym1 = if (sym.isAbstractType) rebind(pre, sym) else sym
     // don't expand cyclical type alias
     // we require that object is initialized, thus info.typeParams instead of typeParams.
-    if (sym1.isAliasType && sameLength(sym1.info.typeParams, args) && !sym1.lockOK)
+    if (sym1.isAliasType && sameLength(
+          sym1.info.typeParams,
+          args) && !sym1.lockOK)
       throw new RecoverableCyclicReference(sym1)
 
     val pre1 = pre match {
@@ -3876,7 +3887,9 @@ trait Types
   def copyTypeRef(tp: Type, pre: Type, sym: Symbol, args: List[Type]): Type =
     tp match {
       case TypeRef(pre0, sym0, _) if pre == pre0 && sym0.name == sym.name =>
-        if (sym.isAliasType && sameLength(sym.info.typeParams, args) && !sym.lockOK)
+        if (sym.isAliasType && sameLength(
+              sym.info.typeParams,
+              args) && !sym.lockOK)
           throw new RecoverableCyclicReference(sym)
 
         TypeRef(pre, sym, args)
@@ -4192,7 +4205,9 @@ trait Types
       tparams: List[Symbol]): List[Symbol] = {
     val eparams = mapWithIndex(tparams)((tparam, i) =>
       clazz
-        .newExistential(newTypeName("?" + i), clazz.pos) setInfo tparam.info.bounds)
+        .newExistential(
+          newTypeName("?" + i),
+          clazz.pos) setInfo tparam.info.bounds)
 
     eparams map (_ substInfo (tparams, eparams))
   }
@@ -4336,8 +4351,8 @@ trait Types
 
     def check(tp1: Type, tp2: Type) = (
       if (tp1.typeSymbol.isClass && tp1.typeSymbol.hasFlag(FINAL))
-        tp1 <:< tp2 || isNumericValueClass(tp1.typeSymbol) && isNumericValueClass(
-          tp2.typeSymbol)
+        tp1 <:< tp2 || isNumericValueClass(
+          tp1.typeSymbol) && isNumericValueClass(tp2.typeSymbol)
       else
         tp1.baseClasses forall (bc =>
           tp2.baseTypeIndex(bc) < 0 || isConsistent(

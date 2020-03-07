@@ -128,8 +128,7 @@ class MetricsBasedResizerSpec
 
       router.sendToAll(await = true)
       router.mockSend(await =
-        false
-      ) // test one message in mailbox and one in each ActorCell
+        false) // test one message in mailbox and one in each ActorCell
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.totalQueueLength shouldBe 3
@@ -259,7 +258,10 @@ class MetricsBasedResizerSpec
       val resizer = DefaultOptimalSizeExploringResizer()
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 =
+        router.sendToAll(await =
+          false
+        ) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
       resizer.reportMessageCount(
@@ -291,7 +293,10 @@ class MetricsBasedResizerSpec
 
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 =
+        router.sendToAll(await =
+          false
+        ) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
       resizer.reportMessageCount(

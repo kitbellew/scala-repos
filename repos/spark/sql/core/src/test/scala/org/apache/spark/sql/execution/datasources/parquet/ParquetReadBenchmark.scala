@@ -92,7 +92,8 @@ object ParquetReadBenchmark {
         }
 
         sqlBenchmark.addCase("SQL Parquet MR") { iter =>
-          withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
+          withSQLConf(
+            SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
             sqlContext.sql("select sum(id) from tempTable").collect()
           }
         }
@@ -185,7 +186,8 @@ object ParquetReadBenchmark {
         }
 
         benchmark.addCase("SQL Parquet MR") { iter =>
-          withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
+          withSQLConf(
+            SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
             sqlContext
               .sql("select sum(c1), sum(length(c2)) from tempTable")
               .collect
@@ -225,7 +227,8 @@ object ParquetReadBenchmark {
         }
 
         benchmark.addCase("SQL Parquet MR") { iter =>
-          withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
+          withSQLConf(
+            SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
             sqlContext.sql("select sum(length(c1)) from tempTable").collect
           }
         }

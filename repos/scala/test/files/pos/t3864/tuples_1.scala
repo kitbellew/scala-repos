@@ -5,7 +5,8 @@ trait EnrichedType[X] {
 trait Tuples {
 
   trait Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
-      extends EnrichedType[Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]] {
+      extends EnrichedType[
+        Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]] {
     def fold[Z](f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => Z): Z = {
       import value._;
       f(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)

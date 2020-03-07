@@ -144,8 +144,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand.exclude(BigInt, OpPow)
   implicit def m_m_UpdateOp[
       @expand.args(Int, Double, Float, Long, BigInt, Complex) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -179,7 +185,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
 
   @expand
   implicit def m_m_UpdateOp[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
         { f.+(_, _) }, {
@@ -261,7 +274,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
 
   @expand
   implicit def m_s_UpdateOp[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
         { f.+(_, _) }, {
@@ -299,8 +319,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand.exclude(BigInt, OpPow)
   implicit def op_M_S[
       @expand.args(Int, Long, Float, Double, BigInt, Complex) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpMod, OpDiv, OpPow) Op]
-      : BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]] = {
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpMod,
+        OpDiv,
+        OpPow) Op]: BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]] = {
     val uop = implicitly[Op.InPlaceImpl2[Matrix[T], T]]
     new BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]] {
       override def bindingMissing(a: Matrix[T], b: T) = {
@@ -314,7 +340,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
 
   @expand
   implicit def op_M_S[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag]
 //  (implicit @expand.sequence[Op]({f.+(_,_)}, {f.-(_,_)}, {f.*(_,_)}, {f.*(_,_)}, {f./(_,_)}, {f.%(_,_)},{f.pow(_,_)}) op: Op.Impl2[T,T,T])
       : BinaryRegistry[Matrix[T], T, Op.type, Matrix[T]] = {
@@ -335,8 +368,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand.exclude(BigInt, OpPow)
   implicit def op_S_M[
       @expand.args(Int, Long, Float, Double, BigInt, Complex) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -374,7 +413,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   }
   @expand
   implicit def op_S_M[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpMulMatrix,
+        OpDiv,
+        OpMod,
+        OpPow) Op <: OpType,
       T: Field: Zero: ClassTag](implicit
       @expand.sequence[Op](
         { f.+(_, _) }, {

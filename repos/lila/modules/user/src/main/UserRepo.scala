@@ -100,7 +100,8 @@ object UserRepo {
   def usernamesByIds(ids: List[ID]) =
     coll.distinct(
       F.username,
-      BSONDocument("_id" -> BSONDocument("$in" -> ids)).some) map lila.db.BSON.asStrings
+      BSONDocument(
+        "_id" -> BSONDocument("$in" -> ids)).some) map lila.db.BSON.asStrings
 
   def orderByGameCount(u1: String, u2: String): Fu[Option[(String, String)]] = {
     coll
@@ -302,7 +303,9 @@ object UserRepo {
   def idExists(id: String): Fu[Boolean] = $count exists id
 
   def engineIds: Fu[Set[String]] =
-    coll.distinct("_id", BSONDocument("engine" -> true).some) map lila.db.BSON.asStringSet
+    coll.distinct(
+      "_id",
+      BSONDocument("engine" -> true).some) map lila.db.BSON.asStringSet
 
   def usernamesLike(username: String, max: Int = 10): Fu[List[String]] = {
     import java.util.regex.Matcher.quoteReplacement

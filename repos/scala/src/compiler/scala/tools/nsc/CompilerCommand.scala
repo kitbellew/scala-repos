@@ -114,7 +114,8 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
         if (debug) "\n" + global.phaseFlagDescriptions else ""
       )
     else if (genPhaseGraph.isSetByUser) {
-      val components = global.phaseNames // global.phaseDescriptors // one initializes
+      val components =
+        global.phaseNames // global.phaseDescriptors // one initializes
       s"Phase graph of ${components.size} components output to ${genPhaseGraph.value}*.dot."
     }
     // would be nicer if we could ask all the options for their helpful messages

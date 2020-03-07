@@ -192,7 +192,8 @@ private[cors] trait AbstractCORSPolicy {
           handleInvalidCORSRequest(request)
         case Some(requestMethod) =>
           val accessControlRequestMethod = requestMethod.trim
-          val methodPredicate = corsConfig.isHttpMethodAllowed // call def to get function val
+          val methodPredicate =
+            corsConfig.isHttpMethodAllowed // call def to get function val
           /* http://www.w3.org/TR/cors/#resource-preflight-requests
            * § 6.2.5
            * If method is not a case-sensitive match for any of the
@@ -222,7 +223,8 @@ private[cors] trait AbstractCORSPolicy {
               }
             }
 
-            val headerPredicate = corsConfig.isHttpHeaderAllowed // call def to get function val
+            val headerPredicate =
+              corsConfig.isHttpHeaderAllowed // call def to get function val
             /* http://www.w3.org/TR/cors/#resource-preflight-requests
              * § 6.2.6
              * If any of the header field-names is not a ASCII case-insensitive
@@ -343,6 +345,9 @@ private[cors] trait AbstractCORSPolicy {
     val originUri = new URI(
       (if (request.secure) "https://" else "http://") + request.host
         .toLowerCase(Locale.ENGLISH))
-    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
+    (
+      hostUri.getScheme,
+      hostUri.getHost,
+      hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
   }
 }

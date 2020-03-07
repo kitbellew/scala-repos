@@ -76,7 +76,9 @@ object BuildSummer {
     if (cacheSize.lowerBound == 0) {
       new SummerBuilder {
         def getSummer[K, V: Semigroup]
-            : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] = {
+            : com.twitter.algebird.util.summer.AsyncSummer[
+              (K, V),
+              Map[K, V]] = {
           new com.twitter.algebird.util.summer.NullSummer[K, V](
             tupleInCounter,
             tupleOutCounter)

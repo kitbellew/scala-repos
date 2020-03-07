@@ -81,7 +81,8 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
     Post("/", helloDeflated) ~> `Content-Encoding`(deflate) ~> route ~> check {
       responseAs[String] shouldEqual "Request content: 'Hello'"
     }
-    Post("/", "hello uncompressed") ~> `Content-Encoding`(identity) ~> route ~> check {
+    Post("/", "hello uncompressed") ~> `Content-Encoding`(
+      identity) ~> route ~> check {
       responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
     }
   }
@@ -121,7 +122,8 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
         UnsupportedRequestEncodingRejection(gzip),
         UnsupportedRequestEncodingRejection(identity))
     }
-    Post("/", "hello uncompressed") ~> `Content-Encoding`(identity) ~> route ~> check {
+    Post("/", "hello uncompressed") ~> `Content-Encoding`(
+      identity) ~> route ~> check {
       responseAs[String] shouldEqual "Request content: 'hello uncompressed'"
     }
   }

@@ -122,7 +122,9 @@ private final class InfoChecker(
         !mapIncludes(
           info.methodsCalledStatically,
           expectedInfo.methodsCalledStatically) ||
-        !mapIncludes(info.staticMethodsCalled, expectedInfo.staticMethodsCalled) ||
+        !mapIncludes(
+          info.staticMethodsCalled,
+          expectedInfo.staticMethodsCalled) ||
         !listIncludes(
           info.instantiatedClasses,
           expectedInfo.instantiatedClasses) ||

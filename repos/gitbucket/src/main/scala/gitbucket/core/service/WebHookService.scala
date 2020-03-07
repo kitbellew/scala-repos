@@ -314,7 +314,9 @@ trait WebHookPullRequestService extends WebHookService {
       context: JsonFormat.Context): Unit = {
     import WebHookService._
     for {
-      ((issue, issueUser, pullRequest, baseOwner, headOwner), webHooks) <- getPullRequestsByRequestForWebhook(
+      (
+        (issue, issueUser, pullRequest, baseOwner, headOwner),
+        webHooks) <- getPullRequestsByRequestForWebhook(
         requestRepository.owner,
         requestRepository.name,
         requestBranch)

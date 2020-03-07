@@ -445,7 +445,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
 
   /** Create a new scope nested in another one with which it shares its elements */
   final def newNestedScope(outer: Scope): Scope = {
-    val nested = newScope // not `new Scope`, we must allow the runtime reflection universe to mixin SynchronizedScopes!
+    val nested =
+      newScope // not `new Scope`, we must allow the runtime reflection universe to mixin SynchronizedScopes!
     nested.elems = outer.elems
     nested.nestinglevel = outer.nestinglevel + 1
     if (outer.hashtable ne null)

@@ -542,13 +542,15 @@ class JobServiceSpec extends TestJobService {
         jobId <- postJobAndGetId(simpleJob)
         res1 <- putStatusRaw(jobId, None)(JObject(Nil))
         res2 <- putStatusRaw(jobId, None)(
-          JObject(JField("message", JString("a")) :: JField(
-            "unit",
-            JString("%")) :: Nil))
+          JObject(
+            JField("message", JString("a")) :: JField(
+              "unit",
+              JString("%")) :: Nil))
         res3 <- putStatusRaw(jobId, None)(
-          JObject(JField("message", JString("a")) :: JField(
-            "progress",
-            JNum(99)) :: Nil))
+          JObject(
+            JField("message", JString("a")) :: JField(
+              "progress",
+              JNum(99)) :: Nil))
         res4 <- putStatusRaw(jobId, None)(JObject(
           JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint

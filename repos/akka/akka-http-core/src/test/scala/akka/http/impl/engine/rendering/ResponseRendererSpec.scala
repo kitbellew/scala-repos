@@ -47,7 +47,9 @@ class ResponseRendererSpec
       }
 
       "a custom Date header" in new TestSetup() {
-        HttpResponse(200, List(Date(DateTime(2011, 8, 26, 10, 11, 59)))) should renderTo {
+        HttpResponse(
+          200,
+          List(Date(DateTime(2011, 8, 26, 10, 11, 59)))) should renderTo {
           """HTTP/1.1 200 OK
             |Date: Fri, 26 Aug 2011 10:11:59 GMT
             |Server: akka-http/1.0.0
@@ -58,7 +60,9 @@ class ResponseRendererSpec
       }
 
       "status 304 and a few headers" in new TestSetup() {
-        HttpResponse(304, List(RawHeader("X-Fancy", "of course"), Age(0))) should renderTo {
+        HttpResponse(
+          304,
+          List(RawHeader("X-Fancy", "of course"), Age(0))) should renderTo {
           """HTTP/1.1 304 Not Modified
             |X-Fancy: of course
             |Age: 0
@@ -411,7 +415,10 @@ class ResponseRendererSpec
         HttpResponse(
           headers =
             List(`Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
-          entity = Chunked(ContentTypes.`text/plain(UTF-8)`, source("Yahoooo"))) should renderTo {
+          entity =
+            Chunked(
+              ContentTypes.`text/plain(UTF-8)`,
+              source("Yahoooo"))) should renderTo {
           """HTTP/1.1 200 OK
               |Transfer-Encoding: fancy, chunked
               |Server: akka-http/1.0.0

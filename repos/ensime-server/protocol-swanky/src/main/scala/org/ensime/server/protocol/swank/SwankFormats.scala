@@ -243,7 +243,10 @@ object SwankProtocolResponse {
   implicit val PackageHint = TypeHint[PackageInfo](SexpSymbol("package"))
   implicit val TypeInfoHint = TypeHint[TypeInfo](SexpSymbol("type"))
   implicit val ArrowTypeHint = TypeHint[ArrowTypeInfo](SexpSymbol("t"))
-  implicit val BasicTypeHint = TypeHint[BasicTypeInfo](SexpSymbol("nil")) // can't be SexpNil because it's not a Symbol
+  implicit val BasicTypeHint =
+    TypeHint[BasicTypeInfo](
+      SexpSymbol("nil")
+    ) // can't be SexpNil because it's not a Symbol
   implicit val DebugVmSuccessHint =
     TypeHint[DebugVmSuccess](SexpSymbol("success"))
   implicit val DebugVmErrorHint = TypeHint[DebugVmError](SexpSymbol("error"))
@@ -803,7 +806,8 @@ object SwankProtocolRequest {
       case SexpList(
           SexpString("+") :: SexpNumber(i) :: SexpString(text) :: Nil) =>
         PatchInsert(i.intValue, text)
-      case SexpList(SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
+      case SexpList(
+          SexpString("*") :: SexpNumber(i) :: SexpNumber(j) :: SexpString(
             text) :: Nil) =>
         PatchReplace(i.intValue, j.intValue, text)
       case SexpList(SexpString("-") :: SexpNumber(i) :: SexpNumber(j) :: Nil) =>

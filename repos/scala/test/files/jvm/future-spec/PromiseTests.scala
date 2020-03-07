@@ -175,7 +175,9 @@ class PromiseTests extends MinimalScalaTest {
     "transform result with map" in {
       f((future, result) =>
         Await
-          .result((future map (_.toString.length)), defaultTimeout) mustBe (result.toString.length))
+          .result(
+            (future map (_.toString.length)),
+            defaultTimeout) mustBe (result.toString.length))
     }
 
     "compose result with flatMap" in {
@@ -211,7 +213,9 @@ class PromiseTests extends MinimalScalaTest {
     "not recover from exception" in {
       f((future, result) =>
         Await
-          .result(future.recover({ case _ => "pigdog" }), defaultTimeout) mustBe (result))
+          .result(
+            future.recover({ case _ => "pigdog" }),
+            defaultTimeout) mustBe (result))
     }
 
     "perform action on result" in {
@@ -269,7 +273,9 @@ class PromiseTests extends MinimalScalaTest {
 
     "retain exception with filter" in {
       f { (future, message) =>
-        intercept[E] { Await.result(future filter (_ => true), defaultTimeout) }.getMessage mustBe (message)
+        intercept[E] {
+          Await.result(future filter (_ => true), defaultTimeout)
+        }.getMessage mustBe (message)
         intercept[E] {
           Await.result(future filter (_ => false), defaultTimeout)
         }.getMessage mustBe (message)

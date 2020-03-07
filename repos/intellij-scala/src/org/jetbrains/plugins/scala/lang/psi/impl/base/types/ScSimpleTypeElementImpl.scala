@@ -365,7 +365,11 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
             if (lastImplicit && i < params.length) {
               //Let's add implicit parameters
-              updateImplicits(nonValueType, withExpected, params, lastImplicit) match {
+              updateImplicits(
+                nonValueType,
+                withExpected,
+                params,
+                lastImplicit) match {
                 case t: ScTypePolymorphicType => nonValueType = t
                 case _                        =>
               }

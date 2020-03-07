@@ -283,8 +283,8 @@ class TopicDeletionManager(
     */
   private def isTopicEligibleForDeletion(topic: String): Boolean = {
     topicsToBeDeleted
-      .contains(topic) && (!isTopicDeletionInProgress(topic) && !isTopicIneligibleForDeletion(
-      topic))
+      .contains(topic) && (!isTopicDeletionInProgress(
+      topic) && !isTopicIneligibleForDeletion(topic))
   }
 
   /**

@@ -311,7 +311,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
         val statsMsg =
-          List(typeMsg, termMsg, implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+          List(
+            typeMsg,
+            termMsg,
+            implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
 
         intp.reporter.printMessage(
           "%2d) %-30s %s%s".format(
@@ -943,7 +946,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case lineComment() => None // line comment, do nothing
       case paste() if !paste.running =>
         paste
-          .transcript(Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
+          .transcript(
+            Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
           case Some(s) => interpretStartingWith(s)
           case _       => None
         }
@@ -1023,7 +1027,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         readerClasses map (cls => Try { mkReader(instantiater(cls)) })
 
       val reader =
-        (readers collect { case Success(reader) => reader } headOption) getOrElse SimpleReader()
+        (readers collect {
+          case Success(reader) => reader
+        } headOption) getOrElse SimpleReader()
 
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {

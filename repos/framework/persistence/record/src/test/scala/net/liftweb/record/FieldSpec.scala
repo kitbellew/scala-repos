@@ -394,8 +394,9 @@ object FieldSpec extends Specification {
       rec.mandatoryDateTimeField,
       Str(dtStr),
       JString(dtStr),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={dtStr} id="mandatoryDateTimeField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        dtStr
+      } id="mandatoryDateTimeField_id"></input>)
     )
   }
 
@@ -430,8 +431,9 @@ object FieldSpec extends Specification {
       rec.mandatoryDecimalField,
       JsRaw(bd.toString),
       JString(bd.toString),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={bd.toString} id="mandatoryDecimalField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        bd.toString
+      } id="mandatoryDecimalField_id"></input>)
     )
   }
 
@@ -450,8 +452,9 @@ object FieldSpec extends Specification {
       rec.mandatoryDoubleField,
       JsRaw(d.toString),
       JDouble(d),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={d.toString} id="mandatoryDoubleField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        d.toString
+      } id="mandatoryDoubleField_id"></input>)
     )
 
     "get set from JInt" in {
@@ -543,8 +546,9 @@ object FieldSpec extends Specification {
       rec.mandatoryIntField,
       JsRaw(num.toString),
       JInt(num),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={num.toString} id="mandatoryIntField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        num.toString
+      } id="mandatoryIntField_id"></input>)
     )
 
     "get set from JDouble" in {
@@ -561,8 +565,9 @@ object FieldSpec extends Specification {
       rec.customIntField,
       JsRaw(num.toString),
       JInt(num),
-      Full(
-        <input name=".*" type="number" tabindex="1" value={num.toString} id="customIntField_id"></input>)
+      Full(<input name=".*" type="number" tabindex="1" value={
+        num.toString
+      } id="customIntField_id"></input>)
     )
   }
 
@@ -599,8 +604,9 @@ object FieldSpec extends Specification {
       rec.mandatoryLongField,
       JsRaw(lng.toString),
       JInt(lng),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={lng.toString} id="mandatoryLongField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        lng.toString
+      } id="mandatoryLongField_id"></input>)
     )
 
     "get set from JDouble" in {
@@ -657,8 +663,9 @@ object FieldSpec extends Specification {
       rec.mandatoryPostalCodeField,
       Str(zip),
       JString(zip),
-      Full(
-        <input name=".*" type="text" maxlength="32" tabindex="1" value={zip} id="mandatoryPostalCodeField_id"></input>)
+      Full(<input name=".*" type="text" maxlength="32" tabindex="1" value={
+        zip
+      } id="mandatoryPostalCodeField_id"></input>)
     )
     "pass validation if field is optional and value is Empty" in {
       S.initIfUninitted(session) {
@@ -851,8 +858,9 @@ object FieldSpec extends Specification {
       rec.mandatoryJodaTimeField,
       Num(dt.getMillis),
       JInt(dt.getMillis),
-      Full(
-        <input name=".*" type="text" tabindex="1" value={dtStr} id="mandatoryJodaTimeField_id"></input>)
+      Full(<input name=".*" type="text" tabindex="1" value={
+        dtStr
+      } id="mandatoryJodaTimeField_id"></input>)
     )
   }
 }

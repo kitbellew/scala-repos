@@ -178,7 +178,8 @@ abstract class RefChecks
           val owners = haveDefaults map (_.owner)
           // constructors of different classes are allowed to have defaults
           if (haveDefaults
-                .exists(x => !x.isConstructor) || owners.distinct.size < haveDefaults.size) {
+                .exists(x =>
+                  !x.isConstructor) || owners.distinct.size < haveDefaults.size) {
             reporter.error(
               clazz.pos,
               "in " + clazz +
@@ -197,7 +198,9 @@ abstract class RefChecks
 
       // Check for doomed attempt to overload applyDynamic
       if (clazz isSubClass DynamicClass) {
-        for ((_, m1 :: m2 :: _) <- (clazz.info member nme.applyDynamic).alternatives groupBy (_.typeParams.length)) {
+        for ((
+               _,
+               m1 :: m2 :: _) <- (clazz.info member nme.applyDynamic).alternatives groupBy (_.typeParams.length)) {
           reporter.error(
             m1.pos,
             "implementation restriction: applyDynamic cannot be overloaded except by methods with different numbers of type parameters, e.g. applyDynamic[T1](method: String)(arg: T1) and applyDynamic[T1, T2](method: String)(arg1: T1, arg2: T2)"
@@ -207,16 +210,16 @@ abstract class RefChecks
 
       // This has become noisy with implicit classes.
       if (settings.warnPolyImplicitOverload && settings.developer) {
-        clazz.info.decls filter (x => x.isImplicit && x.typeParams.nonEmpty) foreach {
-          sym =>
-            // implicit classes leave both a module symbol and a method symbol as residue
-            val alts =
-              clazz.info.decl(sym.name).alternatives filterNot (_.isModule)
-            if (alts.size > 1)
-              alts foreach (x =>
-                reporter.warning(
-                  x.pos,
-                  "parameterized overloaded implicit methods are not visible as view bounds"))
+        clazz.info.decls filter (x =>
+          x.isImplicit && x.typeParams.nonEmpty) foreach { sym =>
+          // implicit classes leave both a module symbol and a method symbol as residue
+          val alts =
+            clazz.info.decl(sym.name).alternatives filterNot (_.isModule)
+          if (alts.size > 1)
+            alts foreach (x =>
+              reporter.warning(
+                x.pos,
+                "parameterized overloaded implicit methods are not visible as view bounds"))
         }
       }
     }
@@ -499,8 +502,8 @@ abstract class RefChecks
             if (isNeitherInClass && !(other.owner isSubClass member.owner))
               emitOverrideError(
                 clazz + " inherits conflicting members:\n  "
-                  + infoStringWithLocation(other) + "  and\n  " + infoStringWithLocation(
-                  member)
+                  + infoStringWithLocation(
+                    other) + "  and\n  " + infoStringWithLocation(member)
                   + "\n(Note: this can be resolved by declaring an override in " + clazz + ".)"
               )
             else
@@ -862,7 +865,8 @@ abstract class RefChecks
 
             abstractClassError(
               true,
-              infoString(member) + " is marked `abstract' and `override'" + explanation)
+              infoString(
+                member) + " is marked `abstract' and `override'" + explanation)
           }
         }
 
@@ -1291,8 +1295,8 @@ abstract class RefChecks
       if (isNonsenseValueClassCompare)
         unrelatedTypes()
       // possibleNumericCount is insufficient or this will warn on e.g. Boolean == j.l.Boolean
-      else if (isWarnable && nullCount == 0 && !(isSpecial(receiver) && isSpecial(
-                 actual))) {
+      else if (isWarnable && nullCount == 0 && !(isSpecial(
+                 receiver) && isSpecial(actual))) {
         // better to have lubbed and lost
         def warnIfLubless(): Unit = {
           val common = global.lub(List(actual.tpe, receiver.tpe))
@@ -1326,7 +1330,8 @@ abstract class RefChecks
     /** Sensibility check examines flavors of equals. */
     def checkSensible(pos: Position, fn: Tree, args: List[Tree]) = fn match {
       case Select(qual, name @ (nme.EQ | nme.NE | nme.eq | nme.ne))
-          if args.length == 1 && isObjectOrAnyComparisonMethod(fn.symbol) && !currentOwner.isSynthetic =>
+          if args.length == 1 && isObjectOrAnyComparisonMethod(
+            fn.symbol) && !currentOwner.isSynthetic =>
         checkSensibleEquals(pos, qual, name, fn.symbol, args.head)
       case _ =>
     }
@@ -1402,7 +1407,10 @@ abstract class RefChecks
           val newFlags = (module.flags | STABLE) & ~MODULE
           val newInfo = NullaryMethodType(module.moduleClass.tpe)
           val accessor =
-            site.newMethod(moduleName, module.pos, newFlags) setInfoAndEnter newInfo
+            site.newMethod(
+              moduleName,
+              module.pos,
+              newFlags) setInfoAndEnter newInfo
 
           DefDef(accessor, Select(This(site), module)) :: Nil
         }
@@ -1464,7 +1472,8 @@ abstract class RefChecks
         }
       case ModuleDef(_, _, _) => eliminateModuleDefs(tree)
       case ValDef(_, _, _, _) =>
-        val tree1 = transform(tree) // important to do before forward reference check
+        val tree1 =
+          transform(tree) // important to do before forward reference check
         if (tree1.symbol.isLazy) tree1 :: Nil
         else {
           val lazySym = tree.symbol.lazyAccessorOrSelf

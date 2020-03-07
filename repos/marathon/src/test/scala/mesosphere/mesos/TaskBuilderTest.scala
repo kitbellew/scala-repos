@@ -323,7 +323,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(resourceOpt("disk").isEmpty)
   }
 
-  test("build creates task with appropriate resource share also preserves role") {
+  test(
+    "build creates task with appropriate resource share also preserves role") {
     val offer = MarathonTestHelper
       .makeBasicOffer(
         cpus = 2.0,

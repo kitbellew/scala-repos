@@ -90,7 +90,9 @@ abstract class RestartNodeSpec
         secondUniqueAddress = Cluster(secondSystem).selfUniqueAddress
         List(first, third) foreach { r ⇒
           system
-            .actorSelection(RootActorPath(r) / "user" / "address-receiver") ! secondUniqueAddress
+            .actorSelection(
+              RootActorPath(
+                r) / "user" / "address-receiver") ! secondUniqueAddress
           expectMsg(5 seconds, "ok")
         }
       }

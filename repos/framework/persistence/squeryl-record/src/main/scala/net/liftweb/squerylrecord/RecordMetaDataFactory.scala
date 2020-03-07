@@ -68,7 +68,11 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
   def build(
       parentMetaData: PosoMetaData[_],
       name: String,
-      property: (Option[Field], Option[Method], Option[Method], Set[Annotation]),
+      property: (
+          Option[Field],
+          Option[Method],
+          Option[Method],
+          Set[Annotation]),
       sampleInstance4OptionTypeDeduction: AnyRef,
       isOptimisticCounter: Boolean): FieldMetaData = {
     if (!isRecord(parentMetaData.clasz) || isOptimisticCounter) {

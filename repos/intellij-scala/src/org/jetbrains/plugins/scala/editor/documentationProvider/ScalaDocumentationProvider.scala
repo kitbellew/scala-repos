@@ -854,14 +854,15 @@ object ScalaDocumentationProvider {
 
         val text = elem match {
           case clazz: ScClass =>
-            "\nclass A {\n " + xText + " \npublic " + getTypeParams(clazz) + "void f" +
+            "\nclass A {\n " + xText + " \npublic " + getTypeParams(
+              clazz) + "void f" +
               getParams(clazz) + " {\n}\n}"
           case typeAlias: ScTypeAlias =>
             xText + "\n class A" + getTypeParams(typeAlias) + " {}"
           case _: ScTypeDefinition => xText + "\nclass A {\n }"
           case f: ScFunction =>
-            "class A {\n" + xText + "\npublic " + getTypeParams(f) + "int f" + getParams(
-              f) + " {}\n}"
+            "class A {\n" + xText + "\npublic " + getTypeParams(
+              f) + "int f" + getParams(f) + " {}\n}"
           case m: PsiMethod =>
             "class A {\n" + m.getText + "\n}"
           case _ => xText + "\nclass A"
@@ -888,7 +889,8 @@ object ScalaDocumentationProvider {
           case e: PsiClass if withDescription =>
             (
               "<b>Description copied from class: </b><a href=\"psi_element://" +
-                escapeHtml(e.qualifiedName) + "\"><code>" + escapeHtml(e.name) + "</code></a><p>",
+                escapeHtml(e.qualifiedName) + "\"><code>" + escapeHtml(
+                e.name) + "</code></a><p>",
               "</p>")
           case _ => ("", "")
         }

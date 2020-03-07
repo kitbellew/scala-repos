@@ -209,7 +209,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
 
     private[this] def advance() {
       if (initialModCount != modCount) sys.error("Concurrent modification")
-      while ((index <= mask) && (table(index) == null || table(index).value == None))
+      while ((index <= mask) && (table(index) == null || table(
+               index).value == None))
         index += 1
     }
 

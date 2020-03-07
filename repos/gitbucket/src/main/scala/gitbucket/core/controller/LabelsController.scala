@@ -98,7 +98,10 @@ trait LabelsControllerBase extends ControllerBase {
         form.labelName,
         form.color.substring(1))
       html.label(
-        getLabel(repository.owner, repository.name, params("labelId").toInt).get,
+        getLabel(
+          repository.owner,
+          repository.name,
+          params("labelId").toInt).get,
         // TODO futility
         countIssueGroupByLabels(
           repository.owner,

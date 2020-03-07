@@ -25,8 +25,10 @@ class SinatraLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("Route with two named parameters replaces both parameters") {
-    url("/foo/:bar/and/:rebar", "bar" -> "moonless", "rebar" -> "midnight") should equal(
-      "/foo/moonless/and/midnight")
+    url(
+      "/foo/:bar/and/:rebar",
+      "bar" -> "moonless",
+      "rebar" -> "midnight") should equal("/foo/moonless/and/midnight")
   }
 
   test("Named of path containing a dot get replaced anyway") {
@@ -64,7 +66,10 @@ class SinatraLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("Unexpected parameters are added as query string") {
-    url("/foo/:bar", "bar" -> "pepper", "unexpected" -> "surprise") should equal(
+    url(
+      "/foo/:bar",
+      "bar" -> "pepper",
+      "unexpected" -> "surprise") should equal(
       "/foo/pepper?unexpected=surprise")
   }
 
@@ -73,8 +78,11 @@ class SinatraLikeUrlGeneratorTest extends FunSuite with Matchers {
   }
 
   test("Many splat parameters get replaced") {
-    url("/mixing-multiple-splats/*/foo/*/*", "made", "in", "japan") should equal(
-      "/mixing-multiple-splats/made/foo/in/japan")
+    url(
+      "/mixing-multiple-splats/*/foo/*/*",
+      "made",
+      "in",
+      "japan") should equal("/mixing-multiple-splats/made/foo/in/japan")
   }
 
   test("Mix named and splat") {

@@ -22,25 +22,40 @@ object HttpErrorHandlerSpec extends Specification {
   "HttpErrorHandler" should {
     def sharedSpecs(errorHandler: HttpErrorHandler) = {
       "render a bad request" in {
-        await(errorHandler.onClientError(FakeRequest(), 400)).header.status must_== 400
+        await(
+          errorHandler
+            .onClientError(FakeRequest(), 400)).header.status must_== 400
       }
       "render forbidden" in {
-        await(errorHandler.onClientError(FakeRequest(), 403)).header.status must_== 403
+        await(
+          errorHandler
+            .onClientError(FakeRequest(), 403)).header.status must_== 403
       }
       "render not found" in {
-        await(errorHandler.onClientError(FakeRequest(), 404)).header.status must_== 404
+        await(
+          errorHandler
+            .onClientError(FakeRequest(), 404)).header.status must_== 404
       }
       "render a generic client error" in {
-        await(errorHandler.onClientError(FakeRequest(), 418)).header.status must_== 418
+        await(
+          errorHandler
+            .onClientError(FakeRequest(), 418)).header.status must_== 418
       }
       "refuse to render something that isn't a client error" in {
-        await(errorHandler.onClientError(FakeRequest(), 500)).header.status must throwAn[
-          IllegalArgumentException]
-        await(errorHandler.onClientError(FakeRequest(), 399)).header.status must throwAn[
-          IllegalArgumentException]
+        await(
+          errorHandler.onClientError(
+            FakeRequest(),
+            500)).header.status must throwAn[IllegalArgumentException]
+        await(
+          errorHandler.onClientError(
+            FakeRequest(),
+            399)).header.status must throwAn[IllegalArgumentException]
       }
       "render a server error" in {
-        await(errorHandler.onServerError(FakeRequest(), new RuntimeException())).header.status must_== 500
+        await(
+          errorHandler.onServerError(
+            FakeRequest(),
+            new RuntimeException())).header.status must_== 500
       }
     }
 

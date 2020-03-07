@@ -4,8 +4,9 @@ object SCL4354 {
 
   implicit def castingScalaListConversion(
       javaList: util.List[_]): { def asScalaListOf[T]: List[T] } = new {
-    def asScalaListOf[T]
-        : List[T] = /*start*/ javaList.asInstanceOf[util.List[T]].asScala.toList /*end*/
+    def asScalaListOf[T]: List[
+      T
+    ] = /*start*/ javaList.asInstanceOf[util.List[T]].asScala.toList /*end*/
   }
 }
 //List[T]

@@ -393,7 +393,9 @@ private[remote] class ReliableDeliverySupervisor(
       writer forward s
   }
 
-  def gated(writerTerminated: Boolean, earlyUngateRequested: Boolean): Receive = {
+  def gated(
+      writerTerminated: Boolean,
+      earlyUngateRequested: Boolean): Receive = {
     case Terminated(_) if !writerTerminated ⇒
       if (earlyUngateRequested)
         self ! Ungate

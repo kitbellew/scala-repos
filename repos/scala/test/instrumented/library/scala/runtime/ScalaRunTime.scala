@@ -328,7 +328,8 @@ object ScalaRunTime {
     // Special casing Unit arrays, the value class which uses a reference array type.
     def arrayToString(x: AnyRef) = {
       if (x.getClass.getComponentType == classOf[BoxedUnit])
-        0 until (array_length(x) min maxElements) map (_ => "()") mkString ("Array(", ", ", ")")
+        0 until (array_length(x) min maxElements) map (_ =>
+          "()") mkString ("Array(", ", ", ")")
       else
         WrappedArray make x take maxElements map inner mkString ("Array(", ", ", ")")
     }

@@ -201,7 +201,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               if (leaderIsrAndControllerEpoch.leaderAndIsr.leader == replicaId)
                 throw new StateChangeFailedException(
                   "Replica %d for partition %s cannot be moved to NewReplica"
-                    .format(replicaId, topicAndPartition) + "state as it is being requested to become leader")
+                    .format(
+                      replicaId,
+                      topicAndPartition) + "state as it is being requested to become leader")
               brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
                 List(replicaId),
                 topic,
@@ -486,7 +488,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     * in zookeeper
     */
   private def initializeReplicaState() {
-    for ((topicPartition, assignedReplicas) <- controllerContext.partitionReplicaAssignment) {
+    for ((
+           topicPartition,
+           assignedReplicas) <- controllerContext.partitionReplicaAssignment) {
       val topic = topicPartition.topic
       val partition = topicPartition.partition
       assignedReplicas.foreach { replicaId =>

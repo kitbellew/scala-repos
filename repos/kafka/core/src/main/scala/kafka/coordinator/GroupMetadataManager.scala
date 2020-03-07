@@ -466,7 +466,8 @@ class GroupMetadataManager(
               val loadedGroups = mutable.Map[String, GroupMetadata]()
               val removedGroups = mutable.Set[String]()
 
-              while (currOffset < getHighWatermark(offsetsPartition) && !shuttingDown
+              while (currOffset < getHighWatermark(
+                       offsetsPartition) && !shuttingDown
                        .get()) {
                 buffer.clear()
                 val messages = log

@@ -122,14 +122,13 @@ class HttpHeaderParserSpec
     }
 
     "retrieve a cached header with a case-insensitive header-name match" in new TestSetup() {
-      parseAndCache("Connection: close\r\nx")("coNNection: close\r\nx") shouldEqual Connection(
-        "close")
+      parseAndCache("Connection: close\r\nx")(
+        "coNNection: close\r\nx") shouldEqual Connection("close")
     }
 
     "parse and cache a modelled header" in new TestSetup() {
-      parseAndCache("Host: spray.io:123\r\nx")("HOST: spray.io:123\r\nx") shouldEqual Host(
-        "spray.io",
-        123)
+      parseAndCache("Host: spray.io:123\r\nx")(
+        "HOST: spray.io:123\r\nx") shouldEqual Host("spray.io", 123)
     }
 
     "parse and cache an invalid modelled header as RawHeader" in new TestSetup() {
@@ -142,7 +141,8 @@ class HttpHeaderParserSpec
     }
 
     "parse and cache an X-Forwarded-For with a hostname in it as a RawHeader" in new TestSetup() {
-      parseAndCache("X-Forwarded-For: 1.2.3.4, akka.io\r\nx")() shouldEqual RawHeader(
+      parseAndCache(
+        "X-Forwarded-For: 1.2.3.4, akka.io\r\nx")() shouldEqual RawHeader(
         "x-forwarded-for",
         "1.2.3.4, akka.io")
     }
@@ -178,10 +178,12 @@ class HttpHeaderParserSpec
     }
 
     "parse and cache a header with UTF8 chars in the value" in new TestSetup() {
-      parseAndCache("2-UTF8-Bytes: árvíztűrő ütvefúrógép\r\nx")() shouldEqual RawHeader(
+      parseAndCache(
+        "2-UTF8-Bytes: árvíztűrő ütvefúrógép\r\nx")() shouldEqual RawHeader(
         "2-UTF8-Bytes",
         "árvíztűrő ütvefúrógép")
-      parseAndCache("3-UTF8-Bytes: The € or the $?\r\nx")() shouldEqual RawHeader(
+      parseAndCache(
+        "3-UTF8-Bytes: The € or the $?\r\nx")() shouldEqual RawHeader(
         "3-UTF8-Bytes",
         "The € or the $?")
       parseAndCache(
@@ -192,9 +194,12 @@ class HttpHeaderParserSpec
     }
 
     "produce an error message for lines with an illegal header name" in new TestSetup() {
-      the[ParsingException] thrownBy parseLine(" Connection: close\r\nx") should have message "Illegal character ' ' in header name"
-      the[ParsingException] thrownBy parseLine("Connection : close\r\nx") should have message "Illegal character ' ' in header name"
-      the[ParsingException] thrownBy parseLine("Connec/tion: close\r\nx") should have message "Illegal character '/' in header name"
+      the[ParsingException] thrownBy parseLine(
+        " Connection: close\r\nx") should have message "Illegal character ' ' in header name"
+      the[ParsingException] thrownBy parseLine(
+        "Connection : close\r\nx") should have message "Illegal character ' ' in header name"
+      the[ParsingException] thrownBy parseLine(
+        "Connec/tion: close\r\nx") should have message "Illegal character '/' in header name"
     }
 
     "produce an error message for lines with a too-long header name" in new TestSetup() {

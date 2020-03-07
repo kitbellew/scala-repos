@@ -1292,7 +1292,9 @@ class KafkaController(
       replicasToReceiveRequest: Seq[Int],
       newAssignedReplicas: Seq[Int]) {
     brokerRequestBatch.newBatch()
-    updateLeaderEpoch(topicAndPartition.topic, topicAndPartition.partition) match {
+    updateLeaderEpoch(
+      topicAndPartition.topic,
+      topicAndPartition.partition) match {
       case Some(updatedLeaderIsrAndControllerEpoch) =>
         try {
           brokerRequestBatch.addLeaderAndIsrRequestForBrokers(

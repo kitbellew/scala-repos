@@ -713,8 +713,10 @@ private[deploy] class Master(
     val oneExecutorPerWorker = coresPerExecutor.isEmpty
     val memoryPerExecutor = app.desc.memoryPerExecutorMB
     val numUsable = usableWorkers.length
-    val assignedCores = new Array[Int](numUsable) // Number of cores to give to each worker
-    val assignedExecutors = new Array[Int](numUsable) // Number of new executors on each worker
+    val assignedCores =
+      new Array[Int](numUsable) // Number of cores to give to each worker
+    val assignedExecutors =
+      new Array[Int](numUsable) // Number of new executors on each worker
     var coresToAssign =
       math.min(app.coresLeft, usableWorkers.map(_.coresFree).sum)
 

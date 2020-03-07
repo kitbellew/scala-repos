@@ -18,7 +18,8 @@ case class ScalaTool(
   //  `%SCALA_HOME%`) can be specified in a platform independent way (e.g.
   //  `@SCALA_HOME@`) and automatically translated for you.
   def patchedToolScript(template: String, forWindows: Boolean) = {
-    val varRegex = """@(\w+)@""" // the group should be able to capture each of the keys of the map below
+    val varRegex =
+      """@(\w+)@""" // the group should be able to capture each of the keys of the map below
     val platformClasspath =
       if (forWindows)
         classpath.mkString(";").replace('/', '\\').replaceAll(varRegex, "%$1%")

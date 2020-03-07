@@ -78,7 +78,9 @@ trait PairOperators[K, V] extends Operators[(K, V)] {
 
   def foldArguments =
     for {
-      ((kinit, kop), (vinit, vop)) <- koperators.foldArguments zip voperators.foldArguments
+      (
+        (kinit, kop),
+        (vinit, vop)) <- koperators.foldArguments zip voperators.foldArguments
     } yield (
       (kinit, vinit),
       new Function2[(K, V), (K, V), (K, V)] {
@@ -88,7 +90,9 @@ trait PairOperators[K, V] extends Operators[(K, V)] {
 
   def addAllTraversables =
     for {
-      (kt, vt) <- koperators.addAllTraversables zip voperators.addAllTraversables
+      (
+        kt,
+        vt) <- koperators.addAllTraversables zip voperators.addAllTraversables
     } yield kt.toIterable zip vt.toIterable
 
   def newArray(sz: Int) = new Array[(K, V)](sz)

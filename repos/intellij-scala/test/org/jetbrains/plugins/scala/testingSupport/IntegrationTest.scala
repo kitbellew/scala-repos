@@ -76,7 +76,8 @@ trait IntegrationTest {
         val presentation =
           root.getValue.asInstanceOf[TreeElement].getPresentation
         presentation
-          .isInstanceOf[TestItemRepresentation] && presentation.getPresentableText == nodeName &&
+          .isInstanceOf[
+            TestItemRepresentation] && presentation.getPresentableText == nodeName &&
         presentation
           .asInstanceOf[TestItemRepresentation]
           .testStatus == status &&

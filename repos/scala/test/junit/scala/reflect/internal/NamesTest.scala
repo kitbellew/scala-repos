@@ -21,7 +21,8 @@ class NamesTest {
   val fy = newTypeName("fisch")
 
   val uy = newTypeName("uhu")
-  val u = uy.toTermName // calling toTermName after constructing a typeName. This tests the fact
+  val u =
+    uy.toTermName // calling toTermName after constructing a typeName. This tests the fact
   // that creating a typeName always also first creates a termName. There is
   // an assertion for that in toTermName.
 

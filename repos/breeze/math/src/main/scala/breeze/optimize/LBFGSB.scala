@@ -193,8 +193,8 @@ class LBFGSB(
       c = c + p :* deltaT
 
       val bRowOfW: DenseVector[Double] = W(b, ::).t
-      fDerivative += deltaT * fSecondDerivative + g(b) * g(b) + theta * g(b) * zb - (bRowOfW.t :* g(
-        b)) * (M * c)
+      fDerivative += deltaT * fSecondDerivative + g(b) * g(b) + theta * g(
+        b) * zb - (bRowOfW.t :* g(b)) * (M * c)
       fSecondDerivative += -1.0 * theta * g(b) * g(b) - 2.0 * (g(b) * (bRowOfW
         .dot(M * p))) - g(b) * g(b) * (bRowOfW.t * (M * bRowOfW))
       p += (bRowOfW :* g(b));

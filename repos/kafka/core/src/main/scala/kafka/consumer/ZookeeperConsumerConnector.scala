@@ -394,8 +394,9 @@ private[kafka] class ZookeeperConsumerConnector(
         case (topic, partitionTopicInfos) =>
           partitionTopicInfos.map {
             case (partition, info) =>
-              TopicAndPartition(info.topic, info.partitionId) -> OffsetAndMetadata(
-                info.getConsumeOffset())
+              TopicAndPartition(
+                info.topic,
+                info.partitionId) -> OffsetAndMetadata(info.getConsumeOffset())
           }
       }.toSeq: _*)
 

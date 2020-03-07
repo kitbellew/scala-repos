@@ -404,12 +404,14 @@ class ExecutorAllocationManagerSuite
     onExecutorIdle(manager, "2")
     assert(removeTimes(manager)("2") !== firstRemoveTime) // different executor
     assert(
-      removeTimes(manager)("2") === clock.getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)(
+        "2") === clock.getTimeMillis + executorIdleTimeout * 1000)
     clock.advance(400L)
     onExecutorIdle(manager, "3")
     assert(removeTimes(manager)("3") !== firstRemoveTime)
     assert(
-      removeTimes(manager)("3") === clock.getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)(
+        "3") === clock.getTimeMillis + executorIdleTimeout * 1000)
     assert(removeTimes(manager).size === 3)
     assert(removeTimes(manager).contains("2"))
     assert(removeTimes(manager).contains("3"))
@@ -872,7 +874,8 @@ class ExecutorAllocationManagerSuite
         Map("host2" -> 1, "host3" -> 2, "host4" -> 1, "host5" -> 2))
   }
 
-  test("SPARK-8366: maxNumExecutorsNeeded should properly handle failed tasks") {
+  test(
+    "SPARK-8366: maxNumExecutorsNeeded should properly handle failed tasks") {
     sc = createSparkContext()
     val manager = sc.executorAllocationManager.get
     assert(maxNumExecutorsNeeded(manager) === 0)

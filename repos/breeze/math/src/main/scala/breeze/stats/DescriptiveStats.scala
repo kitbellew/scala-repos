@@ -296,8 +296,11 @@ trait DescriptiveStats {
     implicit def reduce[T, @expand.args(Double, Complex, Float, Int) Scalar](
         implicit
         iter: CanTraverseValues[T, Scalar],
-        @expand.sequence[Scalar](Double.NaN, Complex.nan, 0.0f, 0) initialValue: Scalar)
-        : Impl[T, ModeResult[Scalar]] =
+        @expand.sequence[Scalar](
+          Double.NaN,
+          Complex.nan,
+          0.0f,
+          0) initialValue: Scalar): Impl[T, ModeResult[Scalar]] =
       new Impl[T, ModeResult[Scalar]] {
         def apply(v: T): ModeResult[Scalar] = {
           val visitor = new ModeVisitor[Scalar](initialValue)

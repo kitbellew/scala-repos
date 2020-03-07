@@ -304,7 +304,9 @@ class ActorSystemSpec
         for (i ← 1 to 3)
           yield system.actorOf(Props[ActorSystemSpec.Waves]) ? 50000
       Await
-        .result(Future.sequence(waves), timeout.duration + 5.seconds) should ===(
+        .result(
+          Future.sequence(waves),
+          timeout.duration + 5.seconds) should ===(
         Vector("done", "done", "done"))
     }
 

@@ -593,25 +593,23 @@ class DenseMatrixTest
     assert(sum(A, Axis._0) === DenseVector(3.0, 7.0).t)
     assert(sum(A(::, *)) === DenseVector(3.0, 7.0).t)
     assert(
-      sum(DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)), Axis._0) === DenseVector(
-        3.0,
-        7.0,
-        11.0).t)
+      sum(
+        DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)),
+        Axis._0) === DenseVector(3.0, 7.0, 11.0).t)
     assert(
-      sum(DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)), Axis._0) === DenseVector(
-        8.0,
-        13.0).t)
+      sum(
+        DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)),
+        Axis._0) === DenseVector(8.0, 13.0).t)
 
     assert(sum(A, Axis._1) === DenseVector(4.0, 6.0))
     assert(
-      sum(DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)), Axis._1) === DenseVector(
-        9.0,
-        12.0))
+      sum(
+        DenseMatrix((1.0, 3.0, 5.0), (2.0, 4.0, 6.0)),
+        Axis._1) === DenseVector(9.0, 12.0))
     assert(
-      sum(DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)), Axis._1) === DenseVector(
-        4.0,
-        6.0,
-        11.0))
+      sum(
+        DenseMatrix((1.0, 3.0), (2.0, 4.0), (5.0, 6.0)),
+        Axis._1) === DenseVector(4.0, 6.0, 11.0))
     assert(sum(A) === 10.0)
   }
 
@@ -756,10 +754,11 @@ class DenseMatrixTest
     assert(
       area === DenseMatrix((3, 4, 5, 6, 7), (3, 4, 5, 6, 7), (3, 4, 5, 6, 7)))
 
-    assert(area.t === DenseMatrix(
-      (3, 4, 5, 6, 7),
-      (3, 4, 5, 6, 7),
-      (3, 4, 5, 6, 7)).t)
+    assert(
+      area.t === DenseMatrix(
+        (3, 4, 5, 6, 7),
+        (3, 4, 5, 6, 7),
+        (3, 4, 5, 6, 7)).t)
 
     val sl2t = area.t(0 until area.cols, 1 until area.rows)
     assert(

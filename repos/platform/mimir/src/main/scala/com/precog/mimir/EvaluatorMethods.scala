@@ -183,7 +183,8 @@ trait EvaluatorMethodsModule[M[+_]]
 
     def buildIdShuffleSpec(indexes: Vector[Int]): TransSpec1 = {
       indexes map { idx =>
-        trans.WrapArray(DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
+        trans.WrapArray(
+          DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
       } reduceLeft { trans.InnerArrayConcat(_, _) }
     }
   }

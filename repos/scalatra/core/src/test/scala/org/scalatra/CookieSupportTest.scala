@@ -91,7 +91,8 @@ class CookieSupportTest extends ScalatraFunSuite {
     }
   }
 
-  test("POST /set-http-only-cookie should set the HttpOnly flag of the cookie") {
+  test(
+    "POST /set-http-only-cookie should set the HttpOnly flag of the cookie") {
     post("/foo/set-http-only-cookie", "cookieval" -> "whatever") {
       response.getHeader("Set-Cookie") should include("HttpOnly")
     }
@@ -117,7 +118,9 @@ class CookieSupportTest extends ScalatraFunSuite {
     session {
       post(
         "/foo/setcookie",
-        Map("cookieval" -> "The value", "anothercookieval" -> "Another Cookie")) {
+        Map(
+          "cookieval" -> "The value",
+          "anothercookieval" -> "Another Cookie")) {
         body should equal("OK")
       }
       get("/foo/getcookie") {

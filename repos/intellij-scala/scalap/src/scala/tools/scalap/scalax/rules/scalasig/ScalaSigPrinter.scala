@@ -574,7 +574,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         })
       case TypeRefType(NoPrefixType, symbol: TypeSymbol, typeArgs)
           if currentTypeParameters.isDefinedAt(symbol) =>
-        sep + processName(currentTypeParameters.getOrElse(symbol, symbol.name)) + typeArgString(
+        sep + processName(
+          currentTypeParameters.getOrElse(symbol, symbol.name)) + typeArgString(
           typeArgs)
       case TypeRefType(prefix, symbol, typeArgs) =>
         sep + (symbol.path match {
@@ -617,7 +618,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                     case AnnotatedType(typeRef, _) =>
                       checkContainsSelf(Some(typeRef), parent)
                     case AnnotatedWithSelfType(typeRef, symbol, _) =>
-                      checkContainsSelf(Some(typeRef), parent) || symbol == parent
+                      checkContainsSelf(
+                        Some(typeRef),
+                        parent) || symbol == parent
                     case ExistentialType(typeRef, symbols) =>
                       checkContainsSelf(Some(typeRef), parent) || symbols
                         .contains(parent)
@@ -698,7 +701,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       case NullaryMethodType(resultType)     => toString(resultType, sep)
 
       case PolyType(typeRef, symbols) =>
-        "({ type λ" + typeParamString(symbols) + " = " + toString(typeRef, sep) + " })#λ"
+        "({ type λ" + typeParamString(symbols) + " = " + toString(
+          typeRef,
+          sep) + " })#λ"
       case PolyTypeWithCons(typeRef, symbols, cons) =>
         typeParamString(symbols) + cons + toString(typeRef, sep)
       case AnnotatedType(typeRef, attribTreeRefs) =>

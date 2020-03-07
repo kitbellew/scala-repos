@@ -99,7 +99,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test("SequenceFiles") {
     sc = new SparkContext("local", "test")
     val outputDir = new File(tempDir, "output").getAbsolutePath
-    val nums = sc.makeRDD(1 to 3).map(x => (x, "a" * x)) // (1,a), (2,aa), (3,aaa)
+    val nums =
+      sc.makeRDD(1 to 3).map(x => (x, "a" * x)) // (1,a), (2,aa), (3,aaa)
     nums.saveAsSequenceFile(outputDir)
     // Try reading the output back as a SequenceFile
     val output = sc.sequenceFile[IntWritable, Text](outputDir)
@@ -180,7 +181,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
   test("implicit conversions in reading SequenceFiles") {
     sc = new SparkContext("local", "test")
     val outputDir = new File(tempDir, "output").getAbsolutePath
-    val nums = sc.makeRDD(1 to 3).map(x => (x, "a" * x)) // (1,a), (2,aa), (3,aaa)
+    val nums =
+      sc.makeRDD(1 to 3).map(x => (x, "a" * x)) // (1,a), (2,aa), (3,aaa)
     nums.saveAsSequenceFile(outputDir)
     // Similar to the tests above, we read a SequenceFile, but this time we pass type params
     // that are convertable to Writable instead of calling sequenceFile[IntWritable, Text]
@@ -480,7 +482,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test("prevent user from overwriting the non-empty directory (old Hadoop API)") {
+  test(
+    "prevent user from overwriting the non-empty directory (old Hadoop API)") {
     sc = new SparkContext("local", "test")
     val randomRDD =
       sc.parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
@@ -517,7 +520,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test("prevent user from overwriting the non-empty directory (new Hadoop API)") {
+  test(
+    "prevent user from overwriting the non-empty directory (new Hadoop API)") {
     sc = new SparkContext("local", "test")
     val randomRDD = sc.parallelize(
       Array(("key1", "a"), ("key2", "a"), ("key3", "b"), ("key4", "c")),

@@ -85,7 +85,8 @@ object Cross {
           }
 
         val isForceGc =
-          getOpt(Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
+          getOpt(
+            Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
         // This is how to get the interval, but ignore it, and just forcegc
         // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
         if (isForceGc) {
@@ -104,7 +105,8 @@ object Cross {
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.
   private[this] def delegateToGlobal[T](key: ScopedKey[T]): Setting[_] =
-    SettingKey[T](key.key) in key.scope := (SettingKey[T](key.key) in GlobalScope).value
+    SettingKey[T](key.key) in key.scope := (SettingKey[T](
+      key.key) in GlobalScope).value
 
   @deprecated("No longer used.", "0.13.0")
   def crossExclude(s: Setting[_]): Boolean =

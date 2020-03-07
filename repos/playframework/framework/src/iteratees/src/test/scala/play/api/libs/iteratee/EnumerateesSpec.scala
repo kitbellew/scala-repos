@@ -334,8 +334,9 @@ object EnumerateesSpec
         }
         val sum = Iteratee.fold[Int, Int](0)(_ + _)(sumEC)
         val enumerator = Enumerator(1, 2, 3, 4, 5, 6, 7, 8, 9)
-        Await.result(enumerator |>>> passAlongFuture &>> sum, Duration.Inf) must equalTo(
-          45)
+        Await.result(
+          enumerator |>>> passAlongFuture &>> sum,
+          Duration.Inf) must equalTo(45)
       }
     }
 
@@ -395,7 +396,16 @@ object EnumerateesSpec
             Iteratee.fold[String, String]("")((s, e) => s + e)(foldEC)
 
         val result =
-          Enumerator("He", "ll", "o", "Concat", "Wo", "r", "ld", "Concat", "!") &>
+          Enumerator(
+            "He",
+            "ll",
+            "o",
+            "Concat",
+            "Wo",
+            "r",
+            "ld",
+            "Concat",
+            "!") &>
             Enumeratee.grouped(folderIteratee) ><>
               Enumeratee.map[String](List(_))(mapEC) |>>>
             Iteratee.consume[List[String]]()
@@ -448,7 +458,8 @@ object EnumerateesSpec
         val result = Enumerator(0, 2, 4) &> Enumeratee.recover[Int] {
           (_, input) => eventuallyInput.success(input)
         }(recoverEC) &> Enumeratee
-          .map[Int] { i => 8 / i }(mapEC) |>>> Iteratee.getChunks // => List(4, 2)
+          .map[Int] { i => 8 / i }(
+            mapEC) |>>> Iteratee.getChunks // => List(4, 2)
 
         Await.result(result, Duration.Inf) must equalTo(List(4, 2))
         Await.result(eventuallyInput.future, Duration.Inf) must equalTo(

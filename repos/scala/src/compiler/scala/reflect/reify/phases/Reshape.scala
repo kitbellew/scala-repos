@@ -287,7 +287,10 @@ trait Reshape {
       val Modifiers(flags0, privateWithin0, annotations0) = mods0
       val flags1 = (flags0 & GetterFlags) & ~(STABLE | ACCESSOR | METHOD)
       val mods1 =
-        Modifiers(flags1, privateWithin0, annotations0) setPositions mods0.positions
+        Modifiers(
+          flags1,
+          privateWithin0,
+          annotations0) setPositions mods0.positions
       val mods2 = toPreTyperModifiers(mods1, ddef.symbol)
       ValDef(mods2, name1, tpt0, extractRhs(rhs0))
     }
@@ -339,7 +342,10 @@ trait Reshape {
             val annotations1 =
               accessors(vdef).foldLeft(annotations)((curr, acc) =>
                 curr ++ (acc.symbol.annotations map toPreTyperAnnotation))
-            Modifiers(flags1, privateWithin1, annotations1) setPositions mods.positions
+            Modifiers(
+              flags1,
+              privateWithin1,
+              annotations1) setPositions mods.positions
           } else {
             mods
           }

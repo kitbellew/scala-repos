@@ -352,15 +352,15 @@ class ParamsSuite extends SparkFunSuite {
 
     val inRange02IntInclusive = ParamValidators.inRange[Int](0, 2)
     assert(
-      inRange02IntInclusive(0) && inRange02IntInclusive(1) && inRange02IntInclusive(
-        2) &&
+      inRange02IntInclusive(0) && inRange02IntInclusive(
+        1) && inRange02IntInclusive(2) &&
         !inRange02IntInclusive(-1) && !inRange02IntInclusive(3))
     val inRange02IntExclusive =
       ParamValidators
         .inRange[Int](0, 2, lowerInclusive = false, upperInclusive = false)
     assert(
-      !inRange02IntExclusive(0) && inRange02IntExclusive(1) && !inRange02IntExclusive(
-        2))
+      !inRange02IntExclusive(0) && inRange02IntExclusive(
+        1) && !inRange02IntExclusive(2))
 
     val inRange02DoubleInclusive = ParamValidators.inRange[Double](0, 2)
     assert(

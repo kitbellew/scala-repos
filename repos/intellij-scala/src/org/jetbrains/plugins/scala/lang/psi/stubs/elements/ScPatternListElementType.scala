@@ -15,7 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScPatternListStubImpl
   * Date: 17.07.2009
   */
 class ScPatternListElementType[Func <: ScPatternList]
-    extends ScStubElementType[ScPatternListStub, ScPatternList]("pattern list") {
+    extends ScStubElementType[ScPatternListStub, ScPatternList](
+      "pattern list") {
   def serialize(stub: ScPatternListStub, dataStream: StubOutputStream): Unit = {
     dataStream.writeBoolean(stub.allPatternsSimple)
   }

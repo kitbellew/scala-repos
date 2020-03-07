@@ -27,7 +27,8 @@ object Boilerplate {
     GenApplyArityFunctions
   )
 
-  val header = "// auto-generated boilerplate" // TODO: put something meaningful here?
+  val header =
+    "// auto-generated boilerplate" // TODO: put something meaningful here?
 
   /** Returns a seq of the generated files.  As a side-effect, it actually generates them... */
   def gen(dir: File) = for (t <- templates) yield {

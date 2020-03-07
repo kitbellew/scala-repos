@@ -76,7 +76,8 @@ class TypedPipeDiffTest extends FunSuite {
     assert(expectedSortedArrDiff === sort(diff.inMemoryToList))
   }
 
-  test("diffWithoutOrdering works for objects with ordering and good hashcodes") {
+  test(
+    "diffWithoutOrdering works for objects with ordering and good hashcodes") {
     val pipe1 = TypedPipe.from(left)
     val pipe2 = TypedPipe.from(right)
     val diff = TypedPipeDiff.diffByHashCode(pipe1, pipe2)

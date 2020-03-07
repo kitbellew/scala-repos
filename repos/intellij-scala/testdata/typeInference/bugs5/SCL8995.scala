@@ -6,7 +6,8 @@ trait SCL8995 {
     def unapply(select: Select): Option[(Tree, Name)]
   }
   case class Select(qualifier: Tree, name: Name) extends Tree {}
-  object Select extends SelectExtractor {} // object creation impossible, unapply not defined...
+  object Select
+      extends SelectExtractor {} // object creation impossible, unapply not defined...
 
   def test(t: Tree) = t match {
     case Select(a, b) =>

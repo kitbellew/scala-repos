@@ -31,7 +31,9 @@ import org.apache.spark.internal.Logging
   * we need more implicit parameters to convert our keys and values to Writable.
   *
   */
-class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag](
+class SequenceFileRDDFunctions[
+    K <% Writable: ClassTag,
+    V <% Writable: ClassTag](
     self: RDD[(K, V)],
     _keyWritableClass: Class[_ <: Writable],
     _valueWritableClass: Class[_ <: Writable])

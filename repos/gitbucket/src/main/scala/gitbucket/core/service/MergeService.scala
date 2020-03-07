@@ -67,7 +67,9 @@ trait MergeService {
     using(Git.open(getRepositoryDir(userName, repositoryName))) { git =>
       git.fetch
         .setRemote(
-          getRepositoryDir(requestUserName, requestRepositoryName).toURI.toString)
+          getRepositoryDir(
+            requestUserName,
+            requestRepositoryName).toURI.toString)
         .setRefSpecs(
           new RefSpec(s"refs/heads/${requestBranch}:refs/pull/${issueId}/head"))
         .call
@@ -95,7 +97,9 @@ trait MergeService {
           // fetch objects from origin repository branch
           git.fetch
             .setRemote(
-              getRepositoryDir(remoteUserName, remoteRepositoryName).toURI.toString)
+              getRepositoryDir(
+                remoteUserName,
+                remoteRepositoryName).toURI.toString)
             .setRefSpecs(refSpec)
             .call
           // merge conflict check

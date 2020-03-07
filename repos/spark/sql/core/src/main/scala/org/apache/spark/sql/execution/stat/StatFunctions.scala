@@ -169,7 +169,8 @@ private[sql] object StatFunctions extends Logging {
       while (opsIdx < sorted.length) {
         val currentSample = sorted(opsIdx)
         // Add all the samples before the next observation.
-        while (sampleIdx < sampled.size && sampled(sampleIdx).value <= currentSample) {
+        while (sampleIdx < sampled.size && sampled(
+                 sampleIdx).value <= currentSample) {
           newSamples.append(sampled(sampleIdx))
           sampleIdx += 1
         }
@@ -382,8 +383,10 @@ private[sql] object StatFunctions extends Logging {
     var xAvg = 0.0 // the mean of all examples seen so far in col1
     var yAvg = 0.0 // the mean of all examples seen so far in col2
     var Ck = 0.0 // the co-moment after k examples
-    var MkX = 0.0 // sum of squares of differences from the (current) mean for col1
-    var MkY = 0.0 // sum of squares of differences from the (current) mean for col2
+    var MkX =
+      0.0 // sum of squares of differences from the (current) mean for col1
+    var MkY =
+      0.0 // sum of squares of differences from the (current) mean for col2
     var count = 0L // count of observed examples
     // add an example to the calculation
     def add(x: Double, y: Double): this.type = {

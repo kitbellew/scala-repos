@@ -246,10 +246,10 @@ package scalaguide.http.scalaactionscomposition {
 
         //#item-action-use
         def tagItem(itemId: String, tag: String) =
-          (UserAction andThen ItemAction(itemId) andThen PermissionCheckAction) {
-            request =>
-              request.item.addTag(tag)
-              Ok("User " + request.username + " tagged " + request.item.id)
+          (UserAction andThen ItemAction(
+            itemId) andThen PermissionCheckAction) { request =>
+            request.item.addTag(tag)
+            Ok("User " + request.username + " tagged " + request.item.id)
           }
         //#item-action-use
 

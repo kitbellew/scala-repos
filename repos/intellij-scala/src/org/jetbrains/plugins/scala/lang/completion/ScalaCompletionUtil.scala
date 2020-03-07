@@ -416,6 +416,7 @@ object ScalaCompletionUtil {
   }
 
   def isTypeDefiniton(position: PsiElement): Boolean =
-    Option(PsiTreeUtil.getParentOfType(position, classOf[ScTypeElement])).isDefined
+    Option(
+      PsiTreeUtil.getParentOfType(position, classOf[ScTypeElement])).isDefined
 
 }

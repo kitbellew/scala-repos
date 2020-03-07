@@ -262,7 +262,8 @@ class GroupManagerTest
     ex.maxPort should be(15)
   }
 
-  test("Retain the original container definition if port mappings are missing") {
+  test(
+    "Retain the original container definition if port mappings are missing") {
     import Container.Docker
 
     val container = Container(

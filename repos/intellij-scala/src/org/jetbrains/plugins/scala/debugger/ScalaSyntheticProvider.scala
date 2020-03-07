@@ -30,8 +30,8 @@ object ScalaSyntheticProvider {
         true
       case m: Method
           if m
-            .name() == "apply" && hasSpecializationMethod(m.declaringType()) && !isMacroDefined(
-            m) =>
+            .name() == "apply" && hasSpecializationMethod(
+            m.declaringType()) && !isMacroDefined(m) =>
         true
       case m: Method if isDefaultArg(m)                      => true
       case m: Method if isTraitForwarder(m)                  => true

@@ -69,7 +69,8 @@ trait Client extends ImplicitConversions {
     post(
       uri,
       toQueryString(params).getBytes("UTF-8"),
-      Seq("Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
+      Seq(
+        "Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
       f)
   def post[A](
       uri: String,
@@ -99,7 +100,8 @@ trait Client extends ImplicitConversions {
     put(
       uri,
       toQueryString(params).getBytes("UTF-8"),
-      Seq("Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
+      Seq(
+        "Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
       f)
   def put[A](
       uri: String,
@@ -153,7 +155,8 @@ trait Client extends ImplicitConversions {
     patch(
       uri,
       toQueryString(params).getBytes("UTF-8"),
-      Seq("Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
+      Seq(
+        "Content-Type" -> "application/x-www-form-urlencoded; charset=utf-8") ++ headers)(
       f)
   def patch[A](
       uri: String,

@@ -485,8 +485,9 @@ class FutureSpec
             .successful[Int](5)
             .future
         Await
-          .result(Future.firstCompletedOf(futures), timeout.duration) should ===(
-          5)
+          .result(
+            Future.firstCompletedOf(futures),
+            timeout.duration) should ===(5)
       }
 
       "find" in {
@@ -827,8 +828,9 @@ class FutureSpec
     "transform result with map" in {
       f((future, result) ⇒
         Await
-          .result((future map (_.toString.length)), timeout.duration) should ===(
-          result.toString.length))
+          .result(
+            (future map (_.toString.length)),
+            timeout.duration) should ===(result.toString.length))
     }
     "compose result with flatMap" in {
       f { (future, result) ⇒
@@ -860,8 +862,9 @@ class FutureSpec
     "not recover from exception" in {
       f((future, result) ⇒
         Await
-          .result(future.recover({ case _ ⇒ "pigdog" }), timeout.duration) should ===(
-          result))
+          .result(
+            future.recover({ case _ ⇒ "pigdog" }),
+            timeout.duration) should ===(result))
     }
     "perform action on result" in {
       f { (future, result) ⇒

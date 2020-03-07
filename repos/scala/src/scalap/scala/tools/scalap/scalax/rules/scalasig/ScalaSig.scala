@@ -230,7 +230,8 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   val classSymbol = symbolEntry(6) ~ (ref ?) ^~^ ClassSymbol as "class"
   val objectSymbol = symbolEntry(7) ^^ ObjectSymbol as "object"
   val methodSymbol =
-    symHeader(8) -~ /*(ref?) -~*/ symbolInfo ~ (ref ?) ^~^ MethodSymbol as "method"
+    symHeader(
+      8) -~ /*(ref?) -~*/ symbolInfo ~ (ref ?) ^~^ MethodSymbol as "method"
   val extRef =
     9 -~ nameRef ~ (symbolRef ?) ~ get ^~~^ ExternalSymbol as "extRef"
   val extModClassRef =

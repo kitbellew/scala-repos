@@ -315,7 +315,8 @@ object BytecodeUtils {
       eval.getMaxSize
     }
 
-    (roughUpperBound(caller) + roughUpperBound(callee) > maxMethodSizeAfterInline) &&
+    (roughUpperBound(caller) + roughUpperBound(
+      callee) > maxMethodSizeAfterInline) &&
     (maxSize(caller) + maxSize(callee) > maxMethodSizeAfterInline)
   }
 

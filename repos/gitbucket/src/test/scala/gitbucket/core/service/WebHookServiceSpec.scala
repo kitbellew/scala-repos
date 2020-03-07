@@ -66,10 +66,11 @@ class WebHookServiceSpec extends FunSuite with ServiceSpecBase {
         Set(WebHook.PullRequest),
         Some("key"))
 
-      assert(service.getPullRequestsByRequestForWebhook(
-        "user1",
-        "repo1",
-        "master1") == Map.empty)
+      assert(
+        service.getPullRequestsByRequestForWebhook(
+          "user1",
+          "repo1",
+          "master1") == Map.empty)
 
       val r = service
         .getPullRequestsByRequestForWebhook("user2", "repo2", "master2")

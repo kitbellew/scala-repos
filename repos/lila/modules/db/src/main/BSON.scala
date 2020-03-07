@@ -124,7 +124,9 @@ object BSON {
       : BSONHandler[BSONArray, Vector[T]] =
     new BSONHandler[BSONArray, Vector[T]] {
       def read(array: BSONArray) =
-        readStream(array, reader.asInstanceOf[BSONReader[BSONValue, T]]).toVector
+        readStream(
+          array,
+          reader.asInstanceOf[BSONReader[BSONValue, T]]).toVector
       def write(repr: Vector[T]) =
         new BSONArray(repr.map(s => scala.util.Try(writer.write(s))).to[Stream])
     }

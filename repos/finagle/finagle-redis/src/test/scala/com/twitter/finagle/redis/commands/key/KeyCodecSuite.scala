@@ -112,7 +112,9 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("PEXPIRE baz -1\r\n")) == List(PExpire(baz, -1L)))
   }
 
-  test("Correctly encode one key to PEXPIREAT at a future timestamp", CodecTest) {
+  test(
+    "Correctly encode one key to PEXPIREAT at a future timestamp",
+    CodecTest) {
     assert(
       codec(wrap("PEXPIREAT boo 100000\r\n")) ==
         List(PExpireAt(boo, Time.fromMilliseconds(100000))))
@@ -153,7 +155,9 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("RENAME foo bar\r\n")) == List(Rename(foo, bar)))
   }
 
-  test("Throw a ClientError if RENAMEX is called with no arguments", CodecTest) {
+  test(
+    "Throw a ClientError if RENAMEX is called with no arguments",
+    CodecTest) {
     intercept[ClientError] {
       codec(wrap("RENAMENX\r\n"))
     }
@@ -175,7 +179,9 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("RANDOMKEY\r\n")) == List(Randomkey()))
   }
 
-  test("Correctly encode a TTL, time to live in seconds, for a key", CodecTest) {
+  test(
+    "Correctly encode a TTL, time to live in seconds, for a key",
+    CodecTest) {
     assert(codec(wrap("TTL foo\r\n")) == List(Ttl(foo)))
   }
 

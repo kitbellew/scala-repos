@@ -261,7 +261,8 @@ object MarkovChain {
             if (!valid(right))
               right = last;
             else
-              while (prop < logMeasure(right) && k > 0 && valid(right + WINDOW)) {
+              while (prop < logMeasure(right) && k > 0 && valid(
+                       right + WINDOW)) {
                 right = right + WINDOW;
                 k -= 1;
               }

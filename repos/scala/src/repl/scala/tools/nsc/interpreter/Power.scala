@@ -217,7 +217,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
         case x: Name => List(x.decode)
         case Tuple2(k, v) =>
           List(
-            prettify(k).toIterator ++ Iterator("->") ++ prettify(v) mkString " ")
+            prettify(k).toIterator ++ Iterator("->") ++ prettify(
+              v) mkString " ")
         case xs: Array[_]           => xs.iterator flatMap prettify
         case xs: TraversableOnce[_] => xs flatMap prettify
         case x                      => List(Prettifier.stringOf(x))

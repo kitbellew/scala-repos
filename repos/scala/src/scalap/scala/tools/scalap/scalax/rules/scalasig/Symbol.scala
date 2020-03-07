@@ -56,7 +56,8 @@ case class SymbolInfo(
   }
 
   override def toString =
-    name + ", owner=" + symbolString(owner) + ", flags=" + flags.toHexString + ", info=" + info + (privateWithin match {
+    name + ", owner=" + symbolString(
+      owner) + ", flags=" + flags.toHexString + ", info=" + info + (privateWithin match {
       case Some(any) => ", privateWithin=" + symbolString(any)
       case None      => " "
     })

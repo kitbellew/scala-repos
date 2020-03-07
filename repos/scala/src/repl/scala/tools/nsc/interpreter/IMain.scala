@@ -88,9 +88,10 @@ class IMain(
   private[nsc] var printResults = true // whether to print result lines
   private[nsc] var totalSilence = false // whether to print anything
   private var _initializeComplete = false // compiler is initialized
-  private var _isInitialized
-      : Future[Boolean] = null // set up initialization future
-  private var bindExceptions = true // whether to bind the lastException variable
+  private var _isInitialized: Future[Boolean] =
+    null // set up initialization future
+  private var bindExceptions =
+    true // whether to bind the lastException variable
   private var _executionWrapper = "" // code to be wrapped around all lines
   var partialInput: String = "" // code accumulated in multi-line REPL input
 
@@ -101,13 +102,13 @@ class IMain(
     *  use a lazy val to ensure that any attempt to use the compiler object waits
     *  on the future.
     */
-  private var _classLoader
-      : util.AbstractFileClassLoader = null // active classloader
-  private val _compiler
-      : ReplGlobal = newCompiler(settings, reporter) // our private compiler
+  private var _classLoader: util.AbstractFileClassLoader =
+    null // active classloader
+  private val _compiler: ReplGlobal =
+    newCompiler(settings, reporter) // our private compiler
 
-  private var _runtimeClassLoader
-      : URLClassLoader = null // wrapper exposing addURL
+  private var _runtimeClassLoader: URLClassLoader =
+    null // wrapper exposing addURL
 
   def compilerClasspath: Seq[java.net.URL] = (
     if (isInitializeComplete) global.classPath.asURLs
@@ -451,17 +452,17 @@ class IMain(
     // enough to just redefine them together but that may not always
     // be what people want so I'm waiting until I can do it better.
     exitingTyper {
-      req.defines filterNot (s => req.defines contains s.companionSymbol) foreach {
-        newSym =>
-          val oldSym = replScope lookup newSym.name.companionName
-          if (Seq(oldSym, newSym).permutations exists {
-                case Seq(s1, s2) => s1.isClass && s2.isModule
-              }) {
-            replwarn(
-              s"warning: previously defined $oldSym is not a companion to $newSym.")
-            replwarn(
-              "Companions must be defined together; you may wish to use :paste mode for this.")
-          }
+      req.defines filterNot (s =>
+        req.defines contains s.companionSymbol) foreach { newSym =>
+        val oldSym = replScope lookup newSym.name.companionName
+        if (Seq(oldSym, newSym).permutations exists {
+              case Seq(s1, s2) => s1.isClass && s2.isModule
+            }) {
+          replwarn(
+            s"warning: previously defined $oldSym is not a companion to $newSym.")
+          replwarn(
+            "Companions must be defined together; you may wish to use :paste mode for this.")
+        }
       }
     }
     exitingTyper {
@@ -534,7 +535,8 @@ class IMain(
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
         val subs = t collect { case sub => sub }
-        subs map (t0 => "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
+        subs map (t0 =>
+          "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
       }) mkString "\n"
     )
     // If the last tree is a bare expression, pinpoint where it begins using the

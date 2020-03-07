@@ -29,7 +29,9 @@ class OffsetRequest(
   val underlying = {
     val scalaMap = {
       import collection.JavaConversions._
-      (requestInfo: mutable.Map[TopicAndPartition, PartitionOffsetRequestInfo]).toMap
+      (requestInfo: mutable.Map[
+        TopicAndPartition,
+        PartitionOffsetRequestInfo]).toMap
     }
     kafka.api.OffsetRequest(
       requestInfo = scalaMap,

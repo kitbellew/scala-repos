@@ -39,7 +39,8 @@ object ExampleInfo {
   def formatNoSpaces(name: String): String = name.replaceAllLiterally(" ", "")
 
   def thumbnailPath(exampleName: String, groupName: String): String =
-    examplesDir + groupName.toLowerCase + "/" + formatNoSpaces(exampleName) + "Sample.png"
+    examplesDir + groupName.toLowerCase + "/" + formatNoSpaces(
+      exampleName) + "Sample.png"
 
   def sourcecodePath(exampleName: String, groupName: String): String =
     examplesDir + groupName.toLowerCase + "/" + "Ensemble" + formatNoSpaces(
@@ -159,7 +160,8 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
     val stageHeader = "" +
       "\n\n" +
       "  stage = new JFXApp.PrimaryStage {\n" +
-      "    title = \"" + formatAddSpaces(extractSampleName(sourceRaw)) + " Example\"\n" +
+      "    title = \"" + formatAddSpaces(
+      extractSampleName(sourceRaw)) + " Example\"\n" +
       (if (stageProperties.isEmpty) ""
        else stageProperties.mkString("    ", "\n    ", "\n")) +
       "    scene = new Scene {\n" +

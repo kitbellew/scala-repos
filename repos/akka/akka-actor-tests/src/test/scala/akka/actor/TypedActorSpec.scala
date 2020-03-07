@@ -403,12 +403,14 @@ class TypedActorSpec
         }.getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] { t.failingJOptionPigdog }).getMessage should ===(
-          "expected")
+        (intercept[IllegalStateException] {
+          t.failingJOptionPigdog
+        }).getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] { t.failingOptionPigdog }).getMessage should ===(
-          "expected")
+        (intercept[IllegalStateException] {
+          t.failingOptionPigdog
+        }).getMessage should ===("expected")
 
         t.read() should ===(1) //Make sure state is not reset after failure
 
@@ -419,8 +421,9 @@ class TypedActorSpec
     "be restarted on failure" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val t = newFooBar(Duration(2, "s"))
-        intercept[IllegalStateException] { t.failingOptionPigdog() }.getMessage should ===(
-          "expected")
+        intercept[IllegalStateException] {
+          t.failingOptionPigdog()
+        }.getMessage should ===("expected")
         t.optionPigdog() should ===(Some("Pigdog"))
         mustStop(t)
 

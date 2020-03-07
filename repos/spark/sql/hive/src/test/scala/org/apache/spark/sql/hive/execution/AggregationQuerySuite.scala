@@ -188,9 +188,10 @@ abstract class AggregationQuerySuite
 
     val emptyDF = sqlContext.createDataFrame(
       sparkContext.emptyRDD[Row],
-      StructType(StructField("key", StringType) :: StructField(
-        "value",
-        IntegerType) :: Nil))
+      StructType(
+        StructField("key", StringType) :: StructField(
+          "value",
+          IntegerType) :: Nil))
     emptyDF.registerTempTable("emptyTable")
 
     // Register UDAFs
@@ -375,7 +376,9 @@ abstract class AggregationQuerySuite
           |FROM agg1
           |GROUP BY Key - 100
         """.stripMargin),
-      Row(20.0, -99) :: Row(-0.5, -98) :: Row(null, -97) :: Row(10.0, null) :: Nil
+      Row(20.0, -99) :: Row(-0.5, -98) :: Row(null, -97) :: Row(
+        10.0,
+        null) :: Nil
     )
 
     checkAnswer(
@@ -385,7 +388,10 @@ abstract class AggregationQuerySuite
           |FROM agg2
           |GROUP BY Key - 100
         """.stripMargin),
-      Row(40, -99, 2) :: Row(0, -98, 2) :: Row(null, -97, 0) :: Row(30, null, 3) :: Nil
+      Row(40, -99, 2) :: Row(0, -98, 2) :: Row(null, -97, 0) :: Row(
+        30,
+        null,
+        3) :: Nil
     )
 
     checkAnswer(
@@ -969,10 +975,12 @@ abstract class AggregationQuerySuite
           Row(1, Seq(Row(4), Row(5), Row(6))) ::
           Row(2, Seq(Row(-10))) :: Nil
       val schema =
-        StructType(StructField("key", IntegerType) ::
-          StructField(
-            "myArray",
-            ArrayType(StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
+        StructType(
+          StructField("key", IntegerType) ::
+            StructField(
+              "myArray",
+              ArrayType(
+                StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
       sqlContext
         .createDataFrame(sparkContext.parallelize(data, 2), schema)
         .registerTempTable("noInputSchemaUDAF")

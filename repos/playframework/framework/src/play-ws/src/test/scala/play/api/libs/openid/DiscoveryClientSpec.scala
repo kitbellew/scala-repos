@@ -33,12 +33,16 @@ object DiscoveryClientSpec extends Specification with Mockito {
       normalize("HTTP://EXAMPLE.COM/%63") must be equalTo "http://example.com/c"
     }
     "normalize port" in {
-      normalize("HTTP://EXAMPLE.COM:80/A/B?Q=Z#") must be equalTo "http://example.com/A/B?Q=Z"
-      normalize("https://example.com:443") must be equalTo "https://example.com/"
+      normalize(
+        "HTTP://EXAMPLE.COM:80/A/B?Q=Z#") must be equalTo "http://example.com/A/B?Q=Z"
+      normalize(
+        "https://example.com:443") must be equalTo "https://example.com/"
     }
     "normalize paths" in {
-      normalize("http://example.com//a/./b/../b/c/") must be equalTo "http://example.com/a/b/c/"
-      normalize("http://example.com?bla") must be equalTo "http://example.com/?bla"
+      normalize(
+        "http://example.com//a/./b/../b/c/") must be equalTo "http://example.com/a/b/c/"
+      normalize(
+        "http://example.com?bla") must be equalTo "http://example.com/?bla"
     }
   }
 
@@ -55,10 +59,12 @@ object DiscoveryClientSpec extends Specification with Mockito {
         normalize("https://example.com/") must be equalTo "https://example.com/"
       }
       "No trailing slash is added to non-empty path components" in {
-        normalize("http://example.com/user") must be equalTo "http://example.com/user"
+        normalize(
+          "http://example.com/user") must be equalTo "http://example.com/user"
       }
       "Trailing slashes are preserved on non-empty path components" in {
-        normalize("http://example.com/user/") must be equalTo "http://example.com/user/"
+        normalize(
+          "http://example.com/user/") must be equalTo "http://example.com/user/"
       }
       "Trailing slashes are preserved when the path is empty" in {
         normalize("http://example.com/") must be equalTo "http://example.com/"
@@ -77,10 +83,14 @@ object DiscoveryClientSpec extends Specification with Mockito {
       }
 
       "If the URL contains a fragment part, it MUST be stripped off together with the fragment delimiter character \"#\"." in {
-        normalize("example.com#thefragment") must be equalTo "http://example.com/"
-        normalize("example.com/#thefragment") must be equalTo "http://example.com/"
-        normalize("http://example.com#thefragment") must be equalTo "http://example.com/"
-        normalize("https://example.com/#thefragment") must be equalTo "https://example.com/"
+        normalize(
+          "example.com#thefragment") must be equalTo "http://example.com/"
+        normalize(
+          "example.com/#thefragment") must be equalTo "http://example.com/"
+        normalize(
+          "http://example.com#thefragment") must be equalTo "http://example.com/"
+        normalize(
+          "https://example.com/#thefragment") must be equalTo "https://example.com/"
       }
     }
   }
@@ -175,7 +185,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "https://www.google.com/a/example.com/o8/ud"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "https://www.google.com/a/example.com/o8/ud"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),
@@ -201,7 +212,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "https://www.google.com/a/example.com/o8/ud"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "https://www.google.com/a/example.com/o8/ud"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),
@@ -217,8 +229,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
         ws.response.xml returns scala.xml.XML
           .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
         ws.response
-          .header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
-          "application/xrds+xml")
+          .header(HeaderNames.CONTENT_TYPE) returns Some(
+          "text/html") thenReturns Some("application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
@@ -229,7 +241,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),
@@ -246,8 +259,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
         ws.response.xml returns scala.xml.XML
           .loadString(readFixture("discovery/xrds/invalid-op-identifier.xml"))
         ws.response
-          .header(HeaderNames.CONTENT_TYPE) returns Some("text/html") thenReturns Some(
-          "application/xrds+xml")
+          .header(HeaderNames.CONTENT_TYPE) returns Some(
+          "text/html") thenReturns Some("application/xrds+xml")
 
         val returnTo = "http://foo.bar.com/openid"
         val openId = "http://abc.example.com/foo"
@@ -258,7 +271,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server-1"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server-1"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),
@@ -284,7 +298,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),
@@ -305,7 +320,8 @@ object DiscoveryClientSpec extends Specification with Mockito {
 
         there was one(ws.request).get()
 
-        new URL(redirectUrl).hostAndPath must be equalTo "http://www.example.com:8080/openidserver/openid.server"
+        new URL(
+          redirectUrl).hostAndPath must be equalTo "http://www.example.com:8080/openidserver/openid.server"
 
         verifyValidOpenIDRequest(
           parseQueryString(redirectUrl),

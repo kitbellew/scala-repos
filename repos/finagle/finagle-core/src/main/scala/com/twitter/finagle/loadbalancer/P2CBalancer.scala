@@ -104,8 +104,8 @@ private trait PeakEwma[Req, Rep] { self: Balancer[Req, Rep] =>
     require(Tau > 0)
 
     // these are all guarded by synchronization on `this`
-    private[this] var stamp
-        : Long = epoch // last timestamp in nanos we observed an rtt
+    private[this] var stamp: Long =
+      epoch // last timestamp in nanos we observed an rtt
     private[this] var pending: Int = 0 // instantaneous rate
     private[this] var cost: Double = 0.0 // ewma of rtt, sensitive to peaks.
 

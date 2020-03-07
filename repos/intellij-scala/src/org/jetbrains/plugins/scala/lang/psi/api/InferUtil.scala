@@ -241,7 +241,10 @@ object InferUtil {
     val iterator = params.iterator
     while (iterator.hasNext) {
       val param = iterator.next()
-      val paramType = abstractSubstitutor.subst(param.paramType) //we should do all of this with information known before
+      val paramType =
+        abstractSubstitutor.subst(
+          param.paramType
+        ) //we should do all of this with information known before
       val implicitState = ImplicitState(
         place,
         paramType,
@@ -362,7 +365,8 @@ object InferUtil {
             safeCheck = check,
             filterTypeParams = filterTypeParams
           )
-          nonValueType = Success(update, Some(expr)) //here should work in different way:
+          nonValueType =
+            Success(update, Some(expr)) //here should work in different way:
         }
         updateRes(expectedType.get)
       //todo: Something should be unified, that's bad to have fromImplicitParameters parameter.
@@ -578,7 +582,10 @@ object InferUtil {
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       typeParams.find(tp =>
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (tpt.name, tpt.getId)) match {
+                        (
+                          tp.name,
+                          ScalaPsiUtil.getPsiElementId(
+                            tp.ptp)) == (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
@@ -651,7 +658,10 @@ object InferUtil {
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
                         typeParams.find(tp =>
-                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (tpt.name, tpt.getId)) match {
+                          (
+                            tp.name,
+                            ScalaPsiUtil.getPsiElementId(
+                              tp.ptp)) == (tpt.name, tpt.getId)) match {
                           case None => (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true

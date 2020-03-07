@@ -186,7 +186,8 @@ class LinearRegression @Since("1.3.0") (
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
 
     if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
-        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(solver) == "normal") {
+        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
+          solver) == "normal") {
       require(
         $(elasticNetParam) == 0.0,
         "Only L2 regularization can be used when normal " +
@@ -950,8 +951,8 @@ private class LeastSquaresAggregator(
           val localGradientSumArray = gradientSumArray
           features.foreachActive { (index, value) =>
             if (featuresStd(index) != 0.0 && value != 0.0) {
-              localGradientSumArray(index) += weight * diff * value / featuresStd(
-                index)
+              localGradientSumArray(
+                index) += weight * diff * value / featuresStd(index)
             }
           }
           lossSum += weight * diff * diff / 2.0

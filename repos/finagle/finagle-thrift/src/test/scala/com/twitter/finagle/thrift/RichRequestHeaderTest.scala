@@ -66,7 +66,12 @@ class RichRequestHeaderTest extends FunSuite {
     val header = new thrift.RequestHeader
     val richHeader = new RichRequestHeader(header)
     assert(
-      TraceId(Some(SpanId(0)), None, SpanId(0), None, Flags()) == richHeader.traceId)
+      TraceId(
+        Some(SpanId(0)),
+        None,
+        SpanId(0),
+        None,
+        Flags()) == richHeader.traceId)
   }
 
   test("non-default traceId") {

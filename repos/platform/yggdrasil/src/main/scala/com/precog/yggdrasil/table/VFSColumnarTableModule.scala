@@ -65,12 +65,15 @@ trait VFSColumnarTableModule
           ({ type l[a] = EitherT[Future, ResourceError, a] })#l,
           ProjectionLike[Future, Slice]] { path =>
           logger.debug("Loading path: " + path)
-          vfs.readProjection(apiKey, path, Version.Current, AccessMode.Read) leftMap {
-            error =>
-              logger.warn(
-                "An error was encountered in loading path %s: %s"
-                  .format(path, error))
-              error
+          vfs.readProjection(
+            apiKey,
+            path,
+            Version.Current,
+            AccessMode.Read) leftMap { error =>
+            logger.warn(
+              "An error was encountered in loading path %s: %s"
+                .format(path, error))
+            error
           }
         }
       } yield {

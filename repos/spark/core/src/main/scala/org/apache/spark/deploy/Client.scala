@@ -96,7 +96,10 @@ private class ClientEndpoint(
         val javaOpts = sparkJavaOpts ++ extraJavaOpts
         val command = new Command(
           mainClass,
-          Seq("{{WORKER_URL}}", "{{USER_JAR}}", driverArgs.mainClass) ++ driverArgs.driverOptions,
+          Seq(
+            "{{WORKER_URL}}",
+            "{{USER_JAR}}",
+            driverArgs.mainClass) ++ driverArgs.driverOptions,
           sys.env,
           classPathEntries,
           libraryPathEntries,

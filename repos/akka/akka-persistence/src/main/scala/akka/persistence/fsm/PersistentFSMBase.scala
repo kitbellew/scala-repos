@@ -224,7 +224,8 @@ trait PersistentFSMBase[S, D, E]
       repeat: Boolean = false): Unit = {
     if (debugEvent)
       log.debug(
-        "setting " + (if (repeat) "repeating " else "") + "timer '" + name + "'/" + timeout + ": " + msg)
+        "setting " + (if (repeat) "repeating "
+                      else "") + "timer '" + name + "'/" + timeout + ": " + msg)
     if (timers contains name) {
       timers(name).cancel
     }

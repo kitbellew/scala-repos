@@ -284,7 +284,9 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   implicit final class RichException(private val self: Throwable)
       extends AnyVal {
     import scala.compat.Platform.EOL
-    @deprecated("Use Throwable#getStackTrace", "2.11.0") def getStackTraceString =
+    @deprecated(
+      "Use Throwable#getStackTrace",
+      "2.11.0") def getStackTraceString =
       self.getStackTrace().mkString("", EOL, EOL)
   }
 
@@ -549,7 +551,9 @@ private[scala] trait DeprecatedPredef {
   @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readLine(
       text: String,
       args: Any*) = StdIn.readLine(text, args: _*)
-  @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readBoolean() =
+  @deprecated(
+    "Use the method in `scala.io.StdIn`",
+    "2.11.0") def readBoolean() =
     StdIn.readBoolean()
   @deprecated("Use the method in `scala.io.StdIn`", "2.11.0") def readByte() =
     StdIn.readByte()

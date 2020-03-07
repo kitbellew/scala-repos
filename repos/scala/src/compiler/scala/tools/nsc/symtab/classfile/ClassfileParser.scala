@@ -59,17 +59,17 @@ abstract class ClassfileParser {
   protected var file: AbstractFile = _ // the class file
   protected var in: AbstractFileReader = _ // the class file reader
   protected var clazz: Symbol = _ // the class symbol containing dynamic members
-  protected var staticModule
-      : Symbol = _ // the module symbol containing static members
-  protected var instanceScope
-      : Scope = _ // the scope of all instance definitions
+  protected var staticModule: Symbol =
+    _ // the module symbol containing static members
+  protected var instanceScope: Scope =
+    _ // the scope of all instance definitions
   protected var staticScope: Scope = _ // the scope of all static definitions
   protected var pool: ThisConstantPool = _ // the classfile's constant pool
   protected var isScala: Boolean = _ // does class file describe a scala class?
-  protected var isScalaAnnot
-      : Boolean = _ // does class file describe a scala class with its pickled info in an annotation?
-  protected var isScalaRaw
-      : Boolean = _ // this class file is a scala class with no pickled info
+  protected var isScalaAnnot: Boolean =
+    _ // does class file describe a scala class with its pickled info in an annotation?
+  protected var isScalaRaw: Boolean =
+    _ // this class file is a scala class with no pickled info
   protected var busy: Symbol = _ // lock to detect recursive reads
   protected var currentClass: Name = _ // JVM name of the current class
   protected var classTParams = Map[Name, Symbol]()
@@ -332,7 +332,8 @@ abstract class ClassfileParser {
         case CONSTANT_LONG    => in.getLong(start + 1)
         case CONSTANT_DOUBLE  => in.getDouble(start + 1)
         case CONSTANT_CLASS =>
-          getClassOrArrayType(index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
+          getClassOrArrayType(
+            index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
         case _ => errorBadTag(start)
       })
     }
@@ -482,7 +483,8 @@ abstract class ClassfileParser {
         }
     }
 
-    val isTopLevel = !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
+    val isTopLevel =
+      !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
 
     val c = if (isTopLevel) pool.getClassSymbol(nameIdx) else clazz
     if (isTopLevel) {
@@ -760,7 +762,8 @@ abstract class ClassfileParser {
             accept('.')
             val name = subName(c => c == ';' || c == '<' || c == '.').toTypeName
             val clazz = tpe.member(name)
-            val dummyArgs = Nil // the actual arguments are added in processClassType
+            val dummyArgs =
+              Nil // the actual arguments are added in processClassType
             val inner = typeRef(pre = tpe, sym = clazz, args = dummyArgs)
             tpe = processClassType(inner)
           }
@@ -900,7 +903,8 @@ abstract class ClassfileParser {
               val name = pool.getName(u2)
               val access = u2
               if ((access & ACC_SYNTHETIC) != ACC_SYNTHETIC) { // name not synthetic
-                val params = sym.paramss.head // Java only has exactly one parameter list
+                val params =
+                  sym.paramss.head // Java only has exactly one parameter list
                 params(i).name = name.encode
                 params(i).resetFlag(SYNTHETIC)
               }

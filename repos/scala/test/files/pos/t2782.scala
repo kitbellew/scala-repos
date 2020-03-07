@@ -8,7 +8,8 @@ object Test {
       aFoo: Foo[A],
       bFoo: Foo[B],
       cb: sc.generic.CanBuild[(A, B), M[A, B]]) = new Foo[M[A, B]] {}
-  implicit object Tuple2IntIntFoo extends Foo[(Int, Int)] // no difference if this line is uncommented
+  implicit object Tuple2IntIntFoo
+      extends Foo[(Int, Int)] // no difference if this line is uncommented
   implicit def Tuple2Foo[A, B] = new Foo[(A, B)] {} // nor this one
 
   implicitly[Foo[(Int, Int)]]

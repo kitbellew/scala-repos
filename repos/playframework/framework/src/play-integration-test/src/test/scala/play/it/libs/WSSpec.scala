@@ -84,7 +84,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     "make GET Requests" in withServer { ws =>
       val req = ws.url("/get").get
-      val rep = req.toCompletableFuture.get(10, TimeUnit.SECONDS) // AWait result
+      val rep =
+        req.toCompletableFuture.get(10, TimeUnit.SECONDS) // AWait result
 
       rep.getStatus aka "status" must_== 200 and (rep.asJson
         .path("origin")

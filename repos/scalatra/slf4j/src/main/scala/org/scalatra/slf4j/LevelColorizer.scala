@@ -54,6 +54,7 @@ class LevelColorizer extends ClassicConverter {
   def convert(event: ILoggingEvent) = {
     import org.scalatra.slf4j.LevelColorizer._
     val c = colors.getOrElse(event.getLevel, "")
-    "%s%s%s" format (c, event.getLevel, c.blankOption map (_ ⇒ EndColor) getOrElse "")
+    "%s%s%s" format (c, event.getLevel, c.blankOption map (_ ⇒
+      EndColor) getOrElse "")
   }
 }

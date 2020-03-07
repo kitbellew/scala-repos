@@ -1165,7 +1165,8 @@ object JavaToScala {
       }
 
       if (owner
-            .hasModifierProperty(PsiModifier.FINAL) && context.get.nonEmpty && !context.get.top._1) {
+            .hasModifierProperty(
+              PsiModifier.FINAL) && context.get.nonEmpty && !context.get.top._1) {
         owner match {
           case _: PsiLocalVariable =>
           case _: PsiParameter     =>

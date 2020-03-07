@@ -122,7 +122,9 @@ abstract class HtmlPage extends Page { thisPage =>
             ) => // html requires sub ULs to be put into the last LI
           xmlList.init ++ <li>{xmlList.last.child ++ blockToHtml(item)}</li>
         case Paragraph(inline) =>
-          xmlList :+ <li>{inlineToHtml(inline)}</li> // LIs are blocks, no need to use Ps
+          xmlList :+ <li>{
+            inlineToHtml(inline)
+          }</li> // LIs are blocks, no need to use Ps
         case block =>
           xmlList :+ <li>{blockToHtml(block)}</li>
       }
@@ -147,18 +149,26 @@ abstract class HtmlPage extends Page { thisPage =>
   def linkToHtml(text: Inline, link: LinkTo, hasLinks: Boolean) = link match {
     case LinkToTpl(dtpl: TemplateEntity) =>
       if (hasLinks)
-        <a href={relativeLinkTo(dtpl)} class="extype" name={dtpl.qualifiedName}>{
+        <a href={relativeLinkTo(dtpl)} class="extype" name={
+          dtpl.qualifiedName
+        }>{
           inlineToHtml(text)
         }</a>
       else
-        <span class="extype" name={dtpl.qualifiedName}>{inlineToHtml(text)}</span>
+        <span class="extype" name={dtpl.qualifiedName}>{
+          inlineToHtml(text)
+        }</span>
     case LinkToMember(mbr: MemberEntity, inTpl: TemplateEntity) =>
       if (hasLinks)
-        <a href={relativeLinkTo(inTpl) + "#" + mbr.signature} class="extmbr" name={
+        <a href={
+          relativeLinkTo(inTpl) + "#" + mbr.signature
+        } class="extmbr" name={
           mbr.qualifiedName
         }>{inlineToHtml(text)}</a>
       else
-        <span class="extmbr" name={mbr.qualifiedName}>{inlineToHtml(text)}</span>
+        <span class="extmbr" name={mbr.qualifiedName}>{
+          inlineToHtml(text)
+        }</span>
     case Tooltip(tooltip) =>
       <span class="extype" name={tooltip}>{inlineToHtml(text)}</span>
     case LinkToExternal(name, url) =>
@@ -223,7 +233,9 @@ abstract class HtmlPage extends Page { thisPage =>
   def templateToHtml(tpl: TemplateEntity, name: String = null) = tpl match {
     case dTpl: DocTemplateEntity =>
       if (hasPage(dTpl)) {
-        <a href={relativeLinkTo(dTpl)} class="extype" name={dTpl.qualifiedName}>{
+        <a href={relativeLinkTo(dTpl)} class="extype" name={
+          dTpl.qualifiedName
+        }>{
           if (name eq null) dTpl.name else name
         }</a>
       } else {

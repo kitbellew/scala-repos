@@ -347,7 +347,11 @@ trait Counter2Ops {
   }
 
   class CanZipMapValuesCounter2[K1, K2, V, RV: Zero: Semiring]
-      extends CanZipMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
+      extends CanZipMapValues[
+        Counter2[K1, K2, V],
+        V,
+        RV,
+        Counter2[K1, K2, RV]] {
 
     /**Maps all corresponding values from the two collection. */
     def map(

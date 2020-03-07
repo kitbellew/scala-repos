@@ -360,7 +360,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           pendingOrSkippedStagesTable.toNodeSeq
       }
       if (shouldShowCompletedStages) {
-        content ++= <h4 id="completed">Completed Stages ({completedStages.size})</h4> ++
+        content ++= <h4 id="completed">Completed Stages ({
+          completedStages.size
+        })</h4> ++
           completedStagesTable.toNodeSeq
       }
       if (shouldShowSkippedStages) {

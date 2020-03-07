@@ -47,8 +47,9 @@ final case class ListT[M[_], A](run: M[List[A]]) {
     new ListT(M.map(run)(_.takeWhile(p)))
 
   def ++(bs: => ListT[M, A])(implicit M: Bind[M]): ListT[M, A] =
-    new ListT(
-      M.bind(run) { list1 => M.map(bs.run) { list2 => list1 ++ list2 } })
+    new ListT(M.bind(run) { list1 =>
+      M.map(bs.run) { list2 => list1 ++ list2 }
+    })
 
   def flatMap[B](f: A => ListT[M, B])(implicit M: Monad[M]): ListT[M, B] =
     new ListT(M.bind(run) { list =>

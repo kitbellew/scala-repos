@@ -143,7 +143,8 @@ class CoGroupedRDD[K: ClassTag](
     // A list of (rdd iterator, dependency number) pairs
     val rddIterators = new ArrayBuffer[(Iterator[Product2[K, Any]], Int)]
     for ((dep, depNum) <- dependencies.zipWithIndex) dep match {
-      case oneToOneDependency: OneToOneDependency[Product2[K, Any]] @unchecked =>
+      case oneToOneDependency: OneToOneDependency[
+            Product2[K, Any]] @unchecked =>
         val dependencyPartition = split.narrowDeps(depNum).get.split
         // Read them from the parent
         val it = oneToOneDependency.rdd.iterator(dependencyPartition, context)

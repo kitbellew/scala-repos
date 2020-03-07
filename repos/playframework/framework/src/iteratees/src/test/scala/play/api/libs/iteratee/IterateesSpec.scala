@@ -326,8 +326,9 @@ object IterateesSpec
 
     "fold input" in {
       mustExecute(4) { foldEC =>
-        await(Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(
-          foldEC)) must equalTo(10)
+        await(
+          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(
+            foldEC)) must equalTo(10)
       }
     }
 
@@ -628,8 +629,9 @@ object IterateesSpec
     "return its concatenated input" in {
       val s = List(List(1, 2), List(3), List(4, 5))
       val r = List(1, 2, 3, 4, 5)
-      await(Enumerator.enumerateSeq1(s) |>>> Iteratee.consume[List[Int]]()) must equalTo(
-        r)
+      await(
+        Enumerator.enumerateSeq1(s) |>>> Iteratee
+          .consume[List[Int]]()) must equalTo(r)
     }
 
   }
@@ -638,7 +640,8 @@ object IterateesSpec
 
     "return its input as a list" in {
       val s = List(1, 2, 3, 4, 5)
-      await(Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must equalTo(
+      await(
+        Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must equalTo(
         s)
     }
 
@@ -775,7 +778,9 @@ object IterateesSpec
       val iterator =
         Iterator.range(0, tooManyArrays).map(_ => new Array[Byte](arraySize))
       import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
-      await(Enumerator.enumerate(iterator) |>>> Iteratee.ignore[Array[Byte]]) must_== (())
+      await(
+        Enumerator.enumerate(iterator) |>>> Iteratee
+          .ignore[Array[Byte]]) must_== (())
     }
 
   }

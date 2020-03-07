@@ -861,7 +861,10 @@ abstract class PersistentActorSpec(config: Config)
         persistentActor ! i
       }
 
-      val all: Seq[String] = this.receiveN(40).asInstanceOf[Seq[String]] // each command = 1 reply + 3 event-replies
+      val all: Seq[String] =
+        this
+          .receiveN(40)
+          .asInstanceOf[Seq[String]] // each command = 1 reply + 3 event-replies
 
       val replies = all.filter(r ⇒ r.count(_ == '-') == 1)
       replies should equal(commands.map(_.data))

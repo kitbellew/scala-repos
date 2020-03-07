@@ -582,7 +582,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                         userName,
                         repositoryName)
                     case _ =>
-                      (forkedRepository.owner, forkedRepository.name) :: getForkedRepositories(
+                      (
+                        forkedRepository.owner,
+                        forkedRepository.name) :: getForkedRepositories(
                         forkedRepository.owner,
                         forkedRepository.name)
                   },
@@ -612,7 +614,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                                                       originRepository.owner).get.isGroupAccount)
                                                   Nil
                                                 else
-                                                  List(originRepository.owner))).sorted,
+                                                  List(
+                                                    originRepository.owner))).sorted,
                   getMilestones(originRepository.owner, originRepository.name),
                   getLabels(originRepository.owner, originRepository.name)
                 )

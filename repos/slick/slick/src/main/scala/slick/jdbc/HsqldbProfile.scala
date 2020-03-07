@@ -63,7 +63,8 @@ trait HsqldbProfile extends JdbcProfile {
 
   override protected def computeQueryCompiler =
     super.computeQueryCompiler
-      .replace(Phase.resolveZipJoinsRownumStyle) + Phase.specializeParameters - Phase.fixRowNumberOrdering
+      .replace(
+        Phase.resolveZipJoinsRownumStyle) + Phase.specializeParameters - Phase.fixRowNumberOrdering
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
@@ -162,7 +163,8 @@ trait HsqldbProfile extends JdbcProfile {
          * CONSTRAINT. */
         val sb = new StringBuilder append "ALTER TABLE " append quoteIdentifier(
           table.tableName) append " ADD "
-        sb append "CONSTRAINT " append quoteIdentifier(idx.name) append " UNIQUE("
+        sb append "CONSTRAINT " append quoteIdentifier(
+          idx.name) append " UNIQUE("
         addIndexColumnList(idx.on, sb, idx.table.tableName)
         sb append ")"
         sb.toString

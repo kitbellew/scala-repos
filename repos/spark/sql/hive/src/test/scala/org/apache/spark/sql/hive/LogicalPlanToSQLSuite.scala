@@ -449,7 +449,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test("script transformation - row format serde clauses with SERDEPROPERTIES") {
+  test(
+    "script transformation - row format serde clauses with SERDEPROPERTIES") {
     checkHiveQl(
       """SELECT TRANSFORM (key, value)
         |ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
@@ -617,7 +618,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test("window with the same window specification without aggregate and filter") {
+  test(
+    "window with the same window specification without aggregate and filter") {
     checkHiveQl("""
          |SELECT key, value,
          |DENSE_RANK() OVER (DISTRIBUTE BY key SORT BY key, value) AS dr,

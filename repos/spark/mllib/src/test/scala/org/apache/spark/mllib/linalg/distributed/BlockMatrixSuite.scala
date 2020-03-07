@@ -181,7 +181,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AplusB.numCols() === B.numCols())
     assert(AplusB.toBreeze() === expected)
 
-    val C = new BlockMatrix(rdd, rowPerPart, colPerPart, m, n + 1) // columns don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m,
+        n + 1
+      ) // columns don't match
     intercept[IllegalArgumentException] {
       gridBasedMat.add(C)
     }
@@ -232,7 +239,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AsubtractB.numCols() === B.numCols())
     assert(AsubtractB.toBreeze() === expected)
 
-    val C = new BlockMatrix(rdd, rowPerPart, colPerPart, m, n + 1) // columns don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m,
+        n + 1
+      ) // columns don't match
     intercept[IllegalArgumentException] {
       gridBasedMat.subtract(C)
     }
@@ -276,7 +290,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AtimesB.numRows() === m)
     assert(AtimesB.numCols() === n)
     assert(AtimesB.toBreeze() === expected)
-    val C = new BlockMatrix(rdd, rowPerPart, colPerPart, m + 1, n) // dimensions don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m + 1,
+        n
+      ) // dimensions don't match
     intercept[IllegalArgumentException] {
       gridBasedMat.multiply(C)
     }

@@ -40,7 +40,8 @@ private[persistence] class LocalSnapshotStore
   private val dir = new File(config.getString("dir"))
 
   private val serializationExtension = SerializationExtension(context.system)
-  private var saving = immutable.Set.empty[SnapshotMetadata] // saving in progress
+  private var saving =
+    immutable.Set.empty[SnapshotMetadata] // saving in progress
 
   override def loadAsync(
       persistenceId: String,
@@ -151,7 +152,9 @@ private[persistence] class LocalSnapshotStore
       extension: String = ""): File =
     new File(
       snapshotDir,
-      s"snapshot-${URLEncoder.encode(metadata.persistenceId, UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}${extension}")
+      s"snapshot-${URLEncoder.encode(
+        metadata.persistenceId,
+        UTF_8)}-${metadata.sequenceNr}-${metadata.timestamp}${extension}")
 
   private def snapshotMetadatas(
       persistenceId: String,

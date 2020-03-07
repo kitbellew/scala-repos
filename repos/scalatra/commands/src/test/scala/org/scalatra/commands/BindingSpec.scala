@@ -95,7 +95,11 @@ class BindingSpec extends Specification {
         Binding(builder.field, conv, implicitly[TypeConverterFactory[String]])(
           manifest[String],
           builder.valueManifest)
-      container(Right(Some("joske".asInstanceOf[container.S]))).validation must_== "joske".success
+      container(
+        Right(
+          Some(
+            "joske"
+              .asInstanceOf[container.S]))).validation must_== "joske".success
     }
 
   }

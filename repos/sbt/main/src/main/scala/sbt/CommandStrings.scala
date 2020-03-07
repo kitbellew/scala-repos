@@ -177,7 +177,8 @@ $ShowCommand <task>
 
   def settingsPreamble = commonPreamble("settings")
   def tasksPreamble =
-    commonPreamble("tasks") + """
+    commonPreamble(
+      "tasks") + """
 Tasks produce values.  Use the 'show' command to run the task and print the resulting value."""
 
   def commonPreamble(label: String) =

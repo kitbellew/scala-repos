@@ -68,7 +68,8 @@ class BucketizerSuite
     val badDF1 = sqlContext
       .createDataFrame(invalidData1.zipWithIndex)
       .toDF("feature", "idx")
-    withClue("Invalid feature value -0.9 was not caught as an invalid feature!") {
+    withClue(
+      "Invalid feature value -0.9 was not caught as an invalid feature!") {
       intercept[SparkException] {
         bucketizer.transform(badDF1).collect()
       }
@@ -76,7 +77,8 @@ class BucketizerSuite
     val badDF2 = sqlContext
       .createDataFrame(invalidData2.zipWithIndex)
       .toDF("feature", "idx")
-    withClue("Invalid feature value 0.51 was not caught as an invalid feature!") {
+    withClue(
+      "Invalid feature value 0.51 was not caught as an invalid feature!") {
       intercept[SparkException] {
         bucketizer.transform(badDF2).collect()
       }

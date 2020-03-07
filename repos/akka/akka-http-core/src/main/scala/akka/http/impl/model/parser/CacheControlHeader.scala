@@ -41,7 +41,7 @@ private[parser] trait CacheControlHeader {
   }
 
   def `quoted-tokens-elem` = rule {
-    clearSB() ~ zeroOrMore(!'"' ~ !',' ~ qdtext ~ appendSB() | `quoted-pair`) ~ push(
-      sb.toString)
+    clearSB() ~ zeroOrMore(
+      !'"' ~ !',' ~ qdtext ~ appendSB() | `quoted-pair`) ~ push(sb.toString)
   }
 }

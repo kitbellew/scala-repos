@@ -680,11 +680,14 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         transport.managementCommand(cmd)
       }
       Future
-        .fold(allStatuses)(true)(_ && _) map ManagementCommandAck pipeTo sender()
+        .fold(allStatuses)(true)(
+          _ && _) map ManagementCommandAck pipeTo sender()
 
     case Quarantine(address, uidToQuarantineOption) ⇒
       // Stop writers
-      (endpoints.writableEndpointWithPolicyFor(address), uidToQuarantineOption) match {
+      (
+        endpoints.writableEndpointWithPolicyFor(address),
+        uidToQuarantineOption) match {
         case (Some(Pass(endpoint, _, _)), None) ⇒
           context.stop(endpoint)
           log.warning(
@@ -1050,7 +1053,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 AkkaPduProtobufCodec,
                 receiveBuffers))
             .withDeploy(Deploy.local),
-          "reliableEndpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId
+          "reliableEndpointWriter-" + AddressUrlEncoder(
+            remoteAddress) + "-" + endpointId
             .next()
         ))
     else
@@ -1069,7 +1073,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 receiveBuffers,
                 reliableDeliverySupervisor = None))
             .withDeploy(Deploy.local),
-          "endpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId
+          "endpointWriter-" + AddressUrlEncoder(
+            remoteAddress) + "-" + endpointId
             .next()
         ))
   }

@@ -195,7 +195,8 @@ object OpenIDSpec extends Specification with Mockito {
         }
       }
       "use direct verification on the discovered endpoint" in {
-        ws.urls(1) must be equalTo "https://www.google.com/a/example.com/o8/ud?be=o8" // From the mock XRDS
+        ws.urls(
+          1) must be equalTo "https://www.google.com/a/example.com/o8/ud?be=o8" // From the mock XRDS
       }
     }
 
@@ -232,8 +233,9 @@ object OpenIDSpec extends Specification with Mockito {
       val errorResponse =
         (openIdResponse - "openid.mode") + ("openid.mode" -> Seq("error"))
 
-      Await.result(openId.verifiedId(setupMockRequest(errorResponse)), dur) must throwA[
-        BAD_RESPONSE.type]
+      Await.result(
+        openId.verifiedId(setupMockRequest(errorResponse)),
+        dur) must throwA[BAD_RESPONSE.type]
     }
 
     // OpenID 1.1 compatibility - 14.2.1

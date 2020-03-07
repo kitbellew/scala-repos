@@ -85,7 +85,8 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
         case other ⇒ other
       }
       val observe =
-        ignore map (ignoreFunc ⇒ !ignoreFunc.applyOrElse(x, FALSE)) getOrElse true
+        ignore map (ignoreFunc ⇒
+          !ignoreFunc.applyOrElse(x, FALSE)) getOrElse true
       if (observe) queue.offerLast(RealMessage(x, sender()))
   }
 

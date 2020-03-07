@@ -69,7 +69,10 @@ trait MethodSynthesis {
         name: Name): Tree = {
       val m =
         original
-          .cloneSymbol(clazz, newMethodFlags(original), name) setPos clazz.pos.focus
+          .cloneSymbol(
+            clazz,
+            newMethodFlags(original),
+            name) setPos clazz.pos.focus
       finishMethod(clazz.info.decls enter m, f)
     }
 

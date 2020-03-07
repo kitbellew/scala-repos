@@ -65,7 +65,8 @@ object DateProperties extends Properties("Date Properties") {
   def asInt(b: Boolean) = if (b) 1 else 0
 
   property("Before/After works") = forAll { (dr: DateRange, rd: RichDate) =>
-    (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(dr.isAfter(rd)) == 1) &&
+    (asInt(dr.contains(rd)) + asInt(dr.isBefore(rd)) + asInt(
+      dr.isAfter(rd)) == 1) &&
     (dr.isBefore(dr.end + (dr.end - dr.start))) &&
     (dr.isAfter(dr.start - (dr.end - dr.start)))
   }

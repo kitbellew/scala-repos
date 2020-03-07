@@ -1318,7 +1318,8 @@ object Client extends Logging {
   }
 
   private def getYarnAppClasspath(conf: Configuration): Option[Seq[String]] =
-    Option(conf.getStrings(YarnConfiguration.YARN_APPLICATION_CLASSPATH)) match {
+    Option(
+      conf.getStrings(YarnConfiguration.YARN_APPLICATION_CLASSPATH)) match {
       case Some(s) => Some(s.toSeq)
       case None    => getDefaultYarnApplicationClasspath
     }

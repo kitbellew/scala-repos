@@ -866,7 +866,8 @@ trait ScalatraBase
 
   def environment: String = {
     sys.props
-      .get(EnvironmentKey) orElse initParameter(EnvironmentKey) getOrElse "DEVELOPMENT"
+      .get(EnvironmentKey) orElse initParameter(
+      EnvironmentKey) getOrElse "DEVELOPMENT"
   }
 
   /**

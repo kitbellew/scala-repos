@@ -15,7 +15,8 @@ import scala.collection.immutable
 object EventAdapterSpec {
 
   final val JournalModelClassName =
-    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[JournalModel].getSimpleName
+    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[
+      JournalModel].getSimpleName
   trait JournalModel {
     def payload: Any
     def tags: immutable.Set[String]
@@ -27,7 +28,8 @@ object EventAdapterSpec {
   }
 
   final val DomainEventClassName =
-    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[DomainEvent].getSimpleName
+    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[
+      DomainEvent].getSimpleName
   trait DomainEvent
   final case class TaggedDataChanged(tags: immutable.Set[String], value: Int)
       extends DomainEvent

@@ -252,8 +252,9 @@ case class AppDefinition(
       healthChecks = proto.getHealthChecksList.asScala
         .map(new HealthCheck().mergeFromProto)
         .toSet,
-      labels =
-        proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap,
+      labels = proto.getLabelsList.asScala.map { p =>
+        p.getKey -> p.getValue
+      }.toMap,
       versionInfo = versionInfoFromProto,
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)
@@ -539,7 +540,8 @@ object AppDefinition {
     } and validBasicAppDefinition
 
   private val definesCorrectResidencyCombination: Validator[AppDefinition] =
-    isTrue("AppDefinition must contain persistent volumes and define residency") {
+    isTrue(
+      "AppDefinition must contain persistent volumes and define residency") {
       app => !(app.residency.isDefined ^ app.persistentVolumes.nonEmpty)
     }
 

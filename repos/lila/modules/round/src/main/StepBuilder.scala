@@ -94,7 +94,11 @@ object StepBuilder {
             variations =
               if (ad.info.variation.isEmpty) after.variations
               else
-                makeVariation(gameId, before, ad.info, variant).toList :: after.variations
+                makeVariation(
+                  gameId,
+                  before,
+                  ad.info,
+                  variant).toList :: after.variations
           )
         )) | steps
     }

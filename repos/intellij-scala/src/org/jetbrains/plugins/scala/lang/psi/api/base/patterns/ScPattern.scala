@@ -606,7 +606,9 @@ object ScPattern {
     val fqnO = Option(fun.containingClass).map(_.qualifiedName)
     fqnO.exists(fqn =>
       fqn.contains('.') && fqn
-        .substring(0, fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
+        .substring(
+          0,
+          fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
   }
 
 }

@@ -174,7 +174,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     val infolog = getBoolean("infolog")
     val nFactor = getInt("nr-of-nodes-factor")
-    val numberOfSeedNodes = getInt("nr-of-seed-nodes") // not scaled by nodes factor
+    val numberOfSeedNodes =
+      getInt("nr-of-seed-nodes") // not scaled by nodes factor
     val numberOfNodesJoiningToSeedNodesInitially =
       getInt("nr-of-nodes-joining-to-seed-initally") * nFactor
     val numberOfNodesJoiningOneByOneSmall =
@@ -199,7 +200,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesShutdownOneByOneLarge =
       getInt("nr-of-nodes-shutdown-one-by-one-large") * nFactor
     val numberOfNodesShutdown = getInt("nr-of-nodes-shutdown") * nFactor
-    val numberOfNodesJoinRemove = getInt("nr-of-nodes-join-remove") // not scaled by nodes factor
+    val numberOfNodesJoinRemove =
+      getInt("nr-of-nodes-join-remove") // not scaled by nodes factor
 
     val workBatchSize = getInt("work-batch-size")
     val workBatchInterval = testConfig.getMillisDuration("work-batch-interval")

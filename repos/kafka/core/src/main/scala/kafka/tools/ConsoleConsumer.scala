@@ -577,7 +577,11 @@ class ChecksumMessageFormatter extends MessageFormatter {
           -1,
           Message.MagicValue_V1).checksum
       else
-        new Message(value, key, Message.NoTimestamp, Message.MagicValue_V0).checksum
+        new Message(
+          value,
+          key,
+          Message.NoTimestamp,
+          Message.MagicValue_V0).checksum
     output.println(topicStr + "checksum:" + chksum)
   }
 }

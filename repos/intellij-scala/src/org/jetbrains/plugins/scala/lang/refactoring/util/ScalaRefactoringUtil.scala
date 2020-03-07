@@ -1030,7 +1030,9 @@ object ScalaRefactoringUtil {
 
   def enclosingContainer(parent: PsiElement): PsiElement = {
     Option(parent)
-      .map(elem => elem.firstChild.getOrElse(elem)) //to make enclosing container non-strict
+      .map(elem =>
+        elem.firstChild
+          .getOrElse(elem)) //to make enclosing container non-strict
       .flatMap(_.scopes.toStream.headOption)
       .orNull
   }

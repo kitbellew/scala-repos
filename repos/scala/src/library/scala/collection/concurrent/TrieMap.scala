@@ -384,7 +384,10 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 else null
               }
             case sn: SNode[K, V] =>
-              if (sn.hc == hc && equal(sn.k, k, ct) && (v == null || sn.v == v)) {
+              if (sn.hc == hc && equal(
+                    sn.k,
+                    k,
+                    ct) && (v == null || sn.v == v)) {
                 val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
                 if (GCAS(cn, ncn, ct)) Some(sn.v) else null
               } else None

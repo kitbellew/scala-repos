@@ -1342,16 +1342,16 @@ trait QuasiTreesPrintTests {
     |}""")
 
   @Test def testQuasiCaseClassWithTypes1 =
-    assertTreeCode(
-      q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[String]}){ def y = "test" }""")(
-      sm"""
+    assertTreeCode(q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[
+      String]}){ def y = "test" }""")(sm"""
     |case class X(x: Int, s: String) {
     |  def y = "test"
     |}""")
 
   @Test def testQuasiCaseClassWithTypes2 =
     assertTreeCode(
-      q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[String]}){ def y = "test" }""",
+      q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[
+        String]}){ def y = "test" }""",
       typecheck = true)(sm"""
     |{
     |  case class X(x: Int, s: String) {

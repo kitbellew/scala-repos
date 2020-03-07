@@ -65,11 +65,13 @@ import akka.http.impl.model.parser.CharacterClasses._
 private[engine] final class HttpHeaderParser private (
     val settings: HttpHeaderParser.Settings,
     onIllegalHeader: ErrorInfo ⇒ Unit,
-    private[this] var nodes: Array[Char] = new Array(512), // initial size, can grow as needed
+    private[this] var nodes: Array[Char] =
+      new Array(512), // initial size, can grow as needed
     private[this] var nodeCount: Int = 0,
     private[this] var branchData: Array[Short] = new Array(254 * 3),
     private[this] var branchDataCount: Int = 0,
-    private[this] var values: Array[AnyRef] = new Array(255), // fixed size of 255
+    private[this] var values: Array[AnyRef] =
+      new Array(255), // fixed size of 255
     private[this] var valueCount: Int = 0,
     private[this] var trieIsPrivate: Boolean = false) { // signals the trie data can be mutated w/o having to copy first
 
@@ -116,7 +118,8 @@ private[engine] final class HttpHeaderParser private (
       val (header, endIx) = valueParser(this, input, cursor, onIllegalHeader)
       if (valueParser.cachingEnabled)
         try {
-          val valueIx = newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
+          val valueIx =
+            newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
           unshareIfRequired()
           val nodeIx = nodeCount
           insertRemainingCharsAsNewNodes(input, header)(cursor, endIx, valueIx)
@@ -268,7 +271,8 @@ private[engine] final class HttpHeaderParser private (
       val signum = math.signum(char - nodeChar)
       node >>> 8 match {
         case 0 ⇒ // input doesn't exist yet in the trie, insert
-          val valueIx = newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
+          val valueIx =
+            newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
           val rowIx = newBranchDataRowIndex
           unshareIfRequired()
           val newNodeIx = nodeCount.toShort
@@ -290,7 +294,8 @@ private[engine] final class HttpHeaderParser private (
             val branchIndex = rowIx(msb) + 1 + signum
             branchData(branchIndex) match { // branching node
               case 0 ⇒ // branch doesn't exist yet, create
-                val valueIx = newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
+                val valueIx =
+                  newValueIndex // compute early in order to trigger OutOfTrieSpaceExceptions before any change
                 unshareIfRequired()
                 val newNodeIx = nodeCount.toShort
                 insertRemainingCharsAsNewNodes(input, value)(
@@ -298,7 +303,8 @@ private[engine] final class HttpHeaderParser private (
                   endIx,
                   valueIx,
                   colonIx)
-                branchData(branchIndex) = newNodeIx // make the previously implicit "equals" sub node explicit
+                branchData(branchIndex) =
+                  newNodeIx // make the previously implicit "equals" sub node explicit
               case subNodeIx ⇒ // descend, but advance only on match
                 insert(input, value)(
                   cursor + 1 - math.abs(signum),

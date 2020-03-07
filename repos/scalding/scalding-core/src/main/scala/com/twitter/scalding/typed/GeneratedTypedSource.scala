@@ -96,7 +96,8 @@ trait TypedSource15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 }
 
 trait TypedSource16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
-    extends TypedSource[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
+    extends TypedSource[
+      Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
   def converter[Z >: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] =
     TupleConverter.asSuperConverter(
       TupleConverter

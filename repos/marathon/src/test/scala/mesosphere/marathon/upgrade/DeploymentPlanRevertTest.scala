@@ -329,11 +329,13 @@ class DeploymentPlanRevertTest
         Group("othergroup1".toRootPath),
         Group("othergroup2".toRootPath),
         Group("othergroup3".toRootPath), {
-          val id = "withdeps".toRootPath // withdeps still exists because of the subgroup
+          val id =
+            "withdeps".toRootPath // withdeps still exists because of the subgroup
           Group(
             id,
             groups = Set(Group(id / "some")),
-            dependencies = Set() // dependencies were introduce with first deployment, should be gone now
+            dependencies =
+              Set() // dependencies were introduce with first deployment, should be gone now
           )
         }, {
           val id = "changeme".toRootPath

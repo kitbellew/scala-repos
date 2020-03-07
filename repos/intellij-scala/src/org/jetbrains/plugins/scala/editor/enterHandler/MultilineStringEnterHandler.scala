@@ -167,7 +167,9 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         marginCharFromSettings match {
           case Some(mChar)
               if hasMarginChars(element, mChar.toString) ||
-                (!hasMarginChars(element, mChar.toString) && lines.length > 3) || needAddByType(
+                (!hasMarginChars(
+                  element,
+                  mChar.toString) && lines.length > 3) || needAddByType(
                 literal) =>
             marginCharFromSettings
           case _ => None
@@ -190,7 +192,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         }
         val needInsertNLBefore =
           (!trimmedStartLine
-            .startsWith(firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine
+            .startsWith(
+              firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine
 
         selectBySettings()(
           if (needAddByType(literal))
@@ -217,7 +220,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         }
 
         val indentSize =
-          prevIndent + needInsertIndentInt + interpolatorPrefixLength(literal) + marginIndent
+          prevIndent + needInsertIndentInt + interpolatorPrefixLength(
+            literal) + marginIndent
 
         if (literal.getText
               .substring(offset - literalOffset) == multilineQuotes) {
@@ -250,7 +254,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
 
         val wsPrefix =
           if (isPrevLineFirst)
-            prevLinePrefixAfterDelimiter(firstMLQuoteLength) + firstMLQuoteLength
+            prevLinePrefixAfterDelimiter(
+              firstMLQuoteLength) + firstMLQuoteLength
           else prevLine.prefixLength(c => c == ' ' || c == '\t')
 
         val prefixStriped = prevLine.substring(wsPrefix)

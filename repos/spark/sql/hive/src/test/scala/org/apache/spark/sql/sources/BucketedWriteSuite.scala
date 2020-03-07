@@ -135,7 +135,9 @@ class BucketedWriteSuite
       val qe = readBack.select(bucketCols.map(col): _*).queryExecution
       val rows = qe.toRdd.map(_.copy()).collect()
       val getBucketId = UnsafeProjection.create(
-        HashPartitioning(qe.analyzed.output, numBuckets).partitionIdExpression :: Nil,
+        HashPartitioning(
+          qe.analyzed.output,
+          numBuckets).partitionIdExpression :: Nil,
         qe.analyzed.output)
 
       for (row <- rows) {

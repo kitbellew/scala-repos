@@ -251,7 +251,9 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
 private[streaming] object WriteAheadLogBasedBlockHandler {
   def checkpointDirToLogDir(checkpointDir: String, streamId: Int): String = {
-    new Path(checkpointDir, new Path("receivedData", streamId.toString)).toString
+    new Path(
+      checkpointDir,
+      new Path("receivedData", streamId.toString)).toString
   }
 }
 

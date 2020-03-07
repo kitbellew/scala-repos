@@ -16,7 +16,8 @@ class ThriftChannelBufferDecoderTest extends FunSuite with MockitoSugar {
     val ch: Channel = mock[Channel]
   }
 
-  test("ThriftChannelBufferDecoder convert channel buffers to arrays directly") {
+  test(
+    "ThriftChannelBufferDecoder convert channel buffers to arrays directly") {
     val c = new ThriftChannelBufferDecoderContext
     import c._
 

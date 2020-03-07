@@ -239,7 +239,10 @@ object MatrixProduct extends java.io.Serializable {
     RowVector[Col, ValT],
     Scalar[ValT],
     RowVector[Col, ValT]] =
-    new MatrixProduct[RowVector[Col, ValT], Scalar[ValT], RowVector[Col, ValT]] {
+    new MatrixProduct[
+      RowVector[Col, ValT],
+      Scalar[ValT],
+      RowVector[Col, ValT]] {
       def apply(
           left: RowVector[Col, ValT],
           right: Scalar[ValT]): RowVector[Col, ValT] = {
@@ -257,7 +260,10 @@ object MatrixProduct extends java.io.Serializable {
     Scalar[ValT],
     RowVector[Col, ValT],
     RowVector[Col, ValT]] =
-    new MatrixProduct[Scalar[ValT], RowVector[Col, ValT], RowVector[Col, ValT]] {
+    new MatrixProduct[
+      Scalar[ValT],
+      RowVector[Col, ValT],
+      RowVector[Col, ValT]] {
       def apply(
           left: Scalar[ValT],
           right: RowVector[Col, ValT]): RowVector[Col, ValT] = {
@@ -275,7 +281,10 @@ object MatrixProduct extends java.io.Serializable {
     ColVector[Row, ValT],
     Scalar[ValT],
     ColVector[Row, ValT]] =
-    new MatrixProduct[ColVector[Row, ValT], Scalar[ValT], ColVector[Row, ValT]] {
+    new MatrixProduct[
+      ColVector[Row, ValT],
+      Scalar[ValT],
+      ColVector[Row, ValT]] {
       def apply(
           left: ColVector[Row, ValT],
           right: Scalar[ValT]): ColVector[Row, ValT] = {
@@ -293,7 +302,10 @@ object MatrixProduct extends java.io.Serializable {
     Scalar[ValT],
     ColVector[Row, ValT],
     ColVector[Row, ValT]] =
-    new MatrixProduct[Scalar[ValT], ColVector[Row, ValT], ColVector[Row, ValT]] {
+    new MatrixProduct[
+      Scalar[ValT],
+      ColVector[Row, ValT],
+      ColVector[Row, ValT]] {
       def apply(
           left: Scalar[ValT],
           right: ColVector[Row, ValT]): ColVector[Row, ValT] = {

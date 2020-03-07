@@ -4,7 +4,9 @@ import scala.reflect.{ClassTag, classTag}
 object Util {
   def show[T](x: T): T = { println(x); x }
   def mkArgs(xs: Any*) =
-    xs map { case ((k, v)) => k + "=" + v; case x => "" + x } mkString ("(", ", ", ")")
+    xs map {
+      case ((k, v)) => k + "=" + v; case x => "" + x
+    } mkString ("(", ", ", ")")
 }
 import Util._
 

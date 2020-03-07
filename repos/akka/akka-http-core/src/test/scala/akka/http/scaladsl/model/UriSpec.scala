@@ -550,7 +550,8 @@ class UriSpec extends WordSpec with Matchers {
     "properly complete a normalization cycle" in {
 
       // http://tools.ietf.org/html/rfc3986#section-6.2.2
-      normalize("eXAMPLE://a/./b/../b/%63/%7bfoo%7d") shouldEqual "example://a/b/c/%7Bfoo%7D"
+      normalize(
+        "eXAMPLE://a/./b/../b/%63/%7bfoo%7d") shouldEqual "example://a/b/c/%7Bfoo%7D"
 
       // more examples
       normalize("") shouldEqual ""
@@ -565,34 +566,48 @@ class UriSpec extends WordSpec with Matchers {
       normalize("http://:80/foo") shouldEqual "http:///foo"
       normalize("http://:8080/foo") shouldEqual "http://:8080/foo"
       normalize("ftp://example.com:21") shouldEqual "ftp://example.com"
-      normalize("example.com:21") shouldEqual "example.com:21" // example.com is parsed as the SCHEME (which is correct)
+      normalize(
+        "example.com:21") shouldEqual "example.com:21" // example.com is parsed as the SCHEME (which is correct)
       normalize("//example.com:21") shouldEqual "//example.com:21"
       normalize("ftp://example.com:22") shouldEqual "ftp://example.com:22"
 
-      normalize("//user:pass@[::1]:80/segment/index.html?query#frag") shouldEqual "//user:pass@[::1]:80/segment/index.html?query#frag"
-      normalize("http://[::1]:80/segment/index.html?query#frag") shouldEqual "http://[::1]/segment/index.html?query#frag"
-      normalize("http://user:pass@[::1]/segment/index.html?query#frag") shouldEqual "http://user:pass@[::1]/segment/index.html?query#frag"
-      normalize("http://user:pass@[::1]:80?query#frag") shouldEqual "http://user:pass@[::1]?query#frag"
-      normalize("http://user:pass@[::1]/segment/index.html#frag") shouldEqual "http://user:pass@[::1]/segment/index.html#frag"
-      normalize("http://user:pass@[::1]:81/segment/index.html?query") shouldEqual "http://user:pass@[::1]:81/segment/index.html?query"
+      normalize(
+        "//user:pass@[::1]:80/segment/index.html?query#frag") shouldEqual "//user:pass@[::1]:80/segment/index.html?query#frag"
+      normalize(
+        "http://[::1]:80/segment/index.html?query#frag") shouldEqual "http://[::1]/segment/index.html?query#frag"
+      normalize(
+        "http://user:pass@[::1]/segment/index.html?query#frag") shouldEqual "http://user:pass@[::1]/segment/index.html?query#frag"
+      normalize(
+        "http://user:pass@[::1]:80?query#frag") shouldEqual "http://user:pass@[::1]?query#frag"
+      normalize(
+        "http://user:pass@[::1]/segment/index.html#frag") shouldEqual "http://user:pass@[::1]/segment/index.html#frag"
+      normalize(
+        "http://user:pass@[::1]:81/segment/index.html?query") shouldEqual "http://user:pass@[::1]:81/segment/index.html?query"
       normalize("ftp://host:21/gnu/") shouldEqual "ftp://host/gnu/"
       normalize("one/two/three") shouldEqual "one/two/three"
       normalize("/one/two/three") shouldEqual "/one/two/three"
-      normalize("//user:pass@localhost/one/two/three") shouldEqual "//user:pass@localhost/one/two/three"
+      normalize(
+        "//user:pass@localhost/one/two/three") shouldEqual "//user:pass@localhost/one/two/three"
       normalize("http://www.example.com/") shouldEqual "http://www.example.com/"
-      normalize("http://sourceforge.net/projects/uriparser/") shouldEqual "http://sourceforge.net/projects/uriparser/"
+      normalize(
+        "http://sourceforge.net/projects/uriparser/") shouldEqual "http://sourceforge.net/projects/uriparser/"
       normalize(
         "http://sourceforge.net/project/platformdownload.php?group_id=182840") shouldEqual "http://sourceforge.net/project/platformdownload.php?group_id=182840"
       normalize("mailto:test@example.com") shouldEqual "mailto:test@example.com"
       normalize("file:/bin/bash") shouldEqual "file:///bin/bash"
-      normalize("http://www.example.com/name%20with%20spaces/") shouldEqual "http://www.example.com/name%20with%20spaces/"
+      normalize(
+        "http://www.example.com/name%20with%20spaces/") shouldEqual "http://www.example.com/name%20with%20spaces/"
       normalize("http://examp%4Ce.com/") shouldEqual "http://example.com/"
-      normalize("http://example.com/a/b/%2E%2E/") shouldEqual "http://example.com/a/"
-      normalize("http://user:pass@SOMEHOST.COM:123") shouldEqual "http://user:pass@somehost.com:123"
-      normalize("HTTP://a:b@HOST:123/./1/2/../%41?abc#def") shouldEqual "http://a:b@host:123/1/A?abc#def"
+      normalize(
+        "http://example.com/a/b/%2E%2E/") shouldEqual "http://example.com/a/"
+      normalize(
+        "http://user:pass@SOMEHOST.COM:123") shouldEqual "http://user:pass@somehost.com:123"
+      normalize(
+        "HTTP://a:b@HOST:123/./1/2/../%41?abc#def") shouldEqual "http://a:b@host:123/1/A?abc#def"
 
       // acceptance and normalization of unescaped ascii characters such as {} and []:
-      normalize("eXAMPLE://a/./b/../b/%63/{foo}/[bar]") shouldEqual "example://a/b/c/%7Bfoo%7D/%5Bbar%5D"
+      normalize(
+        "eXAMPLE://a/./b/../b/%63/{foo}/[bar]") shouldEqual "example://a/b/c/%7Bfoo%7D/%5Bbar%5D"
       a[IllegalUriException] should be thrownBy normalize(
         "eXAMPLE://a/./b/../b/%63/{foo}/[bar]",
         mode = Uri.ParsingMode.Strict)
@@ -796,8 +811,10 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "properly render as HTTP request target origin forms" in {
-      Uri("http://example.com/foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "/foo/bar?query=1"
-      Uri("http://example.com//foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "//foo/bar?query=1"
+      Uri(
+        "http://example.com/foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "/foo/bar?query=1"
+      Uri(
+        "http://example.com//foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "//foo/bar?query=1"
     }
 
     "survive parsing a URI with thousands of path segments" in {

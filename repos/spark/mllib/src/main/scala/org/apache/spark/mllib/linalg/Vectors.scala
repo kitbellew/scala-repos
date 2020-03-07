@@ -514,7 +514,8 @@ object Vectors {
         while (kv1 < nnzv1 || kv2 < nnzv2) {
           var score = 0.0
 
-          if (kv2 >= nnzv2 || (kv1 < nnzv1 && v1Indices(kv1) < v2Indices(kv2))) {
+          if (kv2 >= nnzv2 || (kv1 < nnzv1 && v1Indices(kv1) < v2Indices(
+                kv2))) {
             score = v1Values(kv1)
             kv1 += 1
           } else if (kv1 >= nnzv1 || (kv2 < nnzv2 && v2Indices(kv2) < v1Indices(

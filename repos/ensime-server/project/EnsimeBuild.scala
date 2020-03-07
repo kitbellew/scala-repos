@@ -78,7 +78,9 @@ object EnsimeBuild extends Build {
   )
 
   lazy val s_express =
-    Project("s-express", file("s-express")) settings (commonSettings) dependsOn (
+    Project(
+      "s-express",
+      file("s-express")) settings (commonSettings) dependsOn (
       util,
       testutil % "test"
     ) settings (
@@ -97,7 +99,9 @@ object EnsimeBuild extends Build {
 
   // the JSON protocol
   lazy val jerky =
-    Project("jerky", file("protocol-jerky")) settings (commonSettings) dependsOn (
+    Project(
+      "jerky",
+      file("protocol-jerky")) settings (commonSettings) dependsOn (
       util,
       api,
       testutil % "test",
@@ -111,7 +115,9 @@ object EnsimeBuild extends Build {
 
   // the S-Exp protocol
   lazy val swanky =
-    Project("swanky", file("protocol-swanky")) settings (commonSettings) dependsOn (
+    Project(
+      "swanky",
+      file("protocol-swanky")) settings (commonSettings) dependsOn (
       api,
       testutil % "test",
       api % "test->test", // for the test data
@@ -146,7 +152,8 @@ object EnsimeBuild extends Build {
     )
     .settings(
       unmanagedJars in Compile += JavaTools,
-      EnsimeKeys.unmanagedSourceArchives += file(".").getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
+      EnsimeKeys.unmanagedSourceArchives += file(
+        ".").getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
       libraryDependencies ++= Seq(
         "com.h2database" % "h2" % "1.4.190",
         "com.typesafe.slick" %% "slick" % "3.1.1",
@@ -254,7 +261,9 @@ object EnsimeBuild extends Build {
 
   // manual root project so we can exclude the testing projects from publication
   lazy val root =
-    Project(id = "ensime", base = file(".")) settings (commonSettings) aggregate (
+    Project(
+      id = "ensime",
+      base = file(".")) settings (commonSettings) aggregate (
       api, monkeys, util, testutil, s_express, jerky, swanky, core, server
     ) dependsOn (server) settings (
       // e.g. `sbt ++2.11.8 ensime/assembly`

@@ -18,7 +18,8 @@ class RelabelUnions extends Phase {
                 rb @ Bind(_, _, Pure(StructNode(rs), rts)),
                 _) =>
             val rs2 = ls.zip(rs).map { case ((s, _), (_, n)) => (s, n) }
-            val unifiedTs = lts // Use same type symbol on both sides of the Union
+            val unifiedTs =
+              lts // Use same type symbol on both sides of the Union
             u.copy(right = rb.copy(select = Pure(StructNode(rs2), unifiedTs)))
               .infer()
         },

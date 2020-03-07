@@ -122,8 +122,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable.map(r => {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
-          if (clauses.length > 0 && clauses(0).parameters.length == 1 && clauses(
-                0).parameters(0).isCallByNameParameter) {
+          if (clauses.length > 0 && clauses(
+                0).parameters.length == 1 && clauses(0)
+                .parameters(0)
+                .isCallByNameParameter) {
             callByName = true
           }
         }
@@ -321,7 +323,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       typeParams.find(tp =>
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (tpt.name, tpt.getId)) match {
+                        (
+                          tp.name,
+                          ScalaPsiUtil.getPsiElementId(
+                            tp.ptp)) == (tpt.name, tpt.getId)) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

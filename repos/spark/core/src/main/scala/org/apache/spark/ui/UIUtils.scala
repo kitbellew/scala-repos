@@ -334,7 +334,9 @@ private[spark] object UIUtils extends Logging {
 
     val headerRow: Seq[Node] = {
       headers.view.zipWithIndex.map { x =>
-        <th width={colWidthAttr} class={getClass(x._2)}>{getHeaderContent(x._1)}</th>
+        <th width={colWidthAttr} class={getClass(x._2)}>{
+          getHeaderContent(x._1)
+        }</th>
       }
     }
     <table class={listingTableClass} id={id.map(Text.apply)}>

@@ -646,7 +646,9 @@ trait SHtml extends Loggable {
 
     attrs.foldLeft(fmapFunc((func))(name =>
       <a href="javascript://" onclick={
-        makeAjaxCall(Str(name + "=true"), jsonContext).toJsCmd + "; return false;"
+        makeAjaxCall(
+          Str(name + "=true"),
+          jsonContext).toJsCmd + "; return false;"
       }>{body}</a>))(_ % _)
   }
 
@@ -909,8 +911,9 @@ trait SHtml extends Loggable {
     * @param attrs - the balance of the attributes for the tag
     */
   def area(shape: AreaShape, alt: String, attrs: ElemAttr*): Elem =
-    attrs.foldLeft(
-      <area alt={alt} shape={shape.shape} coords={shape.coords} />)(_ % _)
+    attrs.foldLeft(<area alt={alt} shape={shape.shape} coords={
+      shape.coords
+    } />)(_ % _)
 
   /**
     * Generate an Area tag
@@ -1309,8 +1312,9 @@ trait SHtml extends Loggable {
       body: NodeSeq,
       attrs: ElemAttr*): Elem = {
     fmapFunc((a: List[String]) => { func(); true })(key =>
-      attrs.foldLeft(
-        <a href={Helpers.appendFuncToURL(to, key + "=_")}>{body}</a>)(_ % _))
+      attrs.foldLeft(<a href={Helpers.appendFuncToURL(to, key + "=_")}>{
+        body
+      }</a>)(_ % _))
   }
 
   private def makeFormElement(
@@ -1865,27 +1869,33 @@ trait SHtml extends Loggable {
     text_*(value, SFuncHolder(func), ajaxTest, attrs: _*)
 
   def password(value: String, func: String => Any, attrs: ElemAttr*): Elem =
-    makeFormElement("password", SFuncHolder(func), attrs: _*) % new UnprefixedAttribute(
-      "value",
-      Text(value),
-      Null)
+    makeFormElement(
+      "password",
+      SFuncHolder(func),
+      attrs: _*) % new UnprefixedAttribute("value", Text(value), Null)
 
   def passwordElem(
       settable: Settable { type ValueType = String },
       attrs: ElemAttr*): Elem =
-    makeFormElement("password", SFuncHolder(s => settable.set(s)), attrs: _*) % new UnprefixedAttribute(
-      "value",
-      Text(settable.get),
-      Null)
+    makeFormElement(
+      "password",
+      SFuncHolder(s => settable.set(s)),
+      attrs: _*) % new UnprefixedAttribute("value", Text(settable.get), Null)
 
   def hidden(func: () => Any, attrs: ElemAttr*): Elem =
-    makeFormElement("hidden", NFuncHolder(func), attrs: _*) % ("value" -> "true")
+    makeFormElement(
+      "hidden",
+      NFuncHolder(func),
+      attrs: _*) % ("value" -> "true")
 
   def hidden(
       func: (String) => Any,
       defaultlValue: String,
       attrs: ElemAttr*): Elem =
-    makeFormElement("hidden", SFuncHolder(func), attrs: _*) % ("value" -> defaultlValue)
+    makeFormElement(
+      "hidden",
+      SFuncHolder(func),
+      attrs: _*) % ("value" -> defaultlValue)
 
   /**
     * Create an HTML button with strOrNodeSeq as the body.  The
@@ -2831,8 +2841,8 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): NodeSeq = {
     fmapFunc(func)(name =>
       (attrs
-        .foldLeft(<input type="checkbox" name={name} value="true"/>)(_ % _) % checked(
-        value) % setId(id)) ++
+        .foldLeft(<input type="checkbox" name={name} value="true"/>)(
+          _ % _) % checked(value) % setId(id)) ++
         (<input type="hidden" name={name} value="false"/>))
   }
 

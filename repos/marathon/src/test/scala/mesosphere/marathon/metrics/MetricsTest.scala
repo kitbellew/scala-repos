@@ -42,7 +42,8 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     metrics = new Metrics(new MetricRegistry())
   }
 
-  test("Metrics#className should strip 'EnhancerByGuice' from the metric names") {
+  test(
+    "Metrics#className should strip 'EnhancerByGuice' from the metric names") {
     val instance =
       Guice.createInjector(new TestModule).getInstance(classOf[FooBar])
     assert(instance.getClass.getName.contains("EnhancerByGuice"))

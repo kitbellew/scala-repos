@@ -31,8 +31,8 @@ private[akka] object SerializedSuspendableExecutionContext {
   * @param throughput maximum number of tasks to be executed in serial before relinquishing the executing thread.
   * @param context the underlying context which will be used to actually execute the submitted tasks
   */
-private[akka] final class SerializedSuspendableExecutionContext(throughput: Int)(
-    val context: ExecutionContext)
+private[akka] final class SerializedSuspendableExecutionContext(
+    throughput: Int)(val context: ExecutionContext)
     extends AbstractNodeQueue[Runnable]
     with Runnable
     with ExecutionContext {

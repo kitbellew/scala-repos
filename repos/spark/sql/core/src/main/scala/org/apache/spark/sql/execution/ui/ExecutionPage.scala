@@ -63,7 +63,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Running Jobs: </strong>
                 {
                   executionUIData.runningJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                    <a href={jobURL(jobId)}>{
+                      jobId.toString
+                    }</a><span>&nbsp;</span>
                   }
                 }
               </li>
@@ -75,7 +77,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Succeeded Jobs: </strong>
                 {
                   executionUIData.succeededJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                    <a href={jobURL(jobId)}>{
+                      jobId.toString
+                    }</a><span>&nbsp;</span>
                   }
                 }
               </li>
@@ -87,7 +91,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                 <strong>Failed Jobs: </strong>
                 {
                   executionUIData.failedJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{jobId.toString}</a><span>&nbsp;</span>
+                    <a href={jobURL(jobId)}>{
+                      jobId.toString
+                    }</a><span>&nbsp;</span>
                   }
                 }
               </li>
@@ -121,7 +127,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
     <script src={UIUtils.prependBaseUri("/static/d3.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/dagre-d3.min.js")}></script>
     <script src={UIUtils.prependBaseUri("/static/graphlib-dot.min.js")}></script>
-    <script src={UIUtils.prependBaseUri("/static/sql/spark-sql-viz.js")}></script>
+    <script src={
+      UIUtils.prependBaseUri("/static/sql/spark-sql-viz.js")
+    }></script>
     // scalastyle:on
   }
 

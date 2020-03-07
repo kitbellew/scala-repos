@@ -87,10 +87,11 @@ object BSONHandlers {
         status = r.get[Status](status),
         turns = nbTurns,
         startedAtTurn = r intD startedAtTurn,
-        clock = r.getO[Color => Clock](clock)(clockBSONReader(
-          createdAtValue,
-          wPlayer.berserk,
-          bPlayer.berserk)) map (_(Color(0 == nbTurns % 2))),
+        clock = r.getO[Color => Clock](clock)(
+          clockBSONReader(
+            createdAtValue,
+            wPlayer.berserk,
+            bPlayer.berserk)) map (_(Color(0 == nbTurns % 2))),
         positionHashes = r.bytesD(positionHashes).value,
         checkCount = {
           val counts = r.intsD(checkCount)

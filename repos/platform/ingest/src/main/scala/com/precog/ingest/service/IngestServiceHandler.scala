@@ -274,14 +274,16 @@ class IngestServiceHandler(
                       val message = "Ingest to %s by %s succeeded (%d records)"
                         .format(path, apiKey, ingested)
                       logger.info(message)
-                      notifyJob(durability, JobManager.channels.Info, message) map {
-                        _ =>
-                          val responseContent = JObject(
-                            "ingested" -> JNum(ingested),
-                            "errors" -> JArray())
-                          HttpResponse[JValue](
-                            OK,
-                            content = Some(responseContent))
+                      notifyJob(
+                        durability,
+                        JobManager.channels.Info,
+                        message) map { _ =>
+                        val responseContent = JObject(
+                          "ingested" -> JNum(ingested),
+                          "errors" -> JArray())
+                        HttpResponse[JValue](
+                          OK,
+                          content = Some(responseContent))
                       }
 
                     case StreamingResult(ingested, Some(error)) =>
@@ -289,14 +291,16 @@ class IngestServiceHandler(
                         "Ingest to %s by %s failed after %d records with error %s"
                           .format(path, apiKey, ingested, error)
                       logger.error(message)
-                      notifyJob(durability, JobManager.channels.Error, message) map {
-                        _ =>
-                          val responseContent = JObject(
-                            "ingested" -> JNum(ingested),
-                            "errors" -> JArray(JString(error)))
-                          HttpResponse[JValue](
-                            UnprocessableEntity,
-                            content = Some(responseContent))
+                      notifyJob(
+                        durability,
+                        JobManager.channels.Error,
+                        message) map { _ =>
+                        val responseContent = JObject(
+                          "ingested" -> JNum(ingested),
+                          "errors" -> JArray(JString(error)))
+                        HttpResponse[JValue](
+                          UnprocessableEntity,
+                          content = Some(responseContent))
                       }
 
                     case BatchResult(total, ingested, errs) =>
@@ -320,11 +324,13 @@ class IngestServiceHandler(
                       val message = "Ingest to %s with %s succeeded. Result: %s"
                         .format(path, apiKey, responseContent.renderPretty)
                       logger.info(message)
-                      notifyJob(durability, JobManager.channels.Info, message) map {
-                        _ =>
-                          HttpResponse[JValue](
-                            if (ingested == 0 && total > 0) BadRequest else OK,
-                            content = Some(responseContent))
+                      notifyJob(
+                        durability,
+                        JobManager.channels.Info,
+                        message) map { _ =>
+                        HttpResponse[JValue](
+                          if (ingested == 0 && total > 0) BadRequest else OK,
+                          content = Some(responseContent))
                       }
                   }
               } valueOr { errors =>

@@ -382,7 +382,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     object locals {
 
-      private val slots = mutable.Map.empty[Symbol, Local] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
+      private val slots =
+        mutable.Map.empty[
+          Symbol,
+          Local
+        ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
 
       private var nxtIdx = -1 // next available index for local-var
 
@@ -465,11 +469,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      *  Details in `emitFinalizer()`, which is invoked from `genLoadTry()` and `genSynchronized()`.
      */
     var labelDefsAtOrUnder: scala.collection.Map[Tree, List[LabelDef]] = null
-    var labelDef: scala.collection.Map[Symbol, LabelDef] = null // (LabelDef-sym -> LabelDef)
+    var labelDef: scala.collection.Map[Symbol, LabelDef] =
+      null // (LabelDef-sym -> LabelDef)
 
     // bookkeeping the scopes of non-synthetic local vars, to emit debug info (`emitVars`).
-    var varsInScope
-        : List[Tuple2[Symbol, asm.Label]] = null // (local-var-sym -> start-of-scope)
+    var varsInScope: List[Tuple2[Symbol, asm.Label]] =
+      null // (local-var-sym -> start-of-scope)
 
     // helpers around program-points.
     def lastInsn: asm.tree.AbstractInsnNode = mnode.instructions.getLast

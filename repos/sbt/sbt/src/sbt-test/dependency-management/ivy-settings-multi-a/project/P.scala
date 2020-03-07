@@ -9,7 +9,9 @@ object B extends Build {
       version := "1.0"
   )
   lazy val use =
-    Project("use", file("use")) dependsOn (dep) settings (baseSettings: _*) settings (
+    Project(
+      "use",
+      file("use")) dependsOn (dep) settings (baseSettings: _*) settings (
       libraryDependencies += "junit" % "junit" % "4.5",
       externalIvySettings()
   )

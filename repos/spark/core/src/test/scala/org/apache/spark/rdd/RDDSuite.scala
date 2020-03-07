@@ -460,7 +460,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
         maxImbalance <= 20,
         "Expected 100 +/- 20 per partition, but got " + maxImbalance)
 
-      val data3 = sc.makeRDD(blocks).map(i => i * 2) // derived RDD to test *current* pref locs
+      val data3 =
+        sc.makeRDD(blocks)
+          .map(i => i * 2) // derived RDD to test *current* pref locs
       val coalesced3 = data3.coalesce(numMachines * 2)
       val minLocality2 = coalesced3.partitions
         .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)

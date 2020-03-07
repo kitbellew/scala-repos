@@ -426,7 +426,9 @@ abstract class KafkaShardIngestActor(
         case Nil =>
           (batch, checkpoint)
 
-        case (offset, event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
+        case (
+              offset,
+              event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
           val newCheckpoint = if (records.isEmpty) {
             checkpoint.skipTo(offset)
           } else {
@@ -454,7 +456,9 @@ abstract class KafkaShardIngestActor(
               .format(offset, eventId.uid))
           (batch, checkpoint)
 
-        case (offset, ar @ ArchiveMessage(_, _, _, EventId(pid, sid), _)) :: tail =>
+        case (
+              offset,
+              ar @ ArchiveMessage(_, _, _, EventId(pid, sid), _)) :: tail =>
           // TODO: Where is the authorization checking credentials for the archive done?
           logger.debug(
             "Singleton batch of ArchiveMessage at offset/id %d/%d"
@@ -577,9 +581,11 @@ abstract class KafkaShardIngestActor(
   }
 
   protected def status: JValue =
-    JObject(JField(
-      "Ingest",
-      JObject(JField("lastCheckpoint", lastCheckpoint.serialize) :: Nil)) :: Nil)
+    JObject(
+      JField(
+        "Ingest",
+        JObject(
+          JField("lastCheckpoint", lastCheckpoint.serialize) :: Nil)) :: Nil)
 
   override def postStop() = {
     consumer.close

@@ -14,8 +14,9 @@ object Test {
   type StructF0 = { def apply(): Int }
   def main(args: Array[String]) {
     for (i <- 0 until 150)
-      println(i + " " + test(A.apply) + " " + test(A2.apply) + " " + test(
-        A3.apply) + " " + test(A3.apply))
+      println(
+        i + " " + test(A.apply) + " " + test(A2.apply) + " " + test(
+          A3.apply) + " " + test(A3.apply))
   }
 
   def test(withF0: StructF0 => Int): Int = {

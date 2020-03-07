@@ -51,7 +51,8 @@ object SizedExamples extends App {
     println
 
     // extendedHdrs has the wrong number of columns for rows
-    val extendedHdrs = Sized("Title", "Author", "ISBN") // Sized[IndexedSeq[Int], _3]
+    val extendedHdrs =
+      Sized("Title", "Author", "ISBN") // Sized[IndexedSeq[Int], _3]
     //val badFormatted = csv(threeHdrs, rows)               // Does not compile
 
     // Extend the rows to match ...

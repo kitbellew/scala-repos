@@ -359,7 +359,8 @@ class ExternalAppendOnlyMap[K, V, C](
       */
     private def removeFromBuffer[T](buffer: ArrayBuffer[T], index: Int): T = {
       val elem = buffer(index)
-      buffer(index) = buffer(buffer.size - 1) // This also works if index == buffer.size - 1
+      buffer(index) =
+        buffer(buffer.size - 1) // This also works if index == buffer.size - 1
       buffer.reduceToSize(buffer.size - 1)
       elem
     }
@@ -448,7 +449,8 @@ class ExternalAppendOnlyMap[K, V, C](
       blockId: BlockId,
       batchSizes: ArrayBuffer[Long])
       extends Iterator[(K, C)] {
-    private val batchOffsets = batchSizes.scanLeft(0L)(_ + _) // Size will be batchSize.length + 1
+    private val batchOffsets =
+      batchSizes.scanLeft(0L)(_ + _) // Size will be batchSize.length + 1
     assert(
       file.length() == batchOffsets.last,
       "File length is not equal to the last batch offset:\n" +

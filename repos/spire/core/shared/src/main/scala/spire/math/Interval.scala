@@ -86,16 +86,16 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       flags1: Int,
       lower2: A,
       flags2: Int): Boolean =
-    lower1 < lower2 || lower1 === lower2 && (isClosedLower(flags1) || isOpenLower(
-      flags2))
+    lower1 < lower2 || lower1 === lower2 && (isClosedLower(
+      flags1) || isOpenLower(flags2))
 
   protected[this] def upperPairAbove(
       upper1: A,
       flags1: Int,
       upper2: A,
       flags2: Int): Boolean =
-    upper1 > upper2 || upper1 === upper2 && (isClosedUpper(flags1) || isOpenUpper(
-      flags2))
+    upper1 > upper2 || upper1 === upper2 && (isClosedUpper(
+      flags1) || isOpenUpper(flags2))
 
   def isEmpty: Boolean =
     this.isInstanceOf[Empty[_]]
@@ -352,8 +352,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       if (lower1s < 0 || lower2s < 0) All()
       else {
         val strongZero =
-          (lower1s == 0 && isClosedLower(lf1)) || (lower2s == 0 && isClosedLower(
-            lf2))
+          (lower1s == 0 && isClosedLower(
+            lf1)) || (lower2s == 0 && isClosedLower(lf2))
         val flags = if (strongZero) 0 else lf1 | lf2
         Above(lower1 * lower2, flags)
       }
@@ -365,8 +365,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       if (upper1s > 0 || upper2s > 0) All()
       else {
         val strongZero =
-          (upper1s == 0 && isClosedUpper(uf1)) || (upper2s == 0 && isClosedUpper(
-            uf2))
+          (upper1s == 0 && isClosedUpper(
+            uf1)) || (upper2s == 0 && isClosedUpper(uf2))
         val flags =
           if (strongZero) 0 else upperFlagToLower(uf1) | upperFlagToLower(uf2)
         Above(upper1 * upper2, flags)
@@ -379,8 +379,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       if (lower1s < 0 || upper2s > 0) All()
       else {
         val strongZero =
-          (lower1s == 0 && isClosedLower(lf1)) || (upper2s == 0 && isClosedUpper(
-            uf2))
+          (lower1s == 0 && isClosedLower(
+            lf1)) || (upper2s == 0 && isClosedUpper(uf2))
         val flags = if (strongZero) 0 else lowerFlagToUpper(lf1) | uf2
         Below(lower1 * upper2, flags)
       }
@@ -404,8 +404,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           Above(lower1 * upper2, lf1 | upperFlagToLower(flags2))
         else { // the minimal point is lower1(+) * lower2(+)
           val strongZero =
-            (lower1s == 0 && isClosedLower(lf1)) || (lower2s == 0 && isClosedLower(
-              flags2))
+            (lower1s == 0 && isClosedLower(
+              lf1)) || (lower2s == 0 && isClosedLower(flags2))
           val flags = if (strongZero) 0 else lf1 | lowerFlag(flags2)
           Above(lower1 * lower2, flags)
         }
@@ -413,16 +413,16 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         assert(hasBelowZero2)
         if (hasBelowZero1) { // the maximal point is lower1(-) * lower2(-)
           val strongZero =
-            (lower1s == 0 && isClosedLower(lf1)) || (lower2s == 0 && isClosedLower(
-              flags2))
+            (lower1s == 0 && isClosedLower(
+              lf1)) || (lower2s == 0 && isClosedLower(flags2))
           val flags =
             if (strongZero) 0
             else lowerFlagToUpper(lf1) | lowerFlagToUpper(flags2)
           Below(lower1 * lower2, flags)
         } else { // the maximal point is lower1(+) * upper2(-)
           val strongZero =
-            (lower1s == 0 && isClosedLower(lf1)) || (upper2s == 0 && isClosedUpper(
-              flags2))
+            (lower1s == 0 && isClosedLower(
+              lf1)) || (upper2s == 0 && isClosedUpper(flags2))
           val flags =
             if (strongZero) 0 else lowerFlagToUpper(lf1) | upperFlag(flags2)
           Below(lower1 * upper2, flags)
@@ -448,8 +448,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           Below(upper1 * upper2, uf1 | upperFlag(flags2))
         else { // the maximal point is upper1(+) * lower2(-)
           val strongZero =
-            (upper1s == 0 && isClosedUpper(uf1)) || (lower2s == 0 && isClosedLower(
-              flags2))
+            (upper1s == 0 && isClosedUpper(
+              uf1)) || (lower2s == 0 && isClosedLower(flags2))
           val flags = if (strongZero) 0 else uf1 | lowerFlagToUpper(flags2)
           Below(upper1 * lower2, flags)
         }
@@ -461,8 +461,8 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           Above(upper1 * lower2, flags)
         } else { // the minimal point is upper1(-) * upper2(-)
           val strongZero =
-            (upper1s == 0 && isClosedUpper(uf1)) || (upper2s == 0 && isClosedUpper(
-              flags2))
+            (upper1s == 0 && isClosedUpper(
+              uf1)) || (upper2s == 0 && isClosedUpper(flags2))
           val flags =
             if (strongZero) 0
             else upperFlagToLower(uf1) | upperFlagToLower(flags2)

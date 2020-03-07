@@ -54,7 +54,8 @@ class StringUtilityPropertyTest extends PropSpec with Checkers {
     s <- Gen.oneOf("@@", "@", "x", "//.")
   } yield s
 
-  property("fastSplit(s, sep) should match s.split(sep, -1) for non-regex sep") {
+  property(
+    "fastSplit(s, sep) should match s.split(sep, -1) for non-regex sep") {
     check {
       forAll(randomStringGen, randomSeparator) { (str, separator) =>
         val t = str.mkString("")

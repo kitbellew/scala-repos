@@ -186,7 +186,8 @@ class FlowGraphCompileSpec extends AkkaSpec {
           def f(s: String) = Flow[String].transform(op[String, String]).named(s)
           import GraphDSL.Implicits._
 
-          in7 ~> f("a") ~> b7 ~> f("b") ~> m11 ~> f("c") ~> b11 ~> f("d") ~> out2
+          in7 ~> f("a") ~> b7 ~> f("b") ~> m11 ~> f("c") ~> b11 ~> f(
+            "d") ~> out2
           b11 ~> f("e") ~> m9 ~> f("f") ~> out9
           b7 ~> f("g") ~> m8 ~> f("h") ~> m9
           b11 ~> f("i") ~> m10 ~> f("j") ~> out10

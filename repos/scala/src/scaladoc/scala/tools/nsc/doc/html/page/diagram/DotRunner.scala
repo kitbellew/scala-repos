@@ -81,8 +81,8 @@ class DotProcess(settings: doc.Settings) {
   @volatile var error: Boolean = false // signal an error
   val inputString = new SyncVar[String] // used for the dot process input
   val outputString = new SyncVar[String] // used for the dot process output
-  val errorBuffer
-      : StringBuffer = new StringBuffer() // buffer used for both dot process error console AND logging
+  val errorBuffer: StringBuffer =
+    new StringBuffer() // buffer used for both dot process error console AND logging
 
   // set in only one place, in the main thread
   var process: Process = null

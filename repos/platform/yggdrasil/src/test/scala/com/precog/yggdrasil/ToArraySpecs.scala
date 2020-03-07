@@ -32,15 +32,18 @@ trait ToArraySpec[M[+_]]
   def testToArrayHomogeneous = {
     val data: Stream[JValue] =
       Stream(
-        JObject(JField("value", JNum(23.4)) :: JField(
-          "key",
-          JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(12.4)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(JField("value", JNum(-12.4)) :: JField(
-          "key",
-          JArray(JNum(3) :: Nil)) :: Nil)
+        JObject(
+          JField("value", JNum(23.4)) :: JField(
+            "key",
+            JArray(JNum(1) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(12.4)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField("value", JNum(-12.4)) :: JField(
+            "key",
+            JArray(JNum(3) :: Nil)) :: Nil)
       )
 
     val sample = SampleData(data)
@@ -59,17 +62,22 @@ trait ToArraySpec[M[+_]]
   def testToArrayHeterogeneous = {
     val data: Stream[JValue] =
       Stream(
-        JObject(JField(
-          "value",
-          JObject(
-            JField("foo", JNum(23.4)) :: JField("bar", JString("a")) :: Nil)) :: JField(
-          "key",
-          JArray(JNum(2) :: Nil)) :: Nil),
         JObject(
           JField(
             "value",
             JObject(
-              JField("foo", JNum(23.4)) :: JField("bar", JNum(18.8)) :: Nil)) :: JField(
+              JField("foo", JNum(23.4)) :: JField(
+                "bar",
+                JString("a")) :: Nil)) :: JField(
+            "key",
+            JArray(JNum(2) :: Nil)) :: Nil),
+        JObject(
+          JField(
+            "value",
+            JObject(
+              JField("foo", JNum(23.4)) :: JField(
+                "bar",
+                JNum(18.8)) :: Nil)) :: JField(
             "key",
             JArray(JNum(1) :: Nil)) :: Nil),
         JObject(

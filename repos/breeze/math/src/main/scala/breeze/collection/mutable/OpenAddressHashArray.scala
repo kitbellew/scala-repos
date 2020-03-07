@@ -28,7 +28,8 @@ import scala.util.hashing.MurmurHash3
   * @author dlwh
   */
 @SerialVersionUID(1L)
-final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] private[mutable] (
+final class OpenAddressHashArray[
+    @specialized(Int, Float, Long, Double) V] private[mutable] (
     protected var _index: Array[Int],
     protected var _data: Array[V],
     protected var load: Int,

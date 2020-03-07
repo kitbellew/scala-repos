@@ -191,7 +191,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this
       .consumers(0)
       .commitAsync(
-        Map[TopicPartition, OffsetAndMetadata]((tp2, new OffsetAndMetadata(7L))).asJava,
+        Map[TopicPartition, OffsetAndMetadata](
+          (tp2, new OffsetAndMetadata(7L))).asJava,
         commitCallback)
     awaitCommitCallback(this.consumers(0), commitCallback)
     assertEquals(7, this.consumers(0).committed(tp2).offset)

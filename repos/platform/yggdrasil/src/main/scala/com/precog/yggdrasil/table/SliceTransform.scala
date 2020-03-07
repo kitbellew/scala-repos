@@ -213,7 +213,9 @@ trait SliceTransforms[M[+_]]
                 }
 
                 val groupedNonNum =
-                  (leftNonNum mapValues { _ :: Nil }) cogroup (rightNonNum mapValues {
+                  (leftNonNum mapValues {
+                    _ :: Nil
+                  }) cogroup (rightNonNum mapValues {
                     _ :: Nil
                   })
 
@@ -454,7 +456,8 @@ trait SliceTransforms[M[+_]]
           } else {
             objects map composeSliceTransform2 reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl0, sr0) =>
-                val sl = sl0.typed(JObjectUnfixedT) // Help out the special cases.
+                val sl =
+                  sl0.typed(JObjectUnfixedT) // Help out the special cases.
                 val sr = sr0.typed(JObjectUnfixedT)
 
                 new Slice {
@@ -758,7 +761,9 @@ trait SliceTransforms[M[+_]]
                       rightMask.flip(0, size)
 
                       val grouped =
-                        (leftS.columns mapValues { _ :: Nil }) cogroup (rightS.columns mapValues {
+                        (leftS.columns mapValues {
+                          _ :: Nil
+                        }) cogroup (rightS.columns mapValues {
                           _ :: Nil
                         })
 
@@ -1510,7 +1515,9 @@ trait ArrayConcatHelpers extends ConcatHelpers {
     val newCols = (leftIndices map { case (_, _, ref, col) => ref -> col }) ++
       (rightIndices map {
         case (i, xs, ref, col) =>
-          ColumnRef(CPath(CPathIndex(i + maxId + 1) :: xs.toList), ref.ctype) -> col
+          ColumnRef(
+            CPath(CPathIndex(i + maxId + 1) :: xs.toList),
+            ref.ctype) -> col
       })
 
     newCols.toMap

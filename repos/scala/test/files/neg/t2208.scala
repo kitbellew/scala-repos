@@ -4,5 +4,8 @@ object Test {
   class B[X]
   type Alias[X <: A] = B[X]
 
-  class C extends Alias[Any] // not ok, normalisation should check bounds before expanding Alias
+  class C
+      extends Alias[
+        Any
+      ] // not ok, normalisation should check bounds before expanding Alias
 }

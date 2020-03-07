@@ -402,7 +402,8 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gO: TupleGetter[O],
       gP: TupleGetter[P]): TupleConverter[
     Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] =
-    new TupleConverter[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
+    new TupleConverter[
+      Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple16(

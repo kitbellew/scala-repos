@@ -47,7 +47,8 @@ class TaskStatusUpdateProcessorImplTest
   test(
     "process update for unknown task that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
-    val origUpdate = TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
+    val origUpdate =
+      TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
       .setTaskId(Task.Id.forApp(appId).mesosTaskId)
       .build()
@@ -76,7 +77,8 @@ class TaskStatusUpdateProcessorImplTest
   test(
     "process update for known task without launchedTask that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
-    val origUpdate = TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
+    val origUpdate =
+      TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
       .setTaskId(Task.Id.forApp(appId).mesosTaskId)
       .build()

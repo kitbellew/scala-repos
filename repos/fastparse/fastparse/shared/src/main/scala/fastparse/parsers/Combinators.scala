@@ -319,8 +319,10 @@ object Combinators {
     * Parsers two things in a row, returning a tuple of the two
     * results if both things succeed
     */
-  case class Sequence[+T1, +T2, R](p1: Parser[T1], p2: Parser[T2], cut: Boolean)(
-      implicit ev: Implicits.Sequencer[T1, T2, R])
+  case class Sequence[+T1, +T2, R](
+      p1: Parser[T1],
+      p2: Parser[T2],
+      cut: Boolean)(implicit ev: Implicits.Sequencer[T1, T2, R])
       extends Parser[R] {
     def ev2: Implicits.Sequencer[_, _, _] = ev
     def parseRec(cfg: ParseCtx, index: Int) = {

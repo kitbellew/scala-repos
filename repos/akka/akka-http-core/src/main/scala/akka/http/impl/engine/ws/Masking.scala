@@ -29,7 +29,8 @@ private[http] object Masking {
       maskRandom: () ⇒ Random): Flow[FrameEvent, FrameEvent, NotUsed] =
     if (condition)
       Flow[FrameEvent]
-        .transform(() ⇒ new Masking(maskRandom())) // new random per materialization
+        .transform(() ⇒
+          new Masking(maskRandom())) // new random per materialization
         .map {
           case f: FrameEvent ⇒ f
           case FrameError(ex) ⇒ throw ex

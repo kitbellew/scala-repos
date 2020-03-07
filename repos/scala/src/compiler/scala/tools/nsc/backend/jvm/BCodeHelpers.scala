@@ -60,7 +60,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
   def isAnonymousOrLocalClass(classSym: Symbol): Boolean = {
     assert(classSym.isClass, s"not a class: $classSym")
     val r =
-      exitingPickler(classSym.isAnonymousClass) || !classSym.originalOwner.isClass
+      exitingPickler(
+        classSym.isAnonymousClass) || !classSym.originalOwner.isClass
     if (r) {
       // phase travel necessary: after flatten, the name includes the name of outer classes.
       // if some outer name contains $lambda, a non-lambda class is considered lambda.
@@ -199,8 +200,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       classDesc: Symbol => String,
       methodDesc: Symbol => String): Option[EnclosingMethodEntry] = {
     // trait impl classes are always top-level, see comment in BTypes
-    if (isAnonymousOrLocalClass(classSym) && !considerAsTopLevelImplementationArtifact(
-          classSym)) {
+    if (isAnonymousOrLocalClass(
+          classSym) && !considerAsTopLevelImplementationArtifact(classSym)) {
       val enclosingClass = enclosingClassForEnclosingMethodAttribute(classSym)
       val methodOpt =
         enclosingMethodForEnclosingMethodAttribute(classSym) match {
@@ -808,8 +809,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               case ClazzTag =>
                 av.visit(name, typeToBType(const.typeValue).toASMType)
               case EnumTag =>
-                val edesc = descriptor(const.tpe) // the class descriptor of the enumeration class.
-                val evalue = const.symbolValue.name.toString // value the actual enumeration value.
+                val edesc =
+                  descriptor(
+                    const.tpe
+                  ) // the class descriptor of the enumeration class.
+                val evalue =
+                  const.symbolValue.name.toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
             }
           }
@@ -833,7 +838,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         case NestedAnnotArg(annInfo) =>
           val AnnotationInfo(typ, args, assocs) = annInfo
           assert(args.isEmpty, args)
-          val desc = descriptor(typ) // the class descriptor of the nested annotation class
+          val desc =
+            descriptor(
+              typ
+            ) // the class descriptor of the nested annotation class
           val nestedVisitor = av.visitAnnotation(name, desc)
           emitAssocs(nestedVisitor, assocs)
       }
@@ -1367,7 +1375,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       val stringArrayJType: BType = ArrayBType(StringRef)
       val conJType: BType = MethodBType(
-        classBTypeFromSymbol(definitions.ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
+        classBTypeFromSymbol(
+          definitions.ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
         UNIT
       )
 
@@ -1542,7 +1551,8 @@ object BCodeHelpers {
   object InvokeStyle {
     val Virtual = new InvokeStyle(0) // InvokeVirtual or InvokeInterface
     val Static = new InvokeStyle(1) // InvokeStatic
-    val Special = new InvokeStyle(2) // InvokeSpecial (private methods, constructors)
+    val Special =
+      new InvokeStyle(2) // InvokeSpecial (private methods, constructors)
     val Super = new InvokeStyle(3) // InvokeSpecial (super calls)
   }
 }

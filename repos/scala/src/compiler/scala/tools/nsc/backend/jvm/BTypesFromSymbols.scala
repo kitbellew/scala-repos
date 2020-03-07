@@ -159,7 +159,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
   def bootstrapMethodArg(t: Constant, pos: Position): AnyRef = t match {
     case Constant(mt: Type) =>
-      methodBTypeFromMethodType(transformedType(mt), isConstructor = false).toASMType
+      methodBTypeFromMethodType(
+        transformedType(mt),
+        isConstructor = false).toASMType
     case c @ Constant(sym: Symbol)   => staticHandleFromSymbol(sym)
     case c @ Constant(value: String) => value
     case c @ Constant(value) if c.isNonUnitAnyVal =>
@@ -436,7 +438,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
      * We collect them here.
      */
     val nestedClassSymbols = {
-      val linkedClass = exitingPickler(classSym.linkedClassOfClass) // linkedCoC does not work properly in late phases
+      val linkedClass =
+        exitingPickler(
+          classSym.linkedClassOfClass
+        ) // linkedCoC does not work properly in late phases
 
       // The lambdalift phase lifts all nested classes to the enclosing class, so if we collect
       // member classes right after lambdalift, we obtain all nested classes, including local and
@@ -681,8 +686,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       internalName, {
         val c = ClassBType(internalName)
         // class info consistent with BCodeHelpers.genMirrorClass
-        val nested = exitingPickler(memberClassesForInnerClassTable(
-          moduleClassSym)) map classBTypeFromSymbol
+        val nested = exitingPickler(
+          memberClassesForInnerClassTable(
+            moduleClassSym)) map classBTypeFromSymbol
         c.info = Right(
           ClassInfo(
             superClass = Some(ObjectRef),

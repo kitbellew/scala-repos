@@ -329,8 +329,9 @@ class SparkHadoopUtil extends Logging {
   private[spark] def getSuffixForCredentialsPath(credentialsPath: Path): Int = {
     val fileName = credentialsPath.getName
     fileName
-      .substring(fileName.lastIndexOf(
-        SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
+      .substring(
+        fileName.lastIndexOf(
+          SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
       .toInt
   }
 
@@ -347,7 +348,11 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key = matched.substring(13, matched.length() - 1) // remove ${hadoopconf- .. }
+        val key =
+          matched.substring(
+            13,
+            matched.length() - 1
+          ) // remove ${hadoopconf- .. }
         val eval = Option[String](hadoopConf.get(key))
           .map { value =>
             logDebug("Substituted " + matched + " with " + value)

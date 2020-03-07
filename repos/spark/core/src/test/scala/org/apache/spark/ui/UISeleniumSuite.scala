@@ -395,7 +395,8 @@ class UISeleniumSuite
     }
   }
 
-  test("stages that aren't run appear as 'skipped stages' after a job finishes") {
+  test(
+    "stages that aren't run appear as 'skipped stages' after a job finishes") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
       val rdd =
@@ -468,7 +469,8 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(cssSelector("""ul li a[href*="environment"]""")) should not be (None)
+        find(
+          cssSelector("""ul li a[href*="environment"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="foo"]""")) should not be (None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -482,7 +484,8 @@ class UISeleniumSuite
         find(cssSelector("""ul li a[href*="jobs"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="stages"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="storage"]""")) should not be (None)
-        find(cssSelector("""ul li a[href*="environment"]""")) should not be (None)
+        find(
+          cssSelector("""ul li a[href*="environment"]""")) should not be (None)
         find(cssSelector("""ul li a[href*="foo"]""")) should be(None)
       }
       eventually(timeout(10 seconds), interval(50 milliseconds)) {

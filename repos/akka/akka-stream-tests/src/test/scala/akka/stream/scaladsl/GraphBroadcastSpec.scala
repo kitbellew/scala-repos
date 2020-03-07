@@ -23,19 +23,17 @@ class GraphBroadcastSpec extends AkkaSpec {
       val c2 = TestSubscriber.manualProbe[Int]()
 
       RunnableGraph
-        .fromGraph(
-          GraphDSL.create() {
-            implicit b ⇒
-              val bcast = b.add(Broadcast[Int](2))
-              Source(List(1, 2, 3)) ~> bcast.in
-              bcast.out(0) ~> Flow[Int].buffer(
-                16,
-                OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-              bcast.out(1) ~> Flow[Int].buffer(
-                16,
-                OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
-              ClosedShape
-          })
+        .fromGraph(GraphDSL.create() { implicit b ⇒
+          val bcast = b.add(Broadcast[Int](2))
+          Source(List(1, 2, 3)) ~> bcast.in
+          bcast.out(0) ~> Flow[Int].buffer(
+            16,
+            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
+          bcast.out(1) ~> Flow[Int].buffer(
+            16,
+            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+          ClosedShape
+        })
         .run()
 
       val sub1 = c1.expectSubscription()

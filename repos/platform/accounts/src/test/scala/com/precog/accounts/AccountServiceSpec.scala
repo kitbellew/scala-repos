@@ -147,9 +147,10 @@ class AccountServiceSpec extends TestAccountService with Tags {
     accounts.query("", "").post("")(request)
 
   def createAccount(email: String, password: String) = {
-    val request: JValue = JObject(JField("email", JString(email)) :: JField(
-      "password",
-      JString(password)) :: Nil)
+    val request: JValue = JObject(
+      JField("email", JString(email)) :: JField(
+        "password",
+        JString(password)) :: Nil)
     accounts.post("")(request)
   }
 
@@ -230,9 +231,11 @@ class AccountServiceSpec extends TestAccountService with Tags {
         HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount(
           "test0002@email.com",
           "password1")
-        HttpResponse(HttpStatus(Conflict, _), _, Some(errorMessage), _) <- createAccount(
-          "test0002@email.com",
-          "password2")
+        HttpResponse(
+          HttpStatus(Conflict, _),
+          _,
+          Some(errorMessage),
+          _) <- createAccount("test0002@email.com", "password2")
       } yield errorMessage
 
       msgFuture.copoint must beLike {

@@ -77,7 +77,9 @@ trait GroupFinder extends parser.AST with Tracer {
     @tailrec
     def state1(btrace: List[(Sigma, Expr)]): Option[(Sigma, Where)] =
       btrace match {
-        case (_, _: Add | _: Sub | _: Mul | _: Div | _: Neg | _: Paren) :: tail =>
+        case (
+              _,
+              _: Add | _: Sub | _: Mul | _: Div | _: Neg | _: Paren) :: tail =>
           state1(tail)
         case (_, _: ComparisonOp) :: tail => state2(tail)
         case (_, _: Dispatch) :: tail     => state1(tail)

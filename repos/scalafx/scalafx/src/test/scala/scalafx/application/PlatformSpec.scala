@@ -87,8 +87,9 @@ class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
   }
 
   it should "support runLater(Runnable)" in {
-    hasMethodWithSingleArgument("runLater", classOf[java.lang.Runnable]) should equal(
-      true)
+    hasMethodWithSingleArgument(
+      "runLater",
+      classOf[java.lang.Runnable]) should equal(true)
   }
 
   it should "support runLater(op: => Unit)" in {

@@ -826,8 +826,9 @@ trait ProtoUser {
     }
 
     def innerSignup = {
-      ("type=submit" #> signupSubmitButton(S ? "sign.up", testSignup _)) apply signupXhtml(
-        theUser)
+      ("type=submit" #> signupSubmitButton(
+        S ? "sign.up",
+        testSignup _)) apply signupXhtml(theUser)
     }
 
     innerSignup
@@ -1189,8 +1190,9 @@ trait ProtoUser {
     }
 
     def innerEdit = {
-      ("type=submit" #> editSubmitButton(S.?("save"), testEdit _)) apply editXhtml(
-        theUser)
+      ("type=submit" #> editSubmitButton(
+        S.?("save"),
+        testEdit _)) apply editXhtml(theUser)
     }
 
     innerEdit

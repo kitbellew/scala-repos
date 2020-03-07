@@ -61,7 +61,8 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
   @Named(HttpEventModule.StatusUpdateActor)
   def provideStatusUpdateActor(
       system: ActorSystem,
-      @Named(HttpEventModule.SubscribersKeeperActor) subscribersKeeper: ActorRef,
+      @Named(
+        HttpEventModule.SubscribersKeeperActor) subscribersKeeper: ActorRef,
       metrics: HttpEventActor.HttpEventActorMetrics,
       clock: Clock): ActorRef = {
     system.actorOf(

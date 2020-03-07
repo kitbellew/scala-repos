@@ -538,7 +538,8 @@ object KafkaTools extends Command {
                       "index" -> JNum(timestamp),
                       "account" -> JString(
                         accountLookup.getOrElse(account, account)),
-                      "size" -> JNum(byAccount.getOrElse(account, 0L))).renderCompact)
+                      "size" -> JNum(
+                        byAccount.getOrElse(account, 0L))).renderCompact)
                 }
               }
             }

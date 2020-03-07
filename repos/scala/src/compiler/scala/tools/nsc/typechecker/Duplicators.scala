@@ -276,7 +276,9 @@ abstract class Duplicators extends Analyzer {
 
           val params1 = params map newParam
           val rhs1 =
-            (new TreeSubstituter(params map (_.symbol), params1) transform rhs) // TODO: duplicate?
+            (new TreeSubstituter(
+              params map (_.symbol),
+              params1) transform rhs) // TODO: duplicate?
 
           super.typed(
             treeCopy.LabelDef(tree, name, params1, rhs1.clearType()),
@@ -396,7 +398,8 @@ abstract class Duplicators extends Analyzer {
           debuglog("Duplicators default case: " + tree.summaryString)
           debuglog(" ---> " + tree)
           if (tree.hasSymbolField && tree.symbol.safeOwner == AnyClass)
-            tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
+            tree.symbol =
+              NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
 
           val ntree = castType(tree, pt)
           super.typed(ntree, mode, pt)

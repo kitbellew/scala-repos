@@ -90,7 +90,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
         if (expr.freeTypes.nonEmpty) {
           val ft_s =
-            expr.freeTypes map (ft => s"  ${ft.name} ${ft.origin}") mkString "\n  "
+            expr.freeTypes map (ft =>
+              s"  ${ft.name} ${ft.origin}") mkString "\n  "
           throw ToolBoxError(s"""
             |reflective toolbox failed due to unresolved free type variables:
             |$ft_s
@@ -185,9 +186,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           def withContext(tree: => Tree) = withImplicitFlag(withMacroFlag(tree))
 
           val run = new Run
-          run.symSource(ownerClass) = NoAbstractFile // need to set file to something different from null, so that currentRun.defines works
-          phase = run.typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
-          globalPhase = run.typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
+          run.symSource(ownerClass) =
+            NoAbstractFile // need to set file to something different from null, so that currentRun.defines works
+          phase =
+            run.typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
+          globalPhase =
+            run.typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
           currentTyper.context
             .initRootContext() // need to manually set context mode, otherwise typer.silent will throw exceptions
           reporter.reset()
@@ -309,9 +313,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       def compile(expr0: Tree): () => Any = {
         val expr = build.SyntacticBlock(expr0 :: Nil)
 
-        val freeTerms = expr.freeTerms // need to calculate them here, because later on they will be erased
+        val freeTerms =
+          expr.freeTerms // need to calculate them here, because later on they will be erased
         val thunks =
-          freeTerms map (fte => () => fte.value) // need to be lazy in order not to distort evaluation order
+          freeTerms map (fte =>
+            () =>
+              fte.value) // need to be lazy in order not to distort evaluation order
         verify(expr)
 
         def wrapInModule(expr0: Tree): ModuleDef = {
@@ -333,7 +340,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             val (fv, name) = schema
             meth.newValueParameter(
               name,
-              newFlags = if (fv.hasStableFlag) STABLE else 0) setInfo appliedType(
+              newFlags =
+                if (fv.hasStableFlag) STABLE else 0) setInfo appliedType(
               definitions.FunctionClass(0).tpe,
               List(fv.tpe.resultType))
           }

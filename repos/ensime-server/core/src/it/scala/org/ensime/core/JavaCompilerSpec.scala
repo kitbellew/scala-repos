@@ -65,13 +65,19 @@ class JavaCompilerSpec
           config.rootDir,
           "testing/simple/src/main/java/org/example/Test2.java"))
 
-      cc.askLinkPos(JavaFqn("org.example", "Test2", None), test2) should matchPattern {
+      cc.askLinkPos(
+        JavaFqn("org.example", "Test2", None),
+        test2) should matchPattern {
         case Some(OffsetSourcePosition(f, 22)) =>
       }
-      cc.askLinkPos(JavaFqn("org.example", "Foo", None), test2) should matchPattern {
+      cc.askLinkPos(
+        JavaFqn("org.example", "Foo", None),
+        test2) should matchPattern {
         case None =>
       }
-      cc.askLinkPos(JavaFqn("org.example", "Test2.Bar", None), test2) should matchPattern {
+      cc.askLinkPos(
+        JavaFqn("org.example", "Test2.Bar", None),
+        test2) should matchPattern {
         case Some(OffsetSourcePosition(f, 260)) =>
       }
     //    cc.askLinkPos(JavaFqn("org.example", "Test2", Some("compute()")), test2) should matchPattern { case Some(OffsetSourcePosition(f, 58)) => }

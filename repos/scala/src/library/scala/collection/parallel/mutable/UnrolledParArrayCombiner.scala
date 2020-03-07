@@ -114,5 +114,6 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
 
 object UnrolledParArrayCombiner {
   def apply[T](): UnrolledParArrayCombiner[T] =
-    new UnrolledParArrayCombiner[T] {} // was: with EnvironmentPassingCombiner[T, ParArray[T]]
+    new UnrolledParArrayCombiner[
+      T] {} // was: with EnvironmentPassingCombiner[T, ParArray[T]]
 }

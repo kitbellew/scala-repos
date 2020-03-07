@@ -60,7 +60,8 @@ object WebJobManager {
     (
       config
         .get[String]("service.protocol")
-        .toSuccess(NEL("Configuraiton property service.protocol is required.")) |@|
+        .toSuccess(
+          NEL("Configuraiton property service.protocol is required.")) |@|
         config
           .get[String]("service.host")
           .toSuccess(NEL("Configuration property service.host is required")) |@|

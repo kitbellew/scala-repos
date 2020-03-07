@@ -36,9 +36,10 @@ object Puzzle extends LilaController {
     }) { puzzle =>
       negotiate(
         html =
-          (ctx.me ?? { env.api.attempt.hasPlayed(_, puzzle) map (!_) }) flatMap {
-            asPlay =>
-              renderShow(puzzle, asPlay.fold("play", "try")) map { Ok(_) }
+          (ctx.me ?? {
+            env.api.attempt.hasPlayed(_, puzzle) map (!_)
+          }) flatMap { asPlay =>
+            renderShow(puzzle, asPlay.fold("play", "try")) map { Ok(_) }
           },
         api = _ => puzzleJson(puzzle) map { Ok(_) }
       ) map { NoCache(_) }

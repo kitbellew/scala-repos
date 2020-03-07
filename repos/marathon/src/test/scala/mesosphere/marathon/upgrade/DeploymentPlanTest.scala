@@ -55,7 +55,8 @@ class DeploymentPlanTest
     partitionedApps(2) should have size (2)
   }
 
-  test("partition a complex group's apps into concurrently deployable subsets") {
+  test(
+    "partition a complex group's apps into concurrently deployable subsets") {
     Given("a group of four apps with some simple dependencies")
     val aId = "/a".toPath
     val bId = "/b".toPath
@@ -153,7 +154,8 @@ class DeploymentPlanTest
     plan.isAffectedBy(DeploymentPlan(from, from)) should equal(right = false)
   }
 
-  test("when updating a group with dependencies, the correct order is computed") {
+  test(
+    "when updating a group with dependencies, the correct order is computed") {
 
     Given("Two application updates with command and scale changes")
     val mongoId = "/test/database/mongo".toPath
@@ -533,7 +535,8 @@ class DeploymentPlanTest
     validate(plan).isSuccess should be(true)
   }
 
-  test("Deployment plan validation fails for invalid changes in resident tasks") {
+  test(
+    "Deployment plan validation fails for invalid changes in resident tasks") {
     Given("All options are supplied and we have a valid group change")
     AllConf.SuppliedOptionNames = Set(
       "mesos_authentication_principal",

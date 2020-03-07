@@ -262,7 +262,9 @@ trait MatchTranslation {
 
       // val packedPt = repeatedToSeq(typer.packedType(match_, context.owner))
       val selectorSym =
-        freshSym(selector.pos, pureType(selectorTp)) setFlag treeInfo.SYNTH_CASE_FLAGS
+        freshSym(
+          selector.pos,
+          pureType(selectorTp)) setFlag treeInfo.SYNTH_CASE_FLAGS
 
       // pt = Any* occurs when compiling test/files/pos/annotDepMethType.scala  with -Xexperimental
       val combined = combineCases(
@@ -373,9 +375,8 @@ trait MatchTranslation {
       */
     def translateCase(scrutSym: Symbol, pt: Type)(caseDef: CaseDef) = {
       val CaseDef(pattern, guard, body) = caseDef
-      translatePattern(BoundTree(scrutSym, pattern)) ++ translateGuard(guard) :+ translateBody(
-        body,
-        pt)
+      translatePattern(BoundTree(scrutSym, pattern)) ++ translateGuard(
+        guard) :+ translateBody(body, pt)
     }
 
     def translatePattern(bound: BoundTree): List[TreeMaker] = bound.translate()

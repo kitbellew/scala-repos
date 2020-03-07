@@ -242,7 +242,11 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         return if (getText(rightNode, fileText).apply(0) == ' ') WITHOUT_SPACING
         else WITH_SPACING
       case (ScalaDocTokenType.DOC_TAG_NAME, _, _, _) =>
-        val rightText = getText(rightNode, fileText) //rightString is not semantically equal for PsiError nodes
+        val rightText =
+          getText(
+            rightNode,
+            fileText
+          ) //rightString is not semantically equal for PsiError nodes
         return if (rightText.nonEmpty && rightText.apply(0) == ' ')
           Spacing.getReadOnlySpacing
         else tagSpacing
@@ -659,7 +663,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     //this is a dirty hack for SCL-9264. It looks bad, but seems to be the only fast way to make this work.
-    (leftNode.getElementType, leftNode.getPsi.getPrevSiblingNotWhitespace) match {
+    (
+      leftNode.getElementType,
+      leftNode.getPsi.getPrevSiblingNotWhitespace) match {
       case (
           ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tLPARENTHESIS,
           forNode: LeafPsiElement)
@@ -698,7 +704,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
 
     if (rightPsi.isInstanceOf[ScPackaging]) {
       if (leftPsi
-            .isInstanceOf[ScStableCodeReferenceElement] || leftElementType == tLBRACE)
+            .isInstanceOf[
+              ScStableCodeReferenceElement] || leftElementType == tLBRACE)
         return Spacing.createSpacing(
           0,
           0,
@@ -845,7 +852,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             (oneLineNonEmpty && (spaceInsideOneLineMethod || spaceInsideClosure ||
               scalaSettings.SPACES_IN_ONE_LINE_BLOCKS)) ||
               leftPsi
-                .isInstanceOf[PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
+                .isInstanceOf[
+                  PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
           val spaces = if (needsSpace) 1 else 0
 
           return Spacing.createDependentLFSpacing(
@@ -1166,7 +1174,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     //comments processing
     if (leftNode.getPsi.isInstanceOf[ScDocComment]) return ON_NEW_LINE
     if (rightNode.getPsi
-          .isInstanceOf[ScDocComment] && leftNode.getElementType == ScalaTokenTypes.tLBRACE)
+          .isInstanceOf[
+            ScDocComment] && leftNode.getElementType == ScalaTokenTypes.tLBRACE)
       return ON_NEW_LINE
     if (rightNode.getPsi.isInstanceOf[ScDocComment]) return DOUBLE_LINE
     if (rightNode.getPsi.isInstanceOf[PsiComment] || leftNode.getPsi
@@ -1453,7 +1462,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     //processing before left brace
-    if (rightString.length > 0 && rightString(0) == '{' && rightNode.getElementType != ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_START) {
+    if (rightString.length > 0 && rightString(
+          0) == '{' && rightNode.getElementType != ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_START) {
       val parentPsi = rightNode.getTreeParent.getPsi
 
       parentPsi match {

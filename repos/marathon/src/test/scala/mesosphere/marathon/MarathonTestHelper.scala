@@ -392,7 +392,11 @@ object MarathonTestHelper {
       store: PersistentStore = new InMemoryStore,
       config: MarathonConf = defaultConfig(),
       metrics: Metrics = new Metrics(new MetricRegistry)): TaskTracker = {
-    createTaskTrackerModule(leadershipModule, store, config, metrics).taskTracker
+    createTaskTrackerModule(
+      leadershipModule,
+      store,
+      config,
+      metrics).taskTracker
   }
 
   def dummyTaskBuilder(appId: PathId) =
@@ -522,7 +526,10 @@ object MarathonTestHelper {
       taskId: String,
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2): Protos.MarathonTask = {
-    startingTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt).toBuilder
+    startingTaskProto(
+      taskId,
+      appVersion = appVersion,
+      stagedAt = stagedAt).toBuilder
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_STAGING))
       .build()
   }
@@ -559,7 +566,10 @@ object MarathonTestHelper {
       appVersion: Timestamp = Timestamp(1),
       stagedAt: Long = 2,
       startedAt: Long = 3): Protos.MarathonTask = {
-    stagedTaskProto(taskId, appVersion = appVersion, stagedAt = stagedAt).toBuilder
+    stagedTaskProto(
+      taskId,
+      appVersion = appVersion,
+      stagedAt = stagedAt).toBuilder
       .setStartedAt(startedAt)
       .setStatus(statusForState(taskId, Mesos.TaskState.TASK_RUNNING))
       .build()
@@ -699,7 +709,8 @@ object MarathonTestHelper {
     volumes = Seq[Volume](
       PersistentVolume(
         containerPath = "persistent-volume",
-        persistent = PersistentVolumeInfo(10), // must match persistentVolumeResources
+        persistent =
+          PersistentVolumeInfo(10), // must match persistentVolumeResources
         mode = Mesos.Volume.Mode.RW
       )
     ),

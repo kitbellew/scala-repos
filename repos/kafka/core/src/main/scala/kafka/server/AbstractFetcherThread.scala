@@ -138,7 +138,8 @@ abstract class AbstractFetcherThread(
               .foreach(currentPartitionFetchState =>
                 // we append to the log if the current offset is defined and it is the same as the offset requested during fetch
                 if (fetchRequest
-                      .offset(topicAndPartition) == currentPartitionFetchState.offset) {
+                      .offset(
+                        topicAndPartition) == currentPartitionFetchState.offset) {
                   Errors.forCode(partitionData.errorCode) match {
                     case Errors.NONE =>
                       try {

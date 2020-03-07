@@ -374,8 +374,11 @@ object Schemifier extends Loggable {
           }
         })
       // FIXME deal with column types
-      (field.dbColumnNames(field.name).filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase))).foreach {
-        colName =>
+      (
+        field
+          .dbColumnNames(field.name)
+          .filter(f => !cols.map(_.toLowerCase).contains(f.toLowerCase)))
+        .foreach { colName =>
           logger.trace(
             "Column does not exist: %s.%s ".format(table.dbTableName, colName))
 
@@ -389,7 +392,7 @@ object Schemifier extends Loggable {
               "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
             }
           }
-      }
+        }
 
       field.dbAddedColumn.toList
 

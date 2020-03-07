@@ -85,7 +85,8 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
 
     @inline private def isDisabledOn(file: PsiFile) = {
       WorksheetAutoRunner
-        .isSetDisabled(file) || !settings.isInteractiveMode && !WorksheetAutoRunner
+        .isSetDisabled(
+          file) || !settings.isInteractiveMode && !WorksheetAutoRunner
         .isSetEnabled(file)
     }
 

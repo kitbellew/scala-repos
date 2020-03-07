@@ -271,7 +271,8 @@ abstract class ExplicitOuter
           EmptyTree
         }
       } else {
-        val currentClass = this.currentClass //todo: !!! if this line is removed, we get a build failure that protected$currentClass need an override modifier
+        val currentClass =
+          this.currentClass //todo: !!! if this line is removed, we get a build failure that protected$currentClass need an override modifier
         // outerFld is the $outer field of the current class, if the reference can
         // use it (i.e. reference is allowed to be of the form this.$outer),
         // otherwise it is NoSymbol
@@ -470,9 +471,12 @@ abstract class ExplicitOuter
                         s"Implementation restriction: ${clazz.fullLocationString} requires premature access to ${clazz.outerClass}.")
                     }
                     val outerParam =
-                      sym.newValueParameter(nme.OUTER, sym.pos) setInfo clazz.outerClass
+                      sym.newValueParameter(
+                        nme.OUTER,
+                        sym.pos) setInfo clazz.outerClass
                         .thisType
-                    ((ValDef(outerParam) setType NoType) :: vparamss.head) :: vparamss.tail
+                    ((ValDef(
+                      outerParam) setType NoType) :: vparamss.head) :: vparamss.tail
                   } else vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
             }

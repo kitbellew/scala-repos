@@ -365,7 +365,8 @@ class GroupCoordinator(
                       // another member may have joined the group while we were awaiting this callback,
                       // so we must ensure we are still in the AwaitingSync state and the same generation
                       // when it gets invoked. if we have transitioned to another state, then do nothing
-                      if (group.is(AwaitingSync) && generationId == group.generationId) {
+                      if (group.is(
+                            AwaitingSync) && generationId == group.generationId) {
                         if (errorCode != Errors.NONE.code) {
                           resetAndPropagateAssignmentError(group, errorCode)
                           maybePrepareRebalance(group)

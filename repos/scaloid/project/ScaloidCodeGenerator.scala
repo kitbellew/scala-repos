@@ -9,7 +9,8 @@ class ScaloidCodeGenerator(
 
   def implicitConversion = {
     val name = cls.name
-    s"$deprecated@inline implicit def ${decapitalize(name)}2Rich$name[V <: ${genType(cls.tpe, erased = true)}]" +
+    s"$deprecated@inline implicit def ${decapitalize(
+      name)}2Rich$name[V <: ${genType(cls.tpe, erased = true)}]" +
       s"(${decapitalize(name)}: V) = new Rich$name[V](${decapitalize(name)})"
   }
 
@@ -273,15 +274,16 @@ class ScaloidCodeGenerator(
   // Property
 
   def noGetter(name: String) =
-    s"""@inline def ${safeIdent(name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
+    s"""@inline def ${safeIdent(
+      name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
 
   def getter(prop: AndroidProperty) =
     prop.getter
       .fold(if (prop.nameClashes) "" else noGetter(prop.name)) { getter =>
         val dp = if (getter.isDeprecated) deprecatedDecl else ""
         methodScalaDoc(getter) +
-          s"\n$dp@inline${if (getter.isOverride) " override" else ""} def ${safeIdent(
-            prop.name)} = basis.${getter.name}\n"
+          s"\n$dp@inline${if (getter.isOverride) " override"
+          else ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
       }
 
   def setter(prop: AndroidProperty, method: AndroidMethod) = {
@@ -321,7 +323,8 @@ class ScaloidCodeGenerator(
   // Service
   def systemServiceHead =
     s"@inline def ${decapitalize(cls.name)}(implicit context: Context) = \n" +
-      s"  context.getSystemService(Context.${managerToService(cls.name)}).asInstanceOf[${cls.tpe.name}]"
+      s"  context.getSystemService(Context.${managerToService(
+        cls.name)}).asInstanceOf[${cls.tpe.name}]"
 
   // Scaladoc
   def androidDocBase = "https://developer.android.com/reference"

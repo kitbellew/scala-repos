@@ -207,7 +207,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         if (lastPrintedSource == source)
           println(": tree is unchanged since " + lastPrintedPhase)
         else {
-          lastPrintedPhase = phase.prev // since we're running inside "exitingPhase"
+          lastPrintedPhase =
+            phase.prev // since we're running inside "exitingPhase"
           lastPrintedSource = source
           println("")
           println(source)

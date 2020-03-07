@@ -35,8 +35,8 @@ private[http] abstract class HttpMessageParser[
   private[this] var completionHandling: CompletionHandling = CompletionOk
   private[this] var terminated = false
 
-  private[this] var lastSession
-      : SSLSession = null // used to prevent having to recreate header on each message
+  private[this] var lastSession: SSLSession =
+    null // used to prevent having to recreate header on each message
   private[this] var tlsSessionInfoHeader: `Tls-Session-Info` = null
   def initialHeaderBuffer: ListBuffer[HttpHeader] =
     if (settings.includeTlsSessionInfoHeader && tlsSessionInfoHeader != null)
@@ -122,8 +122,8 @@ private[http] abstract class HttpMessageParser[
 
   def parseProtocol(input: ByteString, cursor: Int): Int = {
     def c(ix: Int) = byteChar(input, cursor + ix)
-    if (c(0) == 'H' && c(1) == 'T' && c(2) == 'T' && c(3) == 'P' && c(4) == '/' && c(
-          5) == '1' && c(6) == '.') {
+    if (c(0) == 'H' && c(1) == 'T' && c(2) == 'T' && c(3) == 'P' && c(
+          4) == '/' && c(5) == '1' && c(6) == '.') {
       protocol = c(7) match {
         case '0' ⇒ `HTTP/1.0`
         case '1' ⇒ `HTTP/1.1`

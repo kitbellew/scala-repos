@@ -191,7 +191,9 @@ trait MutableLPVectorField[V, S]
 }
 
 // Same idea as VectorField, but with explicit key type specified.
-trait CoordinateField[V, S] extends LPVectorField[V, S] with Coordinated[V, S] {}
+trait CoordinateField[V, S]
+    extends LPVectorField[V, S]
+    with Coordinated[V, S] {}
 
 trait MutableCoordinateField[V, S]
     extends CoordinateField[V, S]

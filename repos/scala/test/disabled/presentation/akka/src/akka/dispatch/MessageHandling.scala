@@ -75,7 +75,8 @@ trait MessageDispatcher {
   protected val guard = new ReentrantGuard
   protected val active = new Switch(false)
 
-  private var shutdownSchedule = UNSCHEDULED //This can be non-volatile since it is protected by guard withGuard
+  private var shutdownSchedule =
+    UNSCHEDULED //This can be non-volatile since it is protected by guard withGuard
 
   /**
     *  Creates and returns a mailbox for the given actor.

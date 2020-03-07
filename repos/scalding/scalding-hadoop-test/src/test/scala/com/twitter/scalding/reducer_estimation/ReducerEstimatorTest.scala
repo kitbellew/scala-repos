@@ -10,7 +10,10 @@ import scala.collection.JavaConverters._
 
 object HipJob {
   val InSrcFileSize = 2496L
-  val inSrc = TextLine(getClass.getResource("/hipster.txt").toString) // file size is 2496 bytes
+  val inSrc =
+    TextLine(
+      getClass.getResource("/hipster.txt").toString
+    ) // file size is 2496 bytes
   val InScoresFileSize = 174L
   val inScores = TypedTsv[(String, Double)](
     getClass.getResource("/scores.tsv").toString
@@ -109,13 +112,14 @@ class ReducerEstimatorTest
         Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
           (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
-      HadoopPlatformJobTest(new SimpleJob(_, customConfig), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 1
+      HadoopPlatformJobTest(
+        new SimpleJob(_, customConfig),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 1
 
-          val conf = Config.fromHadoop(steps.head.getConfig)
-          conf.getNumReducers should contain(2)
+        val conf = Config.fromHadoop(steps.head.getConfig)
+        conf.getNumReducers should contain(2)
       }.run
     }
 
@@ -125,13 +129,14 @@ class ReducerEstimatorTest
           (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString) +
           (Config.ReducerEstimatorOverride -> "true")
 
-      HadoopPlatformJobTest(new SimpleJob(_, customConfig), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 1
+      HadoopPlatformJobTest(
+        new SimpleJob(_, customConfig),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 1
 
-          val conf = Config.fromHadoop(steps.head.getConfig)
-          conf.getNumReducers should contain(3)
+        val conf = Config.fromHadoop(steps.head.getConfig)
+        conf.getNumReducers should contain(3)
       }.run
     }
   }
@@ -142,13 +147,14 @@ class ReducerEstimatorTest
         Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
           (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
-      HadoopPlatformJobTest(new GroupAllJob(_, customConfig), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 1
+      HadoopPlatformJobTest(
+        new GroupAllJob(_, customConfig),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 1
 
-          val conf = Config.fromHadoop(steps.head.getConfig)
-          conf.getNumReducers should contain(1)
+        val conf = Config.fromHadoop(steps.head.getConfig)
+        conf.getNumReducers should contain(1)
       }.run
     }
   }
@@ -177,16 +183,17 @@ class ReducerEstimatorTest
         Config.empty.addReducerEstimator(classOf[InputSizeReducerEstimator]) +
           (InputSizeReducerEstimator.BytesPerReducer -> (1L << 10).toString)
 
-      HadoopPlatformJobTest(new SimpleMapOnlyJob(_, customConfig), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 1
+      HadoopPlatformJobTest(
+        new SimpleMapOnlyJob(_, customConfig),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 1
 
-          val conf = Config.fromHadoop(steps.head.getConfig)
-          val numReducers = conf.getNumReducers
-          assert(
-            !numReducers.isDefined || numReducers.get == 0,
-            "Reducers should be 0")
+        val conf = Config.fromHadoop(steps.head.getConfig)
+        val numReducers = conf.getNumReducers
+        assert(
+          !numReducers.isDefined || numReducers.get == 0,
+          "Reducers should be 0")
       }.run
     }
   }

@@ -211,7 +211,8 @@ object ScalaWrapManager {
         else return null
       case params: ScParameters =>
         if (childPsi
-              .isInstanceOf[ScParameterClause] && params.clauses.head != childPsi)
+              .isInstanceOf[
+                ScParameterClause] && params.clauses.head != childPsi)
           return suggestedWrap
         else return null
       case annot: ScAnnotations =>

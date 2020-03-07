@@ -357,7 +357,8 @@ trait Parser extends RegexParsers with Filters with AST {
 
   case class ParseException(failures: Set[Failure]) extends RuntimeException {
     def mkString = {
-      val tail = failures.head.tail // if we have an empty set of failures, that's bad
+      val tail =
+        failures.head.tail // if we have an empty set of failures, that's bad
       val result = ParseException reduceFailures failures
       tail formatError ("error:%d: " + result + "%n  %s%n  %s")
     }

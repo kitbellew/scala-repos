@@ -361,7 +361,8 @@ trait SingleMarathonIntegrationTest
         import mesosphere.marathon.integration.facades.MesosFormats._
         log.info(
           "Waiting for blank slate Mesos...\n \"used_resources\": "
-            + Json.prettyPrint(Json.toJson(agent.usedResources)) + "\n \"reserved_resources\": "
+            + Json.prettyPrint(
+              Json.toJson(agent.usedResources)) + "\n \"reserved_resources\": "
             + Json.prettyPrint(Json.toJson(agent.reservedResourcesByRole))
         )
       }

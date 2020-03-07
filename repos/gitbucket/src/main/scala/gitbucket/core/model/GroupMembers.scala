@@ -10,7 +10,10 @@ trait GroupMemberComponent { self: Profile =>
     val userName = column[String]("USER_NAME", O PrimaryKey)
     val isManager = column[Boolean]("MANAGER")
     def * =
-      (groupName, userName, isManager) <> (GroupMember.tupled, GroupMember.unapply)
+      (
+        groupName,
+        userName,
+        isManager) <> (GroupMember.tupled, GroupMember.unapply)
   }
 }
 

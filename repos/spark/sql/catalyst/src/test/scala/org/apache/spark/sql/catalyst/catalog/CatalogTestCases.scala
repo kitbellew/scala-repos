@@ -148,7 +148,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     assert(newDb1.properties.get("good") == Some("true"))
   }
 
-  test("alter database should throw exception when the database does not exist") {
+  test(
+    "alter database should throw exception when the database does not exist") {
     intercept[AnalysisException] {
       newBasicCatalog().alterDatabase(newDb("does_not_exist"))
     }

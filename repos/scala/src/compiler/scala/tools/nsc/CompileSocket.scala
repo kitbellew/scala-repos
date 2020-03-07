@@ -91,7 +91,8 @@ class CompileSocket extends CompileOutputCommon {
     *  @param vmArgs  the argument string to be passed to the java or scala command
     */
   private def serverCommand(vmArgs: Seq[String]): Seq[String] =
-    Seq(vmCommand) ++ vmArgs ++ Seq(serverClass) ++ serverClassArgs filterNot (_ == "")
+    Seq(vmCommand) ++ vmArgs ++ Seq(
+      serverClass) ++ serverClassArgs filterNot (_ == "")
 
   /** Start a new server. */
   private def startNewServer(vmArgs: String) = {

@@ -285,7 +285,8 @@ abstract class SuperAccessors
             //
             // [1] https://groups.google.com/forum/#!topic/scala-internals/iPkMCygzws4
             //
-            if (closestEnclMethod(currentOwner) hasAnnotation definitions.ScalaInlineClass)
+            if (closestEnclMethod(
+                  currentOwner) hasAnnotation definitions.ScalaInlineClass)
               sym.makeNotPrivate(sym.owner)
 
             qual match {

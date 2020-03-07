@@ -183,8 +183,9 @@ final class SortedSetClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.zAdd(foo, 10, bar)) == 1)
       assert(Await.result(client.zAdd(foo, 20, baz)) == 1)
       assert(Await.result(client.zAdd(foo, 30, boo)) == 1)
-      assert(Await.result(
-        client.zRemRangeByScore(foo, ZInterval(10), ZInterval(20))) == 2)
+      assert(
+        Await.result(
+          client.zRemRangeByScore(foo, ZInterval(10), ZInterval(20))) == 2)
       for (right <- Await.result(client.zRange(foo, 0, -1, false)).right)
         assert(CBToString.fromList(right.toList) == List("boo"))
     }

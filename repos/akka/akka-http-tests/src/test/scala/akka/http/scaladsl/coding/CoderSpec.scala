@@ -90,13 +90,17 @@ abstract class CoderSpec
 
     "not throw an error if a subsequent block is corrupt" in {
       pending // FIXME: should we read as long as possible and only then report an error, that seems somewhat arbitrary
-      ourDecode(Seq(encode("Hello,"), encode(" dear "), corruptContent).join) should readAs(
-        "Hello, dear ")
+      ourDecode(
+        Seq(
+          encode("Hello,"),
+          encode(" dear "),
+          corruptContent).join) should readAs("Hello, dear ")
     }
     "decompress in very small chunks" in {
       val compressed = encode("Hello")
 
-      decodeChunks(Source(Vector(compressed.take(10), compressed.drop(10)))) should readAs(
+      decodeChunks(
+        Source(Vector(compressed.take(10), compressed.drop(10)))) should readAs(
         "Hello")
     }
     "support chunked round-trip encoding/decoding" in {

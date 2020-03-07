@@ -233,7 +233,9 @@ object AlterTableCommandParser {
             "TOK_ALTERTABLE_SKEWED",
             Token(
               "TOK_TABLESKEWED",
-              Token("TOK_TABCOLNAME", colNames) :: colValues :: rest) :: Nil) :: _ =>
+              Token(
+                "TOK_TABCOLNAME",
+                colNames) :: colValues :: rest) :: Nil) :: _ =>
         // Example format:
         //
         //   TOK_ALTERTABLE_SKEWED
@@ -278,7 +280,9 @@ object AlterTableCommandParser {
         AlterTableNotSkewed(tableIdent)(node.source)
 
       // ALTER TABLE table_name NOT STORED AS DIRECTORIES
-      case Token("TOK_ALTERTABLE_SKEWED", Token("TOK_STOREDASDIRS", Nil) :: Nil) :: _ =>
+      case Token(
+            "TOK_ALTERTABLE_SKEWED",
+            Token("TOK_STOREDASDIRS", Nil) :: Nil) :: _ =>
         AlterTableNotStoredAsDirs(tableIdent)(node.source)
 
       // ALTER TABLE table_name SET SKEWED LOCATION (col1="loc1" [, (col2, col3)="loc2", ...] );
@@ -286,7 +290,9 @@ object AlterTableCommandParser {
             "TOK_ALTERTABLE_SKEWED_LOCATION",
             Token(
               "TOK_SKEWED_LOCATIONS",
-              Token("TOK_SKEWED_LOCATION_LIST", locationMaps) :: Nil) :: Nil) :: _ =>
+              Token(
+                "TOK_SKEWED_LOCATION_LIST",
+                locationMaps) :: Nil) :: Nil) :: _ =>
         // Example format:
         //
         //   TOK_ALTERTABLE_SKEWED_LOCATION
@@ -360,7 +366,9 @@ object AlterTableCommandParser {
           node.source)
 
       // ALTER TABLE table_name_1 EXCHANGE PARTITION spec WITH TABLE table_name_2;
-      case Token("TOK_ALTERTABLE_EXCHANGEPARTITION", spec :: newTable :: Nil) :: _ =>
+      case Token(
+            "TOK_ALTERTABLE_EXCHANGEPARTITION",
+            spec :: newTable :: Nil) :: _ =>
         val parsedSpec = parsePartitionSpec(spec)
         val newTableIdent = extractTableIdent(newTable)
         AlterTableExchangePartition(tableIdent, newTableIdent, parsedSpec)(
@@ -416,7 +424,9 @@ object AlterTableCommandParser {
         AlterTableTouch(tableIdent, part)(node.source)
 
       // ALTER TABLE table_name [PARTITION spec] COMPACT 'compaction_type';
-      case Token("TOK_ALTERTABLE_COMPACT", Token(compactType, Nil) :: Nil) :: _ =>
+      case Token(
+            "TOK_ALTERTABLE_COMPACT",
+            Token(compactType, Nil) :: Nil) :: _ =>
         AlterTableCompact(
           tableIdent,
           partition,

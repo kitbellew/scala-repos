@@ -353,8 +353,9 @@ class ScalaInplaceVariableIntroducer(
       myBalloonPanel add myChbPanel
       myBalloonPanel remove myLabelPanel
     }
-    Seq(myVarCheckbox, mySpecifyTypeChb) filter (_ != null) foreach (_.setEnabled(
-      nameIsValid))
+    Seq(
+      myVarCheckbox,
+      mySpecifyTypeChb) filter (_ != null) foreach (_.setEnabled(nameIsValid))
     myBalloon.revalidate()
   }
 

@@ -90,7 +90,8 @@ trait JxBase {
         case Group(nodes) => addToDocFrag(parent, nodes.toList)
         case Text(txt) =>
           JsRaw(
-            parent + ".appendChild(document.createTextNode(" + fixText(txt).encJs + "));").cmd
+            parent + ".appendChild(document.createTextNode(" + fixText(
+              txt).encJs + "));").cmd
         case a: Atom[_] =>
           JsRaw(
             parent + ".appendChild(document.createTextNode(" + a.text.encJs + "));").cmd

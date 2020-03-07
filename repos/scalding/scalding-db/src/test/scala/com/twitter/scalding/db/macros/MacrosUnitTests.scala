@@ -55,7 +55,8 @@ case class BadUser10(@size(2) @size(4) age: Option[Option[Int]])
 case class ExhaustiveJdbcCaseClass(
     bigInt: Long, // 8 bytes
     smallerAgainInt: Int, // 4 bytes
-    @size(5) normalIntWithSize: Int, // Sizes on numerics seem to just be for display. Not sure if its worth allowing.
+    @size(
+      5) normalIntWithSize: Int, // Sizes on numerics seem to just be for display. Not sure if its worth allowing.
     evenSmallerInt: Short, // 2 bytes
     numberFun: Double,
     booleanFlag: Boolean, // 1 byte -- tinyint
@@ -63,7 +64,8 @@ case class ExhaustiveJdbcCaseClass(
     @size(200) smallishString: String, // Should goto varchar
     @size(2048) largeString: String, // Should goto TEXT
     @text forceTextString: String, // Force smaller to text, stored out of the table. So row query speed possibly faster
-    @size(2051) @varchar forcedVarChar: String, // Forced inline to table -- only some sql version support > 255 for varchar
+    @size(
+      2051) @varchar forcedVarChar: String, // Forced inline to table -- only some sql version support > 255 for varchar
     myDateWithTime: Date, // Default goes to MySQL DateTime/Timestamp so its not lossy
     @date myDateWithoutTime: Date,
     optiLong: Option[Long] // Nullable long
@@ -188,7 +190,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(3)) thenReturn ("INT")
     when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(4)) thenReturn ("VARCHAR")
-    when(rsmd.isNullable(4)) thenReturn (ResultSetMetaData.columnNullableUnknown)
+    when(
+      rsmd.isNullable(4)) thenReturn (ResultSetMetaData.columnNullableUnknown)
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isSuccess)
 
@@ -411,7 +414,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getString("forcedVarChar")) thenReturn ("forced_var_char")
     when(rs.getTimestamp("myDateWithTime")) thenReturn (new java.sql.Timestamp(
       1111L))
-    when(rs.getTimestamp("myDateWithoutTime")) thenReturn (new java.sql.Timestamp(
+    when(
+      rs.getTimestamp("myDateWithoutTime")) thenReturn (new java.sql.Timestamp(
       1112L))
     when(rs.getLong("optiLong")) thenReturn (1113L)
 
@@ -471,7 +475,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
         CaseClassWithOptions(Some(26), Some("alice"), Some(new Date(1111L))))
 
     reset(rs)
-    when(rs.getInt("id")) thenReturn (0) // jdbc returns 0 for null numeric values
+    when(
+      rs.getInt("id")) thenReturn (0) // jdbc returns 0 for null numeric values
     when(rs.getString("name")) thenReturn (null)
     when(rs.getString("date_id")) thenReturn (null)
     assert(
@@ -504,7 +509,9 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(2)) thenReturn ("VARCHAR")
     when(rsmd.isNullable(2)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(3)) thenReturn ("DATETIME")
-    when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData.columnNoNulls) // mismatch
+    when(
+      rsmd.isNullable(
+        3)) thenReturn (ResultSetMetaData.columnNoNulls) // mismatch
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isFailure)
   }

@@ -329,7 +329,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
         case app @ ApplyDynamic(
               qual,
-              Literal(Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
+              Literal(
+                Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
           val numStaticArgs =
             boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
           val (staticArgs, dynamicArgs) =
@@ -738,12 +739,18 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             mname,
             methodType.descriptor,
             app.pos)
-          generatedType = boxResultType(fun.symbol) // was typeToBType(fun.symbol.tpe.resultType)
+          generatedType =
+            boxResultType(
+              fun.symbol
+            ) // was typeToBType(fun.symbol.tpe.resultType)
 
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
           genLoad(expr)
-          val boxType = unboxResultType(fun.symbol) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
+          val boxType =
+            unboxResultType(
+              fun.symbol
+            ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
           generatedType = boxType
           val MethodNameAndType(mname, methodType) =
             srBoxesRuntimeUnboxToMethods(boxType)

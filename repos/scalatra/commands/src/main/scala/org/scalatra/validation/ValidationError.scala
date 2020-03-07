@@ -132,7 +132,8 @@ class ValidationErrorSerializer(
             implicit val fmts = formats
             val jv: JValue = ("message" -> message)
             val wf: JValue =
-              fieldName map (fn ⇒ ("field" -> fn.name): JValue) getOrElse JNothing
+              fieldName map (fn ⇒
+                ("field" -> fn.name): JValue) getOrElse JNothing
             val ec: JValue =
               if (includeCode && code.isDefined)
                 ("code" -> (code map (Extraction.decompose(_)(formats))))

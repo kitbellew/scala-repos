@@ -26,10 +26,11 @@ class MultiCategorizingExceptionStatsHandlerTest extends FunSuite {
     assert(receiver.counters(Seq("clienterrors", "restartable")) == 1)
 
     assert(
-      receiver.counters(Seq(
-        "clienterrors",
-        "interrupted",
-        classOf[RuntimeException].getName)) == 1)
+      receiver.counters(
+        Seq(
+          "clienterrors",
+          "interrupted",
+          classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(
         Seq(
@@ -39,10 +40,11 @@ class MultiCategorizingExceptionStatsHandlerTest extends FunSuite {
           classOf[Exception].getName)) == 1)
 
     assert(
-      receiver.counters(Seq(
-        "clienterrors",
-        "restartable",
-        classOf[RuntimeException].getName)) == 1)
+      receiver.counters(
+        Seq(
+          "clienterrors",
+          "restartable",
+          classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(
         Seq(
@@ -53,10 +55,11 @@ class MultiCategorizingExceptionStatsHandlerTest extends FunSuite {
 
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
-      receiver.counters(Seq(
-        "sourcedfailures",
-        "service",
-        classOf[RuntimeException].getName)) == 1)
+      receiver.counters(
+        Seq(
+          "sourcedfailures",
+          "service",
+          classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(
         Seq(
@@ -108,10 +111,11 @@ class MultiCategorizingExceptionStatsHandlerTest extends FunSuite {
 
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
-      receiver.counters(Seq(
-        "sourcedfailures",
-        "service",
-        classOf[RuntimeException].getName)) == 1)
+      receiver.counters(
+        Seq(
+          "sourcedfailures",
+          "service",
+          classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(
         Seq(

@@ -211,7 +211,8 @@ private[cluster] final case class Gossip(
       else
         mbrs.filter(m ⇒
           overview.reachability
-            .isReachable(m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress)
+            .isReachable(
+              m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress)
     if (reachableMembers.isEmpty) None
     else
       reachableMembers

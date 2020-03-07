@@ -23,7 +23,9 @@ import scala.Predef._
   *
   */
 class SimplifyBooleanInspection
-    extends AbstractInspection("SimplifyBoolean", "Simplify boolean expression") {
+    extends AbstractInspection(
+      "SimplifyBoolean",
+      "Simplify boolean expression") {
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case _: ScParenthesisedExpr => //do nothing to avoid many similar expressions

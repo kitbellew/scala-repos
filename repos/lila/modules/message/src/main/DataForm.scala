@@ -19,7 +19,9 @@ private[message] final class DataForm(security: MessageSecurity) {
             "Sorry, this player doesn't accept new messages",
             { name =>
               Granter(_.MessageAnyone)(me) || {
-                security.canMessage(me.id, User normalize name) awaitSeconds 2 // damn you blocking API
+                security.canMessage(
+                  me.id,
+                  User normalize name) awaitSeconds 2 // damn you blocking API
               }
             }
           ),

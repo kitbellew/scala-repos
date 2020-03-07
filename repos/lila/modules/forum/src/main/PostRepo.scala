@@ -86,9 +86,13 @@ sealed abstract class PostRepo(troll: Boolean) {
 
   def userIdsByTopicId(topicId: String): Fu[List[String]] =
     postTube.coll
-      .distinct("userId", BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
+      .distinct(
+        "userId",
+        BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
 
   def idsByTopicId(topicId: String): Fu[List[String]] =
     postTube.coll
-      .distinct("_id", BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
+      .distinct(
+        "_id",
+        BSONDocument("topicId" -> topicId).some) map lila.db.BSON.asStrings
 }

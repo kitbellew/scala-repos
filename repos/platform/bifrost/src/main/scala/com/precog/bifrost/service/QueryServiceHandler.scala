@@ -300,11 +300,13 @@ class SyncQueryServiceHandler(
                   jobManager.listMessages(jobId, channels.ServerWarning, None)
                 (warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM) {
                   (warnings, errors, serverErrors, serverWarnings) =>
-                    val suffix = """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
-                      JArray(errors.toList map (_.value)).renderCompact,
-                      JArray(warnings.toList map (_.value)).renderCompact,
-                      JArray(serverErrors.toList map (_.value)).renderCompact,
-                      JArray(serverWarnings.toList map (_.value)).renderCompact
+                    val suffix =
+                      """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
+                        JArray(errors.toList map (_.value)).renderCompact,
+                        JArray(warnings.toList map (_.value)).renderCompact,
+                        JArray(serverErrors.toList map (_.value)).renderCompact,
+                        JArray(
+                          serverWarnings.toList map (_.value)).renderCompact
                     )
                     Some((CharBuffer.wrap(suffix), None))
                 }

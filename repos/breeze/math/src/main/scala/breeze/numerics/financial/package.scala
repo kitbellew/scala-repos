@@ -223,7 +223,9 @@ package object financial {
     val inflowNPV: Double = netPresentValue(reinvestRate, positives)
     val outflowNPV: Double = netPresentValue(financeRate, negatives)
     val mirr =
-      (pow(math.abs(inflowNPV / outflowNPV), (1.0 / (n - 1))) * (1.0 + reinvestRate) - 1.0)
+      (pow(
+        math.abs(inflowNPV / outflowNPV),
+        (1.0 / (n - 1))) * (1.0 + reinvestRate) - 1.0)
     mirr
   }
 
@@ -278,7 +280,9 @@ package object financial {
     val t2 = pow(1.0 + rate, nper - 1.0)
     val annuityF = fv + pv * t1 + pmt * (t1 - 1) * (1.0 + rate * when.t) / rate
     val gradAnnuityF =
-      nper * t2 * pv - pmt * (t1 - 1.0) * (1.0 + rate * when.t) / pow(rate, 2.0) +
+      nper * t2 * pv - pmt * (t1 - 1.0) * (1.0 + rate * when.t) / pow(
+        rate,
+        2.0) +
         nper * pmt * t2 * (1.0 + rate * when.t) / rate + pmt * (t1 - 1) * when.t / rate
     val fDivGradF = annuityF / gradAnnuityF
     fDivGradF

@@ -18,8 +18,11 @@ object WhitespaceApi {
     * capturing trailing whitespace, which needs to be present for
     * semi-colon inference to work properly
     */
-  case class CustomSequence[+T, +R, +V](WL: P0, p0: P[T], p: P[V], cut: Boolean)(
-      implicit ev: Sequencer[T, V, R])
+  case class CustomSequence[+T, +R, +V](
+      WL: P0,
+      p0: P[T],
+      p: P[V],
+      cut: Boolean)(implicit ev: Sequencer[T, V, R])
       extends P[R] {
     def parseRec(cfg: ParseCtx, index: Int) = {
       p0.parseRec(cfg, index) match {

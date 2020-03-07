@@ -171,7 +171,8 @@ trait MongoPlatformSpecs
       with MongoColumnarTableModuleConfig
 
   object yggConfig extends YggConfig {
-    override val maxSliceSize = 1000 // 10 was waaaaay too small, and we have other specs that cover that case
+    override val maxSliceSize =
+      1000 // 10 was waaaaay too small, and we have other specs that cover that case
   }
 
   override def controlTimeout =
@@ -252,7 +253,8 @@ trait MongoPlatformSpecs
       }
       class YggConfig extends EvaluatorConfig {
         val idSource = new FreshAtomicIdSource
-        val maxSliceSize = 1000 // 10 was waaaaay too small, and we have other specs that cover that case
+        val maxSliceSize =
+          1000 // 10 was waaaaay too small, and we have other specs that cover that case
       }
       val yggConfig = new YggConfig
       def freshIdScanner = self.freshIdScanner

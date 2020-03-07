@@ -88,7 +88,8 @@ private[finagle] object TimerStats {
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
       bucketHeadField
         .map { headField =>
-          val head = headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
+          val head =
+            headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
           if (head == null) {
             0
           } else {

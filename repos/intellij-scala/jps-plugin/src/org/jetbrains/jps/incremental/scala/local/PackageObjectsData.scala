@@ -33,7 +33,8 @@ class PackageObjectsData extends Serializable {
   def invalidatedPackageObjects(sources: Seq[File]): Set[File] = synchronized {
     sources
       .to[HashSet]
-      .flatMap(f => baseSourceToPackageObjects.getOrElse(f, HashSet.empty)) -- sources
+      .flatMap(f =>
+        baseSourceToPackageObjects.getOrElse(f, HashSet.empty)) -- sources
   }
 
   def clear(): Unit = synchronized {

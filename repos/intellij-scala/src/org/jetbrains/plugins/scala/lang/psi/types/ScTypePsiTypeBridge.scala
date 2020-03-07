@@ -74,7 +74,8 @@ trait ScTypePsiTypeBridge {
                   ScProjectionType(
                     constructTypeForClass(
                       containingClass,
-                      withTypeParameters = !clazz.hasModifierProperty("static")),
+                      withTypeParameters =
+                        !clazz.hasModifierProperty("static")),
                     clazz,
                     superReference = false)
                 }

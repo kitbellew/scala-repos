@@ -276,7 +276,8 @@ object CamelMessage extends ((Any, Map[String, Any]) ⇒ CamelMessage) {
     * so that it can be correlated with an asynchronous response. Messages send to Consumer
     * actors have this header already set.
     */
-  val MessageExchangeId = "MessageExchangeId" //Deliberately without type ascription to make it a constant
+  val MessageExchangeId =
+    "MessageExchangeId" //Deliberately without type ascription to make it a constant
 
   /**
     * Creates a canonical form of the given message <code>msg</code>. If <code>msg</code> of type

@@ -475,7 +475,8 @@ class MetastoreDataSourcesSuite
         }
 
         // Create an external table by specifying the path.
-        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(
+          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           df.write
             .format("org.apache.spark.sql.json")
             .mode(SaveMode.Append)
@@ -499,7 +500,8 @@ class MetastoreDataSourcesSuite
           s"""{ "a": $i, "b": "str$i" }"""
         }))
 
-        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(
+          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           df.write
             .format("json")
             .mode(SaveMode.Append)
@@ -525,7 +527,8 @@ class MetastoreDataSourcesSuite
         checkAnswer(read.json(tempPath.toString), df)
 
         // Try to specify the schema.
-        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(
+          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           val schema = StructType(StructField("b", StringType, true) :: Nil)
           createExternalTable(
             "createdJsonTable",

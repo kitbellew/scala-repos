@@ -972,7 +972,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
   def repartitionAndSortWithinPartitions(
       partitioner: Partitioner,
       comp: Comparator[K]): JavaPairRDD[K, V] = {
-    implicit val ordering = comp // Allow implicit conversion of Comparator to Ordering.
+    implicit val ordering =
+      comp // Allow implicit conversion of Comparator to Ordering.
     fromRDD(
       new OrderedRDDFunctions[K, V, (K, V)](rdd)
         .repartitionAndSortWithinPartitions(partitioner))
@@ -1025,7 +1026,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * order of the keys).
     */
   def sortByKey(comp: Comparator[K], ascending: Boolean): JavaPairRDD[K, V] = {
-    implicit val ordering = comp // Allow implicit conversion of Comparator to Ordering.
+    implicit val ordering =
+      comp // Allow implicit conversion of Comparator to Ordering.
     fromRDD(new OrderedRDDFunctions[K, V, (K, V)](rdd).sortByKey(ascending))
   }
 
@@ -1039,7 +1041,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       comp: Comparator[K],
       ascending: Boolean,
       numPartitions: Int): JavaPairRDD[K, V] = {
-    implicit val ordering = comp // Allow implicit conversion of Comparator to Ordering.
+    implicit val ordering =
+      comp // Allow implicit conversion of Comparator to Ordering.
     fromRDD(
       new OrderedRDDFunctions[K, V, (K, V)](rdd)
         .sortByKey(ascending, numPartitions))
@@ -1132,9 +1135,10 @@ object JavaPairRDD {
       (x._1.asJava, x._2.asJava, x._3.asJava))
   }
 
-  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](rdd: RDD[
-    (K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))]): RDD[
-    (K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
+  private[spark] def cogroupResult3ToJava[K: ClassTag, V, W1, W2, W3](
+      rdd: RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))])
+      : RDD[
+        (K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3]))] = {
     rddToPairRDDFunctions(rdd).mapValues(x =>
       (x._1.asJava, x._2.asJava, x._3.asJava, x._4.asJava))
   }

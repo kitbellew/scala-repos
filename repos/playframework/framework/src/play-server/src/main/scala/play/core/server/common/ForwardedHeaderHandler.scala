@@ -209,7 +209,10 @@ private[server] object ForwardedHeaderHandler {
           nodeIdentifierParser.parseNode(addressString) match {
             case Right((Ip(address), _)) =>
               // Parsing was successful, use this connection and scan for another connection.
-              val secure = entry.protoString.fold(false)(_ == "https") // Assume insecure by default
+              val secure =
+                entry.protoString.fold(false)(
+                  _ == "https"
+                ) // Assume insecure by default
               val connection = ConnectionInfo(address, secure)
               Right(connection)
             case errorOrNonIp =>

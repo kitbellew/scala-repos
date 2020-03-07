@@ -65,8 +65,9 @@ object RawCompileLike {
   def cached(cache: File, doCompile: Gen): Gen = cached(cache, Seq(), doCompile)
   def cached(cache: File, fileInputOpts: Seq[String], doCompile: Gen): Gen =
     (sources, classpath, outputDirectory, options, maxErrors, log) => {
-      type Inputs = FilesInfo[HashFileInfo] :+: FilesInfo[ModifiedFileInfo] :+: Seq[
-        File] :+: File :+: Seq[String] :+: Int :+: HNil
+      type Inputs =
+        FilesInfo[HashFileInfo] :+: FilesInfo[ModifiedFileInfo] :+: Seq[
+          File] :+: File :+: Seq[String] :+: Int :+: HNil
       val inputs: Inputs = hash(
         sources.toSet ++ optionFiles(options, fileInputOpts)) :+: lastModified(
         classpath.toSet) :+: classpath :+: outputDirectory :+: options :+: maxErrors :+: HNil

@@ -354,7 +354,8 @@ object Heap extends HeapInstances {
         minZp(leq)(if (leq(rootZ(lo), rootZ(z))) lo else z, rightZ(z))
     }
 
-    def heapify[A](leq: (A, A) => Boolean): Tree[Ranked[A]] => Tree[Ranked[A]] = {
+    def heapify[A](
+        leq: (A, A) => Boolean): Tree[Ranked[A]] => Tree[Ranked[A]] = {
       case n @ Node(_, Stream()) => n
       case n @ Node(Ranked(r, a), as) => {
         val (left, Node(Ranked(rp, ap), asp) #:: right) = minZ(leq)(as)

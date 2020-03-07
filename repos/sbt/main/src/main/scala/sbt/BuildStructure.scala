@@ -375,5 +375,6 @@ object BuildStreams {
       data: Settings[Scope]): File =
     refTarget(GlobalScope.copy(project = Select(ref)), fallbackBase, data)
   def refTarget(scope: Scope, fallbackBase: File, data: Settings[Scope]): File =
-    (Keys.target in scope get data getOrElse outputDirectory(fallbackBase).asFile) / StreamsDirectory
+    (Keys.target in scope get data getOrElse outputDirectory(
+      fallbackBase).asFile) / StreamsDirectory
 }

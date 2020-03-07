@@ -127,7 +127,9 @@ class Statements(indent: Int) {
     val named = P(".".rep(1).!.? ~ dotted_name.!.map(Some(_)))
     val unNamed = P(".".rep(1).!.map(x => (Some(x), None)))
     val star = P("*".!.map(_ => Seq(Ast.alias(Ast.identifier("*"), None))))
-    P(kw("from") ~ (named | unNamed) ~ kw("import") ~ (star | "(" ~ import_as_names ~ ")" | import_as_names))
+    P(
+      kw("from") ~ (named | unNamed) ~ kw(
+        "import") ~ (star | "(" ~ import_as_names ~ ")" | import_as_names))
       .map {
         case (dots, module, names) =>
           Ast.stmt.ImportFrom(
@@ -174,10 +176,13 @@ class Statements(indent: Int) {
     }
   }
   val space_indents = P(spaces.repX ~~ " ".repX(indent))
-  val while_stmt = P(kw("while") ~/ test ~ ":" ~~ suite ~~ (space_indents ~~ kw(
-    "else") ~/ ":" ~~ suite).?.map(_.toSeq.flatten)).map(Ast.stmt.While.tupled)
+  val while_stmt = P(
+    kw("while") ~/ test ~ ":" ~~ suite ~~ (space_indents ~~ kw(
+      "else") ~/ ":" ~~ suite).?.map(_.toSeq.flatten))
+    .map(Ast.stmt.While.tupled)
   val for_stmt: P[Ast.stmt.For] = P(
-    kw("for") ~/ exprlist ~ kw("in") ~ testlist ~ ":" ~~ suite ~~ (space_indents ~ kw(
+    kw("for") ~/ exprlist ~ kw(
+      "in") ~ testlist ~ ":" ~~ suite ~~ (space_indents ~ kw(
       "else") ~/ ":" ~~ suite).?).map {
     case (itervars, generator, body, orelse) =>
       Ast.stmt.For(

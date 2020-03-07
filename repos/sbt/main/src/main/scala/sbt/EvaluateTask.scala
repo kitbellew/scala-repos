@@ -618,7 +618,8 @@ object EvaluateTask {
       case (caller: Task[_], target: Task[_]) =>
         c.toString + (if (caller eq target) "(task: " + name(caller) + ")"
                       else
-                        "(caller: " + name(caller) + ", target: " + name(target) + ")")
+                        "(caller: " + name(caller) + ", target: " + name(
+                          target) + ")")
       case _ => c.toString
     }
 

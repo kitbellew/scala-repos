@@ -31,7 +31,8 @@ class ConfigTest extends WordSpec with Matchers {
     }
     "default has serialization set" in {
       val sers = Config.default.get("io.serializations").get.split(",").toList
-      sers.last shouldBe (classOf[com.twitter.chill.hadoop.KryoSerialization].getName)
+      sers.last shouldBe (classOf[
+        com.twitter.chill.hadoop.KryoSerialization].getName)
     }
     "default has chill configured" in {
       Config.default

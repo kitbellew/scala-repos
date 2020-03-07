@@ -790,8 +790,12 @@ object ScalaJSPluginInternal {
   val scalaJSTestBuildSettings = (
     scalaJSConfigSettings
   ) ++ (
-    Seq(fastOptJS, fullOptJS, packageScalaJSLauncher, packageJSDependencies) map {
-      packageJSTask => moduleName in packageJSTask := moduleName.value + "-test"
+    Seq(
+      fastOptJS,
+      fullOptJS,
+      packageScalaJSLauncher,
+      packageJSDependencies) map { packageJSTask =>
+      moduleName in packageJSTask := moduleName.value + "-test"
     }
   )
 

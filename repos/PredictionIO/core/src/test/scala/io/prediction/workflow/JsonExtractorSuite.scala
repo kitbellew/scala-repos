@@ -210,7 +210,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     compact(render(jValue)) should be("""{"q":"query string"}""")
   }
 
-  test("Java object to JValue using option Json4sNative results in empty Json") {
+  test(
+    "Java object to JValue using option Json4sNative results in empty Json") {
     val query = new JavaQuery("query string")
     val jValue = JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, query)
 

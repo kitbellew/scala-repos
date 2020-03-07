@@ -104,7 +104,10 @@ class CSRFAction(
 
         }
       }
-    } else if (getTokenToValidate(request, config, tokenSigner).isEmpty && config
+    } else if (getTokenToValidate(
+                 request,
+                 config,
+                 tokenSigner).isEmpty && config
                  .createIfNotFound(request)) {
 
       // No token in header and we have to create one if not found, so create a new token

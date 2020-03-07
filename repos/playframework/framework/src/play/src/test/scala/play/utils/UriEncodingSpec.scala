@@ -206,7 +206,9 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
       encodingFor(" ", "US-ASCII") must_== PercentEncoded(
         "%20"
       ) // vs "+" for query strings
-      encodingFor("+", "US-ASCII") must_== NotEncoded // vs "%2B" for query strings
+      encodingFor(
+        "+",
+        "US-ASCII") must_== NotEncoded // vs "%2B" for query strings
       encodingFor(" +", "US-ASCII") must_== PercentEncoded(
         "%20+"
       ) // vs "+%2B" for query strings
@@ -272,8 +274,12 @@ RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax
     }
 
     "decode complex UTF-8 octets" in {
-      decodePath("/path/%C2%ABk%C3%BC%C3%9F%C3%AE%C2%BB", "UTF-8") must_== "/path/«küßî»"
-      decodePath("/path/%E2%80%9C%D0%8C%CF%8D%D0%91%D0%87%E2%80%9D", "UTF-8") must_== "/path/“ЌύБЇ”"
+      decodePath(
+        "/path/%C2%ABk%C3%BC%C3%9F%C3%AE%C2%BB",
+        "UTF-8") must_== "/path/«küßî»"
+      decodePath(
+        "/path/%E2%80%9C%D0%8C%CF%8D%D0%91%D0%87%E2%80%9D",
+        "UTF-8") must_== "/path/“ЌύБЇ”"
     }
 
   }

@@ -83,7 +83,8 @@ object Package {
     val cachedMakeJar = inputChanged(cacheFile / "inputs") {
       (
           inChanged,
-          inputs: Map[File, String] :+: FilesInfo[ModifiedFileInfo] :+: Manifest :+: HNil) =>
+          inputs: Map[File, String] :+: FilesInfo[
+            ModifiedFileInfo] :+: Manifest :+: HNil) =>
         val sources :+: _ :+: manifest :+: HNil = inputs
         outputChanged(cacheFile / "output") {
           (outChanged, jar: PlainFileInfo) =>

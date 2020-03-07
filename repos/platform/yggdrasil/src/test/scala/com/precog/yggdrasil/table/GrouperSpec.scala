@@ -760,7 +760,8 @@ trait GrouperSpec[M[+_]]
           val JArray(JNum(ka) :: JNum(kb) :: Nil) = obj \ "key"
           val JNum(v) = obj \ "value"
 
-          v must_== (grouped1ab(ka.toInt)(kb.toInt).size + grouped2(ka.toInt).size)
+          v must_== (grouped1ab(ka.toInt)(kb.toInt).size + grouped2(
+            ka.toInt).size)
         }
       }
     }

@@ -270,7 +270,8 @@ private[builder] final class ClientConfig[
   * @see The [[http://twitter.github.io/finagle/guide/Configuration.html user guide]]
   *      for information on the preferred `with`-style APIs insead.
   */
-class ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] private[finagle] (
+class ClientBuilder[
+    Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] private[finagle] (
     client: StackBasedClient[Req, Rep]
 ) {
   import ClientConfig._

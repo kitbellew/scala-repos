@@ -1237,8 +1237,9 @@ trait Trees extends api.Trees {
 
     // We silently ignore attempts to add attachments to `EmptyTree`. See SI-8947 for an
     // example of a bug in macro expansion that this solves.
-    override def setAttachments(
-        attachments: Attachments { type Pos = Position }): this.type =
+    override def setAttachments(attachments: Attachments {
+      type Pos = Position
+    }): this.type =
       attachmentWarning()
     override def updateAttachment[T: ClassTag](attachment: T): this.type =
       attachmentWarning()
@@ -1290,7 +1291,8 @@ trait Trees extends api.Trees {
       vparamss: List[List[ValDef]] = mapParamss(sym)(ValDef.apply),
       tpt: Tree = TypeTreeMemberType(sym)
   ): DefDef = (
-    atPos(sym.pos)(DefDef(mods, name, tparams, vparamss, tpt, rhs)) setSymbol sym
+    atPos(sym.pos)(
+      DefDef(mods, name, tparams, vparamss, tpt, rhs)) setSymbol sym
   )
 
   def newTypeDef(sym: Symbol, rhs: Tree)(
@@ -1867,7 +1869,10 @@ trait Trees extends api.Trees {
                 tree.symbol.info,
                 printTypes = true,
                 printIds = true)}
-                |  New: ${showRaw(newInfo, printTypes = true, printIds = true)}""")
+                |  New: ${showRaw(
+                newInfo,
+                printTypes = true,
+                printIds = true)}""")
               mutatedSymbols ::= tree.symbol
               tree.symbol updateInfo newInfo
             }

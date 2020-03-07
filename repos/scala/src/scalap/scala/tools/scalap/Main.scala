@@ -185,7 +185,9 @@ object Main extends Main {
       printPrivates = arguments contains opts.showPrivateDefs
       // construct a custom class path
       val cpArg =
-        List(opts.classpath, opts.cp) map arguments.getArgument reduceLeft (_ orElse _)
+        List(
+          opts.classpath,
+          opts.cp) map arguments.getArgument reduceLeft (_ orElse _)
 
       val settings = new Settings()
 
@@ -233,7 +235,8 @@ object Main extends Main {
               DefaultJavaContext)
         }
       case _ =>
-        settings.classpath.value = "." // include '.' in the default classpath SI-6669
+        settings.classpath.value =
+          "." // include '.' in the default classpath SI-6669
         PathResolverFactory.create(settings).result
     }
 }

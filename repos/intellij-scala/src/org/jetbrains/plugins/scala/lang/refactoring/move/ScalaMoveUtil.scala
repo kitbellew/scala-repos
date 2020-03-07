@@ -56,7 +56,9 @@ object ScalaMoveUtil {
       PsiTreeUtil.findChildrenOfType(file, classOf[ScTypeDefinition])
     val withSameName =
       allClasses.asScala.filter(_.name == ScalaNamesUtil.scalaName(aClass))
-    withSameName.size == 1 && canBeCompanions(withSameName.head, aClass) || withSameName.isEmpty
+    withSameName.size == 1 && canBeCompanions(
+      withSameName.head,
+      aClass) || withSameName.isEmpty
   }
 
   def doMoveClass(
@@ -150,7 +152,8 @@ object ScalaMoveUtil {
         if (associations.isEmpty) null else associations.get(0))
     }
     val alreadyMoved =
-      getMoveDestination(aClass) == aClass.getContainingFile.getContainingDirectory
+      getMoveDestination(
+        aClass) == aClass.getContainingFile.getContainingDirectory
     aClass.getContainingFile match {
       case file: ScalaFile if !alreadyMoved =>
         collectData(aClass, file)

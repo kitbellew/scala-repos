@@ -400,7 +400,8 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent = targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
+    val targetIdent =
+      targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
     val proxyIdent = Ident(encodedName, None)
     val params = targetMDef.args.map(_.copy()) // for the new pos
     val currentClassType = ClassType(classInfo.encodedName)
@@ -439,7 +440,8 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent = targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
+    val targetIdent =
+      targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
     val bridgeIdent = targetIdent
     val params = targetMDef.args.map(_.copy()) // for the new pos
     val currentClassType = ClassType(classInfo.encodedName)

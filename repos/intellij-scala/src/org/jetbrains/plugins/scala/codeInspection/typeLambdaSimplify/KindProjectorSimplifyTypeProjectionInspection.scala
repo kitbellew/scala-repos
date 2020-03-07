@@ -84,10 +84,11 @@ class KindProjectorSimplifyTypeProjectionInspection
           val valid =
             typeParam.nonEmpty &&
               typeParam.forall(hasNoBounds) &&
-              !typeParam.exists(occursInsideParameterized(
-                _,
-                paramType,
-                isInsideParam = false)) &&
+              !typeParam.exists(
+                occursInsideParameterized(
+                  _,
+                  paramType,
+                  isInsideParam = false)) &&
               typeParam.forall { tpt =>
                 paramType.typeArgs.count(tpt.name == _.presentableText) == 1
               }

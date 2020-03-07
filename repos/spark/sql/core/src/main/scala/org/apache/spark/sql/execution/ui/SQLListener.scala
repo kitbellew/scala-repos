@@ -152,7 +152,11 @@ private[sql] class SQLListener(conf: SparkConf)
   override def onExecutorMetricsUpdate(
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate): Unit =
     synchronized {
-      for ((taskId, stageId, stageAttemptID, accumUpdates) <- executorMetricsUpdate.accumUpdates) {
+      for ((
+             taskId,
+             stageId,
+             stageAttemptID,
+             accumUpdates) <- executorMetricsUpdate.accumUpdates) {
         updateTaskAccumulatorValues(
           taskId,
           stageId,

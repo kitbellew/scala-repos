@@ -49,7 +49,8 @@ class PsiClassWrapper(
     obj match {
       case wrapper: PsiClassWrapper =>
         definition
-          .equals(wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
+          .equals(
+            wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
       case _ => false
     }
   }

@@ -11,8 +11,10 @@ class Foo {
 
 class V1 extends AnyVal // fail
 
-class V2(private[test] val x: Int) extends AnyVal // okay, wasn't allowed in 2.10.x
-class V3(protected[test] val x: Int) extends AnyVal // okay, wasn't allowed in 2.10.x
+class V2(private[test] val x: Int)
+    extends AnyVal // okay, wasn't allowed in 2.10.x
+class V3(protected[test] val x: Int)
+    extends AnyVal // okay, wasn't allowed in 2.10.x
 class V4(protected val x: Int) extends AnyVal // okay, wasn't allowed in 2.10.x
 class V5(private val x: Int) extends AnyVal // okay, wasn't allowed in 2.10.x
 

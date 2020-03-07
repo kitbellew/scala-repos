@@ -329,7 +329,9 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * zookeeper
     */
   private def initializePartitionState() {
-    for ((topicPartition, replicaAssignment) <- controllerContext.partitionReplicaAssignment) {
+    for ((
+           topicPartition,
+           replicaAssignment) <- controllerContext.partitionReplicaAssignment) {
       // check if leader and isr path exists for partition. If not, then it is in NEW state
       controllerContext.partitionLeadershipInfo.get(topicPartition) match {
         case Some(currentLeaderIsrAndEpoch) =>
@@ -354,7 +356,10 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     if (!fromStates.contains(partitionState(topicAndPartition)))
       throw new IllegalStateException(
         "Partition %s should be in the %s states before moving to %s state"
-          .format(topicAndPartition, fromStates.mkString(","), targetState) + ". Instead it is in %s state"
+          .format(
+            topicAndPartition,
+            fromStates.mkString(","),
+            targetState) + ". Instead it is in %s state"
           .format(partitionState(topicAndPartition)))
   }
 

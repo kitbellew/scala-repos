@@ -248,7 +248,9 @@ private[hive] class HiveQl(conf: ParserConf)
           "TOK_ANALYZE",
           Token(
             "TOK_TAB",
-            Token("TOK_TABNAME", tableNameParts) :: partitionSpec) :: isNoscan) =>
+            Token(
+              "TOK_TABNAME",
+              tableNameParts) :: partitionSpec) :: isNoscan) =>
         // Reference:
         // https://cwiki.apache.org/confluence/display/Hive/StatsDev#StatsDev-ExistingTables
         if (partitionSpec.nonEmpty) {
@@ -573,7 +575,9 @@ private[hive] class HiveQl(conf: ParserConf)
 
           case Token(
               "TOK_TABLESERIALIZER",
-              Token("TOK_SERDENAME", Token(serdeName, Nil) :: otherProps) :: Nil) =>
+              Token(
+                "TOK_SERDENAME",
+                Token(serdeName, Nil) :: otherProps) :: Nil) =>
             tableDesc =
               tableDesc.withNewStorage(serde = Option(unquoteString(serdeName)))
 
@@ -685,7 +689,9 @@ private[hive] class HiveQl(conf: ParserConf)
               Token(serdeClass, Nil) ::
                 Token(
                   "TOK_TABLEPROPERTIES",
-                  Token("TOK_TABLEPROPLIST", propsClause) :: Nil) :: Nil) :: Nil =>
+                  Token(
+                    "TOK_TABLEPROPLIST",
+                    propsClause) :: Nil) :: Nil) :: Nil =>
           val serdeProps = propsClause.map {
             case Token(
                 "TOK_TABLEPROPERTY",

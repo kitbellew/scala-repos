@@ -190,7 +190,9 @@ trait Config extends Serializable {
     // this must come last
     val last: Seq[Class[_ <: HSerialization[_]]] = Seq(
       classOf[com.twitter.chill.hadoop.KryoSerialization])
-    val required = (first ++ last).toSet[AnyRef] // Class is invariant, but we use it as a function
+    val required =
+      (first ++ last)
+        .toSet[AnyRef] // Class is invariant, but we use it as a function
     // Make sure we keep the order correct and don't add the required fields twice
     val hadoopSer = first ++ (userHadoop.filterNot(required)) ++ last
 

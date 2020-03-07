@@ -18,7 +18,8 @@ object Example extends Specification {
   "Parse address in an Applicative style" in {
     val json = parse(""" {"street": "Manhattan 2", "zip": "00223" } """)
     val a1 =
-      field[String]("zip")(json) <*> (field[String]("street")(json) map Address.curried)
+      field[String]("zip")(json) <*> (field[String]("street")(
+        json) map Address.curried)
     val a2 = (field[String]("street")(json) |@| field[String]("zip")(json)) {
       Address
     }

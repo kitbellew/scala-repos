@@ -283,7 +283,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "a too-long response status reason" in new Test {
-        Seq("HTTP/1.1 204 12345678", "90123456789012\r\n") should generalMultiParseTo(
+        Seq(
+          "HTTP/1.1 204 12345678",
+          "90123456789012\r\n") should generalMultiParseTo(
           Left(MessageStartError(
             400: StatusCode,
             ErrorInfo(

@@ -149,8 +149,8 @@ class ConstantFoldingSuite extends PlanTest {
       testRelation
         .select(
           Cast(Literal("2"), IntegerType) + Literal(3) + 'a as Symbol("c1"),
-          Coalesce(Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as Symbol(
-            "c2"))
+          Coalesce(
+            Seq(Cast(Literal("abc"), IntegerType), Literal(3))) as Symbol("c2"))
 
     val optimized = Optimize.execute(originalQuery.analyze)
 
@@ -183,7 +183,9 @@ class ConstantFoldingSuite extends PlanTest {
     val originalQuery = testRelation.select(
       IsNull(Literal(null)) as 'c1,
       IsNotNull(Literal(null)) as 'c2,
-      UnresolvedExtractValue(Literal.create(null, ArrayType(IntegerType)), 1) as 'c3,
+      UnresolvedExtractValue(
+        Literal.create(null, ArrayType(IntegerType)),
+        1) as 'c3,
       UnresolvedExtractValue(
         Literal.create(Seq(1), ArrayType(IntegerType)),
         Literal.create(null, IntegerType)) as 'c4,

@@ -35,7 +35,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.NotFound
@@ -52,7 +53,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> route ~> check {
       responseAs[String] shouldEqual "The color is 'blue' and the background is '<undefined>'"
@@ -68,10 +70,12 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'red'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'red'"
     }
     Get("/?color=blue") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and the background is 'white'"
+      responseAs[
+        String] shouldEqual "The color is 'blue' and the background is 'white'"
     }
   }
   "required-value" in {
@@ -87,7 +91,8 @@ class ParameterDirectivesExamplesSpec
 
     Get("/?color=blue&action=false") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.NotFound
-      responseAs[String] shouldEqual "The requested resource could not be found."
+      responseAs[
+        String] shouldEqual "The requested resource could not be found."
     }
   }
   "mapped-value" in {
@@ -98,7 +103,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The color is 'blue' and you have 42 of it."
+      responseAs[
+        String] shouldEqual "The color is 'blue' and you have 42 of it."
     }
 
     Get("/?color=blue&count=blub") ~> Route.seal(route) ~> check {
@@ -130,7 +136,8 @@ class ParameterDirectivesExamplesSpec
     }
 
     Get("/?color=blue&city=Chicago&city=Boston") ~> Route.seal(route) ~> check {
-      responseAs[String] === "The color is 'blue' and the cities are Chicago, Boston."
+      responseAs[
+        String] === "The color is 'blue' and the cities are Chicago, Boston."
     }
   }
   "mapped-repeated" in {
@@ -171,7 +178,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The parameters are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The parameters are color = 'blue', count = '42'"
     }
     Get("/?x=1&x=2") ~> route ~> check {
       responseAs[String] shouldEqual "The parameters are x = '2'"
@@ -186,7 +194,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "There are parameters color -> 1, count -> 1"
+      responseAs[
+        String] shouldEqual "There are parameters color -> 1, count -> 1"
     }
     Get("/?x=23&x=42") ~> route ~> check {
       responseAs[String] shouldEqual "There are parameters x -> 2"
@@ -203,7 +212,8 @@ class ParameterDirectivesExamplesSpec
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
-      responseAs[String] shouldEqual "The parameters are color = 'blue', count = '42'"
+      responseAs[
+        String] shouldEqual "The parameters are color = 'blue', count = '42'"
     }
     Get("/?x=1&x=2") ~> route ~> check {
       responseAs[String] shouldEqual "The parameters are x = '1', x = '2'"

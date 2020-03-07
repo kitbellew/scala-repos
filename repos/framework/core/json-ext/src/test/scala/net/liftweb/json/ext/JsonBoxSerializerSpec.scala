@@ -46,12 +46,17 @@ object JsonBoxSerializerSpec extends Specification {
       """{"name":"joe", "age":12, "mother": {"name":"ann", "age":53}}"""
     val p = parse(json).extract[Person]
     p mustEqual Person("joe", Full(12), Full(Person("ann", Full(53), Empty)))
-    (for { a1 <- p.age; m <- p.mother; a2 <- m.age } yield a1 + a2) mustEqual Full(
-      65)
+    (for {
+      a1 <- p.age; m <- p.mother; a2 <- m.age
+    } yield a1 + a2) mustEqual Full(65)
   }
 
   "Render with age" in {
-    swrite(Person("joe", Full(12), Empty)) mustEqual """{"name":"joe","age":12,"mother":null,"thing":null}"""
+    swrite(
+      Person(
+        "joe",
+        Full(12),
+        Empty)) mustEqual """{"name":"joe","age":12,"mother":null,"thing":null}"""
   }
 
   "Serialize failure" in {

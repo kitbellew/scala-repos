@@ -257,8 +257,9 @@ class CoproductTests {
     case class Foo[T](c: T)
     val existentials1 =
       Coproduct[Foo[Double] :+: Foo[Float] :+: CNil](Foo(23f)).unify
-    val existentials2 = Coproduct[
-      Foo[Double] :+: Foo[Float] :+: Foo[Int] :+: CNil](Foo(23f)).unify
+    val existentials2 =
+      Coproduct[Foo[Double] :+: Foo[Float] :+: Foo[Int] :+: CNil](
+        Foo(23f)).unify
 
     typed[Foo[_ >: Float with Double <: AnyVal]](existentials1)
     typed[Foo[_ >: Int with Float with Double <: AnyVal]](existentials2)

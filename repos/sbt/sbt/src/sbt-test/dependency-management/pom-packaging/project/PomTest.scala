@@ -9,7 +9,9 @@ object PomTest extends Build {
   lazy val subJar = Project("sub-jar", file("subJar"))
   lazy val subWar = Project("sub-war", file("subWar")) settings (warArtifact)
   lazy val subParent =
-    Project("sub-parent", file("subParent")) settings (publishArtifact in Compile := false)
+    Project(
+      "sub-parent",
+      file("subParent")) settings (publishArtifact in Compile := false)
 
   def art(p: ProjectReference) = makePom in p
   def checkPom = (art(subJar), art(subWar), art(subParent)) map {

@@ -319,7 +319,10 @@ abstract class Delambdafy
             Literal(Constant(())): Tree
           ) setPos newClass.pos
 
-        (localTyper typed DefDef(constrSym, List(params), body) setPos newClass.pos)
+        (localTyper typed DefDef(
+          constrSym,
+          List(params),
+          body) setPos newClass.pos)
           .asInstanceOf[DefDef]
       }
 
@@ -398,7 +401,9 @@ abstract class Delambdafy
           (optionSymbol(thisProxy).toList ++ (captureProxies2 map (_._2))) map {
             member =>
               lambdaClass.info.decls enter member
-              ValDef(member, gen.mkZero(member.tpe)) setPos decapturedFunction.pos
+              ValDef(
+                member,
+                gen.mkZero(member.tpe)) setPos decapturedFunction.pos
           }
 
         // constructor
@@ -484,7 +489,9 @@ abstract class Delambdafy
           if (isSpecialized)
             target
           else {
-            createBoxingBridgeMethod(functionParamTypes, functionResultType) match {
+            createBoxingBridgeMethod(
+              functionParamTypes,
+              functionResultType) match {
               case EmptyTree =>
                 target
               case bridge =>

@@ -54,7 +54,8 @@ class ScalaParameterInfo(
     case _                => false
   }
 
-  val isVarargType = false //overriders in java of method with repeated parameters are not varargs
+  val isVarargType =
+    false //overriders in java of method with repeated parameters are not varargs
 
   protected def psiType: PsiType = {
     if (scType == null) return null

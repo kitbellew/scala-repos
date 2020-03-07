@@ -180,9 +180,10 @@ private object ClassPath {
       if (uri.isAbsolute)
         Some(uri)
       else
-        Some(new File(
-          jarFile.getParentFile,
-          path.replace('/', File.separatorChar)).toURI)
+        Some(
+          new File(
+            jarFile.getParentFile,
+            path.replace('/', File.separatorChar)).toURI)
     } catch {
       case _: URISyntaxException => None
     }
@@ -196,7 +197,8 @@ private object ClassPath {
         if (str.isEmpty) Nil else Seq(str)
       }
     } catch {
-      case ex: MalformedInputException => Nil /* skip malformed files (e.g. non UTF-8) */
+      case ex: MalformedInputException =>
+        Nil /* skip malformed files (e.g. non UTF-8) */
     } finally {
       source.close()
     }

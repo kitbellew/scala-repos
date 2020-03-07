@@ -245,7 +245,8 @@ object Compatibility {
         undefSubst)
 
     var k = 0
-    var namedMode = false //todo: optimization, when namedMode enabled, exprs.length <= parameters.length
+    var namedMode =
+      false //todo: optimization, when namedMode enabled, exprs.length <= parameters.length
     val used = new Array[Boolean](parameters.length)
     var problems: List[ApplicabilityProblem] = Nil
     var matched: List[(Parameter, ScExpression)] = Nil
@@ -341,7 +342,8 @@ object Compatibility {
               if (ScUnderScoreSectionUtil.isUnderscoreFunction(assign)) assign
               else assign.getRExpression.getOrElse(assign)
             }
-            problems :::= doNoNamed(Expression(extractExpression(assign))).reverse
+            problems :::= doNoNamed(
+              Expression(extractExpression(assign))).reverse
           } else {
             if (!checkNames)
               return ConformanceExtResult(

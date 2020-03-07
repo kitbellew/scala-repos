@@ -467,7 +467,9 @@ trait ColumnarTableModule[M[+_]]
     def constBoolean(v: collection.Set[Boolean]): Table = {
       val column = ArrayBoolColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CBoolean) -> column), v.size) :: StreamT
+        Slice(
+          Map(ColumnRef(CPath.Identity, CBoolean) -> column),
+          v.size) :: StreamT
           .empty[M, Slice],
         ExactSize(v.size))
     }
@@ -475,7 +477,9 @@ trait ColumnarTableModule[M[+_]]
     def constLong(v: collection.Set[Long]): Table = {
       val column = ArrayLongColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CLong) -> column), v.size) :: StreamT
+        Slice(
+          Map(ColumnRef(CPath.Identity, CLong) -> column),
+          v.size) :: StreamT
           .empty[M, Slice],
         ExactSize(v.size))
     }
@@ -483,7 +487,9 @@ trait ColumnarTableModule[M[+_]]
     def constDouble(v: collection.Set[Double]): Table = {
       val column = ArrayDoubleColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CDouble) -> column), v.size) :: StreamT
+        Slice(
+          Map(ColumnRef(CPath.Identity, CDouble) -> column),
+          v.size) :: StreamT
           .empty[M, Slice],
         ExactSize(v.size))
     }
@@ -499,7 +505,9 @@ trait ColumnarTableModule[M[+_]]
     def constString(v: collection.Set[String]): Table = {
       val column = ArrayStrColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CString) -> column), v.size) :: StreamT
+        Slice(
+          Map(ColumnRef(CPath.Identity, CString) -> column),
+          v.size) :: StreamT
           .empty[M, Slice],
         ExactSize(v.size))
     }
@@ -507,7 +515,9 @@ trait ColumnarTableModule[M[+_]]
     def constDate(v: collection.Set[DateTime]): Table = {
       val column = ArrayDateColumn(v.toArray)
       Table(
-        Slice(Map(ColumnRef(CPath.Identity, CDate) -> column), v.size) :: StreamT
+        Slice(
+          Map(ColumnRef(CPath.Identity, CDate) -> column),
+          v.size) :: StreamT
           .empty[M, Slice],
         ExactSize(v.size))
     }

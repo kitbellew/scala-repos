@@ -294,7 +294,8 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       // "postHandlers" as in the source-code view. And from that perspective, both (3.A) and (3.B) are invisible implementation artifacts.
       if (hasFinally) {
         nopIfNeeded(startTryBody)
-        val finalHandler = currProgramPoint() // version of the finally-clause reached via unhandled exception.
+        val finalHandler =
+          currProgramPoint() // version of the finally-clause reached via unhandled exception.
         protect(startTryBody, finalHandler, finalHandler, null)
         val Local(eTK, _, eIdx, _) = locals(
           locals.makeLocal(jlThrowableRef, "exc"))

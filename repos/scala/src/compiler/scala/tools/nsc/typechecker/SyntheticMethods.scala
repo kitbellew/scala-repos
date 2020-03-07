@@ -75,7 +75,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       clazz0: Symbol,
       context: Context): Template = {
     val syntheticsOk = (phase.id <= currentRun.typerPhase.id) && {
-      symbolsToSynthesize(clazz0) filter (_ matchingSymbol clazz0.info isSynthetic) match {
+      symbolsToSynthesize(
+        clazz0) filter (_ matchingSymbol clazz0.info isSynthetic) match {
         case Nil => true
         case syms =>
           log(
@@ -265,7 +266,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       List(
         Product_productPrefix -> (() =>
           constantNullary(nme.productPrefix, clazz.name.decode)),
-        Product_productArity -> (() => constantNullary(nme.productArity, arity)),
+        Product_productArity -> (() =>
+          constantNullary(nme.productArity, arity)),
         Product_productElement -> (() =>
           perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
         Product_iterator -> (() => productIteratorMethod),

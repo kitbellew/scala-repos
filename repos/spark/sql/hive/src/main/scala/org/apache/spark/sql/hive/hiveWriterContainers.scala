@@ -245,7 +245,11 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
     dynamicPartColNames: Array[String],
     inputSchema: Seq[Attribute],
     table: MetastoreRelation)
-    extends SparkHiveWriterContainer(jobConf, fileSinkConf, inputSchema, table) {
+    extends SparkHiveWriterContainer(
+      jobConf,
+      fileSinkConf,
+      inputSchema,
+      table) {
 
   import SparkHiveDynamicPartitionWriterContainer._
 

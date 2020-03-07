@@ -198,7 +198,10 @@ class KafkaApis(
 
       val responseHeader = new ResponseHeader(correlationId)
       val leaderAndIsrResponse =
-        if (authorize(request.session, ClusterAction, Resource.ClusterResource)) {
+        if (authorize(
+              request.session,
+              ClusterAction,
+              Resource.ClusterResource)) {
           val result = replicaManager.becomeLeaderOrFollower(
             correlationId,
             leaderAndIsrRequest,

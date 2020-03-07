@@ -93,7 +93,8 @@ package reverse.controllers {
 object ScalaRoutingSpec extends Specification {
   "the scala router" should {
     "support simple routing with a long parameter" in {
-      contentOf(FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
+      contentOf(
+        FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
     }
     "support a static path" in {
       contentOf(FakeRequest("GET", "/clients/all")) must_== "all clients"
@@ -111,21 +112,32 @@ object ScalaRoutingSpec extends Specification {
       contentOf(FakeRequest("GET", "/foo")) must_== "showing page foo"
     }
     "support passing parameters from the query string" in {
-      contentOf(FakeRequest("GET", "/?page=foo"), classOf[query.Routes]) must_== "showing page foo"
+      contentOf(
+        FakeRequest("GET", "/?page=foo"),
+        classOf[query.Routes]) must_== "showing page foo"
     }
     "support fixed values for parameters" in {
-      contentOf(FakeRequest("GET", "/foo"), classOf[fixed.Routes]) must_== "showing page foo"
-      contentOf(FakeRequest("GET", "/"), classOf[fixed.Routes]) must_== "showing page home"
+      contentOf(
+        FakeRequest("GET", "/foo"),
+        classOf[fixed.Routes]) must_== "showing page foo"
+      contentOf(
+        FakeRequest("GET", "/"),
+        classOf[fixed.Routes]) must_== "showing page home"
     }
     "support default values for parameters" in {
-      contentOf(FakeRequest("GET", "/clients"), classOf[defaultvalue.Routes]) must_== "clients page 1"
+      contentOf(
+        FakeRequest("GET", "/clients"),
+        classOf[defaultvalue.Routes]) must_== "clients page 1"
       contentOf(
         FakeRequest("GET", "/clients?page=2"),
         classOf[defaultvalue.Routes]) must_== "clients page 2"
     }
     "support optional values for parameters" in {
       contentOf(FakeRequest("GET", "/api/list-all")) must_== "version None"
-      contentOf(FakeRequest("GET", "/api/list-all?version=3.0")) must_== "version Some(3.0)"
+      contentOf(
+        FakeRequest(
+          "GET",
+          "/api/list-all?version=3.0")) must_== "version Some(3.0)"
     }
     "support reverse routing" in {
       import reverse.controllers.routes

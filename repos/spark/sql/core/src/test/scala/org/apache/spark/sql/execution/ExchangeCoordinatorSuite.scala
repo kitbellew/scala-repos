@@ -315,7 +315,8 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
       case None                => ""
     }
 
-    test(s"determining the number of reducers: aggregate operator$testNameNote") {
+    test(
+      s"determining the number of reducers: aggregate operator$testNameNote") {
       val test = { sqlContext: SQLContext =>
         val df =
           sqlContext

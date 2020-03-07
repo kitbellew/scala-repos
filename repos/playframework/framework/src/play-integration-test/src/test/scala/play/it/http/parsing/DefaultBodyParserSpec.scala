@@ -50,7 +50,10 @@ object DefaultBodyParserSpec extends PlaySpecification {
     }
 
     "parse JSON bodies for PUT requests" in new WithApplication() {
-      parse("PUT", Some("application/json"), ByteString("""{"foo":"bar"}""")) must beRight
+      parse(
+        "PUT",
+        Some("application/json"),
+        ByteString("""{"foo":"bar"}""")) must beRight
         .like {
           case AnyContentAsJson(json) => (json \ "foo").as[String] must_== "bar"
         }

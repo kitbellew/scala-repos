@@ -24,16 +24,16 @@ private[api] final class UserApi(
       teamId: String,
       nb: Option[Int],
       engine: Option[Boolean]): Fu[JsObject] =
-    lila.team.MemberRepo userIdsByTeam teamId map (_ take makeNb(nb)) flatMap UserRepo.enabledByIds map {
-      users =>
-        Json.obj(
-          "list" -> JsArray(
-            users map { u =>
-              jsonView(u) ++
-                Json.obj("url" -> makeUrl(s"@/${u.username}"))
-            }
-          )
+    lila.team.MemberRepo userIdsByTeam teamId map (_ take makeNb(
+      nb)) flatMap UserRepo.enabledByIds map { users =>
+      Json.obj(
+        "list" -> JsArray(
+          users map { u =>
+            jsonView(u) ++
+              Json.obj("url" -> makeUrl(s"@/${u.username}"))
+          }
         )
+      )
     }
 
   def one(username: String)(implicit ctx: Context): Fu[Option[JsObject]] =

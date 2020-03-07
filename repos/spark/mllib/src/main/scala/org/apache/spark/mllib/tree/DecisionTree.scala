@@ -849,7 +849,8 @@ object DecisionTree extends Serializable with Logging {
 
     val totalCount = leftCount + rightCount
 
-    val leftImpurity = leftImpurityCalculator.calculate() // Note: This equals 0 if count = 0
+    val leftImpurity =
+      leftImpurityCalculator.calculate() // Note: This equals 0 if count = 0
     val rightImpurity = rightImpurityCalculator.calculate()
 
     val leftWeight = leftCount / totalCount.toDouble

@@ -40,8 +40,11 @@ private object UciToPgn {
           .foldLeft[Valid[(Situation, List[Move])]](success(situation -> Nil)) {
             case (scalaz.Success((sit, moves)), uci) =>
               sit
-                .move(uci.orig, uci.dest, uci.promotion) prefixFailuresWith s"ply $ply " map {
-                move => move.situationAfter -> (move :: moves)
+                .move(
+                  uci.orig,
+                  uci.dest,
+                  uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
+                move.situationAfter -> (move :: moves)
               }
             case (failure, _) => failure
           }

@@ -406,7 +406,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
       // user must have set spark.authenticate.secret config
       // For Master/Worker, auth secret is in conf; for Executors, it is in env variable
       Option(sparkConf.getenv(SecurityManager.ENV_AUTH_SECRET))
-        .orElse(sparkConf.getOption(SecurityManager.SPARK_AUTH_SECRET_CONF)) match {
+        .orElse(
+          sparkConf.getOption(SecurityManager.SPARK_AUTH_SECRET_CONF)) match {
         case Some(value) => value
         case None =>
           throw new IllegalArgumentException(

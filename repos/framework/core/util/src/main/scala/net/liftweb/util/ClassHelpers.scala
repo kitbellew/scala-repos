@@ -407,7 +407,8 @@ trait ClassHelpers { self: ControlHelpers =>
   def createInvoker[C <: AnyRef](name: String, on: C): Box[() => Box[Any]] = {
     def controllerMethods(instance: C) =
       instance.getClass.getDeclaredMethods.filter { m =>
-        m.getName == name && isPublic(m.getModifiers) && m.getParameterTypes.isEmpty
+        m.getName == name && isPublic(
+          m.getModifiers) && m.getParameterTypes.isEmpty
       }
     on match {
       case null => Empty

@@ -21,7 +21,8 @@ import scala.io.Codec
   */
 object Socket {
   class Box[+T](f: () => T) {
-    private def handlerFn[U](f: Throwable => U): PartialFunction[Throwable, U] = {
+    private def handlerFn[U](
+        f: Throwable => U): PartialFunction[Throwable, U] = {
       case x @ (_: IOException | _: SecurityException) => f(x)
     }
     private val optHandler = handlerFn[Option[T]](_ => None)

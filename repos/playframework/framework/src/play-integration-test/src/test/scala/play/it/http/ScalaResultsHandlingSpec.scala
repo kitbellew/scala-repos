@@ -407,8 +407,11 @@ trait ScalaResultsHandlingSpec
         )
         .head
       response.status must_== Status.INTERNAL_SERVER_ERROR
-      (response.headers -- Set(CONNECTION, CONTENT_LENGTH, DATE, SERVER)) must be(
-        Map.empty)
+      (response.headers -- Set(
+        CONNECTION,
+        CONTENT_LENGTH,
+        DATE,
+        SERVER)) must be(Map.empty)
     }
   }
 

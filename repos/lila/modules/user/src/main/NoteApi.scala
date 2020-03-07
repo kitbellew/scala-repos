@@ -41,7 +41,8 @@ final class NoteApi(
       date = DateTime.now)
 
     import lila.hub.actorApi.timeline.{Propagate, NoteCreate}
-    timeline ! (Propagate(NoteCreate(note.from, note.to)) toFriendsOf from.id exceptUser note.to)
+    timeline ! (Propagate(
+      NoteCreate(note.from, note.to)) toFriendsOf from.id exceptUser note.to)
 
     coll insert note
   }

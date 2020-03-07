@@ -77,8 +77,14 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
   @expand
   implicit def hv_dv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -107,8 +113,14 @@ trait HashVector_DenseVector_Ops extends DenseVector_HashVector_Ops {
   @expand
   implicit def hv_dv_op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -224,8 +236,14 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_v_Op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -337,8 +355,13 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -567,8 +590,15 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   @expand
   implicit def hv_sv_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType]
-      : Op.InPlaceImpl2[HashVector[T], SparseVector[T]] = updateFromPure
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType]: Op.InPlaceImpl2[HashVector[T], SparseVector[T]] =
+    updateFromPure
 
 }
 
@@ -676,8 +706,15 @@ trait SparseVector_HashVector_Ops
   @expand
   implicit def sv_hv_update[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType]
-      : Op.InPlaceImpl2[SparseVector[T], HashVector[T]] = updateFromPureS
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType]: Op.InPlaceImpl2[SparseVector[T], HashVector[T]] =
+    updateFromPureS
 }
 
 trait HashVector_GenericOps { this: HashVector.type =>

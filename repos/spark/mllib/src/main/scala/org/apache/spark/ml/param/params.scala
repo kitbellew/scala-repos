@@ -460,7 +460,10 @@ class LongParam(
   * Specialized version of [[Param[Boolean]]] for Java.
   */
 @DeveloperApi
-class BooleanParam(parent: String, name: String, doc: String) // No need for isValid
+class BooleanParam(
+    parent: String,
+    name: String,
+    doc: String) // No need for isValid
     extends Param[Boolean](parent, name, doc) {
 
   def this(parent: Identifiable, name: String, doc: String) =

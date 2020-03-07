@@ -74,7 +74,8 @@ class Settings {
       (if (!bootclasspathBf.isEmpty)
          "-bootclasspath" :: bootclasspath.toString :: Nil
        else Nil) :::
-      (if (!extdirsBf.isEmpty) "-extdirs" :: extdirs.toString :: Nil else Nil) :::
+      (if (!extdirsBf.isEmpty) "-extdirs" :: extdirs.toString :: Nil
+       else Nil) :::
       (if (!dBf.isEmpty) "-d" :: d.getAbsolutePath :: Nil else Nil) :::
       (if (!encodingBf.isEmpty) "-encoding" :: encoding :: Nil else Nil) :::
       (if (!targetBf.isEmpty) "-target:" + target :: Nil else Nil) :::

@@ -111,8 +111,9 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
       // assert(Await.result(client.move(foo, bar)) == false)
 
       Await.result(client.set(foo, bar))
-      assert(Await.result(
-        client.move(foo, StringToChannelBuffer(toDb.toString))) == true)
+      assert(
+        Await.result(
+          client.move(foo, StringToChannelBuffer(toDb.toString))) == true)
 
       Await.result(client.del(Seq(foo))) // clean up
     }
@@ -132,7 +133,10 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
     }
   }
 
-  test("Correctly perform the PEXPIREAT & PTL commands", RedisTest, ClientTest) {
+  test(
+    "Correctly perform the PEXPIREAT & PTL commands",
+    RedisTest,
+    ClientTest) {
     withRedisClient { client =>
       val horizon = 20000L
       val ttl = System.currentTimeMillis() + horizon

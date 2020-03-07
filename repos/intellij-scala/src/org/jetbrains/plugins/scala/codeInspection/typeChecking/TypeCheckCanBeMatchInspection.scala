@@ -506,7 +506,8 @@ object TypeCheckToMatchUtil {
           case _                      => parenth :: Nil
         }
       case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
-        separateConditions(infixExpr.lOp) ::: separateConditions(infixExpr.rOp) ::: Nil
+        separateConditions(infixExpr.lOp) ::: separateConditions(
+          infixExpr.rOp) ::: Nil
       case _ => expr :: Nil
     }
   }

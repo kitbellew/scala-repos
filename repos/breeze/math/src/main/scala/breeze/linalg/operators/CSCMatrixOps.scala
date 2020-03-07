@@ -872,8 +872,14 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   @expand.valify
   implicit def csc_T_InPlace[
       @expand.args(Int, Float, Double, Long) T,
-      @expand.args(OpAdd, OpSub, OpDiv, OpPow, OpMod, OpMulScalar, OpMulMatrix) Op <: OpType]
-      : Op.InPlaceImpl2[CSCMatrix[T], T] =
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpDiv,
+        OpPow,
+        OpMod,
+        OpMulScalar,
+        OpMulMatrix) Op <: OpType]: Op.InPlaceImpl2[CSCMatrix[T], T] =
     updateFromPure(implicitly[Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]]])
 
   @expand
@@ -1711,7 +1717,14 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
 
   @expand
   implicit def csc_csc_UpdateOp[
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpSet, OpDiv, OpPow, OpMod) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpSet,
+        OpDiv,
+        OpPow,
+        OpMod) Op <: OpType,
       T: Field: ClassTag]: Op.InPlaceImpl2[CSCMatrix[T], CSCMatrix[T]] =
     updateFromPure_CSC_CSC(
       implicitly[Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]]])

@@ -129,7 +129,12 @@ class PageRank(args: Args) extends Job(args) {
         //Here we make a false row that we use to tell dst how much incoming
         //Page rank it needs to add to itself:
         .map(
-          ('src, 'd_src, 'dst, 'rank, 'rowtype) -> ('src, 'd_src, 'dst, 'rank, 'rowtype)) {
+          (
+            'src,
+            'd_src,
+            'dst,
+            'rank,
+            'rowtype) -> ('src, 'd_src, 'dst, 'rank, 'rowtype)) {
           intup: (Long, Long, Long, Double, Int) =>
             val (src: Long, d_src: Long, dst: Long, rank: Double, row: Int) =
               intup

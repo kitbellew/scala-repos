@@ -396,8 +396,9 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
           Parameter]]) getOrElse Nil
       val errors = route.metadata.get(Symbols.Errors) map (_.asInstanceOf[List[
         ResponseMessage[_]]]) getOrElse Nil
-      val responseClass = route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
-        DataType]) getOrElse DataType.Void
+      val responseClass =
+        route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
+          DataType]) getOrElse DataType.Void
       val summary = (route.metadata
         .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])

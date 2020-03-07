@@ -88,7 +88,8 @@ class ClientSuite
     }
   }
 
-  test("resultant classpath for an application that defines a classpath for MR") {
+  test(
+    "resultant classpath for an application that defines a classpath for MR") {
     withAppConf(Fixtures.mapMRAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)

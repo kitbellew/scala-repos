@@ -27,7 +27,10 @@ object Parsing {
       val needleSize = needle.size
       val fullJump = needleSize
       val jumpBadCharecter: (Byte => Int) = {
-        val map = Map(needle.dropRight(1).reverse.zipWithIndex.reverse: _*) //remove the last
+        val map =
+          Map(
+            needle.dropRight(1).reverse.zipWithIndex.reverse: _*
+          ) //remove the last
         byte => map.get(byte).map(_ + 1).getOrElse(fullJump)
       }
 

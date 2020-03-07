@@ -176,11 +176,14 @@ final class Eval(
     // TODO - We also encode the source of the setting into the hash to avoid conflicts where the exact SAME setting
     // is defined in multiple evaluated instances with a backing.  This leads to issues with finding a previous
     // value on the classpath when compiling.
-    val hash = Hash.toHex(Hash(bytes(stringSeqBytes(content) :: optBytes(
-      backing)(fileExistsBytes) :: stringSeqBytes(options) ::
-      seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
-      imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
-      bytes(ev.extraHash) :: Nil)))
+    val hash = Hash.toHex(
+      Hash(
+        bytes(
+          stringSeqBytes(content) :: optBytes(backing)(
+            fileExistsBytes) :: stringSeqBytes(options) ::
+            seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
+            imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
+            bytes(ev.extraHash) :: Nil)))
     val moduleName = makeModuleName(hash)
 
     lazy val unit = {

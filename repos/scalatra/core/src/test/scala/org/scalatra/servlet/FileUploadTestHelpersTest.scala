@@ -89,12 +89,14 @@ class FileUploadTestHelpersTest extends ScalatraFunSuite {
       assert(header("File-textFile-Name") === "lorem_ipsum.txt")
       assert(header("File-textFile-Size") === "651")
       assert(
-        header("File-textFile-SHA") === "b3572a890c5005aed6409cf81d13fd19f6d004f0")
+        header(
+          "File-textFile-SHA") === "b3572a890c5005aed6409cf81d13fd19f6d004f0")
 
       assert(header("File-binaryFile-Name") === "smiley.png")
       assert(header("File-binaryFile-Size") === "3432")
       assert(
-        header("File-binaryFile-SHA") === "0e777b71581c631d056ee810b4550c5dcd9eb856")
+        header(
+          "File-binaryFile-SHA") === "0e777b71581c631d056ee810b4550c5dcd9eb856")
     }
   }
 
@@ -117,12 +119,14 @@ class FileUploadTestHelpersTest extends ScalatraFunSuite {
       assert(header("File-textFile-Name") === "lorem_ipsum.txt")
       assert(header("File-textFile-Size") === "651")
       assert(
-        header("File-textFile-SHA") === "b3572a890c5005aed6409cf81d13fd19f6d004f0")
+        header(
+          "File-textFile-SHA") === "b3572a890c5005aed6409cf81d13fd19f6d004f0")
 
       assert(header("File-binaryFile-Name") === "smiley.png")
       assert(header("File-binaryFile-Size") === "3432")
       assert(
-        header("File-binaryFile-SHA") === "0e777b71581c631d056ee810b4550c5dcd9eb856")
+        header(
+          "File-binaryFile-SHA") === "0e777b71581c631d056ee810b4550c5dcd9eb856")
     }
   }
 

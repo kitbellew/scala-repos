@@ -122,7 +122,8 @@ object ScalaMacroDebuggingUtil {
   }
 
   def readPreimageName(file: PsiFile): Option[String] =
-    Option(SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (new String(
+    Option(
+      SOURCE_FILE_NAME readAttributeBytes file.getVirtualFile) map (new String(
       _))
 
   def getPreimageFile(file: PsiFile) = PREIMAGE_CACHE get file

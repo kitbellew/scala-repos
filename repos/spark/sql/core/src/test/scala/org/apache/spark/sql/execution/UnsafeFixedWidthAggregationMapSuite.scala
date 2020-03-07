@@ -165,8 +165,9 @@ class UnsafeFixedWidthAggregationMapSuite
     val rand = new Random(42)
     val groupKeys: Set[String] = Seq.fill(512)(rand.nextString(1024)).toSet
     groupKeys.foreach { keyString =>
-      assert(map.getAggregationBuffer(
-        InternalRow(UTF8String.fromString(keyString))) != null)
+      assert(
+        map.getAggregationBuffer(
+          InternalRow(UTF8String.fromString(keyString))) != null)
     }
 
     val seenKeys = new mutable.HashSet[String]

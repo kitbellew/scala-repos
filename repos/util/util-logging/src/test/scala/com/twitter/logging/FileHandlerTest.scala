@@ -179,7 +179,9 @@ class FileHandlerTest extends WordSpec with TempFolder {
           handler.close()
 
           assert(
-            reader("test-" + handler.timeSuffix(date) + ".log").readLine == "first post!")
+            reader(
+              "test-" + handler.timeSuffix(
+                date) + ".log").readLine == "first post!")
           assert(reader("test.log").readLine == "second post")
         }
       }

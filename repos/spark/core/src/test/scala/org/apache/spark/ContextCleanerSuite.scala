@@ -188,7 +188,8 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
 
     // Test that GC causes shuffle cleanup after dereferencing the RDD
     val postGCTester = new CleanerTester(sc, shuffleIds = Seq(0))
-    rdd = null // Make RDD out of scope, so that corresponding shuffle goes out of scope
+    rdd =
+      null // Make RDD out of scope, so that corresponding shuffle goes out of scope
     runGC()
     postGCTester.assertCleanup()
   }
@@ -401,7 +402,8 @@ class SortShuffleContextCleanerSuite
 
     // Test that GC causes shuffle cleanup after dereferencing the RDD
     val postGCTester = new CleanerTester(sc, shuffleIds = Seq(0))
-    rdd = null // Make RDD out of scope, so that corresponding shuffle goes out of scope
+    rdd =
+      null // Make RDD out of scope, so that corresponding shuffle goes out of scope
     runGC()
     postGCTester.assertCleanup()
   }

@@ -1085,7 +1085,8 @@ private[stream] final class Delay[T](
           case Some(InputBuffer(min, max)) ⇒ max
         }
 
-      var buffer: BufferImpl[(Long, T)] = _ // buffer has pairs timestamp with upstream element
+      var buffer: BufferImpl[(Long, T)] =
+        _ // buffer has pairs timestamp with upstream element
       var willStop = false
 
       override def preStart(): Unit = buffer = BufferImpl(size, materializer)
@@ -1145,7 +1146,8 @@ private[stream] final class Delay[T](
         out,
         new OutHandler {
           override def onPull(): Unit = {
-            if (!isTimerActive(timerName) && !buffer.isEmpty && nextElementWaitTime() < 0)
+            if (!isTimerActive(
+                  timerName) && !buffer.isEmpty && nextElementWaitTime() < 0)
               push(out, buffer.dequeue()._2)
 
             if (!willStop && !hasBeenPulled(in)) pull(in)

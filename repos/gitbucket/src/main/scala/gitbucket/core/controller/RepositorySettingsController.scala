@@ -462,7 +462,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         name: String,
         value: String,
         messages: Messages): Option[String] =
-      if (getWebHook(params("owner"), params("repository"), value).isDefined != needExists) {
+      if (getWebHook(
+            params("owner"),
+            params("repository"),
+            value).isDefined != needExists) {
         Some(if (needExists) {
           "URL had not been registered yet."
         } else {

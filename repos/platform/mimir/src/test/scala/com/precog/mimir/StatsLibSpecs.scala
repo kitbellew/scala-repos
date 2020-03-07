@@ -1359,7 +1359,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 0 => (d.toDouble ~= 1)
       }
 
-      result2 must contain(true).only //todo test this answer to a certain level of accuracy
+      result2 must contain(
+        true).only //todo test this answer to a certain level of accuracy
     }
 
     "compute covariance" in {

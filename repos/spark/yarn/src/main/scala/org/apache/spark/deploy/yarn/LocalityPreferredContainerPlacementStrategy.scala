@@ -198,7 +198,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     hostToLocalTaskCount.map {
       case (host, count) =>
         val expectedCount =
-          count.toDouble * numExecutorsPending(localityAwareTasks) / totalLocalTaskNum
+          count.toDouble * numExecutorsPending(
+            localityAwareTasks) / totalLocalTaskNum
         // Take the locality of pending containers into consideration
         val existedCount =
           allocatedHostToContainersMap.get(host).map(_.size).getOrElse(0) +

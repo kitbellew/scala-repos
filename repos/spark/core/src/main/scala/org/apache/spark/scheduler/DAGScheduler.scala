@@ -1374,7 +1374,8 @@ private[spark] class DAGScheduler(
             }
 
             if (runningStages
-                  .contains(shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
+                  .contains(
+                    shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
               markStageAsFinished(shuffleStage)
               logInfo("looking for newly runnable stages")
               logInfo("running: " + runningStages)

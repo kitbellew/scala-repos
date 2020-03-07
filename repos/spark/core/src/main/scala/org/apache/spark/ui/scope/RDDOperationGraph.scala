@@ -100,7 +100,8 @@ private[ui] object RDDOperationGraph extends Logging {
   def makeOperationGraph(stage: StageInfo): RDDOperationGraph = {
     val edges = new ListBuffer[RDDOperationEdge]
     val nodes = new mutable.HashMap[Int, RDDOperationNode]
-    val clusters = new mutable.HashMap[String, RDDOperationCluster] // indexed by cluster ID
+    val clusters =
+      new mutable.HashMap[String, RDDOperationCluster] // indexed by cluster ID
 
     // Root cluster is the stage cluster
     // Use a special prefix here to differentiate this cluster from other operation clusters

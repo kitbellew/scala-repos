@@ -265,7 +265,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def path: Parser[PathPattern] =
-    "/" ~ ((positioned(singleComponentPathPart) | positioned(multipleComponentsPathPart) | positioned(
+    "/" ~ ((positioned(singleComponentPathPart) | positioned(
+      multipleComponentsPathPart) | positioned(
       regexComponentPathPart) | staticPathPart) *) ^^ {
       case _ ~ parts => PathPattern(parts)
     }
@@ -315,7 +316,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     }
 
   def parameter: Parser[Parameter] =
-    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(parameterType) ~ (ignoreWhiteSpace ~> opt(
+    ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(
+      parameterType) ~ (ignoreWhiteSpace ~> opt(
       parameterDefaultValue | parameterFixedValue)) ^^ {
       case name ~ t ~ d =>
         Parameter(
@@ -357,7 +359,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   }
 
   def route =
-    httpVerb ~! separator ~ path ~ separator ~ positioned(call) ~ ignoreWhiteSpace ^^ {
+    httpVerb ~! separator ~ path ~ separator ~ positioned(
+      call) ~ ignoreWhiteSpace ^^ {
       case v ~ _ ~ p ~ _ ~ c ~ _ => Route(v, p, c)
     }
 

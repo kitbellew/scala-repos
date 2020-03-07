@@ -202,7 +202,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           (if (!incomingImplicits.isEmpty) {
              val n = incomingImplicits.last
              "node" + node2Index(n) + " -> node" + node2Index(thisNode) +
-               " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(n) + "_" + node2Index(
+               " [id=\"" + cssClass(n, thisNode) + "|" + node2Index(
+               n) + "_" + node2Index(
                thisNode) + "\", tooltip=\"" + incomingTooltip + "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterIncoming\", lhead=\"clusterThis\", label=\"implicitly\"];\n"
            } else "") +
@@ -210,7 +211,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           (if (!outgoingImplicits.isEmpty) {
              val n = outgoingImplicits.head
              "node" + node2Index(thisNode) + " -> node" + node2Index(n) +
-               " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(thisNode) + "_" + node2Index(
+               " [id=\"" + cssClass(thisNode, n) + "|" + node2Index(
+               thisNode) + "_" + node2Index(
                n) + "\", tooltip=\"" + outgoingTooltip + "\"" +
                ", constraint=\"false\", minlen=\"2\", ltail=\"clusterThis\", lhead=\"clusterOutgoing\", label=\"implicitly\"];\n"
            } else "") +
@@ -325,7 +327,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     attr += ("id" -> (cssClass(node) + "|" + id))
 
     // return dot string
-    "node" + node2Index(node) + " [label=" + label + "," + flatten(attr.toMap) + "];\n"
+    "node" + node2Index(node) + " [label=" + label + "," + flatten(
+      attr.toMap) + "];\n"
   }
 
   /**

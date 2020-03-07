@@ -67,7 +67,10 @@ sealed abstract class Tree[A] {
           for {
             subtree <- suspend(t.draw)
             otherSubtrees <- suspend(drawSubTrees(ts))
-          } yield new StringBuilder("|") +: (shift(branch, trunk, subtree) ++ otherSubtrees)
+          } yield new StringBuilder("|") +: (shift(
+            branch,
+            trunk,
+            subtree) ++ otherSubtrees)
       }
 
     def shift(

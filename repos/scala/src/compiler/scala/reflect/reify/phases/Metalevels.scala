@@ -128,7 +128,8 @@ trait Metalevels {
           println(
             "trimmed %s inlineable free defs from its symbol table: %s".format(
               inlinees.length,
-              inlinees map (inlinee => symtab.symName(inlinee)) mkString (", ")))
+              inlinees map (inlinee =>
+                symtab.symName(inlinee)) mkString (", ")))
         withinSplice {
           super.transform(TreeSplice(
             ReifiedTree(universe, mirror, symtab1, rtree, tpe, rtpe, concrete)))

@@ -105,9 +105,10 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       db: Backend#Database,
       param: Any): QueryInterpreter = new QueryInterpreter(db, param) {
     override def run(n: Node) = n match {
-      case ResultSetMapping(_, from, CompiledMapping(converter, _)) :@ CollectionType(
-            cons,
-            el) =>
+      case ResultSetMapping(
+            _,
+            from,
+            CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
         val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
         val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
         b ++= fromV.map(v =>
@@ -165,7 +166,11 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
 
   class StreamingQueryAction[R, T](tree: Node, param: Any)
       extends StreamingProfileAction[R, T, Effect.Read]
-      with SynchronousDatabaseAction[R, Streaming[T], Backend#This, Effect.Read] {
+      with SynchronousDatabaseAction[
+        R,
+        Streaming[T],
+        Backend#This,
+        Effect.Read] {
     type StreamState = Iterator[T]
     protected[this] def getIterator(ctx: Backend#Context): Iterator[T] = {
       val inter = createInterpreter(ctx.session.database, param)
@@ -294,7 +299,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       (
         serverSide,
         mapping.map(
-          new InsertMappingCompiler(serverSide.asInstanceOf[Insert]).compileMapping))
+          new InsertMappingCompiler(
+            serverSide.asInstanceOf[Insert]).compileMapping))
   }
 }
 

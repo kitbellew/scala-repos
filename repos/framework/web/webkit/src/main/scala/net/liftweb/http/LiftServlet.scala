@@ -182,7 +182,8 @@ class LiftServlet extends Loggable {
       }
     } catch {
       case rest.ContinuationException(theReq, sesBox, func) =>
-        handleGenericContinuation(theReq, resp, sesBox, func); true // we have to return true to hold onto the request
+        handleGenericContinuation(theReq, resp, sesBox, func);
+        true // we have to return true to hold onto the request
 
       case e if e.getClass.getName.endsWith("RetryRequest") => throw e
       case e: Throwable =>

@@ -1113,7 +1113,8 @@ object PrepJSInterop {
 
     @inline def isBaseKind: Boolean =
       Integer
-        .lowestOneBit(baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
+        .lowestOneBit(
+          baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
 
     @inline def |(that: OwnerKind): OwnerKind =
       new OwnerKind(this.baseKinds | that.baseKinds)

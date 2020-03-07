@@ -212,7 +212,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
     new UnrolledBuffer[T]
 
   val waterline = 50
-  val waterlineDelim = 100 // TODO -- fix this name!  It's a denominator, not a delimiter.  (But it's part of the API so we can't just change it.)
+  val waterlineDelim =
+    100 // TODO -- fix this name!  It's a denominator, not a delimiter.  (But it's part of the API so we can't just change it.)
   private[collection] val unrolledlength = 32
 
   /** Unrolled buffer node.
@@ -348,7 +349,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
     private def nullout(from: Int, until: Int) {
       var idx = from
       while (idx < until) {
-        array(idx) = null.asInstanceOf[T] // TODO find a way to assign a default here!!
+        array(idx) =
+          null.asInstanceOf[T] // TODO find a way to assign a default here!!
         idx += 1
       }
     }
@@ -367,7 +369,9 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
         .take(size)
         .mkString(
           "Unrolled@%08x"
-            .format(System.identityHashCode(this)) + "[" + size + "/" + array.length + "](",
+            .format(
+              System.identityHashCode(
+                this)) + "[" + size + "/" + array.length + "](",
           ", ",
           ")") + " -> " + (if (next ne null) next.toString else "")
   }

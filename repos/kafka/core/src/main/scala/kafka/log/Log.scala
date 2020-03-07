@@ -254,10 +254,11 @@ class Log(
       val fileName = logFile.getName
       val startOffset =
         fileName.substring(0, fileName.length - LogFileSuffix.length).toLong
-      val indexFile = new File(CoreUtils.replaceSuffix(
-        logFile.getPath,
-        LogFileSuffix,
-        IndexFileSuffix) + SwapFileSuffix)
+      val indexFile = new File(
+        CoreUtils.replaceSuffix(
+          logFile.getPath,
+          LogFileSuffix,
+          IndexFileSuffix) + SwapFileSuffix)
       val index = new OffsetIndex(
         file = indexFile,
         baseOffset = startOffset,
@@ -432,7 +433,8 @@ class Log(
           if (messageSizesMaybeChanged) {
             for (messageAndOffset <- validMessages.shallowIterator) {
               if (MessageSet
-                    .entrySize(messageAndOffset.message) > config.maxMessageSize) {
+                    .entrySize(
+                      messageAndOffset.message) > config.maxMessageSize) {
                 // we record the original message set size instead of the trimmed size
                 // to be consistent with pre-compression bytesRejectedRate recording
                 BrokerTopicStats

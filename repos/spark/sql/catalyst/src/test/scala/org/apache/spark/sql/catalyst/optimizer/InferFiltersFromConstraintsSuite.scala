@@ -45,7 +45,8 @@ class InferFiltersFromConstraintsSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test("single inner join: filter out values on either side on equi-join keys") {
+  test(
+    "single inner join: filter out values on either side on equi-join keys") {
     val x = testRelation.subquery('x)
     val y = testRelation.subquery('y)
     val originalQuery = x
@@ -112,7 +113,8 @@ class InferFiltersFromConstraintsSuite extends PlanTest {
     comparePlans(optimized, originalQuery)
   }
 
-  test("multiple inner joins: filter out values on all sides on equi-join keys") {
+  test(
+    "multiple inner joins: filter out values on all sides on equi-join keys") {
     val t1 = testRelation.subquery('t1)
     val t2 = testRelation.subquery('t2)
     val t3 = testRelation.subquery('t3)

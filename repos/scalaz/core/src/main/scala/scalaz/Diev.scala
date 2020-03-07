@@ -137,7 +137,9 @@ trait DievImplementation {
 
     def +(interval: (A, A)): Diev[A] = {
       val correctedInterval = fixIntervalOrder(interval)
-      (binarySearch(correctedInterval._1), binarySearch(correctedInterval._2)) match {
+      (
+        binarySearch(correctedInterval._1),
+        binarySearch(correctedInterval._2)) match {
         case (Coincidence(startPosition), Coincidence(endPosition)) => {
           construct(
             startPosition,
@@ -163,7 +165,9 @@ trait DievImplementation {
               .getOrElse(intervals.size)
           )
         }
-        case (earlyBound @ Between(before, after), Coincidence(endPosition)) => {
+        case (
+            earlyBound @ Between(before, after),
+            Coincidence(endPosition)) => {
           val adjacentBeforeResult =
             earlyBound.adjacentBefore(correctedInterval)
           construct(
@@ -207,15 +211,17 @@ trait DievImplementation {
 
     def -(interval: (A, A)): Diev[A] = {
       val orderedInterval = fixIntervalOrder(interval)
-      (binarySearch(orderedInterval._1), binarySearch(orderedInterval._2)) match {
+      (
+        binarySearch(orderedInterval._1),
+        binarySearch(orderedInterval._2)) match {
         case (Coincidence(startPosition), Coincidence(endPosition)) => {
           val middle =
             if (startPosition == endPosition)
               subtractInterval(intervals(startPosition), interval)
             else
-              subtractInterval(intervals(startPosition), interval) ++ subtractInterval(
-                intervals(endPosition),
-                interval)
+              subtractInterval(
+                intervals(startPosition),
+                interval) ++ subtractInterval(intervals(endPosition), interval)
           construct(startPosition, middle, endPosition + 1)
         }
         case (Coincidence(startPosition), Between(_, endAfter)) => {

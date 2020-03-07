@@ -29,7 +29,9 @@ class HiveParquetSuite
     with TestHiveSingleton {
 
   test("Case insensitive attribute names") {
-    withParquetTable((1 to 4).map(i => Cases(i.toString, i.toString)), "cases") {
+    withParquetTable(
+      (1 to 4).map(i => Cases(i.toString, i.toString)),
+      "cases") {
       val expected = (1 to 4).map(i => Row(i.toString))
       checkAnswer(sql("SELECT upper FROM cases"), expected)
       checkAnswer(sql("SELECT LOWER FROM cases"), expected)

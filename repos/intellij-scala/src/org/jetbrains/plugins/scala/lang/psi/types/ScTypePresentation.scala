@@ -257,13 +257,13 @@ trait ScTypePresentation {
               case bp: ScBindingPattern =>
                 val b = ScBindingPattern.getCompoundCopy(rt, bp)
                 Seq(
-                  (if (b.isVar) "var " else "val ") + b.name + " : " + typeText0(
-                    rt))
+                  (if (b.isVar) "var "
+                   else "val ") + b.name + " : " + typeText0(rt))
               case fi: ScFieldId =>
                 val f = ScFieldId.getCompoundCopy(rt, fi)
                 Seq(
-                  (if (f.isVar) "var " else "val ") + f.name + " : " + typeText0(
-                    rt))
+                  (if (f.isVar) "var "
+                   else "val ") + f.name + " : " + typeText0(rt))
               case _ => Seq.empty
             }
           }

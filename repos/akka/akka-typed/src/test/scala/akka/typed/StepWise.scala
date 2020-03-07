@@ -141,7 +141,9 @@ object StepWise {
       copy(ops = Failure(
         timeout,
         (failed, value) ⇒
-          f.asInstanceOf[(Failed, Any) ⇒ Failed.Decision](failed, value) -> value,
+          f.asInstanceOf[(Failed, Any) ⇒ Failed.Decision](
+            failed,
+            value) -> value,
         getTrace()) :: ops)
 
     def expectTerminationKeep(timeout: FiniteDuration)(

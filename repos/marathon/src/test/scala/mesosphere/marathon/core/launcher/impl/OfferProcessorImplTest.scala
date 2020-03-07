@@ -178,7 +178,8 @@ class OfferProcessorImplTest
     }
   }
 
-  test("match successful but very slow so that we are hitting storage timeout") {
+  test(
+    "match successful but very slow so that we are hitting storage timeout") {
     Given("an offer")
     val dummySource = new DummySource
     val tasksWithSource = tasks.map(task =>

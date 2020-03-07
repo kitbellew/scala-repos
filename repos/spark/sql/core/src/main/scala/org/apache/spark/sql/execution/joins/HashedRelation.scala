@@ -67,7 +67,8 @@ private[execution] sealed trait HashedRelation {
   // This is a helper method to implement Externalizable, and is used by
   // GeneralHashedRelation and UniqueKeyHashedRelation
   protected def readBytes(in: ObjectInput): Array[Byte] = {
-    val serializedSize = in.readInt() // Read the length of serialized bytes first
+    val serializedSize =
+      in.readInt() // Read the length of serialized bytes first
     val bytes = new Array[Byte](serializedSize)
     in.readFully(bytes)
     bytes

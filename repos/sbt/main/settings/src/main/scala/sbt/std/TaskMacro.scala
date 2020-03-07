@@ -453,7 +453,8 @@ object TaskMacro {
         EmptyTree
       } else {
         qual.foreach(checkQual)
-        val vd = util.freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
+        val vd =
+          util.freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
         tree.setPos(
@@ -512,7 +513,8 @@ object TaskMacro {
         val fCore = util.createFunction(param :: Nil, tx, functionSym)
         val bodyTpe = wrapTag(tag).tpe
         val fTpe = util.functionType(tpe :: Nil, bodyTpe)
-        val fTag = c.WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
+        val fTag =
+          c.WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
         val fInit = expandTask(false, fCore)(fTag).tree
         inputTaskCreate(InputTaskCreateDynName, tpe, tag.tpe, p, fInit)
       case None =>

@@ -222,7 +222,9 @@ object ManifestFactory {
   }
 
   private object AnyValManifest
-      extends PhantomManifest[scala.AnyVal](classOf[java.lang.Object], "AnyVal") {
+      extends PhantomManifest[scala.AnyVal](
+        classOf[java.lang.Object],
+        "AnyVal") {
     override def runtimeClass = classOf[java.lang.Object]
     override def newArray(len: Int) = new Array[scala.AnyVal](len)
     override def <:<(that: ClassManifest[_]): Boolean =
@@ -231,7 +233,9 @@ object ManifestFactory {
   }
 
   private object NullManifest
-      extends PhantomManifest[scala.Null](classOf[scala.runtime.Null$], "Null") {
+      extends PhantomManifest[scala.Null](
+        classOf[scala.runtime.Null$],
+        "Null") {
     override def runtimeClass = classOf[scala.runtime.Null$]
     override def newArray(len: Int) = new Array[scala.Null](len)
     override def <:<(that: ClassManifest[_]): Boolean =

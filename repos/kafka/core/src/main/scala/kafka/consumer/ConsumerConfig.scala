@@ -48,7 +48,8 @@ object ConsumerConfig extends Config {
   val MirrorTopicsWhitelistProp = "mirror.topics.whitelist"
   val MirrorTopicsBlacklistProp = "mirror.topics.blacklist"
   val ExcludeInternalTopics = true
-  val DefaultPartitionAssignmentStrategy = "range" /* select between "range", and "roundrobin" */
+  val DefaultPartitionAssignmentStrategy =
+    "range" /* select between "range", and "roundrobin" */
   val MirrorConsumerNumThreadsProp = "mirror.consumer.numthreads"
   val DefaultClientId = ""
 

@@ -129,7 +129,9 @@ class HotSwapSpec extends AkkaSpec with ImplicitSender {
       expectMsg("swapped")
       a ! "state"
       expectMsg("1")
-      EventFilter[Exception](message = "Crash (expected)!", occurrences = 1) intercept {
+      EventFilter[Exception](
+        message = "Crash (expected)!",
+        occurrences = 1) intercept {
         a ! "crash"
       }
       a ! "state"

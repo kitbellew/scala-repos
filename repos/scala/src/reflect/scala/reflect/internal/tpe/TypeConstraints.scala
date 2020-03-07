@@ -256,7 +256,8 @@ private[internal] trait TypeConstraints {
               }
           }
         }
-        tvar.constr.inst = NoType // necessary because hibounds/lobounds may contain tvar
+        tvar.constr.inst =
+          NoType // necessary because hibounds/lobounds may contain tvar
 
         //println("solving "+tvar+" "+up+" "+(if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds)+((if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds) map (_.widen)))
         val newInst =

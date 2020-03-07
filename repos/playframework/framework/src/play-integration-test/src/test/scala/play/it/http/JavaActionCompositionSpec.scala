@@ -59,7 +59,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
         @ActionAnnotation
         override def action: Result = Results.ok()
       },
-      Map("play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
+      Map(
+        "play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
       response => response.body must beEqualTo("actioncontroller")
     }
 
@@ -68,7 +69,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
         @ActionAnnotation
         override def action: Result = Results.ok()
       },
-      Map("play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
+      Map(
+        "play.http.actionComposition.controllerAnnotationsFirst" -> "false")) {
       response => response.body must beEqualTo("action")
     }
 

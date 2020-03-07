@@ -153,7 +153,10 @@ case class BaseBolt[I, O](
       * System ticks come with a fixed stream id
       */
     val curResults = if (!tuple.getSourceStreamId.equals("__tick")) {
-      val tsIn = executor.decoder.invert(tuple.getValues).get // Failing to decode here is an ERROR
+      val tsIn =
+        executor.decoder
+          .invert(tuple.getValues)
+          .get // Failing to decode here is an ERROR
       // Don't hold on to the input values
       clearValues(tuple)
       if (earlyAck) { collector.ack(tuple) }

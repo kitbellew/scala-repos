@@ -173,7 +173,8 @@ trait ScParameter
         // an. fun's type
         case f: ScFunctionExpr =>
           var flag = false
-          var result: Option[ScType] = None //strange logic to handle problems with detecting type
+          var result: Option[ScType] =
+            None //strange logic to handle problems with detecting type
           for (tp <- f.expectedTypes(fromUnderscore = false) if !flag) {
             @tailrec
             def applyForFunction(tp: ScType, checkDeep: Boolean) {

@@ -280,7 +280,8 @@ object PlayDocsValidation {
             source.drop(1)
           } else {
             filename
-              .dropRight(filename.length - filename.lastIndexOf('/') + 1) + source
+              .dropRight(
+                filename.length - filename.lastIndexOf('/') + 1) + source
           }
 
           val sourcePos = code.getStartIndex + code.getLabel.length + 4
@@ -644,8 +645,10 @@ object PlayDocsValidation {
     if (invalidRefs.isEmpty) {
       log.info("[" + Colors.green("pass") + "] External links test")
     } else {
-      log.info("[" + Colors
-        .red("fail") + "] External links test (" + invalidRefs.size + " errors)")
+      log.info(
+        "[" + Colors
+          .red(
+            "fail") + "] External links test (" + invalidRefs.size + " errors)")
       throw new RuntimeException("External links validation failed")
     }
 

@@ -395,10 +395,11 @@ class JsonProtocolSuite extends SparkFunSuite {
 
     val deserializedBmRemoved =
       JsonProtocol.blockManagerRemovedFromJson(oldBmRemoved)
-    assert(SparkListenerBlockManagerRemoved(
-      -1L,
-      blockManagerRemoved.blockManagerId) ===
-      deserializedBmRemoved)
+    assert(
+      SparkListenerBlockManagerRemoved(
+        -1L,
+        blockManagerRemoved.blockManagerId) ===
+        deserializedBmRemoved)
   }
 
   test("FetchFailed backwards compatibility") {

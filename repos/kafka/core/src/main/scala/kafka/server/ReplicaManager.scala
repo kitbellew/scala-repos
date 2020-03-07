@@ -605,7 +605,9 @@ class ReplicaManager(
       replicaId: Int,
       fetchMinBytes: Int,
       fetchInfo: immutable.Map[TopicAndPartition, PartitionFetchInfo],
-      responseCallback: Map[TopicAndPartition, FetchResponsePartitionData] => Unit) {
+      responseCallback: Map[
+        TopicAndPartition,
+        FetchResponsePartitionData] => Unit) {
     val isFromFollower = replicaId >= 0
     val fetchOnlyFromLeader: Boolean = replicaId != Request.DebuggingConsumerId
     val fetchOnlyCommitted: Boolean = !Request.isValidBrokerId(replicaId)
@@ -1283,7 +1285,9 @@ class ReplicaManager(
         .format(replicaId, readResults))
     readResults.foreach {
       case (topicAndPartition, readResult) =>
-        getPartition(topicAndPartition.topic, topicAndPartition.partition) match {
+        getPartition(
+          topicAndPartition.topic,
+          topicAndPartition.partition) match {
           case Some(partition) =>
             partition.updateReplicaLogReadResult(replicaId, readResult)
 

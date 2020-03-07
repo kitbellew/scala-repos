@@ -46,8 +46,8 @@ import scala.reflect.ClassTag
   *@author dlwh
   */
 @SerialVersionUID(1)
-class SparseVector[@spec(Double, Int, Float, Long) V](val array: SparseArray[V])(
-    implicit zero: Zero[V])
+class SparseVector[@spec(Double, Int, Float, Long) V](
+    val array: SparseArray[V])(implicit zero: Zero[V])
     extends StorageVector[V]
     with VectorLike[V, SparseVector[V]]
     with Serializable {
@@ -282,8 +282,11 @@ object SparseVector
     }
   }
 
-  implicit def canCopySparse[
-      @spec(Double, Int, Float, Long) V: ClassTag: Zero] =
+  implicit def canCopySparse[@spec(
+    Double,
+    Int,
+    Float,
+    Long) V: ClassTag: Zero] =
     new CanCopySparseVector[V]
 
   implicit def canMapValues[V, V2: ClassTag: Zero]

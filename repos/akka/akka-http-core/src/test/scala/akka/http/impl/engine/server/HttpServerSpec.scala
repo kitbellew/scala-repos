@@ -849,7 +849,8 @@ class HttpServerSpec
             |Please try again in a short while!""")
       }
 
-      "are programmatically decreased" in new RequestTimeoutTestSetup(50.millis) {
+      "are programmatically decreased" in new RequestTimeoutTestSetup(
+        50.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
         expectRequest()
           .header[`Timeout-Access`]

@@ -63,7 +63,9 @@ class IterateeSubscriberSpec extends Specification {
       val subr = new IterateeSubscriber(iter)
       pubr.subscribe(subr)
       Await
-        .result(subr.result.unflatten, ScalaFiniteDuration(2, SECONDS)) must_== Done(
+        .result(
+          subr.result.unflatten,
+          ScalaFiniteDuration(2, SECONDS)) must_== Done(
         List(1, 2, 3),
         Input.EOF)
     }

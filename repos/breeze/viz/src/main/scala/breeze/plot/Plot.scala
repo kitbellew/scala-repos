@@ -253,7 +253,8 @@ object Plot {
   def fillPaint(series: Int) =
     fillPaints(series % fillPaints.length)
 
-  val outlinePaints = paints; // DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE
+  val outlinePaints =
+    paints; // DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE
   def outlinePaint(series: Int) =
     outlinePaints(series % outlinePaints.length)
 

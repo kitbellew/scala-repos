@@ -43,7 +43,9 @@ class AbstractTestRerunFailedTestsAction(
 
       def getTestName(failed: AbstractTestProxy): String = {
         failed
-          .getLocation(getProject, GlobalSearchScope.allScope(getProject)) match {
+          .getLocation(
+            getProject,
+            GlobalSearchScope.allScope(getProject)) match {
           case PsiLocationWithName(_, _, testName) => testName
           case _                                   => failed.getName
         }

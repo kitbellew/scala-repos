@@ -159,7 +159,8 @@ class MetricsSystemSuite
     assert(metricName === source.sourceName)
   }
 
-  test("MetricsSystem with Executor instance and spark.executor.id is not set") {
+  test(
+    "MetricsSystem with Executor instance and spark.executor.id is not set") {
     val source = new Source {
       override val sourceName = "dummySource"
       override val metricRegistry = new MetricRegistry()

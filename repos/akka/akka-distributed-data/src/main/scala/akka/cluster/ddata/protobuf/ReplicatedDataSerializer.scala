@@ -70,7 +70,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       GSetKeyManifest -> (bytes ⇒ GSetKey(keyIdFromBinary(bytes))),
       ORSetKeyManifest -> (bytes ⇒ ORSetKey(keyIdFromBinary(bytes))),
       FlagKeyManifest -> (bytes ⇒ FlagKey(keyIdFromBinary(bytes))),
-      LWWRegisterKeyManifest -> (bytes ⇒ LWWRegisterKey(keyIdFromBinary(bytes))),
+      LWWRegisterKeyManifest -> (bytes ⇒
+        LWWRegisterKey(keyIdFromBinary(bytes))),
       GCounterKeyManifest -> (bytes ⇒ GCounterKey(keyIdFromBinary(bytes))),
       PNCounterKeyManifest -> (bytes ⇒ PNCounterKey(keyIdFromBinary(bytes))),
       ORMapKeyManifest -> (bytes ⇒ ORMapKey(keyIdFromBinary(bytes))),

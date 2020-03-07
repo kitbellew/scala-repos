@@ -47,8 +47,10 @@ private[repl] trait SparkILoopInit {
   }
 
   private val initLock = new java.util.concurrent.locks.ReentrantLock()
-  private val initCompilerCondition = initLock.newCondition() // signal the compiler is initialized
-  private val initLoopCondition = initLock.newCondition() // signal the whole repl is initialized
+  private val initCompilerCondition =
+    initLock.newCondition() // signal the compiler is initialized
+  private val initLoopCondition =
+    initLock.newCondition() // signal the whole repl is initialized
   private val initStart = System.nanoTime
 
   private def withLock[T](body: => T): T = {

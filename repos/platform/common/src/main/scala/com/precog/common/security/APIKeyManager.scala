@@ -237,27 +237,29 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       grants: Set[v1.NewGrantRequest]): M[Option[APIKeyRecord]] = {
     val grantList = grants.toList
     grantList.traverse(grant =>
-      hasCapability(issuerKey, grant.permissions, grant.expirationDate)) flatMap {
-      checks =>
-        if (checks.forall(_ == true)) {
-          for {
-            newGrants <- grantList traverse { g =>
-              deriveGrant(
-                g.name,
-                g.description,
-                issuerKey,
-                g.permissions,
-                g.expirationDate)
-            }
-            newKey <- createAPIKey(
-              name,
-              description,
+      hasCapability(
+        issuerKey,
+        grant.permissions,
+        grant.expirationDate)) flatMap { checks =>
+      if (checks.forall(_ == true)) {
+        for {
+          newGrants <- grantList traverse { g =>
+            deriveGrant(
+              g.name,
+              g.description,
               issuerKey,
-              newGrants.flatMap(_.map(_.grantId))(collection.breakOut))
-          } yield some(newKey)
-        } else {
-          none[APIKeyRecord].point[M]
-        }
+              g.permissions,
+              g.expirationDate)
+          }
+          newKey <- createAPIKey(
+            name,
+            description,
+            issuerKey,
+            newGrants.flatMap(_.map(_.grantId))(collection.breakOut))
+        } yield some(newKey)
+      } else {
+        none[APIKeyRecord].point[M]
+      }
     }
   }
 

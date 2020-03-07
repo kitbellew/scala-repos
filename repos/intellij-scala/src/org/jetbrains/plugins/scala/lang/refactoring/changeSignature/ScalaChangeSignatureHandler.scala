@@ -169,7 +169,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
             case _ => null
           }
       }
-    Option(resolvedMethod) orElse Option(currentFunction) getOrElse primaryConstr
+    Option(resolvedMethod) orElse Option(
+      currentFunction) getOrElse primaryConstr
   }
 
   override def findTargetMember(file: PsiFile, editor: Editor): PsiElement = {

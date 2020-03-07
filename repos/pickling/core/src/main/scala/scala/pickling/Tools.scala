@@ -485,7 +485,8 @@ abstract class Macro extends RichTypes { self =>
     }
   }
 
-  private var reflectivePrologueEmitted = false // TODO: come up with something better
+  private var reflectivePrologueEmitted =
+    false // TODO: come up with something better
   def reflectively(target: String, fir: FieldIR)(
       body: Tree => Tree): List[Tree] =
     reflectively(newTermName(target), fir)(body)

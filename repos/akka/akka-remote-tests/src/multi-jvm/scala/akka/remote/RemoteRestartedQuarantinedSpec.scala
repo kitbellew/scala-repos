@@ -107,7 +107,8 @@ abstract class RemoteRestartedQuarantinedSpec
         }
 
         system
-          .actorSelection(RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
       }
 
       runOn(second) {

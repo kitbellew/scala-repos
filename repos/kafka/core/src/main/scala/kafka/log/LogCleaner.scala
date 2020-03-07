@@ -309,7 +309,8 @@ class LogCleaner(
             .format(
               mb(stats.bytesRead),
               stats.elapsedSecs - stats.elapsedIndexSecs,
-              mb(stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
+              mb(
+                stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
               100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble / stats.elapsedSecs
             ) +
           "\tStart size: %,.1f MB (%,d messages)%n".format(

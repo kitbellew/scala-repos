@@ -92,8 +92,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   }))
   test("Rig syntax")(check(forAll { (a: Int, b: Int) => testRigSyntax(a, b) }))
   test("Rng syntax")(check(forAll { (a: Int, b: Int) => testRngSyntax(a, b) }))
-  test("Ring syntax")(
-    check(forAll { (a: Int, b: Int) => testRingSyntax(a, b) }))
+  test("Ring syntax")(check(forAll { (a: Int, b: Int) =>
+    testRingSyntax(a, b)
+  }))
   test("EuclideanRing syntax")(check(forAll { (a: Int, b: NonZero[Int]) =>
     testEuclideanRingSyntax(a, b.x)
   }))
@@ -125,8 +126,9 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
       testCoordinateSpaceSyntax(v, w, a.x)(
         CoordinateSpace.seq[Rational, Vector](3))
   }))
-  test("Bool syntax")(
-    check(forAll { (a: Int, b: Int) => testBoolSyntax(a, b) }))
+  test("Bool syntax")(check(forAll { (a: Int, b: Int) =>
+    testBoolSyntax(a, b)
+  }))
 }
 
 trait BaseSyntaxTest {

@@ -42,7 +42,11 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
         // allocate 70% of free space
         val allocateBytes = (0.7 * (max - used)).toInt
         val numberOfArrays = allocateBytes / 1024
-        usedMemory = Array.ofDim(numberOfArrays, 248) // each 248 element Int array will use ~ 1 kB
+        usedMemory =
+          Array.ofDim(
+            numberOfArrays,
+            248
+          ) // each 248 element Int array will use ~ 1 kB
         log.info(
           "used heap after: [{}] bytes",
           ManagementFactory.getMemoryMXBean.getHeapMemoryUsage.getUsed)
@@ -169,8 +173,9 @@ abstract class AdaptiveLoadBalancingRouterSpec
     // it may take some time until router receives cluster member events
     awaitAssert { currentRoutees(router).size should ===(roles.size) }
     val routees = currentRoutees(router)
-    routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
-      roles.map(address).toSet)
+    routees.map {
+      case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+    }.toSet should ===(roles.map(address).toSet)
     router
   }
 
@@ -248,8 +253,9 @@ abstract class AdaptiveLoadBalancingRouterSpec
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router3).size should ===(9) }
         val routees = currentRoutees(router3)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
-          Set(address(node1)))
+        routees.map {
+          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        }.toSet should ===(Set(address(node1)))
       }
       enterBarrier("after-4")
     }
@@ -260,8 +266,9 @@ abstract class AdaptiveLoadBalancingRouterSpec
         // it may take some time until router receives cluster member events
         awaitAssert { currentRoutees(router4).size should ===(6) }
         val routees = currentRoutees(router4)
-        routees.map { case ActorRefRoutee(ref) ⇒ fullAddress(ref) }.toSet should ===(
-          Set(address(node1), address(node2), address(node3)))
+        routees.map {
+          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        }.toSet should ===(Set(address(node1), address(node2), address(node3)))
       }
       enterBarrier("after-5")
     }

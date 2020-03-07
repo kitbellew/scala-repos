@@ -217,7 +217,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     assertTrue(
       ByteBuffer.wrap("test".getBytes).equals(messageSet(0).message.key))
     assertTrue(
-      messageSet(0).message.timestamp >= startTime && messageSet(0).message.timestamp < endTime)
+      messageSet(0).message.timestamp >= startTime && messageSet(
+        0).message.timestamp < endTime)
     assertEquals(TimestampType.CREATE_TIME, messageSet(0).message.timestampType)
     assertEquals(Message.MagicValue_V1, messageSet(0).message.magic)
 
@@ -227,7 +228,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     assertTrue(
       ByteBuffer.wrap("test".getBytes).equals(messageSet(1).message.key))
     assertTrue(
-      messageSet(1).message.timestamp >= startTime && messageSet(1).message.timestamp < endTime)
+      messageSet(1).message.timestamp >= startTime && messageSet(
+        1).message.timestamp < endTime)
     assertEquals(TimestampType.CREATE_TIME, messageSet(1).message.timestampType)
     assertEquals(Message.MagicValue_V1, messageSet(1).message.magic)
     producer1.close()

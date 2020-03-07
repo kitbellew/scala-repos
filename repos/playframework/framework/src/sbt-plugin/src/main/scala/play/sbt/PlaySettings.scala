@@ -76,8 +76,10 @@ object PlaySettings {
       TestFrameworks.JUnit,
       "--ignore-runners=org.specs2.runner.JUnitRunner"),
     // Adds app directory's source files to continuous hot reloading
-    watchSources <++= (sourceDirectory in Compile, sourceDirectory in Assets) map {
-      (sources, assets) => (sources ** "*" --- assets ** "*").get
+    watchSources <++= (
+      sourceDirectory in Compile,
+      sourceDirectory in Assets) map { (sources, assets) =>
+      (sources ** "*" --- assets ** "*").get
     },
     commands ++= {
       import PlayCommands._

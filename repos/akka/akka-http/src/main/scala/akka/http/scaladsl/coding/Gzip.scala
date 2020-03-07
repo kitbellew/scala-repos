@@ -60,7 +60,8 @@ class GzipCompressor extends DeflateCompressor {
   private def trailer(): ByteString = {
     def int32(i: Int): ByteString = ByteString(i, i >> 8, i >> 16, i >> 24)
     val crc = checkSum.getValue.toInt
-    val tot = bytesRead.toInt // truncated to 32bit as specified in https://tools.ietf.org/html/rfc1952#section-2
+    val tot =
+      bytesRead.toInt // truncated to 32bit as specified in https://tools.ietf.org/html/rfc1952#section-2
     val trailer = int32(crc) ++ int32(tot)
 
     trailer

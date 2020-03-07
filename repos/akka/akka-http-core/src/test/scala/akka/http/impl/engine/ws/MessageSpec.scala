@@ -412,9 +412,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       "respond to ping frames unmasking them on the server side" in new ServerTestSetup {
         val mask = Random.nextInt()
         val input =
-          frameHeader(Opcode.Ping, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
-            "abcdef",
-            mask)._1
+          frameHeader(
+            Opcode.Ping,
+            6,
+            fin = true,
+            mask = Some(mask)) ++ maskedASCII("abcdef", mask)._1
 
         pushInput(input)
         expectFrameOnNetwork(Opcode.Pong, ByteString("abcdef"), fin = true)
@@ -464,7 +466,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         val pingData0 = pingData.take(3)
         val pingData1 = pingData.drop(3)
         pushInput(
-          frameHeader(Opcode.Ping, 5, fin = true, mask = Some(pingMask)) ++ pingData0)
+          frameHeader(
+            Opcode.Ping,
+            5,
+            fin = true,
+            mask = Some(pingMask)) ++ pingData0)
         expectNoNetworkData()
         pushInput(pingData1)
         expectFrameOnNetwork(
@@ -883,12 +889,14 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
       }
       "half a surrogate pair in utf8 encoding for a strict frame" in new ClientTestSetup {
-        val data = ByteString(0xed, 0xa0, 0x80) // not strictly supported by utf-8
+        val data =
+          ByteString(0xed, 0xa0, 0x80) // not strictly supported by utf-8
         pushInput(frameHeader(Opcode.Text, 3, fin = true) ++ data)
         expectCloseCodeOnNetwork(Protocol.CloseCodes.InconsistentData)
       }
       "half a surrogate pair in utf8 encoding for a streamed frame" in new ClientTestSetup {
-        val data = ByteString(0xed, 0xa0, 0x80) // not strictly supported by utf-8
+        val data =
+          ByteString(0xed, 0xa0, 0x80) // not strictly supported by utf-8
         pushInput(frameHeader(Opcode.Text, 0, fin = false))
         pushInput(frameHeader(Opcode.Continuation, 3, fin = true) ++ data)
 
@@ -919,9 +927,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       "masked input on the client side" in new ClientTestSetup {
         val mask = Random.nextInt()
         val input =
-          frameHeader(Opcode.Binary, 6, fin = true, mask = Some(mask)) ++ maskedASCII(
-            "abcdef",
-            mask)._1
+          frameHeader(
+            Opcode.Binary,
+            6,
+            fin = true,
+            mask = Some(mask)) ++ maskedASCII("abcdef", mask)._1
 
         pushInput(input)
         expectProtocolErrorOnNetwork()

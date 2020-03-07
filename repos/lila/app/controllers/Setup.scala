@@ -135,7 +135,11 @@ object Setup extends LilaController with TheftPrevention {
               (ctx.userId ?? Env.relation.api.fetchBlocking) flatMap {
                 blocking =>
                   env.processor
-                    .hook(config, uid, HTTPRequest sid req, blocking) map hookResponse recover {
+                    .hook(
+                      config,
+                      uid,
+                      HTTPRequest sid req,
+                      blocking) map hookResponse recover {
                     case e: IllegalArgumentException =>
                       BadRequest(jsonError(e.getMessage)) as JSON
                   }
@@ -154,7 +158,11 @@ object Setup extends LilaController with TheftPrevention {
           } flatMap { config =>
             (ctx.userId ?? Env.relation.api.fetchBlocking) flatMap { blocking =>
               env.processor
-                .hook(config, uid, HTTPRequest sid ctx.req, blocking) map hookResponse recover {
+                .hook(
+                  config,
+                  uid,
+                  HTTPRequest sid ctx.req,
+                  blocking) map hookResponse recover {
                 case e: IllegalArgumentException =>
                   BadRequest(jsonError(e.getMessage)) as JSON
               }

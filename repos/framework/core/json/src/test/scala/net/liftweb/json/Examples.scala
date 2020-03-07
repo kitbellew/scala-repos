@@ -40,7 +40,8 @@ trait AbstractExamples extends Specification {
     val json = parse(person)
     val renderedPerson = prettyRender(json)
     (json mustEqual parse(renderedPerson)) and
-      (print(json \\ "name") mustEqual """{"name":"Joe","name":"Marilyn"}""") and
+      (print(
+        json \\ "name") mustEqual """{"name":"Joe","name":"Marilyn"}""") and
       (print(json \ "person" \ "name") mustEqual "\"Joe\"")
   }
 
@@ -80,16 +81,15 @@ trait AbstractExamples extends Specification {
     (print(json \ "children" \ "name") mustEqual """["Mary","Mazy"]""") and
       (print((json \ "children")(0) \ "name") mustEqual "\"Mary\"") and
       (print((json \ "children")(1) \ "name") mustEqual "\"Mazy\"") and
-      ((for { JObject(o) <- json; JField("name", JString(y)) <- o } yield y) mustEqual List(
-        "joe",
-        "Mary",
-        "Mazy"))
+      ((for {
+        JObject(o) <- json; JField("name", JString(y)) <- o
+      } yield y) mustEqual List("joe", "Mary", "Mazy"))
   }
 
   "Unbox values using XPath-like type expression" in {
     (parse(objArray) \ "children" \\ classOf[JInt] mustEqual List(5, 3)) and
-      (parse(lotto) \ "lotto" \ "winning-numbers" \ classOf[JInt] mustEqual List(
-          2, 45, 34, 23, 7, 5, 3)) and
+      (parse(lotto) \ "lotto" \ "winning-numbers" \ classOf[
+        JInt] mustEqual List(2, 45, 34, 23, 7, 5, 3)) and
       (parse(lotto) \\ "winning-numbers" \ classOf[JInt] mustEqual List(2, 45,
         34, 23, 7, 5, 3))
   }
@@ -129,10 +129,13 @@ trait AbstractExamples extends Specification {
 
   "JSON building example" in {
     val json =
-      JObject(JField("name", JString("joe")), JField("age", JInt(34))) ++ JObject(
+      JObject(
+        JField("name", JString("joe")),
+        JField("age", JInt(34))) ++ JObject(
         JField("name", ("mazy")),
         JField("age", JInt(31)))
-    print(json) mustEqual """[{"name":"joe","age":34},{"name":"mazy","age":31}]"""
+    print(
+      json) mustEqual """[{"name":"joe","age":34},{"name":"mazy","age":31}]"""
   }
 
   "JSON building with implicit primitive conversions example" in {
@@ -140,7 +143,8 @@ trait AbstractExamples extends Specification {
     val json = JObject(JField("name", "joe"), JField("age", 34)) ++ JObject(
       JField("name", "mazy"),
       JField("age", 31))
-    print(json) mustEqual """[{"name":"joe","age":34},{"name":"mazy","age":31}]"""
+    print(
+      json) mustEqual """[{"name":"joe","age":34},{"name":"mazy","age":31}]"""
   }
 
   "Example which collects all integers and forms a new JSON" in {

@@ -926,11 +926,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
         try {
           val tp1 = pre.memberType(alt) onTypeError NoType
           val tp2 =
-            adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
+            adaptToNewRunMap(
+              sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
           matchesType(tp1, tp2, alwaysMatchSimple = false) || {
             debugLog(s"findMirrorSymbol matchesType($tp1, $tp2) failed")
             val tp3 =
-              adaptToNewRunMap(sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
+              adaptToNewRunMap(
+                sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
             matchesType(tp1, tp3, alwaysMatchSimple = false) || {
               debugLog(
                 s"findMirrorSymbol fallback matchesType($tp1, $tp3) failed")
@@ -1068,7 +1070,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
       if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol) {
         add(sym.accessed, pre, implicitlyAdded)(toMember)
       } else if (!sym.name.decodedName
-                   .containsName("$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
+                   .containsName(
+                     "$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
         val symtpe = pre.memberType(sym) onTypeError ErrorType
         matching(sym, symtpe, this(sym.name)) match {
           case Some(m) =>
@@ -1235,7 +1238,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             tree,
             functionType(List(ownerTpe), AnyTpe),
             isView = true,
-            context0 = context.makeImplicit(reportAmbiguousErrors = false)).allImplicits
+            context0 =
+              context.makeImplicit(reportAmbiguousErrors = false)).allImplicits
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)

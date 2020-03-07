@@ -506,7 +506,9 @@ class SparkContext(config: SparkConf)
     _statusTracker = new SparkStatusTracker(this)
 
     _progressBar =
-      if (_conf.getBoolean("spark.ui.showConsoleProgress", true) && !log.isInfoEnabled) {
+      if (_conf.getBoolean(
+            "spark.ui.showConsoleProgress",
+            true) && !log.isInfoEnabled) {
         Some(new ConsoleProgressBar(this))
       } else {
         None

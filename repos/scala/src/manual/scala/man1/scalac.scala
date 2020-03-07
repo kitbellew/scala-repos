@@ -57,10 +57,13 @@ object scalac extends Command {
       DefinitionList(
         Definition(
           CmdOptionBound("D", "property=value"),
-          "Pass " & CmdOptionBound("D", "property=value") & " directly to the runtime system."),
+          "Pass " & CmdOptionBound(
+            "D",
+            "property=value") & " directly to the runtime system."),
         Definition(
           CmdOptionBound("J", Argument("flag")),
-          "Pass " & Mono(Argument("flag")) & " directly to the runtime system."),
+          "Pass " & Mono(
+            Argument("flag")) & " directly to the runtime system."),
         Definition(
           CmdOptionBound("P:", Argument("plugin:opt")),
           "Pass an option to a plugin"),
@@ -68,7 +71,8 @@ object scalac extends Command {
         Definition(
           CmdOption("bootclasspath", Argument("path")),
           "Override location of bootstrap class files (where to find the " &
-            "standard built-in classes, such as \"" & Mono("scala.List") & "\")."
+            "standard built-in classes, such as \"" & Mono(
+            "scala.List") & "\")."
         ),
         Definition(
           CmdOption("classpath", Argument("path")),
@@ -78,7 +82,8 @@ object scalac extends Command {
               "semicolon-separated list of paths). This does not override the " &
               "built-in (" & Mono("\"boot\"") & ") search path.",
             "The default class path is the current directory. Setting the " &
-              Mono("CLASSPATH") & " variable or using the " & Mono("-classpath") & " " &
+              Mono("CLASSPATH") & " variable or using the " & Mono(
+              "-classpath") & " " &
               "command-line option overrides that default, so if you want to " &
               "include the current directory in the search path, you must " &
               "include " & Mono("\".\"") & " in the new settings."
@@ -96,8 +101,10 @@ object scalac extends Command {
           CmdOption("encoding", Argument("encoding")),
           SeqPara(
             "Specify character encoding used by source files.",
-            "The default value is platform-specific (Linux: " & Mono("\"UTF8\"") &
-              ", Windows: " & Mono("\"Cp1252\"") & "). Executing the following " &
+            "The default value is platform-specific (Linux: " & Mono(
+              "\"UTF8\"") &
+              ", Windows: " & Mono(
+              "\"Cp1252\"") & "). Executing the following " &
               "code in the Scala interpreter will return the default value " &
               "on your system:",
             MBold("    scala> ") &
@@ -277,7 +284,8 @@ object scalac extends Command {
           "Print out program after " & Argument("phases") & " (see below)."),
         Definition(
           CmdOptionBound("Xprint-icode", "[:" & Argument("phases") & "]"),
-          "Log internal icode to *.icode files after" & Argument("phases") & " (default: icode)."),
+          "Log internal icode to *.icode files after" & Argument(
+            "phases") & " (default: icode)."),
         Definition(
           CmdOption("Xprint-pos"),
           "Print tree positions, as offsets."),
@@ -351,7 +359,8 @@ object scalac extends Command {
           "ANF pre-transform for " & MItalic("@cps") & " (CPS plugin)"),
         Definition(
           MItalic("selectivecps"),
-          MItalic("@cps") & "-driven transform of selectiveanf assignments (CPS plugin)"),
+          MItalic(
+            "@cps") & "-driven transform of selectiveanf assignments (CPS plugin)"),
         Definition(
           MItalic("uncurry"),
           "uncurry, translate function values to anonymous classes"),
@@ -411,7 +420,8 @@ object scalac extends Command {
       Definition(
         MBold("JAVA_HOME"),
         "Specify JDK/JRE home directory. This directory is used to locate " &
-          "the " & MBold("java") & " command unless " & MBold("JAVACMD") & " variable set."
+          "the " & MBold("java") & " command unless " & MBold(
+          "JAVACMD") & " variable set."
       ),
       Definition(
         MBold("JAVA_OPTS"),

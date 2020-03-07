@@ -127,7 +127,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
               if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent
                 .isInstanceOf[ScReferenceExpression]
                 && elem.getParent.getParent
-                  .isInstanceOf[ScReferenceExpression] && item.getAllLookupStrings
+                  .isInstanceOf[
+                    ScReferenceExpression] && item.getAllLookupStrings
                 .size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText

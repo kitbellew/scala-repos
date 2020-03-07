@@ -72,7 +72,9 @@ class ZookeeperServerSetCluster(
           }
 
         endpoint map { endpoint =>
-          new InetSocketAddress(endpoint.getHost, endpoint.getPort): SocketAddress
+          new InetSocketAddress(
+            endpoint.getHost,
+            endpoint.getPort): SocketAddress
         }
       }
       val added = newSet &~ underlyingSet

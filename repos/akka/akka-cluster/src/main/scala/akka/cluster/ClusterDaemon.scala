@@ -804,7 +804,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           // Removal of member itself is handled in merge (pickHighestPriority)
           val prunedLocalGossip = localGossip.members.foldLeft(localGossip) {
             (g, m) ⇒
-              if (Gossip.removeUnreachableWithMemberStatus(m.status) && !remoteGossip.members
+              if (Gossip.removeUnreachableWithMemberStatus(
+                    m.status) && !remoteGossip.members
                     .contains(m)) {
                 log.debug(
                   "Cluster Node [{}] - Pruned conflicting local gossip: {}",
@@ -817,7 +818,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           val prunedRemoteGossip = remoteGossip.members.foldLeft(remoteGossip) {
             (g, m) ⇒
               if (Gossip
-                    .removeUnreachableWithMemberStatus(m.status) && !localGossip.members
+                    .removeUnreachableWithMemberStatus(
+                      m.status) && !localGossip.members
                     .contains(m)) {
                 log.debug(
                   "Cluster Node [{}] - Pruned conflicting remote gossip: {}",
@@ -1344,7 +1346,8 @@ private[cluster] final class FirstSeedNodeProcess(
         // send InitJoin to remaining seed nodes (except myself)
         remainingSeedNodes foreach { a ⇒
           context
-            .actorSelection(context.parent.path.toStringWithAddress(a)) ! InitJoin
+            .actorSelection(
+              context.parent.path.toStringWithAddress(a)) ! InitJoin
         }
       } else {
         // no InitJoinAck received, initialize new cluster by joining myself

@@ -131,8 +131,11 @@ trait Conductor { this: TestConductorExt ⇒
       rateMBit: Double): Future[Done] = {
     import Settings.QueryTimeout
     requireTestConductorTranport()
-    controller ? Throttle(node, target, direction, rateMBit.toFloat) mapTo classTag[
-      Done]
+    controller ? Throttle(
+      node,
+      target,
+      direction,
+      rateMBit.toFloat) mapTo classTag[Done]
   }
 
   /**
@@ -218,7 +221,8 @@ trait Conductor { this: TestConductorExt ⇒
     import system.dispatcher
     // the recover is needed to handle ClientDisconnectedException exception,
     // which is normal during shutdown
-    controller ? Terminate(node, Right(exitValue)) mapTo classTag[Done] recover {
+    controller ? Terminate(node, Right(exitValue)) mapTo classTag[
+      Done] recover {
       case _: ClientDisconnectedException ⇒ Done
     }
   }

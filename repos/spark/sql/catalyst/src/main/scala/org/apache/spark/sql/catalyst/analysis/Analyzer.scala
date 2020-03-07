@@ -659,7 +659,10 @@ class Analyzer(
         case b: BoundReference => attributes(b.ordinal)
       }
 
-      resolveExpression(unbound, LocalRelation(attributes), throws = true) transform {
+      resolveExpression(
+        unbound,
+        LocalRelation(attributes),
+        throws = true) transform {
         case n: NewInstance
             // If this is an inner class of another class, register the outer object in `OuterScopes`.
             // Note that static inner classes (e.g., inner classes within Scala objects) don't need
@@ -932,7 +935,8 @@ class Analyzer(
         val aggregatedCondition =
           Aggregate(
             grouping,
-            Alias(havingCondition, "havingCondition")(isGenerated = true) :: Nil,
+            Alias(havingCondition, "havingCondition")(isGenerated =
+              true) :: Nil,
             child)
         val resolvedOperator = execute(aggregatedCondition)
         def resolvedAggregateFilter =
@@ -1197,7 +1201,8 @@ class Analyzer(
           // If a named expression is not in regularExpressions, add it to
           // extractedExprBuffer and replace it with an AttributeReference.
           val missingExpr =
-            AttributeSet(Seq(expr)) -- (regularExpressions ++ extractedExprBuffer)
+            AttributeSet(
+              Seq(expr)) -- (regularExpressions ++ extractedExprBuffer)
           if (missingExpr.nonEmpty) {
             extractedExprBuffer += ne
           }

@@ -65,16 +65,17 @@ object Account extends LilaController {
 
   def passwdApply = AuthBody { implicit ctx => me =>
     implicit val req = ctx.body
-    FormFuResult(forms.passwd) { err => fuccess(html.account.passwd(me, err)) } {
-      data =>
-        for {
-          ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
-          _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
-        } yield {
-          val content =
-            html.account.passwd(me, forms.passwd.fill(data), ok.some)
-          ok.fold(Ok(content), BadRequest(content))
-        }
+    FormFuResult(forms.passwd) { err =>
+      fuccess(html.account.passwd(me, err))
+    } { data =>
+      for {
+        ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
+        _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
+      } yield {
+        val content =
+          html.account.passwd(me, forms.passwd.fill(data), ok.some)
+        ok.fold(Ok(content), BadRequest(content))
+      }
     }
   }
 
@@ -121,10 +122,12 @@ object Account extends LilaController {
     } { password =>
       UserRepo.checkPasswordById(me.id, password) flatMap {
         case false =>
-          BadRequest(html.account.close(me, Env.security.forms.closeAccount)).fuccess
+          BadRequest(
+            html.account.close(me, Env.security.forms.closeAccount)).fuccess
         case true =>
           doClose(me) inject {
-            Redirect(routes.User show me.username) withCookies LilaCookie.newSession
+            Redirect(
+              routes.User show me.username) withCookies LilaCookie.newSession
           }
       }
     }

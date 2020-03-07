@@ -155,8 +155,8 @@ class ScalaImportTypeFix(
           new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
         val offset = ref.getTextRange.getStartOffset
-        if (classes.nonEmpty && offset >= startOffset(editor) && offset <= endOffset(
-              editor) && editor != null &&
+        if (classes.nonEmpty && offset >= startOffset(
+              editor) && offset <= endOffset(editor) && editor != null &&
             offset <= editor.getDocument.getTextLength) {
           HintManager
             .getInstance()

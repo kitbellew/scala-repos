@@ -413,7 +413,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     )
   }
 
-  test("SPARK-4512 Fix attribute reference resolution error when using SORT BY") {
+  test(
+    "SPARK-4512 Fix attribute reference resolution error when using SORT BY") {
     checkAnswer(
       sql(
         "SELECT * FROM (SELECT key + key AS a FROM src SORT BY value) t ORDER BY t.a"),
@@ -926,7 +927,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .select($"d1".cast(DecimalType(10, 5)).as("d"))
       .registerTempTable("dn")
 
-    sql("select d from dn union all select d * 2 from dn").queryExecution.analyzed
+    sql(
+      "select d from dn union all select d * 2 from dn").queryExecution.analyzed
   }
 
   test("test script transform for stdout") {
@@ -1253,7 +1255,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   // todo: fix this test case by reimplementing the function ResolveAggregateFunctions
-  ignore("window function: Pushing aggregate Expressions in Sort to Aggregate") {
+  ignore(
+    "window function: Pushing aggregate Expressions in Sort to Aggregate") {
     val data = Seq(
       WindowData(1, "d", 10),
       WindowData(2, "a", 6),
@@ -1322,7 +1325,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     (1 to 5).map(i => (i, i.toString)).toDF("k", "v").registerTempTable("t")
     checkAnswer(
       sql("SELECT CASE k WHEN 2 THEN 22 WHEN 4 THEN 44 ELSE 0 END, v FROM t"),
-      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") :: Row(0, "5") :: Nil)
+      Row(0, "1") :: Row(22, "2") :: Row(0, "3") :: Row(44, "4") :: Row(
+        0,
+        "5") :: Nil)
   }
 
   test("SPARK-7595: Window will cause resolve failed with self join") {
@@ -2047,7 +2052,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         .saveAsTable("tbl11453")
       checkAnswer(
         sqlContext.read.table("tbl11453").select("i", "j").orderBy("i"),
-        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row("4", "40") :: Nil)
+        Row("1", "10") :: Row("2", "20") :: Row("3", "30") :: Row(
+          "4",
+          "40") :: Nil)
     }
   }
 

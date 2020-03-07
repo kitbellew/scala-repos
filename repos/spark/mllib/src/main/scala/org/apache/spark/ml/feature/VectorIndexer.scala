@@ -313,7 +313,8 @@ class VectorIndexerModel private[ml] (
     */
   private val partialFeatureAttributes: Array[Attribute] = {
     val attrs = new Array[Attribute](numFeatures)
-    var categoricalFeatureCount = 0 // validity check for numFeatures, categoryMaps
+    var categoricalFeatureCount =
+      0 // validity check for numFeatures, categoryMaps
     var featureIndex = 0
     while (featureIndex < numFeatures) {
       if (categoryMaps.contains(featureIndex)) {

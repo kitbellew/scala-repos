@@ -133,8 +133,10 @@ abstract class TreeInfo {
       sym: Symbol,
       tree: Tree,
       allowVolatile: Boolean): Boolean = (
-    symOk(sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
-      typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(tree)) && !definitions
+    symOk(
+      sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
+      typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(
+      tree)) && !definitions
       .isByNameParamType(tree.tpe)
   )
 
@@ -227,7 +229,8 @@ abstract class TreeInfo {
     case _ =>
       def isWarnableRefTree = tree match {
         case t: RefTree =>
-          isExprSafeToInline(t.qualifier) && t.symbol != null && t.symbol.isAccessor
+          isExprSafeToInline(
+            t.qualifier) && t.symbol != null && t.symbol.isAccessor
         case _ => false
       }
       def isWarnableSymbol = {

@@ -8,7 +8,8 @@ import org.junit.Test
 import scala.tools.nsc.Settings
 
 class CompletionTest {
-  val EmptyString = "" // def string results include the empty string so that JLine won't insert "def ..." at the cursor
+  val EmptyString =
+    "" // def string results include the empty string so that JLine won't insert "def ..." at the cursor
 
   def newIMain(): IMain = {
     val settings = new Settings()

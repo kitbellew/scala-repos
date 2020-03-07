@@ -91,7 +91,10 @@ object Swagger {
       alreadyKnown: Set[Model],
       known: Set[ScalaType] = Set.empty): Set[Model] = {
     if (tpe.isMap)
-      collectModels(tpe.typeArgs.head, alreadyKnown, tpe.typeArgs.toSet) ++ collectModels(
+      collectModels(
+        tpe.typeArgs.head,
+        alreadyKnown,
+        tpe.typeArgs.toSet) ++ collectModels(
         tpe.typeArgs.last,
         alreadyKnown,
         tpe.typeArgs.toSet)

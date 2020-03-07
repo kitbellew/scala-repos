@@ -116,7 +116,8 @@ trait DAG extends Instructions {
             continue {
               case Right(right) :: Right(left) :: tl =>
                 Right(
-                  Right(IUI(instr == instructions.IUnion, left, right)(loc)) :: tl)
+                  Right(
+                    IUI(instr == instructions.IUnion, left, right)(loc)) :: tl)
               case Left(_) :: _ | _ :: Left(_) :: _ =>
                 Left(OperationOnBucket(instr))
               case _ => Left(StackUnderflow(instr))
@@ -1111,8 +1112,10 @@ trait DAG extends Instructions {
     }
 
     //grouping node (e.g. foo where foo.a = 'b)
-    case class SplitGroup(id: Int, identities: Identities, parentId: Identifier)(
-        val loc: Line)
+    case class SplitGroup(
+        id: Int,
+        identities: Identities,
+        parentId: Identifier)(val loc: Line)
         extends DepGraph {
       def valueKeys = Set.empty
 
@@ -1178,7 +1181,8 @@ trait DAG extends Instructions {
       private def specs(policy: IdentityPolicy): Vector[IdentitySpec] =
         policy match {
           case IdentityPolicy.Product(left, right) =>
-            (specs(left) ++ specs(right)).distinct // keeps first instance seen of the id
+            (specs(left) ++ specs(
+              right)).distinct // keeps first instance seen of the id
           case (_: IdentityPolicy.Retain) =>
             parent.identities.fold(Predef.identity, Vector.empty)
           case IdentityPolicy.Synthesize => Vector(SynthIds(IdGen.nextInt()))
@@ -1204,7 +1208,8 @@ trait DAG extends Instructions {
       private def specs(policy: IdentityPolicy): Vector[IdentitySpec] =
         policy match {
           case IdentityPolicy.Product(left, right) =>
-            (specs(left) ++ specs(right)).distinct // keeps first instance seen of the id
+            (specs(left) ++ specs(
+              right)).distinct // keeps first instance seen of the id
           case IdentityPolicy.Retain.Left =>
             left.identities.fold(Predef.identity, Vector.empty)
           case IdentityPolicy.Retain.Right =>

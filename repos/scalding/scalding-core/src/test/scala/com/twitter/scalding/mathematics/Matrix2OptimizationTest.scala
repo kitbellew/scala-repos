@@ -252,7 +252,8 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     }
 
     "handle a G^5 V plan" in {
-      optimizedGraphVectorPlan shouldBe (optimize(unoptimizedGraphVectorPlan)._2)
+      optimizedGraphVectorPlan shouldBe (optimize(
+        unoptimizedGraphVectorPlan)._2)
     }
 
     "handle an optimized G^5 V plan" in {

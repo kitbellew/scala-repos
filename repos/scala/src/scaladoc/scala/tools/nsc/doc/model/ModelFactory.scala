@@ -511,7 +511,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       companionSymbol match {
         case NoSymbol => None
         case comSym
-            if !isEmptyJavaObject(comSym) && (comSym.isClass || comSym.isModule) =>
+            if !isEmptyJavaObject(
+              comSym) && (comSym.isClass || comSym.isModule) =>
           makeTemplate(comSym) match {
             case d: DocTemplateImpl => Some(d)
             case _                  => None
@@ -975,7 +976,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         None
     }
 
-    if (!localShouldDocument(aSym) || aSym.isModuleClass || aSym.isPackageObject || aSym.isMixinConstructor)
+    if (!localShouldDocument(
+          aSym) || aSym.isModuleClass || aSym.isPackageObject || aSym.isMixinConstructor)
       Nil
     else {
       val allSyms = useCases(aSym, inTpl.sym) map {
@@ -1212,7 +1214,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       localShouldDocument(aSym) &&
       !isEmptyJavaObject(aSym) &&
       // either it's inside the original owner or we can document it later:
-      (!inOriginalOwner(aSym, inTpl) || (aSym.isPackageClass || (aSym.sourceFile != null)))
+      (!inOriginalOwner(
+        aSym,
+        inTpl) || (aSym.isPackageClass || (aSym.sourceFile != null)))
 
   def membersShouldDocument(sym: Symbol, inTpl: TemplateImpl) = {
     // pruning modules that shouldn't be documented

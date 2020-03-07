@@ -104,7 +104,10 @@ class PartitionBatchPruningSuite
   }
 
   // IS NOT NULL
-  checkBatchPruning("SELECT key FROM pruningData WHERE value IS NOT NULL", 5, 5) {
+  checkBatchPruning(
+    "SELECT key FROM pruningData WHERE value IS NOT NULL",
+    5,
+    5) {
     (11 to 20) ++ (31 to 40) ++ (51 to 60) ++ (71 to 80) ++ (91 to 100)
   }
 

@@ -549,7 +549,8 @@ class StandardImageExtractor(
     var initialArea: Float = 0
 
     for (image <- images) {
-      var continueVar = true // major haxor during java to scala conversion -> this whole section needs a rewrite
+      var continueVar =
+        true // major haxor during java to scala conversion -> this whole section needs a rewrite
       if (cnt > 30) {
         if (logger.isDebugEnabled) {
           logger.debug("over 30 images attempted, that's enough for now")
@@ -602,8 +603,8 @@ class StandardImageExtractor(
         if (continueVar) {
           if (this.isBannerDimensions(width, height)) {
             if (logger.isDebugEnabled) {
-              logger.debug(
-                image.attr("src") + " seems like a fishy image dimension wise, skipping it")
+              logger.debug(image.attr(
+                "src") + " seems like a fishy image dimension wise, skipping it")
             }
             image.remove()
             continueVar = false

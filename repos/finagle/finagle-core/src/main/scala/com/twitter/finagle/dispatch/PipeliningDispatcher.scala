@@ -21,7 +21,9 @@ import com.twitter.util.{Future, Promise}
 class PipeliningDispatcher[Req, Rep](
     trans: Transport[Req, Rep],
     statsReceiver: StatsReceiver)
-    extends GenSerialClientDispatcher[Req, Rep, Req, Rep](trans, statsReceiver) {
+    extends GenSerialClientDispatcher[Req, Rep, Req, Rep](
+      trans,
+      statsReceiver) {
 
   def this(trans: Transport[Req, Rep]) =
     this(trans, NullStatsReceiver)

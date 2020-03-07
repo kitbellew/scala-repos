@@ -218,7 +218,9 @@ trait Emitter
           else
             (1 until finalStackSize) map Swap
 
-        (insertInstrAtMulti((pullUp :+ Dup) ++ pushDown ++ saveSwaps, insertIdx) >>
+        (insertInstrAtMulti(
+          (pullUp :+ Dup) ++ pushDown ++ saveSwaps,
+          insertIdx) >>
           insertInstrAtMulti(
             restoreSwaps,
             e.bytecode.length + pullUp.length + 1 + pushDown.length + saveSwaps.length))(
@@ -343,14 +345,22 @@ trait Emitter
         contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]],
         dispatches: Set[ast.Dispatch]): EmitterState = spec match {
       case buckets.UnionBucketSpec(left, right) =>
-        emitBucketSpec(solve, left, contextualDispatches, dispatches) >> emitBucketSpec(
+        emitBucketSpec(
+          solve,
+          left,
+          contextualDispatches,
+          dispatches) >> emitBucketSpec(
           solve,
           right,
           contextualDispatches,
           dispatches) >> emitInstr(MergeBuckets(false))
 
       case buckets.IntersectBucketSpec(left, right) =>
-        emitBucketSpec(solve, left, contextualDispatches, dispatches) >> emitBucketSpec(
+        emitBucketSpec(
+          solve,
+          left,
+          contextualDispatches,
+          dispatches) >> emitBucketSpec(
           solve,
           right,
           contextualDispatches,
@@ -562,12 +572,14 @@ trait Emitter
             emitExpr(child, dispatches)
 
           case ast.Assert(_, pred, child) =>
-            emitExpr(pred, dispatches) >> emitExpr(child, dispatches) >> emitInstr(
-              Assert)
+            emitExpr(pred, dispatches) >> emitExpr(
+              child,
+              dispatches) >> emitInstr(Assert)
 
           case ast.Observe(_, data, samples) =>
-            emitExpr(data, dispatches) >> emitExpr(samples, dispatches) >> emitInstr(
-              Observe)
+            emitExpr(data, dispatches) >> emitExpr(
+              samples,
+              dispatches) >> emitInstr(Observe)
 
           case ast.New(_, child) =>
             emitExpr(child, dispatches) >> emitInstr(Map1(New))
@@ -614,8 +626,9 @@ trait Emitter
 
           case ast.ObjectDef(_, props) => {
             def fieldToObjInstr(t: (String, Expr)) =
-              emitInstr(PushString(t._1)) >> emitExpr(t._2, dispatches) >> emitInstr(
-                Map2Cross(WrapObject))
+              emitInstr(PushString(t._1)) >> emitExpr(
+                t._2,
+                dispatches) >> emitInstr(Map2Cross(WrapObject))
 
             val provToField = props
               .groupBy(_._2.provenance)
@@ -823,16 +836,19 @@ trait Emitter
             emitMap(left, right, JoinObject, dispatches)
 
           case ast.Union(_, left, right) =>
-            emitExpr(left, dispatches) >> emitExpr(right, dispatches) >> emitInstr(
-              IUnion)
+            emitExpr(left, dispatches) >> emitExpr(
+              right,
+              dispatches) >> emitInstr(IUnion)
 
           case ast.Intersect(_, left, right) =>
-            emitExpr(left, dispatches) >> emitExpr(right, dispatches) >> emitInstr(
-              IIntersect)
+            emitExpr(left, dispatches) >> emitExpr(
+              right,
+              dispatches) >> emitInstr(IIntersect)
 
           case ast.Difference(_, left, right) =>
-            emitExpr(left, dispatches) >> emitExpr(right, dispatches) >> emitInstr(
-              SetDifference)
+            emitExpr(left, dispatches) >> emitExpr(
+              right,
+              dispatches) >> emitInstr(SetDifference)
 
           case ast.Add(_, left, right) =>
             emitMap(left, right, Add, dispatches)

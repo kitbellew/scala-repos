@@ -392,9 +392,10 @@ class CachedTableSuite
         |abc a join abc b on a.key=b.key
         |join abc c on a.key=c.key""".stripMargin).queryExecution.sparkPlan
 
-    assert(
-      sparkPlan.collect { case e: InMemoryColumnarTableScan => e }.size === 3)
-    assert(sparkPlan.collect { case e: PhysicalRDD          => e }.size === 0)
+    assert(sparkPlan.collect {
+      case e: InMemoryColumnarTableScan => e
+    }.size === 3)
+    assert(sparkPlan.collect { case e: PhysicalRDD => e }.size === 0)
   }
 
   /**

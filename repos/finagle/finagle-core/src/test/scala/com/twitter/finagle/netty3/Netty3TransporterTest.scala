@@ -60,16 +60,19 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
               _,
               inputParams[Transporter.TLSHostname].hostname)))
       assert(transporter.httpProxy == inputParams[Transporter.HttpProxy].sa)
-      assert(transporter.httpProxyCredentials == inputParams[
-        Transporter.HttpProxy].credentials)
+      assert(
+        transporter.httpProxyCredentials == inputParams[
+          Transporter.HttpProxy].credentials)
       assert(transporter.socksProxy == inputParams[Transporter.SocksProxy].sa)
       assert(
         transporter.socksUsernameAndPassword == inputParams[
           Transporter.SocksProxy].credentials)
       assert(
-        transporter.channelReaderTimeout == inputParams[Transport.Liveness].readTimeout)
+        transporter.channelReaderTimeout == inputParams[
+          Transport.Liveness].readTimeout)
       assert(
-        transporter.channelWriterTimeout == inputParams[Transport.Liveness].writeTimeout)
+        transporter.channelWriterTimeout == inputParams[
+          Transport.Liveness].writeTimeout)
       assert(
         transporter.channelOptions
           .get("sendBufferSize") == inputParams[Transport.BufferSizes].send)
@@ -82,8 +85,9 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       assert(transporter.channelOptions.get("connectTimeoutMillis").get ==
         inputParams[Transporter.ConnectTimeout].howlong.inMilliseconds +
           inputParams[LatencyCompensation.Compensation].howlong.inMilliseconds)
-      assert(transporter.channelSnooper.nonEmpty == inputParams[
-        Transport.Verbose].enabled)
+      assert(
+        transporter.channelSnooper.nonEmpty == inputParams[
+          Transport.Verbose].enabled)
     }
 
     it("newPipeline handles unresolved InetSocketAddresses") {
@@ -255,7 +259,10 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
         val engine = mock[SSLEngine]
         when(engine.getSession) thenReturn session
         when(session.getApplicationBufferSize) thenReturn 1024
-        when(engine.unwrap(any[java.nio.ByteBuffer], any[java.nio.ByteBuffer])) thenReturn result
+        when(
+          engine.unwrap(
+            any[java.nio.ByteBuffer],
+            any[java.nio.ByteBuffer])) thenReturn result
         when(engine.getUseClientMode) thenReturn true
         when(engine.isInboundDone) thenReturn true
         when(engine.getEnableSessionCreation) thenReturn true

@@ -20,8 +20,8 @@ object LastIndexToLast extends SimplificationType {
       case qual `.apply` (qual2 `.sizeOrLength` () `-` literal("1"))
           if qual != null && qual2 != null &&
             PsiEquivalenceUtil
-              .areElementsEquivalent(qual, qual2) && isSeq(qual) && !isIndexedSeq(
-            qual) =>
+              .areElementsEquivalent(qual, qual2) && isSeq(
+            qual) && !isIndexedSeq(qual) =>
         Some(replace(expr).withText(invocationText(qual, "last")))
       case _ => None
     }

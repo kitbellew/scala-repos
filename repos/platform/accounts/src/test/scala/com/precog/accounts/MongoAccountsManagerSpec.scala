@@ -84,7 +84,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
     }
 
     "move an Account to the deleted collection" in new AccountManager {
-      type Results = (Option[Account], Option[Account], Option[Account]) //, Option[Account])
+      type Results =
+        (Option[Account], Option[Account], Option[Account]) //, Option[Account])
 
       (for {
         before <- accountManager.findAccountById(account.accountId)

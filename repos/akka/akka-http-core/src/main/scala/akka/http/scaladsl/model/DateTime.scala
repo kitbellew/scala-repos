@@ -101,7 +101,9 @@ final case class DateTime private (
     put_##(
       put_##(
         put_##(
-          put_##(r ~~ weekdayStr ~~ ',' ~~ ' ', day) ~~ ' ' ~~ monthStr ~~ ' ' ~~ year ~~ ' ',
+          put_##(
+            r ~~ weekdayStr ~~ ',' ~~ ' ',
+            day) ~~ ' ' ~~ monthStr ~~ ' ' ~~ year ~~ ' ',
           hour) ~~ ':',
         minute) ~~ ':',
       second) ~~ " GMT"
@@ -300,10 +302,11 @@ object DateTime {
     def check(len: Int): Boolean =
       len match {
         case 19 ⇒
-          c(4) == '-' && c(7) == '-' && c(10) == 'T' && c(13) == ':' && c(16) == ':'
+          c(4) == '-' && c(7) == '-' && c(10) == 'T' && c(13) == ':' && c(
+            16) == ':'
         case 24 ⇒
-          check(19) && c(19) == '.' && isDigit(c(20)) && isDigit(c(21)) && isDigit(
-            c(22)) && c(23) == 'Z'
+          check(19) && c(19) == '.' && isDigit(c(20)) && isDigit(
+            c(21)) && isDigit(c(22)) && c(23) == 'Z'
         case _ ⇒ false
       }
     def mul10(i: Int) = (i << 3) + (i << 1)

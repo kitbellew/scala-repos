@@ -109,9 +109,9 @@ trait QueryTMonad[Q[+_], M[+_]]
     super.map(ma)(f)
   override def ap[A, B](ma: => QueryT[Q, M, A])(
       mf: => QueryT[Q, M, A => B]): QueryT[Q, M, B] = {
-    QueryT(
-      M.ap(ma.run)(
-        M.map(mf.run) { (qf: Q[A => B]) => { (qa: Q[A]) => Q.ap(qa)(qf) } }))
+    QueryT(M.ap(ma.run)(M.map(mf.run) {
+      (qf: Q[A => B]) => { (qa: Q[A]) => Q.ap(qa)(qf) }
+    }))
   }
 }
 
@@ -123,7 +123,9 @@ trait QueryTHoist[Q[+_]]
     QueryT[Q, M, A](M.map(ma)(Q.point(_)))
 
   def hoist[M[+_]: Monad, N[+_]](f: M ~> N) =
-    new (({ type λ[α] = QueryT[Q, M, α] })#λ ~> ({ type λ[α] = QueryT[Q, N, α] })#λ) {
+    new (({ type λ[α] = QueryT[Q, M, α] })#λ ~> ({
+      type λ[α] = QueryT[Q, N, α]
+    })#λ) {
       def apply[A](ma: QueryT[Q, M, A]): QueryT[Q, N, A] = QueryT(f(ma.run))
     }
 

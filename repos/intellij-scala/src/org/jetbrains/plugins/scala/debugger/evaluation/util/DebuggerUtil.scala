@@ -530,7 +530,8 @@ object DebuggerUtil {
       visited: mutable.HashSet[PsiElement] = mutable.HashSet.empty)
       : Seq[ScTypedDefinition] = {
     val container = ScalaEvaluatorBuilderUtil.getContextClass(cl)
-    val extendsBlock = cl.extendsBlock //to exclude references from default parameters
+    val extendsBlock =
+      cl.extendsBlock //to exclude references from default parameters
     localParams(extendsBlock, cl, container, visited)
   }
 

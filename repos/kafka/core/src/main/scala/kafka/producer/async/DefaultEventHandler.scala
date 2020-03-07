@@ -197,12 +197,11 @@ class DefaultEventHandler[K, V](
     serializedMessages
   }
 
-  def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]])
-      : Option[Map[
-        Int,
-        collection.mutable.Map[
-          TopicAndPartition,
-          Seq[KeyedMessage[K, Message]]]]] = {
+  def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]]): Option[Map[
+    Int,
+    collection.mutable.Map[
+      TopicAndPartition,
+      Seq[KeyedMessage[K, Message]]]]] = {
     val ret = new HashMap[
       Int,
       collection.mutable.Map[TopicAndPartition, Seq[KeyedMessage[K, Message]]]]
@@ -392,7 +391,8 @@ class DefaultEventHandler[K, V](
               .sortWith((p1, p2) =>
                 p1._1.topic.compareTo(p2._1.topic) < 0 ||
                   (p1._1.topic
-                    .compareTo(p2._1.topic) == 0 && p1._1.partition < p2._1.partition))
+                    .compareTo(
+                      p2._1.topic) == 0 && p1._1.partition < p2._1.partition))
               .map {
                 case (topicAndPartition, status) =>
                   topicAndPartition.toString + ": " + Errors

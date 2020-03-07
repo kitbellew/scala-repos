@@ -479,8 +479,10 @@ class SecurityServiceSpec
     }
 
     "add a specified grant to an API key" in {
-      addAPIKeyGrant(user1.apiKey, user2.apiKey, user1Grant.grantId) must awaited(
-        to) {
+      addAPIKeyGrant(
+        user1.apiKey,
+        user2.apiKey,
+        user1Grant.grantId) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(Created, _), _, None, _) => ok
         }
@@ -559,8 +561,10 @@ class SecurityServiceSpec
     }
 
     "remove a specified grant from an API key" in {
-      removeAPIKeyGrant(user3.apiKey, user3.apiKey, user3Grant.grantId) must awaited(
-        to) {
+      removeAPIKeyGrant(
+        user3.apiKey,
+        user3.apiKey,
+        user3Grant.grantId) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(NoContent, _), _, None, _) => ok
         }

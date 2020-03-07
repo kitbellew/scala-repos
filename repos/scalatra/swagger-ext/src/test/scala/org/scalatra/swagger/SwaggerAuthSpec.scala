@@ -153,7 +153,9 @@ object SwaggerAuthSpec {
       "OK"
     }
 
-    post("/blah", operation(apiOperation[Unit]("createBlah").allows(isAllowed))) {
+    post(
+      "/blah",
+      operation(apiOperation[Unit]("createBlah").allows(isAllowed))) {
       "OK"
     }
   }

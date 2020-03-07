@@ -60,7 +60,8 @@ class ClosureCleanerSuite extends SparkFunSuite {
     assert(obj.run() === 96) // 4 * (1+2+3+4) + 4 * (1+2+3+4) + 16 * 1
   }
 
-  test("toplevel return statements in closures are identified at cleaning time") {
+  test(
+    "toplevel return statements in closures are identified at cleaning time") {
     intercept[ReturnStatementInClosureException] {
       TestObjectWithBogusReturns.run()
     }

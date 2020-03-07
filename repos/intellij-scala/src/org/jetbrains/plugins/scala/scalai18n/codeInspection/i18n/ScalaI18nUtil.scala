@@ -49,7 +49,9 @@ object ScalaI18nUtil {
   private final val TOP_LEVEL_PROVIDER: ParameterizedCachedValueProvider[
     ScExpression,
     (Project, ScExpression)] =
-    new ParameterizedCachedValueProvider[ScExpression, (Project, ScExpression)] {
+    new ParameterizedCachedValueProvider[
+      ScExpression,
+      (Project, ScExpression)] {
       def compute(pair: (Project, ScExpression))
           : CachedValueProvider.Result[ScExpression] = {
         val param: ScExpression = pair._2

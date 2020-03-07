@@ -327,10 +327,10 @@ private[random] class AcceptanceResult(
     extends Serializable {
 
   val waitList = new ArrayBuffer[Double]
-  var acceptBound
-      : Double = Double.NaN // upper bound for accepting item instantly
-  var waitListBound
-      : Double = Double.NaN // upper bound for adding item to waitlist
+  var acceptBound: Double =
+    Double.NaN // upper bound for accepting item instantly
+  var waitListBound: Double =
+    Double.NaN // upper bound for adding item to waitlist
 
   def areBoundsEmpty: Boolean = acceptBound.isNaN || waitListBound.isNaN
 

@@ -25,7 +25,8 @@ object ServerResultUtils {
         // Close connection, header already exists
         DefaultClose
       } else if ((result.body
-                   .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty)
+                   .isInstanceOf[
+                     HttpEntity.Streamed] && result.body.contentLength.isEmpty)
                  || request.headers
                    .get(CONNECTION)
                    .exists(_.equalsIgnoreCase(CLOSE))) {
@@ -40,7 +41,8 @@ object ServerResultUtils {
             .exists(_.equalsIgnoreCase(CLOSE))) {
         DefaultClose
       } else if ((result.body
-                   .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
+                   .isInstanceOf[
+                     HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
                  request.headers
                    .get(CONNECTION)
                    .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
@@ -66,7 +68,8 @@ object ServerResultUtils {
         .apply(
           "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
-    } else if (!mayHaveEntity(result.header.status) && !result.body.isKnownEmpty) {
+    } else if (!mayHaveEntity(
+                 result.header.status) && !result.body.isKnownEmpty) {
       cancelEntity(result.body)
       result.copy(body =
         HttpEntity.Strict(ByteString.empty, result.body.contentType))

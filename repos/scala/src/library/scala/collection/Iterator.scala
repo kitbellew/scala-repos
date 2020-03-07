@@ -212,7 +212,8 @@ object Iterator {
       lhs: Iterator[A],
       that: => GenTraversableOnce[A])
       extends Iterator[A] {
-    private[this] var state = 0 // 0: lhs not checked, 1: lhs has next, 2: switched to rhs
+    private[this] var state =
+      0 // 0: lhs not checked, 1: lhs has next, 2: switched to rhs
     private[this] lazy val rhs: Iterator[A] = that.toIterator
     def hasNext = state match {
       case 0 =>
@@ -1129,8 +1130,8 @@ trait Iterator[+A] extends TraversableOnce[A] {
     private[this] var buffer: ArrayBuffer[B] = ArrayBuffer() // the buffer
     private[this] var filled = false // whether the buffer is "hot"
     private[this] var _partial = true // whether we deliver short sequences
-    private[this] var pad
-        : Option[() => B] = None // what to pad short sequences with
+    private[this] var pad: Option[() => B] =
+      None // what to pad short sequences with
 
     /** Public functions which can be used to configure the iterator before use.
 	 *

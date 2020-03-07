@@ -46,8 +46,9 @@ object AllowedHostsFilterSpec extends PlaySpecification {
     new GuiceApplicationBuilder()
       .configure(Configuration(ConfigFactory.parseString(config)))
       .overrides(
-        bind[Router].to(
-          Router.from { case request => Action(result(request)) }),
+        bind[Router].to(Router.from {
+          case request => Action(result(request))
+        }),
         bind[HttpFilters].to[Filters]
       )
       .build()
@@ -150,8 +151,10 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       """
         |play.filters.hosts.allowed = [".mozilla.org"]
       """.stripMargin) {
-      status(request("addons.mozilla.org:@passwordreset.net")) must_== BAD_REQUEST
-      status(request("addons.mozilla.org: www.securepasswordreset.com")) must_== BAD_REQUEST
+      status(
+        request("addons.mozilla.org:@passwordreset.net")) must_== BAD_REQUEST
+      status(
+        request("addons.mozilla.org: www.securepasswordreset.com")) must_== BAD_REQUEST
     }
 
     "validate hosts in absolute URIs" in withApplication(

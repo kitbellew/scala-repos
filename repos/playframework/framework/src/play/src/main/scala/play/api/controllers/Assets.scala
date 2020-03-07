@@ -142,7 +142,8 @@ private[controllers] object AssetInfo {
         if (standardDate != null) {
           Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
         } else {
-          val alternativeDate = matcher.group(6) // Cannot be null otherwise match would have failed
+          val alternativeDate =
+            matcher.group(6) // Cannot be null otherwise match would have failed
           Some(
             alternativeDateFormatWithTZOffset
               .parseDateTime(alternativeDate)

@@ -328,7 +328,10 @@ package scala.collection.mutable {
         map ++= entries
 
         val mapView = map.rangeImpl(from, until)
-        mapView.iterator.toSeq == entriesInView(entries, from, until).toSeq.sorted
+        mapView.iterator.toSeq == entriesInView(
+          entries,
+          from,
+          until).toSeq.sorted
     }
 
     property("iteratorFrom") = forAll {
@@ -379,7 +382,8 @@ package scala.collection.mutable {
     property("lastOption") = forAll {
       (map: mutable.TreeMap[K, V], from: Option[K], until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
-        mapView.lastOption == Try(entriesInView(map.iterator, from, until).max).toOption
+        mapView.lastOption == Try(
+          entriesInView(map.iterator, from, until).max).toOption
     }
 
     property("clear") = forAll {

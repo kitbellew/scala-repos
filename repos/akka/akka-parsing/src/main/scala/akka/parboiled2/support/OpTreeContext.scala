@@ -159,7 +159,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     def renderInner(wrapped: Boolean): Tree =
       ops
         .map(_.render(wrapped))
-        .reduceLeft((l, r) ⇒ q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
+        .reduceLeft((l, r) ⇒
+          q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
   }
 
   case class Cut(lhs: OpTree, rhs: OpTree) extends DefaultNonTerminalOpTree {

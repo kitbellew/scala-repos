@@ -250,7 +250,8 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
 
   }
 
-  test("Elementwise mult of vectors distributes over vector addition - Matrix") {
+  test(
+    "Elementwise mult of vectors distributes over vector addition - Matrix") {
     check(Prop.forAll { (trip: (M, M, M)) =>
       val (a, b, c) = trip
       val ab = copyM(a)

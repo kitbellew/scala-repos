@@ -68,7 +68,8 @@ private[http] class HttpResponseRendererFactory(
 
     def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new GraphStageLogic(shape) {
-        var closeMode: CloseMode = DontClose // signals what to do after the current response
+        var closeMode: CloseMode =
+          DontClose // signals what to do after the current response
         def close: Boolean = closeMode != DontClose
         def closeIf(cond: Boolean): Unit = if (cond) closeMode = CloseConnection
         var transferring = false
@@ -298,7 +299,8 @@ private[http] class HttpResponseRendererFactory(
                     protocol != ctx.requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
 
                 if (renderConnectionHeader)
-                  r ~~ Connection ~~ (if (close) CloseBytes else KeepAliveBytes) ~~ CrLf
+                  r ~~ Connection ~~ (if (close) CloseBytes
+                                      else KeepAliveBytes) ~~ CrLf
                 else if (connHeader != null && connHeader.hasUpgrade) {
                   r ~~ connHeader ~~ CrLf
                   headers

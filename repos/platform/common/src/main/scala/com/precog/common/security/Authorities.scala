@@ -61,9 +61,10 @@ object Authorities {
   implicit val AuthoritiesDecomposer: Decomposer[Authorities] =
     new Decomposer[Authorities] {
       override def decompose(authorities: Authorities): JValue = {
-        JObject(JField(
-          "uids",
-          JArray(authorities.accountIds.map(JString(_)).toList)) :: Nil)
+        JObject(
+          JField(
+            "uids",
+            JArray(authorities.accountIds.map(JString(_)).toList)) :: Nil)
       }
     }
 

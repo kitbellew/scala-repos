@@ -12,8 +12,9 @@ class TargetTimestamps(context: CompileContext) {
 
   def get(target: ModuleBuildTarget): Option[Long] = {
     Some(timestampFile(target)).filter(_.exists).flatMap { file =>
-      using(new DataInputStream(
-        new BufferedInputStream(new FileInputStream(file)))) { in =>
+      using(
+        new DataInputStream(
+          new BufferedInputStream(new FileInputStream(file)))) { in =>
         try {
           Some(in.readLong())
         } catch {

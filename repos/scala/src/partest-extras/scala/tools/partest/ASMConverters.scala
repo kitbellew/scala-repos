@@ -297,9 +297,9 @@ object ASMConverters {
         case (
             TableSwitch(op1, min1, max1, l1, ls1),
             TableSwitch(op2, min2, max2, l2, ls2)) =>
-          op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(l1, l2) && sameLabels(
-            ls1,
-            ls2)
+          op1 == op2 && min1 == min2 && max1 == max2 && sameLabel(
+            l1,
+            l2) && sameLabels(ls1, ls2)
         case (LineNumber(line1, l1), LineNumber(line2, l2)) =>
           line1 == line2 && sameLabel(l1, l2)
         case (FrameEntry(tp1, loc1, stk1), FrameEntry(tp2, loc2, stk2)) =>

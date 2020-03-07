@@ -75,7 +75,8 @@ private[scala] trait JavaMirrors
     val universe: thisUniverse.type = thisUniverse
 
     import definitions._
-    private[reflect] lazy val runDefinitions = new definitions.RunDefinitions // only one "run" in the reflection universe
+    private[reflect] lazy val runDefinitions =
+      new definitions.RunDefinitions // only one "run" in the reflection universe
     import runDefinitions._
 
     override lazy val RootPackage = (new RootPackage
@@ -391,7 +392,8 @@ private[scala] trait JavaMirrors
       .alternatives
       .map(_.asMethod)
     private def isBytecodelessMethod(meth: MethodSymbol): Boolean = {
-      if (isGetClass(meth) || isStringConcat(meth) || meth.owner.isPrimitiveValueClass || meth == runDefinitions.Predef_classOf || meth.isMacro)
+      if (isGetClass(meth) || isStringConcat(
+            meth) || meth.owner.isPrimitiveValueClass || meth == runDefinitions.Predef_classOf || meth.isMacro)
         return true
       bytecodelessMethodOwners(meth.owner) && !bytecodefulObjectMethods(meth)
     }
@@ -1013,7 +1015,8 @@ private[scala] trait JavaMirrors
             else if (jclazz.isInterface)
               ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
             else
-              (if (jsuperclazz == null) AnyTpe else typeToScala(jsuperclazz)) :: ifaces
+              (if (jsuperclazz == null) AnyTpe
+               else typeToScala(jsuperclazz)) :: ifaces
           } finally {
             parentsLevel -= 1
           }
@@ -1123,7 +1126,8 @@ private[scala] trait JavaMirrors
         followStatic(classToScala(jowner), jclazz.javaFlags)
       case EnclosedInPackage(jowner) => packageToScala(jowner).moduleClass
       case _ =>
-        packageNameToScala(jclazz.getName take jclazz.getName.lastIndexOf('.')).moduleClass
+        packageNameToScala(
+          jclazz.getName take jclazz.getName.lastIndexOf('.')).moduleClass
     }
 
     /**
@@ -1153,7 +1157,9 @@ private[scala] trait JavaMirrors
       )
 
       clazz.info.decl(newTermName(jname)) orElse {
-        (clazz.info.decls.iterator filter (approximateMatch(_, jname))).toList match {
+        (clazz.info.decls.iterator filter (approximateMatch(
+          _,
+          jname))).toList match {
           case List()    => NoSymbol
           case List(sym) => sym
           case alts      => clazz.newOverloaded(alts.head.tpe.prefix, alts)
@@ -1173,8 +1179,9 @@ private[scala] trait JavaMirrors
       val jOwner = jmeth.getDeclaringClass
       val preOwner = classToScala(jOwner)
       val owner = followStatic(preOwner, jmeth.javaFlags)
-      (lookup(owner, jmeth.getName) suchThat (erasesTo(_, jmeth)) orElse jmethodAsScala(
-        jmeth)).asMethod
+      (lookup(owner, jmeth.getName) suchThat (erasesTo(
+        _,
+        jmeth)) orElse jmethodAsScala(jmeth)).asMethod
     }
 
     /**
@@ -1188,8 +1195,9 @@ private[scala] trait JavaMirrors
     private def constructorToScala1(jconstr: jConstructor[_]): MethodSymbol = {
       val owner =
         followStatic(classToScala(jconstr.getDeclaringClass), jconstr.javaFlags)
-      (lookup(owner, jconstr.getName) suchThat (erasesTo(_, jconstr)) orElse jconstrAsScala(
-        jconstr)).asMethod
+      (lookup(owner, jconstr.getName) suchThat (erasesTo(
+        _,
+        jconstr)) orElse jconstrAsScala(jconstr)).asMethod
     }
 
     /**

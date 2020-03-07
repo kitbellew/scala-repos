@@ -48,7 +48,9 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
         }
       }
     }
-    when(codec.prepareServiceFactory(any[ServiceFactory[String, String]])) thenAnswer {
+    when(
+      codec.prepareServiceFactory(
+        any[ServiceFactory[String, String]])) thenAnswer {
       new Answer[ServiceFactory[String, String]] {
         def answer(
             invocation: InvocationOnMock): ServiceFactory[String, String] = {
@@ -57,7 +59,8 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
         }
       }
     }
-    when(codec.newClientTransport(any[Channel], any[StatsReceiver])) thenAnswer {
+    when(
+      codec.newClientTransport(any[Channel], any[StatsReceiver])) thenAnswer {
       new Answer[ChannelTransport[Any, Any]] {
         def answer(invocation: InvocationOnMock): ChannelTransport[Any, Any] =
           invocation.getArguments match {
@@ -66,7 +69,10 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
           }
       }
     }
-    when(codec.newClientDispatcher(any[Transport[Any, Any]], any[Stack.Params])) thenAnswer {
+    when(
+      codec.newClientDispatcher(
+        any[Transport[Any, Any]],
+        any[Stack.Params])) thenAnswer {
       new Answer[SerialClientDispatcher[String, String]] {
         def answer(invocation: InvocationOnMock)
             : SerialClientDispatcher[String, String] = {

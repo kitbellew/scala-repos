@@ -567,7 +567,10 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         e.getRealParameterType(TypingContext.empty).toOption
       case e: PsiMethod if e.isConstructor => None
       case e: PsiMethod =>
-        create(e.getReturnType, named.getProject, named.getResolveScope).toOption
+        create(
+          e.getReturnType,
+          named.getProject,
+          named.getResolveScope).toOption
       case e: PsiVariable =>
         create(e.getType, named.getProject, named.getResolveScope).toOption
       case _ => None

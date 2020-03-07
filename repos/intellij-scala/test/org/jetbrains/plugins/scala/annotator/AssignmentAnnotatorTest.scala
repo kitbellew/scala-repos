@@ -155,7 +155,8 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
     assertMatches(messages("def a = A; def a_=(x: A) {}; a = A")) {
       case Nil =>
     }
-    assertMatches(messages("def a(implicit b: B) = A; def a_=(x: A) {}; a = A")) {
+    assertMatches(
+      messages("def a(implicit b: B) = A; def a_=(x: A) {}; a = A")) {
       case Nil =>
     }
     assertMatches(messages("def a() = A; def a_=(x: A) {}; a = A")) {

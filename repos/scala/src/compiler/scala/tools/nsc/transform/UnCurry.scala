@@ -677,7 +677,8 @@ abstract class UnCurry
             if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
               ddSym.info.resultType match {
                 case tp @ ConstantType(value) =>
-                  Literal(value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
+                  Literal(
+                    value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
                 case _ => newRhs
               }
             } else newRhs

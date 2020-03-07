@@ -51,7 +51,8 @@ class ScalaFunctionalTestSpec extends ExampleSpecification {
       .build()
 
     // #scalafunctionaltest-respondtoroute
-    "respond to the index Action" in new WithApplication(applicationWithRouter) {
+    "respond to the index Action" in new WithApplication(
+      applicationWithRouter) {
       // ###replace: val Some(result) = route(app, FakeRequest(GET, "/Bob"))
       val Some(result) = route(app, FakeRequest(GET_REQUEST, "/Bob"))
 

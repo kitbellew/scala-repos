@@ -170,13 +170,16 @@ private[spark] class TaskSetManager(
 
   // Figure out which locality levels we have in our TaskSet, so we can do delay scheduling
   var myLocalityLevels = computeValidLocalityLevels()
-  var localityWaits = myLocalityLevels.map(getLocalityWait) // Time to wait at each level
+  var localityWaits =
+    myLocalityLevels.map(getLocalityWait) // Time to wait at each level
 
   // Delay scheduling variables: we keep track of our current locality level and the time we
   // last launched a task at that level, and move up a level when localityWaits[curLevel] expires.
   // We then move down if we manage to launch a "more local" task.
-  var currentLocalityIndex = 0 // Index of our current locality level in validLocalityLevels
-  var lastLaunchTime = clock.getTimeMillis() // Time we last launched a task at this level
+  var currentLocalityIndex =
+    0 // Index of our current locality level in validLocalityLevels
+  var lastLaunchTime =
+    clock.getTimeMillis() // Time we last launched a task at this level
 
   override def schedulableQueue: ConcurrentLinkedQueue[Schedulable] = null
 
@@ -855,7 +858,8 @@ private[spark] class TaskSetManager(
     // The reason is the next stage wouldn't be able to fetch the data from this dead executor
     // so we would need to rerun these tasks on other executors.
     if (tasks(0)
-          .isInstanceOf[ShuffleMapTask] && !env.blockManager.externalShuffleServiceEnabled) {
+          .isInstanceOf[
+            ShuffleMapTask] && !env.blockManager.externalShuffleServiceEnabled) {
       for ((tid, info) <- taskInfos if info.executorId == execId) {
         val index = taskInfos(tid).index
         if (successful(index)) {
@@ -962,7 +966,8 @@ private[spark] class TaskSetManager(
   private def computeValidLocalityLevels(): Array[TaskLocality.TaskLocality] = {
     import TaskLocality.{PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY}
     val levels = new ArrayBuffer[TaskLocality.TaskLocality]
-    if (!pendingTasksForExecutor.isEmpty && getLocalityWait(PROCESS_LOCAL) != 0 &&
+    if (!pendingTasksForExecutor.isEmpty && getLocalityWait(
+          PROCESS_LOCAL) != 0 &&
         pendingTasksForExecutor.keySet.exists(sched.isExecutorAlive(_))) {
       levels += PROCESS_LOCAL
     }

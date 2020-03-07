@@ -390,7 +390,9 @@ trait EvaluatorModule[M[+_]]
             : StateT[N, EvaluatorState, PendingTable] = {
           import CrossOrder._
           def valueSpec = DerefObjectStatic(Leaf(Source), paths.Value)
-          (prepareEval(left, splits) |@| prepareEval(right, splits)).tupled flatMap {
+          (prepareEval(left, splits) |@| prepareEval(
+            right,
+            splits)).tupled flatMap {
             case (ptLeft, ptRight) =>
               val lTable = ptLeft.table.transform(liftToValues(ptLeft.trans))
               val rTable = ptRight.table.transform(liftToValues(ptRight.trans))
@@ -484,9 +486,10 @@ trait EvaluatorModule[M[+_]]
             } else {
               val components =
                 for (i <- ids)
-                  yield trans.WrapArray(DerefArrayStatic(
-                    SourceKey.Single,
-                    CPathIndex(i))): TransSpec1
+                  yield trans.WrapArray(
+                    DerefArrayStatic(
+                      SourceKey.Single,
+                      CPathIndex(i))): TransSpec1
               components reduceLeft { trans.InnerArrayConcat(_, _) }
             }
           }
@@ -562,7 +565,9 @@ trait EvaluatorModule[M[+_]]
             }
           }
 
-          (prepareEval(left, splits) |@| prepareEval(right, splits)).tupled flatMap {
+          (prepareEval(left, splits) |@| prepareEval(
+            right,
+            splits)).tupled flatMap {
             case (pendingTableLeft, pendingTableRight) =>
               transState liftM mn(join0(pendingTableLeft, pendingTableRight))
           }
@@ -1146,7 +1151,9 @@ trait EvaluatorModule[M[+_]]
                       InnerObjectConcat(
                         ObjectDelete(
                           Leaf(Source),
-                          Set(CPathField("sort-" + id), paths.Value) ++ oldSortFields),
+                          Set(
+                            CPathField("sort-" + id),
+                            paths.Value) ++ oldSortFields),
                         wrappedSort),
                       wrappedValue)
 
@@ -1205,8 +1212,8 @@ trait EvaluatorModule[M[+_]]
                 _ <- prepareEval(point, splits)
                 rewritten <- stagedOptimizations(graph, ctx, optimize)
 
-                toEval = listStagingPoints(Queue(rewritten)) filter referencesOnlySplit(
-                  parentSplits)
+                toEval = listStagingPoints(
+                  Queue(rewritten)) filter referencesOnlySplit(parentSplits)
                 result <- stage(toEval, rewritten)
               } yield result
             }

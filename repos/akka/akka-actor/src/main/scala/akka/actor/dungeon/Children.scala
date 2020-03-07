@@ -204,8 +204,9 @@ private[akka] trait Children { this: ActorCell ⇒
       reason: ChildrenContainer.SuspendReason): Boolean = {
     childrenRefs match {
       case c: ChildrenContainer.TerminatingChildrenContainer ⇒
-        swapChildrenRefs(c, c.copy(reason = reason)) || setChildrenTerminationReason(
-          reason)
+        swapChildrenRefs(
+          c,
+          c.copy(reason = reason)) || setChildrenTerminationReason(reason)
       case _ ⇒ false
     }
   }

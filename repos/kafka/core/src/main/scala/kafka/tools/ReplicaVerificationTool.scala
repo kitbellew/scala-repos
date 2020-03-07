@@ -343,7 +343,8 @@ private class ReplicaBuffer(
         fetchResponsePerReplica.size == expectedReplicasPerTopicAndPartition(
           topicAndPartition),
         "fetched " + fetchResponsePerReplica.size + " replicas for " + topicAndPartition + ", but expected "
-          + expectedReplicasPerTopicAndPartition(topicAndPartition) + " replicas"
+          + expectedReplicasPerTopicAndPartition(
+            topicAndPartition) + " replicas"
       )
       val messageIteratorMap = fetchResponsePerReplica.map {
         case (replicaId, fetchResponse) =>
@@ -408,7 +409,8 @@ private class ReplicaBuffer(
           val nextOffset = messageInfoFromFirstReplicaOpt.get.nextOffset
           fetchOffsetMap.put(topicAndPartition, nextOffset)
           debug(
-            expectedReplicasPerTopicAndPartition(topicAndPartition) + " replicas match at offset " +
+            expectedReplicasPerTopicAndPartition(
+              topicAndPartition) + " replicas match at offset " +
               nextOffset + " for " + topicAndPartition)
         }
       }

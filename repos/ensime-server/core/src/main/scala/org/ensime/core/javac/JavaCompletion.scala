@@ -194,7 +194,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val relevance =
       if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
 
-    if (matchesPrefix(s, prefix, matchEntire = false, caseSens = caseSense) && !s
+    if (matchesPrefix(
+          s,
+          prefix,
+          matchEntire = false,
+          caseSens = caseSense) && !s
           .contains("$")) {
       e match {
         case e: ExecutableElement if !typesOnly =>

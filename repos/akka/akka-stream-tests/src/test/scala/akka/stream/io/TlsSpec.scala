@@ -361,7 +361,8 @@ class TlsSpec
       override def flow = logCipherSuite
       def inputs =
         NegotiateNewSession
-          .withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
+          .withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send(
+          "hello") :: Nil
       def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
     }
 

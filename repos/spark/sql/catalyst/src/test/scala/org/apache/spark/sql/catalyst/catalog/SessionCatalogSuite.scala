@@ -155,7 +155,8 @@ class SessionCatalogSuite extends SparkFunSuite {
     assert(newDb1.properties.get("good") == Some("true"))
   }
 
-  test("alter database should throw exception when the database does not exist") {
+  test(
+    "alter database should throw exception when the database does not exist") {
     val catalog = new SessionCatalog(newBasicCatalog())
     intercept[AnalysisException] {
       catalog.alterDatabase(newDb("does_not_exist"))
@@ -443,9 +444,10 @@ class SessionCatalogSuite extends SparkFunSuite {
         SubqueryAlias(
           "tbl1",
           CatalogRelation("db2", tableMetadata, Some(alias))))
-    assert(catalog.lookupRelation(
-      TableIdentifier("tbl1", Some("db2")),
-      alias = None) == relation)
+    assert(
+      catalog.lookupRelation(
+        TableIdentifier("tbl1", Some("db2")),
+        alias = None) == relation)
     assert(
       catalog.lookupRelation(
         TableIdentifier("tbl1", Some("db2")),

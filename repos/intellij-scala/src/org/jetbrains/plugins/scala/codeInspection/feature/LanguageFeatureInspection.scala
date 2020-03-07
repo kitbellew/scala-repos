@@ -38,7 +38,9 @@ import org.jetbrains.plugins.scala.project.settings.ScalaCompilerSettings
   * @author Pavel Fatin
   */
 class LanguageFeatureInspection
-    extends AbstractInspection("LanguageFeature", "Advanced language features") {
+    extends AbstractInspection(
+      "LanguageFeature",
+      "Advanced language features") {
   private val Features = Seq(
     Feature(
       "postfix operator notation",

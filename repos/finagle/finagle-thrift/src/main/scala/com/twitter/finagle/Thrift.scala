@@ -217,7 +217,8 @@ object Thrift
       val classifier =
         if (params.contains[com.twitter.finagle.param.ResponseClassifier]) {
           ThriftResponseClassifier.usingDeserializeCtx(
-            params[com.twitter.finagle.param.ResponseClassifier].responseClassifier
+            params[
+              com.twitter.finagle.param.ResponseClassifier].responseClassifier
           )
         } else {
           ThriftResponseClassifier.DeserializeCtxOnly

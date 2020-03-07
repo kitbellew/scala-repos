@@ -45,7 +45,8 @@ trait ScaladocAnalyzer extends Analyzer {
         val typer1 = newTyper(context.makeNewScope(docDef, context.owner))
         for (useCase <- comment.useCases) {
           typer1
-            .silent(_.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
+            .silent(
+              _.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
             case SilentTypeError(err) =>
               reporter.warning(useCase.pos, err.errMsg)
             case _ =>
@@ -171,11 +172,12 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
   class ScaladocUnitScanner(unit0: CompilationUnit, patches0: List[BracePatch])
       extends UnitScanner(unit0, patches0) {
 
-    private var docBuffer
-        : StringBuilder = null // buffer for comments (non-null while scanning)
-    private var inDocComment = false // if buffer contains double-star doc comment
-    private var lastDoc
-        : DocComment = null // last comment if it was double-star doc
+    private var docBuffer: StringBuilder =
+      null // buffer for comments (non-null while scanning)
+    private var inDocComment =
+      false // if buffer contains double-star doc comment
+    private var lastDoc: DocComment =
+      null // last comment if it was double-star doc
 
     private object unmooredParser extends { // minimalist comment parser
       val global: Global = ScaladocSyntaxAnalyzer.this.global
@@ -237,7 +239,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       super.skipDocComment()
     }
     override def skipBlockComment(): Unit = {
-      inDocComment = false // ??? this means docBuffer won't receive contents of this comment???
+      inDocComment =
+        false // ??? this means docBuffer won't receive contents of this comment???
       docBuffer = new StringBuilder("/*")
       super.skipBlockComment()
     }

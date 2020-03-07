@@ -170,7 +170,9 @@ object TreeTableColumn {
   }
 
   object SortType
-      extends SFXEnumDelegateCompanion[jfxsc.TreeTableColumn.SortType, SortType] {
+      extends SFXEnumDelegateCompanion[
+        jfxsc.TreeTableColumn.SortType,
+        SortType] {
 
     /** Column will be sorted in an ascending order. */
     val Ascending = new SortType(jfxsc.TreeTableColumn.SortType.ASCENDING)
@@ -265,13 +267,14 @@ class TreeTableColumn[S, T](
       new TreeTableCell(delegate.cellFactoryProperty.getValue.call(column)))
 
   def cellFactory_=(f: TreeTableColumn[S, T] => TreeTableCell[S, T]) {
-    delegate.cellFactoryProperty.setValue(new jfxu.Callback[
-      jfxsc.TreeTableColumn[S, T],
-      jfxsc.TreeTableCell[S, T]] {
-      def call(v: jfxsc.TreeTableColumn[S, T]): jfxsc.TreeTableCell[S, T] = {
-        f(v)
-      }
-    })
+    delegate.cellFactoryProperty.setValue(
+      new jfxu.Callback[
+        jfxsc.TreeTableColumn[S, T],
+        jfxsc.TreeTableCell[S, T]] {
+        def call(v: jfxsc.TreeTableColumn[S, T]): jfxsc.TreeTableCell[S, T] = {
+          f(v)
+        }
+      })
   }
 
   /**

@@ -580,10 +580,8 @@ object Multipart {
         input: ByteString,
         offset: Int,
         ix: Int = 2): Boolean =
-      (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(ix)) && boundary(
-        input,
-        offset,
-        ix + 1)
+      (ix == needle.length) || (byteAt(input, offset + ix - 2) == needle(
+        ix)) && boundary(input, offset, ix + 1)
 
     def crlf(input: ByteString, offset: Int): Boolean =
       byteChar(input, offset) == '\r' && byteChar(input, offset + 1) == '\n'

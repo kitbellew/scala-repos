@@ -253,7 +253,11 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     */
   private def testSimpleSpilling(codec: Option[String] = None): Unit = {
     val size = 1000
-    val conf = createSparkConf(loadDefaults = true, codec) // Load defaults for Spark home
+    val conf =
+      createSparkConf(
+        loadDefaults = true,
+        codec
+      ) // Load defaults for Spark home
     conf.set("spark.shuffle.manager", "hash") // avoid using external sorter
     conf.set(
       "spark.shuffle.spill.numElementsForceSpillThreshold",

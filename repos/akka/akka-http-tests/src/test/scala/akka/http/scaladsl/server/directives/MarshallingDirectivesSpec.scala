@@ -22,7 +22,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
   private val iso88592 = HttpCharsets.getForKey("iso-8859-2").get
   implicit val IntUnmarshaller: FromEntityUnmarshaller[Int] =
-    nodeSeqUnmarshaller(ContentTypeRange(`text/xml`, iso88592), `text/html`) map {
+    nodeSeqUnmarshaller(
+      ContentTypeRange(`text/xml`, iso88592),
+      `text/html`) map {
       case NodeSeq.Empty ⇒ throw Unmarshaller.NoContentException
       case x ⇒ { val i = x.text.toInt; require(i >= 0); i }
     }
@@ -57,7 +59,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
             `text/html`,
             `application/xhtml+xml`))
       }
-      Put("/", HttpEntity(ContentType(`text/xml`, `UTF-16`), "<int>26</int>")) ~> {
+      Put(
+        "/",
+        HttpEntity(ContentType(`text/xml`, `UTF-16`), "<int>26</int>")) ~> {
         entity(as[Int]) { echoComplete }
       } ~> check {
         rejection shouldEqual UnsupportedRequestContentTypeRejection(
@@ -73,7 +77,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       } ~> check { rejection shouldEqual ValidationRejection("Problem") }
     }
     "return a ValidationRejection if the request entity is semantically invalid (IllegalArgumentException)" in {
-      Put("/", HttpEntity(ContentType(`text/xml`, iso88592), "<int>-3</int>")) ~> {
+      Put(
+        "/",
+        HttpEntity(ContentType(`text/xml`, iso88592), "<int>-3</int>")) ~> {
         entity(as[Int]) { _ ⇒ completeOk }
       } ~> check {
         inside(rejection) {
@@ -86,7 +92,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     "return a MalformedRequestContentRejection if unmarshalling failed due to a not further classified error" in {
       Put(
         "/",
-        HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<foo attr='illegal xml'")) ~> {
+        HttpEntity(
+          ContentTypes.`text/xml(UTF-8)`,
+          "<foo attr='illegal xml'")) ~> {
         entity(as[NodeSeq]) { _ ⇒ completeOk }
       } ~> check {
         rejection shouldEqual MalformedRequestContentRejection(
@@ -131,15 +139,23 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
       Put(
         "/",
-        HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<name>Peter Xml</name>")) ~> route ~> check {
+        HttpEntity(
+          ContentTypes.`text/xml(UTF-8)`,
+          "<name>Peter Xml</name>")) ~> route ~> check {
         responseAs[String] shouldEqual "Person(Peter Xml)"
       }
-      Put("/", HttpEntity(`application/json`, """{ "name": "Paul Json" }""")) ~> route ~> check {
+      Put(
+        "/",
+        HttpEntity(
+          `application/json`,
+          """{ "name": "Paul Json" }""")) ~> route ~> check {
         responseAs[String] shouldEqual "Person(Paul Json)"
       }
       Put(
         "/",
-        HttpEntity(ContentTypes.`text/plain(UTF-8)`, """name = Sir Text }""")) ~> route ~> check {
+        HttpEntity(
+          ContentTypes.`text/plain(UTF-8)`,
+          """name = Sir Text }""")) ~> route ~> check {
         rejection shouldEqual UnsupportedRequestContentTypeRejection(
           Set(`application/json`, `text/xml`))
       }
@@ -195,7 +211,9 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
     "result in an UnacceptedResponseContentTypeRejection rejection if there is no marshaller supporting the requests Accept-Charset header" in (Put(
       "/",
-      HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~> addHeaders(
+      HttpEntity(
+        ContentTypes.`text/html(UTF-8)`,
+        "<int>42</int>")) ~> addHeaders(
       Accept(`text/xxml`),
       `Accept-Charset`(`UTF-16`)) ~>
       handleWith(times2) ~> check {

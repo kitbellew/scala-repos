@@ -112,7 +112,12 @@ object PartitionMetadata {
       buffer: ByteBuffer,
       brokers: Map[Int, BrokerEndPoint]): PartitionMetadata = {
     val errorCode = readShortInRange(buffer, "error code", (-1, Short.MaxValue))
-    val partitionId = readIntInRange(buffer, "partition id", (0, Int.MaxValue)) /* partition id */
+    val partitionId =
+      readIntInRange(
+        buffer,
+        "partition id",
+        (0, Int.MaxValue)
+      ) /* partition id */
     val leaderId = buffer.getInt
     val leader = brokers.get(leaderId)
 

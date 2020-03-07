@@ -43,7 +43,9 @@ object TestOptions {
       mavenBundle(
         "com.typesafe.akka",
         "akka-testkit_%s".format(scalaDepVersion)).versionAsInProject,
-      mavenBundle("org.scalatest", "scalatest_%s".format(scalaDepVersion)).versionAsInProject,
+      mavenBundle(
+        "org.scalatest",
+        "scalatest_%s".format(scalaDepVersion)).versionAsInProject,
       junitBundles)
   }
 

@@ -66,9 +66,9 @@ object PairingSystem extends AbstractPairingSystem {
         else
           idles.grouped(pairingGroupSize).toList match {
             case a :: b :: c :: _ =>
-              smartPairings(data, a) ::: smartPairings(data, b) ::: naivePairings(
-                tour,
-                c take pairingGroupSize)
+              smartPairings(data, a) ::: smartPairings(
+                data,
+                b) ::: naivePairings(tour, c take pairingGroupSize)
             case a :: b :: Nil =>
               smartPairings(data, a) ::: smartPairings(data, b)
             case a :: Nil => smartPairings(data, a)

@@ -624,7 +624,10 @@ private[deploy] class Worker(
       }
     }
 
-    case driverStateChanged @ DriverStateChanged(driverId, state, exception) => {
+    case driverStateChanged @ DriverStateChanged(
+          driverId,
+          state,
+          exception) => {
       handleDriverStateChanged(driverStateChanged)
     }
 

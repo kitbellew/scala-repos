@@ -416,7 +416,8 @@ package play.api.mvc {
       * Transform this call to an absolute URL.
       */
     def absoluteURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "http" + (if (secure) "s" else "") + "://" + request.host + this.url + this.appendFragment
+      "http" + (if (secure) "s"
+                else "") + "://" + request.host + this.url + this.appendFragment
 
     /**
       * Transform this call to an WebSocket URL.

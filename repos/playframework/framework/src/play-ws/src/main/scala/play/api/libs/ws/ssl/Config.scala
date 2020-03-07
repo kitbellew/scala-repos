@@ -103,8 +103,7 @@ case class SSLDebugConfig(
 
   def withOcsp =
     this.withCertPath.copy(ocsp =
-      true
-    ) // technically a part of certpath, only available in 1.7+
+      true) // technically a part of certpath, only available in 1.7+
 
   def withRecord(plaintext: Boolean = false, packet: Boolean = false) = {
     this.copy(record = Some(SSLDebugRecordOptions(plaintext, packet)))

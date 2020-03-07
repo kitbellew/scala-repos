@@ -353,5 +353,6 @@ private[parallel] object ParHashSetCombiner {
   private[mutable] val nonmasklength = 32 - discriminantbits
 
   def apply[T] =
-    new ParHashSetCombiner[T](FlatHashTable.defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
+    new ParHashSetCombiner[T](
+      FlatHashTable.defaultLoadFactor) {} //with EnvironmentPassingCombiner[T, ParHashSet[T]]
 }

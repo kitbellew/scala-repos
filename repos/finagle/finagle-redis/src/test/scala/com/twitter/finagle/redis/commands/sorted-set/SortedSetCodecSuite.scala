@@ -197,7 +197,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and weights") {
+  test(
+    "Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and weights") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 WEIGHTS 2 3\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
@@ -372,7 +373,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from -inf to +inf") {
+  test(
+    "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from -inf to +inf") {
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s myzset -inf +inf\r\n")) {
         verifyRangeByScore(cmd, "myzset", ZInterval.MIN, ZInterval.MAX) {
@@ -400,10 +402,13 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from 1 (exclusive) to 2") {
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s myzset (1 2\r\n")) {
-        verifyRangeByScore(cmd, "myzset", ZInterval.exclusive(1), ZInterval(2)) {
-          (s, l) =>
-            assert(s == None)
-            assert(l == None)
+        verifyRangeByScore(
+          cmd,
+          "myzset",
+          ZInterval.exclusive(1),
+          ZInterval(2)) { (s, l) =>
+          assert(s == None)
+          assert(l == None)
         }
       }
     }

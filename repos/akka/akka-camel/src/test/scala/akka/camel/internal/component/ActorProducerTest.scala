@@ -63,7 +63,8 @@ class ActorProducerTest
         }
 
         "not expect response and not block" taggedAs TimingTest in {
-          time(producer.processExchangeAdapter(exchange)) should be < (200 millis)
+          time(
+            producer.processExchangeAdapter(exchange)) should be < (200 millis)
         }
       }
 

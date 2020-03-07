@@ -128,7 +128,8 @@ trait FindMembers {
           //           => private members should be included from T1, ... Tn. (SI-7475)
           refinementParents :::= currentBaseClass.parentSymbols
         else if (currentBaseClass.isClass)
-          seenFirstNonRefinementClass = true // only inherit privates of refinement parents after this point
+          seenFirstNonRefinementClass =
+            true // only inherit privates of refinement parents after this point
 
         bcs = bcs.tail
       }
@@ -166,7 +167,8 @@ trait FindMembers {
             )
         )
 
-      (!isPrivate || admitPrivate(sym)) && (sym.name != nme.CONSTRUCTOR || owner == initBaseClasses.head)
+      (!isPrivate || admitPrivate(
+        sym)) && (sym.name != nme.CONSTRUCTOR || owner == initBaseClasses.head)
     }
 
     // True unless the already-found member of type `memberType` matches the candidate symbol `other`.

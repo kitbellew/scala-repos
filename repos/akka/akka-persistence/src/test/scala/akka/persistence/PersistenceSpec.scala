@@ -110,7 +110,9 @@ trait PersistenceMatchers {
     override def apply(_left: immutable.Seq[Any]) = {
       val left = _left.map(_.toString)
       val mapped =
-        left.groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) - (-1) // ignore other messages
+        left.groupBy(l ⇒
+          prefixes.indexWhere(p ⇒
+            l.startsWith(p))) - (-1) // ignore other messages
       val results = for {
         (pos, seq) ← mapped
         nrs = seq.map(_.replaceFirst(prefixes(pos), "").toInt)
@@ -118,8 +120,10 @@ trait PersistenceMatchers {
         if nrs != sortedNrs
       } yield MatchResult(
         false,
-        s"""Messages sequence with prefix ${prefixes(pos)} was not sorted! Was: $seq"""",
-        s"""Messages sequence with prefix ${prefixes(pos)} was sorted! Was: $seq""""
+        s"""Messages sequence with prefix ${prefixes(
+          pos)} was not sorted! Was: $seq"""",
+        s"""Messages sequence with prefix ${prefixes(
+          pos)} was sorted! Was: $seq""""
       )
 
       if (results.forall(_.matches)) MatchResult(true, "", "")

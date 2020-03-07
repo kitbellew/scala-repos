@@ -105,7 +105,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     assertClosed()
   }
 
-  test("SocketAddressResolveHandler should close with resolved socket address") {
+  test(
+    "SocketAddressResolveHandler should close with resolved socket address") {
     val helper = new SocketAddressResolveHandlerHelper
     import helper._
 

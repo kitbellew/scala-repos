@@ -638,7 +638,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def legacyIeCompatibilityMode: Boolean =
     session
-      .map(_.legacyIeCompatibilityMode.is) openOr false // LiftRules.calcIEMode()
+      .map(
+        _.legacyIeCompatibilityMode.is) openOr false // LiftRules.calcIEMode()
 
   /**
     * Get the current instance of HtmlProperties
@@ -754,7 +755,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see LiftRules # rewrite
     */
   def sessionRewriter: List[RewriteHolder] =
-    session map (_.sessionRewriter.toList.map(t => RewriteHolder(t._1, t._2))) openOr Nil
+    session map (
+      _.sessionRewriter.toList.map(t => RewriteHolder(t._1, t._2))) openOr Nil
 
   /**
     * Adds a per-session rewrite function. This can be used if you only want a particular rewrite

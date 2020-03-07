@@ -142,7 +142,8 @@ trait TypeDiagnostics {
     case _                                 => Nil
   }
   def alternativesString(tree: Tree) =
-    alternatives(tree) map (x => "  " + methodTypeErrorString(x)) mkString ("", " <and>\n", "\n")
+    alternatives(tree) map (x =>
+      "  " + methodTypeErrorString(x)) mkString ("", " <and>\n", "\n")
 
   /** The symbol which the given accessor represents (possibly in part).
     *  This is used for error messages, where we want to speak in terms
@@ -160,7 +161,10 @@ trait TypeDiagnostics {
         else DEFERRED
 
       getter.owner
-        .newValue(getter.name.toTermName, getter.pos, flags) setInfo getter.tpe.resultType
+        .newValue(
+          getter.name.toTermName,
+          getter.pos,
+          flags) setInfo getter.tpe.resultType
     }
 
   def treeSymTypeMsg(tree: Tree): String = {
@@ -312,8 +316,8 @@ trait TypeDiagnostics {
   // that condition, I see it.
   def foundReqMsg(found: Type, req: Type): String = {
     def baseMessage = (
-      ";\n found   : " + found.toLongString + existentialContext(found) + explainAlias(
-        found) +
+      ";\n found   : " + found.toLongString + existentialContext(
+        found) + explainAlias(found) +
         "\n required: " + req + existentialContext(req) + explainAlias(req)
     )
     (withDisambiguation(Nil, found, req)(baseMessage)
@@ -647,7 +651,8 @@ trait TypeDiagnostics {
         // Error suppression (in context.warning) would squash some of these warnings.
         // It is presumed if you are using a -Y option you would really like to hear
         // the warnings you've requested; thus, use reporter.warning.
-        if (settings.warnDeadCode && context.unit.exists && treeOK(tree) && exprOK)
+        if (settings.warnDeadCode && context.unit.exists && treeOK(
+              tree) && exprOK)
           reporter.warning(tree.pos, "dead code following this construct")
         tree
       }

@@ -306,8 +306,8 @@ object helpers
      } else {
        getAccountByMailAddress(mailAddress)
      }).map { account =>
-      Html(
-        s"""<a href="${url(account.userName)}" class="${styleClass}">${content}</a>""")
+      Html(s"""<a href="${url(
+        account.userName)}" class="${styleClass}">${content}</a>""")
     } getOrElse content
 
   /**

@@ -359,7 +359,8 @@ private[akka] class RemoteActorRefProvider(
               }
               val localAddress = transport.localAddressForRemote(addr)
               val rpath =
-                (RootActorPath(addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
+                (RootActorPath(
+                  addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
                   .withUid(path.uid)
               new RemoteActorRef(
                 transport,

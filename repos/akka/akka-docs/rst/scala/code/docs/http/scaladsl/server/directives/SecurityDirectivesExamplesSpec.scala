@@ -40,7 +40,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/secured") ~> addCredentials(validCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validCredentials) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "The user is 'John'"
     }
@@ -82,13 +83,15 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/secured") ~> addCredentials(validCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validCredentials) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "The user is 'John'"
     }
 
     val validAdminCredentials = BasicHttpCredentials("John", "p4ssw0rd-special")
-    Get("/secured") ~> addCredentials(validAdminCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validAdminCredentials) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "The user is 'John-admin'"
     }
@@ -137,7 +140,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/secured") ~> addCredentials(validCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validCredentials) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "The user is 'John'"
     }
@@ -169,8 +173,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val route =
       Route.seal {
         path("secured") {
-          authenticateBasicAsync(realm = "secure site", myUserPassAuthenticator) {
-            userName => complete(s"The user is '$userName'")
+          authenticateBasicAsync(
+            realm = "secure site",
+            myUserPassAuthenticator) { userName =>
+            complete(s"The user is '$userName'")
           }
         }
       }
@@ -185,7 +191,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/secured") ~> addCredentials(validCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validCredentials) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "The user is 'John'"
     }
@@ -235,7 +242,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     }
 
     val validCredentials = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/secured") ~> addCredentials(validCredentials) ~> // adds Authorization header
+    Get("/secured") ~> addCredentials(
+      validCredentials) ~> // adds Authorization header
       route ~> check {
       status shouldEqual StatusCodes.OK
       responseAs[String] shouldEqual "Authenticated!"
@@ -271,14 +279,16 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     val johnsCred = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/peters-lair") ~> addCredentials(johnsCred) ~> // adds Authorization header
+    Get("/peters-lair") ~> addCredentials(
+      johnsCred) ~> // adds Authorization header
       route ~> check {
       status shouldEqual StatusCodes.Forbidden
       responseAs[String] shouldEqual "The supplied authentication is not authorized to access this resource"
     }
 
     val petersCred = BasicHttpCredentials("Peter", "pan")
-    Get("/peters-lair") ~> addCredentials(petersCred) ~> // adds Authorization header
+    Get("/peters-lair") ~> addCredentials(
+      petersCred) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "'Peter' visited Peter's lair"
     }
@@ -314,14 +324,16 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
 
     // tests:
     val johnsCred = BasicHttpCredentials("John", "p4ssw0rd")
-    Get("/peters-lair") ~> addCredentials(johnsCred) ~> // adds Authorization header
+    Get("/peters-lair") ~> addCredentials(
+      johnsCred) ~> // adds Authorization header
       route ~> check {
       status shouldEqual StatusCodes.Forbidden
       responseAs[String] shouldEqual "The supplied authentication is not authorized to access this resource"
     }
 
     val petersCred = BasicHttpCredentials("Peter", "pan")
-    Get("/peters-lair") ~> addCredentials(petersCred) ~> // adds Authorization header
+    Get("/peters-lair") ~> addCredentials(
+      petersCred) ~> // adds Authorization header
       route ~> check {
       responseAs[String] shouldEqual "'Peter' visited Peter's lair"
     }

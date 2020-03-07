@@ -275,7 +275,14 @@ object HashVector
   @expand
   implicit def dv_hv_op[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType] = {
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType] = {
     DenseVector.pureFromUpdate(
       implicitly[Op.InPlaceImpl2[DenseVector[T], HashVector[T]]])
   }

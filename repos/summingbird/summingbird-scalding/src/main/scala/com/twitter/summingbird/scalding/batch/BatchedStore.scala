@@ -198,7 +198,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     val batchIntr = batcher.batchesCoveredBy(readTimespan)
 
     val batches = BatchID.toIterable(batchIntr).toList
-    val finalBatch = batches.last // batches won't be empty, ensured by atLeastOneBatch method
+    val finalBatch =
+      batches.last // batches won't be empty, ensured by atLeastOneBatch method
     val filteredBatches = select(batches).sorted
 
     assert(
@@ -228,7 +229,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       */
     def mergeAll(all: TypedPipe[(K, (BatchID, (Timestamp, V)))]): TypedPipe[(
         K,
-        (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))] = {
+        (
+            BatchID,
+            (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))] = {
 
       // Make sure to use sumOption on V
       implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =

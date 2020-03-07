@@ -56,7 +56,12 @@ package object reify {
       universe: global.Tree,
       mirror: global.Tree,
       tree: global.Tree): global.Tree =
-    mkReifier(global)(typer, universe, mirror, tree, concrete = false).reification
+    mkReifier(global)(
+      typer,
+      universe,
+      mirror,
+      tree,
+      concrete = false).reification
       .asInstanceOf[global.Tree]
 
   def reifyType(global: Global)(
@@ -65,7 +70,12 @@ package object reify {
       mirror: global.Tree,
       tpe: global.Type,
       concrete: Boolean = false): global.Tree =
-    mkReifier(global)(typer, universe, mirror, tpe, concrete = concrete).reification
+    mkReifier(global)(
+      typer,
+      universe,
+      mirror,
+      tpe,
+      concrete = concrete).reification
       .asInstanceOf[global.Tree]
 
   def reifyRuntimeClass(global: Global)(

@@ -55,16 +55,21 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
           ijk)
       }
       "Chunked w/o LastChunk" in {
-        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must collectBytesTo(
+        Chunked(
+          tpe,
+          source(Chunk(abc), Chunk(fgh), Chunk(ijk))) must collectBytesTo(
           abc,
           fgh,
           ijk)
       }
       "Chunked with LastChunk" in {
-        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)) must collectBytesTo(
-          abc,
-          fgh,
-          ijk)
+        Chunked(
+          tpe,
+          source(
+            Chunk(abc),
+            Chunk(fgh),
+            Chunk(ijk),
+            LastChunk)) must collectBytesTo(abc, fgh, ijk)
       }
     }
     "support contentLength" - {
@@ -72,14 +77,23 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
         Strict(tpe, abc).contentLengthOption mustEqual Some(3)
       }
       "Default" in {
-        Default(tpe, 11, source(abc, de, fgh, ijk)).contentLengthOption mustEqual Some(
-          11)
+        Default(
+          tpe,
+          11,
+          source(abc, de, fgh, ijk)).contentLengthOption mustEqual Some(11)
       }
       "CloseDelimited" in {
-        CloseDelimited(tpe, source(abc, de, fgh, ijk)).contentLengthOption mustEqual None
+        CloseDelimited(
+          tpe,
+          source(abc, de, fgh, ijk)).contentLengthOption mustEqual None
       }
       "Chunked" in {
-        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk))).contentLengthOption mustEqual None
+        Chunked(
+          tpe,
+          source(
+            Chunk(abc),
+            Chunk(fgh),
+            Chunk(ijk))).contentLengthOption mustEqual None
       }
     }
     "support toStrict" - {
@@ -204,9 +218,14 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
             .withoutSizeLimit)
       }
       "Chunked" in {
-        withReturnType[Chunked](Chunked(
-          tpe,
-          source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk)).withoutSizeLimit)
+        withReturnType[Chunked](
+          Chunked(
+            tpe,
+            source(
+              Chunk(abc),
+              Chunk(fgh),
+              Chunk(ijk),
+              LastChunk)).withoutSizeLimit)
         withReturnType[RequestEntity](
           Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
             .asInstanceOf[RequestEntity]

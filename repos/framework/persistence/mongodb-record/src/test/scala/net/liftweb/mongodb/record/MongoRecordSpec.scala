@@ -539,7 +539,11 @@ class MongoRecordSpec extends Specification with MongoTestKit {
       val btr = BoxTestRecord.createRecord
       btr.jsonobjlist.set(
         BoxTestJsonObj("1", Empty, Full("Full String1"), Failure("Failure1")) ::
-          BoxTestJsonObj("2", Empty, Full("Full String2"), Failure("Failure2")) ::
+          BoxTestJsonObj(
+            "2",
+            Empty,
+            Full("Full String2"),
+            Failure("Failure2")) ::
           Nil
       )
 

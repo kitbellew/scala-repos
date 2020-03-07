@@ -316,7 +316,8 @@ class RenamedEventAwareSerializer extends SerializerWithStringManifest {
   val Utf8 = Charset.forName("UTF-8")
   override def identifier: Int = 8337
 
-  val OldPayloadClassName = "docs.persistence.OldPayload" // class NOT available anymore
+  val OldPayloadClassName =
+    "docs.persistence.OldPayload" // class NOT available anymore
   val MyPayloadClassName = classOf[SamplePayload].getName
 
   override def manifest(o: AnyRef): String = o.getClass.getName

@@ -168,8 +168,8 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7232#section-3.5
   // http://tools.ietf.org/html/rfc7233#section-3.2
   def `if-range` = rule {
-    (`entity-tag` ~> (Left(_)) | `HTTP-date` ~> (Right(_))) ~ EOI ~> (`If-Range`(
-      _))
+    (`entity-tag` ~> (Left(_)) | `HTTP-date` ~> (Right(
+      _))) ~ EOI ~> (`If-Range`(_))
   }
 
   // http://tools.ietf.org/html/rfc7232#section-3.4
@@ -216,10 +216,9 @@ private[parser] trait SimpleHeaders {
   def server = rule { products ~ EOI ~> (Server(_)) }
 
   def `strict-transport-security` = rule {
-    ignoreCase("max-age=") ~ `delta-seconds` ~ optional(ws(";") ~ ignoreCase(
-      "includesubdomains") ~ push(true)) ~ EOI ~> (`Strict-Transport-Security`(
-      _,
-      _))
+    ignoreCase("max-age=") ~ `delta-seconds` ~ optional(
+      ws(";") ~ ignoreCase("includesubdomains") ~ push(
+        true)) ~ EOI ~> (`Strict-Transport-Security`(_, _))
   }
 
   // http://tools.ietf.org/html/rfc7230#section-3.3.1
@@ -230,8 +229,8 @@ private[parser] trait SimpleHeaders {
 
   // https://tools.ietf.org/html/rfc6265
   def `set-cookie` = rule {
-    `cookie-pair` ~> (_.toCookie) ~ zeroOrMore(ws(';') ~ `cookie-av`) ~ EOI ~> (`Set-Cookie`(
-      _))
+    `cookie-pair` ~> (_.toCookie) ~ zeroOrMore(
+      ws(';') ~ `cookie-av`) ~ EOI ~> (`Set-Cookie`(_))
   }
 
   // http://tools.ietf.org/html/rfc7230#section-6.7
@@ -257,8 +256,8 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/draft-ietf-appsawg-http-forwarded-10
   def `x-forwarded-for` = {
     def addr = rule {
-      (`ip-v4-address` | `ip-v6-address`) ~> (RemoteAddress(_)) | "unknown" ~ push(
-        RemoteAddress.Unknown)
+      (`ip-v4-address` | `ip-v6-address`) ~> (RemoteAddress(
+        _)) | "unknown" ~ push(RemoteAddress.Unknown)
     }
     rule {
       oneOrMore(addr).separatedBy(listSep) ~ EOI ~> (`X-Forwarded-For`(_))

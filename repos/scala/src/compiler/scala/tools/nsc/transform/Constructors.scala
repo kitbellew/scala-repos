@@ -63,7 +63,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         def check(tree: Tree) = {
           for (t <- tree) t match {
             case t: RefTree
-                if uninitializedVals(t.symbol.accessedOrSelf) && t.qualifier.symbol == clazz =>
+                if uninitializedVals(
+                  t.symbol.accessedOrSelf) && t.qualifier.symbol == clazz =>
               reporter.warning(
                 t.pos,
                 s"Reference to uninitialized ${t.symbol.accessedOrSelf}")
@@ -87,7 +88,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
     override def transform(tree: Tree): Tree = {
       tree match {
         case cd @ ClassDef(mods0, name0, tparams0, impl0)
-            if !isPrimitiveValueClass(cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
+            if !isPrimitiveValueClass(
+              cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
           if (cd.symbol eq AnyValClass) {
             cd
           } else {
@@ -586,8 +588,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
        *   (c) isn't part of a DelayedInit subclass.
        */
       private def canBeSupplanted(sym: Symbol) =
-        !isDelayedInitSubclass && isStationaryParamRef(sym) && !possiblySpecialized(
-          sym)
+        !isDelayedInitSubclass && isStationaryParamRef(
+          sym) && !possiblySpecialized(sym)
 
       override def transform(tree: Tree): Tree = tree match {
         case Apply(Select(This(_), _), List()) =>
@@ -596,7 +598,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           if (clazz.isTrait)
             super.transform(tree)
           else if (canBeSupplanted(tree.symbol))
-            gen.mkAttributedIdent(parameter(tree.symbol.accessed)) setPos tree.pos
+            gen.mkAttributedIdent(
+              parameter(tree.symbol.accessed)) setPos tree.pos
           else if (tree.symbol.outerSource == clazz)
             gen.mkAttributedIdent(parameterNamed(nme.OUTER)) setPos tree.pos
           else

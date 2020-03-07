@@ -259,7 +259,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
               (s"Rep.Some($pk)", fk)
             else (pk, fk)
           }.unzip
-        s"""lazy val $name = foreignKey("$dbName", ${compoundValue(fkColumns)}, $pkTable)(r => ${compoundValue(
+        s"""lazy val $name = foreignKey("$dbName", ${compoundValue(
+          fkColumns)}, $pkTable)(r => ${compoundValue(
           pkColumns)}, onUpdate=${onUpdate}, onDelete=${onDelete})"""
       }
     }
@@ -267,7 +268,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
     class IndexDef(model: m.Index) extends super.IndexDef(model) {
       def code = {
         val unique = if (model.unique) s", unique=true" else ""
-        s"""val $name = index("$dbName", ${compoundValue(columns.map(_.name))}$unique)"""
+        s"""val $name = index("$dbName", ${compoundValue(
+          columns.map(_.name))}$unique)"""
       }
     }
   }

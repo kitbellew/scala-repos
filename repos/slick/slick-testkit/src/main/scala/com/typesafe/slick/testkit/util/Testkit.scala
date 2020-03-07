@@ -81,8 +81,9 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
           previousTestObject = null
           try ch.run(testObject)
           finally {
-            val skipCleanup = idx == last || (testObject.reuseInstance && (ch.cl eq is(
-              idx + 1)._1._1.cl))
+            val skipCleanup =
+              idx == last || (testObject.reuseInstance && (ch.cl eq is(
+                idx + 1)._1._1.cl))
             if (skipCleanup) {
               if (idx == last) testObject.closeKeepAlive()
               else previousTestObject = testObject

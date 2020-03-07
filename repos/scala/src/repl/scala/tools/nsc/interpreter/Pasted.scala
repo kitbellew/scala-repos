@@ -25,7 +25,8 @@ abstract class Pasted(prompt: String) {
   val ContinueString = replProps.continueText // "     | "
   val anyPrompt = {
     import scala.util.matching.Regex.quote
-    s"""\\s*(?:${quote(PromptString.trim)}|${quote(AltPromptString.trim)})\\s*""".r
+    s"""\\s*(?:${quote(PromptString.trim)}|${quote(
+      AltPromptString.trim)})\\s*""".r
   }
 
   def isPrompted(line: String) = matchesPrompt(line)
@@ -61,7 +62,8 @@ abstract class Pasted(prompt: String) {
     val referenced =
       lines flatMap (resReference findAllIn _.trim.stripPrefix("res")) toSet
     val ActualPromptString = lines find matchesPrompt map (s =>
-      if (matchesString(s, PromptString)) PromptString else AltPromptString) getOrElse PromptString
+      if (matchesString(s, PromptString)) PromptString
+      else AltPromptString) getOrElse PromptString
     val cmds =
       lines reduceLeft append split ActualPromptString filterNot (_.trim == "") toList
 

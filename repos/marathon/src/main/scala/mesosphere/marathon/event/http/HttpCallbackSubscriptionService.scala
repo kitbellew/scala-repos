@@ -9,7 +9,8 @@ import javax.inject.{Named, Inject}
 import scala.concurrent.Future
 
 class HttpCallbackSubscriptionService @Inject() (
-    @Named(HttpEventModule.SubscribersKeeperActor) val subscribersKeeper: ActorRef,
+    @Named(
+      HttpEventModule.SubscribersKeeperActor) val subscribersKeeper: ActorRef,
     @Named(EventModule.busName) eventBus: EventStream) {
 
   import scala.concurrent.ExecutionContext.Implicits.global

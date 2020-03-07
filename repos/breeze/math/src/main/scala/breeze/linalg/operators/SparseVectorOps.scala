@@ -21,8 +21,14 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
   @expand.valify
   implicit def implOps_SVT_DVT_InPlace[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType](
-      implicit
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpMulScalar,
+        OpDiv,
+        OpSet,
+        OpMod,
+        OpPow) Op <: OpType](implicit
       @expand.sequence[Op](
         { _ + _ }, {
           _ - _
@@ -994,7 +1000,14 @@ trait SparseVectorOps { this: SparseVector.type =>
 
   @expand
   implicit def implOps_SVT_Field_InPlace[
-      @expand.args(OpAdd, OpSub, OpDiv, OpPow, OpMod, OpMulScalar, OpMulMatrix) Op <: OpType,
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpDiv,
+        OpPow,
+        OpMod,
+        OpMulScalar,
+        OpMulMatrix) Op <: OpType,
       T: Field: ClassTag]: Op.InPlaceImpl2[SparseVector[T], T] = {
     val uop: Op.InPlaceImpl2[SparseVector[T], T] = updateFromPure(
       implicitly[Op.Impl2[SparseVector[T], T, SparseVector[T]]])
@@ -1004,8 +1017,14 @@ trait SparseVectorOps { this: SparseVector.type =>
   @expand.valify
   implicit def implOps_SVT_T_InPlace[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(OpAdd, OpSub, OpDiv, OpPow, OpMod, OpMulScalar, OpMulMatrix) Op <: OpType]
-      : Op.InPlaceImpl2[SparseVector[T], T] = {
+      @expand.args(
+        OpAdd,
+        OpSub,
+        OpDiv,
+        OpPow,
+        OpMod,
+        OpMulScalar,
+        OpMulMatrix) Op <: OpType]: Op.InPlaceImpl2[SparseVector[T], T] = {
     val uop: Op.InPlaceImpl2[SparseVector[T], T] = updateFromPure(
       implicitly[Op.Impl2[SparseVector[T], T, SparseVector[T]]])
     uop
@@ -1441,7 +1460,12 @@ trait SparseVectorOps { this: SparseVector.type =>
   class CanZipMapKeyValuesSparseVector[
       @spec(Double, Int, Float, Long) V,
       @spec(Int, Double) RV: ClassTag: Zero: Semiring]
-      extends CanZipMapKeyValues[SparseVector[V], Int, V, RV, SparseVector[RV]] {
+      extends CanZipMapKeyValues[
+        SparseVector[V],
+        Int,
+        V,
+        RV,
+        SparseVector[RV]] {
     def create(length: Int): SparseVector[RV] = zeros(length)
 
     /**Maps all corresponding values from the two collection. */

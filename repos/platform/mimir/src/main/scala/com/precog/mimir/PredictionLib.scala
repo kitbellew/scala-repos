@@ -153,16 +153,24 @@ trait PredictionLibModule[M[+_]]
                       ColumnRef(pathFit, CDouble) -> ArrayDoubleColumn(
                         definedModel,
                         resultArray),
-                      ColumnRef(pathConfidenceUpper, CDouble) -> ArrayDoubleColumn(
+                      ColumnRef(
+                        pathConfidenceUpper,
+                        CDouble) -> ArrayDoubleColumn(
                         definedModel,
                         confidenceUpper),
-                      ColumnRef(pathConfidenceLower, CDouble) -> ArrayDoubleColumn(
+                      ColumnRef(
+                        pathConfidenceLower,
+                        CDouble) -> ArrayDoubleColumn(
                         definedModel,
                         confidenceLower),
-                      ColumnRef(pathPredictionUpper, CDouble) -> ArrayDoubleColumn(
+                      ColumnRef(
+                        pathPredictionUpper,
+                        CDouble) -> ArrayDoubleColumn(
                         definedModel,
                         predictionUpper),
-                      ColumnRef(pathPredictionLower, CDouble) -> ArrayDoubleColumn(
+                      ColumnRef(
+                        pathPredictionLower,
+                        CDouble) -> ArrayDoubleColumn(
                         definedModel,
                         predictionLower)
                     )

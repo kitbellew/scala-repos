@@ -192,7 +192,10 @@ object Actor extends ListenerManagement {
     new LocalActorRef(
       () => {
         import ReflectiveAccess.{createInstance, noParams, noArgs}
-        createInstance[Actor](clazz.asInstanceOf[Class[_]], noParams, noArgs) match {
+        createInstance[Actor](
+          clazz.asInstanceOf[Class[_]],
+          noParams,
+          noArgs) match {
           case Right(actor) => actor
           case Left(exception) =>
             val cause = exception match {
@@ -536,7 +539,8 @@ trait Actor {
           f.get.completeWithException(new ActorKilledException("PoisonPill"))
     }
 
-  private lazy val processingBehavior = receive //ProcessingBehavior is the original behavior
+  private lazy val processingBehavior =
+    receive //ProcessingBehavior is the original behavior
 }
 
 private[actor] class AnyOptionAsTypedOption(anyOption: Option[Any]) {

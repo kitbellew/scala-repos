@@ -116,10 +116,12 @@ class ZookeeperConsumerConnectorTest
           .map(x => header + server.config.brokerId + "-" + partition + "-" + x)
         messages ++= ms
         import JavaConversions._
-        javaProducer.send(ms.map(new KeyedMessage[Int, String](
-          topic,
-          partition,
-          _)): java.util.List[KeyedMessage[Int, String]])
+        javaProducer.send(
+          ms.map(
+              new KeyedMessage[Int, String](
+                topic,
+                partition,
+                _)): java.util.List[KeyedMessage[Int, String]])
       }
       javaProducer.close
     }

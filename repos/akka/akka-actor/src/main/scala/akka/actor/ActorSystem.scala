@@ -856,7 +856,8 @@ private[akka] class ActorSystemImpl(
   private def findExtension[T <: Extension](ext: ExtensionId[T]): T =
     extensions.get(ext) match {
       case c: CountDownLatch ⇒
-        c.await(); findExtension(ext) //Registration in process, await completion and retry
+        c.await();
+        findExtension(ext) //Registration in process, await completion and retry
       case t: Throwable ⇒ throw t //Initialization failed, throw same again
       case other ⇒
         other.asInstanceOf[

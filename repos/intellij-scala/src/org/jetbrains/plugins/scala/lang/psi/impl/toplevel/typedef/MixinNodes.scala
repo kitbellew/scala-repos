@@ -617,7 +617,8 @@ object MixinNodes {
       addTp: Boolean,
       supers: Seq[ScType]): Seq[ScType] = {
     val buffer = new ListBuffer[ScType]
-    val set: mutable.HashSet[String] = new mutable.HashSet //to add here qualified names of classes
+    val set: mutable.HashSet[String] =
+      new mutable.HashSet //to add here qualified names of classes
     def classString(clazz: PsiClass): String = {
       clazz match {
         case obj: ScObject => "Object: " + obj.qualifiedName

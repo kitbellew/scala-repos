@@ -441,7 +441,9 @@ class AsyncProducerTest {
     partitionedDataOpt match {
       case Some(partitionedData) =>
         for ((brokerId, dataPerBroker) <- partitionedData) {
-          for ((TopicAndPartition(topic, partitionId), dataPerTopic) <- dataPerBroker)
+          for ((
+                 TopicAndPartition(topic, partitionId),
+                 dataPerTopic) <- dataPerBroker)
             assertTrue(partitionId == 0)
         }
       case None =>

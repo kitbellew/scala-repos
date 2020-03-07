@@ -29,7 +29,12 @@ import java.io.File
 case class DataSourceParams(val filepath: String) extends Params
 
 case class DataSource(val dsp: DataSourceParams)
-    extends PDataSource[DataSourceParams, Null, RDD[Rating], (Int, Int), Double] {
+    extends PDataSource[
+      DataSourceParams,
+      Null,
+      RDD[Rating],
+      (Int, Int),
+      Double] {
 
   override def read(
       sc: SparkContext): Seq[(Null, RDD[Rating], RDD[((Int, Int), Double)])] = {

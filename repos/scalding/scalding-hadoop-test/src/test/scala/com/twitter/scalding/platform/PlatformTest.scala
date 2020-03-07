@@ -517,22 +517,23 @@ class PlatformTest
   //also tests HashJoin behavior to verify that we don't introduce a forceToDisk as the RHS pipe is source Pipe
   "A TypedPipeJoinWithDescriptionPipe" should {
     "have a custom step name from withDescription and no extra forceToDisk steps on hashJoin's rhs" in {
-      HadoopPlatformJobTest(new TypedPipeJoinWithDescriptionJob(_), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 1
-          val firstStep = steps.headOption
-            .map(_.getConfig.get(Config.StepDescriptions))
-            .getOrElse("")
-          val lines = List(149, 151, 152, 155, 156).map { i =>
-            s"com.twitter.scalding.platform.TypedPipeJoinWithDescriptionJob.<init>(PlatformTest.scala:$i"
-          }
-          firstStep should include("leftJoin")
-          firstStep should include("hashJoin")
-          lines.foreach { l => firstStep should include(l) }
-          steps
-            .map(_.getConfig.get(Config.StepDescriptions))
-            .foreach(s => info(s))
+      HadoopPlatformJobTest(
+        new TypedPipeJoinWithDescriptionJob(_),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 1
+        val firstStep = steps.headOption
+          .map(_.getConfig.get(Config.StepDescriptions))
+          .getOrElse("")
+        val lines = List(149, 151, 152, 155, 156).map { i =>
+          s"com.twitter.scalding.platform.TypedPipeJoinWithDescriptionJob.<init>(PlatformTest.scala:$i"
+        }
+        firstStep should include("leftJoin")
+        firstStep should include("hashJoin")
+        lines.foreach { l => firstStep should include(l) }
+        steps
+          .map(_.getConfig.get(Config.StepDescriptions))
+          .foreach(s => info(s))
       }.run
     }
   }
@@ -540,14 +541,15 @@ class PlatformTest
   //expect two jobs - one for the map prior to the Checkpoint and one for the hashJoin
   "A TypedPipeHashJoinWithForceToDiskJob" should {
     "have a custom step name from withDescription and only one user provided forceToDisk on hashJoin's rhs" in {
-      HadoopPlatformJobTest(new TypedPipeHashJoinWithForceToDiskJob(_), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          steps should have size 2
-          val secondStep = steps.lastOption
-            .map(_.getConfig.get(Config.StepDescriptions))
-            .getOrElse("")
-          secondStep should include("hashJoin")
+      HadoopPlatformJobTest(
+        new TypedPipeHashJoinWithForceToDiskJob(_),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        steps should have size 2
+        val secondStep = steps.lastOption
+          .map(_.getConfig.get(Config.StepDescriptions))
+          .getOrElse("")
+        secondStep should include("hashJoin")
       }.run
     }
   }
@@ -680,24 +682,25 @@ class PlatformTest
 
   "A TypedPipeWithDescriptionPipe" should {
     "have a custom step name from withDescription" in {
-      HadoopPlatformJobTest(new TypedPipeWithDescriptionJob(_), cluster).inspectCompletedFlow {
-        flow =>
-          val steps = flow.getFlowSteps.asScala
-          val descs = List(
-            "map stage - assign words to 1",
-            "reduce stage - sum",
-            "write",
-            // should see the .group and the .write show up as line numbers
-            "com.twitter.scalding.platform.TypedPipeWithDescriptionJob.<init>(PlatformTest.scala:137)",
-            "com.twitter.scalding.platform.TypedPipeWithDescriptionJob.<init>(PlatformTest.scala:141)"
-          )
+      HadoopPlatformJobTest(
+        new TypedPipeWithDescriptionJob(_),
+        cluster).inspectCompletedFlow { flow =>
+        val steps = flow.getFlowSteps.asScala
+        val descs = List(
+          "map stage - assign words to 1",
+          "reduce stage - sum",
+          "write",
+          // should see the .group and the .write show up as line numbers
+          "com.twitter.scalding.platform.TypedPipeWithDescriptionJob.<init>(PlatformTest.scala:137)",
+          "com.twitter.scalding.platform.TypedPipeWithDescriptionJob.<init>(PlatformTest.scala:141)"
+        )
 
-          val foundDescs = steps.map(_.getConfig.get(Config.StepDescriptions))
-          descs.foreach { d =>
-            assert(foundDescs.size == 1)
-            assert(foundDescs(0).contains(d))
-          }
-        //steps.map(_.getConfig.get(Config.StepDescriptions)).foreach(s => info(s))
+        val foundDescs = steps.map(_.getConfig.get(Config.StepDescriptions))
+        descs.foreach { d =>
+          assert(foundDescs.size == 1)
+          assert(foundDescs(0).contains(d))
+        }
+      //steps.map(_.getConfig.get(Config.StepDescriptions)).foreach(s => info(s))
       }.run
     }
   }

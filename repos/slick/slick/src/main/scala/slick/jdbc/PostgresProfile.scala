@@ -235,7 +235,9 @@ trait PostgresProfile extends JdbcProfile {
       }
       if (dropLobs.isEmpty) super.dropPhase1
       else
-        Seq("delete from " + quoteIdentifier(table.tableName)) ++ dropLobs ++ super.dropPhase1
+        Seq(
+          "delete from " + quoteIdentifier(
+            table.tableName)) ++ dropLobs ++ super.dropPhase1
     }
   }
 
@@ -257,8 +259,10 @@ trait PostgresProfile extends JdbcProfile {
     def createLobTrigger(tname: String): Option[String] =
       if (sqlType == "lo")
         Some(
-          "create trigger " + lobTrigger(tname) + " before update or delete on " +
-            quoteIdentifier(tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
+          "create trigger " + lobTrigger(
+            tname) + " before update or delete on " +
+            quoteIdentifier(
+              tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
             column.name) + ")"
         )
       else None

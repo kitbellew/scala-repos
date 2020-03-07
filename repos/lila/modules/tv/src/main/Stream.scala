@@ -29,7 +29,10 @@ object Twitch {
   case class Result(streams: List[Stream]) {
     def streamsOnAir(streamers: List[Streamer]) =
       streams map (_.channel) flatMap { c =>
-        (c.url, c.status, StreamerList.findTwitch(streamers)(c.display_name)) match {
+        (
+          c.url,
+          c.status,
+          StreamerList.findTwitch(streamers)(c.display_name)) match {
           case (Some(url), Some(status), Some(streamer)) =>
             Some(
               StreamOnAir(

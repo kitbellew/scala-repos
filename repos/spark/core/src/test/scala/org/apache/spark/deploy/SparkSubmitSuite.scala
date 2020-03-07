@@ -295,9 +295,12 @@ class SparkSubmitSuite
     sysProps("spark.executor.cores") should be("5")
     sysProps("spark.yarn.queue") should be("thequeue")
     sysProps("spark.executor.instances") should be("6")
-    sysProps("spark.yarn.dist.files") should include regex (".*file1.txt,.*file2.txt")
-    sysProps("spark.yarn.dist.archives") should include regex (".*archive1.txt,.*archive2.txt")
-    sysProps("spark.jars") should include regex (".*one.jar,.*two.jar,.*three.jar,.*thejar.jar")
+    sysProps(
+      "spark.yarn.dist.files") should include regex (".*file1.txt,.*file2.txt")
+    sysProps(
+      "spark.yarn.dist.archives") should include regex (".*archive1.txt,.*archive2.txt")
+    sysProps(
+      "spark.jars") should include regex (".*one.jar,.*two.jar,.*three.jar,.*thejar.jar")
     sysProps("SPARK_SUBMIT") should be("true")
     sysProps("spark.ui.enabled") should be("false")
   }

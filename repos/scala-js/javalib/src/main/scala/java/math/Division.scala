@@ -84,7 +84,10 @@ private[math] object Division {
       aLength: Int,
       b: Array[Int],
       bLength: Int): Array[Int] = {
-    val normA = new Array[Int](aLength + 1) // the normalized dividend an extra byte is needed for correct shift
+    val normA =
+      new Array[Int](
+        aLength + 1
+      ) // the normalized dividend an extra byte is needed for correct shift
     val normB = new Array[Int](bLength + 1) // the normalized divisor
     val normBLength = bLength
     /*
@@ -163,7 +166,8 @@ private[math] object Division {
           guessDigit -= 1
           var carry: Long = 0
           for (k <- 0 until normBLength) {
-            carry += (normA(j - normBLength + k) & UINT_MAX) + (normB(k) & UINT_MAX)
+            carry += (normA(j - normBLength + k) & UINT_MAX) + (normB(
+              k) & UINT_MAX)
             normA(j - normBLength + k) = carry.toInt
             carry >>>= 32
           }
@@ -377,7 +381,8 @@ private[math] object Division {
       while (i >= 0) {
         if (res(i) != modulusDigits(i)) {
           doSub =
-            (res(i) != 0) && ((res(i) & UINT_MAX) > (modulusDigits(i) & UINT_MAX))
+            (res(i) != 0) && ((res(i) & UINT_MAX) > (modulusDigits(
+              i) & UINT_MAX))
           //force break
           i = 0
         }
@@ -520,7 +525,8 @@ private[math] object Division {
     */
   def modInverseLorencz(a: BigInteger, modulo: BigInteger): BigInteger = {
     val max = Math.max(a.numberLength, modulo.numberLength)
-    val uDigits = new Array[Int](max + 1) // enough place to make all the inplace operation
+    val uDigits =
+      new Array[Int](max + 1) // enough place to make all the inplace operation
     val vDigits = new Array[Int](max + 1)
     System.arraycopy(modulo.digits, 0, uDigits, 0, modulo.numberLength)
     System.arraycopy(a.digits, 0, vDigits, 0, a.numberLength)

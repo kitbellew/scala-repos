@@ -1439,18 +1439,33 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case (Right(left), Right(right)) =>
             orderHint match {
               case Some(JoinOrder.LeftOrder) =>
-                hashJoin(right.slice, left, flip = true) map (JoinOrder.LeftOrder -> _)
+                hashJoin(
+                  right.slice,
+                  left,
+                  flip = true) map (JoinOrder.LeftOrder -> _)
               case Some(JoinOrder.RightOrder) =>
-                hashJoin(left.slice, right, flip = false) map (JoinOrder.RightOrder -> _)
+                hashJoin(
+                  left.slice,
+                  right,
+                  flip = false) map (JoinOrder.RightOrder -> _)
               case _ =>
-                hashJoin(right.slice, left, flip = true) map (JoinOrder.LeftOrder -> _)
+                hashJoin(
+                  right.slice,
+                  left,
+                  flip = true) map (JoinOrder.LeftOrder -> _)
             }
 
           case (Right(left), Left(right)) =>
-            hashJoin(left.slice, right, flip = false) map (JoinOrder.RightOrder -> _)
+            hashJoin(
+              left.slice,
+              right,
+              flip = false) map (JoinOrder.RightOrder -> _)
 
           case (Left(left), Right(right)) =>
-            hashJoin(right.slice, left, flip = true) map (JoinOrder.LeftOrder -> _)
+            hashJoin(
+              right.slice,
+              left,
+              flip = true) map (JoinOrder.LeftOrder -> _)
 
           case (leftE, rightE) =>
             val idT = Predef.identity[Table](_)
@@ -1660,7 +1675,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
         case (streamIds, indices) =>
           val streams = indices.groupBy(_._1.streamId)
           streamIds.toStream map { streamId =>
-            streams get streamId map (loadTable(sortMergeEngine, _, sortOrder)) getOrElse Table.empty
+            streams get streamId map (loadTable(
+              sortMergeEngine,
+              _,
+              sortOrder)) getOrElse Table.empty
           }
       }
     }

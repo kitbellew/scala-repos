@@ -27,7 +27,8 @@ object Command {
   val COM_BINLOG_DUMP = 0x12.toByte // sent by slave IO thread to req a binlog
   val COM_TABLE_DUMP = 0x13.toByte // deprecated
   val COM_CONNECT_OUT = 0x14.toByte // internal thread state
-  val COM_REGISTER_SLAVE = 0x15.toByte // sent by the slave to register with the master (optional)
+  val COM_REGISTER_SLAVE =
+    0x15.toByte // sent by the slave to register with the master (optional)
   val COM_STMT_PREPARE = 0x16.toByte // mysql_stmt_prepare
   val COM_STMT_EXECUTE = 0x17.toByte // mysql_stmt_execute
   val COM_STMT_SEND_LONG_DATA = 0x18.toByte // mysql_stmt_send_long_data

@@ -125,7 +125,8 @@ trait StatsLibModule[M[+_]]
 
     object Mode extends Morphism1(EmptyNamespace, "mode") {
 
-      type Result = Set[BigDecimal] //(currentRunValue, curentCount, listOfModes, maxCount)
+      type Result =
+        Set[BigDecimal] //(currentRunValue, curentCount, listOfModes, maxCount)
 
       val tpe = UnaryOperationType(JNumberT, JNumberT)
 
@@ -403,7 +404,10 @@ trait StatsLibModule[M[+_]]
                 }
 
               case FindSecond(x0) =>
-                findFirst(values, rowM.getOrElse(range.start), range.end) match {
+                findFirst(
+                  values,
+                  rowM.getOrElse(range.start),
+                  range.end) match {
                   case Some((_, x1)) => loop(Continue(x0, x1 - x0, true), None)
                   case None =>
                     rowM map { row =>
@@ -498,13 +502,14 @@ trait StatsLibModule[M[+_]]
           BigDecimal,
           BigDecimal,
           BigDecimal) // (count, sum1, sum2, sumsq1, sumsq2, productSum)
-      type Result = Option[(
-          BigDecimal,
-          BigDecimal,
-          BigDecimal,
-          BigDecimal,
-          BigDecimal,
-          BigDecimal)]
+      type Result = Option[
+        (
+            BigDecimal,
+            BigDecimal,
+            BigDecimal,
+            BigDecimal,
+            BigDecimal,
+            BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]
 
@@ -796,7 +801,10 @@ trait StatsLibModule[M[+_]]
               val stdDev2 = sqrt(unscaledVar2) / count
               val correlation = cov / (stdDev1 * stdDev2)
 
-              val resultTable = Table.constDecimal(Set(correlation)) //TODO the following lines are used throughout. refactor!
+              val resultTable =
+                Table.constDecimal(
+                  Set(correlation)
+                ) //TODO the following lines are used throughout. refactor!
               val valueTable = resultTable.transform(
                 trans.WrapObject(Leaf(Source), paths.Value.name))
               val keyTable = Table.constEmptyArray.transform(
@@ -823,7 +831,12 @@ trait StatsLibModule[M[+_]]
 
       lazy val alignment = MorphismAlignment.Match(M.point(morph1))
 
-      type InitialResult = (BigDecimal, BigDecimal, BigDecimal, BigDecimal) // (count, sum1, sum2, productSum)
+      type InitialResult =
+        (
+            BigDecimal,
+            BigDecimal,
+            BigDecimal,
+            BigDecimal) // (count, sum1, sum2, productSum)
       type Result = Option[(BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]

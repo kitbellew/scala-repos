@@ -402,7 +402,8 @@ object PatternsCS {
       actor: ActorRef,
       message: Any,
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
+    scalaAsk(actor, message)(
+      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**
@@ -424,7 +425,8 @@ object PatternsCS {
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(actor, messageFactory.apply _)(Timeout(timeoutMillis.millis)).toJava
+    scalaAsk(actor, messageFactory.apply _)(
+      Timeout(timeoutMillis.millis)).toJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**
@@ -519,7 +521,8 @@ object PatternsCS {
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis)).toJava
+    scalaAsk(selection, messageFactory.apply _)(
+      Timeout(timeoutMillis.millis)).toJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**

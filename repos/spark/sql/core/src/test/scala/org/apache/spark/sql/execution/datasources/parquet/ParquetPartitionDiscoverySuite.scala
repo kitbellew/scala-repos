@@ -772,7 +772,8 @@ class ParquetPartitionDiscoverySuite
     }
   }
 
-  test("SPARK-11678: Partition discovery stops at the root path of the dataset") {
+  test(
+    "SPARK-11678: Partition discovery stops at the root path of the dataset") {
     withTempPath { dir =>
       val tablePath = new File(dir, "key=value")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")

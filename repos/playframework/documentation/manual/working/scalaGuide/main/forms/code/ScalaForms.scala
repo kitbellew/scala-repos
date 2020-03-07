@@ -340,7 +340,8 @@ package scalaguide.forms.scalaforms {
         mapping(
           "name" -> text,
           "age" -> number
-        )(UserData.apply)(UserData.unapply) verifying ("Failed form constraints!", fields =>
+        )(UserData.apply)(
+          UserData.unapply) verifying ("Failed form constraints!", fields =>
           fields match {
             case userData => validate(userData.name, userData.age).isDefined
           })

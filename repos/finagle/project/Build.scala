@@ -437,7 +437,8 @@ object Finagle extends Build {
       sharedSettings
   ).settings(
       name := "finagle-thrift",
-      libraryDependencies ++= Seq("silly" % "silly-thrift" % "0.5.0" % "test") ++ scroogeLibs
+      libraryDependencies ++= Seq(
+        "silly" % "silly-thrift" % "0.5.0" % "test") ++ scroogeLibs
     )
     .dependsOn(finagleCore)
 

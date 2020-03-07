@@ -40,15 +40,18 @@ final class SortedSetClientServerIntegrationSuite
 
   test("ZADD should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
-      assert(Await
-        .result(client(ZAdd("zadd1", List(ZMember(1, "one"))))) == IntegerReply(
-        1))
-      assert(Await
-        .result(client(ZAdd("zadd1", List(ZMember(2, "two"))))) == IntegerReply(
-        1))
-      assert(Await
-        .result(client(ZAdd("zadd1", List(ZMember(3, "two"))))) == IntegerReply(
-        0))
+      assert(
+        Await
+          .result(
+            client(ZAdd("zadd1", List(ZMember(1, "one"))))) == IntegerReply(1))
+      assert(
+        Await
+          .result(
+            client(ZAdd("zadd1", List(ZMember(2, "two"))))) == IntegerReply(1))
+      assert(
+        Await
+          .result(
+            client(ZAdd("zadd1", List(ZMember(3, "two"))))) == IntegerReply(0))
       val expected = List("one", "1", "two", "3")
       assertMBulkReply(client(ZRange("zadd1", 0, -1, WithScores)), expected)
       assertMBulkReply(client(ZRange("zadd1", 0, -1)), List("one", "two"))
@@ -68,9 +71,8 @@ final class SortedSetClientServerIntegrationSuite
   test("ZCOUNT should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       initialize(client)
-      assert(
-        Await.result(client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(
-          3))
+      assert(Await.result(
+        client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(3))
       assert(
         Await
           .result(client(ZCount(ZKEY, ZInterval.exclusive(1), ZInterval(3)))) ==
@@ -204,7 +206,10 @@ final class SortedSetClientServerIntegrationSuite
     }
   }
 
-  test("ZRANK and ZREVRANK should work correctly", ClientServerTest, RedisTest) {
+  test(
+    "ZRANK and ZREVRANK should work correctly",
+    ClientServerTest,
+    RedisTest) {
     withRedisClient { client =>
       val key = "zrank1"
       zAdd(

@@ -14,7 +14,8 @@ final case class Apple(kind: String) extends RedOrOrangeFruit
 final case class Orange(ripeness: String) extends RedOrOrangeFruit
 final case class Banana(something: Int) extends Fruit
 
-final case class Cucumber(something: Int) // does not extend Fruit but same shape as Banana
+final case class Cucumber(
+    something: Int) // does not extend Fruit but same shape as Banana
 
 object Fruit {
   implicit val pickler = Pickler.generate[Fruit]

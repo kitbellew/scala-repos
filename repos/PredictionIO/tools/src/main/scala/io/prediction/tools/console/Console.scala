@@ -274,7 +274,8 @@ object Console extends Logging {
         arg[String]("<evaluation-class>") action { (x, c) =>
           c.copy(common = c.common.copy(evaluation = Some(x)))
         },
-        arg[String]("[<engine-parameters-generator-class>]") optional () action {
+        arg[String](
+          "[<engine-parameters-generator-class>]") optional () action {
           (x, c) =>
             c.copy(common = c.common.copy(engineParamsGenerator = Some(x)))
         } text ("Optional engine parameters generator class, overriding the first argument"),
@@ -886,7 +887,9 @@ object Console extends Logging {
 
   def compile(ca: ConsoleArgs): Unit = {
     // only add pioVersion to sbt if project/pio.sbt exists
-    if (new File("project", "pio-build.sbt").exists || ca.build.forceGeneratePIOSbt) {
+    if (new File(
+          "project",
+          "pio-build.sbt").exists || ca.build.forceGeneratePIOSbt) {
       FileUtils.writeLines(
         new File("pio.sbt"),
         Seq(

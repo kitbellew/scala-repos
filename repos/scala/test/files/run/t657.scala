@@ -42,7 +42,9 @@ trait Matcher extends PrecedenceParser {
 
 class Test1 extends OffsetList with Matcher {
   type Node = NodeImpl;
-  trait NodeImpl extends super[OffsetList].NodeImpl with super[Matcher].NodeImpl;
+  trait NodeImpl
+      extends super[OffsetList].NodeImpl
+      with super[Matcher].NodeImpl;
   class MatchableImpl extends super.MatchableImpl with NodeImpl;
   type Matchable = MatchableImpl;
 }

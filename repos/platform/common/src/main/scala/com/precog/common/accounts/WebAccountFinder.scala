@@ -71,19 +71,24 @@ object WebAccountFinder extends Logging {
     } getOrElse {
       (serviceConfig
         .get[String]("protocol")
-        .toSuccess(nels("Configuration property service.protocol is required")) |@|
+        .toSuccess(
+          nels("Configuration property service.protocol is required")) |@|
         serviceConfig
           .get[String]("host")
-          .toSuccess(nels("Configuration property service.host is required")) |@|
+          .toSuccess(
+            nels("Configuration property service.host is required")) |@|
         serviceConfig
           .get[Int]("port")
-          .toSuccess(nels("Configuration property service.port is required")) |@|
+          .toSuccess(
+            nels("Configuration property service.port is required")) |@|
         serviceConfig
           .get[String]("path")
-          .toSuccess(nels("Configuration property service.path is required")) |@|
+          .toSuccess(
+            nels("Configuration property service.path is required")) |@|
         serviceConfig
           .get[String]("user")
-          .toSuccess(nels("Configuration property service.user is required")) |@|
+          .toSuccess(
+            nels("Configuration property service.user is required")) |@|
         serviceConfig
           .get[String]("password")
           .toSuccess(
@@ -130,8 +135,10 @@ class WebAccountFinder(
       eitherT(client.query("apiKey", apiKey).get[JValue]("/accounts/") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
           logger.info("Got response for apiKey " + apiKey)
-          (((_: Extractor.Error).message) <-: jaccountId.validated[
-            WrappedAccountId] :-> { wid => Some(wid.accountId) }).disjunction
+          (((_: Extractor.Error).message) <-: jaccountId
+            .validated[WrappedAccountId] :-> { wid =>
+            Some(wid.accountId)
+          }).disjunction
 
         case HttpResponse(HttpStatus(OK, _), _, None, _) =>
           logger.warn("No account found for apiKey: " + apiKey)

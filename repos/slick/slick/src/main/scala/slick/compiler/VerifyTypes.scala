@@ -56,7 +56,8 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
       throw new SlickTreeException(
         after
           .map(p => "After " + p.name + ": ")
-          .getOrElse("") + errors.size + " type errors found in " + nodeCount + " nodes:",
+          .getOrElse(
+            "") + errors.size + " type errors found in " + nodeCount + " nodes:",
         tree,
         removeUnmarked = false,
         mark = (errors contains RefId(_)))

@@ -37,8 +37,8 @@ import scalaz._
 import scalaz.syntax.comonad._
 
 trait RenderStackSpecs extends EvalStackSpecs with Logging {
-  type TestStack <: EvalStackLike with ParseEvalStack[Future] with ColumnarTableModule[
-    Future] with MemoryDatasetConsumer[Future]
+  type TestStack <: EvalStackLike with ParseEvalStack[
+    Future] with ColumnarTableModule[Future] with MemoryDatasetConsumer[Future]
 
   import stack._
 

@@ -115,7 +115,9 @@ trait Namers extends MethodSynthesis {
 
     protected def owner = context.owner
     def contextFile = context.unit.source.file
-    def typeErrorHandler[T](tree: Tree, alt: T): PartialFunction[Throwable, T] = {
+    def typeErrorHandler[T](
+        tree: Tree,
+        alt: T): PartialFunction[Throwable, T] = {
       case ex: TypeError =>
         // H@ need to ensure that we handle only cyclic references
         TypeSigError(tree, ex)
@@ -734,7 +736,9 @@ trait Namers extends MethodSynthesis {
     }
     def enterPackage(tree: PackageDef) {
       val sym = assignSymbol(tree)
-      newNamer(context.make(tree, sym.moduleClass, sym.info.decls)) enterSyms tree.stats
+      newNamer(
+        context
+          .make(tree, sym.moduleClass, sym.info.decls)) enterSyms tree.stats
     }
     def enterTypeDef(tree: TypeDef) = assignAndEnterFinishedSymbol(tree)
 
@@ -1159,8 +1163,10 @@ trait Namers extends MethodSynthesis {
       }
 
       def overriddenSymbol(resTp: Type) = {
-        lazy val schema
-            : Type = methodTypeSchema(resTp) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
+        lazy val schema: Type =
+          methodTypeSchema(
+            resTp
+          ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
         intersectionType(methOwner.info.parents)
           .nonPrivateMember(meth.name)
           .filter { sym =>
@@ -1498,7 +1504,10 @@ trait Namers extends MethodSynthesis {
     private def typeDefSig(tdef: TypeDef) = {
       val TypeDef(_, _, tparams, rhs) = tdef
       // log("typeDefSig(" + tpsym + ", " + tparams + ")")
-      val tparamSyms = typer.reenterTypeParams(tparams) //@M make tparams available in scope (just for this abstypedef)
+      val tparamSyms =
+        typer.reenterTypeParams(
+          tparams
+        ) //@M make tparams available in scope (just for this abstypedef)
       val tp = typer.typedType(rhs).tpe match {
         case TypeBounds(lt, rt) if (lt.isError || rt.isError) =>
           TypeBounds.empty
@@ -1744,7 +1753,8 @@ trait Namers extends MethodSynthesis {
       }
       if (sym.isLazy && sym.hasFlag(PRESUPER))
         fail(LazyAndEarlyInit)
-      if (sym.info.typeSymbol == FunctionClass(0) && sym.isValueParameter && sym.owner.isCaseClass)
+      if (sym.info.typeSymbol == FunctionClass(
+            0) && sym.isValueParameter && sym.owner.isCaseClass)
         fail(ByNameParameter)
       if (sym.isTrait && sym.isFinal && !sym.isSubClass(AnyValClass))
         checkNoConflict(ABSTRACT, FINAL)

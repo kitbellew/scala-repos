@@ -87,7 +87,9 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
         case Some(fc) =>
           fc(g, last) match {
             case Some((newFc, uciMove)) if newFc.steps.nonEmpty =>
-              coll.update(BSONDocument("_id" -> fc._id), newFc) inject uciMove.some
+              coll.update(
+                BSONDocument("_id" -> fc._id),
+                newFc) inject uciMove.some
             case Some((newFc, uciMove)) =>
               clearPov(Pov player g) inject uciMove.some
             case _ => clearPov(Pov player g) inject none

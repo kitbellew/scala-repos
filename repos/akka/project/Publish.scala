@@ -46,7 +46,8 @@ object Publish extends AutoPlugin {
   }
 
   private def sonatypeRepo(version: String): Option[Resolver] =
-    Option(sys.props("publish.maven.central")) filter (_.toLowerCase == "true") map {
+    Option(
+      sys.props("publish.maven.central")) filter (_.toLowerCase == "true") map {
       _ =>
         val nexus = "https://oss.sonatype.org/"
         if (version endsWith "-SNAPSHOT")

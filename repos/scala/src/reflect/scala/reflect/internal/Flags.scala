@@ -203,9 +203,12 @@ class Flags extends ModifierFlags {
   // The flags (1L << 59) to (1L << 63) are currently unused. If added to the InitialFlags mask,
   // they could be used as normal flags.
 
-  final val InitialFlags = 0x0007FFFFFFFFFFFFL // normal flags, enabled from the first phase: 1L to (1L << 50)
-  final val LateFlags = 0x00F8000000000000L // flags that override flags in (1L << 4) to (1L << 8): DEFERRED, FINAL, INTERFACE, METHOD, MODULE
-  final val AntiFlags = 0x0700000000000000L // flags that cancel flags in 1L to (1L << 2): PROTECTED, OVERRIDE, PRIVATE
+  final val InitialFlags =
+    0x0007FFFFFFFFFFFFL // normal flags, enabled from the first phase: 1L to (1L << 50)
+  final val LateFlags =
+    0x00F8000000000000L // flags that override flags in (1L << 4) to (1L << 8): DEFERRED, FINAL, INTERFACE, METHOD, MODULE
+  final val AntiFlags =
+    0x0700000000000000L // flags that cancel flags in 1L to (1L << 2): PROTECTED, OVERRIDE, PRIVATE
   final val LateShift = 47
   final val AntiShift = 56
 

@@ -134,11 +134,15 @@ private[ui] class AllStagesPage(parent: StagesTab) extends WebUIPage("") {
           activeStagesTable.toNodeSeq
       }
       if (shouldShowPendingStages) {
-        content ++= <h4 id="pending">Pending Stages ({pendingStages.size})</h4> ++
+        content ++= <h4 id="pending">Pending Stages ({
+          pendingStages.size
+        })</h4> ++
           pendingStagesTable.toNodeSeq
       }
       if (shouldShowCompletedStages) {
-        content ++= <h4 id="completed">Completed Stages ({completedStageNumStr})</h4> ++
+        content ++= <h4 id="completed">Completed Stages ({
+          completedStageNumStr
+        })</h4> ++
           completedStagesTable.toNodeSeq
       }
       if (shouldShowFailedStages) {

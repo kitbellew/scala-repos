@@ -928,7 +928,9 @@ private[optimizer] abstract class OptimizerCore(
         pretransformExprs(captureValues) { tcaptureValues =>
           tryOrRollback { cancelFun =>
             val captureBindings = for {
-              (ParamDef(Ident(name, origName), tpe, mutable, rest), value) <- captureParams zip tcaptureValues
+              (
+                ParamDef(Ident(name, origName), tpe, mutable, rest),
+                value) <- captureParams zip tcaptureValues
             } yield {
               assert(!rest, s"Found a rest capture parameter at $pos")
               Binding(name, origName, tpe, mutable, value)
@@ -1303,7 +1305,9 @@ private[optimizer] abstract class OptimizerCore(
                   isStat,
                   usePreTransform)(cont)
               } else if (target.inlineable && (target.shouldInline ||
-                         shouldInlineBecauseOfArgs(target, treceiver :: targs))) {
+                         shouldInlineBecauseOfArgs(
+                           target,
+                           treceiver :: targs))) {
                 inline(
                   allocationSites,
                   Some(treceiver),
@@ -1732,7 +1736,9 @@ private[optimizer] abstract class OptimizerCore(
       }
 
       val argsBindings = for {
-        (ParamDef(Ident(name, originalName), tpe, mutable, rest), arg) <- formals zip args
+        (
+          ParamDef(Ident(name, originalName), tpe, mutable, rest),
+          arg) <- formals zip args
       } yield {
         assert(!rest, s"Trying to inline a body with a rest parameter at $pos")
         Binding(name, originalName, tpe, mutable, arg)
@@ -2017,7 +2023,9 @@ private[optimizer] abstract class OptimizerCore(
 
     pretransformExprs(initialFieldValues) { tinitialFieldValues =>
       val initialFieldBindings = for {
-        (RecordType.Field(name, originalName, tpe, mutable), value) <- recordType.fields zip tinitialFieldValues
+        (
+          RecordType.Field(name, originalName, tpe, mutable),
+          value) <- recordType.fields zip tinitialFieldValues
       } yield {
         Binding(name, originalName, tpe, mutable, value)
       }
@@ -2080,7 +2088,9 @@ private[optimizer] abstract class OptimizerCore(
     }
 
     val argsBindings = for {
-      (ParamDef(Ident(name, originalName), tpe, mutable, _), arg) <- formals zip args
+      (
+        ParamDef(Ident(name, originalName), tpe, mutable, _),
+        arg) <- formals zip args
     } yield {
       Binding(name, originalName, tpe, mutable, arg)
     }
@@ -2122,8 +2132,9 @@ private[optimizer] abstract class OptimizerCore(
           rest,
           cancelFun)(buildInner)(cont)
 
-      case Assign(s @ Select(ths: This, Ident(fieldName, fieldOrigName)), value) :: rest
-          if !inputFieldsLocalDefs(fieldName).mutable =>
+      case Assign(
+            s @ Select(ths: This, Ident(fieldName, fieldOrigName)),
+            value) :: rest if !inputFieldsLocalDefs(fieldName).mutable =>
         pretransformExpr(value) { tvalue =>
           withNewLocalDef(
             Binding(fieldName, fieldOrigName, s.tpe, false, tvalue)) {
@@ -3405,7 +3416,11 @@ private[optimizer] abstract class OptimizerCore(
       resultType: Type,
       body: Tree): (List[ParamDef], Tree) = {
     val (paramLocalDefs, newParamDefs) = (for {
-      p @ ParamDef(ident @ Ident(name, originalName), ptpe, mutable, rest) <- params
+      p @ ParamDef(
+        ident @ Ident(name, originalName),
+        ptpe,
+        mutable,
+        rest) <- params
     } yield {
       val newName = freshLocalName(name, mutable)
       val newOriginalName = originalName.orElse(Some(newName))
@@ -3459,7 +3474,11 @@ private[optimizer] abstract class OptimizerCore(
           returnedTypes.reduce(constrainedLub(_, _, resultType))
         val returnCount = returnedTypes.size - 1
 
-        tryOptimizePatternMatch(oldLabelName, refinedType, returnCount, newBody) getOrElse {
+        tryOptimizePatternMatch(
+          oldLabelName,
+          refinedType,
+          returnCount,
+          newBody) getOrElse {
           Labeled(Ident(newLabel, None), refinedType, newBody)
         }
       }

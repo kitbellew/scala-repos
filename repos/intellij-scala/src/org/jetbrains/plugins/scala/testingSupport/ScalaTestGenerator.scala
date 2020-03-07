@@ -244,7 +244,9 @@ class ScalaTestGenerator extends TestGenerator {
             body,
             className,
             editor.getProject)
-        } else if (isInheritor(typeDef, "org.specs2.mutable.SpecificationLike")) {
+        } else if (isInheritor(
+                     typeDef,
+                     "org.specs2.mutable.SpecificationLike")) {
           ScalaTestGenerator.generateSpecs2BeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -573,7 +575,8 @@ object ScalaTestGenerator {
             ScalaPsiElementFactory.createExpressionFromText(
               testNames
                 .map("eg := ok //" + _)
-                .fold("\"" + className + "\" - new group {")(_ + "\n" + _) + "\n}",
+                .fold("\"" + className + "\" - new group {")(
+                  _ + "\n" + _) + "\n}",
               psiManager),
             closingBrace
           )

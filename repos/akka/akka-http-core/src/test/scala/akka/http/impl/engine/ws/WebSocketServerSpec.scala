@@ -98,7 +98,8 @@ class WebSocketServerSpec
           val upgrade = request.header[UpgradeToWebSocket]
           upgrade.isDefined shouldBe true
 
-          val response = upgrade.get.handleMessages(Flow[Message]) // simple echoing
+          val response =
+            upgrade.get.handleMessages(Flow[Message]) // simple echoing
           responses.sendNext(response)
 
           expectResponseWithWipedDate(

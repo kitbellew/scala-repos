@@ -27,7 +27,8 @@ class GraphMergeSortedSpec
   }
 
   implicit def noShrink[T] =
-    Shrink[T](_ ⇒ Stream.empty) // do not shrink failures, it only destroys evidence
+    Shrink[T](_ ⇒
+      Stream.empty) // do not shrink failures, it only destroys evidence
 
   "MergeSorted" must {
 

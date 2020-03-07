@@ -283,7 +283,8 @@ trait ActorSubscriber extends Actor {
           context.stop(self)
           s.cancel()
         case _ ⇒
-          _canceled = true // cancel will be signaled once a subscription arrives
+          _canceled =
+            true // cancel will be signaled once a subscription arrives
       }
     }
 

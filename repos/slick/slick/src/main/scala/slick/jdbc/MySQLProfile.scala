@@ -136,7 +136,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
       tmd: JdbcType[_],
       sym: Option[FieldSymbol]): String = tmd.sqlType match {
     case java.sql.Types.VARCHAR =>
-      sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+      sym.flatMap(
+        _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
         case Some(l) =>
           if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
         case None =>
@@ -304,12 +305,18 @@ trait MySQLProfile extends JdbcProfile { profile =>
       }
       DDL(
         Iterable(
-          "create table " + quoteIdentifier(seq.name + "_seq") + " (id " + t + ")",
-          "insert into " + quoteIdentifier(seq.name + "_seq") + " values (" + beforeStart + ")",
-          "create function " + quoteIdentifier(seq.name + "_nextval") + "() returns " + sqlType + " begin update " +
-            quoteIdentifier(seq.name + "_seq") + " set id=last_insert_id(" + incExpr + "); return last_insert_id(); end",
-          "create function " + quoteIdentifier(seq.name + "_currval") + "() returns " + sqlType + " begin " +
-            "select max(id) into @v from " + quoteIdentifier(seq.name + "_seq") + "; return @v; end"
+          "create table " + quoteIdentifier(
+            seq.name + "_seq") + " (id " + t + ")",
+          "insert into " + quoteIdentifier(
+            seq.name + "_seq") + " values (" + beforeStart + ")",
+          "create function " + quoteIdentifier(
+            seq.name + "_nextval") + "() returns " + sqlType + " begin update " +
+            quoteIdentifier(
+              seq.name + "_seq") + " set id=last_insert_id(" + incExpr + "); return last_insert_id(); end",
+          "create function " + quoteIdentifier(
+            seq.name + "_currval") + "() returns " + sqlType + " begin " +
+            "select max(id) into @v from " + quoteIdentifier(
+            seq.name + "_seq") + "; return @v; end"
         ),
         Iterable(
           "drop function " + quoteIdentifier(seq.name + "_currval"),

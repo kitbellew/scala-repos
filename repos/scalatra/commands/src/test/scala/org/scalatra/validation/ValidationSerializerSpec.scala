@@ -7,7 +7,8 @@ import org.specs2.mutable.Specification
 class ValidationSerializerSpec extends Specification {
 
   implicit val formats: Formats =
-    DefaultFormats + new ErrorCodeSerializer(org.scalatra.validation.NotFound) + new ValidationErrorSerializer()
+    DefaultFormats + new ErrorCodeSerializer(
+      org.scalatra.validation.NotFound) + new ValidationErrorSerializer()
 
   "A validation error serializer" should {
     "serialize a validation error" in {

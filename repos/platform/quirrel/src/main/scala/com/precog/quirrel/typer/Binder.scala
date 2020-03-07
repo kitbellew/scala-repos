@@ -79,7 +79,9 @@ trait Binder extends parser.AST {
         }
 
         val bindings = ids map { id => id -> SolveBinding(b) }
-        loop(child, env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
+        loop(
+          child,
+          env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
       }
 
       case Import(_, spec, child) => { //todo see scalaz's Boolean.option
@@ -279,7 +281,11 @@ trait Binder extends parser.AST {
   // TODO arity and types
   case class ReductionBinding(red: Reduction) extends BuiltInBinding {
     val name = Identifier(red.namespace, red.name)
-    override val toString = "<native: %s(%d)>".format(red.name, 1) //assumes all reductions are arity 1
+    override val toString =
+      "<native: %s(%d)>".format(
+        red.name,
+        1
+      ) //assumes all reductions are arity 1
   }
 
   case object DistinctBinding extends BuiltInBinding {

@@ -211,8 +211,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                     case _ if lookingForAnnotations =>
                     case f: FakePsiMethod
                         if f.name
-                          .endsWith("_=") && parameters.getInvocationCount < 2 => //don't show _= methods for vars in basic completion
-                    case fun: ScFun                                            => addElement(el)
+                          .endsWith(
+                            "_=") && parameters.getInvocationCount < 2 => //don't show _= methods for vars in basic completion
+                    case fun: ScFun                                    => addElement(el)
                     case param: ScClassParameter =>
                       addElement(el)
                     case param: ScParameter if !el.isNamedParameter =>

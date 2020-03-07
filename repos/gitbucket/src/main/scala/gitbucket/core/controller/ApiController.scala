@@ -289,16 +289,23 @@ trait ApiControllerBase extends ControllerBase {
         LockUtil.lock(RepositoryName(repository).fullName) {
           getLabel(repository.owner, repository.name, params("labelName")).map {
             label =>
-              if (getLabel(repository.owner, repository.name, data.name).isEmpty) {
+              if (getLabel(
+                    repository.owner,
+                    repository.name,
+                    data.name).isEmpty) {
                 updateLabel(
                   repository.owner,
                   repository.name,
                   label.labelId,
                   data.name,
                   data.color)
-                JsonFormat(ApiLabel(
-                  getLabel(repository.owner, repository.name, label.labelId).get,
-                  RepositoryName(repository)))
+                JsonFormat(
+                  ApiLabel(
+                    getLabel(
+                      repository.owner,
+                      repository.name,
+                      label.labelId).get,
+                    RepositoryName(repository)))
               } else {
                 // TODO ApiError should support errors field to enhance compatibility of GitHub API
                 UnprocessableEntity(ApiError(
@@ -505,6 +512,9 @@ trait ApiControllerBase extends ControllerBase {
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =
-    hasWritePermission(owner, repository, context.loginAccount) || author == context.loginAccount.get.userName
+    hasWritePermission(
+      owner,
+      repository,
+      context.loginAccount) || author == context.loginAccount.get.userName
 
 }

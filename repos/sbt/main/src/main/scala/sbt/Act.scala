@@ -251,7 +251,8 @@ object Act {
       examples(ID, suggested, "key"),
       valid.keySet,
       "key") map valid
-    (token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token("::".id)) ?? Omitted
+    (token(value(keyP) | GlobalString ^^^ ParsedGlobal) <~ token(
+      "::".id)) ?? Omitted
   }
   def resolveTask(task: ParsedAxis[AttributeKey[_]]): Option[AttributeKey[_]] =
     task match {
@@ -274,7 +275,9 @@ object Act {
     if (validKeys.isEmpty)
       failure("No valid extra keys.")
     else
-      rep1sep(extraParser(validKeys, knownValues), spacedComma) map AttributeMap.apply
+      rep1sep(
+        extraParser(validKeys, knownValues),
+        spacedComma) map AttributeMap.apply
   }
 
   def extraParser(
@@ -298,7 +301,11 @@ object Act {
       knownPlugins: Map[String, T],
       label: String): Parser[T] = {
     val pluginLabelParser = rep1sep(ID, '.').map(_.mkString("."))
-    token(examplesStrict(pluginLabelParser, knownPlugins.keys.toSet, label)) map knownPlugins
+    token(
+      examplesStrict(
+        pluginLabelParser,
+        knownPlugins.keys.toSet,
+        label)) map knownPlugins
   }
 
   def projectRef(

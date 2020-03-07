@@ -157,9 +157,10 @@ object SessionSettings {
     val oldSettings =
       (oldState get Keys.sessionSettings).toList.flatMap(_.append).flatMap(_._2)
     if (newSession.append.isEmpty && oldSettings.nonEmpty)
-      oldState.log.warn("Discarding " + pluralize(
-        oldSettings.size,
-        " session setting") + ".  Use 'session save' to persist session settings.")
+      oldState.log.warn(
+        "Discarding " + pluralize(
+          oldSettings.size,
+          " session setting") + ".  Use 'session save' to persist session settings.")
   }
 
   @deprecated("This method will no longer be public", "0.13.7")
@@ -282,7 +283,9 @@ object SessionSettings {
         case ((acc, line), (s, newLines)) =>
           val endLine = line + newLines.size
           (
-            (s withPos RangePosition(path, LineRange(line, endLine)), newLines) :: acc,
+            (
+              s withPos RangePosition(path, LineRange(line, endLine)),
+              newLines) :: acc,
             endLine + 1)
       }
     (newWithPos.reverse, other ++ oldShifted)
@@ -367,8 +370,8 @@ save, save-all
     token(Space) ~>
       (token("list-all" ^^^ new Print(true)) | token(
         "list" ^^^ new Print(false)) | token("clear" ^^^ new Clear(false)) |
-        token("save-all" ^^^ new Save(true)) | token("save" ^^^ new Save(false)) | token(
-        "clear-all" ^^^ new Clear(true)) |
+        token("save-all" ^^^ new Save(true)) | token(
+        "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
         remove)
 
   lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>

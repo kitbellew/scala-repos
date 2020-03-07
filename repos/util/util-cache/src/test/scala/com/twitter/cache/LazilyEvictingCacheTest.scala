@@ -88,7 +88,8 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     assert(Await.result(f2) == "new value")
   }
 
-  test("LazilyEvictingCache should evict on failed futures for getOrElseUpdate") {
+  test(
+    "LazilyEvictingCache should evict on failed futures for getOrElseUpdate") {
     val p = Promise[Int]
 
     var loadCount = 0
@@ -122,7 +123,8 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     assert(loadCount == 1)
   }
 
-  test("LazilyEvictingCache should keep satisfied futures for getOrElseUpdate") {
+  test(
+    "LazilyEvictingCache should keep satisfied futures for getOrElseUpdate") {
     val p = Promise[Int]
 
     var loadCount = 0

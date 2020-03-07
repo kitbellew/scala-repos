@@ -209,7 +209,8 @@ private[immutable] abstract class HashSetCombiner[T]
         while (i < chunksz) {
           val v = chunkarr(i).asInstanceOf[T]
           val hc = trie.computeHash(v)
-          trie = trie.updated0(v, hc, rootbits) // internal API, private[collection]
+          trie =
+            trie.updated0(v, hc, rootbits) // internal API, private[collection]
           i += 1
         }
         i = 0
@@ -232,7 +233,8 @@ private[immutable] abstract class HashSetCombiner[T]
 
 object HashSetCombiner {
   def apply[T] =
-    new HashSetCombiner[T] {} // was: with EnvironmentPassingCombiner[T, ParHashSet[T]] {}
+    new HashSetCombiner[
+      T] {} // was: with EnvironmentPassingCombiner[T, ParHashSet[T]] {}
 
   private[immutable] val rootbits = 5
   private[immutable] val rootsize = 1 << 5

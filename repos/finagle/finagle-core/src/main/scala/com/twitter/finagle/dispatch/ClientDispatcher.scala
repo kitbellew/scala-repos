@@ -113,7 +113,9 @@ object GenSerialClientDispatcher {
 class SerialClientDispatcher[Req, Rep](
     trans: Transport[Req, Rep],
     statsReceiver: StatsReceiver)
-    extends GenSerialClientDispatcher[Req, Rep, Req, Rep](trans, statsReceiver) {
+    extends GenSerialClientDispatcher[Req, Rep, Req, Rep](
+      trans,
+      statsReceiver) {
 
   import GenSerialClientDispatcher.wrapWriteException
 

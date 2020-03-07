@@ -34,7 +34,9 @@ package object hypothesis {
         + "samples have variance > 0")
     val tScore = (mu1 - mu2) / sqrt((var1 / n1) + (var2 / n2)) // T statistic
     val dof =
-      pow((var1 / n1) + (var2 / n2), 2) / (pow(var1, 2) / (pow(n1, 2) * (n1 - 1)) +
+      pow((var1 / n1) + (var2 / n2), 2) / (pow(var1, 2) / (pow(
+        n1,
+        2) * (n1 - 1)) +
         pow(var2, 2) / (pow(n2, 2) * (n2 - 1))) //Welch–Satterthwaite equation
     new StudentsT(dof)(RandBasis.mt0).unnormalizedPdf(tScore) //return p value
   }
@@ -69,7 +71,9 @@ package object hypothesis {
       (chiSquaredTerm(meanP * trialsControl, successControl) + chiSquaredTerm(
         (1 - meanP) * trialsControl,
         trialsControl - successControl)
-        + chiSquaredTerm(meanP * trialsVariant, successVariant) + chiSquaredTerm(
+        + chiSquaredTerm(
+          meanP * trialsVariant,
+          successVariant) + chiSquaredTerm(
         (1 - meanP) * trialsVariant,
         trialsVariant - successVariant))
     val pVal = 1.0 - Gamma(0.5, 2.0).cdf(chi2)

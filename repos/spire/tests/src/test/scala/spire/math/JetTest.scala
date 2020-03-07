@@ -369,7 +369,8 @@ class JetTest extends FunSuite with Matchers {
     jfunc.real should be(func(x))
     jfunc.infinitesimal(0) should be(dfunc(x) +- maxError)
   }
-  test("Evaluation and differentiation of a generic function of two variables") {
+  test(
+    "Evaluation and differentiation of a generic function of two variables") {
     def func[@sp(Double) T: Field: Trig](x: T, y: T): T =
       3.14 * x * y - spire.math.tan(x - y)
     def dfuncX(x: Double, y: Double) =

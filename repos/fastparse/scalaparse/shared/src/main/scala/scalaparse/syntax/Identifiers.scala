@@ -6,7 +6,8 @@ import Basic._
 object Identifiers {
 
   val Operator = P(
-    !Keywords ~ (!("/*" | "//") ~ (CharsWhile(x => isOpChar(x) && x != '/') | "/"))
+    !Keywords ~ (!("/*" | "//") ~ (CharsWhile(x =>
+      isOpChar(x) && x != '/') | "/"))
       .rep(1)
   )
 

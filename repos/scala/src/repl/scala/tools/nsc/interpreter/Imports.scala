@@ -109,7 +109,8 @@ trait Imports {
       generousImports: Boolean): ComputedImports = {
     val header, code, trailingBraces, accessPath = new StringBuilder
     val currentImps = mutable.HashSet[Name]()
-    var predefEscapes = false // only emit predef import header if name not resolved in history, loosely
+    var predefEscapes =
+      false // only emit predef import header if name not resolved in history, loosely
 
     /** Narrow down the list of requests from which imports
       *  should be taken.  Removes requests which cannot contribute

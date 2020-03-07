@@ -55,7 +55,8 @@ trait Mirrors extends api.Mirrors {
         if (settings.debug) { log(sym.info); log(sym.info.members) } //debug
         thisMirror.missingHook(owner, name) orElse {
           MissingRequirementError.notFound(
-            (if (path.isTermName) "object " else "class ") + path + " in " + thisMirror)
+            (if (path.isTermName) "object "
+             else "class ") + path + " in " + thisMirror)
         }
       }
     }
@@ -296,7 +297,8 @@ trait Mirrors extends api.Mirrors {
             theirOwner.isPackageClass,
             s"theirSym = $theirSym, theirOwner = $theirOwner")
           val ourOwner = staticPackage(theirOwner.fullName).moduleClass
-          val ourSym = theirSym // just copy the symbol into our branch of the symbol table
+          val ourSym =
+            theirSym // just copy the symbol into our branch of the symbol table
           ourOwner.info.decls enterIfNew ourSym
         })
       }

@@ -168,7 +168,13 @@ object TimeHelpersSpec
     }
     "provide a millisToDays function returning the number of days since the epoch time" in forAllTimeZones {
       millisToDays(new Date(0).getTime) must_== 0
-      millisToDays(today.setYear(1970).setMonth(0).setDay(1).getTime.getTime) must_== 0 // the epoch time
+      millisToDays(
+        today
+          .setYear(1970)
+          .setMonth(0)
+          .setDay(1)
+          .getTime
+          .getTime) must_== 0 // the epoch time
       // on the 3rd day after the epoch time, 2 days are passed
       millisToDays(
         today
@@ -208,7 +214,8 @@ object TimeHelpersSpec
     }
 
     "provide a parseInternetDate function to parse a string formatted using the internet format" in forAllTimeZones {
-      parseInternetDate(internetDateFormatter.format(now)).getTime.toLong must beCloseTo(
+      parseInternetDate(
+        internetDateFormatter.format(now)).getTime.toLong must beCloseTo(
         now.getTime.toLong,
         1000L)
     }
@@ -294,9 +301,10 @@ trait TimeAmountsGen {
       s <- choose(0, 59)
       ml <- choose(0, 999)
     } yield (
-      TimeSpan(weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
-      (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (s, "second") :: (
-        ml,
-        "milli") :: Nil
+      TimeSpan(
+        weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
+      (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (
+        s,
+        "second") :: (ml, "milli") :: Nil
     )
 }

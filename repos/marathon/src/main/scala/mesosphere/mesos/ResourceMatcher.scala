@@ -68,7 +68,8 @@ object ResourceMatcher {
         }
       }
 
-      noAssociatedDisk && acceptedRoles(resource.getRole) && resource.hasReservation == reserved && hasRequiredLabels
+      noAssociatedDisk && acceptedRoles(
+        resource.getRole) && resource.hasReservation == reserved && hasRequiredLabels
     }
 
     override def toString: String = {

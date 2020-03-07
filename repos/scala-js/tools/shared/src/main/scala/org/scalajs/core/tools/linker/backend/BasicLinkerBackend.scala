@@ -28,7 +28,11 @@ final class BasicLinkerBackend(
     outputMode: OutputMode,
     withSourceMap: Boolean,
     config: LinkerBackend.Config
-) extends LinkerBackend(semantics, outputMode.esLevel, withSourceMap, config) {
+) extends LinkerBackend(
+      semantics,
+      outputMode.esLevel,
+      withSourceMap,
+      config) {
 
   private[this] val emitter = new Emitter(semantics, outputMode)
 

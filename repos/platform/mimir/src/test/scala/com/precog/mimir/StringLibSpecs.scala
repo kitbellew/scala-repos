@@ -366,7 +366,8 @@ trait StringLibSpecs[M[+_]]
       testEval(input) must haveSize(0)
     }
     "determine matches" in {
-      val input = op2Input(matches, CString("quirky"), homStrings) //todo put regex here!
+      val input =
+        op2Input(matches, CString("quirky"), homStrings) //todo put regex here!
 
       val result = testEval(input)
 
@@ -394,7 +395,12 @@ trait StringLibSpecs[M[+_]]
         Vector(SString("e"), SString("")))
     }
     "determine compareTo" in {
-      val input = op2Input(compareTo, CString("quirky"), homStrings) //todo put regex here!
+      val input =
+        op2Input(
+          compareTo,
+          CString("quirky"),
+          homStrings
+        ) //todo put regex here!
 
       val result = testEval(input)
 
@@ -424,7 +430,8 @@ trait StringLibSpecs[M[+_]]
       result2 must contain(0, 2, -4, -73, -81, -6)
     }
     "determine compare" in {
-      val input = op2Input(compare, CString("quirky"), homStrings) //todo put regex here!
+      val input =
+        op2Input(compare, CString("quirky"), homStrings) //todo put regex here!
 
       val result = testEval(input)
 
@@ -867,7 +874,8 @@ trait StringLibSpecs[M[+_]]
       testEval(input) must haveSize(0)
     }
     "determine matches" in {
-      val input = op2Input(matches, CString("quirky"), hetStrings) //todo put regex here!
+      val input =
+        op2Input(matches, CString("quirky"), hetStrings) //todo put regex here!
       val result = testEval(input)
 
       result must haveSize(6)

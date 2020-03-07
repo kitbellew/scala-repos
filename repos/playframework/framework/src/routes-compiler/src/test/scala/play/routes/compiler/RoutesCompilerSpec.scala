@@ -44,7 +44,9 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
         new File(tmp, "generating/Routes.scala") must exist
         new File(tmp, "generating/RoutesPrefix.scala") must exist
         new File(tmp, "controllers/ReverseRoutes.scala") must exist
-        new File(tmp, "controllers/javascript/JavaScriptReverseRoutes.scala") must exist
+        new File(
+          tmp,
+          "controllers/javascript/JavaScriptReverseRoutes.scala") must exist
         new File(tmp, "controllers/routes.java") must exist
     }
 

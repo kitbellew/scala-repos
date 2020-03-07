@@ -363,7 +363,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
   @Provides
   @Singleton
   def provideGroupManager(
-      @Named(ModuleNames.SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
+      @Named(
+        ModuleNames.SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
       scheduler: MarathonSchedulerService,
       groupRepo: GroupRepository,
       appRepo: AppRepository,

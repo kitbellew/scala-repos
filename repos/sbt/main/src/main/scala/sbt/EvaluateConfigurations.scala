@@ -218,7 +218,10 @@ object EvaluateConfigurations {
     * The name of the class we cast DSL "setting" (vs. definition) lines to.
     */
   val SettingsDefinitionName = {
-    val _ = classOf[sbt.internals.DslEntry] // this line exists to try to provide a compile-time error when the following line needs to be changed
+    val _ =
+      classOf[
+        sbt.internals.DslEntry
+      ] // this line exists to try to provide a compile-time error when the following line needs to be changed
     "sbt.internals.DslEntry"
   }
 
@@ -430,7 +433,8 @@ object Index {
   def triggers(ss: Settings[Scope]): Triggers[Task] = {
     val runBefore = new TriggerMap
     val triggeredBy = new TriggerMap
-    for ((_, amap) <- ss.data; AttributeEntry(_, value: Task[_]) <- amap.entries) {
+    for ((_, amap) <- ss.data;
+         AttributeEntry(_, value: Task[_]) <- amap.entries) {
       val as = value.info.attributes
       update(runBefore, value, as get Keys.runBefore)
       update(triggeredBy, value, as get Keys.triggeredBy)

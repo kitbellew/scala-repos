@@ -97,12 +97,14 @@ class ServerSSLEngineSpec extends Specification with Mockito {
     }
 
     "load a custom SSLContext from a SSLEngineProvider" in new ApplicationContext {
-      createEngine(Some(classOf[RightSSLEngineProvider].getName)) must beAnInstanceOf[
+      createEngine(
+        Some(classOf[RightSSLEngineProvider].getName)) must beAnInstanceOf[
         SSLEngine]
     }
 
     "load a custom SSLContext from a java SSLEngineProvider" in new ApplicationContext {
-      createEngine(Some(classOf[JavaSSLEngineProvider].getName)) must beAnInstanceOf[
+      createEngine(
+        Some(classOf[JavaSSLEngineProvider].getName)) must beAnInstanceOf[
         SSLEngine]
     }
   }

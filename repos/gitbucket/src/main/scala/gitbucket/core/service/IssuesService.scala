@@ -19,7 +19,10 @@ trait IssuesService {
   def getIssue(owner: String, repository: String, issueId: String)(
       implicit s: Session) =
     if (issueId forall (_.isDigit))
-      Issues filter (_.byPrimaryKey(owner, repository, issueId.toInt)) firstOption
+      Issues filter (_.byPrimaryKey(
+        owner,
+        repository,
+        issueId.toInt)) firstOption
     else None
 
   def getComments(owner: String, repository: String, issueId: Int)(
@@ -65,7 +68,11 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (_.byPrimaryKey(owner, repository, issueId, labelId)) firstOption
+    IssueLabels filter (_.byPrimaryKey(
+      owner,
+      repository,
+      issueId,
+      labelId)) firstOption
 
   /**
     * Returns the count of the search result against  issues.
@@ -369,7 +376,10 @@ trait IssuesService {
       // Mentioned filter
       ((t1.openedUserName === condition.mentioned.get.bind) || t1.assignedUserName === condition.mentioned.get.bind ||
       (IssueComments filter { t2 =>
-        (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) && (t2.commentedUserName === condition.mentioned.get.bind)
+        (t2.byIssue(
+          t1.userName,
+          t1.repositoryName,
+          t1.issueId)) && (t2.commentedUserName === condition.mentioned.get.bind)
       } exists), condition.mentioned.isDefined)
     }
 
@@ -420,7 +430,11 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       labelId: Int)(implicit s: Session) =
-    IssueLabels filter (_.byPrimaryKey(owner, repository, issueId, labelId)) delete
+    IssueLabels filter (_.byPrimaryKey(
+      owner,
+      repository,
+      issueId,
+      labelId)) delete
 
   def createComment(
       owner: String,

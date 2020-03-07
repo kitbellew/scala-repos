@@ -57,12 +57,14 @@ class AppDeployIntegrationTest
     result.code should be(201) //Created
     extractDeploymentIds(result) should have size 1
     waitForEvent("deployment_success")
-    val taskBeforeRedeployment = waitForTasks(app.id, 1) //make sure, the app has really started
+    val taskBeforeRedeployment =
+      waitForTasks(app.id, 1) //make sure, the app has really started
 
     When("redeploying the app without changes")
     marathon.updateApp(app.id, AppUpdate(id = Some(app.id), cmd = app.cmd))
     waitForEvent("deployment_success")
-    val tasksAfterRedeployment = waitForTasks(app.id, 1) //make sure, the app has really started
+    val tasksAfterRedeployment =
+      waitForTasks(app.id, 1) //make sure, the app has really started
 
     Then("no tasks should have been restarted")
     taskBeforeRedeployment should be(tasksAfterRedeployment)

@@ -77,7 +77,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
           case ex =>
             val cause = ex.getCause
             cause
-              .isInstanceOf[RuntimeException] must beTrue and (cause.getMessage must_== "failed")
+              .isInstanceOf[
+                RuntimeException] must beTrue and (cause.getMessage must_== "failed")
         }
       }
 
@@ -91,7 +92,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
           case ex =>
             val cause = ex.getCause
             cause
-              .isInstanceOf[RuntimeException] must beTrue and (cause.getMessage must_== "error")
+              .isInstanceOf[
+                RuntimeException] must beTrue and (cause.getMessage must_== "error")
         }
       }
     }

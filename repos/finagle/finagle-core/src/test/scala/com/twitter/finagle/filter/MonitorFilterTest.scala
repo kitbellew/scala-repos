@@ -100,7 +100,8 @@ class MonitorFilterTest
       .hostConnectionLimit(1)
       .build()
 
-    when(service(any[String])) thenThrow outer // make server service throw the mock exception
+    when(
+      service(any[String])) thenThrow outer // make server service throw the mock exception
 
     try {
       val f = Await.result(client("123"))

@@ -223,7 +223,9 @@ class ReceivedBlockTrackerSuite
       createTracker(clock = manualClock, recoverFromWriteAheadLog = true)
     tracker4.getUnallocatedBlocks(streamId) shouldBe empty
     tracker4
-      .getBlocksOfBatchAndStream(batchTime1, streamId) shouldBe empty // should be cleaned
+      .getBlocksOfBatchAndStream(
+        batchTime1,
+        streamId) shouldBe empty // should be cleaned
     tracker4
       .getBlocksOfBatchAndStream(batchTime2, streamId) shouldEqual blockInfos2
   }

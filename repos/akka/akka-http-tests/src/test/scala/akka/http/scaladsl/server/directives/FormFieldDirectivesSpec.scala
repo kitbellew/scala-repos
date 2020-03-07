@@ -78,7 +78,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
               s"type ${ct.mediaType} length ${data.length} filename ${name.get}")
         }
       } ~> check {
-        responseAs[String] shouldEqual "type text/xml length 13 filename age.xml"
+        responseAs[
+          String] shouldEqual "type text/xml length 13 filename age.xml"
       }
     }
     "reject the request with a MissingFormFieldRejection if a required form field is missing" in {
@@ -162,7 +163,10 @@ class FormFieldDirectivesSpec extends RoutingSpec {
     "extract all occurrences into an Iterable when parameter is present" in {
       Post(
         "/",
-        FormData("age" -> "42", "hobby" -> "cooking", "hobby" -> "reading")) ~> {
+        FormData(
+          "age" -> "42",
+          "hobby" -> "cooking",
+          "hobby" -> "reading")) ~> {
         formField('hobby.*) { echoComplete }
       } ~> check { responseAs[String] === "List(cooking, reading)" }
     }
@@ -180,10 +184,13 @@ class FormFieldDirectivesSpec extends RoutingSpec {
 
   "The 'formFieldMap' directive" should {
     "extract fields with different keys" in {
-      Post("/", FormData("age" -> "42", "numberA" -> "3", "numberB" -> "5")) ~> {
+      Post(
+        "/",
+        FormData("age" -> "42", "numberA" -> "3", "numberB" -> "5")) ~> {
         formFieldMap { echoComplete }
       } ~> check {
-        responseAs[String] shouldEqual "Map(age -> 42, numberA -> 3, numberB -> 5)"
+        responseAs[
+          String] shouldEqual "Map(age -> 42, numberA -> 3, numberB -> 5)"
       }
     }
   }
@@ -193,7 +200,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
         formFieldSeq { echoComplete }
       } ~> check {
-        responseAs[String] shouldEqual "Vector((age,42), (number,3), (number,5))"
+        responseAs[
+          String] shouldEqual "Vector((age,42), (number,3), (number,5))"
       }
     }
     "produce empty Seq when FormData is empty" in {
@@ -208,7 +216,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       Post("/", FormData("age" -> "42", "number" -> "3", "number" -> "5")) ~> {
         formFieldMultiMap { echoComplete }
       } ~> check {
-        responseAs[String] shouldEqual "Map(age -> List(42), number -> List(5, 3))"
+        responseAs[
+          String] shouldEqual "Map(age -> List(42), number -> List(5, 3))"
       }
     }
   }

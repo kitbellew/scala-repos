@@ -150,7 +150,9 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
           fail(
             "Expected " + Failed(
               barrier,
-              ClientLost(Data(Set(nodeA), "bar6", a.ref :: Nil, null), B)) + " but got " + x)
+              ClientLost(
+                Data(Set(nodeA), "bar6", a.ref :: Nil, null),
+                B)) + " but got " + x)
       }
     }
 
@@ -212,7 +214,11 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
               WrongBarrier(
                 "foo",
                 b.ref,
-                Data(Set(nodeA, nodeB), "bar8", a.ref :: Nil, null))) + " but got " + x)
+                Data(
+                  Set(nodeA, nodeB),
+                  "bar8",
+                  a.ref :: Nil,
+                  null))) + " but got " + x)
       }
     }
 
@@ -262,11 +268,12 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
             fail(
               "Expected " + Failed(
                 barrier,
-                BarrierTimeout(Data(
-                  Set(nodeA, nodeB),
-                  "bar10",
-                  a.ref :: Nil,
-                  null))) + " but got " + x)
+                BarrierTimeout(
+                  Data(
+                    Set(nodeA, nodeB),
+                    "bar10",
+                    a.ref :: Nil,
+                    null))) + " but got " + x)
         }
       }
     }
@@ -287,9 +294,12 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
               Data(Set(nodeA), "", Nil, thr.data.deadline),
               nodeB)) ⇒
         case x ⇒
-          fail("Expected " + Failed(
-            barrier,
-            DuplicateNode(Data(Set(nodeA), "", Nil, null), nodeB)) + " but got " + x)
+          fail(
+            "Expected " + Failed(
+              barrier,
+              DuplicateNode(
+                Data(Set(nodeA), "", Nil, null),
+                nodeB)) + " but got " + x)
       }
     }
 

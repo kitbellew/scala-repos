@@ -404,7 +404,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       status shouldBe a[Redirection]
       inside(header[Location]) {
         case Some(Location(uri)) ⇒
-          (if (expectedUri.isAbsolute) uri else uri.toRelative) shouldEqual expectedUri
+          (if (expectedUri.isAbsolute) uri
+           else uri.toRelative) shouldEqual expectedUri
       }
     }
 }

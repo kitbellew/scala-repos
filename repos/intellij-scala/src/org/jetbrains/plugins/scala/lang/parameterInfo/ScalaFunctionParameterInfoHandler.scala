@@ -351,33 +351,33 @@ class ScalaFunctionParameterInfoHandler
                   buffer.append(
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
-                  buffer.append(
-                    method.params
-                      .map((param: Parameter) => {
-                        val buffer: StringBuilder = new StringBuilder("")
-                        val paramType = param.paramType
-                        val name = param.name
-                        if (name != "") {
-                          buffer.append(name)
-                          buffer.append(": ")
+                  buffer.append(method.params
+                    .map((param: Parameter) => {
+                      val buffer: StringBuilder = new StringBuilder("")
+                      val paramType = param.paramType
+                      val name = param.name
+                      if (name != "") {
+                        buffer.append(name)
+                        buffer.append(": ")
+                      }
+                      buffer.append(ScType.presentableText(paramType))
+                      if (param.isRepeated) buffer.append("*")
+
+                      if (param.isDefault) buffer.append(" = _")
+
+                      val isBold =
+                        if (method.params
+                              .indexOf(
+                                param) == index || (param.isRepeated && method.params
+                              .indexOf(param) <= index)) true
+                        else {
+                          //todo: check type
+                          false
                         }
-                        buffer.append(ScType.presentableText(paramType))
-                        if (param.isRepeated) buffer.append("*")
-
-                        if (param.isDefault) buffer.append(" = _")
-
-                        val isBold =
-                          if (method.params
-                                .indexOf(param) == index || (param.isRepeated && method.params
-                                .indexOf(param) <= index)) true
-                          else {
-                            //todo: check type
-                            false
-                          }
-                        val paramText = buffer.toString()
-                        if (isBold) "<b>" + paramText + "</b>" else paramText
-                      })
-                      .mkString(", "))
+                      val paramText = buffer.toString()
+                      if (isBold) "<b>" + paramText + "</b>" else paramText
+                    })
+                    .mkString(", "))
                 }
               case method: PsiMethod =>
                 val p = method.getParameterList
@@ -685,7 +685,9 @@ class ScalaFunctionParameterInfoHandler
             val typeElement = constr.typeElement
             val i = constr.arguments.indexOf(args.element)
             ScType
-              .extractClassType(typeElement.calcType, Some(file.getProject)) match {
+              .extractClassType(
+                typeElement.calcType,
+                Some(file.getProject)) match {
               case Some((clazz: PsiClass, subst: ScSubstitutor)) =>
                 clazz match {
                   case clazz: ScClass =>

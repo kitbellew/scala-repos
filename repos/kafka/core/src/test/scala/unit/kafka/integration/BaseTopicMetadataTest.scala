@@ -49,7 +49,10 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       interBrokerSecurityProtocol = Some(securityProtocol),
       trustStoreFile = trustStoreFile)
     val configs: Seq[KafkaConfig] = props.map(KafkaConfig.fromProps)
-    adHocConfigs = configs.takeRight(configs.size - 1) // Started and stopped by individual test cases
+    adHocConfigs =
+      configs.takeRight(
+        configs.size - 1
+      ) // Started and stopped by individual test cases
     server1 = TestUtils.createServer(configs.head)
     brokerEndPoints = Seq(
       // We are using the Scala clients and they don't support SSL. Once we move to the Java ones, we should use
@@ -306,7 +309,8 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
           metadata.topicsMetadata.nonEmpty &&
           metadata.topicsMetadata.head.partitionsMetadata.nonEmpty &&
           expectedIsr
-            .sortBy(_.id) == metadata.topicsMetadata.head.partitionsMetadata.head.isr
+            .sortBy(
+              _.id) == metadata.topicsMetadata.head.partitionsMetadata.head.isr
             .sortBy(_.id)
         },
         "Topic metadata is not correctly updated for broker " + x + ".\n" +

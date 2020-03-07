@@ -332,7 +332,8 @@ abstract class SparkPlan
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
         }
       }
-      numPartsToTry = math.max(0, numPartsToTry) // guard against negative num of partitions
+      numPartsToTry =
+        math.max(0, numPartsToTry) // guard against negative num of partitions
 
       val left = n - buf.size
       val p = partsScanned.until(

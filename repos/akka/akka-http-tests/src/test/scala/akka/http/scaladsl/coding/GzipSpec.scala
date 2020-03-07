@@ -22,11 +22,15 @@ class GzipSpec extends CoderSpec {
 
   override def extraTests(): Unit = {
     "decode concatenated compressions" in {
-      ourDecode(Seq(encode("Hello, "), encode("dear "), encode("User!")).join) should readAs(
-        "Hello, dear User!")
+      ourDecode(
+        Seq(
+          encode("Hello, "),
+          encode("dear "),
+          encode("User!")).join) should readAs("Hello, dear User!")
     }
     "provide a better compression ratio than the standard Gzip/Gunzip streams" in {
-      ourEncode(largeTextBytes).length should be < streamEncode(largeTextBytes).length
+      ourEncode(largeTextBytes).length should be < streamEncode(
+        largeTextBytes).length
     }
     "throw an error on truncated input" in {
       val ex = the[RuntimeException] thrownBy ourDecode(

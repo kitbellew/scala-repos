@@ -683,7 +683,10 @@ class CheckpointSuite
   // failure, are re-processed or not.
   test("recovery with file input stream") {
     // Set up the streaming context and input streams
-    val batchDuration = Seconds(2) // Due to 1-second resolution of setLastModified() on some OS's.
+    val batchDuration =
+      Seconds(
+        2
+      ) // Due to 1-second resolution of setLastModified() on some OS's.
     val testDir = Utils.createTempDir()
     val outputBuffer = new ConcurrentLinkedQueue[Seq[Int]]
 
@@ -759,7 +762,10 @@ class CheckpointSuite
         eventually(eventuallyTimeout) {
           // Wait until all files have been recorded and all batches have started
           assert(
-            recordedFiles(ssc) === Seq(1, 2, 3) && batchCounter.getNumStartedBatches === 3)
+            recordedFiles(ssc) === Seq(
+              1,
+              2,
+              3) && batchCounter.getNumStartedBatches === 3)
         }
         clock.advance(batchDuration.milliseconds)
         // Wait for a checkpoint to be written

@@ -57,7 +57,8 @@ trait Downloader {
 
   private def osCommandsFor(file: File) = {
     val launcher =
-      jarWith[this.type].getParentFile.getParentFile / "launcher" / "sbt-launch.jar"
+      jarWith[
+        this.type].getParentFile.getParentFile / "launcher" / "sbt-launch.jar"
 
     if (launcher.exists()) {
       Seq(

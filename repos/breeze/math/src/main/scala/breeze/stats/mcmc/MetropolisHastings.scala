@@ -25,7 +25,8 @@ trait MetropolisHastings[T] extends Rand[T] {
   def logLikelihood(x: T): Double
   def logTransitionProbability(start: T, end: T): Double
 
-  def proposalDraw(x: T): T // This is a random function, which returns a random y given a deterministic x
+  def proposalDraw(
+      x: T): T // This is a random function, which returns a random y given a deterministic x
 
   def likelihood(x: T): Double = math.exp(logLikelihood(x))
   def likelihoodRatio(start: T, end: T): Double =
@@ -156,8 +157,9 @@ case class AffineStepMetropolisHastings[T](
   def observe(x: T) = this.copy(burnIn = 0, init = x)
 }
 
-case class ThreadedBufferedRand[T](wrapped: Rand[T], bufferSize: Int = 1024 * 8)(
-    implicit m: ClassTag[T])
+case class ThreadedBufferedRand[T](
+    wrapped: Rand[T],
+    bufferSize: Int = 1024 * 8)(implicit m: ClassTag[T])
     extends Rand[T] {
   require(bufferSize > 0)
 

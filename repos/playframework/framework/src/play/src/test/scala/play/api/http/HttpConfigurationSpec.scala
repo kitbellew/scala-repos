@@ -49,8 +49,8 @@ object HttpConfigurationSpec extends Specification {
     "throw an error when context does not starts with /" in {
       val config = properties + ("play.http.context" -> "something")
       val wrongConfiguration = Configuration(ConfigFactory.parseMap(config))
-      new HttpConfiguration.HttpConfigurationProvider(wrongConfiguration).get must throwA[
-        PlayException]
+      new HttpConfiguration.HttpConfigurationProvider(
+        wrongConfiguration).get must throwA[PlayException]
     }
 
     "configure max memory buffer" in {

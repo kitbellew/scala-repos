@@ -125,7 +125,8 @@ object Ast {
         extends expr
     case class Repr(value: expr) extends expr
     case class Num(n: Any) extends expr // a number as a PyObject.
-    case class Str(s: string) extends expr // need to raw: specify, unicode, etc?
+    case class Str(s: string)
+        extends expr // need to raw: specify, unicode, etc?
     // other bools: Option[literals]?
 
     // the following expression can appear in assignment context

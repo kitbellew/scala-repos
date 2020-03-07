@@ -772,8 +772,8 @@ object JsonValidSpec extends Specification {
         "friend" -> Json.obj("id" -> 124L, "name" -> "john")
       )
 
-      Json.toJson(User(123L, "bob", Some(User(124L, "john", None)))) must beEqualTo(
-        js)
+      Json.toJson(
+        User(123L, "bob", Some(User(124L, "john", None)))) must beEqualTo(js)
       success
     }
 
@@ -796,8 +796,8 @@ object JsonValidSpec extends Specification {
 
       js.validate[User] must beEqualTo(
         JsSuccess(User(123L, "bob", Some(User(124L, "john", None)))))
-      Json.toJson(User(123L, "bob", Some(User(124L, "john", None)))) must beEqualTo(
-        js)
+      Json.toJson(
+        User(123L, "bob", Some(User(124L, "john", None)))) must beEqualTo(js)
       success
     }
 

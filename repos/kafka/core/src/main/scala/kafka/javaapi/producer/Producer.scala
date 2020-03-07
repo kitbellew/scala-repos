@@ -24,7 +24,8 @@ import scala.collection.mutable
   "This class has been deprecated and will be removed in a future release. " +
     "Please use org.apache.kafka.clients.producer.KafkaProducer instead.",
   "0.10.0.0")
-class Producer[K, V](private val underlying: kafka.producer.Producer[K, V]) // for testing only
+class Producer[K, V](
+    private val underlying: kafka.producer.Producer[K, V]) // for testing only
 {
   def this(config: ProducerConfig) =
     this(new kafka.producer.Producer[K, V](config))

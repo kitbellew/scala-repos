@@ -298,7 +298,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
 
                     case record =>
                       // replace when id is not recognized, or when record is binary
-                      acc + ((path, Version.Archived(record.versionId)) -> record) + (currentKey -> JsonRecord(
+                      acc + ((
+                        path,
+                        Version.Archived(
+                          record.versionId)) -> record) + (currentKey -> JsonRecord(
                         Vector(records.map(_.value): _*),
                         writeAs,
                         id))

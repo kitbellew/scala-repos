@@ -107,7 +107,8 @@ object WorksheetSourceProcessor {
     val printMethodName = "println"
 
     val ifDocument = ifEditor map (_.getDocument)
-    val classPrologue = name // s"$name ${if (iterNumber > 0) s"extends A${iterNumber - 1}" }" //todo disabled until I implement incremental code generation
+    val classPrologue =
+      name // s"$name ${if (iterNumber > 0) s"extends A${iterNumber - 1}" }" //todo disabled until I implement incremental code generation
     val objectPrologue =
       s"${packStmt}import _root_.org.jetbrains.plugins.scala.worksheet.$macroPrinterName\n\n object $name { \n"
 
@@ -159,7 +160,8 @@ object WorksheetSourceProcessor {
             case _ =>
           }
 
-          val start = actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
+          val start =
+            actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
           val end = psi.getTextRange.getEndOffset
           s"${document getLineNumber start}|${document getLineNumber end}"
       }
@@ -294,7 +296,9 @@ object WorksheetSourceProcessor {
     }
 
     def withTempVar(callee: String, withInstance: Boolean = true) =
-      "{val $$temp$$ = " + (if (withInstance) instanceName + "." else "") + callee + s"; $macroPrinterName.printDefInfo(" + "$$temp$$" + ")" +
+      "{val $$temp$$ = " + (if (withInstance) instanceName + "."
+                            else
+                              "") + callee + s"; $macroPrinterName.printDefInfo(" + "$$temp$$" + ")" +
         eraseClassName + " + \" = \" + ( " + PRINT_ARRAY_NAME + "($$temp$$) )" + erasePrefixName + "}"
 
     def insertUntouched(exprs: mutable.Iterable[PsiElement]) {

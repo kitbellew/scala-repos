@@ -34,7 +34,8 @@ class HashJoiner[K, V, W, R](
     // The left one cannot be iterated multiple times on Hadoop:
     val leftIt = jc.getIterator(0).asScala // should only be 0 or 1 here
     if (leftIt.isEmpty) {
-      (Iterator.empty: Iterator[CTuple]).asJava // java is not covariant so we need this
+      (Iterator.empty: Iterator[
+        CTuple]).asJava // java is not covariant so we need this
     } else {
       val left = leftIt.buffered
       // There must be at least one item on the left in a hash-join

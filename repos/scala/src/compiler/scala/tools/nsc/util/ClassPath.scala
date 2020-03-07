@@ -35,7 +35,8 @@ object ClassPath {
 
     /* Get all subdirectories, jars, zips out of a directory. */
     def lsDir(dir: Directory, filt: String => Boolean = _ => true) =
-      dir.list filter (x => filt(x.name) && (x.isDirectory || isJarOrZip(x))) map (_.path) toList
+      dir.list filter (x =>
+        filt(x.name) && (x.isDirectory || isJarOrZip(x))) map (_.path) toList
 
     if (pattern == "*") lsDir(Directory("."))
     else if (pattern endsWith wildSuffix) lsDir(Directory(pattern dropRight 2))
@@ -184,7 +185,8 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
     // Collect our new jars/directories and add them to the existing set of classpaths
     val allEntries =
       (entries ++
-        urls.map(url => context.newClassPath(io.AbstractFile.getURL(url)))).distinct
+        urls.map(url =>
+          context.newClassPath(io.AbstractFile.getURL(url)))).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allEntries, context)
@@ -348,8 +350,8 @@ class MergedClassPath[T](
     entries flatMap (_.sourcepaths)
 
   override def origin =
-    Some(
-      entries map (x => x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
+    Some(entries map (x =>
+      x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
   override def asClassPathString: String =
     join(entries map (_.asClassPathString): _*)
 

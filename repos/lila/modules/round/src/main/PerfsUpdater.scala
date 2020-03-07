@@ -89,10 +89,10 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
         resetGameRatings.fold(
           GameRepo.setRatingAndDiffs(
             game.id,
-            intRatingLens(white.perfs) -> (intRatingLens(perfsW) - intRatingLens(
-              white.perfs)),
-            intRatingLens(black.perfs) -> (intRatingLens(perfsB) - intRatingLens(
-              black.perfs))
+            intRatingLens(white.perfs) -> (intRatingLens(
+              perfsW) - intRatingLens(white.perfs)),
+            intRatingLens(black.perfs) -> (intRatingLens(
+              perfsB) - intRatingLens(black.perfs))
           ),
           GameRepo.setRatingDiffs(
             game.id,

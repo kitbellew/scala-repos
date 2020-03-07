@@ -115,8 +115,9 @@ class FutureTests extends MinimalScalaTest {
       val f = Future.successful(s)
 
       ECNotUsed(ec =>
-        f.onFailure({ case _ => fail("onFailure should not have been called") })(
-          ec))
+        f.onFailure({
+          case _ => fail("onFailure should not have been called")
+        })(ec))
       assert(
         ECNotUsed(ec =>
           f.recover({ case _ => fail("recover should not have been called") })(
@@ -150,8 +151,9 @@ class FutureTests extends MinimalScalaTest {
       ECNotUsed(ec =>
         f.foreach(_ => fail("foreach should not have been called"))(ec))
       ECNotUsed(ec =>
-        f.onSuccess({ case _ => fail("onSuccess should not have been called") })(
-          ec))
+        f.onSuccess({
+          case _ => fail("onSuccess should not have been called")
+        })(ec))
       assert(ECNotUsed(ec =>
         f.map(_ => fail("map should not have been called"))(ec)) eq f)
       assert(ECNotUsed(ec =>
@@ -165,8 +167,8 @@ class FutureTests extends MinimalScalaTest {
       assert(
         ECNotUsed(ec =>
           f.zipWith(f)({ (_, _) =>
-              fail("zipWith should not have been called")
-            })(ec)) eq f)
+            fail("zipWith should not have been called")
+          })(ec)) eq f)
     }
   }
 
@@ -245,7 +247,8 @@ class FutureTests extends MinimalScalaTest {
       ECNotUsed(ec => test.map(identity)(ec) eq test)
       ECNotUsed(ec =>
         test
-          .flatMap(_ => fail("flatMap should not have been called"))(ec) eq test)
+          .flatMap(_ => fail("flatMap should not have been called"))(
+            ec) eq test)
       ECNotUsed(ec =>
         test
           .filter(_ => fail("filter should not have been called"))(ec) eq test)
@@ -566,7 +569,9 @@ class FutureTests extends MinimalScalaTest {
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
       Await
-        .result(Future.firstCompletedOf(futures.iterator), defaultTimeout) mustBe (5)
+        .result(
+          Future.firstCompletedOf(futures.iterator),
+          defaultTimeout) mustBe (5)
     }
 
     "find" in {

@@ -102,7 +102,9 @@ class TcpConnectionSpec extends AkkaSpec("""
           true
         ) // only set after connection is established
         EventFilter
-          .warning(pattern = "registration timeout", occurrences = 1) intercept {
+          .warning(
+            pattern = "registration timeout",
+            occurrences = 1) intercept {
           selector.send(connectionActor, ChannelConnectable)
           clientChannel.socket.getKeepAlive should ===(false)
         }
@@ -588,8 +590,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false
-          ) // send EOF (fin) from the server side
+            false) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -608,8 +609,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false
-          ) // send EOF (fin) from the server side
+            false) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -1076,8 +1076,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         fullClose: Boolean = true): Unit = {
       if (fullClose) serverSideChannel.close()
       else serverSideChannel.socket.shutdownOutput()
-      checkFor(clientSelectionKey, OP_READ, 3.seconds.toMillis.toInt) should ===(
-        true)
+      checkFor(
+        clientSelectionKey,
+        OP_READ,
+        3.seconds.toMillis.toInt) should ===(true)
     }
 
     def registerChannel(channel: SocketChannel, name: String): SelectionKey = {

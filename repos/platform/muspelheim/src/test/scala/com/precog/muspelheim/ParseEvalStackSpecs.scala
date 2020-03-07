@@ -103,7 +103,11 @@ trait TestStackLike[M[+_]]
     val memoizationWorkDir = scratchDir
 
     val flatMapTimeout = Duration(100, "seconds")
-    val maxEvalDuration = Duration(5, "minutes") // it's just unreasonable to run tests longer than this
+    val maxEvalDuration =
+      Duration(
+        5,
+        "minutes"
+      ) // it's just unreasonable to run tests longer than this
     val clock = blueeyes.util.Clock.System
 
     val maxSliceSize = 10

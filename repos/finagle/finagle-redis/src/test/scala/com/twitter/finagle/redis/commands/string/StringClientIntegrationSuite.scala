@@ -114,8 +114,9 @@ final class StringClientIntegrationSuite extends RedisClientTest {
           Some(bar),
           Some(baz),
           None))
-      assert(Await.result(
-        client.mSetNx(Map(foo -> bar, baz -> foo, boo -> moo))) == false)
+      assert(
+        Await.result(
+          client.mSetNx(Map(foo -> bar, baz -> foo, boo -> moo))) == false)
       assert(Await.result(client.mSetNx(Map(baz -> foo, boo -> moo))) == true)
       assert(
         Await.result(client.mGet(Seq(baz, boo))) == Seq(Some(foo), Some(moo)))

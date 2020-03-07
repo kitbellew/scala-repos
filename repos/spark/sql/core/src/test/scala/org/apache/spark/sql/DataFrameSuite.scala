@@ -754,7 +754,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       testData.select($"*").filter($"key" < 0).showString(1) === expectedAnswer)
   }
 
-  test("createDataFrame(RDD[Row], StructType) should convert UDTs (SPARK-6672)") {
+  test(
+    "createDataFrame(RDD[Row], StructType) should convert UDTs (SPARK-6672)") {
     val rowRDD = sparkContext.parallelize(Seq(Row(new ExamplePoint(1.0, 2.0))))
     val schema =
       StructType(Array(StructField("point", new ExamplePointUDT(), false)))
@@ -1103,7 +1104,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  test("Alias uses internally generated names 'aggOrder' and 'havingCondition'") {
+  test(
+    "Alias uses internally generated names 'aggOrder' and 'havingCondition'") {
     val df = Seq(1 -> 2).toDF("i", "j")
     val query1 = df
       .groupBy('i)
@@ -1354,7 +1356,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   // This test case is to verify a bug when making a new instance of LogicalRDD.
-  test("SPARK-11633: LogicalRDD throws TreeNode Exception: Failed to Copy Node") {
+  test(
+    "SPARK-11633: LogicalRDD throws TreeNode Exception: Failed to Copy Node") {
     withSQLConf(SQLConf.CASE_SENSITIVE.key -> "false") {
       val rdd = sparkContext.makeRDD(Seq(Row(1, 3), Row(2, 1)))
       val df = sqlContext

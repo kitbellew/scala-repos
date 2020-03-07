@@ -183,9 +183,10 @@ class ReplicaManagerTest {
       }
 
       var fetchCallbackFired = false
-      def fetchCallback(responseStatus: Map[
-        TopicAndPartition,
-        FetchResponsePartitionData]) = {
+      def fetchCallback(
+          responseStatus: Map[
+            TopicAndPartition,
+            FetchResponsePartitionData]) = {
         assertEquals(
           "Should give NotLeaderForPartitionException",
           Errors.NOT_LEADER_FOR_PARTITION.code,

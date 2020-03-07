@@ -334,7 +334,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
       <thead>
         <tr>
           <th style="width: 160px;"></th>
-          <th style="width: 492px;">Timelines (Last {batchTimes.length} batches, {
+          <th style="width: 492px;">Timelines (Last {
+        batchTimes.length
+      } batches, {
         numActiveBatches
       } active, {numCompletedBatches} completed)</th>
           <th style="width: 350px;">Histograms</th></tr>
@@ -359,7 +361,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
               </div>
               {
         if (numReceivers > 0) {
-          <div>Receivers: {listener.numActiveReceivers} / {numReceivers} active</div>
+          <div>Receivers: {listener.numActiveReceivers} / {
+            numReceivers
+          } active</div>
         }
       }
               <div>Avg: {eventRateForAllStreams.formattedAvg} events/sec</div>
@@ -593,7 +597,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
         listener.numTotalCompletedBatches
       })
       </h4> ++
-        new CompletedBatchTable(completedBatches, listener.batchDuration).toNodeSeq
+        new CompletedBatchTable(
+          completedBatches,
+          listener.batchDuration).toNodeSeq
     }
 
     activeBatchesContent ++ completedBatchesContent

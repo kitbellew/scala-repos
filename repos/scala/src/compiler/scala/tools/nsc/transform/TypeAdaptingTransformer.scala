@@ -78,7 +78,9 @@ trait TypeAdaptingTransformer {
                     log(s"boxing an unbox: ${tree.symbol} -> ${arg.tpe}")
                     arg
                   case _ =>
-                    (REF(currentRun.runDefinitions.boxMethod(x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
+                    (REF(
+                      currentRun.runDefinitions.boxMethod(
+                        x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
                 }
             }
         }

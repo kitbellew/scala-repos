@@ -489,7 +489,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               getSchedulerDelay(info, metrics.get, currentTime).toDouble
           }
           val schedulerDelayTitle = <td><span data-toggle="tooltip"
-            title={ToolTips.SCHEDULER_DELAY} data-placement="right">Scheduler Delay</span></td>
+            title={
+            ToolTips.SCHEDULER_DELAY
+          } data-placement="right">Scheduler Delay</span></td>
           val schedulerDelayQuantiles = schedulerDelayTitle +:
             getFormattedTimeQuantiles(schedulerDelays)
           def getFormattedSizeQuantilesWithRecords(
@@ -705,7 +707,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               taskIdsInPage.contains(t.taskInfo.taskId)),
             currentTime) ++
           <h4>Summary Metrics for {numCompleted} Completed Tasks</h4> ++
-          <div>{summaryTable.getOrElse("No tasks have reported metrics yet.")}</div> ++
+          <div>{
+            summaryTable.getOrElse("No tasks have reported metrics yet.")
+          }</div> ++
           <h4>Aggregated Metrics by Executor</h4> ++ executorTable.toNodeSeq ++
           maybeAccumulableTable ++
           <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++ jsForScrollingDownToTaskTable

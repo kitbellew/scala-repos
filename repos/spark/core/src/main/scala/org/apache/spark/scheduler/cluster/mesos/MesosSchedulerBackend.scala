@@ -354,7 +354,8 @@ private[spark] class MesosSchedulerBackend(
         }
 
       // Reply to the offers
-      val filters = Filters.newBuilder().setRefuseSeconds(1).build() // TODO: lower timeout?
+      val filters =
+        Filters.newBuilder().setRefuseSeconds(1).build() // TODO: lower timeout?
 
       mesosTasks.foreach {
         case (slaveId, tasks) =>
@@ -406,7 +407,9 @@ private[spark] class MesosSchedulerBackend(
       .setExecutor(executorInfo)
       .setName(task.name)
       .addAllResources(cpuResources.asJava)
-      .setData(MesosTaskLaunchData(task.serializedTask, task.attemptNumber).toByteString)
+      .setData(MesosTaskLaunchData(
+        task.serializedTask,
+        task.attemptNumber).toByteString)
       .build()
     (taskInfo, finalResources.asJava)
   }

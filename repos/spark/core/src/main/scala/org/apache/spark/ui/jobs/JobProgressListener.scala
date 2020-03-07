@@ -544,7 +544,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
 
   override def onExecutorMetricsUpdate(
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate) {
-    for ((taskId, sid, sAttempt, accumUpdates) <- executorMetricsUpdate.accumUpdates) {
+    for ((
+           taskId,
+           sid,
+           sAttempt,
+           accumUpdates) <- executorMetricsUpdate.accumUpdates) {
       val stageData = stageIdToData.getOrElseUpdate(
         (sid, sAttempt), {
           logWarning("Metrics update for task in unknown stage " + sid)

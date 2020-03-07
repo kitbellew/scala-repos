@@ -313,15 +313,15 @@ trait CaseClassMacros extends ReprTypes {
     else tpe
 
   def isProductAux(tpe: Type): Boolean =
-    tpe.typeSymbol.isClass && (isCaseClassLike(classSym(tpe)) || HasApplyUnapply(
-      tpe) || HasCtorUnapply(tpe))
+    tpe.typeSymbol.isClass && (isCaseClassLike(
+      classSym(tpe)) || HasApplyUnapply(tpe) || HasCtorUnapply(tpe))
 
   def isProduct(tpe: Type): Boolean =
     tpe =:= typeOf[Unit] || (!(tpe =:= typeOf[AnyRef]) && isProductAux(tpe))
 
   def isProduct1(tpe: Type): Boolean =
-    lowerKind(tpe) =:= typeOf[Unit] || (!(lowerKind(tpe) =:= typeOf[AnyRef]) && isProductAux(
-      tpe))
+    lowerKind(tpe) =:= typeOf[Unit] || (!(lowerKind(tpe) =:= typeOf[
+      AnyRef]) && isProductAux(tpe))
 
   def isCoproduct(tpe: Type): Boolean = {
     val sym = tpe.typeSymbol
@@ -957,7 +957,8 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val isCaseClass = sym.asClass.isCaseClass
 
-      val repWCard = Star(Ident(termNames.WILDCARD)) // like pq"_*" except that it does work
+      val repWCard =
+        Star(Ident(termNames.WILDCARD)) // like pq"_*" except that it does work
 
       def narrow(tree: Tree, tpe: Type): Tree =
         tpe match {

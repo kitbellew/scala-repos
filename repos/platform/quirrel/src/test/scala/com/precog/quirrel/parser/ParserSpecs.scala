@@ -243,7 +243,8 @@ object ParserSpecs
       }
 
       "with And, Where" >> {
-        parseSingle("solve 'a, 'b ('a where true) & ('b where false)") must beLike {
+        parseSingle(
+          "solve 'a, 'b ('a where true) & ('b where false)") must beLike {
           case Solve(
               _,
               Vector(TicVar(_, "'a"), TicVar(_, "'b")),
@@ -368,7 +369,8 @@ object ParserSpecs
     }
 
     "disambiguate solve and let" in {
-      parseSingle("solve 'a foo(b) := (solve 'c 'b + 'c) foo + 'a") must beLike {
+      parseSingle(
+        "solve 'a foo(b) := (solve 'c 'b + 'c) foo + 'a") must beLike {
         case Solve(
             _,
             Vector(TicVar(_, "'a")),
@@ -630,7 +632,8 @@ object ParserSpecs
           ok
       }
 
-      parseSingle("{ \"a\": 1, \"b\": 2, \"cafe\": 3, \"star_BUckS\": 4 }") must beLike {
+      parseSingle(
+        "{ \"a\": 1, \"b\": 2, \"cafe\": 3, \"star_BUckS\": 4 }") must beLike {
         case ObjectDef(
             _,
             Vector(
@@ -643,7 +646,8 @@ object ParserSpecs
     }
 
     "accept an object definition with a null property" in {
-      parseSingle("{ a: 1, b: 2, cafe: { foo: null }, star_BUckS: null }") must beLike {
+      parseSingle(
+        "{ a: 1, b: 2, cafe: { foo: null }, star_BUckS: null }") must beLike {
         case ObjectDef(
             _,
             Vector(
@@ -670,11 +674,13 @@ object ParserSpecs
     "reject an object definition with undelimited properties" in {
       parseSingle("{ a: 1, b: 2 cafe: 3, star_BUckS: 4 }") must throwA[
         ParseException]
-      parseSingle("{ \"a\": 1, \"b\": 2 \"cafe\": 3, \"star_BUckS\": 4 }") must throwA[
+      parseSingle(
+        "{ \"a\": 1, \"b\": 2 \"cafe\": 3, \"star_BUckS\": 4 }") must throwA[
         ParseException]
       parseSingle("{ a: 1 b: 2 cafe: 3 star_BUckS: 4 }") must throwA[
         ParseException]
-      parseSingle("{ \"a\": 1 \"b\": 2 \"cafe\": 3 \"star_BUckS\": 4 }") must throwA[
+      parseSingle(
+        "{ \"a\": 1 \"b\": 2 \"cafe\": 3 \"star_BUckS\": 4 }") must throwA[
         ParseException]
     }
 
@@ -2453,7 +2459,8 @@ object ParserSpecs
         case NumLit(_, "1") => ok
       }
 
-      parseSingle("(- testing one two three -)\n(-four five six -)\n1") must beLike {
+      parseSingle(
+        "(- testing one two three -)\n(-four five six -)\n1") must beLike {
         case NumLit(_, "1") => ok
       }
 
@@ -2479,7 +2486,8 @@ object ParserSpecs
         case NumLit(_, "1") => ok
       }
 
-      parseSingle("1\t  (- testing one two three -)\n(-four five six -)\n") must beLike {
+      parseSingle(
+        "1\t  (- testing one two three -)\n(-four five six -)\n") must beLike {
         case NumLit(_, "1") => ok
       }
 

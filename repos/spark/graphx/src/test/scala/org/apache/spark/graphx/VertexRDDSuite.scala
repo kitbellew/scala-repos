@@ -40,7 +40,10 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n)
-      val negatives = verts.mapValues(x => -x).cache() // Allow joining b with a derived RDD of b
+      val negatives =
+        verts
+          .mapValues(x => -x)
+          .cache() // Allow joining b with a derived RDD of b
       assert(negatives.count === n + 1)
     }
   }

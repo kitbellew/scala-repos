@@ -160,7 +160,9 @@ object Scalding {
   private def bisectingMinify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Option[DateRange] = {
     def isGood(end: Long): Boolean =
-      STry(factory(DateRange(desired.start, RichDate(end))).validateTaps(mode)).isSuccess
+      STry(
+        factory(DateRange(desired.start, RichDate(end)))
+          .validateTaps(mode)).isSuccess
     val DateRange(start, end) = desired
     if (isGood(start.timestamp)) {
       // The invariant is that low isGood, low < upper, and upper isGood == false

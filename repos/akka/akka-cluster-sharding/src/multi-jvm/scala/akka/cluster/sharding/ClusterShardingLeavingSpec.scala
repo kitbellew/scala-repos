@@ -218,7 +218,8 @@ abstract class ClusterShardingLeavingSpec(
       enterBarrier("stopped")
 
       runOn(second, third, fourth) {
-        system.actorSelection(node(first) / "user" / "shardLocations") ! GetLocations
+        system.actorSelection(
+          node(first) / "user" / "shardLocations") ! GetLocations
         val Locations(locations) = expectMsgType[Locations]
         val firstAddress = node(first).address
         awaitAssert {

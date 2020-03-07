@@ -143,8 +143,12 @@ class EvaluationInstanceSerializer
                   "sparkConf",
                   Extraction.decompose(i.sparkConf)(DefaultFormats)) ::
                 JField("evaluatorResults", JString(i.evaluatorResults)) ::
-                JField("evaluatorResultsHTML", JString(i.evaluatorResultsHTML)) ::
-                JField("evaluatorResultsJSON", JString(i.evaluatorResultsJSON)) ::
+                JField(
+                  "evaluatorResultsHTML",
+                  JString(i.evaluatorResultsHTML)) ::
+                JField(
+                  "evaluatorResultsJSON",
+                  JString(i.evaluatorResultsJSON)) ::
                 Nil
             )
         }))

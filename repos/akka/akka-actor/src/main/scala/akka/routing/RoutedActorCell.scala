@@ -52,8 +52,8 @@ private[akka] class RoutedActorCell(
   private[akka] val routerConfig = _routerProps.routerConfig
 
   @volatile
-  private var _router
-      : Router = null // initialized in start, and then only updated from the actor
+  private var _router: Router =
+    null // initialized in start, and then only updated from the actor
   def router: Router = _router
 
   def addRoutee(routee: Routee): Unit = addRoutees(List(routee))

@@ -66,7 +66,8 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
     Mockito.verify(taskTracker).tasksByAppSync
   }
 
-  test("Upgrading an app updates app definition in actor and requeries backoff") {
+  test(
+    "Upgrading an app updates app definition in actor and requeries backoff") {
     Given("an entry for an app")
     Mockito
       .when(taskTracker.tasksByAppSync)

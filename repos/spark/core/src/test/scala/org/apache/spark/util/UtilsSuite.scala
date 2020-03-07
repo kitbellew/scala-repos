@@ -451,10 +451,12 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       Utils.nonLocalPaths("hdfs:///spark.jar") === Array("hdfs:///spark.jar"))
     assert(
       Utils
-        .nonLocalPaths("file:/spark.jar,local:/smart.jar,family.py") === Array.empty)
+        .nonLocalPaths(
+          "file:/spark.jar,local:/smart.jar,family.py") === Array.empty)
     assert(
       Utils
-        .nonLocalPaths("local:/spark.jar,file:/smart.jar,family.py") === Array.empty)
+        .nonLocalPaths(
+          "local:/spark.jar,file:/smart.jar,family.py") === Array.empty)
     assert(
       Utils.nonLocalPaths("hdfs:/spark.jar,s3:/smart.jar") ===
         Array("hdfs:/spark.jar", "s3:/smart.jar"))
@@ -476,14 +478,24 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
         .nonLocalPaths("C:/some/path.jar", testWindows = true) === Array.empty)
     assert(
       Utils
-        .nonLocalPaths("file:/C:/some/path.jar", testWindows = true) === Array.empty)
-    assert(Utils
-      .nonLocalPaths("file:///C:/some/path.jar", testWindows = true) === Array.empty)
+        .nonLocalPaths(
+          "file:/C:/some/path.jar",
+          testWindows = true) === Array.empty)
     assert(
       Utils
-        .nonLocalPaths("local:/C:/some/path.jar", testWindows = true) === Array.empty)
-    assert(Utils
-      .nonLocalPaths("local:///C:/some/path.jar", testWindows = true) === Array.empty)
+        .nonLocalPaths(
+          "file:///C:/some/path.jar",
+          testWindows = true) === Array.empty)
+    assert(
+      Utils
+        .nonLocalPaths(
+          "local:/C:/some/path.jar",
+          testWindows = true) === Array.empty)
+    assert(
+      Utils
+        .nonLocalPaths(
+          "local:///C:/some/path.jar",
+          testWindows = true) === Array.empty)
     assert(
       Utils.nonLocalPaths(
         "hdfs:/a.jar,C:/my.jar,s3:/another.jar",

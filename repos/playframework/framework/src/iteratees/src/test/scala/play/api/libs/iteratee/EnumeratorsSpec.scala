@@ -366,8 +366,8 @@ object EnumeratorsSpec
     "Can be composed with another enumerator (doesn't send EOF)" in {
       mustExecute(12, 12) { (foldEC, unfoldEC) =>
         val enumerator = Enumerator.unfoldM[Int, Int](0)(s =>
-          Future(if (s > 10) None else Some((s + 1, s + 1))))(unfoldEC) >>> Enumerator(
-          12)
+          Future(if (s > 10) None else Some((s + 1, s + 1))))(
+          unfoldEC) >>> Enumerator(12)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),

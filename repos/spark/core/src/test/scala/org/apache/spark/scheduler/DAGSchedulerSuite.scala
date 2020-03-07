@@ -1455,7 +1455,8 @@ class DAGSchedulerSuite
     * We lose an executor after completing some shuffle map tasks on it.  Those tasks get
     * resubmitted, and when they finish the job completes normally
     */
-  test("register map outputs correctly after ExecutorLost and task Resubmitted") {
+  test(
+    "register map outputs correctly after ExecutorLost and task Resubmitted") {
     val firstRDD = new MyRDD(sc, 3, Nil)
     val firstShuffleDep =
       new ShuffleDependency(firstRDD, new HashPartitioner(2))
@@ -1620,7 +1621,8 @@ class DAGSchedulerSuite
     // even though we have cancelled that job and are now running it because of job2, we haven't
     // updated the TaskSet's properties.  Changing the properties to "job2" is likely the more
     // correct behavior.
-    val job1Id = 0 // TaskSet priority for Stages run with "job1" as the ActiveJob
+    val job1Id =
+      0 // TaskSet priority for Stages run with "job1" as the ActiveJob
     checkJobPropertiesAndPriority(taskSets(0), "job1", job1Id)
     complete(taskSets(0), Seq((Success, makeMapStatus("hostA", 1))))
 
@@ -1657,7 +1659,8 @@ class DAGSchedulerSuite
     "stage used by two jobs, some fetch failures, and the first job no longer active " +
       "(SPARK-6880)") {
     val shuffleDep1 = launchJobsThatShareStageAndCancelFirst()
-    val job2Id = 1 // TaskSet priority for Stages run with "job2" as the ActiveJob
+    val job2Id =
+      1 // TaskSet priority for Stages run with "job2" as the ActiveJob
 
     // lets say there is a fetch failure in this task set, which makes us go back and
     // run stage 0, attempt 1
@@ -1814,7 +1817,8 @@ class DAGSchedulerSuite
     assertDataStructuresEmpty()
   }
 
-  test("misbehaved accumulator should not crash DAGScheduler and SparkContext") {
+  test(
+    "misbehaved accumulator should not crash DAGScheduler and SparkContext") {
     val acc = new Accumulator[Int](
       0,
       new AccumulatorParam[Int] {

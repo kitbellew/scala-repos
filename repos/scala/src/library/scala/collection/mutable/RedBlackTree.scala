@@ -652,6 +652,7 @@ private[collection] object RedBlackTree {
       }
     }
 
-    isBlack(tree.root) && noRedAfterRed(tree.root) && blackHeight(tree.root) >= 0
+    isBlack(tree.root) && noRedAfterRed(tree.root) && blackHeight(
+      tree.root) >= 0
   }
 }

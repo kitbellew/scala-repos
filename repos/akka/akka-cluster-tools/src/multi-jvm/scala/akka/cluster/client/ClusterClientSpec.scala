@@ -355,8 +355,8 @@ class ClusterClientSpec
         val sys2 = ActorSystem(
           system.name,
           ConfigFactory
-            .parseString(
-              "akka.remote.netty.tcp.port=" + Cluster(system).selfAddress.port.get)
+            .parseString("akka.remote.netty.tcp.port=" + Cluster(
+              system).selfAddress.port.get)
             .withFallback(system.settings.config))
         Cluster(sys2).join(Cluster(sys2).selfAddress)
         val service2 =

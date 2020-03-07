@@ -41,7 +41,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       input.na.drop("name" :: Nil).select("name"),
-      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row("Amy") :: Nil)
+      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row(
+        "Amy") :: Nil)
 
     checkAnswer(
       input.na.drop("age" :: Nil).select("name"),
@@ -65,7 +66,8 @@ class DataFrameNaFunctionsSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       input.na.drop("all").select("name"),
-      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row("Amy") :: Nil)
+      Row("Bob") :: Row("Alice") :: Row("David") :: Row("Nina") :: Row(
+        "Amy") :: Nil)
 
     checkAnswer(input.na.drop("any"), rows(0) :: Nil)
 
