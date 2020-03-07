@@ -19,14 +19,14 @@ package org.apache.spark.scheduler.cluster
 import org.apache.spark.annotation.DeveloperApi
 
 /**
- * :: DeveloperApi ::
- * Stores information about an executor to pass from the scheduler to SparkListeners.
- */
+  * :: DeveloperApi ::
+  * Stores information about an executor to pass from the scheduler to SparkListeners.
+  */
 @DeveloperApi
 class ExecutorInfo(
-   val executorHost: String,
-   val totalCores: Int,
-   val logUrlMap: Map[String, String]) {
+    val executorHost: String,
+    val totalCores: Int,
+    val logUrlMap: Map[String, String]) {
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ExecutorInfo]
 

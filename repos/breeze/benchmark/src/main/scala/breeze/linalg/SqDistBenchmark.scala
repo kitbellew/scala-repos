@@ -4,8 +4,8 @@ import breeze.benchmark.{MyRunner, BreezeBenchmark}
 import spire.syntax.cfor._
 
 /**
- * Created by dlwh on 8/14/15.
- */
+  * Created by dlwh on 8/14/15.
+  */
 class SqDistBenchmark extends BreezeBenchmark {
   assert(usingNatives)
 
@@ -142,13 +142,11 @@ class SqDistBenchmark extends BreezeBenchmark {
       }
     }
   }
-  */
+   */
 
   def timeVectorSquaredDistance(reps: Int) = {
     var sum = 0.0
-    cforRange(0 until reps) { i =>
-      sum += squaredDistance(v1, v2)
-    }
+    cforRange(0 until reps) { i => sum += squaredDistance(v1, v2) }
 
     sum
   }
@@ -165,7 +163,6 @@ class SqDistBenchmark extends BreezeBenchmark {
   }
 
 }
-
 
 object SqDistBenchmark extends MyRunner(classOf[SqDistBenchmark])
 

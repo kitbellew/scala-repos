@@ -7,8 +7,13 @@ import org.slf4j.LoggerFactory
 import scala.util.control.NonFatal
 import scala.util.parsing.combinator.RegexParsers
 
-case class LabelSelector(key: String, fn: String => Boolean, value: List[String]) extends AppSelector {
-  def matches(app: AppDefinition): Boolean = app.labels.contains(key) && fn(app.labels(key))
+case class LabelSelector(
+    key: String,
+    fn: String => Boolean,
+    value: List[String])
+    extends AppSelector {
+  def matches(app: AppDefinition): Boolean =
+    app.labels.contains(key) && fn(app.labels(key))
 }
 
 case class LabelSelectors(selectors: Seq[LabelSelector]) extends AppSelector {
@@ -42,7 +47,9 @@ class LabelSelectorParsers extends RegexParsers {
   private[this] val log = LoggerFactory.getLogger(getClass.getName)
 
   //Allowed characters are A-Za-z0-9._- All other characters can be used, but need to be escaped.
-  def term: Parser[String] = """(\\.|[-A-Za-z0-9_.])+""".r ^^ { _.replaceAll("""\\(.)""", "$1") }
+  def term: Parser[String] = """(\\.|[-A-Za-z0-9_.])+""".r ^^ {
+    _.replaceAll("""\\(.)""", "$1")
+  }
 
   def existenceSelector: Parser[LabelSelector] = term ^^ {
     case existence: String => LabelSelector(existence, _ => true, List.empty)
@@ -61,7 +68,8 @@ class LabelSelectorParsers extends RegexParsers {
     case label ~ "notin" ~ set => LabelSelector(label, !set.contains(_), set)
   }
 
-  def selector: Parser[LabelSelector] = setSelector | equalitySelector | existenceSelector
+  def selector: Parser[LabelSelector] =
+    setSelector | equalitySelector | existenceSelector
   def selectors: Parser[List[LabelSelector]] = repsep(selector, ",")
 
   def parseSelectors(in: String): Either[String, LabelSelectors] = {
@@ -70,8 +78,7 @@ class LabelSelectorParsers extends RegexParsers {
         case Success(selectors, _) => Right(LabelSelectors(selectors))
         case NoSuccess(message, _) => Left(message)
       }
-    }
-    catch {
+    } catch {
       case NonFatal(ex) =>
         log.warn(s"Could not parse $in", ex)
         Left(ex.getMessage)
@@ -79,8 +86,9 @@ class LabelSelectorParsers extends RegexParsers {
   }
 
   def parsed(in: String): LabelSelectors = parseSelectors(in) match {
-    case Left(message)    => throw new IllegalArgumentException(s"Can not parse label selector $in. Reason: $message")
+    case Left(message) =>
+      throw new IllegalArgumentException(
+        s"Can not parse label selector $in. Reason: $message")
     case Right(selectors) => selectors
   }
 }
-

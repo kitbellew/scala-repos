@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.testkit
 
 import scala.collection.immutable
@@ -10,8 +10,8 @@ import java.nio.channels.DatagramChannel
 import java.nio.channels.ServerSocketChannel
 
 /**
- * Utilities to get free socket address.
- */
+  * Utilities to get free socket address.
+  */
 object SocketUtil {
 
   import scala.language.reflectiveCalls
@@ -23,10 +23,15 @@ object SocketUtil {
     def getLocalPort(): Int
   }
 
-  def temporaryServerAddress(address: String = "127.0.0.1", udp: Boolean = false): InetSocketAddress =
+  def temporaryServerAddress(
+      address: String = "127.0.0.1",
+      udp: Boolean = false): InetSocketAddress =
     temporaryServerAddresses(1, address, udp).head
 
-  def temporaryServerAddresses(numberOfAddresses: Int, hostname: String = "127.0.0.1", udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
+  def temporaryServerAddresses(
+      numberOfAddresses: Int,
+      hostname: String = "127.0.0.1",
+      udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
     Vector.fill(numberOfAddresses) {
       val serverSocket: GeneralSocket =
         if (udp) DatagramChannel.open().socket()

@@ -63,7 +63,7 @@ class EventTest extends FunSuite {
 
   test("Event.collect") {
     val e = Event[Int]()
-    val events = e collect { case i if i%2==0 => i*2 }
+    val events = e collect { case i if i % 2 == 0 => i * 2 }
     val ref = new AtomicReference[Seq[Int]](Seq.empty)
     events.build.register(Witness(ref))
 
@@ -72,12 +72,12 @@ class EventTest extends FunSuite {
     e.notify(2)
     assert(ref.get == Seq(4))
     e.notify(3); e.notify(4)
-    assert(ref.get == Seq(4,8))
+    assert(ref.get == Seq(4, 8))
   }
 
   test("Event.foldLeft") {
     val e = Event[Int]()
-    val sum = e.foldLeft(0) (_+_)
+    val sum = e.foldLeft(0)(_ + _)
     val ref = new AtomicReference[Int](0)
     sum.register(Witness(ref))
     e.notify(0)
@@ -97,11 +97,11 @@ class EventTest extends FunSuite {
     e.notify(1)
     assert(ref.get == Seq(1))
     e.notify(2)
-    assert(ref.get == Seq(1,2))
+    assert(ref.get == Seq(1, 2))
     e.notify(3)
-    assert(ref.get == Seq(1,2,3))
+    assert(ref.get == Seq(1, 2, 3))
     e.notify(4)
-    assert(ref.get == Seq(2,3,4))
+    assert(ref.get == Seq(2, 3, 4))
   }
 
   test("Event.mergeMap") {
@@ -181,7 +181,7 @@ class EventTest extends FunSuite {
     for (i <- 50 until 100) e2.notify(i.toString)
     for (i <- 50 until 100) e1.notify(i)
 
-    assert(ref.get == ((0 until 100) zip ((0 until 100) map(_.toString))))
+    assert(ref.get == ((0 until 100) zip ((0 until 100) map (_.toString))))
   }
 
   test("Event.joinLast") {
@@ -229,7 +229,7 @@ class EventTest extends FunSuite {
     for (i <- 0 until 100) e1.notify(i)
     for (i <- 100 until 200) e2.notify(i)
     for (i <- 200 until 300) {
-      if (i%2 == 0) e1.notify(i)
+      if (i % 2 == 0) e1.notify(i)
       else e2.notify(i)
     }
 
@@ -271,7 +271,7 @@ class EventTest extends FunSuite {
 
   test("Jake's composition test") {
     def sum(v: Var[Int]): Var[Int] = {
-      val e = v.changes.foldLeft(0) (_+_)
+      val e = v.changes.foldLeft(0)(_ + _)
       Var(0, e)
     }
 

@@ -5,7 +5,9 @@ import org.jboss.netty.buffer.ChannelBuffer
 trait KeyCommand extends Command {
   val key: ChannelBuffer
   protected def validate() {
-    RequireClientProtocol(key != null && key.readableBytes > 0, "Empty Key found")
+    RequireClientProtocol(
+      key != null && key.readableBytes > 0,
+      "Empty Key found")
   }
 }
 trait StrictKeyCommand extends KeyCommand {
@@ -17,7 +19,9 @@ trait KeysCommand extends Command {
   protected def validate() {
     RequireClientProtocol(keys != null && !keys.isEmpty, "Empty KeySet found")
     keys.foreach { key =>
-      RequireClientProtocol(key != null && key.readableBytes > 0, "Empty key found")
+      RequireClientProtocol(
+        key != null && key.readableBytes > 0,
+        "Empty key found")
     }
   }
 }
@@ -29,7 +33,8 @@ trait ValueCommand extends Command {
   val value: ChannelBuffer
 }
 trait StrictValueCommand extends ValueCommand {
-  RequireClientProtocol(value != null && value.readableBytes > 0,
+  RequireClientProtocol(
+    value != null && value.readableBytes > 0,
     "Found unexpected empty value")
 }
 
@@ -37,6 +42,7 @@ trait MemberCommand extends Command {
   val member: ChannelBuffer
 }
 trait StrictMemberCommand extends MemberCommand {
-  RequireClientProtocol(member != null && member.readableBytes > 0,
+  RequireClientProtocol(
+    member != null && member.readableBytes > 0,
     "Found unexpected empty set member")
 }

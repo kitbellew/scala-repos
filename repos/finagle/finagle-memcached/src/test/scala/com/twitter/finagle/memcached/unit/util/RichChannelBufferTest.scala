@@ -10,12 +10,15 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 @RunWith(classOf[JUnitRunner])
-class RichChannelBufferTest extends FunSuite
-  with GeneratorDrivenPropertyChecks
-{
+class RichChannelBufferTest
+    extends FunSuite
+    with GeneratorDrivenPropertyChecks {
 
   test("toInt for 0 to Int.MaxValue") {
-    import ChannelBufferUtils.{stringToChannelBuffer, channelBufferToRichChannelBuffer}
+    import ChannelBufferUtils.{
+      stringToChannelBuffer,
+      channelBufferToRichChannelBuffer
+    }
 
     forAll(Gen.chooseNum(0, Int.MaxValue)) { n: Int =>
       val cb: ChannelBuffer = n.toString

@@ -24,10 +24,12 @@ import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 
 /**
- * URL class loader that exposes the `addURL` and `getURLs` methods in URLClassLoader.
- */
-private[spark] class MutableURLClassLoader(urls: Array[URL], parent: ClassLoader)
-  extends URLClassLoader(urls, parent) {
+  * URL class loader that exposes the `addURL` and `getURLs` methods in URLClassLoader.
+  */
+private[spark] class MutableURLClassLoader(
+    urls: Array[URL],
+    parent: ClassLoader)
+    extends URLClassLoader(urls, parent) {
 
   override def addURL(url: URL): Unit = {
     super.addURL(url)
@@ -40,21 +42,23 @@ private[spark] class MutableURLClassLoader(urls: Array[URL], parent: ClassLoader
 }
 
 /**
- * A mutable class loader that gives preference to its own URLs over the parent class loader
- * when loading classes and resources.
- */
-private[spark] class ChildFirstURLClassLoader(urls: Array[URL], parent: ClassLoader)
-  extends MutableURLClassLoader(urls, null) {
+  * A mutable class loader that gives preference to its own URLs over the parent class loader
+  * when loading classes and resources.
+  */
+private[spark] class ChildFirstURLClassLoader(
+    urls: Array[URL],
+    parent: ClassLoader)
+    extends MutableURLClassLoader(urls, null) {
 
   private val parentClassLoader = new ParentClassLoader(parent)
 
   /**
-   * Used to implement fine-grained class loading locks similar to what is done by Java 7. This
-   * prevents deadlock issues when using non-hierarchical class loaders.
-   *
-   * Note that due to some issues with implementing class loaders in
-   * Scala, Java 7's `ClassLoader.registerAsParallelCapable` method is not called.
-   */
+    * Used to implement fine-grained class loading locks similar to what is done by Java 7. This
+    * prevents deadlock issues when using non-hierarchical class loaders.
+    *
+    * Note that due to some issues with implementing class loaders in
+    * Scala, Java 7's `ClassLoader.registerAsParallelCapable` method is not called.
+    */
   private val locks = new ConcurrentHashMap[String, Object]()
 
   override def loadClass(name: String, resolve: Boolean): Class[_] = {

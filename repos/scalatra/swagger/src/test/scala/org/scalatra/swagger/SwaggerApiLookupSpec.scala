@@ -30,31 +30,45 @@ class SwaggerApiLookupSpec extends ScalatraSpec with JsonMatchers {
 
   def listResources = get("/api-docs") {
     status must_== 200
-    jackson.parseJson(body) \ "apis" must_== JArray(List(
-      JObject("path" -> JString("/api/unnamed"), "description" -> JString("The first API")),
-      JObject("path" -> JString("/api/custom-name"), "description" -> JString("The second API"))
-    ))
+    jackson.parseJson(body) \ "apis" must_== JArray(
+      List(
+        JObject(
+          "path" -> JString("/api/unnamed"),
+          "description" -> JString("The first API")),
+        JObject(
+          "path" -> JString("/api/custom-name"),
+          "description" -> JString("The second API"))
+      ))
   }
 
   def listFooOperations = get("/api-docs/api/unnamed") {
     status must_== 200
     val json = jackson.parseJson(body)
     json \ "resourcePath" must_== JString("/api/unnamed")
-    json \ "apis" \\ "path" must_== JObject("path" -> JString("/api/unnamed/"), "path" -> JString("/api/unnamed/{id}"))
+    json \ "apis" \\ "path" must_== JObject(
+      "path" -> JString("/api/unnamed/"),
+      "path" -> JString("/api/unnamed/{id}"))
   }
 
   def listBarOperations = get("/api-docs/api/custom-name") {
     status must_== 200
     val json = jackson.parseJson(body)
     json \ "resourcePath" must_== JString("/api/custom-name")
-    json \ "apis" \\ "path" must_== JObject("path" -> JString("/api/custom-name/"), "path" -> JString("/api/custom-name/{id}"))
+    json \ "apis" \\ "path" must_== JObject(
+      "path" -> JString("/api/custom-name/"),
+      "path" -> JString("/api/custom-name/{id}"))
   }
 
 }
 
-class ApiDocs(implicit val swagger: Swagger) extends ScalatraServlet with JacksonSwaggerBase
+class ApiDocs(implicit val swagger: Swagger)
+    extends ScalatraServlet
+    with JacksonSwaggerBase
 
-class ApiController1()(implicit val swagger: Swagger) extends ScalatraServlet with JacksonJsonSupport with SwaggerSupport {
+class ApiController1()(implicit val swagger: Swagger)
+    extends ScalatraServlet
+    with JacksonJsonSupport
+    with SwaggerSupport {
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
   protected val applicationDescription: String = "The first API"
@@ -70,7 +84,13 @@ class ApiController1()(implicit val swagger: Swagger) extends ScalatraServlet wi
   val getFoo = (apiOperation[String]("getFoo")
     summary "Retrieve a single foo by id"
     notes "Foo"
-    parameters Parameter("id", DataType.Int, Some("The id"), None, ParamType.Path, required = true))
+    parameters Parameter(
+      "id",
+      DataType.Int,
+      Some("The id"),
+      None,
+      ParamType.Path,
+      required = true))
 
   get("/:id", operation(getFoo)) {
     "Foo!"
@@ -78,7 +98,10 @@ class ApiController1()(implicit val swagger: Swagger) extends ScalatraServlet wi
 
 }
 
-class ApiController2()(implicit val swagger: Swagger) extends ScalatraServlet with JacksonJsonSupport with SwaggerSupport {
+class ApiController2()(implicit val swagger: Swagger)
+    extends ScalatraServlet
+    with JacksonJsonSupport
+    with SwaggerSupport {
   override implicit protected def jsonFormats: Formats = DefaultFormats
 
   protected val applicationDescription: String = "The second API"
@@ -94,7 +117,13 @@ class ApiController2()(implicit val swagger: Swagger) extends ScalatraServlet wi
   val getBar = (apiOperation[String]("getBar")
     summary "Retrieve a single bar by id"
     notes "Bar"
-    parameters Parameter("id", DataType.Int, Some("The id"), None, ParamType.Path, required = true))
+    parameters Parameter(
+      "id",
+      DataType.Int,
+      Some("The id"),
+      None,
+      ParamType.Path,
+      required = true))
 
   get("/:id", operation(getBar)) {
     "Bar!"

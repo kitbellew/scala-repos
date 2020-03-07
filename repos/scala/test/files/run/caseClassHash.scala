@@ -1,11 +1,21 @@
-case class Foo[T](a: Boolean, b: Byte, c: Short, d: Char, e: Int, f: Long, g: Double, h: Float, i: AnyRef, j: T) { }
+case class Foo[T](
+    a: Boolean,
+    b: Byte,
+    c: Short,
+    d: Char,
+    e: Int,
+    f: Long,
+    g: Double,
+    h: Float,
+    i: AnyRef,
+    j: T) {}
 
 object Test {
   def mkFoo[T](x: T) = Foo[T](true, -1, -1, 100, -5, -10, 500d, 500f, Nil, x)
 
   def main(args: Array[String]): Unit = {
     val foo1 = mkFoo[Double](5.0d)
-    val foo2 = mkFoo[Long](5l)
+    val foo2 = mkFoo[Long](5L)
 
     List(foo1, foo2, foo1.##, foo2.##, foo1 == foo2) foreach println
 
@@ -18,7 +28,8 @@ object Test {
 
 object Timing {
   var hash = 0
-  def mkFoo(i: Int) = Foo(i % 2 == 0, i.toByte, i.toShort, i.toChar, i, i, 1.1, 1.1f, this, this)
+  def mkFoo(i: Int) =
+    Foo(i % 2 == 0, i.toByte, i.toShort, i.toChar, i, i, 1.1, 1.1f, this, this)
 
   def main(args: Array[String]): Unit = {
     val reps = if (args.isEmpty) 100000000 else args(0).toInt

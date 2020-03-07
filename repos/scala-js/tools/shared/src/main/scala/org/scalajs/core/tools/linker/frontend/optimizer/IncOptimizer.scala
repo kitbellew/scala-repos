@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.frontend.optimizer
 
 import scala.collection.{GenTraversableOnce, GenIterable}
@@ -15,7 +14,9 @@ import scala.collection.mutable
 import org.scalajs.core.tools.sem.Semantics
 import org.scalajs.core.tools.javascript.ESLevel
 
-final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
+final class IncOptimizer(
+    semantics: Semantics,
+    esLevel: ESLevel,
     considerPositions: Boolean)
     extends GenIncOptimizer(semantics, esLevel, considerPositions) {
 
@@ -63,7 +64,8 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
   private[optimizer] def scheduleMethod(method: MethodImpl): Unit =
     methodsToProcess += method
 
-  private[optimizer] def newMethodImpl(owner: MethodContainer,
+  private[optimizer] def newMethodImpl(
+      owner: MethodContainer,
       encodedName: String): MethodImpl = new SeqMethodImpl(owner, encodedName)
 
   private[optimizer] def processAllTaggedMethods(): Unit = {
@@ -73,11 +75,15 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
     methodsToProcess.clear()
   }
 
-  private class SeqInterfaceType(encName: String) extends InterfaceType(encName) {
+  private class SeqInterfaceType(encName: String)
+      extends InterfaceType(encName) {
     private val ancestorsAskers = mutable.Set.empty[MethodImpl]
-    private val dynamicCallers = mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val staticCallers = mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val callersOfStatic = mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val dynamicCallers =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val staticCallers =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val callersOfStatic =
+      mutable.Map.empty[String, mutable.Set[MethodImpl]]
 
     private var _ancestors: List[String] = encodedName :: Nil
 
@@ -130,8 +136,8 @@ final class IncOptimizer(semantics: Semantics, esLevel: ESLevel,
       callersOfStatic.remove(methodName).foreach(_.foreach(_.tag()))
   }
 
-  private class SeqMethodImpl(owner: MethodContainer,
-      encodedName: String) extends MethodImpl(owner, encodedName) {
+  private class SeqMethodImpl(owner: MethodContainer, encodedName: String)
+      extends MethodImpl(owner, encodedName) {
 
     private val bodyAskers = mutable.Set.empty[MethodImpl]
 

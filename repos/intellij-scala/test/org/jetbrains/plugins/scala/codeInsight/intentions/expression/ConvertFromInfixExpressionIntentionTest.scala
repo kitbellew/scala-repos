@@ -5,10 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.expression.ConvertFromI
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * @author Ksenia.Sautina
- * @since 4/9/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 4/9/12
+  */
 class ConvertFromInfixExpressionIntentionTest extends ScalaIntentionTestBase {
   val familyName = ConvertFromInfixExpressionIntention.familyName
 

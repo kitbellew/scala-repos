@@ -1,7 +1,7 @@
 package lila.history
 
 import lila.rating.PerfType
-import org.joda.time.{ Days, DateTime }
+import org.joda.time.{Days, DateTime}
 
 case class History(
     standard: RatingsMap,
@@ -47,10 +47,12 @@ object History {
   private[history] implicit val BSONReader = new BSONDocumentReader[History] {
 
     private implicit val ratingsMapReader = new BSONDocumentReader[RatingsMap] {
-      def read(doc: BSONDocument): RatingsMap = doc.stream.flatMap {
-        case scala.util.Success((k, BSONInteger(v))) => parseIntOption(k) map (_ -> v)
-        case _                                       => none[(Int, Int)]
-      }.toList sortBy (_._1)
+      def read(doc: BSONDocument): RatingsMap =
+        doc.stream.flatMap {
+          case scala.util.Success((k, BSONInteger(v))) =>
+            parseIntOption(k) map (_ -> v)
+          case _ => none[(Int, Int)]
+        }.toList sortBy (_._1)
     }
 
     def read(doc: BSONDocument): History = {
@@ -69,7 +71,8 @@ object History {
         blitz = ratingsMap("blitz"),
         classical = ratingsMap("classical"),
         correspondence = ratingsMap("correspondence"),
-        puzzle = ratingsMap("puzzle"))
+        puzzle = ratingsMap("puzzle")
+      )
     }
   }
 }

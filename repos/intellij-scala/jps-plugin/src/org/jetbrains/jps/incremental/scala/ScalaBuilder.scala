@@ -10,8 +10,16 @@ import com.intellij.openapi.util.io.FileUtil
 import org.jetbrains.jps.ModuleChunk
 import org.jetbrains.jps.builders.java.JavaBuilderUtil
 import org.jetbrains.jps.incremental._
-import org.jetbrains.jps.incremental.messages.{BuildMessage, CompilerMessage, ProgressMessage}
-import org.jetbrains.jps.incremental.scala.data.{CompilationData, CompilerData, SbtData}
+import org.jetbrains.jps.incremental.messages.{
+  BuildMessage,
+  CompilerMessage,
+  ProgressMessage
+}
+import org.jetbrains.jps.incremental.scala.data.{
+  CompilationData,
+  CompilerData,
+  SbtData
+}
 import org.jetbrains.jps.incremental.scala.local.LocalServer
 import org.jetbrains.jps.incremental.scala.model.IncrementalityType
 import org.jetbrains.jps.incremental.scala.remote.RemoteServer
@@ -21,26 +29,26 @@ import org.jetbrains.jps.model.module.JpsModule
 import _root_.scala.collection.JavaConverters._
 
 /**
- * Nikolay.Tropin
- * 11/19/13
- */
-
+  * Nikolay.Tropin
+  * 11/19/13
+  */
 object ScalaBuilder {
 
-  def compile(context: CompileContext,
-              chunk: ModuleChunk,
-              sources: Seq[File],
-              modules: Set[JpsModule],
-              client: Client): Either[String, ModuleLevelBuilder.ExitCode] = {
+  def compile(
+      context: CompileContext,
+      chunk: ModuleChunk,
+      sources: Seq[File],
+      modules: Set[JpsModule],
+      client: Client): Either[String, ModuleLevelBuilder.ExitCode] = {
 
-    context.processMessage(new ProgressMessage("Reading compilation settings..."))
+    context.processMessage(
+      new ProgressMessage("Reading compilation settings..."))
 
     for {
-      sbtData <-  sbtData
+      sbtData <- sbtData
       compilerData <- CompilerData.from(context, chunk)
       compilationData <- CompilationData.from(sources, context, chunk)
-    }
-    yield {
+    } yield {
       scalaLibraryWarning(modules, compilationData, client)
 
       val server = getServer(context)
@@ -50,7 +58,8 @@ object ScalaBuilder {
 
   def checkIncrementalTypeChange(context: CompileContext) = {
     def storageFile: Option[File] = {
-      val projectDir = context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+      val projectDir =
+        context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
       if (projectDir != null)
         Some(new File(projectDir, "incrementalType.dat"))
       else None
@@ -58,11 +67,15 @@ object ScalaBuilder {
 
     def getPreviousIncrementalType: Option[IncrementalityType] = {
       storageFile.filter(_.exists).flatMap { file =>
-        val result = using(new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) { in =>
+        val result = using(
+          new DataInputStream(
+            new BufferedInputStream(new FileInputStream(file)))) { in =>
           try {
             Some(IncrementalityType.valueOf(in.readUTF()))
           } catch {
-            case _: IOException | _: IllegalArgumentException | _: NullPointerException => None
+            case _: IOException | _: IllegalArgumentException |
+                _: NullPointerException =>
+              None
           }
         }
         if (result.isEmpty) file.delete()
@@ -74,7 +87,9 @@ object ScalaBuilder {
       storageFile.foreach { file =>
         val parentDir = file.getParentFile
         if (!parentDir.exists()) parentDir.mkdirs()
-        using(new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+        using(
+          new DataOutputStream(
+            new BufferedOutputStream(new FileOutputStream(file)))) {
           _.writeUTF(incrType.name)
         }
       }
@@ -83,11 +98,13 @@ object ScalaBuilder {
     def cleanCaches() {
       context.getProjectDescriptor.setFSCache(FSCache.NO_CACHE)
       try {
-        val directory = context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+        val directory =
+          context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
         FileUtil.delete(directory)
-      }
-      catch {
-        case e: Exception => throw new IOException("Can not delete project system directory: \n" + e.getMessage)
+      } catch {
+        case e: Exception =>
+          throw new IOException(
+            "Can not delete project system directory: \n" + e.getMessage)
       }
     }
 
@@ -95,28 +112,39 @@ object ScalaBuilder {
     val previousIncrementalType = getPreviousIncrementalType
     val incrType = settings.getIncrementalityType
     previousIncrementalType match {
-      case _ if JavaBuilderUtil.isForcedRecompilationAllJavaModules(context) => //isRebiuld
+      case _
+          if JavaBuilderUtil.isForcedRecompilationAllJavaModules(
+            context
+          ) => //isRebiuld
         setPreviousIncrementalType(incrType)
       case None =>
       //        ScalaBuilderDelegate.Log.info("scala: cannot find type of the previous incremental compiler, full rebuild may be required")
       case Some(`incrType`) => //same incremental type, nothing to be done
       case Some(_) if isMakeProject(context) =>
-        if (ScalaBuilder.isScalaProject(context.getProjectDescriptor.getProject)) {
+        if (ScalaBuilder.isScalaProject(
+              context.getProjectDescriptor.getProject)) {
           cleanCaches()
           setPreviousIncrementalType(incrType)
-          context.processMessage(new CompilerMessage("scala", BuildMessage.Kind.WARNING,
-            "type of incremental compiler has been changed, full rebuild..."))
+          context.processMessage(
+            new CompilerMessage(
+              "scala",
+              BuildMessage.Kind.WARNING,
+              "type of incremental compiler has been changed, full rebuild..."))
         }
       case Some(_) =>
-        if (ScalaBuilder.isScalaProject(context.getProjectDescriptor.getProject)) {
-          throw new ProjectBuildException("scala: type of incremental compiler has been changed, full rebuild is required")
+        if (ScalaBuilder.isScalaProject(
+              context.getProjectDescriptor.getProject)) {
+          throw new ProjectBuildException(
+            "scala: type of incremental compiler has been changed, full rebuild is required")
         }
     }
   }
 
   // Invokation of these methods can take a long time on large projects (like IDEA's one)
-  def isScalaProject(project: JpsProject): Boolean = hasScalaSdks(project.getModules)
-  def hasScalaModules(chunk: ModuleChunk): Boolean = hasScalaSdks(chunk.getModules)
+  def isScalaProject(project: JpsProject): Boolean =
+    hasScalaSdks(project.getModules)
+  def hasScalaModules(chunk: ModuleChunk): Boolean =
+    hasScalaSdks(chunk.getModules)
   private def hasScalaSdks(modules: util.Collection[JpsModule]): Boolean = {
     import _root_.scala.collection.JavaConversions._
     modules.exists(SettingsManager.hasScalaSdk)
@@ -124,20 +152,26 @@ object ScalaBuilder {
 
   def hasBuildModules(chunk: ModuleChunk): Boolean = {
     import _root_.scala.collection.JavaConversions._
-    chunk.getModules.exists(_.getName.endsWith("-build")) // gen-idea doesn't use the SBT module type
+    chunk.getModules.exists(
+      _.getName.endsWith("-build")
+    ) // gen-idea doesn't use the SBT module type
   }
 
-  def projectSettings(context: CompileContext) = SettingsManager.getProjectSettings(context.getProjectDescriptor.getProject)
+  def projectSettings(context: CompileContext) =
+    SettingsManager.getProjectSettings(context.getProjectDescriptor.getProject)
 
-  def isMakeProject(context: CompileContext): Boolean = JavaBuilderUtil.isCompileJavaIncrementally(context) && {
-    for {
-      chunk <- context.getProjectDescriptor.getBuildTargetIndex.getSortedTargetChunks(context).asScala
-      target <- chunk.getTargets.asScala
-    } {
-      if (!context.getScope.isAffected(target)) return false
+  def isMakeProject(context: CompileContext): Boolean =
+    JavaBuilderUtil.isCompileJavaIncrementally(context) && {
+      for {
+        chunk <- context.getProjectDescriptor.getBuildTargetIndex
+          .getSortedTargetChunks(context)
+          .asScala
+        target <- chunk.getTargets.asScala
+      } {
+        if (!context.getScope.isAffected(target)) return false
+      }
+      true
     }
-    true
-  }
 
   val Log = JpsLogger.getInstance(ScalaBuilder.getClass.getName)
 
@@ -162,28 +196,38 @@ object ScalaBuilder {
 
   private lazy val sbtData = {
     val classLoader = getClass.getClassLoader
-    val pluginRoot = new File(PathManager.getJarPathForClass(getClass)).getParentFile
+    val pluginRoot = new File(
+      PathManager.getJarPathForClass(getClass)).getParentFile
     val javaClassVersion = System.getProperty("java.class.version")
 
     SbtData.from(classLoader, pluginRoot, javaClassVersion)
   }
 
-  private def scalaLibraryWarning(modules: Set[JpsModule], compilationData: CompilationData, client: Client) {
+  private def scalaLibraryWarning(
+      modules: Set[JpsModule],
+      compilationData: CompilationData,
+      client: Client) {
     val hasScalaFacet = modules.exists(SettingsManager.hasScalaSdk)
-    val hasScalaLibrary = compilationData.classpath.exists(_.getName.startsWith("scala-library"))
+    val hasScalaLibrary =
+      compilationData.classpath.exists(_.getName.startsWith("scala-library"))
 
     if (hasScalaFacet && !hasScalaLibrary) {
       val names = modules.map(_.getName).mkString(", ")
-      client.warning("No 'scala-library*.jar' in module dependencies [%s]".format(names))
+      client.warning(
+        "No 'scala-library*.jar' in module dependencies [%s]".format(names))
     }
   }
 
   private def getServer(context: CompileContext): Server = {
-    val settings = SettingsManager.getGlobalSettings(context.getProjectDescriptor.getModel.getGlobal)
+    val settings = SettingsManager.getGlobalSettings(
+      context.getProjectDescriptor.getModel.getGlobal)
 
-    if (settings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE.get(context) != null) {
+    if (settings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
+          .get(context) != null) {
       cleanLocalServerCache()
-      new RemoteServer(InetAddress.getByName(null), settings.getCompileServerPort)
+      new RemoteServer(
+        InetAddress.getByName(null),
+        settings.getCompileServerPort)
     } else {
       localServer
     }

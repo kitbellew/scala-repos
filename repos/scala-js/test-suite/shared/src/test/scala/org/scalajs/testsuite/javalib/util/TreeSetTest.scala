@@ -207,7 +207,8 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
     assertEquals(6, ts.size())
   }
 
-  @Test def should_check_contained_values_even_in_double_corner_cases(): Unit = {
+  @Test def should_check_contained_values_even_in_double_corner_cases()
+      : Unit = {
     val ts = factory.empty[Double]
 
     assertTrue(ts.add(11111.0))
@@ -242,7 +243,8 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
     assertTrue(ts.contains(-0.0))
   }
 
-  @Test def should_throws_exception_in_case_of_null_elements_and_default_ordering(): Unit = {
+  @Test def should_throws_exception_in_case_of_null_elements_and_default_ordering()
+      : Unit = {
     val hs = factory.empty[String]
 
     assertTrue(hs.add("ONE"))
@@ -257,7 +259,8 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
     }
   }
 
-  @Test def should_not_put_a_whole_Collection_with_null_elements_into(): Unit = {
+  @Test def should_not_put_a_whole_Collection_with_null_elements_into()
+      : Unit = {
     val l = List[String]("ONE", "TWO", (null: String))
     val ts1 = factory.empty[String]
 
@@ -267,9 +270,10 @@ abstract class TreeSetTest(val factory: TreeSetFactory)
       assertTrue(ts1.contains("ONE"))
       assertFalse(ts1.contains("THREE"))
     } else {
-      expectThrows(classOf[Exception], {
-        ts1.addAll(asJavaCollection(l))
-      })
+      expectThrows(
+        classOf[Exception], {
+          ts1.addAll(asJavaCollection(l))
+        })
     }
   }
 
@@ -343,7 +347,9 @@ object TreeSetFactory extends TreeSetFactory {
     Iterator(new TreeSetFactory, new TreeSetWithNullFactory)
 }
 
-class TreeSetFactory extends AbstractSetFactory with NavigableSetFactory
+class TreeSetFactory
+    extends AbstractSetFactory
+    with NavigableSetFactory
     with SortedSetFactory {
   def implementationName: String =
     "java.util.TreeSet"
@@ -370,12 +376,13 @@ class TreeSetWithNullFactory extends TreeSetFactory {
   case class EvenNullComp[E]() extends Comparator[E] {
     def compare(a: E, b: E): Int =
       (Option(a), Option(b)) match {
-        case (Some(e1), Some(e2)) => e1.asInstanceOf[Comparable[E]].compareTo(e2)
+        case (Some(e1), Some(e2)) =>
+          e1.asInstanceOf[Comparable[E]].compareTo(e2)
         case (Some(e1), None) => -1
         case (None, Some(e2)) => 1
-        case (None, None) => 0
+        case (None, None)     => 0
       }
-    }
+  }
 
   override def empty[E: ClassTag]: ju.TreeSet[E] =
     new TreeSet[E](EvenNullComp[E]())

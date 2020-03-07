@@ -33,10 +33,17 @@ import org.apache.spark.util.Utils
 case class OrcParData(intField: Int, stringField: String)
 
 // The data that also includes the partitioning key
-case class OrcParDataWithKey(intField: Int, pi: Int, stringField: String, ps: String)
+case class OrcParDataWithKey(
+    intField: Int,
+    pi: Int,
+    stringField: String,
+    ps: String)
 
 // TODO This test suite duplicates ParquetPartitionDiscoverySuite a lot
-class OrcPartitionDiscoverySuite extends QueryTest with TestHiveSingleton with BeforeAndAfterAll {
+class OrcPartitionDiscoverySuite
+    extends QueryTest
+    with TestHiveSingleton
+    with BeforeAndAfterAll {
   import hiveContext._
   import hiveContext.implicits._
 
@@ -44,31 +51,36 @@ class OrcPartitionDiscoverySuite extends QueryTest with TestHiveSingleton with B
 
   def withTempDir(f: File => Unit): Unit = {
     val dir = Utils.createTempDir().getCanonicalFile
-    try f(dir) finally Utils.deleteRecursively(dir)
+    try f(dir)
+    finally Utils.deleteRecursively(dir)
   }
 
   def makeOrcFile[T <: Product: ClassTag: TypeTag](
-      data: Seq[T], path: File): Unit = {
+      data: Seq[T],
+      path: File): Unit = {
     data.toDF().write.mode("overwrite").orc(path.getCanonicalPath)
   }
 
-
   def makeOrcFile[T <: Product: ClassTag: TypeTag](
-      df: DataFrame, path: File): Unit = {
+      df: DataFrame,
+      path: File): Unit = {
     df.write.mode("overwrite").orc(path.getCanonicalPath)
   }
 
   protected def withTempTable(tableName: String)(f: => Unit): Unit = {
-    try f finally hiveContext.dropTempTable(tableName)
+    try f
+    finally hiveContext.dropTempTable(tableName)
   }
 
   protected def makePartitionDir(
       basePath: File,
       defaultPartitionName: String,
       partitionCols: (String, Any)*): File = {
-    val partNames = partitionCols.map { case (k, v) =>
-      val valueString = if (v == null || v == "") defaultPartitionName else v.toString
-      s"$k=$valueString"
+    val partNames = partitionCols.map {
+      case (k, v) =>
+        val valueString =
+          if (v == null || v == "") defaultPartitionName else v.toString
+        s"$k=$valueString"
     }
 
     val partDir = partNames.foldLeft(basePath) { (parent, child) =>
@@ -173,11 +185,10 @@ class OrcPartitionDiscoverySuite extends QueryTest with TestHiveSingleton with B
     }
   }
 
-
   test("read partitioned table - with nulls") {
     withTempDir { base =>
       for {
-      // Must be `Integer` rather than `Int` here. `null.asInstanceOf[Int]` results in a zero...
+        // Must be `Integer` rather than `Int` here. `null.asInstanceOf[Int]` results in a zero...
         pi <- Seq(1, null.asInstanceOf[Integer])
         ps <- Seq("foo", null.asInstanceOf[String])
       } {
@@ -217,7 +228,8 @@ class OrcPartitionDiscoverySuite extends QueryTest with TestHiveSingleton with B
     }
   }
 
-  test("read partitioned table - with nulls and partition keys are included in Orc file") {
+  test(
+    "read partitioned table - with nulls and partition keys are included in Orc file") {
     withTempDir { base =>
       for {
         pi <- Seq(1, 2)
@@ -252,4 +264,3 @@ class OrcPartitionDiscoverySuite extends QueryTest with TestHiveSingleton with B
     }
   }
 }
-

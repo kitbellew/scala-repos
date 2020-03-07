@@ -1,10 +1,9 @@
-
-import scala.language.{ existentials }
+import scala.language.{existentials}
 
 object Test {
   def f() = { case class Bar(x: Int); Bar }
   def g() = { case class Bar(x: Int); Bar(5) }
-  def h() = { case object Bar ; Bar }
+  def h() = { case object Bar; Bar }
 
   val f1 = f()
   val g1 = g()
@@ -24,6 +23,6 @@ object Test {
 
 class A1[T] {
   class B1[U] {
-    def f = { case class D(x: Int) extends A1[String] ; new D(5) }
+    def f = { case class D(x: Int) extends A1[String]; new D(5) }
   }
 }

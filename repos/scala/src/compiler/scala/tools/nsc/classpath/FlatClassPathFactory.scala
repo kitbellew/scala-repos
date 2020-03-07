@@ -8,10 +8,11 @@ import scala.tools.nsc.io.AbstractFile
 import FileUtils.AbstractFileOps
 
 /**
- * Provides factory methods for flat classpath. When creating classpath instances for a given path,
- * it uses proper type of classpath depending on a types of particular files containing sources or classes.
- */
-class FlatClassPathFactory(settings: Settings) extends ClassPathFactory[FlatClassPath] {
+  * Provides factory methods for flat classpath. When creating classpath instances for a given path,
+  * it uses proper type of classpath depending on a types of particular files containing sources or classes.
+  */
+class FlatClassPathFactory(settings: Settings)
+    extends ClassPathFactory[FlatClassPath] {
 
   override def newClassPath(file: AbstractFile): FlatClassPath =
     if (file.isJarOrZip)

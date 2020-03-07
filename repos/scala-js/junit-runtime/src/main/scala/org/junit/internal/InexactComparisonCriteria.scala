@@ -14,9 +14,12 @@ class InexactComparisonCriteria private (val fDelta: AnyRef)
   def this(delta: Float) =
     this(delta: java.lang.Float)
 
-  override protected def assertElementsEqual(expected: AnyRef,
+  override protected def assertElementsEqual(
+      expected: AnyRef,
       actual: AnyRef): Unit = {
-    Assert.assertEquals(expected.asInstanceOf[Double],
-      actual.asInstanceOf[Double], fDelta.asInstanceOf[Double])
+    Assert.assertEquals(
+      expected.asInstanceOf[Double],
+      actual.asInstanceOf[Double],
+      fDelta.asInstanceOf[Double])
   }
 }

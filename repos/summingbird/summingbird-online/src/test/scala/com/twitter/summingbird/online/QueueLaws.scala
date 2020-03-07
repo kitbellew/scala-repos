@@ -21,14 +21,15 @@ import Gen._
 import Arbitrary._
 import org.scalacheck.Prop._
 
-import com.twitter.util.{ Return, Throw, Future, Try }
+import com.twitter.util.{Return, Throw, Future, Try}
 
 object QueueLaws extends Properties("Queue") {
 
-  property("Putting into a BoundedQueue gets size right") = forAll { (items: List[String]) =>
-    val q = Queue[String]()
-    q.putAll(items)
-    q.size == items.size
+  property("Putting into a BoundedQueue gets size right") = forAll {
+    (items: List[String]) =>
+      val q = Queue[String]()
+      q.putAll(items)
+      q.size == items.size
   }
   property("not spill if capacity is enough") = forAll { (items: List[Int]) =>
     val q = Queue[Int]()
@@ -51,7 +52,7 @@ object QueueLaws extends Properties("Queue") {
       case ((cnt, good), (i, ti)) =>
         ti match {
           case Return(ii) => (cnt + 1, good)
-          case Throw(e) => (cnt + 1, false)
+          case Throw(e)   => (cnt + 1, false)
         }
     } == (items.size, true)
   }
@@ -62,7 +63,7 @@ object QueueLaws extends Properties("Queue") {
       case ((cnt, good), (i, ti)) =>
         ti match {
           case Return(ii) => (cnt + 1, good)
-          case Throw(e) => (cnt + 1, false)
+          case Throw(e)   => (cnt + 1, false)
         }
     } == (items.size, true)
   }
@@ -90,17 +91,19 @@ object QueueLaws extends Properties("Queue") {
   property("Queue poll + size is correct") = forAll { (items: List[Int]) =>
     // Make sure we can fit everything
     val q = Queue[Int]()
-    items.map { i =>
-      q.put(i)
-      val size = q.size
-      if (i % 2 == 0) {
-        // do a poll test
-        q.poll match {
-          case None => q.size == 0
-          case Some(_) => q.size == (size - 1)
-        }
-      } else true
-    }.forall(identity)
+    items
+      .map { i =>
+        q.put(i)
+        val size = q.size
+        if (i % 2 == 0) {
+          // do a poll test
+          q.poll match {
+            case None    => q.size == 0
+            case Some(_) => q.size == (size - 1)
+          }
+        } else true
+      }
+      .forall(identity)
   }
   property("Queue is fifo") = forAll { (items: List[Int]) =>
     val q = Queue[Int]()

@@ -1,18 +1,19 @@
 package org.jetbrains.plugins.scala.codeInspection.collections
 
 /**
- * @author Nikolay.Tropin
- */
-class RedundantHeadOptionTest extends OperationsOnCollectionInspectionTest{
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[RedundantHeadOrLastOptionInspection]
+  * @author Nikolay.Tropin
+  */
+class RedundantHeadOptionTest extends OperationsOnCollectionInspectionTest {
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[RedundantHeadOrLastOptionInspection]
 
   override def hint: String = RedundantHeadOption.hint
 
   def test1(): Unit = {
     doTest(
       s"Some(1).${START}headOption$END",
-       "Some(1).headOption",
-       "Some(1)"
+      "Some(1).headOption",
+      "Some(1)"
     )
   }
 
@@ -49,8 +50,9 @@ class RedundantHeadOptionTest extends OperationsOnCollectionInspectionTest{
   }
 }
 
-class RedundantLastOptionTest extends OperationsOnCollectionInspectionTest{
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[RedundantHeadOrLastOptionInspection]
+class RedundantLastOptionTest extends OperationsOnCollectionInspectionTest {
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[RedundantHeadOrLastOptionInspection]
 
   override def hint: String = RedundantLastOption.hint
 

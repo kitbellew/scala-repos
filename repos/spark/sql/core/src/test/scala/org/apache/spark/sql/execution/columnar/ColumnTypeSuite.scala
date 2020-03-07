@@ -24,7 +24,10 @@ import org.apache.spark.SparkFunSuite
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.CatalystTypeConverters
-import org.apache.spark.sql.catalyst.expressions.{GenericMutableRow, UnsafeProjection}
+import org.apache.spark.sql.catalyst.expressions.{
+  GenericMutableRow,
+  UnsafeProjection
+}
 import org.apache.spark.sql.execution.columnar.ColumnarTestUtils._
 import org.apache.spark.sql.types._
 
@@ -32,18 +35,33 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
   private val DEFAULT_BUFFER_SIZE = 512
   private val MAP_TYPE = MAP(MapType(IntegerType, StringType))
   private val ARRAY_TYPE = ARRAY(ArrayType(IntegerType))
-  private val STRUCT_TYPE = STRUCT(StructType(StructField("a", StringType) :: Nil))
+  private val STRUCT_TYPE = STRUCT(
+    StructType(StructField("a", StringType) :: Nil))
 
   test("defaultSize") {
     val checks = Map(
-      NULL -> 0, BOOLEAN -> 1, BYTE -> 1, SHORT -> 2, INT -> 4, LONG -> 8,
-      FLOAT -> 4, DOUBLE -> 8, COMPACT_DECIMAL(15, 10) -> 8, LARGE_DECIMAL(20, 10) -> 12,
-      STRING -> 8, BINARY -> 16, STRUCT_TYPE -> 20, ARRAY_TYPE -> 16, MAP_TYPE -> 32)
+      NULL -> 0,
+      BOOLEAN -> 1,
+      BYTE -> 1,
+      SHORT -> 2,
+      INT -> 4,
+      LONG -> 8,
+      FLOAT -> 4,
+      DOUBLE -> 8,
+      COMPACT_DECIMAL(15, 10) -> 8,
+      LARGE_DECIMAL(20, 10) -> 12,
+      STRING -> 8,
+      BINARY -> 16,
+      STRUCT_TYPE -> 20,
+      ARRAY_TYPE -> 16,
+      MAP_TYPE -> 32
+    )
 
-    checks.foreach { case (columnType, expectedSize) =>
-      assertResult(expectedSize, s"Wrong defaultSize for $columnType") {
-        columnType.defaultSize
-      }
+    checks.foreach {
+      case (columnType, expectedSize) =>
+        assertResult(expectedSize, s"Wrong defaultSize for $columnType") {
+          columnType.defaultSize
+        }
     }
   }
 
@@ -69,7 +87,10 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
     checkActualSize(LONG, Long.MaxValue, 8)
     checkActualSize(FLOAT, Float.MaxValue, 4)
     checkActualSize(DOUBLE, Double.MaxValue, 8)
-    checkActualSize(STRING, "hello", 4 + "hello".getBytes(StandardCharsets.UTF_8).length)
+    checkActualSize(
+      STRING,
+      "hello",
+      4 + "hello".getBytes(StandardCharsets.UTF_8).length)
     checkActualSize(BINARY, Array.fill[Byte](4)(0.toByte), 4 + 4)
     checkActualSize(COMPACT_DECIMAL(15, 10), Decimal(0, 15, 10), 8)
     checkActualSize(LARGE_DECIMAL(20, 10), Decimal(0, 20, 10), 5)
@@ -95,15 +116,18 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
   testColumnType(ARRAY_TYPE)
   testColumnType(MAP_TYPE)
 
-  def testNativeColumnType[T <: AtomicType](columnType: NativeColumnType[T]): Unit = {
+  def testNativeColumnType[T <: AtomicType](
+      columnType: NativeColumnType[T]): Unit = {
     testColumnType[T#InternalType](columnType)
   }
 
   def testColumnType[JvmType](columnType: ColumnType[JvmType]): Unit = {
 
-    val buffer = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE).order(ByteOrder.nativeOrder())
+    val buffer =
+      ByteBuffer.allocate(DEFAULT_BUFFER_SIZE).order(ByteOrder.nativeOrder())
     val proj = UnsafeProjection.create(Array[DataType](columnType.dataType))
-    val converter = CatalystTypeConverters.createToScalaConverter(columnType.dataType)
+    val converter =
+      CatalystTypeConverters.createToScalaConverter(columnType.dataType)
     val seq = (0 until 4).map(_ => proj(makeRandomRow(columnType)).copy())
 
     test(s"$columnType append/extract") {
@@ -115,9 +139,11 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
         logInfo("buffer = " + buffer + ", expected = " + row)
         val expected = converter(row.get(0, columnType.dataType))
         val extracted = converter(columnType.extract(buffer))
-        assert(expected === extracted,
+        assert(
+          expected === extracted,
           s"Extracted value didn't equal to the original one. $expected != $extracted, buffer =" +
-          dumpBuffer(buffer.duplicate().rewind().asInstanceOf[ByteBuffer]))
+            dumpBuffer(buffer.duplicate().rewind().asInstanceOf[ByteBuffer])
+        )
       }
     }
   }

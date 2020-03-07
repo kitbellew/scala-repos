@@ -4,7 +4,7 @@ import mesosphere.marathon.core.appinfo.impl.TaskForStatistics
 import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.health.Health
 import mesosphere.marathon.state.Timestamp
-import org.apache.mesos.{ Protos => mesos }
+import org.apache.mesos.{Protos => mesos}
 
 /**
   * @param tasksStaged snapshot of the number of staged tasks
@@ -37,10 +37,18 @@ case class TaskCounts(
 }
 
 object TaskCounts {
-  def zero: TaskCounts = TaskCounts(tasksStaged = 0, tasksRunning = 0, tasksHealthy = 0, tasksUnhealthy = 0)
+  def zero: TaskCounts =
+    TaskCounts(
+      tasksStaged = 0,
+      tasksRunning = 0,
+      tasksHealthy = 0,
+      tasksUnhealthy = 0)
 
-  def apply(appTasks: Iterable[Task], healthStatuses: Map[Task.Id, Seq[Health]]): TaskCounts = {
-    TaskCounts(TaskForStatistics.forTasks(Timestamp(0), appTasks, healthStatuses))
+  def apply(
+      appTasks: Iterable[Task],
+      healthStatuses: Map[Task.Id, Seq[Health]]): TaskCounts = {
+    TaskCounts(
+      TaskForStatistics.forTasks(Timestamp(0), appTasks, healthStatuses))
   }
 
   def apply(appTasks: Iterable[TaskForStatistics]): TaskCounts = {

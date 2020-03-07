@@ -3,9 +3,11 @@ package java.util
 import scala.collection.mutable
 import scala.collection.JavaConversions._
 
-class HashSet[E] extends AbstractSet[E] with Set[E]
-                                        with Cloneable
-                                        with Serializable { self =>
+class HashSet[E]
+    extends AbstractSet[E]
+    with Set[E]
+    with Cloneable
+    with Serializable { self =>
   def this(initialCapacity: Int, loadFactor: Float) =
     this()
 

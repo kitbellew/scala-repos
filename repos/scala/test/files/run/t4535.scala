@@ -1,7 +1,4 @@
-
-
 import collection._
-
 
 // #4535
 object Test {

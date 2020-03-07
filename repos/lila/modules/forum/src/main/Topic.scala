@@ -20,21 +20,25 @@ case class Topic(
     closed: Boolean,
     hidden: Boolean) {
 
-  def updatedAt(troll: Boolean): DateTime = troll.fold(updatedAtTroll, updatedAt)
+  def updatedAt(troll: Boolean): DateTime =
+    troll.fold(updatedAtTroll, updatedAt)
   def nbPosts(troll: Boolean): Int = troll.fold(nbPostsTroll, nbPosts)
   def nbReplies(troll: Boolean): Int = nbPosts(troll) - 1
-  def lastPostId(troll: Boolean): String = troll.fold(lastPostIdTroll, lastPostId)
+  def lastPostId(troll: Boolean): String =
+    troll.fold(lastPostIdTroll, lastPostId)
 
   def open = !closed
   def visibleOnHome = !hidden
 
-  def withPost(post: Post): Topic = copy(
-    nbPosts = post.troll.fold(nbPosts, nbPosts + 1),
-    lastPostId = post.troll.fold(lastPostId, post.id),
-    updatedAt = post.troll.fold(updatedAt, post.createdAt),
-    nbPostsTroll = nbPostsTroll + 1,
-    lastPostIdTroll = post.id,
-    updatedAtTroll = post.createdAt)
+  def withPost(post: Post): Topic =
+    copy(
+      nbPosts = post.troll.fold(nbPosts, nbPosts + 1),
+      lastPostId = post.troll.fold(lastPostId, post.id),
+      updatedAt = post.troll.fold(updatedAt, post.createdAt),
+      nbPostsTroll = nbPostsTroll + 1,
+      lastPostIdTroll = post.id,
+      updatedAtTroll = post.createdAt
+    )
 
   def incNbPosts = copy(nbPosts = nbPosts + 1)
 }
@@ -49,26 +53,28 @@ object Topic {
   val idSize = 8
 
   def make(
-    categId: String,
-    slug: String,
-    name: String,
-    troll: Boolean,
-    featured: Boolean): Topic = Topic(
-    id = Random nextString idSize,
-    categId = categId,
-    slug = slug,
-    name = name,
-    views = 0,
-    createdAt = DateTime.now,
-    updatedAt = DateTime.now,
-    nbPosts = 0,
-    lastPostId = "",
-    updatedAtTroll = DateTime.now,
-    nbPostsTroll = 0,
-    lastPostIdTroll = "",
-    troll = troll,
-    closed = false,
-    hidden = !featured)
+      categId: String,
+      slug: String,
+      name: String,
+      troll: Boolean,
+      featured: Boolean): Topic =
+    Topic(
+      id = Random nextString idSize,
+      categId = categId,
+      slug = slug,
+      name = name,
+      views = 0,
+      createdAt = DateTime.now,
+      updatedAt = DateTime.now,
+      nbPosts = 0,
+      lastPostId = "",
+      updatedAtTroll = DateTime.now,
+      nbPostsTroll = 0,
+      lastPostIdTroll = "",
+      troll = troll,
+      closed = false,
+      hidden = !featured
+    )
 
   import lila.db.JsTube
   import JsTube.Helpers._
@@ -81,14 +87,14 @@ object Topic {
   private[forum] lazy val tube = JsTube(
     (__.json update (
       merge(defaults) andThen
-      readDate('createdAt) andThen
-      readDate('updatedAt) andThen
-      readDate('updatedAtTroll)
+        readDate('createdAt) andThen
+        readDate('updatedAt) andThen
+        readDate('updatedAtTroll)
     )) andThen Json.reads[Topic],
     Json.writes[Topic] andThen (__.json update (
       writeDate('createdAt) andThen
-      writeDate('updatedAt) andThen
-      writeDate('updatedAtTroll)
+        writeDate('updatedAt) andThen
+        writeDate('updatedAtTroll)
     ))
   )
 }

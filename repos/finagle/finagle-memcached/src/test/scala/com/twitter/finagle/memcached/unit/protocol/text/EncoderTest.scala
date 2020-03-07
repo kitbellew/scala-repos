@@ -23,7 +23,8 @@ class EncoderTest extends FunSuite with MockitoSugar {
     val encoder = new Encoder
 
     def encode(x: AnyRef) = {
-      val encoded = encoder.encode(context, channel, x).asInstanceOf[ChannelBuffer]
+      val encoded =
+        encoder.encode(context, channel, x).asInstanceOf[ChannelBuffer]
       channelBufferToString(encoded)
     }
 
@@ -40,7 +41,11 @@ class EncoderTest extends FunSuite with MockitoSugar {
     encodeIsPure(TokensWithData(Seq(Buf.Utf8("foo")), Buf.Utf8("bar"), None))
 
     info("tokens with data and cas")
-    encodeIsPure(TokensWithData(Seq(Buf.Utf8("foo")), Buf.Utf8("baz"), Some(Buf.Utf8("quux"))))
+    encodeIsPure(
+      TokensWithData(
+        Seq(Buf.Utf8("foo")),
+        Buf.Utf8("baz"),
+        Some(Buf.Utf8("quux"))))
 
     info("stat lines")
     encodeIsPure(
@@ -54,8 +59,12 @@ class EncoderTest extends FunSuite with MockitoSugar {
 
     info("value lines")
     encodeIsPure(
-      ValueLines(Seq(TokensWithData(Seq(Buf.Utf8("foo")), Buf.Utf8("bar"), Some(Buf.Utf8("quux")))))
+      ValueLines(
+        Seq(
+          TokensWithData(
+            Seq(Buf.Utf8("foo")),
+            Buf.Utf8("bar"),
+            Some(Buf.Utf8("quux")))))
     )
   }
 }
-

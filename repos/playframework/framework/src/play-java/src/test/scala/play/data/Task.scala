@@ -33,4 +33,3 @@ class Task {
   var endDate: Date = _
 
 }
-

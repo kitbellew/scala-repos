@@ -4,9 +4,9 @@ package codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * Nikolay.Tropin
- * 5/30/13
- */
+  * Nikolay.Tropin
+  * 5/30/13
+  */
 class FilterSizeTest extends OperationsOnCollectionInspectionTest {
   val hint = InspectionBundle.message("filter.size.hint")
   def test_1() {
@@ -48,7 +48,6 @@ class FilterSizeTest extends OperationsOnCollectionInspectionTest {
         |""".stripMargin
     testFix(text, result, hint)
   }
-
 
   override val inspectionClass = classOf[FilterSizeInspection]
 }

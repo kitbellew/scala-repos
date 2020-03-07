@@ -7,11 +7,10 @@ package expr
 import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
 
-/** 
-* @author Alexander Podkhalyuzin
-* Date: 06.03.2008
-*/
-
+/**
+  * @author Alexander Podkhalyuzin
+  * Date: 06.03.2008
+  */
 trait ScForStatement extends ScExpression {
   def getDesugarizedExpr: Option[ScExpression]
 
@@ -24,13 +23,15 @@ trait ScForStatement extends ScExpression {
   def enumerators: Option[ScEnumerators]
   def patterns: Seq[ScPattern]
   def body: Option[ScExpression] = findChild(classOf[ScExpression])
-  def getLeftParenthesis : Option[PsiElement]
-  def getRightParenthesis : Option[PsiElement]
-  override def accept(visitor: ScalaElementVisitor) = visitor.visitForExpression(this)
+  def getLeftParenthesis: Option[PsiElement]
+  def getRightParenthesis: Option[PsiElement]
+  override def accept(visitor: ScalaElementVisitor) =
+    visitor.visitForExpression(this)
 }
 
 object ScForStatement {
-  def unapply(forStmt: ScForStatement): Option[(ScEnumerators, ScExpression)] = {
+  def unapply(
+      forStmt: ScForStatement): Option[(ScEnumerators, ScExpression)] = {
     forStmt.enumerators.zip(forStmt.body).headOption
   }
 }

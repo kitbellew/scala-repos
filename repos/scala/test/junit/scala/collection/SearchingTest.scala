@@ -25,13 +25,17 @@ class SearchingTest {
     val coll = new TestSeq((0 to 6).toList)
 
     assertEquals(Found(5), coll.search(5))
-    assertEquals(Set.empty, coll.elementsAccessed) // linear search should not access elements via apply()
+    assertEquals(
+      Set.empty,
+      coll.elementsAccessed
+    ) // linear search should not access elements via apply()
   }
 
   @Test
   def doesBinarySearchOnIndexedSeqs() {
 
-    class TestIndexedSeq[A](vec: Vector[A]) extends IndexedSeqLike[A, TestIndexedSeq[A]] {
+    class TestIndexedSeq[A](vec: Vector[A])
+        extends IndexedSeqLike[A, TestIndexedSeq[A]] {
       var elementsAccessed = Set.empty[Int]
 
       protected[this] def newBuilder = ??? // not needed for this test

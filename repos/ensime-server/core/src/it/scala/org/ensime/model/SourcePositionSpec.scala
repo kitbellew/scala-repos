@@ -9,7 +9,8 @@ import org.ensime.vfs._
 import org.ensime.util.EnsimeSpec
 import org.ensime.util.file._
 
-class SourcePositionSpec extends EnsimeSpec
+class SourcePositionSpec
+    extends EnsimeSpec
     with SharedEnsimeConfigFixture
     with SharedEnsimeVFSFixture {
 
@@ -21,7 +22,7 @@ class SourcePositionSpec extends EnsimeSpec
     withEnsimeConfig { implicit config =>
       lookup(knownFile) match {
         case Some(LineSourcePosition(name, 0)) if name.isFile =>
-        case o => fail(s"not resolved $o")
+        case o                                                => fail(s"not resolved $o")
       }
     }
   }
@@ -30,7 +31,7 @@ class SourcePositionSpec extends EnsimeSpec
     withEnsimeConfig { implicit config =>
       lookup(knownFile, Some(100)) match {
         case Some(LineSourcePosition(name, 100)) if name.isFile =>
-        case o => fail(s"not resolved $o")
+        case o                                                  => fail(s"not resolved $o")
       }
     }
   }
@@ -39,7 +40,7 @@ class SourcePositionSpec extends EnsimeSpec
     withEnsimeConfig { implicit config =>
       lookup(knownJarEntry) match {
         case Some(LineSourcePosition(name, 0)) if name.isFile =>
-        case o => fail(s"not resolved $o")
+        case o                                                => fail(s"not resolved $o")
       }
     }
   }
@@ -48,7 +49,7 @@ class SourcePositionSpec extends EnsimeSpec
     withEnsimeConfig { implicit config =>
       lookup(knownJarEntry, Some(100)) match {
         case Some(LineSourcePosition(name, 100)) if name.isFile =>
-        case o => fail(s"not resolved $o")
+        case o                                                  => fail(s"not resolved $o")
       }
     }
   }
@@ -59,15 +60,20 @@ class SourcePositionSpec extends EnsimeSpec
   }
 
   def knownJarEntry(implicit config: EnsimeConfig): String = {
-    val scalatest = config.subprojects.head.referenceSourceJars.find(
-      _.getName.contains("scalatest_")
-    ).get.getAbsoluteFile
+    val scalatest = config.subprojects.head.referenceSourceJars
+      .find(
+        _.getName.contains("scalatest_")
+      )
+      .get
+      .getAbsoluteFile
     "jar:" + scalatest + "!/org/scalatest/FunSpec.scala"
   }
 
-  def lookup(uri: String, line: Option[Int] = None)(implicit config: EnsimeConfig) = {
+  def lookup(uri: String, line: Option[Int] = None)(
+      implicit config: EnsimeConfig) = {
     withVFS { implicit vfs: EnsimeVFS =>
-      val sym = FqnSymbol(None, "", "", "", None, None, Some(uri), line, Some(0))
+      val sym =
+        FqnSymbol(None, "", "", "", None, None, Some(uri), line, Some(0))
       LineSourcePositionHelper.fromFqnSymbol(sym)
     }
   }

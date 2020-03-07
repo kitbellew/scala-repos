@@ -19,7 +19,9 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
         |class Blargle2(z: Int, b: Int) extends AnyVal
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("s: Int", NonPrivateValParameter()) :: Error("Blargle2", OnlyOneParameter()) :: Nil =>
+      case Error("s: Int", NonPrivateValParameter()) :: Error(
+            "Blargle2",
+            OnlyOneParameter()) :: Nil =>
     }
   }
 
@@ -58,7 +60,9 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
         |}
       """.stripMargin
     assertMatches(messages(code)) {
-      case Error("equals", RedefineEqualsHashCode()) :: Error("hashCode", RedefineEqualsHashCode()) :: Nil =>
+      case Error("equals", RedefineEqualsHashCode()) :: Error(
+            "hashCode",
+            RedefineEqualsHashCode()) :: Nil =>
     }
   }
 
@@ -85,10 +89,16 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
     mock.errorAnnotations
   }
 
-  val NonPrivateValParameter = ContainsPattern("Value classes can have only one non-private val parameter")
-  val OnlyOneParameter = ContainsPattern("Value classes can have only one parameter")
-  val SecondaryConstructor = ContainsPattern("Secondary constructors are not allowed in value classes")
-  val InnerObjects = ContainsPattern("Value classes cannot have nested classes, objects or traits")
-  val RedefineEqualsHashCode = ContainsPattern("Value classes cannot redefine equals and hashCode")
-  val ValueClassCanNotHaveFields = ContainsPattern("Field definitions are not allowed in value classes")
+  val NonPrivateValParameter = ContainsPattern(
+    "Value classes can have only one non-private val parameter")
+  val OnlyOneParameter = ContainsPattern(
+    "Value classes can have only one parameter")
+  val SecondaryConstructor = ContainsPattern(
+    "Secondary constructors are not allowed in value classes")
+  val InnerObjects = ContainsPattern(
+    "Value classes cannot have nested classes, objects or traits")
+  val RedefineEqualsHashCode = ContainsPattern(
+    "Value classes cannot redefine equals and hashCode")
+  val ValueClassCanNotHaveFields = ContainsPattern(
+    "Field definitions are not allowed in value classes")
 }

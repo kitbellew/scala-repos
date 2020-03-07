@@ -5,13 +5,14 @@ import mesosphere.marathon.MarathonSpec
 import mesosphere.marathon.Protos.MarathonTask
 import mesosphere.mesos.protos.Implicits._
 import mesosphere.mesos.protos.TextAttribute
-import org.scalatest.{ GivenWhenThen, Matchers }
+import org.scalatest.{GivenWhenThen, Matchers}
 
 class MarathonTaskTest extends MarathonSpec with GivenWhenThen with Matchers {
 
   test("toProto returns the encapsulated MarathonTask") {
     Given("A state created from a task")
-    val encapsulatedTask = makeTask("app/dummy", "dummyhost", 42000, version = Some("123"))
+    val encapsulatedTask =
+      makeTask("app/dummy", "dummyhost", 42000, version = Some("123"))
     val state = MarathonTaskState(encapsulatedTask)
 
     When("We call the toProto function")
@@ -30,7 +31,8 @@ class MarathonTaskTest extends MarathonSpec with GivenWhenThen with Matchers {
     val proto = makeTask("app/foo", "superhost", 23000, version = None)
     val merged = dummyState.mergeFromProto(proto)
 
-    Then("The 'merged' state does not have a version because mergeFromProto does not merge but create a new instance based on the given proto")
+    Then(
+      "The 'merged' state does not have a version because mergeFromProto does not merge but create a new instance based on the given proto")
     merged.toProto shouldEqual proto
   }
 
@@ -43,12 +45,18 @@ class MarathonTaskTest extends MarathonSpec with GivenWhenThen with Matchers {
     val proto = makeTask("app/foo", "superhost", 23000, version = None)
     val merged = dummyState.mergeFromProto(proto.toByteArray)
 
-    Then("The 'merged' state does not have a version because mergeFromProto does not merge but cerate a new instance based on the given proto")
+    Then(
+      "The 'merged' state does not have a version because mergeFromProto does not merge but cerate a new instance based on the given proto")
     merged.toProto shouldEqual proto
   }
 
-  private[this] def makeTask(id: String, host: String, port: Int, version: Option[String]) = {
-    val builder = MarathonTask.newBuilder()
+  private[this] def makeTask(
+      id: String,
+      host: String,
+      port: Int,
+      version: Option[String]) = {
+    val builder = MarathonTask
+      .newBuilder()
       .setHost(host)
       .addAllPorts(Lists.newArrayList(port))
       .setId(id)

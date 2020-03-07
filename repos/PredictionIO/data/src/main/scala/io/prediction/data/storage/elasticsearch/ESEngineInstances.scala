@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.elasticsearch
 
 import grizzled.slf4j.Logging
@@ -30,8 +29,12 @@ import org.json4s.native.JsonMethods._
 import org.json4s.native.Serialization.read
 import org.json4s.native.Serialization.write
 
-class ESEngineInstances(client: Client, config: StorageClientConfig, index: String)
-  extends EngineInstances with Logging {
+class ESEngineInstances(
+    client: Client,
+    config: StorageClientConfig,
+    index: String)
+    extends EngineInstances
+    with Logging {
   implicit val formats = DefaultFormats + new EngineInstanceSerializer
   private val estype = "engine_instances"
 
@@ -46,34 +49,36 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
       (estype ->
         ("properties" ->
           ("status" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("startTime" -> ("type" -> "date")) ~
-          ("endTime" -> ("type" -> "date")) ~
-          ("engineId" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("engineVersion" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("engineVariant" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("engineFactory" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("batch" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("dataSourceParams" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("preparatorParams" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("algorithmsParams" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("servingParams" ->
-            ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("status" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices.preparePutMapping(index).setType(estype).
-      setSource(compact(render(json))).get
+            ("startTime" -> ("type" -> "date")) ~
+            ("endTime" -> ("type" -> "date")) ~
+            ("engineId" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("engineVersion" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("engineVariant" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("engineFactory" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("batch" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("dataSourceParams" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("preparatorParams" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("algorithmsParams" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("servingParams" ->
+              ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
+            ("status" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
+    indices
+      .preparePutMapping(index)
+      .setType(estype)
+      .setSource(compact(render(json)))
+      .get
   }
 
   def insert(i: EngineInstance): String = {
     try {
-      val response = client.prepareIndex(index, estype).
-        setSource(write(i)).get
+      val response = client.prepareIndex(index, estype).setSource(write(i)).get
       response.getId
     } catch {
       case e: ElasticsearchException =>
@@ -113,13 +118,16 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
       engineVersion: String,
       engineVariant: String): Seq[EngineInstance] = {
     try {
-      val builder = client.prepareSearch(index).setTypes(estype).setPostFilter(
-        andFilter(
-          termFilter("status", "COMPLETED"),
-          termFilter("engineId", engineId),
-          termFilter("engineVersion", engineVersion),
-          termFilter("engineVariant", engineVariant))).
-        addSort("startTime", SortOrder.DESC)
+      val builder = client
+        .prepareSearch(index)
+        .setTypes(estype)
+        .setPostFilter(
+          andFilter(
+            termFilter("status", "COMPLETED"),
+            termFilter("engineId", engineId),
+            termFilter("engineVersion", engineVersion),
+            termFilter("engineVariant", engineVariant)))
+        .addSort("startTime", SortOrder.DESC)
       ESUtils.getAll[EngineInstance](client, builder)
     } catch {
       case e: ElasticsearchException =>
@@ -132,10 +140,7 @@ class ESEngineInstances(client: Client, config: StorageClientConfig, index: Stri
       engineId: String,
       engineVersion: String,
       engineVariant: String): Option[EngineInstance] =
-    getCompleted(
-      engineId,
-      engineVersion,
-      engineVariant).headOption
+    getCompleted(engineId, engineVersion, engineVariant).headOption
 
   def update(i: EngineInstance): Unit = {
     try {

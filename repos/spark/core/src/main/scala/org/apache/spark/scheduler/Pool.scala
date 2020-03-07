@@ -26,16 +26,15 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
 
 /**
- * An Schedulable entity that represent collection of Pools or TaskSetManagers
- */
-
+  * An Schedulable entity that represent collection of Pools or TaskSetManagers
+  */
 private[spark] class Pool(
     val poolName: String,
     val schedulingMode: SchedulingMode,
     initMinShare: Int,
     initWeight: Int)
-  extends Schedulable
-  with Logging {
+    extends Schedulable
+    with Logging {
 
   val schedulableQueue = new ConcurrentLinkedQueue[Schedulable]
   val schedulableNameToSchedulable = new ConcurrentHashMap[String, Schedulable]
@@ -83,7 +82,10 @@ private[spark] class Pool(
     null
   }
 
-  override def executorLost(executorId: String, host: String, reason: ExecutorLossReason) {
+  override def executorLost(
+      executorId: String,
+      host: String,
+      reason: ExecutorLossReason) {
     schedulableQueue.asScala.foreach(_.executorLost(executorId, host, reason))
   }
 
@@ -98,7 +100,8 @@ private[spark] class Pool(
   override def getSortedTaskSetQueue: ArrayBuffer[TaskSetManager] = {
     var sortedTaskSetQueue = new ArrayBuffer[TaskSetManager]
     val sortedSchedulableQueue =
-      schedulableQueue.asScala.toSeq.sortWith(taskSetSchedulingAlgorithm.comparator)
+      schedulableQueue.asScala.toSeq
+        .sortWith(taskSetSchedulingAlgorithm.comparator)
     for (schedulable <- sortedSchedulableQueue) {
       sortedTaskSetQueue ++= schedulable.getSortedTaskSetQueue
     }

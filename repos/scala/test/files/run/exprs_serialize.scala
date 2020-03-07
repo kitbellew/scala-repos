@@ -25,7 +25,7 @@ object Test extends App {
     }
 
   test(reify(2))
-  test(reify{def foo = "hello"; foo + "world!"})
+  test(reify { def foo = "hello"; foo + "world!" })
   test(reify {
     def foo(x: Int) = {
       class Local {

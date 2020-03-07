@@ -4,9 +4,9 @@ package codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * Nikolay.Tropin
- * 5/30/13
- */
+  * Nikolay.Tropin
+  * 5/30/13
+  */
 class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
   val hint = InspectionBundle.message("fold.true.and.hint")
   def test_1() {
@@ -72,12 +72,12 @@ class FoldTrueAndTest extends OperationsOnCollectionInspectionTest {
         |  z += 1
         |  z + y % 2 == 1
         |})
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testWithSideEffect(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |var q = 1
         |List(0).foldLeft(true) {(x, y) =>
         |  x && {

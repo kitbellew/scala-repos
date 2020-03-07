@@ -23,10 +23,9 @@ import com.mongodb._
 
 import org.specs2.mutable.Specification
 
-
 /**
- * System under specification for MongoDirectMonoClient.
- */
+  * System under specification for MongoDirectMonoClient.
+  */
 class MongoDirectMongoClientSpec extends Specification with MongoTestKit {
   "MongoDirectMongoClient Specification".title
 
@@ -37,11 +36,13 @@ class MongoDirectMongoClientSpec extends Specification with MongoTestKit {
     checkMongoIsRunning
 
     // use a Mongo instance directly
-    MongoDB.use( db => {
+    MongoDB.use(db => {
       val coll = db.getCollection("testCollection")
 
       // create a unique index on name
-      coll.createIndex(new BasicDBObject("name", 1), new BasicDBObject("unique", true))
+      coll.createIndex(
+        new BasicDBObject("name", 1),
+        new BasicDBObject("unique", true))
 
       // build the DBObjects
       val doc = new BasicDBObject
@@ -68,4 +69,3 @@ class MongoDirectMongoClientSpec extends Specification with MongoTestKit {
     success
   }
 }
-

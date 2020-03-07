@@ -6,8 +6,6 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 package mutable
@@ -15,22 +13,23 @@ package mutable
 import scala.annotation.migration
 
 /** This class can be used as an adaptor to create mutable maps from
- *  immutable map implementations. Only method `empty` has
- *  to be redefined if the immutable map on which this mutable map is
- *  originally based is not empty. `empty` is supposed to
- *  return the representation of an empty map.
- *
- *  @author  Matthias Zenger
- *  @author  Martin Odersky
- *  @version 2.0, 01/01/2007
- *  @since   1
- */
-@deprecated("Adaptors are inherently unreliable and prone to performance problems.", "2.11.0")
+  *  immutable map implementations. Only method `empty` has
+  *  to be redefined if the immutable map on which this mutable map is
+  *  originally based is not empty. `empty` is supposed to
+  *  return the representation of an empty map.
+  *
+  *  @author  Matthias Zenger
+  *  @author  Martin Odersky
+  *  @version 2.0, 01/01/2007
+  *  @since   1
+  */
+@deprecated(
+  "Adaptors are inherently unreliable and prone to performance problems.",
+  "2.11.0")
 class ImmutableMapAdaptor[A, B](protected var imap: immutable.Map[A, B])
-extends AbstractMap[A, B]
-   with Map[A, B]
-   with Serializable
-{
+    extends AbstractMap[A, B]
+    with Map[A, B]
+    with Serializable {
 
   override def size: Int = imap.size
 
@@ -60,15 +59,19 @@ extends AbstractMap[A, B]
 
   override def toList: List[(A, B)] = imap.toList
 
-  override def update(key: A, value: B): Unit = { imap = imap.updated(key, value) }
+  override def update(key: A, value: B): Unit = {
+    imap = imap.updated(key, value)
+  }
 
-  def -= (key: A): this.type = { imap = imap - key; this }
+  def -=(key: A): this.type = { imap = imap - key; this }
 
-  def += (kv: (A, B)): this.type = { imap = imap + kv; this }
+  def +=(kv: (A, B)): this.type = { imap = imap + kv; this }
 
   override def clear(): Unit = { imap = imap.empty }
 
-  override def transform(f: (A, B) => B): this.type = { imap = imap.transform(f); this }
+  override def transform(f: (A, B) => B): this.type = {
+    imap = imap.transform(f); this
+  }
 
   override def retain(p: (A, B) => Boolean): this.type = {
     imap = imap.filter(xy => p(xy._1, xy._2))
@@ -77,4 +80,3 @@ extends AbstractMap[A, B]
 
   override def toString() = imap.toString()
 }
-

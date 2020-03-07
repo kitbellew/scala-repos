@@ -1,15 +1,18 @@
 /**
- * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
- */
+  * Copyright (C) 2014-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.contrib.circuitbreaker.sample
 
-import akka.actor.{ Actor, ActorLogging, ActorRef }
-import akka.contrib.circuitbreaker.CircuitBreakerProxy.{ CircuitBreakerPropsBuilder, CircuitOpenFailure }
+import akka.actor.{Actor, ActorLogging, ActorRef}
+import akka.contrib.circuitbreaker.CircuitBreakerProxy.{
+  CircuitBreakerPropsBuilder,
+  CircuitOpenFailure
+}
 import akka.contrib.circuitbreaker.sample.CircuitBreaker.AskFor
 import akka.util.Timeout
 
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success, Random }
+import scala.util.{Failure, Success, Random}
 
 //#simple-service
 object SimpleService {
@@ -19,10 +22,10 @@ object SimpleService {
 }
 
 /**
- * This is a simple actor simulating a service
- * - Becoming slower with the increase of frequency of input requests
- * - Failing around 30% of the requests
- */
+  * This is a simple actor simulating a service
+  * - Becoming slower with the increase of frequency of input requests
+  * - Failing around 30% of the requests
+  */
 class SimpleService extends Actor with ActorLogging {
   import SimpleService._
 
@@ -56,21 +59,26 @@ object CircuitBreaker {
 }
 
 //#basic-sample
-class CircuitBreaker(potentiallyFailingService: ActorRef) extends Actor with ActorLogging {
+class CircuitBreaker(potentiallyFailingService: ActorRef)
+    extends Actor
+    with ActorLogging {
   import SimpleService._
 
   val serviceCircuitBreaker =
     context.actorOf(
-      CircuitBreakerPropsBuilder(maxFailures = 3, callTimeout = 2.seconds, resetTimeout = 30.seconds)
-        .copy(
-          failureDetector = {
-            _ match {
-              case Response(Left(_)) ⇒ true
-              case _                 ⇒ false
-            }
-          })
+      CircuitBreakerPropsBuilder(
+        maxFailures = 3,
+        callTimeout = 2.seconds,
+        resetTimeout = 30.seconds)
+        .copy(failureDetector = {
+          _ match {
+            case Response(Left(_)) ⇒ true
+            case _ ⇒ false
+          }
+        })
         .props(potentiallyFailingService),
-      "serviceCircuitBreaker")
+      "serviceCircuitBreaker"
+    )
 
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
@@ -95,7 +103,9 @@ class CircuitBreaker(potentiallyFailingService: ActorRef) extends Actor with Act
 //#basic-sample
 
 //#ask-sample
-class CircuitBreakerAsk(potentiallyFailingService: ActorRef) extends Actor with ActorLogging {
+class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
+    extends Actor
+    with ActorLogging {
   import SimpleService._
   import akka.pattern._
 
@@ -103,45 +113,51 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef) extends Actor with 
 
   val serviceCircuitBreaker =
     context.actorOf(
-      CircuitBreakerPropsBuilder(maxFailures = 3, callTimeout = askTimeout, resetTimeout = 30.seconds)
-        .copy(
-          failureDetector = {
-            _ match {
-              case Response(Left(_)) ⇒ true
-              case _                 ⇒ false
-            }
-          })
-        .copy(
-          openCircuitFailureConverter = { failure ⇒
-            Left(s"Circuit open when processing ${failure.failedMsg}")
-          })
+      CircuitBreakerPropsBuilder(
+        maxFailures = 3,
+        callTimeout = askTimeout,
+        resetTimeout = 30.seconds)
+        .copy(failureDetector = {
+          _ match {
+            case Response(Left(_)) ⇒ true
+            case _ ⇒ false
+          }
+        })
+        .copy(openCircuitFailureConverter = { failure ⇒
+          Left(s"Circuit open when processing ${failure.failedMsg}")
+        })
         .props(potentiallyFailingService),
-      "serviceCircuitBreaker")
+      "serviceCircuitBreaker"
+    )
 
   import context.dispatcher
 
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
-      (serviceCircuitBreaker ? Request(requestToForward)).mapTo[Either[String, String]].onComplete {
-        case Success(Right(successResponse)) ⇒
-          //handle response
-          log.info("Got successful response {}", successResponse)
+      (serviceCircuitBreaker ? Request(requestToForward))
+        .mapTo[Either[String, String]]
+        .onComplete {
+          case Success(Right(successResponse)) ⇒
+            //handle response
+            log.info("Got successful response {}", successResponse)
 
-        case Success(Left(failureResponse)) ⇒
-          //handle response
-          log.info("Got successful response {}", failureResponse)
+          case Success(Left(failureResponse)) ⇒
+            //handle response
+            log.info("Got successful response {}", failureResponse)
 
-        case Failure(exception) ⇒
-          //handle response
-          log.info("Got successful response {}", exception)
+          case Failure(exception) ⇒
+            //handle response
+            log.info("Got successful response {}", exception)
 
-      }
+        }
   }
 }
 //#ask-sample
 
 //#ask-with-failure-sample
-class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef) extends Actor with ActorLogging {
+class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef)
+    extends Actor
+    with ActorLogging {
   import SimpleService._
   import akka.pattern._
   import akka.contrib.circuitbreaker.Implicits.futureExtensions
@@ -150,30 +166,38 @@ class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef) extends 
 
   val serviceCircuitBreaker =
     context.actorOf(
-      CircuitBreakerPropsBuilder(maxFailures = 3, callTimeout = askTimeout, resetTimeout = 30.seconds)
+      CircuitBreakerPropsBuilder(
+        maxFailures = 3,
+        callTimeout = askTimeout,
+        resetTimeout = 30.seconds)
         .props(target = potentiallyFailingService),
-      "serviceCircuitBreaker")
+      "serviceCircuitBreaker"
+    )
 
   import context.dispatcher
 
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
-      (serviceCircuitBreaker ? Request(requestToForward)).failForOpenCircuit.mapTo[String].onComplete {
-        case Success(successResponse) ⇒
-          //handle response
-          log.info("Got successful response {}", successResponse)
+      (serviceCircuitBreaker ? Request(requestToForward)).failForOpenCircuit
+        .mapTo[String]
+        .onComplete {
+          case Success(successResponse) ⇒
+            //handle response
+            log.info("Got successful response {}", successResponse)
 
-        case Failure(exception) ⇒
-          //handle response
-          log.info("Got successful response {}", exception)
+          case Failure(exception) ⇒
+            //handle response
+            log.info("Got successful response {}", exception)
 
-      }
+        }
   }
 }
 //#ask-with-failure-sample
 
 //#ask-with-circuit-breaker-sample
-class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef) extends Actor with ActorLogging {
+class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef)
+    extends Actor
+    with ActorLogging {
   import SimpleService._
   import akka.contrib.circuitbreaker.Implicits.askWithCircuitBreaker
 
@@ -181,24 +205,31 @@ class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef) e
 
   val serviceCircuitBreaker =
     context.actorOf(
-      CircuitBreakerPropsBuilder(maxFailures = 3, callTimeout = askTimeout, resetTimeout = 30.seconds)
+      CircuitBreakerPropsBuilder(
+        maxFailures = 3,
+        callTimeout = askTimeout,
+        resetTimeout = 30.seconds)
         .props(target = potentiallyFailingService),
-      "serviceCircuitBreaker")
+      "serviceCircuitBreaker"
+    )
 
   import context.dispatcher
 
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
-      serviceCircuitBreaker.askWithCircuitBreaker(Request(requestToForward)).mapTo[String].onComplete {
-        case Success(successResponse) ⇒
-          //handle response
-          log.info("Got successful response {}", successResponse)
+      serviceCircuitBreaker
+        .askWithCircuitBreaker(Request(requestToForward))
+        .mapTo[String]
+        .onComplete {
+          case Success(successResponse) ⇒
+            //handle response
+            log.info("Got successful response {}", successResponse)
 
-        case Failure(exception) ⇒
-          //handle response
-          log.info("Got successful response {}", exception)
+          case Failure(exception) ⇒
+            //handle response
+            log.info("Got successful response {}", exception)
 
-      }
+        }
   }
 }
 //#ask-with-circuit-breaker-sample

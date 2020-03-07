@@ -22,12 +22,13 @@ import org.jetbrains.plugins.scala.util.JListCompatibility
 import scala.collection.JavaConverters._
 
 /**
- * @author Nikolay.Tropin
- */
-class ScalaIntroduceParameterDialog(project: Project,
-                              method: ScalaMethodDescriptor,
-                              introduceData: ScalaIntroduceParameterData)
-        extends ScalaChangeSignatureDialog(project, method) {
+  * @author Nikolay.Tropin
+  */
+class ScalaIntroduceParameterDialog(
+    project: Project,
+    method: ScalaMethodDescriptor,
+    introduceData: ScalaIntroduceParameterData)
+    extends ScalaChangeSignatureDialog(project, method) {
 
   private var paramNameField: EditorTextField = _
   private var typeCombobox: ComboBox = _
@@ -44,8 +45,18 @@ class ScalaIntroduceParameterDialog(project: Project,
   override def createNorthPanel(): JComponent = {
     val panel = super.createNorthPanel() //to initialize fields
     val northPanel = new JPanel(new GridBagLayout())
-    val gbc: GridBagConstraints = new GridBagConstraints(0, 0, 1, 1, 1, 1,
-      GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0)
+    val gbc: GridBagConstraints = new GridBagConstraints(
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      GridBagConstraints.WEST,
+      GridBagConstraints.HORIZONTAL,
+      new Insets(0, 0, 0, 0),
+      0,
+      0)
 
     val paramNamePanel = createParamNamePanel()
     val paramTypePanel = createParamTypePanel()
@@ -68,10 +79,20 @@ class ScalaIntroduceParameterDialog(project: Project,
   override def createRefactoringProcessor(): BaseRefactoringProcessor = {
     val parameters = splittedItems.map(_.map(_.parameter))
     val changeInfo =
-      new ScalaChangeInfo(getVisibility, method.fun, getMethodName, returnType, parameters, isAddDefaultArgs)
+      new ScalaChangeInfo(
+        getVisibility,
+        method.fun,
+        getMethodName,
+        returnType,
+        parameters,
+        isAddDefaultArgs)
 
-    val newData = introduceData.copy(paramName = paramNameField.getText, tp = typeMap.get(typeCombobox.getSelectedItem),
-      replaceAll = replaceOccurrencesChb.isSelected, defaultArg = defaultForIntroducedTextField.getText)
+    val newData = introduceData.copy(
+      paramName = paramNameField.getText,
+      tp = typeMap.get(typeCombobox.getSelectedItem),
+      replaceAll = replaceOccurrencesChb.isSelected,
+      defaultArg = defaultForIntroducedTextField.getText
+    )
 
     changeInfo.introducedParameterData = Some(newData)
     new ScalaChangeSignatureProcessor(project, changeInfo)
@@ -83,7 +104,8 @@ class ScalaIntroduceParameterDialog(project: Project,
     panel
   }
 
-  override def customizeParametersTable(table: TableView[ScalaParameterTableModelItem]): Unit = {
+  override def customizeParametersTable(
+      table: TableView[ScalaParameterTableModelItem]): Unit = {
     table.setSelection(util.Collections.emptyList())
   }
 
@@ -91,7 +113,8 @@ class ScalaIntroduceParameterDialog(project: Project,
     new ScalaParametersListTable() {
       override def isRowEditable(row: Int): Boolean = false
 
-      override protected def defaultText(item: ScalaParameterTableModelItem): String = ""
+      override protected def defaultText(
+          item: ScalaParameterTableModelItem): String = ""
     }
   }
 
@@ -102,16 +125,18 @@ class ScalaIntroduceParameterDialog(project: Project,
   override protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(false)
     table.setRowSelectionAllowed(true)
-    table.getSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+    table.getSelectionModel.setSelectionMode(
+      ListSelectionModel.SINGLE_SELECTION)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =
-      ToolbarDecorator.createDecorator(table)
-              .setMoveUpAction(upAction)
-              .setMoveDownAction(downAction)
-              .disableAddAction()
-              .disableRemoveAction()
-              .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
-              .createPanel
+      ToolbarDecorator
+        .createDecorator(table)
+        .setMoveUpAction(upAction)
+        .setMoveDownAction(downAction)
+        .disableAddAction()
+        .disableRemoveAction()
+        .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
+        .createPanel
     myParametersTableModel.addTableModelListener(mySignatureUpdater)
     buttonsPanel
   }
@@ -143,7 +168,8 @@ class ScalaIntroduceParameterDialog(project: Project,
     typeCombobox = new ComboBox()
     val typeLabel = new JLabel("Type:")
     typeLabel.setLabelFor(typeCombobox)
-    typeMap = ScalaRefactoringUtil.getCompatibleTypeNames(introduceData.possibleTypes)
+    typeMap =
+      ScalaRefactoringUtil.getCompatibleTypeNames(introduceData.possibleTypes)
     for (typeName <- typeMap.keySet.asScala) {
       JListCompatibility.addItem(typeCombobox, typeName)
     }
@@ -151,7 +177,7 @@ class ScalaIntroduceParameterDialog(project: Project,
     typeCombobox.addItemListener(new ItemListener {
       override def itemStateChanged(e: ItemEvent): Unit = {
         val scType = typeMap.get(typeCombobox.getSelectedItem)
-        introducedParamTableItem.foreach {item =>
+        introducedParamTableItem.foreach { item =>
           item.parameter.scType = scType
           item.typeText = scType.presentableText
         }
@@ -170,7 +196,10 @@ class ScalaIntroduceParameterDialog(project: Project,
 
   private def createDefaultArgumentPanel(): JComponent = {
     val panel = new JPanel(new BorderLayout())
-    defaultForIntroducedTextField = new EditorTextField(introduceData.defaultArg, project, ScalaFileType.SCALA_FILE_TYPE)
+    defaultForIntroducedTextField = new EditorTextField(
+      introduceData.defaultArg,
+      project,
+      ScalaFileType.SCALA_FILE_TYPE)
     val label = new JLabel("Default value:")
     label.setLabelFor(defaultForIntroducedTextField)
     panel.add(label, BorderLayout.NORTH)
@@ -178,7 +207,8 @@ class ScalaIntroduceParameterDialog(project: Project,
     defaultForIntroducedTextField.setEnabled(true)
     defaultForIntroducedTextField.addDocumentListener(new DocumentAdapter {
       override def documentChanged(e: DocumentEvent): Unit = {
-        introducedParamTableItem.foreach(_.parameter.defaultValue = defaultForIntroducedTextField.getText.trim)
+        introducedParamTableItem.foreach(_.parameter.defaultValue =
+          defaultForIntroducedTextField.getText.trim)
       }
     })
     IJSwingUtilities.adjustComponentsOnMac(label, defaultForIntroducedTextField)
@@ -199,5 +229,6 @@ class ScalaIntroduceParameterDialog(project: Project,
     parameterItems.find(_.parameter.isIntroducedParameter)
   }
 
-  override protected def getDefaultValuesPanel: DefaultValuesUsagePanel = defaultValuesUsagePanel
+  override protected def getDefaultValuesPanel: DefaultValuesUsagePanel =
+    defaultValuesUsagePanel
 }

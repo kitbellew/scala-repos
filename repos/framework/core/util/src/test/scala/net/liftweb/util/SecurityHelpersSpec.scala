@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package net.liftweb
 package util
 
@@ -25,9 +24,9 @@ import org.specs2.mutable.Specification
 import SecurityHelpers._
 
 /**
- * Systems under specification for SecurityHelpers.
- */
-object SecurityHelpersSpec extends Specification  {
+  * Systems under specification for SecurityHelpers.
+  */
+object SecurityHelpersSpec extends Specification {
   "SecurityHelpers Specification".title
 
   "Security Helpers" should {
@@ -36,8 +35,7 @@ object SecurityHelpersSpec extends Specification  {
         <!DOCTYPE foo [
           <!ELEMENT foo ANY >
           <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
-        <foo>&xxe;</foo>"""
-      ) must throwA[SAXParseException]
+        <foo>&xxe;</foo>""") must throwA[SAXParseException]
     }
 
     "parse XML without a DOCTYPE" in {
@@ -68,7 +66,7 @@ object SecurityHelpersSpec extends Specification  {
       encrypted must_!= "hello world"
       blowfishDecrypt(encrypted, key) must_== "hello world"
     }
-    */
+     */
 
     "provide a md5 function to create a md5 digest from a string" in {
       md5("hello") must_== "XUFAKrxLKna5cZ2REBfFkg=="
@@ -83,14 +81,15 @@ object SecurityHelpersSpec extends Specification  {
       hash256("hello") must_!= hash256("hell0")
     }
     "provide a hex encoded SHA hash function" in {
-      hexDigest("hello".getBytes) must_== "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
+      hexDigest(
+        "hello".getBytes) must_== "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d"
       hexDigest("hello".getBytes) must_!= hexDigest("hell0".getBytes)
     }
     "provide a hex encoded SHA-256 hash function" in {
-      hexDigest256("hello".getBytes) must_== "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+      hexDigest256(
+        "hello".getBytes) must_== "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
       hexDigest256("hello".getBytes) must_!= hexDigest256("hell0".getBytes)
     }
   }
 
 }
-

@@ -8,10 +8,9 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 15.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 15.02.2008
+  */
 /*
 Literal ::= ['-']integerLiteral
             | ['-']floatingPointLiteral
@@ -22,8 +21,8 @@ Literal ::= ['-']integerLiteral
             | true
             | false
             | null
-            | javaId"StringLiteral" 
-*/
+            | javaId"StringLiteral"
+ */
 object Literal {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val marker = builder.mark()
@@ -32,8 +31,7 @@ object Literal {
         if (builder.getTokenText == "-") {
           builder.advanceLexer() //Ate -
           builder.getTokenType match {
-            case ScalaTokenTypes.tINTEGER |
-                 ScalaTokenTypes.tFLOAT => {
+            case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT => {
               builder.advanceLexer() //Ate literal
               marker.done(ScalaElementTypes.LITERAL)
               true
@@ -43,8 +41,7 @@ object Literal {
               false
             }
           }
-        }
-        else {
+        } else {
           marker.rollbackTo()
           false
         }
@@ -52,15 +49,16 @@ object Literal {
         CommonUtils.parseInterpolatedString(builder, isPattern = false)
         marker.done(ScalaElementTypes.INTERPOLATED_STRING_LITERAL)
         true
-      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING | ScalaTokenTypes.tINTERPOLATED_STRING =>
+      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
+          ScalaTokenTypes.tINTERPOLATED_STRING =>
         builder.advanceLexer()
         marker.done(ScalaElementTypes.INTERPOLATED_STRING_LITERAL)
         true
       case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT |
-           ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE |
-           ScalaTokenTypes.tCHAR | ScalaTokenTypes.tSYMBOL |
-           ScalaTokenTypes.kNULL | ScalaTokenTypes.tSTRING |
-           ScalaTokenTypes.tMULTILINE_STRING =>
+          ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE |
+          ScalaTokenTypes.tCHAR | ScalaTokenTypes.tSYMBOL |
+          ScalaTokenTypes.kNULL | ScalaTokenTypes.tSTRING |
+          ScalaTokenTypes.tMULTILINE_STRING =>
         builder.advanceLexer() //Ate literal
         marker.done(ScalaElementTypes.LITERAL)
         true

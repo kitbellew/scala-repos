@@ -83,7 +83,8 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
 
     Get("/") ~> Route.seal(route) ~> check {
       status shouldEqual StatusCodes.MethodNotAllowed
-      responseAs[String] shouldEqual "HTTP method not allowed, supported methods: PUT"
+      responseAs[
+        String] shouldEqual "HTTP method not allowed, supported methods: PUT"
     }
   }
 

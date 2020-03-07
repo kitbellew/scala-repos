@@ -4,10 +4,8 @@ package math
 import spire.algebra._
 import spire.std.int._
 
-
 import org.scalatest.FunSuite
 import org.scalatest.prop.Checkers
-
 
 trait SelectTest extends FunSuite /* with Checkers */ {
   def selector: Select
@@ -48,7 +46,10 @@ trait SelectTest extends FunSuite /* with Checkers */ {
           val bs = shuffle(as)
           val orig = bs.clone()
           select(bs, i)
-          assert(bs(i) === i, "Select %d on %s failed." format (i, orig.mkString("[ ", ", ", " ]")))
+          assert(
+            bs(i) === i,
+            "Select %d on %s failed." format (i, orig
+              .mkString("[ ", ", ", " ]")))
         }
       }
     }
@@ -62,4 +63,3 @@ class LinearSelectTest extends SelectTest {
 class QuickSelectTest extends SelectTest {
   val selector = QuickSelect
 }
-

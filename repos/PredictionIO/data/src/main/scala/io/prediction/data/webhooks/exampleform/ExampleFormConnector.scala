@@ -12,14 +12,12 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.webhooks.exampleform
 
 import io.prediction.data.webhooks.FormConnector
 import io.prediction.data.webhooks.ConnectorException
 
 import org.json4s.JObject
-
 
 /** Example FormConnector with following types of webhook form data inputs:
   *
@@ -51,22 +49,25 @@ import org.json4s.JObject
   */
 private[prediction] object ExampleFormConnector extends FormConnector {
 
-  override
-  def toEventJson(data: Map[String, String]): JObject = {
-    val json = try {
-      data.get("type") match {
-        case Some("userAction") => userActionToEventJson(data)
-        case Some("userActionItem") => userActionItemToEventJson(data)
-        case Some(x) => throw new ConnectorException(
-          s"Cannot convert unknown type ${x} to event JSON")
-        case None => throw new ConnectorException(
-          s"The field 'type' is required.")
+  override def toEventJson(data: Map[String, String]): JObject = {
+    val json =
+      try {
+        data.get("type") match {
+          case Some("userAction")     => userActionToEventJson(data)
+          case Some("userActionItem") => userActionItemToEventJson(data)
+          case Some(x) =>
+            throw new ConnectorException(
+              s"Cannot convert unknown type ${x} to event JSON")
+          case None =>
+            throw new ConnectorException(s"The field 'type' is required.")
+        }
+      } catch {
+        case e: ConnectorException => throw e
+        case e: Exception =>
+          throw new ConnectorException(
+            s"Cannot convert ${data} to event JSON. ${e.getMessage()}",
+            e)
       }
-    } catch {
-      case e: ConnectorException => throw e
-      case e: Exception => throw new ConnectorException(
-        s"Cannot convert ${data} to event JSON. ${e.getMessage()}", e)
-    }
     json
   }
 
@@ -77,8 +78,8 @@ private[prediction] object ExampleFormConnector extends FormConnector {
     val context = if (data.exists(_._1.startsWith("context["))) {
       Some(
         ("ip" -> data.get("context[ip]")) ~
-        ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
-        ("prop2" -> data.get("context[prop2]"))
+          ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
+          ("prop2" -> data.get("context[prop2]"))
       )
     } else {
       None
@@ -86,37 +87,40 @@ private[prediction] object ExampleFormConnector extends FormConnector {
 
     val json =
       ("event" -> data("event")) ~
-      ("entityType" -> "user") ~
-      ("entityId" -> data("userId")) ~
-      ("eventTime" -> data("timestamp")) ~
-      ("properties" -> (
-        ("context" -> context) ~
-        ("anotherProperty1" -> data("anotherProperty1").toInt) ~
-        ("anotherProperty2" -> data.get("anotherProperty2"))
-      ))
+        ("entityType" -> "user") ~
+        ("entityId" -> data("userId")) ~
+        ("eventTime" -> data("timestamp")) ~
+        ("properties" -> (
+          ("context" -> context) ~
+            ("anotherProperty1" -> data("anotherProperty1").toInt) ~
+            ("anotherProperty2" -> data.get("anotherProperty2"))
+        ))
     json
   }
-
 
   def userActionItemToEventJson(data: Map[String, String]): JObject = {
     import org.json4s.JsonDSL._
 
     val json =
       ("event" -> data("event")) ~
-      ("entityType" -> "user") ~
-      ("entityId" -> data("userId")) ~
-      ("targetEntityType" -> "item") ~
-      ("targetEntityId" -> data("itemId")) ~
-      ("eventTime" -> data("timestamp")) ~
-      ("properties" -> (
-        ("context" -> (
-          ("ip" -> data("context[ip]")) ~
-          ("prop1" -> data("context[prop1]").toDouble) ~
-          ("prop2" -> data("context[prop2]"))
-        )) ~
-        ("anotherPropertyA" -> data.get("anotherPropertyA").map(_.toDouble)) ~
-        ("anotherPropertyB" -> data.get("anotherPropertyB").map(_.toBoolean))
-      ))
+        ("entityType" -> "user") ~
+        ("entityId" -> data("userId")) ~
+        ("targetEntityType" -> "item") ~
+        ("targetEntityId" -> data("itemId")) ~
+        ("eventTime" -> data("timestamp")) ~
+        ("properties" -> (
+          ("context" -> (
+            ("ip" -> data("context[ip]")) ~
+              ("prop1" -> data("context[prop1]").toDouble) ~
+              ("prop2" -> data("context[prop2]"))
+          )) ~
+            ("anotherPropertyA" -> data
+              .get("anotherPropertyA")
+              .map(_.toDouble)) ~
+            ("anotherPropertyB" -> data
+              .get("anotherPropertyB")
+              .map(_.toBoolean))
+        ))
     json
   }
 

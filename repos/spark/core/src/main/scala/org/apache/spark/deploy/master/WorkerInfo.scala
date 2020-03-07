@@ -30,13 +30,15 @@ private[spark] class WorkerInfo(
     val memory: Int,
     val endpoint: RpcEndpointRef,
     val webUiAddress: String)
-  extends Serializable {
+    extends Serializable {
 
   Utils.checkHost(host, "Expected hostname")
-  assert (port > 0)
+  assert(port > 0)
 
-  @transient var executors: mutable.HashMap[String, ExecutorDesc] = _ // executorId => info
-  @transient var drivers: mutable.HashMap[String, DriverInfo] = _ // driverId => info
+  @transient var executors: mutable.HashMap[String, ExecutorDesc] =
+    _ // executorId => info
+  @transient var drivers: mutable.HashMap[String, DriverInfo] =
+    _ // driverId => info
   @transient var state: WorkerState.Value = _
   @transient var coresUsed: Int = _
   @transient var memoryUsed: Int = _
@@ -48,10 +50,11 @@ private[spark] class WorkerInfo(
   def coresFree: Int = cores - coresUsed
   def memoryFree: Int = memory - memoryUsed
 
-  private def readObject(in: java.io.ObjectInputStream): Unit = Utils.tryOrIOException {
-    in.defaultReadObject()
-    init()
-  }
+  private def readObject(in: java.io.ObjectInputStream): Unit =
+    Utils.tryOrIOException {
+      in.defaultReadObject()
+      init()
+    }
 
   private def init() {
     executors = new mutable.HashMap
@@ -63,7 +66,7 @@ private[spark] class WorkerInfo(
   }
 
   def hostPort: String = {
-    assert (port > 0)
+    assert(port > 0)
     host + ":" + port
   }
 

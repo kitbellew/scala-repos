@@ -9,7 +9,7 @@ object IteratorSpec extends Spec {
       val it = ct.iterator
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce [NoSuchElementException]
+      evaluating { it.next() }.shouldProduce[NoSuchElementException]
     }
 
     def nonEmptyIteratorCheck(sz: Int) {
@@ -24,7 +24,7 @@ object IteratorSpec extends Spec {
       }
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce [NoSuchElementException]
+      evaluating { it.next() }.shouldProduce[NoSuchElementException]
       tracker.size shouldEqual (sz)
       tracker shouldEqual (ct)
     }
@@ -89,7 +89,7 @@ object IteratorSpec extends Spec {
       }
 
       it.hasNext shouldEqual (false)
-      evaluating { it.next() }.shouldProduce [NoSuchElementException]
+      evaluating { it.next() }.shouldProduce[NoSuchElementException]
       tracker.size shouldEqual (sz)
       tracker shouldEqual (ct)
     }
@@ -141,7 +141,7 @@ object IteratorSpec extends Spec {
         override def run() {
           for (i <- 0 until sz) ct.putIfAbsent(new Wrap(i), i) match {
             case Some(_) => ct.remove(new Wrap(i))
-            case None =>
+            case None    =>
           }
         }
       }
@@ -182,7 +182,8 @@ object IteratorSpec extends Spec {
         override def run() {
           for (i <- 0 until sz) {
             assert(ct.remove(new Wrap(i)) == Some(i))
-            for (i <- 0 until removerslowdown) ct.get(new Wrap(i)) // slow down, mate
+            for (i <- 0 until removerslowdown)
+              ct.get(new Wrap(i)) // slow down, mate
           }
         }
       }
@@ -203,7 +204,8 @@ object IteratorSpec extends Spec {
       val remover = new Remover
       remover.start()
       for (_ <- 0 until sgroupnum) {
-        val iters = for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
+        val iters =
+          for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }
@@ -221,7 +223,8 @@ object IteratorSpec extends Spec {
         override def run() {
           for (i <- 0 until sz) {
             assert(ct.put(new Wrap(i), i) == None)
-            for (i <- 0 until inserterslowdown) ct.get(new Wrap(i)) // slow down, mate
+            for (i <- 0 until inserterslowdown)
+              ct.get(new Wrap(i)) // slow down, mate
           }
         }
       }
@@ -242,7 +245,8 @@ object IteratorSpec extends Spec {
       val inserter = new Inserter
       inserter.start()
       for (_ <- 0 until sgroupnum) {
-        val iters = for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
+        val iters =
+          for (_ <- 0 until sgroupsize) yield consistentIteration(ct.iterator)
         iters.foreach(_.start())
         iters.foreach(_.join())
       }
@@ -262,7 +266,8 @@ object IteratorSpec extends Spec {
 
     "be duplicated" in {
       val sz = 50
-      val ct = collection.parallel.mutable.ParTrieMap((0 until sz) zip (0 until sz): _*)
+      val ct = collection.parallel.mutable
+        .ParTrieMap((0 until sz) zip (0 until sz): _*)
       val it = ct.splitter
       for (_ <- 0 until (sz / 2)) it.next()
       val dupit = it.dup

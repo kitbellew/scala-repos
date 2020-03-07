@@ -41,11 +41,14 @@ object EvactorPicklingBench extends scala.pickling.testing.PicklingBenchmark {
 
   override def run() {
     // random events
-    val evts = for (i <- 1 to size) yield
-      DataEvent("event" + i, time + Random.nextInt(100), Random.nextString(5))
+    val evts =
+      for (i <- 1 to size)
+        yield DataEvent(
+          "event" + i,
+          time + Random.nextInt(100),
+          Random.nextString(5))
 
-    val pickles = for (evt <- evts) yield
-      evt.pickle
+    val pickles = for (evt <- evts) yield evt.pickle
 
     var i = 0
     while (i < size) {
@@ -66,8 +69,12 @@ object EvactorKryoBench extends scala.pickling.testing.PicklingBenchmark {
 
   override def run() {
     // random events
-    val evts = for (i <- 1 to size) yield
-      DataEvent("event" + i, time + Random.nextInt(100), Random.nextString(5))
+    val evts =
+      for (i <- 1 to size)
+        yield DataEvent(
+          "event" + i,
+          time + Random.nextInt(100),
+          Random.nextString(5))
 
     ser = new KryoSerializer
     ser.kryo.register(evts(0).getClass)
@@ -94,9 +101,13 @@ object EvactorJavaBench extends scala.pickling.testing.PicklingBenchmark {
     val bos = new ByteArrayOutputStream()
     val out = new ObjectOutputStream(bos)
 
-        // random events
-    val evts = for (i <- 1 to size) yield
-      DataEvent("event" + i, time + Random.nextInt(100), Random.nextString(5))
+    // random events
+    val evts =
+      for (i <- 1 to size)
+        yield DataEvent(
+          "event" + i,
+          time + Random.nextInt(100),
+          Random.nextString(5))
 
     val pickles = for (evt <- evts) yield {
       out.writeObject(evt) // pickle evt

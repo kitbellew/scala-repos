@@ -5,15 +5,14 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.scala.components.HighlightingAdvisor
 
 /**
- * User: Alexander Podkhalyuzin
- * Date: 27.01.2010
- */
-
+  * User: Alexander Podkhalyuzin
+  * Date: 27.01.2010
+  */
 class ToggleTypeAwareHighlightingAction extends AnAction {
   def actionPerformed(e: AnActionEvent) {
     CommonDataKeys.PROJECT.getData(e.getDataContext) match {
       case project: Project => HighlightingAdvisor.getInstance(project).toggle()
-      case _ =>
+      case _                =>
     }
   }
 }

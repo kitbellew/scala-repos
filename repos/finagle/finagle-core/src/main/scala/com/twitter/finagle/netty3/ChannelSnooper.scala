@@ -7,10 +7,13 @@ import org.jboss.netty.channel._
 import org.jboss.netty.buffer.ChannelBuffer
 
 /** Log events on channels */
-trait ChannelSnooper extends ChannelDownstreamHandler with ChannelUpstreamHandler {
+trait ChannelSnooper
+    extends ChannelDownstreamHandler
+    with ChannelUpstreamHandler {
   val name: String
 
-  private[this] lazy val printStream = new PrintStream(System.out, true, "UTF-8")
+  private[this] lazy val printStream =
+    new PrintStream(System.out, true, "UTF-8")
 
   def printer(message: String, exc: Throwable = null) {
     printStream.println(message)
@@ -26,8 +29,10 @@ trait ChannelSnooper extends ChannelDownstreamHandler with ChannelUpstreamHandle
   val upIndicator = "^"
   val downIndicator = "v"
 
-  def printUp(ch: Channel, message: String) = print(ch.getId, upIndicator, message)
-  def printDown(ch: Channel, message: String) = print(ch.getId, downIndicator, message)
+  def printUp(ch: Channel, message: String) =
+    print(ch.getId, upIndicator, message)
+  def printDown(ch: Channel, message: String) =
+    print(ch.getId, downIndicator, message)
 }
 
 /** Log message events */
@@ -37,7 +42,8 @@ class ChannelBufferSnooper(val name: String) extends ChannelSnooper {
 
   override def handleUpstream(ctx: ChannelHandlerContext, e: ChannelEvent) {
     e match {
-      case me: UpstreamMessageEvent if me.getMessage.isInstanceOf[ChannelBuffer] =>
+      case me: UpstreamMessageEvent
+          if me.getMessage.isInstanceOf[ChannelBuffer] =>
         val buf = me.getMessage.asInstanceOf[ChannelBuffer]
         dump(printUp, ctx.getChannel, buf)
       case _ =>
@@ -49,7 +55,8 @@ class ChannelBufferSnooper(val name: String) extends ChannelSnooper {
 
   override def handleDownstream(ctx: ChannelHandlerContext, e: ChannelEvent) {
     e match {
-      case me: DownstreamMessageEvent if me.getMessage.isInstanceOf[ChannelBuffer] =>
+      case me: DownstreamMessageEvent
+          if me.getMessage.isInstanceOf[ChannelBuffer] =>
         val buf = me.getMessage.asInstanceOf[ChannelBuffer]
         dump(printDown, ctx.getChannel, buf)
       case _ =>
@@ -59,8 +66,12 @@ class ChannelBufferSnooper(val name: String) extends ChannelSnooper {
     ctx.sendDownstream(e)
   }
 
-  def dump(printer: (Channel, String) => Unit, ch: Channel, buf: ChannelBuffer) {
-    val rawStr = buf.toString(buf.readerIndex, buf.readableBytes, Charset.forName("UTF-8"))
+  def dump(
+      printer: (Channel, String) => Unit,
+      ch: Channel,
+      buf: ChannelBuffer) {
+    val rawStr =
+      buf.toString(buf.readerIndex, buf.readableBytes, Charset.forName("UTF-8"))
     val str = rawStr.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n")
     val asciiStr = str map { c =>
       if (c >= 32 && c < 128)
@@ -93,7 +104,8 @@ class SimpleChannelSnooper(val name: String) extends ChannelSnooper {
 object ChannelSnooper {
   def apply(name: String)(thePrinter: (String, Throwable) => Unit) =
     new SimpleChannelSnooper(name) {
-      override def printer(message: String, exc: Throwable = null) = thePrinter(message, exc)
+      override def printer(message: String, exc: Throwable = null) =
+        thePrinter(message, exc)
     }
 
   def addLast(name: String, p: ChannelPipeline) =

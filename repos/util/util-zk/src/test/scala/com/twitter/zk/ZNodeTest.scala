@@ -1,10 +1,8 @@
 package com.twitter.zk
 
 /**
- * @author ver@twitter.com
- */
-
-
+  * @author ver@twitter.com
+  */
 import org.junit.runner.RunWith
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
@@ -23,7 +21,7 @@ class ZNodeTest extends WordSpec with MockitoSugar {
       val znode = ZNode(zk, path)
       path should {
         "parentPath" in { assert(znode.parentPath == parent) }
-        "name"       in { assert(znode.name       == name  ) }
+        "name" in { assert(znode.name == name) }
       }
     }
 

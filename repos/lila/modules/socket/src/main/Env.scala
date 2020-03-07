@@ -1,7 +1,7 @@
 package lila.socket
 
 import akka.actor._
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 import com.typesafe.config.Config
 
 import actorApi._
@@ -21,7 +21,8 @@ final class Env(
 
   private val socketHub = system.actorOf(Props[SocketHub], name = HubName)
 
-  private val population = system.actorOf(Props[Population], name = PopulationName)
+  private val population =
+    system.actorOf(Props[Population], name = PopulationName)
 
   system.actorOf(Props[MoveBroadcast], name = MoveBroadcastName)
 

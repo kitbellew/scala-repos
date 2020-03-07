@@ -3,8 +3,8 @@ package scala.scalajs.js.typedarray
 import scala.scalajs.js
 
 /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
- *  A [[TypedArray]] of unsigned 32-bit integers
- */
+  *  A [[TypedArray]] of unsigned 32-bit integers
+  */
 @js.native
 class Uint32Array private extends TypedArray[Double, Uint32Array] {
 
@@ -12,9 +12,9 @@ class Uint32Array private extends TypedArray[Double, Uint32Array] {
   def this(length: Int) = this()
 
   /** Creates a new Uint32Array with the same elements than the given TypedArray
-   *
-   *  The elements are converted before being stored in the new Int8Array.
-   */
+    *
+    *  The elements are converted before being stored in the new Int8Array.
+    */
   def this(typedArray: TypedArray[_, _]) = this()
 
   /** Creates a new Uint32Array with the elements in the given array */
@@ -26,7 +26,7 @@ class Uint32Array private extends TypedArray[Double, Uint32Array] {
 }
 
 /** <span class="badge badge-ecma6" style="float: right;">ECMAScript 6</span>
- *  [[Uint32Array]] companion
- */
+  *  [[Uint32Array]] companion
+  */
 @js.native
 object Uint32Array extends TypedArrayStatic

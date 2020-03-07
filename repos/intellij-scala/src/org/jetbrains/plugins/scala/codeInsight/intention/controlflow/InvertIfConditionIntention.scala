@@ -6,15 +6,19 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.{PsiDocumentManager, PsiElement}
 import org.jetbrains.plugins.scala.extensions._
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScBlockExpr, ScExpression, ScIfStmt, ScInfixExpr}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScBlockExpr,
+  ScExpression,
+  ScIfStmt,
+  ScInfixExpr
+}
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.util.IntentionUtils
 
 /**
- * @author Ksenia.Sautina
- * @since 6/6/12
- */
-
+  * @author Ksenia.Sautina
+  * @since 6/6/12
+  */
 object InvertIfConditionIntention {
   def familyName = "Invert If condition"
 }
@@ -24,11 +28,15 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
 
   override def getText: String = getFamilyName
 
-  def isAvailable(project: Project, editor: Editor, element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+  def isAvailable(
+      project: Project,
+      editor: Editor,
+      element: PsiElement): Boolean = {
+    val ifStmt: ScIfStmt =
+      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null) return false
 
-    val thenBranch =  ifStmt.thenBranch.orNull
+    val thenBranch = ifStmt.thenBranch.orNull
     if (thenBranch == null) return false
 
     val condition = ifStmt.condition.orNull
@@ -38,14 +46,15 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
     if (!(ifStmt.getTextRange.getStartOffset <= offset && offset <= condition.getTextRange.getStartOffset - 1))
       return false
 
-    val elseBranch =  ifStmt.elseBranch.orNull
+    val elseBranch = ifStmt.elseBranch.orNull
     if (elseBranch != null) return elseBranch.isInstanceOf[ScBlockExpr]
 
     true
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt : ScIfStmt = PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt =
+      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid) return
 
     val expr = new StringBuilder
@@ -62,23 +71,44 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
         } else {
           infixExpr.getArgExpr.getText
         }
-        val replaceOper = Map("==" -> "!=", "!=" -> "==", ">" -> "<=", "<" -> ">=", ">=" -> "<", "<=" -> ">",
-          "&&" -> "||", "||" -> "&&")
+        val replaceOper = Map(
+          "==" -> "!=",
+          "!=" -> "==",
+          ">" -> "<=",
+          "<" -> ">=",
+          ">=" -> "<",
+          "<=" -> ">",
+          "&&" -> "||",
+          "||" -> "&&")
         val buf = new StringBuilder
-        buf.append(first).append(" ").append(replaceOper(oper)).append(" ").append(second)
+        buf
+          .append(first)
+          .append(" ")
+          .append(replaceOper(oper))
+          .append(" ")
+          .append(second)
         buf.toString()
       case _ => IntentionUtils.negate(ifStmt.condition.get)
     }
 
-    val elseBranch =  ifStmt.elseBranch.orNull
-    val newThenBranch = if (elseBranch != null) elseBranch.asInstanceOf[ScBlockExpr].getText else "{\n\n}"
-    expr.append("if (").append(newCond).append(")").append(newThenBranch).append(" else ")
-    val res =  ifStmt.thenBranch.get match {
+    val elseBranch = ifStmt.elseBranch.orNull
+    val newThenBranch =
+      if (elseBranch != null) elseBranch.asInstanceOf[ScBlockExpr].getText
+      else "{\n\n}"
+    expr
+      .append("if (")
+      .append(newCond)
+      .append(")")
+      .append(newThenBranch)
+      .append(" else ")
+    val res = ifStmt.thenBranch.get match {
       case e: ScBlockExpr => e.getText
-      case _ => "{\n" + ifStmt.thenBranch.get.getText + "\n}"
+      case _              => "{\n" + ifStmt.thenBranch.get.getText + "\n}"
     }
     expr.append(res)
-    val newStmt : ScExpression = ScalaPsiElementFactory.createExpressionFromText(expr.toString(), element.getManager)
+    val newStmt: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
+      expr.toString(),
+      element.getManager)
 
     inWriteAction {
       ifStmt.replaceExpression(newStmt, true)

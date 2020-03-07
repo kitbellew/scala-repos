@@ -10,13 +10,13 @@ package scala
 package util.control
 
 /** A trait for exceptions which, for efficiency reasons, do not
- *  fill in the stack trace.  Stack trace suppression can be disabled
- *  on a global basis via a system property wrapper in
- *  [[scala.sys.SystemProperties]].
- *
- *  @author   Paul Phillips
- *  @since    2.8
- */
+  *  fill in the stack trace.  Stack trace suppression can be disabled
+  *  on a global basis via a system property wrapper in
+  *  [[scala.sys.SystemProperties]].
+  *
+  *  @author   Paul Phillips
+  *  @since    2.8
+  */
 trait NoStackTrace extends Throwable {
   override def fillInStackTrace(): Throwable =
     if (NoStackTrace.noSuppression) super.fillInStackTrace()

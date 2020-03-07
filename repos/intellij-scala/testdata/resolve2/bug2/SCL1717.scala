@@ -5,6 +5,6 @@ trait A {
 trait B {
   self: Any with A =>
 
-  /*resolved: true*/x
+  /*resolved: true*/
+  x
 }
-

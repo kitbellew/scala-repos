@@ -26,15 +26,19 @@ import org.apache.spark.internal.Logging
 import org.apache.spark.util.{ShutdownHookManager, Utils}
 
 /**
- * Creates and maintains the logical mapping between logical blocks and physical on-disk
- * locations. One block is mapped to one file with a name given by its BlockId.
- *
- * Block files are hashed among the directories listed in spark.local.dir (or in
- * SPARK_LOCAL_DIRS, if it's set).
- */
-private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolean) extends Logging {
+  * Creates and maintains the logical mapping between logical blocks and physical on-disk
+  * locations. One block is mapped to one file with a name given by its BlockId.
+  *
+  * Block files are hashed among the directories listed in spark.local.dir (or in
+  * SPARK_LOCAL_DIRS, if it's set).
+  */
+private[spark] class DiskBlockManager(
+    conf: SparkConf,
+    deleteFilesOnStop: Boolean)
+    extends Logging {
 
-  private[spark] val subDirsPerLocalDir = conf.getInt("spark.diskStore.subDirectories", 64)
+  private[spark] val subDirsPerLocalDir =
+    conf.getInt("spark.diskStore.subDirectories", 64)
 
   /* Create one local directory for each path mentioned in spark.local.dir; then, inside this
    * directory, create multiple subdirectories that we will hash files into, in order to avoid
@@ -46,7 +50,8 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
   }
   // The content of subDirs is immutable but the content of subDirs(i) is mutable. And the content
   // of subDirs(i) is protected by the lock of subDirs(i)
-  private val subDirs = Array.fill(localDirs.length)(new Array[File](subDirsPerLocalDir))
+  private val subDirs =
+    Array.fill(localDirs.length)(new Array[File](subDirsPerLocalDir))
 
   private val shutdownHook = addShutdownHook()
 
@@ -87,15 +92,18 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
   /** List all the files currently stored on disk by the disk manager. */
   def getAllFiles(): Seq[File] = {
     // Get all the files inside the array of array of directories
-    subDirs.flatMap { dir =>
-      dir.synchronized {
-        // Copy the content of dir because it may be modified in other threads
-        dir.clone()
+    subDirs
+      .flatMap { dir =>
+        dir.synchronized {
+          // Copy the content of dir because it may be modified in other threads
+          dir.clone()
+        }
       }
-    }.filter(_ != null).flatMap { dir =>
-      val files = dir.listFiles()
-      if (files != null) files else Seq.empty
-    }
+      .filter(_ != null)
+      .flatMap { dir =>
+        val files = dir.listFiles()
+        if (files != null) files else Seq.empty
+      }
   }
 
   /** List all the blocks currently stored on disk by the disk manager. */
@@ -122,10 +130,10 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
   }
 
   /**
-   * Create local directories for storing block data. These directories are
-   * located inside configured local directories and won't
-   * be deleted on JVM exit when using the external shuffle service.
-   */
+    * Create local directories for storing block data. These directories are
+    * located inside configured local directories and won't
+    * be deleted on JVM exit when using the external shuffle service.
+    */
   private def createLocalDirs(conf: SparkConf): Array[File] = {
     Utils.getConfiguredLocalDirs(conf).flatMap { rootDir =>
       try {
@@ -134,14 +142,17 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
         Some(localDir)
       } catch {
         case e: IOException =>
-          logError(s"Failed to create local dir in $rootDir. Ignoring this directory.", e)
+          logError(
+            s"Failed to create local dir in $rootDir. Ignoring this directory.",
+            e)
           None
       }
     }
   }
 
   private def addShutdownHook(): AnyRef = {
-    ShutdownHookManager.addShutdownHook(ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) { () =>
+    ShutdownHookManager.addShutdownHook(
+      ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) { () =>
       logInfo("Shutdown hook called")
       DiskBlockManager.this.doStop()
     }
@@ -169,7 +180,9 @@ private[spark] class DiskBlockManager(conf: SparkConf, deleteFilesOnStop: Boolea
             }
           } catch {
             case e: Exception =>
-              logError(s"Exception while deleting local spark dir: $localDir", e)
+              logError(
+                s"Exception while deleting local spark dir: $localDir",
+                e)
           }
         }
       }

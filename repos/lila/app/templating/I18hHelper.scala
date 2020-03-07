@@ -2,12 +2,12 @@ package lila.app
 package templating
 
 import controllers._
-import play.api.i18n.{ Lang, Messages }
-import play.api.mvc.{ RequestHeader, Call }
+import play.api.i18n.{Lang, Messages}
+import play.api.mvc.{RequestHeader, Call}
 import play.twirl.api.Html
 
-import lila.i18n.Env.{ current => i18nEnv }
-import lila.i18n.{ LangList, I18nDomain, I18nKey }
+import lila.i18n.Env.{current => i18nEnv}
+import lila.i18n.{LangList, I18nDomain, I18nKey}
 import lila.user.UserContext
 
 trait I18nHelper {
@@ -31,7 +31,8 @@ trait I18nHelper {
   def langName(lang: String): Option[String] = LangList name lang
 
   def shortLangName(lang: Lang): Option[String] = shortLangName(lang.language)
-  def shortLangName(lang: String): Option[String] = langName(lang) map (_ takeWhile (','!=))
+  def shortLangName(lang: String): Option[String] =
+    langName(lang) map (_ takeWhile (',' !=))
 
   def translationCall(implicit ctx: UserContext) = i18nEnv.call(ctx.me, ctx.req)
 
@@ -39,10 +40,15 @@ trait I18nHelper {
     (trans contains "%s") option ".*%s.*"
 
   def langFallbackLinks(implicit ctx: UserContext) = Html {
-    pool.preferredNames(ctx.req, 3).map {
-      case (code, name) => """<a class="lang_fallback" lang="%s" href="%s">%s</a>""".format(
-        code, langUrl(Lang(code))(I18nDomain(ctx.req.domain)), name)
-    }.mkString("").replace(uriPlaceholder, ctx.req.uri)
+    pool
+      .preferredNames(ctx.req, 3)
+      .map {
+        case (code, name) =>
+          """<a class="lang_fallback" lang="%s" href="%s">%s</a>"""
+            .format(code, langUrl(Lang(code))(I18nDomain(ctx.req.domain)), name)
+      }
+      .mkString("")
+      .replace(uriPlaceholder, ctx.req.uri)
   }
 
   private lazy val langAnnotationsBase: String =

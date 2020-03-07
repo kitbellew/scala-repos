@@ -5,8 +5,6 @@ import scala.util.Random
 import org.junit.runner.RunWith
 import org.scalatest.WordSpec
 import org.scalatest.junit.JUnitRunner
-
-
 @RunWith(classOf[JUnitRunner])
 class U64Test extends WordSpec {
   import U64._
@@ -44,7 +42,7 @@ class U64Test extends WordSpec {
   }
 
   "comparable in range" in {
-    assert(0L.u64_within(0, 1)    == false)
+    assert(0L.u64_within(0, 1) == false)
     assert(0L.u64_contained(0, 1) == true)
 
     // (inverted range)
@@ -52,28 +50,62 @@ class U64Test extends WordSpec {
     assert(1L.u64_within(-1, 1) == false)
     assert(2L.u64_within(-1, 1) == false)
 
-    assert(0xFFFFFFFFFFFFFFFEL.u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
-    assert(0xFFFFFFFFFFFFFFFDL.u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
-    assert(0xFFFFFFFFFFFFFFFFL.u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
+    assert(
+      0xFFFFFFFFFFFFFFFEL
+        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+    assert(
+      0xFFFFFFFFFFFFFFFDL
+        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
+    assert(
+      0xFFFFFFFFFFFFFFFFL
+        .u64_within(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == false)
 
-    assert(0xFFFFFFFFFFFFFFFEL.u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
-    assert(0xFFFFFFFFFFFFFFFDL.u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
-    assert(0xFFFFFFFFFFFFFFFFL.u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+    assert(
+      0xFFFFFFFFFFFFFFFEL
+        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+    assert(
+      0xFFFFFFFFFFFFFFFDL
+        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
+    assert(
+      0xFFFFFFFFFFFFFFFFL
+        .u64_contained(0xFFFFFFFFFFFFFFFDL, 0xFFFFFFFFFFFFFFFFL) == true)
 
     // Bit flip area!
-    assert(0x7FFFFFFFFFFFFFFFL.u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
-    assert(0x8000000000000000L.u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
+    assert(
+      0x7FFFFFFFFFFFFFFFL
+        .u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
+    assert(
+      0x8000000000000000L
+        .u64_within(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == false)
 
-    assert(0x7FFFFFFFFFFFFFFFL.u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
-    assert(0x8000000000000000L.u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
+    assert(
+      0x7FFFFFFFFFFFFFFFL
+        .u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
+    assert(
+      0x8000000000000000L
+        .u64_contained(0x7FFFFFFFFFFFFFFFL, 0x8000000000000000L) == true)
 
-    assert(0x7FFFFFFFFFFFFFFAL.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
-    assert(0x7FFFFFFFFFFFFFFBL.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
-    assert(0x7FFFFFFFFFFFFFFFL.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
-    assert(0x8000000000000000L.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
-    assert(0x8000000000000001L.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
-    assert(0x8000000000000009L.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
-    assert(0x800000000000000AL.u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
+    assert(
+      0x7FFFFFFFFFFFFFFAL
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
+    assert(
+      0x7FFFFFFFFFFFFFFBL
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+    assert(
+      0x7FFFFFFFFFFFFFFFL
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+    assert(
+      0x8000000000000000L
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+    assert(
+      0x8000000000000001L
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+    assert(
+      0x8000000000000009L
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == true)
+    assert(
+      0x800000000000000AL
+        .u64_within(0x7FFFFFFFFFFFFFFAL, 0x800000000000000AL) == false)
   }
 
   "divisible" in {
@@ -83,7 +115,7 @@ class U64Test extends WordSpec {
 
     assert(0x7FFFFFFFFFFFFFFFL.u64_/(2) == 0x3FFFFFFFFFFFFFFFL)
 
-    assert(0x8000000000000000L / 2 == 0xc000000000000000L)
+    assert(0x8000000000000000L / 2 == 0xC000000000000000L)
     assert(0x8000000000000000L.u64_/(2) == 0x4000000000000000L)
 
     assert(0x8000000000000000L.u64_/(0x8000000000000000L) == 1)
@@ -101,7 +133,8 @@ class U64Test extends WordSpec {
       (0 until 10000).foreach { _ =>
         val id = rng.nextLong
         assert(id == (id.toU64ByteArray.toU64Long))
-        assert(id == (id.toU64ByteArray.toU64HexString.toU64ByteArray.toU64Long))
+        assert(
+          id == (id.toU64ByteArray.toU64HexString.toU64ByteArray.toU64Long))
       }
     }
 
@@ -122,16 +155,16 @@ class U64Test extends WordSpec {
     }
 
     "not parse with +" in {
-      intercept[NumberFormatException] {"+0".toU64Long}
-      intercept[NumberFormatException] {"0+".toU64Long}
-      intercept[NumberFormatException] {"00+0".toU64Long}
-      intercept[NumberFormatException] {"0+00".toU64Long}
-      intercept[NumberFormatException] {"+ffffffffffffffff".toU64Long}
+      intercept[NumberFormatException] { "+0".toU64Long }
+      intercept[NumberFormatException] { "0+".toU64Long }
+      intercept[NumberFormatException] { "00+0".toU64Long }
+      intercept[NumberFormatException] { "0+00".toU64Long }
+      intercept[NumberFormatException] { "+ffffffffffffffff".toU64Long }
     }
 
     "not parse non-latin unicode digits" in {
       // \u09e6 = BENGALI DIGIT ZERO (accepted by parseLong)
-      intercept[NumberFormatException] {"\u09e6".toU64Long}
+      intercept[NumberFormatException] { "\u09e6".toU64Long }
     }
 
     "parse mixed case" in {
@@ -142,16 +175,16 @@ class U64Test extends WordSpec {
       val actual = intercept[NumberFormatException] { "-1".toU64Long }
       assert(actual.getMessage == "For input string: \"-1\"")
 
-      intercept[NumberFormatException] {"".toU64Long}
-      intercept[NumberFormatException] {"-f".toU64Long}
-      intercept[NumberFormatException] {"-af".toU64Long}
-      intercept[NumberFormatException] {"10-aff".toU64Long}
-      intercept[NumberFormatException] {"1-0aff".toU64Long}
+      intercept[NumberFormatException] { "".toU64Long }
+      intercept[NumberFormatException] { "-f".toU64Long }
+      intercept[NumberFormatException] { "-af".toU64Long }
+      intercept[NumberFormatException] { "10-aff".toU64Long }
+      intercept[NumberFormatException] { "1-0aff".toU64Long }
     }
 
     "not parse empty string" in {
       // this is what Long.parseLong("") does
-      intercept[NumberFormatException] {"".toU64Long}
+      intercept[NumberFormatException] { "".toU64Long }
     }
   }
 }

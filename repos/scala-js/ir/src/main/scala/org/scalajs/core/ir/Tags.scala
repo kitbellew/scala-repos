@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.ir
 
 /** Serialization and hashing tags for trees and types */

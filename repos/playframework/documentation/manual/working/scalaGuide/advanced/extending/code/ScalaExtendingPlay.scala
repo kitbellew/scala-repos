@@ -10,7 +10,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.mvc.Http.RequestHeader
 
-
 object ScalaExtendingPlay extends Specification {
 
   class MyMessagesApi extends MessagesApi {
@@ -23,10 +22,13 @@ object ScalaExtendingPlay extends Specification {
     override def langCookieSecure: Boolean = ???
     override def langCookieName: String = ???
     override def setLang(result: Result, lang: Lang): Result = ???
-    override def apply(key: String, args: Any*)(implicit lang: Lang): String = ???
-    override def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String = ???
+    override def apply(key: String, args: Any*)(implicit lang: Lang): String =
+      ???
+    override def apply(keys: Seq[String], args: Any*)(
+        implicit lang: Lang): String = ???
     override def isDefinedAt(key: String)(implicit lang: Lang): Boolean = ???
-    override def translate(key: String, args: Seq[Any])(implicit lang: Lang): Option[String] = ???
+    override def translate(key: String, args: Seq[Any])(
+        implicit lang: Lang): Option[String] = ???
   }
 
   // #module-definition
@@ -36,7 +38,7 @@ object ScalaExtendingPlay extends Specification {
 
   class MyModule extends play.api.inject.Module {
     def bindings(environment: Environment, configuration: Configuration) = {
-        Seq(bind[MyCode].toInstance(new MyCode))
+      Seq(bind[MyCode].toInstance(new MyCode))
     }
   }
   // #module-definition
@@ -75,6 +77,5 @@ object ScalaExtendingPlay extends Specification {
     }
 
   }
-
 
 }

@@ -6,7 +6,6 @@ import spire.math.poly._
 import spire.std.bigDecimal._
 import spire.syntax.euclideanRing._
 
-
 import org.scalatest.Matchers
 import org.scalacheck.Arbitrary._
 import org.scalatest._
@@ -16,7 +15,10 @@ import org.scalacheck._
 import Gen._
 import Arbitrary.arbitrary
 
-class PolynomialSamplingCheck extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
+class PolynomialSamplingCheck
+    extends PropSpec
+    with Matchers
+    with GeneratorDrivenPropertyChecks {
 
   import PolynomialSetup._
 
@@ -45,7 +47,9 @@ class PolynomialSamplingCheck extends PropSpec with Matchers with GeneratorDrive
     runTest[A](s"$typ/sparse")
   }
 
-  def runTest[A: Eq: Field: ClassTag](name: String)(implicit arb: Arbitrary[Polynomial[A]], arb2: Arbitrary[A]): Unit = {
+  def runTest[A: Eq: Field: ClassTag](name: String)(implicit
+      arb: Arbitrary[Polynomial[A]],
+      arb2: Arbitrary[A]): Unit = {
     type P = Polynomial[A]
 
     val zero = Polynomial.zero[A]
@@ -82,9 +86,7 @@ class PolynomialSamplingCheck extends PropSpec with Matchers with GeneratorDrive
     property(s"$name binop -") { testBinop(_ - _)(_ - _) }
     property(s"$name binop *") { testBinop(_ * _)(_ * _) }
     property(s"$name binop /~ and %") {
-      testBinopNonzero({ (x, y) =>
-        (x /~ y) * y + (x % y)
-      })({ (a, b) =>
+      testBinopNonzero({ (x, y) => (x /~ y) * y + (x % y) })({ (a, b) =>
         (a /~ b) * b + (a % b)
       })
     }

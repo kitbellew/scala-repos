@@ -1,14 +1,19 @@
 package java.nio
 
 private[nio] final class HeapShortBuffer private (
-    _capacity: Int, _array0: Array[Short], _arrayOffset0: Int,
-    _initialPosition: Int, _initialLimit: Int, _readOnly: Boolean)
+    _capacity: Int,
+    _array0: Array[Short],
+    _arrayOffset0: Int,
+    _initialPosition: Int,
+    _initialLimit: Int,
+    _readOnly: Boolean)
     extends ShortBuffer(_capacity, _array0, _arrayOffset0) {
 
   position(_initialPosition)
   limit(_initialLimit)
 
-  private[this] implicit def newHeapShortBuffer = HeapShortBuffer.NewHeapShortBuffer
+  private[this] implicit def newHeapShortBuffer =
+    HeapShortBuffer.NewHeapShortBuffer
 
   def isReadOnly(): Boolean = _readOnly
 
@@ -67,33 +72,56 @@ private[nio] final class HeapShortBuffer private (
     GenHeapBuffer(this).generic_store(index, elem)
 
   @inline
-  override private[nio] def load(startIndex: Int,
-      dst: Array[Short], offset: Int, length: Int): Unit =
+  override private[nio] def load(
+      startIndex: Int,
+      dst: Array[Short],
+      offset: Int,
+      length: Int): Unit =
     GenHeapBuffer(this).generic_load(startIndex, dst, offset, length)
 
   @inline
-  override private[nio] def store(startIndex: Int,
-      src: Array[Short], offset: Int, length: Int): Unit =
+  override private[nio] def store(
+      startIndex: Int,
+      src: Array[Short],
+      offset: Int,
+      length: Int): Unit =
     GenHeapBuffer(this).generic_store(startIndex, src, offset, length)
 }
 
 private[nio] object HeapShortBuffer {
   private[nio] implicit object NewHeapShortBuffer
       extends GenHeapBuffer.NewHeapBuffer[ShortBuffer, Short] {
-    def apply(capacity: Int, array: Array[Short], arrayOffset: Int,
-        initialPosition: Int, initialLimit: Int,
+    def apply(
+        capacity: Int,
+        array: Array[Short],
+        arrayOffset: Int,
+        initialPosition: Int,
+        initialLimit: Int,
         readOnly: Boolean): ShortBuffer = {
-      new HeapShortBuffer(capacity, array, arrayOffset,
-          initialPosition, initialLimit, readOnly)
+      new HeapShortBuffer(
+        capacity,
+        array,
+        arrayOffset,
+        initialPosition,
+        initialLimit,
+        readOnly)
     }
   }
 
   @noinline
-  private[nio] def wrap(array: Array[Short], arrayOffset: Int, capacity: Int,
-      initialPosition: Int, initialLength: Int,
+  private[nio] def wrap(
+      array: Array[Short],
+      arrayOffset: Int,
+      capacity: Int,
+      initialPosition: Int,
+      initialLength: Int,
       isReadOnly: Boolean): ShortBuffer = {
     GenHeapBuffer.generic_wrap(
-        array, arrayOffset, capacity,
-        initialPosition, initialLength, isReadOnly)
+      array,
+      arrayOffset,
+      capacity,
+      initialPosition,
+      initialLength,
+      isReadOnly)
   }
 }

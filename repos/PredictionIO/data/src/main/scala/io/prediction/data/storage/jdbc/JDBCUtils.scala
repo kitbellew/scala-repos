@@ -12,13 +12,13 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.jdbc
 
 import scalikejdbc._
 
 /** JDBC related utilities */
 object JDBCUtils {
+
   /** Extract JDBC driver type from URL
     *
     * @param url JDBC URL
@@ -28,7 +28,7 @@ object JDBCUtils {
     val capture = """jdbc:([^:]+):""".r
     capture findFirstIn url match {
       case Some(capture(driverType)) => driverType
-      case None => ""
+      case None                      => ""
     }
   }
 
@@ -40,8 +40,8 @@ object JDBCUtils {
   def binaryColumnType(url: String): SQLSyntax = {
     driverType(url) match {
       case "postgresql" => sqls"bytea"
-      case "mysql" => sqls"longblob"
-      case _ => sqls"longblob"
+      case "mysql"      => sqls"longblob"
+      case _            => sqls"longblob"
     }
   }
 
@@ -53,8 +53,8 @@ object JDBCUtils {
   def timestampFunction(url: String): String = {
     driverType(url) match {
       case "postgresql" => "to_timestamp"
-      case "mysql" => "from_unixtime"
-      case _ => "from_unixtime"
+      case "mysql"      => "from_unixtime"
+      case _            => "from_unixtime"
     }
   }
 
@@ -73,10 +73,13 @@ object JDBCUtils {
     * @return Map of String to String, e.g. Map("FOO" -> "BAR", "X" -> "Y", ...)
     */
   def stringToMap(str: String): Map[String, String] = {
-    str.split(",").map { x =>
-      val y = x.split("=")
-      y(0) -> y(1)
-    }.toMap[String, String]
+    str
+      .split(",")
+      .map { x =>
+        val y = x.split("=")
+        y(0) -> y(1)
+      }
+      .toMap[String, String]
   }
 
   /** Generate 32-character random ID using UUID with - stripped */
@@ -98,6 +101,9 @@ object JDBCUtils {
     * @param channelId Optional channel ID
     * @return Full event table name
     */
-  def eventTableName(namespace: String, appId: Int, channelId: Option[Int]): String =
+  def eventTableName(
+      namespace: String,
+      appId: Int,
+      channelId: Option[Int]): String =
     s"${namespace}_${appId}${channelId.map("_" + _).getOrElse("")}"
 }

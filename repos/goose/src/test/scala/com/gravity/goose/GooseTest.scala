@@ -4,16 +4,14 @@ import org.junit.Test
 import org.junit.Assert._
 
 /**
- * Created by Jim Plush
- * User: jim
- * Date: 8/14/11
- */
-
+  * Created by Jim Plush
+  * User: jim
+  * Date: 8/14/11
+  */
 class GooseTest {
 
   @Test
   def gooseTest() {
-
 
     //    implicit val config = new Configuration
     //    val url = "http://techcrunch.com/2011/08/13/2005-zuckerberg-didnt-want-to-take-over-the-world/"
@@ -41,6 +39,5 @@ class GooseTest {
     val article = goose.extractContent(url)
     assertNull(article.topNode)
   }
-
 
 }

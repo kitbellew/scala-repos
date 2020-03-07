@@ -3,9 +3,9 @@ class test {
   case class A(a: Int, b: Int)
 
   def f(a: Int, b: Int) = {
-/*start*/
+    /*start*/
     A(a, b)
-/*end*/
+    /*end*/
   }
 }
 /*
@@ -23,4 +23,4 @@ class test {
     A(a, b)
   }
 }
-*/
+ */

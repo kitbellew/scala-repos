@@ -1,6 +1,6 @@
 // ticket #3829
 object Test {
-  import collection.{ mutable, immutable }
+  import collection.{mutable, immutable}
 
   def main(args: Array[String]) {
     val map = immutable.Map(1 -> 2, 3 -> 4)

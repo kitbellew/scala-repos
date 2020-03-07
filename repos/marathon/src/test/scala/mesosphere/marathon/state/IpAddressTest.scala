@@ -3,7 +3,7 @@ package mesosphere.marathon.state
 import mesosphere.marathon.Protos
 import mesosphere.marathon.MarathonSpec
 import mesosphere.marathon.api.JsonTestHelper
-import org.apache.mesos.{ Protos => MesosProtos }
+import org.apache.mesos.{Protos => MesosProtos}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
 
@@ -37,7 +37,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
         "baz" -> "buzz"
       ),
       discoveryInfo = DiscoveryInfo(
-        ports = Vector(DiscoveryInfo.Port(name = "http", number = 80, protocol = "tcp"))
+        ports = Vector(
+          DiscoveryInfo.Port(name = "http", number = 80, protocol = "tcp"))
       )
     )
   }
@@ -51,7 +52,10 @@ class IpAddressTest extends MarathonSpec with Matchers {
 
     // The default IpAddress has an empty DiscoveryInfo
     val defaultIpAddressProto =
-      Protos.IpAddress.newBuilder().setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance).build()
+      Protos.IpAddress
+        .newBuilder()
+        .setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance)
+        .build()
     proto should be(defaultIpAddressProto)
   }
 
@@ -65,7 +69,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
   test("ToProto with groups and labels") {
     val f = fixture()
     val proto = f.ipAddressWithGroupsAndLabels.toProto
-    proto.getGroupsList.asScala should equal(f.ipAddressWithGroupsAndLabels.groups)
+    proto.getGroupsList.asScala should equal(
+      f.ipAddressWithGroupsAndLabels.groups)
     proto.getLabelsList.asScala.map(kv => kv.getKey -> kv.getValue).toMap should
       equal(f.ipAddressWithGroupsAndLabels.labels)
   }
@@ -83,7 +88,8 @@ class IpAddressTest extends MarathonSpec with Matchers {
       .addPorts(portProto)
       .build
 
-    proto.getGroupsList.asScala should equal(f.ipAddressWithGroupsAndLabels.groups)
+    proto.getGroupsList.asScala should equal(
+      f.ipAddressWithGroupsAndLabels.groups)
     proto.getLabelsList.asScala.map(kv => kv.getKey -> kv.getValue).toMap should
       equal(f.ipAddressWithGroupsAndLabels.labels)
     proto.getDiscoveryInfo should equal(discoveryInfoProto)
@@ -151,12 +157,14 @@ class IpAddressTest extends MarathonSpec with Matchers {
 
   test("JSON Serialization round-trip ipAddressWithGroupsAndLabels") {
     val f = fixture()
-    JsonTestHelper.assertSerializationRoundtripWorks(f.ipAddressWithGroupsAndLabels)
+    JsonTestHelper.assertSerializationRoundtripWorks(
+      f.ipAddressWithGroupsAndLabels)
   }
 
   test("JSON Serialization round-trip ipAddressWithDiscoveryInfo") {
     val f = fixture()
-    JsonTestHelper.assertSerializationRoundtripWorks(f.ipAddressWithDiscoveryInfo)
+    JsonTestHelper.assertSerializationRoundtripWorks(
+      f.ipAddressWithDiscoveryInfo)
   }
 
   private[this] def fromJson(json: String): IpAddress = {
@@ -205,4 +213,3 @@ class IpAddressTest extends MarathonSpec with Matchers {
   }
 
 }
-

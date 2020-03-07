@@ -1,32 +1,39 @@
 import ScaloidCodeGenerator._
 
-class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTemplate) {
+class ScaloidCodeGenerator(
+    cls: AndroidClass,
+    companionTemplate: CompanionTemplate) {
   import StringUtils._
 
-  private val sClassName = "S"+ cls.name
+  private val sClassName = "S" + cls.name
 
   def implicitConversion = {
     val name = cls.name
-    s"$deprecated@inline implicit def ${decapitalize(name)}2Rich$name[V <: ${genType(cls.tpe, erased = true)}]" +
+    s"$deprecated@inline implicit def ${decapitalize(
+      name)}2Rich$name[V <: ${genType(cls.tpe, erased = true)}]" +
       s"(${decapitalize(name)}: V) = new Rich$name[V](${decapitalize(name)})"
   }
 
   def wholeClassDef =
     s"""$richClassDef
        |
-       |${if ( ! (cls.isAbstract || cls.isFinal)) prefixedClassDef else "" }
+       |${if (!(cls.isAbstract || cls.isFinal)) prefixedClassDef else ""}
      """.stripMargin
 
   def richClassDef =
     s"""$richClassScalaDoc
-       |${deprecated}class Rich${cls.name}[This <: ${genType(cls.tpe, erased = true)}](val basis: This) extends $helperTraitName[This]
+       |${deprecated}class Rich${cls.name}[This <: ${genType(
+         cls.tpe,
+         erased = true)}](val basis: This) extends $helperTraitName[This]
        |
        |$helperTraitScalaDoc
-       |${deprecated}trait $helperTraitName[This <: ${genType(cls.tpe, erased = true)}]$extendClause {
+       |${deprecated}trait $helperTraitName[This <: ${genType(
+         cls.tpe,
+         erased = true)}]$extendClause {
        |
        |  ${if (cls.parentType.isEmpty) "def basis: This" else ""}
        |
-       |  ${ companionTemplate.safeRender(cls.name + "_traitBody") }
+       |  ${companionTemplate.safeRender(cls.name + "_traitBody")}
        |
        |  $properties
        |  $listeners
@@ -36,27 +43,29 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def deprecated = if (cls.isDeprecated) deprecatedDecl else ""
   def helperTraitName: String = helperTraitName(cls.name)
-  def helperTraitName(name: String): String = "Trait"+ StringUtils.simpleName(name)
+  def helperTraitName(name: String): String =
+    "Trait" + StringUtils.simpleName(name)
 
   def extendClause = {
     val parent = cls.parentType.map(p => helperTraitName(p.name) + "[This]")
     val mixin = companionTemplate.get(cls.name + "_mixin")
     (parent :: mixin :: Nil).flatten match {
-      case Nil => ""
+      case Nil          => ""
       case head :: tail => s" extends $head" + tail.mkString(" ", " with ", "")
     }
   }
 
   def prefixedClassDef = {
     val name = cls.name
-    if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(name) || companionObjectBodies.toMap.isDefinedAt(name))
+    if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(
+          name) || companionObjectBodies.toMap.isDefinedAt(name))
       s"""$prefixedClassScalaDoc
          |${deprecated}class S$name$customClassGenerics($customClassExplicitArgs)$classImplicitArgs
          |    extends $baseClassInstance with $helperTraitName[S$name$customSimpleClassGenerics] {
          |
          |  def basis = this
          |  $customClassBodies
-         |  ${ companionTemplate.safeRender(name + "_concreteBody") }
+         |  ${companionTemplate.safeRender(name + "_concreteBody")}
          |}
          |
          |$companionObjectDef
@@ -67,7 +76,7 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def companionObjectDef = {
     val con =
-      if (! cls.hasBlankConstructor) ""
+      if (!cls.hasBlankConstructor) ""
       else new ConstructorGenerator(cls.constructors.head).constructor
 
     s"""${deprecated}object $sClassName$customCompanionSuperclass {
@@ -77,7 +86,6 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
        |}
      """.stripMargin
   }
-
 
   // Constructors
 
@@ -93,21 +101,28 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def customClassImplicitArgs = predefinedMapping(ClassImplicitArgs)
 
-  def customClassBodies = predefinedMapping(CustomClassBodies, separator = "\n\n")
+  def customClassBodies =
+    predefinedMapping(CustomClassBodies, separator = "\n\n")
 
   def customConstImplicitArgs = predefinedMapping(ConstImplicitArgs)
 
-  def customConstImplicitBodies = predefinedMapping(ConstImplicitBodies, separator = "\n")
+  def customConstImplicitBodies =
+    predefinedMapping(ConstImplicitBodies, separator = "\n")
 
-  def customFullConstructors = predefinedMapping(companionObjectBodies, separator = "\n")
+  def customFullConstructors =
+    predefinedMapping(companionObjectBodies, separator = "\n")
 
-  def customCompanionSuperclass = predefinedMapping(companionObjectExtends, separator = "\n")
+  def customCompanionSuperclass =
+    predefinedMapping(companionObjectExtends, separator = "\n")
 
-  private def predefinedMapping(mappings: PredefinedCodeMappings, separator: String = ", ") =
-    mappings.collect {
-      case (kind, fn) if cls.isA(kind) => fn(cls)
-    }.mkString(separator)
-
+  private def predefinedMapping(
+      mappings: PredefinedCodeMappings,
+      separator: String = ", ") =
+    mappings
+      .collect {
+        case (kind, fn) if cls.isA(kind) => fn(cls)
+      }
+      .mkString(separator)
 
   class ConstructorGenerator(con: ScalaConstructor) {
 
@@ -128,9 +143,10 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
       concatArgs(con.implicitArgs, customConstImplicitArgs, isImplicit = true)
 
     private def constTypeParams = {
-      val argStrings = con.paramedTypes.map(paramedType(_, define = true)) :+ customConstTypeParams.trim
+      val argStrings = con.paramedTypes.map(
+        paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
-        case Nil => ""
+        case Nil    => ""
         case params => params.mkString("[", ", ", "]")
       }
     }
@@ -139,27 +155,34 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
   def classImplicitArgs =
     concatArgs(
       cls.constructors.take(1).flatMap(_.implicitArgs),
-      customClassImplicitArgs, isImplicit = true)
+      customClassImplicitArgs,
+      isImplicit = true)
 
   private def constArgs(args: List[Argument]): String =
     args.map(a => s"${a.name}: ${genType(a.tpe)}").mkString(", ")
 
-  private def concatArgs(args: List[Argument], customArgs: String, isImplicit: Boolean) = {
+  private def concatArgs(
+      args: List[Argument],
+      customArgs: String,
+      isImplicit: Boolean) = {
     List(constArgs(args), customArgs).filter(_.nonEmpty) match {
       case Nil => ""
-      case argStrings => s"(${if (isImplicit) "implicit " else ""}${argStrings.mkString(", ")})"
+      case argStrings =>
+        s"(${if (isImplicit) "implicit " else ""}${argStrings.mkString(", ")})"
     }
   }
 
   def baseClassInstance = {
-    val args = BaseClassArgs.toMap.get(cls.name)
-        .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
+    val args = BaseClassArgs.toMap
+      .get(cls.name)
+      .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
     s"${cls.tpe.name}${typeVar(cls.tpe)}($args)"
   }
 
   def constructors =
-    cls.constructors.map(new ConstructorGenerator(_).constructor).mkString("\n\n")
-
+    cls.constructors
+      .map(new ConstructorGenerator(_).constructor)
+      .mkString("\n\n")
 
   // Methods
 
@@ -171,31 +194,36 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def namedArgs(types: List[ScalaType]) =
     types match {
-      case t :: Nil => "p: "+ genType(t)
-      case ts => ts.zipWithIndex.map {
-        case (t, i) => s"p${i + 1}: ${genType(t)}"
-      }.mkString(", ")
+      case t :: Nil => "p: " + genType(t)
+      case ts =>
+        ts.zipWithIndex
+          .map {
+            case (t, i) => s"p${i + 1}: ${genType(t)}"
+          }
+          .mkString(", ")
     }
 
   def callArgs(types: List[ScalaType]) =
     types match {
       case t :: Nil => "p"
-      case ts => ts.zipWithIndex.map {
-        case (_, i) => "p"+ (i+1)
-      }.mkString(", ")
+      case ts =>
+        ts.zipWithIndex
+          .map {
+            case (_, i) => "p" + (i + 1)
+          }
+          .mkString(", ")
     }
-
 
   // listener
 
   def callbackBody(method: AndroidCallbackMethod, isUnit: Boolean = false) =
-    if ( ! method.hasBody) ""
+    if (!method.hasBody) ""
     else if (isUnit) "f"
     else s"f(${callArgs(method.argTypes)})"
 
   def callbackMethod(m: AndroidCallbackMethod, isUnit: Boolean = false) = {
-    s"def ${m.name}(${namedArgs(m.argTypes)}): ${genType(m.retType)} = "+
-    s"{ ${callbackBody(m, isUnit)} }"
+    s"def ${m.name}(${namedArgs(m.argTypes)}): ${genType(m.retType)} = " +
+      s"{ ${callbackBody(m, isUnit)} }"
   }
 
   def commonListener(l: AndroidListener, args: String = "") = {
@@ -215,17 +243,19 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
-       |    ${l.callbackMethods.map(callbackMethod(_, isUnit = true)).mkString("\n")}
+       |    ${l.callbackMethods
+         .map(callbackMethod(_, isUnit = true))
+         .mkString("\n")}
        |  })
        |  basis
        |}""".stripMargin
 
   def listener(l: AndroidListener) =
-    (if (l.argTypes.nonEmpty) fullListener(l) else "") + "\n\n" + unitListener(l)
+    (if (l.argTypes.nonEmpty) fullListener(l) else "") + "\n\n" + unitListener(
+      l)
 
   def listeners =
     cls.listeners.map(listener).mkString("\n\n")
-
 
   // Intent
 
@@ -234,23 +264,24 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
     val da = if (l.zeroArgs) "" else s"(${namedArgs(l.argTypes)})"
     val ca = if (l.zeroArgs) "" else s", ${callArgs(l.argTypes)}"
     s"$dp@inline def ${l.name}[T: ClassTag]$da(implicit context: Context): " +
-    s"${genType(l.retType)} = basis.${l.name}(SIntent[T]$ca)"
+      s"${genType(l.retType)} = basis.${l.name}(SIntent[T]$ca)"
   }
 
   def intentMethods = cls.intentMethods.map(intentMethod).mkString("\n\n")
 
-
   // Property
 
   def noGetter(name: String) =
-    s"""@inline def ${safeIdent(name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
+    s"""@inline def ${safeIdent(
+      name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
 
   def getter(prop: AndroidProperty) =
     prop.getter
-      .fold( if (prop.nameClashes) "" else noGetter(prop.name) ) { getter =>
+      .fold(if (prop.nameClashes) "" else noGetter(prop.name)) { getter =>
         val dp = if (getter.isDeprecated) deprecatedDecl else ""
         methodScalaDoc(getter) +
-        s"\n$dp@inline${if (getter.isOverride) " override" else ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
+          s"\n$dp@inline${if (getter.isOverride) " override"
+          else ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
       }
 
   def setter(prop: AndroidProperty, method: AndroidMethod) = {
@@ -259,11 +290,12 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
       else {
         val dp = if (method.isDeprecated) deprecatedDecl else ""
         methodScalaDoc(method) +
-        s"\n$dp@inline def ${safeIdent(prop.name + postFix)}${paramedTypes(method.paramedTypes)}(${namedArgs(method.argTypes)}) = $body\n"
+          s"\n$dp@inline def ${safeIdent(prop.name + postFix)}${paramedTypes(
+            method.paramedTypes)}(${namedArgs(method.argTypes)}) = $body\n"
       }
 
     _setter("  ", s"            ${prop.name}_=(p)") + "\n" +
-    _setter("_=", s"{ basis.${method.name}(p); basis }")
+      _setter("_=", s"{ basis.${method.name}(p); basis }")
   }
 
   def switch(name: String, setter: Option[AndroidMethod]) =
@@ -271,7 +303,7 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
       val dp = if (s.isDeprecated) deprecatedDecl else ""
       val spaces = " " * 13
       s"$dp@inline def  enable$name()$spaces= { basis.${s.name}(true ); basis }\n" +
-      s"$dp@inline def disable$name()$spaces= { basis.${s.name}(false); basis }\n"
+        s"$dp@inline def disable$name()$spaces= { basis.${s.name}(false); basis }\n"
     }
 
   def setters(prop: AndroidProperty) =
@@ -286,12 +318,11 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def properties = cls.properties.map(property).mkString("\n")
 
-
   // Service
   def systemServiceHead =
     s"@inline def ${decapitalize(cls.name)}(implicit context: Context) = \n" +
-    s"  context.getSystemService(Context.${managerToService(cls.name)}).asInstanceOf[${cls.tpe.name}]"
-
+      s"  context.getSystemService(Context.${managerToService(
+        cls.name)}).asInstanceOf[${cls.tpe.name}]"
 
   // Scaladoc
   def androidDocBase = "https://developer.android.com/reference"
@@ -328,21 +359,24 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
 
   def prefixedClassScalaDoc =
     s"""/**
-       | * Automatically generated concrete helper class of ${androidReference(cls)}.
+       | * Automatically generated concrete helper class of ${androidReference(
+         cls)}.
        | */
        |""".stripMargin.trim
 
   def typeVar(tpe: ScalaType, erased: Boolean = false) =
     if (tpe.bounds.nonEmpty) paramedType(tpe)
-    else tpe.params match {
-      case Nil => ""
-      case params => s"[${if (erased) "_" else params.map(genType).mkString(", ")}]"
-    }
+    else
+      tpe.params match {
+        case Nil => ""
+        case params =>
+          s"[${if (erased) "_" else params.map(genType).mkString(", ")}]"
+      }
 
   def paramedType(tpe: ScalaType, define: Boolean = false): String =
-    tpe.name + (
-      if (define || ! tpe.isVar) " <: "+ tpe.bounds.map(genType).mkString(" with ")
-      else "")
+    tpe.name + (if (define || !tpe.isVar)
+                  " <: " + tpe.bounds.map(genType).mkString(" with ")
+                else "")
 
   def paramedTypes(pTypes: List[ScalaType], define: Boolean = false) =
     if (pTypes.isEmpty) ""
@@ -351,7 +385,6 @@ class ScaloidCodeGenerator(cls: AndroidClass, companionTemplate: CompanionTempla
   def genType(tpe: ScalaType): String = genType(tpe, erased = false)
   def genType(tpe: ScalaType, erased: Boolean): String =
     (if (tpe.bounds.isEmpty) tpe.name else "") + typeVar(tpe, erased)
-
 
 }
 
@@ -370,7 +403,7 @@ object ScaloidCodeGenerator {
 
   val constTypeParams: PredefinedCodeMappings = List(
     "View" -> { cls =>
-      val sClassName = "S"+ cls.name
+      val sClassName = "S" + cls.name
       s"LP <: ViewGroupLayoutParams[_, $sClassName]"
     }
   )
@@ -384,11 +417,13 @@ object ScaloidCodeGenerator {
   )
 
   val ClassExplicitArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ => "items: java.util.List[T], textViewResourceId: Int = android.R.layout.simple_spinner_item" }
+    "ArrayAdapter" -> { _ =>
+      "items: java.util.List[T], textViewResourceId: Int = android.R.layout.simple_spinner_item"
+    }
   )
 
   val BaseClassArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ => "context, textViewResourceId, items"}
+    "ArrayAdapter" -> { _ => "context, textViewResourceId, items" }
   )
 
   val ClassImplicitArgs: PredefinedCodeMappings = List(
@@ -446,21 +481,25 @@ object ScaloidCodeGenerator {
   )
 
   val companionObjectExtends: PredefinedCodeMappings = List(
-  "TextView" -> { cls =>
-    val sClassName = "S"+ cls.name
-    s" extends TextViewCompanion[$sClassName]"},
-  "ImageView" -> { cls =>
-    val sClassName = "S"+ cls.name
-    s" extends ImageViewCompanion[$sClassName]"}
+    "TextView" -> { cls =>
+      val sClassName = "S" + cls.name
+      s" extends TextViewCompanion[$sClassName]"
+    },
+    "ImageView" -> { cls =>
+      val sClassName = "S" + cls.name
+      s" extends ImageViewCompanion[$sClassName]"
+    }
   )
 
   val companionObjectBodies: PredefinedCodeMappings = List(
     "TextView" -> { cls =>
-      val sClassName = "S"+ cls.name
-      s"def create[LP <: ViewGroupLayoutParams[_, $sClassName]]()(implicit context: Context, defaultLayoutParam: $sClassName => LP) = new $sClassName()"},
+      val sClassName = "S" + cls.name
+      s"def create[LP <: ViewGroupLayoutParams[_, $sClassName]]()(implicit context: Context, defaultLayoutParam: $sClassName => LP) = new $sClassName()"
+    },
     "ImageView" -> { cls =>
-      val sClassName = "S"+ cls.name
-      s"def create[LP <: ViewGroupLayoutParams[_, $sClassName]]()(implicit context: Context, defaultLayoutParam: $sClassName => LP) = new $sClassName()"},
+      val sClassName = "S" + cls.name
+      s"def create[LP <: ViewGroupLayoutParams[_, $sClassName]]()(implicit context: Context, defaultLayoutParam: $sClassName => LP) = new $sClassName()"
+    },
     "Paint" -> { cls =>
       val sClassName = "S" + cls.name
       s"""|def apply(color: Int): $sClassName = {
@@ -524,4 +563,3 @@ object ScaloidCodeGenerator {
       |""".stripMargin
 
 }
-

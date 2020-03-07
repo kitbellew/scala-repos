@@ -7,9 +7,10 @@ import com.twitter.util.{Future, Return}
 import org.jboss.netty.handler.codec.http.{HttpChunk, DefaultHttpChunk}
 
 private[http] object ReaderUtils {
+
   /**
-   * Serialize an HttpChunk into a Buf.
-   */
+    * Serialize an HttpChunk into a Buf.
+    */
   def readChunk(chunk: Any): Future[Option[Buf]] = chunk match {
     case chunk: HttpChunk if chunk.isLast =>
       Future.None
@@ -24,20 +25,20 @@ private[http] object ReaderUtils {
   }
 
   /**
-   * Translates a Buf into HttpChunk. Beware: an empty buffer indicates end
-   * of stream.
-   */
+    * Translates a Buf into HttpChunk. Beware: an empty buffer indicates end
+    * of stream.
+    */
   def chunkOfBuf(buf: Buf): HttpChunk =
     new DefaultHttpChunk(ChannelBufferBuf.Owned.extract(buf))
 
   /**
-   * Continuously read from a Reader, writing everything to a Transport.
-   */
+    * Continuously read from a Reader, writing everything to a Transport.
+    */
   def streamChunks(
-    trans: Transport[Any, Any],
-    r: Reader,
-    // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
-    bufSize: Int = Int.MaxValue
+      trans: Transport[Any, Any],
+      r: Reader,
+      // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
+      bufSize: Int = Int.MaxValue
   ): Future[Unit] = {
     r.read(bufSize) flatMap {
       case None =>
@@ -45,7 +46,7 @@ private[http] object ReaderUtils {
       case Some(buf) =>
         trans.write(chunkOfBuf(buf)) transform {
           case Return(_) => streamChunks(trans, r, bufSize)
-          case _ => Future(r.discard())
+          case _         => Future(r.discard())
         }
     }
   }

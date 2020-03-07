@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package org.apache.spark.util
 
 import java.util.concurrent.{CountDownLatch, TimeUnit}
@@ -31,7 +30,8 @@ import org.apache.spark.SparkFunSuite
 class ThreadUtilsSuite extends SparkFunSuite {
 
   test("newDaemonSingleThreadExecutor") {
-    val executor = ThreadUtils.newDaemonSingleThreadExecutor("this-is-a-thread-name")
+    val executor =
+      ThreadUtils.newDaemonSingleThreadExecutor("this-is-a-thread-name")
     @volatile var threadName = ""
     executor.submit(new Runnable {
       override def run(): Unit = {
@@ -44,16 +44,20 @@ class ThreadUtilsSuite extends SparkFunSuite {
   }
 
   test("newDaemonSingleThreadScheduledExecutor") {
-    val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor("this-is-a-thread-name")
+    val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+      "this-is-a-thread-name")
     try {
       val latch = new CountDownLatch(1)
       @volatile var threadName = ""
-      executor.schedule(new Runnable {
-        override def run(): Unit = {
-          threadName = Thread.currentThread().getName()
-          latch.countDown()
-        }
-      }, 1, TimeUnit.MILLISECONDS)
+      executor.schedule(
+        new Runnable {
+          override def run(): Unit = {
+            threadName = Thread.currentThread().getName()
+            latch.countDown()
+          }
+        },
+        1,
+        TimeUnit.MILLISECONDS)
       latch.await(10, TimeUnit.SECONDS)
       assert(threadName === "this-is-a-thread-name")
     } finally {
@@ -115,22 +119,38 @@ class ThreadUtilsSuite extends SparkFunSuite {
 
   test("runInNewThread") {
     import ThreadUtils._
-    assert(runInNewThread("thread-name") { Thread.currentThread().getName } === "thread-name")
-    assert(runInNewThread("thread-name") { Thread.currentThread().isDaemon } === true)
+    assert(runInNewThread("thread-name") {
+      Thread.currentThread().getName
+    } === "thread-name")
+    assert(runInNewThread("thread-name") {
+      Thread.currentThread().isDaemon
+    } === true)
     assert(
-      runInNewThread("thread-name", isDaemon = false) { Thread.currentThread().isDaemon } === false
+      runInNewThread("thread-name", isDaemon = false) {
+        Thread.currentThread().isDaemon
+      } === false
     )
     val uniqueExceptionMessage = "test" + Random.nextInt()
     val exception = intercept[IllegalArgumentException] {
-      runInNewThread("thread-name") { throw new IllegalArgumentException(uniqueExceptionMessage) }
+      runInNewThread("thread-name") {
+        throw new IllegalArgumentException(uniqueExceptionMessage)
+      }
     }
-    assert(exception.asInstanceOf[IllegalArgumentException].getMessage === uniqueExceptionMessage)
-    assert(exception.getStackTrace.mkString("\n").contains(
-      "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
+    assert(
+      exception
+        .asInstanceOf[IllegalArgumentException]
+        .getMessage === uniqueExceptionMessage)
+    assert(
+      exception.getStackTrace
+        .mkString("\n")
+        .contains(
+          "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
       "stack trace does not contain expected place holder"
     )
-    assert(exception.getStackTrace.mkString("\n").contains("ThreadUtils.scala") === false,
-      "stack trace contains unexpected references to ThreadUtils"
-    )
+    assert(
+      exception.getStackTrace
+        .mkString("\n")
+        .contains("ThreadUtils.scala") === false,
+      "stack trace contains unexpected references to ThreadUtils")
   }
 }

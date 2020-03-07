@@ -1,11 +1,14 @@
 package mesosphere.marathon.event
 
-import akka.actor.{ Actor, ActorLogging }
+import akka.actor.{Actor, ActorLogging}
 import akka.event.EventStream
-import mesosphere.marathon.state.{ TaskFailure, TaskFailureRepository }
+import mesosphere.marathon.state.{TaskFailure, TaskFailureRepository}
 
-class HistoryActor(eventBus: EventStream, taskFailureRepository: TaskFailureRepository)
-    extends Actor with ActorLogging {
+class HistoryActor(
+    eventBus: EventStream,
+    taskFailureRepository: TaskFailureRepository)
+    extends Actor
+    with ActorLogging {
 
   override def preStart(): Unit = {
     eventBus.subscribe(self, classOf[MesosStatusUpdateEvent])
@@ -23,4 +26,3 @@ class HistoryActor(eventBus: EventStream, taskFailureRepository: TaskFailureRepo
   }
 
 }
-

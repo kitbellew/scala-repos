@@ -15,7 +15,8 @@ case class GroupUpdate(
     scaleBy: Option[Double] = None,
     version: Option[Timestamp] = None) {
 
-  def groupId: PathId = id.getOrElse(throw new IllegalArgumentException("No group id was given!"))
+  def groupId: PathId =
+    id.getOrElse(throw new IllegalArgumentException("No group id was given!"))
 
   def apply(current: Group, timestamp: Timestamp): Group = {
     require(scaleBy.isEmpty, "To apply the update, no scale should be given.")
@@ -27,29 +28,46 @@ case class GroupUpdate(
       val changedIdList = changedIds.toList
       val groupUpdates = changedIdList
         .flatMap(gid => current.groups.find(_.id == gid))
-        .zip(changedIdList.flatMap(gid => updates.find(_.groupId.canonicalPath(current.id) == gid)))
+        .zip(changedIdList.flatMap(gid =>
+          updates.find(_.groupId.canonicalPath(current.id) == gid)))
         .map { case (group, groupUpdate) => groupUpdate(group, timestamp) }
       val groupAdditions = groupIds
         .diff(changedIds)
-        .flatMap(gid => updates.find(_.groupId.canonicalPath(current.id) == gid))
-        .map(update => update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
+        .flatMap(gid =>
+          updates.find(_.groupId.canonicalPath(current.id) == gid))
+        .map(update =>
+          update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
       groupUpdates.toSet ++ groupAdditions
     }
-    val effectiveApps: Set[AppDefinition] = apps.getOrElse(current.apps).map(toApp(current.id, _, timestamp))
-    val effectiveDependencies = dependencies.fold(current.dependencies)(_.map(_.canonicalPath(current.id)))
-    Group(current.id, effectiveApps, effectiveGroups, effectiveDependencies, timestamp)
+    val effectiveApps: Set[AppDefinition] =
+      apps.getOrElse(current.apps).map(toApp(current.id, _, timestamp))
+    val effectiveDependencies = dependencies.fold(current.dependencies)(
+      _.map(_.canonicalPath(current.id)))
+    Group(
+      current.id,
+      effectiveApps,
+      effectiveGroups,
+      effectiveDependencies,
+      timestamp)
   }
 
-  def toApp(gid: PathId, app: AppDefinition, version: Timestamp): AppDefinition = {
+  def toApp(
+      gid: PathId,
+      app: AppDefinition,
+      version: Timestamp): AppDefinition = {
     val appId = app.id.canonicalPath(gid)
-    app.copy(id = appId, dependencies = app.dependencies.map(_.canonicalPath(gid)),
+    app.copy(
+      id = appId,
+      dependencies = app.dependencies.map(_.canonicalPath(gid)),
       versionInfo = AppDefinition.VersionInfo.OnlyVersion(version))
   }
 
   def toGroup(gid: PathId, version: Timestamp): Group = Group(
     gid,
     apps.getOrElse(Set.empty).map(toApp(gid, _, version)),
-    groups.getOrElse(Set.empty).map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
+    groups
+      .getOrElse(Set.empty)
+      .map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
     dependencies.fold(Set.empty[PathId])(_.map(_.canonicalPath(gid))),
     version
   )
@@ -59,19 +77,26 @@ object GroupUpdate {
   def apply(id: PathId, apps: Set[AppDefinition]): GroupUpdate = {
     GroupUpdate(Some(id), if (apps.isEmpty) None else Some(apps))
   }
-  def apply(id: PathId, apps: Set[AppDefinition], groups: Set[GroupUpdate]): GroupUpdate = {
-    GroupUpdate(Some(id), if (apps.isEmpty) None else Some(apps), if (groups.isEmpty) None else Some(groups))
+  def apply(
+      id: PathId,
+      apps: Set[AppDefinition],
+      groups: Set[GroupUpdate]): GroupUpdate = {
+    GroupUpdate(
+      Some(id),
+      if (apps.isEmpty) None else Some(apps),
+      if (groups.isEmpty) None else Some(groups))
   }
   def empty(id: PathId): GroupUpdate = GroupUpdate(Some(id))
 
-  implicit val GroupUpdateValidator: Validator[GroupUpdate] = validator[GroupUpdate] { group =>
-    group is notNull
+  implicit val GroupUpdateValidator: Validator[GroupUpdate] =
+    validator[GroupUpdate] { group =>
+      group is notNull
 
-    group.version is theOnlyDefinedOptionIn(group)
-    group.scaleBy is theOnlyDefinedOptionIn(group)
+      group.version is theOnlyDefinedOptionIn(group)
+      group.scaleBy is theOnlyDefinedOptionIn(group)
 
-    group.id is valid
-    group.apps is valid
-    group.groups is valid
-  }
+      group.id is valid
+      group.apps is valid
+      group.groups is valid
+    }
 }

@@ -1,7 +1,6 @@
 trait Analyzer extends Typers with Infer {
   val global: Global
 
-
 }
 trait Definitions { self: SymbolTable =>
   object definitions extends DefinitionsClass
@@ -19,9 +18,7 @@ trait Definitions { self: SymbolTable =>
   }
 }
 
-abstract class SymbolTable extends Symbols with Definitions {
-
-}
+abstract class SymbolTable extends Symbols with Definitions {}
 
 trait Symbols { self: SymbolTable =>
   class TermSymbol
@@ -36,7 +33,8 @@ trait Typers {
 }
 
 class Global extends SymbolTable {
-  lazy val analyzer = new {val global: Global.this.type = Global.this} with Analyzer
+  lazy val analyzer = new { val global: Global.this.type = Global.this }
+  with Analyzer
 
   def currentRun: Run = null
 
@@ -61,13 +59,12 @@ trait Validators {
 
   trait Validator {
     self: MacroImplRefCompiler =>
-    lazy val atparams : List[global.Symbol] = null
-    atparams.map(tparam => freshVar(/*start*/tparam/*end*/))
+    lazy val atparams: List[global.Symbol] = null
+    atparams.map(tparam => freshVar( /*start*/ tparam /*end*/ ))
   }
 }
 
-
-abstract class DefaultMacroCompiler extends Validators{
+abstract class DefaultMacroCompiler extends Validators {
   val global: Global
 
   import global._

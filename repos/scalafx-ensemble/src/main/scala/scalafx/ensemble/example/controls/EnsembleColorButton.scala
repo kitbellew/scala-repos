@@ -69,6 +69,7 @@ class EnsembleColorButton extends EnsembleExample {
         maxHeight = 150
         text = "Color Button 4"
         style = "-fx-base: Orange"
-      })
+      }
+    )
   }
 }

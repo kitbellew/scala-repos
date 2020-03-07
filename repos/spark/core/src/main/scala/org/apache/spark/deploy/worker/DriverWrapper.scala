@@ -21,12 +21,16 @@ import java.io.File
 
 import org.apache.spark.{SecurityManager, SparkConf}
 import org.apache.spark.rpc.RpcEnv
-import org.apache.spark.util.{ChildFirstURLClassLoader, MutableURLClassLoader, Utils}
+import org.apache.spark.util.{
+  ChildFirstURLClassLoader,
+  MutableURLClassLoader,
+  Utils
+}
 
 /**
- * Utility object for launching driver programs such that they share fate with the Worker process.
- * This is used in standalone cluster mode only.
- */
+  * Utility object for launching driver programs such that they share fate with the Worker process.
+  * This is used in standalone cluster mode only.
+  */
 object DriverWrapper {
   def main(args: Array[String]) {
     args.toList match {
@@ -38,14 +42,22 @@ object DriverWrapper {
        */
       case workerUrl :: userJar :: mainClass :: extraArgs =>
         val conf = new SparkConf()
-        val rpcEnv = RpcEnv.create("Driver",
-          Utils.localHostName(), 0, conf, new SecurityManager(conf))
-        rpcEnv.setupEndpoint("workerWatcher", new WorkerWatcher(rpcEnv, workerUrl))
+        val rpcEnv = RpcEnv.create(
+          "Driver",
+          Utils.localHostName(),
+          0,
+          conf,
+          new SecurityManager(conf))
+        rpcEnv.setupEndpoint(
+          "workerWatcher",
+          new WorkerWatcher(rpcEnv, workerUrl))
 
         val currentLoader = Thread.currentThread.getContextClassLoader
         val userJarUrl = new File(userJar).toURI().toURL()
         val loader =
-          if (sys.props.getOrElse("spark.driver.userClassPathFirst", "false").toBoolean) {
+          if (sys.props
+                .getOrElse("spark.driver.userClassPathFirst", "false")
+                .toBoolean) {
             new ChildFirstURLClassLoader(Array(userJarUrl), currentLoader)
           } else {
             new MutableURLClassLoader(Array(userJarUrl), currentLoader)
@@ -61,7 +73,8 @@ object DriverWrapper {
 
       case _ =>
         // scalastyle:off println
-        System.err.println("Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
+        System.err.println(
+          "Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
         // scalastyle:on println
         System.exit(-1)
     }

@@ -6,9 +6,9 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
 
 /**
- * Nikolay.Tropin
- * 2014-03-20
- */
+  * Nikolay.Tropin
+  * 2014-03-20
+  */
 class ImportAllMembersIntentionTest extends ScalaIntentionTestBase {
   override def familyName: String = ImportAllMembersIntention.familyName
 

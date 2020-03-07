@@ -1,6 +1,7 @@
 package lila.tournament
 
-private[tournament] sealed abstract class Status(val id: Int) extends Ordered[Status] {
+private[tournament] sealed abstract class Status(val id: Int)
+    extends Ordered[Status] {
 
   def compare(other: Status) = id compare other.id
 

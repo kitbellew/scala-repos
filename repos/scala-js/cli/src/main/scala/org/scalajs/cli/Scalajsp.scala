@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.cli
 
 import org.scalajs.core.ir
@@ -23,9 +22,9 @@ import java.util.zip.{ZipFile, ZipEntry}
 object Scalajsp {
 
   private case class Options(
-    infos: Boolean = false,
-    jar: Option[File] = None,
-    fileNames: Seq[String] = Seq.empty)
+      infos: Boolean = false,
+      jar: Option[File] = None,
+      fileNames: Seq[String] = Seq.empty)
 
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[Options]("scalajsp") {
@@ -42,7 +41,7 @@ object Scalajsp {
         .action { (_, c) => c.copy(infos = true) }
         .text("Show DCE infos instead of trees")
       opt[Unit]('s', "supported")
-        .action { (_,_) => printSupported(); sys.exit() }
+        .action { (_, _) => printSupported(); sys.exit() }
         .text("Show supported Scala.js IR versions")
       version("version")
         .abbr("v")
@@ -55,7 +54,7 @@ object Scalajsp {
     }
 
     for {
-      options  <- parser.parse(args, Options())
+      options <- parser.parse(args, Options())
       fileName <- options.fileNames
     } {
       val vfile = options.jar map { jar =>
@@ -75,7 +74,8 @@ object Scalajsp {
     binarySupported.foreach(v => println(s"* $v"))
   }
 
-  private def displayFileContent(vfile: VirtualScalaJSIRFile,
+  private def displayFileContent(
+      vfile: VirtualScalaJSIRFile,
       opts: Options): Unit = {
     if (opts.infos)
       new InfoPrinter(stdout).print(vfile.info)

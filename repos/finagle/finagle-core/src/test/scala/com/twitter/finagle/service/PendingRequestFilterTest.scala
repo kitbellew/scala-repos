@@ -11,9 +11,7 @@ import org.scalatest.junit.JUnitRunner
 class PendingRequestFilterTest extends FunSuite {
 
   test("it rejects excessive requests with restartable failures") {
-    val svc = Service.mk { p: Future[Unit] =>
-      p
-    }
+    val svc = Service.mk { p: Future[Unit] => p }
 
     val (p1, p2, p3) = (new Promise[Unit], new Promise[Unit], new Promise[Unit])
     val filteredSvc = new PendingRequestFilter(3).andThen(svc)

@@ -1,24 +1,25 @@
 /**
- * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
- */
-
+  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+  */
 package akka.util
 
 import scala.collection.immutable
 import scala.annotation.tailrec
 
 /**
- * INTERNAL API
- */
+  * INTERNAL API
+  */
 private[akka] object Collections {
 
   case object EmptyImmutableSeq extends immutable.Seq[Nothing] {
     override final def iterator = Iterator.empty
-    override final def apply(idx: Int): Nothing = throw new java.lang.IndexOutOfBoundsException(idx.toString)
+    override final def apply(idx: Int): Nothing =
+      throw new java.lang.IndexOutOfBoundsException(idx.toString)
     override final def length: Int = 0
   }
 
-  abstract class PartialImmutableValuesIterable[From, To] extends immutable.Iterable[To] {
+  abstract class PartialImmutableValuesIterable[From, To]
+      extends immutable.Iterable[To] {
     def isDefinedAt(from: From): Boolean
     def apply(from: From): To
     def valuesIterator: Iterator[From]
@@ -41,8 +42,11 @@ private[akka] object Collections {
         override final def next(): To =
           if (hasNext) {
             val ret = _next
-            _next = null.asInstanceOf[To] // Mark as consumed (nice to the GC, don't leak the last returned value)
-            _hasNext = false // Mark as consumed (we need to look for the next value)
+            _next =
+              null
+                .asInstanceOf[To] // Mark as consumed (nice to the GC, don't leak the last returned value)
+            _hasNext =
+              false // Mark as consumed (we need to look for the next value)
             ret
           } else throw new java.util.NoSuchElementException("next")
       }

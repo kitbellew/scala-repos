@@ -8,6 +8,6 @@
 package scala.annotation.meta
 
 /**
- * Consult the documentation in package [[scala.annotation.meta]].
- */
+  * Consult the documentation in package [[scala.annotation.meta]].
+  */
 final class getter extends scala.annotation.StaticAnnotation

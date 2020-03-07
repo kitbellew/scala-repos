@@ -2,15 +2,16 @@ package org.jetbrains.plugins.scala.debugger.stepOver
 
 import org.jetbrains.plugins.scala.debugger.ScalaVersion_2_11
 
-
 /**
- * @author Nikolay.Tropin
- */
-
-class StepOverCaseClausesTest extends StepOverCaseClausesTestBase with ScalaVersion_2_11
+  * @author Nikolay.Tropin
+  */
+class StepOverCaseClausesTest
+    extends StepOverCaseClausesTestBase
+    with ScalaVersion_2_11
 
 abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
-  addFileWithBreakpoints("Simple.scala",
+  addFileWithBreakpoints(
+    "Simple.scala",
     s"""
       |object Simple {
       |  def main (args: Array[String]){
@@ -26,12 +27,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
       |    }
       |  }
       |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testSimple(): Unit = {
     testStepThrough(Seq(2, 3, 4, 5, 6, 8, 1))
   }
 
-  addFileWithBreakpoints("MultilineExpr.scala",
+  addFileWithBreakpoints(
+    "MultilineExpr.scala",
     s"""
        |object MultilineExpr {
        |  def main (args: Array[String]){
@@ -47,12 +50,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |    }
        |  }
        |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testMultilineExpr(): Unit = {
     testStepThrough(Seq(2, 3, 4, 6, 8, 9, 1))
   }
 
-  addFileWithBreakpoints("SkipStoreResult.scala",
+  addFileWithBreakpoints(
+    "SkipStoreResult.scala",
     s"""
        |object SkipStoreResult {
        |  def main (args: Array[String]){
@@ -71,12 +76,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |  def foo() = "foo"
        |  def fee() = "fee"
        |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testSkipStoreResult(): Unit = {
     testStepThrough(Seq(2, 3, 4, 5, 6, 11))
   }
 
-  addFileWithBreakpoints("PartialFun.scala",
+  addFileWithBreakpoints(
+    "PartialFun.scala",
     s"""
         |object PartialFun {
         |  def main (args: Array[String]){
@@ -95,13 +102,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
         |  def foo() = "foo"
         |  def fee() = "fee"
         |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testPartialFun(): Unit = {
     testStepThrough(Seq(4, 5, 6, 3, 4, 7, 8, 9, 3, 4, 7, 3, 11))
   }
 
-
-  addFileWithBreakpoints("ComplexPattern.scala",
+  addFileWithBreakpoints(
+    "ComplexPattern.scala",
     s"""
        |object ComplexPattern {
        |  def main (args: Array[String]){
@@ -134,12 +142,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |  }
        |}
        |
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testComplexPattern(): Unit = {
     testStepThrough(Seq(2, 3, 4, 7, 10, 11, 12, 14))
   }
 
-  addFileWithBreakpoints("NestedMatch.scala",
+  addFileWithBreakpoints(
+    "NestedMatch.scala",
     s"""
        |object NestedMatch {
        |  def main (args: Array[String]){
@@ -162,12 +172,14 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
        |  def fee() = "fee"
        |  def left(i: Int): Either[Seq[Option[Int]], String] = Left(Seq(Some(i)))
        |}
-    """.stripMargin.trim)
+    """.stripMargin.trim
+  )
   def testNestedMatch(): Unit = {
     testStepThrough(Seq(2, 3, 4, 5, 8, 9, 10, 14))
   }
 
-  addFileWithBreakpoints("CaseClausesReturn.scala",
+  addFileWithBreakpoints(
+    "CaseClausesReturn.scala",
     s"""
       |object CaseClausesReturn {
       |  def main(args: Array[String]) {
@@ -185,7 +197,8 @@ abstract class StepOverCaseClausesTestBase extends StepOverTestBase {
       |    }
       |  }
       |}
-      | """.stripMargin.trim)
+      | """.stripMargin.trim
+  )
 
   def testCaseClausesReturn(): Unit = {
     testStepThrough(Seq(6, 7, 9, 11, 12, 2))

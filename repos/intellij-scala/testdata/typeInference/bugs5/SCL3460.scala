@@ -12,6 +12,7 @@ object SCL3460 {
 
   import U._
 
-  /*start*/1L.substring(1)/*end*/
+  /*start*/
+  1L.substring(1) /*end*/
 }
 //String

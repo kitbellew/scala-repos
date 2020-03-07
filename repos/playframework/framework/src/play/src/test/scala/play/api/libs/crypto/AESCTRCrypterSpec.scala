@@ -20,12 +20,16 @@ class AESCTRCrypterSpec extends Specification {
 
     "be able to encrypt/decrypt text using AES algorithm" in {
       val text = "Play Framework 2.0"
-      crypter.decryptAES(crypter.encryptAES(text, key), key) must be equalTo text
+      crypter.decryptAES(
+        crypter.encryptAES(text, key),
+        key) must be equalTo text
     }
 
     "be able to encrypt/decrypt text using other AES transformations" in {
       val text = "Play Framework 2.0"
-      crypter.decryptAES(crypter.encryptAES(text, key), key) must be equalTo text
+      crypter.decryptAES(
+        crypter.encryptAES(text, key),
+        key) must be equalTo text
     }
 
     "be able to decrypt text generated using the old transformation methods" in {
@@ -33,7 +37,8 @@ class AESCTRCrypterSpec extends Specification {
       val key = "0123456789abcdef"
       // old way to encrypt things
       val cipher = Cipher.getInstance("AES")
-      val skeySpec = new SecretKeySpec(key.substring(0, 16).getBytes("utf-8"), "AES")
+      val skeySpec =
+        new SecretKeySpec(key.substring(0, 16).getBytes("utf-8"), "AES")
       cipher.init(Cipher.ENCRYPT_MODE, skeySpec)
       val encrypted = Codecs.toHexString(cipher.doFinal(text.getBytes("utf-8")))
       val cryptoConfig = CryptoConfig(key, None, "AES/CTR/NoPadding")

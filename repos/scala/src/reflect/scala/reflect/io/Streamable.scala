@@ -8,30 +8,31 @@ package reflect
 package io
 
 import java.net.URL
-import java.io.{ BufferedInputStream, InputStream }
-import java.io.{ BufferedReader, InputStreamReader, Closeable => JCloseable }
-import scala.io.{ Codec, BufferedSource, Source }
+import java.io.{BufferedInputStream, InputStream}
+import java.io.{BufferedReader, InputStreamReader, Closeable => JCloseable}
+import scala.io.{Codec, BufferedSource, Source}
 import scala.collection.mutable.ArrayBuffer
 import Path.fail
 
 /** Traits for objects which can be represented as Streams.
- *
- *  @author Paul Phillips
- *  @since  2.8
- *
- *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
- */
+  *
+  *  @author Paul Phillips
+  *  @since  2.8
+  *
+  *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
+  */
 object Streamable {
+
   /** Traits which can be viewed as a sequence of bytes.  Source types
-   *  which know their length should override def length: Long for more
-   *  efficient method implementations.
-   *
-   *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
-   *
-   *  Note that this code was not written with resource management in mind.
-   *  Several methods (such as `chars` and `lines`) create InputStreams they
-   *  don't close
-   */
+    *  which know their length should override def length: Long for more
+    *  efficient method implementations.
+    *
+    *  ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
+    *
+    *  Note that this code was not written with resource management in mind.
+    *  Several methods (such as `chars` and `lines`) create InputStreams they
+    *  don't close
+    */
   trait Bytes {
     def inputStream(): InputStream
     def length: Long = -1
@@ -44,8 +45,8 @@ object Streamable {
     }
 
     /** This method aspires to be the fastest way to read
-     *  a stream of known length into memory.
-     */
+      *  a stream of known length into memory.
+      */
     def toByteArray(): Array[Byte] = {
       // if we don't know the length, fall back on relative inefficiency
       if (length == -1L)
@@ -69,25 +70,29 @@ object Streamable {
       finally in.close()
 
       if (offset == arr.length) arr
-      else fail("Could not read entire source (%d of %d bytes)".format(offset, len))
+      else
+        fail(
+          "Could not read entire source (%d of %d bytes)".format(offset, len))
     }
   }
 
   /** For objects which can be viewed as Chars.
-   *
-   * ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
-   */
+    *
+    * ''Note:  This library is considered experimental and should not be used unless you know what you are doing.''
+    */
   trait Chars extends Bytes {
+
     /** Calls to methods requiring byte<->char transformations should be offered
-     *  in a form which allows specifying the codec.  When it is not specified,
-     *  the one discovered at creation time will be used, which will always find the
-     *  one in scala.io.Codec if no other is available.  This can be overridden
-     *  to use a different default.
-     */
+      *  in a form which allows specifying the codec.  When it is not specified,
+      *  the one discovered at creation time will be used, which will always find the
+      *  one in scala.io.Codec if no other is available.  This can be overridden
+      *  to use a different default.
+      */
     def creationCodec: Codec = implicitly[Codec]
 
     /** Caller is responsible for closing the returned BufferedSource. */
-    def chars(codec: Codec): BufferedSource = Source.fromInputStream(inputStream())(codec)
+    def chars(codec: Codec): BufferedSource =
+      Source.fromInputStream(inputStream())(codec)
 
     /** Beware! Leaks an InputStream which will not be closed until it gets finalized. */
     def lines(): Iterator[String] = lines(creationCodec)
@@ -96,16 +101,17 @@ object Streamable {
     def lines(codec: Codec): Iterator[String] = chars(codec).getLines()
 
     /** Obtains an InputStreamReader wrapped around a FileInputStream.
-     */
-    def reader(codec: Codec): InputStreamReader = new InputStreamReader(inputStream(), codec.charSet)
+      */
+    def reader(codec: Codec): InputStreamReader =
+      new InputStreamReader(inputStream(), codec.charSet)
 
     /** Wraps a BufferedReader around the result of reader().
-     */
+      */
     def bufferedReader(): BufferedReader = bufferedReader(creationCodec)
     def bufferedReader(codec: Codec) = new BufferedReader(reader(codec))
 
     /** Creates a BufferedReader and applies the closure, automatically closing it on completion.
-     */
+      */
     def applyReader[T](f: BufferedReader => T): T = {
       val in = bufferedReader()
       try f(in)
@@ -113,11 +119,12 @@ object Streamable {
     }
 
     /** Convenience function to import entire file into a String.
-     */
+      */
     def slurp(): String = slurp(creationCodec)
     def slurp(codec: Codec) = {
       val src = chars(codec)
-      try src.mkString finally src.close()  // Always Be Closing
+      try src.mkString
+      finally src.close() // Always Be Closing
     }
   }
 

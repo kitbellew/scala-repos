@@ -22,11 +22,12 @@ import java.io.File
 import org.apache.spark.sql.hive.test.TestHive._
 
 /**
- * A set of test cases based on the big-data-benchmark.
- * https://amplab.cs.berkeley.edu/benchmark/
- */
+  * A set of test cases based on the big-data-benchmark.
+  * https://amplab.cs.berkeley.edu/benchmark/
+  */
 class BigDataBenchmarkSuite extends HiveComparisonTest {
-  val testDataDirectory = new File("target" + File.separator + "big-data-benchmark-testdata")
+  val testDataDirectory = new File(
+    "target" + File.separator + "big-data-benchmark-testdata")
 
   val userVisitPath = new File(testDataDirectory, "uservisits").getCanonicalPath
   val testTables = Seq(
@@ -38,8 +39,11 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |  pageRank INT,
         |  avgDuration INT)
         |  ROW FORMAT DELIMITED FIELDS TERMINATED BY ","
-        |  STORED AS TEXTFILE LOCATION "${new File(testDataDirectory, "rankings").getCanonicalPath}"
-      """.stripMargin.cmd),
+        |  STORED AS TEXTFILE LOCATION "${new File(
+           testDataDirectory,
+           "rankings").getCanonicalPath}"
+      """.stripMargin.cmd
+    ),
     TestTable(
       "scratch",
       s"""
@@ -49,7 +53,8 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |  avgDuration INT)
         |  ROW FORMAT DELIMITED FIELDS TERMINATED BY ","
         |  STORED AS TEXTFILE LOCATION "${new File(testDataDirectory, "scratch").getCanonicalPath}"
-      """.stripMargin.cmd),
+      """.stripMargin.cmd
+    ),
     TestTable(
       "uservisits",
       s"""
@@ -65,14 +70,17 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |  duration INT)
         |  ROW FORMAT DELIMITED FIELDS TERMINATED BY ","
         |  STORED AS TEXTFILE LOCATION "$userVisitPath"
-      """.stripMargin.cmd),
+      """.stripMargin.cmd
+    ),
     TestTable(
       "documents",
       s"""
         |CREATE EXTERNAL TABLE documents (line STRING)
         |STORED AS TEXTFILE
         |LOCATION "${new File(testDataDirectory, "crawl").getCanonicalPath}"
-      """.stripMargin.cmd))
+      """.stripMargin.cmd
+    )
+  )
 
   testTables.foreach(registerTestTable)
 
@@ -80,16 +88,19 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
     // TODO: Auto download the files on demand.
     ignore("No data files found for BigDataBenchmark tests.") {}
   } else {
-    createQueryTest("query1",
+    createQueryTest(
+      "query1",
       "SELECT pageURL, pageRank FROM rankings WHERE pageRank > 1")
 
-    createQueryTest("query2",
+    createQueryTest(
+      "query2",
       """
         |SELECT SUBSTR(sourceIP, 1, 10), SUM(adRevenue) FROM uservisits
         |GROUP BY SUBSTR(sourceIP, 1, 10)
       """.stripMargin)
 
-    createQueryTest("query3",
+    createQueryTest(
+      "query3",
       """
         |SELECT sourceIP,
         |       sum(adRevenue) as totalRevenue,
@@ -104,9 +115,11 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |GROUP BY sourceIP
         |ORDER BY totalRevenue DESC
         |LIMIT 1
-      """.stripMargin)
+      """.stripMargin
+    )
 
-    createQueryTest("query4",
+    createQueryTest(
+      "query4",
       """
         |DROP TABLE IF EXISTS url_counts_partial;
         |CREATE TABLE url_counts_partial AS
@@ -123,6 +136,7 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
         |-- SELECT COUNT(*) FROM url_counts_partial
         |-- SELECT * FROM url_counts_partial
         |-- SELECT * FROM url_counts_total
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 }

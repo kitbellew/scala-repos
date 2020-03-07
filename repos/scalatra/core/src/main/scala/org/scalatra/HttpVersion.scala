@@ -4,13 +4,15 @@ abstract class HttpVersion(
     val protocolName: String,
     val majorVersion: Int,
     val minorVersion: Int,
-    val keepAliveDefault: Boolean) extends Ordered[HttpVersion] {
+    val keepAliveDefault: Boolean)
+    extends Ordered[HttpVersion] {
 
   val text: String = protocolName + '/' + majorVersion + '.' + minorVersion
 
   override def toString: String = text
 
-  override def hashCode(): Int = protocolName.## * 31 + majorVersion.## * 31 + minorVersion
+  override def hashCode(): Int =
+    protocolName.## * 31 + majorVersion.## * 31 + minorVersion
 
   override def equals(obj: Any): Boolean = obj match {
     case m: HttpVersion =>

@@ -5,9 +5,9 @@
 package akka.http.scaladsl.server.util
 
 /**
- * Provides a way to convert a value into an Tuple.
- * If the value is already a Tuple then it is returned unchanged, otherwise it's wrapped in a Tuple1 instance.
- */
+  * Provides a way to convert a value into an Tuple.
+  * If the value is already a Tuple then it is returned unchanged, otherwise it's wrapped in a Tuple1 instance.
+  */
 trait Tupler[T] {
   type Out
   def OutIsTuple: Tuple[Out]

@@ -20,28 +20,36 @@ class SegmentIOAuthSpec extends Specification {
   val eventClient = new LEvents {
     override def init(appId: Int, channelId: Option[Int]): Boolean = true
 
-    override def futureInsert(event: Event, appId: Int, channelId: Option[Int])
-        (implicit ec: ExecutionContext): Future[String] =
+    override def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
+        implicit ec: ExecutionContext): Future[String] =
       Future successful "event_id"
 
     override def futureFind(
-      appId: Int, channelId: Option[Int], startTime: Option[DateTime],
-      untilTime: Option[DateTime], entityType: Option[String],
-      entityId: Option[String], eventNames: Option[Seq[String]],
-      targetEntityType: Option[Option[String]],
-      targetEntityId: Option[Option[String]], limit: Option[Int],
-      reversed: Option[Boolean])
-        (implicit ec: ExecutionContext): Future[Iterator[Event]] =
+        appId: Int,
+        channelId: Option[Int],
+        startTime: Option[DateTime],
+        untilTime: Option[DateTime],
+        entityType: Option[String],
+        entityId: Option[String],
+        eventNames: Option[Seq[String]],
+        targetEntityType: Option[Option[String]],
+        targetEntityId: Option[Option[String]],
+        limit: Option[Int],
+        reversed: Option[Boolean])(
+        implicit ec: ExecutionContext): Future[Iterator[Event]] =
       Future successful List.empty[Event].iterator
 
-    override def futureGet(eventId: String, appId: Int, channelId: Option[Int])
-        (implicit ec: ExecutionContext): Future[Option[Event]] =
+    override def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
+        implicit ec: ExecutionContext): Future[Option[Event]] =
       Future successful None
 
     override def remove(appId: Int, channelId: Option[Int]): Boolean = true
 
-    override def futureDelete(eventId: String, appId: Int, channelId: Option[Int])
-        (implicit ec: ExecutionContext): Future[Boolean] =
+    override def futureDelete(
+        eventId: String,
+        appId: Int,
+        channelId: Option[Int])(
+        implicit ec: ExecutionContext): Future[Boolean] =
       Future successful true
 
     override def close(): Unit = {}
@@ -153,10 +161,10 @@ class SegmentIOAuthSpec extends Specification {
           "/webhooks/segmentio.json",
           HttpEntity(ContentTypes.`application/json`, jsonReq.getBytes)
         ).withHeaders(
-            List(
-              RawHeader("Authorization", s"Basic $accessKeyEncoded")
-            )
+          List(
+            RawHeader("Authorization", s"Basic $accessKeyEncoded")
           )
+        )
       )
       probe.expectMsg(
         HttpResponse(

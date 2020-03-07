@@ -2,14 +2,15 @@ package mesosphere.util
 
 import java.util.concurrent.Executors
 
-import org.scalatest.{ WordSpecLike, Matchers }
+import org.scalatest.{WordSpecLike, Matchers}
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{ Await, Future, ExecutionContext }
+import scala.concurrent.{Await, Future, ExecutionContext}
 
 class ConcurrentSetTest extends WordSpecLike with Matchers {
 
-  implicit val ec = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  implicit val ec =
+    ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
 
   "A ConcurrentSet" should {
     "contain all values" in {

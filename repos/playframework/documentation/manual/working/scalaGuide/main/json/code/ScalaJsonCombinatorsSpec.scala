@@ -14,9 +14,9 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
   val sampleJson = {
     //#sample-json
-      import play.api.libs.json._
+    import play.api.libs.json._
 
-      val json: JsValue = Json.parse("""
+    val json: JsValue = Json.parse("""
       {
         "name" : "Watership Down",
         "location" : {
@@ -34,8 +34,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
         } ]
       }
       """)
-      //#sample-json
-      json
+    //#sample-json
+    json
   }
 
   object SampleModel {
@@ -96,7 +96,9 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val nameReads: Reads[String] = (JsPath \ "name").read[String]
       //#reads-simple
 
-      json.validate(nameReads) must beLike {case x: JsSuccess[String] =>  x.get === "Watership Down"}
+      json.validate(nameReads) must beLike {
+        case x: JsSuccess[String] => x.get === "Watership Down"
+      }
     }
 
     "allow creating complex Reads" in {
@@ -111,7 +113,7 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-complex-builder
       val locationReadsBuilder =
         (JsPath \ "lat").read[Double] and
-        (JsPath \ "long").read[Double]
+          (JsPath \ "long").read[Double]
       //#reads-complex-builder
 
       //#reads-complex-buildertoreads
@@ -119,7 +121,9 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-complex-buildertoreads
 
       val locationResult = (json \ "location").validate[Location]
-      locationResult must beLike {case x: JsSuccess[Location] =>  x.get.lat === 51.235685}
+      locationResult must beLike {
+        case x: JsSuccess[Location] => x.get.lat === 51.235685
+      }
     }
 
     "allow creating complex Reads in a single statement" in {
@@ -134,12 +138,14 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-complex-statement
       implicit val locationReads: Reads[Location] = (
         (JsPath \ "lat").read[Double] and
-        (JsPath \ "long").read[Double]
+          (JsPath \ "long").read[Double]
       )(Location.apply _)
       //#reads-complex-statement
 
       val locationResult = (json \ "location").validate[Location]
-      locationResult must beLike {case x: JsSuccess[Location] =>  x.get.lat === 51.235685}
+      locationResult must beLike {
+        case x: JsSuccess[Location] => x.get.lat === 51.235685
+      }
     }
 
     "allow validation with Reads" in {
@@ -159,16 +165,20 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       nameResult match {
         case s: JsSuccess[String] => println("Name: " + s.get)
-        case e: JsError => println("Errors: " + JsError.toJson(e).toString())
+        case e: JsError           => println("Errors: " + JsError.toJson(e).toString())
       }
       //#reads-validation-simple
-      nameResult must beLike {case x: JsSuccess[String] =>  x.get === "Watership Down"}
+      nameResult must beLike {
+        case x: JsSuccess[String] => x.get === "Watership Down"
+      }
 
       //#reads-validation-custom
       val improvedNameReads =
         (JsPath \ "name").read[String](minLength[String](2))
       //#reads-validation-custom
-      json.validate[String](improvedNameReads) must beLike {case x: JsSuccess[String] =>  x.get === "Watership Down"}
+      json.validate[String](improvedNameReads) must beLike {
+        case x: JsSuccess[String] => x.get === "Watership Down"
+      }
 
     }
 
@@ -182,21 +192,20 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       implicit val locationReads: Reads[Location] = (
         (JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
-        (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
+          (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
       )(Location.apply _)
 
       implicit val residentReads: Reads[Resident] = (
         (JsPath \ "name").read[String](minLength[String](2)) and
-        (JsPath \ "age").read[Int](min(0) keepAnd max(150)) and
-        (JsPath \ "role").readNullable[String]
+          (JsPath \ "age").read[Int](min(0) keepAnd max(150)) and
+          (JsPath \ "role").readNullable[String]
       )(Resident.apply _)
 
       implicit val placeReads: Reads[Place] = (
         (JsPath \ "name").read[String](minLength[String](2)) and
-        (JsPath \ "location").read[Location] and
-        (JsPath \ "residents").read[Seq[Resident]]
+          (JsPath \ "location").read[Location] and
+          (JsPath \ "residents").read[Seq[Resident]]
       )(Place.apply _)
-
 
       //###replace: val json = { ... }
       val json: JsValue = sampleJson
@@ -212,7 +221,9 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       //#reads-model
 
-      json.validate[Place] must beLike {case x: JsSuccess[Place] =>  x.get.name === "Watership Down"}
+      json.validate[Place] must beLike {
+        case x: JsSuccess[Place] => x.get.name === "Watership Down"
+      }
     }
 
     "allow creating Writes for model" in {
@@ -224,21 +235,20 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       implicit val locationWrites: Writes[Location] = (
         (JsPath \ "lat").write[Double] and
-        (JsPath \ "long").write[Double]
+          (JsPath \ "long").write[Double]
       )(unlift(Location.unapply))
 
       implicit val residentWrites: Writes[Resident] = (
         (JsPath \ "name").write[String] and
-        (JsPath \ "age").write[Int] and
-        (JsPath \ "role").writeNullable[String]
+          (JsPath \ "age").write[Int] and
+          (JsPath \ "role").writeNullable[String]
       )(unlift(Resident.unapply))
 
       implicit val placeWrites: Writes[Place] = (
         (JsPath \ "name").write[String] and
-        (JsPath \ "location").write[Location] and
-        (JsPath \ "residents").write[Seq[Resident]]
+          (JsPath \ "location").write[Location] and
+          (JsPath \ "residents").write[Seq[Resident]]
       )(unlift(Place.unapply))
-
 
       val place = Place(
         "Watership Down",
@@ -252,13 +262,14 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val json = Json.toJson(place)
       //#writes-model
 
-      val some = (JsPath \ "lat").write[Double] and (JsPath \ "long").write[Double]
+      val some =
+        (JsPath \ "lat").write[Double] and (JsPath \ "long").write[Double]
       val placeSome = Place.unapply(place)
 
       (json \ "name").get === JsString("Watership Down")
     }
 
-    "allow creating Reads/Writes for recursive types"  in {
+    "allow creating Reads/Writes for recursive types" in {
 
       import play.api.libs.json._
       import play.api.libs.json.Reads._
@@ -269,12 +280,12 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       implicit lazy val userReads: Reads[User] = (
         (__ \ "name").read[String] and
-        (__ \ "friends").lazyRead(Reads.seq[User](userReads))
+          (__ \ "friends").lazyRead(Reads.seq[User](userReads))
       )(User)
 
       implicit lazy val userWrites: Writes[User] = (
         (__ \ "name").write[String] and
-        (__ \ "friends").lazyWrite(Writes.seq[User](userWrites))
+          (__ \ "friends").lazyWrite(Writes.seq[User](userWrites))
       )(unlift(User.unapply))
       //#reads-writes-recursive
 
@@ -292,7 +303,9 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       """)
       val userResult = json.validate[User]
-      userResult must beLike {case x: JsSuccess[User] =>  x.get.name === "Fiver"}
+      userResult must beLike {
+        case x: JsSuccess[User] => x.get.name === "Fiver"
+      }
 
       // Use Writes for model -> JSON
       val jsonFromUser = Json.toJson(userResult.get)
@@ -309,12 +322,12 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#format-components
       val locationReads: Reads[Location] = (
         (JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
-        (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
+          (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
       )(Location.apply _)
 
       val locationWrites: Writes[Location] = (
         (JsPath \ "lat").write[Double] and
-        (JsPath \ "long").write[Double]
+          (JsPath \ "long").write[Double]
       )(unlift(Location.unapply))
 
       implicit val locationFormat: Format[Location] =
@@ -329,7 +342,7 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       """)
       val location = json.validate[Location].get
-      location ===  Location(51.235685,-1.309197)
+      location === Location(51.235685, -1.309197)
 
       // Use Writes for model -> JSON
       val jsonFromLocation = Json.toJson(location)
@@ -346,7 +359,7 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#format-combinators
       implicit val locationFormat: Format[Location] = (
         (JsPath \ "lat").format[Double](min(-90.0) keepAnd max(90.0)) and
-        (JsPath \ "long").format[Double](min(-180.0) keepAnd max(180.0))
+          (JsPath \ "long").format[Double](min(-180.0) keepAnd max(180.0))
       )(Location.apply, unlift(Location.unapply))
       //#format-combinators
 
@@ -358,7 +371,7 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
       """)
       val location = json.validate[Location].get
-      location ===  Location(51.235685,-1.309197)
+      location === Location(51.235685, -1.309197)
 
       // Use Writes for model -> JSON
       val jsonFromLocation = Json.toJson(location)

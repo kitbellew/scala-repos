@@ -1,19 +1,19 @@
 /*
- *  ____    ____    _____    ____    ___     ____ 
+ *  ____    ____    _____    ____    ___     ____
  * |  _ \  |  _ \  | ____|  / ___|  / _/    / ___|        Precog (R)
  * | |_) | | |_) | |  _|   | |     | |  /| | |  _         Advanced Analytics Engine for NoSQL Data
  * |  __/  |  _ <  | |___  | |___  |/ _| | | |_| |        Copyright (C) 2010 - 2013 SlamData, Inc.
  * |_|     |_| \_\ |_____|  \____|   /__/   \____|        All Rights Reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the 
- * GNU Affero General Public License as published by the Free Software Foundation, either version 
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version
  * 3 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
  * the GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License along with this 
+ * You should have received a copy of the GNU Affero General Public License along with this
  * program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
@@ -61,7 +61,8 @@ object DesktopIngestShardServer
   val caveatMessage = None
 
   val actorSystem = ActorSystem("desktopExecutorActorSystem")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext =
+    ExecutionContext.defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def runGUI(config: Configuration): Option[Future[PrecogUnit]] = {
@@ -110,7 +111,8 @@ object DesktopIngestShardServer
 
           appFrame.pack()
 
-          val iconUrl = ClassLoader.getSystemClassLoader.getResource("LargeIcon.png")
+          val iconUrl =
+            ClassLoader.getSystemClassLoader.getResource("LargeIcon.png")
           logger.debug("Loaded icon: " + iconUrl)
           appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
 
@@ -164,24 +166,33 @@ object DesktopIngestShardServer
     guiNotifier.foreach(_("Internal services started, bringing up Precog"))
 
     this.run(config) map {
-      _.onSuccess { case (runningState, stoppable) =>
-        guiNotifier.foreach(_("Precog startup complete"))
+      _.onSuccess {
+        case (runningState, stoppable) =>
+          guiNotifier.foreach(_("Precog startup complete"))
       }.map { _ => PrecogUnit }
     }
   }
 
-  def platformFor(config: Configuration, apiKeyFinder: APIKeyFinder[Future], jobManager: JobManager[Future]): (ManagedPlatform, Stoppable) = {
+  def platformFor(
+      config: Configuration,
+      apiKeyFinder: APIKeyFinder[Future],
+      jobManager: JobManager[Future]): (ManagedPlatform, Stoppable) = {
     val rootAPIKey = config[String]("security.masterAccount.apiKey")
-    val accountFinder = new StaticAccountFinder("desktop", rootAPIKey, Some("/"))
-    val platform = platformFactory(config.detach("queryExecutor"), apiKeyFinder, accountFinder, jobManager)
+    val accountFinder =
+      new StaticAccountFinder("desktop", rootAPIKey, Some("/"))
+    val platform = platformFactory(
+      config.detach("queryExecutor"),
+      apiKeyFinder,
+      accountFinder,
+      jobManager)
 
     val stoppable = Stoppable.fromFuture {
-      platform.shutdown.onComplete { _ =>
-        logger.info("Platform shutdown complete")
-      }.onFailure {
-        case t: Throwable =>
-          logger.error("Failure during platform shutdown", t)
-      }
+      platform.shutdown
+        .onComplete { _ => logger.info("Platform shutdown complete") }
+        .onFailure {
+          case t: Throwable =>
+            logger.error("Failure during platform shutdown", t)
+        }
     }
 
     (platform, stoppable)
@@ -221,7 +232,9 @@ object DesktopIngestShardServer
     defaultProps.setProperty("log.cleanup.interval.mins", "1")
     defaultProps.setProperty("zk.connectiontimeout.ms", "1000000")
 
-    defaultProps.setProperty("zk.connect", "localhost:" + config[String]("zookeeper.port"))
+    defaultProps.setProperty(
+      "zk.connect",
+      "localhost:" + config[String]("zookeeper.port"))
 
     val centralProps = defaultProps.clone.asInstanceOf[Properties]
     centralProps.putAll(config.detach("kafka").data.asJava)
@@ -244,7 +257,8 @@ object DesktopIngestShardServer
 
   def startZookeeperStandalone(config: Configuration): EmbeddedZK = {
     val serverConfig = new ServerConfig
-    serverConfig.parse(Array[String](config[String]("port"), config[String]("dataDir")))
+    serverConfig.parse(
+      Array[String](config[String]("port"), config[String]("dataDir")))
 
     val server = new EmbeddedZK
 
@@ -258,8 +272,8 @@ object DesktopIngestShardServer
   }
 }
 
-object LaunchLabcoat{
-  def main(args:Array[String]){
+object LaunchLabcoat {
+  def main(args: Array[String]) {
     // Set some useful OS X props (just in case)
     System.setProperty("apple.laf.useScreenMenuBar", "true")
     System.setProperty("apple.awt.graphics.UseQuartz", "true")
@@ -270,24 +284,30 @@ object LaunchLabcoat{
 
     val params = CommandLineArguments(args: _*).parameters
 
-    params.get("configFile").map { configFile =>
-      val config = Configuration.load( configFile )
+    params
+      .get("configFile")
+      .map { configFile =>
+        val config = Configuration.load(configFile)
 
-      // Check for launch first
-      if (params.contains("launch")) {
-        launchBrowser(config)
-        sys.exit(0)
-      } else {
-        DesktopIngestShardServer.runGUI(config).map {
-          _.map { _ => launchBrowser(config); println("Launch complete") }
-        }.getOrElse {
-          sys.error("Failed to start bifrost!")
+        // Check for launch first
+        if (params.contains("launch")) {
+          launchBrowser(config)
+          sys.exit(0)
+        } else {
+          DesktopIngestShardServer
+            .runGUI(config)
+            .map {
+              _.map { _ => launchBrowser(config); println("Launch complete") }
+            }
+            .getOrElse {
+              sys.error("Failed to start bifrost!")
+            }
         }
       }
-    }.getOrElse {
-      System.err.println("Usage: LaunchLabcoat --configFile <config file>")
-      sys.exit(1)
-    }
+      .getOrElse {
+        System.err.println("Usage: LaunchLabcoat --configFile <config file>")
+        sys.exit(1)
+      }
   }
 
   def launchBrowser(config: Configuration): Unit = {
@@ -299,27 +319,34 @@ object LaunchLabcoat{
     launchBrowser(jettyPort, shardPort, zkPort, kafkaPort)
   }
 
-  def launchBrowser(jettyPort: Int, shardPort: Int, zkPort: Int, kafkaPort: Int): Unit = {
-    def waitForPorts=
+  def launchBrowser(
+      jettyPort: Int,
+      shardPort: Int,
+      zkPort: Int,
+      kafkaPort: Int): Unit = {
+    def waitForPorts =
       DesktopIngestShardServer.waitForPortOpen(jettyPort, 15) &&
-      DesktopIngestShardServer.waitForPortOpen(shardPort, 15) &&
-      DesktopIngestShardServer.waitForPortOpen(zkPort, 15) &&
-      DesktopIngestShardServer.waitForPortOpen(kafkaPort, 15)
+        DesktopIngestShardServer.waitForPortOpen(shardPort, 15) &&
+        DesktopIngestShardServer.waitForPortOpen(zkPort, 15) &&
+        DesktopIngestShardServer.waitForPortOpen(kafkaPort, 15)
 
     @tailrec
-    def doLaunch(){
+    def doLaunch() {
       if (waitForPorts) {
-        java.awt.Desktop.getDesktop.browse(new java.net.URI("http://localhost:%s".format(jettyPort)))
+        java.awt.Desktop.getDesktop
+          .browse(new java.net.URI("http://localhost:%s".format(jettyPort)))
       } else {
         import javax.swing.JOptionPane
-        JOptionPane.showMessageDialog(null,
+        JOptionPane.showMessageDialog(
+          null,
           "Waiting for server to start.\nPlease check that PrecogService has been launched\nRetrying...",
-          "Labcoat launcher", JOptionPane.WARNING_MESSAGE)
+          "Labcoat launcher",
+          JOptionPane.WARNING_MESSAGE)
         doLaunch()
       }
     }
 
-    if (Desktop.isDesktopSupported){
+    if (Desktop.isDesktopSupported) {
       doLaunch()
     } else {
       sys.error("Browser open on non-desktop system")

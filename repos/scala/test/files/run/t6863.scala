@@ -1,8 +1,8 @@
 /** Make sure that when a variable is captured its initialization expression is handled properly */
 object Test {
   def lazyVal() = {
-  	// internally lazy vals become vars which are initialized with "_", so they need to be tested just like vars do
-  	lazy val x = "42"
+    // internally lazy vals become vars which are initialized with "_", so they need to be tested just like vars do
+    lazy val x = "42"
     assert({ () => x }.apply == "42")
   }
   def ident() = {
@@ -11,7 +11,7 @@ object Test {
     assert({ () => x }.apply == "42")
   }
   def apply() = {
-    def y(x : Int) = x.toString
+    def y(x: Int) = x.toString
     var x = y(42)
     assert({ () => x }.apply == "42")
   }
@@ -24,7 +24,7 @@ object Test {
     assert({ () => x }.apply == "42")
   }
   def select() = {
-    object Foo{val bar = "42"}
+    object Foo { val bar = "42" }
     var x = Foo.bar
     assert({ () => x }.apply == "42")
   }
@@ -35,37 +35,41 @@ object Test {
   def assign() = {
     var y = 1
     var x = y = 42
-    assert({ () => x}.apply == ())
+    assert({ () => x }.apply == ())
   }
   def valDef() = {
-    var x = {val y = 42}
-    assert({ () => x}.apply == ())
+    var x = { val y = 42 }
+    assert({ () => x }.apply == ())
   }
   def `return`(): String = {
     var x = if (true) return "42" else ()
-    assert({ () => x}.apply == ())
+    assert({ () => x }.apply == ())
     "42"
   }
   def tryFinally() = {
-    var x = try { "42" } finally ()
+    var x =
+      try { "42" }
+      finally ()
     assert({ () => x }.apply == "42")
   }
   def tryCatch() = {
-    var x = try { "42" } catch { case _: Throwable => "43" }
+    var x =
+      try { "42" }
+      catch { case _: Throwable => "43" }
     assert({ () => x }.apply == "42")
   }
   def `if`() = {
-  	var x = if (true) ()
+    var x = if (true) ()
     assert({ () => x }.apply == ())
   }
   def ifElse() = {
-    var x = if(true) "42" else "43"
+    var x = if (true) "42" else "43"
     assert({ () => x }.apply == "42")
   }
   def matchCase() = {
     var x = 100 match {
-       case 100 => "42"
-      case _ => "43"
+      case 100 => "42"
+      case _   => "43"
     }
     assert({ () => x }.apply == "42")
   }
@@ -78,20 +82,24 @@ object Test {
   }
   def labelDef() = {
     var x = 100 match {
-      case 100 => try "42" finally ()
+      case 100 =>
+        try "42"
+        finally ()
     }
     assert({ () => x }.apply == "42")
   }
   def nested() = {
     var x = {
       val y = 42
-        if(true) try "42" catch {case _: Throwable => "43"}
-        else "44"
+      if (true)
+        try "42"
+        catch { case _: Throwable => "43" }
+      else "44"
     }
     assert({ () => x }.apply == "42")
   }
   def main(args: Array[String]) {
-  	lazyVal()
+    lazyVal()
     ident()
     apply()
     literal()
@@ -111,4 +119,3 @@ object Test {
     nested()
   }
 }
-

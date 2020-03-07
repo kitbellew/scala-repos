@@ -1,9 +1,9 @@
 package breeze.linalg
 
 /**
- * Trait used for methods that can return a view or a copy.
- * @author dlwh
- */
+  * Trait used for methods that can return a view or a copy.
+  * @author dlwh
+  */
 sealed trait View
 
 //ToDo 3: Could View be made part of the Opts hierarchy for options?

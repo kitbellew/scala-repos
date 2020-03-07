@@ -28,7 +28,7 @@ class NullFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     testFunc(1.toShort, ShortType)
     testFunc(1, IntegerType)
     testFunc(1L, LongType)
-    testFunc(1.0F, FloatType)
+    testFunc(1.0f, FloatType)
     testFunc(1.0, DoubleType)
     testFunc(Decimal(1.5), DecimalType(2, 1))
     testFunc(new java.sql.Date(10), DateType)
@@ -58,11 +58,18 @@ class NullFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("nanvl") {
     checkEvaluation(NaNvl(Literal(5.0), Literal.create(null, DoubleType)), 5.0)
     checkEvaluation(NaNvl(Literal.create(null, DoubleType), Literal(5.0)), null)
-    checkEvaluation(NaNvl(Literal.create(null, DoubleType), Literal(Double.NaN)), null)
+    checkEvaluation(
+      NaNvl(Literal.create(null, DoubleType), Literal(Double.NaN)),
+      null)
     checkEvaluation(NaNvl(Literal(Double.NaN), Literal(5.0)), 5.0)
-    checkEvaluation(NaNvl(Literal(Double.NaN), Literal.create(null, DoubleType)), null)
-    assert(NaNvl(Literal(Double.NaN), Literal(Double.NaN)).
-      eval(EmptyRow).asInstanceOf[Double].isNaN)
+    checkEvaluation(
+      NaNvl(Literal(Double.NaN), Literal.create(null, DoubleType)),
+      null)
+    assert(
+      NaNvl(Literal(Double.NaN), Literal(Double.NaN))
+        .eval(EmptyRow)
+        .asInstanceOf[Double]
+        .isNaN)
   }
 
   test("coalesce") {
@@ -78,19 +85,22 @@ class NullFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   }
 
   test("AtLeastNNonNulls") {
-    val mix = Seq(Literal("x"),
+    val mix = Seq(
+      Literal("x"),
       Literal.create(null, StringType),
       Literal.create(null, DoubleType),
       Literal(Double.NaN),
       Literal(5f))
 
-    val nanOnly = Seq(Literal("x"),
+    val nanOnly = Seq(
+      Literal("x"),
       Literal(10.0),
       Literal(Float.NaN),
       Literal(math.log(-2)),
       Literal(Double.MaxValue))
 
-    val nullOnly = Seq(Literal("x"),
+    val nullOnly = Seq(
+      Literal("x"),
       Literal.create(null, DoubleType),
       Literal.create(null, DecimalType.USER_DEFAULT),
       Literal(Float.MaxValue),

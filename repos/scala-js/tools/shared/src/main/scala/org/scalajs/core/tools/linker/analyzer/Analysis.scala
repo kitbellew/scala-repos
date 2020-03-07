@@ -6,7 +6,6 @@
 **                          |/____/                                     **
 \*                                                                      */
 
-
 package org.scalajs.core.tools.linker.analyzer
 
 import scala.annotation.tailrec
@@ -21,11 +20,11 @@ import ir.Infos
 import ir.Definitions.{decodeClassName, decodeMethodName}
 
 /** Reachability graph produced by the [[Analyzer]].
- *
- *  Warning: this trait is not meant to be extended by third-party libraries
- *  and applications. Methods and/or fields can be added in subsequent
- *  versions, possibly causing `LinkageError`s if you extend it.
- */
+  *
+  *  Warning: this trait is not meant to be extended by third-party libraries
+  *  and applications. Methods and/or fields can be added in subsequent
+  *  versions, possibly causing `LinkageError`s if you extend it.
+  */
 trait Analysis {
   import Analysis._
 
@@ -37,11 +36,11 @@ trait Analysis {
 object Analysis {
 
   /** Class node in a reachability graph produced by the [[Analyzer]].
-   *
-   *  Warning: this trait is not meant to be extended by third-party libraries
-   *  and applications. Methods and/or fields can be added in subsequent
-   *  versions, possibly causing `LinkageError`s if you extend it.
-   */
+    *
+    *  Warning: this trait is not meant to be extended by third-party libraries
+    *  and applications. Methods and/or fields can be added in subsequent
+    *  versions, possibly causing `LinkageError`s if you extend it.
+    */
   trait ClassInfo {
     def encodedName: String
     def kind: ClassKind
@@ -52,10 +51,11 @@ object Analysis {
     def nonExistent: Boolean
     def ancestorCount: Int
     def descendentClasses: Seq[ClassInfo]
+
     /** For a Scala class, it is instantiated with a `New`; for a JS class,
-     *  its constructor is accessed with a `JSLoadConstructor` or because it
-     *  is needed for a subclass.
-     */
+      *  its constructor is accessed with a `JSLoadConstructor` or because it
+      *  is needed for a subclass.
+      */
     def isInstantiated: Boolean
     def isAnySubclassInstantiated: Boolean
     def isModuleAccessed: Boolean
@@ -71,11 +71,11 @@ object Analysis {
   }
 
   /** Method node in a reachability graph produced by the [[Analyzer]].
-   *
-   *  Warning: this trait is not meant to be extended by third-party libraries
-   *  and applications. Methods and/or fields can be added in subsequent
-   *  versions, possibly causing `LinkageError`s if you extend it.
-   */
+    *
+    *  Warning: this trait is not meant to be extended by third-party libraries
+    *  and applications. Methods and/or fields can be added in subsequent
+    *  versions, possibly causing `LinkageError`s if you extend it.
+    */
   trait MethodInfo {
     def owner: ClassInfo
     def encodedName: String
@@ -96,15 +96,16 @@ object Analysis {
         import ir.Types._
 
         def typeDisplayName(tpe: ReferenceType): String = tpe match {
-          case ClassType(encodedName)      => decodeClassName(encodedName)
-          case ArrayType(base, dimensions) => "[" * dimensions + decodeClassName(base)
+          case ClassType(encodedName) => decodeClassName(encodedName)
+          case ArrayType(base, dimensions) =>
+            "[" * dimensions + decodeClassName(base)
         }
 
         val (simpleName, paramTypes, resultType) =
           ir.Definitions.decodeMethodName(encodedName)
 
         simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") + ")" +
-        resultType.fold("")(typeDisplayName)
+          resultType.fold("")(typeDisplayName)
       }
     }
 
@@ -115,58 +116,60 @@ object Analysis {
   sealed trait MethodSyntheticKind
 
   object MethodSyntheticKind {
+
     /** Not a synthetic method. */
     final case object None extends MethodSyntheticKind
 
     // TODO Get rid of InheritedConstructor when we can break binary compat
     /** An explicit call-super constructor.
-     *
-     *  In a class `Foo` with parent class `Bar`, an inherited
-     *  constructor `init___xyz` looks like
-     *
-     *  {{{
-     *  def init___xyz(p1: T1, ..., pn: TN) {
-     *    this.Bar::init___xyz(p1, ..., pn)
-     *  }
-     *  }}}
-     */
+      *
+      *  In a class `Foo` with parent class `Bar`, an inherited
+      *  constructor `init___xyz` looks like
+      *
+      *  {{{
+      *  def init___xyz(p1: T1, ..., pn: TN) {
+      *    this.Bar::init___xyz(p1, ..., pn)
+      *  }
+      *  }}}
+      */
     final case object InheritedConstructor extends MethodSyntheticKind
 
     /** A reflective proxy bridge to the appropriate target method.
-     *
-     *  A reflective proxy `method__xyz__` dynamically calls some `target`
-     *  method `method__xyz__R` on `this`. `R` is boxed according to JVM boxing
-     *  semantics, i.e.,
-     *
-     *  - `Char` is boxed in `java.lang.Character`
-     *  - `void` is followed by a reified `()`, i.e., `undefined`
-     *  - All other types are left as is
-     *
-     *  The basic shape is:
-     *
-     *  {{{
-     *  def method__xyz__(p1: T1, ..., pn: TN): any = {
-     *    this.method__xyz__R(p1, ..., pn)
-     *  }
-     *  }}}
-     */
+      *
+      *  A reflective proxy `method__xyz__` dynamically calls some `target`
+      *  method `method__xyz__R` on `this`. `R` is boxed according to JVM boxing
+      *  semantics, i.e.,
+      *
+      *  - `Char` is boxed in `java.lang.Character`
+      *  - `void` is followed by a reified `()`, i.e., `undefined`
+      *  - All other types are left as is
+      *
+      *  The basic shape is:
+      *
+      *  {{{
+      *  def method__xyz__(p1: T1, ..., pn: TN): any = {
+      *    this.method__xyz__R(p1, ..., pn)
+      *  }
+      *  }}}
+      */
     final case class ReflectiveProxy(target: String) extends MethodSyntheticKind
 
     /** Bridge to a default method.
-     *
-     *  After the linker, default methods are not inherited anymore. Bridges
-     *  are generated where appropriate to statically call the corresponding
-     *  default method in the target interface.
-     *
-     *  The shape of default bridges is
-     *
-     *  {{{
-     *  def method__xyz(p1: T1, ..., pn: TN): R = {
-     *    this.TargetInterface::method__xyz(p1, ..., pn)
-     *  }
-     *  }}}
-     */
-    final case class DefaultBridge(targetInterface: String) extends MethodSyntheticKind
+      *
+      *  After the linker, default methods are not inherited anymore. Bridges
+      *  are generated where appropriate to statically call the corresponding
+      *  default method in the target interface.
+      *
+      *  The shape of default bridges is
+      *
+      *  {{{
+      *  def method__xyz(p1: T1, ..., pn: TN): R = {
+      *    this.TargetInterface::method__xyz(p1, ..., pn)
+      *  }
+      *  }}}
+      */
+    final case class DefaultBridge(targetInterface: String)
+        extends MethodSyntheticKind
   }
 
   sealed trait Error {
@@ -174,11 +177,15 @@ object Analysis {
   }
 
   final case class MissingJavaLangObjectClass(from: From) extends Error
-  final case class CycleInInheritanceChain(cycle: List[ClassInfo], from: From) extends Error
+  final case class CycleInInheritanceChain(cycle: List[ClassInfo], from: From)
+      extends Error
   final case class MissingClass(info: ClassInfo, from: From) extends Error
   final case class NotAModule(info: ClassInfo, from: From) extends Error
   final case class MissingMethod(info: MethodInfo, from: From) extends Error
-  final case class ConflictingDefaultMethods(infos: List[MethodInfo], from: From) extends Error
+  final case class ConflictingDefaultMethods(
+      infos: List[MethodInfo],
+      from: From)
+      extends Error
 
   sealed trait From
   final case class FromMethod(methodInfo: MethodInfo) extends From
@@ -191,7 +198,7 @@ object Analysis {
         "Fatal error: java.lang.Object is missing"
       case CycleInInheritanceChain(cycle, _) =>
         ("Fatal error: cycle in inheritance chain involving " +
-            cycle.map(_.displayName).mkString(", "))
+          cycle.map(_.displayName).mkString(", "))
       case MissingClass(info, _) =>
         s"Referring to non-existent class ${info.displayName}"
       case NotAModule(info, _) =>
@@ -217,7 +224,7 @@ object Analysis {
     }
 
     private def log(level: Level, msg: String) =
-      logger.log(level, indentation+msg)
+      logger.log(level, indentation + msg)
 
     private def indented[A](body: => A): A = {
       indentation += "  "
@@ -225,7 +232,9 @@ object Analysis {
       finally indentation = indentation.substring(2)
     }
 
-    private def logCallStackImpl(level: Level, optFrom: Option[From],
+    private def logCallStackImpl(
+        level: Level,
+        optFrom: Option[From],
         verb: String = "called"): Unit = {
       val involvedClasses = new mutable.ListBuffer[ClassInfo]
 
@@ -242,7 +251,9 @@ object Analysis {
       def loopTrace(optFrom: Option[From], verb: String = "called"): Unit = {
         optFrom match {
           case None =>
-            log(level, s"$verb from ... er ... nowhere!? (this is a bug in dce)")
+            log(
+              level,
+              s"$verb from ... er ... nowhere!? (this is a bug in dce)")
           case Some(from) =>
             from match {
               case FromMethod(methodInfo) =>
@@ -271,8 +282,10 @@ object Analysis {
 
             // recurse with Debug log level not to overwhelm the user
             if (onlyOnce(Level.Debug, classInfo)) {
-              logCallStackImpl(Level.Debug,
-                  classInfo.instantiatedFrom.headOption, verb = "instantiated")
+              logCallStackImpl(
+                Level.Debug,
+                classInfo.instantiatedFrom.headOption,
+                verb = "instantiated")
             }
           }
         }

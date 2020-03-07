@@ -31,7 +31,8 @@ import org.apache.spark.internal.Logging
 private[v1] class EventLogDownloadResource(
     val uIRoot: UIRoot,
     val appId: String,
-    val attemptId: Option[String]) extends Logging {
+    val attemptId: Option[String])
+    extends Logging {
   val conf = SparkHadoopUtil.get.newConfiguration(new SparkConf)
 
   @GET
@@ -40,7 +41,7 @@ private[v1] class EventLogDownloadResource(
       val fileName = {
         attemptId match {
           case Some(id) => s"eventLogs-$appId-$id.zip"
-          case None => s"eventLogs-$appId.zip"
+          case None     => s"eventLogs-$appId.zip"
         }
       }
 
@@ -56,13 +57,15 @@ private[v1] class EventLogDownloadResource(
         }
       }
 
-      Response.ok(stream)
+      Response
+        .ok(stream)
         .header("Content-Disposition", s"attachment; filename=$fileName")
         .header("Content-Type", MediaType.APPLICATION_OCTET_STREAM)
         .build()
     } catch {
       case NonFatal(e) =>
-        Response.serverError()
+        Response
+          .serverError()
           .entity(s"Event logs are not available for app: $appId.")
           .status(Response.Status.SERVICE_UNAVAILABLE)
           .build()

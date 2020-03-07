@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class EqualityToSameElementsTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[EqualityToSameElementsInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[EqualityToSameElementsInspection]
 
-  override def hint: String = InspectionBundle.message("replace.equals.with.sameElements")
+  override def hint: String =
+    InspectionBundle.message("replace.equals.with.sameElements")
 
   def testArraysEquals(): Unit = {
     doTest(

@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.data.storage.elasticsearch
 
 import grizzled.slf4j.Logging
@@ -32,7 +31,8 @@ import scala.util.Random
 
 /** Elasticsearch implementation of AccessKeys. */
 class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
-    extends AccessKeys with Logging {
+    extends AccessKeys
+    with Logging {
   implicit val formats = DefaultFormats.lossless
   private val estype = "accesskeys"
 
@@ -47,9 +47,12 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
       (estype ->
         ("properties" ->
           ("key" -> ("type" -> "string") ~ ("index" -> "not_analyzed")) ~
-          ("events" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
-    indices.preparePutMapping(index).setType(estype).
-      setSource(compact(render(json))).get
+            ("events" -> ("type" -> "string") ~ ("index" -> "not_analyzed"))))
+    indices
+      .preparePutMapping(index)
+      .setType(estype)
+      .setSource(compact(render(json)))
+      .get
   }
 
   def insert(accessKey: AccessKey): Option[String] = {
@@ -60,10 +63,7 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   def get(key: String): Option[AccessKey] = {
     try {
-      val response = client.prepareGet(
-        index,
-        estype,
-        key).get()
+      val response = client.prepareGet(index, estype, key).get()
       Some(read[AccessKey](response.getSourceAsString))
     } catch {
       case e: ElasticsearchException =>
@@ -86,8 +86,10 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   def getByAppid(appid: Int): Seq[AccessKey] = {
     try {
-      val builder = client.prepareSearch(index).setTypes(estype).
-        setPostFilter(termFilter("appid", appid))
+      val builder = client
+        .prepareSearch(index)
+        .setTypes(estype)
+        .setPostFilter(termFilter("appid", appid))
       ESUtils.getAll[AccessKey](client, builder)
     } catch {
       case e: ElasticsearchException =>
@@ -98,7 +100,10 @@ class ESAccessKeys(client: Client, config: StorageClientConfig, index: String)
 
   def update(accessKey: AccessKey): Unit = {
     try {
-      client.prepareIndex(index, estype, accessKey.key).setSource(write(accessKey)).get()
+      client
+        .prepareIndex(index, estype, accessKey.key)
+        .setSource(write(accessKey))
+        .get()
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)

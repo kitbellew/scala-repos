@@ -6,5 +6,6 @@ case class Clocking(
     incMin: Option[Int] = None,
     incMax: Option[Int] = None) {
 
-  def nonEmpty = initMin.isDefined || initMax.isDefined || incMin.isDefined || incMax.isDefined
+  def nonEmpty =
+    initMin.isDefined || initMax.isDefined || incMin.isDefined || incMax.isDefined
 }

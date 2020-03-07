@@ -3,12 +3,14 @@ package org.jetbrains.plugins.scala.codeInspection.collections
 import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
 
 /**
- * @author Nikolay.Tropin
- */
+  * @author Nikolay.Tropin
+  */
 class DropTakeToSliceTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[DropTakeToSliceInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[DropTakeToSliceInspection]
 
-  override def hint: String = InspectionBundle.message("replace.drop.take.with.slice")
+  override def hint: String =
+    InspectionBundle.message("replace.drop.take.with.slice")
 
   def testSeqWithLiteralArg(): Unit = {
     doTest(
@@ -52,9 +54,11 @@ class DropTakeToSliceTest extends OperationsOnCollectionInspectionTest {
 }
 
 class TakeDropToSliceTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[DropTakeToSliceInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[DropTakeToSliceInspection]
 
-  override def hint: String = InspectionBundle.message("replace.take.drop.with.slice")
+  override def hint: String =
+    InspectionBundle.message("replace.take.drop.with.slice")
 
   def testSeqWithLiteralArg(): Unit = {
     doTest(

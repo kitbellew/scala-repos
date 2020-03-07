@@ -7,4 +7,3 @@ object Test extends App {
   assert("abc".nElems == 3)
 
 }
-

@@ -22,4 +22,3 @@ package object commands {
   //  implicit val jsonDefault: org.scalatra.DefaultValue[JValue] = default(JNothing)
 
 }
-

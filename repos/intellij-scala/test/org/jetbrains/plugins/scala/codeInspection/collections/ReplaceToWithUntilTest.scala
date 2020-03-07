@@ -6,7 +6,8 @@ import org.jetbrains.plugins.scala.codeInspection.InspectionBundle
   * @author Nikolay.Tropin
   */
 class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
-  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] = classOf[ReplaceToWithUntilInspection]
+  override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
+    classOf[ReplaceToWithUntilInspection]
 
   override def hint: String = InspectionBundle.message("replace.to.with.until")
 
@@ -23,7 +24,8 @@ class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
       """
         |val x = 42
         |0 until x
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testCall(): Unit = {
@@ -39,7 +41,8 @@ class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
       """
         |val x = 42
         |0.until(x)
-      """.stripMargin)
+      """.stripMargin
+    )
   }
 
   def testOtherTo(): Unit = {
@@ -53,6 +56,6 @@ class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
          |val x = 42
          |a to x - 1
        """.stripMargin
-      )
+    )
   }
 }

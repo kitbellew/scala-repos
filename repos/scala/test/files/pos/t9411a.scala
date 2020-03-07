@@ -14,13 +14,13 @@ object OhNoes {
 
   sealed trait H
   case class H1(a: FB, b: G) extends H
-  case class H2(a: F)        extends H
+  case class H2(a: F) extends H
 
   val demo: H => Unit = {
     case H1(FB1, G1) =>
     case H1(FB2, G2) =>
-    case H2(_: FB) =>
-    case H2(_: FA) =>
+    case H2(_: FB)   =>
+    case H2(_: FA)   =>
     case H1(FB1, G2) =>
     case H1(FB2, G1) =>
   }

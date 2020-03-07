@@ -1,5 +1,4 @@
-
-import scala.language.{ reflectiveCalls }
+import scala.language.{reflectiveCalls}
 object Test {
   def f(x: Any { def toInt: Int }) = println(x.toInt + " " + x.getClass.getName)
 

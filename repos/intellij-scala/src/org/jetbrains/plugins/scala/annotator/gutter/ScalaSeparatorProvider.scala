@@ -2,15 +2,23 @@ package org.jetbrains.plugins.scala
 package annotator.gutter
 
 import com.intellij.psi.PsiElement
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScBlock, ScIfStmt, ScNewTemplateDefinition}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{
+  ScBlock,
+  ScIfStmt,
+  ScNewTemplateDefinition
+}
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.imports.ScImportStmt
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackageContainer
-import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScClass, ScObject, ScTrait}
+import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
+  ScClass,
+  ScObject,
+  ScTrait
+}
 
 /**
- * Pavel.Fatin, 20.01.2010
- */
+  * Pavel.Fatin, 20.01.2010
+  */
 trait ScalaSeparatorProvider {
   val DefaultGroup = 0
   val MultilineLevel = 10
@@ -27,33 +35,28 @@ trait ScalaSeparatorProvider {
       if (g.get >= MultilineLevel) {
         true
       } else {
-        g != getGroupAbove(element) {_ => true}
+        g != getGroupAbove(element) { _ => true }
       }
     } else false
   }
 
   def hasElementAbove(element: PsiElement) = {
-    getGroupAbove(element) {!_.isInstanceOf[ScImportStmt]}.isDefined
+    getGroupAbove(element) { !_.isInstanceOf[ScImportStmt] }.isDefined
   }
 
   def getGroup(element: PsiElement) = {
     for (g <- groupOf(element))
-    yield if (isMultiline(element)) MultilineLevel + g else g
+      yield if (isMultiline(element)) MultilineLevel + g else g
   }
 
   def groupOf(element: PsiElement): Option[Int] = {
     element match {
-      case _: ScValue |
-              _: ScVariable |
-              _: ScTypeAlias |
-              _: ScFunction |
-              _: ScImportStmt |
-              _: ScPackageContainer |
-              _: ScClass |
-              _: ScObject |
-              _: ScTrait |
-              _: ScBlock => Some(DefaultGroup)
-      case it: ScNewTemplateDefinition if it.extendsBlock != null => Some(DefaultGroup)
+      case _: ScValue | _: ScVariable | _: ScTypeAlias | _: ScFunction |
+          _: ScImportStmt | _: ScPackageContainer | _: ScClass | _: ScObject |
+          _: ScTrait | _: ScBlock =>
+        Some(DefaultGroup)
+      case it: ScNewTemplateDefinition if it.extendsBlock != null =>
+        Some(DefaultGroup)
       case _ => None
     }
   }
@@ -76,13 +79,14 @@ trait ScalaSeparatorProvider {
 
   def isSeparationBlocker(element: PsiElement) = {
     element match {
-      case _: ScBlock | _: ScIfStmt => true
+      case _: ScBlock | _: ScIfStmt                               => true
       case it: ScNewTemplateDefinition if it.extendsBlock != null => true
-      case _ => false
+      case _                                                      => false
     }
   }
 
-  def getGroupAbove(element: PsiElement)(filter: PsiElement => Boolean): Option[Int] = {
+  def getGroupAbove(element: PsiElement)(
+      filter: PsiElement => Boolean): Option[Int] = {
     var lines = 0
     var e = element.getPrevSibling
     while (e != null) {

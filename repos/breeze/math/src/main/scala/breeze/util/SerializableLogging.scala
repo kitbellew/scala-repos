@@ -3,9 +3,9 @@ package breeze.util
 import org.slf4j.LoggerFactory
 
 /**
- * Stupid Typesafe logging lib trait isn't serializable. This is just a better version.
- *
- * @author dlwh
+  * Stupid Typesafe logging lib trait isn't serializable. This is just a better version.
+  *
+  * @author dlwh
  **/
 trait SerializableLogging extends Serializable {
   @transient @volatile
@@ -13,10 +13,10 @@ trait SerializableLogging extends Serializable {
 
   protected def logger: LazyLogger = {
     var logger = _the_logger
-    if(logger eq null) {
+    if (logger eq null) {
       synchronized {
         logger = _the_logger
-        if(logger eq null) {
+        if (logger eq null) {
           val ll = new LazyLogger(LoggerFactory.getLogger(this.getClass))
           _the_logger = ll
           logger = ll
@@ -25,6 +25,5 @@ trait SerializableLogging extends Serializable {
     }
     logger
   }
-
 
 }

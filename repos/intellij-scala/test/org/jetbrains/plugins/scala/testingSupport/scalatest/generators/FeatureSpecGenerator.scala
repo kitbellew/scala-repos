@@ -12,7 +12,8 @@ trait FeatureSpecGenerator extends ScalaTestTestCase {
   def featureSpecFileName = featureSpecClassName + ".scala"
 
   def addFeatureSpec() {
-    addFileToProject(featureSpecFileName,
+    addFileToProject(
+      featureSpecFileName,
       """
         |import org.scalatest._
         |

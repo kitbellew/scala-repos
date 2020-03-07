@@ -7,14 +7,19 @@ import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScValue, ScVariable};
+import org.jetbrains.plugins.scala.lang.psi.api.statements.{
+  ScValue,
+  ScVariable
+};
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 04.05.2008
-*/
-
-abstract class ScalaStructureViewElement(protected val myElement: PsiElement, val inherited: Boolean) extends StructureViewTreeElement {
+  * @author Alexander Podkhalyuzin
+  * Date: 04.05.2008
+  */
+abstract class ScalaStructureViewElement(
+    protected val myElement: PsiElement,
+    val inherited: Boolean)
+    extends StructureViewTreeElement {
 
   def getValue: Object = {
     if (myElement.isValid) {
@@ -28,15 +33,16 @@ abstract class ScalaStructureViewElement(protected val myElement: PsiElement, va
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScValue])
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement
-      } else if (PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable]) != null) {
+      } else if (PsiTreeUtil.getParentOfType(
+                   myElement,
+                   classOf[ScVariable]) != null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement
       } else {
         myElement
       }
-    }
-    else {
+    } else {
       null;
     }
   }
@@ -56,7 +62,7 @@ abstract class ScalaStructureViewElement(protected val myElement: PsiElement, va
   override def equals(o: Any): Boolean = {
     val clazz = o match {
       case obj: Object => obj.getClass
-      case _ => return false
+      case _           => return false
     }
     if (o == null || getClass != clazz) return false
     val that = o.asInstanceOf[ScalaStructureViewElement]
@@ -69,8 +75,8 @@ abstract class ScalaStructureViewElement(protected val myElement: PsiElement, va
 
   override def hashCode(): Int = {
     val value = getValue
-    val is = if(inherited) 1 else 0
+    val is = if (inherited) 1 else 0
     if (value == null) 0
-    else value.hashCode*2 + is
+    else value.hashCode * 2 + is
   }
 }

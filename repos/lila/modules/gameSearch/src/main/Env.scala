@@ -24,25 +24,29 @@ final class Env(
 
   lazy val forms = new DataForm
 
-  lazy val userGameSearch = new UserGameSearch(
-    forms = forms,
-    paginator = paginator)
+  lazy val userGameSearch =
+    new UserGameSearch(forms = forms, paginator = paginator)
 
-  system.actorOf(Props(new Actor {
-    import lila.game.actorApi.{ InsertGame, FinishGame }
-    context.system.lilaBus.subscribe(self, 'finishGame)
-    def receive = {
-      case FinishGame(game, _, _) => self ! InsertGame(game)
-      case InsertGame(game)       => api store game
-    }
-  }), name = ActorName)
+  system.actorOf(
+    Props(new Actor {
+      import lila.game.actorApi.{InsertGame, FinishGame}
+      context.system.lilaBus.subscribe(self, 'finishGame)
+      def receive = {
+        case FinishGame(game, _, _) => self ! InsertGame(game)
+        case InsertGame(game)       => api store game
+      }
+    }),
+    name = ActorName
+  )
 
   def cli = new lila.common.Cli {
     import akka.pattern.ask
     private implicit def timeout = makeTimeout minutes 60
     def process = {
-      case "game" :: "search" :: "index" :: "all" :: Nil => api.indexAll inject "done"
-      case "game" :: "search" :: "index" :: since :: Nil => api.indexSince(since) inject "done"
+      case "game" :: "search" :: "index" :: "all" :: Nil =>
+        api.indexAll inject "done"
+      case "game" :: "search" :: "index" :: since :: Nil =>
+        api.indexSince(since) inject "done"
     }
   }
 }

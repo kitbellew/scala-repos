@@ -1,10 +1,15 @@
 package mesosphere.marathon.api
 
 import java.util.Collections
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
-import mesosphere.marathon.plugin.auth.{ Authenticator, AuthorizedAction, Authorizer, Identity }
-import mesosphere.marathon.plugin.http.{ HttpRequest, HttpResponse }
+import mesosphere.marathon.plugin.auth.{
+  Authenticator,
+  AuthorizedAction,
+  Authorizer,
+  Identity
+}
+import mesosphere.marathon.plugin.http.{HttpRequest, HttpResponse}
 import mesosphere.marathon.test.Mockito
 
 import scala.concurrent.Future
@@ -23,18 +28,24 @@ class TestAuthFixture extends Mockito {
   val NotAuthenticatedStatus = 403
 
   def auth: Auth = new Authorizer with Authenticator {
-    override def authenticate(request: HttpRequest): Future[Option[Identity]] = {
+    override def authenticate(
+        request: HttpRequest): Future[Option[Identity]] = {
       Future.successful(if (authenticated) Some(identity) else None)
     }
-    override def handleNotAuthenticated(request: HttpRequest, response: HttpResponse): Unit = {
+    override def handleNotAuthenticated(
+        request: HttpRequest,
+        response: HttpResponse): Unit = {
       response.status(NotAuthenticatedStatus)
     }
-    override def handleNotAuthorized(principal: Identity, response: HttpResponse): Unit = {
+    override def handleNotAuthorized(
+        principal: Identity,
+        response: HttpResponse): Unit = {
       response.status(UnauthorizedStatus)
     }
-    override def isAuthorized[Resource](principal: Identity,
-                                        action: AuthorizedAction[Resource],
-                                        resource: Resource): Boolean = {
+    override def isAuthorized[Resource](
+        principal: Identity,
+        action: AuthorizedAction[Resource],
+        resource: Resource): Boolean = {
       authorized && authFn(resource)
     }
   }

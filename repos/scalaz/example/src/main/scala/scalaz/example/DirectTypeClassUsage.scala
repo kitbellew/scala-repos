@@ -2,7 +2,6 @@ package scalaz.example
 
 import scalaz.Semigroup
 
-
 object DirectTypeClassUsage extends App {
 
   val o1: Option[Int] = Some(0)
@@ -23,7 +22,6 @@ object DirectTypeClassUsage extends App {
     bind(o1)(x => if (x > 0) Some(2) else None)
     join(o2)
   }
-
 
   // Direct use of type class for multiple types
   def direct2() {

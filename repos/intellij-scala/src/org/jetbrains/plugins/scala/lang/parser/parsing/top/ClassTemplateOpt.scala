@@ -6,13 +6,15 @@ package top
 
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
-import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{ClassParents, TemplateBody}
+import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{
+  ClassParents,
+  TemplateBody
+}
 
 /**
-* @author Alexander Podkhalyuzin
-* Date: 06.02.2008
-*/
-
+  * @author Alexander Podkhalyuzin
+  * Date: 06.02.2008
+  */
 /*
  * ClassTemplateOpt ::= 'extends' ClassTemplate | [['extends'] TemplateBody]
  */
@@ -24,7 +26,8 @@ object ClassTemplateOpt {
     val extendsMarker = builder.mark
     //try to find extends keyword
     builder.getTokenType match {
-      case ScalaTokenTypes.kEXTENDS | ScalaTokenTypes.tUPPER_BOUND => builder.advanceLexer() //Ate extends
+      case ScalaTokenTypes.kEXTENDS | ScalaTokenTypes.tUPPER_BOUND =>
+        builder.advanceLexer() //Ate extends
       case ScalaTokenTypes.tLBRACE =>
         TemplateBody parse builder
         extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
@@ -33,8 +36,7 @@ object ClassTemplateOpt {
         if (builder.twoNewlinesBeforeCurrentToken) {
           extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
           return
-        }
-        else {
+        } else {
           builder.getTokenType match {
             case ScalaTokenTypes.tLBRACE => {
               TemplateBody parse builder
@@ -66,8 +68,7 @@ object ClassTemplateOpt {
               if (builder.twoNewlinesBeforeCurrentToken) {
                 extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                 return
-              }
-              else {
+              } else {
                 builder.getTokenType match {
                   case ScalaTokenTypes.tLBRACE => {
                     TemplateBody parse builder
@@ -82,8 +83,7 @@ object ClassTemplateOpt {
               }
             }
           }
-        }
-        else {
+        } else {
           //parse template body
           builder.getTokenType match {
             case ScalaTokenTypes.tLBRACE => {
@@ -112,8 +112,7 @@ object ClassTemplateOpt {
             if (builder.twoNewlinesBeforeCurrentToken) {
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            else {
+            } else {
               builder.getTokenType match {
                 case ScalaTokenTypes.tLBRACE => {
                   TemplateBody parse builder

@@ -10,32 +10,38 @@ import play.api.mvc._
 import scala.annotation.tailrec
 
 /**
- * Wraps a Result to make it Serializable.
- */
-private[play] final class SerializableResult(constructorResult: Result) extends Externalizable {
+  * Wraps a Result to make it Serializable.
+  */
+private[play] final class SerializableResult(constructorResult: Result)
+    extends Externalizable {
 
-  assert(Option(constructorResult).forall(_.body.isInstanceOf[HttpEntity.Strict]),
+  assert(
+    Option(constructorResult).forall(_.body.isInstanceOf[HttpEntity.Strict]),
     "Only strict entities can be cached, streamed entities cannot be cached")
 
   /**
-   * Create an empty object. Must call `readExternal` after calling
-   * this method. This constructor is invoked by the Java
-   * deserialization code.
-   */
+    * Create an empty object. Must call `readExternal` after calling
+    * this method. This constructor is invoked by the Java
+    * deserialization code.
+    */
   def this() = this(null)
 
   /**
-   * Hold the Result. Will either be supplied by the constructor or
-   * set by `readExternal`.
-   */
+    * Hold the Result. Will either be supplied by the constructor or
+    * set by `readExternal`.
+    */
   private var cachedResult: Result = constructorResult
 
   def result: Result = {
-    assert(cachedResult != null, "Result should have been provided in constructor or when deserializing")
+    assert(
+      cachedResult != null,
+      "Result should have been provided in constructor or when deserializing")
     cachedResult
   }
   override def readExternal(in: ObjectInput): Unit = {
-    assert(in.readByte() == SerializableResult.encodingVersion, "Result was serialised from a different version of Play")
+    assert(
+      in.readByte() == SerializableResult.encodingVersion,
+      "Result was serialised from a different version of Play")
 
     val status = in.readInt()
 
@@ -91,12 +97,12 @@ private[play] final class SerializableResult(constructorResult: Result) extends 
 
     {
       out.writeBoolean(cachedResult.body.contentType.nonEmpty)
-      cachedResult.body.contentType.foreach { ct =>
-        out.writeUTF(ct)
-      }
+      cachedResult.body.contentType.foreach { ct => out.writeUTF(ct) }
       val body = cachedResult.body match {
         case HttpEntity.Strict(data, _) => data
-        case other => throw new IllegalStateException("Non strict body cannot be materialized")
+        case other =>
+          throw new IllegalStateException(
+            "Non strict body cannot be materialized")
       }
       out.writeInt(body.length)
       out.write(body.toArray)

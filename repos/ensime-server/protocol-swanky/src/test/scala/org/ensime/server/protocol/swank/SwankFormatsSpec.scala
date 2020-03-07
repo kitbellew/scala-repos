@@ -4,7 +4,7 @@ package org.ensime.server.protocol.swank
 
 import org.ensime.sexp._
 import org.ensime.api._
-import org.ensime.util.{ EnsimeSpec, EscapingStringInterpolation }
+import org.ensime.util.{EnsimeSpec, EscapingStringInterpolation}
 
 class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
   import SwankFormats._
@@ -19,10 +19,11 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     }
     val sexp = envelope.toSexp match {
       case SexpList(
-        SexpSymbol(":return") ::
-          SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
-          SexpNumber(callId) :: Nil
-        ) if callId == 666 => payload
+          SexpSymbol(":return") ::
+            SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
+            SexpNumber(callId) :: Nil
+          ) if callId == 666 =>
+        payload
       case payload => payload
     }
     via match {
@@ -31,7 +32,8 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
       case Some(expected) => sexp.compactPrint shouldBe expected
     }
   }
-  def marshal(value: EnsimeServerMessage, via: String): Unit = marshal(value, Some(via))
+  def marshal(value: EnsimeServerMessage, via: String): Unit =
+    marshal(value, Some(via))
 
   def unmarshal(from: String, to: RpcRequest): Unit = {
     val sexp = s"(:swank-rpc ${from} 666)"
@@ -76,7 +78,10 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:typecheck-files ((:file "$file1") (:file "$file2" :contents "xxx")))""",
-      TypecheckFilesReq(List(Right(SourceFileInfo(file1)), Right(SourceFileInfo(file2, Some("xxx"), None)))): RpcRequest
+      TypecheckFilesReq(
+        List(
+          Right(SourceFileInfo(file1)),
+          Right(SourceFileInfo(file2, Some("xxx"), None)))): RpcRequest
     )
 
     unmarshal(
@@ -106,7 +111,9 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:doc-uri-at-point (:file "$file1" :contents-in "$file2") (1 10))""",
-      DocUriAtPointReq(Right(SourceFileInfo(file1, None, Some(file2))), OffsetRange(1, 10)): RpcRequest
+      DocUriAtPointReq(
+        Right(SourceFileInfo(file1, None, Some(file2))),
+        OffsetRange(1, 10)): RpcRequest
     )
 
     unmarshal(
@@ -136,7 +143,10 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:type-by-name-at-point "foo.bar" "$file1" (1 10))""",
-      TypeByNameAtPointReq("foo.bar", Left(file1), OffsetRange(1, 10)): RpcRequest
+      TypeByNameAtPointReq(
+        "foo.bar",
+        Left(file1),
+        OffsetRange(1, 10)): RpcRequest
     )
 
     unmarshal(
@@ -171,7 +181,11 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:prepare-refactor 1 ignored (end 100 file "$file1" newName "bar" start 1) nil)""",
-      PrepareRefactorReq(1, 'ignored, RenameRefactorDesc("bar", file1, 1, 100), false): RpcRequest
+      PrepareRefactorReq(
+        1,
+        'ignored,
+        RenameRefactorDesc("bar", file1, 1, 100),
+        false): RpcRequest
     )
 
     unmarshal(
@@ -186,13 +200,18 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     unmarshal(
       s"""(swank:diff-refactor 1 (end 100 file "$file1" newName "bar" start 1) nil)""",
-      RefactorReq(1, RenameRefactorDesc("bar", file1, 1, 100), false): RpcRequest
+      RefactorReq(
+        1,
+        RenameRefactorDesc("bar", file1, 1, 100),
+        false): RpcRequest
     )
 
     unmarshal(
       s"""(swank:symbol-designations "$file1" 1 100 (object val))""",
       SymbolDesignationsReq(
-        Left(file1), 1, 100,
+        Left(file1),
+        1,
+        100,
         List(ObjectSymbol, ValSymbol)
       ): RpcRequest
     )
@@ -200,7 +219,9 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     unmarshal(
       s"""(swank:symbol-designations (:file "$file1") 1 100 (object val))""",
       SymbolDesignationsReq(
-        Right(SourceFileInfo(file1, None, None)), 1, 100,
+        Right(SourceFileInfo(file1, None, None)),
+        1,
+        100,
         List(ObjectSymbol, ValSymbol)
       ): RpcRequest
     )
@@ -357,12 +378,20 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      DebugStepEvent(DebugThreadId(207), "threadNameStr", sourcePos1.file, sourcePos1.line): EnsimeEvent,
+      DebugStepEvent(
+        DebugThreadId(207),
+        "threadNameStr",
+        sourcePos1.file,
+        sourcePos1.line): EnsimeEvent,
       s"""(:debug-event (:type step :thread-id "207" :thread-name "threadNameStr" :file "$file1" :line 57))"""
     )
 
     marshal(
-      DebugBreakEvent(DebugThreadId(209), "threadNameStr", sourcePos1.file, sourcePos1.line): EnsimeEvent,
+      DebugBreakEvent(
+        DebugThreadId(209),
+        "threadNameStr",
+        sourcePos1.file,
+        sourcePos1.line): EnsimeEvent,
       s"""(:debug-event (:type breakpoint :thread-id "209" :thread-name "threadNameStr" :file "$file1" :line 57))"""
     )
 
@@ -375,7 +404,12 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
       """(:debug-event (:type disconnect))"""
     )
     marshal(
-      DebugExceptionEvent(33L, dtid, "threadNameStr", Some(sourcePos1.file), Some(sourcePos1.line)): EnsimeEvent,
+      DebugExceptionEvent(
+        33L,
+        dtid,
+        "threadNameStr",
+        Some(sourcePos1.file),
+        Some(sourcePos1.line)): EnsimeEvent,
       s"""(:debug-event (:type exception :exception 33 :thread-id "13" :thread-name "threadNameStr" :file "$file1" :line 57))"""
     )
     marshal(
@@ -422,12 +456,20 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      DebugStringInstance("summaryStr", List(debugClassField), "typeNameStr", DebugObjectId(5L)): DebugValue,
+      DebugStringInstance(
+        "summaryStr",
+        List(debugClassField),
+        "typeNameStr",
+        DebugObjectId(5L)): DebugValue,
       """(:val-type str :summary "summaryStr" :fields ((:index 19 :name "nameStr" :type-name "typeNameStr" :summary "summaryStr")) :type-name "typeNameStr" :object-id "5")"""
     )
 
     marshal(
-      DebugObjectInstance("summaryStr", List(debugClassField), "typeNameStr", DebugObjectId(5L)): DebugValue,
+      DebugObjectInstance(
+        "summaryStr",
+        List(debugClassField),
+        "typeNameStr",
+        DebugObjectId(5L)): DebugValue,
       """(:val-type obj :summary "summaryStr" :fields ((:index 19 :name "nameStr" :type-name "typeNameStr" :summary "summaryStr")) :type-name "typeNameStr" :object-id "5")"""
     )
 
@@ -437,7 +479,11 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      DebugArrayInstance(3, "typeName", "elementType", DebugObjectId(5L)): DebugValue,
+      DebugArrayInstance(
+        3,
+        "typeName",
+        "elementType",
+        DebugObjectId(5L)): DebugValue,
       """(:val-type arr :length 3 :type-name "typeName" :element-type-name "elementType" :object-id "5")"""
     )
 
@@ -526,7 +572,12 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
     )
 
     marshal(
-      new NamedTypeMemberInfo("typeX", typeInfo, None, None, DeclaredAs.Method): EntityInfo,
+      new NamedTypeMemberInfo(
+        "typeX",
+        typeInfo,
+        None,
+        None,
+        DeclaredAs.Method): EntityInfo,
       """(:name "typeX" :type (:arrow-type nil :name "type1" :decl-as method :full-name "FOO.type1") :decl-as method)"""
     )
 
@@ -563,12 +614,14 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
   it should "marshal search related responses" in {
     marshal(
-      new SymbolSearchResults(List(methodSearchRes, typeSearchRes)): SymbolSearchResults,
+      new SymbolSearchResults(
+        List(methodSearchRes, typeSearchRes)): SymbolSearchResults,
       s"""((:type method :name "abc" :local-name "a" :decl-as method :pos (:type line :file "$abd" :line 10) :owner-name "ownerStr") (:type type :name "abc" :local-name "a" :decl-as trait :pos (:type line :file "$abd" :line 10)))"""
     )
 
     marshal(
-      new ImportSuggestions(List(List(methodSearchRes, typeSearchRes))): ImportSuggestions,
+      new ImportSuggestions(
+        List(List(methodSearchRes, typeSearchRes))): ImportSuggestions,
       s"""(((:type method :name "abc" :local-name "a" :decl-as method :pos (:type line :file "$abd" :line 10) :owner-name "ownerStr") (:type type :name "abc" :local-name "a" :decl-as trait :pos (:type line :file "$abd" :line 10))))"""
     )
 
@@ -596,21 +649,30 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
 
     marshal(
       SymbolDesignations(
-        symFile, List(
-        SymbolDesignation(7, 9, VarFieldSymbol),
-        SymbolDesignation(11, 22, ClassSymbol)
-      )
+        symFile,
+        List(
+          SymbolDesignation(7, 9, VarFieldSymbol),
+          SymbolDesignation(11, 22, ClassSymbol)
+        )
       ): SymbolDesignations,
       s"""(:file "$symFile" :syms ((varField 7 9) (class 11 22)))"""
     )
 
     marshal(
-      ImplicitInfos(List(ImplicitConversionInfo(5, 6, symbolInfo))): ImplicitInfos,
+      ImplicitInfos(
+        List(ImplicitConversionInfo(5, 6, symbolInfo))): ImplicitInfos,
       s"""((:type conversion :start 5 :end 6 :fun $symbolInfoStr))"""
     )
 
     marshal(
-      ImplicitInfos(List(ImplicitParamInfo(5, 6, symbolInfo, List(symbolInfo, symbolInfo), true))): ImplicitInfos,
+      ImplicitInfos(
+        List(
+          ImplicitParamInfo(
+            5,
+            6,
+            symbolInfo,
+            List(symbolInfo, symbolInfo),
+            true))): ImplicitInfos,
       s"""((:type param :start 5 :end 6 :fun $symbolInfoStr :params ($symbolInfoStr $symbolInfoStr) :fun-is-implicit t))"""
     )
   }

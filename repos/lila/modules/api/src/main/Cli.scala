@@ -1,13 +1,14 @@
 package lila.api
 
 import akka.actor.ActorSelection
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 import play.twirl.api.Html
 
-import lila.hub.actorApi.{ RemindDeploy, Deploy }
+import lila.hub.actorApi.{RemindDeploy, Deploy}
 import makeTimeout.short
 
-private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection) extends lila.common.Cli {
+private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection)
+    extends lila.common.Cli {
 
   private val logger = lila.log("cli")
 
@@ -18,13 +19,16 @@ private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection) ext
   }
 
   def process = {
-    case "deploy" :: "pre" :: Nil  => remindDeploy(lila.hub.actorApi.RemindDeployPre)
-    case "deploy" :: "post" :: Nil => remindDeploy(lila.hub.actorApi.RemindDeployPost)
-    case "rating" :: "fest" :: Nil => RatingFest(
-      lila.db.Env.current,
-      lila.round.Env.current.perfsUpdater,
-      lila.game.Env.current,
-      lila.user.Env.current) inject "done"
+    case "deploy" :: "pre" :: Nil =>
+      remindDeploy(lila.hub.actorApi.RemindDeployPre)
+    case "deploy" :: "post" :: Nil =>
+      remindDeploy(lila.hub.actorApi.RemindDeployPost)
+    case "rating" :: "fest" :: Nil =>
+      RatingFest(
+        lila.db.Env.current,
+        lila.round.Env.current.perfsUpdater,
+        lila.game.Env.current,
+        lila.user.Env.current) inject "done"
   }
 
   private def remindDeploy(event: RemindDeploy): Fu[String] = {

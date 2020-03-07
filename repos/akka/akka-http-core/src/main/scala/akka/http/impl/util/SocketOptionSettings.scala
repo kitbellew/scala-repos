@@ -4,7 +4,7 @@
 
 package akka.http.impl.util
 
-import akka.io.{ Tcp, Inet }
+import akka.io.{Tcp, Inet}
 
 import scala.collection.immutable
 
@@ -13,10 +13,11 @@ import com.typesafe.config.Config
 
 private[http] object SocketOptionSettings {
   def fromSubConfig(root: Config, c: Config): immutable.Seq[SocketOption] = {
-    def so[T](setting: String)(f: (Config, String) ⇒ T)(cons: T ⇒ SocketOption): List[SocketOption] =
+    def so[T](setting: String)(f: (Config, String) ⇒ T)(
+        cons: T ⇒ SocketOption): List[SocketOption] =
       c.getString(setting) match {
         case "undefined" ⇒ Nil
-        case x           ⇒ cons(f(c, setting)) :: Nil
+        case x ⇒ cons(f(c, setting)) :: Nil
       }
 
     so("so-receive-buffer-size")(_ getIntBytes _)(Inet.SO.ReceiveBufferSize) :::

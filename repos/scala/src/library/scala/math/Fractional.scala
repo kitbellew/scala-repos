@@ -12,8 +12,8 @@ package math
 import scala.language.implicitConversions
 
 /**
- * @since 2.8
- */
+  * @since 2.8
+  */
 trait Fractional[T] extends Numeric[T] {
   def div(x: T, y: T): T
 
@@ -26,7 +26,9 @@ trait Fractional[T] extends Numeric[T] {
 
 object Fractional {
   trait ExtraImplicits {
-    implicit def infixFractionalOps[T](x: T)(implicit num: Fractional[T]): Fractional[T]#FractionalOps = new num.FractionalOps(x)
+    implicit def infixFractionalOps[T](x: T)(
+        implicit num: Fractional[T]): Fractional[T]#FractionalOps =
+      new num.FractionalOps(x)
   }
   object Implicits extends ExtraImplicits
 }

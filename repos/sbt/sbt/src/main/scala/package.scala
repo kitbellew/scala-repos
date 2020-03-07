@@ -1,9 +1,16 @@
 /* sbt -- Simple Build Tool
  * Copyright 2010, 2011 Mark Harrah
  */
-package object sbt extends sbt.std.TaskExtra with sbt.internal.util.Types with sbt.ProcessExtra
-    with sbt.internal.librarymanagement.impl.DependencyBuilders with sbt.io.PathExtra with sbt.ProjectExtra
-    with sbt.internal.librarymanagement.DependencyFilterExtra with sbt.BuildExtra with sbt.TaskMacroExtra
+package object sbt
+    extends sbt.std.TaskExtra
+    with sbt.internal.util.Types
+    with sbt.ProcessExtra
+    with sbt.internal.librarymanagement.impl.DependencyBuilders
+    with sbt.io.PathExtra
+    with sbt.ProjectExtra
+    with sbt.internal.librarymanagement.DependencyFilterExtra
+    with sbt.BuildExtra
+    with sbt.TaskMacroExtra
     with sbt.ScopeFilter.Make {
   type Setting[T] = Def.Setting[T]
   type ScopedKey[T] = Def.ScopedKey[T]
@@ -28,7 +35,7 @@ package object sbt extends sbt.std.TaskExtra with sbt.internal.util.Types with s
   final val ThisScope = Scope.ThisScope
   final val GlobalScope = Scope.GlobalScope
 
-  import sbt.librarymanagement.{ Configuration, Configurations => C }
+  import sbt.librarymanagement.{Configuration, Configurations => C}
   final val Compile = C.Compile
   final val Test = C.Test
   final val Runtime = C.Runtime
@@ -41,7 +48,10 @@ package object sbt extends sbt.std.TaskExtra with sbt.internal.util.Types with s
   def config(s: String): Configuration = C.config(s)
 
   import language.experimental.macros
-  def settingKey[T](description: String): SettingKey[T] = macro std.KeyMacro.settingKeyImpl[T]
-  def taskKey[T](description: String): TaskKey[T] = macro std.KeyMacro.taskKeyImpl[T]
-  def inputKey[T](description: String): InputKey[T] = macro std.KeyMacro.inputKeyImpl[T]
+  def settingKey[T](description: String): SettingKey[T] =
+    macro std.KeyMacro.settingKeyImpl[T]
+  def taskKey[T](description: String): TaskKey[T] =
+    macro std.KeyMacro.taskKeyImpl[T]
+  def inputKey[T](description: String): InputKey[T] =
+    macro std.KeyMacro.inputKeyImpl[T]
 }

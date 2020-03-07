@@ -8,7 +8,7 @@ import mesosphere.marathon.state.PathId
 import mesosphere.marathon.test.Mockito
 import org.apache.mesos.Protos.TaskStatus
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ Matchers, GivenWhenThen, FunSuite }
+import org.scalatest.{Matchers, GivenWhenThen, FunSuite}
 
 import scala.concurrent.Future
 
@@ -18,7 +18,11 @@ import scala.concurrent.Future
   * More tests are in [[mesosphere.marathon.tasks.TaskTrackerImplTest]]
   */
 class StatusUpdateActionResolverTest
-    extends FunSuite with Mockito with GivenWhenThen with ScalaFutures with Matchers {
+    extends FunSuite
+    with Mockito
+    with GivenWhenThen
+    with ScalaFutures
+    with Matchers {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   test("an update for a non-existing tasks is mapped to fail") {

@@ -6,20 +6,21 @@
 **                          |/                                          **
 \*                                                                      */
 
-
-
 package scala
 package collection
 
 // Methods could be printed by  cat TraversableLike.scala | egrep '^  (override )?def'
 
-
 /** This trait implements a proxy for traversable objects. It forwards
- *  all calls to a different traversable object
- *
- *  @author  Martin Odersky
- *  @version 2.8
- *  @since   2.8
- */
-@deprecated("Proxying is deprecated due to lack of use and compiler-level support.", "2.11.3")
-trait TraversableProxy[+A] extends Traversable[A] with TraversableProxyLike[A, Traversable[A]]
+  *  all calls to a different traversable object
+  *
+  *  @author  Martin Odersky
+  *  @version 2.8
+  *  @since   2.8
+  */
+@deprecated(
+  "Proxying is deprecated due to lack of use and compiler-level support.",
+  "2.11.3")
+trait TraversableProxy[+A]
+    extends Traversable[A]
+    with TraversableProxyLike[A, Traversable[A]]

@@ -5,14 +5,19 @@ import scala.pickling._, scala.pickling.Defaults._, json._
 
 case class PersonY(name: String, age: Int)
 case class PersonX(name: String, age: Int, salary: Int)
-class CustomPersonXPickler(implicit val format: PickleFormat) extends Pickler[PersonX] {
+class CustomPersonXPickler(implicit val format: PickleFormat)
+    extends Pickler[PersonX] {
   def tag: FastTypeTag[PersonX] = implicitly[FastTypeTag[PersonX]]
 
   def pickle(picklee: PersonX, builder: PBuilder) = {
-    builder.beginEntry(picklee, tag).putField("name", b => {
-      b.beginEntry(picklee.name, FastTypeTag.String)
-      b.endEntry()
-    })
+    builder
+      .beginEntry(picklee, tag)
+      .putField(
+        "name",
+        b => {
+          b.beginEntry(picklee.name, FastTypeTag.String)
+          b.endEntry()
+        })
     builder.endEntry()
   }
 }
@@ -31,8 +36,9 @@ class GenericPickler extends FunSuite {
   }
 
   test("issue-4") {
-    implicit def genCustomPersonXPickler[T <: PersonX](implicit format: PickleFormat) = new CustomPersonXPickler
-    def fn[T <: PersonX:  Pickler](x: T) = x.pickle
+    implicit def genCustomPersonXPickler[T <: PersonX](
+        implicit format: PickleFormat) = new CustomPersonXPickler
+    def fn[T <: PersonX: Pickler](x: T) = x.pickle
 
     val p = PersonX("Philipp", 32, 99999999)
     val jsn = """JSONPickle({

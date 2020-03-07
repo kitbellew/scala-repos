@@ -53,19 +53,29 @@ private[spark] class ClientArguments(
 
   private var driverMemory: Int = Utils.DEFAULT_DRIVER_MEM_MB // MB
   private var driverCores: Int = 1
-  private val isDynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(sparkConf)
+  private val isDynamicAllocationEnabled =
+    Utils.isDynamicAllocationEnabled(sparkConf)
 
   parseArgs(args.toList)
   loadEnvironmentArgs()
   validateArgs()
 
   // Additional memory to allocate to containers
-  val amMemoryOverheadEntry = if (isClusterMode) DRIVER_MEMORY_OVERHEAD else AM_MEMORY_OVERHEAD
-  val amMemoryOverhead = sparkConf.get(amMemoryOverheadEntry).getOrElse(
-    math.max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN)).toInt
+  val amMemoryOverheadEntry =
+    if (isClusterMode) DRIVER_MEMORY_OVERHEAD else AM_MEMORY_OVERHEAD
+  val amMemoryOverhead = sparkConf
+    .get(amMemoryOverheadEntry)
+    .getOrElse(
+      math.max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN))
+    .toInt
 
-  val executorMemoryOverhead = sparkConf.get(EXECUTOR_MEMORY_OVERHEAD).getOrElse(
-    math.max((MEMORY_OVERHEAD_FACTOR * executorMemory).toLong, MEMORY_OVERHEAD_MIN)).toInt
+  val executorMemoryOverhead = sparkConf
+    .get(EXECUTOR_MEMORY_OVERHEAD)
+    .getOrElse(
+      math.max(
+        (MEMORY_OVERHEAD_FACTOR * executorMemory).toLong,
+        MEMORY_OVERHEAD_MIN))
+    .toInt
 
   /** Load any default arguments provided through environment variables and Spark properties. */
   private def loadEnvironmentArgs(): Unit = {
@@ -76,12 +86,15 @@ private[spark] class ClientArguments(
       .orElse(sys.env.get("SPARK_YARN_DIST_FILES"))
       .orNull
     archives = Option(archives)
-      .orElse(sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
+      .orElse(
+        sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
       .orElse(sys.env.get("SPARK_YARN_DIST_ARCHIVES"))
       .orNull
     // If dynamic allocation is enabled, start at the configured initial number of executors.
     // Default to minExecutors if no initialExecutors is set.
-    numExecutors = YarnSparkHadoopUtil.getInitialTargetExecutorNumber(sparkConf, numExecutors)
+    numExecutors = YarnSparkHadoopUtil.getInitialTargetExecutorNumber(
+      sparkConf,
+      numExecutors)
     principal = Option(principal)
       .orElse(sparkConf.get(PRINCIPAL))
       .orNull
@@ -91,20 +104,20 @@ private[spark] class ClientArguments(
   }
 
   /**
-   * Fail fast if any arguments provided are invalid.
-   * This is intended to be called only after the provided arguments have been parsed.
-   */
+    * Fail fast if any arguments provided are invalid.
+    * This is intended to be called only after the provided arguments have been parsed.
+    */
   private def validateArgs(): Unit = {
     if (numExecutors < 0 || (!isDynamicAllocationEnabled && numExecutors == 0)) {
-      throw new IllegalArgumentException(
-        s"""
+      throw new IllegalArgumentException(s"""
            |Number of executors was $numExecutors, but must be at least 1
            |(or 0 if dynamic executor allocation is enabled).
            |${getUsageMessage()}
          """.stripMargin)
     }
     if (executorCores < sparkConf.get(CPUS_PER_TASK)) {
-      throw new SparkException(s"Executor cores must not be less than ${CPUS_PER_TASK.key}.")
+      throw new SparkException(
+        s"Executor cores must not be less than ${CPUS_PER_TASK.key}.")
     }
     // scalastyle:off println
     if (isClusterMode) {
@@ -160,9 +173,11 @@ private[spark] class ClientArguments(
           println(s"${args(0)} is deprecated and is not used anymore.")
           args = tail
 
-        case ("--master-memory" | "--driver-memory") :: MemoryParam(value) :: tail =>
+        case ("--master-memory" | "--driver-memory") :: MemoryParam(
+              value) :: tail =>
           if (args(0) == "--master-memory") {
-            println("--master-memory is deprecated. Use --driver-memory instead.")
+            println(
+              "--master-memory is deprecated. Use --driver-memory instead.")
           }
           driverMemory = value
           args = tail
@@ -178,16 +193,20 @@ private[spark] class ClientArguments(
           numExecutors = value
           args = tail
 
-        case ("--worker-memory" | "--executor-memory") :: MemoryParam(value) :: tail =>
+        case ("--worker-memory" | "--executor-memory") :: MemoryParam(
+              value) :: tail =>
           if (args(0) == "--worker-memory") {
-            println("--worker-memory is deprecated. Use --executor-memory instead.")
+            println(
+              "--worker-memory is deprecated. Use --executor-memory instead.")
           }
           executorMemory = value
           args = tail
 
-        case ("--worker-cores" | "--executor-cores") :: IntParam(value) :: tail =>
+        case ("--worker-cores" | "--executor-cores") :: IntParam(
+              value) :: tail =>
           if (args(0) == "--worker-cores") {
-            println("--worker-cores is deprecated. Use --executor-cores instead.")
+            println(
+              "--worker-cores is deprecated. Use --executor-cores instead.")
           }
           executorCores = value
           args = tail
@@ -225,7 +244,6 @@ private[spark] class ClientArguments(
           args = tail
 
         case Nil =>
-
         case _ =>
           throw new IllegalArgumentException(getUsageMessage(args))
       }
@@ -233,13 +251,16 @@ private[spark] class ClientArguments(
     // scalastyle:on println
 
     if (primaryPyFile != null && primaryRFile != null) {
-      throw new IllegalArgumentException("Cannot have primary-py-file and primary-r-file" +
-        " at the same time")
+      throw new IllegalArgumentException(
+        "Cannot have primary-py-file and primary-r-file" +
+          " at the same time")
     }
   }
 
   private def getUsageMessage(unknownParam: List[String] = null): String = {
-    val message = if (unknownParam != null) s"Unknown/unsupported param $unknownParam\n" else ""
+    val message =
+      if (unknownParam != null) s"Unknown/unsupported param $unknownParam\n"
+      else ""
     val mem_mb = Utils.DEFAULT_DRIVER_MEM_MB
     message +
       s"""

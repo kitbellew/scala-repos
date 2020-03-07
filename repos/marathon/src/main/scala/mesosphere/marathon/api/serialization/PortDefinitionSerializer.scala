@@ -16,7 +16,10 @@ object PortDefinitionSerializer {
     if (portDefinition.labels.nonEmpty) {
       val labelsBuilder = mesos.Protos.Labels.newBuilder
       portDefinition.labels
-        .map { case (key, value) => mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build }
+        .map {
+          case (key, value) =>
+            mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build
+        }
         .foreach(labelsBuilder.addLabels)
       builder.setLabels(labelsBuilder.build())
     }
@@ -27,7 +30,9 @@ object PortDefinitionSerializer {
   def fromProto(proto: mesos.Protos.Port): PortDefinition = {
     val labels =
       if (proto.hasLabels)
-        proto.getLabels.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap
+        proto.getLabels.getLabelsList.asScala.map { p =>
+          p.getKey -> p.getValue
+        }.toMap
       else Map.empty[String, String]
 
     PortDefinition(

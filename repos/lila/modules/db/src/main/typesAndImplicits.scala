@@ -36,22 +36,26 @@ trait Implicits extends Types {
 
     def sort(sorters: (String, api.SortOrder)*): QueryBuilder =
       if (sorters.size == 0) b
-      else b sort {
-        BSONDocument(
-          (for (sorter ← sorters) yield sorter._1 -> BSONInteger(
-            sorter._2 match {
-              case api.SortOrder.Ascending  => 1
-              case api.SortOrder.Descending => -1
-            })).toStream)
-      }
+      else
+        b sort {
+          BSONDocument(
+            (for (sorter ← sorters)
+              yield sorter._1 -> BSONInteger(sorter._2 match {
+                case api.SortOrder.Ascending  => 1
+                case api.SortOrder.Descending => -1
+              })).toStream)
+        }
 
     def skip(nb: Int): QueryBuilder = b.options(b.options skip nb)
 
     def batch(nb: Int): QueryBuilder = b.options(b.options batchSize nb)
 
-    def toList[A: BSONDocumentReader](limit: Option[Int], readPreference: ReadPreference = ReadPreference.primary): Fu[List[A]] =
-      limit.fold(b.cursor[A](readPreference = readPreference).collect[List]()) { l =>
-        batch(l).cursor[A](readPreference = readPreference).collect[List](l)
+    def toList[A: BSONDocumentReader](
+        limit: Option[Int],
+        readPreference: ReadPreference = ReadPreference.primary): Fu[List[A]] =
+      limit.fold(b.cursor[A](readPreference = readPreference).collect[List]()) {
+        l =>
+          batch(l).cursor[A](readPreference = readPreference).collect[List](l)
       }
 
     def toListFlatten[A: Tube](limit: Option[Int]): Fu[List[A]] =

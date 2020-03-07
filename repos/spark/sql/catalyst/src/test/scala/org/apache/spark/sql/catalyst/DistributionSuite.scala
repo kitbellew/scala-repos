@@ -29,14 +29,14 @@ class DistributionSuite extends SparkFunSuite {
       requiredDistribution: Distribution,
       satisfied: Boolean) {
     if (inputPartitioning.satisfies(requiredDistribution) != satisfied) {
-      fail(
-        s"""
+      fail(s"""
         |== Input Partitioning ==
         |$inputPartitioning
         |== Required Distribution ==
         |$requiredDistribution
         |== Does input partitioning satisfy required distribution? ==
-        |Expected $satisfied got ${inputPartitioning.satisfies(requiredDistribution)}
+        |Expected $satisfied got ${inputPartitioning.satisfies(
+                requiredDistribution)}
         """.stripMargin)
     }
   }
@@ -79,10 +79,7 @@ class DistributionSuite extends SparkFunSuite {
       ClusteredDistribution(Seq('d, 'e)),
       false)
 
-    checkSatisfied(
-      HashPartitioning(Seq('a, 'b, 'c), 10),
-      AllTuples,
-      false)
+    checkSatisfied(HashPartitioning(Seq('a, 'b, 'c), 10), AllTuples, false)
 
     checkSatisfied(
       HashPartitioning(Seq('a, 'b, 'c), 10),
@@ -100,7 +97,7 @@ class DistributionSuite extends SparkFunSuite {
       ClusteredDistribution(Seq('b)),
       ClusteredDistribution(Seq('b + 1)),
       true)
-    */
+   */
   }
 
   test("RangePartitioning is the output partitioning") {

@@ -30,17 +30,17 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 
 /**
- * This class converts the POJO metric responses into json, using jackson.
- *
- * This doesn't follow the standard jersey-jackson plugin options, because we want to stick
- * with an old version of jersey (since we have it from yarn anyway) and don't want to pull in lots
- * of dependencies from a new plugin.
- *
- * Note that jersey automatically discovers this class based on its package and its annotations.
- */
+  * This class converts the POJO metric responses into json, using jackson.
+  *
+  * This doesn't follow the standard jersey-jackson plugin options, because we want to stick
+  * with an old version of jersey (since we have it from yarn anyway) and don't want to pull in lots
+  * of dependencies from a new plugin.
+  *
+  * Note that jersey automatically discovers this class based on its package and its annotations.
+  */
 @Provider
 @Produces(Array(MediaType.APPLICATION_JSON))
-private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object]{
+private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
 
   val mapper = new ObjectMapper() {
     override def writeValueAsString(t: Any): String = {
@@ -57,7 +57,7 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object]{
       `type`: Type,
       annotations: Array[Annotation],
       mediaType: MediaType): Boolean = {
-      true
+    true
   }
 
   override def writeTo(
@@ -69,7 +69,8 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object]{
       multivaluedMap: MultivaluedMap[String, AnyRef],
       outputStream: OutputStream): Unit = {
     t match {
-      case ErrorWrapper(err) => outputStream.write(err.getBytes(StandardCharsets.UTF_8))
+      case ErrorWrapper(err) =>
+        outputStream.write(err.getBytes(StandardCharsets.UTF_8))
       case _ => mapper.writeValue(outputStream, t)
     }
   }

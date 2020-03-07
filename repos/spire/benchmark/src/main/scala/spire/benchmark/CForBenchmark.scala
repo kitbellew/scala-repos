@@ -24,33 +24,35 @@ class CForBenchmarks extends MyBenchmark {
     arr = init(size)(scala.math.abs(nextInt - 1).toInt + 1)
   }
 
-  @tailrec final def gcd(a: Long, b: Long): Long = if (a % b == 0) b else gcd(b, a % b)
+  @tailrec final def gcd(a: Long, b: Long): Long =
+    if (a % b == 0) b else gcd(b, a % b)
   final def min(a: Long, b: Long): Long = if (a < b) a else b
   final def or(a: Long, b: Long): Long = a | b
 
-  def timeWhileOr(reps:Int) = run(reps)(doWhileOr)
-  def timeTailrecOr(reps:Int) = run(reps)(doTailrecOr)
-  def timeForeachOr(reps:Int) = run(reps)(doForeachOr)
-  def timeForOr(reps:Int) = run(reps)(doForOr)
-  def timeCForOr(reps:Int) = run(reps)(doCForOr)
+  def timeWhileOr(reps: Int) = run(reps)(doWhileOr)
+  def timeTailrecOr(reps: Int) = run(reps)(doTailrecOr)
+  def timeForeachOr(reps: Int) = run(reps)(doForeachOr)
+  def timeForOr(reps: Int) = run(reps)(doForOr)
+  def timeCForOr(reps: Int) = run(reps)(doCForOr)
 
-  def timeWhileMin(reps:Int) = run(reps)(doWhileMin)
-  def timeTailrecMin(reps:Int) = run(reps)(doTailrecMin)
-  def timeForeachMin(reps:Int) = run(reps)(doForeachMin)
-  def timeForMin(reps:Int) = run(reps)(doForMin)
-  def timeCForMin(reps:Int) = run(reps)(doCForMin)
+  def timeWhileMin(reps: Int) = run(reps)(doWhileMin)
+  def timeTailrecMin(reps: Int) = run(reps)(doTailrecMin)
+  def timeForeachMin(reps: Int) = run(reps)(doForeachMin)
+  def timeForMin(reps: Int) = run(reps)(doForMin)
+  def timeCForMin(reps: Int) = run(reps)(doCForMin)
 
-  def timeWhileGcd(reps:Int) = run(reps)(doWhileGcd)
-  def timeTailrecGcd(reps:Int) = run(reps)(doTailrecGcd)
-  def timeForeachGcd(reps:Int) = run(reps)(doForeachGcd)
-  def timeForGcd(reps:Int) = run(reps)(doForGcd)
-  def timeCForGcd(reps:Int) = run(reps)(doCForGcd)
+  def timeWhileGcd(reps: Int) = run(reps)(doWhileGcd)
+  def timeTailrecGcd(reps: Int) = run(reps)(doTailrecGcd)
+  def timeForeachGcd(reps: Int) = run(reps)(doForeachGcd)
+  def timeForGcd(reps: Int) = run(reps)(doForGcd)
+  def timeCForGcd(reps: Int) = run(reps)(doCForGcd)
 
-  def timeWhileIntArrayMultiply(reps:Int) = run(reps)(doWhileIntArrayMultiply)
-  def timeTailrecIntArrayMultiply(reps:Int) = run(reps)(doTailrecIntArrayMultiply)
-  def timeForeachIntArrayMultiply(reps:Int) = run(reps)(doForeachGcd)
-  def timeForIntArrayMultiply(reps:Int) = run(reps)(doForGcd)
-  def timeCForIntArrayMultiply(reps:Int) = run(reps)(doCForIntArrayMultiply)
+  def timeWhileIntArrayMultiply(reps: Int) = run(reps)(doWhileIntArrayMultiply)
+  def timeTailrecIntArrayMultiply(reps: Int) =
+    run(reps)(doTailrecIntArrayMultiply)
+  def timeForeachIntArrayMultiply(reps: Int) = run(reps)(doForeachGcd)
+  def timeForIntArrayMultiply(reps: Int) = run(reps)(doForGcd)
+  def timeCForIntArrayMultiply(reps: Int) = run(reps)(doCForIntArrayMultiply)
 
   def doWhileOr(): Unit = {
     var t: Long = 0L
@@ -184,7 +186,6 @@ class CForBenchmarks extends MyBenchmark {
     loop(0)
   }
 
-
   def doForeachOr(): Unit = {
     var t: Long = 0L
     val len = size - 1
@@ -314,8 +315,8 @@ class CForBenchmarks extends MyBenchmark {
   def doCForIntArrayMultiply(): Unit = {
     val arr2 = arr.clone
     val len = size
-    cfor(0)(_ < len, _ + 1) {
-      i => {
+    cfor(0)(_ < len, _ + 1) { i =>
+      {
         val value = arr2(i)
         arr2(i) = value * 2
       }

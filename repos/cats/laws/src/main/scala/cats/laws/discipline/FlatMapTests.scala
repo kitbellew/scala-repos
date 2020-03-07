@@ -11,16 +11,16 @@ trait FlatMapTests[F[_]] extends ApplyTests[F] {
   def laws: FlatMapLaws[F]
 
   def flatMap[A: Arbitrary, B: Arbitrary, C: Arbitrary](implicit
-    ArbFA: Arbitrary[F[A]],
-    ArbFB: Arbitrary[F[B]],
-    ArbFC: Arbitrary[F[C]],
-    ArbFAtoB: Arbitrary[F[A => B]],
-    ArbFBtoC: Arbitrary[F[B => C]],
-    EqFA: Eq[F[A]],
-    EqFB: Eq[F[B]],
-    EqFC: Eq[F[C]],
-    EqFABC: Eq[F[(A, B, C)]],
-    iso: Isomorphisms[F]
+      ArbFA: Arbitrary[F[A]],
+      ArbFB: Arbitrary[F[B]],
+      ArbFC: Arbitrary[F[C]],
+      ArbFAtoB: Arbitrary[F[A => B]],
+      ArbFBtoC: Arbitrary[F[B => C]],
+      EqFA: Eq[F[A]],
+      EqFB: Eq[F[B]],
+      EqFC: Eq[F[C]],
+      EqFABC: Eq[F[(A, B, C)]],
+      iso: Isomorphisms[F]
   ): RuleSet = {
     new DefaultRuleSet(
       name = "flatMap",

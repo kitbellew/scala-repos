@@ -4,7 +4,7 @@ import akka.actor._
 import com.typesafe.config.Config
 
 import lila.db.Types.Coll
-import lila.security.{ Firewall, UserSpy }
+import lila.security.{Firewall, UserSpy}
 
 final class Env(
     config: Config,
@@ -19,7 +19,8 @@ final class Env(
     emailAddress: lila.security.EmailAddress) {
 
   private object settings {
-    val CollectionPlayerAssessment = config getString "collection.player_assessment"
+    val CollectionPlayerAssessment =
+      config getString "collection.player_assessment"
     val CollectionBoosting = config getString "collection.boosting"
     val CollectionModlog = config getString "collection.modlog"
     val CollectionGamingHistory = config getString "collection.gaming_history"
@@ -60,26 +61,30 @@ final class Env(
     reportColl = reportColl,
     historyColl = db(CollectionGamingHistory))
 
-  lazy val search = new UserSearch(
-    securityApi = securityApi,
-    emailAddress = emailAddress)
+  lazy val search =
+    new UserSearch(securityApi = securityApi, emailAddress = emailAddress)
 
   // api actor
-  private val actorApi = system.actorOf(Props(new Actor {
-    override def preStart {
-      context.system.lilaBus.subscribe(self, 'finishGame, 'analysisReady)
-    }
-    def receive = {
-      case lila.hub.actorApi.mod.MarkCheater(userId) => api autoAdjust userId
-      case lila.analyse.actorApi.AnalysisReady(game, analysis) =>
-        assessApi.onAnalysisReady(game, analysis)
-      case lila.game.actorApi.FinishGame(game, whiteUserOption, blackUserOption) =>
-        (whiteUserOption |@| blackUserOption) apply {
-          case (whiteUser, blackUser) => boosting.check(game, whiteUser, blackUser) >>
-            assessApi.onGameReady(game, whiteUser, blackUser)
-        }
-    }
-  }), name = ActorName)
+  private val actorApi = system.actorOf(
+    Props(new Actor {
+      override def preStart {
+        context.system.lilaBus.subscribe(self, 'finishGame, 'analysisReady)
+      }
+      def receive = {
+        case lila.hub.actorApi.mod.MarkCheater(userId) => api autoAdjust userId
+        case lila.analyse.actorApi.AnalysisReady(game, analysis) =>
+          assessApi.onAnalysisReady(game, analysis)
+        case lila.game.actorApi
+              .FinishGame(game, whiteUserOption, blackUserOption) =>
+          (whiteUserOption |@| blackUserOption) apply {
+            case (whiteUser, blackUser) =>
+              boosting.check(game, whiteUser, blackUser) >>
+                assessApi.onGameReady(game, whiteUser, blackUser)
+          }
+      }
+    }),
+    name = ActorName
+  )
 }
 
 object Env {

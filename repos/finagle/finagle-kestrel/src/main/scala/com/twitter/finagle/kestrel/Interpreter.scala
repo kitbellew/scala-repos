@@ -11,7 +11,8 @@ import com.twitter.io.Buf
 import com.twitter.util.{StateMachine, Future}
 import com.twitter.util.StateMachine.InvalidStateTransition
 
-class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMachine {
+class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
+    extends StateMachine {
   case class NoTransaction() extends State
   case class OpenTransaction(queueName: Buf, item: Buf) extends State
   state = NoTransaction()
@@ -22,7 +23,9 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
         state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
-            val item = queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
+            val item = queues
+              .get(queueName)
+              .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
             if (item eq null)
               Values(Seq.empty)
             else
@@ -34,7 +37,9 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
         state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
-            val item = queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
+            val item = queues
+              .get(queueName)
+              .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
             state = OpenTransaction(queueName, item)
             if (item eq null)
               Values(Seq.empty)
@@ -48,7 +53,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/close")
           case OpenTransaction(txnQueueName, _) =>
-            require(queueName == txnQueueName,
+            require(
+              queueName == txnQueueName,
               "Cannot operate on a different queue than the one for which you have an open transaction")
             state = NoTransaction()
             Values(Seq.empty)
@@ -58,7 +64,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/close/open")
           case OpenTransaction(txnQueueName, _) =>
-            require(queueName == txnQueueName,
+            require(
+              queueName == txnQueueName,
               "Cannot operate on a different queue than the one for which you have an open transaction")
             state = NoTransaction()
             apply(Open(queueName, timeout))
@@ -68,7 +75,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
           case NoTransaction() =>
             throw new InvalidStateTransition("Transaction", "get/abort")
           case OpenTransaction(txnQueueName, item) =>
-            require(queueName == txnQueueName,
+            require(
+              queueName == txnQueueName,
               "Cannot operate on a different queue than the one for which you have an open transaction")
 
             queues.get(queueName).addFirst(item)
@@ -77,7 +85,8 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
         }
       case Peek(queueName, timeout) =>
         val wait = timeout.getOrElse(0.seconds)
-        val item = queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
+        val item =
+          queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
         if (item eq null)
           Values(Seq.empty)
         else
@@ -110,6 +119,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]]) extends StateMa
   }
 }
 
-class InterpreterService(interpreter: Interpreter) extends Service[Command, Response] {
+class InterpreterService(interpreter: Interpreter)
+    extends Service[Command, Response] {
   def apply(request: Command) = Future(interpreter(request))
 }

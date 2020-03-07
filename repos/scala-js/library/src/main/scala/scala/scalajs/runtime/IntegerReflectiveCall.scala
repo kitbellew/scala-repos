@@ -3,11 +3,11 @@ package scala.scalajs.runtime
 import java.lang.{Double => JDouble, Integer => JInteger}
 
 /** Explicit box for number values when doing a reflective call that was
- *  identified to be a call on Int rather than on Double (based on the
- *  result type of the method called reflectively).
- *  This class and its methods are only here to properly support reflective
- *  calls on numbers.
- */
+  *  identified to be a call on Int rather than on Double (based on the
+  *  result type of the method called reflectively).
+  *  This class and its methods are only here to properly support reflective
+  *  calls on numbers.
+  */
 class IntegerReflectiveCall(value: Int) {
 
   // Methods of scala.Int whose result type is different than in scala.Double

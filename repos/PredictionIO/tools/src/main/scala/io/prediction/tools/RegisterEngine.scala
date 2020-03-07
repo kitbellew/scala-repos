@@ -12,7 +12,6 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 package io.prediction.tools
 
 import java.io.File
@@ -37,32 +36,34 @@ object RegisterEngine extends Logging {
       jsonManifest: File,
       engineFiles: Seq[File],
       copyLocal: Boolean = false): Unit = {
-    val jsonString = try {
-      Source.fromFile(jsonManifest).mkString
-    } catch {
-      case e: java.io.FileNotFoundException =>
-        error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
-        sys.exit(1)
-    }
+    val jsonString =
+      try {
+        Source.fromFile(jsonManifest).mkString
+      } catch {
+        case e: java.io.FileNotFoundException =>
+          error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
+          sys.exit(1)
+      }
     val engineManifest = read[EngineManifest](jsonString)
 
     info(s"Registering engine ${engineManifest.id} ${engineManifest.version}")
     engineManifests.update(
-      engineManifest.copy(files = engineFiles.map(_.toURI.toString)), true)
+      engineManifest.copy(files = engineFiles.map(_.toURI.toString)),
+      true)
   }
 
   def unregisterEngine(jsonManifest: File): Unit = {
-    val jsonString = try {
-      Source.fromFile(jsonManifest).mkString
-    } catch {
-      case e: java.io.FileNotFoundException =>
-        error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
-        sys.exit(1)
-    }
+    val jsonString =
+      try {
+        Source.fromFile(jsonManifest).mkString
+      } catch {
+        case e: java.io.FileNotFoundException =>
+          error(s"Engine manifest file not found: ${e.getMessage}. Aborting.")
+          sys.exit(1)
+      }
     val fileEngineManifest = read[EngineManifest](jsonString)
-    val engineManifest = engineManifests.get(
-      fileEngineManifest.id,
-      fileEngineManifest.version)
+    val engineManifest =
+      engineManifests.get(fileEngineManifest.id, fileEngineManifest.version)
 
     engineManifest map { em =>
       val conf = new Configuration
@@ -77,8 +78,9 @@ object RegisterEngine extends Logging {
       engineManifests.delete(em.id, em.version)
       info(s"Unregistered engine ${em.id} ${em.version}")
     } getOrElse {
-      error(s"${fileEngineManifest.id} ${fileEngineManifest.version} is not " +
-        "registered.")
+      error(
+        s"${fileEngineManifest.id} ${fileEngineManifest.version} is not " +
+          "registered.")
     }
   }
 }

@@ -2,18 +2,26 @@ package mesosphere.marathon.core.matcher.base.util
 
 import mesosphere.marathon.MarathonTestHelper
 import mesosphere.marathon.core.matcher.base.OfferMatcher
-import mesosphere.marathon.core.matcher.base.OfferMatcher.{ TaskOpWithSource, MatchedTaskOps }
+import mesosphere.marathon.core.matcher.base.OfferMatcher.{
+  TaskOpWithSource,
+  MatchedTaskOps
+}
 import mesosphere.marathon.state.Timestamp
 import mesosphere.marathon.test.Mockito
 import org.apache.mesos.Protos.Offer
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ Matchers, GivenWhenThen, FunSuite }
-import org.apache.mesos.{ Protos => MesosProtos }
+import org.scalatest.{Matchers, GivenWhenThen, FunSuite}
+import org.apache.mesos.{Protos => MesosProtos}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class StopOnFirstMatchingOfferMatcherTest extends FunSuite with Mockito with GivenWhenThen with Matchers with ScalaFutures {
+class StopOnFirstMatchingOfferMatcherTest
+    extends FunSuite
+    with Mockito
+    with GivenWhenThen
+    with Matchers
+    with ScalaFutures {
   test("returns first match if non-empty") {
     Given("a sequence of matchers, the first matching")
     val f = new Fixture {
@@ -50,8 +58,12 @@ class StopOnFirstMatchingOfferMatcherTest extends FunSuite with Mockito with Giv
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId, resendThisOffer = true)),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = true)),
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = false))
       )
     }
 
@@ -67,8 +79,12 @@ class StopOnFirstMatchingOfferMatcherTest extends FunSuite with Mockito with Giv
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false)),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId, resendThisOffer = true))
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = false)),
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = true))
       )
     }
 
@@ -81,7 +97,8 @@ class StopOnFirstMatchingOfferMatcherTest extends FunSuite with Mockito with Giv
   }
 
   class Fixture {
-    lazy val offer: MesosProtos.Offer = MarathonTestHelper.makeBasicOffer().build()
+    lazy val offer: MesosProtos.Offer =
+      MarathonTestHelper.makeBasicOffer().build()
     lazy val deadline = Timestamp.now() + 30.seconds
 
     lazy val someMatch: OfferMatcher.MatchedTaskOps = {
@@ -92,13 +109,17 @@ class StopOnFirstMatchingOfferMatcherTest extends FunSuite with Mockito with Giv
       )
     }
 
-    def offerMatcher(matching: OfferMatcher.MatchedTaskOps): OfferMatcher = new OfferMatcher {
-      override def matchOffer(deadline: Timestamp, offer: Offer): Future[MatchedTaskOps] = {
-        Future.successful(matching)
+    def offerMatcher(matching: OfferMatcher.MatchedTaskOps): OfferMatcher =
+      new OfferMatcher {
+        override def matchOffer(
+            deadline: Timestamp,
+            offer: Offer): Future[MatchedTaskOps] = {
+          Future.successful(matching)
+        }
       }
-    }
 
     lazy val matchers: Seq[OfferMatcher] = Seq.empty
-    lazy val stopOnFirstMatching = new StopOnFirstMatchingOfferMatcher(matchers: _*)
+    lazy val stopOnFirstMatching = new StopOnFirstMatchingOfferMatcher(
+      matchers: _*)
   }
 }

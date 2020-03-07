@@ -25,34 +25,35 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 
 /**
- * :: DeveloperApi ::
- * Class used to perform steps (weight update) using Gradient Descent methods.
- *
- * For general minimization problems, or for regularized problems of the form
- *         min  L(w) + regParam * R(w),
- * the compute function performs the actual update step, when given some
- * (e.g. stochastic) gradient direction for the loss L(w),
- * and a desired step-size (learning rate).
- *
- * The updater is responsible to also perform the update coming from the
- * regularization term R(w) (if any regularization is used).
- */
+  * :: DeveloperApi ::
+  * Class used to perform steps (weight update) using Gradient Descent methods.
+  *
+  * For general minimization problems, or for regularized problems of the form
+  *         min  L(w) + regParam * R(w),
+  * the compute function performs the actual update step, when given some
+  * (e.g. stochastic) gradient direction for the loss L(w),
+  * and a desired step-size (learning rate).
+  *
+  * The updater is responsible to also perform the update coming from the
+  * regularization term R(w) (if any regularization is used).
+  */
 @DeveloperApi
 abstract class Updater extends Serializable {
+
   /**
-   * Compute an updated value for weights given the gradient, stepSize, iteration number and
-   * regularization parameter. Also returns the regularization value regParam * R(w)
-   * computed using the *updated* weights.
-   *
-   * @param weightsOld - Column matrix of size dx1 where d is the number of features.
-   * @param gradient - Column matrix of size dx1 where d is the number of features.
-   * @param stepSize - step size across iterations
-   * @param iter - Iteration number
-   * @param regParam - Regularization parameter
-   *
-   * @return A tuple of 2 elements. The first element is a column matrix containing updated weights,
-   *         and the second element is the regularization value computed using updated weights.
-   */
+    * Compute an updated value for weights given the gradient, stepSize, iteration number and
+    * regularization parameter. Also returns the regularization value regParam * R(w)
+    * computed using the *updated* weights.
+    *
+    * @param weightsOld - Column matrix of size dx1 where d is the number of features.
+    * @param gradient - Column matrix of size dx1 where d is the number of features.
+    * @param stepSize - step size across iterations
+    * @param iter - Iteration number
+    * @param regParam - Regularization parameter
+    *
+    * @return A tuple of 2 elements. The first element is a column matrix containing updated weights,
+    *         and the second element is the regularization value computed using updated weights.
+    */
   def compute(
       weightsOld: Vector,
       gradient: Vector,
@@ -62,10 +63,10 @@ abstract class Updater extends Serializable {
 }
 
 /**
- * :: DeveloperApi ::
- * A simple updater for gradient descent *without* any regularization.
- * Uses a step-size decreasing with the square root of the number of iterations.
- */
+  * :: DeveloperApi ::
+  * A simple updater for gradient descent *without* any regularization.
+  * Uses a step-size decreasing with the square root of the number of iterations.
+  */
 @DeveloperApi
 class SimpleUpdater extends Updater {
   override def compute(
@@ -83,24 +84,24 @@ class SimpleUpdater extends Updater {
 }
 
 /**
- * :: DeveloperApi ::
- * Updater for L1 regularized problems.
- *          R(w) = ||w||_1
- * Uses a step-size decreasing with the square root of the number of iterations.
+  * :: DeveloperApi ::
+  * Updater for L1 regularized problems.
+  *          R(w) = ||w||_1
+  * Uses a step-size decreasing with the square root of the number of iterations.
 
- * Instead of subgradient of the regularizer, the proximal operator for the
- * L1 regularization is applied after the gradient step. This is known to
- * result in better sparsity of the intermediate solution.
- *
- * The corresponding proximal operator for the L1 norm is the soft-thresholding
- * function. That is, each weight component is shrunk towards 0 by shrinkageVal.
- *
- * If w >  shrinkageVal, set weight component to w-shrinkageVal.
- * If w < -shrinkageVal, set weight component to w+shrinkageVal.
- * If -shrinkageVal < w < shrinkageVal, set weight component to 0.
- *
- * Equivalently, set weight component to signum(w) * max(0.0, abs(w) - shrinkageVal)
- */
+  * Instead of subgradient of the regularizer, the proximal operator for the
+  * L1 regularization is applied after the gradient step. This is known to
+  * result in better sparsity of the intermediate solution.
+  *
+  * The corresponding proximal operator for the L1 norm is the soft-thresholding
+  * function. That is, each weight component is shrunk towards 0 by shrinkageVal.
+  *
+  * If w >  shrinkageVal, set weight component to w-shrinkageVal.
+  * If w < -shrinkageVal, set weight component to w+shrinkageVal.
+  * If -shrinkageVal < w < shrinkageVal, set weight component to 0.
+  *
+  * Equivalently, set weight component to signum(w) * max(0.0, abs(w) - shrinkageVal)
+  */
 @DeveloperApi
 class L1Updater extends Updater {
   override def compute(
@@ -128,11 +129,11 @@ class L1Updater extends Updater {
 }
 
 /**
- * :: DeveloperApi ::
- * Updater for L2 regularized problems.
- *          R(w) = 1/2 ||w||^2
- * Uses a step-size decreasing with the square root of the number of iterations.
- */
+  * :: DeveloperApi ::
+  * Updater for L2 regularized problems.
+  *          R(w) = 1/2 ||w||^2
+  * Uses a step-size decreasing with the square root of the number of iterations.
+  */
 @DeveloperApi
 class SquaredL2Updater extends Updater {
   override def compute(
@@ -154,4 +155,3 @@ class SquaredL2Updater extends Updater {
     (Vectors.fromBreeze(brzWeights), 0.5 * regParam * norm * norm)
   }
 }
-

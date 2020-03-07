@@ -13,16 +13,20 @@ class HeaderSpec extends FreeSpec with Matchers {
   "ModeledCompanion should" - {
     "provide parseFromValueString method" - {
       "successful parse run" in {
-        headers.`Cache-Control`.parseFromValueString("private, no-cache, no-cache=Set-Cookie, proxy-revalidate, s-maxage=1000") shouldEqual
-          Right(headers.`Cache-Control`(
-            CacheDirectives.`private`(),
-            CacheDirectives.`no-cache`,
-            CacheDirectives.`no-cache`("Set-Cookie"),
-            CacheDirectives.`proxy-revalidate`,
-            CacheDirectives.`s-maxage`(1000)))
+        headers.`Cache-Control`.parseFromValueString(
+          "private, no-cache, no-cache=Set-Cookie, proxy-revalidate, s-maxage=1000") shouldEqual
+          Right(
+            headers.`Cache-Control`(
+              CacheDirectives.`private`(),
+              CacheDirectives.`no-cache`,
+              CacheDirectives.`no-cache`("Set-Cookie"),
+              CacheDirectives.`proxy-revalidate`,
+              CacheDirectives.`s-maxage`(1000)
+            ))
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) = headers.`Last-Modified`.parseFromValueString("abc")
+        val Left(List(ErrorInfo(summary, detail))) =
+          headers.`Last-Modified`.parseFromValueString("abc")
         summary shouldEqual "Illegal HTTP header 'Last-Modified': Invalid input 'a', expected IMF-fixdate, asctime-date or '0' (line 1, column 1)"
         detail shouldEqual
           """abc
@@ -35,10 +39,12 @@ class HeaderSpec extends FreeSpec with Matchers {
   "MediaType should" - {
     "provide parse method" - {
       "successful parse run" in {
-        MediaType.parse("application/gnutar") shouldEqual Right(MediaTypes.`application/gnutar`)
+        MediaType.parse("application/gnutar") shouldEqual Right(
+          MediaTypes.`application/gnutar`)
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) = MediaType.parse("application//gnutar")
+        val Left(List(ErrorInfo(summary, detail))) =
+          MediaType.parse("application//gnutar")
         summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input '/', expected subtype (line 1, column 13)"
         detail shouldEqual
           """application//gnutar
@@ -50,10 +56,12 @@ class HeaderSpec extends FreeSpec with Matchers {
   "ContentType should" - {
     "provide parse method" - {
       "successful parse run" in {
-        ContentType.parse("text/plain; charset=UTF8") shouldEqual Right(MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`))
+        ContentType.parse("text/plain; charset=UTF8") shouldEqual Right(
+          MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`))
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) = ContentType.parse("text/plain, charset=UTF8")
+        val Left(List(ErrorInfo(summary, detail))) =
+          ContentType.parse("text/plain, charset=UTF8")
         summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input ',', expected tchar, OWS, ws or 'EOI' (line 1, column 11)"
         detail shouldEqual
           """text/plain, charset=UTF8
@@ -72,7 +80,8 @@ class HeaderSpec extends FreeSpec with Matchers {
         `Accept-Language`(LanguageRange(Language("sv_SE"))),
         `Access-Control-Request-Headers`("Host"),
         `Access-Control-Request-Method`(HttpMethods.GET),
-        Authorization(BasicHttpCredentials("johan", "correcthorsebatterystaple")),
+        Authorization(
+          BasicHttpCredentials("johan", "correcthorsebatterystaple")),
         `Cache-Control`(CacheDirectives.`max-age`(3000)),
         Connection("upgrade"),
         `Content-Length`(2000),
@@ -90,7 +99,8 @@ class HeaderSpec extends FreeSpec with Matchers {
         `If-Unmodified-Since`(DateTime(2016, 2, 4, 9, 9, 0)),
         Link(Uri("http://example.com"), LinkParams.`title*`("example")),
         Origin(HttpOrigin("http", Host("example.com"))),
-        `Proxy-Authorization`(BasicHttpCredentials("johan", "correcthorsebatterystaple")),
+        `Proxy-Authorization`(
+          BasicHttpCredentials("johan", "correcthorsebatterystaple")),
         Range(RangeUnits.Bytes, Vector(ByteRange(1, 1024))),
         Referer(Uri("http://example.com/")),
         `Sec-WebSocket-Protocol`(Vector("chat", "superchat")),
@@ -100,11 +110,10 @@ class HeaderSpec extends FreeSpec with Matchers {
         Upgrade(Vector(UpgradeProtocol("HTTP", Some("2.0")))),
         `User-Agent`("Akka HTTP Client 2.4"),
         `X-Forwarded-For`(RemoteAddress(InetAddress.getByName("192.168.0.1"))),
-        `X-Real-Ip`(RemoteAddress(InetAddress.getByName("192.168.1.1"))))
+        `X-Real-Ip`(RemoteAddress(InetAddress.getByName("192.168.1.1")))
+      )
 
-      requestHeaders.foreach { header ⇒
-        header shouldBe 'renderInRequests
-      }
+      requestHeaders.foreach { header ⇒ header shouldBe 'renderInRequests }
     }
   }
 
@@ -142,11 +151,10 @@ class HeaderSpec extends FreeSpec with Matchers {
         `Set-Cookie`(HttpCookie("sessionId", "b0eb8b8b3ad246")),
         `Transfer-Encoding`(TransferEncodings.chunked),
         Upgrade(Vector(UpgradeProtocol("HTTP", Some("2.0")))),
-        `WWW-Authenticate`(HttpChallenge("Basic", "example.com")))
+        `WWW-Authenticate`(HttpChallenge("Basic", "example.com"))
+      )
 
-      responseHeaders.foreach { header ⇒
-        header shouldBe 'renderInResponses
-      }
+      responseHeaders.foreach { header ⇒ header shouldBe 'renderInResponses }
     }
   }
 }

@@ -5,9 +5,9 @@ import org.jetbrains.plugins.scala.codeInsight.intention.expression.ReplaceTypeC
 import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
 
 /**
- * Nikolay.Tropin
- * 5/16/13
- */
+  * Nikolay.Tropin
+  * 5/16/13
+  */
 class ReplaceTypeCheckWithMatchIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = ReplaceTypeCheckWithMatchIntention.familyName
 
@@ -255,6 +255,5 @@ class ReplaceTypeCheckWithMatchIntentionTest extends ScalaIntentionTestBase {
         |}"""
     doTest(text, result)
   }
-
 
 }

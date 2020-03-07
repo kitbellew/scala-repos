@@ -4,11 +4,14 @@
 
 package akka.http.scaladsl.server
 
-import org.scalatest.{ WordSpec, Suite, Matchers }
+import org.scalatest.{WordSpec, Suite, Matchers}
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 
-trait GenericRoutingSpec extends Matchers with Directives with ScalatestRouteTest { this: Suite ⇒
+trait GenericRoutingSpec
+    extends Matchers
+    with Directives
+    with ScalatestRouteTest { this: Suite ⇒
   val Ok = HttpResponse()
   val completeOk = complete(Ok)
 

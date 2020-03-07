@@ -1,11 +1,18 @@
 import com.twitter.conversions.time._
 import com.twitter.finagle._
 import com.twitter.finagle.client.{StackClient, Transporter, StdStackClient}
-import com.twitter.finagle.dispatch.{SerialClientDispatcher, SerialServerDispatcher}
+import com.twitter.finagle.dispatch.{
+  SerialClientDispatcher,
+  SerialServerDispatcher
+}
 import com.twitter.finagle.filter.MaskCancelFilter
 import com.twitter.finagle.netty3.{Netty3Transporter, Netty3Listener}
 import com.twitter.finagle.server.{StackServer, Listener, StdStackServer}
-import com.twitter.finagle.service.{RetryExceptionsFilter, RetryPolicy, TimeoutFilter}
+import com.twitter.finagle.service.{
+  RetryExceptionsFilter,
+  RetryPolicy,
+  TimeoutFilter
+}
 import com.twitter.finagle.transport.Transport
 import com.twitter.finagle.util.DefaultTimer
 import com.twitter.util.{Future, Await}
@@ -14,8 +21,8 @@ import java.net.SocketAddress
 object Echo extends Client[String, String] with Server[String, String] {
   //#client
   case class Client(
-    stack: Stack[ServiceFactory[String, String]] = StackClient.newStack,
-    params: Stack.Params = StackClient.defaultParams
+      stack: Stack[ServiceFactory[String, String]] = StackClient.newStack,
+      params: Stack.Params = StackClient.defaultParams
   ) extends StdStackClient[String, String, Client] {
     protected type In = String
     protected type Out = String
@@ -44,18 +51,17 @@ object Echo extends Client[String, String] with Server[String, String] {
   def newClient(dest: Name, label: String): ServiceFactory[String, String] =
     client.newClient(dest, label)
 
-
   //#server
   case class Server(
-    stack: Stack[ServiceFactory[String, String]] = StackServer.newStack,
-    params: Stack.Params = StackServer.defaultParams
+      stack: Stack[ServiceFactory[String, String]] = StackServer.newStack,
+      params: Stack.Params = StackServer.defaultParams
   ) extends StdStackServer[String, String, Server] {
     protected type In = String
     protected type Out = String
 
     protected def copy1(
-      stack: Stack[ServiceFactory[String, String]] = this.stack,
-      params: Stack.Params = this.params
+        stack: Stack[ServiceFactory[String, String]] = this.stack,
+        params: Stack.Params = this.params
     ): Server = copy(stack, params)
 
     //#serverlistener
@@ -72,11 +78,11 @@ object Echo extends Client[String, String] with Server[String, String] {
 
   val server = Server()
 
-  def serve(addr: SocketAddress,
+  def serve(
+      addr: SocketAddress,
       service: ServiceFactory[String, String]): ListeningServer =
     server.serve(addr, service)
 }
-
 
 object SimpleListenerExample {
   def main(args: Array[String]): Unit = {
@@ -88,7 +94,8 @@ object SimpleListenerExample {
     val serveTransport = (t: Transport[String, String]) =>
       new SerialServerDispatcher(t, service)
     val listener = Netty3Listener[String, String](
-      StringServerPipeline, StackServer.defaultParams)
+      StringServerPipeline,
+      StackServer.defaultParams)
     val server = listener.listen(address) { serveTransport(_) }
     //#simplelisten
 
@@ -112,12 +119,11 @@ object BasicClient {
   //#explicitbridge
   val addr = new java.net.InetSocketAddress("localhost", 8080)
   val transporter = Netty3Transporter[String, String](
-    StringClientPipeline, StackClient.defaultParams)
+    StringClientPipeline,
+    StackClient.defaultParams)
 
   val bridge: Future[Service[String, String]] =
-    transporter(addr) map { transport =>
-      new SerialClientDispatcher(transport)
-    }
+    transporter(addr) map { transport => new SerialClientDispatcher(transport) }
 
   val client = new Service[String, String] {
     def apply(req: String) = bridge flatMap { svc =>
@@ -159,8 +165,8 @@ object RobustClientExample extends App {
   //#robustclient
   val newClient =
     retry andThen
-    timeout andThen
-    maskCancel andThen client
+      timeout andThen
+      maskCancel andThen client
 
   val result = newClient("hello")
   println(Await.result(result))

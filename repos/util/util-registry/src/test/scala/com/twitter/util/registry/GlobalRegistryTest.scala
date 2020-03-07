@@ -12,7 +12,9 @@ class GlobalRegistryTest extends RegistryTest {
 
   val unique = Seq("__flibberty", "__gibbert", "__warbly", "$$parkour")
 
-  private[this] def find(haystack: Iterable[Entry], needle: Seq[String]): Option[Entry] =
+  private[this] def find(
+      haystack: Iterable[Entry],
+      needle: Seq[String]): Option[Entry] =
     haystack.find({ case Entry(key, value) => key == needle })
 
   test(s"$name can write, swap registry, and then read the old write") {

@@ -10,13 +10,15 @@ trait BifoldableTests[F[_, _]] extends Laws {
   def laws: BifoldableLaws[F]
 
   def bifoldable[A: Arbitrary, B: Arbitrary, C: Arbitrary: Monoid: Eq](implicit
-    ArbFAB: Arbitrary[F[A, B]]
+      ArbFAB: Arbitrary[F[A, B]]
   ): RuleSet =
     new DefaultRuleSet(
       name = "bifoldable",
       parent = None,
-      "bifoldLeft consistent with bifoldMap" -> forAll(laws.bifoldLeftConsistentWithBifoldMap[A, B, C] _),
-      "bifoldRight consistent with bifoldMap" -> forAll(laws.bifoldRightConsistentWithBifoldMap[A, B, C] _)
+      "bifoldLeft consistent with bifoldMap" -> forAll(
+        laws.bifoldLeftConsistentWithBifoldMap[A, B, C] _),
+      "bifoldRight consistent with bifoldMap" -> forAll(
+        laws.bifoldRightConsistentWithBifoldMap[A, B, C] _)
     )
 }
 

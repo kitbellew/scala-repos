@@ -4,7 +4,6 @@
 
 import collection._
 
-
 // test conversions between collections
 object Test {
 

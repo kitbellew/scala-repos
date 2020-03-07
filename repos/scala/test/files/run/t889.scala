@@ -4,6 +4,6 @@ object Test extends App {
 
   a match {
     case Seq("a", "b", rest @ _*) => println("a, b, " + rest)
-    case Seq(first, rest @ _*) => println("first: " + first + ", rest: " + rest)
+    case Seq(first, rest @ _*)    => println("first: " + first + ", rest: " + rest)
   }
 }

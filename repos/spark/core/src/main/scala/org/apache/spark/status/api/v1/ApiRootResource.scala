@@ -30,15 +30,15 @@ import org.apache.spark.SecurityManager
 import org.apache.spark.ui.SparkUI
 
 /**
- * Main entry point for serving spark application metrics as json, using JAX-RS.
- *
- * Each resource should have endpoints that return **public** classes defined in api.scala.  Mima
- * binary compatibility checks ensure that we don't inadvertently make changes that break the api.
- * The returned objects are automatically converted to json by jackson with JacksonMessageWriter.
- * In addition, there are a number of tests in HistoryServerSuite that compare the json to "golden
- * files".  Any changes and additions should be reflected there as well -- see the notes in
- * HistoryServerSuite.
- */
+  * Main entry point for serving spark application metrics as json, using JAX-RS.
+  *
+  * Each resource should have endpoints that return **public** classes defined in api.scala.  Mima
+  * binary compatibility checks ensure that we don't inadvertently make changes that break the api.
+  * The returned objects are automatically converted to json by jackson with JacksonMessageWriter.
+  * In addition, there are a number of tests in HistoryServerSuite that compare the json to "golden
+  * files".  Any changes and additions should be reflected there as well -- see the notes in
+  * HistoryServerSuite.
+  */
 @Path("/v1")
 private[v1] class ApiRootResource extends UIRootFromServletContext {
 
@@ -56,39 +56,29 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
   def getJobs(
       @PathParam("appId") appId: String,
       @PathParam("attemptId") attemptId: String): AllJobsResource = {
-    uiRoot.withSparkUI(appId, Some(attemptId)) { ui =>
-      new AllJobsResource(ui)
-    }
+    uiRoot.withSparkUI(appId, Some(attemptId)) { ui => new AllJobsResource(ui) }
   }
 
   @Path("applications/{appId}/jobs")
   def getJobs(@PathParam("appId") appId: String): AllJobsResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new AllJobsResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new AllJobsResource(ui) }
   }
 
   @Path("applications/{appId}/jobs/{jobId: \\d+}")
   def getJob(@PathParam("appId") appId: String): OneJobResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new OneJobResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new OneJobResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/jobs/{jobId: \\d+}")
   def getJob(
       @PathParam("appId") appId: String,
       @PathParam("attemptId") attemptId: String): OneJobResource = {
-    uiRoot.withSparkUI(appId, Some(attemptId)) { ui =>
-      new OneJobResource(ui)
-    }
+    uiRoot.withSparkUI(appId, Some(attemptId)) { ui => new OneJobResource(ui) }
   }
 
   @Path("applications/{appId}/executors")
   def getExecutors(@PathParam("appId") appId: String): ExecutorListResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new ExecutorListResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new ExecutorListResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/executors")
@@ -99,13 +89,9 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
       new ExecutorListResource(ui)
     }
   }
-
-
   @Path("applications/{appId}/stages")
   def getStages(@PathParam("appId") appId: String): AllStagesResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new AllStagesResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new AllStagesResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/stages")
@@ -119,9 +105,7 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
 
   @Path("applications/{appId}/stages/{stageId: \\d+}")
   def getStage(@PathParam("appId") appId: String): OneStageResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new OneStageResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new OneStageResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/stages/{stageId: \\d+}")
@@ -135,34 +119,26 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
 
   @Path("applications/{appId}/storage/rdd")
   def getRdds(@PathParam("appId") appId: String): AllRDDResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new AllRDDResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new AllRDDResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/storage/rdd")
   def getRdds(
       @PathParam("appId") appId: String,
       @PathParam("attemptId") attemptId: String): AllRDDResource = {
-    uiRoot.withSparkUI(appId, Some(attemptId)) { ui =>
-      new AllRDDResource(ui)
-    }
+    uiRoot.withSparkUI(appId, Some(attemptId)) { ui => new AllRDDResource(ui) }
   }
 
   @Path("applications/{appId}/storage/rdd/{rddId: \\d+}")
   def getRdd(@PathParam("appId") appId: String): OneRDDResource = {
-    uiRoot.withSparkUI(appId, None) { ui =>
-      new OneRDDResource(ui)
-    }
+    uiRoot.withSparkUI(appId, None) { ui => new OneRDDResource(ui) }
   }
 
   @Path("applications/{appId}/{attemptId}/storage/rdd/{rddId: \\d+}")
   def getRdd(
       @PathParam("appId") appId: String,
       @PathParam("attemptId") attemptId: String): OneRDDResource = {
-    uiRoot.withSparkUI(appId, Some(attemptId)) { ui =>
-      new OneRDDResource(ui)
-    }
+    uiRoot.withSparkUI(appId, Some(attemptId)) { ui => new OneRDDResource(ui) }
   }
 
   @Path("applications/{appId}/logs")
@@ -182,14 +158,18 @@ private[v1] class ApiRootResource extends UIRootFromServletContext {
 private[spark] object ApiRootResource {
 
   def getServletHandler(uiRoot: UIRoot): ServletContextHandler = {
-    val jerseyContext = new ServletContextHandler(ServletContextHandler.NO_SESSIONS)
+    val jerseyContext = new ServletContextHandler(
+      ServletContextHandler.NO_SESSIONS)
     jerseyContext.setContextPath("/api")
     val holder: ServletHolder = new ServletHolder(classOf[ServletContainer])
-    holder.setInitParameter("com.sun.jersey.config.property.resourceConfigClass",
+    holder.setInitParameter(
+      "com.sun.jersey.config.property.resourceConfigClass",
       "com.sun.jersey.api.core.PackagesResourceConfig")
-    holder.setInitParameter("com.sun.jersey.config.property.packages",
+    holder.setInitParameter(
+      "com.sun.jersey.config.property.packages",
       "org.apache.spark.status.api.v1")
-    holder.setInitParameter(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS,
+    holder.setInitParameter(
+      ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS,
       classOf[SecurityFilter].getCanonicalName)
     UIRootFromServletContext.setUiRoot(jerseyContext, uiRoot)
     jerseyContext.addServlet(holder, "/*")
@@ -198,30 +178,35 @@ private[spark] object ApiRootResource {
 }
 
 /**
- * This trait is shared by the all the root containers for application UI information --
- * the HistoryServer, the Master UI, and the application UI.  This provides the common
- * interface needed for them all to expose application info as json.
- */
+  * This trait is shared by the all the root containers for application UI information --
+  * the HistoryServer, the Master UI, and the application UI.  This provides the common
+  * interface needed for them all to expose application info as json.
+  */
 private[spark] trait UIRoot {
   def getSparkUI(appKey: String): Option[SparkUI]
   def getApplicationInfoList: Iterator[ApplicationInfo]
 
   /**
-   * Write the event logs for the given app to the [[ZipOutputStream]] instance. If attemptId is
-   * [[None]], event logs for all attempts of this application will be written out.
-   */
-  def writeEventLogs(appId: String, attemptId: Option[String], zipStream: ZipOutputStream): Unit = {
-    Response.serverError()
+    * Write the event logs for the given app to the [[ZipOutputStream]] instance. If attemptId is
+    * [[None]], event logs for all attempts of this application will be written out.
+    */
+  def writeEventLogs(
+      appId: String,
+      attemptId: Option[String],
+      zipStream: ZipOutputStream): Unit = {
+    Response
+      .serverError()
       .entity("Event logs are only available through the history server.")
       .status(Response.Status.SERVICE_UNAVAILABLE)
       .build()
   }
 
   /**
-   * Get the spark UI with the given appID, and apply a function
-   * to it.  If there is no such app, throw an appropriate exception
-   */
-  def withSparkUI[T](appId: String, attemptId: Option[String])(f: SparkUI => T): T = {
+    * Get the spark UI with the given appID, and apply a function
+    * to it.  If there is no such app, throw an appropriate exception
+    */
+  def withSparkUI[T](appId: String, attemptId: Option[String])(
+      f: SparkUI => T): T = {
     val appKey = attemptId.map(appId + "/" + _).getOrElse(appId)
     getSparkUI(appKey) match {
       case Some(ui) =>
@@ -252,28 +237,31 @@ private[v1] trait UIRootFromServletContext {
   def uiRoot: UIRoot = UIRootFromServletContext.getUiRoot(servletContext)
 }
 
-private[v1] class NotFoundException(msg: String) extends WebApplicationException(
-  new NoSuchElementException(msg),
-    Response
-      .status(Response.Status.NOT_FOUND)
-      .entity(ErrorWrapper(msg))
-      .build()
-)
+private[v1] class NotFoundException(msg: String)
+    extends WebApplicationException(
+      new NoSuchElementException(msg),
+      Response
+        .status(Response.Status.NOT_FOUND)
+        .entity(ErrorWrapper(msg))
+        .build()
+    )
 
-private[v1] class BadParameterException(msg: String) extends WebApplicationException(
-  new IllegalArgumentException(msg),
-  Response
-    .status(Response.Status.BAD_REQUEST)
-    .entity(ErrorWrapper(msg))
-    .build()
-) {
+private[v1] class BadParameterException(msg: String)
+    extends WebApplicationException(
+      new IllegalArgumentException(msg),
+      Response
+        .status(Response.Status.BAD_REQUEST)
+        .entity(ErrorWrapper(msg))
+        .build()
+    ) {
   def this(param: String, exp: String, actual: String) = {
-    this(raw"""Bad value for parameter "$param".  Expected a $exp, got "$actual"""")
+    this(
+      raw"""Bad value for parameter "$param".  Expected a $exp, got "$actual"""")
   }
 }
 
 /**
- * Signal to JacksonMessageWriter to not convert the message into json (which would result in an
- * extra set of quotes).
- */
+  * Signal to JacksonMessageWriter to not convert the message into json (which would result in an
+  * extra set of quotes).
+  */
 private[v1] case class ErrorWrapper(s: String)

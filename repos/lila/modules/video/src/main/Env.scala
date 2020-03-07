@@ -1,6 +1,6 @@
 package lila.video
 
-import akka.actor.{ ActorSelection, ActorSystem }
+import akka.actor.{ActorSelection, ActorSystem}
 import com.typesafe.config.Config
 import scala.concurrent.duration._
 
@@ -24,13 +24,9 @@ final class Env(
   }
   import settings._
 
-  lazy val api = new VideoApi(
-    videoColl = videoColl,
-    viewColl = viewColl)
+  lazy val api = new VideoApi(videoColl = videoColl, viewColl = viewColl)
 
-  private lazy val sheet = new Sheet(
-    url = SheetUrl,
-    api = api)
+  private lazy val sheet = new Sheet(url = SheetUrl, api = api)
 
   private lazy val youtube = new Youtube(
     url = YoutubeUrl,

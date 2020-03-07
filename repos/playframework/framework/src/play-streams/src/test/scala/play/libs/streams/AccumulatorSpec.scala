@@ -7,18 +7,18 @@ import java.util.concurrent.{
   TimeUnit
 }
 
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.compat.java8.FutureConverters
 
 import akka.actor.ActorSystem
-import akka.stream.javadsl.{ Flow, Source, Sink }
-import akka.stream.{ ActorMaterializer, Materializer }
-import akka.japi.function.{ Function => JFn, Function2 => JFn2 }
+import akka.stream.javadsl.{Flow, Source, Sink}
+import akka.stream.{ActorMaterializer, Materializer}
+import akka.japi.function.{Function => JFn, Function2 => JFn2}
 
-import org.reactivestreams.{ Subscription, Subscriber, Publisher }
+import org.reactivestreams.{Subscription, Subscriber, Publisher}
 
 object AccumulatorSpec extends org.specs2.mutable.Specification {
   import scala.collection.JavaConversions.asJavaIterable
@@ -34,22 +34,25 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
   }
 
   def sum: Accumulator[Int, Int] =
-    Accumulator.fromSink(Sink.fold[Int, Int](0,
-      new JFn2[Int, Int, Int] { def apply(a: Int, b: Int) = a + b }))
+    Accumulator.fromSink(
+      Sink.fold[Int, Int](
+        0,
+        new JFn2[Int, Int, Int] { def apply(a: Int, b: Int) = a + b }))
 
   def source = Source from asJavaIterable(1 to 3)
   def sawait[T](f: Future[T]) = Await.result(f, 10.seconds)
   def await[T](f: CompletionStage[T]) =
     f.toCompletableFuture.get(10, TimeUnit.SECONDS)
 
-  def errorSource[T] = Source.fromPublisher(new Publisher[T] {
-    def subscribe(s: Subscriber[_ >: T]) = {
-      s.onSubscribe(new Subscription {
-        def cancel() = s.onComplete()
-        def request(n: Long) = s.onError(new RuntimeException("error"))
-      })
-    }
-  })
+  def errorSource[T] =
+    Source.fromPublisher(new Publisher[T] {
+      def subscribe(s: Subscriber[_ >: T]) = {
+        s.onSubscribe(new Subscription {
+          def cancel() = s.onComplete()
+          def request(n: Long) = s.onError(new RuntimeException("error"))
+        })
+      }
+    })
 
   "an accumulator" should {
     "be flattenable from a future of itself" in {
@@ -71,8 +74,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(source, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "failed")
+            cause.isInstanceOf[
+              RuntimeException] must beTrue and (cause.getMessage must_== "failed")
         }
       }
 
@@ -85,8 +88,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(errorSource, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "error")
+            cause.isInstanceOf[
+              RuntimeException] must beTrue and (cause.getMessage must_== "error")
         }
       }
     }
@@ -99,8 +102,10 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
               FutureConverters.toScala(f)
           })
 
-        sawait(play.api.libs.streams.Accumulator(sink.asScala).
-          run(source.asScala)) must_== 6
+        sawait(
+          play.api.libs.streams
+            .Accumulator(sink.asScala)
+            .run(source.asScala)) must_== 6
       }
     }
   }

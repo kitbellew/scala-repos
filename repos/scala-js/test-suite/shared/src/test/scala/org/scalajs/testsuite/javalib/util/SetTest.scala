@@ -191,10 +191,11 @@ trait SetTest extends CollectionTest {
       assertTrue(hs.contains("TWO"))
       assertTrue(hs.contains(null))
     } else {
-      expectThrows(classOf[Exception], {
-        val l = List[String]("ONE", "TWO", (null: String))
-        hs.addAll(asJavaCollection(l))
-      })
+      expectThrows(
+        classOf[Exception], {
+          val l = List[String]("ONE", "TWO", (null: String))
+          hs.addAll(asJavaCollection(l))
+        })
     }
   }
 
