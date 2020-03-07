@@ -101,8 +101,9 @@ abstract class StatsSampleSpec
       system.actorOf(Props[StatsWorker], "statsWorker")
       system.actorOf(Props[StatsService], "statsService")
 
-      receiveN(3).collect { case MemberUp(m) => m.address }.toSet should be(
-        Set(firstAddress, secondAddress, thirdAddress))
+      receiveN(3).collect {
+        case MemberUp(m) => m.address
+      }.toSet should be(Set(firstAddress, secondAddress, thirdAddress))
 
       Cluster(system).unsubscribe(testActor)
 

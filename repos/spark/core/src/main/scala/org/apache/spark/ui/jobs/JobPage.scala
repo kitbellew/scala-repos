@@ -163,7 +163,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
 
     <span class="expand-job-timeline">
       <span class="expand-job-timeline-arrow arrow-closed"></span>
-      <a data-toggle="tooltip" title={ToolTips.STAGE_TIMELINE} data-placement="right">
+      <a data-toggle="tooltip" title={
+      ToolTips.STAGE_TIMELINE
+    } data-placement="right">
         Event Timeline
       </a>
     </span> ++
@@ -360,7 +362,9 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           pendingOrSkippedStagesTable.toNodeSeq
       }
       if (shouldShowCompletedStages) {
-        content ++= <h4 id="completed">Completed Stages ({completedStages.size})</h4> ++
+        content ++= <h4 id="completed">Completed Stages ({
+          completedStages.size
+        })</h4> ++
           completedStagesTable.toNodeSeq
       }
       if (shouldShowSkippedStages) {

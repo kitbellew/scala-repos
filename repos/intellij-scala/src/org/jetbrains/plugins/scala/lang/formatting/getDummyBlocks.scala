@@ -526,7 +526,9 @@ object getDummyBlocks {
         } else if (isCorrectBlock(child)) {
           subBlocks.addAll(getTemplateParentsBlocks(child, block))
         }
-      } while (child != lastNode && { child = child.getTreeNext; child != null })
+      } while (child != lastNode && {
+        child = child.getTreeNext; child != null
+      })
     }
 
     //it is not used right now, but could come in handy later

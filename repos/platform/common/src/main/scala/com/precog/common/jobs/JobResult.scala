@@ -65,8 +65,9 @@ trait JobResultSerialization {
           JField("content", JString(Base64.encodeBase64String(result.content))),
           JField(
             "mimeTypes",
-            JArray(
-              result.mimeTypes map { mimeType => JString(mimeType.value) }))
+            JArray(result.mimeTypes map { mimeType =>
+              JString(mimeType.value)
+            }))
         ))
   }
 

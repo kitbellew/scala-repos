@@ -193,7 +193,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
 
     <span class="expand-application-timeline">
       <span class="expand-application-timeline-arrow arrow-closed"></span>
-      <a data-toggle="tooltip" title={ToolTips.JOB_TIMELINE} data-placement="right">
+      <a data-toggle="tooltip" title={
+      ToolTips.JOB_TIMELINE
+    } data-placement="right">
         Event Timeline
       </a>
     </span> ++
@@ -370,7 +372,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           activeJobsTable
       }
       if (shouldShowCompletedJobs) {
-        content ++= <h4 id="completed">Completed Jobs ({completedJobNumStr})</h4> ++
+        content ++= <h4 id="completed">Completed Jobs ({
+          completedJobNumStr
+        })</h4> ++
           completedJobsTable
       }
       if (shouldShowFailedJobs) {

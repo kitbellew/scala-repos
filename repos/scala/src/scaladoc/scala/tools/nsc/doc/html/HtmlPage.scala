@@ -122,7 +122,9 @@ abstract class HtmlPage extends Page { thisPage =>
             ) => // html requires sub ULs to be put into the last LI
           xmlList.init ++ <li>{xmlList.last.child ++ blockToHtml(item)}</li>
         case Paragraph(inline) =>
-          xmlList :+ <li>{inlineToHtml(inline)}</li> // LIs are blocks, no need to use Ps
+          xmlList :+ <li>{
+            inlineToHtml(inline)
+          }</li> // LIs are blocks, no need to use Ps
         case block =>
           xmlList :+ <li>{blockToHtml(block)}</li>
       }

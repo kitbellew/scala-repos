@@ -111,8 +111,9 @@ final class CookedReader(
         case (segId, file0) =>
           val file =
             if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
-          read(file) { channel => segmentFormat.reader.readSegment(channel) }
-            .valueOr(throw _)
+          read(file) { channel =>
+            segmentFormat.reader.readSegment(channel)
+          }.valueOr(throw _)
       }
     }
 

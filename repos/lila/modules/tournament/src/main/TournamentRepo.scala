@@ -256,8 +256,9 @@ object TournamentRepo {
 
   def scheduledDedup: Fu[List[Tournament]] = scheduledCreated map {
     import Schedule.Freq
-    _.flatMap { tour => tour.schedule map (tour -> _) }
-      .foldLeft(List[Tournament]() -> none[Freq]) {
+    _.flatMap { tour =>
+      tour.schedule map (tour -> _)
+    }.foldLeft(List[Tournament]() -> none[Freq]) {
         case ((tours, skip), (_, sched)) if skip.contains(sched.freq) =>
           (tours, skip)
         case ((tours, skip), (tour, sched)) =>

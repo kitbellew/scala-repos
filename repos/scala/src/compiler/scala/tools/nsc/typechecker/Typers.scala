@@ -4378,7 +4378,9 @@ trait Typers
               AnnotationInfo(
                 annType,
                 List(),
-                nvPairs map { p => (p._1, p._2.get) })
+                nvPairs map { p =>
+                  (p._1, p._2.get)
+                })
                 .setOriginal(Apply(typedFun, args).setPos(ann.pos))
           }
         } else {

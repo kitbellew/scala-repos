@@ -376,7 +376,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       for {
         // it's necessary to group by path then traverse since each path will respond to ingest independently.
         // -- a bit of a leak of implementation detail, but that's the actor model for you.
-        allResults <- (data groupBy { case (offset, msg) => msg.path }).toStream traverse {
+        allResults <- (data groupBy {
+          case (offset, msg) => msg.path
+        }).toStream traverse {
           case (path, subset) =>
             (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
         }

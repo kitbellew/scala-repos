@@ -174,7 +174,9 @@ trait PullRequestsControllerBase extends ControllerBase {
                   JGitUtil.getShaByRef(owner, name, pullreq.branch) != Some(
                     pullreq.commitIdFrom),
                 needStatusCheck = context.loginAccount
-                  .map { u => branchProtection.needStatusCheck(u.userName) }
+                  .map { u =>
+                    branchProtection.needStatusCheck(u.userName)
+                  }
                   .getOrElse(true),
                 hasUpdatePermission = hasWritePermission(
                   pullreq.requestUserName,

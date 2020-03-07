@@ -21,7 +21,9 @@ package scalaguide.http.scalasessionflash {
         def index = Action { request =>
           request.session
             .get("connected")
-            .map { user => Ok("Hello " + user) }
+            .map { user =>
+              Ok("Hello " + user)
+            }
             .getOrElse {
               Unauthorized("Oops, you are not connected")
             }

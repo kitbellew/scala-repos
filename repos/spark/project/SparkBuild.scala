@@ -875,7 +875,9 @@ object CopyDependencies {
 
       (dependencyClasspath in Compile).value
         .map(_.data)
-        .filter { jar => jar.isFile() }
+        .filter { jar =>
+          jar.isFile()
+        }
         .foreach { jar =>
           val destJar = new File(dest, jar.getName())
           if (destJar.isFile()) {

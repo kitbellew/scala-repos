@@ -17,8 +17,9 @@ object SecuritySpec extends PlaySpecification {
       status(TestAction { req => Results.Ok(req.user) }(FakeRequest())) must_== UNAUTHORIZED
     }
     "allow authenticated requests" in withApplication {
-      val result = TestAction { req => Results.Ok(req.user) }(
-        FakeRequest().withSession("username" -> "john"))
+      val result = TestAction { req =>
+        Results.Ok(req.user)
+      }(FakeRequest().withSession("username" -> "john"))
       status(result) must_== OK
       contentAsString(result) must_== "john"
     }

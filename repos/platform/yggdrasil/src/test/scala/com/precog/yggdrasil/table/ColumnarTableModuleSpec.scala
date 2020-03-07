@@ -232,7 +232,9 @@ trait ColumnarTableModuleSpec[M[+_]]
     "verify renderJson round tripping" in {
       implicit val gen = sample(schema)
 
-      check { data: SampleData => testRenderJson(data.data) }.set(
+      check { data: SampleData =>
+        testRenderJson(data.data)
+      }.set(
         minTestsOk -> 20000,
         workers -> Runtime.getRuntime.availableProcessors)
     }

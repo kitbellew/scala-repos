@@ -46,7 +46,9 @@ private[ui] class StageTableBase(
     <th>Tasks: Succeeded/Total</th>
     <th><span data-toggle="tooltip" title={ToolTips.INPUT}>Input</span></th>
     <th><span data-toggle="tooltip" title={ToolTips.OUTPUT}>Output</span></th>
-    <th><span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>Shuffle Read</span></th>
+    <th><span data-toggle="tooltip" title={
+        ToolTips.SHUFFLE_READ
+      }>Shuffle Read</span></th>
     <th>
       <!-- Place the shuffle write tooltip on the left (rather than the default position
         of on top) because the shuffle write column is the last column on the right side and
@@ -210,7 +212,9 @@ private[ui] class StageTableBase(
       }
     } ++
       <td>{makeDescription(s)}</td>
-    <td sorttable_customkey={s.submissionTime.getOrElse(0).toString} valign="middle">
+    <td sorttable_customkey={
+        s.submissionTime.getOrElse(0).toString
+      } valign="middle">
       {submissionTime}
     </td>
     <td sorttable_customkey={duration.getOrElse(-1).toString}>{

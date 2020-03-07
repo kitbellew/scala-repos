@@ -474,7 +474,9 @@ object Defaults extends BuildCommon {
       val structure = Project structure state
       val configurations =
         Project.getProject(ref, structure).toList.flatMap(_.configurations)
-      configurations.flatMap { conf => key in (ref, conf) get structure.data } join
+      configurations.flatMap { conf =>
+        key in (ref, conf) get structure.data
+      } join
     }
   def watchTransitiveSourcesTask: Initialize[Task[Seq[File]]] = {
     import ScopeFilter.Make.{inDependencies => inDeps, _}

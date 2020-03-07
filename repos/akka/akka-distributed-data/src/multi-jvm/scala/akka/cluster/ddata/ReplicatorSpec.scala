@@ -397,8 +397,9 @@ class ReplicatorSpec
           for (n ← 1 to 30) {
             val KeyDn = GCounterKey("D" + n)
             replicator ! Get(KeyDn, ReadLocal)
-            expectMsgPF() { case g @ GetSuccess(KeyDn, _) ⇒ g.get(KeyDn) }.value should be(
-              n)
+            expectMsgPF() {
+              case g @ GetSuccess(KeyDn, _) ⇒ g.get(KeyDn)
+            }.value should be(n)
           }
         }
       }

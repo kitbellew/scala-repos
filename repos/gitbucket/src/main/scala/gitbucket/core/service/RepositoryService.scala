@@ -325,27 +325,28 @@ trait RepositoryService { self: AccountService =>
     */
   def getRepository(userName: String, repositoryName: String)(
       implicit s: Session): Option[RepositoryInfo] = {
-    (Repositories filter { t => t.byRepository(userName, repositoryName) } firstOption) map {
-      repository =>
-        // for getting issue count and pull request count
-        val issues = Issues
-          .filter { t =>
-            t.byRepository(repository.userName, repository.repositoryName) && (t.closed === false.bind)
-          }
-          .map(_.pullRequest)
-          .list
+    (Repositories filter { t =>
+      t.byRepository(userName, repositoryName)
+    } firstOption) map { repository =>
+      // for getting issue count and pull request count
+      val issues = Issues
+        .filter { t =>
+          t.byRepository(repository.userName, repository.repositoryName) && (t.closed === false.bind)
+        }
+        .map(_.pullRequest)
+        .list
 
-        new RepositoryInfo(
-          JGitUtil
-            .getRepositoryInfo(repository.userName, repository.repositoryName),
-          repository,
-          issues.count(_ == false),
-          issues.count(_ == true),
-          getForkedCount(
-            repository.originUserName.getOrElse(repository.userName),
-            repository.originRepositoryName.getOrElse(repository.repositoryName)
-          ),
-          getRepositoryManagers(repository.userName))
+      new RepositoryInfo(
+        JGitUtil
+          .getRepositoryInfo(repository.userName, repository.repositoryName),
+        repository,
+        issues.count(_ == false),
+        issues.count(_ == true),
+        getForkedCount(
+          repository.originUserName.getOrElse(repository.userName),
+          repository.originRepositoryName.getOrElse(repository.repositoryName)
+        ),
+        getRepositoryManagers(repository.userName))
     }
   }
 

@@ -182,7 +182,9 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
       Map(
         "play.http.actionComposition.executeActionCreatorActionFirst" -> "false",
         "play.http.actionCreator" -> "play.it.http.ActionCompositionActionCreator")
-    ) { response => response.body must beEqualTo("actionactioncreator") }
+    ) { response =>
+      response.body must beEqualTo("actionactioncreator")
+    }
 
     "execute request handler action last is the default and controller composition before action composition" in makeRequest(
       new ComposedController {

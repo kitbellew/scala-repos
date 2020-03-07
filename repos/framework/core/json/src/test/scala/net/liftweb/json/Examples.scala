@@ -80,10 +80,9 @@ trait AbstractExamples extends Specification {
     (print(json \ "children" \ "name") mustEqual """["Mary","Mazy"]""") and
       (print((json \ "children")(0) \ "name") mustEqual "\"Mary\"") and
       (print((json \ "children")(1) \ "name") mustEqual "\"Mazy\"") and
-      ((for { JObject(o) <- json; JField("name", JString(y)) <- o } yield y) mustEqual List(
-        "joe",
-        "Mary",
-        "Mazy"))
+      ((for {
+        JObject(o) <- json; JField("name", JString(y)) <- o
+      } yield y) mustEqual List("joe", "Mary", "Mazy"))
   }
 
   "Unbox values using XPath-like type expression" in {

@@ -624,8 +624,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       val indent = countWhitespace
-      val style = (listStyles.keys find { checkSkipInitWhitespace(_) })
-        .getOrElse(listStyles.keys.head)
+      val style = (listStyles.keys find {
+        checkSkipInitWhitespace(_)
+      }).getOrElse(listStyles.keys.head)
       listLevel(indent, style)
     }
 

@@ -455,7 +455,9 @@ class Eval(target: Option[File]) {
         val tokens = line.trim.split(' ')
         if (tokens.length == 2 && tokens(0).equals("#include")) {
           val path = tokens(1)
-          resolvers find { resolver: Resolver => resolver.resolvable(path) } match {
+          resolvers find { resolver: Resolver =>
+            resolver.resolvable(path)
+          } match {
             case Some(r: Resolver) => {
               // recursively process includes
               if (maxDepth == 0) {

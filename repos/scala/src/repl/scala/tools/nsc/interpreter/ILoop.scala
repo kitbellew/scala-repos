@@ -1023,7 +1023,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         readerClasses map (cls => Try { mkReader(instantiater(cls)) })
 
       val reader =
-        (readers collect { case Success(reader) => reader } headOption) getOrElse SimpleReader()
+        (readers collect {
+          case Success(reader) => reader
+        } headOption) getOrElse SimpleReader()
 
       if (settings.debug) {
         val readerDiags = (readerClasses, readers).zipped map {

@@ -450,7 +450,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val serializationQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.RESULT_SERIALIZATION_TIME} data-placement="right">
+                    title={
+              ToolTips.RESULT_SERIALIZATION_TIME
+            } data-placement="right">
                 Result Serialization Time
               </span>
             </td> +: getFormattedTimeQuantiles(serializationTimes)
@@ -475,7 +477,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val peakExecutionMemoryQuantiles = {
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.PEAK_EXECUTION_MEMORY} data-placement="right">
+                    title={
+              ToolTips.PEAK_EXECUTION_MEMORY
+            } data-placement="right">
                 Peak Execution Memory
               </span>
             </td> +: getFormattedSizeQuantiles(peakExecutionMemory)
@@ -544,7 +548,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadBlockedQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.SHUFFLE_READ_BLOCKED_TIME} data-placement="right">
+                    title={
+              ToolTips.SHUFFLE_READ_BLOCKED_TIME
+            } data-placement="right">
                 Shuffle Read Blocked Time
               </span>
             </td> +:
@@ -585,7 +591,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val shuffleReadRemoteQuantiles =
             <td>
               <span data-toggle="tooltip"
-                    title={ToolTips.SHUFFLE_READ_REMOTE_SIZE} data-placement="right">
+                    title={
+              ToolTips.SHUFFLE_READ_REMOTE_SIZE
+            } data-placement="right">
                 Shuffle Remote Reads
               </span>
             </td> +:
@@ -705,7 +713,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               taskIdsInPage.contains(t.taskInfo.taskId)),
             currentTime) ++
           <h4>Summary Metrics for {numCompleted} Completed Tasks</h4> ++
-          <div>{summaryTable.getOrElse("No tasks have reported metrics yet.")}</div> ++
+          <div>{
+            summaryTable.getOrElse("No tasks have reported metrics yet.")
+          }</div> ++
           <h4>Aggregated Metrics by Executor</h4> ++ executorTable.toNodeSeq ++
           maybeAccumulableTable ++
           <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++ jsForScrollingDownToTaskTable

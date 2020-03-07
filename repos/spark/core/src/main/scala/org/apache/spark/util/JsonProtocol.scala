@@ -312,7 +312,9 @@ private[spark] object JsonProtocol {
     ("ID" -> accumulableInfo.id) ~
       ("Name" -> name) ~
       ("Update" -> accumulableInfo.update
-        .map { v => accumValueToJson(name, v) }) ~
+        .map { v =>
+          accumValueToJson(name, v)
+        }) ~
       ("Value" -> accumulableInfo.value
         .map { v => accumValueToJson(name, v) }) ~
       ("Internal" -> accumulableInfo.internal) ~

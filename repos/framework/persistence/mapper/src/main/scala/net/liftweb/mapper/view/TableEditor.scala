@@ -299,7 +299,9 @@ trait ItemsListEditor[T <: Mapper[T]] {
         "^" #> customBind(item) andThen
           ".fields" #> eachField(
             item,
-            { f: MappedField[_, T] => ".form" #> <strike>{f.asHtml}</strike> }) &
+            { f: MappedField[_, T] =>
+              ".form" #> <strike>{f.asHtml}</strike>
+            }) &
             ".removeBtn" #> SHtml.submit(
               ?("Remove"),
               () => onRemove(item),

@@ -73,8 +73,9 @@ class PermissionsFinder[M[+_]: Monad](
       path: Path,
       at: Option[Instant]): Set[WritePermission] = {
     keyDetails.grants filter { g =>
-      (at exists { g.isValidAt _ }) || g.createdAt.isBefore(
-        timestampRequiredAfter)
+      (at exists {
+        g.isValidAt _
+      }) || g.createdAt.isBefore(timestampRequiredAfter)
     } flatMap {
       _.permissions collect {
         case perm @ WritePermission(path0, _)

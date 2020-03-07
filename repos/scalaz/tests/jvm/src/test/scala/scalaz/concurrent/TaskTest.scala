@@ -57,22 +57,25 @@ object TaskTest extends SpecLite {
   }
 
   "catches exceptions" ! {
-    Task { Thread.sleep(10); throw FailWhale; 42 }
-      .map(_ + 1)
+    Task {
+      Thread.sleep(10); throw FailWhale; 42
+    }.map(_ + 1)
       .unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
 
   "catches errors" ! {
-    Task { Thread.sleep(10); throw FailTurkey; 42 }
-      .map(_ + 1)
+    Task {
+      Thread.sleep(10); throw FailTurkey; 42
+    }.map(_ + 1)
       .unsafePerformSyncAttempt ==
       -\/(FailTurkey)
   }
 
   "catches exceptions in a mapped function" ! {
-    Task { Thread.sleep(10); 42 }
-      .map(_ => throw FailWhale)
+    Task {
+      Thread.sleep(10); 42
+    }.map(_ => throw FailWhale)
       .unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
@@ -94,8 +97,9 @@ object TaskTest extends SpecLite {
   }
 
   "catches exceptions in a flatMapped function" ! {
-    Task { Thread.sleep(10); 42 }
-      .flatMap(_ => throw FailWhale)
+    Task {
+      Thread.sleep(10); 42
+    }.flatMap(_ => throw FailWhale)
       .unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
@@ -166,8 +170,9 @@ object TaskTest extends SpecLite {
   }
 
   "catches exceptions thrown by onFinish argument function" ! {
-    Task { Thread.sleep(10); 42 }
-      .onFinish { _ => throw SadTrombone; Task.now(()) }
+    Task {
+      Thread.sleep(10); 42
+    }.onFinish { _ => throw SadTrombone; Task.now(()) }
       .unsafePerformSyncAttemptFor(1000) ==
       -\/(SadTrombone)
   }

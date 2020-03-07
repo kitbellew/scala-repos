@@ -58,7 +58,9 @@ package object http {
             concreteResolvable,
             resolvedResult => deferredRender(resolvedResult))
 
-          <div id={placeholderId}><img src="/images/ajax-loader.gif" alt="Loading..." /></div>
+          <div id={
+            placeholderId
+          }><img src="/images/ajax-loader.gif" alt="Loading..." /></div>
         } openOr {
           Comment(
             "FIX" + "ME: Asynchronous rendering failed for unknown reason.")

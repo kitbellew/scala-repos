@@ -130,8 +130,10 @@ class WebAccountFinder(
       eitherT(client.query("apiKey", apiKey).get[JValue]("/accounts/") map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
           logger.info("Got response for apiKey " + apiKey)
-          (((_: Extractor.Error).message) <-: jaccountId.validated[
-            WrappedAccountId] :-> { wid => Some(wid.accountId) }).disjunction
+          (((_: Extractor.Error).message) <-: jaccountId
+            .validated[WrappedAccountId] :-> { wid =>
+            Some(wid.accountId)
+          }).disjunction
 
         case HttpResponse(HttpStatus(OK, _), _, None, _) =>
           logger.warn("No account found for apiKey: " + apiKey)

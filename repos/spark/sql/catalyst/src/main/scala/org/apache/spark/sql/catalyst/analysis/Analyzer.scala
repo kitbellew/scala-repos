@@ -1472,7 +1472,9 @@ class Analyzer(
               // TODO: skip null handling for not-nullable primitive inputs after we can completely
               // trust the `nullable` information.
               // .filter { case (cls, expr) => cls.isPrimitive && expr.nullable }
-              .filter { case (cls, _) => cls.isPrimitive }
+              .filter {
+                case (cls, _) => cls.isPrimitive
+              }
               .map { case (_, expr) => IsNull(expr) }
               .reduceLeftOption[Expression]((e1, e2) => Or(e1, e2))
             inputsNullCheck

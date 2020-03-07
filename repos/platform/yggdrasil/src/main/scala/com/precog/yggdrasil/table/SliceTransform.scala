@@ -213,7 +213,9 @@ trait SliceTransforms[M[+_]]
                 }
 
                 val groupedNonNum =
-                  (leftNonNum mapValues { _ :: Nil }) cogroup (rightNonNum mapValues {
+                  (leftNonNum mapValues {
+                    _ :: Nil
+                  }) cogroup (rightNonNum mapValues {
                     _ :: Nil
                   })
 
@@ -758,7 +760,9 @@ trait SliceTransforms[M[+_]]
                       rightMask.flip(0, size)
 
                       val grouped =
-                        (leftS.columns mapValues { _ :: Nil }) cogroup (rightS.columns mapValues {
+                        (leftS.columns mapValues {
+                          _ :: Nil
+                        }) cogroup (rightS.columns mapValues {
                           _ :: Nil
                         })
 

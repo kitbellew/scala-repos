@@ -139,8 +139,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     */
   case class ScalaSigBytes(bytes: Array[Byte]) extends ClassfileAnnotArg {
     override def toString =
-      (bytes map { byte => (byte & 0xff).toHexString })
-        .mkString("[ ", " ", " ]")
+      (bytes map { byte =>
+        (byte & 0xff).toHexString
+      }).mkString("[ ", " ", " ]")
     lazy val sevenBitsMayBeZero: Array[Byte] = {
       mapToNextModSevenBits(
         scala.reflect.internal.pickling.ByteCodecs.encode8to7(bytes))

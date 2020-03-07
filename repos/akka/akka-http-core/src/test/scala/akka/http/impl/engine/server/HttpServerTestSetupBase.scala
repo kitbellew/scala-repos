@@ -46,7 +46,9 @@ abstract class HttpServerTestSetupBase {
           Source.fromPublisher(netIn) ~> Flow[ByteString].map(
             SessionBytes(null, _)) ~> server.in2
           server.out1 ~> Flow[SslTlsOutbound]
-            .collect { case SendBytes(x) ⇒ x }
+            .collect {
+              case SendBytes(x) ⇒ x
+            }
             .buffer(1, OverflowStrategy.backpressure) ~> netOut.sink
           server.out2 ~> Sink.fromSubscriber(requests)
           Source.fromPublisher(responses) ~> server.in1

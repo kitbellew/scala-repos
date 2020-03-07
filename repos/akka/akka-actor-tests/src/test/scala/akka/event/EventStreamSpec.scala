@@ -95,16 +95,19 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
     "not allow null as subscriber" in {
       val bus = new EventStream(system, true)
-      intercept[IllegalArgumentException] { bus.subscribe(null, classOf[M]) }.getMessage should ===(
-        "subscriber is null")
+      intercept[IllegalArgumentException] {
+        bus.subscribe(null, classOf[M])
+      }.getMessage should ===("subscriber is null")
     }
 
     "not allow null as unsubscriber" in {
       val bus = new EventStream(system, true)
-      intercept[IllegalArgumentException] { bus.unsubscribe(null, classOf[M]) }.getMessage should ===(
-        "subscriber is null")
-      intercept[IllegalArgumentException] { bus.unsubscribe(null) }.getMessage should ===(
-        "subscriber is null")
+      intercept[IllegalArgumentException] {
+        bus.unsubscribe(null, classOf[M])
+      }.getMessage should ===("subscriber is null")
+      intercept[IllegalArgumentException] {
+        bus.unsubscribe(null)
+      }.getMessage should ===("subscriber is null")
     }
 
     "be able to log unhandled messages" in {

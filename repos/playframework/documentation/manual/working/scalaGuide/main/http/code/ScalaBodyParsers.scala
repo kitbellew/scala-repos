@@ -32,7 +32,9 @@ package scalaguide.http.scalabodyparsers {
 
           // Expecting json body
           jsonBody
-            .map { json => Ok("Got: " + (json \ "name").as[String]) }
+            .map { json =>
+              Ok("Got: " + (json \ "name").as[String])
+            }
             .getOrElse {
               BadRequest("Expecting application/json request body")
             }

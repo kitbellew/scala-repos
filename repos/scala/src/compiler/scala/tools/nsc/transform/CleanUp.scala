@@ -314,8 +314,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               Throw(Apply(Select(Ident(invokeExc), nme.getCause), Nil))
 
             // try { method.invoke } catch { case e: InvocationTargetExceptionClass => throw e.getCause() }
-            fixResult(
-              TRY(invocation) CATCH { CASE(catchVar) ==> catchBody } ENDTRY)
+            fixResult(TRY(invocation) CATCH {
+              CASE(catchVar) ==> catchBody
+            } ENDTRY)
           }
 
           /* A possible primitive method call, represented by methods in BoxesRunTime. */

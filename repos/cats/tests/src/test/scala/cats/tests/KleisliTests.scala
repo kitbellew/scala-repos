@@ -193,8 +193,9 @@ class KleisliTests extends CatsSuite {
     val list = opt.transform(optToList)
 
     val is = 0.to(10).toList
-    is.map(list.run) should ===(
-      is.map(Kleisli { (x: Int) => List(x.toDouble) }.run))
+    is.map(list.run) should ===(is.map(Kleisli { (x: Int) =>
+      List(x.toDouble)
+    }.run))
   }
 
   test("local") {

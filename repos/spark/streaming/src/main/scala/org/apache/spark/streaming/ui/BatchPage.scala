@@ -204,7 +204,9 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         <td class="output-op-id-cell" rowspan={
           numSparkJobRowsInOutputOp.toString
         }>{outputOpData.id.toString}</td>
-          <td rowspan={numSparkJobRowsInOutputOp.toString}>{outputOpDescription}</td>
+          <td rowspan={numSparkJobRowsInOutputOp.toString}>{
+          outputOpDescription
+        }</td>
           <td rowspan={numSparkJobRowsInOutputOp.toString}>{
           formattedOutputOpDuration
         }</td> ++ {

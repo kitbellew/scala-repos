@@ -336,7 +336,9 @@ trait EntityPage extends HtmlPage {
                   <ol id="linearization">
                     {
                 (tpl :: tpl.linearizationTemplates).map(wte =>
-                  <li class="in" name={wte.qualifiedName}><span>{wte.name}</span></li>)
+                  <li class="in" name={wte.qualifiedName}><span>{
+                    wte.name
+                  }</span></li>)
               }
                   </ol>
                 </div>
@@ -1163,7 +1165,9 @@ trait EntityPage extends HtmlPage {
               case _ => Text("")
             }
             vlsss map { vlss =>
-              <span class="params">({implicitCheck(vlss) ++ params0(vlss)})</span>
+              <span class="params">({
+                implicitCheck(vlss) ++ params0(vlss)
+              })</span>
             }
           }
           mbr match {
