@@ -453,9 +453,8 @@ trait DAG extends Instructions {
         case PushArray     => buildConstRoot(PushArray)
 
         case PushUndefined =>
-          line map { ln =>
-            Right((Undefined(ln), stream.tail))
-          } getOrElse Left(UnknownLine)
+          line map { ln => Right((Undefined(ln), stream.tail)) } getOrElse Left(
+            UnknownLine)
 
         case instr => Left(StackUnderflow(instr))
       }

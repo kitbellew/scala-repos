@@ -158,9 +158,8 @@ trait WebJobManager
     withJsonClient { client =>
       eitherT(client.get[JValue]("/jobs/" + jobId) map {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj.validated[Job] map { job =>
-            right(Some(job))
-          } getOrElse left("Invalid job returned from server:\n" + obj)
+          obj.validated[Job] map { job => right(Some(job)) } getOrElse left(
+            "Invalid job returned from server:\n" + obj)
         case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
           right(None)
         case res =>

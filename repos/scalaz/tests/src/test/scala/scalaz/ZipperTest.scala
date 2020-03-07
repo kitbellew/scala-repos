@@ -414,9 +414,9 @@ object ZipperTest extends SpecLite {
   "Find" ! forAll {
     (xs: Stream[Int], ys: Stream[Int], f: Int, n: Int, m: Int) =>
       val p = (i: Int) => i < n && i > m
-      zipper(xs, f, ys).findZ(p) map { z =>
-        p(z.focus)
-      } getOrElse !(xs.find(p).isDefined || ys.find(p).isDefined || p(f))
+      zipper(xs, f, ys).findZ(p) map { z => p(z.focus) } getOrElse !(xs
+        .find(p)
+        .isDefined || ys.find(p).isDefined || p(f))
   }
 
   "findZ shouldn't change elements" ! forAll {

@@ -1373,9 +1373,10 @@ trait SliceTransforms[M[+_]]
         case (a, sl, sr) => M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
-        M point ({ (a: A) =>
-          SliceTransform2S[A](a, f0)
-        } <-: f0(initial, sl, sr))
+        M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(
+          initial,
+          sl,
+          sr))
     }
 
     private case class SliceTransform2M[A](

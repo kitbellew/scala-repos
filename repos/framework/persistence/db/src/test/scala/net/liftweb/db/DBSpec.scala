@@ -161,9 +161,8 @@ class DBSpec extends Specification with Mockito {
 
   "appendPostTransaction" should {
     "throw if called outside tx context" in {
-      DB.appendPostTransaction { committed =>
-        ()
-      } must throwA[IllegalStateException]
+      DB.appendPostTransaction { committed => () } must throwA[
+        IllegalStateException]
     }
   }
 

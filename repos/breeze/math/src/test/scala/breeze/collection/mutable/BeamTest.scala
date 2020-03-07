@@ -44,9 +44,9 @@ class BeamTest extends FunSuite with Checkers {
   }
 
   test("Flatmap") {
-    assert(Beam(4)(3.0, 2.0, 1.0).flatMap { i =>
-      Iterator(i, i + 1)
-    } == Beam(4)(4.0, 3.0, 3.0, 2.0))
+    assert(
+      Beam(4)(3.0, 2.0, 1.0)
+        .flatMap { i => Iterator(i, i + 1) } == Beam(4)(4.0, 3.0, 3.0, 2.0))
   }
 
   test("filter") {

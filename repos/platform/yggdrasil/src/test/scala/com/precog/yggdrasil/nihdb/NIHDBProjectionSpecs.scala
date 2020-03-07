@@ -143,9 +143,7 @@ class NIHDBProjectionSpecs
             result <- projection.getBlockAfter(None, None)
           } yield result
 
-        results.onComplete { _ =>
-          ctxt.stop
-        } must awaited(maxDuration)(beLike {
+        results.onComplete { _ => ctxt.stop } must awaited(maxDuration)(beLike {
           case Some(BlockProjectionData(min, max, data)) =>
             min mustEqual 0L
             max mustEqual 0L

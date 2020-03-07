@@ -70,9 +70,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
     "cancel UnsupportedRequestContentTypeRejections if a subsequent `entity` directive succeeds" in {
       Put("/", HttpEntity(ContentTypes.`text/plain(UTF-8)`, "yeah")) ~> {
-        entity(as[NodeSeq]) { _ ⇒
-          completeOk
-        } ~
+        entity(as[NodeSeq]) { _ ⇒ completeOk } ~
           entity(as[String]) { _ ⇒ validate(false, "Problem") { completeOk } }
       } ~> check { rejection shouldEqual ValidationRejection("Problem") }
     }

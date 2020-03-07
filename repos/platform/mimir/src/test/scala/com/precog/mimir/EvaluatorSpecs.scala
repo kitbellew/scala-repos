@@ -1970,9 +1970,8 @@ trait EvaluatorSpecs[M[+_]]
         Const(CFalse)(line),
         dag.AbsoluteLoad(Const(CString("clicks"))(line))(line))(line)
 
-      testEval(input) { result =>
-        result must haveSize(100)
-      } must throwA[FatalQueryException]
+      testEval(input) { result => result must haveSize(100) } must throwA[
+        FatalQueryException]
     }
 
     "fail an assertion according to forall semantics" in {
@@ -1982,9 +1981,8 @@ trait EvaluatorSpecs[M[+_]]
         dag.IUI(true, Const(CFalse)(line), Const(CTrue)(line))(line),
         dag.AbsoluteLoad(Const(CString("clicks"))(line))(line))(line)
 
-      testEval(input) { result =>
-        result must haveSize(100)
-      } must throwA[FatalQueryException]
+      testEval(input) { result => result must haveSize(100) } must throwA[
+        FatalQueryException]
     }
 
     "compute the set difference of two sets" in {
